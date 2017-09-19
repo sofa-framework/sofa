@@ -1,43 +1,39 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
- * OBJExporter.h
+/* OBJExporter.h
  *
  *  Created on: 9 sept. 2009
- *      Author: froy
- */
+ *
+ *  Contributors:
+ *    - froy
+ *    - damien.marchal@univ-lille1.fr
+ *
+ ************************************************************************************/
 
 #ifndef OBJEXPORTER_H_
 #define OBJEXPORTER_H_
 #include "config.h"
 
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/simulation/BaseSimulationExporter.h>
 
 #include <fstream>
 
@@ -47,37 +43,33 @@ namespace sofa
 namespace component
 {
 
-namespace misc
+namespace _objexporter_
 {
 
-class SOFA_EXPORTER_API OBJExporter : public core::objectmodel::BaseObject
+using sofa::simulation::BaseSimulationExporter ;
+using sofa::core::objectmodel::Event ;
+using sofa::core::objectmodel::Base ;
+
+class SOFA_EXPORTER_API OBJExporter : public BaseSimulationExporter
 {
 public:
-	SOFA_CLASS(OBJExporter, core::objectmodel::BaseObject);
+    SOFA_CLASS(OBJExporter, BaseSimulationExporter);
 
-private:
-    unsigned int stepCounter;
-    sofa::core::objectmodel::BaseContext* context;
-    unsigned int maxStep;
+    virtual bool write() override ;
+    bool writeOBJ();
 
-public:
-    sofa::core::objectmodel::DataFileName objFilename;
-    Data<unsigned int> exportEveryNbSteps;
-    Data<bool> exportAtBegin;
-    Data<bool> exportAtEnd;
-    bool  activateExport;
+    virtual void handleEvent(Event *event) override ;
+
 protected:
-    OBJExporter();
     virtual ~OBJExporter();
-public:
-    void init();
-    void cleanup();
-    void bwdInit();
-	void handleEvent(sofa::core::objectmodel::Event *);
-	void writeOBJ(); 
 };
 
 }
+
+using _objexporter_::OBJExporter ;
+
+/// This is for compatibility with old code base in which OBJExporter where in sofa::component::misc.
+namespace misc  { using _objexporter_::OBJExporter ; }
 
 }
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -13,11 +13,8 @@
 * more details.                                                               *
 *                                                                             *
 * You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* with this program. If not, see <http://www.gnu.org/licenses/>.              *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -66,10 +63,9 @@ class Regression_test: public testing::Test
 
 protected:
 
-    void runRegressionScene( const std::string& testScene, unsigned nbsteps, double epsilon )
+    void runRegressionScene( std::string& reference, const std::string& scene, unsigned int steps, double epsilon )
     {
-
-        std::cerr<<"Regression_test : testing scene "<<testScene<<" "<<nbsteps<<std::endl;
+        msg_info("Regression_test") << "  Testing " << scene;
 
         sofa::component::initComponentBase();
         sofa::component::initComponentCommon();
@@ -79,22 +75,19 @@ protected:
 
         simulation::Simulation* simulation = simulation::getSimulation();
 
-        //Load the scene
-        sofa::simulation::Node::SPtr root = simulation->load(testScene.c_str());
+        // Load the scene
+        sofa::simulation::Node::SPtr root = simulation->load(scene.c_str());
 
         simulation->init(root.get());
 
-
         // TODO lancer visiteur pour dumper MO
         // comparer ce dump avec le fichier sceneName.regressionreference
-
-        std::string reference = testScene + ".reference";
 
         bool initializing = false;
 
         if (helper::system::FileSystem::exists(reference) && !helper::system::FileSystem::isDirectory(reference))
         {
-            //We add CompareState components: as it derives from the ReadState, we use the ReadStateActivator to enable them.
+            // Add CompareState components: as it derives from the ReadState, we use the ReadStateActivator to enable them.
             sofa::component::misc::CompareStateCreator compareVisitor(sofa::core::ExecParams::defaultInstance());
 //            compareVisitor.setCreateInMapping(true);
             compareVisitor.setSceneName(reference);
@@ -105,8 +98,7 @@ protected:
         }
         else // create reference
         {
-            std::cerr<<"REGRESSION TEST : WARNING a reference is not existing and is created now, \""<<testScene<<".reference*\" files should be added to the repository "<<std::endl;
-
+            msg_warning("Regression_test") << "Non existing reference created: " << reference;
 
             // just to create an empty file to know it is already init
             std::ofstream filestream(reference.c_str());
@@ -122,31 +114,27 @@ protected:
             v_write.execute(root.get());
         }
 
-        for( unsigned int i=0 ; i<nbsteps ; ++i )
+        for( unsigned int i=0 ; i<steps ; ++i )
         {
             simulation->animate( root.get(), root->getDt() );
         }
 
-
-
         if( !initializing )
         {
-            //We read the final error: the summation of all the error made at each time step
+            // Read the final error: the summation of all the error made at each time step
             sofa::component::misc::CompareStateResult result(sofa::core::ExecParams::defaultInstance());
             result.execute(root.get());
 
-            if( result.getTotalError() > epsilon )
+            double errorByDof = result.getErrorByDof() / double(result.getNumCompareState());
+            if( errorByDof > epsilon )
             {
-                ADD_FAILURE() << "ERROR "<< testScene;
-
-//                << " " << result.getTotalError() << " ERRORBYDOF "
-//                                                             << static_cast<double>(result.getErrorByDof())
-//                                                             / result.getNumCompareState() << std::endl;
+                ADD_FAILURE() << scene
+                << ", TOTALERROR: " << result.getTotalError()
+                << ", ERRORBYDOF: " << errorByDof;
             }
-
         }
 
-        //Clear and prepare for next scene
+        // Clear and prepare for next scene
         simulation->unload(root.get());
         root.reset();
     }
@@ -163,27 +151,55 @@ protected:
 
         if (helper::system::FileSystem::exists(regression_scene_list) && !helper::system::FileSystem::isDirectory(regression_scene_list))
         {
-            std::cerr<<"Regression_test : testing list "<<regression_scene_list<<std::endl;
+            msg_info("Regression_test") << "Parsing " << regression_scene_list;
 
             // parser le fichier -> (file,nb time steps,epsilon)
             std::ifstream iniFileStream(regression_scene_list.c_str());
             while (!iniFileStream.eof())
             {
                 std::string line;
-                std::string currentScene;
-                unsigned int nbsteps;
+                std::string scene;
+                unsigned int steps;
                 double epsilon;
+
                 getline(iniFileStream, line);
                 std::istringstream lineStream(line);
-                lineStream >> currentScene;
-                lineStream >> nbsteps;
+                lineStream >> scene;
+                lineStream >> steps;
                 lineStream >> epsilon;
-//                DataRepository.findFile(currentScene);
 
-                runRegressionScene( testDir + "/" + currentScene, nbsteps, epsilon );
+                scene = testDir + "/" + scene;
+                std::string reference = testDir + "/" + getFileName(scene) + ".reference";
+
+#ifdef WIN32
+                // Minimize absolute scene path to avoid MAX_PATH problem
+                if(scene.length() > MAX_PATH)
+                {
+                    ADD_FAILURE() << scene << ": path is longer than " << MAX_PATH;
+                    continue;
+                }
+                char buffer[MAX_PATH];
+                GetFullPathNameA(scene.c_str(), MAX_PATH, buffer, nullptr);
+                scene = std::string(buffer);
+                std::replace( scene.begin(), scene.end(), '\\', '/');
+#endif // WIN32
+
+                runRegressionScene( reference, scene, steps, epsilon );
             }
-
         }
+    }
+
+    std::string getFileName(const std::string& s)
+    {
+       char sep = '/';
+
+       size_t i = s.rfind(sep, s.length());
+       if (i != std::string::npos)
+       {
+          return(s.substr(i+1, s.length() - i));
+       }
+
+       return s;
     }
 
 
@@ -197,10 +213,9 @@ protected:
         for (std::vector<std::string>::iterator i = dir.begin(); i != dir.end(); ++i)
         {
             const std::string pluginPath = pluginsDirectory + "/" + *i;
+
             if (helper::system::FileSystem::isDirectory(pluginPath))
             {
-//                std::cerr<<"Regression_test : testing plugin/project "<<pluginPath<<std::endl;
-
                 const std::string testDir = pluginPath + "/" + *i + "_test/regression";
                 if (helper::system::FileSystem::exists(testDir) && helper::system::FileSystem::isDirectory(testDir))
                 {
@@ -239,6 +254,9 @@ protected:
         if (helper::system::FileSystem::exists(devProjectsDir))
             testTestPath(devProjectsDir);
 
+        static const std::string modulesDir = std::string(SOFA_SRC_DIR) + "/modules";
+        if (helper::system::FileSystem::exists(modulesDir))
+            testTestPath(modulesDir);
     }
 
 };

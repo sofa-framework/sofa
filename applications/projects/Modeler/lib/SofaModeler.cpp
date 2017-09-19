@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -13,15 +13,14 @@
 * more details.                                                               *
 *                                                                             *
 * You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* with this program. If not, see <http://www.gnu.org/licenses/>.              *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <fstream>
+
 #include "SofaModeler.h"
 
 #include <sofa/helper/system/FileRepository.h>
@@ -309,7 +308,7 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager(Utils::getSofaPathPrefix()
     // Create the Right part of the GUI
     //----------------------------------------------------------------------
 
-	// setRightJustification(true);
+    // setRightJustification(true);
 
     QHBoxLayout *mainLayout = new QHBoxLayout(this->centralWidget());
 
@@ -328,18 +327,18 @@ SofaModeler::SofaModeler():recentlyOpenedFilesManager(Utils::getSofaPathPrefix()
 
     //----------------------------------------------------------------------
     //Create the properties visualization
-	ModifyObjectFlags modifyObjectFlags = ModifyObjectFlags();
+    ModifyObjectFlags modifyObjectFlags = ModifyObjectFlags();
     modifyObjectFlags.setFlagsForModeler();
 
-	QDockWidget* dockProperty = new QDockWidget("Properties", this);
+    QDockWidget* dockProperty = new QDockWidget("Properties", this);
     dockProperty->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 
     addDockWidget(Qt::RightDockWidgetArea, dockProperty);
 
-	// connect(dockProperty, SIGNAL(placeChanged(Q3DockWindow::Place)), this, SLOT(propertyDockMoved(Q3DockWindow::Place)));
-	
+    // connect(dockProperty, SIGNAL(placeChanged(Q3DockWindow::Place)), this, SLOT(propertyDockMoved(Q3DockWindow::Place)));
+
     propertyWidget = new QDisplayPropertyWidget(modifyObjectFlags, dockProperty);
-	dockProperty->setWidget(propertyWidget);
+    dockProperty->setWidget(propertyWidget);
 
     //----------------------------------------------------------------------
     //Add plugin manager window. ->load external libs
@@ -761,79 +760,76 @@ void SofaModeler::fileReload()
 
 void SofaModeler::exportSofaClasses()
 {
-	QString filename = sofa::gui::qt::getSaveFileName(this, QString(binPath.c_str()), "Sofa Classes (*.xml)", "export classes dialog", "Choose where the Sofa classes will be exported");
-	if(filename.isEmpty())
-		return;
+    QString filename = sofa::gui::qt::getSaveFileName(this, QString(binPath.c_str()), "Sofa Classes (*.xml)", "export classes dialog", "Choose where the Sofa classes will be exported");
+    if(filename.isEmpty())
+        return;
 
-	simulation::Node::SPtr root = getSimulation()->createNewGraph("components");
+    simulation::Node::SPtr root = getSimulation()->createNewGraph("components");
 
-	std::vector< ClassEntry::SPtr > entries;
-	sofa::core::ObjectFactory::getInstance()->getAllEntries(entries);
-	//Set of categories found in the Object Factory
-	std::set< std::string > mainCategories;
-	//Data containing all the entries for a given category
-	std::multimap< std::string, ClassEntry::SPtr > inventory;
+    std::vector< ClassEntry::SPtr > entries;
+    sofa::core::ObjectFactory::getInstance()->getAllEntries(entries);
+    //Set of categories found in the Object Factory
+    std::set< std::string > mainCategories;
+    //Data containing all the entries for a given category
+    std::multimap< std::string, ClassEntry::SPtr > inventory;
 
-	for (std::size_t i=0; i<entries.size(); ++i)
-	{
-		//Insert Template specification
-		std::vector< std::string >::iterator it;
-		std::vector<std::string> categories;
-		sofa::core::CategoryLibrary::getCategories(entries[i]->creatorMap.begin()->second->getClass(), categories);
-		for (it = categories.begin(); it != categories.end(); ++it)
-		{
-			mainCategories.insert((*it));
-			inventory.insert(std::make_pair((*it), entries[i]));
-		}
-	}
+    for (std::size_t i=0; i<entries.size(); ++i)
+    {
+        //Insert Template specification
+        std::vector< std::string >::iterator it;
+        std::vector<std::string> categories;
+        sofa::core::CategoryLibrary::getCategories(entries[i]->creatorMap.begin()->second->getClass(), categories);
+        for (it = categories.begin(); it != categories.end(); ++it)
+        {
+            mainCategories.insert((*it));
+            inventory.insert(std::make_pair((*it), entries[i]));
+        }
+    }
 
-	std::set< std::string >::iterator itCategory;
-	typedef std::multimap< std::string, ClassEntry::SPtr >::iterator IteratorInventory;
+    std::set< std::string >::iterator itCategory;
+    typedef std::multimap< std::string, ClassEntry::SPtr >::iterator IteratorInventory;
 
-	//We add the components category by category
-	for (itCategory = mainCategories.begin(); itCategory != mainCategories.end(); ++itCategory)
-	{
-		const std::string& categoryName = *itCategory;
+    //We add the components category by category
+    for (itCategory = mainCategories.begin(); itCategory != mainCategories.end(); ++itCategory)
+    {
+        const std::string& categoryName = *itCategory;
 
-		std::pair< IteratorInventory,IteratorInventory > rangeCategory;
-		rangeCategory = inventory.equal_range(categoryName);
+        std::pair< IteratorInventory,IteratorInventory > rangeCategory;
+        rangeCategory = inventory.equal_range(categoryName);
 
-		simulation::Node::SPtr node = root->createChild(categoryName);
+        simulation::Node::SPtr node = root->createChild(categoryName);
 
-		//Process all the component of the current category, and add them to the group
-		for (IteratorInventory itComponent=rangeCategory.first; itComponent != rangeCategory.second; ++itComponent)
-		{
-			ObjectFactory::ClassEntry::SPtr entry = itComponent->second;
-			const std::string &componentName = entry->className;
+        //Process all the component of the current category, and add them to the group
+        for (IteratorInventory itComponent=rangeCategory.first; itComponent != rangeCategory.second; ++itComponent)
+        {
+            ObjectFactory::ClassEntry::SPtr entry = itComponent->second;
+            const std::string &componentName = entry->className;
 
-			if(0 == entry->className.compare("Distances")) // this component lead to a crash
-				continue;
+            if(0 == entry->className.compare("Distances")) // this component lead to a crash
+                continue;
 
-			int componentCount = 0;
-			for(ObjectFactory::CreatorMap::const_iterator creatorIterator = entry->creatorMap.begin(); creatorIterator != entry->creatorMap.end(); ++creatorIterator)
-			{
-				const std::string& templateName = creatorIterator->first;
+            int componentCount = 0;
+            for(ObjectFactory::CreatorMap::const_iterator creatorIterator = entry->creatorMap.begin(); creatorIterator != entry->creatorMap.end(); ++creatorIterator)
+            {
+                const std::string& templateName = creatorIterator->first;
 
-				std::stringstream componentNameStream;
-				componentNameStream << componentName << componentCount++;
+                std::stringstream componentNameStream;
+                componentNameStream << componentName << componentCount++;
 
-				BaseObjectDescription desc(componentNameStream.str().c_str(), componentName.c_str());
-				desc.setAttribute("template", templateName.c_str());
+                BaseObjectDescription desc(componentNameStream.str().c_str(), componentName.c_str());
+                desc.setAttribute("template", templateName.c_str());
 
-				// print log
-				//std::cout << componentName << " - " << templateName <<  std::endl;
+                if(creatorIterator->second->canCreate(node->getContext(), &desc))
+                    creatorIterator->second->createInstance(node->getContext(), &desc);
+                else
+                    creatorIterator->second->createInstance(node->getContext(), 0);
+            }
+        }
+    }
 
-				if(creatorIterator->second->canCreate(node->getContext(), &desc))
-					creatorIterator->second->createInstance(node->getContext(), &desc);
-				else
-					creatorIterator->second->createInstance(node->getContext(), 0);
-			}
-		}
-	}
+    getSimulation()->exportXML(root.get(), filename.toStdString().c_str());
 
-	getSimulation()->exportXML(root.get(), filename.toStdString().c_str());
-
-	std::cout << "Sofa classes have been XML exported in: " << filename.toStdString() << std::endl << std::endl;
+    std::cout << "Sofa classes have been XML exported in: " << filename.toStdString() << std::endl << std::endl;
 }
 
 void SofaModeler::loadPreset(QAction* act)
@@ -847,7 +843,7 @@ void SofaModeler::loadPreset(QAction* act)
         presetFile = sofa::helper::system::DataRepository.getFile ( presetFile );
         graph->loadPreset(presetFile);
     }
-    else std::cerr<<"Preset : " << presetFile << " Not found\n";
+    else msg_info("SofaModeler")<<"Preset : " << presetFile << " Not found";
 }
 
 void SofaModeler::changeTabName(GraphModeler *graph, const QString &name, const QString &suffix)
@@ -894,25 +890,25 @@ void SofaModeler::changeTabName(GraphModeler *graph, const QString &name, const 
 
 void SofaModeler::resizeEvent(QResizeEvent * /*event*/)
 {
-	// Q3DockArea* dockArea = rightDock();
-	// if(dockArea)
-	// {
-	// 	QList<Q3DockWindow*> dockWindowList = dockArea->dockWindowList();
+    // Q3DockArea* dockArea = rightDock();
+    // if(dockArea)
+    // {
+    // 	QList<Q3DockWindow*> dockWindowList = dockArea->dockWindowList();
 
-	// 	int width = event->size().width();
-	// 	if(width < 1200)
-	// 		width /= 4;
-	// 	else
-	// 		width /= 3;
+    // 	int width = event->size().width();
+    // 	if(width < 1200)
+    // 		width /= 4;
+    // 	else
+    // 		width /= 3;
 
-	// 	while(!dockWindowList.isEmpty())
-	// 	{
-	// 		Q3DockWindow* dockWindow = dockWindowList.takeFirst();
-	// 		dockWindow->setFixedExtentWidth(width);
-	// 	}
+    // 	while(!dockWindowList.isEmpty())
+    // 	{
+    // 		Q3DockWindow* dockWindow = dockWindowList.takeFirst();
+    // 		dockWindow->setFixedExtentWidth(width);
+    // 	}
 
-	// 	update();
-	// }
+    // 	update();
+    // }
 }
 
 void SofaModeler::graphModifiedNotification(bool modified)
@@ -1139,7 +1135,7 @@ void SofaModeler::runInSofa(	const std::string &sceneFilename, Node* root)
             viewerExtension = ".view";
         }
 
-        //        std::cerr << "viewFile = " << viewFile << std::endl;
+        // msg_error("SofaModeler") << "viewFile = " << viewFile ;
         if ( sofa::helper::system::DataRepository.findFile ( viewFile ) )
         {
             std::ifstream originalViewFile(viewFile.c_str());
@@ -1236,6 +1232,7 @@ void SofaModeler::redirectStdout()
 
     if (p->waitForStarted(-1))
     {
+        /// This one probably does not need to be replaced with msg_* API
         std::cout << "FROM SOFA [OUT] >> " << QString(p->readAllStandardOutput()).toStdString() << std::endl;
     }
 }
@@ -1249,6 +1246,7 @@ void SofaModeler::redirectStderr()
     }
     if (p->waitForStarted(-1))
     {
+        /// This one probably does not need to be replaced with msg_* API
         std::cerr << "FROM SOFA [ERR] >> " << QString(p->readAllStandardError()).toStdString() << std::endl;
     }
 }

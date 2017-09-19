@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
-* Software Foundation; either version 2 of the License, or (at your option)   *
-* any later version.                                                          *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
 *                                                                             *
 * This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
-* more details.                                                               *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
 *                                                                             *
-* You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -31,12 +28,11 @@
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/VecTypes.h>
 
+#include <SofaTest/TestMessageHandler.h>
+
 
 namespace sofa {
 
-using std::cout;
-using std::cerr;
-using std::endl;
 using namespace component;
 using namespace defaulttype;
 
@@ -70,7 +66,7 @@ struct SkeletalMotionConstraint_test : public Sofa_test<typename _DataTypes::Rea
 
     /// Create the context for the tests.
     void SetUp()
-    {        
+    {
 //        if( sofa::simulation::getSimulation()==NULL )
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
@@ -83,7 +79,7 @@ struct SkeletalMotionConstraint_test : public Sofa_test<typename _DataTypes::Rea
         projection = core::objectmodel::New<SkeletalMotionConstraint>();
         root->addObject(projection);
 
-       
+
 
 
     }
@@ -98,7 +94,7 @@ struct SkeletalMotionConstraint_test : public Sofa_test<typename _DataTypes::Rea
     void init_2bones()
     {
         joints.clear();
-        
+
         typename MechanicalObject::WriteVecCoord x = dofs->writePositions();
         x.resize(2);
         VecCoord rigids(2);
@@ -106,7 +102,7 @@ struct SkeletalMotionConstraint_test : public Sofa_test<typename _DataTypes::Rea
         DataTypes::setCRot(x[1], CRot(0.707107,0, 0, 0.707107)); // rotation x: 90 degree
         Coord target(CPos(1,1,1), CRot(0,0.382683,0,0.92388)); //rotation y : 45 degrees
 
-        
+
         joints.resize(2);
 
         joints[0].addChannel(x[0], 0);
@@ -135,16 +131,16 @@ struct SkeletalMotionConstraint_test : public Sofa_test<typename _DataTypes::Rea
         typename MechanicalObject::ReadVecCoord x = dofs->readPositions();
         Coord target0(CPos(0.5,0.5,0.5), CRot(0, 0.19509, 0, 0.980785));
         Coord target1(CPos(0.5,1.5,0.5), CRot(0.69352, 0.13795, -0.13795, 0.69352));
-        
+
         bool succeed = true;
-         if( !Sofa_test<typename _DataTypes::Real>::isSmall((x[0].getCenter() - target0.getCenter()).norm(),100) || 
+         if( !Sofa_test<typename _DataTypes::Real>::isSmall((x[0].getCenter() - target0.getCenter()).norm(),100) ||
             !Sofa_test<typename _DataTypes::Real>::isSmall((x[1].getCenter() - target1.getCenter()).norm(),100) )
         {
              succeed = false;
              ADD_FAILURE() << "Position of constrained bones is wrong: "<<x[0].getCenter()<<", "<<x[1].getCenter();
         }
 
-        if( !(x[0].getOrientation() == target0.getOrientation()) || 
+        if( !(x[0].getOrientation() == target0.getOrientation()) ||
             !(x[1].getOrientation() == target1.getOrientation()) )
         {
             succeed = false;
@@ -174,7 +170,6 @@ struct SkeletalMotionConstraint_test : public Sofa_test<typename _DataTypes::Rea
     {
         if (root!=NULL)
             sofa::simulation::getSimulation()->unload(root);
-//        cerr<<"tearing down"<<endl;
     }
 
 
@@ -192,6 +187,7 @@ TYPED_TEST_CASE(SkeletalMotionConstraint_test, DataTypes);
 // first test case
 TYPED_TEST( SkeletalMotionConstraint_test , twoConstrainedBones )
 {
+    EXPECT_MSG_NOEMIT(Error) ;
     this->init_2bones();
     ASSERT_TRUE(  this->test_projectPosition() );
     ASSERT_TRUE(  this->test_projectVelocity() );

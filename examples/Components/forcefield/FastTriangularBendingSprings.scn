@@ -2,13 +2,14 @@
 <Node name="root" dt="0.01" gravity="0 0 -1">
     <VisualStyle displayFlags="showBehavior hideCollision hideVisual " />
     <EdgeSetGeometryAlgorithms />
-    <EulerImplicitSolver />
+    <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
     <Node name="Thin shell">
                 <MeshObjLoader name="loader" filename="mesh/triangleGrid_10_10.obj" />
                 <MeshTopology src="@loader" />
                 <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />
-                <BoxConstraint box="-0.5 -0.5 -0.5  100.5 0.005 0.005  " />
+                <BoxROI name="box1" box="-0.5 -0.5 -0.5  100.5 0.005 0.005  " />
+                <FixedConstraint indices="@box1.indices"/>
                 <TriangularFEMForceFieldOptim name="FEM1" youngModulus="20000" poissonRatio="0.3" method="large" />
                 <FastTriangularBendingSprings bendingStiffness="10000" />
                 <UniformMass totalMass="2500" printLog="0" />

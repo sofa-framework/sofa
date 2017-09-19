@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -206,7 +203,8 @@ void Simulation::init ( Node* root )
     {
         // Why do we need  a copy of the params here ?
         sofa::core::MechanicalParams mparams(*params);
-        root->execute<MechanicalPropagatePositionAndVelocityVisitor>(&mparams);
+        root->execute<MechanicalProjectPositionAndVelocityVisitor>(&mparams);
+        root->execute<MechanicalPropagateOnlyPositionAndVelocityVisitor>(&mparams);
     }
 
     root->execute<UpdateBoundingBoxVisitor>(params);
@@ -229,7 +227,8 @@ void Simulation::initNode( Node* node)
     //node->execute<MechanicalPropagateFreePositionVisitor>(params);
     {
         sofa::core::MechanicalParams mparams(*params);
-        node->execute<MechanicalPropagatePositionAndVelocityVisitor>(&mparams);
+        node->execute<MechanicalProjectPositionAndVelocityVisitor>(&mparams);
+        node->execute<MechanicalPropagateOnlyPositionAndVelocityVisitor>(&mparams);
         /*sofa::core::MultiVecCoordId xfree = sofa::core::VecCoordId::freePosition();
           mparams.x() = xfree;
           MechanicalPropagatePositionVisitor act(&mparams   // PARAMS FIRST //, 0, xfree, true);
@@ -304,7 +303,8 @@ void Simulation::reset ( Node* root )
 
     root->execute<ResetVisitor>(params);
     sofa::core::MechanicalParams mparams(*params);
-    root->execute<MechanicalPropagatePositionAndVelocityVisitor>(&mparams);
+    root->execute<MechanicalProjectPositionAndVelocityVisitor>(&mparams);
+    root->execute<MechanicalPropagateOnlyPositionAndVelocityVisitor>(&mparams);
     root->execute<UpdateMappingVisitor>(params);
     root->execute<VisualUpdateVisitor>(params);
 }

@@ -6,6 +6,9 @@
 #include <SofaExplicitOdeSolver/EulerSolver.h>
 #include <SceneCreator/SceneCreator.h>
 
+#include <SofaTest/TestMessageHandler.h>
+
+
 using namespace sofa::modeling;
 using namespace sofa::component;
 using namespace sofa::simulation;
@@ -425,11 +428,30 @@ struct CompliantImplicitSolver_test : public CompliantSolver_test
 // do run the tests
 //=================
 // simple linear cases
-TEST_F(CompliantImplicitSolver_test, OneFixedOneComplianceSpringV100 ){  testLinearOneFixedOneComplianceSpringV100(false);  }
-TEST_F(CompliantImplicitSolver_test, OneFixedOneStiffnessSpringV100  ){  testLinearOneFixedOneStiffnessSpringV100(false);  }
-TEST_F(CompliantImplicitSolver_test, OneFixedOneStiffnessSpringX200  ){  testLinearOneFixedOneStiffnessSpringX200(false);  }
-TEST_F(CompliantImplicitSolver_test, OneFixedOneComplianceSpringX200 ){  testLinearOneFixedOneComplianceSpringX200(false);  }
-TEST_F(CompliantImplicitSolver_test, EmptyMState                     ){  testEmptyMState(false);  }
+TEST_F(CompliantImplicitSolver_test, OneFixedOneComplianceSpringV100 ){
+    EXPECT_MSG_NOEMIT(Error) ;
+    testLinearOneFixedOneComplianceSpringV100(false);
+}
+
+TEST_F(CompliantImplicitSolver_test, OneFixedOneStiffnessSpringV100  ){
+    EXPECT_MSG_NOEMIT(Error) ;
+    testLinearOneFixedOneStiffnessSpringV100(false);
+}
+
+TEST_F(CompliantImplicitSolver_test, OneFixedOneStiffnessSpringX200  ){
+    EXPECT_MSG_NOEMIT(Error) ;
+    testLinearOneFixedOneStiffnessSpringX200(false);
+}
+
+TEST_F(CompliantImplicitSolver_test, OneFixedOneComplianceSpringX200 ){
+    EXPECT_MSG_NOEMIT(Error) ;
+    testLinearOneFixedOneComplianceSpringX200(false);
+}
+
+TEST_F(CompliantImplicitSolver_test, EmptyMState                     ){
+    EXPECT_MSG_NOEMIT(Error) ;
+    testEmptyMState(false);
+}
 
 }// sofa
 

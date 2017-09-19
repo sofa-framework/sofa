@@ -1,58 +1,57 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Plugins                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sstream>
+
 #include "Binding_Data.h"
 #include "Binding_LinearSpring.h"
 
 #include <sofa/core/objectmodel/BaseData.h>
-#include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/core/objectmodel/Data.h>
+using sofa::core::objectmodel::BaseObject ;
+using sofa::core::objectmodel::BaseData ;
+using sofa::core::objectmodel::Base ;
+
+#include <sofa/defaulttype/DataTypeInfo.h>
+#include <sofa/defaulttype/DataTypeInfo.h>
+using sofa::defaulttype::AbstractTypeInfo ;
+
 #include <sofa/core/objectmodel/BaseNode.h>
+using sofa::core::objectmodel::BaseNode ;
 
+#include "PythonToSofa.inl"
 
-#include "PythonFactory.h"
-
-#include <SofaDeformable/SpringForceField.h> // should not be here
-
-using namespace sofa::core::objectmodel;
-using namespace sofa::defaulttype;
-using namespace sofa::component::interactionforcefield;
-
-
-// TODO:
-// se servir du DataTypeInfo pour utiliser directement les bons type :-)
-// Il y a un seul type "Data" exposé en python, le transtypage est géré automatiquement
+static BaseData* get_basedata(PyObject* self) {
+    return sofa::py::unwrap<BaseData>(self);
+}
 
 
 SP_CLASS_ATTR_GET(Data,name)(PyObject *self, void*)
 {
-    BaseData* data=((PyPtr<BaseData>*)self)->object; // TODO: check dynamic cast
+    BaseData* data = get_basedata( self );
     return PyString_FromString(data->getName().c_str());
 }
 SP_CLASS_ATTR_SET(Data,name)(PyObject *self, PyObject * args, void*)
 {
-    BaseData* data=((PyPtr<BaseData>*)self)->object; // TODO: check dynamic cast
+    BaseData* data = get_basedata( self );
     char *str = PyString_AsString(args); // for setters, only one object and not a tuple....
     data->setName(str);
     return 0;
@@ -60,80 +59,29 @@ SP_CLASS_ATTR_SET(Data,name)(PyObject *self, PyObject * args, void*)
 
 PyObject *GetDataValuePython(BaseData* data)
 {
-    // depending on the data type, we return the good python type (int, float, string, array, ...)
-
-
-    // special cases... from factory (e.g DisplayFlags, OptionsGroup)
-    {
-        PyObject* res = sofa::PythonFactory::toPython(data);
-        if( res ) return res;
-    }
-
-
-    // horrible special case that needs to be refactored
-    if ( Data<sofa::helper::vector<LinearSpring<SReal> > >* vectorLinearSpring = dynamic_cast<Data<sofa::helper::vector<LinearSpring<SReal> > >*>(data) )
-    {
-        // special type, a vector of LinearSpring objects
-
-        const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
-        const void* valueVoidPtr = data->getValueVoidPtr();
-        int rowWidth = typeinfo->size();
-        int nbRows = typeinfo->size(data->getValueVoidPtr()) / typeinfo->size();
-
-        if (typeinfo->size(valueVoidPtr)==1)
-        {
-            // this type is NOT a vector; return directly the proper native type
-            const LinearSpring<SReal>& value = vectorLinearSpring->getValue()[0];
-            LinearSpring<SReal> *obj = new LinearSpring<SReal>(value.m1,value.m2,value.ks,value.kd,value.initpos);
-            return SP_BUILD_PYPTR(LinearSpring,LinearSpring<SReal>,obj,true); // "true", because I manage the deletion myself
-        }
-        else
-        {
-            PyObject *rows = PyList_New(nbRows);
-            for (int i=0; i<nbRows; i++)
-            {
-                PyObject *row = PyList_New(rowWidth);
-                for (int j=0; j<rowWidth; j++)
-                {
-                    // build each value of the list
-                    const LinearSpring<SReal>& value = vectorLinearSpring->getValue()[i*rowWidth+j];
-                    LinearSpring<SReal> *obj = new LinearSpring<SReal>(value.m1,value.m2,value.ks,value.kd,value.initpos);
-                    PyList_SetItem(row,j,SP_BUILD_PYPTR(LinearSpring,LinearSpring<SReal>,obj,true));
-                }
-                PyList_SetItem(rows,i,row);
-            }
-
-            return rows;
-        }
-
-    }
-
-
-
+    /// depending on the data type, we return the good python type (int, float, string, array, ...)
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
     const void* valueVoidPtr = data->getValueVoidPtr();
 
     if (!typeinfo->Container())
     {
-        // this type is NOT a vector; return directly the proper native type
+        /// this type is NOT a vector; return directly the proper native type
         if (typeinfo->Text())
         {
-            // it's some text
             return PyString_FromString(typeinfo->getTextValue(valueVoidPtr,0).c_str());
         }
         if (typeinfo->Scalar())
         {
-            // it's a SReal
             return PyFloat_FromDouble(typeinfo->getScalarValue(valueVoidPtr,0));
         }
         if (typeinfo->Integer())
         {
-            // it's some Integer...
             return PyInt_FromLong((long)typeinfo->getIntegerValue(valueVoidPtr,0));
         }
 
-        // this type is not yet supported
-        SP_MESSAGE_WARNING( "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value" )
+        /// This type is not yet supported, the fallback scenario is to convert it using the python str() function and emit
+        /// a warning message.
+        msg_warning(data->getOwner()) << "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value" ;
         return PyString_FromString(data->getValueString().c_str());
     }
     else
@@ -141,8 +89,7 @@ PyObject *GetDataValuePython(BaseData* data)
         int rowWidth = typeinfo->size();
         int nbRows = typeinfo->size(data->getValueVoidPtr()) / typeinfo->size();
 
-        // this is a vector; return a python list of the corresponding type (ints, scalars or strings)
-
+        /// this is a vector; return a python list of the corresponding type (ints, scalars or strings)
         if( !typeinfo->Text() && !typeinfo->Scalar() && !typeinfo->Integer() )
         {
             SP_MESSAGE_WARNING( "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value" )
@@ -155,25 +102,23 @@ PyObject *GetDataValuePython(BaseData* data)
             PyObject *row = PyList_New(rowWidth);
             for (int j=0; j<rowWidth; j++)
             {
-                // build each value of the list
+                /// build each value of the list
                 if (typeinfo->Text())
                 {
-                    // it's some text
                     PyList_SetItem(row,j,PyString_FromString(typeinfo->getTextValue(valueVoidPtr,i*rowWidth+j).c_str()));
                 }
                 else if (typeinfo->Scalar())
                 {
-                    // it's a Real
                     PyList_SetItem(row,j,PyFloat_FromDouble(typeinfo->getScalarValue(valueVoidPtr,i*rowWidth+j)));
                 }
                 else if (typeinfo->Integer())
                 {
-                    // it's some Integer...
                     PyList_SetItem(row,j,PyInt_FromLong((long)typeinfo->getIntegerValue(valueVoidPtr,i*rowWidth+j)));
                 }
                 else
                 {
-                    // this type is not yet supported (should not happen)
+                    //TODO(PR:304) If this should not happen (see comment later) then we should rise an exception instead of providing a fallback scenario.
+                    /// this type is not yet supported (should not happen)
                     SP_MESSAGE_ERROR( "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value (should not come here!)" )
                 }
             }
@@ -183,226 +128,246 @@ PyObject *GetDataValuePython(BaseData* data)
         return rows;
     }
 
-    // default (should not happen)...
+    //TODO(PR:304) If this should not happen (see comment later) then we should rise an exception instead of providing a fallback scenario.
+    /// default (should not happen)...
     SP_MESSAGE_WARNING( "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value (should not come here!)" )
     return PyString_FromString(data->getValueString().c_str());
 }
 
-bool SetDataValuePython(BaseData* data, PyObject* args)
-{
-    // de quel type est args ?
-    bool isInt = PyInt_Check(args);
-    bool isScalar = PyFloat_Check(args);
-    bool isString = PyString_Check(args);
-    bool isList = PyList_Check(args);
+
+static int SetDataValuePythonList(BaseData* data, PyObject* args,
+                            const int rowWidth, int nbRows) {
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo(); // info about the data value
-    int rowWidth = (typeinfo && typeinfo->ValidInfo()) ? typeinfo->size() : 1;
-    int nbRows = (typeinfo && typeinfo->ValidInfo()) ? typeinfo->size(data->getValueVoidPtr()) / typeinfo->size() : 1;
 
-    // horrible special case that needs to be refactored
-    Data<sofa::helper::vector<LinearSpring<SReal> > >* dataVectorLinearSpring = dynamic_cast<Data<sofa::helper::vector<LinearSpring<SReal> > >*>(data);
-    if (dataVectorLinearSpring)
+    /// If list is empty we can safely exit.
+    if (PyList_Size(args)==0)
     {
-        // special type, a vector of LinearSpring objects
+        data->read("");
+        return 0;
+    }
 
-        if (!isList)
+    /// Check if the list have two dimmensions
+    if (PyList_Check(PyList_GetItem(args,0)))
+    {
+        /// Handle the two-dimension array case.
+        void* editVoidPtr = data->beginEditVoidPtr();
+
+        /// same number of rows?
         {
-            // one value
-            // check the python object type
-            if (rowWidth*nbRows<1 || !PyObject_IsInstance(args,reinterpret_cast<PyObject*>(&SP_SOFAPYTYPEOBJECT(LinearSpring))))
+            int newNbRows = PyList_Size(args);
+            if (newNbRows!=nbRows)
             {
-                // type mismatch or too long list
-                PyErr_BadArgument();
-                return false;
+                /// try to resize (of course, it is not possible with every container, the resize policy is defined in DataTypeInfo)
+                typeinfo->setSize( editVoidPtr, newNbRows*rowWidth );
+
+                if( typeinfo->size(editVoidPtr) != (size_t)(newNbRows*rowWidth) )
+                {
+                    /// resizing was not possible
+                    /// only a warning and not an exception because we have a fallback solution.
+                    SP_MESSAGE_WARNING( "list size mismatch for data \""<<data->getName()<<"\" (incorrect rows count)" )
+                        if (newNbRows<nbRows)
+                            nbRows = newNbRows;
+                }
+                else
+                {
+                    /// resized
+                    nbRows = newNbRows;
+                }
+            }
+        }
+
+        /// let's fill our rows!
+        for (int i=0; i<nbRows; i++)
+        {
+            PyObject *row = PyList_GetItem(args,i);
+
+            /// right number of list members ?
+            int size = rowWidth;
+            if (PyList_Size(row)!=size)
+            {
+                /// only a warning and not an exception because we have a fallback solution.
+                SP_MESSAGE_WARNING( "row "<<i<<" size mismatch for data \""<<data->getName()<<"\"" )
+                    if (PyList_Size(row)<size)
+                        size = PyList_Size(row);
             }
 
-            LinearSpring<SReal>* obj=dynamic_cast<LinearSpring<SReal>*>(((PyPtr<LinearSpring<SReal> >*)args)->object);
-            sofa::helper::vector<LinearSpring<SReal> >* vectorLinearSpring = dataVectorLinearSpring->beginEdit();
-
-            (*vectorLinearSpring)[0].m1 = obj->m1;
-            (*vectorLinearSpring)[0].m2 = obj->m2;
-            (*vectorLinearSpring)[0].ks = obj->ks;
-            (*vectorLinearSpring)[0].kd = obj->kd;
-            (*vectorLinearSpring)[0].initpos = obj->initpos;
-
-            dataVectorLinearSpring->endEdit();
-
-            return true;
-        }
-        else
-        {
-            // values list
-            // is it a double-dimension list ?
-            //PyObject *firstRow = PyList_GetItem(args,0);
-
-            if (PyList_Check(PyList_GetItem(args,0)))
+            /// Analyze the list and convert it
+            for (int j=0; j<size; j++)
             {
-                // two-dimension array!
 
-                // right number if rows ?
-                if (PyList_Size(args)!=nbRows)
+                PyObject *listElt = PyList_GetItem(row,j);
+
+                if (PyInt_Check(listElt))
                 {
-                    // only a warning; do not raise an exception...
+                    /// it's an int
+                    if (typeinfo->Integer())
+                    {
+                        /// integer value
+                        long value = PyInt_AsLong(listElt);
+                        typeinfo->setIntegerValue(editVoidPtr,i*rowWidth+j,value);
+                    }
+                    else if (typeinfo->Scalar())
+                    {
+                        /// cast to scalar value
+                        SReal value = (SReal)PyInt_AsLong(listElt);
+                        typeinfo->setScalarValue(editVoidPtr,i*rowWidth+j,value);
+                    }
+                    else
+                    {
+                        PyErr_BadArgument();
+                        return -1;
+                    }
+                }
+                else if (PyFloat_Check(listElt))
+                {
+                    /// it's a scalar
+                    if (!typeinfo->Scalar())
+                    {
+                        PyErr_BadArgument();
+                        return -1;
+                    }
+                    SReal value = PyFloat_AsDouble(listElt);
+                    typeinfo->setScalarValue(editVoidPtr,i*rowWidth+j,value);
+                }
+                else if (PyString_Check(listElt))
+                {
+                    /// it's a string
+                    if (!typeinfo->Text())
+                    {
+                        PyErr_BadArgument();
+                        return -1;
+                    }
+                    char *str = PyString_AsString(listElt);
+                    typeinfo->setTextValue(editVoidPtr,i*rowWidth+j,str);
+                }
+                else
+                {
+                    PyErr_SetString(PyExc_TypeError, "Lists not yet supported.");
+                    return -1;
+                }
+            }
+        }
+        data->endEditVoidPtr();
+        return 0;
+    }
+    else
+    {
+        /// it is a one-dimension only array
+        void* editVoidPtr = data->beginEditVoidPtr();
+
+        /// same number of list members?
+        int size = rowWidth*nbRows; /// start with oldsize
+        {
+            int newSize = PyList_Size(args);
+            if (newSize!=size)
+            {
+                /// try to resize (of course, it is not possible with every container, the resize policy is defined in DataTypeInfo)
+                typeinfo->setSize( editVoidPtr, newSize );
+
+                if( typeinfo->size(editVoidPtr) != (size_t)newSize )
+                {
+                    /// resizing was not possible
+                    /// only a warning; do not raise an exception...
                     SP_MESSAGE_WARNING( "list size mismatch for data \""<<data->getName()<<"\" (incorrect rows count)" )
-                    if (PyList_Size(args)<nbRows)
-                        nbRows = PyList_Size(args);
+                        if (newSize<size)
+                            size = newSize;
                 }
-
-                sofa::helper::vector<LinearSpring<SReal> >* vectorLinearSpring = dataVectorLinearSpring->beginEdit();
-
-                // let's fill our rows!
-                for (int i=0; i<nbRows; i++)
+                else
                 {
-                    PyObject *row = PyList_GetItem(args,i);
-
-                    // right number if list members ?
-                    int size = rowWidth;
-                    if (PyList_Size(row)!=size)
-                    {
-                        // only a warning; do not raise an exception...
-                        SP_MESSAGE_WARNING( "row "<<i<<" size mismatch for data \""<<data->getName()<<"\" (src="<<(int)PyList_Size(row)<<"x"<<nbRows<<" dst="<<size<<"x"<<nbRows<<")" )
-                        if (PyList_Size(row)<size)
-                            size = PyList_Size(row);
-                    }
-
-                    // okay, let's set our list...
-                    for (int j=0; j<size; j++)
-                    {
-
-                        PyObject *listElt = PyList_GetItem(row,j);
-                        if(!PyObject_IsInstance(listElt,reinterpret_cast<PyObject*>(&SP_SOFAPYTYPEOBJECT(LinearSpring))))
-                        {
-                            // type mismatch
-                            dataVectorLinearSpring->endEdit();
-                            PyErr_BadArgument();
-                            return false;
-                        }
-                        LinearSpring<SReal>* spring=dynamic_cast<LinearSpring<SReal>*>(((PyPtr<LinearSpring<SReal> >*)listElt)->object);
-
-
-                        (*vectorLinearSpring)[j+i*rowWidth].m1 = spring->m1;
-                        (*vectorLinearSpring)[j+i*rowWidth].m2 = spring->m2;
-                        (*vectorLinearSpring)[j+i*rowWidth].ks = spring->ks;
-                        (*vectorLinearSpring)[j+i*rowWidth].kd = spring->kd;
-                        (*vectorLinearSpring)[j+i*rowWidth].initpos = spring->initpos;
-
-                    }
-
-
-
+                    /// resized
+                    size = newSize;
                 }
+            }
+        }
 
-                dataVectorLinearSpring->endEdit();
+        /// Analyze the list and convert it
+        for (int i=0; i<size; i++)
+        {
+            PyObject *listElt = PyList_GetItem(args,i);
 
-                return true;
-
+            if (PyInt_Check(listElt))
+            {
+                if (typeinfo->Integer())
+                {
+                    long value = PyInt_AsLong(listElt);
+                    typeinfo->setIntegerValue(editVoidPtr,i,value);
+                }
+                else if (typeinfo->Scalar())
+                {
+                    SReal value = (SReal)PyInt_AsLong(listElt);
+                    typeinfo->setScalarValue(editVoidPtr,i,value);
+                }
+                else
+                {
+                    PyErr_BadArgument();
+                    return -1;
+                }
+            }
+            else if (PyFloat_Check(listElt))
+            {
+                if (!typeinfo->Scalar())
+                {
+                    PyErr_BadArgument();
+                    return -1;
+                }
+                SReal value = PyFloat_AsDouble(listElt);
+                typeinfo->setScalarValue(editVoidPtr,i,value);
+            }
+            else if (PyString_Check(listElt))
+            {
+                if (!typeinfo->Text())
+                {
+                    PyErr_BadArgument();
+                    return -1;
+                }
+                char *str = PyString_AsString(listElt); /// pour les setters, un seul objet et pas un tuple....
+                typeinfo->setTextValue(editVoidPtr,i,str);
             }
             else
             {
-                // it is a one-dimension only array
-                // right number if list members ?
-                int size = rowWidth*nbRows;
-                if (PyList_Size(args)!=size)
-                {
-                    // only a warning; do not raise an exception...
-                    SP_MESSAGE_WARNING( "list size mismatch for data \""<<data->getName()<<"\" (src="<<(int)PyList_Size(args)<<" dst="<<size<<")" )
-                    if (PyList_Size(args)<size)
-                        size = PyList_Size(args);
-                }
-
-                sofa::helper::vector<LinearSpring<SReal> >* vectorLinearSpring = dataVectorLinearSpring->beginEdit();
-
-                // okay, let's set our list...
-                for (int i=0; i<size; i++)
-                {
-
-                    PyObject *listElt = PyList_GetItem(args,i);
-
-                    if(!PyObject_IsInstance(listElt,reinterpret_cast<PyObject*>(&SP_SOFAPYTYPEOBJECT(LinearSpring))))
-                    {
-                        // type mismatch
-                        dataVectorLinearSpring->endEdit();
-                        PyErr_BadArgument();
-                        return false;
-                    }
-
-                    LinearSpring<SReal>* spring=dynamic_cast<LinearSpring<SReal>*>(((PyPtr<LinearSpring<SReal> >*)listElt)->object);
-
-                    (*vectorLinearSpring)[i].m1 = spring->m1;
-                    (*vectorLinearSpring)[i].m2 = spring->m2;
-                    (*vectorLinearSpring)[i].ks = spring->ks;
-                    (*vectorLinearSpring)[i].kd = spring->kd;
-                    (*vectorLinearSpring)[i].initpos = spring->initpos;
-
-
-    /*
-                    if (PyFloat_Check(listElt))
-                    {
-                        // it's a scalar
-                        if (!typeinfo->Scalar())
-                        {
-                            // type mismatch
-                            PyErr_BadArgument();
-                            return false;
-                        }
-                        SReal value = PyFloat_AsDouble(listElt);
-                        void* editVoidPtr = data->beginEditVoidPtr();
-                        typeinfo->setScalarValue(editVoidPtr,i,value);
-                        data->endEditVoidPtr();
-                    }
-     */
-                }
-                dataVectorLinearSpring->endEdit();
-
-                return true;
+                PyErr_SetString(PyExc_TypeError, "Lists not yet supported as parameter");
+                return -1;
             }
         }
-
-
-        return false;
+        data->endEditVoidPtr();
+        return 0;
     }
 
+    /// no idea whether this is reachable
+    PyErr_BadArgument();
+    return -1;
+}
 
-    if (isInt)
+
+
+int SetDataValuePython(BaseData* data, PyObject* args)
+{
+    if (PyString_Check(args))
     {
-        // it's an int
+        char *str = PyString_AsString(args); /// for setters, only one object and not a tuple....
 
-        if (rowWidth*nbRows<1 || (!typeinfo->Integer() && !typeinfo->Scalar()))
+        if( strlen(str)>0u && str[0]=='@' )  /// DataLink
         {
-            // type mismatch or too long list
-            PyErr_BadArgument();
-            return false;
+            data->setParent(str);
+            data->setDirtyOutputs();         /// forcing children updates (should it be done in BaseData?)
         }
-        long value = PyInt_AsLong(args);
-        void* editVoidPtr = data->beginEditVoidPtr();
-        if (typeinfo->Scalar())
-            typeinfo->setScalarValue(editVoidPtr,0,(SReal)value); // cast int to float
         else
-            typeinfo->setIntegerValue(editVoidPtr,0,value);
-        data->endEditVoidPtr();
-        return true;
-    }
-    else if (isScalar)
-    {
-        // it's a scalar
-        if (rowWidth*nbRows<1 || !typeinfo->Scalar())
         {
-            // type mismatch or too long list
-            PyErr_BadArgument();
-            return false;
+            data->read(str);
         }
-        SReal value = PyFloat_AsDouble(args);
-        void* editVoidPtr = data->beginEditVoidPtr();
-        typeinfo->setScalarValue(editVoidPtr,0,value);
-        data->endEditVoidPtr();
-        return true;
+        return 0;
     }
-    else if (isString)
-    {
-        // it's a string
-        char *str = PyString_AsString(args); // for setters, only one object and not a tuple....
 
-        if( strlen(str)>0u && str[0]=='@' ) // DataLink
+    // Unicode
+    if (PyUnicode_Check(args))
+    {
+        std::stringstream streamstr;
+        PyObject* tmpstr = PyUnicode_AsUTF8String(args);
+        streamstr << PyString_AsString(tmpstr) ;
+        Py_DECREF(tmpstr);
+        std::string str(streamstr.str());
+
+        if( str.size() > 0u && str[0]=='@' ) // DataLink
         {
             data->setParent(str);
             data->setDirtyOutputs(); // forcing children updates (should it be done in BaseData?)
@@ -411,272 +376,98 @@ bool SetDataValuePython(BaseData* data, PyObject* args)
         {
             data->read(str);
         }
-        return true;
+        return 0;
     }
-    else if (isList)
+    /// Get the info about the data value through the introspection mechanism.
+    const AbstractTypeInfo *typeinfo = data->getValueTypeInfo(); 
+    const bool valid = (typeinfo && typeinfo->ValidInfo());
+
+    const int rowWidth = valid ? typeinfo->size() : 1;
+    const int nbRows = valid ? typeinfo->size(data->getValueVoidPtr()) / typeinfo->size() : 1;
+
+    if (PyInt_Check(args))
     {
-        // it's a list
-        // check list emptyness
-        if (PyList_Size(args)==0)
+        if (rowWidth*nbRows<1 || (!typeinfo->Integer() && !typeinfo->Scalar()))
         {
-            data->read("");
-            return true;
+            /// type mismatch or too long list
+            PyErr_BadArgument();
+            return -1;
         }
-
-        // is it a double-dimension list ?
-        //PyObject *firstRow = PyList_GetItem(args,0);
-
-        if (PyList_Check(PyList_GetItem(args,0)))
-        {
-            // two-dimension array!
-
-            void* editVoidPtr = data->beginEditVoidPtr();
-
-            // same number of rows?
-            {
-            int newNbRows = PyList_Size(args);
-            if (newNbRows!=nbRows)
-            {
-                // try to resize (of course, it is not possible with every container, the resize policy is defined in DataTypeInfo)
-                typeinfo->setSize( editVoidPtr, newNbRows*rowWidth );
-
-                if( typeinfo->size(editVoidPtr) != (size_t)(newNbRows*rowWidth) )
-                {
-                    // resizing was not possible
-                    // only a warning; do not raise an exception...
-                    SP_MESSAGE_WARNING( "list size mismatch for data \""<<data->getName()<<"\" (incorrect rows count)" )
-                    if (newNbRows<nbRows)
-                        nbRows = newNbRows;
-                }
-                else
-                {
-                    // resized
-                    nbRows = newNbRows;
-                }
-            }
-            }
-
-
-            // let's fill our rows!
-            for (int i=0; i<nbRows; i++)
-            {
-                PyObject *row = PyList_GetItem(args,i);
-
-                // right number of list members ?
-                int size = rowWidth;
-                if (PyList_Size(row)!=size)
-                {
-                    // only a warning; do not raise an exception...
-                    SP_MESSAGE_WARNING( "row "<<i<<" size mismatch for data \""<<data->getName()<<"\"" )
-                    if (PyList_Size(row)<size)
-                        size = PyList_Size(row);
-                }
-
-                // okay, let's set our list...
-                for (int j=0; j<size; j++)
-                {
-
-                    PyObject *listElt = PyList_GetItem(row,j);
-
-                    if (PyInt_Check(listElt))
-                    {
-                        // it's an int
-                        if (typeinfo->Integer())
-                        {
-                            // integer value
-                            long value = PyInt_AsLong(listElt);
-                            typeinfo->setIntegerValue(editVoidPtr,i*rowWidth+j,value);
-                        }
-                        else if (typeinfo->Scalar())
-                        {
-                            // cast to scalar value
-                            SReal value = (SReal)PyInt_AsLong(listElt);
-                            typeinfo->setScalarValue(editVoidPtr,i*rowWidth+j,value);
-                        }
-                        else
-                        {
-                            // type mismatch
-                            PyErr_BadArgument();
-                            return false;
-                        }
-                    }
-                    else if (PyFloat_Check(listElt))
-                    {
-                        // it's a scalar
-                        if (!typeinfo->Scalar())
-                        {
-                            // type mismatch
-                            PyErr_BadArgument();
-                            return false;
-                        }
-                        SReal value = PyFloat_AsDouble(listElt);
-                        typeinfo->setScalarValue(editVoidPtr,i*rowWidth+j,value);
-                    }
-                    else if (PyString_Check(listElt))
-                    {
-                        // it's a string
-                        if (!typeinfo->Text())
-                        {
-                            // type mismatch
-                            PyErr_BadArgument();
-                            return false;
-                        }
-                        char *str = PyString_AsString(listElt); // pour les setters, un seul objet et pas un tuple....
-                        typeinfo->setTextValue(editVoidPtr,i*rowWidth+j,str);
-                    }
-                    else
-                    {
-                        msg_warning("SetDataValuePython") << "Lists not yet supported...";
-                        PyErr_BadArgument();
-                        return false;
-                    }
-                }
-
-
-
-            }
-            data->endEditVoidPtr();
-            return true;
-
-        }
+        long value = PyInt_AsLong(args);
+        void* editVoidPtr = data->beginEditVoidPtr();
+        if (typeinfo->Scalar())
+            typeinfo->setScalarValue(editVoidPtr,0,(SReal)value); /// cast int to float
         else
-        {
-            // it is a one-dimension only array
-
-            void* editVoidPtr = data->beginEditVoidPtr();
-
-            // same number of list members?
-            int size = rowWidth*nbRows; // start with oldsize
-            {
-            int newSize = PyList_Size(args);
-            if (newSize!=size)
-            {
-                // try to resize (of course, it is not possible with every container, the resize policy is defined in DataTypeInfo)
-                typeinfo->setSize( editVoidPtr, newSize );
-
-                if( typeinfo->size(editVoidPtr) != (size_t)newSize )
-                {
-                    // resizing was not possible
-                    // only a warning; do not raise an exception...
-                    SP_MESSAGE_WARNING( "list size mismatch for data \""<<data->getName()<<"\" (incorrect rows count)" )
-                    if (newSize<size)
-                        size = newSize;
-                }
-                else
-                {
-                    // resized
-                    size = newSize;
-                }
-            }
-            }
-
-            // okay, let's set our list...
-            for (int i=0; i<size; i++)
-            {
-
-                PyObject *listElt = PyList_GetItem(args,i);
-
-                if (PyInt_Check(listElt))
-                {
-                    // it's an int
-                    if (typeinfo->Integer())
-                    {
-                        // integer value
-                        long value = PyInt_AsLong(listElt);
-                        typeinfo->setIntegerValue(editVoidPtr,i,value);
-                    }
-                    else if (typeinfo->Scalar())
-                    {
-                        // cast to scalar value
-                        SReal value = (SReal)PyInt_AsLong(listElt);
-                        typeinfo->setScalarValue(editVoidPtr,i,value);
-                    }
-                    else
-                    {
-                        // type mismatch
-                        PyErr_BadArgument();
-                        return false;
-                    }
-                }
-                else if (PyFloat_Check(listElt))
-                {
-                    // it's a scalar
-                    if (!typeinfo->Scalar())
-                    {
-                        // type mismatch
-                        PyErr_BadArgument();
-                        return false;
-                    }
-                    SReal value = PyFloat_AsDouble(listElt);
-                    typeinfo->setScalarValue(editVoidPtr,i,value);
-                }
-                else if (PyString_Check(listElt))
-                {
-                    // it's a string
-                    if (!typeinfo->Text())
-                    {
-                        // type mismatch
-                        PyErr_BadArgument();
-                        return false;
-                    }
-                    char *str = PyString_AsString(listElt); // pour les setters, un seul objet et pas un tuple....
-                    typeinfo->setTextValue(editVoidPtr,i,str);
-                }
-                else
-                {
-                    msg_warning("SetDataValuePython") << "Lists not yet supported...";
-                    PyErr_BadArgument();
-                    return false;
-
-                }
-            }
-            data->endEditVoidPtr();
-            return true;
-        }
-
+            typeinfo->setIntegerValue(editVoidPtr,0,value);
+        data->endEditVoidPtr();
+        return 0;
     }
 
-    return false;
+    if (PyFloat_Check(args))
+    {
+        if (rowWidth*nbRows<1 || !typeinfo->Scalar())
+        {
+            /// type mismatch or too long list
+            PyErr_BadArgument();
+            return -1;
+        }
+        SReal value = PyFloat_AsDouble(args);
+        void* editVoidPtr = data->beginEditVoidPtr();
+        typeinfo->setScalarValue(editVoidPtr,0,value);
+        data->endEditVoidPtr();
+        return 0;
+    }
 
-}
+    if ( PyList_Check(args))
+    {
+        return SetDataValuePythonList(data, args, rowWidth, nbRows);
+    }
 
+    /// BaseData
+    if( BaseData* targetData = get_basedata(args) )
+    {
+        // TODO improve data to data copy
+        SP_MESSAGE_WARNING( "Data to Data copy is using string serialization for now. This may results in poor performances." );
+        data->read( targetData->getValueString() );
+        return 0;
+    }
 
-
-SP_CLASS_ATTR_GET(Data,value)(PyObject *self, void*)
-{
-    BaseData* data=((PyPtr<BaseData>*)self)->object; // TODO: check dynamic cast
-    return GetDataValuePython(data);
-}
-
-SP_CLASS_ATTR_SET(Data,value)(PyObject *self, PyObject * args, void*)
-{
-    BaseData* data=((PyPtr<BaseData>*)self)->object; // TODO: check dynamic cast
-    if (SetDataValuePython(data,args))
-        return 0;   // OK
-
-
-    SP_MESSAGE_ERROR( "argument type not supported" )
     PyErr_BadArgument();
     return -1;
 }
 
-// access ONE element of the vector
-extern "C" PyObject * Data_getValue(PyObject *self, PyObject * args)
+
+SP_CLASS_ATTR_GET(Data,value)(PyObject *self, void*)
 {
-    BaseData* data=((PyPtr<BaseData>*)self)->object;
-    const AbstractTypeInfo *typeinfo = data->getValueTypeInfo(); // info about the data value
+    BaseData* data = get_basedata( self );
+    return GetDataValuePython(data);
+}
+
+
+SP_CLASS_ATTR_SET(Data,value)(PyObject *self, PyObject * args, void*)
+{
+    BaseData* data = get_basedata( self );
+    return SetDataValuePython(data,args);
+}
+
+
+/// access ONE element of the vector
+static PyObject * Data_getValue(PyObject *self, PyObject * args)
+{
+    BaseData* data = get_basedata( self );
+    const AbstractTypeInfo *typeinfo = data->getValueTypeInfo(); /// info about the data value
     int index;
     if (!PyArg_ParseTuple(args, "i",&index))
     {
-        PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     if ((unsigned int)index>=typeinfo->size())
     {
-        // out of bounds!
+        /// out of bounds!
         SP_MESSAGE_ERROR( "Data.getValue index overflow" )
-        PyErr_BadArgument();
-        Py_RETURN_NONE;
+
+                PyErr_BadArgument();
+        return NULL;
     }
     if (typeinfo->Scalar())
         return PyFloat_FromDouble(typeinfo->getScalarValue(data->getValueVoidPtr(),index));
@@ -685,29 +476,29 @@ extern "C" PyObject * Data_getValue(PyObject *self, PyObject * args)
     if (typeinfo->Text())
         return PyString_FromString(typeinfo->getTextValue(data->getValueVoidPtr(),index).c_str());
 
-    // should never happen....
-    SP_MESSAGE_ERROR( "Data.getValue unknown data type" )
-    PyErr_BadArgument();
-    Py_RETURN_NONE;
+    /// should never happen....
+    SP_PYERR_SETSTRING_OUTOFBOUND(0) ;
+    return NULL;
 }
-extern "C" PyObject * Data_setValue(PyObject *self, PyObject * args)
+
+
+static PyObject * Data_setValue(PyObject *self, PyObject * args)
 {
-    BaseData* data=((PyPtr<BaseData>*)self)->object;
-    const AbstractTypeInfo *typeinfo = data->getValueTypeInfo(); // info about the data value
+    BaseData* data = get_basedata( self );
+    const AbstractTypeInfo *typeinfo = data->getValueTypeInfo(); /// info about the data value
     int index;
     PyObject *value;
-    if (!PyArg_ParseTuple(args, "iO",&index,&value))
-    {
-        PyErr_BadArgument();
-        Py_RETURN_NONE;
+
+    if (!PyArg_ParseTuple(args, "iO", &index, &value)) {
+        return NULL;
     }
-    if ((unsigned int)index>=typeinfo->size())
+
+    if ((unsigned int)index >= typeinfo->size())
     {
-        // out of bounds!
-        SP_MESSAGE_ERROR( "Data.setValue index overflow" )
-        PyErr_BadArgument();
-        Py_RETURN_NONE;
+        SP_PYERR_SETSTRING_OUTOFBOUND(0);
+        return NULL;
     }
+
     if (typeinfo->Scalar() && PyFloat_Check(value))
     {
         typeinfo->setScalarValue((void*)data->getValueVoidPtr(),index,PyFloat_AsDouble(value));
@@ -724,30 +515,31 @@ extern "C" PyObject * Data_setValue(PyObject *self, PyObject * args)
         return PyInt_FromLong(0);
     }
 
-    // should never happen....
-    SP_MESSAGE_ERROR( "Data.setValue type mismatch" )
+    /// should never happen....
     PyErr_BadArgument();
-    Py_RETURN_NONE;
+    return NULL;
 }
 
 
-extern "C" PyObject * Data_getValueTypeString(PyObject *self, PyObject * /*args*/)
+static PyObject * Data_getValueTypeString(PyObject *self, PyObject * /*args*/)
 {
-    BaseData* data=((PyPtr<BaseData>*)self)->object;
+    BaseData* data = get_basedata( self );
     return PyString_FromString(data->getValueTypeString().c_str());
 }
 
-extern "C" PyObject * Data_getValueString(PyObject *self, PyObject * /*args*/)
+
+static PyObject * Data_getValueString(PyObject *self, PyObject * /*args*/)
 {
-    BaseData* data=((PyPtr<BaseData>*)self)->object;
+    BaseData* data = get_basedata( self );
     return PyString_FromString(data->getValueString().c_str());
 }
 
 
-// TODO a description of what this function is supposed to do?
-extern "C" PyObject * Data_getSize(PyObject *self, PyObject * /*args*/)
+
+//TODO(PR:304) a description of what this function is supposed to do?
+static PyObject * Data_getSize(PyObject *self, PyObject * /*args*/)
 {
-    BaseData* data=((PyPtr<BaseData>*)self)->object;
+    BaseData* data = get_basedata( self );
 
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
     int rowWidth = typeinfo->size();
@@ -755,17 +547,18 @@ extern "C" PyObject * Data_getSize(PyObject *self, PyObject * /*args*/)
 
     SP_MESSAGE_WARNING( "Data_getSize (this function always returns 0) rowWidth="<<rowWidth<<" nbRows="<<nbRows );
 
+    //TODO(PR:304) So what ? with the WTF ? Do we remove it ?
     return PyInt_FromLong(0); //temp ==> WTF ?????
 }
 
-extern "C" PyObject * Data_setSize(PyObject *self, PyObject * args)
+
+static PyObject * Data_setSize(PyObject *self, PyObject * args)
 {
-    BaseData* data=((PyPtr<BaseData>*)self)->object;
+    BaseData* data = get_basedata( self );
     int size;
     if (!PyArg_ParseTuple(args, "i",&size))
     {
-        PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
     typeinfo->setSize((void*)data->getValueVoidPtr(),size);
@@ -773,18 +566,19 @@ extern "C" PyObject * Data_setSize(PyObject *self, PyObject * args)
 }
 
 
-extern "C" PyObject * Data_unset(PyObject *self, PyObject * /*args*/)
+static PyObject * Data_unset(PyObject *self, PyObject * /*args*/)
 {
-    BaseData* data=((PyPtr<BaseData>*)self)->object;
+    BaseData* data = get_basedata( self );
 
     data->unset();
 
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * Data_updateIfDirty(PyObject *self, PyObject * /*args*/)
+
+static PyObject * Data_updateIfDirty(PyObject *self, PyObject * /*args*/)
 {
-    BaseData* data=((PyPtr<BaseData>*)self)->object;
+    BaseData* data = get_basedata( self );
 
     data->updateIfDirty();
 
@@ -792,15 +586,14 @@ extern "C" PyObject * Data_updateIfDirty(PyObject *self, PyObject * /*args*/)
 }
 
 
-extern "C" PyObject * Data_read(PyObject *self, PyObject * args)
+static PyObject * Data_read(PyObject *self, PyObject * args)
 {
-    BaseData* data=((PyPtr<BaseData>*)self)->object;
+    BaseData* data = get_basedata( self );
 
     PyObject *value;
     if (!PyArg_ParseTuple(args, "O",&value))
     {
-        PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
     if (PyString_Check(value))
@@ -809,22 +602,22 @@ extern "C" PyObject * Data_read(PyObject *self, PyObject * args)
     }
     else
     {
-        SP_MESSAGE_ERROR( "Data.read type mismatch" )
         PyErr_BadArgument();
+        return NULL;
     }
 
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * Data_setParent(PyObject *self, PyObject * args)
+
+static PyObject * Data_setParent(PyObject *self, PyObject * args)
 {
-    BaseData* data=((PyPtr<BaseData>*)self)->object;
+    BaseData* data = get_basedata( self );
 
     PyObject *value;
     if (!PyArg_ParseTuple(args, "O",&value))
     {
-        PyErr_BadArgument();
-        Py_RETURN_NONE;
+        return NULL;
     }
 
     typedef PyPtr<BaseData> PyBaseData;
@@ -836,23 +629,22 @@ extern "C" PyObject * Data_setParent(PyObject *self, PyObject * args)
     }
     else if( dynamic_cast<BaseData*>(((PyBaseData*)value)->object) )
     {
-//        SP_MESSAGE_INFO("Data_setParent from BaseData")
         data->setParent( ((PyBaseData*)value)->object );
     }
     else
     {
-        SP_MESSAGE_ERROR( "Data.setParent type mismatch" )
         PyErr_BadArgument();
+        return NULL;
     }
 
     Py_RETURN_NONE;
 }
 
 
-// returns the complete link path name (i.e. following the shape "@/path/to/my/object.dataname")
-extern "C" PyObject * Data_getLinkPath(PyObject * self, PyObject * /*args*/)
+/// returns the complete link path name (i.e. following the shape "@/path/to/my/object.dataname")
+static PyObject * Data_getLinkPath(PyObject * self, PyObject * /*args*/)
 {
-    BaseData* data=((PyPtr<BaseData>*)self)->object;
+    BaseData* data = get_basedata( self );
     Base* owner = data->getOwner();
 
     if( owner )
@@ -863,34 +655,31 @@ extern "C" PyObject * Data_getLinkPath(PyObject * self, PyObject * /*args*/)
             return PyString_FromString(("@"+node->getPathName()+"."+data->getName()).c_str());
     }
 
-    // default: no owner or owner of unknown type
-    SP_MESSAGE_WARNING( "Data_getLinkName the Data has no known owner" )
+    /// default: no owner or owner of unknown type
+    SP_MESSAGE_WARNING( "Data_getLinkName the Data has no known owner. Returning its own name." )
     return PyString_FromString(data->getName().c_str());
 }
 
 
-
-
-// returns a pointer to the Data
-extern "C" PyObject * Data_getValueVoidPtr(PyObject * self, PyObject * /*args*/)
+/// returns a pointer to the Data
+static PyObject * Data_getValueVoidPtr(PyObject * self, PyObject * /*args*/)
 {
-    BaseData* data=((PyPtr<BaseData>*)self)->object;
+    BaseData* data = get_basedata( self );
 
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
-    void* dataValueVoidPtr = const_cast<void*>(data->getValueVoidPtr()); // data->beginEditVoidPtr();  // warning a endedit should be necessary somewhere (when releasing the python variable?)
+    void* dataValueVoidPtr = const_cast<void*>(data->getValueVoidPtr()); /// data->beginEditVoidPtr();
+    //TODO(PR:304) warning a endedit should be necessary somewhere (when releasing the python variable?)
     void* valueVoidPtr = typeinfo->getValuePtr(dataValueVoidPtr);
 
-
-    // N-dimensional arrays
+    /// N-dimensional arrays
     sofa::helper::vector<size_t> dimensions;
-    dimensions.push_back( typeinfo->size(dataValueVoidPtr) ); // total size to begin with
-    const AbstractTypeInfo* valuetypeinfo = typeinfo; // to go trough encapsulated types (at the end, it will correspond to the finest type)
-
+    dimensions.push_back( typeinfo->size(dataValueVoidPtr) );   /// total size to begin with
+    const AbstractTypeInfo* valuetypeinfo = typeinfo;           /// to go trough encapsulated types (at the end, it will correspond to the finest type)
 
     while( valuetypeinfo->Container() )
     {
-        size_t s = typeinfo->size(); // the current type size
-        dimensions.back() /= s; // to get the number of current type, the previous total size must be devided by the current type size
+        size_t s = typeinfo->size();        /// the current type size
+        dimensions.back() /= s;             /// to get the number of current type, the previous total size must be devided by the current type size
         dimensions.push_back( s );
         valuetypeinfo=valuetypeinfo->ValueType();
     }
@@ -899,26 +688,49 @@ extern "C" PyObject * Data_getValueVoidPtr(PyObject * self, PyObject * /*args*/)
     for( size_t i=0; i<dimensions.size() ; ++i )
         PyTuple_SetItem( shape, i, PyLong_FromSsize_t( dimensions[i] ) );
 
-
-
-    // output = tuple( pointer, shape tuple, type name)
+    /// output = tuple( pointer, shape tuple, type name)
     PyObject* res = PyTuple_New(3);
 
-    // the data pointer
+    /// the data pointer
     PyTuple_SetItem( res, 0, PyLong_FromVoidPtr( valueVoidPtr ) );
 
-    // the shape
+    /// the shape
     PyTuple_SetItem( res, 1, shape );
 
-    // the most basic type name
+    /// the most basic type name
     PyTuple_SetItem( res, 2, PyString_FromString( valuetypeinfo->name().c_str() ) );
-
 
     return res;
 }
 
 
+/// returns the number of times the Data was modified
+static PyObject * Data_getCounter(PyObject * self, PyObject * /*args*/)
+{
+    BaseData* data = get_basedata( self );
+    return PyInt_FromLong( data->getCounter() );
+}
 
+
+static PyObject * Data_isDirty(PyObject * self, PyObject * /*args*/)
+{
+    BaseData* data = get_basedata( self );
+    return PyBool_FromLong( data->isDirty() );
+}
+
+
+/// implementation of __str__ to cast a Data to a string
+static PyObject * Data_str(PyObject *self)
+{
+    BaseData* data = get_basedata( self );
+    return PyString_FromString(data->getValueString().c_str());
+}
+
+
+static PyObject * Data_getAsACreateObjectParameter(PyObject * self, PyObject * args)
+{
+    return Data_getLinkPath(self, args);
+}
 
 SP_CLASS_METHODS_BEGIN(Data)
 SP_CLASS_METHOD(Data,getValueTypeString)
@@ -933,13 +745,23 @@ SP_CLASS_METHOD(Data,read)
 SP_CLASS_METHOD(Data,setParent)
 SP_CLASS_METHOD(Data,getLinkPath)
 SP_CLASS_METHOD(Data,getValueVoidPtr)
+SP_CLASS_METHOD(Data,getCounter)
+SP_CLASS_METHOD(Data,isDirty)
+SP_CLASS_METHOD(Data,getAsACreateObjectParameter)
 SP_CLASS_METHODS_END
 
 
 SP_CLASS_ATTRS_BEGIN(Data)
 SP_CLASS_ATTR(Data,name)
-//SP_CLASS_ATTR(BaseData,owner)
 SP_CLASS_ATTR(Data,value)
 SP_CLASS_ATTRS_END
 
-SP_CLASS_TYPE_BASE_PTR_ATTR(Data,BaseData)
+namespace {
+static struct patch {
+    patch() {
+        SP_SOFAPYTYPEOBJECT(Data).tp_str = Data_str; /// adding __str__ function
+    }
+} patcher;
+}
+
+SP_CLASS_TYPE_BASE_PTR_ATTR(Data, BaseData);

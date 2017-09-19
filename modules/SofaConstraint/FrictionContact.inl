@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -127,11 +124,8 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::setDe
             contacts.push_back(o);
     }
 
-    if (contacts.size()<outputs.size() && this->f_printLog.getValue())
-    {
-        // DUPLICATED CONTACTS FOUND
-        sout << "Removed " << (outputs.size()-contacts.size()) <<" / " << outputs.size() << " collision points." << sendl;
-    }
+    // DUPLICATED CONTACTS FOUND
+    msg_info_when(contacts.size()<outputs.size()) << "Removed " << (outputs.size()-contacts.size()) <<" / " << outputs.size() << " collision points." << msgendl;
 }
 
 
@@ -162,22 +156,17 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::activ
     int i = 0;
     const double d0 = intersectionMethod->getContactDistance() + model1->getProximity() + model2->getProximity(); // - 0.001;
 
-    //std::cout<<" d0 = "<<d0<<std::endl;
-
     mappedContacts.resize(contacts.size());
     for (std::vector<sofa::core::collision::DetectionOutput*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++, i++)
     {
         sofa::core::collision::DetectionOutput* o = *it;
-        //std::cout<<" collisionElements :"<<o->elem.first<<" - "<<o->elem.second<<std::endl;
         CollisionElement1 elem1(o->elem.first);
         CollisionElement2 elem2(o->elem.second);
         int index1 = elem1.getIndex();
         int index2 = elem2.getIndex();
-        //std::cout<<" indices :"<<index1<<" - "<<index2<<std::endl;
 
         typename DataTypes1::Real r1 = 0.;
         typename DataTypes2::Real r2 = 0.;
-        //double constraintValue = ((o->point[1] - o->point[0]) * o->normal) - intersectionMethod->getContactDistance();
 
         // Create mapping for first point
         index1 = mapper1.addPointB(o->point[0], index1, r1
@@ -214,10 +203,6 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::activ
     mapper1.updateXfree();
     if (!selfCollision) mapper2.update();
     if (!selfCollision) mapper2.updateXfree();
-
-
-    //std::cerr<<" end activateMappers call"<<std::endl;
-
 }
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes  >
@@ -256,7 +241,6 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::creat
         parent = group;
         if (parent!=NULL)
         {
-            //sout << "Attaching contact response to "<<parent->getName()<<sendl;
             parent->addObject(this);
             parent->addObject(m_constraint);
         }
@@ -272,7 +256,6 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::remov
         mapper2.resize(0);
         if (parent!=NULL)
         {
-            //sout << "Removing contact response from "<<parent->getName()<<sendl;
             parent->removeObject(this);
             parent->removeObject(m_constraint);
         }

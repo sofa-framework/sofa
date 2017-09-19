@@ -1,42 +1,45 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Plugins                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
 /// @author M Nesme @date 2016
+///
+///
+/// TODO: we could add a [] operator to get bound DataFileName
 
 #include "Binding_DataFileNameVector.h"
 #include "Binding_Data.h"
+#include "PythonToSofa.inl"
 
-using namespace sofa::helper;
-using namespace sofa::core::objectmodel;
+using sofa::core::objectmodel::DataFileNameVector ;
+
+/// getting a DataFileNameVector* from a PyObject*
+static inline DataFileNameVector* get_DataFileNameVector(PyObject* obj) {
+    return sofa::py::unwrap<DataFileNameVector>(obj);
+}
 
 
-
-
-extern "C" PyObject * DataFileNameVector_clear(PyObject *self, PyObject *)
+static PyObject * DataFileNameVector_clear(PyObject *self, PyObject *)
 {
-    DataFileNameVector* data = down_cast<DataFileNameVector>( ((PyPtr<BaseData>*)self)->object );
+    DataFileNameVector* data = get_DataFileNameVector( self );
 
     sofa::helper::vector<std::string>& val = *data->beginEdit();
     val.clear();
@@ -45,13 +48,13 @@ extern "C" PyObject * DataFileNameVector_clear(PyObject *self, PyObject *)
     Py_RETURN_NONE;
 }
 
-extern "C" PyObject * DataFileNameVector_addPath(PyObject *self, PyObject *args)
+static PyObject * DataFileNameVector_addPath(PyObject *self, PyObject *args)
 {
     char *path;
     if (!PyArg_ParseTuple(args, "s",&path))
-        Py_RETURN_NONE;
+        return nullptr;
 
-    DataFileNameVector* data = down_cast<DataFileNameVector>( ((PyPtr<BaseData>*)self)->object );
+    DataFileNameVector* data = get_DataFileNameVector( self );
 
     data->addPath(path);
 
@@ -62,14 +65,10 @@ extern "C" PyObject * DataFileNameVector_addPath(PyObject *self, PyObject *args)
 SP_CLASS_ATTRS_BEGIN(DataFileNameVector)
 SP_CLASS_ATTRS_END
 
-
-
 SP_CLASS_METHODS_BEGIN(DataFileNameVector)
 SP_CLASS_METHOD(DataFileNameVector,addPath)
 SP_CLASS_METHOD(DataFileNameVector,clear)
 SP_CLASS_METHODS_END
 
-
-
-SP_CLASS_TYPE_PTR_ATTR(DataFileNameVector,DataFileNameVector,Data)
+SP_CLASS_TYPE_PTR_ATTR(DataFileNameVector, sofa::core::objectmodel::BaseData, Data);
 

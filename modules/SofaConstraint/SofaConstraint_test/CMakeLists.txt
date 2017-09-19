@@ -4,7 +4,9 @@ project(SofaConstraint_test)
 
 set(SOURCE_FILES
     BilateralInteractionConstraint_test.cpp
-    UncoupledConstraintCorrection_test.cpp)
+    UncoupledConstraintCorrection_test.cpp
+    #LocalMinDistance_test.cpp
+    )
 
 add_definitions("-DSOFATEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes_test\"")
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

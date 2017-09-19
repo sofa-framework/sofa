@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -85,20 +82,21 @@ public:
     double squaredDistance(const ISAPBox & other)const;
 
     inline void show()const{
-        std::cout<<"MIN "<<cube.minVect()<<std::endl;
-        std::cout<<"MAX "<<cube.maxVect()<<std::endl;
+        msg_info("IncrSAP") <<"MIN "<<cube.minVect() ;
+        msg_info("IncrSAP") <<"MAX "<<cube.maxVect() ;
     }
 
     inline void showEndPoints()const{
-        std::cout<<"MIN ";
+        std::stringstream tmp;
+        tmp<<"MIN ";
         for(int i = 0 ; i < 3 ; ++i)
-            std::cout<<min(i).value<<" ";
-        std::cout<<std::endl;
+            tmp<<min(i).value<<" ";
+        tmp<<msgendl;
 
-        std::cout<<"MAX ";
+        tmp<<"MAX ";
         for(int i = 0 ; i < 3 ; ++i)
-            std::cout<<max(i).value<<" ";
-        std::cout<<std::endl;
+            tmp<<max(i).value<<" ";
+        msg_info("IncrSAP") << tmp.str() ;
     }
 
     /**
@@ -211,12 +209,6 @@ private:
     void addIfCollide(int boxID1,int boxID2,int axis1,int axis2);
     void removeCollision(int a,int b);
     void reinitDetection();
-
-    /**
-      *Inits the field intersectors used to find the right intersector between the two collision models with better speed compared to
-      *find intersector.
-      */
-//    void initIntersectors();
 
     /**
       *Used in initialisatio of IncrSAP. It clears all the IncrSAP fields.

@@ -1,35 +1,34 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/io/bvh/BVHJoint.h>
 
 #include <sofa/helper/helper.h>
+#include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glu.h>
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/gl/BasicShapes.h>
 
+#include <sstream>
 #include <iostream>
 
 namespace sofa
@@ -86,7 +85,7 @@ void BVHJoint::initMotion(double fTime, unsigned int fCount)
 void BVHJoint::display(int frameNum)
 {
 #ifndef SOFA_NO_OPENGL
-	glPushMatrix();
+    glPushMatrix();
     glDisable(GL_LIGHTING);
     glColor3f(0.0, 0.0, 0.0);
     glBegin(GL_LINES);
@@ -129,7 +128,7 @@ void BVHJoint::display(int frameNum)
 
     glColor3f(1.0,0.0,0.0);
 
-	sofa::helper::fixed_array<float, 3> center(0.0, 0.0, 0.0);
+    sofa::helper::fixed_array<float, 3> center(0.0, 0.0, 0.0);
     helper::gl::drawSphere(center, 0.01f);
 
     for (unsigned int i=0; i<children.size(); i++)
@@ -151,7 +150,7 @@ void BVHJoint::displayInGlobalFrame(void)
     glDisable(GL_LIGHTING);
     glColor3f(1.0, 0.0, 0.0);
 
-	sofa::helper::fixed_array<float, 3> center(0.0, 0.0, 0.0);
+    sofa::helper::fixed_array<float, 3> center(0.0, 0.0, 0.0);
     helper::gl::drawSphere(center, 0.005f);
 
     glPopMatrix();
@@ -374,26 +373,27 @@ void BVHJoint::dumpRotationStiffness(FILE *f, int &cpt)
 
 void BVHJoint::debug(int tab)
 {
+    std::stringstream tmpmsg ;
     for (int i=0; i<tab; i++)
-        std::cout << "\t";
+        tmpmsg << "\t";
 
-    std::cout << name << std::endl;
+    tmpmsg << name << msgendl ;
 
     if (offset != NULL)
     {
         for (int i=0; i<tab; i++)
-            std::cout << "\t";
-        std::cout << "offset " << offset->x << " " << offset->y << " " << offset->z << std::endl;
+            tmpmsg << "\t";
+        tmpmsg << "offset " << offset->x << " " << offset->y << " " << offset->z << msgendl;
     }
 
     if (channels != NULL)
     {
         for (int i=0; i<tab; i++)
-            std::cout << "\t";
-        std::cout << "channels ";
+            tmpmsg << "\t";
+        tmpmsg << "channels ";
         for (unsigned int i=0; i<channels->channels.size(); i++)
-            std::cout << channels->channels[i] << " ";
-        std::cout << std::endl;
+            tmpmsg << channels->channels[i] << " ";
+        msg_info("BVHJoint") << tmpmsg.str() ;
     }
 
     for (unsigned int i=0; i<children.size(); i++)

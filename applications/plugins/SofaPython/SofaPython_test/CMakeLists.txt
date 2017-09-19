@@ -8,7 +8,10 @@ set(SOURCE_FILES
     python_test_list.cpp
     memory.cpp
     PythonFactory_test.cpp
+    SofaModule_test.cpp
     PythonScriptControllerHelper_test.cpp
+    PythonScriptController_test.cpp
+    SofaModule_test.cpp
 )
 
 set(PYTHON_FILES
@@ -16,14 +19,18 @@ set(PYTHON_FILES
     python/sysPathDuplicate.py
     python/dataVecResize.py
     python/testController.py
+    python/moduleReload.py
     python/test_PySceneWithPyCtlr.py
     python/test_Quaternion.py
     python/test_Tools.py
     python/test_mass.py
+    python/test_memory.py
     python/test_units.py
+    python/test_SofaModule.py
     python/test_MeshLoader.py
     python/test_PythonFactory.py
     python/test_PythonScriptControllerHelper.py
+    python/test_PythonScriptController.py
 )
 
 

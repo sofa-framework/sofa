@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -26,6 +23,7 @@
 #include <SofaGeneralLoader/MeshGmshLoader.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <iostream>
+#include <fstream>
 
 namespace sofa
 {
@@ -196,6 +194,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
     helper::vector<Tetrahedron>& my_tetrahedra = *(d_tetrahedra.beginEdit());
     helper::vector<Hexahedron>& my_hexahedra = *(d_hexahedra.beginEdit());
 
+    helper::vector<HighOrderEdgePosition >& my_highOrderEdgePositions = *(d_highOrderEdgePositions.beginEdit());
 
     helper::vector< sofa::core::loader::PrimitiveGroup>& my_edgesGroups = *(d_edgesGroups.beginEdit());
     helper::vector< sofa::core::loader::PrimitiveGroup>& my_trianglesGroups = *(d_trianglesGroups.beginEdit());
@@ -238,11 +237,20 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
             case 3: // Quad
                 nnodes = 4;
                 break;
-            case 4: // Tetra                
+            case 4: // Tetra
                 nnodes = 4;
                 break;
             case 5: // Hexa
                 nnodes = 8;
+                break;
+            case 8: // Quadratic edge
+                nnodes = 3;
+                break;
+            case 9: // Quadratic Triangle
+                nnodes = 6;
+                break;
+            case 11: // Quadratic Tetrahedron
+                nnodes = 10;
                 break;
             default:
                 serr << "Error: MeshGmshLoader: Elements of type 1, 2, 3, 4, 5, or 6 expected. Element of type " << etype << " found." << sendl;
@@ -253,7 +261,10 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
 
         helper::vector <unsigned int> nodes;
         nodes.resize (nnodes);
-
+        const unsigned int edgesInQuadraticTriangle[3][2] = {{0,1}, {1,2}, {2,0}};
+        const unsigned int edgesInQuadraticTetrahedron[6][2] = {{0,1}, {1,2}, {0,2},{0,3},{2,3},{1,3}};
+        std::set<Edge> edgeSet;
+        size_t j;
         for (int n=0; n<nnodes; ++n)
         {
             int t = 0;
@@ -288,7 +299,67 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
             addHexahedron(&my_hexahedra,Hexahedron(nodes[0], nodes[1], nodes[2], nodes[3],nodes[4],nodes[5],nodes[6],nodes[7]));
             ++ncubes;
             break;
-
+        case 8: // quadratic edge
+            addInGroup(my_edgesGroups,tag,my_edges.size());
+            addEdge(&my_edges, Edge(nodes[0], nodes[1]));
+            {
+                HighOrderEdgePosition hoep;
+                hoep[0]= nodes[2];
+                hoep[1]=my_edges.size()-1;
+                hoep[2]=1;
+                hoep[3]=1;
+                my_highOrderEdgePositions.push_back(hoep);
+            }
+            ++nlines;
+            break;
+        case 9: // quadratic triangle
+            addInGroup(my_trianglesGroups,tag,my_triangles.size());
+            addTriangle(&my_triangles, Triangle(nodes[0], nodes[1], nodes[2]));
+            {
+                HighOrderEdgePosition hoep;
+                for(j=0;j<3;++j) {
+                    size_t v0=std::min( nodes[edgesInQuadraticTriangle[j][0]],
+                        nodes[edgesInQuadraticTriangle[j][1]]);
+                    size_t v1=std::max( nodes[edgesInQuadraticTriangle[j][0]],
+                        nodes[edgesInQuadraticTriangle[j][1]]);
+                    Edge e(v0,v1);
+                    if (edgeSet.find(e)==edgeSet.end()) {
+                        edgeSet.insert(e);
+                        addEdge(&my_edges, v0, v1);
+                        hoep[0]= nodes[j+3];
+                        hoep[1]=my_edges.size()-1;
+                        hoep[2]=1;
+                        hoep[3]=1;
+                        my_highOrderEdgePositions.push_back(hoep);
+                    }
+                }
+            }
+            ++ntris;
+            break;
+        case 11: // quadratic tetrahedron
+            addInGroup(my_tetrahedraGroups,tag,my_tetrahedra.size());
+            addTetrahedron(&my_tetrahedra, Tetrahedron(nodes[0], nodes[1], nodes[2], nodes[3]));
+            {
+                HighOrderEdgePosition hoep;
+                for(j=0;j<6;++j) {
+                    size_t v0=std::min( nodes[edgesInQuadraticTetrahedron[j][0]],
+                        nodes[edgesInQuadraticTetrahedron[j][1]]);
+                    size_t v1=std::max( nodes[edgesInQuadraticTetrahedron[j][0]],
+                        nodes[edgesInQuadraticTetrahedron[j][1]]);
+                    Edge e(v0,v1);
+                    if (edgeSet.find(e)==edgeSet.end()) {
+                        edgeSet.insert(e);
+                        addEdge(&my_edges, v0, v1);
+                        hoep[0]= nodes[j+4];
+                        hoep[1]=my_edges.size()-1;
+                        hoep[2]=1;
+                        hoep[3]=1;
+                        my_highOrderEdgePositions.push_back(hoep);
+                    }
+                }
+            }
+            ++ntetrahedra;
+            break;
         default:
             //if the type is not handled, skip rest of the line
             string tmp;
@@ -311,6 +382,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
     d_quads.endEdit();
     d_tetrahedra.endEdit();
     d_hexahedra.endEdit();
+    d_highOrderEdgePositions.endEdit();
 
     file >> cmd;
     if (cmd != "$ENDELM" && cmd!="$EndElements")
@@ -320,14 +392,14 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
         return false;
     }
 
-    // 	sout << "Loading topology complete:";
-    // 	if (npoints>0) sout << ' ' << npoints << " points";
-    // 	if (nlines>0)  sout << ' ' << nlines  << " lines";
-    // 	if (ntris>0)   sout << ' ' << ntris   << " triangles";
-    // 	if (nquads>0)  sout << ' ' << nquads  << " quads";
-    // 	if (ntetrahedra>0) sout << ' ' << ntetrahedra << " tetrahedra";
-    // 	if (ncubes>0)  sout << ' ' << ncubes  << " cubes";
-    // 	sout << sendl;
+    // sout << "Loading topology complete:";
+    // if (npoints>0) sout << ' ' << npoints << " points";
+    // if (nlines>0)  sout << ' ' << nlines  << " lines";
+    // if (ntris>0)   sout << ' ' << ntris   << " triangles";
+    // if (nquads>0)  sout << ' ' << nquads  << " quads";
+    // if (ntetrahedra>0) sout << ' ' << ntetrahedra << " tetrahedra";
+    // if (ncubes>0)  sout << ' ' << ncubes  << " cubes";
+    // sout << sendl;
 
     file.close();
     return true;

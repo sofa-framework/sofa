@@ -9,7 +9,7 @@
     <DiscreteIntersection/>
     
     
-    <EulerImplicit />
+    <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
     
     

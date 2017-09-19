@@ -8,7 +8,7 @@
     <DefaultVisualManagerLoop />
     
     <Node 	name="CorotationalStrain"   >
-	<EulerImplicitSolver /> 
+	<EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" /> 
 	<CGLinearSolver  />
         <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
 	<Mesh name="mesh" src="@loader" />

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -13,11 +13,8 @@
 * more details.                                                               *
 *                                                                             *
 * You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* with this program. If not, see <http://www.gnu.org/licenses/>.              *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -139,7 +136,7 @@ simulation::Node::SPtr createGridScene(Vec3 startPoint, Vec3 endPoint, unsigned 
     mappedParticles->addChild(deformableGrid);                                       // second parent
 
     RegularGridTopology::SPtr deformableGrid_grid = addNew<RegularGridTopology>( deformableGrid, "grid" );
-    deformableGrid_grid->setNumVertices(numX,numY,numZ);
+    deformableGrid_grid->setSize(numX,numY,numZ);
     deformableGrid_grid->setPos(startPoint[0],endPoint[0],startPoint[1],endPoint[1],startPoint[2],endPoint[2]);
 
     MechanicalObject3::SPtr deformableGrid_dof = addNew< MechanicalObject3>(deformableGrid,"dof");

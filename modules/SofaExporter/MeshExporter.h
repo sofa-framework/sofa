@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -27,51 +24,56 @@
 #include "config.h"
 
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/OptionsGroup.h>
+#include <sofa/simulation/BaseSimulationExporter.h>
 
-#include <fstream>
+///////////////////////////// FORWARD DECLARATION //////////////////////////////////////////////////
+namespace sofa {
+    namespace core {
+        namespace objectmodel {
+            class Event ;
+        }
+        namespace behavior {
+            class BaseMechanicalState;
+        }
+        namespace topology {
+            class BaseMeshTopology ;
+        }
+    }
+}
 
+
+
+////////////////////////////////// DECLARATION /////////////////////////////////////////////////////
 namespace sofa
 {
 
 namespace component
 {
 
-namespace misc
+namespace _meshexporter_
 {
 
-class SOFA_EXPORTER_API MeshExporter : public core::objectmodel::BaseObject
+using sofa::core::behavior::BaseMechanicalState ;
+using sofa::core::objectmodel::Event ;
+using sofa::core::topology::BaseMeshTopology ;
+using sofa::simulation::BaseSimulationExporter ;
+
+class SOFA_EXPORTER_API MeshExporter : public BaseSimulationExporter
 {
 public:
-    SOFA_CLASS(MeshExporter,core::objectmodel::BaseObject);
-
-protected:
-    sofa::core::topology::BaseMeshTopology* topology;
-    sofa::core::behavior::BaseMechanicalState* mstate;
-    unsigned int stepCounter;
-
-    int nbFiles;
-
-    std::string getMeshFilename(const char* ext);
+    SOFA_CLASS(MeshExporter, BaseSimulationExporter);
 
 public:
-    sofa::core::objectmodel::DataFileName meshFilename;
-    Data<sofa::helper::OptionsGroup> fileFormat;
-    Data<defaulttype::Vec3Types::VecCoord> position;
-    Data<bool> writeEdges;
-    Data<bool> writeTriangles;
-    Data<bool> writeQuads;
-    Data<bool> writeTetras;
-    Data<bool> writeHexas;
-    //Data<helper::vector<std::string> > dPointsDataFields;
-    //Data<helper::vector<std::string> > dCellsDataFields;
-    Data<unsigned int> exportEveryNbSteps;
-    Data<bool> exportAtBegin;
-    Data<bool> exportAtEnd;
+    Data<sofa::helper::OptionsGroup> d_fileFormat;
+    Data<defaulttype::Vec3Types::VecCoord> d_position;
+    Data<bool> d_writeEdges;
+    Data<bool> d_writeTriangles;
+    Data<bool> d_writeQuads;
+    Data<bool> d_writeTetras;
+    Data<bool> d_writeHexas;
 
     helper::vector<std::string> pointsDataObject;
     helper::vector<std::string> pointsDataField;
@@ -80,28 +82,46 @@ public:
     helper::vector<std::string> cellsDataObject;
     helper::vector<std::string> cellsDataField;
     helper::vector<std::string> cellsDataName;
+
+    virtual void doInit() override ;
+    virtual void doReInit() override ;
+    virtual void handleEvent(Event *) override ;
+
+    virtual bool write() override ;
+
+    bool writeMesh();
+    bool writeMeshVTKXML();
+    bool writeMeshVTK();
+    bool writeMeshGmsh();
+    bool writeMeshNetgen();
+    bool writeMeshTetgen();
+
+
 protected:
     MeshExporter();
     virtual ~MeshExporter();
-public:
-    void writeMesh();
-    void writeMeshVTKXML();
-    void writeMeshVTK();
-    void writeMeshGmsh();
-    void writeMeshNetgen();
-    void writeMeshTetgen();
 
-    void init();
-    void cleanup();
-    void bwdInit();
+    BaseMeshTopology*     m_inputtopology {nullptr};
+    BaseMechanicalState*  m_inputmstate {nullptr};
 
-    void handleEvent(sofa::core::objectmodel::Event *);
+    std::string getMeshFilename(const char* ext);
 };
 
-} // namespace misc
+} /// namespace _meshexporter_
 
-} // namespace component
+//todo(18.06): remove the old namespaces...
+/// Import the object in the "old" namespace to allow smooth update of code base.
+namespace misc {
+    using _meshexporter_::MeshExporter ;
+}
 
-} // namespace sofa
+/// Import the object in the exporter namespace to avoid having all the object straight in component.
+namespace exporter {
+    using _meshexporter_::MeshExporter ;
+}
+
+} /// namespace component
+
+} /// namespace sofa
 
 #endif // SOFA_COMPONENT_MISC_MESHEXPORTER_H

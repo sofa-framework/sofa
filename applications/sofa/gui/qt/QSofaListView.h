@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -13,11 +13,8 @@
 * more details.                                                               *
 *                                                                             *
 * You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* with this program. If not, see <http://www.gnu.org/licenses/>.              *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -90,7 +87,7 @@ public:
 
     GraphListenerQListView* getListener() const { return  graphListener_; }
 
-	void setPropertyWidget(QDisplayPropertyWidget* propertyWid) {propertyWidget = propertyWid;}
+    void setPropertyWidget(QDisplayPropertyWidget* propertyWid) {propertyWidget = propertyWid;}
     void addInPropertyWidget(QTreeWidgetItem *item, bool clear);
 
     void Clear(sofa::simulation::Node* rootNode);
@@ -98,7 +95,7 @@ public:
     void Unfreeze();
     SofaListViewAttribute getAttribute() const { return attribute_; }
 
-	void contextMenuEvent(QContextMenuEvent *event);
+    void contextMenuEvent(QContextMenuEvent *event);
 public Q_SLOTS:
     void Export();
     void CloseAllDialogs();
@@ -109,7 +106,7 @@ Q_SIGNALS:
     void RequestSaving(sofa::simulation::Node*);
     void RequestExportOBJ(sofa::simulation::Node* node, bool exportMTL);
     void RequestActivation(sofa::simulation::Node*,bool);
-	void RequestSleeping(sofa::simulation::Node*, bool);
+    void RequestSleeping(sofa::simulation::Node*, bool);
     void RootNodeChanged(sofa::simulation::Node* newroot, const char* newpath);
     void NodeRemoved();
     void Updated();
@@ -129,9 +126,11 @@ protected Q_SLOTS:
     void Modify();
     void HideDatas();
     void ShowDatas();
+    void openInEditor();
+    void copyFilePathToClipBoard();
     void DeactivateNode();
     void ActivateNode();
-	void PutNodeToSleep();
+    void PutNodeToSleep();
     void WakeUpNode();
     void loadObject ( std::string path, double dx, double dy, double dz,  double rx, double ry, double rz,double scale );
 
@@ -158,7 +157,7 @@ protected:
     AddObject* AddObjectDialog_;
     ObjectModel object_;
     SofaListViewAttribute attribute_;
-	QDisplayPropertyWidget* propertyWidget;
+    QDisplayPropertyWidget* propertyWidget;
 
 };
 

@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -116,20 +113,19 @@ public:
         Deriv diff = _center.getValue() - _size.getValue() * .5;
         Deriv diff2 = - _center.getValue() - _size.getValue() * .5;
 
-        _planes[0]->setPlane( Deriv( 0, 1, 0), diff[1]  ); // sud
-        _planes[1]->setPlane( Deriv( 0, -1, 0), diff2[1]  ); // nord
-        _planes[2]->setPlane( Deriv( -1, 0, 0), diff2[0]  ); // ouest
-        _planes[3]->setPlane( Deriv( 1, 0, 0), diff[0]  ); // est
-        _planes[4]->setPlane( Deriv( 0, 0, 1), diff[2]  ); // derriere
-        _planes[5]->setPlane( Deriv( 0, 0, -1), diff2[2]  ); //devant
+        _planes[0]->setPlane( Deriv( 0, 1, 0), diff[1] ); // sud
+        _planes[1]->setPlane( Deriv( 0, -1, 0), diff2[1] ); // nord
+        _planes[2]->setPlane( Deriv( -1, 0, 0), diff2[0] ); // ouest
+        _planes[3]->setPlane( Deriv( 1, 0, 0), diff[0] ); // est
+        _planes[4]->setPlane( Deriv( 0, 0, 1), diff[2] ); // derriere
+        _planes[5]->setPlane( Deriv( 0, 0, -1), diff2[2] ); //devant
 
-        _planes[0]->setDrawColor( Coord( 0.5f,0.4f,0.4f ) );
-        _planes[1]->setDrawColor( Coord( 0.4f,0.5f,0.4f ) );
-        _planes[2]->setDrawColor( Coord( 0.4f,0.4f,0.5f ) );
-        _planes[3]->setDrawColor( Coord( 0.5f,0.5f,0.4f ) );
-        _planes[4]->setDrawColor( Coord( 0.5f,0.4f,0.5f ) );
-        _planes[5]->setDrawColor( Coord( 0.4f,0.5f,0.5f ) );
-
+        _planes[0]->setDrawColor( defaulttype::RGBAColor( 0.5f,0.4f,0.4f,1.0f ) );
+        _planes[1]->setDrawColor( defaulttype::RGBAColor( 0.4f,0.5f,0.4f,1.0f ) );
+        _planes[2]->setDrawColor( defaulttype::RGBAColor( 0.4f,0.4f,0.5f,1.0f ) );
+        _planes[3]->setDrawColor( defaulttype::RGBAColor( 0.5f,0.5f,0.4f,1.0f ) );
+        _planes[4]->setDrawColor( defaulttype::RGBAColor( 0.5f,0.4f,0.5f,1.0f ) );
+        _planes[5]->setDrawColor( defaulttype::RGBAColor( 0.4f,0.5f,0.5f,1.0f ) );
     }
 
     virtual void reinit()
@@ -153,12 +149,12 @@ public:
         _planes[4]->setPlane( Deriv( 0, 0, 1), diff[2]  ); // derriere
         _planes[5]->setPlane( Deriv( 0, 0, -1), diff2[2]  ); //devant
 
-        _planes[0]->setDrawColor( Coord( 0.5f,0.4f,0.4f ) );
-        _planes[1]->setDrawColor( Coord( 0.4f,0.5f,0.4f ) );
-        _planes[2]->setDrawColor( Coord( 0.4f,0.4f,0.5f ) );
-        _planes[3]->setDrawColor( Coord( 0.5f,0.5f,0.4f ) );
-        _planes[4]->setDrawColor( Coord( 0.5f,0.4f,0.5f ) );
-        _planes[5]->setDrawColor( Coord( 0.4f,0.5f,0.5f ) );
+        _planes[0]->setDrawColor( defaulttype::RGBAColor( 0.5f,0.4f,0.4f,1.0f ) );
+        _planes[1]->setDrawColor( defaulttype::RGBAColor( 0.4f,0.5f,0.4f,1.0f ) );
+        _planes[2]->setDrawColor( defaulttype::RGBAColor( 0.4f,0.4f,0.5f,1.0f ) );
+        _planes[3]->setDrawColor( defaulttype::RGBAColor( 0.5f,0.5f,0.4f,1.0f ) );
+        _planes[4]->setDrawColor( defaulttype::RGBAColor( 0.5f,0.4f,0.5f,1.0f ) );
+        _planes[5]->setDrawColor( defaulttype::RGBAColor( 0.4f,0.5f,0.5f,1.0f ) );
 
     }
 

@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -138,7 +135,7 @@ public:
 
         void applyDestroyFunction(unsigned int index, value_type& /*T*/)
         {
-            std::cout << "PSRemovalFunction\n";
+            dmsg_info("ParticleSource") << "PSRemovalFunction";
             if(ps)
             {
                 /*topology::PointSubset::const_iterator it = std::find(ps->lastparticles.begin(),ps->lastparticles.end(), (unsigned int)index);
@@ -202,18 +199,18 @@ public:
                 int i0 = mstate->getSize();
 
                 if (!f_canHaveEmptyVector.getValue())
-        		{
-        			// ignore the first point if it is the only one
+                {
+                    // ignore the first point if it is the only one
                     if (i0 == 1)
-        				i0 = 0;
-        		}
+                        i0 = 0;
+                }
 
                 int ntotal = i0 + ((int)((f_stop.getValue() - f_start.getValue() - f_delay.getValue()) / f_delay.getValue())) * N;
 
                 if (ntotal > 0)
                 {
                     this->mstate->resize(ntotal);
-        			if (!f_canHaveEmptyVector.getValue())
+                    if (!f_canHaveEmptyVector.getValue())
                         this->mstate->resize((i0==0) ? 1 : i0);
                     else
                         this->mstate->resize(i0);
@@ -349,7 +346,7 @@ public:
         std::list<const sofa::core::topology::TopologyChange *>::const_iterator itEnd=topology->endChange();
         if (itBegin != itEnd)
         {
-            if (this->f_printLog.getValue())
+            if (notMuted())
             {
                 sout << "ParticleSource: handleTopologyChange()"<< sendl;
                 sout << "lastparticles = ";
@@ -363,7 +360,7 @@ public:
             int s2 = lastparticles.size();
             if (s2 > s1) sout << "ParticleSource: handleTopologyChange(): " << s2-s1 << " points added!" << sendl;
             if (s2 < s1) sout << "ParticleSource: handleTopologyChange(): " << s1-s2 << " points removed!" << sendl;
-            if (this->f_printLog.getValue())
+            if (notMuted())
             {
                 sout << "NEW lastparticles = ";
                 std::copy(lastparticles.begin(),lastparticles.end(),std::ostream_iterator<unsigned int>(sout," "));

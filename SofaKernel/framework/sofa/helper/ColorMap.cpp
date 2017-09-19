@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -147,7 +144,7 @@ ColorMap::ColorMap(unsigned int paletteSize, const std::string& colorScheme)
     init();
 }
 
-ColorMap::~ColorMap() 
+ColorMap::~ColorMap()
 {
 
 }
@@ -164,7 +161,8 @@ void ColorMap::reinit()
 
     unsigned int nColors = m_paletteSize;
     if (nColors < 2) {
-        std::cerr << "Palette size must be greater than or equal to 2." << std::endl;
+        msg_warning("ColorMap") << "Palette size must be greater than or equal to 2." << msgendl
+                                << "Using the default value of '2'. ";
         m_paletteSize = 2;
         nColors = 2;
     }
@@ -201,19 +199,19 @@ void ColorMap::reinit()
             entries.push_back(Color(hsv2rgb(Color3(0.5f-i*step, 1.0f, 1.0f)), 1.0f));
         }
     } else if (scheme == "Red to Yellow") {
-		float step = 1.0f/(nColors);
+        float step = 1.0f/(nColors);
         for (unsigned int i=0; i<nColors; i++)
         {
             entries.push_back(Color(1.0f, i*step, 0.0f, 1.0f));
         }
     } else if (scheme == "Yellow to Red") {
-		float step = 1.0f/(nColors);
+        float step = 1.0f/(nColors);
         for (unsigned int i=0; i<nColors; i++)
         {
             entries.push_back(Color(1.0f, 1.0f-i*step, 0.0f, 1.0f));
         }
     } else if (scheme == "Yellow to Green") {
-		float step = 1.0f/(nColors);
+        float step = 1.0f/(nColors);
         for (unsigned int i=0; i<nColors; i++)
         {
             entries.push_back(Color(1.0f-i*step, 1.0f, 0.0f, 1.0f));
@@ -311,7 +309,7 @@ void ColorMap::reinit()
     } else {
         // HSV is the default
         if (scheme != "HSV") {
-            std::cerr << "Invalid color scheme selected: " << scheme << std::endl;
+            msg_warning("ColorMap") << "Invalid color scheme selected: " << scheme ;
         }
 
         // List the colors

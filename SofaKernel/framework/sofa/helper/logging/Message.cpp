@@ -1,27 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
-* This component is open-source                                               *
-*                                                                             *
-* Authors: Damien Marchal                                                     *
-*          Bruno Carrez                                                       *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -35,6 +29,7 @@
 using std::endl ;
 using std::string ;
 
+
 namespace sofa
 {
 
@@ -44,16 +39,16 @@ namespace helper
 namespace logging
 {
 
-Message Message::emptyMsg(CEmpty, TEmpty, "", EmptyFileInfo) ;
+Message::TypeSet Message::AnyTypes = {Type::Info,Type::Advice,Type::Deprecated,
+                                      Type::Warning,Type::Error,Type::Fatal};
+
+Message Message::emptyMsg(CEmpty, TEmpty, ComponentInfo::SPtr(), EmptyFileInfo) ;
 
 Message::Message(Class mclass, Type type,
-                 const string& sender,
-                 const FileInfo::SPtr& fileInfo,
-                 const ComponentInfo::SPtr& componentInfo
-                 ):
-    m_sender(sender),
-    m_fileInfo(fileInfo),
+                 const ComponentInfo::SPtr& componentInfo,
+                 const FileInfo::SPtr& fileInfo) :
     m_componentinfo(componentInfo),
+    m_fileInfo(fileInfo),
     m_class(mclass),
     m_type(type),
     m_id(-1)
@@ -61,9 +56,8 @@ Message::Message(Class mclass, Type type,
 }
 
 Message::Message( const Message& msg )
-    : m_sender(msg.sender())
-    , m_fileInfo(msg.fileInfo())
-    , m_componentinfo(msg.componentInfo())
+    : m_componentinfo(msg.componentInfo())
+, m_fileInfo(msg.fileInfo())
     , m_class(msg.context())
     , m_type(msg.type())
 {
@@ -72,7 +66,6 @@ Message::Message( const Message& msg )
 
 Message& Message::operator=( const Message& msg )
 {
-    m_sender = msg.sender();
     m_fileInfo = msg.fileInfo();
     m_componentinfo = msg.componentInfo();
     m_class = msg.context();
@@ -81,16 +74,37 @@ Message& Message::operator=( const Message& msg )
     return *this;
 }
 
+const SOFA_HELPER_API std::string toString(const Message::Type type)
+{
+    switch (type) {
+    case Message::Advice:
+        return "Advice";
+    case Message::Deprecated:
+        return "Deprecated";
+    case Message::Info:
+        return "Info";
+    case Message::Warning:
+        return "Warning";
+    case Message::Error:
+        return "Error";
+    case Message::Fatal:
+        return "Fatal";
+    default:
+        break;
+    }
+    return "Unknown type of message";
+}
 
 std::ostream& operator<< (std::ostream& s, const Message& m){
     s << "[" << m.sender() << "]: " << endl ;
-    s << "    Message type   : " << m.type() << endl ;
+    s << "    Message type   : " << toString(m.type()) << endl ;
     s << "    Message content: " << m.message().str() << endl ;
 
     if(m.fileInfo())
         s << "    source code loc: " << m.fileInfo()->filename << ":" << m.fileInfo()->line << endl ;
+
     if(m.componentInfo())
-        s << "      component: " << m.componentInfo()->m_name << " at " << m.componentInfo()->m_path << endl ;
+        s << "      component: " << m.componentInfo() ;
 
     return s;
 }
@@ -111,6 +125,15 @@ bool Message::empty() const
 
     return end <= 0;
 }
+
+template<>
+
+SOFA_HELPER_API Message& Message::operator<<(const FileInfo::SPtr &fi)
+{
+    m_fileInfo = fi;
+    return *this;
+}
+
 
 } // logging
 } // helper

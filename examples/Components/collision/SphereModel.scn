@@ -6,7 +6,7 @@
     <CollisionGroup name="Group" />
     <DiscreteIntersection />
     <Node name="cubeFEM">
-        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <RegularGrid nx="5" ny="5" nz="5" xmin="-3.5" xmax="3.5" ymin="-3.5" ymax="3.5" zmin="-3.5" zmax="3.5" />
         <MechanicalObject />

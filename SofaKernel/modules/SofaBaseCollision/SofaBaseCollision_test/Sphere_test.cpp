@@ -1,3 +1,24 @@
+/******************************************************************************
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 #include <sofa/config.h>
 #include <cmath>
 
@@ -42,21 +63,12 @@ using sofa::helper::logging::MessageDispatcher ;
 using sofa::helper::logging::ClangMessageHandler ;
 
 #include <SofaTest/TestMessageHandler.h>
-using sofa::helper::logging::ExpectMessage ;
-using sofa::helper::logging::Message ;
-
-int initMessage(){
-    //MessageDispatcher::clearHandlers() ;
-    //MessageDispatcher::addHandler(new ClangMessageHandler()) ;
-    return 0;
-}
-int messageInited = initMessage();
 
 namespace sofa {
 
 using namespace PrimitiveCreationTest;
 
-struct TestSphere : public Sofa_test<double>{
+struct TestSphere : public Sofa_test<>{
 //    /**
 //      *\brief Rotates around x axis vectors x,y and z which here is a frame.
 //      */
@@ -79,8 +91,6 @@ struct TestSphere : public Sofa_test<double>{
 
     template <class Intersector>
     bool softTriangle(Intersector & bi);
-//    sofa::component::collision::OBB movingOBB;
-//    sofa::component::collision::OBB staticOBB;
 };
 
 
@@ -114,9 +124,6 @@ bool TestSphere::rigidRigid1(){
     //loooking for an intersection
     if(!BaseIntTool::computeIntersection(sph1,sph2,1.0,1.0,&detectionOUTPUT))
         return false;
-
-//    std::cout<<"detectionOUTPUT[0].point[0] "<<detectionOUTPUT[0].point[0]<<std::endl;
-//    std::cout<<"detectionOUTPUT[0].point[1] "<<detectionOUTPUT[0].point[1]<<std::endl;
 
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
     if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
@@ -174,9 +181,6 @@ bool TestSphere::rigidRigid2(){
     if(!BaseIntTool::computeIntersection(sph1,sph2,1.0,1.0,&detectionOUTPUT))
         return false;
 
-//    std::cout<<"detectionOUTPUT[0].point[0] "<<detectionOUTPUT[0].point[0]<<std::endl;
-//    std::cout<<"detectionOUTPUT[0].point[1] "<<detectionOUTPUT[0].point[1]<<std::endl;
-
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
     if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
         return false;
@@ -224,9 +228,6 @@ bool TestSphere::rigidSoft2(){
     if(!BaseIntTool::computeIntersection(sph1,sph2,1.0,1.0,&detectionOUTPUT))
         return false;
 
-//    std::cout<<"detectionOUTPUT[0].point[0] "<<detectionOUTPUT[0].point[0]<<std::endl;
-//    std::cout<<"detectionOUTPUT[0].point[1] "<<detectionOUTPUT[0].point[1]<<std::endl;
-
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
     if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
         return false;
@@ -273,9 +274,6 @@ bool TestSphere::rigidSoft1(){
     //loooking for an intersection
     if(!BaseIntTool::computeIntersection(sph1,sph2,1.0,1.0,&detectionOUTPUT))
         return false;
-
-//    std::cout<<"detectionOUTPUT[0].point[0] "<<detectionOUTPUT[0].point[0]<<std::endl;
-//    std::cout<<"detectionOUTPUT[0].point[1] "<<detectionOUTPUT[0].point[1]<<std::endl;
 
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
     if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0.01)).norm() > 1e-6)
@@ -325,9 +323,6 @@ bool TestSphere::rigidSoft3(){
     if(!BaseIntTool::computeIntersection(sph2,sph1,1.0,1.0,&detectionOUTPUT))
         return false;
 
-//    std::cout<<"detectionOUTPUT[0].point[0] "<<detectionOUTPUT[0].point[0]<<std::endl;
-//    std::cout<<"detectionOUTPUT[0].point[1] "<<detectionOUTPUT[0].point[1]<<std::endl;
-
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
     if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0.01)).norm() > 1e-6)
         return false;
@@ -374,9 +369,6 @@ bool TestSphere::rigidSoft4(){
     //loooking for an intersection
     if(!BaseIntTool::computeIntersection(sph2,sph1,1.0,1.0,&detectionOUTPUT))
         return false;
-
-//    std::cout<<"detectionOUTPUT[0].point[0] "<<detectionOUTPUT[0].point[0]<<std::endl;
-//    std::cout<<"detectionOUTPUT[0].point[1] "<<detectionOUTPUT[0].point[1]<<std::endl;
 
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
     if((detectionOUTPUT[0].point[1] - Vec3d(0,0,0.01)).norm() > 1e-6)
@@ -425,9 +417,6 @@ bool TestSphere::rigidTriangle(Intersector &bi){
     if(!bi.computeIntersection(tri,sph,&detectionOUTPUT))
         return false;
 
-//    std::cout<<"detectionOUTPUT[0].point[0] "<<detectionOUTPUT[0].point[0]<<std::endl;
-//    std::cout<<"detectionOUTPUT[0].point[1] "<<detectionOUTPUT[0].point[1]<<std::endl;
-
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
     if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0)).norm() > 1e-6)
         return false;
@@ -467,9 +456,6 @@ bool TestSphere::softTriangle(Intersector &bi){
     if(!bi.computeIntersection(tri,sph,&detectionOUTPUT))
         return false;
 
-//    std::cout<<"detectionOUTPUT[0].point[0] "<<detectionOUTPUT[0].point[0]<<std::endl;
-//    std::cout<<"detectionOUTPUT[0].point[1] "<<detectionOUTPUT[0].point[1]<<std::endl;
-
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
     if((detectionOUTPUT[0].point[0] - Vec3d(0,0,0)).norm() > 1e-6)
         return false;
@@ -505,9 +491,6 @@ bool TestSphere::softSoft1(){
     //loooking for an intersection
     if(!BaseIntTool::computeIntersection(sph1,sph2,1.0,1.0,&detectionOUTPUT))
         return false;
-
-//    std::cout<<"detectionOUTPUT[0].point[0] "<<detectionOUTPUT[0].point[0]<<std::endl;
-//    std::cout<<"detectionOUTPUT[0].point[1] "<<detectionOUTPUT[0].point[1]<<std::endl;
 
     //the intersection point of cap (detectionOUTPUT[0].point[1]) should be (0,0,0.01)
     if((detectionOUTPUT[0].point[0] - Vec3d(0,0,2.01)).norm() > 1e-6)
@@ -599,7 +582,7 @@ void checkSceneWithRigid3dMechanicalModel()
 
 void checkGracefulHandlingWhenMechanicalModelIsMissing()
 {
-    ExpectMessage err(Message::Error) ;
+    EXPECT_MSG_EMIT(Error) ;
 
     std::stringstream scene ;
     scene << "<?xml version='1.0'?>"

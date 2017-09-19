@@ -177,11 +177,12 @@ void BaseSequentialSolver::init() {
 
 // this is where the magic happens
 SReal BaseSequentialSolver::step(vec& lambda,
-                             vec& net, 
-                             const system_type& sys,
-                             const vec& rhs,
-                             vec& error, vec& delta,
-							 bool correct ) const {
+                                 vec& net, 
+                                 const system_type& sys,
+                                 const vec& rhs,
+                                 vec& error, vec& delta,
+                                 bool correct,
+                                 real /*damping*/ ) const {
 
 	// TODO size asserts
 	
@@ -261,23 +262,24 @@ SReal BaseSequentialSolver::step(vec& lambda,
 }
 
 void BaseSequentialSolver::solve(vec& res,
-                             const system_type& sys,
-                             const vec& rhs) const {
+                                 const system_type& sys,
+                                 const vec& rhs) const {
     solve_impl(res, sys, rhs, false );
 }
 
 
 void BaseSequentialSolver::correct(vec& res,
-                               const system_type& sys,
-                               const vec& rhs,
-                               real /*damping*/ ) const {
-    solve_impl(res, sys, rhs, true );
+                                   const system_type& sys,
+                                   const vec& rhs,
+                                   real damping ) const {
+    solve_impl(res, sys, rhs, true, damping );
 }
 
 void BaseSequentialSolver::solve_impl(vec& res,
-								  const system_type& sys,
-								  const vec& rhs,
-								  bool correct) const {
+                                      const system_type& sys,
+                                      const vec& rhs,
+                                      bool correct,
+                                      real damping) const {
 	assert( response );
 
 	// reset bench if needed
@@ -326,7 +328,7 @@ void BaseSequentialSolver::solve_impl(vec& res,
 //	vec primal;
 	for(k = 0; k < max; ++k) {
 
-        real estimate2 = step( lambda, net, sys, constant, error, delta, correct );
+        real estimate2 = step( lambda, net, sys, constant, error, delta, correct, damping );
 
 		if( this->bench ) this->bench->lcp(sys, constant, *response, lambda);
 		
@@ -560,19 +562,20 @@ void SequentialSolver::solve(vec& res,
 void SequentialSolver::correct(vec& res,
                                const system_type& sys,
                                const vec& rhs,
-                               real /*damping*/ ) const {
-    solve_local(res, sys, rhs, true );
+                               real damping ) const {
+    solve_local(res, sys, rhs, true, damping );
 }
 
 
 
 void SequentialSolver::solve_local(vec& res,
-                           const system_type& sys,
-                           const vec& rhs,
-                           bool correct) const {
+                                   const system_type& sys,
+                                   const vec& rhs,
+                                   bool correct, 
+                                   real damping) const {
 
     if( d_iterateOnBilaterals.getValue() || !m_localSystem.H.nonZeros() )
-        return solve_impl( res, sys, rhs, correct );
+        return solve_impl( res, sys, rhs, correct, damping );
 
     const size_t localsize = m_localSystem.size();
 
@@ -584,7 +587,7 @@ void SequentialSolver::solve_local(vec& res,
     m_localSub.toLocal( localres, res );
 
     // performing the solve on the reorganized system
-    solve_impl( localres, m_localSystem, localrhs, correct );
+    solve_impl( localres, m_localSystem, localrhs, correct, damping );
 
     // reordering res
     m_localSub.fromLocal( res, localres );

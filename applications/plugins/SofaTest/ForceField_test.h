@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -13,11 +13,8 @@
 * more details.                                                               *
 *                                                                             *
 * You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* with this program. If not, see <http://www.gnu.org/licenses/>.              *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -73,6 +70,7 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
     /// @name Precision and control parameters
     /// {
     SReal errorMax;       ///< tolerance in precision test. The actual value is this one times the epsilon of the Real numbers (typically float or double)
+    SReal errorFactorPotentialEnergy;  ///< The test for potential energy is successfull if the (infinite norm of the) difference is less than  errorFactorPotentialEnergy * errorMax *epsilon (default = 1)
     /**
      * @brief Minimum/Maximum amplitudes of the random perturbation used to check the stiffness using finite differences
      * @warning Should be more than errorMax/stiffness. This is not checked automatically.
@@ -95,6 +93,7 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
      */
     ForceField_test()
         : errorMax( 100 )
+        , errorFactorPotentialEnergy(1)
         , deltaRange( 1, 1000 )
         , checkStiffness( true )
         , debug( false )
@@ -115,6 +114,7 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
      */
     ForceField_test(std::string filename)
         : errorMax( 100 )
+        , errorFactorPotentialEnergy(1)
         , deltaRange( 1, 1000 )
         , checkStiffness( true )
         , debug( false )
@@ -147,7 +147,10 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
      * The  change of force is compared to the change computed by function addDForce, and to the product of the position change with the stiffness matrix.
      */
     void run_test( const VecCoord& x, const VecDeriv& v, const VecDeriv& ef )
-    {
+    {        
+        if( !(flags & TEST_POTENTIAL_ENERGY) ) msg_warning("ForceFieldTest") << "Potential energy is not tested";
+
+
         if( deltaRange.second / errorMax <= g_minDeltaErrorRatio )
             ADD_FAILURE() << "The comparison threshold is too large for the finite difference delta";
 
@@ -192,7 +195,7 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
 
 
         // Get potential Energy before applying a displacement to dofs
-        double potentialEnergyBeforeDisplacement = ((const core::behavior::BaseForceField*)force.get())->getPotentialEnergy(&mparams);
+        SReal potentialEnergyBeforeDisplacement = (flags & TEST_POTENTIAL_ENERGY) ? ((const core::behavior::BaseForceField*)force.get())->getPotentialEnergy(&mparams) : 0;
 
         // change position
         VecDeriv dX(n);
@@ -214,22 +217,22 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
         if( flags & TEST_POTENTIAL_ENERGY )
         {
             // Get potential energy after displacement of dofs
-            double potentialEnergyAfterDisplacement = ((const core::behavior::BaseForceField*)force.get())->getPotentialEnergy(&mparams);
+            SReal potentialEnergyAfterDisplacement = ((const core::behavior::BaseForceField*)force.get())->getPotentialEnergy(&mparams);
 
             // Check getPotentialEnergy() we should have dE = -dX.F
 
             // Compute dE = E(x+dx)-E(x)
-            double differencePotentialEnergy = potentialEnergyAfterDisplacement-potentialEnergyBeforeDisplacement;
+            SReal differencePotentialEnergy = potentialEnergyAfterDisplacement-potentialEnergyBeforeDisplacement;
 
             // Compute the expected difference of potential energy: -dX.F (dot product between applied displacement and Force)
-            double expectedDifferencePotentialEnergy = 0;
+            SReal expectedDifferencePotentialEnergy = 0;
             for( unsigned i=0; i<n; ++i){
                 expectedDifferencePotentialEnergy = expectedDifferencePotentialEnergy - dot(dX[i],curF[i]);
             }
 
-            double absoluteErrorPotentialEnergy = std::abs(differencePotentialEnergy - expectedDifferencePotentialEnergy);
-            if( absoluteErrorPotentialEnergy> errorMax*this->epsilon() ){
-                ADD_FAILURE()<<"dPotentialEnergy differs from -dX.F (threshold=" << errorMax*this->epsilon() << ")" << std::endl
+            SReal absoluteErrorPotentialEnergy = std::abs(differencePotentialEnergy - expectedDifferencePotentialEnergy);
+            if( absoluteErrorPotentialEnergy> errorFactorPotentialEnergy*errorMax*this->epsilon() ){
+                ADD_FAILURE()<<"dPotentialEnergy differs from -dX.F (threshold=" << errorFactorPotentialEnergy*errorMax*this->epsilon() << ")" << std::endl
                             << "dPotentialEnergy is " << differencePotentialEnergy << std::endl
                             << "-dX.F is " << expectedDifferencePotentialEnergy << std::endl
                             << "Failed seed number = " << BaseSofa_test::seed << std::endl;
@@ -276,6 +279,15 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
         if( this->vectorMaxDiff(Kdx,df)> errorMax*this->epsilon() )
             ADD_FAILURE()<<"Kdx differs from change of force"<< std::endl << "Failed seed number = " << BaseSofa_test::seed << std::endl;;
 
+
+        // =================== test updateForceMask
+        // ensure that each dof receiving a force is in the mask
+        for( unsigned i=0; i<xdof.size(); i++ ) {
+            if( newF[i] != Deriv() && !dof->forceMask.getEntry(i) ){
+                ADD_FAILURE() << "updateForceMask did not set mask to every dof influenced by the ForceField" << std::endl;
+                break;
+            }
+        }
 
 
     }

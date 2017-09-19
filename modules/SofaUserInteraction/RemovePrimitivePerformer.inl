@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -76,7 +73,7 @@ void RemovePrimitivePerformer<DataTypes>::execute()
     mstateCollision = dynamic_cast< core::behavior::MechanicalState<DataTypes>*    >(picked.body->getContext()->getMechanicalState());
     if (!mstateCollision)
     {
-        std::cerr << "incompatible MState during Mouse Interaction " << std::endl;
+        msg_warning("RemovePrimitivePerformer") << "Incompatible Mechanical State during Mouse Interaction ";
         return;
     }
 
@@ -154,8 +151,7 @@ void RemovePrimitivePerformer<DataTypes>::execute()
 template <class DataTypes>
 void RemovePrimitivePerformer<DataTypes>::end()
 {
-    std::cout << "RemovePrimitivePerformer::end()" << std::endl;
-    //	firstClick = true;
+    dmsg_info("RemovePrimitivePerfomer") << " end()" ;
 }
 
 
@@ -179,7 +175,7 @@ bool RemovePrimitivePerformer<DataTypes>::createElementList()
         topoType = sofa::core::topology::TRIANGLE;
     else
     {
-        std::cerr << "Error: No topology has been found." << std::endl;
+        msg_error("RemovePrimitivePerformer") << "No topology has been found." ;
         return false;
     }
 
@@ -226,11 +222,11 @@ bool RemovePrimitivePerformer<DataTypes>::createElementList()
 
                     if (volTmp == -1)
                     {
-                        std::cerr << "Error while looking for corresponding element on surfacique mesh." << std::endl;
+                        msg_error("RemovePrimitivePerformer") << "Problem while looking for corresponding element on surface mesh." ;
                         return false;
                     }
 
-                    // Surfacique element has been found, computation will be done on surfacique mesh => switch temporary all variables to surface
+                    // Surface element has been found, computation will be done on surfacique mesh => switch temporary all variables to surface
                     selectedElem[0] = (unsigned int)volTmp;
                     volumeOnSurface = true;
                     topo_curr = topoMap->getTo();
@@ -240,7 +236,8 @@ bool RemovePrimitivePerformer<DataTypes>::createElementList()
 
             if (!volumeOnSurface)
             {
-                std::cerr << "Error: Trying to remove a volume at the surface of the mesh without using mapping volume to surface mesh. This case is not handle." << std::endl;
+                msg_warning("RemovePrimitivePerformer") << "Trying to remove a volume at the surface of the mesh without using "
+                                 "mapping volume to surface mesh. This case is not supported." ;
                 return false;
             }
         }
@@ -396,7 +393,7 @@ bool RemovePrimitivePerformer<DataTypes>::createElementList()
 
             if (!surfaceOnVolume)
             {
-                std::cerr << "Error: Trying to remove a volume using a surfacique mesh without mapping to volumique mesh." << std::endl;
+                msg_warning("RemovePrimitivePerformer") << "Trying to remove a volume using a surfacique mesh without mapping to volume mesh." ;
                 return false;
             }
         }
@@ -573,7 +570,7 @@ sofa::helper::vector <unsigned int> RemovePrimitivePerformer<DataTypes>::getElem
     Real BB_size = (Real)(sceneMaxBBox - sceneMinBBox).norm();
     if (BB_size == 0)
     {
-        std::cerr << "Error while computing Boundingbox size, size return null." << std::endl;
+        msg_info("RemovePrimitivePerformer") << "While computing Boundingbox size, size return null." ;
         BB_size = 1; // not to crash program
     }
     Real zone_size = (Real)(BB_size*selectorScale)/200;

@@ -1,0 +1,36 @@
+<!-- SphereGrid examples -->
+<Node name="root" dt="0.02" gravity="0 -10 0">
+    <VisualStyle displayFlags="showBehaviorModels showForceFields showVisual" />
+    <Node name="SphereFEMTetra">
+        <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="25" tolerance="0.000001" threshold="1e-5"/>
+        <MechanicalObject dx="-10" />
+        <UniformMass totalmass="100" />
+        <SphereGridTopology nx="10" ny="10" nz="10" radius="4.0" axis="0 1 0" />
+        <BoxConstraint box="-14 0.5 2.5 -8 4 4" fixAll="0"/>
+        <TetrahedronFEMForceField name="FEM" youngModulus="1116" poissonRatio="0.3" method="polar" />
+	<Node name="Visu">
+            <OglModel name="Visual" color="red" translation="-5 0 0" />
+            <IdentityMapping input="@.." output="@Visual" />
+        </Node>
+    </Node>
+    <Node name="SphereFEM">
+        <EulerImplicit />
+        <CGLinearSolver iterations="25" tolerance="0.000001" threshold="1e-5"/>
+        <MechanicalObject />
+        <UniformMass totalmass="100" />
+        <SphereGridTopology nx="10" ny="10" nz="10" radius="4.0" axis="0 1 0" />
+        <BoxConstraint box="-4 0.5 2.5 4 4 4" fixAll="0"/>
+        <HexahedronFEMForceField name="FEM" youngModulus="1116" poissonRatio="0.3" method="large" />
+    </Node>
+    <Node name="SphereSpring">
+        <EulerImplicit />
+        <CGLinearSolver iterations="25" tolerance="0.000001" threshold="1e-5"/>
+        <MechanicalObject dx="10" />
+        <UniformMass totalmass="100" />
+        <SphereGridTopology nx="10" ny="10" nz="10" radius="4.0" axis="0 1 0" />
+        <BoxConstraint box="8 0.5 2.5 14 4 4" fixAll="0"/>
+        <MeshSpringForceField name="FEM" stiffness="1000" />
+    </Node>
+
+</Node>

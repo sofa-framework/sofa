@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -94,10 +91,9 @@ const sofa::defaulttype::BaseMatrix*  PointConstraint<DataTypes>::getJ(const cor
     }
     for(unsigned i=0; i<f_indices.getValue().size(); i++ )
     {
-//                cerr<<"PointConstraint<DataTypes>::getJ, , set null block in " << f_indices.getValue()[i] << ", matrix before = " << jacobian << endl;
         for(unsigned j=0; j<blockSize; j++)
             jacobian.set( f_indices.getValue()[i]*blockSize+j, f_indices.getValue()[i]*blockSize+j, 0);
-        std::cerr<<"PointConstraint<DataTypes>::getJ, , set null block in " << f_indices.getValue()[i] << ", matrix after = " << jacobian << std::endl;
+        msg_info("PointConstraint<DataTypes>")<<"getJ, , set null block in " << f_indices.getValue()[i] << ", matrix after = " << jacobian ;
     }
 
     return &jacobian;
@@ -107,11 +103,8 @@ const sofa::defaulttype::BaseMatrix*  PointConstraint<DataTypes>::getJ(const cor
 template <class DataTypes>
 void PointConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
-    //    cerr<<"PointConstraint<DataTypes>::projectResponse is called "<<endl;
-    //    assert(false);
     helper::WriteAccessor<DataVecDeriv> res ( mparams, resData );
     const SetIndexArray & indices = f_indices.getValue(mparams);
-    //serr<<"PointConstraint<DataTypes>::projectResponse, dx.size()="<<res.size()<<sendl;
     for (SetIndexArray::const_iterator it = indices.begin();
             it != indices.end();
             ++it)
@@ -139,7 +132,6 @@ void PointConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalPar
         }
         ++rowIt;
     }
-    //cerr<<"PointConstraint<DataTypes>::projectJacobianMatrix : helper::WriteAccessor<DataMatrixDeriv> c =  "<<endl<< c<<endl;
 }
 
 // constant velocity: do not change the velocity
@@ -158,8 +150,6 @@ void PointConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /
 template <class DataTypes>
 void PointConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset)
 {
-    //sout << "applyConstraint in Matrix with offset = " << offset << sendl;
-    //cerr<<"PointConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset) is called "<<endl;
     const unsigned int N = Deriv::size();
     const SetIndexArray & indices = f_indices.getValue();
 
@@ -177,8 +167,6 @@ void PointConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, u
 template <class DataTypes>
 void PointConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset)
 {
-    //cerr<<"PointConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset) is called "<<endl;
-    //sout << "applyConstraint in Vector with offset = " << offset << sendl;
     const unsigned int N = Deriv::size();
 
     const SetIndexArray & indices = f_indices.getValue();
@@ -199,10 +187,6 @@ void PointConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     if (!this->isActive()) return;
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    //serr<<"PointConstraint<DataTypes>::draw(), x.size() = "<<x.size()<<sendl;
-
-
-
 
     const SetIndexArray & indices = f_indices.getValue();
 
@@ -210,7 +194,6 @@ void PointConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         std::vector< sofa::defaulttype::Vector3 > points;
         sofa::defaulttype::Vector3 point;
-        //serr<<"PointConstraint<DataTypes>::draw(), indices = "<<indices<<sendl;
         for (SetIndexArray::const_iterator it = indices.begin();
                 it != indices.end();
                 ++it)

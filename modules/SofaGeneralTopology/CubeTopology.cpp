@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -45,7 +42,7 @@ void CubeTopology::parse(core::objectmodel::BaseObjectDescription* arg)
     float scale=1.0f;
     if (arg->getAttribute("scale")!=NULL)
     {
-        scale = (float)atof(arg->getAttribute("scale"));
+        scale = arg->getAttributeAsFloat("scale",1.0);
     }
     this->setSize();
     if (arg->getAttribute("xmin") != NULL &&
@@ -55,14 +52,14 @@ void CubeTopology::parse(core::objectmodel::BaseObjectDescription* arg)
         arg->getAttribute("ymax") != NULL &&
         arg->getAttribute("zmax") != NULL )
     {
-        const char* xmin = arg->getAttribute("xmin");
-        const char* ymin = arg->getAttribute("ymin");
-        const char* zmin = arg->getAttribute("zmin");
-        const char* xmax = arg->getAttribute("xmax");
-        const char* ymax = arg->getAttribute("ymax");
-        const char* zmax = arg->getAttribute("zmax");
-        min.setValue(Vector3((SReal)(atof(xmin)*scale), (SReal)(atof(ymin)*scale), (SReal)(atof(zmin)*scale)));
-        max.setValue(Vector3((SReal)(atof(xmax)*scale), (SReal)(atof(ymax)*scale), (SReal)(atof(zmax)*scale)));
+        float xmin = arg->getAttributeAsFloat("xmin",0);
+        float ymin = arg->getAttributeAsFloat("ymin",0);
+        float zmin = arg->getAttributeAsFloat("zmin",0);
+        float xmax = arg->getAttributeAsFloat("xmax",1);
+        float ymax = arg->getAttributeAsFloat("ymax",1);
+        float zmax = arg->getAttributeAsFloat("zmax",1);
+        min.setValue(Vector3((SReal)(xmin*scale), (SReal)(ymin*scale), (SReal)(zmin*scale)));
+        max.setValue(Vector3((SReal)(xmax*scale), (SReal)(ymax*scale), (SReal)(zmax*scale)));
     }
     this->setPos(min.getValue()[0],max.getValue()[0],min.getValue()[1],max.getValue()[1],min.getValue()[2],max.getValue()[2]);
 }

@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
-* Software Foundation; either version 2 of the License, or (at your option)   *
-* any later version.                                                          *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
 *                                                                             *
 * This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
-* more details.                                                               *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
 *                                                                             *
-* You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -49,23 +46,9 @@ using sofa::core::objectmodel::New ;
 using sofa::core::objectmodel::BaseData ;
 using sofa::core::ExecParams ;
 using sofa::component::container::MechanicalObject ;
-using sofa::defaulttype::Vec3dTypes ;
 
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
-
-#include <sofa/helper/logging/Message.h>
-using sofa::helper::logging::MessageDispatcher ;
-
-#include <sofa/helper/logging/ClangMessageHandler.h>
-using sofa::helper::logging::ClangMessageHandler ;
-
-int initMessage(){
-    MessageDispatcher::clearHandlers() ;
-    MessageDispatcher::addHandler(new ClangMessageHandler()) ;
-    return 0;
-}
-int messageInited = initMessage();
 
 template <class TDataTypes, class TMassTypes>
 struct TemplateTypes

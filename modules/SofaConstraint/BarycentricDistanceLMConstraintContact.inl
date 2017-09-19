@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -74,7 +71,6 @@ template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTyp
 void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::setDetectionOutputs(OutputVector* o)
 {
     TOutputVector& outputs = *static_cast<TOutputVector*>(o);
-    const bool printLog = this->f_printLog.getValue();
     if (ff==NULL)
     {
 
@@ -128,7 +124,7 @@ void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,Re
             if (!index)
             {
                 ++nbnew;
-                if (printLog) std::cerr << "BarycentricDistanceLMConstraintContact: New contact "<<o->id<<std::endl;
+                msg_info() << " new contact "<<o->id ;
             }
         }
         index = -1-i; // save this index as a negative value in contactIndex map.
@@ -153,7 +149,7 @@ void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,Re
         int& index = it->second;
         if (index >= 0)
         {
-            if (printLog) std::cerr << "BarycentricDistanceLMConstraintContact: Removed contact "<<it->first<<std::endl;
+            msg_info() << " removed contact "<<it->first;
             ContactIndexMap::iterator oldit = it;
             ++it;
             contactIndex.erase(oldit);
@@ -164,7 +160,7 @@ void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,Re
             ++it;
         }
     }
-    if (printLog) std::cerr << "BarycentricDistanceLMConstraintContact: "<<insize<<" input contacts, "<<size<<" contacts used for response ("<<nbnew<<" new)."<<std::endl;
+    msg_info() << " "<<insize<<" input contacts, "<<size<<" contacts used for response ("<<nbnew<<" new)." ;
 
     ff->clear();
     mapper1.resize(size);
@@ -216,7 +212,7 @@ void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,Re
         parent = group;
         if (parent!=NULL)
         {
-            //std::cerr << "Attaching contact response to "<<parent->getName()<<std::endl;
+            //msg_error() << "Attaching contact response to "<<parent->getName() ;
             parent->addObject(this);
             parent->addObject(ff);
         }
@@ -230,7 +226,7 @@ void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,Re
     {
         if (parent!=NULL)
         {
-            //std::cerr << "Removing contact response from "<<parent->getName()<<std::endl;
+            //msg_error()<< "Removing contact response from "<<parent->getName();
             parent->removeObject(this);
             parent->removeObject(ff);
         }

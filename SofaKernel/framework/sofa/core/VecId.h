@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -27,6 +24,7 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/helper/logging/Messaging.h>
 
 #include <sstream>
 #include <iostream>
@@ -153,8 +151,12 @@ class TStandardVec<V_MATDERIV, vaccess>
 public:
     typedef TVecId<V_MATDERIV, vaccess> MyVecId;
 
-    static MyVecId holonomicC()    { return MyVecId(1);}
-    static MyVecId nonHolonomicC() { return MyVecId(2);}
+    static MyVecId constraintJacobian()    { return MyVecId(1);} // jacobian matrix of constraints
+    static MyVecId mappingJacobian() { return MyVecId(2);}         // accumulated matrix of the mappings
+    static MyVecId holonomicC()    { return MyVecId(1);
+                                     dmsg_deprecated("") << "holonomicC is deprecated."
+                                                           "See VecId.h to remove this message and replace by constraintJacobian"
+                                                           "Update your code ! It will be removed after May 2018"; }
     enum { V_FIRST_DYNAMIC_INDEX = 3 }; ///< This is the first index used for dynamically allocated vectors
 
     static std::string getName(const MyVecId& v)

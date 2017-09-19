@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -227,7 +224,6 @@ void RigidDistanceGridCollisionModel::computeBoundingTree(int maxDepth)
         Vector3 emin, emax;
         if (elems[i].isTransformed)
         {
-            //std::cout << "Grid "<<i<<" transformation: <"<<elems[i].rotation<<"> x + <"<<elems[i].translation<<">"<<std::endl;
             for (int j=0; j<8; j++)
             {
                 Vector3 corner = elems[i].translation + elems[i].rotation * (flipped ? elems[i].grid->getCorner(j) : elems[i].grid->getBBCorner(j));
@@ -250,7 +246,6 @@ void RigidDistanceGridCollisionModel::computeBoundingTree(int maxDepth)
             emax = flipped ? elems[i].grid->getPMax() : elems[i].grid->getBBMax();
         }
         cubeModel->setParentOf(i, emin, emax); // define the bounding box of the current element
-        //std::cout << "Grid "<<i<<" within  <"<<emin<<">-<"<<emax<<">"<<std::endl;
     }
     cubeModel->computeBoundingTree(maxDepth);
     modified = false;
@@ -465,14 +460,11 @@ FFDDistanceGridCollisionModel::FFDDistanceGridCollisionModel()
 
 FFDDistanceGridCollisionModel::~FFDDistanceGridCollisionModel()
 {
-    //for (unsigned int i=0; i<elems.size(); i++)
-    //    if (elems[i].grid!=NULL) elems[i].grid->release();
     if (elems.size()>0 && elems[0].grid!=NULL) elems[0].grid->release();
 }
 
 void FFDDistanceGridCollisionModel::init()
 {
-    //std::cout << "> FFDDistanceGridCollisionModel::init()"<<std::endl;
     this->core::CollisionModel::init();
     ffd = dynamic_cast< core::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
     ffdMesh = /*dynamic_cast< topology::RegularGridTopology* >*/ (getContext()->getMeshTopology());
@@ -608,14 +600,10 @@ bool FFDDistanceGridCollisionModel::canCollideWithElement(int index, CollisionMo
 {
     if (model2 != this) return true;
     if (!this->bSelfCollision.getValue()) return true;
-    //if (this->getContext() != model2->getContext()) return true;
-    //if (model2 == this)
-    {
-        //sout << "ffd self test "<<index<<" - "<<index2<<sendl;
-        if (index >= index2) return false;
-        if (elems[index].neighbors.count(index2)) return false;
-        return true;
-    }
+
+    if (index >= index2) return false;
+    if (elems[index].neighbors.count(index2)) return false;
+    return true;
 }
 
 void FFDDistanceGridCollisionModel::setGrid(DistanceGrid* surf, int index)
@@ -635,7 +623,6 @@ void FFDDistanceGridCollisionModel::computeBoundingTree(int maxDepth)
     cubeModel->resize(size);
     for (int i=0; i<size; i++)
     {
-        //static_cast<DistanceGridCollisionElement*>(elems[i])->recalcBBox();
         Vector3 emin, emax;
         const DeformedCube& cube = getDeformCube(i);
         {

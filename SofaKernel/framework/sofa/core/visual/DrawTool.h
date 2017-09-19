@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -28,6 +25,7 @@
 #include <sofa/core/core.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Quat.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 #include <vector>
 
@@ -51,6 +49,7 @@ class SOFA_CORE_API DrawTool
 {
 
 public:
+    typedef sofa::helper::types::RGBAColor RGBAColor;
     typedef sofa::defaulttype::Vec4f   Vec4f;
     typedef sofa::defaulttype::Vec3f   Vec3f;
     typedef sofa::defaulttype::Vector3 Vector3;
@@ -61,11 +60,14 @@ public:
     DrawTool() { clear(); }
     virtual ~DrawTool() {}
 
+    virtual void init() = 0;
+
     /// @name Primitive rendering methods
     /// @{
-    virtual void drawPoints(const std::vector<Vector3> &points, float size,  const Vec4f& colour) = 0 ;
+    virtual void drawPoints(const std::vector<Vector3> &points, float size,  const  Vec4f& colour) = 0 ;
     virtual void drawPoints(const std::vector<Vector3> &points, float size, const std::vector<Vec4f>& colour) = 0;
 
+    virtual void drawLine(const Vector3 &p1, const Vector3 &p2, const Vec4f& colour) =  0;
     virtual void drawLines(const std::vector<Vector3> &points, float size, const Vec4f& colour) = 0 ;
     virtual void drawLines(const std::vector<Vector3> &points, float size, const std::vector<Vec4f>& colours) = 0 ;
     virtual void drawLines(const std::vector<Vector3> &points, const std::vector< Vec2i > &index , float size, const Vec4f& colour) = 0 ;
@@ -97,6 +99,8 @@ public:
 
     virtual void drawSpheres (const std::vector<Vector3> &points, const std::vector<float>& radius, const Vec4f& colour) = 0;
     virtual void drawSpheres (const std::vector<Vector3> &points, float radius, const Vec4f& colour) = 0 ;
+    virtual void drawFakeSpheres(const std::vector<Vector3> &points, const std::vector<float>& radius, const Vec4f& colour) = 0;
+    virtual void drawFakeSpheres(const std::vector<Vector3> &points, float radius, const Vec4f& colour) = 0;
 
     virtual void drawCone    (const Vector3& p1, const Vector3 &p2, float radius1, float radius2, const Vec4f& colour, int subd=16) = 0 ;
 
@@ -147,7 +151,7 @@ public:
     //Scale each tetrahedron
     virtual void drawScaledTetrahedra(const std::vector<Vector3> &points, const Vec4f& colour, const float scale) = 0;
 
-    virtual void drawHexahedron(const Vector3 &p0, const Vector3 &p1, const Vector3 &p2, const Vector3 &p3, 
+    virtual void drawHexahedron(const Vector3 &p0, const Vector3 &p1, const Vector3 &p2, const Vector3 &p3,
         const Vector3 &p4, const Vector3 &p5, const Vector3 &p6, const Vector3 &p7, const Vec4f &colour) = 0;
     virtual void drawHexahedra(const std::vector<Vector3> &points, const Vec4f& colour) = 0;
     //Scale each hexahedron

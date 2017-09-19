@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -68,8 +65,11 @@ public:
     typedef typename DataTypes::Deriv Deriv;
 
 protected:
+    bool initializedCubatureTables;
+    void defineTetrahedronCubaturePoints();
     TriangleSetGeometryAlgorithms()
         : EdgeSetGeometryAlgorithms<DataTypes>()
+        ,initializedCubatureTables(false)
         ,showTriangleIndices (initData(&showTriangleIndices, (bool) false, "showTriangleIndices", "Debug : view Triangle indices"))
         , _draw(initData(&_draw, false, "drawTriangles","if true, draw the triangles in the topology"))
         , _drawColor(initData(&_drawColor, sofa::defaulttype::Vec4f(0.2f,1.0f,1.0f,1.0f), "drawColorTriangles", "RGBA code color used to draw edges."))
@@ -278,6 +278,8 @@ public:
     virtual void initPointAdded(unsigned int indice, const core::topology::PointAncestorElem &ancestorElem
         , const helper::vector< VecCoord* >& coordVecs, const helper::vector< VecDeriv* >& derivVecs);
 
+    /// return a pointer to the container of cubature points
+    NumericalIntegrationDescriptor<Real,3> &getTriangleNumericalIntegrationDescriptor();
 protected:
     Data<bool> showTriangleIndices;
     Data<bool> _draw;
@@ -286,7 +288,8 @@ protected:
     Data <SReal> _drawNormalLength;
     Data<bool> p_recomputeTrianglesOrientation;
     Data<bool> p_flipNormals;
-
+    /// include cubature points
+    NumericalIntegrationDescriptor<Real,3> triangleNumericalIntegration;
 };
 
 

@@ -41,21 +41,23 @@ void UniformCompliance<DataTypes>::reinit()
     core::behavior::BaseMechanicalState* state = this->getContext()->getMechanicalState();
     assert(state);
 
+    const SReal& c = compliance.getValue();
+
     if( this->isCompliance.getValue() )
     {
         matC.resize(state->getMatrixSize(), state->getMatrixSize());
 
-        if( compliance.getValue() ) // only fill the matrix for not null compliance, otherwise let play the sparsity
+        if( c ) // only fill the matrix for not null compliance, otherwise let play the sparsity
         {
             for(unsigned i=0, n = state->getMatrixSize(); i < n; i++) {
                 matC.beginRow(i);
-                matC.insertBack(i, i, compliance.getValue());
+                matC.insertBack(i, i, c);
             }
 
             matC.compressedMatrix.finalize();
         }
 
-        if( helper::rabs(compliance.getValue()) <= std::numeric_limits<Real>::epsilon() && this->rayleighStiffness.getValue() )
+        if( helper::rabs(c) <= std::numeric_limits<Real>::epsilon() && this->rayleighStiffness.getValue() )
         {
             serr<<"Warning: a null compliance can not generate rayleighDamping, forced to 0"<<sendl;
             this->rayleighStiffness.setValue(0);
@@ -67,8 +69,8 @@ void UniformCompliance<DataTypes>::reinit()
 //    if( !this->isCompliance.getValue() || this->rayleighStiffness.getValue() )
 //    {
         // the stiffness df/dx is the opposite of the inverse compliance
-        Real k = compliance.getValue() > std::numeric_limits<Real>::epsilon() ?
-                (compliance.getValue() < 1 / std::numeric_limits<Real>::epsilon() ? -1 / compliance.getValue() : 0 ) : // if the compliance is really large, let's consider the stiffness is null
+        Real k = c > std::numeric_limits<Real>::epsilon() ?
+                (c < 1 / std::numeric_limits<Real>::epsilon() ? -1 / c : 0 ) : // if the compliance is really large, let's consider the stiffness is null
                  -1 / std::numeric_limits<Real>::epsilon(); // if the compliance is too small, we have to take a huge stiffness in the numerical limits
 
         matK.resize(state->getMatrixSize(), state->getMatrixSize());
@@ -91,7 +93,7 @@ void UniformCompliance<DataTypes>::reinit()
 
 
 	if( damping.getValue() > 0 ) {
-		SReal d = damping.getValue();
+        const SReal& d = damping.getValue();
 		
 		matB.resize(state->getMatrixSize(), state->getMatrixSize());
 		
@@ -113,8 +115,9 @@ SReal UniformCompliance<DataTypes>::getPotentialEnergy( const core::MechanicalPa
     const VecCoord& _x = x.getValue();
     unsigned int m = this->mstate->getMatrixBlockSize();
 
-    Real k = compliance.getValue() > s_complianceEpsilon ?
-            1. / compliance.getValue() :
+    const SReal& c = compliance.getValue();
+    Real k = c > s_complianceEpsilon ?
+            1. / c :
             1. / s_complianceEpsilon;
 
     SReal e = 0;

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -13,11 +13,8 @@
 * more details.                                                               *
 *                                                                             *
 * You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* with this program. If not, see <http://www.gnu.org/licenses/>.              *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -325,7 +322,7 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
 //            cout<<"new parent positions xp1["<< p << "] = " << xp1[p] << endl;
         }
         mapping->apply ( &mparams, core::VecCoordId::position(), core::VecCoordId::position() );
-        WriteOutVecCoord pout = outDofs->writePositions();
+        ReadOutVecCoord pout = outDofs->readPositions();
         copyFromData( xc1, pout );
 //        cout<<"new child positions xc1 = " << xc1 << endl;
 
@@ -366,6 +363,75 @@ struct MultiMapping_test : public Sofa_test<typename _MultiMapping::Real>
                 ADD_FAILURE() << "applyDJT test failed" << std::endl <<
                                  "dfp["<<p<<"]    = " << dfp[p] << std::endl <<
                                  "fp2["<<p<<"]-fp["<<p<<"] = " << fp12[p] << std::endl;
+            }
+        }
+
+
+        // ================ test getK()
+        InVecDeriv totalvp;
+        for( Index p=0; p<Np.size(); p++ ) {
+            for( Index pi=0; pi<vp[p].size(); pi++ ) {
+                totalvp.push_back(vp[p][pi]);
+            }
+        }
+        InVecDeriv Kv(totalvp.size());
+
+        const defaulttype::BaseMatrix* bk = mapping->getK();
+        // K can be null or empty for linear mappings
+        // still performing the test with a null Kv vector to check if the mapping is really linear
+        if( bk != NULL ){
+
+            typedef component::linearsolver::EigenSparseMatrix<In,In> EigenSparseKMatrix;
+            const EigenSparseKMatrix* K = dynamic_cast<const EigenSparseKMatrix*>(bk);
+            if( K == NULL ){
+                succeed = false;
+                ADD_FAILURE() << "getK returns a matrix of non-EigenSparseMatrix type";
+                // TODO perform a slow conversion with a big warning rather than a failure?
+            }
+
+            if( K->compressedMatrix.nonZeros() ) K->mult(Kv,totalvp);
+        }
+
+        // check that K.vp = dfp
+        for( Index p=0, offset=0; p<Np.size(); p++ ) {
+
+            InVecDeriv Kvp( Kv.begin()+offset, Kv.begin()+offset+fp12[p].size() );
+            offset+=fp12[p].size();
+
+            if( this->vectorMaxDiff(Kvp,fp12[p])>this->epsilon()*errorMax ){
+                succeed = false;
+                ADD_FAILURE() << "K test failed on parent "<< p << ", difference should be less than " << this->epsilon()*errorMax  << std::endl
+                              << "Kv    = " << Kvp << std::endl
+                              << "dfp = " << fp12[p] << std::endl;
+            }
+        }
+
+
+        // =================== test updateForceMask
+        // propagate forces coming from all child, each parent receiving a force should be in the mask
+        for(Index i=0; i<Np.size(); i++)
+        {
+            EXPECT_EQ( inDofs[i]->forceMask.size(), inDofs[i]->getSize() );
+            inDofs[i]->forceMask.assign(inDofs[i]->getSize(),false);
+        }
+        EXPECT_EQ( outDofs->forceMask.size(), outDofs->getSize() );
+        outDofs->forceMask.assign(outDofs->getSize(),true);
+        mapping->apply(&mparams, core::VecCoordId::position(), core::VecCoordId::position()); // to force mask update at the next applyJ
+        for( unsigned i=0; i<Nc; i++ ) Out::set( fout[i], 1,1,1 ); // every child forces are non-nul
+        for(Index p=0; p<Np.size(); p++) {
+            WriteInVecDeriv fin = inDofs[p]->writeForces();
+            copyToData( fin, fp2[p] );  // reset parent forces before accumulating child forces
+        }
+        mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
+        for(Index i=0; i<Np.size(); i++)
+        {
+            copyFromData( fp[i], inDofs[i]->readForces() );
+            for( unsigned j=0; j<Np[i]; j++ ) {
+                if( fp[i][j] != InDeriv() && !inDofs[i]->forceMask.getEntry(j) ){
+                    succeed = false;
+                    ADD_FAILURE() << "updateForceMask did not propagate mask to every influencing parents "<< i << std::endl;
+                    break;
+                }
             }
         }
 

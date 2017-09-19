@@ -1,27 +1,25 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/gl/Texture.h>
 #include <cassert>
 #include <cstdio>
@@ -245,14 +243,14 @@ void Texture::update()
             else
 #endif
             {
-                std::cerr << "sofa::helper::gl::Texture::init: SRGB colorspace is unsupported, "
-                        "GLEW_EXT_texture_srgb or GLEW_ARB_framebuffer_sRGB is missing." << std::endl;
+                msg_error("Texture")
+                        << "SRGB colorspace is unsupported, GLEW_EXT_texture_srgb or GLEW_ARB_framebuffer_sRGB is missing." ;
             }
         }
         else
         {
-            std::cerr << "sofa::helper::gl::Texture::init: SRGB colorspace "
-                    "isn't supported with the given texture format." << std::endl;
+             msg_error("Texture")
+                     << "SRGB colorspace isn't supported with the given texture format." ;
         }
     }
 
@@ -325,8 +323,8 @@ void Texture::init()
         if (!GLEW_VERSION_2_0)
 #endif
         {
-            std::cerr << "sofa::helper::gl::Texture::init: Cannot load a texture, "
-                    "NPOT textures are not supported." << std::endl;
+             msg_error("Texture")
+                     << "cannot load a texture, NPOT textures are not supported.";
             return;
         }
     }
@@ -334,7 +332,7 @@ void Texture::init()
     switch (textureType)
     {
     case io::Image::TEXTURE_INVALID:
-        std::cerr << "sofa::helper::gl::Texture::init: Invalid texture type." << std::endl;
+         msg_error("Texture") << "invalid texture type.";
         return;
 
     case io::Image::TEXTURE_3D:
@@ -342,8 +340,7 @@ void Texture::init()
         if (!GLEW_VERSION_1_2)
 #endif
         {
-            std::cerr << "sofa::helper::gl::Texture::init: Cannot load a texture, "
-                    "OpenGL 1.2 is unsupported." << std::endl;
+             msg_error("Texture") << "cannot load a texture, OpenGL 1.2 is unsupported." ;
             return;
         }
         break;
@@ -353,8 +350,7 @@ void Texture::init()
         if (!GLEW_VERSION_1_3)
 #endif
         {
-            std::cerr << "sofa::helper::gl::Texture::init: Cannot load a texture, "
-                    "OpenGL 1.3 is unsupported." << std::endl;
+             msg_error("Texture") << "Cannot load a texture, OpenGL 1.3 is unsupported.";
             return;
         }
         break;
@@ -371,8 +367,7 @@ void Texture::init()
             if (!GLEW_EXT_texture_integer)
 #endif
             {
-                std::cerr << "sofa::helper::gl::Texture::init: Cannot load a texture, "
-                        "GL_EXT_texture_integer is unsupported." << std::endl;
+                 msg_error("Texture") << "Cannot load a texture, GL_EXT_texture_integer is unsupported.";
                 return;
             }
         }
@@ -381,8 +376,7 @@ void Texture::init()
             if (!GLEW_VERSION_3_0)
 #endif
             {
-                std::cerr << "sofa::helper::gl::Texture::init: Cannot load a texture, "
-                        "OpenGL 3.0 is unsupported." << std::endl;
+                 msg_error("Texture") << "Cannot load a texture, OpenGL 3.0 is unsupported.";
                 return;
             }
         break;
@@ -392,8 +386,7 @@ void Texture::init()
         if (!GLEW_VERSION_3_0)
 #endif
         {
-            std::cerr << "sofa::helper::gl::Texture::init: Cannot load a texture, "
-                    "OpenGL 3.0 is unsupported." << std::endl;
+            msg_error("Texture") << "Cannot load a texture, OpenGL 3.0 is unsupported.";
             return;
         }
         /* Pass through (no break!) */
@@ -405,8 +398,7 @@ void Texture::init()
             if (!GLEW_ARB_texture_float)
 #endif
             {
-                std::cerr << "sofa::helper::gl::Texture::init: Cannot load a texture, "
-                        "GLEW_ARB_texture_float is unsupported." << std::endl;
+                msg_error("Texture") << "Cannot load a texture, GLEW_ARB_texture_float is unsupported." ;
                 return;
             }
         }
@@ -415,8 +407,7 @@ void Texture::init()
             if (!GLEW_VERSION_3_0)
 #endif
             {
-                std::cerr << "sofa::helper::gl::Texture::init: Cannot load a texture, "
-                        "OpenGL 3.0 is unsupported." << std::endl;
+                 msg_error("Texture") << "Cannot load a texture, OpenGL 3.0 is unsupported.";
                 return;
             }
         break;
@@ -430,8 +421,7 @@ void Texture::init()
             if (!GLEW_EXT_texture_compression_latc)
 #endif
             {
-                std::cerr << "sofa::helper::gl::Texture::init: Cannot load a texture, "
-                        "GL_EXT_texture_compression_latc is unsupported." << std::endl;
+                 msg_error("Texture") << " Cannot load a texture, GL_EXT_texture_compression_latc is unsupported." ;
                 return;
             }
             break;
@@ -442,8 +432,7 @@ void Texture::init()
             if (!GLEW_VERSION_3_0)
 #endif
             {
-                std::cerr << "sofa::helper::gl::Texture::init: Cannot load a texture, "
-                        "OpenGL 3.0 is unsupported." << std::endl;
+                 msg_error("Texture") << "Cannot load a texture, OpenGL 3.0 is unsupported." ;
                 return;
             }
             break;
@@ -454,8 +443,7 @@ void Texture::init()
             if (!GLEW_EXT_texture_compression_s3tc)
 #endif
             {
-                std::cerr << "sofa::helper::gl::Texture::init: Cannot load a texture, "
-                        "GL_EXT_texture_compression_s3tc is unsupported." << std::endl;
+                msg_error("Texture") << "Cannot load a texture, GL_EXT_texture_compression_s3tc is unsupported." ;
                 return;
             }
             break;
@@ -517,7 +505,7 @@ void Texture::init()
         glTexParameteri( target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
         glTexParameteri( target, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE );
 #else
-        std::cerr << __FUNCTION__<< " GLEW_VERSION_1_2 required for cubic texture." << std::endl;
+       msg_error("Texture") << __FUNCTION__<< " GLEW_VERSION_1_2 required for cubic texture." << msgendl;
 #endif
     }
 

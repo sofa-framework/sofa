@@ -13,7 +13,7 @@
     
     <Node name="Cloth">
         
-        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         
         <RegularGrid nx="50" ny="1" nz="50" xmin="-9" xmax="5" ymin="7" ymax="7" zmin="-7" zmax="7" name="Container" />

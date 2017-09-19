@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -67,8 +64,8 @@ public:
     /// Adds a path to the front of the set of paths.
     void addFirstPath(const std::string& path);
 
-	/// Replaces every occurrences of "//" by "/"
-	std::string cleanPath( const std::string& path );
+    /// Replaces every occurrences of "//" by "/"
+    std::string cleanPath( const std::string& path );
 
     /// Adds a path to the back of the set of paths.
     void addLastPath(const std::string& path);
@@ -81,8 +78,10 @@ public:
 
     /// Returns a string such as refPath + string = path if path contains refPath.
     /// Otherwise returns path.
-    /// Under WIN32 the method returns a lower cased unix formatted path.
-    static std::string relativeToPath(std::string path, std::string refPath);
+    /// On WIN32 the implementation was also returning the path in lower case. This behavior is now
+    /// deprecated and should be remove the 2018-05-01. Until this date new implementation can be
+    /// used by setting doLowerCaseOnWin32=false;
+    static std::string relativeToPath(std::string path, std::string refPath, bool doLowerCaseOnWin32=true);
 
     const std::vector< std::string > &getPaths() const {return vpath;}
 

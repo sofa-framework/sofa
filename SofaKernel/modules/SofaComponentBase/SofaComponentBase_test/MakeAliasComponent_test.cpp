@@ -1,27 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
-* This component is open-source                                               *
-*                                                                             *
-* Contributors:                                                               *
-*    - damien.marchal@univ-lille1.fr                                          *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -55,12 +49,9 @@ using sofa::helper::logging::ConsoleMessageHandler;
 using sofa::helper::logging::Message ;
 
 #include <SofaTest/TestMessageHandler.h>
-using sofa::helper::logging::MainCountingMessageHandler ;
-using sofa::helper::logging::MainLoggingMessageHandler ;
-using sofa::helper::logging::ExpectMessage ;
-using sofa::helper::logging::MessageAsTestFailure ;
+using sofa::helper::logging::MainGtestMessageHandler ;
 
-#include <sofa/helper/logging/RichConsoleStyleMessageFormatter.h>
+#include <sofa/core/logging/RichConsoleStyleMessageFormatter.h>
 using sofa::helper::logging::RichConsoleStyleMessageFormatter ;
 
 using sofa::core::objectmodel::ComponentState ;
@@ -90,16 +81,17 @@ void perTestInit()
     if(defaultHandler==nullptr)
         defaultHandler=new ConsoleMessageHandler(new RichConsoleStyleMessageFormatter) ;
 
-    MessageDispatcher::clearHandlers() ;
-    MessageDispatcher::addHandler( &MainCountingMessageHandler::getInstance() ) ;
-    MessageDispatcher::addHandler( &MainLoggingMessageHandler::getInstance() ) ;
+    /// THE TESTS HERE ARE NOT INHERITING FROM SOFA TEST SO WE NEED TO MANUALLY INSTALL THE HANDLER
+    /// DO NO REMOVE
+    MessageDispatcher::addHandler( MainGtestMessageHandler::getInstance() );
 }
 
 
 TEST(MakeAliasComponent, checkGracefullHandlingOfMissingAttributes)
 {
     perTestInit();
-    ExpectMessage e(Message::Error) ;
+    EXPECT_MSG_EMIT(Error) ;
+
 
     string scene =
         "<?xml version='1.0'?>                                               "
@@ -124,7 +116,8 @@ TEST(MakeAliasComponent, checkGracefullHandlingOfMissingAttributes)
 TEST(MakeAliasComponent, checkGracefullHandlingOfMissingTargetAttributes)
 {
     perTestInit();
-    ExpectMessage e(Message::Error) ;
+    EXPECT_MSG_EMIT(Error) ;
+
 
     string scene =
         "<?xml version='1.0'?>                                               "
@@ -148,7 +141,7 @@ TEST(MakeAliasComponent, checkGracefullHandlingOfMissingTargetAttributes)
 TEST(MakeAliasComponent, checkGracefullHandlingOfMissingAliasAttributes)
 {
     perTestInit();
-    ExpectMessage e(Message::Error) ;
+    EXPECT_MSG_EMIT(Error) ;
 
     string scene =
         "<?xml version='1.0'?>                                               "
@@ -172,7 +165,8 @@ TEST(MakeAliasComponent, checkGracefullHandlingOfMissingAliasAttributes)
 TEST(MakeAliasComponent, checkGracefullHandlingOfInvalidTargetName)
 {
     perTestInit();
-    ExpectMessage e(Message::Error) ;
+    EXPECT_MSG_EMIT(Error) ;
+
 
     string scene =
         "<?xml version='1.0'?>                                               \n"
@@ -196,7 +190,7 @@ TEST(MakeAliasComponent, checkGracefullHandlingOfInvalidTargetName)
 
 TEST(MakeAliasComponent, checkValidBehavior)
 {
-    MessageAsTestFailure check(Message::Error) ;
+    EXPECT_MSG_NOEMIT(Error) ;
 
     string scene =
         "<?xml version='1.0'?>                                               \n"

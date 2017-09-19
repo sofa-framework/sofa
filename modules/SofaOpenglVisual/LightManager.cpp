@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -43,8 +40,9 @@ using sofa::component::visualmodel::OglTexture ;
 using sofa::core::objectmodel::BaseContext ;
 using sofa::core::RegisterObject ;
 
-using sofa::defaulttype::Vec4f ;
 using sofa::defaulttype::Mat ;
+
+using sofa::helper::types::RGBAColor ;
 
 namespace sofa
 {
@@ -71,7 +69,7 @@ int LightManagerClass = RegisterObject
 LightManager::LightManager()
     : d_shadowsEnabled(initData(&d_shadowsEnabled, (bool) false, "shadows", "Enable Shadow in the scene. (default=0)"))
     , d_softShadowsEnabled(initData(&d_softShadowsEnabled, (bool) false, "softShadows", "If Shadows enabled, Enable Variance Soft Shadow in the scene. (default=0)"))
-    , d_ambient(initData(&d_ambient, Vec4f(0.0f,0.0f,0.0f,0.0f), "ambient", "Ambient lights contribution (Vec4f)(default=[0.0f,0.0f,0.0f,0.0f])"))
+    , d_ambient(initData(&d_ambient, RGBAColor::black(), "ambient", "Ambient lights contribution (Vec4f)(default=[0.0f,0.0f,0.0f,0.0f])"))
     , d_drawIsEnabled(initData(&d_drawIsEnabled, false, "debugDraw", "enable/disable drawing of lights shadow textures. (default=false)"))
 {
     //listen by default, in order to get the keys to activate shadows
@@ -223,7 +221,7 @@ void LightManager::makeShadowMatrix(unsigned int i)
 void LightManager::fwdDraw(core::visual::VisualParams* vp)
 {
 
-    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, d_ambient.getValue().ptr());
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, d_ambient.getValue().data());
     unsigned int id = 0;
     for (std::vector<Light::SPtr>::iterator itl = m_lights.begin(); itl != m_lights.end() ; ++itl)
     {

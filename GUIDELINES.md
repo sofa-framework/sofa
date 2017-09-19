@@ -126,6 +126,6 @@ More info about Doxygen here: https://www.stack.nl/~dimitri/doxygen/manual/index
     If you modify the component in the graph, you will see a tabulation named `Warnings` with the log of all the `serr` done by the component.
     - `sout` will display inside the console a message ONLY if the Data f_printLog is set to true.  
     If you modify the component in the graph, you will see a tabulation named `Outputs` with the log of all the `sout` done by the component
-- Use `sofa::helper::vector` and `sofa::helper::set` instead of `std::vector` and `std::set`
+- Use `sofa::helper::vector`  instead of `std::vector`
 - Only use `sofa::simulation::tree::GNode` when you need to directly use access to the children or the parent of the node. If not, use the more generic `sofa::simulation::Node`
 

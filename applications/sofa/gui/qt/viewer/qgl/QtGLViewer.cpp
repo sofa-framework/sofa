@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -13,11 +13,8 @@
 * more details.                                                               *
 *                                                                             *
 * You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* with this program. If not, see <http://www.gnu.org/licenses/>.              *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -67,7 +64,6 @@ namespace viewer
 namespace qgl
 {
 
-using std::cout;
 using std::endl;
 using namespace sofa::defaulttype;
 using namespace sofa::helper::gl;
@@ -76,10 +72,6 @@ using namespace sofa::simulation;
 
 helper::SofaViewerCreator<QtGLViewer> QtGLViewer_class("qglviewer",false);
 SOFA_DECL_CLASS ( QGLViewerGUI )
-
-
-//static bool LeftPressedForMove = false;
-//static bool RightPressedForMove = false;
 
 
 // ---------------------------------------------------------
@@ -176,15 +168,6 @@ void QtGLViewer::init(void)
 
     if (!initialized)
     {
-        //std::cout << "progname="<<sofa::gui::qt::progname<<std::endl;
-        //sofa::helper::system::SetDirectory cwd(sofa::helper::system::SetDirectory::GetProcessFullPath(sofa::gui::qt::progname));
-
-        // Define light parameters
-        //_lightPosition[0] = 0.0f;
-        //_lightPosition[1] = 10.0f;
-        //_lightPosition[2] = 0.0f;
-        //_lightPosition[3] = 1.0f;
-
         _lightPosition[0] = -0.7f;
         _lightPosition[1] = 0.3f;
         _lightPosition[2] = 0.0f;
@@ -366,7 +349,6 @@ void QtGLViewer::DrawAxis(double xpos, double ypos, double zpos,
 // ---------------------------------------------------
 void QtGLViewer::DrawBox(Real* minBBox, Real* maxBBox, Real r)
 {
-    //std::cout << "box = < " << minBBox[0] << ' ' << minBBox[1] << ' ' << minBBox[2] << " >-< " << maxBBox[0] << ' ' << maxBBox[1] << ' ' << maxBBox[2] << " >"<< std::endl;
     if (r==0.0)
         r = (Vector3(maxBBox) - Vector3(minBBox)).norm() / 500;
 #if 0
@@ -791,21 +773,8 @@ void QtGLViewer::drawScene(void)
     //update info to SofaCamera
     //TODO
 
-
-    //camera()->frame()->getMatrix( lastModelviewMatrix );
-
-    //for(int i=0 ; i<16 ;i++)
-    //	std::cout << lastModelviewMatrix[i] << " ";
-    //
-    //std::cout << std::endl;
-    //std::cout << "P " << camera()->position().x << " " << camera()->position().y << " " << camera()->position().z << " " << std::endl;
-    //std::cout << "T " << camera()->frame()->translation().x << " " << camera()->frame()->translation().y << " " << camera()->frame()->translation().z << " " << std::endl;
-    //std::cout << "Q " << camera()->orientation() << std::endl;
-    //std::cout << "R " << camera()->frame()->rotation() << " " << std::endl;
-
     if (_renderingMode == GL_RENDER)
     {
-
         DisplayOBJs();
         DisplayMenu();		// always needs to be the last object being drawn
     }
@@ -857,7 +826,6 @@ void QtGLViewer::resizeGL(int width, int height)
 
 
     QGLViewer::resizeGL( width,  height);
-    // 	    camera()->setScreenWidthAndHeight(_W,_H);
 
     // TODO: find a better fix
 #if not defined(__APPLE__)
@@ -940,10 +908,8 @@ void QtGLViewer::keyPressEvent ( QKeyEvent * e )
 
     //Tracking Mode
 
-//    std::cerr<<"QtGLViewer::keyPressEvent, get "<<e->key()<<std::endl;
     if( isControlPressed() ) // pass event to the scene data structure
     {
-//        std::cerr<<"QtGLViewer::keyPressEvent, key = "<<e->key()<<" with Control pressed "<<std::endl;
         if (groot)
         {
             sofa::core::objectmodel::KeypressedEvent keyEvent(e->key());
@@ -952,7 +918,6 @@ void QtGLViewer::keyPressEvent ( QKeyEvent * e )
     }
     else  // control the GUI
     {
-        //                            cerr<<"QtGLViewer::keyPressEvent, key = "<<e->key()<<" without Control pressed "<<endl;
         switch(e->key())
         {
         case Qt::Key_A: //axis
@@ -978,9 +943,6 @@ void QtGLViewer::keyPressEvent ( QKeyEvent * e )
 }
 
 
-
-
-
 void QtGLViewer::keyReleaseEvent ( QKeyEvent * e )
 {
 
@@ -989,37 +951,40 @@ void QtGLViewer::keyReleaseEvent ( QKeyEvent * e )
 }
 
 
-
-
-
-
 void QtGLViewer::mousePressEvent ( QMouseEvent * e )
 {
     if( ! mouseEvent(e) )
-        QGLViewer::mousePressEvent(e);
+    {
+        if ( isControlPressed() )
+            SofaViewer::mousePressEvent(e);
+        else
+            QGLViewer::mousePressEvent(e);
+    }
 }
-
-
 
 
 void QtGLViewer::mouseReleaseEvent ( QMouseEvent * e )
 {
     if( ! mouseEvent(e) )
-        QGLViewer::mouseReleaseEvent(e);
+    {
+        if (isControlPressed())
+            SofaViewer::mouseReleaseEvent(e);
+        else
+            QGLViewer::mouseReleaseEvent(e);
+    }
 }
-
-
-
 
 
 void QtGLViewer::mouseMoveEvent ( QMouseEvent * e )
 {
     if( ! mouseEvent(e) )
-        QGLViewer::mouseMoveEvent(e);
+    {
+        if ( isControlPressed() )
+            SofaViewer::mouseMoveEvent(e);
+        else
+            QGLViewer::mouseMoveEvent(e);
+    }
 }
-
-
-
 
 
 bool QtGLViewer::mouseEvent(QMouseEvent * e)

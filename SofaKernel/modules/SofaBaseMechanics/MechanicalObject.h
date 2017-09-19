@@ -1,27 +1,24 @@
 /******************************************************************************
- *       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
- *                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
- *                                                                             *
- * This library is free software; you can redistribute it and/or modify it     *
- * under the terms of the GNU Lesser General Public License as published by    *
- * the Free Software Foundation; either version 2.1 of the License, or (at     *
- * your option) any later version.                                             *
- *                                                                             *
- * This library is distributed in the hope that it will be useful, but WITHOUT *
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
- * for more details.                                                           *
- *                                                                             *
- * You should have received a copy of the GNU Lesser General Public License    *
- * along with this library; if not, write to the Free Software Foundation,     *
- * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
- *******************************************************************************
- *                               SOFA :: Modules                               *
- *                                                                             *
- * Authors: The SOFA Team and external contributors (see Authors.txt)          *
- *                                                                             *
- * Contact information: contact@sofa-framework.org                             *
- ******************************************************************************/
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 #ifndef SOFA_COMPONENT_MECHANICALOBJECT_H
 #define SOFA_COMPONENT_MECHANICALOBJECT_H
 #include "config.h"
@@ -40,7 +37,9 @@
 #include <vector>
 #include <fstream>
 
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
 #include <SofaBaseTopology/TopologyData.h>
+#endif // SOFA_HAVE_NEW_TOPOLOGYCHANGES
 
 namespace sofa
 {
@@ -386,7 +385,9 @@ public:
     virtual void resetConstraint(const core::ExecParams* params);
 
     virtual void getConstraintJacobian(const core::ExecParams* params, sofa::defaulttype::BaseMatrix* J,unsigned int & off);
-
+#if(SOFA_WITH_EXPERIMENTAL_FEATURES==1)
+    virtual void buildIdentityBlocksInJacobian(const sofa::helper::vector<unsigned int>& list_n, core::MatrixDerivId &mID);
+#endif
     /// @}
 
     /// @name Debug
@@ -482,40 +483,40 @@ protected :
 };
 
 #ifndef SOFA_FLOAT
-template<>
+template<> SOFA_BASE_MECHANICS_API
 void MechanicalObject<defaulttype::Rigid3dTypes>::applyRotation (const defaulttype::Quat q);
 #endif
 #ifndef SOFA_DOUBLE
-template<>
+template<> SOFA_BASE_MECHANICS_API
 void MechanicalObject<defaulttype::Rigid3fTypes>::applyRotation (const defaulttype::Quat q);
 #endif
 #ifndef SOFA_FLOAT
-template<>
+template<> SOFA_BASE_MECHANICS_API
 void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset );
 #endif
 #ifndef SOFA_DOUBLE
-template<>
+template<> SOFA_BASE_MECHANICS_API
 void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorSameSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset );
 #endif
 
 #ifndef SOFA_FLOAT
-template<>
+template<> SOFA_BASE_MECHANICS_API
 void MechanicalObject<defaulttype::Rigid3dTypes>::addFromBaseVectorDifferentSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset );
 #endif
 #ifndef SOFA_DOUBLE
-template<>
+template<> SOFA_BASE_MECHANICS_API
 void MechanicalObject<defaulttype::Rigid3fTypes>::addFromBaseVectorDifferentSize(core::VecId dest, const defaulttype::BaseVector* src, unsigned int &offset );
 #endif
 
 #ifndef SOFA_FLOAT
-template<>
+template<> SOFA_BASE_MECHANICS_API
 void MechanicalObject<defaulttype::Rigid3dTypes>::draw(const core::visual::VisualParams* vparams);
 #endif
 #ifndef SOFA_DOUBLE
-template<>
+template<> SOFA_BASE_MECHANICS_API
 void MechanicalObject<defaulttype::Rigid3fTypes>::draw(const core::visual::VisualParams* vparams);
 #endif
-template<>
+template<> SOFA_BASE_MECHANICS_API
 void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::draw(const core::visual::VisualParams* vparams);
 
 

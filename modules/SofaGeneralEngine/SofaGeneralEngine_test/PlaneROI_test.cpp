@@ -1,4 +1,28 @@
+/******************************************************************************
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 #include <SofaTest/Sofa_test.h>
+#include <SofaTest/TestMessageHandler.h>
+
+
 #include <sofa/helper/BackTrace.h>
 
 #include <SofaSimulationGraph/DAGSimulation.h>
@@ -114,7 +138,7 @@ struct PlaneROI_test : public Sofa_test<typename _DataTypes::Real>,
         m_node2->getChild("node")->getObject("PlaneROI")->init();
 
         EXPECT_EQ(m_node2->getChild("node")->getObject("PlaneROI")->findData("edgeIndices")->getValueString(),"0");
-        EXPECT_EQ(m_node2->getChild("node")->getObject("PlaneROI")->findData("edgesInROI")->getValueString(),"0 1 ");
+        EXPECT_EQ(m_node2->getChild("node")->getObject("PlaneROI")->findData("edgesInROI")->getValueString(),"0 1");
     }
 
 
@@ -126,7 +150,7 @@ struct PlaneROI_test : public Sofa_test<typename _DataTypes::Real>,
         m_node2->getChild("node")->getObject("PlaneROI")->init();
 
         EXPECT_EQ(m_node2->getChild("node")->getObject("PlaneROI")->findData("triangleIndices")->getValueString(),"0");
-        EXPECT_EQ(m_node2->getChild("node")->getObject("PlaneROI")->findData("trianglesInROI")->getValueString(),"0 1 2 ");
+        EXPECT_EQ(m_node2->getChild("node")->getObject("PlaneROI")->findData("trianglesInROI")->getValueString(),"0 1 2");
     }
 
 
@@ -138,7 +162,7 @@ struct PlaneROI_test : public Sofa_test<typename _DataTypes::Real>,
         m_node2->getChild("node")->getObject("PlaneROI")->init();
 
         EXPECT_EQ(m_node2->getChild("node")->getObject("PlaneROI")->findData("tetrahedronIndices")->getValueString(),"0");
-        EXPECT_EQ(m_node2->getChild("node")->getObject("PlaneROI")->findData("tetrahedraInROI")->getValueString(),"0 1 2 3 ");
+        EXPECT_EQ(m_node2->getChild("node")->getObject("PlaneROI")->findData("tetrahedraInROI")->getValueString(),"0 1 2 3");
     }
 };
 
@@ -148,26 +172,32 @@ typedef Types<Vec3Types> DataTypes;
 TYPED_TEST_CASE(PlaneROI_test, DataTypes);
 
 TYPED_TEST(PlaneROI_test, attributesTests) {
+    EXPECT_MSG_NOEMIT(Error) ;
     ASSERT_NO_THROW(this->attributesTests()) ;
 }
 
 TYPED_TEST(PlaneROI_test, initTest) {
+    EXPECT_MSG_NOEMIT(Error) ;
     ASSERT_NO_THROW(this->initTest()) ;
 }
 
 TYPED_TEST(PlaneROI_test, isPointInPlaneTest) {
+    EXPECT_MSG_NOEMIT(Error) ;
     ASSERT_NO_THROW(this->isPointInPlaneTest()) ;
 }
 
 TYPED_TEST(PlaneROI_test, isEdgeInPlaneTest) {
+    EXPECT_MSG_NOEMIT(Error) ;
     ASSERT_NO_THROW(this->isEdgeInPlaneTest()) ;
 }
 
 TYPED_TEST(PlaneROI_test, isTriangleInPlaneTest) {
+    EXPECT_MSG_NOEMIT(Error) ;
     ASSERT_NO_THROW(this->isTriangleInPlaneTest()) ;
 }
 
 TYPED_TEST(PlaneROI_test, isTetrahedraInPlaneTest) {
+    EXPECT_MSG_NOEMIT(Error) ;
     ASSERT_NO_THROW(this->isTetrahedraInPlaneTest()) ;
 }
 

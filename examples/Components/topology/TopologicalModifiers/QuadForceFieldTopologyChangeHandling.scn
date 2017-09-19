@@ -8,7 +8,7 @@
     <TreeCollisionGroupManager name="default2" />
 
     <Node name="QuadularSprings">
-        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <RegularGrid name="grid" nx="20" ny="1" nz="20" xmin="12" xmax="-12" ymin="7" ymax="7" zmin="-12" zmax="12" />
         <MechanicalObject src="@grid"/>

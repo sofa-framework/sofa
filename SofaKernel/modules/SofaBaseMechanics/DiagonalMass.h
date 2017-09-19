@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -100,7 +97,7 @@ public:
     typedef typename DiagonalMassInternalData<DataTypes,TMassType>::MassVector MassVector;
     typedef typename DiagonalMassInternalData<DataTypes,TMassType>::GeometricalTypes GeometricalTypes;
 
-    VecMass f_mass;
+    VecMass d_mass;
 
     typedef core::topology::BaseMeshTopology::Point Point;
     typedef core::topology::BaseMeshTopology::Edge Edge;
@@ -178,20 +175,20 @@ public:
     protected:
         DiagonalMass<DataTypes,TMassType>* dm;
     };
-    DMassPointHandler* pointHandler;
+    DMassPointHandler* m_pointHandler;
     /// the mass density used to compute the mass from a mesh topology and geometry
-    Data< Real > m_massDensity;
+    Data< Real > d_massDensity;
 
     /// if true, the mass of every element is computed based on the rest position rather than the position
-    Data< bool > m_computeMassOnRest;
+    Data< bool > d_computeMassOnRest;
 
     /// total mass of the object
-    Data< Real > m_totalMass;
+    Data< Real > d_totalMass;
 
     /// to display the center of gravity of the system
-    Data< bool > showCenterOfGravity;
-    Data< float > showAxisSize;
-    core::objectmodel::DataFileName fileMass;
+    Data< bool > d_showCenterOfGravity;
+    Data< float > d_showAxisSize;
+    core::objectmodel::DataFileName d_fileMass;
 
 protected:
     ////////////////////////// Inherited attributes ////////////////////////////
@@ -207,7 +204,7 @@ protected:
 
     class Loader;
     /// The type of topology to build the mass from the topology
-    TopologyType topologyType;
+    TopologyType m_topologyType;
 
 
 public:
@@ -234,11 +231,12 @@ public:
 
     TopologyType getMassTopologyType() const
     {
-        return topologyType;
+        return m_topologyType;
     }
+
     Real getMassDensity() const
     {
-        return m_massDensity.getValue();
+        return d_massDensity.getValue();
     }
 
 protected:
@@ -248,11 +246,11 @@ public:
 
     void setMassDensity(Real m)
     {
-        m_massDensity.setValue(m);
+        d_massDensity.setValue(m);
     }
 
-    SReal getTotalMass() const { return m_totalMass.getValue(); }
-    int getMassCount() { return f_mass.getValue().size(); }
+    SReal getTotalMass() const { return d_totalMass.getValue(); }
+    int getMassCount() { return d_mass.getValue().size(); }
 
 
     void addMass(const MassType& mass);

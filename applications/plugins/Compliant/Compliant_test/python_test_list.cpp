@@ -1,24 +1,15 @@
 #include <SofaTest/Python_test.h>
 
-
 namespace sofa {
 
 
-// static build of the test list
-static struct Tests : public Python_test_list
-{
-    Tests()
-    {
-        static const std::string scenePath = std::string(COMPLIANT_TEST_PYTHON_DIR);
 
-        addTest( "Example.py", scenePath );
-        addTest( "LambdaPropagation.py", scenePath );
-        addTest( "UniformCompliance.py", scenePath );
-        addTest( "AffineMultiMapping.py", scenePath );
-        addTest( "restitution.py", scenePath );
-        addTest( "friction.py", scenePath );
 
-        // add python tests here
+// these are sofa scenes
+static struct Tests : public Python_test_list {
+    Tests() {
+        addTestDir(COMPLIANT_TEST_PYTHON_DIR, "scene_");
+        
     }
 } tests;
 
@@ -30,6 +21,7 @@ INSTANTIATE_TEST_CASE_P(Batch,
 
 TEST_P(Python_scene_test, sofa_python_scene_tests)
 {
+    max_steps *= 10; // scene_friction.py test requires tons of steps
     run(GetParam());
 }
 
@@ -39,16 +31,10 @@ TEST_P(Python_scene_test, sofa_python_scene_tests)
 ////////////////////////
 
 
-// static build of the test list
-static struct Tests2 : public Python_test_list
-{
-    Tests2()
-    {
-        static const std::string testPath = std::string(COMPLIANT_TEST_PYTHON_DIR);
-
-        addTest( "GenerateRigid.py", testPath );
-
-        // add pure python tests here
+// these are just python files loaded in the sofa python environment (paths...)
+static struct Tests2 : public Python_test_list {
+    Tests2() {
+        addTestDir(COMPLIANT_TEST_PYTHON_DIR, "test_");
     }
 } tests2;
 

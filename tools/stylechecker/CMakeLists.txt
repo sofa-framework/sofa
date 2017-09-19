@@ -64,14 +64,15 @@ target_link_libraries(stylecheck.exe
 
 # LLVM dependencies.
 target_link_libraries(stylecheck.exe
-  LLVMTransformUtils
-  LLVMTarget
-  LLVMMC # Object, Support
-  LLVMMCParser # MC, Support
-  LLVMObject # Support
-  LLVMCore # Support
+  #LLVMSupport
+  #LLVMTransformUtils
+  #LLVMMC # Object, Support
+  #LLVMMCParser # MC, Support
+  #LLVMObject # Support
+  #LLVMCore # Support
+  #LLVMBitReader
+  #LLVMScalarOpts
   LLVMSupport
-  LLVMBitReader
   LLVMOption
 )
 

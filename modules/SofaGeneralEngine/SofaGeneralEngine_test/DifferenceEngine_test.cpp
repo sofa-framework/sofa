@@ -1,4 +1,28 @@
+/******************************************************************************
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 #include <SofaTest/Sofa_test.h>
+#include <SofaTest/TestMessageHandler.h>
+
+
 #include <sofa/helper/BackTrace.h>
 
 #include <SofaSimulationGraph/DAGSimulation.h>
@@ -80,19 +104,22 @@ struct DifferenceEngine_test : public Sofa_test<typename _DataTypes::value_type>
 };
 
 using testing::Types;
-typedef Types<defaulttype::Vec3d> DataTypes;
+typedef Types<defaulttype::Vector3> DataTypes;
 
 TYPED_TEST_CASE(DifferenceEngine_test, DataTypes);
 
 TYPED_TEST(DifferenceEngine_test, NormalBehavior) {
+    EXPECT_MSG_NOEMIT(Error) ;
     ASSERT_NO_THROW(this->normalTests()) ;
 }
 
 TYPED_TEST(DifferenceEngine_test, UpdateTest) {
+    EXPECT_MSG_NOEMIT(Error) ;
     ASSERT_NO_THROW(this->updateTest()) ;
 }
 
 TYPED_TEST(DifferenceEngine_test, DataTest) {
+    EXPECT_MSG_NOEMIT(Error) ;
     ASSERT_NO_THROW(this->dataTest()) ;
 }
 

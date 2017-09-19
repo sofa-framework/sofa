@@ -4,7 +4,7 @@
 <RequiredPlugin name="Compliant" pluginName="Compliant" />
 <Node 	name="complianceSolverScene" >
 <!--    <ComplianceSolver verbose="0" implicitVelocity="1" implicitPosition="1"/>-->
-<!--    <EulerImplicitSolver verbose="0" /> <CGSolver verbose="0" tolerance="1.0e-9" threshold="1.0e-9"/>-->
+<!--    <EulerImplicitSolver verbose="0"  rayleighStiffness="0.1" rayleighMass="0.1" /> <CGSolver verbose="0" tolerance="1.0e-9" threshold="1.0e-9"/>-->
     <EulerSolver />
     <MechanicalObject template="Vec3d" position="0 0 0   1 0 0 " name="particleDOFs" />
     <FixedConstraint template="Vec3d" indices="0" />

@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
-* Software Foundation; either version 2 of the License, or (at your option)   *
-* any later version.                                                          *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
 *                                                                             *
 * This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
-* more details.                                                               *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
 *                                                                             *
-* You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -54,24 +51,13 @@ using sofa::core::objectmodel::BaseData ;
 using sofa::core::objectmodel::New ;
 using sofa::core::ExecParams ;
 using sofa::component::container::MechanicalObject ;
-using sofa::defaulttype::Vec3dTypes ;
+using sofa::defaulttype::Vec3Types ;
 
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 
 #include <sofa/helper/logging/Message.h>
 using sofa::helper::logging::MessageDispatcher ;
-
-#include <sofa/helper/logging/ClangMessageHandler.h>
-using sofa::helper::logging::ClangMessageHandler ;
-
-int initMessage(){
-    MessageDispatcher::clearHandlers() ;
-    //MessageDispatcher::addHandler(new ClangMessageHandler()) ;
-    return 0;
-}
-int messageInited = initMessage();
-
 
 template <typename TDataType>
 struct BoxROITest :  public ::testing::Test
@@ -107,7 +93,7 @@ struct BoxROITest :  public ::testing::Test
         /// List of the supported attributes the user expect to find
         /// This list needs to be updated if you add an attribute.
         vector<string> attrnames = {
-            "box",
+            "box", "orientedBox",
             "position", "edges",  "triangles", "tetrahedra", "hexahedra", "quad",
             "computeEdges", "computeTriangles", "computeTetrahedra", "computeHexahedra", "computeQuad",
             "indices", "edgeIndices", "triangleIndices", "tetrahedronIndices", "hexahedronIndices",
@@ -271,7 +257,7 @@ struct BoxROITest :  public ::testing::Test
         m_boxroi->update();
 
         EXPECT_EQ(m_boxroi->findData("edgeIndices")->getValueString(),"0");
-        EXPECT_EQ(m_boxroi->findData("edgesInROI")->getValueString(),"0 1 ");
+        EXPECT_EQ(m_boxroi->findData("edgesInROI")->getValueString(),"0 1");
     }
 
 
@@ -284,7 +270,7 @@ struct BoxROITest :  public ::testing::Test
         m_boxroi->update();
 
         EXPECT_EQ(m_boxroi->findData("triangleIndices")->getValueString(),"0");
-        EXPECT_EQ(m_boxroi->findData("trianglesInROI")->getValueString(),"0 1 2 ");
+        EXPECT_EQ(m_boxroi->findData("trianglesInROI")->getValueString(),"0 1 2");
     }
 
 
@@ -297,7 +283,91 @@ struct BoxROITest :  public ::testing::Test
         m_boxroi->update();
 
         EXPECT_EQ(m_boxroi->findData("tetrahedronIndices")->getValueString(),"0");
-        EXPECT_EQ(m_boxroi->findData("tetrahedraInROI")->getValueString(),"0 1 2 3 ");
+        EXPECT_EQ(m_boxroi->findData("tetrahedraInROI")->getValueString(),"0 1 2 3");
+    }
+
+
+    /// Test isPointInOrientedBox computation with a simple example
+    void isPointInOrientedBoxTest()
+    {
+        m_boxroi->findData("box")->read("0. 0. 0. 0. 0. 0.");
+        m_boxroi->findData("orientedBox")->read("2 0 0  0 0 0  2 2 2 2");
+        m_boxroi->findData("position")->read("1. 0. 0.   1. 0. 1.   0. 0. 1.");
+        m_boxroi->init();
+
+        EXPECT_EQ(m_boxroi->findData("indices")->getValueString(),"0 1");
+    }
+
+
+    /// Test isEdgeInOrientedBox computation with a simple example
+    void isEdgeInOrientedBoxTest()
+    {
+        m_boxroi->findData("box")->read("0. 0. 0. 0. 0. 0.");
+        m_boxroi->findData("orientedBox")->read("2 0 0  0 0 0  2 2 2  2");
+        m_boxroi->findData("position")->read("0. 0. 0.   1. 0. 1.   0. 0. 1.");
+        m_boxroi->findData("edges")->read("0 1 0 2");
+        m_boxroi->init();
+
+        EXPECT_EQ(m_boxroi->findData("edgeIndices")->getValueString(),"0");
+        EXPECT_EQ(m_boxroi->findData("edgesInROI")->getValueString(),"0 1");
+    }
+
+
+    /// Test isTriangleInOrientedBox computation with a simple example
+    void isTriangleInOrientedBoxTest()
+    {
+        m_boxroi->findData("box")->read("0. 0. 0. 0. 0. 0.");
+        m_boxroi->findData("orientedBox")->read("2 0 0  0 0 0  2 2 2  2");
+        m_boxroi->findData("position")->read("0. 0. 0.   1. 0. 0.   1. 1. 0.  0. 0. -1.");
+        m_boxroi->findData("triangles")->read("0 1 2 0 3 1");
+        m_boxroi->init();
+
+        EXPECT_EQ(m_boxroi->findData("triangleIndices")->getValueString(),"0");
+        EXPECT_EQ(m_boxroi->findData("trianglesInROI")->getValueString(),"0 1 2");
+    }
+
+
+    /// Test isTetrahedraInOrientedBox computation with a simple example
+    void isTetrahedraInOrientedBoxTest()
+    {
+        m_boxroi->findData("box")->read("0. 0. 0. 0. 0. 0.");
+        m_boxroi->findData("orientedBox")->read("2 0 0  0 0 0  2 2 2 2");
+        m_boxroi->findData("position")->read("0. 0. 0.   1. 0. 0.    1. 1. 0.   1. 0. 1.   0. 0. -2.");
+        m_boxroi->findData("tetrahedra")->read("0 1 2 3 0 1 2 4");
+        m_boxroi->init();
+
+        EXPECT_EQ(m_boxroi->findData("tetrahedronIndices")->getValueString(),"0");
+        EXPECT_EQ(m_boxroi->findData("tetrahedraInROI")->getValueString(),"0 1 2 3");
+    }
+
+
+    /// Test isTetrahedraInOrientedBox computation with a simple example
+    void isPointInBoxesTest()
+    {
+        m_boxroi->findData("box")->read("0. 0. 0. 1. 1. 1.  0. 0. 0. -1 -1 -1");
+        m_boxroi->findData("orientedBox")->read("3 0 0  1 0 0  3 2 2  2    -3 0 0  -1 0 0  -3 -2 -2  2");
+        m_boxroi->findData("position")->read("1. 0. 0.   -1. 0. 0.   2. 0. 0.   -2. 0. 0.  1. -1. 0.  -1. 1. 0.");
+        m_boxroi->init();
+
+        EXPECT_EQ(m_boxroi->findData("indices")->getValueString(),"0 1 2 3");
+    }
+
+
+    /// Test computeBBox computation with a simple example
+    void computeBBoxTest()
+    {
+        m_boxroi->findData("box")->read("-1. -1. -1.  0. 0. 0.   1. 1. 1.  2. 2. 2.");
+        m_boxroi->computeBBox(NULL, false);
+
+        EXPECT_EQ(m_boxroi->f_bbox.getValue().minBBox(), Vec3d(-1,-1,-1));
+        EXPECT_EQ(m_boxroi->f_bbox.getValue().maxBBox(), Vec3d(2,2,2));
+
+        m_boxroi->findData("box")->read("-1. -1. -1.  0. 0. 0.");
+        m_boxroi->findData("orientedBox")->read("0 0 0  2 0 0  2 2 0 2");
+        m_boxroi->computeBBox(NULL, false);
+
+        EXPECT_EQ(m_boxroi->f_bbox.getValue().minBBox(), Vec3d(-1,-1,-1));
+        EXPECT_EQ(m_boxroi->f_bbox.getValue().maxBBox(), Vec3d(2,2,1));
     }
 
 };
@@ -360,4 +430,28 @@ TYPED_TEST(BoxROITest, isTetrahedraInBoxTest) {
     ASSERT_NO_THROW(this->isTetrahedraInBoxTest()) ;
 }
 
+
+TYPED_TEST(BoxROITest, isPointInOrientedBoxTest) {
+    ASSERT_NO_THROW(this->isPointInOrientedBoxTest()) ;
+}
+
+TYPED_TEST(BoxROITest, isEdgeInOrientedBoxTest) {
+    ASSERT_NO_THROW(this->isEdgeInOrientedBoxTest()) ;
+}
+
+TYPED_TEST(BoxROITest, isTriangleInOrientedBoxTest) {
+    ASSERT_NO_THROW(this->isTriangleInOrientedBoxTest()) ;
+}
+
+TYPED_TEST(BoxROITest, isTetrahedraInOrientedBoxTest) {
+    ASSERT_NO_THROW(this->isTetrahedraInOrientedBoxTest()) ;
+}
+
+TYPED_TEST(BoxROITest, isPointInBoxesTest) {
+    ASSERT_NO_THROW(this->isPointInBoxesTest()) ;
+}
+
+TYPED_TEST(BoxROITest, computeBBoxTest) {
+    ASSERT_NO_THROW(this->computeBBoxTest()) ;
+}
 

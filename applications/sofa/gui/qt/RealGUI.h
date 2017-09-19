@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -13,11 +13,8 @@
 * more details.                                                               *
 *                                                                             *
 * You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* with this program. If not, see <http://www.gnu.org/licenses/>.              *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -45,6 +42,8 @@
 #include <QDockWidget>
 
 #include <time.h>
+
+#include <sofa/helper/system/FileMonitor.h>
 
 // Recorder GUI is not used (broken in most scenes)
 #define SOFA_GUI_QT_NO_RECORDER
@@ -247,10 +246,13 @@ public:
     virtual int mainLoop();
     virtual int closeGUI();
     virtual sofa::simulation::Node* currentSimulation();
-    virtual void fileOpen(std::string filename, bool temporaryFile=false);
+    virtual void fileOpen(std::string filename, bool temporaryFile=false, bool reload=false);
+
     // virtual void fileOpen();
     virtual void fileOpenSimu(std::string filename);
     virtual void setScene(Node::SPtr groot, const char* filename=NULL, bool temporaryFile=false);
+    virtual void setSceneWithoutMonitor(Node::SPtr groot, const char* filename=NULL, bool temporaryFile=false);
+
     virtual void unloadScene(bool _withViewer = true);
 
     virtual void setTitle( std::string windowTitle );
@@ -260,7 +262,7 @@ public:
     virtual void setViewerResolution(int w, int h);
     virtual void setFullScreen() { setFullScreen(true); }
     virtual void setFullScreen(bool enable);
-    virtual void setBackgroundColor(const defaulttype::Vector3& c);
+    virtual void setBackgroundColor(const defaulttype::RGBAColor& c);
     virtual void setBackgroundImage(const std::string& i);
     virtual void setViewerConfiguration(sofa::component::configurationsetting::ViewerSetting* viewerConf);
     virtual void setMouseButtonConfiguration(sofa::component::configurationsetting::MouseButtonSetting *button);
@@ -331,6 +333,7 @@ protected:
 
     sofa::simulation::Node::SPtr mSimulation;
 
+    sofa::helper::system::FileEventListener* m_filelistener {nullptr};
 private:
     void addViewer();//? where is the implementation ?
 
@@ -391,7 +394,7 @@ public slots:
     virtual void currentTabChanged(int index);
 
     virtual void fileNew();
-    virtual void fileOpen();
+    virtual void popupOpenFileSelector();
     virtual void fileReload();
     virtual void fileSave();
     virtual void fileExit();
@@ -454,7 +457,7 @@ struct ActivationFunctor
             desact_text.remove(QString("Deactivated "), Qt::CaseInsensitive);
             item->setText(0,desact_text);
             //Remove the icon
-            QPixmap *p = getPixmap(n);
+            QPixmap *p = getPixmap(n, false,false, false);
             item->setIcon(0, QIcon(*p));
 //            item->setOpen(true);
             item->setExpanded(true);

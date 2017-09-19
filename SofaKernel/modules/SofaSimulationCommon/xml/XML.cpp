@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -335,11 +332,11 @@ BaseElement* loadFromFile(const char *filename)
     }
 
     BaseElement* r = processXMLLoading(filename, *doc);
-    //std::cerr << "clear doc"<<std::endl;
+    //dmsg_error("XML") << "clear doc";
     doc->Clear();
-    //std::cerr << "delete doc"<<std::endl;
+    //dmsg_error("XML") << "delete doc";
     delete doc;
-    //std::cerr << "<loadFromFile"<<std::endl;
+    //dmsg_error("XML") << "<loadFromFile";
     return r;
 }
 
@@ -514,15 +511,13 @@ BaseElement* createNode(xmlNodePtr root, const char *basefilename, bool isRoot =
         node = BaseElement::Create(classType,name,type);
         if (node==NULL)
         {
-            std::cerr << "Node "<<root->name<<" name "<<name<<" type "<<type<<" creation failed.\n";
+            msg_error("XML") << "Node "<<root->name<<" name "<<name<<" type "<<type<<" creation failed.";
             return NULL;
         }
     }
 
     if (isRoot)
         node->setBaseFile( basefilename );
-
-    //std::cout << "Node "<<root->name<<" name "<<name<<" type "<<type<<" created.\n";
 
     // List attributes
     for (xmlAttrPtr attr = root->properties; attr!=NULL; attr = attr->next)
@@ -548,8 +543,8 @@ BaseElement* createNode(xmlNodePtr root, const char *basefilename, bool isRoot =
             {
                 if (!node->addChild(childnode))
                 {
-                    std::cerr << "Node "<<childnode->getClass()<<" name "<<childnode->getName()<<" type "<<childnode->getType()
-                            <<" cannot be a child of node "<<node->getClass()<<" name "<<node->getName()<<" type "<<node->getType()<<std::endl;
+                    msg_info("XML") << "Node "<<childnode->getClass()<<" name "<<childnode->getName()<<" type "<<childnode->getType()
+                            <<" cannot be a child of node "<<node->getClass()<<" name "<<node->getName()<<" type "<<node->getType();
                     delete childnode;
                 }
             }
@@ -580,7 +575,7 @@ BaseElement* processXMLLoading(const char *filename, const xmlDocPtr &doc)
 
     if (doc == NULL)
     {
-        std::cerr << "Failed to open " << filename << std::endl;
+        msg_info("XML") << "Failed to open '" << filename << "'";
         return NULL;
     }
 
@@ -588,28 +583,23 @@ BaseElement* processXMLLoading(const char *filename, const xmlDocPtr &doc)
 
     if (root == NULL)
     {
-        std::cerr << "empty document" << std::endl;
+        msg_info("XML") << "empty document.";
         xmlFreeDoc(doc);
         return NULL;
     }
 
-    //std::cout << "Creating XML graph"<<std::endl;
     std::string basefilename =
         sofa::helper::system::SetDirectory::GetRelativeFromDir(filename,sofa::helper::system::SetDirectory::GetCurrentDir().c_str());
     BaseElement* graph = createNode(root, basefilename.c_str(), true);
-    //std::cout << "XML Graph created"<<std::endl;
     xmlFreeDoc(doc);
     xmlCleanupParser();
     xmlMemoryDump();
 
     if (graph == NULL)
     {
-        std::cerr << "XML Graph creation failed."<<std::endl;
+        msg_info("XML") << "XML Graph creation failed.";
         return NULL;
     }
-
-    //print the graph scene
-    //dumpNode(graph);
 
     return graph;
 }
@@ -663,7 +653,7 @@ BaseElement* includeNode(xmlNodePtr root,const char *basefilename)
     }
     if (filename.empty())
     {
-        std::cerr << "ERROR: xml include tag requires non empty filename or href attribute." << std::endl;
+        msg_info("XML") << "Xml include tag requires non empty filename or href attribute.";
         return NULL;
     }
     /*  std::cout << "XML: Including external file " << filename << " from " << basefilename << std::endl;*/
@@ -672,14 +662,14 @@ BaseElement* includeNode(xmlNodePtr root,const char *basefilename)
     doc = xmlParseFile(filename.c_str());
     if (doc == NULL)
     {
-        std::cerr << "ERROR: Failed to parse " << filename << std::endl;
+        msg_info("XML") << "Failed to parse '" << filename << "'" ;
         return NULL;
     }
 
     xmlNodePtr newroot = xmlDocGetRootElement(doc);
     if (newroot == NULL)
     {
-        std::cerr << "ERROR: empty document in " << filename << std::endl;
+        msg_info("XML") << "Empty document in '" << filename << "'";
         xmlFreeDoc(doc);
         return NULL;
     }

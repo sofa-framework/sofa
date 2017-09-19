@@ -1,1 +1,1 @@
-gravity.scn 5 0
+gravity.scn 100 1e-4

@@ -349,6 +349,9 @@ void AssemblyVisitor::fill_prefix(simulation::Node* node) {
 
         // compliance
 		c.C = compliance( node );
+        assert(!c.C || c.C->rows() == int(c.size));
+        assert(!c.C || c.C->cols() == int(c.size));
+
         if( notempty(c.C) ) {
 			c.mechanical = true;
 		}
@@ -815,7 +818,8 @@ void AssemblyVisitor::assemble(system_type& res) const {
 
                 // Note this is a pointer (no copy for matrices that are already in the right type i.e. EigenBaseSparseMatrix<SReal>)
                 helper::OwnershipSPtr<rmat> C( convertSPtr<rmat>( c.C ) );
-
+                
+                    
                 // fetch projector and constraint value if any
                 AssembledSystem::constraint_type constraint;
                 constraint.projector = c.dofs->getContext()->get<component::linearsolver::Constraint>( core::objectmodel::BaseContext::Local );
@@ -840,7 +844,9 @@ void AssemblyVisitor::assemble(system_type& res) const {
 				res.J.middleRows(off_c, c.size) = Jc;
 
                 // compliance
-                if( !zero( *C ) ) add_C(*C, off_c, c_factor);
+                if( !zero( *C ) ) {
+                    add_C(*C, off_c, c_factor);
+                }
                 
 				off_c += c.size;
 			}

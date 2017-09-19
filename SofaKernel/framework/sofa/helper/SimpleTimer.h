@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -113,7 +110,6 @@ public:
     {
         if (timer_nstep >= T_NSTEPS) return;
         int i = timer_nstep;
-        //if (timer_niter == 0)
         {
             timers_name[i] = timer_lastname;
             timer_lastname = name;
@@ -136,21 +132,21 @@ public:
         timers_start = t;
         if (timer_niter > 0 && (timer_niter % T_NITERS) == 0)
         {
-            std::cout << "TIMER after " << timer_niter << " iterations :" << std::endl;
+            std::stringstream tmpmsg ;
+            tmpmsg << "TIMER after " << timer_niter << " iterations :" << msgendl;
             for (int i=0; i<T_NSTEPS; ++i)
             {
                 if (timers_total[i])
                 {
                     double tcur = 1000.0 * (double)timers_current[i] / (double) timer_freq;
                     double ttot = 1000.0 * (double)timers_total[i] / (double) (timer_niter * timer_freq);
-                    std::cout << "  " << i << ". " << timers_name[i] << "\t : " << std::fixed << (tcur < 10 ? "   " : tcur < 100 ? "  " : tcur < 1000 ? " " : "") << tcur << " \tms  ( mean " << (ttot < 10 ? "   " : ttot < 100 ? "  " : ttot < 1000 ? " " : "") << ttot << " \tms ) " << std::endl;
+                    tmpmsg << "  " << i << ". " << timers_name[i] << "\t : " << std::fixed << (tcur < 10 ? "   " : tcur < 100 ? "  " : tcur < 1000 ? " " : "") << tcur << " \tms  ( mean " << (ttot < 10 ? "   " : ttot < 100 ? "  " : ttot < 1000 ? " " : "") << ttot << " \tms ) " << msgendl;
                 }
             }
-            {
-                double tcur = 1000.0 * (double)timer_current / (double) timer_freq;
-                double ttot = 1000.0 * (double)timer_total / (double) (timer_niter * timer_freq);
-                std::cout << "** TOTAL *********\t : " << std::fixed << (tcur < 10 ? "   " : tcur < 100 ? "  " : tcur < 1000 ? " " : "") << tcur << " \tms  ( mean " << (ttot < 10 ? "   " : ttot < 100 ? "  " : ttot < 1000 ? " " : "") << ttot << " \tms ) " << std::endl;
-            }
+            double tcur = 1000.0 * (double)timer_current / (double) timer_freq;
+            double ttot = 1000.0 * (double)timer_total / (double) (timer_niter * timer_freq);
+            tmpmsg << "** TOTAL *********\t : " << std::fixed << (tcur < 10 ? "   " : tcur < 100 ? "  " : tcur < 1000 ? " " : "") << tcur << " \tms  ( mean " << (ttot < 10 ? "   " : ttot < 100 ? "  " : ttot < 1000 ? " " : "") << ttot << " \tms ) " ;
+            msg_info("SimpleTimer") << tmpmsg.str() ;
         }
     }
 };

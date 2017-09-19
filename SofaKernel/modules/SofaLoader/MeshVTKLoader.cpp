@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -201,6 +198,8 @@ bool MeshVTKLoader::setInputsMesh()
     helper::vector<Tetrahedron >& my_tetrahedra = *(d_tetrahedra.beginEdit());
     helper::vector<Hexahedron >& my_hexahedra = *(d_hexahedra.beginEdit());
 
+    helper::vector<HighOrderEdgePosition >& my_highOrderEdgePositions = *(d_highOrderEdgePositions.beginEdit());
+
     int errorcount = 0;
     if (reader->inputPolygons)
     {
@@ -266,6 +265,10 @@ bool MeshVTKLoader::setInputsMesh()
 
         helper::vector<int> numSubPolyLines;
 
+        const unsigned int edgesInQuadraticTriangle[3][2] = {{0,1}, {1,2}, {2,0}};
+        const unsigned int edgesInQuadraticTetrahedron[6][2] = {{0,1}, {1,2}, {0,2},{0,3},{1,3},{2,3}};
+        std::set<Edge> edgeSet;
+        size_t j;
         int nbf = reader->numberOfCells;
         int i = 0;
         for (int c = 0; c < nbf; ++c)
@@ -297,7 +300,6 @@ bool MeshVTKLoader::setInputsMesh()
                 numSubPolyLines.push_back(nv);
                 for (int v = 0; v < nv-1; ++v) {
                     addEdge(&my_edges, inFP[i+v+0], inFP[i+v+1]);
-                    //std::cout << " c = " << c << " i = " << i <<  " v = " << v << "  edge: " << inFP[i+v+0] << " " << inFP[i+v+1] << std::endl;
                 }
                 break;
             case 5: // TRIANGLE
@@ -330,6 +332,62 @@ bool MeshVTKLoader::setInputsMesh()
             case 12: // HEXAHEDRON
                 addHexahedron(&my_hexahedra, inFP[i+0], inFP[i+1], inFP[i+2], inFP[i+3],
                         inFP[i+4], inFP[i+5], inFP[i+6], inFP[i+7]);
+                break;
+            case 21: // QUADRATIC Edge
+                addEdge(&my_edges, inFP[i+0], inFP[i+1]);
+                {
+                    HighOrderEdgePosition hoep;
+                    hoep[0]= inFP[i+2];
+                    hoep[1]=my_edges.size()-1;
+                    hoep[2]=1;
+                    hoep[3]=1;
+                    my_highOrderEdgePositions.push_back(hoep);
+                }
+                break;
+            case 22: // QUADRATIC Triangle
+                addTriangle(&my_triangles,inFP[i+0], inFP[i+1], inFP[i+2]);
+                {
+                    HighOrderEdgePosition hoep;
+                    for(j=0;j<3;++j) {
+                        size_t v0=std::min( inFP[i+edgesInQuadraticTriangle[j][0]],
+                            inFP[i+edgesInQuadraticTriangle[j][1]]);
+                        size_t v1=std::max( inFP[i+edgesInQuadraticTriangle[j][0]],
+                            inFP[i+edgesInQuadraticTriangle[j][1]]);
+                        Edge e(v0,v1);
+                        if (edgeSet.find(e)==edgeSet.end()) {
+                            edgeSet.insert(e);
+                            addEdge(&my_edges, v0, v1);
+                            hoep[0]= inFP[i+j+3];
+                            hoep[1]=my_edges.size()-1;
+                            hoep[2]=1;
+                            hoep[3]=1;
+                            my_highOrderEdgePositions.push_back(hoep);
+                        }
+                    }
+                }
+
+                break;
+            case 24: // QUADRATIC Tetrahedron
+                addTetrahedron(&my_tetrahedra, inFP[i+0], inFP[i+1], inFP[i+2], inFP[i+3]);
+                {
+                     HighOrderEdgePosition hoep;
+                    for(j=0;j<6;++j) {
+                        size_t v0=std::min( inFP[i+edgesInQuadraticTetrahedron[j][0]],
+                            inFP[i+edgesInQuadraticTetrahedron[j][1]]);
+                        size_t v1=std::max( inFP[i+edgesInQuadraticTetrahedron[j][0]],
+                            inFP[i+edgesInQuadraticTetrahedron[j][1]]);
+                        Edge e(v0,v1);
+                        if (edgeSet.find(e)==edgeSet.end()) {
+                            edgeSet.insert(e);
+                            addEdge(&my_edges, v0, v1);
+                            hoep[0]= inFP[i+j+4];
+                            hoep[1]=my_edges.size()-1;
+                            hoep[2]=1;
+                            hoep[3]=1;
+                            my_highOrderEdgePositions.push_back(hoep);
+                        }
+                    }
+                }
                 break;
             // more types are defined in vtkCellType.h in libvtk
             default:
@@ -368,6 +426,7 @@ bool MeshVTKLoader::setInputsMesh()
     d_quads.endEdit();
     d_tetrahedra.endEdit();
     d_hexahedra.endEdit();
+    d_highOrderEdgePositions.endEdit();
 
     return true;
 }
@@ -566,10 +625,11 @@ bool LegacyVTKReader::readFile(const char* filename)
                         {
                             inputDataVector.push_back(data);
                             data->name = dataName;
-                            if (kw == "CELL_DATA")
+                            if (kw == "CELL_DATA"){
                                 msg_info(this) << "Read cell data: " << data->name;
-                            else
+                            }else{
                                 msg_info(this) << "Read point data: " << data->name;
+                            }
                         } else
                             delete data;
                     }

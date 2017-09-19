@@ -1,9 +1,6 @@
 //$$ newmat.h           definition file for new version of matrix package
 
 // Copyright (C) 1991,2,3,4,7,2000,2002: R B Davies
-#ifndef use_namespace
-#define use_namespace
-#endif
 #ifndef NEWMAT_LIB
 #define NEWMAT_LIB 0
 
@@ -13,7 +10,7 @@
 #include "myexcept.h"
 
 
-#ifndef newmat_no_namespace
+#ifdef use_namespace
 namespace NEWMAT { using namespace RBD_COMMON; }
 namespace RBD_LIBRARIES { using namespace NEWMAT; }
 
@@ -1790,7 +1787,7 @@ inline MatrixInput GetSubMatrix::operator<<(int f) { return *this << (Real)f; }
 
 
 
-#ifndef newmat_no_namespace
+#ifdef use_namespace
 }
 #endif
 

@@ -317,18 +317,18 @@ class GenericRigidJoint:
         return self.node.createObject( 'UniformVelocityDampingForceField', dampingCoefficient=damping )
 
     def addSpring( self, translation_stiffness=None, rotation_stiffness=None ):
-        compliance=[]
+        stiffnesses=[]
         for i in range(0,3):
             if not self.mask[i]:
-                compliance.append( 1./float(translation_stiffness) )
+                stiffnesses.append( float(translation_stiffness) )
             else:
-                compliance.append(0.)
+                stiffnesses.append(0)
         for i in range(3,6):
             if not self.mask[i]:
-                compliance.append( 1./float(rotation_stiffness) )
+                stiffnesses.append( float(rotation_stiffness) )
             else:
-                compliance.append(0.)
-        return self.node.createObject('DiagonalCompliance', isCompliance=False, compliance=concat(compliance))
+                stiffnesses.append(0)
+        return self.node.createObject('DiagonalStiffness', stiffness=concat(stiffnesses))
 
     class VelocityController:
         def __init__(self, node, mask, velocities, compliance):
@@ -457,8 +457,8 @@ class CompleteRigidJoint:
     def addDamper( self, dampings=[0,0,0,0,0,0] ):
             return self.node.createObject( 'DiagonalVelocityDampingForceField', dampingCoefficients=dampings )
 
-    def addSpring( self, compliances=[0,0,0,0,0,0] ):
-        return self.node.createObject('DiagonalCompliance', isCompliance="0", compliance=concat(compliances))
+    def addSpring( self, stiffnesses=[0,0,0,0,0,0] ):
+        return self.node.createObject('DiagonalStiffness', stiffness=concat(stiffnesses))
 
 
 class HingeRigidJoint(GenericRigidJoint):
@@ -611,36 +611,13 @@ class PlanarRigidJoint(GenericRigidJoint):
         axis1 = (self.normal+1)%3; axis2 = (self.normal+2)%3
         if axis1 > axis2 :
             axis1, axis2 = axis2, axis1
-        mask = [0]*6; mask[axis1]=1.0/stiffness1; mask[axis2]=1.0/stiffness2;
-        return self.node.createObject('DiagonalCompliance', isCompliance="0", compliance=concat(mask))
+        mask = [0]*6; mask[axis1]=stiffness1; mask[axis2]=stiffness2
+        return self.node.createObject('DiagonalStiffness', stiffness=concat(mask))
 
 
 #class GimbalRigidJoint(GenericRigidJoint):
 #    ## Gimbal/Universal joint
 ## TODO it cannot be simulated a unique joint, but with 2 hinges with a third body in between
-
-#    def __init__(self, axis, name, node1, node2, compliance=0, index1=0, index2=0 ):
-#        self.axis = axis
-#        mask = [1]*6; mask[3+(axis+1)%3]=0; mask[3+(axis+2)%3]=0
-#        GenericRigidJoint.__init__(self, name, node1, node2, mask, compliance, index1, index2)
-
-#    def addLimits( self, rotation1_lower, rotation1_upper, rotation2_lower, rotation2_upper, compliance=0 ):
-#        index1 = 3+(self.axis+1)%3; index2 = 3+(self.axis+2)%3
-#        if index1 > index2 :
-#            index1, index2 = index2, index1
-#        mask_1_l = [0]*6; mask_1_l[index1]=1;
-#        mask_1_u = [0]*6; mask_1_u[index1]=-1;
-#        mask_2_l = [0]*6; mask_2_l[index2]=1;
-#        mask_2_u = [0]*6; mask_2_u[index2]=-1;
-#        return GenericRigidJoint.Limits( self.node, [mask_1_l,mask_1_u,mask_2_l,mask_2_u], [rotation1_lower,-rotation1_upper,rotation2_lower,-rotation2_upper], compliance )
-
-#    def addSpring( self, stiffness1, stiffness2 ):
-#        index1 = 3+(self.axis+1)%3; index2 = 3+(self.axis+2)%3
-#        if index1 > index2 :
-#            index1, index2 = index2, index1
-#        mask = [0]*6; mask[index1]=1.0/stiffness1; mask[index2]=1.0/stiffness2
-#        return self.node.createObject('DiagonalCompliance', isCompliance="0", compliance=concat(mask))
-
 
 
 class FixedRigidJoint(GenericRigidJoint):
@@ -676,7 +653,7 @@ class DistanceRigidJoint:
             self.node = node.createChild( 'constraint' )
             self.dofs = self.node.createObject('MechanicalObject', template = 'Vec1'+template_suffix, name = 'dofs', position = '0' )
             self.topology = self.node.createObject('EdgeSetTopologyContainer', edges="0 1" )
-            self.mapping = self.node.createObject('DistanceMapping',  name='mapping', rest_length=(rest_length if rest_length>0 else "" ) )
+            self.mapping = self.node.createObject('DistanceMapping',  name='mapping', restLengths=(rest_length if rest_length>0 else "" ) )
             self.compliance = self.node.createObject('UniformCompliance', name='compliance', compliance=compliance)
             # self.type = self.node.createObject('Stabilization')
 
@@ -692,8 +669,7 @@ class RigidJointSpring:
             
             self.mapping = self.node.createObject('RigidJointMultiMapping',  name = 'mapping', input = concat(input), output = '@dofs', pairs = str(index1)+" "+str(index2),
                                                   geometricStiffness = geometric_stiffness)
-            compliances = 1./numpy.array(stiffnesses);
-            self.compliance = self.node.createObject('DiagonalCompliance', name='compliance', compliance=concat(compliances), isCompliance=0)
+            self.forcefield = self.node.createObject('DiagonalStiffness', name='ff', stiffness=concat(stiffnesses))
             node2.addChild( self.node )
 
 ## @TODO handle joints with diagonalcompliance / diagonaldamper...

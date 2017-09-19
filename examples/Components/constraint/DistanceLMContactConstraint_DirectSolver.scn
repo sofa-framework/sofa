@@ -5,7 +5,7 @@
     <BruteForceDetection name="N2" />
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.7" />
     <DefaultContactManager name="Response" response="distanceLMConstraint" />
-    <EulerImplicitSolver name="cg_odesolver" printLog="0" />
+    <EulerImplicitSolver name="cg_odesolver" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
     <LMConstraintDirectSolver name="default0" maxError="1e-7" listening="1" constraintVel="1" constraintPos="0" numIterations="1" solverAlgorithm="SVD" />
     <Node name="cubeFEM" gravity="0 -9.81 0">

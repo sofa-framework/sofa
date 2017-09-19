@@ -7,7 +7,7 @@
     <DiscreteIntersection />
     <MeshGmshLoader name="meshLoader" filename="mesh/smCube27.msh" />
     <Node name="M1">
-        <EulerImplicit />
+        <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject src="@../meshLoader" dx="0" dy="-10.5" dz="0" />
         <DiagonalMass filename="BehaviorModels/smCube27.xs3" />

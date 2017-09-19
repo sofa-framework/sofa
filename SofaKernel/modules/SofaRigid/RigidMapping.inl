@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -142,7 +139,6 @@ RigidMapping<TIn, TOut>::RigidMapping()
     , matrixJ()
     , updateJ(false)
 {
-    //std::cout << "RigidMapping Creation\n";
     this->addAlias(&fileRigidMapping, "filename");
 }
 
@@ -493,11 +489,8 @@ void RigidMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/
     InMatrixDeriv& out = *dOut.beginEdit();
     const OutMatrixDeriv& in = dIn.getValue();
 
-    if (this->f_printLog.getValue())
-    {
-        sout << "J on mapped DOFs == " << in << sendl;
-        sout << "J on input  DOFs == " << out << sendl;
-    }
+    dmsg_info() << "J on mapped DOFs == " << in << msgendl
+                << "J on input  DOFs == " << out ;
 
     const unsigned int numDofs = this->getFromModel()->getSize();
 
@@ -544,11 +537,7 @@ void RigidMapping<TIn, TOut>::applyJT(const core::ConstraintParams * /*cparams*/
     }
 
 
-
-    if (this->f_printLog.getValue())
-    {
-        sout << "new J on input  DOFs = " << out << sendl;
-    }
+    dmsg_info() << "new J on input  DOFs = " << out ;
 
     dOut.endEdit();
 }
@@ -558,27 +547,27 @@ namespace impl {
 
 template<class U, class Coord>
 static void fill_block(Eigen::Matrix<U, 3, 6>& block, const Coord& v) {
-	U x = v[0];
-	U y = v[1];
-	U z = v[2];
-				
-	// note: this is -hat(v)
-	block.template rightCols<3>() <<
-					
-		0,   z,  -y,
-		-z,  0,   x,
-		y,  -x,   0;
+    U x = v[0];
+    U y = v[1];
+    U z = v[2];
+
+    // note: this is -hat(v)
+    block.template rightCols<3>() <<
+
+        0,   z,  -y,
+        -z,  0,   x,
+        y,  -x,   0;
 }
 
 template<class U, class Coord>
 void fill_block(Eigen::Matrix<U, 2, 3>& block, const Coord& v) {
-	U x = v[0];
-	U y = v[1];
-				
-	// note: this is -hat(v)
-	block.template rightCols<1>() <<
-		-y,
-		x;
+    U x = v[0];
+    U y = v[1];
+
+    // note: this is -hat(v)
+    block.template rightCols<1>() <<
+        -y,
+        x;
 }
 
 
@@ -587,26 +576,26 @@ void fill_block(Eigen::Matrix<U, 2, 3>& block, const Coord& v) {
 template <class TIn, class TOut>
 const helper::vector<sofa::defaulttype::BaseMatrix*>* RigidMapping<TIn, TOut>::getJs()
 {
-	const VecCoord& out =this->toModel->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& out =this->toModel->read(core::ConstVecCoordId::position())->getValue();
     const InVecCoord& in =this->fromModel->read(core::ConstVecCoordId::position())->getValue();
 
-	typename SparseMatrixEigen::CompressedMatrix& J = eigenJacobian.compressedMatrix;
-	
+    typename SparseMatrixEigen::CompressedMatrix& J = eigenJacobian.compressedMatrix;
+
     if( updateJ || J.size() == 0 )
     {
 
         updateJ = false;
 
-		J.resize(out.size() * NOut, in.size() * NIn);
-		J.setZero();
+        J.resize(out.size() * NOut, in.size() * NIn);
+        J.setZero();
 
-		// matrix chunk
-		typedef typename TOut::Real real;
-		typedef Eigen::Matrix<real, NOut, NIn> block_type;
-		block_type block;
-		
-		// translation part
-		block.template leftCols<NOut>().setIdentity();
+        // matrix chunk
+        typedef typename TOut::Real real;
+        typedef Eigen::Matrix<real, NOut, NIn> block_type;
+        block_type block;
+
+        // translation part
+        block.template leftCols<NOut>().setIdentity();
 
 
 
@@ -651,8 +640,8 @@ const helper::vector<sofa::defaulttype::BaseMatrix*>* RigidMapping<TIn, TOut>::g
             }
         }
 
-		J.finalize();		
-	}
+        J.finalize();
+    }
 
     return &eigenJacobians;
 }

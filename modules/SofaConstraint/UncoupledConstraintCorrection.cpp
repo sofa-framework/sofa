@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -111,7 +108,7 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
 template<>
 SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::addComplianceInConstraintSpace(const sofa::core::ConstraintParams * /*cparams*/, defaulttype::BaseMatrix *W)
 {
-    const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::holonomicC())->getValue();
+    const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
 
     Deriv weightedNormal;
     Deriv comp_wN;
@@ -132,10 +129,6 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
         {
             unsigned int dof = colIt.index();
             Deriv n = colIt.val();
-
-#ifdef DEBUG
-            std::cout << "    [ " << dof << "]=" << n << std::endl;
-#endif
 
             getVCenter(weightedNormal) = getVCenter(n);
             getVOrientation(weightedNormal) = getVOrientation(n);
@@ -185,10 +178,6 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
 
         ++rowIt;
     }
-
-#ifdef DEBUG
-    // std::cout << "Wnew = " << Wnew << std::endl;
-#endif
 }
 
 #else
@@ -258,10 +247,6 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
             }
         }
     }
-
-#ifdef DEBUG
-    // std::cout << "Wnew = " << Wnew << std::endl;
-#endif
 }
 
 #endif
@@ -346,7 +331,7 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
 {
     helper::WriteAccessor<Data<VecDeriv> > forceData = *this->mstate->write(core::VecDerivId::externalForce());
     VecDeriv& force = forceData.wref();
-    const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::holonomicC())->getValue();
+    const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
 
     unsigned int dof;
     Deriv weightedNormal;
@@ -418,7 +403,7 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
 template<>
 SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::setConstraintDForce(double * df, int begin, int end, bool update)
 {
-    const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::holonomicC())->getValue();
+    const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
     const VecReal& usedComp = compliance.getValue();
 
     if (!update)
@@ -463,11 +448,10 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
 template<>
 SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, int begin, int end)
 {
-    const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::holonomicC())->getValue();
+    const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
     const VecReal& usedComp = compliance.getValue();
 
-    if (this->f_printLog.getValue()) // debug
-        std::cout<<"getBlockDiagonalCompliance called for lines and columns "<< begin<< " to "<< end <<std::endl;
+    msg_info()<<"getBlockDiagonalCompliance called for lines and columns "<< begin<< " to "<< end ;
 
     Deriv weightedNormal, C_n;
 
@@ -535,11 +519,13 @@ SOFA_DECL_CLASS(UncoupledConstraintCorrection)
 int UncoupledConstraintCorrectionClass = core::RegisterObject("Component computing contact forces within a simulated body using the compliance method.")
 #ifndef SOFA_FLOAT
         .add< UncoupledConstraintCorrection< Vec1dTypes > >()
+        .add< UncoupledConstraintCorrection< Vec2dTypes > >()
         .add< UncoupledConstraintCorrection< Vec3dTypes > >()
         .add< UncoupledConstraintCorrection< Rigid3dTypes > >()
 #endif
 #ifndef SOFA_DOUBLE
         .add< UncoupledConstraintCorrection< Vec1fTypes > >()
+        .add< UncoupledConstraintCorrection< Vec2fTypes > >()
         .add< UncoupledConstraintCorrection< Vec3fTypes > >()
         .add< UncoupledConstraintCorrection< Rigid3fTypes > >()
         //TODO(dmarchal) There is no Rigid3fTypes template specizaliation while there is one for Rigid3d...
@@ -550,11 +536,13 @@ int UncoupledConstraintCorrectionClass = core::RegisterObject("Component computi
 
 #ifndef SOFA_FLOAT
 template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Vec1dTypes >;
+template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Vec2dTypes >;
 template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Vec3dTypes >;
 template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Rigid3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
 template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Vec1fTypes >;
+template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Vec2fTypes >;
 template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Vec3fTypes >;
 template class SOFA_CONSTRAINT_API UncoupledConstraintCorrection< Rigid3fTypes >;
 #endif

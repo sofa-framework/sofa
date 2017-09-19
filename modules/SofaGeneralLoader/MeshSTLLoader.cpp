@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -27,7 +24,7 @@
 #include <sofa/core/visual/VisualParams.h>
 
 #include <iostream>
-//#include <fstream> // we can't use iostream because the windows implementation gets confused by the mix of text and binary
+#include <fstream>
 #include <cstdio>
 #include <sstream>
 #include <string>
@@ -88,8 +85,8 @@ bool MeshSTLLoader::load()
 
 bool MeshSTLLoader::readBinarySTL(const char *filename)
 {
-    if( this->f_printLog.getValue() )
-        sout << "Reading binary STL file..." << sendl;
+    dmsg_info() << "Reading binary STL file..." ;
+
     std::ifstream dataFile (filename, std::ios::in | std::ios::binary);
 
     helper::vector<sofa::defaulttype::Vector3>& my_positions = *(this->d_positions.beginWriteOnly());
@@ -199,8 +196,7 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
     this->d_triangles.endEdit();
     this->d_normals.endEdit();
 
-    if( this->f_printLog.getValue() )
-        sout << "done!" << sendl;
+    dmsg_info() << "done!" ;
 
     return true;
 }
@@ -208,8 +204,7 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
 
 bool MeshSTLLoader::readSTL(std::ifstream& dataFile)
 {
-    if( this->f_printLog.getValue() )
-        sout << "Reading STL file..." << sendl;
+    dmsg_info() << "Reading STL file..." ;
 
     // Init
     std::string buffer;
@@ -311,8 +306,7 @@ bool MeshSTLLoader::readSTL(std::ifstream& dataFile)
 
     dataFile.close();
 
-    if( this->f_printLog.getValue() )
-        sout << "done!" << sendl;
+    dmsg_info() << "done!" ;
 
     return true;
 }

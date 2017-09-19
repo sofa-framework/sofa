@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -40,7 +37,6 @@ namespace helper
 using sofa::defaulttype::Vec;
 using sofa::defaulttype::Vector3;
 using sofa::helper::vector;
-using sofa::helper::set;
 
 class SOFA_HELPER_API MarchingCubeUtility
 {
@@ -198,7 +194,7 @@ private:
         return ( ( dataVoxels[index>>3]& ( ( int ) ( pow ( 2.0f, i ) ) ) ) >> i ) == 1;
     }
 
-    void findConnectedVoxels ( set<unsigned int>& connectedVoxels, const float isoValue, const Vec3i& from, unsigned char* data );
+    void findConnectedVoxels ( std::set<unsigned int>& connectedVoxels, const float isoValue, const Vec3i& from, unsigned char* data );
 
     void createGaussianConvolutionKernel ( vector< float >  &convolutionKernel ) const;
 
@@ -214,7 +210,7 @@ private:
             unsigned char* data, const float isolevel,
             sofa::helper::vector< PointID >& triangles,
             sofa::helper::vector< Vector3 >& vertices,
-            sofa::helper::set<Vec3i>& generatedCubes,
+            std::set<Vec3i>& generatedCubes,
             std::map< Vector3, PointID>& map_vertices,
             helper::vector< helper::vector<unsigned int> >* triangleIndexInRegularGrid = NULL,
             bool propagate = true ) const;

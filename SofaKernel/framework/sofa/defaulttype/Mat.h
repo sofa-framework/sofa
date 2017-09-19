@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -327,12 +324,38 @@ public:
         return id;
     }
 
+
+    template<int S>
+    static bool canSelfTranspose(const Mat<S, S, real>& lhs, const Mat<S, S, real>& rhs)
+    {
+        return &lhs == &rhs;
+    }
+
+    template<int I, int J>
+    static bool canSelfTranspose(const Mat<I, J, real>& /*lhs*/, const Mat<J, I, real>& /*rhs*/)
+    {
+        return false;
+    }
+
     /// Set matrix as the transpose of m.
     void transpose(const Mat<C,L,real> &m)
     {
-        for (int i=0; i<L; i++)
-            for (int j=0; j<C; j++)
-                this->elems[i][j]=m[j][i];
+        if (canSelfTranspose(*this, m))
+        {
+            for (int i=0; i<L; i++)
+            {
+                for (int j=i+1; j<C; j++)
+                {
+                    std::swap(this->elems[i][j], this->elems[j][i]);
+                }
+            }
+        }
+        else
+        {
+            for (int i=0; i<L; i++)
+                for (int j=0; j<C; j++)
+                    this->elems[i][j]=m[j][i];
+        }
     }
 
     /// Return the transpose of m.
@@ -345,17 +368,17 @@ public:
         return m;
     }
 
-    /// Transpose current matrix.
+    /// Transpose the square matrix.
     void transpose()
     {
-        static_assert(L == C, "");
+        static_assert(L == C, "Cannot self-transpose a non-square matrix. Use transposed() instead");
         for (int i=0; i<L; i++)
+        {
             for (int j=i+1; j<C; j++)
             {
-                real t = this->elems[i][j];
-                this->elems[i][j] = this->elems[j][i];
-                this->elems[j][i] = t;
+                std::swap(this->elems[i][j], this->elems[j][i]);
             }
+        }
     }
 
     /// @name Tests operators
@@ -602,9 +625,26 @@ public:
             this->elems[i]-=m[i];
     }
 
-    /// Invert matrix m
+
+    /// invert this
+    Mat<L,C,real> inverted() const
+    {
+        static_assert(L == C, "Cannot invert a non-square matrix");
+        Mat<L,C,real> m = *this;
+        invertMatrix(m, *this);
+        return m;
+    }
+
+    /// Invert square matrix m
     bool invert(const Mat<L,C,real>& m)
     {
+        static_assert(L == C, "Cannot invert a non-square matrix");
+        if (&m == this)
+        {
+            Mat<L,C,real> mat = m;
+            bool res = invertMatrix(*this, mat);
+            return res;
+        }
         return invertMatrix(*this, m);
     }
 

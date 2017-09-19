@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -67,27 +64,25 @@ void StaticSolver::solve(const core::ExecParams* params, SReal dt, sofa::core::M
     MultiVecCoord pos2(&vop, xResult /*core::VecCoordId::position()*/ );
     //MultiVecDeriv vel2(&vop, vResult /*core::VecDerivId::velocity()*/ );
 
-//    MultiVecDeriv b(&vop);
+    //MultiVecDeriv b(&vop);
     MultiVecDeriv x(&vop);
 
     // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
     MultiVecDeriv dx(&vop, core::VecDerivId::dx() ); dx.realloc( &vop, true, true );
-	mop->setImplicit(true); // this solver is implicit
+    mop->setImplicit(true); // this solver is implicit
     mop.addSeparateGravity(dt);	// v += dt*g . Used if mass wants to add G to v separately from the other forces.
 
     // compute the right-hand term of the equation system
     mop.computeForce(force);             // b = f0
     mop.projectResponse(force);         // b is projected to the constrained space
-//    b.teq(-1);
+    //    b.teq(-1);
 
-    if( f_printLog.getValue() )
-        serr<<"StaticSolver, f0 = "<< force <<sendl;
+    dmsg_info() << "StaticSolver, f0 = "<< force ;
     core::behavior::MultiMatrix<simulation::common::MechanicalOperations> matrix(&mop);
     //matrix = MechanicalMatrix::K;
     matrix = MechanicalMatrix(massCoef.getValue(),dampingCoef.getValue(),stiffnessCoef.getValue());
 
-    if( f_printLog.getValue() )
-        serr<<"StaticSolver, matrix = "<< (MechanicalMatrix::K) << " = " << matrix <<sendl;
+    dmsg_info() <<" matrix = "<< (MechanicalMatrix::K) << " = " << matrix ;
 
     matrix.solve(x,force);
     // x is the opposite solution of the system
@@ -96,8 +91,7 @@ void StaticSolver::solve(const core::ExecParams* params, SReal dt, sofa::core::M
     /*    serr<<"StaticSolver::solve, nb iter = "<<nb_iter<<sendl;
      serr<<"StaticSolver::solve, solution = "<<x<<sendl;*/
 
-    if( f_printLog.getValue() )
-        serr<<"StaticSolver, opposite solution = "<< x <<sendl;
+    dmsg_info() <<" opposite solution = "<< x ;
 
     if(applyIncrementFactor.getValue()==true )
         pos2.eq( pos, x, -dt );
@@ -106,7 +100,6 @@ void StaticSolver::solve(const core::ExecParams* params, SReal dt, sofa::core::M
 
     mop.solveConstraint(pos2, core::ConstraintParams::POS);
 
-    /*    serr<<"StaticSolver::solve, new pos = "<<pos2<<sendl;*/
 }
 
 int StaticSolverClass = core::RegisterObject("A solver which seeks the static equilibrium of the scene it monitors")

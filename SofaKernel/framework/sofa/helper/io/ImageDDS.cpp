@@ -1,27 +1,25 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/io/ImageDDS.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <iostream>
@@ -144,11 +142,11 @@ struct DDSHeader
 bool ImageDDS::load(const std::string &filename)
 {
     FILE *file = fopen(filename.c_str(), "rb");
-	m_bLoaded = 0;
+    m_bLoaded = 0;
 
     if (!file)
     {
-        std::cerr << "ImageDDS::load: Cannot open file " << filename << std::endl;
+        msg_error("ImageDDS") << "load: Cannot open file '" << filename << "'";
         return false;
     }
 
@@ -157,7 +155,7 @@ bool ImageDDS::load(const std::string &filename)
     if (!fread(&header, sizeof(header), 1, file))
     {
         fclose(file);
-        std::cerr << "ImageDDS::load: Cannot read the DDS header from " << filename << std::endl;
+        msg_error("ImageDDS") << "load: Cannot read the DDS header from '" << filename << "'";
         return false;
     }
 
@@ -165,7 +163,7 @@ bool ImageDDS::load(const std::string &filename)
     if (header.dwMagic != DDS_MAGIC)
     {
         fclose(file);
-        std::cerr << "ImageDDS::load: File " << filename << " is not of the DDS format." << std::endl;
+        msg_error("ImageDDS") << "load: File '" << filename << "' is not of the DDS format.";
         return false;
     }
 
@@ -312,7 +310,7 @@ bool ImageDDS::load(const std::string &filename)
         if (error)
         {
             fclose(file);
-            std::cerr << "ImageDDS::load: File " << filename << " has unknown or unsupported format." << std::endl;
+            msg_error("ImageDDS") << "load: File '" << filename << "' has unknown or unsupported format.";
             return false;
         }
     }
@@ -329,16 +327,16 @@ bool ImageDDS::load(const std::string &filename)
     fclose(file);
     if (read != size)
     {
-        std::cerr << "ImageDDS::load: Cannot read file " + filename + ", a part of the file is missing." << std::endl;
-		return false; // "
+        msg_error("ImageDDS") << "load: Cannot read file '" + filename + "', a part of the file is missing.";
+        return false; // "
     }
 
-    std::cout << "DDS image " << filename << ": Type: " << strFromTextureType[getTextureType()]
-            << ", Size: " << getWidth() << "x" << getHeight() << "x" << getDepth()
-            << ", Format: " << strFromDataType[getDataType()] << ", Channels: " << strFromChannelFormat[getChannelFormat()]
-            << ", Mipmaps: " << getMipmapCount() << std::endl;
+    msg_info("ImageDDS") << "DDS image " << filename << ": Type: " << strFromTextureType[getTextureType()]
+                         << ", Size: " << getWidth() << "x" << getHeight() << "x" << getDepth()
+                         << ", Format: " << strFromDataType[getDataType()] << ", Channels: " << strFromChannelFormat[getChannelFormat()]
+                         << ", Mipmaps: " << getMipmapCount() ;
 
-	m_bLoaded = 1;
+    m_bLoaded = 1;
     return true;
 }
 
@@ -436,7 +434,7 @@ bool ImageDDS::save(const std::string &filename, int)
     header.ddpfPixelFormat = pixelFormatTable[getDataType()][getChannelFormat()];
     if (!header.ddpfPixelFormat.dwSize)
     {
-        std::cerr << "ImageDDS::save: Cannot save file " << filename << ", the image format is unsupported." << std::endl;
+        msg_error("ImageDDS") << "save: Cannot save file '" << filename << "', the image format is unsupported." ;
         return false;
     }
 
@@ -454,7 +452,7 @@ bool ImageDDS::save(const std::string &filename, int)
     FILE *file = fopen(filename.c_str(), "wb");
     if (!file)
     {
-        std::cerr << "ImageDDS::save: Cannot open file " << filename << " for writing." << std::endl;
+        msg_error("ImageDDS") << "save: Cannot open file '" << filename << "' for writing." ;
         return false;
     }
 
@@ -464,7 +462,7 @@ bool ImageDDS::save(const std::string &filename, int)
     fclose(file);
     if (!isWriteOk)
     {
-        std::cerr << "ImageDDS::save: Cannot write to file" << filename << std::endl;
+        msg_error("ImageDDS") << "save: Cannot write to file '" << filename << "'";
     }
     return isWriteOk;
 }

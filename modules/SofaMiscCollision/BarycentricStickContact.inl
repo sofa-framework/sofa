@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -74,10 +71,10 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
 {
     if (o==NULL) return;
     TOutputVector& outputs = *static_cast<TOutputVector*>(o);
-    const bool printLog = this->f_printLog.getValue();
+
     if (ff==NULL)
     {
-        sout << "Creating BarycentricStickContact springs"<<sendl;
+        msg_info() << "Creating BarycentricStickContact springs" ;
         MechanicalState1* mstate1 = mapper1.createMapping(GenerateStirngID::generate().c_str());
         MechanicalState2* mstate2 = mapper2.createMapping(GenerateStirngID::generate().c_str());
         ff = sofa::core::objectmodel::New<ResponseForceField>(mstate1,mstate2);
@@ -123,7 +120,7 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
             if (!index)
             {
                 ++nbnew;
-                if (printLog) sout << "BarycentricStickContact: New contact "<<o->id<<sendl;
+                msg_info() << "BarycentricStickContact: New contact "<<o->id ;
             }
         }
         index = -1-i; // save this index as a negative value in contactIndex map.
@@ -148,7 +145,7 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
         int& index = it->second;
         if (index >= 0)
         {
-            if (printLog) sout << "BarycentricStickContact: Removed contact "<<it->first<<sendl;
+            msg_info() << "BarycentricStickContact: Removed contact "<<it->first;
             ContactIndexMap::iterator oldit = it;
             ++it;
             contactIndex.erase(oldit);
@@ -159,7 +156,7 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
             ++it;
         }
     }
-    if (printLog) sout << "BarycentricStickContact: "<<insize<<" input contacts, "<<size<<" contacts used for response ("<<nbnew<<" new)."<<sendl;
+    msg_info() << "BarycentricStickContact: "<<insize<<" input contacts, "<<size<<" contacts used for response ("<<nbnew<<" new)." ;
 
     //int size = contacts.size();
     ff->clear(size);
@@ -207,7 +204,7 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
     mapper2.update();
     mapper1.updateXfree();
     mapper2.updateXfree();
-    sout << size << "BarycentricStickContact springs created"<<sendl;
+    msg_info() << size << "BarycentricStickContact springs created";
 }
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
@@ -223,7 +220,6 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
         parent = group;
         if (parent!=NULL)
         {
-            //sout << "Attaching contact response to "<<parent->getName()<<sendl;
             parent->addObject(this);
             parent->addObject(ff);
         }

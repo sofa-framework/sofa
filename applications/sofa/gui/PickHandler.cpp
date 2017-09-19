@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -13,11 +13,8 @@
 * more details.                                                               *
 *                                                                             *
 * You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* with this program. If not, see <http://www.gnu.org/licenses/>.              *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -302,8 +299,8 @@ void PickHandler::updateRay(const sofa::defaulttype::Vector3 &position,const sof
 
     mouseCollision->getRay(0).setOrigin( position+orientation*interaction->mouseInteractor->getDistanceFromMouse() );
     mouseCollision->getRay(0).setDirection( orientation );
-    simulation::MechanicalPropagatePositionVisitor(sofa::core::MechanicalParams::defaultInstance(), 0, sofa::core::VecCoordId::position(), true).execute(mouseCollision->getContext());
-    simulation::MechanicalPropagatePositionVisitor(sofa::core::MechanicalParams::defaultInstance(), 0, sofa::core::VecCoordId::freePosition(), true).execute(mouseCollision->getContext());
+    simulation::MechanicalPropagateOnlyPositionVisitor(sofa::core::MechanicalParams::defaultInstance(), 0, sofa::core::VecCoordId::position(), true).execute(mouseCollision->getContext());
+    simulation::MechanicalPropagateOnlyPositionVisitor(sofa::core::MechanicalParams::defaultInstance(), 0, sofa::core::VecCoordId::freePosition(), true).execute(mouseCollision->getContext());
 
     if (needToCastRay())
     {
@@ -474,12 +471,13 @@ component::collision::BodyPicked PickHandler::findCollisionUsingBruteForce(const
 {
     BodyPicked result;
     // Look for particles hit by this ray
-//  std::cerr<<"PickHandler::findCollisionUsingBruteForce" << std::endl;
+//  msg_info()<<"PickHandler::findCollisionUsingBruteForce" << std::endl;
     simulation::MechanicalPickParticlesVisitor picker(sofa::core::ExecParams::defaultInstance(), origin, direction, maxLength, 0 );
     //core::objectmodel::BaseNode* rootNode = mouseNode->getRoot(); //sofa::simulation::getSimulation()->getContext()->toBaseNode();
 
     if (rootNode) picker.execute(rootNode->getContext());
-    else std::cerr << "ERROR: root node not found." << std::endl;
+    else
+        dmsg_error("PickHandler") << "Root node not found.";
 
     picker.getClosestParticle( result.mstate, result.indexCollisionElement, result.point, result.rayLength );
 

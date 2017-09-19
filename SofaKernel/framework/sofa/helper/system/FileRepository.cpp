@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -45,6 +42,12 @@
 #include <algorithm>
 #include <sstream>
 #include <sofa/helper/logging/Messaging.h>
+
+#ifdef WIN32
+#define ON_WIN32 true
+#else
+#define ON_WIN32 false
+#endif // WIN32
 
 namespace sofa
 {
@@ -163,7 +166,6 @@ void FileRepository::addLastPath(const std::string& p)
         p0 = p1+1;
     }
     vpath.insert(vpath.end(), entries.begin(), entries.end());
-//     std::cout << path << std::endl;
 }
 
 void FileRepository::removePath(const std::string& path)
@@ -186,9 +188,6 @@ void FileRepository::removePath(const std::string& path)
     {
         vpath.erase( find(vpath.begin(), vpath.end(), *it) );
     }
-
-    // Display
-    // std::cout<<(*this)<<std::endl;
 }
 
 std::string FileRepository::getFirstPath()
@@ -204,11 +203,9 @@ bool FileRepository::findFileIn(std::string& filename, const std::string& path)
     std::string newfname = SetDirectory::GetRelativeFromDir(filename.c_str(), path.c_str());
     boost::filesystem::path::imbue( boost::locale::generator().generate("") );
     boost::filesystem::path p(newfname);
-    //std::cout << "Looking for " << newfname <<std::endl;
     if (boost::filesystem::exists(p))
     {
         // File found
-        //std::cout << "File "<<filename<<" found in "<<path.substr(p0,p1-p0)<<std::endl;
         filename = newfname;
         return true;
     }
@@ -247,7 +244,7 @@ bool FileRepository::findFile(std::string& filename, const std::string& basedir,
         for (std::vector<std::string>::const_iterator it = vpath.begin(); it != vpath.end(); ++it)
             tmplog << ':'<<*it;
         if( errlog==&std::cerr || errlog==&std::cout)
-                msg_error("FileRepository") << tmplog.str();
+            msg_error("FileRepository") << tmplog.str();
         else
             (*errlog)<<tmplog.str()<<std::endl;
     }
@@ -264,27 +261,50 @@ void FileRepository::print()
     for (std::vector<std::string>::const_iterator it = vpath.begin(); it != vpath.end(); ++it)
         std::cout << *it << std::endl;
 }
-/*static*/
-std::string FileRepository::relativeToPath(std::string path, std::string refPath)
-{
-#ifdef WIN32
 
-    /*
-    WIN32 is a pain here because of mixed case formatting with randomly
-    picked slash and backslash to separate dirs.
-    */
+/*static*/
+std::string FileRepository::relativeToPath(std::string path, std::string refPath, bool doLowerCaseOnWin32)
+{
+    /// This condition replace the #ifdef in the code.
+    /// The advantage is that the code is compiled and is
+    /// removed by the optimization pass.
+    if( ! ON_WIN32 )
+    {
+        /// Case sensitive OS.
+        std::string::size_type loc = path.find( refPath, 0 );
+        if (loc==0)
+            path = path.substr(refPath.size()+1);
+
+        return path;
+    }
+
+    /// WIN32 is a pain here because of mixed case formatting with randomly
+    /// picked slash and backslash to separate dirs.
+    ///TODO(dmarchal 2017-05-01): remove the deprecated part in one year.
+    std::string tmppath;
     std::replace(path.begin(),path.end(),'\\' , '/' );
     std::replace(refPath.begin(),refPath.end(),'\\' , '/' );
-    std::transform(path.begin(), path.end(), path.begin(), ::tolower );
+
     std::transform(refPath.begin(), refPath.end(), refPath.begin(), ::tolower );
 
-#endif
-    std::string::size_type loc = path.find( refPath, 0 );
-    if (loc==0) path = path.substr(refPath.size()+1);
+    if( doLowerCaseOnWin32 )
+    {
+        dmsg_deprecated("FileRepository") << "Using relativePath(doLowerCaseOnWin32=true) is a deprecated behavior since 2017-05-01. "
+                                             "This behavior will be removed in 2018-05-01 and you need to update your code to use new "
+                                             "API";
+        /// The complete path is lowered... and copied into the tmppath;
+        std::transform(path.begin(), path.end(), path.begin(), ::tolower );
+        tmppath = path ;
+    }else{
+        tmppath = path ;
+        std::transform(tmppath.begin(), tmppath.end(), tmppath.begin(), ::tolower );
+    }
+
+    std::string::size_type loc = tmppath.find( refPath, 0 );
+    if (loc==0)
+        path = path.substr(refPath.size()+1);
 
     return path;
-
-
 }
 
 } // namespace system
