@@ -138,6 +138,7 @@ set(PYTHON_FILES
     python/SofaPython/units.py
     python/SofaPython/noPicking.py
     python/SofaPython/livecoding.py
+    python/SofaPython/PythonAdvancedTimer.py
 )
 
 
