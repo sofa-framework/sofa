@@ -43,7 +43,6 @@
 #include <SofaValidation/ExtraMonitor.h>
 #include <SofaBaseMechanics/MappedObject.h>
 #include <SofaValidation/Monitor.h>
-#include <SofaSphFluid/SpatialGridContainer.h>
 
 
 
@@ -96,13 +95,6 @@ typedef sofa::component::container::MappedObject<sofa::defaulttype::StdVectorTyp
 typedef sofa::component::misc::Monitor<sofa::defaulttype::StdRigidTypes<3, float> > MonitorRigid3f;
 typedef sofa::component::misc::Monitor<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > Monitor3f;
 typedef sofa::component::misc::Monitor<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float> > Monitor6f;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for SpatialGridContainer
-typedef sofa::component::container::SpatialGridContainer<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > SpatialGridContainer3f;
-
 
 
 

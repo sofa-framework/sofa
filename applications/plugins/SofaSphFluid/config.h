@@ -19,36 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <SofaMiscCollision/initMiscCollision.h>
+#ifndef SOFASPHFLUID_CONFIG_H
+#define SOFASPHFLUID_CONFIG_H
 
+#include <SofaBase/config.h>
 
-namespace sofa
-{
+#ifdef SOFA_BUILD_SPH_FLUID
+#  define SOFA_TARGET SofaSphFluid
+#  define SOFA_SPH_FLUID_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_SPH_FLUID_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
-namespace component
-{
-
-
-void initMiscCollision()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
-
-SOFA_LINK_CLASS(DefaultCollisionGroupManager)
-SOFA_LINK_CLASS(TetrahedronDiscreteIntersection)
-SOFA_LINK_CLASS(SpatialGridPointModel)
-SOFA_LINK_CLASS(TetrahedronModel)
-SOFA_LINK_CLASS(TetrahedronBarycentricPenalityContact)
-SOFA_LINK_CLASS(TetrahedronRayContact)
-SOFA_LINK_CLASS(TetrahedronFrictionContact)
-SOFA_LINK_CLASS(BarycentricStickContact)
-
-
-} // namespace component
-
-} // namespace sofa
+#endif

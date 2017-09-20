@@ -54,7 +54,6 @@
 #include <SofaMiscForceField/LineBendingSprings.h>
 #include <SofaBoundaryCondition/LinearForceField.h>
 #include <SofaDeformable/MeshSpringForceField.h>
-#include <SofaSphFluid/ParticlesRepulsionForceField.h>
 #include <SofaObjectInteraction/PenalityContactForceField.h>
 #include <SofaBoundaryCondition/PlaneForceField.h>
 #include <SofaGeneralDeformable/QuadBendingSprings.h>
@@ -62,7 +61,6 @@
 #include <SofaGeneralDeformable/RegularGridSpringForceField.h>
 #include <SofaGeneralObjectInteraction/RepulsiveSpringForceField.h>
 #include <SofaDeformable/RestShapeSpringsForceField.h>
-#include <SofaSphFluid/SPHFluidForceField.h>
 #include <SofaBoundaryCondition/SphereForceField.h>
 #include <SofaDeformable/SpringForceField.h>
 #include <SofaDeformable/StiffSpringForceField.h>
@@ -211,13 +209,6 @@ typedef sofa::component::interactionforcefield::MeshSpringForceField<sofa::defau
 
 
 //---------------------------------------------------------------------------------------------
-//Typedef for ParticlesRepulsionForceField
-typedef sofa::component::forcefield::ParticlesRepulsionForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > ParticlesRepulsionForceField2f;
-typedef sofa::component::forcefield::ParticlesRepulsionForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > ParticlesRepulsionForceField3f;
-
-
-
-//---------------------------------------------------------------------------------------------
 //Typedef for PenalityContactForceField
 typedef sofa::component::interactionforcefield::PenalityContactForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > PenalityContactForceField3f;
 
@@ -268,11 +259,6 @@ typedef sofa::component::forcefield::RestShapeSpringsForceField<sofa::defaulttyp
 typedef sofa::component::forcefield::RestShapeSpringsForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > RestShapeSpringsForceField1f;
 typedef sofa::component::forcefield::RestShapeSpringsForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > RestShapeSpringsForceField3f;
 
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for SPHFluidForceField
-typedef sofa::component::forcefield::SPHFluidForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > SPHFluidForceField3f;
 
 
 

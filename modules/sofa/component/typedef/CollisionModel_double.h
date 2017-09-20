@@ -33,18 +33,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/Mat.h>
 
-
-
-
-#include <SofaMiscCollision/TriangleModelInRegularGrid.h>
 #include <SofaGeneralMeshCollision/TriangleOctreeModel.h>
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for TriangleModelInRegularGrid
-typedef sofa::component::collision::TriangleModelInRegularGrid TriangleModelInRegularGrid3d;
-
 
 
 //---------------------------------------------------------------------------------------------
@@ -56,7 +45,6 @@ typedef sofa::component::collision::TriangleOctreeModel TriangleOctreeModel3d;
 
 
 #ifndef SOFA_FLOAT
-typedef TriangleModelInRegularGrid3d TriangleModelInRegularGrid3;
 typedef TriangleOctreeModel3d TriangleOctreeModel3;
 #endif
 

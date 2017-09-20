@@ -55,7 +55,6 @@
 #include <SofaTopologyMapping/Mesh2PointMechanicalMapping.h>
 #include <SofaRigid/RigidMapping.h>
 #include <SofaRigid/RigidRigidMapping.h>
-#include <SofaSphFluid/SPHFluidSurfaceMapping.h>
 #include <SofaTopologyMapping/SimpleTesselatedTetraMechanicalMapping.h>
 #include <SofaGeneralRigid/SkinningMapping.h>
 #include <SofaBaseMechanics/SubsetMapping.h>
@@ -181,13 +180,6 @@ typedef sofa::component::mapping::RigidMapping<sofa::defaulttype::StdRigidTypes<
 //---------------------------------------------------------------------------------------------
 //Typedef for RigidRigidMapping
 typedef sofa::component::mapping::RigidRigidMapping<sofa::defaulttype::StdRigidTypes<3, float>, sofa::defaulttype::StdRigidTypes<3, float> > RigidRigidMappingRigid3f_to_Rigid3f;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for SPHFluidSurfaceMapping
-typedef sofa::component::mapping::SPHFluidSurfaceMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::ExtVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > SPHFluidSurfaceMapping3f_to_Ext3f;
-typedef sofa::component::mapping::SPHFluidSurfaceMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > SPHFluidSurfaceMapping3f_to_3f;
 
 
 

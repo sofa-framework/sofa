@@ -55,7 +55,6 @@
 #include <SofaTopologyMapping/Mesh2PointMechanicalMapping.h>
 #include <SofaRigid/RigidMapping.h>
 #include <SofaRigid/RigidRigidMapping.h>
-#include <SofaSphFluid/SPHFluidSurfaceMapping.h>
 #include <SofaTopologyMapping/SimpleTesselatedTetraMechanicalMapping.h>
 #include <SofaGeneralRigid/SkinningMapping.h>
 #include <SofaBaseMechanics/SubsetMapping.h>
@@ -187,14 +186,6 @@ typedef sofa::component::mapping::RigidMapping<sofa::defaulttype::StdRigidTypes<
 typedef sofa::component::mapping::RigidRigidMapping<sofa::defaulttype::StdRigidTypes<3, double>, sofa::defaulttype::StdRigidTypes<3, double> > RigidRigidMappingRigid3d_to_Rigid3d;
 
 
-
-//---------------------------------------------------------------------------------------------
-//Typedef for SPHFluidSurfaceMapping
-typedef sofa::component::mapping::SPHFluidSurfaceMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double>, sofa::defaulttype::ExtVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > SPHFluidSurfaceMapping3d_to_Ext3f;
-typedef sofa::component::mapping::SPHFluidSurfaceMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > SPHFluidSurfaceMapping3d_to_3d;
-
-
-
 //---------------------------------------------------------------------------------------------
 //Typedef for SimpleTesselatedTetraMechanicalMapping
 typedef sofa::component::mapping::SimpleTesselatedTetraMechanicalMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double>, sofa::defaulttype::ExtVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > SimpleTesselatedTetraMechanicalMapping3d_to_Ext3f;
@@ -278,8 +269,6 @@ typedef RigidMappingRigid3d_to_Ext3f RigidMappingRigid3_to_Ext3;
 typedef RigidMappingRigid3d_to_3d RigidMappingRigid3_to_3;
 typedef RigidMappingRigid2d_to_2d RigidMappingRigid2_to_2;
 typedef RigidRigidMappingRigid3d_to_Rigid3d RigidRigidMappingRigid3_to_Rigid3;
-typedef SPHFluidSurfaceMapping3d_to_Ext3f SPHFluidSurfaceMapping3_to_Ext3;
-typedef SPHFluidSurfaceMapping3d_to_3d SPHFluidSurfaceMapping3_to_3;
 typedef SimpleTesselatedTetraMechanicalMapping3d_to_Ext3f SimpleTesselatedTetraMechanicalMapping3_to_Ext3;
 typedef SimpleTesselatedTetraMechanicalMapping3d_to_3d SimpleTesselatedTetraMechanicalMapping3_to_3;
 typedef SkinningMappingRigid3d_to_Ext3f SkinningMappingRigid3_to_Ext3;

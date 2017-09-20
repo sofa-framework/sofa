@@ -48,8 +48,6 @@
 #include <SofaBoundaryCondition/ParabolicConstraint.h>
 #include <SofaBoundaryCondition/PartialFixedConstraint.h>
 #include <SofaBoundaryCondition/PartialLinearMovementConstraint.h>
-#include <SofaSphFluid/ParticleSink.h>
-#include <SofaSphFluid/ParticleSource.h>
 
 
 
@@ -156,24 +154,6 @@ typedef sofa::component::projectiveconstraintset::PartialLinearMovementConstrain
 typedef sofa::component::projectiveconstraintset::PartialLinearMovementConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > PartialLinearMovementConstraint3d;
 typedef sofa::component::projectiveconstraintset::PartialLinearMovementConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, double>, sofa::defaulttype::Vec<6, double>, double> > PartialLinearMovementConstraint6d;
 
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for ParticleSink
-typedef sofa::component::misc::ParticleSink<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, double>, sofa::defaulttype::Vec<2, double>, double> > ParticleSink2d;
-typedef sofa::component::misc::ParticleSink<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > ParticleSink3d;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for ParticleSource
-typedef sofa::component::misc::ParticleSource<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, double>, sofa::defaulttype::Vec<2, double>, double> > ParticleSource2d;
-typedef sofa::component::misc::ParticleSource<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > ParticleSource3d;
-
-
-
-
-
 #ifndef SOFA_FLOAT
 typedef AttachConstraintRigid3d AttachConstraintRigid3;
 typedef AttachConstraintRigid2d AttachConstraintRigid2;
@@ -220,10 +200,6 @@ typedef PartialLinearMovementConstraint1d PartialLinearMovementConstraint1;
 typedef PartialLinearMovementConstraint2d PartialLinearMovementConstraint2;
 typedef PartialLinearMovementConstraint3d PartialLinearMovementConstraint3;
 typedef PartialLinearMovementConstraint6d PartialLinearMovementConstraint6;
-typedef ParticleSink2d ParticleSink2;
-typedef ParticleSink3d ParticleSink3;
-typedef ParticleSource2d ParticleSource2;
-typedef ParticleSource3d ParticleSource3;
 #endif
 
 #endif

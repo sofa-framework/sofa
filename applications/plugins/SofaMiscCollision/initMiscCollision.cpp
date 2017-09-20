@@ -19,45 +19,79 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "CudaTypes.h"
-#include "CudaParticleSource.inl"
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/core/behavior/ProjectiveConstraintSet.h>
-#include <SofaSphFluid/ParticleSource.h>
+#include "config.h"
+#include "initMiscCollision.h"
+#include "DefaultCollisionGroupManager.h"
+#include "TetrahedronDiscreteIntersection.h"
+#include "TetrahedronModel.h"
+#include "BarycentricStickContact.h"
+
+#ifdef SOFA_HAVE_SOFASPHFLUID
+#include "SpatialGridPointModel.h"
+#endif // SOFA_HAVE_SOFASPHFLUID
 
 namespace sofa
 {
 
-namespace core
-{
-namespace behavior
-{
-template class ProjectiveConstraintSet<gpu::cuda::CudaVec3fTypes>;
-#ifdef SOFA_GPU_CUDA_DOUBLE
-template class ProjectiveConstraintSet<gpu::cuda::CudaVec3dTypes>;
-#endif
-} // namespace behavior
-} // namespace core
-
-namespace gpu
+namespace component
 {
 
-namespace cuda
+extern "C" {
+SOFA_MISC_COLLISION_API void initExternalModule();
+SOFA_MISC_COLLISION_API const char* getModuleName();
+SOFA_MISC_COLLISION_API const char* getModuleVersion();
+SOFA_MISC_COLLISION_API const char* getModuleLicense();
+SOFA_MISC_COLLISION_API const char* getModuleDescription();
+SOFA_MISC_COLLISION_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
 {
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
 
+const char* getModuleName()
+{
+    return "SofaMiscCollision";
+}
 
+const char* getModuleVersion()
+{
+    return "1.0";
+}
 
-SOFA_DECL_CLASS(CudaParticleSource)
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
 
-int ParticleSourceCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< component::misc::ParticleSource<CudaVec3fTypes> >()
-#ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< component::misc::ParticleSource<CudaVec3dTypes> >()
-#endif // SOFA_GPU_CUDA_DOUBLE
-        ;
+const char* getModuleDescription()
+{
+    return "This plugin contains collision components.";
+}
 
-} // namespace cuda
+const char* getModuleComponentList()
+{
+    return "DistanceGridCollisionModel FFDDistanceGridDiscreteIntersection RayDistanceGridContact "
+           "RigidDistanceGridDiscreteIntersection DistanceGridForceField";
+}
 
-} // namespace gpu
+SOFA_LINK_CLASS(DefaultCollisionGroupManager)
+SOFA_LINK_CLASS(TetrahedronDiscreteIntersection)
+SOFA_LINK_CLASS(TetrahedronModel)
+SOFA_LINK_CLASS(TetrahedronBarycentricPenalityContact)
+SOFA_LINK_CLASS(TetrahedronRayContact)
+SOFA_LINK_CLASS(TetrahedronFrictionContact)
+SOFA_LINK_CLASS(BarycentricStickContact)
 
-} // namespace sofa
+#ifdef SOFA_HAVE_SOFASPHFLUID
+SOFA_LINK_CLASS(SpatialGridPointModel)
+#endif // SOFA_HAVE_SOFASPHFLUID
+
+} /// component
+
+} /// sofa

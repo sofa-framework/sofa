@@ -48,8 +48,6 @@
 #include <SofaBoundaryCondition/ParabolicConstraint.h>
 #include <SofaBoundaryCondition/PartialFixedConstraint.h>
 #include <SofaBoundaryCondition/PartialLinearMovementConstraint.h>
-#include <SofaSphFluid/ParticleSink.h>
-#include <SofaSphFluid/ParticleSource.h>
 
 
 
@@ -155,22 +153,6 @@ typedef sofa::component::projectiveconstraintset::PartialLinearMovementConstrain
 typedef sofa::component::projectiveconstraintset::PartialLinearMovementConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > PartialLinearMovementConstraint2f;
 typedef sofa::component::projectiveconstraintset::PartialLinearMovementConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > PartialLinearMovementConstraint3f;
 typedef sofa::component::projectiveconstraintset::PartialLinearMovementConstraint<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float> > PartialLinearMovementConstraint6f;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for ParticleSink
-typedef sofa::component::misc::ParticleSink<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > ParticleSink2f;
-typedef sofa::component::misc::ParticleSink<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > ParticleSink3f;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for ParticleSource
-typedef sofa::component::misc::ParticleSource<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > ParticleSource2f;
-typedef sofa::component::misc::ParticleSource<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > ParticleSource3f;
-
-
 
 
 
