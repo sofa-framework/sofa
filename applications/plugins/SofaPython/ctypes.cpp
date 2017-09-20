@@ -106,6 +106,7 @@ static void eigen_from_scipy_impl(eigen_csr_matrix<U>* lvalue,
         eigen_csr_matrix<U> matrix;
         char bytes[0]; // ye olde c trick ahoy
         storage_type() { }
+        ~storage_type() { }
     } storage;
 
     const eigen_csr_matrix<U>* alias = new (storage.bytes) eigen_csr_matrix<U>(rvalue);
