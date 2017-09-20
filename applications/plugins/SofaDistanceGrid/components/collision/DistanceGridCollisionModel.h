@@ -22,6 +22,7 @@
 #ifndef SOFA_COMPONENT_COLLISION_DISTANCEGRIDCOLLISIONMODEL_H
 #define SOFA_COMPONENT_COLLISION_DISTANCEGRIDCOLLISIONMODEL_H
 #include <SofaDistanceGrid/config.h>
+#include <math.h>
 
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/objectmodel/DataFileName.h>
@@ -35,8 +36,6 @@
 
 #include "../../DistanceGrid.h"
 
-#define _USE_MATH_DEFINES 1
-#include <cmath>
 
 namespace sofa
 {
