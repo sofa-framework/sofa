@@ -104,8 +104,8 @@ void Vertex2Frame<DataTypes>::update()
             return;
         }
 
-		for (unsigned int i=0 ; i<nbVertices ; i++)
-		{
+        for (unsigned int i=0 ; i<nbVertices ; i++)
+        {
             CPos zAxis = (!d_invertNormals.getValue()) ? fNormals[i] : -fNormals[i];
             zAxis.normalize();
 
@@ -121,19 +121,19 @@ void Vertex2Frame<DataTypes>::update()
 
 
             fFrames[i].getOrientation() = computeOrientation(xAxis, yAxis, zAxis);
-			fFrames[i].getCenter() = fVertices[i];
-		}
+            fFrames[i].getCenter() = fVertices[i];
+        }
         d_frames.endEdit();
-	} 
-	else {
-		if (nbVertices <= 1)
-		{
+    } 
+    else {
+        if (nbVertices <= 1)
+        {
             msg_error(this) << "Vertex2Frame : no enough vertices to compute the orientations. Component will not compute anything" ;
-			return ;
-		}
+            return ;
+        }
 
-		for (unsigned int i=0 ; i<(nbVertices-1) ; i++)
-		{
+        for (unsigned int i=0 ; i<(nbVertices-1) ; i++)
+        {
             CPos xAxis = fVertices[i+1] - fVertices[i];
             xAxis.normalize();
 
@@ -149,11 +149,11 @@ void Vertex2Frame<DataTypes>::update()
 
             fFrames[i].getOrientation() = computeOrientation(xAxis, yAxis, zAxis);
             fFrames[i].getCenter() = fVertices[i];
-		}
-		fFrames[nbVertices-1].getOrientation() = fFrames[nbVertices-2].getOrientation();
-		fFrames[nbVertices-1].getCenter() = fVertices[nbVertices-1];
+        }
+        fFrames[nbVertices-1].getOrientation() = fFrames[nbVertices-2].getOrientation();
+        fFrames[nbVertices-1].getCenter() = fVertices[nbVertices-1];
         d_frames.endEdit();
-	}
+    }
 }
 
 template <class DataTypes>
