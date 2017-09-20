@@ -76,7 +76,7 @@ def matrix(dtype):
             return to_eigen_table[dtype](ptr, byref(self))
         
 
-        def to_scipy(self, writable = False):
+        def to_scipy(self, writeable = False):
             '''construct a scipy view of the current aliased matrix
 
             warning: if writable is True and the scipy view reallocates, it will
@@ -95,7 +95,7 @@ def matrix(dtype):
                 return sp.sparse.csr_matrix( shape )
 
             values = np.ctypeslib.as_array( as_buffer(data.values, data.size) )
-            if not writable: values.flags['WRITEABLE'] = writable
+            if not writeable: values.flags['WRITEABLE'] = writable
             
             inner_indices = np.ctypeslib.as_array( as_buffer(data.indices, data.size) )
 
@@ -107,14 +107,9 @@ def matrix(dtype):
         def view(ptr):
             '''a context that provides a scipy view of an eigen matrix, assigning data back
             when modified on context exit. 
-
-            warning: in python2, context handles leak outside context scope, so
-            make sure you don't mutate the handle outside the context scope
-            (modification may not be mirrored on the eigen side)
-
             '''
             
-            view = Matrix.from_eigen(ptr).to_scipy(writable = True)
+            view = Matrix.from_eigen(ptr).to_scipy(writeable = True)
             data = view.data.ctypes.data
 
             try:
@@ -125,7 +120,8 @@ def matrix(dtype):
                     # data pointer changed: rebuild view and assign back to eigen
                     Matrix.from_scipy(view).to_eigen(ptr)
 
-            
+                # make sure that leaked handles are not writable
+                view.data.flags['WRITEABLE'] = False
 
     return Matrix
 

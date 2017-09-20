@@ -40,4 +40,10 @@ def createScene(node):
     with sparse.data_view(mass, 'massMatrix') as m:
         assert (m == ref).all()
 
+    try:
+        # this must throw ValueError since m is read-only outside context
+        m[1,1] = 10
+        assert False
+    except ValueError:
+        pass
         
