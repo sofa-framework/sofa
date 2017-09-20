@@ -17,10 +17,10 @@ set(SOURCE_FILES
         SphereROI_test.cpp
         PlaneROI_test.cpp
         TransformEngine_test.cpp
+	SmoothMeshEngine_test.cpp
         IndicesFromValues_test.cpp
         MergePoints_test.cpp
         IndexValueMapper_test.cpp
-
         )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
