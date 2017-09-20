@@ -40,7 +40,7 @@ namespace _discretegrid_
 
 using sofa::defaulttype::Vec3d;
 
-class DomainCache
+class  SOFA_SOFAIMPLICITFIELD_API DomainCache
 {
 public:
     bool insideImg; // shows if the domain lies inside the valid image region or outside

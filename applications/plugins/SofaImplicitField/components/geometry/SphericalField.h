@@ -38,7 +38,7 @@ namespace _sphericalfield_
 
 using sofa::defaulttype::Vec3d ;
 
-class SphericalField  : public ScalarField
+class  SOFA_SOFAIMPLICITFIELD_API SphericalField  : public ScalarField
 {
 public:
     SOFA_CLASS(SphericalField, ScalarField);
