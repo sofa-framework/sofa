@@ -2,7 +2,7 @@
 
 #include <Eigen/Sparse>
 #include <cstddef>
-
+#include <type_traits>
 
 template<class U>
 struct scipy_csr_matrix {
