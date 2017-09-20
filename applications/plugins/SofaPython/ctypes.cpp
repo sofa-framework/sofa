@@ -98,8 +98,17 @@ static void eigen_from_scipy_impl(eigen_csr_matrix<U>* lvalue,
                                   const scipy_csr_matrix<U>* rvalue) {
     // note: we use placement new to make sure destructor is never called
     // since memory is owned by scipy
-    typename std::aligned_union<0, eigen_csr_matrix<U> >::type storage;
-    const eigen_csr_matrix<U>* alias = new (&storage) eigen_csr_matrix<U>(rvalue);
+
+    // note: damn you clang-3.4 you're supposed to be a c++11 compiler ffs
+    // typename std::aligned_union<0, eigen_csr_matrix<U> >::type storage;
+
+    union storage_type {
+        eigen_csr_matrix<U> matrix;
+        char bytes[0]; // ye olde c trick ahoy
+        storage_type() { }
+    } storage;
+
+    const eigen_csr_matrix<U>* alias = new (storage.bytes) eigen_csr_matrix<U>(rvalue);
         
     *lvalue = *alias;
     lvalue->makeCompressed();
