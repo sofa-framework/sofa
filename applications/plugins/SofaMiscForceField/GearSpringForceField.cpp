@@ -19,23 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Implementation: LineBendingSprings
-//
-// Description:
-//
-//
-// Author: The SOFA team </www.sofa-framework.org>, (C) 2007
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
-#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_LINEBENDINGSPRINGS_CPP
-#include <SofaMiscForceField/LineBendingSprings.inl>
-#include <SofaDeformable/StiffSpringForceField.inl>
+// Author: François Faure, INRIA-UJF, (C) 2006
+#define SOFA_COMPONENT_FORCEFIELD_GEARSPRINGFORCEFIELD_CPP
+#include "GearSpringForceField.inl"
 #include <sofa/core/behavior/PairInteractionForceField.inl>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/ObjectFactory.h>
+//#include <typeinfo>
+
 
 namespace sofa
 {
@@ -49,29 +41,27 @@ namespace interactionforcefield
 using namespace sofa::defaulttype;
 
 
-
-SOFA_DECL_CLASS(LineBendingSprings)
+SOFA_DECL_CLASS(GearSpringForceField)
 
 // Register in the Factory
-int LineBendingSpringsClass = core::RegisterObject("Springs added to a polyline to prevent bending")
+int GearSpringForceFieldClass = core::RegisterObject("Gear springs for Rigids")
 #ifndef SOFA_FLOAT
-        .add< LineBendingSprings<Vec3dTypes> >()
-        .add< LineBendingSprings<Vec2dTypes> >()
+        .add< GearSpringForceField<Rigid3dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< LineBendingSprings<Vec3fTypes> >()
-        .add< LineBendingSprings<Vec2fTypes> >()
+        .add< GearSpringForceField<Rigid3fTypes> >()
 #endif
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_MISC_FORCEFIELD_API LineBendingSprings<Vec3dTypes>;
-template class SOFA_MISC_FORCEFIELD_API LineBendingSprings<Vec2dTypes>;
+template class SOFA_MISC_FORCEFIELD_API GearSpring<defaulttype::Rigid3dTypes>;
+template class SOFA_MISC_FORCEFIELD_API GearSpringForceField<defaulttype::Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_MISC_FORCEFIELD_API LineBendingSprings<Vec3fTypes>;
-template class SOFA_MISC_FORCEFIELD_API LineBendingSprings<Vec2fTypes>;
+template class SOFA_MISC_FORCEFIELD_API GearSpring<defaulttype::Rigid3fTypes>;
+template class SOFA_MISC_FORCEFIELD_API GearSpringForceField<defaulttype::Rigid3fTypes>;
 #endif
+
 
 } // namespace interactionforcefield
 

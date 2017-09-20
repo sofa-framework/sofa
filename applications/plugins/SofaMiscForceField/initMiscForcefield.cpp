@@ -19,14 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-// Author: François Faure, INRIA-UJF, (C) 2006
-#define SOFA_COMPONENT_FORCEFIELD_GEARSPRINGFORCEFIELD_CPP
-#include <SofaMiscForceField/GearSpringForceField.inl>
-#include <sofa/core/behavior/PairInteractionForceField.inl>
-#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/ObjectFactory.h>
-//#include <typeinfo>
+#include <sofa/helper/system/config.h>
+#include "initMiscForcefield.h"
 
 
 namespace sofa
@@ -35,37 +29,21 @@ namespace sofa
 namespace component
 {
 
-namespace interactionforcefield
+
+void initMiscForcefield()
 {
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
 
-using namespace sofa::defaulttype;
-
-
-SOFA_DECL_CLASS(GearSpringForceField)
-
-// Register in the Factory
-int GearSpringForceFieldClass = core::RegisterObject("Gear springs for Rigids")
-#ifndef SOFA_FLOAT
-        .add< GearSpringForceField<Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< GearSpringForceField<Rigid3fTypes> >()
-#endif
-        ;
-
-#ifndef SOFA_FLOAT
-template class SOFA_MISC_FORCEFIELD_API GearSpring<defaulttype::Rigid3dTypes>;
-template class SOFA_MISC_FORCEFIELD_API GearSpringForceField<defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_MISC_FORCEFIELD_API GearSpring<defaulttype::Rigid3fTypes>;
-template class SOFA_MISC_FORCEFIELD_API GearSpringForceField<defaulttype::Rigid3fTypes>;
-#endif
-
-
-} // namespace interactionforcefield
+SOFA_LINK_CLASS(MatrixMass)
+SOFA_LINK_CLASS(MeshMatrixMass)
+SOFA_LINK_CLASS(LennardJonesForceField)
+SOFA_LINK_CLASS(WashingMachineForceField)
 
 } // namespace component
 
 } // namespace sofa
-

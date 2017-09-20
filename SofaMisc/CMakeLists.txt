@@ -20,7 +20,6 @@ set(SOFAMISC_TARGETS
     SofaMiscCollision
     SofaMiscEngine
     SofaMiscFem
-    SofaMiscForceField
     SofaMiscMapping
     SofaMiscSolver
     SofaMiscTopology

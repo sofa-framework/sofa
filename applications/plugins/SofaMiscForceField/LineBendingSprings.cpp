@@ -19,45 +19,61 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_FORCEFIELD_LENNARDJONESFORCEFIELD_CPP
-
-#include <SofaMiscForceField/LennardJonesForceField.inl>
+//
+// C++ Implementation: LineBendingSprings
+//
+// Description:
+//
+//
+// Author: The SOFA team </www.sofa-framework.org>, (C) 2007
+//
+// Copyright: See COPYING file that comes with this distribution
+//
+//
+#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_LINEBENDINGSPRINGS_CPP
+#include "LineBendingSprings.inl"
+#include <SofaDeformable/StiffSpringForceField.inl>
+#include <sofa/core/behavior/PairInteractionForceField.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
 
-
 namespace component
 {
 
-namespace forcefield
+namespace interactionforcefield
 {
 
 using namespace sofa::defaulttype;
-using namespace core::behavior;
 
-SOFA_DECL_CLASS(LennardJonesForceField)
 
-int LennardJonesForceFieldClass = core::RegisterObject("Lennard-Jones forces for fluids")
+
+SOFA_DECL_CLASS(LineBendingSprings)
+
+// Register in the Factory
+int LineBendingSpringsClass = core::RegisterObject("Springs added to a polyline to prevent bending")
 #ifndef SOFA_FLOAT
-        .add< LennardJonesForceField<Vec3dTypes> >()
+        .add< LineBendingSprings<Vec3dTypes> >()
+        .add< LineBendingSprings<Vec2dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< LennardJonesForceField<Vec3fTypes> >()
+        .add< LineBendingSprings<Vec3fTypes> >()
+        .add< LineBendingSprings<Vec2fTypes> >()
 #endif
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_MISC_FORCEFIELD_API LennardJonesForceField<Vec3dTypes>;
+template class SOFA_MISC_FORCEFIELD_API LineBendingSprings<Vec3dTypes>;
+template class SOFA_MISC_FORCEFIELD_API LineBendingSprings<Vec2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_MISC_FORCEFIELD_API LennardJonesForceField<Vec3fTypes>;
+template class SOFA_MISC_FORCEFIELD_API LineBendingSprings<Vec3fTypes>;
+template class SOFA_MISC_FORCEFIELD_API LineBendingSprings<Vec2fTypes>;
 #endif
 
-
-} // namespace forcefield
+} // namespace interactionforcefield
 
 } // namespace component
 

@@ -57,7 +57,13 @@ install(FILES "${CMAKE_BINARY_DIR}/include/Registration/config.h" DESTINATION "i
 sofa_set_python_directory(Registration "python")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
-target_link_libraries(${PROJECT_NAME} SofaMeshCollision SofaBaseCollision SofaGuiCommon SofaBaseVisual SofaExporter SofaLoader SofaMiscForceField SofaGeneralEngine)
+target_link_libraries(${PROJECT_NAME} SofaMeshCollision SofaBaseCollision SofaGuiCommon SofaBaseVisual SofaExporter SofaLoader SofaGeneralEngine)
+
+find_package(SofaMiscForceField QUIET)
+if(SofaMiscForceField_FOUND)
+    add_definitions("-DSOFA_HAVE_SOFAMISCFORCEFIELD")
+    target_link_libraries(${PROJECT_NAME} SofaMiscForceField)
+endif()
 
 if(image_FOUND)
     target_link_libraries(${PROJECT_NAME} image)

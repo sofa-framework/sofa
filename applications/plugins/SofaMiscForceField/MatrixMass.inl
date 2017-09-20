@@ -22,7 +22,7 @@
 #ifndef SOFA_COMPONENT_MASS_MATRIXMASS_INL
 #define SOFA_COMPONENT_MASS_MATRIXMASS_INL
 
-#include <SofaMiscForceField/MatrixMass.h>
+#include "MatrixMass.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
