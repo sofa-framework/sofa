@@ -42,6 +42,7 @@ set(SOURCE_FILES
 set(README_FILES BulletCollisionDetection.txt)
 
 find_package(SofaMisc REQUIRED)
+find_package(SofaVolumetricData REQUIRED)
 find_package(Compliant QUIET)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 find_package(Bullet CONFIG REQUIRED)

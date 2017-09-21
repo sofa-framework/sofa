@@ -27,7 +27,7 @@
 // set to true/false to activate extra verbose FMM.
 #define EMIT_EXTRA_FMM_MESSAGE false
 
-//TODO(dmarchal 2017-05-18): There is code duplication here with VolumetricData (fastmaching implementation).
+//TODO(dmarchal 2017-05-18): There is code duplication here with SofaDistanceGrid (fastmaching implementation).
 namespace sofa
 {
 
