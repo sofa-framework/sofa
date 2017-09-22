@@ -30,6 +30,7 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
+#include <sofa/core/behavior/BaseMass.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Node.inl>
 #include <sofa/simulation/PropagateEventVisitor.h>

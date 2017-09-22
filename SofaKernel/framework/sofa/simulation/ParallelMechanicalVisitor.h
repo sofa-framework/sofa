@@ -29,7 +29,6 @@
 
 #include <sofa/simulation/MechanicalVisitor.h>
 // #include <sofa/core/behavior/BaseMechanicalMapping.h>
-#include <sofa/core/behavior/Mass.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/BaseInteractionForceField.h>
 #include <sofa/core/behavior/BaseInteractionConstraint.h>

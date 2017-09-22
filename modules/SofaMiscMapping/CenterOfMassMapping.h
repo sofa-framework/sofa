@@ -24,7 +24,7 @@
 #include "config.h"
 
 #include <sofa/core/Mapping.h>
-#include <sofa/core/behavior/BaseMass.h>
+#include <sofa/core/behavior/BaseMass_fwd.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
 
