@@ -44,8 +44,6 @@ set(HEADER_FILES
     sofa/gpu/cuda/CudaMechanicalObject.h
     sofa/gpu/cuda/CudaMechanicalObject.inl
     sofa/gpu/cuda/CudaMemoryManager.h
-    sofa/gpu/cuda/CudaMeshMatrixMass.h
-    sofa/gpu/cuda/CudaMeshMatrixMass.inl
     sofa/gpu/cuda/CudaParticleSource.h
     sofa/gpu/cuda/CudaParticleSource.inl
     sofa/gpu/cuda/CudaParticlesRepulsionForceField.h
@@ -116,7 +114,6 @@ set(SOURCE_FILES
     sofa/gpu/cuda/CudaLinearMovementConstraint.cpp
     sofa/gpu/cuda/CudaLinearVelocityConstraint.cpp
     sofa/gpu/cuda/CudaMechanicalObject.cpp
-    sofa/gpu/cuda/CudaMeshMatrixMass.cpp
     sofa/gpu/cuda/CudaParticleSource.cpp
     sofa/gpu/cuda/CudaParticlesRepulsionForceField.cpp
     sofa/gpu/cuda/CudaPenalityContactForceField.cpp
@@ -185,6 +182,19 @@ find_package(SofaMisc REQUIRED)
 find_package(CUDA REQUIRED)
 find_package(VolumetricRendering QUIET)
 find_package(MiniFlowVR QUIET)
+
+find_package(SofaMiscForceField QUIET)
+if(SofaMiscForceField_FOUND)
+    add_definitions("-DSOFA_HAVE_SOFAMISCFORCEFIELD")
+    target_link_libraries(${PROJECT_NAME} SofaMiscForceField)
+    list(APPEND HEADER_FILES sofa/gpu/cuda/CudaMeshMatrixMass.h)
+    list(APPEND HEADER_FILES sofa/gpu/cuda/CudaMeshMatrixMass.inl)
+    list(APPEND SOURCE_FILES sofa/gpu/cuda/CudaMeshMatrixMass.cpp)
+    message(STATUS "SofaCUDA: Plugin SofaMiscForceField was enabled/found, therefore MeshMatrixMassCuda will be compiled.") 
+else()
+    message(STATUS "SofaCUDA: Plugin SofaMiscForceField was NOT enabled/found, therefore MeshMatrixMassCuda will not be compiled.")
+endif()
+
 
 if(VolumetricRendering_FOUND)   
     list(APPEND HEADER_FILES sofa/gpu/cuda/CudaTetrahedralVisualModel.h)
