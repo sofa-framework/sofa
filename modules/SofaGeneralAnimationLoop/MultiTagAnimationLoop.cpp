@@ -31,6 +31,7 @@
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/UpdateMappingEndEvent.h>
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
+#include <sofa/helper/AdvancedTimer.h>
 #include <math.h>
 #include <iostream>
 

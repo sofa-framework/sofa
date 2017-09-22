@@ -27,7 +27,6 @@
 #include <sofa/core/ExecParams.h>
 #include <sofa/simulation/simulationcore.h>
 #include <sofa/simulation/Node.h>
-#include <sofa/helper/AdvancedTimer.h>
 
 namespace sofa
 {

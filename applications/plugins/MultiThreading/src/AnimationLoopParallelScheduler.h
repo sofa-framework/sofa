@@ -27,7 +27,6 @@
 #include <sofa/core/ExecParams.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Visitor.h>
-#include <sofa/helper/AdvancedTimer.h>
 
 using namespace sofa::core::objectmodel;
 using namespace sofa::core::behavior;
