@@ -39,6 +39,7 @@ void initGeneralEngine()
     }
 }
 
+#ifdef SOFA_BUILD_FULLSETCOMPONENTS
 SOFA_LINK_CLASS(AverageCoord)
 SOFA_LINK_CLASS(PlaneROI)
 SOFA_LINK_CLASS(SphereROI)
@@ -78,6 +79,8 @@ SOFA_LINK_CLASS(MeshClosingEngine)
 SOFA_LINK_CLASS(MeshSubsetEngine)
 SOFA_LINK_CLASS(MeshSampler)
 SOFA_LINK_CLASS(MeshSplittingEngine)
+#endif
+
 
 } // namespace component
 
