@@ -37,6 +37,7 @@ set(HEADER_FILES
     behavior/BaseInteractionProjectiveConstraintSet.h
     behavior/BaseLMConstraint.h
     behavior/BaseMass.h
+    behavior/BaseMass_fwd.h
     behavior/BaseMechanicalState.h
     behavior/BaseProjectiveConstraintSet.h
     behavior/BaseRotationFinder.h
