@@ -36,6 +36,7 @@ def angle(q):
     return 2.0* math.acos(re(q))
 
 def product(qa, qb):
+    """ use this product to compose the rotations represented by two quaterions """ 
     return array([ qa[3]*qb[0] + qb[3]*qa[0] + qa[1]*qb[2] - qa[2]*qb[1],qa[3]*qb[1] + qb[3]*qa[1] + qa[2]*qb[0] - qa[0]*qb[2], qa[3]*qb[2] + qb[3]*qa[2] + qa[0]*qb[1] - qa[1]*qb[0], qa[3]*qb[3] - qb[0]*qa[0] - qa[1]*qb[1] - qa[2]*qb[2] ])
 
 # TODO optimize
