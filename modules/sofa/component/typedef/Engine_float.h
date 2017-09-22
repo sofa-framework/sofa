@@ -36,7 +36,6 @@
 
 
 
-#include <SofaGeneralEngine/AverageCoord.h>
 #include <SofaEngine/BoxROI.h>
 #include <SofaMiscEngine/Distances.h>
 #include <SofaGeneralEngine/ExtrudeQuadsAndGenerateHexas.h>
@@ -65,12 +64,6 @@
 
 
 
-//---------------------------------------------------------------------------------------------
-//Typedef for AverageCoord
-typedef sofa::component::engine::AverageCoord<sofa::defaulttype::StdRigidTypes<2, float> > AverageCoordRigid2f;
-typedef sofa::component::engine::AverageCoord<sofa::defaulttype::StdRigidTypes<3, float> > AverageCoordRigid3f;
-typedef sofa::component::engine::AverageCoord<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > AverageCoord2f;
-typedef sofa::component::engine::AverageCoord<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > AverageCoord3f;
 
 
 

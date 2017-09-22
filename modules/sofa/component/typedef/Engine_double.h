@@ -36,7 +36,6 @@
 
 
 
-#include <SofaGeneralEngine/AverageCoord.h>
 #include <SofaGeneralEngine/BoxROI.h>
 #include <SofaGeneralEngine/DilateEngine.h>
 #include <SofaMiscEngine/Distances.h>
@@ -63,16 +62,6 @@
 #include <SofaGeneralEngine/TransformPosition.h>
 #include <SofaGeneralEngine/ValuesFromPositions.h>
 #include <SofaGeneralEngine/Vertex2Frame.h>
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for AverageCoord
-typedef sofa::component::engine::AverageCoord<sofa::defaulttype::StdRigidTypes<3, double> > AverageCoordRigid3d;
-typedef sofa::component::engine::AverageCoord<sofa::defaulttype::StdRigidTypes<2, double> > AverageCoordRigid2d;
-typedef sofa::component::engine::AverageCoord<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, double>, sofa::defaulttype::Vec<2, double>, double> > AverageCoord2d;
-typedef sofa::component::engine::AverageCoord<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > AverageCoord3d;
-
 
 
 //---------------------------------------------------------------------------------------------
@@ -253,10 +242,6 @@ typedef sofa::component::engine::Vertex2Frame<sofa::defaulttype::StdRigidTypes<3
 
 
 #ifndef SOFA_FLOAT
-typedef AverageCoordRigid3d AverageCoordRigid3;
-typedef AverageCoordRigid2d AverageCoordRigid2;
-typedef AverageCoord2d AverageCoord2;
-typedef AverageCoord3d AverageCoord3;
 typedef BoxROIRigid3d BoxROIRigid3;
 typedef BoxROI3d BoxROI3;
 typedef BoxROI6d BoxROI6;
