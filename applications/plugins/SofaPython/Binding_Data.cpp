@@ -82,7 +82,7 @@ PyObject *GetDataValuePython(BaseData* data)
         /// This type is not yet supported, the fallback scenario is to convert it using the python str() function and emit
         /// a warning message.
         msg_warning(data->getOwner()) << "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value" ;
-        return PyString_FromString(data->getValueString().c_str());
+        return PyString_FromStringAndSize(data->getValueString().c_str(), data->getValueString().size());
     }
     else
     {
@@ -93,7 +93,7 @@ PyObject *GetDataValuePython(BaseData* data)
         if( !typeinfo->Text() && !typeinfo->Scalar() && !typeinfo->Integer() )
         {
             SP_MESSAGE_WARNING( "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value" )
-            return PyString_FromString(data->getValueString().c_str());
+            return PyString_FromStringAndSize(data->getValueString().c_str(), data->getValueString().size());
         }
 
         PyObject *rows = PyList_New(nbRows);
@@ -131,7 +131,8 @@ PyObject *GetDataValuePython(BaseData* data)
     //TODO(PR:304) If this should not happen (see comment later) then we should rise an exception instead of providing a fallback scenario.
     /// default (should not happen)...
     SP_MESSAGE_WARNING( "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value (should not come here!)" )
-    return PyString_FromString(data->getValueString().c_str());
+    return PyString_FromStringAndSize(data->getValueString().c_str(), data->getValueString().size());
+
 }
 
 
