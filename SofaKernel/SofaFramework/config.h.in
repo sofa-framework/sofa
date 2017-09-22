@@ -66,6 +66,9 @@
 #cmakedefine SOFA_WITH_DEVTOOLS
 
 /// This can be either true or false
+#define SOFA_WITH_DEPRECATED ${SOFA_WITH_DEPRECATED_}
+
+/// This can be either true or false
 #define SOFA_WITH_THREADING ${SOFA_WITH_THREADING_}
 
 #define SOFA_WITH_EXPERIMENTAL_FEATURES ${SOFA_WITH_EXPERIMENTAL_FEATURES_}
