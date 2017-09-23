@@ -4,6 +4,8 @@
 #include <sofa/core/ObjectFactory.h>
 #include <SofaPython/Binding_BaseObject.h>
 
+#include <sofa/helper/AdvancedTimer.h>
+
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node;
