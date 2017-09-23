@@ -7,7 +7,6 @@ set(HEADER_FILES
     AnimateVisitor.h
     BehaviorUpdatePositionVisitor.h
     CactusStackStorage.h
-    ClassSystem.h
     CleanupVisitor.h
     CollisionAnimationLoop.h
     CollisionBeginEvent.h
@@ -31,6 +30,7 @@ set(HEADER_FILES
     MechanicalVPrintVisitor.h
     MechanicalVisitor.h
     MutationListener.h
+    MutationListener_fwd.h
     Node.h
     Node.inl
     ParallelVisitorScheduler.h
@@ -56,6 +56,7 @@ set(HEADER_FILES
     Visitor.h
     VisitorExecuteFunc.h
     VisitorScheduler.h
+    VisitorScheduler_fwd.h
     VisualVisitor.h
     WriteStateVisitor.h
     XMLPrintVisitor.h
