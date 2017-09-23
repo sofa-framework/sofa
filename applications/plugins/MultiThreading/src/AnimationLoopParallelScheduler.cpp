@@ -44,7 +44,7 @@
 #include <math.h>
 #include <algorithm>
 
-
+#include <sofa/core/behavior/LinearSolver.h>
 #include <boost/pool/pool.hpp>
 
 
