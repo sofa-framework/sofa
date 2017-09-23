@@ -32,7 +32,7 @@
 
 #include <SofaMeshCollision/TriangleModel.h>
 #include <SofaBaseCollision/SphereModel.h>
-
+#include <sofa/core/collision/Pipeline.h>
 #include <iostream>
 #include <limits>
 
