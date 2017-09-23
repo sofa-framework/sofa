@@ -25,7 +25,7 @@
 #include <VolumetricRendering/config.h>
 
 #include <sofa/core/visual/VisualModel.h>
-#include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/VisualParams_fwd.h>
 #include <SofaBaseVisual/VisualModelImpl.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/MechanicalState.h>

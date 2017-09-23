@@ -22,7 +22,6 @@
 #ifndef SOFA_SIMULATION_TREE_VISUALACTION_H
 #define SOFA_SIMULATION_TREE_VISUALACTION_H
 
-#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ExecParams.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Visitor.h>
