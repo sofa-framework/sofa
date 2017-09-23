@@ -55,18 +55,18 @@
 #include <sofa/core/topology/Topology.h>
 #include <sofa/core/topology/BaseTopologyObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/behavior/LinearSolver.h>
+//#include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/behavior/ConstraintSolver.h>
 #include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/core/visual/VisualLoop.h>
-#include <sofa/core/collision/Pipeline.h>
+#include <sofa/core/collision/Pipeline_fwd.h>
 #include <sofa/core/loader/BaseLoader.h>
 #include <sofa/core/objectmodel/Event.h>
 
 #include <sofa/simulation/simulationcore.h>
-#include <sofa/simulation/MutationListener.h>
-#include <sofa/simulation/VisitorScheduler.h>
+#include <sofa/simulation/MutationListener_fwd.h>
+#include <sofa/simulation/VisitorScheduler_fwd.h>
 
 namespace sofa
 {
