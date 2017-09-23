@@ -26,6 +26,7 @@
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/VisualVisitor.h>
+#include <sofa/core/behavior/BaseMass.h>
 using namespace sofa::simulation;
 
 #include <sofa/core/ExecParams.h>
