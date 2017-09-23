@@ -41,7 +41,7 @@ namespace sofa
 
 namespace simulation
 {
-
+class Node ;
 class LocalStorage;
 
 /// Base class for visitors propagated recursively through the scenegraph

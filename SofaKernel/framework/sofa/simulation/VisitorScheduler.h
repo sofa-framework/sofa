@@ -24,15 +24,13 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/simulation/simulationcore.h>
-#include "ClassSystem.h"
-
 namespace sofa
 {
 
 namespace simulation
 {
 
-
+class Node;
 class Visitor;
 
 /// Abstract class defining custom schedule of action execution through the graph.
