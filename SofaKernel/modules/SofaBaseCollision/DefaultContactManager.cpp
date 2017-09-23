@@ -23,7 +23,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/objectmodel/Tag.h>
-
+#include <sofa/core/collision/Pipeline.h>
 
 namespace sofa
 {
