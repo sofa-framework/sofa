@@ -37,7 +37,7 @@
 #include <sofa/helper/GenerateRigid.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/SceneLoaderFactory.h>
-
+#include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/logging/Messaging.h>
 using sofa::helper::logging::ComponentInfo ;
 using sofa::helper::logging::SofaComponentInfo ;
