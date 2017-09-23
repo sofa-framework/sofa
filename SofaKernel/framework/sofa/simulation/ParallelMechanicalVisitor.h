@@ -37,8 +37,6 @@
 #include <sofa/core/behavior/BaseConstraintSet.h>
 #include <sofa/defaulttype/SharedTypes.h>
 
-//#include <sofa/defaulttype/BaseMatrix.h>
-//#include <sofa/defaulttype/BaseVector.h>
 #include <iostream>
 using std::cerr;
 using std::endl;

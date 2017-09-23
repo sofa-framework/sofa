@@ -22,7 +22,7 @@
 #ifndef SOFA_CORE_BEHAVIOR_MULTIMATRIXACCESSOR_H
 #define SOFA_CORE_BEHAVIOR_MULTIMATRIXACCESSOR_H
 
-#include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/defaulttype/BaseMatrix_fwd.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/BaseMapping.h>
 
