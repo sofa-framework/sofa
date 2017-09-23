@@ -23,7 +23,6 @@
 #define SOFA_SIMULATION_CORE_SIMULATION_H
 
 #include <sofa/simulation/Node.h>
-#include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/visual/DisplayFlags.h>
 #include <memory>
 
