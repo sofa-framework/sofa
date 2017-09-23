@@ -24,7 +24,7 @@
 #include "config.h"
 
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
-#include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/defaulttype/BaseMatrix_fwd.h>
 
 namespace sofa
 {
@@ -50,7 +50,7 @@ public:
     const BaseMatrix* getMatrix() const { return matrix; }
 
 
-    virtual int getGlobalDimension() const { return matrix->rowSize(); }
+    virtual int getGlobalDimension() const ;
     virtual int getGlobalOffset(const core::behavior::BaseMechanicalState*) const { return 0; }
     virtual MatrixRef getMatrix(const core::behavior::BaseMechanicalState*) const;
 

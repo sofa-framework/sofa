@@ -25,6 +25,7 @@
 
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
+#include <sofa/defaulttype/BaseMatrix.h>
 #include <iostream>
 
 namespace sofa

@@ -41,7 +41,6 @@
 //TO REMOVE ONCE THE CONVERGENCE IS DONE
 #include <sofa/core/behavior/BaseLMConstraint.h>
 
-//#include <sofa/defaulttype/BaseMatrix.h>
 //#include <sofa/defaulttype/BaseVector.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/map.h>
