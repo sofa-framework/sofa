@@ -23,6 +23,7 @@
 #include <sofa/helper/Factory.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/behavior/BaseMass.h>
+#include <sofa/core/collision/Pipeline.h>
 namespace sofa
 {
 
