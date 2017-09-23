@@ -28,7 +28,7 @@
 
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/VisualParams_fwd.h>
 #include <vector>
 
 namespace sofa
@@ -134,9 +134,8 @@ public:
 
 protected:
 
-    bool getShow(const core::objectmodel::BaseObject* /*m*/, const core::visual::VisualParams* vparams) const { return vparams->displayFlags().getShowMappings(); }
-
-    bool getShow(const core::BaseMapping* /*m*/, const core::visual::VisualParams* vparams) const { return vparams->displayFlags().getShowMechanicalMappings(); }
+    bool getShow(const core::objectmodel::BaseObject* /*m*/, const core::visual::VisualParams* vparams) const ;
+    bool getShow(const core::BaseMapping* /*m*/, const core::visual::VisualParams* vparams) const ;
 
     virtual void updateForceMask() { /*already done in applyJT*/ }
 };
