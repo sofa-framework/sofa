@@ -30,6 +30,7 @@
 #include <SofaMeshCollision/TriangleModel.h>
 #include <SofaBaseCollision/SphereModel.h>
 #include <SofaUserInteraction/MouseInteractor.h>
+#include <sofa/core/visual/VisualParams.h>
 
 namespace sofa
 {

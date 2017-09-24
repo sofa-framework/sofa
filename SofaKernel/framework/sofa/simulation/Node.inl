@@ -32,6 +32,7 @@
 //
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
+#include <sofa/core/visual/VisualParams.h>
 
 namespace sofa
 {
@@ -42,11 +43,12 @@ namespace simulation
 template <class RealObject>
 Node::SPtr Node::create( RealObject*, sofa::core::objectmodel::BaseObjectDescription* arg)
 {
-//    Node::SPtr obj=getSimulation()->createNewGraph(arg->getName());
     Node::SPtr obj=getSimulation()->createNewNode(arg->getName());
     obj->parse(arg);
     return obj;
 }
+
+
 
 
 }

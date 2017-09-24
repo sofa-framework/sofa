@@ -55,7 +55,6 @@
 #include <sofa/core/topology/Topology.h>
 #include <sofa/core/topology/BaseTopologyObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-//#include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/behavior/ConstraintSolver.h>
 #include <sofa/core/behavior/BaseAnimationLoop.h>
@@ -158,7 +157,7 @@ public:
     }
 
     /// Execute a recursive action starting from this node
-    template<class Act, class Params>
+    template<class Act, class Params = core::visual::VisualParams* >
     void execute(const Params* params, bool precomputedOrder=false)
     {
         Act action(params);
@@ -167,13 +166,15 @@ public:
     }
 
     /// Execute a recursive action starting from this node
-    template<class Act>
-    void execute(core::visual::VisualParams* vparams, bool precomputedOrder=false)
+    template<class Act, class Params = core::visual::VisualParams* >
+    void execute(Params* params, bool precomputedOrder=false)
     {
-        Act action(vparams);
+        Act action(params);
         simulation::Visitor* p = &action;
         executeVisitor(p, precomputedOrder);
     }
+
+
 
     /// Possible optimization with traversal precomputation, not mandatory and does nothing by default
     virtual void precomputeTraversalOrder( const sofa::core::ExecParams* ) {}

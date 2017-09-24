@@ -41,6 +41,7 @@
 #include <CGAL/Polyhedral_mesh_domain_3.h>
 #include <CGAL/make_mesh_3.h>
 #include <CGAL/refine_mesh_3.h>
+#include <sofa/core/visual/VisualParams.h>
 #if CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(3,8,0)
 #include <CGAL/Polyhedral_mesh_domain_with_features_3.h>
 #endif

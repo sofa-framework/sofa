@@ -32,6 +32,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 #include <SofaOpenglVisual/DataDisplay.h>
+#include <sofa/core/visual/VisualParams.h>
 
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 

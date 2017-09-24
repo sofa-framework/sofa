@@ -57,6 +57,12 @@ Visitor::Result VisualDrawVisitor::processNodeTopDown(simulation::Node* node)
     return RESULT_CONTINUE;
 }
 
+VisualVisitor::VisualVisitor(core::visual::VisualParams* params)
+    : Visitor(params)
+    ,vparams(params)
+{}
+
+
 void VisualDrawVisitor::processNodeBottomUp(simulation::Node* node)
 {
     for_each(this, node, node->visualModel,     &VisualDrawVisitor::bwdVisualModel);
@@ -136,6 +142,9 @@ void VisualDrawVisitor::processVisualModel(simulation::Node* node, core::visual:
         break;
     }
 }
+
+VisualUpdateVisitor::VisualUpdateVisitor(const core::ExecParams* params) : Visitor(params)
+{}
 
 Visitor::Result VisualUpdateVisitor::processNodeTopDown(simulation::Node* node)
 {
