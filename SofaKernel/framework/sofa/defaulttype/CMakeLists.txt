@@ -5,6 +5,7 @@ set(HEADER_FILES
     BaseMatrix.h
     BaseMatrix_fwd.h
     BaseVector.h
+    BaseVector_fwd.h
     BoundingBox.h
     DataTypeInfo.h
     Frame.h

@@ -7,9 +7,11 @@ set(HEADER_FILES
     BehaviorModel.h
     CategoryLibrary.h
     CollisionElement.h
-    CollisionModel.h
+    CollisionModel.h    
+    CollisionModel_fwd.h
     ComponentLibrary.h
     ConstraintParams.h
+    ConstraintParams_fwd.h
     DataEngine.h
     DataTracker.h
     ExecParams.h
@@ -63,6 +65,7 @@ set(HEADER_FILES
     behavior/MultiMatrixAccessor.h
     behavior/MultiVec.h
     behavior/OdeSolver.h
+    behavior/OdeSolver_fwd.h
     behavior/PairInteractionConstraint.h
     behavior/PairInteractionConstraint.inl
     behavior/PairInteractionForceField.h
@@ -134,6 +137,7 @@ set(HEADER_FILES
     visual/DisplayFlags.h
     visual/DrawTool.h
     visual/Shader.h
+    visual/Shader_fwd.h
     visual/VisualLoop.h
     visual/VisualManager.h
     visual/VisualModel.h

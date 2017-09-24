@@ -37,6 +37,7 @@ set(HEADER_FILES
     RigidCapsuleModel.inl
     Sphere.h
     SphereModel.h
+    SphereModel_fwd.h
     SphereModel.inl
     config.h
     initBaseCollision.h
