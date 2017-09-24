@@ -26,6 +26,7 @@
 #include <SofaBaseLinearSolver/BlocMatrixWriter.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawTool.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/helper/gl/template.h>
 #include <vector>

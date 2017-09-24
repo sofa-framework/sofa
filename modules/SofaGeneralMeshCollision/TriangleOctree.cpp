@@ -22,6 +22,7 @@
 #include <SofaMeshCollision/TriangleModel.inl>
 #include <SofaGeneralMeshCollision/TriangleOctree.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawTool.h>
 #include <SofaBaseCollision/CubeModel.h>
 #include <SofaMeshCollision/RayTriangleIntersection.h>
 #include <SofaMeshCollision/RayTriangleIntersection.h>

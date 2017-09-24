@@ -44,6 +44,7 @@
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 #include <sofa/defaulttype/BoundingBox.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/visual/DrawTool.h>
 
 #include <sofa/gui/OperationFactory.h>
 #include <sofa/gui/MouseOperations.h>

@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaBaseCollision/CylinderModel.h>
+#include <sofa/core/visual/DrawTool.h>
 
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/proximity.h>

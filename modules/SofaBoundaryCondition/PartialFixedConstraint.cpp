@@ -22,6 +22,7 @@
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PARTIALFIXEDCONSTRAINT_CPP
 #include <SofaBoundaryCondition/PartialFixedConstraint.inl>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawTool.h>
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/simulation/Node.h>

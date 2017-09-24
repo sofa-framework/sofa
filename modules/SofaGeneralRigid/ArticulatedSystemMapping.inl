@@ -25,6 +25,7 @@
 
 #include <SofaGeneralRigid/ArticulatedSystemMapping.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawTool.h>
 
 #include <sofa/simulation/Simulation.h>
 #include <sofa/core/objectmodel/BaseContext.h>

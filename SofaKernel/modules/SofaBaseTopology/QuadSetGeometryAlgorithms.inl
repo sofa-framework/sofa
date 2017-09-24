@@ -24,6 +24,8 @@
 
 #include <SofaBaseTopology/QuadSetGeometryAlgorithms.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawTool.h>
+
 #include <SofaBaseTopology/CommonAlgorithms.h>
 #include <fstream>
 

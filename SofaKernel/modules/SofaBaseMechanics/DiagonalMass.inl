@@ -30,6 +30,7 @@
 #include <SofaBaseTopology/TopologyData.inl>
 #include <SofaBaseTopology/RegularGridTopology.h>
 #include <SofaBaseMechanics/AddMToMatrixFunctor.h>
+#include <sofa/core/visual/DrawTool.h>
 
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
 #include <sofa/core/behavior/InertiaForce.h>

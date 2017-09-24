@@ -30,6 +30,7 @@
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <sofa/core/topology/BaseTopology.h>
 #include <sofa/core/topology/TopologyChange.h>
+#include <sofa/core/visual/DrawTool.h>
 
 #include <sofa/defaulttype/DataTypeInfo.h>
 

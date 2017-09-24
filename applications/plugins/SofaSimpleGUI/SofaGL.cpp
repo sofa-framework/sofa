@@ -1,4 +1,5 @@
 #include <GL/glew.h>
+#include <sofa/core/visual/DrawTool.h>
 #include "SofaGL.h"
 #include "VisualPickVisitor.h"
 #include <sofa/core/objectmodel/Tag.h>

@@ -24,6 +24,8 @@
 #endif
 #define SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_CPP
 #include <SofaBaseMechanics/MechanicalObject.inl>
+#include <sofa/core/visual/DrawTool.h>
+
 #include <sofa/helper/Quater.h>
 #include <sofa/core/ObjectFactory.h>
 

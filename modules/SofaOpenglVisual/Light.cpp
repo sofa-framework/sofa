@@ -33,6 +33,7 @@
 
 #include <SofaOpenglVisual/Light.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawTool.h>
 #include <SofaOpenglVisual/LightManager.h>
 #include <sofa/helper/system/glu.h>
 #include <sofa/core/ObjectFactory.h>

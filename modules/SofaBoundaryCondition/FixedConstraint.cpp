@@ -22,6 +22,7 @@
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDCONSTRAINT_CPP
 #include <SofaBoundaryCondition/FixedConstraint.inl>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/visual/DrawTool.h>
 
 #include <sofa/simulation/Node.h>
 

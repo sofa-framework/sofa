@@ -23,6 +23,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/core/objectmodel/BaseContext.h>
+#include <sofa/core/visual/DrawTool.h>
 #include <sofa/helper/gl/BasicShapes.h>
 #include <sofa/simulation/Simulation.h>
 

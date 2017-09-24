@@ -27,6 +27,7 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/Locale.h>
 using sofa::helper::system::TemporaryLocale ;
+#include <sofa/core/visual/DrawTool.h>
 
 #include <sstream>
 

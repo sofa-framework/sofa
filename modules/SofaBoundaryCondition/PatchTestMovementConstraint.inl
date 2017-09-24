@@ -24,6 +24,7 @@
 
 #include "PatchTestMovementConstraint.h"
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawTool.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/simulation/Simulation.h>

@@ -33,6 +33,7 @@
 
 #include <SofaOpenglVisual/DataDisplay.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawTool.h>
 
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 

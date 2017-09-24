@@ -25,7 +25,6 @@
 
 #include <sofa/core/ExecParams.h>
 #include <sofa/core/MultiVecId.h>
-#include <sofa/core/visual/DrawTool.h>
 #include <sofa/core/visual/DisplayFlags.h>
 #include <sofa/defaulttype/BoundingBox.h>
 #include <sofa/helper/gl/Transformation.h>

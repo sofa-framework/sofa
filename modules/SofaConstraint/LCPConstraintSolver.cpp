@@ -22,6 +22,7 @@
 
 #include <SofaConstraint/LCPConstraintSolver.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawTool.h>
 
 #include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
 #include <sofa/simulation/MechanicalVisitor.h>

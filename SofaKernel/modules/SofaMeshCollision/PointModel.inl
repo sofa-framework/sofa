@@ -35,6 +35,7 @@
 
 #include <SofaMeshCollision/PointModel.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawTool.h>
 #include <SofaMeshCollision/PointLocalMinDistanceFilter.h>
 #include <SofaBaseCollision/CubeModel.h>
 #include <sofa/core/ObjectFactory.h>

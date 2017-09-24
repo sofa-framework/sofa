@@ -28,6 +28,7 @@
 
 #include <SofaGeneralEngine/TextureInterpolation.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawTool.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
 

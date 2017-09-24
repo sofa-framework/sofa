@@ -27,6 +27,8 @@
 #include <sofa/defaulttype/Vec.h>
 #include <iostream>
 #include <algorithm>
+#include <sofa/core/visual/DrawTool.h>
+
 
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/core/visual/VisualParams.h>

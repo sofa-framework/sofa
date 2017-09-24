@@ -27,6 +27,7 @@
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/visual/DrawTool.h>
 
 #include <SofaBaseTopology/RegularGridTopology.h>
 #include <SofaBaseTopology/SparseGridTopology.h>
@@ -50,9 +51,6 @@
 
 #include <algorithm>
 #include <iostream>
-
-//#include <SofaMeshCollision/MeshIntTool.h>
-
 
 namespace sofa
 {
