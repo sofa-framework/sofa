@@ -22,7 +22,7 @@
 #include <sofa/simulation/VisualVisitor.h>
 
 #include <sofa/core/visual/VisualParams.h>
-
+#include <sofa/core/visual/Shader.h>
 #ifdef DEBUG_DRAW
 #define DO_DEBUG_DRAW true
 #else

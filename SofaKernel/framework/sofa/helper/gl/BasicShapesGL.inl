@@ -23,7 +23,7 @@
 #define SOFA_HELPER_GL_BASICSHAPESGL_INL
 
 #include <sofa/helper/gl/BasicShapesGL.h>
-
+#include <sofa/helper/gl/GLSLShader.h>
 #include <sofa/helper/gl/shaders/generateSphere.cppglsl>
 
 namespace sofa

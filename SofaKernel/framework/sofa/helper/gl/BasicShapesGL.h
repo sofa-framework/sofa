@@ -27,7 +27,7 @@
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/vector.h>
-#include <sofa/helper/gl/GLSLShader.h>
+#include <sofa/helper/gl/GLSLShader_fwd.h>
 #include <cmath>
 #include <map>
 

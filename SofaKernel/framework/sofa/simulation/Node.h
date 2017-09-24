@@ -44,7 +44,7 @@
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/visual/VisualManager.h>
-#include <sofa/core/visual/Shader.h>
+#include <sofa/core/visual/Shader_fwd.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/Mapping.h>
 #include <sofa/core/behavior/ForceField.h>
