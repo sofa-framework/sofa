@@ -24,6 +24,7 @@
 
 #include "ProjectionToLineMapping.h"
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawTool.h>
 #include <sofa/defaulttype/RGBAColor.h>
 #include <iostream>
 

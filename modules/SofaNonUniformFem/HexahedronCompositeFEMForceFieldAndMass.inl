@@ -24,7 +24,7 @@
 
 #include <SofaNonUniformFem/HexahedronCompositeFEMForceFieldAndMass.h>
 #include <sofa/core/visual/VisualParams.h>
-
+#include <sofa/core/visual/DrawTool.h>
 
 #include <SofaDenseSolver/NewMatMatrix.h>
 #include <SofaNonUniformFem/SparseGridMultipleTopology.h>

@@ -23,6 +23,7 @@
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_DISTANCEGRIDFORCEFIELD_INL
 
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawTool.h>
 #include <sofa/simulation/Simulation.h>
 #include "DistanceGridForceField.h"
 #include <sofa/helper/system/config.h>

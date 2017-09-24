@@ -24,6 +24,7 @@
 
 #include <SofaSphFluid/SPHFluidSurfaceMapping.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawTool.h>
 #include <SofaSphFluid/SpatialGridContainer.inl>
 
 #include <sofa/helper/rmath.h>
