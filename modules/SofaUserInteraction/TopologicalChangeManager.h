@@ -29,9 +29,10 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 
 #include <SofaMeshCollision/TriangleModel.h>
-#include <SofaBaseCollision/SphereModel.h>
+#include <SofaBaseCollision/SphereModel_fwd.h>
 #include <SofaUserInteraction/CuttingPoint.h>
 
+#include <SofaBaseCollision/SphereModel_fwd.h>
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Vec3Types.h>

@@ -34,7 +34,6 @@
 #include <sofa/simulation/Simulation.h>
 #include <SofaBaseCollision/BaseContactMapper.h>
 #include <SofaBaseCollision/CapsuleModel.h>
-#include <SofaBaseCollision/SphereModel.h>
 #include <SofaMeshCollision/TriangleModel.h>
 #include <SofaMeshCollision/LineModel.h>
 #include <SofaMeshCollision/PointModel.h>
