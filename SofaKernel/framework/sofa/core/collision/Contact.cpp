@@ -22,7 +22,7 @@
 #include <sofa/core/collision/Contact.h>
 #include <sofa/helper/Factory.inl>
 #include <sofa/helper/logging/Messaging.h>
-
+#include <sofa/core/CollisionModel.h>
 namespace sofa
 {
 
@@ -33,8 +33,6 @@ namespace collision
 {
 
 using namespace sofa::defaulttype;
-
-//template class Factory<std::string, Contact, std::pair<core::CollisionModel*,core::CollisionModel*> >;
 
 Contact::Factory* Contact::Factory::getInstance()
 {

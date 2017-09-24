@@ -31,7 +31,7 @@
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/BehaviorModel.h>
 #include <sofa/core/behavior/BaseInteractionForceField.h>
-#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/behavior/OdeSolver_fwd.h>
 #include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/core/collision/Pipeline.h>
 
