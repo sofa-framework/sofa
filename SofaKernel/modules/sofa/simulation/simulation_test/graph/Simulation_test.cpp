@@ -22,7 +22,7 @@
 #include <SofaTest/Sofa_test.h>
 #include <SofaTest/TestMessageHandler.h>
 
-
+#include <sofa/simulation/DefaultAnimationLoop.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <SofaSimulationTree/TreeSimulation.h>
 #include <sofa/simulation/DeleteVisitor.h>

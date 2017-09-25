@@ -47,13 +47,13 @@ namespace simulation
  *
  */
 
-class SOFA_SIMULATION_CORE_API DefaultVisualManagerLoop : public core::visual::VisualLoop
+class SOFA_SIMULATION_CORE_API DefaultVisualManagerLoop : public sofa::core::visual::VisualLoop
 {
 public:
-    typedef core::visual::VisualLoop Inherit;
+    typedef sofa::core::visual::VisualLoop Inherit;
     typedef sofa::core::objectmodel::BaseContext BaseContext;
     typedef sofa::core::objectmodel::BaseObjectDescription BaseObjectDescription;
-    SOFA_CLASS(DefaultVisualManagerLoop,core::visual::VisualLoop);
+    SOFA_CLASS(DefaultVisualManagerLoop,sofa::core::visual::VisualLoop);
 protected:
     DefaultVisualManagerLoop(simulation::Node* gnode = NULL);
 

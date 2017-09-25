@@ -34,6 +34,7 @@
 
 #include <SofaOpenglVisual/SlicedVolumetricModel.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DisplayFlags.h>
 
 
 #define GETCOORD(i) Coord((Real)_mstate->getPX(i), (Real)_mstate->getPY(i), (Real)_mstate->getPZ(i) )

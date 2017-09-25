@@ -25,6 +25,7 @@
 #include "SquareDistanceMapping.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/visual/DrawTool.h>
+#include <sofa/core/visual/DisplayFlags.h>
 #include <iostream>
 #include <sofa/simulation/Node.h>
 

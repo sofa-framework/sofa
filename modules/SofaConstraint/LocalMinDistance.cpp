@@ -26,6 +26,7 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/core/collision/Intersection.inl>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DisplayFlags.h>
 
 #define DYNAMIC_CONE_ANGLE_COMPUTATION
 

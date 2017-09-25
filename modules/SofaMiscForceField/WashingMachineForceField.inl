@@ -24,6 +24,7 @@
 
 #include <SofaMiscForceField/WashingMachineForceField.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DisplayFlags.h>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/system/gl.h>
 #include <assert.h>

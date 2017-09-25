@@ -25,7 +25,7 @@
 
 #include <sofa/core/ExecParams.h>
 #include <sofa/core/MultiVecId.h>
-#include <sofa/core/visual/DisplayFlags.h>
+#include <sofa/core/visual/DisplayFlags_fwd.h>
 #include <sofa/defaulttype/BoundingBox.h>
 #include <sofa/helper/gl/Transformation.h>
 #include <sofa/helper/fixed_array.h>
@@ -121,6 +121,7 @@ public:
     /// @}
 
     VisualParams();
+    ~VisualParams();
 
     /// Get the default VisualParams, to be used to provide a default values for method parameters
     static VisualParams* defaultInstance();
@@ -145,8 +146,8 @@ public:
     helper::gl::FrameBufferObject*& frameBufferObject() { return m_boundFrameBuffer; }
     helper::gl::FrameBufferObject*& frameBufferObject() const { return m_boundFrameBuffer; }
 
-    DisplayFlags& displayFlags() { return m_displayFlags; }
-    const DisplayFlags& displayFlags() const { return m_displayFlags; }
+    DisplayFlags& displayFlags() { return *m_displayFlags; }
+    const DisplayFlags& displayFlags() const { return *m_displayFlags; }
 
     sofa::defaulttype::BoundingBox&  sceneBBox()    { return m_sceneBoundingBox; }
     const sofa::defaulttype::BoundingBox&  sceneBBox() const   { return m_sceneBoundingBox; }
@@ -189,7 +190,7 @@ protected:
     SReal                              m_zFar;
     CameraType                          m_cameraType;
     Pass                                m_pass;
-    DisplayFlags                        m_displayFlags;
+    DisplayFlags*                       m_displayFlags {nullptr} ;
     mutable DrawTool*                   m_drawTool;
     mutable helper::gl::FrameBufferObject*	m_boundFrameBuffer;
     /// Ids of position vector

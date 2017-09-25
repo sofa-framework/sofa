@@ -33,6 +33,7 @@
 
 #include <SofaGeneralEngine/ProximityROI.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DisplayFlags.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/BasicShapes.h>
 

@@ -59,7 +59,7 @@ public:
     virtual void init();
 
     /// perform one animation step
-    virtual void step(const core::ExecParams* params, SReal dt);
+    virtual void step(const sofa::core::ExecParams* params, SReal dt);
 
 
     /// Construction method called by ObjectFactory.

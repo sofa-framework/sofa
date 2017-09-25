@@ -35,7 +35,7 @@
 #include <sofa/core/topology/BaseTopology.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/core/visual/DrawTool.h>
-
+#include <sofa/core/visual/DisplayFlags.h>
 
 namespace sofa
 {

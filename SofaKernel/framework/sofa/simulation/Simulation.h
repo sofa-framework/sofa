@@ -26,8 +26,6 @@
 #include <sofa/core/visual/DisplayFlags.h>
 #include <memory>
 
-#include <sofa/simulation/DefaultAnimationLoop.h>
-#include <sofa/simulation/DefaultVisualManagerLoop.h>
 
 namespace sofa
 {

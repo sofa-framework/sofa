@@ -135,6 +135,7 @@ set(HEADER_FILES
     topology/TopologyElementHandler.h
     topology/TopologyHandler.h
     visual/DisplayFlags.h
+    visual/DisplayFlags_fwd.h
     visual/DrawTool.h
     visual/Shader.h
     visual/Shader_fwd.h

@@ -34,6 +34,7 @@
 #include <SofaOpenglVisual/OglCylinderModel.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/visual/DrawTool.h>
+#include <sofa/core/visual/DisplayFlags.h>
 
 #include <SofaBaseTopology/TopologyData.inl>
 

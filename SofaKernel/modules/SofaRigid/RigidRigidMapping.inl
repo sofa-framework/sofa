@@ -25,7 +25,7 @@
 #include <SofaRigid/RigidRigidMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/visual/DrawTool.h>
-
+#include <sofa/core/visual/DisplayFlags.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 

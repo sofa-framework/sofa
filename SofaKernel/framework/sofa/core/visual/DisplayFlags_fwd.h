@@ -19,59 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/visual/DisplayFlags.h>
-#include <sofa/helper/system/thread/thread_specific_ptr.h>
-#include <sofa/helper/BackTrace.h>
-#include <cassert>
-#include <iostream>
+#ifndef SOFA_CORE_VISUAL_DISPLAYFLAGS_FWD_H
+#define SOFA_CORE_VISUAL_DISPLAYFLAGS_FWD_H
 
-namespace sofa
-{
-
-namespace core
-{
-
-namespace visual
-{
-
-VisualParams::VisualParams()
-    : m_viewport(sofa::helper::make_array(0,0,0,0))
-    , m_zNear(0)
-    , m_zFar(0)
-    , m_cameraType(PERSPECTIVE_TYPE)
-    , m_pass(Std)
-    , m_drawTool(NULL)
-    , m_boundFrameBuffer(NULL)
-    , m_x (ConstVecCoordId::position())
-    , m_v (ConstVecDerivId::velocity())
-    , m_supportedAPIs(0)
-    , m_displayFlags(new sofa::core::visual::DisplayFlags())
-{
-    m_displayFlags->setShowVisualModels(true); // BUGFIX: visual models are visible by default
-}
-
-VisualParams::~VisualParams()
-{
-    if(m_displayFlags)
-        delete m_displayFlags ;
-}
-
-/// Get the default VisualParams, to be used to provide a default values for method parameters
-VisualParams* VisualParams::defaultInstance()
-{
-    SOFA_THREAD_SPECIFIC_PTR(VisualParams, threadParams);
-    VisualParams* ptr = threadParams;
-    if (!ptr)
-    {
-        ptr = new VisualParams;
-        threadParams = ptr;
+namespace sofa {
+    namespace core {
+        namespace visual {
+            class FlagTreeItem ;
+            class DisplayFlags ;
+        }
     }
-    return ptr;
 }
 
-} // namespace visual
-
-} // namespace core
-
-} // namespace sofa
+#endif /// SOFA_CORE_VISUAL_DISPLAYFLAGS_FWD_H

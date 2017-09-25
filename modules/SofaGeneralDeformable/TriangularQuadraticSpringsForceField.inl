@@ -24,6 +24,7 @@
 
 #include <SofaGeneralDeformable/TriangularQuadraticSpringsForceField.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DisplayFlags.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
 #include <sofa/helper/gl/template.h>

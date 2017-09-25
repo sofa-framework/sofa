@@ -24,6 +24,7 @@
 #include "MeshGenerationFromImage.h"
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawTool.h>
 
 using namespace sofa;
 

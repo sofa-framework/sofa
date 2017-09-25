@@ -24,6 +24,7 @@
 
 #include <SofaSphFluid/SPHFluidForceField.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DisplayFlags.h>
 #include <SofaSphFluid/SpatialGridContainer.inl>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/gl/template.h>

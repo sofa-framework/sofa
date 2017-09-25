@@ -24,6 +24,7 @@
 
 #include <SofaBoundaryCondition/LinearVelocityConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DisplayFlags.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
