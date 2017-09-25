@@ -384,11 +384,23 @@ template<class Type>
 class LinkTraitsPtrCasts
 {
 public:
-    static sofa::core::objectmodel::Base* getBase(sofa::core::objectmodel::Base* b) { return b; }
-    static sofa::core::objectmodel::Base* getBase(sofa::core::objectmodel::BaseData* d) { return d->getOwner(); }
-    static sofa::core::objectmodel::BaseData* getData(sofa::core::objectmodel::Base* /*b*/) { return NULL; }
-    static sofa::core::objectmodel::BaseData* getData(sofa::core::objectmodel::BaseData* d) { return d; }
+    static sofa::core::objectmodel::Base* getBase(Type* b) ;
+    static sofa::core::objectmodel::BaseData* getData(Type* /*b*/) ;
 };
+
+#ifndef SOFA_CORE_OBJECTMODEL_BASEDATA_CPP
+extern template
+sofa::core::objectmodel::Base* LinkTraitsPtrCasts<sofa::core::objectmodel::Base>::getBase(sofa::core::objectmodel::Base* b) ;
+
+extern template
+sofa::core::objectmodel::BaseData* LinkTraitsPtrCasts<sofa::core::objectmodel::Base>::getData(sofa::core::objectmodel::Base* b) ;
+
+extern template
+sofa::core::objectmodel::Base* LinkTraitsPtrCasts<sofa::core::objectmodel::BaseData>::getBase(sofa::core::objectmodel::BaseData* d) ;
+
+extern template
+sofa::core::objectmodel::BaseData* LinkTraitsPtrCasts<sofa::core::objectmodel::BaseData>::getData(sofa::core::objectmodel::BaseData* d) ;
+#endif /// SOFA_CORE_OBJECTMODEL_BASEDATA_CPP
 
 } // namespace objectmodel
 
