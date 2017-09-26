@@ -32,9 +32,9 @@ endif()
 
 ############################### COMPONENTS HERE ARE DEPRECATED ####################################
 if(SOFA_BUILD_DEPRECATEDCOMPONENTS)
-    message(STATUS " With deprecated components.")
+    message(STATUS "   With deprecated components.")
 else()
-    message(STATUS " Without deprecated components.")
+    message(STATUS "   Without deprecated components.")
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
