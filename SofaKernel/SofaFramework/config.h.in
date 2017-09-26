@@ -53,6 +53,10 @@
 
 #cmakedefine DETECTIONOUTPUT_BARYCENTRICINFO
 
+#cmakedefine SOFA_BUILD_FULLSETCOMPONENTS
+
+#cmakedefine SOFA_BUILD_DEPRECATEDCOMPONENTS
+
 #cmakedefine SOFA_FLOAT
 
 #cmakedefine SOFA_DOUBLE
@@ -64,12 +68,6 @@
 #cmakedefine SOFA_USE_MASK
 
 #cmakedefine SOFA_WITH_DEVTOOLS
-
-/// This can be either true or false
-#define SOFA_BUILD_DEPRECATEDCOMPONENTS ${SOFA_BUILD_DEPRECATEDCOMPONENTS_}
-
-/// This can be either true or false
-#define SOFA_BUILD_FULLSETCOMPONENTS ${SOFA_BUILD_FULLSETCOMPONENTS_}
 
 /// This can be either true or false
 #define SOFA_WITH_THREADING ${SOFA_WITH_THREADING_}
