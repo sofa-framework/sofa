@@ -4,6 +4,8 @@
 
 find_package(SofaFramework REQUIRED)
 find_package(SofaMisc REQUIRED)
+find_package(SofaDistanceGrid REQUIRED)
+find_package(SofaImplicitField REQUIRED)
 find_package(SofaPython QUIET)
 
 if(NOT TARGET SofaVolumetricData)
