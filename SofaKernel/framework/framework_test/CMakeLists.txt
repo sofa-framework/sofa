@@ -33,10 +33,6 @@ set(SOURCE_FILES
     main.cpp
 )
 
-if(SOFA_HAVE_PNG)
-    list(APPEND SOURCE_FILES helper/io/ImagePNG_test.cpp)
-endif()
-
 #Plugin tests
 #add_subdirectory(plugin-system) ## TODO: check if deprecated or... ?
 add_subdirectory(plugins)
