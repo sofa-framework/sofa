@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "RealGUI.h"
-#include "ImageQt.h"
 
 #ifdef SOFA_PML
 #  include <sofa/filemanager/sofapml/PMLReader.h>
@@ -114,8 +113,6 @@ namespace gui
 namespace qt
 {
 
-SOFA_LINK_CLASS(ImageQt)
-
 
 using sofa::core::objectmodel::BaseObject;
 using namespace sofa::helper::system::thread;
@@ -181,7 +178,7 @@ public:
 //======================= STATIC METHODS ========================= {
 int RealGUI::InitGUI ( const char* /*name*/, const std::vector<std::string>& /* options */ )
 {
-    return ImageQt::Init() ? 0 : 1;
+    return false;
 }
 
 //------------------------------------
