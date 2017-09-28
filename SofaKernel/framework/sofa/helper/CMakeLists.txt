@@ -216,12 +216,6 @@ if(CMAKE_SYSTEM_NAME STREQUAL Windows)
     list(APPEND SOURCE_FILES  system/FileMonitor_windows.cpp)
 endif()
 
-
-if(SOFA_HAVE_PNG)
-    list(APPEND HEADER_FILES  io/ImagePNG.h)
-    list(APPEND SOURCE_FILES  io/ImagePNG.cpp)
-endif()
-
 if(Boost_thread_FOUND)
     list(APPEND HEADER_FILES system/thread/TimeoutWatchdog.h)
     list(APPEND SOURCE_FILES system/thread/TimeoutWatchdog.cpp)
