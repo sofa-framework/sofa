@@ -51,7 +51,6 @@ set(HEADER_FILES
     io/FileAccess.h
     io/File.h
     io/Image.h
-    io/ImageBMP.h
     io/ImageDDS.h
     io/ImageRAW.h
     io/MassSpringLoader.h
@@ -154,7 +153,6 @@ set(SOURCE_FILES
     io/FileAccess.cpp
     io/File.cpp
     io/Image.cpp
-    io/ImageBMP.cpp
     io/ImageDDS.cpp
     io/ImageRAW.cpp
     io/MassSpringLoader.cpp
