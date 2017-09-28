@@ -62,7 +62,7 @@ protected:
     SReal m_resetTime;
 
     /// Save the initial state for later uses in reset()
-    virtual void storeResetState();
+    virtual void storeResetState() override;
 	
 	
 private:
@@ -79,8 +79,8 @@ public:
     /// Returns starting time of the simulation
     SReal getResetTime() const;
 
-    virtual bool insertInNode( objectmodel::BaseNode* node );
-    virtual bool removeInNode( objectmodel::BaseNode* node );
+    virtual bool insertInNode( objectmodel::BaseNode* node ) override;
+    virtual bool removeInNode( objectmodel::BaseNode* node ) override;
 
 };
 

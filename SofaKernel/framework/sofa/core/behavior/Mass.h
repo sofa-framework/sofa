@@ -140,8 +140,8 @@ public:
     /// @name Matrix operations
     /// @{
 
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * /*matrix*/, SReal /*kFact*/, unsigned int &/*offset*/) {}
-    virtual void addBToMatrix(sofa::defaulttype::BaseMatrix * /*matrix*/, SReal /*bFact*/, unsigned int &/*offset*/) {}
+    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * /*matrix*/, SReal /*kFact*/, unsigned int &/*offset*/) override {}
+    virtual void addBToMatrix(sofa::defaulttype::BaseMatrix * /*matrix*/, SReal /*bFact*/, unsigned int &/*offset*/) override {}
 
     virtual void addMToMatrix(const MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
     virtual void addMToMatrix(sofa::defaulttype::BaseMatrix * matrix, SReal mFact, unsigned int &offset);
@@ -179,8 +179,8 @@ protected:
     /// @}
 
 public:
-    virtual bool insertInNode( objectmodel::BaseNode* node ) { BaseMass::insertInNode(node); BaseForceField::insertInNode(node); return true; }
-    virtual bool removeInNode( objectmodel::BaseNode* node ) { BaseMass::removeInNode(node); BaseForceField::removeInNode(node); return true; }
+    virtual bool insertInNode( objectmodel::BaseNode* node ) override { BaseMass::insertInNode(node); BaseForceField::insertInNode(node); return true; }
+    virtual bool removeInNode( objectmodel::BaseNode* node ) override { BaseMass::removeInNode(node); BaseForceField::removeInNode(node); return true; }
 
 };
 
