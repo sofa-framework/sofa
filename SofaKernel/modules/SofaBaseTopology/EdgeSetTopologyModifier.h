@@ -54,7 +54,7 @@ protected:
         : PointSetTopologyModifier()
     {}
 
-    virtual ~EdgeSetTopologyModifier() {}
+    virtual ~EdgeSetTopologyModifier() override {}
 public:
     virtual void init() override;
 
@@ -199,7 +199,7 @@ public:
     * Important : the points are actually deleted from the mechanical object's state vectors iff (removeDOF == true)
     */
     virtual void removePointsProcess(const sofa::helper::vector<unsigned int> &indices,
-            const bool removeDOF = true);
+            const bool removeDOF = true) override;
 
     /** \brief Reorder this topology.
     *
@@ -208,7 +208,7 @@ public:
     */
     virtual void renumberPointsProcess( const sofa::helper::vector<unsigned int> &index,
             const sofa::helper::vector<unsigned int> &/*inv_index*/,
-            const bool renumberDOF = true);
+            const bool renumberDOF = true) override;
 
     /** \brief Remove a set of edges
     @param edges an array of edge indices to be removed (note that the array is not const since it needs to be sorted)
@@ -224,7 +224,7 @@ public:
     /** \brief Generic method for points renumbering
     */
     virtual void renumberPoints( const sofa::helper::vector<unsigned int> & index,
-            const sofa::helper::vector<unsigned int> & inv_index);
+            const sofa::helper::vector<unsigned int> & inv_index) override;
 
     /** \brief Swap a list of pair edges, replacing each edge pair ((p11, p12), (p21, p22)) by the edge pair ((p11, p21), (p12, p22))
     *
@@ -270,7 +270,7 @@ public:
     virtual void movePointsProcess (const sofa::helper::vector <unsigned int>& id,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& coefs,
-            const bool moveDOF = true);
+            const bool moveDOF = true) override;
 
 
 

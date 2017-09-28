@@ -89,7 +89,7 @@ public:
 protected:
     HexahedronSetTopologyContainer();
 
-    virtual ~HexahedronSetTopologyContainer() {}
+    virtual ~HexahedronSetTopologyContainer() override {}
 public:
     virtual void init() override;
 
@@ -139,7 +139,7 @@ public:
      * @return The index of the corresponding hexahedron if it exists, -1 otherwise.
      */
     virtual int getHexahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4,
-				   PointID v5, PointID v6, PointID v7, PointID v8);
+                   PointID v5, PointID v6, PointID v7, PointID v8) override;
 
 
     /** \brief Get the 12 edges that form a hexahedron.

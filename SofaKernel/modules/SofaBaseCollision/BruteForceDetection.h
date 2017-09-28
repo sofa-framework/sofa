@@ -104,19 +104,19 @@ protected:
 
 public:
 
-    void init();
-    void reinit();
+    void init() override;
+    void reinit() override;
 
-    void addCollisionModel (core::CollisionModel *cm);
-    void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& cmPair);
+    void addCollisionModel (core::CollisionModel *cm) override;
+    void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& cmPair) override;
 
-    virtual void beginBroadPhase()
+    virtual void beginBroadPhase() override
     {
         core::collision::BroadPhaseDetection::beginBroadPhase();
         collisionModels.clear();
     }
 
-    void draw(const core::visual::VisualParams* /* vparams */) { }
+    void draw(const core::visual::VisualParams* /* vparams */) override { }
 
     inline virtual bool needsDeepBoundingTree()const{return true;}
 };

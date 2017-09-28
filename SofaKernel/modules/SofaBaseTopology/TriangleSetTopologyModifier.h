@@ -53,7 +53,7 @@ protected:
         : list_Out(initData(&list_Out,"list_Out","triangles with at least one null values."))
     {}
 
-    virtual ~TriangleSetTopologyModifier() {}
+    virtual ~TriangleSetTopologyModifier() override {}
 public:
     virtual void init() override;
 
@@ -119,7 +119,7 @@ public:
      */
     void addEdgesWarning(const unsigned int nEdges,
             const sofa::helper::vector< Edge >& edgesList,
-            const sofa::helper::vector< unsigned int >& edgesIndexList)
+            const sofa::helper::vector< unsigned int >& edgesIndexList) override
     {
         EdgeSetTopologyModifier::addEdgesWarning( nEdges, edgesList, edgesIndexList);
     }
@@ -132,7 +132,7 @@ public:
             const sofa::helper::vector< Edge >& edgesList,
             const sofa::helper::vector< unsigned int >& edgesIndexList,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
-            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs)
+            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs) override
     {
         EdgeSetTopologyModifier::addEdgesWarning( nEdges, edgesList, edgesIndexList, ancestors, baryCoefs);
     }
@@ -215,7 +215,7 @@ public:
      * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
      */
     virtual void removeEdgesProcess( const sofa::helper::vector<unsigned int> &indices,
-            const bool removeIsolatedItems=false);
+            const bool removeIsolatedItems=false) override;
 
 
     /** \brief Remove a subset of points
@@ -227,7 +227,7 @@ public:
      * Important : the points are actually deleted from the mechanical object's state vectors iff (removeDOF == true)
      */
     virtual void removePointsProcess(const sofa::helper::vector<unsigned int> &indices,
-            const bool removeDOF = true);
+            const bool removeDOF = true) override;
 
 
     /** \brief Reorder this topology.
@@ -237,13 +237,13 @@ public:
      */
     virtual void renumberPointsProcess( const sofa::helper::vector<unsigned int> &index,
             const sofa::helper::vector<unsigned int> &inv_index,
-            const bool renumberDOF = true);
+            const bool renumberDOF = true) override;
 
 
     /** \brief Generic method for points renumbering
      */
     virtual void renumberPoints( const sofa::helper::vector<unsigned int> &index,
-            const sofa::helper::vector<unsigned int> &inv_index);
+            const sofa::helper::vector<unsigned int> &inv_index) override;
 
 
     /** \brief Move input points indices to input new coords.
@@ -257,7 +257,7 @@ public:
     virtual void movePointsProcess (const sofa::helper::vector <unsigned int>& id,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& coefs,
-            const bool moveDOF = true);
+            const bool moveDOF = true) override;
 
 
 protected:

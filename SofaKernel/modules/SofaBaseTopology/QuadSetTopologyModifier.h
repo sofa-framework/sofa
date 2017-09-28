@@ -55,7 +55,7 @@ protected:
         : EdgeSetTopologyModifier()
     { }
 
-    virtual ~QuadSetTopologyModifier() {}
+    virtual ~QuadSetTopologyModifier() override {}
 public:
     virtual void init() override;
 
@@ -141,7 +141,7 @@ public:
     * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
     */
     virtual void removeEdgesProcess( const sofa::helper::vector<unsigned int> &indices,
-            const bool removeIsolatedItems=false);
+            const bool removeIsolatedItems=false) override;
 
     /** \brief Add some points to this topology.
     *
@@ -158,7 +158,7 @@ public:
     * Important : the points are actually deleted from the mechanical object's state vectors iff (removeDOF == true)
     */
     virtual void removePointsProcess(const sofa::helper::vector<unsigned int> &indices,
-            const bool removeDOF = true);
+            const bool removeDOF = true) override;
 
     /** \brief Reorder this topology.
     *
@@ -167,7 +167,7 @@ public:
     */
     virtual void renumberPointsProcess( const sofa::helper::vector<unsigned int>& index,
             const sofa::helper::vector<unsigned int>& inv_index,
-            const bool renumberDOF = true);
+            const bool renumberDOF = true) override;
 
     /** \brief Remove a set  of quads
     @param quads an array of quad indices to be removed (note that the array is not const since it needs to be sorted)
@@ -187,7 +187,7 @@ public:
     /** \brief Generic method for points renumbering
     */
     virtual void renumberPoints( const sofa::helper::vector<unsigned int>& index,
-            const sofa::helper::vector<unsigned int>& inv_index);
+            const sofa::helper::vector<unsigned int>& inv_index) override;
 
 
 private:

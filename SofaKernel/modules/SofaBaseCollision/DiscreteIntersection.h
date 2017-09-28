@@ -54,7 +54,7 @@ protected:
 public:
     /// Return the intersector class handling the given pair of collision models, or NULL if not supported.
     /// @param swapModel output value set to true if the collision models must be swapped before calling the intersector.
-    virtual core::collision::ElementIntersector* findIntersector(core::CollisionModel* object1, core::CollisionModel* object2, bool& swapModels);
+    virtual core::collision::ElementIntersector* findIntersector(core::CollisionModel* object1, core::CollisionModel* object2, bool& swapModels) override;
 
     core::collision::IntersectorMap intersectors;
     typedef core::collision::IntersectorFactory<DiscreteIntersection> IntersectorFactory;
