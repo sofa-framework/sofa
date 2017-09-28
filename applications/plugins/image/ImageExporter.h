@@ -241,7 +241,7 @@ public:
     Data<bool> exportAtEnd;
 
 
-    virtual std::string getTemplateName() const    { return templateName(this);    }
+    virtual std::string getTemplateName() const    override { return templateName(this);    }
     static std::string templateName(const ImageExporter<ImageTypes>* = NULL) { return ImageTypes::Name(); }
 
     ImageExporter()	: Inherited()
@@ -278,7 +278,7 @@ protected:
     }
 
 
-    void handleEvent(sofa::core::objectmodel::Event *event)
+    void handleEvent(sofa::core::objectmodel::Event *event) override
     {
         if (sofa::core::objectmodel::KeypressedEvent::checkEventType(event))
         {

@@ -338,9 +338,9 @@ public:
 
     TestMap tests;
 
-    virtual void beginNarrowPhase();
-    virtual void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& cmPair);
-    virtual void endNarrowPhase();
+    virtual void beginNarrowPhase() override;
+    virtual void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& cmPair) override;
+    virtual void endNarrowPhase() override;
 
 protected:
     Test* createTest(core::CollisionModel* model1, core::CollisionModel* model2);

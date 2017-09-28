@@ -76,7 +76,7 @@ public:
     void update(); // compute the displacements wrt original positions
 
     // To simplify the template name in the xml file
-    virtual std::string getTemplateName() const { return templateName(this); }
+    virtual std::string getTemplateName() const override { return templateName(this); }
     static std::string templateName(const DisplacementTransformEngine<DataTypes,OutputType>* = NULL) { return DataTypes::Name()+std::string(",")+defaulttype::DataTypeInfo<OutputType>::name(); }
 
 protected:
@@ -126,7 +126,7 @@ public:
     void update(); // compute the displacements wrt original positions
 
     // To simplify the template name in the xml file
-    virtual std::string getTemplateName() const { return templateName(this); }
+    virtual std::string getTemplateName() const override { return templateName(this); }
     static std::string templateName(const DisplacementMatrixEngine<DataTypes>* = NULL) { return DataTypes::Name(); }
 
     // inputs

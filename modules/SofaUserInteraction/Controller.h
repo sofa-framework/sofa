@@ -139,7 +139,7 @@ protected:
 
 public:
 
-    virtual void handleEvent(core::objectmodel::Event *);
+    virtual void handleEvent(core::objectmodel::Event *) override;
 };
 
 } // namespace controller
