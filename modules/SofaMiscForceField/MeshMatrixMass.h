@@ -194,31 +194,31 @@ public:
 
 
     // -- Mass interface
-    void addMDx(const core::MechanicalParams*, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor) override;
+    virtual void addMDx(const core::MechanicalParams*, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor) override;
 
-    void accFromF(const core::MechanicalParams*, DataVecDeriv& a, const DataVecDeriv& f); // This function can't be used as it use M^-1
+    virtual void accFromF(const core::MechanicalParams*, DataVecDeriv& a, const DataVecDeriv& f) override; // This function can't be used as it use M^-1
 
-    void addForce(const core::MechanicalParams*, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
+    virtual void addForce(const core::MechanicalParams*, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
 
-    SReal getKineticEnergy(const core::MechanicalParams*, const DataVecDeriv& v) const;  ///< vMv/2 using dof->getV() override
+    virtual SReal getKineticEnergy(const core::MechanicalParams*, const DataVecDeriv& v) const override;  ///< vMv/2 using dof->getV() override
 
-    SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& x) const;   ///< Mgx potential in a uniform gravity field, null at origin
+    virtual SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& x) const override;   ///< Mgx potential in a uniform gravity field, null at origin
 
-    defaulttype::Vector6 getMomentum(const core::MechanicalParams* mparams, const DataVecCoord& x, const DataVecDeriv& v) const;  ///< (Mv,cross(x,Mv)) override
+    virtual defaulttype::Vector6 getMomentum(const core::MechanicalParams* mparams, const DataVecCoord& x, const DataVecDeriv& v) const override;  ///< (Mv,cross(x,Mv)) override
 
-    void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v) override;
+    virtual void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v) override;
 
-    bool isDiagonal() override {return false;}
+    virtual bool isDiagonal() override {return false;}
 
 
 
     /// Add Mass contribution to global Matrix assembling
-    void addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    virtual void addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
-    SReal getElementMass(unsigned int index) const override;
-    void getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const override;
+    virtual SReal getElementMass(unsigned int index) const override;
+    virtual void getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const override;
 
-    void draw(const core::visual::VisualParams* vparams) override;
+    virtual void draw(const core::visual::VisualParams* vparams) override;
 
     /// Answer wether mass matrix is lumped or not
     bool isLumped() { return lumping.getValue(); }

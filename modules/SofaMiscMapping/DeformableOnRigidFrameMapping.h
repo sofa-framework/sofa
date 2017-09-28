@@ -125,10 +125,10 @@ class DeformableOnRigidFrameMapping : public core::Multi2Mapping<TIn, TInRoot, T
 
     //Apply
     void apply( OutVecCoord& out, const InVecCoord& in, const InRootVecCoord* inroot  );
-    void apply(
+    virtual void apply(
         const core::MechanicalParams* /* mparams */, const helper::vector<OutDataVecCoord*>& dataVecOutPos,
         const helper::vector<const InDataVecCoord*>& dataVecInPos ,
-        const helper::vector<const InRootDataVecCoord*>& dataVecInRootPos)
+        const helper::vector<const InRootDataVecCoord*>& dataVecInRootPos) override
     {
         if(dataVecOutPos.empty() || dataVecInPos.empty())
             return;
@@ -149,10 +149,10 @@ class DeformableOnRigidFrameMapping : public core::Multi2Mapping<TIn, TInRoot, T
 
     //ApplyJ
     void applyJ( OutVecDeriv& out, const InVecDeriv& in, const InRootVecDeriv* inroot );
-    void applyJ(
+    virtual void applyJ(
         const core::MechanicalParams* /* mparams */, const helper::vector< OutDataVecDeriv*>& dataVecOutVel,
         const helper::vector<const InDataVecDeriv*>& dataVecInVel,
-        const helper::vector<const InRootDataVecDeriv*>& dataVecInRootVel)
+        const helper::vector<const InRootDataVecDeriv*>& dataVecInRootVel) override
     {
         if(dataVecOutVel.empty() || dataVecInVel.empty())
             return;
@@ -173,10 +173,10 @@ class DeformableOnRigidFrameMapping : public core::Multi2Mapping<TIn, TInRoot, T
 
     //ApplyJT Force
     void applyJT( InVecDeriv& out, const OutVecDeriv& in, InRootVecDeriv* outroot );
-    void applyJT(
+    virtual void applyJT(
         const core::MechanicalParams* /* mparams */, const helper::vector< InDataVecDeriv*>& dataVecOutForce,
         const helper::vector< InRootDataVecDeriv*>& dataVecOutRootForce,
-        const helper::vector<const OutDataVecDeriv*>& dataVecInForce)
+        const helper::vector<const OutDataVecDeriv*>& dataVecInForce) override
     {
         if(dataVecOutForce.empty() || dataVecInForce.empty())
             return;
@@ -205,10 +205,10 @@ class DeformableOnRigidFrameMapping : public core::Multi2Mapping<TIn, TInRoot, T
 
     //ApplyJT Constraint
     void applyJT( InMatrixDeriv& out, const OutMatrixDeriv& in, InRootMatrixDeriv* outroot );
-    void applyJT(
+    virtual void applyJT(
         const core::ConstraintParams* /* cparams */, const helper::vector< InDataMatrixDeriv*>& dataMatOutConst ,
         const helper::vector< InRootDataMatrixDeriv*>&  dataMatOutRootConst ,
-        const helper::vector<const OutDataMatrixDeriv*>& dataMatInConst)
+        const helper::vector<const OutDataMatrixDeriv*>& dataMatInConst) override
     {
         if(dataMatOutConst.empty() || dataMatInConst.empty())
             return;

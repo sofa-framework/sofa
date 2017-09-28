@@ -67,8 +67,8 @@ public:
     }
     void selfCollision (TriangleOctreeModel * cm1);
     void addCollisionModel (core::CollisionModel * cm) override;
-    void addCollisionPair (const std::pair < core::CollisionModel *,
-            core::CollisionModel * >&cmPair);
+    virtual void addCollisionPair (const std::pair < core::CollisionModel *,
+            core::CollisionModel * >&cmPair) override;
 
     void findPairsVolume (CubeModel * cm1,
             CubeModel * cm2);

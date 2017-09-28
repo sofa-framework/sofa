@@ -105,7 +105,7 @@ protected:
 
 	TrianglePressureForceField();
 
-    virtual ~TrianglePressureForceField();
+    virtual ~TrianglePressureForceField() override;
 public:
     virtual void init() override;
 

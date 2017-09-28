@@ -265,9 +265,9 @@ public:
 
     virtual ~ImageExporter() {}
 
-    virtual	void cleanup() 	{ if (exportAtEnd.getValue()) write();	}
+    virtual	void cleanup() override { if (exportAtEnd.getValue()) write();	}
 
-    virtual void bwdInit()	{ if (exportAtBegin.getValue())	write(); }
+    virtual void bwdInit() override { if (exportAtBegin.getValue())	write(); }
 
 protected:
 

@@ -103,16 +103,16 @@ public:
     virtual void draw(const core::visual::VisualParams* vparams) override;
 
     // no geometric stiffness
-    virtual void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*parentForce*/, core::ConstMultiVecDerivId  /*childForce*/ ){}
-    virtual void updateK( const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId /*childForce*/ ){}
-    virtual const defaulttype::BaseMatrix* getK(){ return NULL; }
+    virtual void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*parentForce*/, core::ConstMultiVecDerivId  /*childForce*/ ) override {}
+    virtual void updateK( const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId /*childForce*/ ) override {}
+    virtual const defaulttype::BaseMatrix* getK() override { return NULL; }
 
     virtual void updateForceMask() override;
 
 
 protected:
     ProjectionToTargetPlaneMapping();
-    virtual ~ProjectionToTargetPlaneMapping() {}
+    virtual ~ProjectionToTargetPlaneMapping() override {}
 
     SparseMatrixEigen jacobian;                      ///< Jacobian of the mapping
     helper::vector<defaulttype::BaseMatrix*> baseMatrices;   ///< Jacobian of the mapping, in a vector
@@ -195,16 +195,16 @@ public:
     virtual void draw(const core::visual::VisualParams* vparams) override;
 
     // no geometric stiffness
-    virtual void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*parentForce*/, core::ConstMultiVecDerivId /*childForce*/ ){}
-    virtual void updateK(const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId /*childForce*/ ){}
-    virtual const defaulttype::BaseMatrix* getK(){ return NULL; }
+    virtual void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*parentForce*/, core::ConstMultiVecDerivId /*childForce*/ ) override {}
+    virtual void updateK(const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId /*childForce*/ ) override {}
+    virtual const defaulttype::BaseMatrix* getK() override { return NULL; }
     virtual void applyJT( const core::ConstraintParams* /* cparams */, const helper::vector< InDataMatrixDeriv* >& /* dataMatOutConst */, const helper::vector< const OutDataMatrixDeriv* >& /* dataMatInConst */ ) override {}
 
     virtual void updateForceMask() override;
 
 protected:
     ProjectionToPlaneMultiMapping();
-    virtual ~ProjectionToPlaneMultiMapping() {}
+    virtual ~ProjectionToPlaneMultiMapping() override {}
 
     SparseMatrixEigen jacobian0, jacobian1;                      ///< Jacobians of the mapping
     helper::vector<defaulttype::BaseMatrix*> baseMatrices;   ///< Jacobians of the mapping, in a vector

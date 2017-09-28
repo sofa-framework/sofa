@@ -192,19 +192,19 @@ public:
             res[_fixed[s]] = Deriv();
     }
 
-    virtual void projectResponse(const sofa::core::MechanicalParams* mparams, DataVecDeriv& dx) ///< project dx to constrained space
+    virtual void projectResponse(const sofa::core::MechanicalParams* mparams, DataVecDeriv& dx) override ///< project dx to constrained space
     {
         VecDeriv& res = *dx.beginEdit(mparams);
         projectResponseT(res);
         dx.endEdit(mparams);
     }
 
-    virtual void projectVelocity(const sofa::core::MechanicalParams* /* mparams */, DataVecDeriv& /* v */) ///< project dx to constrained space (dx models a velocity) override
+    virtual void projectVelocity(const sofa::core::MechanicalParams* /* mparams */, DataVecDeriv& /* v */) override ///< project dx to constrained space (dx models a velocity) override
     {
 
     }
 
-    virtual void projectPosition(const sofa::core::MechanicalParams* mparams, DataVecCoord& xData) ///< project x to constrained space (x models a position) override
+    virtual void projectPosition(const sofa::core::MechanicalParams* mparams, DataVecCoord& xData) override ///< project x to constrained space (x models a position) override
     {
         if (!this->mstate) return;
 

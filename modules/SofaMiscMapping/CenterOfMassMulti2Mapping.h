@@ -87,19 +87,19 @@ public:
     virtual void apply(
         const core::MechanicalParams* mparams, const helper::vector<OutDataVecCoord*>& dataVecOutPos,
         const helper::vector<const In1DataVecCoord*>& dataVecIn1Pos ,
-        const helper::vector<const In2DataVecCoord*>& dataVecIn2Pos);
+        const helper::vector<const In2DataVecCoord*>& dataVecIn2Pos) override;
     virtual void applyJ(
         const core::MechanicalParams* mparams, const helper::vector< OutDataVecDeriv*>& dataVecOutVel,
         const helper::vector<const In1DataVecDeriv*>& dataVecIn1Vel,
-        const helper::vector<const In2DataVecDeriv*>& dataVecIn2Vel);
+        const helper::vector<const In2DataVecDeriv*>& dataVecIn2Vel) override;
     virtual void applyJT(
         const core::MechanicalParams* mparams, const helper::vector< In1DataVecDeriv*>& dataVecOut1Force,
         const helper::vector< In2DataVecDeriv*>& dataVecOut2Force,
-        const helper::vector<const OutDataVecDeriv*>& dataVecInForce);
+        const helper::vector<const OutDataVecDeriv*>& dataVecInForce) override;
     virtual void applyJT(
         const core::ConstraintParams* /*cparams*/, const helper::vector< In1DataMatrixDeriv*>& /* dataMatOut1Const */ ,
         const helper::vector< In2DataMatrixDeriv*>&  /*dataMatOut2Const*/ ,
-        const helper::vector<const OutDataMatrixDeriv*>& /*dataMatInConst*/)
+        const helper::vector<const OutDataMatrixDeriv*>& /*dataMatInConst*/) override
     {
         serr << "applyJT(constraint) not implemented" << sendl;
     }

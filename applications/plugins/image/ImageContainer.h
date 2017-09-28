@@ -364,7 +364,7 @@ public:
     Data<unsigned int> nFrames;
 
 
-    virtual std::string getTemplateName() const	{ return templateName(this); }
+    virtual std::string getTemplateName() const	override { return templateName(this); }
     static std::string templateName(const ImageContainer<ImageTypes>* = NULL) {	return ImageTypes::Name(); }
 
     ImageContainer() : Inherited()
