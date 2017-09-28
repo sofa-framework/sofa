@@ -133,7 +133,7 @@ public:
     static Image* Create(std::string filename);
 
     template<class Object>
-    static Object* create(Object*, std::string arg)
+    static Object* create(Object*, std::string arg = "")
     {
         return new Object(arg);
     }

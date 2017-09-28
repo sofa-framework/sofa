@@ -55,7 +55,7 @@ bool Capture::saveScreen(const std::string& filename, int compression_level)
         return false;
     }
 
-    helper::io::Image* img =  helper::io::Image::FactoryImage::getInstance()->createObject(extension, filename);
+    helper::io::Image* img =  helper::io::Image::FactoryImage::getInstance()->createObject(extension, "");
 
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT,viewport);
