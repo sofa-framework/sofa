@@ -111,20 +111,20 @@ public:
     void rotate( Deriv axe, Real angle ); // around the origin (0,0,0)
 
     /// Inherited from ForceField.
-    virtual void init();
+    virtual void init() override;
     virtual void addForce(const core::MechanicalParams* mparams,
-                          DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
+                          DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
     virtual void addDForce(const core::MechanicalParams* mparams,
-                           DataVecDeriv& df, const DataVecDeriv& dx);
+                           DataVecDeriv& df, const DataVecDeriv& dx) override;
     virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/,
-                                     const DataVecCoord&  /* x */) const;
+                                     const DataVecCoord&  /* x */) const override;
     virtual void updateStiffness( const VecCoord& x );
     virtual void addKToMatrix(const core::MechanicalParams*
-                              mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix );
+                              mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix ) override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
     void drawPlane(const core::visual::VisualParams*, float size=0.0f);
-    void computeBBox(const core::ExecParams *, bool onlyVisible=false);
+    void computeBBox(const core::ExecParams *, bool onlyVisible=false) override;
 
 };
 

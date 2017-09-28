@@ -49,7 +49,7 @@ protected:
         : TopologyModifier()
     {}
 
-    virtual ~PointSetTopologyModifier() {}
+    virtual ~PointSetTopologyModifier() override {}
 public:
     virtual void init() override;
 
@@ -172,7 +172,7 @@ public:
     * @sa beginChange()
     * @sa endChange()
     */
-    void propagateTopologicalChanges();  // DEPRECATED
+    virtual void propagateTopologicalChanges() override;  // DEPRECATED
 
     /// TODO: doc ??
     void propagateTopologicalChangesWithoutReset();

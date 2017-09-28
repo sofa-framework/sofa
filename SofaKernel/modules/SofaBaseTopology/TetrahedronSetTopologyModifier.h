@@ -63,7 +63,7 @@ protected:
         , removeIsolated( initData(&removeIsolated,true, "removeIsolated", "remove Isolated dof") )
     {}
 
-    virtual ~TetrahedronSetTopologyModifier() {}
+    virtual ~TetrahedronSetTopologyModifier() override {}
 public:
     virtual void init() override;
 
@@ -150,7 +150,7 @@ public:
     */
     virtual void removeTrianglesProcess(const sofa::helper::vector<unsigned int> &indices,
             const bool removeIsolatedEdges=false,
-            const bool removeIsolatedPoints=false);
+            const bool removeIsolatedPoints=false) override;
 
     /** \brief Add some edges to this topology.
     *
@@ -167,7 +167,7 @@ public:
     * @param removeIsolatedItems if true remove isolated vertices
     */
     virtual void removeEdgesProcess( const sofa::helper::vector<unsigned int> &indices,
-            const bool removeIsolatedItems=false);
+            const bool removeIsolatedItems=false) override;
 
     /** \brief Add some points to this topology.
     *
@@ -192,7 +192,7 @@ public:
     */
     virtual void renumberPointsProcess( const sofa::helper::vector<unsigned int> &index,
             const sofa::helper::vector<unsigned int> &/*inv_index*/,
-            const bool renumberDOF = true);
+            const bool renumberDOF = true) override;
 
     /** \brief Remove a set  of tetrahedra
     @param tetrahedra an array of tetrahedron indices to be removed (note that the array is not const since it needs to be sorted)
@@ -211,7 +211,7 @@ public:
     /** \brief Generic method for points renumbering
     */
     virtual void renumberPoints( const sofa::helper::vector<unsigned int> &/*index*/,
-            const sofa::helper::vector<unsigned int> &/*inv_index*/);
+            const sofa::helper::vector<unsigned int> &/*inv_index*/) override;
 
 
 private:

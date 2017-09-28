@@ -118,7 +118,7 @@ public:
 
     void draw(const core::visual::VisualParams* /* vparams */) override { }
 
-    inline virtual bool needsDeepBoundingTree()const{return true;}
+    inline virtual bool needsDeepBoundingTree()const override {return true;}
 };
 
 } // namespace collision

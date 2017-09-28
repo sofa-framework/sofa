@@ -42,7 +42,7 @@ public:
 protected:
     AddFrameButtonSetting();
 public:
-    std::string getOperationType() {return "AddFrame";}
+    std::string getOperationType() override {return "AddFrame";}
 };
 
 }

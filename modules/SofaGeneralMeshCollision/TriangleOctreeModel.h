@@ -55,9 +55,9 @@ public:
     /// the normals for each point
     helper::vector<defaulttype::Vector3> pNorms;
     //vector < defaulttype::Vector4 > octreeVec;
-    void draw(const core::visual::VisualParams* vparams);
-    virtual void computeBoundingTree(int maxDepth=0);
-    virtual void computeContinuousBoundingTree(double dt, int maxDepth=0);
+    void draw(const core::visual::VisualParams* vparams) override;
+    virtual void computeBoundingTree(int maxDepth=0) override;
+    virtual void computeContinuousBoundingTree(double dt, int maxDepth=0) override;
     /// init the octree creation
     void buildOctree ();
 };

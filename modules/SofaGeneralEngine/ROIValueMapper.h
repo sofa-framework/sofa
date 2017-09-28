@@ -64,10 +64,10 @@ public:
     //Parameter
     Data<Real> p_defaultValue;
 
-    virtual std::string getTemplateName() const    {        return templateName(this);    }
+    virtual std::string getTemplateName() const    override {        return templateName(this);    }
     static std::string templateName(const ROIValueMapper* = NULL)    {        return std::string();    }
 
-    virtual void init()
+    virtual void init() override
     {
         addInput(&nbROIs);
         f_indices.resize(nbROIs.getValue());
@@ -77,7 +77,7 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit()
+    virtual void reinit() override
     {
         f_indices.resize(nbROIs.getValue());
         f_value.resize(nbROIs.getValue());
@@ -86,7 +86,7 @@ public:
 
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters
-    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
+    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override
     {
         f_indices.parseSizeData(arg, nbROIs);
         f_value.parseSizeData(arg, nbROIs);
@@ -94,7 +94,7 @@ public:
     }
 
     /// Assign the field values stored in the given map of name -> value pairs
-    void parseFields ( const std::map<std::string,std::string*>& str )
+    void parseFields ( const std::map<std::string,std::string*>& str ) override
     {
         f_indices.parseFieldsSizeData(str, nbROIs);
         f_value.parseFieldsSizeData(str, nbROIs);
@@ -114,7 +114,7 @@ protected:
 
     virtual ~ROIValueMapper() {}
 
-    virtual void update()
+    virtual void update() override
     {
         size_t nb = nbROIs.getValue();
         f_indices.resize(nb);

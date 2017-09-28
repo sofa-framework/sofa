@@ -51,17 +51,17 @@ protected:
     VoxelGridLoader();
     virtual ~VoxelGridLoader();
 public:
-    virtual void init();
+    virtual void init() override;
 
-    virtual void reinit();
+    virtual void reinit() override;
 
     virtual void clear();
 
-    virtual bool load();
-    virtual bool canLoad();
+    virtual bool load() override;
+    virtual bool canLoad() override;
 
     void setVoxelSize ( const defaulttype::Vector3 vSize );
-    defaulttype::Vector3 getVoxelSize () const;
+    defaulttype::Vector3 getVoxelSize () const override;
 
     void addBackgroundValue ( const int value );
     int getBackgroundValue( const unsigned int idx = 0) const;
@@ -71,17 +71,17 @@ public:
 
     void getResolution ( Vec3i& res ) const;
 
-    int getDataSize() const;
+    int getDataSize() const override;
 
-    unsigned char * getData();
-    unsigned char * getSegmentID();
+    unsigned char * getData() override;
+    unsigned char * getSegmentID() override;
 
-    helper::vector<unsigned int> getHexaIndicesInGrid() const;
+    helper::vector<unsigned int> getHexaIndicesInGrid() const override;
 
-    Vec6i getROI() const;
+    Vec6i getROI() const override;
 
     // fill the texture by 'image' only where there is the 'segmentation' of 'activeValue' and give the 3D texture sizes
-    void createSegmentation3DTexture( unsigned char **textureData, int& width, int& height, int& depth);
+    void createSegmentation3DTexture( unsigned char **textureData, int& width, int& height, int& depth) override;
 
     Data< defaulttype::Vector3 > voxelSize;
     Data< Vec3i > dataResolution;
