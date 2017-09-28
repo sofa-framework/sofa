@@ -55,12 +55,12 @@ protected:
 
     virtual ~TriangleSetTopologyModifier() {}
 public:
-    virtual void init();
+    virtual void init() override;
 
-    virtual void reinit();
+    virtual void reinit() override;
 
     /// \brief function to propagate topological change events by parsing the list of topologyEngines linked to this topology.
-    virtual void propagateTopologicalEngineChanges();
+    virtual void propagateTopologicalEngineChanges() override;
 
     /** \brief add a set of triangles
     @param triangles an array of vertex indices describing the triangles to be created
@@ -111,7 +111,7 @@ public:
      *
      * \sa addPointsWarning
      */
-    virtual void addPointsProcess(const unsigned int nPoints);
+    virtual void addPointsProcess(const unsigned int nPoints) override;
 
     /** \brief Sends a message to warn that some edges were added in this topology.
      *
@@ -141,12 +141,12 @@ public:
      *
      * \sa addEdgesWarning
      */
-    void addEdgesProcess(const sofa::helper::vector< Edge > &edges);
+    void addEdgesProcess(const sofa::helper::vector< Edge > &edges) override;
 
 
     /** \brief Generic method to remove a list of items.
      */
-    virtual void removeItems(const sofa::helper::vector< unsigned int >& items);
+    virtual void removeItems(const sofa::helper::vector< unsigned int >& items) override;
 
     /** \brief Remove a set  of triangles
         @param triangles an array of triangle indices to be removed (note that the array is not const since it needs to be sorted)

@@ -65,12 +65,12 @@ protected:
 
     virtual ~TetrahedronSetTopologyModifier() {}
 public:
-    virtual void init();
+    virtual void init() override;
 
-    virtual void reinit();
+    virtual void reinit() override;
 
     /// \brief function to propagate topological change events by parsing the list of topologyEngines linked to this topology.
-    virtual void propagateTopologicalEngineChanges();
+    virtual void propagateTopologicalEngineChanges() override;
 
     /** \brief add a set of tetrahedra
     @param tetrahedra an array of vertex indices describing the tetrahedra to be created
@@ -140,7 +140,7 @@ public:
     *
     * \sa addTrianglesWarning
     */
-    virtual void addTrianglesProcess(const sofa::helper::vector< Triangle > &triangles);
+    virtual void addTrianglesProcess(const sofa::helper::vector< Triangle > &triangles) override;
 
     /** \brief Remove a subset of triangles
     *
@@ -156,7 +156,7 @@ public:
     *
     * \sa addEdgesWarning
     */
-    virtual void addEdgesProcess(const sofa::helper::vector< Edge > &edges);
+    virtual void addEdgesProcess(const sofa::helper::vector< Edge > &edges) override;
 
     /** \brief Remove a subset of edges
     *
@@ -173,7 +173,7 @@ public:
     *
     * \sa addPointsWarning
     */
-    virtual void addPointsProcess(const unsigned int nPoints);
+    virtual void addPointsProcess(const unsigned int nPoints) override;
 
     /** \brief Remove a subset of points
     *
@@ -183,7 +183,7 @@ public:
     * \sa removePointsWarning
     * Important : the points are actually deleted from the mechanical object's state vectors iff (removeDOF == true)
     */
-    virtual void removePointsProcess(const sofa::helper::vector<unsigned int> &indices, const bool removeDOF = true);
+    virtual void removePointsProcess(const sofa::helper::vector<unsigned int> &indices, const bool removeDOF = true) override;
 
     /** \brief Reorder this topology.
     *
@@ -202,7 +202,7 @@ public:
 
     /** \brief Generic method to remove a list of items.
     */
-    virtual void removeItems(const sofa::helper::vector<unsigned int> &items);
+    virtual void removeItems(const sofa::helper::vector<unsigned int> &items) override;
 
     /** \brief  Removes all tetrahedra in the ball of center "ind_ta" and of radius dist(ind_ta, ind_tb)
     */

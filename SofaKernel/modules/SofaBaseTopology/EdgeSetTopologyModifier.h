@@ -56,10 +56,10 @@ protected:
 
     virtual ~EdgeSetTopologyModifier() {}
 public:
-    virtual void init();
+    virtual void init() override;
 
     /// \brief function to propagate topological change events by parsing the list of topologyEngines linked to this topology.
-    virtual void propagateTopologicalEngineChanges();
+    virtual void propagateTopologicalEngineChanges() override;
 
     /** \brief add a set of edges
     @param edges an array of pair of vertex indices describing the edge to be created
@@ -188,7 +188,7 @@ public:
     *
     * \sa addPointsWarning
     */
-    virtual void addPointsProcess(const unsigned int nPoints);
+    virtual void addPointsProcess(const unsigned int nPoints) override;
 
     /** \brief Remove a subset of points
     *
@@ -219,7 +219,7 @@ public:
 
     /** \brief Generic method to remove a list of items.
     */
-    virtual void removeItems(const sofa::helper::vector<unsigned int> &items);
+    virtual void removeItems(const sofa::helper::vector<unsigned int> &items) override;
 
     /** \brief Generic method for points renumbering
     */
