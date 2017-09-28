@@ -74,7 +74,17 @@ bool Capture::saveScreen(const std::string& filename, int compression_level)
 
 std::string Capture::findFilename()
 {
-    std::string filename;
+    bool pngSupport = helper::io::Image::FactoryImage::getInstance()->hasKey("png")
+            || helper::io::Image::FactoryImage::getInstance()->hasKey("PNG");
+
+    bool bmpSupport = helper::io::Image::FactoryImage::getInstance()->hasKey("bmp")
+            || helper::io::Image::FactoryImage::getInstance()->hasKey("BMP");
+
+    std::string filename = "";
+
+    if(!pngSupport && !bmpSupport)
+        return filename;
+
 #ifndef PS3
     char buf[32];
     int c;
@@ -86,11 +96,10 @@ std::string Capture::findFilename()
         sprintf(buf, "%08d",c);
         filename = prefix;
         filename += buf;
-#ifdef SOFA_HAVE_PNG
-        filename += ".png";
-#else
-        filename += ".bmp";
-#endif
+        if(pngSupport)
+            filename += ".png";
+        else
+            filename += ".bmp";
     }
     while (stat(filename.c_str(),&st)==0);
     counter = c+1;
@@ -98,12 +107,12 @@ std::string Capture::findFilename()
     sprintf(buf, "%08d",c);
     filename = prefix;
     filename += buf;
-#ifdef SOFA_HAVE_PNG
-    filename += ".png";
-#else
-    filename += ".bmp";
+    if(pngSupport)
+        filename += ".png";
+    else
+        filename += ".bmp";
 #endif
-#endif
+
     return filename;
 }
 
