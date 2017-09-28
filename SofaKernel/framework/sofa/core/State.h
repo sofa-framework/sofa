@@ -142,12 +142,12 @@ public:
     /// @{
 
     virtual objectmodel::BaseData* baseWrite(VecId v);
-    virtual const objectmodel::BaseData* baseRead(ConstVecId v) const;
+    virtual const objectmodel::BaseData* baseRead(ConstVecId v) const override;
 
     /// @}
 
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }
