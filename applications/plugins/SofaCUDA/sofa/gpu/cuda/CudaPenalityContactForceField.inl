@@ -24,7 +24,7 @@
 
 #include "CudaPenalityContactForceField.h"
 #include <SofaObjectInteraction/PenalityContactForceField.inl>
-
+#include <sofa/helper/gl/template.h>
 
 namespace sofa
 {
