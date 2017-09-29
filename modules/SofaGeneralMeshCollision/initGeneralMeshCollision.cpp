@@ -38,8 +38,11 @@ void initGeneralMeshCollision()
     }
 }
 
+#ifdef SOFA_BUILD_FULLSETCOMPONENTS
 SOFA_LINK_CLASS(MeshDiscreteIntersection)
 SOFA_LINK_CLASS(MeshMinProximityIntersection)
+#endif //SOFA_BUILD_FULLSETCOMPONENTS
+
 
 
 } // namespace component

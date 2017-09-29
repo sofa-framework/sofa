@@ -39,6 +39,7 @@ void initGeneralLoader()
     }
 }
 
+#ifdef SOFA_BUILD_FULLSETCOMPONENTS
 SOFA_LINK_CLASS(MeshGmshLoader)
 SOFA_LINK_CLASS(MeshOffLoader)
 SOFA_LINK_CLASS(MeshTrianLoader)
@@ -48,6 +49,7 @@ SOFA_LINK_CLASS(OffSequenceLoader)
 SOFA_LINK_CLASS(InputEventReader)
 SOFA_LINK_CLASS(ReadState)
 SOFA_LINK_CLASS(ReadTopology)
+#endif // SOFA_BUILD_FULLSETCOMPONENTS
 
 } // namespace component
 

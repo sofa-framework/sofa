@@ -39,6 +39,7 @@ void initMiscCollision()
     }
 }
 
+#ifdef SOFA_BUILD_MISC_COLLISION
 SOFA_LINK_CLASS(DefaultCollisionGroupManager)
 SOFA_LINK_CLASS(TetrahedronDiscreteIntersection)
 SOFA_LINK_CLASS(SpatialGridPointModel)
@@ -47,6 +48,7 @@ SOFA_LINK_CLASS(TetrahedronBarycentricPenalityContact)
 SOFA_LINK_CLASS(TetrahedronRayContact)
 SOFA_LINK_CLASS(TetrahedronFrictionContact)
 SOFA_LINK_CLASS(BarycentricStickContact)
+#endif ///SOFA_BUILD_MISC_COLLISION
 
 
 } // namespace component

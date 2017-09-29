@@ -39,8 +39,11 @@ void initMiscFEM()
     }
 }
 
+#ifdef SOFA_BUILD_FULLSETCOMPONENTS
 SOFA_LINK_CLASS(FastTetrahedralCorotationalForceField)
 SOFA_LINK_CLASS(TetrahedralTensorMassForceField)
+#endif ///SOFA_BUILD_FULLSETCOMPONENTS
+
 
 } // namespace component
 

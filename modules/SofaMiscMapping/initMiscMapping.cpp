@@ -39,6 +39,7 @@ void initMiscMapping()
     }
 }
 
+#ifdef SOFA_BUILD_FULLSETCOMPONENTS
 SOFA_LINK_CLASS(BeamLinearMapping)
 SOFA_LINK_CLASS(CenterPointMechanicalMapping)
 SOFA_LINK_CLASS(CenterOfMassMapping)
@@ -51,6 +52,7 @@ SOFA_LINK_CLASS(TubularMapping)
 SOFA_LINK_CLASS(VoidMapping)
 SOFA_LINK_CLASS(DeformableOnRigidFrameMapping)
 SOFA_LINK_CLASS(CatmullRomSplineMapping)
+#endif ///SOFA_BUILD_FULLSETCOMPONENTS
 
 } // namespace component
 

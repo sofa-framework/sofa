@@ -1,49 +1,74 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaMiscFem)
 
+message(STATUS "SofaMiscFem:")
+################################ COMPONENTS HERE ARE THE NG-SET ####################################
 set(HEADER_FILES
-    BaseMaterial.h
-    BoyceAndArruda.h
-    Costa.h
-    FastTetrahedralCorotationalForceField.h
-    FastTetrahedralCorotationalForceField.inl
-    HyperelasticMaterial.h
-    MooneyRivlin.h
-    NeoHookean.h
-    Ogden.h
-    STVenantKirchhoff.h
-    StandardTetrahedralFEMForceField.h
-    StandardTetrahedralFEMForceField.inl
-    TetrahedralTensorMassForceField.h
-    TetrahedralTensorMassForceField.inl
-    VerondaWestman.h
     config.h
     initMiscFEM.h
-    TetrahedronHyperelasticityFEMForceField.h
-    TetrahedronHyperelasticityFEMForceField.inl
-    TriangleFEMForceField.h
-    TriangleFEMForceField.inl
-    TriangularAnisotropicFEMForceField.h
-    TriangularAnisotropicFEMForceField.inl
-    TriangularFEMForceField.h
-    TriangularFEMForceField.inl
 )
 
 set(SOURCE_FILES
-    FastTetrahedralCorotationalForceField.cpp
-    StandardTetrahedralFEMForceField.cpp
-    TetrahedralTensorMassForceField.cpp
     initMiscFEM.cpp
-    TetrahedronHyperelasticityFEMForceField.cpp
-    TriangularAnisotropicFEMForceField.cpp
-    TriangleFEMForceField.cpp
-    TriangularFEMForceField.cpp
 )
 
-if(SOFA_HAVE_NEWMAT)
-    list(APPEND HEADER_FILES PlasticMaterial.h)
-    list(APPEND SOURCE_FILES PlasticMaterial.cpp)
+############################## COMPONENTS HERE ARE THE FULL-SET ####################################
+if(SOFA_BUILD_FULLSETCOMPONENTS)
+    list(APPEND HEADER_FILES
+        BaseMaterial.h
+        BoyceAndArruda.h
+        Costa.h
+        FastTetrahedralCorotationalForceField.h
+        FastTetrahedralCorotationalForceField.inl
+        HyperelasticMaterial.h
+        MooneyRivlin.h
+        NeoHookean.h
+        Ogden.h
+        STVenantKirchhoff.h
+        StandardTetrahedralFEMForceField.h
+        StandardTetrahedralFEMForceField.inl
+        TetrahedralTensorMassForceField.h
+        TetrahedralTensorMassForceField.inl
+        VerondaWestman.h
+
+        TetrahedronHyperelasticityFEMForceField.h
+        TetrahedronHyperelasticityFEMForceField.inl
+        TriangleFEMForceField.h
+        TriangleFEMForceField.inl
+        TriangularAnisotropicFEMForceField.h
+        TriangularAnisotropicFEMForceField.inl
+        TriangularFEMForceField.h
+        TriangularFEMForceField.inl
+        )
+    list(APPEND SOURCE_FILES
+        FastTetrahedralCorotationalForceField.cpp
+        StandardTetrahedralFEMForceField.cpp
+        TetrahedralTensorMassForceField.cpp
+
+        TetrahedronHyperelasticityFEMForceField.cpp
+        TriangularAnisotropicFEMForceField.cpp
+        TriangleFEMForceField.cpp
+        TriangularFEMForceField.cpp
+        )
+
+
+    if(SOFA_HAVE_NEWMAT)
+        list(APPEND HEADER_FILES PlasticMaterial.h)
+        list(APPEND SOURCE_FILES PlasticMaterial.cpp)
+    endif()
+
+    message(STATUS "   With all maintained sofa components.")
+else()
+    message(STATUS "   With only a minimal set of components.")
 endif()
+
+############################### COMPONENTS HERE ARE DEPRECATED ####################################
+if(SOFA_BUILD_DEPRECATEDCOMPONENTS)
+    message(STATUS "   With deprecated components.")
+else()
+    message(STATUS "   Without deprecated components.")
+endif()
+
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimpleFem)

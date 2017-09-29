@@ -39,10 +39,12 @@ void initGeneralObjectInteraction()
     }
 }
 
+#ifdef SOFA_BUILD_FULLSETCOMPONENTS
 SOFA_LINK_CLASS(AttachConstraint)
 SOFA_LINK_CLASS(BoxStiffSpringForceField)
 SOFA_LINK_CLASS(InteractionEllipsoidForceField)
 SOFA_LINK_CLASS(RepulsiveSpringForceField)
+#endif // SOFA_BUILD_FULLSETCOMPONENTS
 
 
 } // namespace component

@@ -39,7 +39,10 @@ void initMisc()
     }
 }
 
+#ifdef SOFA_BUILD_FULLSETCOMPONENTS
 SOFA_LINK_CLASS(MeshTetraStuffing)
+SOFA_LINK_CLASS(AddResourceRepository)
+#endif ///SOFA_BUIlD_FULLSETCOMPONENTS
 
 } // namespace component
 

@@ -39,6 +39,7 @@ void initGeneralSimpleFEM()
     }
 }
 
+#ifdef SOFA_BUILD_FULLSETCOMPONENTS
 SOFA_LINK_CLASS(BeamFEMForceField)
 SOFA_LINK_CLASS(HexahedralFEMForceField)
 SOFA_LINK_CLASS(HexahedralFEMForceFieldAndMass)
@@ -48,6 +49,7 @@ SOFA_LINK_CLASS(TetrahedralCorotationalFEMForceField)
 //SOFA_LINK_CLASS(TriangleFEMForceField)
 //SOFA_LINK_CLASS(TriangularFEMForceField)
 SOFA_LINK_CLASS(TriangularFEMForceFieldOptim)
+#endif ///SOFA_BUILD_FULLSETCOMPONENTS
 
 
 } // namespace component
