@@ -22,6 +22,9 @@
 #include <sofa/helper/system/config.h>
 #include <SofaMiscCollision/initMiscCollision.h>
 
+#ifdef SOFA_HAVE_SOFASPHFLUID
+#include "SpatialGridPointModel.h"
+#endif // SOFA_HAVE_SOFASPHFLUID
 
 namespace sofa
 {
@@ -29,8 +32,16 @@ namespace sofa
 namespace component
 {
 
+extern "C" {
+SOFA_MISC_COLLISION_API void initExternalModule();
+SOFA_MISC_COLLISION_API const char* getModuleName();
+SOFA_MISC_COLLISION_API const char* getModuleVersion();
+SOFA_MISC_COLLISION_API const char* getModuleLicense();
+SOFA_MISC_COLLISION_API const char* getModuleDescription();
+SOFA_MISC_COLLISION_API const char* getModuleComponentList();
+}
 
-void initMiscCollision()
+void initExternalModule()
 {
     static bool first = true;
     if (first)
@@ -39,10 +50,35 @@ void initMiscCollision()
     }
 }
 
-#ifdef SOFA_BUILD_MISC_COLLISION
+const char* getModuleName()
+{
+    return "SofaMiscCollision";
+}
+
+const char* getModuleVersion()
+{
+    return "1.0";
+}
+
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+const char* getModuleDescription()
+{
+    return "This plugin contains collision components.";
+}
+
+const char* getModuleComponentList()
+{
+    return "DistanceGridCollisionModel FFDDistanceGridDiscreteIntersection RayDistanceGridContact "
+           "RigidDistanceGridDiscreteIntersection DistanceGridForceField";
+}
+
+$#ifdef SOFA_BUILD_MISC_COLLISION
 SOFA_LINK_CLASS(DefaultCollisionGroupManager)
 SOFA_LINK_CLASS(TetrahedronDiscreteIntersection)
-SOFA_LINK_CLASS(SpatialGridPointModel)
 SOFA_LINK_CLASS(TetrahedronModel)
 SOFA_LINK_CLASS(TetrahedronBarycentricPenalityContact)
 SOFA_LINK_CLASS(TetrahedronRayContact)
@@ -50,7 +86,10 @@ SOFA_LINK_CLASS(TetrahedronFrictionContact)
 SOFA_LINK_CLASS(BarycentricStickContact)
 #endif ///SOFA_BUILD_MISC_COLLISION
 
+#ifdef SOFA_HAVE_SOFASPHFLUID
+SOFA_LINK_CLASS(SpatialGridPointModel)
+#endif // SOFA_HAVE_SOFASPHFLUID
 
-} // namespace component
+} /// component
 
-} // namespace sofa
+} /// sofa

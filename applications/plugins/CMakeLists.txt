@@ -8,6 +8,8 @@ find_package(SofaFramework)
 sofa_add_plugin(SofaEulerianFluid SofaEulerianFluid)
 sofa_add_plugin(SofaDistanceGrid SofaDistanceGrid)
 sofa_add_plugin(SofaImplicitField SofaImplicitField)
+sofa_add_plugin(SofaSphFluid SofaSphFluid ON)
+sofa_add_plugin(SofaMiscCollision SofaMiscCollision ON)
 sofa_add_plugin(image image)
 sofa_add_plugin(Compliant Compliant)
 sofa_add_plugin(CGALPlugin CGALPlugin) # Depends on image

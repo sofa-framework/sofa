@@ -22,10 +22,6 @@
 #include <SofaUserInteraction/RemovePrimitivePerformer.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/TopologicalMapping.h>
-
-#if 0
-#include <SofaMiscCollision/TetrahedronModel.h>
-#endif
 #include <sofa/simulation/Simulation.h>
 
 namespace sofa
