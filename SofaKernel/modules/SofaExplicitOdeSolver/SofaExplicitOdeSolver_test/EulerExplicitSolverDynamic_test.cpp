@@ -31,6 +31,7 @@
 
 // Including mechanical object
 #include <SofaBaseMechanics/MechanicalObject.h>
+typedef sofa::component::container::MechanicalObject<sofa::defaulttype::Vec3Types> MechanicalObject3;
 
 // Solvers
 #include <SofaExplicitOdeSolver/EulerSolver.h>
