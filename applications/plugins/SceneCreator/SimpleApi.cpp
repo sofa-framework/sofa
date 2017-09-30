@@ -26,23 +26,49 @@
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory ;
 
+#include <SofaSimulationGraph/DAGSimulation.h>
+using sofa::simulation::graph::DAGSimulation ;
+
 #include "SimpleApi.h"
 using sofa::core::objectmodel::BaseObjectDescription ;
+
 
 namespace sofa
 {
 namespace simpleapi
 {
 
+void importPlugin(const std::string& name)
+{
+
+}
+
+Simulation::SPtr createSimulation(const std::string& type)
+{
+    if(type!="DAG")
+    {
+        msg_error("SimpleApi") << "Unable to create simulation of type '"<<type<<"'. Supported type is ['DAG']";
+        return nullptr ;
+    }
+
+    return new simulation::graph::DAGSimulation() ;
+}
+
+
+Node::SPtr createRootNode(Simulation::SPtr s, const std::string& name,
+                                              const std::map<std::string, std::string>& params)
+{
+    return s->createNewNode(name) ;
+}
+
+
 BaseObject::SPtr createObject(Node::SPtr parent, const std::string& type, const std::map<std::string, std::string>& params)
 {
     /// temporarily, the name is set to the type name.
     /// if a "name" parameter is provided, it will overwrite it.
     BaseObjectDescription desc(type.c_str(),type.c_str());
-    std::cout << "PARSING OPTIONS: " << std::endl ;
     for(auto& kv : params)
     {
-        std::cout << kv.first << " -> " << kv.second << std::endl  ;
         desc.setAttribute(kv.first.c_str(), kv.second.c_str());
     }
 

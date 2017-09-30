@@ -32,6 +32,7 @@
 #include <map>
 
 #include <sofa/simulation/Node.h>
+#include <sofa/simulation/Simulation.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 
 namespace sofa
@@ -40,11 +41,21 @@ namespace simpleapi
 {
 
 using sofa::core::objectmodel::BaseObject ;
+using sofa::simulation::Simulation ;
 using sofa::simulation::Node ;
 
-void importPlugin(const std::string& name) ;
-BaseObject::SPtr SOFA_SCENECREATOR_API createObject(Node::SPtr parent, const std::string& type, const std::map<std::string, std::string>& params={}) ;
-Node::SPtr SOFA_SCENECREATOR_API createChild(Node::SPtr& node, const std::string& name, const std::map<std::string, std::string>& params={}) ;
+void SOFA_SCENECREATOR_API importPlugin(const std::string& name) ;
+
+Simulation::SPtr SOFA_SCENECREATOR_API createSimulation(const std::string& type="DAG") ;
+
+Node::SPtr SOFA_SCENECREATOR_API createRootNode(Simulation::SPtr, const std::string& name,
+                                                const std::map<std::string, std::string>& params={}) ;
+
+BaseObject::SPtr SOFA_SCENECREATOR_API createObject(Node::SPtr parent, const std::string& type,
+                                                    const std::map<std::string, std::string>& params={}) ;
+
+Node::SPtr SOFA_SCENECREATOR_API createChild(Node::SPtr& node, const std::string& name,
+                                             const std::map<std::string, std::string>& params={}) ;
 
 template<class T>
 std::string str(const T& t)
@@ -53,55 +64,48 @@ std::string str(const T& t)
     s << t;
     return s.str() ;
 }
-
-namespace components{
-namespace visual
-{
-    const std::string VisualModel {"VisualModel"} ;
-    const std::string OglShader {"OglShader"} ;
-}
-namespace mechanical
-{
-    const std::string MechanicalModel {"MechanicalModel" } ;
-    const std::string TetrahedronFEMForceField {"TetrahedronFEMForceField" } ;
-    const std::string StiffSpringForceField {"StiffSpringForceField" } ;
-}
-namespace collision
-{
-    const std::string PointModel   {"PointModel"} ;
-    const std::string LineModel    {"LineModel"} ;
-    const std::string SphereModel  {"SphereModel"} ;
-    const std::string OBBModel     {"OBBModel"} ;
-    const std::string CapsuleModel {"CapsuleModel"} ;
-}
-using visual::VisualModel ;
-using visual::OglShader ;
-using mechanical::MechanicalModel ;
-using mechanical::TetrahedronFEMForceField ;
-using mechanical::StiffSpringForceField ;
-using collision::PointModel ;
-using collision::LineModel ;
-using collision::SphereModel ;
-using collision::OBBModel ;
-using collision::CapsuleModel ;
-
-namespace args
-{
-    namespace VisualModel
-    {
-        const std::string name = "name";
-        const std::string filename = "filename";
-    }
-    namespace MechanicalModel
-    {
-        const std::string name = "name";
-        const std::string size = "size";
-    }
-}
-
-} /// components
-
 } /// simpleapi
+
+
+namespace simpleapi
+{
+namespace components {
+
+namespace BaseObject
+{
+    static const std::string aobjectname {"BaseObject"} ;
+    namespace data{
+        static const std::string name {"name"} ;
+    }
+};
+
+namespace MechanicalObject
+{
+    static const std::string objectname {"MechanicalObject"} ;
+    namespace data{
+        using namespace BaseObject::data ;
+        static const std::string position {"position"} ;
+    }
+}
+
+namespace VisualModel
+{
+    static const std::string objectname {"VisualModel"} ;
+
+    namespace data {
+        using namespace BaseObject::data ;
+        static const std::string filename {"filename"} ;
+    }
+}
+
+}
+
+namespace meca   { using namespace simpleapi::components::MechanicalObject ; }
+namespace visual { using namespace simpleapi::components::VisualModel ; }
+
+}
+
+
 } /// sofa
 
 #endif /// SOFA_SIMPLEAPI
