@@ -8,7 +8,7 @@ namespace component
 namespace container
 {
 
-class ImplicitSurfaceMapping : public sofa::component::DiscreteGridField
+class ImplicitSurfaceContainer : public sofa::component::geometry::DiscreteGridField
 {
 public:
     bool loadImage( const char *filename )

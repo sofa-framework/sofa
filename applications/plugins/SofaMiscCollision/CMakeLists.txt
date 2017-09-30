@@ -29,7 +29,6 @@ if(SOFA_BUILD_FULLSETCOMPONENTS)
         DefaultCollisionGroupManager.h
         RuleBasedContactManager.h
         SolverMerger.h
-        SpatialGridPointModel.h
         TetrahedronDiscreteIntersection.h
         TetrahedronModel.h
         TriangleModelInRegularGrid.h
@@ -40,7 +39,6 @@ if(SOFA_BUILD_FULLSETCOMPONENTS)
         DefaultCollisionGroupManager.cpp
         RuleBasedContactManager.cpp
         SolverMerger.cpp
-        SpatialGridPointModel.cpp
         TetrahedronBarycentricPenalityContact.cpp
         TetrahedronDiscreteIntersection.cpp
         TetrahedronFrictionContact.cpp
