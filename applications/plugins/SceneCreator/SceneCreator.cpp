@@ -30,11 +30,6 @@
 #include <sofa/defaulttype/Vec3Types.h>
 using sofa::defaulttype::Vec3Types ;
 
-#include <SofaDeformable/StiffSpringForceField.h>
-
-#include <SofaBaseMechanics/MechanicalObject.h>
-typedef sofa::component::container::MechanicalObject<Vec3Types> MechanicalObject3;
-
 #include <sofa/helper/system/FileRepository.h>
 using sofa::helper::system::DataRepository ;
 
@@ -52,8 +47,6 @@ using sofa::simpleapi::createChild ;
 namespace sofa
 {
 namespace modeling {
-using sofa::component::interactionforcefield::StiffSpringForceField ;
-typedef StiffSpringForceField<Vec3Types>   StiffSpringForceField3;
 
 
 /////////////////// IMPORTING THE DEPENDENCIES INTO THE NAMESPACE ///////////////////////////
@@ -651,39 +644,39 @@ Node::SPtr massSpringString(Node::SPtr parent,
     Vec3d startPoint(x0,y0,z0), endPoint(x1,y1,z1);
     SReal totalLength = (endPoint-startPoint).norm();
 
-    //--------
-    Node::SPtr  string_node = parent->createChild(oss.str());
-
-    MechanicalObject3::SPtr DOF = New<MechanicalObject3>();
-    string_node->addObject(DOF);
-    DOF->setName(oss.str()+"_DOF");
-
-    simpleapi::createObject(string_node, "UniformMass", {
-                                {"name",oss.str()+"_mass"},
-                                {"mass", str(totalMass/numParticles)}});
-
-    StiffSpringForceField3::SPtr spring = New<StiffSpringForceField3>();
-    string_node->addObject(spring);
-    spring->setName(oss.str()+"_spring");
-
-    //--------
-    // create the particles and the springs
-    DOF->resize(numParticles);
-    MechanicalObject3::WriteVecCoord x = DOF->writePositions();
+    std::stringstream positions ;
+    std::stringstream springs ;
     for( unsigned i=0; i<numParticles; i++ )
     {
         double alpha = (double)i/(numParticles-1);
-        x[i] = startPoint * (1-alpha)  +  endPoint * alpha;
+        Vec3d currpos = startPoint * (1-alpha)  +  endPoint * alpha;
+        positions << str(currpos) << " ";
+
         if(i>0)
         {
-            spring->addSpring(i-1,i,stiffnessValue,dampingRatio,totalLength/(numParticles-1));
+            springs << str(i-1) << " " << str(i) << " " << str(stiffnessValue)
+                    << " " << str(dampingRatio) << " " << str(totalLength/(numParticles-1)) ;
         }
     }
 
-    return string_node;
+    Node::SPtr node = simpleapi::createChild(parent, oss.str()) ;
+    simpleapi::createObject(node, "MechanicalObject", {
+                                {"name", oss.str()+"_DOF"},
+                                {"size", str(numParticles)},
+                                {"position", positions.str()}
+                            });
 
+    simpleapi::createObject(node, "UniformMass", {
+                                {"name",oss.str()+"_mass"},
+                                {"mass", str(totalMass/numParticles)}});
+
+    simpleapi::createObject(node, "StiffSprinForceField", {
+                                {"name", oss.str()+"_spring"},
+                                {"spring", springs.str()}
+                            });
+
+    return node;
 }
-
 
 Node::SPtr initSofa()
 {
