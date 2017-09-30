@@ -39,6 +39,7 @@ void initNonUniformFEM()
     }
 }
 
+#ifdef SOFA_BUILD_FULLSETCOMPONENTS
 SOFA_LINK_CLASS(NonUniformHexahedralFEMForceFieldAndMass)
 //SOFA_LINK_CLASS(NonUniformHexahedronFEMForceFieldDensity)
 SOFA_LINK_CLASS(DynamicSparseGridGeometryAlgorithms)
@@ -52,6 +53,7 @@ SOFA_LINK_CLASS(SparseGridRamificationTopology)
 SOFA_LINK_CLASS(HexahedronCompositeFEMForceFieldAndMass)
 #endif
 SOFA_LINK_CLASS(HexahedronCompositeFEMMapping)
+#endif /// SOFA_BUILD_FULLSETCOMPONENTS
 
 } // namespace component
 
