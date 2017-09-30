@@ -9,12 +9,16 @@ set(HEADER_FILES
     GetAssembledSizeVisitor.h
     GetVectorVisitor.h
     SceneCreator.h
+    SceneUtils.h
+    SimpleApi.h
 )
 
 set(SOURCE_FILES
     GetAssembledSizeVisitor.cpp
     GetVectorVisitor.cpp
     SceneCreator.cpp
+    SceneUtils.cpp
+    SimpleApi.cpp
     initSceneCreator.cpp
 )
 
