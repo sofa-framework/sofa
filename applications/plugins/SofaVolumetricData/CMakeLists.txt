@@ -46,4 +46,4 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CUR
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 
 ## Install rules for the library and headers; CMake package configurations files
-##sofa_create_package(SofaVolumetricData ${SOFAVOLUMETRICDATA_VERSION} ${PROJECT_NAME} SofaVolumetricData)
+sofa_create_package(SofaVolumetricData ${SOFAVOLUMETRICDATA_VERSION} ${PROJECT_NAME} SofaVolumetricData)

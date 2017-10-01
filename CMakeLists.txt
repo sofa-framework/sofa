@@ -212,6 +212,26 @@ option(SOFA_USE_MASK "Use mask optimization" ON)
 ### SOFA_DEV_TOOL
 option(SOFA_WITH_DEVTOOLS "Compile with developement extra features." ON)
 
+### SOFA_BUILD_PERIMETER
+### Sofa using type double or float or both
+set(SOFA_BUILD_COMPONENTSET full CACHE STRING
+"Compile SOFA with which set of components (core/full/deprecated)
+ - 'core' for only the core components
+ - 'full' for all non-deprecated components (DEFAULT)
+ - 'deprecated' for full set + deprecated components")
+set_property(CACHE SOFA_BUILD_COMPONENTSET PROPERTY STRINGS core full deprecated)
+
+if(${SOFA_BUILD_COMPONENTSET} STREQUAL full)
+    set(SOFA_BUILD_FULLSETCOMPONENTS 1)          # Used in sofa/config.h.in
+    set(SOFA_BUILD_DEPRECATEDCOMPONENTS 0)       # Used in sofa/config.h.in
+elseif(${SOFA_BUILD_COMPONENTSET} STREQUAL deprecated)
+    set(SOFA_BUILD_FULLSETCOMPONENTS 1)          # Used in sofa/config.h.in
+    set(SOFA_BUILD_DEPRECATEDCOMPONENTS 1)       # Used in sofa/config.h.in
+elseif(${SOFA_BUILD_COMPONENTSET} STREQUAL core)
+    set(SOFA_BUILD_FULLSETCOMPONENTS 0)          # Used in sofa/config.h.in
+    set(SOFA_BUILD_DEPRECATEDCOMPONENTS 0)       # Used in sofa/config.h.in
+endif()
+
 ### Threading
 option(SOFA_WITH_THREADING "Compile sofa with thread-safetiness support (PARTIAL/EXPERIMENTAL)" ON)
 
@@ -281,7 +301,6 @@ add_subdirectory(SofaGui)
 
 # SofaTest depends on SofaPython, so we add SofaPython before SofaTest.
 sofa_add_plugin( applications/plugins/SofaPython SofaPython )
-
 
 ## Scene creator option
 option(SOFA_BUILD_SCENECREATOR "Compile the C++ API located in applications/plugins/SceneCreator" OFF)

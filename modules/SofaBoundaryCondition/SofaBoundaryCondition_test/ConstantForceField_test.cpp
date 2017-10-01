@@ -45,9 +45,11 @@ using sofa::simulation::Node ;
 #include <sofa/defaulttype/RigidTypes.h>
 using namespace sofa::defaulttype;
 
+#include <SofaBaseMechanics/MechanicalObject.h>
+using sofa::component::container::MechanicalObject ;
+
 #include <SofaBoundaryCondition/ConstantForceField.h>
 using sofa::component::forcefield::ConstantForceField ;
-using sofa::component::container::MechanicalObject ;
 using sofa::core::ExecParams ;
 
 

@@ -39,7 +39,9 @@ void initGeneralExplicitODESolver()
     }
 }
 
+#ifdef SOFA_BUILD_FULLSETCOMPONENTS
 SOFA_LINK_CLASS(CentralDifferenceSolver)
+#endif ///
 
 } // namespace component
 

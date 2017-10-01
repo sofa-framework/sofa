@@ -19,10 +19,6 @@ set(HEADER_FILES
     OpenCLPlaneForceField.inl
     OpenCLProgram.h
     OpenCLProgramParser.h
-    OpenCLSPHFluidForceField.h
-    OpenCLSPHFluidForceField.inl
-    OpenCLSpatialGridContainer.h
-    OpenCLSpatialGridContainer.inl
     OpenCLSphereForceField.h
     OpenCLSphereForceField.inl
     OpenCLSpringForceField.h
@@ -52,8 +48,6 @@ set(SOURCE_FILES
     OpenCLMouseInteraction.cpp
     OpenCLPlaneForceField.cpp
     OpenCLProgram.cpp
-    OpenCLSPHFluidForceField.cpp
-    OpenCLSpatialGridContainer.cpp
     OpenCLSphereForceField.cpp
     OpenCLSpringForceField.cpp
     OpenCLUniformMass.cpp
@@ -72,14 +66,31 @@ set(OTHER_FILES
     kernels/OpenCLGenericParticleForceField_Sphere.macrocl
     kernels/OpenCLMechanicalObject.cl
     kernels/OpenCLMemoryManager.cl
-    kernels/OpenCLSPHFluidForceField.cl
-    kernels/OpenCLSpatialGridContainer.cl
     kernels/OpenCLSpatialGridForce.cl
     kernels/OpenCLSpringForceField.cl
     kernels/OpenCLUniformMass.cl
     kernels/oclRadixSort/RadixSort.cl
     kernels/oclRadixSort/Scan_b.cl
 )
+
+if(SofaSphFluid_FOUND)
+    list(APPEND HEADER_FILES
+        OpenCLSPHFluidForceField.h
+        OpenCLSPHFluidForceField.inl
+        OpenCLSpatialGridContainer.h
+        OpenCLSpatialGridContainer.inl)
+    list(APPEND SOURCE_FILES
+        OpenCLSPHFluidForceField.cpp
+        OpenCLSpatialGridContainer.cpp)
+    list(APPEND OTHER_FILES
+        kernels/OpenCLSPHFluidForceField.cl
+        kernels/OpenCLSpatialGridContainer.cl
+        )
+    message(STATUS "SofaOpenCL: optional dependency to SofaSphFluid found. Activing <OpenCLSPHFluidForceField>.")
+else()
+    message(STATUS "SofaOpenCL: optional dependency to SofaSphFluid not found. De-activing <OpenCLSPHFluidForceField>")
+endif()
+
 
 find_package(OpenCL REQUIRED)
 find_package(SofaGeneral REQUIRED)

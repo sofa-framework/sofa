@@ -2,10 +2,31 @@ cmake_minimum_required(VERSION 3.1)
 
 project(SofaGeneralImplicitOdeSolver_test)
 
+message(STATUS "SofaGeneralImplicitOdeSolver_test:")
+################################ COMPONENTS HERE ARE THE NG-SET ####################################
 set(SOURCE_FILES
-    VariationalSymplecticExplicitSolverDynamic_test.cpp
-    VariationalSymplecticImplicitSolverDynamic_test.cpp
     VariationalSymplecticImplicitSolverNonLinearForceDynamic_test.cpp)
+
+############################## COMPONENTS HERE ARE THE FULL-SET ####################################
+if(SOFA_BUILD_FULLSETCOMPONENTS)
+    list(APPEND HEADER_FILES
+        )
+    list(APPEND SOURCE_FILES
+        VariationalSymplecticExplicitSolverDynamic_test.cpp
+        VariationalSymplecticImplicitSolverDynamic_test.cpp
+        )
+    message(STATUS "   With all maintained sofa components.")
+else()
+    message(STATUS "   With only a minimal set of components.")
+endif()
+
+############################### COMPONENTS HERE ARE DEPRECATED ####################################
+if(SOFA_BUILD_DEPRECATEDCOMPONENTS)
+    message(STATUS "   With deprecated components.")
+else()
+    message(STATUS "   Without deprecated components.")
+endif()
+
 
 add_definitions("-DSOFAGENERALIMPLICITODESOLVER_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
