@@ -39,12 +39,6 @@ void initGeneralTopology()
     }
 }
 
-#ifdef SOFA_BUILD_FULLSETCOMPONENTS
-SOFA_LINK_CLASS(CubeTopology)
-SOFA_LINK_CLASS(SphereQuadTopology)
-SOFA_LINK_CLASS(CylinderGridTopology)
-#endif ///SOFA_BUILD_FULLSETCOMPONENTS
-
 } // namespace component
 
 } // namespace sofa

@@ -27,8 +27,6 @@ if(SOFA_BUILD_FULLSETCOMPONENTS)
         MatrixMass.inl
         MeshMatrixMass.h
         MeshMatrixMass.inl
-        WashingMachineForceField.h
-        WashingMachineForceField.inl
         )
     list(APPEND SOURCE_FILES
         ForceMaskOff.cpp
@@ -37,7 +35,6 @@ if(SOFA_BUILD_FULLSETCOMPONENTS)
         LineBendingSprings.cpp
         MatrixMass.cpp
         MeshMatrixMass.cpp
-        WashingMachineForceField.cpp
         )
     message(STATUS "   With all maintained sofa components.")
 else()
@@ -46,6 +43,13 @@ endif()
 
 ############################### COMPONENTS HERE ARE DEPRECATED ####################################
 if(SOFA_BUILD_DEPRECATEDCOMPONENTS)
+    list(APPEND HEADER_FILES
+        WashingMachineForceField.h
+        WashingMachineForceField.inl
+        )
+    list(APPEND SOURCE_FILES
+        WashingMachineForceField.cpp
+        )
     message(STATUS "   With deprecated components.")
 else()
     message(STATUS "   Without deprecated components.")

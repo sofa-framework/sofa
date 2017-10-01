@@ -39,14 +39,6 @@ void initGeneralRigid()
     }
 }
 
-#ifdef SOFA_BUILD_FULLSETCOMPONENTS
-SOFA_LINK_CLASS(ArticulatedHierarchyContainer)
-SOFA_LINK_CLASS(LaparoscopicRigidMapping)
-SOFA_LINK_CLASS(LineSetSkinningMapping)
-SOFA_LINK_CLASS(SkinningMapping)
-#endif //SOFA_BUILD_FULLSETCOMPONENTS
-
-
 } // namespace component
 
 } // namespace sofa

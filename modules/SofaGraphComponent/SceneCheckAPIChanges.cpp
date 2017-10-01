@@ -47,12 +47,12 @@ namespace _scenecheckapichange_
 #define DEPREP 1
 std::map<std::string, std::string> s_commonMessages =
 {
-    {"deprecated-17.06", " has been deprecated since sofa 17.12. Please consider updating your scene as using "
+    {"deprecated-17.12", " has been deprecated since sofa 17.12. Please consider updating your scene as using "
                          " deprecated component may result in poor performance and undefined behavior."
                          " If this component is crucial to you please report that to sofa-dev@ so we can  "
                          " reconsider this component for future re-integration. "
     },
-    {"removed-17.06", " has been removed since sofa 17.12. Please consider updating your scene."
+    {"removed-17.12", " has been removed since sofa 17.12. Please consider updating your scene."
                       " If this component is crucial to you please report that to sofa-dev@ so we can  "
                       " reconsider this component for future re-integration. "
     },
@@ -63,9 +63,7 @@ std::map<std::string, std::string> s_commonMessages =
 /// Component name, the error message to use among
 std::map<std::string, std::vector<std::string>> deprecatedComponents =
 {
-    {"ComponentA", {"deprecated-17.06", "Possible replacement with "}},
-    {"ComponentB", {"deprecated-17.06", "Possible replacement with "}},
-    {"ComponentC", {"deprecated-17.06", "Possible replacement with "}}
+    {"WashingMachineForceField", {"deprecated-17.12"}}
 };
 
 

@@ -39,10 +39,6 @@ void initMiscEngine()
     }
 }
 
-#ifdef SOFA_BUILD_FULLSETCOMPONENTS
-SOFA_LINK_CLASS(Distances)
-#endif ///SOFA_BUILD_FULLSETCOMPONENTS
-
 } // namespace component
 
 } // namespace sofa

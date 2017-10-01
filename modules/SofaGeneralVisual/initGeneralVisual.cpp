@@ -39,12 +39,6 @@ void initGeneralVisual()
     }
 }
 
-#ifdef SOFA_BUILD_FULLSETCOMPONENTS
-SOFA_LINK_CLASS(RecordedCamera)
-SOFA_LINK_CLASS(VisualTransform)
-#endif ///SOFA_BUILD_FULLSETCOMPONENTS
-
-
 } // namespace component
 
 } // namespace sofa

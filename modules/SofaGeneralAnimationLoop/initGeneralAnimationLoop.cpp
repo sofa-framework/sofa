@@ -39,16 +39,6 @@ void initGeneralAnimationLoop()
     }
 }
 
-#ifdef SOFA_BUILD_FULLSETCOMPONENTS
-    SOFA_LINK_CLASS(MultiStepAnimationLoop)
-    SOFA_LINK_CLASS(MultiTagAnimationLoop)
-#endif //
-
-#ifdef SOFA_BUILD_DEPRECATEDCOMPONENTS
-
-#endif //
-
-
 } // namespace component
 
 } // namespace sofa
