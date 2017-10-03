@@ -33,9 +33,6 @@
 #endif
 
 #include <set>
-#ifdef SOFA_SMP
-#include <IterativePartition.h>
-#endif
 
 namespace sofa
 {
@@ -107,9 +104,6 @@ public:
 
     /// The Context is active
     virtual bool isActive() const;
-#ifdef SOFA_SMP
-    virtual bool is_partition() const;
-#endif
 
     /// State of the context
     virtual void setActive(bool) {}
@@ -129,11 +123,7 @@ public:
     /// Animation flag
     virtual bool getAnimate() const;
 
-#ifdef SOFA_SMP
-    virtual int  getProcessor() const;
-    virtual void  setProcessor(int) {}
-    virtual Iterative::IterativePartition*  getPartition() const;
-#endif
+
 
 #ifdef SOFA_SUPPORT_MULTIRESOLUTION
     /// Multiresolution support (UNSTABLE)

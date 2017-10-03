@@ -357,12 +357,6 @@ public:
 
     virtual void vOp(const core::ExecParams* params, core::VecId v, core::ConstVecId a = core::ConstVecId::null(), core::ConstVecId b = core::ConstVecId::null(), SReal f=1.0);
 
-#ifdef SOFA_SMP
-    virtual void vOp(const core::ExecParams* params, core::VecId, core::ConstVecId, core::ConstVecId, double f, a1::Shared<double> *fSh);
-    virtual void vOpMEq(const core::ExecParams* params, core::VecId, core::ConstVecId  = core::ConstVecId::null(), a1::Shared<double> * =NULL);
-    virtual void vDot(const core::ExecParams* params, a1::Shared<double> *, core::ConstVecId , core::ConstVecId);
-#endif
-
     virtual void vMultiOp(const core::ExecParams* params, const VMultiOp& ops);
 
     virtual void vThreshold(core::VecId a, SReal threshold );
