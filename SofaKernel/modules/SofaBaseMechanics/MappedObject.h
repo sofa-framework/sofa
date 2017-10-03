@@ -146,7 +146,6 @@ extern template class MappedObject<defaulttype::Vec6fTypes>;
 extern template class MappedObject<defaulttype::Rigid3fTypes>;
 extern template class MappedObject<defaulttype::Rigid2fTypes>;
 #endif
-extern template class MappedObject<defaulttype::LaparoscopicRigid3Types>;
 #endif
 
 } // namespace container
