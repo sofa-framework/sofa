@@ -23,6 +23,7 @@
 
 #include <sofa/defaulttype/TemplatesAliases.h>
 #include <sofa/helper/logging/Messaging.h>
+#include <sofa/helper/deprecatedcomponents.h>
 
 namespace sofa
 {
@@ -149,6 +150,25 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
     if (creators.empty())
     {	// The object cannot be created
         arg->logError("Object type " + classname + std::string("<") + templatename + std::string("> creation failed"));
+        using sofa::helper::deprecatedcomponents::components ;
+        using sofa::helper::deprecatedcomponents::messages ;
+        using sofa::helper::deprecatedcomponents::indexName ;
+        using sofa::helper::deprecatedcomponents::indexMessage ;
+
+        if( components.find(classname) != components.end() )
+        {
+            auto& msg = components[classname] ;
+            std::string str = msg[indexName];
+
+            /// Replace the string by the default one.
+            if( messages.find( str ) != messages.end() ){
+                str = messages[str] ;
+            }
+
+            msg_warning(object) << classname
+                                << str
+                                << msg[indexMessage] ;
+        }
     }
     else
     {
