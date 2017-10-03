@@ -19,8 +19,6 @@ if(SOFA_BUILD_FULLSETCOMPONENTS)
         ArticulatedHierarchyContainer.inl
         ArticulatedSystemMapping.h
         ArticulatedSystemMapping.inl
-        LaparoscopicRigidMapping.h
-        LaparoscopicRigidMapping.inl
         LineSetSkinningMapping.h
         LineSetSkinningMapping.inl
         SkinningMapping.h
@@ -29,7 +27,6 @@ if(SOFA_BUILD_FULLSETCOMPONENTS)
     list(APPEND SOURCE_FILES
         ArticulatedHierarchyContainer.cpp
         ArticulatedSystemMapping.cpp
-        LaparoscopicRigidMapping.cpp
         LineSetSkinningMapping.cpp
         SkinningMapping.cpp
         )
