@@ -87,7 +87,6 @@ if(SOFA_BUILD_DEPRECATEDCOMPONENTS)
         AddRecordedCameraPerformer.cpp
         ArticulatedHierarchyBVHController.cpp
         ArticulatedHierarchyController.cpp
-        CuttingPoint.cpp
         DisabledContact.cpp
         EdgeSetController.cpp
         FixParticlePerformer.cpp
