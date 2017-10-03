@@ -17,8 +17,6 @@ if(SOFA_BUILD_FULLSETCOMPONENTS)
     list(APPEND HEADER_FILES
         AffineMovementConstraint.h
         AffineMovementConstraint.inl
-        BuoyantForceField.h
-        BuoyantForceField.inl
         ConicalForceField.h
         ConicalForceField.inl
         ConstantForceField.h
@@ -89,7 +87,6 @@ if(SOFA_BUILD_FULLSETCOMPONENTS)
 
     list(APPEND SOURCE_FILES
         AffineMovementConstraint.cpp
-        BuoyantForceField.cpp
         ConicalForceField.cpp
         ConstantForceField.cpp
         DiagonalVelocityDampingForceField.cpp
@@ -132,15 +129,18 @@ endif()
 ############################### COMPONENTS HERE ARE DEPRECATED ####################################
 if(SOFA_BUILD_DEPRECATEDCOMPONENTS)
     list(APPEND HEADER_FILES
+        BuoyantForceField.h
+        BuoyantForceField.inl
         UniformVelocityDampingForceField.h
         UniformVelocityDampingForceField.inl
         VaccumSphereForceField.h
         VaccumSphereForceField.inl
-		)
-	list(APPEND SOURCE_FILES
-	    UniformVelocityDampingForceField.cpp
+        )
+    list(APPEND SOURCE_FILES
+        BuoyantForceField.cpp
+        UniformVelocityDampingForceField.cpp
         VaccumSphereForceField.cpp
-		)
+        )
     message(STATUS "   With deprecated components.")
 else()
     message(STATUS "   Without deprecated components.")
