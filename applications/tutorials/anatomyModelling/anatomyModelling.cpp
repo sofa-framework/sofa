@@ -77,8 +77,6 @@
 #include <forcefield\StiffSpringLink.h>
 #endif
 
-//Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
-#include <sofa/component/typedef/Sofa_typedef.h>
 
 using namespace sofa;
 using namespace sofa::helper;

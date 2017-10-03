@@ -24,13 +24,12 @@
 
 #include <sofa/core/ExecParams.h>
 
-//Including Simulation
 #include <sofa/simulation/Simulation.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/simulation/Node.h>
 
-// Including mechanical object
 #include <SofaBaseMechanics/MechanicalObject.h>
+typedef sofa::component::container::MechanicalObject<Vec3Types> MechanicalObject3;
 
 // Solvers
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>

@@ -1,26 +1,47 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaGeneralObjectInteraction)
 
+message(STATUS "SofaGeneralObjectInteraction:")
+################################ COMPONENTS HERE ARE THE NG-SET ####################################
 set(HEADER_FILES
-    AttachConstraint.h
-    AttachConstraint.inl
-    BoxStiffSpringForceField.h
-    BoxStiffSpringForceField.inl
-    InteractionEllipsoidForceField.h
-    InteractionEllipsoidForceField.inl
-    RepulsiveSpringForceField.h
-    RepulsiveSpringForceField.inl
     config.h
     initGeneralObjectInteraction.h
 )
 
 set(SOURCE_FILES
-	AttachConstraint.cpp
-	BoxStiffSpringForceField.cpp
-    InteractionEllipsoidForceField.cpp
-    RepulsiveSpringForceField.cpp
     initGeneralObjectInteraction.cpp
 )
+
+############################## COMPONENTS HERE ARE THE FULL-SET ####################################
+if(SOFA_BUILD_FULLSETCOMPONENTS)
+    list(APPEND HEADER_FILES
+        AttachConstraint.h
+        AttachConstraint.inl
+        BoxStiffSpringForceField.h
+        BoxStiffSpringForceField.inl
+        InteractionEllipsoidForceField.h
+        InteractionEllipsoidForceField.inl
+        RepulsiveSpringForceField.h
+        RepulsiveSpringForceField.inl
+        )
+    list(APPEND SOURCE_FILES
+        AttachConstraint.cpp
+        BoxStiffSpringForceField.cpp
+        InteractionEllipsoidForceField.cpp
+        RepulsiveSpringForceField.cpp
+        )
+    message(STATUS "   With all maintained sofa components.")
+else()
+    message(STATUS "   With only a minimal set of components.")
+endif()
+
+############################### COMPONENTS HERE ARE DEPRECATED ####################################
+if(SOFA_BUILD_DEPRECATEDCOMPONENTS)
+    message(STATUS "   With deprecated components.")
+else()
+    message(STATUS "   Without deprecated components.")
+endif()
+
 
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})

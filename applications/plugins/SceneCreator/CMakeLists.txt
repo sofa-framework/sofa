@@ -9,24 +9,27 @@ set(HEADER_FILES
     GetAssembledSizeVisitor.h
     GetVectorVisitor.h
     SceneCreator.h
+    SceneUtils.h
+    SimpleApi.h
 )
 
 set(SOURCE_FILES
     GetAssembledSizeVisitor.cpp
     GetVectorVisitor.cpp
     SceneCreator.cpp
+    SceneUtils.cpp
+    SimpleApi.cpp
     initSceneCreator.cpp
 )
 
 find_package(SofaSimulation REQUIRED)
-find_package(SofaMisc REQUIRED)
 
 ## SceneCreator/config.h
 configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/SceneCreator/config.h")
 install(FILES "${CMAKE_BINARY_DIR}/include/SceneCreator/config.h" DESTINATION "include/SceneCreator")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaSimulationTree SofaComponentMisc SofaSimulationGraph SofaLoader SofaEngine SofaSparseSolver)
+target_link_libraries(${PROJECT_NAME} SofaSimulationGraph)
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
@@ -44,7 +47,7 @@ sofa_create_package(SceneCreator ${SCENECREATOR_VERSION} SceneCreator SceneCreat
 add_subdirectory(sceneCreatorExamples)
 
 ## Add test project
-if(SOFA_BUILD_TESTS)
-    find_package(SofaTest QUIET)
-    add_subdirectory(SceneCreator_test)
-endif()
+#if(SOFA_BUILD_TESTS)
+#    find_package(SofaTest QUIET)
+#    add_subdirectory(SceneCreator_test)
+#endif()

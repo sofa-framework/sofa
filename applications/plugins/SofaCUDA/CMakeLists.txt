@@ -28,7 +28,6 @@ set(HEADER_FILES
     sofa/gpu/cuda/CudaFixedConstraint.h
     sofa/gpu/cuda/CudaFixedConstraint.inl
     sofa/gpu/cuda/CudaHexahedronTLEDForceField.h
-    # sofa/gpu/cuda/CudaHexahedronTLEDForceField.inl
     sofa/gpu/cuda/CudaIdentityMapping.h
     sofa/gpu/cuda/CudaIdentityMapping.inl
     sofa/gpu/cuda/CudaLineModel.h
@@ -48,8 +47,6 @@ set(HEADER_FILES
     sofa/gpu/cuda/CudaMeshMatrixMass.inl
     sofa/gpu/cuda/CudaParticleSource.h
     sofa/gpu/cuda/CudaParticleSource.inl
-    sofa/gpu/cuda/CudaParticlesRepulsionForceField.h
-    sofa/gpu/cuda/CudaParticlesRepulsionForceField.inl
     sofa/gpu/cuda/CudaPenalityContactForceField.h
     sofa/gpu/cuda/CudaPenalityContactForceField.inl
     sofa/gpu/cuda/CudaPlaneForceField.h
@@ -57,12 +54,8 @@ set(HEADER_FILES
     sofa/gpu/cuda/CudaPointModel.h
     sofa/gpu/cuda/CudaRigidMapping.h
     sofa/gpu/cuda/CudaRigidMapping.inl
-    sofa/gpu/cuda/CudaSPHFluidForceField.h
-    sofa/gpu/cuda/CudaSPHFluidForceField.inl
     sofa/gpu/cuda/CudaScan.h
     sofa/gpu/cuda/CudaSort.h
-    sofa/gpu/cuda/CudaSpatialGridContainer.h
-    sofa/gpu/cuda/CudaSpatialGridContainer.inl
     sofa/gpu/cuda/CudaSphereForceField.h
     sofa/gpu/cuda/CudaSphereForceField.inl
     sofa/gpu/cuda/CudaSphereModel.h
@@ -117,16 +110,12 @@ set(SOURCE_FILES
     sofa/gpu/cuda/CudaLinearVelocityConstraint.cpp
     sofa/gpu/cuda/CudaMechanicalObject.cpp
     sofa/gpu/cuda/CudaMeshMatrixMass.cpp
-    sofa/gpu/cuda/CudaParticleSource.cpp
-    sofa/gpu/cuda/CudaParticlesRepulsionForceField.cpp
     sofa/gpu/cuda/CudaPenalityContactForceField.cpp
     sofa/gpu/cuda/CudaPlaneForceField.cpp
     sofa/gpu/cuda/CudaPointModel.cpp
     sofa/gpu/cuda/CudaRestShapeSpringsForceField.cpp
     sofa/gpu/cuda/CudaRigidMapping.cpp
-    sofa/gpu/cuda/CudaSPHFluidForceField.cpp
     sofa/gpu/cuda/CudaSetTopology.cpp
-    sofa/gpu/cuda/CudaSpatialGridContainer.cpp
     sofa/gpu/cuda/CudaSphereForceField.cpp
     sofa/gpu/cuda/CudaSphereModel.cpp
     sofa/gpu/cuda/CudaSphereROI.cpp
@@ -156,14 +145,11 @@ set(CUDA_SOURCES
     sofa/gpu/cuda/CudaMechanicalObject.cu
     sofa/gpu/cuda/CudaMeshMatrixMass.cu
     sofa/gpu/cuda/CudaParticleSource.cu
-    sofa/gpu/cuda/CudaParticlesRepulsionForceField.cu
     sofa/gpu/cuda/CudaPenalityContactForceField.cu
     sofa/gpu/cuda/CudaPlaneForceField.cu
     sofa/gpu/cuda/CudaRigidMapping.cu
-    sofa/gpu/cuda/CudaSPHFluidForceField.cu
     sofa/gpu/cuda/CudaScan.cu
     sofa/gpu/cuda/CudaSort.cu
-    sofa/gpu/cuda/CudaSpatialGridContainer.cu
     sofa/gpu/cuda/CudaSphereForceField.cu
     sofa/gpu/cuda/CudaSpringForceField.cu
     sofa/gpu/cuda/CudaStandardTetrahedralFEMForceField.cu
@@ -222,6 +208,36 @@ if(SofaDistanceGrid_FOUND)
 else()
     message(STATUS "SofaCUDA: SofaDistanceGrid was not enabled, therefore CudaDistanceGridCollisionModel will not be compiled.")
 endif()
+
+find_package(SofaSphFluid QUIET)
+if(SofaSphFluid_FOUND)
+    list(APPEND HEADER_FILES
+            sofa/gpu/cuda/CudaParticleSource.h
+            sofa/gpu/cuda/CudaParticleSource.inl
+            sofa/gpu/cuda/CudaSPHFluidForceField.h
+            sofa/gpu/cuda/CudaSPHFluidForceField.inl
+            sofa/gpu/cuda/CudaParticlesRepulsionForceField.h
+            sofa/gpu/cuda/CudaParticlesRepulsionForceField.inl
+            sofa/gpu/cuda/CudaSpatialGridContainer.h
+            sofa/gpu/cuda/CudaSpatialGridContainer.inl
+            )
+    list(APPEND SOURCE_FILES
+        sofa/gpu/cuda/CudaParticleSource.cpp
+        sofa/gpu/cuda/CudaSPHFluidForceField.cpp
+        sofa/gpu/cuda/CudaParticlesRepulsionForceField.cpp
+        sofa/gpu/cuda/CudaSpatialGridContainer.cpp
+        )
+    list(APPEND CUDA_SOURCES
+        sofa/gpu/cuda/CudaParticleSource.cu
+        sofa/gpu/cuda/CudaSPHFluidForceField.cu
+        sofa/gpu/cuda/CudaParticlesRepulsionForceField.cu
+        sofa/gpu/cuda/CudaSpatialGridContainer.cu
+        )
+    message(STATUS "SofaCUDA: optional dependency to SofaSphFluid found. ")
+else()
+    message(STATUS "SofaCUDA: optional dependency SofaSphFluid not found. ")
+endif()
+
 
 option(SOFACUDA_VERBOSE_PTXAS "???" OFF)
 if(SOFACUDA_VERBOSE_PTXAS)
@@ -321,6 +337,9 @@ if(SOFACUDA_CUDPP)
 endif()
 if(VolumetricRendering_FOUND)
     target_link_libraries(${PROJECT_NAME} VolumetricRendering)
+endif()
+if(SofaSphFluid_FOUND)
+    target_link_libraries(${PROJECT_NAME} SofaSphFluid)
 endif()
 
 ## SofaCUDANvccFlags.cmake

@@ -6,8 +6,11 @@ add_subdirectory(../../extlibs/CImg extlibs/CImg)
 find_package(SofaFramework)
 
 sofa_add_plugin(SofaEulerianFluid SofaEulerianFluid)
+sofa_add_plugin(SofaSphFluid SofaSphFluid ON)
+sofa_add_plugin(SofaMiscCollision SofaMiscCollision ON)
 sofa_add_plugin(SofaDistanceGrid SofaDistanceGrid)
 sofa_add_plugin(SofaImplicitField SofaImplicitField)
+sofa_add_plugin(SofaVolumetricData SofaVolumetricData)  ##TRANSITIONAL DEPEND ON DISTANCEGRID & IMPLICIT
 sofa_add_plugin(image image)
 sofa_add_plugin(Compliant Compliant)
 sofa_add_plugin(CGALPlugin CGALPlugin) # Depends on image
@@ -54,5 +57,3 @@ else()
     sofa_add_plugin(VolumetricRendering VolumetricRendering) # VolumetricRendering plugin can't work without OPENGL
 endif()
 
-# The following are just transitional packages to help switching module to plugin while refactoring.
-sofa_add_plugin(SofaVolumetricData SofaVolumetricData)

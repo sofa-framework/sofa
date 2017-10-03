@@ -24,7 +24,6 @@
 
 #include "SimpleDataWidget.h"
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 #include <SofaDeformable/SpringForceField.h>
 #include <SofaRigid/JointSpringForceField.h>
 #include <SofaMiscForceField/GearSpringForceField.h>
@@ -407,44 +406,6 @@ template<int N, class T>
 class data_widget_container < sofa::defaulttype::RigidMass<N, T> > : public struct_data_widget_container < sofa::defaulttype::RigidMass<N, T> >
 {};
 
-
-////////////////////////////////////////////////////////////////
-/// LaparoscopicRigid3Types support
-////////////////////////////////////////////////////////////////
-
-template<>
-class struct_data_trait < sofa::defaulttype::LaparoscopicRigid3Types::Coord >
-{
-public:
-    typedef sofa::defaulttype::LaparoscopicRigid3Types::Coord data_type;
-    enum { NVAR = 2 };
-    static void set( data_type& /*d*/ )
-    {
-    }
-};
-template<> STRUCT_DATA_VAR(sofa::defaulttype::LaparoscopicRigid3Types::Coord, 0, "Translation", "T", data_type::value_type, getTranslation());
-template<> STRUCT_DATA_VAR(sofa::defaulttype::LaparoscopicRigid3Types::Coord, 1, "Orientation", "", sofa::defaulttype::Quat, getOrientation());
-
-template<>
-class data_widget_container < sofa::defaulttype::LaparoscopicRigid3Types::Coord > : public struct_data_widget_container < sofa::defaulttype::LaparoscopicRigid3Types::Coord >
-{};
-
-template<>
-class struct_data_trait < sofa::defaulttype::LaparoscopicRigid3Types::Deriv >
-{
-public:
-    typedef sofa::defaulttype::LaparoscopicRigid3Types::Deriv data_type;
-    enum { NVAR = 2 };
-    static void set( data_type& /*d*/ )
-    {
-    }
-};
-template<> STRUCT_DATA_VAR(sofa::defaulttype::LaparoscopicRigid3Types::Deriv, 0, "VTranslation", "dT", data_type::value_type, getVTranslation());
-template<> STRUCT_DATA_VAR(sofa::defaulttype::LaparoscopicRigid3Types::Deriv, 1, "VOrientation", "w", sofa::defaulttype::Vector3, getVOrientation());
-
-template<>
-class data_widget_container < sofa::defaulttype::LaparoscopicRigid3Types::Deriv > : public struct_data_widget_container < sofa::defaulttype::LaparoscopicRigid3Types::Deriv >
-{};
 
 ////////////////////////////////////////////////////////////////
 /// sofa::component::forcefield::LinearSpring support

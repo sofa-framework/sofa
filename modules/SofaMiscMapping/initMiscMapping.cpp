@@ -39,19 +39,6 @@ void initMiscMapping()
     }
 }
 
-SOFA_LINK_CLASS(BeamLinearMapping)
-SOFA_LINK_CLASS(CenterPointMechanicalMapping)
-SOFA_LINK_CLASS(CenterOfMassMapping)
-SOFA_LINK_CLASS(CenterOfMassMultiMapping)
-SOFA_LINK_CLASS(CenterOfMassMulti2Mapping)
-SOFA_LINK_CLASS(CurveMapping)
-SOFA_LINK_CLASS(ExternalInterpolationMapping)
-SOFA_LINK_CLASS(SubsetMultiMapping)
-SOFA_LINK_CLASS(TubularMapping)
-SOFA_LINK_CLASS(VoidMapping)
-SOFA_LINK_CLASS(DeformableOnRigidFrameMapping)
-SOFA_LINK_CLASS(CatmullRomSplineMapping)
-
 } // namespace component
 
 } // namespace sofa

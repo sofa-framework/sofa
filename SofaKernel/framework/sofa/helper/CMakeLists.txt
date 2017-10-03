@@ -39,6 +39,7 @@ set(HEADER_FILES
     accessor.h
     decompose.h
     decompose.inl
+    deprecatedcomponents.h
     deque.h
     fixed_array.h
     hash.h
@@ -147,6 +148,7 @@ set(SOURCE_FILES
     UnitTest.cpp
     Utils.cpp
     decompose.cpp
+    deprecatedcomponents.cpp
     gl/Trackball.cpp
     gl/Transformation.cpp
     init.cpp
