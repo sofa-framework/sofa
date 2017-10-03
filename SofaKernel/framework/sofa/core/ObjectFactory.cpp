@@ -165,7 +165,7 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
                 str = messages[str] ;
             }
 
-            msg_warning(object) << classname
+            msg_warning(object.get()) << classname
                                 << str
                                 << msg[indexMessage] ;
         }
