@@ -48,15 +48,16 @@ std::map<std::string, std::string>  messages =
 std::map<std::string, std::vector<std::string>> components =
 {
     {"WashingMachineForceField", {"deprecated-17.12"}},
-	
-    {"CatmullRomSplineMapping.cpp", {"deprecated-17.12"}},
-    {"CenterPointMechanicalMapping.cpp", {"deprecated-17.12"}},
-    {"CurveMapping.cpp", {"deprecated-17.12"}},
-    {"ExternalInterpolationMapping.cpp", {"deprecated-17.12"}},
+
+    {"BuoyantForceField", {"deprecated-17.12"}},
+    {"CatmullRomSplineMapping", {"deprecated-17.12"}},
+    {"CenterPointMechanicalMapping", {"deprecated-17.12"}},
+    {"CurveMapping", {"deprecated-17.12"}},
+    {"ExternalInterpolationMapping", {"deprecated-17.12"}},
     {"ProjectionToLineMapping", {"deprecated-17.12"}},
     {"ProjectionToTargetLineMapping_test", {"deprecated-17.12"}},
     {"ProjectionToPlaneMapping", {"deprecated-17.12"}},
-    {"ProjectionToTargetPlaneMapping_test.cpp", {"deprecated-17.12"}},
+    {"ProjectionToTargetPlaneMapping_test", {"deprecated-17.12"}},
 
     /// SofaUserInteraction
     {"AddRecordedCameraPerformer", {"deprecated-17.12"}},
