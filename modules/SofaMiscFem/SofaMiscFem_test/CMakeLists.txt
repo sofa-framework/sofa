@@ -28,6 +28,13 @@ endif()
 
 ############################### COMPONENTS HERE ARE DEPRECATED ####################################
 if(SOFA_BUILD_DEPRECATEDCOMPONENTS)
+list(APPEND HEADER_FILES
+		LennardJonesForceField_test.h
+		LennardJonesForceField_test.inl
+        )
+    list(APPEND SOURCE_FILES
+		LennardJonesForceField_test.cpp
+        )
     message(STATUS "   With deprecated components.")
 else()
     message(STATUS "   Without deprecated components.")
