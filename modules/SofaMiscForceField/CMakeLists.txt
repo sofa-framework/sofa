@@ -16,20 +16,15 @@ set(SOURCE_FILES
 ############################## COMPONENTS HERE ARE THE FULL-SET ####################################
 if(SOFA_BUILD_FULLSETCOMPONENTS)
     list(APPEND HEADER_FILES
-        ForceMaskOff.h
-        GearSpringForceField.h
-        GearSpringForceField.inl        
-        LineBendingSprings.h
-        LineBendingSprings.inl
+	    GearSpringForceField.h
+        GearSpringForceField.inl             
         MatrixMass.h
         MatrixMass.inl
         MeshMatrixMass.h
         MeshMatrixMass.inl
         )
-    list(APPEND SOURCE_FILES
-        ForceMaskOff.cpp
-        GearSpringForceField.cpp        
-        LineBendingSprings.cpp
+    list(APPEND SOURCE_FILES     
+	    GearSpringForceField.cpp           
         MatrixMass.cpp
         MeshMatrixMass.cpp
         )
@@ -41,12 +36,17 @@ endif()
 ############################### COMPONENTS HERE ARE DEPRECATED ####################################
 if(SOFA_BUILD_DEPRECATEDCOMPONENTS)
     list(APPEND HEADER_FILES
+	    ForceMaskOff.h  
+        LineBendingSprings.h
+        LineBendingSprings.inl
         WashingMachineForceField.h
         WashingMachineForceField.inl
 		LennardJonesForceField.h
         LennardJonesForceField.inl
         )
     list(APPEND SOURCE_FILES
+	    ForceMaskOff.cpp        
+        LineBendingSprings.cpp
         WashingMachineForceField.cpp
 		LennardJonesForceField.cpp
         )
