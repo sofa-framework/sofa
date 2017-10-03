@@ -47,7 +47,29 @@ std::map<std::string, std::string>  messages =
 /// Component name, the error message to use among
 std::map<std::string, std::vector<std::string>> components =
 {
-    {"WashingMachineForceField", {"deprecated-17.12"}}
+    {"WashingMachineForceField", {"deprecated-17.12"}},
+	
+    {"CatmullRomSplineMapping.cpp", {"deprecated-17.12"}},
+    {"CenterPointMechanicalMapping.cpp", {"deprecated-17.12"}},
+    {"CurveMapping.cpp", {"deprecated-17.12"}},
+    {"ExternalInterpolationMapping.cpp", {"deprecated-17.12"}},
+    {"ProjectionToLineMapping", {"deprecated-17.12"}},
+    {"ProjectionToTargetLineMapping_test", {"deprecated-17.12"}},
+    {"ProjectionToPlaneMapping", {"deprecated-17.12"}},
+    {"ProjectionToTargetPlaneMapping_test.cpp", {"deprecated-17.12"}},
+
+    /// SofaUserInteraction
+    {"AddRecordedCameraPerformer", {"deprecated-17.12"}},
+    {"ArticulatedHierarchyBVHController", {"deprecated-17.12"}},
+    {"ArticulatedHierarchyController", {"deprecated-17.12"}},
+    {"CuttingPoint", {"deprecated-17.12"}},
+    {"DisabledContact", {"deprecated-17.12"}},
+    {"EdgeSetController", {"deprecated-17.12"}},
+    {"FixParticlePerformer", {"deprecated-17.12"}},
+    {"GraspingManager", {"deprecated-17.12"}},
+    {"InciseAlongPathPerformer", {"deprecated-17.12"}},
+    {"InterpolationController", {"deprecated-17.12"}},
+    {"NodeToggleController", {"deprecated-17.12"}}
 };
 
 } /// namespace deprecatedcomponents
