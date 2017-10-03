@@ -258,7 +258,7 @@ public:
 
     /// Generic object access template wrapper, possibly searching up or down from the current context
     template<class T>
-    void get(boost::intrusive_ptr<T>& ptr, SearchDirection dir = SearchUp) const
+    void get(sptr<T>& ptr, SearchDirection dir = SearchUp) const
     {
         ptr = this->get<T>(dir);
     }
@@ -279,7 +279,7 @@ public:
 
     /// Generic object access template wrapper, given a required tag, possibly searching up or down from the current context
     template<class T>
-    void get(boost::intrusive_ptr<T>& ptr, const Tag& tag, SearchDirection dir = SearchUp) const
+    void get(sptr<T>& ptr, const Tag& tag, SearchDirection dir = SearchUp) const
     {
         ptr = this->get<T>(tag, dir);
     }
@@ -300,7 +300,7 @@ public:
 
     /// Generic object access template wrapper, given a set of required tags, possibly searching up or down from the current context
     template<class T>
-    void get(boost::intrusive_ptr<T>& ptr, const TagSet& tags, SearchDirection dir = SearchUp) const
+    void get(sptr<T>& ptr, const TagSet& tags, SearchDirection dir = SearchUp) const
     {
         ptr = this->get<T>(tags, dir);
     }
@@ -321,7 +321,7 @@ public:
 
     /// Generic object access template wrapper, given a path from the current context
     template<class T>
-    void get(boost::intrusive_ptr<T>& ptr, const std::string& path) const
+    void get(sptr<T>& ptr, const std::string& path) const
     {
         ptr = this->get<T>(path);
     }
@@ -428,13 +428,13 @@ public:
     /// @{
 
     /// Add an object, or return false if not supported
-    virtual bool addObject( boost::intrusive_ptr<BaseObject> /*obj*/ )
+    virtual bool addObject( sptr<BaseObject> /*obj*/ )
     {
         return false;
     }
 
     /// Remove an object, or return false if not supported
-    virtual bool removeObject( boost::intrusive_ptr<BaseObject> /*obj*/ )
+    virtual bool removeObject( sptr<BaseObject> /*obj*/ )
     {
         return false;
     }

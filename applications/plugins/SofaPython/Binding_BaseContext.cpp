@@ -366,7 +366,7 @@ static PyObject * BaseContext_getObjects(PyObject * self, PyObject * args)
         }
     }
 
-    sofa::helper::vector< boost::intrusive_ptr<BaseObject> > list;
+    sofa::helper::vector< BaseObject::SPtr > list;
     context->get<BaseObject>(&list,search_direction_enum);
 
     PyObject *pyList = PyList_New(0);
