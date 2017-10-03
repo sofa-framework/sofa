@@ -315,10 +315,6 @@ public:
 
     void* findLinkDestClass(const sofa::core::objectmodel::BaseClass* destType, const std::string& path, const sofa::core::objectmodel::BaseLink* link);
 
-#ifdef SOFA_SMP
-    /// Get first partition
-    Iterative::IterativePartition* getFirstPartition();
-#endif
 
     /// Generic object access, given a set of required tags, possibly searching up or down from the current context
     ///
