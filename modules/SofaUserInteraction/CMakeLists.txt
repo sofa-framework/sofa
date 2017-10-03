@@ -36,12 +36,6 @@ if(SOFA_BUILD_FULLSETCOMPONENTS)
         RayModel.h
         RayNewProximityIntersection.h
         RayTraceDetection.h
-        RemovePrimitivePerformer.h
-        RemovePrimitivePerformer.inl
-        SleepController.h
-        StartNavigationPerformer.h
-        SuturePointPerformer.h
-        SuturePointPerformer.inl
         TopologicalChangeManager.h
         )
 
@@ -59,10 +53,6 @@ if(SOFA_BUILD_FULLSETCOMPONENTS)
         RayModel.cpp
         RayNewProximityIntersection.cpp
         RayTraceDetection.cpp
-        RemovePrimitivePerformer.cpp
-        SleepController.cpp
-        StartNavigationPerformer.cpp
-        SuturePointPerformer.cpp
         TopologicalChangeManager.cpp
         )
     message(STATUS "   With all maintained sofa components.")
@@ -87,6 +77,12 @@ if(SOFA_BUILD_DEPRECATEDCOMPONENTS)
         InterpolationController.h
         InterpolationController.inl
         NodeToggleController.h
+        RemovePrimitivePerformer.h
+        RemovePrimitivePerformer.inl
+        SleepController.h
+        StartNavigationPerformer.h
+        SuturePointPerformer.h
+        SuturePointPerformer.inl
         )
     list(APPEND SOURCE_FILES
         AddRecordedCameraPerformer.cpp
@@ -100,6 +96,10 @@ if(SOFA_BUILD_DEPRECATEDCOMPONENTS)
         InciseAlongPathPerformer.cpp
         InterpolationController.cpp
         NodeToggleController.cpp
+        RemovePrimitivePerformer.cpp
+        SleepController.cpp
+        StartNavigationPerformer.cpp
+        SuturePointPerformer.cpp
         )
     message(STATUS "   With deprecated components.")
 else()
