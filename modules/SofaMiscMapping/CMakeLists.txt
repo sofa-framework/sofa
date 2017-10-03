@@ -19,32 +19,32 @@ if(SOFA_BUILD_FULLSETCOMPONENTS)
         BarycentricMappingRigid.inl
         BeamLinearMapping.h
         BeamLinearMapping.inl
-        CatmullRomSplineMapping.h
-        CatmullRomSplineMapping.inl
+        #CatmullRomSplineMapping.h
+        #CatmullRomSplineMapping.inl
         CenterOfMassMapping.h
         CenterOfMassMapping.inl
         CenterOfMassMulti2Mapping.h
         CenterOfMassMulti2Mapping.inl
         CenterOfMassMultiMapping.h
         CenterOfMassMultiMapping.inl
-        CenterPointMechanicalMapping.h
-        CenterPointMechanicalMapping.inl
-        CurveMapping.h
-        CurveMapping.inl
+        #CenterPointMechanicalMapping.h
+        #CenterPointMechanicalMapping.inl
+        #CurveMapping.h
+        #CurveMapping.inl
         DeformableOnRigidFrameMapping.h
         DeformableOnRigidFrameMapping.inl
         DistanceFromTargetMapping.h
         DistanceFromTargetMapping.inl
         DistanceMapping.h
         DistanceMapping.inl
-        ExternalInterpolationMapping.h
-        ExternalInterpolationMapping.inl
+        #ExternalInterpolationMapping.h
+        #ExternalInterpolationMapping.inl
         IdentityMultiMapping.h
         IdentityMultiMapping.inl
-        ProjectionToLineMapping.h
-        ProjectionToLineMapping.inl
-        ProjectionToPlaneMapping.h
-        ProjectionToPlaneMapping.inl
+        #ProjectionToLineMapping.h
+        #ProjectionToLineMapping.inl
+        #ProjectionToPlaneMapping.h
+        #ProjectionToPlaneMapping.inl
         SquareDistanceMapping.h
         SquareDistanceMapping.inl
         SquareMapping.h
@@ -58,19 +58,19 @@ if(SOFA_BUILD_FULLSETCOMPONENTS)
     list(APPEND SOURCE_FILES
         BarycentricMappingRigid.cpp
         BeamLinearMapping.cpp
-        CatmullRomSplineMapping.cpp
+        #CatmullRomSplineMapping.cpp
         CenterOfMassMapping.cpp
         CenterOfMassMulti2Mapping.cpp
         CenterOfMassMultiMapping.cpp
-        CenterPointMechanicalMapping.cpp
-        CurveMapping.cpp
+        #CenterPointMechanicalMapping.cpp
+        #CurveMapping.cpp
         DeformableOnRigidFrameMapping.cpp
         DistanceFromTargetMapping.cpp
         DistanceMapping.cpp
-        ExternalInterpolationMapping.cpp
+        #ExternalInterpolationMapping.cpp
         IdentityMultiMapping.cpp
-        ProjectionToLineMapping.cpp
-        ProjectionToPlaneMapping.cpp
+        #ProjectionToLineMapping.cpp
+        #ProjectionToPlaneMapping.cpp
         SquareDistanceMapping.cpp
         SquareMapping.cpp
         SubsetMultiMapping.cpp
@@ -85,6 +85,28 @@ endif()
 
 ############################### COMPONENTS HERE ARE DEPRECATED ####################################
 if(SOFA_BUILD_DEPRECATEDCOMPONENTS)
+    list(APPEND HEADER_FILES
+        CatmullRomSplineMapping.h
+        CatmullRomSplineMapping.inl
+        CenterPointMechanicalMapping.h
+        CenterPointMechanicalMapping.inl
+        CurveMapping.h
+        CurveMapping.inl
+        ExternalInterpolationMapping.h
+        ExternalInterpolationMapping.inl
+        ProjectionToLineMapping.h
+        ProjectionToLineMapping.inl
+        ProjectionToPlaneMapping.h
+        ProjectionToPlaneMapping.inl
+        )
+    list(APPEND SOURCE_FILES
+        CatmullRomSplineMapping.cpp
+        CenterPointMechanicalMapping.cpp
+        CurveMapping.cpp
+        ExternalInterpolationMapping.cpp
+        ProjectionToLineMapping.cpp
+        ProjectionToPlaneMapping.cpp
+        )
     message(STATUS "   With deprecated components.")
 else()
     message(STATUS "   Without deprecated components.")

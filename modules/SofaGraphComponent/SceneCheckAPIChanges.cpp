@@ -51,7 +51,6 @@ namespace _scenecheckapichange_
 {
 
 
-
 const std::string SceneCheckAPIChange::getName()
 {
     return "SceneCheckAPIChange";
