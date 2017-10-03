@@ -18,9 +18,7 @@ if(SOFA_BUILD_FULLSETCOMPONENTS)
     list(APPEND HEADER_FILES
         ForceMaskOff.h
         GearSpringForceField.h
-        GearSpringForceField.inl
-        LennardJonesForceField.h
-        LennardJonesForceField.inl
+        GearSpringForceField.inl        
         LineBendingSprings.h
         LineBendingSprings.inl
         MatrixMass.h
@@ -30,8 +28,7 @@ if(SOFA_BUILD_FULLSETCOMPONENTS)
         )
     list(APPEND SOURCE_FILES
         ForceMaskOff.cpp
-        GearSpringForceField.cpp
-        LennardJonesForceField.cpp
+        GearSpringForceField.cpp        
         LineBendingSprings.cpp
         MatrixMass.cpp
         MeshMatrixMass.cpp
@@ -46,9 +43,12 @@ if(SOFA_BUILD_DEPRECATEDCOMPONENTS)
     list(APPEND HEADER_FILES
         WashingMachineForceField.h
         WashingMachineForceField.inl
+		LennardJonesForceField.h
+        LennardJonesForceField.inl
         )
     list(APPEND SOURCE_FILES
         WashingMachineForceField.cpp
+		LennardJonesForceField.cpp
         )
     message(STATUS "   With deprecated components.")
 else()
