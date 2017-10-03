@@ -77,10 +77,6 @@ if(SOFA_BUILD_FULLSETCOMPONENTS)
         TorsionForceField.inl
         TrianglePressureForceField.h
         TrianglePressureForceField.inl
-        UniformVelocityDampingForceField.h
-        UniformVelocityDampingForceField.inl
-        VaccumSphereForceField.h
-        VaccumSphereForceField.inl
         ProjectToLineConstraint.h
         ProjectToLineConstraint.inl
         ProjectToPlaneConstraint.h
@@ -123,8 +119,6 @@ if(SOFA_BUILD_FULLSETCOMPONENTS)
         TaitSurfacePressureForceField.cpp
         TorsionForceField.cpp
         TrianglePressureForceField.cpp
-        UniformVelocityDampingForceField.cpp
-        VaccumSphereForceField.cpp
         ProjectToLineConstraint.cpp
         ProjectToPlaneConstraint.cpp
         ProjectToPointConstraint.cpp
@@ -137,6 +131,16 @@ endif()
 
 ############################### COMPONENTS HERE ARE DEPRECATED ####################################
 if(SOFA_BUILD_DEPRECATEDCOMPONENTS)
+    list(APPEND HEADER_FILES
+        UniformVelocityDampingForceField.h
+        UniformVelocityDampingForceField.inl
+        VaccumSphereForceField.h
+        VaccumSphereForceField.inl
+		)
+	list(APPEND SOURCE_FILES
+	    UniformVelocityDampingForceField.cpp
+        VaccumSphereForceField.cpp
+		)
     message(STATUS "   With deprecated components.")
 else()
     message(STATUS "   Without deprecated components.")
