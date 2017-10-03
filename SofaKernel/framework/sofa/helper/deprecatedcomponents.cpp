@@ -70,6 +70,7 @@ std::map<std::string, std::vector<std::string>> components =
     {"GraspingManager", {"deprecated-17.12"}},
     {"InciseAlongPathPerformer", {"deprecated-17.12"}},
     {"InterpolationController", {"deprecated-17.12"}},
+	{"MechanicalStateControllerOmni", {"deprecated-17.12"}},
     {"NodeToggleController", {"deprecated-17.12"}}
 };
 
