@@ -278,10 +278,6 @@ public:
 
     sofa::defaulttype::Vec3f bbox[2];
     Data< sofa::core::loader::Material > material;
-#ifdef SOFA_SMP
-    sofa::core::loader::Material originalMaterial;
-    bool previousProcessorColor;
-#endif
     Data< bool > putOnlyTexCoords;
     Data< bool > srgbTexturing;
 
