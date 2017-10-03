@@ -25,8 +25,6 @@ if(SOFA_BUILD_FULLSETCOMPONENTS)
         InteractionPerformer.h
         MechanicalStateController.h
         MechanicalStateController.inl
-        MechanicalStateControllerOmni.h
-        MechanicalStateControllerOmni.inl
         MouseInteractor.h
         MouseInteractor.inl
         Ray.h
@@ -46,7 +44,6 @@ if(SOFA_BUILD_FULLSETCOMPONENTS)
         Controller.cpp
         InteractionPerformer.cpp
         MechanicalStateController.cpp
-        MechanicalStateControllerOmni.cpp
         MouseInteractor.cpp
         RayContact.cpp
         RayDiscreteIntersection.cpp
@@ -76,6 +73,8 @@ if(SOFA_BUILD_DEPRECATEDCOMPONENTS)
         InciseAlongPathPerformer.h
         InterpolationController.h
         InterpolationController.inl
+        MechanicalStateControllerOmni.h
+        MechanicalStateControllerOmni.inl
         NodeToggleController.h
         RemovePrimitivePerformer.h
         RemovePrimitivePerformer.inl
@@ -95,6 +94,7 @@ if(SOFA_BUILD_DEPRECATEDCOMPONENTS)
         GraspingManager.cpp
         InciseAlongPathPerformer.cpp
         InterpolationController.cpp
+        MechanicalStateControllerOmni.cpp
         NodeToggleController.cpp
         RemovePrimitivePerformer.cpp
         SleepController.cpp
