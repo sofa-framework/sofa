@@ -1,7 +1,20 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaUserInteraction)
 
+message(STATUS "SofaUserInteraction:")
+################################ COMPONENTS HERE ARE THE NG-SET ####################################
 set(HEADER_FILES
+    config.h
+    initUserInteraction.h
+)
+
+set(SOURCE_FILES
+    initUserInteraction.cpp
+)
+
+############################## COMPONENTS HERE ARE THE FULL-SET ####################################
+if(SOFA_BUILD_FULLSETCOMPONENTS)
+    list(APPEND HEADER_FILES
     # AddFramePerformer.h
     # AddFramePerformer.inl
     AddRecordedCameraPerformer.h
@@ -16,12 +29,12 @@ set(HEADER_FILES
     DisabledContact.h
     EdgeSetController.h
     EdgeSetController.inl
-    FixParticlePerformer.h
-    FixParticlePerformer.inl
-    GraspingManager.h
-    InciseAlongPathPerformer.h
+    #FixParticlePerformer.h
+    #FixParticlePerformer.inl
+    #GraspingManager.h
+    #InciseAlongPathPerformer.h
     InteractionPerformer.h
-    InterpolationController.h
+    #InterpolationController.h
     MechanicalStateController.h
     MechanicalStateController.inl
     MechanicalStateControllerOmni.h
@@ -43,11 +56,9 @@ set(HEADER_FILES
     SuturePointPerformer.h
     SuturePointPerformer.inl
     TopologicalChangeManager.h
-    config.h
-    initUserInteraction.h
 )
 
-set(SOURCE_FILES
+list(APPEND SOURCE_FILES
     # AddFramePerformer.cpp
     AddRecordedCameraPerformer.cpp
     ArticulatedHierarchyBVHController.cpp
@@ -58,12 +69,12 @@ set(SOURCE_FILES
     CuttingPoint.cpp
     DisabledContact.cpp
     EdgeSetController.cpp
-    FixParticlePerformer.cpp
-    GraspingManager.cpp
-    InciseAlongPathPerformer.cpp
+    #FixParticlePerformer.cpp
+    #GraspingManager.cpp
+    #InciseAlongPathPerformer.cpp
     InteractionPerformer.cpp
-    InterpolationController.cpp
-    InterpolationController.inl
+    #InterpolationController.cpp
+    #InterpolationController.inl
     MechanicalStateController.cpp
     MechanicalStateControllerOmni.cpp
     MouseInteractor.cpp
@@ -79,7 +90,35 @@ set(SOURCE_FILES
     SuturePointPerformer.cpp
     TopologicalChangeManager.cpp
     initUserInteraction.cpp
-)
+    )
+message(STATUS "   With all maintained sofa components.")
+else()
+message(STATUS "   With only a minimal set of components.")
+endif()
+
+############################### COMPONENTS HERE ARE DEPRECATED ####################################
+if(SOFA_BUILD_DEPRECATEDCOMPONENTS)
+    list(APPEND HEADER_FILES
+        FixParticlePerformer.h
+        FixParticlePerformer.inl
+        GraspingManager.h
+        InciseAlongPathPerformer.h
+        InterpolationController.h
+        InterpolationController.inl
+        )
+    list(APPEND SOURCE_FILES
+        FixParticlePerformer.cpp
+        GraspingManager.cpp
+        InciseAlongPathPerformer.cpp
+        InterpolationController.cpp
+        )
+    message(STATUS "   With deprecated components.")
+else()
+    message(STATUS "   Without deprecated components.")
+endif()
+
+
+
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaGeneralMeshCollision SofaGeneralRigid SofaGeneralVisual SofaTopologyMapping SofaDeformable SofaBoundaryCondition SofaGraphComponent SofaBaseVisual)

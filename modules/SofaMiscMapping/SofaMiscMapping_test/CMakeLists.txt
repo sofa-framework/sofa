@@ -14,8 +14,8 @@ set(SOURCE_FILES
 if(SOFA_BUILD_FULLSETCOMPONENTS)
     list(APPEND SOURCE_FILES
         DistanceMapping_test.cpp
-        ProjectionToTargetLineMapping_test.cpp
-        ProjectionToTargetPlaneMapping_test.cpp
+        #ProjectionToTargetLineMapping_test.cpp
+        #ProjectionToTargetPlaneMapping_test.cpp
         SubsetMultiMapping_test.cpp
         SquareDistanceMapping_test.cpp
         SquareMapping_test.cpp
@@ -28,6 +28,10 @@ endif()
 
 ############################### COMPONENTS HERE ARE DEPRECATED ####################################
 if(SOFA_BUILD_DEPRECATEDCOMPONENTS)
+    list(APPEND SOURCE_FILES
+        ProjectionToTargetLineMapping_test.cpp
+        ProjectionToTargetPlaneMapping_test.cpp
+        )
     message(STATUS "   With deprecated components.")
 else()
     message(STATUS "   Without deprecated components.")
