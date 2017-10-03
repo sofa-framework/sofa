@@ -147,6 +147,7 @@ public:
     Data< VecDeriv > vfree;
     Data< VecCoord > x0;
     Data< MatrixDeriv > c;
+    Data< MatrixDeriv > m;
     Data< VecCoord > reset_position;
     Data< VecDeriv > reset_velocity;
 #endif
