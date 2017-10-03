@@ -53,8 +53,7 @@ public:
         EXEC_DEFAULT,
         EXEC_DEBUG,
         EXEC_GPU,
-        EXEC_GRAPH,
-        EXEC_KAAPI
+        EXEC_GRAPH
     };
 
 private:

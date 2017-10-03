@@ -57,9 +57,6 @@ public:
         RENDERING,
         WIREFRAME,
         NORMALS,
-#ifdef SOFA_SMP
-        PROCESSORCOLOR,
-#endif
         ALLFLAGS
     };
 
