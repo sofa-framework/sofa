@@ -3,8 +3,9 @@
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <sofa/core/ObjectFactory.h>
 
-#include "../assembly/AssemblyVisitor.h"
-#include "../utils/scoped.h"
+#include <Compliant/assembly/AssemblyVisitor.h>
+#include <Compliant/utils/scoped.h>
+#include <Compliant/numericalsolver/KKTSolver.h>
 
 namespace sofa {
 namespace component {
