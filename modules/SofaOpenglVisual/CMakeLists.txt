@@ -24,13 +24,8 @@ if(SOFA_BUILD_FULLSETCOMPONENTS)
         OglColorMap.h
         CompositingVisualLoop.h
         DataDisplay.h
-        OglCylinderModel.h
-        OglGrid.h
         OglLabel.h
-        OglLineAxis.h
         OglModel.h
-        OglRenderingSRGB.h
-        OglSceneFrame.h
         PointSplatModel.h
         MergeVisualModels.h
         )
@@ -39,13 +34,9 @@ if(SOFA_BUILD_FULLSETCOMPONENTS)
         OglColorMap.cpp
         CompositingVisualLoop.cpp
         DataDisplay.cpp
-        OglCylinderModel.cpp
         OglGrid.cpp
         OglLabel.cpp
-        OglLineAxis.cpp
         OglModel.cpp
-        OglRenderingSRGB.cpp
-        OglSceneFrame.cpp
         PointSplatModel.cpp
         MergeVisualModels.cpp
         )
@@ -56,42 +47,42 @@ if(SOFA_BUILD_FULLSETCOMPONENTS)
                     Light.h
                     OrderIndependentTransparencyManager.h
                     OglOITShader.h
-            OglAttribute.h
-            OglAttribute.inl
-            OglShader.h
-            OglShaderMacro.h
-            OglShaderVisualModel.h
-            OglShadowShader.h
-            OglTexture.h
-            OglTexturePointer.h
-            OglVariable.h
-            OglVariable.inl
-            OglViewport.h
-            PostProcessManager.h
-            SlicedVolumetricModel.h
-            VisualManagerPass.h
-            VisualManagerSecondaryPass.h
-        )
+                    OglAttribute.h
+                    OglAttribute.inl
+                    OglShader.h
+                    OglShaderMacro.h
+                    OglShaderVisualModel.h
+                    OglShadowShader.h
+                    OglTexture.h
+                    OglTexturePointer.h
+                    OglVariable.h
+                    OglVariable.inl
+                    OglViewport.h
+                    PostProcessManager.h
+                    SlicedVolumetricModel.h
+                    VisualManagerPass.h
+                    VisualManagerSecondaryPass.h
+                )
 
         list(APPEND SOURCE_FILES
                     Light.cpp
                     LightManager.cpp
                     OrderIndependentTransparencyManager.cpp
                     OglOITShader.cpp
-            OglAttribute.cpp
-            OglShader.cpp
-            OglShaderMacro.cpp
-            OglShaderVisualModel.cpp
-            OglShadowShader.cpp
-            OglTexture.cpp
-            OglTexturePointer.cpp
-            OglVariable.cpp
-            OglViewport.cpp
-            PostProcessManager.cpp
-            SlicedVolumetricModel.cpp
-            VisualManagerPass.cpp
-            VisualManagerSecondaryPass.cpp
-        )
+                    OglAttribute.cpp
+                    OglShader.cpp
+                    OglShaderMacro.cpp
+                    OglShaderVisualModel.cpp
+                    OglShadowShader.cpp
+                    OglTexture.cpp
+                    OglTexturePointer.cpp
+                    OglVariable.cpp
+                    OglViewport.cpp
+                    PostProcessManager.cpp
+                    SlicedVolumetricModel.cpp
+                    VisualManagerPass.cpp
+                    VisualManagerSecondaryPass.cpp
+                )
     endif()
 
     message(STATUS "   With all maintained sofa components.")
@@ -102,6 +93,20 @@ endif()
 ############################### COMPONENTS HERE ARE DEPRECATED ####################################
 if(SOFA_BUILD_DEPRECATEDCOMPONENTS)
     message(STATUS "   With deprecated components.")
+    list(APPEND HEADER_FILES
+        OglCylinderModel.h
+        OglGrid.h
+        OglRenderingSRGB.h
+        OglLineAxis.h
+        OglSceneFrame.h
+    )
+    list(APPEND SOURCE_FILES
+        OglCylinderModel.cpp
+        OglGrid.cpp
+        OglRenderingSRGB.cpp
+        OglLineAxis.cpp
+        OglSceneFrame.cpp
+    )
 else()
     message(STATUS "   Without deprecated components.")
 endif()
