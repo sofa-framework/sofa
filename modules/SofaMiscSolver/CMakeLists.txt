@@ -1,19 +1,39 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaMiscSolver)
 
+message(STATUS "SofaMiscSolver:")
+################################ COMPONENTS HERE ARE THE NG-SET ####################################
 set(HEADER_FILES
-    DampVelocitySolver.h
-    NewmarkImplicitSolver.h
     config.h
     initMiscSolver.h
 )
 
 set(SOURCE_FILES
-    DampVelocitySolver.cpp
-    NewmarkImplicitSolver.cpp
     initMiscSolver.cpp
 )
 
+############################## COMPONENTS HERE ARE THE FULL-SET ####################################
+if(SOFA_BUILD_FULLSETCOMPONENTS)
+    list(APPEND HEADER_FILES
+        DampVelocitySolver.h
+        NewmarkImplicitSolver.h
+        )
+    list(APPEND SOURCE_FILES
+        DampVelocitySolver.cpp
+        NewmarkImplicitSolver.cpp
+        )
+
+    message(STATUS "   With all maintained sofa components.")
+else()
+    message(STATUS "   With only a minimal set of components.")
+endif()
+
+############################### COMPONENTS HERE ARE DEPRECATED ####################################
+if(SOFA_BUILD_DEPRECATEDCOMPONENTS)
+    message(STATUS "   With deprecated components.")
+else()
+    message(STATUS "   Without deprecated components.")
+endif()
 
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})

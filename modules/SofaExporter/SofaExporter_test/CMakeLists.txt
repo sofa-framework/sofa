@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.1)
 project(SofaExporter_test)
 
 
-set(SOURCE_FILES)
+set(SOURCE_FILES ../../empty.cpp)
 
 ############################## COMPONENTS HERE ARE THE FULL-SET ####################################
 if(SOFA_BUILD_FULLSETCOMPONENTS)

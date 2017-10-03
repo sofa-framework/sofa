@@ -7,7 +7,7 @@ find_package(Metis QUIET)
 message(STATUS "SofaMiscFem_test:")
 ################################ COMPONENTS HERE ARE THE NG-SET ####################################
 set(HEADER_FILES)
-set(SOURCE_FILES)
+set(SOURCE_FILES ../../empty.cpp)
 
 ############################## COMPONENTS HERE ARE THE FULL-SET ####################################
 if(SOFA_BUILD_FULLSETCOMPONENTS)

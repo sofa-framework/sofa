@@ -3,31 +3,55 @@ project(SofaTest)
 
 set(SOFATEST_VERSION 0.1)
 
+message(STATUS "SofaTest:")
+################################ COMPONENTS HERE ARE THE NG-SET ####################################
 set(HEADER_FILES
-    BroadPhase_test.h
-    DataEngine_test.h
-    Elasticity_test.h
-    Elasticity_test.inl
-    ForceField_test.h
-    InitPlugin_test.h
-    Mapping_test.h
-    MultiMapping_test.h
-    Multi2Mapping_test.h
-    PrimitiveCreation.h
     Sofa_test.h
     TestMessageHandler.h
-    #LogMessage.h
+    PrimitiveCreation.h
 )
 
 set(SOURCE_FILES
-    Elasticity_test.cpp
+    Sofa_test.cpp
     InitPlugin_test.cpp
     PrimitiveCreation.cpp
     TestMessageHandler.cpp
-    Sofa_test.cpp
-)
+    )
+
 
 set(PYTHON_FILES "")
+
+
+############################## COMPONENTS HERE ARE THE FULL-SET ####################################
+if(SOFA_BUILD_FULLSETCOMPONENTS)
+    list(APPEND HEADER_FILES
+        BroadPhase_test.h
+        DataEngine_test.h
+        Elasticity_test.h
+        Elasticity_test.inl
+        ForceField_test.h
+        InitPlugin_test.h
+        Mapping_test.h
+        MultiMapping_test.h
+        Multi2Mapping_test.h
+        )
+    list(APPEND SOURCE_FILES
+        Elasticity_test.cpp
+
+        )
+
+    message(STATUS "   With all maintained sofa components.")
+else()
+    message(STATUS "   With only a minimal set of components.")
+endif()
+
+############################### COMPONENTS HERE ARE DEPRECATED ####################################
+if(SOFA_BUILD_DEPRECATEDCOMPONENTS)
+    message(STATUS "   With deprecated components.")
+else()
+    message(STATUS "   Without deprecated components.")
+endif()
+
 
 find_package(SofaFramework REQUIRED)
 find_package(SofaMisc REQUIRED)

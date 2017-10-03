@@ -5,6 +5,7 @@ project(SofaGraphComponent_test)
 message(STATUS "SofaGraphComponent_test:")
 ################################ COMPONENTS HERE ARE THE NG-SET ####################################
 set(SOURCE_FILES
+    ../../empty.cpp
     )
 
 ############################## COMPONENTS HERE ARE THE FULL-SET ####################################

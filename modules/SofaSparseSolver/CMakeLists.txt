@@ -1,38 +1,59 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaSparseSolver)
 
+message(STATUS "SofaSparseSolver:")
+################################ COMPONENTS HERE ARE THE NG-SET ####################################
 set(HEADER_FILES
-    PrecomputedLinearSolver.h
-    PrecomputedLinearSolver.inl
-    SparseCholeskySolver.h
-    SparseLUSolver.h
     config.h
     initSparseSolver.h
 )
 
 set(SOURCE_FILES
-    PrecomputedLinearSolver.cpp
-    SparseCholeskySolver.cpp
-    SparseLUSolver.cpp
     initSparseSolver.cpp
 )
 
-if(SOFA_HAVE_METIS)
-    list(APPEND HEADER_FILES SparseLDLSolver.h SparseLDLSolver.inl SparseLDLSolverImpl.h)
-    list(APPEND SOURCE_FILES SparseLDLSolver.h SparseLDLSolver.cpp)
-    message(STATUS "SofaSparseSolver: metis was found, SparseLDLSolver will be built")
+############################## COMPONENTS HERE ARE THE FULL-SET ####################################
+if(SOFA_BUILD_FULLSETCOMPONENTS)
+    list(APPEND HEADER_FILES
+        PrecomputedLinearSolver.h
+        PrecomputedLinearSolver.inl
+        SparseCholeskySolver.h
+        SparseLUSolver.h
+        )
+    list(APPEND SOURCE_FILES
+        PrecomputedLinearSolver.cpp
+        SparseCholeskySolver.cpp
+        SparseLUSolver.cpp
+        )
+
+    message(STATUS "   With all maintained sofa components.")
+
+    if(SOFA_HAVE_METIS)
+        list(APPEND HEADER_FILES SparseLDLSolver.h SparseLDLSolver.inl SparseLDLSolverImpl.h)
+        list(APPEND SOURCE_FILES SparseLDLSolver.h SparseLDLSolver.cpp)
+        message(STATUS "   Metis was found, SparseLDLSolver will be built")
+    else()
+        message(STATUS "   Metis was not found, SparseLDLSolver won't be built")
+    endif()
+
+    if(SOFA_HAVE_CSPARSE)
+        list(APPEND HEADER_FILES SparseCholeskySolver.h)
+        list(APPEND HEADER_FILES SparseLUSolver.h)
+        list(APPEND SOURCE_FILES SparseCholeskySolver.cpp)
+        list(APPEND SOURCE_FILES SparseLUSolver.cpp)
+        message(STATUS "   Csparse was found, SparseLUSolver and SparseCholeskySolver will be built")
+    else()
+        message(STATUS "   Csparse was not found, SparseLUSolver and SparseCholeskySolver won't be built")
+    endif()
 else()
-    message(STATUS "SofaSparseSolver: metis was not found, SparseLDLSolver won't be built")
+    message(STATUS "   With only a minimal set of components.")
 endif()
 
-if(SOFA_HAVE_CSPARSE)
-    list(APPEND HEADER_FILES SparseCholeskySolver.h)
-    list(APPEND HEADER_FILES SparseLUSolver.h)
-    list(APPEND SOURCE_FILES SparseCholeskySolver.cpp)
-    list(APPEND SOURCE_FILES SparseLUSolver.cpp)
-    message(STATUS "SofaSparseSolver: csparse was found, SparseLUSolver and SparseCholeskySolver will be built")
+############################### COMPONENTS HERE ARE DEPRECATED ####################################
+if(SOFA_BUILD_DEPRECATEDCOMPONENTS)
+    message(STATUS "   With deprecated components.")
 else()
-    message(STATUS "SofaSparseSolver: csparse was not found, SparseLUSolver and SparseCholeskySolver won't be built")
+    message(STATUS "   Without deprecated components.")
 endif()
 
 
