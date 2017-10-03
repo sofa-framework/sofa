@@ -50,9 +50,6 @@
 #ifdef SOFA_HAVE_CSPARSE
 #include <SofaSparseSolver/initSparseSolver.h>
 #endif
-#ifdef SOFA_HAVE_TAUCS
-#include <SofaTaucsSolver/initTaucsSolver.h>
-#endif
 #include <SofaEigen2Solver/initEigen2Solver.h>
 
 #include <SofaPreconditioner/initPreconditioner.h>
@@ -101,9 +98,6 @@ void initComponentGeneral()
 #endif
 #ifdef SOFA_HAVE_CSPARSE
     initSparseSolver();
-#endif
-#ifdef SOFA_HAVE_TAUCS
-    initTaucsSolver();
 #endif
     initPreconditioner();
 #ifndef SOFA_NO_OPENGL
