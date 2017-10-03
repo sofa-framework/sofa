@@ -22,12 +22,6 @@ if(SOFA_BUILD_FULLSETCOMPONENTS)
         AddResourceRepository.cpp
         )
 
-    if(SOFA_HAVE_SMP)
-        list(APPEND HEADER_FILES ParallelCGLinearSolver.h)
-        list(APPEND HEADER_FILES ParallelCGLinearSolver.inl)
-        list(APPEND SOURCE_FILES ParallelCGLinearSolver.cpp)
-    endif()
-
     message(STATUS "   With all maintained sofa components.")
 else()
     message(STATUS "   With only a minimal set of components.")
@@ -36,8 +30,15 @@ endif()
 ############################### COMPONENTS HERE ARE DEPRECATED ####################################
 if(SOFA_BUILD_DEPRECATEDCOMPONENTS)
     message(STATUS "   With deprecated components.")
+    if(SOFA_HAVE_SMP)
+        list(APPEND HEADER_FILES ParallelCGLinearSolver.h)
+        list(APPEND HEADER_FILES ParallelCGLinearSolver.inl)
+        list(APPEND SOURCE_FILES ParallelCGLinearSolver.cpp)
+    endif()
+
 else()
     message(STATUS "   Without deprecated components.")
+
 endif()
 
 
