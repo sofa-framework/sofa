@@ -189,6 +189,10 @@ list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${JSON_INCLUDE_DIR})
 ## sofa/config.h
 configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/sofa/config.h")
 install(FILES "${CMAKE_BINARY_DIR}/include/sofa/config.h" DESTINATION "include/sofa")
+
+configure_file(build_option_componentset.h.in "${CMAKE_BINARY_DIR}/include/sofa/config/build_option_componentset.h")
+install(FILES "${CMAKE_BINARY_DIR}/include/sofa/config/build_option_componentset.h" DESTINATION "include/sofa/config")
+
 # make sure everyone in the build tree can see <sofa/config.h>
 #list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR})
 list(REMOVE_DUPLICATES SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES)
