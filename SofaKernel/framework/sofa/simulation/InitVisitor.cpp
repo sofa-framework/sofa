@@ -40,13 +40,6 @@ Visitor::Result InitVisitor::processNodeTopDown(simulation::Node* node)
     if (!rootNode) rootNode=node;
 
     node->initialize();
-#ifdef SOFA_SMP_NUMA
-    if(node->getProcessor()!=-1)
-    {
-        msg_info()<<"set preferred cpu "<<node->getProcessor()/2<<std::endl;
-        numa_set_preferred(node->getProcessor()/2);
-    }
-#endif
 
     sofa::defaulttype::BoundingBox* nodeBBox = node->f_bbox.beginEdit(params);
     nodeBBox->invalidate();

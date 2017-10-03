@@ -26,10 +26,6 @@
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/objectmodel/Link.h>
-#ifdef SOFA_SMP_NUMA
-#include <numa.h>
-#endif
-
 
 namespace sofa
 {
