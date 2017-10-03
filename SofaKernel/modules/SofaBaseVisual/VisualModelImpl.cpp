@@ -1200,35 +1200,6 @@ void VisualModelImpl::updateVisual()
     m_triangles.updateIfDirty();
     m_quads.updateIfDirty();
 
-#ifdef SOFA_SMP
-
-    if(vparams->displayFlags().getShowProcessorColor())
-    {
-        sofa::core::objectmodel::Context *context=dynamic_cast<sofa::core::objectmodel::Context *>(this->getContext());
-        if(context&&context->getPartition())
-        {
-
-            if(context->getPartition()->getThread()&&context->getPartition()->getThread()->get_processor())
-            {
-                unsigned int proc =context->getPartition()->getThread()->get_processor()->get_pid();
-                this->setColor(colorTab[proc].r,colorTab[proc].g,colorTab[proc].b,1.0f);
-            }
-            else if(context->getPartition()->getCPU()!=-1)
-            {
-                unsigned int proc=context->getPartition()->getCPU();
-                this->setColor(colorTab[proc].r,colorTab[proc].g,colorTab[proc].b,1.0f);
-
-            }
-
-        }
-    }
-
-    if(previousProcessorColor&&!vparams->displayFlags().getShowProcessorColor())
-    {
-        material.setValue(originalMaterial);
-    }
-    previousProcessorColor=vparams->displayFlags().getShowProcessorColor();
-#endif
 }
 
 
