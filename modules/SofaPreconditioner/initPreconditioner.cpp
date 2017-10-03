@@ -39,14 +39,6 @@ void initPreconditioner()
     }
 }
 
-SOFA_LINK_CLASS(ShewchukPCGLinearSolver)
-SOFA_LINK_CLASS(JacobiPreconditioner)
-SOFA_LINK_CLASS(BlockJacobiPreconditioner)
-SOFA_LINK_CLASS(SSORPreconditioner)
-SOFA_LINK_CLASS(WarpPreconditioner)
-SOFA_LINK_CLASS(PrecomputedWarpPreconditioner)
-
-
 } // namespace component
 
 } // namespace sofa

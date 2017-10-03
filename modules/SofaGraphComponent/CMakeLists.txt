@@ -6,10 +6,24 @@ message(STATUS "SofaGraphComponent:")
 set(HEADER_FILES
     config.h
     initGraphComponent.h
+    APIVersion.h
+    FixPickedParticleButtonSetting.h
+    MouseButtonSetting.h
+    RequiredPlugin.h
+    SceneChecks.h
+    SceneCheckAPIChanges.h
+    SceneCheckerVisitor.h
 )
 
 set(SOURCE_FILES
     initGraphComponent.cpp
+    APIVersion.cpp
+    FixPickedParticleButtonSetting.cpp
+    MouseButtonSetting.cpp
+    RequiredPlugin.cpp
+    SceneChecks.cpp
+    SceneCheckAPIChanges.cpp
+    SceneCheckerVisitor.cpp
 )
 
 ############################## COMPONENTS HERE ARE THE FULL-SET ####################################
@@ -19,39 +33,27 @@ if(SOFA_BUILD_FULLSETCOMPONENTS)
         AddRecordedCameraButtonSetting.h
         AttachBodyButtonSetting.h
         BackgroundSetting.h
-        FixPickedParticleButtonSetting.h
+
         Gravity.h
         InteractingBehaviorModel.h
-        MouseButtonSetting.h
         PauseAnimation.h
         PauseAnimationOnEvent.h
-        RequiredPlugin.h
         SofaDefaultPathSetting.h
         StatsSetting.h
         ViewerSetting.h
-        SceneChecks.h
-        SceneCheckAPIChanges.h
-        SceneCheckerVisitor.h
-        APIVersion.h
         )
     list(APPEND SOURCE_FILES
         AddFrameButtonSetting.cpp
         AddRecordedCameraButtonSetting.cpp
         AttachBodyButtonSetting.cpp
         BackgroundSetting.cpp
-        FixPickedParticleButtonSetting.cpp
-        Gravity.cpp
-        MouseButtonSetting.cpp
+
+        Gravity.cpp    
         PauseAnimation.cpp
         PauseAnimationOnEvent.cpp
-        RequiredPlugin.cpp
         SofaDefaultPathSetting.cpp
         StatsSetting.cpp
         ViewerSetting.cpp
-        SceneChecks.cpp
-        SceneCheckAPIChanges.cpp
-        SceneCheckerVisitor.cpp
-        APIVersion.cpp
         )
     message(STATUS "   With all maintained sofa components.")
 else()

@@ -6,10 +6,13 @@ message(STATUS "SofaBoundaryCondition:")
 set(HEADER_FILES
     config.h
     initBoundaryCondition.h
+    FixedConstraint.h
+    FixedConstraint.inl
 )
 
 set(SOURCE_FILES
     initBoundaryCondition.cpp
+    FixedConstraint.cpp
 )
 
 ############################## COMPONENTS HERE ARE THE FULL-SET ####################################
@@ -28,9 +31,7 @@ if(SOFA_BUILD_FULLSETCOMPONENTS)
         EdgePressureForceField.h
         EdgePressureForceField.inl
         EllipsoidForceField.h
-        EllipsoidForceField.inl
-        FixedConstraint.h
-        FixedConstraint.inl
+        EllipsoidForceField.inl     
         FixedPlaneConstraint.h
         FixedPlaneConstraint.inl
         FixedRotationConstraint.h
@@ -99,7 +100,7 @@ if(SOFA_BUILD_FULLSETCOMPONENTS)
         DiagonalVelocityDampingForceField.cpp
         EdgePressureForceField.cpp
         EllipsoidForceField.cpp
-        FixedConstraint.cpp
+
         FixedPlaneConstraint.cpp
         FixedRotationConstraint.cpp
         FixedTranslationConstraint.cpp

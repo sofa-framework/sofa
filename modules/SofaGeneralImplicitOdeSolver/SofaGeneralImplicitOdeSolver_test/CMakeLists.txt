@@ -4,14 +4,12 @@ project(SofaGeneralImplicitOdeSolver_test)
 
 message(STATUS "SofaGeneralImplicitOdeSolver_test:")
 ################################ COMPONENTS HERE ARE THE NG-SET ####################################
-set(SOURCE_FILES
-    VariationalSymplecticImplicitSolverNonLinearForceDynamic_test.cpp)
+set(SOURCE_FILES ../../empty.cpp)
 
 ############################## COMPONENTS HERE ARE THE FULL-SET ####################################
 if(SOFA_BUILD_FULLSETCOMPONENTS)
-    list(APPEND HEADER_FILES
-        )
     list(APPEND SOURCE_FILES
+        VariationalSymplecticImplicitSolverNonLinearForceDynamic_test.cpp
         VariationalSymplecticExplicitSolverDynamic_test.cpp
         VariationalSymplecticImplicitSolverDynamic_test.cpp
         )

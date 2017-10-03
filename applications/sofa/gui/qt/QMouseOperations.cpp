@@ -23,7 +23,6 @@
 #include "QMouseOperations.h"
 #include "QDisplayDataWidget.h"
 #include "DataWidget.h"
-#include <SofaGraphComponent/AttachBodyButtonSetting.h>
 #include <SofaGraphComponent/AddRecordedCameraButtonSetting.h>
 
 #include <QVBoxLayout>

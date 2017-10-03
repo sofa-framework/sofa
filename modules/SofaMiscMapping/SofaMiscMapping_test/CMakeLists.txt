@@ -8,6 +8,7 @@ set(HEADER_FILES
 )
 
 set(SOURCE_FILES
+    ../../empty.cpp
 )
 
 ############################## COMPONENTS HERE ARE THE FULL-SET ####################################

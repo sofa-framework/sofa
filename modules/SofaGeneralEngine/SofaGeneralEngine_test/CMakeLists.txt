@@ -5,7 +5,7 @@ project(SofaGeneralEngine_test)
 
 set(HEADER_FILES)
 
-set(SOURCE_FILES)
+set(SOURCE_FILES ../../empty.cpp)
 
 if(SOFA_BUILD_FULLSETCOMPONENTS)
         list(APPEND SOURCE_FILES AverageCoord_test.cpp
