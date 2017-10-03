@@ -65,6 +65,10 @@
 
 #cmakedefine SOFA_WITH_DEVTOOLS
 
+#cmakedefine SOFA_BUILD_FULLSETCOMPONENTS
+
+#cmakedefine SOFA_BUILD_DEPRECATEDCOMPONENTS
+
 /// This can be either true or false
 #define SOFA_WITH_THREADING ${SOFA_WITH_THREADING_}
 
