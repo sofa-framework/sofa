@@ -315,8 +315,8 @@ template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(const sofa::core::ConstraintParams * cparams, sofa::defaulttype::BaseMatrix *W)
 {
     const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
-    const VecReal& comp = compliance.getValue();
-    const Real comp0 = defaultCompliance.getValue();
+    VecReal comp = compliance.getValue();
+    Real comp0 = defaultCompliance.getValue();
     const bool verbose = f_verbose.getValue();
     const bool useOdeIntegrationFactors = d_useOdeSolverIntegrationFactors.getValue();
     // use the OdeSolver to get the position integration factor
