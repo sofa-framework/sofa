@@ -36,7 +36,7 @@
 #include <SofaBaseCollision/DiscreteIntersection.h>
 #include <SofaUserInteraction/ComponentMouseInteraction.inl>
 #include <SofaUserInteraction/AttachBodyPerformer.inl>
-#include <SofaUserInteraction/FixParticlePerformer.inl>
+#include <SofaSpecificUserInteraction/FixParticlePerformer.inl>
 #include <SofaUserInteraction/RayContact.h>
 #include <SofaMeshCollision/BarycentricPenalityContact.inl>
 #include <SofaMeshCollision/BarycentricContactMapper.inl>
