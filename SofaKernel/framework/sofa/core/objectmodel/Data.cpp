@@ -34,7 +34,6 @@ namespace objectmodel
 
 /// Specialization for reading strings
 template<>
-inline
 bool SOFA_CORE_API TData<std::string>::read( const std::string& str )
 {
     virtualSetValue(str);
@@ -43,7 +42,6 @@ bool SOFA_CORE_API TData<std::string>::read( const std::string& str )
 
 /// Specialization for reading booleans
 template<>
-inline
 bool SOFA_CORE_API TData<bool>::read( const std::string& str )
 {
     if (str.empty())
