@@ -268,7 +268,7 @@ void RigidMapping<TIn, TOut>::clear(int reserve)
 template <class TIn, class TOut>
 void RigidMapping<TIn, TOut>::setRepartition(unsigned int value)
 {
-    serr<<"setRepartition: deprecated function"<<sendl;
+    serr<<helper::logging::Message::Deprecated<<"setRepartition function. Fill rigidIndexPerPoint instead."<<sendl;
 
     helper::vector<unsigned int>& rigidIndexPerPoint = *this->rigidIndexPerPoint.beginWriteOnly();
 
@@ -278,20 +278,22 @@ void RigidMapping<TIn, TOut>::setRepartition(unsigned int value)
 
     unsigned int idx = 0;
     for( size_t i=0 ; i<size ; )
+    {
          for( size_t j=0; j<value && i<size ; ++j, ++i )
+         {
             rigidIndexPerPoint[i] = idx;
+         }
          ++idx;
+    }
 
     this->rigidIndexPerPoint.endEdit();
-
-
 }
 
 template <class TIn, class TOut>
 void RigidMapping<TIn, TOut>::setRepartition(sofa::helper::vector<
                                              unsigned int> values)
 {
-    serr<<"setRepartition: deprecated function "<<sendl;
+    serr<<helper::logging::Message::Deprecated<<"setRepartition function. Fill rigidIndexPerPoint instead."<<sendl;
 
     helper::vector<unsigned int>& rigidIndexPerPoint = *this->rigidIndexPerPoint.beginWriteOnly();
 
@@ -301,8 +303,12 @@ void RigidMapping<TIn, TOut>::setRepartition(sofa::helper::vector<
 
     size_t i = 0;
     for( unsigned int idx=0 ; idx<values.size() ; ++idx )
+    {
          for( size_t j=0, jend=values[idx]; j<jend ; ++j, ++i )
+         {
             rigidIndexPerPoint[i] = idx;
+         }
+    }
 
     this->rigidIndexPerPoint.endEdit();
 }
