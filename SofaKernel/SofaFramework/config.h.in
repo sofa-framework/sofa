@@ -38,6 +38,10 @@
 
 #cmakedefine SOFA_HAVE_BOOST_DATE_TIME
 
+#cmakedefine SOFA_HAVE_BOOST_LOCALE
+
+#cmakedefine SOFA_HAVE_BOOST_FILESYSTEM
+
 #cmakedefine SOFA_HAVE_TINYXML
 
 #cmakedefine SOFA_DUMP_VISITOR_INFO
