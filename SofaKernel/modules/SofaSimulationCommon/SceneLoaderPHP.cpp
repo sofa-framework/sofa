@@ -24,6 +24,7 @@
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 #include <sofa/helper/system/PipeProcess.h>
 #include <SofaSimulationCommon/xml/NodeElement.h>
+#include <sofa/helper/system/FileRepository.h>
 
 namespace sofa
 {

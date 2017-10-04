@@ -1,0 +1,10 @@
+cmake_minimum_required(VERSION 3.1)
+
+set(JSON_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+		COMPONENT json_headers
+		DESTINATION include
+		PATTERN "*.in" EXCLUDE
+		PATTERN "*.txt" EXCLUDE
+		PATTERN "*.cpp" EXCLUDE)

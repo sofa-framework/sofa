@@ -3,7 +3,7 @@
 <Node 	name="Root" gravity="0 -1 0" time="0" animate="0"  dt="0.02" >
 <VisualStyle displayFlags="hideVisualModels showBehaviorModels showMappings showForceFields" />
 <Node 	name="complianceSolverScene" >
-    <EulerImplicitSolver verbose="0" /> <CGSolver verbose="0" tolerance="1.0e-9" threshold="1.0e-9" />
+    <EulerImplicitSolver verbose="0"  rayleighStiffness="0.1" rayleighMass="0.1" /> <CGSolver verbose="0" tolerance="1.0e-9" threshold="1.0e-9" />
     <GridMeshCreator name="loader" filename="nofile" resolution="2 3" trianglePattern="0" rotation="180 0 0 " scale="1 1 0" />
     <MeshTopology name="mesh" src="@loader" />
     <MechanicalObject name="defoDOF" template="Vec3d"  src="@loader" />

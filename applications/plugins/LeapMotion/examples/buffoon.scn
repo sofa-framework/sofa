@@ -15,7 +15,7 @@
 
     <LeapMotionDriver name="leapMotionDriver" scale="0.0025" rotation="90 0 0" translation="0 0. 0" displayHand="true" printLog="0"/>
 
-    <EulerImplicit vdamping="2.0" />
+    <EulerImplicit vdamping="2.0"  rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGLinearSolver iterations="30"  tolerance="1e-6" threshold="1e-6" />
 
     <Node name="TrackedHand" activated="true" >
@@ -34,7 +34,7 @@
 		<Node name="Palm">
 	        <Gravity name="Gravity" gravity="0 0 0" />
 			<MechanicalObject name="palmState" template="Rigid" rest_position="@../../leapMotionDriver.handPalmCoordinate" showObject="false" showObjectScale="0.02" />
-			<RestShapeSpringsForceField  name="RSFF" stiffness="1e6" angularStiffness="1e3" external_rest_shape="../../TrackedHand/TrackedPalm/movingDOFs" recompute_indices="false" />
+			<RestShapeSpringsForceField  name="RSFF" stiffness="1e6" angularStiffness="1e3" external_rest_shape="@../../TrackedHand/TrackedPalm/movingDOFs" recompute_indices="false" />
 			<UniformMass name="uniformMass" template="Rigid"  totalmass="0.1" />
 			<Node name="Collision_Model" >
 				<MechanicalObject name="collisDOFs" template="Vec3d" position="@../../../leapMotionDriver.handPalmCoordinate" />
@@ -45,7 +45,7 @@
 		<Node name="Fingers" >
 			<Gravity name="Gravity" gravity="0 0 0" />
 			<MechanicalObject name="handDOFs" template="Rigid" rest_position="@../../leapMotionDriver.fingersCoordinates" showObject="false" showObjectScale="0.02" />
-			<RestShapeSpringsForceField  name="RSFF" stiffness="1e3" angularStiffness="1e3" external_rest_shape="../../TrackedHand/TrackedFingers/movingDOFs" recompute_indices="false" />
+			<RestShapeSpringsForceField  name="RSFF" stiffness="1e3" angularStiffness="1e3" external_rest_shape="@../../TrackedHand/TrackedFingers/movingDOFs" recompute_indices="false" />
 			<UniformMass name="uniformMass" template="Rigid"  totalmass="0.5" />
 			<Node name="Collision_Model" >
 				<MechanicalObject name="lineCollisDOFs" template="Vec3d" position="@../../../leapMotionDriver.fingersCoordinates" />	

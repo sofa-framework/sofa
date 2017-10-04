@@ -32,7 +32,6 @@ using sofa::core::objectmodel::BaseObject ;
 using sofa::core::objectmodel::BaseData ;
 using sofa::core::objectmodel::New ;
 using sofa::core::ExecParams ;
-using sofa::defaulttype::Vec3dTypes ;
 
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;

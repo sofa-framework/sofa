@@ -407,7 +407,8 @@ void ArticulatedHierarchyController::applyController(void)
                     articulationIndex = articulationPropagationChain[j];
             }
 
-            static_cast<sofa::simulation::Node*>(this->getContext())->execute<sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor>(sofa::core::MechanicalParams::defaultInstance());
+            static_cast<sofa::simulation::Node*>(this->getContext())->execute<sofa::simulation::MechanicalProjectPositionAndVelocityVisitor>(sofa::core::MechanicalParams::defaultInstance());
+            static_cast<sofa::simulation::Node*>(this->getContext())->execute<sofa::simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor>(sofa::core::MechanicalParams::defaultInstance());
             static_cast<sofa::simulation::Node*>(this->getContext())->execute<sofa::simulation::UpdateMappingVisitor>(sofa::core::ExecParams::defaultInstance());
         }
     }

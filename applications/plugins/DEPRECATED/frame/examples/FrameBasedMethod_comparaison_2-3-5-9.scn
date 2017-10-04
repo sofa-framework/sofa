@@ -7,7 +7,7 @@
     <DefaultCollisionGroupManager name="default23" />
     <Node name="FrameBased2">
         <VisualStyle displayFlags="showVisual hideForceFields showCollisionModels hideMapping hideNormals" />
-        <EulerImplicitSolver name="default2" />
+        <EulerImplicitSolver name="default2"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver template="GraphScattered" name="default3" iterations="50" threshold="1e-08" />
         <MechanicalObject template="Rigid" name="DOFs" restScale="1" position="0 0 0 0 0 0 1  0 0 2 0 0 0 1" />
         <FrameDiagonalMass template="Rigid" name="Mass" massDensity="0.1" showAxisSizeFactor="0.1" damping="0" rotateMass="0" />

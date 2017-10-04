@@ -351,8 +351,6 @@ void SlicedVolumetricModel::findAndDrawTriangles()
                     }
                     else if(howmany==2)
                     {
-// 						cerr<<"intersect une ligne entiere"<<sendl;
-
                         Intersection inter( s0, _textureCoordinates[cell[e0]]);
                         intersections.push_back( inter );
                         inter = Intersection( s1, _textureCoordinates[cell[e1]]);
@@ -363,59 +361,23 @@ void SlicedVolumetricModel::findAndDrawTriangles()
                 }
             }
 
-// 			cerr<<"intersections.size() : "<<intersections.size()<<endl;
-
             if( intersections.size() <2 )
             {
                 ++itcell;
                 continue;
             }
-// 			else cerr<<"pas assez inter"<<sendl;
-
-
 
             nbintersections += (int)intersections.size();
 
-
-
-
-
-
-
-
-
-
-
-
             // trier les intersections
-
             helper::vector<std::pair<Real,int> > neg; // angle + indice
             helper::vector<std::pair<Real,int> > pos;
             helper::vector<int> nul;
 
-
-
-// 			Coord middle(0,0,0);
-// 			for(unsigned int i=0;i<intersections.size();++i)
-// 				middle+=intersections[i].first;
-// 			animal::v_teq(middle,1.0/intersections.size());
-// 			Coord referenceLine = intersections[0].first - middle;
-
-
             Coord referenceLine = intersections[1].first - intersections[0].first;
-
-
-
             Coord referenceLine2( referenceLine[1],- referenceLine[0], 0);
-// 		// 	Coord referenceLine2( referenceLine[1], referenceLine[0], (-2*referenceLine[0]*referenceLine[1])/referenceLine[2]);
-// 		// 	Coord tmp,referenceLine2;
-// 		// 	animal::v_eq_cross( tmp,referenceLine, intersections[2] - intersections[0]);
-// 		// 	animal::v_eq_cross( referenceLine2,referenceLine, tmp); // est-ce que la line2 a besoin d'etre dans le plan ???
-// 		// 	cerr<<"---\n"<<sendl;
 
-
-
-            for(unsigned int i=2; i<intersections.size(); ++i) // les cas 0 et 1 sont trait�s � la mano
+            for(unsigned int i=2; i<intersections.size(); ++i) // les cas 0 et 1 sont traite la mano
             {
                 Coord actualline = intersections[i].first-intersections[0].first;
 
@@ -426,34 +388,12 @@ void SlicedVolumetricModel::findAndDrawTriangles()
                     neg.push_back( std::pair<Real,int>(angle1, i) );
                 else
                     pos.push_back( std::pair<Real,int>(angle1, i) );
-
-                // 		cerr<<i<<" : "<<angle1<<" "<<angle2<<endl;
             }
-
-
-// 			for(unsigned int i=1;i<intersections.size();++i) // les cas 0 et 1 sont trait�s � la mano
-// 			{
-// 				Coord actualline = intersections[i].first-middle;
-            //
-// 				Real angle1 = animal::v_dot( referenceLine,  actualline);
-// 				Real angle2 = animal::v_dot( referenceLine2, actualline );
-            //
-// 				if( angle2<0.0)
-// 					neg.push_back( std::pair<Real,int>(angle1, i) );
-// 				else
-// 					pos.push_back( std::pair<Real,int>(angle1, i) );
-            //
-// 		// 		cerr<<i<<" : "<<angle1<<" "<<angle2<<endl;
-// 			}
-
-
-
 
             stable_sort( pos.begin(),pos.end());
             stable_sort( neg.begin(),neg.end());
 
             helper::vector<int> tripoints;
-// 			tripoints.push_back(0);
 
             glPointSize(30.0);
             for(unsigned  int i=0; i<pos.size(); ++i)
@@ -468,10 +408,6 @@ void SlicedVolumetricModel::findAndDrawTriangles()
                 tripoints.push_back(neg[i].second);
             }
 
-
-
-
-
             for( unsigned int i=0; i<tripoints.size()-1; ++i)
             {
                 helper::gl::glTexCoordT(intersections[0].second);
@@ -482,23 +418,6 @@ void SlicedVolumetricModel::findAndDrawTriangles()
                 helper::gl::glVertexT(intersections[tripoints[i+1]].first);
             }
 
-
-
-
-
-
-
-// 			for( unsigned int i=0;i<tripoints.size()-1;++i)
-// 			{
-// 				glTexCoord3fv(middle);
-// 				glVertex3fv(middle);
-// 				glTexCoord3fv(intersections[tripoints[i]].second);
-// 				glVertex3fv(intersections[tripoints[i]].first);
-// 				glTexCoord3fv(intersections[tripoints[i+1]].second);
-// 				glVertex3fv(intersections[tripoints[i+1]].first);
-// 			}
-
-
             ++itcell;
         }
 
@@ -508,7 +427,6 @@ void SlicedVolumetricModel::findAndDrawTriangles()
 
     }
     while( true );
-
 }
 
 
@@ -516,8 +434,6 @@ void SlicedVolumetricModel::findAndDrawTriangles()
 /// return 0->no intersection, 1->1 intersection, 2->line on plane
 int SlicedVolumetricModel::intersectionSegmentPlane( const Coord&s0,const Coord&s1,  const Coord &segmentDirection, const Coord& planeNormal, const Real&planeConstant,Real & m_fLineT /*where is the intersection on the segment*/)
 {
-// 	++_debugNbInteresctionComputations;
-
     Real fDdN = segmentDirection * planeNormal;
     Real fSDistance = (planeNormal * s0) - planeConstant;
 

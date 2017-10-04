@@ -23,8 +23,10 @@
  * OBJExporter.cpp
  *
  *  Created on: 9 sept. 2009
- *      Author: froy
- */
+ *  Contributors:
+ *       - froy
+ *       - damien.marchal@univ-lille1.fr
+ ***********************************************************************************/
 
 #include "OBJExporter.h"
 
@@ -33,11 +35,17 @@
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/simulation/AnimateBeginEvent.h>
-#include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/simulation/ExportOBJVisitor.h>
+using sofa::simulation::ExportOBJVisitor ;
+
 #include <sofa/core/objectmodel/KeypressedEvent.h>
+using sofa::core::objectmodel::KeypressedEvent ;
+
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
+using sofa::core::objectmodel::KeyreleasedEvent ;
+
+#include <sofa/helper/system/FileSystem.h>
+using sofa::helper::system::FileSystem ;
 
 namespace sofa
 {
@@ -45,70 +53,73 @@ namespace sofa
 namespace component
 {
 
-namespace misc
+namespace _objexporter_
 {
 
 SOFA_DECL_CLASS(OBJExporter)
 
-int OBJExporterClass = core::RegisterObject("Export under Wavefront OBJ format")
+int OBJExporterClass = core::RegisterObject("Export the scene under the Wavefront OBJ format."
+                                            "When several frames are exported the file name have the following pattern: outfile000.obj outfile001.obj.")
         .add< OBJExporter >()
         .addAlias("ObjExporter");
 
-OBJExporter::OBJExporter()
-    : stepCounter(0)
-    , objFilename( initData(&objFilename, "filename", "output OBJ file name"))
-    , exportEveryNbSteps( initData(&exportEveryNbSteps, (unsigned int)0, "exportEveryNumberOfSteps", "export file only at specified number of steps (0=disable)"))
-    , exportAtBegin( initData(&exportAtBegin, false, "exportAtBegin", "export file at the initialization"))
-    , exportAtEnd( initData(&exportAtEnd, false, "exportAtEnd", "export file when the simulation is finished"))
-    , activateExport(false)
-{
-    this->f_listening.setValue(true);
-}
 
 OBJExporter::~OBJExporter()
 {
 }
 
-void OBJExporter::init()
+
+bool OBJExporter::write()
 {
-    context = this->getContext();
-    maxStep = exportEveryNbSteps.getValue();
+    return writeOBJ() ;
 }
 
-void OBJExporter::writeOBJ()
-{
-    std::string filename = objFilename.getFullPath();
-    if (maxStep)
-    {
-        std::ostringstream oss;
-        oss.width(5);
-        oss.fill('0');
-        oss << stepCounter / maxStep;
-        filename += oss.str();
-    }
-    if ( !(filename.size() > 3 && filename.substr(filename.size()-4)==".obj"))
-        filename += ".obj";
-    std::ofstream outfile(filename.c_str());
 
-    std::string mtlfilename = objFilename.getFullPath();
-    if ( !(mtlfilename.size() > 3 && mtlfilename.substr(filename.size()-4)==".obj"))
+bool OBJExporter::writeOBJ()
+{
+    std::string basename = getOrCreateTargetPath(d_filename.getValue(),
+                                                 d_exportEveryNbSteps.getValue()) ;
+    std::string objfilename = basename ;
+    std::string mtlfilename = basename ;
+
+    if ( !(objfilename.size() > 3 && objfilename.substr(objfilename.size()-4)==".obj"))
+        objfilename += ".obj";
+    std::ofstream outfile(objfilename.c_str());
+
+    if ( !(mtlfilename.size() > 3 && mtlfilename.substr(objfilename.size()-4)==".obj"))
         mtlfilename += ".mtl";
     else
         mtlfilename = mtlfilename.substr(0, mtlfilename.size()-4) + ".mtl";
     std::ofstream mtlfile(mtlfilename.c_str());
-    sofa::simulation::ExportOBJVisitor exportOBJ(core::ExecParams::defaultInstance(),&outfile, &mtlfile);
-    context->executeVisitor(&exportOBJ);
+
+    if(!outfile.is_open())
+    {
+        msg_warning() << "Unable to export OBJ...the file '"<< objfilename <<"' cannot be opened" ;
+        return false ;
+    }
+
+    if(!mtlfile.is_open())
+    {
+        msg_warning() << "Unable to export OBJ...the file '"<< objfilename <<"' cannot be opened" ;
+        return false ;
+    }
+
+    ExportOBJVisitor exportOBJ(core::ExecParams::defaultInstance(),&outfile, &mtlfile);
+    getContext()->executeVisitor(&exportOBJ);
+
     outfile.close();
     mtlfile.close();
 
-    msg_info() << "Exporting OBJ as: " << filename.c_str() << " with MTL file: " << mtlfilename.c_str() ;
+    msg_info() << "Exporting OBJ in: " << objfilename.c_str() << " with MTL in: " << mtlfilename.c_str() ;
+    return true ;
 }
 
-void OBJExporter::handleEvent(sofa::core::objectmodel::Event *event)
+
+void OBJExporter::handleEvent(Event *event)
 {
-    if (sofa::core::objectmodel::KeypressedEvent::checkEventType(event))
+    if (KeypressedEvent::checkEventType(event))
     {
-        sofa::core::objectmodel::KeypressedEvent *ev = static_cast<sofa::core::objectmodel::KeypressedEvent *>(event);
+        KeypressedEvent *ev = static_cast<KeypressedEvent *>(event);
 
         switch(ev->getKey())
         {
@@ -116,6 +127,10 @@ void OBJExporter::handleEvent(sofa::core::objectmodel::Event *event)
         case 'E':
         case 'e':
         {
+            //todo(18.06) remove the behavior
+            msg_deprecated() << "Hard coded interaction behavior in component is now a deprecated behavior."
+                                "Scene specific interaction should be implement using an external controller or pythonScriptController."
+                                "Please update your scene because this behavior will be removed in Sofa 18.06";
             writeOBJ();
             break;
         }
@@ -123,40 +138,23 @@ void OBJExporter::handleEvent(sofa::core::objectmodel::Event *event)
         case 'P':
         case 'p':
         {
-            if (!activateExport){
+            //todo(18.06) remove the behavior
+            msg_deprecated() << "Hard coded interaction behavior in component is now a deprecated behavior."
+                                "Scene specific interaction should be implement using an external controller or pythonScriptController"
+                                "Please update your scene because this behavior will be removed in Sofa 18.06";
+
+            if (!d_isEnabled.getValue()){
                 msg_info() << "Starting OBJ sequence export..." ;
             }else{
                 msg_info() << "Ending OBJ sequence export..." ;
             }
-            activateExport = !activateExport;
+            d_isEnabled = !d_isEnabled.getValue() ;
             break;
         }
         }
     }
 
-    if ( simulation::AnimateEndEvent::checkEventType(event))
-    {
-        if (maxStep == 0 || !activateExport) return;
-
-        stepCounter++;
-        if(stepCounter % maxStep == 0)
-        {
-            writeOBJ();
-        }
-    }
-}
-
-void OBJExporter::cleanup()
-{
-    if (exportAtEnd.getValue())
-        writeOBJ();
-
-}
-
-void OBJExporter::bwdInit()
-{
-    if (exportAtBegin.getValue())
-        writeOBJ();
+    BaseSimulationExporter::handleEvent(event) ;
 }
 
 }

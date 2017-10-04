@@ -50,7 +50,6 @@
 #include <SofaMiscMapping/ExternalInterpolationMapping.h>
 #include <SofaNonUniformFem/HexahedronCompositeFEMMapping.h>
 #include <SofaBaseMechanics/IdentityMapping.h>
-#include <SofaVolumetricData/ImplicitSurfaceMapping.h>
 #include <SofaGeneralRigid/LineSetSkinningMapping.h>
 #include <SofaTopologyMapping/Mesh2PointMechanicalMapping.h>
 #include <SofaRigid/RigidMapping.h>
@@ -154,10 +153,6 @@ typedef sofa::component::mapping::IdentityMapping<sofa::defaulttype::StdVectorTy
 
 
 
-//---------------------------------------------------------------------------------------------
-//Typedef for ImplicitSurfaceMapping
-typedef sofa::component::mapping::ImplicitSurfaceMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double>, sofa::defaulttype::ExtVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > ImplicitSurfaceMapping3d_to_Ext3f;
-typedef sofa::component::mapping::ImplicitSurfaceMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > ImplicitSurfaceMapping3d_to_3d;
 
 
 
@@ -269,8 +264,6 @@ typedef IdentityMapping3d_to_3d IdentityMapping3_to_3;
 typedef IdentityMapping6d_to_Ext3f IdentityMapping6_to_Ext3;
 typedef IdentityMapping6d_to_3d IdentityMapping6_to_3;
 typedef IdentityMapping6d_to_6d IdentityMapping6_to_6;
-typedef ImplicitSurfaceMapping3d_to_Ext3f ImplicitSurfaceMapping3_to_Ext3;
-typedef ImplicitSurfaceMapping3d_to_3d ImplicitSurfaceMapping3_to_3;
 typedef LineSetSkinningMappingRigid3d_to_3d LineSetSkinningMappingRigid3_to_3;
 typedef Mesh2PointMechanicalMapping3d_to_Ext3f Mesh2PointMechanicalMapping3_to_Ext3;
 typedef Mesh2PointMechanicalMapping3d_to_3d Mesh2PointMechanicalMapping3_to_3;

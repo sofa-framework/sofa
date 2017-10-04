@@ -42,6 +42,7 @@ set(HEADER_FILES
     Binding_MultiMapping.h
     Binding_Node.h
     Binding_OBJExporter.h
+    Binding_STLExporter.h
     Binding_PythonScriptController.h
     Binding_RegularGridTopology.h
     Binding_RigidMapping.h
@@ -60,6 +61,7 @@ set(HEADER_FILES
     PythonScriptControllerHelper.h
     PythonScriptEvent.h
     PythonScriptFunction.h
+    PythonToSofa.inl
     PythonVisitor.h
     SceneLoaderPY.h
     ScriptController.h
@@ -98,6 +100,7 @@ set(SOURCE_FILES
     Binding_MultiMapping.cpp
     Binding_Node.cpp
     Binding_OBJExporter.cpp
+    Binding_STLExporter.cpp
     Binding_PythonScriptController.cpp
     Binding_RegularGridTopology.cpp
     Binding_RigidMapping.cpp
@@ -135,6 +138,7 @@ set(PYTHON_FILES
     python/SofaPython/units.py
     python/SofaPython/noPicking.py
     python/SofaPython/livecoding.py
+    python/SofaPython/PythonAdvancedTimer.py
 )
 
 

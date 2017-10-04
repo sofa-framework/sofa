@@ -29,7 +29,7 @@
 #include <sys/stat.h>
 
 #include <cstdio>		// sprintf and friends
-
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
@@ -59,8 +59,10 @@ bool Capture::saveScreen(const std::string& filename, int compression_level)
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
     glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_RGB, GL_UNSIGNED_BYTE, img.getPixels());
 
-    if (!img.save(filename, compression_level)) return false;
-    std::cout << "Saved "<<img.getWidth()<<"x"<<img.getHeight()<<" screen image to "<<filename<<std::endl;
+    if (!img.save(filename, compression_level))
+        return false;
+
+    msg_info("Capture") << "Saved "<<img.getWidth()<<"x"<<img.getHeight()<<" screen image to "<<filename ;
     glReadBuffer(GL_BACK);
     return true;
 }

@@ -33,7 +33,7 @@ namespace sofa
 struct TestIndicesFromValues : public Sofa_test<>{
     // Test computation on a simple example
     void search_one_index(){
-        IndicesFromValues<double>::SPtr m_thisObject=New<IndicesFromValues<double>>();
+        IndicesFromValues<SReal>::SPtr m_thisObject=New<IndicesFromValues<SReal>>();
         m_thisObject->findData("global")->read("0. 0.5 0.5  0. 0. 1.  0. -1. 3.");
         m_thisObject->findData("values")->read("-1");
         m_thisObject->update();
@@ -42,7 +42,7 @@ struct TestIndicesFromValues : public Sofa_test<>{
     }
 
     void search_two_indices(){
-        IndicesFromValues<double>::SPtr m_thisObject=New<IndicesFromValues<double>>();
+        IndicesFromValues<SReal>::SPtr m_thisObject=New<IndicesFromValues<SReal>>();
         m_thisObject->findData("global")->read("0. 0.5 0.5  0. 0. 1.  0. -1. 3.");
         m_thisObject->findData("values")->read("-1. 1.");
         m_thisObject->update();
@@ -52,7 +52,7 @@ struct TestIndicesFromValues : public Sofa_test<>{
 
 
     void search_nothing(){
-        IndicesFromValues<double>::SPtr m_thisObject=New<IndicesFromValues<double>>();
+        IndicesFromValues<SReal>::SPtr m_thisObject=New<IndicesFromValues<SReal>>();
         m_thisObject->findData("global")->read("0. 0.5 0.5  0. 0. 1.  0. -1. 3.");
         m_thisObject->findData("values")->read("");
         m_thisObject->update();
@@ -61,7 +61,7 @@ struct TestIndicesFromValues : public Sofa_test<>{
     }
 
     void search_in_nothing(){
-        IndicesFromValues<double>::SPtr m_thisObject=New<IndicesFromValues<double>>();
+        IndicesFromValues<SReal>::SPtr m_thisObject=New<IndicesFromValues<SReal>>();
         m_thisObject->findData("global")->read(" ");
         m_thisObject->findData("values")->read("1");
         m_thisObject->update();
@@ -70,7 +70,7 @@ struct TestIndicesFromValues : public Sofa_test<>{
     }
 
     void search_nothing_in_nothing(){
-        IndicesFromValues<double>::SPtr m_thisObject=New<IndicesFromValues<double>>();
+        IndicesFromValues<SReal>::SPtr m_thisObject=New<IndicesFromValues<SReal>>();
         m_thisObject->findData("global")->read(" ");
         m_thisObject->findData("values")->read(" ");
         m_thisObject->update();
@@ -79,7 +79,7 @@ struct TestIndicesFromValues : public Sofa_test<>{
     }
 
     void search_existing_and_nonexisting(){
-        IndicesFromValues<double>::SPtr m_thisObject=New<IndicesFromValues<double>>();
+        IndicesFromValues<SReal>::SPtr m_thisObject=New<IndicesFromValues<SReal>>();
         m_thisObject->findData("global")->read("0. 0.5 0.5  0. 0. 1.  0. -1. 3.");
         m_thisObject->findData("values")->read("1.  4. ");
         m_thisObject->update();
@@ -89,7 +89,7 @@ struct TestIndicesFromValues : public Sofa_test<>{
 
 
     void search_nonexisting(){
-        IndicesFromValues<double>::SPtr m_thisObject=New<IndicesFromValues<double>>();
+        IndicesFromValues<SReal>::SPtr m_thisObject=New<IndicesFromValues<SReal>>();
         m_thisObject->findData("global")->read("0. 0.5 0.5  0. 0. 1.  0. -1. 3.");
         m_thisObject->findData("values")->read("4. ");
         m_thisObject->update();
@@ -98,7 +98,7 @@ struct TestIndicesFromValues : public Sofa_test<>{
     }
 
     void search_a_sequence(){
-        IndicesFromValues<double>::SPtr m_thisObject=New<IndicesFromValues<double>>();
+        IndicesFromValues<SReal>::SPtr m_thisObject=New<IndicesFromValues<SReal>>();
         m_thisObject->findData("global")->read("0. 0.5 0.5  0. 0. 1.  0. -1. 3.");
         m_thisObject->findData("values")->read("1. 0. -1. ");
         m_thisObject->update();

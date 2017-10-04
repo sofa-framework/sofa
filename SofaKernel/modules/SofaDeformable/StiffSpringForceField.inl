@@ -64,7 +64,7 @@ void StiffSpringForceField<DataTypes>::addSpringForce(
     int b = spring.m2;
     Coord u = p2[b]-p1[a];
     Real d = u.norm();
-    if( d>1.0e-4 && (!spring.elongationOnly || d>spring.initpos))
+    if( d>1.0e-9 && (!spring.elongationOnly || d>spring.initpos))
     {
         // F =   k_s.(l-l_0 ).U + k_d((V_b - V_a).U).U = f.U   where f is the intensity and U the direction
         Real inverseLength = 1.0f/d;

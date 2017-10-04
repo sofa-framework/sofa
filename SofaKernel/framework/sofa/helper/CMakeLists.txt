@@ -106,6 +106,7 @@ set(HEADER_FILES
     vector_algebra.h
     vector_device.h
     types/RGBAColor.h
+    types/Material.h
     logging/Messaging.h
     logging/Message.h
     logging/ComponentInfo.h
@@ -187,6 +188,7 @@ set(SOURCE_FILES
     vector.cpp
     types/fixed_array.cpp
     types/RGBAColor.cpp
+    types/Material.cpp
     logging/Message.cpp
     logging/MessageDispatcher.cpp
     logging/ComponentInfo.cpp
@@ -363,7 +365,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAFRAMEWORK_DEPENDENCY_LINK} ${
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../..>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES}>")
+target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES}>")
 # For generated files, like sofa/config.h
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 set(SOFAHELPER_COMPILE_FLAGS "-DSOFA_BUILD_HELPER")

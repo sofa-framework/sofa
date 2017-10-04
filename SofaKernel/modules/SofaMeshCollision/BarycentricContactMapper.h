@@ -36,10 +36,8 @@
 #include <SofaBaseCollision/CapsuleModel.h>
 #include <SofaBaseCollision/SphereModel.h>
 #include <SofaMeshCollision/TriangleModel.h>
-//#include <SofaMiscCollision/TetrahedronModel.h>
 #include <SofaMeshCollision/LineModel.h>
 #include <SofaMeshCollision/PointModel.h>
-//#include <SofaVolumetricData/DistanceGridCollisionModel.h>
 #include <SofaBaseMechanics/IdentityMapping.h>
 #include <iostream>
 
@@ -164,7 +162,7 @@ public:
                 return this->mapper->createPointInQuad(P, qindex, &this->model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
             else
             {
-                msg_error("ContactMapper<TriangleMeshModel>") << "Invalid contact element index "<<index<<" on a topology with "<<nbt<<" triangles and "<<nbq<<" quads."<<msgendl
+                msg_error("ContactMapper<TriangleModel>") << "Invalid contact element index "<<index<<" on a topology with "<<nbt<<" triangles and "<<nbq<<" quads."<<msgendl
                                                               << "model="<<this->model->getName()<<" size="<<this->model->getSize() ;
                 return -1;
             }
@@ -185,8 +183,8 @@ public:
                 return this->mapper->createPointInQuad(P, qindex, &this->model->getMechanicalState()->read(core::ConstVecCoordId::position())->getValue());
             else
             {
-                std::cerr << "ContactMapper<TriangleMeshModel>: ERROR invalid contact element index "<<index<<" on a topology with "<<nbt<<" triangles and "<<nbq<<" quads."<<std::endl;
-                std::cerr << "model="<<this->model->getName()<<" size="<<this->model->getSize()<<std::endl;
+                msg_error("ContactMapper<TriangleModel>") << "Invalid contact element index "<<index<<" on a topology with "<<nbt<<" triangles and "<<nbq<<" quads."<<msgendl
+                            << "model="<<this->model->getName()<<" size="<<this->model->getSize() ;
                 return -1;
             }
         }

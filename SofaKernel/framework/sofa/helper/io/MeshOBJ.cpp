@@ -128,7 +128,6 @@ void MeshOBJ::readOBJ (std::istream &stream, const std::string &filename)
                 {
                     if (it->name == curGroup.materialName)
                     {
-                        // std::cout << "Using material "<<it->name<<std::endl;
                         (*it).activated = true;
                         if (!material.activated)
                             material = *it;
@@ -197,12 +196,6 @@ void MeshOBJ::readOBJ (std::istream &stream, const std::string &filename)
     curGroup.nbp = nbf - curGroup.p0;
     if (curGroup.nbp > 0) groups.push_back(curGroup);
 
-    // announce the model statistics
-    // std::cout << " Vertices: " << vertices.size() << std::endl;
-    // std::cout << " Normals: " << normals.size() << std::endl;
-    // std::cout << " Texcoords: " << texCoords.size() << std::endl;
-    // std::cout << " Triangles: " << facets.size() << std::endl;
-
     if (vertices.size()>0)
     {
         // compute bbox
@@ -220,7 +213,6 @@ void MeshOBJ::readOBJ (std::istream &stream, const std::string &filename)
             }
         }
 
-        // 		std::cout << "BBox: <"<<minBB[0]<<','<<minBB[1]<<','<<minBB[2]<<">-<"<<maxBB[0]<<','<<maxBB[1]<<','<<maxBB[2]<<">\n";
     }
 
 }

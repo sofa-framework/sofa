@@ -24,6 +24,8 @@
 
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
 
+#include <sofa/helper/BackTrace.h>
+
 namespace sofa {
 
 namespace component {
@@ -61,7 +63,7 @@ MatrixInvertData * MatrixLinearSolver<Matrix,Vector>::getMatrixInvertData(defaul
 template<class Matrix, class Vector>
 MatrixInvertData * MatrixLinearSolver<Matrix,Vector>::createInvertData()
 {
-    std::cerr << "ERROR the solver didn't implement MatrixLinearSolver::getMatrixInvertData this function is not available in MatrixLinearSolver, NULL is return" << std::endl;
+    msg_error("MatrixLinearSolver") << "The solver didn't implement MatrixLinearSolver::getMatrixInvertData this function is not available in MatrixLinearSolver, NULL is return." ;
     return NULL;
 }
 
@@ -161,6 +163,7 @@ void MatrixLinearSolver<Matrix,Vector>::setSystemMBKMatrix(const core::Mechanica
             if (!currentGroup->systemMatrix) currentGroup->systemMatrix = createMatrix();
             currentGroup->matrixAccessor.setGlobalMatrix(currentGroup->systemMatrix);
             currentGroup->matrixAccessor.clear();
+
             //unsigned int nbRow=0, nbCol=0;
             //MechanicalGetMatrixDimensionVisitor(nbRow, nbCol).execute( getContext() );
             //this->getMatrixDimension(&nbRow, &nbCol);
@@ -347,7 +350,7 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
         }
         else
         {
-            std::cerr << "AsyncMatrixLinearSolver::addJMInvJt is only implemented for SparseMatrix<Real>" << std::endl;
+            dmsg_error("MatrixLinearSolver") << "AsyncMatrixLinearSolver::addJMInvJt is only implemented for SparseMatrix<Real>" ;
             return false;
         }
     }

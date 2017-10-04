@@ -25,10 +25,21 @@
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/Utils.h>
 #include <gtest/gtest.h>
+#include <SofaTest/TestMessageHandler.h>
+
+#include <fstream>
 
 using sofa::helper::system::PluginManager;
+using sofa::helper::system::FileSystem;
 
-static std::string pluginName = "TestPlugin";;
+static std::string pluginName = "TestPlugin" ;
+
+#ifdef NDEBUG
+static std::string pluginFileName = "TestPlugin" ;
+#else
+static std::string pluginFileName = "TestPlugin_d" ;
+#endif //N_DEBUG
+
 static std::string nonpluginName = "RandomNameForAPluginButHopeItDoesNotExist";
 
 const std::string dotExt = "." + sofa::helper::system::DynamicLibrary::extension;
@@ -54,33 +65,46 @@ struct PluginManager_test: public ::testing::Test
 #endif
         sofa::helper::system::PluginRepository.addFirstPath(pluginDir);
     }
+
+    void TearDown()
+    {
+        PluginManager&pm = PluginManager::getInstance();
+        //empty loaded plugin(s)
+        std::vector<std::string> toDelete;
+        for (PluginManager::PluginMap::const_iterator it = pm.getPluginMap().begin(); it != pm.getPluginMap().end(); it++)
+        {
+            toDelete.push_back((*it).first);
+        }
+
+        for(std::string p : toDelete)
+            ASSERT_TRUE(pm.unloadPlugin(p));
+
+        ASSERT_EQ(pm.getPluginMap().size(), 0u);
+    }
 };
 
 
 TEST_F(PluginManager_test, loadTestPluginByPath)
 {
-    sofa::helper::system::PluginManager&pm = sofa::helper::system::PluginManager::getInstance();
+    PluginManager&pm = PluginManager::getInstance();
 
-    std::string pluginPath = pluginDir + separator + prefix + pluginName + dotExt;
+    std::string pluginPath = pluginDir + separator + prefix + pluginFileName + dotExt;
     std::string nonpluginPath = pluginDir + separator + prefix + nonpluginName + dotExt;
 
-    std::cout << pluginPath << std::endl;
-
+    std::cout << pm.getPluginMap().size() << std::endl;
     ASSERT_TRUE(pm.loadPluginByPath(pluginPath));
+    std::cout << pm.getPluginMap().size() << std::endl;
     ASSERT_FALSE(pm.loadPluginByPath(nonpluginPath));
+    std::cout << pm.getPluginMap().size() << std::endl;
 
     ASSERT_GT(pm.findPlugin(pluginName).size(), 0u);
     ASSERT_EQ(pm.findPlugin(nonpluginName).size(), 0u);
-
-    //It is better to unload the testPlugin in each test or it will stay loaded for the entire fixture
-    ASSERT_TRUE(pm.unloadPlugin(pluginPath));
-    ASSERT_EQ(pm.getPluginMap().size(), 0u);
 
 }
 
 TEST_F(PluginManager_test, loadTestPluginByName )
 {
-    sofa::helper::system::PluginManager&pm = sofa::helper::system::PluginManager::getInstance();
+    PluginManager&pm = PluginManager::getInstance();
 
     ASSERT_TRUE(pm.loadPluginByName(pluginName) );
     ASSERT_FALSE(pm.loadPluginByName(nonpluginName));
@@ -88,15 +112,11 @@ TEST_F(PluginManager_test, loadTestPluginByName )
     std::string pluginPath = pm.findPlugin(pluginName);
     ASSERT_GT(pluginPath.size(), 0u);
     ASSERT_EQ(pm.findPlugin(nonpluginName).size(), 0u);
-
-    //Same
-    ASSERT_TRUE(pm.unloadPlugin(pluginPath));
-    ASSERT_EQ(pm.getPluginMap().size(), 0u);
 }
 
 TEST_F(PluginManager_test, pluginEntries)
 {
-    sofa::helper::system::PluginManager&pm = sofa::helper::system::PluginManager::getInstance();
+    PluginManager&pm = PluginManager::getInstance();
 
     pm.loadPluginByName(pluginName);
     const std::string pluginPath = pm.findPlugin(pluginName);
@@ -109,13 +129,11 @@ TEST_F(PluginManager_test, pluginEntries)
     EXPECT_TRUE(p.getModuleDescription.func != NULL);
     EXPECT_TRUE(p.getModuleComponentList.func != NULL);
 
-    ASSERT_TRUE(pm.unloadPlugin(pluginPath));
-    ASSERT_EQ(pm.getPluginMap().size(), 0u);
 }
 
 TEST_F(PluginManager_test, pluginEntriesValues)
 {
-    sofa::helper::system::PluginManager&pm = sofa::helper::system::PluginManager::getInstance();
+    PluginManager&pm = PluginManager::getInstance();
 
     pm.loadPluginByName(pluginName);
     const std::string pluginPath = pm.findPlugin(pluginName);
@@ -142,30 +160,46 @@ TEST_F(PluginManager_test, pluginEntriesValues)
     ASSERT_EQ(0, std::string(p.getModuleComponentList()).compare(testModuleComponentList));
     ASSERT_NE(0, std::string(p.getModuleComponentList()).compare(testModuleComponentList + "ComponentZ"));
 
-    ASSERT_TRUE(pm.unloadPlugin(pluginPath));
-    ASSERT_EQ(pm.getPluginMap().size(), 0u);
 }
 
 TEST_F(PluginManager_test, testIniFile)
 {
-    sofa::helper::system::PluginManager&pm = sofa::helper::system::PluginManager::getInstance();
+    EXPECT_MSG_NOEMIT(Deprecated);
+
+    PluginManager&pm = PluginManager::getInstance();
     pm.loadPluginByName(pluginName);
     const std::string pluginPath = pm.findPlugin(pluginName);
 
-    const std::string pathIniFile = std::string(FRAMEWORK_TEST_RESOURCES_DIR) + separator + "PluginManager_test.ini";
+    const std::string pathIniFile = "PluginManager_test.ini";
     pm.writeToIniFile(pathIniFile);
 
     //writeToIniFile does not return anything to say if the file was created without error...
-    ASSERT_TRUE(sofa::helper::system::FileSystem::exists(pathIniFile));
+    ASSERT_TRUE(FileSystem::exists(pathIniFile));
 
     ASSERT_TRUE(pm.unloadPlugin(pluginPath));
     ASSERT_EQ(pm.getPluginMap().size(), 0u);
 
-    ASSERT_TRUE(sofa::helper::system::FileSystem::exists(pathIniFile));
+    ASSERT_TRUE(FileSystem::exists(pathIniFile));
 
     pm.readFromIniFile(pathIniFile);
     ASSERT_EQ(pm.findPlugin(pluginName).compare(pluginPath), 0);
 
-    ASSERT_TRUE(pm.unloadPlugin(pluginPath));
+}
+
+TEST_F(PluginManager_test, testDeprecatedIniFileWoVersion)
+{
+    EXPECT_MSG_EMIT(Deprecated);
+
+    PluginManager&pm = PluginManager::getInstance();
+
     ASSERT_EQ(pm.getPluginMap().size(), 0u);
+
+    const std::string pathIniFile = "PluginManager_test_deprecated_wo_version.ini";
+    std::ofstream outstream(pathIniFile.c_str());
+
+    outstream << pluginName << std::endl;
+    outstream.close();
+    ASSERT_TRUE(FileSystem::exists(pathIniFile));
+    pm.readFromIniFile(pathIniFile);
+
 }

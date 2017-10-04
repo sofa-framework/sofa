@@ -169,16 +169,12 @@ bool LMConstraintSolver::prepareStates(const core::ConstraintParams *cparams, Mu
 
         msg_info() << "prepareStates for velocities";
 
+        simulation::MechanicalProjectVelocityVisitor projectState(&mparams, this->getContext()->getTime(), core::VecDerivId(vid));
+        projectState.execute(this->getContext());
         if (needPriorStatePropagation(orderState))
         {
-            simulation::MechanicalPropagateVelocityVisitor propagateState(&mparams, 0.0, core::VecDerivId(vid),false);
+            simulation::MechanicalPropagateOnlyVelocityVisitor propagateState(&mparams, 0.0, core::VecDerivId(vid),false);
             propagateState.execute(this->getContext());
-        }
-        else
-        {
-            //TODO: change ProjectVelocityVisitor to pass the VecId
-            simulation::MechanicalProjectVelocityVisitor projectVel(&mparams,this->getContext()->getTime(), core::VecDerivId(vid) );
-            projectVel.execute(this->getContext());
         }
 
         // calling writeConstraintEquations
@@ -197,15 +193,12 @@ bool LMConstraintSolver::prepareStates(const core::ConstraintParams *cparams, Mu
         if (!constraintPos.getValue()) return false;
         msg_info() << "prepareStates for positions";
 
+        simulation::MechanicalProjectPositionVisitor projectPos(&mparams, this->getContext()->getTime(), core::VecCoordId(vid));
+        projectPos.execute(this->getContext());
         if (needPriorStatePropagation(orderState))
         {
-            simulation::MechanicalPropagatePositionVisitor propagateState(&mparams, 0.0, core::VecCoordId(vid), false);
+            simulation::MechanicalPropagateOnlyPositionVisitor propagateState(&mparams, 0.0, core::VecCoordId(vid), false);
             propagateState.execute(this->getContext());
-        }
-        else
-        {
-            simulation::MechanicalProjectPositionVisitor projectPos(&mparams,this->getContext()->getTime(), core::VecCoordId(vid));
-            projectPos.execute(this->getContext());
         }
 
         // calling writeConstraintEquations

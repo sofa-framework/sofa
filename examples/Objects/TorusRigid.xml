@@ -1,5 +1,5 @@
 <Node name="TorusRigid">
-	<EulerImplicitSolver rayleighStiffness="0.01" />
+	<EulerImplicitSolver rayleighStiffness="0.01"  rayleighMass="0.1" />
 	<CGLinearSolver iterations="25" threshold="0.00000001"  tolerance="1e-05"/>
 	<MechanicalObject template="Rigid"  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0"  />
 	<UniformMass />

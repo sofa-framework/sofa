@@ -155,8 +155,6 @@ protected:
             Real hb = (BC - edgeDir * (BC*edgeDir)).norm(); // distance from B to CD
             Real l = (p[vid[C]]-p[vid[D]]).norm();          // distance from C to D
             lambda = (Real)(2./3) * (ha+hb)/(ha*ha*hb*hb) * l * materialBendingStiffness;
-
-            //            cerr<<"EdgeInformation::setEdgeSpring, vertices = " << vid << endl;
         }
 
         /// Accumulates force and return potential energy
@@ -196,10 +194,10 @@ protected:
 #else
         void addDForce( VecDeriv& df, const VecDeriv& dp, Real kfactor) const
         {
-	        if( !is_activated ) return;
-	        for( unsigned j=0; j<4; j++ )
-	            for( unsigned k=0; k<4; k++ )
-	                df[vid[j]] -= dp[vid[k]] * lambda * alpha[j] * alpha[k] * kfactor;
+            if( !is_activated ) return;
+            for( unsigned j=0; j<4; j++ )
+                for( unsigned k=0; k<4; k++ )
+                    df[vid[j]] -= dp[vid[k]] * lambda * alpha[j] * alpha[k] * kfactor;
         }
 #endif
 

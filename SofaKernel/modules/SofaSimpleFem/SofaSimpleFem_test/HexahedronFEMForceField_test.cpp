@@ -41,6 +41,7 @@ struct HexahedronFEMForceField_test : public ForceField_test<_HexahedronFEMForce
     typedef typename ForceType::VecDeriv VecDeriv;
     typedef typename ForceType::Coord Coord;
     typedef typename ForceType::Deriv Deriv;
+    typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef typename Coord::value_type Real;
     typedef helper::Vec<3,Real> Vec3;
 
@@ -104,6 +105,22 @@ struct HexahedronFEMForceField_test : public ForceField_test<_HexahedronFEMForce
         // run the forcefield_test
         Inherited::run_test( x, v, f );
     }
+
+    void test_computeBBox()
+    {
+        std::size_t n = x.size();
+        // copy the position and velocities to the scene graph
+        this->dof->resize(n);
+        typename DOF::WriteVecCoord xdof = this->dof->writePositions();
+        copyToData( xdof, x );
+        // init scene and compute force
+        sofa::simulation::getSimulation()->init(this->node.get());
+
+        Inherited::force->computeBBox(NULL, true);
+
+        EXPECT_EQ(Inherited::force->f_bbox.getValue().minBBox(), Vec3(0,0,0));
+        EXPECT_EQ(Inherited::force->f_bbox.getValue().maxBBox(), Vec3(1,1,1.1));
+    }
 };
 
 // ========= Define the list of types to instanciate.
@@ -126,6 +143,11 @@ TYPED_TEST( HexahedronFEMForceField_test , extension )
 
     // run test
     this->test_valueForce();
+}
+
+TYPED_TEST( HexahedronFEMForceField_test, test_computeBBox )
+{
+    ASSERT_NO_THROW(this->test_computeBBox()) ;
 }
 
 } // namespace sofa

@@ -6,7 +6,7 @@
     <!--<ProximityIntersection name="Proximity" alarmDistance="1.0" contactDistance="0.5" useTriangleTriangle="1" useLineTriangle="0"/>-->
     <MinProximityIntersection name="Proximity" alarmDistance="1.0" contactDistance="0.5"  />
     <Node name="Poutre1">
-        <EulerImplicit />
+        <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
         <MeshGmshLoader name="meshLoader" filename="mesh/smCube27.msh" />
         <Node name="M1">

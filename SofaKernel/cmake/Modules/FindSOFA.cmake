@@ -290,12 +290,10 @@ list(APPEND SOFA_LIB_ADVANCED_NAME
     #SofaAdvancedFem            SOFA_LIB_ADVANCED_FEM
     #SofaAdvancedInteraction    SOFA_LIB_ADVANCED_INTERACTION
     SofaEigen2Solver           SOFA_LIB_EIGEN2_SOLVER
-    SofaEulerianFluid          SOFA_LIB_EULERIAN_FUILD
     #SofaMjedFem                SOFA_LIB_MJED_FEM
     SofaNonUniformFem          SOFA_LIB_NON_UNIFORM_FEM
     #SofaNonUniformFemDev       SOFA_LIB_NON_UNIFORM_FEM_DEV
     SofaSphFluid               SOFA_LIB_SPH_FUILD
-    SofaVolumetricData         SOFA_LIB_VOLUMETRIC_DATA
     )
 list(LENGTH SOFA_LIB_GENERAL_NAME sofaAdvancedLibList)
 math(EXPR passToMiscLib "${sofaAdvancedLibList}/2+${passToAdvancedLib}")

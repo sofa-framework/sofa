@@ -1,5 +1,5 @@
 <Node name="TetraFEM">
-	<EulerImplicitSolver rayleighStiffness="0.01" />
+	<EulerImplicitSolver rayleighStiffness="0.01"  rayleighMass="0.1" />
 	<CGLinearSolver iterations="25" threshold="0.00000001"  />
 
 	<SparseGrid n="6 6 6" filename="file"/>

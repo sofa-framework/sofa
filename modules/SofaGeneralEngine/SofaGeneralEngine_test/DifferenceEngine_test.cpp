@@ -104,7 +104,7 @@ struct DifferenceEngine_test : public Sofa_test<typename _DataTypes::value_type>
 };
 
 using testing::Types;
-typedef Types<defaulttype::Vec3d> DataTypes;
+typedef Types<defaulttype::Vector3> DataTypes;
 
 TYPED_TEST_CASE(DifferenceEngine_test, DataTypes);
 

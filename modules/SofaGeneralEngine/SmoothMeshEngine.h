@@ -61,6 +61,7 @@ public:
     void init();
     void reinit();
     void update();
+	void computeBBox(const core::ExecParams* params, bool onlyVisible);
     virtual void draw(const core::visual::VisualParams* vparams);
 
     Data<VecCoord> input_position;

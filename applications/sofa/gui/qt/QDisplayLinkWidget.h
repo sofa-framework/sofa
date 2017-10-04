@@ -30,7 +30,7 @@
 #include <QTextEdit>
 #include <QGroupBox>
 #include <QSlider>
-
+#include <sofa/helper/system/FileRepository.h>
 
 namespace sofa
 {
@@ -64,17 +64,17 @@ signals:
     void LinkOwnerDirty(bool);
 
 protected:
-	static QIcon& RefreshIcon()
-	{
-		static QIcon icon;
-		if(icon.isNull())
-		{
-			std::string filename = "textures/refresh.png";
-			sofa::helper::system::DataRepository.findFile(filename);
-			icon = QIcon(filename.c_str());
-		}
-		return icon;
-	}
+    static QIcon& RefreshIcon()
+    {
+        static QIcon icon;
+        if(icon.isNull())
+        {
+            std::string filename = "textures/refresh.png";
+            sofa::helper::system::DataRepository.findFile(filename);
+            icon = QIcon(filename.c_str());
+        }
+        return icon;
+    }
 
 protected:
     core::objectmodel::BaseLink* link_;

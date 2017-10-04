@@ -75,13 +75,13 @@ using defaulttype::BaseMatrix;
 template <class DataTypes, class MassType>
 UniformMass<DataTypes, MassType>::UniformMass()
     : d_mass ( initData ( &d_mass, MassType ( 1.0f ), "mass",
-                          "Specify an unique mass for all the particles.                      "
+                          "Specify a unique mass for all the particles.                      "
                           "If the mass attribute is set then totalmass is deduced from it     "
                           "using the following formula: totalmass = mass * number of particules"
                           "The default value is {1.0}" ) )
 
     , d_totalMass ( initData ( &d_totalMass, (SReal)0.0, "totalmass",
-                               "Specify an unique mass for all the particles.                        "
+                               "Specify a unique mass for all the particles.                        "
                                "If the totalmass attribute is set then the mass is deduced from it   "
                                "using the following formula: mass = totalmass / number of particules "
                                "If unspecified the default value is totalmass = mass * number of particules."
@@ -185,7 +185,6 @@ void UniformMass<DataTypes, MassType>::reinit()
             indices.push_back(i);
         m_doesTopoChangeAffect = true;
     }
-
     if(d_totalMass.getValue() < 0.0 || d_mass.getValue() < 0.0){
         msg_warning(this) << "The mass or totalmass data field cannot have negative values.\n"
                              "Switching back to the default value, mass = 1.0 and totalmass = mass * num_position. \n"
@@ -198,9 +197,15 @@ void UniformMass<DataTypes, MassType>::reinit()
     //Update mass and totalMass
     if (d_totalMass.getValue() > 0)
     {
+        if (d_mass.isSet()) {
+            msg_warning(this) << "Totalmass value overriding the value of the attribute Mass.\n"
+                                 "Mass = TotalMass / num_position. \n"
+                                 "To remove this warning you need to set either totalmass or mass data field but not both.";
+        }
         MassType *m = d_mass.beginEdit();
         *m = ( ( typename DataTypes::Real ) d_totalMass.getValue() / indices.size() );
         d_mass.endEdit();
+
     }
     else
         d_totalMass.setValue ( indices.size() * (Real)d_mass.getValue() );

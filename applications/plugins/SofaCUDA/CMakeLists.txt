@@ -184,9 +184,8 @@ find_package(SofaAdvanced REQUIRED)
 find_package(SofaMisc REQUIRED)
 find_package(CUDA REQUIRED)
 find_package(VolumetricRendering QUIET)
-find_package(MiniFlowVR QUIET)
 
-if(VolumetricRendering_FOUND)   
+if(VolumetricRendering_FOUND)
     list(APPEND HEADER_FILES sofa/gpu/cuda/CudaTetrahedralVisualModel.h)
     list(APPEND HEADER_FILES sofa/gpu/cuda/CudaTetrahedralVisualModel.inl)
     list(APPEND SOURCE_FILES sofa/gpu/cuda/CudaTetrahedralVisualModel.cpp)
@@ -195,7 +194,18 @@ else()
     message(STATUS "SofaCUDA: Plugin VolumetricRendering was not enabled/found, therefore CudaTetrahedralVisualModel will not be compiled.")
 endif()
 
-if(MiniFlowVR_FOUND)
+find_package(SofaDistanceGrid QUIET)
+find_package(MiniFlowVR QUIET)
+
+if(SofaDistanceGrid_FOUND)
+    if(MiniFlowVR_FOUND)
+        add_definitions("-DSOFA_HAVE_MINIFLOWVR")
+        message(STATUS "SofaCUDA: MiniFlowVR enabled.")
+
+    else()
+        message(STATUS "SofaCUDA: MiniFlowVR was not enabled, therefore some feature of CudaDistanceGridCollisionModel will not be compiled.")
+    endif()
+
     list(APPEND HEADER_FILES
         sofa/gpu/cuda/CudaDistanceGridCollisionModel.h
         sofa/gpu/cuda/CudaContactMapper.h
@@ -210,7 +220,7 @@ if(MiniFlowVR_FOUND)
         sofa/gpu/cuda/CudaContactMapper.cu
         sofa/gpu/cuda/CudaCollisionDetection.cu)
 else()
-    message(STATUS "SofaCUDA: MiniFlowVR was not enabled/found, therefore CudaDistanceGridCollisionModel will not be compiled.")
+    message(STATUS "SofaCUDA: SofaDistanceGrid was not enabled, therefore CudaDistanceGridCollisionModel will not be compiled.")
 endif()
 
 option(SOFACUDA_VERBOSE_PTXAS "???" OFF)
@@ -284,11 +294,23 @@ cuda_include_directories("${CMAKE_CURRENT_SOURCE_DIR}")
 cuda_include_directories("${CMAKE_BINARY_DIR}/include")
 cuda_add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${CUDA_SOURCES} ${README_FILES} OPTIONS ${VERBOSE_PTXAS} ${WINDOWSOPTIONS})
 
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFACUDA_COMPILE_DEFINITIONS}")
-target_link_libraries(${PROJECT_NAME} SofaOpenglVisual SofaGeneralEngine SofaGeneralDeformable SofaEngine SofaSphFluid SofaUserInteraction SofaVolumetricData SofaComponentAdvanced SofaComponentMisc)
+target_link_libraries(${PROJECT_NAME} SofaOpenglVisual SofaGeneralEngine SofaGeneralDeformable SofaEngine SofaSphFluid SofaUserInteraction SofaComponentAdvanced SofaComponentMisc)
+
+if(SofaDistanceGrid_FOUND)
+    target_link_libraries(${PROJECT_NAME} SofaDistanceGrid)
+endif()
+
+if(MiniFlowVR_FOUND)
+    target_link_libraries(${PROJECT_NAME} miniFlowVR)
+endif()
+
+set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 if(SOFACUDA_CUBLAS)
     cuda_add_cublas_to_target(${PROJECT_NAME})
@@ -297,8 +319,8 @@ endif()
 if(SOFACUDA_CUDPP)
     target_link_libraries(${PROJECT_NAME} cudpp)
 endif()
-if(VolumetricRendering_FOUND)  
-    target_link_libraries(${PROJECT_NAME} VolumetricRendering) 
+if(VolumetricRendering_FOUND)
+    target_link_libraries(${PROJECT_NAME} VolumetricRendering)
 endif()
 
 ## SofaCUDANvccFlags.cmake

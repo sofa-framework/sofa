@@ -19,19 +19,3 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/*
-#include "Binding_MultiMapping.h"
-#include "Binding_BaseMapping.h"
-
-#include <sofa/core/topology/Topology.h>
-using namespace sofa::core::topology;
-using namespace sofa::core;
-
-
-SP_CLASS_METHODS_BEGIN(MultiMapping3_to_3)
-SP_CLASS_METHODS_END
-
-
-SP_CLASS_TYPE_SPTR(MultiMapping3_to_3,MultiMapping3_to_3,BaseMapping)
-
-*/

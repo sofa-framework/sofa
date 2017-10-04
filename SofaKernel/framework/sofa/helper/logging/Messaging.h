@@ -128,12 +128,16 @@
 #define logmsg_fatal(emitter)      sofa::helper::logging::MessageDispatcher::fatal(sofa::helper::logging::Message::Log, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO)
 #define logmsg_advice(emitter)      sofa::helper::logging::MessageDispatcher::advice(sofa::helper::logging::Message::Log, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO)
 
-#define msg_info_withfile(emitter, file, line)       sofa::helper::logging::MessageDispatcher::info(sofa::helper::logging::Message::Runtime, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO2(file,line))
-#define msg_deprecated_withfile(emitter, file, line) sofa::helper::logging::MessageDispatcher::deprecated(sofa::helper::logging::Message::Runtime, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO2(file,line))
-#define msg_warning_withfile(emitter, file,line)    sofa::helper::logging::MessageDispatcher::warning(sofa::helper::logging::Message::Runtime, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO2(file,line))
-#define msg_error_withfile(emitter, file,line)      sofa::helper::logging::MessageDispatcher::error(sofa::helper::logging::Message::Runtime, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO2(file,line))
-#define msg_fatal_withfile(emitter, file,line)      sofa::helper::logging::MessageDispatcher::fatal(sofa::helper::logging::Message::Runtime, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO2(file,line))
-#define msg_advice_withfile(emitter, file,line)      sofa::helper::logging::MessageDispatcher::advice(sofa::helper::logging::Message::Runtime, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO2(file,line))
+#define msg_info_withfile(emitter, file, line)       sofa::helper::logging::MessageDispatcher::info(sofa::helper::logging::Message::Runtime, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO_COPIED_FROM(file,line))
+#define msg_deprecated_withfile(emitter, file, line) sofa::helper::logging::MessageDispatcher::deprecated(sofa::helper::logging::Message::Runtime, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO_COPIED_FROM(file,line))
+#define msg_warning_withfile(emitter, file,line)    sofa::helper::logging::MessageDispatcher::warning(sofa::helper::logging::Message::Runtime, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO_COPIED_FROM(file,line))
+#define msg_error_withfile(emitter, file,line)      sofa::helper::logging::MessageDispatcher::error(sofa::helper::logging::Message::Runtime, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO_COPIED_FROM(file,line))
+#define msg_fatal_withfile(emitter, file,line)      sofa::helper::logging::MessageDispatcher::fatal(sofa::helper::logging::Message::Runtime, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO_COPIED_FROM(file,line))
+#define msg_advice_withfile(emitter, file,line)      sofa::helper::logging::MessageDispatcher::advice(sofa::helper::logging::Message::Runtime, sofa::helper::logging::getComponentInfo(emitter), SOFA_FILE_INFO_COPIED_FROM(file,line))
+
+#define FILEINFO(filename, line) sofa::helper::logging::FileInfo(filename, line)
+
+#define FILEINFO(filename, line) sofa::helper::logging::FileInfo(filename, line)
 
 /// THESE MACRO BEASTS ARE FOR AUTOMATIC DETECTION OF MACRO NO or ONE ARGUMENTS
 #define TWO_FUNC_CHOOSER(_f1, _f2 ,...) _f2
@@ -283,5 +287,17 @@
 #define dmsg_advice(...) DMSGADVICE_CHOOSER(__VA_ARGS__)(__VA_ARGS__)
 #define dmsg_advice_when(cond, ...) if((cond)) dmsg_advice(__VA_ARGS__)
 
+#define MSG_REGISTER_CLASS(classType, nameName) \
+    namespace sofa {         \
+    namespace helper {       \
+    namespace logging {      \
+        inline bool notMuted(const classType* ){ return true; }         \
+        inline ComponentInfo::SPtr getComponentInfo(const classType* )  \
+        {                                                               \
+            return ComponentInfo::SPtr(new ComponentInfo(nameName)) ;   \
+        }                                                               \
+    } \
+    } \
+    }
 
 #endif // MESSAGING_H

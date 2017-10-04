@@ -57,32 +57,32 @@ struct MemoryTest : public ::testing::Test
         sofa::core::objectmodel::PythonScriptFunction pythonScriptFunctionDETACHSUB(PyObject_GetAttrString(ctr->scriptControllerInstance(), "detachSub"), false);
 
         pythonScriptFunctionADD(NULL, NULL);
-        EXPECT_EQ( s_nbAlloc, 10u );
+        EXPECT_EQ( s_nbAlloc, 10u ) << "ADD";
 
         pythonScriptFunctionADD(NULL, NULL);
-        EXPECT_EQ( s_nbAlloc, 20u );
+        EXPECT_EQ( s_nbAlloc, 20u ) << "ADD";
 
         pythonScriptFunctionADDSUB(NULL, NULL);
-        EXPECT_EQ( s_nbAlloc, 30u );
+        EXPECT_EQ( s_nbAlloc, 30u ) << "ADDSUB";
 
         pythonScriptFunctionREMOVESUB(NULL, NULL);
-        EXPECT_EQ( s_nbAlloc, 20u );
+        EXPECT_EQ( s_nbAlloc, 20u ) << "RMSUB";
 
         pythonScriptFunctionREMOVE(NULL, NULL);
-        EXPECT_EQ( s_nbAlloc, 0u );
+        EXPECT_EQ( s_nbAlloc, 0u ) << "RM";
 
 
         pythonScriptFunctionADDSUB(NULL, NULL);
-        EXPECT_EQ( s_nbAlloc, 10u );
+        EXPECT_EQ( s_nbAlloc, 10u ) << "ADDSUB";
         pythonScriptFunctionDETACHSUB(NULL, NULL);
-        EXPECT_EQ( s_nbAlloc, 0u );
+        EXPECT_EQ( s_nbAlloc, 0u ) << "DETACHSUB";
 
 
 
         pythonScriptFunctionADD(NULL, NULL);
-        EXPECT_EQ( s_nbAlloc, 10u );
+        EXPECT_EQ( s_nbAlloc, 10u ) << "ADD";
         simulation::getSimulation()->unload(root);
-        EXPECT_EQ( s_nbAlloc, 0u );
+        EXPECT_EQ( s_nbAlloc, 0u ) << "UNLOAD";
     }
 
 

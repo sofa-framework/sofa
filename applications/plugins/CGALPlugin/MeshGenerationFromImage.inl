@@ -26,6 +26,8 @@
 
 using namespace sofa;
 
+#define SQR(X)   ((X)*(X))
+
 #if CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(3,5,0)
 using namespace CGAL::parameters;
 #endif
@@ -35,33 +37,34 @@ namespace cgal
 
 template <class DataTypes, class _ImageTypes>
 MeshGenerationFromImage<DataTypes, _ImageTypes>::MeshGenerationFromImage()
-	: m_filename(initData(&m_filename,"filename","Image file"))
-    , image(initData(&image,ImageTypes(),"image","image input"))
-    , transform(initData(&transform, "transform" , "12-param vector for trans, rot, scale, ..."))
-    , f_newX0( initData (&f_newX0, "outputPoints", "New Rest position coordinates from the tetrahedral generation"))
-    , f_tetrahedra(initData(&f_tetrahedra, "outputTetras", "List of tetrahedra"))
-    , f_tetraDomain(initData(&f_tetraDomain, "outputTetrasDomains", "domain of each tetrahedron"))
-    , output_cellData(initData(&output_cellData, "outputCellData", "Output cell data"))
-    , frozen(initData(&frozen, false, "frozen", "true to prohibit recomputations of the mesh"))
-    , facetAngle(initData(&facetAngle, 25.0, "facetAngle", "Lower bound for the angle in degrees of the surface mesh facets"))
-    , facetSize(initData(&facetSize, 0.15, "facetSize", "Uniform upper bound for the radius of the surface Delaunay balls"))
-    , facetApproximation(initData(&facetApproximation, 0.008, "facetApproximation", "Upper bound for the center-center distances of the surface mesh facets"))
-    , cellRatio(initData(&cellRatio, 4.0, "cellRatio", "Upper bound for the radius-edge ratio of the tetrahedra"))
-    , cellSize(initData(&cellSize, 1.0, "cellSize", "Uniform upper bound for the circumradii of the tetrahedra in the mesh"))
-    , label(initData(&label, "label", "label to be resized to a specific cellSize"))
-    , labelCellSize(initData(&labelCellSize, "labelCellSize", "Uniform upper bound for the circumradii of the tetrahedra in the mesh by label"))
-    , labelCellData(initData(&labelCellData, "labelCellData", "1D cell data by label"))
-    , odt(initData(&odt, false, "odt", "activate odt optimization"))
-    , lloyd(initData(&lloyd, false, "lloyd", "activate lloyd optimization"))
-    , perturb(initData(&perturb, false, "perturb", "activate perturb optimization"))
-    , exude(initData(&exude, false, "exude", "activate exude optimization"))
-    , odt_max_it(initData(&odt_max_it, 200, "odt_max_it", "odt max iteration number"))
-    , lloyd_max_it(initData(&lloyd_max_it, 200, "lloyd_max_it", "lloyd max iteration number"))
-    , perturb_max_time(initData(&perturb_max_time, 20.0, "perturb_max_time", "perturb maxtime"))
-    , exude_max_time(initData(&exude_max_time, 20.0, "exude_max_time", "exude max time"))
-    , ordering(initData(&ordering, 0, "ordering", "Output points and elements ordering (0 = none, 1 = longest bbox axis)"))
-    , drawTetras(initData(&drawTetras, false, "drawTetras", "display generated tetra mesh"))
-    , drawSurface(initData(&drawSurface, false, "drawSurface", "display input surface mesh"))
+    : d_filename(initData(&d_filename,"filename","Image file"))
+    , d_image(initData(&d_image,ImageTypes(),"image","image input"))
+    , d_transform(initData(&d_transform, "transform" , "12-param vector for trans, rot, scale, ..."))
+    , d_features( initData (&d_features, "features", "features (1D) that will be preserved in the mesh"))
+    , d_newX0( initData (&d_newX0, "outputPoints", "New Rest position coordinates from the tetrahedral generation"))
+    , d_tetrahedra(initData(&d_tetrahedra, "outputTetras", "List of tetrahedra"))
+    , d_tetraDomain(initData(&d_tetraDomain, "outputTetrasDomains", "domain of each tetrahedron"))
+    , d_outputCellData(initData(&d_outputCellData, "outputCellData", "Output cell data"))
+    , d_frozen(initData(&d_frozen, false, "frozen", "true to prohibit recomputations of the mesh"))
+    , d_edgeSize(initData(&d_edgeSize, 2.0, "edgeSize", "Edge size criterium (needed for polyline features"))
+    , d_facetAngle(initData(&d_facetAngle, 25.0, "facetAngle", "Lower bound for the angle in degrees of the surface mesh facets"))
+    , d_facetSize(initData(&d_facetSize, 0.15, "facetSize", "Uniform upper bound for the radius of the surface Delaunay balls"))
+    , d_facetApproximation(initData(&d_facetApproximation, 0.008, "facetApproximation", "Upper bound for the center-center distances of the surface mesh facets"))
+    , d_cellRatio(initData(&d_cellRatio, 4.0, "cellRatio", "Upper bound for the radius-edge ratio of the tetrahedra"))
+    , d_cellSize(initData(&d_cellSize, 1.0, "cellSize", "Uniform upper bound for the circumradii of the tetrahedra in the mesh"))
+    , d_label(initData(&d_label, "label", "label to be resized to a specific cellSize"))
+    , d_labelCellSize(initData(&d_labelCellSize, "labelCellSize", "Uniform upper bound for the circumradii of the tetrahedra in the mesh by label"))
+    , d_labelCellData(initData(&d_labelCellData, "labelCellData", "1D cell data by label"))
+    , d_odt(initData(&d_odt, false, "odt", "activate odt optimization"))
+    , d_lloyd(initData(&d_lloyd, false, "lloyd", "activate lloyd optimization"))
+    , d_perturb(initData(&d_perturb, false, "perturb", "activate perturb optimization"))
+    , d_exude(initData(&d_exude, false, "exude", "activate exude optimization"))
+    , d_odtMaxIt(initData(&d_odtMaxIt, 200, "odt_max_it", "odt max iteration number"))
+    , d_lloydMaxIt(initData(&d_lloydMaxIt, 200, "lloyd_max_it", "lloyd max iteration number"))
+    , d_perturbMaxTime(initData(&d_perturbMaxTime, 20.0, "perturb_max_time", "perturb maxtime"))
+    , d_exudeMaxTime(initData(&d_exudeMaxTime, 20.0, "exude_max_time", "exude max time"))
+    , d_ordering(initData(&d_ordering, 0, "ordering", "Output points and elements ordering (0 = none, 1 = longest bbox axis)"))
+    , d_drawTetras(initData(&d_drawTetras, false, "drawTetras", "display generated tetra mesh"))
 {
 }
 
@@ -73,29 +76,29 @@ template<class T1, class T2> bool compare_pair_first(const std::pair<T1,T2>& e1,
 template <class DataTypes, class _ImageTypes>
 void MeshGenerationFromImage<DataTypes, _ImageTypes>::init()
 {
-    addOutput(&f_newX0);
-    addOutput(&f_tetrahedra);
-    addOutput(&f_tetraDomain);
-    addOutput(&output_cellData);
-    addInput(&frozen);
-    addInput(&facetAngle);
-    addInput(&facetSize);
-    addInput(&facetApproximation);
-    addInput(&cellRatio);
-    addInput(&cellSize);
-    addInput(&label);
-    addInput(&labelCellSize);
-    addInput(&odt);
-    addInput(&lloyd);
-    addInput(&perturb);
-    addInput(&exude);
-    addInput(&odt_max_it);
-    addInput(&lloyd_max_it);
-    addInput(&perturb_max_time);
-    addInput(&exude_max_time);
-    addInput(&ordering);
-    addInput(&image);
-    addInput(&transform);
+    addOutput(&d_newX0);
+    addOutput(&d_tetrahedra);
+    addOutput(&d_tetraDomain);
+    addOutput(&d_outputCellData);
+    addInput(&d_frozen);
+    addInput(&d_facetAngle);
+    addInput(&d_facetSize);
+    addInput(&d_facetApproximation);
+    addInput(&d_cellRatio);
+    addInput(&d_cellSize);
+    addInput(&d_label);
+    addInput(&d_labelCellSize);
+    addInput(&d_odt);
+    addInput(&d_lloyd);
+    addInput(&d_perturb);
+    addInput(&d_exude);
+    addInput(&d_odtMaxIt);
+    addInput(&d_lloydMaxIt);
+    addInput(&d_perturbMaxTime);
+    addInput(&d_exudeMaxTime);
+    addInput(&d_ordering);
+    addInput(&d_image);
+    addInput(&d_transform);
 
     setDirtyValue();
 }
@@ -126,31 +129,36 @@ template <class C3t3,class Obj>
 void printStats(C3t3& c3t3, Obj* obj, const char* step = "")
 {
     int nb_in = countWellCentered(c3t3);
-    obj->sout << step << ":  number of tetra     = " << c3t3.number_of_cells() << obj->sendl;
-    obj->sout << step << ":  well-centered tetra = " << ((double)nb_in/(double)c3t3.number_of_cells())*100 << "%" << obj->sendl;
+
+    msg_info(obj) << step << ":  number of tetra     = " << c3t3.number_of_cells();
+    msg_info(obj) << step << ":  well-centered tetra = " << ((double)nb_in/(double)c3t3.number_of_cells())*100 << "%";
 }
 
 template <class DataTypes, class _ImageTypes>
 void MeshGenerationFromImage<DataTypes, _ImageTypes>::update()
 {
-    helper::WriteAccessor< Data<VecCoord> > newPoints = f_newX0;
-    helper::WriteAccessor< Data<SeqTetrahedra> > tetrahedra = f_tetrahedra;
-    helper::WriteAccessor<Data< vector<int> > > tetraDomain(this->f_tetraDomain);
+    helper::WriteAccessor< Data<VecCoord> > newPoints = d_newX0;
+    helper::WriteAccessor< Data<SeqTetrahedra> > tetrahedra = d_tetrahedra;
+    helper::WriteAccessor<Data< vector<int> > > tetraDomain(this->d_tetraDomain);
+
+    helper::ReadAccessor< Data<VecCoord> > fts = d_features;
 
 
-    if (frozen.getValue()) return;
+    if (d_frozen.getValue())
+        return;
+
     newPoints.clear();
     tetrahedra.clear();
     tetraDomain.clear();
 
     // Create domain
-    sout << "Create domain" << sendl;
+    msg_info(this) << "Create domain";
     CGAL::Image_3 image3;
 
-    if (this->m_filename.getFullPath().empty()) {
-        if(image.isSet()) {
-            raImage in(this->image);
-            raTransform inT(this->transform);
+    if (this->d_filename.getFullPath().empty()) {
+        if(d_image.isSet()) {
+            raImage in(this->d_image);
+            raTransform inT(this->d_transform);
             unsigned int i,j,k;
             uint8_t *volumearray =new uint8_t[in->getDimensions()[2]*in->getDimensions()[1]*in->getDimensions()[0]];
             uint8_t *vptr= volumearray;
@@ -189,88 +197,114 @@ void MeshGenerationFromImage<DataTypes, _ImageTypes>::update()
             memcpy(vrnimage->data,(void*)volumearray,in->getDimensions()[2]*in->getDimensions()[1]*in->getDimensions()[0]);
             image3 = CGAL::Image_3(vrnimage);
         }
-        else {
-        serr << "ERROR : image filename is empty" << sendl;
-        return;
+        else
+        {
+            msg_error(this) << "ERROR : image filename is empty";
+            return;
         }
     } else {
-        image3.read(this->m_filename.getFullPath().c_str());
+        image3.read(this->d_filename.getFullPath().c_str());
     }
 
     Mesh_domain domain(image3);
 
     int volume_dimension = 3;
-    Sizing_field size(cellSize.getValue());
+    Sizing_field size(d_cellSize.getValue());
 
-	if (label.getValue().size() == labelCellSize.getValue().size())
+    if (d_label.getValue().size() == d_labelCellSize.getValue().size())
 	{
-		for (unsigned int i=0; i<label.getValue().size(); ++i)
+        for (unsigned int i=0; i<d_label.getValue().size(); ++i)
 		{
-			size.set_size(labelCellSize.getValue()[i], volume_dimension, 
-				domain.index_from_subdomain_index(label.getValue()[i]));
+            size.set_size(d_labelCellSize.getValue()[i], volume_dimension,
+                domain.index_from_subdomain_index(d_label.getValue()[i]));
 		}
 	}
 	else
 	{
-        serr << "ERROR : label and labelCellSize must have the same size... otherwise cellSize "
-            << cellSize.getValue() << " will be apply for all layers" << sendl;
+        msg_error(this) << "ERROR : label and labelCellSize must have the same size... otherwise cellSize "
+            << d_cellSize.getValue() << " will be apply for all layers";
 	}
 
+
 #if CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(3,6,0)
-    sout << "Create Mesh" << sendl;
-    Mesh_criteria criteria(
-        facet_angle=facetAngle.getValue(), facet_size=facetSize.getValue(), facet_distance=facetApproximation.getValue(),
-        cell_radius_edge=cellRatio.getValue(), cell_size=size);
+    msg_info(this) << "Create Mesh";
+    Mesh_criteria criteria(edge_size=d_edgeSize.getValue(),
+        facet_angle=d_facetAngle.getValue(), facet_size=d_facetSize.getValue(), facet_distance=d_facetApproximation.getValue(),
+        cell_radius_edge=d_cellRatio.getValue(), cell_size=size);
+
+    size_t nfts = fts.size();
+    Polylines polylines (nfts);
+
+    if (nfts > 0)
+        msg_info(this) << "Explicitly defined 0D features: #" << nfts;
+
+    size_t fi = 0;
+
+    Vector3 translation = Vector3(image3.image()->tx, image3.image()->ty, image3.image()->tz);
+    for (Polylines::iterator l = polylines.begin(); l != polylines.end(); l++, fi++) {
+        Coord ft = fts[fi];
+
+        ft = ft - translation;
+
+        Point3 p=Point3(ft[0],ft[1], ft[2]);
+        l->push_back(p);
+        Point3 p1=Point3(ft[0], ft[1], ft[2]);
+        l->push_back(p1);
+    }
+    domain.add_features(polylines.begin(), polylines.end());
+
     C3t3 c3t3 = CGAL::make_mesh_3<C3t3>(domain, criteria, no_perturb(), no_exude());
+
+
 #else
     // Set mesh criteria
-    Facet_criteria facet_criteria(facetAngle.getValue(), facetSize.getValue(), facetApproximation.getValue()); // angle, size, approximation
-    Cell_criteria cell_criteria(cellRatio.getValue(), cellSize.getValue()); // radius-edge ratio, size
+    Facet_criteria facet_criteria(d_facetAngle.getValue(), d_facetSize.getValue(), d_facetApproximation.getValue()); // angle, size, approximation
+    Cell_criteria cell_criteria(d_cellRatio.getValue(), d_cellSize.getValue()); // radius-edge ratio, size
     Mesh_criteria criteria(facet_criteria, cell_criteria);
 
-    sout << "Create Mesh" << sendl;
+    msg_info(this) << "Create Mesh";
     C3t3 c3t3 = CGAL::make_mesh_3<C3t3>(domain, criteria, no_perturb(), no_exude());
-#endif
+#endif // CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(3,6,0)
     printStats(c3t3,this,"Initial mesh");
 #if CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(3,5,0)
-    sout << "Optimize Mesh" << sendl;
-    if(lloyd.getValue())
+    msg_info(this) << "Optimize Mesh";
+    if(d_lloyd.getValue())
     {
-        CGAL::lloyd_optimize_mesh_3(c3t3, domain, max_iteration_number=lloyd_max_it.getValue());
+        CGAL::lloyd_optimize_mesh_3(c3t3, domain, max_iteration_number=d_lloydMaxIt.getValue());
         printStats(c3t3,this,"Lloyd");
     }
-    if(odt.getValue())
+    if(d_odt.getValue())
     {
-        CGAL::odt_optimize_mesh_3(c3t3, domain, max_iteration_number=odt_max_it.getValue());
+        CGAL::odt_optimize_mesh_3(c3t3, domain, max_iteration_number=d_odtMaxIt.getValue());
         printStats(c3t3,this,"ODT");
     }
 #if CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(3,6,0)
-    if(perturb.getValue())
+    if(d_perturb.getValue())
     {
-        CGAL::perturb_mesh_3(c3t3, domain, time_limit=perturb_max_time.getValue());
+        CGAL::perturb_mesh_3(c3t3, domain, time_limit=d_perturbMaxTime.getValue());
         printStats(c3t3,this,"Perturb");
     }
-    if(exude.getValue())
+    if(d_exude.getValue())
     {
-        CGAL::exude_mesh_3(c3t3, time_limit=exude_max_time.getValue());
+        CGAL::exude_mesh_3(c3t3, time_limit=d_exudeMaxTime.getValue());
         printStats(c3t3,this,"Exude");
     }
 #else
-    if(perturb.getValue())
+    if(d_perturb.getValue())
     {
-        CGAL::perturb_mesh_3(c3t3, domain, max_time=perturb_max_time.getValue());
+        CGAL::perturb_mesh_3(c3t3, domain, max_time=d_perturbMaxTime.getValue());
         printStats(c3t3,this,"Perturb");
     }
-    if(exude.getValue())
+    if(d_exude.getValue())
     {
-        CGAL::exude_mesh_3(c3t3, max_time=exude_max_time.getValue());
+        CGAL::exude_mesh_3(c3t3, max_time=d_exudeMaxTime.getValue());
         printStats(c3t3,this,"Exude");
     }
-#endif
-#endif
+#endif // CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(3,6,0)
+#endif // CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(3,5,0)
+
 
     const Tr& tr = c3t3.triangulation();
-
     std::map<Vertex_handle, int> Vnbe;
 
     for( Cell_iterator cit = c3t3.cells_begin() ; cit != c3t3.cells_end() ; ++cit )
@@ -278,7 +312,6 @@ void MeshGenerationFromImage<DataTypes, _ImageTypes>::update()
         for (int i=0; i<4; i++)
             ++Vnbe[cit->vertex(i)];
     }
-
     std::map<Vertex_handle, int> V;
     newPoints.clear();
     int inum = 0;
@@ -293,6 +326,7 @@ void MeshGenerationFromImage<DataTypes, _ImageTypes>::update()
         p[2] = CGAL::to_double(pointCgal.z());
         if (Vnbe.find(vit) == Vnbe.end() || Vnbe[vit] <= 0)
         {
+            nmsg_info(this) << "Un-connected point: " << p;;
             ++notconnected;
         }
         else
@@ -304,9 +338,6 @@ void MeshGenerationFromImage<DataTypes, _ImageTypes>::update()
                 for (unsigned int c=0; c<p.size(); c++)
                     if (p[c] < bbmin[c]) bbmin[c] = p[c]; else if (p[c] > bbmax[c]) bbmax[c] = p[c];
 
-//            Vector3 scale = Vector3(image3.image()->vx, image3.image()->vy, image3.image()->vz);
-//            p = p.linearProduct(scale);
-
             Vector3 rotation = Vector3(image3.image()->rx, image3.image()->ry, image3.image()->rz);
             defaulttype::Quaternion q = helper::Quater<Real>::createQuaterFromEuler(rotation*M_PI/180.0);
             p= q.rotate(p);
@@ -315,11 +346,12 @@ void MeshGenerationFromImage<DataTypes, _ImageTypes>::update()
             newPoints.push_back(p+translation);
         }
     }
-    if (notconnected > 0) serr << notconnected << " points are not connected to the mesh."<<sendl;
+    if (notconnected > 0)
+        msg_info(this) << notconnected << " points are not connected to the mesh.";
 
     tetrahedra.clear();
     tetraDomain.clear();
-    tetraDomainLabels.clear();
+    m_tetraDomainLabels.clear();
     for( Cell_iterator cit = c3t3.cells_begin() ; cit != c3t3.cells_end() ; ++cit )
     {
         Tetra tetra;
@@ -327,8 +359,8 @@ void MeshGenerationFromImage<DataTypes, _ImageTypes>::update()
         for (int i=0; i<4; i++)
             tetra[i] = V[cit->vertex(i)];
         tetrahedra.push_back(tetra);
-        if( std::find(tetraDomainLabels.begin(),tetraDomainLabels.end(),c3t3.subdomain_index(cit)) == tetraDomainLabels.end()) {
-            tetraDomainLabels.push_back(c3t3.subdomain_index(cit));
+        if( std::find(m_tetraDomainLabels.begin(),m_tetraDomainLabels.end(),c3t3.subdomain_index(cit)) == m_tetraDomainLabels.end()) {
+            m_tetraDomainLabels.push_back(c3t3.subdomain_index(cit));
         }
         tetraDomain.push_back(c3t3.subdomain_index(cit));
     }
@@ -336,7 +368,7 @@ void MeshGenerationFromImage<DataTypes, _ImageTypes>::update()
     int nbp = newPoints.size();
     int nbe = tetrahedra.size();
 
-    switch(ordering.getValue())
+    switch(d_ordering.getValue())
     {
     case 0: break;
     case 1:
@@ -344,7 +376,7 @@ void MeshGenerationFromImage<DataTypes, _ImageTypes>::update()
         int axis = 0;
         for (int c=1; c<3; c++)
             if (bbmax[c]-bbmin[c] > bbmax[axis]-bbmin[axis]) axis=c;
-        sout << "Ordering along the " << (char)('X'+axis) << " axis." << sendl;
+        msg_info(this) << "Ordering along the " << (char)('X'+axis) << " axis.";
         helper::vector< std::pair<float,int> > sortArray;
         for (int i=0; i<nbp; ++i)
             sortArray.push_back(std::make_pair((float)newPoints[i][axis], i));
@@ -383,52 +415,43 @@ void MeshGenerationFromImage<DataTypes, _ImageTypes>::update()
     default: break;
     }
 
-    helper::WriteAccessor< Data<sofa::helper::vector<Real> > > data(output_cellData);
+    helper::WriteAccessor< Data<sofa::helper::vector<Real> > > data(d_outputCellData);
     data.clear();
-    if (label.getValue().size() != labelCellData.getValue().size())
+    if (d_label.getValue().size() != d_labelCellData.getValue().size())
     {
-        helper::WriteAccessor< Data<sofa::helper::vector<Real> > > labeldata(labelCellData);
-        labeldata.resize(label.getValue().size());
-        serr << "ERROR : label and labelCellData must have the same size... otherwise 0.0 will be apply for all layers" << sendl;
+        helper::WriteAccessor< Data<sofa::helper::vector<Real> > > labeldata(d_labelCellData);
+        labeldata.resize(d_label.getValue().size());
+        msg_error(this) << "ERROR : label and labelCellData must have the same size... otherwise 0.0 will be apply for all layers";
     }
-
-//    const vector<int> labels = label.getValue();
-//    for( Cell_iterator cit = c3t3.cells_begin() ; cit != c3t3.cells_end() ; ++cit )
-//    {
-//        vector<int>::const_iterator f = std::find(labels.begin(),labels.end(),c3t3.subdomain_index(cit));
-//        if (f!=labels.end()) data.push_back(labelCellData.getValue()[f-labels.begin()]);
-//        else data.push_back(0.0);
-//    }
-
+    if(d_labelCellData.getValue().size() > tetraDomain.size() + 1 )
     for (unsigned int i = 0 ; i < tetraDomain.size(); i++)
     {
-        //std::cout << "tetraDomain " << tetraDomain[i] << std::endl;
-        data.push_back(labelCellData.getValue()[tetraDomain[i]-1]);
+        data.push_back(d_labelCellData.getValue()[tetraDomain[i]-1]);
     }
 
-    sout << "Generated mesh: " << nbp << " points, " << nbe << " tetrahedra." << sendl;
+    msg_info(this) << "Generated mesh: " << nbp << " points, " << nbe << " tetrahedra.";
 
-    frozen.setValue(true);
+    d_frozen.setValue(true);
 
 }
 
 template <class DataTypes, class _ImageTypes>
 void MeshGenerationFromImage<DataTypes, _ImageTypes>::draw(const sofa::core::visual::VisualParams* vparams)
 {
-    if (drawTetras.getValue())
+    if (d_drawTetras.getValue())
     {
-        helper::ReadAccessor< Data<VecCoord> > x = f_newX0;
-        helper::ReadAccessor< Data<SeqTetrahedra> > tetrahedra = f_tetrahedra;
-        helper::ReadAccessor< Data< vector<int> > > tetraDomain = f_tetraDomain;
+        helper::ReadAccessor< Data<VecCoord> > x = d_newX0;
+        helper::ReadAccessor< Data<SeqTetrahedra> > tetrahedra = d_tetrahedra;
+        helper::ReadAccessor< Data< vector<int> > > tetraDomain = d_tetraDomain;
 
         vparams->drawTool()->setLightingEnabled(false);
         std::vector< std::vector<defaulttype::Vector3> > pointsDomains[4];
         for(unsigned int i=0; i<4; ++i)
-            pointsDomains[i].resize(tetraDomainLabels.size());
+            pointsDomains[i].resize(m_tetraDomainLabels.size());
         int domainLabel = 0;
         for(unsigned int i=0; i<tetrahedra.size(); ++i)
         {            
-            domainLabel =  std::find(tetraDomainLabels.begin(), tetraDomainLabels.end(),tetraDomain[i]) - tetraDomainLabels.begin();
+            domainLabel =  std::find(m_tetraDomainLabels.begin(), m_tetraDomainLabels.end(),tetraDomain[i]) - m_tetraDomainLabels.begin();
 
             int a = tetrahedra[i][0];
             int b = tetrahedra[i][1];
@@ -457,7 +480,8 @@ void MeshGenerationFromImage<DataTypes, _ImageTypes>::draw(const sofa::core::vis
             pointsDomains[3][domainLabel].push_back(pb);
         }
 
-        for(size_t i=0; i<tetraDomainLabels.size(); i++) {
+        for(size_t i=0; i<m_tetraDomainLabels.size(); i++)
+        {
             vparams->drawTool()->drawTriangles(pointsDomains[0][i], defaulttype::Vec<4,float>(fmod(i*0.5,1.5), fmod(0.5-fmod(i*0.5,1.5),1.5)-0.1, 1.0-fmod(i*0.5,1.5), 1));
             vparams->drawTool()->drawTriangles(pointsDomains[1][i], defaulttype::Vec<4,float>(fmod(i*0.5,1.5)-0.1, fmod(0.5-fmod(i*0.5,1.5),1.5)-0.2, 1.0-fmod(i*0.5,1.5), 1));
             vparams->drawTool()->drawTriangles(pointsDomains[2][i], defaulttype::Vec<4,float>(fmod(i*0.5,1.5)-0.2, fmod(0.5-fmod(i*0.5,1.5),1.5)-0.3, 1.0-fmod(i*0.5,1.5), 1));

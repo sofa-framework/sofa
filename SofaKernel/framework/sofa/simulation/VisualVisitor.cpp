@@ -23,7 +23,11 @@
 
 #include <sofa/core/visual/VisualParams.h>
 
-//#define DEBUG_DRAW
+#ifdef DEBUG_DRAW
+#define DO_DEBUG_DRAW true
+#else
+#define DO_DEBUG_DRAW false
+#endif // DEBUG_DRAW
 
 namespace sofa
 {
@@ -40,9 +44,9 @@ Visitor::Result VisualDrawVisitor::processNodeTopDown(simulation::Node* node)
     node->getPositionInWorld().writeOpenGlMatrix(glMatrix);
     glMultMatrixd( glMatrix );
 #endif
-	// NB: hasShader is only used when there are visual models and getShader does a graph search when there is no shader,
-	// which will most probably be the case when there are no visual models, so we skip the search unless we have visual models. 
-	hasShader = !node->visualModel.empty() && (node->getShader()!=NULL); 
+    // NB: hasShader is only used when there are visual models and getShader does a graph search when there is no shader,
+    // which will most probably be the case when there are no visual models, so we skip the search unless we have visual models.
+    hasShader = !node->visualModel.empty() && (node->getShader()!=NULL);
 
     for_each(this, node, node->visualModel,     &VisualDrawVisitor::fwdVisualModel);
     this->VisualVisitor::processNodeTopDown(node);
@@ -62,41 +66,34 @@ void VisualDrawVisitor::processObject(simulation::Node* /*node*/, core::objectmo
 {
     if (vparams->pass() == core::visual::VisualParams::Std || vparams->pass() == core::visual::VisualParams::Shadow)
     {
-#ifdef DEBUG_DRAW
-        std::cerr << ">" << o->getClassName() << "::draw() of " << o->getName() << std::endl;
-#endif
+        msg_info_when(DO_DEBUG_DRAW, o) << " entering VisualVisitor::draw()" ;
+
         o->draw(vparams);
-#ifdef DEBUG_DRAW
-        std::cerr << "<" << o->getClassName() << "::draw() of " << o->getName() << std::endl;
-#endif
+
+        msg_info_when(DO_DEBUG_DRAW, o) << " leaving VisualVisitor::draw()" ;
     }
 }
 
 void VisualDrawVisitor::fwdVisualModel(simulation::Node* /*node*/, core::visual::VisualModel* vm)
 {
-#ifdef DEBUG_DRAW
-    std::cerr << ">" << vm->getClassName() << "::fwdDraw() of " << vm->getName() << std::endl;
-#endif
+    msg_info_when(DO_DEBUG_DRAW, vm) << " entering VisualVisitor::fwdVisualModel()" ;
+
     vm->fwdDraw(vparams);
-#ifdef DEBUG_DRAW
-    std::cerr << "<" << vm->getClassName() << "::fwdDraw() of " << vm->getName() << std::endl;
-#endif
+
+    msg_info_when(DO_DEBUG_DRAW, vm) << " leaving VisualVisitor::fwdVisualModel()" ;
 }
 
 void VisualDrawVisitor::bwdVisualModel(simulation::Node* /*node*/,core::visual::VisualModel* vm)
 {
-#ifdef DEBUG_DRAW
-    std::cerr << ">" << vm->getClassName() << "::bwdDraw() of " << vm->getName() << std::endl;
-#endif
+    msg_info_when(DO_DEBUG_DRAW, vm) << " entering VisualVisitor::bwdVisualModel()" ;
+
     vm->bwdDraw(vparams);
-#ifdef DEBUG_DRAW
-    std::cerr << "<" << vm->getClassName() << "::bwdDraw() of " << vm->getName() << std::endl;
-#endif
+
+    msg_info_when(DO_DEBUG_DRAW, vm) << " leaving VisualVisitor::bwdVisualModel()" ;
 }
 
 void VisualDrawVisitor::processVisualModel(simulation::Node* node, core::visual::VisualModel* vm)
 {
-    //cerr<<"VisualDrawVisitor::processVisualModel "<<vm->getName()<<endl;
     sofa::core::visual::Shader* shader = NULL;
     if (hasShader)
         shader = node->getShader(subsetsToManage);
@@ -107,13 +104,13 @@ void VisualDrawVisitor::processVisualModel(simulation::Node* node, core::visual:
     {
         if (shader && shader->isActive())
             shader->start();
-#ifdef DEBUG_DRAW
-        std::cerr << ">" << vm->getClassName() << "::drawVisual() of " << vm->getName() << std::endl;
-#endif
+
+        msg_info_when(DO_DEBUG_DRAW, vm) << " before calling drawVisual" ;
+
         vm->drawVisual(vparams);
-#ifdef DEBUG_DRAW
-        std::cerr << "<" << vm->getClassName() << "::drawVisual() of " << vm->getName() << std::endl;
-#endif
+
+        msg_info_when(DO_DEBUG_DRAW, vm) << " after calling drawVisual" ;
+
         if (shader && shader->isActive())
             shader->stop();
         break;
@@ -122,25 +119,20 @@ void VisualDrawVisitor::processVisualModel(simulation::Node* node, core::visual:
     {
         if (shader && shader->isActive())
             shader->start();
-#ifdef DEBUG_DRAW
-        std::cerr << ">" << vm->getClassName() << "::drawTransparent() of " << vm->getName() << std::endl;
-#endif
+
+        msg_info_when(DO_DEBUG_DRAW, vm) << " before calling drawTransparent" ;
+
         vm->drawTransparent(vparams);
-#ifdef DEBUG_DRAW
-        std::cerr << "<" << vm->getClassName() << "::drawTransparent() of " << vm->getName() << std::endl;
-#endif
+
+        msg_info_when(DO_DEBUG_DRAW, vm) << " after calling drawTransparent" ;
         if (shader && shader->isActive())
             shader->stop();
         break;
     }
     case core::visual::VisualParams::Shadow:
-#ifdef DEBUG_DRAW
-        std::cerr << ">" << vm->getClassName() << "::drawShadow() of " << vm->getName() << std::endl;
-#endif
+        msg_info_when(DO_DEBUG_DRAW, vm) << " before calling drawShadow" ;
         vm->drawShadow(vparams);
-#ifdef DEBUG_DRAW
-        std::cerr << "<" << vm->getClassName() << "::drawShadow() of " << vm->getName() << std::endl;
-#endif
+        msg_info_when(DO_DEBUG_DRAW, vm) << " after calling drawVisual" ;
         break;
     }
 }
@@ -183,21 +175,17 @@ VisualComputeBBoxVisitor::VisualComputeBBoxVisitor(const core::ExecParams* param
 
 void VisualComputeBBoxVisitor::processMechanicalState(simulation::Node*, core::behavior::BaseMechanicalState* vm)
 {
-//    cerr << "VisualComputeBBoxVisitor::processMechanicalState, bbox before = " << *minBBox <<", "<< *maxBBox << endl;
     vm->addBBox(minBBox, maxBBox);
-//    cerr << "VisualComputeBBoxVisitor::processMechanicalState, bbox after = " << *minBBox <<", "<< *maxBBox << endl;
 }
+
 void VisualComputeBBoxVisitor::processVisualModel(simulation::Node*, core::visual::VisualModel* vm)
 {
-//    cerr << "VisualComputeBBoxVisitor::processVisualModel, bbox before = " << *minBBox <<", "<< *maxBBox << endl;
     vm->addBBox(minBBox, maxBBox);
-//    cerr << "VisualComputeBBoxVisitor::processVisualModel, bbox after = " << *minBBox <<", "<< *maxBBox << endl;
 }
+
 void VisualComputeBBoxVisitor::processBehaviorModel(simulation::Node*, core::BehaviorModel* bm)
 {
-//    cerr << "VisualComputeBBoxVisitor::processBehaviorModel, bbox before = " << *minBBox <<", "<< *maxBBox << endl;
     bm->addBBox(minBBox, maxBBox);
-//    cerr << "VisualComputeBBoxVisitor::processBehaviorModel, bbox after = " << *minBBox <<", "<< *maxBBox << endl;
 }
 
 } // namespace simulation

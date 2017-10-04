@@ -52,7 +52,7 @@ class SOFA_EXPORTER_API VTKExporter : public core::objectmodel::BaseObject
 public:
     SOFA_CLASS(VTKExporter,core::objectmodel::BaseObject);
 
-private:
+protected:
     sofa::core::topology::BaseMeshTopology* topology;
     sofa::core::behavior::BaseMechanicalState* mstate;
     unsigned int stepCounter;

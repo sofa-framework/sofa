@@ -19,7 +19,7 @@
             <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="gray" />
         </Node>
         <Node name="TorusRigid">
-            <EulerImplicit />
+            <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
             <CGLinearSolver iterations="50" threshold="1e-15" tolerance="1e-15" verbose="0" />
             <MechanicalObject name="rigidframe" template="Rigid" position="1 2 0 0 0 0.7 0.7" />
             <UniformMass filename="BehaviorModels/torus.rigid" />

@@ -170,7 +170,6 @@ struct SkeletalMotionConstraint_test : public Sofa_test<typename _DataTypes::Rea
     {
         if (root!=NULL)
             sofa::simulation::getSimulation()->unload(root);
-//        cerr<<"tearing down"<<endl;
     }
 
 

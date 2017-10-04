@@ -146,7 +146,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     setVecDeriv(core::VecDerivId::dx().index, &dx);
     setVecDeriv(core::VecDerivId::freeVelocity().index, &vfree);
     setVecDeriv(core::VecDerivId::resetVelocity().index, &reset_velocity);
-    setVecMatrixDeriv(core::MatrixDerivId::holonomicC().index, &c);
+    setVecMatrixDeriv(core::MatrixDerivId::constraintJacobian().index, &c);
 
     // These vectors are set as modified as they are mandatory in the MechanicalObject.
     x               .forceSet();
@@ -390,9 +390,7 @@ template <class DataTypes>
 void MechanicalObject<DataTypes>::handleStateChange()
 {
     if (!l_topology) return;
-    //#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
-    //    std::cout << "WARNING MechanicalObject<DataTypes>::handleStateChange()" << std::endl;
-    //#else
+
     using sofa::core::topology::TopologyChange;
     using sofa::core::topology::TopologyChangeType;
     using sofa::core::topology::PointsAdded;
@@ -1096,9 +1094,56 @@ void MechanicalObject<DataTypes>::init()
     {
         sout << "Initialization with topology " << l_topology->getTypeName() << " " << l_topology->getName() << " ( " << l_topology->getNbPoints() << " points)" << sendl; // << (l_topology->hasPos() ? "WITH" : "WITHOUT") << " positions)"
     }
+  
+    // Make sure the sizes of the vectors and the arguments of the scene matches
+    const std::vector<std::pair<const std::string, const size_t>> vector_sizes = {
+            {x.getName(),                x.getValue().size()},
+            {v.getName(),                v.getValue().size()},
+            {f.getName(),                f.getValue().size()},
+            {externalForces.getName(),   externalForces.getValue().size()},
+            {dx.getName(),               dx.getValue().size()},
+            {xfree.getName(),            xfree.getValue().size()},
+            {vfree.getName(),            vfree.getValue().size()},
+            {x0.getName(),               x0.getValue().size()},
+            {reset_position.getName(),   reset_position.getValue().size()},
+            {reset_velocity.getName(),   reset_velocity.getValue().size()}
+    };
 
-    //helper::WriteAccessor< Data<VecCoord> > x_wA = *this->write(VecCoordId::position());
-    //helper::WriteAccessor< Data<VecDeriv> > v_wA = *this->write(VecDerivId::velocity());
+    // Get the maximum size of all argument's vectors
+    auto maxElement = std::max_element(vector_sizes.begin(), vector_sizes.end(),
+       [] (const std::pair<const std::string, const size_t> &a, const std::pair<const std::string, const size_t> &b) {
+            return a.second < b.second;
+    });
+
+    if (maxElement != vector_sizes.end()) {
+        size_t maxSize = (*maxElement).second;
+
+        // Resize the mechanical object size to match the maximum size of argument's vectors
+        if (getSize() < maxSize)
+            resize(maxSize);
+
+        // Print a warning if one or more vector don't match the maximum size
+        bool allSizeAreEqual = true;
+        for (const std::pair<const std::string, const size_t> vector_size : vector_sizes) {
+            const size_t & size = vector_size.second;
+            if (size > 1 && size != maxSize) {
+                allSizeAreEqual = false;
+                break;
+            }
+        }
+
+        if (!allSizeAreEqual) {
+            std::string message_warning = "One or more of the state vectors passed as argument don't match the size of the others : ";
+            for (const std::pair<const std::string, const size_t> vector_size : vector_sizes) {
+                const std::string & name = vector_size.first;
+                const size_t & size = vector_size.second;
+                if (size <= 1) continue;
+                message_warning += name + "(size " + std::to_string(size) + ") ";
+            }
+            msg_warning() << message_warning;
+        }
+    }
+
     Data<VecCoord>* x_wAData = this->write(sofa::core::VecCoordId::position());
     Data<VecDeriv>* v_wAData = this->write(sofa::core::VecDerivId::velocity());
     VecCoord& x_wA = *x_wAData->beginEdit();
@@ -1119,7 +1164,8 @@ void MechanicalObject<DataTypes>::init()
         {
             int nbp = l_topology->getNbPoints();
             //std::cout<<"Setting "<<nbp<<" points from topology. " << this->getName() << " topo : " << l_topology->getName() <<std::endl;
-            // copy the last specified velocity to all points
+
+          // copy the last specified velocity to all points
             if (v_wA.size() >= 1 && v_wA.size() < (unsigned)nbp)
             {
                 unsigned int i = v_wA.size();
@@ -2565,7 +2611,7 @@ void MechanicalObject<DataTypes>::resetAcc(const core::ExecParams* params, core:
 template <class DataTypes>
 void MechanicalObject<DataTypes>::resetConstraint(const core::ExecParams* params)
 {
-    Data<MatrixDeriv>& c_data = *this->write(core::MatrixDerivId::holonomicC());
+    Data<MatrixDeriv>& c_data = *this->write(core::MatrixDerivId::constraintJacobian());
     MatrixDeriv *c = c_data.beginEdit(params);
     c->clear();
     c_data.endEdit(params);
@@ -2576,7 +2622,7 @@ void MechanicalObject<DataTypes>::getConstraintJacobian(const core::ExecParams* 
 {
     // Compute J
     const size_t N = Deriv::size();
-    const MatrixDeriv& c = this->read(core::ConstMatrixDerivId::holonomicC())->getValue();
+    const MatrixDeriv& c = this->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
 
     MatrixDerivRowConstIterator rowItEnd = c.end();
 
@@ -2598,6 +2644,34 @@ void MechanicalObject<DataTypes>::getConstraintJacobian(const core::ExecParams* 
 
     off += this->getSize() * N;
 }
+
+#if(SOFA_WITH_EXPERIMENTAL_FEATURES==1)
+template <class DataTypes>
+void MechanicalObject<DataTypes>::buildIdentityBlocksInJacobian(const sofa::helper::vector<unsigned int>& list_n, core::MatrixDerivId &mID)
+{
+    const size_t N = Deriv::size();
+    Data<MatrixDeriv>* cMatrix= this->write(mID);
+
+    unsigned int columnIndex = 0;
+    MatrixDeriv& jacobian = *cMatrix->beginEdit();
+
+
+    for (unsigned int i=0; i<list_n.size(); i++)
+    { //loop on the nodes on which we assign the identity blocks
+        unsigned int node= list_n[i];
+
+        for(unsigned int j=0; j<N; j++)
+        {   //identity block
+            typename DataTypes::MatrixDeriv::RowIterator rowIterator = jacobian.writeLine(N*node + j);
+            Deriv d;
+            d[j]=1.0;
+            rowIterator.setCol(node,  d);
+            columnIndex++;
+        }
+    }
+
+}
+#endif
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::renumberConstraintId(const sofa::helper::vector<unsigned>& /*renumbering*/)
@@ -2737,9 +2811,6 @@ inline void MechanicalObject<DataTypes>::drawVectors(const core::visual::VisualP
     {
         Real vx=0.0,vy=0.0,vz=0.0;
         DataTypes::get(vx,vy,vz,v_rA[i]);
-        //v = DataTypes::getDPos(v_rA[i]);
-        //Real vx = v[0]; Real vy = v[1]; Real vz = v[2];
-        //std::cout << "v=" << vx << ", " << vy << ", " << vz << std::endl;
         Vector3 p1 = Vector3(getPX(i), getPY(i), getPZ(i));
         Vector3 p2 = Vector3(getPX(i)+scale*vx, getPY(i)+scale*vy, getPZ(i)+scale*vz);
 
@@ -3264,123 +3335,9 @@ void MechanicalObject < DataTypes >::vDot ( const core::ExecParams* /* params */
     // return r;
 }
 
-//     template < class DataTypes >
-//       void MechanicalObject < DataTypes >::setX (VecId v)
-//     {
-//       if (v.type == sofa::core::V_COORD)
-//  {
-//
-//    this->xSh = *getVecCoord (v.index);
-//
-//    this->x = getVecCoord (v.index);
-//
-//  }
-//       else
-//  {
-//    std::cerr << "Invalid setX operation (" << v << ")\n";
-//  }
-//     }
-//
-//     template < class DataTypes >
-//       void ParallelMechanicalObject < DataTypes >::setXfree (VecId v)
-//     {
-//       if (v.type == sofa::core::V_COORD)
-//  {
-//    this->xfreeSh = *getVecCoord (v.index);
-//
-//    this->xfree = getVecCoord (v.index);
-//
-//  }
-//       else
-//  {
-//    std::cerr << "Invalid setXfree operation (" << v << ")\n";
-//  }
-//     }
-//
-//     template < class DataTypes >
-//       void ParallelMechanicalObject < DataTypes >::setVfree (VecId v)
-//     {
-//       if (v.type == sofa::core::V_DERIV)
-//  {
-//
-//    this->vfreeSh = *getVecDeriv (v.index);
-//
-//    this->vfree = getVecDeriv (v.index);
-//
-//  }
-//       else
-//  {
-//    std::cerr << "Invalid setVfree operation (" << v << ")\n";
-//  }
-//     }
-//
-//     template < class DataTypes >
-//       void ParallelMechanicalObject < DataTypes >::setV (VecId v)
-//     {
-//       if (v.type == sofa::core::V_DERIV)
-//  {
-//    this->vSh = *getVecDeriv (v.index);
-//
-//    this->v = getVecDeriv (v.index);
-//
-//  }
-//       else
-//  {
-//    std::cerr << "Invalid setV operation (" << v << ")\n";
-//  }
-//     }
-//
-//     template < class DataTypes >
-//       void ParallelMechanicalObject < DataTypes >::setF (VecId v)
-//     {
-//       if (v.type == sofa::core::V_DERIV)
-//  {
-//
-//    this->fSh = *getVecDeriv (v.index);
-//
-//    this->f = getVecDeriv (v.index);
-//
-//  }
-//       else
-//  {
-//    std::cerr << "Invalid setF operation (" << v << ")\n";
-//  }
-//     }
-//
-//     template < class DataTypes >
-//       void ParallelMechanicalObject < DataTypes >::setDx (VecId v)
-//     {
-//       if (v.type == sofa::core::V_DERIV)
-//  {
-//    this->dxSh = *getVecDeriv (v.index);
-//
-//
-//    this->dx = getVecDeriv (v.index);
-//
-//  }
-//       else
-//  {
-//    std::cerr << "Invalid setDx operation (" << v << ")\n";
-//  }
-//     }
-//
-//
 template < class DataTypes >
 void MechanicalObject < DataTypes >::printDOF (core::ConstVecId /*v*/, std::ostream & /*out*/, int /* firstIndex */, int /* range */) const
 {
-    //  if (v.type == sofa::core::V_COORD)
-    //  {
-    //      VecCoord & x = *getVecCoord (v.index);
-    //      Task < printDOFSh < VecCoord > >(this,*x);
-    //  }
-    //  else if (v.type == sofa::core::V_DERIV)
-    //  {
-    //      VecDeriv & x = *getVecDeriv (v.index);
-    //      Task < printDOFSh < VecDeriv > >(this,*x);
-    //  }
-    //  else
-    //      out << "ParallelMechanicalObject<DataTypes>::printDOF, unknown v.type = " <<
-    //          v.type << std::endl;
 
 }
 #endif /* SOFA_SMP */

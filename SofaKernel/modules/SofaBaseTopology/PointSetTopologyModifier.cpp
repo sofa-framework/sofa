@@ -124,7 +124,7 @@ void PointSetTopologyModifier::addPointsWarning(const unsigned int nPoints,
 
     m_container->setPointTopologyToDirty();
 
-    // Compute standard points construction info based on ancestor points 
+    // Compute standard points construction info based on ancestor points
     // related to topology elems and local coordinates
 
     const unsigned int startIndex = m_container->getNbPoints() - nPoints;
@@ -136,12 +136,12 @@ void PointSetTopologyModifier::addPointsWarning(const unsigned int nPoints,
     newPointIndices.resize(nPoints);
     ancestorPointIndices.resize(nPoints);
     baryCoefs.resize(nPoints);
-    
+
     for(unsigned int i = 0; i < nPoints; ++i)
     {
         newPointIndices[i] = startIndex + i;
         unsigned int ancestorIndex = ancestorElems[i].index;
-        // check if this new point has indeed an ancestor. 
+        // check if this new point has indeed an ancestor.
         if (ancestorIndex != core::topology::BaseMeshTopology::InvalidID )
         {
             core::topology::PointAncestorElem::LocalCoords localCoords = ancestorElems[i].localCoords;
@@ -440,8 +440,8 @@ void PointSetTopologyModifier::propagateTopologicalEngineChanges()
     std::list<sofa::core::topology::TopologyEngine *>::iterator it;
 
 #ifndef NDEBUG
-    std::cout << "points is dirty" << std::endl;
-    std::cout << "PointSetTopologyModifier - Number of outputs for point array: " << m_container->m_enginesList.size() << std::endl;
+    dmsg_info() << "points is dirty" << msgendl
+                << "PointSetTopologyModifier - Number of outputs for point array: " << m_container->m_enginesList.size();
 #endif
     for ( it = m_container->m_enginesList.begin(); it!=m_container->m_enginesList.end(); ++it)
     {

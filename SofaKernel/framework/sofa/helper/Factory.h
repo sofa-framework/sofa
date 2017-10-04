@@ -25,6 +25,7 @@
 #include <map>
 #include <iostream>
 #include <typeinfo>
+#include <type_traits>
 
 #include <sofa/helper/helper.h>
 
@@ -33,6 +34,9 @@ namespace sofa
 
 namespace helper
 {
+
+/// Allow us to use BaseCreator and Factory without using any Arguments
+class NoArgument {} ;
 
 /// Decode the type's name to a more readable form if possible
 std::string SOFA_HELPER_API gettypename(const std::type_info& t);
@@ -43,7 +47,7 @@ void SOFA_HELPER_API logFactoryRegister(std::string baseclass, std::string class
 /// Print factory log
 void SOFA_HELPER_API printFactoryLog(std::ostream& out = std::cout);
 
-template <class Object, class Argument, class ObjectPtr = Object*>
+template <class Object, class Argument = NoArgument, class ObjectPtr = Object*>
 class BaseCreator
 {
 public:
@@ -52,7 +56,7 @@ public:
     virtual const std::type_info& type() = 0;
 };
 
-template <typename TKey, class TObject, typename TArgument, typename TPtr = TObject* >
+template <typename TKey, class TObject, typename TArgument = NoArgument, typename TPtr = TObject* >
 class Factory
 {
 public:
@@ -72,13 +76,17 @@ public:
         if(!multi && this->registry.find(key) != this->registry.end())
             return false; // key used
         logFactoryRegister(gettypename(typeid(Object)), gettypename(creator->type()), key, multi);
-        //std::cout << gettypename(typeid(Object)) << (multi?" template class ":" class ")
-        //          << gettypename(creator->type()) << " registered as " << key << std::endl;
         this->registry.insert(std::pair<Key, Creator*>(key, creator));
         return true;
     }
 
+    template< class U = Argument, typename std::enable_if<std::is_same<U, NoArgument>::value, int>::type = 0>
+    ObjectPtr createObject(Key key, Argument arg = NoArgument()){
+        createObject(key, arg);
+    }
+
     ObjectPtr createObject(Key key, Argument arg);
+
     ObjectPtr createAnyObject(Argument arg);
 
     template< typename OutIterator >
@@ -147,11 +155,11 @@ public:
         return typeid(RealObject);
     }
 
-	// Dummy function to avoid dead stripping symbol
-	void registerInFactory()
-	{
-		printf("[SOFA]Registration of class : %s\n", type().name());
-	}
+    // Dummy function to avoid dead stripping symbol
+    void registerInFactory()
+    {
+        printf("[SOFA]Registration of class : %s\n", type().name());
+    }
 
 };
 /*
@@ -159,7 +167,7 @@ public:
 template<class Object, class Argument>
 Object create(Object* obj, Argument arg)
 {
-	return new Object(arg);
+    return new Object(arg);
 }
 */
 template <class Factory, class RealObject>

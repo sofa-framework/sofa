@@ -265,7 +265,7 @@ void TTriangleModel<DataTypes>::handleTopologyChange()
                 //                 updateNormals();
                 break;
             }
-            /*
+                /*
             case core::topology::TRIANGLESADDED:
             {
             //sout << "INFO_print : Vis - TRIANGLESADDED" << sendl;
@@ -493,7 +493,7 @@ void TTriangleModel<DataTypes>::handleTopologyChange()
                 break;
             }
 
-            // Case "POINTSRENUMBERING" added to propagate the treatment to the Visual Model
+                // Case "POINTSRENUMBERING" added to propagate the treatment to the Visual Model
 
             case core::topology::POINTSRENUMBERING:
             {
@@ -543,12 +543,12 @@ template<class DataTypes>
 void TTriangleModel<DataTypes>::draw(const core::visual::VisualParams* vparams ,int index)
 {
     Element t(this,index);
-//        glBegin(GL_TRIANGLES);
-//        helper::gl::glNormalT(t.n());
-//        helper::gl::glVertexT(t.p1());
-//        helper::gl::glVertexT(t.p2());
-//        helper::gl::glVertexT(t.p3());
-//        glEnd();
+    //        glBegin(GL_TRIANGLES);
+    //        helper::gl::glNormalT(t.n());
+    //        helper::gl::glVertexT(t.p1());
+    //        helper::gl::glVertexT(t.p2());
+    //        helper::gl::glVertexT(t.p3());
+    //        glEnd();
 
     vparams->drawTool()->setPolygonMode(0,vparams->displayFlags().getShowWireFrame());
     vparams->drawTool()->setLightingEnabled(true);
@@ -620,23 +620,12 @@ bool TTriangleModel<DataTypes>::canCollideWithElement(int index, CollisionModel*
     if (!this->bSelfCollision.getValue()) return true; // we need to perform this verification process only for the selfcollision case.
     if (this->getContext() != model2->getContext()) return true;
 
-    //if (model2 == mpoints && index2==4)
-    //{
-    //	std::cout<<"Triangle model : at index ["<<index<<"] can collide with point 4 ?"<<std::endl;
-    //}
-
-
-    //return true;
-
     Element t(this,index);
     if (model2 == mpoints)
     {
         // if point belong to the triangle, return false
         if ( index2==t.p1Index() || index2==t.p2Index() || index2==t.p3Index())
             return false;
-
-        //const helper::vector <unsigned int>& EdgesAroundVertex11 =topology->getEdgesAroundVertex(p11);
-        //const helper::vector <unsigned int>& EdgesAroundVertex12 =topology->getEdgesAroundVertex(p12);
 
         //// if the point belong to the the neighborhood of the triangle, return false
         //for (unsigned int i1=0; i1<EdgesAroundVertex11.size(); i1++)
@@ -666,7 +655,6 @@ template<class DataTypes>
 void TTriangleModel<DataTypes>::computeBoundingTree(int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
-    //updateFromTopology();
 
     if (needsUpdate && !cubeModel->empty()) cubeModel->resize(0);
 
@@ -678,101 +666,41 @@ void TTriangleModel<DataTypes>::computeBoundingTree(int maxDepth)
 
     const bool calcNormals = computeNormals.getValue();
 
-//    if (maxDepth == 0)
-//    {
-//        // no hierarchy
-//        if (empty())
-//            cubeModel->resize(0);
-//        else
-//        {
-//            cubeModel->resize(1);
-//            minElem = x[0];
-//            maxElem = x[0];
-//            for (unsigned i=1; i<x.size(); i++)
-//            {
-//                const defaulttype::Vector3& pt1 = x[i];
-//                if (pt1[0] > maxElem[0]) maxElem[0] = pt1[0];
-//                else if (pt1[0] < minElem[0]) minElem[0] = pt1[0];
-//                if (pt1[1] > maxElem[1]) maxElem[1] = pt1[1];
-//                else if (pt1[1] < minElem[1]) minElem[1] = pt1[1];
-//                if (pt1[2] > maxElem[2]) maxElem[2] = pt1[2];
-//                else if (pt1[2] < minElem[2]) minElem[2] = pt1[2];
-//            }
-//            const SReal distance = (SReal)this->proximity.getValue();
-//            for (int c = 0; c < 3; c++)
-//            {
-//                minElem[c] -= distance;
-//                maxElem[c] += distance;
-//            }
-//            cubeModel->setLeafCube(0, std::make_pair(this->begin(),this->end()), minElem, maxElem); // define the bounding box of the current triangle
-//            if (calcNormals)
-//                for (int i=0; i<size; i++)
-//                {
-//                    Element t(this,i);
-//                    const defaulttype::Vector3& pt1 = x[t.p1Index()];
-//                    const defaulttype::Vector3& pt2 = x[t.p2Index()];
-//                    const defaulttype::Vector3& pt3 = x[t.p3Index()];
 
-//                    /*for (int c = 0; c < 3; c++)
-//                    {
-//                    if (i==0)
-//                    {
-//                    minElem[c] = pt1[c];
-//                    maxElem[c] = pt1[c];
-//                    }
-//                    else
-//                    {
-//                    if (pt1[c] > maxElem[c]) maxElem[c] = pt1[c];
-//                    else if (pt1[c] < minElem[c]) minElem[c] = pt1[c];
-//                    }
-//                    if (pt2[c] > maxElem[c]) maxElem[c] = pt2[c];
-//                    else if (pt2[c] < minElem[c]) minElem[c] = pt2[c];
-//                    if (pt3[c] > maxElem[c]) maxElem[c] = pt3[c];
-//                    else if (pt3[c] < minElem[c]) minElem[c] = pt3[c];
-//                    }*/
 
-//                    // Also recompute normal vector
-//                    t.n() = cross(pt2-pt1,pt3-pt1);
-//                    t.n().normalize();
-//                }
-//        }
-//    }
-//    else
-//    {
-
-        cubeModel->resize(size);  // size = number of triangles
-        if (!empty())
+    cubeModel->resize(size);  // size = number of triangles
+    if (!empty())
+    {
+        const SReal distance = (SReal)this->proximity.getValue();
+        for (int i=0; i<size; i++)
         {
-            const SReal distance = (SReal)this->proximity.getValue();
-            for (int i=0; i<size; i++)
-            {
-                Element t(this,i);
-                const defaulttype::Vector3& pt1 = x[t.p1Index()];
-                const defaulttype::Vector3& pt2 = x[t.p2Index()];
-                const defaulttype::Vector3& pt3 = x[t.p3Index()];
+            Element t(this,i);
+            const defaulttype::Vector3& pt1 = x[t.p1Index()];
+            const defaulttype::Vector3& pt2 = x[t.p2Index()];
+            const defaulttype::Vector3& pt3 = x[t.p3Index()];
 
-                for (int c = 0; c < 3; c++)
-                {
-                    minElem[c] = pt1[c];
-                    maxElem[c] = pt1[c];
-                    if (pt2[c] > maxElem[c]) maxElem[c] = pt2[c];
-                    else if (pt2[c] < minElem[c]) minElem[c] = pt2[c];
-                    if (pt3[c] > maxElem[c]) maxElem[c] = pt3[c];
-                    else if (pt3[c] < minElem[c]) minElem[c] = pt3[c];
-                    minElem[c] -= distance;
-                    maxElem[c] += distance;
-                }
-                if (calcNormals)
-                {
-                    // Also recompute normal vector
-                    t.n() = cross(pt2-pt1,pt3-pt1);
-                    t.n().normalize();
-                }
-                cubeModel->setParentOf(i, minElem, maxElem); // define the bounding box of the current triangle
+            for (int c = 0; c < 3; c++)
+            {
+                minElem[c] = pt1[c];
+                maxElem[c] = pt1[c];
+                if (pt2[c] > maxElem[c]) maxElem[c] = pt2[c];
+                else if (pt2[c] < minElem[c]) minElem[c] = pt2[c];
+                if (pt3[c] > maxElem[c]) maxElem[c] = pt3[c];
+                else if (pt3[c] < minElem[c]) minElem[c] = pt3[c];
+                minElem[c] -= distance;
+                maxElem[c] += distance;
             }
-            cubeModel->computeBoundingTree(maxDepth);
+            if (calcNormals)
+            {
+                // Also recompute normal vector
+                t.n() = cross(pt2-pt1,pt3-pt1);
+                t.n().normalize();
+            }
+            cubeModel->setParentOf(i, minElem, maxElem); // define the bounding box of the current triangle
         }
-    //}
+        cubeModel->computeBoundingTree(maxDepth);
+    }
+
 
     if (m_lmdFilter != 0)
     {

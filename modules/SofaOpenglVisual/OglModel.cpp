@@ -22,6 +22,7 @@
 #include <SofaOpenglVisual/OglModel.h>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/gl/RAII.h>
 #include <sofa/helper/vector.h>
@@ -29,6 +30,8 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <string.h>
 #include <sofa/helper/types/RGBAColor.h>
+
+
 //#ifdef SOFA_HAVE_GLEW
 //#include <sofa/helper/gl/GLSLShader.h>
 //#endif // SOFA_HAVE_GLEW

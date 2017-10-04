@@ -22,6 +22,7 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_INL
 #define SOFA_COMPONENT_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_INL
 
+#include <fstream>
 #include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/MatEigen.h>
@@ -681,7 +682,7 @@ typename DataTypes::Coord EdgeSetGeometryAlgorithms<DataTypes>::compute2EdgesInt
 
     if ((ind1 == -1) || (ind2 == -1))
     {
-        std::cout << "Error: EdgeSetGeometryAlgorithms::compute2EdgeIntersection, vector director is null." << std::endl;
+        msg_error() << "Vector director is null." ;
         intersected = false;
         return X;
     }
@@ -696,7 +697,7 @@ typename DataTypes::Coord EdgeSetGeometryAlgorithms<DataTypes>::compute2EdgesInt
     for (unsigned int i = 0; i<Coord::spatial_dimensions; i++)
         if ( (X[i] - edge2[0][i] - alpha * vec2[i]) > 0.1 )
         {
-            std::cout << "Error: EdgeSetGeometryAlgorithms::compute2EdgeIntersection, edges don't intersect themself." << std::endl;
+            msg_error() << "Edges don't intersect themself." ;
             intersected = false;
         }
 
@@ -777,7 +778,6 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( helpe
 
     for(unsigned pointId=0; pointId<pos.size(); pointId++ )
     {
-        //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, point " << pointId << endl;
         EdgesAroundVertex ve = this->m_topology->getEdgesAroundVertex(pointId);
         edgeVec.resize(ve.size());
         numEdges.push_back((unsigned)ve.size());            // number of edges attached to this point
@@ -797,7 +797,6 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( helpe
             CPos p0 = DataTypes::getCPos(pos[edge[0]]);
             CPos p1 = DataTypes::getCPos(pos[edge[1]]);
             edgeVec[e] = p1 - p0;
-            //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights debug: edge "<< edge << ", edgeVec = " << edgeVec[e] << endl;
             // each edge vector adds e.et to the matrix
             for(unsigned j=0; j<3; j++)
                 for(unsigned k=0; k<3; k++)
@@ -814,31 +813,25 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( helpe
             // axis x
             a=defaulttype::Vector3(1,0,0);
             cholBksb(u,L,a); // solve EEt.u=x using the Cholesky decomposition
-            //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, ux = " << u << endl;
             for(size_t i=0; i<ve.size(); i++ )
             {
                 weights[n+i][0] = u * edgeVec[i];
-                //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, contribution of edge "<< i << " to x = " << weights[n+i][0] << endl;
             }
 
             // axis y
             a=defaulttype::Vector3(0,1,0);
             cholBksb(u,L,a); // solve EEt.u=y using the Cholesky decomposition
-            //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, uy = " << u << endl;
             for(size_t i=0; i<ve.size(); i++ )
             {
                 weights[n+i][1] = u * edgeVec[i];
-                //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, contribution of edge "<< i << " to y = " << weights[n+i][1] << endl;
             }
 
             // axis z
             a=defaulttype::Vector3(0,0,1);
             cholBksb(u,L,a); // solve EEt.u=z using the Cholesky decomposition
-            //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, uz = " << u << endl;
             for(size_t i=0; i<ve.size(); i++ )
             {
                 weights[n+i][2] = u * edgeVec[i];
-                //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, contribution of edge "<< i << " to z = " << weights[n+i][2] << endl;
             }
         }
         else
@@ -849,7 +842,6 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( helpe
 
             typedef Eigen::Matrix<SReal,3,3> EigenM33;
             EigenM33 emat = eigenMat(EEt);
-//            Eigen::JacobiSVD<EigenM33> jacobi(emat, Eigen::ComputeThinU | Eigen::ComputeThinV);
             Eigen::JacobiSVD<EigenM33> jacobi(emat, Eigen::ComputeFullU | Eigen::ComputeFullV);
             Eigen::Matrix<SReal,3,1> solution;
 
@@ -859,11 +851,9 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( helpe
             // least-squares solve EEt.u=x
             for(int i=0; i<3; i++)
                 u[i] = solution(i);
-            //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, ux = " << u << endl;
             for(size_t i=0; i<ve.size(); i++ )
             {
                 weights[n+i][0] = u * edgeVec[i];
-                //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, contribution of edge "<< i << " to x = " << weights[n+i][0] << endl;
             }
 
             // axis y
@@ -872,11 +862,9 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( helpe
             // least-squares solve EEt.u=y
             for(int i=0; i<3; i++)
                 u[i] = solution(i);
-            //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, uy = " << u << endl;
             for(size_t i=0; i<ve.size(); i++ )
             {
                 weights[n+i][1] = u * edgeVec[i];
-                //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, contribution of edge "<< i << " to y = " << weights[n+i][1] << endl;
             }
 
             // axis z
@@ -885,11 +873,9 @@ void EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights( helpe
             // least-squares solve EEt.u=z
             for(int i=0; i<3; i++)
                 u[i] = solution(i);
-            //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, uz = " << u << endl;
             for(size_t i=0; i<ve.size(); i++ )
             {
                 weights[n+i][2] = u * edgeVec[i];
-                //cerr<<"EdgeSetGeometryAlgorithms< DataTypes >::computeLocalFrameEdgeWeights, contribution of edge "<< i << " to z = " << weights[n+i][2] << endl;
             }
         }
 

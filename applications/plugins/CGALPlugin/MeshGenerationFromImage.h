@@ -38,8 +38,11 @@
 #include <CGAL/Mesh_complex_3_in_triangulation_3.h>
 #include <CGAL/Mesh_criteria_3.h>
 #include <CGAL/Labeled_image_mesh_domain_3.h>
+#include <CGAL/Mesh_domain_with_polyline_features_3.h>
 #include <CGAL/make_mesh_3.h>
 #include <CGAL/refine_mesh_3.h>
+#include <CGAL/Image_3.h>
+#include <CGAL/Weighted_point.h>
 
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Quat.h>
@@ -63,8 +66,6 @@ public:
     typedef sofa::core::DataEngine Inherited;
     SOFA_CLASS(SOFA_TEMPLATE2(MeshGenerationFromImage,DataTypes,_ImageTypes),Inherited);
 
-    //SOFA_CLASS(SOFA_TEMPLATE(MeshGenerationFromImage,DataTypes),sofa::core::DataEngine);
-
     typedef typename sofa::defaulttype::Vec3dTypes::Real Real;
     typedef typename sofa::defaulttype::Vec3dTypes::Coord Point;
     typedef typename sofa::defaulttype::Vec3dTypes::Coord Coord;
@@ -76,11 +77,15 @@ public:
 
 	// Domain
     // (we use exact intersection computation with Robust_intersection_traits_3)
-    typedef typename CGAL::Labeled_image_mesh_domain_3<CGAL::Image_3,K> Mesh_domain;
+    typedef CGAL::Mesh_domain_with_polyline_features_3<CGAL::Labeled_image_mesh_domain_3<CGAL::Image_3,K> >    Mesh_domain;
+    typedef K::Point_3 Point3;
+
+    typedef std::vector<Point3>	 Polyline;
+    typedef std::list<Polyline>	 Polylines;
 
     // Triangulation
     typedef typename CGAL::Mesh_triangulation_3<Mesh_domain>::type Tr;
-    typedef typename CGAL::Mesh_complex_3_in_triangulation_3<Tr> C3t3;
+    typedef typename CGAL::Mesh_complex_3_in_triangulation_3<Tr,Mesh_domain::Corner_index,Mesh_domain::Curve_segment_index> C3t3;
 
     // Mesh Criteria
     typedef typename CGAL::Mesh_criteria_3<Tr> Mesh_criteria;
@@ -131,44 +136,44 @@ public:
         return DataTypes::Name();
     }
 
-    //Inputs
-    sofa::core::objectmodel::DataFileName m_filename;
-    sofa::core::objectmodel::Data< ImageTypes > image;
-    sofa::core::objectmodel::Data< TransformType > transform;
+    //Inputs    
+    sofa::core::objectmodel::DataFileName d_filename;
+    sofa::core::objectmodel::Data< ImageTypes > d_image;
+    sofa::core::objectmodel::Data< TransformType > d_transform;
+    sofa::core::objectmodel::Data<VecCoord> d_features;
 
     //Outputs
-    sofa::core::objectmodel::Data<VecCoord> f_newX0;
-    sofa::core::objectmodel::Data<SeqTetrahedra> f_tetrahedra;
-    sofa::core::objectmodel::Data<sofa::helper::vector<int> > f_tetraDomain;
-    vector<int> tetraDomainLabels;
-    sofa::core::objectmodel::Data<sofa::helper::vector<double> > output_cellData;
-
-    sofa::core::objectmodel::Data<bool> frozen;
+    sofa::core::objectmodel::Data<VecCoord> d_newX0;
+    sofa::core::objectmodel::Data<SeqTetrahedra> d_tetrahedra;
+    sofa::core::objectmodel::Data<sofa::helper::vector<int> > d_tetraDomain;
+    sofa::core::objectmodel::Data<sofa::helper::vector<double> > d_outputCellData;
+    sofa::core::objectmodel::Data<bool> d_frozen;
 
     //Parameters
-    sofa::core::objectmodel::Data<double> facetAngle, facetSize, facetApproximation;
-    sofa::core::objectmodel::Data<double> cellRatio;
-    sofa::core::objectmodel::Data<double> cellSize;
-    sofa::core::objectmodel::Data< sofa::helper::vector<int> > label;
-    sofa::core::objectmodel::Data< sofa::helper::vector<double> > labelCellSize;
-    sofa::core::objectmodel::Data< sofa::helper::vector<double> > labelCellData;
-    sofa::core::objectmodel::Data<bool> odt, lloyd, perturb, exude;
-    sofa::core::objectmodel::Data<int> odt_max_it, lloyd_max_it;
-    sofa::core::objectmodel::Data<double> perturb_max_time, exude_max_time;
-    sofa::core::objectmodel::Data<int> ordering;
+    sofa::core::objectmodel::Data<double> d_edgeSize, d_facetAngle, d_facetSize, d_facetApproximation;
+    sofa::core::objectmodel::Data<double> d_cellRatio;
+    sofa::core::objectmodel::Data<double> d_cellSize;
+    sofa::core::objectmodel::Data< sofa::helper::vector<int> > d_label;
+    sofa::core::objectmodel::Data< sofa::helper::vector<double> > d_labelCellSize;
+    sofa::core::objectmodel::Data< sofa::helper::vector<double> > d_labelCellData;
+    sofa::core::objectmodel::Data<bool> d_odt, d_lloyd, d_perturb, d_exude;
+    sofa::core::objectmodel::Data<int> d_odtMaxIt, d_lloydMaxIt;
+    sofa::core::objectmodel::Data<double> d_perturbMaxTime, d_exudeMaxTime;
+    sofa::core::objectmodel::Data<int> d_ordering;
 
     // Display
-    sofa::core::objectmodel::Data<bool> drawTetras;
-    sofa::core::objectmodel::Data<bool> drawSurface;
+    sofa::core::objectmodel::Data<bool> d_drawTetras;
+
+    sofa::helper::vector<int> m_tetraDomainLabels;
 
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(CGALPLUGIN_MESHGENERATIONFROMIMAGE_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_CGALPLUGIN_API MeshGenerationFromImage<sofa::defaulttype::Vec3dTypes>;
+extern template class SOFA_CGALPLUGIN_API MeshGenerationFromImage<sofa::defaulttype::Vec3dTypes, sofa::defaulttype::ImageUC>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-extern template class SOFA_CGALPLUGIN_API MeshGenerationFromImage<sofa::defaulttype::Vec3fTypes>;
+extern template class SOFA_CGALPLUGIN_API MeshGenerationFromImage<sofa::defaulttype::Vec3fTypes, sofa::defaulttype::ImageUC>;
 #endif //SOFA_DOUBLE
 #endif
 

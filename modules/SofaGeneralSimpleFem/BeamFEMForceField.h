@@ -249,6 +249,7 @@ public:
     }
 
     void draw(const core::visual::VisualParams* vparams);
+    void computeBBox(const core::ExecParams* params, bool onlyVisible);
 
     void setBeam(unsigned int i, double E, double L, double nu, double r, double rInner);
     void initBeams(unsigned int size);
