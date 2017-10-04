@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -80,7 +77,6 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
     const double d0 = e1.getProximity() + e2.getProximity() + (intersection->getContactDistance() == 0.0 ? 0.001 : intersection->getContactDistance());
     //const SReal margin = 0.001f + (SReal)d0;
     const SReal margin = (SReal)((e1.getProximity() + e2.getProximity() + (intersection->getAlarmDistance() == 0.0 ? 0.001 : intersection->getAlarmDistance()))/2);
-    //std::cout << "margin="<<margin<<std::endl;
     const bool singleContact = e1.getCollisionModel()->singleContact.getValue();
 
     // transform from grid1 to grid2
@@ -130,7 +126,6 @@ int FFDDistanceGridDiscreteIntersection::computeIntersection(FFDDistanceGridColl
                     contacts->resize(contacts->size()+1);
                 DetectionOutput *detection = &*(contacts->end()-1);
                 double value = d + margin - d0;
-                //std::cout << "value = d + margin - d0 = " << d << " + " << margin << " - " << d0 << " = " << value << std::endl;
                 if (!singleContact || first || (value < detection->value))
                 {
                     detection->point[0] = grid1->meshPts[c1.points[i].index];

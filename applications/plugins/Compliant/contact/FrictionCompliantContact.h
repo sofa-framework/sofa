@@ -7,8 +7,9 @@
 
 #include <Compliant/constraint/CoulombConstraint.h>
 #include <Compliant/mapping/ContactMapping.h>
-
 #include <Compliant/compliance/UniformCompliance.h>
+
+#include <sofa/helper/OptionsGroup.h>
 
 #include <Compliant/utils/map.h>
 #include <Compliant/utils/edit.h>
@@ -35,6 +36,7 @@ public:
 
     Data< SReal > mu; ///< friction coef
     Data< bool > horizontalConeProjection; ///< should the cone projection be horizontal (default)? Otherwise an orthogonal cone projection is performed.
+    Data< helper::OptionsGroup > frictionCoefficientMixingMethod; ///< how to blend the friction coefficients from two collision models?
 
 protected:
 
@@ -53,18 +55,21 @@ protected:
     typedef linearsolver::CoulombConstraint<contact_type> proj_type;
     proj_type::SPtr projector;
 
-//    FrictionCompliantContact()
-//        : Inherit()
-//        , mu( initData(&mu, SReal(0.0), "mu", "friction coefficient (0 for frictionless contacts)") )
-//        , horizontalConeProjection( initData(&horizontalConeProjection, true, "horizontalConeProjection", "Should the Coulomb cone projection be horizontal (default)? Otherwise an orthogonal cone projection is performed.") )
-//    {}
 
     FrictionCompliantContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
         : Inherit(model1, model2, intersectionMethod)
-        , mu( initData(&mu, SReal(0.7), "mu", "friction coefficient (0 for frictionless contacts)") )
+        , mu( initData(&mu, SReal(-1), "mu", "global friction coefficient. Warning it overrides everything. (0 for frictionless contacts, <0 -default- to blend coefficients given in collision models)") )
         , horizontalConeProjection(initData(&horizontalConeProjection, true, "horizontal", "horizontal cone projection, else orthogonal"))
+        , frictionCoefficientMixingMethod(initData(&frictionCoefficientMixingMethod,"frictionCoefficientMixingMethod","how to blend the friction coefficients from two collision models?" ) )
     {
-        
+        helper::OptionsGroup frictionCoefficientMixingMethodOptions(4
+                                            ,"MINIMUM" // min(c0,c1)
+                                            ,"AVERAGE" // 0.5*(c0+c1)
+                                            ,"GEOMETRIC" // sqrt(c0+c1)
+                                            ,"PRODUCT" // c0*c1
+                                            );
+        frictionCoefficientMixingMethodOptions.setSelectedItem(3);
+        frictionCoefficientMixingMethod.setValue(frictionCoefficientMixingMethodOptions);
     }
 
 
@@ -162,11 +167,11 @@ protected:
         {
             compliance->compliance.setValue( this->compliance_value.getValue() );
             compliance->damping.setValue( this->damping_ratio.getValue() );
-            compliance->reinit();
         }
 
-        // approximate current mu between the 2 objects as the product of both friction coefficients
-        const SReal frictionCoefficient = mu.getValue() ? mu.getValue() : this->model1->getContactFriction(0)*this->model2->getContactFriction(0);
+        // don't forget reinit as dofs size may have changed !
+        compliance->reinit();
+
 
         // approximate restitution coefficient between the 2 objects as the product of both coefficients
         const SReal restitutionCoefficient = this->restitution_coef.getValue() ? this->restitution_coef.getValue() : this->model1->getContactRestitution(0) * this->model2->getContactRestitution(0);
@@ -177,7 +182,33 @@ protected:
         if( restitutionCoefficient ) projector->mask = cvmask; // for restitution, only activate violated constraints
         else projector->mask = NULL;
         projector->horizontalProjection = horizontalConeProjection.getValue();
-        projector->mu = frictionCoefficient;
+
+
+        // approximate current mu between the 2 objects from both friction coefficients
+        const SReal& frictionCoef = mu.getValue();
+        if( frictionCoef >=0 ) // if a global mu is defined, use it
+        {
+            projector->mu = frictionCoef;
+        }
+        else // blending friction coefficients given in collision models
+        {
+            switch(frictionCoefficientMixingMethod.getValue().getSelectedId())
+            {
+            case 0: // MINIMUM
+                projector->mu = std::min( this->model1->getContactFriction(0), this->model2->getContactFriction(0) );
+                break;
+            case 1: // AVERAGE
+                projector->mu = 0.5 * ( this->model1->getContactFriction(0) + this->model2->getContactFriction(0) );
+                break;
+            case 2: // GEOMETRIC
+                projector->mu = std::sqrt( this->model1->getContactFriction(0)+this->model2->getContactFriction(0) );
+                break;
+            case 3: // PRODUCT
+                projector->mu = this->model1->getContactFriction(0) * this->model2->getContactFriction(0);
+                break;
+            }
+        }
+
 
 //        // every contact points must propagate constraint forces
 //        for(unsigned i = 0; i < size; ++i)

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 project(SofaGraphComponent)
 
 set(HEADER_FILES
@@ -16,6 +16,9 @@ set(HEADER_FILES
     SofaDefaultPathSetting.h
     StatsSetting.h
     ViewerSetting.h
+    SceneChecks.h
+    SceneCheckerVisitor.h
+    APIVersion.h
     config.h
     initGraphComponent.h
 )
@@ -34,12 +37,15 @@ set(SOURCE_FILES
     SofaDefaultPathSetting.cpp
     StatsSetting.cpp
     ViewerSetting.cpp
+    SceneChecks.cpp
+    SceneCheckerVisitor.cpp
+    APIVersion.cpp
     initGraphComponent.cpp
 )
 
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationTree)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCore SofaSimulationTree)
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_GRAPH_COMPONENT")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 

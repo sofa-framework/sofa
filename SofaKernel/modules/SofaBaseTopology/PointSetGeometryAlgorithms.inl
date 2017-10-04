@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -30,7 +27,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
-
+#include <sofa/core/objectmodel/Tag.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
 
@@ -44,9 +41,21 @@ namespace topology
 {
 
 template <class DataTypes>
+ PointSetGeometryAlgorithms< DataTypes >::PointSetGeometryAlgorithms()        : GeometryAlgorithms()
+        ,d_showIndicesScale (core::objectmodel::Base::initData(&d_showIndicesScale, (float) 0.02, "showIndicesScale", "Debug : scale for view topology indices"))
+        ,d_showPointIndices (core::objectmodel::Base::initData(&d_showPointIndices, (bool) false, "showPointIndices", "Debug : view Point indices"))
+        ,d_tagMechanics( initData(&d_tagMechanics,std::string(),"tagMechanics","Tag of the Mechanical Object"))
+    {
+    }
+template <class DataTypes>
 void PointSetGeometryAlgorithms< DataTypes >::init()
 {
-    object = this->getContext()->core::objectmodel::BaseContext::template get< core::behavior::MechanicalState< DataTypes > >();
+    if ( this->d_tagMechanics.getValue().size()>0) {
+        sofa::core::objectmodel::Tag mechanicalTag(this->d_tagMechanics.getValue());
+        object = this->getContext()->core::objectmodel::BaseContext::template get< core::behavior::MechanicalState< DataTypes > >(mechanicalTag,sofa::core::objectmodel::BaseContext::SearchUp);
+    } else {
+        object = this->getContext()->core::objectmodel::BaseContext::template get< core::behavior::MechanicalState< DataTypes > >();
+    }
     core::topology::GeometryAlgorithms::init();
     this->m_topology = this->getContext()->getMeshTopology();
 }
@@ -60,7 +69,7 @@ template <class DataTypes>
 float PointSetGeometryAlgorithms< DataTypes >::getIndicesScale() const
 {
     const sofa::defaulttype::BoundingBox& bbox = this->getContext()->f_bbox.getValue();
-    return (float)((bbox.maxBBox() - bbox.minBBox()).norm() * showIndicesScale.getValue());
+    return (float)((bbox.maxBBox() - bbox.minBBox()).norm() * d_showIndicesScale.getValue());
 }
 
 
@@ -236,9 +245,8 @@ void PointSetGeometryAlgorithms<DataTypes>::initPointAdded(unsigned int index, c
 template<class DataTypes>
 void PointSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    if (showPointIndices.getValue())
+    if (d_showPointIndices.getValue())
     {
-        sofa::defaulttype::Mat<4,4, GLfloat> modelviewM;
         sofa::defaulttype::Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
         const VecCoord& coords =(this->object->read(core::ConstVecCoordId::position())->getValue());
 

@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -32,6 +29,7 @@
 #include <sofa/helper/vector.h>
 #include <Eigen/Core>
 #include <Eigen/Sparse>
+#include <sofa/helper/OwnershipSPtr.h>
 
 namespace sofa
 {
@@ -599,6 +597,61 @@ template<> inline const char* EigenSparseMatrix<defaulttype::Vec3fTypes, default
 } // namespace linearsolver
 
 } // namespace component
+
+
+
+    /// Converts a BaseMatrix to a eigen sparse matrix encapsulted in a OwnershipSPtr.
+    /// It the conversion needs to create a temporary matrix, it will be automatically deleted
+    /// by the OwnershipSPtr (with ownership).
+    /// It the conversion did not create a temporary data, and points to an existing matrix,
+    /// the OwnershipSPtr does not take the ownership and won't delete anything.
+    /// @TODO move this somewhere else?
+    /// @author Matthieu Nesme
+    template<class mat>
+    helper::OwnershipSPtr<mat> convertSPtr( const defaulttype::BaseMatrix* m) {
+        assert( m );
+
+        {
+        typedef component::linearsolver::EigenBaseSparseMatrix<SReal> matrixr;
+        const matrixr* smr = dynamic_cast<const matrixr*> (m);
+        // no need to create temporary data, so the SPtr does not take this ownership
+        if ( smr ) return helper::OwnershipSPtr<mat>(&smr->compressedMatrix, false);
+        }
+
+        msg_warning("EigenSparseMatrix")<<"convertSPtr: slow matrix conversion (scalar type conversion)";
+
+        {
+        typedef component::linearsolver::EigenBaseSparseMatrix<double> matrixd;
+        const matrixd* smd = dynamic_cast<const matrixd*> (m);
+        // the cast is creating a temporary matrix, the SPtr takes its ownership, so its deletion will be transparent
+        if ( smd ) return helper::OwnershipSPtr<mat>( new mat(smd->compressedMatrix.cast<SReal>()), true );
+        }
+
+        {
+        typedef component::linearsolver::EigenBaseSparseMatrix<float> matrixf;
+        const matrixf* smf = dynamic_cast<const matrixf*>(m);
+        // the cast is creating a temporary matrix, the SPtr takes its ownership, so its deletion will be transparent
+        if( smf ) return helper::OwnershipSPtr<mat>( new mat(smf->compressedMatrix.cast<SReal>()), true );
+        }
+
+        msg_warning("EigenSparseMatrix")<<"convertSPtr: very slow matrix conversion (from BaseMatrix)";
+
+        mat* res = new mat(m->rowSize(), m->colSize());
+
+        res->reserve(res->rows() * res->cols());
+        for(unsigned i = 0, n = res->rows(); i < n; ++i) {
+            res->startVec( i );
+            for(unsigned j = 0, k = res->cols(); j < k; ++j) {
+                SReal e = m->element(i, j);
+                if( e ) res->insertBack(i, j) = e;
+            }
+        }
+
+        // a temporary matrix is created, the SPtr takes its ownership, so its deletion will be transparent
+        return helper::OwnershipSPtr<mat>(res, true);
+    }
+
+
 
 } // namespace sofa
 

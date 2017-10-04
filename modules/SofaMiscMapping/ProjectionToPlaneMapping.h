@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -31,6 +28,7 @@
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
@@ -83,7 +81,7 @@ public:
     Data< Real > d_factor;
 
     Data< SReal >            d_drawScale; ///< drawing scale
-    Data< defaulttype::Vec4f >  d_drawColor; ///< drawing color
+    Data< defaulttype::RGBAColor >  d_drawColor; ///< drawing color
 
 
     virtual void init();
@@ -180,8 +178,8 @@ public:
     Data< helper::vector<unsigned> > f_indices;         ///< indices of the parent points
     Data< Real > d_factor;
 
-    Data< SReal >            d_drawScale; ///< drawing scale
-    Data< defaulttype::Vec4f >  d_drawColor; ///< drawing color
+    Data< SReal >                   d_drawScale; ///< drawing scale
+    Data< defaulttype::RGBAColor >  d_drawColor; ///< drawing color
 
     virtual void init();
     virtual void reinit();
@@ -196,17 +194,13 @@ public:
 
     virtual void draw(const core::visual::VisualParams* vparams);
 
-
     // no geometric stiffness
     virtual void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*parentForce*/, core::ConstMultiVecDerivId /*childForce*/ ){}
     virtual void updateK(const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId /*childForce*/ ){}
     virtual const defaulttype::BaseMatrix* getK(){ return NULL; }
     virtual void applyJT( const core::ConstraintParams* /* cparams */, const helper::vector< InDataMatrixDeriv* >& /* dataMatOutConst */, const helper::vector< const OutDataMatrixDeriv* >& /* dataMatInConst */ ) {}
 
-
-
     virtual void updateForceMask();
-
 
 protected:
     ProjectionToPlaneMultiMapping();

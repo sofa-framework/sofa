@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -30,6 +27,13 @@
 #include <SofaBaseTopology/CommonAlgorithms.h>
 #include <fstream>
 
+#ifdef NDEBUG
+#define DO_EXTRADEBUG_MESSAGES false
+#else
+#define DO_EXTRADEBUG_MESSAGES true
+#endif //
+
+
 namespace sofa
 {
 
@@ -38,6 +42,239 @@ namespace component
 
 namespace topology
 {
+const size_t permutation3[6][3]={{0,1,2},{0,2,1},{1,0,2},{1,2,0},{2,0,1},{2,1,0}};
+template< class DataTypes>
+NumericalIntegrationDescriptor<typename TriangleSetGeometryAlgorithms< DataTypes >::Real,3> &TriangleSetGeometryAlgorithms< DataTypes >::getTriangleNumericalIntegrationDescriptor()
+{
+    // initialize the cubature table only if needed.
+    if (initializedCubatureTables==false) {
+        initializedCubatureTables=true;
+        defineTetrahedronCubaturePoints();
+    }
+    return triangleNumericalIntegration;
+}
+
+template< class DataTypes>
+void TriangleSetGeometryAlgorithms< DataTypes >::defineTetrahedronCubaturePoints() {
+    typedef typename NumericalIntegrationDescriptor<typename TriangleSetGeometryAlgorithms< DataTypes >::Real,3>::QuadraturePoint QuadraturePoint;
+    typedef typename NumericalIntegrationDescriptor<typename TriangleSetGeometryAlgorithms< DataTypes >::Real,3>::BarycentricCoordinatesType BarycentricCoordinatesType;
+    // Gauss method
+    typename NumericalIntegrationDescriptor<typename TriangleSetGeometryAlgorithms< DataTypes >::Real,3>::QuadratureMethod m=NumericalIntegrationDescriptor<typename TriangleSetGeometryAlgorithms< DataTypes >::Real,3>::GAUSS_SIMPLEX_METHOD;
+    typename NumericalIntegrationDescriptor<typename TriangleSetGeometryAlgorithms< DataTypes >::Real,3>::QuadraturePointArray qpa;
+    BarycentricCoordinatesType v;
+    /// integration with linear accuracy.
+    v=BarycentricCoordinatesType(1/(Real)3.0,1/(Real)3.0,1/(Real)3.0);
+    qpa.push_back(QuadraturePoint(v,1/(Real)2));
+    triangleNumericalIntegration.addQuadratureMethod(m,1,qpa);
+    /// integration with quadratic accuracy.
+    qpa.clear();
+    Real a=1/(Real)6;
+    Real b=(Real) (2.0/3.0);
+    size_t i;
+    for (i=0;i<3;++i) {
+        v=BarycentricCoordinatesType(a,a,a);
+        v[i]=b;
+        qpa.push_back(QuadraturePoint(v,1/(Real)6));
+    }
+    triangleNumericalIntegration.addQuadratureMethod(m,2,qpa);
+    /// integration with cubic accuracy.
+    qpa.clear();
+    v=BarycentricCoordinatesType(1/(Real)3.0,1/(Real)3.0,1/(Real)3.0);
+    qpa.push_back(QuadraturePoint(v,(Real) -9/32));
+    a=(Real)1/5.0;
+    b=(Real)3/5.0;
+    for (i=0;i<3;++i) {
+        v=BarycentricCoordinatesType(a,a,a);
+        v[i]=b;
+        qpa.push_back(QuadraturePoint(v,(Real)25/(Real)96));
+    }
+    triangleNumericalIntegration.addQuadratureMethod(m,3,qpa);
+    /// integration with quadric accuracy with 6 points
+    qpa.clear();
+    a=(Real)0.445948490915965;
+    b=(Real)1-2*a;
+    Real c1=0.111690794839005;
+    for (i=0;i<3;++i) {
+        v=BarycentricCoordinatesType(a,a,a);
+        v[i]=b;
+        qpa.push_back(QuadraturePoint(v,c1));
+    }
+    a=(Real)0.091576213509771;
+    b=(Real)1-2*a;
+    Real c2=0.054975871827661;
+    for (i=0;i<3;++i) {
+        v=BarycentricCoordinatesType(a,a,a);
+        v[i]=b;
+        qpa.push_back(QuadraturePoint(v,c2));
+    }
+    triangleNumericalIntegration.addQuadratureMethod(m,4,qpa);
+    /// integration with quintic accuracy and 7 points
+    qpa.clear();
+    v=BarycentricCoordinatesType(1/(Real)3.0,1/(Real)3.0,1/(Real)3.0);
+    qpa.push_back(QuadraturePoint(v,9/(Real)80));
+    a=(Real)(6.0+sqrt(15.0))/21.0;
+    b=(Real)1-2*a;
+    c1=(Real)(155.0+sqrt(15.0))/2400.0;
+    for (i=0;i<3;++i) {
+        v=BarycentricCoordinatesType(a,a,a);
+        v[i]=b;
+        qpa.push_back(QuadraturePoint(v,c1));
+    }
+    a=(Real)4/7.0-a;
+    b=(Real)1-2*a;
+     c2=(Real)31/240.0 -c1;
+    for (i=0;i<3;++i) {
+        v=BarycentricCoordinatesType(a,a,a);
+        v[i]=b;
+        qpa.push_back(QuadraturePoint(v,c2));
+    }
+    triangleNumericalIntegration.addQuadratureMethod(m,5,qpa);
+    /// integration with order 6 accuracy and 12 points
+     qpa.clear();
+    a=(Real) 0.063089104491502;
+    b=(Real)1-2*a;
+    c1=(Real)0.025422453185103;
+    for (i=0;i<3;++i) {
+        v=BarycentricCoordinatesType(a,a,a);
+        v[i]=b;
+        qpa.push_back(QuadraturePoint(v,c1));
+    }
+    a=(Real) 0.249286745170910;
+    b=(Real)1-2*a;
+    c1=(Real)0.058393137863189;
+    for (i=0;i<3;++i) {
+        v=BarycentricCoordinatesType(a,a,a);
+        v[i]=b;
+        qpa.push_back(QuadraturePoint(v,c1));
+    }
+    Real aa[3];
+    aa[0]=(Real)0.310352451033785;
+    aa[1]=(Real)0.053145049844816;
+    aa[2]=(Real)(1.0-aa[0]-aa[1]);
+    c2=(Real)0.041425537809187;
+    for (i=0;i<6;++i) {
+        v=BarycentricCoordinatesType(aa[permutation3[i][0]],aa[permutation3[i][1]],aa[permutation3[i][2]]);
+        qpa.push_back(QuadraturePoint(v,c2));
+    }
+    triangleNumericalIntegration.addQuadratureMethod(m,6,qpa);
+    /// integration with order 7 accuracy and 13 points
+     qpa.clear();
+     v=BarycentricCoordinatesType(1/(Real)3.0,1/(Real)3.0,1/(Real)3.0);
+    qpa.push_back(QuadraturePoint(v,(Real)-0.0747850222338));
+    a=(Real)0.0651301029022;
+    b=(Real)1-2*a;
+    c1=(Real)0.0266736178044;
+    for (i=0;i<3;++i) {
+        v=BarycentricCoordinatesType(a,a,a);
+        v[i]=b;
+        qpa.push_back(QuadraturePoint(v,c1));
+    }
+    a=(Real) 0.2603459660790;
+    b=(Real)1-2*a;
+    c1=(Real)0.0878076287166;
+    for (i=0;i<3;++i) {
+        v=BarycentricCoordinatesType(a,a,a);
+        v[i]=b;
+        qpa.push_back(QuadraturePoint(v,c1));
+    }
+
+    aa[0]=(Real)0.3128654960049;
+    aa[1]=(Real)0.6384441885698;
+    aa[2]=(Real)(1.0-aa[0]-aa[1]);
+    c2=(Real)0.0385568804451;
+    for (i=0;i<6;++i) {
+        v=BarycentricCoordinatesType(aa[permutation3[i][0]],aa[permutation3[i][1]],aa[permutation3[i][2]]);
+        qpa.push_back(QuadraturePoint(v,c2));
+    }
+    triangleNumericalIntegration.addQuadratureMethod(m,7,qpa);
+/// integration with order 8 accuracy and 16 points
+    qpa.clear();
+    v=BarycentricCoordinatesType(1/(Real)3.0,1/(Real)3.0,1/(Real)3.0);
+    c1=(Real)0.1443156076777871682510911104890646/2.0;
+    qpa.push_back(QuadraturePoint(v,(Real)c1));
+    a=(Real)0.1705693077517602066222935014914645;
+    b=(Real)1-2*a;
+    c1=(Real)0.1032173705347182502817915502921290/2.0;
+    for (i=0;i<3;++i) {
+        v=BarycentricCoordinatesType(a,a,a);
+        v[i]=b;
+        qpa.push_back(QuadraturePoint(v,c1));
+    }
+    a=(Real)0.0505472283170309754584235505965989;
+    b=(Real)1-2*a;
+    c1=(Real)0.0324584976231980803109259283417806/2.0;
+    for (i=0;i<3;++i) {
+        v=BarycentricCoordinatesType(a,a,a);
+        v[i]=b;
+        qpa.push_back(QuadraturePoint(v,c1));
+    }
+    a=(Real)0.4592925882927231560288155144941693;
+    b=(Real)1-2*a;
+    c1=(Real)0.0950916342672846247938961043885843/2.0;
+    for (i=0;i<3;++i) {
+        v=BarycentricCoordinatesType(a,a,a);
+        v[i]=b;
+        qpa.push_back(QuadraturePoint(v,c1));
+    }
+    aa[0]=(Real)0.2631128296346381134217857862846436;
+    aa[1]=(Real)0.0083947774099576053372138345392944;
+    aa[2]=(Real)(1.0-aa[0]-aa[1]);
+    c2=(Real)0.0272303141744349942648446900739089/2.0;
+    for (i=0;i<6;++i) {
+        v=BarycentricCoordinatesType(aa[permutation3[i][0]],aa[permutation3[i][1]],aa[permutation3[i][2]]);
+        qpa.push_back(QuadraturePoint(v,c2));
+    }
+    triangleNumericalIntegration.addQuadratureMethod(m,8,qpa);
+    /// integration with order 10 accuracy and 25 points from https://github.com/libMesh/libmesh/blob/master/src/quadrature/quadrature_gauss_2D.C
+    qpa.clear();
+    v=BarycentricCoordinatesType(1/(Real)3.0,1/(Real)3.0,1/(Real)3.0);
+    c1=(Real)4.5408995191376790047643297550014267e-02L;
+    qpa.push_back(QuadraturePoint(v,(Real)c1));
+    a=(Real)4.8557763338365737736750753220812615e-01L;
+    b=(Real)1-2*a;
+    c1=(Real)1.8362978878233352358503035945683300e-02L;
+    for (i=0;i<3;++i) {
+        v=BarycentricCoordinatesType(a,a,a);
+        v[i]=b;
+        qpa.push_back(QuadraturePoint(v,c1));
+    }
+    a=(Real)1.0948157548503705479545863134052284e-01L;
+    b=(Real)1-2*a;
+    c1=(Real)2.2660529717763967391302822369298659e-02L;
+    for (i=0;i<3;++i) {
+        v=BarycentricCoordinatesType(a,a,a);
+        v[i]=b;
+        qpa.push_back(QuadraturePoint(v,c1));
+    }
+    aa[0]=(Real)3.0793983876412095016515502293063162e-01L;
+    aa[1]=(Real)5.5035294182099909507816172659300821e-01L;
+    aa[2]=(Real)(1.0-aa[0]-aa[1]);
+    c2=(Real)3.6378958422710054302157588309680344e-02L;
+    for (i=0;i<6;++i) {
+        v=BarycentricCoordinatesType(aa[permutation3[i][0]],aa[permutation3[i][1]],aa[permutation3[i][2]]);
+        qpa.push_back(QuadraturePoint(v,c2));
+    }
+    aa[0]=(Real)2.4667256063990269391727646541117681e-01L;
+    aa[1]=(Real)7.2832390459741092000873505358107866e-01L;
+    aa[2]=(Real)(1.0-aa[0]-aa[1]);
+    c2=(Real)1.4163621265528742418368530791049552e-02L;
+    for (i=0;i<6;++i) {
+        v=BarycentricCoordinatesType(aa[permutation3[i][0]],aa[permutation3[i][1]],aa[permutation3[i][2]]);
+        qpa.push_back(QuadraturePoint(v,c2));
+    }
+    aa[0]=(Real)6.6803251012200265773540212762024737e-02L;
+    aa[1]=(Real)9.2365593358750027664630697761508843e-01L;
+    aa[2]=(Real)(1.0-aa[0]-aa[1]);
+    c2=(Real)4.7108334818664117299637354834434138e-03L;
+    for (i=0;i<6;++i) {
+        v=BarycentricCoordinatesType(aa[permutation3[i][0]],aa[permutation3[i][1]],aa[permutation3[i][2]]);
+        qpa.push_back(QuadraturePoint(v,c2));
+    }
+    triangleNumericalIntegration.addQuadratureMethod(m,10,qpa);
+
+}
+
+
 template<class DataTypes>
 void TriangleSetGeometryAlgorithms< DataTypes >::init()
 {
@@ -1467,26 +1704,26 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
 
     if (ind_ta == ind_tb)
     {
-#ifndef NDEBUG
-        std::cout << "INFO_print - TriangleSetTopology.inl : Cut is not reached because inputs elements are the same element." << std::endl;
-#endif
+        if(DO_EXTRADEBUG_MESSAGES){
+            dmsg_info() << "TriangleSetTopology.inl : Cut is not reached because inputs elements are the same element." ;
+        }
         return false;
     }
 
 
-#ifndef NDEBUG
-    std::cout << "*********************************" << std::endl;
-    std::cout << "ind_t_current: " << ind_t_current << std::endl;
-    std::cout << "p_current: " << p_current << std::endl;
-    std::cout << "coord_t: " << coord_t << std::endl;
-    std::cout << "coord_k: " << coord_k << std::endl;
-    std::cout << "indices: " << indices << std::endl;
-    std::cout << "last_point: " << last_point << std::endl;
-    std::cout << "a: " << a << std::endl;
-    std::cout << "b: " << b << std::endl;
-    std::cout << "is_intersected: "<< is_intersected << std::endl;
-    std::cout << "*********************************" << std::endl;
-#endif
+    if(DO_EXTRADEBUG_MESSAGES){
+        dmsg_info() << "*********************************" << msgendl
+                    << "ind_t_current: " << ind_t_current << msgendl
+                    << "p_current: " << p_current << msgendl
+                    << "coord_t: " << coord_t << msgendl
+                    << "coord_k: " << coord_k << msgendl
+                    << "indices: " << indices << msgendl
+                    << "last_point: " << last_point << msgendl
+                    << "a: " << a << msgendl
+                    << "b: " << b << msgendl
+                    << "is_intersected: "<< is_intersected << msgendl
+                    << "*********************************" ;
+    }
 
     coord_k_test=coord_k;
     dist_min=(b-a)*(b-a);
@@ -1520,7 +1757,6 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
 
         if(coord_t==0.0 || coord_t==1.0) // current point indexed by ind_t_current is on a vertex
         {
-            //std::cout << "INFO_print : INPUT ON A VERTEX !!!" <<  std::endl;
             if(coord_t==0.0)
             {
                 ind_index=indices[0];
@@ -1535,7 +1771,6 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
                 sofa::helper::vector< unsigned int > shell =(sofa::helper::vector< unsigned int >) (this->m_topology->getTrianglesAroundVertex(ind_index));
                 ind_triangle=shell[0];
                 unsigned int i=0;
-                //bool is_in_next_triangle=false;
                 bool is_test_init=false;
 
                 unsigned int ind_from = ind_t_current;
@@ -1689,11 +1924,8 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
                                 }
                             }
                         }
-
                         i=i+1;
                     }
-
-
                     is_intersected=is_test_init;
                 }
                 else
@@ -1714,31 +1946,26 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
 
     bool is_reached = (ind_tb==ind_triangle && coord_k_test>=1.0);
 
-#ifndef NDEBUG
-    if(is_reached)
-    {
-        std::cout << "INFO_print - TriangleSetTopology.inl : Cut is reached" << std::endl;
+    if(DO_EXTRADEBUG_MESSAGES){
+        if(is_reached)
+        {
+            dmsg_info() << "TriangleSetTopology.inl : Cut is reached" ;
+        }
+
+        if(is_on_boundary)
+        {
+            dmsg_info() << "TriangleSetTopology.inl : Cut meets a mesh boundary" ;
+        }
     }
-
-    if(is_on_boundary)
-    {
-
-        std::cout << "INFO_print - TriangleSetTopology.inl : Cut meets a mesh boundary" << std::endl;
-    }
-#endif
-
 
     if(!is_reached && !is_on_boundary)
     {
-#ifndef NDEBUG
-        std::cout << "INFO_print - TriangleSetTopology.inl : Cut is not reached" << std::endl;
-#endif
-//      ind_tb=ind_triangle;
-//      return true;
+        if(DO_EXTRADEBUG_MESSAGES){
+            dmsg_info() << "INFO_print - TriangleSetTopology.inl : Cut is not reached" ;
+        }
     }
 
     return (is_reached && is_validated && is_intersected); // b is in triangle indexed by ind_t_current
-
 }
 
 
@@ -1766,16 +1993,16 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (co
     // using old function:
     pathOK = this->computeIntersectedPointsList (last_point, a, b, ind_ta, ind_tb, triangles_list, edges_list, coordsEdge_list, is_on_boundary);
 
-#ifndef NDEBUG
-    std::cout << "*********************************" << std::endl;
-    std::cout << "last_point: " << last_point << std::endl;
-    std::cout << "a: " << a << std::endl;
-    std::cout << "b: " << b << std::endl;
-    std::cout << "triangles_list: "<< triangles_list << std::endl;
-    std::cout << "edges_list: "<< edges_list << std::endl;
-    std::cout << "coordsEdge_list: "<< coordsEdge_list << std::endl;
-    std::cout << "*********************************" << std::endl;
-#endif
+    if(DO_EXTRADEBUG_MESSAGES){
+        dmsg_info() << "*********************************" << msgendl
+                    << "last_point: " << last_point << msgendl
+                    << "a: " << a << msgendl
+                    << "b: " << b << msgendl
+                    << "triangles_list: "<< triangles_list << msgendl
+                    << "edges_list: "<< edges_list << msgendl
+                    << "coordsEdge_list: "<< coordsEdge_list << msgendl
+                    << "*********************************" ;
+    }
 
     if (pathOK)
     {
@@ -1841,9 +2068,6 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (co
 
     return pathOK;
 }
-
-
-
 
 
 /// Get the triangle in a given direction from a point.
@@ -1959,9 +2183,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::reorderTrianglesOrientationFromNo
         {
             unsigned int triId = _neighTri[i];
             triNormal = this->computeTriangleNormal(triId);
-            //std::cout << "triNormal: "<< triNormal << std::endl;
             double prod = (firstNormal*triNormal)/(firstNormal.norm()*triNormal.norm());
-            //std::cout << "prod: "<< prod << std::endl;
             if (prod < 0.15) //change orientation
                 this->m_topology->reOrientateTriangle(triId);
         }
@@ -2011,18 +2233,17 @@ void TriangleSetGeometryAlgorithms<DataTypes>::reorderTrianglesOrientationFromNo
             }
         }
 
-#ifndef NDEBUG
-        std::cout << "_neighTri: "<< _neighTri << std::endl;
-        std::cout << "_neighTri2: "<< _neighTri2 << std::endl;
-        std::cout << "buffk: "<< buffK << std::endl;
-        std::cout << "buffkk: "<< buffKK << std::endl;
-#endif
-        //_neighTri = _neighTri2;
+        if(DO_EXTRADEBUG_MESSAGES){
+            dmsg_info() << "_neighTri: "<< _neighTri << msgendl
+                        << "_neighTri2: "<< _neighTri2 <<msgendl
+                        << "buffk: "<< buffK <<msgendl
+                        << "buffkk: "<< buffKK <<msgendl ;
+        }
         cpt_secu++;
     }
 
     if(cpt_secu == max)
-        std::cerr << "WARNING: TriangleSetGeometryAlgorithms: reorder triangle orientation reach security end of loop." << std::endl;
+        msg_warning() << "TriangleSetGeometryAlgorithms: reorder triangle orientation reach security end of loop." ;
 
     return;
 }
@@ -2056,14 +2277,12 @@ bool is_point_in_triangle(const sofa::defaulttype::Vec<3,Real>& p, const sofa::d
         }
         else // p is not in the plane defined by the triangle (p0,p1,p2)
         {
-            //sout << "INFO_print : p is not in the plane defined by the triangle (p0,p1,p2)" << sendl;
             return false;
         }
 
     }
     else // triangle is flat
     {
-        //sout << "INFO_print : triangle is flat" << sendl;
         return false;
     }
 }
@@ -2088,8 +2307,6 @@ bool is_point_in_halfplane(const sofa::defaulttype::Vec<3,Real>& p, unsigned int
 
     if(norm_v_normal != 0.0)
     {
-        //v_normal/=norm_v_normal;
-
         if(ind_p0==e0 || ind_p0==e1)
         {
             sofa::defaulttype::Vec<3,Real> n_12 = (p2-p1).cross(v_normal);
@@ -2118,7 +2335,6 @@ bool is_point_in_halfplane(const sofa::defaulttype::Vec<3,Real>& p, unsigned int
     }
     else // triangle is flat
     {
-        //sout << "INFO_print : triangle is flat" << sendl;
         return false;
     }
 }
@@ -2298,9 +2514,6 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
     }
 
 }
-
-
-
 
 
 } // namespace topology

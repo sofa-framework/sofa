@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -71,14 +68,15 @@ Shape functions computed using heat diffusion in images
 
 
 /// Default implementation does not compile
-template <int imageTypeLabel>
+template <class ImageType>
 struct DiffusionShapeFunctionSpecialization
 {
 };
 
+
 /// Specialization for regular Image
-template <>
-struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
+template <class T>
+struct DiffusionShapeFunctionSpecialization<defaulttype::Image<T>>
 {
     template<class DiffusionShapeFunction>
     static void init(DiffusionShapeFunction* This)
@@ -385,8 +383,7 @@ struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
 template <class ShapeFunctionTypes_,class ImageTypes_>
 class DiffusionShapeFunction : public BaseImageShapeFunction<ShapeFunctionTypes_,ImageTypes_>
 {
-    friend struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>;
-//    friend struct DiffusionShapeFunctionSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>;
+    friend struct DiffusionShapeFunctionSpecialization<ImageTypes_>;
 
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(DiffusionShapeFunction, ShapeFunctionTypes_,ImageTypes_) , SOFA_TEMPLATE2(BaseImageShapeFunction, ShapeFunctionTypes_,ImageTypes_));
@@ -448,7 +445,7 @@ public:
         createBoundaryConditionsData();
 
         // init weight and indice image
-        DiffusionShapeFunctionSpecialization<ImageTypes::label>::init( this );
+        DiffusionShapeFunctionSpecialization<ImageTypes>::init( this );
 
 //        if (this->method.getValue().getSelectedId() == HARMONIC)
         {
@@ -462,7 +459,7 @@ public:
 
             if( biasDistances.getValue() )
             {
-                DiffusionShapeFunctionSpecialization<ImageTypes::label>::buildMaterialImage(this,material);
+                DiffusionShapeFunctionSpecialization<ImageTypes>::buildMaterialImage(this,material);
                 materialPtr = &material;
             }
 
@@ -473,7 +470,7 @@ public:
 
             for(unsigned int i=0; i<this->f_position.getValue().size(); i++)
             {
-                DiffusionShapeFunctionSpecialization<ImageTypes::label>::buildDiffusionProblem(this,i,values,mask);
+                DiffusionShapeFunctionSpecialization<ImageTypes>::buildDiffusionProblem(this,i,values,mask);
 
 //                values.display("values");
 //                mask.display("mask");
@@ -489,26 +486,26 @@ public:
                 switch( this->solver.getValue().getSelectedId() )
                 {
                     case JACOBI:
-                        DiffusionShapeFunctionSpecialization<ImageTypes::label>::solveJacobi(this,values,mask,materialPtr);
+                        DiffusionShapeFunctionSpecialization<ImageTypes>::solveJacobi(this,values,mask,materialPtr);
                         break;
                     case CG:
-                        DiffusionShapeFunctionSpecialization<ImageTypes::label>::solveCG(this,values,mask,materialPtr);
+                        DiffusionShapeFunctionSpecialization<ImageTypes>::solveCG(this,values,mask,materialPtr);
                         break;
                     case GAUSS_SEIDEL:
                     default:
-                        DiffusionShapeFunctionSpecialization<ImageTypes::label>::solveGS(this,values,mask,materialPtr);
+                        DiffusionShapeFunctionSpecialization<ImageTypes>::solveGS(this,values,mask,materialPtr);
                         break;
                 }
 
 //                values.display("diffused");
 
-                DiffusionShapeFunctionSpecialization<ImageTypes::label>::updateWeights(this,i);
+                DiffusionShapeFunctionSpecialization<ImageTypes>::updateWeights(this,i);
             }
 
 
         }
 
-        DiffusionShapeFunctionSpecialization<ImageTypes::label>::normalizeWeights( this );
+        DiffusionShapeFunctionSpecialization<ImageTypes>::normalizeWeights( this );
 
         if(this->d_clearData.getValue())
         {

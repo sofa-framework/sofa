@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -28,8 +25,8 @@
 #include <Flexible/config.h>
 #include "../shapeFunction/BarycentricShapeFunction.h"
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <SofaGeneralTopology/BezierTetrahedronSetTopologyContainer.h>
-#include <SofaGeneralTopology/BezierTetrahedronSetGeometryAlgorithms.h>
+#include <SofaHighOrderTopology/HighOrderTetrahedronSetTopologyContainer.h>
+#include <SofaHighOrderTopology/BezierTetrahedronSetGeometryAlgorithms.h>
 
 #include <algorithm>
 #include <iostream>
@@ -66,7 +63,7 @@ public:
     typedef typename Inherit::Hessian Hessian;
     enum {spatial_dimensions=Inherit::spatial_dimensions};
 
-    typedef topology::BezierTetrahedronSetTopologyContainer BezierTopoContainer;
+    typedef topology::HighOrderTetrahedronSetTopologyContainer BezierTopoContainer;
     typedef defaulttype::StdVectorTypes<defaulttype::Vec<Inherit::spatial_dimensions,Real>,defaulttype::Vec<Inherit::spatial_dimensions,Real>,Real> VecSpatialDimensionType;
     typedef topology::BezierTetrahedronSetGeometryAlgorithms<VecSpatialDimensionType> BezierGeoAlg;
     typedef typename BezierGeoAlg::Vec4 Vec4;
@@ -75,7 +72,7 @@ public:
 protected:
     BezierTopoContainer* container;
     BezierGeoAlg* geoAlgo;
-    helper::vector<topology::TetrahedronBezierIndex> tbiArray;
+    helper::vector<topology::TetrahedronIndexVector> tbiArray;
 
 public:
 
@@ -100,7 +97,7 @@ public:
         if(w.size()!=4) return;
 
        
-        const BezierTopoContainer::VecPointID &indexArray=container->getGlobalIndexArrayOfBezierPoints(this->cellIndex);
+        const BezierTopoContainer::VecPointID &indexArray=container->getGlobalIndexArrayOfControlPoints(this->cellIndex);
 
         size_t nbRef = tbiArray.size();
         //        this->f_nbRef.setValue(nbRef);
@@ -112,14 +109,14 @@ public:
         {
             ref_n[i] = indexArray[i];
             Vec4 barycentricCoordinate(w[0],w[1],w[2],w[3]);
-            w_n[i] = this->geoAlgo->computeBernsteinPolynomial(tbiArray[i],barycentricCoordinate);
+            w_n[i] = this->geoAlgo->computeShapeFunction(tbiArray[i],barycentricCoordinate);
             if(dw)
             {
-                Vec4 dval = this->geoAlgo->computeBernsteinPolynomialGradient(tbiArray[i],barycentricCoordinate);
+                Vec4 dval = this->geoAlgo->computeShapeFunctionDerivatives(tbiArray[i],barycentricCoordinate);
                 for(unsigned j=0; j<4; ++j) dw_n[i]+=(*dw)[j]*dval[j];
                 if(ddw)
                 {
-                    Mat44 ddval = this->geoAlgo->computeBernsteinPolynomialHessian(tbiArray[i],barycentricCoordinate);
+                    Mat44 ddval = this->geoAlgo->computeShapeFunctionHessian(tbiArray[i],barycentricCoordinate);
                     for(unsigned j=0; j<4; ++j) ddw_n[i]+=(*ddw)[j]*dval[j];
                     for(unsigned j=0; j<4; ++j) for(unsigned k=0; k<4; ++k) ddw_n[i]+=covMN((*dw)[j],(*dw)[k])*ddval[j][k];
                 }
@@ -149,7 +146,7 @@ public:
             if(!this->geoAlgo) { serr<<"BezierGeometryAlgorithms not found"<<sendl; return; }
         }
 
-        tbiArray=container->getTetrahedronBezierIndexArray();
+        tbiArray=container->getTetrahedronIndexArray();
     }
 
 protected:

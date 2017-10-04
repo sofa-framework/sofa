@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
-* Software Foundation; either version 2 of the License, or (at your option)   *
-* any later version.                                                          *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
 *                                                                             *
 * This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
-* more details.                                                               *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
 *                                                                             *
-* You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -32,6 +29,9 @@
 #include <SofaDeformable/StiffSpringForceField.h>
 
 #include <sofa/simulation/Simulation.h>
+
+#include <SofaTest/TestMessageHandler.h>
+
 
 namespace sofa {
 
@@ -55,19 +55,20 @@ struct EulerImplicit_test_2_particles_to_equilibrium : public Sofa_test<>
 {
     EulerImplicit_test_2_particles_to_equilibrium()
     {
+        EXPECT_MSG_NOEMIT(Error) ;
         //*******
-        modeling::initSofa();
+        simulation::Node::SPtr root = modeling::initSofa();
         //*******
         // begin create scene under the root node
 
-        EulerImplicitSolver::SPtr eulerSolver = addNew<EulerImplicitSolver>(getRoot() );
-        CGLinearSolver::SPtr linearSolver = addNew<CGLinearSolver>(getRoot() );
+        EulerImplicitSolver::SPtr eulerSolver = addNew<EulerImplicitSolver>(root);
+        CGLinearSolver::SPtr linearSolver = addNew<CGLinearSolver>(root);
         linearSolver->f_maxIter.setValue(25);
         linearSolver->f_tolerance.setValue(1e-5);
         linearSolver->f_smallDenominatorThreshold.setValue(1e-5);
 
         simulation::Node::SPtr string = massSpringString(
-                    getRoot(), // attached to root node
+                    root, // attached to root node
                     0,1,0,     // first particle position
                     0,0,0,     // last  particle position
                     2,      // number of particles
@@ -82,7 +83,7 @@ struct EulerImplicit_test_2_particles_to_equilibrium : public Sofa_test<>
 
         // end create scene
         //*********
-        initScene();
+        initScene(root);
         //*********
         // run simulation
 
@@ -95,7 +96,7 @@ struct EulerImplicit_test_2_particles_to_equilibrium : public Sofa_test<>
         const unsigned nMax=100;
         const double  precision = 1.e-4;
         do {
-            sofa::simulation::getSimulation()->animate(getRoot().get(),1.0);
+            sofa::simulation::getSimulation()->animate(root.get(),1.0);
 
             x1 = getVector( core::VecId::position() ); //cerr<<"EulerImplicit_test, new positions : " << x1.transpose() << endl;
             v1 = getVector( core::VecId::velocity() );
@@ -138,36 +139,36 @@ struct EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium  : publi
     EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium()
     {
         //*******
-        modeling::initSofa();
+        simulation::Node::SPtr root = modeling::initSofa();
         //*******
         // create scene
-        getRoot()->setGravity(Vec3(0,0,0));
+        root->setGravity(Vec3(0,0,0));
 
-        EulerImplicitSolver::SPtr eulerSolver = addNew<EulerImplicitSolver> (getRoot() );
-        CGLinearSolver::SPtr linearSolver = addNew<CGLinearSolver> (getRoot() );
+        EulerImplicitSolver::SPtr eulerSolver = addNew<EulerImplicitSolver> (root );
+        CGLinearSolver::SPtr linearSolver = addNew<CGLinearSolver> (root );
         linearSolver->f_maxIter.setValue(25);
         linearSolver->f_tolerance.setValue(1e-5);
         linearSolver->f_smallDenominatorThreshold.setValue(1e-5);
 
 
-        MechanicalObject<Vec3Types>::SPtr DOF = addNew<MechanicalObject<Vec3Types> >(getRoot(),"DOF");
+        MechanicalObject<Vec3Types>::SPtr DOF = addNew<MechanicalObject<Vec3Types> >(root,"DOF");
 
-        UniformMass<Vec3Types, SReal>::SPtr mass = addNew<UniformMass<Vec3Types, SReal> >(getRoot(),"mass");
-        mass->mass.setValue( 1. );
+        UniformMass<Vec3Types, SReal>::SPtr mass = addNew<UniformMass<Vec3Types, SReal> >(root,"mass");
+        mass->d_mass.setValue( 1. );
 
 
-//        FixedConstraint3::SPtr fixed = modeling::addNew<FixedConstraint3>(getRoot(),"fixedConstraint");
+//        FixedConstraint3::SPtr fixed = modeling::addNew<FixedConstraint3>(root,"fixedConstraint");
 //        fixed->addConstraint(0);      // attach first particle
 
         // create a child node with its own DOF
-        simulation::Node::SPtr child = getRoot()->createChild("childNode");
+        simulation::Node::SPtr child = root->createChild("childNode");
         MechanicalObject<Vec3Types>::SPtr childDof = addNew<MechanicalObject<Vec3Types> >(child);
         UniformMass<Vec3Types, SReal>::SPtr childMass = addNew<UniformMass<Vec3Types, SReal> >(child,"childMass");
-        childMass->mass.setValue( 1. );
+        childMass->d_mass.setValue( 1. );
 
         // attach a spring
         StiffSpringForceField<Vec3Types>::SPtr spring = New<StiffSpringForceField<Vec3Types> >(DOF.get(), childDof.get());
-        getRoot()->addObject(spring);
+        root->addObject(spring);
         spring->addSpring(0,0,  1000. ,0.1, 1.);
 
         // set position and velocity vectors, using DataTypes::set to cope with tests in dimension 2
@@ -191,7 +192,7 @@ struct EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium  : publi
 
         // end create scene
         //*********
-        initScene();
+        initScene(root);
         //*********
         // run simulation
 
@@ -204,7 +205,7 @@ struct EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium  : publi
         const unsigned nMax=100;
         const double  precision = 1.e-4;
         do {
-            sofa::simulation::getSimulation()->animate(getRoot().get(),1.0);
+            sofa::simulation::getSimulation()->animate(root.get(),1.0);
 
             x1 = getVector( core::VecId::position() ); //cerr<<"EulerImplicit_test, new positions : " << x1.transpose() << endl;
             v1 = getVector( core::VecId::velocity() );

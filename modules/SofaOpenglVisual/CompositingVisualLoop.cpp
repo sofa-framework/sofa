@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -29,7 +26,6 @@
  *      Author: Jeremy Ringard
  */
 
-//#define DEBUG_DRAW
 
 #include <SofaOpenglVisual/CompositingVisualLoop.h>
 #include <sofa/core/ObjectFactory.h>
@@ -99,17 +95,14 @@ void CompositingVisualLoop::drawStep(sofa::core::visual::VisualParams* vparams)
 
     if (!(vparams->displayFlags().getShowRendering()))
     {
-#ifdef DEBUG_DRAW
-        std::cout << "Advanced Rendering is OFF" << std::endl;
-#endif
+        dmsg_info() << "Advanced Rendering is OFF" ;
+
         defaultRendering(vparams);
         return;
     }
-#ifdef DEBUG_DRAW
-    else
-        std::cout << "Advanced Rendering is ON" << std::endl;
-#endif
-
+    else{
+        dmsg_info() << "Advanced Rendering is ON" ;
+    }
     //should not happen: the compositing loop relies on one or more rendered passes done by the VisualManagerPass component
     if (gRoot->visualManager.empty())
     {
@@ -132,9 +125,7 @@ void CompositingVisualLoop::drawStep(sofa::core::visual::VisualParams* vparams)
             VisualManagerPass* currentVMP=dynamic_cast<VisualManagerPass*>(*it);
             if( currentVMP!=NULL && !currentVMP->isPrerendered())
             {
-#ifdef DEBUG_DRAW
-                std::cout<<"final pass is "<<currentVMP->getName()<< "end of predraw loop" <<std::endl;
-#endif
+                msg_info() << "final pass is "<<currentVMP->getName()<< "end of predraw loop"  ;
                 break;
             }
         }
@@ -145,8 +136,9 @@ void CompositingVisualLoop::drawStep(sofa::core::visual::VisualParams* vparams)
 
         if (!rendered) // do the rendering
         {
-            std::cerr << "VisualLoop error: no visualManager rendered the scene. Please make sure the final visualManager(Secondary)Pass has a renderToScreen=\"true\" attribute" << std::endl;
+            msg_error() << "No visualManager rendered the scene. Please make sure the final visualManager(Secondary)Pass has a renderToScreen=\"true\" attribute" ;
         }
+
         //postDraw sequence
         sofa::simulation::Node::Sequence<core::visual::VisualManager>::reverse_iterator rbegin = gRoot->visualManager.rbegin(), rend = gRoot->visualManager.rend(), rit;
         for (rit = rbegin; rit != rend; ++rit)

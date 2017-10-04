@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -75,7 +72,7 @@ namespace core
  * }
  *
  */
-class SOFA_CORE_API DataEngine : public core::objectmodel::DDGNode, public virtual core::objectmodel::BaseObject
+class SOFA_CORE_API DataEngine : public core::DataTrackerDDGNode, public virtual core::objectmodel::BaseObject
 {
 public:
     SOFA_ABSTRACT_CLASS(DataEngine, core::objectmodel::BaseObject);
@@ -87,11 +84,6 @@ protected:
     /// Destructor. Do nothing
     virtual ~DataEngine();
 
-    /// utility fonction to ensure all inputs are up-to-date
-    /// can be useful for particulary complex DataEngine
-    /// with a lot input/output imbricated access
-    void updateAllInputsIfDirty();
-
 private:
 	DataEngine(const DataEngine& n) ;
 	DataEngine& operator=(const DataEngine& n) ;
@@ -100,14 +92,8 @@ public:
     /// Add a new input to this engine
     void addInput(objectmodel::BaseData* n);
 
-    /// Remove an input from this engine
-    void delInput(objectmodel::BaseData* n);
-
     /// Add a new output to this engine
     void addOutput(objectmodel::BaseData* n);
-
-    /// Remove an output from this engine
-    void delOutput(objectmodel::BaseData* n);
 
     // The methods below must be redefined because of the
     // double inheritance from Base and DDGNode
@@ -197,35 +183,6 @@ public:
     {
         objectmodel::BaseObject::addLink(l);
     }
-
-
-    /// Set dirty flag to false
-    /// for the Engine and for all the tracked Data
-    virtual void cleanDirty(const core::ExecParams* params = 0);
-
-protected:
-
-
-    /// @name Tracking Data mechanism
-    /// each tracked Data is connected to a DataTracker
-    /// that is dirtied with the tracked Data
-    /// but cleaned only in the DataEngine::cleanDirty()
-    /// @{
-
-    /// select a Data to track to be able to check
-    /// if it was dirtied since the previous update.
-    /// @see isTrackedDataDirty
-    void trackData( objectmodel::BaseData* data );
-
-    /// Was the tracked Data dirtied since last update?
-    /// @warning data must be a tracked Data @see trackData
-    bool isTrackedDataDirty( const objectmodel::BaseData& data );
-
-    /// map a tracked Data to a DataTracker
-    typedef std::map<const objectmodel::BaseData*,DataTracker> DataTrackers;
-    DataTrackers m_dataTrackers;
-
-    /// @}
 
 };
 

@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -32,7 +29,7 @@ namespace core
 
 namespace topology
 {
-    
+
 SOFA_CORE_API TopologyObjectType parseTopologyObjectTypeFromString(const std::string& s)
 {
     std::string sUP = s;
@@ -45,7 +42,8 @@ SOFA_CORE_API TopologyObjectType parseTopologyObjectTypeFromString(const std::st
     SOFA_ENUM_CASE(TETRAHEDRON);
     SOFA_ENUM_CASE(HEXAHEDRON);
 #undef SOFA_ENUM_CASE
-    std::cerr << "ERROR parsing \"" << s << "\" as TopologyObjectType, defaulting to POINT" << std::endl;
+    msg_error("TopologyObjectType")
+            << "unable to parse '" << s << "' as TopologyObjectType, defaulting to POINT" ;
     return POINT;
 }
 
@@ -128,7 +126,7 @@ SOFA_CORE_API TopologyChangeType parseTopologyChangeTypeFromString(const std::st
     SOFA_ENUM_CASE(HEXAHEDRARENUMBERING);
     SOFA_ENUM_CASE(TOPOLOGYCHANGE_LASTID);
 #undef SOFA_ENUM_CASE
-    std::cerr << "ERROR parsing \"" << s << "\" as TopologyChangeType, defaulting to TOPOLOGYCHANGE_LASTID" << std::endl;
+    msg_warning("TopologyChange") << "problem while parsing '" << s << "' as TopologyChangeType, defaulting to TOPOLOGYCHANGE_LASTID" ;
     return TOPOLOGYCHANGE_LASTID;
 }
 

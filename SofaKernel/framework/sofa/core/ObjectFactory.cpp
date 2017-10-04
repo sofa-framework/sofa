@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -67,21 +64,21 @@ std::string ObjectFactory::shortName(std::string classname)
         if(!entry->creatorMap.empty())
         {
             CreatorMap::iterator it = entry->creatorMap.begin();
-	    Creator::SPtr c = it->second;
+            Creator::SPtr c = it->second;
             shortname = c->getClass()->shortName;
         }
     }
     return shortname;
 }
 
-bool ObjectFactory::addAlias(std::string name, std::string result, bool force,
+bool ObjectFactory::addAlias(std::string name, std::string target, bool force,
                              ClassEntry::SPtr* previous)
 {
     // Check that the pointed class does exist
-    ClassEntryMap::iterator it = registry.find(result);
+    ClassEntryMap::iterator it = registry.find(target);
     if (it == registry.end())
     {
-        msg_error("ObjectFactory::addAlias()") << "Target class for alias '" << result << "' not found: " << name;
+        msg_error("ObjectFactory::addAlias()") << "Target class for alias '" << target << "' not found: " << name;
         return false;
     }
 
@@ -115,17 +112,18 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
     objectmodel::BaseObject::SPtr object = NULL;
     std::vector< std::pair<std::string, Creator::SPtr> > creators;
     std::string classname = arg->getAttribute( "type", "");
-	std::string usertemplatename = arg->getAttribute( "template", "");
-	std::string templatename = sofa::defaulttype::TemplateAliases::resolveAlias(usertemplatename); // Resolve template aliases
-	std::string userresolved = templatename; // Copy in case we change for the default one
+    std::string usertemplatename = arg->getAttribute( "template", "");
+    std::string templatename = sofa::defaulttype::TemplateAliases::resolveAlias(usertemplatename); // Resolve template aliases
+    std::string userresolved = templatename; // Copy in case we change for the default one
+    ClassEntry::SPtr entry ;
 
     ClassEntryMap::iterator it = registry.find(classname);
-	if (it != registry.end()) // Found the classname
+    if (it != registry.end()) // Found the classname
     {
-        ClassEntry::SPtr entry = it->second;
-		// If no template has been given or if the template does not exist, first try with the default one
+        entry = it->second;
+        // If no template has been given or if the template does not exist, first try with the default one
         if(templatename.empty() || entry->creatorMap.find(templatename) == entry->creatorMap.end())
-			templatename = entry->defaultTemplate;
+            templatename = entry->defaultTemplate;
 
         CreatorMap::iterator it2 = entry->creatorMap.find(templatename);
         if (it2 != entry->creatorMap.end())
@@ -135,13 +133,13 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
                 creators.push_back(*it2);
         }
 
-		// If object cannot be created with the given template (or the default one), try all possible ones
+        // If object cannot be created with the given template (or the default one), try all possible ones
         if (creators.empty())
         {
             CreatorMap::iterator it3;
             for (it3 = entry->creatorMap.begin(); it3 != entry->creatorMap.end(); ++it3)
             {
-				Creator::SPtr c = it3->second;
+                Creator::SPtr c = it3->second;
                 if (c->canCreate(context, arg))
                     creators.push_back(*it3);
             }
@@ -156,9 +154,9 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
     {
         object = creators[0].second->createInstance(context, arg);
 
-		// The object has been created, but not with the template given by the user
-		if (!usertemplatename.empty() && object->getTemplateName() != userresolved)
-		{
+        // The object has been created, but not with the template given by the user
+        if (!usertemplatename.empty() && object->getTemplateName() != userresolved)
+        {
             std::string w = "Template <" + usertemplatename + std::string("> incorrect, used <") + object->getTemplateName() + std::string(">");
             object->serr << w << object->sendl;
         }
@@ -169,6 +167,53 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
                 w += std::string("\n\t* ") + creators[i].first;
             object->serr << w << object->sendl;
         }
+        //TODO(dmarchal): Improve the error message & update the URL.
+        //TODO(dmarchal): This code may be used to inform users that the Component has
+        //been created with an Alias and thus
+        // that it should be removed.
+        /*if(classname != object->getClassName()){
+            msg_info("ObjectFactory") <<  "The object '"<< object->getClassName()
+                                      << "' was created using the alias '" << classname << "'.  \n"
+                                      << "You can find more informations about aliasing in sofa at this address: 'http://www.sofa-framework.org/wiki/alias'  \n"
+                                      << "To remove this message you can replace <" << classname <<"/> with <'" << object->getClassName() << "'/> in your scene.";
+        }*/
+
+        ///////////////////////// All this code is just there to implement the MakeDataAlias component.
+        // TODO(dmarchal): I'm not sure it should stay there but I cannot find a better way with a
+        // minimal number of change.
+        std::vector<std::string> todelete;
+        for(auto& kv : entry->m_dataAlias)
+        {
+            if(object->findData(kv.first)==nullptr)
+            {
+                msg_warning("ObjectFactoy") << "The object '"<< (object->getClassName()) <<"' does not have an alias named '"<< kv.first <<"'.  "
+                                            << "To remove this error message you need to use a valid data name for the 'dataname field'. ";
+
+                todelete.push_back(kv.first);
+            }
+        }
+
+        for(auto& todeletename : todelete)
+        {
+            entry->m_dataAlias.erase( entry->m_dataAlias.find(todeletename) ) ;
+        }
+
+        for(auto& kv : entry->m_dataAlias)
+        {
+            objectmodel::BaseObjectDescription newdesc;
+            for(std::string& alias : kv.second){
+                object->addAlias(object->findData(kv.first), alias.c_str()) ;
+
+                /// The Alias is used in the argument
+                const char* val = arg->getAttribute(alias) ;
+                if( val ){
+                    newdesc.setAttribute( alias, val );
+                }
+            }
+            object->parse(&newdesc);
+        }
+        ///////////////////////////////////////////////////////////////////////////////////////////////
+
     }
 
     return object;
@@ -203,7 +248,7 @@ void ObjectFactory::getEntriesFromTarget(std::vector<ClassEntry::SPtr>& result, 
         bool inTarget = false;
         for (CreatorMap::iterator itc = entry->creatorMap.begin(), itcend = entry->creatorMap.end(); itc != itcend; ++itc)
         {
-	    Creator::SPtr c = itc->second;
+            Creator::SPtr c = itc->second;
             if (target == c->getTarget())
                 inTarget = true;
         }

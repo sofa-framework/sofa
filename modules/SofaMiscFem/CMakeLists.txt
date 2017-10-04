@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 project(SofaMiscFem)
 
 set(HEADER_FILES
@@ -19,6 +19,8 @@ set(HEADER_FILES
     VerondaWestman.h
     config.h
     initMiscFEM.h
+    TetrahedronHyperelasticityFEMForceField.h
+    TetrahedronHyperelasticityFEMForceField.inl
     TriangleFEMForceField.h
     TriangleFEMForceField.inl
     TriangularAnisotropicFEMForceField.h
@@ -32,6 +34,7 @@ set(SOURCE_FILES
     StandardTetrahedralFEMForceField.cpp
     TetrahedralTensorMassForceField.cpp
     initMiscFEM.cpp
+    TetrahedronHyperelasticityFEMForceField.cpp
     TriangularAnisotropicFEMForceField.cpp
     TriangleFEMForceField.cpp
     TriangularFEMForceField.cpp

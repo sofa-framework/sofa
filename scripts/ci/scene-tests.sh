@@ -165,7 +165,11 @@ create-directories() {
         list-scenes "$src_dir/$path" > "$output_dir/$path/scenes.txt"
         while read scene; do
             mkdir -p "$output_dir/$path/$scene"
-            echo 30 > "$output_dir/$path/$scene/timeout.txt" # Default timeout, in seconds
+            if [[ "$CI_BUILD_TYPE" == "Debug" ]]; then
+                echo 60 > "$output_dir/$path/$scene/timeout.txt" # Default debug timeout, in seconds
+            else
+                echo 30 > "$output_dir/$path/$scene/timeout.txt" # Default release timeout, in seconds
+            fi
             echo 100 > "$output_dir/$path/$scene/iterations.txt" # Default number of iterations
             echo "$path/$scene" >> "$output_dir/all-scenes.txt"
         done < "$output_dir/$path/scenes.txt"
@@ -193,7 +197,11 @@ parse-options-files() {
                                 scene="$(get-arg "$args" 1)"
                                 echo $scene >> "$output_dir/$path/add-patterns.txt"
                                 mkdir -p "$output_dir/$path/$scene"
-                                echo 30 > "$output_dir/$path/$scene/timeout.txt" # Default timeout, in seconds
+                                if [[ "$CI_BUILD_TYPE" == "Debug" ]]; then
+                                    echo 60 > "$output_dir/$path/$scene/timeout.txt" # Default debug timeout, in seconds
+                                else
+                                    echo 30 > "$output_dir/$path/$scene/timeout.txt" # Default release timeout, in seconds
+                                fi
                                 echo 100 > "$output_dir/$path/$scene/iterations.txt" # Default number of iterations
                             else
                                 echo "$path/.scene-tests: warning: 'add' expects one argument: add <pattern>" | log
@@ -297,6 +305,7 @@ test-all-scenes() {
         if [[ -e runSofa.timeout ]]; then
             echo 'Timeout!'
             echo timeout > "$output_dir/$scene/status.txt"
+            echo -e "\n\nINFO: Abort caused by timeout.\n" >> "$output_dir/$scene/output.txt"
             rm -f runSofa.timeout
         else
             cat runSofa.exit_code > "$output_dir/$scene/status.txt"

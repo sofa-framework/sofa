@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -85,20 +82,21 @@ public:
     double squaredDistance(const ISAPBox & other)const;
 
     inline void show()const{
-        std::cout<<"MIN "<<cube.minVect()<<std::endl;
-        std::cout<<"MAX "<<cube.maxVect()<<std::endl;
+        msg_info("IncrSAP") <<"MIN "<<cube.minVect() ;
+        msg_info("IncrSAP") <<"MAX "<<cube.maxVect() ;
     }
 
     inline void showEndPoints()const{
-        std::cout<<"MIN ";
+        std::stringstream tmp;
+        tmp<<"MIN ";
         for(int i = 0 ; i < 3 ; ++i)
-            std::cout<<min(i).value<<" ";
-        std::cout<<std::endl;
+            tmp<<min(i).value<<" ";
+        tmp<<msgendl;
 
-        std::cout<<"MAX ";
+        tmp<<"MAX ";
         for(int i = 0 ; i < 3 ; ++i)
-            std::cout<<max(i).value<<" ";
-        std::cout<<std::endl;
+            tmp<<max(i).value<<" ";
+        msg_info("IncrSAP") << tmp.str() ;
     }
 
     /**
@@ -158,16 +156,15 @@ public:
   *Implementation of incremental sweep and prune. i.e. collision are stored and updated which should speed up
   *the collision detection compared to the DirectSAP.
   */
-template <template<class T,class Allocator> class List,template <class T> class Allocator = std::allocator>
-class TIncrSAP :
+class SOFA_GENERAL_MESH_COLLISION_API IncrSAP :
     public core::collision::BroadPhaseDetection,
     public core::collision::NarrowPhaseDetection
 {
 public:
-    SOFA_CLASS2(SOFA_TEMPLATE2(TIncrSAP,List,Allocator), core::collision::BroadPhaseDetection, core::collision::NarrowPhaseDetection);
+    SOFA_CLASS2(IncrSAP, core::collision::BroadPhaseDetection, core::collision::NarrowPhaseDetection);
 
     typedef ISAPBox SAPBox;
-    typedef List<EndPointID*,Allocator<EndPointID*> > EndPointList;
+    typedef std::vector<EndPointID*> EndPointList;
 
 private:
     /**
@@ -214,12 +211,6 @@ private:
     void reinitDetection();
 
     /**
-      *Inits the field intersectors used to find the right intersector between the two collision models with better speed compared to
-      *find intersector.
-      */
-//    void initIntersectors();
-
-    /**
       *Used in initialisatio of IncrSAP. It clears all the IncrSAP fields.
       */
     void purge();
@@ -237,15 +228,15 @@ private:
 
 
     //The following methods are used when updating end points in the end point lists, it updates in the same time the collisions.
-    void moveMinForward(int dim,EndPointID * cur_end_point,typename EndPointList::iterator & it,typename EndPointList::iterator & next_it);
-    void moveMaxForward(int dim,EndPointID * cur_end_point,typename EndPointList::iterator & it,typename EndPointList::iterator & next_it);
-    void moveMinBackward(int dim,EndPointID * cur_end_point,typename EndPointList::iterator & it,typename EndPointList::iterator & prev_it);
-    void moveMaxBackward(int dim,EndPointID * cur_end_point,typename EndPointList::iterator & it,typename EndPointList::iterator & prev_it);
+    void moveMinForward(int dim,EndPointID * cur_end_point,EndPointList::iterator & it,EndPointList::iterator & next_it);
+    void moveMaxForward(int dim,EndPointID * cur_end_point,EndPointList::iterator & it,EndPointList::iterator & next_it);
+    void moveMinBackward(int dim,EndPointID * cur_end_point,EndPointList::iterator & it,EndPointList::iterator & prev_it);
+    void moveMaxBackward(int dim,EndPointID * cur_end_point,EndPointList::iterator & it,EndPointList::iterator & prev_it);
 
-    static bool assertion_order(typename EndPointList::iterator it,typename EndPointList::iterator begin,typename EndPointList::iterator end);
-    static bool assertion_list_order(typename EndPointList::iterator begin_it,const typename EndPointList::iterator & end_it);
-    static bool assertion_superior(typename EndPointList::iterator begin_it,const typename EndPointList::iterator & end_it,EndPoint* point);
-    static bool assertion_inferior(typename EndPointList::iterator begin_it,const typename EndPointList::iterator & end_it,EndPoint* point);
+    static bool assertion_order(EndPointList::iterator it,EndPointList::iterator begin,EndPointList::iterator end);
+    static bool assertion_list_order(EndPointList::iterator begin_it,const EndPointList::iterator & end_it);
+    static bool assertion_superior(EndPointList::iterator begin_it,const EndPointList::iterator & end_it,EndPoint* point);
+    static bool assertion_inferior(EndPointList::iterator begin_it,const EndPointList::iterator & end_it,EndPoint* point);
     bool assertion_end_points_sorted()const;
     //EndPointID & findEndPoint(int dim,int data);
 
@@ -259,9 +250,9 @@ private:
 
     std::set<core::CollisionModel*> collisionModels;
 protected:
-    TIncrSAP();
+    IncrSAP();
 
-    virtual ~TIncrSAP();
+    virtual ~IncrSAP();
 
 public:
     void setDraw(bool val) { bDraw.setValue(val); }
@@ -290,12 +281,6 @@ public:
     void showBoxes()const;
 };
 
-typedef TIncrSAP<std::vector,std::allocator> IncrSAP;
-
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_INCRSAP_CPP)
-extern template class SOFA_GENERAL_MESH_COLLISION_API TIncrSAP<helper::vector,helper::CPUMemoryManager>;
-extern template class SOFA_GENERAL_MESH_COLLISION_API TIncrSAP<std::vector,std::allocator>;
-#endif
 
 } // namespace collision
 

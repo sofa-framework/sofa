@@ -62,6 +62,30 @@ template class SOFA_Compliant_API DotProductMultiMapping< Vec3fTypes, Vec1fTypes
 #endif
 
 
+///////////////////////
+
+SOFA_DECL_CLASS(DotProductFromTargetMapping)
+
+using namespace defaulttype;
+
+// Register in the Factory
+int DotProductFromTargetMappingClass = core::RegisterObject("Compute Dot Products from dofs to targets")
+#ifndef SOFA_FLOAT
+.add< DotProductFromTargetMapping< Vec3dTypes, Vec1dTypes > >()
+#endif
+#ifndef SOFA_DOUBLE
+.add< DotProductFromTargetMapping< Vec3fTypes, Vec1fTypes > >()
+#endif
+;
+
+
+#ifndef SOFA_FLOAT
+template class SOFA_Compliant_API DotProductFromTargetMapping< Vec3dTypes, Vec1dTypes >;
+#endif
+
+#ifndef SOFA_DOUBLE
+template class SOFA_Compliant_API DotProductFromTargetMapping< Vec3fTypes, Vec1fTypes >;
+#endif
 
 }
 }

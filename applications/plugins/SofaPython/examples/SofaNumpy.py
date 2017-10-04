@@ -32,6 +32,7 @@ def createSceneAndController(node):
     fc = node.createObject("FixedConstraint", fixAll=False, indices="0")
     print "a simple bool:", fc.fixAll, SofaPython.SofaNumpy.numpy_data( fc, "fixAll" )
     print "a simple scalar:", fc.drawSize, SofaPython.SofaNumpy.numpy_data( fc, "drawSize" )
+    print "an array:", node.gravity, SofaPython.SofaNumpy.numpy_data( node, "gravity" )
     print "a 1D array:", fc.indices, SofaPython.SofaNumpy.numpy_data( fc, "indices" )
     print "a 2D array:", mo.position, SofaPython.SofaNumpy.numpy_data( mo, "position" )
 

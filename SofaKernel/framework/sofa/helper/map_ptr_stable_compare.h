@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -27,7 +24,7 @@
 
 #include <sofa/helper/helper.h>
 #include <map>
-#include <boost/scoped_ptr.hpp>
+#include <memory>
 
 namespace sofa
 {
@@ -67,8 +64,8 @@ public:
     }
 
 protected:
-    mutable boost::shared_ptr<unsigned int> counter;
-    mutable boost::shared_ptr< std::map<T*,unsigned int> > idMap;
+    mutable std::shared_ptr<unsigned int> counter;
+    mutable std::shared_ptr< std::map<T*,unsigned int> > idMap;
 };
 
 /// A comparison object that order pointers in a stable way, i.e. in the order pointers are presented
@@ -186,7 +183,7 @@ public:
 
 private:
     /// smart ptr for memory ownership
-    boost::scoped_ptr<stable_id_map_type> m_stable_id_map;
+    std::unique_ptr<stable_id_map_type> m_stable_id_map;
 };
 
 } // namespace helper

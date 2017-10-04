@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -25,6 +22,8 @@
 
 #ifndef IMAGE_IMAGETYPES_H
 #define IMAGE_IMAGETYPES_H
+
+#include <image/config.h>
 
 #if  defined (SOFA_HAVE_FFMPEG)  || defined (SOFA_EXTLIBS_FFMPEG)
 #define cimg_use_ffmpeg
@@ -39,13 +38,12 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Quat.h>
 #include <SofaBaseVisual/VisualModelImpl.h>
+#include <SofaBaseVisual/VisualStyle.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/helper/fixed_array.h>
 #include "VectorVis.h"
 #include <sofa/helper/rmath.h>
-
-
 
 namespace sofa
 {
@@ -54,9 +52,6 @@ namespace defaulttype
 {
 
 
-/// type identifier, must be unique
-static const int IMAGELABEL_IMAGE = 0;
-static const int IMAGELABEL_BRANCHINGIMAGE = 1;
 
 
 
@@ -69,6 +64,9 @@ struct BaseImage
     virtual ~BaseImage() {}
 };
 
+
+
+
 //-----------------------------------------------------------------------------------------------//
 /// 5d-image structure on top of a shared memory CImgList
 //-----------------------------------------------------------------------------------------------//
@@ -80,7 +78,6 @@ struct Image : public BaseImage
     typedef _T T;
     typedef cimg_library::CImg<T> CImgT;
 
-    static const int label = IMAGELABEL_IMAGE; // type identifier, must be unique
     /// the 5 dimension labels of an image ( x, y, z, spectrum=nb channels , time )
     typedef enum{ DIMENSION_X=0, DIMENSION_Y, DIMENSION_Z, DIMENSION_S /* spectrum = nb channels*/, DIMENSION_T /*4th dimension = time*/, NB_DimensionLabel } DimensionLabel;
 
@@ -450,6 +447,10 @@ public:
     virtual Real toImage(const Real& p) const {return p;}		// time to image index transform
     virtual Coord toImageInt(const Coord& p) const { Coord p2 = toImage(p); return Coord( helper::round(p2.x()),helper::round(p2.y()),helper::round(p2.z()) );}		// space coord to rounded image transform
     virtual Real toImageInt(const Real& p) const { return helper::round(toImage(p));}		// time to rounded image index transform
+
+    virtual const Coord& getTranslation() const = 0;
+    virtual const Coord& getRotation() const = 0;
+    virtual const Coord& getScale() const = 0;
 
     virtual void update()=0;
 
@@ -845,6 +846,9 @@ public:
 
         for(unsigned int m=0; m<visualModels.size(); m++)
         {
+            sofa::component::visualmodel::VisualStyle::SPtr ptr = visualModels[m]->template searchUp<sofa::component::visualmodel::VisualStyle>();
+            if (ptr && !ptr->displayFlags.getValue().getShowVisualModels()) continue;
+
             const ResizableExtVector<VisualModelTypes::Coord>& verts= visualModels[m]->getVertices();
             //            const ResizableExtVector<VisualModelTypes::Coord>& verts= visualModels[m]->m_positions.getValue();
             //            const ResizableExtVector<int> * extvertPosIdx = &visualModels[m]->m_vertPosIdx.getValue();
@@ -880,6 +884,10 @@ public:
         return get_slicedModels(index,axis,roi);
     }
 
+    // returns the transformed parameters (for the widget)
+    Coord get_transformTranslation() const { return transform->getTranslation(); }
+    Coord get_transformRotation() const { return transform->getRotation(); }
+    Coord get_transformScale() const { return transform->getScale(); }
 
     // returns the transformed point (for the widget)
     Coord get_pointCoord(const Coord& ip) const { return transform->fromImage(ip); }
@@ -964,7 +972,7 @@ struct ImageTypeInfo
     enum { Scalar          = 0                             }; ///< 1 if this type uses scalar values
     enum { Text            = 0                             }; ///< 1 if this type uses text values
     enum { CopyOnWrite     = 1                             }; ///< 1 if this type uses copy-on-write -> it seems to be THE important option not to perform too many copies
-    enum { Container       = 1                             }; ///< 1 if this type is a container
+    enum { Container       = 0                             }; ///< 1 if this type is a container
 
     enum { Size = 1 }; ///< largest known fixed size for this type, as returned by size()
 

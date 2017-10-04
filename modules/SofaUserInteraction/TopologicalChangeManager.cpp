@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -103,7 +100,7 @@ int TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::coll
         model->getContext()->get(badMapping, sofa::core::objectmodel::BaseContext::SearchRoot);
         if(badMapping) //stop process
         {
-            std::cout << "WARNING: TopologicalChangeManager: Removing element is not handle by Hexa2TetraTopologicalMapping. Stopping process." << std::endl;
+            msg_warning("TopologicalChangeManager") << " Removing element is not handle by Hexa2TetraTopologicalMapping. Stopping process." ;
             return 0;
         }
 
@@ -111,7 +108,6 @@ int TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::coll
         for (unsigned int i=0; i<indices.size(); ++i)
         {
             items.insert(indices[i] < nbt ? indices[i] : (indices[i]+nbt)/2);
-            //std::cout << indices[i] <<std::endl;
         }
     }
 
@@ -138,7 +134,6 @@ int TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::coll
                     {
                         unsigned int ind_glob = topoMap->getGlobIndex(*it);
                         unsigned int ind = topoMap->getFromIndex(ind_glob);
-                        //std::cout << *it << " -> "<<ind_glob << " -> "<<ind<<std::endl;
                         items.insert(ind);
                     }
                 }
@@ -150,7 +145,6 @@ int TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::coll
                         topoMap->getFromIndex( indices, *it);
                         for( vector<unsigned int>::const_iterator itIndices = indices.begin(); itIndices != indices.end(); ++itIndices)
                         {
-                            //std::cout << *it << " -> " << *itIndices << std::endl;
                             items.insert( *itIndices );
                         }
                     }
@@ -233,7 +227,6 @@ int TopologicalChangeManager::removeItemsFromTetrahedronModel(sofa::component::c
                         topoMap->getFromIndex( indices, *it);
                         for( vector<unsigned int>::const_iterator itIndices = indices.begin(); itIndices != indices.end(); itIndices++)
                         {
-                            //std::cout << *it << " -> " << *itIndices << std::endl;
                             items.insert( *itIndices );
                         }
                     }
@@ -303,7 +296,6 @@ int TopologicalChangeManager::removeItemsFromSphereModel(sofa::component::collis
                     {
                         unsigned int ind_glob = topoMap->getGlobIndex(*it);
                         unsigned int ind = topoMap->getFromIndex(ind_glob);
-                        //sout << *it << " -> "<<ind_glob << " -> "<<ind<<sendl;
                         items.insert(ind);
                     }
                 }
@@ -315,7 +307,6 @@ int TopologicalChangeManager::removeItemsFromSphereModel(sofa::component::collis
                         topoMap->getFromIndex( indices, *it);
                         for( vector<unsigned int>::const_iterator itIndices = indices.begin(); itIndices != indices.end(); ++itIndices)
                         {
-                            //std::cout << *it << " -> " << *itIndices << std::endl;
                             items.insert( *itIndices );
                         }
                     }
@@ -460,7 +451,7 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleModel *firstModel ,
 
     if (firstCollisionModel != secondCollisionModel)
     {
-        std::cerr << "Incision involving different models is not supported yet!" << std::endl;
+        msg_warning("TopologicalChangeManager") << "Incision involving different models is not supported yet!" ;
         return false;
     }
 
@@ -523,9 +514,7 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleModel *firstModel ,
 
         if (!path_ok)
         {
-#ifndef NDEBUG
-            std::cout << "ERROR in computeIntersectedObjectsList" << std::endl;
-#endif
+            dmsg_error("TopologicalChangeManager") << " in computeIntersectedObjectsList" ;
             return false;
         }
 
@@ -548,9 +537,7 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleModel *firstModel ,
 
         if (!incision_ok)
         {
-#ifndef NDEBUG
-            std::cout << "ERROR in InciseAlongEdgeList" << std::endl;
-#endif
+            dmsg_error("TopologicalChangeManager") << " in InciseAlongEdgeList" ;
             return false;
         }
 

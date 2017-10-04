@@ -18,9 +18,10 @@ NNCGSolver::NNCGSolver()
 
 // TODO copypasta 
 void NNCGSolver::solve_impl(vec& res,
-							   const system_type& sys,
-							   const vec& rhs,
-							   bool correct) const {
+                            const system_type& sys,
+                            const vec& rhs,
+                            bool correct,
+                            real /*damping*/ ) const {
 
 	scoped::timer timer("system solve");
 

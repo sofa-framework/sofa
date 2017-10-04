@@ -5,7 +5,7 @@
     <NewProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
     <CollisionResponse name="Response" response="default" />
     <CollisionGroup name="Group" />
-    <EulerImplicit />
+    <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
     <Node name="Liver1">
         <!--<CGImplicit iterations="25"/>-->

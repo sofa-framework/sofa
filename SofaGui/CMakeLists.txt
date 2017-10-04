@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 project(SofaGui)
 
 
@@ -122,11 +122,21 @@ if(NOT SOFA_NO_OPENGL)
             endif()
 
            ## QWT
-           option(SOFA_ENABLE_QWT "Enable QWT for Qt GUIs")
-           if(SOFA_ENABLE_QWT)
+           option(SOFAGUI_ENABLE_QWT "Enable QWT for Qt GUIs")
+           if(SOFAGUI_ENABLE_QWT)
                 set(SOFA_HAVE_QWT 1) # cmakedefine
             endif()
 
+            ## Qt native menu
+            set(DEFAULT_SOFAGUI_ENABLE_NATIVE_MENU ON)
+            if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+                set(DEFAULT_SOFAGUI_ENABLE_NATIVE_MENU OFF)
+            endif()
+
+            option(SOFAGUI_ENABLE_NATIVE_MENU "Enable Qt to use the operating system's native menu for the Qt GUI" ${DEFAULT_SOFAGUI_ENABLE_NATIVE_MENU})
+            if(SOFAGUI_ENABLE_NATIVE_MENU)
+                set(SOFA_GUI_NATIVE_MENU 1)
+            endif()
 
             set(SOFA_GUI_QT 1) # cmakedefine
             list(APPEND SOFAGUI_TARGETS SofaGuiQt)

@@ -7,7 +7,7 @@
     <NewProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
     <CollisionGroup />
     <Node name="H">
-        <EulerImplicitSolver />
+        <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver />
         <MeshGmshLoader name="meshLoader" filename="mesh/nine_hexa.msh" />
         <MechanicalObject name="Hexa" src="@meshLoader" />

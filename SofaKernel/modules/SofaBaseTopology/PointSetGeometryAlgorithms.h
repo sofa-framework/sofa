@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -63,12 +60,8 @@ public:
     Angle computeAngle(PointID ind_p0, PointID ind_p1, PointID ind_p2) const;
 
 protected:
-    PointSetGeometryAlgorithms()
-        : GeometryAlgorithms()
-        ,showIndicesScale (core::objectmodel::Base::initData(&showIndicesScale, (float) 0.02, "showIndicesScale", "Debug : scale for view topology indices"))
-        ,showPointIndices (core::objectmodel::Base::initData(&showPointIndices, (bool) false, "showPointIndices", "Debug : view Point indices"))
-    {
-    }
+    PointSetGeometryAlgorithms();
+
 
     virtual ~PointSetGeometryAlgorithms() {}
 public:
@@ -133,8 +126,10 @@ protected:
     /** the object where the mechanical DOFs are stored */
     sofa::core::behavior::MechanicalState<DataTypes> *object;
     sofa::core::topology::BaseMeshTopology* m_topology;
-    Data<float> showIndicesScale;
-    Data<bool> showPointIndices;
+    Data<float> d_showIndicesScale;
+    Data<bool> d_showPointIndices;
+    /// Tage of the Mechanical State associated with the vertex position
+    Data<std::string> d_tagMechanics;
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_TOPOLOGY_POINTSETGEOMETRYALGORITHMS_CPP)

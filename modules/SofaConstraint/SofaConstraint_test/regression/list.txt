@@ -1,3 +1,0 @@
-../../../../examples/Components/constraint/BilateralInteractionConstraint.scn 100 1e-4
-../../../../examples/Components/constraint/FixedConstraint.scn 100 1e-4
-../../../../examples/Components/constraint/FrictionContact.scn 100 1e-4

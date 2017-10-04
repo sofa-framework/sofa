@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -13,15 +13,13 @@
 * more details.                                                               *
 *                                                                             *
 * You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* with this program. If not, see <http://www.gnu.org/licenses/>.              *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <fstream>
 
 #include "GUIManager.h"
 #include "BaseGUI.h"
@@ -34,10 +32,8 @@
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/Utils.h>
 #include <sofa/helper/logging/Messaging.h>
+#include <sofa/helper/system/FileRepository.h>
 
-
-using std::cerr;
-using std::endl;
 using sofa::helper::system::FileSystem;
 using sofa::helper::Utils;
 
@@ -71,18 +67,18 @@ const std::string &GUIManager::GetCurrentGUIName()
 
 int GUIManager::RegisterGUI(const char* name, CreateGUIFn* creator, InitGUIFn* init, int priority)
 {
-	if(guiCreators.size())
-	{
-		std::list<GUICreator>::iterator it = guiCreators.begin();
-		std::list<GUICreator>::iterator itend = guiCreators.end();
-		while (it != itend && strcmp(name, it->name))
-			++it;
-		if (it != itend)
-		{
+    if(guiCreators.size())
+    {
+        std::list<GUICreator>::iterator it = guiCreators.begin();
+        std::list<GUICreator>::iterator itend = guiCreators.end();
+        while (it != itend && strcmp(name, it->name))
+            ++it;
+        if (it != itend)
+        {
             msg_error("GUIManager") << "ERROR(GUIManager): GUI "<<name<<" duplicate registration.";
-			return 1;
-		}
-	}
+            return 1;
+        }
+    }
 
     GUICreator entry;
     entry.name = name;
@@ -179,8 +175,8 @@ GUIManager::GUICreator* GUIManager::GetGUICreator(const char* name)
         ++it;
     if (it == itend)
     {
-        std::cerr << "ERROR(GUIManager): GUI "<<name<<" creation failed."<<std::endl;
-        std::cerr << "Available GUIs:" << ListSupportedGUI(' ') << std::endl;
+        msg_error("GUIManager") << "GUI '"<<name<<"' creation failed."<< msgendl
+                                << "Available GUIs: {" << ListSupportedGUI(' ') <<  "}";
         return NULL;
     }
     else
@@ -230,7 +226,7 @@ int GUIManager::Init(const char* argv0, const char* name)
 
     if (guiCreators.empty())
     {
-        std::cerr << "ERROR(SofaGUI): No GUI registered."<<std::endl;
+        msg_error("GUIManager") << "No GUI registered.";
         return 1;
     }
 
@@ -264,7 +260,7 @@ int GUIManager::createGUI(sofa::simulation::Node::SPtr groot, const char* filena
         currentGUI = (*creator->creator)(valid_guiname, guiOptions, groot, filename);
         if (!currentGUI)
         {
-            std::cerr << "ERROR(GUIManager): GUI "<<valid_guiname<<" creation failed."<<std::endl;
+            msg_error("GUIManager") << "GUI '"<<valid_guiname<<"' creation failed." ;
             return 1;
         }
         //Save this GUI type as the last used GUI
@@ -314,7 +310,7 @@ int GUIManager::MainLoop(sofa::simulation::Node::SPtr groot, const char* filenam
     ret = currentGUI->mainLoop();
     if (ret)
     {
-        std::cerr << "ERROR(SofaGUI): GUI "<<currentGUI->GetGUIName()<<" main loop failed (code "<<ret<<")."<<std::endl;
+        dmsg_error("GUIManager") << " GUI '"<<currentGUI->GetGUIName()<<"' main loop failed (code "<<ret<<").";
         return ret;
     }
     return ret;
@@ -348,15 +344,15 @@ void GUIManager::SetDimension(int  width , int  height )
 void GUIManager::SetFullScreen()
 {
     if (currentGUI) currentGUI->setFullScreen();
-    else cerr<<"GUIManager::SetFullScreen(), no currentGUI" << endl;
+    else{ msg_error("GUIManager") <<"no currentGUI" ; }
 }
 
 void GUIManager::SaveScreenshot(const char* filename)
 {
     if (currentGUI) {
-		std::string output = (filename?std::string(filename):"output.png");
-		currentGUI->saveScreenshot(output);
-	}
+        std::string output = (filename?std::string(filename):"output.png");
+        currentGUI->saveScreenshot(output);
+    }
 }
 
 

@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -26,8 +23,6 @@
 #define SOFA_CORE_MULTIVECID_H
 
 #include <sofa/core/VecId.h>
-
-#include <boost/static_assert.hpp>
 
 #include <map>
 
@@ -249,7 +244,7 @@ public:
 #else
 
 private:
-    boost::shared_ptr< IdMap > idMap_ptr;
+    std::shared_ptr< IdMap > idMap_ptr;
 
 	template <VecType vtype2, VecAccess vaccess2> friend class TMultiVecId;
 
@@ -263,7 +258,7 @@ protected:
         return *idMap_ptr;
     }
 public:
-    bool hasIdMap() const { return idMap_ptr != NULL; }
+    bool hasIdMap() const { return idMap_ptr != nullptr; }
     const  IdMap& getIdMap() const
     {
         if (!idMap_ptr)
@@ -290,7 +285,7 @@ public:
         :
         defaultId(v)
     {
-        BOOST_STATIC_ASSERT(vaccess2 >= vaccess);
+        static_assert(vaccess2 >= vaccess, "");
     }
 
     //// Copy constructor
@@ -313,9 +308,9 @@ public:
     template< VecType vtype2, VecAccess vaccess2>
     TMultiVecId( const TMultiVecId<vtype2,vaccess2>& mv) : defaultId( mv.getDefaultId() )
     {
-        BOOST_STATIC_ASSERT( vaccess2 > vaccess );
-        BOOST_STATIC_ASSERT( vtype != V_ALL ); // we should be using the V_ALL specific specialization in this case.
-		BOOST_STATIC_ASSERT( vtype2 == vtype );
+        static_assert( vaccess2 > vaccess, "" );
+        static_assert( vtype != V_ALL, "" ); // we should be using the V_ALL specific specialization in this case.
+        static_assert( vtype2 == vtype, "" );
         if (mv.hasIdMap())
         {
 #ifdef MAP_PTR
@@ -329,7 +324,7 @@ public:
 #		pragma GCC diagnostic ignored "-Wstrict-aliasing" // this should not create problems here
 #endif
 #	endif
-            idMap_ptr = *reinterpret_cast<const boost::shared_ptr< IdMap > * >(&mv.idMap_ptr);
+            idMap_ptr = *reinterpret_cast<const std::shared_ptr< IdMap > * >(&mv.idMap_ptr);
 #	ifndef _MSC_VER
 #if __GNUC__ > 4 || __GNUC__ == 4 && __GNUC_MINOR__ > 4
 #		pragma GCC diagnostic pop
@@ -348,8 +343,8 @@ public:
     template< VecAccess vaccess2>
     explicit TMultiVecId( const TMultiVecId<V_ALL,vaccess2>& mv) : defaultId( MyVecId(mv.getDefaultId()) )
     {
-        BOOST_STATIC_ASSERT( vaccess2 >= vaccess );
-        BOOST_STATIC_ASSERT( !(vtype == V_ALL) ); // for V_ALL vectors, this constructor is redundant with the previous one
+        static_assert( vaccess2 >= vaccess, "" );
+        static_assert( !(vtype == V_ALL), "" ); // for V_ALL vectors, this constructor is redundant with the previous one
 
         if (mv.hasIdMap())
         {
@@ -480,7 +475,7 @@ public:
         template<class DataTypes>
         typename DataTypesVecInfo<DataTypes,vtype>::DataVecT* write(State<DataTypes>* s) const
         {
-            BOOST_STATIC_ASSERT(vaccess >= V_WRITE);
+            static_assert(vaccess >= V_WRITE, "");
             return s->write(getId(s));
         }
     */
@@ -517,7 +512,7 @@ public:
 #else
 
 private:
-    boost::shared_ptr< IdMap > idMap_ptr;
+    std::shared_ptr< IdMap > idMap_ptr;
 
 	template <VecType vtype2, VecAccess vaccess2> friend class TMultiVecId;
 
@@ -531,7 +526,7 @@ protected:
         return *idMap_ptr;
     }
 public:
-    bool hasIdMap() const { return idMap_ptr != NULL; }
+    bool hasIdMap() const { return idMap_ptr != nullptr; }
     const  IdMap& getIdMap() const
     {
         if (!idMap_ptr)
@@ -556,7 +551,7 @@ public:
     template<VecType vtype2, VecAccess vaccess2>
     TMultiVecId(const TVecId<vtype2, vaccess2>& v) : defaultId(v)
     {
-        BOOST_STATIC_ASSERT(vaccess2 >= vaccess);
+        static_assert(vaccess2 >= vaccess, "");
     }
 
     //// Copy constructor
@@ -578,8 +573,8 @@ public:
     template< VecType vtype2, VecAccess vaccess2>
     TMultiVecId( const TMultiVecId<vtype2,vaccess2>& mv) : defaultId( mv.getDefaultId() )
     {
-        BOOST_STATIC_ASSERT( vaccess2 >= vaccess );
-        //BOOST_STATIC_ASSERT( vtype == V_ALL || vtype2 == vtype );
+        static_assert( vaccess2 >= vaccess, "" );
+        //static_assert( vtype == V_ALL || vtype2 == vtype, "" );
 
         if (mv.hasIdMap())
         {
@@ -594,7 +589,7 @@ public:
 #		pragma GCC diagnostic ignored "-Wstrict-aliasing" // this should not create problems here
 #endif
 #	endif
-            idMap_ptr = *reinterpret_cast<const boost::shared_ptr< IdMap > * >(&mv.idMap_ptr);
+            idMap_ptr = *reinterpret_cast<const std::shared_ptr< IdMap > * >(&mv.idMap_ptr);
 #	ifndef _MSC_VER
 #if __GNUC__ > 4 || __GNUC__ == 4 && __GNUC_MINOR__ > 4
 #		pragma GCC diagnostic pop
@@ -726,7 +721,7 @@ public:
         template<class DataTypes>
         typename DataTypesVecInfo<DataTypes,vtype>::DataVecT* write(State<DataTypes>* s) const
         {
-            BOOST_STATIC_ASSERT(vaccess >= V_WRITE);
+            static_assert(vaccess >= V_WRITE, "");
             return s->write(getId(s));
         }
     */

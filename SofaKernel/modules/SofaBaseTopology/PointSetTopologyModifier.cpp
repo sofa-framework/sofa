@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -127,7 +124,7 @@ void PointSetTopologyModifier::addPointsWarning(const unsigned int nPoints,
 
     m_container->setPointTopologyToDirty();
 
-    // Compute standard points construction info based on ancestor points 
+    // Compute standard points construction info based on ancestor points
     // related to topology elems and local coordinates
 
     const unsigned int startIndex = m_container->getNbPoints() - nPoints;
@@ -139,12 +136,12 @@ void PointSetTopologyModifier::addPointsWarning(const unsigned int nPoints,
     newPointIndices.resize(nPoints);
     ancestorPointIndices.resize(nPoints);
     baryCoefs.resize(nPoints);
-    
+
     for(unsigned int i = 0; i < nPoints; ++i)
     {
         newPointIndices[i] = startIndex + i;
         unsigned int ancestorIndex = ancestorElems[i].index;
-        // check if this new point has indeed an ancestor. 
+        // check if this new point has indeed an ancestor.
         if (ancestorIndex != core::topology::BaseMeshTopology::InvalidID )
         {
             core::topology::PointAncestorElem::LocalCoords localCoords = ancestorElems[i].localCoords;
@@ -392,7 +389,7 @@ void PointSetTopologyModifier::propagateTopologicalChanges()
     sout << sendl << "******* START ENGINE PROCESSING *********" << sendl;
 #endif
     // Declare all engines to dirty:
-    sofa::helper::list <sofa::core::topology::TopologyEngine *>::iterator it;
+    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
     for ( it = m_container->m_topologyEngineList.begin(); it!=m_container->m_topologyEngineList.end(); ++it)
     {
         sofa::core::topology::TopologyEngine* topoEngine = (*it);
@@ -440,11 +437,11 @@ void PointSetTopologyModifier::propagateTopologicalEngineChanges()
         return;
 
     // get directly the list of engines created at init: case of removing.... for the moment
-    sofa::helper::list <sofa::core::topology::TopologyEngine *>::iterator it;
+    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
 
 #ifndef NDEBUG
-    std::cout << "points is dirty" << std::endl;
-    std::cout << "PointSetTopologyModifier - Number of outputs for point array: " << m_container->m_enginesList.size() << std::endl;
+    dmsg_info() << "points is dirty" << msgendl
+                << "PointSetTopologyModifier - Number of outputs for point array: " << m_container->m_enginesList.size();
 #endif
     for ( it = m_container->m_enginesList.begin(); it!=m_container->m_enginesList.end(); ++it)
     {

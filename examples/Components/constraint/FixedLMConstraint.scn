@@ -4,7 +4,7 @@ The outcome of this scene is a still object. The MechanicalObject is comprised b
 
 <Node 	name="Root" dt="0.02"  >
   <VisualStyle displayFlags="showCollisionModels showBehaviorModels" />
-	<EulerImplicitSolver  />
+	<EulerImplicitSolver   rayleighStiffness="0.1" rayleighMass="0.1" />
 	<CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5" />
 	<LMConstraintSolver numIterations="27" maxError="1e-7" />
 	<MechanicalObject template="Rigid" position="0 -1 0 0 0 0 1 0 1 0 0 0 0 1" />

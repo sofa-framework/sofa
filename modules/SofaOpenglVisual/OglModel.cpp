@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -25,14 +22,15 @@
 #include <SofaOpenglVisual/OglModel.h>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/gl/RAII.h>
 #include <sofa/helper/vector.h>
-#include <sofa/defaulttype/Quat.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sstream>
 #include <string.h>
+#include <sofa/helper/types/RGBAColor.h>
+
 
 //#ifdef SOFA_HAVE_GLEW
 //#include <sofa/helper/gl/GLSLShader.h>
@@ -97,20 +95,17 @@ OglModel::OglModel()
     sofa::helper::OptionsGroup* blendEquationOptions = blendEquation.beginEdit();
     blendEquationOptions->setNames(4,"GL_FUNC_ADD", "GL_FUNC_SUBTRACT", "GL_MIN", "GL_MAX"); // .. add other options
     blendEquationOptions->setSelectedItem(0);
-    //this->f_printLog.setValue(true);
     blendEquation.endEdit();
 
     // alpha blend values
     sofa::helper::OptionsGroup* sourceFactorOptions = sourceFactor.beginEdit();
     sourceFactorOptions->setNames(4,"GL_ZERO", "GL_ONE", "GL_SRC_ALPHA", "GL_ONE_MINUS_SRC_ALPHA"); // .. add other options
     sourceFactorOptions->setSelectedItem(2);
-    //this->f_printLog.setValue(true);
     sourceFactor.endEdit();
 
     sofa::helper::OptionsGroup* destFactorOptions = destFactor.beginEdit();
     destFactorOptions->setNames(4,"GL_ZERO", "GL_ONE", "GL_SRC_ALPHA", "GL_ONE_MINUS_SRC_ALPHA"); // .. add other options
     destFactorOptions->setSelectedItem(3);
-    //this->f_printLog.setValue(true);
     destFactor.endEdit();
 
     sofa::helper::OptionsGroup* primitiveTypeOptions = primitiveType.beginEdit();
@@ -251,16 +246,16 @@ void OglModel::drawGroup(int ig, bool transparent)
 //        }
     }
 
-    Vec4f ambient = m.useAmbient?m.ambient:Vec4f();
-    Vec4f diffuse = m.useDiffuse?m.diffuse:Vec4f();
-    Vec4f specular = m.useSpecular?m.specular:Vec4f();
-    Vec4f emissive = m.useEmissive?m.emissive:Vec4f();
+    RGBAColor ambient = m.useAmbient?m.ambient:RGBAColor::black();
+    RGBAColor diffuse = m.useDiffuse?m.diffuse:RGBAColor::black();
+    RGBAColor specular = m.useSpecular?m.specular:RGBAColor::black();
+    RGBAColor emissive = m.useEmissive?m.emissive:RGBAColor::black();
     float shininess = m.useShininess?m.shininess:45;
     if( shininess > 128.0f ) shininess = 128.0f;
 
     if (shininess == 0.0f)
     {
-        specular.clear();
+        specular = RGBAColor::black() ;
         shininess = 1;
     }
 
@@ -271,18 +266,18 @@ void OglModel::drawGroup(int ig, bool transparent)
         //diffuse[3] = 0;
         specular[3] = 0;
     }
-    glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT, ambient.ptr());
-    glMaterialfv (GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse.ptr());
-    glMaterialfv (GL_FRONT_AND_BACK, GL_SPECULAR, specular.ptr());
-    glMaterialfv (GL_FRONT_AND_BACK, GL_EMISSION, emissive.ptr());
+    glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT, ambient.data());
+    glMaterialfv (GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse.data());
+    glMaterialfv (GL_FRONT_AND_BACK, GL_SPECULAR, specular.data());
+    glMaterialfv (GL_FRONT_AND_BACK, GL_EMISSION, emissive.data());
     glMaterialf (GL_FRONT_AND_BACK, GL_SHININESS, shininess);
     const bool useBufferObjects = (VBOGenDone && useVBO.getValue());
     const bool drawPoints = (primitiveType.getValue().getSelectedId() == 3);
     if (drawPoints)
     {
-        //Disable lighting if we draw points 
+        //Disable lighting if we draw points
         glDisable(GL_LIGHTING);
-        glColor4fv(diffuse.ptr());
+        glColor4fv(diffuse.data());
         glDrawArrays(GL_POINTS, 0, vertices.size());
         glEnable(GL_LIGHTING);
         glColor4f(1.0,1.0,1.0,1.0);
@@ -589,12 +584,12 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
     {
         glLineWidth(lineWidth.getValue());
     }
-    
+
     if (pointSize.isSet())
     {
         glPointSize(pointSize.getValue());
     }
-    
+
     if (pointSmooth.getValue())
     {
         glEnable(GL_POINT_SMOOTH);
@@ -607,7 +602,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
     }
 
     drawGroups(transparent);
-    
+
     if (lineSmooth.getValue())
     {
         glDisable(GL_LINE_SMOOTH);
@@ -800,11 +795,9 @@ bool OglModel::loadTextures()
 //                textureFile = this->fileMesh.getFullPath();
 //                unsigned int position = textureFile.rfind("/");
 //                textureFile.replace (position+1,textureFile.length() - position, this->materials.getValue()[i].bumpTextureFilename);
-////                std::cout << "Loading texture: " << textureFile << std::endl;
 //
 //                if (!sofa::helper::system::DataRepository.findFile(textureFile))
 //                {
-//                    std::cout <<  std::endl;
 //                    serr << "Texture \"" << this->materials.getValue()[i].bumpTextureFilename << "\" not found"
 //                            << " in material " << this->materials.getValue()[i].name << " for OglModel " << this->name
 //                            << "(\""<< this->fileMesh.getFullPath() << "\")" << sendl;
@@ -815,19 +808,17 @@ bool OglModel::loadTextures()
 //            helper::io::Image *img = helper::io::Image::Create(textureFile);
 //            if (!img)
 //            {
-//                std::cout <<  std::endl;
-//               std::cerr << "Error:OglModel:loadTextures: couldn't create an image from file " << this->materials.getValue()[i].bumpTextureFilename << std::endl;
+//               msg_error() << "Error:OglModel:loadTextures: couldn't create an image from file " << this->materials.getValue()[i].bumpTextureFilename << std::endl;
 //               return false;
 //            }
 //            helper::gl::Texture * text = new helper::gl::Texture(img, true, true, false, srgbTexturing.getValue());
 //            materialTextureIdMap.insert(std::pair<int, int>(i,textures.size()));
 //            textures.push_back( text );
 //
-//            std::cout << "\r\033[K" << i+1 << "/" << this->materials.getValue().size() << " textures loaded for bump mapping for OglModel " << this->getName()
+//            msg_info() << "\r\033[K" << i+1 << "/" << this->materials.getValue().size() << " textures loaded for bump mapping for OglModel " << this->getName()
 //                    << "(loading "<<textureFile << ")"<< std::flush;
 //       }
 //    }
-//    std::cout << "\r\033[K" << std::flush;
     return result;
 }
 
@@ -840,18 +831,18 @@ void OglModel::initVisual()
     canUseVBO = false;
 #else
 #if !defined(PS3)
-	static bool vboAvailable = false; // check the vbo availability
+    static bool vboAvailable = false; // check the vbo availability
 
-	static bool init = false;
-	if(!init)
+    static bool init = false;
+    if(!init)
     {
         vboAvailable = CanUseGlExtension( "GL_ARB_vertex_buffer_object" );
-		init = true;
-	}
+        init = true;
+    }
 
     canUseVBO = vboAvailable;
 #elif PS3
-	canUseVBO = true;
+    canUseVBO = true;
 #endif
 
     if (useVBO.getValue() && !canUseVBO)
@@ -1238,8 +1229,7 @@ GLenum OglModel::getGLenum(const char* c ) const
 #endif // SOFA_HAVE_GLEW
     else
     {
-        // error: not valid
-        std::cerr   << " OglModel - not valid or not supported openGL enum value: " << c ;
+        msg_warning()   << " OglModel - not valid or not supported openGL enum value: " << c ;
         return GL_ZERO;
     }
 

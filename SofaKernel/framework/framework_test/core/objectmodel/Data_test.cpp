@@ -1,33 +1,33 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
-* Software Foundation; either version 2 of the License, or (at your option)   *
-* any later version.                                                          *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
 *                                                                             *
 * This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
-* more details.                                                               *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
 *                                                                             *
-* You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/helper/vectorData.h>
+#include <sofa/core/objectmodel/DataFileName.h>
 
 #include <gtest/gtest.h>
 
 namespace sofa {
+
+using namespace core::objectmodel;
 
 /**  Test suite for data link.
 Create two datas and a link between them.
@@ -35,8 +35,8 @@ Set the value of data1 and check if the boolean is dirty of data2 is true and th
   */
 struct DataLink_test: public ::testing::Test
 {
-    core::objectmodel::Data<int> data1;
-    core::objectmodel::Data<int> data2;
+    Data<int> data1;
+    Data<int> data2;
 
     /// Create a link between the two datas
     void SetUp()
@@ -57,7 +57,10 @@ struct DataLink_test: public ::testing::Test
 
 };
 
-// Test
+
+/////////////////////////////////////
+
+
 TEST_F(DataLink_test , testDataLink )
 {
     this->testDataLink();
@@ -69,7 +72,7 @@ TEST_F(DataLink_test , testDataLink )
  */
 struct vectorData_test: public ::testing::Test
 {
-    core::objectmodel::Data<int> data1;
+    Data<int> data1;
     helper::vectorData<int> vDataInt;
 
     vectorData_test()
@@ -99,7 +102,6 @@ struct vectorData_test: public ::testing::Test
 
 };
 
-// Test
 TEST_F(vectorData_test , test_resize )
 {
     this->test_resize();
@@ -108,5 +110,39 @@ TEST_F(vectorData_test , test_link )
 {
     this->test_link();
 }
+
+
+/////////////////////////////////
+
+
+/** Test suite for DataFileNameVector
+ *
+ * @author M Nesme @date 2016
+ */
+struct DataFileNameVector_test: public ::testing::Test
+{
+    DataFileNameVector dataFileNameVector;
+
+    DataFileNameVector_test()
+        : dataFileNameVector()
+    { }
+
+    void SetUp()
+    {}
+
+};
+
+TEST_F(DataFileNameVector_test , setValueAsString_spaces )
+{
+    dataFileNameVector.setValueAsString( "['"+std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/dir with spaces/file.txt' ,'"+ std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/file with spaces.txt' ]" );
+    ASSERT_EQ( dataFileNameVector.getValue().size(), 2u );
+}
+
+TEST_F(DataFileNameVector_test , read_spaces )
+{
+    dataFileNameVector.read( "['" + std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/dir with spaces/file.txt' ,'"+ std::string(FRAMEWORK_TEST_RESOURCES_DIR) + "/file with spaces.txt' ]" );
+    ASSERT_EQ( dataFileNameVector.getValue().size(), 2u );
+}
+
 
 }// namespace sofa

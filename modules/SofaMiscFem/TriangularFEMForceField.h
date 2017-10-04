@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -91,6 +88,11 @@ public:
 
     typedef sofa::helper::Quater<Real> Quat;
 
+    enum {
+        LARGE = 0,   ///< Symbol of small displacements triangle solver
+        SMALL = 1,   ///< Symbol of large displacements triangle solver
+    };
+
 protected:
 
     bool _anisotropicMaterial;			                 	    /// used to turn on / off optimizations
@@ -103,9 +105,6 @@ protected:
     typedef defaulttype::Mat<3, 3, Real > Transformation;				    ///< matrix for rigid transformations like rotations
 
 
-public:
-    static const int SMALL = 1;						    ///< Symbol of small displacements triangle solver
-    static const int LARGE = 0;                                             ///< Symbol of large displacements triangle solver
 protected:
     /// ForceField API
     //{
@@ -258,7 +257,16 @@ public:
     void setDamping(Real val) { f_damping.setValue(val); }
     int  getMethod() { return method; }
     void setMethod(int val) { method = val; }
-
+    void setMethod(std::string methodName) {
+        if (methodName == "small")
+            this->setMethod(SMALL);
+        else
+        {
+            if (methodName != "large")
+                serr << "unknown method: large method will be used. Remark: Available method are \"small\", \"large\" "<<sendl;
+            this->setMethod(LARGE);
+        }
+    }
 
 
 public:

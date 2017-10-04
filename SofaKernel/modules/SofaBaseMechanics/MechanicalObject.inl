@@ -1,27 +1,24 @@
 /******************************************************************************
- *       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
- *                (c) 2006-2011 MGH, INRIA, USTL, UJF, CNRS                    *
- *                                                                             *
- * This library is free software; you can redistribute it and/or modify it     *
- * under the terms of the GNU Lesser General Public License as published by    *
- * the Free Software Foundation; either version 2.1 of the License, or (at     *
- * your option) any later version.                                             *
- *                                                                             *
- * This library is distributed in the hope that it will be useful, but WITHOUT *
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
- * for more details.                                                           *
- *                                                                             *
- * You should have received a copy of the GNU Lesser General Public License    *
- * along with this library; if not, write to the Free Software Foundation,     *
- * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
- *******************************************************************************
- *                               SOFA :: Modules                               *
- *                                                                             *
- * Authors: The SOFA Team and external contributors (see Authors.txt)          *
- *                                                                             *
- * Contact information: contact@sofa-framework.org                             *
- ******************************************************************************/
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 #ifndef SOFA_COMPONENT_MECHANICALOBJECT_INL
 #define SOFA_COMPONENT_MECHANICALOBJECT_INL
 
@@ -31,8 +28,8 @@
 #include <SofaBaseMechanics/MechanicalObjectTasks.inl>
 #endif
 #include <SofaBaseLinearSolver/SparseMatrix.h>
+#include <sofa/core/topology/BaseTopology.h>
 #include <sofa/core/topology/TopologyChange.h>
-#include <SofaBaseTopology/RegularGridTopology.h>
 
 #include <sofa/defaulttype/DataTypeInfo.h>
 
@@ -47,7 +44,9 @@
 #include <assert.h>
 #include <iostream>
 
+#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
 #include <SofaBaseTopology/TopologyData.inl>
+#endif // SOFA_HAVE_NEW_TOPOLOGYCHANGES
 
 namespace
 {
@@ -91,24 +90,24 @@ MechanicalObject<DataTypes>::MechanicalObject()
     , c(initData(&c, "constraint", "constraints applied to the degrees of freedom"))
     , reset_position(initData(&reset_position, "reset_position", "reset position coordinates of the degrees of freedom"))
     , reset_velocity(initData(&reset_velocity, "reset_velocity", "reset velocity coordinates of the degrees of freedom"))
-    , restScale(initData(&restScale, (SReal)1.0, "restScale", "optional scaling of rest position coordinates (to simulated pre-existing internal tension)"))
-    , showObject(initData(&showObject, (bool) false, "showObject", "Show objects"))
-    , showObjectScale(initData(&showObjectScale, (float) 0.1, "showObjectScale", "Scale for object display"))
-    , showIndices(initData(&showIndices, (bool) false, "showIndices", "Show indices"))
-    , showIndicesScale(initData(&showIndicesScale, (float) 0.02, "showIndicesScale", "Scale for indices display"))
-    , showVectors(initData(&showVectors, (bool) false, "showVectors", "Show velocity"))
-    , showVectorsScale(initData(&showVectorsScale, (float) 0.0001, "showVectorsScale", "Scale for vectors display"))
-    , drawMode(initData(&drawMode,0,"drawMode","The way vectors will be drawn:\n- 0: Line\n- 1:Cylinder\n- 2: Arrow.\n\nThe DOFS will be drawn:\n- 0: point\n- >1: sphere"))
-    , d_color(initData(&d_color, defaulttype::Vec4f(1,1,1,1), "showColor", "Color for object display"))
-    , isToPrint( initData(&isToPrint, false, "isToPrint", "suppress somes data before using save as function"))
+    , restScale(initData(&restScale, (SReal)1.0, "restScale", "optional scaling of rest position coordinates (to simulated pre-existing internal tension).(default = 1.0)"))
+    , showObject(initData(&showObject, (bool) false, "showObject", "Show objects. (default=false)"))
+    , showObjectScale(initData(&showObjectScale, (float) 0.1, "showObjectScale", "Scale for object display. (default=0.1)"))
+    , showIndices(initData(&showIndices, (bool) false, "showIndices", "Show indices. (default=false)"))
+    , showIndicesScale(initData(&showIndicesScale, (float) 0.02, "showIndicesScale", "Scale for indices display. (default=0.02)"))
+    , showVectors(initData(&showVectors, (bool) false, "showVectors", "Show velocity. (default=false)"))
+    , showVectorsScale(initData(&showVectorsScale, (float) 0.0001, "showVectorsScale", "Scale for vectors display. (default=0.0001)"))
+    , drawMode(initData(&drawMode,0,"drawMode","The way vectors will be drawn:\n- 0: Line\n- 1:Cylinder\n- 2: Arrow.\n\nThe DOFS will be drawn:\n- 0: point\n- >1: sphere. (default=0)"))
+    , d_color(initData(&d_color, defaulttype::Vec4f(1,1,1,1), "showColor", "Color for object display. (default=[1 1 1 1])"))
+    , isToPrint( initData(&isToPrint, false, "isToPrint", "suppress somes data before using save as function. (default=false)"))
     , translation(initData(&translation, Vector3(), "translation", "Translation of the DOFs"))
     , rotation(initData(&rotation, Vector3(), "rotation", "Rotation of the DOFs"))
     , scale(initData(&scale, Vector3(1.0,1.0,1.0), "scale3d", "Scale of the DOFs in 3 dimensions"))
     , translation2(initData(&translation2, Vector3(), "translation2", "Translation of the DOFs, applied after the rest position has been computed"))
     , rotation2(initData(&rotation2, Vector3(), "rotation2", "Rotation of the DOFs, applied the after the rest position has been computed"))
     , filename(initData(&filename, std::string(""), "filename", "File corresponding to the Mechanical Object", false))
-    , ignoreLoader(initData(&ignoreLoader, (bool) false, "ignoreLoader", "Is the Mechanical Object do not use a loader"))
-    , f_reserve(initData(&f_reserve, 0, "reserve", "Size to reserve when creating vectors"))
+    , ignoreLoader(initData(&ignoreLoader, (bool) false, "ignoreLoader", "Is the Mechanical Object do not use a loader. (default=false)"))
+    , f_reserve(initData(&f_reserve, 0, "reserve", "Size to reserve when creating vectors. (default=0)"))
     , vsize(0)
     , m_gnuplotFileX(NULL)
     , m_gnuplotFileV(NULL)
@@ -151,7 +150,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     setVecDeriv(core::VecDerivId::dx().index, &dx);
     setVecDeriv(core::VecDerivId::freeVelocity().index, &vfree);
     setVecDeriv(core::VecDerivId::resetVelocity().index, &reset_velocity);
-    setVecMatrixDeriv(core::MatrixDerivId::holonomicC().index, &c);
+    setVecMatrixDeriv(core::MatrixDerivId::constraintJacobian().index, &c);
 
     // These vectors are set as modified as they are mandatory in the MechanicalObject.
     x               .forceSet();
@@ -289,43 +288,64 @@ template <class DataTypes>
 void MechanicalObject<DataTypes>::parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
 {
     Inherited::parse(arg);
-    
+
     if (arg->getAttribute("size") != NULL)
     {
-        resize(atoi(arg->getAttribute("size", "0")));
+        int newsize = arg->getAttributeAsInt("size", 1) ;
+        if(newsize>=0)
+        {
+            resize(newsize) ;
+        }
+        else
+        {
+            msg_warning(this) << "The attribute 'size' cannot have a negative value.  "
+                                 "The value "<<newsize<<" is ignored. Current value is " <<getSize()<< ".  "
+                                 "To remove this warning you need to fix your scene.";
+        }
     }
 
-    // DEPRECATED: Warning, you should not use these parameters, but a TransformEngine instead
     if (arg->getAttribute("scale") != NULL)
     {
-        SReal s = (SReal)atof(arg->getAttribute("scale", "1.0"));
+        SReal s = (SReal)arg->getAttributeAsFloat("scale", 1.0);
         scale.setValue(Vector3(s, s, s));
     }
 
     if (arg->getAttribute("sx") != NULL || arg->getAttribute("sy") != NULL || arg->getAttribute("sz") != NULL)
     {
-        scale.setValue(Vector3((SReal)(atof(arg->getAttribute("sx","1.0"))),(SReal)(atof(arg->getAttribute("sy","1.0"))),(SReal)(atof(arg->getAttribute("sz","1.0")))));
+        scale.setValue(Vector3((SReal)arg->getAttributeAsFloat("sx",1.0),
+                               (SReal)arg->getAttributeAsFloat("sy",1.0),
+                               (SReal)arg->getAttributeAsFloat("sz",1.0)));
     }
 
     if (arg->getAttribute("rx") != NULL || arg->getAttribute("ry") != NULL || arg->getAttribute("rz") != NULL)
     {
-        rotation.setValue(Vector3((SReal)(atof(arg->getAttribute("rx","0.0"))),(SReal)(atof(arg->getAttribute("ry","0.0"))),(SReal)(atof(arg->getAttribute("rz","0.0")))));
+        rotation.setValue(Vector3((SReal)arg->getAttributeAsFloat("rx",0.0),
+                                  (SReal)arg->getAttributeAsFloat("ry",0.0),
+                                  (SReal)arg->getAttributeAsFloat("rz",0.0)));
     }
 
     if (arg->getAttribute("dx") != NULL || arg->getAttribute("dy") != NULL || arg->getAttribute("dz") != NULL)
     {
-        translation.setValue(Vector3((Real)atof(arg->getAttribute("dx","0.0")), (Real)atof(arg->getAttribute("dy","0.0")), (Real)atof(arg->getAttribute("dz","0.0"))));
+        translation.setValue(Vector3((Real)arg->getAttributeAsFloat("dx",0.0),
+                                     (Real)arg->getAttributeAsFloat("dy",0.0),
+                                     (Real)arg->getAttributeAsFloat("dz",0.0)));
     }
 
     if (arg->getAttribute("rx2") != NULL || arg->getAttribute("ry2") != NULL || arg->getAttribute("rz2") != NULL)
     {
-        rotation2.setValue(Vector3((SReal)(atof(arg->getAttribute("rx2","0.0"))),(SReal)(atof(arg->getAttribute("ry2","0.0"))),(SReal)(atof(arg->getAttribute("rz2","0.0")))));
+        rotation2.setValue(Vector3((SReal)arg->getAttributeAsFloat("rx2",0.0),
+                                   (SReal)arg->getAttributeAsFloat("ry2",0.0),
+                                   (SReal)arg->getAttributeAsFloat("rz2",0.0)));
     }
 
     if (arg->getAttribute("dx2") != NULL || arg->getAttribute("dy2") != NULL || arg->getAttribute("dz2") != NULL)
     {
-        translation2.setValue(Vector3((Real)atof(arg->getAttribute("dx2","0.0")), (Real)atof(arg->getAttribute("dy2","0.0")), (Real)atof(arg->getAttribute("dz2","0.0"))));
+        translation2.setValue(Vector3((Real)arg->getAttributeAsFloat("dx2",0.0),
+                                      (Real)arg->getAttributeAsFloat("dy2",0.0),
+                                      (Real)arg->getAttributeAsFloat("dz2",0.0)));
     }
+
+
 }
 
 
@@ -373,9 +393,6 @@ void MechanicalObject<DataTypes>::PointDestroyFunction(int , void * param, Coord
 template <class DataTypes>
 void MechanicalObject<DataTypes>::handleStateChange()
 {
-    //#ifdef SOFA_HAVE_NEW_TOPOLOGYCHANGES
-    //    std::cout << "WARNING MechanicalObject<DataTypes>::handleStateChange()" << std::endl;
-    //#else
     using sofa::core::topology::TopologyChange;
     using sofa::core::topology::TopologyChangeType;
     using sofa::core::topology::PointsAdded;
@@ -413,8 +430,8 @@ void MechanicalObject<DataTypes>::handleStateChange()
                 unsigned int p2 = pointsAdded.pointIndexArray[i];
                 if (p1 != p2)
                 {
-                    serr << "TOPO STATE EVENT POINTSADDED INDEX " << i << " MISMATCH: "
-                         << p1 << " != " << p2 << sendl;
+                    dmsg_error(this) << "TOPO STATE EVENT POINTSADDED INDEX " << i << " MISMATCH: "
+                                     << p1 << " != " << p2 << ".\n";
                 }
             }
 
@@ -481,7 +498,7 @@ void MechanicalObject<DataTypes>::handleStateChange()
 
                 geoAlgo->initPointsAdded(pointsAdded.pointIndexArray, pointsAdded.ancestorElems, coordVecs, derivVecs);
             }
-            
+
             break;
         }
         case core::topology::POINTSREMOVED:
@@ -1075,9 +1092,55 @@ void MechanicalObject<DataTypes>::init()
     if(m_topology == NULL)
         m_topology = this->getContext()->getMeshTopology();
 
+    // Make sure the sizes of the vectors and the arguments of the scene matches
+    const std::vector<std::pair<const std::string, const size_t>> vector_sizes = {
+            {x.getName(),                x.getValue().size()},
+            {v.getName(),                v.getValue().size()},
+            {f.getName(),                f.getValue().size()},
+            {externalForces.getName(),   externalForces.getValue().size()},
+            {dx.getName(),               dx.getValue().size()},
+            {xfree.getName(),            xfree.getValue().size()},
+            {vfree.getName(),            vfree.getValue().size()},
+            {x0.getName(),               x0.getValue().size()},
+            {reset_position.getName(),   reset_position.getValue().size()},
+            {reset_velocity.getName(),   reset_velocity.getValue().size()}
+    };
 
-    //helper::WriteAccessor< Data<VecCoord> > x_wA = *this->write(VecCoordId::position());
-    //helper::WriteAccessor< Data<VecDeriv> > v_wA = *this->write(VecDerivId::velocity());
+    // Get the maximum size of all argument's vectors
+    auto maxElement = std::max_element(vector_sizes.begin(), vector_sizes.end(),
+       [] (const std::pair<const std::string, const size_t> &a, const std::pair<const std::string, const size_t> &b) {
+            return a.second < b.second;
+    });
+
+    if (maxElement != vector_sizes.end()) {
+        size_t maxSize = (*maxElement).second;
+
+        // Resize the mechanical object size to match the maximum size of argument's vectors
+        if (getSize() < maxSize)
+            resize(maxSize);
+
+        // Print a warning if one or more vector don't match the maximum size
+        bool allSizeAreEqual = true;
+        for (const std::pair<const std::string, const size_t> vector_size : vector_sizes) {
+            const size_t & size = vector_size.second;
+            if (size > 1 && size != maxSize) {
+                allSizeAreEqual = false;
+                break;
+            }
+        }
+
+        if (!allSizeAreEqual) {
+            std::string message_warning = "One or more of the state vectors passed as argument don't match the size of the others : ";
+            for (const std::pair<const std::string, const size_t> vector_size : vector_sizes) {
+                const std::string & name = vector_size.first;
+                const size_t & size = vector_size.second;
+                if (size <= 1) continue;
+                message_warning += name + "(size " + std::to_string(size) + ") ";
+            }
+            msg_warning() << message_warning;
+        }
+    }
+
     Data<VecCoord>* x_wAData = this->write(sofa::core::VecCoordId::position());
     Data<VecDeriv>* v_wAData = this->write(sofa::core::VecDerivId::velocity());
     VecCoord& x_wA = *x_wAData->beginEdit();
@@ -1097,7 +1160,6 @@ void MechanicalObject<DataTypes>::init()
         if (m_topology != NULL && m_topology->getNbPoints() && m_topology->getContext() == this->getContext())
         {
             int nbp = m_topology->getNbPoints();
-            //std::cout<<"Setting "<<nbp<<" points from topology. " << this->getName() << " topo : " << m_topology->getName() <<std::endl;
             // copy the last specified velocity to all points
             if (v_wA.size() >= 1 && v_wA.size() < (unsigned)nbp)
             {
@@ -1211,38 +1273,14 @@ void MechanicalObject<DataTypes>::init()
 template <class DataTypes>
 void MechanicalObject<DataTypes>::reinit()
 {
-    Vector3 p0;
-    sofa::component::topology::RegularGridTopology *grid;
-    this->getContext()->get(grid, sofa::core::objectmodel::BaseContext::Local);
-    if (grid) p0 = grid->getP0();
-
     if (scale.getValue() != Vector3(1.0,1.0,1.0))
-    {
         this->applyScale(scale.getValue()[0],scale.getValue()[1],scale.getValue()[2]);
-        if (grid) p0 = p0.linearProduct(scale.getValue());
-    }
 
     if (rotation.getValue()[0]!=0.0 || rotation.getValue()[1]!=0.0 || rotation.getValue()[2]!=0.0)
-    {
         this->applyRotation(rotation.getValue()[0],rotation.getValue()[1],rotation.getValue()[2]);
 
-        if (grid)
-        {
-            this->serr << "Warning ! MechanicalObject initial rotation is not applied to its grid topology"<<this->sendl;
-            this->serr << "Regular grid topologies rotations are unsupported."<<this->sendl;
-            //  p0 = q.rotate(p0);
-        }
-    }
-
     if (translation.getValue()[0]!=0.0 || translation.getValue()[1]!=0.0 || translation.getValue()[2]!=0.0)
-    {
         this->applyTranslation( translation.getValue()[0],translation.getValue()[1],translation.getValue()[2]);
-        if (grid) p0 += translation.getValue();
-    }
-
-
-    if (grid)
-        grid->setP0(p0);
 }
 
 template <class DataTypes>
@@ -2568,7 +2606,7 @@ void MechanicalObject<DataTypes>::resetAcc(const core::ExecParams* params, core:
 template <class DataTypes>
 void MechanicalObject<DataTypes>::resetConstraint(const core::ExecParams* params)
 {
-    Data<MatrixDeriv>& c_data = *this->write(core::MatrixDerivId::holonomicC());
+    Data<MatrixDeriv>& c_data = *this->write(core::MatrixDerivId::constraintJacobian());
     MatrixDeriv *c = c_data.beginEdit(params);
     c->clear();
     c_data.endEdit(params);
@@ -2579,7 +2617,7 @@ void MechanicalObject<DataTypes>::getConstraintJacobian(const core::ExecParams* 
 {
     // Compute J
     const size_t N = Deriv::size();
-    const MatrixDeriv& c = this->read(core::ConstMatrixDerivId::holonomicC())->getValue();
+    const MatrixDeriv& c = this->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
 
     MatrixDerivRowConstIterator rowItEnd = c.end();
 
@@ -2601,6 +2639,34 @@ void MechanicalObject<DataTypes>::getConstraintJacobian(const core::ExecParams* 
 
     off += this->getSize() * N;
 }
+
+#if(SOFA_WITH_EXPERIMENTAL_FEATURES==1)
+template <class DataTypes>
+void MechanicalObject<DataTypes>::buildIdentityBlocksInJacobian(const sofa::helper::vector<unsigned int>& list_n, core::MatrixDerivId &mID)
+{
+    const size_t N = Deriv::size();
+    Data<MatrixDeriv>* cMatrix= this->write(mID);
+
+    unsigned int columnIndex = 0;
+    MatrixDeriv& jacobian = *cMatrix->beginEdit();
+
+
+    for (unsigned int i=0; i<list_n.size(); i++)
+    { //loop on the nodes on which we assign the identity blocks
+        unsigned int node= list_n[i];
+
+        for(unsigned int j=0; j<N; j++)
+        {   //identity block
+            typename DataTypes::MatrixDeriv::RowIterator rowIterator = jacobian.writeLine(N*node + j);
+            Deriv d;
+            d[j]=1.0;
+            rowIterator.setCol(node,  d);
+            columnIndex++;
+        }
+    }
+
+}
+#endif
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::renumberConstraintId(const sofa::helper::vector<unsigned>& /*renumbering*/)
@@ -2740,9 +2806,6 @@ inline void MechanicalObject<DataTypes>::drawVectors(const core::visual::VisualP
     {
         Real vx=0.0,vy=0.0,vz=0.0;
         DataTypes::get(vx,vy,vz,v_rA[i]);
-        //v = DataTypes::getDPos(v_rA[i]);
-        //Real vx = v[0]; Real vy = v[1]; Real vz = v[2];
-        //std::cout << "v=" << vx << ", " << vy << ", " << vz << std::endl;
         Vector3 p1 = Vector3(getPX(i), getPY(i), getPZ(i));
         Vector3 p2 = Vector3(getPX(i)+scale*vx, getPY(i)+scale*vy, getPZ(i)+scale*vz);
 
@@ -3267,123 +3330,9 @@ void MechanicalObject < DataTypes >::vDot ( const core::ExecParams* /* params */
     // return r;
 }
 
-//     template < class DataTypes >
-//       void MechanicalObject < DataTypes >::setX (VecId v)
-//     {
-//       if (v.type == sofa::core::V_COORD)
-//  {
-//
-//    this->xSh = *getVecCoord (v.index);
-//
-//    this->x = getVecCoord (v.index);
-//
-//  }
-//       else
-//  {
-//    std::cerr << "Invalid setX operation (" << v << ")\n";
-//  }
-//     }
-//
-//     template < class DataTypes >
-//       void ParallelMechanicalObject < DataTypes >::setXfree (VecId v)
-//     {
-//       if (v.type == sofa::core::V_COORD)
-//  {
-//    this->xfreeSh = *getVecCoord (v.index);
-//
-//    this->xfree = getVecCoord (v.index);
-//
-//  }
-//       else
-//  {
-//    std::cerr << "Invalid setXfree operation (" << v << ")\n";
-//  }
-//     }
-//
-//     template < class DataTypes >
-//       void ParallelMechanicalObject < DataTypes >::setVfree (VecId v)
-//     {
-//       if (v.type == sofa::core::V_DERIV)
-//  {
-//
-//    this->vfreeSh = *getVecDeriv (v.index);
-//
-//    this->vfree = getVecDeriv (v.index);
-//
-//  }
-//       else
-//  {
-//    std::cerr << "Invalid setVfree operation (" << v << ")\n";
-//  }
-//     }
-//
-//     template < class DataTypes >
-//       void ParallelMechanicalObject < DataTypes >::setV (VecId v)
-//     {
-//       if (v.type == sofa::core::V_DERIV)
-//  {
-//    this->vSh = *getVecDeriv (v.index);
-//
-//    this->v = getVecDeriv (v.index);
-//
-//  }
-//       else
-//  {
-//    std::cerr << "Invalid setV operation (" << v << ")\n";
-//  }
-//     }
-//
-//     template < class DataTypes >
-//       void ParallelMechanicalObject < DataTypes >::setF (VecId v)
-//     {
-//       if (v.type == sofa::core::V_DERIV)
-//  {
-//
-//    this->fSh = *getVecDeriv (v.index);
-//
-//    this->f = getVecDeriv (v.index);
-//
-//  }
-//       else
-//  {
-//    std::cerr << "Invalid setF operation (" << v << ")\n";
-//  }
-//     }
-//
-//     template < class DataTypes >
-//       void ParallelMechanicalObject < DataTypes >::setDx (VecId v)
-//     {
-//       if (v.type == sofa::core::V_DERIV)
-//  {
-//    this->dxSh = *getVecDeriv (v.index);
-//
-//
-//    this->dx = getVecDeriv (v.index);
-//
-//  }
-//       else
-//  {
-//    std::cerr << "Invalid setDx operation (" << v << ")\n";
-//  }
-//     }
-//
-//
 template < class DataTypes >
 void MechanicalObject < DataTypes >::printDOF (core::ConstVecId /*v*/, std::ostream & /*out*/, int /* firstIndex */, int /* range */) const
 {
-    //  if (v.type == sofa::core::V_COORD)
-    //  {
-    //      VecCoord & x = *getVecCoord (v.index);
-    //      Task < printDOFSh < VecCoord > >(this,*x);
-    //  }
-    //  else if (v.type == sofa::core::V_DERIV)
-    //  {
-    //      VecDeriv & x = *getVecDeriv (v.index);
-    //      Task < printDOFSh < VecDeriv > >(this,*x);
-    //  }
-    //  else
-    //      out << "ParallelMechanicalObject<DataTypes>::printDOF, unknown v.type = " <<
-    //          v.type << std::endl;
 
 }
 #endif /* SOFA_SMP */
@@ -3404,16 +3353,11 @@ bool MechanicalObject<DataTypes>::pickParticles(const core::ExecParams* /* param
 
         defaulttype::Vec<3,Real> origin((Real)rayOx, (Real)rayOy, (Real)rayOz);
         defaulttype::Vec<3,Real> direction((Real)rayDx, (Real)rayDy, (Real)rayDz);
-//                            cerr<<"MechanicalObject<DataTypes>::pickParticles, ray point = " << rayOx << ", " << rayOy << ", " << rayOz << endl;
-//                            cerr<<"MechanicalObject<DataTypes>::pickParticles, ray dir = " << rayDx << ", " << rayDy << ", " << rayDz << endl;
-//                            cerr<<"MechanicalObject<DataTypes>::pickParticles, radius0 = " << radius0 << endl;
-//                            cerr<<"MechanicalObject<DataTypes>::pickParticles, dRadius = " << dRadius << endl;
         for (size_t i=0; i< vsize; ++i)
         {
             defaulttype::Vec<3,Real> pos;
             DataTypes::get(pos[0],pos[1],pos[2],x[i]);
 
-//                                    cerr<<"MechanicalObject<DataTypes>::pickParticles, point " << i << " = " << pos << endl;
             if (pos == origin) continue;
             SReal dist = (pos-origin)*direction;
             if (dist < 0) continue; // discard particles behind the camera, such as mouse position
@@ -3421,13 +3365,10 @@ bool MechanicalObject<DataTypes>::pickParticles(const core::ExecParams* /* param
             defaulttype::Vec<3,Real> vecPoint = (pos-origin) - direction*dist;
             SReal distToRay = vecPoint.norm2();
             SReal maxr = radius0 + dRadius*dist;
-//                                    cerr<<"MechanicalObject<DataTypes>::pickParticles, point " << i << ", maxR = " << maxr << endl;
             if (distToRay <= maxr*maxr)
             {
                 particles.insert(std::make_pair(distToRay,std::make_pair(this,i)));
-//                                            cerr<<"MechanicalObject<DataTypes>::pickParticles, point " << i << ", distance = " << r2 << " inserted " << endl;
             }
-//                                    cerr<<"MechanicalObject<DataTypes>::pickParticles, point " << i << ", distance = " << r2 << " not inserted " << endl;
         }
         return true;
     }

@@ -1,29 +1,28 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_VISUALMODEL_LABEL_H
 #define SOFA_COMPONENT_VISUALMODEL_LABEL_H
+#include <string>
+
 #include "config.h"
 
 #include <sofa/core/objectmodel/Data.h>
@@ -33,7 +32,6 @@
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/Vec.h>
-#include <string>
 #include <SofaGraphComponent/BackgroundSetting.h>
 
 namespace sofa
@@ -45,50 +43,42 @@ namespace component
 namespace visualmodel
 {
 
-class SOFA_OPENGL_VISUAL_API OglLabel : public sofa::core::visual::VisualModel
+class SOFA_OPENGL_VISUAL_API OglLabel : public core::visual::VisualModel
 {
 public:
-    SOFA_CLASS(OglLabel, sofa::core::visual::VisualModel);
-
-protected:
-    OglLabel();
-    virtual ~OglLabel() {
-    }
-
-    unsigned int stepCounter;
+    SOFA_CLASS(OglLabel, core::visual::VisualModel);
 
 public:
-
-    Data<std::string> prefix;
-    Data<std::string> label;
-    Data<std::string> suffix;
-    Data<unsigned int> x;
-    Data<unsigned int> y;
-    Data<unsigned int> fontsize;
-    Data<std::string> color;
-    Data<unsigned int> updateLabelEveryNbSteps;
-	Data<bool> f_visible;
+    Data<std::string>            d_prefix;
+    Data<std::string>            d_label;
+    Data<std::string>            d_suffix;
+    Data<unsigned int>           d_x;
+    Data<unsigned int>           d_y;
+    Data<unsigned int>           d_fontsize;
+    Data<defaulttype::RGBAColor> d_color;
+    Data<bool>                   d_selectContrastingColor ;
+    Data<unsigned int>           d_updateLabelEveryNbSteps;
+    Data<bool>                   d_visible;
 
     void init();
     void reinit();
     void updateVisual();
     void drawVisual(const core::visual::VisualParams* vparams);
 
-    void handleEvent(sofa::core::objectmodel::Event *);
+    void handleEvent(core::objectmodel::Event *);
+
+    void parse(core::objectmodel::BaseObjectDescription *arg) ;
+    void setColor(float r, float g, float b, float a) ;
+
+
+protected:
+    OglLabel();
+    virtual ~OglLabel() {}
+
+    unsigned int                 m_stepCounter;
 
 private:
-    void setColor(float r, float g, float b, float a);
-    void setColor(std::string color);
-
-
-    float r,g,b,a;
-    typedef defaulttype::Vec4f Color;   // Color with alpha value
-
-    std::string internalLabel;
-
-    sofa::component::configurationsetting::BackgroundSetting* backgroundSetting;
-
-
+    std::string                  m_internalLabel;
 };
 
 } // namespace visualmodel

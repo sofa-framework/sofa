@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -85,7 +82,6 @@ void SpatialGridPointModel::computeBoundingTree(int maxDepth)
         this->PointModel::computeBoundingTree(maxDepth);
         return;
     }
-    const bool verbose = this->f_printLog.getValue();
     int lscale = d_leafScale.getValue();
     if (lscale > Grid::GRIDDIM_LOG2) lscale = Grid::GRIDDIM_LOG2;
     int ldim = (1<<lscale);
@@ -150,8 +146,8 @@ void SpatialGridPointModel::computeBoundingTree(int maxDepth)
             Grid::Cell* c = g->cell+i;
             if (!c->plist.empty())
             {
-        	pfirst = c->plist.front().index;
-        	break;
+            pfirst = c->plist.front().index;
+            break;
             }
         }
         if (pfirst == -1) continue; // empty
@@ -160,8 +156,8 @@ void SpatialGridPointModel::computeBoundingTree(int maxDepth)
             Grid::Cell* c = g->cell+i;
             if (!c->plist.empty())
             {
-        	plast = c->plist.back().index;
-        	break;
+            plast = c->plist.back().index;
+            break;
             }
         }
         cells.push_back(OctreeCell(k, pfirst, plast));
@@ -199,7 +195,7 @@ void SpatialGridPointModel::computeBoundingTree(int maxDepth)
     int depth = 0;
     while (depth < maxDepth && cells.size() > 8)
     {
-        if (verbose) sout << "SpatialGridPointModel: cube depth "<<depth<<": "<<cells.size()<<" cells ("<<(size*100/cells.size())*0.01<<" points/cell)."<<sendl;
+        msg_info() << "SpatialGridPointModel: cube depth "<<depth<<": "<<cells.size()<<" cells ("<<(size*100/cells.size())*0.01<<" points/cell)."<<sendl;
         // compact cells inplace
         int parent = -1;
         for (unsigned int i=0; i<cells.size(); ++i)

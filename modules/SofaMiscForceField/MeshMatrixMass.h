@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -51,7 +48,6 @@ namespace topology
 	template< class DataTypes> class EdgeSetGeometryAlgorithms;
 	template< class DataTypes> class TriangleSetGeometryAlgorithms;
 	template< class DataTypes> class TetrahedronSetGeometryAlgorithms;
-	template< class DataTypes> class BezierTetrahedronSetGeometryAlgorithms;
 	template< class DataTypes> class QuadSetGeometryAlgorithms;
 	template< class DataTypes> class HexahedronSetGeometryAlgorithms;
 }
@@ -98,8 +94,7 @@ public:
         TOPOLOGY_TRIANGLESET=2,
         TOPOLOGY_TETRAHEDRONSET=3,
         TOPOLOGY_QUADSET=4,
-        TOPOLOGY_HEXAHEDRONSET=5,
-        TOPOLOGY_BEZIERTETRAHEDRONSET=6,
+        TOPOLOGY_HEXAHEDRONSET=5
     } TopologyType;
 	/// the way the mass should be computed on non-linear elements
 	typedef enum 
@@ -166,7 +161,7 @@ public:
     sofa::component::topology::QuadSetGeometryAlgorithms<GeometricalTypes>* quadGeo;
     sofa::component::topology::TetrahedronSetGeometryAlgorithms<GeometricalTypes>* tetraGeo;
     sofa::component::topology::HexahedronSetGeometryAlgorithms<GeometricalTypes>* hexaGeo;
-    sofa::component::topology::BezierTetrahedronSetGeometryAlgorithms<GeometricalTypes>* bezierTetraGeo;
+
 
     virtual void clear();
 
@@ -227,8 +222,7 @@ public:
 
     /// Answer wether mass matrix is lumped or not
     bool isLumped() { return lumping.getValue(); }
-	// returns the mass vector for a given index of a Bezier tetrahedron
-	virtual const  MassVector &getBezierTetrahedronMassVector(const size_t i) const;
+
 
 protected:
 

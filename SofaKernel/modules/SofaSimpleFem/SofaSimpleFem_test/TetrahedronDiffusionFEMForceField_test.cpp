@@ -1,23 +1,20 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 RC 1        *
-*                (c) 2006-2011 INRIA, USTL, UJF, CNRS, MGH                    *
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
-* Software Foundation; either version 2 of the License, or (at your option)   *
-* any later version.                                                          *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
 *                                                                             *
 * This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
-* more details.                                                               *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
 *                                                                             *
-* You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.                   *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -30,17 +27,29 @@
 #include <SceneCreator/SceneCreator.h>
 
 #include <SofaTest/Sofa_test.h>
+#include <SofaTest/TestMessageHandler.h>
+
+
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaBaseTopology/RegularGridTopology.h>
 #include <SofaSimpleFem/TetrahedronDiffusionFEMForceField.h>
 #include <SofaBaseMechanics/DiagonalMass.h>
 
 #include <sofa/defaulttype/Vec.h>
-#include <math.h>
-#include <boost/math/special_functions/erf.hpp>
 
 #include <iostream>
 #include <fstream>
+
+
+#if defined(WIN32) && _MSC_VER<=1700  // before or equal to visual studio 2012
+   #include <boost/math/special_functions/erf.hpp>
+   #define ERFC(x) boost::math::erfc(x)
+#else
+   #define ERFC(x) std::erfc(x)
+#endif
+
+
+
 
 namespace sofa {
 
@@ -111,7 +120,7 @@ struct TetrahedronDiffusionFEMForceField_test : public Sofa_test<typename _Force
 
         /// Load the scene
         root = simu->createNewGraph("root");
-        root = sofa::core::objectmodel::SPtr_dynamic_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(sceneFilename.c_str()));
+        root = sofa::simulation::getSimulation()->load(sceneFilename.c_str());
 
     }
 
@@ -124,7 +133,7 @@ struct TetrahedronDiffusionFEMForceField_test : public Sofa_test<typename _Force
 
         if(!tetraNode || !temperatureNode)
         {
-          std::cerr << "Node not found in TetrahedronDiffusionFEMForceField_test.scn, test will break" << std::endl;
+          msg_error("TetrahedronDiffusionFEMForceField_test") << "Node not found in TetrahedronDiffusionFEMForceField_test.scn, test will break" ;
           return;
         }
 
@@ -132,7 +141,7 @@ struct TetrahedronDiffusionFEMForceField_test : public Sofa_test<typename _Force
         typename RegularGridTopology::SPtr grid = root->get<RegularGridTopology>(root->SearchDown);
         if(grid)
         {
-            grid->setNumVertices(beamResolution);
+            grid->setSize(beamResolution);
             grid->setPos(0.0, beamDimension[0], 0.0, beamDimension[1], 0.0, beamDimension[2]);
         }
 
@@ -171,7 +180,7 @@ struct TetrahedronDiffusionFEMForceField_test : public Sofa_test<typename _Force
     {
         // For a Dirac heat of T=1 and a fixed BC T=0, the temperature at time = TTTT in the middle of the beam is:
         SReal temp = 1.0 / (4.0 * sqrt(timeEvaluation));
-        theorX[0] = 1.0 * boost::math::erfc( temp );
+        theorX[0] = 1.0 * ERFC( temp );
     }
 
 
@@ -199,6 +208,7 @@ TYPED_TEST_CASE(TetrahedronDiffusionFEMForceField_test, TestTypes);
 // test case
 TYPED_TEST( TetrahedronDiffusionFEMForceField_test , extension )
 {
+    EXPECT_MSG_NOEMIT(Error) ;
     this->debug = false;
 
 
@@ -212,5 +222,7 @@ TYPED_TEST( TetrahedronDiffusionFEMForceField_test , extension )
 
 
 } // namespace sofa
+
+#undef ERFC
 
 #endif /* SOFA_STANDARDTEST_TETRAHEDRONDIFFUSIONFEMFORCEFIELD_TEST_H */

@@ -11,7 +11,7 @@
     <Node name="Quads Mesh">
         <MeshObjLoader name="loader" filename="mesh/cubeQuad.obj" />
         <MechanicalObject src="@loader" template="Vec3d" name="Quads" />
-        <EulerImplicitSolver name="cg_odesolver" printLog="0" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver name="linear solver" template="GraphScattered" iterations="40" tolerance="1e-09" threshold="1e-09" />
         <QuadSetTopologyContainer src="@loader" name="Container" />
         <QuadSetTopologyModifier name="Topology Modifier" />

@@ -1,27 +1,25 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/io/ImagePNG.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <iostream>
@@ -29,8 +27,13 @@
 #ifdef SOFA_HAVE_PNG
 #include <png.h>
 #ifdef _MSC_VER
+#ifdef _DEBUG
+#pragma comment(lib,"libpngd.lib")
+#pragma comment(lib,"zlibd.lib")
+#else
 #pragma comment(lib,"libpng.lib")
 #pragma comment(lib,"zlib.lib")
+#endif
 #endif
 #endif
 
@@ -79,25 +82,25 @@ void png_my_read_data(png_structp png_ptr, png_bytep data, png_size_t length)
 
 bool ImagePNG::load(std::string filename)
 {
-	m_bLoaded = 0;
+    m_bLoaded = 0;
 
     if (!sofa::helper::system::DataRepository.findFile(filename))
     {
-        std::cerr << "File " << filename << " not found " << std::endl;
+        msg_error("ImagePNG") << "File '" << filename << "' not found ";
         return false;
     }
     FILE *file;
     /* make sure the file is there and open it read-only (binary) */
     if ((file = fopen(filename.c_str(), "rb")) == NULL)
     {
-        std::cerr << "File not found : " << filename << std::endl;
+        msg_error("ImagePNG") << "File not found : '" << filename << "'";
         return false;
     }
 
     png_structp PNG_reader = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
     if (PNG_reader == NULL)
     {
-        std::cerr << "png_create_read_struct failed for file "<< filename << std::endl;
+        msg_error("ImagePNG") << "png_create_read_struct failed for file '"<< filename << "'";
         fclose(file);
         return false;
     }
@@ -105,7 +108,7 @@ bool ImagePNG::load(std::string filename)
     png_infop PNG_info = png_create_info_struct(PNG_reader);
     if (PNG_info == NULL)
     {
-        std::cerr << "png_create_info_struct failed for file " << filename << std::endl;
+        msg_error("ImagePNG") << "png_create_info_struct failed for file '" << filename << "'";
         png_destroy_read_struct(&PNG_reader, NULL, NULL);
         fclose(file);
         return false;
@@ -114,7 +117,7 @@ bool ImagePNG::load(std::string filename)
     png_infop PNG_end_info = png_create_info_struct(PNG_reader);
     if (PNG_end_info == NULL)
     {
-        std::cerr << "png_create_info_struct failed for file " << filename << std::endl;
+        msg_error("ImagePNG") << "png_create_info_struct failed for file '" << filename << "'";
         png_destroy_read_struct(&PNG_reader, &PNG_info, NULL);
         fclose(file);
         return false;
@@ -122,14 +125,13 @@ bool ImagePNG::load(std::string filename)
 
     if (setjmp(png_jmpbuf(PNG_reader)))
     {
-        std::cerr << "Loading failed for PNG file " << filename << std::endl;
+        msg_error("ImagePNG") << "Loading failed for PNG file '" << filename << "'";
         png_destroy_read_struct(&PNG_reader, &PNG_info, &PNG_end_info);
         fclose(file);
         return false;
     }
 
-    //png_init_io(PNG_reader, file);
-	png_set_read_fn(PNG_reader, file, png_my_read_data);
+    png_set_read_fn(PNG_reader, file, png_my_read_data);
 
     png_read_info(PNG_reader, PNG_info);
 
@@ -142,9 +144,7 @@ bool ImagePNG::load(std::string filename)
     channels = png_get_channels(PNG_reader, PNG_info);
     color_type = png_get_color_type(PNG_reader, PNG_info);
 
-#ifndef NDEBUG
-    std::cout << "PNG image "<<filename<<": "<<width<<"x"<<height<<"x"<<bit_depth*channels<<std::endl;
-#endif
+
     bool changed = false;
     if (color_type == PNG_COLOR_TYPE_PALETTE)
     {
@@ -172,10 +172,9 @@ bool ImagePNG::load(std::string filename)
         png_read_update_info(PNG_reader, PNG_info);
         bit_depth = png_get_bit_depth(PNG_reader, PNG_info);
         channels = png_get_channels(PNG_reader, PNG_info);
-//        color_type = png_get_color_type(PNG_reader, PNG_info);
 
 #ifndef NDEBUG
-        std::cout << "Converted PNG image "<<filename<<": "<<width<<"x"<<height<<"x"<<bit_depth*channels<<std::endl;
+        msg_info("ImagePNG") << "Converted PNG image "<<filename<<": "<<width<<"x"<<height<<"x"<<bit_depth*channels;
 #endif
     }
 
@@ -187,7 +186,7 @@ bool ImagePNG::load(std::string filename)
         dataType = Image::UNORM8;
         break;
     default:
-        std::cerr << "PNG: in " << filename << ", unsupported bit depth: " << bit_depth << std::endl;
+        msg_error("ImagePNG") << "File '" << filename << "' has unsupported bit depth: " << bit_depth ;
         return false;
     }
     switch (channels)
@@ -205,7 +204,7 @@ bool ImagePNG::load(std::string filename)
         channelFormat = Image::RGBA;
         break;
     default:
-        std::cerr << "PNG: in " << filename << ", unsupported number of channels: " << channels << std::endl;
+        msg_error("ImagePNG") << "in '" << filename << "', unsupported number of channels: " << channels ;
         return false;
     }
 
@@ -225,7 +224,7 @@ bool ImagePNG::load(std::string filename)
 
     png_destroy_read_struct(&PNG_reader, &PNG_info, &PNG_end_info);
     fclose(file);
-	m_bLoaded = 1;
+    m_bLoaded = 1;
     return true;
 }
 
@@ -233,46 +232,44 @@ bool ImagePNG::load(std::string filename)
 // and not the one belonging to libpng since Sofa do the "fopen" on the FILE struct
 void png_my_write_data(png_structp png_ptr, png_bytep data, png_size_t length)
 {
-	png_size_t check;
+    png_size_t check;
 
-	if (png_ptr == NULL)
-		return;
+    if (png_ptr == NULL)
+        return;
 
-	check = fwrite(data, 1, length, (png_FILE_p)png_get_io_ptr(png_ptr));
+    check = fwrite(data, 1, length, (png_FILE_p)png_get_io_ptr(png_ptr));
 
-	if (check != length)
-		png_error(png_ptr, "Write Error");
+    if (check != length)
+        png_error(png_ptr, "Write Error");
 }
 
 void png_default_flush(png_structp png_ptr)
 {
-	png_FILE_p io_ptr;
+    png_FILE_p io_ptr;
 
-	if (png_ptr == NULL)
-		return;
+    if (png_ptr == NULL)
+        return;
 
-	io_ptr = (png_FILE_p)(png_get_io_ptr(png_ptr));
-	fflush(io_ptr);
+    io_ptr = (png_FILE_p)(png_get_io_ptr(png_ptr));
+    fflush(io_ptr);
 }
 
 bool ImagePNG::save(std::string filename, int compression_level)
 {
 
     FILE *file;
-#ifndef NDEBUG
-    std::cout << "Writing PNG file " << filename << std::endl;
-#endif
+
     /* make sure the file is there and open it read-only (binary) */
     if ((file = fopen(filename.c_str(), "wb")) == NULL)
     {
-        std::cerr << "File write access failed : " << filename << std::endl;
+        msg_error("ImagePNG") << "File write access failed to '" << filename << "'" ;
         return false;
     }
 
     png_structp PNG_writer = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
     if (PNG_writer == NULL)
     {
-        std::cerr << "png_create_write_struct failed for file "<< filename << std::endl;
+        msg_error("ImagePNG") << "png_create_write_struct failed for file '"<< filename << "'";
         fclose(file);
         return false;
     }
@@ -280,7 +277,7 @@ bool ImagePNG::save(std::string filename, int compression_level)
     png_infop PNG_info = png_create_info_struct(PNG_writer);
     if (PNG_info == NULL)
     {
-        std::cerr << "png_create_info_struct failed for file " << filename << std::endl;
+        msg_error("ImagePNG") << "png_create_info_struct failed for file '" << filename << "'";
         png_destroy_write_struct(&PNG_writer, NULL);
         fclose(file);
         return false;
@@ -288,14 +285,14 @@ bool ImagePNG::save(std::string filename, int compression_level)
 
     if (setjmp(png_jmpbuf(PNG_writer)))
     {
-        std::cerr << "Writing failed for PNG file " << filename << std::endl;
+        msg_error("ImagePNG") << "Writing failed for PNG file '" << filename << "'";
         png_destroy_write_struct(&PNG_writer, &PNG_info);
         fclose(file);
         return false;
     }
 
     //png_init_io(PNG_writer, file);
-	png_set_write_fn(PNG_writer, file, png_my_write_data, png_default_flush);
+    png_set_write_fn(PNG_writer, file, png_my_write_data, png_default_flush);
 
     png_uint_32 width, height;
     png_uint_32 bit_depth, channels, color_type;
@@ -316,14 +313,16 @@ bool ImagePNG::save(std::string filename, int compression_level)
 
     if (bit_depth != 8)
     {
-        std::cerr << "Unsupported bitdepth "<< bit_depth <<" to write to PNG file "<<filename<<std::endl;
+        msg_error("ImagePNG") << "Unsupported bitdepth "<< bit_depth <<" to write to PNG file '"<<filename<<"'";
         png_destroy_write_struct(&PNG_writer, &PNG_info);
         fclose(file);
         return false;
     }
+
 #ifndef NDEBUG
-    std::cout << "PNG image "<<filename<<": "<<width<<"x"<<height<<"x"<<bit_depth*channels<<std::endl;
+    msg_info("ImagePNG") << "PNG image "<<filename<<": "<<width<<"x"<<height<<"x"<<bit_depth*channels;
 #endif
+
     png_set_IHDR(PNG_writer, PNG_info, width, height,
             bit_depth, color_type, PNG_INTERLACE_NONE,
             PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
@@ -333,7 +332,7 @@ bool ImagePNG::save(std::string filename, int compression_level)
         if (compression_level>=0 && compression_level<=9)
             png_set_compression_level(PNG_writer, compression_level);
         else
-            std::cerr << "ERROR: compression level must be a value between 0 and 9" << std::endl;
+            msg_error("ImagePNG") << "Compression level must be a value between 0 and 9" ;
     }
 
     png_byte** PNG_rows = (png_byte**)malloc(height * sizeof(png_byte*));

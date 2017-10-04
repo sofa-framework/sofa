@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -26,6 +23,8 @@
 #define SOFA_COMPONENT_LINEARSOLVER_MATRIXLINEARSOLVER_INL
 
 #include <SofaBaseLinearSolver/MatrixLinearSolver.h>
+
+#include <sofa/helper/BackTrace.h>
 
 namespace sofa {
 
@@ -36,7 +35,8 @@ namespace linearsolver {
 
 template<class Matrix, class Vector>
 MatrixLinearSolver<Matrix,Vector>::MatrixLinearSolver()
-    : multiGroup( initData( &multiGroup, false, "multiGroup", "activate multiple system solve, one for each child node" ) )
+    : Inherit()
+    , multiGroup( initData( &multiGroup, false, "multiGroup", "activate multiple system solve, one for each child node" ) )
 //, needInvert(true), systemMatrix(NULL), systemRHVector(NULL), systemLHVector(NULL)
     , currentGroup(&defaultGroup)
 {
@@ -63,7 +63,7 @@ MatrixInvertData * MatrixLinearSolver<Matrix,Vector>::getMatrixInvertData(defaul
 template<class Matrix, class Vector>
 MatrixInvertData * MatrixLinearSolver<Matrix,Vector>::createInvertData()
 {
-    std::cerr << "ERROR the solver didn't implement MatrixLinearSolver::getMatrixInvertData this function is not available in MatrixLinearSolver, NULL is return" << std::endl;
+    msg_error("MatrixLinearSolver") << "The solver didn't implement MatrixLinearSolver::getMatrixInvertData this function is not available in MatrixLinearSolver, NULL is return." ;
     return NULL;
 }
 
@@ -163,6 +163,7 @@ void MatrixLinearSolver<Matrix,Vector>::setSystemMBKMatrix(const core::Mechanica
             if (!currentGroup->systemMatrix) currentGroup->systemMatrix = createMatrix();
             currentGroup->matrixAccessor.setGlobalMatrix(currentGroup->systemMatrix);
             currentGroup->matrixAccessor.clear();
+
             //unsigned int nbRow=0, nbCol=0;
             //MechanicalGetMatrixDimensionVisitor(nbRow, nbCol).execute( getContext() );
             //this->getMatrixDimension(&nbRow, &nbCol);
@@ -349,7 +350,7 @@ bool MatrixLinearSolver<Matrix,Vector>::addJMInvJtLocal(Matrix * /*M*/,ResMatrix
         }
         else
         {
-            std::cerr << "AsyncMatrixLinearSolver::addJMInvJt is only implemented for SparseMatrix<Real>" << std::endl;
+            dmsg_error("MatrixLinearSolver") << "AsyncMatrixLinearSolver::addJMInvJt is only implemented for SparseMatrix<Real>" ;
             return false;
         }
     }
