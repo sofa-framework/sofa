@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaMiscFem)
 
+# Dependencies
+find_package(Newmat)
+set(SOFA_HAVE_NEWMAT ${Newmat_FOUND})
+
 message(STATUS "SofaMiscFem:")
 ################################ COMPONENTS HERE ARE THE NG-SET ####################################
 set(HEADER_FILES
@@ -35,10 +39,6 @@ if(SOFA_BUILD_FULLSETCOMPONENTS)
         TetrahedronHyperelasticityFEMForceField.inl
         TriangleFEMForceField.h
         TriangleFEMForceField.inl
-        TriangularAnisotropicFEMForceField.h
-        TriangularAnisotropicFEMForceField.inl
-        TriangularFEMForceField.h
-        TriangularFEMForceField.inl
         )
     list(APPEND SOURCE_FILES
         FastTetrahedralCorotationalForceField.cpp
@@ -46,15 +46,23 @@ if(SOFA_BUILD_FULLSETCOMPONENTS)
         TetrahedralTensorMassForceField.cpp
 
         TetrahedronHyperelasticityFEMForceField.cpp
-        TriangularAnisotropicFEMForceField.cpp
         TriangleFEMForceField.cpp
-        TriangularFEMForceField.cpp
         )
 
 
     if(SOFA_HAVE_NEWMAT)
-        list(APPEND HEADER_FILES PlasticMaterial.h)
-        list(APPEND SOURCE_FILES PlasticMaterial.cpp)
+        list(APPEND HEADER_FILES
+            PlasticMaterial.h
+            TriangularAnisotropicFEMForceField.h
+            TriangularAnisotropicFEMForceField.inl
+            TriangularFEMForceField.h
+            TriangularFEMForceField.inl
+            )
+        list(APPEND SOURCE_FILES
+            PlasticMaterial.cpp
+            TriangularAnisotropicFEMForceField.cpp
+            TriangularFEMForceField.cpp
+            )
     endif()
 
     message(STATUS "   With all maintained sofa components.")
