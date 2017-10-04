@@ -4,8 +4,7 @@ project(SofaGeneralSimpleFem_test)
 
 message(STATUS "SofaGeneralSimpleFem_test:")
 ################################ COMPONENTS HERE ARE THE NG-SET ####################################
-set(SOURCE_FILES
-)
+set(SOURCE_FILES ../../empty.cpp)
 
 
 ############################## COMPONENTS HERE ARE THE FULL-SET ####################################
