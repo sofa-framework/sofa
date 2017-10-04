@@ -4,7 +4,7 @@ project(SofaBoundaryCondition_test)
 
 message(STATUS "SofaBoundaryCondition_test:")
 ################################ COMPONENTS HERE ARE THE NG-SET ####################################
-set(SOURCE_FILES)
+set(SOURCE_FILES ../../empty.cpp)
 
 ############################## COMPONENTS HERE ARE THE FULL-SET ####################################
 if(SOFA_BUILD_FULLSETCOMPONENTS)
