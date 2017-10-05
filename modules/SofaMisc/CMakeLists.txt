@@ -3,11 +3,13 @@ project(SofaMisc)
 
 set(HEADER_FILES
     MeshTetraStuffing.h
+    AddResourceRepository.h
     initMisc.h
 )
 
 set(SOURCE_FILES
     MeshTetraStuffing.cpp
+    AddResourceRepository.cpp
     initMisc.cpp
 )
 

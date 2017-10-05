@@ -1,0 +1,1 @@
+#include<SofaDistanceGrid/components/collision/FFDDistanceGridDiscreteIntersection.h>

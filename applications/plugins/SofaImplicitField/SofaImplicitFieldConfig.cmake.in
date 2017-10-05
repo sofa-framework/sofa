@@ -1,0 +1,17 @@
+# CMake package configuration file for the SofaImplicitField plugin
+
+@PACKAGE_INIT@
+
+find_package(SofaFramework REQUIRED)
+find_package(SofaPython QUIET)
+
+if(NOT TARGET SofaImplicitField)
+        include("${CMAKE_CURRENT_LIST_DIR}/SofaImplicitFieldTargets.cmake")
+endif()
+
+set(SOFA_HAVE_SOFAIMPLICITFIELD "@SOFA_HAVE_SOFAIMPLICITFIELD@")
+
+check_required_components(SofaImplicitField)
+set(SofaImplicitField_LIBRARIES SofaImplicitField)
+set(SofaImplicitField_INCLUDE_DIRS @PACKAGE_SOFAIMPLICITFIELD_INCLUDE_DIR@ ${SOFAIMPLICITFIELD_INCLUDE_DIR})
+

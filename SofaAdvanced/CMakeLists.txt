@@ -21,7 +21,6 @@ set(SOFAADVANCED_TARGETS
     SofaComponentAdvanced
     SofaNonUniformFem
     SofaSphFluid
-    SofaVolumetricData
 )
 
 foreach(TARGET ${SOFAADVANCED_TARGETS})

@@ -36,15 +36,8 @@
 
 
 
-#include <SofaVolumetricData/ImplicitSurfaceMapping.h>
 #include <SofaSphFluid/SPHFluidSurfaceMapping.h>
 
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for ImplicitSurfaceMapping
-typedef sofa::component::mapping::ImplicitSurfaceMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double>, sofa::defaulttype::ExtVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > ImplicitSurfaceMapping3d_Ext3f;
-typedef sofa::component::mapping::ImplicitSurfaceMapping<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > ImplicitSurfaceMapping3d_3d;
 
 
 
@@ -58,8 +51,6 @@ typedef sofa::component::mapping::SPHFluidSurfaceMapping<sofa::defaulttype::StdV
 
 
 #ifndef SOFA_FLOAT
-typedef ImplicitSurfaceMapping3d_Ext3f ImplicitSurfaceMapping3_Ext3;
-typedef ImplicitSurfaceMapping3d_3d ImplicitSurfaceMapping3_3;
 typedef SPHFluidSurfaceMapping3d_Ext3f SPHFluidSurfaceMapping3_Ext3;
 typedef SPHFluidSurfaceMapping3d_3d SPHFluidSurfaceMapping3_3;
 #endif

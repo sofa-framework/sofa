@@ -22,7 +22,6 @@
 #include <sofa/helper/system/config.h>
 #include <SofaComponentAdvanced/initComponentAdvanced.h>
 #include <SofaSphFluid/initSPHFluid.h>
-#include <SofaVolumetricData/initVolumetricData.h>
 #include <SofaNonUniformFem/initNonUniformFEM.h>
 
 namespace sofa
@@ -41,7 +40,6 @@ void initComponentAdvanced()
     }
 
     initSPHFluid();
-    initVolumetricData();
     initNonUniformFEM();
 }
 
