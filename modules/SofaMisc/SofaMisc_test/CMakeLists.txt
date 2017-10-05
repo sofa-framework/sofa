@@ -7,22 +7,27 @@ message(STATUS "SofaMisc_test:")
 set(HEADER_FILES)
 set(SOURCE_FILES ../../empty.cpp)
 
-############################## COMPONENTS HERE ARE THE FULL-SET ####################################
-if(SOFA_BUILD_FULLSETCOMPONENTS)
+############################## COMPONENTS HERE ARE THE LIGHT-SET ###################################
+if(SOFA_BUILD_COMPONENTSET_LIGHT)
+    list(APPEND HEADER_FILES
+
+        )
+    list(APPEND SOURCE_FILES
+
+        )
+endif()
+
+############################## COMPONENTS HERE ARE THE STANDARD-SET ################################
+if(SOFA_BUILD_COMPONENTSET_STANDARD)
     list(APPEND SOURCE_FILES
         AddResourceRepository_test.cpp
         )
 
-    message(STATUS "   With all maintained sofa components.")
-else()
-    message(STATUS "   With only a minimal set of components.")
 endif()
 
 ############################### COMPONENTS HERE ARE DEPRECATED ####################################
-if(SOFA_BUILD_DEPRECATEDCOMPONENTS)
-    message(STATUS "   With deprecated components.")
-else()
-    message(STATUS "   Without deprecated components.")
+if(SOFA_BUILD_COMPONENTSET_FULL)
+
 endif()
 
 

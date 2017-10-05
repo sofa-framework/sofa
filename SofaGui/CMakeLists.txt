@@ -95,7 +95,7 @@ if(NOT SOFA_NO_OPENGL)
     endif()
 
     if(SOFA_HAVE_QT_LIBRARIES)        
-        if(SOFA_BUILD_FULLSETCOMPONENTS)
+        if(SOFA_BUILD_COMPONENTSET_STANDARD)
            option(SOFAGUI_QT "Compile the Qt GUI" ON)
             if(SOFAGUI_QT)
 
