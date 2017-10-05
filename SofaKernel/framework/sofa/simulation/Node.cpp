@@ -30,6 +30,7 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
+#include <sofa/core/visual/Shader.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Node.inl>
 #include <sofa/simulation/PropagateEventVisitor.h>
@@ -58,6 +59,14 @@ namespace sofa
 
 namespace simulation
 {
+
+class TestFORWARD : public BaseObject
+{
+    SOFA_CLASS(TestFORWARD, BaseObject) ;
+public:
+
+} ;
+
 using core::objectmodel::BaseNode;
 using core::objectmodel::BaseObject;
 
