@@ -37,7 +37,6 @@ using namespace std;
 //////////////////// Windows Header ///////////////////////////////////////////////
 #include <windows.h>
 #include <FileAPI.h>
-#include <cstringt.h>
 
 namespace sofa
 {
