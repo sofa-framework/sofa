@@ -10,10 +10,10 @@
 #ifndef EIGEN_FUNCTORS_H
 #define EIGEN_FUNCTORS_H
 
-#ifndef WIN32
+#ifdef GNUC
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations" // deprecated std::binder1st and std::binder2nd
-#endif // WIN32
+#endif // GNUC
 
 
 namespace Eigen {
@@ -1029,8 +1029,8 @@ struct functor_traits<std::binary_compose<T0,T1,T2> >
 
 } // end namespace Eigen
 
-#ifndef WIN32
+#ifdef GNUC
 #pragma GCC diagnostic pop
-#endif // WIN32 
+#endif // GNUC 
 
 #endif // EIGEN_FUNCTORS_H
