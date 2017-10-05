@@ -5,22 +5,26 @@ project(SofaExporter_test)
 
 set(SOURCE_FILES ../../empty.cpp)
 
-############################## COMPONENTS HERE ARE THE FULL-SET ####################################
-if(SOFA_BUILD_FULLSETCOMPONENTS)
+############################## COMPONENTS HERE ARE THE LIGHT-SET ###################################
+if(SOFA_BUILD_COMPONENTSET_LIGHT)
+    list(APPEND HEADER_FILES
+
+        )
+    list(APPEND SOURCE_FILES
+
+        )
+endif()
+
+############################## COMPONENTS HERE ARE THE STANDARD-SET ################################
+if(SOFA_BUILD_COMPONENTSET_STANDARD)
     list(APPEND SOURCE_FILES
         OBJExporter_test.cpp
         STLExporter_test.cpp
         MeshExporter_test.cpp)
-    message(STATUS "SofaExporter_test: build all maintained sofa components.")
-else()
-    message(STATUS "SofaExporter_test: build with only the minimal set of components.")
 endif()
 
 ############################### COMPONENTS HERE ARE DEPRECATED ####################################
-if(SOFA_BUILD_DEPRECATEDCOMPONENTS)
-    message(STATUS "SofaExporter_test: build with deprecated components.")
-else()
-    message(STATUS "SofaExporter_test: build without deprecated components.")
+if(SOFA_BUILD_COMPONENTSET_FULL)
 endif()
 
 

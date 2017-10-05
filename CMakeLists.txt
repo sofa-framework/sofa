@@ -214,22 +214,33 @@ option(SOFA_WITH_DEVTOOLS "Compile with developement extra features." ON)
 
 ### SOFA_BUILD_PERIMETER
 ### Sofa using type double or float or both
-set(SOFA_BUILD_COMPONENTSET full CACHE STRING
+set(SOFA_BUILD_COMPONENTSET standard CACHE STRING
 "Compile SOFA with which set of components (core/full/deprecated)
  - 'core' for only the core components
  - 'full' for all non-deprecated components (DEFAULT)
  - 'deprecated' for full set + deprecated components")
-set_property(CACHE SOFA_BUILD_COMPONENTSET PROPERTY STRINGS core full deprecated)
+set_property(CACHE SOFA_BUILD_COMPONENTSET PROPERTY STRINGS core light standard full)
 
-if(${SOFA_BUILD_COMPONENTSET} STREQUAL full)
-    set(SOFA_BUILD_FULLSETCOMPONENTS 1)          # Used in sofa/config.h.in
-    set(SOFA_BUILD_DEPRECATEDCOMPONENTS 0)       # Used in sofa/config.h.in
-elseif(${SOFA_BUILD_COMPONENTSET} STREQUAL deprecated)
-    set(SOFA_BUILD_FULLSETCOMPONENTS 1)          # Used in sofa/config.h.in
-    set(SOFA_BUILD_DEPRECATEDCOMPONENTS 1)       # Used in sofa/config.h.in
-elseif(${SOFA_BUILD_COMPONENTSET} STREQUAL core)
-    set(SOFA_BUILD_FULLSETCOMPONENTS 0)          # Used in sofa/config.h.in
-    set(SOFA_BUILD_DEPRECATEDCOMPONENTS 0)       # Used in sofa/config.h.in
+if(${SOFA_BUILD_COMPONENTSET} STREQUAL core)
+    message(STATUS "   Build SOFA with 'core' compenents set")
+    set(SOFA_BUILD_COMPONENTSET_LIGHT 0)
+    set(SOFA_BUILD_COMPONENTSET_STANDARD 0)
+    set(SOFA_BUILD_COMPONENTSET_FULL 0)
+elseif(${SOFA_BUILD_COMPONENTSET} STREQUAL light)
+    message(STATUS "   Build SOFA with 'light' compenents set")
+    set(SOFA_BUILD_COMPONENTSET_LIGHT 1)
+    set(SOFA_BUILD_COMPONENTSET_STANDARD 0)
+    set(SOFA_BUILD_COMPONENTSET_FULL 0)
+elseif(${SOFA_BUILD_COMPONENTSET} STREQUAL standard)
+    message(STATUS "   Build SOFA with 'standard' compenents set")
+    set(SOFA_BUILD_COMPONENTSET_LIGHT 1)
+    set(SOFA_BUILD_COMPONENTSET_STANDARD 1)
+    set(SOFA_BUILD_COMPONENTSET_FULL 0)
+elseif(${SOFA_BUILD_COMPONENTSET} STREQUAL full)
+    message(STATUS "   Build SOFA with 'full' compenents set (incuding deprecated components)")
+    set(SOFA_BUILD_COMPONENTSET_LIGHT 1)
+    set(SOFA_BUILD_COMPONENTSET_STANDARD 1)
+    set(SOFA_BUILD_COMPONENTSET_FULL 1)
 endif()
 
 ### Threading

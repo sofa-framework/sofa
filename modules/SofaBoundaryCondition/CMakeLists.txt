@@ -12,8 +12,18 @@ set(SOURCE_FILES
     initBoundaryCondition.cpp
 )
 
-############################## COMPONENTS HERE ARE THE FULL-SET ####################################
-if(SOFA_BUILD_FULLSETCOMPONENTS)
+############################## COMPONENTS HERE ARE THE LIGHT-SET ###################################
+if(SOFA_BUILD_COMPONENTSET_LIGHT)
+    list(APPEND HEADER_FILES
+
+        )
+    list(APPEND SOURCE_FILES
+
+        )
+endif()
+
+############################## COMPONENTS HERE ARE THE STANDARD-SET ################################
+if(SOFA_BUILD_COMPONENTSET_STANDARD)
     list(APPEND HEADER_FILES
         AffineMovementConstraint.h
         AffineMovementConstraint.inl
@@ -121,13 +131,10 @@ if(SOFA_BUILD_FULLSETCOMPONENTS)
         ProjectToPointConstraint.cpp
         ProjectDirectionConstraint.cpp
         )
-    message(STATUS "   With all maintained sofa components.")
-else()
-    message(STATUS "   With only a minimal set of components.")
 endif()
 
 ############################### COMPONENTS HERE ARE DEPRECATED ####################################
-if(SOFA_BUILD_DEPRECATEDCOMPONENTS)
+if(SOFA_BUILD_COMPONENTSET_FULL)
     list(APPEND HEADER_FILES
         BuoyantForceField.h
         BuoyantForceField.inl
@@ -141,9 +148,6 @@ if(SOFA_BUILD_DEPRECATEDCOMPONENTS)
         UniformVelocityDampingForceField.cpp
         VaccumSphereForceField.cpp
         )
-    message(STATUS "   With deprecated components.")
-else()
-    message(STATUS "   Without deprecated components.")
 endif()
 
 

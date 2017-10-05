@@ -12,8 +12,18 @@ set(SOURCE_FILES
     initUserInteraction.cpp
     )
 
-############################## COMPONENTS HERE ARE THE FULL-SET ####################################
-if(SOFA_BUILD_FULLSETCOMPONENTS)
+############################## COMPONENTS HERE ARE THE LIGHT-SET ###################################
+if(SOFA_BUILD_COMPONENTSET_LIGHT)
+    list(APPEND HEADER_FILES
+
+        )
+    list(APPEND SOURCE_FILES
+
+        )
+endif()
+
+############################## COMPONENTS HERE ARE THE STANDARD-SET ################################
+if(SOFA_BUILD_COMPONENTSET_STANDARD)
     list(APPEND HEADER_FILES
         # AddFramePerformer.h
         # AddFramePerformer.inl
@@ -52,13 +62,10 @@ if(SOFA_BUILD_FULLSETCOMPONENTS)
         RayTraceDetection.cpp
         TopologicalChangeManager.cpp
         )
-    message(STATUS "   With all maintained sofa components.")
-else()
-    message(STATUS "   With only a minimal set of components.")
 endif()
 
 ############################### COMPONENTS HERE ARE DEPRECATED ####################################
-if(SOFA_BUILD_DEPRECATEDCOMPONENTS)
+if(SOFA_BUILD_COMPONENTSET_FULL)
     list(APPEND HEADER_FILES
         AddRecordedCameraPerformer.h
         ArticulatedHierarchyBVHController.h
@@ -100,9 +107,6 @@ if(SOFA_BUILD_DEPRECATEDCOMPONENTS)
         StartNavigationPerformer.cpp
         SuturePointPerformer.cpp
         )
-    message(STATUS "   With deprecated components.")
-else()
-    message(STATUS "   Without deprecated components.")
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})

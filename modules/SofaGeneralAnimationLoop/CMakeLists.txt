@@ -11,8 +11,18 @@ set(SOURCE_FILES
     initGeneralAnimationLoop.cpp
 )
 
-############################## COMPONENTS HERE ARE THE FULL-SET ####################################
-if(SOFA_BUILD_FULLSETCOMPONENTS)
+############################## COMPONENTS HERE ARE THE LIGHT-SET ###################################
+if(SOFA_BUILD_COMPONENTSET_LIGHT)
+    list(APPEND HEADER_FILES
+
+        )
+    list(APPEND SOURCE_FILES
+
+        )
+endif()
+
+############################## COMPONENTS HERE ARE THE STANDARD-SET ################################
+if(SOFA_BUILD_COMPONENTSET_STANDARD)
     list(APPEND HEADER_FILES
         MultiStepAnimationLoop.h
         MultiTagAnimationLoop.h )
@@ -20,16 +30,10 @@ if(SOFA_BUILD_FULLSETCOMPONENTS)
     list(APPEND SOURCE_FILES
         MultiStepAnimationLoop.cpp
         MultiTagAnimationLoop.cpp )
-    message(STATUS "SofaGeneralAnimationLoop: build all maintained sofa components.")
-else()
-    message(STATUS "SofaGeneralAnimationLoop: build with only the minimal set of components.")
 endif()
 
 ############################### COMPONENTS HERE ARE DEPRECATED ####################################
-if(SOFA_BUILD_DEPRECATEDCOMPONENTS)
-    message(STATUS "SofaGeneralAnimationLoop: build with deprecated components.")
-else()
-    message(STATUS "SofaGeneralAnimationLoop: build without deprecated components.")
+if(SOFA_BUILD_COMPONENTSET_FULL)
 endif()
 
 

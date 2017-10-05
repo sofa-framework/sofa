@@ -7,7 +7,7 @@ set(HEADER_FILES)
 
 set(SOURCE_FILES ../../empty.cpp)
 
-if(SOFA_BUILD_FULLSETCOMPONENTS)
+if(SOFA_BUILD_COMPONENTSET_STANDARD)
         list(APPEND SOURCE_FILES AverageCoord_test.cpp
             ClusteringEngine_test.cpp
             ComplementaryROI_test.cpp
@@ -22,9 +22,6 @@ if(SOFA_BUILD_FULLSETCOMPONENTS)
             IndicesFromValues_test.cpp
             MergePoints_test.cpp
             IndexValueMapper_test.cpp)
-        message(STATUS "SofaGeneralEngine_test: build all maintained sofa components.")
-else()
-        message(STATUS "SofaGeneralEngine_test: build without deprecation layer.")
 endif()
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
