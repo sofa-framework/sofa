@@ -135,6 +135,7 @@ void ServerCommunicationZMQ::receiveData()
 
 std::string ServerCommunicationZMQ::dataToString(CommunicationSubscriber* subscriber, std::string argument)
 {
+    /// TODO change to fetchData
     std::stringstream messageStr;
     SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK> source = subscriber->getSource();
     MapData dataMap = source->getDataAliases();
