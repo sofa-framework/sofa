@@ -50,7 +50,15 @@ namespace simulation
 namespace _scenecheckapichange_
 {
 
+SceneCheckAPIChange::SceneCheckAPIChange()
+{
+    installDefaultChangeSets() ;
+}
 
+SceneCheckAPIChange::~SceneCheckAPIChange()
+{
+
+}
 
 const std::string SceneCheckAPIChange::getName()
 {
