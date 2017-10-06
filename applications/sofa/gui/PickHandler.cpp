@@ -232,8 +232,12 @@ void PickHandler::activateRay(int width, int height, core::objectmodel::BaseNode
 {
     if (!interactorInUse)
     {
-        root->addChild(mouseNode);
-        interaction->attach(mouseNode.get());
+		if (mouseNode)
+		{
+			root->addChild(mouseNode);
+			interaction->attach(mouseNode.get());
+		}
+
         if( pickingMethod == SELECTION_BUFFER)
         {
             allocateSelectionBuffer(width,height);
@@ -246,7 +250,8 @@ void PickHandler::deactivateRay()
 {
     if (interactorInUse )
     {
-        mouseNode->detachFromGraph();
+		if (mouseNode)
+			mouseNode->detachFromGraph();
 
 		if (operations[LEFT]) operations[LEFT]->endOperation();			
 		if (operations[MIDDLE]) operations[MIDDLE]->endOperation();
@@ -285,7 +290,8 @@ void PickHandler::setCompatibleInteractor()
             {
                 interaction->detach();
                 interaction = instanceComponents[i];
-                interaction->attach(mouseNode.get());
+				if (mouseNode) 
+					interaction->attach(mouseNode.get());					
             }
         }
     }
@@ -299,7 +305,8 @@ void PickHandler::setCompatibleInteractor()
             {
                 interaction->detach();
                 interaction = instanceComponents[i];
-                interaction->attach(mouseNode.get());
+				if (mouseNode) 
+					interaction->attach(mouseNode.get());
             }
         }
     }
@@ -309,7 +316,7 @@ void PickHandler::setCompatibleInteractor()
 
 void PickHandler::updateRay(const sofa::defaulttype::Vector3 &position,const sofa::defaulttype::Vector3 &orientation)
 {
-    if (!interactorInUse) return;
+    if (!interactorInUse || !mouseCollision) return;
 
     mouseCollision->getRay(0).setOrigin( position+orientation*interaction->mouseInteractor->getDistanceFromMouse() );
     mouseCollision->getRay(0).setDirection( orientation );
@@ -404,11 +411,17 @@ component::collision::BodyPicked PickHandler::findCollision()
 
 component::collision::BodyPicked PickHandler::findCollisionUsingPipeline()
 {
+	BodyPicked result;
+
+	if (!mouseCollision) {
+		dmsg_error("PickHandler") << "No mouseCollision.";
+		return result;
+	}
+
     const defaulttype::Vector3& origin          = mouseCollision->getRay(0).origin();
     const defaulttype::Vector3& direction       = mouseCollision->getRay(0).direction();
     const double& maxLength                     = mouseCollision->getRay(0).l();
-
-    BodyPicked result;
+    
     const std::set< sofa::component::collision::BaseRayContact*> &contacts = mouseCollision->getContacts();
     for (std::set< sofa::component::collision::BaseRayContact*>::const_iterator it=contacts.begin(); it != contacts.end(); ++it)
     {
