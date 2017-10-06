@@ -24,8 +24,6 @@
 
 #include <gtest/gtest.h>
 
-#include <SofaTest/TestMessageHandler.h>
-using sofa::helper::logging::Message;
 
 namespace sofa {
 
@@ -110,7 +108,7 @@ protected:
 TEST_F(MeshOBJ_test, MeshOBJ_NoFile)
 {
     /// This generate a test failure if no message is generated.
-    EXPECT_MSG_EMIT(Error) ;
+
 
     MeshOBJTestData meshNoFile("mesh/randomnamewhichdoesnotexist.obj", 0, 0, 0, 0, 0, 0, 0);
     meshNoFile.testBench();

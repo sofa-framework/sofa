@@ -25,7 +25,6 @@
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/Utils.h>
 #include <gtest/gtest.h>
-#include <SofaTest/TestMessageHandler.h>
 
 #include <fstream>
 
@@ -164,8 +163,6 @@ TEST_F(PluginManager_test, pluginEntriesValues)
 
 TEST_F(PluginManager_test, testIniFile)
 {
-    EXPECT_MSG_NOEMIT(Deprecated);
-
     PluginManager&pm = PluginManager::getInstance();
     pm.loadPluginByName(pluginName);
     const std::string pluginPath = pm.findPlugin(pluginName);
@@ -188,8 +185,6 @@ TEST_F(PluginManager_test, testIniFile)
 
 TEST_F(PluginManager_test, testDeprecatedIniFileWoVersion)
 {
-    EXPECT_MSG_EMIT(Deprecated);
-
     PluginManager&pm = PluginManager::getInstance();
 
     ASSERT_EQ(pm.getPluginMap().size(), 0u);

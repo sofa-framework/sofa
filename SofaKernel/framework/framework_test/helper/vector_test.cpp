@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Sofa_test.h>
-using sofa::Sofa_test;
-using testing::Types;
+#include <gtest/gtest.h>
 
 #include <sofa/helper/vector.h>
 using sofa::helper::vector ;
@@ -38,12 +36,11 @@ using sofa::helper::logging::MessageDispatcher ;
 using sofa::helper::logging::Message ;
 
 template<class T>
-class vector_test : public Sofa_test<>,
-        public ::testing::WithParamInterface<std::vector<std::string>>
+class vector_test : public ::testing::Test, 
+                    public ::testing::WithParamInterface<std::vector<std::string> >
 {
 public:
     void checkVector(const std::vector<std::string>& params) ;
-    void benchmark(const std::vector<std::string>& params) ;
 };
 
 template<class T>
@@ -182,6 +179,8 @@ std::vector<std::vector<std::string>> uintvalues={
     {"3.14 4.15 5.16", "0 0 0", "Warning"},
     {"5 6---10 0", "5 0 0", "Warning"}
 };
+
+
 INSTANTIATE_TEST_CASE_P(checkReadWriteBehavior,
                         vector_test_unsigned_int,
                         ::testing::ValuesIn(uintvalues));
@@ -193,8 +192,8 @@ INSTANTIATE_TEST_CASE_P(checkReadWriteBehavior,
 ///
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 template<class T>
-class vector_benchmark : public Sofa_test<>,
-        public ::testing::WithParamInterface<std::vector<std::string>>
+class vector_benchmark : public ::testing::Test,
+                         public ::testing::WithParamInterface<std::vector<std::string> >
 {
 public:
     void benchmark(const std::vector<std::string>& params) ;
@@ -237,17 +236,22 @@ std::vector<std::vector<std::string>> benchvalues =
      {"100000","1000"}
     } ;
 
+template class vector_benchmark<unsigned int>;
 typedef vector_benchmark<unsigned int> vector_benchmark_unsigned_int;
+
 TEST_P(vector_benchmark_unsigned_int, benchmark)
 {
-   this->benchmark(GetParam());
+    this->benchmark(GetParam());
 }
 
 INSTANTIATE_TEST_CASE_P(benchmark,
-                        vector_benchmark_unsigned_int,
-                        ::testing::ValuesIn(benchvalues));
+    vector_benchmark_unsigned_int,
+    ::testing::ValuesIn(benchvalues));
 
+
+template class vector_benchmark<int>;
 typedef vector_benchmark<int> vector_benchmark_int;
+
 TEST_P(vector_benchmark_int, benchmark)
 {
    this->benchmark(GetParam());
