@@ -22,6 +22,7 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_STANDARDTETRAHEDRALFEMFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_STANDARDTETRAHEDRALFEMFORCEFIELD_INL
 
+#include <sofa/core/visual/DisplayFlags.h>
 #include <SofaMiscFem/BoyceAndArruda.h>
 #include <SofaMiscFem/NeoHookean.h>
 #include <SofaMiscFem/MooneyRivlin.h>

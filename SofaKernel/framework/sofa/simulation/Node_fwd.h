@@ -19,36 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-// Author: Hadrien Courtecuisse
-//
-// Copyright: See COPYING file that comes with this distribution
+#ifndef SOFA_SIMULATION_NODE_FWD_H
+#define SOFA_SIMULATION_NODE_FWD_H
 
-#include <sofa/core/ObjectFactory.h>
-#include <SofaPreconditioner/PrecomputedWarpPreconditioner.inl>
+namespace sofa {
+    namespace simulation {
+        class Node ;
+    }
+}
 
-namespace sofa
-{
-
-namespace component
-{
-
-namespace linearsolver
-{
-
-SOFA_DECL_CLASS(PrecomputedWarpPreconditioner)
-
-int PrecomputedWarpPreconditionerClass = core::RegisterObject("Linear system solver based on a precomputed inverse matrix, wrapped by a per-node rotation matrix")
-#ifndef SOFA_FLOAT
-        .add< PrecomputedWarpPreconditioner< defaulttype::Vec3dTypes > >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< PrecomputedWarpPreconditioner< defaulttype::Vec3fTypes > >()
-#endif
-        ;
-
-} // namespace linearsolver
-
-} // namespace component
-
-} // namespace sofa
-
+#endif // SOFA_SIMULATION_NODE_FWD

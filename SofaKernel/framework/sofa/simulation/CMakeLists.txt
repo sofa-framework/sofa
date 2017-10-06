@@ -32,6 +32,7 @@ set(HEADER_FILES
     MutationListener.h
     MutationListener_fwd.h
     Node.h
+    Node_fwd.h
     Node.inl
     ParallelVisitorScheduler.h
     PauseEvent.h

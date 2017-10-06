@@ -22,6 +22,7 @@
 #include <sofa/core/behavior/ConstraintSolver.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/core/objectmodel/BaseNode.h>
+#include <sofa/core/ConstraintParams.h>
 
 namespace sofa
 {

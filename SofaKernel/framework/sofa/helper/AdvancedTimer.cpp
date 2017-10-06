@@ -29,7 +29,7 @@
 #include <sofa/helper/map.h>
 #include <../extlibs/json/json.h>
 
-
+#include <sofa/simulation/Simulation.h>
 #include <cmath>
 #include <cstdlib>
 #include <stack>
