@@ -19,7 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_CORE_OBJECTMODEL_BASEDATA_CPP
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/helper/BackTrace.h>
@@ -344,33 +343,6 @@ std::string BaseData::decodeTypeName(const std::type_info& t)
 {
     return BaseClass::decodeTypeName(t);
 }
-
-
-
-template<>
-sofa::core::objectmodel::Base* LinkTraitsPtrCasts<sofa::core::objectmodel::Base>::getBase(sofa::core::objectmodel::Base* b)
-{
-    return b;
-}
-template<>
-sofa::core::objectmodel::BaseData* LinkTraitsPtrCasts<sofa::core::objectmodel::Base>::getData(sofa::core::objectmodel::Base* /*b*/)
-{
-    return NULL;
-}
-
-template<>
-sofa::core::objectmodel::Base* LinkTraitsPtrCasts<sofa::core::objectmodel::BaseData>::getBase(sofa::core::objectmodel::BaseData* d)
-{
-    return d->getOwner();
-}
-
-template<>
-sofa::core::objectmodel::BaseData* LinkTraitsPtrCasts<sofa::core::objectmodel::BaseData>::getData(sofa::core::objectmodel::BaseData* d)
-{
-    return d;
-}
-
-
 
 } // namespace objectmodel
 
