@@ -21,12 +21,8 @@
 ******************************************************************************/
 #ifndef SOFA_HELPER_PARTICLEMASK_H
 #define SOFA_HELPER_PARTICLEMASK_H
+
 #include <sofa/helper/vector.h>
-
-#include <sofa/defaulttype/Mat.h>
-#include <Eigen/SparseCore>
-
-
 namespace sofa
 {
 
@@ -59,6 +55,9 @@ namespace helper
 
 
 #ifdef SOFA_USE_MASK
+
+#include <sofa/defaulttype/Mat.h>
+#include <Eigen/SparseCore>
 
 class SOFA_HELPER_API StateMask
 {
@@ -178,8 +177,8 @@ public:
 
     /// filtering the given input matrix by using the mask as a diagonal projection matrix
     /// output = mask.asDiagonal() * input
-    template<class Real>
-    void maskedMatrix( Eigen::SparseMatrix<Real,Eigen::RowMajor>& output, const Eigen::SparseMatrix<Real,Eigen::RowMajor>& input, size_t blockSize=1 ) const {SOFA_UNUSED(blockSize); output=input;}
+    //template<class Real>
+    //void maskedMatrix( Eigen::SparseMatrix<Real,Eigen::RowMajor>& output, const Eigen::SparseMatrix<Real,Eigen::RowMajor>& input, size_t blockSize=1 ) const {SOFA_UNUSED(blockSize); output=input;}
 
     /// return the number of dofs in the mask
     size_t nbActiveDofs() const {return m_size;}
