@@ -47,6 +47,9 @@ typedef std::function<void(sofa::core::objectmodel::Base*)> ChangeSetHookFunctio
 class SOFA_GRAPH_COMPONENT_API SceneCheckAPIChange : public SceneCheck
 {
 public:
+    SceneCheckAPIChange() ;
+    virtual ~SceneCheckAPIChange() ;
+
     typedef std::shared_ptr<SceneCheckAPIChange> SPtr ;
     static SPtr newSPtr() { return SPtr(new SceneCheckAPIChange()); }
     virtual const std::string getName() override ;
