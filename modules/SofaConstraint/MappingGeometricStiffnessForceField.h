@@ -1,12 +1,12 @@
-#ifndef ISPHYSICS_MECHANICS_GEOMETRICSTIFFNESSFORCEFIELD_H
-#define ISPHYSICS_MECHANICS_GEOMETRICSTIFFNESSFORCEFIELD_H
+#ifndef SOFA_CONSTRAINT_MAPPINGGEOMTRICSTIFFNESSFORCEFIELD_H
+#define SOFA_CONSTRAINT_MAPPINGGEOMTRICSTIFFNESSFORCEFIELD_H
 
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/behavior/ForceField.h>
 
-namespace isphysics
+namespace sofa
 {
-namespace mechanics
+namespace constraint
 {
 
 template <class DataTypes>
@@ -53,4 +53,4 @@ private:
 }
 
 
-#endif // ! ISPHYSICS_MECHANICS_GEOMETRICSTIFFNESSFORCEFIELD_H
+#endif // ! SOFA_CONSTRAINT_MAPPINGGEOMTRICSTIFFNESSFORCEFIELD_H

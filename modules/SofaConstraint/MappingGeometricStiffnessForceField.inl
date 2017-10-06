@@ -1,13 +1,13 @@
-#ifndef ISPHYSICS_MECHANICS_GEOMETRICSTIFFNESSFORCEFIELD_INL
-#define ISPHYSICS_MECHANICS_GEOMETRICSTIFFNESSFORCEFIELD_INL
+#ifndef SOFA_CONSTRAINT_MAPPINGGEOMTRICSTIFFNESSFORCEFIELD_INL
+#define SOFA_CONSTRAINT_MAPPINGGEOMTRICSTIFFNESSFORCEFIELD_INL
 
-#include "GeometricStiffnessForceField.h"
+#include "MappingGeometricStiffnessForceField.h"
 #include <sofa/core/behavior/ForceField.inl>
 #include <SofaBaseLinearSolver/BlocMatrixWriter.h>
 
-namespace isphysics
+namespace sofa
 {
-namespace mechanics
+namespace constraint
 {
 
 template< class DataTypes> 
@@ -77,4 +77,4 @@ void GeometricStiffnessForceField<DataTypes>::addKToMatrix(const sofa::core::Mec
 }
 
 
-#endif // ISPHYSICS_MECHANICS_GEOMETRICSTIFFNESSFORCEFIELD_INL
+#endif // SOFA_CONSTRAINT_MAPPINGGEOMTRICSTIFFNESSFORCEFIELD_INL

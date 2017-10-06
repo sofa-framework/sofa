@@ -46,6 +46,8 @@ if(SOFA_BUILD_COMPONENTSET_STANDARD)
         LinearSolverConstraintCorrection.inl
         LocalMinDistance.h
         LocalMinDistance.inl
+        MappingGeometricStiffnessForceField.h
+        MappingGeometricStiffnessForceField.inl
         PrecomputedConstraintCorrection.h
         PrecomputedConstraintCorrection.inl
         SlidingConstraint.h
@@ -87,6 +89,7 @@ if(SOFA_BUILD_COMPONENTSET_STANDARD)
         LMDNewProximityIntersection.cpp
         LinearSolverConstraintCorrection.cpp
         LocalMinDistance.cpp
+        MappingGeometricStiffnessForceField.cpp
         PrecomputedConstraintCorrection.cpp
         SlidingConstraint.cpp
         StickContactConstraint.cpp
