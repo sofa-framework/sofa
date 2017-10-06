@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <SofaTest/Sofa_test.h>
 #include <SceneCreator/SceneCreator.h>
+#include <SceneCreator/SceneUtils.h>
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
 #include <SofaBaseMechanics/UniformMass.h>

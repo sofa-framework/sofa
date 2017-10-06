@@ -22,6 +22,8 @@
 #include <SofaTest/Sofa_test.h>
 #include <SofaTest/TestMessageHandler.h>
 
+#include <SofaBaseMechanics/MechanicalObject.h>
+typedef sofa::component::container::MechanicalObject<Vec3Types> MechanicalObject3;
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <SofaSimulationTree/TreeSimulation.h>

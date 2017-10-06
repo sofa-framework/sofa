@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "BroadPhase_test.h"
-
+#include <SofaBaseCollision/BruteForceDetection.h>
 
 typedef BroadPhaseTest<sofa::component::collision::BruteForceDetection> Brut;
 TEST_F(Brut, rand_sparse_test ) { ASSERT_TRUE( randSparse()); }

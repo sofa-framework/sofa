@@ -74,39 +74,18 @@ private:
     std::map<std::string,bool> m_requiredPlugins ;
 };
 
-typedef std::function<void(sofa::core::objectmodel::Base*)> ChangeSetHookFunction ;
-class SOFA_GRAPH_COMPONENT_API SceneCheckAPIChange : public SceneCheck
-{
-public:
-    typedef std::shared_ptr<SceneCheckAPIChange> SPtr ;
-    static SPtr newSPtr() { return SPtr(new SceneCheckAPIChange()); }
-    virtual const std::string getName() override ;
-    virtual const std::string getDesc() override ;
-    virtual void doInit(Node* node) override ;
-    virtual void doCheckOn(Node* node) override ;
-
-    void installDefaultChangeSets() ;
-    void addHookInChangeSet(const std::string& version, ChangeSetHookFunction fct) ;
-private:
-    std::string m_currentApiLevel;
-    std::string m_selectedApiLevel {"17.06"} ;
-
-    std::map<std::string, std::vector<ChangeSetHookFunction>> m_changesets ;
-};
 
 } /// _scenechecks_
 
 using _scenechecks_::SceneCheck ;
 using _scenechecks_::SceneCheckDuplicatedName ;
 using _scenechecks_::SceneCheckMissingRequiredPlugin ;
-using _scenechecks_::SceneCheckAPIChange ;
 
 namespace scenecheckers
 {
     using _scenechecks_::SceneCheck ;
     using _scenechecks_::SceneCheckDuplicatedName ;
     using _scenechecks_::SceneCheckMissingRequiredPlugin ;
-    using _scenechecks_::SceneCheckAPIChange ;
 } /// checkers
 
 } /// namespace simulation

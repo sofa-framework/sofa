@@ -39,6 +39,7 @@ void initConstraint()
     }
 }
 
+#ifdef SOFA_BUILD_FULLSETCOMPONENTS
 SOFA_LINK_CLASS(LocalMinDistance)
 SOFA_LINK_CLASS(LMDNewProximityIntersection)
 SOFA_LINK_CLASS(FrictionContact)
@@ -52,7 +53,7 @@ SOFA_LINK_CLASS(BilateralInteractionConstraint)
 SOFA_LINK_CLASS(ConstraintAnimationLoop)
 SOFA_LINK_CLASS(StopperConstraint)
 SOFA_LINK_CLASS(SlidingConstraint)
-
+#endif
 
 } // namespace component
 

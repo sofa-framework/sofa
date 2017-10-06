@@ -34,6 +34,12 @@ if(MSVC)
     option(SOFA_VECTORIZE "Enable the use of SSE2 instructions by the compiler (Only available for MSVC)." OFF)
 endif()
 
+if(SOFA_WITH_DEPRECATED)
+    set(SOFA_WITH_DEPRECATED_ "1")
+else()
+    set(SOFA_WITH_DEPRECATED_ "0")
+endif()
+
 if(SOFA_WITH_THREADING)
     set(SOFA_WITH_THREADING_ "1")
 else()

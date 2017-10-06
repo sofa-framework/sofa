@@ -4,6 +4,8 @@ project(SofaDistanceGrid)
 set(SOFADISTANCEGRID_VERSION 1.0)
 set(SOFA_HAVE_SOFADISTANCEGRID 1)
 
+find_package(SofaMiscCollision REQUIRED)
+
 set(HEADER_FILES
     config.h
     initSofaDistanceGrid.h
@@ -43,7 +45,7 @@ add_subdirectory(SofaDistanceGrid_test)
 configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/SofaDistanceGrid/config.h")
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaMiscCollision ${SOFAADVANCED_DEPENDENCY_LINK})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaUserInteraction SofaMiscCollision)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaUserInteraction)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_HAVE_SOFADISTANCEGRID")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
