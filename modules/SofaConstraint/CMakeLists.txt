@@ -58,6 +58,8 @@ if(SOFA_BUILD_COMPONENTSET_STANDARD)
         UncoupledConstraintCorrection.inl
         UnilateralInteractionConstraint.h
         UnilateralInteractionConstraint.inl
+        UniformConstraint.h
+        UniformConstraint.inl
         BarycentricDistanceLMConstraintContact.h
         BarycentricDistanceLMConstraintContact.inl
         DOFBlockerLMConstraint.h
@@ -91,6 +93,7 @@ if(SOFA_BUILD_COMPONENTSET_STANDARD)
         StopperConstraint.cpp
         UncoupledConstraintCorrection.cpp
         UnilateralInteractionConstraint.cpp
+        UniformConstraint.cpp
         BarycentricDistanceLMConstraintContact.cpp
         DOFBlockerLMConstraint.cpp
         FixedLMConstraint.cpp

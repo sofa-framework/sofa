@@ -1,10 +1,9 @@
-#ifndef ISPHYSICS_INTERACTION_UNIFORMCONSTRAINT_INL
-#define ISPHYSICS_INTERACTION_UNIFORMCONSTRAINT_INL
+#ifndef SOFA_CONSTRAINT_UNIFORMCONSTRAINT_INL
+#define SOFA_CONSTRAINT_UNIFORMCONSTRAINT_INL
 
 #include "UniformConstraint.h"
 #include <sofa/core/behavior/Constraint.inl>
 #include <sofa/core/objectmodel/Data.h>
-#include "GenericConstraintResolution.h"
 #include <SofaConstraint/BilateralConstraintResolution.h>
 
 namespace isphysics
@@ -14,8 +13,7 @@ namespace interaction
 
 template< class DataTypes >
 UniformConstraint<DataTypes>::UniformConstraint()
-    :d_softW(initData(&d_softW, sofa::helper::vector<Real>(1, Real(0)), "softW", "Local compliance to apply on each dof"))
-    ,d_iterative(initData(&d_iterative, true, "iterative", "Iterate over the bilateral constraints, otherwise a block factorisation\
+    :d_iterative(initData(&d_iterative, true, "iterative", "Iterate over the bilateral constraints, otherwise a block factorisation\
                                                             is computed."))
     ,m_constraintIndex(0)
 {
@@ -84,18 +82,14 @@ void UniformConstraint<DataTypes>::getConstraintViolation(const sofa::core::Cons
 template< class DataTypes >
 void UniformConstraint<DataTypes>::getConstraintResolution(const sofa::core::ConstraintParams* cParams, std::vector<sofa::core::behavior::ConstraintResolution*>& crVector, unsigned int& offset)
 {
-    
-    auto softW  = sofa::helper::read(d_softW, cParams);
-
+   
     if (d_iterative.getValue(cParams))
     {
         for (std::size_t i = 0; i < this->getMState()->getSize(); ++i)
         {
             for (std::size_t j = 0; j < Deriv::size(); ++j)
             {
-                isphysics::contact::GenericConstraintResolution* cr = new isphysics::contact::GenericConstraintResolution();
-                cr->setSoftW(  (softW.size() == this->getMState()->getSize() ? softW[i] : softW[0]) );
-                cr->setBilateralOnNormal(true);
+                sofa::component::constraintset::BilateralConstraintResolution* cr = new sofa::component::constraintset::BilateralConstraintResolution();
                 crVector[offset++] = cr;
             }
         }
@@ -113,4 +107,4 @@ void UniformConstraint<DataTypes>::getConstraintResolution(const sofa::core::Con
 
 }
 
-#endif // ISPHYSICS_INTERACTION_UNIFORMCONSTRAINT_INL
+#endif // SOFA_CONSTRAINT_UNIFORMCONSTRAINT_INL

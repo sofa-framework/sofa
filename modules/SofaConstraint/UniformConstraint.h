@@ -1,5 +1,5 @@
-#ifndef ISPHYSICS_INTERACTION_UNIFORMCONSTRAINT_H
-#define ISPHYSICS_INTERACTION_UNIFORMCONSTRAINT_H
+#ifndef SOFA_CONSTRAINT_UNIFORMCONSTRAINT_H
+#define SOFA_CONSTRAINT_UNIFORMCONSTRAINT_H
 
 #include <sofa/core/behavior/Constraint.h>
 
@@ -33,7 +33,6 @@ public:
 
     void getConstraintResolution(const sofa::core::ConstraintParams* cParams, std::vector<sofa::core::behavior::ConstraintResolution*>& crVector, unsigned int& offset) override;
 
-    sofa::Data<sofa::helper::vector<Real> > d_softW;
     sofa::Data<bool> d_iterative;
 protected:
 
@@ -47,4 +46,4 @@ protected:
 
 }
 
-#endif // ISPHYSICS_INTERACTION_UNIFORMCONSTRAINT_H
+#endif // SOFA_CONSTRAINT_UNIFORMCONSTRAINT_H
