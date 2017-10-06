@@ -23,11 +23,7 @@
 #define SOFA_HELPER_PARTICLEMASK_H
 
 #include <sofa/helper/vector.h>
-namespace sofa
-{
 
-namespace helper
-{
 
 /**
  *  \brief Utility class to handle the mechanism of masks.
@@ -55,9 +51,15 @@ namespace helper
 
 
 #ifdef SOFA_USE_MASK
-
 #include <sofa/defaulttype/Mat.h>
 #include <Eigen/SparseCore>
+
+namespace sofa
+{
+
+namespace helper
+{
+
 
 class SOFA_HELPER_API StateMask
 {
@@ -137,6 +139,11 @@ protected:
 };
 
 #else
+namespace sofa
+{
+
+namespace helper
+{
 
 class SOFA_HELPER_API StateMask
 {
