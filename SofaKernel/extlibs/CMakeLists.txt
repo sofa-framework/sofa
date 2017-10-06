@@ -3,12 +3,14 @@ cmake_minimum_required(VERSION 3.1)
 set(EXTLIBS_TARGETS
     newmat
     tinyxml
+    json
 )
 
 ## Necessary ones
 add_subdirectory(eigen-3.2.7 eigen)
 add_subdirectory(newmat)
 add_subdirectory(tinyxml)
+add_subdirectory(json)
 
 foreach(target ${EXTLIBS_TARGETS})
     set_target_properties(${target} PROPERTIES DEBUG_POSTFIX "_d")

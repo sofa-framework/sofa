@@ -178,8 +178,10 @@ case $CI_OPTIONS in
         else
             append "-DPLUGIN_SOFACUDA=OFF"
         fi
+        append "-DPLUGIN_SOFADISTANCEGRID=ON"
         # Requires HAPI libraries.
         append "-DPLUGIN_SOFAHAPI=OFF"
+        append "-DPLUGIN_SOFAIMPLICITFIELD=ON"
         # Not sure if worth maintaining
         append "-DPLUGIN_SOFASIMPLEGUI=ON"
         append "-DPLUGIN_THMPGSPATIALHASHING=ON"

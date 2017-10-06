@@ -77,5 +77,13 @@ if(SofaTest_FOUND)
     add_subdirectory(Registration_test)
 endif()
 
+find_package(SofaDistanceGrid QUIET)
+if(SofaDistanceGrid_FOUND)
+    add_definitions("-DSOFA_HAVE_SOFADISTANCEGRID")
+    target_link_libraries(${PROJECT_NAME} SofaDistanceGrid)
+else()
+    message(STATUS "Registration: could not find SOFADISTANCEGRID, won't build RegistrationContact for RigidDistanceGridCollisionModel.")
+endif()
+
 ## Install rules for the library; CMake package configurations files
 sofa_create_package(Registration ${REGISTRATION_VERSION} Registration Registration)

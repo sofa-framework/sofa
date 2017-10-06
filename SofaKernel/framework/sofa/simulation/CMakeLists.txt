@@ -61,6 +61,7 @@ set(HEADER_FILES
     XMLPrintVisitor.h
     init.h
     MechanicalGetMomentumVisitor.h
+    BaseSimulationExporter.h
 )
 
 set(SOURCE_FILES
@@ -117,6 +118,7 @@ set(SOURCE_FILES
     XMLPrintVisitor.cpp
     init.cpp
     MechanicalComputeEnergyVisitor.cpp
+    BaseSimulationExporter.cpp
 )
 
 if(SOFA-MISC_SMP)

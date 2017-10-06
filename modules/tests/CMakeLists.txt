@@ -33,9 +33,10 @@ add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaGeneralTopology/SofaGeneralT
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaGeneralSimpleFem/SofaGeneralSimpleFem_test tests/SofaGeneralSimpleFem)
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaGraphComponent/SofaGraphComponent_test tests/SofaGraphComponent)
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaMiscFem/SofaMiscFem_test tests/SofaMiscFem)
+add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaMisc/SofaMisc_test tests/SofaMisc)
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaMiscMapping/SofaMiscMapping_test tests/SofaMiscMapping)
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaMiscSolver/SofaMiscSolver_test tests/SofaMiscSolver)
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaMiscTopology/SofaMiscTopology_test tests/SofaMiscTopology)
-add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaVolumetricData/SofaVolumetricData_test tests/SofaVolumetricData)
+add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaExporter/SofaExporter_test tests/SofaExporter)
 
 

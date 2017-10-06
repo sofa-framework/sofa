@@ -12,6 +12,8 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Quat.h>
 
+#include <sofa/helper/system/FileRepository.h>
+
 namespace sofa
 {
 
@@ -35,7 +37,7 @@ RegistrationExporter::RegistrationExporter()
 , exportAtBegin( initData(&exportAtBegin, false, "exportAtBegin", "export file at the initialization"))
 , exportAtEnd( initData(&exportAtEnd, false, "exportAtEnd", "export file when the simulation is finished"))
 {
-	f_listening.setValue(true);
+    f_listening.setValue(true);
 }
 
 RegistrationExporter::~RegistrationExporter()
@@ -44,8 +46,8 @@ RegistrationExporter::~RegistrationExporter()
 
 void RegistrationExporter::init()
 {
-	sofa::core::objectmodel::BaseContext* context = this->getContext();
-	context->get(mstate);
+    sofa::core::objectmodel::BaseContext* context = this->getContext();
+    context->get(mstate);
 
     if (!position.isSet() && mstate)
     {
@@ -57,20 +59,20 @@ void RegistrationExporter::init()
         }
     }
 
-	std::vector<sofa::component::loader::MeshObjLoader*> loaders;
-	this->getContext()->get<sofa::component::loader::MeshObjLoader,std::vector<sofa::component::loader::MeshObjLoader*> >(&loaders);
+    std::vector<sofa::component::loader::MeshObjLoader*> loaders;
+    this->getContext()->get<sofa::component::loader::MeshObjLoader,std::vector<sofa::component::loader::MeshObjLoader*> >(&loaders);
 
-	if (!loaders.size()) 		serr << "Can not find MeshObjLoaders in context" << sendl;
-	else for(unsigned int l=0;l<loaders.size();l++)	
-	{
-		std::string strIn=loaders[l]->getFilename();
-		if (sofa::helper::system::DataRepository.findFile(strIn)) 
-		{
-			this->inFileNames.push_back(sofa::helper::system::DataRepository.getFile(strIn));
-			this->outFileNames.push_back(outPath.getFullPath().c_str() + this->inFileNames.back().substr(this->inFileNames[l].find_last_of('/')));
-			if (this->f_printLog.getValue()) std::cout<<"RegistrationExporter: "<<this->inFileNames.back()<<"  ->  "<<this->outFileNames.back()<<std::endl;
+    if (!loaders.size()) 		serr << "Can not find MeshObjLoaders in context" << sendl;
+    else for(unsigned int l=0;l<loaders.size();l++)
+    {
+        std::string strIn=loaders[l]->getFilename();
+        if (sofa::helper::system::DataRepository.findFile(strIn))
+        {
+            this->inFileNames.push_back(sofa::helper::system::DataRepository.getFile(strIn));
+            this->outFileNames.push_back(outPath.getFullPath().c_str() + this->inFileNames.back().substr(this->inFileNames[l].find_last_of('/')));
+            if (this->f_printLog.getValue()) std::cout<<"RegistrationExporter: "<<this->inFileNames.back()<<"  ->  "<<this->outFileNames.back()<<std::endl;
 
-			// get inverse transforms applied in loader		
+            // get inverse transforms applied in loader
                         defaulttype::Vector3 scale=loaders[l]->getScale();
                         Mat4x4 m_scale; m_scale.fill(0);   for(unsigned int i=0;i<3;i++)	 m_scale[i][i]=1./scale[i]; m_scale[3][3]=1.;
                         defaulttype::Quaternion q = helper::Quater< SReal >::createQuaterFromEuler(defaulttype::Vec< 3, SReal >(loaders[l]->getRotation()) * M_PI / 180.0);
@@ -81,46 +83,46 @@ void RegistrationExporter::init()
                         this->inverseTransforms.push_back(m_scale*m_rot*m_translation);
                         if (this->f_printLog.getValue()) std::cout<<"RegistrationExporter: transform = "<<this->inverseTransforms.back()<<std::endl;
                }
-	}
+    }
 }
 
 void RegistrationExporter::writeMesh()
 {
-	// replicate loaded obj files with updated positions
-	helper::ReadAccessor<Data< defaulttype::Vec3Types::VecCoord > > raPositions = position;
-	unsigned int count=0;
-	std::string line;
+    // replicate loaded obj files with updated positions
+    helper::ReadAccessor<Data< defaulttype::Vec3Types::VecCoord > > raPositions = position;
+    unsigned int count=0;
+    std::string line;
 
-	for(unsigned int l=0;l<this->inFileNames.size();l++)	
-	{
-			std::ifstream fileIn(this->inFileNames[l].c_str(), std::ifstream::in);
-			if (fileIn.is_open()) 
-			{
-				std::ofstream fileOut (this->outFileNames[l].c_str(), std::ofstream::out);
-				if (fileOut.is_open() ) 
-				{
-					while( std::getline(fileIn,line) )
-					{
-						if (line.empty()) continue;
-						std::istringstream values(line);
-						std::string token;
+    for(unsigned int l=0;l<this->inFileNames.size();l++)
+    {
+            std::ifstream fileIn(this->inFileNames[l].c_str(), std::ifstream::in);
+            if (fileIn.is_open())
+            {
+                std::ofstream fileOut (this->outFileNames[l].c_str(), std::ofstream::out);
+                if (fileOut.is_open() )
+                {
+                    while( std::getline(fileIn,line) )
+                    {
+                        if (line.empty()) continue;
+                        std::istringstream values(line);
+                        std::string token;
 
-						values >> token;
-						if (token == "v") {
-							defaulttype::Vec< 4, SReal > p(raPositions[count][0],raPositions[count][1],raPositions[count][2],1);
+                        values >> token;
+                        if (token == "v") {
+                            defaulttype::Vec< 4, SReal > p(raPositions[count][0],raPositions[count][1],raPositions[count][2],1);
                                                          if(applyInverseTransform.getValue()) p=inverseTransforms[l]*p;
-							if(count<raPositions.size()) fileOut<<"v "<<p[0]<<" "<<p[1]<<" "<<p[2]<<std::endl;
-							count++;
-							}
-						else fileOut<<line<<std::endl;
-					}
-					sout << "Written " << this->outFileNames[l].c_str() << sendl;
-					if (this->f_printLog.getValue()) std::cout<<"Written " << this->outFileNames[l].c_str() << std::endl;
-					fileOut.close();
-				}
-				fileIn.close();
-			}
-	   }
+                            if(count<raPositions.size()) fileOut<<"v "<<p[0]<<" "<<p[1]<<" "<<p[2]<<std::endl;
+                            count++;
+                            }
+                        else fileOut<<line<<std::endl;
+                    }
+                    sout << "Written " << this->outFileNames[l].c_str() << sendl;
+                    if (this->f_printLog.getValue()) std::cout<<"Written " << this->outFileNames[l].c_str() << std::endl;
+                    fileOut.close();
+                }
+                fileIn.close();
+            }
+       }
 }
 
 
@@ -131,32 +133,32 @@ void RegistrationExporter::handleEvent(sofa::core::objectmodel::Event *event)
     {
         sofa::core::objectmodel::KeypressedEvent* ev = static_cast<sofa::core::objectmodel::KeypressedEvent*>(event);
         //std::cout << "key pressed " << ev->getKey() << std::endl;
-		switch(ev->getKey())
-		{
+        switch(ev->getKey())
+        {
 
-			case 'E':
-			case 'e':
+            case 'E':
+            case 'e':
                 writeMesh();
             break;
-		}
-	}
+        }
+    }
     else if ( /*simulation::AnimateEndEvent* ev =*/ simulation::AnimateEndEvent::checkEventType(event))
-	{
+    {
         unsigned int maxStep = exportEveryNbSteps.getValue();
         if (maxStep == 0) return;
-        
+
         stepCounter++;
         if(stepCounter >= maxStep)
         {
             stepCounter = 0;
             writeMesh();
         }
-	}
+    }
 }
 
 void RegistrationExporter::cleanup()
 {
-	if (exportAtEnd.getValue())
+    if (exportAtEnd.getValue())
         writeMesh();
 }
 

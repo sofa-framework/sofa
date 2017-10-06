@@ -1,0 +1,7 @@
+ <?xml version='1.0'?>
+ <Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >
+    <DefaultAnimationLoop/>
+    <MechanicalObject position='0 1 2 3 4 5 6 7 8 9'/>
+    <RegularGridTopology name='grid' n='6 6 6' min='-10 -10 -10' max='10 10 10' p0='-30 -10 -10' computeHexaList='0'/>
+    <MeshExporter name='exporterA' format='vtk' printLog='true' filename='outFile' exportEveryNumberOfSteps='5' />
+ </Node>

@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <algorithm>
 #include <string>
+#include <fstream>
 
 #include <sofa/core/ObjectFactory.h>
 #include <SofaGeneralLoader/GIDMeshLoader.h>

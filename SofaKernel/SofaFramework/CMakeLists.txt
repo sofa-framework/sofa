@@ -138,11 +138,42 @@ set(SOFA_HAVE_PNG ${PNG_FOUND})
 # optional boost libraries
 find_package(Boost REQUIRED system filesystem locale
                    OPTIONAL_COMPONENTS thread date_time chrono atomic)
-set(SOFA_HAVE_BOOST_THREAD ${Boost_THREAD_FOUND})
+
 set(SOFA_HAVE_BOOST_DATE_TIME ${Boost_DATE_TIME_FOUND})
+set(SOFA_HAVE_BOOST_SYSTEM ${Boost_SYSTEM_FOUND})
+set(SOFA_HAVE_BOOST_LOCALE ${Boost_LOCALE_FOUND})
+set(SOFA_HAVE_BOOST_FILESYSTEM ${Boost_FILESYSTEM_FOUND})
+set(SOFA_HAVE_BOOST_THREAD ${Boost_THREAD_FOUND})
 
 list(APPEND Boost_INCLUDE_DIRS ${Boost_INCLUDE_DIR})
 list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIRS})
+
+if(SOFA_HAVE_BOOST_SYSTEM
+   AND SOFA_HAVE_BOOST_FILESYSTEM
+   AND SOFA_HAVE_BOOST_LOCALE)
+
+    set(SOFA_HAVE_BOOST 1)
+
+    sofa_create_target(BoostSystem SofaFramework "${Boost_SYSTEM_LIBRARY}" "${Boost_INCLUDE_DIRS}")
+    sofa_create_target(BoostLocale SofaFramework "${Boost_LOCALE_LIBRARY}" "${Boost_INCLUDE_DIRS}")
+    sofa_create_target(BoostFileSystem SofaFramework "${Boost_FILESYSTEM_LIBRARY}" "${Boost_INCLUDE_DIRS}")
+
+	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostSystem_Target})
+    list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostLocale_Target})
+    list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostFileSystem_Target})
+
+    sofa_install_get_libraries(${Boost_SYSTEM_LIBRARY})
+    sofa_install_get_libraries(${Boost_LOCALE_LIBRARY})
+    sofa_install_get_libraries(${Boost_FILESYSTEM_LIBRARY})
+
+    if(SOFA_HAVE_BOOST_DATE_TIME)
+        sofa_create_target(BoostDateTime SofaFramework "${Boost_DATE_TIME_LIBRARY}" "${Boost_INCLUDE_DIRS}")
+        list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostDateTime_Target})
+        sofa_install_get_libraries(${Boost_DATE_TIME_LIBRARY})
+    endif()
+
+    if(SOFA_HAVE_BOOST_THREAD)
+        sofa_create_target(BoostThread SofaFramework "${Boost_THREAD_LIBRARY}" "${Boost_INCLUDE_DIRS}")
 
 foreach(target Boost::system Boost::thread Boost::date_time Boost::filesystem Boost::locale Boost::chrono Boost::atomic)
     if(WIN32)
@@ -155,12 +186,14 @@ endforeach()
 find_package(Eigen3 REQUIRED)
 list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${EIGEN3_INCLUDE_DIR})
 
+## JSON
+list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${JSON_INCLUDE_DIR})
 
 ## sofa/config.h
 configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/sofa/config.h")
 install(FILES "${CMAKE_BINARY_DIR}/include/sofa/config.h" DESTINATION "include/sofa" COMPONENT headers)
 # make sure everyone in the build tree can see <sofa/config.h>
-list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR})
+#list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR})
 list(REMOVE_DUPLICATES SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES)
 
 ## Version

@@ -6,10 +6,10 @@
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/helper/system/FileRepository.h>
 
 #include "labelboximagetoolboxaction.h"
 #include "../labelimagetoolbox.h"
-
 
 
 #include <image/image_gui/config.h>

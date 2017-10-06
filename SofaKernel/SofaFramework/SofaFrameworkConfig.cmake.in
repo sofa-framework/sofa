@@ -45,10 +45,21 @@ if(SOFA_HAVE_GLUT)
 endif()
 
 if(SOFA_HAVE_BOOST)
-    find_package(Boost QUIET REQUIRED COMPONENTS thread system date_time)
-    sofa_create_target(BoostSystem SofaFramework "${Boost_SYSTEM_LIBRARY}" "${Boost_INCLUDE_DIRS}")
-    sofa_create_target(BoostThread SofaFramework "${Boost_THREAD_LIBRARY}" "${Boost_INCLUDE_DIRS}")
-    sofa_create_target(BoostDateTime SofaFramework "${Boost_DATE_TIME_LIBRARY}" "${Boost_INCLUDE_DIRS}")
+    find_package(Boost QUIET REQUIRED COMPONENTS system filesystem locale OPTIONAL_COMPONENTS date_time thread)
+    
+    if(Boost_SYSTEM_FOUND AND Boost_FILESYSTEM_FOUND AND Boost_LOCALE_FOUND)
+        sofa_create_target(BoostSystem SofaFramework "${Boost_SYSTEM_LIBRARY}" "${Boost_INCLUDE_DIRS}")
+        sofa_create_target(BoostLocale SofaFramework "${Boost_LOCALE_LIBRARY}" "${Boost_INCLUDE_DIRS}")
+        sofa_create_target(BoostFileSystem SofaFramework "${Boost_FILESYSTEM_LIBRARY}" "${Boost_INCLUDE_DIRS}")
+    endif()
+
+    if(Boost_DATE_TIME_FOUND)
+        sofa_create_target(BoostDateTime SofaFramework "${Boost_DATE_TIME_LIBRARY}" "${Boost_INCLUDE_DIRS}")
+    endif()
+
+    if(Boost_THREAD_FOUND)
+        sofa_create_target(BoostThread SofaFramework "${Boost_THREAD_LIBRARY}" "${Boost_INCLUDE_DIRS}")
+    endif()
 endif()
 
 if(NOT TARGET SofaCore)

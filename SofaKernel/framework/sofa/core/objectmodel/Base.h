@@ -35,7 +35,7 @@
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/objectmodel/Tag.h>
 
-#include <boost/intrusive_ptr.hpp>
+#include <sofa/core/sptr.h>
 
 #include <deque>
 #include <string>
@@ -133,8 +133,9 @@ class SOFA_CORE_API Base
 public:
 
     typedef Base* Ptr;
-    typedef boost::intrusive_ptr<Base> SPtr;
 
+    using SPtr = sptr<Base>;
+    
     typedef TClass< Base, void > MyClass;
     static const MyClass* GetClass() { return MyClass::get(); }
     virtual const BaseClass* getClass() const { return GetClass(); }

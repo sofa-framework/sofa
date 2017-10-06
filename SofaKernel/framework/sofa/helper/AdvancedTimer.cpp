@@ -27,12 +27,19 @@
 #include <sofa/helper/system/atomic.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/map.h>
+#include <../extlibs/json/json.h>
+
 
 #include <cmath>
 #include <cstdlib>
 #include <stack>
+#include <algorithm>
+#include <cctype>
 
 #define DEFAULT_INTERVAL 100
+
+using namespace sofa::core::objectmodel;
+using json = sofa::helper::json;
 
 
 namespace sofa
@@ -71,6 +78,7 @@ public:
     int nbIter;
     int interval;
     int defaultInterval;
+    AdvancedTimer::outputType timerOutputType;
 
     class StepData
     {
@@ -107,7 +115,7 @@ public:
     helper::vector<AdvancedTimer::IdVal> vals;
 
     TimerData()
-        : nbIter(-1), interval(0), defaultInterval(DEFAULT_INTERVAL)
+        : nbIter(-1), interval(0), defaultInterval(DEFAULT_INTERVAL), timerOutputType(AdvancedTimer::STDOUT)
     {
     }
 
@@ -123,11 +131,15 @@ public:
         else
             interval = 0;
         defaultInterval = (interval != 0) ? interval : DEFAULT_INTERVAL;
+        this->timerOutputType = AdvancedTimer::outputType::STDOUT;
     }
     void clear();
     void process();
     void print();
     void print(std::ostream& result);
+    json getJson(std::string stepNumber);
+    json getLightJson(std::string stepNumber);
+    json createJSONArray(int s, json jsonObject, StepData& data);
 };
 
 std::map< AdvancedTimer::IdTimer, TimerData > timers;
@@ -339,6 +351,25 @@ void AdvancedTimer::end(IdTimer id)
     {
         TimerData& data = timers[curTimer.top()];
         setCurRecords((data.interval == 0) ? NULL : &(data.records));
+    }
+}
+
+std::string AdvancedTimer::end(IdTimer id, simulation::Node* node)
+{
+    TimerData& data = timers[id];
+    if(!data.id)
+    {
+        return std::string("");
+    }
+
+    switch(data.timerOutputType)
+    {
+        case JSON   : return getTimeAnalysis(id, node);
+        case LJSON  : return getTimeAnalysis(id, node);
+        case STDOUT : end(id);
+                      return std::string("");
+        default :     end(id);
+                      return std::string("");
     }
 }
 
@@ -900,10 +931,174 @@ void TimerData::print()
             out << std::endl;
         }
     }
-
+    out << "\n iteration : " << getCurRecords()->size();
     out << "\n==== END ====\n";
     out << std::endl;
 }
+
+AdvancedTimer::outputType AdvancedTimer::convertOutputType(std::string type)
+{
+	std::for_each(type.begin(), type.end(),  [](char& c) {
+		c = std::tolower(static_cast<unsigned char>(c)); } );
+
+	if(type.compare("json") == 0)
+		return JSON;
+	else if(type.compare("ljson") == 0)
+		return LJSON;
+	else if(type.compare("stdout") == 0)
+		return STDOUT;
+	else // Add your own outputTypes before the else
+	{
+		msg_warning("AdvancedTimer") << "Unable to set output type to " << type << ". Switching to the default 'stdout' output. Valid types are [stdout, json, ljson].";
+		return STDOUT;
+	}
+}
+
+void AdvancedTimer::setOutputType(IdTimer id, const std::string& type)
+{
+    // Seek for the timer
+    TimerData& data = timers[id];
+    if (!data.id)
+    {
+        data.init(id);
+    }
+
+	data.timerOutputType = convertOutputType(type);
+}
+
+AdvancedTimer::outputType AdvancedTimer::getOutputType(IdTimer id)
+{
+	TimerData& data = timers[id];
+	return data.timerOutputType;
+}
+
+// -------------------------------
+// Methods used for JSON output
+
+std::string getVal(double v)
+{
+    std::stringstream outputStringStream;
+    if (v < 0)
+    {
+        v = -v;
+        v += 0.005;
+        long long i = (long long)floor(v);
+        if (i >= 10000)
+        {
+            v += 0.495;
+            i = (long long)floor(v);
+            outputStringStream << "-" << i;
+            if (i < 100000)
+                outputStringStream << ' ';
+        }
+        else if (i >= 1000)
+        {
+            v += 0.045;
+            i = (long long)floor(v);
+            int dec = (int)floor((v-i)*10);
+            outputStringStream << '-' << i;
+            if (dec == 0)
+                outputStringStream << "  ";
+            else
+                outputStringStream << '.' << dec;
+        }        else
+        {
+            int dec = (int)floor((v-i)*100);
+            long long m = 100;
+            while (i < m && m > 1)
+            {
+                outputStringStream << ' ';
+                m /= 10;
+            }
+            outputStringStream << '-' << i;
+            if (dec == 0)
+                outputStringStream << "   ";
+            else if (dec < 10)
+                outputStringStream << ".0" << dec;
+            else
+                outputStringStream << '.' << dec;
+        }
+    }
+    else
+    {
+        v += 0.005;
+        long long i = (long long)floor(v);
+        if (i >= 100000)
+        {
+            v += 0.495;
+            i = (long long)floor(v);
+            outputStringStream << i;
+            if (i < 1000000)
+                outputStringStream << ' ';
+        }
+        else if (i >= 10000)
+        {
+            v += 0.045;
+            i = (long long)floor(v);
+            int dec = (int)floor((v-i)*10);
+            outputStringStream << i;
+            if (dec == 0)
+                outputStringStream << "  ";
+            else
+                outputStringStream << '.' << dec;
+        }
+        else
+        {
+            int dec = (int)floor((v-i)*100);
+            long long m = 1000;
+            while (i < m && m > 1)
+            {
+                outputStringStream << ' ';
+                m /= 10;
+            }
+            outputStringStream << i;
+            if (dec == 0)
+                outputStringStream << "   ";
+            else if (dec < 10)
+                outputStringStream << ".0" << dec;
+            else
+                outputStringStream << '.' << dec;
+        }
+    }
+    return outputStringStream.str();
+}
+
+
+
+std::string getNoVal()
+{
+    return "       ";
+}
+
+
+std::string getVal(double v, int niter)
+{
+    if (niter == 0)
+        return getNoVal();
+    else
+        return getVal(v/niter);
+}
+
+
+std::string getTime(ctime_t t, int niter=1)
+{
+    static ctime_t timer_freq = CTime::getTicksPerSec();
+    return getVal(1000.0 * (double)t / (double)(niter*timer_freq));
+}
+
+
+double strToDouble(std::string const &stringToConvert, std::size_t const precision)
+{
+    std::stringstream convertingStream;
+    convertingStream << std::setprecision(precision) << std::fixed << stringToConvert << std::endl;
+
+    double answer;
+    convertingStream >> answer;
+
+    return answer;
+}
+
+
 
 void TimerData::print(std::ostream& result)
 {
@@ -974,6 +1169,306 @@ void TimerData::print(std::ostream& result)
 
     //out << "\n==== END ====\n";
     out << std::endl;
+}
+
+
+json TimerData::createJSONArray(int s,json jsonObject, StepData& data)
+{
+    double value = 0;
+    ctime_t ttotal = stepData[AdvancedTimer::IdStep()].ttotal;
+
+
+    // Level :
+    value = strToDouble(getVal(data.level), 4);
+    jsonObject["Level"] = value;
+
+    // Start
+    value = strToDouble(getTime(data.tstart, data.numIt), 4);
+    jsonObject["Start"] = value;
+
+    // Num
+    value = strToDouble(getVal(data.num, (s == 0) ? 1 : nbIter), 4);
+    jsonObject["Num"] = value;
+
+    // TMin
+    value = strToDouble(getTime(data.tmin), 4);
+    jsonObject["Min"] = value;
+
+    // TMax
+    value = strToDouble(getTime(data.tmax), 4);
+    jsonObject["Max"] = value;
+
+    // Mean
+    double mean = (double)data.ttotal / data.num;
+    value = strToDouble(getTime((ctime_t)mean), 4);
+    jsonObject["Mean"] = value;
+
+    // Dev
+    value = strToDouble(getTime((ctime_t)(sqrt((double)data.ttotal2/data.num - mean*mean))), 4);
+    jsonObject["Dev"] = value;
+
+    // Total
+    value = strToDouble(getTime(data.ttotal, (s == 0) ? 1 : nbIter), 4);
+    jsonObject["Total"] = value;
+
+    // Percent
+    value = strToDouble(getVal(100.0*data.ttotal / (double) ttotal), 4);
+    jsonObject["Percent"] = value;
+
+    return jsonObject;
+}
+
+
+json TimerData::getJson(std::string stepNumber)
+{
+    json jsonOutput;
+    json temp;
+    json *jsonPointer;
+    std::vector<std::string> deepthTree;
+    std::string jsonObjectName = stepNumber;
+    int componantLevel = 0;
+    int subComponantLevel = 0;
+    std::stringstream ComposantId;
+
+    if (!steps.empty())
+    {
+        // Clean the streamString
+        ComposantId.str("");
+        componantLevel = 0;
+        subComponantLevel = 0;
+
+        // Create the JSON container
+        jsonPointer = &jsonOutput[jsonObjectName];
+        temp = *jsonPointer;
+
+        for (unsigned int s=0; s<steps.size(); s++)
+        {
+            // Clean the streamString
+            ComposantId.str("");
+
+            StepData& data = stepData[steps[s]];
+
+            if (s == 0)
+            {
+                ComposantId << "TOTAL";
+                deepthTree.push_back(ComposantId.str());
+                subComponantLevel = 0;
+                temp[ComposantId.str()]["Values"] = createJSONArray(s, temp[ComposantId.str()]["Values"], data);
+                *jsonPointer = temp;
+                jsonPointer = &jsonPointer->at(ComposantId.str());
+            }
+            else
+            {
+                for(int ii=0; ii<data.level; ii++) ++subComponantLevel;  // indentation to show the hierarchy level
+
+                // If the level increment
+                if(componantLevel < subComponantLevel)
+                {
+
+                    temp = *jsonPointer;
+
+                    ComposantId << steps[s];
+                    deepthTree.push_back(ComposantId.str());
+                    temp[ComposantId.str()]["Values"] = createJSONArray(s, temp[ComposantId.str()]["Values"], data);;
+                    *jsonPointer = temp;
+                    jsonPointer = &jsonPointer->at(ComposantId.str());
+
+                }
+                // If the level decrement
+                else if(componantLevel > subComponantLevel)
+                {
+                    deepthTree.pop_back();
+                    jsonPointer = &jsonOutput[jsonObjectName];
+                    temp = *jsonPointer;
+                    for(unsigned int i = 0; i < deepthTree.size(); i++)
+                    {
+                        temp = temp.at(deepthTree.at(i));
+                        jsonPointer = &jsonPointer->at(deepthTree.at(i));
+                    }
+
+                    ComposantId << steps[s];
+                    temp[ComposantId.str()]["Values"] = createJSONArray(s, temp[ComposantId.str()]["Values"], data);
+
+                }
+
+                // If the level stay the same
+                else if (componantLevel == subComponantLevel)
+                {
+                    ComposantId << steps[s];
+                    temp = *jsonPointer;
+                    temp[ComposantId.str()]["Values"] = createJSONArray(s, temp[ComposantId.str()]["Values"], data);
+                    *jsonPointer = temp;
+                }
+
+            }
+
+            componantLevel = subComponantLevel;
+            subComponantLevel = 0;
+
+
+        }
+    }
+
+    return jsonOutput;
+}
+
+
+json TimerData::getLightJson(std::string stepNumber)
+{
+    json jsonOutput;
+    std::vector<std::string> deepthTree;
+    std::string jsonObjectName = stepNumber;
+    std::string father;
+    int componantLevel = 0;
+    int subComponantLevel = 0;
+    std::stringstream ComposantId;
+
+    if (!steps.empty())
+    {
+        // Clean the streamString
+        ComposantId.str("");
+        componantLevel = 0;
+        subComponantLevel = 0;
+
+        // Create the JSON container
+        jsonOutput[jsonObjectName];
+
+        for (unsigned int s=0; s<steps.size(); s++)
+        {
+            // Clean the streamString
+            ComposantId.str("");
+
+            StepData& data = stepData[steps[s]];
+
+            if (s == 0)
+            {
+                ComposantId << "TOTAL";
+                deepthTree.push_back(ComposantId.str());
+                subComponantLevel = 0;
+                jsonOutput[jsonObjectName][ComposantId.str()]["Father"] = "None";
+                jsonOutput[jsonObjectName][ComposantId.str()]["Values"] = createJSONArray(s, jsonOutput[jsonObjectName][ComposantId.str()]["Values"], data);
+            }
+            else
+            {
+                for(int ii=0; ii<data.level; ii++) ++subComponantLevel;  // indentation to show the hierarchy level
+
+                // If the level increment
+                if(componantLevel < subComponantLevel)
+                {
+                    father = deepthTree.at(deepthTree.size()-1);
+                    ComposantId << steps[s];
+                    deepthTree.push_back(ComposantId.str());
+                    jsonOutput[jsonObjectName][ComposantId.str()]["Father"] = father;
+                    jsonOutput[jsonObjectName][ComposantId.str()]["Values"] = createJSONArray(s, jsonOutput[jsonObjectName][ComposantId.str()]["Values"], data);;
+
+                }
+                // If the level decrement
+                else if(componantLevel > subComponantLevel)
+                {
+                    deepthTree.pop_back();
+                    father = deepthTree.at(deepthTree.size()-1);
+                    ComposantId << steps[s];
+
+                    jsonOutput[jsonObjectName][ComposantId.str()]["Father"] = father;
+                    jsonOutput[jsonObjectName][ComposantId.str()]["Values"] = createJSONArray(s, jsonOutput[jsonObjectName][ComposantId.str()]["Values"], data);
+
+                }
+
+                // If the level stay the same
+                else if (componantLevel == subComponantLevel)
+                {
+                    ComposantId << steps[s];
+
+                    jsonOutput[jsonObjectName][ComposantId.str()]["Father"] = father;
+                    jsonOutput[jsonObjectName][ComposantId.str()]["Values"] = createJSONArray(s, jsonOutput[jsonObjectName][ComposantId.str()]["Values"], data);
+                }
+
+            }
+
+            componantLevel = subComponantLevel;
+            subComponantLevel = 0;
+
+
+        }
+    }
+
+    return jsonOutput;
+}
+
+
+std::string AdvancedTimer::getTimeAnalysis(IdTimer id, simulation::Node* node)
+{
+    // Get simulation context and find the actual simulation step
+    double time = node->getContext()->getTime();
+    double deltaTime = node->getContext()->getDt();
+    std::stringstream tempStepNumber;
+    std::string stepNumber;
+    json outputJson;
+    std::string outputStr;
+
+    // We need to convert this way to keep stepNumber as accurate as possible
+    tempStepNumber << time/deltaTime;
+    stepNumber = tempStepNumber.str();
+
+    // Get the timer result and create the JSON
+    std::stack<AdvancedTimer::IdTimer>& curTimer = getCurTimer();
+
+    if (curTimer.empty())
+    {
+        msg_error("AdvancedTimer::end") << "timer[" << id << "] called while begin was not" ;
+        return NULL;
+    }
+    if (id != curTimer.top())
+    {
+        msg_error("AdvancedTimer::end") << "timer[" << id << "] does not correspond to last call to begin(" << curTimer.top() << ")" ;
+        return NULL;
+    }
+    helper::vector<Record>* curRecords = getCurRecords();
+    if (curRecords)
+    {
+        if (syncCallBack) (*syncCallBack)(syncCallBackData);
+        Record r;
+        r.time = CTime::getTime();
+        r.type = Record::REND;
+        r.id = id;
+        curRecords->push_back(r);
+
+        TimerData& data = timers[curTimer.top()];
+        data.process();
+        if (data.nbIter == data.interval)
+        {
+            // Get values and create the JSON output
+            switch(data.timerOutputType)
+            {
+                case JSON   : outputJson = data.getJson(stepNumber);
+                              break;
+                case LJSON  : outputJson = data.getLightJson(stepNumber);
+                              break;
+                default :     outputJson = data.getJson(stepNumber);
+            }
+            data.clear();
+        }
+    }
+    curTimer.pop();
+    if (curTimer.empty())
+    {
+        setCurRecords(NULL);
+    }
+    else
+    {
+        TimerData& data = timers[curTimer.top()];
+        setCurRecords((data.interval == 0) ? NULL : &(data.records));
+    }
+
+    outputStr = outputJson.dump(4);
+
+    if(outputStr.compare("null") != 0)
+    {
+        outputStr.erase(0,1);
+        outputStr.erase(outputStr.end()-2, outputStr.end());
+    }
+
+    return outputStr;
 }
 
 }
