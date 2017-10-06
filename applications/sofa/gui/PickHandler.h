@@ -25,23 +25,9 @@
 #include "SofaGUI.h"
 #include "OperationFactory.h"
 
-
 #include <sofa/gui/ColourPickingVisitor.h>
-
-#include <sofa/simulation/Simulation.h>
-#include <sofa/simulation/Node.h>
-
 #include <SofaBaseMechanics/MechanicalObject.h>
-
-#include <SofaUserInteraction/RayModel.h>
-#include <SofaUserInteraction/MouseInteractor.h>
-
-#include <SofaGraphComponent/MouseButtonSetting.h>
-
-#include <sofa/helper/fixed_array.h>
 #include <sofa/helper/gl/FrameBufferObject.h>
-#include <functional>
-
 
 namespace sofa
 {
@@ -49,9 +35,15 @@ namespace component
 {
 namespace collision
 {
-class ComponentMouseInteraction;
+	class ComponentMouseInteraction;
+	class RayModel;
+}
+namespace configurationsetting
+{
+	class MouseButtonSetting;
 }
 }
+
 
 namespace gui
 {
