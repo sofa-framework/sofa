@@ -38,11 +38,6 @@ namespace sofa
 namespace simpleapi
 {
 
-void importPlugin(const std::string& name)
-{
-
-}
-
 Simulation::SPtr createSimulation(const std::string& type)
 {
     if(type!="DAG")
@@ -58,7 +53,16 @@ Simulation::SPtr createSimulation(const std::string& type)
 Node::SPtr createRootNode(Simulation::SPtr s, const std::string& name,
                                               const std::map<std::string, std::string>& params)
 {
-    return s->createNewNode(name) ;
+    Node::SPtr root = s->createNewNode(name) ;
+
+    BaseObjectDescription desc(type.c_str(),type.c_str());
+    for(auto& kv : params)
+    {
+        desc.setAttribute(kv.first.c_str(), kv.second.c_str());
+    }
+    root->parse(desc) ;
+
+    return root ;
 }
 
 
