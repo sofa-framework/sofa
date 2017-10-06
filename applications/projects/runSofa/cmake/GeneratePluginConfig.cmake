@@ -30,7 +30,8 @@ macro(sofa_generate_plugin_config config_filename)
 	# With Win/MVSC, we can only know $CONFIG at build time
 	if (MSVC)
 	    add_custom_target(do_always ALL 
-	    COMMAND "${CMAKE_COMMAND}" -E copy "${config_filename}" "${CMAKE_BINARY_DIR}/bin/$<CONFIG>/"
+	    COMMAND if exist "${CMAKE_BINARY_DIR}/bin/$<CONFIG>/"
+            "${CMAKE_COMMAND}" -E copy "${config_filename}" "${CMAKE_BINARY_DIR}/bin/$<CONFIG>/"
 	)
 	endif(MSVC)
 
