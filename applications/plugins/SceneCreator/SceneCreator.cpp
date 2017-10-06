@@ -195,6 +195,7 @@ Node::SPtr createCollisionNodeVec3(Node::SPtr  parent, BaseObject::SPtr  dof,
                                    const std::vector<std::string> &elements,
                                    const Deriv3& translation, const Deriv3 &rotation)
 {
+    SOFA_UNUSED(dof) ;
     Node::SPtr  node = simpleapi::createChild(parent, "Collision");
     simpleapi::createObject(node, "MeshObjLoader", {
                                 {"name", "loader"},
@@ -224,6 +225,7 @@ simulation::Node::SPtr createVisualNodeVec3(simulation::Node::SPtr  parent,
                                             const Deriv3& translation, const Deriv3 &rotation,
                                             const MappingType &mappingT)
 {
+    SOFA_UNUSED(dof) ;
     Node::SPtr  node = simpleapi::createChild(parent, "visualNode") ;
 
     std::string mappingType ;
