@@ -241,6 +241,8 @@ elseif(${SOFA_BUILD_COMPONENTSET} STREQUAL full)
     set(SOFA_BUILD_COMPONENTSET_LIGHT 1)
     set(SOFA_BUILD_COMPONENTSET_STANDARD 1)
     set(SOFA_BUILD_COMPONENTSET_FULL 1)
+else()
+    message(STATUS "   Unrecognize option for components set. Possible ones are: core, light, standard and full")
 endif()
 
 ### Threading
