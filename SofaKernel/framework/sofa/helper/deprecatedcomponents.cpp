@@ -31,6 +31,9 @@ namespace deprecatedcomponents
 
 std::map<std::string, std::string>  messages =
 {
+    {"pluginized-17.12", " has been moved into a plugin since sofa 17.12. To continue using this component you need "
+                         " to update you scene and add "
+    },
     {"deprecated-17.12", " has been deprecated since sofa 17.12. Please consider updating your scene as using "
                          " deprecated component may result in poor performance and undefined behavior."
                          " If this component is crucial to you please report that to sofa-dev@ so we can  "
@@ -41,6 +44,7 @@ std::map<std::string, std::string>  messages =
                       " reconsider this component for future re-integration. "
     },
 } ;
+
 
 
 ////// Here is the list of component that are removed or deprecated.
@@ -70,7 +74,26 @@ std::map<std::string, std::vector<std::string>> components =
     {"InciseAlongPathPerformer", {"deprecated-17.12"}},
     {"InterpolationController", {"deprecated-17.12"}},
 	{"MechanicalStateControllerOmni", {"deprecated-17.12"}},
-    {"NodeToggleController", {"deprecated-17.12"}}
+    {"NodeToggleController", {"deprecated-17.12"}},
+};
+
+////// Here is the list of component that are move or removed with a message explaining
+/// what happened.
+std::map<std::string, std::vector<std::string>> uncreateablecomponents =
+{
+    /// SofaDistanceGrid is now a Plugin
+    {"BarycentricPenalityContact", {"pluginized-17.12", "<RequirePlugin name='SofaDistanceGrid'/>"}},
+    {"DistanceGridCollisionModel", {"pluginized-17.12", "<RequirePlugin name='SofaDistanceGrid'/>"}},
+    {"FFDDistanceGridDiscreteIntersection", {"pluginized-17.12", "<RequirePlugin name='SofaDistanceGrid'/>"}},
+    {"RayDistanceGridContact", {"pluginized-17.12", "<RequirePlugin name='SofaDistanceGrid'/>"}},
+    {"RigidDistanceGridDiscreteIntersection", {"pluginized-17.12", "<RequirePlugin name='SofaDistanceGrid'/>"}},
+    {"DistanceGridForceField", {"pluginized-17.12", "<RequirePlugin name='SofaDistanceGrid'/>"}},
+
+    /// SofaDistanceGrid is now a Plugin
+    {"ImplicitSurfaceContainer", {"pluginized-17.12", "<RequirePlugin name='SofaImplicitField'/>"}},
+    {"InterpolatedImplicitSurface", {"pluginized-17.12", "<RequirePlugin name='SofaImplicitField'/>"}},
+    {"SphereSurface", {"pluginized-17.12", "<RequirePlugin name='SofaImplicitField'/>"}},
+    {"ImplicitSurfaceMapping", {"pluginized-17.12", "<RequirePlugin name='SofaImplicitField'/>"}}
 };
 
 } /// namespace deprecatedcomponents

@@ -41,6 +41,8 @@ constexpr int indexMessage {1};
 
 extern SOFA_HELPER_API std::map<std::string, std::string>  messages ;
 extern SOFA_HELPER_API std::map<std::string, std::vector<std::string>> components ;
+extern SOFA_HELPER_API std::map<std::string, std::vector<std::string>> uncreatablecomponents ;
+
 
 } /// namespace deprecatedcomponents
 
