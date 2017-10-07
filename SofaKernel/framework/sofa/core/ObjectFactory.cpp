@@ -151,13 +151,13 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
     if (creators.empty())
     {	// The object cannot be created
         arg->logError("Object type " + classname + std::string("<") + templatename + std::string("> was not created"));
-        using components = sofa::helper::deprecatedcomponents::uncreatablecomponents ;
+        using sofa::helper::deprecatedcomponents::uncreateablecomponents ;
         using sofa::helper::deprecatedcomponents::messages ;
         using sofa::helper::deprecatedcomponents::indexName ;
 
-        if( components.find(classname) != components.end() )
+        if( uncreateablecomponents.find(classname) != uncreateablecomponents.end() )
         {
-            auto& msg = components[classname] ;
+            auto& msg = uncreateablecomponents[classname] ;
             std::string str = msg[indexName];
 
             /// Replace the string by the default one.
