@@ -214,7 +214,7 @@ option(SOFA_WITH_DEVTOOLS "Compile with developement extra features." ON)
 
 ### SOFA_BUILD_PERIMETER
 ### Sofa using type double or float or both
-set(SOFA_BUILD_COMPONENTSET standard CACHE STRING
+set(SOFA_BUILD_COMPONENTSET deprecated CACHE STRING
 "Compile SOFA with which set of components (core/full/deprecated)
  - 'core' for only the core components
  - 'full' for all non-deprecated components (DEFAULT)
