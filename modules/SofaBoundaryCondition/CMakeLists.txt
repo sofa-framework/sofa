@@ -85,6 +85,8 @@ if(SOFA_BUILD_COMPONENTSET_STANDARD)
         TorsionForceField.inl
         TrianglePressureForceField.h
         TrianglePressureForceField.inl
+        UniformVelocityDampingForceField.h
+        UniformVelocityDampingForceField.inl
         ProjectToLineConstraint.h
         ProjectToLineConstraint.inl
         ProjectToPlaneConstraint.h
@@ -126,6 +128,7 @@ if(SOFA_BUILD_COMPONENTSET_STANDARD)
         TaitSurfacePressureForceField.cpp
         TorsionForceField.cpp
         TrianglePressureForceField.cpp
+        UniformVelocityDampingForceField.cpp
         ProjectToLineConstraint.cpp
         ProjectToPlaneConstraint.cpp
         ProjectToPointConstraint.cpp
@@ -138,14 +141,11 @@ if(SOFA_BUILD_COMPONENTSET_FULL)
     list(APPEND HEADER_FILES
         BuoyantForceField.h
         BuoyantForceField.inl
-        UniformVelocityDampingForceField.h
-        UniformVelocityDampingForceField.inl
         VaccumSphereForceField.h
         VaccumSphereForceField.inl
         )
     list(APPEND SOURCE_FILES
         BuoyantForceField.cpp
-        UniformVelocityDampingForceField.cpp
         VaccumSphereForceField.cpp
         )
 endif()
