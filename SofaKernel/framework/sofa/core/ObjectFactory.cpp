@@ -108,6 +108,7 @@ void ObjectFactory::resetAlias(std::string name, ClassEntry::SPtr previous)
     registry[name] = previous;
 }
 
+
 objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
 {
     objectmodel::BaseObject::SPtr object = NULL;
@@ -149,11 +150,10 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
 
     if (creators.empty())
     {	// The object cannot be created
-        arg->logError("Object type " + classname + std::string("<") + templatename + std::string("> creation failed"));
-        using sofa::helper::deprecatedcomponents::components ;
+        arg->logError("Object type " + classname + std::string("<") + templatename + std::string("> was not created"));
+        using components = sofa::helper::deprecatedcomponents::uncreatablecomponents ;
         using sofa::helper::deprecatedcomponents::messages ;
         using sofa::helper::deprecatedcomponents::indexName ;
-        using sofa::helper::deprecatedcomponents::indexMessage ;
 
         if( components.find(classname) != components.end() )
         {
@@ -165,9 +165,14 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
                 str = messages[str] ;
             }
 
-            msg_warning(object.get()) << classname
-                                << str
-                                << msg[indexMessage] ;
+            std::stringstream tmp;
+            tmp << classname << str ;
+            for(unsigned int i=1;i<msg.size();i++)
+            {
+                tmp << msg[i] ;
+            }
+
+            msg_warning(object.get()) << tmp.str() ;
         }
     }
     else
