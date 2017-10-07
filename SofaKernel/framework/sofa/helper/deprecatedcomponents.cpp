@@ -78,7 +78,8 @@ std::map<std::string, std::vector<std::string>> components =
 };
 
 ////// Here is the list of component that are move or removed with a message explaining
-/// what happened.
+/// what happened. The list is different to the components one as in the other list the
+/// components are still in the factory.
 std::map<std::string, std::vector<std::string>> uncreateablecomponents =
 {
     /// SofaDistanceGrid is now a Plugin
