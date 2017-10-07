@@ -81,7 +81,7 @@ BaseObject::SPtr createObject(Node::SPtr parent, const std::string& type, const 
     if (obj==0)
     {
         std::stringstream msg;
-        msg << "create: component '" << desc.getName() << "' of type '" << desc.getAttribute("type","") << "' " ;
+        msg << "Component '" << desc.getName() << "' of type '" << desc.getAttribute("type","") << "' failed:" << msgendl ;
         for (std::vector< std::string >::const_iterator it = desc.getErrors().begin(); it != desc.getErrors().end(); ++it)
             msg << " " << *it << msgendl ;
         msg_error(parent.get()) << msg.str() ;

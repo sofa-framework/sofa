@@ -44,6 +44,7 @@ if(SOFA_BUILD_COMPONENTSET_STANDARD)
         RayModel.h
         RayNewProximityIntersection.h
         RayTraceDetection.h
+        SleepController.h
         TopologicalChangeManager.h
         )
 
@@ -60,6 +61,7 @@ if(SOFA_BUILD_COMPONENTSET_STANDARD)
         RayModel.cpp
         RayNewProximityIntersection.cpp
         RayTraceDetection.cpp
+        SleepController.cpp
         TopologicalChangeManager.cpp
         )
 endif()
@@ -70,7 +72,6 @@ if(SOFA_BUILD_COMPONENTSET_FULL)
         AddRecordedCameraPerformer.h
         ArticulatedHierarchyBVHController.h
         ArticulatedHierarchyController.h
-        CuttingPoint.h
         DisabledContact.h
         EdgeSetController.h
         EdgeSetController.inl
@@ -85,7 +86,6 @@ if(SOFA_BUILD_COMPONENTSET_FULL)
         NodeToggleController.h
         RemovePrimitivePerformer.h
         RemovePrimitivePerformer.inl
-        SleepController.h
         StartNavigationPerformer.h
         SuturePointPerformer.h
         SuturePointPerformer.inl
@@ -103,7 +103,6 @@ if(SOFA_BUILD_COMPONENTSET_FULL)
         MechanicalStateControllerOmni.cpp
         NodeToggleController.cpp
         RemovePrimitivePerformer.cpp
-        SleepController.cpp
         StartNavigationPerformer.cpp
         SuturePointPerformer.cpp
         )
