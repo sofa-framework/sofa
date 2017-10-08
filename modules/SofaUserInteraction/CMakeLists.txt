@@ -4,11 +4,16 @@ project(SofaUserInteraction)
 message(STATUS "SofaUserInteraction:")
 ################################ COMPONENTS HERE ARE THE NG-SET ####################################
 set(HEADER_FILES
+    InteractionPerformer.h
+    MouseInteractor.h
+    MouseInteractor.inl
     config.h
     initUserInteraction.h
     )
 
 set(SOURCE_FILES
+    InteractionPerformer.cpp
+    MouseInteractor.cpp
     initUserInteraction.cpp
     )
 
@@ -32,11 +37,8 @@ if(SOFA_BUILD_COMPONENTSET_STANDARD)
         ComponentMouseInteraction.h
         ComponentMouseInteraction.inl
         Controller.h
-        InteractionPerformer.h
         MechanicalStateController.h
-        MechanicalStateController.inl
-        MouseInteractor.h
-        MouseInteractor.inl
+        MechanicalStateController.inl  
         Ray.h
         RayContact.h
         RayDiscreteIntersection.h
@@ -53,9 +55,7 @@ if(SOFA_BUILD_COMPONENTSET_STANDARD)
         AttachBodyPerformer.cpp
         ComponentMouseInteraction.cpp
         Controller.cpp
-        InteractionPerformer.cpp
         MechanicalStateController.cpp
-        MouseInteractor.cpp
         RayContact.cpp
         RayDiscreteIntersection.cpp
         RayModel.cpp
