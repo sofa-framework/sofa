@@ -69,6 +69,7 @@ static sofa::simulation::Node::SPtr root = NULL;
 
 using sofa::core::objectmodel::BaseObject ;
 
+
 Node::SPtr createRootWithCollisionPipeline(const std::string& responseType)
 {
     root = simulation::getSimulation()->createNewGraph("root");
@@ -254,8 +255,11 @@ simulation::Node::SPtr createVisualNodeVec3(simulation::Node::SPtr  parent,
 
     simpleapi::createObject(node, mappingType, {
                                 {"name", nameVisual},
+                                {"template", "Vec3,ExtVec3"},
                                 {"input", refDof},
                                 {"output", refVisual}});
+
+
 
     return node;
 }
@@ -432,6 +436,8 @@ simulation::Node::SPtr addCube(simulation::Node::SPtr parent, const std::string&
 
     //Node VISUAL
     createVisualNodeVec3(cube, dofFEM, "", "red", Deriv3(), Deriv3(), MT_Identity);
+
+    simpleapi::dumpScene(parent) ;
 
     return cube;
 }

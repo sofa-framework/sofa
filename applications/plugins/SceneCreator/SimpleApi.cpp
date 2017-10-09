@@ -32,11 +32,19 @@ using sofa::simulation::graph::DAGSimulation ;
 #include "SimpleApi.h"
 using sofa::core::objectmodel::BaseObjectDescription ;
 
+#include <sofa/simulation/XMLPrintVisitor.h>
+using sofa::simulation::XMLPrintVisitor ;
 
 namespace sofa
 {
 namespace simpleapi
 {
+
+void dumpScene(Node::SPtr root)
+{
+    XMLPrintVisitor p(sofa::core::ExecParams::defaultInstance(), std::cout) ;
+    p.execute(root.get()) ;
+}
 
 Simulation::SPtr createSimulation(const std::string& type)
 {
@@ -87,8 +95,6 @@ BaseObject::SPtr createObject(Node::SPtr parent, const std::string& type, const 
         msg_error(parent.get()) << msg.str() ;
         return NULL;
     }
-
-    parent->addObject(obj) ;
     return obj ;
 }
 

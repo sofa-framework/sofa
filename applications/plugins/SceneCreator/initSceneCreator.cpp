@@ -20,6 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SceneCreator/config.h>
+#include <sofa/helper/system/PluginManager.h>
+using sofa::helper::system::PluginManager ;
 
 namespace sofa
 {
@@ -45,6 +47,9 @@ namespace component
 		{
 			first = false;
 		}
+
+        /// Required for DefaultCollisionGroupManager
+        PluginManager::getInstance().loadPlugin("SofaMiscCollision") ;
 	}
 
 	const char* getModuleName()
