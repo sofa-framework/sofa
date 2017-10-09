@@ -10,10 +10,10 @@ namespace constraint
 {
 
 template <class DataTypes>
-class GeometricStiffnessForceField final : public sofa::core::behavior::ForceField<DataTypes>
+class MappingGeometricStiffnessForceField final : public sofa::core::behavior::ForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(GeometricStiffnessForceField, DataTypes), 
+    SOFA_CLASS(SOFA_TEMPLATE(MappingGeometricStiffnessForceField, DataTypes), 
                SOFA_TEMPLATE(sofa::core::behavior::ForceField,DataTypes) );
     
     typedef Inherit1 Inherit;
@@ -37,9 +37,9 @@ public:
     }
 
 protected:
-    GeometricStiffnessForceField();
+    MappingGeometricStiffnessForceField();
 
-    ~GeometricStiffnessForceField();
+    ~MappingGeometricStiffnessForceField();
 
 private:
     MappingLink l_mapping;

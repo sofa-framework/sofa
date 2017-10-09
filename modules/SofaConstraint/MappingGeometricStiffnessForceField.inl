@@ -11,34 +11,34 @@ namespace constraint
 {
 
 template< class DataTypes> 
-GeometricStiffnessForceField<DataTypes>::GeometricStiffnessForceField()
+MappingGeometricStiffnessForceField<DataTypes>::MappingGeometricStiffnessForceField()
 :l_mapping(initLink("mapping", "Path to the mapping instance whose geometric stiffness is assembled"))
 {
 
 }
 
 template< class DataTypes>
-GeometricStiffnessForceField<DataTypes>::~GeometricStiffnessForceField()
+MappingGeometricStiffnessForceField<DataTypes>::~MappingGeometricStiffnessForceField()
 {
 
 }
 
 template< class DataTypes>
-void GeometricStiffnessForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv& /*f*/, 
+void MappingGeometricStiffnessForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv& /*f*/, 
     const DataVecCoord& /*x*/, const DataVecDeriv& /*v*/)
 {
 
 }
 
 template< class DataTypes>
-void GeometricStiffnessForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams* mparams,
+void MappingGeometricStiffnessForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams* mparams,
     DataVecDeriv& /*df*/, const DataVecDeriv& /*dx*/)
 {
     mparams->kFactor();
 }
 
 template< class DataTypes>
-void GeometricStiffnessForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
+void MappingGeometricStiffnessForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
     SReal kFact = (Real)mparams->kFactor();
     if (kFact == 0)
@@ -67,7 +67,7 @@ void GeometricStiffnessForceField<DataTypes>::addKToMatrix(const sofa::core::Mec
 
 //template<class MatrixWriter>
 //template<class DataTypes>
-//void GeometricStiffnessForceField<DataTypes>::addKToMatrixT(const sofa::core::MechanicalParams* mparams, MatrixWriter m)
+//void MappingGeometricStiffnessForceField<DataTypes>::addKToMatrixT(const sofa::core::MechanicalParams* mparams, MatrixWriter m)
 //{
 //
 //}
