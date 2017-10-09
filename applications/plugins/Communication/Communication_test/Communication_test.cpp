@@ -247,16 +247,23 @@ public:
 
 };
 
-TEST_F(Communication_test, checkPerformancs) {
-    std::cout << "#############cretion " << std::endl;
+TEST_F(Communication_test, checkCreationDestruction) {
     ASSERT_NO_THROW(this->checkCreationDestruction()) ;
-    std::cout << "#############add subscriber" << std::endl;
+}
+
+TEST_F(Communication_test, checkAddSubscriber) {
     ASSERT_NO_THROW(this->checkAddSubscriber()) ;
-    std::cout << "#############get subscriber" << std::endl;
+}
+
+TEST_F(Communication_test, checkGetSubscriber) {
     ASSERT_NO_THROW(this->checkGetSubscriber()) ;
-    std::cout << "#############send osc" << std::endl;
-//    ASSERT_NO_THROW(this->checkSendOSC()) ;
-    std::cout << "#############receive osc" << std::endl;
+}
+
+TEST_F(Communication_test, checkSendOSC) {
+    ASSERT_NO_THROW(this->checkSendOSC()) ;
+}
+
+TEST_F(Communication_test, checkReceiveOSC) {
     ASSERT_NO_THROW(this->checkReceiveOSC()) ;
 }
 

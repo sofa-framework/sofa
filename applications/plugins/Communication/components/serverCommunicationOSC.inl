@@ -211,7 +211,6 @@ void ServerCommunicationOSC::ProcessMessage( const osc::ReceivedMessage& m, cons
             i++;
         }
     }
-    std::cout << "value  " << m_running << std::endl;
 }
 
 std::string ServerCommunicationOSC::convertArgumentToStringValue(osc::ReceivedMessageArgumentIterator it)
