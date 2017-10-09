@@ -28,8 +28,8 @@ bool SimpleApi_test::testParamAPI()
                      {MechanicalObject::data::position, "1 2 3"}
                  });
 
-    //ASSERT_EQ( std::string("toto"), std::string("aMechanicalObject1")) ;
-    //ASSERT_EQ( (meca2->getName()), std::string("aMechanicalObject2") ) ;
+    EXPECT_EQ( (meca1->getName()), std::string("aMechanicalObject1") ) ;
+    EXPECT_EQ( (meca2->getName()), std::string("aMechanicalObject2") ) ;
 
     return true ;
 }
@@ -49,8 +49,8 @@ bool SimpleApi_test::testParamString()
                      {"position", "1 2 3"}
                  });
 
-    //ASSERT_EQ( (meca1->getName()), std::string("aMechanicalObject1") ) ;
-    //ASSERT_EQ( (meca2->getName()), std::string("aMechanicalObject2") ) ;
+    EXPECT_EQ( (meca1->getName()), std::string("aMechanicalObject1") ) ;
+    EXPECT_EQ( (meca2->getName()), std::string("aMechanicalObject2") ) ;
 
     return true;
 }
