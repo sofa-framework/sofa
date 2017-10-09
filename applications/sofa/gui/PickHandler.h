@@ -82,7 +82,7 @@ public:
         SELECTION_BUFFER
     };
 
-    PickHandler();
+    PickHandler(double defaultLength = 1000000);
     ~PickHandler();
 
     void activateRay(int width, int height, core::objectmodel::BaseNode* root);
@@ -175,7 +175,7 @@ protected:
     bool needToCastRay();
     void setCompatibleInteractor();
 
-
+	double m_defaultLength;
 };
 }
 }

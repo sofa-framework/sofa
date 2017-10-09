@@ -47,7 +47,7 @@ using namespace component::collision;
 namespace gui
 {
 
-PickHandler::PickHandler():
+PickHandler::PickHandler(double defaultLength):
     interactorInUse(false),
     mouseStatus(DEACTIVATED),
     mouseButton(NONE),
@@ -59,7 +59,8 @@ PickHandler::PickHandler():
 #endif
     renderCallback(NULL),
     pickingMethod(RAY_CASTING),
-    _fboAllocated(false)
+    _fboAllocated(false),
+	m_defaultLength(defaultLength)
 {
     operations[LEFT] = operations[MIDDLE] = operations[RIGHT] = NULL;
 }
@@ -152,7 +153,7 @@ void PickHandler::init(core::objectmodel::BaseNode* root)
 
     mouseCollision = sofa::core::objectmodel::New<MouseCollisionModel>();
     mouseCollision->setNbRay(1);
-    mouseCollision->getRay(0).setL(1000000);
+    mouseCollision->getRay(0).setL(m_defaultLength);
     mouseCollision->setName("MouseCollisionModel");
     mouseNode->addObject(mouseCollision);
 
