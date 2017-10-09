@@ -23,15 +23,14 @@
 using sofa::Sofa_test ;
 
 #include <sofa/defaulttype/Vec.h>
+using sofa::defaulttype::Vec3f;
 
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
 using sofa::core::ExecParams;
-using sofa::core::objectmodel::BaseData ;
-using sofa::core::objectmodel::BaseObject;
 
-#include <sofa/helper/vectorData.h>
-using sofa::helper::vectorData;
+#include <sofa/core/objectmodel/Base.h>
+using sofa::core::objectmodel::Base;
 
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
@@ -42,27 +41,20 @@ using sofa::simulation::Simulation ;
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory ;
 
-#include <condition_variable>
-
 // COMMUNICATION PART
 #include <Communication/components/serverCommunication.h>
-using sofa::component::communication::ServerCommunication;
 #include <Communication/components/CommunicationSubscriber.h>
+using sofa::component::communication::ServerCommunication;
 using sofa::component::communication::CommunicationSubscriber;
 
 // OSC TEST PART
-#include <oscpack/osc/OscReceivedElements.h>
-#include <oscpack/osc/OscPrintReceivedElements.h>
-#include <oscpack/ip/UdpSocket.h>
-#include <oscpack/ip/PacketListener.h>
 #include <oscpack/osc/OscReceivedElements.h>
 #include <oscpack/osc/OscPrintReceivedElements.h>
 #include <oscpack/osc/OscPacketListener.h>
 #include <oscpack/osc/OscOutboundPacketStream.h>
 
 #include <oscpack/ip/UdpSocket.h>
-
-using sofa::defaulttype::Vec3f;
+#include <oscpack/ip/PacketListener.h>
 
 
 namespace sofa
@@ -109,7 +101,6 @@ public:
 } ;
 
 int mclass = sofa::core::RegisterObject("").add<MyComponent>();
-
 
 class Communication_test : public Sofa_test<>
 {
@@ -190,24 +181,20 @@ public:
         EXPECT_NE(subscriber, nullptr) ;
     }
 
-    //    void server(){
-    //        //        std::stringstream scene1 ;
-    //        //        scene1 <<
-    //        //                  "<?xml version='1.0' ?>                                                       \n"
-    //        //                  "<Node name='root'>                                                           \n"
-    //        //                  "   <RequiredPlugin name='Communication' />                                   \n"
-    //        //                  "   <ServerCommunicationOSC name='oscSender' job='sender' port='6000'  refreshRate='1000'/> \n"
-    //        //                  "   <CommunicationSubscriber name='sub1' communication='@oscSender' subject='/test' source='@oscSender' arguments='port'/>"
-    //        //                  "</Node>                                                                      \n";
-
-    //        //        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
-    //        //        root->init(ExecParams::defaultInstance()) ;
-    //        root->doSimu();
-    //    }
-
-
     void checkSendOSC()
     {
+        std::stringstream scene1 ;
+        scene1 <<
+                  "<?xml version='1.0' ?>                                                       \n"
+                  "<Node name='root'>                                                           \n"
+                  "   <RequiredPlugin name='Communication' />                                   \n"
+                  "   <ServerCommunicationOSC name='oscSender' job='sender' port='6000'  refreshRate='1000'/> \n"
+                  "   <CommunicationSubscriber name='sub1' communication='@oscSender' subject='/test' source='@oscSender' arguments='x'/>"
+                  "</Node>                                                                      \n";
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
+        root->init(ExecParams::defaultInstance()) ;
+
         OscDumpPacketListener listener;
         UdpListeningReceiveSocket s(
                     IpEndpointName( IpEndpointName::ANY_ADDRESS, 6000 ),
@@ -219,95 +206,57 @@ public:
 
     void checkReceiveOSC()
     {
-        OscDumpPacketListener listener;
-        UdpListeningReceiveSocket s(
-                    IpEndpointName( IpEndpointName::ANY_ADDRESS, 6000 ),
-                    &listener );
-        listener.setSocket(&s);
-        s.Run();
-        EXPECT_EQ(listener.m_data.size(), 1);
+        std::stringstream scene1 ;
+        scene1 <<
+                  "<?xml version='1.0' ?>                                                       \n"
+                  "<Node name='root'>                                                           \n"
+                  "   <RequiredPlugin name='Communication' />                                   \n"
+                  "   <ServerCommunicationOSC name='oscReceiver' job='receiver' port='6000' /> \n"
+                  "   <CommunicationSubscriber name='sub1' communication='@oscReceiver' subject='/test' source='@oscReceiver' arguments='x'/>"
+                  "</Node>                                                                      \n";
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
+        root->init(ExecParams::defaultInstance());
+        ServerCommunication* aServerCommunicationOSC = dynamic_cast<ServerCommunication*>(root->getObject("oscReceiver"));
+        aServerCommunicationOSC->setRunning(false);
+
+        usleep(1000);
+        UdpTransmitSocket transmitSocket( IpEndpointName( "127.0.0.1", 6000 ) );
+        char buffer[1024];
+        osc::OutboundPacketStream p(buffer, 1024 );
+        p << osc::BeginBundleImmediate;
+        p << osc::BeginMessage("/test");
+        p << "";
+        p << osc::EndMessage;
+        p << osc::EndBundle;
+        transmitSocket.Send( p.Data(), p.Size() );
+        usleep(1000);
+
+
+        Base::MapData dataMap = aServerCommunicationOSC->getDataAliases();
+        Base::MapData::const_iterator itData = dataMap.find("port");
+        BaseData* data;
+
+        EXPECT_TRUE(itData != dataMap.end());
+        if (itData != dataMap.end())
+        {
+            data = itData->second;
+            EXPECT_NE(data, nullptr) ;
+        }
     }
-
-
-    //    void checkSendTODOOSC()
-    //    {
-    //        port ===,
-
-    //        std::thread(server);
-    //        std::thread(client);
-
-    //        std::join(server);
-    //        std::join(client);
-
-    //        //        bool received = false;
-
-    //        //        std::condition_variable cv;
-    //        //        std::mutex mtx;
-
-
-    //        //        std::stringstream scene1 ;
-    //        //        scene1 <<
-    //        //                  "<?xml version='1.0' ?>                                                       \n"
-    //        //                  "<Node name='root'>                                                           \n"
-    //        //                  "   <RequiredPlugin name='Communication' />                                   \n"
-    //        //                  "   <ServerCommunicationOSC name='oscSender' job='sender' port='6000'  refreshRate='1000'/> \n"
-    //        //                  "   <CommunicationSubscriber name='sub1' communication='@oscSender' subject='/test' source='@oscSender' arguments='port'/>"
-    //        //                  "</Node>                                                                      \n";
-
-    //        //        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
-    //        //        root->init(ExecParams::defaultInstance()) ;
-
-    //        //        std::unique_lock<std::mutex> lk(mtx);
-    //        //        cv.wait(mtx, listener.();{ return; });
-    //    }
-
-//    void checkSendOSC(int numstep)
-//    {
-//        std::stringstream scene1 ;
-//        scene1 <<
-//                  "<?xml version='1.0' ?>                                                                                                               \n"
-//                  "<Node name='root'>                                                                                                                   \n"
-//                  "     <RequiredPlugin name='Communication' />                                                                                         \n"
-//                  "     <MyComponent name='aName' positionIn='1.0 1.0 1.0' positionOut='2.0 2.0 2.0'/>                                                                                                     \n"
-//                  "     <ServerCommunicationOSC name='oscReceiver' job='receiver' port='6000'/>                                                         \n"
-//                  "     <CommunicationSubscriber name='sub1' communication='@oscReceiver' subject='/test' source='@oscReceiver' arguments='positionOut'/>      \n"
-//                  "     <ServerCommunicationOSC name='oscSender' job='sender' port='6000' refreshRate='1000'/>                                          \n"
-//                  "     <CommunicationSubscriber name='sub2' communication='@oscSender' subject='/test' source='@oscSender' arguments='positionIn'/>          \n"
-
-//                  "</Node>                                                                      \n";
-
-//        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
-//        root->init(ExecParams::defaultInstance()) ;
-
-//        for(unsigned int i=0;i<numstep;i++)
-//            sofa::simulation::getSimulation()->animate(root.get(), 0.001);
-
-//        MyComponent* component = dynamic_cast<MyComponent*>(root->getObject("aName"));
-//        vectorData<Vec3f>  d_positionsOut = component->d_positionsOut;
-
-//        for(unsigned int i=0; i<d_positionsOut.size(); i++)
-//        {
-//            ReadAccessor<Data<Vec3f>> data = d_positionsOut[i];
-//            std::cout << data << std::endl;
-//        }
-//        vectorData<Vec3f>  d_positionsIn = component->d_positionsIn;
-
-//        for(unsigned int i=0; i<d_positionsIn.size(); i++)
-//        {
-//            ReadAccessor<Data<Vec3f>> data = d_positionsIn[i];
-//            std::cout << data << std::endl;
-//        }
-
-
-//    }
 
 };
 
 TEST_F(Communication_test, checkPerformancs) {
+    std::cout << "#############cretion " << std::endl;
     ASSERT_NO_THROW(this->checkCreationDestruction()) ;
+    std::cout << "#############add subscriber" << std::endl;
     ASSERT_NO_THROW(this->checkAddSubscriber()) ;
+    std::cout << "#############get subscriber" << std::endl;
     ASSERT_NO_THROW(this->checkGetSubscriber()) ;
-    ASSERT_NO_THROW(this->checkSendOSC()) ;
+    std::cout << "#############send osc" << std::endl;
+//    ASSERT_NO_THROW(this->checkSendOSC()) ;
+    std::cout << "#############receive osc" << std::endl;
     ASSERT_NO_THROW(this->checkReceiveOSC()) ;
 }
 

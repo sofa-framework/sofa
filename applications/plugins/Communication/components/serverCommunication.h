@@ -101,6 +101,9 @@ public:
     std::map<std::string, CommunicationSubscriber*> getSubscribers();
     CommunicationSubscriber* getSubscriberFor(std::string);
 
+    bool isRunning() { return m_running;}
+    void setRunning(bool value) {m_running = value;}
+
     //////////////////////////////// Factory type /////////////////////////////////
     typedef sofa::helper::Factory< std::string, BaseData> CommunicationDataFactory;
     virtual CommunicationDataFactory* getFactoryInstance() =0;
@@ -125,6 +128,7 @@ protected:
     bool                                            m_running = true;
 
     BaseData* fetchData(SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK> source, std::string keyTypeMessage, std::string argumentName);
+
 
     virtual void openCommunication();
     virtual void closeCommunication();

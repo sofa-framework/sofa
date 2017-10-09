@@ -39,11 +39,6 @@ ServerCommunicationOSC::ServerCommunicationOSC()
 
 ServerCommunicationOSC::~ServerCommunicationOSC()
 {
-    if (d_job.getValueString().compare("receiver") == 0)
-    {
-        m_socket->Break();
-        free(m_socket);
-    }
     Inherited::closeCommunication();
 }
 
@@ -162,7 +157,8 @@ osc::OutboundPacketStream ServerCommunicationOSC::createOSCMessage()
 
 void ServerCommunicationOSC::ProcessMessage( const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint )
 {
-
+    if (!m_running)
+        m_socket->Break();
     const char* address = m.AddressPattern();
     osc::ReceivedMessageArgumentIterator it = m.ArgumentsBegin();
 
@@ -215,6 +211,7 @@ void ServerCommunicationOSC::ProcessMessage( const osc::ReceivedMessage& m, cons
             i++;
         }
     }
+    std::cout << "value  " << m_running << std::endl;
 }
 
 std::string ServerCommunicationOSC::convertArgumentToStringValue(osc::ReceivedMessageArgumentIterator it)
