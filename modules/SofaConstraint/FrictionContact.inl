@@ -145,7 +145,6 @@ void FrictionContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::activ
         else
         {
             mmodel2 = mapper2.createMapping(getName().c_str());
-            mapper2.setConstraintMode();
         }
         m_constraint = sofa::core::objectmodel::New<constraintset::UnilateralInteractionConstraint<defaulttype::Vec3Types> >(mmodel1, mmodel2);
         m_constraint->setName( getName() );
