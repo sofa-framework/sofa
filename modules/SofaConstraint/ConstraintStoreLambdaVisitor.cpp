@@ -14,7 +14,7 @@ ConstraintStoreLambdaVisitor::ConstraintStoreLambdaVisitor(const sofa::core::Con
 
 Visitor::Result ConstraintStoreLambdaVisitor::fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* cSet)
 {
-    if (core::behavior::BaseConstraint *c = core::behavior::BaseConstraint::DynamicCast(cSet))
+    if (core::behavior::BaseConstraint *c = dynamic_cast<core::behavior::BaseConstraint*>(cSet) )
     {
         ctime_t t0 = begin(node, c);
         c->storeLambda(m_cParams, m_cParams->lambda(), m_lambda);
