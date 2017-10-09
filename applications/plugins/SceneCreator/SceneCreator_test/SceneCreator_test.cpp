@@ -37,11 +37,6 @@ using sofa::helper::system::PluginManager ;
 class SceneCreator_test : public sofa::Sofa_test<>
 {
 public:
-    virtual void SetUp()
-    {
-        PluginManager::getInstance().loadPlugin("SceneCreator") ;
-    }
-
     bool createCubeFailed();
     bool createCubeSuccess();
     bool createRigidCubeSuccess();
