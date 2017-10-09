@@ -784,7 +784,7 @@ void GenericConstraintProblem::gaussSeidel(double timeout, GenericConstraintSolv
         }
         else msg_info_when(solver->displayTime.getValue(), solver) << " Convergence after " << i+1 << " iterations " ;
 
-		for(i=0; i<dim; i += constraintsResolutions[i]->getNbLines())
+		for(i=0; i<dimension; i += constraintsResolutions[i]->getNbLines())
             constraintsResolutions[i]->store(i, force, convergence);
     }
 
