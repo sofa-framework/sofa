@@ -5,9 +5,9 @@
 
 
 
-namespace isphysics
+namespace sofa
 {
-namespace interaction
+namespace constraint
 {
 
 template < class DataTypes >

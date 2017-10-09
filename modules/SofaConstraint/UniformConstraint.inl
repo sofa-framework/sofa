@@ -6,9 +6,9 @@
 #include <sofa/core/objectmodel/Data.h>
 #include <SofaConstraint/BilateralConstraintResolution.h>
 
-namespace isphysics
+namespace sofa
 {
-namespace interaction
+namespace constraint
 {
 
 template< class DataTypes >
