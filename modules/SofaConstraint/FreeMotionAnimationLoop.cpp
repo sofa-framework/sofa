@@ -199,17 +199,17 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     this->gnode->execute(&freeMotion);
     AdvancedTimer::stepEnd("FreeMotion");
 
-    {
-        mop.projectResponse(freeVel);
-        mop.propagateDx(freeVel, true);
+    
+    mop.projectResponse(freeVel);
+    mop.propagateDx(freeVel, true);
 
-        if (cparams.constOrder() == core::ConstraintParams::POS ||
-            cparams.constOrder() == core::ConstraintParams::POS_AND_VEL)
-        {
-            // xfree = x + vfree*dt
-            simulation::MechanicalVOpVisitor freePosEqPosPlusFreeVelDt(params, freePos, pos, freeVel, dt);
-            freePosEqPosPlusFreeVelDt.setMapped(true);
-            this->getContext()->executeVisitor(&freePosEqPosPlusFreeVelDt);
+    if (cparams.constOrder() == core::ConstraintParams::POS ||
+        cparams.constOrder() == core::ConstraintParams::POS_AND_VEL)
+    {
+        // xfree = x + vfree*dt
+        simulation::MechanicalVOpVisitor freePosEqPosPlusFreeVelDt(params, freePos, pos, freeVel, dt);
+        freePosEqPosPlusFreeVelDt.setMapped(true);
+        this->getContext()->executeVisitor(&freePosEqPosPlusFreeVelDt);
     }
     dmsg_info() << " SolveVisitor for freeMotion performed" ;
 
