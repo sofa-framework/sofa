@@ -147,7 +147,9 @@ public:
     Data< VecDeriv > vfree;
     Data< VecCoord > x0;
     Data< MatrixDeriv > c;
+#if(SOFA_WITH_EXPERIMENTAL_FEATURES==1)
     Data< MatrixDeriv > m;
+#endif
     Data< VecCoord > reset_position;
     Data< VecDeriv > reset_velocity;
 #endif
