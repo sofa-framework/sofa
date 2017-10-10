@@ -28,9 +28,6 @@
 #include <sofa/core/behavior/LinearSolver.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <SofaBaseLinearSolver/FullMatrix.h>
-#ifdef SOFA_SMP
-#include <sofa/core/behavior/ParallelMultiVec.h>
-#endif
 
 namespace sofa
 {
@@ -43,9 +40,6 @@ namespace linearsolver
 
 class GraphScatteredMatrix;
 class GraphScatteredVector;
-#ifdef SOFA_SMP
-class ParallelGraphScatteredVector;
-#endif
 template <class T1, class T2>
 class MultExpr
 {
@@ -76,16 +70,8 @@ public:
     {
         return MultExpr<GraphScatteredMatrix,GraphScatteredVector>(*this, v);
     }
-#ifdef SOFA_SMP
-    MultExpr<GraphScatteredMatrix,ParallelGraphScatteredVector> operator*(ParallelGraphScatteredVector& v)
-    {
-        return MultExpr<GraphScatteredMatrix,ParallelGraphScatteredVector>(*this, v);
-    }
-#endif
     void apply(GraphScatteredVector& res, GraphScatteredVector& x);
-#ifdef SOFA_SMP
-    void apply(ParallelGraphScatteredVector& res, ParallelGraphScatteredVector& x);
-#endif
+
 
     // compatibility with baseMatrix
     unsigned int rowSize()
@@ -168,50 +154,6 @@ public:
     static const char* Name() { return "GraphScattered"; }
 };
 
-#ifdef SOFA_SMP
-class SOFA_BASE_LINEAR_SOLVER_API ParallelGraphScatteredVector : public sofa::core::behavior::ParallelMultiVecDeriv
-{
-public:
-    typedef sofa::core::behavior::ParallelMultiVecDeriv Inherit;
-    ParallelGraphScatteredVector(core::behavior::BaseVectorOperations* p, core::VecDerivId id)
-        : Inherit(p, id)
-    {
-    }
-    ParallelGraphScatteredVector(core::behavior::BaseVectorOperations* p)
-        : Inherit(p)
-    {
-    }
-    void set(core::MultiVecDerivId id)
-    {
-        this->v = id;
-    }
-    void reset()
-    {
-        this->v = core::VecDerivId::null();
-    }
-
-    /// TO IMPLEMENT
-    void add(int /*row*/, SReal /*v*/)
-    {
-        msg_info()<<"WARNING : add an element is not supported in ParallelMultiVector"<<std::endl;
-    }
-
-    SReal element(int /*i*/)
-    {
-        msg_info()<<"WARNING : get a single element is not supported in ParallelMultiVector"<<std::endl;
-        return 0;
-    }
-
-    friend class GraphScatteredMatrix;
-
-    void operator=(const MultExpr<GraphScatteredMatrix,ParallelGraphScatteredVector>& expr)
-    {
-        expr.a.apply(*this,expr.b);
-    }
-
-    static const char* Name() { return "ParallelGraphScattered"; }
-};
-#endif /* SOFA_SMP */
 
 } // namespace linearsolver
 

@@ -7,7 +7,6 @@ set(HEADER_FILES
     BoundingBox.h
     DataTypeInfo.h
     Frame.h
-    LaparoscopicRigidTypes.h
     MapMapSparseMatrix.h
     Mat.h
     MatSym.h

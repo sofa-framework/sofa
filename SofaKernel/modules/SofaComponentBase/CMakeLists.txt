@@ -7,6 +7,7 @@ set(HEADER_FILES
     messageHandlerComponent.h
     MakeAliasComponent.h
     MakeDataAliasComponent.h
+    InfoComponent.h
 )
 
 set(SOURCE_FILES
@@ -14,6 +15,7 @@ set(SOURCE_FILES
     messageHandlerComponent.cpp
     MakeAliasComponent.cpp
     MakeDataAliasComponent.cpp
+    InfoComponent.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})

@@ -119,7 +119,11 @@ struct DataEngine_test : public Sofa_test<>
     /// To do so, you can inherit this class and add a test function that takes inputs and ouputs to test
     void run_basic_test()
     {
-        init();
+        /// The comp
+        {
+            IGNORE_MSG(Error) ;
+            init();
+        }
 
         m_engine->resetCounter();
 

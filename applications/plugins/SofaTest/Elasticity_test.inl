@@ -488,12 +488,13 @@ UniformMass3::SPtr massPtr = modeling::addNew<UniformMass3>(root,"mass");
 massPtr->d_totalMass.setValue(mPlanet + mSun);
 
 // Lennard Jones Force Field
-typename component::forcefield::LennardJonesForceField<DataTypes>::SPtr ff =
-    modeling::addNew<typename component::forcefield::LennardJonesForceField<DataTypes> >(root);
-// Set froce field parameters
-ff->setAlpha(1);
-ff->setBeta(-1);
-ff->setAInit(mPlanet*mSun*g);
+//TODO: Find another FF to add in this test. If Sympletic solver are not deprecated. Erik STC #4
+//typename component::forcefield::LennardJonesForceField<DataTypes>::SPtr ff =
+//    modeling::addNew<typename component::forcefield::LennardJonesForceField<DataTypes> >(root);
+//// Set froce field parameters
+//ff->setAlpha(1);
+//ff->setBeta(-1);
+//ff->setAInit(mPlanet*mSun*g);
 
 return root;
 

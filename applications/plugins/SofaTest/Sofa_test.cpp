@@ -23,7 +23,12 @@
 #include "Sofa_test.h"
 #include <SceneCreator/SceneCreator.h>
 
+#include <sofa/helper/system/PluginManager.h>
+using sofa::helper::system::PluginManager ;
+
 #include <sofa/helper/system/FileRepository.h>
+using sofa::helper::system::PluginRepository ;
+
 #include <sofa/helper/system/FileSystem.h>
 using sofa::helper::system::PluginRepository;
 using sofa::helper::system::DataRepository;
@@ -42,7 +47,11 @@ using sofa::helper::Console ;
 using sofa::helper::logging::MessageDispatcher ;
 using sofa::helper::logging::MainGtestMessageHandler ;
 
+
 namespace sofa {
+
+
+
 
 // some basic RAII stuff to automatically add a TestMessageHandler to every tests
 namespace {
@@ -50,6 +59,11 @@ namespace {
       raii() {
           MessageDispatcher::addHandler( MainGtestMessageHandler::getInstance() ) ;
           BackTrace::autodump() ;
+
+          const std::string pluginDir = Utils::getPluginDirectory() ;
+          PluginRepository.addFirstPath(pluginDir);
+
+          PluginManager::getInstance().loadPlugin("SceneCreator") ;
       }
     } singleton;
 }

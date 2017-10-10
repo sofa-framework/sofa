@@ -29,11 +29,6 @@
 #include <iostream>
 #include <map>
 
-#ifdef SOFA_SMP
-#include <IterativePartition.h>
-#include <AthapascanIterative.h>
-#endif
-
 
 namespace sofa
 {
@@ -71,12 +66,7 @@ public:
     /// @}
 #endif
 
-#ifdef SOFA_SMP
-    Data<int> processor;
-    Data<bool> gpuPrioritary;
-    Data<bool> is_partition_;
-    Iterative::IterativePartition *partition_;
-#endif
+
 
 protected:
     Context();
@@ -187,13 +177,7 @@ public:
     virtual void setFinestLevel(int l);
 #endif
 
-#ifdef SOFA_SMP
-    inline bool is_partition()const {return is_partition_.getValue();}
-    inline Iterative::IterativePartition *getPartition()const {return partition_;}
-    /// Accessor to the object processor
-    int getProcessor() const;
-    void setProcessor(int);
-#endif
+
 
     /// @}
 

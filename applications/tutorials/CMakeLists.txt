@@ -3,14 +3,14 @@ cmake_minimum_required(VERSION 3.1)
 set(SOFATUTORIALS_TARGETS
     # No CMakeLists.txt
     # anatomyModelling
-    chainHybrid
-    compositeObject
-    houseOfCards
-    mixedPendulum
-    oneParticle
+    #chainHybrid
+    #compositeObject
+    #houseOfCards
+    #mixedPendulum
+    #oneParticle
     # Needs SofaTypedefs
     # oneParticleWithSofaTypedefs
-    oneTetrahedron
+    #oneTetrahedron
 )
 
 foreach(TARGET ${SOFATUTORIALS_TARGETS})

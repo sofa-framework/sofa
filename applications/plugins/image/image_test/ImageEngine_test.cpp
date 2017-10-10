@@ -236,7 +236,7 @@ struct ImageEngine_test : public Sofa_test<>
 // Test
 TEST_F(ImageEngine_test , testDataLink )
 {
-    ASSERT_NO_THROW(this->testDataLink());
+    this->testDataLink() ;
 }
 
 TEST_F(ImageEngine_test , testEngineDataLink )
