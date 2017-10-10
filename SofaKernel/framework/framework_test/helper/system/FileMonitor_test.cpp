@@ -81,17 +81,17 @@ void waitUntilFileExists(const std::string& filename, double timeout)
     }
 }
 
-void waitForFileEvents()
+void waitABit()
 {
     // on windows we use file date, which resoution is assumed (by us) to be below this value in ms
 #ifdef WIN32
     Sleep(100);
 #endif
 #ifdef __APPLE__
-    sleep(1);
+    // sleep(1);
 #endif
 #ifdef __linux__
-  //  sleep(1);
+    //  sleep(1);
 #endif
 }
 
@@ -131,7 +131,8 @@ TEST(FileMonitor, addFileExist_test)
 
     // create the file
     createAFilledFile(getPath("existing.txt"), 1) ;
-    waitUntilFileExists(getPath("existing.txt"), 10.0) ;
+    waitABit();
+    //waitUntilFileExists(getPath("existing.txt"), 10.0) ;
 
     // Add an existing file.It should work.
     EXPECT_EQ( FileMonitor::addFile(getPath("existing.txt"), &listener), 1 ) ;
@@ -145,7 +146,8 @@ TEST(FileMonitor, addFileTwice_test)
 
     // create the file
     createAFilledFile(getPath("existing.txt"), 1) ;
-   waitUntilFileExists(getPath("existing.txt"), 10.0) ;
+    waitABit();
+    //waitUntilFileExists(getPath("existing.txt"), 10.0) ;
 
 
     // Add an existing file.It should work.
@@ -170,8 +172,8 @@ TEST(FileMonitor, noUpdate_test)
 
     // create the file
     createAFilledFile(getPath("existing.txt"), 1) ;
-   waitUntilFileExists(getPath("existing.txt"), 10.0) ;
-
+    //waitUntilFileExists(getPath("existing.txt"), 10.0) ;
+    waitABit();
 
     // Add an existing file.It should work.
     FileMonitor::addFile(getPath("existing.txt"), &listener) ;
@@ -186,8 +188,8 @@ TEST(FileMonitor, updateNoChange_test)
 
     // create the file
     createAFilledFile(getPath("existing.txt"), 1) ;
-   waitUntilFileExists(getPath("existing.txt"), 10.0) ;
-
+    //waitUntilFileExists(getPath("existing.txt"), 10.0) ;
+    waitABit();
 
     FileMonitor::addFile(getPath("existing.txt"), &listener) ;
     FileMonitor::updates(2) ;
@@ -203,9 +205,8 @@ TEST(FileMonitor, fileChange_test)
 
     // create the file
     createAFilledFile(getPath("existing.txt"), 1) ;
-   waitUntilFileExists(getPath("existing.txt"), 10.0) ;
-
-
+    waitABit();
+    //waitUntilFileExists(getPath("existing.txt"), 10.0) ;
 
     FileMonitor::addFile(getPath("existing.txt"), &listener) ;
     //waitForFileEvents();
@@ -225,8 +226,8 @@ TEST(FileMonitor, fileChangeTwice_test)
 
     // create the file
     createAFilledFile(getPath("existing.txt"), 1) ;
-   waitUntilFileExists(getPath("existing.txt"), 10.0) ;
-
+    //waitUntilFileExists(getPath("existing.txt"), 10.0) ;
+    waitABit();
 
     FileMonitor::addFile(getPath("existing.txt"), &listener) ;
     //FileMonitor::updates(2) ;
@@ -236,7 +237,7 @@ TEST(FileMonitor, fileChangeTwice_test)
     createAFilledFile(getPath("existing.txt"), 100,false) ;
     createAFilledFile(getPath("existing.txt"), 200,false) ;
 
-    FileMonitor::updates(2) ;
+    FileMonitor::updates(10) ;
     EXPECT_EQ( listener.m_files.size(), 1u) ;
 
     FileMonitor::removeListener(&listener) ;
@@ -249,7 +250,8 @@ TEST(FileMonitor, fileListenerRemoved_test)
 
     // create the file
     createAFilledFile(getPath("existing.txt"), 1) ;
-    waitUntilFileExists(getPath("existing.txt"), 10.0) ;
+    //waitUntilFileExists(getPath("existing.txt"), 10.0) ;
+    waitABit();
 
     FileMonitor::addFile(getPath("existing.txt"), &listener1) ;
     FileMonitor::addFile(getPath("existing.txt"), &listener2) ;
@@ -277,8 +279,8 @@ TEST(FileMonitor, listenerRemoved_test)
 
     // create the file
     createAFilledFile(getPath("existing.txt"), 1) ;
-    waitUntilFileExists(getPath("existing.txt"), 10.0) ;
-
+    //waitUntilFileExists(getPath("existing.txt"), 10.0) ;
+    waitABit();
 
     FileMonitor::addFile(getPath("existing.txt"), &listener1) ;
     FileMonitor::addFile(getPath("existing.txt"), &listener2) ;
@@ -305,8 +307,8 @@ TEST(FileMonitor, fileChange2_test)
 
     // create the file
     createAFilledFile(getPath("existing.txt"), 1) ;
-    waitUntilFileExists(getPath("existing.txt"), 10.0) ;
-
+    //waitUntilFileExists(getPath("existing.txt"), 10.0) ;
+    waitABit();
 
     FileMonitor::addFile(getPath(""),"existing.txt", &listener) ;
     //waitForFileEvents();
