@@ -185,7 +185,7 @@ TEST(FileMonitor, updateNoChange_test)
     waitABit();
 
     FileMonitor::addFile(getPath("existing.txt"), &listener) ;
-    FileMonitor::updates(2) ;
+    FileMonitor::updates(1) ;
 
     EXPECT_EQ( listener.m_files.size(), 0u) ;
 
@@ -225,7 +225,7 @@ TEST(FileMonitor, fileChangeTwice_test)
     createAFilledFile(getPath("existing.txt"), 100,false) ;
     createAFilledFile(getPath("existing.txt"), 200,false) ;
 
-    FileMonitor::updates(10) ;
+    FileMonitor::updates(2) ;
     EXPECT_EQ( listener.m_files.size(), 1u) ;
 
     FileMonitor::removeListener(&listener) ;
@@ -242,7 +242,6 @@ TEST(FileMonitor, fileListenerRemoved_test)
 
     FileMonitor::addFile(getPath("existing.txt"), &listener1) ;
     FileMonitor::addFile(getPath("existing.txt"), &listener2) ;
-    //FileMonitor::updates(2) ;
 
     // change the file content 2x to test if the events are coalesced.
     listener1.m_files.clear() ;
