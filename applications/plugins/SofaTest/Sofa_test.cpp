@@ -60,7 +60,7 @@ namespace {
           MessageDispatcher::addHandler( MainGtestMessageHandler::getInstance() ) ;
           BackTrace::autodump() ;
 
-          const std::string pluginDir = Utils::getSofaPathPrefix() + "/lib";
+          const std::string pluginDir = Utils::getPluginDirectory() ;
           PluginRepository.addFirstPath(pluginDir);
 
           PluginManager::getInstance().loadPlugin("SceneCreator") ;
