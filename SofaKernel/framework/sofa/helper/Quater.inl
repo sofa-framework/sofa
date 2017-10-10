@@ -488,8 +488,8 @@ void Quater<Real>::quatToAxis(defaulttype::Vec<3,Real> & axis, Real &angle) cons
 
     Real sin_half_theta; // note that sin(theta/2) == norm of the imaginary part for unit quaternion
 
-    // to avoid numerical instabilities of acos for theta < 5°
-    if(q[3]>0.999) // theta < 5° -> q[3] = cos(theta/2) > 0.999
+    // to avoid numerical instabilities of acos for theta < 5Â°
+    if(q[3]>0.999) // theta < 5Â° -> q[3] = cos(theta/2) > 0.999
     {
         sin_half_theta = sqrt(q[0] * q[0] + q[1] * q[1] + q[2] * q[2]);
         angle = (Real)(2.0 * asin(sin_half_theta));
@@ -523,8 +523,8 @@ defaulttype::Vec<3,Real> Quater<Real>::quatToRotationVector() const
 
     Real sin_half_theta; // note that sin(theta/2) == norm of the imaginary part for unit quaternion
 
-    // to avoid numerical instabilities of acos for theta < 5°
-    if(q[3]>0.999) // theta < 5° -> q[3] = cos(theta/2) > 0.999
+    // to avoid numerical instabilities of acos for theta < 5Â°
+    if(q[3]>0.999) // theta < 5Â° -> q[3] = cos(theta/2) > 0.999
     {
         sin_half_theta = sqrt(q[0] * q[0] + q[1] * q[1] + q[2] * q[2]);
         angle = (Real)(2.0 * asin(sin_half_theta));
@@ -559,7 +559,7 @@ defaulttype::Vec<3,Real> Quater<Real>::toEulerVector() const
 
     Quater<Real> q = *this;
         q.normalize();
-        double y = std::max(-1.0,std::min(1.0,2*(q[3]*q[1] - q[2]*q[0])));
+        Real y = std::max(Real(-1.0),std::min(Real(1.0),Real(2.)*(q[3]*q[1] - q[2]*q[0])));
 
         defaulttype::Vec<3,Real> vEuler;
         vEuler[0] = atan2(2*(q[3]*q[0] + q[1]*q[2]) , (1-2*(q[0]*q[0] + q[1]*q[1])));   //roll
