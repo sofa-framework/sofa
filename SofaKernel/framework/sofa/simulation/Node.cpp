@@ -30,6 +30,7 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
+#include <sofa/core/behavior/BaseMass.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Node.inl>
 #include <sofa/simulation/PropagateEventVisitor.h>
@@ -40,7 +41,9 @@
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/VisualVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
-
+#include <sofa/simulation/MutationListener.h>
+#include <sofa/core/behavior/LinearSolver.h>
+#include <sofa/core/visual/Shader.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/Factory.inl>
 #include <sofa/helper/cast.h>

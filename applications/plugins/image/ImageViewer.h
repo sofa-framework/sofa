@@ -38,6 +38,7 @@
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawTool.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/CollisionModel.h>
 #include <sofa/helper/system/glu.h>

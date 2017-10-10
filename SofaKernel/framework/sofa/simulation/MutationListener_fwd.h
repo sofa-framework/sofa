@@ -19,15 +19,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CLASSSYSTEM_H
-#define SOFA_CLASSSYSTEM_H
+#ifndef SOFA_SIMULATION_CORE_MUTATIONLISTENER_FWD_H
+#define SOFA_SIMULATION_CORE_MUTATIONLISTENER_FWD_H
 
-namespace sofa
-{
-namespace simulation
-{
-class Node;
-}
-}
+namespace sofa {
+namespace simulation {
+    class  MutationListener ;
+} /// namespace simulation
+} /// namespace sofa
 
 #endif

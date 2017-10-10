@@ -24,7 +24,7 @@
 
 #include <SofaGeneralRigid/LaparoscopicRigidMapping.h>
 #include <sofa/core/visual/VisualParams.h>
-
+#include <sofa/core/visual/DisplayFlags.h>
 #include <string>
 
 

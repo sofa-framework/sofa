@@ -31,7 +31,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/AdvancedTimer.h>
-
+#include <sofa/core/behavior/BaseMass.h>
 #include <Eigen/LU>
 #include <Eigen/QR>
 

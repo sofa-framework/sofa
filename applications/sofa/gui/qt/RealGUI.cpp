@@ -99,6 +99,9 @@ using sofa::helper::system::FileMonitor ;
 #include <SofaGraphComponent/SceneCheckerVisitor.h>
 using sofa::simulation::SceneCheckerVisitor ;
 
+#include <SofaGraphComponent/SceneCheckAPIChanges.h>
+using sofa::simulation::scenecheckers::SceneCheckAPIChange ;
+
 using sofa::core::ExecParams ;
 
 namespace sofa

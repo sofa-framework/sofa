@@ -26,7 +26,6 @@
 #include <sofa/core/collision/IntersectorFactory.h>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/FnDispatcher.inl>
-#include <sofa/helper/proximity.h>
 #include <SofaBaseCollision/DiscreteIntersection.h>
 #include "RigidDistanceGridDiscreteIntersection.inl"
 

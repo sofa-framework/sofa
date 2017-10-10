@@ -24,6 +24,8 @@
 
 #include "TriangleDeformationMapping.h"
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawTool.h>
+#include <sofa/core/visual/DisplayFlags.h>
 #include <iostream>
 using std::cerr;
 using std::endl;

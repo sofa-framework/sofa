@@ -25,6 +25,8 @@
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/CommonAlgorithms.h>
+#include <sofa/core/visual/DrawTool.h>
+
 #include <fstream>
 
 #ifdef NDEBUG

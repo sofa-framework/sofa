@@ -22,6 +22,7 @@
 #include <SofaOpenglVisual/OglModel.h>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DisplayFlags.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/gl/RAII.h>

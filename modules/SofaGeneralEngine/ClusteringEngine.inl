@@ -26,6 +26,7 @@
 #include <sofa/helper/gl/template.h>
 #include <iostream>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DisplayFlags.h>
 #include <fstream>
 
 #include <sofa/helper/logging/Messaging.h>

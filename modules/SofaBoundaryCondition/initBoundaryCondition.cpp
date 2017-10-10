@@ -39,6 +39,7 @@ void initBoundaryCondition()
     }
 }
 
+#ifdef SOFA_BUILD_FULLSETCOMPONENTS
 SOFA_LINK_CLASS(BuoyantForceField)
 SOFA_LINK_CLASS(ConicalForceField)
 SOFA_LINK_CLASS(ConstantForceField)
@@ -70,6 +71,8 @@ SOFA_LINK_CLASS(ParabolicConstraint)
 SOFA_LINK_CLASS(PartialFixedConstraint)
 SOFA_LINK_CLASS(PartialLinearMovementConstraint)
 SOFA_LINK_CLASS(PositionBasedDynamicsConstraint)
+#endif // SOFA_BUILD_FULLSETCOMPONENTS
+
 
 } // namespace component
 

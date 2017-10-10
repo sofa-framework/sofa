@@ -31,6 +31,8 @@
 #include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
 #include <sofa/simulation/UpdateContextVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
+#include <sofa/helper/AdvancedTimer.h>
+
 #include <math.h>
 #include <iostream>
 

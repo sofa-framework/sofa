@@ -27,7 +27,6 @@
 #include <sofa/core/ExecParams.h>
 #include <sofa/simulation/simulationcore.h>
 #include <sofa/simulation/Node.h>
-#include <sofa/helper/AdvancedTimer.h>
 
 namespace sofa
 {
@@ -60,7 +59,7 @@ public:
     virtual void init();
 
     /// perform one animation step
-    virtual void step(const core::ExecParams* params, SReal dt);
+    virtual void step(const sofa::core::ExecParams* params, SReal dt);
 
 
     /// Construction method called by ObjectFactory.

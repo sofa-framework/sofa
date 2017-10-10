@@ -26,6 +26,7 @@
 #include <SofaBoundaryCondition/ProjectToLineConstraint.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawTool.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/helper/gl/template.h>
 //#include <sofa/defaulttype/RigidTypes.h>

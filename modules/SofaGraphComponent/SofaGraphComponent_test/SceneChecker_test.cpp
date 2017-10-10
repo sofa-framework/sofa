@@ -7,6 +7,9 @@ using sofa::simulation::SceneCheckerVisitor ;
 #include <SofaGraphComponent/SceneChecks.h>
 using namespace sofa::simulation::scenecheckers ;
 
+#include <SofaGraphComponent/SceneCheckAPIChanges.h>
+using sofa::simulation::scenecheckers::SceneCheckAPIChange ;
+
 #include <sofa/helper/system/PluginManager.h>
 using sofa::helper::system::PluginManager ;
 

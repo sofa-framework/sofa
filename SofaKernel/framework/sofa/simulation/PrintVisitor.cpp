@@ -22,7 +22,9 @@
 #include <sofa/simulation/PrintVisitor.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/simulation/Node.h>
-
+#include <sofa/core/behavior/BaseMass.h>
+#include <sofa/core/collision/Pipeline.h>
+#include <sofa/core/behavior/LinearSolver.h>
 namespace sofa
 {
 

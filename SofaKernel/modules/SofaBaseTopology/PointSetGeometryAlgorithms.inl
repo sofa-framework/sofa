@@ -30,6 +30,8 @@
 #include <sofa/core/objectmodel/Tag.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
+#include <sofa/core/visual/DrawTool.h>
+
 
 namespace sofa
 {

@@ -22,6 +22,7 @@
 #define SOFA_COMPONENT_CONSTRAINTSET_FIXEDLMCONSTRAINT_CPP
 #include <SofaConstraint/FixedLMConstraint.inl>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/visual/DrawTool.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
 

@@ -21,9 +21,8 @@
 ******************************************************************************/
 #include <SofaGeneralVisual/VisualTransform.h>
 #include <sofa/core/visual/VisualParams.h>
-//#include <sofa/core/objectmodel/Context.h>
+#include <sofa/core/visual/DrawTool.h>
 #include <sofa/core/ObjectFactory.h>
-//#include <sofa/simulation/UpdateContextVisitor.h>
 
 #include <sofa/core/visual/DrawTool.h>
 

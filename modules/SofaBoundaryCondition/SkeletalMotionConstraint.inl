@@ -24,6 +24,7 @@
 
 #include <SofaBoundaryCondition/SkeletalMotionConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawTool.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/helper/gl/template.h>

@@ -34,6 +34,8 @@
 #include <SofaMiscFem/Ogden.h>
 #include "TetrahedronHyperelasticityFEMForceField.h"
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawTool.h>
+#include <sofa/core/visual/DisplayFlags.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/ObjectFactory.h>

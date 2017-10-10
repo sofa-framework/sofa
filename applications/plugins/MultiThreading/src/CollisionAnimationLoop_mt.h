@@ -22,7 +22,6 @@
 #ifndef SOFA_SIMULATION_TREE_COLLISIONANIMATIONLOOP_MT_H
 #define SOFA_SIMULATION_TREE_COLLISIONANIMATIONLOOP_MT_H
 
-#include <sofa/helper/AdvancedTimer.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include "BaseAnimationLoop_mt.h"
 #include <sofa/core/ExecParams.h>

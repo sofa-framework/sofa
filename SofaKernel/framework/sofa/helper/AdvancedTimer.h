@@ -22,8 +22,7 @@
 #ifndef SOFA_HELPER_ADVANCEDTIMER_H
 #define SOFA_HELPER_ADVANCEDTIMER_H
 #include <sofa/helper/helper.h>
-#include <sofa/simulation/Simulation.h>
-
+#include <sofa/simulation/Node_fwd.h>
 
 #include <iostream>
 #include <string>

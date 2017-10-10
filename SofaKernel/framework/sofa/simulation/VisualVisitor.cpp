@@ -22,7 +22,7 @@
 #include <sofa/simulation/VisualVisitor.h>
 
 #include <sofa/core/visual/VisualParams.h>
-
+#include <sofa/core/visual/Shader.h>
 #ifdef DEBUG_DRAW
 #define DO_DEBUG_DRAW true
 #else
@@ -56,6 +56,12 @@ Visitor::Result VisualDrawVisitor::processNodeTopDown(simulation::Node* node)
 #endif
     return RESULT_CONTINUE;
 }
+
+VisualVisitor::VisualVisitor(core::visual::VisualParams* params)
+    : Visitor(params)
+    ,vparams(params)
+{}
+
 
 void VisualDrawVisitor::processNodeBottomUp(simulation::Node* node)
 {
@@ -136,6 +142,9 @@ void VisualDrawVisitor::processVisualModel(simulation::Node* node, core::visual:
         break;
     }
 }
+
+VisualUpdateVisitor::VisualUpdateVisitor(const core::ExecParams* params) : Visitor(params)
+{}
 
 Visitor::Result VisualUpdateVisitor::processNodeTopDown(simulation::Node* node)
 {

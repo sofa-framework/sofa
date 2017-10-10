@@ -26,6 +26,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/Topology.h>
 #include <sofa/core/objectmodel/Context.h>
+#include <sofa/core/visual/DrawTool.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/DataTypeInfo.h>

@@ -25,6 +25,7 @@
 
 #include <SofaValidation/CompareState.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawTool.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/core/ObjectFactory.h>

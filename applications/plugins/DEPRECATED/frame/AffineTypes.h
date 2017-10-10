@@ -28,7 +28,6 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/MapMapSparseMatrix.h>
 #include <sofa/core/objectmodel/BaseContext.h>
-//#include <sofa/core/behavior/Mass.h>
 #ifdef SOFA_SMP
 #include <sofa/defaulttype/SharedTypes.h>
 #endif /* SOFA_SMP */

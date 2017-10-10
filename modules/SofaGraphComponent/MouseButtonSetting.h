@@ -25,7 +25,6 @@
 
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <sofa/helper/OptionsGroup.h>
-#include <sofa/core/objectmodel/DataFileName.h>
 
 
 namespace sofa

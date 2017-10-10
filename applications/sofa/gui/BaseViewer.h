@@ -29,7 +29,6 @@
 #include "ColourPickingVisitor.h"
 
 #include <sofa/helper/Factory.h>
-#include <sofa/core/ObjectFactory.h>
 #include <sofa/core/CollisionModel.h>
 
 

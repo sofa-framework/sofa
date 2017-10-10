@@ -22,7 +22,7 @@
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectToPointConstraint_CPP
 #include <SofaBoundaryCondition/ProjectToPointConstraint.inl>
 #include <sofa/core/ObjectFactory.h>
-
+#include <sofa/core/visual/DrawTool.h>
 #include <sofa/simulation/Node.h>
 
 namespace sofa

@@ -31,7 +31,7 @@
 //
 //
 #include <sofa/simulation/MechanicalComputeEnergyVisitor.h>
-
+#include <sofa/core/behavior/BaseMass.h>
 namespace sofa
 {
 

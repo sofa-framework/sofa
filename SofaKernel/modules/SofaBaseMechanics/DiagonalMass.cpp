@@ -21,6 +21,8 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MASS_DIAGONALMASS_CPP
 #include <SofaBaseMechanics/DiagonalMass.inl>
+#include <sofa/core/visual/DrawTool.h>
+
 #include <sofa/core/ObjectFactory.h>
 
 using sofa::core::visual::VisualParams ;

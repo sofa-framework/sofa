@@ -24,6 +24,7 @@
 #include "FrameMechanicalObject.h"
 #include <SofaBaseMechanics/MechanicalObject.inl>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/visual/DrawTool.h>
 #include <sofa/helper/gl/template.h>
 #include <iostream>
 using std::cerr;

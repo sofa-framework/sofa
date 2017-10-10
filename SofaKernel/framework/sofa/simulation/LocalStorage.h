@@ -23,7 +23,6 @@
 #define SOFA_SIMULATION_TREE_LOCALSTORAGE_H
 
 #include <sofa/core/objectmodel/BaseObject.h>
-#include "ClassSystem.h"
 
 namespace sofa
 {
@@ -31,7 +30,7 @@ namespace sofa
 namespace simulation
 {
 
-
+class Node ;
 class Visitor;
 
 /// Abstract class allowing actions to store local data as a stack while traversing the graph.

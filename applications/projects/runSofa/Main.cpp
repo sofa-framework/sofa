@@ -68,7 +68,7 @@ using sofa::gui::GUIManager;
 #include <sofa/gui/BatchGUI.h>  // For the default number of iterations
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/atomic.h>
-
+#include <sofa/helper/AdvancedTimer.h>
 using sofa::core::ExecParams ;
 
 #include <sofa/helper/system/console.h>

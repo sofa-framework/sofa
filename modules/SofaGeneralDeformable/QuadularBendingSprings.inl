@@ -24,6 +24,7 @@
 
 #include <SofaGeneralDeformable/QuadularBendingSprings.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DisplayFlags.h>
 #include <iostream>
 
 #include <sofa/helper/gl/template.h>

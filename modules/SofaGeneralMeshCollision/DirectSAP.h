@@ -33,7 +33,6 @@
 #include <set>
 #include <map>
 #include <deque>
-#include <sofa/helper/AdvancedTimer.h>
 
 namespace sofa
 {

@@ -24,6 +24,7 @@
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/visual/DrawTool.h>
 
 #include <boost/bind.hpp>
 

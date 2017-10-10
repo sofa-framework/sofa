@@ -26,6 +26,7 @@
 #include "HexahedralFEMForceFieldAndMass.h"
 #include <sofa/core/visual/VisualParams.h>
 #include "HexahedralFEMForceField.inl"
+#include <sofa/core/visual/DrawTool.h>
 
 #include <SofaBaseTopology/TopologyData.inl>
 

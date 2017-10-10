@@ -212,6 +212,12 @@ option(SOFA_USE_MASK "Use mask optimization" ON)
 ### SOFA_DEV_TOOL
 option(SOFA_WITH_DEVTOOLS "Compile with developement extra features." ON)
 
+### SOFA_BUILD_DEPRECATEDCOMPONENTS
+option(SOFA_BUILD_DEPRECATEDCOMPONENTS "Compile Sofa with the deprecated component." OFF)
+
+### SOFA_BUILD_FULLSETCOMPONENTS
+option(SOFA_BUILD_FULLSETCOMPONENTS "Compile Sofa with all the components." ON)
+
 ### Threading
 option(SOFA_WITH_THREADING "Compile sofa with thread-safetiness support (PARTIAL/EXPERIMENTAL)" ON)
 

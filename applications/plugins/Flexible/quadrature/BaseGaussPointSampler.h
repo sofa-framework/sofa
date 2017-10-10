@@ -28,6 +28,8 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/vector.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DisplayFlags.h>
+#include <sofa/core/visual/DrawTool.h>
 #include <sofa/helper/OptionsGroup.h>
 
 #define GAUSSLEGENDRE 0

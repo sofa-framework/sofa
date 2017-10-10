@@ -43,6 +43,8 @@
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
 #include <sofa/simulation/UpdateLinksVisitor.h>
 #include <sofa/simulation/init.h>
+#include <sofa/simulation/DefaultAnimationLoop.h>
+#include <sofa/simulation/DefaultVisualManagerLoop.h>
 
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/AdvancedTimer.h>

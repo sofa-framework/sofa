@@ -22,6 +22,7 @@
 
 #include <SofaOpenglVisual/OglViewport.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawTool.h>
 #include <sofa/simulation/VisualVisitor.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/gl/Transformation.h>

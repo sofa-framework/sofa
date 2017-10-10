@@ -8,6 +8,7 @@
 #include "../utils/map.h"
 
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DisplayFlags.h>
 #include <sofa/helper/gl/Axis.h>
 
 namespace sofa

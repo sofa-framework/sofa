@@ -44,29 +44,28 @@
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/visual/VisualManager.h>
-#include <sofa/core/visual/Shader.h>
+#include <sofa/core/visual/Shader_fwd.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/Mapping.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/BaseInteractionForceField.h>
-#include <sofa/core/behavior/Mass.h>
+#include <sofa/core/behavior/BaseMass_fwd.h>
 #include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
 #include <sofa/core/behavior/BaseConstraintSet.h>
 #include <sofa/core/topology/Topology.h>
 #include <sofa/core/topology/BaseTopologyObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/behavior/ConstraintSolver.h>
 #include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/core/visual/VisualLoop.h>
-#include <sofa/core/collision/Pipeline.h>
+#include <sofa/core/collision/Pipeline_fwd.h>
 #include <sofa/core/loader/BaseLoader.h>
 #include <sofa/core/objectmodel/Event.h>
 
 #include <sofa/simulation/simulationcore.h>
-#include <sofa/simulation/MutationListener.h>
-#include <sofa/simulation/VisitorScheduler.h>
+#include <sofa/simulation/MutationListener_fwd.h>
+#include <sofa/simulation/VisitorScheduler_fwd.h>
 
 namespace sofa
 {
@@ -158,7 +157,7 @@ public:
     }
 
     /// Execute a recursive action starting from this node
-    template<class Act, class Params>
+    template<class Act, class Params = core::visual::VisualParams* >
     void execute(const Params* params, bool precomputedOrder=false)
     {
         Act action(params);
@@ -167,13 +166,15 @@ public:
     }
 
     /// Execute a recursive action starting from this node
-    template<class Act>
-    void execute(core::visual::VisualParams* vparams, bool precomputedOrder=false)
+    template<class Act, class Params = core::visual::VisualParams* >
+    void execute(Params* params, bool precomputedOrder=false)
     {
-        Act action(vparams);
+        Act action(params);
         simulation::Visitor* p = &action;
         executeVisitor(p, precomputedOrder);
     }
+
+
 
     /// Possible optimization with traversal precomputation, not mandatory and does nothing by default
     virtual void precomputeTraversalOrder( const sofa::core::ExecParams* ) {}

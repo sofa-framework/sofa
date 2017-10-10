@@ -30,6 +30,8 @@
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
 
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DisplayFlags.h>
+#include <sofa/core/visual/DrawTool.h>
 
 namespace sofa
 {

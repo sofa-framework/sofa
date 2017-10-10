@@ -24,6 +24,7 @@
 
 #include <SofaConstraint/SlidingConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DisplayFlags.h>
 #include <SofaConstraint/BilateralInteractionConstraint.h>
 #include <SofaConstraint/UnilateralInteractionConstraint.h>
 
