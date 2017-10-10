@@ -159,7 +159,7 @@ int FileMonitor::updates(int timeout)
     bool hadEvent = false ;
     ctime_t t = CTime::getTime() ;
 
-    while(!hadEvent && (CTime::getRefTime()-t) < timeout ){
+    while(!hadEvent && CTime::toSecond(CTime::getRefTime()-t) < 1.0*timeout ){
         for (ListOfMonitors::iterator it_monitor = monitors.begin(); it_monitor != monitors.end(); it_monitor++)
         {
             if (!it_monitor->update())
