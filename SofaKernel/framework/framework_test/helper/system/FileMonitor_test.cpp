@@ -32,9 +32,19 @@ using std::ofstream ;
 #include <string>
 using std::string ;
 
+#include <sofa/helper/system/FileSystem.h>
+using sofa::helper::system::FileSystem ;
+
 #include <sofa/helper/system/FileMonitor.h>
 using sofa::helper::system::FileEventListener ;
 using sofa::helper::system::FileMonitor ;
+
+#include <cmath>
+
+
+#include <sofa/helper/system/thread/CTime.h>
+using sofa::helper::system::thread::CTime ;
+using sofa::helper::system::thread::ctime_t ;
 
 #ifdef WIN32
 #include <windows.h>
@@ -59,6 +69,15 @@ void createAFilledFile(const string filename, unsigned int rep, bool resetFileMo
     // dirty fix to avoid interferences between successive tests using the same file
     if (resetFileMonitor)
         FileMonitor::updates(1);
+}
+
+void waitUntilFileExists(const std::string& filename, double timeout)
+{
+    ctime_t time = CTime::getTime() ;
+    while( !FileSystem::exists(filename)
+           && CTime::toSecond(CTime::getTime()-time) < timeout ){
+        CTime::sleep(0.1) ;
+    }
 }
 
 void waitForFileEvents()
@@ -111,7 +130,7 @@ TEST(FileMonitor, addFileExist_test)
 
     // create the file
     createAFilledFile(getPath("existing.txt"), 1) ;
-    waitForFileEvents();
+    waitUntilFileExists("existing.txt", 2.0) ;
 
     // Add an existing file.It should work.
     EXPECT_EQ( FileMonitor::addFile(getPath("existing.txt"), &listener), 1 ) ;
@@ -125,7 +144,7 @@ TEST(FileMonitor, addFileTwice_test)
 
     // create the file
     createAFilledFile(getPath("existing.txt"), 1) ;
-    waitForFileEvents();
+    waitUntilFileExists("existing.txt", 2.0) ;
 
     // Add an existing file.It should work.
     FileMonitor::addFile(getPath("existing.txt"), &listener);
@@ -150,7 +169,7 @@ TEST(FileMonitor, noUpdate_test)
 
     // create the file
     createAFilledFile(getPath("existing.txt"), 1) ;
-    waitForFileEvents();
+    waitUntilFileExists("existing.txt", 2.0) ;
 
     // Add an existing file.It should work.
     FileMonitor::addFile(getPath("existing.txt"), &listener) ;
@@ -165,7 +184,7 @@ TEST(FileMonitor, updateNoChange_test)
 
     // create the file
     createAFilledFile(getPath("existing.txt"), 1) ;
-    waitForFileEvents();
+    waitUntilFileExists("existing.txt", 2.0) ;
 
     FileMonitor::addFile(getPath("existing.txt"), &listener) ;
     waitForFileEvents();
@@ -182,7 +201,8 @@ TEST(FileMonitor, fileChange_test)
 
     // create the file
     createAFilledFile(getPath("existing.txt"), 1) ;
-    waitForFileEvents();
+    waitUntilFileExists("existing.txt", 2.0) ;
+
 
     FileMonitor::addFile(getPath("existing.txt"), &listener) ;
     //waitForFileEvents();
@@ -203,7 +223,7 @@ TEST(FileMonitor, fileChangeTwice_test)
 
     // create the file
     createAFilledFile(getPath("existing.txt"), 1) ;
-    waitForFileEvents();
+    waitUntilFileExists("existing.txt", 2.0) ;
 
     FileMonitor::addFile(getPath("existing.txt"), &listener) ;
     //FileMonitor::updates(2) ;
@@ -227,7 +247,8 @@ TEST(FileMonitor, fileListenerRemoved_test)
 
     // create the file
     createAFilledFile(getPath("existing.txt"), 1) ;
-    waitForFileEvents();
+    waitUntilFileExists("existing.txt", 2.0) ;
+
 
     FileMonitor::addFile(getPath("existing.txt"), &listener1) ;
     FileMonitor::addFile(getPath("existing.txt"), &listener2) ;
@@ -256,7 +277,7 @@ TEST(FileMonitor, listenerRemoved_test)
 
     // create the file
     createAFilledFile(getPath("existing.txt"), 1) ;
-    waitForFileEvents();
+    waitUntilFileExists("existing.txt", 2.0) ;
 
     FileMonitor::addFile(getPath("existing.txt"), &listener1) ;
     FileMonitor::addFile(getPath("existing.txt"), &listener2) ;
