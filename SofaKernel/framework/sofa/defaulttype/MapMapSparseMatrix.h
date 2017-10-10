@@ -118,7 +118,7 @@ public:
     {
         typedef typename VecDeriv::value_type Deriv;
 
-        static_assert(std::is_same<Deriv, T>::value, "res must be contain same type as MapMapSparseMatrix type");
+        static_assert(std::is_same<Deriv, T>::value, "res must contain same type as MapMapSparseMatrix type");
 
         for (auto rowIt = begin(), rowItEnd = end(); rowIt != rowItEnd; ++rowIt)
         {
