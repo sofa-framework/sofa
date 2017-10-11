@@ -57,6 +57,8 @@ BaseObject::SPtr SOFA_SCENECREATOR_API createObject(Node::SPtr parent, const std
 Node::SPtr SOFA_SCENECREATOR_API createChild(Node::SPtr& node, const std::string& name,
                                              const std::map<std::string, std::string>& params={}) ;
 
+void SOFA_SCENECREATOR_API dumpScene(Node::SPtr root) ;
+
 template<class T>
 std::string str(const T& t)
 {

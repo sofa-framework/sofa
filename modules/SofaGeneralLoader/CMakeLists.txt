@@ -5,16 +5,32 @@ project(SofaGeneralLoader)
 message(STATUS "SofaGeneralLoader:")
 ################################ COMPONENTS HERE ARE THE NG-SET ####################################
 set(HEADER_FILES
+    ReadState.h
+    ReadState.inl
+    ReadTopology.h
+    ReadTopology.inl
     config.h
     initGeneralLoader.h
 )
 
 set(SOURCE_FILES
+    ReadState.cpp
+    ReadTopology.cpp
     initGeneralLoader.cpp
 )
 
-############################## COMPONENTS HERE ARE THE FULL-SET ####################################
-if(SOFA_BUILD_FULLSETCOMPONENTS)
+############################## COMPONENTS HERE ARE THE LIGHT-SET ###################################
+if(SOFA_BUILD_COMPONENTSET_LIGHT)
+    list(APPEND HEADER_FILES
+
+        )
+    list(APPEND SOURCE_FILES
+
+        )
+endif()
+
+############################## COMPONENTS HERE ARE THE STANDARD-SET ################################
+if(SOFA_BUILD_COMPONENTSET_STANDARD)
     list(APPEND HEADER_FILES
         GIDMeshLoader.h
         GridMeshCreator.h
@@ -24,11 +40,7 @@ if(SOFA_BUILD_FULLSETCOMPONENTS)
         MeshSTLLoader.h
         MeshTrianLoader.h
         MeshXspLoader.h
-        OffSequenceLoader.h
-        ReadState.h
-        ReadState.inl
-        ReadTopology.h
-        ReadTopology.inl
+        OffSequenceLoader.h       
         SphereLoader.h
         StringMeshCreator.h
         VoxelGridLoader.h
@@ -43,22 +55,16 @@ if(SOFA_BUILD_FULLSETCOMPONENTS)
         MeshTrianLoader.cpp
         MeshXspLoader.cpp
         OffSequenceLoader.cpp
-        ReadState.cpp
-        ReadTopology.cpp
         SphereLoader.cpp
         StringMeshCreator.cpp
         VoxelGridLoader.cpp
         )
-    message(STATUS "   With all maintained sofa components.")
-else()
-    message(STATUS "   With only a minimal set of components.")
+
 endif()
 
 ############################### COMPONENTS HERE ARE DEPRECATED ####################################
-if(SOFA_BUILD_DEPRECATEDCOMPONENTS)
-    message(STATUS "   With deprecated components.")
-else()
-    message(STATUS "   Without deprecated components.")
+if(SOFA_BUILD_COMPONENTSET_FULL)
+
 endif()
 
 

@@ -13,46 +13,51 @@ set(SOURCE_FILES
     initMiscForcefield.cpp
 )
 
-############################## COMPONENTS HERE ARE THE FULL-SET ####################################
-if(SOFA_BUILD_FULLSETCOMPONENTS)
+############################## COMPONENTS HERE ARE THE LIGHT-SET ###################################
+if(SOFA_BUILD_COMPONENTSET_LIGHT)
     list(APPEND HEADER_FILES
-        ForceMaskOff.h
-        GearSpringForceField.h
-        GearSpringForceField.inl
-        LennardJonesForceField.h
-        LennardJonesForceField.inl
-        LineBendingSprings.h
-        LineBendingSprings.inl
+
+        )
+    list(APPEND SOURCE_FILES
+
+        )
+endif()
+
+############################## COMPONENTS HERE ARE THE STANDARD-SET ################################
+if(SOFA_BUILD_COMPONENTSET_STANDARD)
+    list(APPEND HEADER_FILES
+	    GearSpringForceField.h
+        GearSpringForceField.inl             
         MatrixMass.h
         MatrixMass.inl
         MeshMatrixMass.h
         MeshMatrixMass.inl
         )
-    list(APPEND SOURCE_FILES
-        ForceMaskOff.cpp
-        GearSpringForceField.cpp
-        LennardJonesForceField.cpp
-        LineBendingSprings.cpp
+    list(APPEND SOURCE_FILES     
+	    GearSpringForceField.cpp           
         MatrixMass.cpp
         MeshMatrixMass.cpp
         )
-    message(STATUS "   With all maintained sofa components.")
-else()
-    message(STATUS "   With only a minimal set of components.")
+
 endif()
 
 ############################### COMPONENTS HERE ARE DEPRECATED ####################################
-if(SOFA_BUILD_DEPRECATEDCOMPONENTS)
+if(SOFA_BUILD_COMPONENTSET_FULL)
     list(APPEND HEADER_FILES
+	    ForceMaskOff.h  
+        LineBendingSprings.h
+        LineBendingSprings.inl
         WashingMachineForceField.h
         WashingMachineForceField.inl
+		LennardJonesForceField.h
+        LennardJonesForceField.inl
         )
     list(APPEND SOURCE_FILES
+	    ForceMaskOff.cpp        
+        LineBendingSprings.cpp
         WashingMachineForceField.cpp
+		LennardJonesForceField.cpp
         )
-    message(STATUS "   With deprecated components.")
-else()
-    message(STATUS "   Without deprecated components.")
 endif()
 
 

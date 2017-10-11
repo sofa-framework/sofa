@@ -69,6 +69,7 @@ static sofa::simulation::Node::SPtr root = NULL;
 
 using sofa::core::objectmodel::BaseObject ;
 
+
 Node::SPtr createRootWithCollisionPipeline(const std::string& responseType)
 {
     root = simulation::getSimulation()->createNewGraph("root");
@@ -195,6 +196,7 @@ Node::SPtr createCollisionNodeVec3(Node::SPtr  parent, BaseObject::SPtr  dof,
                                    const std::vector<std::string> &elements,
                                    const Deriv3& translation, const Deriv3 &rotation)
 {
+    SOFA_UNUSED(dof) ;
     Node::SPtr  node = simpleapi::createChild(parent, "Collision");
     simpleapi::createObject(node, "MeshObjLoader", {
                                 {"name", "loader"},
@@ -224,6 +226,7 @@ simulation::Node::SPtr createVisualNodeVec3(simulation::Node::SPtr  parent,
                                             const Deriv3& translation, const Deriv3 &rotation,
                                             const MappingType &mappingT)
 {
+    SOFA_UNUSED(dof) ;
     Node::SPtr  node = simpleapi::createChild(parent, "visualNode") ;
 
     std::string mappingType ;
@@ -252,8 +255,11 @@ simulation::Node::SPtr createVisualNodeVec3(simulation::Node::SPtr  parent,
 
     simpleapi::createObject(node, mappingType, {
                                 {"name", nameVisual},
+                                {"template", "Vec3,ExtVec3"},
                                 {"input", refDof},
                                 {"output", refVisual}});
+
+
 
     return node;
 }
@@ -430,6 +436,8 @@ simulation::Node::SPtr addCube(simulation::Node::SPtr parent, const std::string&
 
     //Node VISUAL
     createVisualNodeVec3(cube, dofFEM, "", "red", Deriv3(), Deriv3(), MT_Identity);
+
+    simpleapi::dumpScene(parent) ;
 
     return cube;
 }
@@ -670,7 +678,7 @@ Node::SPtr massSpringString(Node::SPtr parent,
                                 {"name",oss.str()+"_mass"},
                                 {"mass", str(totalMass/numParticles)}});
 
-    simpleapi::createObject(node, "StiffSprinForceField", {
+    simpleapi::createObject(node, "StiffSpringForceField", {
                                 {"name", oss.str()+"_spring"},
                                 {"spring", springs.str()}
                             });

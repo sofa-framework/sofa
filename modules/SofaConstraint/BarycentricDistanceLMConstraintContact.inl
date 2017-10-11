@@ -80,10 +80,6 @@ void BarycentricDistanceLMConstraintContact<TCollisionModel1,TCollisionModel2,Re
         ff->setName( getName() );
         setInteractionTags(mstate1, mstate2);
         ff->init();
-#ifdef SOFA_SMP
-        ff->setPartition(mstate1->getPartition());
-#endif
-
     }
 
     int insize = outputs.size();

@@ -19,15 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_TAUCS_SOLVER_TAUCS_SOLVER_H
-#define SOFA_TAUCS_SOLVER_TAUCS_SOLVER_H
+#ifndef SOFA_CONFIG_BUILD_OPTION_COMPONENTSET_H
+#define SOFA_CONFIG_BUILD_OPTION_COMPONENTSET_H
 
-#include <sofa/helper/system/config.h>
-
-#ifdef SOFA_BUILD_TAUCS_SOLVER
-#  define SOFA_TAUCS_SOLVER_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_TAUCS_SOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#define SOFA_BUILD_COMPONENTSET_LIGHT ${SOFA_BUILD_COMPONENTSET_LIGHT_}
+#define SOFA_BUILD_COMPONENTSET_STANDARD ${SOFA_BUILD_COMPONENTSET_STANDARD_}
+#define SOFA_BUILD_COMPONENTSET_FULL ${SOFA_BUILD_COMPONENTSET_FULL_}
 
 #endif

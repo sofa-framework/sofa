@@ -11,8 +11,18 @@ set(SOURCE_FILES
     initGeneralEngine.cpp
 )
 
-############################## COMPONENTS HERE ARE THE FULL-SET ####################################
-if(SOFA_BUILD_FULLSETCOMPONENTS)
+############################## COMPONENTS HERE ARE THE LIGHT-SET ###################################
+if(SOFA_BUILD_COMPONENTSET_LIGHT)
+    list(APPEND HEADER_FILES
+
+        )
+    list(APPEND SOURCE_FILES
+
+        )
+endif()
+
+############################## COMPONENTS HERE ARE THE STANDARD-SET ################################
+if(SOFA_BUILD_COMPONENTSET_STANDARD)
     list(APPEND HEADER_FILES AverageCoord.h
                              AverageCoord.inl
                              ClusteringEngine.h
@@ -183,18 +193,12 @@ if(SOFA_BUILD_FULLSETCOMPONENTS)
                              ValuesFromPositions.cpp
                              Vertex2Frame.cpp
                              )
-    message(STATUS "SofaGeneralEngine: build all maintained sofa components.")
-else()
-    message(STATUS "SofaGeneralEngine: build with only the minimal set of components.")
 endif()
 
 ############################### COMPONENTS HERE ARE DEPRECATED ####################################
-if(SOFA_BUILD_DEPRECATEDCOMPONENTS)
+if(SOFA_BUILD_COMPONENTSET_FULL)
     #list(APPEND HEADER_FILES MeshG.h)
     #list(APPEND SOURCE_FILES MeshGenerationFromImage.cpp)
-    message(STATUS "SofaGeneralEngine: build with deprecated components.")
-else()
-    message(STATUS "SofaGeneralEngine: build without deprecated components.")
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})

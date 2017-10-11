@@ -32,7 +32,6 @@
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 
 #include <vector>
 #include <fstream>
@@ -358,12 +357,6 @@ public:
 
     virtual void vOp(const core::ExecParams* params, core::VecId v, core::ConstVecId a = core::ConstVecId::null(), core::ConstVecId b = core::ConstVecId::null(), SReal f=1.0);
 
-#ifdef SOFA_SMP
-    virtual void vOp(const core::ExecParams* params, core::VecId, core::ConstVecId, core::ConstVecId, double f, a1::Shared<double> *fSh);
-    virtual void vOpMEq(const core::ExecParams* params, core::VecId, core::ConstVecId  = core::ConstVecId::null(), a1::Shared<double> * =NULL);
-    virtual void vDot(const core::ExecParams* params, a1::Shared<double> *, core::ConstVecId , core::ConstVecId);
-#endif
-
     virtual void vMultiOp(const core::ExecParams* params, const VMultiOp& ops);
 
     virtual void vThreshold(core::VecId a, SReal threshold );
@@ -516,8 +509,6 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::draw(const core::visual::Visua
 template<> SOFA_BASE_MECHANICS_API
 void MechanicalObject<defaulttype::Rigid3fTypes>::draw(const core::visual::VisualParams* vparams);
 #endif
-template<> SOFA_BASE_MECHANICS_API
-void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::draw(const core::visual::VisualParams* vparams);
 
 
 
@@ -538,7 +529,6 @@ extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Vec6
 extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Rigid3fTypes>;
 extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::Rigid2fTypes>;
 #endif
-extern template class SOFA_BASE_MECHANICS_API MechanicalObject<defaulttype::LaparoscopicRigid3Types>;
 #endif
 
 } // namespace container

@@ -32,9 +32,19 @@ using std::ofstream ;
 #include <string>
 using std::string ;
 
+#include <sofa/helper/system/FileSystem.h>
+using sofa::helper::system::FileSystem ;
+
 #include <sofa/helper/system/FileMonitor.h>
 using sofa::helper::system::FileEventListener ;
 using sofa::helper::system::FileMonitor ;
+
+#include <cmath>
+
+
+#include <sofa/helper/system/thread/CTime.h>
+using sofa::helper::system::thread::CTime ;
+using sofa::helper::system::thread::ctime_t ;
 
 #ifdef WIN32
 #include <windows.h>
@@ -48,12 +58,11 @@ void createAFilledFile(const string filename, unsigned int rep, bool resetFileMo
     ofstream file1 ;
     file1.open(filename.c_str(), ofstream::out) ;
 
-    //throw_when(!file1.is_open()) ;
-
     string sample = "#include<TODOD> int main(int argc...){ ... }\n}" ;
     for(unsigned int i=0;i<rep;i++){
         file1.write(sample.c_str(), sample.size()) ;
     }
+    file1.flush();
     file1.close();
 
     // dirty fix to avoid interferences between successive tests using the same file
@@ -61,17 +70,26 @@ void createAFilledFile(const string filename, unsigned int rep, bool resetFileMo
         FileMonitor::updates(1);
 }
 
-void waitForFileEvents()
+void waitUntilFileExists(const std::string& filename, double timeout)
+{
+    ctime_t time = CTime::getTime() ;
+    while( !FileSystem::exists(filename)
+           && CTime::toSecond(CTime::getTime()-time) < timeout ){
+        CTime::sleep(0.1) ;
+    }
+}
+
+void waitABit()
 {
     // on windows we use file date, which resoution is assumed (by us) to be below this value in ms
 #ifdef WIN32
     Sleep(100);
 #endif
 #ifdef __APPLE__
-    sleep(1);
+    // sleep(1);
 #endif
 #ifdef __linux__
-  //  sleep(1);
+    //  sleep(1);
 #endif
 }
 
@@ -111,7 +129,7 @@ TEST(FileMonitor, addFileExist_test)
 
     // create the file
     createAFilledFile(getPath("existing.txt"), 1) ;
-    waitForFileEvents();
+    waitABit();
 
     // Add an existing file.It should work.
     EXPECT_EQ( FileMonitor::addFile(getPath("existing.txt"), &listener), 1 ) ;
@@ -125,7 +143,7 @@ TEST(FileMonitor, addFileTwice_test)
 
     // create the file
     createAFilledFile(getPath("existing.txt"), 1) ;
-    waitForFileEvents();
+    waitABit();
 
     // Add an existing file.It should work.
     FileMonitor::addFile(getPath("existing.txt"), &listener);
@@ -135,7 +153,6 @@ TEST(FileMonitor, addFileTwice_test)
 
     // change the file content..
     createAFilledFile(getPath("existing.txt"), 10) ;
-    waitForFileEvents();
     FileMonitor::updates(2) ;
 
     // The listener should be notified 1 times with the same event.
@@ -150,7 +167,7 @@ TEST(FileMonitor, noUpdate_test)
 
     // create the file
     createAFilledFile(getPath("existing.txt"), 1) ;
-    waitForFileEvents();
+    waitABit();
 
     // Add an existing file.It should work.
     FileMonitor::addFile(getPath("existing.txt"), &listener) ;
@@ -165,11 +182,10 @@ TEST(FileMonitor, updateNoChange_test)
 
     // create the file
     createAFilledFile(getPath("existing.txt"), 1) ;
-    waitForFileEvents();
+    waitABit();
 
     FileMonitor::addFile(getPath("existing.txt"), &listener) ;
-    waitForFileEvents();
-    FileMonitor::updates(2) ;
+    FileMonitor::updates(1) ;
 
     EXPECT_EQ( listener.m_files.size(), 0u) ;
 
@@ -182,15 +198,12 @@ TEST(FileMonitor, fileChange_test)
 
     // create the file
     createAFilledFile(getPath("existing.txt"), 1) ;
-    waitForFileEvents();
+    waitABit();
 
     FileMonitor::addFile(getPath("existing.txt"), &listener) ;
-    //waitForFileEvents();
-    //FileMonitor::updates(2) ;
 
     // change the file content..
     createAFilledFile(getPath("existing.txt"), 10,false) ;
-    waitForFileEvents();
     FileMonitor::updates(2) ;
     EXPECT_EQ( listener.m_files.size(), 1u) ;
 
@@ -203,17 +216,15 @@ TEST(FileMonitor, fileChangeTwice_test)
 
     // create the file
     createAFilledFile(getPath("existing.txt"), 1) ;
-    waitForFileEvents();
+    waitABit();
 
     FileMonitor::addFile(getPath("existing.txt"), &listener) ;
-    //FileMonitor::updates(2) ;
 
     // change the file content 2x to test if the events are coalesced.
     listener.m_files.clear() ;
     createAFilledFile(getPath("existing.txt"), 100,false) ;
     createAFilledFile(getPath("existing.txt"), 200,false) ;
 
-    waitForFileEvents();
     FileMonitor::updates(2) ;
     EXPECT_EQ( listener.m_files.size(), 1u) ;
 
@@ -227,11 +238,10 @@ TEST(FileMonitor, fileListenerRemoved_test)
 
     // create the file
     createAFilledFile(getPath("existing.txt"), 1) ;
-    waitForFileEvents();
+    waitABit();
 
     FileMonitor::addFile(getPath("existing.txt"), &listener1) ;
     FileMonitor::addFile(getPath("existing.txt"), &listener2) ;
-    //FileMonitor::updates(2) ;
 
     // change the file content 2x to test if the events are coalesced.
     listener1.m_files.clear() ;
@@ -240,7 +250,6 @@ TEST(FileMonitor, fileListenerRemoved_test)
 
     FileMonitor::removeFileListener(getPath("existing.txt"), &listener1) ;
 
-    waitForFileEvents();
     FileMonitor::updates(2) ;
     EXPECT_EQ( listener1.m_files.size(), 0u) ;
     EXPECT_EQ( listener2.m_files.size(), 1u) ;
@@ -256,11 +265,10 @@ TEST(FileMonitor, listenerRemoved_test)
 
     // create the file
     createAFilledFile(getPath("existing.txt"), 1) ;
-    waitForFileEvents();
+    waitABit();
 
     FileMonitor::addFile(getPath("existing.txt"), &listener1) ;
     FileMonitor::addFile(getPath("existing.txt"), &listener2) ;
-    //FileMonitor::updates(2) ;
 
     // change the file content 2x to test if the events are coalesced.
     listener1.m_files.clear() ;
@@ -269,7 +277,6 @@ TEST(FileMonitor, listenerRemoved_test)
 
     FileMonitor::removeListener(&listener1) ;
 
-    waitForFileEvents();
     FileMonitor::updates(2) ;
     EXPECT_EQ( listener1.m_files.size(), 0u) ;
     EXPECT_EQ( listener2.m_files.size(), 1u) ;
@@ -284,16 +291,13 @@ TEST(FileMonitor, fileChange2_test)
 
     // create the file
     createAFilledFile(getPath("existing.txt"), 1) ;
-    waitForFileEvents();
+    waitABit();
 
     FileMonitor::addFile(getPath(""),"existing.txt", &listener) ;
-    //waitForFileEvents();
-    //FileMonitor::updates(2) ;
 
     // change the file content..
     createAFilledFile(getPath("existing.txt"), 10,false) ;
 
-    waitForFileEvents();
     FileMonitor::updates(2) ;
     EXPECT_EQ( listener.m_files.size(), 1u) ;
 

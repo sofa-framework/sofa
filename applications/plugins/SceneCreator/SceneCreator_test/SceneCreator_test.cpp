@@ -31,9 +31,12 @@ typedef MechanicalObject<sofa::defaulttype::Vec3Types>      MechanicalObject3;
 typedef TetrahedronFEMForceField<Vec3Types>                 TetrahedronFEMForceField3;
 typedef TriangularFEMForceField<Vec3Types>                  TriangularFEMForceField3;
 
-struct SceneCreator_test : public sofa::Sofa_test<>
-{
+#include <sofa/helper/system/PluginManager.h>
+using sofa::helper::system::PluginManager ;
 
+class SceneCreator_test : public sofa::Sofa_test<>
+{
+public:
     bool createCubeFailed();
     bool createCubeSuccess();
     bool createRigidCubeSuccess();

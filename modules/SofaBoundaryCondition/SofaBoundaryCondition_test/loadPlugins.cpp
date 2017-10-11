@@ -19,35 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <SofaTaucsSolver/initTaucsSolver.h>
+#include <sofa/helper/system/PluginManager.h>
+using sofa::helper::system::PluginManager ;
 
+#include <sofa/helper/system/FileRepository.h>
+using sofa::helper::system::PluginRepository ;
 
-namespace sofa
+#include <sofa/helper/Utils.h>
+using sofa::helper::Utils ;
+
+namespace loadplugins
 {
+    bool initPlugins()
+    {        
+        const std::string pluginDir = Utils::getPluginDirectory() ;
+        PluginRepository.addFirstPath(pluginDir);
 
-namespace component
-{
-
-
-void initTaucsSolver()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
+        PluginManager::getInstance().loadPlugin("SceneCreator") ;
+        return true ;
     }
+
+    bool inited = initPlugins() ;
 }
 
-#ifdef SOFA_HAVE_TAUCS
-SOFA_LINK_CLASS(IncompleteTAUCSSolver)
-SOFA_LINK_CLASS(SparseTAUCSSolver)
-#endif
-
-#ifdef SOFA_EXTLIBS_TAUCS_MT
-SOFA_LINK_CLASS(SparseTAUCSLLtSolver)
-#endif
-
-} // namespace component
-
-} // namespace sofa

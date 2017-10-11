@@ -19,65 +19,39 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#ifndef SOFA_LENNARDJONESFORCEFIELD_TEST_H
+#define SOFA_LENNARDJONESFORCEFIELD_TEST_H
 
-#include <fstream>
-#include <gtest/gtest.h>
 #include <SofaTest/Sofa_test.h>
+#include <SceneCreator/SceneCreator.h>
+#include <sofa/defaulttype/VecTypes.h>
 
-#include <sofa/helper/Utils.h>
-#include <sofa/helper/system/PluginManager.h>
-#include <sofa/helper/system/FileRepository.h>
+//Including Simulation
+#include <SofaBaseMechanics/MechanicalObject.h>
 
-namespace sofa
-{
+namespace sofa {
 
-using sofa::helper::system::DataRepository;
-using sofa::helper::system::PluginRepository;
-using sofa::helper::system::PluginManager;
+	template< class DataTypes>
+	struct LennardJonesForceField_test : public Sofa_test<typename DataTypes::Real>
+	{
+		typedef component::container::MechanicalObject<DataTypes> DOFs;
+		typedef typename DOFs::Real  Real;
+		typedef typename DOFs::Coord  Coord;
+		typedef typename DOFs::Deriv  Deriv;
 
-class runSofa_test : public Sofa_test<>
-{
-protected:
-    std::string m_testConfigPluginName;
-    std::string m_testConfigPluginPath;
-    std::string m_testPluginName;
+		/// Create sun-planet system
+		simulation::Node::SPtr createSunPlanetSystem(
+			simulation::Node::SPtr root,
+			double mSun,
+			double mPlanet,
+			double g,
+			Coord xSun,
+			Deriv vSun,
+			Coord xPlanet,
+			Deriv vPlanet);
 
-    runSofa_test() {
-
-    }
-
-    void SetUp()
-    {
-        const std::string& pluginDir = helper::Utils::getPluginDirectory();
-
-        m_testConfigPluginName = "test_plugin_list.conf";
-        m_testConfigPluginPath = pluginDir + "/" + m_testConfigPluginName;
-        m_testPluginName = "TestPlugin";
-        
-        //generate on the fly test list
-        std::ofstream testPluginList;
-        testPluginList.open(m_testConfigPluginPath);
-        testPluginList << m_testPluginName << std::endl;
-        testPluginList.close();
-    }
-    void TearDown()
-    {
-
-    }
-    
-};
-
-TEST_F(runSofa_test, runSofa_autoload)
-{
-    PluginManager& pm = PluginManager::getInstance();
-    unsigned int num = pm.getPluginMap().size() ;
-    pm.readFromIniFile(m_testConfigPluginPath);
-    PluginManager::getInstance().init();
-    ASSERT_GT(pm.getPluginMap().size(), num);
-    const std::string pluginPath = pm.findPlugin(m_testPluginName);
-    ASSERT_GT(pluginPath.size(), 0U);
-    helper::system::Plugin& p = pm.getPluginMap()[pluginPath];
-    ASSERT_EQ(0, std::string(p.getModuleName()).compare(m_testPluginName));
-}
+	};
 
 } // namespace sofa
+
+#endif

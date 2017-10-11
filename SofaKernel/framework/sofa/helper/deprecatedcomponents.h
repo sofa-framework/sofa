@@ -19,9 +19,35 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFATAUCSSOLVER_CONFIG_H
-#define SOFATAUCSSOLVER_CONFIG_H
+#ifndef SOFA_HELPER_DEPRECATEDCOMPONENTS_H
+#define SOFA_HELPER_DEPRECATEDCOMPONENTS_H
 
-#include <SofaGeneral/config.h>
+#include <string>
+#include <vector>
+#include <map>
+#include "helper.h"
+
+namespace sofa
+{
+
+namespace helper
+{
+
+namespace deprecatedcomponents
+{
+
+constexpr int indexName {0};
+constexpr int indexMessage {1};
+
+extern SOFA_HELPER_API std::map<std::string, std::string>  messages ;
+extern SOFA_HELPER_API std::map<std::string, std::vector<std::string>> components ;
+extern SOFA_HELPER_API std::map<std::string, std::vector<std::string>> uncreateablecomponents ;
+
+
+} /// namespace deprecatedcomponents
+
+} /// namespace helper
+
+} /// namespace sofa
 
 #endif

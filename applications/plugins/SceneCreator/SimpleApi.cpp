@@ -32,15 +32,18 @@ using sofa::simulation::graph::DAGSimulation ;
 #include "SimpleApi.h"
 using sofa::core::objectmodel::BaseObjectDescription ;
 
+#include <sofa/simulation/XMLPrintVisitor.h>
+using sofa::simulation::XMLPrintVisitor ;
 
 namespace sofa
 {
 namespace simpleapi
 {
 
-void importPlugin(const std::string& name)
+void dumpScene(Node::SPtr root)
 {
-
+    XMLPrintVisitor p(sofa::core::ExecParams::defaultInstance(), std::cout) ;
+    p.execute(root.get()) ;
 }
 
 Simulation::SPtr createSimulation(const std::string& type)
@@ -58,7 +61,16 @@ Simulation::SPtr createSimulation(const std::string& type)
 Node::SPtr createRootNode(Simulation::SPtr s, const std::string& name,
                                               const std::map<std::string, std::string>& params)
 {
-    return s->createNewNode(name) ;
+    Node::SPtr root = s->createNewNode(name) ;
+
+    BaseObjectDescription desc("Node", "Node");
+    for(auto& kv : params)
+    {
+        desc.setAttribute(kv.first.c_str(), kv.second.c_str());
+    }
+    root->parse(&desc) ;
+
+    return root ;
 }
 
 
@@ -77,14 +89,12 @@ BaseObject::SPtr createObject(Node::SPtr parent, const std::string& type, const 
     if (obj==0)
     {
         std::stringstream msg;
-        msg << "create: component '" << desc.getName() << "' of type '" << desc.getAttribute("type","") ;
+        msg << "Component '" << desc.getName() << "' of type '" << desc.getAttribute("type","") << "' failed:" << msgendl ;
         for (std::vector< std::string >::const_iterator it = desc.getErrors().begin(); it != desc.getErrors().end(); ++it)
             msg << " " << *it << msgendl ;
         msg_error(parent.get()) << msg.str() ;
         return NULL;
     }
-
-    parent->addObject(obj) ;
     return obj ;
 }
 

@@ -19,17 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTaucsSolver/TaucsSolver.h>
-#include <sofa/core/Plugin.h>
+#include<SofaValidation/initValidation.h>
+#include<SofaDeformable/initDeformable.h>
+#include<SofaMiscSolver/initMiscSolver.h>
 
-class TaucsSolverPlugin: public sofa::core::Plugin {
-public:
-    TaucsSolverPlugin(): Plugin("TaucsSolver") {
-        setDescription("");
-        setVersion("");
-        setLicense("LGPL");
-        setAuthors("The SOFA Team");
-    }
-};
-
-SOFA_PLUGIN(TaucsSolverPlugin);
+// some basic RAII stuff to automatically add a TestMessageHandler to every tests
+namespace {
+    static struct raii {
+      raii()
+      {
+        sofa::component::initValidation() ;
+        sofa::component::initDeformable() ;
+        sofa::component::initMiscSolver() ;
+      }
+    } singleton;
+}

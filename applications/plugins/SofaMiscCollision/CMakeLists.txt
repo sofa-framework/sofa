@@ -21,8 +21,18 @@ set(EXTRA_FILES
     README.md
     )
 
-############################## COMPONENTS HERE ARE THE FULL-SET ####################################
-if(SOFA_BUILD_FULLSETCOMPONENTS)
+############################## COMPONENTS HERE ARE THE LIGHT-SET ###################################
+if(SOFA_BUILD_COMPONENTSET_LIGHT)
+    list(APPEND HEADER_FILES
+
+        )
+    list(APPEND SOURCE_FILES
+
+        )
+endif()
+
+############################## COMPONENTS HERE ARE THE STANDARD-SET ################################
+if(SOFA_BUILD_COMPONENTSET_STANDARD)
     list(APPEND HEADER_FILES
         BarycentricStickContact.h
         BarycentricStickContact.inl
@@ -71,15 +81,11 @@ if(SOFA_BUILD_FULLSETCOMPONENTS)
         list(APPEND HEADER_FILES RayTriangleVisitor.h)
         list(APPEND SOURCE_FILES RayTriangleVisitor.cpp)
     endif()
-else()
-    message(STATUS "SofaMiscModule: build with only the minimal set of components.")
+
 endif()
 
 ############################### COMPONENTS HERE ARE DEPRECATED ####################################
-if(SOFA_BUILD_DEPRECATEDCOMPONENTS)
-    message(STATUS "   With deprecated components.")
-else()
-    message(STATUS "   Without deprecated components.")
+if(SOFA_BUILD_COMPONENTSET_FULL)
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
