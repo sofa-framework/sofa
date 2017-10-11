@@ -29,9 +29,6 @@ namespace sofa
 namespace component
 {
 
-
-void SOFA_SPH_FLUID_API initSPHFluid();
-
 } // namespace component
 
 } // namespace sofa

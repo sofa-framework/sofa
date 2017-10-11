@@ -29,8 +29,16 @@ namespace sofa
 namespace component
 {
 
+extern "C" {
+SOFA_SPH_FLUID_API void initExternalModule();
+SOFA_SPH_FLUID_API const char* getModuleName();
+SOFA_SPH_FLUID_API const char* getModuleVersion();
+SOFA_SPH_FLUID_API const char* getModuleLicense();
+SOFA_SPH_FLUID_API const char* getModuleDescription();
+SOFA_SPH_FLUID_API const char* getModuleComponentList();
+}
 
-void initSPHFluid()
+void initExternalModule()
 {
     static bool first = true;
     if (first)
@@ -38,6 +46,33 @@ void initSPHFluid()
         first = false;
     }
 }
+
+const char* getModuleName()
+{
+    return "SofaSphFluid";
+}
+
+const char* getModuleVersion()
+{
+    return "1.0";
+}
+
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+const char* getModuleDescription()
+{
+    return "This plugin contains fluids simulation based on the SPH method.";
+}
+
+const char* getModuleComponentList()
+{
+    return "SpatialGridContainer SPHFluidForceField SPHFluidSurfaceMapping"
+           " ParticleSink ParticuleSource ParticlesRepulsionForceField";
+}
+
 
 SOFA_LINK_CLASS(SpatialGridContainer)
 SOFA_LINK_CLASS(SPHFluidForceField)
