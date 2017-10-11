@@ -145,7 +145,7 @@ protected:
     /*
     * @brief Compute the compliance matrix
     */
-    virtual void computeJ(sofa::defaulttype::BaseMatrix* W);
+    virtual void computeJ(sofa::defaulttype::BaseMatrix* W, const MatrixDeriv& j);
 
 private:
     // new :  for non building the constraint system during solving process //

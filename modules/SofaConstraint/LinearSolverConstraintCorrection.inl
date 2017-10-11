@@ -120,12 +120,11 @@ void LinearSolverConstraintCorrection<DataTypes>::init()
 }
 
 template<class TDataTypes>
-void LinearSolverConstraintCorrection<TDataTypes>::computeJ(sofa::defaulttype::BaseMatrix* W)
+void LinearSolverConstraintCorrection<TDataTypes>::computeJ(sofa::defaulttype::BaseMatrix* W, const MatrixDeriv& c)
 {
     const unsigned int numDOFs = this->mstate->getSize();
     const unsigned int N = Deriv::size();
     const unsigned int numDOFReals = numDOFs*N;
-    const MatrixDeriv& c = this->mstate->read(core::ConstMatrixDerivId::holonomicC())->getValue();
     const unsigned int totalNumConstraints = W->rowSize();
 
     J.resize(totalNumConstraints, numDOFReals);
@@ -212,7 +211,7 @@ void LinearSolverConstraintCorrection<DataTypes>::addComplianceInConstraintSpace
 #endif
 
     // Compute J
-    this->computeJ(W);
+    this->computeJ(W, cparams->readJ(this->mstate)->getValue(cparams));
 
     // use the Linear solver to compute J*inv(M)*Jt, where M is the mechanical linear system matrix
     for (unsigned i = 0; i < linearsolvers.size(); i++)
