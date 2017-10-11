@@ -51,8 +51,6 @@ using sofa::helper::WriteAccessor;
 using sofa::core::VecId;
 using sofa::core::objectmodel::New;
 
-//Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
-#include <sofa/component/typedef/Sofa_typedef.h>
 // ---------------------------------------------------------------------
 // ---
 // ---------------------------------------------------------------------

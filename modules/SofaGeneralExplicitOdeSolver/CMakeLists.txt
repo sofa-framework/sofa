@@ -1,21 +1,41 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaGeneralExplicitOdeSolver)
 
+message(STATUS "SofaGeneralExplicitOdeSolver:")
+################################ COMPONENTS HERE ARE THE NG-SET ####################################
 set(HEADER_FILES
-    CentralDifferenceSolver.h
-    RungeKutta2Solver.h
-    RungeKutta4Solver.h
     config.h
     initGeneralExplicitODESolver.h
 )
 
 set(SOURCE_FILES
-    CentralDifferenceSolver.cpp
-    RungeKutta2Solver.cpp
-    RungeKutta4Solver.cpp
     initGeneralExplicitODESolver.cpp
 )
 
+
+############################## COMPONENTS HERE ARE THE FULL-SET ####################################
+if(SOFA_BUILD_FULLSETCOMPONENTS)
+    list(APPEND HEADER_FILES
+        CentralDifferenceSolver.h
+        RungeKutta2Solver.h
+        RungeKutta4Solver.h
+        )
+    list(APPEND SOURCE_FILES
+        CentralDifferenceSolver.cpp
+        RungeKutta2Solver.cpp
+        RungeKutta4Solver.cpp
+        )
+    message(STATUS "   With all maintained sofa components.")
+else()
+    message(STATUS "   With only a minimal set of components.")
+endif()
+
+############################### COMPONENTS HERE ARE DEPRECATED ####################################
+if(SOFA_BUILD_DEPRECATEDCOMPONENTS)
+    message(STATUS "   With deprecated components.")
+else()
+    message(STATUS "   Without deprecated components.")
+endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationTree)

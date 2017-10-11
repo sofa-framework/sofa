@@ -1,73 +1,96 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaMiscMapping)
 
+message(STATUS "SofaMiscMapping:")
+################################ COMPONENTS HERE ARE THE NG-SET ####################################
 set(HEADER_FILES
-    BarycentricMappingRigid.h
-    BarycentricMappingRigid.inl
-    BeamLinearMapping.h
-    BeamLinearMapping.inl
-    CatmullRomSplineMapping.h
-    CatmullRomSplineMapping.inl
-    CenterOfMassMapping.h
-    CenterOfMassMapping.inl
-    CenterOfMassMulti2Mapping.h
-    CenterOfMassMulti2Mapping.inl
-    CenterOfMassMultiMapping.h
-    CenterOfMassMultiMapping.inl
-    CenterPointMechanicalMapping.h
-    CenterPointMechanicalMapping.inl
-    CurveMapping.h
-    CurveMapping.inl
-    DeformableOnRigidFrameMapping.h
-    DeformableOnRigidFrameMapping.inl
-    DistanceFromTargetMapping.h
-    DistanceFromTargetMapping.inl
-    DistanceMapping.h
-    DistanceMapping.inl
-    ExternalInterpolationMapping.h
-    ExternalInterpolationMapping.inl
-    IdentityMultiMapping.h
-    IdentityMultiMapping.inl
-    ProjectionToLineMapping.h
-    ProjectionToLineMapping.inl
-    ProjectionToPlaneMapping.h
-    ProjectionToPlaneMapping.inl
-    SquareDistanceMapping.h
-    SquareDistanceMapping.inl
-    SquareMapping.h
-    SquareMapping.inl
-    SubsetMultiMapping.h
-    SubsetMultiMapping.inl
-    TubularMapping.h
-    TubularMapping.inl
-    VoidMapping.h
     config.h
     initMiscMapping.h
 )
 
 set(SOURCE_FILES
-    BarycentricMappingRigid.cpp
-    BeamLinearMapping.cpp
-    CatmullRomSplineMapping.cpp
-    CenterOfMassMapping.cpp
-    CenterOfMassMulti2Mapping.cpp
-    CenterOfMassMultiMapping.cpp
-    CenterPointMechanicalMapping.cpp
-    CurveMapping.cpp
-    DeformableOnRigidFrameMapping.cpp
-    DistanceFromTargetMapping.cpp
-    DistanceMapping.cpp
-    ExternalInterpolationMapping.cpp
-    IdentityMultiMapping.cpp
-    ProjectionToLineMapping.cpp
-    ProjectionToPlaneMapping.cpp
-    SquareDistanceMapping.cpp
-    SquareMapping.cpp
-    SubsetMultiMapping.cpp
-    TubularMapping.cpp
-    VoidMapping.cpp
     initMiscMapping.cpp
 )
+
+############################## COMPONENTS HERE ARE THE FULL-SET ####################################
+if(SOFA_BUILD_FULLSETCOMPONENTS)
+    list(APPEND HEADER_FILES
+        BarycentricMappingRigid.h
+        BarycentricMappingRigid.inl
+        BeamLinearMapping.h
+        BeamLinearMapping.inl
+        CatmullRomSplineMapping.h
+        CatmullRomSplineMapping.inl
+        CenterOfMassMapping.h
+        CenterOfMassMapping.inl
+        CenterOfMassMulti2Mapping.h
+        CenterOfMassMulti2Mapping.inl
+        CenterOfMassMultiMapping.h
+        CenterOfMassMultiMapping.inl
+        CenterPointMechanicalMapping.h
+        CenterPointMechanicalMapping.inl
+        CurveMapping.h
+        CurveMapping.inl
+        DeformableOnRigidFrameMapping.h
+        DeformableOnRigidFrameMapping.inl
+        DistanceFromTargetMapping.h
+        DistanceFromTargetMapping.inl
+        DistanceMapping.h
+        DistanceMapping.inl
+        ExternalInterpolationMapping.h
+        ExternalInterpolationMapping.inl
+        IdentityMultiMapping.h
+        IdentityMultiMapping.inl
+        ProjectionToLineMapping.h
+        ProjectionToLineMapping.inl
+        ProjectionToPlaneMapping.h
+        ProjectionToPlaneMapping.inl
+        SquareDistanceMapping.h
+        SquareDistanceMapping.inl
+        SquareMapping.h
+        SquareMapping.inl
+        SubsetMultiMapping.h
+        SubsetMultiMapping.inl
+        TubularMapping.h
+        TubularMapping.inl
+        VoidMapping.h
+        )
+    list(APPEND SOURCE_FILES
+        BarycentricMappingRigid.cpp
+        BeamLinearMapping.cpp
+        CatmullRomSplineMapping.cpp
+        CenterOfMassMapping.cpp
+        CenterOfMassMulti2Mapping.cpp
+        CenterOfMassMultiMapping.cpp
+        CenterPointMechanicalMapping.cpp
+        CurveMapping.cpp
+        DeformableOnRigidFrameMapping.cpp
+        DistanceFromTargetMapping.cpp
+        DistanceMapping.cpp
+        ExternalInterpolationMapping.cpp
+        IdentityMultiMapping.cpp
+        ProjectionToLineMapping.cpp
+        ProjectionToPlaneMapping.cpp
+        SquareDistanceMapping.cpp
+        SquareMapping.cpp
+        SubsetMultiMapping.cpp
+        TubularMapping.cpp
+        VoidMapping.cpp
+        )
+
+    message(STATUS "   With all maintained sofa components.")
+else()
+    message(STATUS "   With only a minimal set of components.")
+endif()
+
+############################### COMPONENTS HERE ARE DEPRECATED ####################################
+if(SOFA_BUILD_DEPRECATEDCOMPONENTS)
+    message(STATUS "   With deprecated components.")
+else()
+    message(STATUS "   Without deprecated components.")
+endif()
+
+
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimpleFem SofaRigid)
