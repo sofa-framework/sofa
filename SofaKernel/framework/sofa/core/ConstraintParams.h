@@ -219,7 +219,7 @@ public:
         : sofa::core::ExecParams(p)
         , m_x(ConstVecCoordId::position())
         , m_v(ConstVecDerivId::velocity())
-        , m_j(MatrixDerivId::holonomicC())
+        , m_j(MatrixDerivId::constraintJacobian())
         , m_dx(VecDerivId::dx())
         , m_lambda(VecDerivId::externalForce())
         , m_constOrder (POS_AND_VEL)
