@@ -159,7 +159,7 @@ public:
     // Dummy function to avoid dead stripping symbol
     void registerInFactory()
     {
-        msg_info() << "[SOFA]Registration of class : " << type().name();
+        msg_info("Creator") << "[SOFA]Registration of class : " << type().name();
     }
 
 };
