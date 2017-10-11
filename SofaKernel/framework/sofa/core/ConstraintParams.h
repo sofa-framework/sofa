@@ -172,8 +172,8 @@ public:
     const ConstMultiVecDerivId& v() const { return m_v; }
     ConstMultiVecDerivId& v()       { return m_v; }
 
-    const ConstMultiMatrixDerivId&  j() const { return m_j; }
-    ConstMultiMatrixDerivId& j()              { return m_j; }
+    const MultiMatrixDerivId&  j() const { return m_j; }
+    MultiMatrixDerivId& j()              { return m_j; }
 
     const MultiVecDerivId& dx() const { return m_dx;  }
     MultiVecDerivId&  dx()            { return m_dx;  }
@@ -194,10 +194,10 @@ public:
     ConstraintParams& setV(const StateSet& g, ConstVecDerivId v) { m_v.setId(g, v); return *this; }
 
     /// Set the IDs where to read the constraint jacobian matrix
-    ConstraintParams& setJ(ConstMatrixDerivId j) { m_j.assign(j); return *this; }
-    ConstraintParams& setJ(ConstMultiMatrixDerivId j) { m_j = j; return *this; }
+    ConstraintParams& setJ(MatrixDerivId j)      { m_j.assign(j); return *this; }
+    ConstraintParams& setJ(MultiMatrixDerivId j) { m_j = j; return *this; }
     template<class StateSet>
-    ConstraintParams& setJ(const StateSet& g, ConstMatrixDerivId j) { m_j.setId(g, j); return *this; }
+    ConstraintParams& setJ(const StateSet& g, MatrixDerivId j) { m_j.setId(g, j); return *this; }
 
     /// Set the IDs where to write corrective displacement vector
     ConstraintParams& setDx(VecDerivId dx)      { m_dx.assign(dx); return *this; }
@@ -219,7 +219,7 @@ public:
         : sofa::core::ExecParams(p)
         , m_x(ConstVecCoordId::position())
         , m_v(ConstVecDerivId::velocity())
-        , m_j(ConstMatrixDerivId::holonomicC())
+        , m_j(MatrixDerivId::holonomicC())
         , m_dx(VecDerivId::dx())
         , m_lambda(VecDerivId::externalForce())
         , m_constOrder (POS_AND_VEL)
@@ -244,7 +244,7 @@ protected:
     ConstMultiVecDerivId m_v;
 
     /// Ids of the constraint jacobian matrix
-    ConstMultiMatrixDerivId m_j;
+    MultiMatrixDerivId m_j;
 
     /// Ids of contraint correction vector
     MultiVecDerivId      m_dx;
