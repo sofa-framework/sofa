@@ -41,6 +41,8 @@ namespace sofa
 namespace core
 {
 
+class ConstraintParams;
+
 namespace behavior
 {
 
@@ -218,10 +220,10 @@ public:
     /// @{
 
     /// Reset the constraint matrix
-    virtual void resetConstraint(const ExecParams* params = ExecParams::defaultInstance()) = 0;
+    virtual void resetConstraint(const ConstraintParams* params) = 0;
 
     /// build the jacobian of the constraint in a baseMatrix
-    virtual void getConstraintJacobian(const ExecParams* params, sofa::defaulttype::BaseMatrix* J,unsigned int & off) = 0;
+    virtual void getConstraintJacobian(const ConstraintParams* params, sofa::defaulttype::BaseMatrix* J,unsigned int & off) = 0;
 #if(SOFA_WITH_EXPERIMENTAL_FEATURES==1)
     /// fill the jacobian matrix (of the constraints) with identity blocks on the provided list of nodes(dofs)
     virtual void buildIdentityBlocksInJacobian(const sofa::helper::vector<unsigned int>& list_n, core::MatrixDerivId &mID) = 0;
