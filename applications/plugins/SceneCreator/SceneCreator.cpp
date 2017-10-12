@@ -33,7 +33,7 @@ using sofa::defaulttype::Vec3Types ;
 #include <sofa/helper/system/FileRepository.h>
 using sofa::helper::system::DataRepository ;
 
-#include "SimpleApi.h"
+#include <SofaSimulationGraph/SimpleApi.h>
 using sofa::simpleapi::str ;
 using sofa::simpleapi::createObject ;
 using sofa::simpleapi::createChild ;
