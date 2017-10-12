@@ -24,7 +24,9 @@
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/helper/cast.h>
 
-#include <gtest/gtest.h>
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest ;
+
 
 namespace sofa {
 
@@ -217,7 +219,7 @@ public:
 
 
 
-struct DataTrackerEngine_test: public ::testing::Test
+struct DataTrackerEngine_test: public BaseTest
 {
 
     static unsigned updateCounter;
@@ -345,7 +347,7 @@ TEST_F(DataTrackerEngine_test, testTrackedData )
 /// An idea to do so: the functor can add the modified Data in a list
 /// that will be read by the gui when it is refreshed in order to
 /// update something.
-struct DataTrackerFunctor_test: public ::testing::Test
+struct DataTrackerFunctor_test: public BaseTest
 {
 
     // This functor illustrates what is possible.

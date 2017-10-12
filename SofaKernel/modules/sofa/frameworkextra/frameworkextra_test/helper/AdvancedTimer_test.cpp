@@ -21,12 +21,13 @@
 ******************************************************************************/
 #include <sofa/helper/AdvancedTimer.h>
 
-#include <gtest/gtest.h>
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 using sofa::simulation::Node ;
 using sofa::core::ExecParams;
 
+#include <SofaSimulationGraph/testing/BaseSimulationTest.h>
+using sofa::helper::testing::BaseSimulationTest ;
 
 namespace sofa {
 
@@ -36,10 +37,10 @@ namespace sofa {
  * @date 2017/08/31
  */
 
-struct AdvancedTimerTest: public ::testing::Test
+struct AdvancedTimerTest: public BaseSimulationTest
 {
 protected:
-	virtual void SetUp()
+	virtual void onSetUp()
 	{
 		using namespace sofa::helper;
 
@@ -53,9 +54,9 @@ protected:
 				 "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
 				 "</Node>                                                                        \n" ;
 
-		root = SceneLoaderXML::loadFromMemory ("testscene",
-											scene.str().c_str(),
-											scene.str().size()) ;
+		//root = SceneLoaderXML::loadFromMemory ("testscene",
+		//									scene.str().c_str(),
+		//									scene.str().size()) ;
 	}
 
 public:
