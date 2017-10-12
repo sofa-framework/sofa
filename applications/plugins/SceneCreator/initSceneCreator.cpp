@@ -23,71 +23,68 @@
 #include <sofa/helper/system/PluginManager.h>
 using sofa::helper::system::PluginManager ;
 
+#include <SofaComponentBase/initComponentBase.h>
+#include <SofaComponentCommon/initComponentCommon.h>
+
 namespace sofa
 {
 
 namespace component
 {
 
-	//Here are just several convenient functions to help user to know what contains the plugin
+///Here are just several convenient functions to help user to know what contains the plugin
+extern "C" {
+SOFA_SCENECREATOR_API void initExternalModule();
+SOFA_SCENECREATOR_API const char* getModuleName();
+SOFA_SCENECREATOR_API const char* getModuleVersion();
+SOFA_SCENECREATOR_API const char* getModuleLicense();
+SOFA_SCENECREATOR_API const char* getModuleDescription();
+SOFA_SCENECREATOR_API const char* getModuleComponentList();
+}
 
-	extern "C" {
-                SOFA_SCENECREATOR_API void initExternalModule();
-                SOFA_SCENECREATOR_API const char* getModuleName();
-                SOFA_SCENECREATOR_API const char* getModuleVersion();
-                SOFA_SCENECREATOR_API const char* getModuleLicense();
-                SOFA_SCENECREATOR_API const char* getModuleDescription();
-                SOFA_SCENECREATOR_API const char* getModuleComponentList();
-	}
-	
-	void initExternalModule()
-	{
-		static bool first = true;
-		if (first)
-		{
-			first = false;
-		}
+void initExternalModule()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
 
-        /// Required for DefaultCollisionGroupManager
-        PluginManager::getInstance().loadPlugin("SofaMiscCollision") ;
-	}
+    std::cout << "Loading..." << std::endl ;
+    sofa::component::initComponentBase();
+    sofa::component::initComponentCommon();
 
-	const char* getModuleName()
-	{
-	  return "SceneCreator";
-	}
+    /// Required for DefaultCollisionGroupManager
+    PluginManager::getInstance().loadPlugin("SofaMiscCollision") ;
+}
 
-	const char* getModuleVersion()
-	{
-		return "0.2";
-	}
+const char* getModuleName()
+{
+    return "SceneCreator";
+}
 
-	const char* getModuleLicense()
-	{
-		return "LGPL";
-	}
+const char* getModuleVersion()
+{
+    return "1.0";
+}
 
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
 
-	const char* getModuleDescription()
-	{
-		return "TODO: replace this with the description of your plugin";
-	}
+const char* getModuleDescription()
+{
+    return "Add function to ease the creation of scenes";
+}
 
-	const char* getModuleComponentList()
-	{
-	  /// string containing the names of the classes provided by the plugin
-	  return "";
-	  //return "MyMappingPendulumInPlane, MyBehaviorModel, MyProjectiveConstraintSet";
-	}
-
-
-
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    return "";
+}
+} 
 } 
 
-} 
 
-/// Use the SOFA_LINK_CLASS macro for each class, to enable linking on all platforms
-//SOFA_LINK_CLASS(PatchTestStruct)
-//SOFA_LINK_CLASS(MyBehaviorModel)
-//SOFA_LINK_CLASS(MyProjectiveConstraintSet)
 
