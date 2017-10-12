@@ -137,11 +137,14 @@ public:
 
     /// Build the jacobian of the constraints using a visitor
     ///
+    /// @param cparams contains the MultiMatrixDerivId  which allows to retrieve the constraint jacobian to use for 
+    ///        each mechanical object. 
     /// @param result the variable where the result will be added
     /// @param fact integrator parameter
     /// @return false if the solver does not support this operation, of it the system matrix is not invertible
-    virtual bool buildComplianceMatrix(defaulttype::BaseMatrix* result, SReal fact)
+    virtual bool buildComplianceMatrix(const sofa::core::ConstraintParams* cparams, defaulttype::BaseMatrix* result, SReal fact)
     {
+        SOFA_UNUSED(cparams);
         SOFA_UNUSED(result);
         SOFA_UNUSED(fact);
         serr << "Error buildComplianceMatrix has not been implemented" << sendl;
