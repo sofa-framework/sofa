@@ -1299,18 +1299,14 @@ void MechanicalAddMBKdxVisitor::bwdMechanicalMapping(simulation::Node* /*node*/,
 
 void MechanicalAddMBKdxVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
 {
-    mm->forceMask.activate(false);
+    mm->forceMask.activate(false); 
 }
 
 
 Visitor::Result MechanicalResetConstraintVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
 {
-<<<<<<< HEAD
-    mm->resetConstraint(this->params);
-=======
     // mm->setC(res);
     mm->resetConstraint(m_cparams);
->>>>>>> 268f0dc... [SofaSimulationCore] UPDATE: Reflect API changes in visitors.
     return RESULT_CONTINUE;
 }
 
