@@ -167,7 +167,7 @@ void GenericConstraintCorrection::addComplianceInConstraintSpace(const core::Con
     // use the Linear solver to compute J*inv(M)*Jt, where M is the mechanical linear system matrix
     for (unsigned i = 0; i < linearsolvers.size(); i++)
     {
-        linearsolvers[i]->buildComplianceMatrix(W, factor);
+        linearsolvers[i]->buildComplianceMatrix(cparams, W, factor);
     }
 }
 

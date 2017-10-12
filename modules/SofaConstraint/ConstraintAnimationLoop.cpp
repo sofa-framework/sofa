@@ -388,15 +388,14 @@ void ConstraintAnimationLoop::setConstraintEquations(const core::ExecParams* par
 
 void ConstraintAnimationLoop::writeAndAccumulateAndCountConstraintDirections(const core::ExecParams* params, simulation::Node *context, unsigned int &numConstraints)
 {
-    // calling resetConstraint on LMConstraints and MechanicalStates
-    simulation::MechanicalResetConstraintVisitor(params).execute(context);
-
     core::ConstraintParams cparams = core::ConstraintParams(*params);
     cparams.setX(core::ConstVecCoordId::freePosition());
     cparams.setV(core::ConstVecDerivId::freeVelocity());
 
-    // calling applyConstraint on each constraint
+    // calling resetConstraint on LMConstraints and MechanicalStates
+    simulation::MechanicalResetConstraintVisitor(&cparams).execute(context);
 
+    // calling applyConstraint on each constraint
     MechanicalSetConstraint(&cparams, core::MatrixDerivId::constraintJacobian(), numConstraints).execute(context);
 
     sofa::helper::AdvancedTimer::valSet("numConstraints", numConstraints);
