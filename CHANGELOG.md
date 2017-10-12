@@ -82,6 +82,7 @@ ____________________________________________________________
     - Improve and clean msg_api and logging of message (#190, #255, #275). See [documentation](https://www.sofa-framework.org/community/doc/programming-with-sofa/logger/) for more information.
     - Add CMake option to limit cores used to build specific targets (#254)
     - Fix rgbacolor parsing (#305)
+    - CMake: installing gtest headers for separate plugin builds (#395)
 - [SofaKernel]
     - Update the RichConsoleStyleMessageFormatter  (#126)
     - creation of a defaulttype::RGBAColor (#119)
@@ -148,6 +149,7 @@ ____________________________________________________________
     - Fix CMakeLists bug on Sofa.ini and installedSofa.ini creation (#291)
     - Fix a lot of failing tests (#271, #279)
     - Fix compilation with SOFA_FLOATING_POINT_TYPE as float (#262)
+    - CMake: Fix and clean boost, when using Sofa as an external lib (#421)
 - [SofaKernel]
     - Fix the Filemonitor_test random failure on MacOs (#143)
     - implement a numerical integration for triangle (#249)
@@ -157,6 +159,7 @@ ____________________________________________________________
     - FileRepository::getRelativePath() lowering the case on WIN32 is now a deprecated behavior (#264)
     - Fix FileRepository should not be optional (#122)
     - FileMonitor: fix the recurrent problem with file 'SofaKernel/framework/framework_test/resources/existing.txt' pointed in Issue #146 (#258)
+    - Fix wrong inline in exported functions (#449)
 - [SofaFramework]
     - fix the integration scheme for Quaternion (#172) and fix values with which the quaternion is being compared after creation from euler angles
 - [SofaHelper]
