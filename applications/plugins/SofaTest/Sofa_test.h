@@ -45,7 +45,7 @@ typedef sofa::defaulttype::Vec1fTypes Vec1Types;
 namespace sofa
 {
     using namespace sofa::helper::testing ;
-    class BaseSofa_test : public BaseSimulationTest
+    class SOFA_TestPlugin_API BaseSofa_test : public BaseSimulationTest
     {
     public:
         BaseSofa_test();
@@ -54,7 +54,7 @@ namespace sofa
     } ;
 
     template<class R=SReal>
-    class Sofa_test : public NumericTest<R>, public BaseSofa_test
+    class SOFA_TestPlugin_API Sofa_test : public NumericTest<R>, public BaseSofa_test
     {
     };
 
