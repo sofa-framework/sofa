@@ -67,7 +67,7 @@ unsigned int CommunicationSubscriber::getArgumentSize()
 
 std::string CommunicationSubscriber::getArgumentName(unsigned int index)
 {
-    return m_argumentsNameList.at(index);
+     return m_argumentsNameList.at(index);
 }
 
 std::string CommunicationSubscriber::getSubject()

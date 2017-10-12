@@ -56,6 +56,14 @@ using sofa::component::communication::CommunicationSubscriber;
 #include <oscpack/ip/UdpSocket.h>
 #include <oscpack/ip/PacketListener.h>
 
+// ZMQ TEST PART
+#include <zmq.hpp>
+
+// TIMEOUT
+#include <iostream>
+#include <future>
+#include <thread>
+#include <chrono>
 
 namespace sofa
 {
@@ -81,7 +89,7 @@ public:
         d_positionsOut.resize(1);
         d_positionsIn.resize(1);
 
-        for(Data<Vec3f>* t : d_positionsIn)
+        for(Data<Vec3f>* t : d_positionsOut)
         {
             Vec3f a;
             a.at(0) = 1.0f;
@@ -89,12 +97,28 @@ public:
             a.at(2) = 1.0f;
             t->setValue(a);
         }
-
+        for(Data<Vec3f>* t : d_positionsIn)
+        {
+            Vec3f a;
+            a.at(0) = 0.0f;
+            a.at(1) = 0.0f;
+            a.at(2) = 0.0f;
+            t->setValue(a);
+        }
     }
 
-    virtual void handleEvent(sofa::core::objectmodel::Event *event) override
-    {
-    }
+//    virtual void handleEvent(sofa::core::objectmodel::Event *event) override
+//    {
+//        std::cout << "event " << std::endl;
+//        for(Data<Vec3f>* t : d_positionsOut)
+//        {
+//            Vec3f a;
+//            a.at(0) = a.at(0)+1.0f;
+//            a.at(1) = a.at(1)+1.0f;
+//            a.at(2) = a.at(2)+1.0f;
+//            t->setValue(a);
+//        }
+//    }
 
     vectorData<Vec3f>  d_positionsOut ;
     vectorData<Vec3f> d_positionsIn ;
@@ -219,8 +243,7 @@ public:
         root->init(ExecParams::defaultInstance());
         ServerCommunication* aServerCommunicationOSC = dynamic_cast<ServerCommunication*>(root->getObject("oscReceiver"));
         aServerCommunicationOSC->setRunning(false);
-
-        usleep(1000);
+        usleep(10000);
         UdpTransmitSocket transmitSocket( IpEndpointName( "127.0.0.1", 6000 ) );
         char buffer[1024];
         osc::OutboundPacketStream p(buffer, 1024 );
@@ -230,7 +253,7 @@ public:
         p << osc::EndMessage;
         p << osc::EndBundle;
         transmitSocket.Send( p.Data(), p.Size() );
-        usleep(1000);
+        usleep(10000);
 
 
         Base::MapData dataMap = aServerCommunicationOSC->getDataAliases();
@@ -245,27 +268,220 @@ public:
         }
     }
 
+    void checkArgumentCreation()
+    {
+        std::stringstream scene1 ;
+        scene1 <<
+                  "<?xml version='1.0' ?>                                                       \n"
+                  "<Node name='root'>                                                           \n"
+                  "   <RequiredPlugin name='Communication' />                                   \n"
+                  "   <ServerCommunicationOSC name='oscSender' job='sender' port='6000' refreshRate='1000'/> \n"
+                  "   <CommunicationSubscriber name='sub1' communication='@oscSender' subject='/test' source='@oscSender' arguments='x'/>"
+                  "</Node>                                                                      \n";
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
+        root->init(ExecParams::defaultInstance());
+        ServerCommunication* aServerCommunicationOSC = dynamic_cast<ServerCommunication*>(root->getObject("oscSender"));
+        EXPECT_NE(aServerCommunicationOSC, nullptr);
+
+        usleep(10000);
+
+        Base::MapData dataMap = aServerCommunicationOSC->getDataAliases();
+        Base::MapData::const_iterator itData;
+        BaseData* data;
+
+        itData = dataMap.find("port");
+        EXPECT_TRUE(itData != dataMap.end());
+        if (itData != dataMap.end())
+        {
+            data = itData->second;
+            EXPECT_NE(data, nullptr) ;
+        }
+
+        itData = dataMap.find("x");
+        EXPECT_TRUE(itData != dataMap.end());
+        if (itData != dataMap.end())
+        {
+            data = itData->second;
+            EXPECT_NE(data, nullptr) ;
+        }
+    }
+
+    void checkSendReceiveOSC()
+    {
+
+        std::stringstream scene1 ;
+        scene1 <<
+                  "<?xml version='1.0' ?>                                                       \n"
+                  "<Node name='root'>                                                           \n"
+                  "   <RequiredPlugin name='Communication' />                                   \n"
+                  "   <ServerCommunicationOSC name='oscSender' job='sender' port='6000'  refreshRate='1000'/> \n"
+                  "   <CommunicationSubscriber name='subSender' communication='@oscSender' subject='/test' source='@oscSender' arguments='x'/>"
+                  "   <ServerCommunicationOSC name='oscReceiver' job='receiver' port='6000' /> \n"
+                  "   <CommunicationSubscriber name='subReceiver' communication='@oscReceiver' subject='/test' source='@oscReceiver' arguments='x'/>"
+                  "</Node>                                                                      \n";
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
+        root->init(ExecParams::defaultInstance()) ;
+
+        ServerCommunication* aServerCommunicationOSCSender = dynamic_cast<ServerCommunication*>(root->getObject("oscSender"));
+        ServerCommunication* aServerCommunicationOSCReceiver = dynamic_cast<ServerCommunication*>(root->getObject("oscReceiver"));
+        EXPECT_NE(aServerCommunicationOSCSender, nullptr);
+        EXPECT_NE(aServerCommunicationOSCReceiver, nullptr);
+
+        aServerCommunicationOSCReceiver->setRunning(false);
+
+        usleep(10000);
+
+        Base::MapData dataMap = aServerCommunicationOSCSender->getDataAliases();
+        Base::MapData::const_iterator itData;
+        BaseData* data;
+
+        itData = dataMap.find("x");
+        EXPECT_TRUE(itData != dataMap.end());
+        if (itData != dataMap.end())
+        {
+            data = itData->second;
+            EXPECT_NE(data, nullptr) ;
+        }
+
+        dataMap = aServerCommunicationOSCSender->getDataAliases();
+        itData = dataMap.find("x");
+        EXPECT_TRUE(itData != dataMap.end());
+        if (itData != dataMap.end())
+        {
+            data = itData->second;
+            EXPECT_NE(data, nullptr) ;
+        }
+    }
+
+    void checkThreadSafe(int nbStep)
+    {
+        std::stringstream scene1 ;
+        scene1 <<
+                  "<?xml version='1.0' ?>                                                       \n"
+                  "<Node name='root'>                                                           \n"
+                  "   <RequiredPlugin name='Communication' />                                   \n"
+                  "   <MyComponent name='aComponent' />                                         \n"
+
+                  "   <ServerCommunicationOSC name='oscSender' job='sender' port='6000'  refreshRate='100000'/> \n"
+                  "   <CommunicationSubscriber name='subSender' communication='@oscSender' subject='/test' source='@aComponent' arguments='x'/>"
+
+                  "   <ServerCommunicationOSC name='oscReceiver' job='receiver' port='6000' /> \n"
+                  "   <CommunicationSubscriber name='subReceiver' communication='@oscReceiver' subject='/test' source='@aComponent' arguments='x'/>"
+
+                  "</Node>                                                                      \n";
+
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
+        root->init(ExecParams::defaultInstance()) ;
+
+        for(unsigned int i=0; i<nbStep; i++)
+        {
+            sofa::simulation::getSimulation()->animate(root.get(), 0.01);
+
+            MyComponent* aComponent = dynamic_cast<MyComponent*>(root->getObject("aComponent"));
+            EXPECT_NE(aComponent, nullptr);
+            for(Data<Vec3f>* t : aComponent->d_positionsOut)
+            {
+                std::cout << t->getValueString() << std::endl;
+            }
+            for(Data<Vec3f>* t : aComponent->d_positionsIn)
+            {
+                std::cout << t->getValueString() << std::endl;
+            }
+        }
+
+        ServerCommunication* aServerCommunicationOSCSender = dynamic_cast<ServerCommunication*>(root->getObject("oscSender"));
+        ServerCommunication* aServerCommunicationOSCReceiver = dynamic_cast<ServerCommunication*>(root->getObject("oscReceiver"));
+        EXPECT_NE(aServerCommunicationOSCSender, nullptr);
+        EXPECT_NE(aServerCommunicationOSCReceiver, nullptr);
+
+        aServerCommunicationOSCReceiver->setRunning(false);
+        usleep(10000);
+
+    }
+
+
+    void checkSendZMQ()
+    {
+        std::stringstream scene1 ;
+        scene1 <<
+                  "<?xml version='1.0' ?>                                                       \n"
+                  "<Node name='root'>                                                           \n"
+                  "   <RequiredPlugin name='Communication' />                                   \n"
+                  "   <ServerCommunicationZMQ name='sender' job='sender' port='6000' pattern='publish/subscribe' refreshRate='1000'/> \n"
+                  "   <CommunicationSubscriber name='subSender' communication='@sender' subject='/test' source='@sender' arguments='port'/>"
+
+                  "</Node>                                                                      \n";
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
+        root->init(ExecParams::defaultInstance()) ;
+
+        std::future<char*> future = std::async(std::launch::async, [](){
+            zmq::context_t context (1);
+            zmq::socket_t socket (context, ZMQ_SUB);
+            socket.connect ("tcp://localhost:6000");
+            socket.setsockopt(ZMQ_SUBSCRIBE, "", 0);
+            zmq::message_t reply;
+            socket.recv (&reply);
+            char* tmp = (char*)malloc(sizeof(char) * reply.size());
+            memcpy(tmp, reply.data(), reply.size());
+            return tmp;
+        });
+
+        std::cout << "waiting...";
+        std::future_status status;
+        status = future.wait_for(std::chrono::seconds(3));
+        if (status == std::future_status::deferred) {
+            std::cout << "deferred" << std::endl;
+        } else if (status == std::future_status::timeout) {
+            std::cout << "timeout" << std::endl;
+        } else if (status == std::future_status::ready) {
+            std::cout << "received!" << std::endl;
+        }
+        std::cout << future.get() << std::endl;
+        EXPECT_EQ(status, std::future_status::ready);
+    }
+
 };
 
-TEST_F(Communication_test, checkCreationDestruction) {
-    ASSERT_NO_THROW(this->checkCreationDestruction()) ;
-}
+//TEST_F(Communication_test, checkCreationDestruction) {
+//    ASSERT_NO_THROW(this->checkCreationDestruction()) ;
+//}
 
-TEST_F(Communication_test, checkAddSubscriber) {
-    ASSERT_NO_THROW(this->checkAddSubscriber()) ;
-}
+//TEST_F(Communication_test, checkAddSubscriber) {
+//    ASSERT_NO_THROW(this->checkAddSubscriber()) ;
+//}
 
-TEST_F(Communication_test, checkGetSubscriber) {
-    ASSERT_NO_THROW(this->checkGetSubscriber()) ;
-}
+//TEST_F(Communication_test, checkGetSubscriber) {
+//    ASSERT_NO_THROW(this->checkGetSubscriber()) ;
+//}
 
-TEST_F(Communication_test, checkSendOSC) {
-    ASSERT_NO_THROW(this->checkSendOSC()) ;
-}
+//TEST_F(Communication_test, checkSendOSC) {
+//    ASSERT_NO_THROW(this->checkSendOSC()) ;
+//}
 
-TEST_F(Communication_test, checkReceiveOSC) {
-    ASSERT_NO_THROW(this->checkReceiveOSC()) ;
-}
+//TEST_F(Communication_test, checkReceiveOSC) {
+//    ASSERT_NO_THROW(this->checkReceiveOSC()) ;
+//}
+
+//TEST_F(Communication_test, checkArgumentCreation) {
+//    ASSERT_NO_THROW(this->checkArgumentCreation()) ;
+//}
+
+//TEST_F(Communication_test, checkSendReceiveOSC) {
+//    ASSERT_NO_THROW(this->checkSendReceiveOSC()) ;
+//}
+
+//TEST_F(Communication_test, checkThreadSafe) {
+//    ASSERT_NO_THROW(this->checkThreadSafe(100)) ;
+//}
+
+//TEST_F(Communication_test, checkSendZMQ) {
+//    ASSERT_NO_THROW(this->checkSendZMQ()) ;
+//}
+
 
 } // communication
 } // component

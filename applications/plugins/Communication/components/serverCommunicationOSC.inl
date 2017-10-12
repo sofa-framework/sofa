@@ -39,6 +39,11 @@ ServerCommunicationOSC::ServerCommunicationOSC()
 
 ServerCommunicationOSC::~ServerCommunicationOSC()
 {
+    if (d_job.getValueString().compare("receiver") == 0)
+    {
+        m_socket->Break();
+        delete m_socket;
+    }
     Inherited::closeCommunication();
 }
 
@@ -110,12 +115,11 @@ osc::OutboundPacketStream ServerCommunicationOSC::createOSCMessage()
             messageName = subscriber->getSubject();
 
             p << osc::BeginMessage(messageName.c_str());
-
             if (typeinfo->Container())
             {
                 int nbRows = typeinfo->size();
                 int nbCols  = typeinfo->size(data->getValueVoidPtr()) / typeinfo->size();
-                p  << nbRows << nbCols;
+                p  << "matrix" << nbRows << nbCols;
 
                 if( !typeinfo->Text() && !typeinfo->Scalar() && !typeinfo->Integer() )
                 {
@@ -187,8 +191,9 @@ void ServerCommunicationOSC::ProcessMessage( const osc::ReceivedMessage& m, cons
             }
         } else
             msg_warning() << address << " is matrix, but message size is not correct. Should be : /subject matrix width height value value value... ";
-
-        data = fetchData(source, "matrix" + std::string(1, (++it)->TypeTag()), subscriber->getArgumentName(0));
+        std::string argument = subscriber->getArgumentName(0);
+        std::string type = std::string("matrix") + (++it)->TypeTag();
+        data = fetchData(source, type, argument);
         if (!data)
             return;
 

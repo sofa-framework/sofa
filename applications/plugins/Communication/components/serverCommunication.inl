@@ -67,7 +67,6 @@ void ServerCommunication::openCommunication()
     else if (d_job.getValueString().compare("sender") == 0)
     {
         sendData();
-
     }
 }
 
