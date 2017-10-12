@@ -37,25 +37,14 @@ using sofa::helper::system::FileSystem;
 #include <sofa/helper/Utils.h>
 using sofa::helper::Utils;
 
-#include <SofaComponentBase/initComponentBase.h>
-#include <SofaComponentCommon/initComponentCommon.h>
-#include <SofaComponentGeneral/initComponentGeneral.h>
-#include <SofaComponentAdvanced/initComponentAdvanced.h>
-#include <SofaComponentMisc/initComponentMisc.h>
-
 namespace sofa {
 namespace {
     static struct raii {
       raii() {
-          sofa::component::initComponentBase();
-          sofa::component::initComponentCommon();
-          sofa::component::initComponentGeneral();
-          sofa::component::initComponentAdvanced();
-          sofa::component::initComponentMisc();
-
           const std::string pluginDir = Utils::getPluginDirectory() ;
           PluginRepository.addFirstPath(pluginDir);
           PluginManager::getInstance().loadPlugin("SceneCreator") ;
+          PluginManager::getInstance().loadPlugin("SofaAllCommonComponents") ;
       }
     } singleton;
 }
