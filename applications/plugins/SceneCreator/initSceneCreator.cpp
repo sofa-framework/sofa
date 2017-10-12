@@ -23,9 +23,6 @@
 #include <sofa/helper/system/PluginManager.h>
 using sofa::helper::system::PluginManager ;
 
-#include <SofaComponentBase/initComponentBase.h>
-#include <SofaComponentCommon/initComponentCommon.h>
-
 namespace sofa
 {
 
@@ -50,12 +47,9 @@ void initExternalModule()
         first = false;
     }
 
-    std::cout << "Loading..." << std::endl ;
-    sofa::component::initComponentBase();
-    sofa::component::initComponentCommon();
-
     /// Required for DefaultCollisionGroupManager
     PluginManager::getInstance().loadPlugin("SofaMiscCollision") ;
+    PluginManager::getInstance().loadPlugin("SofaAllCommonComponents") ;
 }
 
 const char* getModuleName()
