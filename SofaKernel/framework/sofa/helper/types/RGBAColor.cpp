@@ -263,17 +263,6 @@ SOFA_HELPER_API std::istream& operator>>(std::istream& in, RGBAColor& t)
     return in;
 }
 
-
-/// Write to an output stream
-SOFA_HELPER_API std::ostream& operator << ( std::ostream& out, const RGBAColor& v )
-{
-    for( int i=0; i<3; ++i )
-        out<<v[i]<<" ";
-    out<<v[3];
-    return out;
-}
-
-
 } // namespace types
 } // namespace helper
 } // namespace sofa

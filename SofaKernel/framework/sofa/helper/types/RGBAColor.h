@@ -98,7 +98,6 @@ public:
         return false;
     }
 
-    friend SOFA_HELPER_API std::ostream& operator<<(std::ostream& i, const RGBAColor& t) ;
     friend SOFA_HELPER_API std::istream& operator>>(std::istream& i, RGBAColor& t) ;
 
 public:
