@@ -52,7 +52,9 @@ int BatchGUI::mainLoop()
     if (groot)
     {
 
+        sofa::helper::AdvancedTimer::begin("Animate");
         sofa::simulation::getSimulation()->animate(groot.get());
+        sofa::helper::AdvancedTimer::end("Animate");
         //As no visualization is done by the Batch GUI, these two lines are not necessary.
         sofa::simulation::getSimulation()->updateVisual(groot.get());
         std::cout << "Computing "<<nbIter<<" iterations." << std::endl;
@@ -62,7 +64,9 @@ int BatchGUI::mainLoop()
         sofa::simulation::Visitor::ctime_t t = sofa::helper::system::thread::CTime::getFastTime();
         for (unsigned int i=0; i<nbIter; i++)
         {
+            sofa::helper::AdvancedTimer::begin("Animate");
             sofa::simulation::getSimulation()->animate(groot.get());
+            sofa::helper::AdvancedTimer::end("Animate");
             //As no visualization is done by the Batch GUI, these two lines are not necessary.
             sofa::simulation::getSimulation()->updateVisual(groot.get());
         }
