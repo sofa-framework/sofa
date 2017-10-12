@@ -39,10 +39,12 @@ namespace testing
 using sofa::simulation::Node ;
 using sofa::simulation::Simulation ;
 
-class BaseSimulationTest : public virtual BaseTest
+class SOFA_SIMULATION_GRAPH_API BaseSimulationTest : public virtual BaseTest
 {
 public:
     BaseSimulationTest() ;
+
+    bool importPlugin(const std::string& name) ;
 
     class SceneInstance
     {

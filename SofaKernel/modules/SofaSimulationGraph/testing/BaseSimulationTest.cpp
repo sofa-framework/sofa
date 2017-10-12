@@ -31,12 +31,20 @@ using sofa::simulation::SceneLoaderXML ;
 #include <sofa/core/ExecParams.h>
 using sofa::core::ExecParams ;
 
+#include <sofa/helper/system/PluginManager.h>
+using sofa::helper::system::PluginManager ;
+
 namespace sofa
 {
 namespace helper
 {
 namespace testing
 {
+
+bool BaseSimulationTest::importPlugin(const std::string& name)
+{
+    return PluginManager::getInstance().loadPlugin(name) ;
+}
 
 BaseSimulationTest::SceneInstance::SceneInstance(const std::string& type, const std::string& desc)
 {
