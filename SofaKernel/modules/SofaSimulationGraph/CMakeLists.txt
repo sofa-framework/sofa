@@ -14,7 +14,13 @@ set(SOURCE_FILES
     DAGNodeMultiMappingElement.cpp
     DAGSimulation.cpp
     init.cpp
+
 )
+
+if(SOFA_BUILD_TESTS)
+    list(APPEND HEADER_FILES testing/BaseSimulationTest.h)
+    list(APPEND SOURCE_FILES testing/BaseSimulationTest.cpp)
+endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCommon)
