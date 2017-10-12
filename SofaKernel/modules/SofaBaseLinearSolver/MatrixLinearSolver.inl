@@ -401,7 +401,7 @@ bool MatrixLinearSolver<Matrix,Vector>::addMInvJt(defaulttype::BaseMatrix* resul
 }
 
 template<class Matrix, class Vector>
-bool MatrixLinearSolver<Matrix,Vector>::buildComplianceMatrix(defaulttype::BaseMatrix* result, double fact)
+bool MatrixLinearSolver<Matrix,Vector>::buildComplianceMatrix(const sofa::core::ConstraintParams* cparams, defaulttype::BaseMatrix* result, double fact)
 {
     JMatrixType * j_local = internalData.getLocalJ();
     j_local->clear();
@@ -412,7 +412,7 @@ bool MatrixLinearSolver<Matrix,Vector>::buildComplianceMatrix(defaulttype::BaseM
         return true;
     }
 
-    executeVisitor(simulation::MechanicalGetConstraintJacobianVisitor(core::ExecParams::defaultInstance(),j_local));
+    executeVisitor(simulation::MechanicalGetConstraintJacobianVisitor(cparams,j_local));
 
     return addJMInvJt(result,j_local,fact);
 }
