@@ -15,15 +15,12 @@ set(HEADER_FILES
     Multi2Mapping_test.h
     PrimitiveCreation.h
     Sofa_test.h
-    TestMessageHandler.h
-    #LogMessage.h
 )
 
 set(SOURCE_FILES
     Elasticity_test.cpp
     InitPlugin_test.cpp
     PrimitiveCreation.cpp
-    TestMessageHandler.cpp
     Sofa_test.cpp
 )
 

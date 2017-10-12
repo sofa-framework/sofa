@@ -37,67 +37,52 @@ using sofa::helper::system::FileSystem;
 #include <sofa/helper/Utils.h>
 using sofa::helper::Utils;
 
-#include <sofa/helper/BackTrace.h>
-using sofa::helper::BackTrace;
-
-#include <sofa/helper/system/console.h>
-using sofa::helper::Console ;
-
-#include <SofaTest/TestMessageHandler.h>
-using sofa::helper::logging::MessageDispatcher ;
-using sofa::helper::logging::MainGtestMessageHandler ;
-
+#include <SofaComponentBase/initComponentBase.h>
+#include <SofaComponentCommon/initComponentCommon.h>
+#include <SofaComponentGeneral/initComponentGeneral.h>
+#include <SofaComponentAdvanced/initComponentAdvanced.h>
+#include <SofaComponentMisc/initComponentMisc.h>
 
 namespace sofa {
-
-
-
-
-// some basic RAII stuff to automatically add a TestMessageHandler to every tests
 namespace {
     static struct raii {
       raii() {
-          MessageDispatcher::addHandler( MainGtestMessageHandler::getInstance() ) ;
-          BackTrace::autodump() ;
+          sofa::component::initComponentBase();
+          sofa::component::initComponentCommon();
+          sofa::component::initComponentGeneral();
+          sofa::component::initComponentAdvanced();
+          sofa::component::initComponentMisc();
 
           const std::string pluginDir = Utils::getPluginDirectory() ;
           PluginRepository.addFirstPath(pluginDir);
-
           PluginManager::getInstance().loadPlugin("SceneCreator") ;
       }
     } singleton;
 }
 
-
-int BaseSofa_test::seed = (unsigned int)time(NULL);
-
-BaseSofa_test::BaseSofa_test(){
-    seed = testing::UnitTest::GetInstance()->random_seed() ;
+BaseSofa_test::BaseSofa_test()
+{
+    dmsg_deprecated("Sofa_test") << "Sofa_test & BaseSofa_test are now deprecated classes. "
+                                    "To fix this message you should replace their usage by BaseTest, NumericTest or BaseSimulationTest to implement your tests" ;
     modeling::initSofa();
-
-    //if you want to generate the same sequence of pseudo-random numbers than a specific test suites
-    //use the same seed (the seed value is indicated at the 2nd line of test results)
-    //and pass the seed in command argument line ex: SofaTest_test.exe seed 32
-    helper::srand(seed);
-
-    // gtest already use color so we remove the color from the sofa message to make the distinction
-    // clean and avoid ambiguity.
-    Console::setColorsStatus(Console::ColorsDisabled) ;
-
-    // Repeating this for each class is harmless because addHandler test if the handler is already installed and
-    // if so it don't install it again.
-    MessageDispatcher::addHandler( MainGtestMessageHandler::getInstance() ) ;
 }
 
-BaseSofa_test::~BaseSofa_test(){ clearSceneGraph(); }
+BaseSofa_test::~BaseSofa_test()
+{
+    clearSceneGraph();
+}
 
-void BaseSofa_test::clearSceneGraph(){ modeling::clearScene(); }
+void BaseSofa_test::clearSceneGraph()
+{
+    modeling::clearScene();
+}
 
 
-#ifndef SOFA_FLOAT
-template struct SOFA_TestPlugin_API Sofa_test<double>;
-#endif
-#ifndef SOFA_DOUBLE
+
+#ifdef SOFA_WITH_FLOAT
 template struct SOFA_TestPlugin_API Sofa_test<float>;
+#endif
+#ifdef SOFA_WITH_DOUBLE
+template struct SOFA_TestPlugin_API Sofa_test<double>;
 #endif
 }
