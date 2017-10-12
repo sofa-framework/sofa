@@ -57,19 +57,7 @@ else()
     sofa_add_plugin(VolumetricRendering VolumetricRendering) # VolumetricRendering plugin can't work without OPENGL
 endif()
 
-##### External plugins
+##### External things
+add_subdirectory(Externals)
 
-include(${CMAKE_ROOT}/Modules/ExternalProject.cmake)
-option(EXTERNAL_GIT_PLUGIN_HIGH_ORDER "Enable High Order Plugin" ON)
-if(EXTERNAL_GIT_PLUGIN_HIGH_ORDER)
-    # Download and unpack  at configure time
-    configure_file(SofaHighOrder/CMakeLists.txt.in ${CMAKE_SOURCE_DIR}/applications/plugins/SofaHighOrder/CMakeLists.txt)
-    execute_process(COMMAND "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .
-        WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/applications/plugins/SofaHighOrder" )
-    execute_process(COMMAND "${CMAKE_COMMAND}" --build .
-        WORKING_DIRECTORY  "${CMAKE_SOURCE_DIR}/applications/plugins/SofaHighOrder" )
-
-    add_subdirectory("${CMAKE_SOURCE_DIR}/applications/plugins/SofaHighOrder/src"
-                "${CMAKE_BINARY_DIR}/SofaHighOrder/build")
-endif()
 

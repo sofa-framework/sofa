@@ -246,7 +246,78 @@ macro(sofa_install_get_libraries library)
     install(FILES ${ABS_LIB} DESTINATION lib)
 endmacro()
 
+### External project management
+#Thanks to http://crascit.com/2015/07/25/cmake-gtest/
 
+macro(sofa_external_add_subdirectory repo_name repo_location)
+    string(TOUPPER EXTERNAL_SUBDIRECTORY_${repo_name} option)
+
+    # optional parameter to activate/desactivate the option
+    set(active OFF)
+    if(${ARGV3})
+        if( ${ARGV3} STREQUAL ON )
+            set(active ON)
+        endif()
+    endif()
+
+    option(${option} "Enable external repository ${repo_name}." ${active})
+
+    if(${option})
+        # Download and unpack  at configure time
+        configure_file(${repo_location}/CMakeLists.txt.in ${repo_location}/CMakeLists.txt)
+        execute_process(COMMAND "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .
+            WORKING_DIRECTORY "${repo_location}" )
+        execute_process(COMMAND "${CMAKE_COMMAND}" --build .
+            WORKING_DIRECTORY  "${repo_location}" )
+
+        add_subdirectory("${repo_location}/src"
+                    "${CMAKE_BINARY_DIR}/${repo_name}/build")
+    endif()
+endmacro()
+
+macro(sofa_external_add_plugin plugin_name plugin_location)
+    string(TOUPPER EXTERNAL_PLUGIN_${plugin_name} option)
+
+    # optional parameter to activate/desactivate the option
+    set(active OFF)
+    if(${ARGV3})
+        if( ${ARGV3} STREQUAL ON )
+            set(active ON)
+        endif()
+    endif()
+
+    option(${option} "Enable external plugin ${plugin_name}." ${active})
+
+    if(${option})
+        # Download and unpack  at configure time
+        configure_file(${plugin_location}/CMakeLists.txt.in ${plugin_location}/CMakeLists.txt)
+        execute_process(COMMAND "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .
+            WORKING_DIRECTORY "${repo_location}" )
+        execute_process(COMMAND "${CMAKE_COMMAND}" --build .
+            WORKING_DIRECTORY  "${repo_location}" )
+
+        sofa_add_plugin("${repo_location}/src" "${plugin_name}")
+    endif()
+endmacro()
+
+# macro(create_external_git_repository_subdirectory project_name git_url git_tag src_dir build_dir)
+#     project(${project_name}_download NONE)
+
+#     include(ExternalProject) #for ExternalProject_add
+#     ExternalProject_Add(${project_name}_download
+#         GIT_REPOSITORY ${git_url}
+#         GIT_TAG ${git_tag}
+#         #SOURCE_DIR "${CMAKE_SOURCE_DIR}/applications/plugins/${project_name}/src"
+#         #BINARY_DIR "${CMAKE_BINARY_DIR}/applications/plugins/${project_name}/build"
+#         SOURCE_DIR "${src_dir}"
+#         BINARY_DIR "${build_dir}"
+#         CONFIGURE_COMMAND ""
+#         BUILD_COMMAND ""
+#         INSTALL_COMMAND ""
+#         TEST_COMMAND ""
+#     )
+# endmacro()
+###
 
 
 ##########################################################
