@@ -85,6 +85,9 @@ MechanicalObject<DataTypes>::MechanicalObject()
     , vfree(initData(&vfree, "free_velocity", "free velocity coordinates of the degrees of freedom"))
     , x0(initData(&x0, "rest_position", "rest position coordinates of the degrees of freedom"))
     , c(initData(&c, "constraint", "constraints applied to the degrees of freedom"))
+#if(SOFA_WITH_EXPERIMENTAL_FEATURES==1)
+    , m(initData(&m, "mappingJacobian", "mappingJacobian applied to the degrees of freedom"))
+#endif
     , reset_position(initData(&reset_position, "reset_position", "reset position coordinates of the degrees of freedom"))
     , reset_velocity(initData(&reset_velocity, "reset_velocity", "reset velocity coordinates of the degrees of freedom"))
     , restScale(initData(&restScale, (SReal)1.0, "restScale", "optional scaling of rest position coordinates (to simulated pre-existing internal tension).(default = 1.0)"))
@@ -148,6 +151,9 @@ MechanicalObject<DataTypes>::MechanicalObject()
     setVecDeriv(core::VecDerivId::freeVelocity().index, &vfree);
     setVecDeriv(core::VecDerivId::resetVelocity().index, &reset_velocity);
     setVecMatrixDeriv(core::MatrixDerivId::constraintJacobian().index, &c);
+#if(SOFA_WITH_EXPERIMENTAL_FEATURES==1)
+    setVecMatrixDeriv(core::MatrixDerivId::mappingJacobian().index, &m);
+#endif
 
     // These vectors are set as modified as they are mandatory in the MechanicalObject.
     x               .forceSet();
@@ -2526,6 +2532,12 @@ void MechanicalObject<DataTypes>::resetConstraint(const core::ExecParams* params
     MatrixDeriv *c = c_data.beginEdit(params);
     c->clear();
     c_data.endEdit(params);
+#if(SOFA_WITH_EXPERIMENTAL_FEATURES==1)
+    Data<MatrixDeriv>& m_data = *this->write(core::MatrixDerivId::mappingJacobian());
+    MatrixDeriv *m = m_data.beginEdit(params);
+    m->clear();
+    m_data.endEdit(params);
+#endif
 }
 
 template <class DataTypes>
@@ -2580,6 +2592,7 @@ void MechanicalObject<DataTypes>::buildIdentityBlocksInJacobian(const sofa::help
             columnIndex++;
         }
     }
+    cMatrix->endEdit();
 
 }
 #endif
