@@ -69,9 +69,9 @@ void BaseSofa_test::clearSceneGraph()
 
 
 #ifdef SOFA_WITH_FLOAT
-template struct SOFA_TestPlugin_API Sofa_test<float>;
+template struct SOFA_SOFATEST_API Sofa_test<float>;
 #endif
 #ifdef SOFA_WITH_DOUBLE
-template struct SOFA_TestPlugin_API Sofa_test<double>;
+template struct SOFA_SOFATEST_API Sofa_test<double>;
 #endif
 }

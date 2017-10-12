@@ -41,23 +41,23 @@ namespace sofa {
 template<class T>
 struct PatchTestStruct
 {
-   simulation::Node::SPtr SquareNode;
-   typename component::projectiveconstraintset::AffineMovementConstraint<T>::SPtr affineConstraint;
-   typename component::container::MechanicalObject<T>::SPtr dofs;
+    simulation::Node::SPtr SquareNode;
+    typename component::projectiveconstraintset::AffineMovementConstraint<T>::SPtr affineConstraint;
+    typename component::container::MechanicalObject<T>::SPtr dofs;
 };
 
 /// Structure which contains the nodes and the pointers useful for the patch test
 template<class T>
 struct CylinderTractionStruct
 {
-   simulation::Node::SPtr root;
-   typename component::container::MechanicalObject<T>::SPtr dofs;
-   typename component::forcefield::TrianglePressureForceField<T>::SPtr forceField;
+    simulation::Node::SPtr root;
+    typename component::container::MechanicalObject<T>::SPtr dofs;
+    typename component::forcefield::TrianglePressureForceField<T>::SPtr forceField;
 };
 
 
 template< class DataTypes>
-struct SOFA_TestPlugin_API Elasticity_test: public Sofa_test<typename DataTypes::Real>
+struct SOFA_SOFATEST_API Elasticity_test: public Sofa_test<typename DataTypes::Real>
 {
     typedef component::container::MechanicalObject<DataTypes> DOFs;
     typedef typename DOFs::Real  Real;
@@ -73,58 +73,58 @@ struct SOFA_TestPlugin_API Elasticity_test: public Sofa_test<typename DataTypes:
     typedef Data<VecDeriv> DataVecDeriv;
 
 
-/// Create a scene with a regular grid and an affine constraint for patch test
+    /// Create a scene with a regular grid and an affine constraint for patch test
 
-PatchTestStruct<DataTypes> createRegularGridScene(
-        simulation::Node::SPtr root,
-        Coord startPoint,
-        Coord endPoint,
-        int numX,
-        int numY,
-        int numZ,
-        sofa::defaulttype::Vec<6,SReal> entireBoxRoi,
-        sofa::defaulttype::Vec<6,SReal> inclusiveBox,
-        sofa::defaulttype::Vec<6,SReal> includedBox);
+    PatchTestStruct<DataTypes> createRegularGridScene(
+            simulation::Node::SPtr root,
+            Coord startPoint,
+            Coord endPoint,
+            int numX,
+            int numY,
+            int numZ,
+            sofa::defaulttype::Vec<6,SReal> entireBoxRoi,
+            sofa::defaulttype::Vec<6,SReal> inclusiveBox,
+            sofa::defaulttype::Vec<6,SReal> includedBox);
 
-CylinderTractionStruct<DataTypes>  createCylinderTractionScene(
-        int resolutionCircumferential,
-        int resolutionRadial,
-        int resolutionHeight,
-        int maxIter);
+    CylinderTractionStruct<DataTypes>  createCylinderTractionScene(
+            int resolutionCircumferential,
+            int resolutionRadial,
+            int resolutionHeight,
+            int maxIter);
 
 
-/// Create an assembly of a siff hexahedral grid with other objects
-simulation::Node::SPtr createGridScene(
-        Coord startPoint,
-        Coord endPoint,
-        int numX,
-        int numY,
-        int numZ,
-        SReal totalMass,
-        SReal stiffnessValue,
-        SReal dampingRatio );
+    /// Create an assembly of a siff hexahedral grid with other objects
+    simulation::Node::SPtr createGridScene(
+            Coord startPoint,
+            Coord endPoint,
+            int numX,
+            int numY,
+            int numZ,
+            SReal totalMass,
+            SReal stiffnessValue,
+            SReal dampingRatio );
 
-/// Create a mass srping system
-simulation::Node::SPtr createMassSpringSystem(
-        simulation::Node::SPtr root,
-        double stiffness,
-        double mass,
-        double restLength,
-        VecCoord xFixedPoint,
-        VecDeriv vFixedPoint,
-        VecCoord xMass,
-        VecDeriv vMass);
+    /// Create a mass srping system
+    simulation::Node::SPtr createMassSpringSystem(
+            simulation::Node::SPtr root,
+            double stiffness,
+            double mass,
+            double restLength,
+            VecCoord xFixedPoint,
+            VecDeriv vFixedPoint,
+            VecCoord xMass,
+            VecDeriv vMass);
 
-/// Create sun-planet system
-simulation::Node::SPtr createSunPlanetSystem(
-        simulation::Node::SPtr root,
-        double mSun,
-        double mPlanet,
-        double g,
-        Coord xSun,
-        Deriv vSun,
-        Coord xPlanet,
-        Deriv vPlanet);
+    /// Create sun-planet system
+    simulation::Node::SPtr createSunPlanetSystem(
+            simulation::Node::SPtr root,
+            double mSun,
+            double mPlanet,
+            double g,
+            Coord xSun,
+            Deriv vSun,
+            Coord xPlanet,
+            Deriv vPlanet);
 
 };
 
