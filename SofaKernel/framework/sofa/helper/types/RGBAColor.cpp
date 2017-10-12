@@ -205,6 +205,62 @@ SOFA_HELPER_API std::istream& operator>>(std::istream& in, RGBAColor& t)
             in >> a;
         }
     }
+    else if (first=='[')
+    {
+        char c;
+        if (!(in >> c) || c != '[') {
+            msg_error("color") << "read: Bad begin character : " << c << ", expected  [";
+            in.setstate(std::ios::badbit);
+            return in;
+        }
+        if (!(in >> r)) {
+            msg_error("color") << "reading [,] separated values";
+            in.setstate(std::ios::badbit);
+            return in;
+        }
+        if (!(in >> c) || c!=',') {
+            msg_error("color") << "reading [,] separated values";
+            in.setstate(std::ios::badbit);
+            return in;
+        }
+        if (!(in >> g)) {
+            msg_error("color") << "reading [,] separated values";
+            in.setstate(std::ios::badbit);
+            return in;
+        }
+        if (!(in >> c) || c!=',') {
+            msg_error("color") << "reading [,] separated values";
+            in.setstate(std::ios::badbit);
+            return in;
+        }
+        if (!(in >> b)) {
+            msg_error("color") << "reading [,] separated values";
+            in.setstate(std::ios::badbit);
+            return in;
+        }
+        if (!(in >> c)) {
+            msg_error("color") << "reading [,] separated values";
+            in.setstate(std::ios::badbit);
+            return in;
+        }
+        if (c==',') {
+            if (!(in >> a)) {
+                msg_error("color") << "reading [,] separated values";
+                in.setstate(std::ios::badbit);
+                return in;
+            }
+            if (!(in >> c) || c!=']') {
+                msg_error("color") << "reading [,] separated values, bad end character : " << c << ", expected  ]";
+                in.setstate(std::ios::badbit);
+                return in;
+            }
+        }
+        else if (c!=']') {
+            msg_error("color") << "reading [,] separated values, expecting data after [";
+            in.setstate(std::ios::badbit);
+            return in;
+        }
+    }
     else if (first=='#')
     {
         std::string str;
