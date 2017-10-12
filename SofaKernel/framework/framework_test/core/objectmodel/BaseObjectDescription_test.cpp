@@ -19,7 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaSimulationCommon/init.h>
+/*
+ * #include <SofaSimulationCommon/init.h>
 using sofa::simulation::common::init ;
 
 #include <SofaSimulationGraph/init.h>
@@ -27,19 +28,16 @@ using sofa::simulation::graph::init ;
 
 #include <SofaComponentBase/initComponentBase.h>
 using sofa::component::initComponentBase ;
-
-#include <SofaTest/Sofa_test.h>
-using sofa::Sofa_test ;
+*/
 
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 using sofa::core::objectmodel::BaseObjectDescription ;
 
-#include <SofaTest/TestMessageHandler.h>
-using sofa::helper::logging::Message ;
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest ;
 
 
-
-struct BaseObjectDescription_test: public Sofa_test<>
+struct BaseObjectDescription_test: public BaseTest
 {
     void SetUp()
     {

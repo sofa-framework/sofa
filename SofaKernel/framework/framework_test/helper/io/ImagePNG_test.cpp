@@ -23,11 +23,12 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <cstring>
 
-#include <SofaTest/Sofa_test.h>
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest ;
 
 namespace sofa {
 
-class ImagePNG_test : public Sofa_test<>
+class ImagePNG_test : public BaseTest
 {
 protected:
 

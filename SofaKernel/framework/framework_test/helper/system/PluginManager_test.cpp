@@ -24,8 +24,9 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/Utils.h>
-#include <gtest/gtest.h>
-#include <SofaTest/TestMessageHandler.h>
+
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest ;
 
 #include <fstream>
 
@@ -51,7 +52,7 @@ const std::string separator = "/";
 const std::string prefix = "lib";
 #endif // WIN32
 
-struct PluginManager_test: public ::testing::Test
+struct PluginManager_test: public BaseTest
 {
     std::string pluginDir;
 
