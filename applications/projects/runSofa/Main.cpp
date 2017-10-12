@@ -185,7 +185,7 @@ int main(int argc, char** argv)
     bool        noAutoloadPlugins = false;
     int         nbIterations = BatchGUI::DEFAULT_NUMBER_OF_ITERATIONS;
     unsigned int nbMSSASamples = 1;
-    unsigned    computationTimeSampling=0; ///< Frequency of display of the computation time statistics, in number of animation steps. 0 means never.
+    int    computationTimeSampling=0; ///< Frequency of display of the computation time statistics, in number of animation steps. 0 means never.
 
     string gui = "";
     string verif = "";
@@ -418,7 +418,20 @@ int main(int argc, char** argv)
         loadVerificationData(verif, fileName, groot.get());
     }
 
+    if( computationTimeSampling<1 )
+    {
+        sofa::helper::AdvancedTimer::setEnabled("Init", true);
+        sofa::helper::AdvancedTimer::setInterval("Init", 1);
+        sofa::helper::AdvancedTimer::begin("Init");
+        sofa::helper::AdvancedTimer::end("Init");
+        sofa::helper::AdvancedTimer::begin("Init");
+    }
+
     sofa::simulation::getSimulation()->init(groot.get());
+    if( computationTimeSampling<1 )
+    {
+        sofa::helper::AdvancedTimer::end("Init");
+    }
     GUIManager::SetScene(groot,fileName.c_str(), temporaryFile);
 
 
@@ -434,10 +447,10 @@ int main(int argc, char** argv)
         msg_info("") << "//////// END FACTORY ////////" ;
     }
 
-    if( computationTimeSampling>0 )
+    if( computationTimeSampling!=0 )
     {
         sofa::helper::AdvancedTimer::setEnabled("Animate", true);
-        sofa::helper::AdvancedTimer::setInterval("Animate", computationTimeSampling);
+        sofa::helper::AdvancedTimer::setInterval("Animate", abs(computationTimeSampling));
     }
 
     //=======================================
