@@ -26,15 +26,6 @@
 
 #ifdef SOFA_HAVE_PNG
 #include <png.h>
-#ifdef _MSC_VER
-#ifdef _DEBUG
-#pragma comment(lib,"libpngd.lib")
-#pragma comment(lib,"zlibd.lib")
-#else
-#pragma comment(lib,"libpng.lib")
-#pragma comment(lib,"zlib.lib")
-#endif
-#endif
 #endif
 
 #if PNG_LIBPNG_VER >= 10209
