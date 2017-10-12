@@ -49,11 +49,13 @@ public:
     class SceneInstance
     {
     public:
+
+         SceneInstance(const std::string& rootname="root") ;
          SceneInstance(const std::string& type, const std::string& memory) ;
-         //SceneInstance(const std::string& filename) ;
          ~SceneInstance() ;
 
         Node::SPtr root ;
+        Simulation* simulation {nullptr} ;
 
         void initScene() ;
     } ;

@@ -51,8 +51,20 @@ BaseSimulationTest::SceneInstance::SceneInstance(const std::string& type, const 
     if(simulation::getSimulation() == nullptr)
         simulation::setSimulation(new simulation::graph::DAGSimulation()) ;
 
+    simulation = simulation::getSimulation() ;
     root = SceneLoaderXML::loadFromMemory("dynamicscene", desc.c_str(), desc.size()) ;
 }
+
+BaseSimulationTest::SceneInstance::SceneInstance(const std::string& rootname)
+{
+    if(simulation::getSimulation() == nullptr)
+        simulation::setSimulation(new simulation::graph::DAGSimulation()) ;
+
+    simulation = simulation::getSimulation() ;
+    root = simulation::getSimulation()->createNewNode(rootname) ;
+}
+
+
 
 BaseSimulationTest::SceneInstance::~SceneInstance()
 {
