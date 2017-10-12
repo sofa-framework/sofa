@@ -218,6 +218,17 @@ if(CMAKE_SYSTEM_NAME STREQUAL Windows)
     list(APPEND SOURCE_FILES  system/FileMonitor_windows.cpp)
 endif()
 
+if(SOFA_BUILD_TESTS)
+
+    list(APPEND HEADER_FILES testing/BaseTest.h
+                             testing/NumericTest.h
+                             testing/TestMessageHandler.h
+        )
+    list(APPEND SOURCE_FILES testing/BaseTest.cpp
+                             testing/NumericTest.cpp
+                             testing/TestMessageHandler.cpp
+        )
+endif()
 
 if(SOFA_HAVE_PNG)
     list(APPEND HEADER_FILES  io/ImagePNG.h)
@@ -364,6 +375,13 @@ if(APPLE)
     list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK "-framework CoreServices")
 endif()
 target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAFRAMEWORK_DEPENDENCY_LINK} ${Boost_LIBRARIES})
+
+if(SOFA_BUILD_TESTS)
+    target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAFRAMEWORK_DEPENDENCY_LINK} ${Boost_LIBRARIES} gtest)
+else()
+    target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAFRAMEWORK_DEPENDENCY_LINK} ${Boost_LIBRARIES})
+endif()
+
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../..>")

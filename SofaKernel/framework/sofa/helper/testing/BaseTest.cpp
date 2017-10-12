@@ -44,6 +44,8 @@ using sofa::helper::Console ;
 using sofa::helper::logging::MessageDispatcher ;
 using sofa::helper::logging::MainGtestMessageHandler ;
 
+#include <sofa/helper/random.h>
+
 #include "BaseTest.h"
 
 namespace sofa {
@@ -60,10 +62,9 @@ void initializeOnce()
         BackTrace::autodump() ;
 
 
-        const std::string pluginDir = Utils::getPluginDirectory() ;
-        PluginRepository.addFirstPath(pluginDir);
-
-        PluginManager::getInstance().loadPlugin("SceneCreator") ;
+        //const std::string pluginDir = Utils::getPluginDirectory() ;
+        //PluginRepository.addFirstPath(pluginDir);
+        //PluginManager::getInstance().loadPlugin("SceneCreator") ;
         initialized=true ;
     }
 }
@@ -71,8 +72,8 @@ void initializeOnce()
 int BaseTest::seed = (unsigned int)time(NULL);
 
 BaseTest::BaseTest() :
-    m_fatal(sofa::helper::logging::Message::Fatal, __FILE__, __LINE__ ),
-    m_error(sofa::helper::logging::Message::Error, __FILE__, __LINE__ )
+   m_fatal(sofa::helper::logging::Message::Fatal, __FILE__, __LINE__ ),
+   m_error(sofa::helper::logging::Message::Error, __FILE__, __LINE__ )
 {
     initializeOnce() ;
 
@@ -94,13 +95,19 @@ BaseTest::BaseTest() :
 
 BaseTest::~BaseTest() {}
 
-}
-}
+void BaseTest::SetUp()
+{
+    onSetUp();
 }
 
-#ifdef SOFA_WITH_FLOAT
-template struct SOFA_HELPER_API sofa::helper::testing::NumericTest<float>;
-#endif
-#ifdef SOFA_WITH_DOUBLE
-template struct SOFA_HELPER_API sofa::helper::testing::NumericTest<double>;
-#endif
+void BaseTest::TearDown()
+{
+    onTearDown();
+}
+
+
+} /// testing
+} /// helper
+} /// sofa
+
+

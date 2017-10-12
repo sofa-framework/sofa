@@ -19,51 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/******************************************************************************
- * Contributors:
- *    - françois.faure
- *    - damien.marchal@univ-lille1.fr
- ******************************************************************************/
-#ifndef SOFA_BASETEST_H
-#define SOFA_BASETEST_H
 
-#include <gtest/gtest.h>
-#include <sofa/helper/testing/TestMessageHandler.h>
+#include "NumericTest.h"
 
-namespace sofa {
-namespace helper {
-namespace testing {
-/// acceptable ratio between finite difference delta and error threshold
-const SReal g_minDeltaErrorRatio = .1;
-
-/** @brief Base class for Sofa test fixtures.
-  */
-class SOFA_HELPER_API BaseTest : public ::testing::Test
-{
-public:
-    /// To prevent that you simply need to add the line
-    /// EXPECT_MSG_EMIT(Error); Where you want to allow a message.
-    sofa::helper::logging::MessageAsTestFailure m_fatal ;
-    sofa::helper::logging::MessageAsTestFailure m_error ;
-
-    /// Initialize Sofa and the random number generator
-    BaseTest() ;
-    virtual ~BaseTest();
-
-    virtual void onSetUp() {}
-    virtual void onTearDown() {}
-
-    /// Seed value
-    static int seed;
-
-private:
-    virtual void SetUp() override ;
-    virtual void TearDown() override ;
-};
-
-} /// namespace testing
-} /// namespace helper
-} /// namespace sofa
-
-
-#endif // SOFA_BASETEST_H
+#ifdef SOFA_WITH_FLOAT
+template struct SOFA_HELPER_API sofa::helper::testing::NumericTest<float>;
+#endif
+#ifdef SOFA_WITH_DOUBLE
+template struct SOFA_HELPER_API sofa::helper::testing::NumericTest<double>;
+#endif
