@@ -7,3 +7,4 @@ sofa_external_add_subdirectory(SofaHighOrder SofaHighOrder)
 
 
 ##### External plugins
+#sofa_external_add_plugin(XBoxControllerPlugin XBoxControllerPlugin)

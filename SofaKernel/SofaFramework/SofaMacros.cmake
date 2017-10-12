@@ -249,54 +249,68 @@ endmacro()
 ### External project management
 #Thanks to http://crascit.com/2015/07/25/cmake-gtest/
 
-macro(sofa_external_add_subdirectory repo_name repo_location)
-    string(TOUPPER EXTERNAL_SUBDIRECTORY_${repo_name} option)
+macro(sofa_external_add_subdirectory repo_name directory)
 
-    # optional parameter to activate/desactivate the option
-    set(active OFF)
-    if(${ARGV3})
-        if( ${ARGV3} STREQUAL ON )
-            set(active ON)
+    if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/${directory}" AND IS_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/${directory}")
+        set(repo_location "${CMAKE_CURRENT_LIST_DIR}/${directory}")
+
+        string(TOUPPER EXTERNAL_SUBDIRECTORY_${repo_name} option)
+
+        # optional parameter to activate/desactivate the option
+        set(active OFF)
+        if(${ARGV3})
+            if( ${ARGV3} STREQUAL ON )
+                set(active ON)
+            endif()
         endif()
-    endif()
 
-    option(${option} "Enable external repository ${repo_name}." ${active})
+        option(${option} "Enable external repository ${repo_name}." ${active})
 
-    if(${option})
-        # Download and unpack  at configure time
-        configure_file(${repo_location}/CMakeLists.txt.in ${repo_location}/CMakeLists.txt)
-        execute_process(COMMAND "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .
-            WORKING_DIRECTORY "${repo_location}" )
-        execute_process(COMMAND "${CMAKE_COMMAND}" --build .
-            WORKING_DIRECTORY  "${repo_location}" )
+        if(${option})
+            # Download and unpack  at configure time
+            configure_file(${repo_location}/CMakeLists.txt.in ${repo_location}/CMakeLists.txt)
+            execute_process(COMMAND "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .
+                WORKING_DIRECTORY "${repo_location}" )
+            execute_process(COMMAND "${CMAKE_COMMAND}" --build .
+                WORKING_DIRECTORY  "${repo_location}" )
 
-        add_subdirectory("${repo_location}/src"
-                    "${CMAKE_BINARY_DIR}/${repo_name}/build")
+            add_subdirectory("${repo_location}/src"
+                        "${CMAKE_BINARY_DIR}/${repo_name}/build")
+        endif()
+    else()
+        message("(${CMAKE_CURRENT_LIST_DIR}/${repo_location}) does not exist and will be ignored.")
     endif()
 endmacro()
 
-macro(sofa_external_add_plugin plugin_name plugin_location)
-    string(TOUPPER EXTERNAL_PLUGIN_${plugin_name} option)
+macro(sofa_external_add_plugin plugin_name directory)
 
-    # optional parameter to activate/desactivate the option
-    set(active OFF)
-    if(${ARGV3})
-        if( ${ARGV3} STREQUAL ON )
-            set(active ON)
+    if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/${directory}" AND IS_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/${directory}")
+        set(plugin_location "${CMAKE_CURRENT_LIST_DIR}/${directory}")
+
+        string(TOUPPER EXTERNAL_PLUGIN_${plugin_name} option)
+
+        # optional parameter to activate/desactivate the option
+        set(active OFF)
+        if(${ARGV3})
+            if( ${ARGV3} STREQUAL ON )
+                set(active ON)
+            endif()
         endif()
-    endif()
 
-    option(${option} "Enable external plugin ${plugin_name}." ${active})
+        option(${option} "Enable external plugin ${plugin_name}." ${active})
 
-    if(${option})
-        # Download and unpack  at configure time
-        configure_file(${plugin_location}/CMakeLists.txt.in ${plugin_location}/CMakeLists.txt)
-        execute_process(COMMAND "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .
-            WORKING_DIRECTORY "${repo_location}" )
-        execute_process(COMMAND "${CMAKE_COMMAND}" --build .
-            WORKING_DIRECTORY  "${repo_location}" )
+        if(${option})
+            # Download and unpack  at configure time
+            configure_file(${plugin_location}/CMakeLists.txt.in ${plugin_location}/CMakeLists.txt)
+            execute_process(COMMAND "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .
+                WORKING_DIRECTORY "${plugin_location}" )
+            execute_process(COMMAND "${CMAKE_COMMAND}" --build .
+                WORKING_DIRECTORY  "${plugin_location}" )
 
-        sofa_add_plugin("${repo_location}/src" "${plugin_name}")
+            sofa_add_plugin("${plugin_name}/src" "${plugin_name}")
+        endif()
+    else()
+        message("${plugin_location}) does not exist and will be ignored.")
     endif()
 endmacro()
 
