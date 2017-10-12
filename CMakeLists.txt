@@ -375,10 +375,10 @@ install(DIRECTORY modules/sofa/component/typedef/ DESTINATION include/sofa/compo
 
 
 #CPack install
-SET(CPACK_PACKAGE_VERSION "17.06.01")
+SET(CPACK_PACKAGE_VERSION "17.06.02")
 SET(CPACK_PACKAGE_VERSION_MAJOR "17")
 SET(CPACK_PACKAGE_VERSION_MINOR "06")
-SET(CPACK_PACKAGE_VERSION_PATCH "01")
+SET(CPACK_PACKAGE_VERSION_PATCH "02")
 
 #dirty hack to pack component we want (named BundlePack from runSofa for example, and that will install .app + share)
 #if not set, it will install everything as usual
