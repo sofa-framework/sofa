@@ -2541,26 +2541,26 @@ void MechanicalObject<DataTypes>::resetAcc(const core::ExecParams* params, core:
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::resetConstraint(const core::ExecParams* params)
+void MechanicalObject<DataTypes>::resetConstraint(const core::ConstraintParams* cParams)
 {
-    Data<MatrixDeriv>& c_data = *this->write(core::MatrixDerivId::constraintJacobian());
-    MatrixDeriv *c = c_data.beginEdit(params);
+    Data<MatrixDeriv>& c_data = *this->write(cParams->j().getId(this));
+    MatrixDeriv *c = c_data.beginEdit(cParams);
     c->clear();
-    c_data.endEdit(params);
+    c_data.endEdit(cParams);
 #if(SOFA_WITH_EXPERIMENTAL_FEATURES==1)
     Data<MatrixDeriv>& m_data = *this->write(core::MatrixDerivId::mappingJacobian());
     MatrixDeriv *m = m_data.beginEdit(params);
     m->clear();
-    m_data.endEdit(params);
+    m_data.endEdit(cParams);
 #endif
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::getConstraintJacobian(const core::ExecParams* /*params*/, sofa::defaulttype::BaseMatrix* J,unsigned int & off)
+void MechanicalObject<DataTypes>::getConstraintJacobian(const core::ConstraintParams* cParams, sofa::defaulttype::BaseMatrix* J,unsigned int & off)
 {
     // Compute J
     const size_t N = Deriv::size();
-    const MatrixDeriv& c = this->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
+    const MatrixDeriv& c = cParams->readJ(this)->getValue(cParams);
 
     MatrixDerivRowConstIterator rowItEnd = c.end();
 

@@ -375,9 +375,9 @@ public:
 
     virtual void resetAcc(const core::ExecParams* params, core::VecDerivId a = core::VecDerivId::dx()) override;
 
-    virtual void resetConstraint(const core::ExecParams* params) override;
+    virtual void resetConstraint(const core::ConstraintParams* cparams) override;
 
-    virtual void getConstraintJacobian(const core::ExecParams* params, sofa::defaulttype::BaseMatrix* J,unsigned int & off) override;
+    virtual void getConstraintJacobian(const core::ConstraintParams* cparams, sofa::defaulttype::BaseMatrix* J,unsigned int & off) override;
 #if(SOFA_WITH_EXPERIMENTAL_FEATURES==1)
     virtual void buildIdentityBlocksInJacobian(const sofa::helper::vector<unsigned int>& list_n, core::MatrixDerivId &mID);
 #endif
