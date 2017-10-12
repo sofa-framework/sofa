@@ -19,15 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <gtest/gtest.h>
 #include <sofa/helper/io/ImagePNG.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <cstring>
 
-#include <SofaTest/Sofa_test.h>
-
 namespace sofa {
 
-class ImagePNG_test : public Sofa_test<>
+class ImagePNG_test : public ::testing::Test
 {
 protected:
 
@@ -75,7 +74,7 @@ protected:
 TEST_F(ImagePNG_test, ImagePNG_NoFile)
 {
     /// This generate a test failure if no error message is generated.
-    EXPECT_MSG_EMIT(Error) ;
+
 
     sofa::helper::io::ImagePNG imgNoFile;
     EXPECT_FALSE(imgNoFile.load("image/randomnamewhichdoesnotexist.png"));
@@ -84,7 +83,7 @@ TEST_F(ImagePNG_test, ImagePNG_NoFile)
 TEST_F(ImagePNG_test, ImagePNG_NoImg)
 {
     /// This generate a test failure if no error message is generated.
-    EXPECT_MSG_EMIT(Error) ;
+
 
     sofa::helper::io::ImagePNG imgNoImage;
     EXPECT_FALSE(imgNoImage.load("image/imagetest_noimage.png"));

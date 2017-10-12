@@ -3,7 +3,10 @@ cmake_minimum_required(VERSION 3.1)
 project(SofaSimulation_test)
 
 set(SOURCE_FILES
+    AdvancedTimer_test.cpp
+    DefaultAnimationLoop_test.cpp
     Node_test.h
+    TrackedData_test.cpp
     tree/GNode_test.cpp
     graph/DAG_test.cpp
     graph/Node_test.cpp

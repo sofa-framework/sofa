@@ -19,6 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <gtest/gtest.h>
+
 #include <sstream>
 using std::stringstream ;
 
@@ -31,12 +33,9 @@ using sofa::core::objectmodel::Data ;
 #include <sofa/helper/types/Material.h>
 using sofa::helper::types::Material ;
 
-#include <SofaTest/Sofa_test.h>
-using sofa::Sofa_test ;
-
 namespace sofa {
 
-class Material_test : public Sofa_test<>
+class Material_test : public ::testing::Test
 {
 public:
 

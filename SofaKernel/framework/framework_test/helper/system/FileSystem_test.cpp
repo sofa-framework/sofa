@@ -19,14 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <gtest/gtest.h>
 
 #include <sofa/helper/system/FileSystem.h>
-#include <gtest/gtest.h>
 #include <exception>
 #include <algorithm>
-#include <SofaTest/TestMessageHandler.h>
-using sofa::helper::logging::Message;
-
 
 using sofa::helper::system::FileSystem;
 
@@ -44,8 +41,6 @@ static std::string getPath(std::string s) {
 
 TEST(FileSystemTest, listDirectory_nonEmpty)
 {
-    EXPECT_MSG_NOEMIT(Error) ;
-
     std::vector<std::string> fileList;
     FileSystem::listDirectory(getPath("non-empty-directory"), fileList);
     // Workaround: svn adds a '.svn' directory in each subdirectory
@@ -60,8 +55,6 @@ TEST(FileSystemTest, listDirectory_nonEmpty)
 
 TEST(FileSystemTest, listDirectory_nonEmpty_trailingSlash)
 {
-    EXPECT_MSG_NOEMIT(Error) ;
-
     std::vector<std::string> fileList;
     FileSystem::listDirectory(getPath("non-empty-directory/"), fileList);
     // Workaround: svn adds a '.svn' directory in each subdirectory
@@ -76,8 +69,6 @@ TEST(FileSystemTest, listDirectory_nonEmpty_trailingSlash)
 
 TEST(FileSystemTest, listDirectory_withExtension_multipleMatches)
 {
-    EXPECT_MSG_NOEMIT(Error) ;
-
     std::vector<std::string> fileList;
     FileSystem::listDirectory(getPath("non-empty-directory/"), fileList, "txt");
     EXPECT_EQ(fileList.size(), 2u);
@@ -87,8 +78,6 @@ TEST(FileSystemTest, listDirectory_withExtension_multipleMatches)
 
 TEST(FileSystemTest, listDirectory_withExtension_oneMatch)
 {
-    EXPECT_MSG_NOEMIT(Error) ;
-
     std::vector<std::string> fileList;
     FileSystem::listDirectory(getPath("non-empty-directory/"), fileList, "so");
     EXPECT_EQ(fileList.size(), 1u);
@@ -97,8 +86,6 @@ TEST(FileSystemTest, listDirectory_withExtension_oneMatch)
 
 TEST(FileSystemTest, listDirectory_withExtension_noMatch)
 {
-    EXPECT_MSG_NOEMIT(Error) ;
-
     std::vector<std::string> fileList;
     FileSystem::listDirectory(getPath("non-empty-directory/"), fileList, "h");
     EXPECT_TRUE(fileList.empty());
@@ -106,8 +93,6 @@ TEST(FileSystemTest, listDirectory_withExtension_noMatch)
 
 TEST(FileSystemTest, createDirectory)
 {
-    EXPECT_MSG_NOEMIT(Error) ;
-
     EXPECT_FALSE(FileSystem::createDirectory("createDirectoryTestDir"));
     EXPECT_TRUE(FileSystem::exists("createDirectoryTestDir"));
     EXPECT_TRUE(FileSystem::isDirectory("createDirectoryTestDir"));
@@ -118,22 +103,19 @@ TEST(FileSystemTest, createDirectory)
 TEST(FileSystemTest, createDirectory_alreadyExists)
 {
     {
-        EXPECT_MSG_NOEMIT(Error) ;
         FileSystem::createDirectory("createDirectoryTestDir");
     }
     {
-        EXPECT_MSG_EMIT(Error) ;
         EXPECT_TRUE(FileSystem::createDirectory("createDirectoryTestDir"));
     }
     {
-        EXPECT_MSG_NOEMIT(Error) ;
         FileSystem::removeDirectory("createDirectoryTestDir");
     }
 }
 
 TEST(FileSystemTest, removeDirectory)
 {
-    EXPECT_MSG_NOEMIT(Error) ;
+
 
     FileSystem::createDirectory("removeDirectoryTestDir");
     EXPECT_FALSE(FileSystem::removeDirectory("removeDirectoryTestDir"));
@@ -144,11 +126,11 @@ TEST(FileSystemTest, removeDirectory_doesNotExists)
 {
     {
         // this test will raise an error on purpose
-        EXPECT_MSG_EMIT(Error) ;
+
         EXPECT_TRUE(FileSystem::removeDirectory("removeDirectoryTestDir"));
     }
     {
-        EXPECT_MSG_NOEMIT(Error) ;
+    
         EXPECT_FALSE(FileSystem::exists("removeDirectoryTestDir"));
     }
 }
