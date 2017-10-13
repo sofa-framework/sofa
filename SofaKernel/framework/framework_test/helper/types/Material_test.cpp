@@ -81,7 +81,7 @@ TEST_F(Material_test, checkConstructor)
 
 TEST_F(Material_test, checkDataRead)
 {
-        checkDataRead("sofa_logo Diffuse 1 0.3 0.18 0.05 1 Ambient 1 0.05 0.02 0 1 Specular 1 1 1 1 1 Emissive 0 0 0 0 0 Shininess 1 1000 ");
+        checkDataRead("sofa_logo Diffuse 1 [0.3, 0.18, 0.05, 1] Ambient 1 [0.05, 0.02, 0, 1] Specular 1 [1, 1, 1, 1] Emissive 0 [0, 0, 0, 0] Shininess 1 1000 ");
 }
 
 
