@@ -121,17 +121,6 @@ if(ZLIB_FOUND)
 endif()
 set(SOFA_HAVE_ZLIB ${ZLIB_FOUND})
 
-## PNG
-find_package(PNG)
-if(PNG_FOUND)
-    sofa_create_target(PNG SofaFramework "${PNG_LIBRARY}" "${PNG_INCLUDE_DIRS}")
-        list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${PNG_Target})
-
-
-    sofa_install_get_libraries("${PNG_LIBRARY}/libpng")
-endif()
-set(SOFA_HAVE_PNG ${PNG_FOUND})
-
 ## Boost
 # required boost libraries
 find_package(Boost REQUIRED system filesystem locale 
