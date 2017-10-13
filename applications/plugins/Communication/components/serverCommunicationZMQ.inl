@@ -294,8 +294,6 @@ void ServerCommunicationZMQ::stringToData(std::string dataString)
     }
     else
     {
-        for (int i=0; i < argumentList.size(); i++)
-            std::cout << argumentList.at(i) << std::endl;
         if (!isSubscribedTo(subject, argumentList.size()-1)) // remove subject
             return;
         int i = 0;
