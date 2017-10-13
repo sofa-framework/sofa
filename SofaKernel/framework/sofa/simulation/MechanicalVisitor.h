@@ -1827,7 +1827,7 @@ class SOFA_SIMULATION_CORE_API MechanicalResetConstraintVisitor : public BaseMec
 public:
     //VecId res;
     MechanicalResetConstraintVisitor(const sofa::core::ConstraintParams* cparams)
-        : BaseMechanicalVisitor(params)
+        : BaseMechanicalVisitor(cparams)
         , m_cparams(cparams)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
