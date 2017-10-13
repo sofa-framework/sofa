@@ -46,7 +46,7 @@ public:
 
     bool importPlugin(const std::string& name) ;
 
-    class SceneInstance
+    class SOFA_SIMULATION_GRAPH_API SceneInstance
     {
     public:
 
