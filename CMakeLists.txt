@@ -405,9 +405,6 @@ if(SOFA_INSTALL_RESOURCES_FILES)
     install(DIRECTORY examples/ DESTINATION share/sofa/examples)	
 endif()
 
-## Temporary (todo: think about this typedef thing)
-install(DIRECTORY modules/sofa/component/typedef/ DESTINATION include/sofa/component/typedef)
-
 
 #CPack install
 SET(CPACK_PACKAGE_VERSION "17.dev.0")
