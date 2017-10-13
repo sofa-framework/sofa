@@ -58,9 +58,6 @@ BaseContext* BaseContext::getDefault()
 
 /// The Context is active
 bool BaseContext::isActive() const { return true; }
-#ifdef SOFA_SMP
-bool BaseContext::is_partition() const { return false; }
-#endif
 
 /// The Context is not sleeping by default
 bool BaseContext::isSleeping() const { return false; }
@@ -102,16 +99,7 @@ bool BaseContext::getAnimate() const
     return true;
 }
 
-#ifdef SOFA_SMP
-int BaseContext::getProcessor() const
-{
-    return -1;
-}
-Iterative::IterativePartition* BaseContext::getPartition() const
-{
-    return 0;
-}
-#endif
+
 
 
 #ifdef SOFA_SUPPORT_MULTIRESOLUTION

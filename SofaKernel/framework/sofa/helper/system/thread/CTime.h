@@ -75,6 +75,8 @@ public:
     // Sleep for the given duration in second
     static void sleep(double s);
 
+    static double toSecond(const ctime_t t) ;
+
 protected:
     static ctime_t computeTicksPerSec();
 };

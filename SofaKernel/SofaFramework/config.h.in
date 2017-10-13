@@ -27,8 +27,6 @@
 
 #cmakedefine SOFA_HAVE_ZLIB
 
-#cmakedefine SOFA_HAVE_PNG
-
 #cmakedefine SOFA_HAVE_GLEW
 
 #cmakedefine SOFA_HAVE_GLUT
@@ -40,6 +38,10 @@
 #cmakedefine SOFA_HAVE_BOOST_SYSTEM
 
 #cmakedefine SOFA_HAVE_BOOST_DATE_TIME
+
+#cmakedefine SOFA_HAVE_BOOST_LOCALE
+
+#cmakedefine SOFA_HAVE_BOOST_FILESYSTEM
 
 #cmakedefine SOFA_HAVE_TINYXML
 

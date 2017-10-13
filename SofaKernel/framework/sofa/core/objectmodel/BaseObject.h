@@ -26,16 +26,6 @@
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/objectmodel/Link.h>
-#ifdef SOFA_SMP
-#include <sofa/defaulttype/SharedTypes.h>
-#include <sofa/core/objectmodel/Context.h>
-#include <sofa/core/objectmodel/BaseObjectTasks.h>
-#include <sofa/helper/set.h>
-#endif
-#ifdef SOFA_SMP_NUMA
-#include <numa.h>
-#endif
-
 
 namespace sofa
 {
@@ -80,9 +70,6 @@ enum class ComponentState {
  *
  */
 class SOFA_CORE_API BaseObject : public virtual Base
-#ifdef SOFA_SMP
-    , public BaseObjectTasks
-#endif
 {
 public:
     SOFA_CLASS(BaseObject, Base);
@@ -462,11 +449,6 @@ public:
 
     void* findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link);
 
-#ifdef SOFA_SMP
-    void setPartition(Iterative::IterativePartition* p);
-    Iterative::IterativePartition*  getPartition();
-    Iterative::IterativePartition*  prepareTask();
-#endif
 
     /// Return the full path name of this object
     virtual std::string getPathName() const;
@@ -491,9 +473,6 @@ protected:
     // BaseNode can set the context of its own objects
     friend class BaseNode;
 
-#ifdef SOFA_SMP
-    Iterative::IterativePartition *partition_;
-#endif
 
 public:
 

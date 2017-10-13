@@ -35,7 +35,6 @@
 #include <SofaComponentCommon/initComponentCommon.h>
 #include <SofaComponentBase/initComponentBase.h>
 
-//#include <sofa/component/typedef/Sofa_typedef.h>
 
 void fallingCubeExample(sofa::simulation::Node::SPtr root)
 {

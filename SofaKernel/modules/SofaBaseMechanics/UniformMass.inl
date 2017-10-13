@@ -545,29 +545,6 @@ void UniformMass<DataTypes, MassType>::draw(const VisualParams* vparams)
     }
 
 
-#ifdef SOFA_SMP
-    static float colorTab[][4]=
-    {
-        {1.0f,0.0f,0.0f,1.0f},
-        {1.0f,1.0f,0.0f,1.0f},
-        {0.0f,1.0f,0.0f,1.0f},
-        {0.0f,1.0f,1.0f,1.0f},
-        {0.0f,0.0f,1.0f,1.0f},
-        {0.5f,.5f,.5f,1.0f},
-        {0.5f,0.0f,0.0f,1.0f},
-        {.5f,.5f,0.0f,1.0f},
-        {0.0f,1.0f,0.0f,1.0f},
-        {0.0f,1.0f,1.0f,1.0f},
-        {0.0f,0.0f,1.0f,1.0f},
-        {0.5f,.5f,.5f,1.0f}
-    };
-    if(vparams->displayFlags().getShowProcessorColor())
-    {
-        unsigned int proc=Core::Processor::get_current()->get_pid();
-        color = colorTab[proc%12];
-    }
-#endif
-
     if ( d_showCenterOfGravity.getValue() )
     {
         gravityCenter /= x.size();

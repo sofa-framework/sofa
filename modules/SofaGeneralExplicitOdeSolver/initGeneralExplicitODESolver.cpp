@@ -39,8 +39,6 @@ void initGeneralExplicitODESolver()
     }
 }
 
-SOFA_LINK_CLASS(CentralDifferenceSolver)
-
 } // namespace component
 
 } // namespace sofa

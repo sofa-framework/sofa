@@ -39,9 +39,6 @@ void initGeneralAnimationLoop()
     }
 }
 
-SOFA_LINK_CLASS(MultiStepAnimationLoop)
-SOFA_LINK_CLASS(MultiTagAnimationLoop)
-
 } // namespace component
 
 } // namespace sofa

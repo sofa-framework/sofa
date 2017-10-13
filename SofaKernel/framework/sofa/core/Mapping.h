@@ -395,8 +395,6 @@ extern template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid3fTypes, so
 #endif
 #endif
 
-extern template class SOFA_CORE_API Mapping< sofa::defaulttype::LaparoscopicRigidTypes, sofa::defaulttype::RigidTypes >;
-
 #endif
 
 } // namespace core

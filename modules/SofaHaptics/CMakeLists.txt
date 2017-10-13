@@ -1,25 +1,52 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaHaptics)
 
+message(STATUS "SofaHaptics:")
+################################ COMPONENTS HERE ARE THE NG-SET ####################################
 set(HEADER_FILES
-    # EnslavementForceFeedback.h
-    ForceFeedback.h
-    LCPForceFeedback.h
-    LCPForceFeedback.inl
-    MechanicalStateForceFeedback.h
-    NullForceFeedback.h
-    NullForceFeedbackT.h
     config.h
     initHaptics.h
 )
 
 set(SOURCE_FILES
-    # EnslavementForceFeedback.cpp
-    LCPForceFeedback.cpp
-    NullForceFeedback.cpp
-    NullForceFeedbackT.cpp
     initHaptics.cpp
 )
+
+############################## COMPONENTS HERE ARE THE LIGHT-SET ###################################
+if(SOFA_BUILD_COMPONENTSET_LIGHT)
+    list(APPEND HEADER_FILES
+
+        )
+    list(APPEND SOURCE_FILES
+
+        )
+endif()
+
+############################## COMPONENTS HERE ARE THE STANDARD-SET ################################
+if(SOFA_BUILD_COMPONENTSET_STANDARD)
+    list(APPEND HEADER_FILES
+        # EnslavementForceFeedback.h
+        ForceFeedback.h
+        LCPForceFeedback.h
+        LCPForceFeedback.inl
+        MechanicalStateForceFeedback.h
+        NullForceFeedback.h
+        NullForceFeedbackT.h
+        )
+    list(APPEND SOURCE_FILES
+        # EnslavementForceFeedback.cpp
+        LCPForceFeedback.cpp
+        NullForceFeedback.cpp
+        NullForceFeedbackT.cpp
+        )
+
+endif()
+
+############################### COMPONENTS HERE ARE DEPRECATED ####################################
+if(SOFA_BUILD_COMPONENTSET_FULL)
+
+endif()
+
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaConstraint)

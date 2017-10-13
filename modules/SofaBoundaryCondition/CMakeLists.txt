@@ -1,116 +1,92 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaBoundaryCondition)
 
+message(STATUS "SofaBoundaryCondition:")
+################################ COMPONENTS HERE ARE THE NG-SET ####################################
 set(HEADER_FILES
-    AffineMovementConstraint.h
-    AffineMovementConstraint.inl
-    BuoyantForceField.h
-    BuoyantForceField.inl
-    ConicalForceField.h
-    ConicalForceField.inl
-    ConstantForceField.h
-    ConstantForceField.inl
-    DiagonalVelocityDampingForceField.h
-    DiagonalVelocityDampingForceField.inl
-    EdgePressureForceField.h
-    EdgePressureForceField.inl
-    EllipsoidForceField.h
-    EllipsoidForceField.inl
-    FixedConstraint.h
-    FixedConstraint.inl
-    FixedPlaneConstraint.h
-    FixedPlaneConstraint.inl
-    FixedRotationConstraint.h
-    FixedRotationConstraint.inl
-    FixedTranslationConstraint.h
-    FixedTranslationConstraint.inl
-    HermiteSplineConstraint.h
-    HermiteSplineConstraint.inl
-    LinearForceField.h
-    LinearForceField.inl
-    LinearMovementConstraint.h
-    LinearMovementConstraint.inl
-    LinearVelocityConstraint.h
-    LinearVelocityConstraint.inl
-    OscillatingTorsionPressureForceField.h
-    OscillatingTorsionPressureForceField.inl
-    OscillatorConstraint.h
-    OscillatorConstraint.inl
-    ParabolicConstraint.h
-    ParabolicConstraint.inl
-    PartialFixedConstraint.h
-    PartialFixedConstraint.inl
-    PartialLinearMovementConstraint.h
-    PartialLinearMovementConstraint.inl
-    PatchTestMovementConstraint.h
-    PatchTestMovementConstraint.inl
-    PlaneForceField.h
-    PlaneForceField.inl
-    PointConstraint.h
-    PointConstraint.inl
-    PositionBasedDynamicsConstraint.h
-    PositionBasedDynamicsConstraint.inl
-    QuadPressureForceField.h
-    QuadPressureForceField.inl
-    SkeletalMotionConstraint.h
-    SkeletalMotionConstraint.inl
-    SphereForceField.h
-    SphereForceField.inl
-    SurfacePressureForceField.h
-    SurfacePressureForceField.inl
-    TaitSurfacePressureForceField.h
-    TaitSurfacePressureForceField.inl
-    TorsionForceField.h
-    TorsionForceField.inl
-    TrianglePressureForceField.h
-    TrianglePressureForceField.inl
-    UniformVelocityDampingForceField.h
-    UniformVelocityDampingForceField.inl
-    VaccumSphereForceField.h
-    VaccumSphereForceField.inl
     config.h
     initBoundaryCondition.h
 )
 
 set(SOURCE_FILES
-    AffineMovementConstraint.cpp
-    BuoyantForceField.cpp
-    ConicalForceField.cpp
-    ConstantForceField.cpp
-    DiagonalVelocityDampingForceField.cpp
-    EdgePressureForceField.cpp
-    EllipsoidForceField.cpp
-    FixedConstraint.cpp
-    FixedPlaneConstraint.cpp
-    FixedRotationConstraint.cpp
-    FixedTranslationConstraint.cpp
-    HermiteSplineConstraint.cpp
-    LinearForceField.cpp
-    LinearMovementConstraint.cpp
-    LinearVelocityConstraint.cpp
-    OscillatingTorsionPressureForceField.cpp
-    OscillatorConstraint.cpp
-    ParabolicConstraint.cpp
-    PartialFixedConstraint.cpp
-    PartialLinearMovementConstraint.cpp
-    PatchTestMovementConstraint.cpp
-    PlaneForceField.cpp
-    PointConstraint.cpp
-    PositionBasedDynamicsConstraint.cpp
-    QuadPressureForceField.cpp
-    SkeletalMotionConstraint.cpp
-    SphereForceField.cpp
-    SurfacePressureForceField.cpp
-    TaitSurfacePressureForceField.cpp
-    TorsionForceField.cpp
-    TrianglePressureForceField.cpp
-    UniformVelocityDampingForceField.cpp
-    VaccumSphereForceField.cpp
     initBoundaryCondition.cpp
 )
 
-
+############################## COMPONENTS HERE ARE THE LIGHT-SET ###################################
+if(SOFA_BUILD_COMPONENTSET_LIGHT)
     list(APPEND HEADER_FILES
+
+        )
+    list(APPEND SOURCE_FILES
+
+        )
+endif()
+
+############################## COMPONENTS HERE ARE THE STANDARD-SET ################################
+if(SOFA_BUILD_COMPONENTSET_STANDARD)
+    list(APPEND HEADER_FILES
+        AffineMovementConstraint.h
+        AffineMovementConstraint.inl
+        ConicalForceField.h
+        ConicalForceField.inl
+        ConstantForceField.h
+        ConstantForceField.inl
+        DiagonalVelocityDampingForceField.h
+        DiagonalVelocityDampingForceField.inl
+        EdgePressureForceField.h
+        EdgePressureForceField.inl
+        EllipsoidForceField.h
+        EllipsoidForceField.inl
+        FixedConstraint.h
+        FixedConstraint.inl
+        FixedPlaneConstraint.h
+        FixedPlaneConstraint.inl
+        FixedRotationConstraint.h
+        FixedRotationConstraint.inl
+        FixedTranslationConstraint.h
+        FixedTranslationConstraint.inl
+        HermiteSplineConstraint.h
+        HermiteSplineConstraint.inl
+        LinearForceField.h
+        LinearForceField.inl
+        LinearMovementConstraint.h
+        LinearMovementConstraint.inl
+        LinearVelocityConstraint.h
+        LinearVelocityConstraint.inl
+        OscillatingTorsionPressureForceField.h
+        OscillatingTorsionPressureForceField.inl
+        OscillatorConstraint.h
+        OscillatorConstraint.inl
+        ParabolicConstraint.h
+        ParabolicConstraint.inl
+        PartialFixedConstraint.h
+        PartialFixedConstraint.inl
+        PartialLinearMovementConstraint.h
+        PartialLinearMovementConstraint.inl
+        PatchTestMovementConstraint.h
+        PatchTestMovementConstraint.inl
+        PlaneForceField.h
+        PlaneForceField.inl
+        PointConstraint.h
+        PointConstraint.inl
+        PositionBasedDynamicsConstraint.h
+        PositionBasedDynamicsConstraint.inl
+        QuadPressureForceField.h
+        QuadPressureForceField.inl
+        SkeletalMotionConstraint.h
+        SkeletalMotionConstraint.inl
+        SphereForceField.h
+        SphereForceField.inl
+        SurfacePressureForceField.h
+        SurfacePressureForceField.inl
+        TaitSurfacePressureForceField.h
+        TaitSurfacePressureForceField.inl
+        TorsionForceField.h
+        TorsionForceField.inl
+        TrianglePressureForceField.h
+        TrianglePressureForceField.inl
+        UniformVelocityDampingForceField.h
+        UniformVelocityDampingForceField.inl
         ProjectToLineConstraint.h
         ProjectToLineConstraint.inl
         ProjectToPlaneConstraint.h
@@ -119,14 +95,60 @@ set(SOURCE_FILES
         ProjectToPointConstraint.inl
         ProjectDirectionConstraint.h
         ProjectDirectionConstraint.inl
-    )
+        )
 
     list(APPEND SOURCE_FILES
-          ProjectToLineConstraint.cpp
-          ProjectToPlaneConstraint.cpp
-          ProjectToPointConstraint.cpp
-          ProjectDirectionConstraint.cpp
-    )
+        AffineMovementConstraint.cpp
+        ConicalForceField.cpp
+        ConstantForceField.cpp
+        DiagonalVelocityDampingForceField.cpp
+        EdgePressureForceField.cpp
+        EllipsoidForceField.cpp
+        FixedConstraint.cpp
+        FixedPlaneConstraint.cpp
+        FixedRotationConstraint.cpp
+        FixedTranslationConstraint.cpp
+        HermiteSplineConstraint.cpp
+        LinearForceField.cpp
+        LinearMovementConstraint.cpp
+        LinearVelocityConstraint.cpp
+        OscillatingTorsionPressureForceField.cpp
+        OscillatorConstraint.cpp
+        ParabolicConstraint.cpp
+        PartialFixedConstraint.cpp
+        PartialLinearMovementConstraint.cpp
+        PatchTestMovementConstraint.cpp
+        PlaneForceField.cpp
+        PointConstraint.cpp
+        PositionBasedDynamicsConstraint.cpp
+        QuadPressureForceField.cpp
+        SkeletalMotionConstraint.cpp
+        SphereForceField.cpp
+        SurfacePressureForceField.cpp
+        TaitSurfacePressureForceField.cpp
+        TorsionForceField.cpp
+        TrianglePressureForceField.cpp
+        UniformVelocityDampingForceField.cpp
+        ProjectToLineConstraint.cpp
+        ProjectToPlaneConstraint.cpp
+        ProjectToPointConstraint.cpp
+        ProjectDirectionConstraint.cpp
+        )
+endif()
+
+############################### COMPONENTS HERE ARE DEPRECATED ####################################
+if(SOFA_BUILD_COMPONENTSET_FULL)
+    list(APPEND HEADER_FILES
+        BuoyantForceField.h
+        BuoyantForceField.inl
+        VaccumSphereForceField.h
+        VaccumSphereForceField.inl
+        )
+    list(APPEND SOURCE_FILES
+        BuoyantForceField.cpp
+        VaccumSphereForceField.cpp
+        )
+endif()
 
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
