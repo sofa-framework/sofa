@@ -30,6 +30,12 @@
 
 using sofa::helper::Utils;
 
+#ifdef NDEBUG
+    #define DO_SPECIFIC_CODE_IN_DEBUG false
+#else
+    #define DO_SPECIFIC_CODE_IN_DEBUG true
+#endif ///NDEBUG
+
 namespace sofa
 {
 namespace helper
@@ -172,20 +178,33 @@ bool PluginManager::loadPluginByPath(const std::string& pluginPath, std::ostream
 
 bool PluginManager::loadPluginByName(const std::string& pluginName, std::ostream* errlog)
 {
-    std::string pluginPath = findPlugin(pluginName);
 
-    if (pluginPath != "")
+    if(DO_SPECIFIC_CODE_IN_DEBUG)
     {
-        return loadPluginByPath(pluginPath, errlog);
+        /// We are in debug...so let's try to load debug plugins first
+        std::string pluginPath = findPlugin(pluginName+"_d");
+        if (pluginPath != "")
+            return loadPluginByPath(pluginPath, errlog);
+
+        /// If we cannot find the debug plugin...let's search for the real name.
+        pluginPath = findPlugin(pluginName);
+        if (pluginPath != "")
+            return loadPluginByPath(pluginPath, errlog);
+    }else
+    {
+        std::string pluginPath = findPlugin(pluginName);
+        pluginPath = findPlugin(pluginName);
+        if (pluginPath != "")
+            return loadPluginByPath(pluginPath, errlog);
     }
+
+    const std::string msg = "Plugin not found: \"" + pluginName + "\"";
+    if (errlog)
+        (*errlog) << msg << std::endl;
     else
-    {
-        const std::string msg = "Plugin not found: \"" + pluginName + "\"";
-        if (errlog) (*errlog) << msg << std::endl;
-        else msg_error("PluginManager") << msg;
+        msg_error("PluginManager") << msg;
 
-        return false;
-    }
+    return false;
 }
 
 bool PluginManager::loadPlugin(const std::string& plugin, std::ostream* errlog)
