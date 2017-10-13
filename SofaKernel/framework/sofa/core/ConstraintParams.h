@@ -215,7 +215,7 @@ public:
 
 
     /// Constructor, initializing all VecIds to default values, implicit and energy flags to false
-    ConstraintParams(const sofa::core::ExecParams& p = sofa::core::ExecParams())
+    ConstraintParams(const sofa::core::ExecParams& p = *sofa::core::ExecParams::defaultInstance())
         : sofa::core::ExecParams(p)
         , m_x(ConstVecCoordId::position())
         , m_v(ConstVecDerivId::velocity())
