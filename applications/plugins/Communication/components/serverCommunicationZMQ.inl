@@ -116,16 +116,12 @@ void ServerCommunicationZMQ::receiveData()
     {
         if(this->d_pattern.getValue().getSelectedItem() == "request/reply")
             sendRequest();
-
-        zmq::message_t message;
-        bool status = this->m_socket->recv(&message);
+        zmq::message_t reply;
+        bool status = this->m_socket->recv(&reply);
         if(status)
         {
-
-            char* tmp = (char*)malloc(sizeof(char) * message.size());
-            memcpy(tmp, message.data(), message.size());
-
-            stringToData(std::string(tmp));
+            std::string rpl = std::string(static_cast<char*>(reply.data()), reply.size());
+            stringToData(rpl);
         }
         else
             msg_warning(this) << "Problem with communication";
@@ -298,7 +294,9 @@ void ServerCommunicationZMQ::stringToData(std::string dataString)
     }
     else
     {
-        if (!isSubscribedTo(subject, argumentList.size()))
+        for (int i=0; i < argumentList.size(); i++)
+            std::cout << argumentList.at(i) << std::endl;
+        if (!isSubscribedTo(subject, argumentList.size()-1)) // remove subject
             return;
         int i = 0;
         for ( it ; it != argumentList.end(); it++)

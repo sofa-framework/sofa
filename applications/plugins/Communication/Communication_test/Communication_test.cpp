@@ -107,18 +107,18 @@ public:
         }
     }
 
-//    virtual void handleEvent(sofa::core::objectmodel::Event *event) override
-//    {
-//        std::cout << "event " << std::endl;
-//        for(Data<Vec3f>* t : d_positionsOut)
-//        {
-//            Vec3f a;
-//            a.at(0) = a.at(0)+1.0f;
-//            a.at(1) = a.at(1)+1.0f;
-//            a.at(2) = a.at(2)+1.0f;
-//            t->setValue(a);
-//        }
-//    }
+    //    virtual void handleEvent(sofa::core::objectmodel::Event *event) override
+    //    {
+    //        std::cout << "event " << std::endl;
+    //        for(Data<Vec3f>* t : d_positionsOut)
+    //        {
+    //            Vec3f a;
+    //            a.at(0) = a.at(0)+1.0f;
+    //            a.at(1) = a.at(1)+1.0f;
+    //            a.at(2) = a.at(2)+1.0f;
+    //            t->setValue(a);
+    //        }
+    //    }
 
     vectorData<Vec3f>  d_positionsOut ;
     vectorData<Vec3f> d_positionsIn ;
@@ -257,7 +257,7 @@ public:
 
 
         Base::MapData dataMap = aServerCommunicationOSC->getDataAliases();
-        Base::MapData::const_iterator itData = dataMap.find("port");
+        Base::MapData::const_iterator itData = dataMap.find("x");
         BaseData* data;
 
         EXPECT_TRUE(itData != dataMap.end());
@@ -402,7 +402,6 @@ public:
 
     }
 
-
     void checkSendZMQ()
     {
         std::stringstream scene1 ;
@@ -410,7 +409,7 @@ public:
                   "<?xml version='1.0' ?>                                                       \n"
                   "<Node name='root'>                                                           \n"
                   "   <RequiredPlugin name='Communication' />                                   \n"
-                  "   <ServerCommunicationZMQ name='sender' job='sender' port='6000' pattern='publish/subscribe' refreshRate='1000'/> \n"
+                  "   <ServerCommunicationZMQ name='sender' job='sender' port='6000' pattern='publish/subscribe' refreshRate='30'/> \n"
                   "   <CommunicationSubscriber name='subSender' communication='@sender' subject='/test' source='@sender' arguments='port'/>"
 
                   "</Node>                                                                      \n";
@@ -421,66 +420,108 @@ public:
         std::future<char*> future = std::async(std::launch::async, [](){
             zmq::context_t context (1);
             zmq::socket_t socket (context, ZMQ_SUB);
-            socket.connect ("tcp://localhost:6000");
+            socket.connect ("tcp://*:6000");
             socket.setsockopt(ZMQ_SUBSCRIBE, "", 0);
+
+            int timeout = 3000; // + 100 ms than the future timeout
+            socket.setsockopt(ZMQ_RCVTIMEO, &timeout, sizeof (int));
+
             zmq::message_t reply;
             socket.recv (&reply);
-            char* tmp = (char*)malloc(sizeof(char) * reply.size());
+            char* tmp = (char*)malloc(sizeof(char) * reply.size()-1);
             memcpy(tmp, reply.data(), reply.size());
             return tmp;
         });
 
-        std::cout << "waiting...";
         std::future_status status;
         status = future.wait_for(std::chrono::seconds(3));
-        if (status == std::future_status::deferred) {
-            std::cout << "deferred" << std::endl;
-        } else if (status == std::future_status::timeout) {
-            std::cout << "timeout" << std::endl;
-        } else if (status == std::future_status::ready) {
-            std::cout << "received!" << std::endl;
-        }
-        std::cout << future.get() << std::endl;
         EXPECT_EQ(status, std::future_status::ready);
+    }
+
+    void checkReceiveZMQ()
+    {
+        std::stringstream scene1 ;
+        scene1 <<
+                  "<?xml version='1.0' ?>                                                       \n"
+                  "<Node name='root'>                                                           \n"
+                  "   <RequiredPlugin name='Communication' />                                   \n"
+                  "   <ServerCommunicationZMQ name='receiver' job='receiver' port='6000' pattern='publish/subscribe'/> \n"
+                  "   <CommunicationSubscriber name='subSender' communication='@receiver' subject='/test' source='@receiver' arguments='x'/>"
+                  "</Node>                                                                      \n";
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
+        root->init(ExecParams::defaultInstance());
+        ServerCommunication* aServerCommunication = dynamic_cast<ServerCommunication*>(root->getObject("receiver"));
+        aServerCommunication->setRunning(false);
+
+        usleep(10000);
+        zmq::context_t context (1);
+        zmq::socket_t socket (context, ZMQ_PUB);
+        socket.bind ("tcp://*:6000");
+        for(int i = 0; i <3; i++) // ensure the receiver, receive it at least once
+        {
+            std::string mesg = "/test ";
+            mesg += "int:" + std::to_string(i);
+            zmq::message_t reply (mesg.size());
+            memcpy (reply.data (), mesg.c_str(), mesg.size());
+            socket.send (reply);
+            usleep(100000);
+        }
+        usleep(10000);
+
+        Base::MapData dataMap = aServerCommunication->getDataAliases();
+        Base::MapData::const_iterator itData = dataMap.find("x");
+        BaseData* data;
+
+        EXPECT_TRUE(itData != dataMap.end());
+        if (itData != dataMap.end())
+        {
+            data = itData->second;
+            EXPECT_NE(data, nullptr) ;
+        }
     }
 
 };
 
-//TEST_F(Communication_test, checkCreationDestruction) {
-//    ASSERT_NO_THROW(this->checkCreationDestruction()) ;
-//}
+TEST_F(Communication_test, checkCreationDestruction) {
+    ASSERT_NO_THROW(this->checkCreationDestruction()) ;
+}
 
-//TEST_F(Communication_test, checkAddSubscriber) {
-//    ASSERT_NO_THROW(this->checkAddSubscriber()) ;
-//}
+TEST_F(Communication_test, checkAddSubscriber) {
+    ASSERT_NO_THROW(this->checkAddSubscriber()) ;
+}
 
-//TEST_F(Communication_test, checkGetSubscriber) {
-//    ASSERT_NO_THROW(this->checkGetSubscriber()) ;
-//}
+TEST_F(Communication_test, checkGetSubscriber) {
+    ASSERT_NO_THROW(this->checkGetSubscriber()) ;
+}
 
-//TEST_F(Communication_test, checkSendOSC) {
-//    ASSERT_NO_THROW(this->checkSendOSC()) ;
-//}
+TEST_F(Communication_test, checkSendOSC) {
+    ASSERT_NO_THROW(this->checkSendOSC()) ;
+}
 
-//TEST_F(Communication_test, checkReceiveOSC) {
-//    ASSERT_NO_THROW(this->checkReceiveOSC()) ;
-//}
+TEST_F(Communication_test, checkReceiveOSC) {
+    ASSERT_NO_THROW(this->checkReceiveOSC()) ;
+}
 
-//TEST_F(Communication_test, checkArgumentCreation) {
-//    ASSERT_NO_THROW(this->checkArgumentCreation()) ;
-//}
+TEST_F(Communication_test, checkArgumentCreation) {
+    ASSERT_NO_THROW(this->checkArgumentCreation()) ;
+}
 
-//TEST_F(Communication_test, checkSendReceiveOSC) {
-//    ASSERT_NO_THROW(this->checkSendReceiveOSC()) ;
-//}
+TEST_F(Communication_test, checkSendReceiveOSC) {
+    ASSERT_NO_THROW(this->checkSendReceiveOSC()) ;
+}
 
 //TEST_F(Communication_test, checkThreadSafe) {
 //    ASSERT_NO_THROW(this->checkThreadSafe(100)) ;
 //}
 
-//TEST_F(Communication_test, checkSendZMQ) {
-//    ASSERT_NO_THROW(this->checkSendZMQ()) ;
-//}
+TEST_F(Communication_test, checkSendZMQ) {
+    ASSERT_NO_THROW(this->checkSendZMQ()) ;
+}
+
+TEST_F(Communication_test, checkReceiveZMQ) {
+    ASSERT_NO_THROW(this->checkReceiveZMQ()) ;
+}
 
 
 } // communication
