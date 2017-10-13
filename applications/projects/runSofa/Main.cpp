@@ -185,7 +185,8 @@ int main(int argc, char** argv)
     bool        noAutoloadPlugins = false;
     int         nbIterations = BatchGUI::DEFAULT_NUMBER_OF_ITERATIONS;
     unsigned int nbMSSASamples = 1;
-    int    computationTimeSampling=0; ///< Frequency of display of the computation time statistics, in number of animation steps. 0 means never.
+    int    computationTimeSampling=0; ///< Frequency of display of the computation time statistics, in number of animation steps: if equals 0, print the initialization only, if smaller zero, print the initialization and every abs(computationTimeSampling) step
+    string    computationTimeOutputType="stdout";
 
     string gui = "";
     string verif = "";
@@ -214,7 +215,8 @@ int main(int argc, char** argv)
     sofa::helper::parse(&files, "This is a SOFA application. Here are the command line arguments")
     // alphabetical order on short name
     .option(&startAnim,'a',"start","start the animation loop")
-    .option(&computationTimeSampling,'c',"computationTimeSampling","Frequency of display of the computation time statistics, in number of animation steps. 0 means never.")
+    .option(&computationTimeSampling,'c',"computationTimeSampling","Frequency of display of the computation time statistics, in number of animation steps: if equals 0, print the initialization only, if smaller zero, print the initialization and every abs(computationTimeSampling) step")
+    .option(&computationTimeOutputType,'o',"computationTimeOutputType","Output type for the computation time statistics: either stdout, json or ljson")
     .option(&gui,'g',"gui",gui_help.c_str())
     .option(&plugins,'l',"load","load given plugins")
     .option(&noAutoloadPlugins, '0', "noautoload", "disable plugins autoloading")
@@ -422,6 +424,7 @@ int main(int argc, char** argv)
     {
         sofa::helper::AdvancedTimer::setEnabled("Init", true);
         sofa::helper::AdvancedTimer::setInterval("Init", 1);
+        sofa::helper::AdvancedTimer::setOutputType("Init", computationTimeOutputType);
         sofa::helper::AdvancedTimer::begin("Init");
         sofa::helper::AdvancedTimer::end("Init");
         sofa::helper::AdvancedTimer::begin("Init");
@@ -430,7 +433,7 @@ int main(int argc, char** argv)
     sofa::simulation::getSimulation()->init(groot.get());
     if( computationTimeSampling<1 )
     {
-        sofa::helper::AdvancedTimer::end("Init");
+        std::cout << sofa::helper::AdvancedTimer::end("Init", groot.get()) << std::endl;
     }
     GUIManager::SetScene(groot,fileName.c_str(), temporaryFile);
 
@@ -451,6 +454,7 @@ int main(int argc, char** argv)
     {
         sofa::helper::AdvancedTimer::setEnabled("Animate", true);
         sofa::helper::AdvancedTimer::setInterval("Animate", abs(computationTimeSampling));
+        sofa::helper::AdvancedTimer::setOutputType("Animate", computationTimeOutputType);
     }
 
     //=======================================
