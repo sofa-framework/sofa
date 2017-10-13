@@ -466,7 +466,7 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
 {
     m_activeDofs.clear();
 
-    const MatrixDeriv& c = this->mstate->read(core::ConstMatrixDerivId::holonomicC())->getValue();
+	const MatrixDeriv& c = cparams->readJ(this->mstate)->getValue(cparams);
 
     double factor = 1.0;
 
