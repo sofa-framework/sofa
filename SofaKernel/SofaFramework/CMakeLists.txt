@@ -175,12 +175,23 @@ list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${EIGEN3_INCLUDE_DIR})
 ## JSON
 list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${JSON_INCLUDE_DIR})
 
-## sofa/config.h
-configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/sofa/config.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/sofa/config.h" DESTINATION "include/sofa")
+## Generate & install the different files that contains the defines associated with
+## the state of the build option.
+set(SOFA_BUILD_OPTIONS_SRC
+        sharedlibrary_defines.h
+        build_option_componentset.h
+        build_option_dump_visitor.h
+        build_option_experimental_features.h
+        build_option_opengl.h
+        build_option_threading.h
+    )
+foreach(NAME ${SOFA_BUILD_OPTIONS_SRC})
+    configure_file("${NAME}.in" "${CMAKE_BINARY_DIR}/include/sofa/config/${NAME}")
+    install(FILES "${CMAKE_BINARY_DIR}/include/sofa/config/${NAME}" DESTINATION "include/sofa/config")
+endforeach()
 
-configure_file(build_option_componentset.h.in "${CMAKE_BINARY_DIR}/include/sofa/config/build_option_componentset.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/sofa/config/build_option_componentset.h" DESTINATION "include/sofa/config")
+configure_file("config.h.in" "${CMAKE_BINARY_DIR}/include/sofa/config.h")
+install(FILES "${CMAKE_BINARY_DIR}/include/sofa/config.h" DESTINATION "include/sofa/")
 
 # make sure everyone in the build tree can see <sofa/config.h>
 #list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR})
