@@ -21,12 +21,11 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_ENGINE_DISTANCES_H
 #define SOFA_COMPONENT_ENGINE_DISTANCES_H
-#include "config.h"
 
+#include "config.h"
 #include <sofa/core/DataEngine.h>
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <SofaNonUniformFem/DynamicSparseGridTopologyContainer.h>
 #include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/helper/SVector.h>
 #include <sofa/helper/set.h>
 #include <sofa/helper/map.h>
@@ -38,24 +37,25 @@
 #define TYPE_VORONOI 3
 #define TYPE_HARMONIC_STIFFNESS 4
 
-namespace sofa
-{
+//////////////////////////// FORWARD DECLARATION ///////////////////////////////////////////////////
+namespace sofa {
+namespace component {
+namespace topology {
+        class HexahedronSetTopologyContainer;
+        class HexahedronSetTopologyModifier;
+        template < class DataTypes > class DynamicSparseGridGeometryAlgorithms;
 
-namespace component
-{
-
-namespace topology
-{
-
-class HexahedronSetTopologyContainer;
-
-class HexahedronSetTopologyModifier;
-
-template < class DataTypes >
-class DynamicSparseGridGeometryAlgorithms;
-
+        class DynamicSparseGridTopologyContainer ;
+        }
+    }
 }
 
+
+//////////////////////////////////// DECLARATION ///////////////////////////////////////////////////
+namespace sofa
+{
+namespace component
+{
 namespace engine
 {
 
@@ -86,7 +86,8 @@ protected:
     DistancesInternalData<DataTypes> data;
     friend class DistancesInternalData<DataTypes>;
 
-    Distances ( sofa::component::topology::DynamicSparseGridTopologyContainer* hexaTopoContainer, core::behavior::MechanicalState<DataTypes>* targetPointSet );
+    Distances ( sofa::component::topology::DynamicSparseGridTopologyContainer* hexaTopoContainer,
+                core::behavior::MechanicalState<DataTypes>* targetPointSet );
 
     virtual ~Distances() {}
 
@@ -228,14 +229,12 @@ private:
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_DISTANCES_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_MISC_ENGINE_API Distances<defaulttype::Vec3dTypes>;
-//extern template class SOFA_MISC_ENGINE_API Distances<defaulttype::Rigid3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
+#ifdef SOFA_WITH_FLOAT
 extern template class SOFA_MISC_ENGINE_API Distances<defaulttype::Vec3fTypes>;
-//extern template class SOFA_MISC_ENGINE_API Distances<defaulttype::Rigid3fTypes>;
-#endif //SOFA_DOUBLE
+#endif /// SOFA_WITH_FLOAT
+#ifdef SOFA_WITH_DOUBLE
+extern template class SOFA_MISC_ENGINE_API Distances<defaulttype::Vec3dTypes>;
+#endif ///SOFA_WITH_DOUBLE
 #endif
 
 } // namespace engine

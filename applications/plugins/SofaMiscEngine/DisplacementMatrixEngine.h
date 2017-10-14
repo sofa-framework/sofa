@@ -36,9 +36,9 @@ namespace component
 namespace engine
 {
 
-/*
- * kept for backward compatibility now deprecated by DisplacementTransformEngine
- */
+///
+/// kept for backward compatibility now deprecated by DisplacementTransformEngine
+///
 template < class DataTypes >
 class SOFA_MISC_ENGINE_API DisplacementMatrixEngine : public DisplacementTransformEngine<DataTypes, defaulttype::Mat4x4f>
 {
@@ -54,26 +54,24 @@ public:
     typedef typename defaulttype::Mat4x4f Matrix4x4;
     typedef typename sofa::defaulttype::Vec<4,float> Line;
 
-    // Method
+    /// Method
     DisplacementMatrixEngine();
 
-    void init();   // compute the inverse matrices
-    void reinit(); // compute S*inverse and store it once and for all.
-    void update(); // compute the displacements wrt original positions
+    void init();   /// compute the inverse matrices
+    void reinit(); /// compute S*inverse and store it once and for all.
+    void update(); /// compute the displacements wrt original positions
 
-    // To simplify the template name in the xml file
+    /// To simplify the template name in the xml file
     virtual std::string getTemplateName() const { return templateName(this); }
     static std::string templateName(const DisplacementMatrixEngine<DataTypes>* = NULL) { return DataTypes::Name(); }
 
-    // inputs
+    /// inputs
     Data< helper::vector< sofa::defaulttype::Vec<3,Real> > > d_scales; ///< scale matrices
     helper::vector<Matrix4x4> SxInverses;  ///< inverse initial positions
 };
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
+} /// namespace engine
+} /// namespace component
+} /// namespace sofa
 
 #endif /// SOFA_COMPONENT_ENGINE_DISPLACEMENTMATRIXENGINE_H

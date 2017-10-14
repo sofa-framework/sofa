@@ -24,6 +24,7 @@
 
 #include "DisplacementMatrixEngine.h"
 #include "DisplacementTransformEngine.inl"
+
 namespace sofa
 {
 namespace component
@@ -47,10 +48,10 @@ DisplacementMatrixEngine< DataTypes >::DisplacementMatrixEngine()
 template < class DataTypes >
 void DisplacementMatrixEngine< DataTypes >::init()
 {
-    // parent method
+    /// parent method
     Inherit::init();
 
-    // Init of the scale matrices in case if the user did not initialize them
+    /// Init of the scale matrices in case if the user did not initialize them
     const VecCoord& x0 = this->d_x0.getValue();
     helper::vector< sofa::defaulttype::Vec<3,Real> >& scales = *d_scales.beginWriteOnly();
     if (scales.size() == 0)
@@ -60,14 +61,14 @@ void DisplacementMatrixEngine< DataTypes >::init()
         }
     d_scales.endEdit();
 
-    // Init of the product between the scale matrices and the inverse
+    /// Init of the product between the scale matrices and the inverse
     this->reinit();
 }
 
 template < class DataTypes >
 void DisplacementMatrixEngine< DataTypes >::reinit()
 {
-    // parent method
+    /// parent method
     Inherit::reinit();
 
     const VecCoord& x0 = this->d_x0.getValue();
@@ -77,7 +78,7 @@ void DisplacementMatrixEngine< DataTypes >::reinit()
 
     if( size0 != sizeS)
     {
-        serr << "x0 and S have not the same size: respectively " << ", " << size0 << " and " << sizeS << sendl;
+        msg_info() << "x0 and S have not the same size: respectively " << ", " << size0 << " and " << sizeS ;
         return;
     }
 
@@ -106,10 +107,10 @@ void DisplacementMatrixEngine< DataTypes >::update()
     const size_t size0 = x0.size();
     const size_t sizeS = scales.size();
 
-    // Check the size of x0
+    /// Check the size of x0
     if( size != size0 || size != sizeS)
     {
-        serr << "x, x0 and S have not the same size: respectively " << size << ", " << size0 << " and " << sizeS << sendl;
+        msg_info() <<  "x, x0 and S have not the same size: respectively " << size << ", " << size0 << " and " << sizeS ;
         return;
     }
 
@@ -125,10 +126,8 @@ void DisplacementMatrixEngine< DataTypes >::update()
     this->d_displacements.endEdit();
 }
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
+} /// namespace engine
+} /// namespace component
+} /// namespace sofa
 
 #endif

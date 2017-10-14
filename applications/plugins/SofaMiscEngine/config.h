@@ -22,7 +22,7 @@
 #ifndef SOFAMISCENGINE_CONFIG_H
 #define SOFAMISCENGINE_CONFIG_H
 
-#include <SofaMisc/config.h>
+#include <sofa/config/sharedlibrary_defines.h>
 
 #ifdef SOFA_BUILD_MISC_ENGINE
 #  define SOFA_MISC_ENGINE_API SOFA_EXPORT_DYNAMIC_LIBRARY

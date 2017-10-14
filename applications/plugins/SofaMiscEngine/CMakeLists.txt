@@ -4,7 +4,7 @@ project(SofaMiscEngine)
 set(SOFAMISCENGINE_VERSION 1.0)
 
 ################################ COMPONENTS HERE ARE THE NG-SET ####################################
-set(HEADER_FILES config.h initMiscEngine.h)
+set(HEADER_FILES config.h)
 set(SOURCE_FILES initMiscEngine.cpp)
 set(EXTRA_FILES README.md)
 

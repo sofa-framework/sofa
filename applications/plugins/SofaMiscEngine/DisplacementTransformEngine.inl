@@ -53,10 +53,10 @@ Inherit()
 template < class DataTypes, class OutputType >
 void DisplacementTransformEngine< DataTypes, OutputType >::init()
 {
-    // parent method
+    /// parent method
     Inherit::init();
 
-    // Computation of inverse matrix
+    /// Computation of inverse matrix
     const VecCoord& x0 = d_x0.getValue();
     inverses.resize(x0.size());
     for( size_t i=0; i<x0.size(); ++i )
@@ -68,7 +68,7 @@ void DisplacementTransformEngine< DataTypes, OutputType >::init()
 template < class DataTypes, class OutputType >
 void DisplacementTransformEngine< DataTypes, OutputType >::update()
 {
-    // parent method
+    /// parent method
     Inherit::init();
 
     const VecCoord& x = d_x.getValue();
@@ -76,16 +76,16 @@ void DisplacementTransformEngine< DataTypes, OutputType >::update()
     const size_t size = x.size();
     const size_t size0 = x0.size();
 
-    // Check the size of x0
+    /// Check the size of x0
     if( size != size0 )
     {
-        serr << "x and x0 have not the same size: respectively " << size << " and " << size0 << sendl;
+        msg_info() << "x and x0 have not the same size: respectively " << size << " and " << size0 ;
         return;
     }
 
     cleanDirty();
 
-    // Clean the output
+    /// Clean the output
     helper::vector< OutputType >& displacements = *d_displacements.beginWriteOnly();
     displacements.resize(size);
 

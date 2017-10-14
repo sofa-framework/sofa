@@ -19,9 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <SofaMiscEngine/initMiscEngine.h>
-
+#include "config.h"
 
 namespace sofa
 {
@@ -29,8 +27,17 @@ namespace sofa
 namespace component
 {
 
+/// Convenient functions to help user to know what contains the plugin
+extern "C" {
+    SOFA_MISC_ENGINE_API void initExternalModule();
+    SOFA_MISC_ENGINE_API const char* getModuleName();
+    SOFA_MISC_ENGINE_API const char* getModuleVersion();
+    SOFA_MISC_ENGINE_API const char* getModuleLicense();
+    SOFA_MISC_ENGINE_API const char* getModuleDescription();
+    SOFA_MISC_ENGINE_API const char* getModuleComponentList();
+}
 
-void initMiscEngine()
+void initExternalModule()
 {
     static bool first = true;
     if (first)
@@ -39,6 +46,33 @@ void initMiscEngine()
     }
 }
 
-} // namespace component
+const char* getModuleName()
+{
+    return "SofaMiscEngine";
+}
 
-} // namespace sofa
+const char* getModuleVersion()
+{
+    return "1.0";
+}
+
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+
+const char* getModuleDescription()
+{
+    return "This plugin contains transformation engines.";
+}
+
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    return "ProjectiveTransformEngine Distances DistplacementTransformEngine DisplacementMatrixEngine";
+}
+
+} /// namespace component
+
+} /// namespace sofa
