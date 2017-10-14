@@ -24,7 +24,6 @@
 
 #include <sofa/config/sharedlibrary_defines.h>
 #include <sofa/config/build_option_dump_visitor.h>
-#include <sofa/config/build_option_experimental_features.h>
 #include <sofa/config/build_option_opengl.h>
 #include <sofa/config/build_option_threading.h>
 
