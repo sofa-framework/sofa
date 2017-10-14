@@ -85,6 +85,12 @@ std::map<std::string, std::vector<std::string>> components =
 /// components are still in the factory.
 std::map<std::string, std::vector<std::string>> uncreateablecomponents =
 {
+    /// SofaMiscCollision is now a Plugin
+    {"TriangleModelInRegularGrid", {"pluginized-17.12", "<RequirePlugin name='SofaMiscCollision'/>"}},
+    {"TetrahedronModel", {"pluginized-17.12", "<RequirePlugin name='SofaMiscCollision'/>"}},
+    {"DefaultCollisionGroupManager", {"pluginized-17.12", "<RequirePlugin name='SofaMiscCollision'/>"}},
+    {"RuleBasedContactManager", {"pluginized-17.12", "<RequirePlugin name='SofaMiscCollision'/>"}},
+
     /// SofaDistanceGrid is now a Plugin
     {"BarycentricPenalityContact", {"pluginized-17.12", "<RequirePlugin name='SofaDistanceGrid'/>"}},
     {"DistanceGridCollisionModel", {"pluginized-17.12", "<RequirePlugin name='SofaDistanceGrid'/>"}},
