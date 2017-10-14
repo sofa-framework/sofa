@@ -19,46 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_ENGINE_PROJECTIVETRANSFORMENGINE_CPP
-#include <SofaMiscEngine/ProjectiveTransformEngine.inl>
-#include <sofa/core/ObjectFactory.h>
+#ifndef SOFAMISCENGINE_CONFIG_H
+#define SOFAMISCENGINE_CONFIG_H
 
-namespace sofa
-{
+#include <SofaMisc/config.h>
 
-namespace component
-{
-
-namespace engine
-{
-
-  SOFA_DECL_CLASS(ProjectiveTransformEngine)
-
-  int ProjectiveTransformEngineClass = core::RegisterObject("Project the position of 3d points onto a plane according to a projection matrix")
-#ifdef SOFA_FLOAT
-        .add< ProjectiveTransformEngine<defaulttype::Vec3fTypes> >(true) // default template
+#ifdef SOFA_BUILD_MISC_ENGINE
+#  define SOFA_MISC_ENGINE_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-        .add< ProjectiveTransformEngine<defaulttype::Vec3dTypes> >(true) // default template
-#ifndef SOFA_DOUBLE
-        .add< ProjectiveTransformEngine<defaulttype::Vec3fTypes> >()
-#endif
+#  define SOFA_MISC_ENGINE_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-        .add< ProjectiveTransformEngine<defaulttype::ExtVec3fTypes> >()
-        ;
-
-#ifndef SOFA_FLOAT
-template class SOFA_MISC_ENGINE_API ProjectiveTransformEngine<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_MISC_ENGINE_API ProjectiveTransformEngine<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
-template class SOFA_MISC_ENGINE_API ProjectiveTransformEngine<defaulttype::ExtVec3fTypes>;
-
-
-} // namespace constraint
-
-} // namespace component
-
-} // namespace sofa
-
+#endif

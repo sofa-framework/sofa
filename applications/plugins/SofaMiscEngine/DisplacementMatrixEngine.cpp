@@ -19,9 +19,28 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAMISCENGINE_CONFIG_H
-#define SOFAMISCENGINE_CONFIG_H
+//#define SOFA_COMPONENT_ENGINE_DisplacementMatrixEngine_CPP
 
-#include <SofaMisc/config.h>
+#include "DisplacementMatrixEngine.inl"
+#include <sofa/core/ObjectFactory.h>
 
-#endif
+namespace sofa
+{
+namespace component
+{
+namespace engine
+{
+
+using namespace defaulttype;
+
+SOFA_DECL_CLASS( DisplacementMatrixEngine )
+
+int DisplacementMatrixEngineClass = core::RegisterObject("Converts a vector of Rigid to a vector of displacement matrices.")
+    .add< DisplacementMatrixEngine<Rigid3Types> >()
+;
+
+} // namespace engine
+
+} // namespace component
+
+} // namespace sofa

@@ -19,14 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <SofaComponentMisc/initComponentMisc.h>
-#include <SofaMiscTopology/initMiscTopology.h>
-#include <SofaMiscMapping/initMiscMapping.h>
-#include <SofaMiscForceField/initMiscForcefield.h>
-#include <SofaMiscFem/initMiscFEM.h>
-#include <SofaMiscSolver/initMiscSolver.h>
-#include <SofaMisc/initMisc.h>
+#define SOFA_COMPONENT_ENGINE_PROJECTIVETRANSFORMENGINE_CPP
+#include <SofaMiscEngine/ProjectiveTransformEngine.inl>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
@@ -34,23 +29,34 @@ namespace sofa
 namespace component
 {
 
-
-void initComponentMisc()
+namespace engine
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
 
-    initMiscTopology();
-    initMiscMapping();
-    initMiscForcefield();
-    initMiscFEM();
-    initMiscSolver();
-    initMisc();
-}
+  SOFA_DECL_CLASS(ProjectiveTransformEngine)
+
+  int ProjectiveTransformEngineClass = core::RegisterObject("Project the position of 3d points onto a plane according to a projection matrix")
+#ifdef SOFA_WITH_FLOAT
+        .add< ProjectiveTransformEngine<defaulttype::Vec3fTypes> >(true) // default template
+#endif
+#ifdef SOFA_WITH_DOUBLE
+        .add< ProjectiveTransformEngine<defaulttype::Vec3dTypes> >(true) // default template
+#endif
+       .add< ProjectiveTransformEngine<defaulttype::ExtVec3fTypes> >()   // default template
+        ;
+
+#ifdef SOFA_WITH_FLOAT
+template class SOFA_MISC_ENGINE_API ProjectiveTransformEngine<defaulttype::Vec3fTypes>;
+#endif
+#ifdef SOFA_WITH_DOUBLE
+template class SOFA_MISC_ENGINE_API ProjectiveTransformEngine<defaulttype::Vec3dTypes>;
+#endif
+
+template class SOFA_MISC_ENGINE_API ProjectiveTransformEngine<defaulttype::ExtVec3fTypes>;
+
+
+} // namespace constraint
 
 } // namespace component
 
 } // namespace sofa
+

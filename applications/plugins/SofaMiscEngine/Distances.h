@@ -23,10 +23,6 @@
 #define SOFA_COMPONENT_ENGINE_DISTANCES_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <SofaNonUniformFem/DynamicSparseGridTopologyContainer.h>
@@ -71,10 +67,10 @@ public:
 };
 
 /**
- * This class computes distances between to set of mechanical objects.
+ * This class computes distances between two set of mechanical objects.
  */
 template <class DataTypes>
-class Distances : public core::DataEngine
+class SOFA_MISC_ENGINE_API Distances : public core::DataEngine
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(Distances,DataTypes),core::DataEngine);

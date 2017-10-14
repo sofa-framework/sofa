@@ -22,9 +22,7 @@
 #ifndef SOFA_COMPONENT_ENGINE_DISTANCES_INL
 #define SOFA_COMPONENT_ENGINE_DISTANCES_INL
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+#include <sofa/config/build_option_opengl.h>
 
 #include <SofaMiscEngine/Distances.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -709,27 +707,25 @@ void Distances< DataTypes >::getNeighbors ( const core::topology::BaseMeshTopolo
 template<class DataTypes>
 void Distances< DataTypes >::draw(const core::visual::VisualParams* )
 {
-#ifndef SOFA_NO_OPENGL
-    // Display the distance on each hexa of the grid
-    if ( showDistanceMap.getValue() )
-    {
-        glColor3f ( 1.0f, 0.0f, 0.3f );
-        const helper::vector<double>& distMap = distanceMap[showMapIndex.getValue()%distanceMap.size()];
-        for ( unsigned int j = 0; j < distMap.size(); j++ )
+    if(SOFA_WITH_OPENGL){
+        // Display the distance on each hexa of the grid
+        if ( showDistanceMap.getValue() )
         {
-            Coord point = hexaGeoAlgo->computeHexahedronRestCenter ( j );
-            sofa::defaulttype::Vector3 tmpPt = sofa::defaulttype::Vector3 ( point[0], point[1], point[2] );
-            sofa::helper::gl::GlText::draw((int)(distMap[j]), tmpPt, showTextScaleFactor.getValue() );
+            glColor3f ( 1.0f, 0.0f, 0.3f );
+            const helper::vector<double>& distMap = distanceMap[showMapIndex.getValue()%distanceMap.size()];
+            for ( unsigned int j = 0; j < distMap.size(); j++ )
+            {
+                Coord point = hexaGeoAlgo->computeHexahedronRestCenter ( j );
+                sofa::defaulttype::Vector3 tmpPt = sofa::defaulttype::Vector3 ( point[0], point[1], point[2] );
+                sofa::helper::gl::GlText::draw((int)(distMap[j]), tmpPt, showTextScaleFactor.getValue() );
+            }
         }
     }
-#endif /* SOFA_NO_OPENGL */
 }
 
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
+} /// namespace engine
+} /// namespace component
+} /// namespace sofa
 
 #endif
