@@ -4,8 +4,8 @@ project(SofaGeneralImplicitOdeSolver_test)
 
 message(STATUS "SofaGeneralImplicitOdeSolver_test:")
 ################################ COMPONENTS HERE ARE THE NG-SET ####################################
-set(SOURCE_FILES
-    VariationalSymplecticImplicitSolverNonLinearForceDynamic_test.cpp)
+set(SOURCE_FILES ""
+    )
 
 ############################## COMPONENTS HERE ARE THE LIGHT-SET ###################################
 if(SOFA_BUILD_COMPONENTSET_LIGHT)
@@ -30,6 +30,9 @@ endif()
 
 ############################### COMPONENTS HERE ARE DEPRECATED ####################################
 if(SOFA_BUILD_COMPONENTSET_FULL)
+    list(APPEND SOURCE_FILES
+        VariationalSymplecticImplicitSolverNonLinearForceDynamic_test.cpp
+        )
 
 endif()
 
