@@ -54,7 +54,7 @@ public:
     /// Inherited from BaseObject.
     /// Parse the given description to assign values to this object's fields and
     /// potentially other parameters.
-    virtual void parse ( core::objectmodel::BaseObjectDescription* arg ) ;
+    virtual void parse ( core::objectmodel::BaseObjectDescription* arg ) override;
 
     Data<std::string>   d_componentname       ;
     Data<std::string>   d_dataname            ;
@@ -67,7 +67,7 @@ public:
         return "MakeDataAlias" ;
     }
 
-    virtual std::string getClassName() const
+    virtual std::string getClassName() const override
     {
         return "MakeDataAlias" ;
     }

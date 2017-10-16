@@ -78,29 +78,29 @@ public:
     /// @{
 
     /// The Context is active
-    virtual bool isActive() const;
+    virtual bool isActive() const override;
     /// State of the context
-    virtual void setActive(bool val);
+    virtual void setActive(bool val) override;
 
 	/// The Context is sleeping
-	virtual bool isSleeping() const;
+	virtual bool isSleeping() const override;
 
 	/// The Context can change its sleeping state
-	virtual bool canChangeSleepingState() const;
+	virtual bool canChangeSleepingState() const override;
 
     /// Gravity in local coordinates
-    virtual const Vec3& getGravity() const;
+    virtual const Vec3& getGravity() const override;
     /// Gravity in local coordinates
-    virtual void setGravity( const Vec3& );
+    virtual void setGravity( const Vec3& ) override;
 
     /// Simulation timestep
-    virtual SReal getDt() const;
+    virtual SReal getDt() const override;
 
     /// Simulation time
-    virtual SReal getTime() const;
+    virtual SReal getTime() const override;
 
     /// Animation flag
-    virtual bool getAnimate() const;
+    virtual bool getAnimate() const override;
 
 #ifdef SOFA_SUPPORT_MULTIRESOLUTION
     /// Multiresolution support (UNSTABLE)
@@ -151,19 +151,19 @@ public:
     /// @{
 
     /// Simulation timestep
-    virtual void setDt( SReal dt );
+    virtual void setDt( SReal dt ) override;
 
     /// Simulation time
     virtual void setTime( SReal t );
 
     /// Animation flag
-    virtual void setAnimate(bool val);
+    virtual void setAnimate(bool val) override;
 
 	/// Sleeping state of the context
-	virtual void setSleeping(bool val);
+	virtual void setSleeping(bool val) override;
 
 	/// Sleeping state change of the context
-	virtual void setChangeSleepingState(bool val);
+	virtual void setChangeSleepingState(bool val) override;
 
     /// Display flags: Gravity
     virtual void setDisplayWorldGravity(bool val) { worldGravity_.setDisplayed(val); }

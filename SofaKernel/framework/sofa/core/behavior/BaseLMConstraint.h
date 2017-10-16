@@ -155,7 +155,7 @@ public:
 
 
     /// Get Right Hand Term
-    virtual void getConstraintViolation(const sofa::core::ConstraintParams*, defaulttype::BaseVector * /*v*/ );
+    virtual void getConstraintViolation(const sofa::core::ConstraintParams*, defaulttype::BaseVector * /*v*/ ) override;
 
     using BaseConstraintSet::getConstraintViolation;
     // Override used in LMConstraintSolver::buildSystem method
@@ -218,13 +218,13 @@ public:
     ///
     /// That way, we can optimize the time spent to transfer quantities through the mechanical mappings.
     /// Every Dofs are inserted by default. The Constraint using only a subset of dofs should only insert these dofs in the mask.
-    virtual void updateForceMask() = 0;
+    virtual void updateForceMask() override = 0;
 
     /// Methods to know if we have to propagate the state we want to constrain before computing the correction
     /// If the correction is computed with the simulatedDOF, there is no need, and we can reach a good speed-up
     virtual bool isCorrectionComputedWithSimulatedDOF(ConstraintParams::ConstOrder) const {return false;}
 
-    virtual void resetConstraint();
+    virtual void resetConstraint() override;
 protected:
 
     /// Interface to construct a group of constraint: Giving the order of these constraints, it returns a pointer to the structure

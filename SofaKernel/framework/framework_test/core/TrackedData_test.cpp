@@ -84,7 +84,7 @@ public:
 
 
 
-    void handleEvent( core::objectmodel::Event* _event )
+    void handleEvent( core::objectmodel::Event* _event ) override
     {
         if (simulation::AnimateBeginEvent::checkEventType(_event))
         {

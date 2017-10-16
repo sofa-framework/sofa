@@ -48,12 +48,12 @@ protected:
     VisualTransform();
     virtual ~VisualTransform();
 public:
-    void fwdDraw(sofa::core::visual::VisualParams* vparams);
-    void bwdDraw(sofa::core::visual::VisualParams* vparams);
+    void fwdDraw(sofa::core::visual::VisualParams* vparams) override;
+    void bwdDraw(sofa::core::visual::VisualParams* vparams) override;
 
-    void draw(const sofa::core::visual::VisualParams* vparams);
-    void drawVisual(const sofa::core::visual::VisualParams* vparams);
-    void drawTransparent(const sofa::core::visual::VisualParams* vparams);
+    void draw(const sofa::core::visual::VisualParams* vparams) override;
+    void drawVisual(const sofa::core::visual::VisualParams* vparams) override;
+    void drawTransparent(const sofa::core::visual::VisualParams* vparams) override;
 
     Data<Coord> transform;
     Data<bool> recursive;

@@ -129,27 +129,27 @@ protected:
     virtual ~SkinningMapping();
     
 public:
-    void init();
-    void reinit();
+    void init() override;
+    void reinit() override;
 
-    virtual void apply( const sofa::core::MechanicalParams* mparams, OutDataVecCoord& out, const InDataVecCoord& in);
+    virtual void apply( const sofa::core::MechanicalParams* mparams, OutDataVecCoord& out, const InDataVecCoord& in) override;
     //void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
 
-    virtual void applyJ( const sofa::core::MechanicalParams* mparams, OutDataVecDeriv& out, const InDataVecDeriv& in);
+    virtual void applyJ( const sofa::core::MechanicalParams* mparams, OutDataVecDeriv& out, const InDataVecDeriv& in) override;
     //void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
 
-    virtual void applyJT( const sofa::core::MechanicalParams* mparams, InDataVecDeriv& out, const OutDataVecDeriv& in);
+    virtual void applyJT( const sofa::core::MechanicalParams* mparams, InDataVecDeriv& out, const OutDataVecDeriv& in) override;
     //void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
 
-    virtual void applyJT( const sofa::core::ConstraintParams* cparams, InDataMatrixDeriv& out, const OutDataMatrixDeriv& in);
+    virtual void applyJT( const sofa::core::ConstraintParams* cparams, InDataMatrixDeriv& out, const OutDataMatrixDeriv& in) override;
     //void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
 
     // additional Compliant methods
-    const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs();
-    const sofa::defaulttype::BaseMatrix* getJ();
+    const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
+    const sofa::defaulttype::BaseMatrix* getJ() override;
 
     SeqTriangles triangles; // Topology of toModel (used for weight display)
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
 };
 

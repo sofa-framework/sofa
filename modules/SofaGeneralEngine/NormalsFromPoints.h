@@ -57,11 +57,11 @@ protected:
 
     virtual ~NormalsFromPoints() {}
 public:
-    void init();
+    void init() override;
 
-    void reinit();
+    void reinit() override;
 
-    void update();
+    void update() override;
 
     Data< VecCoord > position;
     Data< helper::vector< helper::fixed_array <unsigned int,3> > > triangles;
@@ -70,7 +70,7 @@ public:
     Data<bool> invertNormals;
     Data<bool> useAngles;
 
-    virtual std::string getTemplateName() const    { return templateName(this);    }
+    virtual std::string getTemplateName() const    override { return templateName(this);    }
     static std::string templateName(const NormalsFromPoints<DataTypes>* = NULL) { return DataTypes::Name();    }
 
 };

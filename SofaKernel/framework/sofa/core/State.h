@@ -141,13 +141,13 @@ public:
     /// @name BaseData vectors access API based on VecId
     /// @{
 
-    virtual objectmodel::BaseData* baseWrite(VecId v);
-    virtual const objectmodel::BaseData* baseRead(ConstVecId v) const;
+    virtual objectmodel::BaseData* baseWrite(VecId v) override;
+    virtual const objectmodel::BaseData* baseRead(ConstVecId v) const override;
 
     /// @}
 
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -157,7 +157,7 @@ public:
         return TDataTypes::Name();
     }
 
-    virtual void computeBBox(const core::ExecParams* params, bool onlyVisible=false);
+    virtual void computeBBox(const core::ExecParams* params, bool onlyVisible=false) override;
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_CORE_STATE_CPP)

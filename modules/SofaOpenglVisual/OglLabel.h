@@ -60,14 +60,14 @@ public:
     Data<unsigned int>           d_updateLabelEveryNbSteps;
     Data<bool>                   d_visible;
 
-    void init();
-    void reinit();
-    void updateVisual();
-    void drawVisual(const core::visual::VisualParams* vparams);
+    void init() override;
+    void reinit() override;
+    void updateVisual() override;
+    void drawVisual(const core::visual::VisualParams* vparams) override;
 
-    void handleEvent(core::objectmodel::Event *);
+    void handleEvent(core::objectmodel::Event *) override;
 
-    void parse(core::objectmodel::BaseObjectDescription *arg) ;
+    void parse(core::objectmodel::BaseObjectDescription *arg) override;
     void setColor(float r, float g, float b, float a) ;
 
 
