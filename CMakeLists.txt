@@ -120,6 +120,7 @@ if(MSVC)
         list(APPEND CMAKE_LIBRARY_PATH ${DEPENDENCY_PACK_DIR}/lib/win32)
     endif()
 
+    install(DIRECTORY ${DEPENDENCY_PACK_DIR}/include/ DESTINATION include COMPONENT headers)
     install(DIRECTORY ${DEPENDENCY_PACK_DIR}/licenses/ DESTINATION licenses COMPONENT applications)
 endif()
 
@@ -172,11 +173,11 @@ option(SOFA_WITH_THREADING "Compile sofa with thread-safetiness support (PARTIAL
 option(SOFA_WITH_EXPERIMENTAL_FEATURES "Compile sofa with exprimental features regarding sparse matrices treatments under mappings" OFF)
 
 ### Testing
+add_subdirectory(extlibs/gtest)
 option(SOFA_BUILD_TESTS "Compile the automatic tests for Sofa, along with the gtest library." ON)
 if(SOFA_BUILD_TESTS)
     # Enable testing features of cmake, like the add_test() command.
     enable_testing()
-    add_subdirectory(extlibs/gtest)
 endif()
 
 ### Ninja build pools
@@ -339,11 +340,13 @@ set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_SOURCE_DIR}/README.md")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Real-time multi-physics simulation with an emphasis on medical simulation.")
 set(CPACK_PACKAGE_EXECUTABLES "runSofa" "runSofa")
 
-set(CPACK_COMPONENTS_ALL applications headers libraries resources)
+set(CPACK_COMPONENTS_ALL applications headers Eigen_headers libraries resources)
 set(CPACK_COMPONENT_APPLICATIONS_GROUP "Runtime")
 set(CPACK_COMPONENT_APPLICATIONS_DISPLAY_NAME "runSofa Application")
 set(CPACK_COMPONENT_HEADERS_GROUP "Development")
 set(CPACK_COMPONENT_HEADERS_DISPLAY_NAME "C++ Headers")
+set(CPACK_COMPONENT_EIGEN_HEADERS_GROUP "Development")
+set(CPACK_COMPONENT_EIGEN_HEADERS_DISPLAY_NAME "Eigen Headers")
 set(CPACK_COMPONENT_LIBRARIES_GROUP "Development")
 set(CPACK_COMPONENT_LIBRARIES_DISPLAY_NAME "Libraries")
 set(CPACK_COMPONENT_RESOURCES_GROUP "Runtime")
