@@ -407,7 +407,11 @@ Polynomial_LD<Real,N>  & Polynomial_LD<Real,N>::operator+=(const Monomial_LD<Rea
             break;
         }
     }
-    if (!added) listOfMonoMial.push_back(b); nbOfMonomial++;
+    if (!added)
+    {
+        listOfMonoMial.push_back(b);
+        nbOfMonomial++;
+    }
     sort();
     return *this;
 }
@@ -428,7 +432,11 @@ Polynomial_LD<Real,N>  & Polynomial_LD<Real,N>::operator+=(const Polynomial_LD<R
                 break;
             }
         }
-        if (!added) listOfMonoMial.push_back((*itb)); nbOfMonomial++;
+        if (!added)
+        {
+            listOfMonoMial.push_back((*itb));
+            nbOfMonomial++;
+        }
     }
     sort();
     return *this;
@@ -449,7 +457,11 @@ Polynomial_LD<Real,N>  & Polynomial_LD<Real,N>::operator-=(const Polynomial_LD<R
                 break;
             }
         }
-        if (!added) listOfMonoMial.push_back(-(*itb)); nbOfMonomial++;
+        if (!added)
+        {
+            listOfMonoMial.push_back(-(*itb));
+            nbOfMonomial++;
+        }
     }
     sort();
     return *this;

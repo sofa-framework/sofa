@@ -222,12 +222,8 @@ void RandomPointDistributionInSurface<DataTypes>::update()
     VecCoord* outPoints = f_outPoints.beginWriteOnly();
     outPoints->clear();
 
-    //Hack : octree is not templated
-#ifdef SOFA_SMP
-    collision::TriangleOctreeRoot::VecCoord verticesD;
-#else
+
     helper::vector<defaulttype::Vector3> verticesD;
-#endif
     for (unsigned int i=0 ; i<vertices.size() ; i++)
         verticesD.push_back(vertices[i]);
 

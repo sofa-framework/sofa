@@ -19,10 +19,7 @@ install(FILES "${CMAKE_BINARY_DIR}/include/SofaAdvanced/config.h" DESTINATION "i
 
 set(SOFAADVANCED_TARGETS
     SofaComponentAdvanced
-    SofaEulerianFluid
     SofaNonUniformFem
-    SofaSphFluid
-    SofaVolumetricData
 )
 
 foreach(TARGET ${SOFAADVANCED_TARGETS})

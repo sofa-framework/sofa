@@ -80,7 +80,17 @@ bool ObjectElement::initNode()
         obj = Factory::CreateObject(this->getType(), this);
     if (obj == NULL)
     {
-        getParent()->logError(std::string("Object type \"" + getType() + "\" creation Failed" ));
+        BaseObjectDescription desc("InfoComponent", "InfoComponent") ;
+        desc.setAttribute("name", ("Not created ("+getType()+")").c_str());
+        obj = core::ObjectFactory::CreateObject(ctx, &desc) ;
+        if(obj)
+        {
+           obj->init() ;
+           msg_error(obj.get()) << "Object type \"" << getType() << "\" creation Failed." ;
+           return false;
+        }
+
+        msg_error(ctx) << "Object type \"" << getType() << "\" creation Failed." ;
         return false;
     }
     setObject(obj);

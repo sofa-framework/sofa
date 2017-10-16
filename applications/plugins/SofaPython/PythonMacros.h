@@ -27,7 +27,7 @@
 #include <sofa/config.h>
 
 #include "PythonCommon.h"
-#include <boost/intrusive_ptr.hpp>
+#include <sofa/core/sptr.h>
 
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -60,7 +60,7 @@
 
 
 // =============================================================================
-// Module declarations & methods
+// Module declarations & methods + docstring creation
 // =============================================================================
 
 // PyObject *MyModule = SP_INIT_MODULE(MyModuleName)
@@ -69,7 +69,9 @@
 #define SP_MODULE_METHODS_BEGIN(MODULENAME) PyMethodDef MODULENAME##ModuleMethods[] = {
 #define SP_MODULE_METHODS_END {NULL,NULL,0,NULL} };
 #define SP_MODULE_METHOD(MODULENAME,M) {#M, MODULENAME##_##M, METH_VARARGS, ""},
+#define SP_MODULE_METHOD_DOC(MODULENAME,M, D) {#M, MODULENAME##_##M, METH_VARARGS, D},
 #define SP_MODULE_METHOD_KW(MODULENAME,M) {#M, (PyCFunction)MODULENAME##_##M, METH_KEYWORDS|METH_VARARGS, ""},
+#define SP_MODULE_METHOD_KW_DOC(MODULENAME,M, D) {#M, (PyCFunction)MODULENAME##_##M, METH_KEYWORDS|METH_VARARGS, D},
 
 
 
@@ -81,7 +83,8 @@ template <class T>
 struct PySPtr
 {
     PyObject_HEAD
-    boost::intrusive_ptr<T> object;
+    sofa::core::sptr<T> object;
+    
 //    PySPtr()        { object=0; }
 //    PySPtr(T *obj)  { object=obj; }
 

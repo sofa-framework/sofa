@@ -30,7 +30,7 @@
 #include <SofaEigen2Solver/EigenBaseSparseMatrix.h>
 #include <SofaBaseLinearSolver/SingleMatrixAccessor.h>
 #include <SceneCreator/SceneCreator.h>
-
+#include <SceneCreator/SceneUtils.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 

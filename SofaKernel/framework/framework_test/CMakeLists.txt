@@ -14,6 +14,7 @@ set(SOURCE_FILES
     defaulttype/VecTypes_test.cpp
     helper/types/Color_test.cpp
     helper/types/Material_test.cpp
+	helper/AdvancedTimer_test.cpp
     helper/KdTree_test.cpp
     helper/Utils_test.cpp
     helper/Quater_test.cpp
@@ -31,10 +32,6 @@ set(SOURCE_FILES
     simulation/DefaultAnimationLoop_test.cpp
     main.cpp
 )
-
-if(SOFA_HAVE_PNG)
-    list(APPEND SOURCE_FILES helper/io/ImagePNG_test.cpp)
-endif()
 
 #Plugin tests
 #add_subdirectory(plugin-system) ## TODO: check if deprecated or... ?

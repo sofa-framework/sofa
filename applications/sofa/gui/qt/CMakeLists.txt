@@ -35,7 +35,6 @@ set(MOC_HEADER_FILES
 set(HEADER_FILES
     FileManagement.h
     GraphListenerQListView.h
-    ImageQt.h
     PickHandlerCallBacks.h
     QMenuFilesRecentlyOpened.h
     QModelViewTableDataContainer.h
@@ -54,7 +53,6 @@ set(SOURCE_FILES
     FileManagement.cpp
     GenGraphForm.cpp
     GraphListenerQListView.cpp
-    ImageQt.cpp
     LinkWidget.cpp
     MaterialDataWidget.cpp
     RGBAColorDataWidget.cpp

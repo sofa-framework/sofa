@@ -20,6 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SceneCreator/config.h>
+#include <sofa/helper/system/PluginManager.h>
+using sofa::helper::system::PluginManager ;
 
 namespace sofa
 {
@@ -30,12 +32,12 @@ namespace component
 	//Here are just several convenient functions to help user to know what contains the plugin
 
 	extern "C" {
-                SOFA_SceneCreator_API void initExternalModule();
-                SOFA_SceneCreator_API const char* getModuleName();
-                SOFA_SceneCreator_API const char* getModuleVersion();
-                SOFA_SceneCreator_API const char* getModuleLicense();
-                SOFA_SceneCreator_API const char* getModuleDescription();
-                SOFA_SceneCreator_API const char* getModuleComponentList();
+                SOFA_SCENECREATOR_API void initExternalModule();
+                SOFA_SCENECREATOR_API const char* getModuleName();
+                SOFA_SCENECREATOR_API const char* getModuleVersion();
+                SOFA_SCENECREATOR_API const char* getModuleLicense();
+                SOFA_SCENECREATOR_API const char* getModuleDescription();
+                SOFA_SCENECREATOR_API const char* getModuleComponentList();
 	}
 	
 	void initExternalModule()
@@ -45,6 +47,9 @@ namespace component
 		{
 			first = false;
 		}
+
+        /// Required for DefaultCollisionGroupManager
+        PluginManager::getInstance().loadPlugin("SofaMiscCollision") ;
 	}
 
 	const char* getModuleName()
