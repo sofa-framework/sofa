@@ -93,6 +93,8 @@ void SceneCheckAPIChange::doInit(Node* node)
 
 void SceneCheckAPIChange::doCheckOn(Node* node)
 {
+    if(node==nullptr)
+        return ;
     for (auto& object : node->object )
     {
         if(m_selectedApiLevel != m_currentApiLevel && m_changesets.find(m_selectedApiLevel) != m_changesets.end())
@@ -130,9 +132,17 @@ void SceneCheckAPIChange::installDefaultChangeSets()
                 str = messages[str] ;
             }
 
-            msg_warning(o) << o->getClassName()
+            if(msg.size() >= indexMessage )
+            {
+                msg_warning(o) << o->getClassName()
+                                   << str ;
+            }
+            else {
+                msg_warning(o) << o->getClassName()
                                << str
                                << msg[indexMessage] ;
+
+            }
         }
     }) ;
 }
