@@ -104,18 +104,18 @@ public:
         , computeNormals( initData( &computeNormals, false, "computeNormals", "true to compute smooth normals") )
     {}
 
-    virtual void init();
-    virtual void reinit();
+    virtual void init() override;
+    virtual void reinit() override;
     virtual void internalDraw(const core::visual::VisualParams* vparams);
-    virtual void drawVisual(const core::visual::VisualParams*);
-    virtual void drawTransparent(const core::visual::VisualParams*);
-    virtual void drawShadow(const core::visual::VisualParams*);
-    virtual void updateVisual();
+    virtual void drawVisual(const core::visual::VisualParams*) override;
+    virtual void drawTransparent(const core::visual::VisualParams*) override;
+    virtual void drawShadow(const core::visual::VisualParams*) override;
+    virtual void updateVisual() override;
     virtual void updateTopology();
     virtual void updateNormals();
-    virtual void handleTopologyChange();
+    virtual void handleTopologyChange() override;
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -125,7 +125,7 @@ public:
     }
 
 
-    virtual void computeBBox(const core::ExecParams* params, bool=false);
+    virtual void computeBBox(const core::ExecParams* params, bool=false) override;
 
 protected:
 

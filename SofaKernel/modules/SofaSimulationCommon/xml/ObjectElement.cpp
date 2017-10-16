@@ -83,14 +83,18 @@ bool ObjectElement::initNode()
         BaseObjectDescription desc("InfoComponent", "InfoComponent") ;
         desc.setAttribute("name", ("Not created ("+getType()+")").c_str());
         obj = core::ObjectFactory::CreateObject(ctx, &desc) ;
+        std::stringstream tmp ;
+        for(auto& s : this->getErrors())
+            tmp << s << msgendl ;
+
         if(obj)
         {
            obj->init() ;
-           msg_error(obj.get()) << "Object type \"" << getType() << "\" creation Failed." ;
+           msg_error(obj.get()) << tmp.str() ;
            return false;
         }
 
-        msg_error(ctx) << "Object type \"" << getType() << "\" creation Failed." ;
+        msg_error(ctx) << tmp.str() ;
         return false;
     }
     setObject(obj);

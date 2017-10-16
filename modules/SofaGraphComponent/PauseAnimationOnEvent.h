@@ -47,12 +47,12 @@ protected:
 
     virtual ~PauseAnimationOnEvent();
 public:
-    virtual void init();
+    virtual void init() override;
 
     bool paused;
-    bool isPaused();
+    bool isPaused() override;
 
-    virtual void handleEvent(sofa::core::objectmodel::Event* event);
+    virtual void handleEvent(sofa::core::objectmodel::Event* event) override;
 
 };
 

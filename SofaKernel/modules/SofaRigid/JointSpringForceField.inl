@@ -26,10 +26,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/helper/io/MassSpringLoader.h>
-#include <sofa/helper/gl/template.h>
-#include <sofa/helper/gl/Cylinder.h>
-#include <sofa/helper/gl/BasicShapes.h>
-#include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/system/config.h>
 #include <cassert>
 #include <iostream>

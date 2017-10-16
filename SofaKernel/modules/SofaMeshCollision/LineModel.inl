@@ -30,7 +30,6 @@
 #include <SofaMeshCollision/Line.h>
 #include <sofa/core/CollisionElement.h>
 #include <vector>
-#include <sofa/helper/gl/template.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/simulation/Simulation.h>

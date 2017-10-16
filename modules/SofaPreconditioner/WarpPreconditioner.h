@@ -70,23 +70,23 @@ public:
 
     ~WarpPreconditioner();
 
-    void bwdInit();
+    void bwdInit() override;
 
-    void setSystemMBKMatrix(const core::MechanicalParams* mparams);
+    void setSystemMBKMatrix(const core::MechanicalParams* mparams) override;
 
-    virtual void invert(Matrix& M);
+    virtual void invert(Matrix& M) override;
 
-    virtual void solve(Matrix& M, Vector& solution, Vector& rh);
+    virtual void solve(Matrix& M, Vector& solution, Vector& rh) override;
 
-    virtual bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact);
+    virtual bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact) override;
 
-    virtual bool addMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact);
+    virtual bool addMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact) override;
 
     unsigned getSystemDimention(const sofa::core::MechanicalParams* mparams);
 
-    void computeResidual(const core::ExecParams* params, defaulttype::BaseVector* /*f*/);
+    void computeResidual(const core::ExecParams* params, defaulttype::BaseVector* /*f*/) override;
 
-    void updateSystemMatrix();
+    void updateSystemMatrix() override;
 
 private :
 

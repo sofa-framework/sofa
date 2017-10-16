@@ -46,7 +46,7 @@ protected:
 public:
     void setSize(int nx, int ny, int nz);
 
-    void parse(core::objectmodel::BaseObjectDescription* arg);
+    void parse(core::objectmodel::BaseObjectDescription* arg) override;
 
     int getNx() const { return nx.getValue(); }
     int getNy() const { return ny.getValue(); }
@@ -56,8 +56,8 @@ public:
     void setNy(int n) { ny.setValue(n); setSize(); }
     void setNz(int n) { nz.setValue(n); setSize(); }
 
-    virtual void init();
-    virtual void reinit();
+    virtual void init() override;
+    virtual void reinit() override;
 
     //int getNbQuads();
     //Quad getQuad(int i);
@@ -91,10 +91,10 @@ public:
 
     Vector3 getPoint(int i) const;
     virtual Vector3 getPoint(int x, int y, int z) const;
-    bool hasPos()  const { return true; }
-    SReal getPX(int i)  const { return getPoint(i)[0]; }
-    SReal getPY(int i) const { return getPoint(i)[1]; }
-    SReal getPZ(int i) const { return getPoint(i)[2]; }
+    bool hasPos()  const override { return true; }
+    SReal getPX(int i)  const override { return getPoint(i)[0]; }
+    SReal getPY(int i) const override { return getPoint(i)[1]; }
+    SReal getPZ(int i) const override { return getPoint(i)[2]; }
 
     void setSplitNormals(bool b) {splitNormals.setValue(b);}
 

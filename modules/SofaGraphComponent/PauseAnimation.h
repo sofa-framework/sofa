@@ -49,7 +49,7 @@ protected:
     PauseAnimation ();
     virtual ~PauseAnimation ();
 public:
-    virtual void init();
+    virtual void init() override;
 
     virtual bool isPaused() = 0;
 

@@ -46,13 +46,13 @@ protected:
     RecordedCamera();
     virtual ~RecordedCamera() {}
 public:
-    virtual void init();
+    virtual void init() override;
 
-    virtual void reinit();
+    virtual void reinit() override;
 
-    virtual void reset();
+    virtual void reset() override;
 
-    virtual void handleEvent(sofa::core::objectmodel::Event *);
+    virtual void handleEvent(sofa::core::objectmodel::Event *) override;
 
     //virtual void rotateWorldAroundPoint(Quat &rotation, const Vec3 &point);
 
@@ -63,7 +63,7 @@ public:
     Data<double> p_panSpeed;
     Data<int> p_pivot;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
 private:
     int currentMode;
@@ -77,7 +77,7 @@ private:
 
     // Kepp functions for mouse interaction (TODO: removed them and allow interactive and recorded camera in same scene)
     void moveCamera_mouse(int x, int y);
-    void manageEvent(core::objectmodel::Event* e);
+    void manageEvent(core::objectmodel::Event* e) override;
     void processMouseEvent(core::objectmodel::MouseEvent* me);
 
     void configureRotation();
