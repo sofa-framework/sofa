@@ -481,47 +481,100 @@ public:
         }
     }
 
+    void checkSendReceiveZMQ()
+    {
+
+        std::stringstream scene1 ;
+        scene1 <<
+                  "<?xml version='1.0' ?>                                                       \n"
+                  "<Node name='root'>                                                           \n"
+                  "   <RequiredPlugin name='Communication' />                                   \n"
+                  "   <ServerCommunicationZMQ name='sender' job='sender' port='6000'  refreshRate='1000'/> \n"
+                  "   <CommunicationSubscriber name='subSender' communication='@sender' subject='/test' source='@sender' arguments='x'/>"
+
+                  "   <ServerCommunicationZMQ name='receiver' job='receiver' port='6000' /> \n"
+                  "   <CommunicationSubscriber name='subReceiver' communication='@receiver' subject='/test' source='@receiver' arguments='x'/>"
+                  "</Node>                                                                      \n";
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
+        root->init(ExecParams::defaultInstance()) ;
+
+        ServerCommunication* aServerCommunicationSender = dynamic_cast<ServerCommunication*>(root->getObject("sender"));
+        ServerCommunication* aServerCommunicationReceiver = dynamic_cast<ServerCommunication*>(root->getObject("receiver"));
+        EXPECT_NE(aServerCommunicationSender, nullptr);
+        EXPECT_NE(aServerCommunicationReceiver, nullptr);
+
+        aServerCommunicationReceiver->setRunning(false);
+
+        usleep(100000);
+
+        Base::MapData dataMap = aServerCommunicationSender->getDataAliases();
+        Base::MapData::const_iterator itData;
+        BaseData* data;
+
+        itData = dataMap.find("x");
+        EXPECT_TRUE(itData != dataMap.end());
+        if (itData != dataMap.end())
+        {
+            data = itData->second;
+            EXPECT_NE(data, nullptr) ;
+        }
+
+        dataMap = aServerCommunicationSender->getDataAliases();
+        itData = dataMap.find("x");
+        EXPECT_TRUE(itData != dataMap.end());
+        if (itData != dataMap.end())
+        {
+            data = itData->second;
+            EXPECT_NE(data, nullptr) ;
+        }
+    }
 };
 
-TEST_F(Communication_test, checkCreationDestruction) {
-    ASSERT_NO_THROW(this->checkCreationDestruction()) ;
-}
-
-TEST_F(Communication_test, checkAddSubscriber) {
-    ASSERT_NO_THROW(this->checkAddSubscriber()) ;
-}
-
-TEST_F(Communication_test, checkGetSubscriber) {
-    ASSERT_NO_THROW(this->checkGetSubscriber()) ;
-}
-
-TEST_F(Communication_test, checkSendOSC) {
-    ASSERT_NO_THROW(this->checkSendOSC()) ;
-}
-
-TEST_F(Communication_test, checkReceiveOSC) {
-    ASSERT_NO_THROW(this->checkReceiveOSC()) ;
-}
-
-TEST_F(Communication_test, checkArgumentCreation) {
-    ASSERT_NO_THROW(this->checkArgumentCreation()) ;
-}
-
-TEST_F(Communication_test, checkSendReceiveOSC) {
-    ASSERT_NO_THROW(this->checkSendReceiveOSC()) ;
-}
-
-//TEST_F(Communication_test, checkThreadSafe) {
-//    ASSERT_NO_THROW(this->checkThreadSafe(100)) ;
+//TEST_F(Communication_test, checkCreationDestruction) {
+//    ASSERT_NO_THROW(this->checkCreationDestruction()) ;
 //}
 
-TEST_F(Communication_test, checkSendZMQ) {
-    ASSERT_NO_THROW(this->checkSendZMQ()) ;
+//TEST_F(Communication_test, checkAddSubscriber) {
+//    ASSERT_NO_THROW(this->checkAddSubscriber()) ;
+//}
+
+//TEST_F(Communication_test, checkGetSubscriber) {
+//    ASSERT_NO_THROW(this->checkGetSubscriber()) ;
+//}
+
+//TEST_F(Communication_test, checkSendOSC) {
+//    ASSERT_NO_THROW(this->checkSendOSC()) ;
+//}
+
+//TEST_F(Communication_test, checkReceiveOSC) {
+//    ASSERT_NO_THROW(this->checkReceiveOSC()) ;
+//}
+
+//TEST_F(Communication_test, checkSendReceiveOSC) {
+//    ASSERT_NO_THROW(this->checkSendReceiveOSC()) ;
+//}
+
+//TEST_F(Communication_test, checkArgumentCreation) {
+//    ASSERT_NO_THROW(this->checkArgumentCreation()) ;
+//}
+
+////TEST_F(Communication_test, checkThreadSafe) {
+////    ASSERT_NO_THROW(this->checkThreadSafe(100)) ;
+////}
+
+//TEST_F(Communication_test, checkSendZMQ) {
+//    ASSERT_NO_THROW(this->checkSendZMQ()) ;
+//}
+
+//TEST_F(Communication_test, checkReceiveZMQ) {
+//    ASSERT_NO_THROW(this->checkReceiveZMQ()) ;
+//}
+
+TEST_F(Communication_test, checkSendReceiveZMQ) {
+    ASSERT_NO_THROW(this->checkSendReceiveZMQ()) ;
 }
 
-TEST_F(Communication_test, checkReceiveZMQ) {
-    ASSERT_NO_THROW(this->checkReceiveZMQ()) ;
-}
 
 
 } // communication

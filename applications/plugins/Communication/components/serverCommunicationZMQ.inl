@@ -133,65 +133,56 @@ std::string ServerCommunicationZMQ::dataToString(CommunicationSubscriber* subscr
 {
     /// TODO change to fetchData
     std::stringstream messageStr;
-    SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK> source = subscriber->getSource();
-    MapData dataMap = source->getDataAliases();
-    MapData::const_iterator itData = dataMap.find(argument);
 
-    // handle no argument
-    if (itData != dataMap.end())
+    BaseData* data = fetchData(subscriber->getSource(), "string", argument); // s for std::string in case of non existing argument
+
+    if (data)
     {
-        messageStr.clear();
-        BaseData* data = itData->second;
+        const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
+        const void* valueVoidPtr = data->getValueVoidPtr();
 
-        if (data)
+        if (typeinfo->Container())
         {
-            const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
-            const void* valueVoidPtr = data->getValueVoidPtr();
+            int nbRows = typeinfo->size();
+            int nbCols  = typeinfo->size(data->getValueVoidPtr()) / typeinfo->size();
+            messageStr << "matrix int:" << std::to_string(nbRows) << " int:" << std::to_string(nbCols) << " ";
 
-
-            if (typeinfo->Container())
+            if( !typeinfo->Text() && !typeinfo->Scalar() && !typeinfo->Integer() )
             {
-                int nbRows = typeinfo->size();
-                int nbCols  = typeinfo->size(data->getValueVoidPtr()) / typeinfo->size();
-                messageStr << "matrix int:" << std::to_string(nbRows) << " int:" << std::to_string(nbCols) << " ";
-
-                if( !typeinfo->Text() && !typeinfo->Scalar() && !typeinfo->Integer() )
-                {
-                    msg_advice(data->getOwner()) << "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value" ;
-                    messageStr << "string:'" << (data->getValueString()) << "' ";
-                }
-                else if (typeinfo->Text())
-                    for (int i=0; i < nbRows; i++)
-                        for (int j=0; j<nbCols; j++)
-                            messageStr << "string:" << typeinfo->getTextValue(valueVoidPtr,(i*nbCols) + j).c_str() << " ";
-                else if (typeinfo->Scalar())
-                    for (int i=0; i < nbRows; i++)
-                        for (int j=0; j<nbCols; j++)
-                            messageStr << "float:" << (float)typeinfo->getScalarValue(valueVoidPtr,(i*nbCols) + j) << " ";
-                else if (typeinfo->Integer())
-                    for (int i=0; i < nbRows; i++)
-                        for (int j=0; j<nbCols; j++)
-                            messageStr << "int:" << (int)typeinfo->getIntegerValue(valueVoidPtr,(i*nbCols) + j) << " ";
+                msg_advice(data->getOwner()) << "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value" ;
+                messageStr << "string:'" << (data->getValueString()) << "' ";
             }
-            else
+            else if (typeinfo->Text())
+                for (int i=0; i < nbRows; i++)
+                    for (int j=0; j<nbCols; j++)
+                        messageStr << "string:" << typeinfo->getTextValue(valueVoidPtr,(i*nbCols) + j).c_str() << " ";
+            else if (typeinfo->Scalar())
+                for (int i=0; i < nbRows; i++)
+                    for (int j=0; j<nbCols; j++)
+                        messageStr << "float:" << (float)typeinfo->getScalarValue(valueVoidPtr,(i*nbCols) + j) << " ";
+            else if (typeinfo->Integer())
+                for (int i=0; i < nbRows; i++)
+                    for (int j=0; j<nbCols; j++)
+                        messageStr << "int:" << (int)typeinfo->getIntegerValue(valueVoidPtr,(i*nbCols) + j) << " ";
+        }
+        else
+        {
+            if( !typeinfo->Text() && !typeinfo->Scalar() && !typeinfo->Integer() )
             {
-                if( !typeinfo->Text() && !typeinfo->Scalar() && !typeinfo->Integer() )
-                {
-                    msg_advice(data->getOwner()) << "BaseData_getAttr_value unsupported native type=" << data->getValueTypeString() << " for data "<<data->getName()<<" ; returning string value" ;
-                    messageStr << "string:'" << (data->getValueString()) << "' ";
-                }
-                if (typeinfo->Text())
-                {
-                    messageStr << "string:'" << (data->getValueString()) << "' ";
-                }
-                else if (typeinfo->Scalar())
-                {
-                    messageStr << "float:" << (data->getValueString()) << " ";
-                }
-                else if (typeinfo->Integer())
-                {
-                    messageStr << "int:" << (data->getValueString()) << " ";
-                }
+                msg_advice(data->getOwner()) << "BaseData_getAttr_value unsupported native type=" << data->getValueTypeString() << " for data "<<data->getName()<<" ; returning string value" ;
+                messageStr << "string:'" << (data->getValueString()) << "' ";
+            }
+            if (typeinfo->Text())
+            {
+                messageStr << "string:'" << (data->getValueString()) << "' ";
+            }
+            else if (typeinfo->Scalar())
+            {
+                messageStr << "float:" << (data->getValueString()) << " ";
+            }
+            else if (typeinfo->Integer())
+            {
+                messageStr << "int:" << (data->getValueString()) << " ";
             }
         }
     }
@@ -208,8 +199,9 @@ std::vector<std::string> stringToArgumentList(std::string dataString)
     for ( ; iter != end; ++iter)
     {
         std::string tmp = *iter;
-        if (tmp.find("string:'") != std::string::npos)
+        if (tmp.find("string:'") != std::string::npos && tmp.find(" ") != std::string::npos)
         {
+
             bool stringIsNotFinished = true;
             while (++iter != end && stringIsNotFinished)
             {
@@ -223,7 +215,6 @@ std::vector<std::string> stringToArgumentList(std::string dataString)
             }
         }
         listArguments.push_back(tmp);
-
     }
     return listArguments;
 }
