@@ -82,11 +82,11 @@ protected:
 
     virtual ~TriangleSetGeometryAlgorithms() {}
 public:
-    virtual void draw(const core::visual::VisualParams* vparams);
+    virtual void draw(const core::visual::VisualParams* vparams) override;
 
-    virtual void init();
+    virtual void init() override;
 
-    virtual void reinit();
+    virtual void reinit() override;
 
     void computeTriangleAABB(const TriangleID i, Coord& minCoord, Coord& maxCoord) const;
 
@@ -276,7 +276,7 @@ public:
     /** \brief Process the added point initialization according to the topology and local coordinates.
     */
     virtual void initPointAdded(unsigned int indice, const core::topology::PointAncestorElem &ancestorElem
-        , const helper::vector< VecCoord* >& coordVecs, const helper::vector< VecDeriv* >& derivVecs);
+        , const helper::vector< VecCoord* >& coordVecs, const helper::vector< VecDeriv* >& derivVecs) override;
 
     /// return a pointer to the container of cubature points
     NumericalIntegrationDescriptor<Real,3> &getTriangleNumericalIntegrationDescriptor();

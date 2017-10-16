@@ -77,9 +77,9 @@ protected:
 
 public:
 
-    virtual void init();
-    virtual void initVisual();
-    virtual void drawStep(sofa::core::visual::VisualParams* vparams);
+    virtual void init() override;
+    virtual void initVisual() override;
+    virtual void drawStep(sofa::core::visual::VisualParams* vparams) override;
 };
 
 } // namespace visualmodel

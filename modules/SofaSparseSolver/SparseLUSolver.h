@@ -82,12 +82,12 @@ public:
     Data<double> f_tol;
 
     SparseLUSolver();
-    void solve (Matrix& M, Vector& x, Vector& b);
-    void invert(Matrix& M);
+    void solve (Matrix& M, Vector& x, Vector& b) override;
+    void invert(Matrix& M) override;
 
 protected :
 
-    MatrixInvertData * createInvertData() {
+    MatrixInvertData * createInvertData() override {
         return new SparseLUInvertData<Real>();
     }
 

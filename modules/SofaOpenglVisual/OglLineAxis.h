@@ -53,10 +53,10 @@ public:
         drawX(true), drawY(true), drawZ(true)
     {}
 
-    virtual void init();
-    virtual void reinit();
-    virtual void drawVisual(const core::visual::VisualParams*);
-    virtual void updateVisual();
+    virtual void init() override;
+    virtual void reinit() override;
+    virtual void drawVisual(const core::visual::VisualParams*) override;
+    virtual void updateVisual() override;
 
 protected:
 

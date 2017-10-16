@@ -26,7 +26,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/config.h>
 #include <cassert>
-#include <sofa/helper/gl/template.h>
 #include <iostream>
 
 #include <sofa/simulation/Simulation.h>
@@ -161,8 +160,6 @@ void PenalityContactForceField<DataTypes>::draw(const core::visual::VisualParams
     const VecCoord& p1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& p2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
     const helper::vector<Contact>& cc = contacts.getValue();
-
-    //glDisable(GL_LIGHTING); // do not use gl under draw component, it cause crash when using other render !
 
     std::vector< defaulttype::Vector3 > points[4];
 

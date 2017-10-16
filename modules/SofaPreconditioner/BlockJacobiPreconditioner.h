@@ -64,8 +64,8 @@ public:
 protected:
     BlockJacobiPreconditioner();
 public:
-    void solve (Matrix& M, Vector& x, Vector& b);
-    void invert(Matrix& M);
+    void solve (Matrix& M, Vector& x, Vector& b) override;
+    void invert(Matrix& M) override;
 
     BlockJacobiPreconditionerInternalData<TVector> internalData; //not use in CPU
 
@@ -77,7 +77,7 @@ public:
         return sofa::core::objectmodel::BaseObject::canCreate(obj, context, arg);
     }
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }

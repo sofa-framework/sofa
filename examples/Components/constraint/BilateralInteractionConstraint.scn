@@ -1,5 +1,6 @@
 <!-- BilateralInteractionConstraint example -->
 <Node name="root" dt="0.001" gravity="0 -981 0">
+    <RequiredPlugin name="SofaMiscCollision"/>
     <VisualStyle displayFlags="showForceFields" />
     <FreeMotionAnimationLoop />
     <GenericConstraintSolver tolerance="0.001" maxIterations="1000"/>

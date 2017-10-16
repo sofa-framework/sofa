@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "RealGUI.h"
-#include "ImageQt.h"
 
 #ifdef SOFA_PML
 #  include <sofa/filemanager/sofapml/PMLReader.h>
@@ -99,6 +98,9 @@ using sofa::helper::system::FileMonitor ;
 #include <SofaGraphComponent/SceneCheckerVisitor.h>
 using sofa::simulation::SceneCheckerVisitor ;
 
+#include <SofaGraphComponent/SceneCheckAPIChanges.h>
+using sofa::simulation::scenecheckers::SceneCheckAPIChange ;
+
 using sofa::core::ExecParams ;
 
 namespace sofa
@@ -113,8 +115,6 @@ namespace gui
 
 namespace qt
 {
-
-SOFA_LINK_CLASS(ImageQt)
 
 
 using sofa::core::objectmodel::BaseObject;
@@ -181,7 +181,7 @@ public:
 //======================= STATIC METHODS ========================= {
 int RealGUI::InitGUI ( const char* /*name*/, const std::vector<std::string>& /* options */ )
 {
-    return ImageQt::Init() ? 0 : 1;
+    return false;
 }
 
 //------------------------------------
@@ -2163,18 +2163,28 @@ void RealGUI::screenshot()
 {
     QString filename;
 
-#ifdef SOFA_HAVE_PNG
-    const char* imageString = "Images (*.png)";
-#else
-    const char* imageString = "Images (*.bmp)";
-#endif
+    bool pngSupport = helper::io::Image::FactoryImage::getInstance()->hasKey("png")
+            || helper::io::Image::FactoryImage::getInstance()->hasKey("PNG");
+    bool bmpSupport = helper::io::Image::FactoryImage::getInstance()->hasKey("bmp")
+            || helper::io::Image::FactoryImage::getInstance()->hasKey("BMP");
+
+    if(!pngSupport && !bmpSupport)
+    {
+        QMessageBox::warning(this, tr("runSofa"),
+                                       tr("Screenshot is not available (PNG or BMP support not found).\n"),
+                                       QMessageBox::Cancel);
+        return;
+    }
+    std::string imageString = "Images (*.bmp)";
+    if(pngSupport)
+        imageString = "Images (*.png)";
 
     filename = getSaveFileName ( this,
             getViewer()->screenshotName().c_str(),
-            imageString,
+            imageString.c_str(),
             "save file dialog"
             "Choose a filename to save under"
-                               );
+    );
 
     viewer::SofaViewer* qtViewer = getQtViewer();
     if( qtViewer )

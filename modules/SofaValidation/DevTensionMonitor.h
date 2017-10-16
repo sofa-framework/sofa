@@ -52,8 +52,8 @@ protected:
     DevTensionMonitor() { };
     virtual ~DevTensionMonitor() { };
 public:
-    void init();
-    void eval();
+    void init() override;
+    void eval() override;
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
@@ -87,7 +87,7 @@ public:
         return obj;
     }
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }

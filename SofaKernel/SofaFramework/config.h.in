@@ -27,8 +27,6 @@
 
 #cmakedefine SOFA_HAVE_ZLIB
 
-#cmakedefine SOFA_HAVE_PNG
-
 #cmakedefine SOFA_HAVE_GLEW
 
 #cmakedefine SOFA_HAVE_GLUT

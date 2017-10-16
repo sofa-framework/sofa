@@ -48,12 +48,12 @@ protected:
     virtual ~SceneLoader() { }
 
 public:
-    virtual bool canLoad();
+    virtual bool canLoad() override;
 
     //virtual void init();
-    virtual void parse ( sofa::core::objectmodel::BaseObjectDescription* arg );
+    virtual void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
 
-    virtual void reinit();
+    virtual void reinit() override;
 
 
 protected:

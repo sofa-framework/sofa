@@ -205,13 +205,26 @@ static PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * args
     if (obj==0)
     {
         std::stringstream msg;
-        msg << "createObject: component '" << desc.getName() << "' of type '" << desc.getAttribute("type","")<< "' in node '"<<context->getName()<<"'" ;
+        msg << "Unable to create '" << desc.getName() << "' of type '" << desc.getAttribute("type","")<< "' in node '"<<context->getName()<<"'." ;
         for (std::vector< std::string >::const_iterator it = desc.getErrors().begin(); it != desc.getErrors().end(); ++it)
             msg << " " << *it << msgendl ;
+
+        //todo(STC4) do it or remove it ?
+        //todo(dmarchal 2017/10/01) I don't like that because it is weird to have error reporting
+        //strategy into the createObject implementation instead of into a dedicated exception.
+        //in addition this is the first time we are not using the macro from msg_*
+        BaseObjectDescription desc("InfoComponent", "InfoComponent") ;
+        BaseObject::SPtr obj = ObjectFactory::getInstance()->createObject(context,&desc) ;
+        obj->setName( "Not created ("+std::string(type)+")" ) ;
+        sofa::helper::logging::Message m(sofa::helper::logging::Message::Runtime,
+                                         sofa::helper::logging::Message::Error) ;
+        m << msg.str() ;
+        obj->addMessage(  m ) ;
+        //todo(STC4) end of do it or remove it.
+
         PyErr_SetString(PyExc_RuntimeError, msg.str().c_str()) ;
         return NULL;
     }
-
 
     if( warning )
     {
@@ -366,7 +379,7 @@ static PyObject * BaseContext_getObjects(PyObject * self, PyObject * args)
         }
     }
 
-    sofa::helper::vector< boost::intrusive_ptr<BaseObject> > list;
+    sofa::helper::vector< BaseObject::SPtr > list;
     context->get<BaseObject>(&list,search_direction_enum);
 
     PyObject *pyList = PyList_New(0);

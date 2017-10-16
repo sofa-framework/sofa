@@ -34,6 +34,12 @@ if(MSVC)
     option(SOFA_VECTORIZE "Enable the use of SSE2 instructions by the compiler (Only available for MSVC)." OFF)
 endif()
 
+if(SOFA_WITH_DEPRECATED)
+    set(SOFA_WITH_DEPRECATED_ "1")
+else()
+    set(SOFA_WITH_DEPRECATED_ "0")
+endif()
+
 if(SOFA_WITH_THREADING)
     set(SOFA_WITH_THREADING_ "1")
 else()
@@ -115,17 +121,6 @@ if(ZLIB_FOUND)
 endif()
 set(SOFA_HAVE_ZLIB ${ZLIB_FOUND})
 
-## PNG
-find_package(PNG)
-if(PNG_FOUND)
-    sofa_create_target(PNG SofaFramework "${PNG_LIBRARY}" "${PNG_INCLUDE_DIRS}")
-        list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${PNG_Target})
-
-
-    sofa_install_get_libraries("${PNG_LIBRARY}/libpng")
-endif()
-set(SOFA_HAVE_PNG ${PNG_FOUND})
-
 ## Boost
 # required boost libraries
 find_package(Boost REQUIRED system filesystem locale 
@@ -183,6 +178,10 @@ list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${JSON_INCLUDE_DIR})
 ## sofa/config.h
 configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/sofa/config.h")
 install(FILES "${CMAKE_BINARY_DIR}/include/sofa/config.h" DESTINATION "include/sofa")
+
+configure_file(build_option_componentset.h.in "${CMAKE_BINARY_DIR}/include/sofa/config/build_option_componentset.h")
+install(FILES "${CMAKE_BINARY_DIR}/include/sofa/config/build_option_componentset.h" DESTINATION "include/sofa/config")
+
 # make sure everyone in the build tree can see <sofa/config.h>
 #list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR})
 list(REMOVE_DUPLICATES SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES)

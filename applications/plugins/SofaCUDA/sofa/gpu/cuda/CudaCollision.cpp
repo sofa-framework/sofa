@@ -114,7 +114,7 @@ class CudaProximityIntersection : public sofa::component::collision::NewProximit
 public:
     SOFA_CLASS(CudaProximityIntersection,sofa::component::collision::NewProximityIntersection);
 
-    virtual void init()
+    virtual void init() override
     {
         sofa::component::collision::NewProximityIntersection::init();
         intersectors.add<CudaSphereModel, CudaSphereModel,   DiscreteIntersection>(this);

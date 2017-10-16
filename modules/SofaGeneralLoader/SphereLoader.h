@@ -46,7 +46,7 @@ public:
     Data< helper::vector<SReal> > radius;
     Data< defaulttype::Vector3 > d_scale;
     Data< defaulttype::Vector3 > d_translation;
-    virtual bool load();
+    virtual bool load() override;
 };
 
 } //loader

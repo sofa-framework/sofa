@@ -26,7 +26,6 @@
 #include <SofaMiscForceField/initMiscForcefield.h>
 #include <SofaMiscFem/initMiscFEM.h>
 #include <SofaMiscEngine/initMiscEngine.h>
-#include <SofaMiscCollision/initMiscCollision.h>
 #include <SofaMiscSolver/initMiscSolver.h>
 #include <SofaMisc/initMisc.h>
 
@@ -50,7 +49,6 @@ void initComponentMisc()
     initMiscForcefield();
     initMiscFEM();
     initMiscEngine();
-    initMiscCollision();
     initMiscSolver();
     initMisc();
 }

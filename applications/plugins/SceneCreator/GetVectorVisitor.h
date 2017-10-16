@@ -54,7 +54,7 @@ namespace simulation
     Only the independent DOFs are used.
     Francois Faure, 2013
 */
-class SOFA_SceneCreator_API GetVectorVisitor: public Visitor
+class SOFA_SCENECREATOR_API GetVectorVisitor: public Visitor
 {
 public:
 //    typedef Eigen::Matrix<SReal, Eigen::Dynamic, 1> Vector;

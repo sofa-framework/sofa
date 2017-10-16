@@ -81,21 +81,21 @@ public:
     Data<bool> f_keepAlive;
 
     /// Return true if this contact should be kept alive, even if objects are no longer in collision
-    virtual bool keepAlive() { return f_keepAlive.getValue(); }
+    virtual bool keepAlive() override { return f_keepAlive.getValue(); }
 
     /// Control the keepAlive flag of the contact.
-    virtual void setKeepAlive(bool val) { f_keepAlive.setValue(val); }
+    virtual void setKeepAlive(bool val) override { f_keepAlive.setValue(val); }
 
 
-    void cleanup();
+    void cleanup() override;
 
-    std::pair<core::CollisionModel*,core::CollisionModel*> getCollisionModels() { return std::make_pair(model1,model2); }
+    std::pair<core::CollisionModel*,core::CollisionModel*> getCollisionModels() override { return std::make_pair(model1,model2); }
 
-    void setDetectionOutputs(OutputVector* outputs);
+    void setDetectionOutputs(OutputVector* outputs) override;
 
-    void createResponse(core::objectmodel::BaseContext* group);
+    void createResponse(core::objectmodel::BaseContext* group) override;
 
-    void removeResponse();
+    void removeResponse() override;
 };
 
 

@@ -57,12 +57,7 @@ struct PluginManager_test: public ::testing::Test
 
     void SetUp()
     {
-        // Add the plugin directory to PluginRepository
-#ifdef WIN32
-        pluginDir = sofa::helper::Utils::getExecutableDirectory();
-#else
-        pluginDir = sofa::helper::Utils::getSofaPathPrefix() + "/lib";
-#endif
+        pluginDir = sofa::helper::Utils::getPluginDirectory() ;
         sofa::helper::system::PluginRepository.addFirstPath(pluginDir);
     }
 

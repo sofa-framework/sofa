@@ -76,17 +76,17 @@ public:
     /**
      * @brief Init method called during the scene graph initialization.
      */
-    virtual void init();
+    virtual void init() override;
 
     /**
      * @brief Reset to initial state
      */
-    virtual void reset();
+    virtual void reset() override;
 
     /**
      * @brief Apply the controller current modifications to its controled component.
      */
-    virtual void applyController(void);
+    virtual void applyController(void) override;
 
 protected:
     Data< bool > useExternalTime;

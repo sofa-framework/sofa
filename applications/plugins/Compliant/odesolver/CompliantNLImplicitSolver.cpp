@@ -2,13 +2,12 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-#include "../assembly/AssemblyVisitor.h"
-#include "../utils/scoped.h"
+#include <Compliant/assembly/AssemblyVisitor.h>
+#include <Compliant/utils/scoped.h>
+#include <Compliant/numericalsolver/KKTSolver.h>
 
 using std::cerr;
 using std::endl;
-
-
 
 namespace sofa {
 namespace component {

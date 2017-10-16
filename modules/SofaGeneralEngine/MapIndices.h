@@ -57,11 +57,11 @@ protected:
 
     virtual ~MapIndices();
 public:
-    void init();
+    void init() override;
 
-    void reinit();
+    void reinit() override;
 
-    void update();
+    void update() override;
 
     core::objectmodel::Data<VecValue> f_in;
     core::objectmodel::Data<VecIndex> f_indices;

@@ -36,6 +36,9 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/operations.hpp>
+
 
 #include "FileSystem.h"
 using sofa::helper::system::FileSystem ;
@@ -145,36 +148,47 @@ int FileMonitor::addFile(const std::string& parentname,
                          const std::string& filename,
                          FileEventListener* listener)
 {
+    using namespace boost::filesystem;
+
     if(listener == NULL)
         return -1 ;
 
-    if(!FileSystem::exists(parentname))
+    path prefix(parentname) ;
+    path name(filename) ;
+
+    path fullPath = prefix/name;
+    path absolutePath = absolute(fullPath) ;
+
+    if(! exists(status(fullPath)) )
         return -1;
 
-    if(!FileSystem::exists(parentname+"/"+filename))
+    if(! exists(status(absolutePath)) )
         return -1;
 
     if(filemonitor_inotifyfd<0)
         FileMonitor_init() ;
 
+    std::string parentnameL = absolutePath.parent_path().string() ;
+    std::string filenameL = absolutePath.filename().string() ;
+
     // Is the directory in the already monitored files ?
-    if( dir2files.find(parentname) != dir2files.end() ) {
+    if( dir2files.find(parentnameL) != dir2files.end() ) {
         // If so, is the file in the monitored files ?
-        addAFileListenerInDict(parentname+"/"+filename,listener);
-        ListOfFiles& lf=dir2files[parentname];
-        if(find(lf.begin(), lf.end(), filename)==lf.end()){
-            dir2files[parentname].push_back(filename) ;
+        addAFileListenerInDict(parentnameL+"/"+filenameL,listener);
+        ListOfFiles& lf=dir2files[parentnameL];
+        if(find(lf.begin(), lf.end(), filenameL)==lf.end()){
+            dir2files[parentnameL].push_back(filenameL) ;
         }
     } else {
         // If the directory is not yet monitored we add it to the system.
-        dir2files[parentname] = ListOfFiles() ;
+        dir2files[parentnameL] = ListOfFiles() ;
         int wd=inotify_add_watch( filemonitor_inotifyfd,
-                                  parentname.c_str(),
+                                  parentnameL.c_str(),
                                   IN_CLOSE | IN_MOVED_TO ) ;
-        fd2fn[wd]=string(parentname) ;
-        addAFileListenerInDict(parentname+"/"+filename,listener);
+        fd2fn[wd]=string(parentnameL) ;
+        addAFileListenerInDict(parentnameL+"/"+filenameL,listener);
 
-        dir2files[parentname].push_back(filename) ;
+        dir2files[parentnameL].push_back(filenameL) ;
     }
 
     return 1 ;
@@ -224,6 +238,7 @@ int FileMonitor::updates(int timeout)
                 if(dir2files.find(fd2fn[pevent->wd])!=dir2files.end()) {
                     ListOfFiles& dl=dir2files[fd2fn[pevent->wd]] ;
                     string fullname = string(fd2fn[pevent->wd])+"/"+string(pevent->name) ;
+
                     if(find(dl.begin(), dl.end(), pevent->name)!=dl.end()) {
                         if(find(changedfiles.begin(), changedfiles.end(), fullname)==changedfiles.end()) {
                             changedfiles.push_back(fullname) ;
@@ -233,6 +248,7 @@ int FileMonitor::updates(int timeout)
             }
             buffer_i += sizeof(struct inotify_event)+pevent->len ;
         }
+
 
         for(vector<string>::iterator f=changedfiles.begin(); f!=changedfiles.end(); f++) {
             ListOfListeners::iterator it = file2listener[*f].begin() ;
