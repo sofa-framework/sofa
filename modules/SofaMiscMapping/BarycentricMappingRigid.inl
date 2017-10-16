@@ -421,7 +421,6 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::applyJT ( typename In
 template <class In, class Out>
 void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::draw  (const core::visual::VisualParams* vparams,const typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-#ifndef SOFA_NO_OPENGL
     const sofa::helper::vector<core::topology::BaseMeshTopology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
     const sofa::helper::vector<MappingData >& map = this->map.getValue();
     // TODO(dmarchal 2017-05-03) who do it & when it will be done. Otherwise I will delete that one day.
@@ -455,6 +454,10 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::draw  (const core::vi
     }
     vparams->drawTool()->drawLines ( points, 1, sofa::defaulttype::Vec<4,float> ( 0,1,0,1 ) );
 
+    points.clear();
+    std::vector< sofa::defaulttype::Vector3 > tetraPoints;
+    std::vector< sofa::defaulttype::Vector3 > tetraLines;
+
     for ( unsigned int i=0; i<map.size(); i++ )
     {
         //get velocity of the DoF
@@ -478,39 +481,25 @@ void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::draw  (const core::vi
         //for (unsigned int ti = 0; ti<4; ti++)
         //    out[tetra[ti]] -= cross(actualTetraPosition[tetra[ti]],torque);
         //}
-
         for (size_t i = 0; i < actualPos.size(); i++)
-        {
-            glPointSize(10);
-            glColor3d(1.0,0,0.0);
-            glBegin(GL_POINTS);
-            helper::gl::glVertexT(actualPos[i]);
-            glEnd();
-        }
-
+            points.push_back(sofa::defaulttype::Vector3(actualPos[i][0],actualPos[i][1],actualPos[i][2]));
 
         for (unsigned int ti = 0; ti<4; ti++)
         {
-            glPointSize(10);
-            glColor3d(1.0,0,1.0);
-            glBegin(GL_POINTS);
-            helper::gl::glVertexT(actualTetraPosition[tetra[ti]]);
-            glEnd();
+            const typename In::Coord& tp0 = actualTetraPosition[tetra[ti]];
+            typename In::Coord tp1 = actualTetraPosition[tetra[ti]]+actualOut[tetra[ti]];
 
+            tetraPoints.push_back(sofa::defaulttype::Vector3(tp0[0],tp0[1],tp0[2]));
 
-            if (tetra[ti] < actualOut.size())
-            {
-                glLineWidth(3.0);
-                glBegin(GL_LINES);
-                helper::gl::glVertexT(actualTetraPosition[tetra[ti]]);
-                helper::gl::glVertexT(actualTetraPosition[tetra[ti]]+actualOut[tetra[ti]]);
-                glEnd();
-            }
-
+            tetraLines.push_back(sofa::defaulttype::Vector3(tp0[0],tp0[1],tp0[2]));
+            tetraLines.push_back(sofa::defaulttype::Vector3(tp1[0],tp1[1],tp1[2]));
         }
-        glEnd();
+
+        vparams->drawTool()->drawPoints ( points, 10, sofa::defaulttype::Vec<4,float> ( 1,0,0,1 ) );
+        vparams->drawTool()->drawPoints ( tetraPoints, 10, sofa::defaulttype::Vec<4,float> ( 1,0,1,1 ) );
+        vparams->drawTool()->drawLines ( tetraLines, 3.0, sofa::defaulttype::Vec<4,float> ( 1,0,1,1 ) );
+
     }
-#endif /* SOFA_NO_OPENGL */
 }
 
 } // namespace mapping

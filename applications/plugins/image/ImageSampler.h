@@ -654,7 +654,7 @@ protected:
             {
             case 1:
                 glPushAttrib(GL_LIGHTING_BIT);
-                glEnable(GL_LIGHTING);
+                vparams->drawTool()->enableLighting();
                 vparams->drawTool()->drawSpheres(this->position.getValue(),showSamplesScale.getValue(),defaulttype::Vec4f(0.1,0.7,0.1,1));
                 vparams->drawTool()->drawSpheres(this->fixedPosition.getValue(),showSamplesScale.getValue(),defaulttype::Vec4f(0.1,0.7,0.1,1));
                 glPopAttrib();
