@@ -43,8 +43,12 @@ using sofa::core::ObjectFactory ;
 
 // COMMUNICATION PART
 #include <Communication/components/serverCommunication.h>
+#include <Communication/components/serverCommunicationOSC.h>
+#include <Communication/components/serverCommunicationZMQ.h>
 #include <Communication/components/CommunicationSubscriber.h>
 using sofa::component::communication::ServerCommunication;
+using sofa::component::communication::ServerCommunicationOSC;
+using sofa::component::communication::ServerCommunicationZMQ;
 using sofa::component::communication::CommunicationSubscriber;
 
 // OSC TEST PART
@@ -153,19 +157,10 @@ private:
     };
 
 public:
-    void checkCreationDestruction()
-    {
-        std::stringstream scene1 ;
-        scene1 <<
-                  "<?xml version='1.0' ?>                                                       \n"
-                  "<Node name='root'>                                                           \n"
-                  "   <RequiredPlugin name='Communication' />                                   \n"
-                  "   <ServerCommunicationOSC name='oscSender' job='sender' port='6000'  refreshRate='1000'/> \n"
-                  "</Node>                                                                      \n";
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
-        root->init(ExecParams::defaultInstance()) ;
-    }
+    /// BASIC STUFF TEST
+    /// testing subscriber + argument creation
+    /// it uses OSC but those tested functions are the same for OSC/ZMQ
 
     void checkAddSubscriber()
     {
@@ -203,6 +198,62 @@ public:
         ServerCommunication* aServerCommunicationOSC = dynamic_cast<ServerCommunication*>(root->getObject("oscSender"));
         CommunicationSubscriber* subscriber = aServerCommunicationOSC->getSubscriberFor("/test");
         EXPECT_NE(subscriber, nullptr) ;
+    }
+
+    void checkArgumentCreation()
+    {
+        std::stringstream scene1 ;
+        scene1 <<
+                  "<?xml version='1.0' ?>                                                       \n"
+                  "<Node name='root'>                                                           \n"
+                  "   <RequiredPlugin name='Communication' />                                   \n"
+                  "   <ServerCommunicationOSC name='oscSender' job='sender' port='6000' refreshRate='1000'/> \n"
+                  "   <CommunicationSubscriber name='sub1' communication='@oscSender' subject='/test' source='@oscSender' arguments='x'/>"
+                  "</Node>                                                                      \n";
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
+        root->init(ExecParams::defaultInstance());
+        ServerCommunication* aServerCommunicationOSC = dynamic_cast<ServerCommunication*>(root->getObject("oscSender"));
+        EXPECT_NE(aServerCommunicationOSC, nullptr);
+
+        usleep(10000);
+
+        Base::MapData dataMap = aServerCommunicationOSC->getDataAliases();
+        Base::MapData::const_iterator itData;
+        BaseData* data;
+
+        itData = dataMap.find("port");
+        EXPECT_TRUE(itData != dataMap.end());
+        if (itData != dataMap.end())
+        {
+            data = itData->second;
+            EXPECT_NE(data, nullptr) ;
+        }
+
+        itData = dataMap.find("x");
+        EXPECT_TRUE(itData != dataMap.end());
+        if (itData != dataMap.end())
+        {
+            data = itData->second;
+            EXPECT_NE(data, nullptr) ;
+        }
+    }
+
+    /// OSC TEST PART
+    /// testing basic use + specific functions such as parsing
+
+    void checkCreationDestruction()
+    {
+        std::stringstream scene1 ;
+        scene1 <<
+                  "<?xml version='1.0' ?>                                                       \n"
+                  "<Node name='root'>                                                           \n"
+                  "   <RequiredPlugin name='Communication' />                                   \n"
+                  "   <ServerCommunicationOSC name='oscSender' job='sender' port='6000'  refreshRate='1000'/> \n"
+                  "</Node>                                                                      \n";
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
+        root->init(ExecParams::defaultInstance()) ;
     }
 
     void checkSendOSC()
@@ -260,45 +311,6 @@ public:
         Base::MapData::const_iterator itData = dataMap.find("x");
         BaseData* data;
 
-        EXPECT_TRUE(itData != dataMap.end());
-        if (itData != dataMap.end())
-        {
-            data = itData->second;
-            EXPECT_NE(data, nullptr) ;
-        }
-    }
-
-    void checkArgumentCreation()
-    {
-        std::stringstream scene1 ;
-        scene1 <<
-                  "<?xml version='1.0' ?>                                                       \n"
-                  "<Node name='root'>                                                           \n"
-                  "   <RequiredPlugin name='Communication' />                                   \n"
-                  "   <ServerCommunicationOSC name='oscSender' job='sender' port='6000' refreshRate='1000'/> \n"
-                  "   <CommunicationSubscriber name='sub1' communication='@oscSender' subject='/test' source='@oscSender' arguments='x'/>"
-                  "</Node>                                                                      \n";
-
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
-        root->init(ExecParams::defaultInstance());
-        ServerCommunication* aServerCommunicationOSC = dynamic_cast<ServerCommunication*>(root->getObject("oscSender"));
-        EXPECT_NE(aServerCommunicationOSC, nullptr);
-
-        usleep(10000);
-
-        Base::MapData dataMap = aServerCommunicationOSC->getDataAliases();
-        Base::MapData::const_iterator itData;
-        BaseData* data;
-
-        itData = dataMap.find("port");
-        EXPECT_TRUE(itData != dataMap.end());
-        if (itData != dataMap.end())
-        {
-            data = itData->second;
-            EXPECT_NE(data, nullptr) ;
-        }
-
-        itData = dataMap.find("x");
         EXPECT_TRUE(itData != dataMap.end());
         if (itData != dataMap.end())
         {
@@ -401,6 +413,9 @@ public:
         usleep(10000);
 
     }
+
+    /// ZMQ TEST PART
+    /// testing basic use + specific functions such as parsing
 
     void checkSendZMQ()
     {
@@ -529,6 +544,36 @@ public:
             EXPECT_NE(data, nullptr) ;
         }
     }
+
+    void checkZMQParsingFunctions()
+    {
+        ServerCommunicationZMQ * zmqServer = new ServerCommunicationZMQ();
+        EXPECT_STREQ(zmqServer->getArgumentType("string:''").c_str(), "string");
+        EXPECT_STREQ(zmqServer->getArgumentType("string:'toto'").c_str(), "string");
+        EXPECT_STREQ(zmqServer->getArgumentType("string:'toto blop'").c_str(), "string");
+
+        EXPECT_STREQ(zmqServer->getArgumentValue("string:''").c_str(), "");
+        EXPECT_STREQ(zmqServer->getArgumentValue("string:'toto'").c_str(), "toto");
+        EXPECT_STREQ(zmqServer->getArgumentValue("string:'toto blop'").c_str(), "toto blop");
+
+        std::vector<std::string> argumentList;
+
+        argumentList = zmqServer->stringToArgumentList("/test string:'toto' int:26");
+        EXPECT_EQ(argumentList.size(), 3);
+
+        argumentList = zmqServer->stringToArgumentList("/test string:'toto tata' string:'toto' int:26");
+        EXPECT_EQ(argumentList.size(), 4);
+
+        argumentList = zmqServer->stringToArgumentList("/test string:'toto tata titi' string:'toto' int:26");
+        EXPECT_EQ(argumentList.size(), 4);
+
+        argumentList = zmqServer->stringToArgumentList("/test string:'toto tata string:'toto' int:26");
+        EXPECT_EQ(argumentList.size(), 4);
+
+        argumentList = zmqServer->stringToArgumentList("/test string:'toto tata int:26");
+        EXPECT_EQ(argumentList.size(), 2);
+    }
+
 };
 
 //TEST_F(Communication_test, checkCreationDestruction) {
@@ -571,11 +616,13 @@ public:
 //    ASSERT_NO_THROW(this->checkReceiveZMQ()) ;
 //}
 
-TEST_F(Communication_test, checkSendReceiveZMQ) {
-    ASSERT_NO_THROW(this->checkSendReceiveZMQ()) ;
+//TEST_F(Communication_test, checkSendReceiveZMQ) {
+//    ASSERT_NO_THROW(this->checkSendReceiveZMQ()) ;
+//}
+
+TEST_F(Communication_test, checkZMQParsingFunctions) {
+    ASSERT_NO_THROW(this->checkZMQParsingFunctions()) ;
 }
-
-
 
 } // communication
 } // component

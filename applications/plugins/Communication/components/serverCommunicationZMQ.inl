@@ -189,46 +189,55 @@ std::string ServerCommunicationZMQ::dataToString(CommunicationSubscriber* subscr
     return messageStr.str();
 }
 
-std::vector<std::string> stringToArgumentList(std::string dataString)
+std::vector<std::string> ServerCommunicationZMQ::stringToArgumentList(std::string dataString)
 {
     std::regex rgx("\\s+");
     std::sregex_token_iterator iter(dataString.begin(), dataString.end(), rgx, -1);
     std::sregex_token_iterator end;
     std::vector<std::string> listArguments;
-
-    for ( ; iter != end; ++iter)
+    while (iter != end)
     {
         std::string tmp = *iter;
-        if (tmp.find("string:'") != std::string::npos && tmp.find(" ") != std::string::npos)
+        if (tmp.find("string:'") != std::string::npos && tmp.find_last_of("'") != tmp.length()-1)
         {
-
-            bool stringIsNotFinished = true;
-            while (++iter != end && stringIsNotFinished)
+            bool stop = false;
+            std::string concat = tmp;
+            iter++;
+            while (iter != end && !stop)
             {
                 std::string anotherTmp = *iter;
-                tmp += " " + anotherTmp;
-                if (anotherTmp.find("'") != std::string::npos)
+                if (anotherTmp.find("string:'") != std::string::npos)
+                    stop = true;
+                else
                 {
-                    stringIsNotFinished = false;
-                    break;
+                    concat.append(" ");
+                    concat.append(anotherTmp);
+                    iter++;
                 }
             }
+            listArguments.push_back(concat);
         }
-        listArguments.push_back(tmp);
+        else
+        {
+            iter++;
+            listArguments.push_back(tmp);
+        }
     }
     return listArguments;
 }
 
 
-std::string getArgumentValue(std::string value)
+std::string ServerCommunicationZMQ::getArgumentValue(std::string value)
 {
     std::string stringData = value;
+    std::string returnValue;
     size_t pos = stringData.find(":"); // That's how ZMQ messages could be. Type:value
     stringData.erase(0, pos+1);
-    return stringData;
+    std::remove_copy(stringData.begin(), stringData.end(), std::back_inserter(returnValue), '\'');
+    return returnValue;
 }
 
-std::string getArgumentType(std::string value)
+std::string ServerCommunicationZMQ::getArgumentType(std::string value)
 {
     std::string stringType = value;
     size_t pos = stringType.find(":"); // That's how ZMQ messages could be. Type:value

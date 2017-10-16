@@ -2,7 +2,8 @@
 #define SOFA_SERVERCOMMUNICATIONZMQ_H
 
 #include "serverCommunication.h"
-
+#include <algorithm>
+#include <string>
 #include <zmq.hpp>
 
 namespace sofa
@@ -23,6 +24,10 @@ public:
 
     ServerCommunicationZMQ();
     virtual ~ServerCommunicationZMQ();
+
+    std::string getArgumentType(std::string value);
+    std::string getArgumentValue(std::string value);
+    std::vector<std::string> stringToArgumentList(std::string dataString);
 
     //////////////////////////////// Factory OSC type /////////////////////////////////
     typedef CommunicationDataFactory ZMQDataFactory;
