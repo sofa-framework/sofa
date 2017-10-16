@@ -14,35 +14,8 @@ if(NOT SOFA_NO_OPENGL)
     ## Qt(Qt4/5)
     set(QT_USE_IMPORTED_TARGETS 1)
 
+    # Search for Qt to see if we can auto-enable stuff
     find_package(Qt5 COMPONENTS Core QUIET)
-    if(Qt5Core_FOUND)
-        set(QT5_NO_LINK_QTMAIN 1)
-        find_package(Qt5 COMPONENTS Gui OpenGL Xml REQUIRED)
-
-        SET(QT_TARGETS Qt5::Core Qt5::Gui Qt5::OpenGL Qt5::Xml)
-    else()
-        set(QT4_NO_LINK_QTMAIN 1)
-        find_package(Qt4 COMPONENTS QtCore QtGui QtOpenGl QtXml)
-
-        SET(QT_TARGETS Qt4::Core Qt4::Gui Qt4::OpenGL Qt4::Xml)
-    endif()
-
-    if(WIN32)
-        foreach(target ${QT_TARGETS})
-            sofa_copy_files_from_target(${target})
-            sofa_install_files_from_target(${target})
-        endforeach()
-    endif()
-
-    if(WIN32) # Installing Qt dlls the hard way (dirty)
-        list (GET QT_TARGETS 0 QtCore_target)
-        get_target_property(QtCore_location ${QtCore_target} LOCATION_${CMAKE_BUILD_TYPE})
-        string(REGEX REPLACE "\\/[^/]*/[^/]*$" "" Qt_location ${QtCore_location})
-        FILE(GLOB QT_PLUGINS "${Qt_location}/plugins/platforms/qwindows*.dll")
-        FILE(GLOB QT_EXTDLLS "${Qt_location}/bin/[^Q][^t]*.dll")
-        install(FILES ${QT_PLUGINS} DESTINATION "bin/platforms" COMPONENT applications)
-        install(FILES ${QT_EXTDLLS} DESTINATION bin COMPONENT applications)
-    endif()
 
     ## Thoses variables are used in SofaGuiConfig.cmake.in
     if(Qt5_FOUND OR Qt4_FOUND)
