@@ -259,7 +259,6 @@ macro(sofa_install_targets package_name the_targets install_include_subdir)
 endmacro()
 
 
-
 macro(sofa_create_package package_name version the_targets include_subdir)
     sofa_install_targets("${package_name}" "${the_targets}" "${include_subdir}")
     sofa_write_package_config_files("${package_name}" "${version}")
@@ -268,7 +267,7 @@ endmacro()
 
 
 # Get path of all library versions (involving symbolic links) for a specified library
-macro(sofa_install_files_from_library libraries)
+macro(sofa_install_libraries libraries)
     foreach(library ${libraries})
         if(EXISTS ${library})
             get_filename_component(LIB_NAME ${library} NAME_WE)
@@ -308,14 +307,16 @@ macro(sofa_install_files_from_library libraries)
 endmacro()
 
 
-macro(sofa_install_files_from_target target)
-    get_target_property(target_location ${target} LOCATION_${CMAKE_BUILD_TYPE})
-    sofa_install_files_from_library(${target_location})
+macro(sofa_install_libraries_from_targets the_targets)
+    foreach(target ${the_targets})
+        get_target_property(target_location ${target} LOCATION_${CMAKE_BUILD_TYPE})
+        sofa_install_libraries(${target_location})
+    endforeach()
 endmacro()
 
 
 
-macro(sofa_copy_files_from_library libraries)
+macro(sofa_copy_libraries libraries)
     foreach(library ${libraries})
         if(EXISTS ${library})
             get_filename_component(LIB_NAME ${library} NAME_WE)
@@ -335,9 +336,11 @@ macro(sofa_copy_files_from_library libraries)
 endmacro()
 
 
-macro(sofa_copy_files_from_target target)
-    get_target_property(target_location ${target} LOCATION_${CMAKE_BUILD_TYPE})
-    sofa_copy_files_from_library(${target_location})
+macro(sofa_copy_libraries_from_targets the_targets)
+    foreach(target ${the_targets})
+        get_target_property(target_location ${target} LOCATION_${CMAKE_BUILD_TYPE})
+        sofa_copy_libraries(${target_location})
+    endforeach()
 endmacro()
 
 

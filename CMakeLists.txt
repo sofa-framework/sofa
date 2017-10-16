@@ -375,9 +375,7 @@ else()
 
     find_package(ICU COMPONENTS data i18n uc)
     if(ICU_FOUND)
-        foreach(ICU_LIB ${ICU_LIBRARIES})
-            sofa_install_files_from_library(${ICU_LIB})
-        endforeach()
+        sofa_install_libraries(${ICU_LIBRARIES})
     endif()
 endif()
 

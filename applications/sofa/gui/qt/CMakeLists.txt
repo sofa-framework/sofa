@@ -180,10 +180,15 @@ else()
 endif()
 
 if(WIN32)
-    foreach(target ${QT_TARGETS})
-        sofa_copy_files_from_target(${target})
-        sofa_install_files_from_target(${target})
-    endforeach()
+    sofa_copy_libraries_from_targets("${QT_TARGETS}")
+    sofa_install_libraries_from_targets("${QT_TARGETS}")
+
+    # Installing Qt platforms dll the hard way (dirty)
+    list (GET QT_TARGETS 0 QtCore_target)
+    get_target_property(QtCore_location ${QtCore_target} LOCATION_${CMAKE_BUILD_TYPE})
+    string(REGEX REPLACE "\\/[^/]*/[^/]*$" "" Qt_location ${QtCore_location})
+    FILE(GLOB QT_PLUGINS "${Qt_location}/plugins/platforms/qwindows*.dll")
+    install(FILES ${QT_PLUGINS} DESTINATION "bin/platforms" COMPONENT applications)
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${MOC_HEADER_FILES} ${HEADER_FILES} ${MOC_FILES} ${FORM_FILES} ${SOURCE_FILES})
@@ -209,6 +214,3 @@ endif()
 
 
 sofa_install_targets(SofaGui SofaGuiQt "sofa/gui/qt")
-
-#install(FILES ${HEADER_FILES} DESTINATION "include/sofa/gui/qt" COMPONENT headers)
-#install(FILES ${MOC_HEADER_FILES} DESTINATION "include/sofa/gui/qt" COMPONENT headers)
