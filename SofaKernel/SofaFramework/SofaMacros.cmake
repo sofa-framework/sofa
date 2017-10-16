@@ -242,6 +242,20 @@ macro(sofa_install_targets package_name the_targets install_include_subdir)
             LIBRARY DESTINATION lib COMPONENT libraries
             ARCHIVE DESTINATION lib COMPONENT libraries
             PUBLIC_HEADER DESTINATION include/${install_include_subdir} COMPONENT headers)
+
+    if(NOT "${install_include_subdir}" STREQUAL "") # Handle multi-dir install (no PUBLIC_HEADER)
+        foreach(target ${the_targets})
+            get_target_property(public_header ${target} PUBLIC_HEADER)
+            if("${public_header}" STREQUAL "public_header-NOTFOUND")
+                message("Full install: ${CMAKE_CURRENT_SOURCE_DIR}")
+                # the trailing slash is IMPORTANT, see https://cmake.org/pipermail/cmake/2009-December/033850.html
+                install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
+                        DESTINATION include/${install_include_subdir}
+                        COMPONENT headers
+                        FILES_MATCHING PATTERN "*.h" PATTERN "*.inl")
+            endif()
+        endforeach()
+    endif()
 endmacro()
 
 
@@ -254,41 +268,44 @@ endmacro()
 
 
 # Get path of all library versions (involving symbolic links) for a specified library
-macro(sofa_install_files_from_library library)
-    get_filename_component(LIB_NAME ${library} NAME_WE)
-    get_filename_component(LIB_PATH ${library} PATH)
+macro(sofa_install_files_from_library libraries)
+    foreach(library ${libraries})
+        if(EXISTS ${library})
+            get_filename_component(LIB_NAME ${library} NAME_WE)
+            get_filename_component(LIB_PATH ${library} PATH)
 
-    get_filename_component(LIBREAL ${library} REALPATH)
-    get_filename_component(LIBREAL_NAME ${LIBREAL} NAME_WE)
-    get_filename_component(LIBREAL_PATH ${LIBREAL} PATH)
+            get_filename_component(LIBREAL ${library} REALPATH)
+            get_filename_component(LIBREAL_NAME ${LIBREAL} NAME_WE)
+            get_filename_component(LIBREAL_PATH ${LIBREAL} PATH)
 
-    file(GLOB_RECURSE SHARED_LIBS FOLLOW_SYMLINKS
-        "${LIB_PATH}/${LIB_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX}*"
-        "${LIB_PATH}/${LIB_NAME}[0-9]${CMAKE_SHARED_LIBRARY_SUFFIX}*"
-        "${LIB_PATH}/${LIB_NAME}[0-9][0-9]${CMAKE_SHARED_LIBRARY_SUFFIX}*"
+            file(GLOB_RECURSE SHARED_LIBS FOLLOW_SYMLINKS
+                "${LIB_PATH}/${LIB_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX}*"
+                "${LIB_PATH}/${LIB_NAME}[0-9]${CMAKE_SHARED_LIBRARY_SUFFIX}*"
+                "${LIB_PATH}/${LIB_NAME}[0-9][0-9]${CMAKE_SHARED_LIBRARY_SUFFIX}*"
 
-        "${LIBREAL_PATH}/${LIBREAL_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX}*"
-        "${LIBREAL_PATH}/${LIBREAL_NAME}[0-9]${CMAKE_SHARED_LIBRARY_SUFFIX}*"
-        "${LIBREAL_PATH}/${LIBREAL_NAME}[0-9][0-9]${CMAKE_SHARED_LIBRARY_SUFFIX}*"
-    )
-    file(GLOB_RECURSE STATIC_LIBS FOLLOW_SYMLINKS
-        "${LIB_PATH}/${LIB_NAME}${CMAKE_STATIC_LIBRARY_SUFFIX}*"
-        "${LIB_PATH}/${LIB_NAME}[0-9]${CMAKE_STATIC_LIBRARY_SUFFIX}*"
-        "${LIB_PATH}/${LIB_NAME}[0-9][0-9]${CMAKE_STATIC_LIBRARY_SUFFIX}*"
+                "${LIBREAL_PATH}/${LIBREAL_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX}*"
+                "${LIBREAL_PATH}/${LIBREAL_NAME}[0-9]${CMAKE_SHARED_LIBRARY_SUFFIX}*"
+                "${LIBREAL_PATH}/${LIBREAL_NAME}[0-9][0-9]${CMAKE_SHARED_LIBRARY_SUFFIX}*"
+            )
+            file(GLOB_RECURSE STATIC_LIBS FOLLOW_SYMLINKS
+                "${LIB_PATH}/${LIB_NAME}${CMAKE_STATIC_LIBRARY_SUFFIX}*"
+                "${LIB_PATH}/${LIB_NAME}[0-9]${CMAKE_STATIC_LIBRARY_SUFFIX}*"
+                "${LIB_PATH}/${LIB_NAME}[0-9][0-9]${CMAKE_STATIC_LIBRARY_SUFFIX}*"
 
-        "${LIBREAL_PATH}/${LIBREAL_NAME}${CMAKE_STATIC_LIBRARY_SUFFIX}*"
-        "${LIBREAL_PATH}/${LIBREAL_NAME}[0-9]${CMAKE_STATIC_LIBRARY_SUFFIX}*"
-        "${LIBREAL_PATH}/${LIBREAL_NAME}[0-9][0-9]${CMAKE_STATIC_LIBRARY_SUFFIX}*"
-    )
+                "${LIBREAL_PATH}/${LIBREAL_NAME}${CMAKE_STATIC_LIBRARY_SUFFIX}*"
+                "${LIBREAL_PATH}/${LIBREAL_NAME}[0-9]${CMAKE_STATIC_LIBRARY_SUFFIX}*"
+                "${LIBREAL_PATH}/${LIBREAL_NAME}[0-9][0-9]${CMAKE_STATIC_LIBRARY_SUFFIX}*"
+            )
 
-    if(WIN32)
-        install(FILES ${SHARED_LIBS} DESTINATION bin COMPONENT applications)
-    else()
-        install(FILES ${SHARED_LIBS} DESTINATION lib COMPONENT applications)
-    endif()
-    install(FILES ${STATIC_LIBS} DESTINATION lib COMPONENT libraries)
+            if(WIN32)
+                install(FILES ${SHARED_LIBS} DESTINATION bin COMPONENT applications)
+            else()
+                install(FILES ${SHARED_LIBS} DESTINATION lib COMPONENT applications)
+            endif()
+            install(FILES ${STATIC_LIBS} DESTINATION lib COMPONENT libraries)
+        endif()
+    endforeach()
 endmacro()
-
 
 
 macro(sofa_install_files_from_target target)
@@ -298,21 +315,29 @@ endmacro()
 
 
 
+macro(sofa_copy_files_from_library libraries)
+    foreach(library ${libraries})
+        if(EXISTS ${library})
+            get_filename_component(LIB_NAME ${library} NAME_WE)
+            get_filename_component(LIB_PATH ${library} PATH)
+
+            file(GLOB SHARED_LIB "${LIB_PATH}/${LIB_NAME}*${CMAKE_SHARED_LIBRARY_SUFFIX}")
+
+            if(CMAKE_CONFIGURATION_TYPES) # Multi-config generator (MSVC)
+                foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
+                    file(COPY ${SHARED_LIB} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CONFIG}")
+                endforeach()
+            else()                      # Single-config generator (nmake)
+                file(COPY ${SHARED_LIB} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
+            endif()
+        endif()
+    endforeach()
+endmacro()
+
+
 macro(sofa_copy_files_from_target target)
     get_target_property(target_location ${target} LOCATION_${CMAKE_BUILD_TYPE})
-
-    get_filename_component(LIB_NAME ${target_location} NAME_WE)
-    get_filename_component(LIB_PATH ${target_location} PATH)
-
-    file(GLOB SHARED_LIB "${LIB_PATH}/${LIB_NAME}*${CMAKE_SHARED_LIBRARY_SUFFIX}")
-
-    if(CMAKE_CONFIGURATION_TYPES) # Multi-config generator (MSVC)
-        foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
-            file(COPY ${SHARED_LIB} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CONFIG}")
-        endforeach()
-    else()                      # Single-config generator (nmake)
-        file(COPY ${SHARED_LIB} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
-    endif()
+    sofa_copy_files_from_library(${target_location})
 endmacro()
 
 

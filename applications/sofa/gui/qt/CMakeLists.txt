@@ -208,7 +208,7 @@ if(SOFA_ENABLE_QWT)
 endif()
 
 
-sofa_install_targets(SofaGui SofaGuiQt "")
+sofa_install_targets(SofaGui SofaGuiQt "sofa/gui/qt")
 
-install(FILES ${HEADER_FILES} DESTINATION "include/sofa/gui/qt" COMPONENT headers)
-install(FILES ${MOC_HEADER_FILES} DESTINATION "include/sofa/gui/qt" COMPONENT headers)
+#install(FILES ${HEADER_FILES} DESTINATION "include/sofa/gui/qt" COMPONENT headers)
+#install(FILES ${MOC_HEADER_FILES} DESTINATION "include/sofa/gui/qt" COMPONENT headers)

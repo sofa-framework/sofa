@@ -367,12 +367,11 @@ if(APPLE)
     # on macOS, -framework CoreServices is needed for FileMonitor
     list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK "-framework CoreServices")
 endif()
-target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAFRAMEWORK_DEPENDENCY_LINK} ${Boost_LIBRARIES} )
 
 if(SOFA_BUILD_TESTS)
     target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAFRAMEWORK_DEPENDENCY_LINK} ${Boost_LIBRARIES} gtest)
 else()
-    target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAFRAMEWORK_DEPENDENCY_LINK} ${Boost_LIBRARIES})
+    target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAFRAMEWORK_DEPENDENCY_LINK})
 endif()
 
 
@@ -391,7 +390,6 @@ set_property(SOURCE system/PluginManager.cpp APPEND PROPERTY COMPILE_DEFINITIONS
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFAHELPER_COMPILE_FLAGS}")
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION "${SOFAFRAMEWORK_VERSION}")
 
-sofa_install_targets(SofaFramework SofaHelper "")
+sofa_install_targets(SofaFramework ${PROJECT_NAME} "sofa/helper")
