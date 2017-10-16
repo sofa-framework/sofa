@@ -23,10 +23,6 @@
 #define SOFA_COMPONENT_ENGINE_PROJECTIVETRANSFORMENGINE_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 
@@ -48,7 +44,7 @@ namespace engine
 This transformation can be either translation, rotation, scale
  */
 template <class DataTypes>
-class ProjectiveTransformEngine : public core::DataEngine
+class SOFA_MISC_ENGINE_API ProjectiveTransformEngine : public core::DataEngine
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(ProjectiveTransformEngine,DataTypes),core::DataEngine);
@@ -89,20 +85,20 @@ protected:
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_PROJECTIVETRANSFORMENGINE_CPP)
 
-#ifndef SOFA_FLOAT
+#ifdef SOFA_WITH_DOUBLE
 extern template class SOFA_MISC_ENGINE_API ProjectiveTransformEngine<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
+#endif
+
+#ifdef SOFA_WITH_FLOAT
 extern template class SOFA_MISC_ENGINE_API ProjectiveTransformEngine<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+#endif
+
 extern template class SOFA_MISC_ENGINE_API ProjectiveTransformEngine<defaulttype::ExtVec3fTypes>;
 
-#endif
+#endif /// SOFA_EXTERN_TEMPLATE
 
-} // namespace engine
+} /// namespace engine
+} /// namespace component
+} /// namespace sofa
 
-} // namespace component
-
-} // namespace sofa
-
-#endif
+#endif /// SOFA_COMPONENT_ENGINE_PROJECTIVETRANSFORMENGINE_H

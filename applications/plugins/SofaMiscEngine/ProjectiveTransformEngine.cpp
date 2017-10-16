@@ -19,9 +19,44 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAMISCENGINE_CONFIG_H
-#define SOFAMISCENGINE_CONFIG_H
+#define SOFA_COMPONENT_ENGINE_PROJECTIVETRANSFORMENGINE_CPP
+#include <SofaMiscEngine/ProjectiveTransformEngine.inl>
+#include <sofa/core/ObjectFactory.h>
 
-#include <SofaMisc/config.h>
+namespace sofa
+{
 
+namespace component
+{
+
+namespace engine
+{
+
+  SOFA_DECL_CLASS(ProjectiveTransformEngine)
+
+  int ProjectiveTransformEngineClass = core::RegisterObject("Project the position of 3d points onto a plane according to a projection matrix")
+#ifdef SOFA_WITH_FLOAT
+        .add< ProjectiveTransformEngine<defaulttype::Vec3fTypes> >(true) // default template
 #endif
+#ifdef SOFA_WITH_DOUBLE
+        .add< ProjectiveTransformEngine<defaulttype::Vec3dTypes> >(true) // default template
+#endif
+       .add< ProjectiveTransformEngine<defaulttype::ExtVec3fTypes> >()   // default template
+        ;
+
+#ifdef SOFA_WITH_FLOAT
+template class SOFA_MISC_ENGINE_API ProjectiveTransformEngine<defaulttype::Vec3fTypes>;
+#endif
+#ifdef SOFA_WITH_DOUBLE
+template class SOFA_MISC_ENGINE_API ProjectiveTransformEngine<defaulttype::Vec3dTypes>;
+#endif
+
+template class SOFA_MISC_ENGINE_API ProjectiveTransformEngine<defaulttype::ExtVec3fTypes>;
+
+
+} // namespace constraint
+
+} // namespace component
+
+} // namespace sofa
+

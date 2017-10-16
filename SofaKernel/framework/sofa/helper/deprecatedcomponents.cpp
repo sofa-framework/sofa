@@ -75,6 +75,9 @@ std::map<std::string, std::vector<std::string>> components =
     {"InterpolationController", {"deprecated-17.12"}},
 	{"MechanicalStateControllerOmni", {"deprecated-17.12"}},
     {"NodeToggleController", {"deprecated-17.12"}},
+
+    /// SofaMiscEngine
+    {"DisplacementMatrixEngine", {"deprecated-17.12", "You can replace this component by DisplacementTransformEngine"}}
 };
 
 ////// Here is the list of component that are move or removed with a message explaining
@@ -82,6 +85,12 @@ std::map<std::string, std::vector<std::string>> components =
 /// components are still in the factory.
 std::map<std::string, std::vector<std::string>> uncreateablecomponents =
 {
+    /// SofaMiscCollision is now a Plugin
+    {"TriangleModelInRegularGrid", {"pluginized-17.12", "<RequirePlugin name='SofaMiscCollision'/>"}},
+    {"TetrahedronModel", {"pluginized-17.12", "<RequirePlugin name='SofaMiscCollision'/>"}},
+    {"DefaultCollisionGroupManager", {"pluginized-17.12", "<RequirePlugin name='SofaMiscCollision'/>"}},
+    {"RuleBasedContactManager", {"pluginized-17.12", "<RequirePlugin name='SofaMiscCollision'/>"}},
+
     /// SofaDistanceGrid is now a Plugin
     {"BarycentricPenalityContact", {"pluginized-17.12", "<RequirePlugin name='SofaDistanceGrid'/>"}},
     {"DistanceGridCollisionModel", {"pluginized-17.12", "<RequirePlugin name='SofaDistanceGrid'/>"}},
@@ -94,7 +103,13 @@ std::map<std::string, std::vector<std::string>> uncreateablecomponents =
     {"ImplicitSurfaceContainer", {"pluginized-17.12", "<RequirePlugin name='SofaImplicitField'/>"}},
     {"InterpolatedImplicitSurface", {"pluginized-17.12", "<RequirePlugin name='SofaImplicitField'/>"}},
     {"SphereSurface", {"pluginized-17.12", "<RequirePlugin name='SofaImplicitField'/>"}},
-    {"ImplicitSurfaceMapping", {"pluginized-17.12", "<RequirePlugin name='SofaImplicitField'/>"}}
+    {"ImplicitSurfaceMapping", {"pluginized-17.12", "<RequirePlugin name='SofaImplicitField'/>"}},
+
+    /// SofaMiscEngine is now a Plugin
+    {"DisplacementTransformEngine", {"pluginized-17.12", "<RequirePlugin name='SofaMiscEngine'/>"}},
+    {"DisplacementMatrixEngine", {"pluginized-17.12", "<RequirePlugin name='SofaMiscEngine'/>"}},
+    {"Distance", {"pluginized-17.12", "<RequirePlugin name='SofaMiscEngine'/>"}},
+    {"ProjectiveTransformEngine", {"pluginized-17.12", "<RequirePlugin name='SofaMiscEngine'/>"}}
 };
 
 } /// namespace deprecatedcomponents

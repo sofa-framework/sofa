@@ -19,38 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <SofaComponentMisc/initComponentMisc.h>
-#include <SofaMiscTopology/initMiscTopology.h>
-#include <SofaMiscMapping/initMiscMapping.h>
-#include <SofaMiscForceField/initMiscForcefield.h>
-#include <SofaMiscFem/initMiscFEM.h>
-#include <SofaMiscSolver/initMiscSolver.h>
-#include <SofaMisc/initMisc.h>
+#ifndef SOFA_CONFIG_BUILD_OPTION_OPENGL_H
+#define SOFA_CONFIG_BUILD_OPTION_OPENGL_H
 
-namespace sofa
-{
+#cmakedefine SOFA_NO_OPENGL
+#define SOFA_WITH_OPENGL ${SOFA_WITH_OPENGL_}
 
-namespace component
-{
+#endif /// SOFA_CONFIG_BUILD_OPTION_OPENGL_H
 
-
-void initComponentMisc()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-
-    initMiscTopology();
-    initMiscMapping();
-    initMiscForcefield();
-    initMiscFEM();
-    initMiscSolver();
-    initMisc();
-}
-
-} // namespace component
-
-} // namespace sofa

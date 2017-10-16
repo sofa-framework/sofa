@@ -182,6 +182,13 @@ install(FILES "${CMAKE_BINARY_DIR}/include/sofa/config.h" DESTINATION "include/s
 configure_file(build_option_componentset.h.in "${CMAKE_BINARY_DIR}/include/sofa/config/build_option_componentset.h")
 install(FILES "${CMAKE_BINARY_DIR}/include/sofa/config/build_option_componentset.h" DESTINATION "include/sofa/config")
 
+configure_file(build_option_opengl.h.in "${CMAKE_BINARY_DIR}/include/sofa/config/build_option_opengl.h")
+install(FILES "${CMAKE_BINARY_DIR}/include/sofa/config/build_option_opengl.h" DESTINATION "include/sofa/config")
+
+configure_file(sharedlibrary_defines.h.in "${CMAKE_BINARY_DIR}/include/sofa/config/sharedlibrary_defines.h")
+install(FILES "${CMAKE_BINARY_DIR}/include/sofa/config/sharedlibrary_defines.h" DESTINATION "include/sofa/config")
+
+
 # make sure everyone in the build tree can see <sofa/config.h>
 #list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR})
 list(REMOVE_DUPLICATES SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES)

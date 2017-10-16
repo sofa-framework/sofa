@@ -19,44 +19,28 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_ENGINE_DISTANCES_CPP
-#include <SofaMiscEngine/Distances.inl>
+//#define SOFA_COMPONENT_ENGINE_DisplacementMatrixEngine_CPP
+
+#include "DisplacementMatrixEngine.inl"
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
 
 namespace sofa
 {
-
 namespace component
 {
-
 namespace engine
 {
 
-using namespace sofa::defaulttype;
+using namespace defaulttype;
 
-SOFA_DECL_CLASS(Distances)
+SOFA_DECL_CLASS( DisplacementMatrixEngine )
 
-int DistancesClass = core::RegisterObject("Compute distances based on a grid.")
-#ifndef SOFA_FLOAT
-        .add< Distances<Vec3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< Distances<Vec3fTypes> >()
-#endif //SOFA_DOUBLE
-        ;
-
-#ifndef SOFA_FLOAT
-template class SOFA_MISC_ENGINE_API Distances<Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_MISC_ENGINE_API Distances<Vec3fTypes>;
-#endif //SOFA_DOUBLE
-
+int DisplacementMatrixEngineClass = core::RegisterObject("Converts a vector of Rigid to a vector of displacement matrices.")
+    .add< DisplacementMatrixEngine<Rigid3Types> >()
+;
 
 } // namespace engine
 
 } // namespace component
 
 } // namespace sofa
-

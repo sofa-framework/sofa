@@ -22,6 +22,9 @@
 #ifndef SOFA_CONFIG_H
 #define SOFA_CONFIG_H
 
+#include <sofa/config/sharedlibrary_defines.h>
+#include <sofa/config/build_option_opengl.h>
+
 // fixes CGAL plugin build errors (default value: 5)
 #define BOOST_PARAMETER_MAX_ARITY 12
 
@@ -46,8 +49,6 @@
 #cmakedefine SOFA_HAVE_TINYXML
 
 #cmakedefine SOFA_DUMP_VISITOR_INFO
-
-#cmakedefine SOFA_NO_OPENGL
 
 #cmakedefine SOFA_NO_UPDATE_BBOX
 
@@ -100,18 +101,6 @@ typedef double SReal;
 // supported by all majors compilers.)
 #ifndef SOFA_NO_EXTERN_TEMPLATE
 #  define SOFA_EXTERN_TEMPLATE
-#endif
-
-#ifndef WIN32
-#	define SOFA_EXPORT_DYNAMIC_LIBRARY
-#   define SOFA_IMPORT_DYNAMIC_LIBRARY
-#else
-#	define SOFA_EXPORT_DYNAMIC_LIBRARY __declspec( dllexport )
-#   define SOFA_IMPORT_DYNAMIC_LIBRARY __declspec( dllimport )
-#   ifdef _MSC_VER
-#       pragma warning(disable : 4231)
-#       pragma warning(disable : 4910)
-#   endif
 #endif
 
 #ifdef SOFA_BUILD_HELPER

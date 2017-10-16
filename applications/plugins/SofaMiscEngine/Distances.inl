@@ -22,9 +22,7 @@
 #ifndef SOFA_COMPONENT_ENGINE_DISTANCES_INL
 #define SOFA_COMPONENT_ENGINE_DISTANCES_INL
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+#include <sofa/config/build_option_opengl.h>
 
 #include <SofaMiscEngine/Distances.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -87,7 +85,7 @@ void Distances< DataTypes >::init()
     hexaContainer->getContext()->get ( hexaGeoAlgo );
     if ( !hexaGeoAlgo )
     {
-        serr << "Can not find the hexahedron geometry algorithms component." << sendl;
+        msg_error() << "Can not find the hexahedron geometry algorithms component." ;
         return;
     }
 
@@ -95,7 +93,7 @@ void Distances< DataTypes >::init()
     this->getContext()->get( voxelGridLoader);
     if ( !voxelGridLoader )
     {
-        serr << "Can not find the Voxel Grid Loader component." << sendl;
+        msg_error() << "Can not find the Voxel Grid Loader component." ;
         return;
     }
     densityValues = voxelGridLoader->getData();
@@ -141,24 +139,8 @@ void Distances< DataTypes >::reinit()
 template<class DataTypes>
 void Distances< DataTypes >::update()
 {
-
-    // tester les data dirty
     cleanDirty();
-
-    /*
-    if( true)
-      computeDistanceMap
-
-
-      if (true)
-    getDistances
-    */
-
-
-
 }
-
-
 
 template<class DataTypes>
 void Distances< DataTypes >::computeDistanceMap ( VecCoord beginElts, const double& distMax )
@@ -174,7 +156,7 @@ void Distances< DataTypes >::computeDistanceMap ( VecCoord beginElts, const doub
     else if ( distanceType.getValue().getSelectedId() == TYPE_HARMONIC_STIFFNESS ) filename+="StiffnessHarmonic";
     else
     {
-        serr << "distance Type unknown when adding an element." << sendl;
+        msg_error() << "distance Type unknown when adding an element." ;
         return;
     }
 
@@ -182,12 +164,12 @@ void Distances< DataTypes >::computeDistanceMap ( VecCoord beginElts, const doub
     {
         // Load the distance map from the file
         filename=sofa::helper::system::DataRepository.getFile(filename);
-        sout << "Using filename:" << filename << " to load the distances" << sendl;
+        msg_info() << "Using filename:" << filename << " to load the distances" ;
         std::ifstream distanceFile(filename.c_str());
         distanceMap.read(distanceFile);
         distanceFile.close();
     }
-    else // Else, compute it and write it into the file
+    else /// Else, compute it and write it into the file
     {
         distanceMap.clear();
         distanceMap.resize ( beginElts.size() );
@@ -230,7 +212,7 @@ void Distances< DataTypes >::computeDistanceMap ( VecCoord beginElts, const doub
                 computeHarmonicCoords ( i, hfrom, true );
         }
 
-        sout << "Writing filename:" << filename << " to save the distances" << sendl;
+        msg_info() << "Writing filename:" << filename << " to save the distances" ;
         std::ofstream distanceFile(filename.c_str());
         distanceMap.write(distanceFile);
         distanceFile.close();
@@ -272,7 +254,7 @@ void Distances< DataTypes >::addElt ( const Coord& elt, VecCoord beginElts, cons
     }
     else
     {
-        serr << "distance Type unknown when adding an element." << sendl;
+        msg_error() << "distance Type unknown when adding an element." ;
     }
 }
 
@@ -297,25 +279,25 @@ void Distances< DataTypes >::computeGeodesicalDistance ( const unsigned int& map
     for ( typename VecCoord::const_iterator it = beginElts.begin(); it != beginElts.end(); it++)
     {
         hexaCoord.first = hexaGeoAlgo->findNearestElementInRestPos ( *it - offSet, baryC, dist );
-        hexaCoord.second = 0.0;//( point - offSet - hexaGeoAlgo->computeHexahedronRestCenter ( hexaCoord.first ) ).norm();
+        hexaCoord.second = 0.0;
         hexasBeingParsed.push ( hexaCoord );
     }
 
-    // Propagate
+    /// Propagate
     while ( !hexasBeingParsed.empty() )
     {
-        hexaCoord = hexasBeingParsed.front(); // Get the front element of the queue.
-        hexasBeingParsed.pop();             // Remove it from the queue.
+        hexaCoord = hexasBeingParsed.front(); /// Get the front element of the queue.
+        hexasBeingParsed.pop();               /// Remove it from the queue.
         const core::topology::BaseMeshTopology::HexaID& hexaID = hexaCoord.first;
         const double& distance = hexaCoord.second;
 
         if ( hexasParsed.find ( hexaID ) != hexasParsed.end() ) continue;
-        hexasParsed.insert ( hexaID ); // This hexa has been parsed
+        hexasParsed.insert ( hexaID ); /// This hexa has been parsed
 
-        // Continue if the distance max is reached
+        /// Continue if the distance max is reached
         const Coord hexaIDpos = hexaGeoAlgo->computeHexahedronRestCenter ( hexaID );
 
-        // Propagate
+        /// Propagate
         std::set<core::topology::BaseMeshTopology::HexaID> neighbors;
         getNeighbors ( hexaID, neighbors );
 
@@ -329,14 +311,11 @@ void Distances< DataTypes >::computeGeodesicalDistance ( const unsigned int& map
             double stiffCoeff = 1.0;
             if (diffuseAccordingToStiffness)
             {
-                //unsigned int hexaID2;
-                //find1DCoord(hexaID2, hexaGeoAlgo->computeHexahedronRestCenter(*it));
-                //double densityValue2 = densityValues[hexaID2];
-                stiffCoeff = 1.0 + (densityValue1/* - densityValue2*/) / 255.0 * 5.0; // From 1 to 10
+                stiffCoeff = 1.0 + (densityValue1) / 255.0 * 5.0; /// From 1 to 10
             }
             newDist.first = *it;
             newDist.second = distance + (( hexaGeoAlgo->computeHexahedronRestCenter ( *it ) - hexaIDpos ).norm() * stiffCoeff);
-            if ( distMax != 0 && newDist.second > distMax ) continue; // End on distMax
+            if ( distMax != 0 && newDist.second > distMax ) continue; /// End on distMax
             if ( distanceMap[mapIndex][*it] == -1.0 || newDist.second < distanceMap[mapIndex][*it] ) distanceMap[mapIndex][*it] = newDist.second;
             hexasBeingParsed.push ( newDist );
         }
@@ -347,7 +326,8 @@ void Distances< DataTypes >::computeGeodesicalDistance ( const unsigned int& map
 template<class DataTypes>
 void Distances< DataTypes >::computeHarmonicCoords ( const unsigned int& mapIndex, const helper::vector<core::topology::BaseMeshTopology::HexaID>& hfrom, const bool& useStiffnessMap )
 {
-    // Init the distance Map. TODO: init the distance map between each elt before diffusing
+    /// Init the distance Map.
+    /// TODO: init the distance map between each elt before diffusing
     helper::vector<double>& dMIndex = distanceMap[mapIndex];
     dMIndex.clear();
     dMIndex.resize ( hexaContainer->getNumberOfHexahedra() );
@@ -374,7 +354,7 @@ void Distances< DataTypes >::computeHarmonicCoords ( const unsigned int& mapInde
 
     dMIndex[hfrom[mapIndex]] = 0.0;
 
-    sout << "Compute distance map." << sendl;
+    msg_info() << "Compute distance map." ;
 
     sofa::defaulttype::Vec3i res = hexaContainer->resolution.getValue();
     bool convergence = false;
@@ -406,30 +386,30 @@ void Distances< DataTypes >::computeHarmonicCoords ( const unsigned int& mapInde
 
     while ( !convergence )
     {
-        // Copy the current values.
+        /// Copy the current values.
         for ( int x = 0; x < res[0]; x++ )
             for ( int y = 0; y < res[1]; y++ )
                 for ( int z = 0; z < res[2]; z++ )
                     dMCpy[x][y][z] = distMap[x][y][z];
 
-        // Apply the filter
-        //10 iterations per thread
+        /// Apply the filter
+        /// 10 iterations per thread
         int x,y,z;
         for (  x = 0; x < res[0]; x++ )
             for (  y = 0; y < res[1]; y++ )
             {
                 for (  z = 0; z < res[2]; z++ )
                 {
-                    // Avoid to compute the value for the 'from' hexa and the unexisting hexas.
+                    /// Avoid to compute the value for the 'from' hexa and the unexisting hexas.
                     if ( dMCpy[x][y][z] == -1.0 || dMCpy[x][y][z] == 0.0 || dMCpy[x][y][z] == harmonicMaxValue.getValue() ) continue;
 
 
                     double value = 0;
-                    int nbTest = 4; // Contribution of the current case 'i'
+                    int nbTest = 4; /// Contribution of the current case 'i'
 
                     if ( z > 0 )
                     {
-                        addContribution ( value, nbTest, dMCpy, x, y, z-1, 2, useStiffnessMap );// gridID-res[0]*res[1]
+                        addContribution ( value, nbTest, dMCpy, x, y, z-1, 2, useStiffnessMap );      // gridID-res[0]*res[1]
                         if ( y > 0 )
                             addContribution ( value, nbTest, dMCpy, x, y-1, z-1, 1, useStiffnessMap );// gridID-res[0]*res[1]-res[0]
                         if ( y < res[1]-1 )
@@ -472,12 +452,12 @@ void Distances< DataTypes >::computeHarmonicCoords ( const unsigned int& mapInde
                     if ( x < res[0]-1 )
                         addContribution ( value, nbTest, dMCpy, x+1, y, z, 2, useStiffnessMap );// gridID+1
 
-                    // And store the result
+                    /// And store the result
                     distMap[x][y][z] = ( ( 4*dMCpy[x][y][z] + value ) / ( double ) nbTest );
                 }
             }
 
-        // Convergence test
+        /// Convergence test
         convergence = true;
         for ( int x = 0; x < res[0]; x++ )
             for ( int y = 0; y < res[1]; y++ )
@@ -486,7 +466,7 @@ void Distances< DataTypes >::computeHarmonicCoords ( const unsigned int& mapInde
                         convergence = false;
     }
 
-    // Copy the result in distanceMap
+    /// Copy the result in distanceMap
     for ( unsigned int i = 0; i < dMIndex.size(); i++ )
     {
         Coord pos = hexaGeoAlgo->computeHexahedronRestCenter ( i );
@@ -509,7 +489,7 @@ void Distances< DataTypes >::computeHarmonicCoords ( const unsigned int& mapInde
     delete [] dMCpy;
     delete [] distMap;
 
-    sout << "Distance map computed." << sendl;
+    msg_info() << "Distance map computed." ;
 }
 
 
@@ -522,8 +502,6 @@ void Distances< DataTypes >::computeVoronoiDistances( const unsigned int& /*mapI
     // Remonter jusqu'aux reperes a partir de ces elts pour obtenir les lignes verte de (2)
     // initialiser les frontieres a 0 et propager
     // On obtient ligne rouge de (2)
-
-
 }
 
 
@@ -677,7 +655,9 @@ void Distances< DataTypes >::findCorrespondingHexas ( helper::vector<core::topol
         unsigned int hexa1DCoord;
         find1DCoord( hexa1DCoord, pointSet[i]);
         hexas.push_back ( hexaGeoAlgo->getTopoIndexFromRegularGridIndex ( hexa1DCoord, existing ) );
-        if ( !existing ) serr << "hexa not found. Point (" << pointSet[i] << ") may be outside of the grid." << sendl;
+
+        msg_error_when(!existing)
+            << "hexa not found. Point (" << pointSet[i] << ") may be outside of the grid." ;
     }
 }
 
@@ -709,27 +689,25 @@ void Distances< DataTypes >::getNeighbors ( const core::topology::BaseMeshTopolo
 template<class DataTypes>
 void Distances< DataTypes >::draw(const core::visual::VisualParams* )
 {
-#ifndef SOFA_NO_OPENGL
-    // Display the distance on each hexa of the grid
-    if ( showDistanceMap.getValue() )
-    {
-        glColor3f ( 1.0f, 0.0f, 0.3f );
-        const helper::vector<double>& distMap = distanceMap[showMapIndex.getValue()%distanceMap.size()];
-        for ( unsigned int j = 0; j < distMap.size(); j++ )
+    if(SOFA_WITH_OPENGL){
+        // Display the distance on each hexa of the grid
+        if ( showDistanceMap.getValue() )
         {
-            Coord point = hexaGeoAlgo->computeHexahedronRestCenter ( j );
-            sofa::defaulttype::Vector3 tmpPt = sofa::defaulttype::Vector3 ( point[0], point[1], point[2] );
-            sofa::helper::gl::GlText::draw((int)(distMap[j]), tmpPt, showTextScaleFactor.getValue() );
+            glColor3f ( 1.0f, 0.0f, 0.3f );
+            const helper::vector<double>& distMap = distanceMap[showMapIndex.getValue()%distanceMap.size()];
+            for ( unsigned int j = 0; j < distMap.size(); j++ )
+            {
+                Coord point = hexaGeoAlgo->computeHexahedronRestCenter ( j );
+                sofa::defaulttype::Vector3 tmpPt = sofa::defaulttype::Vector3 ( point[0], point[1], point[2] );
+                sofa::helper::gl::GlText::draw((int)(distMap[j]), tmpPt, showTextScaleFactor.getValue() );
+            }
         }
     }
-#endif /* SOFA_NO_OPENGL */
 }
 
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
+} /// namespace engine
+} /// namespace component
+} /// namespace sofa
 
 #endif

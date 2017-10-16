@@ -10,7 +10,9 @@ sofa_add_plugin(SofaSphFluid SofaSphFluid ON)
 sofa_add_plugin(SofaMiscCollision SofaMiscCollision ON)
 sofa_add_plugin(SofaDistanceGrid SofaDistanceGrid)
 sofa_add_plugin(SofaImplicitField SofaImplicitField)
+sofa_add_plugin(SofaMiscEngine SofaMiscEngine)
 sofa_add_plugin(SofaVolumetricData SofaVolumetricData)  ##TRANSITIONAL DEPEND ON DISTANCEGRID & IMPLICIT
+
 sofa_add_plugin(image image)
 sofa_add_plugin(Compliant Compliant)
 sofa_add_plugin(CGALPlugin CGALPlugin) # Depends on image

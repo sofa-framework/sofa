@@ -19,84 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_DisplacementMatrixEngine_INL
-#define SOFA_COMPONENT_ENGINE_DisplacementMatrixEngine_INL
+#ifndef SOFA_COMPONENT_ENGINE_DISPLACEMENTMATRIXENGINE_INL
+#define SOFA_COMPONENT_ENGINE_DISPLACEMENTMATRIXENGINE_INL
 
 #include "DisplacementMatrixEngine.h"
-
+#include "DisplacementTransformEngine.inl"
 
 namespace sofa
 {
-
 namespace component
 {
-
 namespace engine
 {
-
-///////////////////////////////////////////////////////////////
-/// DisplacementTransformEngine
-///////////////////////////////////////////////////////////////
-template < class DataTypes, class OutputType >
-DisplacementTransformEngine< DataTypes, OutputType >::DisplacementTransformEngine()
-:
-Inherit()
-, d_x0( initData( &d_x0, "x0", "Rest position" ) )
-, d_x( initData( &d_x, "x", "Current position" ) )
-, d_displacements( initData( &d_displacements, "displacements", "Displacement transforms with respect to original rigid positions") )
-{
-    addInput( &d_x0 );
-    addInput( &d_x );
-    addOutput( &d_displacements );
-    setDirtyValue();
-}
-
-template < class DataTypes, class OutputType >
-void DisplacementTransformEngine< DataTypes, OutputType >::init()
-{
-    // parent method
-    Inherit::init();
-
-    // Computation of inverse matrix
-    const VecCoord& x0 = d_x0.getValue();
-    inverses.resize(x0.size());
-    for( size_t i=0; i<x0.size(); ++i )
-    {
-        setInverse( inverses[i], x0[i] );
-    }
-}
-
-template < class DataTypes, class OutputType >
-void DisplacementTransformEngine< DataTypes, OutputType >::update()
-{
-    // parent method
-    Inherit::init();
-
-    const VecCoord& x = d_x.getValue();
-    const VecCoord& x0 = d_x0.getValue();
-    const size_t size = x.size();
-    const size_t size0 = x0.size();
-
-    // Check the size of x0
-    if( size != size0 )
-    {
-        serr << "x and x0 have not the same size: respectively " << size << " and " << size0 << sendl;
-        return;
-    }
-
-    cleanDirty();
-
-    // Clean the output
-    helper::vector< OutputType >& displacements = *d_displacements.beginWriteOnly();
-    displacements.resize(size);
-
-    for( unsigned int i = 0; i < size; ++i )
-    {
-        mult( displacements[i], inverses[i], x[i] );
-    }
-    d_displacements.endEdit();
-    //serr << "update(), displaceMats  = " << d_displaceMats.getValue() << sendl;
-}
 
 ///////////////////////////////////////////////////////////////
 /// DisplacementMatrixEngine
@@ -114,10 +48,10 @@ DisplacementMatrixEngine< DataTypes >::DisplacementMatrixEngine()
 template < class DataTypes >
 void DisplacementMatrixEngine< DataTypes >::init()
 {
-    // parent method
+    /// parent method
     Inherit::init();
 
-    // Init of the scale matrices in case if the user did not initialize them
+    /// Init of the scale matrices in case if the user did not initialize them
     const VecCoord& x0 = this->d_x0.getValue();
     helper::vector< sofa::defaulttype::Vec<3,Real> >& scales = *d_scales.beginWriteOnly();
     if (scales.size() == 0)
@@ -127,14 +61,14 @@ void DisplacementMatrixEngine< DataTypes >::init()
         }
     d_scales.endEdit();
 
-    // Init of the product between the scale matrices and the inverse
+    /// Init of the product between the scale matrices and the inverse
     this->reinit();
 }
 
 template < class DataTypes >
 void DisplacementMatrixEngine< DataTypes >::reinit()
 {
-    // parent method
+    /// parent method
     Inherit::reinit();
 
     const VecCoord& x0 = this->d_x0.getValue();
@@ -144,7 +78,7 @@ void DisplacementMatrixEngine< DataTypes >::reinit()
 
     if( size0 != sizeS)
     {
-        serr << "x0 and S have not the same size: respectively " << ", " << size0 << " and " << sizeS << sendl;
+        msg_info() << "x0 and S have not the same size: respectively " << ", " << size0 << " and " << sizeS ;
         return;
     }
 
@@ -173,10 +107,10 @@ void DisplacementMatrixEngine< DataTypes >::update()
     const size_t size0 = x0.size();
     const size_t sizeS = scales.size();
 
-    // Check the size of x0
+    /// Check the size of x0
     if( size != size0 || size != sizeS)
     {
-        serr << "x, x0 and S have not the same size: respectively " << size << ", " << size0 << " and " << sizeS << sendl;
+        msg_info() <<  "x, x0 and S have not the same size: respectively " << size << ", " << size0 << " and " << sizeS ;
         return;
     }
 
@@ -192,10 +126,8 @@ void DisplacementMatrixEngine< DataTypes >::update()
     this->d_displacements.endEdit();
 }
 
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
+} /// namespace engine
+} /// namespace component
+} /// namespace sofa
 
 #endif

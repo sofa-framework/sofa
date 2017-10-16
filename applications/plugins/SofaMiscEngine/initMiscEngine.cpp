@@ -19,11 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//#define SOFA_COMPONENT_ENGINE_DisplacementMatrixEngine_CPP
-
-#include "DisplacementMatrixEngine.inl"
-
-#include <sofa/core/ObjectFactory.h>
+#include "config.h"
 
 namespace sofa
 {
@@ -31,57 +27,52 @@ namespace sofa
 namespace component
 {
 
-namespace engine
-{
-
-using namespace defaulttype;
-
-SOFA_DECL_CLASS( DisplacementTransformEngine )
-
-int DisplacementTransformEngineClass = core::RegisterObject("Converts a vector of Rigid to a vector of displacement transforms.")
-    .add< DisplacementTransformEngine<Rigid3Types,Mat4x4f> >()
-    .add< DisplacementTransformEngine<Rigid3Types,Rigid3Types::Coord> >()
-;
-
-template class SOFA_MISC_ENGINE_API DisplacementTransformEngine<Rigid3Types,Mat4x4f>;
-template class SOFA_MISC_ENGINE_API DisplacementTransformEngine<Rigid3Types,Rigid3Types::Coord>;
-
-template <>
-void DisplacementTransformEngine<Rigid3Types,Rigid3Types::Coord>::setInverse( Rigid3Types::Coord& inv, const Coord& x0 )
-{
-    inv = Rigid3Types::inverse(x0);
+/// Convenient functions to help user to know what contains the plugin
+extern "C" {
+    SOFA_MISC_ENGINE_API void initExternalModule();
+    SOFA_MISC_ENGINE_API const char* getModuleName();
+    SOFA_MISC_ENGINE_API const char* getModuleVersion();
+    SOFA_MISC_ENGINE_API const char* getModuleLicense();
+    SOFA_MISC_ENGINE_API const char* getModuleDescription();
+    SOFA_MISC_ENGINE_API const char* getModuleComponentList();
 }
 
-template <>
-void DisplacementTransformEngine<Rigid3Types,Rigid3Types::Coord>::mult( Rigid3Types::Coord& out, const Rigid3Types::Coord& inv, const Coord& x )
+void initExternalModule()
 {
-    out = x;
-    out.multRight(inv);
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
 }
 
-template <>
-void DisplacementTransformEngine<Rigid3Types,Mat4x4f>::setInverse( Mat4x4f& inv, const Coord& x0 )
+const char* getModuleName()
 {
-    Rigid3Types::inverse(x0).toMatrix(inv);
+    return "SofaMiscEngine";
 }
 
-template <>
-void DisplacementTransformEngine<Rigid3Types,Mat4x4f>::mult( Mat4x4f& out, const Mat4x4f& inv, const Coord& x )
+const char* getModuleVersion()
 {
-    x.toMatrix(out);
-    out = out * inv;
+    return "1.0";
 }
 
-/////////////////////////////////////////
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
 
-SOFA_DECL_CLASS( DisplacementMatrixEngine )
 
-int DisplacementMatrixEngineClass = core::RegisterObject("Converts a vector of Rigid to a vector of displacement matrices.")
-    .add< DisplacementMatrixEngine<Rigid3Types> >()
-;
+const char* getModuleDescription()
+{
+    return "This plugin contains transformation engines.";
+}
 
-} // namespace engine
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    return "ProjectiveTransformEngine Distances DistplacementTransformEngine DisplacementMatrixEngine";
+}
 
-} // namespace component
+} /// namespace component
 
-} // namespace sofa
+} /// namespace sofa

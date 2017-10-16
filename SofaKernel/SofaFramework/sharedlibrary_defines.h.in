@@ -19,22 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MISC_ENGINE_INIT_H
-#define SOFA_COMPONENT_MISC_ENGINE_INIT_H
-#include "config.h"
+#ifndef SOFA_CONFIG_SHAREDLIBRARY_DEFINES_H
+#define SOFA_CONFIG_SHAREDLIBRARY_DEFINES_H
 
-namespace sofa
-{
-
-namespace component
-{
-
-
-void SOFA_MISC_ENGINE_API initMiscEngine();
-
-} // namespace component
-
-} // namespace sofa
-
+#ifndef WIN32
+#	define SOFA_EXPORT_DYNAMIC_LIBRARY
+#   define SOFA_IMPORT_DYNAMIC_LIBRARY
+#else
+#	define SOFA_EXPORT_DYNAMIC_LIBRARY __declspec( dllexport )
+#   define SOFA_IMPORT_DYNAMIC_LIBRARY __declspec( dllimport )
+#   ifdef _MSC_VER
+#       pragma warning(disable : 4231)
+#       pragma warning(disable : 4910)
+#   endif
 #endif
+
+#endif /// SOFA_CONFIG_SHAREDLIBRARY_DEFINES_H
 

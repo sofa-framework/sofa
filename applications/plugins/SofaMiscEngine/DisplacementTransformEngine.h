@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_DisplacementMatrixEngine_H
-#define SOFA_COMPONENT_ENGINE_DisplacementMatrixEngine_H
+#ifndef SOFA_COMPONENT_ENGINE_DISPLACEMENTTRANSFORMENGINE_H
+#define SOFA_COMPONENT_ENGINE_DISPLACEMENTTRANSFORMENGINE_H
 
 #include "config.h"
 
@@ -30,14 +30,10 @@
 
 namespace sofa
 {
-
 namespace component
 {
-
 namespace engine
 {
-
-
 
 /*
  * Engine which computes a displacement with respect to an origin position, as D(t) = M(t).M(0)^-1
@@ -53,7 +49,7 @@ namespace engine
  * By default S is the identity matrix, but the user can set other matrices
  */
 template < class DataTypes, class OutputType >
-class DisplacementTransformEngine : public sofa::core::DataEngine
+class SOFA_MISC_ENGINE_API DisplacementTransformEngine : public sofa::core::DataEngine
 {
 public:
     SOFA_CLASS( SOFA_TEMPLATE2( DisplacementTransformEngine, DataTypes, OutputType ), sofa::core::DataEngine );
@@ -88,56 +84,19 @@ protected:
 
 };
 
-// Specializations
 template <>
 void DisplacementTransformEngine<defaulttype::Rigid3Types,defaulttype::Rigid3Types::Coord >::setInverse( defaulttype::Rigid3Types::Coord& inv, const Coord& x0 );
 template <>
 void DisplacementTransformEngine<defaulttype::Rigid3Types,defaulttype::Rigid3Types::Coord >::mult( defaulttype::Rigid3Types::Coord& out, const defaulttype::Rigid3Types::Coord& inv, const Coord& x );
-/////////
+
 template <>
 void DisplacementTransformEngine<defaulttype::Rigid3Types,defaulttype::Mat4x4f >::setInverse( defaulttype::Mat4x4f& inv, const Coord& x0 );
 template <>
 void DisplacementTransformEngine<defaulttype::Rigid3Types,defaulttype::Mat4x4f >::mult( defaulttype::Mat4x4f& out, const defaulttype::Mat4x4f& inv, const Coord& x );
 
-/////////////////////////////////////////////
 
-/*
- * kept for backward compatibility
- */
-template < class DataTypes >
-class DisplacementMatrixEngine : public DisplacementTransformEngine<DataTypes, defaulttype::Mat4x4f>
-{
-
-public:
-    SOFA_CLASS( SOFA_TEMPLATE( DisplacementMatrixEngine, DataTypes ),SOFA_TEMPLATE2( DisplacementTransformEngine, DataTypes, defaulttype::Mat4x4f ) );
-
-    typedef DisplacementTransformEngine<DataTypes, defaulttype::Mat4x4f> Inherit;
-    typedef typename DataTypes::Real Real;
-    typedef typename DataTypes::Coord Coord; // rigid
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename defaulttype::Mat4x4f Matrix4x4;
-    typedef typename sofa::defaulttype::Vec<4,float> Line;
-
-    // Method
-    DisplacementMatrixEngine();
-
-    void init();   // compute the inverse matrices
-    void reinit(); // compute S*inverse and store it once and for all.
-    void update(); // compute the displacements wrt original positions
-
-    // To simplify the template name in the xml file
-    virtual std::string getTemplateName() const { return templateName(this); }
-    static std::string templateName(const DisplacementMatrixEngine<DataTypes>* = NULL) { return DataTypes::Name(); }
-
-    // inputs
-    Data< helper::vector< sofa::defaulttype::Vec<3,Real> > > d_scales; ///< scale matrices
-    helper::vector<Matrix4x4> SxInverses;  ///< inverse initial positions
-};
-
-} // namespace engine
-
-} // namespace component
-
-} // namespace sofa
+} /// namespace engine
+} /// namespace component
+} /// namespace sofa
 
 #endif // FLEXIBLE_DisplacementMatrixENGINE_H
