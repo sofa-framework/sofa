@@ -198,7 +198,7 @@ SOFA_HELPER_API std::istream& operator>>(std::istream& in, RGBAColor& t)
         return in;
 
     char first = in.peek() ;
-    if (std::isdigit(first, std::locale()))
+    if (std::isdigit(first, std::locale()) || first=='.')
     {
         in >> r >> g >> b ;
         if(!in.eof()){
