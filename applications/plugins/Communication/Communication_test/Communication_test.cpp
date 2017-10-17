@@ -92,50 +92,36 @@ class MyComponent : public BaseObject
 {
 public:
     MyComponent() :
-        d_positionsOut(this, "positionOut", "")
-      , d_positionsIn(this, "positionIn", "")
+        d_vectorIn(initData (&d_vectorIn, "vectorIn", ""))
+      , d_vectorOut(initData (&d_vectorOut, "vectorOut", ""))
     {
         f_listening = true ;
     }
 
     virtual void init() override
     {
-        d_positionsOut.resize(1);
-        d_positionsIn.resize(1);
-
-        for(Data<Vec3f>* t : d_positionsOut)
-        {
-            Vec3f a;
-            a.at(0) = 1.0f;
-            a.at(1) = 1.0f;
-            a.at(2) = 1.0f;
-            t->setValue(a);
-        }
-        for(Data<Vec3f>* t : d_positionsIn)
-        {
-            Vec3f a;
-            a.at(0) = 0.0f;
-            a.at(1) = 0.0f;
-            a.at(2) = 0.0f;
-            t->setValue(a);
-        }
+        std::stringstream ss;
+        for (int i =0; i <100; i++)
+            ss << std::to_string(static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/1.0))) << " ";
+        d_vectorOut.read(ss.str());
     }
 
-    //    virtual void handleEvent(sofa::core::objectmodel::Event *event) override
-    //    {
-    //        std::cout << "event " << std::endl;
-    //        for(Data<Vec3f>* t : d_positionsOut)
-    //        {
-    //            Vec3f a;
-    //            a.at(0) = a.at(0)+1.0f;
-    //            a.at(1) = a.at(1)+1.0f;
-    //            a.at(2) = a.at(2)+1.0f;
-    //            t->setValue(a);
-    //        }
-    //    }
+    virtual void handleEvent(sofa::core::objectmodel::Event *event) override
+    {
+        //        std::cout << "event " << std::endl;
+        //        for(Data<Vec3f>* t : d_positionsOut)
+        //        {
+        //            Vec3f a;
+        //            a.at(0) = a.at(0)+1.0f;
+        //            a.at(1) = a.at(1)+1.0f;
+        //            a.at(2) = a.at(2)+1.0f;
+        //            t->setValue(a);
+        //        }
+    }
 
-    vectorData<Vec3f>  d_positionsOut ;
-    vectorData<Vec3f> d_positionsIn ;
+    //    vectorData<Vec3f> d_pos;
+    Data<vector<float>> d_vectorIn;
+    Data<vector<float>> d_vectorOut;
 } ;
 
 int mclass = sofa::core::RegisterObject("").add<MyComponent>();
@@ -377,55 +363,6 @@ public:
         }
     }
 
-    void checkThreadSafeZMQ()
-    {
-        std::stringstream scene1 ;
-        scene1 <<
-                  "<?xml version='1.0' ?>                                                       \n"
-                  "<Node name='root'>                                                           \n"
-                  "   <RequiredPlugin name='Communication' />                                   \n"
-                  "   <MyComponent name='aComponent' />                                         \n"
-
-                  "   <ServerCommunicationZMQ name='Sender' job='sender' port='6000' pattern='publish/subscribe' refreshRate='100000'/> \n"
-                  "   <CommunicationSubscriber name='subSender' communication='@Sender' subject='/test' source='@aComponent' arguments='positionOut1'/>"
-                  "   <ServerCommunicationZMQ name='Receiver' job='receiver' port='6000' /> \n"
-                  "   <CommunicationSubscriber name='subReceiver' communication='@Receiver' subject='/test' source='@aComponent' arguments='positionIn1'/>"
-                  "</Node>                                                                      \n";
-
-
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
-        root->init(ExecParams::defaultInstance()) ;
-
-        ServerCommunication* aServerCommunicationSender = dynamic_cast<ServerCommunication*>(root->getObject("Sender"));
-        ServerCommunication* aServerCommunicationReceiver = dynamic_cast<ServerCommunication*>(root->getObject("Receiver"));
-        MyComponent* aComponent = dynamic_cast<MyComponent*>(root->getObject("aComponent"));
-
-        EXPECT_NE(aServerCommunicationSender, nullptr);
-        EXPECT_NE(aServerCommunicationReceiver, nullptr);
-        EXPECT_NE(aComponent, nullptr);
-
-        usleep(10000);
-
-
-        aServerCommunicationReceiver->setRunning(false);
-        usleep(10000);
-        aServerCommunicationSender->setRunning(false);
-        usleep(10000);
-
-        for(Data<Vec3f>* a : aComponent->d_positionsIn)
-        {
-            Vec3f value = a->getValue();
-
-            EXPECT_FLOAT_EQ(value.at(0), 1.0f);
-            EXPECT_FLOAT_EQ(value.at(1), 1.0f);
-            EXPECT_FLOAT_EQ(value.at(2), 1.0f);
-        }
-        //        Base::MapData dataMap = aComponent->getDataAliases();
-        //        for (Base::MapData::iterator it = dataMap.begin(); it != dataMap.end(); it++)
-        //            std::cout << it->first << std::endl;
-
-
-    }
 
     /// ZMQ TEST PART
     /// testing basic use + specific functions such as parsing
@@ -589,51 +526,100 @@ public:
         EXPECT_EQ(argumentList.size(), 2);
     }
 
+    void checkThreadSafeZMQ()
+    {
+        std::stringstream scene1 ;
+        scene1 <<
+                  "<?xml version='1.0' ?>                                                       \n"
+                  "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                  \n"
+                  "   <RequiredPlugin name='Communication' />                                   \n"
+                  "   <MyComponent name='aComponent' />                                         \n"
+                  "   <ServerCommunicationZMQ name='Sender' job='sender' port='6000' pattern='publish/subscribe' refreshRate='100000'/> \n"
+                  "   <CommunicationSubscriber name='subSender' communication='@Sender' subject='/test' source='@aComponent' arguments='vectorOut'/>"
+                  "   <ServerCommunicationZMQ name='Receiver' job='receiver' port='6000' /> \n"
+                  "   <CommunicationSubscriber name='subReceiver' communication='@Receiver' subject='/test' source='@aComponent' arguments='vectorIn'/>"
+                  "</Node>                                                                      \n";
+
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
+        root->init(ExecParams::defaultInstance()) ;
+        root->setName("root");
+
+        ServerCommunication* aServerCommunicationSender = dynamic_cast<ServerCommunication*>(root->getObject("Sender"));
+        ServerCommunication* aServerCommunicationReceiver = dynamic_cast<ServerCommunication*>(root->getObject("Receiver"));
+        MyComponent* aComponent = dynamic_cast<MyComponent*>(root->getObject("aComponent"));
+
+        EXPECT_NE(aServerCommunicationSender, nullptr);
+        EXPECT_NE(aServerCommunicationReceiver, nullptr);
+        EXPECT_NE(aComponent, nullptr);
+
+
+        for(unsigned int i=0; i<10000; i++)
+        {
+            //            for(Data<Vec3f>* a : aComponent->d_positionsIn)
+            //            {
+            //                Vec3f value = a->getValue();
+            //                std::cout << value << std::endl;
+            //                EXPECT_FLOAT_EQ(value.at(0), value.at(1));
+            //                EXPECT_FLOAT_EQ(value.at(1), value.at(2));
+            //            }
+            //            sofa::simulation::getSimulation()->animate(root.get(), 0.01);
+        }
+
+
+        aServerCommunicationReceiver->setRunning(false);
+        usleep(10000);
+        aServerCommunicationSender->setRunning(false);
+        usleep(10000);
+
+        EXPECT_STREQ(aComponent->d_vectorIn.getValueString().c_str(), aComponent->d_vectorOut.getValueString().c_str()); // crappy but it's not the final test. The test have to be inside the animation loop and test this easch step
+
+    }
 };
 
-//TEST_F(Communication_test, checkCreationDestruction) {
-//    ASSERT_NO_THROW(this->checkCreationDestruction()) ;
-//}
+TEST_F(Communication_test, checkCreationDestruction) {
+    ASSERT_NO_THROW(this->checkCreationDestruction()) ;
+}
 
-//TEST_F(Communication_test, checkAddSubscriber) {
-//    ASSERT_NO_THROW(this->checkAddSubscriber()) ;
-//}
+TEST_F(Communication_test, checkAddSubscriber) {
+    ASSERT_NO_THROW(this->checkAddSubscriber()) ;
+}
 
-//TEST_F(Communication_test, checkGetSubscriber) {
-//    ASSERT_NO_THROW(this->checkGetSubscriber()) ;
-//}
+TEST_F(Communication_test, checkGetSubscriber) {
+    ASSERT_NO_THROW(this->checkGetSubscriber()) ;
+}
 
-//TEST_F(Communication_test, checkSendOSC) {
-//    ASSERT_NO_THROW(this->checkSendOSC()) ;
-//}
+TEST_F(Communication_test, checkSendOSC) {
+    ASSERT_NO_THROW(this->checkSendOSC()) ;
+}
 
-//TEST_F(Communication_test, checkReceiveOSC) {
-//    ASSERT_NO_THROW(this->checkReceiveOSC()) ;
-//}
+TEST_F(Communication_test, checkReceiveOSC) {
+    ASSERT_NO_THROW(this->checkReceiveOSC()) ;
+}
 
-//TEST_F(Communication_test, checkSendReceiveOSC) {
-//    ASSERT_NO_THROW(this->checkSendReceiveOSC()) ;
-//}
+TEST_F(Communication_test, checkSendReceiveOSC) {
+    ASSERT_NO_THROW(this->checkSendReceiveOSC()) ;
+}
 
-//TEST_F(Communication_test, checkArgumentCreation) {
-//    ASSERT_NO_THROW(this->checkArgumentCreation()) ;
-//}
+TEST_F(Communication_test, checkArgumentCreation) {
+    ASSERT_NO_THROW(this->checkArgumentCreation()) ;
+}
 
-//TEST_F(Communication_test, checkSendZMQ) {
-//    ASSERT_NO_THROW(this->checkSendZMQ()) ;
-//}
+TEST_F(Communication_test, checkSendZMQ) {
+    ASSERT_NO_THROW(this->checkSendZMQ()) ;
+}
 
-//TEST_F(Communication_test, checkReceiveZMQ) {
-//    ASSERT_NO_THROW(this->checkReceiveZMQ()) ;
-//}
+TEST_F(Communication_test, checkReceiveZMQ) {
+    ASSERT_NO_THROW(this->checkReceiveZMQ()) ;
+}
 
-//TEST_F(Communication_test, checkSendReceiveZMQ) {
-//    ASSERT_NO_THROW(this->checkSendReceiveZMQ()) ;
-//}
+TEST_F(Communication_test, checkSendReceiveZMQ) {
+    ASSERT_NO_THROW(this->checkSendReceiveZMQ()) ;
+}
 
-//TEST_F(Communication_test, checkZMQParsingFunctions) {
-//    ASSERT_NO_THROW(this->checkZMQParsingFunctions()) ;
-//}
+TEST_F(Communication_test, checkZMQParsingFunctions) {
+    ASSERT_NO_THROW(this->checkZMQParsingFunctions()) ;
+}
 
 TEST_F(Communication_test, checkThreadSafeZMQ) {
     ASSERT_NO_THROW(this->checkThreadSafeZMQ()) ;
