@@ -32,6 +32,16 @@ using sofa::core::ExecParams;
 #include <sofa/core/objectmodel/Base.h>
 using sofa::core::objectmodel::Base;
 
+#include <sofa/core/objectmodel/Data.h>
+using sofa::core::objectmodel::Data;
+using sofa::core::objectmodel::BaseData;
+
+#include <sofa/helper/vectorData.h>
+using sofa::helper::vectorData;
+using sofa::helper::WriteAccessorVector;
+using sofa::helper::WriteAccessor;
+using sofa::helper::ReadAccessor;
+
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 
@@ -367,7 +377,7 @@ public:
         }
     }
 
-    void checkThreadSafe(int nbStep)
+    void checkThreadSafeZMQ()
     {
         std::stringstream scene1 ;
         scene1 <<
@@ -376,41 +386,44 @@ public:
                   "   <RequiredPlugin name='Communication' />                                   \n"
                   "   <MyComponent name='aComponent' />                                         \n"
 
-                  "   <ServerCommunicationOSC name='oscSender' job='sender' port='6000'  refreshRate='100000'/> \n"
-                  "   <CommunicationSubscriber name='subSender' communication='@oscSender' subject='/test' source='@aComponent' arguments='x'/>"
-
-                  "   <ServerCommunicationOSC name='oscReceiver' job='receiver' port='6000' /> \n"
-                  "   <CommunicationSubscriber name='subReceiver' communication='@oscReceiver' subject='/test' source='@aComponent' arguments='x'/>"
-
+                  "   <ServerCommunicationZMQ name='Sender' job='sender' port='6000' pattern='publish/subscribe' refreshRate='100000'/> \n"
+                  "   <CommunicationSubscriber name='subSender' communication='@Sender' subject='/test' source='@aComponent' arguments='positionOut1'/>"
+                  "   <ServerCommunicationZMQ name='Receiver' job='receiver' port='6000' /> \n"
+                  "   <CommunicationSubscriber name='subReceiver' communication='@Receiver' subject='/test' source='@aComponent' arguments='positionIn1'/>"
                   "</Node>                                                                      \n";
 
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
         root->init(ExecParams::defaultInstance()) ;
 
-        for(unsigned int i=0; i<nbStep; i++)
-        {
-            sofa::simulation::getSimulation()->animate(root.get(), 0.01);
+        ServerCommunication* aServerCommunicationSender = dynamic_cast<ServerCommunication*>(root->getObject("Sender"));
+        ServerCommunication* aServerCommunicationReceiver = dynamic_cast<ServerCommunication*>(root->getObject("Receiver"));
+        MyComponent* aComponent = dynamic_cast<MyComponent*>(root->getObject("aComponent"));
 
-            MyComponent* aComponent = dynamic_cast<MyComponent*>(root->getObject("aComponent"));
-            EXPECT_NE(aComponent, nullptr);
-            for(Data<Vec3f>* t : aComponent->d_positionsOut)
-            {
-                std::cout << t->getValueString() << std::endl;
-            }
-            for(Data<Vec3f>* t : aComponent->d_positionsIn)
-            {
-                std::cout << t->getValueString() << std::endl;
-            }
-        }
+        EXPECT_NE(aServerCommunicationSender, nullptr);
+        EXPECT_NE(aServerCommunicationReceiver, nullptr);
+        EXPECT_NE(aComponent, nullptr);
 
-        ServerCommunication* aServerCommunicationOSCSender = dynamic_cast<ServerCommunication*>(root->getObject("oscSender"));
-        ServerCommunication* aServerCommunicationOSCReceiver = dynamic_cast<ServerCommunication*>(root->getObject("oscReceiver"));
-        EXPECT_NE(aServerCommunicationOSCSender, nullptr);
-        EXPECT_NE(aServerCommunicationOSCReceiver, nullptr);
-
-        aServerCommunicationOSCReceiver->setRunning(false);
         usleep(10000);
+
+
+        aServerCommunicationReceiver->setRunning(false);
+        usleep(10000);
+        aServerCommunicationSender->setRunning(false);
+        usleep(10000);
+
+        for(Data<Vec3f>* a : aComponent->d_positionsIn)
+        {
+            Vec3f value = a->getValue();
+
+            EXPECT_FLOAT_EQ(value.at(0), 1.0f);
+            EXPECT_FLOAT_EQ(value.at(1), 1.0f);
+            EXPECT_FLOAT_EQ(value.at(2), 1.0f);
+        }
+        //        Base::MapData dataMap = aComponent->getDataAliases();
+        //        for (Base::MapData::iterator it = dataMap.begin(); it != dataMap.end(); it++)
+        //            std::cout << it->first << std::endl;
+
 
     }
 
@@ -424,7 +437,7 @@ public:
                   "<?xml version='1.0' ?>                                                       \n"
                   "<Node name='root'>                                                           \n"
                   "   <RequiredPlugin name='Communication' />                                   \n"
-                  "   <ServerCommunicationZMQ name='sender' job='sender' port='6000' pattern='publish/subscribe' refreshRate='30'/> \n"
+                  "   <ServerCommunicationZMQ name='sender' job='sender' port='6000' pattern='publish/subscribe' refreshRate='100'/> \n"
                   "   <CommunicationSubscriber name='subSender' communication='@sender' subject='/test' source='@sender' arguments='port'/>"
 
                   "</Node>                                                                      \n";
@@ -432,20 +445,20 @@ public:
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
         root->init(ExecParams::defaultInstance()) ;
 
-        std::future<char*> future = std::async(std::launch::async, [](){
+
+        std::future<std::string> future = std::async(std::launch::async, [](){
             zmq::context_t context (1);
             zmq::socket_t socket (context, ZMQ_SUB);
-            socket.connect ("tcp://*:6000");
+            socket.connect ("tcp://localhost:6000");
             socket.setsockopt(ZMQ_SUBSCRIBE, "", 0);
-
-            int timeout = 3000; // + 100 ms than the future timeout
+            int timeout = 3000; // timeout
             socket.setsockopt(ZMQ_RCVTIMEO, &timeout, sizeof (int));
 
             zmq::message_t reply;
             socket.recv (&reply);
-            char* tmp = (char*)malloc(sizeof(char) * reply.size()-1);
-            memcpy(tmp, reply.data(), reply.size());
-            return tmp;
+            std::string rpl = std::string(static_cast<char*>(reply.data()), reply.size());
+
+            return rpl;
         });
 
         std::future_status status;
@@ -551,10 +564,12 @@ public:
         EXPECT_STREQ(zmqServer->getArgumentType("string:''").c_str(), "string");
         EXPECT_STREQ(zmqServer->getArgumentType("string:'toto'").c_str(), "string");
         EXPECT_STREQ(zmqServer->getArgumentType("string:'toto blop'").c_str(), "string");
+        EXPECT_STREQ(zmqServer->getArgumentType("test").c_str(), "string");
 
         EXPECT_STREQ(zmqServer->getArgumentValue("string:''").c_str(), "");
         EXPECT_STREQ(zmqServer->getArgumentValue("string:'toto'").c_str(), "toto");
         EXPECT_STREQ(zmqServer->getArgumentValue("string:'toto blop'").c_str(), "toto blop");
+        EXPECT_STREQ(zmqServer->getArgumentValue("test").c_str(), "test");
 
         std::vector<std::string> argumentList;
 
@@ -604,10 +619,6 @@ public:
 //    ASSERT_NO_THROW(this->checkArgumentCreation()) ;
 //}
 
-////TEST_F(Communication_test, checkThreadSafe) {
-////    ASSERT_NO_THROW(this->checkThreadSafe(100)) ;
-////}
-
 //TEST_F(Communication_test, checkSendZMQ) {
 //    ASSERT_NO_THROW(this->checkSendZMQ()) ;
 //}
@@ -620,8 +631,12 @@ public:
 //    ASSERT_NO_THROW(this->checkSendReceiveZMQ()) ;
 //}
 
-TEST_F(Communication_test, checkZMQParsingFunctions) {
-    ASSERT_NO_THROW(this->checkZMQParsingFunctions()) ;
+//TEST_F(Communication_test, checkZMQParsingFunctions) {
+//    ASSERT_NO_THROW(this->checkZMQParsingFunctions()) ;
+//}
+
+TEST_F(Communication_test, checkThreadSafeZMQ) {
+    ASSERT_NO_THROW(this->checkThreadSafeZMQ()) ;
 }
 
 } // communication

@@ -131,9 +131,7 @@ void ServerCommunicationZMQ::receiveData()
 
 std::string ServerCommunicationZMQ::dataToString(CommunicationSubscriber* subscriber, std::string argument)
 {
-    /// TODO change to fetchData
     std::stringstream messageStr;
-
     BaseData* data = fetchData(subscriber->getSource(), "string", argument); // s for std::string in case of non existing argument
 
     if (data)
@@ -241,6 +239,8 @@ std::string ServerCommunicationZMQ::getArgumentType(std::string value)
 {
     std::string stringType = value;
     size_t pos = stringType.find(":"); // That's how ZMQ messages could be. Type:value
+    if (pos == std::string::npos)
+        return "string";
     stringType.erase(pos, stringType.size()-1);
     return stringType;
 }

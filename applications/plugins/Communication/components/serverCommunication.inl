@@ -121,7 +121,7 @@ std::map<std::string, CommunicationSubscriber*> ServerCommunication::getSubscrib
     return m_subscriberMap;
 }
 
-BaseData* ServerCommunication::fetchData(SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK> source, std::string keyTypeMessage, std::string argumentName)
+BaseData* ServerCommunication::fetchData(SingleLink<CommunicationSubscriber, BaseObject, BaseLink::FLAG_DOUBLELINK> source, std::string keyTypeMessage, std::string argumentName)
 {
     MapData dataMap = source->getDataAliases();
     MapData::const_iterator itData = dataMap.find(argumentName);
