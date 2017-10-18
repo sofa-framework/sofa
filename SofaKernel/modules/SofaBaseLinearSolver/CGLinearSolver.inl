@@ -160,7 +160,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
 #endif
 
 
-        /// Compute ρ = r²
+        /// Compute p = r^2
         rho = r.dot(r);
 
         /// If NOT the first step
