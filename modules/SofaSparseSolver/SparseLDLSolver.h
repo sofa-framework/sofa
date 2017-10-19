@@ -57,14 +57,14 @@ public :
     typedef typename Inherit::JMatrixType JMatrixType;
     typedef SparseLDLImplInvertData<helper::vector<int>, helper::vector<Real> > InvertData;
 
-    void solve (Matrix& M, Vector& x, Vector& b);
-    void invert(Matrix& M);
-    bool addJMInvJtLocal(TMatrix * M, ResMatrixType * result,const JMatrixType * J, double fact);
+    virtual void solve (Matrix& M, Vector& x, Vector& b) override;
+    virtual void invert(Matrix& M) override;
+    virtual bool addJMInvJtLocal(TMatrix * M, ResMatrixType * result,const JMatrixType * J, double fact) override;
     int numStep;
 
     Data<bool> f_saveMatrixToFile;
 
-    MatrixInvertData * createInvertData() {
+    MatrixInvertData * createInvertData() override {
         return new InvertData();
     }
 

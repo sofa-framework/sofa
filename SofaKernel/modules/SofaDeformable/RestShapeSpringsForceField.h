@@ -91,7 +91,8 @@ public:
     Data< sofa::defaulttype::Vec4f > d_springSphereColor;
     Data< Real > d_springSphereRadius;
 
-    SingleLink<RestShapeSpringsForceField<DataTypes>, sofa::core::behavior::MechanicalState< DataTypes >, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> restMState;
+    SingleLink<RestShapeSpringsForceField<DataTypes>, sofa::core::behavior::MechanicalState< DataTypes >, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> l_restMState;
+    sofa::core::behavior::MechanicalState< DataTypes >* restMState;
     linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> matS;
 
 protected:

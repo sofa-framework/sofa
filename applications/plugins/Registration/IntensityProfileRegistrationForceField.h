@@ -134,15 +134,15 @@ public:
     core::behavior::MechanicalState<DataTypes>* getObject() { return this->mstate; }
 
     static std::string templateName(const IntensityProfileRegistrationForceField<DataTypes,ImageTypes>* = NULL) { return DataTypes::Name()+ std::string(",")+ImageTypes::Name();    }
-    virtual std::string getTemplateName() const    { return templateName(this);    }
+    virtual std::string getTemplateName() const override   { return templateName(this);    }
 
     // -- ForceField interface
-    void reinit();
-    void init();
-    void addForce(const core::MechanicalParams* /*mparams*/,DataVecDeriv& f , const DataVecCoord& x , const DataVecDeriv& v);
-    void addDForce(const core::MechanicalParams* mparams ,DataVecDeriv&   df , const DataVecDeriv&   dx);
-    SReal getPotentialEnergy(const core::MechanicalParams* ,const DataVecCoord&) const { return m_potentialEnergy; }
-    void addKToMatrix( const core::MechanicalParams* mparams,const sofa::core::behavior::MultiMatrixAccessor* matrix);
+    void reinit() override;
+    void init() override;
+    void addForce(const core::MechanicalParams* /*mparams*/,DataVecDeriv& f , const DataVecCoord& x , const DataVecDeriv& v) override;
+    void addDForce(const core::MechanicalParams* mparams ,DataVecDeriv&   df , const DataVecDeriv&   dx) override;
+    SReal getPotentialEnergy(const core::MechanicalParams* ,const DataVecCoord&) const override { return m_potentialEnergy; }
+    void addKToMatrix( const core::MechanicalParams* mparams,const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
     Real getStiffness() const{ return ks.getValue(); }
     Real getDamping() const{ return kd.getValue(); }
@@ -153,7 +153,7 @@ public:
     int getDrawMode() const{return drawMode.getValue();}
     void setDrawMode(int m){drawMode.setValue(m);}
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
 protected :
 

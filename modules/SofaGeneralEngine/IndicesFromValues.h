@@ -70,7 +70,7 @@ public:
     core::objectmodel::Data<VecIndex> f_otherIndices;
     core::objectmodel::Data<bool> f_recursiveSearch;
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }

@@ -70,7 +70,7 @@ RestShapeSpringsForceField<DataTypes>::RestShapeSpringsForceField()
     , d_springColor(initData(&d_springColor, defaulttype::RGBAColor(0.0,1.0,0.0,1.0), "springColor", "Display : spring color. (default=[0.0,1.0,0.0,1.0])"))
     , d_springSphereColor(initData(&d_springSphereColor, sofa::defaulttype::Vec4f(1.f,.5f,0.5f,1.f), "springSphereColor", "Display : spring sphere color (used when springs are used as fixed constraint)"))
     , d_springSphereRadius(initData(&d_springSphereRadius, (Real)0.2, "springSphereRadius", "Display : spring sphere radius (used when springs are used as fixed constraint)"))
-    , restMState(NULL)
+    , l_restMState(initLink("restMState", "rest_shape can be defined by the position of an external Mechanical State"))
     , d_useRestMState(initData(&d_useRestMState, "useRestMState", "An external MechanicalState is used as rest reference."))
 {
 }
@@ -92,16 +92,20 @@ void RestShapeSpringsForceField<DataTypes>::bwdInit()
 
     const std::string path = external_rest_shape.getValue();
 
-    restMState = NULL;
-
-    if (path.size() > 0)
+    // Look for a mechanical state if a path is given and link failed
+    if (l_restMState == NULL && path.size() > 0)
     {
-        this->getContext()->get(restMState ,path);
+        this->getContext()->get(restMState , path);
+    }
+    else // if link succeeds, direct link to rest mechanical state
+    {
+        restMState = l_restMState.get();
     }
 
     d_useRestMState.setValue(restMState != NULL);
     d_useRestMState.setReadOnly(true);
 
+    // if neither the link nor the path successly found a mechanical state
     if (!d_useRestMState.getValue() && (path.size() > 0))
     {
         msg_warning() << "external_rest_shape in node " << this->getContext()->getName() << " not found";
@@ -305,7 +309,7 @@ void RestShapeSpringsForceField<DataTypes>::addDForce(const MechanicalParams* mp
 template<class DataTypes>
 void RestShapeSpringsForceField<DataTypes>::draw(const VisualParams *vparams)
 {
-    if (!vparams->displayFlags().getShowForceFields() || !drawSpring.getValue())
+    if (!vparams->displayFlags().getShowForceFields() || !d_drawSpring.getValue())
         return;  /// \todo put this in the parent class
 
     if(DataTypes::spatial_dimensions > 3)
@@ -321,7 +325,7 @@ void RestShapeSpringsForceField<DataTypes>::draw(const VisualParams *vparams)
     ReadAccessor< DataVecCoord > p  = this->mstate->read(VecCoordId::position());
 
     const VecIndex& indices = m_indices;
-    const VecIndex& ext_indices = (d_useRestMState ? m_ext_indices : m_indices);
+    const VecIndex& ext_indices = (d_useRestMState.getValue() ? m_ext_indices : m_indices);
 
     vector<Vector3> vertices;
 
@@ -343,16 +347,13 @@ void RestShapeSpringsForceField<DataTypes>::draw(const VisualParams *vparams)
     }
 
     //todo(dmarchal) because of https://github.com/sofa-framework/sofa/issues/64
-    vparams->drawTool()->drawLines(vertices,5,Vec4f(springColor.getValue()));
+    vparams->drawTool()->drawLines(vertices,5,Vec4f(d_springColor.getValue()));
     vparams->drawTool()->restoreLastState();
 }
 
 template<class DataTypes>
 void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams, const MultiMatrixAccessor* matrix )
 {
-    //      remove to be able to build in parallel
-    // 	const VecIndex& indices = points.getValue();
-    // 	const VecReal& k = stiffness.getValue();
     MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     BaseMatrix* mat = mref.matrix;
     unsigned int offset = mref.offset;
