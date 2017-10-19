@@ -10,6 +10,7 @@ set(SOURCE_FILES
     core/objectmodel/DataFileName_test.cpp
     core/DataEngine_test.cpp
     core/TrackedData_test.cpp
+    defaulttype/MapMapSparseMatrixEigenUtils_test.cpp
     defaulttype/MatTypes_test.cpp
     defaulttype/VecTypes_test.cpp
     helper/types/Color_test.cpp

@@ -115,17 +115,6 @@ simulation::Node::SPtr createMassSpringSystem(
         VecCoord xMass,
         VecDeriv vMass);
 
-/// Create sun-planet system
-simulation::Node::SPtr createSunPlanetSystem(
-        simulation::Node::SPtr root,
-        double mSun,
-        double mPlanet,
-        double g,
-        Coord xSun,
-        Deriv vSun,
-        Coord xPlanet,
-        Deriv vPlanet);
-
 };
 
 

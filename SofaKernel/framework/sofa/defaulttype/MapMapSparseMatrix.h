@@ -588,7 +588,7 @@ public:
             return m_internal > it2.m_internal;
         }
 
-        void addCol(KeyT id, T value)
+        void addCol(KeyT id, const T& value)
         {
             RowType& row = m_internal->second;
             typename RowType::iterator it = row.find(id);
@@ -603,7 +603,7 @@ public:
             }
         }
 
-        void setCol(KeyT id, T value)
+        void setCol(KeyT id, const T& value)
         {
             RowType& row = m_internal->second;
             typename RowType::iterator it = row.find(id);
