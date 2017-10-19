@@ -267,15 +267,35 @@ macro(sofa_external_add_subdirectory repo_name directory)
         option(${option} "Enable external repository ${repo_name}." ${active})
 
         if(${option})
-            # Download and unpack  at configure time
-            configure_file(${repo_location}/CMakeLists.txt.in ${repo_location}/CMakeLists.txt)
-            execute_process(COMMAND "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .
-                WORKING_DIRECTORY "${repo_location}" )
-            execute_process(COMMAND "${CMAKE_COMMAND}" --build .
-                WORKING_DIRECTORY  "${repo_location}" )
+            if(NOT ${repo_name}_PROJECT_RUN_ONCE)
+                set(${repo_name}_PROJECT_RUN_ONCE TRUE CACHE BOOL "run only once the fetching process")
 
-            add_subdirectory("${repo_location}/src"
-                        "${CMAKE_BINARY_DIR}/${repo_name}/build")
+                #setup temporary directory
+                set(${repo_name}_TEMP_DIR "${CMAKE_BINARY_DIR}/Externals/${repo_name}/" )
+                if(NOT EXISTS ${${repo_name}_TEMP_DIR})
+                    message("Creating ${${repo_name}_TEMP_DIR}")
+                    file(MAKE_DIRECTORY ${${repo_name}_TEMP_DIR})
+                endif()
+
+                # Download and unpack  at configure time
+                configure_file(${repo_location}/CMakeLists.txt.in ${${repo_name}_TEMP_DIR}/CMakeLists.txt)
+               
+                #execute script to get src
+                message("Pulling ${repo_name}... ")
+                execute_process(COMMAND "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .
+                    WORKING_DIRECTORY "${${repo_name}_TEMP_DIR}/" )
+                execute_process(COMMAND "${CMAKE_COMMAND}" --build .
+                    WORKING_DIRECTORY  "${${repo_name}_TEMP_DIR}/" )
+
+                if(EXISTS "${repo_location}/src")
+                    message("... Done")
+                    # add .gitignore for Sofa
+                    file(WRITE "${repo_location}/.gitignore" "src/*")
+                    add_subdirectory("${repo_location}/src" "${CMAKE_BINARY_DIR}/${repo_name}/build")
+                else()
+                    message(".... error while pulling ${repo_name}")
+                endif()
+            endif()
         endif()
     else()
         message("(${CMAKE_CURRENT_LIST_DIR}/${repo_location}) does not exist and will be ignored.")
@@ -300,14 +320,37 @@ macro(sofa_external_add_plugin plugin_name directory)
         option(${option} "Enable external plugin ${plugin_name}." ${active})
 
         if(${option})
-            # Download and unpack  at configure time
-            configure_file(${plugin_location}/CMakeLists.txt.in ${plugin_location}/CMakeLists.txt)
-            execute_process(COMMAND "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .
-                WORKING_DIRECTORY "${plugin_location}" )
-            execute_process(COMMAND "${CMAKE_COMMAND}" --build .
-                WORKING_DIRECTORY  "${plugin_location}" )
+            if(NOT ${plugin_name}_PLUGIN_RUN_ONCE)
+                set(${plugin_name}_PLUGIN_RUN_ONCE TRUE CACHE BOOL "run only once the fetching process")
 
-            sofa_add_plugin("${plugin_name}/src" "${plugin_name}")
+                #setup temporary directory
+                set(${plugin_name}_TEMP_DIR "${CMAKE_BINARY_DIR}/Externals/${plugin_name}/" )
+                if(NOT EXISTS ${${plugin_name}_TEMP_DIR})
+                    message("Creating ${${plugin_name}_TEMP_DIR}")
+                    file(MAKE_DIRECTORY ${${plugin_name}_TEMP_DIR})
+                endif()
+
+                # Download and unpack  at configure time
+                configure_file(${plugin_location}/CMakeLists.txt.in ${${plugin_name}_TEMP_DIR}/CMakeLists.txt)
+
+                #execute script to get src
+                message("Pulling ${plugin_name}...")
+                execute_process(COMMAND "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .
+                    WORKING_DIRECTORY "${${plugin_name}_TEMP_DIR}/" )
+                execute_process(COMMAND "${CMAKE_COMMAND}" --build .
+                    WORKING_DIRECTORY  "${${plugin_name}_TEMP_DIR}/" )
+
+                if(EXISTS "${plugin_location}/src")
+                    message("... Done")
+                    # add .gitignore for Sofa
+                    file(WRITE "${plugin_location}/.gitignore" "src/*")
+
+                    sofa_add_plugin("${plugin_name}/src" "${plugin_name}")
+                else()
+                    message(".... error while pulling ${repo_name}")
+                endif()
+
+            endif()
         endif()
     else()
         message("${plugin_location}) does not exist and will be ignored.")
