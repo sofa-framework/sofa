@@ -90,8 +90,15 @@ if [ -e "$build_dir/full-build" ]; then
 fi
 
 ## Test scenes
-
 if [[ -n "$CI_TEST_SCENES" ]]; then
+    echo "Preventing SofaCUDA from being loaded in VMs."
+    if [[ $(uname) = Darwin || $(uname) = Linux ]]; then
+        plugin_conf="$build_dir/lib/plugin_list.conf.default"
+    else
+        plugin_conf="$build_dir/bin/plugin_list.conf.default"
+    fi
+    grep -v "SofaCUDA NO_VERSION" "$plugin_conf" > "${plugin_conf}.tmp" && mv "${plugin_conf}.tmp" "$plugin_conf"
+
     "$src_dir/scripts/ci/scene-tests.sh" run "$build_dir" "$src_dir"
     scenes_errors_count=$("$src_dir/scripts/ci/scene-tests.sh" count-errors "$build_dir" "$src_dir")
     send-message-to-dashboard "scenes_errors=$scenes_errors_count"

@@ -31,10 +31,10 @@
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/helper/io/MassSpringLoader.h>
-#include <sofa/helper/gl/template.h>
 #include <sofa/helper/system/config.h>
 #include <cassert>
 #include <iostream>
+#include <fstream>
 
 namespace sofa
 {
@@ -192,7 +192,6 @@ SReal SpringForceField<DataTypes>::getPotentialEnergy(const core::MechanicalPara
         Real d = u.norm();
         Real elongation = (Real)(d - springs[i].initpos);
         ener += elongation * elongation * springs[i].ks /2;
-        //std::cout << "spring energy = " << ener << std::endl;
     }
 
     return ener;

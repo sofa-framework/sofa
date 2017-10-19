@@ -109,7 +109,6 @@ protected:
     bool useGUI;
     int GUIFramerate;
     sofa::core::visual::VisualParams* vparams;
-    sofa::core::visual::DrawToolGL   drawTool;
 
     sofa::helper::system::thread::ctime_t stepTime[10];
     sofa::helper::system::thread::ctime_t timeTicks;

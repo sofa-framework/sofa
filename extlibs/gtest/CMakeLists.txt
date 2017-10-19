@@ -44,3 +44,7 @@ target_include_directories(gtest_main PUBLIC "$<INSTALL_INTERFACE:include>")
 
 include(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework/SofaMacros.cmake)
 sofa_create_package(GTest 2.6.2 "gtest;gtest_main" "")
+
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/gtest
+        COMPONENT GTest_headers
+        DESTINATION include/)

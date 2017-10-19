@@ -54,10 +54,7 @@ void ImageCImg::setCimgCreators()
 
 bool ImageCImg::load(std::string filename)
 {
-     cimg_library::cimg::exception_mode(0);
-
-    //msg_info("ImageCImg") << "Using CImgPlugin for " << filename;
-
+    cimg_library::cimg::exception_mode(0);
     m_bLoaded = 0;
 
     if (!sofa::helper::system::DataRepository.findFile(filename))
@@ -77,10 +74,9 @@ bool ImageCImg::load(std::string filename)
         return false;
     }
 
-    unsigned int width, height, depth, channels;
+    unsigned int width, height, channels;
     width = cimgImage.width();
     height = cimgImage.height();
-    depth = cimgImage.depth();
     channels = cimgImage.spectrum();
 
     Image::DataType dataType;

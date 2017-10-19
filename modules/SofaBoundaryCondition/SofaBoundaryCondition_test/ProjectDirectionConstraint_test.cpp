@@ -28,13 +28,13 @@
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/VecTypes.h>
 
+#include <SofaTest/TestMessageHandler.h>
+
+
 namespace sofa {
 
 namespace {
 
-using std::cout;
-using std::cerr;
-using std::endl;
 using namespace component;
 using namespace defaulttype;
 using namespace core::objectmodel;
@@ -56,7 +56,7 @@ struct ProjectDirectionConstraint_test : public Sofa_test<typename _DataTypes::R
     typedef typename ProjectDirectionConstraint::Indices Indices;
     typedef component::topology::PointSetTopologyContainer PointSetTopologyContainer;
     typedef container::MechanicalObject<DataTypes> MechanicalObject;
-  
+
     simulation::Node::SPtr root;                 ///< Root of the scene graph, created by the constructor an re-used in the tests
     simulation::Simulation* simulation;          ///< created by the constructor an re-used in the tests
 
@@ -68,7 +68,7 @@ struct ProjectDirectionConstraint_test : public Sofa_test<typename _DataTypes::R
 
      /// Create the context for the tests.
     void SetUp()
-    {      
+    {
         //Init
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
@@ -80,7 +80,7 @@ struct ProjectDirectionConstraint_test : public Sofa_test<typename _DataTypes::R
 
         dofs = New<MechanicalObject>();
         root->addObject(dofs);
-        
+
         // Project direction constraint
         projection = New<ProjectDirectionConstraint>();
         root->addObject(projection);
@@ -137,14 +137,14 @@ struct ProjectDirectionConstraint_test : public Sofa_test<typename _DataTypes::R
        projection->projectPosition(core::MechanicalParams::defaultInstance(), *dofs->write(core::VecCoordId::position()) );
 
        helper::vector<CPos> m_origin;
-     
+
        // particle original position
        const VecCoord& xOrigin = projection->getMState()->read(core::ConstVecCoordId::position())->getValue();
         for( typename Indices::const_iterator it = indices.begin() ; it != indices.end() ; ++it )
         {
              m_origin.push_back( DataTypes::getCPos(xOrigin[*it]) );
         }
-    
+
 
        bool succeed=true;
        typename Indices::const_iterator it = indices.begin(); // must be sorted
@@ -206,7 +206,6 @@ struct ProjectDirectionConstraint_test : public Sofa_test<typename _DataTypes::R
            {
               CPos dv = v[i]-vprev[i];
               Real scal = dv*dv;
-//              cerr<<"scal gap = "<< scal << endl;
               if( !Sofa_test<typename _DataTypes::Real>::isSmall(scal,100) ){
                   succeed = false;
                   ADD_FAILURE() << "Velocity of unconstrained particle " << i << " is wrong: " << v[i] ;
@@ -235,9 +234,11 @@ typedef Types<
 
 // Test suite for all the instanciations
 TYPED_TEST_CASE(ProjectDirectionConstraint_test, DataTypes);
+
 // first test case
 TYPED_TEST( ProjectDirectionConstraint_test , oneConstrainedParticle )
 {
+    EXPECT_MSG_NOEMIT(Error) ;
     this->init_oneConstrainedParticle();
     ASSERT_TRUE(  this->test_projectPosition() );
     ASSERT_TRUE(  this->test_projectVelocity() );
@@ -245,6 +246,7 @@ TYPED_TEST( ProjectDirectionConstraint_test , oneConstrainedParticle )
 // second test case
 TYPED_TEST( ProjectDirectionConstraint_test , allParticlesConstrained )
 {
+    EXPECT_MSG_NOEMIT(Error) ;
     this->init_allParticlesConstrained();
     ASSERT_TRUE(  this->test_projectPosition() );
     ASSERT_TRUE(  this->test_projectVelocity() );

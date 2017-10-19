@@ -27,9 +27,6 @@
 namespace sofa {
 namespace {
 
-using std::cout;
-using std::cerr;
-using std::endl;
 using namespace core;
 using namespace component;
 using defaulttype::Vec;

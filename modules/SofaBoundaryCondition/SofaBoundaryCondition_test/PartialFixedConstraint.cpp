@@ -31,6 +31,9 @@
 #include <SceneCreator/SceneCreator.h>
 #include <SofaBoundaryCondition/ConstantForceField.h>
 
+#include <SofaTest/TestMessageHandler.h>
+
+
 namespace sofa{
 namespace {
 using namespace modeling;
@@ -61,7 +64,7 @@ struct PartialFixedConstraint_test : public Sofa_test<typename _DataTypes::Real>
     typedef component::projectiveconstraintset::PartialFixedConstraint<DataTypes> FixedConstraint;
     typedef component::forcefield::ConstantForceField<DataTypes> ForceField;
     typedef component::container::MechanicalObject<DataTypes> MechanicalObject;
-    
+
     typedef typename MechanicalObject::VecCoord  VecCoord;
     typedef typename MechanicalObject::Coord  Coord;
     typedef typename MechanicalObject::VecDeriv  VecDeriv;
@@ -69,11 +72,11 @@ struct PartialFixedConstraint_test : public Sofa_test<typename _DataTypes::Real>
     typedef typename DataTypes::Real  Real;
     typedef sofa::helper::fixed_array<bool,Deriv::total_size> VecBool;
 
-	bool test(double epsilon)
-	{
-		//Init
+    bool test(double epsilon)
+    {
+        //Init
 
-        simulation::Simulation* simulation;  
+        simulation::Simulation* simulation;
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
         Coord initCoord;
         Deriv force;
@@ -83,12 +86,12 @@ struct PartialFixedConstraint_test : public Sofa_test<typename _DataTypes::Real>
         for(unsigned i=0; i<fixed.size(); i++)
             fixed[i]=false;
 
-        /// Scene creation 
+        /// Scene creation
         simulation::Node::SPtr root = simulation->createNewGraph("root");
         root->setGravity( defaulttype::Vector3(0,0,0) );
 
         simulation::Node::SPtr node = createEulerSolverNode(root,"test");
-        
+
         typename MechanicalObject::SPtr dofs = addNew<MechanicalObject>(node);
         dofs->resize(1);
 
@@ -98,7 +101,7 @@ struct PartialFixedConstraint_test : public Sofa_test<typename _DataTypes::Real>
         forceField->setForce( 0, force );
 
         typename FixedConstraint::SPtr constraint = addNew<FixedConstraint>(node);
-        
+
 
         // Init simulation
         sofa::simulation::getSimulation()->init(root.get());
@@ -123,10 +126,10 @@ struct PartialFixedConstraint_test : public Sofa_test<typename _DataTypes::Real>
             fixed[i] = false;
         }
 
-        
+
         return true;
 
-	}
+    }
 };
 
 // Define the list of DataTypes to instanciate
@@ -145,10 +148,11 @@ TYPED_TEST_CASE(PartialFixedConstraint_test, DataTypes);
 // first test case
 TYPED_TEST( PartialFixedConstraint_test , testValue )
 {
+    EXPECT_MSG_NOEMIT(Error) ;
     EXPECT_TRUE(  this->test(1e-8) );
 }
 
-}// namespace 
+}// namespace
 }// namespace sofa
 
 

@@ -24,7 +24,7 @@
     </Node>
 	
     <Node name="Cube1" canChangeSleepingState="true">
-        <EulerImplicit printLog="false" />
+        <EulerImplicit printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9"  />
         <MechanicalObject template="Rigid" scale="1.0" dx="0.0" dy="0" dz="0.0" />
         <UniformMass totalmass="1" />

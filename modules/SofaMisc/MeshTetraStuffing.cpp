@@ -225,7 +225,6 @@ void MeshTetraStuffing::init()
 #endif
                 if (!results.empty())
                 {
-                    //std::cout << "Point " << p << " edge " << e << " : " << results.size() << " intersections." << std::endl;
                     std::sort(results.begin(), results.end());
                     int n = results.size();
                     for (int i=0; i<n; ++i)
@@ -479,7 +478,6 @@ void MeshTetraStuffing::init()
             {
                 //p = x + gsize[0] * (y + gsize[1] * (z));
                 //ph = ph0 + x + hsize[0] * (y + hsize[1] * (z));
-                //std::cout << "P " <<x<< ","<<y<<","<<z<<std::endl;
                 if (x > 0)
                 {
                     // edge in X axis
@@ -534,16 +532,10 @@ void MeshTetraStuffing::init()
             if (newPid[p] != (int)p)
             {
                 outP[newPid[p]] = outP[p];
-                //std::cout << "P = " << p << std::endl;
-                //std::cout << "newPid[p] = " << newPid[p] << std::endl;
-                //std::cout << "pInside[newPid[p]] = " << pInside[newPid[p]] << std::endl;
                 if (pInside.size() > p)
                 {
-                    //std::cout << "pInside[p] = " << pInside[p] << std::endl;
                     pInside[newPid[p]] = pInside[p];
                 }
-                //else
-                //    std::cout << "Problem with |pInside| = " << pInside.size() << " and p = " << p << std::endl;
             }
         }
     }
@@ -604,10 +596,6 @@ void MeshTetraStuffing::addFinalTetra(SeqTetrahedra& outT, SeqPoints& outP, int 
         sout << __FILE__ << "(" << line << "): WARNING: final tetra " << p1 << " " << p2 << " " << p3 << " " << p4 << " is inverted." << sendl;
         int tmp = p3; p3 = p4; p4 = tmp;
     }
-    //else if (line >= 677)
-    //{
-    //    sout << __FILE__ << "(" << line << "): final tetra " << p1 << " " << p2 << " " << p3 << " " << p4 << " is ok." << sendl;
-    //}
     outT.push_back(Tetra(p1,p2,p3,p4));
 }
 
@@ -623,6 +611,7 @@ bool MeshTetraStuffing::needFlip(int p1, int p2, int p3, int p4, int q1, int q2,
     {
         int tmp = q1; q1 = q2; q2 = q3; q3 = q4; q4 = tmp; flip = !flip;
     }
+
     // make the second smallest indice the second vertex
     while(p2 > p3 || p2 > p4)
     {
@@ -632,6 +621,7 @@ bool MeshTetraStuffing::needFlip(int p1, int p2, int p3, int p4, int q1, int q2,
     {
         int tmp = q2; q2 = q3; q3 = q4; q4 = tmp; //flip = !flip;
     }
+
     // the tetrahedra are flipped if the last edge is flipped
     if (p3 == q4) flip = !flip;
     return flip;
@@ -917,19 +907,15 @@ MeshTetraStuffing::Point MeshTetraStuffing::getEdgeDir(int e)
 
 void MeshTetraStuffing::draw(const core::visual::VisualParams* vparams)
 {
-    if (!bDraw.getValue()) return;
-    //const SeqPoints& inP = inputPoints.getValue();
-    //const SeqTriangles& inT = inputTriangles.getValue();
-    const SeqPoints& outP = outputPoints.getValue();
-    //const SeqTetrahedra& outT = outputTetrahedra.getValue();
+    if (!bDraw.getValue())
+        return;
 
-    //vparams->drawTool()->drawPoints(inP, 1, Vec<4,float>(1,0,0,1));
+    const SeqPoints& outP = outputPoints.getValue();
     vparams->drawTool()->drawPoints(intersections, 2, Vec<4,float>(1,0,0,1));
-    //vparams->drawTool()->drawPoints(insides, 1, Vec<4,float>(0,1,0,1));
-    //vparams->drawTool()->drawLines(rays, 1, Vec<4,float>(1,1,0,1));
     vparams->drawTool()->drawPoints(outP, 1, Vec<4,float>(0,1,0,1));
     if (!diags.empty())
         vparams->drawTool()->drawLines(diags, 1, Vec<4,float>(0,1,1,1));
+
     if (!snaps.empty())
         vparams->drawTool()->drawPoints(snaps, 4, Vec<4,float>(0,0,1,1));
 }

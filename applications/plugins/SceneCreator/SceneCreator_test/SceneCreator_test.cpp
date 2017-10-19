@@ -2,11 +2,15 @@
 #include <SceneCreator/SceneCreator.h>
 
 #include <SofaSimpleFem/TetrahedronFEMForceField.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 using sofa::component::container::MechanicalObject ;
+typedef sofa::component::container::MechanicalObject<Vec3Types>                   MechanicalObject3;
 
 #include <SofaMiscFem/TriangularFEMForceField.h>
 using sofa::component::forcefield::TetrahedronFEMForceField;
 using sofa::component::forcefield::TriangularFEMForceField;
+typedef sofa::component::forcefield::TetrahedronFEMForceField<Vec3Types>          TetrahedronFEMForceField3;
+typedef sofa::component::forcefield::TriangularFEMForceField<Vec3Types>           TriangularFEMForceField3;
 
 #include <SofaBaseTopology/RegularGridTopology.h>
 #include <SofaGeneralTopology/CylinderGridTopology.h>
@@ -19,9 +23,6 @@ using sofa::component::topology::SphereGridTopology;
 using sofa::core::objectmodel::BaseContext;
 using sofa::defaulttype::Vec3Types;
 
-typedef sofa::component::container::MechanicalObject<Vec3Types>                   MechanicalObject3;
-typedef sofa::component::forcefield::TetrahedronFEMForceField<Vec3Types>          TetrahedronFEMForceField3;
-typedef sofa::component::forcefield::TriangularFEMForceField<Vec3Types>           TriangularFEMForceField3;
 
 #include <sofa/simulation/Simulation.h>
 using sofa::simulation::Node;
@@ -30,9 +31,12 @@ typedef MechanicalObject<sofa::defaulttype::Vec3Types>      MechanicalObject3;
 typedef TetrahedronFEMForceField<Vec3Types>                 TetrahedronFEMForceField3;
 typedef TriangularFEMForceField<Vec3Types>                  TriangularFEMForceField3;
 
-struct SceneCreator_test : public sofa::Sofa_test<>
-{
+#include <sofa/helper/system/PluginManager.h>
+using sofa::helper::system::PluginManager ;
 
+class SceneCreator_test : public sofa::Sofa_test<>
+{
+public:
     bool createCubeFailed();
     bool createCubeSuccess();
     bool createRigidCubeSuccess();
@@ -310,7 +314,7 @@ bool SceneCreator_test::createSphereSuccess()
     // check FEM
     std::vector<TetrahedronFEMForceField3*> FEMs;
     node->get<TetrahedronFEMForceField3>(&FEMs, sofa::core::objectmodel::BaseContext::SearchDown);
-    EXPECT_EQ(grids.size(), 1);
+    EXPECT_EQ(grids.size(), (size_t)1);
 
     TetrahedronFEMForceField3* fem = FEMs[0];
     EXPECT_EQ(fem->_poissonRatio.getValue(), poissonRatio);
@@ -332,12 +336,12 @@ bool SceneCreator_test::createRigidSphereSuccess()
     // check Grid
     std::vector<SphereGridTopology*> grids;
     node->get<SphereGridTopology>(&grids, sofa::core::objectmodel::BaseContext::SearchDown);
-    EXPECT_EQ(grids.size(), 1);
+    EXPECT_EQ(grids.size(), (size_t)1);
 
     // check No FEM
     std::vector<TetrahedronFEMForceField3*> FEMs;
     node->get<TetrahedronFEMForceField3>(&FEMs, sofa::core::objectmodel::BaseContext::SearchDown);
-    EXPECT_EQ(FEMs.size(), 0);
+    EXPECT_EQ(FEMs.size(), (size_t)0);
 
     return true;
 }

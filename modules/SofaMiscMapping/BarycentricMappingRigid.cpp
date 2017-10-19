@@ -88,7 +88,6 @@ void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3dTypes, defaulttype
                     const int j = *iter;
                     if ( mapData[j].in_index == -1 ) // compute new mapping
                     {
-                        //	std::cout << "BarycentricMapperHexahedronSetTopology : new mapping" << std::endl;
                         Vector3 coefs;
                         defaulttype::Vec3dTypes::Coord pos;
                         pos[0] = mapData[j].baryCoords[0];
@@ -133,12 +132,10 @@ void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3dTypes, defaulttype
         break;
         case core::topology::HEXAHEDRAREMOVED:   ///< For HexahedraRemoved.
         {
-            // std::cout << "BarycentricMapperHexahedronSetTopology() HEXAHEDRAREMOVED" << std::endl;
             const unsigned int nbHexahedra = this->fromTopology->getNbHexahedra();
 
             const sofa::helper::vector<unsigned int> &hexahedra =
                     ( static_cast< const sofa::core::topology::HexahedraRemoved *> ( *changeIt ) )->getArray();
-            //        sofa::helper::vector<unsigned int> hexahedra(tab);
 
             for ( unsigned int i=0; i<hexahedra.size(); ++i )
             {
@@ -224,7 +221,6 @@ void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3fTypes, defaulttype
                     const int j = *iter;
                     if ( mapData[j].in_index == -1 ) // compute new mapping
                     {
-                        //	std::cout << "BarycentricMapperHexahedronSetTopology : new mapping" << std::endl;
                         Vector3 coefs;
                         defaulttype::Vec3fTypes::Coord pos;
                         pos[0] = mapData[j].baryCoords[0];
@@ -269,12 +265,10 @@ void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3fTypes, defaulttype
         break;
         case core::topology::HEXAHEDRAREMOVED:   ///< For HexahedraRemoved.
         {
-            // std::cout << "BarycentricMapperHexahedronSetTopology() HEXAHEDRAREMOVED" << std::endl;
             const unsigned int nbHexahedra = this->fromTopology->getNbHexahedra();
 
             const sofa::helper::vector<unsigned int> &hexahedra =
                     ( static_cast< const sofa::core::topology::HexahedraRemoved *> ( *changeIt ) )->getArray();
-            //        sofa::helper::vector<unsigned int> hexahedra(tab);
 
             for ( unsigned int i=0; i<hexahedra.size(); ++i )
             {
@@ -349,7 +343,8 @@ void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3dTypes, defaulttype
         const core::topology::TopologyChangeType changeType = ( *changeIt )->getChangeType();
         switch ( changeType )
         {
-            //TODO: implementation of BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
+        //TODO(dmarchal 2017-05-03) Who will do it and when ? In one year I remove this todo.
+        //TODO: implementation of BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
         case core::topology::ENDING_EVENT:       ///< To notify the end for the current sequence of topological change events
         {
             if(!_invalidIndex.empty())
@@ -362,7 +357,6 @@ void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3dTypes, defaulttype
                     const int j = *iter;
                     if ( mapData[j].in_index == -1 ) // compute new mapping
                     {
-                        //	std::cout << "BarycentricMapperHexahedronSetTopology : new mapping" << std::endl;
                         Vector3 coefs;
                         defaulttype::Vec3dTypes::Coord pos;
                         pos[0] = mapData[j].baryCoords[0];
@@ -407,12 +401,10 @@ void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3dTypes, defaulttype
         break;
         case core::topology::HEXAHEDRAREMOVED:   ///< For HexahedraRemoved.
         {
-            // std::cout << "BarycentricMapperHexahedronSetTopology() HEXAHEDRAREMOVED" << std::endl;
             const unsigned int nbHexahedra = this->fromTopology->getNbHexahedra();
 
             const sofa::helper::vector<unsigned int> &hexahedra =
                     ( static_cast< const sofa::core::topology::HexahedraRemoved *> ( *changeIt ) )->getArray();
-            //        sofa::helper::vector<unsigned int> hexahedra(tab);
 
             for ( unsigned int i=0; i<hexahedra.size(); ++i )
             {
@@ -485,7 +477,8 @@ void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3fTypes, defaulttype
         const core::topology::TopologyChangeType changeType = ( *changeIt )->getChangeType();
         switch ( changeType )
         {
-            //TODO: implementation of BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
+        //TODO(dmarchal 2017-05-03) Who will do it and when ? In one year I remove this todo.
+        //TODO: implementation of BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
         case core::topology::ENDING_EVENT:       ///< To notify the end for the current sequence of topological change events
         {
             if(!_invalidIndex.empty())
@@ -498,7 +491,6 @@ void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3fTypes, defaulttype
                     const int j = *iter;
                     if ( mapData[j].in_index == -1 ) // compute new mapping
                     {
-                        //	std::cout << "BarycentricMapperHexahedronSetTopology : new mapping" << std::endl;
                         Vector3 coefs;
                         defaulttype::Vec3fTypes::Coord pos;
                         pos[0] = mapData[j].baryCoords[0];
@@ -543,12 +535,10 @@ void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3fTypes, defaulttype
         break;
         case core::topology::HEXAHEDRAREMOVED:   ///< For HexahedraRemoved.
         {
-            // std::cout << "BarycentricMapperHexahedronSetTopology() HEXAHEDRAREMOVED" << std::endl;
             const unsigned int nbHexahedra = this->fromTopology->getNbHexahedra();
 
             const sofa::helper::vector<unsigned int> &hexahedra =
                     ( static_cast< const sofa::core::topology::HexahedraRemoved *> ( *changeIt ) )->getArray();
-            //        sofa::helper::vector<unsigned int> hexahedra(tab);
 
             for ( unsigned int i=0; i<hexahedra.size(); ++i )
             {

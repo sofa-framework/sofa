@@ -39,9 +39,6 @@ void initGeneralVisual()
     }
 }
 
-SOFA_LINK_CLASS(RecordedCamera)
-SOFA_LINK_CLASS(VisualTransform)
-
 } // namespace component
 
 } // namespace sofa

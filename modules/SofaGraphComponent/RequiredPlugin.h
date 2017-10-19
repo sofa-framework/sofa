@@ -48,7 +48,7 @@ protected:
 
 public:
 
-    virtual void parse(sofa::core::objectmodel::BaseObjectDescription* arg);
+    virtual void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override;
 
     static void loadPlugin( const std::string& pluginName );
 

@@ -243,8 +243,10 @@ void SleepController::wakeUpNodes()
             const BaseContexts& wakeupPairRef = wakeupPairs[i];
             if (!wakeupPairRef.empty())
             {
+                std::stringstream tmp
                 for (unsigned int j = 0, nbLinks = wakeupPairRef.size(); j < nbLinks; ++j)
-                    std::cout << m_contextsThatCanSleep[i]->getName() << " --> " << wakeupPairRef[j]->getName() << std::endl;
+                    tmp << m_contextsThatCanSleep[i]->getName() << " --> " << wakeupPairRef[j]->getName() << msgendl;
+                msg_info() << tmp ;
             }
         }
     } */

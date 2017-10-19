@@ -46,19 +46,28 @@ ComponentB<T>::~ComponentB()
 SOFA_DECL_CLASS(ComponentB)
 
 int ComponentBClass = sofa::core::RegisterObject("Component B")
-.add< ComponentB<float> >()
-.add< ComponentB<double> >()
-.add< ComponentB<sofa::defaulttype::Vec2dTypes> >()
-.add< ComponentB<sofa::defaulttype::Vec2fTypes> >()
-.add< ComponentB<sofa::defaulttype::Rigid3dTypes> >()
-.add< ComponentB<sofa::defaulttype::Rigid3fTypes> >()
+#ifndef SOFA_FLOAT
+    .add< ComponentB<double> >()
+    .add< ComponentB<sofa::defaulttype::Vec2dTypes> >()
+    .add< ComponentB<sofa::defaulttype::Rigid3dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
+    .add< ComponentB<float> >()
+    .add< ComponentB<sofa::defaulttype::Vec2fTypes> >()
+    .add< ComponentB<sofa::defaulttype::Rigid3fTypes> >()
+#endif
 ;
-template class SOFA_TESTPLUGIN_API ComponentB<float>;
+
+#ifndef SOFA_FLOAT
 template class SOFA_TESTPLUGIN_API ComponentB<double>; 
 template class SOFA_TESTPLUGIN_API ComponentB<sofa::defaulttype::Vec2dTypes>;
-template class SOFA_TESTPLUGIN_API ComponentB<sofa::defaulttype::Vec2fTypes>;
 template class SOFA_TESTPLUGIN_API ComponentB<sofa::defaulttype::Rigid3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class SOFA_TESTPLUGIN_API ComponentB<float>;
+template class SOFA_TESTPLUGIN_API ComponentB<sofa::defaulttype::Vec2fTypes>;
 template class SOFA_TESTPLUGIN_API ComponentB<sofa::defaulttype::Rigid3fTypes>;
+#endif
 
 
 

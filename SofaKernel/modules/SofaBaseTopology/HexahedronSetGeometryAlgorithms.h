@@ -154,7 +154,7 @@ public:
     */
     void writeMSHfile(const char *filename) const;
 
-    virtual void draw(const core::visual::VisualParams* vparams);
+    virtual void draw(const core::visual::VisualParams* vparams) override;
 
 protected:
     Data<bool> d_showHexaIndices;

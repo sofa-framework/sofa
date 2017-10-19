@@ -82,20 +82,21 @@ public:
     double squaredDistance(const ISAPBox & other)const;
 
     inline void show()const{
-        std::cout<<"MIN "<<cube.minVect()<<std::endl;
-        std::cout<<"MAX "<<cube.maxVect()<<std::endl;
+        msg_info("IncrSAP") <<"MIN "<<cube.minVect() ;
+        msg_info("IncrSAP") <<"MAX "<<cube.maxVect() ;
     }
 
     inline void showEndPoints()const{
-        std::cout<<"MIN ";
+        std::stringstream tmp;
+        tmp<<"MIN ";
         for(int i = 0 ; i < 3 ; ++i)
-            std::cout<<min(i).value<<" ";
-        std::cout<<std::endl;
+            tmp<<min(i).value<<" ";
+        tmp<<msgendl;
 
-        std::cout<<"MAX ";
+        tmp<<"MAX ";
         for(int i = 0 ; i < 3 ; ++i)
-            std::cout<<max(i).value<<" ";
-        std::cout<<std::endl;
+            tmp<<max(i).value<<" ";
+        msg_info("IncrSAP") << tmp.str() ;
     }
 
     /**
@@ -210,12 +211,6 @@ private:
     void reinitDetection();
 
     /**
-      *Inits the field intersectors used to find the right intersector between the two collision models with better speed compared to
-      *find intersector.
-      */
-//    void initIntersectors();
-
-    /**
       *Used in initialisatio of IncrSAP. It clears all the IncrSAP fields.
       */
     void purge();
@@ -262,24 +257,24 @@ protected:
 public:
     void setDraw(bool val) { bDraw.setValue(val); }
 
-    void init();
-    void reinit();
+    void init() override;
+    void reinit() override;
 
-    void addCollisionModel (core::CollisionModel *cm);
+    void addCollisionModel (core::CollisionModel *cm) override;
 
     /**
       *Unuseful methods because all is done in addCollisionModel
       */
-    void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& ){}
-    void addCollisionPairs (const helper::vector<std::pair<core::CollisionModel*, core::CollisionModel*> >&){}
+    virtual void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& ) override {}
+    virtual void addCollisionPairs (const helper::vector<std::pair<core::CollisionModel*, core::CollisionModel*> >&) override {}
 
-    virtual void beginNarrowPhase();
+    virtual void beginNarrowPhase() override;
 
 
     /* for debugging */
-    inline void draw(const core::visual::VisualParams*){}
+    virtual void draw(const core::visual::VisualParams*) override {}
 
-    inline virtual bool needsDeepBoundingTree()const{return false;}
+    inline virtual bool needsDeepBoundingTree()const override {return false;}
 
     void showEndPoints()const;
 

@@ -1,0 +1,17 @@
+# CMake package configuration file for the SofaMiscCollision plugin
+
+@PACKAGE_INIT@
+
+find_package(SofaFramework REQUIRED)
+
+if(NOT TARGET SofaSphFluid)
+        include("${CMAKE_CURRENT_LIST_DIR}/SofaSphFluidTargets.cmake")
+endif()
+
+set(SOFA_HAVE_SOFASPHFLUID "@SOFA_HAVE_SOFASPHFLUID@")
+
+check_required_components(SofaSphFluid)
+set(SofaSphFluid_LIBRARIES SOFASPHFLUID)
+set(SofaSphFluid_INCLUDE_DIRS @PACKAGE_SOFASPHFLUID_INCLUDE_DIR@ ${SOFASPHFLUID_INCLUDE_DIR})
+
+

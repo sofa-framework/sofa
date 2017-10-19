@@ -99,7 +99,7 @@ public:
 protected:
     BaseMeshTopology()	;
 public:
-    virtual void init();
+    virtual void init() override;
 
     /// Load the topology from a file.
     ///
@@ -254,10 +254,10 @@ public:
     /// @name Initial points accessors (only available if the topology was loaded from a file containing this information).
     /// Note that this data is only used for initialization and is not maintained afterwards (i.e. topological changes may not be applied)
     /// @{
-    virtual bool hasPos() const { return false; }
-    virtual SReal getPX(int) const { return 0.0; }
-    virtual SReal getPY(int) const { return 0.0; }
-    virtual SReal getPZ(int) const { return 0.0; }
+    virtual bool hasPos() const override { return false; }
+    virtual SReal getPX(int) const override { return 0.0; }
+    virtual SReal getPY(int) const override { return 0.0; }
+    virtual SReal getPZ(int) const override { return 0.0; }
     /// @}
 
     /// Procedural creation methods
@@ -335,8 +335,8 @@ protected:
 
 public:
 
-    virtual bool insertInNode( objectmodel::BaseNode* node );
-    virtual bool removeInNode( objectmodel::BaseNode* node );
+    virtual bool insertInNode( objectmodel::BaseNode* node ) override;
+    virtual bool removeInNode( objectmodel::BaseNode* node ) override;
 
 };
 

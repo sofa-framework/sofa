@@ -49,7 +49,7 @@ protected:
     */
     CompareTopology();
 public:
-    void handleEvent(sofa::core::objectmodel::Event* event);
+    void handleEvent(sofa::core::objectmodel::Event* event) override;
 
     /// Compute the total number of errors
     void processCompareTopology();

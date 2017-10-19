@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <SofaTest/Sofa_test.h>
 #include <SceneCreator/SceneCreator.h>
+#include <SceneCreator/SceneUtils.h>
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
 #include <SofaBaseMechanics/UniformMass.h>
@@ -29,6 +30,9 @@
 #include <SofaDeformable/StiffSpringForceField.h>
 
 #include <sofa/simulation/Simulation.h>
+
+#include <SofaTest/TestMessageHandler.h>
+
 
 namespace sofa {
 
@@ -52,6 +56,7 @@ struct EulerImplicit_test_2_particles_to_equilibrium : public Sofa_test<>
 {
     EulerImplicit_test_2_particles_to_equilibrium()
     {
+        EXPECT_MSG_NOEMIT(Error) ;
         //*******
         simulation::Node::SPtr root = modeling::initSofa();
         //*******

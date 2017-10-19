@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/helper/system/FileRepository.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/objectmodel/Base.h>
 
@@ -65,7 +66,8 @@ void DataFileName::updatePath()
         {
             if( m_fullpath.find(path) == 0 )
             {
-                m_relativepath=DataRepository.relativeToPath(m_fullpath, path);
+                m_relativepath=DataRepository.relativeToPath(m_fullpath, path,
+                                                             false /*option for backward compatibility*/);
                 break;
             }
         }

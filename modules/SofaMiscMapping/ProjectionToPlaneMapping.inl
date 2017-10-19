@@ -141,7 +141,6 @@ void ProjectionToTargetPlaneMapping<TIn, TOut>::applyJT(const core::MechanicalPa
 template <class TIn, class TOut>
 void ProjectionToTargetPlaneMapping<TIn, TOut>::applyJT(const core::ConstraintParams*, Data<InMatrixDeriv>& , const Data<OutMatrixDeriv>& )
 {
-    //    cerr<<"ProjectionToTargetPlaneMapping<TIn, TOut>::applyJT is not implemented " << endl;
 }
 
 
@@ -174,12 +173,8 @@ void ProjectionToTargetPlaneMapping<TIn, TOut>::draw(const core::visual::VisualP
     helper::ReadAccessor< Data<OutVecCoord> > origins(f_origins);
     helper::ReadAccessor< Data<OutVecCoord> > normals(f_normals);
 
-#ifndef SOFA_NO_OPENGL
-    glPushAttrib(GL_LIGHTING_BIT);
-    glDisable(GL_LIGHTING);
-
-    glBegin(GL_QUADS);
-
+    vparams->drawTool()->saveLastState();
+    vparams->drawTool()->setLightingEnabled(false);
 
     size_t nb = std::max( normals.size(), origins.size() );
     for(unsigned i=0; i<nb; i++ )
@@ -198,10 +193,8 @@ void ProjectionToTargetPlaneMapping<TIn, TOut>::draw(const core::visual::VisualP
         vparams->drawTool()->drawQuad( o -t0*scale -t1*scale, o +t0*scale -t1*scale, o +t0*scale +t1*scale, o -t0*scale +t1*scale, n, color );
 
     }
-    glEnd();
 
-    glPopAttrib();
-#endif // SOFA_NO_OPENGL
+    vparams->drawTool()->restoreLastState();
 }
 
 
@@ -402,12 +395,8 @@ void ProjectionToPlaneMultiMapping<TIn, TOut>::draw(const core::visual::VisualPa
     const OutCoord& o = plane[0];
     OutCoord n = plane[1].normalized();
 
-#ifndef SOFA_NO_OPENGL
-    glPushAttrib(GL_LIGHTING_BIT);
-    glDisable(GL_LIGHTING);
-
-    glBegin(GL_QUADS);
-
+    vparams->drawTool()->saveLastState();
+    vparams->drawTool()->setLightingEnabled(false);
 
     OutCoord t0, t1;
 
@@ -420,11 +409,7 @@ void ProjectionToPlaneMultiMapping<TIn, TOut>::draw(const core::visual::VisualPa
 
     vparams->drawTool()->drawQuad( o -t0*scale -t1*scale, o +t0*scale -t1*scale, o +t0*scale +t1*scale, o -t0*scale +t1*scale, n, color );
 
-    glEnd();
-
-    glPopAttrib();
-#endif // SOFA_NO_OPENGL
-
+    vparams->drawTool()->restoreLastState();
 
     // normal
     helper::vector< defaulttype::Vector3 > points;

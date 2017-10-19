@@ -1,36 +1,63 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaGeneralMeshCollision)
 
+message(STATUS "SofaGeneralMeshCollision:")
+################################ COMPONENTS HERE ARE THE NG-SET ####################################
 set(HEADER_FILES
-    DirectSAP.h
-    IncrSAP.h
-    # IntrTriangleOBB.h
-    # IntrTriangleOBB.inl
-    MeshDiscreteIntersection.h
-    MeshDiscreteIntersection.inl
-    MeshMinProximityIntersection.h
-    # RigidContactMapper.h
-    # RigidContactMapper.inl
-    # SubsetContactMapper.h
-    # SubsetContactMapper.inl
-    TriangleOctree.h
-    TriangleOctreeModel.h
     config.h
     initGeneralMeshCollision.h
 )
 
 set(SOURCE_FILES
-    DirectSAP.cpp
-    IncrSAP.cpp
-    # IntrTriangleOBB.cpp
-    MeshDiscreteIntersection.cpp
-    MeshMinProximityIntersection.cpp
-    # RigidContactMapper.cpp
-    # SubsetContactMapper.cpp
-    TriangleOctree.cpp
-    TriangleOctreeModel.cpp
     initGeneralMeshCollision.cpp
 )
+
+############################## COMPONENTS HERE ARE THE LIGHT-SET ###################################
+if(SOFA_BUILD_COMPONENTSET_LIGHT)
+    list(APPEND HEADER_FILES
+
+        )
+    list(APPEND SOURCE_FILES
+
+        )
+endif()
+
+############################## COMPONENTS HERE ARE THE STANDARD-SET ################################
+if(SOFA_BUILD_COMPONENTSET_STANDARD)
+    list(APPEND HEADER_FILES
+        DirectSAP.h
+        IncrSAP.h
+        # IntrTriangleOBB.h
+        # IntrTriangleOBB.inl
+        MeshDiscreteIntersection.h
+        MeshDiscreteIntersection.inl
+        MeshMinProximityIntersection.h
+        # RigidContactMapper.h
+        # RigidContactMapper.inl
+        # SubsetContactMapper.h
+        # SubsetContactMapper.inl
+        TriangleOctree.h
+        TriangleOctreeModel.h
+        )
+    list(APPEND SOURCE_FILES
+        DirectSAP.cpp
+        IncrSAP.cpp
+        # IntrTriangleOBB.cpp
+        MeshDiscreteIntersection.cpp
+        MeshMinProximityIntersection.cpp
+        # RigidContactMapper.cpp
+        # SubsetContactMapper.cpp
+        TriangleOctree.cpp
+        TriangleOctreeModel.cpp
+        )
+
+endif()
+
+############################### COMPONENTS HERE ARE DEPRECATED ####################################
+if(SOFA_BUILD_COMPONENTSET_FULL)
+
+endif()
+
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaObjectInteraction SofaRigid SofaBaseCollision SofaMeshCollision)

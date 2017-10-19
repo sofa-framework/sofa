@@ -125,7 +125,7 @@ void EvalPointsDistance<DataTypes>::reinit()
         else
         {
             (*outfile) << "# name\t\t\ttime\t\tmean\t\tmin\t\tmax\t\tdev\t\tmean(%)\t\tmin(%)\t\tmax(%)\t\tdev(%)" << std::endl;
-            std::cout << "OutputFile " << filename << " created" << std::endl;
+            msg_info() << "OutputFile " << filename << " created.";
         }
     }
     else

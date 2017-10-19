@@ -33,12 +33,14 @@ namespace component
 
 namespace linearsolver
 {
-
+#ifndef SOFA_FLOAT
 template<>
 const char* EigenVector<defaulttype::Vec3dTypes>::Name() { return "EigenVector3d"; }
+#endif
+#ifndef SOFA_DOUBLE
 template<>
 const char* EigenVector<defaulttype::Vec3fTypes>::Name() { return "EigenVector3f"; }
-
+#endif
 const char* EigenVector<double>::Name() { return "EigenVectord"; }
 }
 }

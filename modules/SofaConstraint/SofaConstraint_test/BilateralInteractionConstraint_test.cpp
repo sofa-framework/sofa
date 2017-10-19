@@ -22,6 +22,9 @@
 
 
 #include <SofaTest/Sofa_test.h>
+#include <SofaTest/TestMessageHandler.h>
+
+
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseTopology/PointSetTopologyContainer.h>
@@ -38,20 +41,12 @@ namespace sofa {
 
 namespace {
 
-
-using std::cout;
-using std::cerr;
-using std::endl;
-
 using sofa::simulation::Node ;
 using sofa::core::ExecParams ;
 using sofa::simulation::SceneLoaderXML ;
 
 using namespace component;
 using namespace defaulttype;
-
-using sofa::helper::logging::ExpectMessage ;
-using sofa::helper::logging::Message ;
 
 template <typename _DataTypes>
 struct BilateralInteractionConstraint_test : public Sofa_test<typename _DataTypes::Real>
@@ -82,11 +77,11 @@ struct BilateralInteractionConstraint_test : public Sofa_test<typename _DataType
             simulation->unload(root);
     }
 
-    void init_Vec3dSetup()
+    void init_Vec3Setup()
     {
     }
 
-    bool test_Vec3dconstrainedPositions()
+    bool test_Vec3ConstrainedPositions()
     {
         return true;
     }
@@ -106,7 +101,7 @@ struct BilateralInteractionConstraint_test : public Sofa_test<typename _DataType
                  "   <BilateralInteractionConstraint template='"<< DataTypes::Name() << "' object1='@./o1' object2='@./o2'/>     \n"
                  "</Node>                                                     \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory (__FILE__,
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                           scene.str().c_str(),
                                                           scene.str().size()) ;
         root->init(ExecParams::defaultInstance()) ;
@@ -128,7 +123,7 @@ struct BilateralInteractionConstraint_test : public Sofa_test<typename _DataType
 
     /// This component requires to be used in conjonction with MechanicalObjects.
     void checkMstateRequiredAssumption(){
-        ExpectMessage e(Message::Error) ;
+        EXPECT_MSG_EMIT(Error) ;
 
         /// I'm using '\n' so that the XML parser correctly report the line number
         /// in case of problems.
@@ -138,7 +133,7 @@ struct BilateralInteractionConstraint_test : public Sofa_test<typename _DataType
                  "   <BilateralInteractionConstraint template='"<< DataTypes::Name() << "' />     \n"
                  "</Node>                                                     \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory (__FILE__,
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                           scene.str().c_str(),
                                                           scene.str().size()) ;
         root->init(ExecParams::defaultInstance()) ;
@@ -151,7 +146,7 @@ struct BilateralInteractionConstraint_test : public Sofa_test<typename _DataType
 
 template<>
 void BilateralInteractionConstraint_test<Rigid3fTypes>::checkRigid3fFixForBackwardCompatibility(){
-    ExpectMessage e(Message::Warning) ;
+    EXPECT_MSG_EMIT(Warning) ;
 
     /// I'm using '\n' so that the XML parser correctly report the line number
     /// in case of problems.
@@ -163,7 +158,7 @@ void BilateralInteractionConstraint_test<Rigid3fTypes>::checkRigid3fFixForBackwa
              "   <BilateralInteractionConstraint template='"<< DataTypes::Name() << "' object1='@./o1' object2='@./o2'/>     \n"
              "</Node>                                                     \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory (__FILE__,
+    Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
     root->init(ExecParams::defaultInstance()) ;
@@ -173,7 +168,7 @@ void BilateralInteractionConstraint_test<Rigid3fTypes>::checkRigid3fFixForBackwa
 
 
 template<>
-void BilateralInteractionConstraint_test<Vec3dTypes>::init_Vec3dSetup()
+void BilateralInteractionConstraint_test<Vec3Types>::init_Vec3Setup()
 {
     /// Load the scene
     //TODO(dmarchal): This general load should be updated... there is no reason to load
@@ -200,7 +195,7 @@ void BilateralInteractionConstraint_test<Vec3dTypes>::init_Vec3dSetup()
 }
 
 template<>
-bool BilateralInteractionConstraint_test<Vec3dTypes>::test_Vec3dconstrainedPositions()
+bool BilateralInteractionConstraint_test<Vec3Types>::test_Vec3ConstrainedPositions()
 {
     std::vector<MechanicalObject*> meca;
     root->get<MechanicalObject>(&meca,std::string("mecaConstraint"),root->SearchDown);
@@ -246,10 +241,10 @@ typedef Types<Vec3Types
 TYPED_TEST_CASE(BilateralInteractionConstraint_test, DataTypes);
 
 //TODO(dmarchal): Needs a serious refactor !!!
-TYPED_TEST( BilateralInteractionConstraint_test , checkVec3dconstrainedPositions )
+TYPED_TEST( BilateralInteractionConstraint_test , checkVec3ConstrainedPositions )
 {
-    this->init_Vec3dSetup();
-    ASSERT_TRUE(  this->test_Vec3dconstrainedPositions() );
+    this->init_Vec3Setup();
+    ASSERT_TRUE(  this->test_Vec3ConstrainedPositions() );
 }
 
 

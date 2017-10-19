@@ -74,10 +74,30 @@ Message& Message::operator=( const Message& msg )
     return *this;
 }
 
+const SOFA_HELPER_API std::string toString(const Message::Type type)
+{
+    switch (type) {
+    case Message::Advice:
+        return "Advice";
+    case Message::Deprecated:
+        return "Deprecated";
+    case Message::Info:
+        return "Info";
+    case Message::Warning:
+        return "Warning";
+    case Message::Error:
+        return "Error";
+    case Message::Fatal:
+        return "Fatal";
+    default:
+        break;
+    }
+    return "Unknown type of message";
+}
 
 std::ostream& operator<< (std::ostream& s, const Message& m){
     s << "[" << m.sender() << "]: " << endl ;
-    s << "    Message type   : " << m.type() << endl ;
+    s << "    Message type   : " << toString(m.type()) << endl ;
     s << "    Message content: " << m.message().str() << endl ;
 
     if(m.fileInfo())
@@ -105,6 +125,15 @@ bool Message::empty() const
 
     return end <= 0;
 }
+
+template<>
+
+SOFA_HELPER_API Message& Message::operator<<(const FileInfo::SPtr &fi)
+{
+    m_fileInfo = fi;
+    return *this;
+}
+
 
 } // logging
 } // helper

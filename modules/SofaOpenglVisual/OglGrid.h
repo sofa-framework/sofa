@@ -63,10 +63,10 @@ public:
         draw(initData(&draw, true,  "draw", "Display the grid or not"))
     {}
 
-    virtual void init();
-    virtual void reinit();
-    virtual void drawVisual(const core::visual::VisualParams*);
-    virtual void updateVisual();
+    virtual void init() override;
+    virtual void reinit() override;
+    virtual void drawVisual(const core::visual::VisualParams*) override;
+    virtual void updateVisual() override;
 
 protected:
 

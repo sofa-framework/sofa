@@ -30,8 +30,6 @@
 #include <math.h>
 #include <iostream>
 #include <sofa/helper/AdvancedTimer.h>
-using std::cerr;
-using std::endl;
 
 //#define SOFA_NO_VMULTIOP
 
@@ -39,7 +37,7 @@ namespace sofa
 {
 
 namespace component
-{ 
+{
 
 namespace odesolver
 {
@@ -89,10 +87,6 @@ void EulerSolver::solve(const core::ExecParams* params, SReal dt, sofa::core::Mu
     mop.projectResponse(acc);
 
     mop.solveConstraint(acc, core::ConstraintParams::ACC);
-#ifdef SOFA_SMP
-    // For SofaSMP we would need VMultiOp to be implemented in a SofaSMP compatible way
-#define SOFA_NO_VMULTIOP
-#endif
 
     // update state
 #ifdef SOFA_NO_VMULTIOP // unoptimized version

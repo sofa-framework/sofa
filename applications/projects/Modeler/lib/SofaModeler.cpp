@@ -19,6 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <fstream>
+
 #include "SofaModeler.h"
 
 #include <sofa/helper/system/FileRepository.h>
@@ -816,9 +818,6 @@ void SofaModeler::exportSofaClasses()
 
                 BaseObjectDescription desc(componentNameStream.str().c_str(), componentName.c_str());
                 desc.setAttribute("template", templateName.c_str());
-
-                // print log
-                //std::cout << componentName << " - " << templateName <<  std::endl;
 
                 if(creatorIterator->second->canCreate(node->getContext(), &desc))
                     creatorIterator->second->createInstance(node->getContext(), &desc);

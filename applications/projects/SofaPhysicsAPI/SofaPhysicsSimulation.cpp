@@ -39,6 +39,7 @@
 #include <sofa/gui/GUIManager.h>
 #include <sofa/gui/Main.h>
 #include <sofa/helper/system/glut.h>
+#include <sofa/helper/init.h>
 
 #include <sofa/gui/BaseGUI.h>
 #include "fakegui.h"
@@ -55,7 +56,11 @@ SofaPhysicsAPI::SofaPhysicsAPI(bool useGUI, int GUIFramerate)
 
 SofaPhysicsAPI::~SofaPhysicsAPI()
 {
-    delete impl;
+    if (impl != NULL)
+    {
+        delete impl;
+        impl = NULL;
+    }
 }
 
 const char *SofaPhysicsAPI::APIName()
@@ -199,16 +204,21 @@ using namespace sofa::core::objectmodel;
 
 static sofa::core::ObjectFactory::ClassEntry::SPtr classVisualModel;
 
-SofaPhysicsSimulation::SofaPhysicsSimulation(bool useGUI_, int GUIFramerate_) :
-useGUI(useGUI_), GUIFramerate(GUIFramerate_)
+SofaPhysicsSimulation::SofaPhysicsSimulation(bool useGUI_, int GUIFramerate_)
+    : useGUI(useGUI_)
+    , GUIFramerate(GUIFramerate_)
 {
+    sofa::helper::init();
     static bool first = true;
     if (first)
     {
-        if ( !useGUI ) {
+        if ( !useGUI )
+        {
           // FakeGUI to be able to receive messages
           FakeGUI::Create();
-        } else {
+        }
+        else
+        {
           sofa::gui::initMain();
 
           int argc= 1;
@@ -224,7 +234,7 @@ useGUI(useGUI_), GUIFramerate(GUIFramerate_)
           sofa::gui::GUIManager::SetDimension(600,600);
         }
         first = false;
-    }
+    }    
 
     m_RootNode = NULL;
     initGLDone = false;
@@ -233,7 +243,6 @@ useGUI(useGUI_), GUIFramerate(GUIFramerate_)
     lastW = 0;
     lastH = 0;
     vparams = sofa::core::visual::VisualParams::defaultInstance();
-    vparams->drawTool() = &drawTool;
 
     m_Simulation = new sofa::simulation::tree::TreeSimulation();
     sofa::simulation::setSimulation(m_Simulation);

@@ -8,7 +8,7 @@
 	<CollisionGroup name="Group" />
 	
 	<Node name="M1" processor="0">
-		<EulerImplicit />
+		<EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
 		<CGLinearSolver iterations="10"/>
 		<MechanicalObject template="CudaVec3f"/>
 		<UniformMass totalmass="200" />

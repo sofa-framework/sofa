@@ -83,27 +83,24 @@ public:
     /// @{
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters
-    virtual void parse ( sofa::core::objectmodel::BaseObjectDescription* arg );
+    virtual void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override ;
 
     /// Initialization method called at graph creation and modification, during top-down traversal.
-    virtual void init();
+    virtual void init() override ;
 
     /// Initialization method called at graph creation and modification, during bottom-up traversal.
-    virtual void bwdInit();
-
-    /// Update method called when variables used in precomputation are modified.
-//    virtual void reinit();
+    virtual void bwdInit() override ;
 
     /// Save the initial state for later uses in reset()
-    virtual void storeResetState();
+    virtual void storeResetState() override ;
 
     /// Reset to initial state
-    virtual void reset();
+    virtual void reset() override ;
 
     /// Called just before deleting this object
     /// Any object in the tree bellow this object that are to be removed will be removed only after this call,
     /// so any references this object holds should still be valid.
-    virtual void cleanup();
+    virtual void cleanup() override ;
 
     /// @}
 
@@ -115,41 +112,41 @@ public:
     /**
     * @brief Mouse event callback.
     */
-    virtual void onMouseEvent(core::objectmodel::MouseEvent *);
+    virtual void onMouseEvent(core::objectmodel::MouseEvent *) override ;
 
     /**
     * @brief Key Press event callback.
     */
-    virtual void onKeyPressedEvent(core::objectmodel::KeypressedEvent *);
+    virtual void onKeyPressedEvent(core::objectmodel::KeypressedEvent *) override ;
 
     /**
     * @brief Key Release event callback.
     */
-    virtual void onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *);
+    virtual void onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *) override ;
 
     /**
     * @brief Begin Animation event callback.
     */
-    virtual void onBeginAnimationStep(const double);
+    virtual void onBeginAnimationStep(const double) override ;
 
     /**
     * @brief End Animation event callback.
     */
-    virtual void onEndAnimationStep(const double);
+    virtual void onEndAnimationStep(const double) override ;
 
     /// @}
 
     /**
     * @brief GUI event callback.
     */
-    virtual void onGUIEvent(core::objectmodel::GUIEvent *);
+    virtual void onGUIEvent(core::objectmodel::GUIEvent *) override ;
 
-    virtual void handleEvent(core::objectmodel::Event *);
+    virtual void handleEvent(core::objectmodel::Event *) override ;
 
     /**
      * @brief draw callback.
      */
-    virtual void draw(const core::visual::VisualParams*);
+    virtual void draw(const core::visual::VisualParams*) override ;
 
 protected:
     /// @name Script interface

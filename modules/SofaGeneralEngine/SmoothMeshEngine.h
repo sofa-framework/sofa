@@ -58,10 +58,11 @@ protected:
 
     virtual ~SmoothMeshEngine() {}
 public:
-    void init();
-    void reinit();
-    void update();
-    virtual void draw(const core::visual::VisualParams* vparams);
+    void init() override;
+    void reinit() override;
+    void update() override;
+	void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
+    virtual void draw(const core::visual::VisualParams* vparams) override;
 
     Data<VecCoord> input_position;
     Data<helper::vector <unsigned int> > input_indices;
@@ -72,7 +73,7 @@ public:
     Data<bool> showInput;
     Data<bool> showOutput;
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }

@@ -171,7 +171,6 @@ public:
 
     void clear(Index i)
     {
-        printf("je clear\n");
         data[i] = (Real)0;
     }
 

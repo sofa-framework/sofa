@@ -35,16 +35,12 @@ public:
 class SOFA_CIMGPLUGIN_API ImageCImg : public Image
 {
 public:
-    ImageCImg ()
-    {
-        helper::logging::MessageDispatcher::clearHandlers() ;
-        helper::logging::MessageDispatcher::addHandler( &helper::logging::MainCountingMessageHandler::getInstance() ) ;
-        helper::logging::MessageDispatcher::addHandler( &helper::logging::MainLoggingMessageHandler::getInstance() ) ;
-    }
+    ImageCImg (){}
 
     ImageCImg (const std::string &filename)
     {
-        load(filename);
+        if(!filename.empty())
+            load(filename);
     }
 
     static void setCimgCreators();

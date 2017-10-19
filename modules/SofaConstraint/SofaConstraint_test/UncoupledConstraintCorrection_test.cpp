@@ -20,6 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaTest/Sofa_test.h>
+#include <SofaTest/TestMessageHandler.h>
+
+
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/simulation/DeleteVisitor.h>
 #include <sofa/simulation/CleanupVisitor.h>
@@ -80,7 +83,10 @@ struct UncoupledConstraintCorrection_test: public Sofa_test<SReal>
 };
 
 // run the tests
-TEST_F( UncoupledConstraintCorrection_test,objectRemovalThenStep) { this->objectRemovalThenStep(); }
+TEST_F( UncoupledConstraintCorrection_test,objectRemovalThenStep) {
+    EXPECT_MSG_NOEMIT(Error) ;
+    this->objectRemovalThenStep();
+}
 
 
 }// namespace sofa

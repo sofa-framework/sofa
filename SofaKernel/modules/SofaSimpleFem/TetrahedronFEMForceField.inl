@@ -27,7 +27,6 @@
 #include <SofaBaseTopology/GridTopology.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/helper/decompose.h>
-#include <sofa/helper/gl/template.h>
 #include <assert.h>
 #include <iostream>
 #include <set>
@@ -1392,6 +1391,21 @@ inline void TetrahedronFEMForceField<DataTypes>::applyStiffnessCorotational( Vec
 //////////////////////////////////////////////////////////////////////
 
 template <class DataTypes>
+TetrahedronFEMForceField<DataTypes>::~TetrahedronFEMForceField()
+{
+    // Need to unaffect a vector to the pointer
+    if (_mesh == NULL && _indexedElements != NULL)
+        delete _indexedElements;
+
+    // 	    if (_gatherPt) delete _gatherPt;
+    // 	    if (_gatherBsize)  delete _gatherBsize;
+    // 	    _gatherPt = NULL;
+    // 	    _gatherBsize = NULL
+}
+
+
+
+template <class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::init()
 {
     m_componentstate = ComponentState::Invalid ;
@@ -1414,10 +1428,16 @@ void TetrahedronFEMForceField<DataTypes>::init()
 
     this->core::behavior::ForceField<DataTypes>::init();
     _mesh = this->getContext()->getMeshTopology();
+
     if (_mesh==NULL)
     {
         msg_error(this) << " object must have a mesh topology. The component is inactivated.  "
                            "To remove this error message please add a topology component to your scene.";
+
+        // Need to affect a vector to the pointer even if it is empty.
+        if (_indexedElements == NULL)
+            _indexedElements = new VecElement();
+
         return;
     }
 #ifdef SOFA_NEW_HEXA
@@ -1428,8 +1448,14 @@ void TetrahedronFEMForceField<DataTypes>::init()
     {
         msg_error(this) << " object must have a tetrahedric topology. The component is inactivated.  "
                            "To remove this error message please add a tetrahedric topology component to your scene.";
+
+        // Need to affect a vector to the pointer even if it is empty.
+        if (_indexedElements == NULL)
+            _indexedElements = new VecElement();
+
         return;
     }
+
     if (!_mesh->getTetrahedra().empty())
     {
         _indexedElements = & (_mesh->getTetrahedra());
@@ -1575,7 +1601,14 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
     if(m_componentstate==ComponentState::Invalid)
         return ;
 
-    if (!this->mstate) return;
+    if (!this->mstate || !_mesh){
+        // Need to affect a vector to the pointer even if it is empty.
+        if (_indexedElements == NULL)
+            _indexedElements = new VecElement();
+
+        return;
+    }
+
     if (!_mesh->getTetrahedra().empty())
     {
         _indexedElements = & (_mesh->getTetrahedra());
@@ -1632,7 +1665,7 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
     {
         rotations.resize( _indexedElements->size() );
         _initialRotations.resize( _indexedElements->size() );
-        _rotationIdx.resize(_indexedElements->size() *4);
+        _rotationIdx.resize(_mesh->getNbPoints());
         _rotatedInitialElements.resize(_indexedElements->size());
         for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
         {
@@ -1649,7 +1682,7 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
     {
         rotations.resize( _indexedElements->size() );
         _initialRotations.resize( _indexedElements->size() );
-        _rotationIdx.resize(_indexedElements->size() *4);
+        _rotationIdx.resize(_mesh->getNbPoints());
         _rotatedInitialElements.resize(_indexedElements->size());
         //_initialTransformation.resize(_indexedElements->size());
         unsigned int i=0;
@@ -1669,7 +1702,7 @@ inline void TetrahedronFEMForceField<DataTypes>::reinit()
     {
         rotations.resize( _indexedElements->size() );
         _initialRotations.resize( _indexedElements->size() );
-        _rotationIdx.resize(_indexedElements->size() *4);
+        _rotationIdx.resize(_mesh->getNbPoints());
         _rotatedInitialElements.resize(_indexedElements->size());
         _initialTransformation.resize(_indexedElements->size());
         unsigned int i=0;
@@ -1867,16 +1900,12 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
             maxVMN = (vMN[i] > maxVMN) ? vMN[i] : maxVMN;
         }
 
-        //std::cout << "Min VMs: " << minVM << "   max: " << maxVM << std::endl;
         maxVM*=_showStressAlpha.getValue();
         maxVMN*=_showStressAlpha.getValue();
 
     }
 
     vparams->drawTool()->setLightingEnabled(false);
-    //glEnable(GL_BLEND) ;
-    //glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-    //glDepthMask(0);
 
 #ifdef SIMPLEFEM_COLORMAP
     if (_showVonMisesStressPerNode.getValue()) {
@@ -2451,8 +2480,6 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
     for (size_t i = 0; i < X0.size(); i++)
         U[i] = X[i] - X0[i];
 
-    //std::cout << "Displ = " << U << std::endl;
-
     typename VecElement::const_iterator it;
     size_t el;
     helper::WriteAccessor<Data<helper::vector<Real> > > vME =  _vonMisesPerElement;
@@ -2472,7 +2499,6 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
                         gradU[k][l] += shf[l+1][m] * U[(*it)[m]][k];
                 }
             }
-            //std::cout << "gradU = " << gradU<< std::endl;
 
             Mat33 strain = ((Real)0.5)*(gradU + gradU.transposed() + gradU.transposed()*gradU);
 
@@ -2570,10 +2596,6 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
             vStrain[3] = strain[1][2];
             vStrain[4] = strain[0][2];
             vStrain[5] = strain[0][1];
-
-            //std::cout << "D= " << D << std::endl;
-            //std::cout << "vStrain= " << D << std::endl;
-
         }
 
         Real lambda=elemLambda[el];
@@ -2598,8 +2620,6 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
         vME[el] = helper::rsqrt(s[0]*s[0] + s[1]*s[1] + s[2]*s[2] - s[0]*s[1] - s[1]*s[2] - s[2]*s[0] + 3*s[3]*s[3] + 3*s[4]*s[4] + 3*s[5]*s[5]);
         if (vME[el] < 1e-10)
             vME[el] = 0.0;
-
-        //std::cout << "VMStress: " << vM[el] << std::endl;
     }
 
     const VecCoord& dofs = this->mstate->read(core::ConstVecCoordId::position())->getValue();
@@ -2633,7 +2653,6 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
         maxVM = prevMaxStress;
 
 #ifdef SIMPLEFEM_COLORMAP
-    //std::cout << "Min VMs: " << minVM << "   max: " << maxVM << std::endl;
     maxVM*=_showStressAlpha.getValue();
     vonMisesStressColors.resize(_mesh->getNbPoints());
     vonMisesStressColorsCoeff.resize(_mesh->getNbPoints());

@@ -2,7 +2,7 @@
 	<Node>
 	<!--<RungeKutta4/>-->
 		<!--<CentralDifferenceSolver/>-->
-        <EulerImplicitSolver/>
+        <EulerImplicitSolver rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver/>
 <!---->		<MechanicalObject name="MModel" template="Vec3f"/>  <-- -->
 <!-- 		<MechanicalObject name="MModel" template="Vec3f" position="0 6 0" /> -->

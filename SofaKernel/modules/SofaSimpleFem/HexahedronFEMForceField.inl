@@ -26,7 +26,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/helper/decompose.h>
-#include <sofa/helper/gl/template.h>
 #include <assert.h>
 #include <iostream>
 #include <set>
@@ -1270,6 +1269,29 @@ void HexahedronFEMForceField<DataTypes>::addKToMatrix(const core::MechanicalPara
 }
 
 
+
+template<class DataTypes>
+void HexahedronFEMForceField<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
+{
+    if( !onlyVisible ) return;
+
+    helper::ReadAccessor<DataVecCoord> x = this->mstate->read(core::VecCoordId::position());
+
+    static const Real max_real = std::numeric_limits<Real>::max();
+    static const Real min_real = std::numeric_limits<Real>::lowest();
+    Real maxBBox[3] = {min_real,min_real,min_real};
+    Real minBBox[3] = {max_real,max_real,max_real};
+    for (size_t i=0; i<x.size(); i++)
+    {
+        for (int c=0; c<3; c++)
+        {
+            if (x[i][c] > maxBBox[c]) maxBBox[c] = (Real)x[i][c];
+            else if (x[i][c] < minBBox[c]) minBBox[c] = (Real)x[i][c];
+        }
+    }
+
+    this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
+}
 
 
 template<class DataTypes>

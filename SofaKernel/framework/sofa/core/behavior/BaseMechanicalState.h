@@ -135,11 +135,6 @@ public:
     /// \li v = a + b
     /// \li v = b * f
     virtual void vOp(const ExecParams* params, VecId v, ConstVecId a = ConstVecId::null(), ConstVecId b = ConstVecId::null(), SReal f = 1.0 ) = 0;
-#ifdef SOFA_SMP
-    virtual void vOp(const ExecParams* params, VecId v, ConstVecId a, ConstVecId b, SReal f, a1::Shared<SReal> * fSh ) = 0;
-    virtual void vOpMEq(const ExecParams* params, VecId v, ConstVecId a = ConstVecId::null(), a1::Shared<SReal> * fSh=NULL ) = 0;
-    virtual void vDot(const ExecParams* params, a1::Shared<SReal> *result,ConstVecId a, ConstVecId b ) = 0;
-#endif
     /// Data structure describing a set of linear operation on vectors
     /// \see vMultiOp
     class VMultiOpEntry : public std::pair< MultiVecId, helper::vector< std::pair< ConstMultiVecId, SReal > > >
@@ -225,7 +220,10 @@ public:
 
     /// build the jacobian of the constraint in a baseMatrix
     virtual void getConstraintJacobian(const ExecParams* params, sofa::defaulttype::BaseMatrix* J,unsigned int & off) = 0;
-
+#if(SOFA_WITH_EXPERIMENTAL_FEATURES==1)
+    /// fill the jacobian matrix (of the constraints) with identity blocks on the provided list of nodes(dofs)
+    virtual void buildIdentityBlocksInJacobian(const sofa::helper::vector<unsigned int>& list_n, core::MatrixDerivId &mID) = 0;
+#endif
     /// Renumber the constraint ids with the given permutation vector
     virtual void renumberConstraintId(const sofa::helper::vector<unsigned>& renumbering) = 0;
 
@@ -388,8 +386,8 @@ public:
 
     /// @}getPotent
 
-    virtual bool insertInNode( objectmodel::BaseNode* node );
-    virtual bool removeInNode( objectmodel::BaseNode* node );
+    virtual bool insertInNode( objectmodel::BaseNode* node ) override;
+    virtual bool removeInNode( objectmodel::BaseNode* node ) override;
 
 };
 

@@ -21,49 +21,36 @@
 ******************************************************************************/
 #include "Binding_DisplayFlagsData.h"
 #include "Binding_Data.h"
+#include "PythonToSofa.inl"
 
 #include <sofa/core/visual/DisplayFlags.h>
-using namespace sofa::core::visual;
-using namespace sofa::core::objectmodel;
+using sofa::core::visual::DisplayFlags;
+using sofa::core::visual::tristate ;
+using sofa::core::objectmodel::Data ;
+
+/// getting a Data<DisplayFlags>* from a PyObject*
+static inline Data<DisplayFlags>* get_DataDisplayFlags(PyObject* obj) {
+  return sofa::py::unwrap<Data<DisplayFlags> >(obj);
+}
+
 
 SP_CLASS_METHODS_BEGIN(DisplayFlagsData)
 SP_CLASS_METHODS_END
 
-/*
-\item showAll
-\item showVisual
-\item showVisualModels
-\item showBehavior
-\item showBehaviorModels
-\item showForceFields
-\item showInteractionForceFields
-\item showCollision
-\item showCollisionModels
-\item showBoundingCollisionModels
-\item showMapping
-\item showMappings
-\item showMechanicalMappings
-\item showOptions
-\item showWireFrame
-\item showNormals
-*/
-
-
 #define DISPLAYFLAG_ATTRIBUTE_IMPL(flagName) \
-    extern "C" PyObject * DisplayFlagsData_getAttr_show##flagName(PyObject *self, void*) \
+    static PyObject * DisplayFlagsData_getAttr_show##flagName(PyObject *self, void*) \
     { \
-        Data<DisplayFlags>* data= down_cast<Data<DisplayFlags> >( ((PyPtr<BaseData>*)self)->object ); \
+        Data<DisplayFlags>* data = get_DataDisplayFlags(self); \
         const DisplayFlags& flags = data->getValue(); \
         bool b = (tristate::false_value != flags.getShow##flagName()); \
         return PyBool_FromLong(b); \
     } \
-    extern "C" int DisplayFlagsData_setAttr_show##flagName(PyObject *self, PyObject * args, void*) \
+    static int DisplayFlagsData_setAttr_show##flagName(PyObject *self, PyObject * args, void*) \
     { \
-        Data<DisplayFlags>* data= down_cast<Data<DisplayFlags> >( ((PyPtr<BaseData>*)self)->object ); \
+        Data<DisplayFlags>* data = get_DataDisplayFlags(self); \
         bool b = (Py_True==args); \
         DisplayFlags* flags = data->beginEdit(); \
         flags->setShow##flagName(b); \
-        /*printf("%s %d\n",#flagName,b);*/ \
         data->endEdit(); \
         return 0; \
     }
@@ -106,5 +93,6 @@ SP_CLASS_ATTR(DisplayFlagsData,showWireFrame)
 SP_CLASS_ATTR(DisplayFlagsData,showNormals)
 SP_CLASS_ATTRS_END
 
-SP_CLASS_TYPE_PTR_ATTR(DisplayFlagsData,Data<DisplayFlags>,Data)
+SP_CLASS_TYPE_PTR_ATTR(DisplayFlagsData, sofa::core::objectmodel::BaseData, Data);
+
 

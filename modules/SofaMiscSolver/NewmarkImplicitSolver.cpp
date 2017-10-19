@@ -45,9 +45,9 @@ using namespace sofa::defaulttype;
 using namespace core::behavior;
 
 NewmarkImplicitSolver::NewmarkImplicitSolver()
-    : f_rayleighStiffness(initData(&f_rayleighStiffness,0.1,"rayleighStiffness","Rayleigh damping coefficient related to stiffness") )
-    , f_rayleighMass( initData(&f_rayleighMass,0.1,"rayleighMass","Rayleigh damping coefficient related to mass"))
-    , f_velocityDamping( initData(&f_velocityDamping,0.,"vdamping","Velocity decay coefficient (no decay if null)") )
+    : f_rayleighStiffness(initData(&f_rayleighStiffness,0.0,"rayleighStiffness","Rayleigh damping coefficient related to stiffness") )
+    , f_rayleighMass( initData(&f_rayleighMass,0.0,"rayleighMass","Rayleigh damping coefficient related to mass"))
+    , f_velocityDamping( initData(&f_velocityDamping,0.0,"vdamping","Velocity decay coefficient (no decay if null)") )
     , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
     , f_gamma( initData(&f_gamma, 0.5, "gamma", "Newmark scheme gamma coefficient"))
     , f_beta( initData(&f_beta, 0.25, "beta", "Newmark scheme beta coefficient") )
@@ -115,7 +115,7 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa
 
     // Define a
     MultiVecDeriv a(&vop, pID);
-	a.realloc( &vop, true, true );
+    a.realloc( &vop, true, true );
     if(cpt ==0)
     {
         a.clear();
@@ -136,7 +136,7 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa
     //b = f;
     // b = M a
     if (rM != 0.0 || rK != 0.0 || beta != 0.5)
-    {  
+    {
         mop.propagateDx(a);
 
         mop.addMBKdx(b, -h*(1-gamma)*rM, h*(1-gamma), h*(1-gamma)*rK + h*h*(1-2*beta)/2.0,true,true);
@@ -179,7 +179,6 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa
     b.eq(vel, a, h*(0.5-beta));
     b.peq(aResult, h*beta);
     newPos.eq(pos, b, h);
-    std::cout<<"there"<<std::endl;
     solveConstraint(dt,xResult,core::ConstraintParams::POS);
     // v_{t+h} = v_t + h ( (1-\gamma) a_t + \gamma a_{t+h} )
     newVel.eq(vel, a, h*(1-gamma));

@@ -71,13 +71,13 @@ public:
 
     virtual ~ShapeMatching() {}
 
-    void init();
+    void init() override;
 
-    void reinit();
+    void reinit() override;
 
-    void update();
+    void update() override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
     Data<unsigned int> iterations;
     Data< Real > affineRatio;
@@ -88,7 +88,7 @@ public:
     Data< VVI > cluster; ///< input2 (clusters)
     Data< VecCoord > targetPosition;       ///< result
 
-    virtual std::string getTemplateName() const    { return templateName(this);    }
+    virtual std::string getTemplateName() const    override { return templateName(this);    }
     static std::string templateName(const ShapeMatching<DataTypes>* = NULL)    {    return DataTypes::Name();    }
 
 private:

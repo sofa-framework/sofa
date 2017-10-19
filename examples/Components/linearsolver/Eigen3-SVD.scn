@@ -2,7 +2,7 @@
 <Node name="root" dt="0.02" gravity="0 -10 0">
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <Node>
-        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <SVD template="FullMatrix" printLog="1" verbose="0" />
         <MechanicalObject />
         <UniformMass mass="1" />

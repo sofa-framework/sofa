@@ -45,16 +45,17 @@ public:
     Data<sofa::defaulttype::Vector3> normal;
     Data<int> id;
     Data<bool> active;
+
+    virtual sofa::core::objectmodel::ComponentState checkDataValues();
+    virtual void init() override;
+    virtual void reinit() override;
+    virtual void fwdDraw(core::visual::VisualParams*) override;
+    virtual void bwdDraw(core::visual::VisualParams*) override;
+
 protected:
     ClipPlane();
     virtual ~ClipPlane();
-public:
-    virtual void init();
-    virtual void reinit();
-    virtual void fwdDraw(core::visual::VisualParams*);
-    virtual void bwdDraw(core::visual::VisualParams*);
 
-protected:
     GLboolean wasActive;
     double saveEq[4];
 };

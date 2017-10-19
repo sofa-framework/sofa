@@ -64,8 +64,8 @@ public:
     /// Adds a path to the front of the set of paths.
     void addFirstPath(const std::string& path);
 
-	/// Replaces every occurrences of "//" by "/"
-	std::string cleanPath( const std::string& path );
+    /// Replaces every occurrences of "//" by "/"
+    std::string cleanPath( const std::string& path );
 
     /// Adds a path to the back of the set of paths.
     void addLastPath(const std::string& path);
@@ -78,8 +78,10 @@ public:
 
     /// Returns a string such as refPath + string = path if path contains refPath.
     /// Otherwise returns path.
-    /// Under WIN32 the method returns a lower cased unix formatted path.
-    static std::string relativeToPath(std::string path, std::string refPath);
+    /// On WIN32 the implementation was also returning the path in lower case. This behavior is now
+    /// deprecated and should be remove the 2018-05-01. Until this date new implementation can be
+    /// used by setting doLowerCaseOnWin32=false;
+    static std::string relativeToPath(std::string path, std::string refPath, bool doLowerCaseOnWin32=true);
 
     const std::vector< std::string > &getPaths() const {return vpath;}
 

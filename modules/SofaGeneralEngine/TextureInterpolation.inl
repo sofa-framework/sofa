@@ -294,7 +294,7 @@ void TextureInterpolation<DataTypes>::draw(const core::visual::VisualParams* vpa
 
         if(potentiels.size() != coords.size())
         {
-            std::cout << "Error: vector sizes differ" << std::endl;
+            msg_error() << "Vector sizes differ." ;
             return;
         }
         unsigned int nbr = potentiels.size();

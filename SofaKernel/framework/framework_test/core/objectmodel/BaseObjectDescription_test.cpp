@@ -36,7 +36,6 @@ using sofa::core::objectmodel::BaseObjectDescription ;
 
 #include <SofaTest/TestMessageHandler.h>
 using sofa::helper::logging::Message ;
-using sofa::helper::logging::ExpectMessage ;
 
 
 
@@ -67,7 +66,7 @@ struct BaseObjectDescription_test: public Sofa_test<>
 
         /// This function is supposed to return an error message if there is no context.
         {
-            ExpectMessage error(Message::Error) ;
+            EXPECT_MSG_EMIT(Error) ;
             EXPECT_EQ( objectDescription.findObject("aNonExistantName"), nullptr );
         }
 
@@ -185,7 +184,7 @@ TEST_F(BaseObjectDescription_test ,  checkGetAttributeAsInt)
     this->checkGetAttributeAsFloat();
 }
 
-TEST_F(BaseObjectDescription_test ,  checkRemoveAnAttribute_OpenIssue)
+TEST_F(BaseObjectDescription_test ,  checkRemoveAnAttribute)
 {
     this->checkRemoveAnAttribute();
 }

@@ -23,8 +23,6 @@
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/ObjectFactory.h>
-//#include <SofaBaseMechanics/MechanicalObject.inl>
-//#include <sofa/helper/gl/glText.inl>
 
 namespace sofa
 {
@@ -66,7 +64,6 @@ void TriangleSetTopologyContainer::addTriangle( int a, int b, int c )
 
 void TriangleSetTopologyContainer::init()
 {
-    //std::cout << "TriangleSetTopologyContainer::init()" << std::endl;
     EdgeSetTopologyContainer::init();
     d_triangle.updateIfDirty(); // make sure m_triangle is up to date
 }

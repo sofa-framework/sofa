@@ -167,10 +167,9 @@ void VoxelGridLoader::reinit()
 
         sout << " done. " << sendl;
 
-        std::cout << "[VoxelGridLoader::init] inserting hexa ... ";
         helper::vector<Hexahedron>& seqHexahedra = *hexahedra.beginEdit();
 
-
+        msg_info() << "inserting hexahedras...please wait... " ;
         for ( unsigned int k=(unsigned)ROI[2]; k<=(unsigned)ROI[5]; ++k )
             for ( unsigned int j=(unsigned)ROI[1]; j<=(unsigned)ROI[4]; ++j )
                 for ( unsigned int i=(unsigned)ROI[0]; i<=(unsigned)ROI[3]; ++i )
@@ -186,27 +185,18 @@ void VoxelGridLoader::reinit()
                         }
 
                         addHexahedron( &seqHexahedra, p[0], p[1], p[3], p[2], p[4], p[5], p[7], p[6] );
-
-//            addHexahedron( &seqHexahedra, p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7] );
-
-
                         _idxInRegularGrid.push_back ( idx );
                     }
                 }
-
-        std::cout << "done. (" << seqHexahedra.size() << ")" << std::endl;
+        msg_info() << "inserting (" << seqHexahedra.size() << ")  hexahedras done. " ;
         hexahedra.endEdit();
-
     }
     else
     {
         const unsigned int numVoxelsX = dataResolution.getValue()[0];
         const unsigned int numVoxelsY = dataResolution.getValue()[1];
-        //	  const unsigned int numVoxelsZ = dataResolution.getValue()[2];
 
-        std::cout << "[VoxelGridLoader::init] inserting points ... ";
-
-
+        msg_info() << "inserting point...please wait... " ;
         for ( unsigned int k=(unsigned)ROI[2]; k<=(unsigned)ROI[5]; ++k )
             for ( unsigned int j=(unsigned)ROI[1]; j<=(unsigned)ROI[4]; ++j )
                 for ( unsigned int i=(unsigned)ROI[0]; i<=(unsigned)ROI[3]; ++i )
@@ -224,8 +214,7 @@ void VoxelGridLoader::reinit()
                         _idxInRegularGrid.push_back ( idx );
                     }
                 }
-
-        std::cout << "done. (" << seqPoints.size() << ")" << std::endl;
+        msg_info() << "inserting (" << seqPoints.size() << ") points done." ;
 
     }
     idxInRegularGrid.endEdit();
@@ -296,7 +285,7 @@ helper::io::Image* VoxelGridLoader::loadImage ( const std::string& filename, con
                 channels = helper::io::Image::RGBA;
                 break;
             default:
-                serr << "Unknown bitdepth: " << bpp << sendl;
+                msg_warning("VoxelGridLoader") << "Unknown bitdepth: " << bpp ;
                 return 0;
             }
             helper::io::ImageRAW *imageRAW = new helper::io::ImageRAW();
@@ -309,7 +298,7 @@ helper::io::Image* VoxelGridLoader::loadImage ( const std::string& filename, con
 
     if(image == NULL)
     {
-        this->serr << "Unable to load file " <<  _filename << sendl;
+        msg_warning("VoxelGridLoader") << "Unable to load file " <<  _filename ;
     }
 
     return image;

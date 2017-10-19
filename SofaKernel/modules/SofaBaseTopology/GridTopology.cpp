@@ -55,12 +55,13 @@ void GridTopology::GridUpdate::update()
 {
     updateEdges();
     updateQuads();
+    updateTriangles();
     updateHexas();
 }
 
 void GridTopology::GridUpdate::updateEdges()
 {
-    SeqEdges& edges = *topology->seqEdges.beginEdit();
+    SeqEdges& edges = *topology->seqEdges.beginWriteOnly();
     const Vec3i& n = topology->d_n.getValue();
     edges.clear();
     edges.reserve( (n[0]-1)*n[1]*n[2] +
@@ -84,9 +85,26 @@ void GridTopology::GridUpdate::updateEdges()
     topology->seqEdges.endEdit();
 }
 
+void GridTopology::GridUpdate::updateTriangles()
+{
+    // base on quads
+    const SeqQuads& quads = topology->seqQuads.getValue();
+    SeqTriangles& triangles = *topology->seqTriangles.beginWriteOnly();
+    triangles.clear();
+    triangles.reserve(quads.size()*2);
+
+    for (unsigned int i=0; i<quads.size(); ++i)
+    {
+        triangles.push_back(Triangle(quads[i][0], quads[i][1], quads[i][2]));
+        triangles.push_back(Triangle(quads[i][0], quads[i][2], quads[i][3]));
+    }
+
+    topology->seqTriangles.endEdit();
+}
+
 void GridTopology::GridUpdate::updateQuads()
 {
-    SeqQuads& quads = *topology->seqQuads.beginEdit();
+    SeqQuads& quads = *topology->seqQuads.beginWriteOnly();
     const Vec3i& n = topology->d_n.getValue();
     quads.clear();
     quads.reserve((n[0]-1)*(n[1]-1)*n[2]+(n[0]-1)*n[1]*(n[2]-1)+n[0]*(n[1]-1)*(n[2]-1));
@@ -120,7 +138,7 @@ void GridTopology::GridUpdate::updateQuads()
 
 void GridTopology::GridUpdate::updateHexas()
 {
-    SeqHexahedra& hexahedra = *topology->seqHexahedra.beginEdit();
+    SeqHexahedra& hexahedra = *topology->seqHexahedra.beginWriteOnly();
     const Vec3i& n = topology->d_n.getValue();
     hexahedra.clear();
     hexahedra.reserve((n[0]-1)*(n[1]-1)*(n[2]-1));
@@ -141,51 +159,44 @@ void GridTopology::GridUpdate::updateHexas()
     topology->seqHexahedra.endEdit();
 }
 
+/// To avoid duplicating the code in the different variants of the constructor
+/// this object is using the delegating constructor feature of c++ x11.
+/// The following constructor is "chained" by the other constructors to
+/// defined only one the member initialization.
 GridTopology::GridTopology()
-    : d_n(initData(&d_n,Vec3i(2,2,2),"n","grid resolution"))
-    , d_computeHexaList(initData(&d_computeHexaList, true, "computeHexaList", "put true if the list of Hexahedra is needed during init"))
-    , d_computeQuadList(initData(&d_computeQuadList, true, "computeQuadList", "put true if the list of Quad is needed during init"))
-    , d_computeEdgeList(initData(&d_computeEdgeList, true, "computeEdgeList", "put true if the list of Lines is needed during init"))
-    , d_computePointList(initData(&d_computePointList, true, "computePointList", "put true if the list of Points is needed during init"))
-    , d_createTexCoords(initData(&d_createTexCoords, (bool)false, "createTexCoords", "If set to true, virtual texture coordinates will be generated using 3D interpolation."))
+    : d_n(initData(&d_n,Vec3i(2,2,2),"n","grid resolution. (default = 2 2 2)"))
+    , d_computeHexaList(initData(&d_computeHexaList, true, "computeHexaList", "put true if the list of Hexahedra is needed during init (default=true)"))
+    , d_computeQuadList(initData(&d_computeQuadList, true, "computeQuadList", "put true if the list of Quad is needed during init (default=true)"))
+    , d_computeEdgeList(initData(&d_computeEdgeList, true, "computeEdgeList", "put true if the list of Lines is needed during init (default=true)"))
+    , d_computePointList(initData(&d_computePointList, true, "computePointList", "put true if the list of Points is needed during init (default=true)"))
+    , d_createTexCoords(initData(&d_createTexCoords, (bool)false, "createTexCoords", "If set to true, virtual texture coordinates will be generated using 3D interpolation (default=false)."))
 {
     setNbGridPoints();
     GridUpdate::SPtr gridUpdate = sofa::core::objectmodel::New<GridUpdate>(this);
     this->addSlave(gridUpdate);
 }
 
-GridTopology::GridTopology(int _nx, int _ny, int _nz)
-    : d_n(initData(&d_n,Vec3i(_nx,_ny,_nz),"n","grid resolution"))
-    , d_computeHexaList(initData(&d_computeHexaList, true, "computeHexaList", "put true if the list of Hexahedra is needed during init"))
-    , d_computeQuadList(initData(&d_computeQuadList, true, "computeQuadList", "put true if the list of Quad is needed during init"))
-    , d_computeEdgeList(initData(&d_computeEdgeList, true, "computeEdgeList", "put true if the list of Lines is needed during init"))
-    , d_computePointList(initData(&d_computePointList, true, "computePointList", "put true if the list of Points is needed during init"))
-    , d_createTexCoords(initData(&d_createTexCoords, (bool)false, "createTexCoords", "If set to true, virtual texture coordinates will be generated using 3D interpolation."))
+/// This constructor is chained with the one without parameter
+GridTopology::GridTopology(const Vec3i& dimXYZ ) :
+    GridTopology()
 {
-    nbPoints = _nx*_ny*_nz;
-    this->d_n.setValue(Vec3i(_nx,_ny,_nz));
-
+    d_n.setValue(dimXYZ);
     checkGridResolution();
 }
 
-GridTopology::GridTopology( Vec3i np )
-    : d_n(initData(&d_n,np,"n","grid resolution"))
-    , d_computeHexaList(initData(&d_computeHexaList, true, "computeHexaList", "put true if the list of Hexahedra is needed during init"))
-    , d_computeQuadList(initData(&d_computeQuadList, true, "computeQuadList", "put true if the list of Quad is needed during init"))
-    , d_computeEdgeList(initData(&d_computeEdgeList, true, "computeEdgeList", "put true if the list of Lines is needed during init"))
-    , d_computePointList(initData(&d_computePointList, true, "computePointList", "put true if the list of Points is needed during init"))
-    , d_createTexCoords(initData(&d_createTexCoords, (bool)false, "createTexCoords", "If set to true, virtual texture coordinates will be generated using 3D interpolation."))
+/// This constructor is chained with the one with a Vec3i parameter
+GridTopology::GridTopology(int nx, int ny, int nz) :
+    GridTopology(Vec3i(nx,ny,nz))
 {
-    nbPoints = np[0]*np[1]*np[2];
-    this->d_n.setValue(np);
-
-    checkGridResolution();
 }
 
 void GridTopology::init()
 {
     // first check resolution
     checkGridResolution();
+
+    if (d_computePointList.getValue())
+        this->computePointList();
 
     if (d_createTexCoords.getValue())
         this->createTexCoords();
@@ -198,9 +209,6 @@ void GridTopology::init()
 
     if (d_computeEdgeList.getValue())
         this->computeEdgeList();
-
-    if (d_computePointList.getValue())
-        this->computePointList();
 
     Inherit1::init();
 }
@@ -223,16 +231,30 @@ void GridTopology::setSize(int nx, int ny, int nz)
 void GridTopology::checkGridResolution()
 {
     const Vec3i& _n = d_n.getValue();
-    if (_n[0] < 2 || _n[1] < 2 || _n[2] < 2)
+
+    if (_n[0] < 1 || _n[1] < 1 || _n[2] < 1)
     {
-        msg_warning(this) << "The grid resolution: ["<< _n[0] << " ; " << _n[1] << " ; " << _n[2] <<
-                             "] is outside the validity range. At least a resolution of 2 is needed in each 3D direction."
-                             " Continuing with default value=[2; 2; 2]."
-                             " Set a valid grid resolution to remove this warning message.";
+        msg_warning() << "The grid resolution: ["<< _n[0] << " ; " << _n[1] << " ; " << _n[2] <<
+                         "] is outside the validity range. At least a resolution of 1 is needed in each 3D direction."
+                         " Continuing with default value=[2; 2; 2]."
+                         " Set a valid grid resolution to remove this warning message.";
+
         this->d_n.setValue(Vec3i(2,2,2));
-        setNbGridPoints();
-        computePointList();
+        changeGridResolutionPostProcess();
     }
+
+    setNbGridPoints();
+}
+
+Grid_dimension GridTopology::getDimensions() const
+{
+	const Vec3i& _n = d_n.getValue();
+	int dim = 0;
+	for (int i = 0; i<3; i++)
+		if (_n[i] > 1) 
+			dim++;
+
+	return (Grid_dimension)dim;
 }
 
 void GridTopology::setSize(Vec3i n)
@@ -269,7 +291,7 @@ void GridTopology::computePointList()
 {
     int nbPoints= this->getNbPoints();
     // put the result in seqPoints
-    SeqPoints& seq_P= *(seqPoints.beginEdit());
+    SeqPoints& seq_P= *(seqPoints.beginWriteOnly());
     seq_P.resize(nbPoints);
 
     for (int i=0; i<nbPoints; i++)

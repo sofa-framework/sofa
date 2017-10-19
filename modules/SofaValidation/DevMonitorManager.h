@@ -51,8 +51,8 @@ protected:
     DevMonitorManager();
     virtual ~DevMonitorManager();
 public:
-    void init();
-    void eval();
+    void init() override;
+    void eval() override;
 
 private:
     sofa::helper::vector<core::DevBaseMonitor*> monitors;

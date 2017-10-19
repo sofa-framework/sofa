@@ -43,7 +43,7 @@ If you are able to patch the bug or add the feature yourself – fantastic, make
 - Pull in changes from upstream often to [**sync your fork**](https://help.github.com/articles/syncing-a-fork/) so that merge conflicts will be less likely in your pull request.
 - [**Create a pull request**](https://help.github.com/articles/creating-a-pull-request-from-a-fork/) when you are ready to propose your changes into the main project.
 
-### Rules for SOFA pull requests
+### Rules
 
 - Description must explain the **issue solved** or the **feature added**, and this must be reported in the **[CHANGELOG.md](https://github.com/sofa-framework/sofa/blob/master/CHANGELOG.md)** file.
 - Code must follow **[our guidelines](https://github.com/sofa-framework/sofa/blob/master/GUIDELINES.md)**.
@@ -51,18 +51,25 @@ If you are able to patch the bug or add the feature yourself – fantastic, make
 - **Unit Tests** are required for each new component or if an issue is fixed.
 - **Examples** (at least one) must be provided showing the new feature.
 
-### Reviewing (for the reviewers team)
+### Lifecycle
+
+Standard pull-requests are reviewed and approved by the "Reviewers" team.  
+Major pull-requests (BREAKING, major features) are reviewed by the "Reviewers" team and approved by the "STC members" team through a vote within a maximum period of 2 weeks.
+
+Reviewing:
 
 - Make sure the pull request is **labelized** and well assigned.
 - Control that it follows **our rules** (defined above).
+- Track the **status of each pull request** using the dedicated labels:
+  - "pr: wip" must be set if the PR has been created for a team work or if some fixes are needed (discussed in the comments).
+  - "pr: to review" must be set if the PR is ready to be reviewed. 
+  - "pr: ready" must be set **instead of merge** if another PR merge is being built on the [Dashboard](https://www.sofa-framework.org/dash/?branch=origin/master). It is used to delay the merge and avoid CI overflow.
+- **Control the builds**: Dashboard > Details in the pull request checks.
+- Merge method: **prefer "merge"** or "squash" over "rebase".
+
+Remember that
+
 - You can **add commits** in a pull request: see [GitHub documentation](https://help.github.com/articles/committing-changes-to-a-pull-request-branch-created-from-a-fork/).
 - If the pull request contains out of scope commits (from a previous merge with master), **consider rebasing it**.
-- **Control the builds**: Dashboard > Details in the pull request checks.
-- Track the **status of each pull request** using labels:
-  - in progress "pr : wip"
-  - to be reviewed during the weekly SOFA meeting "pr : to review"
-  - to be merged "pr : ready"
-- Merge method: **prefer "rebase"** or "squash" over "merge" to keep linear history.
-
 
 For more information on forks and pull request, check out [this GitHub guide](https://guides.github.com/activities/forking/).

@@ -46,8 +46,6 @@
 #include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/gl/RAII.h>
 
-#include <sofa/helper/io/ImageBMP.h>
-
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/gui/ColourPickingVisitor.h>
 
@@ -127,13 +125,6 @@ QGLFormat QtViewer::setupGLFormat(const unsigned int nbMSAASamples)
     }
 
 //    int val = 0;
-
-//#ifdef __APPLE__
-//        std::cout << "QtViewer: disabling vertical refresh sync (Mac version)" << std::endl;
-//        const GLint swapInterval = 0;
-//        CGLSetParameter(CGLGetCurrentContext(), kCGLCPSwapInterval, &swapInterval);
-//        //std::cout << this->format().swapInterval() << std::endl;
-//#endif
 
 #if defined(QT_VERSION) && QT_VERSION >= 0x040200
     std::cout << "QtViewer: disabling vertical refresh sync" << std::endl;
@@ -1061,7 +1052,7 @@ void QtViewer::calcProjection(int width, int height)
     GLdouble projectionMatrix[16];
     currentCamera->getOpenGLProjectionMatrix(projectionMatrix);
 
-    glViewport(0, 0, width, height);
+    glViewport(0, 0, width * this->devicePixelRatio(), height * this->devicePixelRatio()); // to handle retina displays
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glMultMatrixd(projectionMatrix);
@@ -1612,17 +1603,17 @@ void QtViewer::newView()
     SofaViewer::newView();
 }
 
-void QtViewer::getView(Vec3d& pos, Quat& ori) const
+void QtViewer::getView(Vector3& pos, Quat& ori) const
 {
     SofaViewer::getView(pos, ori);
 }
 
-void QtViewer::setView(const Vec3d& pos, const Quat &ori)
+void QtViewer::setView(const Vector3& pos, const Quat &ori)
 {
     SofaViewer::setView(pos, ori);
 }
 
-void QtViewer::moveView(const Vec3d& pos, const Quat &ori)
+void QtViewer::moveView(const Vector3& pos, const Quat &ori)
 {
     SofaViewer::moveView(pos, ori);
 }

@@ -59,8 +59,8 @@ protected:
     DevAngleCollisionMonitor();
     virtual ~DevAngleCollisionMonitor() { };
 public:
-    void init();
-    void eval();
+    void init() override;
+    void eval() override;
 
     /// Retrieve the associated MechanicalState (First model)
     core::behavior::MechanicalState<DataTypes>* getMState1() { return mstate1; }
@@ -106,7 +106,7 @@ public:
         return obj;
     }
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }

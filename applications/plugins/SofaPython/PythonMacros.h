@@ -22,10 +22,12 @@
 #ifndef PYTHONMACROS_H
 #define PYTHONMACROS_H
 
+// TODO DEPRECATE AND REMOVE THIS MESS
+
 #include <sofa/config.h>
 
 #include "PythonCommon.h"
-#include <boost/intrusive_ptr.hpp>
+#include <sofa/core/sptr.h>
 
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -56,8 +58,9 @@
 #define SP_SOFAPYFREE(X) X##_PyFree     // deallocator
 
 
+
 // =============================================================================
-// Module declarations & methods
+// Module declarations & methods + docstring creation
 // =============================================================================
 
 // PyObject *MyModule = SP_INIT_MODULE(MyModuleName)
@@ -66,7 +69,9 @@
 #define SP_MODULE_METHODS_BEGIN(MODULENAME) PyMethodDef MODULENAME##ModuleMethods[] = {
 #define SP_MODULE_METHODS_END {NULL,NULL,0,NULL} };
 #define SP_MODULE_METHOD(MODULENAME,M) {#M, MODULENAME##_##M, METH_VARARGS, ""},
+#define SP_MODULE_METHOD_DOC(MODULENAME,M, D) {#M, MODULENAME##_##M, METH_VARARGS, D},
 #define SP_MODULE_METHOD_KW(MODULENAME,M) {#M, (PyCFunction)MODULENAME##_##M, METH_KEYWORDS|METH_VARARGS, ""},
+#define SP_MODULE_METHOD_KW_DOC(MODULENAME,M, D) {#M, (PyCFunction)MODULENAME##_##M, METH_KEYWORDS|METH_VARARGS, D},
 
 
 
@@ -78,7 +83,8 @@ template <class T>
 struct PySPtr
 {
     PyObject_HEAD
-    boost::intrusive_ptr<T> object;
+    sofa::core::sptr<T> object;
+    
 //    PySPtr()        { object=0; }
 //    PySPtr(T *obj)  { object=obj; }
 
@@ -92,9 +98,8 @@ struct PySPtr
 };
 
 template <class T>
-PyObject* BuildPySPtr(T* obj,PyTypeObject *pto)
-{
-    PySPtr<T> * pyObj = (PySPtr<T> *)PyType_GenericAlloc(pto, 0);
+static inline PyObject* BuildPySPtr(T* obj, PyTypeObject *pto) {
+    PySPtr<T> * pyObj = (PySPtr<T> *) PyType_GenericAlloc(pto, 0);
     pyObj->object = obj;
     return (PyObject*)pyObj;
 }
@@ -114,8 +119,7 @@ struct PyPtr
 };
 
 template <class T>
-PyObject* BuildPyPtr(T* obj,PyTypeObject *pto,bool del)
-{
+static inline PyObject* BuildPyPtr(T* obj, PyTypeObject *pto, bool del) {
     PyPtr<T> * pyObj = (PyPtr<T> *)PyType_GenericAlloc(pto, 0);
     pyObj->object = obj;
     pyObj->deletable = del;
@@ -150,7 +154,9 @@ SP_CLASS_METHODS_END
 #define SP_CLASS_METHODS_BEGIN(C) static PyMethodDef SP_SOFAPYMETHODS(C)[] = {
 #define SP_CLASS_METHODS_END {0,0,0,0} };
 #define SP_CLASS_METHOD(C,M) {#M, C##_##M, METH_VARARGS, ""},
+#define SP_CLASS_METHOD_DOC(C,M,D) {#M, C##_##M, METH_VARARGS, D},
 #define SP_CLASS_METHOD_KW(C,M) {#M, (PyCFunction)C##_##M, METH_KEYWORDS|METH_VARARGS, ""},
+#define SP_CLASS_METHOD_KW_DOC(C,M,D) {#M, (PyCFunction)C##_##M, METH_KEYWORDS|METH_VARARGS, D},
 
 /*
 static PyGetSetDef DummyClass_PyAttributes[] =
@@ -177,8 +183,8 @@ becomes...
 
 SP_CLASS_ATTR_GET(Datamname)(PyObject *self, void*)
  */
-#define SP_CLASS_ATTR_GET(C,A) extern "C" PyObject * C##_getAttr_##A
-#define SP_CLASS_ATTR_SET(C,A) extern "C" int C##_setAttr_##A
+#define SP_CLASS_ATTR_GET(C,A) static PyObject * C##_getAttr_##A
+#define SP_CLASS_ATTR_SET(C,A) static int C##_setAttr_##A
 
 
 
@@ -329,18 +335,18 @@ static PyTypeObject DummyChild_PyTypeObject = {
 // (+ the entry in the SP_CLASS_ATTR array)
 // =============================================================================
 
-#define SP_CLASS_DATA_ATTRIBUTE(C,D) \
-    extern "C" PyObject * C##_getAttr_##D(PyObject *self, void*) \
-    { \
-        C::SPtr obj=((PySPtr<C>*)self)->object;  \
+#define SP_CLASS_DATA_ATTRIBUTE(C,D)                                    \
+    static PyObject * C##_getAttr_##D(PyObject *self, void*)            \
+    {                                                                   \
+        C::SPtr obj=((PySPtr<C>*)self)->object;                         \
         return PyString_FromString(obj->findData(#D)->getValueString().c_str()); \
-    } \
-    extern "C" int C##_setAttr_##D(PyObject *self, PyObject * args, void*) \
-    { \
-        C::SPtr obj=((PySPtr<C>*)self)->object; \
-        char *str = PyString_AsString(args); \
-        obj->findData(#D)->read(str); \
-        return 0; \
+    }                                                                   \
+    static int C##_setAttr_##D(PyObject *self, PyObject * args, void*)  \
+    {                                                                   \
+        C::SPtr obj=((PySPtr<C>*)self)->object;                         \
+        char *str = PyString_AsString(args);                            \
+        obj->findData(#D)->read(str);                                   \
+        return 0;                                                       \
     }
 
 
@@ -355,9 +361,15 @@ static PyTypeObject DummyChild_PyTypeObject = {
 #define SP_MESSAGE_ERROR( msg ) msg_error("SofaPython") << msg;
 #define SP_MESSAGE_EXCEPTION( msg ) msg_fatal("SofaPython") << msg;
 
+#define SP_PYERR_SETSTRING_INVALIDTYPE( o ) PyErr_SetString(PyExc_TypeError, "Invalid argument, a " o " object is expected.");
+#define SP_PYERR_SETSTRING_OUTOFBOUND( o ) PyErr_SetString(PyExc_RuntimeError, "Out of bound exception.");
+
 
 // get python exceptions and print their error message
 void printPythonExceptions();
+
+// deal with SystemExit before PyErr_Print does
+void handle_python_error(const char* message);
 
 
 // =============================================================================
@@ -406,44 +418,43 @@ void printPythonExceptions();
 }\
 }
 
-#define SP_CALL_MODULEFUNC(func, ...) \
-{ \
-    if (func) { \
-        PyObject *res = PyObject_CallObject(func,Py_BuildValue(__VA_ARGS__)); \
-        if (!res) { \
-            SP_MESSAGE_EXCEPTION("SP_CALL_MODULEFUNC") PyErr_Print(); \
-        } \
-        else Py_DECREF(res); \
-    } \
-}
+#define SP_CALL_MODULEFUNC(func, ...)                                   \
+    {                                                                   \
+     if (func) {                                                        \
+         PyObject *res = PyObject_CallObject(func,Py_BuildValue(__VA_ARGS__)); \
+         if (!res) {                                                    \
+             handle_python_error("SP_CALL_MODULEFUNC");                 \
+         }                                                              \
+         else Py_DECREF(res);                                           \
+     }                                                                  \
+    }
 
 
-#define SP_CALL_MODULEFUNC_NOPARAM(func) \
-{ \
-    if (func) { \
-        PyObject *res = PyObject_CallObject(func,0); \
-        if (!res) { \
-            SP_MESSAGE_EXCEPTION("SP_CALL_MODULEFUNC_NOPARAM") PyErr_Print(); \
-         } \
-        else Py_DECREF(res); \
-    } \
-}
+#define SP_CALL_MODULEFUNC_NOPARAM(func)                            \
+    {                                                               \
+        if (func) {                                                 \
+            PyObject *res = PyObject_CallObject(func,0);            \
+            if (!res) {                                             \
+                handle_python_error("SP_CALL_MODULEFUNC_NOPARAM");  \
+            }                                                       \
+            else Py_DECREF(res);                                    \
+        }                                                           \
+    }
 
 // call a function that returns a boolean
-#define SP_CALL_MODULEBOOLFUNC(func, ...) { \
-    if (func) { \
-        PyObject *res = PyObject_CallObject(func,Py_BuildValue(__VA_ARGS__)); \
-        if (!res) \
-        { \
-            SP_MESSAGE_EXCEPTION( "SP_CALL_MODULEFUNC_BOOL" ) \
-            PyErr_Print(); \
-        } \
-        else \
-        { \
-            if PyBool_Check(res) b = ( res == Py_True ); \
-            Py_DECREF(res); \
-        } \
-    } \
+#define SP_CALL_MODULEBOOLFUNC(func, ...) {                             \
+        if (func) {                                                     \
+            PyObject *res = PyObject_CallObject(func,Py_BuildValue(__VA_ARGS__)); \
+            if (!res)                                                   \
+                {                                                       \
+                    handle_python_error("SP_CALL_MODULEFUNC_BOOL");     \
+                }                                                       \
+            else                                                        \
+                {                                                       \
+                    if PyBool_Check(res) b = ( res == Py_True );        \
+                    Py_DECREF(res);                                     \
+                }                                                       \
+        }                                                               \
 }
 
 

@@ -31,8 +31,6 @@
 #include <sofa/gui/Main.h>
 #include <sofa/helper/system/FileRepository.h>
 
-#include <sofa/component/typedef/Sofa_typedef.h>
-
 #include <SofaComponentCommon/initComponentCommon.h>
 #include <SofaComponentBase/initComponentBase.h>
 #include <SofaComponentGeneral/initComponentGeneral.h>

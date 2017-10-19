@@ -92,10 +92,6 @@ void MechanicalStateController<Vec1dTypes>::applyController()
     using sofa::defaulttype::Vec;
 
 
-    //std::cout<<" applyController() : device "<< device << "  buttonDevice " <<buttonDevice<<std::endl;
-
-//	if(device)
-//	{
     if(mState)
     {
         helper::WriteAccessor<Data<VecCoord> > x0 = *mState->write(sofa::core::VecCoordId::restPosition());
@@ -106,15 +102,13 @@ void MechanicalStateController<Vec1dTypes>::applyController()
             else
                 x0[0].x() =  -0.1;
             /*
-            				if (x0[1].x() > 0.001)
-            					x0[1].x() -= 0.05;
-            				else
-            					x0[1].x() = 0.001;*/
+                            if (x0[1].x() > 0.001)
+                                x0[1].x() -= 0.05;
+                            else
+                                x0[1].x() = 0.001;*/
         }
         else
         {
-            //sout<<"mouseMode==Release"<<sendl;
-
             if (x0[0].x() > -0.5)	 //angle d'ouverture max
                 x0[0].x() -= 0.05;   //vitesse d'ouverture
             else
@@ -149,14 +143,6 @@ void MechanicalStateController<Vec1dTypes>::applyController()
 
         }
     }
-    //}
-
-
-
-    //	//sofa::simulation::Node *node = static_cast<sofa::simulation::Node*> (this->getContext());
-    //	//sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor mechaVisitor; mechaVisitor.execute(node);
-    //	//sofa::simulation::UpdateMappingVisitor updateVisitor; updateVisitor.execute(node);
-    //}
 };
 #endif
 
@@ -249,7 +235,7 @@ void MechanicalStateController<Vec1fTypes>::applyController()
 
 
     //	//sofa::simulation::Node *node = static_cast<sofa::simulation::Node*> (this->getContext());
-    //	//sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor mechaVisitor; mechaVisitor.execute(node);
+    //	//sofa::simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor mechaVisitor; mechaVisitor.execute(node);
     //	//sofa::simulation::UpdateMappingVisitor updateVisitor; updateVisitor.execute(node);
     //}
 };

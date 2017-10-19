@@ -27,11 +27,13 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 
+#include <SofaTest/TestMessageHandler.h>
+
 
 namespace sofa {
 
 /**  Test suite for engine using TestEngine class.
-This class has a counter which shows how many times the update method is called. 
+This class has a counter which shows how many times the update method is called.
 Add inputs to engine.
 Check that the output is updated only if necessary.
 For this test 3 engines are used.The output of engine1 is linked to the input of engine2 and also the input of engine3.
@@ -51,13 +53,13 @@ struct Engine_test : public Sofa_test<>
 
     /// Create the engines
     void SetUp()
-    { 
+    {
        // Engine 1
        engine1 = sofa::core::objectmodel::New<TestEngine>();
        engine1->f_numberToMultiply.setValue(1);
        engine1->f_factor.setValue(2);
        engine1->init();
-     
+
        // Engine 2 linked to the ouput of engine 1
        engine2 = sofa::core::objectmodel::New<TestEngine>();
        sofa::modeling::setDataLink(&engine1->f_result,&engine2->f_numberToMultiply);
@@ -114,7 +116,7 @@ struct Engine_test : public Sofa_test<>
            ADD_FAILURE() << "Update method of engine1 was called " << engine1->getCounterUpdate() << " times instead of 1 time " << std::endl;
        }
 
-       // Test if update method of engine2 is not called 
+       // Test if update method of engine2 is not called
        if(engine2->getCounterUpdate()!=0)
        {
            ADD_FAILURE() << "Update method of engine2 must not be called " << std::endl;
@@ -130,7 +132,7 @@ struct Engine_test : public Sofa_test<>
        ASSERT_EQ(result3,6);
 
     }
-    
+
     // Test the propagation: if the ouput is changed the input must not changed
     void testPropagationDirection()
     {
@@ -168,18 +170,21 @@ struct Engine_test : public Sofa_test<>
 /// first test case: Check update method of engine2
 TEST_F(Engine_test , check_engine2_update )
 {
+    EXPECT_MSG_NOEMIT(Error, Warning);
     this->testUpdateEngine2();
 }
 
 /// second test case: Check update method of engine3
 TEST_F(Engine_test , check_engine3_update )
 {
+    EXPECT_MSG_NOEMIT(Error, Warning);
     this->testUpdateEngine3();
 }
 
 /// third test case: check propagation direction
 TEST_F(Engine_test , check_propagation )
 {
+    EXPECT_MSG_NOEMIT(Error, Warning);
     this->testPropagationDirection();
 }
 
@@ -257,7 +262,9 @@ typedef testing::Types<
 //TestDataEngine< component::engine::SphereROI<defaulttype::Vec3Types> >, // getObject pb -> require a scene
 TestDataEngine< component::engine::SelectLabelROI<unsigned int> >,
 TestDataEngine< component::engine::SelectConnectedLabelsROI<unsigned int> >,
-TestDataEngine< component::engine::DilateEngine<defaulttype::Vec3Types> >,
+#ifdef SOFA_WITH_DOUBLE
+TestDataEngine< component::engine::DilateEngine<defaulttype::Vec3Types> >, // DilateEngine only defined for Vec3dTypes
+#endif
 TestDataEngine< component::engine::GenerateCylinder<defaulttype::Vec3Types> >,
 TestDataEngine< component::engine::ExtrudeSurface<defaulttype::Vec3Types> >,
 TestDataEngine< component::engine::ExtrudeQuadsAndGenerateHexas<defaulttype::Vec3Types> >,
@@ -311,6 +318,7 @@ TYPED_TEST_CASE(DataEngine_test, TestTypes);
 //// test number of call to DataEngine::update
 TYPED_TEST( DataEngine_test , basic_test )
 {
+    EXPECT_MSG_NOEMIT(Error) ;
     this->run_basic_test();
 }
 

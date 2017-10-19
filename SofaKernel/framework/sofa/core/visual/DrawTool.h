@@ -67,11 +67,13 @@ public:
     virtual void drawPoints(const std::vector<Vector3> &points, float size,  const  Vec4f& colour) = 0 ;
     virtual void drawPoints(const std::vector<Vector3> &points, float size, const std::vector<Vec4f>& colour) = 0;
 
+    virtual void drawLine(const Vector3 &p1, const Vector3 &p2, const Vec4f& colour) =  0;
     virtual void drawLines(const std::vector<Vector3> &points, float size, const Vec4f& colour) = 0 ;
     virtual void drawLines(const std::vector<Vector3> &points, float size, const std::vector<Vec4f>& colours) = 0 ;
     virtual void drawLines(const std::vector<Vector3> &points, const std::vector< Vec2i > &index , float size, const Vec4f& colour) = 0 ;
 
     virtual void drawLineStrip(const std::vector<Vector3> &points, float size, const Vec4f& colour) = 0 ;
+    virtual void drawLineLoop(const std::vector<Vector3> &points, float size, const Vec4f& colour) = 0 ;
 
     virtual void drawTriangles(const std::vector<Vector3> &points, const Vec4f& colour) = 0 ;
     virtual void drawTriangles(const std::vector<Vector3> &points, const Vector3& normal, const Vec4f& colour) = 0 ;
@@ -190,6 +192,12 @@ public:
 
     virtual void enableBlending() = 0;
     virtual void disableBlending() = 0;
+
+    virtual void enableLighting() = 0;
+    virtual void disableLighting() = 0;
+
+    virtual void enableDepthTest() = 0;
+    virtual void disableDepthTest() = 0;
 
     /// @name States (save/restore)
     virtual void saveLastState() = 0;

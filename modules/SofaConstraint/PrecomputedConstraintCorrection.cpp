@@ -41,7 +41,7 @@ SOFA_CONSTRAINT_API void PrecomputedConstraintCorrection< defaulttype::Rigid3dTy
 {
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-    helper::WriteAccessor<Data<MatrixDeriv> > cData = *this->mstate->write(core::MatrixDerivId::holonomicC());
+    helper::WriteAccessor<Data<MatrixDeriv> > cData = *this->mstate->write(core::MatrixDerivId::constraintJacobian());
     MatrixDeriv& c = cData.wref();
 
     // On fait tourner les normales (en les ramenant dans le "pseudo" repere initial)
@@ -139,7 +139,7 @@ SOFA_CONSTRAINT_API void PrecomputedConstraintCorrection< defaulttype::Rigid3fTy
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
-    helper::WriteAccessor<Data<MatrixDeriv> > cData = *this->mstate->write(core::MatrixDerivId::holonomicC());
+    helper::WriteAccessor<Data<MatrixDeriv> > cData = *this->mstate->write(core::MatrixDerivId::constraintJacobian());
     MatrixDeriv& c = cData.wref();
 
     // On fait tourner les normales (en les ramenant dans le "pseudo" repere initial)

@@ -22,9 +22,6 @@
 #include "TopologicalChangeManager.h"
 
 #include <SofaMeshCollision/TriangleModel.h>
-#if 0
-#include <SofaMiscCollision/TetrahedronModel.h>
-#endif
 #include <SofaBaseCollision/SphereModel.h>
 
 #include <SofaBaseMechanics/MechanicalObject.h>
@@ -100,7 +97,7 @@ int TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::coll
         model->getContext()->get(badMapping, sofa::core::objectmodel::BaseContext::SearchRoot);
         if(badMapping) //stop process
         {
-            std::cout << "WARNING: TopologicalChangeManager: Removing element is not handle by Hexa2TetraTopologicalMapping. Stopping process." << std::endl;
+            msg_warning("TopologicalChangeManager") << " Removing element is not handle by Hexa2TetraTopologicalMapping. Stopping process." ;
             return 0;
         }
 
@@ -108,7 +105,6 @@ int TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::coll
         for (unsigned int i=0; i<indices.size(); ++i)
         {
             items.insert(indices[i] < nbt ? indices[i] : (indices[i]+nbt)/2);
-            //std::cout << indices[i] <<std::endl;
         }
     }
 
@@ -135,7 +131,6 @@ int TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::coll
                     {
                         unsigned int ind_glob = topoMap->getGlobIndex(*it);
                         unsigned int ind = topoMap->getFromIndex(ind_glob);
-                        //std::cout << *it << " -> "<<ind_glob << " -> "<<ind<<std::endl;
                         items.insert(ind);
                     }
                 }
@@ -147,7 +142,6 @@ int TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::coll
                         topoMap->getFromIndex( indices, *it);
                         for( vector<unsigned int>::const_iterator itIndices = indices.begin(); itIndices != indices.end(); ++itIndices)
                         {
-                            //std::cout << *it << " -> " << *itIndices << std::endl;
                             items.insert( *itIndices );
                         }
                     }
@@ -230,7 +224,6 @@ int TopologicalChangeManager::removeItemsFromTetrahedronModel(sofa::component::c
                         topoMap->getFromIndex( indices, *it);
                         for( vector<unsigned int>::const_iterator itIndices = indices.begin(); itIndices != indices.end(); itIndices++)
                         {
-                            //std::cout << *it << " -> " << *itIndices << std::endl;
                             items.insert( *itIndices );
                         }
                     }
@@ -300,7 +293,6 @@ int TopologicalChangeManager::removeItemsFromSphereModel(sofa::component::collis
                     {
                         unsigned int ind_glob = topoMap->getGlobIndex(*it);
                         unsigned int ind = topoMap->getFromIndex(ind_glob);
-                        //sout << *it << " -> "<<ind_glob << " -> "<<ind<<sendl;
                         items.insert(ind);
                     }
                 }
@@ -312,7 +304,6 @@ int TopologicalChangeManager::removeItemsFromSphereModel(sofa::component::collis
                         topoMap->getFromIndex( indices, *it);
                         for( vector<unsigned int>::const_iterator itIndices = indices.begin(); itIndices != indices.end(); ++itIndices)
                         {
-                            //std::cout << *it << " -> " << *itIndices << std::endl;
                             items.insert( *itIndices );
                         }
                     }
@@ -520,9 +511,7 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleModel *firstModel ,
 
         if (!path_ok)
         {
-#ifndef NDEBUG
-            std::cout << "ERROR in computeIntersectedObjectsList" << std::endl;
-#endif
+            dmsg_error("TopologicalChangeManager") << " in computeIntersectedObjectsList" ;
             return false;
         }
 
@@ -545,9 +534,7 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleModel *firstModel ,
 
         if (!incision_ok)
         {
-#ifndef NDEBUG
-            std::cout << "ERROR in InciseAlongEdgeList" << std::endl;
-#endif
+            dmsg_error("TopologicalChangeManager") << " in InciseAlongEdgeList" ;
             return false;
         }
 

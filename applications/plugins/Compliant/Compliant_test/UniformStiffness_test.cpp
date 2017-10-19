@@ -23,7 +23,6 @@
 #include <SofaTest/ForceField_test.h>
 
 #include <SofaTest/TestMessageHandler.h>
-using sofa::helper::logging::ExpectMessage ;
 using sofa::helper::logging::Message ;
 
 #include <SofaSimulationGraph/DAGSimulation.h>

@@ -63,7 +63,6 @@ Node::SPtr DAGNode::createChild(const std::string& nodeName)
 /// Add a child node
 void DAGNode::doAddChild(DAGNode::SPtr node)
 {
-//    printf("DAGNode::doAddChild this=%X(%s) child=%X(%s)\n",this,getName().c_str(),node.get(),node->getName().c_str());
     child.add(node);
     node->l_parents.add(this);
     node->l_parents.updateLinks(); // to fix load-time unresolved links
@@ -581,7 +580,6 @@ void DAGNode::executeVisitorTopDown(simulation::Visitor* action, NodeList& execu
         // do not execute the visitor on this node
         statusMap[this] = PRUNED;
 
-//        std::cout << "...pruned (all parents pruned)" ;
         // ... but continue the recursion anyway!
         if( action->childOrderReversed(this) )
             for(unsigned int i = child.size(); i>0;)

@@ -58,58 +58,68 @@ public:
 
 public:
     /// indices of the points the force applies to
-    SetIndex points;
+    SetIndex                   d_indices;
+
+    /// Concerned DOFs indices are numbered from the end of the MState DOFs vector
+    Data< bool >               d_indexFromEnd;
+
     /// Per-point forces.
-    Data< VecDeriv > forces;
+    Data< VecDeriv >           d_forces;
+
     /// Force applied at each point, if per-point forces are not specified
-    Data< Deriv > force;
+    Data< Deriv >              d_force;
+
     /// Sum of the forces applied at each point, if per-point forces are not specified
-    Data< Deriv > totalForce;
+    Data< Deriv >              d_totalForce;
+
     ///S for drawing. The sign changes the direction, 0 doesn't draw arrow
-    Data< SReal > arrowSizeCoef; // for drawing. The sign changes the direction, 0 doesn't draw arrow
+    Data< SReal >              d_arrowSizeCoef;
+
     /// display color
     Data< defaulttype::RGBAColor > d_color;
     /// Concerned DOFs indices are numbered from the end of the MState DOFs vector
     Data< bool > indexFromEnd;
-protected:
-    ConstantForceField();
-public:
-    /// Set a force to a given particle
-    void setForce( unsigned i, const Deriv& f );
 
+public:
     /// Init function
-    void init();
+    void init() override;
+    void parse(sofa::core::objectmodel::BaseObjectDescription *arg) override;
 
     /// Add the forces
-    virtual void addForce (const core::MechanicalParams* params, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
+    virtual void addForce (const core::MechanicalParams* params, DataVecDeriv& f,
+                           const DataVecCoord& x, const DataVecDeriv& v) override;
 
     /// Constant force has null variation
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df , const DataVecDeriv& d_dx)
-    {
-        //TODO: remove this line (avoid warning message) ...
-        mparams->setKFactorUsed(true);
-        sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > _f1 = d_df;
-        _f1.resize(d_dx.getValue().size());
-    }
+    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df ,
+                           const DataVecDeriv& d_dx) override;
 
     using Inherit::addKToMatrix;
 
     /// Constant force has null variation
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset);
+    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m,
+                              SReal kFactor, unsigned int &offset) override;
 
     /// Constant force has null variation
-    virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/, SReal /*kFact*/) {}
+    virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/,
+                              SReal /*kFact*/) ;
 
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* params, const DataVecCoord& x) const;
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* params,
+                                     const DataVecCoord& x) const override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
-    virtual void updateForceMask();
+    virtual void updateForceMask() override;
+
+    /// Set a force to a given particle
+    void setForce( unsigned i, const Deriv& f );
+
+    using Inherit::addAlias ;
 
 protected:
-    /// Pointer to the current topology
-    sofa::core::topology::BaseMeshTopology* topology;
+    ConstantForceField();
 
+    /// Pointer to the current topology
+    sofa::core::topology::BaseMeshTopology* m_topology;
 };
 
 #ifndef SOFA_FLOAT

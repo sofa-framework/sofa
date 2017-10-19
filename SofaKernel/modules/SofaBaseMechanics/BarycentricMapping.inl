@@ -43,7 +43,6 @@
 #include <SofaBaseTopology/TopologyData.inl>
 
 #include <sofa/helper/vector.h>
-#include <sofa/helper/gl/template.h>
 #include <sofa/helper/system/config.h>
 
 #include <sofa/simulation/Simulation.h>
@@ -370,22 +369,6 @@ int BarycentricMapperMeshTopology<In,Out>::createPointInTriangle ( const typenam
         }
     }
 
-//    std::cout<<"barycoords : "<<baryCoords[0]<<" "<<baryCoords[1]<<std::endl;
-//    const sofa::core::topology::BaseMeshTopology::Triangle& elem = this->fromTopology->getTriangle ( triangleIndex );
-//    const typename In::Coord p0 = ( *points ) [elem[0]];
-//    const typename In::Coord pA = ( *points ) [elem[1]] - p0;
-//    const typename In::Coord pB = ( *points ) [elem[2]] - p0;
-//    // First project to plane
-//    typename In::Coord normal = cross ( pA, pB );
-//    Real norm2 = normal.norm2();
-//    typename In::Coord pos = Out::getCPos(p) - p0;
-//    pos -= normal* ( ( pos*normal ) /norm2 );
-//    baryCoords[0] = ( Real ) sqrt ( cross ( pB, pos ).norm2() / norm2 );
-//    baryCoords[1] = ( Real ) sqrt ( cross ( pA, pos ).norm2() / norm2 );
-
-//    typename In::Coord result = p0 * (1-baryCoords[0]-baryCoords[1]) + ( *points ) [elem[1]] * (baryCoords[0]) + ( *points ) [elem[2]] * (baryCoords[1]);
-//    std::cout<<"Result "<<result<<std::endl;
-
     return this->addPointInTriangle ( triangleIndex, baryCoords );
 }
 
@@ -540,7 +523,6 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
             mt.transpose ( m );
             bases[t].invert ( mt );
             centers[t] = ( in[tetrahedra[t][0]]+in[tetrahedra[t][1]]+in[tetrahedra[t][2]]+in[tetrahedra[t][3]] ) *0.25;
-            //sout << "Tetra "<<t<<" center="<<centers[t]<<" base="<<m<<sendl;
         }
         for ( unsigned int c = 0; c < cubes.size(); c++ )
         {
@@ -967,19 +949,14 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::init ( const typename Out::
         const typename In::VecCoord& /*in*/ )
 {
     _fromContainer->getContext()->get ( _fromGeomAlgo );
-    // Why do we need that ? is reset the map in case of topology change
-//    if (this->toTopology)
-//    {
-//        map.createTopologicalEngine(this->toTopology);
-//        map.registerTopologicalData();
-//    }
 
     if ( _fromGeomAlgo == NULL )
     {
-        std::cerr << "Error [BarycentricMapperHexahedronSetTopology::init] cannot find GeometryAlgorithms component." << std::endl;
+        msg_error() << "Cannot find GeometryAlgorithms component at init." ;
     }
 
-    if ( !map.getValue().empty() ) return;
+    if ( !map.getValue().empty() )
+        return;
 
 
     clear ( (int)out.size() );
@@ -989,7 +966,6 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::init ( const typename Out::
     helper::vector<sofa::defaulttype::Vector3> coefs ( out.size() );
     helper::vector<Real>  distances ( out.size() );
 
-    //coord.assign(out.begin(), out.end());
     coord.resize ( out.size() );
     for ( unsigned int i=0; i<out.size(); ++i ) coord[i] = Out::getCPos(out[i]);
 
@@ -1000,7 +976,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::init ( const typename Out::
         if ( elements[i] != -1 )
             addPointInCube ( elements[i], coefs[i].ptr() );
         else
-            std::cerr << "Error [BarycentricMapperHexahedronSetTopology::init] cannot find a cell for barycentric mapping." << std::endl;
+            msg_error() << "Cannot find a cell for barycentric mapping at init." ;
     }
 }
 
@@ -1015,7 +991,6 @@ void BarycentricMapping<TIn, TOut>::createMapperFromTopology ( BaseMeshTopology 
     this->toModel->getContext()->get(toTopoCont);
 
     core::topology::TopologyContainer* fromTopoCont = 0;
-//	this->fromModel->getContext()->get(fromTopoCont);
 
     if (dynamic_cast< core::topology::TopologyContainer* >(topology) != 0)
     {
@@ -2299,8 +2274,6 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperMeshTopology<In,Out>::getJ
     const sofa::core::topology::BaseMeshTopology::SeqCubes& cubes = this->fromTopology->getCubes();
 #endif
 
-    //         std::cerr << "BarycentricMapperMeshTopology<In,Out>::getJ() \n";
-
     // 1D elements
     {
         for ( size_t i=0; i<map1d.size(); i++ )
@@ -2408,7 +2381,6 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperRegularGridTopology<In,Out
         matrixJ->resize(outSize*NOut, inSize*NIn);
     else
         matrixJ->clear();
-    //         std::cerr << "BarycentricMapperRegularGridTopology<In,Out>::getJ() \n";
 
     for ( size_t i=0; i<map.size(); i++ )
     {
@@ -2456,7 +2428,6 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperSparseGridTopology<In,Out>
         matrixJ->resize(outSize*NOut, inSize*NIn);
     else
         matrixJ->clear();
-    //         std::cerr << "BarycentricMapperSparseGridTopology<In,Out>::getJ() \n";
 
     for ( size_t i=0; i<map.size(); i++ )
     {
@@ -2508,7 +2479,6 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperEdgeSetTopology<In,Out>::g
         matrixJ->resize(outSize*NOut, inSize*NIn);
     else
         matrixJ->clear();
-    //         std::cerr << "BarycentricMapperEdgeSetTopology<In,Out>::getJ() \n";
 
     const sofa::helper::vector<core::topology::BaseMeshTopology::Edge>& edges = this->fromTopology->getEdges();
 
@@ -2524,7 +2494,6 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperEdgeSetTopology<In,Out>::g
         this->addMatrixContrib(matrixJ, outId, edge[1], (   fx));
     }
     matrixJ->compress();
-//	std::cout << "BarycentricMapperEdgeSetTopology  J = " << *matrixJ << std::endl;
     updateJ = false;
     return matrixJ;
 }
@@ -2540,7 +2509,6 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperTriangleSetTopology<In,Out
         matrixJ->resize(outSize*NOut, inSize*NIn);
     else
         matrixJ->clear();
-    //         std::cerr << "BarycentricMapperTriangleSetTopology<In,Out>::getJ() \n";
 
     const sofa::helper::vector<core::topology::BaseMeshTopology::Triangle>& triangles = this->fromTopology->getTriangles();
 
@@ -2559,7 +2527,6 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperTriangleSetTopology<In,Out
 
 
     matrixJ->compress();
-//	std::cout << "BarycentricMapperTriangleSetTopology  J = " << *matrixJ << std::endl;
     updateJ = false;
     return matrixJ;
 }
@@ -2575,7 +2542,6 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperQuadSetTopology<In,Out>::g
         matrixJ->resize(outSize*NOut, inSize*NIn);
     else
         matrixJ->clear();
-    //         std::cerr << "BarycentricMapperQuadSetTopology<In,Out>::getJ() \n";
 
     const sofa::helper::vector<core::topology::BaseMeshTopology::Quad>& quads = this->fromTopology->getQuads();
 
@@ -2596,14 +2562,13 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperQuadSetTopology<In,Out>::g
     }
 
     matrixJ->compress();
-//	std::cout << "BarycentricMapperQuadSetTopology  J = " << std::endl<< *matrixJ << std::endl;
     updateJ = false;
     return matrixJ;
 }
 
 template <class In, class Out>
 const sofa::defaulttype::BaseMatrix* BarycentricMapperTetrahedronSetTopology<In,Out>::getJ(int outSize, int inSize)
-{    
+{
 
     if (matrixJ && !updateJ)
         return matrixJ;
@@ -2647,7 +2612,7 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperHexahedronSetTopology<In,O
     if (matrixJ->rowBSize() != (MatrixTypeIndex)outSize || matrixJ->colBSize() != (MatrixTypeIndex)inSize)
         matrixJ->resize(outSize*NOut, inSize*NIn);
     else
-        matrixJ->clear();    
+        matrixJ->clear();
 
     const sofa::helper::vector<core::topology::BaseMeshTopology::Hexahedron>& cubes = this->fromTopology->getHexahedra();
 
@@ -3592,7 +3557,6 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange(core::
                     const int j = *iter;
                     if ( mapData[j].in_index == -1 ) // compute new mapping
                     {
-                        //	std::cout << "BarycentricMapperHexahedronSetTopology : new mapping" << std::endl;
                         sofa::defaulttype::Vector3 coefs;
                         typename In::Coord pos;
                         pos[0] = mapData[j].baryCoords[0];
@@ -3611,13 +3575,12 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange(core::
                             this->toTopology->getContext()->get( mState);
                             if( !mState)
                             {
-                                std::cerr << "Can not find mechanical state." << std::endl;
+                                msg_error() << "Can not find mechanical state." ;
                             }
                             else
                             {
                                 const typename MechanicalStateT::VecCoord& xto0 = (mState->read(core::ConstVecCoordId::restPosition())->getValue());
                                 index = _fromGeomAlgo->findNearestElementInRestPos ( Out::getCPos(xto0[j]), coefs, distance );
-                                //_fromGeomAlgo->findNearestElementInRestPos ( pos, coefs, distance );
                                 coefs = _fromGeomAlgo->computeHexahedronRestBarycentricCoeficients(index, pos);
                             }
                         }
@@ -3659,7 +3622,6 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange(core::
         break;
         case core::topology::HEXAHEDRAREMOVED:   ///< For HexahedraRemoved.
         {
-            // std::cout << "BarycentricMapperHexahedronSetTopology() HEXAHEDRAREMOVED" << std::endl;
             const unsigned int nbHexahedra = this->fromTopology->getNbHexahedra();
 
             const sofa::helper::vector<unsigned int> &hexahedra =
@@ -3732,7 +3694,6 @@ void BarycentricMapping<TIn, TOut>::handleTopologyChange ( core::topology::Topol
 template<class TIn, class TOut>
 const helper::vector< defaulttype::BaseMatrix*>* BarycentricMapping<TIn, TOut>::getJs()
 {
-    //std::cerr << this->getName() << ": getJs " << std::endl;
     typedef typename Mapper::MatrixType mat_type;
     const sofa::defaulttype::BaseMatrix* matJ = getJ();
 

@@ -519,8 +519,6 @@ BaseElement* createNode(xmlNodePtr root, const char *basefilename, bool isRoot =
     if (isRoot)
         node->setBaseFile( basefilename );
 
-    //std::cout << "Node "<<root->name<<" name "<<name<<" type "<<type<<" created.\n";
-
     // List attributes
     for (xmlAttrPtr attr = root->properties; attr!=NULL; attr = attr->next)
     {
@@ -590,11 +588,9 @@ BaseElement* processXMLLoading(const char *filename, const xmlDocPtr &doc)
         return NULL;
     }
 
-    //std::cout << "Creating XML graph"<<std::endl;
     std::string basefilename =
         sofa::helper::system::SetDirectory::GetRelativeFromDir(filename,sofa::helper::system::SetDirectory::GetCurrentDir().c_str());
     BaseElement* graph = createNode(root, basefilename.c_str(), true);
-    //std::cout << "XML Graph created"<<std::endl;
     xmlFreeDoc(doc);
     xmlCleanupParser();
     xmlMemoryDump();
@@ -604,9 +600,6 @@ BaseElement* processXMLLoading(const char *filename, const xmlDocPtr &doc)
         msg_info("XML") << "XML Graph creation failed.";
         return NULL;
     }
-
-    //print the graph scene
-    //dumpNode(graph);
 
     return graph;
 }

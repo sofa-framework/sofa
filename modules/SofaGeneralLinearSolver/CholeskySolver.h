@@ -58,10 +58,10 @@ public:
     CholeskySolver();
 
     /// Compute x such as Mx=b. M is not used, it must have been factored before using method invert(Matrix& M)
-    void solve (Matrix& M, Vector& x, Vector& b);
+    void solve (Matrix& M, Vector& x, Vector& b) override;
 
     /// Factors the matrix. Must be done before solving
-    void invert(Matrix& M);
+    void invert(Matrix& M) override;
 
 private :
     FullMatrix<typename Vector::Real> L;

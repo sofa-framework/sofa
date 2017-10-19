@@ -188,7 +188,6 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addForce(
 
     sofa::defaulttype::Quat Cq = vars.pos6D.getOrientation();
     sofa::defaulttype::Vec3d Cx = (Coord1) vars.pos6D.getCenter();
-    //std::cout << "Cx= " << Cx << "    Cq= " << Cq << std::endl;
     Deriv2 V6D = v2[object2_dof_index.getValue()];
     sofa::defaulttype::Vec3d Cv = (sofa::defaulttype::Vec3d) getVCenter(V6D);
     Cv.clear();
@@ -224,25 +223,25 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addForce(
             contacts->push_back(c);
             /*
             printf("\n contactForce : %f %f %f, bras_Levier : %f %f %f, f2 = %f %f %f - %f %f %f",
-            	contactForce.x(), contactForce.y(), contactForce.z(),
-            	c.bras_levier.x(), c.bras_levier.y(), c.bras_levier.z(),
-            	f2.getVCenter().x(), f2.getVCenter().y(), f2.getVCenter().z(),
-            	f2.getVOrientation().x(), f2.getVOrientation().y(), f2.getVOrientation().z());
+                contactForce.x(), contactForce.y(), contactForce.z(),
+                c.bras_levier.x(), c.bras_levier.y(), c.bras_levier.z(),
+                f2.getVCenter().x(), f2.getVCenter().y(), f2.getVCenter().z(),
+                f2.getVOrientation().x(), f2.getVOrientation().y(), f2.getVOrientation().z());
              */
 
         }
     }
     /*
     printf("\n f2 = %f %f %f - %f %f %f",
-    	f2.getVCenter().x(), f2.getVCenter().y(), f2.getVCenter().z(),
-    	f2.getVOrientation().x(), f2.getVOrientation().y(), f2.getVOrientation().z());
+        f2.getVCenter().x(), f2.getVCenter().y(), f2.getVCenter().z(),
+        f2.getVOrientation().x(), f2.getVOrientation().y(), f2.getVOrientation().z());
      */
     /*
     printf("\n verify addForce2 : ");
     addForce2(f1, f2, p1, p2, v1, v2);
     printf("\n f2 = %f %f %f - %f %f %f",
-    	f2.getVCenter().x(), f2.getVCenter().y(), f2.getVCenter().z(),
-    	f2.getVOrientation().x(), f2.getVOrientation().y(), f2.getVOrientation().z());
+        f2.getVCenter().x(), f2.getVCenter().y(), f2.getVCenter().z(),
+        f2.getVOrientation().x(), f2.getVOrientation().y(), f2.getVOrientation().z());
      */
 
     if (object2_forces.getValue())
@@ -388,7 +387,7 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::draw(const core::vi
 #ifdef SOFA_FLOAT
         GLfloat R[4][4];
 #elif PS3
-		double R[4][4];
+        double R[4][4];
 #else
         GLdouble R[4][4];
 #endif
@@ -401,10 +400,10 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::draw(const core::vi
             helper::gl::glTranslate(cx2, cy2, cz2);
             helper::gl::glMultMatrix( &(R[0][0]) );
         }
-		sofa::defaulttype::Vector3 center(cx1, cy1, cz1);
-		sofa::defaulttype::Vector3 radii(rx, ry, (stiffness.getValue()>0 ? rz : -rz));
-		
-		vparams->drawTool()->drawEllipsoid(center, radii);
+        sofa::defaulttype::Vector3 center(cx1, cy1, cz1);
+        sofa::defaulttype::Vector3 radii(rx, ry, (stiffness.getValue()>0 ? rz : -rz));
+
+        vparams->drawTool()->drawEllipsoid(center, radii);
 
         glTranslated(-cx2, -cy2, -cz2);
 

@@ -67,6 +67,13 @@ list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/extlibs)
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/applications/plugins)
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/applications/projects)
 
+# Create etc/sofa.ini: it contains the paths to share/ and examples/. In the
+# build directory, it points to the source tree,
+set(SHARE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/share")
+set(EXAMPLES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/examples")
+configure_file(${SOFA_KERNEL_SOURCE_DIR}/etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/sofa.ini")
+
+
 ## RPATH
 if(UNIX)
     # RPATH is a field in ELF binaries that is used as a hint by the system
@@ -88,8 +95,9 @@ endif(UNIX)
 include(CompilerOptions)
 
 
-## Boost is now mandatory.
-find_package(Boost QUIET)
+## Boost (1.54.0 or higher) is now mandatory.
+set(BOOST_MIN_VERSION "1.54.0")
+find_package(Boost ${BOOST_MIN_VERSION} QUIET)
 if(NOT Boost_FOUND)
     message("Did not find a boost directory from Boost_LIBRARY_DIR and Boost_INCLUDE_DIR, will try to search one in possible directories")
     ## Try to find an installed boost.
@@ -155,7 +163,7 @@ if(NOT Boost_FOUND)
     endif()
 endif()
 
-find_package(Boost REQUIRED)
+find_package(Boost ${BOOST_MIN_VERSION} REQUIRED)
 
 ### Dependency pack for Windows
 if(MSVC)
@@ -198,33 +206,53 @@ if(MSVC)
     install(DIRECTORY ${DEPENDENCY_PACK_DIR}/include/ DESTINATION include)
 endif()
 
-option(SOFA_INSTALL_RESOURCES_FILES "Copy resources files (etc/, share/, examples/) when installing" ON)
-if(SOFA_INSTALL_RESOURCES_FILES)
-    ## Install resource files
-    install(DIRECTORY share/ DESTINATION share/sofa)
-    install(DIRECTORY examples/ DESTINATION share/sofa/examples)
-    # Create etc/sofa.ini: it contains the paths to share/ and examples/. In the
-    # build directory, it points to the source tree, whereas in the install
-    # directory, it contains to relative paths to the installed resource directory.
-    set(SHARE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/share")
-    set(EXAMPLES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/examples")
-    configure_file(${SOFA_KERNEL_SOURCE_DIR}/etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/sofa.ini")
-    set(SHARE_DIR "../share/sofa")
-    set(EXAMPLES_DIR "../share/sofa/examples")
-    configure_file(${SOFA_KERNEL_SOURCE_DIR}/etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/installedSofa.ini")
-    install(FILES "${CMAKE_BINARY_DIR}/etc/installedSofa.ini" DESTINATION etc RENAME sofa.ini)
-endif()
-
-# Temporary (todo: think about this typedef thing)
-install(DIRECTORY modules/sofa/component/typedef/ DESTINATION include/sofa/component/typedef)
-
-
 ### Mask
 option(SOFA_USE_MASK "Use mask optimization" ON)
 
 ### SOFA_DEV_TOOL
 option(SOFA_WITH_DEVTOOLS "Compile with developement extra features." ON)
 
+### SOFA_BUILD_PERIMETER
+### Sofa using type double or float or both
+set(SOFA_BUILD_COMPONENTSET full CACHE STRING
+"Compile SOFA with which set of components (core/full/deprecated)
+- 'core' for only the core components (only base classes)
+- 'light' for stable only component (a minimal set to make simulations)
+ - 'standard' for all non-deprecated components (DEFAULT)
+ - 'full' for standard set + deprecated components")
+set_property(CACHE SOFA_BUILD_COMPONENTSET PROPERTY STRINGS core light standard full)
+
+if(${SOFA_BUILD_COMPONENTSET} STREQUAL core)
+    message(STATUS "   Build SOFA with 'core' compenents set")
+    set(SOFA_BUILD_COMPONENTSET_LIGHT 0)
+    set(SOFA_BUILD_COMPONENTSET_STANDARD 0)
+    set(SOFA_BUILD_COMPONENTSET_FULL 0)
+    set(SOFAGUI_QQT 0)
+elseif(${SOFA_BUILD_COMPONENTSET} STREQUAL light)
+    message(STATUS "   Build SOFA with 'light' compenents set")
+    set(SOFA_BUILD_COMPONENTSET_LIGHT 1)
+    set(SOFA_BUILD_COMPONENTSET_STANDARD 0)
+    set(SOFA_BUILD_COMPONENTSET_FULL 0)
+    set(SOFAGUI_QQT 0)
+elseif(${SOFA_BUILD_COMPONENTSET} STREQUAL standard)
+    message(STATUS "   Build SOFA with 'standard' compenents set")
+    set(SOFA_BUILD_COMPONENTSET_LIGHT 1)
+    set(SOFA_BUILD_COMPONENTSET_STANDARD 1)
+    set(SOFA_BUILD_COMPONENTSET_FULL 0)
+elseif(${SOFA_BUILD_COMPONENTSET} STREQUAL full)
+    message(STATUS "   Build SOFA with 'full' compenents set (incuding deprecated components)")
+    set(SOFA_BUILD_COMPONENTSET_LIGHT 1)
+    set(SOFA_BUILD_COMPONENTSET_STANDARD 1)
+    set(SOFA_BUILD_COMPONENTSET_FULL 1)
+else()
+    message(STATUS "   Unrecognize option for components set. Possible ones are: core, light, standard and full")
+endif()
+
+### Threading
+option(SOFA_WITH_THREADING "Compile sofa with thread-safetiness support (PARTIAL/EXPERIMENTAL)" ON)
+
+### Experimental
+option(SOFA_WITH_EXPERIMENTAL_FEATURES "Compile sofa with exprimental features regarding sparse matrices treatments under mappings" OFF)
 
 ### Testing
 option(SOFA_BUILD_TESTS "Compile the automatic tests for Sofa, along with the gtest library." ON)
@@ -236,6 +264,37 @@ endif()
 
 ### Ninja build pools
 option(SOFA_NINJA_BUILD_POOLS "Activate the Ninja build pools feature, to limit the cores used by specific targets" OFF)
+
+### Sofa using type double or float or both
+set(SOFA_FLOATING_POINT_TYPE both CACHE STRING
+"Type used for floating point values in SOFA. It actually determines:
+ - what template instanciations will be compiled (via the definition of the
+   SOFA_FLOAT and SOFA_DOUBLE macros)
+ - what is the type behind the 'SReal' typedef used throughout SOFA. (If 'both'
+   is selected, SReal defaults to double.)")
+set_property(CACHE SOFA_FLOATING_POINT_TYPE PROPERTY STRINGS float double both)
+
+if(${SOFA_FLOATING_POINT_TYPE} STREQUAL double)
+    set(SOFA_DOUBLE 1)          # Used in sofa/config.h.in
+elseif(${SOFA_FLOATING_POINT_TYPE} STREQUAL float)
+    set(SOFA_FLOAT 1)           # Used in sofa/config.h.in
+endif()
+
+# If you really don't understand the negated logics of SOFA_DOUBLE and
+# SOFA_FLOAT please consider using SOFA_WITH_FLOAT and SOFA_WITH_DOUBLE.
+# Eg: SOFA_WITH_FLOAT indicate that you need to generate the
+# float code and SOFA_WITH_DOUBLE indicates that you
+# nedd to generate the double related code.
+if(${SOFA_FLOATING_POINT_TYPE} STREQUAL float)
+    set(SOFA_WITH_FLOAT 1)
+endif()
+if(${SOFA_FLOATING_POINT_TYPE} STREQUAL double)
+    set(SOFA_WITH_DOUBLE 1)
+endif()
+if(${SOFA_FLOATING_POINT_TYPE} STREQUAL both)
+    set(SOFA_WITH_FLOAT 1)
+    set(SOFA_WITH_DOUBLE 1)
+endif()
 
 ### Extlibs
 add_subdirectory(extlibs)
@@ -258,7 +317,6 @@ add_subdirectory(SofaGui)
 
 # SofaTest depends on SofaPython, so we add SofaPython before SofaTest.
 sofa_add_plugin( applications/plugins/SofaPython SofaPython )
-
 
 ## Scene creator option
 option(SOFA_BUILD_SCENECREATOR "Compile the C++ API located in applications/plugins/SceneCreator" OFF)
@@ -322,6 +380,7 @@ if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/custom.cmake")
 endif()
 
 
+# Install configuration:
 ## when installing, keep an eye on options/params/sources used for compilation
 ## this should be internal and not delivered, but this is definitively useful
 sofa_install_git_version( "sofa" ${CMAKE_CURRENT_SOURCE_DIR} )
@@ -330,6 +389,22 @@ install(FILES "${CMAKE_SOURCE_DIR}/README.md" DESTINATION .)
 install(FILES "${CMAKE_SOURCE_DIR}/CHANGELOG.md" DESTINATION .)
 install(FILES "${CMAKE_SOURCE_DIR}/LICENSE.LGPL.txt" DESTINATION .)
 install(FILES "${CMAKE_SOURCE_DIR}/Authors.txt" DESTINATION .)
+
+## Create etc/installedSofa.ini: it contains the paths to share/ and examples/. Compare to the Sofa.ini in the
+## build directory, this one contains relative paths to the installed resource directory.
+set(SHARE_DIR "../share/sofa")
+set(EXAMPLES_DIR "../share/sofa/examples")
+configure_file(${SOFA_KERNEL_SOURCE_DIR}/etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/installedSofa.ini")
+install(FILES "${CMAKE_BINARY_DIR}/etc/installedSofa.ini" DESTINATION etc RENAME sofa.ini)
+
+
+option(SOFA_INSTALL_RESOURCES_FILES "Copy resources files (etc/, share/, examples/) when installing" ON)
+## Install resource files
+if(SOFA_INSTALL_RESOURCES_FILES)
+    install(DIRECTORY share/ DESTINATION share/sofa)
+    install(DIRECTORY examples/ DESTINATION share/sofa/examples)	
+endif()
+
 
 #CPack install
 SET(CPACK_PACKAGE_VERSION "17.dev.0")

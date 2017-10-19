@@ -28,12 +28,10 @@
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/defaulttype/VecTypes.h>
 
+#include <SofaTest/TestMessageHandler.h>
+
 
 namespace sofa {
-
-using std::cout;
-using std::cerr;
-using std::endl;
 using namespace component;
 using namespace defaulttype;
 
@@ -69,7 +67,7 @@ struct ProjectToLineConstraint_test : public Sofa_test<typename _DataTypes::Real
 
     /// Create the context for the tests.
     void SetUp()
-    {        
+    {
 //        if( sofa::simulation::getSimulation()==NULL )
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
@@ -137,9 +135,7 @@ struct ProjectToLineConstraint_test : public Sofa_test<typename _DataTypes::Real
        for (unsigned i=0; i<numNodes; i++){
            xprev[i] = x[i] = CPos(i,0,0);
        }
-//       cerr<<"test_projectPosition, x before = " << x << endl;
        projection->projectPosition(core::MechanicalParams::defaultInstance(), *dofs->write(core::VecCoordId::position()) );
-//       cerr<<"test_projectPosition, x after = " << x << endl;
 
        bool succeed=true;
        typename Indices::const_iterator it = indices.begin(); // must be sorted
@@ -149,7 +145,6 @@ struct ProjectToLineConstraint_test : public Sofa_test<typename _DataTypes::Real
            {
               CPos crossprod = (x[i]-origin).cross(direction); // should be parallel
               Real scal = crossprod*crossprod; // null if x is on the line
-//              cerr<<"scal = "<< scal << endl;
               if( !Sofa_test<typename _DataTypes::Real>::isSmall(scal,100) ){
                   succeed = false;
                   ADD_FAILURE() << "Position of constrained particle " << i << " is wrong: " << x[i] ;
@@ -160,7 +155,6 @@ struct ProjectToLineConstraint_test : public Sofa_test<typename _DataTypes::Real
            {
               CPos dx = x[i]-xprev[i];
               Real scal = dx*dx;
-//              cerr<<"scal gap = "<< scal << endl;
               if( !Sofa_test<typename _DataTypes::Real>::isSmall(scal,100) ){
                   succeed = false;
                   ADD_FAILURE() << "Position of unconstrained particle " << i << " is wrong: " << x[i] ;
@@ -178,9 +172,7 @@ struct ProjectToLineConstraint_test : public Sofa_test<typename _DataTypes::Real
        for (unsigned i=0; i<numNodes; i++){
            vprev[i] = v[i] = CPos(i,0,0);
        }
-//       cerr<<"test_projectVelocity, v before = " << v << endl;
        projection->projectVelocity(core::MechanicalParams::defaultInstance(), *dofs->write(core::VecDerivId::velocity()) );
-//       cerr<<"test_projectVelocity, v after = " << v << endl;
 
        bool succeed=true;
        typename Indices::const_iterator it = indices.begin(); // must be sorted
@@ -190,7 +182,6 @@ struct ProjectToLineConstraint_test : public Sofa_test<typename _DataTypes::Real
            {
               CPos crossprod = v[i].cross(direction); // should be parallel
               Real scal = crossprod.norm(); // null if v is ok
-//              cerr<<"scal = "<< scal << endl;
               if( !Sofa_test<typename _DataTypes::Real>::isSmall(scal,100) ){
                   succeed = false;
                   ADD_FAILURE() << "Velocity of constrained particle " << i << " is wrong: " << v[i] ;
@@ -201,7 +192,6 @@ struct ProjectToLineConstraint_test : public Sofa_test<typename _DataTypes::Real
            {
               CPos dv = v[i]-vprev[i];
               Real scal = dv*dv;
-//              cerr<<"scal gap = "<< scal << endl;
               if( !Sofa_test<typename _DataTypes::Real>::isSmall(scal,100) ){
                   succeed = false;
                   ADD_FAILURE() << "Velocity of unconstrained particle " << i << " is wrong: " << v[i] ;
@@ -216,7 +206,6 @@ struct ProjectToLineConstraint_test : public Sofa_test<typename _DataTypes::Real
     {
         if (root!=NULL)
             sofa::simulation::getSimulation()->unload(root);
-//        cerr<<"tearing down"<<endl;
     }
 
 
@@ -234,6 +223,7 @@ TYPED_TEST_CASE(ProjectToLineConstraint_test, DataTypes);
 // first test case
 TYPED_TEST( ProjectToLineConstraint_test , oneConstrainedParticle )
 {
+    EXPECT_MSG_NOEMIT(Error) ;
     this->init_oneConstrainedParticle();
     ASSERT_TRUE(  this->test_projectPosition() );
     ASSERT_TRUE(  this->test_projectVelocity() );
@@ -241,6 +231,7 @@ TYPED_TEST( ProjectToLineConstraint_test , oneConstrainedParticle )
 // next test case
 TYPED_TEST( ProjectToLineConstraint_test , allParticlesConstrained )
 {
+    EXPECT_MSG_NOEMIT(Error) ;
     this->init_allParticlesConstrained();
     ASSERT_TRUE(  this->test_projectPosition() );
     ASSERT_TRUE(  this->test_projectVelocity() );

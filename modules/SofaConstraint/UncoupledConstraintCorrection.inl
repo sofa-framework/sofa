@@ -132,7 +132,6 @@ void UncoupledConstraintCorrection< DataTypes >::handleTopologyChange()
 
             for (unsigned int i = 0; i < nbPoints; i++)
             {
-                //	std::cout << "addedCompliance --> " << comp0 << std::endl;
                 addedCompliance.push_back(comp0);
             }
 
@@ -170,12 +169,12 @@ void UncoupledConstraintCorrection< DataTypes >::handleTopologyChange()
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(defaulttype::BaseMatrix* Wmerged, std::vector<int> &constraint_merge)
 {
-    helper::WriteAccessor<Data<MatrixDeriv> > constraintsData = *this->mstate->write(core::MatrixDerivId::holonomicC());
+    helper::WriteAccessor<Data<MatrixDeriv> > constraintsData = *this->mstate->write(core::MatrixDerivId::constraintJacobian());
     MatrixDeriv& constraints = constraintsData.wref();
 
     MatrixDeriv constraintCopy;
 
-    std::cout << "******\n Constraint before Merge  \n *******" << std::endl;
+    msg_info() << "******\n Constraint before Merge  \n *******" ;
 
     MatrixDerivRowIterator rowIt = constraints.begin();
     MatrixDerivRowIterator rowItEnd = constraints.end();
@@ -198,11 +197,11 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(
     }
     numGroup += 1;
 
-    std::cout << "******\n Constraint after Merge  \n *******" << std::endl;
+   msg_info() << "******\n Constraint after Merge  \n *******" ;
 
     for (unsigned int group = 0; group < numGroup; group++)
     {
-        std::cout << "constraint[" << group << "] : " << std::endl;
+        msg_info() << "constraint[" << group << "] : " ;
 
         MatrixDerivRowIterator rowCopyIt = constraintCopy.begin();
         MatrixDerivRowIterator rowCopyItEnd = constraintCopy.end();
@@ -224,7 +223,7 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(
     /////////// BACK TO THE INITIAL CONSTRAINT SET//////////////
 
     constraints.clear();
-    std::cout << "******\n Constraint back to initial values  \n *******" << std::endl;
+    msg_info() << "******\n Constraint back to initial values  \n *******" ;
 
     rowIt = constraintCopy.begin();
     rowItEnd = constraintCopy.end();
@@ -241,7 +240,7 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(const sofa::core::ConstraintParams * /*cparams*/, sofa::defaulttype::BaseMatrix *W)
 {
-    const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::holonomicC())->getValue();
+    const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
     const VecReal& comp = compliance.getValue();
     const Real comp0 = defaultCompliance.getValue();
 
@@ -262,9 +261,6 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
 
             int indexCurColConst;
 
-#ifdef DEBUG
-            std::cout << " [ " << dof << "]=" << n << std::endl;
-#endif
             for (MatrixDerivRowConstIterator rowIt2 = rowIt; rowIt2 != rowItEnd; ++rowIt2)
             {
                 indexCurColConst = rowIt2.index();
@@ -282,31 +278,10 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
                     }
                 }
             }
-
-            /*
-            for(unsigned int curColConst = curRowConst+1; curColConst < numConstraints; curColConst++)
-            {
-            	indexCurColConst = mstate->getConstraintId()[curColConst];
-            	W[indexCurColConst][indexCurRowConst] = W[indexCurRowConst][indexCurColConst];
-            }
-            */
         }
         if (f_verbose.getValue())
             sout << sendl;
     }
-
-    /*debug : verifie qu'il n'y a pas de 0 sur la diagonale de W
-    printf("\n index : ");
-    for(unsigned int curRowConst = 0; curRowConst < numConstraints; curRowConst++)
-    {
-    	int indexCurRowConst = mstate->getConstraintId()[curRowConst];
-    	printf(" %d ",indexCurRowConst);
-    	if(abs(W[indexCurRowConst][indexCurRowConst]) < 0.000000001)
-    		printf("\n WARNING : there is a 0 on the diagonal of matrix W");
-
-    	if(abs(W[curRowConst][curRowConst]) <0.000000001)
-    		printf("\n stop");
-    }*/
 }
 
 #else
@@ -314,7 +289,7 @@ void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(co
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(const ConstraintParams * /*cparams*/, defaulttype::BaseMatrix *W)
 {
-    const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::holonomicC())->getValue;
+    const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue;
     const VecReal& comp = compliance.getValue();
     const Real comp0 = defaultCompliance.getValue();
 
@@ -469,7 +444,6 @@ void UncoupledConstraintCorrection<DataTypes>::computeAndApplyVelocityCorrection
     const VecDeriv& v_free = cparams->readV(this->mstate)->getValue();
 
     const VecDeriv& dx = this->mstate->read(core::VecDerivId::dx())->getValue();
-//	const double invDt = 1.0 / this->getContext()->getDt();
 
     for (unsigned int i = 0; i < dx.size(); i++)
     {
@@ -485,7 +459,7 @@ void UncoupledConstraintCorrection<DataTypes>::applyContactForce(const defaultty
 {
     helper::WriteAccessor<Data<VecDeriv> > forceData = *this->mstate->write(core::VecDerivId::externalForce());
     VecDeriv& force = forceData.wref();
-    const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::holonomicC())->getValue();
+    const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
     const VecReal& comp = compliance.getValue();
     const Real comp0 = defaultCompliance.getValue();
 
@@ -558,7 +532,7 @@ void UncoupledConstraintCorrection<DataTypes>::resetContactForce()
 template<class DataTypes>
 bool UncoupledConstraintCorrection<DataTypes>::hasConstraintNumber(int index)
 {
-    const MatrixDeriv &constraints = this->mstate->read(core::ConstMatrixDerivId::holonomicC())->getValue();
+    const MatrixDeriv &constraints = this->mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
 
     return (constraints.readLine(index) != constraints.end());
 }
@@ -567,7 +541,7 @@ bool UncoupledConstraintCorrection<DataTypes>::hasConstraintNumber(int index)
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::resetForUnbuiltResolution(double * f, std::list<unsigned int>& /*renumbering*/)
 {
-    const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::holonomicC())->getValue();
+    const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
 
     constraint_disp.clear();
     constraint_disp.resize(this->mstate->getSize());
@@ -610,7 +584,7 @@ void UncoupledConstraintCorrection<DataTypes>::addConstraintDisplacement(double 
 /// constraint_force contains the force applied on dof involved with the contact
 /// TODO : compute a constraint_disp that is updated each time a new force is provided !
 
-    const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::holonomicC())->getValue();
+    const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
 
     for (int id = begin; id <= end; id++)
     {
@@ -640,7 +614,7 @@ void UncoupledConstraintCorrection<DataTypes>::setConstraintDForce(double * df, 
     /// if update is true, it computes the displacements due to this delta of force.
     /// As the contact are uncoupled, a displacement is obtained only on dof involved with the constraints
 
-    const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::holonomicC())->getValue();
+    const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
     const VecReal& comp = compliance.getValue();
     const Real comp0 = defaultCompliance.getValue();
 
@@ -677,7 +651,7 @@ void UncoupledConstraintCorrection<DataTypes>::setConstraintDForce(double * df, 
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, int begin, int end)
 {
-    const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::holonomicC())->getValue();
+    const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
     const VecReal& comp = compliance.getValue();
     const Real comp0 = defaultCompliance.getValue();
 

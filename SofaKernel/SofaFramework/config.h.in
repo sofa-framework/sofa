@@ -22,9 +22,10 @@
 #ifndef SOFA_CONFIG_H
 #define SOFA_CONFIG_H
 
-#cmakedefine SOFA_HAVE_ZLIB
+// fixes CGAL plugin build errors (default value: 5)
+#define BOOST_PARAMETER_MAX_ARITY 12
 
-#cmakedefine SOFA_HAVE_PNG
+#cmakedefine SOFA_HAVE_ZLIB
 
 #cmakedefine SOFA_HAVE_GLEW
 
@@ -37,6 +38,10 @@
 #cmakedefine SOFA_HAVE_BOOST_SYSTEM
 
 #cmakedefine SOFA_HAVE_BOOST_DATE_TIME
+
+#cmakedefine SOFA_HAVE_BOOST_LOCALE
+
+#cmakedefine SOFA_HAVE_BOOST_FILESYSTEM
 
 #cmakedefine SOFA_HAVE_TINYXML
 
@@ -61,6 +66,11 @@
 #cmakedefine SOFA_USE_MASK
 
 #cmakedefine SOFA_WITH_DEVTOOLS
+
+/// This can be either true or false
+#define SOFA_WITH_THREADING ${SOFA_WITH_THREADING_}
+
+#define SOFA_WITH_EXPERIMENTAL_FEATURES ${SOFA_WITH_EXPERIMENTAL_FEATURES_}
 
 #ifdef _MSC_VER
 #define EIGEN_DONT_ALIGN

@@ -7,7 +7,7 @@
     <DefaultContactManager name="Response" response="default" />
     <TreeCollisionGroupManager name="Group" />
     <Node name="Off file">
-        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MeshOffLoader name="offLoader" filename="mesh/aneurysm3D_1.off" />
         <MechanicalObject name="dofs" scale="1" src="@offLoader" />

@@ -97,16 +97,16 @@ protected:
 	GenericConstraintSolver();
 	virtual ~GenericConstraintSolver();
 public:
-	void init();
+	void init() override;
 
-    void cleanup();
+    void cleanup() override;
 
-	bool prepareStates(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null());
-	bool buildSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null());
-        void rebuildSystem(double massFactor, double forceFactor);
-        bool solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null());
-	bool applyCorrection(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null());
-    void computeResidual(const core::ExecParams* /*params*/);
+	bool prepareStates(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
+	bool buildSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
+        void rebuildSystem(double massFactor, double forceFactor) override;
+        bool solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
+	bool applyCorrection(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
+    void computeResidual(const core::ExecParams* /*params*/) override;
 
 	Data<bool> displayTime;
 	Data<int> maxIt;
@@ -122,10 +122,10 @@ public:
 	Data<double> currentError;
     Data<bool> reverseAccumulateOrder;
 
-	ConstraintProblem* getConstraintProblem();
-	void lockConstraintProblem(ConstraintProblem* p1, ConstraintProblem* p2=0);
+	ConstraintProblem* getConstraintProblem() override;
+	void lockConstraintProblem(ConstraintProblem* p1, ConstraintProblem* p2=0) override;
 
-    virtual void removeConstraintCorrection(core::behavior::BaseConstraintCorrection *s);
+    virtual void removeConstraintCorrection(core::behavior::BaseConstraintCorrection *s) override;
 
 protected:
 	GenericConstraintProblem cp1, cp2, cp3;

@@ -75,10 +75,6 @@ void RungeKutta4Solver::solve(const core::ExecParams* params, SReal dt, sofa::co
     MultiVecCoord newX(&vop);
     //MultiVecDeriv newV(&vop);
 
-    //std::cout << "\nEntering RungeKutta4Solver::solve()\n";
-    //std::cout << pos << std::endl;
-
-
     double stepBy2 = double(dt / 2.0);
     double stepBy3 = double(dt / 3.0);
     double stepBy6 = double(dt / 6.0);

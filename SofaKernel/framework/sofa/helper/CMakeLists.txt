@@ -39,6 +39,7 @@ set(HEADER_FILES
     accessor.h
     decompose.h
     decompose.inl
+    deprecatedcomponents.h
     deque.h
     fixed_array.h
     hash.h
@@ -51,7 +52,6 @@ set(HEADER_FILES
     io/FileAccess.h
     io/File.h
     io/Image.h
-    io/ImageBMP.h
     io/ImageDDS.h
     io/ImageRAW.h
     io/MassSpringLoader.h
@@ -106,6 +106,7 @@ set(HEADER_FILES
     vector_algebra.h
     vector_device.h
     types/RGBAColor.h
+    types/Material.h
     logging/Messaging.h
     logging/Message.h
     logging/ComponentInfo.h
@@ -146,6 +147,7 @@ set(SOURCE_FILES
     UnitTest.cpp
     Utils.cpp
     decompose.cpp
+    deprecatedcomponents.cpp
     gl/Trackball.cpp
     gl/Transformation.cpp
     init.cpp
@@ -153,7 +155,6 @@ set(SOURCE_FILES
     io/FileAccess.cpp
     io/File.cpp
     io/Image.cpp
-    io/ImageBMP.cpp
     io/ImageDDS.cpp
     io/ImageRAW.cpp
     io/MassSpringLoader.cpp
@@ -187,6 +188,7 @@ set(SOURCE_FILES
     vector.cpp
     types/fixed_array.cpp
     types/RGBAColor.cpp
+    types/Material.cpp
     logging/Message.cpp
     logging/MessageDispatcher.cpp
     logging/ComponentInfo.cpp
@@ -212,12 +214,6 @@ endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL Windows)
     list(APPEND SOURCE_FILES  system/FileMonitor_windows.cpp)
-endif()
-
-
-if(SOFA_HAVE_PNG)
-    list(APPEND HEADER_FILES  io/ImagePNG.h)
-    list(APPEND SOURCE_FILES  io/ImagePNG.cpp)
 endif()
 
 if(Boost_thread_FOUND)
@@ -363,7 +359,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAFRAMEWORK_DEPENDENCY_LINK} ${
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../..>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES}>")
+target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES}>")
 # For generated files, like sofa/config.h
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 set(SOFAHELPER_COMPILE_FLAGS "-DSOFA_BUILD_HELPER")

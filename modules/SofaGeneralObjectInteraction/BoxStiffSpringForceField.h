@@ -67,14 +67,16 @@ protected:
     BoxStiffSpringForceField(MechanicalState* object1, MechanicalState* object2, double ks=100.0, double kd=5.0);
     BoxStiffSpringForceField(double ks=100.0, double kd=5.0);
 public:
-    void bwdInit();
+    void init() override;
+    void bwdInit() override;
 
     Data<Vec6>  box_object1;
     Data<Vec6>  box_object2;
     Data<SReal> factorRestLength;
+    Data<bool>  forceOldBehavior;
     // -- VisualModel interface
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
 };
 

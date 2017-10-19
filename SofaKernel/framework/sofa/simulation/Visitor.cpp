@@ -134,7 +134,6 @@ void Visitor::dumpInfo( const std::string &info)
 
 void Visitor::startDumpVisitor(std::ostream *s, SReal time)
 {
-//    std::cout << "startDumpVisitor" << std::endl;
     initDumpTime = sofa::helper::system::thread::CTime::getRefTime();
     printActivated=true; outputVisitor=s;
     //std::string initDump;
@@ -143,7 +142,6 @@ void Visitor::startDumpVisitor(std::ostream *s, SReal time)
 };
 void Visitor::stopDumpVisitor()
 {
-//    std::cout << "stopDumpVisitor" << std::endl;
     std::ostringstream s;
     s << "<TotalTime value=\"" << getTimeSpent(initDumpTime,  sofa::helper::system::thread::CTime::getRefTime() ) << "\" />\n";
     s << "</TraceVisitor>\n";
@@ -178,7 +176,6 @@ void Visitor::printVector(core::behavior::BaseMechanicalState *mm, core::ConstVe
 
 void Visitor::printNode(const std::string &type, const std::string &name, const TRACE_ARGUMENT &arguments)
 {
-//    std::cout << "printNode " << type << " " << name << std::endl;
     if (Visitor::printActivated)
     {
         std::ostringstream s;
@@ -289,36 +286,34 @@ void Visitor::end(simulation::Visitor::VisitorContext* vc, core::objectmodel::Ba
 #ifdef SOFA_VERBOSE_TRAVERSAL
 void Visitor::debug_write_state_before( core::objectmodel::BaseObject* obj )
 {
-    using std::cerr;
-    using std::endl;
     if( dynamic_cast<VisualVisitor*>(this) ) return;
-    cerr<<"Visitor "<<getClassName()<<" enter component "<<obj->getName();
+    std::stringstream tmp;
+    tmp<<"Visitor "<<getClassName()<<" enter component "<<obj->getName();
     using core::behavior::BaseMechanicalState;
     if( BaseMechanicalState* dof = obj->getContext()->getMechanicalState() )
     {
-        cerr<<", state:\nx= "; dof->writeX(cerr);
-        cerr<<"\nv= ";        dof->writeV(cerr);
-        cerr<<"\ndx= ";       dof->writeDx(cerr);
-        cerr<<"\nf= ";        dof->writeF(cerr);
+        tmp<<", state:\nx= "; dof->writeX(tmp);
+        tmp<<"\nv= ";        dof->writeV(tmp);
+        tmp<<"\ndx= ";       dof->writeDx(tmp);
+        tmp<<"\nf= ";        dof->writeF(tmp);
     }
-    cerr<<endl;
+    dmsg_info("Visitor(debug)") << tmp.str() ;
 }
 
 void Visitor::debug_write_state_after( core::objectmodel::BaseObject* obj )
 {
-    using std::cerr;
-    using std::endl;
     if( dynamic_cast<VisualVisitor*>(this) ) return;
-    cerr<<"Visitor "<<getClassName()<<" leave component "<<obj->getName();
+    std::stringstream tmp ;
+    tmp<<"Visitor "<<getClassName()<<" leave component "<<obj->getName();
     using core::behavior::BaseMechanicalState;
     if( BaseMechanicalState* dof = obj->getContext()->getMechanicalState() )
     {
-        cerr<<", state:\nx= "; dof->writeX(cerr);
-        cerr<<"\nv= ";        dof->writeV(cerr);
-        cerr<<"\ndx= ";       dof->writeDx(cerr);
-        cerr<<"\nf= ";        dof->writeF(cerr);
+        tmp<<", state:\nx= "; dof->writeX(tmp);
+        tmp<<"\nv= ";        dof->writeV(tmp);
+        tmp<<"\ndx= ";       dof->writeDx(tmp);
+        tmp<<"\nf= ";        dof->writeF(tmp);
     }
-    cerr<<endl;
+    dmsg_info() << tmp.str() ;
 }
 #endif
 

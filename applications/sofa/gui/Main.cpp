@@ -37,9 +37,6 @@
 #endif
 #endif
 
-using std::cerr;
-using std::endl;
-
 namespace sofa
 {
 

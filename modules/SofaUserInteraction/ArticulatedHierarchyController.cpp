@@ -181,11 +181,11 @@ void ArticulatedHierarchyController::dumpActiveArticulations(void) const
     int i=0;
     while (it != itEnd)
     {
-        if (*it)
-            std::cout << "-------------> Articulation " << articulationsIndices.getValue()[i] << " active"<<std::endl;
-        else
-            std::cout << "-------------> Articulation " << articulationsIndices.getValue()[i] << " inactive"<<std::endl;
-
+        if (*it){
+            msg_info() << "-------------> Articulation " << articulationsIndices.getValue()[i] << " active" ;
+        }else{
+            msg_info() << "-------------> Articulation " << articulationsIndices.getValue()[i] << " inactive" ;
+        }
         ++it;
         i++;
     }
@@ -195,7 +195,7 @@ void ArticulatedHierarchyController::dumpActiveArticulations(void) const
 
 void ArticulatedHierarchyController::dumpArticulationsAndBindingKeys(void) const
 {
-    std::cout << "ARTICULATIONS_KEYBOARD_CONTROLER : Controled Articulations & Binding Keys"<<std::endl;
+    msg_info() << "ARTICULATIONS_KEYBOARD_CONTROLER : Controled Articulations & Binding Keys" ;
 
     vector<int>::const_iterator articulationsIndicesIt = articulationsIndices.getValue().begin();
     vector<int>::const_iterator articulationsIndicesItEnd = articulationsIndices.getValue().end();
@@ -205,7 +205,7 @@ void ArticulatedHierarchyController::dumpArticulationsAndBindingKeys(void) const
 
     while (articulationsIndicesIt != articulationsIndicesItEnd)
     {
-        std::cout << "Articulation " << *articulationsIndicesIt << " controlled with key " << *bindinKeysIt << std::endl;
+        msg_info() << "Articulation " << *articulationsIndicesIt << " controlled with key " << *bindinKeysIt ;
         ++articulationsIndicesIt;
         ++bindinKeysIt;
         if (bindinKeysIt == bindinKeysItEnd)
@@ -407,7 +407,8 @@ void ArticulatedHierarchyController::applyController(void)
                     articulationIndex = articulationPropagationChain[j];
             }
 
-            static_cast<sofa::simulation::Node*>(this->getContext())->execute<sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor>(sofa::core::MechanicalParams::defaultInstance());
+            static_cast<sofa::simulation::Node*>(this->getContext())->execute<sofa::simulation::MechanicalProjectPositionAndVelocityVisitor>(sofa::core::MechanicalParams::defaultInstance());
+            static_cast<sofa::simulation::Node*>(this->getContext())->execute<sofa::simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor>(sofa::core::MechanicalParams::defaultInstance());
             static_cast<sofa::simulation::Node*>(this->getContext())->execute<sofa::simulation::UpdateMappingVisitor>(sofa::core::ExecParams::defaultInstance());
         }
     }

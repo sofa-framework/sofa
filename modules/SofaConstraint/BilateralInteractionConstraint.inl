@@ -279,8 +279,6 @@ void BilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(const Cons
             }
             dfree[pid] = dfree_loc;
 
-            //std::cout<<" BilateralInteractionConstraint add Constraint between point "<<tm1<<" of object1 and "<< tm2<< " of object2"<<std::endl;
-
             const defaulttype::Vec<3, Real> cx(1.0,0,0), cy(0,1.0,0), cz(0,0,1.0);
 
             cid[pid] = constraintId;
@@ -599,14 +597,12 @@ void BilateralInteractionConstraint<DataTypes>::handleEvent(Event *event)
     if (KeypressedEvent::checkEventType(event))
     {
         KeypressedEvent *ev = static_cast<KeypressedEvent *>(event);
-
-        //std::cout << "key pressed " << std::endl;
         switch(ev->getKey())
         {
 
         case 'A':
         case 'a':
-            std::cout << "Activating constraint" << std::endl;
+            msg_info() << "Activating constraint" ;
             activated = true;
             break;
         }
@@ -618,7 +614,7 @@ void BilateralInteractionConstraint<DataTypes>::handleEvent(Event *event)
         ++iteration;
         if (!activated && activateAtIteration.getValue() >= 0 && activateAtIteration.getValue() <= iteration)
         {
-            std::cout << "Activating constraint" << std::endl;
+            msg_info() << "Activating constraint" ;
             activated = true;
         }
     }

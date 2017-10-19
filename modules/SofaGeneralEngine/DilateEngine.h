@@ -66,12 +66,12 @@ public:
 
     virtual ~DilateEngine() {}
 
-    virtual void init();
-    virtual void bwdInit();
-    virtual void reinit();
-    virtual void update();
+    virtual void init() override;
+    virtual void bwdInit() override;
+    virtual void reinit() override;
+    virtual void update() override;
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -93,8 +93,9 @@ protected:
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_DILATEENGINE_CPP)
-
+#ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_ENGINE_API DilateEngine<defaulttype::Vec3dTypes>;
+#endif
 #endif
 
 } // namespace engine

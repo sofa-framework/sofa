@@ -27,6 +27,9 @@
 #include <SofaRigid/RigidMapping.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 
+#include <SofaTest/Sofa_test.h>
+#include <SofaTest/TestMessageHandler.h>
+
 
 namespace sofa {
 namespace {
@@ -36,16 +39,16 @@ template<class Rigid3Types>
 struct QuaternionIntegrationTest : Sofa_test< typename Rigid3Types::Real > {
 
     using data_types = Rigid3Types;
-    
+
     typename data_types::Coord coord;
     typename data_types::Deriv deriv;
-    
+
     typename data_types::Real dt;
-    
+
     QuaternionIntegrationTest()
         : dt(1) {
 
-        deriv = data_types::randomDeriv(0, M_PI / 2);        
+        deriv = data_types::randomDeriv(0, M_PI / 2);
 
         // time integration
         coord += deriv * dt;
@@ -60,19 +63,28 @@ struct QuaternionIntegrationTest : Sofa_test< typename Rigid3Types::Real > {
         const real expected_angle = dt * deriv.getVOrientation().norm();
 
         // std::clog << expected_angle << " " << angle << std::endl;
-        
+
         // child coordinates given directly in parent frame
         ASSERT_TRUE(this->isSmall(expected_angle - angle, 10));
     }
 
 };
-  
+
 
 // Define the list of types to instanciate. We do not necessarily need to test all combinations.
 using testing::Types;
 typedef Types<
-    defaulttype::Rigid3dTypes,
+#ifndef SOFA_FLOAT
+    defaulttype::Rigid3dTypes
+#endif
+#ifndef SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+    ,
+#endif
+#endif
+#ifndef SOFA_DOUBLE
     defaulttype::Rigid3fTypes
+#endif
 > DataTypes; // the types to instanciate.
 
 // Test suite for all the instanciations
@@ -80,6 +92,7 @@ TYPED_TEST_CASE(QuaternionIntegrationTest, DataTypes);
 
 // first test case
 TYPED_TEST( QuaternionIntegrationTest, quaternion_angle) {
+    EXPECT_MSG_NOEMIT(Error) ;
     this->test_quaternion_angle();
 }
 

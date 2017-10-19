@@ -82,9 +82,9 @@ public:
     FullVector(const FullVector& vect)
         : defaulttype::BaseVector()
         , data(NULL), cursize(0), allocsize(0)
-	{
-		(*this) = vect;
-	}
+    {
+        (*this) = vect;
+    }
 
     explicit FullVector(Index n)
         : defaulttype::BaseVector()
@@ -140,7 +140,7 @@ public:
         {
             if (dim > -allocsize)
             {
-                std::cerr << "ERROR: cannot resize preallocated vector to size "<<dim<<std::endl;
+                msg_error("FullVector") << "Cannot resize preallocated vector to size "<<dim ;
                 return;
             }
         }

@@ -59,6 +59,11 @@ namespace helper
 namespace logging
 {
 
+#if(SOFA_WITH_THREADING==1)
+   #define MUTEX_IF_THREADING lock_guard<mutex> guard(getMainInstance()->getMutex()) ;
+#else
+   #define MUTEX_IF_THREADING
+#endif
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -79,6 +84,12 @@ std::vector<MessageHandler*> getDefaultMessageHandlers(){
 class MessageDispatcherImpl
 {
 public:
+    mutex m_mutex ;
+    mutex& getMutex()
+    {
+        return m_mutex;
+    }
+
     std::vector<MessageHandler*> m_messageHandlers = getDefaultMessageHandlers();
 
     std::vector<MessageHandler*>& getHandlers()
@@ -109,43 +120,46 @@ public:
 
     void process(sofa::helper::logging::Message& m)
     {
-        for( size_t i=0 ; i<m_messageHandlers.size() ; i++ )
+        for( size_t i=0 ; i<m_messageHandlers.size() ; i++ ){
             m_messageHandlers[i]->process(m) ;
+        }
     }
 };
 
 
-MessageDispatcherImpl s_messagedispatcher ;
+MessageDispatcherImpl* s_messagedispatcher = nullptr ;
+
+MessageDispatcherImpl* getMainInstance(){
+    if(s_messagedispatcher==nullptr){
+        s_messagedispatcher = new MessageDispatcherImpl();
+    }
+    return s_messagedispatcher;
+}
 
 std::vector<MessageHandler*>& MessageDispatcher::getHandlers()
 {
-    //lock_guard<mutex> guard(getMutex()) ;
-
-    return s_messagedispatcher.getHandlers();
+    MUTEX_IF_THREADING ;
+    return getMainInstance()->getHandlers();
 }
 
 int MessageDispatcher::addHandler(MessageHandler* o){
-    //lock_guard<mutex> guard(getMutex()) ;
-
-    return s_messagedispatcher.addHandler(o);
+    MUTEX_IF_THREADING ;
+    return getMainInstance()->addHandler(o);
 }
 
 int MessageDispatcher::rmHandler(MessageHandler* o){
-    //lock_guard<mutex> guard(getMutex()) ;
-
-    return s_messagedispatcher.rmHandler(o);
+    MUTEX_IF_THREADING ;
+    return getMainInstance()->rmHandler(o);
 }
 
 void MessageDispatcher::clearHandlers(){
-    //lock_guard<mutex> guard(getMutex()) ;
-
-    s_messagedispatcher.clearHandlers();
+    MUTEX_IF_THREADING ;
+    getMainInstance()->clearHandlers();
 }
 
 void MessageDispatcher::process(sofa::helper::logging::Message& m){
-    //lock_guard<mutex> guard(getMutex()) ;
-
-    s_messagedispatcher.process(m);
+    MUTEX_IF_THREADING ;
+    getMainInstance()->process(m);
 }
 
 

@@ -30,17 +30,10 @@
 //Including Simulation
 #include <SofaSimulationGraph/DAGSimulation.h>
 
-// #include <SofaMiscFem/TetrahedralTensorMassForceField.h>
-// #include <SofaSimpleFem/TetrahedralCorotationalFEMForceField.h>
 #include <SofaBaseTopology/TopologySparseData.inl>
 #include <SofaBoundaryCondition/TrianglePressureForceField.h>
 #include <SofaBoundaryCondition/AffineMovementConstraint.h>
-// #include <SofaBaseLinearSolver/CGLinearSolver.h>
-// #include <SofaEngine/PairBoxRoi.h>
-// #include <SofaEngine/GenerateCylinder.h>
-// #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
-// #include <SofaImplicitOdeSolver/StaticSolver.h>
-// #include <SofaBoundaryCondition/ProjectToLineConstraint.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 
 namespace sofa {
 
@@ -121,17 +114,6 @@ simulation::Node::SPtr createMassSpringSystem(
         VecDeriv vFixedPoint,
         VecCoord xMass,
         VecDeriv vMass);
-
-/// Create sun-planet system
-simulation::Node::SPtr createSunPlanetSystem(
-        simulation::Node::SPtr root,
-        double mSun,
-        double mPlanet,
-        double g,
-        Coord xSun,
-        Deriv vSun,
-        Coord xPlanet,
-        Deriv vPlanet);
 
 };
 

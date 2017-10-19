@@ -63,9 +63,9 @@ bool MassSpringLoader::load(const char *filename)
         msg_error("MassSpringLoader") << "cannot read file '" << filename << "'" ;
         return false;
     }
-#ifndef NDEBUG
+
     dmsg_info("MassSpringLoader") << "Loading model '" << filename << "'" ;
-#endif
+
     int totalNumMasses=0;
     int totalNumSprings=0;
     // Check first line
@@ -96,17 +96,41 @@ bool MassSpringLoader::load(const char *filename)
     // then find out number of masses and springs
     std::ostringstream cmdScanFormat;
     cmdScanFormat << "%" << (sizeof(cmd) - 1) << "s";
-    if (fscanf(file, cmdScanFormat.str().c_str(), cmd) != EOF && !strcmp(cmd,"numm"))
+    int massAndSpringSet=0;
+    while (massAndSpringSet != 2 && fscanf(file, cmdScanFormat.str().c_str(), cmd) != EOF )
     {
-        if (fscanf(file, "%d", &totalNumMasses) == EOF)
-            msg_error("MassSpringLoader") << "fscanf function has encountered an error." ;
-        setNumMasses(totalNumMasses);
+        if (!strcmp(cmd,"numm"))
+        {
+            if (fscanf(file, "%d", &totalNumMasses) == EOF){
+                msg_error("MassSpringLoader") << "fscanf function has encountered an error." ;
+                setNumMasses(0);
+                setNumSprings(0);
+                return false;
+            }
+            setNumMasses(totalNumMasses);
+            massAndSpringSet+=1;
+        }else if(!strcmp(cmd,"nums")){
+            if (fscanf(file, "%d", &totalNumSprings) == EOF){
+                msg_error("MassSpringLoader") << "fscanf function has encountered an error." ;
+                setNumMasses(0);
+                setNumSprings(0);
+                return false;
+            }
+            setNumSprings(totalNumSprings);
+            massAndSpringSet+=1;
+
+        }else {
+            msg_warning("MassSpringLoader") << "Unable to process Xsp command '"<< cmd << "'" ;
+            skipToEOL(file);
+        }
     }
-    if (fscanf(file, cmdScanFormat.str().c_str(), cmd) != EOF && !strcmp(cmd,"nums"))
-    {
-        if (fscanf(file, "%d", &totalNumSprings) == EOF)
-            msg_error("MassSpringLoader") << "fscanf function has encountered an error." ;
-        setNumSprings(totalNumSprings);
+
+    if(massAndSpringSet!=2){
+        msg_error("MassSpringLoader") << "Unable to load punctual masses from file. "
+                                      << "Either the file is broken or is a file describing a rigid object." ;
+        setNumMasses(0);
+        setNumSprings(0);
+        return false;
     }
 
     std::vector<Vector3> masses;
@@ -171,8 +195,9 @@ bool MassSpringLoader::load(const char *filename)
                     initpos = (masses[m1]-masses[m2]).norm();
                     ks/=initpos;
                     kd/=initpos;
+
 #ifndef NDEBUG
-                    std::cout << "spring "<<m1<<" "<<m2<<" "<<ks<<" "<<kd<<" "<<initpos<<"\n";
+                    dmsg_info("MassSpringLoader") << "spring "<<m1<<" "<<m2<<" "<<ks<<" "<<kd<<" "<<initpos ;
 #endif
                 }
 
@@ -199,7 +224,6 @@ bool MassSpringLoader::load(const char *filename)
         }
         else if (!strcmp(cmd,"step"))
         {
-            //fscanf(file, "%lf\n", &(MSparams.default_dt));
             skipToEOL(file);
         }
         else if (!strcmp(cmd,"frce"))
@@ -212,7 +236,8 @@ bool MassSpringLoader::load(const char *filename)
         }
         else		// it's an unknown keyword
         {
-            printf("%s: Unknown MassSpring keyword: %s\n", filename, cmd);
+            msg_info("LassSpringLoader") << "Unknown MassSpring keyword: " << cmd << msgendl
+                                         << "From file: " << filename ;
             skipToEOL(file);
         }
     }

@@ -2,6 +2,10 @@
 
 #include "../assembly/AssemblyVisitor.h"
 #include <SofaBoundaryCondition/ConstantForceField.h>
+#include <sofa/defaulttype/RigidTypes.h>
+using sofa::defaulttype::Rigid3Types;
+using MechanicalObject3 = sofa::component::container::MechanicalObject<Vec3Types> ;
+using MechanicalObjectRigid3 = sofa::component::container::MechanicalObject<Rigid3Types> ;
 
 namespace sofa
 {
@@ -44,7 +48,7 @@ struct Assembly_test : public CompliantSolver_test
         node->getContext()->executeVisitor( &assemblyVisitor );
         component::linearsolver::AssembledSystem sys;
         assemblyVisitor.assemble(sys); // assemble system
-        
+
         return sys.H;
     }
 
@@ -128,15 +132,15 @@ struct Assembly_test : public CompliantSolver_test
         // Opposite forces applied to the ends
         ConstantForceField3::SPtr ff = New<ConstantForceField3>();
         string1->addObject(ff);
-        helper::vector<unsigned>* indices = ff->points.beginEdit(); // not managed to create a WriteAccessor with a resize function for a ConstantForceField::SetIndex
-        helper::WriteAccessor< Data<helper::vector<Vec3> > > forces( ff->forces );
+        helper::vector<unsigned>* indices = ff->d_indices.beginEdit(); // not managed to create a WriteAccessor with a resize function for a ConstantForceField::SetIndex
+        helper::WriteAccessor< Data<helper::vector<Vec3> > > forces( ff->d_forces );
         (*indices).resize(2);
         forces.resize(2);
         // pull the left-hand particle to the left
         (*indices)[0]= 0; forces[0]= Vec3(-1,0,0);
         // pull the right-hand particle to the right
         (*indices)[1]= n-1; forces[1]= Vec3(1,0,0);
-        ff->points.endEdit();
+        ff->d_indices.endEdit();
 
 
         sofa::simulation::getSimulation()->init(root.get());

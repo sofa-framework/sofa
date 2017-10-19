@@ -25,7 +25,6 @@
 
 #include "Sofa_test.h"
 
-
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 
@@ -49,7 +48,7 @@ public:
     {}
 
 
-    virtual void update()
+    virtual void update() override
     {
         DataEngineType::update();
 
@@ -120,7 +119,11 @@ struct DataEngine_test : public Sofa_test<>
     /// To do so, you can inherit this class and add a test function that takes inputs and ouputs to test
     void run_basic_test()
     {
-        init();
+        /// The comp
+        {
+            IGNORE_MSG(Error) ;
+            init();
+        }
 
         m_engine->resetCounter();
 
@@ -139,7 +142,7 @@ struct DataEngine_test : public Sofa_test<>
         // modifying inputs to ensure the engine should be evaluated
         for( unsigned i=0, iend=parent_inputs.size() ; i<iend ; ++i )
         {
-            parent_inputs[i]->setDirtyValue();            
+            parent_inputs[i]->setDirtyValue();
             CHECKCOUNTER( 0 );  // c'est parti mon kiki
         }
 

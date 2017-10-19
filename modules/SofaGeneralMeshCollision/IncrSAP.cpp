@@ -355,8 +355,6 @@ int IncrSAP::greatestVarianceAxis()const{
         }
     }
 
-    //std::cout<<"end greatestVarianceAxis"<<std::endl;
-
     if(v[0] >= v[1] && v[0] >= v[2])
         return 0;
     else if(v[1] >= v[2])
@@ -398,7 +396,7 @@ void IncrSAP::reinitDetection(){
 
 void IncrSAP::showEndPoints()const{
     for(int j = 0 ; j < 3 ; ++j){
-        std::cout<<"dimension "<<j<<"==========="<<std::endl;
+        msg_info() <<"dimension "<<j<<"===========" ;
         for(EndPointList::const_iterator it = _end_points[j].begin() ; it != _end_points[j].end() ; ++it){
             const EndPointID & end_pt = (**it);
             end_pt.show();
@@ -410,19 +408,21 @@ void IncrSAP::showEndPoints()const{
 void IncrSAP::showBoxes()const{
     for(size_t i = 0 ; i < _boxes.size() ; ++i){
         const ISAPBox & box = _boxes[i];
-        std::cout<<"collision model "<<box.cube.getCollisionModel()->getLast()<<" index "<<box.cube.getExternalChildren().first.getIndex()<<std::endl;
+        std::stringstream tmp;
 
-        std::cout<<"minBBox ";
-        for(int j = 0 ; j < 3 ; ++j){
-            std::cout<<" "<<box.min(j).value;
-        }
-        std::cout<<std::endl;
+        tmp <<"collision model "<<box.cube.getCollisionModel()->getLast()<<" index "<<box.cube.getExternalChildren().first.getIndex()<<msgendl ;
 
-        std::cout<<"maxBBox ";
+        tmp<<"minBBox ";
         for(int j = 0 ; j < 3 ; ++j){
-            std::cout<<" "<<box.max(j).value;
+            tmp<<" "<<box.min(j).value;
         }
-        std::cout<<std::endl;
+        tmp<<msgendl ;
+
+        tmp<<"maxBBox ";
+        for(int j = 0 ; j < 3 ; ++j){
+            tmp<<" "<<box.max(j).value;
+        }
+        msg_info() << tmp.str() ;
     }
 }
 
@@ -601,7 +601,6 @@ bool IncrSAP::assertion_inferior(EndPointList::iterator begin_it,const EndPointL
 
 bool IncrSAP::assertion_end_points_sorted() const{
     CompPEndPoint inferior;
-    //std::cout<<"ZOZO"<<std::endl;
     int n = 0;
     for(int dim = 0 ; dim < 3 ; ++dim){
         int ID = 0;
@@ -616,37 +615,23 @@ bool IncrSAP::assertion_end_points_sorted() const{
                 assert((**next_it2).ID == ID + 1);
 
                 if(!inferior(*it2,*next_it2)){
-//                    (**it2).show();
-//                    (**next_it2).show();
                     ++n;
 
                     if((**it2).value == (**next_it2).value)
                         ++equality_number;
                 }
-                //assert((**it).value < (**next_it).value);
             }
 
             ++ID;
         }
 
-//        std::cout<<"n "<<n<<std::endl;
-//        std::cout<<"equality_number "<<equality_number<<std::endl;
-        if(n != 0){
-            std::cout<<"STOP !"<<std::endl;
-        }
+        msg_info_when(n!=0)
+                << "STOP !";
+
     }
 
     return n == 0;
 }
-
-//
-//EndPointID & IncrSAP::findEndPoint(int dim,int data){
-//    for(int i = 0 ; i < _end_points[dim].size() ; ++i){
-//        if((*_end_points[dim][i]).data == data)
-//            return *_end_points[dim][i];
-//    }
-//}
-
 
 void IncrSAP::moveMinForward(int dim,EndPointID * cur_end_point,EndPointList::iterator & it,EndPointList::iterator & next_it){
     CompPEndPoint inferior;
@@ -663,7 +648,6 @@ void IncrSAP::moveMinForward(int dim,EndPointID * cur_end_point,EndPointList::it
     while((next_it != _end_points[dim].end()) && (inferior(*next_it,cur_end_point)));
 
     (*it) = cur_end_point;
-    //assert(assertion_end_points_sorted());
 }
 
 
@@ -683,7 +667,6 @@ void IncrSAP::moveMaxForward(int dim,EndPointID * cur_end_point,EndPointList::it
     while((next_it != _end_points[dim].end()) && (inferior(*next_it,cur_end_point)));
 
     (*it) = cur_end_point;
-    //assert(assertion_end_points_sorted());
 }
 
 
@@ -706,7 +689,6 @@ void IncrSAP::moveMinBackward(int dim,EndPointID * cur_end_point,EndPointList::i
     while(inferior(cur_end_point,*prev_it));
 
     (*it) = cur_end_point;
-    //assert(assertion_end_points_sorted());
 }
 
 
@@ -729,7 +711,6 @@ void IncrSAP::moveMaxBackward(int dim,EndPointID * cur_end_point,EndPointList::i
     while(inferior(cur_end_point,*prev_it));
 
     (*it) = cur_end_point;
-    //assert(assertion_end_points_sorted());
 }
 
 
@@ -741,7 +722,6 @@ void IncrSAP::updateMovingBoxes(){
     if(_boxes.size() < 2)
         return;
 
-    //std::cout<<__LINE__<<std::endl;
     EndPointID * cur_end_point_min,*cur_end_point_max;
     cur_end_point_min = cur_end_point_max = 0x0;
 
@@ -751,15 +731,12 @@ void IncrSAP::updateMovingBoxes(){
     EndPointID updated_max;
 
     for(unsigned int i = 0 ; i < _boxes.size() ; ++i){
-        //std::cout<<__LINE__<<std::endl;
         ISAPBox & cur_box = _boxes[i];
-        //std::cout<<"\tMOVED!"<<std::endl;
         for(int dim = 0 ; dim < 3 ; ++dim){
             min_updated = false;
             max_updated = false;
 
             //FIRST CREATING CONTACTS THEN DELETING, this order is very important, it doesn't work in the other sens
-
             //MOVING MAX FOREWARD
             if((max_moving = cur_box.maxMoving(dim,_alarmDist_d2))){
                 cur_box.updatedMax(dim,updated_max,_alarmDist_d2);//we don't update directly update the max of the box but a copy of it, because when
@@ -782,7 +759,6 @@ void IncrSAP::updateMovingBoxes(){
                     cur_end_point_max->value = updated_max.value;//the real update of the end point (belonging to the end point list) is done
                                                                  //here because this end point will be put at its right place
                     moveMaxForward(dim,cur_end_point_max,it_max,next_it_max);
-                    //MOVE_MAX_FOR(dim,cur_end_point_max,it_max,next_it_max);
                     max_updated = true;
                 }//after, cases when the end point is at its right place
                 else if(next_it_max == _end_points[dim].end() && inferior(*prev_it_max,&updated_max)){
@@ -798,8 +774,6 @@ void IncrSAP::updateMovingBoxes(){
                     max_updated = true;
                 }
             }
-
-            //assert(assertion_end_points_sorted());
 
             //MOVING MIN BACKWARD
             if((min_moving = cur_box.minMoving(dim,_alarmDist_d2))){
@@ -818,7 +792,6 @@ void IncrSAP::updateMovingBoxes(){
 
                 if((it_min != _end_points[dim].begin()) && inferior(&updated_min,*prev_it_min)){//moving the min backward
                     cur_end_point_min->value = updated_min.value;
-                    //MOVE_MIN_BACK(dim,cur_end_point_min,it_min,prev_it_min);
                     moveMinBackward(dim,cur_end_point_min,it_min,prev_it_min);
                     min_updated = true;
                 }//after, cases when the end point is at its right place
@@ -836,8 +809,6 @@ void IncrSAP::updateMovingBoxes(){
                 }
             }
 
-            //assert(assertion_end_points_sorted());
-
             //THEN DELETING
             if(min_moving && (!min_updated)){
                 cur_end_point_min->value = updated_min.value;
@@ -845,11 +816,8 @@ void IncrSAP::updateMovingBoxes(){
                 //MOVING MIN FOREWARD
                 if((next_it_min != _end_points[dim].end()) && (inferior(*next_it_min,cur_end_point_min))){
                     moveMinForward(dim,cur_end_point_min,it_min,next_it_min);
-                    //MOVE_MIN_FOR(dim,cur_end_point_min,it_min,next_it_min);
                 }
             }
-
-            //assert(assertion_end_points_sorted());
 
             //MOVING MAX BACKWARD
             if(max_moving && (!max_updated)){
@@ -863,7 +831,6 @@ void IncrSAP::updateMovingBoxes(){
 
                 if((prev_it_max != it_max && inferior(cur_end_point_max,*prev_it_max))){
                     moveMaxBackward(dim,cur_end_point_max,it_max,prev_it_max);
-                    //MOVE_MAX_BACK(dim,cur_end_point_max,it_max,prev_it_max);
                 }
             }
 
@@ -871,7 +838,6 @@ void IncrSAP::updateMovingBoxes(){
                 assert(assertion_end_points_sorted());
             }
         }
-        //assert(assertion_end_points_sorted());
     }
 }
 
@@ -881,8 +847,6 @@ void IncrSAP::updateMovingBoxes(){
 double ISAPBox::tolerance = (double)(1e-7);
 
 double ISAPBox::squaredDistance(const ISAPBox & other) const{
-//    assert(dynamic_cast<OBBModel*>(cube.getCollisionModel()->getNext()) != 0x0);
-//    assert(dynamic_cast<OBBModel*>(other.cube.getCollisionModel()->getNext()) != 0x0);
     const defaulttype::Vector3 & min_vect0 = cube.minVect();
     const defaulttype::Vector3 & max_vect0 = cube.maxVect();
     const defaulttype::Vector3 & min_vect1 = other.cube.minVect();
@@ -910,8 +874,6 @@ double ISAPBox::squaredDistance(const ISAPBox & other) const{
 }
 
 bool ISAPBox::overlaps(const ISAPBox & other,double alarmDist) const{
-//    assert(dynamic_cast<OBBModel*>(cube.getCollisionModel()->getNext()) != 0x0);
-//    assert(dynamic_cast<OBBModel*>(other.cube.getCollisionModel()->getNext()) != 0x0);
     const defaulttype::Vector3 & min_vect0 = cube.minVect();
     const defaulttype::Vector3 & max_vect0 = cube.maxVect();
     const defaulttype::Vector3 & min_vect1 = other.cube.minVect();

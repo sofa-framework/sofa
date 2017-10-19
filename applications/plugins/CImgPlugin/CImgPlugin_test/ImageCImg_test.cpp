@@ -27,31 +27,18 @@
 #include <numeric>
 #include <gtest/gtest.h>
 
-#include <SofaTest/TestMessageHandler.h>
-using sofa::helper::logging::MessageDispatcher ;
-using sofa::helper::logging::ExpectMessage ;
-using sofa::helper::logging::Message ;
-
-#include <sofa/helper/logging/LoggingMessageHandler.h>
-using sofa::helper::logging::MainLoggingMessageHandler ;
-
-#include <sofa/helper/logging/CountingMessageHandler.h>
-using sofa::helper::logging::MainCountingMessageHandler ;
-
+#include <SofaTest/Sofa_test.h>
 
 namespace sofa {
-
 
 //used to compare lossy images
 const float PIXEL_TOLERANCE = 1.28; //0.5% difference on the average of the image
 
-class ImageCImg_test : public ::testing::Test
+class ImageCImg_test : public Sofa_test<>
 {
 protected:
     ImageCImg_test() {
-        MessageDispatcher::clearHandlers() ;
-        MessageDispatcher::addHandler( &MainCountingMessageHandler::getInstance() ) ;
-        MessageDispatcher::addHandler( &MainLoggingMessageHandler::getInstance() ) ;
+
     }
 
     void SetUp()
@@ -144,21 +131,27 @@ protected:
 
 TEST_F(ImageCImg_test, ImageCImg_NoFile)
 {
-    /// This generates a test failure if no error message is generated.
-    ExpectMessage raii(Message::Error) ;
+        /// This generates a test failure if no error message is generated.
+        EXPECT_MSG_EMIT(Error) ;
 
-    sofa::helper::io::ImageCImg imgNoFile;
-    EXPECT_FALSE(imgNoFile.load("randomnamewhichdoesnotexist.png"));
+        sofa::helper::io::ImageCImg imgNoFile;
+        EXPECT_FALSE(imgNoFile.load("randomnamewhichdoesnotexist.png"));
+
 }
 
 TEST_F(ImageCImg_test, ImageCImg_NoImg)
 {
+    EXPECT_MSG_EMIT(Error) ;
+    EXPECT_MSG_NOEMIT(Warning) ;
+
     sofa::helper::io::ImageCImg imgNoImage;
     EXPECT_FALSE(imgNoImage.load("imagetest_noimage.png"));
 }
 
 TEST_F(ImageCImg_test, ImageCImg_ReadBlackWhite)
 {
+    EXPECT_MSG_NOEMIT(Error, Warning) ;
+
     unsigned int width = 800;
     unsigned int height = 600;
     unsigned int bpp = 3;//images are RGB
@@ -195,6 +188,8 @@ TEST_F(ImageCImg_test, ImageCImg_ReadBlackWhite)
 
 TEST_F(ImageCImg_test, ImageCImg_WriteBlackWhite)
 {
+    EXPECT_MSG_NOEMIT(Error, Warning) ;
+
     unsigned int width = 800;
     unsigned int height = 600;
     unsigned int bpp = 3;//image is RGB

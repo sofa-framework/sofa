@@ -22,6 +22,8 @@
 #include <SofaOpenglVisual/ClipPlane.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
+#include <cmath>
+using sofa::core::objectmodel::ComponentState ;
 
 namespace sofa
 {
@@ -45,23 +47,38 @@ ClipPlane::ClipPlane()
     , id(initData(&id, 0, "id", "Clipping plane OpenGL ID"))
     , active(initData(&active,true,"active","Control whether the clipping plane should be applied or not"))
 {
-
 }
 
 ClipPlane::~ClipPlane()
 {
 }
 
+sofa::core::objectmodel::ComponentState ClipPlane::checkDataValues()
+{
+    if(id.getValue() < 0)
+    {
+        msg_error() << "plane ID cannot be negative. The component is disabled." ;
+        return ComponentState::Invalid;
+    }
+    return ComponentState::Valid;
+}
+
 void ClipPlane::init()
 {
+    m_componentstate = checkDataValues() ;
 }
 
 void ClipPlane::reinit()
 {
+    if(m_componentstate==ComponentState::Invalid)
+        msg_error() << "Reiniting an invalid component is not allowed. It must be inited first" ;
 }
 
 void ClipPlane::fwdDraw(core::visual::VisualParams*)
 {
+    if(m_componentstate==ComponentState::Invalid)
+        return ;
+
 #ifndef PS3
     wasActive = glIsEnabled(GL_CLIP_PLANE0+id.getValue());
     if (active.getValue())
@@ -80,8 +97,8 @@ void ClipPlane::fwdDraw(core::visual::VisualParams*)
             glDisable(GL_CLIP_PLANE0+id.getValue());
     }
 #else
-	///\todo save clip plane in this class and restore it because PS3 SDK doesn't have glGetClipPlane
-	if (active.getValue())
+    ///\todo save clip plane in this class and restore it because PS3 SDK doesn't have glGetClipPlane
+    if (active.getValue())
     {
         sofa::defaulttype::Vector3 p = position.getValue();
         sofa::defaulttype::Vector3 n = normal.getValue();
@@ -111,7 +128,7 @@ void ClipPlane::bwdDraw(core::visual::VisualParams*)
             glEnable(GL_CLIP_PLANE0+id.getValue());
     }
 #else
-	if(active.getValue())
+    if(active.getValue())
     {
         glDisable(GL_CLIP_PLANE0+id.getValue());
     }

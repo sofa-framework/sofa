@@ -72,10 +72,10 @@ protected:
     virtual ~EvalSurfaceDistance();
 public:
     /// Compute the error metric between two surfaces
-    virtual SReal  eval();
+    virtual SReal  eval() override;
     /// Init the computation
-    virtual void init();
-    virtual void draw(const core::visual::VisualParams* vparams);
+    virtual void init() override;
+    virtual void draw(const core::visual::VisualParams* vparams) override;
 
 protected:
 

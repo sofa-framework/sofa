@@ -146,8 +146,6 @@ void FixOperation::configurePerformer(sofa::component::collision::InteractionPer
 //*******************************************************************************************
 void TopologyOperation::start()
 {
-    //std::cout <<"TopologyOperation::start()"<< std::endl;
-
     if (getTopologicalOperation() == 0)  // Remove one element
     {
         performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("RemovePrimitive", pickHandle->getInteraction()->mouseInteractor.get());

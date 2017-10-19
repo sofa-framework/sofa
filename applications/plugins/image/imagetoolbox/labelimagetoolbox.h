@@ -87,30 +87,30 @@ public:
 
     LabelImageToolBox();
 
-    virtual void init()
+    virtual void init() override
     {
         //addInput(&image);
         //addOutput(&triangles);
         setDirtyValue();
     }
 
-    virtual void reinit() { update(); }
+    virtual void reinit() override { update(); }
 
 protected:
 
     unsigned int time;
 
-    virtual void update()
+    virtual void update() override
     {
         cleanDirty();
 
     }
 
-    void handleEvent(sofa::core::objectmodel::Event * /*event*/)
+    void handleEvent(sofa::core::objectmodel::Event * /*event*/) override
     {
     }
 
-    virtual void draw(const core::visual::VisualParams* /*vparams*/)
+    virtual void draw(const core::visual::VisualParams* /*vparams*/) override
     {
     }
 

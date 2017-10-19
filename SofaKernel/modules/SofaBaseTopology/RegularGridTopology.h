@@ -49,26 +49,33 @@ public:
     typedef sofa::defaulttype::BoundingBox BoundingBox;
     SOFA_CLASS(RegularGridTopology,GridTopology);
 protected:
-    /// Default constructor
+    /// Delegated constructor
+    RegularGridTopology(const Vec3i &dimXYZ);
+
+    /// Base constructor
     RegularGridTopology();
+
     /// Constructor for regular grid defined using number of vertices
     RegularGridTopology(int nx, int ny, int nz);
+
     /// Constructor for regular grid defined using number of vertices and size
-    RegularGridTopology( Vec3i numVertices, BoundingBox box );
+    RegularGridTopology(const Vec3i &numVertices, BoundingBox box );
+
+    virtual void changeGridResolutionPostProcess() override;
 public:
     /// BaseObject method should be overwritten by children
-    virtual void init();
+    virtual void init() override;
 
     /// BaseObject method should be overwritten by children
-    virtual void reinit();
+    virtual void reinit() override;
 
     /// Overload method from \sa BaseObject::parse . /// Parse the given description to assign values to this object's fields and potentially other parameters
-    void parse(core::objectmodel::BaseObjectDescription* arg);
+    void parse(core::objectmodel::BaseObjectDescription* arg) override;
 
     /** \brief Overload method of @sa GridTopology::getPointInGrid.
      * Get Point in grid @return Vector3 given its position in grid @param i, @param j, @param k
      * */
-    Vector3 getPointInGrid(int i, int j, int k) const;
+    Vector3 getPointInGrid(int i, int j, int k) const override;
 
 
     /// set the spatial extent
@@ -121,7 +128,7 @@ public:
     int findNearestHexa(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz) { return findNearestCube(pos, fx, fy, fz); }
 
     /// Overload Method of @sa GridTopology::createTexCoords called at init if @sa d_createTexCoords is true
-    virtual void createTexCoords();
+    virtual void createTexCoords() override;
 
 public:
     /// Data storing min and max 3D position of the grid bounding box

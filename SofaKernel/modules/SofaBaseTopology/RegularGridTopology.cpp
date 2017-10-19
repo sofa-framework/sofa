@@ -35,6 +35,35 @@ namespace topology
 using namespace sofa::defaulttype;
 using helper::vector;
 
+/// To avoid duplicating the code in the different variants of the constructor
+/// this object is using the delegating constructor feature of c++ x11.
+/// The following constructor is "chained" by the other constructors to
+/// defined only one the member initialization.
+RegularGridTopology::RegularGridTopology(const Vec3i& dimXYZ)
+    : GridTopology(dimXYZ)
+    , d_min(initData(&d_min,Vector3(0.0f,0.0f,0.0f),"min", "Min end of the diagonal"))
+    , d_max(initData(&d_max,Vector3(1.0f,1.0f,1.0f),"max", "Max end of the diagonal"))
+    , d_p0(initData(&d_p0,Vector3(0.0f,0.0f,0.0f),"p0", "Offset all the grid points"))
+    , d_cellWidth(initData(&d_cellWidth, (SReal)0.0, "cellWidth","if > 0 : dimension of each cell in the created grid. Otherwise, the cell size is computed based on min, max, and resolution n."))
+{
+}
+
+RegularGridTopology::RegularGridTopology()
+    : RegularGridTopology(Vec3i(2,2,2))
+{
+}
+
+RegularGridTopology::RegularGridTopology(int nx, int ny, int nz)
+    : RegularGridTopology(Vec3i(nx,ny,nz))
+{
+}
+
+RegularGridTopology::RegularGridTopology(const Vec3i& n, BoundingBox b)
+    : RegularGridTopology(n)
+{
+    setPos(b);
+}
+
 
 void RegularGridTopology::parse(core::objectmodel::BaseObjectDescription* arg)
 {
@@ -65,43 +94,6 @@ void RegularGridTopology::parse(core::objectmodel::BaseObjectDescription* arg)
 
 }
 
-SOFA_DECL_CLASS(RegularGridTopology)
-
-int RegularGridTopologyClass = core::RegisterObject("Regular grid in 3D")
-        .addAlias("RegularGrid")
-        .add< RegularGridTopology >()
-        ;
-
-RegularGridTopology::RegularGridTopology()
-    : GridTopology()
-    , d_min(initData(&d_min,Vector3(0.0f,0.0f,0.0f),"min", "Min end of the diagonal"))
-    , d_max(initData(&d_max,Vector3(1.0f,1.0f,1.0f),"max", "Max end of the diagonal"))
-    , d_p0(initData(&d_p0,Vector3(0.0f,0.0f,0.0f),"p0", "Offset all the grid points"))
-    , d_cellWidth(initData(&d_cellWidth, (SReal)0.0, "cellWidth","if > 0 : dimension of each cell in the created grid. Otherwise, the cell size is computed based on min, max, and resolution n."))
-{
-}
-
-RegularGridTopology::RegularGridTopology(Vec3i n, BoundingBox b)
-    : GridTopology(n)
-    , d_min(initData(&d_min,Vector3(0.0f,0.0f,0.0f),"min", "Min"))
-    , d_max(initData(&d_max,Vector3(1.0f,1.0f,1.0f),"max", "Max"))
-    , d_p0(initData(&d_p0,Vector3(0.0f,0.0f,0.0f),"p0", "p0"))
-    , d_cellWidth(initData(&d_cellWidth, (SReal)0.0, "cellWidth","if > 0 : dimension of each cell in the created grid"))
-
-{
-    setPos(b);
-}
-
-RegularGridTopology::RegularGridTopology(int nx, int ny, int nz)
-    : GridTopology(nx, ny, nz)
-    , d_min(initData(&d_min,Vector3(0.0f,0.0f,0.0f),"min", "Min"))
-    , d_max(initData(&d_max,Vector3(1.0f,1.0f,1.0f),"max", "Max"))
-    , d_p0(initData(&d_p0,Vector3(0.0f,0.0f,0.0f),"p0", "p0"))
-    , d_cellWidth(initData(&d_cellWidth, (SReal)0.0, "cellWidth","if > 0 : dimension of each cell in the created grid"))
-
-{
-}
-
 void RegularGridTopology::init()
 {
     if (d_cellWidth.getValue())
@@ -114,7 +106,6 @@ void RegularGridTopology::init()
         grid[2]= (int)ceil((d_max.getValue()[2]-d_min.getValue()[2]) / w)+1;
         d_n.setValue(grid);
         setNbGridPoints();
-        sout << "Grid size: " << d_n.getValue() << sendl;
     }
 
     Inherit1::init();
@@ -125,6 +116,11 @@ void RegularGridTopology::reinit()
     setPos(d_min.getValue()[0],d_max.getValue()[0],d_min.getValue()[1],d_max.getValue()[1],d_min.getValue()[2],d_max.getValue()[2]);
 
     Inherit1::reinit();
+}
+
+void RegularGridTopology::changeGridResolutionPostProcess()
+{
+    setPos(d_min.getValue()[0],d_max.getValue()[0],d_min.getValue()[1],d_max.getValue()[1],d_min.getValue()[2],d_max.getValue()[2]);
 }
 
 void RegularGridTopology::setPos(BoundingBox b)
@@ -282,21 +278,15 @@ Vector3 RegularGridTopology::getCubeCoordinate(int i) const
 
 void RegularGridTopology::createTexCoords()
 {
-#ifndef NDEBUG
-    std::cout << "createTexCoords" << std::endl;
-#endif
     unsigned int nPts = this->getNbPoints();
     const Vec3i& _n = d_n.getValue();
 
     if ( (_n[0] == 1 && _n[1] == 1) || (_n[0] == 1 && _n[2] == 1) || (_n[1] == 1 && _n[2] == 1))
     {
-        std::cerr << "Error: can't create Texture coordinates as at least 2 dimensions of the grid are null."  << std::endl;
+        msg_warning() << "Can't create Texture coordinates as at least 2 dimensions of the grid are null." ;
         return;
     }
 
-#ifndef NDEBUG
-    std::cout << "nbP: " << nPts << std::endl;
-#endif
     helper::WriteAccessor< Data< vector<Vector2> > > _texCoords = this->seqUVs;
     _texCoords.resize(nPts);
 
@@ -319,10 +309,6 @@ void RegularGridTopology::createTexCoords()
         {
             unsigned int pt1 = n0 + _n[ axes[0] ] * n1;
             unsigned int pt2 = n0 + _n[ axes[0] ] * (n1 + _n[ axes[1] ] * (_n[ axes[2] ]-1));
-#ifndef NDEBUG
-            std::cout << "pt1: " << pt1 << std::endl;
-            std::cout << "pt2: " << pt2 << std::endl;
-#endif
             _texCoords[pt1] = Vector2(n0*Uscale, n1*Vscale);
             _texCoords[pt2] = Vector2(1- n0*Uscale, 1 - n1*Vscale);
         }
@@ -360,6 +346,14 @@ void RegularGridTopology::createTexCoords()
         }
     }
 }
+
+
+SOFA_DECL_CLASS(RegularGridTopology)
+
+int RegularGridTopologyClass = core::RegisterObject("Regular grid in 3D")
+        .addAlias("RegularGrid")
+        .add< RegularGridTopology >()
+        ;
 
 
 } // namespace topology

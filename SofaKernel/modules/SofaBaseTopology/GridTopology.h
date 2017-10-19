@@ -34,7 +34,15 @@ namespace component
 namespace topology
 {
 
- 
+
+enum class Grid_dimension
+{
+    GRID_NULL = 0,
+    GRID_1D,
+    GRID_2D,
+    GRID_3D
+};
+
 /** \brief
  * Define a regular grid topology, with no spatial information.
   */
@@ -52,6 +60,8 @@ using MeshTopology::getHexahedron;
     typedef sofa::defaulttype::Vector3 Vector3;
     typedef sofa::defaulttype::ResizableExtVector<Vector2> TextCoords2D;
     friend class GridUpdate;
+
+
 private:
     class GridUpdate : public sofa::core::DataEngine
     {
@@ -61,10 +71,11 @@ private:
         typedef MeshTopology::Hexa Hexa;
         SOFA_CLASS(GridUpdate,sofa::core::DataEngine);
         GridUpdate(GridTopology* t);
-        void update();
+        virtual void update() override;
     protected:
         void updateEdges();
         void updateQuads();
+        void updateTriangles();
         void updateHexas();
     private:
         GridTopology* topology;
@@ -76,7 +87,7 @@ protected:
     /// Constructor with grid size by int
     GridTopology(int nx, int ny, int nz);
     /// Constructor with grid size by Vec3
-    GridTopology(Vec3i nXnYnZ );
+    GridTopology(const Vec3i& dimXYZ);
 
     /// Internal method to set the number of point using grid resolution. Will call \sa MeshTopology::setNbPoints
     virtual void setNbGridPoints();
@@ -95,12 +106,15 @@ protected:
     /// Method that will check current grid resolution, if invalide, will set default value: [2; 2; 2]
     void checkGridResolution();
 
+    /// Internal Method called by \sa checkGridResolution if resolution need to be changed. Should be overwritten by children.
+    virtual void changeGridResolutionPostProcess(){}
+
 public:
     /// BaseObject method should be overwritten by children
-    virtual void init();
+    virtual void init() override;
 
     /// BaseObject method should be overwritten by children
-    virtual void reinit();
+    virtual void reinit() override;
 
 
     /** \brief Set grid resolution in the 3 directions
@@ -133,7 +147,7 @@ public:
     unsigned getIndex( int i, int j, int k ) const;
 
     /// Overwrite from @sa MeshTopology::hasPos always @return bool true
-    bool hasPos()  const { return true; }
+    virtual bool hasPos()  const override { return true; }
 
     /// Get Point in grid @return Vector3 given its @param id i. Will call @sa getPointInGrid. This method should be overwritten by children.
     virtual Vector3 getPoint(int i) const;
@@ -142,14 +156,14 @@ public:
     virtual Vector3 getPointInGrid(int i, int j, int k) const;
 
     /// get X from Point index @param i, will call @sa getPoint
-    SReal getPX(int i)  const { return getPoint(i)[0]; }
+    virtual SReal getPX(int i)  const override { return getPoint(i)[0]; }
     /// get Y from Point index @param i, will call @sa getPoint
-    SReal getPY(int i) const { return getPoint(i)[1]; }
+    virtual SReal getPY(int i) const override { return getPoint(i)[1]; }
     /// get Z from Point index @param i, will call @sa getPoint
-    SReal getPZ(int i) const { return getPoint(i)[2]; }
+    virtual SReal getPZ(int i) const override { return getPoint(i)[2]; }
 
     /// Overload method from \sa BaseObject::parse . /// Parse the given description to assign values to this object's fields and potentially other parameters
-    void parse(core::objectmodel::BaseObjectDescription* arg)
+    virtual void parse(core::objectmodel::BaseObjectDescription* arg) override
     {
         this->MeshTopology::parse(arg);
 
@@ -166,7 +180,7 @@ public:
 
 
     /// Overload Method from @sa MeshTopology::getNbHexahedra
-    virtual int getNbHexahedra() { return (d_n.getValue()[0]-1)*(d_n.getValue()[1]-1)*(d_n.getValue()[2]-1); }
+    virtual int getNbHexahedra() override { return (d_n.getValue()[0]-1)*(d_n.getValue()[1]-1)*(d_n.getValue()[2]-1); }
     /// Overload Method from @sa MeshTopology::getQuad
     Quad getQuad(int x, int y, int z);
 
@@ -187,6 +201,8 @@ public:
     /// Get Cube index, similar to \sa hexa method
     int cube(int x, int y, int z) const { return hexa(x,y,z); }
 
+	/// Get the actual dimension of this grid using Enum @sa Grid_dimension
+	Grid_dimension getDimensions() const;
 public:
     /// Data storing the size of the grid in the 3 directions
     Data<Vec3i> d_n;

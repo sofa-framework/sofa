@@ -76,11 +76,11 @@ protected:
 
 public:
 
-    void init();
+    virtual void init() override;
 
-    void reinit();
+    virtual void reinit() override;
 
-    void update();
+    virtual void update() override;
 
     void ApplyTopologyChanges();
 
@@ -92,12 +92,12 @@ public:
 
 
     /// Function to link DataEngine with Data array from topology
-    void linkToPointDataArray();
-    void linkToEdgeDataArray();
-    void linkToTriangleDataArray();
-    void linkToQuadDataArray();
-    void linkToTetrahedronDataArray();
-    void linkToHexahedronDataArray();
+    virtual void linkToPointDataArray() override;
+    virtual void linkToEdgeDataArray() override;
+    virtual void linkToTriangleDataArray() override;
+    virtual void linkToQuadDataArray() override;
+    virtual void linkToTetrahedronDataArray() override;
+    virtual void linkToHexahedronDataArray() override;
 
 protected:
     t_topologicalData* m_topologicalData;

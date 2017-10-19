@@ -46,7 +46,7 @@ class RigidImpl {};
 template<>
 class BilateralInteractionConstraintSpecialization<RigidImpl>
 {
-public:    
+public:
 
     template<class T>
     static void bwdInit(BilateralInteractionConstraint<T>& self) {
@@ -56,7 +56,7 @@ public:
         helper::WriteAccessor<Data<typename BilateralInteractionConstraint<T>::VecDeriv > > wrest = self.restVector;
 
         if (wrest.size() > 0) {
-            std::cout << "WARNING: keepOrientationDifference is activated, rest_vector will be ignored! " << std::endl;
+            msg_warning("BilateralInteractionConstraintSpecialization") << "keepOrientationDifference is activated, rest_vector will be ignored! " ;
             wrest.resize(0);
         }
 

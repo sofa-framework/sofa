@@ -139,8 +139,6 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::reset()
 template <class TIn, class TInRoot, class TOut>
 void ArticulatedSystemMapping<TIn, TInRoot, TOut>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in, const typename InRoot::VecCoord* inroot  )
 {
-//    std::cout << " --> ArticulatedSystemMapping<TIn, TOut>::apply called with in: " << in << "  -- inroot" << (*inroot) << std::endl;
-
     const Data< OutVecCoord > &xtoData = *m_toModel->read(core::VecCoordId::position());
     out.resize(xtoData.getValue().size());
 
@@ -216,9 +214,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::apply( typename Out::VecCoord
         }
         case 1: // the axis of the articulations are linked to the parent - rotations are treated by successive increases -
         {
-            //sout<<"Case 1"<<sendl;
             // no reset of the position of the child its position is corrected at the end to respect the articulation center.
-
             for (; a != aEnd; a++)
             {
                 int ind = (*a)->articulationIndex.getValue();
@@ -267,7 +263,6 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::apply( typename Out::VecCoord
         }
         case 2: // the axis of the articulations are linked to the child (previous pos) - rotations are treated by successive increases -
         {
-            //sout<<"Case 2"<<sendl;
             // no reset of the position of the child its position is corrected at the end to respect the articulation center.
             //Quat dq(0,0,0,1);
             sofa::defaulttype::Vec<3,Real> disp(0,0,0);
@@ -322,54 +317,21 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::apply( typename Out::VecCoord
     {
         CoordinateBuf[c].x() = in[c].x();
     }
-
-    //if( notMuted() )
-    //{
-    //	serr<<"ArticulatedSystemMapping::propageX processed :"<<sendl;
-    //	if (m_fromRootModel!=NULL)
-    //		serr<<"input root: "<<*m_fromRootModel->read(sofa::core::ConstVecCoordId::position())->getValue();
-    //	serr<<"  - input: "<<*m_fromModel->read(sofa::core::ConstVecCoordId::position())->getValue()<<"  output : "<<*m_toModel->read(sofa::core::ConstVecCoordId::position())->getValue()<<sendl;
-    //}
-
-    //if( notMuted())
-    //{
-    //	serr<<"ArticulatedSystemMapping::propageXfree processed"<<sendl;
-    //	if (rootModel!=NULL)
-    //		serr<<"input root: "<<*rootModel->read(sofa::core::ConstVecCoordId::freePosition())->getValue();
-    //	serr<<"  - input: "<<*m_fromModel->read(sofa::core::ConstVecCoordId::freePosition())->getValue()<<"  output : "<<*m_toModel->read(sofa::core::ConstVecCoordId::freePosition())->getValue()<<sendl;
-    //}
-
-//	  std::cout << " <-- ArticulatedSystemMapping<TIn, TOut>::apply called with in: " << in << "  -- inroot" << (*inroot) << std::endl;
 }
 
 template <class TIn, class TInRoot, class TOut>
 void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in, const typename InRoot::VecDeriv* inroot )
 {
     Data<OutVecCoord>* xtoData = m_toModel->write(core::VecCoordId::position());
-    //const Data<InVecCoord>* xfromData = m_fromModel->read(core::ConstVecCoordId::position());
-
-    /*apply(*xtoData->beginEdit(), xfromData->getValue(),
-          (m_fromRootModel==NULL ? NULL : &m_fromRootModel->read(core::ConstVecCoordId::position())->getValue()));
-
-    xtoData->endEdit();*/
 
     const OutVecCoord& xto = xtoData->getValue();
-
-    /*std::cout << "--> applyJ : \n";
-    std::cout << "xto=" << xto << std::endl;
-    std::cout << "xfrom=" << xfromData->getValue() << std::endl;*/
-
-    //sout<<" \n ApplyJ ";
 
     out.clear();
     out.resize(xto.size());
 
     // Copy the root position if a rigid root model is present
     if (m_fromRootModel && inroot)
-    {
-        // sout << "Root Model Name = " << rootModel->getName() << sendl;
         out[0] = (*inroot)[m_fromRootModel->getSize()-1];
-    }
     else
         out[0] = OutDeriv();
 
@@ -414,25 +376,6 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJ( typename Out::VecDeri
 
         }
     }
-    //if(notMuted())
-    //{
-    //	serr<<" propagateV processed"<<sendl;
-    //	if (m_fromRootModel!=NULL)
-    //		serr<<"V input root: "<<m_fromRootModel->read(core::ConstVecDerivId::velocity())->getValue();
-    //	serr<<"  - V input: "<<m_fromModel->read(core::ConstVecDerivId::velocity())->getValue()<<"   V output : "<<m_toModel->read(core::ConstVecCoordId::velocity())->getValue()<<sendl;
-    //}
-
-    //if(notMuted())
-    //{
-    //	serr<<"ArticulatedSystemMapping::propagateDx processed"<<sendl;
-    //	if (m_fromRootModel!=NULL)
-    //		serr<<"input root: "<<*m_fromRootModel->getDx();
-    //	serr<<"  - input: "<<*m_fromModel->getDx()<<"  output : "<<*m_toModel->getDx()<<sendl;
-    //}
-
-    /*std::cout << "<-- applyJ : \n";
-    std::cout << "xto=" << xto << std::endl;
-    std::cout << "xfrom=" << xfromData->getValue() << std::endl;*/
 }
 
 
@@ -440,15 +383,7 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJ( typename Out::VecDeri
 template <class TIn, class TInRoot, class TOut>
 void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in, typename InRoot::VecDeriv* outroot )
 {
-    //sout<<"\n ApplyJt";
     const OutVecCoord& xto = m_toModel->read(core::VecCoordId::position())->getValue();
-//	InVecCoord &xfrom= *m_fromModel->read(core::ConstVecCoordId::position());
-
-    //apply(xto,xfrom);
-
-    // debug
-    //apply(core::VecCoordId::position(), core::ConstVecCoordId::position(), (rootModel==NULL ? NULL : rootModel->read(sofa::core::ConstVecCoordId::position())->getValue()));
-    //serr<<" XTO = "<<xto<<"  - Xroot :"<<*rootModel->read(sofa::core::ConstVecCoordId::position())->getValue()<<sendl;
 
     OutVecDeriv fObjects6DBuf = in;
     InVecDeriv OutBuf = out;
@@ -499,24 +434,6 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( typename In::VecDeri
     {
         (*outroot)[m_fromRootModel->getSize()-1] += fObjects6DBuf[0];
     }
-
-    //if(notMuted())
-    //{
-    //	serr<<"ArticulatedSystemMapping::accumulateForce processed"<<sendl;
-    //	serr<<" input f : "<<*m_toModel->getF();
-    //	if (m_fromRootModel!=NULL)
-    //		serr<<"- output root: "<<*m_fromRootModel->getF();
-    //	serr<<"  - output F: "<<*m_fromModel->getF()<<sendl;
-    //}
-
-    //if(notMuted())
-    //{
-    //	serr<<"ArticulatedSystemMapping::accumulateDf processed"<<sendl;
-    //	serr<<" input df : "<<*m_toModel->getF();
-    //	if (m_fromRootModel!=NULL)
-    //		serr<<"- output root: "<<*m_fromRootModel->getF();
-    //	serr<<"  - output: "<<*m_fromModel->getF()<<sendl;
-    //}
 }
 
 
@@ -524,11 +441,6 @@ template <class TIn, class TInRoot, class TOut>
 void ArticulatedSystemMapping<TIn, TInRoot, TOut>::applyJT( InMatrixDeriv& out, const OutMatrixDeriv& in, InRootMatrixDeriv* outRoot )
 {
     const OutVecCoord& xto = m_toModel->read(core::ConstVecCoordId::position())->getValue();
-
-    //std::cout << "applyJT (constraints) : \n";
-    //std::cout << "xto = " << xto << std::endl;
-    //std::cout << "xfrom = " <<m_fromModel->read(core::ConstVecCoordId::position())->getValue() << std::endl;
-    //std::cout << "xfromFree = " << m_fromModel->read(core::VecCoordId::freePosition())->getValue() << std::endl;
 
     typename OutMatrixDeriv::RowConstIterator rowItEnd = in.end();
 
@@ -630,8 +542,6 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::draw(const core::visual::Visu
     unsigned int i=0;
     for (; ac != acEnd; ac++)
     {
-//		int parent = (*ac)->parentIndex.getValue();
-//		int child = (*ac)->childIndex.getValue();
         helper::vector< sofa::component::container::Articulation* > articulations = (*ac)->getArticulations();
         helper::vector< sofa::component::container::Articulation* >::const_iterator a = articulations.begin();
         helper::vector< sofa::component::container::Articulation* >::const_iterator aEnd = articulations.end();
@@ -652,11 +562,6 @@ void ArticulatedSystemMapping<TIn, TInRoot, TOut>::draw(const core::visual::Visu
 
     vparams->drawTool()->drawPoints(points, 10, sofa::defaulttype::Vec<4,float>(1,0.5,0.5,1));
     vparams->drawTool()->drawLines(pointsLine, 1, sofa::defaulttype::Vec<4,float>(0,0,1,1));
-
-    //
-    //OutVecCoord& xto =m_toModel->read(core::ConstVecCoordId::position())->getValue();
-    //glDisable (GL_LIGHTING);
-    //glPointSize(2);
 }
 
 } // namespace mapping
