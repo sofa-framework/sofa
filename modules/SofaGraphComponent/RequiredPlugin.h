@@ -47,7 +47,7 @@ class SOFA_GRAPH_COMPONENT_API RequiredPlugin : public core::objectmodel::BaseOb
 {
 public:
     SOFA_CLASS(RequiredPlugin,core::objectmodel::BaseObject);
-    sofa::core::objectmodel::Data<helper::vector<std::string> > pluginName;
+    sofa::core::objectmodel::Data<helper::vector<std::string> > d_pluginName;
     sofa::core::objectmodel::Data<helper::vector<helper::fixed_array<std::string,2> > > d_suffixMap;
 
     sofa::core::objectmodel::Data<bool> d_stopAfterFirstNameFound;
