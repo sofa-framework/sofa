@@ -126,7 +126,7 @@ std::string PluginManager::getDefaultSuffix()
 #ifdef SOFA_LIBSUFFIX
     return sofa_tostring(SOFA_LIBSUFFIX);
 #else
-    return "";
+	return std::string();
 #endif
 }
 
@@ -134,10 +134,7 @@ bool PluginManager::loadPluginByPath(const std::string& pluginPath, std::ostream
 {
     if (pluginIsLoaded(pluginPath))
     {
-        const std::string msg = "Plugin already loaded: " + pluginPath;
-//        Logger::getMainLogger().log(Logger::Warning, msg, "PluginManager");
-        if (errlog) (*errlog) << msg << std::endl;
-        return false;
+        return true;
     }
 
     if (!FileSystem::exists(pluginPath))
@@ -181,17 +178,17 @@ bool PluginManager::loadPluginByPath(const std::string& pluginPath, std::ostream
     return true;
 }
 
-bool PluginManager::loadPluginByName(const std::string& pluginName, const std::string& suffix, std::ostream* errlog)
+bool PluginManager::loadPluginByName(const std::string& pluginName, const std::string& suffix, bool ignoreCase, std::ostream* errlog)
 {
-    std::string pluginPath = findPlugin(pluginName, suffix);
+    std::string pluginPath = findPlugin(pluginName, suffix, ignoreCase);
 
-    if (pluginPath != "")
+    if (!pluginPath.empty())
     {
         return loadPluginByPath(pluginPath, errlog);
     }
     else
     {
-        const std::string msg = "Plugin not found: \"" + pluginName + "\"";
+        const std::string msg = "Plugin not found: \"" + pluginName + suffix + "\"";
         if (errlog) (*errlog) << msg << std::endl;
         else msg_error("PluginManager") << msg;
 
@@ -199,14 +196,18 @@ bool PluginManager::loadPluginByName(const std::string& pluginName, const std::s
     }
 }
 
-bool PluginManager::loadPlugin(const std::string& plugin, std::ostream* errlog, const std::string& suffix)
+bool PluginManager::loadPlugin(const std::string& plugin, const std::string& suffix, bool ignoreCase, std::ostream* errlog)
 {
     // If 'plugin' ends with ".so", ".dll" or ".dylib", this is a path
     const std::string dotExt = "." + DynamicLibrary::extension;
     if (std::equal(dotExt.rbegin(), dotExt.rend(), plugin.rbegin()))
+	{
         return loadPluginByPath(plugin, errlog);
+	}
     else
-        return loadPluginByName(plugin, suffix, errlog);
+	{
+		return loadPluginByName(plugin, suffix, ignoreCase, errlog);
+	}
 }
 
 bool PluginManager::unloadPlugin(const std::string &pluginPath, std::ostream* errlog)
@@ -272,7 +273,6 @@ std::string PluginManager::findPlugin(const std::string& pluginName, const std::
 {
     std::string name(pluginName);
     name  += suffix;
-
     const std::string libName = DynamicLibrary::prefix + name + "." + DynamicLibrary::extension;
 
     // First try: case sensitive
@@ -303,7 +303,7 @@ std::string PluginManager::findPlugin(const std::string& pluginName, const std::
             }
         }
     }
-    return "";
+	return std::string();
 }
 
 bool PluginManager::pluginIsLoaded(const std::string& pluginPath)
