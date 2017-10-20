@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -29,7 +26,7 @@
 #include <sofa/core/behavior/ForceField.h>
 
 #include <SofaBaseTopology/TopologySubsetData.h>
-
+#include <sofa/defaulttype/RGBAColor.h>
 
 namespace sofa
 {
@@ -61,56 +58,68 @@ public:
 
 public:
     /// indices of the points the force applies to
-    SetIndex points;
+    SetIndex                   d_indices;
+
+    /// Concerned DOFs indices are numbered from the end of the MState DOFs vector
+    Data< bool >               d_indexFromEnd;
+
     /// Per-point forces.
-    Data< VecDeriv > forces;
+    Data< VecDeriv >           d_forces;
+
     /// Force applied at each point, if per-point forces are not specified
-    Data< Deriv > force;
+    Data< Deriv >              d_force;
+
     /// Sum of the forces applied at each point, if per-point forces are not specified
-    Data< Deriv > totalForce;
+    Data< Deriv >              d_totalForce;
+
     ///S for drawing. The sign changes the direction, 0 doesn't draw arrow
-    Data< SReal > arrowSizeCoef; // for drawing. The sign changes the direction, 0 doesn't draw arrow
+    Data< SReal >              d_arrowSizeCoef;
+
     /// display color
-    Data< defaulttype::Vec4f > d_color;
+    Data< defaulttype::RGBAColor > d_color;
     /// Concerned DOFs indices are numbered from the end of the MState DOFs vector
     Data< bool > indexFromEnd;
-protected:
-    ConstantForceField();
-public:
-    /// Set a force to a given particle
-    void setForce( unsigned i, const Deriv& f );
 
+public:
     /// Init function
-    void init();
+    void init() override;
+    void parse(sofa::core::objectmodel::BaseObjectDescription *arg) override;
 
     /// Add the forces
-    virtual void addForce (const core::MechanicalParams* params, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
+    virtual void addForce (const core::MechanicalParams* params, DataVecDeriv& f,
+                           const DataVecCoord& x, const DataVecDeriv& v) override;
 
     /// Constant force has null variation
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df , const DataVecDeriv& d_dx)
-    {
-        //TODO: remove this line (avoid warning message) ...
-        mparams->setKFactorUsed(true);
-        sofa::helper::WriteAccessor< core::objectmodel::Data< VecDeriv > > _f1 = d_df;
-        _f1.resize(d_dx.getValue().size());
-    }
+    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df ,
+                           const DataVecDeriv& d_dx) override;
 
     using Inherit::addKToMatrix;
 
     /// Constant force has null variation
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset);
+    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m,
+                              SReal kFactor, unsigned int &offset) override;
 
     /// Constant force has null variation
-    virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/, SReal /*kFact*/) {}
+    virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/,
+                              SReal /*kFact*/) ;
 
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* params, const DataVecCoord& x) const;
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* params,
+                                     const DataVecCoord& x) const override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
+
+    virtual void updateForceMask() override;
+
+    /// Set a force to a given particle
+    void setForce( unsigned i, const Deriv& f );
+
+    using Inherit::addAlias ;
 
 protected:
-    /// Pointer to the current topology
-    sofa::core::topology::BaseMeshTopology* topology;
+    ConstantForceField();
 
+    /// Pointer to the current topology
+    sofa::core::topology::BaseMeshTopology* m_topology;
 };
 
 #ifndef SOFA_FLOAT

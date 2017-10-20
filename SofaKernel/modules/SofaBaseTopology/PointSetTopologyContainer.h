@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -60,14 +57,14 @@ protected:
     virtual ~PointSetTopologyContainer() {}
 public:
 
-    virtual void init();
+    virtual void init() override;
 
 
 
     /// Procedural creation methods
     /// @{
-    virtual void clear();
-    virtual void addPoint(double px, double py, double pz);
+    virtual void clear() override;
+    virtual void addPoint(double px, double py, double pz) override;
     /// @}
 
 
@@ -76,7 +73,7 @@ public:
     /// @{
 
     /** \brief Returns the number of vertices in this topology. */
-    int getNbPoints() const { return (int)nbPoints.getValue(); }
+    int getNbPoints() const override { return (int)nbPoints.getValue(); }
 
     /** \brief Returns the number of topological element of the current topology.
      * This function avoids to know which topological container is in used.
@@ -87,20 +84,20 @@ public:
     Data<InitTypes::VecCoord>& getPointDataArray() {return d_initPoints;}
 
     /** \brief Set the number of vertices in this topology. */
-    void setNbPoints(int n);
+    void setNbPoints(int n) override;
 
 
     /** \brief check if vertices in this topology have positions. */
-    virtual bool hasPos() const;
+    virtual bool hasPos() const override;
 
     /** \brief Returns the X coordinate of the ith DOF. */
-    virtual SReal getPX(int i) const;
+    virtual SReal getPX(int i) const override;
 
     /** \brief Returns the Y coordinate of the ith DOF. */
-    virtual SReal getPY(int i) const;
+    virtual SReal getPY(int i) const override;
 
     /** \brief Returns the Z coordinate of the ith DOF. */
-    virtual SReal getPZ(int i) const;
+    virtual SReal getPZ(int i) const override;
 
     /// @}
 
@@ -156,10 +153,10 @@ public:
 
 protected:
     /// \brief Function creating the data graph linked to d_point
-    virtual void updateTopologyEngineGraph();
+    virtual void updateTopologyEngineGraph() override;
 
     /// \brief functions to really update the graph of Data/DataEngines linked to the different Data array, using member variable.
-    virtual void updateDataEngineGraph(sofa::core::objectmodel::BaseData& my_Data, sofa::helper::list <sofa::core::topology::TopologyEngine *>& my_enginesList);
+    virtual void updateDataEngineGraph(sofa::core::objectmodel::BaseData& my_Data, std::list<sofa::core::topology::TopologyEngine *>& my_enginesList);
 
 
     /// Use a specific boolean @see m_pointTopologyDirty in order to know if topology Data is dirty or not.
@@ -184,7 +181,7 @@ protected:
     bool m_pointTopologyDirty;
 
     /// List of engines related to this specific container
-    sofa::helper::list <sofa::core::topology::TopologyEngine *> m_enginesList;
+    std::list<sofa::core::topology::TopologyEngine *> m_enginesList;
 
     /// \brief variables used to display the graph of Data/DataEngines linked to this Data array.
     sofa::helper::vector < sofa::helper::vector <std::string> > m_dataGraph;

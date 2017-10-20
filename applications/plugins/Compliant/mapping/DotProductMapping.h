@@ -3,7 +3,7 @@
 
 #include <Compliant/config.h>
 
-#include "AssembledMapping.h"
+#include "ConstantAssembledMapping.h"
 #include "AssembledMultiMapping.h"
 
 namespace sofa
@@ -345,6 +345,116 @@ class SOFA_Compliant_API DotProductMapping : public AssembledMapping<TIn, TOut>
         }
 
     };
+
+
+
+
+
+//////////////////////
+
+
+    /**
+     Maps a dof to its dot product with a target:
+
+     p -> p . t
+
+     @author Matthieu Nesme
+     @date 2016
+
+    */
+    template <class TIn, class TOut >
+    class SOFA_Compliant_API DotProductFromTargetMapping : public ConstantAssembledMapping<TIn, TOut>
+    {
+      public:
+        SOFA_CLASS(SOFA_TEMPLATE2(DotProductFromTargetMapping,TIn,TOut), SOFA_TEMPLATE2(ConstantAssembledMapping,TIn,TOut));
+
+        typedef DotProductFromTargetMapping<TIn,TOut> self;
+
+        typedef typename Inherit1::InVecCoord InVecCoord;
+
+        Data< helper::vector< unsigned > > d_indices;
+        Data< InVecCoord > d_targets;
+
+
+        DotProductFromTargetMapping()
+            : d_indices( initData(&d_indices, "indices", "indices of the dofs used to compute a dot product") )
+            , d_targets( initData(&d_targets, "targets", "targets to compute the dot products with") )
+        {}
+
+        enum {Nin = TIn::deriv_total_size, Nout = TOut::deriv_total_size };
+
+        virtual void init()
+        {
+            reinit();
+            AssembledMapping<TIn, TOut>::init();
+        }
+
+        virtual void reinit()
+        {
+            size_t size = d_indices.getValue().size();
+            this->getToModel()->resize( size );
+
+            // if targets is not big enough, duplicate last component
+            InVecCoord& targets = *d_targets.beginEdit();
+            assert( !targets.empty() );
+            targets.reserve(size);
+            for( size_t i=targets.size() ; i<size ; ++i )
+                targets.push_back(targets.back());
+            d_targets.endEdit();
+
+            AssembledMapping<TIn, TOut>::reinit();
+        }
+
+        virtual void apply(typename self::out_pos_type& out,
+                           const typename self::in_pos_type& in )  {
+
+            const helper::vector< unsigned >& indices = d_indices.getValue();
+            const InVecCoord& targets = d_targets.getValue();
+            assert( out.size() == indices.size() );
+
+            for( size_t j = 0, m = indices.size(); j < m; ++j)
+            {
+                out[j][0] = in[indices[j]] * targets[j];
+            }
+        }
+
+        virtual void assemble( const typename self::in_pos_type& in ) {
+
+            // jacobian matrix assembly
+            const helper::vector< unsigned >& indices = d_indices.getValue();
+            const InVecCoord& targets = d_targets.getValue();
+
+            typename self::jacobian_type::CompressedMatrix& J = this->jacobian.compressedMatrix;
+            this->jacobian.resizeBlocks( indices.size(), in.size() );
+            J.reserve(indices.size()*Nin);
+
+            for(size_t k = 0, n = indices.size(); k < n; ++k)
+            {
+                J.startVec( k );
+
+                for(size_t i = 0; i < Nin; ++i)
+                    J.insertBack(k, indices[k] * Nin + i ) = targets[k][i];
+            }
+            J.finalize();
+        }
+
+
+        virtual void updateForceMask()
+        {
+            const helper::vector< unsigned >& indices = d_indices.getValue();
+
+            for( size_t i = 0, iend = indices.size(); i < iend; ++i )
+            {
+                if( this->maskTo->getEntry(i) )
+                {
+                    this->maskFrom->insertEntry(indices[i]);
+                }
+            }
+        }
+
+    };
+
+
 
 
 }

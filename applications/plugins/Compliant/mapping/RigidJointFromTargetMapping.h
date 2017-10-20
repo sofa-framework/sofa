@@ -89,7 +89,11 @@ protected:
 
         for(unsigned i = 0, n = in_pos.size(); i < n; ++i) {
 
-            const coord_type& parent = targets[i];
+            coord_type parent = targets[i];
+            if (!rotation) {
+                parent[3]=0.;parent[4]=0.;parent[5]=0.;parent[6]=1.;
+            }
+
             const coord_type& child  = in_pos[i];
             const coord_type diff = delta(parent, child); // note that parent^{-1} is precomputable but it would be a mess to handle when target is changing dynamically
 
@@ -145,8 +149,11 @@ protected:
         const helper::vector< coord_type >& targets = this->targets.getValue();
 
         for(unsigned i = 0, n = in.size(); i < n; ++i) {
-			
-            const coord_type diff = delta( targets[i], in[i] );
+            coord_type parent = targets[i];
+            if (!rotation) {
+                parent[3]=0.;parent[4]=0.;parent[5]=0.;parent[6]=1.;
+            }
+            const coord_type diff = delta( parent, in[i] );
 
             if( !rotation ) {
                 out[i][0] = diff.getCenter()[0];

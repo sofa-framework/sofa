@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -56,9 +53,6 @@ void LMConstraint<DataTypes1,DataTypes2>::init()
     if (constrainedObject1 != NULL && constrainedObject2 != NULL)
     {
         //Constraint created by passing Mechanical State directly, need to find the name of the path to be able to save the scene eventually
-
-//            std::cerr << "start LMConstraint<DataTypes1,DataTypes2>::init(), simulatedObject1 = " << simulatedObject1->getName() << std::endl;
-//            std::cerr << "start LMConstraint<DataTypes1,DataTypes2>::init(), simulatedObject2 = " << simulatedObject2->getName() << std::endl;
 
         if (constrainedObject1->getContext() != getContext())
         {
@@ -105,8 +99,6 @@ void LMConstraint<DataTypes1,DataTypes2>::init()
                 break;
             simulatedObject2 = mapping->getMechFrom()[0];
         }
-//                std::cerr << "LMConstraint<DataTypes1,DataTypes2>::init(), simulatedObject1 = " << simulatedObject1->getName() << std::endl;
-//                std::cerr << "LMConstraint<DataTypes1,DataTypes2>::init(), simulatedObject2 = " << simulatedObject2->getName() << std::endl;
     }
 }
 

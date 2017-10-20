@@ -5,7 +5,7 @@
     <BruteForceDetection name="N2"  />
     <DiscreteIntersection />
     <Node name="Poutre1">
-        <EulerImplicit />
+        <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="10" tolerance="1e-5" threshold="1e-5"/>
         <MeshGmshLoader name="meshLoader" filename="mesh/smCube27.msh" />
         <Node name="M1">

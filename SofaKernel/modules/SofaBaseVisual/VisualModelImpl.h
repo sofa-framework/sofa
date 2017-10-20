@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -248,14 +245,14 @@ public:
     Data< TexCoord > m_scaleTex;
     Data< TexCoord > m_translationTex;
 
-    void applyTranslation(const SReal dx, const SReal dy, const SReal dz);
+    virtual void applyTranslation(const SReal dx, const SReal dy, const SReal dz) override;
 
     /// Apply Rotation from Euler angles (in degree!)
-    void applyRotation (const SReal rx, const SReal ry, const SReal rz);
+    virtual void applyRotation (const SReal rx, const SReal ry, const SReal rz) override;
 
-    void applyRotation(const sofa::defaulttype::Quat q);
+    virtual void applyRotation(const sofa::defaulttype::Quat q) override;
 
-    void applyScale(const SReal sx, const SReal sy, const SReal sz);
+    virtual void applyScale(const SReal sx, const SReal sy, const SReal sz) override;
 
     virtual void applyUVTransformation();
 
@@ -281,10 +278,6 @@ public:
 
     sofa::defaulttype::Vec3f bbox[2];
     Data< sofa::core::loader::Material > material;
-#ifdef SOFA_SMP
-    sofa::core::loader::Material originalMaterial;
-    bool previousProcessorColor;
-#endif
     Data< bool > putOnlyTexCoords;
     Data< bool > srgbTexturing;
 
@@ -330,14 +323,14 @@ protected:
     ~VisualModelImpl();
 
 public:
-    void parse(core::objectmodel::BaseObjectDescription* arg);
+    virtual void parse(core::objectmodel::BaseObjectDescription* arg) override;
 
     virtual bool hasTransparent();
     bool hasOpaque();
 
-    void drawVisual(const core::visual::VisualParams* vparams);
-    void drawTransparent(const core::visual::VisualParams* vparams);
-    void drawShadow(const core::visual::VisualParams* vparams);
+    virtual void drawVisual(const core::visual::VisualParams* vparams) override;
+    virtual void drawTransparent(const core::visual::VisualParams* vparams) override;
+    virtual void drawShadow(const core::visual::VisualParams* vparams) override;
 
     virtual bool loadTextures() {return false;}
     virtual bool loadTexture(const std::string& /*filename*/) { return false; }
@@ -475,25 +468,25 @@ public:
     virtual void computeMesh();
     virtual void computeNormals();
     virtual void computeTangents();
-    virtual void computeBBox(const core::ExecParams* params, bool=false);
+    virtual void computeBBox(const core::ExecParams* params, bool=false) override;
 
     virtual void updateBuffers() {}
 
-    virtual void updateVisual();
+    virtual void updateVisual() override;
 
     // Handle topological changes
-    virtual void handleTopologyChange();
+    virtual void handleTopologyChange() override;
 
-    void init();
+    virtual void init() override;
 
-    void initVisual();
+    virtual void initVisual() override;
 
     /// Append this mesh to an OBJ format stream.
     /// The number of vertices position, normal, and texture coordinates already written is given as parameters
     /// This method should update them
-    virtual void exportOBJ(std::string name, std::ostream* out, std::ostream* mtl, int& vindex, int& nindex, int& tindex, int& count);
+    virtual void exportOBJ(std::string name, std::ostream* out, std::ostream* mtl, int& vindex, int& nindex, int& tindex, int& count) override;
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return ExtVec3fState::getTemplateName();
     }
@@ -516,8 +509,8 @@ public:
     bool xformsModified;
 
 
-    virtual bool insertInNode( core::objectmodel::BaseNode* node ) { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
-    virtual bool removeInNode( core::objectmodel::BaseNode* node ) { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
+    virtual bool insertInNode( core::objectmodel::BaseNode* node ) override { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
+    virtual bool removeInNode( core::objectmodel::BaseNode* node ) override { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
 };
 
 

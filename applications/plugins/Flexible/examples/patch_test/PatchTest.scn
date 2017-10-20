@@ -4,7 +4,7 @@
   <VisualStyle displayFlags="showVisualModels showBehaviorModels showForceFields" />
 
   <Node name="Patch" >
-    <EulerImplicitSolver verbose="0" />
+    <EulerImplicitSolver verbose="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGSolver verbose="0" tolerance="1.0e-9" threshold="1.0e-9" />
 
     <!--Nodes-->

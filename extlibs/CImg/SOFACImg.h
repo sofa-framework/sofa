@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -26,7 +23,7 @@
 // this file contains CImg extensions for SOFA
 
 #include <queue>
-#define cimg_plugin "skeleton.h"
+#define cimg_plugin "plugins/skeleton.h"
 
 #if defined(_OPENMP) && (_OPENMP >= 200805)
 #include <omp.h>
@@ -210,8 +207,9 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
     else // add path to the specified file name
     {
         std::string tmp(headerFilename);
-        std::size_t pos=tmp.find_last_of('/');
-        if(pos==std::string::npos) pos=tmp.find_last_of('\\');
+        std::size_t posSlash=tmp.find_last_of('/');
+        std::size_t posAslash=tmp.find_last_of('\\');
+        std::size_t pos = (posSlash==std::string::npos) ? posAslash : ( (posAslash==std::string::npos) ? posSlash : std::max(posSlash, posAslash) );
         if(pos!=std::string::npos) {tmp.erase(pos+1); imageFilename.insert(0,tmp);}
     }
 
@@ -226,8 +224,16 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
     }
     else
     {
+//        // get file size for verifications
+//        fseek( nfile, 0, SEEK_END );  // set the file pointer to end of file
+//        const size_t filesize = ftell( nfile ); // get the file size (position of last pos)
+//        rewind( nfile );  // return to begin of file
+
+
+
         if(inputType==std::string("char"))
         {
+//            if( filesize != nb*sizeof(char) ) std::cerr<<"SofaCImg load_metaimage the file size does not correspond to the image dimensions"<<std::endl;
             char *const buffer = new char[dim[3]*nb];
             cimg::fread(buffer,dim[3]*nb,nfile);
             //if (endian) cimg::invert_endianness(buffer,dim[3]*nb);
@@ -236,6 +242,7 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
         }
         else if(inputType==std::string("double"))
         {
+//            if( filesize != nb*sizeof(double) ) std::cerr<<"SofaCImg load_metaimage the file size does not correspond to the image dimensions"<<std::endl;
             double *const buffer = new double[dim[3]*nb];
             cimg::fread(buffer,dim[3]*nb,nfile);
             //if (endian) cimg::invert_endianness(buffer,dim[3]*nb);
@@ -244,6 +251,7 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
         }
         else if(inputType==std::string("float"))
         {
+//            if( filesize != nb*sizeof(float) ) std::cerr<<"SofaCImg load_metaimage the file size does not correspond to the image dimensions"<<std::endl;
             float *const buffer = new float[dim[3]*nb];
             cimg::fread(buffer,dim[3]*nb,nfile);
             //if (endian) cimg::invert_endianness(buffer,dim[3]*nb);
@@ -252,6 +260,7 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
         }
         else if(inputType==std::string("int"))
         {
+//            if( filesize != nb*sizeof(int) ) std::cerr<<"SofaCImg load_metaimage the file size does not correspond to the image dimensions"<<std::endl;
             int *const buffer = new int[dim[3]*nb];
             cimg::fread(buffer,dim[3]*nb,nfile);
             //if (endian) cimg::invert_endianness(buffer,dim[3]*nb);
@@ -260,6 +269,7 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
         }
         else if(inputType==std::string("long"))
         {
+//            if( filesize != nb*sizeof(long) ) std::cerr<<"SofaCImg load_metaimage the file size does not correspond to the image dimensions"<<std::endl;
             long *const buffer = new long[dim[3]*nb];
             cimg::fread(buffer,dim[3]*nb,nfile);
             //if (endian) cimg::invert_endianness(buffer,dim[3]*nb);
@@ -268,6 +278,7 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
         }
         else if(inputType==std::string("short"))
         {
+//            if( filesize != nb*sizeof(short) ) std::cerr<<"SofaCImg load_metaimage the file size does not correspond to the image dimensions"<<std::endl;
             short *const buffer = new short[dim[3]*nb];
             cimg::fread(buffer,dim[3]*nb,nfile);
             //if (endian) cimg::invert_endianness(buffer,dim[3]*nb);
@@ -276,6 +287,7 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
         }
         else if(inputType==std::string("unsigned char"))
         {
+//            if( filesize != nb*sizeof(unsigned char) ) std::cerr<<"SofaCImg load_metaimage the file size does not correspond to the image dimensions"<<std::endl;
             unsigned char *const buffer = new unsigned char[dim[3]*nb];
             cimg::fread(buffer,dim[3]*nb,nfile);
             //if (endian) cimg::invert_endianness(buffer,dim[3]*nb);
@@ -284,6 +296,7 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
         }
         else if(inputType==std::string("unsigned int"))
         {
+//            if( filesize != nb*sizeof(unsigned int) ) std::cerr<<"SofaCImg load_metaimage the file size does not correspond to the image dimensions"<<std::endl;
             unsigned int *const buffer = new unsigned int[dim[3]*nb];
             cimg::fread(buffer,dim[3]*nb,nfile);
             //if (endian) cimg::invert_endianness(buffer,dim[3]*nb);
@@ -292,6 +305,7 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
         }
         else if(inputType==std::string("unsigned long"))
         {
+//            if( filesize != nb*sizeof(unsigned long) ) std::cerr<<"SofaCImg load_metaimage the file size does not correspond to the image dimensions"<<std::endl;
             unsigned long *const buffer = new unsigned long[dim[3]*nb];
             cimg::fread(buffer,dim[3]*nb,nfile);
             //if (endian) cimg::invert_endianness(buffer,dim[3]*nb);
@@ -300,6 +314,7 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
         }
         else if(inputType==std::string("unsigned short"))
         {
+//            if( filesize != nb*sizeof(unsigned short) ) std::cerr<<"SofaCImg load_metaimage the file size does not correspond to the image dimensions"<<std::endl;
             unsigned short *const buffer = new unsigned short[dim[3]*nb];
             cimg::fread(buffer,dim[3]*nb,nfile);
             //if (endian) cimg::invert_endianness(buffer,dim[3]*nb);
@@ -308,6 +323,7 @@ CImgList<T> load_metaimage(const char *const  headerFilename, F *const scale=0, 
         }
         else if(inputType==std::string("bool"))
         {
+//            if( filesize != nb*sizeof(bool) ) std::cerr<<"SofaCImg load_metaimage the file size does not correspond to the image dimensions"<<std::endl;
             bool *const buffer = new bool[dim[3]*nb];
             cimg::fread(buffer,dim[3]*nb,nfile);
             //if (endian) cimg::invert_endianness(buffer,dim[3]*nb);

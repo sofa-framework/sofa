@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 
 project(stylecheck.exe)
 
@@ -64,14 +64,15 @@ target_link_libraries(stylecheck.exe
 
 # LLVM dependencies.
 target_link_libraries(stylecheck.exe
-  LLVMTransformUtils
-  LLVMTarget
-  LLVMMC # Object, Support
-  LLVMMCParser # MC, Support
-  LLVMObject # Support
-  LLVMCore # Support
+  #LLVMSupport
+  #LLVMTransformUtils
+  #LLVMMC # Object, Support
+  #LLVMMCParser # MC, Support
+  #LLVMObject # Support
+  #LLVMCore # Support
+  #LLVMBitReader
+  #LLVMScalarOpts
   LLVMSupport
-  LLVMBitReader
   LLVMOption
 )
 

@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -54,7 +51,9 @@ public:
 
     /// load the file
     virtual Node::SPtr load(const char *filename);
-    Node::SPtr loadSceneWithArguments(const char *filename, const std::vector<std::string>& arguments=std::vector<std::string>(0));
+
+    // max: added out parameter to get the root *before* createScene is called
+    void loadSceneWithArguments(const char *filename, const std::vector<std::string>& arguments=std::vector<std::string>(0), Node::SPtr* root_out = 0);
     bool loadTestWithArguments(const char *filename, const std::vector<std::string>& arguments=std::vector<std::string>(0));
 
     /// write the file
@@ -74,14 +73,8 @@ private:
 
 };
 
-///////////
-
-
-
 /// Export the scene graph in Python format
 void SOFA_SOFAPYTHON_API exportPython( Node* node, const char* fileName=NULL );
-
-
 
 /// Visitor that exports all nodes/components in python
 class SOFA_SOFAPYTHON_API PythonExporterVisitor : public Visitor
@@ -95,16 +88,14 @@ protected:
     unsigned m_variableIndex; ///< unique index per node to garanty a unique variablename
 
 public:
-
     PythonExporterVisitor(std::ostream& out) : Visitor(sofa::core::ExecParams::defaultInstance()), m_out(out), m_variableIndex(0) {}
 
     template<class T> void processObject( T obj, const std::string& nodeVariable );
 
-    virtual Result processNodeTopDown(Node* node);
-    virtual void processNodeBottomUp(Node* node);
+    virtual Result processNodeTopDown(Node* node) override ;
+    virtual void processNodeBottomUp(Node* node) override ;
 
-    virtual const char* getClassName() const { return "PythonExporterVisitor"; }
-
+    virtual const char* getClassName() const override { return "PythonExporterVisitor"; }
 };
 
 

@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -57,32 +54,35 @@ namespace misc
 
 
 /// Default implementation does not compile
-template <int imageTypeLabel>
+template <class ImageType>
 struct ImageExporterSpecialization
 {
 };
 
+/// forward declaration
+template <class ImageType> class ImageExporter;
+
 
 /// Specialization for regular Image
-template <>
-struct ImageExporterSpecialization<defaulttype::IMAGELABEL_IMAGE>
+template <class T>
+struct ImageExporterSpecialization<defaulttype::Image<T>>
 {
-    template<class ImageExporter>
-    static void init( ImageExporter& /*exporter*/ )
+    typedef ImageExporter<defaulttype::Image<T>> ImageExporterT;
+
+
+    static void init( ImageExporterT& /*exporter*/ )
     {
     }
 
-    template<class ImageExporter>
-    static bool write( ImageExporter& exporter )
+    static bool write( ImageExporterT& exporter )
     {
-        typedef typename ImageExporter::Real Real;
-        typedef typename ImageExporter::T T;
+        typedef typename ImageExporterT::Real Real;
 
         if (!exporter.m_filename.isSet()) { exporter.serr << "ImageExporter: file not set"<<exporter.name<<exporter.sendl; return false; }
         std::string fname(exporter.m_filename.getFullPath());
 
-        typename ImageExporter::raImage rimage(exporter.image);
-        typename ImageExporter::raTransform rtransform(exporter.transform);
+        typename ImageExporterT::raImage rimage(exporter.image);
+        typename ImageExporterT::raTransform rtransform(exporter.transform);
         if (rimage->isEmpty()) { exporter.serr << "ImageExporter: no image "<<exporter.name<<exporter.sendl; return false; }
 
         if(fname.find(".mhd")!=std::string::npos || fname.find(".MHD")!=std::string::npos || fname.find(".Mhd")!=std::string::npos
@@ -213,8 +213,7 @@ struct ImageExporterSpecialization<defaulttype::IMAGELABEL_IMAGE>
 template <class _ImageTypes>
 class ImageExporter : public core::objectmodel::BaseObject
 {
-    friend struct ImageExporterSpecialization<defaulttype::IMAGELABEL_IMAGE>;
-    friend struct ImageExporterSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>;
+    friend struct ImageExporterSpecialization<_ImageTypes>;
 
 public:
     typedef core::objectmodel::BaseObject Inherited;
@@ -242,7 +241,7 @@ public:
     Data<bool> exportAtEnd;
 
 
-    virtual std::string getTemplateName() const    { return templateName(this);    }
+    virtual std::string getTemplateName() const    override { return templateName(this);    }
     static std::string templateName(const ImageExporter<ImageTypes>* = NULL) { return ImageTypes::Name(); }
 
     ImageExporter()	: Inherited()
@@ -261,25 +260,25 @@ public:
         transform.setReadOnly(true);
         f_listening.setValue(true);
 
-        ImageExporterSpecialization<ImageTypes::label>::init( *this );
+        ImageExporterSpecialization<ImageTypes>::init( *this );
     }
 
     virtual ~ImageExporter() {}
 
-    virtual	void cleanup() 	{ if (exportAtEnd.getValue()) write();	}
+    virtual	void cleanup() override { if (exportAtEnd.getValue()) write();	}
 
-    virtual void bwdInit()	{ if (exportAtBegin.getValue())	write(); }
+    virtual void bwdInit() override { if (exportAtBegin.getValue())	write(); }
 
 protected:
 
 
     bool write()
     {
-        return ImageExporterSpecialization<ImageTypes::label>::write( *this );
+        return ImageExporterSpecialization<ImageTypes>::write( *this );
     }
 
 
-    void handleEvent(sofa::core::objectmodel::Event *event)
+    void handleEvent(sofa::core::objectmodel::Event *event) override
     {
         if (sofa::core::objectmodel::KeypressedEvent::checkEventType(event))
         {

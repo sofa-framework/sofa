@@ -1,2 +1,0 @@
-../../../../examples/Components/forcefield/BeamFEMForceField.scn 100 1e-4
-../../../../examples/Components/forcefield/TriangularFEMForceFieldOptim.scn 100 1e-4

@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -67,68 +64,68 @@ protected:
 
 public:
     //Pure Virtual method from Node
-    virtual Node::SPtr createChild(const std::string& nodeName);
+    virtual Node::SPtr createChild(const std::string& nodeName) override;
 
     //Pure Virtual method from BaseNode
     /// Add a child node
-    virtual void addChild(BaseNode::SPtr node);
+    virtual void addChild(BaseNode::SPtr node) override;
 
     /// Remove a child node
-    virtual void removeChild(BaseNode::SPtr node);
+    virtual void removeChild(BaseNode::SPtr node) override;
 
     /// Move a node from another node
-    virtual void moveChild(BaseNode::SPtr obj);
+    virtual void moveChild(BaseNode::SPtr obj) override;
 
     /// Add an object and return this. Detect the implemented interfaces and add the object to the corresponding lists.
-    virtual bool addObject(core::objectmodel::BaseObject::SPtr obj) { return simulation::Node::addObject(obj); }
+    virtual bool addObject(core::objectmodel::BaseObject::SPtr obj) override { return simulation::Node::addObject(obj); }
 
     /// Remove an object
-    virtual bool removeObject(core::objectmodel::BaseObject::SPtr obj) { return simulation::Node::removeObject(obj); }
+    virtual bool removeObject(core::objectmodel::BaseObject::SPtr obj) override { return simulation::Node::removeObject(obj); }
 
     /// Remove the current node from the graph: consists in removing the link to its parent
-    virtual void detachFromGraph();
+    virtual void detachFromGraph() override;
 
     /// Get a list of parent node
-    virtual Parents getParents() const;
+    virtual Parents getParents() const override;
 
     /// returns number of parents
-    virtual size_t getNbParents() const;
+    virtual size_t getNbParents() const override;
 
     /// return the first parent (returns NULL if no parent)
-    virtual BaseNode* getFirstParent() const;
+    virtual BaseNode* getFirstParent() const override;
 
     /// Test if the given node is a parent of this node.
-    bool hasParent(const BaseNode* node) const;
+    bool hasParent(const BaseNode* node) const override;
 
     /// Test if the given context is a parent of this context.
     bool hasParent(const BaseContext* context) const;
 
     /// Test if the given context is an ancestor of this context.
     /// An ancestor is a parent or (recursively) the parent of an ancestor.
-    bool hasAncestor(const BaseNode* node) const
+    bool hasAncestor(const BaseNode* node) const override
     {
         return hasAncestor(node->getContext());
     }
 
     /// Test if the given context is an ancestor of this context.
     /// An ancestor is a parent or (recursively) the parent of an ancestor.
-    bool hasAncestor(const BaseContext* context) const;
+    bool hasAncestor(const BaseContext* context) const override;
 
 
     /// Generic object access, given a set of required tags, possibly searching up or down from the current context
     ///
     /// Note that the template wrapper method should generally be used to have the correct return type,
-    virtual void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir = SearchUp) const;
+    virtual void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir = SearchUp) const override;
 
     /// Generic object access, given a path from the current context
     ///
     /// Note that the template wrapper method should generally be used to have the correct return type,
-    virtual void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, const std::string& path) const;
+    virtual void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, const std::string& path) const override;
 
     /// Generic list of objects access, given a set of required tags, possibly searching up or down from the current context
     ///
     /// Note that the template wrapper method should generally be used to have the correct return type,
-    virtual void getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir = SearchUp) const;
+    virtual void getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir = SearchUp) const override;
 
 
 
@@ -136,13 +133,13 @@ public:
 
 
     /// Called during initialization to corectly propagate the visual context to the children
-    virtual void initVisualContext();
+    virtual void initVisualContext() override;
 
     /// Update the whole context values, based on parent and local ContextObjects
-    virtual void updateContext();
+    virtual void updateContext() override;
 
     /// Update the simulation context values(gravity, time...), based on parent and local ContextObjects
-    virtual void updateSimulationContext();
+    virtual void updateSimulationContext() override;
 
     static DAGNode::SPtr create(DAGNode*, core::objectmodel::BaseObjectDescription* arg)
     {
@@ -153,10 +150,10 @@ public:
 
 
     /// return the smallest common parent between this and node2 (returns NULL if separated sub-graphes)
-    virtual Node* findCommonParent( Node* node2 );
+    virtual Node* findCommonParent( Node* node2 ) override;
 
     /// compute the traversal order from this Node
-    virtual void precomputeTraversalOrder( const core::ExecParams* params );
+    virtual void precomputeTraversalOrder( const core::ExecParams* params ) override;
 
 protected:
 
@@ -171,7 +168,7 @@ protected:
 
 
     /// Execute a recursive action starting from this node.
-    void doExecuteVisitor(simulation::Visitor* action, bool precomputedOrder=false);
+    void doExecuteVisitor(simulation::Visitor* action, bool precomputedOrder=false) override;
 
 
     /// @name @internal stuff related to the DAG traversal
@@ -189,11 +186,11 @@ protected:
 
 
     // need to update the ancestor descendancy
-    virtual void notifyAddChild(Node::SPtr node);
+    virtual void notifyAddChild(Node::SPtr node) override;
     // need to update the ancestor descendancy
-    virtual void notifyRemoveChild(Node::SPtr node);
+    virtual void notifyRemoveChild(Node::SPtr node) override;
     // need to update the ancestor descendancy
-    virtual void notifyMoveChild(Node::SPtr node, Node* prev);
+    virtual void notifyMoveChild(Node::SPtr node, Node* prev) override;
 
 
     /// traversal flags
@@ -223,7 +220,7 @@ protected:
     typedef std::map<DAGNode*,StatusStruct> StatusMap;
 
     /// list of DAGNode*
-    typedef helper::list<DAGNode*> NodeList;
+    typedef std::list<DAGNode*> NodeList;
 
     /// the ordered list of Node to traverse from this Node
     NodeList _precomputedTraversalOrder;

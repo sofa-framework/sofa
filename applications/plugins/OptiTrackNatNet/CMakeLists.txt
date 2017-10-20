@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 project(OptiTrackNatNet)
 
 
@@ -15,7 +15,7 @@ set(SOURCE_FILES
 )
 
 find_package(SofaGeneral REQUIRED)
-find_package(Boost QUIET COMPONENTS system regex REQUIRED)
+find_package(Boost QUIET COMPONENTS system regex date_time REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_OPTITRACKNATNET")

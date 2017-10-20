@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -29,6 +26,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/CollisionElement.h>
 
+#include <sofa/defaulttype/RGBAColor.h>
 
 namespace sofa
 {
@@ -100,13 +98,13 @@ protected:
         , contactFriction(initData(&contactFriction, (SReal)0.0, "contactFriction", "Contact friction coefficient (dry or viscous or unused depending on the contact method)"))
         , contactRestitution(initData(&contactRestitution, (SReal)0.0, "contactRestitution", "Contact coefficient of restitution"))
         , contactResponse(initData(&contactResponse, "contactResponse", "if set, indicate to the ContactManager that this model should use the given class of contacts.\nNote that this is only indicative, and in particular if both collision models specify a different class it is up to the manager to choose."))
-        , color(initData(&color, defaulttype::Vec4f(1,0,0,1), "color", "color used to display the collision model if requested"))
+        , color(initData(&color, defaulttype::RGBAColor(1,0,0,1), "color", "color used to display the collision model if requested"))
         , group(initData(&group,"group","IDs of the groups containing this model. No collision can occur between collision models included in a common group (e.g. allowing the same object to have multiple collision models)"))
         , size(0)
         , numberOfContacts(0)
         , previous(initLink("previous", "Previous (coarser / upper / parent level) CollisionModel in the hierarchy."))
         , next(initLink("next", "Next (finer / lower / child level) CollisionModel in the hierarchy."))
-		, userData(NULL)
+        , userData(NULL)
     {
     }
     /// Destructor
@@ -115,7 +113,7 @@ protected:
 
     }
 public:
-    virtual void bwdInit()
+    virtual void bwdInit() override
     {
         getColor4f(); //init the color to default value
     }
@@ -299,7 +297,7 @@ public:
             return true;
         else
         {
-            helper::set<int>::const_iterator it = group.getValue().begin(), itend = group.getValue().end();
+            std::set<int>::const_iterator it = group.getValue().begin(), itend = group.getValue().end();
             for( ; it != itend ; ++it )
                 if( model->group.getValue().count(*it)>0 ) // both models are included in the same group -> do not collide
                     return false;
@@ -322,7 +320,7 @@ public:
     virtual void draw(const core::visual::VisualParams* /*vparams*/,int /*index*/) {}
 
     /// Render the whole collision model.
-    virtual void draw(const core::visual::VisualParams* )
+    virtual void draw(const core::visual::VisualParams* ) override
     {
     }
 
@@ -407,14 +405,13 @@ public:
 
 
     /// Return the group IDs containing this model.
-    const helper::set<int>& getGroups() const { return group.getValue(); }
+    const std::set<int>& getGroups() const { return group.getValue(); }
 
     /// add the group ID to this model.
     void addGroup(const int groupId) { group.beginEdit()->insert(groupId); group.endEdit(); }
 
-	/// Set the group IDs to this model
-	void setGroups(const helper::set<int>& ids) { group.setValue(ids); }
-
+    /// Set the group IDs to this model
+    void setGroups(const std::set<int>& ids) { group.setValue(ids); }
     /// @}
 
 
@@ -427,7 +424,10 @@ public:
     /// Get a color that can be used to display this CollisionModel
     const float* getColor4f();
     /// Set a color that can be used to display this CollisionModel
-    void setColor4f(const float *c) {color.setValue(defaulttype::Vec4f(c[0],c[1],c[2],c[3]));}
+
+    void setColor4f(const float *c) {
+        color.setValue(defaulttype::RGBAColor(c[0],c[1],c[2],c[3]));
+    }
 
     /// Set of differents parameters
     void setProximity       (const SReal a)        { proximity.setValue(a); }
@@ -439,11 +439,11 @@ public:
         return enum_type;
     }
 
-	/// Set user data
-	void SetUserData(void* pUserData)  { userData = pUserData; }
+    /// Set user data
+    void SetUserData(void* pUserData)  { userData = pUserData; }
 
-	/// Get user data
-	void* GetUserData() { return userData; }
+    /// Get user data
+    void* GetUserData() { return userData; }
 
 protected:
 
@@ -470,11 +470,11 @@ protected:
     Data<std::string> contactResponse;
 
     /// color used to display the collision model if requested
-    Data<defaulttype::Vec4f> color;
+    Data<defaulttype::RGBAColor> color;
 
     /// No collision can occur between collision
     /// models included in a common group (i.e. sharing a common id)
-    Data< helper::set<int> > group;
+    Data< std::set<int> > group;
 
     /// Number of collision elements
     int size;
@@ -492,12 +492,12 @@ protected:
     /// Useful for optimizations involving static_cast
     int enum_type;
 
-	void* userData;
+    void* userData;
 
 public:
 
-    virtual bool insertInNode( objectmodel::BaseNode* node );
-    virtual bool removeInNode( objectmodel::BaseNode* node );
+    virtual bool insertInNode( objectmodel::BaseNode* node ) override;
+    virtual bool removeInNode( objectmodel::BaseNode* node ) override;
 
 };
 

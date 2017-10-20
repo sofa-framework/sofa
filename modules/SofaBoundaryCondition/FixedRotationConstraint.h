@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -64,14 +61,14 @@ protected:
     FixedRotationConstraint();
     virtual ~FixedRotationConstraint();
 public:
-    void init();
+    void init() override;
 
-    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& dx);
-    void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& dx);
-    void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& x);
-    void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& c);
+    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& dx) override;
+    void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& dx) override;
+    void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& x) override;
+    void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& c) override;
 
-    virtual void draw(const core::visual::VisualParams* vparams);
+    virtual void draw(const core::visual::VisualParams* vparams) override;
 
 
 protected :

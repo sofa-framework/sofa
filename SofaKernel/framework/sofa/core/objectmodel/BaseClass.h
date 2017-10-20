@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -59,6 +56,10 @@ protected:
     virtual ~BaseClass();
 
 public:
+
+
+    /// @todo the names could be hashed for faster comparisons
+
     std::string namespaceName;
     std::string className;
     std::string templateName;
@@ -66,11 +67,21 @@ public:
     //std::string targetName;
     helper::vector<const BaseClass*> parents;
 
+    /// returns true iff c is a parent class of this
     bool hasParent(const BaseClass* c) const
     {
         if (*this == *c) return true;
         for (unsigned int i=0; i<parents.size(); ++i)
             if (parents[i]->hasParent(c)) return true;
+        return false;
+    }
+
+    /// returns true iff a parent class of this is named parentClassName
+    bool hasParent(const std::string& parentClassName) const
+    {
+        if (className==parentClassName) return true;
+        for (unsigned int i=0; i<parents.size(); ++i)
+            if (parents[i]->hasParent(parentClassName)) return true;
         return false;
     }
 
@@ -258,10 +269,10 @@ public:
 // Do not use this macro directly, use SOFA_ABSTRACT_CLASS instead
 #define SOFA_ABSTRACT_CLASS_DECL                                        \
     typedef MyType* Ptr;                                                \
-    typedef boost::intrusive_ptr<MyType> SPtr;                          \
+    using SPtr = sofa::core::sptr<MyType>;                              \
                                                                         \
     static const MyClass* GetClass() { return MyClass::get(); }         \
-    virtual const ::sofa::core::objectmodel::BaseClass* getClass() const \
+    virtual const ::sofa::core::objectmodel::BaseClass* getClass() const override \
     { return GetClass(); }                                              \
 	static const char* HeaderFileLocation() { return __FILE__; }         \
     template<class SOFA_T> ::sofa::core::objectmodel::BaseData::BaseInitData \

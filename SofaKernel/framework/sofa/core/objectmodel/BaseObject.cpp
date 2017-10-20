@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -47,9 +44,6 @@ BaseObject::BaseObject()
     , l_context(initLink("context","Graph Node containing this object (or BaseContext::getDefault() if no graph is used"))
     , l_slaves(initLink("slaves","Sub-objects used internally by this object"))
     , l_master(initLink("master","NULL for regular objects, or master object for which this object is one sub-objects"))
-#ifdef SOFA_SMP
-    ,partition_(NULL)
-#endif
 {
     l_context.setValidator(&sofa::core::objectmodel::BaseObject::changeContextLink);
     l_context.set(BaseContext::getDefault());
@@ -92,8 +86,6 @@ void BaseObject::parse( BaseObjectDescription* arg )
 {
     if (arg->getAttribute("src"))
     {
-        std::vector< std::string > attributeList;
-        arg->getAttributeList(attributeList);
         std::string valueString(arg->getAttribute("src"));
 
         if (valueString[0] != '@')
@@ -102,6 +94,8 @@ void BaseObject::parse( BaseObjectDescription* arg )
         }
         else
         {
+            std::vector< std::string > attributeList;
+            arg->getAttributeList(attributeList);
             setSrc(valueString, &attributeList);
         }
         arg->removeAttribute("src");
@@ -188,22 +182,7 @@ void* BaseObject::findLinkDestClass(const BaseClass* destType, const std::string
         return this->getContext()->findLinkDestClass(destType, path, link);
 }
 
-#ifdef SOFA_SMP
 
-void BaseObject::setPartition(Iterative::IterativePartition* p)
-{
-    partition_=p;
-}
-Iterative::IterativePartition*  BaseObject::getPartition()
-{
-    if(partition_)
-        return partition_;
-    if(getContext()&&getContext()->is_partition())
-        return getContext()->getPartition();
-    return 0;
-}
-
-#endif
 const BaseContext* BaseObject::getContext() const
 {
     return l_context.get();
@@ -288,10 +267,7 @@ void BaseObject::releaseAspect(int aspect)
 
 void BaseObject::init()
 {
-#ifdef SOFA_SMP
-    if(!context_||!context_->is_partition())
-        setPartition(new Iterative::IterativePartition());
-#endif
+
 
 	for(VecData::const_iterator iData = this->m_vecData.begin(); iData != this->m_vecData.end(); ++iData)
 	{

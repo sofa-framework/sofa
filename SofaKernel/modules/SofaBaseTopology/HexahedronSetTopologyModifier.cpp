@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -675,7 +672,7 @@ void HexahedronSetTopologyModifier::removeHexahedra(const sofa::helper::vector< 
     for (unsigned int i = 0; i < hexahedraIds.size(); i++)
     {
         if( hexahedraIds[i] >= m_container->getNumberOfHexahedra())
-            std::cout << "Error: HexahedronSetTopologyModifier::removeHexahedra: hexahedra: "<< hexahedraIds[i] <<" is out of bound and won't be removed." << std::endl;
+            msg_error() << "Unable to remove the hexahedra: "<< hexahedraIds[i] <<" its index is out of bound." ;
         else
             hexahedraIds_filtered.push_back(hexahedraIds[i]);
     }
@@ -715,7 +712,7 @@ void HexahedronSetTopologyModifier::propagateTopologicalEngineChanges()
     if (!m_container->isHexahedronTopologyDirty()) // hexahedron Data has not been touched
         return QuadSetTopologyModifier::propagateTopologicalEngineChanges();
 
-    sofa::helper::list <sofa::core::topology::TopologyEngine *>::iterator it;
+    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
 
     for ( it = m_container->m_enginesList.begin(); it!=m_container->m_enginesList.end(); ++it)
     {
@@ -723,7 +720,7 @@ void HexahedronSetTopologyModifier::propagateTopologicalEngineChanges()
         if (topoEngine->isDirty())
         {
 #ifndef NDEBUG
-            std::cout << "HexahedronSetTopologyModifier::performing: " << topoEngine->getName() << std::endl;
+            msg_info() << "HexahedronSetTopologyModifier::performing: " << topoEngine->getName() ;
 #endif
             topoEngine->update();
         }

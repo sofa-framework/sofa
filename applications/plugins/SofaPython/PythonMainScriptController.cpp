@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Plugins                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -32,8 +29,6 @@ using sofa::helper::ScopedAdvancedTimer;
 
 using sofa::core::visual::VisualParams;
 
-#include "ScriptEnvironment.h"
-using sofa::simulation::ScriptEnvironment;
 using sofa::simulation::PythonEnvironment;
 
 #include "PythonScriptEvent.h"
@@ -46,6 +41,7 @@ using sofa::core::objectmodel::PythonScriptEvent;
 
 //TODO(dmarchal): Use the deactivable ScopedTimer
 
+
 namespace sofa
 {
 
@@ -54,6 +50,8 @@ namespace component
 
 namespace controller
 {
+
+using sofa::core::objectmodel::IdleEvent ;
 
 int PythonMainScriptControllerClass = RegisterObject("A Sofa controller scripted in python, looking for callbacks directly "
                                                      "in the file (not in a class like the more general and powerful "
@@ -76,6 +74,7 @@ PythonMainScriptController::PythonMainScriptController(const char* filename)
 
 void PythonMainScriptController::loadScript()
 {
+    PythonEnvironment::gil lock(__func__);
     if(!PythonEnvironment::runFile(m_filename))
     {
         SP_MESSAGE_ERROR( getName() << " object - "<<m_filename<<" script load error." )
@@ -85,7 +84,8 @@ void PythonMainScriptController::loadScript()
     PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));
 
 
-    helper::logging::MessageDispatcher::LoggerStream msg = msg_info("PythonMainScriptController");
+
+    std::stringstream msg;
     msg << "Found callbacks: ";
 
     #define BIND_SCRIPT_FUNC_WITH_MESSAGE(funcName){\
@@ -111,22 +111,37 @@ void PythonMainScriptController::loadScript()
     BIND_SCRIPT_FUNC_WITH_MESSAGE(onGUIEvent)
     BIND_SCRIPT_FUNC_WITH_MESSAGE(onScriptEvent)
     BIND_SCRIPT_FUNC_WITH_MESSAGE(draw)
+    BIND_SCRIPT_FUNC_WITH_MESSAGE(onIdle)
 
     #undef BIND_SCRIPT_FUNC_WITH_MESSAGE
+
+    msg_info() << msg.str();
+
+}
+
+void PythonMainScriptController::script_onIdleEvent(const IdleEvent* event)
+{
+    // there's no such thing as a macro being better than something ;-)    
+    (void) event;
+    PythonEnvironment::gil lock(__func__);    
+    SP_CALL_MODULEFUNC_NOPARAM(m_Func_onIdle)
 }
 
 void PythonMainScriptController::script_onLoaded(sofa::simulation::Node *node)
 {
+    PythonEnvironment::gil lock(__func__);        
     SP_CALL_MODULEFUNC(m_Func_onLoaded,"(O)",sofa::PythonFactory::toPython(node))
 }
 
 void PythonMainScriptController::script_createGraph(sofa::simulation::Node *node)
 {
+    PythonEnvironment::gil lock(__func__);            
     SP_CALL_MODULEFUNC(m_Func_createGraph,"(O)",sofa::PythonFactory::toPython(node))
 }
 
 void PythonMainScriptController::script_initGraph(sofa::simulation::Node *node)
 {
+    PythonEnvironment::gil lock(__func__);            
     // no ScriptController::parse for a PythonMainScriptController
     // so call these functions here
     script_onLoaded( down_cast<simulation::Node>(getContext()) );
@@ -137,17 +152,20 @@ void PythonMainScriptController::script_initGraph(sofa::simulation::Node *node)
 
 void PythonMainScriptController::script_bwdInitGraph(sofa::simulation::Node *node)
 {
+    PythonEnvironment::gil lock(__func__);    
     SP_CALL_MODULEFUNC(m_Func_bwdInitGraph,"(O)",sofa::PythonFactory::toPython(node))
 }
 
 bool PythonMainScriptController::script_onKeyPressed(const char c)
 {
+    PythonEnvironment::gil lock(__func__);    
     bool b = false;
     SP_CALL_MODULEBOOLFUNC(m_Func_onKeyPressed,"(c)", c);
     return b;
 }
 bool PythonMainScriptController::script_onKeyReleased(const char c)
 {
+    PythonEnvironment::gil lock(__func__);    
     bool b = false;
     SP_CALL_MODULEBOOLFUNC(m_Func_onKeyReleased,"(c)", c);
     return b;
@@ -155,57 +173,67 @@ bool PythonMainScriptController::script_onKeyReleased(const char c)
 
 void PythonMainScriptController::script_onMouseButtonLeft(const int posX,const int posY,const bool pressed)
 {
+    PythonEnvironment::gil lock(__func__);    
     PyObject *pyPressed = pressed? Py_True : Py_False;
     SP_CALL_MODULEFUNC(m_Func_onMouseButtonLeft,"(iiO)", posX,posY,pyPressed);
 }
 
 void PythonMainScriptController::script_onMouseButtonRight(const int posX,const int posY,const bool pressed)
 {
+    PythonEnvironment::gil lock(__func__);    
     PyObject *pyPressed = pressed? Py_True : Py_False;
     SP_CALL_MODULEFUNC(m_Func_onMouseButtonRight,"(iiO)", posX,posY,pyPressed);
 }
 
 void PythonMainScriptController::script_onMouseButtonMiddle(const int posX,const int posY,const bool pressed)
 {
+    PythonEnvironment::gil lock(__func__);    
     PyObject *pyPressed = pressed? Py_True : Py_False;
     SP_CALL_MODULEFUNC(m_Func_onMouseButtonMiddle,"(iiO)", posX,posY,pyPressed);
 }
 
 void PythonMainScriptController::script_onMouseWheel(const int posX,const int posY,const int delta)
 {
+    PythonEnvironment::gil lock(__func__);    
     SP_CALL_MODULEFUNC(m_Func_onMouseWheel,"(iii)", posX,posY,delta);
 }
 
 
 void PythonMainScriptController::script_onBeginAnimationStep(const double dt)
 {
+    PythonEnvironment::gil lock(__func__);    
     helper::ScopedAdvancedTimer advancedTimer("PythonMainScriptController_AnimationStep");
     SP_CALL_MODULEFUNC(m_Func_onBeginAnimationStep,"(d)", dt)
 }
 
 void PythonMainScriptController::script_onEndAnimationStep(const double dt)
 {
+    PythonEnvironment::gil lock(__func__);    
     helper::ScopedAdvancedTimer advancedTimer("PythonMainScriptController_AnimationStep");
     SP_CALL_MODULEFUNC(m_Func_onEndAnimationStep,"(d)", dt)
 }
 
 void PythonMainScriptController::script_storeResetState()
 {
+    PythonEnvironment::gil lock(__func__);    
     SP_CALL_MODULEFUNC_NOPARAM(m_Func_storeResetState)
 }
 
 void PythonMainScriptController::script_reset()
 {
+    PythonEnvironment::gil lock(__func__);    
     SP_CALL_MODULEFUNC_NOPARAM(m_Func_reset)
 }
 
 void PythonMainScriptController::script_cleanup()
 {
+    PythonEnvironment::gil lock(__func__);    
     SP_CALL_MODULEFUNC_NOPARAM(m_Func_cleanup)
 }
 
 void PythonMainScriptController::script_onGUIEvent(const char* controlID, const char* valueName, const char* value)
 {
+    PythonEnvironment::gil lock(__func__);    
     SP_CALL_MODULEFUNC(m_Func_onGUIEvent,"(sss)",controlID,valueName,value)
 }
 
@@ -214,11 +242,13 @@ void PythonMainScriptController::script_onScriptEvent(ScriptEvent* event)
     helper::ScopedAdvancedTimer advancedTimer( (std::string("PythonMainScriptController_Event_")+this->getName()).c_str() );
 
     PythonScriptEvent *pyEvent = static_cast<PythonScriptEvent*>(event);
+    PythonEnvironment::gil lock(__func__);    
     SP_CALL_MODULEFUNC(m_Func_onScriptEvent,"(OsO)",sofa::PythonFactory::toPython(pyEvent->getSender().get()),const_cast<char*>(pyEvent->getEventName().c_str()),pyEvent->getUserData())
 }
 
 void PythonMainScriptController::script_draw(const VisualParams*)
 {
+    PythonEnvironment::gil lock(__func__);    
     SP_CALL_MODULEFUNC_NOPARAM(m_Func_draw)
 }
 
@@ -227,7 +257,6 @@ void PythonMainScriptController::handleEvent(Event *event)
     if (PythonScriptEvent::checkEventType(event))
     {
         script_onScriptEvent(static_cast<PythonScriptEvent *> (event));
-        ScriptEnvironment::initScriptNodes();
     }
     else ScriptController::handleEvent(event);
 }

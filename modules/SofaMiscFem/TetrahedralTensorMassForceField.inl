@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -125,12 +122,9 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::apply
                 Mat3 &m=edgeData[te[j]].DfDx;
 
                 val1= dot(shapeVector[k],shapeVector[l])*mustar;
+
                 // print if obtuse tetrahedron along that edge
-                if (ff->f_printLog.getValue())
-                {
-                    if (val1<0)
-                        ff->serr<<"negative cotangent["<<tetrahedronAdded[i]<<"]["<<j<<"]"<<ff->sendl;
-                }
+                msg_info_when(val1<0, ff) << "negative cotangent["<<tetrahedronAdded[i]<<"]["<<j<<"]" ;
 
                 if (ff->_topology->getEdge(te[j])[0]!=t[l])
                 {
@@ -215,11 +209,7 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::apply
 
                 val1= dot(shapeVector[k],shapeVector[l])*mustar;
                 // print if obtuse tetrahedron along that edge
-                if (ff->f_printLog.getValue())
-                {
-                    if (val1<0)
-                        ff->serr<<"negative cotangent["<<tetrahedronRemoved[i]<<"]["<<j<<"]"<<ff->sendl;
-                }
+                msg_info_when(val1<0, ff) <<"negative cotangent["<<tetrahedronRemoved[i]<<"]["<<j<<"]" ;
 
                 if (ff->_topology->getEdge(te[j])[0]!=t[l])
                 {
@@ -262,7 +252,7 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::Apply
 
     applyTetrahedronCreation(tetraAdded, elems, ancestors, coefs);
 }
-        
+
 template< class DataTypes>
 void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMEdgeHandler::ApplyTopologyChange(const core::topology::TetrahedraRemoved* e)
 {
@@ -376,17 +366,18 @@ SReal  TetrahedralTensorMassForceField<DataTypes>::getPotentialEnergy(const core
         dp0=x[v0]-_initialPoints[v0];
         dp1=x[v1]-_initialPoints[v1];
         dp = dp1-dp0;
-		force=einfo->DfDx*dp;
-		energy+=dot(force,dp1);
-		force=einfo->DfDx.transposeMultiply(dp);
-		energy-=dot(force,dp0);
+        force=einfo->DfDx*dp;
+        energy+=dot(force,dp1);
+        force=einfo->DfDx.transposeMultiply(dp);
+        energy-=dot(force,dp0);
     }
 
-	energy/=-2.0;
-    if (this->f_printLog.getValue())
-		std::cout << "energy="<<energy<<std::endl;
+    energy/=-2.0;
+
+    msg_info() << "energy="<<energy ;
+
     sofa::helper::AdvancedTimer::stepEnd("getPotentialEnergy");
-	return(energy);
+    return(energy);
 }
 
 template <class DataTypes>
@@ -489,23 +480,23 @@ void TetrahedralTensorMassForceField<DataTypes>::draw(const core::visual::Visual
 // 	int nbTriangles=_topology->getNbTriangles();
 
     /*
-    	glDisable(GL_LIGHTING);
+        glDisable(GL_LIGHTING);
 
-    	glBegin(GL_TRIANGLES);
-    	for(i=0;i<nbTriangles; ++i)
-    	{
-    		int a = _topology->getTriangle(i)[0];
-    		int b = _topology->getTriangle(i)[1];
-    		int c = _topology->getTriangle(i)[2];
+        glBegin(GL_TRIANGLES);
+        for(i=0;i<nbTriangles; ++i)
+        {
+            int a = _topology->getTriangle(i)[0];
+            int b = _topology->getTriangle(i)[1];
+            int c = _topology->getTriangle(i)[2];
 
-    		glColor4f(0,1,0,1);
-    		helper::gl::glVertexT(x[a]);
-    		glColor4f(0,0.5,0.5,1);
-    		helper::gl::glVertexT(x[b]);
-    		glColor4f(0,0,1,1);
-    		helper::gl::glVertexT(x[c]);
-    	}
-    	glEnd();
+            glColor4f(0,1,0,1);
+            helper::gl::glVertexT(x[a]);
+            glColor4f(0,0.5,0.5,1);
+            helper::gl::glVertexT(x[b]);
+            glColor4f(0,0,1,1);
+            helper::gl::glVertexT(x[c]);
+        }
+        glEnd();
 
     */
     if (vparams->displayFlags().getShowWireFrame())

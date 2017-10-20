@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -166,7 +163,7 @@ public:
             {
                 if ((nbCol/BSIZE)*(nbRow/BSIZE) > -allocsize)
                 {
-                    std::cerr << "ERROR: cannot resize preallocated matrix to size ("<<nbRow<<","<<nbCol<<")"<<std::endl;
+                    msg_error("BTDLinearSolver") << "Cannot resize preallocated matrix to size ("<<nbRow<<","<<nbCol<<")." ;
                     return;
                 }
             }
@@ -546,7 +543,7 @@ public:
             {
                 if ((nbRow/BSIZE)*3 > -allocsize)
                 {
-                    std::cerr << "ERROR: cannot resize preallocated matrix to size ("<<nbRow<<","<<nbCol<<")"<<std::endl;
+                    msg_error("BTDLinearSolver") << "Cannot resize preallocated matrix to size ("<<nbRow<<","<<nbCol<<")" ;
                     return;
                 }
             }
@@ -802,14 +799,14 @@ public:
 
     void invert(SubMatrix& Inv, const BlocType& m);
 
-    void invert(Matrix& M);
+    void invert(Matrix& M) override;
 
     void computeMinvBlock(Index i, Index j);
 
     double getMinvElement(Index i, Index j);
 
     /// Solve Mx=b
-    void solve (Matrix& /*M*/, Vector& x, Vector& b);
+    void solve (Matrix& /*M*/, Vector& x, Vector& b) override;
 
 
 
@@ -818,11 +815,11 @@ public:
     /// @param result the variable where the result will be added
     /// @param J the matrix J to use
     /// @return false if the solver does not support this operation, of it the system matrix is not invertible
-    bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact);
+    bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact) override;
 
 
     /// Init the partial solve
-    void init_partial_solve();
+    void init_partial_solve() override;
 
     using MatrixLinearSolver<Matrix,Vector>::partial_solve;
     /// partial solve :
@@ -831,7 +828,7 @@ public:
     /// partial_x is a sparse vector (with sparse map given) that provide the result of M x = b+db
     /// Solve Mx=b
     //void partial_solve_old(ListIndex&  Iout, ListIndex&  Iin , bool NewIn);
-    void partial_solve(ListIndex&  Iout, ListIndex&  Iin , bool NewIn);
+    void partial_solve(ListIndex&  Iout, ListIndex&  Iin , bool NewIn) override;
 
 
 

@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -25,18 +22,14 @@
 #include <SofaOpenglVisual/OglModel.h>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/gl/RAII.h>
 #include <sofa/helper/vector.h>
-#include <sofa/defaulttype/Quat.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sstream>
 #include <string.h>
-
-//#ifdef SOFA_HAVE_GLEW
-//#include <sofa/helper/gl/GLSLShader.h>
-//#endif // SOFA_HAVE_GLEW
+#include <sofa/helper/types/RGBAColor.h>
 
 //#define NO_VBO
 //#define DEBUG_DRAW
@@ -68,11 +61,11 @@ const T* getData(const sofa::helper::vector<T>& v) { return &v[0]; }
 OglModel::OglModel()
     : blendTransparency(initData(&blendTransparency, (bool) true, "blendTranslucency", "Blend transparent parts"))
     , premultipliedAlpha(initData(&premultipliedAlpha, (bool) false, "premultipliedAlpha", "is alpha premultiplied ?"))
-#ifndef SOFA_HAVE_GLEW
+    #ifndef SOFA_HAVE_GLEW
     , useVBO(initData(&useVBO, (bool) false, "useVBO", "Use VBO for rendering"))
-#else
+    #else
     , useVBO(initData(&useVBO, (bool) true, "useVBO", "Use VBO for rendering"))
-#endif
+    #endif
     , writeZTransparent(initData(&writeZTransparent, (bool) false, "writeZTransparent", "Write into Z Buffer for Transparent Object"))
     , alphaBlend(initData(&alphaBlend, (bool) false, "alphaBlend", "Enable alpha blending"))
     , depthTest(initData(&depthTest, (bool) true, "depthTest", "Enable depth testing"))
@@ -97,20 +90,17 @@ OglModel::OglModel()
     sofa::helper::OptionsGroup* blendEquationOptions = blendEquation.beginEdit();
     blendEquationOptions->setNames(4,"GL_FUNC_ADD", "GL_FUNC_SUBTRACT", "GL_MIN", "GL_MAX"); // .. add other options
     blendEquationOptions->setSelectedItem(0);
-    //this->f_printLog.setValue(true);
     blendEquation.endEdit();
 
     // alpha blend values
     sofa::helper::OptionsGroup* sourceFactorOptions = sourceFactor.beginEdit();
     sourceFactorOptions->setNames(4,"GL_ZERO", "GL_ONE", "GL_SRC_ALPHA", "GL_ONE_MINUS_SRC_ALPHA"); // .. add other options
     sourceFactorOptions->setSelectedItem(2);
-    //this->f_printLog.setValue(true);
     sourceFactor.endEdit();
 
     sofa::helper::OptionsGroup* destFactorOptions = destFactor.beginEdit();
     destFactorOptions->setNames(4,"GL_ZERO", "GL_ONE", "GL_SRC_ALPHA", "GL_ONE_MINUS_SRC_ALPHA"); // .. add other options
     destFactorOptions->setSelectedItem(3);
-    //this->f_printLog.setValue(true);
     destFactor.endEdit();
 
     sofa::helper::OptionsGroup* primitiveTypeOptions = primitiveType.beginEdit();
@@ -191,8 +181,8 @@ void OglModel::drawGroup(int ig, bool transparent)
     if (!tex && m.useTexture && m.activated)
     {
         //get the texture id corresponding to the current material
-        int indexInTextureArray = materialTextureIdMap[g.materialId];
-        if (textures[indexInTextureArray])
+        unsigned int indexInTextureArray = materialTextureIdMap[g.materialId];
+        if (indexInTextureArray < textures.size() && textures[indexInTextureArray])
         {
             textures[indexInTextureArray]->bind();
         }
@@ -204,7 +194,7 @@ void OglModel::drawGroup(int ig, bool transparent)
             glBindBufferARB(GL_ARRAY_BUFFER, vbo);
             glTexCoordPointer(2, GL_FLOAT, 0, (char*)NULL + (vertices.size()*sizeof(vertices[0]))
                     + (vnormals.size()*sizeof(vnormals[0]))
-                             );
+                    );
             glBindBufferARB(GL_ARRAY_BUFFER, 0);
         }
         else
@@ -215,52 +205,18 @@ void OglModel::drawGroup(int ig, bool transparent)
             glTexCoordPointer(2, GL_FLOAT, 0, getData(vtexcoords));
         }
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-//
-//        if (hasTangents)
-//        {
-//            glClientActiveTexture(GL_TEXTURE1);
-//            glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-//            if(VBOGenDone && useVBO.getValue())
-//            {
-//                glBindBufferARB(GL_ARRAY_BUFFER, vbo);
-//                glTexCoordPointer(3, GL_FLOAT, 0,
-//                                  (char*)NULL + (vertices.size()*sizeof(vertices[0])) +
-//                                  (vnormals.size()*sizeof(vnormals[0])) +
-//                                  (vtexcoords.size()*sizeof(vtexcoords[0])));
-//                glBindBufferARB(GL_ARRAY_BUFFER, 0);
-//            }
-//            else
-//                glTexCoordPointer(3, GL_FLOAT, 0, vtangents.getData());
-//
-//            glClientActiveTexture(GL_TEXTURE2);
-//            glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-//            if(VBOGenDone && useVBO.getValue())
-//            {
-//                glBindBufferARB(GL_ARRAY_BUFFER, vbo);
-//                glTexCoordPointer(3, GL_FLOAT, 0,
-//                                  (char*)NULL + (vertices.size()*sizeof(vertices[0])) +
-//                                  (vnormals.size()*sizeof(vnormals[0])) +
-//                                  (vtexcoords.size()*sizeof(vtexcoords[0])) +
-//                                  (vtangents.size()*sizeof(vtangents[0])));
-//                glBindBufferARB(GL_ARRAY_BUFFER, 0);
-//            }
-//            else
-//                glTexCoordPointer(3, GL_FLOAT, 0, vbitangents.getData());
-//
-//            glClientActiveTexture(GL_TEXTURE0);
-//        }
     }
 
-    Vec4f ambient = m.useAmbient?m.ambient:Vec4f();
-    Vec4f diffuse = m.useDiffuse?m.diffuse:Vec4f();
-    Vec4f specular = m.useSpecular?m.specular:Vec4f();
-    Vec4f emissive = m.useEmissive?m.emissive:Vec4f();
+    RGBAColor ambient = m.useAmbient?m.ambient:RGBAColor::black();
+    RGBAColor diffuse = m.useDiffuse?m.diffuse:RGBAColor::black();
+    RGBAColor specular = m.useSpecular?m.specular:RGBAColor::black();
+    RGBAColor emissive = m.useEmissive?m.emissive:RGBAColor::black();
     float shininess = m.useShininess?m.shininess:45;
     if( shininess > 128.0f ) shininess = 128.0f;
 
     if (shininess == 0.0f)
     {
-        specular.clear();
+        specular = RGBAColor::black() ;
         shininess = 1;
     }
 
@@ -271,18 +227,18 @@ void OglModel::drawGroup(int ig, bool transparent)
         //diffuse[3] = 0;
         specular[3] = 0;
     }
-    glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT, ambient.ptr());
-    glMaterialfv (GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse.ptr());
-    glMaterialfv (GL_FRONT_AND_BACK, GL_SPECULAR, specular.ptr());
-    glMaterialfv (GL_FRONT_AND_BACK, GL_EMISSION, emissive.ptr());
+    glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT, ambient.data());
+    glMaterialfv (GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse.data());
+    glMaterialfv (GL_FRONT_AND_BACK, GL_SPECULAR, specular.data());
+    glMaterialfv (GL_FRONT_AND_BACK, GL_EMISSION, emissive.data());
     glMaterialf (GL_FRONT_AND_BACK, GL_SHININESS, shininess);
     const bool useBufferObjects = (VBOGenDone && useVBO.getValue());
     const bool drawPoints = (primitiveType.getValue().getSelectedId() == 3);
     if (drawPoints)
     {
-        //Disable lighting if we draw points 
+        //Disable lighting if we draw points
         glDisable(GL_LIGHTING);
-        glColor4fv(diffuse.ptr());
+        glColor4fv(diffuse.data());
         glDrawArrays(GL_POINTS, 0, vertices.size());
         glEnable(GL_LIGHTING);
         glColor4f(1.0,1.0,1.0,1.0);
@@ -295,13 +251,13 @@ void OglModel::drawGroup(int ig, bool transparent)
             glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboEdges);
         else
 #endif
-        indices = edges.getData();
+            indices = edges.getData();
 
         GLenum prim = GL_LINES;
         switch (primitiveType.getValue().getSelectedId())
         {
         case 1:
-            serr << "LINES_ADJACENCY primitive type invalid for edge topologies" << sendl;
+            msg_warning() << "LINES_ADJACENCY primitive type invalid for edge topologies" ;
             break;
         case 2:
 #if defined(GL_PATCHES) && defined(SOFA_HAVE_GLEW)
@@ -337,7 +293,7 @@ void OglModel::drawGroup(int ig, bool transparent)
         switch (primitiveType.getValue().getSelectedId())
         {
         case 1:
-            serr << "LINES_ADJACENCY primitive type invalid for triangular topologies" << sendl;
+            msg_warning() << "LINES_ADJACENCY primitive type invalid for triangular topologies" ;
             break;
         case 2:
 #if defined(GL_PATCHES) && defined(SOFA_HAVE_GLEW)
@@ -375,11 +331,11 @@ void OglModel::drawGroup(int ig, bool transparent)
         {
         case 1:
 #ifndef GL_LINES_ADJACENCY_EXT
-            serr << "GL_LINES_ADJACENCY_EXT not defined, please activage GLEW" << sendl;
+            msg_warning() << "GL_LINES_ADJACENCY_EXT not defined, please activage GLEW" ;
 #else
-            {
-                prim = GL_LINES_ADJACENCY_EXT;
-            }
+        {
+            prim = GL_LINES_ADJACENCY_EXT;
+        }
 #endif
             break;
         case 2:
@@ -405,8 +361,8 @@ void OglModel::drawGroup(int ig, bool transparent)
 
     if (!tex && m.useTexture && m.activated)
     {
-        int indexInTextureArray = materialTextureIdMap[g.materialId];
-        if (textures[indexInTextureArray])
+        unsigned int indexInTextureArray = materialTextureIdMap[g.materialId];
+        if (indexInTextureArray < textures.size() && textures[indexInTextureArray])
         {
             textures[indexInTextureArray]->unbind();
         }
@@ -418,35 +374,26 @@ void OglModel::drawGroup(int ig, bool transparent)
 void OglModel::drawGroups(bool transparent)
 {
     if(isToPrint.getValue()==true) {
-    m_positions.setPersistent(false);
-    m_vnormals.setPersistent(false);
-    m_vtexcoords.setPersistent(false);
-    m_triangles.setPersistent(false);}
+        m_positions.setPersistent(false);
+        m_vnormals.setPersistent(false);
+        m_vtexcoords.setPersistent(false);
+        m_triangles.setPersistent(false);}
 
     helper::ReadAccessor< Data< helper::vector<FaceGroup> > > groups = this->groups;
 
-    //for (unsigned int i=0; i<xforms.size(); i++)
+    if (groups.empty())
     {
-        //    float matrix[16];
-        //    xforms[i].writeOpenGlMatrix(matrix);
-        //    pushTransformMatrix(matrix);
-
-        if (groups.empty())
-            drawGroup(-1, transparent);
-        else
-        {
-            for (unsigned int i=0; i<groups.size(); ++i)
-                drawGroup(i, transparent);
-        }
-
-        //    popTransformMatrix();
+        drawGroup(-1, transparent);
+    }
+    else
+    {
+        for (unsigned int i=0; i<groups.size(); ++i)
+            drawGroup(i, transparent);
     }
 }
 
 void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool transparent)
 {
-//    m_vtexcoords.updateIfDirty();
-//    serr<<" OglModel::internalDraw()"<<sendl;
     if (!vparams->displayFlags().getShowVisualModels()) return;
 
     if (vparams->displayFlags().getShowWireFrame())
@@ -461,7 +408,6 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
 
     glEnable(GL_LIGHTING);
 
-    //Enable<GL_BLEND> blending;
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
     glColor3f(1.0 , 1.0, 1.0);
 
@@ -485,7 +431,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
     glEnableClientState(GL_NORMAL_ARRAY);
     glEnableClientState(GL_VERTEX_ARRAY);
 
-    if ((tex || putOnlyTexCoords.getValue()) )//&& !numberOfTextures)
+    if ((tex || putOnlyTexCoords.getValue()) )
     {
         if(tex)
         {
@@ -515,7 +461,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
             {
                 glBindBufferARB(GL_ARRAY_BUFFER, vbo);
                 glTexCoordPointer(3, GL_FLOAT, 0,
-                        (char*)NULL + (vertices.size()*sizeof(vertices[0])) +
+                                  (char*)NULL + (vertices.size()*sizeof(vertices[0])) +
                         (vnormals.size()*sizeof(vnormals[0])) +
                         (vtexcoords.size()*sizeof(vtexcoords[0])));
                 glBindBufferARB(GL_ARRAY_BUFFER, 0);
@@ -529,7 +475,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
             {
                 glBindBufferARB(GL_ARRAY_BUFFER, vbo);
                 glTexCoordPointer(3, GL_FLOAT, 0,
-                        (char*)NULL + (vertices.size()*sizeof(vertices[0])) +
+                                  (char*)NULL + (vertices.size()*sizeof(vertices[0])) +
                         (vnormals.size()*sizeof(vnormals[0])) +
                         (vtexcoords.size()*sizeof(vtexcoords[0])) +
                         (vtangents.size()*sizeof(vtangents[0])));
@@ -589,12 +535,12 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
     {
         glLineWidth(lineWidth.getValue());
     }
-    
+
     if (pointSize.isSet())
     {
         glPointSize(pointSize.getValue());
     }
-    
+
     if (pointSmooth.getValue())
     {
         glEnable(GL_POINT_SMOOTH);
@@ -607,7 +553,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
     }
 
     drawGroups(transparent);
-    
+
     if (lineSmooth.getValue())
     {
         glDisable(GL_LINE_SMOOTH);
@@ -650,7 +596,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
         glDepthMask(GL_TRUE);
     }
 
-    if ( (tex || putOnlyTexCoords.getValue()) )//&& !numberOfTextures)
+    if ( (tex || putOnlyTexCoords.getValue()) )
     {
         if (tex)
         {
@@ -676,7 +622,6 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
     {
         glDisable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        //glBlendFunc(GL_ONE, GL_ZERO);
         glDepthMask(GL_TRUE);
     }
 
@@ -685,10 +630,6 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
 
     if (vparams->displayFlags().getShowNormals())
     {
-//#ifdef SOFA_HAVE_GLEW
-//        GLhandleARB currentShader = sofa::helper::gl::GLSLShader::GetActiveShaderProgram();
-//        sofa::helper::gl::GLSLShader::SetActiveShaderProgram(0);
-//#endif // SOFA_HAVE_GLEW
         glColor3f (1.0, 1.0, 1.0);
         for (unsigned int i=0; i<xforms.size(); i++)
         {
@@ -708,11 +649,7 @@ void OglModel::internalDraw(const core::visual::VisualParams* vparams, bool tran
 
             glPopMatrix();
         }
-//#ifdef SOFA_HAVE_GLEW
-//        sofa::helper::gl::GLSLShader::SetActiveShaderProgram(currentShader);
-//#endif // SOFA_HAVE_GLEW
     }
-//    m_vtexcoords.updateIfDirty();
 }
 
 bool OglModel::hasTransparent()
@@ -760,8 +697,8 @@ bool OglModel::loadTextures()
 
             if (!sofa::helper::system::DataRepository.findFile(textureFile))
             {
-                serr   << "ERROR: Texture \"" << this->materials.getValue()[*i].textureFilename << "\" not found"
-                        << " in material " << this->materials.getValue()[*i].name <<  sendl;
+                msg_error() << "Texture \"" << this->materials.getValue()[*i].textureFilename << "\" not found"
+                            << " in material " << this->materials.getValue()[*i].name ;
                 result = false;
                 continue;
             }
@@ -770,7 +707,7 @@ bool OglModel::loadTextures()
         helper::io::Image *img = helper::io::Image::Create(textureFile);
         if (!img)
         {
-            serr << "ERROR: couldn't create an image from file " << this->materials.getValue()[*i].textureFilename << sendl;
+            msg_error() << "couldn't create an image from file " << this->materials.getValue()[*i].textureFilename ;
             result = false;
             continue;
         }
@@ -780,54 +717,8 @@ bool OglModel::loadTextures()
     }
 
     if (textures.size() != activatedTextures.size())
-        serr << "ERROR: " << (activatedTextures.size() - textures.size()) << " textures couldn't be loaded" <<  sendl;
+        msg_error() << (activatedTextures.size() - textures.size()) << " textures couldn't be loaded" ;
 
-
-
-    /**********************************************
-     * Load textures for bump mapping
-     *********************************************/
-//
-//    for (unsigned int i = 0 ; i < this->materials.getValue().size() ; i++)
-//    {
-//       //we count only the bump texture with an activated material
-//       if (this->materials.getValue()[i].useBumpMapping && this->materials.getValue()[i].activated)
-//       {
-//            std::string textureFile(this->materials.getValue()[i].bumpTextureFilename);
-//
-//            if (!sofa::helper::system::DataRepository.findFile(textureFile))
-//            {
-//                textureFile = this->fileMesh.getFullPath();
-//                unsigned int position = textureFile.rfind("/");
-//                textureFile.replace (position+1,textureFile.length() - position, this->materials.getValue()[i].bumpTextureFilename);
-////                std::cout << "Loading texture: " << textureFile << std::endl;
-//
-//                if (!sofa::helper::system::DataRepository.findFile(textureFile))
-//                {
-//                    std::cout <<  std::endl;
-//                    serr << "Texture \"" << this->materials.getValue()[i].bumpTextureFilename << "\" not found"
-//                            << " in material " << this->materials.getValue()[i].name << " for OglModel " << this->name
-//                            << "(\""<< this->fileMesh.getFullPath() << "\")" << sendl;
-//                    break;
-//                }
-//            }
-//
-//            helper::io::Image *img = helper::io::Image::Create(textureFile);
-//            if (!img)
-//            {
-//                std::cout <<  std::endl;
-//               std::cerr << "Error:OglModel:loadTextures: couldn't create an image from file " << this->materials.getValue()[i].bumpTextureFilename << std::endl;
-//               return false;
-//            }
-//            helper::gl::Texture * text = new helper::gl::Texture(img, true, true, false, srgbTexturing.getValue());
-//            materialTextureIdMap.insert(std::pair<int, int>(i,textures.size()));
-//            textures.push_back( text );
-//
-//            std::cout << "\r\033[K" << i+1 << "/" << this->materials.getValue().size() << " textures loaded for bump mapping for OglModel " << this->getName()
-//                    << "(loading "<<textureFile << ")"<< std::flush;
-//       }
-//    }
-//    std::cout << "\r\033[K" << std::flush;
     return result;
 }
 
@@ -840,23 +731,23 @@ void OglModel::initVisual()
     canUseVBO = false;
 #else
 #if !defined(PS3)
-	static bool vboAvailable = false; // check the vbo availability
+    static bool vboAvailable = false; // check the vbo availability
 
-	static bool init = false;
-	if(!init)
+    static bool init = false;
+    if(!init)
     {
         vboAvailable = CanUseGlExtension( "GL_ARB_vertex_buffer_object" );
-		init = true;
-	}
+        init = true;
+    }
 
     canUseVBO = vboAvailable;
 #elif PS3
-	canUseVBO = true;
+    canUseVBO = true;
 #endif
 
     if (useVBO.getValue() && !canUseVBO)
     {
-        serr << "OglModel : VBO is not supported by your GPU" << sendl;
+        msg_warning() << "OglModel : VBO is not supported by your GPU" ;
     }
 
 #endif
@@ -864,23 +755,21 @@ void OglModel::initVisual()
 #if defined(SOFA_HAVE_GLEW) && !defined(PS3)
     if (primitiveType.getValue().getSelectedId() == 1 && !GLEW_EXT_geometry_shader4)
     {
-        serr << "GL_EXT_geometry_shader4 not supported by your graphics card and/or OpenGL driver." << sendl;
+        msg_warning() << "GL_EXT_geometry_shader4 not supported by your graphics card and/or OpenGL driver." ;
     }
 
-//#ifdef GL_ARB_tessellation_shader
     canUsePatches = (glewIsSupported("GL_ARB_tessellation_shader")!=0);
-//#endif
 
     if (primitiveType.getValue().getSelectedId() == 2 && !canUsePatches)
     {
 #ifdef GL_ARB_tessellation_shader
-        serr << "GL_ARB_tessellation_shader not supported by your graphics card and/or OpenGL driver." << sendl;
+        msg_warning() << "GL_ARB_tessellation_shader not supported by your graphics card and/or OpenGL driver." ;
 #else
-        serr << "GL_ARB_tessellation_shader not defined, please update GLEW to 1.5.4+" << sendl;
+        msg_warning() << "GL_ARB_tessellation_shader not defined, please update GLEW to 1.5.4+" ;
 #endif
-        serr << "GL Version: " << glGetString(GL_VERSION) << sendl;
-        serr << "GL Vendor : " << glGetString(GL_VENDOR) << sendl;
-        serr << "GL Extensions: " << glGetString(GL_EXTENSIONS) << sendl;
+        msg_warning() << "GL Version: " << glGetString(GL_VERSION) ;
+        msg_warning() << "GL Vendor : " << glGetString(GL_VENDOR) ;
+        msg_warning() << "GL Extensions: " << glGetString(GL_EXTENSIONS) ;
     }
 #endif
 
@@ -980,9 +869,9 @@ void OglModel::initVertexBuffer()
     glBindBufferARB(GL_ARRAY_BUFFER, vbo);
     //Vertex Buffer creation
     glBufferDataARB(GL_ARRAY_BUFFER,
-            totalSize,
-            NULL,
-            GL_DYNAMIC_DRAW);
+                    totalSize,
+                    NULL,
+                    GL_DYNAMIC_DRAW);
 
 
     updateVertexBuffer();
@@ -1053,35 +942,35 @@ void OglModel::updateVertexBuffer()
     glBindBufferARB(GL_ARRAY_BUFFER, vbo);
     //Positions
     glBufferSubDataARB(GL_ARRAY_BUFFER,
-            0,
-            positionsBufferSize,
-            vertices.getData());
+                       0,
+                       positionsBufferSize,
+                       vertices.getData());
 
     //Normals
     glBufferSubDataARB(GL_ARRAY_BUFFER,
-            positionsBufferSize,
-            normalsBufferSize,
-            vnormals.getData());
+                       positionsBufferSize,
+                       normalsBufferSize,
+                       vnormals.getData());
 
     //Texture coords
     if(tex || putOnlyTexCoords.getValue() ||!textures.empty())
     {
         glBufferSubDataARB(GL_ARRAY_BUFFER,
-                positionsBufferSize + normalsBufferSize,
-                textureCoordsBufferSize,
-                getData(vtexcoords));
+                           positionsBufferSize + normalsBufferSize,
+                           textureCoordsBufferSize,
+                           getData(vtexcoords));
 
         if (hasTangents)
         {
             glBufferSubDataARB(GL_ARRAY_BUFFER,
-                    positionsBufferSize + normalsBufferSize + textureCoordsBufferSize,
-                    tangentsBufferSize,
-                    vtangents.getData());
+                               positionsBufferSize + normalsBufferSize + textureCoordsBufferSize,
+                               tangentsBufferSize,
+                               vtangents.getData());
 
             glBufferSubDataARB(GL_ARRAY_BUFFER,
-                    positionsBufferSize + normalsBufferSize + textureCoordsBufferSize + tangentsBufferSize,
-                    bitangentsBufferSize,
-                    vbitangents.getData());
+                               positionsBufferSize + normalsBufferSize + textureCoordsBufferSize + tangentsBufferSize,
+                               bitangentsBufferSize,
+                               vbitangents.getData());
         }
     }
 
@@ -1147,10 +1036,10 @@ void OglModel::updateBuffers()
             else
             {
                 if(oldVerticesSize != vertices.size() ||
-                   oldNormalsSize != normals.size() ||
-                   oldTexCoordsSize != texCoords.size() ||
-                   oldTangentsSize != tangents.size() ||
-                   oldBitangentsSize != bitangents.size())
+                        oldNormalsSize != normals.size() ||
+                        oldTexCoordsSize != texCoords.size() ||
+                        oldTangentsSize != tangents.size() ||
+                        oldBitangentsSize != bitangents.size())
                     initVertexBuffer();
                 else
                     updateVertexBuffer();
@@ -1238,8 +1127,7 @@ GLenum OglModel::getGLenum(const char* c ) const
 #endif // SOFA_HAVE_GLEW
     else
     {
-        // error: not valid
-        std::cerr   << " OglModel - not valid or not supported openGL enum value: " << c ;
+        msg_warning() << " OglModel - not valid or not supported openGL enum value: " << c ;
         return GL_ZERO;
     }
 

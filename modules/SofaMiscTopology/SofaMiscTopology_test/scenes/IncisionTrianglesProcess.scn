@@ -1,5 +1,6 @@
 <!-- Automatic incision example: incision path is define in: ./IncisionTrianglesProcess.txt -->
 <Node name="root" gravity="0 0 -50" dt="0.01">
+    <RequiredPlugin name='SofaMiscCollision'/>
     <VisualStyle displayFlags="showVisual showWireframe" />
     <DefaultPipeline name="default0" verbose="0" />
     <BruteForceDetection name="N2" />
@@ -7,7 +8,7 @@
     <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
     <TreeCollisionGroupManager name="default2" />
     <Node name="SquareGravity" gravity="0 0 0">
-        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="100" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MeshGmshLoader name="loader" filename="mesh/square3.msh" createSubelements="true"/>
         <MechanicalObject src="@loader" template="Vec3d" name="default4" scale3d="10 10 10" restScale="1" />

@@ -1,3 +1,24 @@
+/******************************************************************************
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 #include <SofaBaseCollision/RigidCapsuleModel.h>
 
 #include <sofa/helper/system/config.h>
@@ -114,7 +135,6 @@ void TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::computeBounding
     }
 
     if (!isMoving() && !cubeModel->empty() && !updated){
-        std::cout<<"immobile..."<<std::endl;
         return; // No need to recompute BBox if immobile
     }
 
@@ -122,8 +142,6 @@ void TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::computeBounding
     if (!empty())
     {
         typename TCapsule<defaulttype::StdRigidTypes<3,MyReal> >::Real r;
-
-        //const typename TCapsule<StdRigidTypes<3,MyReal> >::Real distance = (typename TCapsule<StdRigidTypes<3,MyReal> >::Real)this->proximity.getValue();
         for (int i=0; i<ncap; i++)
         {
             const Coord p1 = point1(i);
@@ -161,7 +179,7 @@ void TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::draw(const core
 
 template<class MyReal>
 void TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::draw(const core::visual::VisualParams* vparams)
-{   
+{
     if (vparams->displayFlags().getShowCollisionModels())
     {
         sofa::defaulttype::Vec<4,float> col4f(getColor4f());
@@ -169,8 +187,6 @@ void TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::draw(const core
         vparams->drawTool()->setLightingEnabled(true); //Enable lightning
 
         // Check topological modifications
-        //const int npoints = _mstate->getSize()/2;
-
         for (int i=0; i<size; i++){
             vparams->drawTool()->drawCapsule(point1(i),point2(i),(float)radius(i),col4f);
         }
@@ -279,5 +295,3 @@ Data<typename TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::VecRea
 }
 }
 }
-
-

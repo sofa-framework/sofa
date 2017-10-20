@@ -1,8 +1,32 @@
+/******************************************************************************
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 // Base class
 #include <SofaTest/ForceField_test.h>
 //Force field
 #include <SofaBoundaryCondition/QuadPressureForceField.h>
 #include <SofaBaseTopology/TopologySparseData.inl>
+
+#include <SofaTest/TestMessageHandler.h>
+
 
 namespace sofa {
 
@@ -27,6 +51,9 @@ struct QuadPressureForceField_test : public ForceField_test<_QuadPressureForceFi
 
     QuadPressureForceField_test(): Inherited::ForceField_test(std::string(SOFABOUNDARYCONDITION_TEST_SCENES_DIR) + "/" + "QuadPressureForceField.scn")
     {
+        // potential energy is not implemented and won't be tested
+        this->flags &= ~Inherited::TEST_POTENTIAL_ENERGY;
+
         // Set vectors, using DataTypes::set to cope with tests in dimension 2
         //Position
         x.resize(4);
@@ -54,7 +81,7 @@ struct QuadPressureForceField_test : public ForceField_test<_QuadPressureForceFi
         Inherited::force->dmax.setValue(0.01);
         Inherited::force->pressure=Coord(0,0,0.2);
     }
-    
+
     //Test the value of the force it should be equal for each vertex to Pressure*area/4
     void test_valueForce()
     {
@@ -72,7 +99,7 @@ struct QuadPressureForceField_test : public ForceField_test<_QuadPressureForceFi
         {
             sofa::simulation::getSimulation()->animate(Inherited::node.get(),0.5);
         }
-        
+
         // run the forcefield_test
         Inherited::run_test( x, v, f );
     }
@@ -82,7 +109,7 @@ struct QuadPressureForceField_test : public ForceField_test<_QuadPressureForceFi
 // Types to instantiate.
 typedef testing::Types<
     component::forcefield::QuadPressureForceField<defaulttype::Vec3Types>
-> TestTypes; 
+> TestTypes;
 
 
 
@@ -92,6 +119,7 @@ TYPED_TEST_CASE(QuadPressureForceField_test, TestTypes);
 // first test case: test force value
 TYPED_TEST( QuadPressureForceField_test , quadPressureForceFieldTest)
 {
+    EXPECT_MSG_NOEMIT(Error) ;
     this->errorMax *= 10;
     this->debug = false;
 
@@ -101,6 +129,7 @@ TYPED_TEST( QuadPressureForceField_test , quadPressureForceFieldTest)
 // second test case: test that force is constant
 TYPED_TEST( QuadPressureForceField_test , constantQuadPressureForceFieldTest)
 {
+    EXPECT_MSG_NOEMIT(Error) ;
     this->errorMax *= 10;
     this->debug = false;
 

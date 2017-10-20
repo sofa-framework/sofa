@@ -47,7 +47,7 @@ template <class I1, class I2, class O>
 void RigidScaleToRigidMultiMapping<I1, I2, O>::reset()
 {
     // Reset of the different parameter
-	this->setup();
+	//this->setup();
 	// Call of the parent method
 	Inherit::reset();
 }
@@ -56,7 +56,7 @@ template <class I1, class I2, class O>
 void RigidScaleToRigidMultiMapping<I1,I2,O>::reinit()
 {	
 	// Update of the different parameter
-	this->setup();	
+	//this->setup();	
 	// Call of the parent method
 	Inherit::reinit();
 }
@@ -297,7 +297,7 @@ void RigidScaleToRigidMultiMapping<I1, I2, O>::setup()
         for(unsigned int i=0; i<xout_const.size(); ++i) {
             ind0 = index_const[3 * i];
             ind1 = index_const[3 * i + 1];
-            this->relativeCoord.push_back(-x1_const[ind1]+xout_const[ind0]);
+            this->relativeCoord.push_back(I1::mult(I1::inverse(x1_const[ind1]), xout_const[ind0]));
         }
 		// Initialization of the jacobian matrix size
 		_J1.resizeBlocks(outSize, in1Size);

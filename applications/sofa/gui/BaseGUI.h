@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -13,11 +13,8 @@
 * more details.                                                               *
 *                                                                             *
 * You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* with this program. If not, see <http://www.gnu.org/licenses/>.              *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -79,7 +76,7 @@ public:
     virtual void setViewerConfiguration(sofa::component::configurationsetting::ViewerSetting* /*viewerConf*/) {}
     virtual void setViewerResolution(int /* width */, int /* height */) {}
     virtual void setFullScreen() {}
-    virtual void setBackgroundColor(const defaulttype::Vector3& /*color*/) {}
+    virtual void setBackgroundColor(const defaulttype::RGBAColor& /*color*/) {}
     virtual void setBackgroundImage(const std::string& /*image*/) {}
 
     virtual BaseViewer* getViewer() {return NULL;}
@@ -116,19 +113,19 @@ protected:
     /// The destructor should not be called directly. Use the closeGUI() method instead.
     virtual ~BaseGUI();
 
-    static std::string mGuiName; // would like to make it const but not possible with the current implementation of RealGUI...
+    static std::string mGuiName;
     static std::string configDirectoryPath;
     static std::string screenshotDirectoryPath;
     static const char* mProgramName;
 };
 
 ////// TO declare into BaseViewer
-//setScene();
-//resetView();
-//setBackgroundColour(...)
-//setBackgroundImage(...)
-//setScene()
-//getSceneFileName()
+///setScene();
+///resetView();
+///setBackgroundColour(...)
+///setBackgroundImage(...)
+///setScene()
+///getSceneFileName()
 
 } // namespace gui
 

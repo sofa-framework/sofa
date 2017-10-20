@@ -3,7 +3,7 @@
   <Node name="M1">
     <MeshVTKLoader name="volume" filename="mesh/raptorTetra_19409.vtu" onlyAttachedPoints="false" />
 <!--    <MeshObjLoader name="surface" filename="mesh/raptor8k1.obj" />-->
-    <EulerImplicit />
+    <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGLinearSolver iterations="25" tolerance="1e-6" threshold="1e-20"/>
 <!--	<ShewchukPCGLinearSolver iterations="25" tolerance="1e-3" preconditioners="precond" />
 	<JacobiPreconditioner template="CudaDiagonalMatrixf" name="precond" /> -->

@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Plugins                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -26,11 +23,13 @@
 #include "misc/CompliantSolverMerger.h"
 #include "contact/CompliantContact.h"
 
+#ifdef SOFA_HAVE_SOFAPYTHON
 #include <SofaPython/PythonCommon.h>
 #include <SofaPython/PythonMacros.h>
 #include <SofaPython/PythonFactory.h>
-#include "misc/python.h"
-extern PyMethodDef SofaCompliantModuleMethods[]; // functions of the SofaCompliant python module
+extern PyMethodDef _CompliantModuleMethods[]; // functions of the _Compliant python module
+#include "python/Binding_AssembledSystem.h"
+#endif
 
 
 namespace sofa
@@ -60,15 +59,21 @@ void initExternalModule()
 
         component::collision::CompliantSolverMerger::add();
 
-        // previous Eigen versions have a critical bug (v.noalias()+=w does not work in every situations)
-        BOOST_STATIC_ASSERT( EIGEN_WORLD_VERSION>=3 && EIGEN_MAJOR_VERSION>=2 && EIGEN_MINOR_VERSION>=5 );
+        // previous Eigen versions have a critical bug (v.noalias()+=w does not work in some situations)
+        static_assert( EIGEN_WORLD_VERSION>=3 && EIGEN_MAJOR_VERSION>=2 && EIGEN_MINOR_VERSION>=5, "" );
 
-        // adding SofaCompliant python module
+#ifdef SOFA_HAVE_SOFAPYTHON
+        // adding _Compliant python module
         if( PythonFactory::s_sofaPythonModule ) // add the module only if the Sofa module exists (SofaPython is loaded)
         {
-            static PyObject *s_sofaCompliantPythonModule = SP_INIT_MODULE(SofaCompliant);
-            (void)s_sofaCompliantPythonModule;
+            simulation::PythonEnvironment::gil lock(__func__);
+            static PyObject *s__CompliantPythonModule = SP_INIT_MODULE(_Compliant);
+
+            // adding more bindings to the _Compliant module
+            SP_ADD_CLASS( s__CompliantPythonModule, AssembledSystem );
         }
+#endif
+
     }
 }
 

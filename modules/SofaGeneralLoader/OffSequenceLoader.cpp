@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -29,7 +26,7 @@
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sstream>
-
+#include <fstream>
 
 namespace sofa
 {
@@ -55,18 +52,18 @@ OffSequenceLoader::OffSequenceLoader():sofa::component::loader::MeshOffLoader()
 {
     this->f_listening.setValue(true);
 
-    edges.setDisplayed(false);
-    triangles.setDisplayed(false);
-    quads.setDisplayed(false);
-    polygons.setDisplayed(false);
-    tetrahedra.setDisplayed(false);
-    hexahedra.setDisplayed(false);
-    edgesGroups.setDisplayed(false);
-    trianglesGroups.setDisplayed(false);
-    quadsGroups.setDisplayed(false);
-    polygonsGroups.setDisplayed(false);
-    tetrahedraGroups.setDisplayed(false);
-    hexahedraGroups.setDisplayed(false);
+    d_edges.setDisplayed(false);
+    d_triangles.setDisplayed(false);
+    d_quads.setDisplayed(false);
+    d_polygons.setDisplayed(false);
+    d_tetrahedra.setDisplayed(false);
+    d_hexahedra.setDisplayed(false);
+    d_edgesGroups.setDisplayed(false);
+    d_trianglesGroups.setDisplayed(false);
+    d_quadsGroups.setDisplayed(false);
+    d_polygonsGroups.setDisplayed(false);
+    d_tetrahedraGroups.setDisplayed(false);
+    d_hexahedraGroups.setDisplayed(false);
 }
 
 
@@ -121,32 +118,32 @@ void OffSequenceLoader::handleEvent(sofa::core::objectmodel::Event* event)
 
 void OffSequenceLoader::clear()
 {
-    positions.beginWriteOnly()->clear();
-    positions.endEdit();
-    edges.beginWriteOnly()->clear();
-    edges.endEdit();
-    triangles.beginWriteOnly()->clear();
-    triangles.endEdit();
-    quads.beginWriteOnly()->clear();
-    quads.endEdit();
-    polygons.beginWriteOnly()->clear();
-    polygons.endEdit();
-    tetrahedra.beginWriteOnly()->clear();
-    tetrahedra.endEdit();
-    hexahedra.beginWriteOnly()->clear();
-    hexahedra.endEdit();
-    edgesGroups.beginWriteOnly()->clear();
-    edgesGroups.endEdit();
-    trianglesGroups.beginWriteOnly()->clear();
-    trianglesGroups.endEdit();
-    quadsGroups.beginWriteOnly()->clear();
-    quadsGroups.endEdit();
-    polygonsGroups.beginWriteOnly()->clear();
-    polygonsGroups.endEdit();
-    tetrahedraGroups.beginWriteOnly()->clear();
-    tetrahedraGroups.endEdit();
-    hexahedraGroups.beginWriteOnly()->clear();
-    hexahedraGroups.endEdit();
+    d_positions.beginWriteOnly()->clear();
+    d_positions.endEdit();
+    d_edges.beginWriteOnly()->clear();
+    d_edges.endEdit();
+    d_triangles.beginWriteOnly()->clear();
+    d_triangles.endEdit();
+    d_quads.beginWriteOnly()->clear();
+    d_quads.endEdit();
+    d_polygons.beginWriteOnly()->clear();
+    d_polygons.endEdit();
+    d_tetrahedra.beginWriteOnly()->clear();
+    d_tetrahedra.endEdit();
+    d_hexahedra.beginWriteOnly()->clear();
+    d_hexahedra.endEdit();
+    d_edgesGroups.beginWriteOnly()->clear();
+    d_edgesGroups.endEdit();
+    d_trianglesGroups.beginWriteOnly()->clear();
+    d_trianglesGroups.endEdit();
+    d_quadsGroups.beginWriteOnly()->clear();
+    d_quadsGroups.endEdit();
+    d_polygonsGroups.beginWriteOnly()->clear();
+    d_polygonsGroups.endEdit();
+    d_tetrahedraGroups.beginWriteOnly()->clear();
+    d_tetrahedraGroups.endEdit();
+    d_hexahedraGroups.beginWriteOnly()->clear();
+    d_hexahedraGroups.endEdit();
 }
 
 

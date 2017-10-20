@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -130,7 +127,7 @@ public:
     Data<bool> worldGridAligned;
 
 
-    virtual std::string getTemplateName() const    { return templateName(this);    }
+    virtual std::string getTemplateName() const    override { return templateName(this);    }
     static std::string templateName(const MeshToImageEngine<ImageTypes>* = NULL) { return ImageTypes::Name();    }
 
     MeshToImageEngine()    :   Inherited()
@@ -177,7 +174,7 @@ public:
     {
     }
 
-    virtual void init()
+    virtual void init() override
     {
         // backward compatibility (if InsideValue is not set: use first value)
         for( size_t meshId=0; meshId<vf_InsideValues.size() ; ++meshId )
@@ -211,7 +208,7 @@ public:
         im.fill((T)0);
     }
 
-    virtual void reinit()
+    virtual void reinit() override
     {
         vf_positions.resize(f_nbMeshes.getValue());
         vf_edges.resize(f_nbMeshes.getValue());
@@ -225,7 +222,7 @@ public:
     }
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters
-    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
+    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override
     {
         vf_positions.parseSizeData(arg, f_nbMeshes);
         vf_edges.parseSizeData(arg, f_nbMeshes);
@@ -239,7 +236,7 @@ public:
     }
 
     /// Assign the field values stored in the given map of name -> value pairs
-    void parseFields ( const std::map<std::string,std::string*>& str )
+    void parseFields ( const std::map<std::string,std::string*>& str ) override
     {
         vf_positions.parseFieldsSizeData(str, f_nbMeshes);
         vf_edges.parseFieldsSizeData(str, f_nbMeshes);
@@ -254,7 +251,7 @@ public:
 
 protected:
 
-    virtual void update()
+    virtual void update() override
     {
         updateAllInputsIfDirty();
         cleanDirty();
@@ -394,7 +391,7 @@ protected:
 
         for( size_t meshId=0 ; meshId<f_nbMeshes.getValue() ; ++meshId )        rasterizeAndFill ( meshId, im, tr );
 
-        if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: "<<this->getName()<<": Voxelization done"<<std::endl;
+        if(this->f_printLog.getValue()) sout<<this->getName()<<": Voxelization done"<<sendl;
 
     }
 
@@ -410,7 +407,7 @@ protected:
 
         raIndex roiIndices(*this->vf_roiIndices[meshId]);
         if(roiIndices.size() && !this->vf_roiValue[meshId]->getValue().size()) serr<<"at least one roiValue for mesh "<<meshId<<" needs to be specified"<<sendl;
-        if(this->f_printLog.getValue())  for(size_t r=0;r<roiIndices.size();++r) std::cout<<"MeshToImageEngine: "<<this->getName()<<": mesh "<<meshId<<"\t ROI "<<r<<"\t number of vertices= " << roiIndices[r].size() << "\t value= "<<getROIValue(meshId,r)<<std::endl;
+        if(this->f_printLog.getValue())  for(size_t r=0;r<roiIndices.size();++r) sout<<this->getName()<<": mesh "<<meshId<<"\t ROI "<<r<<"\t number of vertices= " << roiIndices[r].size() << "\t value= "<<getROIValue(meshId,r)<<sendl;
 
         /// colors definition
         const T FillColor = (T)getValue(meshId,0);
@@ -423,7 +420,7 @@ protected:
         mask.fill(false);
 
         // draw edges
-        if(this->f_printLog.getValue() && nbedg) std::cout<<"MeshToImageEngine: "<<this->getName()<<":  Voxelizing edges (mesh "<<meshId<<")..."<<std::endl;
+        if(this->f_printLog.getValue() && nbedg) sout<<this->getName()<<":  Voxelizing edges (mesh "<<meshId<<")..."<<sendl;
 
         unsigned int subdivValue = this->subdiv.getValue();
 
@@ -459,7 +456,7 @@ protected:
         }
 
         //  draw filled faces
-        if(this->f_printLog.getValue() && nbtri) std::cout<<"MeshToImageEngine: "<<this->getName()<<":  Voxelizing triangles (mesh "<<meshId<<")..."<<std::endl;
+        if(this->f_printLog.getValue() && nbtri) sout<<this->getName()<<":  Voxelizing triangles (mesh "<<meshId<<")..."<<sendl;
 
         std::map<unsigned int,T> triToValue; // we record special roi values and rasterize them after to prevent from overwriting
 #ifdef _OPENMP
@@ -499,7 +496,7 @@ protected:
         {
             if(!isClosed(tri.ref())) sout<<"mesh["<<meshId<<"] might be open, let's try to fill it anyway"<<sendl;
             // flood fill from the exterior point (0,0,0) with the color outsideColor
-            if(this->f_printLog.getValue()) std::cout<<"MeshToImageEngine: "<<this->getName()<<":  Filling object (mesh "<<meshId<<")..."<<std::endl;
+            if(this->f_printLog.getValue()) sout<<this->getName()<<":  Filling object (mesh "<<meshId<<")..."<<sendl;
             static const bool colorTrue=true;
             mask.draw_fill(0,0,0,&colorTrue);
             cimg_foroff(mask,off) if(!mask[off]) im[off]=InsideColor;
@@ -544,7 +541,7 @@ protected:
 
 
 
-    virtual void draw(const core::visual::VisualParams* /*vparams*/)
+    virtual void draw(const core::visual::VisualParams* /*vparams*/) override
     {
     }
 
@@ -568,9 +565,7 @@ protected:
         Coord P0(p0),P1(p1);
 
         Coord delta = P1 - P0;
-        unsigned int dmax = sofa::helper::round(
-                    cimg_library::cimg::max(cimg_library::cimg::abs(delta[0]),cimg_library::cimg::abs(delta[1]),cimg_library::cimg::abs(delta[2]), 1.)
-                );
+        unsigned int dmax = cimg_library::cimg::max(cimg_library::cimg::abs(delta[0]),cimg_library::cimg::abs(delta[1]),cimg_library::cimg::abs(delta[2]));
         dmax*=subdiv; // divide step to avoid possible holes
         Coord dP = delta/(Real)dmax;
         Coord P (P0);
@@ -593,9 +588,7 @@ protected:
         Coord P0(p0),P1(p1);
 
         Coord delta = P1 - P0;
-        unsigned int dmax = sofa::helper::round(
-                    cimg_library::cimg::max(cimg_library::cimg::abs(delta[0]),cimg_library::cimg::abs(delta[1]),cimg_library::cimg::abs(delta[2]), 1.)
-                );
+        unsigned int dmax = cimg_library::cimg::max(cimg_library::cimg::abs(delta[0]),cimg_library::cimg::abs(delta[1]),cimg_library::cimg::abs(delta[2]));
         dmax*=subdiv; // divide step to avoid possible holes
         Coord dP = delta/(Real)dmax;
         Coord P (P0);
@@ -679,8 +672,12 @@ protected:
         triangles.push_back(_Triangle(p2,p0,p1));
         std::sort(triangles.begin(), triangles.end());
 
-        _draw_triangle(im, mask, triangles[0].p0(), triangles[0].p1(), triangles[0].p2(), color0, color1, color2, subdiv);
-        _draw_triangle(im, mask, triangles[1].p0(), triangles[1].p1(), triangles[1].p2(), color0, color1, color2, subdiv);
+        std::map<Coord,Real> ptoC;
+        ptoC[p0]=color0;
+        ptoC[p1]=color1;
+        ptoC[p2]=color2;
+        _draw_triangle(im, mask, triangles[0].p0(), triangles[0].p1(), triangles[0].p2(), ptoC[triangles[0].p0()], ptoC[triangles[0].p1()], ptoC[triangles[0].p2()], subdiv);
+        _draw_triangle(im, mask, triangles[1].p0(), triangles[1].p1(), triangles[1].p2(), ptoC[triangles[1].p0()], ptoC[triangles[1].p1()], ptoC[triangles[1].p2()], subdiv);
     }
 
     template<class PixelT>

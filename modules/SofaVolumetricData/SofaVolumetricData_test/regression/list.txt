@@ -1,1 +1,0 @@
-../../../../examples/Components/collision/FFDDistanceGridCollisionModel.scn 100 1e-4

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 project(SofaSimulationCore)
 
 set(HEADER_FILES
@@ -61,6 +61,7 @@ set(HEADER_FILES
     XMLPrintVisitor.h
     init.h
     MechanicalGetMomentumVisitor.h
+    BaseSimulationExporter.h
 )
 
 set(SOURCE_FILES
@@ -117,14 +118,10 @@ set(SOURCE_FILES
     XMLPrintVisitor.cpp
     init.cpp
     MechanicalComputeEnergyVisitor.cpp
+    BaseSimulationExporter.cpp
 )
 
-if(SOFA-MISC_SMP)
-    list(APPEND HEADER_FILES ChangeListener.h)
-    list(APPEND HEADER_FILES ParallelMechanicalVisitor.h)
-    list(APPEND SOURCE_FILES ChangeListener.cpp)
-    list(APPEND SOURCE_FILES ParallelMechanicalVisitor.cpp)
-endif()
+
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore)

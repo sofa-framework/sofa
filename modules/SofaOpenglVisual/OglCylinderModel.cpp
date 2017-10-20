@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -57,11 +54,11 @@ int OglCylinderModelClass = core::RegisterObject("A simple visualization for set
 using namespace sofa::defaulttype;
 using namespace sofa::core::topology;
 
-OglCylinderModel::OglCylinderModel() 
+OglCylinderModel::OglCylinderModel()
     : radius(initData(&radius, 1.0f, "radius", "Radius of the cylinder.")),
-      color(initData(&color, std::string("white"), "color", "Color of the cylinders."))
+      color(initData(&color, defaulttype::RGBAColor(1.0,1.0,1.0,1.0), "color", "Color of the cylinders."))
     , d_edges(initData(&d_edges,"edges","List of edge indices"))
-	  // , pointData(initData(&pointData, "pointData", "scalar field modulating point colors"))
+      // , pointData(initData(&pointData, "pointData", "scalar field modulating point colors"))
 {
 }
 
@@ -80,7 +77,6 @@ void OglCylinderModel::init()
 
 void OglCylinderModel::reinit()
 {
-    setColor(color.getValue());
 }
 
 void OglCylinderModel::drawVisual(const core::visual::VisualParams* vparams)
@@ -89,12 +85,10 @@ void OglCylinderModel::drawVisual(const core::visual::VisualParams* vparams)
 
     const VecCoord& pos = this->read( core::ConstVecCoordId::position() )->getValue();
 
-    // glPushAttrib(GL_ENABLE_BIT);
-
     vparams->drawTool()->setLightingEnabled(true);
-	Real _radius = radius.getValue();
+    Real _radius = radius.getValue();
 
-	Vec<4,float> col( r, g, b, a );
+    Vec<4,float> col( r, g, b, a );
 
     const SeqEdges& edges = d_edges.getValue();
 
@@ -105,8 +99,6 @@ void OglCylinderModel::drawVisual(const core::visual::VisualParams* vparams)
 
         vparams->drawTool()->drawCylinder(p1,p2,_radius,col);
     }
-
-    // glPopAttrib();
 }
 
 

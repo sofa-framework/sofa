@@ -2,7 +2,12 @@
 
 #include <vector>
 #include <sofa/core/CollisionElement.h>
+#include <boost/version.hpp>
+#if BOOST_VERSION < 106400
 #include <boost/unordered/detail/util.hpp>
+#else
+#include <boost/unordered/detail/implementation.hpp>
+#endif
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/core/collision/NarrowPhaseDetection.h>
 #include <sofa/helper/AdvancedTimer.h>

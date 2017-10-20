@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -90,12 +87,21 @@ PluginManager::~PluginManager()
 void PluginManager::readFromIniFile(const std::string& path)
 {
     std::ifstream instream(path.c_str());
-    std::string pluginPath;
-
-    while(std::getline(instream,pluginPath))
+    std::string pluginPath, line, version;
+    while(std::getline(instream, line))
     {
+        if (line.empty()) continue;
+
+        std::istringstream is(line);
+        is >> pluginPath;
+        if (is.eof())
+            msg_deprecated("PluginManager") << path << " file is using a deprecated syntax (version information missing). Please update it in the near future.";
+        else
+            is >> version; // information not used for now
         if(loadPlugin(pluginPath))
+    {
             m_pluginMap[pluginPath].initExternalModule();
+    }
     }
     instream.close();
 }
@@ -107,7 +113,8 @@ void PluginManager::writeToIniFile(const std::string& path)
     for( iter = m_pluginMap.begin(); iter!=m_pluginMap.end(); ++iter)
     {
         const std::string& pluginPath = (iter->first);
-        outstream << pluginPath << "\n";
+        outstream << pluginPath << " ";
+        outstream << m_pluginMap[pluginPath].getModuleVersion() << "\n";
     }
     outstream.close();
 }

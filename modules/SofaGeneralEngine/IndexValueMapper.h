@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -34,7 +31,6 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/helper/vector.h>
 
-
 namespace sofa
 {
 
@@ -43,7 +39,6 @@ namespace component
 
 namespace engine
 {
-
 
 template <class DataTypes>
 class IndexValueMapper : public sofa::core::DataEngine
@@ -61,11 +56,11 @@ protected:
     IndexValueMapper();
     ~IndexValueMapper() {}
 public:
-    void init();
-    void reinit();
-    void update();
+    virtual void init() override;
+    virtual void reinit() override;
+    virtual void update() override;
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -76,15 +71,15 @@ public:
     }
 
     //Input
-    Data<sofa::helper::vector<Real> > f_inputValues;
-    Data<sofa::helper::vector<Index> > f_indices;
-    Data<Real> f_value;
+    Data<sofa::helper::vector<Real> > f_inputValues; ///< Already existing values (can be empty)
+    Data<sofa::helper::vector<Index> > f_indices; ///< Indices to map value on
+    Data<Real> f_value; ///< Value to map indices on
 
     //Output
-    Data<sofa::helper::vector<Real> > f_outputValues;
+    Data<sofa::helper::vector<Real> > f_outputValues; ///< New map between indices and values
 
     //Parameter
-    Data<Real> p_defaultValue;
+    Data<Real> p_defaultValue; ///< Default value for indices without any value
 
 };
 
@@ -96,7 +91,6 @@ extern template class SOFA_GENERAL_ENGINE_API IndexValueMapper<sofa::defaulttype
 extern template class SOFA_GENERAL_ENGINE_API IndexValueMapper<sofa::defaulttype::Vec3fTypes>;
 #endif //SOFA_DOUBLE
 #endif
-
 
 } // namespace engine
 

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 project(SofaMisc)
 
 ## Dependencies
@@ -17,7 +17,6 @@ install(FILES "${CMAKE_BINARY_DIR}/include/SofaMisc/config.h" DESTINATION "inclu
 set(SOFAMISC_TARGETS
     SofaComponentMisc
     SofaMisc
-    SofaMiscCollision
     SofaMiscEngine
     SofaMiscFem
     SofaMiscForceField

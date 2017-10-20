@@ -8,7 +8,7 @@ import SofaPython.sml
 from Compliant import Tools
 from Compliant.Tools import cat as concat
 
-import RigidScale.sml
+import RigidScale.sml_deprecated as sml
 
 __file = __file__.replace('\\', '/') # windows
 
@@ -37,7 +37,7 @@ def createScene(root):
 class MyClass(Sofa.PythonScriptController):
 
     def createGraph(self, root):
-
+        print 'createGraph called (python side)'
         # Variable
         self.t = 0
         self.root_node = root
@@ -54,12 +54,12 @@ class MyClass(Sofa.PythonScriptController):
         # solver
         #root.createObject('CompliantPseudoStaticSolver', iterations="10", threshold="1e-5", velocityFactor="0", printLog=False, stabilization=1, neglecting_compliance_forces_in_geometric_stiffness=False)
         root.createObject('CompliantImplicitSolver', stabilization=1)
-        root.createObject('SequentialSolver', iterations=50, precision=1E-15, iterateOnBilaterals=1)
+        root.createObject('SequentialSolver', iterations=50, precision=1E-15, iterateOnBilaterals=0)
         root.createObject('LDLTResponse', schur=0)
 
         # sml scene
         self.model = SofaPython.sml.Model(os.path.join(os.path.dirname(__file__), "./data/main.sml"))
-        self.scene = RigidScale.sml.SceneArticulatedRigidScale(root, self.model)
+        self.scene = sml.SceneArticulatedRigidScale(root, self.model)
 
         # settings
         self.scene.param.elasticity = 1E5
@@ -68,11 +68,11 @@ class MyClass(Sofa.PythonScriptController):
         self.scene.param.constraintCompliance = 1E-6
 
         # visual settings
-        self.scene.param.showRigid=True
-        self.scene.param.showRigidScale=0.025
-        self.scene.param.showOffset=True
-        self.scene.param.showOffsetScale=0.020
-        self.scene.param.showRigidDOFasSphere=False
+        self.scene.param.showRigid = True
+        self.scene.param.showRigidScale = 0.025
+        self.scene.param.showOffset = True
+        self.scene.param.showOffsetScale = 0.020
+        self.scene.param.showRigidDOFasSphere = False
 
         # scene creation
         self.scene.createScene()
@@ -81,13 +81,27 @@ class MyClass(Sofa.PythonScriptController):
         # Add of fixed constraint
         for b in boneToFixed:
             if b in self.scene.bones.keys():
-                self.scene.bones[b].rigidNode.createObject('FixedConstraint', fixAll=0, indices='1')
-                self.scene.bones[b].scaleNode.createObject('FixedConstraint', fixAll=0, indices='1')
+                self.scene.bones[b].rigidNode.createObject('PartialFixedConstraint', indices='1', fixedDirections="1 1 1 0 0 0" )
+                # self.scene.bones[b].scaleNode.createObject('FixedConstraint', indices='1')
 
-    # To remove warning
-    def onBeginAnimationStep(self, dt):
-        if self.t==0:
-            for bone in self.scene.bones.values():
-                bone.affineMassNode.active = False
-        self.t = self.t+dt
+    # Init completion
+    def bwdInitGraph(self, rootNode):
+        for bone in self.scene.bones.values():
+            for node in bone.affineNode.getChildren():
+                if node.getName() == "mass":
+                    bone.affineNode.removeChild(node)
+                    # node.active = False
+
+        # removal animation loop
+        visitor = SofaPython.Tools.SceneDataIO.SofaVisitor('SceneIOVisitor')
+        self.scene.node.executeVisitor(visitor)
+        componentList = visitor.componentList
+
+        # process the scene to load each component data
+        classNameList = ['DefaultAnimationLoop', 'DefaultVisualManagerLoop', 'MeshObjLoader', 'TransferFunction',
+                         'ImageContainer', 'MeshToImageEngine', 'ImageSampler', 'VoronoiShapeFunction',
+                         'RequiredPlugin']
+        for component in componentList:
+            if component.getClassName() in classNameList:
+                component.getContext().removeObject(component)
 

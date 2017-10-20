@@ -1,31 +1,48 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 project(SofaGeneralTopology)
 
 
+message(STATUS "SofaGeneralTopology:")
+################################ COMPONENTS HERE ARE THE NG-SET ####################################
 set(HEADER_FILES
-    BezierTetrahedronSetGeometryAlgorithms.h
-    BezierTetrahedronSetGeometryAlgorithms.inl
-    BezierTetrahedronSetTopologyContainer.h
-    BezierTriangleSetGeometryAlgorithms.h
-    BezierTriangleSetGeometryAlgorithms.inl
-    BezierTriangleSetTopologyContainer.h
-    CubeTopology.h
-    CylinderGridTopology.h
-    SphereQuadTopology.h
     config.h
     initGeneralTopology.h
 )
 
 set(SOURCE_FILES
-    BezierTetrahedronSetGeometryAlgorithms.cpp
-    BezierTetrahedronSetTopologyContainer.cpp
-    BezierTriangleSetGeometryAlgorithms.cpp
-    BezierTriangleSetTopologyContainer.cpp
-    CubeTopology.cpp
-    CylinderGridTopology.cpp
-    SphereQuadTopology.cpp
     initGeneralTopology.cpp
 )
+
+############################## COMPONENTS HERE ARE THE LIGHT-SET ###################################
+if(SOFA_BUILD_COMPONENTSET_LIGHT)
+    list(APPEND HEADER_FILES
+
+        )
+    list(APPEND SOURCE_FILES
+
+        )
+endif()
+
+############################## COMPONENTS HERE ARE THE STANDARD-SET ################################
+if(SOFA_BUILD_COMPONENTSET_STANDARD)
+    list(APPEND HEADER_FILES
+        CubeTopology.h
+        CylinderGridTopology.h
+        SphereGridTopology.h
+        SphereQuadTopology.h
+        )
+    list(APPEND SOURCE_FILES
+        CubeTopology.cpp
+        CylinderGridTopology.cpp
+        SphereGridTopology.cpp
+        SphereQuadTopology.cpp
+        )
+endif()
+
+############################### COMPONENTS HERE ARE DEPRECATED ####################################
+if(SOFA_BUILD_COMPONENTSET_FULL)
+endif()
+
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCommon SofaBaseTopology)

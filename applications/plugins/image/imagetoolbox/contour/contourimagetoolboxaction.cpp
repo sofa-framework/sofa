@@ -1,9 +1,8 @@
+#include "contourimagetoolboxaction.h"
+#include "contourimagetoolbox.h"
+
 #include <QString>
 #include <QWidgetAction>
-
-#include "contourimagetoolboxaction.h"
-
-#include "contourimagetoolbox.h"
 
 namespace sofa
 {

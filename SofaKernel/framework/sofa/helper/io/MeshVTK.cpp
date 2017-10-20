@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -30,6 +27,9 @@
 
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
+
+/// This allow MeshVTK to interact with the messaging system.
+MSG_REGISTER_CLASS(sofa::helper::io::MeshVTK, "MeshVTK")
 
 namespace sofa
 {
@@ -51,7 +51,7 @@ void MeshVTK::init(std::string filename)
 {
     if (!sofa::helper::system::DataRepository.findFile(filename))
     {
-        std::cerr << "File " << filename << " not found " << std::endl;
+        msg_error() << "File '" << filename << "' not found." ;
         return;
     }
     loaderType = "vtu";
@@ -65,8 +65,8 @@ void MeshVTK::readVTU(const std::string &filename)
     vtu.LoadFile(filename);
     if (vtu.Error())
     {
-        std::cerr << "Error while loading file " << filename << std::endl;
-        std::cerr << vtu.ErrorDesc() << std::endl;
+        msg_error() << "Error while loading file '" << filename << "':"
+                    << vtu.ErrorDesc() ;
         return;
     }
     TiXmlElement* piece = vtu.FirstChildElement("VTKFile")->FirstChildElement("UnstructuredGrid")->FirstChildElement("Piece");
@@ -134,7 +134,7 @@ void MeshVTK::readVTU(const std::string &filename)
             facets.push_back(vertNormTexIndices);
             break;
         default:
-            std::cerr << "ERROR: " << filename << " - Unsupported cell type: " << cellType << std::endl;
+            msg_error() << "In '" << filename << "' - Unsupported cell type: " << cellType ;
             return;
         }
     }

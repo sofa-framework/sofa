@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -82,7 +79,7 @@ protected:
     virtual ~TopologyAlgorithms()
     {}
 public:
-    virtual void init();
+    virtual void init() override;
 
 protected:
     /** \brief Adds a TopologyChange object to the list of the topology this object describes.
@@ -112,7 +109,7 @@ protected:
     virtual ~GeometryAlgorithms()
     {}
 public:
-    virtual void init();
+    virtual void init() override;
 
     /** \brief Called by the MechanicalObject state change callback to initialize added
     * points according to the topology (topology element & local coordinates)
@@ -142,7 +139,7 @@ protected:
     virtual ~TopologyModifier()
     { }
 public:
-    virtual void init();
+    virtual void init() override;
 
     /** \brief Called by a topology to warn the Mechanical Object component that points have been added or will be removed.
     *
@@ -209,33 +206,33 @@ protected:
     /// Destructor
     virtual ~TopologyContainer();
 public:
-    virtual void init();
+    virtual void init() override;
 
     /// BaseMeshTopology API
     /// @{
-    virtual const SeqEdges& getEdges()         { static SeqEdges     empty; return empty; }
-    virtual const SeqTriangles& getTriangles() { static SeqTriangles empty; return empty; }
-    virtual const SeqQuads& getQuads()         { static SeqQuads     empty; return empty; }
-    virtual const SeqTetrahedra& getTetrahedra()       { static SeqTetrahedra    empty; return empty; }
-    virtual const SeqHexahedra& getHexahedra()         { static SeqHexahedra     empty; return empty; }
+    virtual const SeqEdges& getEdges()         override { static SeqEdges     empty; return empty; }
+    virtual const SeqTriangles& getTriangles() override { static SeqTriangles empty; return empty; }
+    virtual const SeqQuads& getQuads()         override { static SeqQuads     empty; return empty; }
+    virtual const SeqTetrahedra& getTetrahedra()       override { static SeqTetrahedra    empty; return empty; }
+    virtual const SeqHexahedra& getHexahedra()         override { static SeqHexahedra     empty; return empty; }
 
     /** \brief Get the current revision of this mesh.
     *
     * This can be used to detect changes, however topological changes event should be used whenever possible.
     */
-    virtual int getRevision() const { return m_changeList.getCounter(); }
+    virtual int getRevision() const override { return m_changeList.getCounter(); }
 
     /// @}
 
     /// TopologyChange interactions
     /// @{
-    const sofa::helper::list<const TopologyChange *> &getChangeList() const { return m_changeList.getValue(); }
+    const std::list<const TopologyChange *> &getChangeList() const { return m_changeList.getValue(); }
 
-    const sofa::helper::list<const TopologyChange *> &getStateChangeList() const { return m_stateChangeList.getValue(); }
+    const std::list<const TopologyChange *> &getStateChangeList() const { return m_stateChangeList.getValue(); }
 
-    const Data <sofa::helper::list<const TopologyChange *> > &getDataChangeList() const { return m_changeList; }
+    const Data <std::list<const TopologyChange *> > &getDataChangeList() const { return m_changeList; }
 
-    const Data <sofa::helper::list<const TopologyChange *> > &getDataStateChangeList() const { return m_stateChangeList; }
+    const Data <std::list<const TopologyChange *> > &getDataStateChangeList() const { return m_stateChangeList; }
 
     /** \brief Adds a TopologyChange to the list.
     *
@@ -253,19 +250,19 @@ public:
 
     /** \brief Provides an iterator on the first element in the list of TopologyChange objects.
      */
-    sofa::helper::list<const TopologyChange *>::const_iterator beginChange() const;
+    std::list<const TopologyChange *>::const_iterator beginChange() const override;
 
     /** \brief Provides an iterator on the last element in the list of TopologyChange objects.
      */
-    sofa::helper::list<const TopologyChange *>::const_iterator endChange() const;
+    std::list<const TopologyChange *>::const_iterator endChange() const override;
 
     /** \brief Provides an iterator on the first element in the list of StateChange objects.
      */
-    sofa::helper::list<const TopologyChange *>::const_iterator beginStateChange() const;
+    std::list<const TopologyChange *>::const_iterator beginStateChange() const override;
 
     /** \brief Provides an iterator on the last element in the list of StateChange objects.
      */
-    sofa::helper::list<const TopologyChange *>::const_iterator endStateChange() const;
+    std::list<const TopologyChange *>::const_iterator endStateChange() const override;
 
 
     /** \brief Free each Topology changes in the list and remove them from the list
@@ -282,20 +279,20 @@ public:
 
     /// TopologyEngine interactions
     ///@{
-    const sofa::helper::list<TopologyEngine *> &getTopologyEngineList() const { return m_topologyEngineList; }
+    const std::list<TopologyEngine *> &getTopologyEngineList() const { return m_topologyEngineList; }
 
     /** \brief Adds a TopologyEngine to the list.
     */
-    virtual void addTopologyEngine(TopologyEngine* _topologyEngine);
+    virtual void addTopologyEngine(TopologyEngine* _topologyEngine) override;
 
 
     /** \brief Provides an iterator on the first element in the list of TopologyEngine objects.
      */
-    sofa::helper::list<TopologyEngine *>::const_iterator beginTopologyEngine() const;
+    std::list<TopologyEngine *>::const_iterator beginTopologyEngine() const override;
 
     /** \brief Provides an iterator on the last element in the list of TopologyEngine objects.
      */
-    sofa::helper::list<TopologyEngine *>::const_iterator endTopologyEngine() const;
+    std::list<TopologyEngine *>::const_iterator endTopologyEngine() const override;
 
     /** \brief Free each Topology changes in the list and remove them from the list
     *
@@ -310,19 +307,19 @@ protected:
     virtual void updateTopologyEngineGraph() {}
 
     /// Array of topology modifications that have already occured (addition) or will occur next (deletion).
-    Data <sofa::helper::list<const TopologyChange *> >m_changeList;
+    Data <std::list<const TopologyChange *> >m_changeList;
 
     /// Array of state modifications that have already occured (addition) or will occur next (deletion).
-    Data <sofa::helper::list<const TopologyChange *> >m_stateChangeList;
+    Data <std::list<const TopologyChange *> >m_stateChangeList;
 
     /// List of topology engines which will interact on all topological Data.
-    sofa::helper::list<TopologyEngine *> m_topologyEngineList;
+    std::list<TopologyEngine *> m_topologyEngineList;
 
 public:
 
 
-    virtual bool insertInNode( objectmodel::BaseNode* node ) { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
-    virtual bool removeInNode( objectmodel::BaseNode* node ) { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
+    virtual bool insertInNode( objectmodel::BaseNode* node ) override { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
+    virtual bool removeInNode( objectmodel::BaseNode* node ) override { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
 
 };
 

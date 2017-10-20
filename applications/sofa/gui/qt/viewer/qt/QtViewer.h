@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -13,11 +13,8 @@
 * more details.                                                               *
 *                                                                             *
 * You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* with this program. If not, see <http://www.gnu.org/licenses/>.              *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -194,10 +191,10 @@ public slots:
     virtual void setSizeW(int);
     virtual void setSizeH(int);
 
-    virtual void getView(defaulttype::Vec3d& pos, defaulttype::Quat& ori) const;
-    virtual void setView(const defaulttype::Vec3d& pos, const defaulttype::Quat &ori);
+    virtual void getView(defaulttype::Vector3& pos, defaulttype::Quat& ori) const;
+    virtual void setView(const defaulttype::Vector3& pos, const defaulttype::Quat &ori);
     virtual void newView();
-    virtual void moveView(const defaulttype::Vec3d& pos, const defaulttype::Quat &ori);
+    virtual void moveView(const defaulttype::Vector3& pos, const defaulttype::Quat &ori);
     virtual void captureEvent() { SofaViewer::captureEvent(); }
     virtual void drawColourPicking (ColourPickingVisitor::ColourCode code);
     virtual void fitNodeBBox(sofa::core::objectmodel::BaseNode * node ) { SofaViewer::fitNodeBBox(node); }

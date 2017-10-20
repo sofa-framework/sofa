@@ -1,4 +1,5 @@
 <Node dt="0.005" gravity="0 -10 0">
+    <RequiredPlugin name="SofaImplicitField"/>
     <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels showMappings" />
     <Node>
         <RungeKutta4 />

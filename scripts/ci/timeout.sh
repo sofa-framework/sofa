@@ -49,13 +49,9 @@ run-command-with-timeout() {
     rm -f $1.pid
 }
 
-if [[ $(uname) != Linux && $(uname) != Darwin ]]; then
-    run-command-with-timeout "$1" "$2" "$3" 2> /dev/null
-else
-    timeout "$3" bash -c "$2"
-    exit_code=$?
-    if [[ ( $(uname) = Linux && $exit_code = 124 ) || ($(uname) = Darwin && $exit_code = 137 ) ]]; then
-        touch "$1".timeout
-    fi
-    echo $exit_code > "$1".exit_code
+timeout "$3" bash -c "$2"
+exit_code=$?
+if [[ ($(uname) = Darwin && $exit_code = 137 ) || ( $exit_code = 124 ) ]]; then
+    touch "$1".timeout
 fi
+echo $exit_code > "$1".exit_code

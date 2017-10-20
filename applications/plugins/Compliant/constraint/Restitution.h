@@ -25,7 +25,7 @@ class SOFA_Compliant_API Restitution : public ConstraintValue
     // value for dynamics
     virtual void dynamics(SReal* dst, unsigned n, unsigned dim, bool, const core::MultiVecCoordId& posId = core::VecCoordId::position(), const core::MultiVecDerivId& velId = core::VecDerivId::velocity()) const;
     // flag violated constraints
-    virtual void filterConstraints( helper::vector<bool>* activateMask, const core::MultiVecCoordId& posId, unsigned n, unsigned dim );
+    virtual void filterConstraints( helper::vector<bool>*& activateMask, const core::MultiVecCoordId& posId, unsigned n, unsigned dim );
     // clear violated mask
     virtual void clear() { mask.beginWriteOnly()->clear(); mask.endEdit(); }
 

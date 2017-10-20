@@ -32,11 +32,28 @@ def as_numpy( data ):
 
     # print (shape)
 
-    array = ctypes.cast( ctypes.c_void_p(ptr), ctypes.POINTER(type))
-    return numpy.ctypeslib.as_array(array, shape )
+    # fold
+    array_type = reduce(lambda x, y: x * y, reversed(shape), type)
+    array = array_type.from_address(ptr)
+    return numpy.ctypeslib.as_array(array)
+
+    # https://github.com/numpy/numpy/issues/6511
+    # array = ctypes.cast( ctypes.c_void_p(ptr), ctypes.POINTER(type))
+    # return numpy.ctypeslib.as_array(array, shape)
 
 
 # convenience
 def numpy_data(obj, name):
     data = obj.findData(name)
     return as_numpy(data)
+
+
+def vec_as_numpy( (ptr, size, typename) ):
+    '''maps vec as a numpy array'''
+
+    type = ctypeFromName.get(typename,None)
+    if not type: raise Exception("can't map data of type " + typename)
+
+    array_type = type * size
+    array = array_type.from_address(ptr)
+    return numpy.ctypeslib.as_array(array)

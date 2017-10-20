@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -60,26 +57,17 @@ DampVelocitySolver::DampVelocitySolver()
 void DampVelocitySolver::solve(const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId /*xResult*/, sofa::core::MultiVecDerivId vResult)
 {
     sofa::simulation::common::VectorOperations vop( params, this->getContext() );
-    //sofa::simulation::common::MechanicalOperations mop( this->getContext() );
     MultiVecDeriv vel(&vop, vResult /*core::VecDerivId::velocity()*/ );
-    bool printLog = f_printLog.getValue();
 
-    if( printLog )
-    {
-        serr<<"DampVelocitySolver, dt = "<< dt <<sendl;
-        serr<<"DampVelocitySolver, initial v = "<< vel <<sendl;
-    }
+    msg_info() <<"DampVelocitySolver, dt = "<< dt
+               <<"DampVelocitySolver, initial v = "<< vel ;
 
-    //mop.addSeparateGravity(dt);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
 
     vel.teq( exp(-rate.getValue()*dt) );
     if( threshold.getValue() != 0.0 )
         vel.threshold( threshold.getValue() );
 
-    if( printLog )
-    {
-        serr<<"DampVelocitySolver, final v = "<< vel <<sendl;
-    }
+    msg_info() <<"DampVelocitySolver, final v = "<< vel ;
 }
 
 } // namespace odesolver

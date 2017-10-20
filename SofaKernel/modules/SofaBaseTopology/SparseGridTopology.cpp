@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -248,7 +245,7 @@ void SparseGridTopology::init()
 void SparseGridTopology::buildAsFinest(  )
 {
     //	serr<<"SparseGridTopology::buildAsFinest(  )"<<sendl;
-    
+
     VoxelLoader *loader;
     getContext()->get(loader);
     if( loader )
@@ -472,18 +469,16 @@ void SparseGridTopology::buildFromData( Vec3i numPoints, BoundingBox box, const 
         _stiffnessCoefs[i] = _massCoefs[i] = 1.0;
     }
 
-
-    std::cerr << "SparseGridTopology::buildFromData, _regularGrid  has " << _regularGrid->getNbHexahedra() << " hexahedra " << std::endl;
-    std::cerr << "SparseGridTopology::buildFromData, hexahedra = " << this->seqHexahedra.getValue() << std::endl;
-//    for( unsigned i=0; i<)
+    std::stringstream tmp;
+    tmp << "regularGrid  has " << _regularGrid->getNbHexahedra() << " hexahedra, "
+        << "hexahedra = " << this->seqHexahedra.getValue() ;
+    msg_info() << tmp.str() ;
 }
 
 
 //Building from a RAW file
 void SparseGridTopology::buildFromRawVoxelFile(const std::string& filename)
 {
-    //	serr<<"SparseGridTopology::buildFromRawVoxelFile(const std::string& filename)"<<sendl;
-
     _regularGrid->setSize(getNx(),getNy(),getNz());
     const int nbCubesRG = _regularGrid->getNbHexahedra();
 
@@ -539,7 +534,7 @@ void SparseGridTopology::buildFromRawVoxelFile(const std::string& filename)
 
 void SparseGridTopology::buildFromVoxelLoader(VoxelLoader * loader)
 {
-    std::cerr<<"SparseGridTopology::buildFromVoxelLoader(VoxelLoader * loader)\n";
+    msg_info()<<"SparseGridTopology::buildFromVoxelLoader(VoxelLoader * loader)";
 
     unsigned char *textureData;
     int width,height,depth;
@@ -588,8 +583,6 @@ void SparseGridTopology::buildFromVoxelLoader(VoxelLoader * loader)
         }
 
         regularstiffnessCoef[i] /= (float)((p6x-p0x)*(p6y-p0y)*(p6z-p0z));
-        //	regularstiffnessCoef[i] /= 256.0;
-
         if( regularstiffnessCoef[i] !=0.0 )
             regularGridTypes[i] = INSIDE;
     }
@@ -625,12 +618,11 @@ void SparseGridTopology::updateMesh()
 
     //Creating if needed collision models and visual models
     // 	    using sofa::simulation::Node;
-
     sofa::helper::vector< sofa::core::topology::BaseMeshTopology * > list_meshf;
     sofa::helper::vector< Data< sofa::defaulttype::Vec3fTypes::VecCoord >* > list_Xf;
 
 #ifndef SOFA_FLOAT
-	sofa::helper::vector< sofa::core::topology::BaseMeshTopology * > list_meshd;
+    sofa::helper::vector< sofa::core::topology::BaseMeshTopology * > list_meshd;
     sofa::helper::vector< Data< sofa::defaulttype::Vec3dTypes::VecCoord >* > list_Xd;
 #endif
 
@@ -644,7 +636,6 @@ void SparseGridTopology::updateMesh()
         if (m_temp[i] != this) {collisionTopology = m_temp[i]; break;}
     }
 
-    // sout << m_temp << " " <<  (m_temp != this) << " " << m_temp->getNbTriangles()  << " !!!! test to enter "<<sendl;
     if ( collisionTopology != NULL && collisionTopology->getNbTriangles() == 0)
     {
 #ifndef SOFA_FLOAT
@@ -669,11 +660,11 @@ void SparseGridTopology::updateMesh()
     }
 
     if (
-		list_meshf.empty() 
+        list_meshf.empty()
 #ifndef SOFA_FLOAT
-		&& list_meshd.empty() 
+        && list_meshd.empty()
 #endif
-		)
+        )
         return;				 //No Marching Cube to run
 
     //Configuration of the Marching Cubes algorithm
@@ -746,7 +737,7 @@ void SparseGridTopology::constructCollisionModels(const sofa::helper::vector< so
 void SparseGridTopology::buildFromTriangleMesh(const std::string& filename)
 {
     helper::io::Mesh* mesh = NULL;
-    
+
     if (filename.empty())
     {
         mesh = new helper::io::Mesh();
@@ -821,7 +812,7 @@ void SparseGridTopology::buildFromTriangleMesh(const std::string& filename)
     buildFromRegularGridTypes(_regularGrid, regularGridTypes);
 
     sout << "Mesh Loaded" << sendl;
-    
+
     delete mesh;
 }
 
@@ -1728,8 +1719,6 @@ void SparseGridTopology::propagateFrom( const Vec3i &point,
     assert( x>=0 && x<=regularGrid->getNx()-2 && y>=0 && y<=regularGrid->getNy()-2 && z>=0 && z<=regularGrid->getNz()-2 );
 
     unsigned indice = regularGrid->cube( x, y, z );
-    //        std::cerr << "this=" << this << std::endl;
-    //        std::cerr << indice << " : " << alreadyTested.size() << " :: " << regularGridTypes.size() << std::endl;
     if( alreadyTested[indice] || regularGridTypes[indice] == BOUNDARY ) return;
 
     alreadyTested[indice] = true;

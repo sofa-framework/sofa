@@ -6,6 +6,9 @@
 #include <SofaExplicitOdeSolver/EulerSolver.h>
 #include <SceneCreator/SceneCreator.h>
 
+#include <SofaTest/TestMessageHandler.h>
+
+
 using namespace sofa::modeling;
 using namespace sofa::component;
 using namespace sofa::simulation;
@@ -37,15 +40,15 @@ struct CompliantImplicitSolver_test : public CompliantSolver_test
 
         // The solver
         using odesolver::CompliantImplicitSolver;
-        CompliantImplicitSolver::SPtr complianceSolver = addNew<CompliantImplicitSolver>(getRoot());
+        CompliantImplicitSolver::SPtr complianceSolver = addNew<CompliantImplicitSolver>(root);
         complianceSolver->debug.setValue(debug);
         complianceSolver->alpha.setValue(1.0);
         complianceSolver->beta.setValue(1.0);
         SReal precision = 1.0e-6;
 
-        linearsolver::LDLTSolver::SPtr linearSolver = addNew<linearsolver::LDLTSolver>(getRoot());
+        linearsolver::LDLTSolver::SPtr linearSolver = addNew<linearsolver::LDLTSolver>(root);
         linearSolver->debug.setValue(debug);
-        linearsolver::LDLTResponse::SPtr response = addNew<linearsolver::LDLTResponse>(getRoot());
+        linearsolver::LDLTResponse::SPtr response = addNew<linearsolver::LDLTResponse>(root);
         (void) response;
 
         // The string
@@ -81,7 +84,7 @@ struct CompliantImplicitSolver_test : public CompliantSolver_test
         // An explicit integration step using the opposite dt should bring us back to the initial state
         string1.compliance->isCompliance.setValue(false); string1.compliance->reinit(); // switch the spring as stiffness
         core::MechanicalParams mparams;
-        simulation::common::MechanicalOperations mop (&mparams,getRoot()->getContext());
+        simulation::common::MechanicalOperations mop (&mparams,root->getContext());
         mop.computeForce( 0+dt, core::VecId::force(), core::VecId::position(), core::VecId::velocity(), false );
         Vector f1 = modeling::getVector( core::VecId::force() );
         Vector v2 = v1 - f1 * dt;
@@ -156,7 +159,7 @@ struct CompliantImplicitSolver_test : public CompliantSolver_test
         // We check the explicit step backward without a solver, because it would not accumulate compliance forces
         string1.compliance->isCompliance.setValue(false); string1.compliance->reinit(); // switch the spring as stiffness
         core::MechanicalParams mparams;
-        simulation::common::MechanicalOperations mop (&mparams,getRoot()->getContext());
+        simulation::common::MechanicalOperations mop (&mparams,root->getContext());
         mop.computeForce( 0+dt, core::VecId::force(), core::VecId::position(), core::VecId::velocity(), false );
         Vector f1 = modeling::getVector( core::VecId::force() );
 //        cerr<<"test, f1 = " << f1.transpose() << endl;
@@ -231,7 +234,7 @@ struct CompliantImplicitSolver_test : public CompliantSolver_test
 
         // We check the explicit step backward without a solver, because it would not accumulate compliance forces
         core::MechanicalParams mparams;
-        simulation::common::MechanicalOperations mop (&mparams,getRoot()->getContext());
+        simulation::common::MechanicalOperations mop (&mparams,root->getContext());
         mop.computeForce( 0+dt, core::VecId::force(), core::VecId::position(), core::VecId::velocity(), false );
         Vector f1 = modeling::getVector( core::VecId::force() );
 
@@ -316,8 +319,8 @@ struct CompliantImplicitSolver_test : public CompliantSolver_test
         // 1- no lambda propagation -> force must be null
         Vector f1 = modeling::getVector( core::VecId::force() );
         ASSERT_TRUE( f1.sum() == 0 );
-        // 2- with lambda propagation -> force must be NOT null
-        odeSolver->propagate_lambdas.setValue(true);
+        // 2- with constraint force export (after cleaning) -> force must be NOT null
+        odeSolver->constraint_forces.beginWriteOnly()->setSelectedItem(3); odeSolver->constraint_forces.endEdit();
         {
         MechanicalObject3::WriteVecCoord x = string1.DOF->writePositions();
         x[1] = Vec3(2,0,0);
@@ -334,7 +337,7 @@ struct CompliantImplicitSolver_test : public CompliantSolver_test
         // We check the explicit step backward without a solver, because it would not accumulate compliance forces
         string1.compliance->isCompliance.setValue(false); string1.compliance->reinit(); // switch the spring as stiffness
         core::MechanicalParams mparams;
-        simulation::common::MechanicalOperations mop (&mparams,getRoot()->getContext());
+        simulation::common::MechanicalOperations mop (&mparams,root->getContext());
         mop.computeForce( 0+dt, core::VecId::force(), core::VecId::position(), core::VecId::velocity(), false );
         f1 = modeling::getVector( core::VecId::force() );
 
@@ -385,7 +388,7 @@ struct CompliantImplicitSolver_test : public CompliantSolver_test
         MechanicalObject3::SPtr DOF = addNew<MechanicalObject3>(root);
         DOF->resize(1);
         UniformMass3::SPtr mass = addNew<UniformMass3>(root);
-        mass->totalMass.setValue(1);
+        mass->d_totalMass.setValue(1);
 
 
         Node::SPtr mappedComplianceNode = root->createChild("mappedComplianceNode");
@@ -425,11 +428,30 @@ struct CompliantImplicitSolver_test : public CompliantSolver_test
 // do run the tests
 //=================
 // simple linear cases
-TEST_F(CompliantImplicitSolver_test, OneFixedOneComplianceSpringV100 ){  testLinearOneFixedOneComplianceSpringV100(false);  }
-TEST_F(CompliantImplicitSolver_test, OneFixedOneStiffnessSpringV100  ){  testLinearOneFixedOneStiffnessSpringV100(false);  }
-TEST_F(CompliantImplicitSolver_test, OneFixedOneStiffnessSpringX200  ){  testLinearOneFixedOneStiffnessSpringX200(false);  }
-TEST_F(CompliantImplicitSolver_test, OneFixedOneComplianceSpringX200 ){  testLinearOneFixedOneComplianceSpringX200(false);  }
-TEST_F(CompliantImplicitSolver_test, EmptyMState                     ){  testEmptyMState(false);  }
+TEST_F(CompliantImplicitSolver_test, OneFixedOneComplianceSpringV100 ){
+    EXPECT_MSG_NOEMIT(Error) ;
+    testLinearOneFixedOneComplianceSpringV100(false);
+}
+
+TEST_F(CompliantImplicitSolver_test, OneFixedOneStiffnessSpringV100  ){
+    EXPECT_MSG_NOEMIT(Error) ;
+    testLinearOneFixedOneStiffnessSpringV100(false);
+}
+
+TEST_F(CompliantImplicitSolver_test, OneFixedOneStiffnessSpringX200  ){
+    EXPECT_MSG_NOEMIT(Error) ;
+    testLinearOneFixedOneStiffnessSpringX200(false);
+}
+
+TEST_F(CompliantImplicitSolver_test, OneFixedOneComplianceSpringX200 ){
+    EXPECT_MSG_NOEMIT(Error) ;
+    testLinearOneFixedOneComplianceSpringX200(false);
+}
+
+TEST_F(CompliantImplicitSolver_test, EmptyMState                     ){
+    EXPECT_MSG_NOEMIT(Error) ;
+    testEmptyMState(false);
+}
 
 }// sofa
 

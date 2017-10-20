@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -30,7 +27,6 @@
 #include <SofaNonUniformFem/MultilevelHexahedronSetTopologyContainer.h>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/core/objectmodel/Base.h>
-
 
 namespace sofa
 {
@@ -188,14 +184,6 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::reinit()
 
     HexahedralFEMForceFieldAndMassT::computeParticleMasses();
     HexahedralFEMForceFieldAndMassT::computeLumpedMasses();
-
-//                helper::vector<ElementMass>* ElementMassMatrices = this->_elementMasses.beginEdit();
-//                typename helper::vector<ElementMass>::iterator iter;
-//                for ( iter = ElementMassMatrices->begin(); iter != ElementMassMatrices->end() ; ++iter)
-//                {
-//                    computeCorrection(*iter);
-//                }
-//                this->_elementMasses.endEdit();
 }
 
 template<class T>
@@ -269,10 +257,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleHexaAdded(const core::to
 {
     const sofa::helper::vector<unsigned int> &hexaModif = hexaAddedEvent.hexahedronIndexArray;
 
-#ifndef NDEBUG
-    std::cout << "HEXAHEDRAADDED hexaId: " << hexaModif << std::endl;
-#endif
-
+    dmsg_info() << "HEXAHEDRAADDED hexaId: " << hexaModif ;
     const VecElement& hexahedra = this->_topology->getHexahedra();
 
     switch(this->method)
@@ -334,9 +319,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleHexaRemoved(const core::
 {
     const sofa::helper::vector<unsigned int> &hexaModif = hexaRemovedEvent.getArray();
 
-#ifndef NDEBUG
-    std::cout << "HEXAHEDRAREMOVED hexaId: " << hexaModif << std::endl;
-#endif
+    dmsg_info() << "HEXAHEDRAREMOVED hexaId: " << hexaModif ;
 
     const VecElement& hexahedra = this->_topology->getHexahedra();
     helper::vector<Real>&	particleMasses = *this->_particleMasses.beginEdit();
@@ -382,9 +365,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleMultilevelModif(const co
 {
     const sofa::helper::vector<unsigned int> &hexaModif = modEvent.getArray();
 
-#ifndef NDEBUG
-    std::cout << "MULTILEVEL_MODIFICATION hexaId: " << hexaModif << std::endl;
-#endif
+    dmsg_info() << "MULTILEVEL_MODIFICATION hexaId: " << hexaModif ;
 
     const VecElement& hexahedra = this->_topology->getHexahedra();
 
@@ -549,27 +530,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCon
     else
     {
         computeMechanicalMatricesByCondensation_IntervalAnalysis( K, M, totalMass, _material.K, _material.M, _material.mass, level, voxels);
-
-        //ElementStiffness K_tmp;
-        //ElementMass M_tmp;
-        //Real totalMass_tmp = (Real) 0.0;
-
-        //computeMechanicalMatricesByCondensation_Direct( K_tmp, M_tmp, totalMass_tmp, _material.K, _material.M, _material.mass, level, voxels);
-
-        //if(K_tmp != K)
-        //{
-        //	std::cout << "Stiffness matrices don't match." << std::endl;
-        //}
-        //if(M_tmp != M)
-        //{
-        //	std::cout << "Mass matrices don't match." << std::endl;
-        //}
-        //if(fabs(totalMass_tmp - totalMass) > 0.0001)
-        //{
-        //	std::cout << "Total masses don't match." << std::endl;
-        //}
     }
-//                computeCorrection(M);
 }
 
 template<class T>
@@ -608,47 +569,6 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCon
             this->addHtfineHtoCoarse(H, M_fine, M);
             totalMass += mass_fine;
         }
-        /*
-        std::cout << "M_fine" << std::endl;
-        	for( int i = 0; i < 24; i++)
-        	{
-        		for( int j = 0; j < 24; j++)
-        			std::cout << M_fine[i][j]*8 << " ";
-        		std::cout << endl;
-        	}
-
-        	std::cout << "M" << std::endl;
-        	for( int i = 0; i < 24; i++)
-        	{
-        		for( int j = 0; j < 24; j++)
-        			std::cout << M[i][j] << " ";
-        		std::cout << endl;
-        	}
-
-        	std::cout << "K_fine" << std::endl;
-        	for( int i = 0; i < 24; i++)
-        	{
-        		for( int j = 0; j < 24; j++)
-        			std::cout << K_fine[i][j]*2 << " ";
-        		std::cout << endl;
-        	}
-
-        	std::cout << "K" << std::endl;
-        	for( int i = 0; i < 24; i++)
-        	{
-        		for( int j = 0; j < 24; j++)
-        			std::cout << K[i][j] << " ";
-        		std::cout << endl;
-        	}
-
-        	for( int i = 0; i < 24; i++)
-        		for( int j = 0; j < 24; j++)
-        			if ((float)(M_fine[i][j]*8) != (float)(M[i][j])) std::cout << "diff en M["<<i<<"]["<<j<<"]: " << M_fine[i][j]*8 << ", " << M[i][j] << std::endl;
-
-        	for( int i = 0; i < 24; i++)
-        		for( int j = 0; j < 24; j++)
-        			if ((float)(K_fine[i][j]*2) != (float)(K[i][j])) std::cout << "diff en K["<<i<<"]["<<j<<"]: " << K_fine[i][j]*2 << ", " << K[i][j] << std::endl;
-        	*/
     }
     else
     {
@@ -1059,8 +979,6 @@ void NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::addMBKdx(const core::M
     // mFactor > 0 , so we assume this is a product of the equation matrix done by an implicit solver
     if( matrixIsDirty )
     {
-//                    serr<<"NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::addMBKdx, recomputation of the matrix" << sendl;
-
         // Compute the matrix
         this->mbkMatrix.resize(hexahedra.size());
 
@@ -1076,7 +994,6 @@ void NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::addMBKdx(const core::M
             for ( unsigned n1 = 0; n1 < 8; n1++ )
             {
                 for (unsigned n2=0; n2<8; n2++)
-//                            unsigned n2 = n1; /////////// WARNING Changed to compute only diag elements
                 {
                     // add M to matrix
                     Mat33 tmp( Deriv ( Me[3*n1+0][3*n2+0]*mFactor, Me[3*n1+0][3*n2+1]*mFactor, Me[3*n1+0][3*n2+2]*mFactor ),
@@ -1105,12 +1022,6 @@ void NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::addMBKdx(const core::M
 
             // store
             this->mbkMatrix[e] = MBKe;
-//                        cerr << "Re = " << Re << endl << endl;
-//                        cerr << "Me = " << Me << endl << endl;
-//                        cerr << "Ke = " << Ke << endl << endl;
-//                        cerr << "mFactor = " << mFactor << endl;
-//                        cerr << "kFactor = " << kFactor << endl;
-//                        cerr << "MBKe = " << MBKe << endl << endl;
         }
 
         this->matrixIsDirty = false;
@@ -1129,20 +1040,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::addMBKdx(const core::M
             X[w*3+2] = x_2[2];
         }
         Displacement F;
-//                   cerr << "dx = " << X << endl;
         F = this->mbkMatrix[e] * X;
-//                   cerr << "MBKdx = " << F << endl;
-////                   F = this->_elementMasses.getValue()[e] * X * mFactor;
-//                   F = Mfoo * X * mFactor;
-////                   cerr << "M = " << this->_elementMasses.getValue()[e] << endl<< endl;
-//                   cerr << "M = " << Mfoo << endl<< endl;
-//                   cerr << "Mfoo * X  = " << Mfoo * X << endl<< endl;
-//                   cerr << "mFactor  = " << mFactor << endl<< endl;
-//                   cerr << "Mfoo * X * mFactor  = " << Mfoo * X * mFactor << endl<< endl;
-//                   cerr << "Mdx = " << F << endl ;
-//                   F += hexahedronInf[e].stiffness * X * kFactor;
-//                   cerr << "(M+K)dx = " << F << endl;
-
 
         for(int w=0; w<8; ++w)
             df[hexahedra[e][w]] += Deriv( F[w*3],  F[w*3+1],  F[w*3+2]  );

@@ -1,7 +1,34 @@
+/******************************************************************************
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 #include "console.h"
 #include <sofa/helper/Utils.h>
 #include <sofa/helper/logging/Messaging.h>
 #include <stdlib.h>             // For getenv()
+
+#ifdef __linux__
+#include <sys/ioctl.h>
+#include <unistd.h>
+#endif
+
 
 #ifndef WIN32
 #  include <unistd.h>           // for isatty()
@@ -59,6 +86,14 @@ namespace helper {
         GetConsoleScreenBufferInfo(getOutputHandle(), &currentInfo);
         return currentInfo.wAttributes;
     }
+    static Console::CodeType getDefaultCode()
+    {
+        CONSOLE_SCREEN_BUFFER_INFO currentInfo;
+        GetConsoleScreenBufferInfo(getOutputHandle(), &currentInfo);
+        return currentInfo.wAttributes;
+    }
+
+
 
     const Console::ColorType Console::BLACK         = Console::ColorType(0);
     const Console::ColorType Console::BLUE          = Console::ColorType(1);
@@ -78,6 +113,11 @@ namespace helper {
     const Console::ColorType Console::BRIGHT_WHITE  = Console::ColorType(15);
     const Console::ColorType Console::DEFAULT_COLOR = getDefaultColor();
 
+    //TODO(dmarchal): Implement the rich text on windows...
+    const Console::CodeType Console::ITALIC = getDefaultCode();
+    const Console::CodeType Console::UNDERLINE = getDefaultCode();
+    const Console::CodeType Console::DEFAULT_CODE = getDefaultCode();
+
     void Console::setColorsStatus(ColorsStatus status)
     {
         s_colorsStatus = status;
@@ -94,6 +134,13 @@ namespace helper {
     {
         if (Console::shouldUseColors(stream))
             SetConsoleTextAttribute(getOutputHandle(), color.value);
+        return stream;
+    }
+
+    SOFA_HELPER_API std::ostream& operator<<( std::ostream& stream, Console::CodeType code )
+    {
+        if (Console::shouldUseColors(stream))
+            SetConsoleTextAttribute(getOutputHandle(), code.value);
         return stream;
     }
 
@@ -116,6 +163,11 @@ namespace helper {
     const Console::ColorType Console::BRIGHT_CYAN   = Console::ColorType("\033[1;36m");
     const Console::ColorType Console::BRIGHT_WHITE  = Console::ColorType("\033[1;37m");
     const Console::ColorType Console::DEFAULT_COLOR = Console::ColorType("\033[0m");
+
+    const Console::CodeType Console::UNDERLINE = Console::CodeType("\033[4m");
+    const Console::CodeType Console::ITALIC = Console::CodeType("\033[3m");
+    const Console::CodeType Console::DEFAULT_CODE = Console::CodeType("\033[0m");
+
 
     static bool s_stdoutIsRedirected = false;
     static bool s_stderrIsRedirected = false;
@@ -147,7 +199,27 @@ namespace helper {
             return stream;
     }
 
+    std::ostream& operator<<( std::ostream& stream, Console::CodeType code )
+    {
+        if (Console::shouldUseColors(stream))
+            return stream << code.value;
+        else
+            return stream;
+    }
+
+
 #endif
+
+    size_t Console::getColumnCount(){
+#ifdef __linux__
+        struct winsize w;
+        ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+        return w.ws_col;
+#else
+        //TODO(dmarchal): implement macOS and Windows or a portable version of this function.
+        return 80;
+#endif
+    }
 
     Console::ColorsStatus Console::getColorsStatus()
     {

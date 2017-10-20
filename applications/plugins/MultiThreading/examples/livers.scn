@@ -1,0 +1,126 @@
+<?xml version="1.0" ?>
+<Node name="root" gravity="0 -9.81 0" dt="0.02">
+  <!--<RequiredPlugin pluginName="PluginXiCath_1_0.dll" />-->
+  <RequiredPlugin pluginName="MultiThreading" />
+  
+  <AnimationLoopParallelScheduler name="mainLoop" threadNumber="0" />
+
+  <Node name="scene1" gravity="0 -9.81 0" dt="0.02">
+    <DefaultAnimationLoop name="loop1" />
+    <DefaultPipeline name="CollisionPipeline" verbose="0" />
+    <BruteForceDetection name="N2" />
+    <DefaultContactManager name="collision response" response="default" />
+    <Node name="liver1" gravity="0 -9.81 0">
+      <EulerImplicitSolver name="cg_odesolver"   rayleighStiffness="0.1" rayleighMass="0.1" />
+      <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
+      <MeshGmshLoader name="meshLoader" filename="mesh/liver.msh" />
+      <TetrahedronSetTopologyContainer name="topo" src="@meshLoader" />
+      <MechanicalObject name="dofs1" src="@meshLoader" />
+      <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
+      <DiagonalMass  name="computed using mass density" massDensity="1" />
+      <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" />
+      <FixedConstraint  name="FixedConstraint" indices="39" />
+      <Node name="Visu1" tags="Visual" gravity="0 -9.81 0">
+        <OglModel  name="VisualModel" fileMesh="mesh/liver-smooth.obj" />
+        <BarycentricMapping name="visual mapping" input="@../dofs1" output="@VisualModel" />
+      </Node>
+      <Node name="Surf1" gravity="0 -9.81 0">
+        <SphereLoader filename="mesh/liver.sph" />
+        <MechanicalObject name="spheres" position="@[-1].position" />
+        <TSphereModel name="CollisionModel" listRadius="@[-2].listRadius"/>
+        <BarycentricMapping name="sphere mapping" input="@../dofs1" output="@spheres" />
+      </Node>
+    </Node>
+  </Node>
+
+  <Node name="scene2" gravity="0 -9.81 0" dt="0.02">
+    <DefaultAnimationLoop name="loop2" />
+    <DefaultPipeline name="CollisionPipeline" verbose="0" />
+    <BruteForceDetection name="N2" />
+    <DefaultContactManager name="collision response" response="default" />
+    <Node name="liver2" gravity="0 -9.81 0">
+      <EulerImplicitSolver name="cg_odesolver"  />
+      <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
+      <MeshGmshLoader name="meshLoader" filename="mesh/liver.msh" />
+      <TetrahedronSetTopologyContainer name="topo" src="@meshLoader" />
+      <MechanicalObject name="dofs2" src="@meshLoader" />
+      <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
+      <DiagonalMass  name="computed using mass density" massDensity="1" />
+      <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" />
+      <FixedConstraint  name="FixedConstraint" indices="64" />
+      <Node name="Visu2" tags="Visual" gravity="0 -9.81 0">
+        <OglModel  name="VisualModel" fileMesh="mesh/liver-smooth.obj" />
+        <BarycentricMapping name="visual mapping" input="@../dofs2" output="@VisualModel" />
+      </Node>
+      <Node name="Surf2" gravity="0 -9.81 0">
+        <SphereLoader filename="mesh/liver.sph" />
+        <MechanicalObject name="spheres" position="@[-1].position" />
+        <TSphereModel name="CollisionModel" listRadius="@[-2].listRadius"/>
+        <BarycentricMapping name="sphere mapping" input="@../dofs2" output="@spheres" />
+      </Node>
+    </Node>
+  </Node>
+
+  <Node name="scene3" gravity="0 -9.81 0" dt="0.02">
+    <DefaultAnimationLoop name="loop2" />
+    <DefaultPipeline name="CollisionPipeline" verbose="0" />
+    <BruteForceDetection name="N2" />
+    <DefaultContactManager name="collision response" response="default" />
+    <Node name="liver3" gravity="0 -9.81 0">
+      <EulerImplicitSolver name="cg_odesolver"  />
+      <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
+      <MeshGmshLoader name="meshLoader" filename="mesh/liver.msh" />
+      <TetrahedronSetTopologyContainer name="topo" src="@meshLoader" />
+      <MechanicalObject name="dofs3" src="@meshLoader" />
+      <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
+      <DiagonalMass  name="computed using mass density" massDensity="1" />
+      <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" />
+      <FixedConstraint  name="FixedConstraint" indices="72" />
+      <Node name="Visu3" tags="Visual" gravity="0 -9.81 0">
+        <OglModel  name="VisualModel" fileMesh="mesh/liver-smooth.obj" />
+        <BarycentricMapping name="visual mapping" input="@../dofs3" output="@VisualModel" />
+      </Node>
+      <Node name="Surf3" gravity="0 -9.81 0">
+        <SphereLoader filename="mesh/liver.sph" />
+        <MechanicalObject name="spheres" position="@[-1].position" />
+        <TSphereModel name="CollisionModel" listRadius="@[-2].listRadius"/>
+        <BarycentricMapping name="sphere mapping" input="@../dofs3" output="@spheres" />
+      </Node>
+    </Node>
+  </Node>
+
+
+  <Node name="scene4" gravity="0 -9.81 0" dt="0.02">
+    <DefaultAnimationLoop name="loop2" />
+    <DefaultPipeline name="CollisionPipeline" verbose="0" />
+    <BruteForceDetection name="N2" />
+    <DefaultContactManager name="collision response" response="default" />
+    <Node name="liver4" gravity="0 -9.81 0">
+      <EulerImplicitSolver name="cg_odesolver"  />
+      <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
+      <MeshGmshLoader name="meshLoader" filename="mesh/liver.msh" />
+      <TetrahedronSetTopologyContainer name="topo" src="@meshLoader" />
+      <MechanicalObject name="dofs4" src="@meshLoader" />
+      <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
+      <DiagonalMass  name="computed using mass density" massDensity="1" />
+      <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" />
+      <FixedConstraint  name="FixedConstraint" indices="96" />
+      <Node name="Visu4" tags="Visual" gravity="0 -9.81 0">
+        <OglModel  name="VisualModel" fileMesh="mesh/liver-smooth.obj" />
+        <BarycentricMapping name="visual mapping" input="@../dofs4" output="@VisualModel" />
+      </Node>
+      <Node name="Surf4" gravity="0 -9.81 0">
+        <SphereLoader filename="mesh/liver.sph" />
+        <MechanicalObject name="spheres" position="@[-1].position" />
+        <TSphereModel name="CollisionModel" listRadius="@[-2].listRadius"/>
+        <BarycentricMapping name="sphere mapping" input="@../dofs4" output="@spheres" />
+      </Node>
+    </Node>
+  </Node>
+
+  
+  <DataExchange name="exchangeData1" template="vector<Vec3d>" from="@scene1/liver1/dofs1.position" to="@scene2/liver2/dofs2.position" />
+  <!--<DataExchange name="exchangeData2" template="vector<Vec3d>" from="@scene1/liver1/dofs1.free_position" to="@scene2/liver2/dofs2.free_position" />-->
+    
+
+</Node>

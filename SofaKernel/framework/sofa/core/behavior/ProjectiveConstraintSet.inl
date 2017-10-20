@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -77,61 +74,7 @@ void ProjectiveConstraintSet<DataTypes>::projectJacobianMatrix(const MechanicalP
     }
 }
 
-#ifdef SOFA_SMP
-template<class T>
-struct projectResponseTask
-{
-    void operator()(const MechanicalParams* mparams, void *c, Shared_rw< objectmodel::Data< typename T::VecDeriv> > dx)
-    {
-        ((T *)c)->T::projectResponse(mparams, dx.access());
-    }
-};
 
-template<class T>
-struct projectVelocityTask
-{
-    void operator()(const MechanicalParams* mparams, void *c, Shared_rw< objectmodel::Data< typename T::VecDeriv> > v)
-    {
-        ((T *)c)->T::projectVelocity(mparams, v.access());
-    }
-};
-
-template<class T>
-struct projectPositionTask
-{
-    void operator()(const MechanicalParams* mparams, void *c, Shared_rw< objectmodel::Data< typename T::VecCoord> > x)
-    {
-        ((T *)c)->T::projectPosition(mparams, x.access());
-    }
-};
-
-template<class DataTypes>
-struct projectResponseTask<ProjectiveConstraintSet< DataTypes > >
-{
-    void operator()(const MechanicalParams* mparams, ProjectiveConstraintSet<DataTypes>  *c, Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv> > dx)
-    {
-        c->projectResponse(mparams, dx.access());
-    }
-};
-
-template<class DataTypes>
-struct projectVelocityTask<ProjectiveConstraintSet< DataTypes > >
-{
-    void operator()(const MechanicalParams* mparams, ProjectiveConstraintSet<DataTypes>  *c, Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv> > v)
-    {
-        c->projectVelocity(mparams, v.access());
-    }
-};
-
-template<class DataTypes>
-struct projectPositionTask<ProjectiveConstraintSet< DataTypes > >
-{
-    void operator()(const MechanicalParams* mparams, ProjectiveConstraintSet<DataTypes>  *c, Shared_rw< objectmodel::Data< typename DataTypes::VecCoord> > x)
-    {
-        c->projectPosition(mparams, x.access());
-    }
-};
-#endif /* SOFA_SMP */
 
 template<class DataTypes>
 void ProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId)
@@ -143,12 +86,7 @@ void ProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams*
     if (mstate)
     {
 //        serr << "ProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId) " << this->getName() << " has mstate " << sendl;
-#ifdef SOFA_SMP
-        if (mparams->execMode() == ExecParams::EXEC_KAAPI)
-            Task<projectResponseTask<ProjectiveConstraintSet< DataTypes > > >(mparams, this,
-                    **defaulttype::getShared(*dxId[mstate.get(mparams)].write()));
-        else
-#endif /* SOFA_SMP */
+
             projectResponse(mparams, *dxId[mstate.get(mparams)].write());
     }
     else serr << "ProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId), no mstate for " << this->getName() << sendl;
@@ -162,12 +100,7 @@ void ProjectiveConstraintSet<DataTypes>::projectVelocity(const MechanicalParams*
 
     if (mstate)
     {
-#ifdef SOFA_SMP
-        if (mparams->execMode() == ExecParams::EXEC_KAAPI)
-            Task<projectVelocityTask<ProjectiveConstraintSet< DataTypes > > >(mparams, this,
-                    **defaulttype::getShared(*vId[mstate.get(mparams)].write()));
-        else
-#endif /* SOFA_SMP */
+
             projectVelocity(mparams, *vId[mstate.get(mparams)].write());
     }
     else serr << "ProjectiveConstraintSet<DataTypes>::projectVelocity(const MechanicalParams* mparams, MultiVecDerivId dxId), no mstate for " << this->getName() << sendl;
@@ -181,36 +114,11 @@ void ProjectiveConstraintSet<DataTypes>::projectPosition(const MechanicalParams*
 
     if (mstate)
     {
-#ifdef SOFA_SMP
-        if (mparams->execMode() == ExecParams::EXEC_KAAPI)
-            Task<projectPositionTask<ProjectiveConstraintSet< DataTypes > > >(mparams, this,
-                    **defaulttype::getShared(*xId[mstate.get(mparams)].write()));
-        else
-#endif /* SOFA_SMP */
+
             projectPosition(mparams, *xId[mstate.get(mparams)].write());
     }
 }
 
-#ifdef SOFA_SMP
-
-// TODO
-// template<class DataTypes>
-// void ProjectiveConstraintSet<DataTypes>::projectFreeVelocity()
-// {
-// 	if( !isActive() ) return;
-// 	if (mstate)
-// 		Task<projectVelocityTask<ProjectiveConstraintSet< DataTypes > > >(this,**mstate->getVfree());
-// }
-//
-// template<class DataTypes>
-// void ProjectiveConstraintSet<DataTypes>::projectFreePosition()
-// {
-// 	if( !isActive() ) return;
-// 	if (mstate)
-// 		Task<projectPositionTask<ProjectiveConstraintSet< DataTypes > > >(this,**mstate->read(sofa::core::ConstVecCoordId::freePosition())->getValue());
-// }
-
-#endif /* SOFA_SMP */
 
 } // namespace behavior
 

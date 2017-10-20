@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -158,7 +155,7 @@ public:
 
 
     /// Get Right Hand Term
-    virtual void getConstraintViolation(const sofa::core::ConstraintParams*, defaulttype::BaseVector * /*v*/ );
+    virtual void getConstraintViolation(const sofa::core::ConstraintParams*, defaulttype::BaseVector * /*v*/ ) override;
 
     using BaseConstraintSet::getConstraintViolation;
     // Override used in LMConstraintSolver::buildSystem method
@@ -221,13 +218,13 @@ public:
     ///
     /// That way, we can optimize the time spent to transfer quantities through the mechanical mappings.
     /// Every Dofs are inserted by default. The Constraint using only a subset of dofs should only insert these dofs in the mask.
-    virtual void updateForceMask() = 0;
+    virtual void updateForceMask() override = 0;
 
     /// Methods to know if we have to propagate the state we want to constrain before computing the correction
     /// If the correction is computed with the simulatedDOF, there is no need, and we can reach a good speed-up
     virtual bool isCorrectionComputedWithSimulatedDOF(ConstraintParams::ConstOrder) const {return false;}
 
-    virtual void resetConstraint();
+    virtual void resetConstraint() override;
 protected:
 
     /// Interface to construct a group of constraint: Giving the order of these constraints, it returns a pointer to the structure

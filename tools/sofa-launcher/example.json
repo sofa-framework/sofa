@@ -1,0 +1,27 @@
+{
+        "files"       : ["example.scn", "example.py"],
+        
+        "variables"   : [{
+                                "GRAVITYXML"      : "1 2 3",
+                                "GRAVITYPY"      : [1, 2, 3],
+                                "speedobject1" : "3, 4, 5",
+                                "nbIterations" : 1000 
+                        },
+                        {
+                                "GRAVITYXML"      : "1 2 3",
+                                "GRAVITYPY"       : [1, 2, 3],
+                                "speedobject1" : "3, 4, 5",
+                                "nbIterations" : 1000 
+                        }
+                        ],
+                        
+        "launcher"    : "sequential",
+
+        "resultsstyle" : "results.thtml",
+        "resultsfile"  : "results.html",
+
+        "numjobs"     : 5,        
+        "sshlogin"    : "dmarchal",
+        "sshhosts"    : ["192.168.0.22", "192.168.0.22"], 
+        "sshsofapath" : "/home/dmarchal/projects/2016/DEFROST/04-code/sofa-src/sofa/master/build-src-Desktop-Defaut/bin/runSofa"
+}

@@ -5,7 +5,7 @@
     <DefaultPipeline />
     <MinProximityIntersection alarmDistance="1" contactDistance="0.5"/>
     <Node>
-        <EulerImplicit name="cg odesolver" printLog="false" />
+        <EulerImplicit name="cg odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="100" name="linear solver" threshold="1e-20" tolerance="1e-20" />
         <Node name="restarticulation">
             <MechanicalObject name="rest" template="Vec1d" position="0 0 0 0" />
@@ -15,6 +15,8 @@
             <MechanicalObject name="Articulations" template="Vec1d" position="0 0 0 0" />
             <Node>
                 <MechanicalObject template="Rigid" name="DOFs" position="0 0 0  0 0 0 1  1 0 0  0 0 0 1  3 0 0  0 0 0 1  5 0 0  0 0 0 1  7 0 0  0 0 0 1" />
+                <BeamFEMForceField name="FEM" radius="0.1" youngModulus="1e8" poissonRatio="0.45"/>
+                <Mesh name="lines" lines="0 1 1 2 2 3 3 4 " />
                 <UniformMass template="Rigid" name="mass" mass="0.1 0.1 [1 0 0,0 1 0,0 0 1]" />
                 <FixedConstraint template="Rigid" name="fixOrigin" indices="0" />
                 <ArticulatedSystemMapping input1="@../Articulations" output="@DOFs" />

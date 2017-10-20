@@ -13,7 +13,7 @@
 
   <Node name="Affine"   >
      <VisualStyle displayFlags="showWireframe" />
-    <EulerImplicitSolver />
+    <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGLinearSolver iterations="200" tolerance="1e-15" threshold="1e-15"/>
 
     <MeshObjLoader name="mesh" filename="beam.obj" triangulate="1"/>

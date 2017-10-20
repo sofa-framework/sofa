@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -51,15 +48,15 @@ namespace shapefunction
 
 
 /// Default implementation does not compile
-template <int imageTypeLabel>
+template <class ImageType>
 struct BaseImageShapeFunctionSpecialization
 {
 };
 
 
 /// Specialization for regular Image
-template <>
-struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
+template <class T>
+struct BaseImageShapeFunctionSpecialization<defaulttype::Image<T>>
 {
     typedef SReal DistT;
     typedef defaulttype::Image<DistT> DistTypes;
@@ -170,8 +167,7 @@ abstract class for shape functions computed from a set of images (typically rast
 template <class ShapeFunctionTypes_,class ImageTypes_>
 class BaseImageShapeFunction : public core::behavior::BaseShapeFunction<ShapeFunctionTypes_>
 {
-    friend struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>;
-    friend struct BaseImageShapeFunctionSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>;
+    friend struct BaseImageShapeFunctionSpecialization<ImageTypes_>;
 
 public:
     SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE2(BaseImageShapeFunction, ShapeFunctionTypes_,ImageTypes_) , SOFA_TEMPLATE(core::behavior::BaseShapeFunction, ShapeFunctionTypes_));
@@ -204,14 +200,14 @@ public:
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
     Data< TransformType > transform;
 
-    typedef typename BaseImageShapeFunctionSpecialization<ImageTypes::label>::DistT DistT;
-    typedef typename BaseImageShapeFunctionSpecialization<ImageTypes::label>::DistTypes DistTypes;
+    typedef typename BaseImageShapeFunctionSpecialization<ImageTypes>::DistT DistT;
+    typedef typename BaseImageShapeFunctionSpecialization<ImageTypes>::DistTypes DistTypes;
     typedef helper::ReadAccessor<Data< DistTypes > > raDist;
     typedef helper::WriteOnlyAccessor<Data< DistTypes > > waDist;
     Data< DistTypes > f_w;
 
-    typedef typename BaseImageShapeFunctionSpecialization<ImageTypes::label>::IndT IndT;
-    typedef typename BaseImageShapeFunctionSpecialization<ImageTypes::label>::IndTypes IndTypes;
+    typedef typename BaseImageShapeFunctionSpecialization<ImageTypes>::IndT IndT;
+    typedef typename BaseImageShapeFunctionSpecialization<ImageTypes>::IndTypes IndTypes;
     typedef helper::ReadAccessor<Data< IndTypes > > raInd;
     typedef helper::WriteOnlyAccessor<Data< IndTypes > > waInd;
     Data< IndTypes > f_index;
@@ -239,7 +235,7 @@ public:
 //        Mat<3,3,Real> R; q.toMatrix(R);
 //        for ( unsigned int i = 0; i < BaseImageShapeFunction::spatial_dimensions; i++ )  for ( unsigned int j = 0; j < BaseImageShapeFunction::spatial_dimensions; j++ ) M[i][j]=R[i][j];
 
-        BaseImageShapeFunctionSpecialization<ImageTypes::label>::computeShapeFunction( this, childPosition, ref, w, dw, ddw, cell );
+        BaseImageShapeFunctionSpecialization<ImageTypes>::computeShapeFunction( this, childPosition, ref, w, dw, ddw, cell );
 
         // normalize
         this->normalize(w,dw,ddw);
@@ -267,7 +263,7 @@ protected:
         f_w.setGroup("output");
         f_index.setGroup("output");
 
-        BaseImageShapeFunctionSpecialization<ImageTypes::label>::constructor( this );
+        BaseImageShapeFunctionSpecialization<ImageTypes>::constructor( this );
     }
 
     virtual ~BaseImageShapeFunction()

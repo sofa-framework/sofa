@@ -33,7 +33,7 @@
 	</Node>
 	
 	<Node name="Tool1">	
-		<EulerImplicit />
+		<EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
 		<CGLinearSolver />
 		
 		<MechanicalObject name="ms" template="Rigid"  position="7.13718 -5.81916 23.8066 0.807871 0.160225 -0.1368 0.550416"/>
@@ -50,7 +50,7 @@
 			<RigidMapping />
 		</Node>	
 
-		<RestShapeSpringsForceField template="Rigid" stiffness="1000000" angularStiffness="200000000" external_rest_shape="../OmniObject/RigidLayer/Tool1/RealPosition" />
+		<RestShapeSpringsForceField template="Rigid" stiffness="1000000" angularStiffness="200000000" external_rest_shape="@../OmniObject/RigidLayer/Tool1/RealPosition" />
 		<UncoupledConstraintCorrection compliance="0.001   0.00003 0 0   0.00003 0   0.00003" />
 	</Node>
 

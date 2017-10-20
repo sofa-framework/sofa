@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -84,13 +81,13 @@ public:
 protected:
     virtual ~MechanicalState() {}
 public:
-    virtual size_t getCoordDimension() const { return defaulttype::DataTypeInfo<Coord>::size(); }
-    virtual size_t getDerivDimension() const { return defaulttype::DataTypeInfo<Deriv>::size(); }
+    virtual size_t getCoordDimension() const override { return defaulttype::DataTypeInfo<Coord>::size(); }
+    virtual size_t getDerivDimension() const override { return defaulttype::DataTypeInfo<Deriv>::size(); }
 
     /// Get the indices of the particles located in the given bounding box
     virtual void getIndicesInSpace(sofa::helper::vector<unsigned>& /*indices*/, Real /*xmin*/, Real /*xmax*/,Real /*ymin*/, Real /*ymax*/, Real /*zmin*/, Real /*zmax*/) const=0;
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -109,7 +106,7 @@ public:
         return name;
     }
 
-	virtual void copyToBuffer(SReal* dst, ConstVecId src, unsigned n) const {
+	virtual void copyToBuffer(SReal* dst, ConstVecId src, unsigned n) const override {
 		const size_t size = this->getSize();
 		
 		switch(src.type) {
@@ -145,7 +142,7 @@ public:
 		(void) n;
 	}
 
-	virtual void copyFromBuffer(VecId dst, const SReal* src, unsigned n) {
+	virtual void copyFromBuffer(VecId dst, const SReal* src, unsigned n) override {
 		const size_t size = this->getSize();
 		
 		switch(dst.type) {
@@ -181,7 +178,7 @@ public:
 		(void) n;
 	}
 
-    virtual void addFromBuffer(VecId dst, const SReal* src, unsigned n) {
+    virtual void addFromBuffer(VecId dst, const SReal* src, unsigned n) override {
         const size_t size = this->getSize();
 
         switch(dst.type) {
