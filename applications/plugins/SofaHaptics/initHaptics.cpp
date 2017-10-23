@@ -19,9 +19,63 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAHAPTICS_CONFIG_H
-#define SOFAHAPTICS_CONFIG_H
+#include <sofa/helper/system/config.h>
+#include <SofaHaptics/initHaptics.h>
 
-#include <SofaGeneral/config.h>
 
-#endif
+namespace sofa
+{
+
+namespace component
+{
+
+
+extern "C" {
+SOFA_SOFAHAPTICS_API void initExternalModule();
+SOFA_SOFAHAPTICS_API const char* getModuleName();
+SOFA_SOFAHAPTICS_API const char* getModuleVersion();
+SOFA_SOFAHAPTICS_API const char* getModuleLicense();
+SOFA_SOFAHAPTICS_API const char* getModuleDescription();
+SOFA_SOFAHAPTICS_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
+
+const char* getModuleName()
+{
+    return "SofaHaptics";
+}
+
+const char* getModuleVersion()
+{
+    return "1.0";
+}
+
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+const char* getModuleDescription()
+{
+    return "TODO";
+}
+
+const char* getModuleComponentList()
+{
+    return "NullForceFeedback LCPForceFeedback";
+}
+
+SOFA_LINK_CLASS(NullForceFeedback)
+SOFA_LINK_CLASS(LCPForceFeedback)
+
+} // namespace component
+
+} // namespace sofa

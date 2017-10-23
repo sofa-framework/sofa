@@ -1,0 +1,16 @@
+# CMake package configuration file for the SofaDistanceGrid plugin
+
+@PACKAGE_INIT@
+
+find_package(SofaFramework REQUIRED)
+
+if(NOT TARGET SofaHaptics)
+        include("${CMAKE_CURRENT_LIST_DIR}/SofaHapticsTargets.cmake")
+endif()
+
+set(SOFA_HAVE_SOFAHAPTICS "@SOFA_HAVE_SOFAHAPTICS@")
+
+check_required_components(SofaHaptics)
+set(SofaHaptics_LIBRARIES SOFAHAPTICS)
+set(SofaHaptics_INCLUDE_DIRS @PACKAGE_SOFAHAPTICS_INCLUDE_DIR@ ${SOFAHAPTICS_INCLUDE_DIR})
+

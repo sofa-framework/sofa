@@ -19,29 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <SofaHaptics/initHaptics.h>
+#ifndef SOFAHAPTICS_CONFIG_H
+#define SOFAHAPTICS_CONFIG_H
 
+#include <SofaGeneral/config.h>
 
-namespace sofa
-{
+#ifdef SOFA_HAVE_SOFAHAPTICS
+#  define SOFA_SOFAHAPTICS_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_SOFAHAPTICS_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
-namespace component
-{
-
-
-void initHaptics()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
-
-SOFA_LINK_CLASS(NullForceFeedback)
-SOFA_LINK_CLASS(LCPForceFeedback)
-
-} // namespace component
-
-} // namespace sofa
+#endif
