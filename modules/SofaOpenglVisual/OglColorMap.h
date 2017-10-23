@@ -73,13 +73,13 @@ public:
 
     void initOld(const std::string &data);
 
-    void init();
-    void reinit();
+    void init() override;
+    void reinit() override;
 
     //void initVisual() { initTextures(); }
     //void clearVisual() { }
     //void initTextures() {}
-    void drawVisual(const core::visual::VisualParams* vparams);
+    void drawVisual(const core::visual::VisualParams* vparams) override;
     //void drawTransparent(const VisualParams* /*vparams*/)
     //void updateVisual();
 

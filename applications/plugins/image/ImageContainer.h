@@ -364,7 +364,7 @@ public:
     Data<unsigned int> nFrames;
 
 
-    virtual std::string getTemplateName() const	{ return templateName(this); }
+    virtual std::string getTemplateName() const	override { return templateName(this); }
     static std::string templateName(const ImageContainer<ImageTypes>* = NULL) {	return ImageTypes::Name(); }
 
     ImageContainer() : Inherited()
@@ -396,7 +396,7 @@ public:
 
     bool transformIsSet;
 
-    virtual void parse(sofa::core::objectmodel::BaseObjectDescription *arg)
+    virtual void parse(sofa::core::objectmodel::BaseObjectDescription *arg) override
     {
         Inherited::parse(arg);
 
@@ -412,7 +412,7 @@ public:
         ImageContainerSpecialization<ImageTypes>::parse( this, arg );
     }
 
-    virtual void init()
+    virtual void init() override
     {
         ImageContainerSpecialization<ImageTypes>::init( this );
 
@@ -505,7 +505,7 @@ protected:
         return ImageContainerSpecialization<ImageTypes>::loadCamera( this );
     }
 
-    void handleEvent(sofa::core::objectmodel::Event *event)
+    void handleEvent(sofa::core::objectmodel::Event *event) override
     {
         if (simulation::AnimateEndEvent::checkEventType(event))
             loadCamera();
@@ -531,7 +531,7 @@ protected:
         for(unsigned int i=0;i<p.size();i++) c[i]=rtransform->fromImage(p[i]);
     }
 
-    virtual void computeBBox(const core::ExecParams*  params, bool onlyVisible=false )
+    virtual void computeBBox(const core::ExecParams*  params, bool onlyVisible=false ) override
     {
         if( onlyVisible && !drawBB.getValue()) return;
 
@@ -548,7 +548,7 @@ protected:
         this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<Real>(bbmin,bbmax));
     }
 
-    void draw(const core::visual::VisualParams* vparams)
+    void draw(const core::visual::VisualParams* vparams) override
     {
 #ifndef SOFA_NO_OPENGL
         // draw bounding box

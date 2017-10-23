@@ -74,19 +74,19 @@ public:
     virtual ~VisualManagerPass();
 
 
-    virtual void init();
-    virtual void initVisual();
+    virtual void init() override;
+    virtual void initVisual() override;
 
-    virtual void preDrawScene(core::visual::VisualParams* vp);
-    virtual bool drawScene(core::visual::VisualParams* vp);
-    virtual void postDrawScene(core::visual::VisualParams* vp);
+    virtual void preDrawScene(core::visual::VisualParams* vp) override;
+    virtual bool drawScene(core::visual::VisualParams* vp) override;
+    virtual void postDrawScene(core::visual::VisualParams* vp) override;
 
 
-    virtual void draw(const core::visual::VisualParams* vparams);
-    virtual void fwdDraw(core::visual::VisualParams*);
-    virtual void bwdDraw(core::visual::VisualParams*);
+    virtual void draw(const core::visual::VisualParams* vparams) override;
+    virtual void fwdDraw(core::visual::VisualParams*) override;
+    virtual void bwdDraw(core::visual::VisualParams*) override;
 
-    virtual void handleEvent(sofa::core::objectmodel::Event* /*event*/);
+    virtual void handleEvent(sofa::core::objectmodel::Event* /*event*/) override;
 
     virtual bool isPrerendered() {return prerendered;};
 

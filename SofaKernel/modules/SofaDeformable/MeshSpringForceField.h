@@ -165,7 +165,7 @@ public:
         cubesDamping.setValue(val);
     }
 
-    virtual void init();
+    virtual void init() override;
 
 
 };

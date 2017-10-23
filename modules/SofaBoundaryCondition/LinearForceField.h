@@ -85,7 +85,7 @@ protected:
     virtual ~LinearForceField() { delete data; };
 
 public:
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
     /// methods to add/remove some indices, keyTimes, keyForces
     void addPoint(unsigned index);
@@ -102,22 +102,22 @@ public:
     void addKeyForce(Real time, Deriv force);
     void clearKeyForces();
 
-    virtual void init();
+    virtual void init() override;
 
     // ForceField methods
     /// Add the forces
-    virtual void addForce (const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
+    virtual void addForce (const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
 
     /// Compute the force derivative
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */)
+    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */) override
     {
         //TODO: remove this line (avoid warning message) ...
         mparams->setKFactorUsed(true);
     };
 
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * matrix, SReal kFact, unsigned int &offset);
+    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * matrix, SReal kFact, unsigned int &offset) override;
 
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const;
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const override;
 
 private :
     /// the key times surrounding the current simulation time (for interpolation)

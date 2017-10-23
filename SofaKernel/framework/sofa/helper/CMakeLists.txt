@@ -52,7 +52,6 @@ set(HEADER_FILES
     io/FileAccess.h
     io/File.h
     io/Image.h
-    io/ImageBMP.h
     io/ImageDDS.h
     io/ImageRAW.h
     io/MassSpringLoader.h
@@ -156,7 +155,6 @@ set(SOURCE_FILES
     io/FileAccess.cpp
     io/File.cpp
     io/Image.cpp
-    io/ImageBMP.cpp
     io/ImageDDS.cpp
     io/ImageRAW.cpp
     io/MassSpringLoader.cpp
@@ -228,11 +226,6 @@ if(SOFA_BUILD_TESTS)
                              testing/NumericTest.cpp
                              testing/TestMessageHandler.cpp
         )
-endif()
-
-if(SOFA_HAVE_PNG)
-    list(APPEND HEADER_FILES  io/ImagePNG.h)
-    list(APPEND SOURCE_FILES  io/ImagePNG.cpp)
 endif()
 
 if(Boost_thread_FOUND)

@@ -41,8 +41,8 @@ class TriangleModelInRegularGrid : public TriangleModel
 public:
     SOFA_CLASS(TriangleModelInRegularGrid, TriangleModel);
 
-    virtual void init();
-    virtual void computeBoundingTree ( int maxDepth=0 );
+    virtual void init() override;
+    virtual void computeBoundingTree ( int maxDepth=0 ) override;
 
     sofa::core::topology::BaseMeshTopology* _topology;
     sofa::core::topology::BaseMeshTopology* _higher_topo;

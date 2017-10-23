@@ -19,39 +19,37 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_QT_IMAGEQT_H
-#define SOFA_GUI_QT_IMAGEQT_H
+#ifndef SOFA_Elasticity_test_deprecated_H
+#define SOFA_Elasticity_test_deprecated_H
 
-#include "SofaGUIQt.h"
-#include <sofa/helper/io/Image.h>
 
-#include <iostream>
+#include "Elasticity_test.h"
 
-namespace sofa
+namespace sofa {
+
+template< class DataTypes>
+struct SOFA_TestPlugin_API Elasticity_test_deprecated: public Elasticity_test<DataTypes>
 {
+    typedef component::container::MechanicalObject<DataTypes> DOFs;
+    typedef typename DOFs::Coord  Coord;
+    typedef typename DOFs::Deriv  Deriv;
 
-namespace gui
-{
+/// Create sun-planet system
+simulation::Node::SPtr createSunPlanetSystem(
+        simulation::Node::SPtr root,
+        double mSun,
+        double mPlanet,
+        double g,
+        Coord xSun,
+        Deriv vSun,
+        Coord xPlanet,
+        Deriv vPlanet);
 
-namespace qt
-{
-
-class SOFA_SOFAGUIQT_API ImageQt : public sofa::helper::io::Image
-{
-public:
-    ImageQt() {}
-    ImageQt(const std::string& filename)
-    {
-        load(filename);
-    }
-    bool load(std::string filename);
-    static bool Init();
 };
 
-} //namespace qt
 
-} //namespace gui
 
-} //namespace sofa
+
+} // namespace sofa
 
 #endif

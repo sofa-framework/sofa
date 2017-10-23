@@ -77,7 +77,7 @@ public:
     Data< SeqPositions > closingPosition;
     Data< SeqTriangles > closingTriangles;
 
-    virtual std::string getTemplateName() const    { return templateName(this);    }
+    virtual std::string getTemplateName() const    override { return templateName(this);    }
     static std::string templateName(const MeshClosingEngine<DataTypes>* = NULL) { return DataTypes::Name();    }
 
 protected:
@@ -98,7 +98,7 @@ protected:
     virtual ~MeshClosingEngine() {}
 
 public:
-    virtual void init()
+    virtual void init() override
     {
         addInput(&inputPosition);
         addInput(&inputTriangles);
@@ -112,8 +112,8 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit()    { update();  }
-    void update();
+    virtual void reinit()    override { update();  }
+    void update() override;
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_MeshClosingEngine_CPP)

@@ -31,7 +31,6 @@
 #include <sofa/core/topology/TopologyChange.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/helper/io/MassSpringLoader.h>
-#include <sofa/helper/gl/template.h>
 #include <sofa/helper/system/config.h>
 #include <cassert>
 #include <iostream>

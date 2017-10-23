@@ -47,11 +47,11 @@ public:
 protected:
     StaticSolver();
 public:
-    void solve (const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult);
+    void solve (const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 
     /// Given an input derivative order (0 for position, 1 for velocity, 2 for acceleration),
     /// how much will it affect the output derivative of the given order.
-    double getIntegrationFactor(int inputDerivative, int outputDerivative) const
+    double getIntegrationFactor(int inputDerivative, int outputDerivative) const override
     {
         double matrix[3][3] =
         {
@@ -67,7 +67,7 @@ public:
 
     /// Given a solution of the linear system,
     /// how much will it affect the output derivative of the given order.
-    double getSolutionIntegrationFactor(int outputDerivative) const
+    double getSolutionIntegrationFactor(int outputDerivative) const override
     {
         double vect[3] = { 1, 0, 0};
         if (outputDerivative >= 3)

@@ -112,11 +112,11 @@ public:
     Data< std::string > d_variables;
     Data< helper::vector<Rule> > rules;
 
-    virtual std::string getContactResponse(core::CollisionModel* model1, core::CollisionModel* model2);
+    virtual std::string getContactResponse(core::CollisionModel* model1, core::CollisionModel* model2) override;
 
     void createVariableData ( std::string variable );
 
-    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg );
+    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
 
 protected:
     RuleBasedContactManager();

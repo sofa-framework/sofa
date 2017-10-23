@@ -48,14 +48,14 @@ void SOFA_SCENECREATOR_API importPlugin(const std::string& name) ;
 
 Simulation::SPtr SOFA_SCENECREATOR_API createSimulation(const std::string& type="DAG") ;
 
-Node::SPtr SOFA_SCENECREATOR_API createRootNode(Simulation::SPtr, const std::string& name,
-                                                const std::map<std::string, std::string>& params={}) ;
+Node::SPtr SOFA_SCENECREATOR_API createRootNode( Simulation::SPtr, const std::string& name,
+    const std::map<std::string, std::string>& params = std::map<std::string, std::string>{} );
 
-BaseObject::SPtr SOFA_SCENECREATOR_API createObject(Node::SPtr parent, const std::string& type,
-                                                    const std::map<std::string, std::string>& params={}) ;
+BaseObject::SPtr SOFA_SCENECREATOR_API createObject( Node::SPtr parent, const std::string& type,
+    const std::map<std::string, std::string>& params = std::map<std::string, std::string>{} );
 
-Node::SPtr SOFA_SCENECREATOR_API createChild(Node::SPtr& node, const std::string& name,
-                                             const std::map<std::string, std::string>& params={}) ;
+Node::SPtr SOFA_SCENECREATOR_API createChild( Node::SPtr& node, const std::string& name,
+    const std::map<std::string, std::string>& params = std::map<std::string, std::string>{} );
 
 void SOFA_SCENECREATOR_API dumpScene(Node::SPtr root) ;
 

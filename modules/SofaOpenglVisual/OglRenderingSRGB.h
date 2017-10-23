@@ -56,8 +56,8 @@ class SOFA_OPENGL_VISUAL_API OglRenderingSRGB : public core::visual::VisualManag
 public:
     SOFA_CLASS(OglRenderingSRGB, core::visual::VisualManager);
 
-    void fwdDraw(core::visual::VisualParams* );
-    void bwdDraw(core::visual::VisualParams* );
+    void fwdDraw(core::visual::VisualParams* ) override;
+    void bwdDraw(core::visual::VisualParams* ) override;
 };
 
 }//namespace visualmodel

@@ -34,7 +34,6 @@
 #include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/helper/io/SphereLoader.h>
 #include <sofa/helper/io/Mesh.h>
-#include <sofa/helper/gl/template.h>
 #include <sofa/helper/decompose.h>
 
 #include <sofa/simulation/Simulation.h>
