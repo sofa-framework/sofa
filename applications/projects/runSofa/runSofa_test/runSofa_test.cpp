@@ -70,11 +70,10 @@ protected:
 TEST_F(runSofa_test, runSofa_autoload)
 {
     PluginManager& pm = PluginManager::getInstance();
-
-    ASSERT_EQ(pm.getPluginMap().size(), 0U);
+    unsigned int num = pm.getPluginMap().size() ;
     pm.readFromIniFile(m_testConfigPluginPath);
     PluginManager::getInstance().init();
-    ASSERT_GT(pm.getPluginMap().size(), 0U);
+    ASSERT_GT(pm.getPluginMap().size(), num);
     const std::string pluginPath = pm.findPlugin(m_testPluginName);
     ASSERT_GT(pluginPath.size(), 0U);
     helper::system::Plugin& p = pm.getPluginMap()[pluginPath];

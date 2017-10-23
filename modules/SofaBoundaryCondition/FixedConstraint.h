@@ -99,25 +99,25 @@ public:
     void removeConstraint(unsigned int index);
 
     // -- Constraint interface
-    virtual void init();
-    virtual void reinit();
+    virtual void init() override;
+    virtual void reinit() override;
 
-    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData);
-    void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData);
-    void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData);
-    void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData);
+    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData) override;
+    void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData) override;
+    void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData) override;
+    void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;
 
 
-    virtual void applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix);
-    virtual void applyConstraint(const core::MechanicalParams* mparams, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix);
+    virtual void applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    virtual void applyConstraint(const core::MechanicalParams* mparams, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
     /** Project the the given matrix (Experimental API).
       See doc in base parent class
       */
-    virtual void projectMatrix( sofa::defaulttype::BaseMatrix* /*M*/, unsigned /*offset*/ );
+    virtual void projectMatrix( sofa::defaulttype::BaseMatrix* /*M*/, unsigned /*offset*/ ) override;
 
 
-    virtual void draw(const core::visual::VisualParams* vparams);
+    virtual void draw(const core::visual::VisualParams* vparams) override;
 
     bool fixAllDOFs() const { return f_fixAll.getValue(); }
 

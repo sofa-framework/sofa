@@ -44,7 +44,7 @@ protected:
     SphereQuadTopology(int nx, int ny, int nz);
     SphereQuadTopology();
 public:
-    Vector3 getPoint(int x, int y, int z) const;
+    Vector3 getPoint(int x, int y, int z) const override;
 
 protected:
     Data< Vector3 > center;

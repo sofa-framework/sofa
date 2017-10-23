@@ -133,9 +133,7 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
 
     if (node->collisionPipeline != NULL)
     {
-#ifndef SOFA_SMP
         processCollisionPipeline(node, node->collisionPipeline);
-#endif
     }
     if (!node->solver.empty() )
     {

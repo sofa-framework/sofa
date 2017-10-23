@@ -46,8 +46,6 @@
 #include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/gl/RAII.h>
 
-#include <sofa/helper/io/ImageBMP.h>
-
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/gui/ColourPickingVisitor.h>
 

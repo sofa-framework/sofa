@@ -57,10 +57,10 @@ public:
     virtual void setNode( simulation::Node* );
 
     /// Set the simulation node to the local context if not specified previously
-    virtual void init();
+    virtual void init() override;
 
     /// perform one animation step
-    virtual void step(const core::ExecParams* params, SReal dt);
+    virtual void step(const core::ExecParams* params, SReal dt) override;
 
 
     /// Construction method called by ObjectFactory.

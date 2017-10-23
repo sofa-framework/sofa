@@ -106,14 +106,16 @@ def sofaExceptHandler(type, value, tb):
           File file1.py line 23 ...
             faulty line
     """
-    s="\nPython Stack (most recent are at the end): \n"
-    for line in traceback.format_tb(tb):
-        s += line
+    h = type.__name__
 
-    Sofa.msg_error(repr(value)+" "+s, "line", 7)
+    if str(value) != '':
+        h += ': ' + str(value)
+    
+    s = ''.join(traceback.format_tb(tb))
+    
+    Sofa.msg_error(h + '\n' + s, "line", 7)
 
 sys.excepthook=sofaExceptHandler
-
 
 class Controller(Sofa.PythonScriptController):
 

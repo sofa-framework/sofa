@@ -31,6 +31,7 @@
 
 // Including mechanical object
 #include <SofaBaseMechanics/MechanicalObject.h>
+using MechanicalObject3 = sofa::component::container::MechanicalObject<Vec3Types> ;
 
 // Solvers
 #include <SofaGeneralImplicitOdeSolver/VariationalSymplecticSolver.h>

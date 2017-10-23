@@ -79,9 +79,9 @@ class SOFA_USER_INTERACTION_API SleepController : public core::objectmodel::Base
 public:
     SOFA_CLASS(SleepController, core::objectmodel::BaseObject);
 
-	virtual void init();
-	virtual void reset();
-	virtual void handleEvent(core::objectmodel::Event*);
+	virtual void init() override;
+	virtual void reset() override;
+	virtual void handleEvent(core::objectmodel::Event*) override;
 
 	Data<double> d_minTimeSinceWakeUp; // Do not do anything before objects have been moving for this duration
 	Data<SReal> d_speedThreshold, d_rotationThreshold; // Put to sleep objects in which all particules move slower than this value (and rotate slower for rigid particles)

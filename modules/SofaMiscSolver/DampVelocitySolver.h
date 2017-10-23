@@ -42,13 +42,13 @@ class SOFA_MISC_SOLVER_API DampVelocitySolver : public sofa::core::behavior::Ode
 public:
     SOFA_CLASS(DampVelocitySolver, sofa::core::behavior::OdeSolver);
 
-    void solve (const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult);
+    void solve (const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
     Data<double> rate;
     Data<double> threshold;
 
     /// Given an input derivative order (0 for position, 1 for velocity, 2 for acceleration),
     /// how much will it affect the output derivative of the given order.
-    virtual double getIntegrationFactor(int inputDerivative, int outputDerivative) const
+    virtual double getIntegrationFactor(int inputDerivative, int outputDerivative) const override
     {
         const SReal dt = getContext()->getDt();
         double matrix[3][3] =
@@ -66,7 +66,7 @@ public:
     /// Given a solution of the linear system,
     /// how much will it affect the output derivative of the given order.
     ///
-    virtual double getSolutionIntegrationFactor(int /*outputDerivative*/) const
+    virtual double getSolutionIntegrationFactor(int /*outputDerivative*/) const override
     {
         return 0;
     }

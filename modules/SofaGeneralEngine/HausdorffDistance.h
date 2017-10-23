@@ -57,15 +57,15 @@ protected:
 
     virtual ~HausdorffDistance() {}
 
-    void handleEvent(core::objectmodel::Event *event);
+    void handleEvent(core::objectmodel::Event *event) override;
     void onBeginAnimationStep(const double /*dt*/);
 
 public:
-    void init();
+    void init() override;
 
-    void reinit();
+    void reinit() override;
 
-    void update();
+    void update() override;
 
     //Input
     Data<VecCoord> f_points_1;
@@ -78,7 +78,7 @@ public:
 
     Data<bool> f_update;
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }

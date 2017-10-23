@@ -33,6 +33,7 @@
 #include <assert.h>
 #include <float.h>
 #include <stdlib.h>
+#include <fstream>
 
 namespace sofa
 {

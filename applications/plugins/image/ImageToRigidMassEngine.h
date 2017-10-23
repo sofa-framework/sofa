@@ -83,7 +83,7 @@ public:
     //@}
 
 
-    virtual std::string getTemplateName() const    { return templateName(this);    }
+    virtual std::string getTemplateName() const    override { return templateName(this);    }
     static std::string templateName(const ImageToRigidMassEngine<ImageTypes>* = NULL) { return ImageTypes::Name();    }
 
     ImageToRigidMassEngine()    :   Inherited()
@@ -102,7 +102,7 @@ public:
         f_listening.setValue(true);
     }
 
-    virtual void init()
+    virtual void init() override
     {
         addInput(&image);
         addInput(&transform);
@@ -114,13 +114,13 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit() { update(); }
+    virtual void reinit() override { update(); }
 
 protected:
 
     unsigned int time;
 
-    virtual void update()
+    virtual void update() override
     {
         raTransform inT(this->transform);
         raImage in(this->image);
@@ -177,7 +177,7 @@ protected:
 
     }
 
-    void handleEvent(sofa::core::objectmodel::Event *event)
+    void handleEvent(sofa::core::objectmodel::Event *event) override
     {
         if (simulation::AnimateEndEvent::checkEventType(event))
         {

@@ -6,11 +6,16 @@ add_subdirectory(../../extlibs/CImg extlibs/CImg)
 find_package(SofaFramework)
 
 sofa_add_plugin(SofaEulerianFluid SofaEulerianFluid)
+sofa_add_plugin(SofaSphFluid SofaSphFluid ON)
+sofa_add_plugin(SofaMiscCollision SofaMiscCollision ON)
+sofa_add_plugin(SofaDistanceGrid SofaDistanceGrid)
+sofa_add_plugin(SofaImplicitField SofaImplicitField)
+sofa_add_plugin(SofaVolumetricData SofaVolumetricData)  ##TRANSITIONAL DEPEND ON DISTANCEGRID & IMPLICIT
 sofa_add_plugin(image image)
 sofa_add_plugin(Compliant Compliant)
 sofa_add_plugin(CGALPlugin CGALPlugin) # Depends on image
 sofa_add_plugin(Flexible Flexible)     # Depends on image
-sofa_add_plugin(Registration Registration) # Depends on image, SofaPython, SofaSimpleGUI
+sofa_add_plugin(Registration Registration) # Depends on image, SofaPython, SofaSimpleGUI and #SOFADISTANCEGRID
 sofa_add_plugin(BulletCollisionDetection BulletCollisionDetection) # Depends on Compliant
 sofa_add_plugin(ColladaSceneLoader ColladaSceneLoader) # Depends on Flexible and image
 sofa_add_plugin(PreassembledMass PreassembledMass) # Depends on Flexible and Compliant
@@ -40,9 +45,9 @@ sofa_add_plugin(LeapMotion LeapMotion)
 sofa_add_plugin(Geomagic Geomagic)
 sofa_add_plugin(CImgPlugin CImgPlugin ON) # ON by default
 
-#if((${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU") AND (${CMAKE_SYSTEM_NAME} MATCHES "Linux"))
-#    sofa_add_plugin(SofaPardisoSolver SofaPardisoSolver) # SofaPardisoSolver is only available under linux with gcc
-#endif()
+if((${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU") AND (${CMAKE_SYSTEM_NAME} MATCHES "Linux"))
+    sofa_add_plugin(SofaPardisoSolver SofaPardisoSolver) # SofaPardisoSolver is only available under linux with gcc
+endif()
 
 if(${SOFA_NO_OPENGL})
     message("SOFA_NO_OPENGL flag prevents from using the SofaCUDA, SofaSimpleGUI and VolumetricRendering plugins")
@@ -51,3 +56,4 @@ else()
     sofa_add_plugin(SofaSimpleGUI SofaSimpleGUI) # SofaSimpleGUI plugin can't work without OPENGL
     sofa_add_plugin(VolumetricRendering VolumetricRendering) # VolumetricRendering plugin can't work without OPENGL
 endif()
+

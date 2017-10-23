@@ -67,7 +67,7 @@ public:
     static const float WEIGHT27[8][27];
     static const int cornerIndicesFromFineToCoarse[8][8];
 
-    virtual void init();
+    virtual void init() override;
 
     /// building from a mesh file
     virtual void buildAsFinest();
@@ -141,7 +141,7 @@ public:
     SReal getYmax() { return _max.getValue()[1]; }
     SReal getZmax() { return _max.getValue()[2]; }
 
-    bool hasPos()  const { return true; }
+    bool hasPos()  const override { return true; }
 
     /// return the cube containing the given point (or -1 if not found),
     /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
@@ -226,7 +226,7 @@ public:
 protected:
     virtual void updateEdges();
     virtual void updateQuads();
-    virtual void updateHexahedra();
+    virtual void updateHexahedra() override;
 
     sofa::helper::MarchingCubeUtility                 marchingCubes;
     bool                                _usingMC;
@@ -345,7 +345,7 @@ protected:
 public :
 
 #ifdef SOFA_NEW_HEXA
-    virtual const SeqHexahedra& getHexahedra()
+    virtual const SeqHexahedra& getHexahedra() override
     {
         if( !_alreadyInit ) init();
         return sofa::component::topology::MeshTopology::getHexahedra();
@@ -357,13 +357,13 @@ public :
         return sofa::component::topology::MeshTopology::getHexahedra();
     }
 #endif
-    virtual int getNbPoints() const
+    virtual int getNbPoints() const override
     {
         if( !_alreadyInit ) const_cast<SparseGridTopology*>(this)->init();
         return sofa::component::topology::MeshTopology::getNbPoints();
     }
 
-    virtual int getNbHexahedra() { return (int)this->getHexahedra().size();}
+    virtual int getNbHexahedra() override { return (int)this->getHexahedra().size();}
 };
 
 } // namespace topology

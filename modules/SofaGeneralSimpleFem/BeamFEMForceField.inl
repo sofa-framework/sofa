@@ -676,6 +676,36 @@ void BeamFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparam
 }
 
 template<class DataTypes>
+void BeamFEMForceField<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
+{
+    if( !onlyVisible ) return;
+
+
+    static const Real max_real = std::numeric_limits<Real>::max();
+    static const Real min_real = std::numeric_limits<Real>::min();
+    Real maxBBox[3] = {min_real,min_real,min_real};
+    Real minBBox[3] = {max_real,max_real,max_real};
+
+
+    const int npoints = this->mstate->getSize();
+    const VecCoord& p = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+
+    for (unsigned i=0; i<npoints; i++)
+    {
+        const defaulttype::Vector3 &pt = p[i].getCenter();
+
+        for (int c=0; c<3; c++)
+        {
+            if (pt[c] > maxBBox[c]) maxBBox[c] = pt[c];
+            else if (pt[c] < minBBox[c]) minBBox[c] = pt[c];
+        }
+    }
+
+    this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
+
+}
+
+template<class DataTypes>
 void BeamFEMForceField<DataTypes>::drawElement(int i, std::vector< defaulttype::Vector3 >* points, const VecCoord& x)
 {
     Index a = (*_indexedElements)[i][0];

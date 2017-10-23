@@ -11,8 +11,7 @@
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
 
-// TODO forward instead ?
-#include "../numericalsolver/KKTSolver.h"
+#include <Compliant/assembly/AssembledSystem.h>
 
 #include <sofa/helper/OptionsGroup.h>
 
@@ -34,6 +33,7 @@ namespace component {
 
 namespace linearsolver {
 class AssembledSystem;
+class KKTSolver;
 }
 
 
@@ -228,7 +228,7 @@ class SOFA_Compliant_API CompliantImplicitSolver : public sofa::core::behavior::
 	
 	// linear solver: TODO hide in pimpl ?
 	typedef linearsolver::KKTSolver kkt_type;
-	kkt_type::SPtr kkt;
+    core::sptr<kkt_type> kkt;
 
 
 

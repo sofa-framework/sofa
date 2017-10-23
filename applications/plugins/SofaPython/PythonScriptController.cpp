@@ -84,6 +84,8 @@ public:
     virtual ~MyFileEventListener(){}
 
     virtual void fileHasChanged(const std::string& filepath){
+        PythonEnvironment::gil lock {__func__} ;
+
         /// This function is called when the file has changed. Two cases have
         /// to be considered if the script was already loaded once or not.
         if(!m_controller->scriptControllerInstance()){
@@ -242,7 +244,6 @@ void PythonScriptController::doLoadScript()
 
 void PythonScriptController::script_onIdleEvent(const IdleEvent* /*event*/)
 {
-    
     FileMonitor::updates(0);
 
     {

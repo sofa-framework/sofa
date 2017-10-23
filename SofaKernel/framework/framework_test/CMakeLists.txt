@@ -10,6 +10,7 @@ set(SOURCE_FILES
     core/objectmodel/DataFileName_test.cpp
     core/DataEngine_test.cpp
     core/TrackedData_test.cpp
+    defaulttype/MapMapSparseMatrixEigenUtils_test.cpp
     defaulttype/MatTypes_test.cpp
     defaulttype/VecTypes_test.cpp
     helper/types/Color_test.cpp
@@ -32,10 +33,6 @@ set(SOURCE_FILES
     simulation/DefaultAnimationLoop_test.cpp
     main.cpp
 )
-
-if(SOFA_HAVE_PNG)
-    list(APPEND SOURCE_FILES helper/io/ImagePNG_test.cpp)
-endif()
 
 #Plugin tests
 #add_subdirectory(plugin-system) ## TODO: check if deprecated or... ?

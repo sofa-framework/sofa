@@ -52,14 +52,14 @@ protected:
     OglShaderMacro();
     virtual ~OglShaderMacro();
 public:
-    virtual void init();
+    virtual void init() override;
 
     /// Returns the type of shader element (texture, macro, variable, or attribute)
-    virtual ShaderElementType getSEType() const { return core::visual::ShaderElement::SE_MACRO; }
+    virtual ShaderElementType getSEType() const override { return core::visual::ShaderElement::SE_MACRO; }
     // Returns the value of the shader element
-    virtual const core::objectmodel::BaseData* getSEValue() const { return NULL; }
+    virtual const core::objectmodel::BaseData* getSEValue() const override { return NULL; }
     // Returns the value of the shader element
-    virtual core::objectmodel::BaseData* getSEValue() { return NULL; }
+    virtual core::objectmodel::BaseData* getSEValue() override { return NULL; }
 };
 
 
@@ -72,11 +72,11 @@ protected:
 public:
     OglShaderDefineMacro();
     virtual ~OglShaderDefineMacro();
-    virtual void init();
+    virtual void init() override;
     // Returns the value of the shader element
-    virtual const core::objectmodel::BaseData* getSEValue() const { return &value; }
+    virtual const core::objectmodel::BaseData* getSEValue() const override { return &value; }
     // Returns the value of the shader element
-    virtual core::objectmodel::BaseData* getSEValue() { return &value; }
+    virtual core::objectmodel::BaseData* getSEValue() override { return &value; }
 };
 
 }

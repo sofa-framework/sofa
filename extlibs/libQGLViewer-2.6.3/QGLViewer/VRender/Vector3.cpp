@@ -45,6 +45,7 @@
 #include <iostream>
 #include "Vector3.h"
 #include "NVector3.h"
+#include <algorithm>
 #include <math.h>
 
 #ifdef WIN32

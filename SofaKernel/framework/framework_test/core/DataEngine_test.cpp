@@ -48,7 +48,7 @@ public:
 
     ~TestEngine() {}
 
-    void init()
+    void init() override
     {
         addInput(&input);
         m_dataTracker.trackData(input); // to connect a DataTracker to the Data 'input'
@@ -58,12 +58,12 @@ public:
         setDirtyValue();
     }
 
-    void reinit()
+    void reinit() override
     {
         update();
     }
 
-    void update()
+    void update() override
     {
         // true only iff the DataTracker associated to the Data 'input' is Dirty
         // that could only happen if 'input' was dirtied since last update

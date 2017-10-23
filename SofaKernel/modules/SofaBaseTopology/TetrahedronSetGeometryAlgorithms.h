@@ -79,9 +79,9 @@ protected:
         core::objectmodel::Base::addAlias(&d_drawTetrahedra, "drawTetrahedron");
     }
 
-    virtual ~TetrahedronSetGeometryAlgorithms() {}
+    virtual ~TetrahedronSetGeometryAlgorithms() override {}
 public:
-    virtual void draw(const core::visual::VisualParams* vparams);
+    virtual void draw(const core::visual::VisualParams* vparams) override;
 
     void computeTetrahedronAABB(const TetraID i, Coord& minCoord, Coord& maxCoord) const;
 

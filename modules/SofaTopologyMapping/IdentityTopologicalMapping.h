@@ -52,7 +52,7 @@ protected:
     IdentityTopologicalMapping();
     virtual ~IdentityTopologicalMapping();
 public:
-    virtual void init();
+    virtual void init() override;
 
 
     /** \brief Translates the TopologyChange objects from the source to the target.
@@ -61,9 +61,9 @@ public:
      * reflect the effects of the first topology changes on the second topology.
      *
      */
-    virtual void updateTopologicalMappingTopDown();
+    virtual void updateTopologicalMappingTopDown() override;
 
-    virtual unsigned int getFromIndex(unsigned int ind);
+    virtual unsigned int getFromIndex(unsigned int ind) override;
 
 };
 
