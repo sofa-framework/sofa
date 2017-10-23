@@ -113,14 +113,6 @@ void SceneCheckAPIChange::doCheckOn(Node* node)
 void SceneCheckAPIChange::installDefaultChangeSets()
 {
     addHookInChangeSet("17.06", [](Base* o){
-        if(o->getClassName() == "RestShapeSpringsForceField" && o->findLink("external_rest_shape") )
-        {
-            if( o->findLink("external_rest_shape")->getSize() != 0)
-                msg_warning(o) << "RestShapeSpringsForceField have changed since 17.06. The parameter 'external_rest_shape' is now a Link. To fix your scene you need to add and '@' in front of the provided path. See PR#315" ;
-        }
-    }) ;
-
-    addHookInChangeSet("17.06", [](Base* o){
         if(o->getClassName() == "BoxStiffSpringForceField" )
             msg_warning(o) << "BoxStiffSpringForceField have changed since 17.06. To use the old behavior you need to set parameter 'forceOldBehavior=true'" ;
     }) ;
