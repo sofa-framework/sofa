@@ -90,11 +90,15 @@ std::map<std::string, std::vector<std::string>> uncreateablecomponents =
     {"RigidDistanceGridDiscreteIntersection", {"pluginized-17.12", "<RequirePlugin name='SofaDistanceGrid'/>"}},
     {"DistanceGridForceField", {"pluginized-17.12", "<RequirePlugin name='SofaDistanceGrid'/>"}},
 
-    /// SofaDistanceGrid is now a Plugin
+    /// SofaIplicitField is now a Plugin
     {"ImplicitSurfaceContainer", {"pluginized-17.12", "<RequirePlugin name='SofaImplicitField'/>"}},
     {"InterpolatedImplicitSurface", {"pluginized-17.12", "<RequirePlugin name='SofaImplicitField'/>"}},
     {"SphereSurface", {"pluginized-17.12", "<RequirePlugin name='SofaImplicitField'/>"}},
-    {"ImplicitSurfaceMapping", {"pluginized-17.12", "<RequirePlugin name='SofaImplicitField'/>"}}
+    {"ImplicitSurfaceMapping", {"pluginized-17.12", "<RequirePlugin name='SofaImplicitField'/>"}},
+
+    /// SofaHaptics is now a Plugin
+    {"NullForceFeedback", {"pluginized-17.12", "<RequirePlugin name='SofaHaptics'/>"}},
+    {"LCPForceFeedback", {"pluginized-17.12", "<RequirePlugin name='SofaHaptics'/>"}}
 };
 
 } /// namespace deprecatedcomponents

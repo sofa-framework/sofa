@@ -38,7 +38,6 @@ set(SOFAGENERAL_TARGETS
     SofaGeneralEngine
     SofaExporter
     SofaGraphComponent
-    SofaHaptics
     SofaPreconditioner
     SofaSparseSolver
     SofaTopologyMapping
