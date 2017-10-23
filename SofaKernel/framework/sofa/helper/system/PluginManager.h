@@ -137,38 +137,36 @@ public:
 
     static PluginManager& getInstance();
     /// Get the default suffix applied to plugin names to find the actual lib to load
-	/// Returns "_d" in debug configuration and an empty string otherwise 
+    /// Returns "_d" in debug configuration and an empty string otherwise 
     static std::string getDefaultSuffix();
 
-	
-	/// Loads a plugin library in process memory. 
-	/// @param plugin Can be just the filename of the library to load (without extension) or the full path
-	/// @param suffix An optional suffix to apply to the filename. Defaults to "_d" with debug builds and is empty otherwise.
-	/// @param ignoreCase Specify if the plugin search should be case insensitive (activated by default). 
-	///                   Not used if the plugin string passed as a parameter is a full path
-	/// @param errlog An optional stream for error logging.
-	bool loadPlugin(const std::string& plugin, const std::string& suffix = getDefaultSuffix(), bool ignoreCase = true, std::ostream* errlog = nullptr);
-	
-	/// Loads a plugin library in process memory. 
-	/// @param path The full path of the plugin to load
-	/// @param ignoreCase Specify if the plugin search should be case insensitive (activated by default). 
-	///                   Not used if the plugin string passed as a parameter is a full path
-	/// @param errlog An optional stream for error logging.
-	bool loadPluginByPath(const std::string& path, std::ostream* errlog= nullptr);
-	
-	/// Loads a plugin library in process memory. 
-	/// @param pluginName The filename without extension of the plugin to load
-	/// @param suffix An optional suffix to apply to the filename. Defaults to "_d" with debug builds, empty otherwise.
-	/// @param ignoreCase Specify if the plugin search should be case insensitive (activated by default). 
-	///                   Not used if the plugin string passed as a parameter is a full path
-	/// @param errlog An optional stream for error logging.
-	bool loadPluginByName(const std::string& pluginName, const std::string& suffix = getDefaultSuffix(), bool ignoreCase = true, std::ostream* errlog= nullptr);
     
-	/// Unloads a plugin from process memory.
-	bool unloadPlugin(const std::string& path, std::ostream* errlog= nullptr);
+    /// Loads a plugin library in process memory. 
+    /// @param plugin Can be just the filename of the library to load (without extension) or the full path
+    /// @param suffix An optional suffix to apply to the filename. Defaults to "_d" with debug builds and is empty otherwise.
+    /// @param ignoreCase Specify if the plugin search should be case insensitive (activated by default). 
+    ///                   Not used if the plugin string passed as a parameter is a full path
+    /// @param errlog An optional stream for error logging.
+    bool loadPlugin(const std::string& plugin, const std::string& suffix = getDefaultSuffix(), bool ignoreCase = true, std::ostream* errlog = nullptr);
+    
+    /// Loads a plugin library in process memory. 
+    /// @param path The full path of the plugin to load
+    /// @param errlog An optional stream for error logging.
+    bool loadPluginByPath(const std::string& path, std::ostream* errlog= nullptr);
+    
+    /// Loads a plugin library in process memory. 
+    /// @param pluginName The filename without extension of the plugin to load
+    /// @param suffix An optional suffix to apply to the filename. Defaults to "_d" with debug builds, empty otherwise.
+    /// @param ignoreCase Specify if the plugin search should be case insensitive (activated by default). 
+    ///                   Not used if the plugin string passed as a parameter is a full path
+    /// @param errlog An optional stream for error logging.
+    bool loadPluginByName(const std::string& pluginName, const std::string& suffix = getDefaultSuffix(), bool ignoreCase = true, std::ostream* errlog= nullptr);
+    
+    /// Unloads a plugin from process memory.
+    bool unloadPlugin(const std::string& path, std::ostream* errlog= nullptr);
 
     void init();
-	void init(const std::string& pluginPath);
+    void init(const std::string& pluginPath);
 
     std::string findPlugin(const std::string& pluginName, const std::string& suffix = getDefaultSuffix(), bool ignoreCase = true);
     bool pluginIsLoaded(const std::string& pluginPath);

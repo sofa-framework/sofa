@@ -126,7 +126,7 @@ std::string PluginManager::getDefaultSuffix()
 #ifdef SOFA_LIBSUFFIX
     return sofa_tostring(SOFA_LIBSUFFIX);
 #else
-	return std::string();
+    return std::string();
 #endif
 }
 
@@ -201,13 +201,13 @@ bool PluginManager::loadPlugin(const std::string& plugin, const std::string& suf
     // If 'plugin' ends with ".so", ".dll" or ".dylib", this is a path
     const std::string dotExt = "." + DynamicLibrary::extension;
     if (std::equal(dotExt.rbegin(), dotExt.rend(), plugin.rbegin()))
-	{
-        return loadPluginByPath(plugin, errlog);
-	}
+    {
+        return loadPluginByPath(plugin,  errlog);
+    }
     else
-	{
-		return loadPluginByName(plugin, suffix, ignoreCase, errlog);
-	}
+    {
+        return loadPluginByName(plugin, suffix, ignoreCase, errlog);
+    }
 }
 
 bool PluginManager::unloadPlugin(const std::string &pluginPath, std::ostream* errlog)
@@ -259,12 +259,12 @@ void PluginManager::init()
 
 void PluginManager::init(const std::string& pluginPath)
 {
-	PluginMap::iterator iter = m_pluginMap.find(pluginPath);
-	if(m_pluginMap.end() != iter)
-	{
+    PluginMap::iterator iter = m_pluginMap.find(pluginPath);
+    if(m_pluginMap.end() != iter)
+    {
         Plugin& plugin = iter->second;
         plugin.initExternalModule();
-	}
+    }
 }
 
 
@@ -298,12 +298,11 @@ std::string PluginManager::findPlugin(const std::string& pluginName, const std::
                 const std::string downcaseFilename = Utils::downcaseString(filename);
                 if (downcaseFilename == downcaseLibName) {
                     return dir + "/" + filename;
-                    std::cout<<"dir : "<<dir + "/" + filename<<std::endl;
                 }
             }
         }
     }
-	return std::string();
+    return std::string();
 }
 
 bool PluginManager::pluginIsLoaded(const std::string& pluginPath)
