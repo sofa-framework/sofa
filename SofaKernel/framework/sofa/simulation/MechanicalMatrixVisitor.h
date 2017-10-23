@@ -214,9 +214,10 @@ public:
         return RESULT_CONTINUE;
     }
 
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
+    virtual bool stopAtMechanicalMapping(simulation::Node* node, core::BaseMapping* map)
     {
-        return !map->f_mapMatrices.getValue();
+        SOFA_UNUSED(node);
+        return !map->areMatricesMapped();
     }
 };
 
