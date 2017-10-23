@@ -212,7 +212,7 @@ public:
         ServerCommunication* aServerCommunicationOSC = dynamic_cast<ServerCommunication*>(root->getObject("oscSender"));
         EXPECT_NE(aServerCommunicationOSC, nullptr);
 
-        usleep(10000);
+        usleep(1000000);
 
         Base::MapData dataMap = aServerCommunicationOSC->getDataAliases();
         Base::MapData::const_iterator itData;
@@ -277,6 +277,8 @@ public:
 
     void checkReceiveOSC()
     {
+
+
         std::stringstream scene1 ;
         scene1 <<
                   "<?xml version='1.0' ?>                                                       \n"
@@ -290,7 +292,7 @@ public:
         root->init(ExecParams::defaultInstance());
         ServerCommunication* aServerCommunicationOSC = dynamic_cast<ServerCommunication*>(root->getObject("oscReceiver"));
         aServerCommunicationOSC->setRunning(false);
-        usleep(10000);
+        usleep(1000000);
         UdpTransmitSocket transmitSocket( IpEndpointName( "127.0.0.1", 6000 ) );
         char buffer[1024];
         osc::OutboundPacketStream p(buffer, 1024 );
@@ -300,7 +302,7 @@ public:
         p << osc::EndMessage;
         p << osc::EndBundle;
         transmitSocket.Send( p.Data(), p.Size() );
-        usleep(10000);
+        usleep(1000000);
 
 
         Base::MapData dataMap = aServerCommunicationOSC->getDataAliases();
@@ -313,6 +315,7 @@ public:
             data = itData->second;
             EXPECT_NE(data, nullptr) ;
         }
+
     }
 
     void checkSendReceiveOSC()
@@ -339,7 +342,7 @@ public:
 
         aServerCommunicationOSCReceiver->setRunning(false);
 
-        usleep(10000);
+        usleep(1000000);
 
         Base::MapData dataMap = aServerCommunicationOSCSender->getDataAliases();
         Base::MapData::const_iterator itData;
@@ -568,9 +571,8 @@ public:
 
 
         aServerCommunicationReceiver->setRunning(false);
-        usleep(10000);
+        usleep(100000);
         aServerCommunicationSender->setRunning(false);
-        usleep(10000);
 
         EXPECT_STREQ(aComponent->d_vectorIn.getValueString().c_str(), aComponent->d_vectorOut.getValueString().c_str()); // crappy but it's not the final test. The test have to be inside the animation loop and test this easch step
 
