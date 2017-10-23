@@ -29,6 +29,7 @@
 #include <QTreeWidgetItem>
 #include <QHeaderView>
 #include <QPushButton>
+#include <QPoint>
 
 
 #include <sofa/gui/qt/SofaGUIQt.h>
@@ -96,7 +97,17 @@ public:
     SofaListViewAttribute getAttribute() const { return attribute_; }
 
     void contextMenuEvent(QContextMenuEvent *event);
+
+    sofa::simulation::Node* getNode(QTreeWidgetItem *item) const ;
+    sofa::core::objectmodel::Base* getComponent(QTreeWidgetItem *item) const ;
+    sofa::core::objectmodel::BaseObject* getObject(QTreeWidgetItem *item) const ;
+
+    // From QTreeWidget
+    virtual void mousePressEvent(QMouseEvent* event) ;
+    virtual void mouseMoveEvent(QMouseEvent* event) ;
+
 public Q_SLOTS:
+
     void Export();
     void CloseAllDialogs();
     void UpdateOpenedDialogs();
@@ -144,6 +155,7 @@ protected Q_SLOTS:
     void focusObject();
     void focusNode();
 protected:
+    core::objectmodel::Base* findBaseFromItem(QTreeWidgetItem* item) ;
     void collapseNode(QTreeWidgetItem* item);
     void expandNode(QTreeWidgetItem* item);
     void transformObject ( sofa::simulation::Node *node, double dx, double dy, double dz,  double rx, double ry, double rz, double scale );
@@ -159,6 +171,7 @@ protected:
     SofaListViewAttribute attribute_;
     QDisplayPropertyWidget* propertyWidget;
 
+    QPoint m_dragStartPosition ;
 };
 
 } //sofa

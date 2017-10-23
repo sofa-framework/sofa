@@ -339,8 +339,11 @@
             <height>0</height>
            </size>
           </property>
+          <property name="acceptDrops">
+           <bool>false</bool>
+          </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>1</number>
           </property>
           <widget class="QWidget" name="TabGraph">
            <attribute name="title">

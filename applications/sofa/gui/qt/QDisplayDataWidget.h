@@ -60,6 +60,11 @@ public:
 
     ModifyObjectFlags flag() {return flags_;}
 
+
+    // Inherited from QGroupBox. These are reimplemented to implement
+    // drag&drop.
+    virtual void 	mousePressEvent(QMouseEvent * event) ;
+
 public slots:
     void UpdateData();              //QWidgets ---> BaseData
     void UpdateWidgets();           //BaseData ---> QWidget
@@ -71,17 +76,17 @@ signals:
     void dataValueChanged(QString);
 
 protected:
-	static QIcon& RefreshIcon()
-	{
-		static QIcon icon;
-		if(icon.isNull())
-		{
-			std::string filename = "textures/refresh.png";
-			sofa::helper::system::DataRepository.findFile(filename);
-			icon = QIcon(filename.c_str());
-		}
-		return icon;
-	}
+    static QIcon& RefreshIcon()
+    {
+        static QIcon icon;
+        if(icon.isNull())
+        {
+            std::string filename = "textures/refresh.png";
+            sofa::helper::system::DataRepository.findFile(filename);
+            icon = QIcon(filename.c_str());
+        }
+        return icon;
+    }
 
 protected:
     core::objectmodel::BaseData* data_;
