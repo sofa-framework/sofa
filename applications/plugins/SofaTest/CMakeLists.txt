@@ -45,7 +45,6 @@ if(SOFA_BUILD_COMPONENTSET_STANDARD)
     list(APPEND SOURCE_FILES
         Elasticity_test.cpp
         PrimitiveCreation.cpp
-        TestMessageHandler.cpp
         )
 endif()
 
