@@ -652,6 +652,15 @@ template<> inline const char* EigenSparseMatrix<defaulttype::Vec3fTypes, default
     }
 
 
+namespace defaulttype {
+
+template<class TIn, class TOut>
+struct DataTypeInfo< component::linearsolver::EigenSparseMatrix<TIn, TOut> > 
+    : DataTypeInfo< typename component::linearsolver::EigenSparseMatrix<TIn, TOut>::Inherit > {
+    
+};
+
+}
 
 } // namespace sofa
 

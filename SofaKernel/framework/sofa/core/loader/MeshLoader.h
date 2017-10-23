@@ -77,14 +77,14 @@ public:
 protected:
     MeshLoader();
 public:
-    virtual bool canLoad();
+    virtual bool canLoad() override;
 
     //virtual void init();
-    virtual void parse ( sofa::core::objectmodel::BaseObjectDescription* arg );
+    virtual void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
 
-    virtual void init();
+    virtual void init() override;
 
-    virtual void reinit();
+    virtual void reinit() override;
 
 
     /// Apply Homogeneous transformation to the positions

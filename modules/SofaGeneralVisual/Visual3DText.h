@@ -58,11 +58,11 @@ protected:
     Visual3DText();
 
 public:
-    virtual void init();
+    virtual void init() override;
 
-    virtual void reinit();
+    virtual void reinit() override;
 
-    virtual void drawTransparent(const core::visual::VisualParams* vparams);
+    virtual void drawTransparent(const core::visual::VisualParams* vparams) override;
 
 public:
     Data<std::string> d_text;

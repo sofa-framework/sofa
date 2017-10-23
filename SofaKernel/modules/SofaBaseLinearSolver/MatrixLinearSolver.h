@@ -185,7 +185,7 @@ public:
     virtual ~MatrixLinearSolver();
 
     /// Reset the current linear system.
-    void resetSystem();
+    void resetSystem() override;
 
     /// Reset the current linear system.
     void resizeSystem(int n);
@@ -195,10 +195,10 @@ public:
     /// Note that this automatically resizes the linear system to the number of active degrees of freedoms
     ///
     /// @todo Should we put this method in a specialized class for mechanical systems, or express it using more general terms (i.e. coefficients of the second order ODE to solve)
-    void setSystemMBKMatrix(const core::MechanicalParams* mparams);
+    void setSystemMBKMatrix(const core::MechanicalParams* mparams) override;
 
     /// Rebuild the system using a mass and force factor
-    virtual void rebuildSystem(double massFactor, double forceFactor);
+    virtual void rebuildSystem(double massFactor, double forceFactor) override;
 
     /// Set the linear system matrix (only use for bench)
     void setSystemMatrix(Matrix* matrix);
@@ -208,14 +208,14 @@ public:
     }
 
     /// Set the linear system right-hand term vector, from the values contained in the (Mechanical/Physical)State objects
-    void setSystemRHVector(core::MultiVecDerivId v);
+    void setSystemRHVector(core::MultiVecDerivId v) override;
 
     /// Set the initial estimate of the linear system left-hand term vector, from the values contained in the (Mechanical/Physical)State objects
     /// This vector will be replaced by the solution of the system once solveSystem is called
-    void setSystemLHVector(core::MultiVecDerivId v);
+    void setSystemLHVector(core::MultiVecDerivId v) override;
 
     /// Get the linear system matrix, or NULL if this solver does not build it
-    Matrix* getSystemMatrix() { return currentGroup->systemMatrix; }
+    Matrix* getSystemMatrix() override { return currentGroup->systemMatrix; }
 
     /// Get the linear system right-hand term vector, or NULL if this solver does not build it
     Vector* getSystemRHVector() { return currentGroup->systemRHVector; }
@@ -224,19 +224,19 @@ public:
     Vector* getSystemLHVector() { return currentGroup->systemLHVector; }
 
     /// Get the linear system matrix, or NULL if this solver does not build it
-    defaulttype::BaseMatrix* getSystemBaseMatrix() { return currentGroup->systemMatrix; }
+    defaulttype::BaseMatrix* getSystemBaseMatrix() override { return currentGroup->systemMatrix; }
 
     /// Get the linear system right-hand term vector, or NULL if this solver does not build it
-    defaulttype::BaseVector* getSystemRHBaseVector() { return currentGroup->systemRHVector; }
+    defaulttype::BaseVector* getSystemRHBaseVector() override { return currentGroup->systemRHVector; }
 
     /// Get the linear system left-hand term vector, or NULL if this solver does not build it
-    defaulttype::BaseVector* getSystemLHBaseVector() { return currentGroup->systemLHVector; }
+    defaulttype::BaseVector* getSystemLHBaseVector() override { return currentGroup->systemLHVector; }
 
     /// Solve the system as constructed using the previous methods
-    virtual void solveSystem();
+    virtual void solveSystem() override;
 
     /// Invert the system, this method is optional because it's call when solveSystem() is called for the first time
-    virtual void invertSystem();
+    virtual void invertSystem() override;
 
     void prepareVisitor(simulation::Visitor* v)
     {
@@ -267,37 +267,37 @@ public:
         return ThreadManager::Name()+Matrix::Name();
     }
 
-    virtual bool isAsyncSolver()
+    virtual bool isAsyncSolver() override
     {
         return ThreadManager::isAsyncSolver();
     }
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }
 
 
-    virtual void invert(Matrix& /*M*/) {}
+    virtual void invert(Matrix& /*M*/) override {}
 
-    virtual void solve(Matrix& M, Vector& solution, Vector& rh) = 0;
+    virtual void solve(Matrix& M, Vector& solution, Vector& rh) override = 0;
 
     virtual bool addJMInvJtLocal(Matrix * /*M*/,ResMatrixType * result,const JMatrixType * J, double fact);
 
     virtual bool addMInvJtLocal(Matrix * /*M*/,ResMatrixType * result,const  JMatrixType * J, double fact);
 
-    virtual bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact);
+    virtual bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact) override;
 
-    virtual bool addMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact);
+    virtual bool addMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact) override;
 
-    virtual bool buildComplianceMatrix(defaulttype::BaseMatrix* result, double fact);
+    virtual bool buildComplianceMatrix(defaulttype::BaseMatrix* result, double fact) override;
 
-    virtual void applyContactForce(const defaulttype::BaseVector* f,double positionFactor,double velocityFactor);
+    virtual void applyContactForce(const defaulttype::BaseVector* f,double positionFactor,double velocityFactor) override;
 
-    virtual void computeResidual(const core::ExecParams* params, defaulttype::BaseVector* f);
+    virtual void computeResidual(const core::ExecParams* params, defaulttype::BaseVector* f) override;
 
 public :
-    bool isMultiGroup() const
+    bool isMultiGroup() const override
     {
         return multiGroup.getValue();
     }

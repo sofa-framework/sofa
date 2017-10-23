@@ -205,23 +205,6 @@ template <int dim> void LCPSolver<dim>::printInfo(double *q, Matrix &M)
         printf("\t%.4f\n",q[ii]);
     }
     printf("      ]\n\n");
-
-    // afficahge base courante
-    /*	printf("B = [");
-    	for(ii=0;ii<dim;ii++) {
-    		printf("\t%d",base[ii]);
-    	}
-    	printf("\t]\n\n");
-
-    	// affichage matrice courante
-    	printf("mat = [");
-    	for(ii=0;ii<dim;ii++) {
-    		for(jj=0;jj<2*dim+1;jj++) {
-    			printf("\t%.4f",mat[ii][jj]);
-    		}
-    		printf("\n");
-    	}
-    	printf("      ]\n\n"); */
 }
 
 //template<> class LCPSolver<3>;

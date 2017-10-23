@@ -99,17 +99,17 @@ public:
     void addConstraint(unsigned int index);
     void removeConstraint(unsigned int index);
 
-    void init();
-    void draw(const core::visual::VisualParams* vparams);
+    void init() override;
+    void draw(const core::visual::VisualParams* vparams) override;
     void initFixedPosition();
-    void reset() {initFixedPosition();}
+    void reset() override {initFixedPosition();}
 
     // -- LMConstraint interface
-    void buildConstraintMatrix(const core::ConstraintParams* cParams, core::MultiMatrixDerivId cId, unsigned int &cIndex);
-    void writeConstraintEquations(unsigned int& lineNumber, core::MultiVecId id, ConstOrder order);
+    void buildConstraintMatrix(const core::ConstraintParams* cParams, core::MultiMatrixDerivId cId, unsigned int &cIndex) override;
+    void writeConstraintEquations(unsigned int& lineNumber, core::MultiVecId id, ConstOrder order) override;
 
 
-    std::string getTemplateName() const
+    std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -118,7 +118,7 @@ public:
         return DataTypes::Name();
     }
 
-    bool isCorrectionComputedWithSimulatedDOF(ConstOrder /*order*/) const
+    bool isCorrectionComputedWithSimulatedDOF(ConstOrder /*order*/) const override
     {
         simulation::Node* node=(simulation::Node*) this->constrainedObject1->getContext();
         if (node->mechanicalMapping.empty()) return true;

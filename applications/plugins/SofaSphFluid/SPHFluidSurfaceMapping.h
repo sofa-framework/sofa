@@ -155,15 +155,15 @@ public:
         mIsoValue.setValue(val);
     }
 
-    void init();
+    void init() override;
 
-    void apply(const core::MechanicalParams *mparams, Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn);
+    void apply(const core::MechanicalParams *mparams, Data<OutVecCoord>& dOut, const Data<InVecCoord>& dIn) override;
 
-    void applyJ(const core::MechanicalParams *mparams, Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn);
+    void applyJ(const core::MechanicalParams *mparams, Data<OutVecDeriv>& dOut, const Data<InVecDeriv>& dIn) override;
 
-    void applyJT(const core::MechanicalParams *mparams, Data<InVecDeriv>& dOut, const Data<OutVecDeriv>& dIn);
+    void applyJT(const core::MechanicalParams *mparams, Data<InVecDeriv>& dOut, const Data<OutVecDeriv>& dIn) override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
 
 protected:
@@ -261,8 +261,8 @@ protected:
     }
 
 public:
-    virtual bool insertInNode( core::objectmodel::BaseNode* node ) { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
-    virtual bool removeInNode( core::objectmodel::BaseNode* node ) { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
+    virtual bool insertInNode( core::objectmodel::BaseNode* node ) override { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
+    virtual bool removeInNode( core::objectmodel::BaseNode* node ) override { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
 };
 
 

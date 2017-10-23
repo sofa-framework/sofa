@@ -52,8 +52,6 @@ namespace linearsolver
 
 
 
-
-
 /** Sparse matrix based on the Eigen library.
 
 An Eigen::SparseMatrix<Real, RowMajor> matrix is used to store the data in Compressed Row Storage mode.
@@ -476,6 +474,31 @@ template<> inline const char* EigenBaseSparseMatrix<float>::Name()  { return "Ei
 } // namespace linearsolver
 
 } // namespace component
+
+
+namespace defaulttype {
+
+template<class Real>
+struct DataTypeInfo< component::linearsolver::EigenBaseSparseMatrix<Real> > 
+    : DefaultDataTypeInfo<component::linearsolver::EigenBaseSparseMatrix<Real> > {
+
+    using typename DataTypeInfo::DefaultDataTypeInfo::DataType;
+
+    static const char* name() {
+        return DataType::Name();
+    }
+    
+    static const void* getValuePtr(const DataType& type) {
+        return &type.compressedMatrix;
+    }
+
+    static void* getValuePtr(DataType& type) {
+        return &type.compressedMatrix;
+    }
+    
+};
+
+}
 
 } // namespace sofa
 

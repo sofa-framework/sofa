@@ -58,12 +58,12 @@ public:
 
     ~MergedCatchAllVector() {}
 
-    void init()
+    void init() override
     {
         reinit();
     }
 
-    void reinit()
+    void reinit() override
     {
         helper::vector<Type> data;
         const helper::vector<Type> &data1 = _data1.getValue();
@@ -90,7 +90,7 @@ public:
 
 protected:
 
-    virtual void update()
+    virtual void update() override
     {
     }
 

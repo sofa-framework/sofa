@@ -43,7 +43,7 @@ public:
 protected:
     MeshSTLLoader();
 public:
-    virtual bool load();
+    virtual bool load() override;
 
     template <class T>
     static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )

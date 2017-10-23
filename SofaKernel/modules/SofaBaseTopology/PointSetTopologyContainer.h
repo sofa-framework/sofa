@@ -57,14 +57,14 @@ protected:
     virtual ~PointSetTopologyContainer() {}
 public:
 
-    virtual void init();
+    virtual void init() override;
 
 
 
     /// Procedural creation methods
     /// @{
-    virtual void clear();
-    virtual void addPoint(double px, double py, double pz);
+    virtual void clear() override;
+    virtual void addPoint(double px, double py, double pz) override;
     /// @}
 
 
@@ -73,7 +73,7 @@ public:
     /// @{
 
     /** \brief Returns the number of vertices in this topology. */
-    int getNbPoints() const { return (int)nbPoints.getValue(); }
+    int getNbPoints() const override { return (int)nbPoints.getValue(); }
 
     /** \brief Returns the number of topological element of the current topology.
      * This function avoids to know which topological container is in used.
@@ -84,20 +84,20 @@ public:
     Data<InitTypes::VecCoord>& getPointDataArray() {return d_initPoints;}
 
     /** \brief Set the number of vertices in this topology. */
-    void setNbPoints(int n);
+    void setNbPoints(int n) override;
 
 
     /** \brief check if vertices in this topology have positions. */
-    virtual bool hasPos() const;
+    virtual bool hasPos() const override;
 
     /** \brief Returns the X coordinate of the ith DOF. */
-    virtual SReal getPX(int i) const;
+    virtual SReal getPX(int i) const override;
 
     /** \brief Returns the Y coordinate of the ith DOF. */
-    virtual SReal getPY(int i) const;
+    virtual SReal getPY(int i) const override;
 
     /** \brief Returns the Z coordinate of the ith DOF. */
-    virtual SReal getPZ(int i) const;
+    virtual SReal getPZ(int i) const override;
 
     /// @}
 
@@ -153,7 +153,7 @@ public:
 
 protected:
     /// \brief Function creating the data graph linked to d_point
-    virtual void updateTopologyEngineGraph();
+    virtual void updateTopologyEngineGraph() override;
 
     /// \brief functions to really update the graph of Data/DataEngines linked to the different Data array, using member variable.
     virtual void updateDataEngineGraph(sofa::core::objectmodel::BaseData& my_Data, std::list<sofa::core::topology::TopologyEngine *>& my_enginesList);

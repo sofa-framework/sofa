@@ -103,12 +103,12 @@ public:
 	TorsionForceField();
 	virtual ~TorsionForceField();
 
-	virtual void bwdInit();
-	virtual void addForce(const MechanicalParams *, DataVecDeriv &f, const DataVecCoord &x, const DataVecDeriv &v);
-	virtual void addDForce(const MechanicalParams *mparams, DataVecDeriv &df, const DataVecDeriv &dx);
-	virtual void addKToMatrix(defaulttype::BaseMatrix *matrix, double kFact, unsigned int &offset);
+	virtual void bwdInit() override;
+	virtual void addForce(const MechanicalParams *, DataVecDeriv &f, const DataVecCoord &x, const DataVecDeriv &v) override;
+	virtual void addDForce(const MechanicalParams *mparams, DataVecDeriv &df, const DataVecDeriv &dx) override;
+	virtual void addKToMatrix(defaulttype::BaseMatrix *matrix, double kFact, unsigned int &offset) override;
 
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
     {
         serr << "Get potentialEnergy not implemented" << sendl;
         return 0.0;

@@ -56,8 +56,8 @@ public:
     //cannot be a DataFilename
     Data<std::string> d_repositoryPath;
 
-    void parse(sofa::core::objectmodel::BaseObjectDescription* arg);
-    void cleanup();
+    void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override;
+    void cleanup() override;
 private:
     std::string m_currentAddedPath;
 
