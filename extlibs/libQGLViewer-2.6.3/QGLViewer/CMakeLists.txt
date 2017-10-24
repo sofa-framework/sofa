@@ -70,6 +70,18 @@ else()
     qt4_wrap_ui(FORM_FILES ${UI_FILES})
 endif()
 
+if(WIN32)
+    sofa_copy_libraries_from_targets("${QT_TARGETS}")
+    sofa_install_libraries_from_targets("${QT_TARGETS}")
+
+    # Installing Qt platforms dll the hard way (dirty)
+    list (GET QT_TARGETS 0 QtCore_target)
+    get_target_property(QtCore_location ${QtCore_target} LOCATION_${CMAKE_BUILD_TYPE})
+    string(REGEX REPLACE "\\/[^/]*/[^/]*$" "" Qt_location ${QtCore_location})
+    FILE(GLOB QT_PLUGINS "${Qt_location}/plugins/platforms/qwindows*.dll")
+    install(FILES ${QT_PLUGINS} DESTINATION "bin/platforms" COMPONENT applications)
+endif()
+
 # These header files don't need to be processed by the moc.
 list(APPEND HEADER_FILES
     VRender/AxisAlignedBox.h
