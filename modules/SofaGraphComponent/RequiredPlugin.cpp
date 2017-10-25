@@ -99,7 +99,7 @@ void RequiredPlugin::loadPlugin()
             }
             if (result)
             {
-                sout << "Loaded " << pluginPath << sendl;
+                msg_info("RequiredPlugin") << "Loaded " << pluginPath;
                 loaded.push_back(pluginPath);
                 nameLoaded = true;
                 if (d_stopAfterFirstSuffixFound.getValue()) break;
@@ -118,13 +118,13 @@ void RequiredPlugin::loadPlugin()
     {
         if ((d_requireAll.getValue() || (d_requireOne.getValue() && loaded.empty())))
         {
-            serr << errmsg.str();
-            serr << "Required plugin"<<(failed.size()>1?"s":"")<<" failed to load: " << failed << sendl;
+            msg_error("RequiredPlugin") << errmsg.str();
+            msg_error("RequiredPlugin") <<(failed.size()>1?"s":"")<<" failed to load: " << failed ;
         }
         else
         {
-            sout << errmsg.str();
-            sout << "Optional/alternate plugin"<<(failed.size()>1?"s":"")<<" failed to load: " << failed << sendl;
+            msg_warning("RequiredPlugin") << errmsg.str();
+            msg_warning("RequiredPlugin") << "Optional/alternate plugin"<<(failed.size()>1?"s":"")<<" failed to load: " << failed;
         }
     }
     pluginManager->init();
