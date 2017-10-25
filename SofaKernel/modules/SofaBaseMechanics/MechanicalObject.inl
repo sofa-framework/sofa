@@ -1820,14 +1820,14 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params, core::VecI
             if (v.type == sofa::core::V_COORD)
             {
                 helper::WriteOnlyAccessor< Data<VecCoord> > vv( params, *this->write(core::VecCoordId(v)) );
-                vv.resize(vsize);
+                vv.resize(d_size.getValue());
                 for (unsigned int i=0; i<vv.size(); i++)
                     vv[i] = Coord();
             }
             else
             {
                 helper::WriteOnlyAccessor< Data<VecDeriv> > vv( params, *this->write(core::VecDerivId(v)) );
-                vv.resize(vsize);
+                vv.resize(d_size.getValue());
                 for (unsigned int i=0; i<vv.size(); i++)
                     vv[i] = Deriv();
             }
