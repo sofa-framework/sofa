@@ -42,7 +42,12 @@ int RequiredPluginClass = core::RegisterObject("Load the required plugins")
         .add< RequiredPlugin >();
 
 RequiredPlugin::RequiredPlugin()
-    : d_pluginName( initData(&d_pluginName, "pluginName", "Name of the plugin to loaded. If this is empty, the name of this component is used as plugin name."))
+    : d_pluginName( initData(&d_pluginName, "pluginName", "plugin name (or several names if you need to load different plugins or a plugin with several alternate names)"))
+    , d_suffixMap ( initData(&d_suffixMap , "suffixMap", "standard->custom suffixes pairs (to be used if the plugin is compiled outside of Sofa with a non standard way of differenciating versions), using ! to represent empty suffix"))
+    , d_stopAfterFirstNameFound( initData(&d_stopAfterFirstNameFound , false, "stopAfterFirstNameFound", "Stop after the first plugin name that is loaded successfully"))
+    , d_stopAfterFirstSuffixFound( initData(&d_stopAfterFirstSuffixFound , true, "stopAfterFirstSuffixFound", "For each plugin name, stop after the first suffix that is loaded successfully"))
+    , d_requireOne ( initData(&d_requireOne , false, "requireOne", "Display an error message if no plugin names were successfully loaded"))
+    , d_requireAll ( initData(&d_requireAll , true, "requireAll", "Display an error message if any plugin names failed to be loaded"))
 {
     this->f_printLog.setValue(true); // print log by default, to identify which pluging is responsible in case of a crash during loading
 }
@@ -50,40 +55,80 @@ RequiredPlugin::RequiredPlugin()
 void RequiredPlugin::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
 {
     Inherit1::parse(arg);
-
-    const helper::vector<std::string>& pluginName = d_pluginName.getValue();
-
-    // if no plugin name is given, try with the component name
-    if(pluginName.empty())
-        loadPlugin( name.getValue() );
-    else
-        for( const auto& it: pluginName )
-            loadPlugin( it );
+    loadPlugin();
 }
 
-void RequiredPlugin::loadPlugin( const std::string& pluginName )
+void RequiredPlugin::loadPlugin()
 {
-    PluginManager& pluginManager = PluginManager::getInstance();
-
-    const std::string path = pluginManager.findPlugin(pluginName);
-    if (path != "")
+    sofa::helper::system::PluginManager* pluginManager = &sofa::helper::system::PluginManager::getInstance();
+    std::string defaultSuffix = pluginManager->getDefaultSuffix();
+    const helper::vector<helper::fixed_array<std::string,2> >& sMap = d_suffixMap.getValue();
+    helper::vector<std::string> suffixVec;
+    if (!sMap.empty())
     {
-        if (!PluginManager::getInstance().pluginIsLoaded(path))
+        std::string skey = (defaultSuffix.empty() ? std::string("!") : defaultSuffix);
+        for (std::size_t i = 0; i < sMap.size(); ++i)
         {
-            if (PluginManager::getInstance().loadPlugin(path))
+            if (sMap[i][0] == skey)
             {
-                const std::string guiPath = pluginManager.findPlugin(pluginName + "_" + PluginManager::s_gui_postfix);
-                if (guiPath != "")
-                {
-                    PluginManager::getInstance().loadPlugin(guiPath);
-                }
+                suffixVec.push_back(sMap[i][1] == std::string("!") ? std::string(""):sMap[i][1]);
             }
         }
     }
-    else
+    if (suffixVec.empty())
+        suffixVec.push_back(defaultSuffix);
+    const helper::vector<std::string>& nameVec = d_pluginName.getValue();
+    helper::vector<std::string> nameVecCopy=nameVec;
+    if(nameVec.empty()) nameVecCopy.push_back(this->getName());
+    helper::vector< std::string > loaded;
+    helper::vector< std::string > failed;
+    std::ostringstream errmsg;
+    for (std::size_t nameIndex = 0; nameIndex < nameVecCopy.size(); ++nameIndex)
     {
-        msg_error("RequiredPlugin") << "Plugin not found: \"" + pluginName + "\"";
+        const std::string& name = nameVecCopy[nameIndex];
+        //sout << "Loading " << name << sendl;
+        bool nameLoaded = false;
+        for (std::size_t suffixIndex = 0; suffixIndex < suffixVec.size(); ++suffixIndex)
+        {
+            const std::string& suffix = suffixVec[suffixIndex];
+            std::string pluginPath = pluginManager->findPlugin(name, suffix, false);
+            bool result = !pluginPath.empty();
+            if (result && !pluginManager->pluginIsLoaded(pluginPath))
+            {
+                result = pluginManager->loadPlugin(pluginPath, suffix, false, &errmsg);
+            }
+            if (result)
+            {
+                msg_info("RequiredPlugin") << "Loaded " << pluginPath;
+                loaded.push_back(pluginPath);
+                nameLoaded = true;
+                if (d_stopAfterFirstSuffixFound.getValue()) break;
+            }
+        }
+        if (!nameLoaded)
+        {
+            failed.push_back(name);
+        }
+        else
+        {
+            if (d_stopAfterFirstNameFound.getValue()) break;
+        }
     }
+    if (!failed.empty())
+    {
+        if ((d_requireAll.getValue() || (d_requireOne.getValue() && loaded.empty())))
+        {
+            msg_error("RequiredPlugin") << errmsg.str();
+            msg_error("RequiredPlugin") <<(failed.size()>1?"s":"")<<" failed to load: " << failed ;
+        }
+        else
+        {
+            msg_warning("RequiredPlugin") << errmsg.str();
+            msg_warning("RequiredPlugin") << "Optional/alternate plugin"<<(failed.size()>1?"s":"")<<" failed to load: " << failed;
+        }
+    }
+    pluginManager->init();
+
 }
 
 }

@@ -283,11 +283,6 @@ int main(int argc, char** argv)
     }
     MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance()) ;
 
-
-    // Add the plugin directory to PluginRepository
-    const std::string& pluginDir = Utils::getPluginDirectory();
-    PluginRepository.addFirstPath(pluginDir);
-
     // Initialise paths
     BaseGUI::setConfigDirectoryPath(Utils::getSofaPathPrefix() + "/config", true);
     BaseGUI::setScreenshotDirectoryPath(Utils::getSofaPathPrefix() + "/screenshots", true);
@@ -298,8 +293,8 @@ int main(int argc, char** argv)
     for (unsigned int i=0; i<plugins.size(); i++)
         PluginManager::getInstance().loadPlugin(plugins[i]);
 
-    std::string configPluginPath = pluginDir + "/" + TOSTRING(CONFIG_PLUGIN_FILENAME);
-    std::string defaultConfigPluginPath = pluginDir + "/" + TOSTRING(DEFAULT_CONFIG_PLUGIN_FILENAME);
+    std::string configPluginPath = PluginRepository.getFirstPath() + "/" + TOSTRING(CONFIG_PLUGIN_FILENAME);
+    std::string defaultConfigPluginPath = PluginRepository.getFirstPath() + "/" + TOSTRING(DEFAULT_CONFIG_PLUGIN_FILENAME);
 
     if (!noAutoloadPlugins)
     {
