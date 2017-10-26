@@ -8,7 +8,7 @@
 
     <Node name="FlexibleU" activated="1"  >
       
-      <EulerImplicitSolver name="cg_odesolver" printLog="0" /> <CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25" tolerance="1e-20" threshold="1e-20"/>
+      <EulerImplicitSolver name="cg_odesolver" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" /> <CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25" tolerance="1e-20" threshold="1e-20"/>
       
 	 <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
         <Mesh name="mesh" src="@loader" />

@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -98,6 +95,12 @@ public:
     RigidDeriv(const Vec<6,real2> &v)
         : vCenter(Vec<3,real2>(v.data())), vOrientation(Vec<3,real2>(v.data()+3))
     {}
+
+    template<typename real2>
+    RigidDeriv(const real2* ptr)
+        :vCenter(ptr),vOrientation(ptr+3)
+    {
+    }
 
     void clear()
     {
@@ -186,7 +189,7 @@ public:
     {
         return helper::rsqrt( vCenter*vCenter + vOrientation*vOrientation);
     }
-    
+
 
     Vec3& getVCenter() { return vCenter; }
     Vec3& getVOrientation() { return vOrientation; }
@@ -400,27 +403,38 @@ public:
     //    orientation = c.getOrientation();
     //}
 
-    void operator +=(const Deriv& a)
-    {
-        center += a.getVCenter();
-        orientation.normalize();
-        Quat qDot = orientation.vectQuatMult(a.getVOrientation());
-        for (int i = 0; i < 4; i++)
-            orientation[i] += qDot[i] * 0.5f;
-        orientation.normalize();
+    void operator +=(const Deriv& dg) {
+        // R3 x SO(3) exponential integration
+        center += dg.getVCenter();
+
+        const Vec3 omega = dg.getVOrientation() / 2;
+        const real theta = omega.norm();
+
+        static const real epsilon = std::numeric_limits<real>::epsilon();
+
+        if( theta < epsilon ) {
+            // fallback to gnomonic projection
+            Quat exp(omega[0], omega[1], omega[2], 1);
+            exp.normalize();
+            orientation = exp * orientation;
+        } else {
+            // expontential
+            const real sinc = std::sin(theta) / theta;
+            const Quat exp(sinc * omega[0],
+                           sinc * omega[1],
+                           sinc * omega[2],
+                           std::cos(theta));
+            orientation = exp * orientation;
+        }
+
     }
 
-    RigidCoord<3,real> operator+(const Deriv& a) const
-    {
+    RigidCoord<3,real> operator+(const Deriv& dg) const {
         RigidCoord c = *this;
-        c.center += a.getVCenter();
-        c.orientation.normalize();
-        Quat qDot = c.orientation.vectQuatMult(a.getVOrientation());
-        for (int i = 0; i < 4; i++)
-            c.orientation[i] += qDot[i] * 0.5f;
-        c.orientation.normalize();
+        c += dg;
         return c;
     }
+
 
     RigidCoord<3,real> operator-(const RigidCoord<3,real>& a) const
     {
@@ -446,17 +460,13 @@ public:
     template<typename real2>
     void operator*=(real2 a)
     {
-        //std::cout << "*="<<std::endl;
         center *= a;
-        //orientation *= a;
     }
 
     template<typename real2>
     void operator/=(real2 a)
     {
-        //std::cout << "/="<<std::endl;
         center /= a;
-        //orientation /= a;
     }
 
     template<typename real2>
@@ -490,9 +500,6 @@ public:
       */
     real norm2() const
     {
-//        real r = (this->center).elems[0]*(this->center).elems[0];
-//        for (int i=1; i<3; i++)
-//            r += (this->center).elems[i]*(this->center).elems[i];
         return center*center
                 + orientation[0]*orientation[0]
                 + orientation[1]*orientation[1]
@@ -670,7 +677,7 @@ public:
         else
             return this->orientation[i-3];
     }
-    
+
     /// @name Tests operators
     /// @{
 
@@ -1201,10 +1208,10 @@ public:
             return this->vOrientation;
     }
 
-    
+
     /// @name Tests operators
     /// @{
-    
+
     bool operator==(const RigidDeriv<2,real>& b) const
     {
         return vCenter == b.vCenter && vOrientation == b.vOrientation;
@@ -1309,7 +1316,6 @@ public:
 
     void operator +=(const RigidCoord<2,real>& a)
     {
-        //         std::cout << "+="<<std::endl;
         center += a.getCenter();
         orientation += a.getOrientation();
     }
@@ -1317,7 +1323,6 @@ public:
     template<typename real2>
     void operator*=(real2 a)
     {
-        //         std::cout << "*="<<std::endl;
         center *= a;
         orientation *= (Real)a;
     }
@@ -1325,7 +1330,6 @@ public:
     template<typename real2>
     void operator/=(real2 a)
     {
-        //         std::cout << "/="<<std::endl;
         center /= a;
         orientation /= (Real)a;
     }

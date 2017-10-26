@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 project(SofaMiscSolver)
 
 set(HEADER_FILES
@@ -13,6 +13,8 @@ set(SOURCE_FILES
     NewmarkImplicitSolver.cpp
     initMiscSolver.cpp
 )
+
+
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationTree)

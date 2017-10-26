@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -129,40 +126,36 @@ void MechanicalOperations::propagateDxAndResetDf(core::MultiVecDerivId dx, core:
 }
 
 /// Propagate the given position through all mappings
-void MechanicalOperations::propagateX(core::MultiVecCoordId x, bool applyProjections)
+void MechanicalOperations::propagateX(core::MultiVecCoordId x)
 {
     setX(x);
-    MechanicalPropagatePositionVisitor visitor(&mparams, 0.0, x, false); //Don't ignore the masks
-    visitor.applyProjections = applyProjections;
+    MechanicalPropagateOnlyPositionVisitor visitor(&mparams, 0.0, x, false); //Don't ignore the masks
     executeVisitor( visitor );
 }
 
 /// Propagate the given velocity through all mappings
-void MechanicalOperations::propagateV(core::MultiVecDerivId v, bool applyProjections)
+void MechanicalOperations::propagateV(core::MultiVecDerivId v)
 {
     setV(v);
-    MechanicalPropagateVelocityVisitor visitor(&mparams, 0.0, v, false); //Don't ignore the masks
-    visitor.applyProjections = applyProjections;
+    MechanicalPropagateOnlyVelocityVisitor visitor(&mparams, 0.0, v, false); //Don't ignore the masks
     executeVisitor( visitor );
 }
 
 /// Propagate the given position and velocity through all mappings
-void MechanicalOperations::propagateXAndV(core::MultiVecCoordId x, core::MultiVecDerivId v, bool applyProjections)
+void MechanicalOperations::propagateXAndV(core::MultiVecCoordId x, core::MultiVecDerivId v)
 {
     setX(x);
     setV(v);
-    MechanicalPropagatePositionAndVelocityVisitor visitor(&mparams, 0.0, x, v, false); //Don't ignore the masks
-    visitor.applyProjections = applyProjections;
+    MechanicalPropagateOnlyPositionAndVelocityVisitor visitor(&mparams, 0.0, x, v, false); //Don't ignore the masks
     executeVisitor( visitor );
 }
 
 /// Propagate the given position through all mappings and reset the current force delta
-void MechanicalOperations::propagateXAndResetF(core::MultiVecCoordId x, core::MultiVecDerivId f, bool applyProjections)
+void MechanicalOperations::propagateXAndResetF(core::MultiVecCoordId x, core::MultiVecDerivId f)
 {
     setX(x);
     setF(f);
-    MechanicalPropagatePositionAndResetForceVisitor visitor(&mparams, x, f, false);
-    visitor.applyProjections = applyProjections;
+    MechanicalPropagateOnlyPositionAndResetForceVisitor visitor(&mparams, x, f, false);
     executeVisitor( visitor );
 }
 
@@ -177,11 +170,11 @@ void MechanicalOperations::projectPosition(core::MultiVecCoordId x, SReal time)
 void MechanicalOperations::computeEnergy(SReal &kineticEnergy, SReal &potentialEnergy)
 {
     kineticEnergy=0;
-	potentialEnergy=0;
-	sofa::simulation::MechanicalComputeEnergyVisitor *energyVisitor = new sofa::simulation::MechanicalComputeEnergyVisitor(&mparams);
+    potentialEnergy=0;
+    sofa::simulation::MechanicalComputeEnergyVisitor *energyVisitor = new sofa::simulation::MechanicalComputeEnergyVisitor(&mparams);
     executeVisitor(energyVisitor);
-	kineticEnergy=energyVisitor->getKineticEnergy();
-	potentialEnergy=energyVisitor->getPotentialEnergy();
+    kineticEnergy=energyVisitor->getKineticEnergy();
+    potentialEnergy=energyVisitor->getPotentialEnergy();
 }
 /// Apply projective constraints to the given velocity vector
 void MechanicalOperations::projectVelocity(core::MultiVecDerivId v, SReal time)
@@ -195,6 +188,14 @@ void MechanicalOperations::projectResponse(core::MultiVecDerivId dx, double **W)
 {
     setDx(dx);
     executeVisitor( MechanicalApplyConstraintsVisitor(&mparams, dx, W) );
+}
+
+/// Apply projective constraints to the given position and velocity vectors
+void MechanicalOperations::projectPositionAndVelocity(core::MultiVecCoordId x, core::MultiVecDerivId v, double time)
+{
+    setX(x);
+    setV(v);
+    executeVisitor( MechanicalProjectPositionAndVelocityVisitor(&mparams, time, x, v) );
 }
 
 void MechanicalOperations::addMdx(core::MultiVecDerivId res, core::MultiVecDerivId dx, SReal factor)
@@ -324,7 +325,8 @@ void MechanicalOperations::computeAcc(SReal t, core::MultiVecDerivId a, core::Mu
     setDx(a);
     setX(x);
     setV(v);
-    executeVisitor( MechanicalPropagatePositionAndVelocityVisitor(&mparams, t,x,v,
+    executeVisitor( MechanicalProjectPositionAndVelocityVisitor(&mparams, t,x,v) );
+    executeVisitor( MechanicalPropagateOnlyPositionAndVelocityVisitor(&mparams, t,x,v,
 #ifdef SOFA_SUPPORT_MAPPED_MASS
             a,
 #endif
@@ -340,7 +342,8 @@ void MechanicalOperations::computeForce(SReal t, core::MultiVecDerivId f, core::
     setF(f);
     setX(x);
     setV(v);
-    executeVisitor( MechanicalPropagatePositionAndVelocityVisitor(&mparams, t,x,v,
+    executeVisitor( MechanicalProjectPositionAndVelocityVisitor(&mparams, t,x,v) );
+    executeVisitor( MechanicalPropagateOnlyPositionAndVelocityVisitor(&mparams, t,x,v,
 #ifdef SOFA_SUPPORT_MAPPED_MASS
             a,
 #endif
@@ -357,7 +360,8 @@ void MechanicalOperations::computeContactAcc(SReal t, core::MultiVecDerivId a, c
     setDx(a);
     setX(x);
     setV(v);
-    executeVisitor( MechanicalPropagatePositionAndVelocityVisitor(&mparams, t,x,v,
+    executeVisitor( MechanicalProjectPositionAndVelocityVisitor(&mparams, t,x,v) );
+    executeVisitor( MechanicalPropagateOnlyPositionAndVelocityVisitor(&mparams, t,x,v,
 #ifdef SOFA_SUPPORT_MAPPED_MASS
             a,
 #endif
@@ -513,7 +517,6 @@ void MechanicalOperations::addMBK_ToMatrix(const sofa::core::behavior::MultiMatr
     mparams.setKFactor(kFact);
     if (matrix != NULL)
     {
-        //std::cout << "MechanicalAddMBK_ToMatrixVisitor "<< mFact << " " << bFact << " " << kFact << " " << offset << std::endl;
         executeVisitor( MechanicalAddMBK_ToMatrixVisitor(&mparams, matrix) );
     }
 }
@@ -525,7 +528,6 @@ void MechanicalOperations::addSubMBK_ToMatrix(const sofa::core::behavior::MultiM
     mparams.setKFactor(kFact);
     if (matrix != NULL)
     {
-        //std::cout << "MechanicalAddMBK_ToMatrixVisitor "<< mFact << " " << bFact << " " << kFact << " " << offset << std::endl;
         executeVisitor( MechanicalAddSubMBK_ToMatrixVisitor(&mparams, matrix, subMatrixIndex) );
     }
 }

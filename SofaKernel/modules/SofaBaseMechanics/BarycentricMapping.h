@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -169,18 +166,18 @@ public:
 protected:
     BarycentricMapper() {}
     virtual ~BarycentricMapper() {}
-	
+
 private:
-	BarycentricMapper(const BarycentricMapper& n) ;
-	BarycentricMapper& operator=(const BarycentricMapper& n) ;
-	
+    BarycentricMapper(const BarycentricMapper& n) ;
+    BarycentricMapper& operator=(const BarycentricMapper& n) ;
+
 public:
     using core::objectmodel::BaseObject::init;
     virtual void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) = 0;
     virtual void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) = 0;
     virtual const sofa::defaulttype::BaseMatrix* getJ(int /*outSize*/, int /*inSize*/)
     {
-        std::cerr << "BarycentricMapper::getJ() NOT IMPLEMENTED BY " << sofa::core::objectmodel::BaseClass::decodeClassName(typeid(*this)) << std::endl;
+        dmsg_error() << " getJ() NOT IMPLEMENTED BY " << sofa::core::objectmodel::BaseClass::decodeClassName(typeid(*this)) ;
         return NULL;
     }
     virtual void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) = 0;
@@ -318,32 +315,32 @@ protected:
     }
 public:
 
-    void clear(int reserve=0);
+    void clear(int reserve=0) override;
 
-    int addPointInLine(const int lineIndex, const SReal* baryCoords);
-    int createPointInLine(const typename Out::Coord& p, int lineIndex, const typename In::VecCoord* points);
+    int addPointInLine(const int lineIndex, const SReal* baryCoords) override;
+    int createPointInLine(const typename Out::Coord& p, int lineIndex, const typename In::VecCoord* points) override;
 
-    int addPointInTriangle(const int triangleIndex, const SReal* baryCoords);
-    int createPointInTriangle(const typename Out::Coord& p, int triangleIndex, const typename In::VecCoord* points);
+    int addPointInTriangle(const int triangleIndex, const SReal* baryCoords) override;
+    int createPointInTriangle(const typename Out::Coord& p, int triangleIndex, const typename In::VecCoord* points) override;
 
-    int addPointInQuad(const int quadIndex, const SReal* baryCoords);
-    int createPointInQuad(const typename Out::Coord& p, int quadIndex, const typename In::VecCoord* points);
+    int addPointInQuad(const int quadIndex, const SReal* baryCoords) override;
+    int createPointInQuad(const typename Out::Coord& p, int quadIndex, const typename In::VecCoord* points) override;
 
-    int addPointInTetra(const int tetraIndex, const SReal* baryCoords);
+    int addPointInTetra(const int tetraIndex, const SReal* baryCoords) override;
 
-    int addPointInCube(const int cubeIndex, const SReal* baryCoords);
+    int addPointInCube(const int cubeIndex, const SReal* baryCoords) override;
 
-    void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
+    void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
 
-    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
-    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
-    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
-    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
-    const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize);
-    void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in);
-    virtual void resize( core::State<Out>* toModel );
+    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) override;
+    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) override;
+    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in ) override;
+    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) override;
+    const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize) override;
+    void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
+    virtual void resize( core::State<Out>* toModel ) override;
 
-	sofa::helper::vector< MappingData3D > const* getMap3d() const { return &map3d; }
+    sofa::helper::vector< MappingData3D > const* getMap3d() const { return &map3d; }
 
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperMeshTopology<In, Out> &b )
     {
@@ -450,22 +447,22 @@ protected:
     }
 public:
 
-    void clear(int reserve=0);
+    void clear(int reserve=0) override;
 
     bool isEmpty() {return this->map.size() == 0;}
     void setTopology(topology::RegularGridTopology* _topology) {this->fromTopology = _topology;}
     topology::RegularGridTopology *getTopology() {return dynamic_cast<topology::RegularGridTopology *>(this->fromTopology);}
 
-    int addPointInCube(const int cubeIndex, const SReal* baryCoords);
+    int addPointInCube(const int cubeIndex, const SReal* baryCoords) override;
 
-    void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
-    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
-    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
-    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
-    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
-    const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize);
-    void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in);
-    virtual void resize( core::State<Out>* toModel );
+    void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
+    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) override;
+    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) override;
+    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in ) override;
+    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) override;
+    const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize) override;
+    void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
+    virtual void resize( core::State<Out>* toModel ) override;
 
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperRegularGridTopology<In, Out> &b )
     {
@@ -531,19 +528,19 @@ protected:
     }
 public:
 
-    void clear(int reserve=0);
+    void clear(int reserve=0) override;
 
-    int addPointInCube(const int cubeIndex, const SReal* baryCoords);
+    int addPointInCube(const int cubeIndex, const SReal* baryCoords) override;
 
-    void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
+    void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
 
-    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
-    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
-    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
-    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
-    const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize);
-    void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in);
-    virtual void resize( core::State<Out>* toModel );
+    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) override;
+    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) override;
+    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in ) override;
+    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) override;
+    const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize) override;
+    void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
+    virtual void resize( core::State<Out>* toModel ) override;
 
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperSparseGridTopology<In, Out> &b )
     {
@@ -601,22 +598,22 @@ protected:
     virtual ~BarycentricMapperEdgeSetTopology() {}
 public:
 
-    void clear(int reserve=0);
+    void clear(int reserve=0) override;
 
-    int addPointInLine(const int edgeIndex, const SReal* baryCoords);
-    int createPointInLine(const typename Out::Coord& p, int edgeIndex, const typename In::VecCoord* points);
+    int addPointInLine(const int edgeIndex, const SReal* baryCoords) override;
+    int createPointInLine(const typename Out::Coord& p, int edgeIndex, const typename In::VecCoord* points) override;
 
-    void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
+    void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
 
-    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
-    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
-    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
-    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
+    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) override;
+    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) override;
+    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in ) override;
+    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) override;
 
-    virtual const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize);
+    virtual const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize) override;
 
-    void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in);
-    virtual void resize( core::State<Out>* toModel );
+    void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
+    virtual void resize( core::State<Out>* toModel ) override;
 
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperEdgeSetTopology<In, Out> &b )
     {
@@ -690,22 +687,22 @@ protected:
     virtual ~BarycentricMapperTriangleSetTopology() {}
 
 public:
-    void clear(int reserve=0);
+    void clear(int reserve=0) override;
 
-    virtual int addPointInTriangle(const int triangleIndex, const SReal* baryCoords);
-    int createPointInTriangle(const typename Out::Coord& p, int triangleIndex, const typename In::VecCoord* points);
+    virtual int addPointInTriangle(const int triangleIndex, const SReal* baryCoords) override;
+    int createPointInTriangle(const typename Out::Coord& p, int triangleIndex, const typename In::VecCoord* points) override;
 
-    void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
+    void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
 
-    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
-    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
-    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
-    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
+    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) override;
+    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) override;
+    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in ) override;
+    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) override;
 
-    virtual const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize);
+    virtual const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize) override;
 
-    void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in);
-    virtual void resize( core::State<Out>* toModel );
+    void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
+    virtual void resize( core::State<Out>* toModel ) override;
 
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperTriangleSetTopology<In, Out> &b )
     {
@@ -779,22 +776,22 @@ protected:
     virtual ~BarycentricMapperQuadSetTopology() {}
 
 public:
-    void clear(int reserve=0);
+    void clear(int reserve=0) override;
 
-    int addPointInQuad(const int index, const SReal* baryCoords);
-    int createPointInQuad(const typename Out::Coord& p, int index, const typename In::VecCoord* points);
+    int addPointInQuad(const int index, const SReal* baryCoords) override;
+    int createPointInQuad(const typename Out::Coord& p, int index, const typename In::VecCoord* points) override;
 
-    void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
+    void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
 
-    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
-    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
-    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
-    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
+    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) override;
+    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) override;
+    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in ) override;
+    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) override;
 
-    virtual const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize);
+    virtual const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize) override;
 
-    void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in);
-    virtual void resize( core::State<Out>* toModel );
+    void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
+    virtual void resize( core::State<Out>* toModel ) override;
 
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperQuadSetTopology<In, Out> &b )
     {
@@ -871,21 +868,21 @@ protected:
     virtual ~BarycentricMapperTetrahedronSetTopology() {}
 
 public:
-    void clear(int reserve=0);
+    void clear(int reserve=0) override;
 
-    int addPointInTetra(const int index, const SReal* baryCoords);
+    int addPointInTetra(const int index, const SReal* baryCoords) override;
 
-    void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
+    void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
 
-    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
-    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
-    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
-    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
+    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) override;
+    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) override;
+    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in ) override;
+    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) override;
 
-    virtual const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize);
+    virtual const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize) override;
 
-    void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in);
-    virtual void resize( core::State<Out>* toModel );
+    void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
+    virtual void resize( core::State<Out>* toModel ) override;
 
 
 };
@@ -941,30 +938,30 @@ protected:
     virtual ~BarycentricMapperHexahedronSetTopology() {}
 
 public:
-    void clear(int reserve=0);
+    void clear(int reserve=0) override;
 
-    int addPointInCube(const int index, const SReal* baryCoords);
+    int addPointInCube(const int index, const SReal* baryCoords) override;
 
-    int setPointInCube(const int pointIndex, const int cubeIndex, const SReal* baryCoords);
+    int setPointInCube(const int pointIndex, const int cubeIndex, const SReal* baryCoords) override;
 
-    void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
+    void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
 
-    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
-    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
-    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
-    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
+    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) override;
+    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) override;
+    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in ) override;
+    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) override;
 
-    virtual const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize);
+    virtual const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize) override;
 
-    void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in);
-    virtual void resize( core::State<Out>* toModel );
+    void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
+    virtual void resize( core::State<Out>* toModel ) override;
 
     //-- test mapping partiel
-    void applyOnePoint( const unsigned int& hexaId, typename Out::VecCoord& out, const typename In::VecCoord& in);
+    void applyOnePoint( const unsigned int& hexaId, typename Out::VecCoord& out, const typename In::VecCoord& in) override;
     //--
 
     // handle topology changes in the From topology
-    virtual void handleTopologyChange(core::topology::Topology* t);
+    virtual void handleTopologyChange(core::topology::Topology* t) override;
 
     bool isEmpty() {return this->map.getValue().empty();}
     void setTopology(topology::HexahedronSetTopologyContainer* _topology) {this->fromTopology = _topology; _fromContainer=_topology;}
@@ -1052,23 +1049,23 @@ protected:
     virtual ~BarycentricMapping();
 
 public:
-    void init();
+    void init() override;
 
-    void reinit();
+    void reinit() override;
 
-    void apply(const core::MechanicalParams *mparams, Data< typename Out::VecCoord >& out, const Data< typename In::VecCoord >& in);
+    void apply(const core::MechanicalParams *mparams, Data< typename Out::VecCoord >& out, const Data< typename In::VecCoord >& in) override;
 
-    void applyJ(const core::MechanicalParams *mparams, Data< typename Out::VecDeriv >& out, const Data< typename In::VecDeriv >& in);
+    void applyJ(const core::MechanicalParams *mparams, Data< typename Out::VecDeriv >& out, const Data< typename In::VecDeriv >& in) override;
 
-    void applyJT(const core::MechanicalParams *mparams, Data< typename In::VecDeriv >& out, const Data< typename Out::VecDeriv >& in);
+    void applyJT(const core::MechanicalParams *mparams, Data< typename In::VecDeriv >& out, const Data< typename Out::VecDeriv >& in) override;
 
-    void applyJT(const core::ConstraintParams *cparams, Data< typename In::MatrixDeriv >& out, const Data< typename Out::MatrixDeriv >& in);
+    void applyJT(const core::ConstraintParams *cparams, Data< typename In::MatrixDeriv >& out, const Data< typename Out::MatrixDeriv >& in) override;
 
-    virtual const sofa::defaulttype::BaseMatrix* getJ();
+    virtual const sofa::defaulttype::BaseMatrix* getJ() override;
 
 
 public:
-    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs();
+    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
 
 protected:
     typedef linearsolver::EigenSparseMatrix<InDataTypes, OutDataTypes> eigen_type;
@@ -1077,14 +1074,14 @@ protected:
     eigen_type eigen;
     helper::vector< defaulttype::BaseMatrix* > js;
 
-    virtual void updateForceMask();
+    virtual void updateForceMask() override;
 
 public:
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
     // handle topology changes depending on the topology
-    virtual void handleTopologyChange(core::topology::Topology* t);
+    virtual void handleTopologyChange(core::topology::Topology* t) override;
 
     // interface for continuous friction contact
 

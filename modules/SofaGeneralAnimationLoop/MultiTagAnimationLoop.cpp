@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -100,15 +97,16 @@ void MultiTagAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt)
     {
         this->addTag (*it);
 
-        if (this->f_printLog.getValue()) sout << "MultiTagAnimationLoop::step, begin constraints reset" << sendl;
+        dmsg_info() << "begin constraints reset" ;
         sofa::simulation::MechanicalResetConstraintVisitor(params).execute(this->getContext());
-        if (this->f_printLog.getValue()) sout << "MultiTagAnimationLoop::step, end constraints reset" << sendl;
-        if (this->f_printLog.getValue()) sout << "MultiTagAnimationLoop::step, begin collision for tag: "<< *it << sendl;
+        dmsg_info() << "end constraints reset" ;
+
+        dmsg_info() << "begin collision for tag: "<< *it ;
         computeCollision(params);
-        if (this->f_printLog.getValue()) sout << "MultiTagAnimationLoop::step, end collision" << sendl;
-        if (this->f_printLog.getValue()) sout << "MultiTagAnimationLoop::step, begin integration  for tag: "<< *it << sendl;
+        dmsg_info() << "step, end collision" ;
+        dmsg_info() << "step, begin integration  for tag: "<< *it ;
         integrate(params, dt);
-        if (this->f_printLog.getValue()) sout << "MultiTagAnimationLoop::step, end integration" << sendl;
+        dmsg_info() << "end integration" << sendl;
 
         this->removeTag (*it);
     }

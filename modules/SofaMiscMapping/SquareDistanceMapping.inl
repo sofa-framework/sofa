@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -46,10 +43,10 @@ static const SReal s_null_distance_epsilon = 1e-8;
 template <class TIn, class TOut>
 SquareDistanceMapping<TIn, TOut>::SquareDistanceMapping()
     : Inherit()
-    , f_computeDistance(initData(&f_computeDistance, false, "computeDistance", "if 'computeDistance = true', then rest length of each element equal 0, otherwise rest length is the initial lenght of each of them"))
-    , f_restLengths(initData(&f_restLengths, "restLengths", "Rest lengths of the connections"))
+//    , f_computeDistance(initData(&f_computeDistance, false, "computeDistance", "if no restLengths are given and if 'computeDistance = true', then rest length of each element equal 0, otherwise rest length is the initial lenght of each of them"))
+//    , f_restLengths(initData(&f_restLengths, "restLengths", "Rest lengths of the connections"))
     , d_showObjectScale(initData(&d_showObjectScale, Real(0), "showObjectScale", "Scale for object display"))
-    , d_color(initData(&d_color, defaulttype::Vec4f(1,1,0,1), "showColor", "Color for object display"))
+    , d_color(initData(&d_color, defaulttype::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
     , d_geometricStiffness(initData(&d_geometricStiffness, (unsigned)2, "geometricStiffness", "0 -> no GS, 1 -> exact GS, 2 -> stabilized GS (default)"))
 {
 }
@@ -72,36 +69,37 @@ void SquareDistanceMapping<TIn, TOut>::init()
 
     // only used for warning message
     bool compliance = ((simulation::Node*)(this->getContext()))->forceField.size() && ((simulation::Node*)(this->getContext()))->forceField[0]->isCompliance.getValue();
+    if( compliance ) serr<<"Null rest Lengths cannot be used for stable compliant constraint, prefer to use a DifferenceMapping if those dofs are used with a compliance"<<sendl;
 
     // compute the rest lengths if they are not known
-    if( f_restLengths.getValue().size() != links.size() )
-    {
-        helper::WriteOnlyAccessor< Data<helper::vector<Real> > > restLengths(f_restLengths);
-        typename core::behavior::MechanicalState<In>::ReadVecCoord pos = this->getFromModel()->readPositions();
-        restLengths.resize( links.size() );
-        if(!(f_computeDistance.getValue()))
-        {
-            for(unsigned i=0; i<links.size(); i++ )
-            {
-                restLengths[i] = (pos[links[i][0]] - pos[links[i][1]]).norm();
+//    if( f_restLengths.getValue().size() != links.size() )
+//    {
+//        helper::WriteOnlyAccessor< Data<helper::vector<Real> > > restLengths(f_restLengths);
+//        typename core::behavior::MechanicalState<In>::ReadVecCoord pos = this->getFromModel()->readPositions();
+//        restLengths.resize( links.size() );
+//        if(!(f_computeDistance.getValue()))
+//        {
+//            for(unsigned i=0; i<links.size(); i++ )
+//            {
+//                restLengths[i] = (pos[links[i][0]] - pos[links[i][1]]).norm();
 
-                if( restLengths[i]<=s_null_distance_epsilon && compliance ) serr<<"Null rest Length cannot be used for stable compliant constraint, prefer to use a DifferenceMapping for this dof "<<i<<" if used with a compliance"<<sendl;
-            }
-        }
-        else
-        {
-            if( compliance ) serr<<"Null rest Lengths cannot be used for stable compliant constraint, prefer to use a DifferenceMapping if those dofs are used with a compliance"<<sendl;
-            for(unsigned i=0; i<links.size(); i++ )
-                restLengths[i] = (Real)0.;
-        }
-    }
-    else // manually set
-        if( compliance ) // for warning message
-        {
-            helper::ReadAccessor< Data<helper::vector<Real> > > restLengths(f_restLengths);
-            for(unsigned i=0; i<links.size(); i++ )
-                if( restLengths[i]<=s_null_distance_epsilon ) serr<<"Null rest Length cannot be used for stable compliant constraint, prefer to use a DifferenceMapping for this dof "<<i<<" if used with a compliance"<<sendl;
-        }
+//                if( restLengths[i]<=s_null_distance_epsilon && compliance ) serr<<"Null rest Length cannot be used for stable compliant constraint, prefer to use a DifferenceMapping for this dof "<<i<<" if used with a compliance"<<sendl;
+//            }
+//        }
+//        else
+//        {
+//            if( compliance ) serr<<"Null rest Lengths cannot be used for stable compliant constraint, prefer to use a DifferenceMapping if those dofs are used with a compliance"<<sendl;
+//            for(unsigned i=0; i<links.size(); i++ )
+//                restLengths[i] = (Real)0.;
+//        }
+//    }
+//    else // manually set
+//        if( compliance ) // for warning message
+//        {
+//            helper::ReadAccessor< Data<helper::vector<Real> > > restLengths(f_restLengths);
+//            for(unsigned i=0; i<links.size(); i++ )
+//                if( restLengths[i]<=s_null_distance_epsilon ) serr<<"Null rest Length cannot be used for stable compliant constraint, prefer to use a DifferenceMapping for this dof "<<i<<" if used with a compliance"<<sendl;
+//        }
 
     baseMatrices.resize( 1 );
     baseMatrices[0] = &jacobian;
@@ -120,7 +118,7 @@ void SquareDistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mp
 {
     helper::WriteOnlyAccessor< Data<OutVecCoord> >  out = dOut;
     helper::ReadAccessor< Data<InVecCoord> >  in = dIn;
-    helper::ReadAccessor<Data<helper::vector<Real> > > restLengths(f_restLengths);
+//    helper::ReadAccessor<Data<helper::vector<Real> > > restLengths(f_restLengths);
     SeqEdges links = edgeContainer->getEdges();
 
     //    jacobian.clear();
@@ -137,11 +135,23 @@ void SquareDistanceMapping<TIn, TOut>::apply(const core::MechanicalParams * /*mp
         // gap = in[links[i][1]] - in[links[i][0]] (only for position)
         computeCoordPositionDifference( gap, p0, p1 );
 
+        // if d = N - R  ==> d² = N² + R² - 2.N.R
         const Real gapNorm = gap.norm2();
-        out[i] = gapNorm - restLengths[i]*restLengths[i];  // output
+        out[i][0] = gapNorm; // d = N²
+
 
         // insert in increasing column order
         gap *= 2; // 2*p[1]-2*p[0]
+
+//        if( restLengths[i] )
+//        {
+//            out[i][0] -= ( 2*sqrt(gapNorm) + restLengths[i] ) * restLengths[i]; // d = N² + R² - 2.N.R
+
+//            // TODO implement Jacobian when restpos != 0
+//            // gap -=  d2NR/dx
+//        }
+
+
         jacobian.beginRow(i);
         if( links[i][1]<links[i][0] )
         {
@@ -219,7 +229,6 @@ void SquareDistanceMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mp
 template <class TIn, class TOut>
 void SquareDistanceMapping<TIn, TOut>::applyJT(const core::ConstraintParams*, Data<InMatrixDeriv>& , const Data<OutMatrixDeriv>& )
 {
-    //    cerr<<"SquareDistanceMapping<TIn, TOut>::applyJT(const core::ConstraintParams*, Data<InMatrixDeriv>& , const Data<OutMatrixDeriv>& ) does nothing " << endl;
 }
 
 

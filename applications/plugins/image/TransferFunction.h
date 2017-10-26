@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -50,30 +47,29 @@ namespace engine
  */
 
 /// Default implementation does not compile
-template <int imageTypeLabel>
+template <class InImageType, class OutImageType>
 struct TransferFunctionSpecialization
 {
 };
 
+/// forward declaration
+template <class InImageType, class OutImageType> class TransferFunction;
 
 /// Specialization for regular Image
-template <>
-struct TransferFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
+template <class Ti, class To>
+struct TransferFunctionSpecialization<defaulttype::Image<Ti>,defaulttype::Image<To>>
 {
+    typedef TransferFunction<defaulttype::Image<Ti>,defaulttype::Image<To>> TransferFunctionT;
 
-    template<class TransferFunction>
-    static void update(TransferFunction& This)
+    static void update(TransferFunctionT& This)
     {
-        typedef typename TransferFunction::Ti Ti;
-        typedef typename TransferFunction::To To;
-
-        typename TransferFunction::raParam p(This.param);
-        typename TransferFunction::raImagei in(This.inputImage);
+        typename TransferFunctionT::raParam p(This.param);
+        typename TransferFunctionT::raImagei in(This.inputImage);
         if(in->isEmpty()) return;
         const cimg_library::CImgList<Ti>& inimg = in->getCImgList();
 
-        typename TransferFunction::waImageo out(This.outputImage);
-        typename TransferFunction::imCoord dim=in->getDimensions();
+        typename TransferFunctionT::waImageo out(This.outputImage);
+        typename TransferFunctionT::imCoord dim=in->getDimensions();
         out->setDimensions(dim);
         cimg_library::CImgList<To>& img = out->getCImgList();
 
@@ -81,7 +77,7 @@ struct TransferFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
         {
         case LINEAR:
         {
-            typename TransferFunction::iomap mp; for(unsigned int i=0; i<p.size(); i+=2) mp[(Ti)p[i]]=(To)p[i+1];
+            typename TransferFunctionT::iomap mp; for(unsigned int i=0; i<p.size(); i+=2) mp[(Ti)p[i]]=(To)p[i+1];
             cimglist_for(inimg,l) cimg_forXYZC(inimg(l),x,y,z,c) img(l)(x,y,z,c)=This.Linear_TransferFunction(inimg(l)(x,y,z,c),mp);
         }
             break;
@@ -101,8 +97,7 @@ struct TransferFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>
 template <class _InImageTypes,class _OutImageTypes>
 class TransferFunction : public core::DataEngine
 {
-    friend struct TransferFunctionSpecialization<defaulttype::IMAGELABEL_IMAGE>;
-    friend struct TransferFunctionSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>;
+    friend struct TransferFunctionSpecialization<_InImageTypes,_OutImageTypes>;
 
 public:
     typedef core::DataEngine Inherited;
@@ -132,7 +127,7 @@ public:
 
     Data< OutImageTypes > outputImage;
 
-    virtual std::string getTemplateName() const    { return templateName(this);    }
+    virtual std::string getTemplateName() const    override { return templateName(this);    }
     static std::string templateName(const TransferFunction<InImageTypes,OutImageTypes>* = NULL) { return InImageTypes::Name()+std::string(",")+OutImageTypes::Name(); }
 
     TransferFunction()    :   Inherited()
@@ -151,20 +146,20 @@ public:
 
     virtual ~TransferFunction() {}
 
-    virtual void init()
+    virtual void init() override
     {
         addInput(&inputImage);
         addOutput(&outputImage);
         setDirtyValue();
     }
 
-    virtual void reinit() { update(); }
+    virtual void reinit() override { update(); }
 
 protected:
 
-    virtual void update()
+    virtual void update() override
     {
-        TransferFunctionSpecialization<InImageTypes::label>::update( *this );
+        TransferFunctionSpecialization<InImageTypes,OutImageTypes>::update( *this );
         cleanDirty();
     }
 

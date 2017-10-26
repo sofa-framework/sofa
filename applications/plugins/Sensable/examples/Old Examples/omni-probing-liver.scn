@@ -14,7 +14,7 @@
 		<DiagonalMass template="Vec3d" name="computed using mass density"  massDensity="1" />
 		<TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM"  method="large"  poissonRatio="0.3"  youngModulus="500"  computeGlobalMatrix="0" />
 		<FixedConstraint template="Vec3d" name="FixedConstraint"  indices="3 39 64" />
-		<EulerImplicitSolver name="cg_odesolver"  printLog="0" />
+		<EulerImplicitSolver name="cg_odesolver"  printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
 		<CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25"  tolerance="1e-009"  threshold="1e-009" />
 		<Node 	name="Visu" tags="Visual" gravity="0 -9.81 0"  >
 			<OglModel template="ExtVec3f" name="VisualModel"  fileMesh="mesh/liver-smooth.obj" />

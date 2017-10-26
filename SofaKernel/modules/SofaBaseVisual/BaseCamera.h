@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -30,8 +27,6 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/Quater.h>
-#include <sofa/helper/gl/Trackball.h>
-#include <sofa/helper/gl/Transformation.h>
 
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
@@ -96,20 +91,16 @@ public:
 
     Data<bool> p_activated;
 	Data<bool> p_fixedLookAtPoint;
-
-    Data<Mat3> p_intrinsicParameters;
-
-    //Data<Mat4> d_modelviewMatrix;
-    //Data<Mat4> d_projectionMatrix;
+    
     Data<helper::vector<float> > p_modelViewMatrix;
     Data<helper::vector<float> > p_projectionMatrix;
 
     BaseCamera();
     virtual ~BaseCamera();
 
-    virtual void init();
-    virtual void reinit();
-    virtual void bwdInit();
+    virtual void init() override;
+    virtual void reinit() override;
+    virtual void bwdInit() override;
 
     void activate();
     void desactivate();
@@ -172,18 +163,15 @@ public:
 
     double getHorizontalFieldOfView()
     {
-#ifndef SOFA_NO_OPENGL
-        GLint viewport[4];
-        glGetIntegerv( GL_VIEWPORT, viewport );
+        const sofa::core::visual::VisualParams* vp = sofa::core::visual::VisualParams::defaultInstance();
+        const core::visual::VisualParams::Viewport viewport = vp->viewport();
+
         float screenwidth = (float)viewport[2];
         float screenheight = (float)viewport[3];
         float aspectRatio = screenwidth / screenheight;
         float fov_radian = (float)getFieldOfView()* (float)(M_PI/180);
         float hor_fov_radian = 2.0f * atan ( tan(fov_radian/2.0f) * aspectRatio );
         return hor_fov_radian*(180/M_PI);
-#else
-	    return 0.0;
-#endif /* SOFA_NO_OPENGL */
     }
 
     unsigned int getCameraType() const
@@ -234,8 +222,8 @@ public:
     //be according to the gravity.
     void setDefaultView(const Vec3& gravity = Vec3(0, -9.81, 0));
 
-    void getModelViewMatrix(double mat[16]);
-    void getProjectionMatrix(double mat[16]);
+    virtual void getModelViewMatrix(double mat[16]);
+    virtual void getProjectionMatrix(double mat[16]);
     void getOpenGLModelViewMatrix(double mat[16]);
     void getOpenGLProjectionMatrix(double mat[16]);
 
@@ -246,7 +234,7 @@ public:
     virtual void manageEvent(core::objectmodel::Event* e)=0;
     virtual void internalUpdate() {}
 
-    void handleEvent(sofa::core::objectmodel::Event* event);
+    void handleEvent(sofa::core::objectmodel::Event* event) override;
     void computeZ();
 
     virtual bool isStereo()
@@ -300,6 +288,7 @@ protected:
     Vec3 sceneCenter;
     SReal sceneRadius;
 
+    bool b_setDefaultParameters;
 
     //need to keep "internal" lookAt and distance for updating Data
     //better way to do that ?

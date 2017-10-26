@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -50,7 +47,7 @@ const unsigned int verticesInHexahedronArray[2][2][2]=  {{{0,4},{3,7}},{{1,5},{2
 
 HexahedronSetTopologyContainer::HexahedronSetTopologyContainer()
     : QuadSetTopologyContainer()
-	, d_createQuadArray(initData(&d_createQuadArray, bool(false),"createQuadArray", "Force the creation of a set of quads associated with the hexahedra"))
+    , d_createQuadArray(initData(&d_createQuadArray, bool(false),"createQuadArray", "Force the creation of a set of quads associated with the hexahedra"))
     , d_hexahedron(initData(&d_hexahedron, "hexahedra", "List of hexahedron indices"))
 {
     addAlias(&d_hexahedron, "hexas");
@@ -75,9 +72,9 @@ void HexahedronSetTopologyContainer::init()
 {
     QuadSetTopologyContainer::init();
     d_hexahedron.updateIfDirty(); // make sure m_hexahedron is up to date
-	// eventually force the creation of quads
-	if (d_createQuadArray.getValue())
-		createQuadSetArray();
+    // eventually force the creation of quads
+    if (d_createQuadArray.getValue())
+        createQuadSetArray();
 }
 
 
@@ -586,20 +583,20 @@ HexahedronSetTopologyContainer::Quad HexahedronSetTopologyContainer::getLocalQua
             quadsInHexahedronArray[i][3]);
 }
 
- unsigned int HexahedronSetTopologyContainer::getLocalIndexFromBinaryIndex(const HexahedronBinaryIndex bi) const 
+ unsigned int HexahedronSetTopologyContainer::getLocalIndexFromBinaryIndex(const HexahedronBinaryIndex bi) const
  {
-	 return(verticesInHexahedronArray[bi[0]][bi[1]][bi[2]]);
+     return(verticesInHexahedronArray[bi[0]][bi[1]][bi[2]]);
  }
- HexahedronSetTopologyContainer::HexahedronBinaryIndex HexahedronSetTopologyContainer::getBinaryIndexFromLocalIndex(const unsigned int li) const 
+ HexahedronSetTopologyContainer::HexahedronBinaryIndex HexahedronSetTopologyContainer::getBinaryIndexFromLocalIndex(const unsigned int li) const
  {
-	 HexahedronBinaryIndex bi;
-	 if (li==0)
-		 bi[0]=0;
-	 else
-		 bi[0]=1-(((li-1)&2)/2);
-	 bi[1]=(li&2)/2;
-	 bi[2]=(li&4)/4;
-	return bi;
+     HexahedronBinaryIndex bi;
+     if (li==0)
+         bi[0]=0;
+     else
+         bi[0]=1-(((li-1)&2)/2);
+     bi[1]=(li&2)/2;
+     bi[2]=(li&4)/4;
+    return bi;
  }
 QuadSetTopologyContainer::QuadID HexahedronSetTopologyContainer::getNextAdjacentQuad(const HexaID _hexaID, const QuadID _quadID, const EdgeID _edgeID)
 {
@@ -826,7 +823,7 @@ bool HexahedronSetTopologyContainer::checkTopology() const
 
                 if(!check_hexa_vertex_shell)
                 {
-                    std::cout << "*** CHECK FAILED : check_hexa_vertex_shell, i = " << i << " , j = " << j << std::endl;
+                    msg_error() << "*** CHECK FAILED : check_hexa_vertex_shell, i = " << i << " , j = " << j ;
                     ret = false;
                 }
             }
@@ -854,7 +851,7 @@ bool HexahedronSetTopologyContainer::checkTopology() const
                         || (m_edgesInHexahedron[tes[j]][11]==i);
                 if(!check_hexa_edge_shell)
                 {
-                    std::cout << "*** CHECK FAILED : check_hexa_edge_shell, i = " << i << " , j = " << j << std::endl;
+                    msg_error() << "*** CHECK FAILED : check_hexa_edge_shell, i = " << i << " , j = " << j ;
                     ret = false;
                 }
             }
@@ -876,7 +873,7 @@ bool HexahedronSetTopologyContainer::checkTopology() const
                         || (m_quadsInHexahedron[tes[j]][5]==i);
                 if(!check_hexa_quad_shell)
                 {
-                    std::cout << "*** CHECK FAILED : check_hexa_quad_shell, i = " << i << " , j = " << j << std::endl;
+                    msg_error() << "*** CHECK FAILED : check_hexa_quad_shell, i = " << i << " , j = " << j ;
                     ret = false;
                 }
             }

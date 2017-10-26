@@ -7,7 +7,7 @@
     <CollisionResponse name="Response" response="default" />
     <MeshGmshLoader name="meshLoader" filename="mesh/smCube27.msh" />
     <Node name="Poutre1">
-        <EulerImplicit />
+        <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="10" threshold="1e-5" tolerance="1e-5"/>
         <Node name="M1">
             <MechanicalObject src="@../../meshLoader" dz="-21.0" />

@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -86,11 +83,11 @@ protected:
     OglTexture();
     virtual ~OglTexture();
 public:
-    virtual void init();
-    void initVisual();
-    void reinit();
-    void fwdDraw(core::visual::VisualParams*);
-    void bwdDraw(core::visual::VisualParams*);
+    virtual void init() override;
+    void initVisual() override;
+    void reinit() override;
+    void fwdDraw(core::visual::VisualParams*) override;
+    void bwdDraw(core::visual::VisualParams*) override;
 
     std::string getTextureName();
     unsigned short getTextureUnit() { return textureUnit.getValue(); }
@@ -102,11 +99,11 @@ public:
     static void setActiveTexture(unsigned short unit);
 
     /// Returns the type of shader element (texture, macro, variable, or attribute)
-    virtual ShaderElementType getSEType() const { return core::visual::ShaderElement::SE_TEXTURE; }
+    virtual ShaderElementType getSEType() const override { return core::visual::ShaderElement::SE_TEXTURE; }
     // Returns the value of the shader element
-    virtual const core::objectmodel::BaseData* getSEValue() const { return &textureFilename; }
+    virtual const core::objectmodel::BaseData* getSEValue() const override { return &textureFilename; }
     // Returns the value of the shader element
-    virtual core::objectmodel::BaseData* getSEValue() { return &textureFilename; }
+    virtual core::objectmodel::BaseData* getSEValue() override { return &textureFilename; }
 };
 
 class SOFA_OPENGL_VISUAL_API OglTexture2D : public OglTexture
@@ -121,7 +118,7 @@ public:
     OglTexture2D();
     virtual ~OglTexture2D();
 
-    virtual void init();
+    virtual void init() override;
 };
 
 }

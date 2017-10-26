@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -31,6 +28,7 @@
 #define SOFA_HELPER_ARGUMENTPARSER_H
 
 #include <sofa/helper/helper.h>
+#include <sofa/helper/logging/Messaging.h>
 
 #include <iostream>
 #include <cstdlib>
@@ -151,17 +149,17 @@ Example: run -D ELEM1 -D ELEM2 ...
 template<class TE> inline
 bool Argument< std::vector<TE> >::read( std::list<std::string>& str)
 {
-	if (str.empty()) return false;
-	std::string s = str.front();
-	str.pop_front();
-	TE val;
-	istrstream istr( s.c_str() );
-	if( ! (istr >> val) ) return false;
-	else {
-		isSet = true;
-		*ptr.push_back(vak);
-		return true;
-	}
+    if (str.empty()) return false;
+    std::string s = str.front();
+    str.pop_front();
+    TE val;
+    istrstream istr( s.c_str() );
+    if( ! (istr >> val) ) return false;
+    else {
+        isSet = true;
+        *ptr.push_back(vak);
+        return true;
+    }
 }
 */
 
@@ -253,13 +251,19 @@ class SOFA_HELPER_API ArgumentParser
     /// Set of remaining file
     std::vector<std::string>* files;
 
+    /// extra args appearing after --argv
+    using extra_type = std::vector<std::string>;
+    static extra_type extra;
+    
     // help stuff
     string globalHelp;    ///< Overall presentation
     char helpShortName;   ///< short name for help
     string helpLongName;  ///< long name for help
 
 public:
-
+    /** last parsed extra arguments */
+    static const extra_type& extra_args() { return extra; }
+    
     /// Constructor using a global help string
     ArgumentParser( const string& helpstr="", char hlpShrt='h', const string& hlpLng="help" );
 
@@ -282,24 +286,24 @@ public:
 
         if( sho!=0 && shortName.find(sho) != shortName.end() )
         {
-            std::cerr << "name " << sn << " already used !" << std::endl;
+            msg_fatal("ArgumentParser") << "name " << sn << " already used !";
             exit(EXIT_FAILURE);
         }
 
         if( ln.size()>0 && longName.find(ln) != longName.end() )
         {
-            std::cerr << "name " << ln << " already used !" << std::endl;
+            msg_fatal("ArgumentParser") << ln << " already used !" ;
             exit(EXIT_FAILURE);
         }
 
         if( sho!=0 && sho == helpShortName )
         {
-            std::cerr << "name " << sho << " reserved for help !" << std::endl;
+            msg_fatal("ArgumentParser") <<sho << " reserved for help !" ;
             exit(EXIT_FAILURE);
         }
         if( ln.size()>0 && lon == helpLongName )
         {
-            std::cerr << "name " << lon << " reserved for help !" << std::endl;
+            msg_fatal("ArgumentParser") << "name " << lon << " reserved for help !" ;
             exit(EXIT_FAILURE);
         }
 
@@ -323,24 +327,24 @@ public:
 
         if( sho!=0 && shortName.find(sho) != shortName.end() )
         {
-            std::cerr << "name " << sn << " already used !" << std::endl;
+            msg_fatal("ArgumentParser") << "name " << sn << " already used !"  ;
             exit(EXIT_FAILURE);
         }
 
         if( ln.size()>0 && longName.find(ln) != longName.end() )
         {
-            std::cerr << "name " << ln << " already used !" << std::endl;
+            msg_fatal("ArgumentParser") << "name " << ln << " already used !" ;
             exit(EXIT_FAILURE);
         }
 
         if( sho!=0 && sho == helpShortName )
         {
-            std::cerr << "name " << sho << " reserved for help !" << std::endl;
+            msg_error("ArgumentParser") << "name " << sho << " reserved for help !" ;
             exit(EXIT_FAILURE);
         }
         if( ln.size()>0 && lon == helpLongName )
         {
-            std::cerr << "name " << lon << " reserved for help !" << std::endl;
+            msg_error("ArgumentParser") << "name " << lon << " reserved for help !" ;
             exit(EXIT_FAILURE);
         }
 
@@ -350,6 +354,7 @@ public:
         commands.push_back(c);
         return (*this);
     }
+
 
     /** Parse a command line
     \param argc number of arguments + 1, as usual in C

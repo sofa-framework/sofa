@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -156,7 +153,7 @@ void PointSetTopologyContainer::addEngineToList(sofa::core::topology::TopologyEn
 }
 
 
-void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::BaseData &my_Data, sofa::helper::list<sofa::core::topology::TopologyEngine *> &my_enginesList)
+void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::BaseData &my_Data, std::list<sofa::core::topology::TopologyEngine *> &my_enginesList)
 {
     // clear data stored by previous call of this function
     my_enginesList.clear();
@@ -170,13 +167,13 @@ void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::B
     bool allDone = false;
 
     unsigned int cpt_security = 0;
-    sofa::helper::list <sofa::core::topology::TopologyEngine *> _engines;
-    sofa::helper::list <sofa::core::topology::TopologyEngine *>::iterator it_engines;
+    std::list<sofa::core::topology::TopologyEngine *> _engines;
+    std::list<sofa::core::topology::TopologyEngine *>::iterator it_engines;
 
     while (!allDone && cpt_security < 1000)
     {
-        sofa::helper::list <sofa::core::objectmodel::DDGNode* > next_GraphLevel;
-        sofa::helper::list <sofa::core::topology::TopologyEngine *> next_enginesLevel;
+        std::list<sofa::core::objectmodel::DDGNode* > next_GraphLevel;
+        std::list<sofa::core::topology::TopologyEngine *> next_enginesLevel;
 
         // for drawing graph
         sofa::helper::vector <std::string> enginesNames;
@@ -251,28 +248,14 @@ void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::B
 
 
     // Reorder engine graph by inverting order and avoiding duplicate engines
-    sofa::helper::list <sofa::core::topology::TopologyEngine *>::reverse_iterator it_engines_rev;
-
-#ifndef NDEBUG
-//    std::cout << " ***** DEBUG: _engines size: " << _engines.size() << std::endl;
-#endif
+    std::list<sofa::core::topology::TopologyEngine *>::reverse_iterator it_engines_rev;
 
     for ( it_engines_rev = _engines.rbegin(); it_engines_rev != _engines.rend(); ++it_engines_rev)
     {
-#ifndef NDEBUG
-//        std::string name = (*it_engines_rev)->getName();
-//        std::cout << "DEBUG: engine name: " << name << std::endl;
-//        std::cout << "DEBUG: engine: " << (*it_engines_rev) << std::endl;
-#endif
         bool find = false;
 
         for ( it_engines = my_enginesList.begin(); it_engines!=my_enginesList.end(); ++it_engines)
         {
-#ifndef NDEBUG
-            // std::string nameStored = (*it_engines)->getName();
-            // std::cout << "DEBUG: engine name stored: " << nameStored << std::endl;
-            // std::cout << "DEBUG: engine name stored: " << (*it_engines) << std::endl;
-#endif
             if ((*it_engines_rev) == (*it_engines))
             {
                 find = true;
@@ -292,13 +275,11 @@ void PointSetTopologyContainer::displayDataGraph(sofa::core::objectmodel::BaseDa
 {
     // A cout very lite version
     std::string name;
-
+    std::stringstream tmpmsg;
     name = my_Data.getName();
-    std::cout << name << std::endl;
-    std::cout << std::endl;
+    tmpmsg << name << msgendl << msgendl;
 
     unsigned int cpt_engine = 0;
-
 
 
     for (unsigned int i=0; i<this->m_enginesGraph.size(); ++i ) // per engine level
@@ -308,14 +289,14 @@ void PointSetTopologyContainer::displayDataGraph(sofa::core::objectmodel::BaseDa
         unsigned int cpt_engine_tmp = cpt_engine;
         for (unsigned int j=0; j<enginesNames.size(); ++j) // per engine on the same level
         {
-            std::cout << enginesNames[j];
+            tmpmsg << enginesNames[j];
 
             for (unsigned int k=0; k<this->m_enginesGraph[cpt_engine].size(); ++k) // create espace between engines name
-                std::cout << "     ";
+                tmpmsg << "     ";
 
             cpt_engine++;
         }
-        std::cout << std::endl;
+        tmpmsg << msgendl;
         cpt_engine = cpt_engine_tmp;
 
 
@@ -323,13 +304,13 @@ void PointSetTopologyContainer::displayDataGraph(sofa::core::objectmodel::BaseDa
         {
             sofa::helper::vector <std::string> dataNames = this->m_dataGraph[cpt_engine];
             for (unsigned int k=0; k<dataNames.size(); ++k)
-                std::cout << dataNames[k] << "     " ;
-            std::cout << "            ";
+                tmpmsg << dataNames[k] << "     " ;
+            tmpmsg << "            ";
 
             cpt_engine++;
         }
-        std::cout << std::endl;
-        std::cout << std::endl;
+        tmpmsg << msgendl ;
+        msg_info() << tmpmsg.str() ;
     }
 }
 

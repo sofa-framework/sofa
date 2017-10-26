@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -128,12 +125,12 @@ void RandomPointDistributionInSurface<DataTypes>::generateRandomDirections()
 {
     /*Real d[3];
     for (unsigned int i=0 ;i<3 ;i++)
-    	d[i] = (2.0*((Real) rand())/RAND_MAX) - 1.0; //[-1; 1]
+        d[i] = (2.0*((Real) rand())/RAND_MAX) - 1.0; //[-1; 1]
 
     for (unsigned int i=0 ;i<numberOfTests.getValue() ;i++)
     {
-    	Vec3 v(d[i%3], d[(i+1)%3], d[(i+2)%3]);
-    	directions.push_back(v);
+        Vec3 v(d[i%3], d[(i+1)%3], d[(i+2)%3]);
+        directions.push_back(v);
     }
     */
 
@@ -174,9 +171,7 @@ bool RandomPointDistributionInSurface<DataTypes>::isInside(Coord p)
 
     for (unsigned int i=0 ; i<numberOfTests.getValue() ; i++)
     {
-        //std::cout << "p " << p << " dir " << directions[i] << std::endl;
         trianglesOctree.octreeRoot->trace(p, directions[i], result);
-        //if intersect a triangle
         if(result.tid > -1.0)
         {
             BaseMeshTopology::Triangle triangle = triangles[result.tid];
@@ -227,12 +222,8 @@ void RandomPointDistributionInSurface<DataTypes>::update()
     VecCoord* outPoints = f_outPoints.beginWriteOnly();
     outPoints->clear();
 
-    //Hack : octree is not templated
-#ifdef SOFA_SMP
-    collision::TriangleOctreeRoot::VecCoord verticesD;
-#else
+
     helper::vector<defaulttype::Vector3> verticesD;
-#endif
     for (unsigned int i=0 ; i<vertices.size() ; i++)
         verticesD.push_back(vertices[i]);
 

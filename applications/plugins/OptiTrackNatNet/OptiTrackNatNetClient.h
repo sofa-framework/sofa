@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -13,17 +13,16 @@
 * more details.                                                               *
 *                                                                             *
 * You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* with this program. If not, see <http://www.gnu.org/licenses/>.              *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #ifndef OPTITRACKNATNETCLIENT_H
 #define OPTITRACKNATNETCLIENT_H
+
+#include <sofa/config.h>
 
 #include <boost/asio.hpp>
 #include <boost/array.hpp>
@@ -33,6 +32,7 @@
 //#include <sofa/core/behavior/BaseController.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Quat.h>
+#include <SofaUserInteraction/Controller.h>
 
 namespace SofaOptiTrackNatNet
 {
@@ -46,10 +46,10 @@ struct ModelDef;
 /// decoded frame of tracked data
 struct FrameData;
 
-class OptiTrackNatNetDataReceiver : public virtual sofa::core::objectmodel::BaseObject
+class OptiTrackNatNetDataReceiver : public sofa::component::controller::Controller
 {
 public:
-    SOFA_ABSTRACT_CLASS(OptiTrackNatNetDataReceiver, sofa::core::objectmodel::BaseObject);
+    SOFA_ABSTRACT_CLASS(OptiTrackNatNetDataReceiver, sofa::component::controller::Controller);
 protected:
     virtual ~OptiTrackNatNetDataReceiver() {}
 public:

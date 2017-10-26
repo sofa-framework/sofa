@@ -11,6 +11,10 @@ build_dir="$1"
 src_dir="$(cd "$2" && pwd)"
 sha=$(git --git-dir="$src_dir/.git" rev-parse HEAD)
 
+# Clean flag files
+rm -f "$build_dir/build-started"
+rm -f "$build_dir/build-finished"
+
 if [ -z "$CI_JOB" ]; then CI_JOB="$JOB_NAME"; fi
 
 send-message-to-dashboard() {
@@ -26,7 +30,7 @@ send-message-to-dashboard() {
         message="$message&sha=$sha&config=$CI_JOB"
         local url="$CI_DASHBOARD_URL"
         echo "Message (sent): " sha="$sha" "config=$CI_JOB" $*
-        wget --no-verbose --output-document=/dev/null --post-data="$message" "$CI_DASHBOARD_URL"
+        wget --no-check-certificate --no-verbose --output-document=/dev/null --post-data="$message" "$CI_DASHBOARD_URL"
     fi
 }
 
@@ -63,8 +67,7 @@ send-message-to-dashboard \
     "tests_failures=$("$src_dir/scripts/ci/tests.sh" count-failures $build_dir $src_dir)" \
     "tests_disabled=$("$src_dir/scripts/ci/tests.sh" count-disabled $build_dir $src_dir)" \
     "tests_errors=$("$src_dir/scripts/ci/tests.sh" count-errors $build_dir $src_dir)" \
-    "tests_suites=$("$src_dir/scripts/ci/tests.sh" count-test-suites $build_dir $src_dir)" \
-    "tests_crash=$("$src_dir/scripts/ci/tests.sh" count-crashes $build_dir $src_dir)"
+    "tests_suites=$("$src_dir/scripts/ci/tests.sh" count-test-suites $build_dir $src_dir)"
 
 touch "$build_dir/build-finished"
 
@@ -87,8 +90,15 @@ if [ -e "$build_dir/full-build" ]; then
 fi
 
 ## Test scenes
-
 if [[ -n "$CI_TEST_SCENES" ]]; then
+    echo "Preventing SofaCUDA from being loaded in VMs."
+    if [[ $(uname) = Darwin || $(uname) = Linux ]]; then
+        plugin_conf="$build_dir/lib/plugin_list.conf.default"
+    else
+        plugin_conf="$build_dir/bin/plugin_list.conf.default"
+    fi
+    grep -v "SofaCUDA NO_VERSION" "$plugin_conf" > "${plugin_conf}.tmp" && mv "${plugin_conf}.tmp" "$plugin_conf"
+
     "$src_dir/scripts/ci/scene-tests.sh" run "$build_dir" "$src_dir"
     scenes_errors_count=$("$src_dir/scripts/ci/scene-tests.sh" count-errors "$build_dir" "$src_dir")
     send-message-to-dashboard "scenes_errors=$scenes_errors_count"

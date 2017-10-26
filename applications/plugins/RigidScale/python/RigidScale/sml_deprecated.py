@@ -20,8 +20,8 @@ import RigidScale.API
 
 # Recognized flag from the sml
 BoneType = ("flat", "irregular", "long", "short", "special")
-FramePerBoneType = {"short": 1, "long": 2, "flat": 3, "irregular": 5, "special": 20}
-IntegrationPointPerBoneType = {"short": 1, "long": 20, "flat": 10, "irregular": 20, "special": 20}
+FramePerBoneType = {"short": 1, "long": 2, "flat": 3, "irregular": 3, "special": 20}
+IntegrationPointPerBoneType = {"short": 1, "long": 8, "flat": 12, "irregular": 12, "special": 20}
 TransferMethod = ("minimal", "interpolation", "classic", "icp")
 ConstraintType = ("straight")
 ROIFlag = ("frameROI", "registrationROI")
@@ -91,8 +91,10 @@ class Bone():
         self.frame = []
         # --- short bone
         if self.type == "short" and not len(model.mesh[0].group):
-            if model.com: self.frame.append(model.com)
-            if model.inertia: self.inertia.append(model.inertia)
+            if model.com:
+                self.frame.append(model.com)
+            if model.inertia:
+                self.inertia.append(model.inertia)
         # --- long bone, flat bone, irregular bone
         else:
             for mesh in model.mesh:
@@ -106,7 +108,7 @@ class Bone():
                                 v_index.append(v[i])
                             # lets add it to the frame
                             frame = numpy.mean(numpy.array(v_index), 0).tolist() # position
-                            frame.extend([0,0,0,1]) # orientation
+                            frame.extend([0, 0, 0, 1]) # orientation
                             self.frame.append(frame)
                             self.inertia.append([1,0,0, 0,1,0, 0,0,1])
         # return the output
@@ -116,26 +118,34 @@ class Bone():
     def setup(self, parentNode, density=2000, param=None, generatedDir = None ):
 
         # Computation the offset according to the attribute self.transform
-        offset = [0,0,0,0,0,0,1]
+        offset = [0, 0, 0, 0, 0, 0, 1]
         offset[:3] = self.transform[:3]
         offset[3:] = Quaternion.from_euler(self.transform[3:6])
         scale3d = self.transform[6:]
+
         if self.type not in BoneType:
-            self.type = "short" # --> to set 1 frame on bone which not have a type
+            self.type = "short"  # --> to set 1 frame on bone which not have a type
+
         # Creation of the shearless affine body
         self.body = RigidScale.API.ShearlessAffineBody(parentNode, self.name)
+
         # Depending on the frame set in the constructor, let decide how the body will be initialized
-        if (self.frame == None) or (len(self.frame) < FramePerBoneType[self.type]):
-            self.body.setFromMesh(self.filepath, density, offset, scale3d, self.voxelSize, FramePerBoneType[self.type])
+        if (self.frame is None) or (len(self.frame) < FramePerBoneType[self.type]):
+            self.body.setFromMesh(self.filepath, density, offset, scale3d, self.voxelSize, FramePerBoneType[self.type], generatedDir=generatedDir)
+            for p in self.body.frame:
+                self.frame.append(p.offset())
         else:
-            scale3dList = []
-            for i in range(len(self.frame)): scale3dList.append(scale3d)
+            scale3dList = list()
+            for i in range(len(self.frame)):
+                scale3dList.append(scale3d)
             self.body.setManually(self.filepath, self.frame, self.voxelSize, density=1000, generatedDir=generatedDir)
+
         # Add of the behavior model, the collision model and the visual model
-        localGeneratedDir=None if generatedDir is None else generatedDir+self.name
-        self.behavior = self.body.addBehavior(self.elasticity, IntegrationPointPerBoneType[self.type], generatedDir=localGeneratedDir )
+        localGeneratedDir = None if generatedDir is None else generatedDir+self.name
+        self.behavior = self.body.addBehavior(self.elasticity, IntegrationPointPerBoneType[self.type], generatedDir=localGeneratedDir)
         self.collision = self.body.addCollisionMesh(self.filepath, scale3d, offset, generatedDir=localGeneratedDir)
         self.visual = self.collision.addVisualModel()
+        self.visual.filename = self.collision.loader.filename
         return self.body
 
 ## ==============================================================================
@@ -313,10 +323,68 @@ class Constraint(Joint):
         constraintNode.createObject('MechanicalObject', template='Vec1'+StructuralAPI.template_suffix, name='dofs')
         constraintNode.createObject('MaskMapping', template='Vec6'+StructuralAPI.template_suffix+',Vec1'+StructuralAPI.template_suffix, dofs=listToStr(self.mask))
         constraintNode.createObject('UniformCompliance', template='Vec1'+StructuralAPI.template_suffix, name='compliance', isCompliance='0', compliance=_compliance)
-        constraintNode.createObject('Stabilization', name='Stabilization')
 
 ## ==============================================================================
-## @Description: Create a sofa scene containning the articulated systeme
+## @Description: Create the differents bones and register them onto a repository
+"""
+- @param: parentNode: the node which will contains the articulated system
+- @param: model: sml model
+- @param: voxel_size: voxel size used to rasterize each bone
+- @param: elasticity: elasticity of each bone model
+@todo: sml ids should be used as keys in the different maps, instead of names
+"""
+## ==============================================================================
+class SceneRigidScale(SofaPython.sml.BaseScene):
+
+    """ Builds a (sub)scene from a sml model which create a model and register all the
+    re-usable information related to the frame based model"""
+    def __init__(self, parentNode, model):
+
+        SofaPython.sml.BaseScene.__init__(self, parentNode, model)
+
+        # main components
+        self.bones = dict()
+
+        # params
+        self.param.useCompliance = 0
+        self.param.voxelSize = 0.005 # SI unit (m)
+        self.param.elasticity = 10e3 # SI unit
+        self.param.jointCompliance = 1E-6
+        self.param.constraintCompliance = 1E-6
+
+        # settings
+        self.param.showRigid=False
+        self.param.showRigidScale=0.05 # SI unit (m)
+        self.param.showOffset=False
+        self.param.showOffsetScale=0.01 # SI unit (m)
+        self.param.showRigidDOFasSphere=False
+
+        self.param.generatedDir = './model'
+
+    def createScene(self):
+        self.node.createObject('RequiredPlugin', name='image')
+        self.node.createObject('RequiredPlugin', name='Flexible')
+        self.node.createObject('RequiredPlugin', name='Compliant')
+        self.node.createObject('RequiredPlugin', name='RigidScale')
+
+        # bones
+        SMLBones = dict()
+
+        # rigids
+        for rigidModel in self.model.getSolidsByTags({"bone"}):
+            bone = Bone(rigidModel.name)
+            bone.elasticity = SofaPython.units.elasticity_from_SI(self.param.elasticity)
+            bone.voxelSize = SofaPython.units.length_from_SI(self.param.voxelSize)
+            SMLBones[bone.name] = bone.initUsingSMLModel(rigidModel)
+
+        # scene creation
+        for b in SMLBones.values():
+            self.bones[b.name] = b.setup(self.node, generatedDir=None)
+            self.bones[b.name].affineDofs.showObject = self.param.showRigid
+            self.bones[b.name].affineDofs.showObjectScale = SofaPython.units.length_from_SI(self.param.showRigidScale)
+
+## ==============================================================================
+## @Description: Create a sofa scene containing the articulated system
 """
 - @param: parentNode: the node which will contains the articulated system
 - @param: model: sml model
@@ -348,6 +416,7 @@ class SceneArticulatedRigidScale(SofaPython.sml.BaseScene):
         # sofa important component
         self.collisions = dict()
         self.visuals = dict()
+        self.visualStyles = dict()
         self.behaviors = dict()
 
         # settings
@@ -357,7 +426,7 @@ class SceneArticulatedRigidScale(SofaPython.sml.BaseScene):
         self.param.showOffsetScale=0.01 # SI unit (m)
         self.param.showRigidDOFasSphere=False
 
-        self.generatedDir = None
+        self.param.generatedDir = None
 
     def createScene(self):
         self.node.createObject('RequiredPlugin', name='image')
@@ -365,28 +434,32 @@ class SceneArticulatedRigidScale(SofaPython.sml.BaseScene):
         self.node.createObject('RequiredPlugin', name='Compliant')
         self.node.createObject('RequiredPlugin', name='RigidScale')
 
+        # settings
+        if self.param.generatedDir and not os.path.exists(self.param.generatedDir):
+            self.param.generatedDir = None
+
         # bones
         SMLBones = dict()
 
         # rigids
-        if "bone" in self.model.solidsByTag:
-            for rigidModel in self.model.solidsByTag["bone"]:
-                bone = Bone(rigidModel.name)
-                bone.elasticity = SofaPython.units.elasticity_from_SI(self.param.elasticity)
-                bone.voxelSize = SofaPython.units.length_from_SI(self.param.voxelSize)
-                SMLBones[bone.name] = bone.initUsingSMLModel(rigidModel)
+        for rigidModel in self.model.getSolidsByTags({"bone"}):
+            bone = Bone(rigidModel.name)
+            bone.elasticity = SofaPython.units.elasticity_from_SI(self.param.elasticity)
+            bone.voxelSize = SofaPython.units.length_from_SI(self.param.voxelSize)
+            SMLBones[bone.name] = bone.initUsingSMLModel(rigidModel)
 
         # scene creation
         for b in SMLBones.values():
-            self.bones[b.name] = b.setup(self.node,generatedDir=self.generatedDir)
-            self.bones[b.name].affineDofs.showObject=self.param.showRigid
-            self.bones[b.name].affineDofs.showObjectScale=SofaPython.units.length_from_SI(self.param.showRigidScale)
+            self.bones[b.name] = b.setup(self.node, generatedDir=self.param.generatedDir)
+            self.bones[b.name].affineDofs.showObject = self.param.showRigid
+            self.bones[b.name].affineDofs.showObjectScale = SofaPython.units.length_from_SI(self.param.showRigidScale)
             # add of behavior models
             self.behaviors[b.name] = b.behavior
             # add of collision models
             self.collisions[b.name] = b.collision
             # add of visual models
-            self.visuals[b.name] = b.visual
+            self.visuals[b.name] = b.visual.model
+            self.visualStyles[b.name] = b.visual.node.createObject('VisualStyle', displayFlags='showVisual')
             # visualisation of dofs as point
             if self.param.showRigidDOFasSphere:
                 l = 0.00675 if b.type != "short" else 0.00335
@@ -416,11 +489,10 @@ class SceneArticulatedRigidScale(SofaPython.sml.BaseScene):
         # -- constraints: only alignement constrainy will be handle for the moment
         # variables
         SMLBonesStraightConstraint = dict() # all  the constraints
-        if "straight" in self.model.solidsByTag:
-            for boneModel in self.model.solidsByTag["straight"]:
-                bone = SMLBones[boneModel.name]
-                constraint = Constraint(bone.name, bone)
-                SMLBonesStraightConstraint[bone.name] = constraint.initUsingSMLModel(boneModel)
+        for boneModel in self.model.getSolidsByTags({"straight"}):
+            bone = SMLBones[boneModel.name]
+            constraint = Constraint(bone.name, bone)
+            SMLBonesStraightConstraint[bone.name] = constraint.initUsingSMLModel(boneModel)
 
         for c in SMLBonesStraightConstraint.values():
             constraint = c.setup(self.param.useCompliance, self.param.constraintCompliance, self.param.showOffset, SofaPython.units.length_from_SI(self.param.showOffsetScale))

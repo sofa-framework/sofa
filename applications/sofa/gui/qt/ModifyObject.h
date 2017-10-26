@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -13,11 +13,8 @@
 * more details.                                                               *
 *                                                                             *
 * You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* with this program. If not, see <http://www.gnu.org/licenses/>.              *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -50,6 +47,7 @@
 #include <QCheckBox>
 #include <QSpinBox>
 #include <QVBoxLayout>
+#include <QTextBrowser>
 
 
 namespace sofa
@@ -143,6 +141,7 @@ public:
     void readOnlyData(QWidget *widget, core::objectmodel::BaseData* data);
 
 public slots:
+    void openExternalBrowser(const QUrl &link);
     void reject   ();
     void accept   ();
     void closeNow () {emit(reject());} //called from outside to close the current widget
@@ -166,8 +165,7 @@ signals:
 
 protected slots:
     //update the tables of value at each step of the simulation
-    void clearWarnings() {node->clearWarnings(); logWarningEdit->clear();}
-    void clearOutputs() {node->clearOutputs(); logOutputEdit->clear();}
+    void clearMessages() ;
 
 protected:
     void updateConsole();  //update the console log of warnings and outputs
@@ -178,13 +176,12 @@ protected:
     core::objectmodel::BaseData* data_;
     const ModifyObjectFlags dialogFlags_;
 
-    QWidget* outputTab;
-    QTextEdit *logOutputEdit;
-    QWidget *warningTab;
-    QTextEdit *logWarningEdit;
+    QWidget *messageTab;
+    QTextBrowser *messageEdit;
 
     QTabWidget *dialogTab;
     QPushButton *buttonUpdate;
+    int m_numMessages;
 
     //Widget specific to Node:
     //Transformation widget: translation, rotation, scale ( only experimental and deactivated)

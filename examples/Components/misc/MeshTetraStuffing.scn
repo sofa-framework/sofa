@@ -13,7 +13,7 @@
         <MeshTetraStuffing name="stuffing" snapPoints="true" splitTetras="true" draw="true" size="0.7" alphaLong="0.3" alphaShort="0.4" inputPoints="@surface.points" inputTriangles="@surface.triangles" />
     </Node>
     <Node activated="1" name="output">
-        <EulerImplicit name="odesolver" />
+        <EulerImplicit name="odesolver"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="10" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <TetrahedronSetTopologyContainer name="volume" points="@../input/stuffing.outputPoints" tetras="@../input/stuffing.outputTetras" />
         <MechanicalObject />

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -13,11 +13,8 @@
 * more details.                                                               *
 *                                                                             *
 * You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* with this program. If not, see <http://www.gnu.org/licenses/>.              *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -43,10 +40,6 @@
 
 namespace sofa {
 namespace {
-
-using std::cout;
-using std::cerr;
-using std::endl;
 using namespace core;
 using namespace component;
 using defaulttype::Vec;
@@ -451,6 +444,46 @@ struct Multi2Mapping_test : public Sofa_test<typename _MultiMapping::Real>
                                  "fIn2p2["<<p<<"]-fIn2p["<<p<<"] = " << fIn2p12[p] << endl;
             }
         }
+
+        // =================== test updateForceMask
+        // propagate forces coming from all child, each parent receiving a force should be in the mask
+        for(Index i=0; i<Np1.size(); i++) in1Dofs[i]->forceMask.clear();
+        for(Index i=0; i<Np2.size(); i++) in2Dofs[i]->forceMask.clear();
+        outDofs->forceMask.assign(outDofs->getSize(),true);
+        mapping->apply(&mparams, core::VecCoordId::position(), core::VecCoordId::position()); // to force mask update at the next applyJ
+        for( unsigned i=0; i<Nc; i++ ) Out::set( fout[i], 1,1,1 ); // every child forces are non-nul
+        for(Index p=0; p<Np1.size(); p++) {
+            WriteInVecDeriv fin = in1Dofs[p]->writeForces();
+            copyToData( fin, fIn1p2[p] );  // reset parent forces before accumulating child forces
+        }
+        for(Index p=0; p<Np2.size(); p++) {
+            WriteInVecDeriv fin = in2Dofs[p]->writeForces();
+            copyToData( fin, fIn2p2[p] );  // reset parent forces before accumulating child forces
+        }
+        mapping->applyJT( &mparams, core::VecDerivId::force(), core::VecDerivId::force() );
+        for(Index i=0; i<Np1.size(); i++)
+        {
+            copyFromData( fIn1p[i], in1Dofs[i]->readForces() );
+            for( unsigned j=0; j<Np1[i]; j++ ) {
+                if( fIn1p[i][j] != InDeriv() && !in1Dofs[i]->forceMask.getEntry(j) ){
+                    succeed = false;
+                    ADD_FAILURE() << "updateForceMask did not propagate mask to every influencing parents 0-"<< i << std::endl;
+                    break;
+                }
+            }
+        }
+        for(Index i=0; i<Np2.size(); i++)
+        {
+            copyFromData( fIn2p[i], in2Dofs[i]->readForces() );
+            for( unsigned j=0; j<Np2[i]; j++ ) {
+                if( fIn2p[i][j] != InDeriv() && !in2Dofs[i]->forceMask.getEntry(j) ){
+                    succeed = false;
+                    ADD_FAILURE() << "updateForceMask did not propagate mask to every influencing parents 1-"<< i << std::endl;
+                    break;
+                }
+            }
+        }
+
         return succeed;
     }
 

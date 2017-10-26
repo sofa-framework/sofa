@@ -1,3 +1,24 @@
+/******************************************************************************
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 #ifndef VariationalSymplecticSolver_H
 #define VariationalSymplecticSolver_H
 #include "config.h"
@@ -42,16 +63,16 @@ public:
 
 	VariationalSymplecticSolver();
 
-	void init();
+	void init() override;
 	std::ofstream energies;
-   void solve (const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult);
+   void solve (const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 
    int cpt;
    /// Given a displacement as computed by the linear system inversion, how much will it affect the velocity
    ///
    /// This method is used to compute the compliance for contact corrections
    /// For Euler methods, it is typically dt.
-   virtual double getVelocityIntegrationFactor() const
+   virtual double getVelocityIntegrationFactor() const override
    {
        return 0; // getContext()->getDt();
    }
@@ -60,13 +81,13 @@ public:
    ///
    /// This method is used to compute the compliance for contact corrections
    /// For Euler methods, it is typically dt².
-   virtual double getPositionIntegrationFactor() const
+   virtual double getPositionIntegrationFactor() const override
    {
        return 0; //*getContext()->getDt());
    }
 
 
-       double getIntegrationFactor(int /*inputDerivative*/, int /*outputDerivative*/) const
+       double getIntegrationFactor(int /*inputDerivative*/, int /*outputDerivative*/) const override
        {
 
                        return 0;
@@ -74,7 +95,7 @@ public:
        }
 
 
-       double getSolutionIntegrationFactor(int /*outputDerivative*/) const
+       double getSolutionIntegrationFactor(int /*outputDerivative*/) const override
        {
 
                        return 0;

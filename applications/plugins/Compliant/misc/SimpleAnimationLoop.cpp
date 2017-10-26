@@ -17,6 +17,7 @@
 #include <sofa/simulation/IntegrateBeginEvent.h>
 #include <sofa/simulation/IntegrateEndEvent.h>
 #include <sofa/simulation/UpdateContextVisitor.h>
+#include <sofa/helper/cast.h>
 
 namespace sofa
 {
@@ -26,7 +27,7 @@ namespace simulation
 
 SOFA_DECL_CLASS(SimpleAnimationLoop)
 
-static int _ = core::RegisterObject("a truly simple animation loop")
+int _ = core::RegisterObject("a truly simple animation loop")
     .add< SimpleAnimationLoop >()
     ;
 
@@ -95,11 +96,16 @@ class SOFA_Compliant_API SimpleAnimateVisitor : public Visitor {
             using namespace sofa::core;
             
             // this is needed
-            MechanicalPropagatePositionAndVelocityVisitor propagate(&mparams,
-                                                                    next,
-                                                                    VecCoordId::position(),
-                                                                    VecDerivId::velocity(),
-                                                                    true);
+            MechanicalProjectPositionAndVelocityVisitor project(&mparams,
+                                                                next,
+                                                                VecCoordId::position(),
+                                                                VecDerivId::velocity());
+            project.execute(node);
+            MechanicalPropagateOnlyPositionAndVelocityVisitor propagate(&mparams,
+                                                                        next,
+                                                                        VecCoordId::position(),
+                                                                        VecDerivId::velocity(),
+                                                                        true);
             propagate.execute(node);
 
             // stop after first solver
@@ -134,7 +140,7 @@ SimpleAnimationLoop::SimpleAnimationLoop():
 // a comment stating why this is useful
 void SimpleAnimationLoop::step(const core::ExecParams* params, SReal dt)
 {
-    sofa::simulation::Node* gnode = sofa::simulation::getSimulation()->GetRoot().get();
+    sofa::simulation::Node* gnode = down_cast<sofa::simulation::Node>(this->getContext()->getRootContext());
     
     if (dt == 0) {
         // make sure we don't do silly shit

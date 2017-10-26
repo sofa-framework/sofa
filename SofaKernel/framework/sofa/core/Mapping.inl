@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -26,9 +23,6 @@
 #define SOFA_CORE_MAPPING_INL
 
 #include <sofa/core/Mapping.h>
-#ifdef SOFA_SMP
-#include <sofa/defaulttype/SharedTypes.h>
-#endif
 #include <iostream>
 
 namespace sofa
@@ -146,25 +140,7 @@ sofa::defaulttype::BaseMatrix* Mapping<In,Out>::createMappedMatrix(const behavio
 
 
 
-#ifdef SOFA_SMP
-template<class T>
-struct ParallelMappingApply
-{
-    void operator()(const MechanicalParams* mparams, void *m, Shared_rw< objectmodel::Data< typename T::Out::VecCoord > > out, Shared_r< objectmodel::Data< typename T::In::VecCoord > > in)
-    {
-        ((T *)m)->apply(mparams, out.access(), in.read());
-    }
-};
 
-template<class T>
-struct ParallelMappingApplyJ
-{
-    void operator()(const MechanicalParams* mparams, void *m, Shared_rw< objectmodel::Data< typename T::Out::VecDeriv> > out, Shared_r< objectmodel::Data< typename T::In::VecDeriv> > in)
-    {
-        ((T *)m)->applyJ(mparams, out.access(), in.read());
-    }
-};
-#endif /* SOFA_SMP */
 
 template <class In, class Out>
 void Mapping<In,Out>::apply(const MechanicalParams* mparams, MultiVecCoordId outPos, ConstMultiVecCoordId inPos)
@@ -177,14 +153,11 @@ void Mapping<In,Out>::apply(const MechanicalParams* mparams, MultiVecCoordId out
         const InDataVecCoord* in = inPos[fromModel].read();
         if(out && in)
         {
-#ifdef SOFA_SMP
-            if (mparams->execMode() == ExecParams::EXEC_KAAPI)
-                Task<ParallelMappingApply< Mapping<In,Out> > >(mparams, this,
-                        **defaulttype::getShared(*out), **defaulttype::getShared(*in));
-            else
-#endif /* SOFA_SMP */
+
                 this->apply(mparams, *out, *in);
+#ifdef SOFA_USE_MASK
             this->m_forceMaskNewStep = true;
+#endif
         }
     }
 }// Mapping::apply
@@ -200,13 +173,6 @@ void Mapping<In,Out>::applyJ(const MechanicalParams* mparams, MultiVecDerivId ou
         const InDataVecDeriv* in = inVel[fromModel].read();
         if(out && in)
         {
-
-#ifdef SOFA_SMP
-            if (mparams->execMode() == ExecParams::EXEC_KAAPI)
-                Task<ParallelMappingApplyJ< Mapping<In,Out> > >(mparams, this,
-                        **defaulttype::getShared(*out), **defaulttype::getShared(*in));
-            else
-#endif /* SOFA_SMP */
                 this->applyJ(mparams, *out, *in);
         }
     }
@@ -224,14 +190,15 @@ void Mapping<In,Out>::applyJT(const MechanicalParams *mparams, MultiVecDerivId i
         if(out && in)
         {
             this->applyJT(mparams, *out, *in);
-#ifdef SOFA_USE_MASK
 
+#ifdef SOFA_USE_MASK
             if( this->m_forceMaskNewStep )
             {
                 this->m_forceMaskNewStep = false;
                 updateForceMask();
             }
 #endif /*SOFA_USE_MASK*/
+
         }
     }
 }// Mapping::applyJT

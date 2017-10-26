@@ -7,7 +7,7 @@
 
     <!-- Using a rigid cube using collision triangles, lines and points  -->
     <Node name="Cube1">
-        <EulerImplicit name="EulerImplicit" />
+        <EulerImplicit name="EulerImplicit"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver name="CG Solver" />
         <MechanicalObject name="Cube1 RigidDOF" template="Rigid" dy="0" />
         <UniformMass name="UniformMass1" totalmass="10.0" />

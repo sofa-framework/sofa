@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -103,16 +100,11 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::setDetectionOutp
 
 
     int SIZE = outputs.size();
-    std::cout << SIZE << " contacts" << std::endl;
+    msg_info() << SIZE << " contacts" ;
 
     contacts.reserve(SIZE);
 
-    //m_constraint->clear(SIZE);
-    //mapper1.resize(SIZE);
-    //mapper2.resize(SIZE);
-
     int OUTSIZE = 0;
-    //const double d0 = intersectionMethod->getContactDistance() + model1->getProximity() + model2->getProximity(); // - 0.001;
 
     // the following procedure cancels the duplicated detection outputs
     for (int cpt=0; cpt<SIZE; cpt++)
@@ -132,11 +124,8 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::setDetectionOutp
         ++OUTSIZE;
     }
 
-    if (OUTSIZE<SIZE && this->f_printLog.getValue())
-    {
-        // DUPLICATED CONTACTS FOUND
-        sout << "Removed " << (SIZE-OUTSIZE) <<" / " << SIZE << " collision points." << sendl;
-    }
+    // DUPLICATED CONTACTS FOUND
+    msg_info_when(OUTSIZE<SIZE) << "Removed " << (SIZE-OUTSIZE) <<" / " << SIZE << " collision points." ;
 
 }
 
@@ -162,22 +151,17 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::activateMappers(
     int i = 0;
     const double d0 = intersectionMethod->getContactDistance() + model1->getProximity() + model2->getProximity(); // - 0.001;
 
-    //std::cout<<" d0 = "<<d0<<std::endl;
-
     mappedContacts.resize(contacts.size());
     for (std::vector<sofa::core::collision::DetectionOutput*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++, i++)
     {
         sofa::core::collision::DetectionOutput* o = *it;
-        //std::cout<<" collisionElements :"<<o->elem.first<<" - "<<o->elem.second<<std::endl;
         CollisionElement1 elem1(o->elem.first);
         CollisionElement2 elem2(o->elem.second);
         int index1 = elem1.getIndex();
         int index2 = elem2.getIndex();
-        //std::cout<<" indices :"<<index1<<" - "<<index2<<std::endl;
 
         typename DataTypes1::Real r1 = 0.;
         typename DataTypes2::Real r2 = 0.;
-        //double constraintValue = ((o->point[1] - o->point[0]) * o->normal) - intersectionMethod->getContactDistance();
 
         // Create mapping for first point
         index1 = mapper1.addPointB(o->point[0], index1, r1
@@ -203,50 +187,19 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::activateMappers(
     mapper1.updateXfree();
     mapper2.update();
     mapper2.updateXfree();
-    /*
 
-            CollisionElement1 elem1(o->elem.first);
-            CollisionElement2 elem2(o->elem.second);
-            int index1 = elem1.getIndex();
-            int index2 = elem2.getIndex();
-
-            typename DataTypes1::Real r1 = 0.0;
-            typename DataTypes2::Real r2 = 0.0;
-            // Create mapping for first point
-            index1 = mapper1.addPointB(o->point[0], index1, r1
-    #ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                                      , o->baryCoords[0]
-    #endif
-            );
-            // Create mapping for second point
-            index2 = mapper2.addPointB(o->point[1], index2, r2
-    #ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-                                      , o->baryCoords[1]
-    #endif
-            );
-
-            double distance = d0 + r1 + r2;
-
-            m_constraint->addContact(o->normal, o->point[0], o->point[1], distance, index1, index2, o->point[0], o->point[1], OUTSIZE, 0);
-            ++OUTSIZE;
-    	}
-        // Update mappings
-        mapper1.update();
-        mapper2.update();
-    */
     sout << contacts.size() << " StickContactConstraint created"<<sendl;
     sout << "mstate1 size = " << m_constraint->getMState1()->getSize() << " x = " << m_constraint->getMState1()->getSize() << " xfree = " << m_constraint->getMState1()->read(core::ConstVecCoordId::freePosition())->getValue().size() << sendl;
     sout << "mstate2 size = " << m_constraint->getMState2()->getSize() << " x = " << m_constraint->getMState2()->getSize() << " xfree = " << m_constraint->getMState2()->read(core::ConstVecCoordId::freePosition())->getValue().size() << sendl;
-    //std::cerr<<" end activateMappers call"<<std::endl;
 
 }
 
 template < class TCollisionModel1, class TCollisionModel2 >
 void StickContactConstraint<TCollisionModel1,TCollisionModel2>::createResponse(core::objectmodel::BaseContext* group)
 {
-	sout << "->createResponse(" << group->getName() << ")" << sendl;
+    sout << "->createResponse(" << group->getName() << ")" << sendl;
     if (!contacts.empty() || !keepAlive())
-	{
+    {
         activateMappers();
         int i = 0;
         for (std::vector<sofa::core::collision::DetectionOutput*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++, i++)
@@ -261,10 +214,8 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::createResponse(c
 
             // Add contact in unilateral constraint
             m_constraint->addContact(o->normal, o->point[0], o->point[1], distance, index1, index2, o->point[0], o->point[1], i, o->id);
-
-            //m_constraint->addContact(mu_, o->normal, distance, index1, index2, index, o->id);
         }
-	}
+    }
 
     if (m_constraint!=NULL)
     {
@@ -276,7 +227,6 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::createResponse(c
         parent = group;
         if (parent!=NULL)
         {
-            //sout << "Attaching contact response to "<<parent->getName()<<sendl;
             parent->addObject(this);
             parent->addObject(m_constraint);
         }
@@ -286,14 +236,11 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::createResponse(c
 template < class TCollisionModel1, class TCollisionModel2 >
 void StickContactConstraint<TCollisionModel1,TCollisionModel2>::removeResponse()
 {
-	sout << "->removeResponse()" << sendl;
+    sout << "->removeResponse()" << sendl;
     if (m_constraint)
     {
-        //mapper1.resize(0);
-        //mapper2.resize(0);
         if (parent!=NULL)
         {
-            //sout << "Removing contact response from "<<parent->getName()<<sendl;
             parent->removeObject(this);
             parent->removeObject(m_constraint);
         }

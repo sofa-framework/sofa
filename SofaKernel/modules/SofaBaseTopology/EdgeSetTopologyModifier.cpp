@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -171,7 +168,7 @@ void EdgeSetTopologyModifier::addEdgesWarning(const unsigned int nEdges,
         const sofa::helper::vector< core::topology::EdgeAncestorElem >& ancestorElems)
 {
     m_container->setEdgeTopologyToDirty();
-    
+
     sofa::helper::vector< sofa::helper::vector< unsigned int > > ancestors;
     sofa::helper::vector< sofa::helper::vector< double > > baryCoefs;
     ancestors.resize(nEdges);
@@ -207,8 +204,6 @@ void EdgeSetTopologyModifier::removeEdgesWarning(sofa::helper::vector<unsigned i
     // Warning that these edges will be deleted
     EdgesRemoved *e = new EdgesRemoved(edges);
     addTopologyChange(e);
-
-    //std::cout<<"addTopologyChange EdgesRemoved"<<std::endl;
 }
 
 
@@ -358,13 +353,13 @@ void EdgeSetTopologyModifier::renumberPointsProcess( const sofa::helper::vector<
             /*
             if(p0 < p1)
             {
-            	m_container->m_edge[i][0] = p0;
-            	m_container->m_edge[i][1] = p1;
+                m_container->m_edge[i][0] = p0;
+                m_container->m_edge[i][1] = p1;
             }
             else
             {
-            	m_container->m_edge[i][0] = p1;
-            	m_container->m_edge[i][1] = p0;
+                m_container->m_edge[i][0] = p1;
+                m_container->m_edge[i][1] = p0;
             }
             */
 
@@ -629,7 +624,7 @@ void EdgeSetTopologyModifier::removeEdges(const sofa::helper::vector< unsigned i
     for (unsigned int i = 0; i < edgeIds.size(); i++)
     {
         if( edgeIds[i] >= m_container->getNumberOfEdges())
-            std::cout << "Error: EdgeSetTopologyModifier::removeEdges: edges: "<< edgeIds[i] <<" is out of bound and won't be removed." << std::endl;
+            dmsg_error() << "Unable to remoev and edges: "<< edgeIds[i] <<" is out of bound and won't be removed." ;
         else
             edgeIds_filtered.push_back(edgeIds[i]);
     }
@@ -973,7 +968,7 @@ void EdgeSetTopologyModifier::propagateTopologicalEngineChanges()
     if (!m_container->isEdgeTopologyDirty()) // edge Data has not been touched
         return PointSetTopologyModifier::propagateTopologicalEngineChanges();
 
-    sofa::helper::list <sofa::core::topology::TopologyEngine *>::iterator it;
+    std::list<sofa::core::topology::TopologyEngine *>::iterator it;
     for ( it = m_container->m_enginesList.begin(); it!=m_container->m_enginesList.end(); ++it)
     {
         // no need to dynamic cast this time? TO BE CHECKED!
@@ -981,7 +976,7 @@ void EdgeSetTopologyModifier::propagateTopologicalEngineChanges()
         if (topoEngine->isDirty())
         {
 #ifndef NDEBUG
-            std::cout << "EdgeSetTopologyModifier::performing: " << topoEngine->getName() << std::endl;
+            msg_info() << "EdgeSetTopologyModifier::performing: " << topoEngine->getName() ;
 #endif
             topoEngine->update();
         }

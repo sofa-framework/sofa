@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -26,6 +23,7 @@
 #define SOFA_HELPER_FNDISPATCHER_INL
 
 #include <sofa/helper/FnDispatcher.h>
+#include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/Factory.h> // for gettypename()
 #include <iostream>
 #include <string>
@@ -44,9 +42,9 @@ namespace helper
 template <class BaseClass, typename ResulT>
 ResulT BasicDispatcher<BaseClass, ResulT>::defaultFn(BaseClass& arg1, BaseClass& arg2)
 {
-    std::cerr << "ERROR DISPATCH ("
+    msg_info("BasicDispatcher") << "ERROR DISPATCH ("
             << gettypename(typeid(arg1)) << ", "
-            << gettypename(typeid(arg2)) << ")\n";
+            << gettypename(typeid(arg2)) << ")" << msgendl;
     this->ignore(typeid(arg1), typeid(arg2));
     return ResulT();
 }

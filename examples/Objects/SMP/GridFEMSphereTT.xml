@@ -1,5 +1,5 @@
 <Node name="FEM" processor="0">
-	<EulerImplicitSolver rayleighStiffness="0.01" />
+	<EulerImplicitSolver rayleighStiffness="0.01"  rayleighMass="0.1" />
 	<ParallelCGLinearSolver iterations="25" threshold="0.00000001"  />
 
 	<SparseGrid name="sparse" n="6 6 6" filename="file"/>

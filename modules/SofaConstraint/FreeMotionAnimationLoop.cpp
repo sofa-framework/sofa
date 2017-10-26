@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -167,21 +164,18 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
 
     // Update the BehaviorModels
     // Required to allow the RayPickInteractor interaction
-    if (f_printLog.getValue())
-        serr << "updatePos called" << sendl;
+    dmsg_info() << "updatePos called" ;
 
     AdvancedTimer::stepBegin("UpdatePosition");
     this->gnode->execute(&beh);
     AdvancedTimer::stepEnd("UpdatePosition");
 
-    if (f_printLog.getValue())
-        serr << "updatePos performed - beginVisitor called" << sendl;
+    dmsg_info() << "updatePos performed - beginVisitor called" ;
 
     simulation::MechanicalBeginIntegrationVisitor beginVisitor(params, dt);
     this->gnode->execute(&beginVisitor);
 
-    if (f_printLog.getValue())
-        serr << "beginVisitor performed - SolveVisitor for freeMotion is called" << sendl;
+    dmsg_info() << "beginVisitor performed - SolveVisitor for freeMotion is called" ;
 
     // Free Motion
     AdvancedTimer::stepBegin("FreeMotion");
@@ -189,15 +183,15 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     this->gnode->execute(&freeMotion);
     AdvancedTimer::stepEnd("FreeMotion");
 
-    mop.propagateXAndV(freePos, freeVel, true); // apply projective constraints
+    mop.projectPositionAndVelocity(freePos, freeVel); // apply projective constraints
+    mop.propagateXAndV(freePos, freeVel);
 
-    if (f_printLog.getValue())
-        serr << " SolveVisitor for freeMotion performed" << sendl;
+    dmsg_info() << " SolveVisitor for freeMotion performed" ;
 
     if (displayTime.getValue())
     {
-        sout << " >>>>> Begin display FreeMotionAnimationLoop time" << sendl;
-        sout <<" Free Motion " << ((double)CTime::getTime() - time) * timeScale << " ms" << sendl;
+        msg_info() << " >>>>> Begin display FreeMotionAnimationLoop time  " << msgendl
+                   <<" Free Motion " << ((double)CTime::getTime() - time) * timeScale << " ms" ;
 
         time = (double)CTime::getTime();
     }
@@ -207,7 +201,7 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     computeCollision(params);
     AdvancedTimer::stepEnd  ("Collision");
 
-    mop.propagateX(pos, false); // Why is this done at that point ???
+    mop.propagateX(pos); // Why is this done at that point ???
 
     if (displayTime.getValue())
     {
@@ -235,14 +229,15 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
 
             // xfree += dv * dt
             freePos.eq(freePos, dv, dt);
-            mop.propagateX(freePos, false); // ignore projective constraints
+            mop.propagateX(freePos);
 
             cparams.setOrder(core::ConstraintParams::POS);
             constraintSolver->solveConstraint(&cparams, pos);
 
             MultiVecDeriv dx(&vop, constraintSolver->getDx());
 
-            mop.propagateV(vel, true); // apply projective constraints
+            mop.projectVelocity(vel); // apply projective constraints
+            mop.propagateV(vel);
             mop.projectResponse(dx);
             mop.propagateDx(dx, true);
 
@@ -256,7 +251,8 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
             cparams.setV(freeVel);
 
             constraintSolver->solveConstraint(&cparams, pos, vel);
-            mop.propagateV(vel, true); // apply projective constraints
+            mop.projectVelocity(vel); // apply projective constraints
+            mop.propagateV(vel);
 
             MultiVecDeriv dx(&vop, constraintSolver->getDx());
             mop.projectResponse(dx);

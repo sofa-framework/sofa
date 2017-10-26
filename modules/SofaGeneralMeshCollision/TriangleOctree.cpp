@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -809,7 +806,6 @@ void TriangleOctree::bbAllTriangles(const defaulttype::Vector3 & bbmin,
                 tmin[1] <= bbmax[1] && tmax[1] >= bbmin[1] &&
                 tmin[2] <= bbmax[2] && tmax[2] >= bbmin[2])
         {
-            //std::cout << "Found tri " << t << std::endl;
             results.insert(t);
         }
     }
@@ -819,9 +815,6 @@ template<class Res>
 void TriangleOctree::bbAll (const defaulttype::Vector3 & bbmin, const defaulttype::Vector3 & bbmax, Res& results)
 {
     defaulttype::Vector3 c(x+size/2,y+size/2,z+size/2);
-    //static int level = 0;
-    //for (int l=0;l<level;++l) std::cout << ' ';
-    //std::cout << "-> " << c[0] << " " << c[1] << " " << c[2] << " " << size << " -> " << objects.size() << std::endl;
     bbAllTriangles (bbmin, bbmax, results);
     if (is_leaf)
     {
@@ -830,8 +823,6 @@ void TriangleOctree::bbAll (const defaulttype::Vector3 & bbmin, const defaulttyp
     int dx0 = (bbmin[0] > c[0]) ? 1 : 0;    int dx1 = (bbmax[0] >= c[0]) ? 1 : 0;
     int dy0 = (bbmin[1] > c[1]) ? 1 : 0;    int dy1 = (bbmax[1] >= c[1]) ? 1 : 0;
     int dz0 = (bbmin[2] > c[2]) ? 1 : 0;    int dz1 = (bbmax[2] >= c[2]) ? 1 : 0;
-    //dx0 = dy0 = dz0 = 0;
-    //dx1 = dy1 = dz1 = 1;
     for (int dx = dx0; dx <= dx1; ++dx)
         for (int dy = dy0; dy <= dy1; ++dy)
             for (int dz = dz0; dz <= dz1; ++dz)
@@ -839,13 +830,7 @@ void TriangleOctree::bbAll (const defaulttype::Vector3 & bbmin, const defaulttyp
                 int i = dx * 4 + dy * 2 + dz;
                 if (childVec[i])
                 {
-                    //for (int l=0;l<level;++l) std::cout << ' ';
-                    //std::cout << "> " << i << std::endl;
-                    //++level;
                     childVec[i]->bbAll (bbmin, bbmax, results);
-                    //--level;
-                    //for (int l=0;l<level;++l) std::cout << ' ';
-                    //std::cout << "< " << i << std::endl;
                 }
             }
 }

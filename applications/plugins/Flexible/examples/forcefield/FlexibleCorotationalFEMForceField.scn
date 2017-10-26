@@ -10,7 +10,7 @@
     
    <Node name="meta-Flexible-mesh"   activated="1" >
    
-        <EulerImplicitSolver />
+        <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver  iterations="50" tolerance="1e-5" threshold="1e-5"/>
     
 	<Mesh name="mesh" src="@../loader" />

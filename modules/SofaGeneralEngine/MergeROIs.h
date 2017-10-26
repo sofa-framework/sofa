@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -63,10 +60,10 @@ public:
     //Output
     Data<helper::vector<helper::SVector<Index> > > f_outputIndices;
 
-    virtual std::string getTemplateName() const    {        return templateName(this);    }
+    virtual std::string getTemplateName() const    override {        return templateName(this);    }
     static std::string templateName(const MergeROIs* = NULL)    {        return std::string();    }
 
-    virtual void init()
+    virtual void init() override
     {
         addInput(&nbROIs);
         f_indices.resize(nbROIs.getValue());
@@ -74,7 +71,7 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit()
+    virtual void reinit() override
     {
         f_indices.resize(nbROIs.getValue());
         update();
@@ -82,14 +79,14 @@ public:
 
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters
-    void parse ( core::objectmodel::BaseObjectDescription* arg )
+    void parse ( core::objectmodel::BaseObjectDescription* arg ) override
     {
         f_indices.parseSizeData(arg, nbROIs);
         Inherit1::parse(arg);
     }
 
     /// Assign the field values stored in the given map of name -> value pairs
-    void parseFields ( const std::map<std::string,std::string*>& str )
+    void parseFields ( const std::map<std::string,std::string*>& str ) override
     {
         f_indices.parseFieldsSizeData(str, nbROIs);
         Inherit1::parseFields(str);
@@ -106,7 +103,7 @@ protected:
 
     virtual ~MergeROIs() {}
 
-    virtual void update()
+    virtual void update() override
     {
         size_t nb = nbROIs.getValue();
         f_indices.resize(nb);

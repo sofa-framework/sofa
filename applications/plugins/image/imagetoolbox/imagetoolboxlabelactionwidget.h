@@ -1,6 +1,8 @@
 #ifndef IMAGETOOLBOXLABELACTIONWIDGET_H
 #define IMAGETOOLBOXLABELACTIONWIDGET_H
 
+#include <image/image_gui/config.h>
+
 #include <QVBoxLayout>
 #include <QComboBox>
 #include <QPushButton>
@@ -8,7 +10,6 @@
 
 #include "imagetoolboxcentralwidget.h"
 #include "labelimagetoolboxaction.h"
-#include <image/image_gui/config.h>
 
 namespace sofa
 {

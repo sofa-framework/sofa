@@ -1,6 +1,8 @@
 #ifndef DEPTHIMAGETOOLBOX_H
 #define DEPTHIMAGETOOLBOX_H
 
+#include <image/image_gui/config.h>
+
 #include <QTextStream>
 #include <QFile>
 
@@ -18,8 +20,6 @@
 #include "../depth/depthimagetoolbox.h"
 #include <image/ImageTypes.h>
 #include "meshData.h"
-
-#include <image/image_gui/config.h>
 
 
 
@@ -93,7 +93,7 @@ public:
     {
     }
     
-    virtual void init()
+    virtual void init() override
     {
         addInput(&d_transform);
         addInput(&d_filename);
@@ -123,7 +123,7 @@ public:
 
     }
     
-    virtual sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QWidget*parent=NULL)
+    virtual sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QWidget*parent=NULL) override
     {
         return new sofa::gui::qt::DepthImageToolBoxAction(this,parent);
     }

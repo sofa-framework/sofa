@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -277,7 +274,7 @@ bool BaseData::updateFromParentValue(const BaseData* parent)
     std::string m = msgs.str();
     if (m_owner
 #ifdef NDEBUG
-        && (!m.empty() || m_owner->f_printLog.getValue())
+        && (!m.empty() || m_owner->notMuted())
 #endif
     )
     {
@@ -321,7 +318,6 @@ bool BaseData::findDataLinkDest(BaseData*& ptr, const std::string& path, const B
 void BaseData::addLink(BaseLink* l)
 {
     m_vecLink.push_back(l);
-    //l->setOwner(this);
 }
 
 void BaseData::copyAspect(int destAspect, int srcAspect)
@@ -331,7 +327,6 @@ void BaseData::copyAspect(int destAspect, int srcAspect)
     DDGNode::copyAspect(destAspect, srcAspect);
     for(VecLink::const_iterator iLink = m_vecLink.begin(); iLink != m_vecLink.end(); ++iLink)
     {
-        //std::cout << "  " << iLink->first;
         (*iLink)->copyAspect(destAspect, srcAspect);
     }
 }

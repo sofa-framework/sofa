@@ -1,5 +1,5 @@
 <Node>
-  <EulerImplicit />
+  <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
   <CGLinearSolver  iterations="25" tolerance="1e-5" threshold="1e-5"/>
   <Node>
     <VoxelGridLoader name="gridloader" filename="textures/Test_64_64_4.raw" voxelSize="0.1 0.1 0.1" resolution="64 64 4" bgValue="0" />

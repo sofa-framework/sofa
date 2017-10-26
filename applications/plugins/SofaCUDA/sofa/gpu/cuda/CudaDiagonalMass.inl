@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -67,8 +64,8 @@ void DiagonalMass<CudaVec3fTypes, float>::addMDx(const core::MechanicalParams* /
     VecDeriv& f = *d_f.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
 
-    DiagonalMassCuda_addMDxf(dx.size(),(float) d_factor, f_mass.getValue().deviceRead() , dx.deviceRead(), f.deviceWrite());
-//     const MassVector &masses= f_mass.getValue();
+    DiagonalMassCuda_addMDxf(dx.size(),(float) d_factor, d_mass.getValue().deviceRead() , dx.deviceRead(), f.deviceWrite());
+//     const MassVector &masses= d_mass.getValue();
 //     for (unsigned int i=0;i<dx.size();i++) {
 // 	res[i] += dx[i] * masses[i] * (Real)factor;
 //     }
@@ -82,8 +79,8 @@ void DiagonalMass<CudaVec3fTypes, float>::accFromF(const core::MechanicalParams*
     VecDeriv& a = *d_a.beginEdit();
     const VecDeriv& f = d_f.getValue();
 
-    DiagonalMassCuda_accFromFf(f.size(),  f_mass.getValue().deviceRead(), f.deviceRead(), a.deviceWrite());
-//     const MassVector &masses= f_mass.getValue();
+    DiagonalMassCuda_accFromFf(f.size(),  d_mass.getValue().deviceRead(), f.deviceRead(), a.deviceWrite());
+//     const MassVector &masses= d_mass.getValue();
 //     for (unsigned int i=0;i<f.size();i++) {
 //         a[i] = f[i] / masses[i];
 //     }
@@ -99,7 +96,7 @@ void DiagonalMass<CudaVec3fTypes, float>::addForce(const core::MechanicalParams*
     //const VecDeriv& v = d_v.getValue();
 
     defaulttype::Vec3d g ( this->getContext()->getGravity() );
-    const MassVector &masses= f_mass.getValue();
+    const MassVector &masses= d_mass.getValue();
     DiagonalMassCuda_addForcef(masses.size(),masses.deviceRead(),g.ptr(), f.deviceWrite());
 
 //     // gravity
@@ -124,7 +121,7 @@ void DiagonalMass<CudaVec3dTypes, double>::addMDx(const core::MechanicalParams* 
     VecDeriv& f = *d_f.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
 
-    DiagonalMassCuda_addMDxd(dx.size(),(double) d_factor, f_mass.getValue().deviceRead() , dx.deviceRead(), f.deviceWrite());
+    DiagonalMassCuda_addMDxd(dx.size(),(double) d_factor, d_mass.getValue().deviceRead() , dx.deviceRead(), f.deviceWrite());
 
     d_f.endEdit();
 }
@@ -135,7 +132,7 @@ void DiagonalMass<CudaVec3dTypes, double>::accFromF(const core::MechanicalParams
     VecDeriv& a = *d_a.beginEdit();
     const VecDeriv& f = d_f.getValue();
 
-    DiagonalMassCuda_accFromFd(f.size(),  f_mass.getValue().deviceRead(), f.deviceRead(), a.deviceWrite());
+    DiagonalMassCuda_accFromFd(f.size(),  d_mass.getValue().deviceRead(), f.deviceRead(), a.deviceWrite());
 
     d_a.endEdit();
 }
@@ -148,7 +145,7 @@ void DiagonalMass<CudaVec3dTypes, double>::addForce(const core::MechanicalParams
     //const VecDeriv& v = d_v.getValue();
 
     Vec3d g ( this->getContext()->getGravity() );
-    const MassVector &masses= f_mass.getValue();
+    const MassVector &masses= d_mass.getValue();
     DiagonalMassCuda_addForced(masses.size(),masses.deviceRead(),g.ptr(), f.deviceWrite());
 
     d_f.endEdit();

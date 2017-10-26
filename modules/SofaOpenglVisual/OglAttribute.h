@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -51,14 +48,14 @@ protected:
     OglAttribute();
     virtual ~OglAttribute();
 public:
-    virtual void init();
+    virtual void init() override;
 
-    virtual void initVisual();
+    virtual void initVisual() override;
 
-    virtual void reinit();
+    virtual void reinit() override;
 
     /// if attributes are not static, update the buffer
-    void updateVisual();
+    void updateVisual() override;
 
     sofa::defaulttype::ResizableExtVector<DataTypes>* beginEdit();
     void endEdit();
@@ -66,24 +63,24 @@ public:
     void setValue( const sofa::defaulttype::ResizableExtVector<DataTypes>& value);
     void enable();
     void disable();
-    virtual void bwdDraw(core::visual::VisualParams* );
-    virtual void fwdDraw(core::visual::VisualParams* );
+    virtual void bwdDraw(core::visual::VisualParams* ) override;
+    virtual void fwdDraw(core::visual::VisualParams* ) override;
 
     void setUsage(unsigned int usage) { _usage = usage; }
 
     // handle topological changes
-    virtual void handleTopologyChange();
+    virtual void handleTopologyChange() override;
 
     /// Returns the type of shader element (texture, macro, variable, or attribute)
-    virtual ShaderElementType getSEType() const { return core::visual::ShaderElement::SE_ATTRIBUTE; }
+    virtual ShaderElementType getSEType() const override { return core::visual::ShaderElement::SE_ATTRIBUTE; }
     // Returns the value of the shader element
-    virtual const core::objectmodel::BaseData* getSEValue() const { return &value; }
+    virtual const core::objectmodel::BaseData* getSEValue() const override { return &value; }
     // Returns the value of the shader element
-    virtual core::objectmodel::BaseData* getSEValue() { return &value; }
+    virtual core::objectmodel::BaseData* getSEValue() override { return &value; }
     // For attributes : return the number of values per vertex
-    virtual int getSESizePerVertex() { return size; }
+    virtual int getSESizePerVertex() override { return size; }
     // Returns the total size of the values
-    virtual int getSETotalSize();
+    virtual int getSETotalSize() override;
 
 protected:
     // attribute buffer object identity

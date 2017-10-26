@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -51,15 +48,15 @@ namespace system
 {
 
 #if defined(WIN32)
-	#define chdir _chdir
-	#define getcwd _getcwd
+    #define chdir _chdir
+    #define getcwd _getcwd
 #elif defined(_XBOX)
-	int chdir(const char* path) { return -1; } // NOT IMPLEMENTED
-	char* getcwd(char *buffer, int maxlen) { return ""; } // NOT IMPLEMENTED
+    int chdir(const char* path) { return -1; } // NOT IMPLEMENTED
+    char* getcwd(char *buffer, int maxlen) { return ""; } // NOT IMPLEMENTED
 #elif defined(PS3)
-	std::string g_currentWorkingDir = std::string("/app_home/");
-	char* getcwd(char *buffer, int maxlen) { strcpy(buffer, g_currentWorkingDir.c_str()); return buffer;}
-	int chdir(const char* path) { g_currentWorkingDir = path; return 1;}
+    std::string g_currentWorkingDir = std::string("/app_home/");
+    char* getcwd(char *buffer, int maxlen) { strcpy(buffer, g_currentWorkingDir.c_str()); return buffer;}
+    int chdir(const char* path) { g_currentWorkingDir = path; return 1;}
 #endif
 
 SetDirectory::SetDirectory(const char* filename)
@@ -67,7 +64,6 @@ SetDirectory::SetDirectory(const char* filename)
     directory = GetParentDir(filename);
     if (!directory.empty())
     {
-//         std::cout << ">chdir("<<directory<<")"<<std::endl;
         previousDir = GetCurrentDir();
         if (chdir(directory.c_str()) != 0)
             msg_error("SetDirectory") << "can't change directory.";
@@ -83,7 +79,6 @@ SetDirectory::~SetDirectory()
 {
     if (!directory.empty() && !previousDir.empty())
     {
-//         std::cout << "<chdir("<<directory<<")"<<std::endl;
         if (chdir(previousDir.c_str()) != 0)
             msg_error("SetDirectory") << "can't change directory.";
     }
@@ -196,7 +191,6 @@ std::string SetDirectory::GetProcessFullPath(const char* filename)
         //    char path[1024];
         //    memset(path,0,sizeof(path));
         //    wcstombs(path, wpath, sizeof(path)-1);
-        //    //std::cout << "Current process: "<<path<<std::endl;
         //    if (path[0]) return path;
         //   }
         TCHAR tpath[1024];
@@ -204,7 +198,6 @@ std::string SetDirectory::GetProcessFullPath(const char* filename)
         std::wstring wprocessPath = tpath;
         std::string processPath;
         processPath.assign(wprocessPath.begin(), wprocessPath.end() );
-        //std::cout << "Current process: "<<processPath<<std::endl;
         return processPath;
     }
     /// \TODO use GetCommandLineW and/or CommandLineToArgvW. This is however not strictly necessary, as argv[0] already contains the full path in most cases.
@@ -215,11 +208,10 @@ std::string SetDirectory::GetProcessFullPath(const char* filename)
         memset(path,0,sizeof(path));
         if (readlink("/proc/self/exe",path,sizeof(path)-1) == -1)
             msg_error("SetDirectory") << "can't read the contents of the link.";
-// 		std::cout << "Current process: "<< path <<std::endl;
         if (path[0])
             return path;
         else
-            std::cout << "ERROR: can't get current process path..." << std::endl;
+            msg_error("SetDirectory") << "can't get current process path..." ;
     }
 #elif defined (__APPLE__)
     if (!filename || filename[0]!='/')
@@ -239,9 +231,9 @@ std::string SetDirectory::GetProcessFullPath(const char* filename)
     }
 #endif
 
-	if(filename)
-		return filename;
-	else return std::string("");
+    if(filename)
+        return filename;
+    else return std::string("");
 }
 
 } // namespace system

@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -96,14 +93,14 @@ void TopologyContainer::init()
 
 void TopologyContainer::addTopologyChange(const TopologyChange *topologyChange)
 {
-    sofa::helper::list <const TopologyChange *>& my_changeList = *(m_changeList.beginEdit());
+    std::list<const TopologyChange *>& my_changeList = *(m_changeList.beginEdit());
     my_changeList.push_back(topologyChange);
     m_changeList.endEdit();
 }
 
 void TopologyContainer::addStateChange(const TopologyChange *topologyChange)
 {
-    sofa::helper::list <const TopologyChange *>& my_stateChangeList = *(m_stateChangeList.beginEdit());
+    std::list<const TopologyChange *>& my_stateChangeList = *(m_stateChangeList.beginEdit());
     my_stateChangeList.push_back(topologyChange);
     m_stateChangeList.endEdit();
 }
@@ -116,39 +113,39 @@ void TopologyContainer::addTopologyEngine(TopologyEngine *_topologyEngine)
 }
 
 
-sofa::helper::list<const TopologyChange *>::const_iterator TopologyContainer::endChange() const
+std::list<const TopologyChange *>::const_iterator TopologyContainer::endChange() const
 {
     return (m_changeList.getValue()).end();
 }
 
-sofa::helper::list<const TopologyChange *>::const_iterator TopologyContainer::beginChange() const
+std::list<const TopologyChange *>::const_iterator TopologyContainer::beginChange() const
 {
     return (m_changeList.getValue()).begin();
 }
 
-sofa::helper::list<const TopologyChange *>::const_iterator TopologyContainer::endStateChange() const
+std::list<const TopologyChange *>::const_iterator TopologyContainer::endStateChange() const
 {
     return (m_stateChangeList.getValue()).end();
 }
 
-sofa::helper::list<const TopologyChange *>::const_iterator TopologyContainer::beginStateChange() const
+std::list<const TopologyChange *>::const_iterator TopologyContainer::beginStateChange() const
 {
     return (m_stateChangeList.getValue()).begin();
 }
 
-sofa::helper::list<TopologyEngine *>::const_iterator TopologyContainer::endTopologyEngine() const
+std::list<TopologyEngine *>::const_iterator TopologyContainer::endTopologyEngine() const
 {
     return m_topologyEngineList.end();
 }
 
-sofa::helper::list<TopologyEngine *>::const_iterator TopologyContainer::beginTopologyEngine() const
+std::list<TopologyEngine *>::const_iterator TopologyContainer::beginTopologyEngine() const
 {
     return m_topologyEngineList.begin();
 }
 
 void TopologyContainer::resetTopologyChangeList()
 {
-    sofa::helper::list <const TopologyChange *>& my_changeList = *(m_changeList.beginEdit());
+    std::list<const TopologyChange *>& my_changeList = *(m_changeList.beginEdit());
     for (std::list<const TopologyChange *>::iterator it=my_changeList.begin();
             it!=my_changeList.end(); ++it)
     {
@@ -161,7 +158,7 @@ void TopologyContainer::resetTopologyChangeList()
 
 void TopologyContainer::resetStateChangeList()
 {
-    sofa::helper::list <const TopologyChange *>& my_stateChangeList = *(m_stateChangeList.beginEdit());
+    std::list<const TopologyChange *>& my_stateChangeList = *(m_stateChangeList.beginEdit());
     for (std::list<const TopologyChange *>::iterator it=my_stateChangeList.begin();
             it!=my_stateChangeList.end(); ++it)
     {

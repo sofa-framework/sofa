@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<Node name="root" gravity="0 -9.81 0" dt="0.02">
+    <DefaultPipeline name="CollisionPipeline" verbose="0" />
+    <BruteForceDetection name="N2" />
+    <DefaultContactManager name="collision response" response="default" />
+    <DiscreteIntersection/>
+    
+    <Node name="Hyperelastic-Liver" gravity="0 -9.81 0">
+        <EulerImplicitSolver name="cg_odesolver"   rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
+        <MeshGmshLoader name="meshLoader" filename="mesh/liver.msh" />
+
+        <TetrahedronSetTopologyContainer name="topo" src="@meshLoader" />
+        <MechanicalObject name="dofs" src="@meshLoader" />
+        <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
+
+        <DiagonalMass  name="computed using mass density" massDensity="1" />
+        <FixedConstraint  name="FixedConstraint" indices="3 39 64" />
+
+		<!-- TetrahedronHyperelasticityFEMForceField will be added by the test-->
+		
+	</Node>
+</Node>

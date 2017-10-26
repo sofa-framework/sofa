@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -51,8 +48,8 @@ using namespace core::behavior;
 VariationalSymplecticSolver::VariationalSymplecticSolver()
     : f_newtonError( initData(&f_newtonError,0.01,"newtonError","Error tolerance for Newton iterations") )
     , f_newtonSteps( initData(&f_newtonSteps,(unsigned int)5,"steps","Maximum number of Newton steps") )
-    , f_rayleighStiffness( initData(&f_rayleighStiffness,(SReal)0.1,"rayleighStiffness","Rayleigh damping coefficient related to stiffness, > 0") )
-    , f_rayleighMass( initData(&f_rayleighMass,(SReal)0.1,"rayleighMass","Rayleigh damping coefficient related to mass, > 0"))
+    , f_rayleighStiffness( initData(&f_rayleighStiffness,(SReal)0.0,"rayleighStiffness","Rayleigh damping coefficient related to stiffness, > 0") )
+    , f_rayleighMass( initData(&f_rayleighMass,(SReal)0.0,"rayleighMass","Rayleigh damping coefficient related to mass, > 0"))
     , f_verbose( initData(&f_verbose,false,"verbose","Dump information on the residual errors and number of Newton iterations") )
     , f_saveEnergyInFile( initData(&f_saveEnergyInFile,false,"saveEnergyInFile","If kinetic and potential energies should be dumped in a CSV file at each iteration") )
     , f_explicit( initData(&f_explicit,false,"explicitIntegration","Use explicit integration scheme") )
