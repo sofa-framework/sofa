@@ -41,12 +41,10 @@
 #include <sofa/helper/gl/glfont.h>
 #include <sofa/helper/gl/RAII.h>
 #include <sofa/helper/gl/GLSLShader.h>
-#include <sofa/helper/io/ImageBMP.h>
 
 #include <sofa/helper/system/thread/CTime.h>
 
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 #include <sofa/defaulttype/BoundingBox.h>
 #include <sofa/core/ObjectFactory.h>
 
@@ -539,8 +537,27 @@ void MultithreadGUI::initializeGL(void)
 
         //glBlendFunc(GL_SRC_ALPHA, GL_ONE);
         //Load texture for logo
-        texLogo = new helper::gl::Texture(new helper::io::ImageBMP( sofa::helper::system::DataRepository.getFile("textures/SOFA_logo.bmp")));
-        texLogo->init();
+        std::string filename = sofa::helper::system::DataRepository.getFile("textures/SOFA_logo.bmp");
+        std::string extension = sofa::helper::system::SetDirectory::GetExtension(filename.c_str());
+        std::transform(extension.begin(),extension.end(),extension.begin(),::tolower );
+        bool imageSupport = helper::io::Image::FactoryImage::getInstance()->hasKey(extension);
+        if(!imageSupport)
+        {
+            msg_error("MultithreadGUI") << "Could not open sofa logo, " << extension  << " image format (no support found)" ;
+            return;
+        } else
+        {
+
+            helper::io::Image* img =  helper::io::Image::FactoryImage::getInstance()->createObject(extension, "");
+            bool imgLoaded = img->load(filename);
+            if (!imgLoaded)
+            {
+                msg_error("MultithreadGUI") << "Could not open sofa logo, " << filename ;
+                return;
+            }
+            texLogo = new helper::gl::Texture(img);
+            texLogo->init();
+        }
 
         glEnableClientState(GL_VERTEX_ARRAY);
         glEnableClientState(GL_NORMAL_ARRAY);
@@ -1623,125 +1640,7 @@ void MultithreadGUI::mouseEvent ( int type, int eventX, int eventY, int button )
     }
     else if (isControlPressed())
     {
-        std::vector< sofa::core::behavior::MechanicalState<sofa::defaulttype::LaparoscopicRigidTypes>* > instruments;
-        groot->getTreeObjects<sofa::core::behavior::MechanicalState<sofa::defaulttype::LaparoscopicRigidTypes>, std::vector< sofa::core::behavior::MechanicalState<sofa::defaulttype::LaparoscopicRigidTypes>* > >(&instruments);
-        //std::cout << instruments.size() << " instruments\n";
-        if (!instruments.empty())
-        {
-            _moving = false;
-            sofa::core::behavior::MechanicalState<sofa::defaulttype::LaparoscopicRigidTypes>* instrument = instruments[0];
-            switch (type)
-            {
-            case MouseButtonPress:
-                // Mouse left button is pushed
-                if (button == GLUT_LEFT_BUTTON)
-                {
-                    _navigationMode = BTLEFT_MODE;
-                    _mouseInteractorMoving = true;
-                    _mouseInteractorSavedPosX = eventX;
-                    _mouseInteractorSavedPosY = eventY;
-                }
-                // Mouse right button is pushed
-                else if (button == GLUT_RIGHT_BUTTON)
-                {
-                    _navigationMode = BTRIGHT_MODE;
-                    _mouseInteractorMoving = true;
-                    _mouseInteractorSavedPosX = eventX;
-                    _mouseInteractorSavedPosY = eventY;
-                }
-                // Mouse middle button is pushed
-                else if (button == GLUT_MIDDLE_BUTTON)
-                {
-                    _navigationMode = BTMIDDLE_MODE;
-                    _mouseInteractorMoving = true;
-                    _mouseInteractorSavedPosX = eventX;
-                    _mouseInteractorSavedPosY = eventY;
-                }
-                break;
 
-            case MouseMove:
-                //
-                break;
-
-            case MouseButtonRelease:
-                // Mouse left button is released
-                if (button == GLUT_LEFT_BUTTON)
-                {
-                    if (_mouseInteractorMoving)
-                    {
-                        _mouseInteractorMoving = false;
-                    }
-                }
-                // Mouse right button is released
-                else if (button == GLUT_RIGHT_BUTTON)
-                {
-                    if (_mouseInteractorMoving)
-                    {
-                        _mouseInteractorMoving = false;
-                    }
-                }
-                // Mouse middle button is released
-                else if (button == GLUT_MIDDLE_BUTTON)
-                {
-                    if (_mouseInteractorMoving)
-                    {
-                        _mouseInteractorMoving = false;
-                    }
-                }
-                break;
-
-            default:
-                break;
-            }
-            if (_mouseInteractorMoving)
-            {
-                {
-                    helper::WriteAccessor<Data<sofa::defaulttype::LaparoscopicRigidTypes::VecCoord> > instrumentX = *instrument->write(core::VecCoordId::position());
-                    if (_navigationMode == BTLEFT_MODE)
-                    {
-                        int dx = eventX - _mouseInteractorSavedPosX;
-                        int dy = eventY - _mouseInteractorSavedPosY;
-                        if (dx || dy)
-                        {
-                            instrumentX[0].getOrientation() = instrumentX[0].getOrientation() * Quat(Vector3(0,1,0),dx*0.001) * Quat(Vector3(0,0,1),dy*0.001);
-                            redraw();
-                            _mouseInteractorSavedPosX = eventX;
-                            _mouseInteractorSavedPosY = eventY;
-                        }
-                    }
-                    else if (_navigationMode == BTMIDDLE_MODE)
-                    {
-                        int dx = eventX - _mouseInteractorSavedPosX;
-                        int dy = eventY - _mouseInteractorSavedPosY;
-                        if (dx || dy)
-                        {
-                            if (!groot || !groot->getContext()->getAnimate())
-                                redraw();
-                            _mouseInteractorSavedPosX = eventX;
-                            _mouseInteractorSavedPosY = eventY;
-                        }
-                    }
-                    else if (_navigationMode == BTRIGHT_MODE)
-                    {
-                        int dx = eventX - _mouseInteractorSavedPosX;
-                        int dy = eventY - _mouseInteractorSavedPosY;
-                        if (dx || dy)
-                        {
-                            instrumentX[0].getTranslation() += (dy)*0.01;
-                            instrumentX[0].getOrientation() = instrumentX[0].getOrientation() * Quat(Vector3(1,0,0),dx*0.001);
-                            if (!groot || !groot->getContext()->getAnimate())
-                                redraw();
-                            _mouseInteractorSavedPosX = eventX;
-                            _mouseInteractorSavedPosY = eventY;
-                        }
-                    }
-                }
-                sofa::simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor(core::MechanicalParams::defaultInstance()).execute(instrument->getContext());
-                sofa::simulation::UpdateMappingVisitor(core::ExecParams::defaultInstance()).execute(instrument->getContext());
-                //static_cast<sofa::simulation::Node*>(instrument->getContext())->execute<sofa::simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor>();
-                //static_cast<sofa::simulation::Node*>(instrument->getContext())->execute<sofa::simulation::UpdateMappingVisitor>();
-            }
-        }
     }
     else
     {
