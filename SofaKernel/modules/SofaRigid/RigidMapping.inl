@@ -268,7 +268,7 @@ void RigidMapping<TIn, TOut>::clear(int reserve)
 template <class TIn, class TOut>
 void RigidMapping<TIn, TOut>::setRepartition(unsigned int value)
 {
-    serr<<helper::logging::Message::Deprecated<<"setRepartition function. Fill rigidIndexPerPoint instead."<<sendl;
+    msg_deprecated()<<"setRepartition function. Fill rigidIndexPerPoint instead.";
 
     helper::vector<unsigned int>& rigidIndexPerPoint = *this->rigidIndexPerPoint.beginWriteOnly();
 
@@ -293,7 +293,7 @@ template <class TIn, class TOut>
 void RigidMapping<TIn, TOut>::setRepartition(sofa::helper::vector<
                                              unsigned int> values)
 {
-    serr<<helper::logging::Message::Deprecated<<"setRepartition function. Fill rigidIndexPerPoint instead."<<sendl;
+    msg_deprecated()<<"setRepartition function. Fill rigidIndexPerPoint instead.";
 
     helper::vector<unsigned int>& rigidIndexPerPoint = *this->rigidIndexPerPoint.beginWriteOnly();
 
@@ -320,11 +320,13 @@ const typename RigidMapping<TIn, TOut>::VecCoord & RigidMapping<TIn, TOut>::getP
     {
         const Data<VecCoord>* v = this->toModel.get()->read(core::VecCoordId::restPosition());
         if (v)
+        {
             return v->getValue();
+        }
         else
-            serr
-                    << "RigidMapping: ERROR useX0 can only be used in MechanicalMappings."
-                    << sendl;
+        {
+            msg_error()<< "RigidMapping: ERROR useX0 can only be used in MechanicalMappings.";
+        }
     }
     return points.getValue();
 }
