@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -143,7 +140,7 @@ public:
 
     typedef component::visualmodel::VisualModelImpl VisuModelType;
     
-    std::string getTemplateName() const  {	return templateName(this);	}
+    std::string getTemplateName() const  override {	return templateName(this);	}
     static std::string templateName(const ImageViewer<ImageTypes>* = NULL)	{ return ImageTypes::Name(); }
     
     ImageViewer() : Inherited()
@@ -174,17 +171,21 @@ public:
         plane.setWidget("imageplane");
         
         vectorVisualization.setWidget("vectorvis");
-        
+
+#ifndef SOFA_NO_OPENGL
         for(unsigned int i=0;i<3;i++)	cutplane_tex[i]=NULL;
+#endif //SOFA_NO_OPENGL
     }
     
     
     virtual ~ImageViewer()
     {
+#ifndef SOFA_NO_OPENGL
         for(unsigned int i=0;i<3;i++)	if(cutplane_tex[i]) delete cutplane_tex[i];
+#endif //SOFA_NO_OPENGL
     }
     
-    virtual void init()
+    virtual void init() override
     {
         
         // getvisuals
@@ -217,7 +218,7 @@ public:
     }
     
     
-    virtual void reinit()
+    virtual void reinit() override
     {
         waHisto whisto(this->histo);
         waPlane wplane(this->plane);
@@ -229,7 +230,7 @@ public:
 
     }
     
-    virtual void handleEvent( sofa::core::objectmodel::Event* event)
+    virtual void handleEvent( sofa::core::objectmodel::Event* event) override
     {
         typename ImagePlaneType::pCoord pc(0,0,0);
 
@@ -272,6 +273,9 @@ public:
                 pc = wplane->getPlane();
                 if (pc[2] < zmax) pc[2]++;
                 wplane->setPlane(pc);
+                break;
+            case '5':
+                reinit();
                 break;
             }
         }
@@ -318,8 +322,9 @@ public:
         }
     }
     
-    virtual void draw(const core::visual::VisualParams* vparams)
+    virtual void draw(const core::visual::VisualParams* vparams) override
     {
+#ifndef SOFA_NO_OPENGL
         if (!vparams->displayFlags().getShowVisualModels() || display.getValue()==false) return;
 
         bool initialized=true;
@@ -395,7 +400,7 @@ public:
         glPushAttrib( GL_LIGHTING_BIT | GL_ENABLE_BIT | GL_LINE_BIT | GL_CURRENT_BIT);
         drawCutplanes();
         glPopAttrib();
-        
+#endif //SOFA_NO_OPENGL
     }
 
 
@@ -418,7 +423,7 @@ public:
         for(unsigned int i=0;i<p.size();i++) c[i]=rtransform->fromImage(p[i]);
     }
 
-    virtual void computeBBox(const core::ExecParams*  params, bool /*onlyVisible=false*/ )
+    virtual void computeBBox(const core::ExecParams*  params, bool /*onlyVisible=false*/ ) override
     {
         //        if( onlyVisible) return;
         defaulttype::Vec<8,defaulttype::Vector3> c;
@@ -438,7 +443,10 @@ public:
 protected:
     
     static const unsigned cutplane_res=1024;
+
+#ifndef SOFA_NO_OPENGL
     helper::gl::Texture* cutplane_tex[3];
+#endif //SOFA_NO_OPENGL
 
     //Draw vectors as arrows
     void drawArrows(const core::visual::VisualParams* vparams)
@@ -475,6 +483,7 @@ protected:
     //Draw tensors as ellipsoids
     void drawEllipsoid()
     {
+#ifndef SOFA_NO_OPENGL
         raImage rimage(this->image);
         raPlane rplane(this->plane);
         raTransform rtransform(this->transform);
@@ -574,7 +583,7 @@ protected:
 
                     }
         }
-
+#endif //SOFA_NO_OPENGL
     }
 
     cimg_library::CImg<T> computeTensorFromLowerTriRowMajorVector(cimg_library::CImg<T> vector)
@@ -618,6 +627,7 @@ protected:
     //Draw the boxes around the slices
     void drawCutplanes()
     {
+#ifndef SOFA_NO_OPENGL
         raPlane rplane(this->plane);
         if (!rplane->getDimensions()[0]) return;
 
@@ -665,14 +675,14 @@ protected:
                             glEnd ();
 
                         }
-
+#endif //SOFA_NO_OPENGL
     }
 
 
     //Update and draw the slices
     void updateTextures()
     {
-
+#ifndef SOFA_NO_OPENGL
         raPlane rplane(this->plane);
         if (!rplane->getDimensions()[0]) return;
 
@@ -718,6 +728,7 @@ protected:
                 cutplane_tex[i]->update();
             }
         }
+#endif //SOFA_NO_OPENGL
     }
 
 };

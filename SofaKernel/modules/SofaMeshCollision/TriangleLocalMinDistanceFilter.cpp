@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -62,15 +59,12 @@ void TriangleInfo::buildFilter(unsigned int tri_index)
 
 bool TriangleInfo::validate(const unsigned int tri_index, const defaulttype::Vector3 &PQ)
 {
-    //std::cout<<"TriangleInfo::validate on tri "<<tri_index<<"is called"<<std::endl;
     if (isValid())
     {
-        //std::cout<<" is Valid !"<<std::endl;
         return ( (m_normal * PQ) >= 0.0 );
     }
     else
     {
-        //std::cout<<" not valid => build ------------------------ for triangle "<< tri_index <<std::endl;
         buildFilter(tri_index);
         return validate(tri_index, PQ);
     }
@@ -200,19 +194,6 @@ void TriangleLocalMinDistanceFilter::handleTopologyChange()
         serr<<"WARNING: filters optimization needed for topological change on rigid collision model"<<sendl;
         this->invalidate(); // all the filters will be recomputed, not only those involved in the topological change
     }
-
-    /*
-        core::topology::BaseMeshTopology *bmt = getContext()->getMeshTopology();
-
-        assert(bmt != 0);
-
-        std::list< const core::topology::TopologyChange * >::const_iterator itBegin = bmt->beginChange();
-        std::list< const core::topology::TopologyChange * >::const_iterator itEnd = bmt->endChange();
-
-        m_pointInfo.handleTopologyEvents(itBegin, itEnd);
-    	m_lineInfo.handleTopologyEvents(itBegin, itEnd);
-    	m_triangleInfo.handleTopologyEvents(itBegin, itEnd);
-    */
 }
 
 
@@ -221,7 +202,7 @@ void TriangleLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(unsig
 {
     const TriangleLocalMinDistanceFilter *tLMDFilter = this->f;
     pInfo.setLMDFilters(tLMDFilter);
-    sofa::core::topology::BaseMeshTopology * bmt = tLMDFilter->bmt; //(sofa::core::topology::BaseMeshTopology *)pLMDFilter->getContext()->getTopology();
+    sofa::core::topology::BaseMeshTopology * bmt = tLMDFilter->bmt;
     pInfo.setBaseMeshTopology(bmt);
     /////// TODO : template de la classe
     component::container::MechanicalObject<Vec3Types>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<Vec3Types>*>(tLMDFilter->getContext()->getMechanicalState());
@@ -306,14 +287,7 @@ void TriangleLocalMinDistanceFilter::TriangleInfoHandler::applyCreateFunction(un
 
 bool TriangleLocalMinDistanceFilter::validPoint(const int pointIndex, const defaulttype::Vector3 &PQ)
 {
-    // AdvancedTimer::StepVar("Filters");
-
     PointInfo & Pi = m_pointInfo[pointIndex];
-//    if(&Pi==NULL)
-//    {
-//        serr<<"Pi == NULL"<<sendl;
-//        return true;
-//    }
 
     if(this->isRigid())
     {
@@ -330,14 +304,7 @@ bool TriangleLocalMinDistanceFilter::validPoint(const int pointIndex, const defa
 
 bool TriangleLocalMinDistanceFilter::validLine(const int lineIndex, const defaulttype::Vector3 &PQ)
 {
-    //AdvancedTimer::StepVar("Filters");
-
     LineInfo &Li = m_lineInfo[lineIndex];  // filter is precomputed
-//    if(&Li==NULL)
-//    {
-//        serr<<"Li == NULL"<<sendl;
-//        return true;
-//    }
 
     if(this->isRigid())
     {
@@ -346,22 +313,13 @@ bool TriangleLocalMinDistanceFilter::validLine(const int lineIndex, const defaul
         return Li.validate(lineIndex,PQtest);
     }
 
-    //std::cout<<"validLine "<<lineIndex<<" is called with PQ="<<PQ<<std::endl;
     return Li.validate(lineIndex, PQ);
 }
 
 
 bool TriangleLocalMinDistanceFilter::validTriangle(const int triangleIndex, const defaulttype::Vector3 &PQ)
 {
-    //AdvancedTimer::StepVar("Filters");
-    //std::cout<<"validTriangle "<<triangleIndex<<" is called with PQ="<<PQ<<std::endl;
     TriangleInfo &Ti = m_triangleInfo[triangleIndex];
-
-//    if(&Ti==NULL)
-//    {
-//        serr<<"Ti == NULL"<<sendl;
-//        return true;
-//    }
 
     if(this->isRigid())
     {
@@ -369,7 +327,6 @@ bool TriangleLocalMinDistanceFilter::validTriangle(const int triangleIndex, cons
         PQtest = pos->getOrientation().inverseRotate(PQ);
         return Ti.validate(triangleIndex,PQtest);
     }
-
 
     return Ti.validate(triangleIndex,PQ);
 }

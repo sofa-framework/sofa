@@ -77,8 +77,13 @@ class ExampleController(Sofa.PythonScriptController):
 		sys.stdout.flush()
 		return 0
 
-
-
+	def onIdle(self):
+		sys.stdout.flush()
+		return 0
+		
+	def onRecompile(self):
+		print("The source ["+__file__+"] has changed and is reloaded.")
+		
 	# called on each animation step
 	total_time = 0
 	def onBeginAnimationStep(self,dt):
@@ -112,8 +117,6 @@ class ExampleController(Sofa.PythonScriptController):
 		print 'GUIEvent received: controldID='+controlID+' valueName='+valueName+' value='+value
 		sys.stdout.flush()
 		return 0 
-
-
 
 	# key and mouse events; use this to add some user interaction to your scripts 
 	def onKeyPressed(self,k):

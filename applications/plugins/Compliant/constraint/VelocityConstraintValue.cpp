@@ -35,7 +35,7 @@ void VelocityConstraintValue::dynamics(SReal* dst, unsigned n, unsigned dim, boo
     assert( d_velocities.getValue().size() == size );
 
 	using namespace utils;
-    map(dst, size) = map( &d_velocities.getValue()[0], size );
+    map(dst, size) = map( d_velocities.getValue().data(), size );
 }
 
 

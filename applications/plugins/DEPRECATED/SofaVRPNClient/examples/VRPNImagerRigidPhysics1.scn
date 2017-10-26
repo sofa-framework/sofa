@@ -7,7 +7,7 @@
         <CollisionGroup name="Group" />
 	<LocalMinDistance name="Proximity" alarmDistance="0.04" contactDistance="0.002" />
 
-        <EulerImplicit rayleighStiffness="0.01" name="cg_odesolver" printLog="false"/>
+        <EulerImplicit rayleighStiffness="0.01" name="cg_odesolver" printLog="false" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 	<Node name="tracking">
 		<VRPNImager name="imageData" template="Rigid" listening="true" serverName="134.206.18.181" serverPort="3883" deviceName="TestImage" />
@@ -25,7 +25,7 @@
        <Node name="cage">
                 <MechanicalObject template="Rigid" position="0 0 -1.15 0 0 0 1"/>
                 <UniformMass  mass="0.001" showAxisSizeFactor="0.01"/>
-		<RestShapeSpringsForceField points="0" external_points="0" external_rest_shape="../proxy/center/mechCenter" stiffness="2000" angularStiffness="50000"/>
+		<RestShapeSpringsForceField points="0" external_points="0" external_rest_shape="@../proxy/center/mechCenter" stiffness="2000" angularStiffness="50000"/>
                 <UncoupledConstraintCorrection compliance="0.0005 0.00002 0 0  0.00002  0 0.00002"/>
                 <Node name="Visu">
 			<OglModel name="Visual" fileMesh="mesh/box_outside_duriez.obj" color="1 0 0 0.7"/>

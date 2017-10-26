@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -48,8 +45,7 @@ namespace engine
 {
 
 /**
- * This class dilates the positions of one DataFields into new positions after applying a dilateation
-This dilateation can be either translation, rotation, scale
+ * This class dilates a given mesh by moving vertices along their normal.
  */
 template <class DataTypes>
 class DilateEngine : public core::DataEngine
@@ -68,15 +64,14 @@ public:
 
     DilateEngine();
 
-    ~DilateEngine() {}
+    virtual ~DilateEngine() {}
 
-    void init();
+    virtual void init() override;
+    virtual void bwdInit() override;
+    virtual void reinit() override;
+    virtual void update() override;
 
-    void reinit();
-
-    void update();
-
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -87,25 +82,20 @@ public:
     }
 
 protected:
-    Data<VecCoord> f_inputX; ///< input position
-    Data<VecCoord> f_outputX; ///< ouput position
-    Data<SeqTriangles> f_triangles; ///< input triangles
-    Data<SeqQuads> f_quads; ///< input quads
-    Data<VecCoord> f_normals; ///< ouput normals
-    Data<helper::vector<Real> > f_thickness;
-    Data<Real> f_distance; ///< distance to move the points (positive for dilatation, negative for erosion)
-    Data<Real> f_minThickness; ///< minimal thickness to enforce
+    Data<VecCoord> d_inputX; ///< input position
+    Data<VecCoord> d_outputX; ///< ouput position
+    Data<SeqTriangles> d_triangles; ///< input triangles
+    Data<SeqQuads> d_quads; ///< input quads
+    Data<VecCoord> d_normals; ///< ouput normals
+    Data<helper::vector<Real> > d_thickness;
+    Data<Real> d_distance; ///< distance to move the points (positive for dilatation, negative for erosion)
+    Data<Real> d_minThickness; ///< minimal thickness to enforce
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_DILATEENGINE_CPP)
-
-//#ifndef SOFA_FLOAT
+#ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_ENGINE_API DilateEngine<defaulttype::Vec3dTypes>;
-//#endif //SOFA_FLOAT
-//#ifndef SOFA_DOUBLE
-//extern template class SOFA_GENERAL_ENGINE_API DilateEngine<defaulttype::Vec3fTypes>;
-//#endif //SOFA_DOUBLE
-//extern template class SOFA_GENERAL_ENGINE_API DilateEngine<defaulttype::ExtVec3fTypes>;
+#endif
 #endif
 
 } // namespace engine

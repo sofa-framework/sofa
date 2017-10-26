@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 project(SofaGeneral)
 
 ## Dependencies
@@ -52,10 +52,6 @@ endif()
 
 if(NOT SOFA_NO_OPENGL)
     list(APPEND SOFAGENERAL_TARGETS SofaOpenglVisual)
-endif()
-
-if(SOFA_HAVE_TAUCS)
-    list(APPEND SOFAGENERAL_TARGETS SofaTaucsSolver)
 endif()
 
 foreach(TARGET ${SOFAGENERAL_TARGETS})

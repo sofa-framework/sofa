@@ -17,3 +17,7 @@ LICENCE :
 
 
 OTHER COMMENTS :
+    Please cite:
+    "Stable Constrained Dynamics"
+    Maxime Tournier, Matthieu Nesme, Benjamin Gilles, François Faure
+    ACM Transactions on Graphics, Proceedings of SIGGRAPH, 2015

@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -121,12 +118,8 @@ void BTDLinearSolver<Matrix,Vector>::invert(SubMatrix& Inv, const BlocType& m)
 template<class Matrix, class Vector>
 void BTDLinearSolver<Matrix,Vector>::invert(Matrix& M)
 {
-    const bool verbose  = this->f_verbose.getValue() || this->f_printLog.getValue();
 
-    if( verbose )
-    {
-        serr<<"BTDLinearSolver, invert Matrix = "<< M <<sendl;
-    }
+    msg_info_when(this->f_verbose.getValue()) << "BTDLinearSolver, invert Matrix = "<< M ;
 
     const Index bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
     const Index nb = M.rowSize() / bsize;
@@ -151,11 +144,9 @@ void BTDLinearSolver<Matrix,Vector>::invert(Matrix& M)
     //if (verbose) sout << "C[0] = " << C << sendl;
     //alpha[0] = A;
     invert(alpha_inv[0],A);
-    if (verbose) sout << "alpha_inv[0] = " << alpha_inv[0] << sendl;
+    msg_info_when(this->f_verbose.getValue()) << "alpha_inv[0] = " << alpha_inv[0] ;
     lambda[0] = alpha_inv[0]*C;
-    if (verbose) sout << "lambda[0] = " << lambda[0] << sendl;
-    //if (verbose) sout << "C[0] = alpha[0]*lambda[0] = " << alpha[0]*lambda[0] << sendl;
-
+    msg_info_when(this->f_verbose.getValue()) << "lambda[0] = " << lambda[0] ;
 
     for (Index i=1; i<nb; ++i)
     {
@@ -179,15 +170,13 @@ void BTDLinearSolver<Matrix,Vector>::invert(Matrix& M)
         //	serr<<" Add pair ("<<i<<","<<i-1<<")"<<sendl;
         //}
 
-        if (verbose) sout << "alpha_inv["<<i<<"] = " << alpha_inv[i] << sendl;
-        //if (verbose) sout << "A["<<i<<"] = B["<<i<<"]*lambda["<<i-1<<"]+alpha["<<i<<"] = " << B[i]*lambda[i-1]+alpha[i] << sendl;
+        msg_info_when(this->f_verbose.getValue()) << "alpha_inv["<<i<<"] = " << alpha_inv[i] ;
         if (i<nb-1)
         {
             M.getAlignedSubMatrix((i  ),(i+1),bsize,bsize,C);
-            //if (verbose) sout << "C["<<i<<"] = " << C << sendl;
             lambda[i] = alpha_inv[i]*C;
-            if (verbose) sout << "lambda["<<i<<"] = " << lambda[i] << sendl;
-            //if (verbose) sout << "C["<<i<<"] = alpha["<<i<<"]*lambda["<<i<<"] = " << alpha[i]*lambda[i] << sendl;
+
+            msg_info_when(this->f_verbose.getValue()) << "lambda["<<i<<"] = " << lambda[i] ;
         }
     }
     nBlockComputedMinv.resize(nb);
@@ -197,8 +186,6 @@ void BTDLinearSolver<Matrix,Vector>::invert(Matrix& M)
     // WARNING : cost of resize here : ???
     Minv.resize(nb*bsize,nb*bsize);
     Minv.setAlignedSubMatrix((nb-1),(nb-1),bsize,bsize,alpha_inv[nb-1]);
-
-    //std::cout<<"Minv.setSubMatrix call for block number"<<(nb-1)<<std::endl;
 
     nBlockComputedMinv[nb-1] = 1;
 
@@ -212,8 +199,6 @@ void BTDLinearSolver<Matrix,Vector>::invert(Matrix& M)
         // TODO : ajouter un compteur "first_block" qui évite de descendre les déplacements jusqu'au block 0 dans partial_solve si ce block n'a pas été appelé
         computeMinvBlock(0, 0);
     }
-
-    //sout << "BTDLinearSolver: "<<ndiag<<"/"<<nb<<"diagonal blocs."<<sendl;
 }
 
 
@@ -228,8 +213,6 @@ void BTDLinearSolver<Matrix,Vector>::invert(Matrix& M)
 template<class Matrix, class Vector>
 void BTDLinearSolver<Matrix,Vector>::computeMinvBlock(Index i, Index j)
 {
-    //serr<<"computeMinvBlock("<<i<<","<<j<<")"<<sendl;
-
     if (i < j)
     {
         // i < j correspond to the upper diagonal
@@ -252,7 +235,6 @@ void BTDLinearSolver<Matrix,Vector>::computeMinvBlock(Index i, Index j)
     // we need to compute all the Minv[i0][i0] (with i0>=i) till i0=i
     while (i0 > i)
     {
-        //serr<<"i0 ="<<i0<<"nBlockComputedMinv[i0]="<<nBlockComputedMinv[i0]<<sendl;
         if (nBlockComputedMinv[i0] == 1) // only the bloc on the diagonal is computed : need of the the bloc [i0][i0-1]
         {
             // compute bloc (i0,i0-1)
@@ -355,41 +337,25 @@ double BTDLinearSolver<Matrix,Vector>::getMinvElement(Index i, Index j)
 template<class Matrix, class Vector>
 void BTDLinearSolver<Matrix,Vector>::solve (Matrix& /*M*/, Vector& x, Vector& b)
 {
-    const bool verbose  = this->f_verbose.getValue() || this->f_printLog.getValue();
-
-    if( verbose )
-    {
-        serr<<"BTDLinearSolver, b = "<< b <<sendl;
-    }
-
-    //invert(M);
+    msg_info_when(this->f_verbose.getValue() ) << "solve, b = "<< b;
 
     const Index bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
     const Index nb = b.size() / bsize;
     if (nb == 0) return;
 
-    //if (verbose) sout << "D["<<0<<"] = " << b.asub(0,bsize) << sendl;
     x.asub(0,bsize) = alpha_inv[0] * b.asub(0,bsize);
-    //if (verbose) sout << "Y["<<0<<"] = " << x.asub(0,bsize) << sendl;
     for (Index i=1; i<nb; ++i)
     {
-        //if (verbose) sout << "D["<<i<<"] = " << b.asub(i,bsize) << sendl;
         x.asub(i,bsize) = alpha_inv[i]*(b.asub(i,bsize) - B[i]*x.asub((i-1),bsize));
-        //if (verbose) sout << "Y["<<i<<"] = " << x.asub(i,bsize) << sendl;
     }
-    //x.asub((nb-1),bsize) = Y.asub((nb-1),bsize);
-    //if (verbose) sout << "x["<<nb-1<<"] = " << x.asub((nb-1),bsize) << sendl;
     for (Index i=nb-2; i>=0; --i)
     {
         x.asub(i,bsize) /* = Y.asub(i,bsize)- */ -= lambda[i]*x.asub((i+1),bsize);
-        //if (verbose) sout << "x["<<i<<"] = " << x.asub(i,bsize) << sendl;
     }
 
     // x is the solution of the system
-    if( verbose )
-    {
-        serr<<"BTDLinearSolver::solve, solution = "<<x<<sendl;
-    }
+    msg_info_when(this->f_verbose.getValue()) << "solve, solution = "<<x;
+
 }
 
 template<class Matrix, class Vector>
@@ -499,7 +465,7 @@ void BTDLinearSolver<Matrix,Vector>::bwdAccumulateRHinBloc(Index indMaxBloc)
     //debug
     if (indMaxBloc <  current_bloc)
     {
-        std::cout<<" WARNING in bwdAccumulateRHinBloc : indMaxBloc = "<<indMaxBloc <<" <  "<<" current_bloc = "<<current_bloc<<std::endl;
+        std::cout <<" WARNING in bwdAccumulateRHinBloc : indMaxBloc = "<<indMaxBloc <<" <  "<<" current_bloc = "<<current_bloc<<std::endl;
     }
 
     SubVector RHbloc;

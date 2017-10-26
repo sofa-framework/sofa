@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -13,11 +13,8 @@
 * more details.                                                               *
 *                                                                             *
 * You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* with this program. If not, see <http://www.gnu.org/licenses/>.              *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -33,17 +30,10 @@
 //Including Simulation
 #include <SofaSimulationGraph/DAGSimulation.h>
 
-// #include <SofaMiscFem/TetrahedralTensorMassForceField.h>
-// #include <SofaSimpleFem/TetrahedralCorotationalFEMForceField.h>
 #include <SofaBaseTopology/TopologySparseData.inl>
 #include <SofaBoundaryCondition/TrianglePressureForceField.h>
 #include <SofaBoundaryCondition/AffineMovementConstraint.h>
-// #include <SofaBaseLinearSolver/CGLinearSolver.h>
-// #include <SofaEngine/PairBoxRoi.h>
-// #include <SofaEngine/GenerateCylinder.h>
-// #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
-// #include <SofaImplicitOdeSolver/StaticSolver.h>
-// #include <SofaBoundaryCondition/ProjectToLineConstraint.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 
 namespace sofa {
 
@@ -124,17 +114,6 @@ simulation::Node::SPtr createMassSpringSystem(
         VecDeriv vFixedPoint,
         VecCoord xMass,
         VecDeriv vMass);
-
-/// Create sun-planet system
-simulation::Node::SPtr createSunPlanetSystem(
-        simulation::Node::SPtr root,
-        double mSun,
-        double mPlanet,
-        double g,
-        Coord xSun,
-        Deriv vSun,
-        Coord xPlanet,
-        Deriv vPlanet);
 
 };
 

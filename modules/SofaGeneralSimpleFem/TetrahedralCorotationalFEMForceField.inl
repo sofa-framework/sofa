@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -105,8 +102,8 @@ TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedralCorotationalFEMForce
     _poissonRatio.setWidget("poissonRatio");
     tetrahedronHandler = new TetrahedronHandler(this,&tetrahedronInfo);
 
-	_poissonRatio.setRequired(true);
-	_youngModulus.setRequired(true);
+    _poissonRatio.setRequired(true);
+    _youngModulus.setRequired(true);
 }
 
 template <class DataTypes>
@@ -758,8 +755,8 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForceSmall( Vect
         }
 
         /*for(unsigned int i=0;i<_stiffnesses.size();++i)
-        	for(typename CompressedValue::iterator it=_stiffnesses[i].begin();it!=_stiffnesses[i].end();++it)
-        		serr<<i<<" "<<(*it).first<<"   "<<(*it).second<<"   "<<JKJt[i][(*it).first]<<sendl;*/
+            for(typename CompressedValue::iterator it=_stiffnesses[i].begin();it!=_stiffnesses[i].end();++it)
+                serr<<i<<" "<<(*it).first<<"   "<<(*it).second<<"   "<<JKJt[i][(*it).first]<<sendl;*/
 
         F = JKJt * D;
     }
@@ -1437,32 +1434,6 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::printStiffnessMatrix(int i
     Rot[2][0]=Rot[2][1]=0;
 
     computeStiffnessMatrix(JKJt,tmp,tetrahedronInf[idTetra].materialMatrix,tetrahedronInf[idTetra].strainDisplacementTransposedMatrix,Rot);
-
-
-//	std::cout<<"TetrahedralCorotationalFEMForceField<DataTypes>::  Element "<<idTetra <<"   ===STIFNESSMATRIX===="<<std::endl;
-//	for(int inode=0;inode<4;inode++)
-//	{
-//		for(int icomp=0;icomp<3;icomp++)
-//		{
-//			int imatrix=inode*3+icomp;
-//
-//			for(int jnode=0;jnode<4;jnode++)
-//			{
-//				std::cout<<"| ";
-//				for(int jcomp=0;jcomp<3;jcomp++)
-//				{
-//					   int jmatrix=jnode*3+jcomp;
-//					std::cout<<JKJt[imatrix][jmatrix]<<" ";
-//				}
-//			}
-//			std::cout<<" |"<<std::endl;
-//		}
-//		std::cout<<std::endl;
-//	}
-//
-//	//<<JKJt<<std::endl
-//	std::cout<<"==============================================================="<<std::endl;
-
 }
 
 } // namespace forcefield

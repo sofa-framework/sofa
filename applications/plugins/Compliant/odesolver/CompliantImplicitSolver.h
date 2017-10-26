@@ -11,8 +11,7 @@
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
 
-// TODO forward instead ?
-#include "../numericalsolver/KKTSolver.h"
+#include <Compliant/assembly/AssembledSystem.h>
 
 #include <sofa/helper/OptionsGroup.h>
 
@@ -34,6 +33,7 @@ namespace component {
 
 namespace linearsolver {
 class AssembledSystem;
+class KKTSolver;
 }
 
 
@@ -96,8 +96,8 @@ class SOFA_Compliant_API CompliantImplicitSolver : public sofa::core::behavior::
         SReal alpha;
         SReal beta;
         core::MechanicalParams _mparams;
-        const core::MultiVecCoordId& posId;
-        const core::MultiVecDerivId& velId;
+        core::MultiVecCoordId posId;
+        core::MultiVecDerivId velId;
 
         SolverOperations( const core::ExecParams* ep , sofa::core::objectmodel::BaseContext* ctx,
                           SReal a, SReal b, SReal dt,
@@ -147,6 +147,17 @@ class SOFA_Compliant_API CompliantImplicitSolver : public sofa::core::behavior::
             mop.mparams = mparams();
         }
 
+//        SolverOperations( const SolverOperations& sop )
+//            : vop(sop.vop)
+//            , mop(sop.mop)
+//            , ctx(sop.ctx)
+//            , alpha(sop.alpha)
+//            , beta(sop.beta)
+//            , _mparams(sop._mparams)
+//            , posId(sop.posId)
+//            ,velId(sop.velId)
+//        {}
+
         inline const core::MechanicalParams& mparams() const { return /*mop.*/_mparams; }
         inline       core::MechanicalParams& mparams()       { return /*mop.*/_mparams; }
 
@@ -160,6 +171,7 @@ class SOFA_Compliant_API CompliantImplicitSolver : public sofa::core::behavior::
     typedef linearsolver::AssembledSystem system_type;
 				
     virtual void init();
+    virtual void parse(core::objectmodel::BaseObjectDescription* arg);
 
     // OdeSolver API
     virtual void solve(const core::ExecParams* params,
@@ -177,7 +189,8 @@ class SOFA_Compliant_API CompliantImplicitSolver : public sofa::core::behavior::
     enum { NO_STABILIZATION=0, PRE_STABILIZATION, POST_STABILIZATION_RHS, POST_STABILIZATION_ASSEMBLY, NB_STABILIZATION };
     Data<helper::OptionsGroup> stabilization;
 
-    Data<bool> warm_start, propagate_lambdas, debug;
+    Data<bool> warm_start, debug;
+    Data<helper::OptionsGroup> constraint_forces;
     Data<SReal> alpha, beta;     ///< the \alpha and \beta parameters of the integration scheme
 	Data<SReal> stabilization_damping;
 
@@ -215,7 +228,7 @@ class SOFA_Compliant_API CompliantImplicitSolver : public sofa::core::behavior::
 	
 	// linear solver: TODO hide in pimpl ?
 	typedef linearsolver::KKTSolver kkt_type;
-	kkt_type::SPtr kkt;
+    core::sptr<kkt_type> kkt;
 
 
 
@@ -285,7 +298,6 @@ public:
     const system_type::rmat& P() const {return sys.P;}
     const system_type::rmat& J() const {return sys.J;}
     const system_type::rmat& C() const {return sys.C;}
-
     //@}
 
     /// compute post-stabilization correcting constraint in position-based

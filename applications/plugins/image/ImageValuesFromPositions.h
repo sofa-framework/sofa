@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -48,32 +45,34 @@ namespace engine
  */
 
 /// Default implementation does not compile
-template <int imageTypeLabel>
+template <class ImageType>
 struct ImageValuesFromPositionsSpecialization
 {
 };
 
+/// forward declaration
+template <class ImageType> class ImageValuesFromPositions;
+
 
 /// Specialization for regular Image
-template <>
-struct ImageValuesFromPositionsSpecialization<defaulttype::IMAGELABEL_IMAGE>
+template <class T>
+struct ImageValuesFromPositionsSpecialization<defaulttype::Image<T>>
 {
+    typedef ImageValuesFromPositions<defaulttype::Image<T>> ImageValuesFromPositionsT;
 
-    template<class ImageValuesFromPositions>
-    static void update(ImageValuesFromPositions& This)
+    static void update(ImageValuesFromPositionsT& This)
     {
-        typedef typename ImageValuesFromPositions::Real Real;
-        typedef typename ImageValuesFromPositions::Coord Coord;
-        typedef typename ImageValuesFromPositions::T T;
+        typedef typename ImageValuesFromPositionsT::Real Real;
+        typedef typename ImageValuesFromPositionsT::Coord Coord;
 
-        typename ImageValuesFromPositions::raTransform inT(This.transform);
-        typename ImageValuesFromPositions::raPositions pos(This.position);
+        typename ImageValuesFromPositionsT::raTransform inT(This.transform);
+        typename ImageValuesFromPositionsT::raPositions pos(This.position);
 
-        typename ImageValuesFromPositions::raImage in(This.image);
+        typename ImageValuesFromPositionsT::raImage in(This.image);
         if(in->isEmpty()) return;
         const cimg_library::CImg<T>& img = in->getCImg(This.time);
 
-        typename ImageValuesFromPositions::waValues val(This.values);
+        typename ImageValuesFromPositionsT::waValues val(This.values);
         Real outval=This.outValue.getValue();
         val.resize(pos.size());
 
@@ -123,8 +122,7 @@ struct ImageValuesFromPositionsSpecialization<defaulttype::IMAGELABEL_IMAGE>
 template <class _ImageTypes>
 class ImageValuesFromPositions : public core::DataEngine
 {
-    friend struct ImageValuesFromPositionsSpecialization<defaulttype::IMAGELABEL_IMAGE>;
-    friend struct ImageValuesFromPositionsSpecialization<defaulttype::IMAGELABEL_BRANCHINGIMAGE>;
+    friend struct ImageValuesFromPositionsSpecialization<_ImageTypes>;
 
 public:
     typedef core::DataEngine Inherited;
@@ -155,7 +153,7 @@ public:
     Data< Real > outValue;
 
 
-    virtual std::string getTemplateName() const    { return templateName(this);    }
+    virtual std::string getTemplateName() const    override { return templateName(this);    }
     static std::string templateName(const ImageValuesFromPositions<ImageTypes>* = NULL) { return ImageTypes::Name();    }
 
     ImageValuesFromPositions()    :   Inherited()
@@ -176,7 +174,7 @@ public:
         f_listening.setValue(true);
     }
 
-    virtual void init()
+    virtual void init() override
     {
         addInput(&image);
         addInput(&transform);
@@ -185,19 +183,19 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit() { update(); }
+    virtual void reinit() override { update(); }
 
 protected:
 
     unsigned int time;
 
-    virtual void update()
+    virtual void update() override
     {
-        ImageValuesFromPositionsSpecialization<ImageTypes::label>::update( *this );
+        ImageValuesFromPositionsSpecialization<ImageTypes>::update( *this );
         cleanDirty();
     }
 
-    void handleEvent(sofa::core::objectmodel::Event *event)
+    void handleEvent(sofa::core::objectmodel::Event *event) override
     {
         if (simulation::AnimateEndEvent::checkEventType(event))
         {

@@ -5,7 +5,7 @@
     <FreeMotionAnimationLoop />
     <GenericConstraintSolver tolerance="0.001" maxIterations="1000"/>
     <Node name="Beam1">
-        <EulerImplicit name="odesolver" printLog="false" />
+        <EulerImplicit name="odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <BTDLinearSolver printLog="false" verbose="false" />
         <MechanicalObject template="Rigid" name="DOFs1" position="0 0 0 0 0 0 1  1 0 0 0 0 0 1  2 0 0 0 0 0 1  3 0 0 0 0 0 1  4 0 0 0 0 0 1  5 0 0 0 0 0 1  6 0 0 0 0 0 1  7 0 0 0 0 0 1" />
         <Mesh name="lines" lines="0 1 1 2 2 3 3 4 4 5 5 6 6 7" />

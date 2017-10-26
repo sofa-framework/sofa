@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 project(SofaHelper)
 
 set(HEADER_FILES
@@ -22,6 +22,7 @@ set(HEADER_FILES
     MatEigen.h
     MemoryManager.h
     OptionsGroup.h
+    OwnershipSPtr.h
     StateMask.h
     Polynomial_LD.h
     Polynomial_LD.inl
@@ -38,15 +39,19 @@ set(HEADER_FILES
     accessor.h
     decompose.h
     decompose.inl
+    deprecatedcomponents.h
     deque.h
     fixed_array.h
+    hash.h
     gl/Trackball.h
     gl/Transformation.h
     helper.h
     init.h
     integer_id.h
+    io/BaseFileAccess.h
+    io/FileAccess.h
+    io/File.h
     io/Image.h
-    io/ImageBMP.h
     io/ImageDDS.h
     io/ImageRAW.h
     io/MassSpringLoader.h
@@ -68,6 +73,7 @@ set(HEADER_FILES
     list.h
     map.h
     map_ptr_stable_compare.h
+    pair.h
     polygon_cube_intersection/polygon_cube_intersection.h
     polygon_cube_intersection/vec.h
     proximity.h
@@ -76,7 +82,6 @@ set(HEADER_FILES
     set.h
     stable_vector.h
     system/DynamicLibrary.h
-    system/FileRepository.h
     system/FileSystem.h
     system/Locale.h
     system/PipeProcess.h
@@ -93,19 +98,27 @@ set(HEADER_FILES
     system/thread/CircularQueue.inl
     system/thread/debug.h
     system/thread/thread_specific_ptr.h
+    system/FileMonitor.h
+    system/FileRepository.h
     vector.h
     vectorData.h
     vectorLinks.h
     vector_algebra.h
     vector_device.h
+    types/RGBAColor.h
+    types/Material.h
     logging/Messaging.h
     logging/Message.h
+    logging/ComponentInfo.h
+    logging/FileInfo.h
     logging/MessageDispatcher.h
     logging/MessageHandler.h
     logging/ConsoleMessageHandler.h
     logging/SilentMessageHandler.h
     logging/FileMessageHandler.h
-#    logging/LoggerMessageHandler.h
+    logging/CountingMessageHandler.h
+    logging/LoggingMessageHandler.h
+    logging/RoutingMessageHandler.h
     logging/MessageHandler.h
     logging/MessageFormatter.h
     logging/ClangMessageHandler.h
@@ -126,6 +139,7 @@ set(SOURCE_FILES
     MarchingCubeUtility.cpp
     OptionsGroup.cpp
     StateMask.cpp
+    SVector.cpp
     Polynomial_LD.cpp
     Quater.cpp
     RandomGenerator.cpp
@@ -133,11 +147,14 @@ set(SOURCE_FILES
     UnitTest.cpp
     Utils.cpp
     decompose.cpp
+    deprecatedcomponents.cpp
     gl/Trackball.cpp
     gl/Transformation.cpp
     init.cpp
+    io/BaseFileAccess.cpp
+    io/FileAccess.cpp
+    io/File.cpp
     io/Image.cpp
-    io/ImageBMP.cpp
     io/ImageDDS.cpp
     io/ImageRAW.cpp
     io/MassSpringLoader.cpp
@@ -157,7 +174,6 @@ set(SOURCE_FILES
     polygon_cube_intersection/polygon_cube_intersection.cpp
     proximity.cpp
     system/DynamicLibrary.cpp
-    system/FileRepository.cpp
     system/FileSystem.cpp
     system/Locale.cpp
     system/PipeProcess.cpp
@@ -168,28 +184,49 @@ set(SOURCE_FILES
     system/thread/CTime.cpp
     system/thread/CircularQueue.cpp
     system/thread/debug.cpp
+    system/FileRepository.cpp
     vector.cpp
+    types/fixed_array.cpp
+    types/RGBAColor.cpp
+    types/Material.cpp
     logging/Message.cpp
     logging/MessageDispatcher.cpp
+    logging/ComponentInfo.cpp
     logging/ClangMessageHandler.cpp
     logging/ClangStyleMessageFormatter.cpp
     logging/DefaultStyleMessageFormatter.cpp
     logging/ConsoleMessageHandler.cpp
     logging/SilentMessageHandler.cpp
     logging/FileMessageHandler.cpp
-#    logging/LoggerMessageHandler.cpp
+    logging/CountingMessageHandler.cpp
+    logging/LoggingMessageHandler.cpp
+    logging/RoutingMessageHandler.cpp
     logging/ExceptionMessageHandler.cpp
 )
 
-if(SOFA_HAVE_PNG)
-    list(APPEND HEADER_FILES  io/ImagePNG.h)
-    list(APPEND SOURCE_FILES  io/ImagePNG.cpp)
+if(CMAKE_SYSTEM_NAME STREQUAL Linux)
+    list(APPEND SOURCE_FILES  system/FileMonitor_linux.cpp)
+endif()
+
+if(CMAKE_SYSTEM_NAME STREQUAL Darwin)
+    list(APPEND SOURCE_FILES  system/FileMonitor_macosx.cpp)
+endif()
+
+if(CMAKE_SYSTEM_NAME STREQUAL Windows)
+    list(APPEND SOURCE_FILES  system/FileMonitor_windows.cpp)
 endif()
 
 if(Boost_thread_FOUND)
     list(APPEND HEADER_FILES system/thread/TimeoutWatchdog.h)
     list(APPEND SOURCE_FILES system/thread/TimeoutWatchdog.cpp)
 endif()
+
+if(Boost_FILESYSTEM_FOUND AND Boost_LOCALE_FOUND)
+    list(APPEND HEADER_FILES system/FileRepository.h)
+    list(APPEND SOURCE_FILES system/FileRepository.cpp)
+endif()
+
+set(SHADER_FILES "")
 
 if(NOT SOFA_NO_OPENGL)
     list(APPEND HEADER_FILES
@@ -202,6 +239,8 @@ if(NOT SOFA_NO_OPENGL)
         system/glu.h
         gl/Axis.h
         gl/BasicShapes.h
+        gl/BasicShapesGL.h
+        gl/BasicShapesGL.inl
         gl/Cylinder.h
         gl/Texture.h
         gl/Trackball.h
@@ -211,6 +250,7 @@ if(NOT SOFA_NO_OPENGL)
     )
     list(APPEND SOURCE_FILES
         gl/Axis.cpp
+        gl/BasicShapesGL.cpp
         gl/Cylinder.cpp
         gl/glText.cpp
         gl/Capture.cpp
@@ -236,6 +276,9 @@ if(NOT SOFA_NO_OPENGL)
             gl/FrameBufferObject.cpp
             gl/GLSLShader.cpp
         )
+        list(APPEND SHADER_FILES
+            gl/shaders/generateSphere.cppglsl
+        )
     endif()
 
 endif()
@@ -255,7 +298,7 @@ if(PS3)
 endif()
 
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SHADER_FILES} ${SOURCE_FILES})
 if(WIN32)
     # Windows library, used in system::FileSystem
     target_link_libraries(${PROJECT_NAME} PRIVATE Shlwapi)
@@ -308,13 +351,18 @@ if(SOFA-EXTERNAL_FFMPEG)
                 endif()
 
 endif()
-target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAFRAMEWORK_DEPENDENCY_LINK})
+if(APPLE)
+    # on macOS, -framework CoreServices is needed for FileMonitor
+    list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK "-framework CoreServices")
+endif()
+target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAFRAMEWORK_DEPENDENCY_LINK} ${Boost_LIBRARIES})
+
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../..>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES}>")
+target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES}>")
 # For generated files, like sofa/config.h
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
-set(SOFAHELPER_COMPILE_FLAGS "-DSOFA_BUILD_HELPER -DUNICODE")
+set(SOFAHELPER_COMPILE_FLAGS "-DSOFA_BUILD_HELPER")
 if(${CMAKE_BUILD_TYPE} STREQUAL Debug)
     set(SOFAHELPER_COMPILE_FLAGS "${SOFAHELPER_COMPILE_FLAGS} -DSOFA_LIBSUFFIX=_d")
 endif()

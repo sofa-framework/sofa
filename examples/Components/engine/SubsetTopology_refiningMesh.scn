@@ -5,7 +5,7 @@
     <MinProximityIntersection name="Proximity" alarmDistance="3" contactDistance="2" />
     <DefaultContactManager name="Response" response="default" />
     <Node name="SquareGravity">
-        <EulerImplicitSolver name="cg_odesolver" />
+        <EulerImplicitSolver name="cg_odesolver"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
         <MeshGmshLoader name="meshLoader" filename="mesh/truthcylinder1.msh" />
         <SubsetTopology template="Vec3d" box="-5 -20 -5 5 -10 5" drawROI="0" src="@meshLoader" rest_position="@meshLoader.position" name="Subset" localIndices="1" />

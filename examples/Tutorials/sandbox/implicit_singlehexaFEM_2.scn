@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Node dt="0.02"  >
-	<EulerImplicitSolver />
+	<EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
 	<CGLinearSolver  iterations="25" tolerance="1e-5" threshold="1e-5"/>
         <VisualStyle displayFlags="showBehavior" />
 	<Node >

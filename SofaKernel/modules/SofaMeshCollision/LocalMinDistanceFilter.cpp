@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -105,31 +102,23 @@ void LocalMinDistanceFilter::invalidate()
     if(this->isRigid())
         return;         // If the object is rigid, the filters are pre-built
 
-    //std::cout<<"invalidate is called on Filter "<<this->getName()<<std::endl;
-    //std::cout<<"m_revision before : "<<m_revision;
-
     /// TODO: this does not do anything...
     //m_revision = m_revision++;
 
     if (m_revision >= std::numeric_limits< unsigned int >::max())
         m_revision=0;
 
-    //std::cout<<"  m_revision after: "<<m_revision<<std::endl;
 }
 
 bool InfoFilter::isValid(void)
 {
-//		std::cout<<"is Valid called"<<std::endl;
     assert(m_lmdFilters != 0);
-//		std::cout<<"m_revision= "<<m_revision<<std::endl;
     if (m_lmdFilters==NULL)
     {
-        std::cerr<<"WARNING pointer m_lmdFilters is null"<<std::endl;
+        msg_error("InfoFilter")<<"pointer m_lmdFilters is null";
         return false;
     }
 
-
-//		std::cout<<" m_lmdFilters->getRevision() "<<m_lmdFilters->getRevision()<<std::endl;
     return m_revision == m_lmdFilters->getRevision();
 }
 
@@ -145,15 +134,15 @@ void InfoFilter::setValid()
 template<>
 bool LocalMinDistanceFilters::validate(const Point &p, const defaulttype::Vector3 &PQ)
 {
-	PointInfoMap::iterator it = m_pointInfoMap.find(p.getIndex());
-	if (it != m_pointInfoMap.end())
-	{
-		return it->second->validate(p, PQ);
-	}
+    PointInfoMap::iterator it = m_pointInfoMap.find(p.getIndex());
+    if (it != m_pointInfoMap.end())
+    {
+        return it->second->validate(p, PQ);
+    }
 
-	std::pair< PointInfoMap::iterator, bool > ret = m_pointInfoMap.insert(std::make_pair(p.getIndex(), new PointInfo(this)));
+    std::pair< PointInfoMap::iterator, bool > ret = m_pointInfoMap.insert(std::make_pair(p.getIndex(), new PointInfo(this)));
 
-	return ret.first->second->validate(p, PQ);
+    return ret.first->second->validate(p, PQ);
 }
 
 
@@ -161,15 +150,15 @@ bool LocalMinDistanceFilters::validate(const Point &p, const defaulttype::Vector
 template<>
 bool LocalMinDistanceFilters::validate(const Line &l, const defaulttype::Vector3 &PQ)
 {
-	LineInfoMap::iterator it = m_lineInfoMap.find(l.getIndex());
-	if (it != m_lineInfoMap.end())
-	{
-		return it->second->validate(l, PQ);
-	}
+    LineInfoMap::iterator it = m_lineInfoMap.find(l.getIndex());
+    if (it != m_lineInfoMap.end())
+    {
+        return it->second->validate(l, PQ);
+    }
 
-	std::pair< LineInfoMap::iterator, bool > ret = m_lineInfoMap.insert(std::make_pair(l.getIndex(), new LineInfo(this)));
+    std::pair< LineInfoMap::iterator, bool > ret = m_lineInfoMap.insert(std::make_pair(l.getIndex(), new LineInfo(this)));
 
-	return ret.first->second->validate(l, PQ);
+    return ret.first->second->validate(l, PQ);
 }
 
 
@@ -177,15 +166,15 @@ bool LocalMinDistanceFilters::validate(const Line &l, const defaulttype::Vector3
 template<>
 bool LocalMinDistanceFilters::validate(const Triangle &t, const defaulttype::Vector3 &PQ)
 {
-	TriangleInfoMap::iterator it = m_triangleInfoMap.find(t.getIndex());
-	if (it != m_triangleInfoMap.end())
-	{
-		return it->second->validate(t, PQ);
-	}
+    TriangleInfoMap::iterator it = m_triangleInfoMap.find(t.getIndex());
+    if (it != m_triangleInfoMap.end())
+    {
+        return it->second->validate(t, PQ);
+    }
 
-	std::pair< TriangleInfoMap::iterator, bool > ret = m_triangleInfoMap.insert(std::make_pair(t.getIndex(), new TriangleInfo(this)));
+    std::pair< TriangleInfoMap::iterator, bool > ret = m_triangleInfoMap.insert(std::make_pair(t.getIndex(), new TriangleInfo(this)));
 
-	return ret.first->second->validate(t, PQ);
+    return ret.first->second->validate(t, PQ);
 }
 */
 

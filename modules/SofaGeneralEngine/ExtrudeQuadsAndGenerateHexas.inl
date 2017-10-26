@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -90,7 +87,7 @@ void ExtrudeQuadsAndGenerateHexas<DataTypes>::update()
 
     if (surfaceVertices.size() < 1 || surfaceQuads.size() < 1)
     {
-        std::cout << "WARNING: initial mesh does not contain vertices or quads... No extruded mesh will be generated" << std::endl;
+        msg_warning() << "initial mesh does not contain vertices or quads... No extruded mesh will be generated" ;
         return;
     }
 
@@ -135,16 +132,13 @@ void ExtrudeQuadsAndGenerateHexas<DataTypes>::update()
     // compute coordinates of extruded vertices (including initial vertices)
     for (unsigned int i=0; i<surfaceVertices.size(); i++)
     {
-        //  std::cout << "Extruded vertex coordinates: " << std::endl;
         for (int n=0; n<=f_numberOfSlices.getValue(); n++)
         {
             Real scale = (f_thicknessIn.getValue() + f_thicknessOut.getValue())/(Real)f_numberOfSlices.getValue();
             Coord disp = -normals[i].first * f_thicknessIn.getValue() + (normals[i].first * scale * (Real)n);
-            //std::cout << "[ " << surfaceVertices[i] + disp << "] ";
             Coord newVertexPos(surfaceVertices[i][0]*f_scale.getValue()[0], surfaceVertices[i][1]*f_scale.getValue()[1], surfaceVertices[i][2]*f_scale.getValue()[2]);
             extrudedVertices->push_back(newVertexPos + disp);
         }
-        //std::cout << std::endl;
     }
 
     // compute indices of newly created surface quads
@@ -152,7 +146,6 @@ void ExtrudeQuadsAndGenerateHexas<DataTypes>::update()
     {
         BaseMeshTopology::Quad quad = BaseMeshTopology::Quad(surfaceQuads[q][0]*(nSlices+1), surfaceQuads[q][1]*(nSlices+1), surfaceQuads[q][2]*(nSlices+1), surfaceQuads[q][3]*(nSlices+1));
         extrudedSurfaceQuads->push_back(quad);
-        // std::cout << "Surface Quads : " << quad << std::endl;
     }
 
     // compute indices of extruded quads (including initial quads)
@@ -196,11 +189,8 @@ void ExtrudeQuadsAndGenerateHexas<DataTypes>::update()
             BaseMeshTopology::Hexa hexa = BaseMeshTopology::Hexa(surfaceQuads[q][3]*(nSlices+1)+n,   surfaceQuads[q][2]*(nSlices+1)+n,   surfaceQuads[q][1]*(nSlices+1)+n,   surfaceQuads[q][0]*(nSlices+1)+n,
                     surfaceQuads[q][3]*(nSlices+1)+n+1, surfaceQuads[q][2]*(nSlices+1)+n+1, surfaceQuads[q][1]*(nSlices+1)+n+1, surfaceQuads[q][0]*(nSlices+1)+n+1);
             extrudedHexas->push_back(hexa);
-            //std::cout << "Extruded Hexas : " << hexa << std::endl;
         }
     }
-
-    // std::cout << "============= DONE ==========" << std::endl;
 
     f_extrudedHexas.endEdit();
     f_extrudedQuads.endEdit();

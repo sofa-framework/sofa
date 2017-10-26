@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -60,7 +57,7 @@ void kdTree<Coord>::build(const VecCoord& positions, const vector<unsigned int> 
 template<class Coord>
 void kdTree<Coord>::print(const unsigned int index)
 {
-    std::cout<<index<<"["<<(int)tree[index].splitdir<<"] "<<tree[index].left<<" "<<tree[index].right<<std::endl;
+    dmsg_info("KDTree") << index<<"["<<(int)tree[index].splitdir<<"] "<<tree[index].left<<" "<<tree[index].right ;
     if(tree[index].left!=index) print(tree[index].left);
     if(tree[index].right!=index) print(tree[index].right);
 }
@@ -99,7 +96,7 @@ unsigned int kdTree<Coord>::build(UIlist &list, unsigned char direction, const V
 
 
 template<class Coord>
-void kdTree<Coord>::closest(distanceSet &cl,const Coord &x, const unsigned int &currentnode, const VecCoord& positions)
+void kdTree<Coord>::closest(distanceSet &cl,const Coord &x, const unsigned int &currentnode, const VecCoord& positions, unsigned N) const
 // [zhang94] algorithm
 {
     Real Dmax;
@@ -118,14 +115,14 @@ void kdTree<Coord>::closest(distanceSet &cl,const Coord &x, const unsigned int &
             if(cl.size()>N) {it=cl.end(); it--; cl.erase(it);}
         }
     }
-    if(tree[currentnode].left!=currentnode)     if(c1-Dmax<c2)  closest(cl,x,tree[currentnode].left,positions);
-    if(tree[currentnode].right!=currentnode)    if(c2-Dmax<c1)  closest(cl,x,tree[currentnode].right,positions);
+    if(tree[currentnode].left!=currentnode)     if(c1-Dmax<c2)  closest(cl,x,tree[currentnode].left,positions,N);
+    if(tree[currentnode].right!=currentnode)    if(c2-Dmax<c1)  closest(cl,x,tree[currentnode].right,positions,N);
 }
 
 
 // slightly improved version of the above, for one point
 template<class Coord>
-void kdTree<Coord>::closest(distanceToPoint &cl,const Coord &x, const unsigned int &currentnode, const VecCoord& positions)
+void kdTree<Coord>::closest(distanceToPoint &cl,const Coord &x, const unsigned int &currentnode, const VecCoord& positions) const
 {
     Real Dmax=cl.first;
     unsigned int splitdir=tree[currentnode].splitdir;
@@ -147,15 +144,14 @@ void kdTree<Coord>::closest(distanceToPoint &cl,const Coord &x, const unsigned i
 
 
 template<class Coord>
-void kdTree<Coord>::getNClosest(distanceSet &cl, const Coord &x, const VecCoord& positions, const unsigned int n)
+void kdTree<Coord>::getNClosest(distanceSet &cl, const Coord &x, const VecCoord& positions, const unsigned int n) const
 {
-    N=n;
     cl.clear();
-    closest(cl,x,firstNode,positions);
+    closest(cl,x,firstNode,positions,n);
 }
 
 template<class Coord>
-unsigned int kdTree<Coord>::getClosest(const Coord &x, const VecCoord& positions)
+unsigned int kdTree<Coord>::getClosest(const Coord &x, const VecCoord& positions) const
 {
     distanceToPoint cl(std::numeric_limits<Real>::max(),firstNode);
     closest(cl,x,firstNode,positions);
@@ -163,7 +159,7 @@ unsigned int kdTree<Coord>::getClosest(const Coord &x, const VecCoord& positions
 }
 
 template<class Coord>
-bool kdTree<Coord>::getNClosestCached(distanceSet &cl,  distanceToPoint &cacheThresh_max, distanceToPoint &cacheThresh_min, Coord &previous_x, const Coord &x, const VecCoord& positions, const unsigned int n)
+bool kdTree<Coord>::getNClosestCached(distanceSet &cl,  distanceToPoint &cacheThresh_max, distanceToPoint &cacheThresh_min, Coord &previous_x, const Coord &x, const VecCoord& positions, const unsigned int n) const
 {
     Real dx=(previous_x-x).norm();
     if(dx>=cacheThresh_max.first || cl.size()<2)
@@ -176,7 +172,6 @@ bool kdTree<Coord>::getNClosestCached(distanceSet &cl,  distanceToPoint &cacheTh
         cacheThresh_min.first=((it1->first)-(it0->first))*(Real)0.5; // half distance between first and second closest points
         cacheThresh_min.second=it0->second;
         previous_x=x;
-//        std::cout<<"not in cache"<<std::endl;
         return false;
     }
     else if(dx>=cacheThresh_min.first) // in the cache -> update N-1 distances
@@ -188,7 +183,6 @@ bool kdTree<Coord>::getNClosestCached(distanceSet &cl,  distanceToPoint &cacheTh
             else
                 newset.insert(distanceToPoint(std::numeric_limits<Real>::max(),it->second));
         cl.swap(newset);
-//        std::cout<<"in cache:"<<std::endl;
         return true;
     }
     else // still the same closest point
@@ -200,7 +194,6 @@ bool kdTree<Coord>::getNClosestCached(distanceSet &cl,  distanceToPoint &cacheTh
             else
                 newset.insert(distanceToPoint(std::numeric_limits<Real>::max(),it->second));
         cl.swap(newset);
-//        std::cout<<"same"<<std::endl;
         return true;
     }
 }

@@ -1,9 +1,32 @@
+/******************************************************************************
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 
 #include <sofa/helper/system/FileSystem.h>
 #include <gtest/gtest.h>
 #include <exception>
 #include <algorithm>
 #include <SofaTest/TestMessageHandler.h>
+using sofa::helper::logging::Message;
+
 
 using sofa::helper::system::FileSystem;
 
@@ -21,6 +44,8 @@ static std::string getPath(std::string s) {
 
 TEST(FileSystemTest, listDirectory_nonEmpty)
 {
+    EXPECT_MSG_NOEMIT(Error) ;
+
     std::vector<std::string> fileList;
     FileSystem::listDirectory(getPath("non-empty-directory"), fileList);
     // Workaround: svn adds a '.svn' directory in each subdirectory
@@ -35,6 +60,8 @@ TEST(FileSystemTest, listDirectory_nonEmpty)
 
 TEST(FileSystemTest, listDirectory_nonEmpty_trailingSlash)
 {
+    EXPECT_MSG_NOEMIT(Error) ;
+
     std::vector<std::string> fileList;
     FileSystem::listDirectory(getPath("non-empty-directory/"), fileList);
     // Workaround: svn adds a '.svn' directory in each subdirectory
@@ -49,6 +76,8 @@ TEST(FileSystemTest, listDirectory_nonEmpty_trailingSlash)
 
 TEST(FileSystemTest, listDirectory_withExtension_multipleMatches)
 {
+    EXPECT_MSG_NOEMIT(Error) ;
+
     std::vector<std::string> fileList;
     FileSystem::listDirectory(getPath("non-empty-directory/"), fileList, "txt");
     EXPECT_EQ(fileList.size(), 2u);
@@ -58,6 +87,8 @@ TEST(FileSystemTest, listDirectory_withExtension_multipleMatches)
 
 TEST(FileSystemTest, listDirectory_withExtension_oneMatch)
 {
+    EXPECT_MSG_NOEMIT(Error) ;
+
     std::vector<std::string> fileList;
     FileSystem::listDirectory(getPath("non-empty-directory/"), fileList, "so");
     EXPECT_EQ(fileList.size(), 1u);
@@ -66,6 +97,8 @@ TEST(FileSystemTest, listDirectory_withExtension_oneMatch)
 
 TEST(FileSystemTest, listDirectory_withExtension_noMatch)
 {
+    EXPECT_MSG_NOEMIT(Error) ;
+
     std::vector<std::string> fileList;
     FileSystem::listDirectory(getPath("non-empty-directory/"), fileList, "h");
     EXPECT_TRUE(fileList.empty());
@@ -73,6 +106,8 @@ TEST(FileSystemTest, listDirectory_withExtension_noMatch)
 
 TEST(FileSystemTest, createDirectory)
 {
+    EXPECT_MSG_NOEMIT(Error) ;
+
     EXPECT_FALSE(FileSystem::createDirectory("createDirectoryTestDir"));
     EXPECT_TRUE(FileSystem::exists("createDirectoryTestDir"));
     EXPECT_TRUE(FileSystem::isDirectory("createDirectoryTestDir"));
@@ -82,18 +117,24 @@ TEST(FileSystemTest, createDirectory)
 
 TEST(FileSystemTest, createDirectory_alreadyExists)
 {
-    FileSystem::createDirectory("createDirectoryTestDir");
     {
-        // this test will raise an error on purpose
-        sofa::helper::logging::ScopedDeactivatedTestMessageHandler scopedDeactivatedTestMessageHandler;
+        EXPECT_MSG_NOEMIT(Error) ;
+        FileSystem::createDirectory("createDirectoryTestDir");
+    }
+    {
+        EXPECT_MSG_EMIT(Error) ;
         EXPECT_TRUE(FileSystem::createDirectory("createDirectoryTestDir"));
     }
-    // Cleanup
-    FileSystem::removeDirectory("createDirectoryTestDir");
+    {
+        EXPECT_MSG_NOEMIT(Error) ;
+        FileSystem::removeDirectory("createDirectoryTestDir");
+    }
 }
 
 TEST(FileSystemTest, removeDirectory)
 {
+    EXPECT_MSG_NOEMIT(Error) ;
+
     FileSystem::createDirectory("removeDirectoryTestDir");
     EXPECT_FALSE(FileSystem::removeDirectory("removeDirectoryTestDir"));
     EXPECT_FALSE(FileSystem::exists("removeDirectoryTestDir"));
@@ -103,10 +144,13 @@ TEST(FileSystemTest, removeDirectory_doesNotExists)
 {
     {
         // this test will raise an error on purpose
-        sofa::helper::logging::ScopedDeactivatedTestMessageHandler scopedDeactivatedTestMessageHandler;
+        EXPECT_MSG_EMIT(Error) ;
         EXPECT_TRUE(FileSystem::removeDirectory("removeDirectoryTestDir"));
     }
-    EXPECT_FALSE(FileSystem::exists("removeDirectoryTestDir"));
+    {
+        EXPECT_MSG_NOEMIT(Error) ;
+        EXPECT_FALSE(FileSystem::exists("removeDirectoryTestDir"));
+    }
 }
 
 TEST(FileSystemTest, exists_yes)

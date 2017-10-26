@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -549,7 +546,6 @@ void AttachConstraint<DataTypes>::projectPosition(const core::MechanicalParams *
     const bool lastFreeRotation = f_lastFreeRotation.getValue();
     const bool last = (f_lastDir.isSet() && f_lastDir.getValue().norm() > 1.0e-10);
     const bool clamp = f_clamp.getValue();
-    const bool log = this->f_printLog.getValue();
 
     VecCoord &res1 = *res1_d.beginEdit();
     VecCoord &res2 = *res2_d.beginEdit();
@@ -572,15 +568,13 @@ void AttachConstraint<DataTypes>::projectPosition(const core::MechanicalParams *
             {
                 if (clamp)
                 {
-                    if (activeFlags[i])
-                        sout << "AttachConstraint: point "<<indices1[i]<<" stopped."<<sendl;
-                    //DataTypes::set(p,f_lastPos.getValue()[0],f_lastPos.getValue()[1],f_lastPos.getValue()[2]);
-                    //p = f_lastPos.getValue();
+                    msg_info_when(activeFlags[i]) << "AttachConstraint: point "
+                                                  <<indices1[i]<<" stopped." ;
                 }
                 else
                 {
-                    if (activeFlags[i])
-                        sout << "AttachConstraint: point "<<indices1[i]<<" is free."<<sendl;
+                    msg_info_when(activeFlags[i]) << "AttachConstraint: point "
+                                                  <<indices1[i]<<" is free.";
                 }
                 active = false;
             }
@@ -592,8 +586,7 @@ void AttachConstraint<DataTypes>::projectPosition(const core::MechanicalParams *
         Coord p = res1[indices1[i]];
         if (activeFlags[i])
         {
-            if (log)
-                sout << "AttachConstraint: x2["<<indices2[i]<<"] = x1["<<indices1[i]<<"]"<<sendl;
+            msg_info() << "AttachConstraint: x2["<<indices2[i]<<"] = x1["<<indices1[i]<<"]";
 
             projectPosition(p, res2[indices2[i]], freeRotations || (lastFreeRotation && (i>=activeFlags.size() || !activeFlags[i+1])), i);
         }
@@ -601,8 +594,7 @@ void AttachConstraint<DataTypes>::projectPosition(const core::MechanicalParams *
         {
             DataTypes::set(p,f_lastPos.getValue()[0],f_lastPos.getValue()[1],f_lastPos.getValue()[2]);
 
-            if (log)
-                sout << "AttachConstraint: x2["<<indices2[i]<<"] = lastPos"<<sendl;
+            msg_info() << "AttachConstraint: x2["<<indices2[i]<<"] = lastPos";
 
             projectPosition(p, res2[indices2[i]], freeRotations, i);
         }
@@ -623,7 +615,6 @@ void AttachConstraint<DataTypes>::projectVelocity(const core::MechanicalParams *
     const bool freeRotations = f_freeRotations.getValue();
     const bool lastFreeRotation = f_lastFreeRotation.getValue();
     const bool clamp = f_clamp.getValue();
-    const bool log = this->f_printLog.getValue();
 
     for (unsigned int i=0; i<indices1.size() && i<indices2.size(); ++i)
     {
@@ -634,15 +625,13 @@ void AttachConstraint<DataTypes>::projectVelocity(const core::MechanicalParams *
 
         if (active)
         {
-            if (log)
-                sout << "AttachConstraint: v2["<<indices2[i]<<"] = v1["<<indices1[i]<<"]"<<sendl;
+            msg_info() << "AttachConstraint: v2["<<indices2[i]<<"] = v1["<<indices1[i]<<"]" ;
 
             projectVelocity(res1[indices1[i]], res2[indices2[i]], freeRotations || (lastFreeRotation && (i>=activeFlags.size() || !activeFlags[i+1])), i);
         }
         else if (clamp)
         {
-            if (log)
-                sout << "AttachConstraint: v2["<<indices2[i]<<"] = 0"<<sendl;
+            msg_info() << "AttachConstraint: v2["<<indices2[i]<<"] = 0" ;
 
             Deriv v = Deriv();
             projectVelocity(v, res2[indices2[i]], freeRotations, i);
@@ -665,7 +654,6 @@ void AttachConstraint<DataTypes>::projectResponse(const core::MechanicalParams *
     const bool freeRotations = f_freeRotations.getValue();
     const bool lastFreeRotation = f_lastFreeRotation.getValue();
     const bool clamp = f_clamp.getValue();
-    const bool log = this->f_printLog.getValue();
 
     for (unsigned int i=0; i<indices1.size() && i<indices2.size(); ++i)
     {
@@ -676,29 +664,24 @@ void AttachConstraint<DataTypes>::projectResponse(const core::MechanicalParams *
 
         if (active)
         {
-            if (log)
-            {
-                if (twoway)
-                    sout << "AttachConstraint: r2["<<indices2[i]<<"] = r1["<<indices2[i]<<"] = (r2["<<indices2[i]<<"] + r2["<<indices2[i]<<"])"<<sendl;
-                else
-                    sout << "AttachConstraint: r2["<<indices2[i]<<"] = 0"<<sendl;
+            if (twoway){
+                msg_info() << " r2["<<indices2[i]<<"] = r1["<<indices2[i]<<"] = (r2["<<indices2[i]<<"] + r2["<<indices2[i]<<"])";
+            }else{
+                msg_info() << " r2["<<indices2[i]<<"] = 0";
             }
 
             projectResponse(res1[indices1[i]], res2[indices2[i]], freeRotations || (lastFreeRotation && (i>=activeFlags.size() || !activeFlags[i+1])), twoway, i);
 
-            if (log)
-                sout << "AttachConstraint: final r2["<<indices2[i]<<"] = "<<res2[indices2[i]]<<""<<sendl;
+            msg_info() << " final r2["<<indices2[i]<<"] = "<<res2[indices2[i]]<<"";
         }
         else if (clamp)
         {
-            if (log)
-                sout << "AttachConstraint: r2["<<indices2[i]<<"] = 0"<<sendl;
+            msg_info() << " r2["<<indices2[i]<<"] = 0";
 
             Deriv v = Deriv();
             projectResponse(v, res2[indices2[i]], freeRotations, false, i);
 
-            if (log)
-                sout << "AttachConstraint: final r2["<<indices2[i]<<"] = "<<res2[indices2[i]]<<""<<sendl;
+            msg_info() << " final r2["<<indices2[i]<<"] = "<<res2[indices2[i]]<<"";
         }
     }
 
@@ -727,15 +710,13 @@ void AttachConstraint<DataTypes>::applyConstraint(const core::MechanicalParams *
     const unsigned int NCLast = DerivConstrainedSize(f_lastFreeRotation.getValue());
     unsigned int i=0;
     const bool clamp = f_clamp.getValue();
-    const bool log = this->f_printLog.getValue();
 
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it, ++i)
     {
         if (!clamp && i < activeFlags.size() && !activeFlags[i])
             continue;
 
-        if (log)
-            sout << "AttachConstraint: apply in matrix column/row "<<(*it)<<""<<sendl;
+        msg_info() << "AttachConstraint: apply in matrix column/row "<<(*it);
 
         if (NCLast != NC && (i>=activeFlags.size() || !activeFlags[i+1]))
         {
@@ -771,8 +752,7 @@ void AttachConstraint<DataTypes>::applyConstraint(const core::MechanicalParams *
 
     unsigned int offset = (unsigned int)o;
 
-    if (this->f_printLog.getValue())
-        sout << "applyConstraint in Vector with offset = " << offset << sendl;
+    msg_info() << "applyConstraint in Vector with offset = " << offset ;
 
     const SetIndexArray & indices = f_indices2.getValue();
     const unsigned int N = Deriv::size();

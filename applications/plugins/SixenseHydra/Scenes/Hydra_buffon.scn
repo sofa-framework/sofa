@@ -16,7 +16,7 @@
 	<RazerHydraDriver name="RazerHydraDriver"  listening="true" displayTools="false" scale="0.002" positionBase="0 0.2 -0.4" orientationBase="0.7071 0 0 0.7071" />
 	<!-- http://www.onlineconversion.com/quaternions.htm -->
 	
-	<EulerImplicit vdamping="2.0" />
+	<EulerImplicit vdamping="2.0"  rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGLinearSolver iterations="30"  tolerance="1e-6" threshold="1e-6" />
 	
 	<Node name="ControlledFist" >

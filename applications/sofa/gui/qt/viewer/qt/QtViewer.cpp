@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -13,11 +13,8 @@
 * more details.                                                               *
 *                                                                             *
 * You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* with this program. If not, see <http://www.gnu.org/licenses/>.              *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -48,8 +45,6 @@
 #include <sofa/helper/gl/glText.inl>
 #include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/gl/RAII.h>
-
-#include <sofa/helper/io/ImageBMP.h>
 
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/gui/ColourPickingVisitor.h>
@@ -130,13 +125,6 @@ QGLFormat QtViewer::setupGLFormat(const unsigned int nbMSAASamples)
     }
 
 //    int val = 0;
-
-//#ifdef __APPLE__
-//        std::cout << "QtViewer: disabling vertical refresh sync (Mac version)" << std::endl;
-//        const GLint swapInterval = 0;
-//        CGLSetParameter(CGLGetCurrentContext(), kCGLCPSwapInterval, &swapInterval);
-//        //std::cout << this->format().swapInterval() << std::endl;
-//#endif
 
 #if defined(QT_VERSION) && QT_VERSION >= 0x040200
     std::cout << "QtViewer: disabling vertical refresh sync" << std::endl;
@@ -279,7 +267,7 @@ void QtViewer::initializeGL(void)
 #ifdef SOFA_HAVE_GLEW
         glewInit();
         if (!GLEW_ARB_multitexture)
-            std::cerr << "Error: GL_ARB_multitexture not supported\n";
+            msg_error("QtViewer") << "GL_ARB_multitexture not supported.";
 #endif
 
         _clearBuffer = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
@@ -354,8 +342,6 @@ void QtViewer::initializeGL(void)
 
         //printf("GL initialized\n");
     }
-
-
 
     // switch to preset view
     resetView();
@@ -541,7 +527,7 @@ void QtViewer::DrawXYPlane(double zo, double xmin, double xmax, double ymin,
 void QtViewer::DrawYZPlane(double xo, double ymin, double ymax, double zmin,
         double zmax, double step)
 {
-    register double y, z;
+    double y, z;
     Enable<GL_DEPTH_TEST> depth;
 
     glBegin(GL_LINES);
@@ -569,7 +555,7 @@ void QtViewer::DrawYZPlane(double xo, double ymin, double ymax, double zmin,
 void QtViewer::DrawXZPlane(double yo, double xmin, double xmax, double zmin,
         double zmax, double step)
 {
-    register double x, z;
+    double x, z;
     Enable<GL_DEPTH_TEST> depth;
 
     glBegin(GL_LINES);
@@ -810,7 +796,7 @@ void QtViewer::drawScene(void)
 
     if(!currentCamera)
     {
-        std::cerr << "ERROR: no camera defined" << std::endl;
+        msg_error("QtViewer") << "No camera defined.";
         return;
     }
 
@@ -1065,12 +1051,12 @@ void QtViewer::calcProjection(int width, int height)
 
     GLdouble projectionMatrix[16];
     currentCamera->getOpenGLProjectionMatrix(projectionMatrix);
-    
-    glViewport(0, 0, width, height);
+
+    glViewport(0, 0, width * this->devicePixelRatio(), height * this->devicePixelRatio()); // to handle retina displays
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glMultMatrixd(projectionMatrix);
-    
+
     glMatrixMode(GL_MODELVIEW);
     glGetDoublev(GL_PROJECTION_MATRIX, lastProjectionMatrix);
 
@@ -1617,17 +1603,17 @@ void QtViewer::newView()
     SofaViewer::newView();
 }
 
-void QtViewer::getView(Vec3d& pos, Quat& ori) const
+void QtViewer::getView(Vector3& pos, Quat& ori) const
 {
     SofaViewer::getView(pos, ori);
 }
 
-void QtViewer::setView(const Vec3d& pos, const Quat &ori)
+void QtViewer::setView(const Vector3& pos, const Quat &ori)
 {
     SofaViewer::setView(pos, ori);
 }
 
-void QtViewer::moveView(const Vec3d& pos, const Quat &ori)
+void QtViewer::moveView(const Vector3& pos, const Quat &ori)
 {
     SofaViewer::moveView(pos, ori);
 }

@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -68,16 +65,16 @@ protected:
 
     virtual ~TriangleSetTopologyContainer() {}
 public:
-    virtual void init();
+    virtual void init() override;
 
-    virtual void reinit();
+    virtual void reinit() override;
 
 
     /// Procedural creation methods
     /// @{
-    virtual void clear();
-    virtual void addEdge( int, int ) {}
-    virtual void addTriangle( int a, int b, int c );
+    virtual void clear() override;
+    virtual void addEdge( int, int ) override {}
+    virtual void addTriangle( int a, int b, int c ) override;
     /// @}
 
 
@@ -86,7 +83,7 @@ public:
     /// @{
 
     /** \brief Returns the quad array. */
-    virtual const SeqTriangles& getTriangles()
+    virtual const SeqTriangles& getTriangles() override
     {
         return getTriangleArray();
     }
@@ -100,7 +97,7 @@ public:
      * @param ID of a triangle.
      * @return The corresponding triangle.
      */
-    virtual const Triangle getTriangle(TriangleID i);
+    virtual const Triangle getTriangle(TriangleID i) override;
 
 
     /* Returns the indices of a triangle given three vertex indices.
@@ -109,7 +106,7 @@ public:
      * @return the ID of the corresponding triangle.
      * @return -1 if none
      */
-    virtual int getTriangleIndex(PointID v1, PointID v2, PointID v3);
+    virtual int getTriangleIndex(PointID v1, PointID v2, PointID v3) override;
 
 
     /** \brief Returns the 3 edges adjacent to a given triangle.
@@ -117,7 +114,7 @@ public:
      * @param ID of a triangle.
      * @return EdgesInTriangle list composing the input triangle.
      */
-    virtual const EdgesInTriangle& getEdgesInTriangle(TriangleID i);
+    virtual const EdgesInTriangle& getEdgesInTriangle(TriangleID i) override;
 
 
     /** \brief Returns the set of triangles adjacent to a given vertex.
@@ -125,7 +122,7 @@ public:
      * @param ID of a vertex
      * @return TrianglesAroundVertex list around the input vertex
      */
-    virtual const TrianglesAroundVertex& getTrianglesAroundVertex(PointID i);
+    virtual const TrianglesAroundVertex& getTrianglesAroundVertex(PointID i) override;
 
 
     /** \brief Returns the set of triangles adjacent to a given edge.
@@ -133,7 +130,7 @@ public:
      * @param ID of an edge.
      * @return TrianglesAroundEdge list around the input edge.
      */
-    virtual const TrianglesAroundEdge& getTrianglesAroundEdge(EdgeID i);
+    virtual const TrianglesAroundEdge& getTrianglesAroundEdge(EdgeID i) override;
 
 
     /** \brief Returns the index (either 0, 1 ,2) of the vertex whose global index is vertexIndex.
@@ -143,7 +140,7 @@ public:
      * @return the position of this vertex in the triangle (i.e. either 0, 1, 2).
      * @return -1 if none.
      */
-    virtual int getVertexIndexInTriangle(const Triangle &t, PointID vertexIndex) const;
+    virtual int getVertexIndexInTriangle(const Triangle &t, PointID vertexIndex) const override;
 
     /** \brief Returns the index (either 0, 1 ,2) of the edge whose global index is edgeIndex.
      *
@@ -152,7 +149,7 @@ public:
      * @return the position of this edge in the triangle (i.e. either 0, 1, 2).
      * @return -1 if none.
      */
-    virtual int getEdgeIndexInTriangle(const EdgesInTriangle &t, EdgeID edgeIndex) const;
+    virtual int getEdgeIndexInTriangle(const EdgesInTriangle &t, EdgeID edgeIndex) const override;
 
     /// @}
 
@@ -170,7 +167,7 @@ public:
      * @see m_trianglesAroundVertex
      * @see m_trianglesAroundEdge
      */
-    virtual bool checkTopology() const;
+    virtual bool checkTopology() const override;
 
 
     /** \brief Returns the number of triangles in this topology.
@@ -181,7 +178,7 @@ public:
     /** \brief Returns the number of topological element of the current topology.
      * This function avoids to know which topological container is in used.
      */
-    virtual unsigned int getNumberOfElements() const;
+    virtual unsigned int getNumberOfElements() const override;
 
     /** \brief Returns the Triangle array. */
     const sofa::helper::vector<Triangle> &getTriangleArray();
@@ -202,19 +199,19 @@ public:
     /** \brief: Return a list of TriangleID which are on a border.
      * @see createElementsOnBorder()
      */
-    const sofa::helper::vector <TriangleID>& getTrianglesOnBorder();
+    const sofa::helper::vector <TriangleID>& getTrianglesOnBorder() override;
 
 
     /** \brief: Return a list of EdgeID which are on a border.
      * @see createElementsOnBorder()
      */
-    const sofa::helper::vector <EdgeID>& getEdgesOnBorder();
+    const sofa::helper::vector <EdgeID>& getEdgesOnBorder() override;
 
 
     /** \brief: Return a vector of PointID which are on a border.
      * @see createElementsOnBorder()
      */
-    const sofa::helper::vector <PointID>& getPointsOnBorder();
+    const sofa::helper::vector <PointID>& getPointsOnBorder() override;
 
 
     /// Get information about connexity of the mesh
@@ -223,18 +220,18 @@ public:
       *
       * @return true if only one connected component
       */
-    virtual bool checkConnexity();
+    virtual bool checkConnexity() override;
 
     /// Returns the number of connected component.
-    virtual unsigned int getNumberOfConnectedComponent();
+    virtual unsigned int getNumberOfConnectedComponent() override;
 
     /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
-    virtual const VecTriangleID getConnectedElement(TriangleID elem);
+    virtual const VecTriangleID getConnectedElement(TriangleID elem) override;
 
     /// Returns the set of element indices adjacent to a given element (i.e. sharing a link)
-    virtual const VecTriangleID getElementAroundElement(TriangleID elem);
+    virtual const VecTriangleID getElementAroundElement(TriangleID elem) override;
     /// Returns the set of element indices adjacent to a given list of elements (i.e. sharing a link)
-    virtual const VecTriangleID getElementAroundElements(VecTriangleID elems);
+    virtual const VecTriangleID getElementAroundElements(VecTriangleID elems) override;
     /// @}
 
     bool hasTriangles() const;
@@ -260,7 +257,7 @@ public:
     /// @}
 
     /// Will change order of vertices in triangle: t[1] <=> t[2]
-    void reOrientateTriangle(TriangleID id);
+    void reOrientateTriangle(TriangleID id) override;
 
 protected:
 
@@ -275,7 +272,7 @@ protected:
      *
      * Create the set of edges when needed.
      */
-    virtual void createEdgeSetArray();
+    virtual void createEdgeSetArray() override;
 
 
     /** \brief Creates the array of edge indices for each triangle.
@@ -332,7 +329,7 @@ protected:
 
 
     /// \brief Function creating the data graph linked to d_triangle
-    virtual void updateTopologyEngineGraph();
+    virtual void updateTopologyEngineGraph() override;
 
 
     /// Use a specific boolean @see m_triangleTopologyDirty in order to know if topology Data is dirty or not.
@@ -368,7 +365,7 @@ protected:
     bool m_triangleTopologyDirty;
 
     /// List of engines related to this specific container
-    sofa::helper::list <sofa::core::topology::TopologyEngine *> m_enginesList;
+    std::list<sofa::core::topology::TopologyEngine *> m_enginesList;
 
     /// \brief variables used to display the graph of Data/DataEngines linked to this Data array.
     sofa::helper::vector < sofa::helper::vector <std::string> > m_dataGraph;

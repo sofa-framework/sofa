@@ -1,0 +1,6 @@
+<?xml version='1.0'?>                                               
+<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   >         
+       <MakeDataAlias componentname='MechanicalObject' dataname='position' alias='myrest_position'/> 
+       <MechanicalObject name="position should be 1 2 3 " myrest_position='1 2 3'/>                                                 
+</Node>                                                             
+

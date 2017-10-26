@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -191,7 +188,6 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addForce(
 
     sofa::defaulttype::Quat Cq = vars.pos6D.getOrientation();
     sofa::defaulttype::Vec3d Cx = (Coord1) vars.pos6D.getCenter();
-    //std::cout << "Cx= " << Cx << "    Cq= " << Cq << std::endl;
     Deriv2 V6D = v2[object2_dof_index.getValue()];
     sofa::defaulttype::Vec3d Cv = (sofa::defaulttype::Vec3d) getVCenter(V6D);
     Cv.clear();
@@ -227,25 +223,25 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addForce(
             contacts->push_back(c);
             /*
             printf("\n contactForce : %f %f %f, bras_Levier : %f %f %f, f2 = %f %f %f - %f %f %f",
-            	contactForce.x(), contactForce.y(), contactForce.z(),
-            	c.bras_levier.x(), c.bras_levier.y(), c.bras_levier.z(),
-            	f2.getVCenter().x(), f2.getVCenter().y(), f2.getVCenter().z(),
-            	f2.getVOrientation().x(), f2.getVOrientation().y(), f2.getVOrientation().z());
+                contactForce.x(), contactForce.y(), contactForce.z(),
+                c.bras_levier.x(), c.bras_levier.y(), c.bras_levier.z(),
+                f2.getVCenter().x(), f2.getVCenter().y(), f2.getVCenter().z(),
+                f2.getVOrientation().x(), f2.getVOrientation().y(), f2.getVOrientation().z());
              */
 
         }
     }
     /*
     printf("\n f2 = %f %f %f - %f %f %f",
-    	f2.getVCenter().x(), f2.getVCenter().y(), f2.getVCenter().z(),
-    	f2.getVOrientation().x(), f2.getVOrientation().y(), f2.getVOrientation().z());
+        f2.getVCenter().x(), f2.getVCenter().y(), f2.getVCenter().z(),
+        f2.getVOrientation().x(), f2.getVOrientation().y(), f2.getVOrientation().z());
      */
     /*
     printf("\n verify addForce2 : ");
     addForce2(f1, f2, p1, p2, v1, v2);
     printf("\n f2 = %f %f %f - %f %f %f",
-    	f2.getVCenter().x(), f2.getVCenter().y(), f2.getVCenter().z(),
-    	f2.getVOrientation().x(), f2.getVOrientation().y(), f2.getVOrientation().z());
+        f2.getVCenter().x(), f2.getVCenter().y(), f2.getVCenter().z(),
+        f2.getVOrientation().x(), f2.getVOrientation().y(), f2.getVOrientation().z());
      */
 
     if (object2_forces.getValue())
@@ -391,7 +387,7 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::draw(const core::vi
 #ifdef SOFA_FLOAT
         GLfloat R[4][4];
 #elif PS3
-		double R[4][4];
+        double R[4][4];
 #else
         GLdouble R[4][4];
 #endif
@@ -404,10 +400,10 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::draw(const core::vi
             helper::gl::glTranslate(cx2, cy2, cz2);
             helper::gl::glMultMatrix( &(R[0][0]) );
         }
-		sofa::defaulttype::Vector3 center(cx1, cy1, cz1);
-		sofa::defaulttype::Vector3 radii(rx, ry, (stiffness.getValue()>0 ? rz : -rz));
-		
-		vparams->drawTool()->drawEllipsoid(center, radii);
+        sofa::defaulttype::Vector3 center(cx1, cy1, cz1);
+        sofa::defaulttype::Vector3 radii(rx, ry, (stiffness.getValue()>0 ? rz : -rz));
+
+        vparams->drawTool()->drawEllipsoid(center, radii);
 
         glTranslated(-cx2, -cy2, -cz2);
 

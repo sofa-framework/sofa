@@ -1,10 +1,10 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 project(Sofa)
 
-set(SOFA_KERNEL_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaKernel/" CACHE STRING "Path to SofaKernel")
+set(SOFA_KERNEL_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaKernel" CACHE STRING "Path to SofaKernel")
 
 if(NOT EXISTS ${SOFA_KERNEL_SOURCE_DIR}/framework)
-    set(SOFA_KERNEL_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaKernel/")
+    set(SOFA_KERNEL_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaKernel")
     if(NOT EXISTS ${SOFA_KERNEL_SOURCE_DIR}/framework)
         message( FATAL_ERROR "SofaKernel is not present or is inaccessible. Check if ${SOFA_KERNEL_SOURCE_DIR} exists or is accessible.")
     endif()
@@ -42,10 +42,19 @@ file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/cmake)
 # adding paths to disabled plugins.
 file(REMOVE_RECURSE ${CMAKE_BINARY_DIR}/etc/sofa/python.d)
 
+set(ARCHIVE_OUTPUT_DIRECTORY lib)
+set(RUNTIME_OUTPUT_DIRECTORY bin)
+
+if(WIN32)
+        set(LIBRARY_OUTPUT_DIRECTORY ${RUNTIME_OUTPUT_DIRECTORY})
+else()
+        set(LIBRARY_OUTPUT_DIRECTORY ${ARCHIVE_OUTPUT_DIRECTORY})
+endif()
+
 ## Set the output directories globally
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${ARCHIVE_OUTPUT_DIRECTORY})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${RUNTIME_OUTPUT_DIRECTORY})
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/${LIBRARY_OUTPUT_DIRECTORY})
 
 ## Environment
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
@@ -57,6 +66,13 @@ list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/extlibs)
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/applications/plugins)
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/applications/projects)
+
+# Create etc/sofa.ini: it contains the paths to share/ and examples/. In the
+# build directory, it points to the source tree,
+set(SHARE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/share")
+set(EXAMPLES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/examples")
+configure_file(${SOFA_KERNEL_SOURCE_DIR}/etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/sofa.ini")
+
 
 ## RPATH
 if(UNIX)
@@ -71,50 +87,17 @@ if(UNIX)
 
     if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
         set(CMAKE_MACOSX_RPATH ON)
-        
+
     endif()
 
 endif(UNIX)
 
 include(CompilerOptions)
 
-# C++11 Support
-#
-# Note for the future: CMake 3.1 has a CMAKE_CXX_STANDARD variable
-# that handles versions of the C++ standard...
-if(NOT WIN32)
-    option(SOFA_USE_C++11
-        "Use C++11 as a target language. Even though Sofa is written in C++98, it is
-        compatible with C++11. Targetting this standard allows you to benefit from
-        a more optimized STL."  OFF)
 
-    if(SOFA_USE_C++11)
-
-        if(CMAKE_COMPILER_IS_GNUCXX)
-
-            EXEC_PROGRAM(${CMAKE_CXX_COMPILER} ARGS ${CMAKE_CXX_COMPILER_ARG1} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
-
-            if(GCC_VERSION VERSION_GREATER 4.7 OR GCC_VERSION VERSION_EQUAL 4.7)
-                set(CXX11_FLAG "-std=c++11" CACHE STRING "c++11 compiler flag")
-            elseif(GCC_VERSION VERSION_GREATER 4.3 OR GCC_VERSION VERSION_EQUAL 4.3)
-                message(WARNING "c++0x activated. g++ compiler with a version >= 4.7 is needed to fully support c++11.")
-                set(CXX11_FLAG "-std=c++0x" CACHE STRING "c++11 compiler flag")
-            else ()
-                message("Warning: a g++ compiler with a version >= 4.3 is needed to support c++11.")
-            endif()
-
-        else() # not gcc -> clang?
-            # TODO detect clang versions ?
-            set(CXX11_FLAG "-std=c++11" CACHE STRING "c++11 compiler flag")
-        endif()
-
-    endif(SOFA_USE_C++11)
-
-endif(NOT WIN32)
-
-
-## Boost is now mandatory.
-find_package(Boost QUIET)
+## Boost (1.54.0 or higher) is now mandatory.
+set(BOOST_MIN_VERSION "1.54.0")
+find_package(Boost ${BOOST_MIN_VERSION} QUIET)
 if(NOT Boost_FOUND)
     message("Did not find a boost directory from Boost_LIBRARY_DIR and Boost_INCLUDE_DIR, will try to search one in possible directories")
     ## Try to find an installed boost.
@@ -125,11 +108,11 @@ if(NOT Boost_FOUND)
     ## TODO: Set an other hint from the PATH, as the user should set it with the binaries directory when he launches Sofa
     if(WIN32)
         #set roots
-        set(BOOST_TEST_ROOTS 
+        set(BOOST_TEST_ROOTS
             "C:" "D:" "E:" "F:" "G:" "H:"
             )
         #set credible subdirectories
-        set(BOOST_TEST_SUBDIRECTORIES 
+        set(BOOST_TEST_SUBDIRECTORIES
             "/" "/local" "/Dependencies" "/Program Files" "/Program Files (x86)"
             )
 
@@ -180,13 +163,14 @@ if(NOT Boost_FOUND)
     endif()
 endif()
 
-find_package(Boost REQUIRED)
+find_package(Boost ${BOOST_MIN_VERSION} REQUIRED)
 
 ### Dependency pack for Windows
 if(MSVC)
     #define BOOST_ALL_DYN_LINK needed for dynamic linking with boost libraries
     add_definitions(-DBOOST_ALL_DYN_LINK)
 
+    set(SOFA_DEPENDENCY_PACK_DIR "" CACHE PATH "sofa windows dependency pack path")
     if(SOFA_DEPENDENCY_PACK_DIR)
         set(DEPENDENCY_PACK_DIR "${SOFA_DEPENDENCY_PACK_DIR}")
     else()
@@ -211,47 +195,66 @@ if(MSVC)
     ## Copy DLLs to the build tree
     if(CMAKE_CONFIGURATION_TYPES) # Multi-config generator (MSVC)
         foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
-            file(COPY ${DLLS} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CONFIG}")
+            file(COPY ${DLLS} DESTINATION "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CONFIG}")
         endforeach()
     else()                      # Single-config generator (nmake)
-        file(COPY ${DLLS} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
+        file(COPY ${DLLS} DESTINATION "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
     endif()
     ## Install DLLs
-    install(FILES ${DLLS} DESTINATION bin)
-    install(FILES ${LIBS} DESTINATION lib)
+    install(FILES ${DLLS} DESTINATION ${LIBRARY_OUTPUT_DIRECTORY})
+    install(FILES ${LIBS} DESTINATION ${ARCHIVE_OUTPUT_DIRECTORY})
     install(DIRECTORY ${DEPENDENCY_PACK_DIR}/include/ DESTINATION include)
-
 endif()
 
-option(SOFA_INSTALL_RESOURCES_FILES "Copy resources files (etc/, share/, examples/) when installing" ON)
-if(SOFA_INSTALL_RESOURCES_FILES)
-    ## Install resource files
-    install(DIRECTORY share/ DESTINATION share/sofa)
-    install(DIRECTORY examples/ DESTINATION share/sofa/examples)
-    # Create etc/sofa.ini: it contains the paths to share/ and examples/. In the
-    # build directory, it points to the source tree, whereas in the install
-    # directory, it contains to relative paths to the installed resource directory.
-    set(SHARE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/share")
-    set(EXAMPLES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/examples")
-    configure_file(${SOFA_KERNEL_SOURCE_DIR}/etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/sofa.ini")
-    set(SHARE_DIR "../share/sofa")
-    set(EXAMPLES_DIR "../share/sofa/examples")
-    configure_file(${SOFA_KERNEL_SOURCE_DIR}/etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/installedSofa.ini")
-    install(FILES "${CMAKE_BINARY_DIR}/etc/installedSofa.ini" DESTINATION etc RENAME sofa.ini)
-endif()
-
-# Temporary (todo: think about this typedef thing)
-install(DIRECTORY modules/sofa/component/typedef/ DESTINATION include/sofa/component/typedef)
-
-
-### Extlibs
+### Mask
 option(SOFA_USE_MASK "Use mask optimization" ON)
-if(SOFA_USE_MASK)
-    add_definitions(-DSOFA_USE_MASK)
+
+### SOFA_DEV_TOOL
+option(SOFA_WITH_DEVTOOLS "Compile with developement extra features." ON)
+
+### SOFA_BUILD_PERIMETER
+### Sofa using type double or float or both
+set(SOFA_BUILD_COMPONENTSET full CACHE STRING
+"Compile SOFA with which set of components (core/full/deprecated)
+- 'core' for only the core components (only base classes)
+- 'light' for stable only component (a minimal set to make simulations)
+ - 'standard' for all non-deprecated components (DEFAULT)
+ - 'full' for standard set + deprecated components")
+set_property(CACHE SOFA_BUILD_COMPONENTSET PROPERTY STRINGS core light standard full)
+
+if(${SOFA_BUILD_COMPONENTSET} STREQUAL core)
+    message(STATUS "   Build SOFA with 'core' compenents set")
+    set(SOFA_BUILD_COMPONENTSET_LIGHT 0)
+    set(SOFA_BUILD_COMPONENTSET_STANDARD 0)
+    set(SOFA_BUILD_COMPONENTSET_FULL 0)
+    set(SOFAGUI_QQT 0)
+elseif(${SOFA_BUILD_COMPONENTSET} STREQUAL light)
+    message(STATUS "   Build SOFA with 'light' compenents set")
+    set(SOFA_BUILD_COMPONENTSET_LIGHT 1)
+    set(SOFA_BUILD_COMPONENTSET_STANDARD 0)
+    set(SOFA_BUILD_COMPONENTSET_FULL 0)
+    set(SOFAGUI_QQT 0)
+elseif(${SOFA_BUILD_COMPONENTSET} STREQUAL standard)
+    message(STATUS "   Build SOFA with 'standard' compenents set")
+    set(SOFA_BUILD_COMPONENTSET_LIGHT 1)
+    set(SOFA_BUILD_COMPONENTSET_STANDARD 1)
+    set(SOFA_BUILD_COMPONENTSET_FULL 0)
+elseif(${SOFA_BUILD_COMPONENTSET} STREQUAL full)
+    message(STATUS "   Build SOFA with 'full' compenents set (incuding deprecated components)")
+    set(SOFA_BUILD_COMPONENTSET_LIGHT 1)
+    set(SOFA_BUILD_COMPONENTSET_STANDARD 1)
+    set(SOFA_BUILD_COMPONENTSET_FULL 1)
+else()
+    message(STATUS "   Unrecognize option for components set. Possible ones are: core, light, standard and full")
 endif()
 
+### Threading
+option(SOFA_WITH_THREADING "Compile sofa with thread-safetiness support (PARTIAL/EXPERIMENTAL)" ON)
 
-### Extlibs
+### Experimental
+option(SOFA_WITH_EXPERIMENTAL_FEATURES "Compile sofa with exprimental features regarding sparse matrices treatments under mappings" OFF)
+
+### Testing
 option(SOFA_BUILD_TESTS "Compile the automatic tests for Sofa, along with the gtest library." ON)
 if(SOFA_BUILD_TESTS)
     # Enable testing features of cmake, like the add_test() command.
@@ -259,6 +262,41 @@ if(SOFA_BUILD_TESTS)
     add_subdirectory(extlibs/gtest)
 endif()
 
+### Ninja build pools
+option(SOFA_NINJA_BUILD_POOLS "Activate the Ninja build pools feature, to limit the cores used by specific targets" OFF)
+
+### Sofa using type double or float or both
+set(SOFA_FLOATING_POINT_TYPE both CACHE STRING
+"Type used for floating point values in SOFA. It actually determines:
+ - what template instanciations will be compiled (via the definition of the
+   SOFA_FLOAT and SOFA_DOUBLE macros)
+ - what is the type behind the 'SReal' typedef used throughout SOFA. (If 'both'
+   is selected, SReal defaults to double.)")
+set_property(CACHE SOFA_FLOATING_POINT_TYPE PROPERTY STRINGS float double both)
+
+if(${SOFA_FLOATING_POINT_TYPE} STREQUAL double)
+    set(SOFA_DOUBLE 1)          # Used in sofa/config.h.in
+elseif(${SOFA_FLOATING_POINT_TYPE} STREQUAL float)
+    set(SOFA_FLOAT 1)           # Used in sofa/config.h.in
+endif()
+
+# If you really don't understand the negated logics of SOFA_DOUBLE and
+# SOFA_FLOAT please consider using SOFA_WITH_FLOAT and SOFA_WITH_DOUBLE.
+# Eg: SOFA_WITH_FLOAT indicate that you need to generate the
+# float code and SOFA_WITH_DOUBLE indicates that you
+# nedd to generate the double related code.
+if(${SOFA_FLOATING_POINT_TYPE} STREQUAL float)
+    set(SOFA_WITH_FLOAT 1)
+endif()
+if(${SOFA_FLOATING_POINT_TYPE} STREQUAL double)
+    set(SOFA_WITH_DOUBLE 1)
+endif()
+if(${SOFA_FLOATING_POINT_TYPE} STREQUAL both)
+    set(SOFA_WITH_FLOAT 1)
+    set(SOFA_WITH_DOUBLE 1)
+endif()
+
+### Extlibs
 add_subdirectory(extlibs)
 
 
@@ -280,9 +318,25 @@ add_subdirectory(SofaGui)
 # SofaTest depends on SofaPython, so we add SofaPython before SofaTest.
 sofa_add_plugin( applications/plugins/SofaPython SofaPython )
 
-if(SOFA_BUILD_TESTS)
-    # Library used by SofaTest.
+## Scene creator option
+option(SOFA_BUILD_SCENECREATOR "Compile the C++ API located in applications/plugins/SceneCreator" OFF)
+
+## Tutorials option
+option(SOFA_BUILD_TUTORIALS "Build (most of) the tutorials available." OFF)
+
+
+# Activate SceneCreator when required
+if(SOFA_BUILD_TESTS OR SOFA_BUILD_TUTORIALS)
+    set(SOFA_BUILD_SCENECREATOR ON CACHE BOOL "" FORCE)
+endif()
+
+# Library used by SOFA_BUILD_TESTS and SOFA_BUILD_TUTORIALS
+if(SOFA_BUILD_SCENECREATOR)
     add_subdirectory(applications/plugins/SceneCreator SceneCreator)
+endif()
+
+# Tests : define subdirectories
+if(SOFA_BUILD_TESTS)
     # Library used to write high level tests involving many components.
     add_subdirectory(applications/plugins/SofaTest SofaTest)
     # Tests for all the modules, written using SofaTest.
@@ -303,8 +357,7 @@ add_subdirectory(applications/plugins)
 ## Applications
 add_subdirectory(applications/projects)
 
-## Tutorials
-option(SOFA_BUILD_TUTORIALS "Build (most of) the tutorials available." OFF)
+# Tutorial add subdirectory
 if(SOFA_BUILD_TUTORIALS)
     add_subdirectory(applications/tutorials)
 endif()
@@ -327,18 +380,37 @@ if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/custom.cmake")
 endif()
 
 
+# Install configuration:
 ## when installing, keep an eye on options/params/sources used for compilation
 ## this should be internal and not delivered, but this is definitively useful
 sofa_install_git_version( "sofa" ${CMAKE_CURRENT_SOURCE_DIR} )
 install(FILES "${CMAKE_BINARY_DIR}/CMakeCache.txt" DESTINATION .)
+install(FILES "${CMAKE_SOURCE_DIR}/README.md" DESTINATION .)
+install(FILES "${CMAKE_SOURCE_DIR}/CHANGELOG.md" DESTINATION .)
+install(FILES "${CMAKE_SOURCE_DIR}/LICENSE.LGPL.txt" DESTINATION .)
+install(FILES "${CMAKE_SOURCE_DIR}/Authors.txt" DESTINATION .)
+
+## Create etc/installedSofa.ini: it contains the paths to share/ and examples/. Compare to the Sofa.ini in the
+## build directory, this one contains relative paths to the installed resource directory.
+set(SHARE_DIR "../share/sofa")
+set(EXAMPLES_DIR "../share/sofa/examples")
+configure_file(${SOFA_KERNEL_SOURCE_DIR}/etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/installedSofa.ini")
+install(FILES "${CMAKE_BINARY_DIR}/etc/installedSofa.ini" DESTINATION etc RENAME sofa.ini)
+
+
+option(SOFA_INSTALL_RESOURCES_FILES "Copy resources files (etc/, share/, examples/) when installing" ON)
+## Install resource files
+if(SOFA_INSTALL_RESOURCES_FILES)
+    install(DIRECTORY share/ DESTINATION share/sofa)
+    install(DIRECTORY examples/ DESTINATION share/sofa/examples)	
+endif()
+
 
 #CPack install
-SET(CPACK_PACKAGE_VERSION "15.12.0")
-SET(CPACK_PACKAGE_VERSION_MAJOR "15")
-SET(CPACK_PACKAGE_VERSION_MINOR "12")
+SET(CPACK_PACKAGE_VERSION "17.dev.0")
+SET(CPACK_PACKAGE_VERSION_MAJOR "17")
+SET(CPACK_PACKAGE_VERSION_MINOR "dev")
 SET(CPACK_PACKAGE_VERSION_PATCH "0")
-SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENCE.txt")
-SET(CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/README.md")
 
 #dirty hack to pack component we want (named BundlePack from runSofa for example, and that will install .app + share)
 #if not set, it will install everything as usual
@@ -350,5 +422,3 @@ if(TEMP_CPACK_COMPONENTS_ALL)
 endif()
 
 INCLUDE(CPack)
-
-

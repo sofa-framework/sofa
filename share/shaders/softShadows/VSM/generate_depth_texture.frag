@@ -1,8 +1,8 @@
 #version 120
 
-uniform float shadowBias; 
-uniform float zFar;
-uniform float zNear;
+uniform float u_shadowBias; 
+uniform float u_zFar;
+uniform float u_zNear;
 
 varying vec4 lightVec;
 
@@ -25,10 +25,11 @@ vec2 ComputeMoments(float depth)
 
 void main()
 {
-	float depthSqr = dot(lightVec, lightVec) + shadowBias;
+	float depthSqr = dot(lightVec, lightVec) + u_shadowBias;
 	float depth = sqrt(depthSqr);
 	//depth = m_depth;
-	depth = (depth - zNear)/(zFar - zNear);
+	depth = (depth - u_zNear)/(u_zFar - u_zNear); // make it between znear and zfar and linear
+    
 	vec4 moments = vec4(0.0,0.0,0.0,0.0);
 	moments.xy = ComputeMoments(depth);
 	gl_FragColor = moments;

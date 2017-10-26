@@ -1,35 +1,35 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/helper/system/config.h>
 #include <sofa/helper/LCPcalc.h>
 #include <sofa/helper/AdvancedTimer.h>
+#include <sofa/helper/logging/Messaging.h>
 #include <vector>
 #include <algorithm>
 #include <functional>
 #include <iostream>
 #include <fstream>
 #include <cstring>
+#include <iomanip>
 
 namespace sofa
 {
@@ -44,46 +44,6 @@ LCP::LCP() : maxConst(0), tol(0.00001), numItMax(1000), useInitialF(true), mu(0.
 {
 
 }
-/*
-LCP& LCP::operator=(LCP& lcp)
-{
-	if(this == &lcp) return *this; //self assignment
-
-	if(maxConst != lcp.maxConst)
-	{
-		maxConst = lcp.maxConst;
-
-		delete [] dfree;
-		for (unsigned int i = 0; i < maxConst; i++)
-		{
-			delete [] W[i];
-		}
-		delete [] W;
-
-		W = new double*[maxConst];
-		for (unsigned int i = 0; i < maxConst; i++)
-		{
-			W[i] = new double[maxConst];
-		}
-		dfree = new double[maxConst];
-		f = new double[2 * maxConst + 1];
-	}
-
-	dim = lcp.dim;
-	mu = lcp.mu;
-	tol = lcp.tol;
-	numItMax = lcp.numItMax;
-	useInitialF = lcp.useInitialF;
-        dim = lcp.dim;
-
-	for (unsigned int i = 0; i < maxConst; i++)
-		memcpy(W[i], lcp.W[i], maxConst * sizeof(double));
-	memcpy(dfree, lcp.dfree, maxConst * sizeof(double));
-	memcpy(f, lcp.f, maxConst * sizeof(double));
-
-	return *this;
-}
-*/
 
 LCP::~LCP()
 {
@@ -317,10 +277,10 @@ int resoudreLCP(int dim, double * q, double ** M, double * res)
 
     /*printf("mat = [");
     for(compteur=0;compteur<dim;compteur++) {
-    	for(compteur2=0;compteur2<2*dim+1;compteur2++) {
-    		printf("\t%.2f",mat[compteur][compteur2]);
-    	}
-    	printf("\n");
+        for(compteur2=0;compteur2<2*dim+1;compteur2++) {
+            printf("\t%.2f",mat[compteur][compteur2]);
+        }
+        printf("\n");
     }
     printf("      ]\n\n");*/
 
@@ -498,590 +458,6 @@ void afficheSyst(double *q,double **M, int *base, double **mat, int dim)
     printf("      ]\n\n");
 }
 
-/* Siconos-Numerics version 1.2.0, Copyright INRIA 2005-2006.
- * Siconos is a program dedicated to modeling, simulation and control
- * of non smooth dynamical systems.
- * Siconos is a free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- * Siconos is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Siconos; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
- *
- * Contact: Vincent ACARY vincent.acary@inrialpes.fr
-*/
-
-/* from: lcp_lexicolemke.c
- *
- * The lcp_lexicolemke subroutine allows the resolution of LCP (Linear Complementary Problem).\n
- * Try \f$(z,w)\f$ such that:\n
- * \f$
- *  \left\lbrace
- *   \begin{array}{l}
- *    w - M z = q\\
- *    0 \le z \perp w \ge 0\\
- *   \end{array}
- *  \right.
- * \f$
- *
- * where M is an (\f$nn \times nn\f$)-matrix, q , w and z nn-vectors.
- */
-
-
-/*!\fn  void lcp_lexicolemke( int *nn , double *vec , double *q , double *zlem , double *wlem , int *info , int *iparamLCP , double *dparamLCP )
-
-  lcp_lexicolemke is a direct solver for LCP based on pivoting method principle for degenrate problem.\n
-  Choice of pivot variable is performed via lexicographic ordering
-  Ref: "The Linear Complementary Problem" Cottle, Pang, Stone (1992)\n
-
-
-  \param nn      On enter, an integer which represents the dimension of the system.
-  \param vec     On enter, a (\f$nn\times nn\f$)-vector of doubles which contains the components of the matrix with a fortran storage.
-  \param q       On enter, a nn-vector of doubles which contains the components of the right hand side vector.
-  \param zlem    On return, a nn-vector of doubles which contains the solution of the problem.
-  \param wlem    On return, a nn-vector of doubles which contains the solution of the problem.
-  \param info    On return, an integer which returns the termination value:\n
-                 0 : convergence\n
-                 1 : iter = itermax\n
-                 2 : negative diagonal term\n
-
-  \param iparamLCP  On enter/return, a vetor of integers:\n
-                 - iparamLCP[0] = itermax On enter, the maximum number of pivots allowed.
-                 - iparamLCP[1] = ispeak  On enter, the output log identifiant:\n
-                        0 : no output\n
-                        >0: active screen output\n
-                 - iparamLCP[2] = it_end  On return, the number of pivots performed by the algorithm.
-
-  \param dparamLCP  On enter/return, a vetor of doubles (not used).\n
-
-
-
-  \author Mathieu Renouf
-
- */
-//void lcp_lexicolemke( int *nn , double *vec , double *q , double *zlem , double *wlem , int *info , int *iparamLCP , double *dparamLCP ){
-//void lcp_lexicolemke( int dim , double *vec , double *q , double *zlem )
-
-int lcp_lexicolemke(int dim, double * q, double ** M, double * res)
-{
-
-    int i,Ifound;
-    int ic,jc;
-    int dim2,ITER;
-    int itermax/*,ispeak*/;
-
-    double qs,z0;
-    int *basis;
-    static double** A;
-    //static int dimTest=0;
-
-    dim2 = 2*(dim+1);
-
-    /*input*/
-
-    itermax = dim2;
-    //ispeak  = 0;
-
-    /*output*/
-
-
-    basis = (int *)malloc( dim*sizeof(int) );
-
-    /* Allocation */
-    A = (double **)malloc( dim*sizeof(double*) );
-    for( ic = 0 ; ic < dim; ++ic )
-        A[ic] = (double *)malloc( dim2*sizeof(double) );
-
-    for( ic = 0 ; ic < dim; ++ic )
-        for( jc = 0 ; jc < dim2; ++jc )
-            A[ic][jc] = 0.0;
-
-    /* construction of A matrix such as
-     * A = [ q | Id | -d | -M ] with d = (1,...1)
-     */
-
-    for( ic = 0 ; ic < dim; ++ic )
-        for( jc = 0 ; jc < dim; ++jc )
-            A[ic][jc+dim+2] = -M[ic][jc];
-
-    for( ic = 0 ; ic < dim; ++ic ) A[ic][0] = q[ic];
-
-    for( ic = 0 ; ic < dim; ++ic ) A[ic][ic+1 ] =  1.0;
-    for( ic = 0 ; ic < dim; ++ic ) A[ic][dim+1] = -1.0;
-
-    /* End of construction of A */
-
-    /* STEP 0
-     * qs = min{ q[i], i=1,...,NC }
-     */
-
-    qs = q[0];
-
-    for( ic = 1 ; ic < dim ; ++ic )
-    {
-        if( q[ic] < qs ) qs = q[ic];
-    }
-
-    Ifound = 0;
-
-    ITER=0;
-    if( qs >= 0 )
-    {
-
-        /* TRIVIAL CASE
-         * z = 0 and w = q is solution of LCP(q,M)
-         */
-
-        for( ic = 0 ; ic < dim; ++ic )
-        {
-            res[ic] = 0.0;
-            //wlem[ic] = q[ic];
-//            z0 = 0.0;
-        }
-
-        Ifound=1;
-
-    }
-    else
-    {
-
-        for( ic = 0 ; ic < dim  ; ++ic ) basis[ic]=ic+1;
-
-        int drive = dim+1;
-        int block = 0;
-        z0 = A[block][0];
-        double zb,dblock,tmp;
-
-
-        /* Start research of argmin lexico */
-        /* With this first step the covering vector enter in the basis */
-
-        for( ic = 1 ; ic < dim ; ++ic )
-        {
-            zb = A[ic][0];
-            if( zb < z0 )
-            {
-                z0    = zb;
-                block = ic;
-            }
-            else if( zb == z0 )
-            {
-                for( jc = 0 ; jc < dim ; ++jc )
-                {
-                    dblock = A[block][1+jc] - A[ic][1+jc];
-                    if( dblock < 0 )
-                    {
-                        break;
-                    }
-                    else if( dblock > 0 )
-                    {
-                        block = ic;
-                        break;
-                    }
-                }
-            }
-        }
-
-        /* Stop research of argmin lexico */
-
-        double pivot = A[block][drive];
-        double tovip = 1.0/pivot;
-
-        /* Pivot < block , drive > */
-
-        A[block][drive] = 1;
-        for( ic = 0       ; ic < drive ; ++ic ) A[block][ic] = A[block][ic]*tovip;
-        for( ic = drive+1 ; ic < dim2  ; ++ic ) A[block][ic] = A[block][ic]*tovip;
-
-        /* */
-
-        for( ic = 0 ; ic < block ; ++ic )
-        {
-            tmp = A[ic][drive];
-            for( jc = 0 ; jc < dim2 ; ++jc ) A[ic][jc] -=  tmp*A[block][jc];
-        }
-        for( ic = block+1 ; ic < dim ; ++ic )
-        {
-            tmp = A[ic][drive];
-            for( jc = 0 ; jc < dim2 ; ++jc ) A[ic][jc] -=  tmp*A[block][jc];
-        }
-
-        int nobasis = basis[block];
-        basis[block] = drive;
-
-        while( ITER < itermax && !Ifound )
-        {
-
-            ++ITER;
-
-            if( nobasis < dim + 1 )      drive = nobasis + (dim+1);
-            else if( nobasis > dim + 1 ) drive = nobasis - (dim+1);
-
-            /* Start research of argmin lexico for minimum ratio test */
-
-            pivot = 1e20;
-            block = -1;
-
-            for( ic = 0 ; ic < dim ; ++ic )
-            {
-                zb = A[ic][drive];
-                if( zb > 0.0 )
-                {
-                    z0 = A[ic][0]/zb;
-                    if( z0 > pivot ) continue;
-                    if( z0 < pivot )
-                    {
-                        pivot = z0;
-                        block = ic;
-                    }
-                    else
-                    {
-                        for( jc = 1 ; jc < dim+1 ; ++jc )
-                        {
-                            dblock = A[block][jc]/pivot - A[ic][jc]/zb;
-                            if( dblock < 0 ) break;
-                            else if( dblock > 0 )
-                            {
-                                block = ic;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            if( block == -1 ) break;
-
-            if( basis[block] == dim+1 ) Ifound = 1;
-
-            /* Pivot < block , drive > */
-
-            pivot = A[block][drive];
-            tovip = 1.0/pivot;
-            A[block][drive] = 1;
-
-            for( ic = 0       ; ic < drive ; ++ic ) A[block][ic] = A[block][ic]*tovip;
-            for( ic = drive+1 ; ic < dim2  ; ++ic ) A[block][ic] = A[block][ic]*tovip;
-
-            /* */
-
-            for( ic = 0 ; ic < block ; ++ic )
-            {
-                tmp = A[ic][drive];
-                for( jc = 0 ; jc < dim2 ; ++jc ) A[ic][jc] -=  tmp*A[block][jc];
-            }
-            for( ic = block+1 ; ic < dim ; ++ic )
-            {
-                tmp = A[ic][drive];
-                for( jc = 0 ; jc < dim2 ; ++jc ) A[ic][jc] -=  tmp*A[block][jc];
-            }
-
-            nobasis = basis[block];
-            basis[block] = drive;
-
-        }
-
-        for( ic = 0 ; ic < dim; ++ic )
-        {
-            drive = basis[ic];
-            if( drive < dim + 1 )
-            {
-                res[drive-1] = 0.0;
-                //wlem[drive-1] = A[ic][0];
-            }
-            else if( drive > dim + 1 )
-            {
-                res[drive-dim-2] = A[ic][0];
-                //wlem[drive-dim-2] = 0.0;
-            }
-        }
-
-    }
-
-
-
-//  if(Ifound) *info = 0;
-// else *info = 1;
-
-    free(basis);
-
-
-    for( i = 0 ; i < dim ; ++i ) free(A[i]);
-    free(A);
-
-
-
-    // for compatibility with previous LCP solver
-    for( i = 0 ; i < dim ; ++i )
-        res[i+dim] = res[i];
-
-
-    if (Ifound) return 1;
-
-    printf("\n Problem with this LCP :\n");
-    afficheLCP(q,M,dim);
-    return 0;
-
-}
-
-/******************************** WITHOUT ALLOCATION of A ************************************/
-int lcp_lexicolemke(int dim, double * q, double ** M, double **A, double * res)
-{
-
-    int i,Ifound;
-    int ic,jc;
-    int dim2,ITER;
-    int itermax/*,ispeak*/;
-
-    double qs,z0;
-    int *basis;
-
-    dim2 = 2*(dim+1);
-
-    /*input*/
-
-    itermax = dim2;
-    //ispeak  = 0;
-
-    /*output*/
-
-    basis = (int *)malloc( dim*sizeof(int) );
-
-    for( ic = 0 ; ic < dim; ++ic )
-        for( jc = 0 ; jc < dim2; ++jc )
-            A[ic][jc] = 0.0;
-
-    /* construction of A matrix such as
-     * A = [ q | Id | -d | -M ] with d = (1,...1)
-     */
-
-    for( ic = 0 ; ic < dim; ++ic )
-        for( jc = 0 ; jc < dim; ++jc )
-            A[ic][jc+dim+2] = -M[ic][jc];
-
-    for( ic = 0 ; ic < dim; ++ic ) A[ic][0] = q[ic];
-
-    for( ic = 0 ; ic < dim; ++ic ) A[ic][ic+1 ] =  1.0;
-    for( ic = 0 ; ic < dim; ++ic ) A[ic][dim+1] = -1.0;
-
-    /* End of construction of A */
-
-    /* STEP 0
-     * qs = min{ q[i], i=1,...,NC }
-     */
-
-    qs = q[0];
-
-    for( ic = 1 ; ic < dim ; ++ic )
-    {
-        if( q[ic] < qs ) qs = q[ic];
-    }
-
-    Ifound = 0;
-
-    ITER=0;
-    if( qs >= 0 )
-    {
-
-        /* TRIVIAL CASE
-         * z = 0 and w = q is solution of LCP(q,M)
-         */
-
-        for( ic = 0 ; ic < dim; ++ic )
-        {
-            res[ic] = 0.0;
-            //wlem[ic] = q[ic];
-//            z0 = 0.0;
-        }
-
-        Ifound=1;
-
-    }
-    else
-    {
-
-        for( ic = 0 ; ic < dim  ; ++ic ) basis[ic]=ic+1;
-
-        int drive = dim+1;
-        int block = 0;
-        z0 = A[block][0];
-        double zb, dblock, tmp;
-
-
-        /* Start research of argmin lexico */
-        /* With this first step the covering vector enter in the basis */
-
-        for( ic = 1 ; ic < dim ; ++ic )
-        {
-            zb = A[ic][0];
-            if( zb < z0 )
-            {
-                z0    = zb;
-                block = ic;
-            }
-            else if( zb == z0 )
-            {
-                for( jc = 0 ; jc < dim ; ++jc )
-                {
-                    dblock = A[block][1+jc] - A[ic][1+jc];
-                    if( dblock < 0 )
-                    {
-                        break;
-                    }
-                    else if( dblock > 0 )
-                    {
-                        block = ic;
-                        break;
-                    }
-                }
-            }
-        }
-
-        /* Stop research of argmin lexico */
-
-        double pivot = A[block][drive];
-        double tovip = 1.0/pivot;
-
-        /* Pivot < block , drive > */
-
-        A[block][drive] = 1;
-        for( ic = 0       ; ic < drive ; ++ic ) A[block][ic] = A[block][ic]*tovip;
-        for( ic = drive+1 ; ic < dim2  ; ++ic ) A[block][ic] = A[block][ic]*tovip;
-
-        /* */
-
-        for( ic = 0 ; ic < block ; ++ic )
-        {
-            tmp = A[ic][drive];
-            for( jc = 0 ; jc < dim2 ; ++jc ) A[ic][jc] -=  tmp*A[block][jc];
-        }
-        for( ic = block+1 ; ic < dim ; ++ic )
-        {
-            tmp = A[ic][drive];
-            for( jc = 0 ; jc < dim2 ; ++jc ) A[ic][jc] -=  tmp*A[block][jc];
-        }
-
-        int nobasis = basis[block];
-        basis[block] = drive;
-
-        while( ITER < itermax && !Ifound )
-        {
-
-            ++ITER;
-
-            if( nobasis < dim + 1 )      drive = nobasis + (dim+1);
-            else if( nobasis > dim + 1 ) drive = nobasis - (dim+1);
-
-            /* Start research of argmin lexico for minimum ratio test */
-
-            pivot = 1e20;
-            block = -1;
-
-            for( ic = 0 ; ic < dim ; ++ic )
-            {
-                zb = A[ic][drive];
-                if( zb > 0.0 )
-                {
-                    z0 = A[ic][0]/zb;
-                    if( z0 > pivot ) continue;
-                    if( z0 < pivot )
-                    {
-                        pivot = z0;
-                        block = ic;
-                    }
-                    else
-                    {
-                        for( jc = 1 ; jc < dim+1 ; ++jc )
-                        {
-                            dblock = A[block][jc]/pivot - A[ic][jc]/zb;
-                            if( dblock < 0 ) break;
-                            else if( dblock > 0 )
-                            {
-                                block = ic;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-            if( block == -1 ) break;
-
-            if( basis[block] == dim+1 ) Ifound = 1;
-
-            /* Pivot < block , drive > */
-
-            pivot = A[block][drive];
-            tovip = 1.0/pivot;
-            A[block][drive] = 1;
-
-            for( ic = 0       ; ic < drive ; ++ic ) A[block][ic] = A[block][ic]*tovip;
-            for( ic = drive+1 ; ic < dim2  ; ++ic ) A[block][ic] = A[block][ic]*tovip;
-
-            /* */
-
-            for( ic = 0 ; ic < block ; ++ic )
-            {
-                tmp = A[ic][drive];
-                for( jc = 0 ; jc < dim2 ; ++jc ) A[ic][jc] -=  tmp*A[block][jc];
-            }
-            for( ic = block+1 ; ic < dim ; ++ic )
-            {
-                tmp = A[ic][drive];
-                for( jc = 0 ; jc < dim2 ; ++jc ) A[ic][jc] -=  tmp*A[block][jc];
-            }
-
-            nobasis = basis[block];
-            basis[block] = drive;
-
-        }
-
-        for( ic = 0 ; ic < dim; ++ic )
-        {
-            drive = basis[ic];
-            if( drive < dim + 1 )
-            {
-                res[drive-1] = 0.0;
-                //wlem[drive-1] = A[ic][0];
-            }
-            else if( drive > dim + 1 )
-            {
-                res[drive-dim-2] = A[ic][0];
-                //wlem[drive-dim-2] = 0.0;
-            }
-        }
-
-    }
-
-
-
-//  if(Ifound) *info = 0;
-// else *info = 1;
-
-    free(basis);
-
-    /*
-    for( i = 0 ; i < dim ; ++i ) free(A[i]);
-    free(A);
-    */
-
-
-    // for compatibility with previous LCP solver
-    for( i = 0 ; i < dim ; ++i )
-        res[i+dim] = res[i];
-
-
-    if (Ifound) return 1;
-
-    printf("\n Problem with this LCP :\n");
-//  afficheLCP(q,M,dim);
-    return 0;
-
-}
 /********************************************************************************************/
 void afficheLCP(double *q, double **M, int dim)
 {
@@ -1142,16 +518,16 @@ void afficheLCP(double *q, double **M, double *f, int dim)
 }
 
 
-void afficheResult(double *f, int dim)
+void resultToString(ostream& s, double *f, int dim)
 {
     int compteur;
-    // affichage de f
-    printf("f = [");
+    s << std::fixed << std::setw( 11 ) << std::setprecision( 9 ) ;
+    s << "f = [" ;
     for(compteur=0; compteur<dim; compteur++)
     {
-        printf("\t%.9f\n",f[compteur]);
+        s << f[compteur];
     }
-    printf("      ];\n\n");
+    s << "      ]"  ;
 }
 
 /********************************************************************************************/
@@ -1182,7 +558,7 @@ void LocalBlock33::stickState(double &dn, double &dt, double &ds, double &fn, do
 void LocalBlock33::slipState(double &mu, double &dn, double &dt, double &ds, double &fn, double &ft, double &fs)
 {
     double d[3];
-    
+
     for (int iteration=0; iteration<10000; iteration++)
     {
         // we set the previous value of the force
@@ -1438,11 +814,13 @@ struct listSortAscending
 void projection(LCP &fineLevel, LCP &coarseLevel, int nbContactsCoarse, const std::vector<int> &projectionTable, const std::vector<int> &projectionConstraints, std::vector<double> & projectionValues, std::vector<bool> &contact_is_projected, bool verbose)
 
 {
+    SOFA_UNUSED(verbose) ;
     // preliminary step: set values to 0
 
     if (3*nbContactsCoarse > (int) coarseLevel.getMaxConst())
     {
-        std::cerr<<"ERROR : allocation pb for the coarseLevel. size needed : "<<3*nbContactsCoarse<<" - size allocated : "<<coarseLevel.getMaxConst()<<std::endl;
+        msg_error("LCPcalc")<<"allocation pb for the coarseLevel. size needed : "<<3*nbContactsCoarse
+                           <<" - size allocated : "<<coarseLevel.getMaxConst();
         return;
     }
 
@@ -1490,9 +868,7 @@ void projection(LCP &fineLevel, LCP &coarseLevel, int nbContactsCoarse, const st
         else
             contact_is_projected[c1]= false;
 
-        //   std::cout<<"contact "<<c1<<" is in group "<< projectionTable[c1]<<std::endl;
     }
-
 
     // STEP2
     // For group with no active contact, the closest to the contact one is chosen
@@ -1500,7 +876,7 @@ void projection(LCP &fineLevel, LCP &coarseLevel, int nbContactsCoarse, const st
     {
         if (!group_has_projection[g])
         {
-            std::cout<<"WARNING ! NO PROJECTION FOR GROUP "<<g<<" projection of the closest contact"<<std::endl;
+            dmsg_error("LCPcalc") <<"NO PROJECTION FOR GROUP "<<g<<" projection of the closest contact" ;
 
             double dmin = 0.0;
             int projected_contact=-1;
@@ -1521,7 +897,7 @@ void projection(LCP &fineLevel, LCP &coarseLevel, int nbContactsCoarse, const st
             }
             else
             {
-                std::cerr<<"ERROR in nlcp_multiGrid: no projection found for group" << g << std::endl;
+                dmsg_error("LCPcalc")<<"in nlcp_multiGrid: no projection found for group" << g ;
                 return;
             }
 
@@ -1572,15 +948,6 @@ void projection(LCP &fineLevel, LCP &coarseLevel, int nbContactsCoarse, const st
             }
         }
     }
-
-    if(verbose)
-    {
-        //std::cout<<"LCP at the COARSE LEVEL: "<<std::endl;
-        //afficheLCP(coarseLevel.getDfree(), coarseLevel.getW(), coarseLevel.getF(), nbContactsCoarse*3);
-    }
-
-
-
 }
 
 /// prolongation function
@@ -1588,14 +955,14 @@ void projection(LCP &fineLevel, LCP &coarseLevel, int nbContactsCoarse, const st
 /// output=> change value of F in fineLevel
 
 void prolongation(LCP &fineLevel, LCP &coarseLevel, const std::vector<int> &projectionTable, const std::vector<int> &projectionConstraints, std::vector<double> & projectionValues, std::vector<bool> &contact_is_projected, bool verbose)
-
 {
+    SOFA_UNUSED(verbose) ;
 
     int numContactsFine = fineLevel.getDim()/3;
 
     if (numContactsFine != (int)contact_is_projected.size() || numContactsFine != (int)projectionTable.size() )
     {
-        std::cerr<<"WARNING in prolongation: problem with the size of tables "<<std::endl;
+        msg_info("LCPcalc")<<"WARNING in prolongation: problem with the size of tables ";
     }
 
     // STEP 4: PROLONGATION DU RESULTAT AU NIVEAU FIN
@@ -1618,12 +985,6 @@ void prolongation(LCP &fineLevel, LCP &coarseLevel, const std::vector<int> &proj
             }
         }
     }
-
-    if(verbose)
-    {
-        // std::cout<<"projection at the finer LEVEL: "<<std::endl;
-        // afficheResult(  fineLevel.getF(), fineLevel.getDim());
-    }
 }
 
 /// new multigrid resolution of a problem with projection & prolongation
@@ -1642,9 +1003,6 @@ int nlcp_multiGrid_2levels(int dim, double *dfree, double**W, double *f, double 
     if (!useInitialF)
         memset(fineLevel->getF(), 0, dim*sizeof(double));
 
-
-
-
     // iterations at the fine Level (no test of convergence)
     bool convergenceTest= false;
     fineLevel->setNumItMax(0);
@@ -1653,11 +1011,12 @@ int nlcp_multiGrid_2levels(int dim, double *dfree, double**W, double *f, double 
 
     // projection step & construction of the coarse LCP
     LCP *coarseLevel = new LCP();
+
     if(verbose)
-        std::cout<<"allocation of size"<<num_group<<" at coarse level"<<std::endl;
+        msg_info("LCPcalc") <<"allocation of size"<<num_group<<" at coarse level" ;
+
     coarseLevel->allocate(3*num_group); // allocation of the memory for the coarse LCP
     coarseLevel->setDim(3*num_group);
-
 
     std::vector<bool> contact_is_projected;
     projection((*fineLevel), (*coarseLevel), num_group, contact_group, constraint_group, constraint_group_fact, contact_is_projected, verbose);
@@ -1671,8 +1030,10 @@ int nlcp_multiGrid_2levels(int dim, double *dfree, double**W, double *f, double 
 
     if(verbose)
     {
-        std::cout<<"after  "<<coarseLevel->it<<" iteration(s) to solve NLCP at the coarse level: (dim = "<< coarseLevel->getDim()<<") "<<std::endl;
-        afficheResult(  coarseLevel->getF(), coarseLevel->getDim());
+        std::stringstream tmp;
+        tmp << "after  "<<coarseLevel->it<<" iteration(s) to solve NLCP at the coarse level: (dim = "<< coarseLevel->getDim()<<") " << msgendl;
+        resultToString(tmp, coarseLevel->getF(), coarseLevel->getDim());
+        msg_info("LCPcalc") << tmp.str() ;
     }
 
     // prolongation (interpolation) at the fine level
@@ -1686,8 +1047,10 @@ int nlcp_multiGrid_2levels(int dim, double *dfree, double**W, double *f, double 
     if (residuals1 && residuals2) while (residuals2->size() < residuals1->size()) residuals2->push_back(pow(10.0,0.0));
     if(verbose)
     {
-        std::cout<<"after  "<<fineLevel->it<<" iteration(s) to solve NLCP at the fine Level : (dim = "<< fineLevel->getDim()<<")  error ="<<fineLevel->error<<std::endl;
-        afficheResult(  fineLevel->getF(), fineLevel->getDim());
+        std::stringstream tmp;
+        tmp<< "after  "<<fineLevel->it<<" iteration(s) to solve NLCP at the fine Level : (dim = "<< fineLevel->getDim()<<")  error ="<<fineLevel->error<< msgendl;
+        resultToString(tmp, fineLevel->getF(), fineLevel->getDim());
+        dmsg_info("LCPcalc") << tmp.str() ;
     }
 
     return 1;
@@ -1701,17 +1064,17 @@ int nlcp_multiGrid_Nlevels(int dim, double *dfree, double**W, double *f, double 
     std::size_t num_hierarchies = Tab_num_group.size();
     if (num_hierarchies != contact_group_hierarchy.size())
     {
-        std::cerr<<" ERRROR in nlcp_multiGrid_Nlevels size of Tab_num_group must be equal to size of contact_group_hierarchy"<<std::endl;
+        dmsg_info("LCPcalc")<<" in nlcp_multiGrid_Nlevels size of Tab_num_group must be equal to size of contact_group_hierarchy";
         return 0;
     }
     if (num_hierarchies != constraint_group_hierarchy.size())
     {
-        std::cerr<<" ERRROR in nlcp_multiGrid_Nlevels size of Tab_num_group must be equal to size of constraint_group_hierarchy"<<std::endl;
+        dmsg_info("LCPcalc")<<" in nlcp_multiGrid_Nlevels size of Tab_num_group must be equal to size of constraint_group_hierarchy";
         return 0;
     }
     if (num_hierarchies != constraint_group_fact_hierarchy.size())
     {
-        std::cerr<<" ERRROR in nlcp_multiGrid_Nlevels size of Tab_num_group must be equal to size of constraint_group_fact_hierarchy"<<std::endl;
+        dmsg_info("LCPcalc")<<" in nlcp_multiGrid_Nlevels size of Tab_num_group must be equal to size of constraint_group_fact_hierarchy";
         return 0;
     }
 
@@ -1745,13 +1108,13 @@ int nlcp_multiGrid_Nlevels(int dim, double *dfree, double**W, double *f, double 
 
         // projection step & construction of the coarse LCP
         hierarchicalLevels[h+1] = new LCP();
-        if(verbose)
-            std::cout<<"Hierarchical level "<<h<<": allocation of size"<<Tab_num_group[h]<<" at coarse level"<<std::endl;
+
+        dmsg_info_when(verbose, "LCPCalc") << "Hierarchical level "<<h<<": allocation of size"<<Tab_num_group[h]<<" at coarse level" ;
+
         hierarchicalLevels[h+1]->allocate(3*Tab_num_group[h]); // allocation of the memory for the coarse LCP
         hierarchicalLevels[h+1]->setDim(3*Tab_num_group[h]);
 
         // call to projection function
-
         projection((*hierarchicalLevels[h]), (*hierarchicalLevels[h+1]), Tab_num_group[h], contact_group_hierarchy[h], constraint_group_hierarchy[h], constraint_group_fact_hierarchy[h], contact_is_projected[h], verbose);
     }
 
@@ -1769,8 +1132,10 @@ int nlcp_multiGrid_Nlevels(int dim, double *dfree, double**W, double *f, double 
 
     if(verbose)
     {
-        std::cout<<"after  "<<hierarchicalLevels[num_hierarchies]->it<<" iteration(s) to solve NLCP at the level "<<num_hierarchies<<" : (dim = "<< hierarchicalLevels[num_hierarchies]->getDim()<<") "<<std::endl;
-        afficheResult(  hierarchicalLevels[num_hierarchies]->getF(), hierarchicalLevels[num_hierarchies]->getDim());
+        std::stringstream tmp;
+        tmp<<"after  "<<hierarchicalLevels[num_hierarchies]->it<<" iteration(s) to solve NLCP at the level "<<num_hierarchies<<" : (dim = "<< hierarchicalLevels[num_hierarchies]->getDim()<<") "<<std::endl;
+        resultToString( tmp, hierarchicalLevels[num_hierarchies]->getF(), hierarchicalLevels[num_hierarchies]->getDim());
+        dmsg_info("LCPcalc") << tmp.str();
     }
 
     for(std::size_t idx = 1 ; idx<=num_hierarchies; idx++)
@@ -1782,7 +1147,6 @@ int nlcp_multiGrid_Nlevels(int dim, double *dfree, double**W, double *f, double 
         // iterations at the fine level (till convergence)
         convergenceTest = true;
         hierarchicalLevels[h]->setNumItMax(numItMax);
-        //hierarchicalLevels[h]->setTol(tol);
         hierarchicalLevels[h]->setTol((tol * (dim/3+1))/(hierarchicalLevels[h]->getDim()/3+1));
         hierarchicalLevels[h]->solveNLCP(convergenceTest, residualsN, violations);
         if (residualsN && residualLevels)
@@ -1791,8 +1155,10 @@ int nlcp_multiGrid_Nlevels(int dim, double *dfree, double**W, double *f, double 
 
         if(verbose)
         {
-            std::cout<<"after  "<<hierarchicalLevels[h]->it<<" iteration(s) to solve NLCP at the Level "<<h<<" : (dim = "<< hierarchicalLevels[h]->getDim()<<")  error ="<<hierarchicalLevels[h]->error<<std::endl;
-            afficheResult(  hierarchicalLevels[h]->getF(), hierarchicalLevels[h]->getDim());
+            std::stringstream tmp;
+            tmp <<"after  "<<hierarchicalLevels[h]->it<<" iteration(s) to solve NLCP at the Level "<<h<<" : (dim = "<< hierarchicalLevels[h]->getDim()<<")  error ="<<hierarchicalLevels[h]->error<<std::endl;
+            resultToString(tmp,  hierarchicalLevels[h]->getF(), hierarchicalLevels[h]->getDim());
+            dmsg_info("LCPcalc") << tmp.str() ;
         }
     }
 
@@ -1806,9 +1172,7 @@ int nlcp_multiGrid_Nlevels(int dim, double *dfree, double**W, double *f, double 
 int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, double tol, int numItMax, bool useInitialF,
         double** W_coarse, std::vector< int> &contact_group, unsigned int num_group, bool verbose)
 {
-
-
-    std::cerr<<"entering nlcp_multiGrid fct"<<std::endl;
+    msg_info("LCPcalc")<<"entering nlcp_multiGrid fct";
 
     double test = dim/3;
     double zero = 0.0;
@@ -1817,7 +1181,7 @@ int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, doub
 
     if (test>0.01)
     {
-        printf("\n WARNING dim should be dividable by 3 in nlcp_gaussseidel");
+        dmsg_warning("dim should be dividable by 3 in nlcp_gaussseidel") ;
         return 0;
     }
 
@@ -1832,14 +1196,11 @@ int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, doub
     if (!useInitialF)
         memset(f, 0, dim*sizeof(double));
 
-    std::cerr<<"step 1 allocation ok"<<std::endl;
+    dmsg_info("LCPcalc")<<"step 1 allocation ok";
 
     // previous value of the force and the displacment
     double f_1[3];
     double d_1[3];
-
-
-
 
     ////////////////////////////////
     // allocation du système grossier
@@ -1849,13 +1210,12 @@ int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, doub
     double *F_coarse_1, *F_coarse;
     double *d_coarse;
 
-
     // W_coarse = (double **) malloc (3*num_group * sizeof(double*));
     d_free_coarse= (double*) malloc (3*num_group * sizeof(double));
     F_coarse_1 = (double*) malloc (3*num_group * sizeof(double));
     F_coarse= (double*) malloc (3*num_group * sizeof(double));
     d_coarse= (double*) malloc (3*num_group * sizeof(double));
-    std::cerr<<"step 2 allocation ok"<<std::endl;
+    dmsg_info("LCPcalc")<<"step 2 allocation ok";
 
     for (unsigned int g=0;  g<3*num_group ; g++)
     {
@@ -1869,7 +1229,7 @@ int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, doub
     memset(d_coarse, 0, 3*num_group*sizeof(double));
     if(verbose)
     {
-        std::cout<<"allocation ok"<<std::endl;
+        dmsg_info("LCPcalc") << "allocation ok" ;
     }
     ////////////////////////////////
     /////////// CALCUL EN V /////////
@@ -1927,7 +1287,7 @@ int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, doub
 
     if(verbose)
     {
-        std::cout<<"initial steps at the finest level "<<std::endl;
+        dmsg_info("LCPcalc") <<"initial steps at the finest level " ;
         afficheLCP(dfree, W, f, dim);
     }
 
@@ -1964,18 +1324,17 @@ int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, doub
         }
         else
             contact_is_projected[c1]= false;
-
-        //      std::cout<<"contact "<<c1<<" is in group "<< contact_group[c1]<<std::endl;
     }
-    std::cout<<"STEP 2, d = "<<std::endl;
-    afficheResult(d,dim);
-
+    std::stringstream tmp ;
+    tmp <<"STEP 2, d = "<< msgendl ;
+    resultToString(tmp, d,dim);
+    dmsg_info("LCPcalc") << tmp.str() ;
 
     for (unsigned int g=0;  g<num_group ; g++)
     {
         if (!group_has_projection[g])
         {
-            std::cout<<"WARNING ! NO PROJECTION FOR GROUP "<<g<<" projection of the closest contact"<<std::endl;
+            dmsg_warning("LCPcalc")<<"NO PROJECTION FOR GROUP "<<g<<" projection of the closest contact";
 
             double dmin = 9.9e99;
             int projected_contact=-1;
@@ -1988,8 +1347,7 @@ int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, doub
                     contact_is_projected[c1]= true;
                 }
                 if(contact_group[c1]==7)
-                    std::cout<<"dmin > d["<<3*c1<<"] (=" << d[3*c1] << ")"<<std::endl;
-
+                    dmsg_info("LCPcalc")<<"dmin > d["<<3*c1<<"] (=" << d[3*c1] << ")" ;
             }
             if (projected_contact >=0)
             {
@@ -1999,7 +1357,7 @@ int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, doub
             }
             else
             {
-                std::cerr<<"ERROR in nlcp_multiGrid: no projection found for group" << g << std::endl;
+                msg_error("LCPcalc")<<"in nlcp_multiGrid: no projection found for group" << g;
                 free(d_free_coarse);
                 free(F_coarse_1);
                 free(F_coarse);
@@ -2008,7 +1366,7 @@ int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, doub
                 for (int i = 0; i < numContacts; i++)
                     delete W33[i];
                 free(W33);
-                
+
                 return 0;
             }
 
@@ -2059,7 +1417,7 @@ int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, doub
 
     if(verbose)
     {
-        std::cout<<"LCP at the COARSE LEVEL: "<<std::endl;
+        dmsg_info("LCPcalc")<< "LCP at the COARSE LEVEL: " ;
         afficheLCP(d_free_coarse, W_coarse, F_coarse,num_group*3);
     }
 
@@ -2144,8 +1502,10 @@ int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, doub
 
     if(verbose)
     {
-        std::cout<<"Result at the COARSE LEVEL: "<<std::endl;
-        afficheResult( F_coarse,num_group*3);
+        std::stringstream tmp;
+        tmp << "Result at the COARSE LEVEL: " << msgendl;
+        resultToString(tmp, F_coarse,num_group*3);
+        dmsg_info("LCPcalc") << tmp.str() ;
     }
 
 
@@ -2168,8 +1528,10 @@ int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, doub
 
     if(verbose)
     {
-        std::cout<<"projection at the finer LEVEL: "<<std::endl;
-        afficheResult( f,dim);
+        std::stringstream tmp;
+        tmp << "projection at the finer LEVEL: " << msgendl ;
+        resultToString(tmp, f,dim);
+        dmsg_info("LCPcalc") << tmp.str() ;
     }
 
 
@@ -2179,8 +1541,10 @@ int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, doub
 
     if(verbose)
     {
-        std::cout<<"after 10 iteration at the finer LEVEL: "<<std::endl;
-        afficheResult( f,dim);
+        std::stringstream tmp;
+        tmp << "after 10 iteration at the finer LEVEL: " << msgendl ;
+        resultToString(tmp, f,dim);
+        dmsg_info("LCPcalc") << tmp.str();
     }
 
     free(d_free_coarse);
@@ -2205,7 +1569,7 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, do
 
     if (dim % 3)
     {
-        printf("\n WARNING dim should be dividable by 3 in nlcp_gaussseidel");
+        dmsg_info("LCPcalc") << "dim should be dividable by 3 in nlcp_gaussseidel" ;
         return 0;
     }
     // iterators
@@ -2214,13 +1578,13 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, do
     // memory allocation of vector d
     double *d;
     d = (double*)malloc(dim*sizeof(double));
+
     // put the vector force to zero
     if (!useInitialF)
         memset(f, 0, dim*sizeof(double));
 
     // previous value of the force and the displacment
     double f_1[3];
-    // double d_1b[3] = {0.0, 0.0, 0.0};
     double d_1[3];
 
     // allocation of the inverted system 3x3
@@ -2228,17 +1592,6 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, do
     W33 = (LocalBlock33 **) malloc (dim*sizeof(LocalBlock33));
     for (c1=0; c1<numContacts; c1++)
         W33[c1] = new LocalBlock33();
-    /*
-    std::vector<listElem> sortedList;
-    listElem buf;
-    sortedList.clear();
-    for (c1=0; c1<numContacts; c1++)
-    {
-    	buf.value = dfree[3*c1];
-    	buf.index = c1;
-    	sortedList.push_back(buf);
-    }
-    */
 
     //////////////
     // Beginning of iterative computations
@@ -2266,19 +1619,17 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, do
                 dt += W[3*index1+1][i]*f[i];
                 ds += W[3*index1+2][i]*f[i];
             }
-            // if (maxF != 0.0)
-            // {
-            //     d_1b[0] = dn;
-            //     d_1b[1] = dt;
-            //     d_1b[2] = ds;
-            // }
             d_1[0] = dn + W[3*index1  ][3*index1  ]*f_1[0]+W[3*index1  ][3*index1+1]*f_1[1]+W[3*index1  ][3*index1+2]*f_1[2];
             d_1[1] = dt + W[3*index1+1][3*index1  ]*f_1[0]+W[3*index1+1][3*index1+1]*f_1[1]+W[3*index1+1][3*index1+2]*f_1[2];
             d_1[2] = ds + W[3*index1+2][3*index1  ]*f_1[0]+W[3*index1+2][3*index1+1]*f_1[1]+W[3*index1+2][3*index1+2]*f_1[2];
             if (minW != 0.0 && fabs(W[3*index1  ][3*index1  ]) <= minW)
             {
                 // constraint compliance is too small
-                if (it == 0) std::cout<<"NLCP WARNING: compliance too small for contact " << index1 << ": |" << std::scientific << W[3*index1  ][3*index1  ] << "| < " << minW << std::fixed << std::endl;
+                if(it==0){
+                    std::stringstream tmpmsg;
+                    tmpmsg << "Compliance too small for contact " << index1 << ": |" << std::scientific << W[3*index1  ][3*index1  ] << "| < " << minW << std::fixed ;
+                    dmsg_warning("LCPcalc") << tmpmsg.str() ;
+                }
 
                 fn=0; ft=0; fs=0;
             }
@@ -2292,21 +1643,9 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, do
 
                 fn=f_1[0]; ft=f_1[1]; fs=f_1[2];
                 W33[index1]->GS_State(mu,dn,dt,ds,fn,ft,fs);
-                //W33[index1]->BiPotential(mu,dn,dt,ds,fn,ft,fs);
-                // if (maxF != 0.0 && it >= 3 && fabs(fn) >= maxF)
-                // { // constraint force is too large
-                //     std::cout<<"NLCP WARNING: force too large for contact " << index1 << " at iteration " << it << ": |" << std::scientific << fn << "| > " << maxF << std::fixed << std::endl;
-                //     fn=0; ft=0; fs=0;
-                //     dn = d_1b[0];
-                //     dt = d_1b[1];
-                //     ds = d_1b[2];
-                // }
-            }
+           }
             error += absError(dn,dt,ds,d_1[0],d_1[1],d_1[2]);
-
-
             set3Dof(f,index1,fn,ft,fs);
-
         }
         if (residuals) residuals->push_back(error);
         if (violations)
@@ -2314,12 +1653,10 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, do
             double sum_d = 0;
             for (int c=0;  c<numContacts ; c++)
             {
-                dn = dfree[3*c];  //dt = dfree[3*c+1]; ds = dfree[3*c+2];
+                dn = dfree[3*c];
                 for (int i=0; i<dim; i++)
                 {
                     dn += W[3*c  ][i]*f[i];
-                    //dt += W[3*c+1][i]*f[i];
-                    //ds += W[3*c+2][i]*f[i];
                 }
                 if (dn < 0)
                     sum_d += -dn;
@@ -2329,8 +1666,6 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, do
 
         if (error < tol*(numContacts+1))
         {
-
-
             if (maxF != 0.0)
             {
                 for (c1=0; c1<numContacts; c1++)
@@ -2340,7 +1675,9 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, do
                     if (fabs(f[3*index1]) >= maxF)
                     {
                         // constraint force is too large
-                        std::cout<<"NLCP WARNING: force too large for contact " << index1 << " : |" << std::scientific << f[3*index1] << "| > " << maxF << std::fixed << std::endl;
+                        std::stringstream tmp ;
+                        tmp <<"Force too large for contact " << index1 << " : |" << std::scientific << f[3*index1] << "| > " << maxF << std::fixed ;
+                        dmsg_info("LCPcalc") << tmp.str() ;
                         f[3*index1  ] = 0;
                         f[3*index1+1] = 0;
                         f[3*index1+2] = 0;
@@ -2351,10 +1688,12 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, do
             free(d);
             for (int i = 0; i < numContacts; i++)
                 delete W33[i];
+
             free(W33);
-            if (verbose)
-                printf("Convergence after %d iteration(s) with tolerance : %f and error : %f with dim : %d\n",it, tol, error, dim);
-            //afficheLCP(dfree,W,f,dim);
+
+            if (verbose){
+                dmsg_info("LCPcalc") << "Convergence after "<< it <<" iteration(s) with tolerance : "<< tol <<" and error : "<< error <<" with dim : " <<  dim ;
+            }
             sofa::helper::AdvancedTimer::valSet("GS iterations", it+1);
             return 1;
         }
@@ -2368,7 +1707,7 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, do
 
     if (verbose)
     {
-        std::cerr<<"\n No convergence in  nlcp_gaussseidel function : error ="<<error <<" after"<< it<<" iterations"<<std::endl;
+        msg_warning("LCPcalc")<<"No convergence in  nlcp_gaussseidel function : error ="<<error <<" after"<< it<<" iterations";
         afficheLCP(dfree,W,f,dim);
     }
 
@@ -2416,9 +1755,9 @@ int nlcp_gaussseidelTimed(int dim, double *dfree, double**W, double *f, double m
     sortedList.clear();
     for (c1=0; c1<numContacts; c1++)
     {
-    	buf.value = dfree[3*c1];
-    	buf.index = c1;
-    	sortedList.push_back(buf);
+        buf.value = dfree[3*c1];
+        buf.index = c1;
+        sortedList.push_back(buf);
     }
     */
 
@@ -2539,17 +1878,17 @@ void gaussSeidelLCP1(int dim, FemClipsReal * q, FemClipsReal ** M, FemClipsReal 
             if (minW != 0.0 && fabs(M[compteur2][compteur2]) <= minW)
             {
                 // constraint compliance is too small
-                if (compteur == 0) std::cout<<"LCP WARNING: compliance too small for constraint " << compteur2 << ": |" << std::scientific << M[compteur2][compteur2] << "| < " << minW << std::fixed << std::endl;
+                if (compteur == 0)
+                {
+                    std::stringstream tmpmsg;
+                    tmpmsg <<"Compliance too small for constraint " << compteur2 << ": |" << std::scientific << M[compteur2][compteur2] << "| < " << minW << std::fixed ;
+                    dmsg_warning("LCPcalc") << tmpmsg.str() ;
+                }
                 res[dim+compteur2]=(FemClipsReal)0.0;
             }
             else if (res[compteur2]<0)
             {
                 res[dim+compteur2]=-res[compteur2]/M[compteur2][compteur2];
-                // if (maxF != 0.0 && compteur >= 3 && fabs(res[dim+compteur2]) >= maxF)
-                // { // constraint force is too large
-                //     std::cout<<"LCP WARNING: force too large for constraint " << compteur2 << " at iteration " << compteur << " : |" << std::scientific << res[dim+compteur2] << "| > " << maxF << std::fixed << std::endl;
-                //     res[dim+compteur2]=(FemClipsReal)0.0;
-                // }
             }
             else
             {
@@ -2563,7 +1902,6 @@ void gaussSeidelLCP1(int dim, FemClipsReal * q, FemClipsReal ** M, FemClipsReal 
         if (residuals) residuals->push_back(error);
         if (error < tol)
         {
-            //	std::cout << "convergence in gaussSeidelLCP1 with " << compteur << " iterations\n";
             break;
         }
 
@@ -2577,7 +1915,10 @@ void gaussSeidelLCP1(int dim, FemClipsReal * q, FemClipsReal ** M, FemClipsReal 
             if (fabs(res[dim+compteur2]) >= maxF)
             {
                 // constraint force is too large
-                std::cout<<"LCP WARNING: force too large for constraint " << compteur2 << " : |" << std::scientific << res[dim+compteur2] << "| > " << maxF << std::fixed << std::endl;
+                std::stringstream tmpmsg;
+                tmpmsg << "force too large for constraint " << compteur2 << " : |" << std::scientific << res[dim+compteur2] << "| > " << maxF << std::fixed ;
+                dmsg_warning("LCPcalc") << tmpmsg.str() ;
+
                 res[dim+compteur2]=(FemClipsReal)0.0;
             }
         }
@@ -2588,8 +1929,7 @@ void gaussSeidelLCP1(int dim, FemClipsReal * q, FemClipsReal ** M, FemClipsReal 
 
     if (error >= tol)
     {
-        std::cout << "No convergence in gaussSeidelLCP1 : error = " << error << std::endl;
-        //	afficheLCP(q, M, res, dim);
+        dmsg_error("LCPcalc") << "No convergence in gaussSeidelLCP1 : error = " << error ;
     }
 }
 

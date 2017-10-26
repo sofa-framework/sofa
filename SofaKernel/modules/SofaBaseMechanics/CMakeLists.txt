@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 project(SofaBaseMechanics)
 
 set(HEADER_FILES
@@ -32,9 +32,6 @@ set(SOURCE_FILES
     initBaseMechanics.cpp
 )
 
-if(SOFA-MISC_SMP)
-    list(APPEND HEADER_FILES MechanicalObjectTasks.inl)
-endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaBaseTopology)

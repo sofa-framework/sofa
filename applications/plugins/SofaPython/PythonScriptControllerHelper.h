@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Plugins                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -43,23 +40,22 @@ namespace helper {
 
 namespace internal {
 
-PyObject* PythonScriptController_valueToPyObject(bool param);
-PyObject* PythonScriptController_valueToPyObject(int param);
-PyObject* PythonScriptController_valueToPyObject(unsigned int param);
-PyObject* PythonScriptController_valueToPyObject(double param);
-PyObject* PythonScriptController_valueToPyObject(std::string const& param);
+SOFA_SOFAPYTHON_API PyObject* PythonScriptController_valueToPyObject(bool param);
+SOFA_SOFAPYTHON_API PyObject* PythonScriptController_valueToPyObject(int param);
+SOFA_SOFAPYTHON_API PyObject* PythonScriptController_valueToPyObject(unsigned int param);
+SOFA_SOFAPYTHON_API PyObject* PythonScriptController_valueToPyObject(double param);
+SOFA_SOFAPYTHON_API PyObject* PythonScriptController_valueToPyObject(std::string const& param);
 
-void PythonScriptController_pyObjectToValue(PyObject* pyObject, bool & val);
-void PythonScriptController_pyObjectToValue(PyObject* pyObject, int & val);
-void PythonScriptController_pyObjectToValue(PyObject* pyObject, unsigned int & val);
-void PythonScriptController_pyObjectToValue(PyObject* pyObject, float & val);
-void PythonScriptController_pyObjectToValue(PyObject* pyObject, double & val);
-void PythonScriptController_pyObjectToValue(PyObject* pyObject, std::string & val);
+SOFA_SOFAPYTHON_API void PythonScriptController_pyObjectToValue(PyObject* pyObject, bool & val);
+SOFA_SOFAPYTHON_API void PythonScriptController_pyObjectToValue(PyObject* pyObject, int & val);
+SOFA_SOFAPYTHON_API void PythonScriptController_pyObjectToValue(PyObject* pyObject, unsigned int & val);
+SOFA_SOFAPYTHON_API void PythonScriptController_pyObjectToValue(PyObject* pyObject, float & val);
+SOFA_SOFAPYTHON_API void PythonScriptController_pyObjectToValue(PyObject* pyObject, double & val);
+SOFA_SOFAPYTHON_API void PythonScriptController_pyObjectToValue(PyObject* pyObject, std::string & val);
 
 
 void PythonScriptController_parametersToVector(std::vector<PyObject*> & /*vecParam*/) {return;}
 
-#if __cplusplus > 201100L || (defined(_MSC_VER) &&  _MSC_VER>=1800) // msvc 2013 and above can compile c++11, but do not define properly __cplusplus
 template<typename T, typename... ParametersType>
 void PythonScriptController_parametersToVector(std::vector<PyObject*> & vecParam, T param, ParametersType... otherParameters)
 {
@@ -77,22 +73,18 @@ PyObject* PythonScript_parametersToTuple(ParametersType... parameters)
         PyTuple_SetItem(tuple, i, vecParam[i]);
     return tuple;
 }
-#else
-// implement a c++98 version if necessary
-#endif
 
 } // namespase internal
 
-#if __cplusplus > 201100L || (defined(_MSC_VER) &&  _MSC_VER>=1800) // msvc 2013 and above can compile c++11, but do not define properly __cplusplus
 /** A helper function to call \a funcName in \a pythonScriptControllerName.
  * The function returned value is stored in \a result.
  * If the controller functions returns \c None, or if you are not interested by the returned value, call it with \c nullptr as first parameter.
  */
 template<typename ResultType, typename... ParametersType>
-void PythonScriptController_call(ResultType * result, std::string const& pythonScriptControllerName, std::string const& funcName, ParametersType... parameters)
+void PythonScriptController_call(ResultType * result, sofa::simulation::Node::SPtr root, std::string const& pythonScriptControllerName, std::string const& funcName, ParametersType... parameters)
 {
     sofa::component::controller::PythonScriptController* controller = nullptr;
-    controller = dynamic_cast<sofa::component::controller::PythonScriptController*>(sofa::simulation::getSimulation()->GetRoot()->getObject(pythonScriptControllerName.c_str()));
+    controller = dynamic_cast<sofa::component::controller::PythonScriptController*>(root->getObject(pythonScriptControllerName.c_str()));
     if(!controller) {
         SP_MESSAGE_ERROR("Controller not found " << "(name: " << pythonScriptControllerName << " function: " << funcName << ")");
         return;
@@ -112,15 +104,11 @@ void PythonScriptController_call(ResultType * result, std::string const& pythonS
 }
 
 template<typename... ParametersType>
-void PythonScriptController_call(std::nullptr_t /*result*/, std::string const& pythonScriptControllerName, std::string const& funcName, ParametersType... parameters)
+void PythonScriptController_call(std::nullptr_t /*result*/, sofa::simulation::Node::SPtr root, std::string const& pythonScriptControllerName, std::string const& funcName, ParametersType... parameters)
 {
     int* none=nullptr;
-    PythonScriptController_call(none, pythonScriptControllerName, funcName, parameters...);
+    PythonScriptController_call(none, root, pythonScriptControllerName, funcName, parameters...);
 }
-
-#else
-// implement a c++98 version if necessary
-#endif
 
 } // namespace helper
 } // namespace sofa

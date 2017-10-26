@@ -36,7 +36,7 @@ mass_kg  = 1.0
 mass_ton = 1e3
 imperial_mass_lb  = 0.45359237               # pound
 imperial_mass_oz  = imperial_mass_lb/16.0    # ounce
-imperial_mass_ton = imperial_mass_lb*2240.0 # imperial ton
+imperial_mass_ton = imperial_mass_lb*2240.0  # imperial ton
 
 # TIME
 time_h   = 3600.0
@@ -61,6 +61,47 @@ def setLocalUnits(time="s", length="m", mass="kg"):
     local_time = eval("time_"+time)
     local_length = eval("length_"+length)
     local_mass = eval("mass_"+mass)
+
+def getLocalUnit_time():
+    """ return string representation
+    """
+    if local_time == time_h :
+        return "h"
+    elif local_time == time_min :
+        return "min"
+    elif local_time == time_s :
+        return "s"
+    elif local_time == time_ms :
+        return "ms"
+    return str(local_time)+"s" # default string from SI unit
+
+def getLocalUnit_length():
+    """ return string representation
+    """
+    if local_length == length_hm :
+        return "hm"
+    elif local_length == length_dam :
+        return "dam"
+    elif local_length == length_m :
+        return "m"
+    elif local_length == length_dm :
+        return "dm"
+    elif local_length == length_cm :
+        return "cm"
+    elif local_length == length_mm :
+        return "mm"
+    return str(local_length)+"m" # default string from SI unit
+
+def getLocalUnit_mass():
+    """ return string representation
+    """
+    if local_mass == mass_g :
+        return "g"
+    elif local_mass == mass_kg :
+        return "kg"
+    elif local_mass == mass_ton :
+        return "ton"
+    return str(local_mass)+"kg" # default string from SI unit
 
 ### conversion methods
 
@@ -116,6 +157,15 @@ def volume_to_SI( v, length_unit=None ):
     length_unit = length_unit or local_length
     return v * length_unit * length_unit * length_unit
 
+# 1/m3 (not related to a mass, simply the nb of somethings in a given volume)
+def density_from_SI( d, length_unit=None ):
+    length_unit = length_unit or local_length
+    return d * length_unit * length_unit * length_unit
+
+def density_to_SI( d, length_unit=None ):
+    length_unit = length_unit or local_length
+    return d / length_unit / length_unit / length_unit
+
 
 
 # m/s
@@ -155,19 +205,6 @@ def force_to_SI( f, length_unit=None, mass_unit=None, time_unit=None ):
     time_unit = time_unit or local_time
     return f * length_unit * mass_unit / time_unit / time_unit
 
-# C = N.m = kg.m2/s2
-def torque_from_SI( c, length_unit=None, mass_unit=None, time_unit=None ):
-    length_unit = length_unit or local_length
-    mass_unit = mass_unit or local_mass
-    time_unit = time_unit or local_time
-    return c / length_unit / length_unit / mass_unit * time_unit * time_unit
-
-def torque_to_SI( c, length_unit=None, mass_unit=None, time_unit=None ):
-    length_unit = length_unit or local_length
-    mass_unit = mass_unit or local_mass
-    time_unit = time_unit or local_time
-    return c * length_unit * length_unit * mass_unit / time_unit / time_unit
-
 # Pa = N/m2 = kg/(m.s2)
 def pressure_from_SI( p, length_unit=None, mass_unit=None, time_unit=None ):
     length_unit = length_unit or local_length
@@ -182,18 +219,25 @@ def pressure_to_SI( p, length_unit=None, mass_unit=None, time_unit=None ):
     return p * mass_unit / length_unit / time_unit / time_unit
 
 
-# J = N.m = kg.m2/s2
+# J = N.m = kg.m2/s2 = Pa.m3 = W.s
 def energy_from_SI( e, length_unit=None, mass_unit=None, time_unit=None ):
     length_unit = length_unit or local_length
     mass_unit = mass_unit or local_mass
     time_unit = time_unit or local_time
     return e / length_unit / length_unit / mass_unit * time_unit * time_unit
 
+def torque_from_SI( t, length_unit=None, mass_unit=None, time_unit=None ):
+    return energy_from_SI( t, length_unit, mass_unit, time_unit )
+
+
 def energy_to_SI( e, length_unit=None, mass_unit=None, time_unit=None ):
     length_unit = length_unit or local_length
     mass_unit = mass_unit or local_mass
     time_unit = time_unit or local_time
     return e * length_unit * length_unit * mass_unit / time_unit / time_unit
+
+def torque_to_SI( t, length_unit=None, mass_unit=None, time_unit=None ):
+    return energy_to_SI( t, length_unit, mass_unit, time_unit )
 
 # I = kg.m2
 def inertia_from_SI( i, length_unit=None, mass_unit=None ):
@@ -217,6 +261,24 @@ def damping_to_SI(d, mass_unit=None, time_unit=None):
     time_unit = time_unit or local_time
     return d * mass_unit / time_unit
 
+# rad/s
+def angularvelocity_from_SI( v, time_unit=None ):
+    time_unit = time_unit or local_time
+    return v * time_unit
+
+def angularvelocity_to_SI( v, time_unit=None ):
+    time_unit = time_unit or local_time
+    return v / time_unit
+
+# rad/s2
+def angularacceleration_from_SI( v, time_unit=None ):
+    time_unit = time_unit or local_time
+    return v * time_unit * time_unit
+
+def angularacceleration_to_SI( v, time_unit=None ):
+    time_unit = time_unit or local_time
+    return v / (time_unit * time_unit )
+
 # MATERIAL
 
 # Pa
@@ -239,15 +301,6 @@ def massDensity_to_SI( d, length_unit=None, mass_unit=None ):
     mass_unit = mass_unit or local_mass
     return d / length_unit / length_unit / length_unit * mass_unit
 
-# /m3
-def density_from_SI( d, length_unit=None ):
-    length_unit = length_unit or local_length
-    return d * length_unit * length_unit * length_unit
-
-def density_to_SI( d, length_unit=None ):
-    length_unit = length_unit or local_length
-    mass_unit = mass_unit or local_mass
-    return d / length_unit / length_unit / length_unit
 
 
 # w/o

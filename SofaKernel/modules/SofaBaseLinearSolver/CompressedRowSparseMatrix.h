@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -43,6 +40,14 @@ namespace linearsolver
 
 //#define SPARSEMATRIX_CHECK
 //#define SPARSEMATRIX_VERBOSE
+
+/// This pattern is used to force compilation of code fragment that depend on the definition of
+/// the "define". In the following, use if(EMIT_EXTRA_MESSAGE) instead of #ifdef
+#ifdef SPARSEMATRIX_VERBOSE
+#define EMIT_EXTRA_MESSAGE true
+#else
+#define EMIT_EXTRA_MESSAGE false
+#endif
 
 template<typename TBloc, typename TVecBloc = helper::vector<TBloc>, typename TVecIndex = helper::vector<int> >
 class CompressedRowSparseMatrix : public defaulttype::BaseMatrix
@@ -177,6 +182,11 @@ public:
     {
     }
 
+    ~CompressedRowSparseMatrix()
+    {
+        this->clear();
+    }
+
     /// \returns the number of row blocs
     Index rowBSize() const
     {
@@ -207,9 +217,9 @@ public:
         }
         else
         {
-#ifdef SPARSEMATRIX_VERBOSE
-            std::cout << /* this->Name()  <<  */": resize("<<nbBRow<<"*"<<NL<<","<<nbBCol<<"*"<<NC<<")"<<std::endl;
-#endif
+            msg_info_when(EMIT_EXTRA_MESSAGE)
+                    << ": resize("<<nbBRow<<"*"<<NL<<","<<nbBCol<<"*"<<NC<<")" ;
+
             nRow = nbBRow*NL;
             nCol = nbBCol*NC;
             nBlocRow = nbBRow;
@@ -228,13 +238,11 @@ public:
         if (compressed && btemp.empty()) return;
         if (!btemp.empty())
         {
-#ifdef SPARSEMATRIX_VERBOSE
-            std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): sort "<<btemp.size()<<" temp blocs."<<std::endl;
-#endif
+            dmsg_info_when(EMIT_EXTRA_MESSAGE)
+                    << "("<<rowSize()<<","<<colSize()<<"): sort "<<btemp.size()<<" temp blocs." ;
             std::sort(btemp.begin(),btemp.end());
-#ifdef SPARSEMATRIX_VERBOSE
-            std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): blocs sorted."<<std::endl;
-#endif
+            dmsg_info_when(EMIT_EXTRA_MESSAGE)
+                    << "("<<rowSize()<<","<<colSize()<<"): blocs sorted." ;
         }
         oldRowIndex.swap(rowIndex);
         oldRowBegin.swap(rowBegin);
@@ -259,9 +267,8 @@ public:
         Index outValId = 0;
         while (inRowIndex < EndRow || bRowIndex < EndRow)
         {
-#ifdef SPARSEMATRIX_VERBOSE
-            std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): inRowIndex = "<<inRowIndex<<" , bRowIndex = "<<bRowIndex<<""<<std::endl;
-#endif
+            dmsg_info_when(EMIT_EXTRA_MESSAGE)
+                    << "("<<rowSize()<<","<<colSize()<<"): inRowIndex = "<<inRowIndex<<" , bRowIndex = "<<bRowIndex<<"" ;
             if (inRowIndex < bRowIndex)
             {
                 // this row contains values only from old*
@@ -278,9 +285,6 @@ public:
                     }
                     ++inRow;
                 }
-                //colsIndex.insert(colsIndex.end(), inRow.begin(oldColsIndex), inRow.end(oldColsIndex));
-                //colsValue.insert(colsValue.end(), inRow.begin(oldColsValue), inRow.end(oldColsValue));
-                //outValId += inRow.size();
                 ++inRowId;
                 inRowIndex = (inRowId < oldNRow ) ? oldRowIndex[inRowId] : EndRow;
             }
@@ -362,9 +366,6 @@ public:
             }
         }
         rowBegin.push_back(outValId);
-        //#ifdef SPARSEMATRIX_VERBOSE
-        //          std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): compressed " << oldColsIndex.size()<<" old blocs and " << btemp.size() << " temp blocs into " << rowIndex.size() << " lines and " << colsIndex.size() << " blocs."<<std::endl;
-        //#endif
         btemp.clear();
         compressed = true;
     }
@@ -651,9 +652,10 @@ public:
             Index colId = rowRange.begin() + j * rowRange.size() / nBlocCol;
             if (sortedFind(colsIndex, rowRange, j, colId))
             {
-#ifdef SPARSEMATRIX_VERBOSE
-                std::cout << /* this->Name()  <<  */"("<<rowBSize()<<"*"<<NL<<","<<colBSize()<<"*"<<NC<<"): bloc("<<i<<","<<j<<") found at "<<colId<<" (line "<<rowId<<")."<<std::endl;
-#endif
+
+                dmsg_info_when(EMIT_EXTRA_MESSAGE)
+                        << "("<<rowBSize()<<"*"<<NL<<","<<colBSize()<<"*"<<NC<<"): bloc("<<i<<","<<j<<") found at "<<colId<<" (line "<<rowId<<")." ;
+
                 return &colsValue[colId];
             }
         }
@@ -661,9 +663,9 @@ public:
         {
             if (btemp.empty() || btemp.back().l != i || btemp.back().c != j)
             {
-#ifdef SPARSEMATRIX_VERBOSE
-                std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): new temp bloc ("<<i<<","<<j<<")"<<std::endl;
-#endif
+                dmsg_info_when(EMIT_EXTRA_MESSAGE)
+                        << "("<<rowSize()<<","<<colSize()<<"): new temp bloc ("<<i<<","<<j<<")" ;
+
                 btemp.push_back(IndexedBloc(i,j));
                 traits::clear(btemp.back().value);
             }
@@ -686,10 +688,12 @@ public:
 
     void resize(Index nbRow, Index nbCol)
     {
-#ifdef SPARSEMATRIX_VERBOSE
-        if (nbRow != rowSize() || nbCol != colSize())
-            std::cout << /* this->Name()  <<  */": resize("<<nbRow<<","<<nbCol<<")"<<std::endl;
-#endif
+        if (EMIT_EXTRA_MESSAGE)
+        {
+            if (nbRow != rowSize() || nbCol != colSize())
+                msg_info() << ": resize("<<nbRow<<","<<nbCol<<")" ;
+        }
+
         resizeBloc((nbRow + NL-1) / NL, (nbCol + NC-1) / NC);
         nRow = nbRow;
         nCol = nbCol;
@@ -711,9 +715,9 @@ public:
 
     void set(Index i, Index j, double v)
     {
-#ifdef SPARSEMATRIX_VERBOSE
-        std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v<<std::endl;
-#endif
+        dmsg_info_when(EMIT_EXTRA_MESSAGE)
+                << "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v ;
+
 #ifdef SPARSEMATRIX_CHECK
         if (i >= rowSize() || j >= colSize())
         {
@@ -722,17 +726,18 @@ public:
         }
 #endif
         Index bi=0, bj=0; split_row_index(i, bi); split_col_index(j, bj);
-#ifdef SPARSEMATRIX_VERBOSE
-        std::cout << /* this->Name()  <<  */"("<<rowBSize()<<"*"<<NL<<","<<colBSize()<<"*"<<NC<<"): bloc("<<i<<","<<j<<")["<<bi<<","<<bj<<"] = "<<v<<std::endl;
-#endif
+
+        dmsg_info_when(EMIT_EXTRA_MESSAGE)
+                << "("<<rowBSize()<<"*"<<NL<<","<<colBSize()<<"*"<<NC<<"): bloc("<<i<<","<<j<<")["<<bi<<","<<bj<<"] = "<<v ;
+
         traits::v(*wbloc(i,j,true), bi, bj) = (Real)v;
     }
 
     void add(Index i, Index j, double v)
     {
-#ifdef SPARSEMATRIX_VERBOSE
-        std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") += "<<v<<std::endl;
-#endif
+        dmsg_info_when(EMIT_EXTRA_MESSAGE)
+                << "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") += "<<v ;
+
 #ifdef SPARSEMATRIX_CHECK
         if (i >= rowSize() || j >= colSize())
         {
@@ -741,17 +746,18 @@ public:
         }
 #endif
         Index bi=0, bj=0; split_row_index(i, bi); split_col_index(j, bj);
-#ifdef SPARSEMATRIX_VERBOSE
-        std::cout << /* this->Name()  <<  */"("<<rowBSize()<<"*"<<NL<<","<<colBSize()<<"*"<<NC<<"): bloc("<<i<<","<<j<<")["<<bi<<","<<bj<<"] += "<<v<<std::endl;
-#endif
+
+        dmsg_info_when(EMIT_EXTRA_MESSAGE)
+                << "("<<rowBSize()<<"*"<<NL<<","<<colBSize()<<"*"<<NC<<"): bloc("<<i<<","<<j<<")["<<bi<<","<<bj<<"] += "<<v ;
+
         traits::v(*wbloc(i,j,true), bi, bj) += (Real)v;
     }
 
     void clear(Index i, Index j)
     {
-#ifdef SPARSEMATRIX_VERBOSE
-        std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = 0"<<std::endl;
-#endif
+        dmsg_info_when(EMIT_EXTRA_MESSAGE)
+                << "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = 0" ;
+
 #ifdef SPARSEMATRIX_CHECK
         if (i >= rowSize() || j >= colSize())
         {
@@ -768,9 +774,9 @@ public:
 
     void clearRow(Index i)
     {
-#ifdef SPARSEMATRIX_VERBOSE
-        std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): row("<<i<<") = 0"<<std::endl;
-#endif
+        dmsg_info_when(EMIT_EXTRA_MESSAGE)
+                << "("<<rowSize()<<","<<colSize()<<"): row("<<i<<") = 0" ;
+
 #ifdef SPARSEMATRIX_CHECK
         if (i >= rowSize())
         {
@@ -780,17 +786,6 @@ public:
 #endif
         Index bi=0; split_row_index(i, bi);
         compress();
-        /*
-        for (Index j=0; j<nBlocCol; ++j)
-        {
-            Bloc* b = wbloc(i,j,false);
-            if (b)
-            {
-                for (Index bj = 0; bj < NC; ++bj)
-                    traits::v(*b, bi, bj) = 0;
-            }
-        }
-        */
         Index rowId = i * (Index)rowIndex.size() / nBlocRow;
         if (sortedFind(rowIndex, i, rowId))
         {
@@ -806,9 +801,9 @@ public:
 
     void clearCol(Index j)
     {
-#ifdef SPARSEMATRIX_VERBOSE
-        std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): col("<<j<<") = 0"<<std::endl;
-#endif
+        dmsg_info_when(EMIT_EXTRA_MESSAGE)
+                << "("<<rowSize()<<","<<colSize()<<"): col("<<j<<") = 0" ;
+
 #ifdef SPARSEMATRIX_CHECK
         if (j >= colSize())
         {
@@ -831,9 +826,9 @@ public:
 
     void clearRowCol(Index i)
     {
-#ifdef SPARSEMATRIX_VERBOSE
-        std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): row("<<i<<") = 0 and col("<<i<<") = 0"<<std::endl;
-#endif
+        dmsg_info_when(EMIT_EXTRA_MESSAGE)
+                << "("<<rowSize()<<","<<colSize()<<"): row("<<i<<") = 0 and col("<<i<<") = 0" ;
+
 #ifdef SPARSEMATRIX_CHECK
         if (i >= rowSize() || i >= colSize())
         {
@@ -848,7 +843,6 @@ public:
         }
         else
         {
-            //std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): sparse row("<<i<<") = 0 and col("<<i<<") = 0"<<std::endl;
             // Here we assume the matrix is symmetric
             Index bi=0; split_row_index(i, bi);
             compress();
@@ -936,7 +930,6 @@ protected:
     }
     virtual void bAccessorAdd(InternalBlockAccessor* b, Index i, Index j, double v)
     {
-        //add(b->row * getBlockRows() + i, b->col * getBlockCols() + j, v);
         Index index = b->data;
         Bloc& data = (index >= 0) ? colsValue[index] : btemp[-index-1].value;
         traits::v(data, i, j) += (Real)v;
@@ -1057,19 +1050,15 @@ public:
             Index colId = rowRange.begin() + j * rowRange.size() / nBlocCol;
             if (sortedFind(colsIndex, rowRange, j, colId))
             {
-#ifdef SPARSEMATRIX_VERBOSE
-                std::cout << /* this->Name()  <<  */"("<<rowBSize()<<"*"<<NL<<","<<colBSize()<<"*"<<NC<<"): bloc("<<i<<","<<j<<") found at "<<colId<<" (line "<<rowId<<")."<<std::endl;
-#endif
+                dmsg_info_when(EMIT_EXTRA_MESSAGE)
+                        << "("<<rowBSize()<<"*"<<NL<<","<<colBSize()<<"*"<<NC<<"): bloc("<<i<<","<<j<<") found at "<<colId<<" (line "<<rowId<<")." ;
                 return createBlockAccessor(i, j, colId);
             }
         }
-        //if (create)
         {
             if (btemp.empty() || btemp.back().l != i || btemp.back().c != j)
             {
-#ifdef SPARSEMATRIX_VERBOSE
-                std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): new temp bloc ("<<i<<","<<j<<")"<<std::endl;
-#endif
+                dmsg_info_when(EMIT_EXTRA_MESSAGE) << "("<<rowSize()<<","<<colSize()<<"): new temp bloc ("<<i<<","<<j<<")" ;
                 btemp.push_back(IndexedBloc(i,j));
                 traits::clear(btemp.back().value);
             }
@@ -1437,10 +1426,6 @@ public:
 
         assert( colSize() == m.rowSize() );
 
-        // must already be compressed, since matrices are const they cannot be modified
-        //compress();
-        //m.compress();
-
         ((Matrix*)this)->compress();  /// \warning this violates the const-ness of the method
         ((CompressedRowSparseMatrix<MB,MVB,MVI>*)&m)->compress();  /// \warning this violates the const-ness of the parameter
 
@@ -1493,8 +1478,6 @@ public:
         assert( rowSize() == m.rowSize() );
 
         // must already be compressed, since matrices are const they cannot be modified
-        //compress();
-        //m.compress();
         ((Matrix*)this)->compress();  /// \warning this violates the const-ness of the method
         ((CompressedRowSparseMatrix<MB,MVB,MVI>*)&m)->compress();  /// \warning this violates the const-ness of the parameter
 
@@ -1544,90 +1527,10 @@ public:
         res += m;
         return res;
     }
-
-
-
-
     /// @}
-
-
-    /** Helper class to represent a column of the block matrix.
-      Stores indices of one bloc per row. In each row, if the bloc in the derired colum is null, the next bloc is indexed.
-      */
-    /*struct Column
-    {
-        Index column; ///< the index of the column
-        VecIndex indices;  ///< In each row: index of the first non-null bloc with column equal or superior to the desired column.
-    };*/
-
-
 
     /// @name specialization of product methods on a few vector types
     /// @{
-
-   /* /// equal res = this * v
-    /// @warning The block sizes must be compatible ie v.size() must be a multiple of block size.
-    template<class Real2>
-    void mul(FullVector<Real2>& res, const FullVector<Real2>& v) const
-    {
-        tmul< Real2, FullVector<Real2>, FullVector<Real2> >(res, v);
-    }
-
-    /// equal res += this^T * v
-    /// @warning The block sizes must be compatible ie v.size() must be a multiple of block size.
-    template<class Real2>
-    void addMulTranspose(FullVector<Real2>& res, const FullVector<Real2>& v) const
-    {
-        taddMulTranspose< Real2, FullVector<Real2>, FullVector<Real2> >(res, v);
-    }
-
-    /// equal res = this * v
-    /// @warning The block sizes must be compatible ie v.size() must be a multiple of block size.
-    template<class Real2>
-    void mul(FullVector<Real2>& res, const defaulttype::BaseVector* v) const
-    {
-        tmul< Real2, FullVector<Real2>, defaulttype::BaseVector >(res, *v);
-    }
-
-    /// equal res += this^T * v
-    /// @warning The block sizes must be compatible ie v.size() must be a multiple of block size.
-    template<class Real2>
-    void addMulTranspose(FullVector<Real2>& res, const defaulttype::BaseVector* v) const
-    {
-        taddMulTranspose< Real2, FullVector<Real2>, defaulttype::BaseVector >(res, *v);
-    }
-
-    /// equal res = this * v
-    /// @warning The block sizes must be compatible ie v.size() must be a multiple of block size.
-    template<class Real2>
-    void mul(defaulttype::BaseVector* res, const FullVector<Real2>& v) const
-    {
-        tmul< Real2, defaulttype::BaseVector, FullVector<Real2> >(*res, v);
-    }
-
-    /// equal res += this^T * v
-    /// @warning The block sizes must be compatible ie v.size() must be a multiple of block size.
-    template<class Real2>
-    void addMulTranspose(defaulttype::BaseVector* res, const FullVector<Real2>& v) const
-    {
-        taddMulTranspose< Real2, defaulttype::BaseVector, FullVector<Real2> >(*res, v);
-    }
-
-    /// equal res = this * v
-    /// @warning The block sizes must be compatible ie v.size() must be a multiple of block size.
-    template<class Real2>
-    void mul(defaulttype::BaseVector* res, const defaulttype::BaseVector* v) const
-    {
-        tmul< Real, defaulttype::BaseVector, defaulttype::BaseVector >(*res, *v);
-    }
-
-    /// equal res += this^T * v
-    /// @warning The block sizes must be compatible ie v.size() must be a multiple of block size.
-    void addMulTranspose(defaulttype::BaseVector* res, const defaulttype::BaseVector* v) const
-    {
-        taddMulTranspose< Real, defaulttype::BaseVector, defaulttype::BaseVector >(*res, *v);
-    }*/
-
 
     /// equal result = this * v
     /// @warning The block sizes must be compatible ie v.size() must be a multiple of block size.
@@ -1681,9 +1584,6 @@ public:
 
 
     /// @}
-
-
-
 
 
     // methods for MatrixExpr support
@@ -1863,7 +1763,7 @@ public:
         // check ap, size m beecause ther is at least the diagonal value wich is different of 0
         if (a_p[0]!=0)
         {
-            std::cerr << "CompressedRowSparseMatrix: First value of row indices (a_p) should be 0" << std::endl;
+            msg_error("CompressedRowSparseMatrix") << "First value of row indices (a_p) should be 0" ;
             return false;
         }
 
@@ -1871,7 +1771,7 @@ public:
         {
             if (a_p[i]<=a_p[i-1])
             {
-                std::cerr << "CompressedRowSparseMatrix: Row (a_p) indices are not sorted index " << i-1 << " : " << a_p[i-1] << " , " << i << " : " << a_p[i] << std::endl;
+                msg_error("CompressedRowSparseMatrix") << "Row (a_p) indices are not sorted index " << i-1 << " : " << a_p[i-1] << " , " << i << " : " << a_p[i] ;
                 return false;
             }
         }
@@ -1881,7 +1781,7 @@ public:
         }
         else if (a_p[m]!=nzmax)
         {
-            std::cerr << "CompressedRowSparseMatrix: Last value of row indices (a_p) should be " << nzmax << " and is " << a_p[m] << std::endl;
+            msg_error("CompressedRowSparseMatrix") << "Last value of row indices (a_p) should be " << nzmax << " and is " << a_p[m] ;
             return false;
         }
 
@@ -1894,12 +1794,12 @@ public:
             {
                 if (a_i[i] <= a_i[i-1])
                 {
-                    std::cerr << "CompressedRowSparseMatrix: Column (a_i) indices are not sorted index " << i-1 << " : " << a_i[i-1] << " , " << i << " : " << a_p[i] << std::endl;
+                    msg_error("CompressedRowSparseMatrix") << "Column (a_i) indices are not sorted index " << i-1 << " : " << a_i[i-1] << " , " << i << " : " << a_p[i] ;
                     return false;
                 }
                 if (a_i[i]<0 || a_i[i]>=n)
                 {
-                    std::cerr << "CompressedRowSparseMatrix: Column (a_i) indices are not correct " << i << " : " << a_i[i] << std::endl;
+                    msg_error("CompressedRowSparseMatrix") << "Column (a_i) indices are not correct " << i << " : " << a_i[i] ;
                     return false;
                 }
             }
@@ -1910,18 +1810,18 @@ public:
         {
             if (a_x[i]==0)
             {
-                std::cerr << "CompressedRowSparseMatrix: Warning , matrix contains 0 , index " << i << std::endl;
+                msg_warning("CompressedRowSparseMatrix") << "Matrix contains 0 , index " << i ;
                 return false;
             }
         }
 
         if (n!=m)
         {
-            std::cerr << "CompressedRowSparseMatrix: the matrix is not square" << std::endl;
+            msg_error("CompressedRowSparseMatrix") << "The matrix is not square" ;
             return false;
         }
 
-        std::cerr << "Check_matrix passed successfully" << std::endl;
+        msg_info("CompressedRowSparseMatrix") << "Check_matrix passed successfully" ;
         return true;
     }
 };

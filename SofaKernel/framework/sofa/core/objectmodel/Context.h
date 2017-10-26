@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -31,11 +28,6 @@
 
 #include <iostream>
 #include <map>
-
-#ifdef SOFA_SMP
-#include <IterativePartition.h>
-#include <AthapascanIterative.h>
-#endif
 
 
 namespace sofa
@@ -74,12 +66,7 @@ public:
     /// @}
 #endif
 
-#ifdef SOFA_SMP
-    Data<int> processor;
-    Data<bool> gpuPrioritary;
-    Data<bool> is_partition_;
-    Iterative::IterativePartition *partition_;
-#endif
+
 
 protected:
     Context();
@@ -91,29 +78,29 @@ public:
     /// @{
 
     /// The Context is active
-    virtual bool isActive() const;
+    virtual bool isActive() const override;
     /// State of the context
-    virtual void setActive(bool val);
+    virtual void setActive(bool val) override;
 
 	/// The Context is sleeping
-	virtual bool isSleeping() const;
+	virtual bool isSleeping() const override;
 
 	/// The Context can change its sleeping state
-	virtual bool canChangeSleepingState() const;
+	virtual bool canChangeSleepingState() const override;
 
     /// Gravity in local coordinates
-    virtual const Vec3& getGravity() const;
+    virtual const Vec3& getGravity() const override;
     /// Gravity in local coordinates
-    virtual void setGravity( const Vec3& );
+    virtual void setGravity( const Vec3& ) override;
 
     /// Simulation timestep
-    virtual SReal getDt() const;
+    virtual SReal getDt() const override;
 
     /// Simulation time
-    virtual SReal getTime() const;
+    virtual SReal getTime() const override;
 
     /// Animation flag
-    virtual bool getAnimate() const;
+    virtual bool getAnimate() const override;
 
 #ifdef SOFA_SUPPORT_MULTIRESOLUTION
     /// Multiresolution support (UNSTABLE)
@@ -164,19 +151,19 @@ public:
     /// @{
 
     /// Simulation timestep
-    virtual void setDt( SReal dt );
+    virtual void setDt( SReal dt ) override;
 
     /// Simulation time
     virtual void setTime( SReal t );
 
     /// Animation flag
-    virtual void setAnimate(bool val);
+    virtual void setAnimate(bool val) override;
 
 	/// Sleeping state of the context
-	virtual void setSleeping(bool val);
+	virtual void setSleeping(bool val) override;
 
 	/// Sleeping state change of the context
-	virtual void setChangeSleepingState(bool val);
+	virtual void setChangeSleepingState(bool val) override;
 
     /// Display flags: Gravity
     virtual void setDisplayWorldGravity(bool val) { worldGravity_.setDisplayed(val); }
@@ -190,13 +177,7 @@ public:
     virtual void setFinestLevel(int l);
 #endif
 
-#ifdef SOFA_SMP
-    inline bool is_partition()const {return is_partition_.getValue();}
-    inline Iterative::IterativePartition *getPartition()const {return partition_;}
-    /// Accessor to the object processor
-    int getProcessor() const;
-    void setProcessor(int);
-#endif
+
 
     /// @}
 

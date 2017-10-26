@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -26,6 +23,9 @@
 #include <sofa/helper/system/Locale.h>
 #include <iostream>
 #include <sstream>
+#include <sofa/helper/logging/Messaging.h>
+
+MSG_REGISTER_CLASS(sofa::helper::io::bvh::BVHLoader, "BVHLoader")
 
 namespace sofa
 {
@@ -51,10 +51,10 @@ BVHJoint *BVHLoader::load(const char *filename)
         BVHJoint::lastId = 0;
         BVHJoint *retBVHJoint = NULL;
         char buf[256];
-        
+
         std::ostringstream bufScanFormat;
         bufScanFormat << "%" << (sizeof(buf) - 1) << "s";
-            
+
         while (fscanf(file, bufScanFormat.str().c_str(), buf) != EOF)
         {
             if (strcmp(buf, "ROOT") == 0)
@@ -66,7 +66,7 @@ BVHJoint *BVHLoader::load(const char *filename)
         return retBVHJoint;
     }
 
-    std::cout << "File " << filename << " not found\n";
+    msg_info() << "File '" << filename << "' not found.";
     return NULL;
 }
 
@@ -79,16 +79,16 @@ BVHJoint *BVHLoader::parseJoint(FILE *f, bool isEndSite, BVHJoint *parent)
     bufScanFormat << "%" << (sizeof(buf) - 1) << "s";
 
     if (!isEndSite)
-    {  
+    {
         if (fscanf(f,bufScanFormat.str().c_str(),buf) == EOF)
-            std::cerr << "Error: BVHLoader: fscanf function has encountered an error." << std::endl;
+            msg_error() << "fscanf function has encountered an error." ;
     }
 
 
     BVHJoint *j = new BVHJoint(buf, isEndSite, parent);
 
     if (fscanf(f,bufScanFormat.str().c_str(),buf) == EOF)
-        std::cerr << "Error: BVHLoader: fscanf function has encountered an error." << std::endl;
+        msg_error() << "fscanf function has encountered an error." ;
 
     while (!(strcmp(buf,"}") == 0))
     {
@@ -107,14 +107,14 @@ BVHJoint *BVHLoader::parseJoint(FILE *f, bool isEndSite, BVHJoint *parent)
         else if (strcmp(buf,"End") == 0)
         {
             if (fscanf(f,bufScanFormat.str().c_str(),buf) ==EOF )
-                std::cerr << "Error: BVHLoader: fscanf function has encountered an error." << std::endl;
+                msg_error() << "fscanf function has encountered an error." ;
 
             if (strcmp(buf, "Site") == 0)
                 j->addChild(parseJoint(f, true, j));
         }
 
         if (fscanf(f,bufScanFormat.str().c_str(),buf) == EOF)
-            std::cerr << "Error: BVHLoader: fscanf function has encountered an error." << std::endl;
+            msg_error()  << "fscanf function has encountered an error." ;
     }
 
     return j;
@@ -128,11 +128,11 @@ BVHOffset *BVHLoader::parseOffset(FILE *f)
     double z(0);
 
     if (fscanf(f,"%lf",&x) == EOF)
-        std::cerr << "Error: BVHLoader: fscanf function has encountered an error." << std::endl;
+        msg_error() << "fscanf function has encountered an error." ;
     if (fscanf(f,"%lf",&y) == EOF)
-        std::cerr << "Error: BVHLoader: fscanf function has encountered an error." << std::endl;
+        msg_error() << "fscanf function has encountered an error." ;
     if (fscanf(f,"%lf",&z) == EOF)
-        std::cerr << "Error: BVHLoader: fscanf function has encountered an error." << std::endl;
+        msg_error() << "fscanf function has encountered an error." ;
 
     return new BVHOffset(x,y,z);
 }
@@ -142,7 +142,7 @@ BVHChannels *BVHLoader::parseChannels(FILE *f)
 {
     int cSize(0);
     if (fscanf(f,"%d",&cSize) == EOF)
-        std::cerr << "Error: BVHLoader: fscanf function has encountered an error." << std::endl;
+        msg_error() << "fscanf function has encountered an error." ;
 
     if (cSize <= 0)
         return NULL;
@@ -156,7 +156,7 @@ BVHChannels *BVHLoader::parseChannels(FILE *f)
     for (int i=0; i<cSize; i++)
     {
         if (fscanf(f,bufScanFormat.str().c_str(),buf) == EOF)
-            std::cerr << "Error: BVHLoader: fscanf function has encountered an error." << std::endl;
+            msg_error() << "BVHLoader: fscanf function has encountered an error." ;
 
         if (strcmp(buf, "Xposition") == 0)
             c->addChannel(BVHChannels::Xposition);
@@ -193,20 +193,20 @@ void BVHLoader::parseMotion(FILE *f, BVHJoint *j)
     {
         std::ostringstream bufScanFormat;
         bufScanFormat << "%" << (sizeof(buf) - 1) << "s";
-    
+
         if (fscanf(f,bufScanFormat.str().c_str(),buf) == EOF)
-            std::cerr << "Error: BVHLoader: fscanf function has encountered an error." << std::endl;
+            msg_error() << "fscanf function has encountered an error." ;
 
         if (strcmp(buf,"Frames:") == 0)
         {
             if (fscanf(f,"%d",&(frameCount)) == EOF)
-                std::cerr << "Error: BVHLoader: fscanf function has encountered an error." << std::endl;
+                msg_error() << "fscanf function has encountered an error." ;
             framesFound = true;
         }
         else if (strcmp(buf, "Time:") == 0)
         {
             if (fscanf(f,"%lf",&(frameTime)) == EOF)
-                std::cerr << "Error: BVHLoader: fscanf function has encountered an error." << std::endl;
+                msg_error() << "fscanf function has encountered an error." ;
             frameTimeFound = true;
         }
     }
@@ -224,9 +224,8 @@ void BVHLoader::parseFrames(BVHJoint *joint, unsigned int frameIndex, FILE *f)
         for (unsigned int i=0; i < joint->getChannels()->size; i++)
         {
             if (fscanf(f,"%lf",&joint->getMotion()->frames[frameIndex][i]) == EOF)
-                std::cerr << "Error: BVHLoader: fscanf function has encountered an error." << std::endl;
+                msg_error() << "fscanf function has encountered an error." ;
         }
-
 
     for (unsigned int i=0; i < joint->getChildren().size(); i++)
         parseFrames(joint->getChildren()[i], frameIndex, f);

@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -26,7 +23,6 @@
 #define SOFA_DEFAULTTYPE_VEC_H
 
 #include <sofa/helper/fixed_array.h>
-#include <boost/static_assert.hpp>
 #include <sofa/helper/rmath.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <functional>
@@ -46,7 +42,7 @@ template <int N, typename real=float>
 class Vec : public helper::fixed_array<real,N>
 {
 
-    BOOST_STATIC_ASSERT( N > 0 );
+    static_assert( N > 0, "" );
 
 public:
     // Type inconsistency workaround, see Mat.h
@@ -69,106 +65,121 @@ public:
     }
 
     /// Specific constructor for 1-element vectors.
+    template<int NN = N, typename std::enable_if<NN==1,int>::type = 0>
     explicit Vec(real r1)
     {
         set( r1 );
     }
 
     /// Specific constructor for 1-element vectors.
+    template<int NN = N, typename std::enable_if<NN==1,int>::type = 0>
     void operator=(real r1)
     {
         set( r1 );
     }
 
     /// Specific constructor for 2-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==2,int>::type = 0>
     Vec(real r1, real r2)
     {
         set( r1, r2 );
     }
 
     /// Specific constructor for 3-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==3,int>::type = 0>
     Vec(real r1, real r2, real r3)
     {
         set( r1, r2, r3 );
     }
 
     /// Specific constructor for 4-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==4,int>::type = 0>
     Vec(real r1, real r2, real r3, real r4)
     {
         set( r1, r2, r3, r4 );
     }
 
     /// Specific constructor for 5-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==5,int>::type = 0>
     Vec(real r1, real r2, real r3, real r4, real r5)
     {
         set( r1, r2, r3, r4, r5 );
     }
 
     /// Specific constructor for 6-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==6,int>::type = 0>
     Vec(real r1, real r2, real r3, real r4, real r5, real r6)
     {
         set( r1, r2, r3, r4, r5, r6 );
     }
 
     /// Specific constructor for 6-elements vectors.
-    template<typename R, typename T>
+    template<typename R, typename T, int NN=N, typename std::enable_if<NN==6,int>::type = 0 >
     Vec( const Vec<3,R>& a , const Vec<3,T>& b )
     {
         set( a[0], a[1], a[2], b[0], b[1], b[2] );
     }
 
     /// Specific constructor for 7-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==7,int>::type = 0>
     Vec(real r1, real r2, real r3, real r4, real r5, real r6, real r7)
     {
         set( r1, r2, r3, r4, r5, r6, r7 );
     }
 
     /// Specific constructor for 8-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==8,int>::type = 0>
     Vec(real r1, real r2, real r3, real r4, real r5, real r6, real r7, real r8)
     {
         set( r1, r2, r3, r4, r5, r6, r7, r8 );
     }
 
     /// Specific constructor for 9-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==9,int>::type = 0>
     Vec(real r1, real r2, real r3, real r4, real r5, real r6, real r7, real r8, real r9)
     {
         set( r1, r2, r3, r4, r5, r6, r7, r8, r9 );
     }
 
     /// Specific constructor for 12-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==12,int>::type = 0>
     Vec(real r1, real r2, real r3, real r4, real r5, real r6, real r7, real r8, real r9, real r10, real r11, real r12)
     {
         set( r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12 );
     }
 
     /// Specific set for 1-element vectors.
+    template<int NN = N, typename std::enable_if<NN==1,int>::type = 0>
     void set(real r1)
     {
-        BOOST_STATIC_ASSERT(N==1);
+        static_assert(N==1, "");
         this->elems[0]=r1;
     }
 
     /// Specific set for 2-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==2,int>::type = 0>
     void set(real r1, real r2)
     {
-        BOOST_STATIC_ASSERT(N == 2);
+        static_assert(N == 2, "");
         this->elems[0]=r1;
         this->elems[1]=r2;
     }
 
     /// Specific set for 3-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==3,int>::type = 0>
     void set(real r1, real r2, real r3)
     {
-        BOOST_STATIC_ASSERT(N == 3);
+        static_assert(N == 3, "");
         this->elems[0]=r1;
         this->elems[1]=r2;
         this->elems[2]=r3;
     }
 
     /// Specific set for 4-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==4,int>::type = 0>
     void set(real r1, real r2, real r3, real r4)
     {
-        BOOST_STATIC_ASSERT(N == 4);
+        static_assert(N == 4, "");
         this->elems[0]=r1;
         this->elems[1]=r2;
         this->elems[2]=r3;
@@ -176,9 +187,10 @@ public:
     }
 
     /// Specific set for 5-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==5,int>::type = 0>
     void set(real r1, real r2, real r3, real r4, real r5)
     {
-        BOOST_STATIC_ASSERT(N == 5);
+        static_assert(N == 5, "");
         this->elems[0]=r1;
         this->elems[1]=r2;
         this->elems[2]=r3;
@@ -187,9 +199,10 @@ public:
     }
 
     /// Specific set for 6-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==6,int>::type = 0>
     void set(real r1, real r2, real r3, real r4, real r5, real r6)
     {
-        BOOST_STATIC_ASSERT(N == 6);
+        static_assert(N == 6, "");
         this->elems[0]=r1;
         this->elems[1]=r2;
         this->elems[2]=r3;
@@ -199,9 +212,10 @@ public:
     }
 
     /// Specific constructor for 7-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==7,int>::type = 0>
     void set(real r1, real r2, real r3, real r4, real r5, real r6, real r7)
     {
-        BOOST_STATIC_ASSERT(N == 7);
+        static_assert(N == 7, "");
         this->elems[0]=r1;
         this->elems[1]=r2;
         this->elems[2]=r3;
@@ -212,9 +226,10 @@ public:
     }
 
     /// Specific set for 8-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==8,int>::type = 0>
     void set(real r1, real r2, real r3, real r4, real r5, real r6, real r7, real r8)
     {
-        BOOST_STATIC_ASSERT(N == 8);
+        static_assert(N == 8, "");
         this->elems[0]=r1;
         this->elems[1]=r2;
         this->elems[2]=r3;
@@ -226,9 +241,10 @@ public:
     }
 
     /// Specific set for 9-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==9,int>::type = 0>
     void set(real r1, real r2, real r3, real r4, real r5, real r6, real r7, real r8, real r9)
     {
-        BOOST_STATIC_ASSERT(N == 9);
+        static_assert(N == 9, "");
         this->elems[0]=r1;
         this->elems[1]=r2;
         this->elems[2]=r3;
@@ -241,9 +257,10 @@ public:
     }
 
     /// Specific set for 12-elements vectors.
+    template<int NN = N, typename std::enable_if<NN==12,int>::type = 0>
     void set(real r1, real r2, real r3, real r4, real r5, real r6, real r7, real r8, real r9, real r10, real r11, real r12)
     {
-        BOOST_STATIC_ASSERT(N == 12);
+        static_assert(N == 12, "");
         this->elems[0]=r1;
         this->elems[1]=r2;
         this->elems[2]=r3;
@@ -271,10 +288,17 @@ public:
 
 
     /// Constructor from an N-1 elements vector and an additional value (added at the end).
+    //template<int NN = N, typename std::enable_if<(NN>1),int>::type = 0>
     Vec(const Vec<N-1,real>& v, real r1)
     {
-        BOOST_STATIC_ASSERT(N > 1);
+        static_assert(N > 1, "");
         set( v, r1 );
+    }
+
+    Vec(const helper::fixed_array<real, N>& p)
+    {
+        for(int i=0; i<N; i++)
+            this->elems[i] = p[i];
     }
 
     /// Constructor from a different size vector (null default value and ignoring outside entries)
@@ -302,52 +326,60 @@ public:
     }
 
     /// Special access to first element.
+    template<int NN = N, typename std::enable_if<(NN>=1),int>::type = 0>
     real& x()
     {
-        BOOST_STATIC_ASSERT(N >= 1);
+        static_assert(N >= 1, "");
         return this->elems[0];
     }
     /// Special access to second element.
+    template<int NN = N, typename std::enable_if<(NN>=2),int>::type = 0>
     real& y()
     {
-        BOOST_STATIC_ASSERT(N >= 2);
+        static_assert(N >= 2, "");
         return this->elems[1];
     }
     /// Special access to third element.
+    template<int NN = N, typename std::enable_if<(NN>=3),int>::type = 0>
     real& z()
     {
-        BOOST_STATIC_ASSERT(N >= 3);
+        static_assert(N >= 3, "");
         return this->elems[2];
     }
     /// Special access to fourth element.
+    template<int NN = N, typename std::enable_if<(NN>=4),int>::type = 0>
     real& w()
     {
-        BOOST_STATIC_ASSERT(N >= 4);
+        static_assert(N >= 4, "");
         return this->elems[3];
     }
 
     /// Special const access to first element.
+    template<int NN = N, typename std::enable_if<(NN>=1),int>::type = 0>
     const real& x() const
     {
-        BOOST_STATIC_ASSERT(N >= 1);
+        static_assert(N >= 1, "");
         return this->elems[0];
     }
     /// Special const access to second element.
+    template<int NN = N, typename std::enable_if<(NN>=2),int>::type = 0>
     const real& y() const
     {
-        BOOST_STATIC_ASSERT(N >= 2);
+        static_assert(N >= 2, "");
         return this->elems[1];
     }
     /// Special const access to third element.
+    template<int NN = N, typename std::enable_if<(NN>=3),int>::type = 0>
     const real& z() const
     {
-        BOOST_STATIC_ASSERT(N >= 3);
+        static_assert(N >= 3, "");
         return this->elems[2];
     }
     /// Special const access to fourth element.
+    template<int NN = N, typename std::enable_if<(NN>=4),int>::type = 0>
     const real& w() const
     {
-        BOOST_STATIC_ASSERT(N >= 4);
+        static_assert(N >= 4, "");
         return this->elems[3];
     }
 
@@ -370,13 +402,13 @@ public:
     }
 
     /// Sets every element to 0.
-    void clear()
+    inline void clear()
     {
         this->assign(real());
     }
 
     /// Sets every element to r.
-    void fill(real r)
+    inline void fill(real r)
     {
         this->assign(r);
     }
@@ -445,7 +477,7 @@ public:
     template<class real2>
     Vec<N,real> mulscalar(real2 f) const
     {
-        BOOST_STATIC_ASSERT(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1);
+        static_assert(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1, "");
         Vec<N,real> r(NOINIT);
         for (int i=0; i<N; i++)
             r[i] = this->elems[i]*(real)f;
@@ -465,7 +497,7 @@ public:
     template<class real2>
     void eqmulscalar(real2 f)
     {
-        BOOST_STATIC_ASSERT(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1);
+        static_assert(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1, "");
         for (int i=0; i<N; i++)
             this->elems[i]*=(real)f;
     }
@@ -483,7 +515,7 @@ public:
     template<class real2>
     Vec<N,real> divscalar(real2 f) const
     {
-        BOOST_STATIC_ASSERT(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1);
+        static_assert(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1, "");
         Vec<N,real> r(NOINIT);
         for (int i=0; i<N; i++)
             r[i] = this->elems[i]/(real)f;
@@ -503,7 +535,7 @@ public:
     template<class real2>
     void eqdivscalar(real2 f)
     {
-        BOOST_STATIC_ASSERT(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1);
+        static_assert(DataTypeInfo<real2>::ValidInfo && DataTypeInfo<real2>::Size==1, "");
         for (int i=0; i<N; i++)
             this->elems[i]/=(real)f;
     }
@@ -690,10 +722,10 @@ public:
     /// return true iff norm()==1
     bool isNormalized( real threshold=std::numeric_limits<real>::epsilon()*(real)10 ) const { return helper::rabs<real>( norm2()-(real)1 ) <= threshold; }
 
-    template<typename R>
+    template<typename R,int NN = N, typename std::enable_if<(NN==3),int>::type = 0>
     Vec cross( const Vec<3,R>& b ) const
     {
-        BOOST_STATIC_ASSERT(N == 3);
+        static_assert(N == 3, "");
         return Vec(
                 (real)((*this)[1]*b[2] - (*this)[2]*b[1]),
                 (real)((*this)[2]*b[0] - (*this)[0]*b[2]),
@@ -930,7 +962,7 @@ struct less< sofa::defaulttype::Vec<N,T> > : public binary_function< sofa::defau
 {
     bool operator()(const  sofa::defaulttype::Vec<N,T>& x, const  sofa::defaulttype::Vec<N,T>& y) const
     {
-        //std::cerr<<"specialized std::less, x = "<<x<<", y = "<<y<<std::endl;
+        //msg_info()<<"specialized std::less, x = "<<x<<", y = "<<y<<std::endl;
         for( unsigned i=0; i<N; ++i )
         {
             if( x[i]<y[i] )

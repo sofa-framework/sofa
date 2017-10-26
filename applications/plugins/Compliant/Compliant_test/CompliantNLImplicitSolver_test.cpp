@@ -36,7 +36,7 @@ struct CompliantNLImplicitSolver_test : public sofa::CompliantSolver_test
 
         // The solver
         using odesolver::CompliantNLImplicitSolver;
-        CompliantNLImplicitSolver::SPtr complianceSolver = addNew<CompliantNLImplicitSolver>(getRoot());
+        CompliantNLImplicitSolver::SPtr complianceSolver = addNew<CompliantNLImplicitSolver>(root);
         complianceSolver->iterations.setValue(1);
         complianceSolver->debug.setValue(debug);
         complianceSolver->alpha.setValue(1.0);
@@ -45,9 +45,9 @@ struct CompliantNLImplicitSolver_test : public sofa::CompliantSolver_test
         complianceSolver->precision.setValue(precision);
         complianceSolver->stabilization.beginEdit()->setSelectedItem(CompliantNLImplicitSolver::NO_STABILIZATION); complianceSolver->stabilization.endEdit();
 
-        linearsolver::LDLTSolver::SPtr linearSolver = addNew<linearsolver::LDLTSolver>(getRoot());
+        linearsolver::LDLTSolver::SPtr linearSolver = addNew<linearsolver::LDLTSolver>(root);
         linearSolver->debug.setValue(debug);
-        linearsolver::LDLTResponse::SPtr response = addNew<linearsolver::LDLTResponse>(getRoot());
+        linearsolver::LDLTResponse::SPtr response = addNew<linearsolver::LDLTResponse>(root);
         (void) response;
 
         // The string
@@ -82,7 +82,7 @@ struct CompliantNLImplicitSolver_test : public sofa::CompliantSolver_test
 
          // An integration step using the opposite dt should bring us back to the initial state
         core::MechanicalParams mparams;
-        simulation::common::MechanicalOperations mop (&mparams,getRoot()->getContext());
+        simulation::common::MechanicalOperations mop (&mparams,root->getContext());
         mop.computeForce( 0+dt, core::VecId::force(), core::VecId::position(), core::VecId::velocity(), false );
         Vector f1 = modeling::getVector( core::VecId::force() );
 
@@ -160,7 +160,7 @@ struct CompliantNLImplicitSolver_test : public sofa::CompliantSolver_test
 
         // We check the explicit step backward without a solver, because it would not accumulate compliance forces
         core::MechanicalParams mparams;
-        simulation::common::MechanicalOperations mop (&mparams,getRoot()->getContext());
+        simulation::common::MechanicalOperations mop (&mparams,root->getContext());
         mop.computeForce( 0+dt, core::VecId::force(), core::VecId::position(), core::VecId::velocity(), false );
         Vector f1 = modeling::getVector( core::VecId::force() );
 
@@ -225,7 +225,7 @@ struct CompliantNLImplicitSolver_test : public sofa::CompliantSolver_test
         }
 
 
-//        sofa::simulation::getSimulation()->exportXML( sofa::simulation::getSimulation()->GetRoot().get(), "/tmp/test.scn" );
+//        sofa::simulation::getSimulation()->exportXML( root.get(), "/tmp/test.scn" );
 
 
         //**************************************************
@@ -245,7 +245,7 @@ struct CompliantNLImplicitSolver_test : public sofa::CompliantSolver_test
 
         // We check the explicit step backward without a solver, because it would not accumulate compliance forces
         core::MechanicalParams mparams;
-        simulation::common::MechanicalOperations mop (&mparams,getRoot()->getContext());
+        simulation::common::MechanicalOperations mop (&mparams,root->getContext());
         mop.computeForce( 0+dt, core::VecId::force(), core::VecId::position(), core::VecId::velocity(), false );
         Vector f1 = modeling::getVector( core::VecId::force() );
 
@@ -341,7 +341,7 @@ struct CompliantNLImplicitSolver_test : public sofa::CompliantSolver_test
 
         // We check the explicit step backward without a solver, because it would not accumulate compliance forces
         core::MechanicalParams mparams;
-        simulation::common::MechanicalOperations mop (&mparams,getRoot()->getContext());
+        simulation::common::MechanicalOperations mop (&mparams,root->getContext());
         mop.computeForce( 0+dt, core::VecId::force(), core::VecId::position(), core::VecId::velocity(), false );
         Vector f1 = modeling::getVector( core::VecId::force() );
 

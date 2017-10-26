@@ -6,8 +6,8 @@
     <CollisionResponse response="default" />
     <DiscreteIntersection/>
     <Node name="LiverFFD-lowres">
-        <EulerImplicit />
-        <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
+        <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
+        <CGLinearSolver iterations="100" tolerance="1e-7" threshold="1e-7"/>
         <MechanicalObject />
         <UniformMass totalmass="100.0" />
         <RegularGrid nx="4" ny="3" nz="3" xmin="-10.25" xmax="-3.25" ymin="0.25" ymax="5.25" zmin="-2" zmax="3" />
@@ -26,7 +26,7 @@
     </Node>
     <Node name="LiverFFD-hires">
         <EulerImplicit />
-        <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
+        <CGLinearSolver iterations="100" tolerance="1e-7" threshold="1e-7"/>
         <MechanicalObject />
         <UniformMass totalmass="100.0" />
         <RegularGrid nx="8" ny="6" nz="6" xmin="-0.25" xmax="7.25" ymin="0.25" ymax="5.25" zmin="-2" zmax="3" />

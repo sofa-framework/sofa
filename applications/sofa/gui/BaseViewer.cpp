@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -13,11 +13,8 @@
 * more details.                                                               *
 *                                                                             *
 * You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* with this program. If not, see <http://www.gnu.org/licenses/>.              *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -121,13 +118,14 @@ const std::string BaseViewer::screenshotName()
 #ifndef SOFA_NO_OPENGL
     return capture.findFilename().c_str();
 #else
-	return "";
+    return "";
 #endif
 }
 
-void BaseViewer::setPrefix(const std::string& prefix)
+void BaseViewer::setPrefix(const std::string& prefix, bool prependDirectory)
 {
-    const std::string fullPrefix = sofa::gui::BaseGUI::getScreenshotDirectoryPath() + "/" + prefix;
+    const std::string fullPrefix = (prependDirectory) ? sofa::gui::BaseGUI::getScreenshotDirectoryPath() + "/" + prefix
+                                                      : prefix;
 #ifndef SOFA_NO_OPENGL
     capture.setPrefix(fullPrefix);
 #endif
@@ -229,8 +227,8 @@ void BaseViewer::setBackgroundImage(std::string imageFileName)
         {
             helper::vector<std::string> validExtensions;
             helper::io::Image::FactoryImage::getInstance()->uniqueKeys(std::back_inserter(validExtensions));
-            std::cerr << "Could not create: " << imageFileName << std::endl;
-            std::cerr << "Valid extensions: " << validExtensions << std::endl;
+            msg_error("BaseViewer") << "Could not create file '" << imageFileName <<"'" << msgendl
+                                    << "Valid extensions: " << validExtensions ;
         }
         else
         {
@@ -261,8 +259,8 @@ bool BaseViewer::load()
             currentCamera = sofa::core::objectmodel::New<component::visualmodel::InteractiveCamera>();
             currentCamera->setName(core::objectmodel::Base::shortName(currentCamera.get()));
             groot->addObject(currentCamera);
-            currentCamera->p_position.forceSet();
-            currentCamera->p_orientation.forceSet();
+            //currentCamera->p_position.forceSet();
+            //currentCamera->p_orientation.forceSet();
             currentCamera->bwdInit();
         }
         component::visualmodel::VisualStyle::SPtr visualStyle = NULL;

@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -38,10 +35,6 @@
 // FIX: temporarily disabled as SofaSimpleFem is not supposed to depend on SofaOpenGLVisual
 #define SIMPLEFEM_COLORMAP
 #define SOFATETRAHEDRONFEMFORCEFIELD_COLORMAP
-
-//#ifdef SOFATETRAHEDRONFEMFORCEFIELD_COLORMAP
-//#include <SofaOpenglVisual/ColorMap.h>
-//#endif
 
 #include <sofa/helper/ColorMap.h>
 
@@ -204,7 +197,7 @@ public:
         }
     }
 
-    void getRotations(defaulttype::BaseMatrix * rotations,int offset = 0)
+    void getRotations(defaulttype::BaseMatrix * rotations,int offset = 0) override
     {
         unsigned int nbdof = this->mstate->getSize();
 
@@ -297,9 +290,6 @@ public:
     
 
 #ifdef SOFATETRAHEDRONFEMFORCEFIELD_COLORMAP
-//#ifndef SOFA_NO_OPENGL
-//	visualmodel::ColorMap::SPtr _showStressColorMapReal;
-//#endif
     helper::ColorMap m_VonMisesColorMap;
 
     Data<std::string> _showStressColorMap;
@@ -339,9 +329,6 @@ protected:
         , _vonMisesPerNode(initData(&_vonMisesPerNode, "vonMisesPerNode", "von Mises Stress per node"))
         , _vonMisesStressColors(initData(&_vonMisesStressColors, "vonMisesStressColors", "Vector of colors describing the VonMises stress"))
 #ifdef SOFATETRAHEDRONFEMFORCEFIELD_COLORMAP
-#ifndef SOFA_NO_OPENGL
-//        , _showStressColorMapReal(sofa::core::objectmodel::New< visualmodel::ColorMap >())
-#endif
         , _showStressColorMap(initData(&_showStressColorMap,"showStressColorMap", "Color map used to show stress values"))
         , _showStressAlpha(initData(&_showStressAlpha, 1.0f, "showStressAlpha", "Alpha for vonMises visualisation"))
         , _showVonMisesStressPerNode(initData(&_showVonMisesStressPerNode,false,"showVonMisesStressPerNode","draw points  showing vonMises stress interpolated in nodes"))
@@ -362,13 +349,8 @@ protected:
 
     }
 
-    virtual ~TetrahedronFEMForceField()
-    {
-// 	    if (_gatherPt) delete _gatherPt;
-// 	    if (_gatherBsize)  delete _gatherBsize;
-// 	    _gatherPt = NULL;
-// 	    _gatherBsize = NULL
-    }
+    virtual ~TetrahedronFEMForceField();
+
 public:
     void setPoissonRatio(Real val) { this->_poissonRatio.setValue(val); }
 
@@ -425,24 +407,24 @@ public:
 
     void setUpdateStiffnessMatrix(bool val) { this->_updateStiffnessMatrix.setValue(val); }
 
-    virtual void reset();
-    virtual void init();
-    virtual void reinit();
+    virtual void reset() override;
+    virtual void init() override;
+    virtual void reinit() override;
 
-    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
+    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
+    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
 
     // Make other overloaded version of getPotentialEnergy() to show up in subclass.
     using InheritForceField::getPotentialEnergy;
     // getPotentialEnergy is implemented for small method
-    virtual SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&   x) const;
+    virtual SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&   x) const override;
 
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset);
-    virtual void addKToMatrix(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/ );
+    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset) override;
+    virtual void addKToMatrix(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/ ) override;
 
-    virtual void addSubKToMatrix(sofa::defaulttype::BaseMatrix *mat, const helper::vector<unsigned> & subMatrixIndex, SReal k, unsigned int &offset);
+    virtual void addSubKToMatrix(sofa::defaulttype::BaseMatrix *mat, const helper::vector<unsigned> & subMatrixIndex, SReal k, unsigned int &offset) override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
     // Getting the stiffness matrix of index i
     void getElementStiffnessMatrix(Real* stiffness, unsigned int nodeIdx);
@@ -488,14 +470,14 @@ protected:
     void applyStiffnessCorotational( Vector& f, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3, SReal fact=1.0  );
 
 
-    void handleTopologyChange()
+    void handleTopologyChange() override
     {
         needUpdateTopology = true;
     }
 
     void computeVonMisesStress();
 
-    void handleEvent(core::objectmodel::Event *event);
+    void handleEvent(core::objectmodel::Event *event) override;
 
 };
 

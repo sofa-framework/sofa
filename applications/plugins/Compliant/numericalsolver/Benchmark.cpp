@@ -53,7 +53,7 @@ void Benchmark::push(const vec& primal,
 
 
 unsigned Benchmark::elapsed() const {
-	using namespace boost::chrono;
+    using namespace std::chrono;
 	clock_type::time_point now = clock_type::now();
 	
 	return duration_cast<microseconds> (now - last).count();
@@ -62,7 +62,7 @@ unsigned Benchmark::elapsed() const {
 
 
 unsigned Benchmark::restart() {
-	using namespace boost::chrono;
+    using namespace std::chrono;
 	clock_type::time_point now = clock_type::now();
 	
 	unsigned res = ( duration_cast<microseconds> (now - last) ).count();

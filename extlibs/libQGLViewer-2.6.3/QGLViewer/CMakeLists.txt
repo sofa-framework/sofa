@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 project(QGLViewer)
 
 set(HEADER_FILES
@@ -116,4 +116,4 @@ set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${QGLVIEWER_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
 include(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework/SofaMacros.cmake)
-sofa_create_package(QGLViewer ${QGLVIEWER_VERSION} QGLViewer QGLViewer)
+sofa_create_package(${PROJECT_NAME} ${QGLVIEWER_VERSION} ${PROJECT_NAME} ${PROJECT_NAME})

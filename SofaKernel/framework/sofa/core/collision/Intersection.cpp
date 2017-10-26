@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -84,23 +81,27 @@ ElementIntersector* IntersectorMap::get(core::CollisionModel* model1, core::Coll
         return it->second;
     }
 
-    std::cerr << "ERROR: Element Intersector "
-            << gettypename(t1) << "-"
-            << gettypename(t2) << " NOT FOUND within :" << std::endl;
+
+    std::stringstream tmp;
     for(InternalMap::const_iterator it = intersectorsMap.begin(), itEnd = intersectorsMap.end(); it != itEnd; ++it)
     {
         helper::TypeInfo t1 = it->first.first;
         helper::TypeInfo t2 = it->first.second;
-        std::cerr << "  "
+        tmp << "  "
                 << gettypename(t1) << "-"
                 << gettypename(t2);
         ElementIntersector* i = it->second;
-        if (!i) std::cout << "  NULL";
+        if (!i)
+            tmp << "  NULL";
         else
-            std::cout << "  " << i->name();
-        std::cout << std::endl;
+            tmp << "  " << i->name();
+        tmp << msgendl;
     }
-    std::cout << std::endl;
+    tmp << msgendl;
+
+    msg_warning("IntersectorMap")
+            << "Element Intersector " << gettypename(t1) << "-" << gettypename(t2) << " NOT FOUND within :" << tmp.str() ;
+
 
     insert(t1, t2, 0);
     return 0;

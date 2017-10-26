@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -27,6 +24,7 @@
 
 #include "ProjectionToPlaneMapping.h"
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <iostream>
 
 namespace sofa
@@ -46,7 +44,7 @@ ProjectionToTargetPlaneMapping<TIn, TOut>::ProjectionToTargetPlaneMapping()
     , f_normals(initData(&f_normals, "normals", "Normals of the planes on which the points are projected"))
     , d_factor(initData(&d_factor, Real(1), "factor", "Projection factor (0->nothing, 1->projection on the plane (default), 2->planar symmetry, ..."))
     , d_drawScale(initData(&d_drawScale, SReal(10), "drawScale", "Draw scale"))
-    , d_drawColor(initData(&d_drawColor, defaulttype::Vec4f(1,0,0,0.5), "drawColor", "Draw color"))
+    , d_drawColor(initData(&d_drawColor, defaulttype::RGBAColor(1.0f,0.0f,0.0f,0.5f), "drawColor", "Draw color. (default=[1.0,0.0,0.0,0.5]))"))
 {
     d_drawScale.setGroup("Visualization");
     d_drawColor.setGroup("Visualization");
@@ -143,7 +141,6 @@ void ProjectionToTargetPlaneMapping<TIn, TOut>::applyJT(const core::MechanicalPa
 template <class TIn, class TOut>
 void ProjectionToTargetPlaneMapping<TIn, TOut>::applyJT(const core::ConstraintParams*, Data<InMatrixDeriv>& , const Data<OutMatrixDeriv>& )
 {
-    //    cerr<<"ProjectionToTargetPlaneMapping<TIn, TOut>::applyJT is not implemented " << endl;
 }
 
 
@@ -176,12 +173,8 @@ void ProjectionToTargetPlaneMapping<TIn, TOut>::draw(const core::visual::VisualP
     helper::ReadAccessor< Data<OutVecCoord> > origins(f_origins);
     helper::ReadAccessor< Data<OutVecCoord> > normals(f_normals);
 
-#ifndef SOFA_NO_OPENGL
-    glPushAttrib(GL_LIGHTING_BIT);
-    glDisable(GL_LIGHTING);
-
-    glBegin(GL_QUADS);
-
+    vparams->drawTool()->saveLastState();
+    vparams->drawTool()->setLightingEnabled(false);
 
     size_t nb = std::max( normals.size(), origins.size() );
     for(unsigned i=0; i<nb; i++ )
@@ -200,10 +193,8 @@ void ProjectionToTargetPlaneMapping<TIn, TOut>::draw(const core::visual::VisualP
         vparams->drawTool()->drawQuad( o -t0*scale -t1*scale, o +t0*scale -t1*scale, o +t0*scale +t1*scale, o -t0*scale +t1*scale, n, color );
 
     }
-    glEnd();
 
-    glPopAttrib();
-#endif // SOFA_NO_OPENGL
+    vparams->drawTool()->restoreLastState();
 }
 
 
@@ -228,7 +219,7 @@ ProjectionToPlaneMultiMapping<TIn, TOut>::ProjectionToPlaneMultiMapping()
     , f_indices(initData(&f_indices, "indices", "Indices of the parent points (if empty, all input dofs are mapped)"))
     , d_factor(initData(&d_factor, Real(1), "factor", "Projection factor (0->nothing, 1->projection on the plane (default), 2->planar symmetry, ..."))
     , d_drawScale(initData(&d_drawScale, SReal(10), "drawScale", "Draw scale"))
-    , d_drawColor(initData(&d_drawColor, defaulttype::Vec4f(0,1,0,1), "drawColor", "Draw color"))
+    , d_drawColor(initData(&d_drawColor, defaulttype::RGBAColor(0,1,0,1), "drawColor", "Draw color. (default=[0.0,1.0,0.0,1.0])"))
 {
 }
 
@@ -404,12 +395,8 @@ void ProjectionToPlaneMultiMapping<TIn, TOut>::draw(const core::visual::VisualPa
     const OutCoord& o = plane[0];
     OutCoord n = plane[1].normalized();
 
-#ifndef SOFA_NO_OPENGL
-    glPushAttrib(GL_LIGHTING_BIT);
-    glDisable(GL_LIGHTING);
-
-    glBegin(GL_QUADS);
-
+    vparams->drawTool()->saveLastState();
+    vparams->drawTool()->setLightingEnabled(false);
 
     OutCoord t0, t1;
 
@@ -422,11 +409,7 @@ void ProjectionToPlaneMultiMapping<TIn, TOut>::draw(const core::visual::VisualPa
 
     vparams->drawTool()->drawQuad( o -t0*scale -t1*scale, o +t0*scale -t1*scale, o +t0*scale +t1*scale, o -t0*scale +t1*scale, n, color );
 
-    glEnd();
-
-    glPopAttrib();
-#endif // SOFA_NO_OPENGL
-
+    vparams->drawTool()->restoreLastState();
 
     // normal
     helper::vector< defaulttype::Vector3 > points;
