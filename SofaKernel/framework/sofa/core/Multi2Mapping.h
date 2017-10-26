@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -109,22 +106,22 @@ public:
     const VecToModels& getToModels();
 
     /// Return a container of input models statically casted as BaseObject*
-    helper::vector<BaseState*> getFrom();
+    helper::vector<BaseState*> getFrom() override;
     /// Return container of output model statically casted as BaseObject*.
-    helper::vector<BaseState*> getTo();
+    helper::vector<BaseState*> getTo() override;
 
     /// Get the source (upper) model.
-    virtual helper::vector<behavior::BaseMechanicalState*> getMechFrom();
+    virtual helper::vector<behavior::BaseMechanicalState*> getMechFrom() override;
 
     /// Get the destination (lower, mapped) model.
-    virtual helper::vector<behavior::BaseMechanicalState*> getMechTo();
+    virtual helper::vector<behavior::BaseMechanicalState*> getMechTo() override;
 
     /// Apply ///
     /// Apply the mapping to position vectors.
     ///
     /// If the Mapping can be represented as a matrix J, this method computes
     /// $ out = J in $
-    virtual void apply (const MechanicalParams* mparams, MultiVecCoordId outPos, ConstMultiVecCoordId inPos )
+    virtual void apply (const MechanicalParams* mparams, MultiVecCoordId outPos, ConstMultiVecCoordId inPos ) override
     {
         helper::vector<OutDataVecCoord*> vecOutPos;
         getVecOutCoord(outPos, vecOutPos);
@@ -134,7 +131,10 @@ public:
         getConstVecIn2Coord(inPos, vecIn2Pos);
 
         this->apply(mparams, vecOutPos, vecIn1Pos, vecIn2Pos);
+
+#ifdef SOFA_USE_MASK
         this->m_forceMaskNewStep = true;
+#endif
     }
     /// This method must be reimplemented by all mappings.
     /// InPos and OutPos by default contains VecIds of type V_COORD.
@@ -149,7 +149,7 @@ public:
     /// This method computes
     /// $ out = J in $
     /// where J is the tangent operator (the linear approximation) of the mapping
-    virtual void applyJ (const MechanicalParams* mparams, MultiVecDerivId outVel, ConstMultiVecDerivId inVel )
+    virtual void applyJ (const MechanicalParams* mparams, MultiVecDerivId outVel, ConstMultiVecDerivId inVel ) override
     {
         helper::vector<OutDataVecDeriv*> vecOutVel;
         getVecOutDeriv(outVel, vecOutVel);
@@ -197,7 +197,7 @@ public:
 
     /// ApplyJT (Force)///
     /// Apply the mapping to Force vectors.
-    virtual void applyJT (const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce )
+    virtual void applyJT (const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce ) override
     {
         helper::vector<In1DataVecDeriv*> vecOut1Force;
         getVecIn1Deriv(inForce, vecOut1Force);
@@ -208,11 +208,13 @@ public:
         getConstVecOutDeriv(outForce, vecInForce);
         this->applyJT(mparams, vecOut1Force, vecOut2Force, vecInForce);
 
+#ifdef SOFA_USE_MASK
         if( this->m_forceMaskNewStep )
         {
             this->m_forceMaskNewStep = false;
             updateForceMask();
         }
+#endif
     }
     /// This method must be reimplemented by all mappings.
     /// InDeriv and OutDeriv by default contains VecIds of type V_DERIV.
@@ -224,7 +226,7 @@ public:
         const helper::vector<const OutDataVecDeriv*>& dataVecInForce) = 0;
 
     /// ApplyJT (Constraint)///
-    virtual void applyJT(const ConstraintParams* cparams, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst )
+    virtual void applyJT(const ConstraintParams* cparams, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst ) override
     {
         helper::vector<In1DataMatrixDeriv*> matOut1Const;
         getMatIn1Deriv(inConst, matOut1Const);
@@ -245,7 +247,7 @@ public:
     }
 
     /// computeAccFromMapping
-    virtual void computeAccFromMapping(const MechanicalParams* mparams, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc )
+    virtual void computeAccFromMapping(const MechanicalParams* mparams, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc ) override
     {
         helper::vector<OutDataVecDeriv*> vecOutAcc;
         getVecOutDeriv(outAcc, vecOutAcc);
@@ -272,14 +274,14 @@ public:
     {
     }
 
-    virtual void init();
+    virtual void init() override;
 
     /// Disable the mapping to get the original coordinates of the mapped model.
     ///
     /// It is for instance used in RigidMapping to get the local coordinates of the object.
-    virtual void disable();
+    virtual void disable() override;
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -372,7 +374,7 @@ protected:
     ///
     /// That way, we can optimize Jacobian sparsity.
     /// Every Dofs are inserted by default. The mappings using only a subset of dofs should only insert these dofs in the mask.
-    virtual void updateForceMask();
+    virtual void updateForceMask() override;
 
     /// keep pointers on the masks
     helper::vector<helper::StateMask*> maskFrom1, maskFrom2, maskTo;

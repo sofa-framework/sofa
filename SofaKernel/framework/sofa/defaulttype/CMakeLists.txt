@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 project(SofaDefaultType)
 
 set(HEADER_FILES
@@ -7,7 +7,6 @@ set(HEADER_FILES
     BoundingBox.h
     DataTypeInfo.h
     Frame.h
-    LaparoscopicRigidTypes.h
     MapMapSparseMatrix.h
     Mat.h
     MatSym.h
@@ -29,7 +28,14 @@ set(HEADER_FILES
     VecTypes.h
     defaulttype.h
     init.h
+    Color.h
 )
+
+if(EIGEN3_FOUND OR Eigen3_FOUND)
+    list(APPEND HEADER_FILES 
+         MapMapSparseMatrixEigenUtils.h
+        )
+endif()
 
 set(SOURCE_FILES
     BaseMatrix.cpp
@@ -45,7 +51,7 @@ set(SOURCE_FILES
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper)
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>/../..")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../..>")
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_DEFAULTTYPE")
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION "${SOFAFRAMEWORK_VERSION}")

@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -95,10 +92,6 @@ void MechanicalStateController<Vec1dTypes>::applyController()
     using sofa::defaulttype::Vec;
 
 
-    //std::cout<<" applyController() : device "<< device << "  buttonDevice " <<buttonDevice<<std::endl;
-
-//	if(device)
-//	{
     if(mState)
     {
         helper::WriteAccessor<Data<VecCoord> > x0 = *mState->write(sofa::core::VecCoordId::restPosition());
@@ -109,15 +102,13 @@ void MechanicalStateController<Vec1dTypes>::applyController()
             else
                 x0[0].x() =  -0.1;
             /*
-            				if (x0[1].x() > 0.001)
-            					x0[1].x() -= 0.05;
-            				else
-            					x0[1].x() = 0.001;*/
+                            if (x0[1].x() > 0.001)
+                                x0[1].x() -= 0.05;
+                            else
+                                x0[1].x() = 0.001;*/
         }
         else
         {
-            //sout<<"mouseMode==Release"<<sendl;
-
             if (x0[0].x() > -0.5)	 //angle d'ouverture max
                 x0[0].x() -= 0.05;   //vitesse d'ouverture
             else
@@ -152,14 +143,6 @@ void MechanicalStateController<Vec1dTypes>::applyController()
 
         }
     }
-    //}
-
-
-
-    //	//sofa::simulation::Node *node = static_cast<sofa::simulation::Node*> (this->getContext());
-    //	//sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor mechaVisitor; mechaVisitor.execute(node);
-    //	//sofa::simulation::UpdateMappingVisitor updateVisitor; updateVisitor.execute(node);
-    //}
 };
 #endif
 
@@ -252,7 +235,7 @@ void MechanicalStateController<Vec1fTypes>::applyController()
 
 
     //	//sofa::simulation::Node *node = static_cast<sofa::simulation::Node*> (this->getContext());
-    //	//sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor mechaVisitor; mechaVisitor.execute(node);
+    //	//sofa::simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor mechaVisitor; mechaVisitor.execute(node);
     //	//sofa::simulation::UpdateMappingVisitor updateVisitor; updateVisitor.execute(node);
     //}
 };

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 project(SofaFramework)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
@@ -30,26 +30,27 @@ option(SOFA_NO_UPDATE_BBOX
 option(SOFA_DUMP_VISITOR_INFO
 "Compile Sofa with the SOFA_DUMP_VISITOR_INFO macro defined." OFF)
 
-set(SOFA_FLOATING_POINT_TYPE both CACHE STRING
-"Type used for floating point values in SOFA. It actually determines:
- - what template instanciations will be compiled (via the definition of the
-   SOFA_FLOAT and SOFA_DOUBLE macros)
- - what is the type behind the 'SReal' typedef used throughout SOFA. (If 'both'
-   is selected, SReal defaults to double.)")
-set_property(CACHE SOFA_FLOATING_POINT_TYPE PROPERTY STRINGS float double both)
-
-
 if(MSVC)
     option(SOFA_VECTORIZE "Enable the use of SSE2 instructions by the compiler (Only available for MSVC)." OFF)
 endif()
 
-if(${SOFA_FLOATING_POINT_TYPE} STREQUAL double)
-    set(SOFA_DOUBLE 1)          # Used in sofa/config.h.in
-elseif(${SOFA_FLOATING_POINT_TYPE} STREQUAL float)
-    set(SOFA_FLOAT 1)           # Used in sofa/config.h.in
+if(SOFA_WITH_DEPRECATED)
+    set(SOFA_WITH_DEPRECATED_ "1")
+else()
+    set(SOFA_WITH_DEPRECATED_ "0")
 endif()
 
+if(SOFA_WITH_THREADING)
+    set(SOFA_WITH_THREADING_ "1")
+else()
+    set(SOFA_WITH_THREADING_ "0")
+endif()
 
+if(SOFA_WITH_EXPERIMENTAL_FEATURES)
+    set(SOFA_WITH_EXPERIMENTAL_FEATURES_ "1")
+else()
+    set(SOFA_WITH_EXPERIMENTAL_FEATURES_ "0")
+endif()
 
 ### Dependencies
 
@@ -120,47 +121,49 @@ if(ZLIB_FOUND)
 endif()
 set(SOFA_HAVE_ZLIB ${ZLIB_FOUND})
 
-## PNG
-find_package(PNG)
-if(PNG_FOUND)
-    sofa_create_target(PNG SofaFramework "${PNG_LIBRARY}" "${PNG_INCLUDE_DIRS}")
-	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${PNG_Target})
-
-
-    sofa_install_get_libraries("${PNG_LIBRARY}/libpng")
-endif()
-set(SOFA_HAVE_PNG ${PNG_FOUND})
-
 ## Boost
-find_package(Boost COMPONENTS thread system date_time chrono QUIET)
+# required boost libraries
+find_package(Boost REQUIRED system filesystem locale 
+                   OPTIONAL_COMPONENTS thread date_time )
 
-set(SOFA_HAVE_BOOST_SYSTEM ${Boost_SYSTEM_FOUND})
-set(SOFA_HAVE_BOOST_THREAD ${Boost_THREAD_FOUND})
 set(SOFA_HAVE_BOOST_DATE_TIME ${Boost_DATE_TIME_FOUND})
-set(SOFA_HAVE_BOOST_CHRONO ${Boost_CHRONO_FOUND})
+set(SOFA_HAVE_BOOST_SYSTEM ${Boost_SYSTEM_FOUND})
+set(SOFA_HAVE_BOOST_LOCALE ${Boost_LOCALE_FOUND})
+set(SOFA_HAVE_BOOST_FILESYSTEM ${Boost_FILESYSTEM_FOUND})
+set(SOFA_HAVE_BOOST_THREAD ${Boost_THREAD_FOUND})
 
 list(APPEND Boost_INCLUDE_DIRS ${Boost_INCLUDE_DIR})
 
 if(SOFA_HAVE_BOOST_SYSTEM
-   AND SOFA_HAVE_BOOST_THREAD
-   AND SOFA_HAVE_BOOST_DATE_TIME
-   AND SOFA_HAVE_BOOST_CHRONO)
+   AND SOFA_HAVE_BOOST_FILESYSTEM
+   AND SOFA_HAVE_BOOST_LOCALE)
+
     set(SOFA_HAVE_BOOST 1)
 
     sofa_create_target(BoostSystem SofaFramework "${Boost_SYSTEM_LIBRARY}" "${Boost_INCLUDE_DIRS}")
-    sofa_create_target(BoostThread SofaFramework "${Boost_THREAD_LIBRARY}" "${Boost_INCLUDE_DIRS}")
-    sofa_create_target(BoostDateTime SofaFramework "${Boost_DATE_TIME_LIBRARY}" "${Boost_INCLUDE_DIRS}")
-    sofa_create_target(BoostChrono SofaFramework "${Boost_CHRONO_LIBRARY}" "${Boost_INCLUDE_DIRS}")
+    sofa_create_target(BoostLocale SofaFramework "${Boost_LOCALE_LIBRARY}" "${Boost_INCLUDE_DIRS}")
+    sofa_create_target(BoostFileSystem SofaFramework "${Boost_FILESYSTEM_LIBRARY}" "${Boost_INCLUDE_DIRS}")
 
 	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostSystem_Target})
-	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostThread_Target})
-	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostDateTime_Target})
-	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostChrono_Target})
+    list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostLocale_Target})
+    list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostFileSystem_Target})
 
     sofa_install_get_libraries(${Boost_SYSTEM_LIBRARY})
-    sofa_install_get_libraries(${Boost_THREAD_LIBRARY})
-    sofa_install_get_libraries(${Boost_DATE_TIME_LIBRARY})
-    sofa_install_get_libraries(${Boost_CHRONO_LIBRARY})
+    sofa_install_get_libraries(${Boost_LOCALE_LIBRARY})
+    sofa_install_get_libraries(${Boost_FILESYSTEM_LIBRARY})
+
+    if(SOFA_HAVE_BOOST_DATE_TIME)
+        sofa_create_target(BoostDateTime SofaFramework "${Boost_DATE_TIME_LIBRARY}" "${Boost_INCLUDE_DIRS}")
+        list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostDateTime_Target})
+        sofa_install_get_libraries(${Boost_DATE_TIME_LIBRARY})
+    endif()
+
+    if(SOFA_HAVE_BOOST_THREAD)
+        sofa_create_target(BoostThread SofaFramework "${Boost_THREAD_LIBRARY}" "${Boost_INCLUDE_DIRS}")
+        list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostThread_Target})
+        sofa_install_get_libraries(${Boost_THREAD_LIBRARY})
+    endif()
+
 else()
     list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIRS})
 endif()
@@ -169,20 +172,26 @@ endif()
 find_package(Eigen3 REQUIRED)
 list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${EIGEN3_INCLUDE_DIR})
 
+## JSON
+list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${JSON_INCLUDE_DIR})
 
 ## sofa/config.h
 configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/sofa/config.h")
 install(FILES "${CMAKE_BINARY_DIR}/include/sofa/config.h" DESTINATION "include/sofa")
+
+configure_file(build_option_componentset.h.in "${CMAKE_BINARY_DIR}/include/sofa/config/build_option_componentset.h")
+install(FILES "${CMAKE_BINARY_DIR}/include/sofa/config/build_option_componentset.h" DESTINATION "include/sofa/config")
+
 # make sure everyone in the build tree can see <sofa/config.h>
-list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR})
+#list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR})
 list(REMOVE_DUPLICATES SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES)
 
 ## Version
-set(SOFAFRAMEWORK_VERSION "15.12.0")
+set(SOFAFRAMEWORK_VERSION "17.12.dev")
 
 ## sofa/version.h
-set(SOFA_VERSION "151200")
-set(SOFA_VERSION_STR "\"devel\"")
+set(SOFA_VERSION "171299")
+set(SOFA_VERSION_STR "\"17.12.dev\"")
 configure_file(../framework/sofa/version.h.in "${CMAKE_BINARY_DIR}/include/sofa/version.h")
 install(FILES "${CMAKE_BINARY_DIR}/include/sofa/version.h" DESTINATION include/sofa)
 
@@ -219,29 +228,6 @@ if(MSVC)
     if(SOFA_VECTORIZE)
         target_compile_options(SofaHelper PUBLIC "/arch:SSE2 /fp:fast")
     endif()
-endif()
-
-# C++11
-if(NOT WIN32)
-    if(SOFA_USE_C++11)
-
-        # If we compile in c++11, then everyone linking against us should, so we
-        # put -std=c++11 in the INTERFACE_COMPILE_OPTIONS of SofaHelper.
-        #
-        # Exceptionnally, you can prevent a target from being compiled with this
-        # option with the SOFA_NO_CXX11 property.  E.g.
-        #   set_target_properties(Foo PROPERTIES SOFA_NO_CXX11 1)
-
-        target_compile_options(SofaHelper PUBLIC "$<$<AND:$<NOT:$<BOOL:$<TARGET_PROPERTY:SOFA_NO_CXX11>>>,$<STREQUAL:$<TARGET_PROPERTY:LINKER_LANGUAGE>,CXX>>:${CXX11_FLAG}>")
-        if ("${CMAKE_CXX_COMPILER} ${CMAKE_CXX_COMPILER_ARG1}" MATCHES ".*clang") # Wno-deprecated-register does not exist in GCC
-            target_compile_options(SofaHelper PUBLIC "$<$<AND:$<NOT:$<BOOL:$<TARGET_PROPERTY:SOFA_NO_CXX11>>>,$<STREQUAL:$<TARGET_PROPERTY:LINKER_LANGUAGE>,CXX>>:-Wno-deprecated-register>")
-        endif()
-    endif()
-endif()
-
-# Eigen
-if(MSVC)
-    target_compile_definitions(SofaHelper PUBLIC "-DEIGEN_DONT_ALIGN")
 endif()
 
 set(SOFAFRAMEWORK_TARGETS SofaCore SofaDefaultType SofaHelper)

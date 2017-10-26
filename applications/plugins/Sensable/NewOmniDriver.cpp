@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Plugins                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -372,7 +369,10 @@ int NewOmniDriver::initDevice()
 
             if (HD_DEVICE_ERROR(error = hdGetError()))
             {
-                std::cout<<"[NewOmni] Failed to initialize the device "<<autreOmniDriver[i]->deviceName.getValue()<<std::endl;
+              std::string m = "[NewOmni] Failed to initialize the device " + autreOmniDriver[i]->deviceName.getValue();
+              printError(&error, m.c_str());
+              autreOmniDriver[i]->isInitialized = false;
+              return -1;
             }
             else
             {
@@ -474,10 +474,10 @@ void NewOmniDriver::setForceFeedback(ForceFeedback* ff)
 //executed once at the start of Sofa, initialization of all variables excepts haptics-related ones
 void NewOmniDriver::init()
 {
+    sofa::simulation::Node::SPtr rootContext = static_cast<simulation::Node*>(this->getContext()->getRootContext());
     if(firstDevice)
     {
-        simulation::Node *context = dynamic_cast<simulation::Node*>(this->getContext()->getRootContext());
-        context->getTreeObjects<NewOmniDriver>(&autreOmniDriver);
+        rootContext->getTreeObjects<NewOmniDriver>(&autreOmniDriver);
         sout<<"Detected NewOmniDriver:"<<sendl;
         for(unsigned int i=0; i<autreOmniDriver.size(); i++)
         {
@@ -541,13 +541,7 @@ void NewOmniDriver::init()
         visualNode[i].mapping = NULL;
     }
 
-    parent = dynamic_cast<simulation::Node*>(this->getContext());
-
-    sofa::simulation::tree::GNode *parentRoot = dynamic_cast<sofa::simulation::tree::GNode*>(this->getContext());
-    if (parentRoot->parent())
-        parentRoot = parentRoot->parent();
-
-    nodePrincipal= parentRoot->createChild("omniVisu "+deviceName.getValue());
+    nodePrincipal = rootContext->createChild("omniVisu "+deviceName.getValue());
     nodePrincipal->updateContext();
 
     DOFs=NULL;
@@ -672,7 +666,10 @@ void NewOmniDriver::bwdInit()
         }
         else
         {
-            autreOmniDriver[this->deviceIndex.getValue()]->DOFs = DOFs;
+          sofa::helper::WriteAccessor<sofa::core::objectmodel::Data<VecCoord> > xfree = *DOFs->write(this->setRestShape.getValue() ? sofa::core::VecCoordId::restPosition() : sofa::core::VecCoordId::freePosition());
+          if (xfree.size() == 0)
+            xfree.resize(1);
+          autreOmniDriver[this->deviceIndex.getValue()]->DOFs = DOFs;
         }
 }
 
@@ -1036,7 +1033,7 @@ void NewOmniDriver::onAnimateBeginEvent()
             sofa::simulation::Node *node = dynamic_cast<sofa::simulation::Node*> (this->getContext());
             if (node)
             {
-                sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor mechaVisitor(sofa::core::MechanicalParams::defaultInstance()); mechaVisitor.execute(node);
+                sofa::simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor mechaVisitor(sofa::core::MechanicalParams::defaultInstance()); mechaVisitor.execute(node);
                 sofa::simulation::UpdateMappingVisitor updateVisitor(sofa::core::ExecParams::defaultInstance()); updateVisitor.execute(node);
             }
         }

@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -28,6 +25,7 @@
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <iostream>
 #include <sofa/helper/logging/Messaging.h>
+#include <sofa/helper/system/Locale.h>
 
 namespace sofa
 {
@@ -86,10 +84,10 @@ std::string BaseObjectDescription::getBaseFile()
 }
 
 ///// Get all attribute data, read-only
-//const BaseObjectDescription::AttributeMap& BaseObjectDescription::getAttributeMap() const
-//{
-//    return attributes;
-//}
+const BaseObjectDescription::AttributeMap& BaseObjectDescription::getAttributeMap() const
+{
+    return attributes;
+}
 
 /// Find an object description given its name (relative to this object)
 BaseObjectDescription* BaseObjectDescription::find(const char* /*nodeName*/, bool /*absolute*/)
@@ -97,10 +95,15 @@ BaseObjectDescription* BaseObjectDescription::find(const char* /*nodeName*/, boo
     return NULL;
 }
 
-/// Remove an attribute given its name
-bool BaseObjectDescription::removeAttribute(const std::string&)
+/// Remove an attribute given its name, returns false if the attribute was not there.
+bool BaseObjectDescription::removeAttribute(const std::string& attr)
 {
-    return false;
+    AttributeMap::iterator it = attributes.find(attr);
+    if (it == attributes.end())
+        return false;
+
+    attributes.erase(it);
+    return true;
 }
 
 /// Get an attribute given its name (return defaultVal if not present)
@@ -112,6 +115,58 @@ const char* BaseObjectDescription::getAttribute(const std::string& attr, const c
     else
         return it->second.c_str();
 }
+
+/// Docs is in .h
+float BaseObjectDescription::getAttributeAsFloat(const std::string& attr, const float defaultVal)
+{
+    AttributeMap::iterator it = attributes.find(attr);
+    if (it == attributes.end())
+        return defaultVal;
+
+    // Make sure that strtof uses a dot '.' as the decimal separator.
+    helper::system::TemporaryLocale locale(LC_NUMERIC, "C");
+
+    const char* attrstr=it->second.c_str();
+    char* end=nullptr;
+    float retval = strtof(attrstr, &end);
+
+    /// It is important to check that the attribute was totally parsed to report
+    /// message to users because a silent error is the worse thing that can happen in UX.
+    if(end !=  attrstr+strlen(attrstr)){
+        std::stringstream msg;
+        msg << "Unable to parse a float value from attribute '" << attr << "'='"<<it->second.c_str()<<"'. "
+               "Use the default value '"<<defaultVal<< "' instead.";
+        errors.push_back(msg.str());
+        return defaultVal ;
+    }
+
+    return retval ;
+}
+
+/// Docs is in .h
+int BaseObjectDescription::getAttributeAsInt(const std::string& attr, const int defaultVal)
+{
+    AttributeMap::iterator it = attributes.find(attr);
+    if (it == attributes.end())
+        return defaultVal;
+
+    const char* attrstr=it->second.c_str();
+    char* end=nullptr;
+    int retval = strtol(attrstr, &end, 10);
+
+    /// It is important to check that the attribute was totally parsed to report
+    /// message to users because a silent error is the worse thing that can happen in UX.
+    if(end !=  attrstr+strlen(attrstr)){
+        std::stringstream msg;
+        msg << "Unable to parse an integer value from attribute '" << attr << "'='"<<it->second.c_str()<<"'. "
+               "Use the default value '"<<defaultVal<< "' instead.";
+        errors.push_back(msg.str());
+        return defaultVal;
+    }
+
+    return retval ;
+}
+
 
 /// Set an attribute. Override any existing value
 void BaseObjectDescription::setAttribute(const std::string& attr, const char* val)

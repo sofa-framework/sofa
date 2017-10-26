@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -77,31 +74,38 @@ using defaulttype::BaseMatrix;
 
 template <class DataTypes, class MassType>
 UniformMass<DataTypes, MassType>::UniformMass()
-    : mass ( initData ( &mass, MassType ( 1.0f ), "mass",
-                          "Mass of each particle" ) )
+    : d_mass ( initData ( &d_mass, MassType ( 1.0f ), "mass",
+                          "Specify a unique mass for all the particles.                      "
+                          "If the mass attribute is set then totalmass is deduced from it     "
+                          "using the following formula: totalmass = mass * number of particules"
+                          "The default value is {1.0}" ) )
 
-    , totalMass ( initData ( &totalMass, (SReal)0.0, "totalmass",
-                               "Sum of the particles' masses" ) )
+    , d_totalMass ( initData ( &d_totalMass, (SReal)0.0, "totalmass",
+                               "Specify a unique mass for all the particles.                        "
+                               "If the totalmass attribute is set then the mass is deduced from it   "
+                               "using the following formula: mass = totalmass / number of particules "
+                               "If unspecified the default value is totalmass = mass * number of particules."
+                                ) )
 
-    , filenameMass ( initData ( &filenameMass, "filename",
-                                  "Rigid file to load the mass parameters" ) )
+    , d_filenameMass ( initData ( &d_filenameMass, "filename",
+                                  "rigid file to load the mass parameters" ) )
 
-    , showCenterOfGravity ( initData ( &showCenterOfGravity, false, "showGravityCenter",
+    , d_showCenterOfGravity ( initData ( &d_showCenterOfGravity, false, "showGravityCenter",
                                          "display the center of gravity of the system" ) )
 
-    , showAxisSize ( initData ( &showAxisSize, 1.0f, "showAxisSizeFactor",
+    , d_showAxisSize ( initData ( &d_showAxisSize, 1.0f, "showAxisSizeFactor",
                                   "factor length of the axis displayed (only used for rigids)" ) )
 
-    , computeMappingInertia ( initData ( &computeMappingInertia, false, "compute_mapping_inertia",
+    , d_computeMappingInertia ( initData ( &d_computeMappingInertia, false, "compute_mapping_inertia",
                                            "to be used if the mass is placed under a mapping" ) )
 
-    , showInitialCenterOfGravity ( initData ( &showInitialCenterOfGravity, false, "showInitialCenterOfGravity",
+    , d_showInitialCenterOfGravity ( initData ( &d_showInitialCenterOfGravity, false, "showInitialCenterOfGravity",
                                                 "display the initial center of gravity of the system" ) )
 
-    , showX0 ( initData ( &showX0, false, "showX0",
+    , d_showX0 ( initData ( &d_showX0, false, "showX0",
                             "display the rest positions" ) )
 
-    , localRange ( initData ( &localRange, Vec<2,int> ( -1,-1 ), "localRange",
+    , d_localRange ( initData ( &d_localRange, Vec<2,int> ( -1,-1 ), "localRange",
                                 "optional range of local DOF indices. \n"
                               "Any computation involving only indices outside of this range \n"
                               "are discarded (useful for parallelization using mesh partitionning)" ) )
@@ -109,33 +113,39 @@ UniformMass<DataTypes, MassType>::UniformMass()
     , d_indices ( initData ( &d_indices, "indices",
                              "optional local DOF indices. Any computation involving only indices outside of this list are discarded" ) )
 
-    , handleTopoChange ( initData ( &handleTopoChange, false, "handleTopoChange",
+    , d_handleTopoChange ( initData ( &d_handleTopoChange, false, "handleTopoChange",
                                       "The mass and totalMass are recomputed on particles add/remove." ) )
 
-    , preserveTotalMass( initData ( &preserveTotalMass, false, "preserveTotalMass",
+    , d_preserveTotalMass( initData ( &d_preserveTotalMass, false, "preserveTotalMass",
                                       "Prevent totalMass from decreasing when removing particles."))
 {
-    this->addAlias(&totalMass,"totalMass");
+    this->addAlias(&d_totalMass,"totalMass");
     constructor_message();
 }
-
 
 template <class DataTypes, class MassType>
 UniformMass<DataTypes, MassType>::~UniformMass()
 {}
 
+template <class DataTypes, class MassType>
+void UniformMass<DataTypes, MassType>::constructor_message()
+{
+    d_filenameMass.setDisplayed(true) ;
+    d_filenameMass.setReadOnly(true) ;
+    d_filenameMass.setValue("unused") ;
+    d_filenameMass.setHelp("File storing the mass parameters [rigid objects only].");
+}
 
 template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::setMass ( const MassType& m )
 {
-    mass.setValue ( m );
+    d_mass.setValue ( m );
 }
-
 
 template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::setTotalMass ( SReal m )
 {
-    totalMass.setValue ( m );
+    d_totalMass.setValue ( m );
 }
 
 
@@ -144,15 +154,26 @@ void UniformMass<DataTypes, MassType>::reinit()
 {
     WriteAccessor<Data<vector<int> > > indices = d_indices;
     m_doesTopoChangeAffect = false;
-    if(mstate==NULL) return;
+
+    if(mstate==NULL){
+        msg_warning(this) << "Missing mechanical state. \n"
+                             "UniformMass need to be used with an object also having a MechanicalState. \n"
+                             "To remove this warning: add a <MechanicalObject/> to the parent node of the one \n"
+                             " containing this <UniformMass/>";
+        return;
+    }
+
+    if ( d_filenameMass.isSet() && d_filenameMass.getValue() != "unused" ){
+        loadRigidMass(d_filenameMass.getFullPath()) ;
+    }
 
     //If localRange is set, update indices
-    if (localRange.getValue()[0] >= 0
-        && localRange.getValue()[1] > 0
-        && localRange.getValue()[1] + 1 < (int)mstate->getSize())
+    if (d_localRange.getValue()[0] >= 0
+        && d_localRange.getValue()[1] > 0
+        && d_localRange.getValue()[1] + 1 < (int)mstate->getSize())
     {
         indices.clear();
-        for(int i=localRange.getValue()[0]; i<=localRange.getValue()[1]; i++)
+        for(int i=d_localRange.getValue()[0]; i<=d_localRange.getValue()[1]; i++)
             indices.push_back(i);
     }
 
@@ -164,16 +185,30 @@ void UniformMass<DataTypes, MassType>::reinit()
             indices.push_back(i);
         m_doesTopoChangeAffect = true;
     }
+    if(d_totalMass.getValue() < 0.0 || d_mass.getValue() < 0.0){
+        msg_warning(this) << "The mass or totalmass data field cannot have negative values.\n"
+                             "Switching back to the default value, mass = 1.0 and totalmass = mass * num_position. \n"
+                             "To remove this warning you need to use positive values in totalmass and mass data field";
+
+        d_totalMass.setValue(0.0) ;
+        d_mass.setValue(1.0) ;
+    }
 
     //Update mass and totalMass
-    if (totalMass.getValue() > 0)
+    if (d_totalMass.getValue() > 0)
     {
-        MassType *m = mass.beginEdit();
-        *m = ( ( typename DataTypes::Real ) totalMass.getValue() / indices.size() );
-        mass.endEdit();
+        if (d_mass.isSet()) {
+            msg_warning(this) << "Totalmass value overriding the value of the attribute Mass.\n"
+                                 "Mass = TotalMass / num_position. \n"
+                                 "To remove this warning you need to set either totalmass or mass data field but not both.";
+        }
+        MassType *m = d_mass.beginEdit();
+        *m = ( ( typename DataTypes::Real ) d_totalMass.getValue() / indices.size() );
+        d_mass.endEdit();
+
     }
     else
-        totalMass.setValue ( indices.size() * (Real)mass.getValue() );
+        d_totalMass.setValue ( indices.size() * (Real)d_mass.getValue() );
 
 }
 
@@ -181,9 +216,6 @@ void UniformMass<DataTypes, MassType>::reinit()
 template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::init()
 {
-    loadRigidMass ( filenameMass.getFullPath() );
-    if ( filenameMass.getValue().empty() )
-        filenameMass.setDisplayed ( false );
     Mass<DataTypes>::init();
     reinit();
 }
@@ -199,7 +231,7 @@ void UniformMass<DataTypes, MassType>::handleTopologyChange()
     {
         indices.clear();
         for(size_t i=0; i<mstate->getSize(); i++)
-            indices.push_back(i);
+            indices.push_back((int)i);
     }
 
     if ( meshTopology != 0 )
@@ -212,21 +244,21 @@ void UniformMass<DataTypes, MassType>::handleTopologyChange()
             switch ( ( *it )->getChangeType() )
             {
             case core::topology::POINTSADDED:
-                if ( handleTopoChange.getValue() && m_doesTopoChangeAffect)
+                if ( d_handleTopoChange.getValue() && m_doesTopoChangeAffect)
                 {
-                    MassType* m = mass.beginEdit();
-                    *m = ( ( typename DataTypes::Real ) totalMass.getValue() / mstate->getSize() );
-                    mass.endEdit();
+                    MassType* m = d_mass.beginEdit();
+                    *m = ( ( typename DataTypes::Real ) d_totalMass.getValue() / mstate->getSize() );
+                    d_mass.endEdit();
                 }
                 break;
 
             case core::topology::POINTSREMOVED:
-                if ( handleTopoChange.getValue() && m_doesTopoChangeAffect)
+                if ( d_handleTopoChange.getValue() && m_doesTopoChangeAffect)
                 {
-                    if (!preserveTotalMass.getValue())
-                        totalMass.setValue (mstate->getSize() * (Real)mass.getValue() );
+                    if (!d_preserveTotalMass.getValue())
+                        d_totalMass.setValue (mstate->getSize() * (Real)d_mass.getValue() );
                     else
-                        mass.setValue( static_cast< MassType >( ( typename DataTypes::Real ) totalMass.getValue() / mstate->getSize()) );
+                        d_mass.setValue( static_cast< MassType >( ( typename DataTypes::Real ) d_totalMass.getValue() / mstate->getSize()) );
                 }
                 break;
 
@@ -252,7 +284,7 @@ void UniformMass<DataTypes, MassType>::addMDx ( const core::MechanicalParams*,
 
     WriteAccessor<Data<vector<int> > > indices = d_indices;
 
-    MassType m = mass.getValue();
+    MassType m = d_mass.getValue();
     if ( factor != 1.0 )
         m *= ( typename DataTypes::Real ) factor;
 
@@ -271,7 +303,7 @@ void UniformMass<DataTypes, MassType>::accFromF ( const core::MechanicalParams*,
 
     ReadAccessor<Data<vector<int> > > indices = d_indices;
 
-    MassType m = mass.getValue();
+    MassType m = d_mass.getValue();
     for ( unsigned int i=0; i<indices.size(); i++ )
         a[indices[i]] = f[indices[i]] / m;
 }
@@ -302,8 +334,9 @@ void UniformMass<DataTypes, MassType>::addGravityToV(const MechanicalParams* mpa
         Deriv theGravity;
         DataTypes::set ( theGravity, g[0], g[1], g[2] );
         Deriv hg = theGravity * ( Real ) (mparams->dt());
-        if ( this->f_printLog.getValue() )
-            serr << "UniformMass::addGravityToV hg = "<<theGravity<<"*"<<mparams->dt()<<"="<<hg<<sendl;
+
+        dmsg_info()<< " addGravityToV hg = "<<theGravity<<"*"<<mparams->dt()<<"="<<hg ;
+
         for ( unsigned int i=0; i<v.size(); i++ )
         {
             v[i] += hg;
@@ -337,10 +370,10 @@ void UniformMass<DataTypes, MassType>::addForce ( const core::MechanicalParams*,
     Deriv theGravity;
     DataTypes::set
     ( theGravity, g[0], g[1], g[2] );
-    const MassType& m = mass.getValue();
+    const MassType& m = d_mass.getValue();
     Deriv mg = theGravity * m;
-    if ( this->f_printLog.getValue() )
-        serr<<"UniformMass::addForce, mg = "<<mass<<" * "<<theGravity<<" = "<<mg<<sendl;
+
+    dmsg_info() <<" addForce, mg = "<<d_mass<<" * "<<theGravity<<" = "<<mg;
 
 
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
@@ -399,7 +432,7 @@ SReal UniformMass<DataTypes, MassType>::getKineticEnergy ( const MechanicalParam
     ReadAccessor<Data<vector<int> > > indices = d_indices;
 
     SReal e = 0;
-    const MassType& m = mass.getValue();
+    const MassType& m = d_mass.getValue();
 
     for ( unsigned int i=0; i<indices.size(); i++ )
         e+= v[indices[i]]*m*v[indices[i]];
@@ -416,7 +449,7 @@ SReal UniformMass<DataTypes, MassType>::getPotentialEnergy ( const MechanicalPar
     ReadAccessor<Data<vector<int> > > indices = d_indices;
 
     SReal e = 0;
-    const MassType& m = mass.getValue();
+    const MassType& m = d_mass.getValue();
 
     Vec3d g( getContext()->getGravity());
     Deriv gravity;
@@ -441,6 +474,10 @@ UniformMass<DataTypes, MassType>::getMomentum ( const core::MechanicalParams* pa
     SOFA_UNUSED(params);
     SOFA_UNUSED(d_x);
     SOFA_UNUSED(d_v);
+
+    msg_warning(this) << "You are using the getMomentum function that has not been implemented"
+                         "for the template '"<< this->getTemplateName() << "'.\n" ;
+
     return defaulttype::Vector6();
 }
 
@@ -450,9 +487,9 @@ template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::addMToMatrix (const MechanicalParams *mparams,
                                                      const MultiMatrixAccessor* matrix)
 {
-    const MassType& m = mass.getValue();
+    const MassType& m = d_mass.getValue();
 
-    const int N = DataTypeInfo<Deriv>::size();
+    const size_t N = DataTypeInfo<Deriv>::size();
 
     AddMToMatrixFunctor<Deriv,MassType> calc;
     MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(mstate);
@@ -468,7 +505,7 @@ void UniformMass<DataTypes, MassType>::addMToMatrix (const MechanicalParams *mpa
 template <class DataTypes, class MassType>
 SReal UniformMass<DataTypes, MassType>::getElementMass ( unsigned int ) const
 {
-    return ( SReal ) ( mass.getValue() );
+    return ( SReal ) ( d_mass.getValue() );
 }
 
 
@@ -483,7 +520,7 @@ void UniformMass<DataTypes, MassType>::getElementMass ( unsigned int  index ,
         m->resize ( dimension, dimension );
 
     m->clear();
-    AddMToMatrixFunctor<Deriv,MassType>() ( m, mass.getValue(), 0, 1 );
+    AddMToMatrixFunctor<Deriv,MassType>() ( m, d_mass.getValue(), 0, 1 );
 }
 
 
@@ -508,51 +545,30 @@ void UniformMass<DataTypes, MassType>::draw(const VisualParams* vparams)
     }
 
 
-#ifdef SOFA_SMP
-    static float colorTab[][4]=
-    {
-        {1.0f,0.0f,0.0f,1.0f},
-        {1.0f,1.0f,0.0f,1.0f},
-        {0.0f,1.0f,0.0f,1.0f},
-        {0.0f,1.0f,1.0f,1.0f},
-        {0.0f,0.0f,1.0f,1.0f},
-        {0.5f,.5f,.5f,1.0f},
-        {0.5f,0.0f,0.0f,1.0f},
-        {.5f,.5f,0.0f,1.0f},
-        {0.0f,1.0f,0.0f,1.0f},
-        {0.0f,1.0f,1.0f,1.0f},
-        {0.0f,0.0f,1.0f,1.0f},
-        {0.5f,.5f,.5f,1.0f}
-    };
-    if(vparams->displayFlags().getShowProcessorColor())
-    {
-        unsigned int proc=Core::Processor::get_current()->get_pid();
-        color = colorTab[proc%12];
-    }
-#endif
-
-    if ( showCenterOfGravity.getValue() )
+    if ( d_showCenterOfGravity.getValue() )
     {
         gravityCenter /= x.size();
         const sofa::defaulttype::Vec4f color(1.0,1.0,0.0,1.0);
 
-        Real axisSize = showAxisSize.getValue();
+        Real axisSize = d_showAxisSize.getValue();
         sofa::defaulttype::Vector3 temp;
 
         for ( unsigned int i=0 ; i<3 ; i++ )
             if(i < Coord::spatial_dimensions )
                 temp[i] = gravityCenter[i];
 
-        vparams->drawTool()->drawCross(temp, axisSize, color);
+        vparams->drawTool()->drawCross(temp, (float)axisSize, color);
     }
 }
 
 template<class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::loadRigidMass ( std::string )
+void UniformMass<DataTypes, MassType>::loadRigidMass( const std::string&  filename)
 {
-    //If the template is not rigid, we hide the Data filenameMass, to avoid confusion.
-    filenameMass.setDisplayed ( false );
-    mass.setDisplayed ( false );
+    msg_warning(this) << "The attribute filename is set to ["<< filename << "] while " << msgendl <<
+                         " the current object is not based on a Rigid template. It is thus ignored. " << msgendl <<
+                         "To remove this warning you can: " << msgendl <<
+                         "  - remove the filename attribute from <UniformMass filename='"<< filename << "'/>." << msgendl <<
+                         "  - use a Rigid mechanical object instead of a VecXX one." ;
 }
 
 } // namespace mass

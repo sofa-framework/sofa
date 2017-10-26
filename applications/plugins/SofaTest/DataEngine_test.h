@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -13,11 +13,8 @@
 * more details.                                                               *
 *                                                                             *
 * You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* with this program. If not, see <http://www.gnu.org/licenses/>.              *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -27,7 +24,6 @@
 #define SOFA_STANDARDTEST_DataEngine_test_H
 
 #include "Sofa_test.h"
-
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
@@ -52,7 +48,7 @@ public:
     {}
 
 
-    virtual void update()
+    virtual void update() override
     {
         DataEngineType::update();
 
@@ -123,7 +119,11 @@ struct DataEngine_test : public Sofa_test<>
     /// To do so, you can inherit this class and add a test function that takes inputs and ouputs to test
     void run_basic_test()
     {
-        init();
+        /// The comp
+        {
+            IGNORE_MSG(Error) ;
+            init();
+        }
 
         m_engine->resetCounter();
 
@@ -142,7 +142,7 @@ struct DataEngine_test : public Sofa_test<>
         // modifying inputs to ensure the engine should be evaluated
         for( unsigned i=0, iend=parent_inputs.size() ; i<iend ; ++i )
         {
-            parent_inputs[i]->setDirtyValue();            
+            parent_inputs[i]->setDirtyValue();
             CHECKCOUNTER( 0 );  // c'est parti mon kiki
         }
 

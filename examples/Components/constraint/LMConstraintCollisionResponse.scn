@@ -11,7 +11,7 @@ and stiffness coefficients for the collision models.
 	<DefaultContactManager response="distanceLMConstraint" />
 	<DefaultCollisionGroupManager />
   <Node name="Rigid" >
-    <EulerImplicitSolver />
+    <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
     <LMConstraintSolver numIterations="27" maxError="1e-7"/>
     <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
     <MechanicalObject template="Rigid" translation="0 3 0" />

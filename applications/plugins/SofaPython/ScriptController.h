@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Plugins                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -31,6 +28,15 @@
 #include <sofa/simulation/Node.h>
 #include "ScriptEvent.h"
 #include "ScriptFunction.h"
+
+/// fwd declaration
+namespace sofa {
+    namespace core {
+        namespace objectmodel {
+            class IdleEvent ;
+        }
+    }
+}
 
 namespace sofa
 {
@@ -77,27 +83,24 @@ public:
     /// @{
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters
-    virtual void parse ( sofa::core::objectmodel::BaseObjectDescription* arg );
+    virtual void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override ;
 
     /// Initialization method called at graph creation and modification, during top-down traversal.
-    virtual void init();
+    virtual void init() override ;
 
     /// Initialization method called at graph creation and modification, during bottom-up traversal.
-    virtual void bwdInit();
-
-    /// Update method called when variables used in precomputation are modified.
-//    virtual void reinit();
+    virtual void bwdInit() override ;
 
     /// Save the initial state for later uses in reset()
-    virtual void storeResetState();
+    virtual void storeResetState() override ;
 
     /// Reset to initial state
-    virtual void reset();
+    virtual void reset() override ;
 
     /// Called just before deleting this object
     /// Any object in the tree bellow this object that are to be removed will be removed only after this call,
     /// so any references this object holds should still be valid.
-    virtual void cleanup();
+    virtual void cleanup() override ;
 
     /// @}
 
@@ -109,44 +112,43 @@ public:
     /**
     * @brief Mouse event callback.
     */
-    virtual void onMouseEvent(core::objectmodel::MouseEvent *);
+    virtual void onMouseEvent(core::objectmodel::MouseEvent *) override ;
 
     /**
     * @brief Key Press event callback.
     */
-    virtual void onKeyPressedEvent(core::objectmodel::KeypressedEvent *);
+    virtual void onKeyPressedEvent(core::objectmodel::KeypressedEvent *) override ;
 
     /**
     * @brief Key Release event callback.
     */
-    virtual void onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *);
+    virtual void onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *) override ;
 
     /**
     * @brief Begin Animation event callback.
     */
-    virtual void onBeginAnimationStep(const double);
+    virtual void onBeginAnimationStep(const double) override ;
 
     /**
     * @brief End Animation event callback.
     */
-    virtual void onEndAnimationStep(const double);
+    virtual void onEndAnimationStep(const double) override ;
 
     /// @}
 
     /**
     * @brief GUI event callback.
     */
-    virtual void onGUIEvent(core::objectmodel::GUIEvent *);
+    virtual void onGUIEvent(core::objectmodel::GUIEvent *) override ;
 
-    virtual void handleEvent(core::objectmodel::Event *);
+    virtual void handleEvent(core::objectmodel::Event *) override ;
 
     /**
      * @brief draw callback.
      */
-    virtual void draw(const core::visual::VisualParams*);
+    virtual void draw(const core::visual::VisualParams*) override ;
 
 protected:
-
     /// @name Script interface
     ///   Function that need to be implemented for each script language
     /// Typically, all "script_*" functions call the corresponding "*" function of the script, if it exists
@@ -186,6 +188,9 @@ protected:
 
     /// drawing
     virtual void script_draw(const core::visual::VisualParams*) = 0;
+
+    /// Idle event is sent a regular interval from the host application
+    virtual void script_onIdleEvent(const sofa::core::objectmodel::IdleEvent* event) = 0;
 
     /// @}
 

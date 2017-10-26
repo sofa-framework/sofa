@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -108,13 +105,13 @@ bool Decompose<Real>::QRDecomposition_stable( const defaulttype::Mat<3,3,Real> &
 
             if( nz < zeroTolerance() ) // edgex, edgey, edgez are null -> collapsed to a point
             {
-                //std::cerr<<"helper::QRDecomposition_stable collapased to point "<<M<<std::endl;
+                //msg_info()<<"helper::QRDecomposition_stable collapased to point "<<M<<std::endl;
                 R.identity();
                 return degenerated;
             }
             else // collapsed to edgez
             {
-                //std::cerr<<"QRDecomposition_stable collapased to edgez "<<M<<std::endl;
+                //msg_info()<<"QRDecomposition_stable collapased to edgez "<<M<<std::endl;
 
                 edgez.normalizeWithNorm( helper::rsqrt(nz) );
 
@@ -159,7 +156,7 @@ bool Decompose<Real>::QRDecomposition_stable( const defaulttype::Mat<3,3,Real> &
 
             if( nz < zeroTolerance() ) // collapsed to edgey
             {
-                //std::cerr<<"QRDecomposition_stable collapased to edgey "<<M<<std::endl;
+                //msg_info()<<"QRDecomposition_stable collapased to edgey "<<M<<std::endl;
 
                 // check the main direction of edgey to try to take a not too close arbritary vector
                 Real abs0 = helper::rabs( edgey[0] );
@@ -194,7 +191,7 @@ bool Decompose<Real>::QRDecomposition_stable( const defaulttype::Mat<3,3,Real> &
             }
             else // collapsed to face (edgey, edgez)
             {
-                //std::cerr<<"QRDecomposition_stable collapased to face (edgey, edgez) "<<M<<std::endl;
+                //msg_info()<<"QRDecomposition_stable collapased to face (edgey, edgez) "<<M<<std::endl;
 
                 edgex = cross( edgey, edgez );
                 edgex.normalize();
@@ -215,7 +212,7 @@ bool Decompose<Real>::QRDecomposition_stable( const defaulttype::Mat<3,3,Real> &
 
             if( nz < zeroTolerance() ) // collapsed to edgex
             {
-                //std::cerr<<"QRDecomposition_stable ollapased to edgex "<<M<<std::endl;
+                //msg_info()<<"QRDecomposition_stable ollapased to edgex "<<M<<std::endl;
 
                 // check the main direction of edgex to try to take a not too close arbritary vector
                 Real abs0 = helper::rabs( edgex[0] );
@@ -250,7 +247,7 @@ bool Decompose<Real>::QRDecomposition_stable( const defaulttype::Mat<3,3,Real> &
             }
             else // collapsed to face (edgez,edgex)
             {
-                //std::cerr<<"QRDecomposition_stable collapased to face (edgez, edgex) "<<M<<std::endl;
+                //msg_info()<<"QRDecomposition_stable collapased to face (edgez, edgex) "<<M<<std::endl;
 
                 edgey = cross( edgez, edgex );
                 edgey.normalize();

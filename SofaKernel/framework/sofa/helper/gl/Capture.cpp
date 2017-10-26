@@ -1,38 +1,32 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/gl/Capture.h>
-#include <sofa/helper/io/ImageBMP.h>
-#ifdef SOFA_HAVE_PNG
-#include <sofa/helper/io/ImagePNG.h>
-#endif
+#include <sofa/helper/system/SetDirectory.h>
 
 #include <sys/types.h>
 #include <sys/stat.h>
 
 #include <cstdio>		// sprintf and friends
-
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
@@ -50,27 +44,47 @@ Capture::Capture()
 
 bool Capture::saveScreen(const std::string& filename, int compression_level)
 {
-#ifdef SOFA_HAVE_PNG
-    io::ImagePNG img;
-#else
-    io::ImageBMP img;
-#endif
+    std::string extension = sofa::helper::system::SetDirectory::GetExtension(filename.c_str());
+    std::transform(extension.begin(),extension.end(),extension.begin(),::tolower );
+
+    //test if we can export in lossless image
+    bool imageSupport = helper::io::Image::FactoryImage::getInstance()->hasKey(extension);
+    if(!imageSupport)
+    {
+        msg_error("Capture") << "Could not write " << extension  << "image format (no support found)" ;
+        return false;
+    }
+
+    helper::io::Image* img =  helper::io::Image::FactoryImage::getInstance()->createObject(extension, "");
+
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT,viewport);
-    img.init(viewport[2], viewport[3], 1, 1, io::Image::UNORM8, io::Image::RGB);
+    img->init(viewport[2], viewport[3], 1, 1, io::Image::UNORM8, io::Image::RGB);
     glReadBuffer(GL_FRONT);
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
-    glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_RGB, GL_UNSIGNED_BYTE, img.getPixels());
+    glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_RGB, GL_UNSIGNED_BYTE, img->getPixels());
 
-    if (!img.save(filename, compression_level)) return false;
-    std::cout << "Saved "<<img.getWidth()<<"x"<<img.getHeight()<<" screen image to "<<filename<<std::endl;
+    if (!img->save(filename, compression_level))
+        return false;
+
+    msg_info("Capture") << "Saved "<<img->getWidth()<<"x"<<img->getHeight()<<" screen image to "<<filename ;
     glReadBuffer(GL_BACK);
     return true;
 }
 
 std::string Capture::findFilename()
 {
-    std::string filename;
+    bool pngSupport = helper::io::Image::FactoryImage::getInstance()->hasKey("png")
+            || helper::io::Image::FactoryImage::getInstance()->hasKey("PNG");
+
+    bool bmpSupport = helper::io::Image::FactoryImage::getInstance()->hasKey("bmp")
+            || helper::io::Image::FactoryImage::getInstance()->hasKey("BMP");
+
+    std::string filename = "";
+
+    if(!pngSupport && !bmpSupport)
+        return filename;
+
 #ifndef PS3
     char buf[32];
     int c;
@@ -82,11 +96,10 @@ std::string Capture::findFilename()
         sprintf(buf, "%08d",c);
         filename = prefix;
         filename += buf;
-#ifdef SOFA_HAVE_PNG
-        filename += ".png";
-#else
-        filename += ".bmp";
-#endif
+        if(pngSupport)
+            filename += ".png";
+        else
+            filename += ".bmp";
     }
     while (stat(filename.c_str(),&st)==0);
     counter = c+1;
@@ -94,12 +107,12 @@ std::string Capture::findFilename()
     sprintf(buf, "%08d",c);
     filename = prefix;
     filename += buf;
-#ifdef SOFA_HAVE_PNG
-    filename += ".png";
-#else
-    filename += ".bmp";
+    if(pngSupport)
+        filename += ".png";
+    else
+        filename += ".bmp";
 #endif
-#endif
+
     return filename;
 }
 

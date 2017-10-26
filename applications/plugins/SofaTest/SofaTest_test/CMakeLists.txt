@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 project(SofaTest_test)
 
 set(HEADER_FILES
@@ -6,6 +6,7 @@ set(HEADER_FILES
 )
 
 set(SOURCE_FILES
+    TestMessageHandler_test.cpp
     Regression_test.cpp
 )
 

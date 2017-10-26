@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -121,13 +118,13 @@ protected:
     std::vector<unsigned int>    errorTrianglesIndices;
 
 public:
-    virtual void init();
+    virtual void init() override;
 
-    virtual void reinit();
+    virtual void reinit() override;
 
     virtual void readDataFile();
 
-    virtual void handleEvent(sofa::core::objectmodel::Event* event);
+    virtual void handleEvent(sofa::core::objectmodel::Event* event) override;
 
     void setTime(double time);
 
@@ -147,7 +144,7 @@ public:
         return BaseObject::canCreate(obj, context, arg);
     }
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
     void updateTriangleIncisionInformation();
 
@@ -174,20 +171,20 @@ public:
 
     void display()
     {
-        std::cout << "***(TriangleIncisionInformation)***" << std::endl;
-        std::cout << "Time to incise: " << timeToIncise << std::endl;
-        std::cout << "Triangle indices : ";
+        std::stringstream tmp ;
+        tmp<< "Time to incise: " << timeToIncise << msgendl;
+        tmp<< "Triangle indices : ";
         for (unsigned int i = 0 ; i < triangleIndices.size() ; i++)
-            std::cout << triangleIndices[i] << " ";
-        std::cout <<  std::endl;
-        std::cout << "Barycentric coordinates : ";
+            tmp<< triangleIndices[i] << " ";
+        tmp<<  msgendl;
+        tmp<< "Barycentric coordinates : ";
         for (unsigned int i = 0 ; i < barycentricCoordinates.size() ; i++)
-            std::cout << barycentricCoordinates[i] << " | " ;
-        std::cout <<  std::endl;
-        std::cout << "Coordinates : ";
+            tmp<< barycentricCoordinates[i] << " | " ;
+        tmp<<  msgendl;
+        tmp<< "Coordinates : ";
         for (unsigned int i = 0 ; i < coordinates.size() ; i++)
-            std::cout << coordinates[i] << " | " ;
-        std::cout <<  std::endl;
+            tmp<< coordinates[i] << " | " ;
+        msg_info("TriangleIncisionInformation") << tmp.str() ;
     }
 
 
@@ -201,9 +198,7 @@ public:
 
         if (coordinates.size() != triangleIndices.size())
         {
-//                std::cout << "computeCoordinates:: about to resize coordinates with  " <<  triangleIndices.size() << std::endl;
             coordinates.resize(triangleIndices.size());
-//                std::cout << "computeCoordinates:: is now resized  " <<  coordinates.size() << std::endl;
         }
 
         for (unsigned int i = 0 ; i < coordinates.size() ; i++)
@@ -213,7 +208,7 @@ public:
 
             if ( (int)triIndex >= topology->getNbTriangles())
             {
-                std::cout << "ERROR(TriangleIncisionInformation::computeCoordinates) bad index to access triangles  " <<  triIndex << std::endl;
+                msg_error("TriangleIncisionInformation") << " Bad index to access triangles  " <<  triIndex ;
             }
 
             triangleGeo->getTriangleVertexCoordinates(triIndex, coord);
@@ -225,11 +220,8 @@ public:
             }
         }
 
-//            std::cout << "computeCoordinates:: size " <<  coordinates.size() << std::endl;
-
         return coordinates;
     }
-
 };
 
 

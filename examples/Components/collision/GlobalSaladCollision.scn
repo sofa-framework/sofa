@@ -6,7 +6,7 @@
 	<DefaultContactManager name="Response"  response="default" />
 	<CollisionGroupManager name="Group" />
 	<NewProximityIntersection name="newProximityIntersection0" alarmDistance="1" contactDistance="0.5"/>
-	<EulerImplicitSolver name="Implicit Euler Solver" />
+	<EulerImplicitSolver name="Implicit Euler Solver"  rayleighStiffness="0.1" rayleighMass="0.1" />
 	<CGLinearSolver template="GraphScattered" name="Conjugate Gradient" iterations="25" tolerance="1e-5" threshold="1e-5"/>
 	<Node 	 name="gNode4"  gravity="0 0 -9.81"  >
              <RequiredPlugin name="SofaPython"  printLog="1"  pluginName="SofaPython" />

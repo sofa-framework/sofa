@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -40,7 +37,6 @@ namespace linearsolver
 {
 
 //#define EigenVector_CHECK
-//#define EigenVector_VERBOSE
 
 
 /** Container of a vector of the Eigen library. Not an eigenvector of a matrix.
@@ -104,9 +100,6 @@ public:
 
     void set(Index i, double v)
     {
-#ifdef EigenVector_VERBOSE
-        std::cout << /*this->Name() <<*/ "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v<<std::endl;
-#endif
 #ifdef EigenVector_CHECK
         if (i >= rowSize() || j >= colSize())
         {
@@ -119,9 +112,6 @@ public:
 
     void setBlock(Index i, const Block& v)
     {
-#ifdef EigenVector_VERBOSE
-        std::cout << /*this->Name() <<*/ "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v<<std::endl;
-#endif
 #ifdef EigenVector_CHECK
         if (i >= rowSize()/Nout || j >= colSize()/Nin )
         {
@@ -138,9 +128,6 @@ public:
 
     void add(Index i, double v)
     {
-#ifdef EigenVector_VERBOSE
-        std::cout << /*this->Name() << */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") += "<<v<<std::endl;
-#endif
 #ifdef EigenVector_CHECK
         if (i >= rowSize() || j >= colSize())
         {
@@ -153,9 +140,6 @@ public:
 
     void clear(Index i)
     {
-#ifdef EigenVector_VERBOSE
-        std::cout << /*this->Name() <<*/ "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = 0"<<std::endl;
-#endif
 #ifdef EigenVector_CHECK
         if (i >= rowSize() || j >= colSize())
         {
@@ -251,9 +235,6 @@ public:
 
     void set(Index i, double v)
     {
-#ifdef EigenVector_VERBOSE
-        std::cout << /*this->Name() <<*/ "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v<<std::endl;
-#endif
 #ifdef EigenVector_CHECK
         if (i >= rowSize() || j >= colSize())
         {
@@ -270,9 +251,6 @@ public:
 
     void add(Index i, double v)
     {
-#ifdef EigenVector_VERBOSE
-        std::cout << /*this->Name() << */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") += "<<v<<std::endl;
-#endif
 #ifdef EigenVector_CHECK
         if (i >= rowSize() || j >= colSize())
         {
@@ -285,9 +263,6 @@ public:
 
     void clear(Index i)
     {
-#ifdef EigenVector_VERBOSE
-        std::cout << /*this->Name() <<*/ "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = 0"<<std::endl;
-#endif
 #ifdef EigenVector_CHECK
         if (i >= rowSize() || j >= colSize())
         {
@@ -304,17 +279,6 @@ public:
     {
         eigenVector.setZero();
     }
-
-
-//    friend std::ostream& operator << (std::ostream& out, const EigenVector<double>& v )
-//    {
-//        IndexEigen ny = v.size();
-//        for (IndexEigen y=0;y<ny;++y)
-//        {
-//                out << " " << v.element(y);
-//        }
-//        return out;
-//    }
 
     static const char* Name();
 

@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -57,12 +54,12 @@ protected:
         : PointSetTopologyModifier()
     {}
 
-    virtual ~EdgeSetTopologyModifier() {}
+    virtual ~EdgeSetTopologyModifier() override {}
 public:
-    virtual void init();
+    virtual void init() override;
 
     /// \brief function to propagate topological change events by parsing the list of topologyEngines linked to this topology.
-    virtual void propagateTopologicalEngineChanges();
+    virtual void propagateTopologicalEngineChanges() override;
 
     /** \brief add a set of edges
     @param edges an array of pair of vertex indices describing the edge to be created
@@ -191,7 +188,7 @@ public:
     *
     * \sa addPointsWarning
     */
-    virtual void addPointsProcess(const unsigned int nPoints);
+    virtual void addPointsProcess(const unsigned int nPoints) override;
 
     /** \brief Remove a subset of points
     *
@@ -202,7 +199,7 @@ public:
     * Important : the points are actually deleted from the mechanical object's state vectors iff (removeDOF == true)
     */
     virtual void removePointsProcess(const sofa::helper::vector<unsigned int> &indices,
-            const bool removeDOF = true);
+            const bool removeDOF = true) override;
 
     /** \brief Reorder this topology.
     *
@@ -211,7 +208,7 @@ public:
     */
     virtual void renumberPointsProcess( const sofa::helper::vector<unsigned int> &index,
             const sofa::helper::vector<unsigned int> &/*inv_index*/,
-            const bool renumberDOF = true);
+            const bool renumberDOF = true) override;
 
     /** \brief Remove a set of edges
     @param edges an array of edge indices to be removed (note that the array is not const since it needs to be sorted)
@@ -222,12 +219,12 @@ public:
 
     /** \brief Generic method to remove a list of items.
     */
-    virtual void removeItems(const sofa::helper::vector<unsigned int> &items);
+    virtual void removeItems(const sofa::helper::vector<unsigned int> &items) override;
 
     /** \brief Generic method for points renumbering
     */
     virtual void renumberPoints( const sofa::helper::vector<unsigned int> & index,
-            const sofa::helper::vector<unsigned int> & inv_index);
+            const sofa::helper::vector<unsigned int> & inv_index) override;
 
     /** \brief Swap a list of pair edges, replacing each edge pair ((p11, p12), (p21, p22)) by the edge pair ((p11, p21), (p12, p22))
     *
@@ -273,7 +270,7 @@ public:
     virtual void movePointsProcess (const sofa::helper::vector <unsigned int>& id,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& coefs,
-            const bool moveDOF = true);
+            const bool moveDOF = true) override;
 
 
 

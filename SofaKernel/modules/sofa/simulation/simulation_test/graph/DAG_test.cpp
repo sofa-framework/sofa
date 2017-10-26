@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
-* Software Foundation; either version 2 of the License, or (at your option)   *
-* any later version.                                                          *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
 *                                                                             *
 * This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
-* more details.                                                               *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
 *                                                                             *
-* You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -25,12 +22,16 @@
 
 #include "../Node_test.h"
 #include <SofaTest/Sofa_test.h>
+#include <SofaTest/TestMessageHandler.h>
+
+
 #include <SceneCreator/SceneCreator.h>
 #include <sofa/simulation/Visitor.h>
-#include <SofaSimulationGraph/DAGNode.h>
-#include <SofaSimulationGraph/DAGSimulation.h>
 
+#include <SofaSimulationGraph/DAGNode.h>
 using sofa::simulation::graph::DAGNode;
+
+#include <SofaSimulationGraph/DAGSimulation.h>
 
 namespace sofa {
 
@@ -96,7 +97,7 @@ struct DAG_test : public Sofa_test<>
 
 
     /// utility function testing a scene graph traversals with given expected results
-    void traverse_test( Node::SPtr node, std::string treeTraverse, std::string treeTraverseRepeatAll, std::string treeTraverseRepeatOnce, std::string dagTopDown )
+    static void traverse_test( Node::SPtr node, std::string treeTraverse, std::string treeTraverseRepeatAll, std::string treeTraverseRepeatOnce, std::string dagTopDown )
     {
         // dagBottumUp must be the exact inverse of dagTopDown
         std::string dagBottomUp(dagTopDown);
@@ -288,12 +289,89 @@ Expected output: RABCDEEDCBAR
                        "RABCDEFGH" );
     }
 
+
+
+    static void getObjectByPath( Node::SPtr node, const std::string& searchpath, const std::string& objpath )
+    {
+        void *foundObj = node->getObject(classid(Dummy), searchpath);
+        ASSERT_TRUE( foundObj!=nullptr );
+        Dummy* dummyObj = reinterpret_cast<Dummy*>(foundObj);
+        ASSERT_TRUE( dummyObj!=nullptr );
+        EXPECT_STREQ( objpath.c_str(), dummyObj->getPathName().c_str() );
+    }
+
+
+
+    void getObject()
+    {
+        Node::SPtr A = clearScene();
+        A->setName("A");
+
+        Node::SPtr B = A->createChild("B");
+        Node::SPtr C = A->createChild("C");
+        Node::SPtr D = B->createChild("D");
+        C->addChild(D);
+        Node::SPtr E = D->createChild("E");
+
+/**
+        A
+       / \
+       B C
+       \ /
+        D
+        |
+        E
+*/
+
+        Dummy::SPtr dummyA = sofa::core::objectmodel::New<Dummy>("obj");
+        A->addObject(dummyA);
+        Dummy::SPtr dummyA2 = sofa::core::objectmodel::New<Dummy>("obj2");
+        A->addObject(dummyA2);
+        Dummy::SPtr dummyB = sofa::core::objectmodel::New<Dummy>("obj");
+        B->addObject(dummyB);
+        Dummy::SPtr dummyC = sofa::core::objectmodel::New<Dummy>("obj");
+        C->addObject(dummyC);
+        Dummy::SPtr dummyD = sofa::core::objectmodel::New<Dummy>("obj");
+        D->addObject(dummyD);
+        Dummy::SPtr dummyE = sofa::core::objectmodel::New<Dummy>("obj");
+        E->addObject(dummyE);
+
+
+
+        // by path
+        {
+        void* foundObj = A->getObject(classid(Dummy), "/inexisting");
+        ASSERT_TRUE( foundObj==nullptr );
+        }
+
+        getObjectByPath( A, "/obj", "/obj" );
+        getObjectByPath( A, "obj", "/obj" );
+        getObjectByPath( A, "/B/obj", "/B/obj" );
+        getObjectByPath( A, "C/obj", "/C/obj" );
+        getObjectByPath( A, "/B/D/obj", "/B/D/obj" );
+        getObjectByPath( A, "C/D/obj", "/B/D/obj" );
+        getObjectByPath( A, "/B/D/E/obj", "/B/D/E/obj" );
+        getObjectByPath( A, "C/D/E/obj", "/B/D/E/obj" );
+        getObjectByPath( B, "obj", "/B/obj" );
+        getObjectByPath( C, "D/E/obj", "/B/D/E/obj" );
+        getObjectByPath( A, "/obj2", "/obj2" );
+        getObjectByPath( A, "obj2", "/obj2" );
+
+
+        // TODO test other getObject{s} functions
+
+
+
+    }
+
+
 };
 
 
 
 TEST_F( DAG_test, traverse )
 {
+    EXPECT_MSG_NOEMIT(Error) ;
     traverse_simple_tree();
     traverse_simple_diamond();
     traverse_complex();
@@ -303,22 +381,34 @@ TEST_F( DAG_test, traverse )
 
 TEST(DAGNodeTest, objectDestruction_singleObject)
 {
+    EXPECT_MSG_NOEMIT(Error) ;
+
     Node_test_objectDestruction_singleObject<DAGNode>();
 }
 
 TEST(DAGNodeTest, objectDestruction_multipleObjects)
 {
+    EXPECT_MSG_NOEMIT(Error) ;
     Node_test_objectDestruction_multipleObjects<DAGNode>();
 }
 
 TEST(DAGNodeTest, objectDestruction_childNode_singleObject)
 {
+    EXPECT_MSG_NOEMIT(Error) ;
     Node_test_objectDestruction_childNode_singleObject<DAGNode>();
 }
 
 TEST(DAGNodeTest, objectDestruction_childNode_complexChild)
 {
+    EXPECT_MSG_NOEMIT(Error) ;
     Node_test_objectDestruction_childNode_complexChild<DAGNode>();
+}
+
+
+TEST_F(DAG_test, getObject)
+{
+    EXPECT_MSG_NOEMIT(Error) ;
+    getObject();
 }
 
 

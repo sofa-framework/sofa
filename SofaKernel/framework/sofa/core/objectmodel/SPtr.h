@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -53,31 +50,11 @@ namespace objectmodel
  *
  */
 template<class T>
-class New : public T::SPtr
-{
+class New : public T::SPtr {
     typedef typename T::SPtr SPtr;
 public:
-    New() : SPtr(new T) {}
-    template <class A1>
-    New(A1 a1) : SPtr(new T(a1)) {}
-    template <class A1, class A2>
-    New(A1 a1, A2 a2) : SPtr(new T(a1,a2)) {}
-    template <class A1, class A2, class A3>
-    New(A1 a1, A2 a2, A3 a3) : SPtr(new T(a1,a2,a3)) {}
-    template <class A1, class A2, class A3, class A4>
-    New(A1 a1, A2 a2, A3 a3, A4 a4) : SPtr(new T(a1,a2,a3,a4)) {}
-    template <class A1, class A2, class A3, class A4, class A5>
-    New(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5) : SPtr(new T(a1,a2,a3,a4,a5)) {}
-    template <class A1, class A2, class A3, class A4, class A5, class A6>
-    New(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6) : SPtr(new T(a1,a2,a3,a4,a5,a6)) {}
-    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7>
-    New(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7) : SPtr(new T(a1,a2,a3,a4,a5,a6,a7)) {}
-    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8>
-    New(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8) : SPtr(new T(a1,a2,a3,a4,a5,a6,a7,a8)) {}
-    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9>
-    New(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9) : SPtr(new T(a1,a2,a3,a4,a5,a6,a7,a8,a9)) {}
-    template <class A1, class A2, class A3, class A4, class A5, class A6, class A7, class A8, class A9, class A10>
-    New(A1 a1, A2 a2, A3 a3, A4 a4, A5 a5, A6 a6, A7 a7, A8 a8, A9 a9, A10 a10) : SPtr(new T(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10)) {}
+    template<class ... Args>
+    New(Args&& ... args) : SPtr( new T(std::forward<Args>(args)...) ) { }
 };
 
 /// dynamic_cast operator for SPtr

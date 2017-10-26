@@ -60,6 +60,14 @@ def getImageTransform(filename, scaleFactor=1):
     offset=[tr[0],tr[1],tr[2],q[0],q[1],q[2],q[3]]
     return (dim,scale,offset)
 
+def getImagePerspective(filename):
+    with open(filename,'r') as f:
+        for line in f:
+            splitted = line.split()
+            if len(splitted)!=0:
+                if 'isPerpective'==splitted[0]:
+                    return map(int,splitted[2:3])[0]
+    return 0
 
 def getImageType(filename):
     """ Returns type of an image given an .mhd header image file
@@ -119,11 +127,19 @@ class ImagePlaneController(Sofa.PythonScriptController):
 
 
 # simpler python script controllers based on SofaPython.script
+# TODO maybe this should be double Inherited from both ImagePlaneController and SofaPython.script.Controller
+# not to copy code. But then testing inheritance against ImagePlaneController has to be checked.
 class Controller(ImagePlaneController):
-    def __new__(cls, node, name='pythonScriptController'):
+
+    def __new__(cls, node, name='pythonScriptController', filename=''):
+        """
+        :param filename: you may have to define it (at least once) to create
+                        a controller for which the class is defined in an external
+                        file. Be aware the file will then be read several times.
+        """
 
         node.createObject('PythonScriptController',
-                          filename = inspect.getfile(cls),
+                          filename = filename,
                           classname = cls.__name__,
                           name = name)
         try:
@@ -133,9 +149,10 @@ class Controller(ImagePlaneController):
         except AttributeError:
             # if this fails, you need to call
             # Controller.onLoaded(self, node) in derived classes
-            print "[SofaPython.script.Controller.__new__] instance not found, did you call 'SofaPython.script.Controller.onLoaded' on your overloaded 'onLoaded' in {} ?".format(cls)
+            print "[SofaImage.Controller.__new__] instance not found, did you call 'SofaImage.Controller.onLoaded' on your overloaded 'onLoaded' in {} ?".format(cls)
             raise
 
     def onLoaded(self, node):
         Controller.instance = self
+
 

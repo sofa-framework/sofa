@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -13,11 +13,8 @@
 * more details.                                                               *
 *                                                                             *
 * You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* with this program. If not, see <http://www.gnu.org/licenses/>.              *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -27,12 +24,12 @@
 
 #include "SimpleDataWidget.h"
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 #include <SofaDeformable/SpringForceField.h>
 #include <SofaRigid/JointSpringForceField.h>
 #include <SofaMiscForceField/GearSpringForceField.h>
 /* #include <../../../projects/vulcain/lib/DiscreteElementModel.h> */
 #include <sofa/helper/io/Mesh.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -411,44 +408,6 @@ class data_widget_container < sofa::defaulttype::RigidMass<N, T> > : public stru
 
 
 ////////////////////////////////////////////////////////////////
-/// LaparoscopicRigid3Types support
-////////////////////////////////////////////////////////////////
-
-template<>
-class struct_data_trait < sofa::defaulttype::LaparoscopicRigid3Types::Coord >
-{
-public:
-    typedef sofa::defaulttype::LaparoscopicRigid3Types::Coord data_type;
-    enum { NVAR = 2 };
-    static void set( data_type& /*d*/ )
-    {
-    }
-};
-template<> STRUCT_DATA_VAR(sofa::defaulttype::LaparoscopicRigid3Types::Coord, 0, "Translation", "T", data_type::value_type, getTranslation());
-template<> STRUCT_DATA_VAR(sofa::defaulttype::LaparoscopicRigid3Types::Coord, 1, "Orientation", "", sofa::defaulttype::Quat, getOrientation());
-
-template<>
-class data_widget_container < sofa::defaulttype::LaparoscopicRigid3Types::Coord > : public struct_data_widget_container < sofa::defaulttype::LaparoscopicRigid3Types::Coord >
-{};
-
-template<>
-class struct_data_trait < sofa::defaulttype::LaparoscopicRigid3Types::Deriv >
-{
-public:
-    typedef sofa::defaulttype::LaparoscopicRigid3Types::Deriv data_type;
-    enum { NVAR = 2 };
-    static void set( data_type& /*d*/ )
-    {
-    }
-};
-template<> STRUCT_DATA_VAR(sofa::defaulttype::LaparoscopicRigid3Types::Deriv, 0, "VTranslation", "dT", data_type::value_type, getVTranslation());
-template<> STRUCT_DATA_VAR(sofa::defaulttype::LaparoscopicRigid3Types::Deriv, 1, "VOrientation", "w", sofa::defaulttype::Vector3, getVOrientation());
-
-template<>
-class data_widget_container < sofa::defaulttype::LaparoscopicRigid3Types::Deriv > : public struct_data_widget_container < sofa::defaulttype::LaparoscopicRigid3Types::Deriv >
-{};
-
-////////////////////////////////////////////////////////////////
 /// sofa::component::forcefield::LinearSpring support
 ////////////////////////////////////////////////////////////////
 
@@ -627,10 +586,10 @@ public:
 };
 
 template<> STRUCT_DATA_VAR(sofa::core::loader::Material, 0, "Name", "Name", std::string, name);
-template<> STRUCT_DATA_VAR_CHECK(sofa::core::loader::Material, 1, "Ambient", "Amb", sofa::defaulttype::Vec4f, ambient, useAmbient);
-template<> STRUCT_DATA_VAR_CHECK(sofa::core::loader::Material, 2, "Diffuse", "Diff", sofa::defaulttype::Vec4f, diffuse, useDiffuse);
-template<> STRUCT_DATA_VAR_CHECK(sofa::core::loader::Material, 3, "Specular", "Spec", sofa::defaulttype::Vec4f, specular, useSpecular);
-template<> STRUCT_DATA_VAR_CHECK(sofa::core::loader::Material, 4, "Emissive", "Emm", sofa::defaulttype::Vec4f, emissive, useEmissive);
+template<> STRUCT_DATA_VAR_CHECK(sofa::core::loader::Material, 1, "Ambient", "Amb", sofa::helper::types::RGBAColor, ambient, useAmbient);
+template<> STRUCT_DATA_VAR_CHECK(sofa::core::loader::Material, 2, "Diffuse", "Diff", sofa::helper::types::RGBAColor, diffuse, useDiffuse);
+template<> STRUCT_DATA_VAR_CHECK(sofa::core::loader::Material, 3, "Specular", "Spec", sofa::helper::types::RGBAColor, specular, useSpecular);
+template<> STRUCT_DATA_VAR_CHECK(sofa::core::loader::Material, 4, "Emissive", "Emm", sofa::helper::types::RGBAColor, emissive, useEmissive);
 template<> STRUCT_DATA_VAR_CHECK(sofa::core::loader::Material, 5, "Shininess", "Shin", float, shininess, useShininess);
 
 template<>

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -13,11 +13,8 @@
 * more details.                                                               *
 *                                                                             *
 * You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* with this program. If not, see <http://www.gnu.org/licenses/>.              *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -33,7 +30,7 @@
 #include <QTextEdit>
 #include <QGroupBox>
 #include <QSlider>
-
+#include <sofa/helper/system/FileRepository.h>
 
 namespace sofa
 {
@@ -67,17 +64,17 @@ signals:
     void LinkOwnerDirty(bool);
 
 protected:
-	static QIcon& RefreshIcon()
-	{
-		static QIcon icon;
-		if(icon.isNull())
-		{
-			std::string filename = "textures/refresh.png";
-			sofa::helper::system::DataRepository.findFile(filename);
-			icon = QIcon(filename.c_str());
-		}
-		return icon;
-	}
+    static QIcon& RefreshIcon()
+    {
+        static QIcon icon;
+        if(icon.isNull())
+        {
+            std::string filename = "textures/refresh.png";
+            sofa::helper::system::DataRepository.findFile(filename);
+            icon = QIcon(filename.c_str());
+        }
+        return icon;
+    }
 
 protected:
     core::objectmodel::BaseLink* link_;

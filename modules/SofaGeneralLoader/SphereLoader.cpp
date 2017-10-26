@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -70,13 +67,12 @@ bool SphereLoader::load()
 
     if ((file = fopen(fname.c_str(), "r")) == NULL)
     {
-        std::cout << "ERROR: cannot read file '" << filename << "'. Exiting..." << std::endl;
+        msg_error("SphereLoader") << "cannot read file '" << filename << "'. ";
         return false;
     }
 
     helper::vector<sofa::defaulttype::Vec<3,SReal> >& my_positions = *positions.beginEdit();
     helper::vector<SReal>& my_radius = *radius.beginEdit();
-// 	std::cout << "Loading model'" << filename << "'" << std::endl;
 
     int totalNumSpheres=0;
 
@@ -96,7 +92,7 @@ bool SphereLoader::load()
         {
             int total;
             if (fscanf(file, "%d", &total) == EOF)
-                std::cerr << "Error: SphereLoader: fscanf function has encountered an error." << std::endl;
+                msg_error("SphereLoader") << "Problem while loading. fscanf function has encountered an error." ;
             my_positions.reserve(total);
         }
         else if (!strcmp(cmd,"sphe"))
@@ -105,7 +101,7 @@ bool SphereLoader::load()
             double cx=0,cy=0,cz=0,r=1;
             if (fscanf(file, "%d %lf %lf %lf %lf\n",
                     &index, &cx, &cy, &cz, &r) == EOF)
-                std::cerr << "Error: SphereLoader: fscanf function has encountered an error." << std::endl;
+                msg_error("SphereLoader") << "Problem while loading. fscanf function has encountered an error." ;
             my_positions.push_back(Vector3((SReal)cx,(SReal)cy,(SReal)cz));
             my_radius.push_back((SReal)r);
             ++totalNumSpheres;
@@ -116,12 +112,10 @@ bool SphereLoader::load()
         }
         else			// it's an unknown keyword
         {
-            printf("%s: Unknown Sphere keyword: %s\n", filename, cmd);
+            msg_warning("SphereLoader") << "Unknown Sphere keyword: "<< cmd << " in file '"<<filename<< "'" ;
             skipToEOL(file);
         }
     }
-// 	printf("Model contains %d spheres\n", totalNumSpheres);
-
 
     (void) fclose(file);
 

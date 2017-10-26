@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -29,6 +26,7 @@
 #if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
 #pragma once
 #endif
+
 
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -52,6 +50,8 @@ class Vertex2Frame : public  core::DataEngine
 public:
     SOFA_CLASS(SOFA_TEMPLATE(Vertex2Frame,DataTypes),core::DataEngine);
     typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::CPos CPos;
     typedef typename DataTypes::VecCoord VecCoord;
 
 protected:
@@ -60,13 +60,13 @@ protected:
 
     ~Vertex2Frame() {}
 public:
-    void init();
+    void init() override;
 
-    void reinit();
+    void reinit() override;
 
-    void update();
+    void update() override;
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -77,17 +77,22 @@ public:
     }
 
 protected:
-    sofa::core::behavior::MechanicalState<DataTypes>* mstate;
-    Data< helper::vector<sofa::defaulttype::Vector3> > vertices;
-    Data< helper::vector<sofa::defaulttype::Vector3> > texCoords; // for the moment, we suppose that texCoords is order 2 (2 texCoords for a vertex)
-    Data< helper::vector<sofa::defaulttype::Vector3> > normals;
+    typename sofa::core::behavior::MechanicalState<DataTypes>::SPtr m_mstate;
+    Data< helper::vector<CPos> > d_vertices;
+    Data< helper::vector<sofa::defaulttype::Vector2> > d_texCoords; // for the moment, we suppose that texCoords is order 2 (2 texCoords for a vertex)
+    Data< helper::vector<CPos> > d_normals;
 
-    Data<VecCoord> frames;
-	Data<bool> useNormals;
-	Data<bool> invertNormals;
+    Data<VecCoord> d_frames;
+    Data<bool> d_useNormals;
+    Data<bool> d_invertNormals;
 
-    Data<int> rotation;
-    Data<double> rotationAngle;
+    Data<int> d_rotation;
+    Data<double> d_rotationAngle;
+
+    defaulttype::Quat computeOrientation(const CPos &xAxis, const CPos &yAxis, const CPos &zAxis);
+
+    static const Real EPSILON;
+
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_VERTEX2FRAME_CPP)

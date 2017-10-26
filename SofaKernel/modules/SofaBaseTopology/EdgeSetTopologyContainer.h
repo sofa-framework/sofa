@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -60,16 +57,16 @@ protected:
     virtual ~EdgeSetTopologyContainer() {}
 public:
 
-    virtual void init();
+    virtual void init() override;
 
-    virtual void reinit();
+    virtual void reinit() override;
 
 
 
     /// Procedural creation methods
     /// @{
-    virtual void clear();
-    virtual void addEdge( int a, int b );
+    virtual void clear() override;
+    virtual void addEdge( int a, int b ) override;
     /// @}
 
 
@@ -80,7 +77,7 @@ public:
     /** \brief Returns the edge array.
      *
      */
-    virtual const SeqEdges& getEdges()
+    virtual const SeqEdges& getEdges() override
     {
         return getEdgeArray();
     }
@@ -90,7 +87,7 @@ public:
      * @param i The ID of the Edge.
      * @return The corresponding Edge.
      */
-    virtual const Edge getEdge(EdgeID i);
+    virtual const Edge getEdge(EdgeID i) override;
 
 
     /** \brief Get the index of the edge joining two vertices.
@@ -99,7 +96,7 @@ public:
      * @param v@ The second vertex
      * @return The index of the Edge if it exists, -1 otherwise.
     */
-    virtual int getEdgeIndex(PointID v1, PointID v2);
+    virtual int getEdgeIndex(PointID v1, PointID v2) override;
 
 
     /** \brief Get the indices of the edges around a vertex.
@@ -107,7 +104,7 @@ public:
      * @param i The ID of the vertex.
      * @return An EdgesAroundVertex containing the indices of the edges.
      */
-    virtual const EdgesAroundVertex& getEdgesAroundVertex(PointID i);
+    virtual const EdgesAroundVertex& getEdgesAroundVertex(PointID i) override;
 
     /// @}
 
@@ -123,7 +120,7 @@ public:
      * @see m_edge
      * @return bool true if topology is coherent.
      */
-    virtual bool checkTopology() const;
+    virtual bool checkTopology() const override;
 
 
     /** \brief Returns the number of edges in this topology.
@@ -136,7 +133,7 @@ public:
     /** \brief Returns the number of topological element of the current topology.
      * This function avoids to know which topological container is in used.
      */
-    virtual unsigned int getNumberOfElements() const;
+    virtual unsigned int getNumberOfElements() const override;
 
 
     /** \brief Returns the number of connected components from the graph containing all edges and give, for each vertex, which component it belongs to  (use BOOST GRAPH LIBRAIRY)
@@ -176,18 +173,18 @@ public:
       *
       * @return true if only one connected component
       */
-    virtual bool checkConnexity();
+    virtual bool checkConnexity() override;
 
     /// Returns the number of connected component.
-    virtual unsigned int getNumberOfConnectedComponent();
+    virtual unsigned int getNumberOfConnectedComponent() override;
 
     /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
-    virtual const VecEdgeID getConnectedElement(EdgeID elem);
+    virtual const VecEdgeID getConnectedElement(EdgeID elem) override;
 
     /// Returns the set of element indices adjacent to a given element (i.e. sharing a link)
-    virtual const VecEdgeID getElementAroundElement(EdgeID elem);
+    virtual const VecEdgeID getElementAroundElement(EdgeID elem) override;
     /// Returns the set of element indices adjacent to a given list of elements (i.e. sharing a link)
-    virtual const VecEdgeID getElementAroundElements(VecEdgeID elems);
+    virtual const VecEdgeID getElementAroundElements(VecEdgeID elems) override;
     /// @}
 
 
@@ -216,7 +213,7 @@ protected:
 
 
     /// \brief Function creating the data graph linked to d_triangle
-    virtual void updateTopologyEngineGraph();
+    virtual void updateTopologyEngineGraph() override;
 
 
     /// Use a specific boolean @see m_triangleTopologyDirty in order to know if topology Data is dirty or not.
@@ -244,7 +241,7 @@ protected:
     bool m_edgeTopologyDirty;
 
     /// List of engines related to this specific container
-    sofa::helper::list <sofa::core::topology::TopologyEngine *> m_enginesList;
+    std::list<sofa::core::topology::TopologyEngine *> m_enginesList;
 
     /// \brief variables used to display the graph of Data/DataEngines linked to this Data array.
     sofa::helper::vector < sofa::helper::vector <std::string> > m_dataGraph;

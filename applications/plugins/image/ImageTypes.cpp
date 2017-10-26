@@ -7,6 +7,7 @@ namespace sofa
 namespace defaulttype
 {
 
+
 #ifndef SOFA_FLOAT
 RegisterTemplateAlias ImageRAlias("ImageR", "ImageD");
 #else

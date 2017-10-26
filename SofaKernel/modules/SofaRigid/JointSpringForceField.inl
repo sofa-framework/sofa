@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -29,10 +26,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/helper/io/MassSpringLoader.h>
-#include <sofa/helper/gl/template.h>
-#include <sofa/helper/gl/Cylinder.h>
-#include <sofa/helper/gl/BasicShapes.h>
-#include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/system/config.h>
 #include <cassert>
 #include <iostream>
@@ -151,8 +144,6 @@ template<class DataTypes>
 void JointSpringForceField<DataTypes>::projectTorsion(Spring& spring)
 {
     Real pi2=(Real)2.*(Real)pi;
-
-    //std::cout<<"torsion:=";
 
     for (unsigned int i=0; i<3; i++)
     {
@@ -472,6 +463,39 @@ void JointSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vp
     vparams->drawTool()->drawLines(vertices,1, colors);
 
     vparams->drawTool()->restoreLastState();
+}
+
+template <class DataTypes>
+void JointSpringForceField<DataTypes>::computeBBox(const core::ExecParams*  params, bool /* onlyVisible */)
+{
+//    const sofa::core::visual::VisualParams* vparams = sofa::core::visual::VisualParams::defaultInstance();
+
+    const Real max_real = std::numeric_limits<Real>::max();
+    const Real min_real = std::numeric_limits<Real>::lowest(); //not min() !
+    Real maxBBox[3] = { min_real,min_real,min_real };
+    Real minBBox[3] = { max_real,max_real,max_real };
+
+    const VecCoord& p1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
+    const VecCoord& p2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
+
+    const helper::vector<Spring>& springs = this->springs.getValue();
+
+    for (unsigned int i = 0, iend = springs.size(); i<iend; ++i)
+    {
+        const Spring& s = springs[i];
+
+        sofa::defaulttype::Vector3 v0 = p1[s.m1].getCenter();
+        sofa::defaulttype::Vector3 v1 = p2[s.m2].getCenter();
+
+        for (int c = 0; c<3; c++)
+        {
+            if (v0[c] > maxBBox[c]) maxBBox[c] = (Real)v0[c];
+            if (v0[c] < minBBox[c]) minBBox[c] = (Real)v0[c];
+            if (v1[c] > maxBBox[c]) maxBBox[c] = (Real)v1[c];
+            if (v1[c] < minBBox[c]) minBBox[c] = (Real)v1[c];
+        }
+    }
+    this->f_bbox.setValue(params, sofa::defaulttype::TBoundingBox<Real>(minBBox, maxBBox));
 }
 
 template <class DataTypes>

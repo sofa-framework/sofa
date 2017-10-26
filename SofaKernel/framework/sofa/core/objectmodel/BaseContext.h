@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -36,9 +33,6 @@
 #endif
 
 #include <set>
-#ifdef SOFA_SMP
-#include <IterativePartition.h>
-#endif
 
 namespace sofa
 {
@@ -110,9 +104,6 @@ public:
 
     /// The Context is active
     virtual bool isActive() const;
-#ifdef SOFA_SMP
-    virtual bool is_partition() const;
-#endif
 
     /// State of the context
     virtual void setActive(bool) {}
@@ -132,11 +123,7 @@ public:
     /// Animation flag
     virtual bool getAnimate() const;
 
-#ifdef SOFA_SMP
-    virtual int  getProcessor() const;
-    virtual void  setProcessor(int) {}
-    virtual Iterative::IterativePartition*  getPartition() const;
-#endif
+
 
 #ifdef SOFA_SUPPORT_MULTIRESOLUTION
     /// Multiresolution support (UNSTABLE)
@@ -261,7 +248,7 @@ public:
 
     /// Generic object access template wrapper, possibly searching up or down from the current context
     template<class T>
-    void get(boost::intrusive_ptr<T>& ptr, SearchDirection dir = SearchUp) const
+    void get(sptr<T>& ptr, SearchDirection dir = SearchUp) const
     {
         ptr = this->get<T>(dir);
     }
@@ -282,7 +269,7 @@ public:
 
     /// Generic object access template wrapper, given a required tag, possibly searching up or down from the current context
     template<class T>
-    void get(boost::intrusive_ptr<T>& ptr, const Tag& tag, SearchDirection dir = SearchUp) const
+    void get(sptr<T>& ptr, const Tag& tag, SearchDirection dir = SearchUp) const
     {
         ptr = this->get<T>(tag, dir);
     }
@@ -303,7 +290,7 @@ public:
 
     /// Generic object access template wrapper, given a set of required tags, possibly searching up or down from the current context
     template<class T>
-    void get(boost::intrusive_ptr<T>& ptr, const TagSet& tags, SearchDirection dir = SearchUp) const
+    void get(sptr<T>& ptr, const TagSet& tags, SearchDirection dir = SearchUp) const
     {
         ptr = this->get<T>(tags, dir);
     }
@@ -324,7 +311,7 @@ public:
 
     /// Generic object access template wrapper, given a path from the current context
     template<class T>
-    void get(boost::intrusive_ptr<T>& ptr, const std::string& path) const
+    void get(sptr<T>& ptr, const std::string& path) const
     {
         ptr = this->get<T>(path);
     }
@@ -431,13 +418,13 @@ public:
     /// @{
 
     /// Add an object, or return false if not supported
-    virtual bool addObject( boost::intrusive_ptr<BaseObject> /*obj*/ )
+    virtual bool addObject( sptr<BaseObject> /*obj*/ )
     {
         return false;
     }
 
     /// Remove an object, or return false if not supported
-    virtual bool removeObject( boost::intrusive_ptr<BaseObject> /*obj*/ )
+    virtual bool removeObject( sptr<BaseObject> /*obj*/ )
     {
         return false;
     }

@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -27,9 +24,6 @@
 #include <sofa/helper/vector.h>
 
 #include <sofa/defaulttype/Mat.h>
-#ifdef Success
-#undef Success // dirty workaround to cope with the (dirtier) X11 define. See http://eigen.tuxfamily.org/bz/show_bug.cgi?id=253
-#endif
 #include <Eigen/SparseCore>
 
 
@@ -133,7 +127,8 @@ public:
     /// return the number of dofs in the mask
     size_t nbActiveDofs() const;
 
-    //    size_t getHash() const;
+    /// return a hash, useful to check if the mask changed
+    size_t getHash() const;
 
 protected:
 
@@ -149,19 +144,15 @@ class SOFA_HELPER_API StateMask
 
 public:
 
-    StateMask() : activated(false) {
-        m_size = 0;
-    }
+    StateMask() : m_size(0) {}
 
     /// filling-up (and resizing when necessary) the mask
-    void assign( size_t size, bool value );
+    void assign( size_t size, bool ) { m_size=size; }
 
     /// the mask can be deactivated when the mappings must be applied to every dofs (e.g. propagatePosition)
     /// it must be activated when the mappings can be limited to active dofs
-    void activate( bool a );
-    inline bool isActivated() const {
-        return activated;
-    }
+    void activate( bool ) {}
+    inline bool isActivated() const { return false; }
 
     /// add the given dof index in the mask
     inline void insertEntry( size_t /*index */) {}
@@ -175,55 +166,29 @@ public:
     /// getting mask entries is useful for advanced uses.
     //    const InternalStorage& getEntries() const { return mask; }
 
-    void resize( size_t size );
-    inline void clear() {
-        m_size = 0;
-    }
+    void resize( size_t size ) { m_size=size; }
+    inline void clear() { m_size=0; }
 
     size_t size() const {
         return m_size;
     }
 
-    inline friend std::ostream& operator<< ( std::ostream& os, const StateMask& /*sm*/ )
-    {
-        return os;
-    }
+    inline friend std::ostream& operator<< ( std::ostream& os, const StateMask& /*sm*/ ) { return os; }
 
 
     /// filtering the given input matrix by using the mask as a diagonal projection matrix
     /// output = mask.asDiagonal() * input
     template<class Real>
-    void maskedMatrix( Eigen::SparseMatrix<Real,Eigen::RowMajor>& output, const Eigen::SparseMatrix<Real,Eigen::RowMajor>& input, size_t blockSize=1 ) const
-    {
-        typedef Eigen::SparseMatrix<Real,Eigen::RowMajor> Mat;
-
-        output.resize( input.rows(), input.cols() );
-
-        for( size_t k=0 ; k<m_size ; ++k )
-        {
-            for( size_t i=0 ; i<blockSize ; ++i )
-            {
-                int row = k*blockSize+i;
-                output.startVec( row );
-                for( typename Mat::InnerIterator it(input,row) ; it ; ++it )
-                    output.insertBack( row, it.col() ) = it.value();
-            }
-        }
-        output.finalize();
-    }
-
-
+    void maskedMatrix( Eigen::SparseMatrix<Real,Eigen::RowMajor>& output, const Eigen::SparseMatrix<Real,Eigen::RowMajor>& input, size_t blockSize=1 ) const {SOFA_UNUSED(blockSize); output=input;}
 
     /// return the number of dofs in the mask
-    size_t nbActiveDofs() const;
+    size_t nbActiveDofs() const {return m_size;}
 
-    //    size_t getHash() const;
-
+    size_t getHash() const { return 0; }
 
 protected:
 
-    bool activated; // automatic switch (the mask is only used for specific operations)
-    unsigned m_size;
+    size_t m_size;
 
 };
 

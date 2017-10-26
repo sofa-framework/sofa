@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -127,7 +124,7 @@ void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix(TMatrix& M)
 template<class TMatrix,class TVector>
 void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixWithCSparse(TMatrix& M)
 {
-    std::cout << "Compute the initial invert matrix with CS_PARSE" << std::endl;
+    msg_info("PrecomputedLinearSolver") << "Compute the initial invert matrix with CS_PARSE" ;
 
     CompressedRowSparseMatrix<double> matSolv;
     FullVector<double> r;
@@ -149,14 +146,15 @@ void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixWithCSparse(TMatrix& M)
         b.set(j,0.0);
     }
 
-    std::cout << "Precomputing constraint correction LU decomposition " << std::endl;
+    msg_info("PrecomputedLinearSolver") << "Precomputing constraint correction LU decomposition " ;
     solver.invert(matSolv);
 
     for (unsigned int j=0; j<systemSize; j++)
     {
-        std::cout.precision(2);
-        std::cout << "Precomputing constraint correction : " << std::fixed << (float)j/(float)systemSize*100.0f << " %   " << '\xd';
-        std::cout.flush();
+        std::stringstream tmp;
+        tmp.precision(2);
+        tmp << "Precomputing constraint correction : " << std::fixed << (float)j/(float)systemSize*100.0f << " %   " << '\xd';
+        msg_info("PrecomputedLinearSolver") << tmp.str() ;
 
         if (j>0) b.set(j-1,0.0);
         b.set(j,1.0);
@@ -167,8 +165,8 @@ void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixWithCSparse(TMatrix& M)
             internalData.Minv.set(j,i,r.element(i) * factInt);
         }
     }
-    std::cout << "Precomputing constraint correction : " << std::fixed << 100.0f << " %   " << '\xd';
-    std::cout.flush();
+    msg_info("PrecomputedLinearSolver") << "Precomputing constraint correction : " << std::fixed << 100.0f << " %   " << '\xd';
+
 }
 #endif
 
@@ -212,7 +210,8 @@ bool PrecomputedLinearSolver<TMatrix,TVector>::addJMInvJt(defaulttype::BaseMatri
         core::MechanicalParams mparams = *core::MechanicalParams::defaultInstance();
         //TODO get the m b k factor from euler
 
-        std::cerr << "ERROR : the construction of the matrix when the solver is used only as cvonstraint correction is not implemented. You first need to save the matrix into a file" << std::endl;
+        msg_error() << "The construction of the matrix when the solver is used only as cvonstraint "
+                       "correction is not implemented. You first need to save the matrix into a file. " ;
         setSystemMBKMatrix(&mparams);
     }
 

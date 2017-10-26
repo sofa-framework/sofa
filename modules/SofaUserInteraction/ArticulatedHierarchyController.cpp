@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -184,11 +181,11 @@ void ArticulatedHierarchyController::dumpActiveArticulations(void) const
     int i=0;
     while (it != itEnd)
     {
-        if (*it)
-            std::cout << "-------------> Articulation " << articulationsIndices.getValue()[i] << " active"<<std::endl;
-        else
-            std::cout << "-------------> Articulation " << articulationsIndices.getValue()[i] << " inactive"<<std::endl;
-
+        if (*it){
+            msg_info() << "-------------> Articulation " << articulationsIndices.getValue()[i] << " active" ;
+        }else{
+            msg_info() << "-------------> Articulation " << articulationsIndices.getValue()[i] << " inactive" ;
+        }
         ++it;
         i++;
     }
@@ -198,7 +195,7 @@ void ArticulatedHierarchyController::dumpActiveArticulations(void) const
 
 void ArticulatedHierarchyController::dumpArticulationsAndBindingKeys(void) const
 {
-    std::cout << "ARTICULATIONS_KEYBOARD_CONTROLER : Controled Articulations & Binding Keys"<<std::endl;
+    msg_info() << "ARTICULATIONS_KEYBOARD_CONTROLER : Controled Articulations & Binding Keys" ;
 
     vector<int>::const_iterator articulationsIndicesIt = articulationsIndices.getValue().begin();
     vector<int>::const_iterator articulationsIndicesItEnd = articulationsIndices.getValue().end();
@@ -208,7 +205,7 @@ void ArticulatedHierarchyController::dumpArticulationsAndBindingKeys(void) const
 
     while (articulationsIndicesIt != articulationsIndicesItEnd)
     {
-        std::cout << "Articulation " << *articulationsIndicesIt << " controlled with key " << *bindinKeysIt << std::endl;
+        msg_info() << "Articulation " << *articulationsIndicesIt << " controlled with key " << *bindinKeysIt ;
         ++articulationsIndicesIt;
         ++bindinKeysIt;
         if (bindinKeysIt == bindinKeysItEnd)
@@ -410,7 +407,8 @@ void ArticulatedHierarchyController::applyController(void)
                     articulationIndex = articulationPropagationChain[j];
             }
 
-            static_cast<sofa::simulation::Node*>(this->getContext())->execute<sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor>(sofa::core::MechanicalParams::defaultInstance());
+            static_cast<sofa::simulation::Node*>(this->getContext())->execute<sofa::simulation::MechanicalProjectPositionAndVelocityVisitor>(sofa::core::MechanicalParams::defaultInstance());
+            static_cast<sofa::simulation::Node*>(this->getContext())->execute<sofa::simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor>(sofa::core::MechanicalParams::defaultInstance());
             static_cast<sofa::simulation::Node*>(this->getContext())->execute<sofa::simulation::UpdateMappingVisitor>(sofa::core::ExecParams::defaultInstance());
         }
     }

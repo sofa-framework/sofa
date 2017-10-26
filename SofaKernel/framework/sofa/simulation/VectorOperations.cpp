@@ -1,35 +1,28 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/simulation/VectorOperations.h>
 #include <sofa/core/MultiVecId.h>
-
-#ifndef SOFA_SMP
 #include <sofa/simulation/MechanicalVisitor.h>
-#else
-#include <sofa/simulation/ParallelMechanicalVisitor.h>
-#endif
+
 
 #include <sofa/simulation/VelocityThresholdVisitor.h>
 #include <sofa/simulation/MechanicalVPrintVisitor.h>
@@ -125,27 +118,11 @@ void VectorOperations::v_eq(sofa::core::MultiVecId v, sofa::core::ConstMultiVecI
     executeVisitor( MechanicalVOpVisitor(params, v, core::ConstMultiVecId::null(), a, f) );
 }
 
-#ifndef SOFA_SMP
 void VectorOperations::v_peq(sofa::core::MultiVecId v, sofa::core::ConstMultiVecId a, SReal f)
 {
     executeVisitor( MechanicalVOpVisitor(params, v, v, a, f) );
 }
-#else
-void VectorOperations::v_peq(sofa::core::MultiVecId v, sofa::core::ConstMultiVecId a, Shared<SReal> &fSh,SReal f)
-{
-    ParallelMechanicalVOpVisitor(params, v, v, a, f, &fSh).execute( ctx );
-}
 
-void VectorOperations::v_peq(sofa::core::MultiVecId v, sofa::core::ConstMultiVecId a, SReal f)
-{
-    // ParallelMechanicalVOpVisitor(params, v, v, a, f).execute( ctx );
-}
-
-void VectorOperations::v_meq(sofa::core::MultiVecId v, sofa::core::ConstMultiVecId a, Shared<SReal> &fSh)
-{
-    ParallelMechanicalVOpMecVisitor(params, v, a, &fSh).execute( ctx );
-}
-#endif
 
 void VectorOperations::v_teq(sofa::core::MultiVecId v, SReal f)
 {
@@ -162,12 +139,6 @@ void VectorOperations::v_multiop(const core::behavior::BaseMechanicalState::VMul
     executeVisitor( MechanicalVMultiOpVisitor(params, o) );
 }
 
-#ifdef SOFA_SMP
-void VectorOperations::v_op(sofa::core::MultiVecId v, sofa::core::MultiVecId a, sofa::core::MultiVecId b, Shared<SReal> &f) ///< v=a+b*f
-{
-    ParallelMechanicalVOpVisitor(params, v, a, b, 1.0, &f).execute( ctx );
-}
-#endif // SOFA_SMP
 
 void VectorOperations::v_dot( sofa::core::ConstMultiVecId a, sofa::core::ConstMultiVecId b)
 {
@@ -182,12 +153,6 @@ void VectorOperations::v_norm( sofa::core::ConstMultiVecId a, unsigned l)
     result = vis.getResult();
 }
 
-#ifdef SOFA_SMP
-void VectorOperations::v_dot( Shared<SReal> &result, core::MultiVecId a, core::MultiVecId b)
-{
-    ParallelMechanicalVDotVisitor(params, &result, a, b).execute( ctx );
-}
-#endif
 
 void VectorOperations::v_threshold(sofa::core::MultiVecId a, SReal threshold)
 {

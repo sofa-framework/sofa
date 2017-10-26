@@ -13,7 +13,7 @@
         <MechanicalObject src="@loader" name="DOFs" template="Vec3d" translation="0 0 0" rotation="0 90 0" scale="10" />
         <FixedConstraint name="FixedConstraint" template="Vec3d" indices="0" />
         <UniformMass name="Mass" template="Vec3d" totalmass="50" />
-        <EulerImplicitSolver name="cg_odesolver" printLog="0" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver name="linear solver" template="GraphScattered" iterations="25" tolerance="1e-09" threshold="1e-09" />
         <MeshTopology src="@loader" name="Static Mesh" fileTopology="mesh/cylinder.msh" />
         <MeshSpringForceField name="FEM-Bend" template="Vec3d" stiffness="100" damping="1" />

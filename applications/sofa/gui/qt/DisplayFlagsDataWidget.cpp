@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -13,11 +13,8 @@
 * more details.                                                               *
 *                                                                             *
 * You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* with this program. If not, see <http://www.gnu.org/licenses/>.              *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -102,11 +99,6 @@ DisplayFlagWidget::DisplayFlagWidget(QWidget* parent, const char* name,  Qt::Win
     this->setTreeWidgetCheckable(itemShowFlag[WIREFRAME], "Wire Frame");
     itemShowFlag[NORMALS]   = new QTreeWidgetItem(itemShowOptions, itemShowFlag[WIREFRAME]);
     this->setTreeWidgetCheckable(itemShowFlag[NORMALS], "Normals");
-
-#ifdef SOFA_SMP
-    itemShowFlag[PROCESSORCOLOR]   = new QTreeWidgetItem(itemShowOptions, itemShowFlag[NORMALS]);
-    this->setTreeWidgetCheckable(itemShowFlag[PROCESSORCOLOR], "Processor Color");
-#endif
     this->addTopLevelItem(itemShowAll);
     itemShowAll->addChild(itemShowVisual); itemShowAll->setExpanded(true);
     itemShowVisual->addChild(itemShowFlag[VISUALMODELS]);
@@ -125,9 +117,6 @@ DisplayFlagWidget::DisplayFlagWidget(QWidget* parent, const char* name,  Qt::Win
     itemShowOptions->addChild(itemShowFlag[RENDERING]);
     itemShowOptions->addChild(itemShowFlag[WIREFRAME]);
     itemShowOptions->addChild(itemShowFlag[NORMALS]);
-#ifdef SOFA_SMP
-    itemShowOptions->addChild(itemShowFlag[PROCESSORCOLOR]);
-#endif
     for (int i=0; i<ALLFLAGS; ++i)  mapFlag.insert(std::make_pair(itemShowFlag[i],i));
 }
 
@@ -207,9 +196,6 @@ void DisplayFlagsDataWidget::readFromData()
     flags->setFlag(DisplayFlagWidget::RENDERING, displayFlags.getShowRendering());
     flags->setFlag(DisplayFlagWidget::WIREFRAME, displayFlags.getShowWireFrame());
     flags->setFlag(DisplayFlagWidget::NORMALS, displayFlags.getShowNormals());
-#ifdef SOFA_SMP
-    flags->setFlag(DisplayFlagWidget::PROCESSORCOLOR, displayFlags.getShowProcessorColor());
-#endif
 }
 
 void DisplayFlagsDataWidget::writeToData()
@@ -227,9 +213,6 @@ void DisplayFlagsDataWidget::writeToData()
     displayFlags.setShowRendering(flags->getFlag(DisplayFlagWidget::RENDERING));
     displayFlags.setShowWireFrame(flags->getFlag(DisplayFlagWidget::WIREFRAME));
     displayFlags.setShowNormals(flags->getFlag(DisplayFlagWidget::NORMALS));
-#ifdef SOFA_SMP
-    displayFlags.setShowProcessorColor(flags->getFlag(DisplayFlagWidget::PROCESSORCOLOR));
-#endif
     this->getData()->endEdit();
 
 }

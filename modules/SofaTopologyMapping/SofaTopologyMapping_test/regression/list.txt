@@ -1,1 +1,0 @@
-../../../../examples/Components/topology/Mesh2PointTopologicalMapping.scn 100 1e-4

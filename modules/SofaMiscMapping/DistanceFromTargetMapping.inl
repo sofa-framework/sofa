@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -27,6 +24,7 @@
 
 #include "DistanceFromTargetMapping.h"
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <iostream>
 
 namespace sofa
@@ -44,9 +42,10 @@ DistanceFromTargetMapping<TIn, TOut>::DistanceFromTargetMapping()
     , f_indices(initData(&f_indices, "indices", "Indices of the parent points"))
     , f_targetPositions(initData(&f_targetPositions, "targetPositions", "Positions to compute the distances from"))
     , f_restDistances(initData(&f_restDistances, "restLengths", "Rest lengths of the connections."))
+    //TODO(dmarchal): use a list of options instead of numeric values.
     , d_geometricStiffness(initData(&d_geometricStiffness, (unsigned)2, "geometricStiffness", "0 -> no GS, 1 -> exact GS, 2 -> stabilized GS (default)"))
     , d_showObjectScale(initData(&d_showObjectScale, 0.f, "showObjectScale", "Scale for object display"))
-    , d_color(initData(&d_color, defaulttype::Vec4f(1,0,0,1), "showColor", "Color for object display"))
+    , d_color(initData(&d_color, defaulttype::RGBAColor(1,1,0,1), "showColor", "Color for object display. (default=[1.0,1.0,0.0,1.0])"))
 {
 }
 
@@ -65,8 +64,6 @@ void DistanceFromTargetMapping<TIn, TOut>::createTarget(unsigned index, const In
     indices.push_back(index);
     targetPositions.push_back(position);
     distances.push_back(distance);
-
-//    cerr<<"DistanceFromTargetMapping<TIn, TOut>::createTarget index " << index << " at position " << position << ", distance = " << distances << endl;
 }
 
 template <class TIn, class TOut>
@@ -74,7 +71,6 @@ void DistanceFromTargetMapping<TIn, TOut>::updateTarget(unsigned index, const In
 {
     helper::WriteAccessor< Data<InVecCoord > > targetPositions(f_targetPositions);
     helper::WriteAccessor< Data<helper::vector<unsigned> > > indices(f_indices);
-//    cerr<<"DistanceFromTargetMapping<TIn, TOut>::updateTarget index " << index << " at position " << position << endl;
 
     // find the target with given index
     unsigned i=0; while(i<indices.size() && indices[i]!=index) i++;
@@ -158,7 +154,6 @@ void DistanceFromTargetMapping<TIn, TOut>::apply(const core::MechanicalParams * 
         computeCoordPositionDifference( gap, targetPositions[i], in[indices[i]] );
 
         Real gapNorm = gap.norm();
-//        cerr<<"DistanceFromTargetMapping<TIn, TOut>::apply, gap = " << gap <<", norm = " << gapNorm << endl;
         out[i] = gapNorm - restDistances[i];  // output
 
         if( gapNorm>1.e-10 )
@@ -181,15 +176,9 @@ void DistanceFromTargetMapping<TIn, TOut>::apply(const core::MechanicalParams * 
                 jacobian.insertBack( i*Nout+j, indices[i]*Nin+k, gap[k] );
             }
         }
-
     }
-//    cerr<<"DistanceFromTargetMapping<TIn, TOut>::apply, in = " << in << endl;
-//    cerr<<"DistanceFromTargetMapping<TIn, TOut>::apply, target positions = " << positions << endl;
-//    cerr<<"DistanceFromTargetMapping<TIn, TOut>::apply, out = " << out << endl;
 
     jacobian.compress();
-//    serr << "apply, jacobian: " << sendl << jacobian << sendl;
-
 }
 
 
@@ -211,7 +200,6 @@ void DistanceFromTargetMapping<TIn, TOut>::applyJT(const core::MechanicalParams 
 template <class TIn, class TOut>
 void DistanceFromTargetMapping<TIn, TOut>::applyJT(const core::ConstraintParams*, Data<InMatrixDeriv>& , const Data<OutMatrixDeriv>& )
 {
-    //    cerr<<"DistanceFromTargetMapping<TIn, TOut>::applyJT does nothing " << endl;
 }
 
 
@@ -261,7 +249,6 @@ void DistanceFromTargetMapping<TIn, TOut>::applyDJT(const core::MechanicalParams
             }
            // InDeriv df = b*dx;
             parentForce[indices[i]] += df;
-    //        cerr<<"DistanceFromTargetMapping<TIn, TOut>::applyDJT, df = " << df << endl;
         }
     }
 }
@@ -319,8 +306,6 @@ void DistanceFromTargetMapping<TIn, TOut>::updateK( const core::MechanicalParams
                 }
             }
             b *= childForce[i][0] * invlengths[i];  // (I - uu^T)*f/l
-
-    //        std::cerr<<SOFA_CLASS_METHOD<<childForce[i][0]<<std::endl;
 
             K.addBlock(idx,idx,b);
         }

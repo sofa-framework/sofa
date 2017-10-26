@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -63,13 +60,13 @@ protected:
 
     virtual ~QuadSetTopologyContainer() {}
 public:
-    virtual void init();
+    virtual void init() override;
 
 
     /// Procedural creation methods
     /// @{
-    virtual void clear();
-    virtual void addQuad( int a, int b, int c, int d );
+    virtual void clear() override;
+    virtual void addQuad( int a, int b, int c, int d ) override;
     /// @}
 
 
@@ -80,7 +77,7 @@ public:
     /** \brief Returns the quad array.
      *
      */
-    virtual const SeqQuads& getQuads()
+    virtual const SeqQuads& getQuads() override
     {
         return getQuadArray();
     }
@@ -93,7 +90,7 @@ public:
      * @param ID of a Quad.
      * @return The corresponding Quad.
      */
-    virtual const Quad getQuad(QuadID i);
+    virtual const Quad getQuad(QuadID i) override;
 
 
     /** Returns the indices of a quad given four vertex indices.
@@ -102,7 +99,7 @@ public:
      * @return the ID of the corresponding quad.
      * @return -1 if none
      */
-    virtual int getQuadIndex(PointID v1, PointID v2, PointID v3, PointID v4);
+    virtual int getQuadIndex(PointID v1, PointID v2, PointID v3, PointID v4) override;
 
 
     /** \brief Returns the set of edges adjacent to a given quad.
@@ -110,7 +107,7 @@ public:
      * @param ID of a quad.
      * @return EdgesInQuad list composing the input quad.
     */
-    virtual const EdgesInQuad& getEdgesInQuad(QuadID i) ;
+    virtual const EdgesInQuad& getEdgesInQuad(QuadID i) override;
 
 
     /** \brief Returns the set of quads adjacent to a given vertex.
@@ -118,7 +115,7 @@ public:
      * @param ID of a vertex.
      * @return QuadsAroundVertex list around the input vertex.
      */
-    virtual const QuadsAroundVertex& getQuadsAroundVertex(PointID i);
+    virtual const QuadsAroundVertex& getQuadsAroundVertex(PointID i) override;
 
 
     /** \brief Returns the set of quads adjacent to a given edge.
@@ -126,7 +123,7 @@ public:
      * @param ID of an edge.
      * @return QuadsAroundEdge list around the input edge.
      */
-    virtual const QuadsAroundEdge& getQuadsAroundEdge(EdgeID i);
+    virtual const QuadsAroundEdge& getQuadsAroundEdge(EdgeID i) override;
 
 
     /** \brief Returns the index (either 0, 1, 2, 3) of the vertex whose global index is vertexIndex.
@@ -136,7 +133,7 @@ public:
      * @return the position of this vertex in the quad (i.e. either 0, 1, 2, 3).
      * @return -1 if none.
      */
-    virtual int getVertexIndexInQuad(const Quad &t, PointID vertexIndex) const;
+    virtual int getVertexIndexInQuad(const Quad &t, PointID vertexIndex) const override;
 
 
     /** \brief Returns the index (either 0, 1, 2, 3) of the edge whose global index is edgeIndex.
@@ -146,7 +143,7 @@ public:
      * @return the position of this edge in the quad (i.e. either 0, 1, 2, 3).
      * @return -1 if none.
      */
-    virtual int getEdgeIndexInQuad(const EdgesInQuad &t, EdgeID edheIndex) const;
+    virtual int getEdgeIndexInQuad(const EdgesInQuad &t, EdgeID edheIndex) const override;
 
     /// @}
 
@@ -164,7 +161,7 @@ public:
     * @see m_quadsAroundVertex
     * @see m_quadsAroundEdge
     */
-    virtual bool checkTopology() const;
+    virtual bool checkTopology() const override;
 
 
     /// Get information about connexity of the mesh
@@ -173,18 +170,18 @@ public:
       *
       * @return true if only one connected component
       */
-    virtual bool checkConnexity();
+    virtual bool checkConnexity() override;
 
     /// Returns the number of connected component.
-    virtual unsigned int getNumberOfConnectedComponent();
+    virtual unsigned int getNumberOfConnectedComponent() override;
 
     /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
-    virtual const VecQuadID getConnectedElement(QuadID elem);
+    virtual const VecQuadID getConnectedElement(QuadID elem) override;
 
     /// Returns the set of element indices adjacent to a given element (i.e. sharing a link)
-    virtual const VecQuadID getElementAroundElement(QuadID elem);
+    virtual const VecQuadID getElementAroundElement(QuadID elem) override;
     /// Returns the set of element indices adjacent to a given list of elements (i.e. sharing a link)
-    virtual const VecQuadID getElementAroundElements(VecQuadID elems);
+    virtual const VecQuadID getElementAroundElements(VecQuadID elems) override;
     /// @}
 
 
@@ -197,7 +194,7 @@ public:
     /** \brief Returns the number of topological element of the current topology.
      * This function avoids to know which topological container is in used.
      */
-    virtual unsigned int getNumberOfElements() const;
+    virtual unsigned int getNumberOfElements() const override;
 
 
     /** \brief Returns the Quad array. */
@@ -240,7 +237,7 @@ protected:
      *
      * Create the set of edges when needed.
      */
-    virtual void createEdgeSetArray();
+    virtual void createEdgeSetArray() override;
 
 
     /** \brief Creates the array of edge indices for each quad.
@@ -296,7 +293,7 @@ protected:
 
 
     /// \brief Function creating the data graph linked to d_quad
-    virtual void updateTopologyEngineGraph();
+    virtual void updateTopologyEngineGraph() override;
 
 
     /// Use a specific boolean @see m_quadTopologyDirty in order to know if topology Data is dirty or not.
@@ -324,7 +321,7 @@ protected:
     bool m_quadTopologyDirty;
 
     /// List of engines related to this specific container
-    sofa::helper::list <sofa::core::topology::TopologyEngine *> m_enginesList;
+    std::list<sofa::core::topology::TopologyEngine *> m_enginesList;
 
     /// \brief variables used to display the graph of Data/DataEngines linked to this Data array.
     sofa::helper::vector < sofa::helper::vector <std::string> > m_dataGraph;

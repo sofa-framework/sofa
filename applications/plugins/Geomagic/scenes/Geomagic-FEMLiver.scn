@@ -1,0 +1,102 @@
+<Node name="root" dt="0.005" gravity="0 -9.81 0" >
+    <VisualStyle displayFlags="hideBehaviorModels hideCollisionModels hideMappings hideForceFields" />
+    <RequiredPlugin name="Geomagic plugin" pluginName="Geomagic" />
+    
+    <CollisionPipeline name="pipeline" depth="6" verbose="0"/>
+    <BruteForceDetection name="detection" />
+    <CollisionResponse name="response" response="FrictionContact" />
+    <LocalMinDistance name="proximity" alarmDistance="0.15" contactDistance="0.05" angleCone="0.0" />
+    <FreeMotionAnimationLoop/>
+    <LCPConstraintSolver tolerance="0.001" maxIt="1000"/>
+    <GeomagicDriver name="GeomagicDevice" deviceName="Default Device" scale="1" drawDeviceFrame="1" positionBase="0 0 0" orientationBase="0 0.707 0 -0.707"  />
+
+
+    <Node name="Liver" gravity="0 -9.81 0">
+        <EulerImplicitSolver name="cg_odesolver"  />
+        <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
+        <MeshGmshLoader name="meshLoader" filename="mesh/liver.msh" />
+        <TetrahedronSetTopologyContainer name="topo" src="@meshLoader" />
+        <MechanicalObject name="dofs" src="@meshLoader" />
+        <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
+        <DiagonalMass  name="computed using mass density" massDensity="1" />
+        <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="6000" computeGlobalMatrix="0" />
+        <PrecomputedConstraintCorrection recompute="true"/>
+
+        <FixedConstraint  name="FixedConstraint" indices="3 39 64" />
+        <Node name="Visu" tags="Visual" gravity="0 -9.81 0">
+            <OglModel  name="VisualModel" fileMesh="mesh/liver-smooth.obj" />
+            <BarycentricMapping name="visual mapping" input="@../dofs" output="@VisualModel" />
+        </Node>
+        <Node name="Surf" gravity="0 -9.81 0">
+            <SphereLoader filename="mesh/liver.sph" />
+            <MechanicalObject name="spheres" position="@[-1].position" />
+            <TSphereModel name="CollisionModel" listRadius="@[-2].listRadius"/>
+            <BarycentricMapping name="sphere mapping" input="@../dofs" output="@spheres" />
+        </Node>
+    </Node>
+    
+    <!-- ADDED: the Mechanical state Controller gathers events from the Omni driver and populates the Mechanical state -->
+    <Node name="Omni">
+        <MechanicalObject template="Rigid" name="DOFs" position="@GeomagicDevice.positionDevice"/>
+        <MechanicalStateController template="Rigid" listening="true" mainDirection="-1.0 0.0 0.0" handleEventTriggersUpdate="true"/>
+        <Node name="VisuAvatar" activated="false" >
+            <OglModel name="Visual" fileMesh="mesh/sphere.obj" color="gray" scale="0.1"/>
+            <RigidMapping input="@.." output="@Visual" index="0"/>
+        </Node>
+        <Node name="RefModel">
+            <MeshObjLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
+            <Mesh src="@loader"  />
+            <MechanicalObject src="@loader" name="instrumentCollisionState" ry="-180" rz="-90" dz="3.5" dx="-0.3" />
+            <RigidMapping />
+        </Node>
+        <Node name="RefModelRight" >
+            <MeshObjLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
+            <Mesh src="@loader" name="InstrumentCollisionModel"  />
+            <MechanicalObject src="@loader" name="instrumentCollisionState" ry="-180" rz="-90" dz="3.5" dx="-0.3" dy="0.5" />
+            <RigidMapping />
+        </Node>
+        <Node name="RefModelLeft" >
+            <MeshObjLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
+            <Mesh src="@loader" name="InstrumentCollisionModel"  />
+            <MechanicalObject src="@loader" name="instrumentCollisionState" ry="-180" rz="-90" dz="3.5" dx="-0.3" dy="-0.5" />
+            <RigidMapping />
+        </Node>
+    </Node>
+
+    <Node name="Instrument" >
+        <EulerImplicitSolver name="ODE solver" rayleighStiffness="0.05" rayleighMass="1.0" />
+        <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-10" threshold="10e-10" /> 
+        <MechanicalObject name="instrumentState" position="@GeomagicDevice.positionDevice" template="Rigid" />
+        <UniformMass name="mass" totalmass="0.005" />
+        <LCPForceFeedback activate="true" forceCoef="0.005"/> <!-- ADDED : Compute a force-feedback for the device -->
+        <UncoupledConstraintCorrection/>
+        <Node name="VisualModel" >
+            <OglModel name="InstrumentVisualModel" fileMesh="Demos/Dentistry/data/mesh/dental_instrument.obj" color="1.0 0.2 0.2 1.0" ry="-180" rz="-90" dz="3.5" dx="-0.3"/>
+            <RigidMapping name="MM->VM mapping" input="@instrumentState" output="@InstrumentVisualModel" />
+        </Node>
+        <Node name="CollisionModel" >
+            <MeshObjLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
+            <Mesh src="@loader" name="InstrumentCollisionModel" />
+            <MechanicalObject src="@loader" name="instrumentCollisionState"  ry="-180" rz="-90" dz="3.5" dx="-0.3" />
+            <Line name="instrument" contactStiffness="10" />
+            <Point name="instrument" contactStiffness="10" /> 
+            <RigidMapping name="MM->CM mapping" input="@instrumentState" output="@instrumentCollisionState" />
+        </Node>
+        <Node name="RefModelRight" >
+            <MeshObjLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
+            <Mesh src="@loader" name="InstrumentCollisionModel" />
+            <MechanicalObject src="@loader" name="instrumentCollisionState"  ry="-180" rz="-90" dz="3.5" dx="-0.3" dy="0.5" />
+            <RigidMapping name="MM->CM mapping" input="@instrumentState" output="@instrumentCollisionState" />
+        </Node>
+        <Node name="RefModelLeft" >
+            <MeshObjLoader filename="Demos/Dentistry/data/mesh/dental_instrument_centerline.obj"  name="loader"/>
+            <Mesh src="@loader" name="InstrumentCollisionModel"  />
+            <MechanicalObject src="@loader" name="instrumentCollisionState"  ry="-180" rz="-90" dz="3.5" dx="-0.3" dy="-0.5" />
+            <RigidMapping name="MM->CM mapping" input="@instrumentState" output="@instrumentCollisionState" />
+        </Node>
+        <VectorSpringForceField  template="Vec3d" object1="@Omni/RefModel/instrumentCollisionState" object2="@Instrument/CollisionModel/instrumentCollisionState" stiffness="10" viscosity="0" />
+        <VectorSpringForceField  template="Vec3d" object1="@Omni/RefModelRight/instrumentCollisionState" object2="@Instrument/RefModelRight/instrumentCollisionState" stiffness="10" viscosity="0" />
+        <VectorSpringForceField  template="Vec3d" object1="@Omni/RefModelLeft/instrumentCollisionState" object2="@Instrument/RefModelLeft/instrumentCollisionState" stiffness="10" viscosity="0" />
+    </Node>  
+
+</Node>

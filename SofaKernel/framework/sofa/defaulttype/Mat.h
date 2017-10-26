@@ -1,24 +1,21 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                              SOFA :: Framework                              *
-*                                                                             *
-* Authors: The SOFA Team (see Authors.txt)                                    *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -27,7 +24,6 @@
 
 #include <sofa/helper/system/config.h>
 #include <sofa/defaulttype/Vec.h>
-#include <boost/static_assert.hpp>
 #include <iostream>
 #include <sofa/helper/logging/Messaging.h>
 
@@ -71,7 +67,7 @@ public:
       /// Specific constructor with a single line.
       explicit Mat(Line r1)
       {
-        BOOST_STATIC_ASSERT(L == 1);
+        static_assert(L == 1, "");
         this->elems[0]=r1;
       }
     */
@@ -79,7 +75,7 @@ public:
     /// Specific constructor with 2 lines.
     Mat(Line r1, Line r2)
     {
-        BOOST_STATIC_ASSERT(L == 2);
+        static_assert(L == 2, "");
         this->elems[0]=r1;
         this->elems[1]=r2;
     }
@@ -87,7 +83,7 @@ public:
     /// Specific constructor with 3 lines.
     Mat(Line r1, Line r2, Line r3)
     {
-        BOOST_STATIC_ASSERT(L == 3);
+        static_assert(L == 3, "");
         this->elems[0]=r1;
         this->elems[1]=r2;
         this->elems[2]=r3;
@@ -96,7 +92,7 @@ public:
     /// Specific constructor with 4 lines.
     Mat(Line r1, Line r2, Line r3, Line r4)
     {
-        BOOST_STATIC_ASSERT(L == 4);
+        static_assert(L == 4, "");
         this->elems[0]=r1;
         this->elems[1]=r2;
         this->elems[2]=r3;
@@ -289,27 +285,27 @@ public:
     }
 
     /// Special access to first line.
-    Line& x() { BOOST_STATIC_ASSERT(L >= 1); return this->elems[0]; }
+    Line& x() { static_assert(L >= 1, ""); return this->elems[0]; }
     /// Special access to second line.
-    Line& y() { BOOST_STATIC_ASSERT(L >= 2); return this->elems[1]; }
+    Line& y() { static_assert(L >= 2, ""); return this->elems[1]; }
     /// Special access to third line.
-    Line& z() { BOOST_STATIC_ASSERT(L >= 3); return this->elems[2]; }
+    Line& z() { static_assert(L >= 3, ""); return this->elems[2]; }
     /// Special access to fourth line.
-    Line& w() { BOOST_STATIC_ASSERT(L >= 4); return this->elems[3]; }
+    Line& w() { static_assert(L >= 4, ""); return this->elems[3]; }
 
     /// Special access to first line (read-only).
-    const Line& x() const { BOOST_STATIC_ASSERT(L >= 1); return this->elems[0]; }
+    const Line& x() const { static_assert(L >= 1, ""); return this->elems[0]; }
     /// Special access to second line (read-only).
-    const Line& y() const { BOOST_STATIC_ASSERT(L >= 2); return this->elems[1]; }
+    const Line& y() const { static_assert(L >= 2, ""); return this->elems[1]; }
     /// Special access to thrid line (read-only).
-    const Line& z() const { BOOST_STATIC_ASSERT(L >= 3); return this->elems[2]; }
+    const Line& z() const { static_assert(L >= 3, ""); return this->elems[2]; }
     /// Special access to fourth line (read-only).
-    const Line& w() const { BOOST_STATIC_ASSERT(L >= 4); return this->elems[3]; }
+    const Line& w() const { static_assert(L >= 4, ""); return this->elems[3]; }
 
     /// Set matrix to identity.
     void identity()
     {
-        BOOST_STATIC_ASSERT(L == C);
+        static_assert(L == C, "");
         clear();
         for (int i=0; i<L; i++)
             this->elems[i][i]=1;
@@ -321,19 +317,45 @@ public:
     /// Returns the identity matrix
     static Mat<L,L,real> Identity()
     {
-        BOOST_STATIC_ASSERT(L == C);
+        static_assert(L == C, "");
         Mat<L,L,real> id;
         for (int i=0; i<L; i++)
             id[i][i]=1;
         return id;
     }
 
+
+    template<int S>
+    static bool canSelfTranspose(const Mat<S, S, real>& lhs, const Mat<S, S, real>& rhs)
+    {
+        return &lhs == &rhs;
+    }
+
+    template<int I, int J>
+    static bool canSelfTranspose(const Mat<I, J, real>& /*lhs*/, const Mat<J, I, real>& /*rhs*/)
+    {
+        return false;
+    }
+
     /// Set matrix as the transpose of m.
     void transpose(const Mat<C,L,real> &m)
     {
-        for (int i=0; i<L; i++)
-            for (int j=0; j<C; j++)
-                this->elems[i][j]=m[j][i];
+        if (canSelfTranspose(*this, m))
+        {
+            for (int i=0; i<L; i++)
+            {
+                for (int j=i+1; j<C; j++)
+                {
+                    std::swap(this->elems[i][j], this->elems[j][i]);
+                }
+            }
+        }
+        else
+        {
+            for (int i=0; i<L; i++)
+                for (int j=0; j<C; j++)
+                    this->elems[i][j]=m[j][i];
+        }
     }
 
     /// Return the transpose of m.
@@ -346,17 +368,17 @@ public:
         return m;
     }
 
-    /// Transpose current matrix.
+    /// Transpose the square matrix.
     void transpose()
     {
-        BOOST_STATIC_ASSERT(L == C);
+        static_assert(L == C, "Cannot self-transpose a non-square matrix. Use transposed() instead");
         for (int i=0; i<L; i++)
+        {
             for (int j=i+1; j<C; j++)
             {
-                real t = this->elems[i][j];
-                this->elems[i][j] = this->elems[j][i];
-                this->elems[j][i] = t;
+                std::swap(this->elems[i][j], this->elems[j][i]);
             }
+        }
     }
 
     /// @name Tests operators
@@ -603,9 +625,26 @@ public:
             this->elems[i]-=m[i];
     }
 
-    /// Invert matrix m
+
+    /// invert this
+    Mat<L,C,real> inverted() const
+    {
+        static_assert(L == C, "Cannot invert a non-square matrix");
+        Mat<L,C,real> m = *this;
+        invertMatrix(m, *this);
+        return m;
+    }
+
+    /// Invert square matrix m
     bool invert(const Mat<L,C,real>& m)
     {
+        static_assert(L == C, "Cannot invert a non-square matrix");
+        if (&m == this)
+        {
+            Mat<L,C,real> mat = m;
+            bool res = invertMatrix(*this, mat);
+            return res;
+        }
         return invertMatrix(*this, m);
     }
 
@@ -681,7 +720,7 @@ public:
     /// this = ( this + this.transposed() ) / 2.0
     void symmetrize()
     {
-        BOOST_STATIC_ASSERT( C == L );
+        static_assert( C == L, "" );
         for(int l=0; l<L; l++)
             for(int c=l+1; c<C; c++)
                 this->elems[l][c] = this->elems[c][l] = ( this->elems[l][c] + this->elems[c][l] ) * 0.5f;

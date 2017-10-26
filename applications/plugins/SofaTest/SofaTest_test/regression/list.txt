@@ -1,2 +1,1 @@
-../../../../../examples/Demos/caduceus.scn 100 1e-3
 gravity.scn 100 1e-4

@@ -1,3 +1,24 @@
+/******************************************************************************
+*       SOFA, Simulation Open-Framework Architecture, development version     *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                                                                             *
+* This program is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
+*******************************************************************************
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 // File modified from GeometricTools
 // http://www.geometrictools.com/
 #ifndef INTRUTILITY3_INL
@@ -1240,7 +1261,7 @@ void IntrUtil<Real>::SegmentThroughPlane (
     Real v1 = planeNormal * segment[1];
 
     // Now that there it has been reduced to a 1-dimensional problem via
-    // projection, it becomes easy to find the ratio along V that V 
+    // projection, it becomes easy to find the ratio along V that V
     // intersects with U.
     Real ratio = (u - v0)/(v1 - v0);
     P[0] = segment[0] + ratio*(segment[1] - segment[0]);
@@ -1824,7 +1845,7 @@ void ClipConvexPolygonAgainstPlane (const defaulttype::Vec<3,Real>& normal,
         // cannot create a new segment, as clipping a polygon would
         if (positive > 0)
         {
-            if (negative > 0) 
+            if (negative > 0)
             {
                 int clip;
 
@@ -1944,7 +1965,7 @@ void ClipConvexPolygonAgainstPlane (const defaulttype::Vec<3,Real>& normal,
             // This should not ever happen if called by the findintersect
             // routines after an intersection has been determined.
             quantity = 0;
-        }    
+        }
     }
 }
 //----------------------------------------------------------------------------
@@ -2034,8 +2055,10 @@ void MyBox<TReal>::showVertices()const{
     vs.push_back(Center + a0 - a1 + a2);
     vs.push_back(Center - a0 - a1 + a2);
 
+    std::stringstream tmpmsg;
     for(int i = 0 ; i < 8 ; ++i){
-        std::cout<<"    "<<vs[i]<<std::endl;
+        tmpmsg<<"    "<<vs[i]<<msgendl;
+    dmsg_info("MyBox<TReal>") << tmpmsg ;
     }
 }
 

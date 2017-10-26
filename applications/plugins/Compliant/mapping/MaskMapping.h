@@ -79,14 +79,16 @@ protected:
 		// build array of (dof index, coeff index)
 		index.clear();
 
-		for(unsigned i = 0, n = d.size(); i < n; ++i) {
-			for( unsigned j = 0; j < self::Nin; ++j) {
-				if( d[i][j] ) {
-					index.push_back( std::make_pair(i, j) );
-				}
-			}
-		}
-		
+
+        for(size_t i = 0, n = in.size(); i < n; ++i) {
+            const typename TIn::Coord& di = d[std::min(d.size()-1,i)];
+            for( unsigned j = 0; j < self::Nin; ++j) {
+                if( di[j] ) {
+                    index.push_back( std::make_pair(i, j) );
+                }
+            }
+        }
+
 		// automatic output resize yo !
 		this->getToModel()->resize( index.size() );
 		

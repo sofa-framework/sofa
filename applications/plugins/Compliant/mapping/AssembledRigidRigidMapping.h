@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -29,7 +26,7 @@
 #include <Compliant/config.h>
 
 #include "../utils/se3.h"
-#include "../utils/pair.h"
+#include <sofa/helper/pair.h>
 
 #include <sofa/core/ObjectFactory.h>
 
@@ -83,7 +80,7 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
 
 
 
-	typedef defaulttype::SerializablePair<unsigned, typename TIn::Coord> source_type;
+    typedef std::pair<unsigned, typename TIn::Coord> source_type;
     typedef helper::vector< source_type > source_vectype;
     Data< helper::vector< source_type > > source;
 
@@ -132,7 +129,7 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
 		// which is most likely never
         for(unsigned i = 0, n = src.size(); i < n; ++i) {
             const source_type& s = src[i];
-            in_out[ s.first() ].push_back(i);
+            in_out[ s.first ].push_back(i);
         }
 
         typedef typename self::geometric_type::CompressedMatrix matrix_type;
@@ -154,13 +151,13 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
                 const unsigned i = it->second[w];
 
                 const source_type& s = src[i];
-                assert( it->first == s.first() );
+                assert( it->first == s.first );
 
                 const typename TOut::Deriv& lambda = out_force[i];
                 const typename TOut::Deriv::Vec3& f = lambda.getLinear();
 
                 const typename TOut::Deriv::Quat& R = in_pos[ parentIdx ].getOrientation();
-                const typename TOut::Deriv::Vec3& t = s.second().getCenter();
+                const typename TOut::Deriv::Vec3& t = s.second.getCenter();
                 const typename TOut::Deriv::Vec3& Rt = R.rotate( t );
 
                 block += defaulttype::crossProductMatrix<Real>( f ) * defaulttype::crossProductMatrix<Real>( Rt );
@@ -213,13 +210,13 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
     //         const typename TOut::Deriv& lambda = out_force[i];
     //         const typename TOut::Deriv::Vec3& f = lambda.getLinear();
 
-    //         const typename TOut::Deriv::Quat& R = in_pos[ s.first() ].getOrientation();
-    //         const typename TOut::Deriv::Vec3& t = s.second().getCenter();
+    //         const typename TOut::Deriv::Quat& R = in_pos[ s.first ].getOrientation();
+    //         const typename TOut::Deriv::Vec3& t = s.second.getCenter();
 
     //         const typename TOut::Deriv::Vec3& Rt = R.rotate( t );
-    //         const typename TIn::Deriv::Vec3& omega = inDx.getValue()[ s.first() ].getAngular();
+    //         const typename TIn::Deriv::Vec3& omega = inDx.getValue()[ s.first ].getAngular();
             
-    //         lvalue[s.first()].getAngular() -= TIn::crosscross(f, omega, Rt) * mparams->kFactor();
+    //         lvalue[s.first].getAngular() -= TIn::crosscross(f, omega, Rt) * mparams->kFactor();
     //     }
       
     // }
@@ -242,7 +239,7 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
         for(unsigned i = 0, n = src.size(); i < n; ++i) {
             const source_type& s = src[i];
 			
-            typename se3::mat66 block = se3::dR(s.second(), in_pos[ s.first() ] );
+            typename se3::mat66 block = se3::dR(s.second, in_pos[ s.first ] );
 			
 			for(unsigned j = 0; j < 6; ++j) {
 				unsigned row = 6 * i + j;
@@ -250,7 +247,7 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
 				J.startVec( row );
 				
 				for(unsigned k = 0; k < 6; ++k) {
-                    unsigned col = 6 * s.first() + k;
+                    unsigned col = 6 * s.first + k;
 					if( block(j, k) ) {
                         J.insertBack(row, col) = block(j, k);
                     }
@@ -273,7 +270,7 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
 		
         for(unsigned i = 0, n = src.size(); i < n; ++i) {
             const source_type& s = src[i];
-            out[ i ] = se3::prod( in[ s.first() ], s.second() );
+            out[ i ] = se3::prod( in[ s.first ], s.second );
 		}
 		
 	}
@@ -288,7 +285,7 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
             if( this->maskTo->getEntry(i) )
             {
                 const source_type& s = src[i];
-                this->maskFrom->insertEntry(s.first());
+                this->maskFrom->insertEntry(s.first);
             }
         }
     }

@@ -3,7 +3,7 @@
     <RequiredPlugin name="VolumetricRendering" />
 
     <Node name="HexaRaptor" >
-        <EulerImplicit />
+        <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="100" tolerance="1.0e-7" threshold="1.0e-7"/>
 
 		<SparseGrid name="grid" n="21 21 21" fileTopology="mesh/raptor_8kp.obj" />

@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -47,11 +44,7 @@ namespace collision
 
 template< class TFilter1, class TFilter2 >
 inline int LMDNewProximityIntersection::doIntersectionLineLine(double dist2, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& q1, const defaulttype::Vector3& q2, OutputVector* contacts, int id, int indexLine1, int indexLine2,  TFilter1 &f1, TFilter2 &f2)
-//inline int LMDNewProximityIntersection::doIntersectionLineLine(double dist2, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& q1, const defaulttype::Vector3& q2, OutputVector* contacts, int id)
 {
-
-//	std::cout<<"doIntersectionLine "<<indexLine1 <<" and Line "<<indexLine2 <<" is called" <<std::endl;
-
     bool debug=false;
     if(indexLine1==-1 || indexLine2==-1)
         debug=true;
@@ -130,7 +123,6 @@ inline int LMDNewProximityIntersection::doIntersectionLineLine(double dist2, con
 
 template< class TFilter1, class TFilter2 >
 inline int LMDNewProximityIntersection::doIntersectionLinePoint(double dist2, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& q, OutputVector* contacts, int id, int indexLine1, int indexPoint2, TFilter1 &f1, TFilter2 &f2, bool swapElems)
-//inline int LMDNewProximityIntersection::doIntersectionLinePoint(double dist2, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& q, OutputVector* contacts, int id, bool swapElems)
 {
     std::cout<<"doIntersectionLinePoint is called"<<std::endl;
     const defaulttype::Vector3 AB = p2-p1;
@@ -164,13 +156,9 @@ inline int LMDNewProximityIntersection::doIntersectionLinePoint(double dist2, co
     if (!f2.validPoint(indexPoint2, qp))
         return 0;
 
-
-
-    //const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
     contacts->resize(contacts->size()+1);
     sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
 
-    //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
     detection->id = id;
     if (swapElems)
     {
@@ -186,13 +174,11 @@ inline int LMDNewProximityIntersection::doIntersectionLinePoint(double dist2, co
     }
     detection->value = detection->normal.norm();
     detection->normal /= detection->value;
-    //detection->value -= contactDist;
     return 1;
 }
 
 template< class TFilter1, class TFilter2 >
 inline int LMDNewProximityIntersection::doIntersectionPointPoint(double dist2, const defaulttype::Vector3& p, const defaulttype::Vector3& q, OutputVector* contacts, int id, int indexPoint1, int indexPoint2, TFilter1 &f1, TFilter2 &f2)
-//inline int LMDNewProximityIntersection::doIntersectionPointPoint(double dist2, const defaulttype::Vector3& p, const defaulttype::Vector3& q, OutputVector* contacts, int id)
 {
     defaulttype::Vector3 pq;
     pq = q-p;
@@ -206,23 +192,19 @@ inline int LMDNewProximityIntersection::doIntersectionPointPoint(double dist2, c
     if (!f2.validPoint(indexPoint2, qp))
         return 0;
 
-    //const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
     contacts->resize(contacts->size()+1);
     sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
-    //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->id = id;
     detection->point[0]=p;
     detection->point[1]=q;
     detection->normal=pq;
     detection->value = detection->normal.norm();
     detection->normal /= detection->value;
-    //detection->value -= contactDist;
     return 1;
 }
 
 template< class TFilter1, class TFilter2 >
 inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2, int flags, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& p3, const defaulttype::Vector3& /*n*/, const defaulttype::Vector3& q, OutputVector* contacts, int id,  Triangle &e1, unsigned int *edgesIndices, int indexPoint2, TFilter1 &f1, TFilter2 &f2, bool swapElems)
-//inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2, int flags, const defaulttype::Vector3& p1, const defaulttype::Vector3& p2, const defaulttype::Vector3& p3, const defaulttype::Vector3& /*n*/, const defaulttype::Vector3& q, OutputVector* contacts, int id, bool swapElems)
 {
     const defaulttype::Vector3 AB = p2-p1;
     const defaulttype::Vector3 AC = p3-p1;
@@ -241,7 +223,7 @@ inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2
 
     if(det==0.0)
     {
-        std::cerr<<"WARNING: in doIntersectionTrianglePoint point is just on the triangle or the triangle do not exists: computation impossible"<<std::endl;
+        msg_warning("LMDNewProximityIntersection")<<"(doIntersectionTrianglePoint) point is just on the triangle or the triangle do not exists: computation impossible";
         return 0;
     }
 
@@ -250,10 +232,6 @@ inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2
     beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
     defaulttype::Vector3 pq;
     defaulttype::Vector3 p;
-    //if (alpha < 0.000001 ||
-    //    beta  < 0.000001 ||
-    //    alpha + beta  > 0.999999)
-    //        return 0;
     if (alpha < 0.000001 || beta < 0.000001 || alpha + beta > 0.999999)
     {
         // nearest point is on an edge or corner

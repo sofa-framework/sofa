@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 3.1)
 project(SofaCore)
 
 set(HEADER_FILES
@@ -22,8 +22,6 @@ set(HEADER_FILES
     MultiMapping.inl
     MultiVecId.h
     ObjectFactory.h
-    # Plugin.h
-    # PluginManager.h
     SofaLibrary.h
     State.h
     State.inl
@@ -117,6 +115,7 @@ set(HEADER_FILES
     objectmodel/JoystickEvent.h
     objectmodel/KeypressedEvent.h
     objectmodel/KeyreleasedEvent.h
+    objectmodel/IdleEvent.h
     objectmodel/Link.h
     objectmodel/MouseEvent.h
     objectmodel/SPtr.h
@@ -138,6 +137,8 @@ set(HEADER_FILES
     visual/VisualManager.h
     visual/VisualModel.h
     visual/VisualParams.h
+    logging/RichConsoleStyleMessageFormatter.h
+    logging/PerComponentLoggingMessageHandler.h
 )
 
 set(SOURCE_FILES
@@ -189,6 +190,7 @@ set(SOURCE_FILES
     collision/Intersection.cpp
     collision/Pipeline.cpp
     init.cpp
+    loader/BaseLoader.cpp
     loader/MeshLoader.cpp
     loader/SceneLoader.cpp
     loader/VoxelLoader.cpp
@@ -216,6 +218,7 @@ set(SOURCE_FILES
     objectmodel/KeypressedEvent.cpp
     objectmodel/KeyreleasedEvent.cpp
     objectmodel/MouseEvent.cpp
+    objectmodel/IdleEvent.cpp
     objectmodel/Tag.cpp
     topology/BaseMeshTopology.cpp
     topology/BaseTopology.cpp
@@ -230,6 +233,8 @@ set(SOURCE_FILES
     visual/VisualManager.cpp
     visual/VisualModel.cpp
     visual/VisualParams.cpp
+    logging/RichConsoleStyleMessageFormatter.cpp
+    logging/PerComponentLoggingMessageHandler.cpp
 )
 
 if(NOT SOFA_NO_OPENGL)
@@ -242,22 +247,7 @@ if(Boost_thread_FOUND)
     list(APPEND SOURCE_FILES objectmodel/AspectPool.cpp)
 endif()
 
-if(SOFA-MISC_SMP)
-    list(APPEND HEADER_FILES
-        CallContext.h
-        ParallelCollisionModel.h
-        behavior/ParallelMultiVec.h
-        collision/ParallelNarrowPhaseDetection.h
-        collision/ParallelPipeline.h
-        objectmodel/BaseObjectTasks.h
-    )
 
-    list(APPEND SOURCE_FILES
-        CallContext.cpp
-        collision/ParallelPipeline.cpp
-        objectmodel/BaseObjectTasks.cpp
-    )
-endif()
 
 # # TODO?
 # if(SOFA-MISC_SUPPORT_MOVING_FRAMES)
@@ -272,7 +262,7 @@ endif()
 
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaDefaultType)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaDefaultType)
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../..>")
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_CORE")

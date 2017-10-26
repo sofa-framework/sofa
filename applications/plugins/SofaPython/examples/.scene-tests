@@ -13,4 +13,4 @@ add "MultiMapping.py"
 add "PythonMainScriptController.py"
 #add "units.py" # it is pure python file (not a sofa scene) and should be tested in a specific unit test
 # add "variables.py" # this is not a sofa scene, simply a Controller definition called in variables.scn
-add "Visitor.py"
+# add "Visitor.py"" # this is not a sofa scene, simply a visitor implementation called in Visitor.scn

@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Plugins                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -39,54 +36,55 @@ namespace core
 namespace objectmodel
 {
 
+// mtournier: wtf is this supposed to do?
+// mtournier: wtf is this doing in sofa::core?
 class SOFA_SOFAPYTHON_API PythonScriptFunctionParameter : public ScriptFunctionParameter
 {
 public:
-	PythonScriptFunctionParameter();
-	explicit PythonScriptFunctionParameter(PyObject* data, bool own);
-	virtual ~PythonScriptFunctionParameter();
+    PythonScriptFunctionParameter();
+    explicit PythonScriptFunctionParameter(PyObject* data, bool own);
+    virtual ~PythonScriptFunctionParameter();
 
-	PyObject* data() const					{return m_pyData;}
-	void setData(PyObject* data, bool own)	{m_pyData = data; m_own = own;}
+    PyObject* data() const					{return m_pyData;}
+    void setData(PyObject* data, bool own)	{m_pyData = data; m_own = own;}
 
 private:
-	bool		m_own;
-	PyObject*	m_pyData;
+    bool		m_own {false} ;
+    PyObject*	m_pyData {nullptr} ;
 
 };
 
 class SOFA_SOFAPYTHON_API PythonScriptFunctionResult : public ScriptFunctionResult
 {
 public:
-	PythonScriptFunctionResult();
-	explicit PythonScriptFunctionResult(PyObject* data, bool own);
-	virtual ~PythonScriptFunctionResult();
+    PythonScriptFunctionResult();
+    explicit PythonScriptFunctionResult(PyObject* data, bool own);
+    virtual ~PythonScriptFunctionResult();
 
-	PyObject* data() const					{return m_pyData;}
-	void setData(PyObject* data, bool own)	{m_pyData = data; m_own = own;}
+    PyObject* data() const					{return m_pyData;}
+    void setData(PyObject* data, bool own)	{m_pyData = data; m_own = own;}
 
 private:
-	bool		m_own;
-	PyObject*	m_pyData;
+    bool		m_own {false} ;
+    PyObject*	m_pyData {nullptr} ;
 
 };
 
 class SOFA_SOFAPYTHON_API PythonScriptFunction : public ScriptFunction
 {
 public:
-	explicit PythonScriptFunction(PyObject* pyCallableObject, bool own);
-	virtual ~PythonScriptFunction();
+    explicit PythonScriptFunction(PyObject* pyCallableObject=nullptr, bool own=false);
+    virtual ~PythonScriptFunction();
 
-	PyObject* callableObject() const					{return m_pyCallableObject;}
-	void setCallableObject(PyObject* callableObject)	{m_pyCallableObject = callableObject;}
-
-private:
-	virtual void onCall(const ScriptFunctionParameter*, ScriptFunctionResult*) const;
+    PyObject* callableObject() const					{return m_pyCallableObject;}
+    void setCallableObject(PyObject* callableObject, bool own);
 
 private:
-	bool		m_own;
-	PyObject*	m_pyCallableObject;
+    virtual void onCall(const ScriptFunctionParameter*, ScriptFunctionResult*) const;
 
+private:
+    bool		m_own {false} ;
+    PyObject*	m_pyCallableObject {nullptr} ;
 };
 
 

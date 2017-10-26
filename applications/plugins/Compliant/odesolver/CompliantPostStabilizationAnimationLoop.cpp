@@ -99,7 +99,7 @@ void CompliantPostStabilizationAnimationLoop::step(const sofa::core::ExecParams*
     // solve the system with full contact
     m_solver->solve(params,dt,pos,vel);
 
-    sop.mop.propagateXAndV(pos,vel,false);
+    sop.mop.propagateXAndV(pos,vel);
 
 
     // replace the current ContactManager response by the one creating unilateral contacts for correction pass

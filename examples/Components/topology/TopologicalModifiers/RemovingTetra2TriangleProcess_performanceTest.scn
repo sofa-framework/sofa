@@ -9,7 +9,7 @@
 
     <CollisionGroup />
     <Node name="TT">
-        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MeshVTKLoader name="meshLoader" filename="mesh/raptorTetra_19409.vtu" translation=" -19 -22 12" />
         <MechanicalObject name="Volume" src="@meshLoader" translation="0 0 0" />

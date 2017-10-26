@@ -5,6 +5,12 @@ if(NOT (${CUDA_NVCC_FLAGS} MATCHES ${TEMP_CUDA_FLAGS}))
 	    set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS} -fPIC")
 	endif()
 endif()
+
 set(CUDA_NVCC_FLAGS_DEBUG "-g")
 set(CUDA_NVCC_FLAGS_RELEASE "-DNDEBUG")
+
+if (WIN32)
+	set(CUDA_NVCC_FLAGS_DEBUG "--compiler-options /MDd")
+endif (WIN32)
+
 unset(TEMP_CUDA_FLAGS)

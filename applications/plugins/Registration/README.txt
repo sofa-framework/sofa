@@ -11,6 +11,11 @@ AUTHORS :
 
 
 
+LICENCE :
+ - QPL
+
+
+
 OTHER COMMENTS :
 
 This plugin allows registering deformable surfaces to

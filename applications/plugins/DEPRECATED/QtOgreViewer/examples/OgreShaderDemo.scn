@@ -7,7 +7,7 @@
 	
 	
 	<Node 	name="CelShading" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0" depend="topo dofs"  >
-		<EulerImplicitSolver name="cg_odesolver"  printLog="0" />
+		<EulerImplicitSolver name="cg_odesolver"  printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
 		<CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25"  tolerance="1e-09"  threshold="1e-09" />
 		<MeshLoader name="meshLoader"  filename="mesh/liver.msh" />
 		<TetrahedronSetTopologyContainer name="topo" />

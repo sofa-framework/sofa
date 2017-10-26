@@ -8,7 +8,7 @@
 
   <Node name="hexaFEM"  >
     <VisualStyle displayFlags="showWireframe hideBehaviorModels" />
-    <EulerImplicitSolver />
+    <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGLinearSolver iterations="200" tolerance="1e-15" threshold="1e-15"/>
 
 

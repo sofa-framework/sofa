@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -36,12 +33,6 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/AdvancedTimer.h>
 
-#ifdef SOFA_SMP
-#include <SofaSimulationTree/TreeSimulation.h>
-#include <SofaSimulationTree/GNode.h>
-#endif
-
-
 
 namespace sofa
 {
@@ -56,12 +47,13 @@ using namespace sofa::defaulttype;
 using namespace core::behavior;
 
 EulerImplicitSolver::EulerImplicitSolver()
-    : f_rayleighStiffness( initData(&f_rayleighStiffness,(SReal)0.1,"rayleighStiffness","Rayleigh damping coefficient related to stiffness, > 0") )
-    , f_rayleighMass( initData(&f_rayleighMass,(SReal)0.1,"rayleighMass","Rayleigh damping coefficient related to mass, > 0"))
-    , f_velocityDamping( initData(&f_velocityDamping,(SReal)0.,"vdamping","Velocity decay coefficient (no decay if null)") )
+    : f_rayleighStiffness( initData(&f_rayleighStiffness,(SReal)0.0,"rayleighStiffness","Rayleigh damping coefficient related to stiffness, > 0") )
+    , f_rayleighMass( initData(&f_rayleighMass,(SReal)0.0,"rayleighMass","Rayleigh damping coefficient related to mass, > 0"))
+    , f_velocityDamping( initData(&f_velocityDamping,(SReal)0.0,"vdamping","Velocity decay coefficient (no decay if null)") )
     , f_firstOrder (initData(&f_firstOrder, false, "firstOrder", "Use backward Euler scheme for first order ode system."))
     , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
     , d_trapezoidalScheme( initData(&d_trapezoidalScheme,false,"trapezoidalScheme","Optional: use the trapezoidal scheme instead of the implicit Euler scheme and get second order accuracy in time") )
+    , f_solveConstraint( initData(&f_solveConstraint,false,"solveConstraint","Apply ConstraintSolver (requires a ConstraintSolver in the same node as this solver, disabled by by default for now)") )
 {
 }
 
@@ -99,9 +91,9 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
     MultiVecCoord newPos(&vop, xResult );
     MultiVecDeriv newVel(&vop, vResult );
 
-	/// inform the constraint parameters about the position and velocity id
-	mop.cparams.setX(xResult);
-	mop.cparams.setV(vResult);
+    /// inform the constraint parameters about the position and velocity id
+    mop.cparams.setX(xResult);
+    mop.cparams.setV(vResult);
 
     // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
     MultiVecDeriv dx(&vop, core::VecDerivId::dx() ); dx.realloc( &vop, true, true );
@@ -113,28 +105,6 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
     sofa::simulation::Visitor::printCloseNode("SolverVectorAllocation");
 #endif
 
-#ifdef SOFA_SMP
-    sofa::simulation::Node *context=static_cast<sofa::simulation::Node *>(getContext());
-    //   if (!getPartition()&&context&&!context->is_partition())
-    {
-        Iterative::IterativePartition *p;
-        Iterative::IterativePartition *firstPartition=context->getFirstPartition();
-        if (firstPartition)
-        {
-            //p->setCPU(firstPartition->getCPU());
-            p=firstPartition;
-        }
-        else if (context->getPartition())
-        {
-            p=context->getPartition();
-        }
-        else
-        {
-            p= new Iterative::IterativePartition();
-        }
-        setPartition(p);
-    }
-#endif
 
     const SReal& h = dt;
     const bool verbose  = f_verbose.getValue();
@@ -152,7 +122,7 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
         std::cout<<"trapezoidal factor = "<< tr <<std::endl;
 
     sofa::helper::AdvancedTimer::stepBegin("ComputeForce");
-	mop->setImplicit(true); // this solver is implicit
+    mop->setImplicit(true); // this solver is implicit
     // compute the net forces at the beginning of the time step
     mop.computeForce(f);
     if( verbose )
@@ -165,18 +135,7 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
     }
     else
     {
-#ifdef SOFA_SMP
-        // B v is missing i n this equation. Is this normal?
-        mop.computeDfV(b);                // b = K v    , with K=df/dx
-        b.teq(h+f_rayleighStiffness.getValue());      // b = (h+rs) K v
-        b.peq(f,1.0/tr);      // b = f0 + (h+rs) K v
-
-        if (f_rayleighMass.getValue() != 0.0)
-        {
-            mop.addMdx(b,vel,-f_rayleighMass.getValue()); // no need to propagate vel as dx again
-        }
-        b.teq(tr*h);                           // b = h(f0 + (h+rs) K v - rm M v)    Rayleigh mass factor rm is used with a negative sign because it is recorded as a positive real, while its force is opposed to the velocity
-#else  // new more powerful visitors
+        // new more powerful visitors
 
         // force in the current configuration
         b.eq(f,1.0/tr);                                                                         // b = f0
@@ -188,7 +147,6 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
 
         // integration over a time step
         b.teq(h*tr);                                                                        // b = h(f0 + ( rm M + B + (h+rs) K ) v )
-#endif
     }
 
     if( verbose )
@@ -229,15 +187,12 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
 
     // apply the solution
 
-    //For to No MultiOp, as it would be impossible to apply the constraints
-#define SOFA_NO_VMULTIOP
+    const bool solveConstraint = f_solveConstraint.getValue();
 
-#ifdef SOFA_SMP
-    // For SofaSMP we would need VMultiOp to be implemented in a SofaSMP compatible way
-#define SOFA_NO_VMULTIOP
+#ifndef SOFA_NO_VMULTIOP // unoptimized version
+    if (solveConstraint)
 #endif
-
-#ifdef SOFA_NO_VMULTIOP // unoptimized version
+    {
     if (firstOrder)
     {
         sofa::helper::AdvancedTimer::stepBegin("UpdateV");
@@ -264,9 +219,9 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
         mop.solveConstraint(newPos,core::ConstraintParams::POS);
         sofa::helper::AdvancedTimer::stepEnd  ("CorrectX");
     }
-
-
-#else // single-operation optimization
+    }
+#ifndef SOFA_NO_VMULTIOP
+    else
     {
         typedef core::behavior::BaseMechanicalState::VMultiOp VMultiOp;
         VMultiOp ops;
@@ -291,13 +246,8 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
         }
 
         sofa::helper::AdvancedTimer::stepBegin("UpdateVAndX");
-
         vop.v_multiop(ops);
-        sofa::helper::AdvancedTimer::stepNext ("UpdateVAndX", "CorrectV");
-        mop.solveConstraint(newVel,core::ConstraintParams::VEL);
-        sofa::helper::AdvancedTimer::stepNext ("CorrectV", "CorrectX");
-        mop.solveConstraint(newPos,core::ConstraintParams::POS);
-        sofa::helper::AdvancedTimer::stepEnd  ("CorrectX");
+        sofa::helper::AdvancedTimer::stepEnd("UpdateVAndX");
     }
 #endif
 
@@ -307,8 +257,10 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
 
     if( verbose )
     {
-        mop.propagateX(newPos, true);
-        mop.propagateDx(newVel);
+        mop.projectPosition(newPos);
+        mop.projectVelocity(newVel);
+        mop.propagateX(newPos);
+        mop.propagateV(newVel);
         serr<<"EulerImplicitSolver, final x = "<< newPos <<sendl;
         serr<<"EulerImplicitSolver, final v = "<< newVel <<sendl;
         mop.computeForce(f);
@@ -320,14 +272,11 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
 
 SOFA_DECL_CLASS(EulerImplicitSolver)
 
-int EulerImplicitSolverClass = core::RegisterObject("Implicit time integrator using backward Euler scheme")
+int EulerImplicitSolverClass = core::RegisterObject("Time integrator using implicit backward Euler scheme")
         .add< EulerImplicitSolver >()
         .addAlias("EulerImplicit")
         .addAlias("ImplicitEulerSolver")
         .addAlias("ImplicitEuler")
-#ifdef SOFA_SMP
-        .addAlias("ParallelEulerImplicit")
-#endif
         ;
 
 } // namespace odesolver

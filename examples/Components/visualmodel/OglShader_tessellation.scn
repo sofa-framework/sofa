@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <Node name="root" dt="0.02">
     <CollisionPipeline verbose="0" />
     <BruteForceDetection name="N2" />
@@ -23,11 +24,11 @@
 
         <Node name="Visu">
 
-            <OglShader fileVertexShader="shaders/tessellationPNTriangle.glsl"
-                       fileTessellationControlShader="shaders/tessellationPNTriangle.glsl"
-                       fileTessellationEvaluationShader="shaders/tessellationPNTriangle.glsl"
-                       fileGeometryShader="shaders/tessellationPNTriangle.glsl"
-                       fileFragmentShader="shaders/tessellationPNTriangle.glsl"
+            <OglShader fileVertexShaders="['shaders/tessellationPNTriangle.glsl']"
+                       fileTessellationControlShaders="['shaders/tessellationPNTriangle.glsl']"
+                       fileTessellationEvaluationShaders="['shaders/tessellationPNTriangle.glsl']"
+                       fileGeometryShaders="['shaders/tessellationPNTriangle.glsl']"
+                       fileFragmentShaders="['shaders/tessellationPNTriangle.glsl']"
                        printLog="1" />
             <OglFloatVariable name="TessellationLevel" value="6" />
             <OglModel name="VisualModel" src="@../loader" color="white" primitiveType="PATCHES" />

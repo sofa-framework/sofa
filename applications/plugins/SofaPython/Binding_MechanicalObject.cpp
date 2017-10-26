@@ -1,23 +1,20 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
+* This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
 * the Free Software Foundation; either version 2.1 of the License, or (at     *
 * your option) any later version.                                             *
 *                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
+* This program is distributed in the hope that it will be useful, but WITHOUT *
 * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
 * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
 * for more details.                                                           *
 *                                                                             *
 * You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+* along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-*                               SOFA :: Plugins                               *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -26,6 +23,7 @@
 #include "Binding_MechanicalObject.h"
 #include "Binding_BaseMechanicalState.h"
 #include "Binding_Vector.h"
+#include "PythonToSofa.inl"
 
 
 using namespace sofa::core;
@@ -34,9 +32,16 @@ using namespace sofa::core::objectmodel;
 using namespace sofa::defaulttype;
 
 
+/// getting a MechanicalObject3* from a PyObject*
+static inline MechanicalObject3* get_MechanicalObject3(PyObject* obj) {
+    return down_cast<MechanicalObject3>( get_basemechanicalstate(obj) );
+}
+
+
+
 extern "C" PyObject * MechanicalObject_setTranslation(PyObject *self, PyObject * args)
 {
-    MechanicalObject3* obj=down_cast<MechanicalObject3>(((PySPtr<Base>*)self)->object->toBaseMechanicalState());
+    MechanicalObject3* obj = get_MechanicalObject3( self );
     double dx,dy,dz;
     if (!PyArg_ParseTuple(args, "ddd",&dx,&dy,&dz))
     {
@@ -44,7 +49,7 @@ extern "C" PyObject * MechanicalObject_setTranslation(PyObject *self, PyObject *
         if (!PyArg_ParseTuple(args, "iii",&ix,&iy,&iz))
         {
             PyErr_BadArgument();
-            Py_RETURN_NONE;
+            return NULL;
         }
         dx = (double)ix;
         dy = (double)iy;
@@ -56,7 +61,7 @@ extern "C" PyObject * MechanicalObject_setTranslation(PyObject *self, PyObject *
 
 extern "C" PyObject * MechanicalObject_setScale(PyObject *self, PyObject * args)
 {
-    MechanicalObject3* obj=down_cast<MechanicalObject3>(((PySPtr<Base>*)self)->object->toBaseMechanicalState());
+    MechanicalObject3* obj = get_MechanicalObject3( self );
     double dx,dy,dz;
     if (!PyArg_ParseTuple(args, "ddd",&dx,&dy,&dz))
     {
@@ -64,7 +69,7 @@ extern "C" PyObject * MechanicalObject_setScale(PyObject *self, PyObject * args)
         if (!PyArg_ParseTuple(args, "iii",&ix,&iy,&iz))
         {
             PyErr_BadArgument();
-            Py_RETURN_NONE;
+            return NULL;
         }
         dx = (double)ix;
         dy = (double)iy;
@@ -76,7 +81,7 @@ extern "C" PyObject * MechanicalObject_setScale(PyObject *self, PyObject * args)
 
 extern "C" PyObject * MechanicalObject_setRotation(PyObject *self, PyObject * args)
 {
-    MechanicalObject3* obj=down_cast<MechanicalObject3>(((PySPtr<Base>*)self)->object->toBaseMechanicalState());
+    MechanicalObject3* obj = get_MechanicalObject3( self );
     double dx,dy,dz;
     if (!PyArg_ParseTuple(args, "ddd",&dx,&dy,&dz))
     {
@@ -84,7 +89,7 @@ extern "C" PyObject * MechanicalObject_setRotation(PyObject *self, PyObject * ar
         if (!PyArg_ParseTuple(args, "iii",&ix,&iy,&iz))
         {
             PyErr_BadArgument();
-            Py_RETURN_NONE;
+            return NULL;
         }
         dx = (double)ix;
         dy = (double)iy;
@@ -96,21 +101,21 @@ extern "C" PyObject * MechanicalObject_setRotation(PyObject *self, PyObject * ar
 
 extern "C" PyObject * MechanicalObject_getTranslation(PyObject *self, PyObject * /*args*/)
 {
-    MechanicalObject3* obj=down_cast<MechanicalObject3>(((PySPtr<Base>*)self)->object->toBaseMechanicalState());
+    MechanicalObject3* obj = get_MechanicalObject3( self );
     Vector3 *vec = new Vector3(obj->getTranslation());
     return SP_BUILD_PYPTR(Vector3,Vector3,vec,true); // "true", because I manage the deletion myself (below)
 }
 
 extern "C" PyObject * MechanicalObject_getRotation(PyObject *self, PyObject * /*args*/)
 {
-    MechanicalObject3* obj=down_cast<MechanicalObject3>(((PySPtr<Base>*)self)->object->toBaseMechanicalState());
+    MechanicalObject3* obj = get_MechanicalObject3( self );
     Vector3 *vec = new Vector3(obj->getRotation());
     return SP_BUILD_PYPTR(Vector3,Vector3,vec,true); // "true", because I manage the deletion myself (below)
 }
 
 extern "C" PyObject * MechanicalObject_getScale(PyObject *self, PyObject * /*args*/)
 {
-    MechanicalObject3* obj=down_cast<MechanicalObject3>(((PySPtr<Base>*)self)->object->toBaseMechanicalState());
+    MechanicalObject3* obj = get_MechanicalObject3( self );
     Vector3 *vec = new Vector3(obj->getScale());
     return SP_BUILD_PYPTR(Vector3,Vector3,vec,true); // "true", because I manage the deletion myself (below)
 }
