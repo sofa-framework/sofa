@@ -286,6 +286,7 @@ int main(int argc, char** argv)
     // Initialise paths
     BaseGUI::setConfigDirectoryPath(Utils::getSofaPathPrefix() + "/config", true);
     BaseGUI::setScreenshotDirectoryPath(Utils::getSofaPathPrefix() + "/screenshots", true);
+    PluginRepository.addFirstPath( Utils::getPluginDirectory() );
 
     if (!files.empty())
         fileName = files[0];
@@ -300,16 +301,18 @@ int main(int argc, char** argv)
     {
         if (DataRepository.findFile(configPluginPath))
         {
-            msg_info("runSofa") << "Loading automatically plugin list in " << configPluginPath;
+            msg_info("runSofa") << "Loading automatically custom plugin list from " << configPluginPath;
             PluginManager::getInstance().readFromIniFile(configPluginPath);
         }
         else if (DataRepository.findFile(defaultConfigPluginPath))
         {
-            msg_info("runSofa") << "Loading automatically plugin list in " << defaultConfigPluginPath;
+            msg_info("runSofa") << "Loading automatically default plugin list from " << defaultConfigPluginPath;
             PluginManager::getInstance().readFromIniFile(defaultConfigPluginPath);
         }
         else
-            msg_info("runSofa") << "No plugin list found. No plugin will be automatically loaded.";
+            msg_info("runSofa") << "No plugin will be automatically loaded" << msgendl
+                                << "- No custom list found at " << configPluginPath << msgendl
+                                << "- No default list found at " << defaultConfigPluginPath;
     }
     else
         msg_info("runSofa") << "Automatic plugin loading disabled.";
