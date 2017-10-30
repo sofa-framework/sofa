@@ -171,7 +171,7 @@ void SpringForceField<DataTypes>::addForce(
 template<class DataTypes>
 void SpringForceField<DataTypes>::addDForce(const core::MechanicalParams*, DataVecDeriv&, DataVecDeriv&, const DataVecDeriv&, const DataVecDeriv& )
 {
-    serr << "SpringForceField does not support implicit integration. Use StiffSpringForceField instead."<<sendl;
+    msg_error() << "SpringForceField does not support implicit integration. Use StiffSpringForceField instead.";
 }
 
 
@@ -201,7 +201,7 @@ SReal SpringForceField<DataTypes>::getPotentialEnergy(const core::MechanicalPara
 template<class DataTypes>
 void SpringForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *, SReal, unsigned int &)
 {
-    serr << "SpringForceField does not support implicit integration. Use StiffSpringForceField instead."<<sendl;
+    msg_error() << "SpringForceField does not support implicit integration. Use StiffSpringForceField instead.";
 }
 
 
@@ -294,8 +294,10 @@ void SpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams
         for (unsigned int i=0; i<numLines2; ++i) vparams->drawTool()->drawArrow(points[2][2*i+1], points[2][2*i], showArrowSize.getValue(), c2);
         for (unsigned int i=0; i<numLines3; ++i) vparams->drawTool()->drawArrow(points[3][2*i+1], points[3][2*i], showArrowSize.getValue(), c3);
     }
-    else serr << "No proper drawing mode found!" << sendl;
-
+    else
+    {
+        msg_error()<< "No proper drawing mode found!";
+    }
 }
 
 template<class DataTypes>
