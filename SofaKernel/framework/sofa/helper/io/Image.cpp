@@ -411,11 +411,28 @@ bool Image::save(std::string filename, int compression_level)
 
 Image* Image::Create(std::string filename)
 {
-    std::string loader="default";
+    std::string extension="default";
     std::string::size_type p = filename.rfind('.');
     if (p!=std::string::npos)
-        loader = std::string(filename, p+1);
-    return FactoryImage::CreateObject(loader, filename);
+        extension = std::string(filename, p+1);
+    Image* createdImage = FactoryImage::CreateObject(extension, filename);
+    if( extension.compare("default")>0 )
+    {
+        if(!createdImage )
+        {
+            helper::vector<std::string> validExtensions;
+            helper::io::Image::FactoryImage::getInstance()->uniqueKeys(std::back_inserter(validExtensions));
+            msg_error("Image") << "Could not load image with extension " << extension << ". Valid extensions: " << validExtensions;
+        }
+    }
+    else
+    {
+        helper::vector<std::string> validExtensions;
+        helper::io::Image::FactoryImage::getInstance()->uniqueKeys(std::back_inserter(validExtensions));
+        msg_error("Image") << "No extension detected. Valid extensions: " << validExtensions;
+
+    }
+    return createdImage;
 }
 
 } // namespace io
