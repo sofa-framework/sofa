@@ -94,9 +94,9 @@ protected:
 
 public:
     /// BaseObject initialization method.
-    void bwdInit() override;
-
-    virtual void reinit() override;
+    void bwdInit() override ;
+    virtual void parse(core::objectmodel::BaseObjectDescription *arg) override ;
+    virtual void reinit() override ;
 
     /// Add the forces.
     virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
