@@ -22,6 +22,8 @@
 #ifndef SOFA_COMPONENT_MECHANICALOBJECT_INL
 #define SOFA_COMPONENT_MECHANICALOBJECT_INL
 
+#include <sofa/config/build_option_experimental_features.h>
+
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
