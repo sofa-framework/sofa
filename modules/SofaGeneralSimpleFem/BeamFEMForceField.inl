@@ -687,10 +687,10 @@ void BeamFEMForceField<DataTypes>::computeBBox(const core::ExecParams* params, b
     Real minBBox[3] = {max_real,max_real,max_real};
 
 
-    const int npoints = this->mstate->getSize();
+    const size_t npoints = this->mstate->getSize();
     const VecCoord& p = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    for (unsigned i=0; i<npoints; i++)
+    for (size_t i=0; i<npoints; i++)
     {
         const defaulttype::Vector3 &pt = p[i].getCenter();
 
