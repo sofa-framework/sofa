@@ -116,7 +116,7 @@ list-scenes() {
 
 get-lib() {
     pushd "$build_dir/lib/" > /dev/null
-    ls {lib,}"$1".{dylib,so,lib}* 2> /dev/null | xargs echo
+    ls {lib,}"$1"{,d,_d}.{dylib,so,lib}* 2> /dev/null | xargs echo
     popd > /dev/null
 }
 
