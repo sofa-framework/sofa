@@ -67,9 +67,18 @@ Reviewing:
 - **Control the builds**: Dashboard > Details in the pull request checks.
 - Merge method: **prefer "merge"** or "squash" over "rebase".
 
-Remember that
+Remember that:
 
 - You can **add commits** in a pull request: see [GitHub documentation](https://help.github.com/articles/committing-changes-to-a-pull-request-branch-created-from-a-fork/).
 - If the pull request contains out of scope commits (from a previous merge with master), **consider rebasing it**.
 
 For more information on forks and pull request, check out [this GitHub guide](https://guides.github.com/activities/forking/).
+
+### SOFA Contributor License Agreement ("Agreement"), v1.0
+
+Note that by submitting a "Contribution" (shall mean the code, documentation or other original works of authorship) to SOFA, through the Pull Request mechanism in github or by other means, "You" (the entity that is making this Contribution) hereby accept and agree to the following terms and conditions for Your present and future Contributions:
+
+- You certify that You have authored 100% of the content, or in the event part or all of the content has been authored by a third party, you have appropriate permissions to include their work in your Contribution,
+- You certify You have the necessary rights to license the Contribution (i.e. if You are employed You have received the necessary permissions from Your employer to make the Contribution),
+- You grant a perpetual, irrevocable, non-exclusive, royalty-free, worldwide license to distribute this Contribution under the license agreement commonly known as the [LGPL License](https://opensource.org/licenses/LGPL-2.1).
+- You will remain the copyright holder of your Contribution.
