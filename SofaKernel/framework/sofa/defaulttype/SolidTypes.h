@@ -337,7 +337,7 @@ public:
         template<class Real2>
         Transform& operator*=(Real2 a)
         {
-            dmsg_info() << "SolidTypes<R>::Transform::operator *=";
+            dmsg_info("Transform") << "SolidTypes<R>::Transform::operator *=";
             origin_ *= a;
             return *this;
         }
