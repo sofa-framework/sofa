@@ -83,18 +83,18 @@ std::map<std::string, std::vector<std::string>> components =
 std::map<std::string, std::vector<std::string>> uncreateablecomponents =
 {
     /// SofaDistanceGrid is now a Plugin
-    {"BarycentricPenalityContact", {"pluginized-17.12", "<RequirePlugin name='SofaDistanceGrid'/>"}},
-    {"DistanceGridCollisionModel", {"pluginized-17.12", "<RequirePlugin name='SofaDistanceGrid'/>"}},
-    {"FFDDistanceGridDiscreteIntersection", {"pluginized-17.12", "<RequirePlugin name='SofaDistanceGrid'/>"}},
-    {"RayDistanceGridContact", {"pluginized-17.12", "<RequirePlugin name='SofaDistanceGrid'/>"}},
-    {"RigidDistanceGridDiscreteIntersection", {"pluginized-17.12", "<RequirePlugin name='SofaDistanceGrid'/>"}},
-    {"DistanceGridForceField", {"pluginized-17.12", "<RequirePlugin name='SofaDistanceGrid'/>"}},
+    {"BarycentricPenalityContact", {"pluginized-17.12", "<RequiredPlugin name='SofaDistanceGrid'/>"}},
+    {"DistanceGridCollisionModel", {"pluginized-17.12", "<RequiredPlugin name='SofaDistanceGrid'/>"}},
+    {"FFDDistanceGridDiscreteIntersection", {"pluginized-17.12", "<RequiredPlugin name='SofaDistanceGrid'/>"}},
+    {"RayDistanceGridContact", {"pluginized-17.12", "<RequiredPlugin name='SofaDistanceGrid'/>"}},
+    {"RigidDistanceGridDiscreteIntersection", {"pluginized-17.12", "<RequiredPlugin name='SofaDistanceGrid'/>"}},
+    {"DistanceGridForceField", {"pluginized-17.12", "<RequiredPlugin name='SofaDistanceGrid'/>"}},
 
     /// SofaDistanceGrid is now a Plugin
-    {"ImplicitSurfaceContainer", {"pluginized-17.12", "<RequirePlugin name='SofaImplicitField'/>"}},
-    {"InterpolatedImplicitSurface", {"pluginized-17.12", "<RequirePlugin name='SofaImplicitField'/>"}},
-    {"SphereSurface", {"pluginized-17.12", "<RequirePlugin name='SofaImplicitField'/>"}},
-    {"ImplicitSurfaceMapping", {"pluginized-17.12", "<RequirePlugin name='SofaImplicitField'/>"}}
+    {"ImplicitSurfaceContainer", {"pluginized-17.12", "<RequiredPlugin name='SofaImplicitField'/>"}},
+    {"InterpolatedImplicitSurface", {"pluginized-17.12", "<RequiredPlugin name='SofaImplicitField'/>"}},
+    {"SphereSurface", {"pluginized-17.12", "<RequiredPlugin name='SofaImplicitField'/>"}},
+    {"ImplicitSurfaceMapping", {"pluginized-17.12", "<RequiredPlugin name='SofaImplicitField'/>"}}
 };
 
 } /// namespace deprecatedcomponents
