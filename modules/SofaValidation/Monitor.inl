@@ -64,7 +64,7 @@ Monitor<DataTypes>::Monitor()
     ,d_trajectoriesPrecision (initData (&d_trajectoriesPrecision, 0.1,"TrajectoriesPrecision", "set the dt between to save of positions"))
     ,d_trajectoriesColor(initData (&d_trajectoriesColor, "TrajectoriesColor", "define the color of the trajectories"))
     ,d_showSizeFactor(initData (&d_showSizeFactor, 1.0, "sizeFactor", "factor to multiply to arrows"))
-    ,d_fileName(initData (&d_fileName, std::string("./") + getName(), "fileName", "name of the plot files to be generated"))
+    ,d_fileName(initData (&d_fileName, "fileName", "name of the plot files to be generated"))
     ,m_saveGnuplotX ( NULL ), m_saveGnuplotV ( NULL ), m_saveGnuplotF ( NULL )
     ,m_X (NULL), m_V(NULL), m_F(NULL)
     ,m_internalDt(0.0)
@@ -97,6 +97,10 @@ Monitor<DataTypes>::~Monitor()
 template<class DataTypes>
 void Monitor<DataTypes>::init()
 {
+    if (!d_fileName.isSet()) {
+        d_fileName.setValue(std::string("./") + getName());
+    }
+
     core::behavior::MechanicalState<DataTypes>* mmodel = dynamic_cast<core::behavior::MechanicalState<DataTypes>*>( this->getContext()->getMechanicalState() );
 
     if(!mmodel)
