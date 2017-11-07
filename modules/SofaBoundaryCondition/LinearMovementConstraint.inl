@@ -254,9 +254,19 @@ void LinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, typename 
     Deriv m = prevM + (nextM-prevM)*dt;
 
     //set the motion to the Dofs
-    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+    if (d_relativeMovements.getValue())
     {
-        x[*it] = x0[*it] + m ;
+        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        {
+            x[*it] = x0[*it] + m ;
+        }
+    }
+    else
+    {
+        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        {
+            x[*it] = m ;
+        }
     }
 }
 
