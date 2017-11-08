@@ -23,6 +23,8 @@
 #define SOFA_COMPONENT_MECHANICALOBJECT_H
 #include "config.h"
 
+#include <sofa/config/build_option_experimental_features.h>
+
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/topology/BaseMeshTopology.h>

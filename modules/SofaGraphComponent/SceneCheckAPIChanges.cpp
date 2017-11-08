@@ -93,6 +93,9 @@ void SceneCheckAPIChange::doInit(Node* node)
 
 void SceneCheckAPIChange::doCheckOn(Node* node)
 {
+    if(node==nullptr)
+        return ;
+
     for (auto& object : node->object )
     {
         if(m_selectedApiLevel != m_currentApiLevel && m_changesets.find(m_selectedApiLevel) != m_changesets.end())
@@ -110,11 +113,6 @@ void SceneCheckAPIChange::doCheckOn(Node* node)
 void SceneCheckAPIChange::installDefaultChangeSets()
 {
     addHookInChangeSet("17.06", [](Base* o){
-        if(o->getClassName() == "RestShapeSpringsForceField" && o->findData("external_rest_shape")->isSet())
-            msg_warning(o) << "RestShapeSpringsForceField have changed since 17.06. The parameter 'external_rest_shape' is now a Link. To fix your scene you need to add and '@' in front of the provided path. See PR#315" ;
-    }) ;
-
-    addHookInChangeSet("17.06", [](Base* o){
         if(o->getClassName() == "BoxStiffSpringForceField" )
             msg_warning(o) << "BoxStiffSpringForceField have changed since 17.06. To use the old behavior you need to set parameter 'forceOldBehavior=true'" ;
     }) ;
@@ -130,9 +128,17 @@ void SceneCheckAPIChange::installDefaultChangeSets()
                 str = messages[str] ;
             }
 
-            msg_warning(o) << o->getClassName()
+            if(msg.size() >= indexMessage )
+            {
+                msg_warning(o) << o->getClassName()
+                                   << str ;
+            }
+            else {
+                msg_warning(o) << o->getClassName()
                                << str
                                << msg[indexMessage] ;
+
+            }
         }
     }) ;
 }

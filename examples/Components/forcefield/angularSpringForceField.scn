@@ -36,7 +36,7 @@
 	            <Point />
 	            <BeamLinearMapping isMechanical="true" />
 	        </Node>
-	        <RestShapeSpringsForceField stiffness="1200"  angularStiffness="500" drawSpring="1" external_points="0" external_rest_shape="../TranslPoint/DOF" mstate="@DOFs" points="0" template="Rigid" />
+	        <RestShapeSpringsForceField stiffness="1200"  angularStiffness="500" drawSpring="1" external_points="0" external_rest_shape="@../TranslPoint/DOF" mstate="@DOFs" points="0" template="Rigid" />
 	    </Node>
 
         <ArticulatedHierarchyContainer />

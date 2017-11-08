@@ -209,8 +209,8 @@ CylinderTractionStruct<DataTypes>  Elasticity_test<DataTypes>::createCylinderTra
     boxRoi1->d_alignedBoxes.setValue(vecBox);
     // FixedConstraint
     typename component::projectiveconstraintset::FixedConstraint<DataTypes>::SPtr fc=
-            modeling::addNew<typename component::projectiveconstraintset::FixedConstraint<DataTypes> >(root);
-    sofa::modeling::setDataLink(&boxRoi1->d_indices,&fc->f_indices);
+        modeling::addNew<typename component::projectiveconstraintset::FixedConstraint<DataTypes> >(root);
+    sofa::modeling::setDataLink(&boxRoi1->d_indices,&fc->d_indices);
     // FixedPlaneConstraint
     typename component::projectiveconstraintset::FixedPlaneConstraint<DataTypes>::SPtr fpc=
             modeling::addNew<typename component::projectiveconstraintset::FixedPlaneConstraint<DataTypes> >(root);

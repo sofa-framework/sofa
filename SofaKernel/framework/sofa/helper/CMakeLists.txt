@@ -382,9 +382,13 @@ target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${SO
 # For generated files, like sofa/config.h
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 set(SOFAHELPER_COMPILE_FLAGS "-DSOFA_BUILD_HELPER")
-if(${CMAKE_BUILD_TYPE} STREQUAL Debug)
-    set(SOFAHELPER_COMPILE_FLAGS "${SOFAHELPER_COMPILE_FLAGS} -DSOFA_LIBSUFFIX=_d")
-endif()
+
+# The default binary suffix for libraries/plugins is "_d" when using a debug build.
+# since this is configuration specific it is a bit more convenient to put it as a debug compile definition for 
+# PluginManager.cpp, at the expense of being much less visible compare to having it in the generated 
+# SofaFramework/config.h
+set_property(SOURCE system/PluginManager.cpp APPEND PROPERTY COMPILE_DEFINITIONS_DEBUG "SOFA_LIBSUFFIX=_d" )
+
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFAHELPER_COMPILE_FLAGS}")
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION "${SOFAFRAMEWORK_VERSION}")
