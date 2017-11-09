@@ -195,30 +195,40 @@ int main(int argc, char** argv)
     string colorsStatus = "auto";
     string messageHandler = "auto";
     bool enableInteraction = false ;
+    string recordVideo = "";
+    string recordPNG = "";
+    int width = 800;
+    int height = 600;
+    int seconds = 5;
 
     string gui_help = "choose the UI (";
     gui_help += GUIManager::ListSupportedGUI('|');
     gui_help += ")";
 
     sofa::helper::parse(&files, "This is a SOFA application. Here are the command line arguments")
-    // alphabetical order on short name
-    .option(&startAnim,'a',"start","start the animation loop")
-    .option(&computationTimeSampling,'c',"computationTimeSampling","Frequency of display of the computation time statistics, in number of animation steps. 0 means never.")
-    .option(&gui,'g',"gui",gui_help.c_str())
-    .option(&plugins,'l',"load","load given plugins")
-    .option(&noAutoloadPlugins, '0', "noautoload", "disable plugins autoloading")
-    .option(&nbMSSASamples, 'm', "msaa", "number of samples for MSAA (Multi Sampling Anti Aliasing ; value < 2 means disabled")
-    .option(&nbIterations,'n',"nb_iterations","(only batch) Number of iterations of the simulation")
-    .option(&printFactory,'p',"factory","print factory logs")
-    .option(&loadRecent,'r',"recent","load most recently opened file")
-    .option(&simulationType,'s',"simu","select the type of simulation (bgl, dag, tree)")
-    .option(&temporaryFile,'t',"temporary","the loaded scene won't appear in history of opened files")
-    .option(&testMode,'x',"test","select test mode with xml output after N iteration")
-    .option(&verif,'v',"verification","load verification data for the scene")
-    .option(&colorsStatus,'z',"colors","use colors on stdout and stderr (yes, no, auto)")
-    .option(&messageHandler,'f',"formatting","select the message formatting to use (auto, clang, sofa, rich, test)")
-    .option(&enableInteraction, 'i', "interactive", "enable interactive mode for the GUI which includes idle and mouse events (EXPERIMENTAL)")
-    (argc,argv);
+            // alphabetical order on short name
+            .option(&startAnim,'a',"start","start the animation loop")
+            .option(&computationTimeSampling,'c',"computationTimeSampling","Frequency of display of the computation time statistics, in number of animation steps. 0 means never.")
+            .option(&gui,'g',"gui",gui_help.c_str())
+            .option(&plugins,'l',"load","load given plugins")
+            .option(&noAutoloadPlugins, '0', "noautoload", "disable plugins autoloading")
+            .option(&nbMSSASamples, 'm', "msaa", "number of samples for MSAA (Multi Sampling Anti Aliasing ; value < 2 means disabled")
+            .option(&nbIterations,'n',"nb_iterations","(only batch) Number of iterations of the simulation")
+            .option(&printFactory,'p',"factory","print factory logs")
+            .option(&loadRecent,'r',"recent","load most recently opened file")
+            .option(&simulationType,'s',"simu","select the type of simulation (bgl, dag, tree)")
+            .option(&temporaryFile,'t',"temporary","the loaded scene won't appear in history of opened files")
+            .option(&testMode,'x',"test","select test mode with xml output after N iteration")
+            .option(&verif,'v',"verification","load verification data for the scene")
+            .option(&colorsStatus,'z',"colors","use colors on stdout and stderr (yes, no, auto)")
+            .option(&messageHandler,'f',"formatting","select the message formatting to use (auto, clang, sofa, rich, test)")
+            .option(&enableInteraction, 'i', "interactive", "enable interactive mode for the GUI which includes idle and mouse events (EXPERIMENTAL)")
+            .option(&recordVideo, '1', "recordAsVideo", "(only hRecorder) enable screencast mode with filename, recorded with h264 encoding")
+            .option(&recordPNG, '2', "recordAsPng", "(only hRecorder) enable screenshot for each simulation frame as png with filename")
+            .option(&width, '3', "width", "set the default width of the GUI")
+            .option(&height, '4', "height", "set the default height of the GUI")
+            .option(&seconds, '5', "seconds", "set the recording time")
+            (argc,argv);
 
     // Note that initializations must be done after ArgumentParser that can exit the application (without cleanup)
     // even if everything is ok e.g. asking for help
@@ -283,10 +293,14 @@ int main(int argc, char** argv)
     }
     MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance()) ;
 
+
+    // Add the plugin directory to PluginRepository
+    const std::string& pluginDir = Utils::getPluginDirectory();
+    PluginRepository.addFirstPath(pluginDir);
+
     // Initialise paths
     BaseGUI::setConfigDirectoryPath(Utils::getSofaPathPrefix() + "/config", true);
     BaseGUI::setScreenshotDirectoryPath(Utils::getSofaPathPrefix() + "/screenshots", true);
-    PluginRepository.addFirstPath( Utils::getPluginDirectory() );
 
     if (!files.empty())
         fileName = files[0];
@@ -294,30 +308,72 @@ int main(int argc, char** argv)
     for (unsigned int i=0; i<plugins.size(); i++)
         PluginManager::getInstance().loadPlugin(plugins[i]);
 
-    std::string configPluginPath = PluginRepository.getFirstPath() + "/" + TOSTRING(CONFIG_PLUGIN_FILENAME);
-    std::string defaultConfigPluginPath = PluginRepository.getFirstPath() + "/" + TOSTRING(DEFAULT_CONFIG_PLUGIN_FILENAME);
+    std::string configPluginPath = pluginDir + "/" + TOSTRING(CONFIG_PLUGIN_FILENAME);
+    std::string defaultConfigPluginPath = pluginDir + "/" + TOSTRING(DEFAULT_CONFIG_PLUGIN_FILENAME);
 
     if (!noAutoloadPlugins)
     {
         if (DataRepository.findFile(configPluginPath))
         {
-            msg_info("runSofa") << "Loading automatically custom plugin list from " << configPluginPath;
+            msg_info("runSofa") << "Loading automatically plugin list in " << configPluginPath;
             PluginManager::getInstance().readFromIniFile(configPluginPath);
         }
         else if (DataRepository.findFile(defaultConfigPluginPath))
         {
-            msg_info("runSofa") << "Loading automatically default plugin list from " << defaultConfigPluginPath;
+            msg_info("runSofa") << "Loading automatically plugin list in " << defaultConfigPluginPath;
             PluginManager::getInstance().readFromIniFile(defaultConfigPluginPath);
         }
         else
-            msg_info("runSofa") << "No plugin will be automatically loaded" << msgendl
-                                << "- No custom list found at " << configPluginPath << msgendl
-                                << "- No default list found at " << defaultConfigPluginPath;
+            msg_info("runSofa") << "No plugin list found. No plugin will be automatically loaded.";
     }
     else
         msg_info("runSofa") << "Automatic plugin loading disabled.";
 
     PluginManager::getInstance().init();
+
+    if(gui.compare("hRecorder") == 0)
+    {
+        ostringstream oss ;
+
+        if (recordVideo.compare("") != 0)
+        {
+            oss << "recordVideo=";
+            oss << recordVideo;
+            GUIManager::AddGUIOption(oss.str().c_str());
+        }
+        if (recordPNG.compare("") != 0)
+        {
+            oss.str("");
+            oss.flush();
+            oss << "recordPNG=";
+            oss << recordPNG;
+            GUIManager::AddGUIOption(oss.str().c_str());
+        }
+        if (width > 0)
+        {
+            oss.str("");
+            oss.flush();
+            oss << "width=";
+            oss << width;
+            GUIManager::AddGUIOption(oss.str().c_str());
+        }
+        if (height > 0)
+        {
+            oss.str("");
+            oss.flush();
+            oss << "height=";
+            oss << height;
+            GUIManager::AddGUIOption(oss.str().c_str());
+        }
+        if (seconds > 0)
+        {
+            oss.str("");
+            oss.flush();
+            oss << "seconds=";
+            oss << seconds;
+            GUIManager::AddGUIOption(oss.str().c_str());
+        }
+    }
 
     if(gui.compare("batch") == 0 && nbIterations >= 0)
     {
@@ -364,7 +420,7 @@ int main(int argc, char** argv)
         return err;
 
     //To set a specific resolution for the viewer, use the component ViewerSetting in you scene graph
-    GUIManager::SetDimension(800,600);
+    GUIManager::SetDimension(width, height);
 
     Node::SPtr groot = sofa::simulation::getSimulation()->load(fileName.c_str());
     if( !groot )

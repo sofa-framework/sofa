@@ -30,6 +30,9 @@
 #ifdef SOFA_GUI_GLUT
 #include "glut/SimpleGUI.h"
 #endif
+#ifdef SOFA_GUI_HEADLESS_RECORDER
+#include "headlessRecorder/HeadlessRecorder.h"
+#endif
 
 #ifdef SOFA_GUI_GLUT
 #ifdef SOFA_HAVE_BOOST
@@ -62,6 +65,10 @@ int SimpleGUIClass = GUIManager::RegisterGUI("glut", &glut::SimpleGUI::CreateGUI
 #ifdef SOFA_HAVE_BOOST
 int MtGUIClass = GUIManager::RegisterGUI("glut-mt", &glut::MultithreadGUI::CreateGUI, &glut::MultithreadGUI::InitGUI, 0);
 #endif
+#endif
+
+#ifdef SOFA_GUI_HEADLESS_RECORDER
+int HeadlessRecorderClass = GUIManager::RegisterGUI ( "hRecorder", &hRecorder::HeadlessRecorder::CreateGUI, &hRecorder::HeadlessRecorder::InitGUI, 2 );
 #endif
 
 #ifdef SOFA_GUI_QGLVIEWER
