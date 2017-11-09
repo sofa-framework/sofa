@@ -48,7 +48,7 @@ HeadlessRecorder::HeadlessRecorder(const std::vector<std::string>& options)
     m_fileNameVideo = "tmp";
     m_fileNamePNG = "tmp";
     saveAsScreenShot = false;
-    saveAsVideo = true;
+    saveAsVideo = false;
     initVideoRecorder = true;
     initTexturesDone = false;
     vparams = core::visual::VisualParams::defaultInstance();
@@ -116,19 +116,15 @@ void HeadlessRecorder::parseOptions(const std::vector<std::string>& options)
 
         } else if ((cursor = opt.find("recordVideo=")) != std::string::npos)
         {
-            int fileNameVideo;
-            std::istringstream iss;
-            iss.str(opt.substr(cursor+std::string("recordVideo=").length(), std::string::npos));
-            iss >> fileNameVideo;
-            m_fileNameVideo = fileNameVideo;
+            saveAsVideo = true;
+            std::string fileName = opt.substr(cursor+std::string("recordVideo=").length(), std::string::npos);
+            m_fileNameVideo = fileName.empty() ? m_fileNameVideo : fileName;
 
         } else if ((cursor = opt.find("recordPNG=")) != std::string::npos)
         {
-            int fileNamePNG;
-            std::istringstream iss;
-            iss.str(opt.substr(cursor+std::string("recordPNG=").length(), std::string::npos));
-            iss >> fileNamePNG;
-            m_fileNamePNG = fileNamePNG;
+            saveAsScreenShot = true;
+            std::string fileName = opt.substr(cursor+std::string("recordPNG=").length(), std::string::npos);
+            m_fileNamePNG = fileName.empty() ? m_fileNamePNG : fileName;
 
         } else if ((cursor = opt.find("seconds=")) != std::string::npos)
         {
@@ -241,6 +237,12 @@ int HeadlessRecorder::mainLoop()
     if(currentCamera)
         currentCamera->setViewport(m_width, m_height);
     calcProjection();
+
+    if (!saveAsVideo && !saveAsScreenShot)
+    {
+        msg_warning("HeadlessRecorder") <<  "Please, use at least one option: recordPNG or recordAsVideo.";
+        return 0;
+    }
 
     while((float)m_nFrames/(float)m_fps < m_recordTimeInSeconds)
     {
@@ -491,7 +493,7 @@ void HeadlessRecorder::record()
         if (initVideoRecorder)
         {
             std::string fileName = m_fileNameVideo;
-            fileName.append(".h264");
+            fileName.append(".mkv");
             videoEncoderStart(fileName.c_str(), AV_CODEC_ID_H264);
             initVideoRecorder = false;
         }
