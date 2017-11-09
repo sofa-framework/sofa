@@ -81,7 +81,7 @@ protected:
     QDisplayLinkInfoWidget*  linkinfowidget_;
     LinkWidget* linkwidget_;
     unsigned int numWidgets_;
-    QHBoxLayout* gridLayout_;
+    QGridLayout* gridLayout_;
 
 };
 
