@@ -81,6 +81,12 @@ if(NOT SOFA_NO_OPENGL)
             list(APPEND SOFAGUI_TARGETS SofaGuiGlut)
             add_subdirectory(../applications/sofa/gui/glut ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiGlut)
         endif()
+        option(SOFAGUI_HEADLESS_RECORDER "Compile the Glut headless recorder" OFF)
+        if(SOFAGUI_HEADLESS_RECORDER)
+            set(SOFA_GUI_HEADLESS_RECORDER 1) # cmakedefine
+            list(APPEND SOFAGUI_TARGETS SofaHeadlessRecorder)
+            add_subdirectory(../applications/sofa/gui/headlessRecorder ${CMAKE_CURRENT_BINARY_DIR}/SofaHeadlessRecorder)
+        endif()
     endif()
 
     ## Qt GUI
