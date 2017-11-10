@@ -1,6 +1,3 @@
-#include <SofaTest/Sofa_test.h>
-#include <SceneCreator/SceneCreator.h>
-
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 using sofa::simulation::Node ;
@@ -9,10 +6,13 @@ using sofa::core::ExecParams;
 
 #include <sofa/simulation/Simulation.h>
 
+#include <SofaSimulationGraph/testing/BaseSimulationTest.h>
+using sofa::helper::testing::BaseSimulationTest ;
+
 namespace sofa
 {
 
-struct DefaultAnimationLoop_test : public Sofa_test<>
+struct DefaultAnimationLoop_test : public BaseSimulationTest
 {
 
     void testOneStep()
@@ -25,13 +25,12 @@ struct DefaultAnimationLoop_test : public Sofa_test<>
                  "   <DefaultAnimationLoop />            \n"
                  "</Node>                                                                        \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
-                                                          scene.str().c_str(),
-                                                          scene.str().size()) ;
+        SceneInstance c("xml", scene.str()) ;
+        Node* root = c.root.get() ;
+        ASSERT_NE(root, nullptr) ;
 
-        ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
-        simulation::getSimulation()->animate ( root.get(), (SReal)0.01 );
+        c.initScene() ;
+        sofa::simulation::getSimulation()->animate ( root, (SReal)0.01 );
     }
 
 };

@@ -63,7 +63,7 @@ Node::SPtr createRootNode(Simulation::SPtr s, const std::string& name,
 {
     Node::SPtr root = s->createNewNode(name) ;
 
-    BaseObjectDescription desc("Node", "Node");
+    BaseObjectDescription desc(name.c_str(), "Node");
     for(auto& kv : params)
     {
         desc.setAttribute(kv.first.c_str(), kv.second.c_str());
@@ -100,7 +100,7 @@ BaseObject::SPtr createObject(Node::SPtr parent, const std::string& type, const 
 
 Node::SPtr createChild(Node::SPtr& node, const std::string& name, const std::map<std::string, std::string>& params)
 {
-    BaseObjectDescription desc("Node", "Node");
+    BaseObjectDescription desc(name.c_str(), "Node");
     for(auto& kv : params)
     {
         desc.setAttribute(kv.first.c_str(), kv.second.c_str());

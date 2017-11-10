@@ -6,7 +6,6 @@ set(HEADER_FILES
 )
 
 set(SOURCE_FILES
-    TestMessageHandler_test.cpp
     Regression_test.cpp
 )
 

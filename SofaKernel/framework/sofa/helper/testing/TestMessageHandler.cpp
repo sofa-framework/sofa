@@ -19,8 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/TestMessageHandler.h>
-
+/******************************************************************************
+ * Contributors:
+ *    - damien.marchal@univ-lille1.fr
+ ******************************************************************************/
+#include <sofa/helper/testing/TestMessageHandler.h>
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// This file organization:
@@ -87,7 +90,7 @@ public:
 
 
 
-class SOFA_TestPlugin_API GtestMessageHandler : public MessageHandler
+class SOFA_HELPER_API GtestMessageHandler : public MessageHandler
 {
     std::vector<std::vector<GtestMessageFrame*> > m_gtestframes;
 
@@ -101,7 +104,7 @@ public:
     void popFrame(Message::Type type) ;
 };
 
-class SOFA_TestPlugin_API MainGtestMessageHandlerPrivate
+class SOFA_HELPER_API MainGtestMessageHandlerPrivate
 {
 public:
     static GtestMessageHandler& getInstance() ;

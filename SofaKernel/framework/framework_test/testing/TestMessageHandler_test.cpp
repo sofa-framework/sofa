@@ -1,7 +1,7 @@
 #include <gtest/gtest-spi.h>
 
-#include <SofaTest/Sofa_test.h>
-using sofa::Sofa_test;
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest ;
 
 
 ////////////// IMPLEMENTS A TEST PREDICATE TO VALIDE THAT A THERE IS AT LEAST ONE MESSAGE
@@ -104,8 +104,7 @@ AnyFailureChecker::~AnyFailureChecker() {
   } while (::testing::internal::AlwaysFalse())
 
 
-#include <SofaTest/TestMessageHandler.h>
-class TestMessageHandler_test : public Sofa_test<>
+class TestMessageHandler_test : public BaseTest
 {
 public:
     void defaultTestBehavior()

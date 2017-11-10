@@ -41,23 +41,23 @@ namespace sofa {
 template<class T>
 struct PatchTestStruct
 {
-   simulation::Node::SPtr SquareNode;
-   typename component::projectiveconstraintset::AffineMovementConstraint<T>::SPtr affineConstraint;
-   typename component::container::MechanicalObject<T>::SPtr dofs;
+    simulation::Node::SPtr SquareNode;
+    typename component::projectiveconstraintset::AffineMovementConstraint<T>::SPtr affineConstraint;
+    typename component::container::MechanicalObject<T>::SPtr dofs;
 };
 
 /// Structure which contains the nodes and the pointers useful for the patch test
 template<class T>
 struct CylinderTractionStruct
 {
-   simulation::Node::SPtr root;
-   typename component::container::MechanicalObject<T>::SPtr dofs;
-   typename component::forcefield::TrianglePressureForceField<T>::SPtr forceField;
+    simulation::Node::SPtr root;
+    typename component::container::MechanicalObject<T>::SPtr dofs;
+    typename component::forcefield::TrianglePressureForceField<T>::SPtr forceField;
 };
 
 
 template< class DataTypes>
-struct SOFA_TestPlugin_API Elasticity_test: public Sofa_test<typename DataTypes::Real>
+struct SOFA_SOFATEST_API Elasticity_test: public Sofa_test<typename DataTypes::Real>
 {
     typedef component::container::MechanicalObject<DataTypes> DOFs;
     typedef typename DOFs::Real  Real;
