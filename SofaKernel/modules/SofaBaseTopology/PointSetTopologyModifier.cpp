@@ -375,15 +375,6 @@ void PointSetTopologyModifier::propagateTopologicalChanges()
 {
     if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
 
-    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
-    sofa::simulation::TopologyChangeVisitor a(params, m_container);
-
-    // sout << getName() << " propagation du truc: " << getContext()->getName() << sendl;
-    // for( std::list<const core::topology::TopologyChange *>::const_iterator it = m_container->beginChange(); it != m_container->endChange(); it++)
-    // std:: cout << (*it)->getChangeType() << sendl;
-
-    getContext()->executeVisitor(&a);
-
     //TODO: temporary code to test topology engine pipeline.
 #ifndef NDEBUG
     sout << sendl << "******* START ENGINE PROCESSING *********" << sendl;
@@ -405,6 +396,15 @@ void PointSetTopologyModifier::propagateTopologicalChanges()
 #ifndef NDEBUG
     sout << sendl << "******* START ENGINE PROCESSING END *********" << sendl;
 #endif
+    
+    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
+    sofa::simulation::TopologyChangeVisitor a(params, m_container);
+
+    // sout << getName() << " propagation du truc: " << getContext()->getName() << sendl;
+    // for( std::list<const core::topology::TopologyChange *>::const_iterator it = m_container->beginChange(); it != m_container->endChange(); it++)
+    // std:: cout << (*it)->getChangeType() << sendl;
+
+    getContext()->executeVisitor(&a);
 
     // remove the changes we just propagated, so that we don't send them again next time
     m_container->resetTopologyChangeList();

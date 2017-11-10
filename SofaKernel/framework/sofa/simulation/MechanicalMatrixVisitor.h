@@ -213,6 +213,12 @@ public:
 
         return RESULT_CONTINUE;
     }
+
+    virtual bool stopAtMechanicalMapping(simulation::Node* node, core::BaseMapping* map)
+    {
+        SOFA_UNUSED(node);
+        return !map->areMatricesMapped();
+    }
 };
 
 /** Accumulate the entries of a mechanical matrix (mass or stiffness) of the whole scene ONLY ON THE subMatrixIndex */

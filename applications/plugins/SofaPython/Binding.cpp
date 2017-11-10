@@ -114,7 +114,9 @@ void bindSofaPythonModule()
     const char* name = "Sofa.SofaException";
     const char* doc = "Base exception class for the SofaPython module." ;
     PyObject* PyExc_SofaException = PyErr_NewExceptionWithDoc(
-                const_cast<char*>(name), const_cast<char *>(doc), NULL, NULL);
+        (char*) "Sofa.SofaException",
+        (char*) "Base exception class for the SofaPython module.",
+        NULL, NULL);
 
     if ( PyExc_SofaException )
         PyModule_AddObject(PythonFactory::s_sofaPythonModule, "SofaException", PyExc_SofaException);

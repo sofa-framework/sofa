@@ -51,6 +51,7 @@ class FixedConstraintInternalData
 
 };
 
+
 /** Maintain a constant velocity.
  * If the particle is initially fixed then it is attached to its initial position.
  * Otherwise it keeps on drifting.
@@ -82,10 +83,11 @@ protected:
     virtual ~FixedConstraint();
 
 public:
-    SetIndex f_indices;
-    Data<bool> f_fixAll;
-    Data<bool> f_showObject;
-    Data<SReal> f_drawSize;
+    SetIndex d_indices;
+    Data<bool> d_fixAll;
+    Data<bool> d_showObject;
+    Data<SReal> d_drawSize;
+    Data<bool> d_projectVelocity;
 
 
 protected:
@@ -119,7 +121,7 @@ public:
 
     virtual void draw(const core::visual::VisualParams* vparams) override;
 
-    bool fixAllDOFs() const { return f_fixAll.getValue(); }
+    bool fixAllDOFs() const { return d_fixAll.getValue(); }
 
     class FCPointHandler : public sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >
     {

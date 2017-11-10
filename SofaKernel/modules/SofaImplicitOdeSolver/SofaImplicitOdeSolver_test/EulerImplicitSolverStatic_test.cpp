@@ -158,9 +158,6 @@ struct EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium  : publi
         mass->d_mass.setValue( 1. );
 
 
-//        FixedConstraint3::SPtr fixed = modeling::addNew<FixedConstraint3>(root,"fixedConstraint");
-//        fixed->addConstraint(0);      // attach first particle
-
         // create a child node with its own DOF
         simulation::Node::SPtr child = root->createChild("childNode");
         MechanicalObject<Vec3Types>::SPtr childDof = addNew<MechanicalObject<Vec3Types> >(child);

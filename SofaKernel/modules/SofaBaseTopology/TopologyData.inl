@@ -57,7 +57,7 @@ void TopologyDataImpl <TopologyElementType, VecT>::createTopologicalEngine(sofa:
         this->m_topologicalEngine->setNamePrefix(std::string(sofa::core::topology::TopologyElementInfo<TopologyElementType>::name()) + std::string("Engine_"));
         if (this->getOwner() && dynamic_cast<sofa::core::objectmodel::BaseObject*>(this->getOwner())) dynamic_cast<sofa::core::objectmodel::BaseObject*>(this->getOwner())->addSlave(this->m_topologicalEngine.get());
         this->m_topologicalEngine->init();
-        this->linkToElementDataArray();
+        this->linkToElementDataArray((TopologyElementType*)NULL);
         this->getOwner()->sout<<"TopologyDataImpl: " << this->getName() << " initialized with dynamic " << _topology->getClassName() << "Topology." << this->getOwner()->sendl;
         if (deleteHandler && _topologyHandler) m_topologyHandler = _topologyHandler;
     }

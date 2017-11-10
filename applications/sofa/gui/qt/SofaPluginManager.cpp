@@ -119,7 +119,7 @@ void SofaPluginManager::addLibrary()
     std::stringstream sstream;
 
     std::string pluginFile = std::string(sfile.toStdString());
-    if(sofa::helper::system::PluginManager::getInstance().loadPlugin(pluginFile,&sstream))
+    if(sofa::helper::system::PluginManager::getInstance().loadPluginByPath(pluginFile,&sstream))
     {
         typedef sofa::helper::system::PluginManager::PluginMap PluginMap;
         typedef sofa::helper::system::Plugin    Plugin;
