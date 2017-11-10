@@ -5,6 +5,7 @@ project(SofaFramework_test)
 set(SOURCE_FILES
     core/loader/MeshLoader_test.cpp
     core/objectmodel/AspectPool_test.cpp
+    core/objectmodel/BaseContext_unittest.cpp
     core/objectmodel/Data_test.cpp
     core/objectmodel/BaseObjectDescription_test.cpp
     core/objectmodel/DataFileName_test.cpp
@@ -15,7 +16,7 @@ set(SOURCE_FILES
     defaulttype/VecTypes_test.cpp
     helper/types/Color_test.cpp
     helper/types/Material_test.cpp
-	helper/AdvancedTimer_test.cpp
+    helper/AdvancedTimer_test.cpp
     helper/KdTree_test.cpp
     helper/Utils_test.cpp
     helper/Quater_test.cpp
