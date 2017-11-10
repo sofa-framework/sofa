@@ -26,7 +26,6 @@
 #include <sofa/config/build_option_experimental_features.h>
 
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
 #include <sofa/defaulttype/BaseVector.h>
@@ -159,6 +158,8 @@ public:
 
     Data< SReal > restScale;
 
+    Data< bool >  d_useTopology;
+
     Data< bool >  showObject;
     Data< float > showObjectScale;
     Data< bool >  showIndices;
@@ -202,7 +203,7 @@ public:
     virtual void resize( size_t vsize) override;
     virtual void reserve(size_t vsize);
 
-    size_t getSize() const override { return vsize; }
+    size_t getSize() const { return d_size.getValue(); }
 
     SReal getPX(size_t i) const override { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::ConstVecCoordId::position())->getValue())[i]); return (SReal)x; }
     SReal getPY(size_t i) const override { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::ConstVecCoordId::position())->getValue())[i]); return (SReal)y; }
@@ -294,8 +295,6 @@ public:
     virtual std::list<ConstraintBlock> constraintBlocks( const std::list<unsigned int> &indices) const override;
     virtual SReal getConstraintJacobianTimesVecDeriv( unsigned int line, core::ConstVecId id) override;
 
-    void setFilename(std::string s) {filename.setValue(s);}
-
     /// @name Initial transformations accessors.
     /// @{
 
@@ -308,10 +307,6 @@ public:
     virtual Vector3 getScale() const override {return scale.getValue();}
 
     /// @}
-
-    void setIgnoreLoader(bool b) {ignoreLoader.setValue(b);}
-
-    std::string getFilename() {return filename.getValue();}
 
     /// Renumber the constraint ids with the given permutation vector
     void renumberConstraintId(const sofa::helper::vector< unsigned >& renumbering) override;
@@ -424,8 +419,11 @@ protected :
 
     /// @}
 
-    sofa::core::objectmodel::DataFileName filename;
-    Data< bool> ignoreLoader;
+    //int vsize; ///< Number of elements to allocate in vectors
+    Data< int > d_size;
+
+    SingleLink< MechanicalObject<DataTypes>, core::topology::BaseMeshTopology,BaseLink::FLAG_STRONGLINK|BaseLink::FLAG_STOREPATH> l_topology;
+
     Data< int > f_reserve;
 
     bool m_initialized;
@@ -436,8 +434,6 @@ protected :
     sofa::helper::vector< Data< VecCoord >		* > vectorsCoord;		///< Coordinates DOFs vectors table (static and dynamic allocated)
     sofa::helper::vector< Data< VecDeriv >		* > vectorsDeriv;		///< Derivates DOFs vectors table (static and dynamic allocated)
     sofa::helper::vector< Data< MatrixDeriv >	* > vectorsMatrixDeriv; ///< Constraint vectors table
-
-    size_t vsize; ///< Number of elements to allocate in vectors
 
     /**
      * @brief Inserts VecCoord DOF coordinates vector at index in the vectorsCoord container.
@@ -477,7 +473,6 @@ protected :
     std::ofstream* m_gnuplotFileX;
     std::ofstream* m_gnuplotFileV;
 
-    sofa::core::topology::BaseMeshTopology* m_topology;
 };
 
 #ifndef SOFA_FLOAT

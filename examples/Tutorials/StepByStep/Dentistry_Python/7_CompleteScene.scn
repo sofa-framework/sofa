@@ -48,10 +48,10 @@ An assemblage of all the previous steps altogether
                 <TriangleSetGeometryAlgorithms name="GeomAlgo" />
                 <Tetra2TriangleTopologicalMapping name="mapping" input="@../volume" output="@TriContainer" flipNormals="true" />
                 <MechanicalObject name="colTongue" />
+		        <IdentityMapping name="identityMappingToCollision" input="@../mecaTongue" output="@colTongue" isMechanical="false" />
                 <Triangle name="tongue" contactStiffness="5" />
                 <Line name="tongue" contactStiffness="5" />
                 <Point name="tongue" contactStiffness="5" />
-                <IdentityMapping name="identityMappingToCollision" input="@../mecaTongue" output="@colTongue" isMechanical="false" />
             </Node>
         </Node>
         <Node name="Teeth" activated="true" >
