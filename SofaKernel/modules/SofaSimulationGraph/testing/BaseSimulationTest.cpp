@@ -71,10 +71,15 @@ BaseSimulationTest::SceneInstance::~SceneInstance()
     simulation::getSimulation()->unload(root) ;
 }
 
-void BaseSimulationTest::SceneInstance::initScene(){
+void BaseSimulationTest::SceneInstance::initScene()
+{
     root->init(ExecParams::defaultInstance()) ;
 }
 
+void BaseSimulationTest::SceneInstance::simulate(const double timestep)
+{
+    simulation->animate( root.get(), (SReal)timestep );
+}
 
 BaseSimulationTest::BaseSimulationTest()
 {

@@ -58,6 +58,7 @@ public:
         Simulation* simulation {nullptr} ;
 
         void initScene() ;
+        void simulate(const double timestep) ;
     } ;
 };
 
