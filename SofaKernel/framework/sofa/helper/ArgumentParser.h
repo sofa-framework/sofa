@@ -62,7 +62,7 @@ public:
     \param h help
     \param m true iff the argument is mandatory
     */
-    ArgumentBase(char s, string l, string h, bool m);
+    ArgumentBase(string s, string l, string h, bool m);
 
     /// Base destructor: does nothing.
     virtual ~ArgumentBase();
@@ -76,7 +76,7 @@ public:
     /// print short name, long name, help
     void print () const;
 
-    char shortName; ///< Short name
+    string shortName; ///< Short name
     string longName;  ///< Long name
     string help;      ///< Help message
 
@@ -110,7 +110,7 @@ public:
     \param h help on the argument
     \param m true iff the argument is mandatory
     */
-    Argument( T* t, char sn, string ln, string h, bool m )
+    Argument( T* t, string sn, string ln, string h, bool m )
         : ArgumentBase(sn,ln,h,m)
         , ptr(t)
     {}
@@ -233,7 +233,7 @@ class SOFA_HELPER_API ArgumentParser
     /// Associate a string with a Argument object
     typedef std::map< string, ArgumentBase* > Map;
     /// short name -> Argument object
-    std::map< char, ArgumentBase* > shortName;
+    Map shortName;
     /// long name -> Argument object
     Map longName;
 
@@ -257,104 +257,73 @@ class SOFA_HELPER_API ArgumentParser
     
     // help stuff
     string globalHelp;    ///< Overall presentation
-    char helpShortName;   ///< short name for help
+    string helpShortName;   ///< short name for help
     string helpLongName;  ///< long name for help
+    unsigned int shortNameLength = 3;
 
 public:
     /** last parsed extra arguments */
     static const extra_type& extra_args() { return extra; }
     
     /// Constructor using a global help string
-    ArgumentParser( const string& helpstr="", char hlpShrt='h', const string& hlpLng="help" );
+    ArgumentParser( const string& helpstr="", const string& hlpShrt="h", const string& hlpLng="help" );
 
     /// Constructor using a global help string and a list of filenames
-    ArgumentParser( std::vector<std::string>* files, const string& helpstr="", char hlpShrt='h', const string& hlpLng="help" );
+    ArgumentParser( std::vector<std::string>* files, const string& helpstr="", const string& hlpShrt="h", const string& hlpLng="help" );
 
     /// Constructor using a global help string
     ~ArgumentParser();
 
-    /** Declare an optional argument
+    /** Declare an argument
     \param ptr pointer to the variable
     \param sho short name
     \param lon long name
     \param help
     */
     template<class T> inline
-    ArgumentParser& option( T* ptr, char sho, const char* lon, const char* help )
+    ArgumentParser& parameter( T* ptr, const char* sho, const char* lon, const char* help, bool mandatory = false )
     {
-        string sn, ln(lon), h(help); sn += sho;
+        string sn(sho), ln(lon), h(help);
 
-        if( sho!=0 && shortName.find(sho) != shortName.end() )
+        if( sn.length()<=0 || sn.length()>shortNameLength)
+        {
+            msg_fatal("ArgumentParser") << sn << "  " << lon << " length is not correct. Length have to be between 1 to 3" ;
+            exit(EXIT_FAILURE);
+        }
+        if( shortName.find(sn) != shortName.end() )
         {
             msg_fatal("ArgumentParser") << "name " << sn << " already used !";
             exit(EXIT_FAILURE);
         }
 
-        if( ln.size()>0 && longName.find(ln) != longName.end() )
+        if( ln.size()<0 )
         {
-            msg_fatal("ArgumentParser") << ln << " already used !" ;
+            msg_fatal("ArgumentParser") << ln << " length is not correct. Length have to be more than 0" ;
+            exit(EXIT_FAILURE);
+        }
+        if( shortName.find(ln) != shortName.end() )
+        {
+            msg_fatal("ArgumentParser") << "name " << ln << " already used !";
             exit(EXIT_FAILURE);
         }
 
-        if( sho!=0 && sho == helpShortName )
+        if( sn.compare(helpLongName) == 0 )
         {
-            msg_fatal("ArgumentParser") <<sho << " reserved for help !" ;
+            msg_fatal("ArgumentParser") << "short name " << sn << " reserved for help !" ;
             exit(EXIT_FAILURE);
         }
-        if( ln.size()>0 && lon == helpLongName )
+        if( ln.compare(helpLongName) == 0 )
         {
-            msg_fatal("ArgumentParser") << "name " << lon << " reserved for help !" ;
+            msg_fatal("ArgumentParser") << "long name " << lon << " reserved for help !" ;
             exit(EXIT_FAILURE);
         }
 
-        ArgumentBase* c = new Argument<T>(ptr,sho,ln,h,false);
+        ArgumentBase* c = new Argument<T>(ptr,sho,ln,h,mandatory);
         shortName[sho] = c;
         longName[lon] = c;
         commands.push_back(c);
         return (*this);
     }
-
-    /** Declare a mandatory argument
-    \param ptr pointer to the variable
-    \param sho short name
-    \param lon long name
-    \param help
-    */
-    template<class T> inline
-    ArgumentParser& parameter( T* ptr, char sho, const char* lon, const char* help )
-    {
-        string sn, ln(lon), h(help); sn += sho;
-
-        if( sho!=0 && shortName.find(sho) != shortName.end() )
-        {
-            msg_fatal("ArgumentParser") << "name " << sn << " already used !"  ;
-            exit(EXIT_FAILURE);
-        }
-
-        if( ln.size()>0 && longName.find(ln) != longName.end() )
-        {
-            msg_fatal("ArgumentParser") << "name " << ln << " already used !" ;
-            exit(EXIT_FAILURE);
-        }
-
-        if( sho!=0 && sho == helpShortName )
-        {
-            msg_error("ArgumentParser") << "name " << sho << " reserved for help !" ;
-            exit(EXIT_FAILURE);
-        }
-        if( ln.size()>0 && lon == helpLongName )
-        {
-            msg_error("ArgumentParser") << "name " << lon << " reserved for help !" ;
-            exit(EXIT_FAILURE);
-        }
-
-        ArgumentBase* c = new Argument<T>(ptr,sho,ln,h,true);
-        shortName[sho] = c;
-        longName[lon] = c;
-        commands.push_back(c);
-        return (*this);
-    }
-
 
     /** Parse a command line
     \param argc number of arguments + 1, as usual in C
@@ -372,12 +341,12 @@ public:
 \param hl long name for help
 This method frees the programmer from explicitly creating an ArgumentParser, which makes the program (hopefully) more readable. Using this method, the ArgumentParser is transparently created, it receives and processes the arguments, then it is destroyed.
 */
-inline ArgumentParser parse( const std::string& helpstr="", char hs='h', const std::string& hl="help" )
+inline ArgumentParser parse( const std::string& helpstr="", const std::string& hs="h", const std::string& hl="help" )
 {
     return ArgumentParser(helpstr,hs,hl);
 }
 
-inline ArgumentParser parse( std::vector<std::string>* files, const std::string& helpstr="", char hs='h', const std::string& hl="help" )
+inline ArgumentParser parse( std::vector<std::string>* files, const std::string& helpstr="", const std::string& hs="h", const std::string& hl="help" )
 {
     return ArgumentParser(files,helpstr,hs,hl);
 }

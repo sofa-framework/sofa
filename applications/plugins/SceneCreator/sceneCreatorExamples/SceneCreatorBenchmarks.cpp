@@ -108,7 +108,7 @@ int main(int argc, char** argv)
 
     unsigned int idExample = 0;
     sofa::helper::parse("This is a SOFA application. Here are the command line arguments")
-            .option(&idExample,'e',"example","Example Number to enter from (0 - 9)")
+            .parameter(&idExample,"e","example","Example Number to enter from (0 - 9)")
     (argc,argv);
 
     // init GUI
