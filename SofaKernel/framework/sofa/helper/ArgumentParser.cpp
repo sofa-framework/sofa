@@ -36,7 +36,7 @@ typedef std::istringstream istrstream;
 
 ArgumentParser::extra_type ArgumentParser::extra;
 
-ArgumentBase::ArgumentBase(char s, string l, string h, bool m)
+ArgumentBase::ArgumentBase(string s, string l, string h, bool m)
     : shortName(s)
     , longName(l)
     , help(h)
@@ -60,7 +60,7 @@ void ArgumentBase::print () const
 
 //========================================================================
 /// Constructor using a global help string
-ArgumentParser::ArgumentParser( const string& helpstr, char hlpShrt, const string& hlpLng )
+ArgumentParser::ArgumentParser( const string& helpstr, const string& hlpShrt, const string& hlpLng )
     : files(NULL)
     , globalHelp( helpstr )
     , helpShortName(hlpShrt)
@@ -68,7 +68,7 @@ ArgumentParser::ArgumentParser( const string& helpstr, char hlpShrt, const strin
 {}
 
 /// Constructor using a global help string and a list of filenames
-ArgumentParser::ArgumentParser( std::vector<std::string>* files, const string& helpstr, char hlpShrt, const string& hlpLng )
+ArgumentParser::ArgumentParser( std::vector<std::string>* files, const string& helpstr, const string& hlpShrt, const string& hlpLng )
     : files(files)
     , globalHelp( helpstr )
     , helpShortName(hlpShrt)
@@ -94,7 +94,7 @@ void ArgumentParser::operator () ( int argc, char** argv )
 
 void ArgumentParser::operator () ( std::list<std::string> str )
 {
-    string shHelp("-");  shHelp.push_back( helpShortName );
+    string shHelp("-");  shHelp.append( helpShortName );
     string lgHelp("--"); lgHelp.append( helpLongName );
     string name;
 
@@ -162,26 +162,44 @@ void ArgumentParser::operator () ( std::list<std::string> str )
                 msg_warning("ArgumentParser") << "Unknown option: " << name;
         }
 
-        // short names (possibly concatenated)
-        else if( name.length() > 1 && name[0]=='-' && name[1]!='-' )
+        // shot names
+        else if( name.length() > 1 && name.length() <=shortNameLength+1 && name[0]=='-' && name[1]!='-' )
         {
+            string a;
             for( unsigned int i=1; i<name.length(); ++i )
             {
-                char a = name[i];
-                if( shortName.find(a) != shortName.end() )
-                {
-                    if( !(shortName[ a ]->read( str )))
-                        msg_warning("ArgumentParser") << "Could not read value for option: " << name;
-
-                    else parameter_set[shortName[ a ]] = true;
-                }
-                else
-                    msg_warning("ArgumentParser") << "Unknown option: " << name;
+                a += name[i];
             }
+            if( shortName.find(a) != shortName.end() )
+            {
+                if( !(shortName[ a ]->read( str )))
+                    msg_warning("ArgumentParser") << "Could not read value for option: " << name;
+                else parameter_set[shortName[ a ]] = true;
+            }
+            else
+                msg_warning("ArgumentParser") << "Unknown option: " << name;
         }
 
-        else
-            msg_warning("ArgumentParser") << "Unknown option: " << name;
+//        // short names (possibly concatenated)
+//        else if( name.length() > 1 && name[0]=='-' && name[1]!='-' )
+//        {
+//            for( unsigned int i=1; i<name.length(); ++i )
+//            {
+//                string a = name[i];
+//                if( shortName.find(a) != shortName.end() )
+//                {
+//                    if( !(shortName[ a ]->read( str )))
+//                        msg_warning("ArgumentParser") << "Could not read value for option: " << name;
+
+//                    else parameter_set[shortName[ a ]] = true;
+//                }
+//                else
+//                    msg_warning("ArgumentParser") << "Unknown option: " << name;
+//            }
+//        }
+
+//        else
+//            msg_warning("ArgumentParser") << "Unknown option: " << name;
 
     }
 
