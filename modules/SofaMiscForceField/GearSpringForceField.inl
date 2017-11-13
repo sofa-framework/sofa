@@ -173,8 +173,10 @@ void GearSpringForceField<DataTypes>::addSpringForce( SReal& /*potentialEnergy*/
          newAngle2 = getAngleAroundAxis(*cp2,*cc2,spring.freeAxis[1]);
 
     Real PI2=(Real)2.*(Real)pi;
-    while(newAngle1 - spring.previousAngle1 > pi) newAngle1 -= PI2;		while(newAngle1 - spring.previousAngle1 < -pi) newAngle1 += PI2;
-    while(newAngle2 - spring.previousAngle2 > pi) newAngle2 -= PI2;		while(newAngle2 - spring.previousAngle2 < -pi) newAngle2 += PI2;
+    while(newAngle1 - spring.previousAngle1 > pi) newAngle1 -= PI2;
+    while(newAngle1 - spring.previousAngle1 < -pi) newAngle1 += PI2;
+    while(newAngle2 - spring.previousAngle2 > pi) newAngle2 -= PI2;
+    while(newAngle2 - spring.previousAngle2 < -pi) newAngle2 += PI2;
 
     spring.angle1 += newAngle1 - spring.previousAngle1; spring.previousAngle1 = newAngle1;
     spring.angle2 += newAngle2 - spring.previousAngle2; spring.previousAngle2 = newAngle2;

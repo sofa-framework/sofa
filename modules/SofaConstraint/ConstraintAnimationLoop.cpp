@@ -598,7 +598,7 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
         {
             computePredictiveForce(CP.getSize(), CP.getF()->ptr(), CP.getConstraintResolutions());
             msg_info() << "getF() after computePredictiveForce:" ;
-            helper::afficheResult(CP.getF()->ptr(),CP.getSize());
+            helper::resultToString(std::cout,CP.getF()->ptr(),CP.getSize());
         }
     }
 
@@ -607,7 +607,7 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
         (*CP.getF())*=0.0;
         computePredictiveForce(CP.getSize(), CP.getF()->ptr(), CP.getConstraintResolutions());
         msg_info() << "getF() after re-computePredictiveForce:" ;
-        helper::afficheResult(CP.getF()->ptr(),CP.getSize());
+        helper::resultToString(std::cout,CP.getF()->ptr(),CP.getSize());
     }
 
 
@@ -636,7 +636,7 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
     if (EMIT_EXTRA_DEBUG_MESSAGE)
     {
         msg_info() << "getF() after setConstraintEquations:" ;
-        helper::afficheResult(CP.getF()->ptr(),CP.getSize());
+        helper::resultToString(std::cout, CP.getF()->ptr(),CP.getSize());
     }
 
     sofa::helper::AdvancedTimer::stepBegin("GaussSeidel");

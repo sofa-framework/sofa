@@ -22,6 +22,8 @@
 #ifndef SOFA_COMPONENT_MECHANICALOBJECT_INL
 #define SOFA_COMPONENT_MECHANICALOBJECT_INL
 
+#include <sofa/config/build_option_experimental_features.h>
+
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
@@ -91,6 +93,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     , reset_position(initData(&reset_position, "reset_position", "reset position coordinates of the degrees of freedom"))
     , reset_velocity(initData(&reset_velocity, "reset_velocity", "reset velocity coordinates of the degrees of freedom"))
     , restScale(initData(&restScale, (SReal)1.0, "restScale", "optional scaling of rest position coordinates (to simulated pre-existing internal tension).(default = 1.0)"))
+    , d_useTopology(initData(&d_useTopology, true, "useTopology", "Shall this object rely on any active topology to initialize its size and positions"))
     , showObject(initData(&showObject, (bool) false, "showObject", "Show objects. (default=false)"))
     , showObjectScale(initData(&showObjectScale, (float) 0.1, "showObjectScale", "Scale for object display. (default=0.1)"))
     , showIndices(initData(&showIndices, (bool) false, "showIndices", "Show indices. (default=false)"))
@@ -105,22 +108,17 @@ MechanicalObject<DataTypes>::MechanicalObject()
     , scale(initData(&scale, Vector3(1.0,1.0,1.0), "scale3d", "Scale of the DOFs in 3 dimensions"))
     , translation2(initData(&translation2, Vector3(), "translation2", "Translation of the DOFs, applied after the rest position has been computed"))
     , rotation2(initData(&rotation2, Vector3(), "rotation2", "Rotation of the DOFs, applied the after the rest position has been computed"))
-    , filename(initData(&filename, std::string(""), "filename", "File corresponding to the Mechanical Object", false))
-    , ignoreLoader(initData(&ignoreLoader, (bool) false, "ignoreLoader", "Is the Mechanical Object do not use a loader. (default=false)"))
+    , d_size(initData(&d_size, 0, "size", "Size of the vectors"))
+    , l_topology(initLink("topology","Link to the topology relevant for this object"))
     , f_reserve(initData(&f_reserve, 0, "reserve", "Size to reserve when creating vectors. (default=0)"))
-    , vsize(0)
     , m_gnuplotFileX(NULL)
     , m_gnuplotFileV(NULL)
 {
-    // HACK
-    if (!restScale.isSet())
-    {
-        restScale.setValue(1);
-    }
-
     m_initialized = false;
 
     data = MechanicalObjectInternalData<DataTypes>(this);
+
+    isToPrint.setDisplayed(false);
 
     x               .setGroup("Vector");
     v               .setGroup("Vector");
@@ -219,14 +217,14 @@ void MechanicalObject<DataTypes>::MOPointHandler::applyCreateFunction(unsigned i
     if (!ancestors.empty() )
     {
         const unsigned int prevSizeMechObj = obj->getSize();
-        obj->vsize =prevSizeMechObj + 1;
+        obj->d_size.setValue( prevSizeMechObj + 1 );
 
         obj->computeWeightedValue( prevSizeMechObj + 1, ancestors, coefs );
     }
     else
     {
         // No ancestors specified, resize DOFs vectors and set new values to the reset default value.
-        obj->vsize = obj->getSize() + 1;
+        obj->d_size.setValue( obj->getSize() + 1 );
     }
 }
 
@@ -240,7 +238,7 @@ void MechanicalObject<DataTypes>::MOPointHandler::applyDestroyFunction(unsigned 
     unsigned int prevSizeMechObj   = obj->getSize();
     //unsigned int lastIndexMech = prevSizeMechObj - 1;
 
-    obj->vsize = prevSizeMechObj - 1;
+    obj->d_size.setValue( prevSizeMechObj - 1 );
     //obj->replaceValue(lastIndexMech, index );
     //obj->resize( prevSizeMechObj - 1 );
 }
@@ -364,14 +362,14 @@ void MechanicalObject<DataTypes>::PointCreationFunction(int , void * param, Coor
     if (!ancestors.empty() )
     {
         const unsigned int prevSizeMechObj = meca->getSize();
-        meca->vsize =prevSizeMechObj + 1;
+        meca->d_size.setValue( prevSizeMechObj + 1 );
 
         meca->computeWeightedValue( prevSizeMechObj + 1, ancestors, coefs );
     }
     else
     {
         // No ancestors specified, resize DOFs vectors and set new values to the reset default value.
-        meca->vsize = meca->getSize() + 1;
+        meca->d_size.setValue( meca->getSize() + 1 );
     }
 }
 
@@ -386,7 +384,7 @@ void MechanicalObject<DataTypes>::PointDestroyFunction(int , void * param, Coord
     unsigned int prevSizeMechObj   = meca->getSize();
     //unsigned int lastIndexMech = prevSizeMechObj - 1;
 
-    meca->vsize = prevSizeMechObj - 1;
+    meca->d_size.setValue( prevSizeMechObj - 1 );
     //meca->replaceValue(lastIndexMech, index );
     //meca->resize( prevSizeMechObj - 1 );
 }
@@ -396,6 +394,8 @@ void MechanicalObject<DataTypes>::PointDestroyFunction(int , void * param, Coord
 template <class DataTypes>
 void MechanicalObject<DataTypes>::handleStateChange()
 {
+    if (!l_topology) return;
+
     using sofa::core::topology::TopologyChange;
     using sofa::core::topology::TopologyChangeType;
     using sofa::core::topology::PointsAdded;
@@ -405,8 +405,8 @@ void MechanicalObject<DataTypes>::handleStateChange()
     sofa::core::topology::GeometryAlgorithms *geoAlgo = NULL;
     this->getContext()->get(geoAlgo, sofa::core::objectmodel::BaseContext::Local);
 
-    std::list< const TopologyChange * >::const_iterator itBegin = m_topology->beginStateChange();
-    std::list< const TopologyChange * >::const_iterator itEnd = m_topology->endStateChange();
+    std::list< const TopologyChange * >::const_iterator itBegin = l_topology->beginStateChange();
+    std::list< const TopologyChange * >::const_iterator itEnd = l_topology->endStateChange();
 
     while( itBegin != itEnd )
     {
@@ -679,9 +679,10 @@ void MechanicalObject<DataTypes>::resize(const size_t size)
 
     if(size>0)
     {
-        //if (size!=vsize)
+        //if (size!=d_size.getValue())
         {
-            vsize = size;
+            if (d_size.getValue() != size)
+                d_size.setValue( size );
             for (unsigned int i = 0; i < vectorsCoord.size(); i++)
             {
                 if (vectorsCoord[i] != NULL && vectorsCoord[i]->isSet())
@@ -704,7 +705,7 @@ void MechanicalObject<DataTypes>::resize(const size_t size)
     }
     else // clear
     {
-        vsize = 0;
+        d_size.setValue(0);
         for (unsigned int i = 0; i < vectorsCoord.size(); i++)
         {
             if (vectorsCoord[i] != NULL && vectorsCoord[i]->isSet())
@@ -1082,12 +1083,16 @@ template <class DataTypes>
 void MechanicalObject<DataTypes>::init()
 {
 
-    //Look at a topology associated to this instance of MechanicalObject by a tag
-    this->getContext()->get(m_topology, this->getTags());
-    // If no topology found, no association, then look to the nearest one
-    if(m_topology == NULL)
-        m_topology = this->getContext()->getMeshTopology();
+    if (!l_topology && d_useTopology.getValue())
+    {
+        l_topology.set( this->getContext()->getActiveMeshTopology() );
+    }
 
+    if (l_topology)
+    {
+        sout << "Initialization with topology " << l_topology->getTypeName() << " " << l_topology->getName() << " ( " << l_topology->getNbPoints() << " points)" << sendl; // << (l_topology->hasPos() ? "WITH" : "WITHOUT") << " positions)"
+    }
+  
     // Make sure the sizes of the vectors and the arguments of the scene matches
     const std::vector<std::pair<const std::string, const size_t>> vector_sizes = {
             {x.getName(),                x.getValue().size()},
@@ -1153,10 +1158,12 @@ void MechanicalObject<DataTypes>::init()
     if( x_wA.size() <= 1 && v_wA.size() <= 1 )
     {
         // if a topology is present, implicitly copy position from it
-        if (m_topology != NULL && m_topology->getNbPoints() && m_topology->getContext() == this->getContext())
+        if (l_topology && l_topology->hasPos() /*&& l_topology->getContext() == this->getContext()*/ )
         {
-            int nbp = m_topology->getNbPoints();
-            // copy the last specified velocity to all points
+            int nbp = l_topology->getNbPoints();
+            //std::cout<<"Setting "<<nbp<<" points from topology. " << this->getName() << " topo : " << l_topology->getName() <<std::endl;
+
+          // copy the last specified velocity to all points
             if (v_wA.size() >= 1 && v_wA.size() < (unsigned)nbp)
             {
                 unsigned int i = v_wA.size();
@@ -1169,7 +1176,7 @@ void MechanicalObject<DataTypes>::init()
             for (int i=0; i<nbp; i++)
             {
                 x_wA[i] = Coord();
-                DataTypes::set(x_wA[i], m_topology->getPX(i), m_topology->getPY(i), m_topology->getPZ(i));
+                DataTypes::set(x_wA[i], l_topology->getPX(i), l_topology->getPY(i), l_topology->getPZ(i));
             }
         }
         else if( x_wA.size() == 0 )
@@ -1179,7 +1186,7 @@ void MechanicalObject<DataTypes>::init()
             resize(0);
         }
     }
-    else if (x_wA.size() != vsize || v_wA.size() != vsize)
+    else if (x_wA.size() != d_size.getValue() || v_wA.size() != d_size.getValue())
     {
         // X and/or V were user-specified
         // copy the last specified velocity to all points
@@ -1216,24 +1223,24 @@ void MechanicalObject<DataTypes>::init()
 
 
 #if 0// SOFA_HAVE_NEW_TOPOLOGYCHANGES
-    x0.createTopologicalEngine(m_topology);
+    x0.createTopologicalEngine(l_topology);
     //x0.setCreateFunction(PointCreationFunction);
     //x0.setDestroyFunction(PointDestroyFunction);
     //x0.setCreateParameter( (void *) this );
     //x0.setDestroyParameter( (void *) this );
     x0.registerTopologicalData();
 
-    x.createTopologicalEngine(m_topology);
+    x.createTopologicalEngine(l_topology);
     x.setCreateFunction(PointCreationFunction);
     x.setDestroyFunction(PointDestroyFunction);
     x.setCreateParameter( (void *) this );
     x.setDestroyParameter( (void *) this );
     x.registerTopologicalData();
 
-    v.createTopologicalEngine(m_topology);
+    v.createTopologicalEngine(l_topology);
     v.registerTopologicalData();
 
-    f.createTopologicalEngine(m_topology);
+    f.createTopologicalEngine(l_topology);
     f.registerTopologicalData();
 #endif
 
@@ -1690,7 +1697,7 @@ void MechanicalObject<DataTypes>::vAlloc(const core::ExecParams* params, core::V
     if (v.index >= sofa::core::VecCoordId::V_FIRST_DYNAMIC_INDEX)
     {
         Data<VecCoord>* vec_d = this->write(v);
-        vec_d->beginEdit(params)->resize(vsize);
+        vec_d->beginEdit(params)->resize(d_size.getValue());
         vec_d->endEdit(params);
     }
 
@@ -1705,9 +1712,8 @@ void MechanicalObject<DataTypes>::vAlloc(const core::ExecParams* params, core::V
     if (v.index >= sofa::core::VecDerivId::V_FIRST_DYNAMIC_INDEX)
     {
         Data<VecDeriv>* vec_d = this->write(v);
-        vec_d->beginEdit(params)->resize(vsize);
+        vec_d->beginEdit(params)->resize(d_size.getValue());
         vec_d->endEdit(params);
-
     }
 
     //vOp(v); // clear vector
@@ -1720,7 +1726,7 @@ void MechanicalObject<DataTypes>::vRealloc(const core::ExecParams* params, core:
 
     if ( !vec_d->isSet(params) /*&& v.index >= sofa::core::VecCoordId::V_FIRST_DYNAMIC_INDEX*/ )
     {
-        vec_d->beginEdit(params)->resize(vsize);
+        vec_d->beginEdit(params)->resize(d_size.getValue());
         vec_d->endEdit(params);
     }
 }
@@ -1732,7 +1738,7 @@ void MechanicalObject<DataTypes>::vRealloc(const core::ExecParams* params, core:
 
     if ( !vec_d->isSet(params) /*&& v.index >= sofa::core::VecDerivId::V_FIRST_DYNAMIC_INDEX*/ )
     {
-        vec_d->beginEdit(params)->resize(vsize);
+        vec_d->beginEdit(params)->resize(d_size.getValue());
         vec_d->endEdit(params);
     }
 }
@@ -1816,14 +1822,14 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params, core::VecI
             if (v.type == sofa::core::V_COORD)
             {
                 helper::WriteOnlyAccessor< Data<VecCoord> > vv( params, *this->write(core::VecCoordId(v)) );
-                vv.resize(vsize);
+                vv.resize(d_size.getValue());
                 for (unsigned int i=0; i<vv.size(); i++)
                     vv[i] = Coord();
             }
             else
             {
                 helper::WriteOnlyAccessor< Data<VecDeriv> > vv( params, *this->write(core::VecDerivId(v)) );
-                vv.resize(vsize);
+                vv.resize(d_size.getValue());
                 for (unsigned int i=0; i<vv.size(); i++)
                     vv[i] = Deriv();
             }
@@ -2718,7 +2724,7 @@ inline void MechanicalObject<DataTypes>::drawIndices(const core::visual::VisualP
     float scale = (float)((vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox()).norm() * showIndicesScale.getValue());
 
     helper::vector<defaulttype::Vector3> positions;
-    for (size_t i = 0; i < vsize; ++i)
+    for (size_t i = 0; i < d_size.getValue(); ++i)
         positions.push_back(defaulttype::Vector3(getPX(i), getPY(i), getPZ(i)));
 
     vparams->drawTool()->draw3DText_Indices(positions, scale, color);
@@ -2778,8 +2784,8 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
     if (showObject.getValue())
     {
         const float& scale = showObjectScale.getValue();
-        helper::vector<Vector3> positions(vsize);
-        for (size_t i = 0; i < vsize; ++i)
+        helper::vector<Vector3> positions(d_size.getValue());
+        for (size_t i = 0; i < d_size.getValue(); ++i)
             positions[i] = Vector3(getPX(i), getPY(i), getPZ(i));
 
         switch (drawMode.getValue())
@@ -2828,7 +2834,7 @@ bool MechanicalObject<DataTypes>::pickParticles(const core::ExecParams* /* param
 
         defaulttype::Vec<3,Real> origin((Real)rayOx, (Real)rayOy, (Real)rayOz);
         defaulttype::Vec<3,Real> direction((Real)rayDx, (Real)rayDy, (Real)rayDz);
-        for (size_t i=0; i< vsize; ++i)
+        for (size_t i=0; i< d_size.getValue(); ++i)
         {
             defaulttype::Vec<3,Real> pos;
             DataTypes::get(pos[0],pos[1],pos[2],x[i]);

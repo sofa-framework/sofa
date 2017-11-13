@@ -100,6 +100,7 @@ public:
     Data < Real > f_radius;
     Data < bool > f_handleTopologyChange;
     Data < bool > f_ignoreNotFound;
+    Data < bool > f_resizeToModel; 
     SubsetMappingInternalData<In, Out> data;
     void postInit();
 protected:

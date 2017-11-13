@@ -114,7 +114,7 @@ void SceneCheckMissingRequiredPlugin::doCheckOn(Node* node)
                 {
                     msg_warning("SceneChecker")
                             << "This scene is using component '" << object->getClassName() << "'. " << msgendl
-                            << "This component is part of the '" << pluginName << "' plugin but there is no <RequiredPlugin name='" << pluginName << "'> directive in your scene." << msgendl
+                            << "This component is part of the '" << pluginName << "' plugin but there is no <RequiredPlugin name='" << pluginName << "' /> directive in your scene." << msgendl
                             << "Your scene may not work on a sofa environment that does not have pre-loaded the plugin." << msgendl
                             << "To fix your scene and remove this warning you need to add the RequiredPlugin directive at the beginning of your scene. ";
                 }

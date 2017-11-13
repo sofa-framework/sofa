@@ -117,14 +117,14 @@ void FixedConstraint< TYPEABSTRACTNAME3dTypes >::draw(const core::visual::Visual
 {
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
-    const SetIndexArray & indices = f_indices.getValue();
+    const SetIndexArray & indices = d_indices.getValue();
     const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    if( f_drawSize.getValue() == 0) // old classical drawing by points
+    if( d_drawSize.getValue() == 0) // old classical drawing by points
     {
         std::vector< Vector3 > points;
 
-        if( f_fixAll.getValue()==true )
+        if( d_fixAll.getValue()==true )
             for (unsigned i=0; i<x.size(); i++ )
                 points.push_back(x[i].getCenter());
         else
@@ -136,16 +136,16 @@ void FixedConstraint< TYPEABSTRACTNAME3dTypes >::draw(const core::visual::Visual
         vparams->drawTool()->drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
     }
     else
-//        vparams->drawTool()->drawSpheres(points, (float)f_drawSize.getValue(), Vec<4,float>(0.2f,0.1f,0.9f,1.0f));
+//        vparams->drawTool()->drawSpheres(points, (float)d_drawSize.getValue(), Vec<4,float>(0.2f,0.1f,0.9f,1.0f));
     {
-        if( f_fixAll.getValue()==true )
+        if( d_fixAll.getValue()==true )
             for (unsigned i=0; i<x.size(); i++ )
             {
                 vparams->drawTool()->pushMatrix();
                 float glTransform[16];
                 x[i].writeOpenGlMatrix ( glTransform );
                 vparams->drawTool()->multMatrix( glTransform );
-                vparams->drawTool()->scale ( f_drawSize.getValue() );
+                vparams->drawTool()->scale ( d_drawSize.getValue() );
                 vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
                 vparams->drawTool()->popMatrix();
             }
@@ -158,7 +158,7 @@ void FixedConstraint< TYPEABSTRACTNAME3dTypes >::draw(const core::visual::Visual
                     float glTransform[16];
                     x[indices[i]].writeOpenGlMatrix ( glTransform );
                     vparams->drawTool()->multMatrix( glTransform );
-                    vparams->drawTool()->scale ( f_drawSize.getValue() );
+                    vparams->drawTool()->scale ( d_drawSize.getValue() );
                     vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
                     vparams->drawTool()->popMatrix();
                 }
@@ -168,7 +168,7 @@ void FixedConstraint< TYPEABSTRACTNAME3dTypes >::draw(const core::visual::Visual
                 float glTransform[16];
                 x[*it].writeOpenGlMatrix ( glTransform );
                 vparams->drawTool()->multMatrix( glTransform );
-                vparams->drawTool()->scale ( f_drawSize.getValue() );
+                vparams->drawTool()->scale ( d_drawSize.getValue() );
                 vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
                 vparams->drawTool()->popMatrix();
             }
@@ -182,14 +182,14 @@ void FixedConstraint< TYPEABSTRACTNAME3fTypes >::draw(const core::visual::Visual
 {
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
-    const SetIndexArray & indices = f_indices.getValue();
+    const SetIndexArray & indices = d_indices.getValue();
     const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    if( f_drawSize.getValue() == 0) // old classical drawing by points
+    if( d_drawSize.getValue() == 0) // old classical drawing by points
     {
         std::vector< Vector3 > points;
 
-        if( f_fixAll.getValue()==true )
+        if( d_fixAll.getValue()==true )
             for (unsigned i=0; i<x.size(); i++ )
                 points.push_back(x[i].getCenter());
         else
@@ -201,16 +201,16 @@ void FixedConstraint< TYPEABSTRACTNAME3fTypes >::draw(const core::visual::Visual
         vparams->drawTool()->drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
     }
     else
-//        vparams->drawTool()->drawSpheres(points, (float)f_drawSize.getValue(), Vec<4,float>(0.2f,0.1f,0.9f,1.0f));
+//        vparams->drawTool()->drawSpheres(points, (float)d_drawSize.getValue(), Vec<4,float>(0.2f,0.1f,0.9f,1.0f));
     {
-        if( f_fixAll.getValue()==true )
+        if( d_fixAll.getValue()==true )
             for (unsigned i=0; i<x.size(); i++ )
             {
                 vparams->drawTool()->pushMatrix();
                 float glTransform[16];
                 x[i].writeOpenGlMatrix ( glTransform );
                 vparams->drawTool()->multMatrix( glTransform );
-                vparams->drawTool()->scale ( f_drawSize.getValue() );
+                vparams->drawTool()->scale ( d_drawSize.getValue() );
                 vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
                 vparams->drawTool()->popMatrix();
             }
@@ -223,7 +223,7 @@ void FixedConstraint< TYPEABSTRACTNAME3fTypes >::draw(const core::visual::Visual
                     float glTransform[16];
                     x[indices[i]].writeOpenGlMatrix ( glTransform );
                     vparams->drawTool()->multMatrix( glTransform );
-                    vparams->drawTool()->scale ( f_drawSize.getValue() );
+                    vparams->drawTool()->scale ( d_drawSize.getValue() );
                     vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
                     vparams->drawTool()->popMatrix();
                 }
@@ -233,7 +233,7 @@ void FixedConstraint< TYPEABSTRACTNAME3fTypes >::draw(const core::visual::Visual
                 float glTransform[16];
                 x[*it].writeOpenGlMatrix ( glTransform );
                 vparams->drawTool()->multMatrix( glTransform );
-                vparams->drawTool()->scale ( f_drawSize.getValue() );
+                vparams->drawTool()->scale ( d_drawSize.getValue() );
                 vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
                 vparams->drawTool()->popMatrix();
             }
@@ -275,14 +275,14 @@ void PartialFixedConstraint<TYPEABSTRACTNAME3dTypes>::draw(const core::visual::V
 {
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
-    const SetIndexArray & indices = f_indices.getValue();
+    const SetIndexArray & indices = d_indices.getValue();
     const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    if( _drawSize.getValue() == 0) // old classical drawing by points
+    if( d_drawSize.getValue() == 0) // old classical drawing by points
     {
         std::vector< Vector3 > points;
 
-        if( f_fixAll.getValue()==true )
+        if( d_fixAll.getValue()==true )
             for (unsigned i=0; i<x.size(); i++ )
                 points.push_back(x[i].getCenter());
         else
@@ -294,16 +294,16 @@ void PartialFixedConstraint<TYPEABSTRACTNAME3dTypes>::draw(const core::visual::V
         vparams->drawTool()->drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
     }
     else
-//        vparams->drawTool()->drawSpheres(points, (float)f_drawSize.getValue(), Vec<4,float>(0.2f,0.1f,0.9f,1.0f));
+//        vparams->drawTool()->drawSpheres(points, (float)d_drawSize.getValue(), Vec<4,float>(0.2f,0.1f,0.9f,1.0f));
     {
-        if( f_fixAll.getValue()==true )
+        if( d_fixAll.getValue()==true )
             for (unsigned i=0; i<x.size(); i++ )
             {
                 vparams->drawTool()->pushMatrix();
                 float glTransform[16];
                 x[i].writeOpenGlMatrix ( glTransform );
                 vparams->drawTool()->multMatrix( glTransform );
-                vparams->drawTool()->scale ( _drawSize.getValue() );
+                vparams->drawTool()->scale ( d_drawSize.getValue() );
                 vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
                 vparams->drawTool()->popMatrix();
             }
@@ -316,7 +316,7 @@ void PartialFixedConstraint<TYPEABSTRACTNAME3dTypes>::draw(const core::visual::V
                     float glTransform[16];
                     x[indices[i]].writeOpenGlMatrix ( glTransform );
                     vparams->drawTool()->multMatrix( glTransform );
-                    vparams->drawTool()->scale ( _drawSize.getValue() );
+                    vparams->drawTool()->scale ( d_drawSize.getValue() );
                     vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
                     vparams->drawTool()->popMatrix();
                 }
@@ -326,7 +326,7 @@ void PartialFixedConstraint<TYPEABSTRACTNAME3dTypes>::draw(const core::visual::V
                 float glTransform[16];
                 x[*it].writeOpenGlMatrix ( glTransform );
                 vparams->drawTool()->multMatrix( glTransform );
-                vparams->drawTool()->scale ( _drawSize.getValue() );
+                vparams->drawTool()->scale ( d_drawSize.getValue() );
                 vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
                 vparams->drawTool()->popMatrix();
             }
@@ -340,14 +340,14 @@ void PartialFixedConstraint<TYPEABSTRACTNAME3fTypes>::draw(const core::visual::V
 {
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
-    const SetIndexArray & indices = f_indices.getValue();
+    const SetIndexArray & indices = d_indices.getValue();
     const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    if( _drawSize.getValue() == 0) // old classical drawing by points
+    if( d_drawSize.getValue() == 0) // old classical drawing by points
     {
         std::vector< Vector3 > points;
 
-        if( f_fixAll.getValue()==true )
+        if( d_fixAll.getValue()==true )
             for (unsigned i=0; i<x.size(); i++ )
                 points.push_back(x[i].getCenter());
         else
@@ -359,16 +359,16 @@ void PartialFixedConstraint<TYPEABSTRACTNAME3fTypes>::draw(const core::visual::V
         vparams->drawTool()->drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
     }
     else
-//        vparams->drawTool()->drawSpheres(points, (float)f_drawSize.getValue(), Vec<4,float>(0.2f,0.1f,0.9f,1.0f));
+//        vparams->drawTool()->drawSpheres(points, (float)d_drawSize.getValue(), Vec<4,float>(0.2f,0.1f,0.9f,1.0f));
     {
-        if( f_fixAll.getValue()==true )
+        if( d_fixAll.getValue()==true )
             for (unsigned i=0; i<x.size(); i++ )
             {
                 vparams->drawTool()->pushMatrix();
                 float glTransform[16];
                 x[i].writeOpenGlMatrix ( glTransform );
                 vparams->drawTool()->multMatrix( glTransform );
-                vparams->drawTool()->scale ( _drawSize.getValue() );
+                vparams->drawTool()->scale ( d_drawSize.getValue() );
                 vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
                 vparams->drawTool()->popMatrix();
             }
@@ -381,7 +381,7 @@ void PartialFixedConstraint<TYPEABSTRACTNAME3fTypes>::draw(const core::visual::V
                     float glTransform[16];
                     x[indices[i]].writeOpenGlMatrix ( glTransform );
                     vparams->drawTool()->multMatrix( glTransform );
-                    vparams->drawTool()->scale ( _drawSize.getValue() );
+                    vparams->drawTool()->scale ( d_drawSize.getValue() );
                     vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
                     vparams->drawTool()->popMatrix();
                 }
@@ -391,7 +391,7 @@ void PartialFixedConstraint<TYPEABSTRACTNAME3fTypes>::draw(const core::visual::V
                 float glTransform[16];
                 x[*it].writeOpenGlMatrix ( glTransform );
                 vparams->drawTool()->multMatrix( glTransform );
-                vparams->drawTool()->scale ( _drawSize.getValue() );
+                vparams->drawTool()->scale ( d_drawSize.getValue() );
                 vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
                 vparams->drawTool()->popMatrix();
             }

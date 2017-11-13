@@ -19,55 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <MultiThreading/config.h>
+#ifndef SOFA_CONFIG_BUILD_OPTION_EXPERIMENTAL_FEATURES_H
+#define SOFA_CONFIG_BUILD_OPTION_EXPERIMENTAL_FEATURES_H
 
-namespace sofa
-{
-namespace component
-{
+#define SOFA_WITH_EXPERIMENTAL_FEATURES ${SOFA_WITH_EXPERIMENTAL_FEATURES_}
 
-extern "C" {
-SOFA_MULTITHREADING_PLUGIN_API void initExternalModule();
-SOFA_MULTITHREADING_PLUGIN_API const char* getModuleName();
-SOFA_MULTITHREADING_PLUGIN_API const char* getModuleVersion();
-SOFA_MULTITHREADING_PLUGIN_API const char* getModuleLicense();
-SOFA_MULTITHREADING_PLUGIN_API const char* getModuleDescription();
-SOFA_MULTITHREADING_PLUGIN_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
-
-const char* getModuleName()
-{
-    return "MultiThreading";
-}
-
-const char* getModuleVersion()
-{
-    return "1.0";
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-const char* getModuleDescription()
-{
-    return "MultiThreading SOFA Framework";
-}
-
-const char* getModuleComponentList()
-{
-    return "DataExchange, AnimationLoopParallelScheduler ";
-}
-
-} // namespace component
-} // namespace sofa
+#endif

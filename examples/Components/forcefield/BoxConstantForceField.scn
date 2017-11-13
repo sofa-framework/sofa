@@ -10,10 +10,10 @@
         <TriangleFEMForceField name="FEM0" youngModulus="100" poissonRatio="0.3" method="large" />
 
         <BoxROI template="Vec3d" name="box_roi1" box="0 0 0  1 0.5 0"/>
-        <ConstantForceField points="@box_roi1.indices" force="0 -1 0" arrowSizeCoef=".2"/>
+        <ConstantForceField indices="@box_roi1.indices" force="0 -1 0" arrowSizeCoef=".2"/>
 
         <BoxROI template="Vec3d" name="box_roi2" box="0 0.5 0  1 1 0"/>
-        <ConstantForceField points="@box_roi2.indices" force="0 1 0" arrowSizeCoef=".2"/>
+        <ConstantForceField indices="@box_roi2.indices" force="0 1 0" arrowSizeCoef=".2"/>
 
         <Node name="Visu">
             <OglModel name="Visual" color="red" />

@@ -113,9 +113,9 @@ void bindSofaPythonModule()
 
     /// Custom Exception to embed
     PyObject* PyExc_SofaException = PyErr_NewExceptionWithDoc(
-                (char*) "Sofa.SofaException",
-                (char*) "Base exception class for the SofaPython module.",
-                NULL, NULL);
+        (char*) "Sofa.SofaException",
+        (char*) "Base exception class for the SofaPython module.",
+        NULL, NULL);
 
     if ( PyExc_SofaException )
         PyModule_AddObject(PythonFactory::s_sofaPythonModule, "SofaException", PyExc_SofaException);
