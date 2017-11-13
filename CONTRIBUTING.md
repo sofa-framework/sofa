@@ -1,3 +1,24 @@
+# Welcome
+
+Welcome to the SOFA Community! Here is a brief summary of how it is structured:
+- SOFA Users: people using SOFA by writing scenes or using the SOFA API.
+- SOFA Developpers: people programming into SOFA, modifying the API, writing plugins.
+- SOFA Contributors: (awesome) people proposing their changes in SOFA code via pull-requests.
+- SOFA Reviewers: people reviewing and merging the pull-requests. This group is validated by the Scientific and Technical Committee (STC).
+- SOFA Consortium: research centers and companies willing to share the cost of development and maintenance of SOFA, hosted by the Inria Foundation.
+- SOFA Consortium Staff: administrators of SOFA and its ecosystem. This group is directed by the Executive Committee (EC).
+
+All SOFA Developpers are gladly invited to the SOFA-dev meetings.  
+They take place remotely every Wednesday at 10 a.m. CET and are animated by the SOFA Reviewers + the Consortium Staff.  
+[Subscribe to SOFA-dev mailing-list](https://sympa.inria.fr/sympa/subscribe/sofa-dev) to get the agenda, reports and conference room url.
+
+About the steering committees:
+- SOFA Scientific and Technical Committee (STC): defines the technical roadmap twice a year, validate the contribution rules, the Reviewers team and discuss every technical point in SOFA.
+- SOFA Executive Committee (EC): decides on evolutions of the membership contract, the communication policy and the priorities of the Consortium.
+
+A more detailed definition of the committees is available [in the SOFA website](https://www.sofa-framework.org/consortium/presentation/).
+
+
 # Getting started
 
 Please **read carefully** [the GitHub guide on Contributing to Open Source](https://guides.github.com/activities/contributing-to-open-source/). We also recommend you to check this [more detailed documentation on issues and pull requests](https://help.github.com/categories/collaborating-with-issues-and-pull-requests/).
