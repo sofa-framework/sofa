@@ -307,7 +307,7 @@ public:
             exit(EXIT_FAILURE);
         }
 
-        if( sn.compare(helpLongName) == 0 )
+        if( sn.compare(helpShortName) == 0 )
         {
             msg_fatal("ArgumentParser") << "short name " << sn << " reserved for help !" ;
             exit(EXIT_FAILURE);

@@ -179,28 +179,6 @@ void ArgumentParser::operator () ( std::list<std::string> str )
             else
                 msg_warning("ArgumentParser") << "Unknown option: " << name;
         }
-
-//        // short names (possibly concatenated)
-//        else if( name.length() > 1 && name[0]=='-' && name[1]!='-' )
-//        {
-//            for( unsigned int i=1; i<name.length(); ++i )
-//            {
-//                string a = name[i];
-//                if( shortName.find(a) != shortName.end() )
-//                {
-//                    if( !(shortName[ a ]->read( str )))
-//                        msg_warning("ArgumentParser") << "Could not read value for option: " << name;
-
-//                    else parameter_set[shortName[ a ]] = true;
-//                }
-//                else
-//                    msg_warning("ArgumentParser") << "Unknown option: " << name;
-//            }
-//        }
-
-//        else
-//            msg_warning("ArgumentParser") << "Unknown option: " << name;
-
     }
 
     // Unset mandatory arguments ?
