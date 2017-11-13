@@ -5,7 +5,6 @@ project(SofaFramework_test)
 set(SOURCE_FILES
     core/loader/MeshLoader_test.cpp
     core/objectmodel/AspectPool_test.cpp
-    core/objectmodel/BaseContext_unittest.cpp
     core/objectmodel/Data_test.cpp
     core/objectmodel/BaseObjectDescription_test.cpp
     core/objectmodel/DataFileName_test.cpp

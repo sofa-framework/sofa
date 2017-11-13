@@ -237,12 +237,42 @@ public:
     /// Note that the template wrapper method should generally be used to have the correct return type,
     virtual void getObjects(const ClassInfo& class_info, GetObjectsCallBack& container, const TagSet& tags, SearchDirection dir = SearchUp) const;
 
+    /// List all objects of this node deriving from a given class
+    template<class Object, class Container>
+    void getObjects(Container* list, SearchDirection dir = SearchUp)
+    {
+        this->get<Object, Container>(list, dir);
+    }
+
     /// Returns a list of object of type passed as a parameter.
-    template<class Container=std::vector<sofa::core::objectmodel::BaseObject*>>
-    Container& getNodeObjects(Container& result=Container(), SearchDirection dir = SearchUp){
-        this->get<Container::value_type, Container>(result, dir);
+    template<class Container>
+    Container* getObjects(Container* result, SearchDirection dir = SearchUp){
+        this->get<typename std::remove_pointer<typename Container::value_type>::type, Container>(result, dir);
         return result ;
     }
+
+    /// Returns a list of object of type passed as a parameter.
+    /// eg:
+    ///       sofa::helper::vector<VisualModel*> results;
+    ///       context->getObjects(results) ;
+    template<class Container>
+    Container& getObjects(Container& result, SearchDirection dir = SearchUp){
+        this->get<typename std::remove_pointer<typename Container::value_type>::type, Container>(&result, dir);
+        return result ;
+    }
+
+    /// Returns a list of object of type passed as a parameter. There shoud be no
+    /// Copy constructor because of Return Value Optimization.
+    /// eg:
+    ///    for(BaseObject* o : context->getObjects() ){ ... }
+    ///    for(VisualModel* o : context->getObjects<VisualModel>() ){ ... }
+    template<class Object=sofa::core::objectmodel::BaseObject>
+    std::vector<Object*> getObjects(SearchDirection dir = SearchUp){
+        std::vector<Object*> o;
+        getObjects(o, dir) ;
+        return o ;
+    }
+
 
     /// Generic object access template wrapper, possibly searching up or down from the current context
     template<class T>
