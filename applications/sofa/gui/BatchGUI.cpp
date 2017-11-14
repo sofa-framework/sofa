@@ -162,6 +162,12 @@ BaseGUI* BatchGUI::CreateGUI(const char* name, const std::vector<std::string>& /
     return gui;
 }
 
+int BatchGUI::RegisterGUIParameters(ArgumentParser& argumentParser)
+{
+    argumentParser.parameter(&nbIter,"n","nb_iterations","(only batch) Number of iterations of the simulation");
+    return 0;
+}
+
 } // namespace gui
 
 } // namespace sofa

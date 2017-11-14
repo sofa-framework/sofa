@@ -60,12 +60,22 @@ void GUIManager::AddGUIOption(const char* option)
     guiOptions.push_back(option);
 }
 
+void GUIManager::RegisterParameters(ArgumentParser& argumentParser)
+{
+    for(std::list<GUICreator>::iterator it =guiCreators.begin(), itend =guiCreators.end(); it != itend; ++it)
+    {
+        std::cout << it->name << std::endl;
+        if (it->parameters != NULL)
+            it->parameters(argumentParser);
+    }
+}
+
 const std::string &GUIManager::GetCurrentGUIName()
 {
     return currentGUI->GetGUIName();
 }
 
-int GUIManager::RegisterGUI(const char* name, CreateGUIFn* creator, InitGUIFn* init, int priority)
+int GUIManager::RegisterGUI(const char* name, CreateGUIFn* creator, InitGUIFn* init, RegisterGUIParameters* parameters, int priority)
 {
     if(guiCreators.size())
     {
@@ -84,6 +94,7 @@ int GUIManager::RegisterGUI(const char* name, CreateGUIFn* creator, InitGUIFn* i
     entry.name = name;
     entry.creator = creator;
     entry.init = init;
+    entry.parameters = parameters;
     entry.priority = priority;
     guiCreators.push_back(entry);
     return 0;
