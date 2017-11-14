@@ -1,4 +1,5 @@
 import Sofa
 
 def createScene(rootNode):
-    None
+    print("Aliases: "+str(Sofa.getAliasesFor("VisualModel")))
+    print("Aliases: "+str(Sofa.getAliasesFor("SphereModel")))

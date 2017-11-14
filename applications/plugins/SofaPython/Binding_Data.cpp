@@ -707,7 +707,8 @@ static PyObject * Data_setParent(PyObject *self, PyObject * args)
 }
 
 /// This function is actually returning the content of getLinkPath
-//TODO(dmarchal 2017-08-02): This is awfull to have mismatch in behavior between python & C++ code.
+//TODO(dmarchal 2017-08-02): This is awfull to have mismatch in behavior between python & C++
+// with similar name.
 static PyObject * Data_getParentPath(PyObject *self, PyObject * args)
 {
     const size_t argSize = PyTuple_Size(args);
@@ -847,20 +848,24 @@ static PyObject * Data_setValueString(PyObject *self, PyObject * args)
 SP_CLASS_METHODS_BEGIN(Data)
 SP_CLASS_METHOD(Data,getValueTypeString)
 SP_CLASS_METHOD(Data,getValueString)
-SP_CLASS_METHOD(Data,setValueString)
+SP_CLASS_METHOD_DOC(Data,setValueString, "Set the value of the field from a string.")
 SP_CLASS_METHOD(Data,setValue)
-SP_CLASS_METHOD(Data,getValue)
+SP_CLASS_METHOD_DOC(Data,getValue, "Return the value at given index if the field is a vector.")
 SP_CLASS_METHOD(Data,getSize)
 SP_CLASS_METHOD(Data,setSize)
 SP_CLASS_METHOD(Data,unset)
-SP_CLASS_METHOD(Data,isSet)
-SP_CLASS_METHOD(Data,isPersistant)
-SP_CLASS_METHOD(Data,setPersistant)
+SP_CLASS_METHOD_DOC(Data,isSet, "Returns True/False if the data field has been setted.\n"
+                                "if field.isSet():                                    \n"
+                                "    print('set')                                     ")
+SP_CLASS_METHOD_DOC(Data,isPersistant, "Returns True/False if the data field has the PERSISTANT(STORE) flag set/unset.")
+SP_CLASS_METHOD_DOC(Data,setPersistant, "Change the PERSISTANT(STORE) flag of the data field. \n"
+                                        "eg:                                                  \n"
+                                        "    field.setPersistant(True)")
 SP_CLASS_METHOD(Data,updateIfDirty)
 SP_CLASS_METHOD(Data,read)
 SP_CLASS_METHOD(Data,setParent)
-SP_CLASS_METHOD(Data,getParentPath)
-SP_CLASS_METHOD(Data,hasParent)
+SP_CLASS_METHOD_DOC(Data,getParentPath, "Returns the string containing the path to the field's parent. Return empty string if there is not parent")
+SP_CLASS_METHOD_DOC(Data,hasParent, "Indicate if the string is linked to an other data field (its parent).")
 SP_CLASS_METHOD(Data,getLinkPath)
 SP_CLASS_METHOD(Data,getValueVoidPtr)
 SP_CLASS_METHOD(Data,getCounter)

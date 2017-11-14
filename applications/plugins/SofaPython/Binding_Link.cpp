@@ -158,8 +158,10 @@ SP_CLASS_METHODS_BEGIN(Link)
 SP_CLASS_METHOD(Link,getValueTypeString)
 SP_CLASS_METHOD(Link,getValueString)
 SP_CLASS_METHOD(Link,setValueString)
-SP_CLASS_METHOD(Link,isPersistant)
-SP_CLASS_METHOD(Link,setPersistant)
+SP_CLASS_METHOD_DOC(Link,isPersistant, "Returns True if the PERSISTANT(STORE) flag is set. This is used to \n"
+                                       "indicate that the field should be saved.")
+SP_CLASS_METHOD_DOC(Link,setPersistant,  "Change the value of the PERSISTANT(STORE) flag. This is used to \n"
+                                         "control if the field should be saved.")
 SP_CLASS_METHOD(Link,getSize)
 SP_CLASS_METHODS_END
 
