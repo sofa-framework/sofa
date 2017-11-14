@@ -113,7 +113,7 @@ char* getStringCopy(char *c)
     return tmp ;
 }
 
-static PyObject * Base_realAddData(PyObject *self, PyObject *args )
+static PyObject * Base_addData(PyObject *self, PyObject *args )
 {
     Base* obj = get_base(self);
     PyObject* pydata;
@@ -128,7 +128,7 @@ static PyObject * Base_realAddData(PyObject *self, PyObject *args )
     Py_RETURN_NONE;
 }
 
-static PyObject * Base_addData(PyObject *self, PyObject *args ) {
+static PyObject * Base_addNewData(PyObject *self, PyObject *args ) {
     Base* obj = get_base(self);
     char* dataName;
     char* dataClass;
@@ -394,18 +394,32 @@ static PyObject * Base_downCast(PyObject *self, PyObject * /*args*/) {
 }
 
 SP_CLASS_METHODS_BEGIN(Base)
-SP_CLASS_METHOD(Base,addData)
-SP_CLASS_METHOD(Base,realAddData)
-SP_CLASS_METHOD(Base,findData)
-SP_CLASS_METHOD(Base,findLink)
-SP_CLASS_METHOD(Base,getData)
-SP_CLASS_METHOD(Base,getLink)
+SP_CLASS_METHOD_DOC(Base,addNewData, "Add a new Data field to the current object. \n"
+                                        "Eg:                                         \n"
+                                        "  obj.addNewData('myDataName1','theDataGroupA','help message','f',1.0)  \n"
+                                        "  obj.addNewData('myDataName2','theDataGroupA','help message','b',True) \n"
+                                        "  obj.addNewData('myDataName3','theDataGroupB','help message','d',1)     \n"
+                                        "  obj.addNewData('myDataName4','theDataGroupB','help message','s','hello') \n")
+SP_CLASS_METHOD_DOC(Base,addData, "Adds an existing data field to the current object")
+SP_CLASS_METHOD_DOC(Base,findData, "Returns the data field if there is one associated \n"
+                                   "with the provided name and downcasts it to the lowest known type. \n"
+                                   "Returns None otherwhise.")
+SP_CLASS_METHOD_DOC(Base,findLink, "Returns a link field if there is one associated \n"
+                                   "with the provided name, returns None otherwhise")
+SP_CLASS_METHOD_DOC(Base,getData, "Returns the data field if there is one associated \n"
+                              "with the provided name but don't downcasts it to the lowest known type. \n"
+                              "Returns None is there is no field with this name.")
+SP_CLASS_METHOD_DOC(Base,getLink, "Returns the link field if there is one associated \n"
+                              "with the provided name but. \n"
+                              "Returns None is there is no field with this name.")
 SP_CLASS_METHOD(Base,getClassName)
 SP_CLASS_METHOD(Base,getTemplateName)
 SP_CLASS_METHOD(Base,getName)
-SP_CLASS_METHOD(Base,getDataFields)
-SP_CLASS_METHOD(Base,getListOfDataFields)
-SP_CLASS_METHOD(Base,getListOfLinks)
+
+SP_CLASS_METHOD_DOC(Base,getDataFields, "Returns a list with the *content* of all the data fields converted in python"
+                                        " type. \n")
+SP_CLASS_METHOD_DOC(Base,getListOfDataFields, "Returns the list of data fields.")
+SP_CLASS_METHOD_DOC(Base,getListOfLinks, "Returns the list of link fields.")
 SP_CLASS_METHOD(Base,downCast)
 SP_CLASS_METHODS_END;
 
