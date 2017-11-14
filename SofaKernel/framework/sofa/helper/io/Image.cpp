@@ -384,7 +384,7 @@ void Image::init(unsigned width, unsigned height, unsigned bpp)
         channels = RGBA;
         break;
     default:
-        msg_error("Image") << "init(): Unsupported bpp: " << bpp << msgendl;
+        msg_error() << "init(): Unsupported bpp: " << bpp << msgendl;
         return;
     }
 
@@ -396,7 +396,7 @@ bool Image::load(std::string filename)
 {
     SOFA_UNUSED(filename);
 
-    msg_warning("Image") << "This Image format did not implement load()";
+    msg_warning() << "This Image format did not implement load()";
     return false;
 }
 
@@ -405,7 +405,7 @@ bool Image::save(std::string filename, int compression_level)
     SOFA_UNUSED(filename);
     SOFA_UNUSED(compression_level);
 
-    msg_warning("Image") << "This Image format did not implement save()";
+    msg_warning() << "This Image format did not implement save()";
     return false;
 }
 
@@ -416,7 +416,7 @@ Image* Image::Create(std::string filename)
     if (p!=std::string::npos)
         extension = std::string(filename, p+1);
     Image* createdImage = FactoryImage::CreateObject(extension, filename);
-    if( extension.compare("default")>0 )
+    if( extension != "default" )
     {
         if(!createdImage )
         {
@@ -430,7 +430,6 @@ Image* Image::Create(std::string filename)
         helper::vector<std::string> validExtensions;
         helper::io::Image::FactoryImage::getInstance()->uniqueKeys(std::back_inserter(validExtensions));
         msg_error("Image") << "No extension detected. Valid extensions: " << validExtensions;
-
     }
     return createdImage;
 }

@@ -567,7 +567,7 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
     {
         if ((m_positions.getValue()).size() == 0 && (m_vertices2.getValue()).size() == 0)
         {
-            msg_info() << "VisualModel: will use Topology.";
+            msg_info() << "will use Topology.";
             useTopology = true;
         }
 
@@ -1519,11 +1519,11 @@ void VisualModelImpl::handleTopologyChange()
                                     if(ind_forgotten<m_topology->getNbTriangles())
                                     {
                                         const core::topology::BaseMeshTopology::Triangle t_forgotten = m_topology->getTriangle(ind_forgotten);
-                                        msg_info() << "INFO_print : Vis - last = " << last;
-                                        msg_info() << "INFO_print : Vis - lastIndexVec[i] = " << lastIndexVec[i];
-                                        msg_info() << "INFO_print : Vis - tab.size() = " << tab.size() << " , tab = " << tab;
-                                        msg_info() << "INFO_print : Vis - t_local rectified = " << triangles[j_loc];
-                                        msg_info() << "INFO_print : Vis - t_global = " << t_forgotten;
+                                        msg_info() << "Vis - last = " << last << msgendl
+                                                   << "Vis - lastIndexVec[i] = " << lastIndexVec[i] << msgendl
+                                                   << "Vis - tab.size() = " << tab.size() << " , tab = " << tab << msgendl
+                                                   << "Vis - t_local rectified = " << triangles[j_loc] << msgendl
+                                                   << "Vis - t_global = " << t_forgotten;
                                     }
                                 }
                             }
