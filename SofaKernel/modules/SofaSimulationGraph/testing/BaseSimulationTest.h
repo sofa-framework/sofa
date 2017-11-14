@@ -49,10 +49,12 @@ public:
     class SOFA_SIMULATION_GRAPH_API SceneInstance
     {
     public:
-
          SceneInstance(const std::string& rootname="root") ;
          SceneInstance(const std::string& type, const std::string& memory) ;
          ~SceneInstance() ;
+
+        /// Create a new scene instance from the content of the filename using the factory.
+        static SceneInstance LoadFromFile(const std::string& filename) ;
 
         Node::SPtr root ;
         Simulation* simulation {nullptr} ;

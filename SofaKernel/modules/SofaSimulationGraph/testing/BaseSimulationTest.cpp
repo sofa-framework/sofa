@@ -24,12 +24,17 @@
  *    - damien.marchal@univ-lille1.fr
  ******************************************************************************/
 #include "BaseSimulationTest.h"
-#include <SofaSimulationGraph/DAGSimulation.h>
-#include <SofaSimulationCommon/SceneLoaderXML.h>
-using sofa::simulation::SceneLoaderXML ;
 
 #include <sofa/core/ExecParams.h>
 using sofa::core::ExecParams ;
+
+#include <sofa/simulation/SceneLoaderFactory.h>
+using sofa::simulation::SceneLoaderFactory ;
+using sofa::simulation::SceneLoader ;
+
+#include <SofaSimulationGraph/DAGSimulation.h>
+#include <SofaSimulationCommon/SceneLoaderXML.h>
+using sofa::simulation::SceneLoaderXML ;
 
 #include <sofa/helper/system/PluginManager.h>
 using sofa::helper::system::PluginManager ;
@@ -48,11 +53,34 @@ bool BaseSimulationTest::importPlugin(const std::string& name)
 
 BaseSimulationTest::SceneInstance::SceneInstance(const std::string& type, const std::string& desc)
 {
+    if(type != "xml"){
+        msg_error("BaseSimulationTest") << "Unsupported scene of type '"<< type << "' currently only 'xml' type is supported." ;
+        return ;
+    }
+
     if(simulation::getSimulation() == nullptr)
         simulation::setSimulation(new simulation::graph::DAGSimulation()) ;
 
     simulation = simulation::getSimulation() ;
     root = SceneLoaderXML::loadFromMemory("dynamicscene", desc.c_str(), desc.size()) ;
+}
+
+BaseSimulationTest::SceneInstance BaseSimulationTest::SceneInstance::LoadFromFile(const std::string& filename)
+{
+    BaseSimulationTest::SceneInstance instance ;
+    if(simulation::getSimulation() == nullptr)
+        simulation::setSimulation(new simulation::graph::DAGSimulation()) ;
+
+    for(SceneLoader* loader : (*SceneLoaderFactory::getInstance()->getEntries()) )
+    {
+        if(loader->canLoadFileName(filename.c_str()))
+        {
+            instance.root = loader->load(filename.c_str()) ;
+            return instance ;
+        }
+    }
+    msg_error("BaseSimulationTest") << "Unable to find a valid loader for: '"<< filename << "'" ;
+    return instance ;
 }
 
 BaseSimulationTest::SceneInstance::SceneInstance(const std::string& rootname)
@@ -63,7 +91,6 @@ BaseSimulationTest::SceneInstance::SceneInstance(const std::string& rootname)
     simulation = simulation::getSimulation() ;
     root = simulation::getSimulation()->createNewNode(rootname) ;
 }
-
 
 
 BaseSimulationTest::SceneInstance::~SceneInstance()
