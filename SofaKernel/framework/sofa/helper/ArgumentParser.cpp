@@ -162,7 +162,7 @@ void ArgumentParser::operator () ( std::list<std::string> str )
                 msg_warning("ArgumentParser") << "Unknown option: " << name;
         }
 
-        // shot names
+        // short names
         else if( name.length() > 1 && name.length() <=shortNameLength+1 && name[0]=='-' && name[1]!='-' )
         {
             string a;
