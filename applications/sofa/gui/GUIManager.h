@@ -43,14 +43,12 @@ class BaseGUI;
 class SOFA_SOFAGUI_API GUIManager
 {
 public:
-    typedef int InitGUIFn(const char* name, const std::vector<std::string>& options);
-    typedef BaseGUI* CreateGUIFn(const char* name, const std::vector<std::string>& options, sofa::simulation::Node::SPtr groot, const char* filename);
+    typedef BaseGUI* CreateGUIFn(const char* name, sofa::simulation::Node::SPtr groot, const char* filename);
     typedef int RegisterGUIParameters(ArgumentParser& argumentParser);
 
     struct GUICreator
     {
         const char* name;
-        InitGUIFn* init;
         CreateGUIFn* creator;
         RegisterGUIParameters* parameters;
         int priority;
@@ -66,12 +64,11 @@ public:
      *  \param priority : If nothing is given as name GUIManager::Init parameter GUIManager::valid_guiname is automaticly set compared with the priority
      *  \return 1 if the name is already used (failed), 0 if restry succed
      */
-    static int RegisterGUI(const char* name, CreateGUIFn* creator, InitGUIFn* init=NULL, RegisterGUIParameters* parameters=NULL, int priority=0);
+    static int RegisterGUI(const char* name, CreateGUIFn* creator, RegisterGUIParameters* parameters=NULL, int priority=0);
     static const char* GetValidGUIName();
     static const std::string& GetCurrentGUIName();
     static std::vector<std::string> ListSupportedGUI();
     static std::string ListSupportedGUI(char separator);
-    static void AddGUIOption(const char* option);
     static void RegisterParameters(ArgumentParser& parser);
     static int createGUI(sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
     static void closeGUI();

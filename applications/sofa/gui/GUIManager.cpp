@@ -46,7 +46,6 @@ namespace gui
 /*STATIC FIELD DEFINITIONS */
 BaseGUI* GUIManager::currentGUI = NULL;
 std::list<GUIManager::GUICreator> GUIManager::guiCreators;
-std::vector<std::string> GUIManager::guiOptions;
 const char* GUIManager::valid_guiname = NULL;
 
 
@@ -55,17 +54,12 @@ BaseGUI* GUIManager::getGUI()
     return currentGUI;
 }
 
-void GUIManager::AddGUIOption(const char* option)
-{
-    guiOptions.push_back(option);
-}
-
 void GUIManager::RegisterParameters(ArgumentParser& argumentParser)
 {
     for(std::list<GUICreator>::iterator it =guiCreators.begin(), itend =guiCreators.end(); it != itend; ++it)
     {
         std::cout << it->name << std::endl;
-        if (it->parameters != NULL)
+        if (it->parameters)
             it->parameters(argumentParser);
     }
 }
@@ -75,7 +69,7 @@ const std::string &GUIManager::GetCurrentGUIName()
     return currentGUI->GetGUIName();
 }
 
-int GUIManager::RegisterGUI(const char* name, CreateGUIFn* creator, InitGUIFn* init, RegisterGUIParameters* parameters, int priority)
+int GUIManager::RegisterGUI(const char* name, CreateGUIFn* creator, RegisterGUIParameters* parameters, int priority)
 {
     if(guiCreators.size())
     {
@@ -93,7 +87,6 @@ int GUIManager::RegisterGUI(const char* name, CreateGUIFn* creator, InitGUIFn* i
     GUICreator entry;
     entry.name = name;
     entry.creator = creator;
-    entry.init = init;
     entry.parameters = parameters;
     entry.priority = priority;
     guiCreators.push_back(entry);
@@ -252,9 +245,9 @@ int GUIManager::Init(const char* argv0, const char* name)
     }
     valid_guiname = name; // at this point we must have a valid name for the gui.
 
-    if (creator->init)
-        return (*creator->init)(valid_guiname, guiOptions);
-    else
+//    if (creator->init)
+//        return (*creator->init)(valid_guiname, guiOptions);
+//    else
         return 0;
 }
 
@@ -268,7 +261,7 @@ int GUIManager::createGUI(sofa::simulation::Node::SPtr groot, const char* filena
         {
             return 1;
         }
-        currentGUI = (*creator->creator)(valid_guiname, guiOptions, groot, filename);
+        currentGUI = (*creator->creator)(valid_guiname, groot, filename);
         if (!currentGUI)
         {
             msg_error("GUIManager") << "GUI '"<<valid_guiname<<"' creation failed." ;

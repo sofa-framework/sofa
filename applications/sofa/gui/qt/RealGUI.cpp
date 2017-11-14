@@ -179,19 +179,13 @@ public:
 
 
 //======================= STATIC METHODS ========================= {
-int RealGUI::InitGUI ( const char* /*name*/, const std::vector<std::string>& /* options */ )
-{
-    return false;
-}
 
-//------------------------------------
-
-BaseGUI* RealGUI::CreateGUI ( const char* name, const std::vector<std::string>& options, sofa::simulation::Node::SPtr root, const char* filename )
+BaseGUI* RealGUI::CreateGUI ( const char* name, sofa::simulation::Node::SPtr root, const char* filename )
 {
     CreateApplication();
 
     // create interface
-    gui = new RealGUI ( name, options );
+    gui = new RealGUI ( name );
     if ( root )
     {
         gui->setScene ( root, filename );
@@ -254,7 +248,7 @@ void RealGUI::InitApplication( RealGUI* _gui)
 
 
 //======================= CONSTRUCTOR - DESTRUCTOR ========================= {
-RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& options )
+RealGUI::RealGUI ( const char* viewername)
     :
 #ifdef SOFA_GUI_INTERACTION
     interactionButton( NULL ),
