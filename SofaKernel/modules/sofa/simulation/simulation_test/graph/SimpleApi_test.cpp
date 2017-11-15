@@ -1,11 +1,12 @@
-#include <SofaTest/Sofa_test.h>
+#include <SofaSimulationGraph/testing/BaseSimulationTest.h>
+using sofa::helper::testing::BaseSimulationTest ;
 
-#include <SceneCreator/SimpleApi.h>
+#include <SofaSimulationGraph/SimpleApi.h>
 using namespace sofa ;
 using namespace sofa::simpleapi ;
 using namespace sofa::simpleapi::components ;
 
-class SimpleApi_test : public sofa::Sofa_test<>
+class SimpleApi_test : public BaseSimulationTest
 {
 public:
     bool testParamAPI();

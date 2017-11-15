@@ -21,7 +21,9 @@
 ******************************************************************************/
 #include <sofa/core/DataEngine.h>
 
-#include <gtest/gtest.h>
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest ;
+
 
 namespace sofa {
 
@@ -78,7 +80,7 @@ public:
 };
 
 
-struct DataEngine_test: public ::testing::Test
+struct DataEngine_test: public BaseTest
 {
     TestEngine engine;
 

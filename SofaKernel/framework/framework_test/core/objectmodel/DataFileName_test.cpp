@@ -20,13 +20,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Sofa_test.h>
-using sofa::Sofa_test ;
-
-#include <SofaTest/TestMessageHandler.h>
-using sofa::helper::logging::Message ;
-using sofa::helper::logging::ExpectMessage ;
-
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 using sofa::core::objectmodel::BaseObjectDescription ;
 
@@ -39,9 +32,12 @@ using sofa::helper::system::DataRepository ;
 #include <sofa/helper/system/SetDirectory.h>
 using sofa::helper::system::SetDirectory ;
 
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest ;
+
 #define filename "UtilsTest.ini"
 
-class DataFileName_test: public Sofa_test<>
+class DataFileName_test: public BaseTest
 {
     DataFileName d_filename;
 public:
