@@ -58,8 +58,7 @@ struct PluginManager_test: public BaseTest
 
     void SetUp()
     {
-        pluginDir = sofa::helper::Utils::getPluginDirectory() ;
-        sofa::helper::system::PluginRepository.addFirstPath(pluginDir);
+        pluginDir = sofa::helper::system::PluginRepository.getFirstPath();
     }
 
     void TearDown()
