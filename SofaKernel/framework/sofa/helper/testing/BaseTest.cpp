@@ -61,8 +61,6 @@ void initializeOnce()
         MessageDispatcher::addHandler( MainGtestMessageHandler::getInstance() ) ;
         BackTrace::autodump() ;
 
-        const std::string pluginDir = Utils::getPluginDirectory() ;
-        PluginRepository.addFirstPath(pluginDir);
         initialized=true ;
     }
 }
