@@ -503,7 +503,50 @@ void AttachConstraint<DataTypes>::init()
                 addConstraint(best, i2);
             }
         }
+
+        helper::vector<Real>& constraintFactor = *d_constraintFactor.beginEdit();
+
+        // constraintFactor default behavior
+        // if NOT set : initialize all constraints active
+        if(!d_constraintFactor.isSet())
+        {
+            int size = f_indices2.getValue().size();
+
+            constraintFactor.clear();
+            constraintFactor.resize(size);
+
+            for (unsigned int j=0; j<size; ++j)
+            {
+                constraintFactor[j] = 1.0;
+            }
+        }
+        // if set : check size
+        else
+        {
+            if(constraintFactor.size() != f_indices2.getValue().size())
+            {
+                msg_error() << "Size of vector constraintFactor, do not fit number of indices attached";
+            }
+            else
+            {
+                for (unsigned int j=0; j<constraintFactor.size(); ++j)
+                {
+                    if((constraintFactor[j] > 1.0) || (constraintFactor[j] < 0.0))
+                    {
+                        msg_warning() << "Value of vector constraintFactor at indice "<<j<<" is out of bounds [0.0 - 1.0]";
+                    }
+                }
+            }
+        }
+        d_constraintFactor.endEdit();
     }
+
+    // Check coherency of size between indices vectors 1 and 2
+    if(f_indices1.getValue().size() != f_indices2.getValue().size())
+    {
+        msg_error() << "Size mismatch between indices1 and indices2";
+    }
+
 #if 0
     // Initialize functions and parameters
     topology::PointSubset my_subset = f_indices.getValue();
