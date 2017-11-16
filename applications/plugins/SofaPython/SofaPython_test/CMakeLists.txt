@@ -36,6 +36,7 @@ set(PYTHON_FILES
     python/test_BindingBase.py
     python/test_BindingData.py
     python/test_BindingLink.py
+    python/unicodeData.py
 )
 
 
