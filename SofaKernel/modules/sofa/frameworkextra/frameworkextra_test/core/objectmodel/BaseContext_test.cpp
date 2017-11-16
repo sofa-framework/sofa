@@ -33,13 +33,13 @@ using sofa::simulation::Node ;
 
 using sofa::core::visual::VisualModel ;
 
-class NodeContext_test: public BaseSimulationTest
+class BaseContext_test: public BaseSimulationTest
 {
 public:
     void testGetObjects()
     {
         EXPECT_MSG_NOEMIT(Error, Warning) ;
-
+        importPlugin("SofaAllCommonComponents") ;
         std::stringstream scene ;
         scene << "<?xml version='1.0'?>"
                  "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
@@ -89,7 +89,7 @@ public:
     }
 };
 
-TEST_F(NodeContext_test , testGetObjects )
+TEST_F(BaseContext_test , testGetObjects )
 {
     this->testGetObjects();
 }
