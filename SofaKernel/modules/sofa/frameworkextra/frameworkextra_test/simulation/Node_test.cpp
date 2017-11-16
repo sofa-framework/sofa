@@ -33,9 +33,18 @@ using sofa::simulation::Node ;
 
 using sofa::core::visual::VisualModel ;
 
+#include <sofa/helper/system/PluginManager.h>
+using sofa::helper::system::PluginManager ;
+
 class NodeContext_test: public BaseSimulationTest
 {
 public:
+
+
+    NodeContext_test()
+    {
+        importPlugin("SofaAllCommonComponents") ;
+    }
 
     void testGetNodeObjects()
     {
