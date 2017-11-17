@@ -44,7 +44,7 @@ class SOFA_SOFAGUI_API GUIManager
 {
 public:
     typedef BaseGUI* CreateGUIFn(const char* name, sofa::simulation::Node::SPtr groot, const char* filename);
-    typedef int RegisterGUIParameters(ArgumentParser& argumentParser);
+    typedef int RegisterGUIParameters(ArgumentParser* argumentParser);
 
     struct GUICreator
     {
@@ -69,7 +69,7 @@ public:
     static const std::string& GetCurrentGUIName();
     static std::vector<std::string> ListSupportedGUI();
     static std::string ListSupportedGUI(char separator);
-    static void RegisterParameters(ArgumentParser& parser);
+    static void RegisterParameters(ArgumentParser* parser);
     static int createGUI(sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
     static void closeGUI();
 

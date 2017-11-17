@@ -138,7 +138,7 @@ void loadVerificationData(string& directory, string& filename, Node* node)
     v_read.execute(node);
 }
 
-void addGUIParameters(ArgumentParser& argumentParser)
+void addGUIParameters(ArgumentParser* argumentParser)
 {
     GUIManager::RegisterParameters(argumentParser);
 }
@@ -177,6 +177,7 @@ int main(int argc, char** argv)
 
     string fileName ;
     bool        startAnim = false;
+    bool        showHelp = false;
     bool        printFactory = false;
     bool        loadRecent = false;
     bool        temporaryFile = false;
@@ -184,7 +185,7 @@ int main(int argc, char** argv)
     bool        noAutoloadPlugins = false;
     int         nbIterations = BatchGUI::DEFAULT_NUMBER_OF_ITERATIONS;
     unsigned int nbMSSASamples = 1;
-    unsigned    computationTimeSampling=0; ///< Frequency of display of the computation time statistics, in number of animation steps. 0 means never.
+    unsigned int computationTimeSampling=0; ///< Frequency of display of the computation time statistics, in number of animation steps. 0 means never.
 
     string gui = "";
     string verif = "";
@@ -205,26 +206,38 @@ int main(int argc, char** argv)
     gui_help += GUIManager::ListSupportedGUI('|');
     gui_help += ")";
 
-    ArgumentParser argumentParser = sofa::helper::parse(&files, "This is a SOFA application. Here are the command line arguments");
-    // alphabetical order on short name
-    argumentParser.parameter(&startAnim,"a","start","start the animation loop");
-    argumentParser.parameter(&computationTimeSampling,"c","computationTimeSampling","Frequency of display of the computation time statistics, in number of animation steps. 0 means never.");
-    argumentParser.parameter(&gui,"g","gui",gui_help.c_str());
-    argumentParser.parameter(&plugins,"l","load","load given plugins");
-    argumentParser.parameter(&noAutoloadPlugins, "0", "noautoload", "disable plugins autoloading");
-    argumentParser.parameter(&nbMSSASamples, "m", "msaa", "number of samples for MSAA (Multi Sampling Anti Aliasing ; value < 2 means disabled");
-    argumentParser.parameter(&printFactory,"p","factory","print factory logs");
-    argumentParser.parameter(&loadRecent,"r","recent","load most recently opened file");
-    argumentParser.parameter(&simulationType,"s","simu","select the type of simulation (bgl, dag, tree)");
-    argumentParser.parameter(&temporaryFile,"t","temporary","the loaded scene won't appear in history of opened files");
-    argumentParser.parameter(&testMode,"x","test","select test mode with xml output after N iteration");
-    argumentParser.parameter(&verif,"v","verification","load verification data for the scene");
-    argumentParser.parameter(&colorsStatus,"z","colors","use colors on stdout and stderr (yes, no, auto)");
-    argumentParser.parameter(&messageHandler,"f","formatting","select the message formatting to use (auto, clang, sofa, rich, test)");
-    argumentParser.parameter(&enableInteraction, "i", "interactive", "enable interactive mode for the GUI which includes idle and mouse events (EXPERIMENTAL)");
-    addGUIParameters(argumentParser);
-    argumentParser(argc,argv);
+    ArgumentParser* argParser = new ArgumentParser(argc, argv);
+    argParser->addArgument(po::value<bool>(&showHelp)->default_value(false)->implicit_value(true), "help,h", "Display this help message");
+    argParser->addArgument(po::value<bool>(&startAnim)->default_value(false)->implicit_value(true), "start,a", "start the animation loop");
+    argParser->addArgument(po::value<unsigned int>(&computationTimeSampling)->default_value(0), "computationTimeSampling", "Frequency of display of the computation time statistics, in number of animation steps. 0 means never.");
+    argParser->addArgument(po::value<std::string>(&gui)->default_value(""), "gui,g", gui_help.c_str());
+    argParser->addArgument(po::value<std::vector<std::string>>(&plugins), "load,l", "load given plugins");
+    argParser->addArgument(po::value<bool>(&noAutoloadPlugins)->default_value(false)->implicit_value(true), "noautoload", "disable plugins autoloading");
 
+    argParser->addArgument(po::value<unsigned int>(&nbMSSASamples)->default_value(1), "msaa,m", "number of samples for MSAA (Multi Sampling Anti Aliasing ; value < 2 means disabled");
+    argParser->addArgument(po::value<bool>(&printFactory)->default_value(false)->implicit_value(true), "factory,p", "print factory logs");
+    argParser->addArgument(po::value<bool>(&loadRecent)->default_value(false)->implicit_value(true), "recent,r", "load most recently opened file");
+    argParser->addArgument(po::value<std::string>(&simulationType), "simu,s", "select the type of simulation (bgl, dag, tree)");
+    argParser->addArgument(po::value<bool>(&temporaryFile)->default_value(false)->implicit_value(true), "tmp", "the loaded scene won't appear in history of opened files");
+    argParser->addArgument(po::value<bool>(&testMode)->default_value(false)->implicit_value(true), "test", "select test mode with xml output after N iteration");
+    argParser->addArgument(po::value<std::string>(&verif)->default_value(""), "verification,v", "load verification data for the scene");
+    argParser->addArgument(po::value<std::string>(&colorsStatus)->default_value("auto")->implicit_value("yes"), "colors,c", "use colors on stdout and stderr (yes, no, auto)");
+    argParser->addArgument(po::value<std::string>(&messageHandler)->default_value("auto"), "formatting,f", "select the message formatting to use (auto, clang, sofa, rich, test)");
+    argParser->addArgument(po::value<bool>(&enableInteraction)->default_value(false)->implicit_value(true), "interactive,i", "enable interactive mode for the GUI which includes idle and mouse events (EXPERIMENTAL)");
+
+    addGUIParameters(argParser);
+    argParser->parse();
+
+    files = argParser->getInputFileList();
+    std::cout << "File list " << std::endl;
+    for(std::vector<std::string>::iterator it = files.begin(); it != files.end(); it++)
+        std::cout << *it << std::endl;
+
+    if(showHelp)
+    {
+        argParser->showHelp();
+        exit( EXIT_SUCCESS );
+    }
 
     // Note that initializations must be done after ArgumentParser that can exit the application (without cleanup)
     // even if everything is ok e.g. asking for help

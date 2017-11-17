@@ -107,9 +107,10 @@ int main(int argc, char** argv)
     sofa::component::initComponentCommon();
 
     unsigned int idExample = 0;
-    sofa::helper::parse("This is a SOFA application. Here are the command line arguments")
-            .parameter(&idExample,"e","example","Example Number to enter from (0 - 9)")
-    (argc,argv);
+    // ArgumentParser TODO
+//    sofa::helper::parse("This is a SOFA application. Here are the command line arguments")
+//            .parameter(&idExample,"e","example","Example Number to enter from (0 - 9)")
+//    (argc,argv);
 
     // init GUI
     sofa::gui::initMain();

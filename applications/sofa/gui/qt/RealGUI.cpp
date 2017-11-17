@@ -304,7 +304,6 @@ RealGUI::RealGUI ( const char* viewername)
 {
     setupUi(this);
 
-    parseOptions(options);
 
     createPluginManager();
 
