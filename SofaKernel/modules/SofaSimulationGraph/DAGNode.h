@@ -130,7 +130,7 @@ public:
 
     /// Mesh Topology that is relevant for this context
     /// (within it or its parents until a mapping is reached that does not preserve topologies).
-    virtual core::topology::BaseMeshTopology* getActiveMeshTopology() const;
+    virtual core::topology::BaseMeshTopology* getActiveMeshTopology() const override;
 
 
     /// Called during initialization to corectly propagate the visual context to the children

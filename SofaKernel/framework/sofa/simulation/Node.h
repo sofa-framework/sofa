@@ -399,7 +399,7 @@ public:
     virtual sofa::core::topology::BaseMeshTopology* getMeshTopology() const override;
 
     /// Mesh Topology that is local to this context (i.e. not within parent contexts)
-    virtual core::topology::BaseMeshTopology* getLocalMeshTopology() const;
+    virtual core::topology::BaseMeshTopology* getLocalMeshTopology() const override;
 
     /// Degrees-of-Freedom
     virtual sofa::core::BaseState* getState() const override;

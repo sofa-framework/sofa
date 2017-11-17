@@ -625,7 +625,7 @@ public:
     Edge getLocalEdgesInHexahedron (const unsigned int i) const override;
 
   	/** \ brief returns the topologyType */
-	  virtual sofa::core::topology::TopologyObjectType getTopologyType() const {return UpperTopology;}
+	  virtual sofa::core::topology::TopologyObjectType getTopologyType() const override {return UpperTopology;}
   
     int revision;
 

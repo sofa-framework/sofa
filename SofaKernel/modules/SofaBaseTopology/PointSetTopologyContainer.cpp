@@ -64,9 +64,9 @@ int PointSetTopologyContainerClass = core::RegisterObject("Point set topology co
 
 PointSetTopologyContainer::PointSetTopologyContainer(int npoints)
     : d_initPoints (initData(&d_initPoints, "position", "Initial position of points",true,true))
+    , m_pointTopologyDirty(false)
     , nbPoints (initData(&nbPoints, (unsigned int )npoints, "nbPoints", "Number of points"))
     , points(initData(&points, "points","List of point indices"))
-    , m_pointTopologyDirty(false)
 {
     addAlias(&d_initPoints,"points");
 }
