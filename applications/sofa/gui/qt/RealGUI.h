@@ -115,8 +115,7 @@ protected:
 
 //-----------------CONSTRUCTOR - DESTRUCTOR ------------------------{
 public:
-    RealGUI( const char* viewername,
-            const std::vector<std::string>& options = std::vector<std::string>() );
+    RealGUI( const char* viewername);
 
     ~RealGUI();
 //-----------------CONSTRUCTOR - DESTRUCTOR ------------------------}

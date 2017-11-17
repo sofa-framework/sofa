@@ -138,9 +138,9 @@ BaseGUI* BatchGUI::CreateGUI(const char* name, sofa::simulation::Node::SPtr groo
     return gui;
 }
 
-int BatchGUI::RegisterGUIParameters(ArgumentParser& argumentParser)
+int BatchGUI::RegisterGUIParameters(ArgumentParser* argumentParser)
 {
-    argumentParser.parameter(&nbIter,"n","nb_iterations","(only batch) Number of iterations of the simulation");
+    argumentParser->addArgument(po::value<unsigned int>(&nbIter)->default_value(DEFAULT_NUMBER_OF_ITERATIONS), "nbIter", "(only batch) Number of iterations of the simulation");
     return 0;
 }
 

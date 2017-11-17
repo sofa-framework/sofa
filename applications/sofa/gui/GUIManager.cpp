@@ -54,7 +54,7 @@ BaseGUI* GUIManager::getGUI()
     return currentGUI;
 }
 
-void GUIManager::RegisterParameters(ArgumentParser& argumentParser)
+void GUIManager::RegisterParameters(ArgumentParser* argumentParser)
 {
     for(std::list<GUICreator>::iterator it =guiCreators.begin(), itend =guiCreators.end(); it != itend; ++it)
     {

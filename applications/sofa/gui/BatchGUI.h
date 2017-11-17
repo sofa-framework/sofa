@@ -61,7 +61,7 @@ public:
     /// @{
 
     static BaseGUI* CreateGUI(const char* name, sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
-    static int RegisterGUIParameters(ArgumentParser& argumentParser);
+    static int RegisterGUIParameters(ArgumentParser* argumentParser);
 
 
     static const unsigned int DEFAULT_NUMBER_OF_ITERATIONS;
