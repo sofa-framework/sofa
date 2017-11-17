@@ -203,7 +203,7 @@ public:
     virtual void resize( size_t vsize) override;
     virtual void reserve(size_t vsize);
 
-    size_t getSize() const { return d_size.getValue(); }
+    size_t getSize() const override { return d_size.getValue(); }
 
     SReal getPX(size_t i) const override { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::ConstVecCoordId::position())->getValue())[i]); return (SReal)x; }
     SReal getPY(size_t i) const override { Real x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(read(core::ConstVecCoordId::position())->getValue())[i]); return (SReal)y; }

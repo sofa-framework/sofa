@@ -98,7 +98,7 @@ public:
     virtual SReal getPZ(int i) const override;
 
    	/** \brief Returns the type of the topology */
-   	virtual sofa::core::topology::TopologyObjectType getTopologyType() const {return sofa::core::topology::POINT;}
+   	virtual sofa::core::topology::TopologyObjectType getTopologyType() const override {return sofa::core::topology::POINT;}
     
     /// @}
 
