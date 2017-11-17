@@ -49,7 +49,7 @@ class TimerLjsonManyFilesPlot() :
 
             # First analys to take Steps informations
             if firstPass == 1 :
-                row = ["Steps", k]
+                row = ["Steps", int(k)]
                 parsedInformations.append(row)
                 # Take informations from the target componant
                 for kbis, vbis in v.items() :
