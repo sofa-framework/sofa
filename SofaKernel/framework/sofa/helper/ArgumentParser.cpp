@@ -118,7 +118,7 @@ void ArgumentParser::showArgs()
         } else { // Assumes that the only remainder is vector<string>
             try {
                 std::vector<std::string> vect = vm[it->first].as<std::vector<std::string> >();
-                uint i = 0;
+                unsigned int i = 0;
                 for (std::vector<std::string>::iterator oit=vect.begin();
                      oit != vect.end(); oit++, ++i) {
                     std::cout << "\r> " << it->first << "[" << i << "]=" << (*oit) << std::endl;
