@@ -48,7 +48,6 @@ int BatchGUI::mainLoop()
 {
     if (groot)
     {
-
         sofa::simulation::getSimulation()->animate(groot.get());
         //As no visualization is done by the Batch GUI, these two lines are not necessary.
         sofa::simulation::getSimulation()->updateVisual(groot.get());

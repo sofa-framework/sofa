@@ -101,6 +101,7 @@ protected:
     static std::vector<std::string> guiOptions;
     static BaseGUI* currentGUI;
     static const char* valid_guiname;
+    static ArgumentParser* currentArgumentParser;
 public:
     static BaseGUI* getGUI();
 };

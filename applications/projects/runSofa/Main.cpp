@@ -213,7 +213,7 @@ int main(int argc, char** argv)
     argParser->addArgument(po::value<std::vector<std::string>>(&plugins), "load,l", "load given plugins");
     argParser->addArgument(po::value<bool>(&noAutoloadPlugins)->default_value(false)->implicit_value(true), "noautoload", "disable plugins autoloading");
 
-    // option using lambda function which ensure the value passed
+    // example of an option using lambda function which ensure the value passed is > 0
     argParser->addArgument(po::value<unsigned int>(&nbMSSASamples)->default_value(1)->notifier([](unsigned int value)
     {
         if (value < 1) {
@@ -235,7 +235,6 @@ int main(int argc, char** argv)
 
     addGUIParameters(argParser);
     argParser->parse();
-
     files = argParser->getInputFileList();
 
     if(showHelp)

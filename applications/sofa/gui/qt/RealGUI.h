@@ -336,7 +336,7 @@ private:
     void addViewer();//? where is the implementation ?
 
     /// Parse options from the RealGUI constructor
-    void parseOptions(const std::vector<std::string>& options);
+    void parseOptions();
 
     void createPluginManager();
 
