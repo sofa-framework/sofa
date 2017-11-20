@@ -102,6 +102,8 @@ void ArgumentParser::showArgs()
             std::cout << vm[it->first].as<int>() << std::endl;
         } else if (((boost::any)it->second.value()).type() == typeid(bool)) {
             std::cout << vm[it->first].as<bool>() << std::endl;
+        } else if (((boost::any)it->second.value()).type() == typeid(unsigned int)) {
+            std::cout << vm[it->first].as<unsigned int>() << std::endl;
         } else if (((boost::any)it->second.value()).type() == typeid(double)) {
             std::cout << vm[it->first].as<double>() << std::endl;
         } else if (is_char) {
