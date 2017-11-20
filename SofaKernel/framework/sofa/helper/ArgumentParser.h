@@ -55,8 +55,11 @@ See examples argumentParserLine_test.cpp and argumentParserFile_test.cpp
 @see Argument
 */
 
+
 class SOFA_HELPER_API ArgumentParser
 {
+
+
 public:
 
     ArgumentParser(int a, char *b[]);
@@ -68,7 +71,12 @@ public:
     void parse();
     void showArgs();
 
+    po::variables_map getVariableMap();
     std::vector<std::string> getInputFileList();
+
+    /** last parsed extra arguments */
+    static std::vector<std::string> extra;
+    static const std::vector<std::string> extra_args() { return extra; }
 
 private:
     int argc;
@@ -76,6 +84,8 @@ private:
     po::variables_map vm;
     po::options_description desc;
     po::positional_options_description p;
+
+
 
 };
 
