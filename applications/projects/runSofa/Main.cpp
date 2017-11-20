@@ -183,7 +183,6 @@ int main(int argc, char** argv)
     bool        temporaryFile = false;
     bool        testMode = false;
     bool        noAutoloadPlugins = false;
-    int         nbIterations = BatchGUI::DEFAULT_NUMBER_OF_ITERATIONS;
     unsigned int nbMSSASamples = 1;
     unsigned int computationTimeSampling=0; ///< Frequency of display of the computation time statistics, in number of animation steps. 0 means never.
 
@@ -214,7 +213,15 @@ int main(int argc, char** argv)
     argParser->addArgument(po::value<std::vector<std::string>>(&plugins), "load,l", "load given plugins");
     argParser->addArgument(po::value<bool>(&noAutoloadPlugins)->default_value(false)->implicit_value(true), "noautoload", "disable plugins autoloading");
 
-    argParser->addArgument(po::value<unsigned int>(&nbMSSASamples)->default_value(1), "msaa,m", "number of samples for MSAA (Multi Sampling Anti Aliasing ; value < 2 means disabled");
+    // option using lambda function which ensure the value passed
+    argParser->addArgument(po::value<unsigned int>(&nbMSSASamples)->default_value(1)->notifier([](unsigned int value)
+    {
+        if (value < 1) {
+            std::cerr << "msaa sample cannot be lower than 1" << std::endl;
+            exit( EXIT_FAILURE );
+        }
+    }), "msaa,m", "number of samples for MSAA (Multi Sampling Anti Aliasing ; value < 2 means disabled");
+
     argParser->addArgument(po::value<bool>(&printFactory)->default_value(false)->implicit_value(true), "factory,p", "print factory logs");
     argParser->addArgument(po::value<bool>(&loadRecent)->default_value(false)->implicit_value(true), "recent,r", "load most recently opened file");
     argParser->addArgument(po::value<std::string>(&simulationType), "simu,s", "select the type of simulation (bgl, dag, tree)");
@@ -224,14 +231,12 @@ int main(int argc, char** argv)
     argParser->addArgument(po::value<std::string>(&colorsStatus)->default_value("auto")->implicit_value("yes"), "colors,c", "use colors on stdout and stderr (yes, no, auto)");
     argParser->addArgument(po::value<std::string>(&messageHandler)->default_value("auto"), "formatting,f", "select the message formatting to use (auto, clang, sofa, rich, test)");
     argParser->addArgument(po::value<bool>(&enableInteraction)->default_value(false)->implicit_value(true), "interactive,i", "enable interactive mode for the GUI which includes idle and mouse events (EXPERIMENTAL)");
+    argParser->addArgument(po::value<std::vector<std::string> >()->multitoken(), "argv", "forward extra args to the python interpreter");
 
     addGUIParameters(argParser);
     argParser->parse();
 
     files = argParser->getInputFileList();
-    std::cout << "File list " << std::endl;
-    for(std::vector<std::string>::iterator it = files.begin(); it != files.end(); it++)
-        std::cout << *it << std::endl;
 
     if(showHelp)
     {
@@ -338,27 +343,19 @@ int main(int argc, char** argv)
 
     PluginManager::getInstance().init();
 
-//    if(gui.compare("batch") == 0 && nbIterations >= 0)
-//    {
-//        ostringstream oss ;
-//        oss << "nbIterations=";
-//        oss << nbIterations;
-//        GUIManager::AddGUIOption(oss.str().c_str());
-//    }
+    //    if(enableInteraction){
+    //        msg_warning("Main") << "you activated the interactive mode. This is currently an experimental feature "
+    //                               "that may change or be removed in the future. " ;
+    //        GUIManager::AddGUIOption("enableInteraction");
+    //    }
 
-//    if(enableInteraction){
-//        msg_warning("Main") << "you activated the interactive mode. This is currently an experimental feature "
-//                               "that may change or be removed in the future. " ;
-//        GUIManager::AddGUIOption("enableInteraction");
-//    }
-
-//    if(nbMSSASamples > 1)
-//    {
-//        ostringstream oss ;
-//        oss << "msaa=";
-//        oss << nbMSSASamples;
-//        GUIManager::AddGUIOption(oss.str().c_str());
-//    }
+    //    if(nbMSSASamples > 1)
+    //    {
+    //        ostringstream oss ;
+    //        oss << "msaa=";
+    //        oss << nbMSSASamples;
+    //        GUIManager::AddGUIOption(oss.str().c_str());
+    //    }
 
     if (int err = GUIManager::Init(argv[0],gui.c_str()))
         return err;

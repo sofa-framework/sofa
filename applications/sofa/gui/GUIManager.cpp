@@ -58,7 +58,6 @@ void GUIManager::RegisterParameters(ArgumentParser* argumentParser)
 {
     for(std::list<GUICreator>::iterator it =guiCreators.begin(), itend =guiCreators.end(); it != itend; ++it)
     {
-        std::cout << it->name << std::endl;
         if (it->parameters)
             it->parameters(argumentParser);
     }

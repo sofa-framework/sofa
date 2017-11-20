@@ -28,6 +28,7 @@ namespace sofa
 namespace helper
 {
 
+std::vector<std::string> ArgumentParser::extra = std::vector<std::string>();
 
 ArgumentParser::ArgumentParser(int a, char *b[]){
     argc = a;
@@ -57,8 +58,10 @@ void ArgumentParser::showHelp()
 void ArgumentParser::parse()
 {
     try {
-//        po::store(po::command_line_parser(argc, argv, desc), vm);
         po::store(po::command_line_parser(argc, argv).options(desc).positional(p).run(), vm);
+
+        if (vm.find("argv") != vm.end())
+            extra = vm.at("argv").as<std::vector<std::string> >();
     }
     catch (po::error const& e) {
         std::cerr << e.what() << '\n';
@@ -127,7 +130,14 @@ void ArgumentParser::showArgs()
 
 std::vector<std::string> ArgumentParser::getInputFileList()
 {
-    return vm.at("input-file").as<std::vector<std::string> >();
+    if (vm.find("input-file") != vm.end())
+        return vm.at("input-file").as<std::vector<std::string> >();
+    return std::vector<std::string>();
+}
+
+po::variables_map ArgumentParser::getVariableMap()
+{
+    return vm;
 }
 
 } // namespace helper
