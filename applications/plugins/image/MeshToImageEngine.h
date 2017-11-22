@@ -127,7 +127,7 @@ public:
     Data<bool> worldGridAligned;
 
 
-    virtual std::string getTemplateName() const    { return templateName(this);    }
+    virtual std::string getTemplateName() const    override { return templateName(this);    }
     static std::string templateName(const MeshToImageEngine<ImageTypes>* = NULL) { return ImageTypes::Name();    }
 
     MeshToImageEngine()    :   Inherited()
@@ -174,7 +174,7 @@ public:
     {
     }
 
-    virtual void init()
+    virtual void init() override
     {
         // backward compatibility (if InsideValue is not set: use first value)
         for( size_t meshId=0; meshId<vf_InsideValues.size() ; ++meshId )
@@ -208,7 +208,7 @@ public:
         im.fill((T)0);
     }
 
-    virtual void reinit()
+    virtual void reinit() override
     {
         vf_positions.resize(f_nbMeshes.getValue());
         vf_edges.resize(f_nbMeshes.getValue());
@@ -222,7 +222,7 @@ public:
     }
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters
-    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
+    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override
     {
         vf_positions.parseSizeData(arg, f_nbMeshes);
         vf_edges.parseSizeData(arg, f_nbMeshes);
@@ -236,7 +236,7 @@ public:
     }
 
     /// Assign the field values stored in the given map of name -> value pairs
-    void parseFields ( const std::map<std::string,std::string*>& str )
+    void parseFields ( const std::map<std::string,std::string*>& str ) override
     {
         vf_positions.parseFieldsSizeData(str, f_nbMeshes);
         vf_edges.parseFieldsSizeData(str, f_nbMeshes);
@@ -251,7 +251,7 @@ public:
 
 protected:
 
-    virtual void update()
+    virtual void update() override
     {
         updateAllInputsIfDirty();
         cleanDirty();
@@ -541,7 +541,7 @@ protected:
 
 
 
-    virtual void draw(const core::visual::VisualParams* /*vparams*/)
+    virtual void draw(const core::visual::VisualParams* /*vparams*/) override
     {
     }
 

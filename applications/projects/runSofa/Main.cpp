@@ -40,9 +40,6 @@ using std::vector;
 #include <SofaSimulationGraph/init.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
 #endif
-#ifdef SOFA_SMP
-#include <SofaSimulationTree/SMPSimulation.h>
-#endif
 #include <SofaSimulationTree/init.h>
 #include <SofaSimulationTree/TreeSimulation.h>
 using sofa::simulation::Node;
@@ -99,9 +96,6 @@ using  sofa::helper::logging::MainPerComponentLoggingMessageHandler ;
 #include <sofa/helper/system/glut.h>
 #endif // SOFA_HAVE_GLUT_GUI
 
-#ifdef SOFA_SMP
-#include <athapascan-1>
-#endif /* SOFA_SMP */
 #ifdef WIN32
 #include <windows.h>
 #endif
@@ -189,20 +183,15 @@ int main(int argc, char** argv)
 
     string gui = "";
     string verif = "";
-#ifdef SOFA_SMP
-    string simulationType = "smp";
-#elif defined(SOFA_HAVE_DAG)
+
+#if defined(SOFA_HAVE_DAG)
     string simulationType = "dag";
 #else
     string simulationType = "tree";
 #endif
+
     vector<string> plugins;
     vector<string> files;
-#ifdef SOFA_SMP
-    string nProcs="";
-    bool        disableStealing = false;
-    bool        affinity = false;
-#endif
     string colorsStatus = "auto";
     string messageHandler = "auto";
     bool enableInteraction = false ;
@@ -222,19 +211,13 @@ int main(int argc, char** argv)
     .option(&nbIterations,'n',"nb_iterations","(only batch) Number of iterations of the simulation")
     .option(&printFactory,'p',"factory","print factory logs")
     .option(&loadRecent,'r',"recent","load most recently opened file")
-    .option(&simulationType,'s',"simu","select the type of simulation (bgl, dag, tree, smp)")
+    .option(&simulationType,'s',"simu","select the type of simulation (bgl, dag, tree)")
     .option(&temporaryFile,'t',"temporary","the loaded scene won't appear in history of opened files")
     .option(&testMode,'x',"test","select test mode with xml output after N iteration")
     .option(&verif,'v',"verification","load verification data for the scene")
     .option(&colorsStatus,'z',"colors","use colors on stdout and stderr (yes, no, auto)")
     .option(&messageHandler,'f',"formatting","select the message formatting to use (auto, clang, sofa, rich, test)")
     .option(&enableInteraction, 'i', "interactive", "enable interactive mode for the GUI which includes idle and mouse events (EXPERIMENTAL)")
-
-#ifdef SOFA_SMP
-    .option(&disableStealing,'w',"disableStealing","Disable Work Stealing")
-    .option(&nProcs,'c',"nprocs","Number of processor")
-    .option(&affinity,'f',"affinity","Enable aFfinity base Work Stealing")
-#endif
     (argc,argv);
 
     // Note that initializations must be done after ArgumentParser that can exit the application (without cleanup)
@@ -249,36 +232,12 @@ int main(int argc, char** argv)
     sofa::component::initComponentAdvanced();
     sofa::component::initComponentMisc();
 
-#ifdef SOFA_SMP
-    int ac = 0;
-    char **av = NULL;
-
-    Util::KaapiComponentManager::prop["util.globalid"]="0";
-    Util::KaapiComponentManager::prop["sched.strategy"]="I";
-    if(!disableStealing)
-        Util::KaapiComponentManager::prop["sched.stealing"]="true";
-    if(nProcs!="")
-        Util::KaapiComponentManager::prop["community.thread.poolsize"]=nProcs;
-    if(affinity)
-    {
-        Util::KaapiComponentManager::prop["sched.stealing"]="true";
-        Util::KaapiComponentManager::prop["sched.affinity"]="true";
-    }
-
-    a1::Community com = a1::System::join_community( ac, av);
-#endif /* SOFA_SMP */
-
 #ifndef SOFA_NO_OPENGL
 #ifdef SOFA_HAVE_GLUT_GUI
     if(gui!="batch") glutInit(&argc,argv);
 #endif // SOFA_HAVE_GLUT_GUI
 #endif // SOFA_NO_OPENGL
 
-#ifdef SOFA_SMP
-        if (simulationType == "smp")
-            sofa::simulation::setSimulation(new sofa::simulation::tree::SMPSimulation());
-        else
-#endif
 #ifdef SOFA_HAVE_DAG
     if (simulationType == "tree")
         sofa::simulation::setSimulation(new TreeSimulation());
@@ -324,14 +283,10 @@ int main(int argc, char** argv)
     }
     MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance()) ;
 
-
-    // Add the plugin directory to PluginRepository
-    const std::string& pluginDir = Utils::getPluginDirectory();
-    PluginRepository.addFirstPath(pluginDir);
-
     // Initialise paths
     BaseGUI::setConfigDirectoryPath(Utils::getSofaPathPrefix() + "/config", true);
     BaseGUI::setScreenshotDirectoryPath(Utils::getSofaPathPrefix() + "/screenshots", true);
+    PluginRepository.addFirstPath( Utils::getPluginDirectory() );
 
     if (!files.empty())
         fileName = files[0];
@@ -339,23 +294,25 @@ int main(int argc, char** argv)
     for (unsigned int i=0; i<plugins.size(); i++)
         PluginManager::getInstance().loadPlugin(plugins[i]);
 
-    std::string configPluginPath = pluginDir + "/" + TOSTRING(CONFIG_PLUGIN_FILENAME);
-    std::string defaultConfigPluginPath = pluginDir + "/" + TOSTRING(DEFAULT_CONFIG_PLUGIN_FILENAME);
+    std::string configPluginPath = PluginRepository.getFirstPath() + "/" + TOSTRING(CONFIG_PLUGIN_FILENAME);
+    std::string defaultConfigPluginPath = PluginRepository.getFirstPath() + "/" + TOSTRING(DEFAULT_CONFIG_PLUGIN_FILENAME);
 
     if (!noAutoloadPlugins)
     {
         if (DataRepository.findFile(configPluginPath))
         {
-            msg_info("runSofa") << "Loading automatically plugin list in " << configPluginPath;
+            msg_info("runSofa") << "Loading automatically custom plugin list from " << configPluginPath;
             PluginManager::getInstance().readFromIniFile(configPluginPath);
         }
         else if (DataRepository.findFile(defaultConfigPluginPath))
         {
-            msg_info("runSofa") << "Loading automatically plugin list in " << defaultConfigPluginPath;
+            msg_info("runSofa") << "Loading automatically default plugin list from " << defaultConfigPluginPath;
             PluginManager::getInstance().readFromIniFile(defaultConfigPluginPath);
         }
         else
-            msg_info("runSofa") << "No plugin list found. No plugin will be automatically loaded.";
+            msg_info("runSofa") << "No plugin will be automatically loaded" << msgendl
+                                << "- No custom list found at " << configPluginPath << msgendl
+                                << "- No default list found at " << defaultConfigPluginPath;
     }
     else
         msg_info("runSofa") << "Automatic plugin loading disabled.";

@@ -28,6 +28,7 @@
 #include <type_traits>
 
 #include <sofa/helper/helper.h>
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
@@ -158,7 +159,7 @@ public:
     // Dummy function to avoid dead stripping symbol
     void registerInFactory()
     {
-        printf("[SOFA]Registration of class : %s\n", type().name());
+        msg_info("Creator") << "[SOFA]Registration of class : " << type().name();
     }
 
 };

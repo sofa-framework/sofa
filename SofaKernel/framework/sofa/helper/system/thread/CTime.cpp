@@ -213,6 +213,11 @@ ctime_t CTime::getTime()
     return t;
 }
 
+double CTime::toSecond(const ctime_t t)
+{
+    return 1.0*t/CTime::getTicksPerSec() ;
+}
+
 } // namespace thread
 
 } // namespace system

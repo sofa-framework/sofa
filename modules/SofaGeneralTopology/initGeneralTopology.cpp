@@ -39,10 +39,6 @@ void initGeneralTopology()
     }
 }
 
-SOFA_LINK_CLASS(CubeTopology)
-SOFA_LINK_CLASS(SphereQuadTopology)
-SOFA_LINK_CLASS(CylinderGridTopology)
-
 } // namespace component
 
 } // namespace sofa

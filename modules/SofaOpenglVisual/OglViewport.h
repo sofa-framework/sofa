@@ -67,12 +67,12 @@ protected:
     OglViewport();
     virtual ~OglViewport();
 public:
-    void init();
-    void draw(const core::visual::VisualParams* vparams);
-    void initVisual();
-    void preDrawScene(core::visual::VisualParams* vp);
-    bool drawScene(core::visual::VisualParams* vp);
-    void postDrawScene(core::visual::VisualParams* vp);
+    void init() override;
+    void draw(const core::visual::VisualParams* vparams) override;
+    void initVisual() override;
+    void preDrawScene(core::visual::VisualParams* vp) override;
+    bool drawScene(core::visual::VisualParams* vp) override;
+    void postDrawScene(core::visual::VisualParams* vp) override;
 
     bool isVisible(const core::visual::VisualParams* vparams);
 

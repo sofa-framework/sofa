@@ -121,16 +121,12 @@ set(SOURCE_FILES
     BaseSimulationExporter.cpp
 )
 
-if(SOFA-MISC_SMP)
-    list(APPEND HEADER_FILES ChangeListener.h)
-    list(APPEND HEADER_FILES ParallelMechanicalVisitor.h)
-    list(APPEND SOURCE_FILES ChangeListener.cpp)
-    list(APPEND SOURCE_FILES ParallelMechanicalVisitor.cpp)
-endif()
+
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore)
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SIMULATION_CORE")
+set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 
 sofa_install_targets(SofaSimulation ${PROJECT_NAME} ${PROJECT_NAME})
 

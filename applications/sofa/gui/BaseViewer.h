@@ -51,7 +51,6 @@
 
 //instruments handling
 #include <SofaUserInteraction/Controller.h>
-#include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/Simulation.h>

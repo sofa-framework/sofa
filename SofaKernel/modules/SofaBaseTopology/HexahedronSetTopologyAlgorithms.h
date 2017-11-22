@@ -57,7 +57,7 @@ protected:
 
     virtual ~HexahedronSetTopologyAlgorithms() {}
 public:
-    virtual void init();
+    virtual void init() override;
 
 private:
     HexahedronSetTopologyContainer*						m_container;

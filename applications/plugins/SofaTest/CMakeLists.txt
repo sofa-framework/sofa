@@ -2,32 +2,65 @@ cmake_minimum_required(VERSION 3.1)
 project(SofaTest)
 
 set(SOFATEST_VERSION 0.1)
+################################ COMPONENTS HERE ARE THE NG-SET ####################################
 
 set(HEADER_FILES
-    BroadPhase_test.h
-    DataEngine_test.h
-    Elasticity_test.h
-    Elasticity_test.inl
-    ForceField_test.h
     InitPlugin_test.h
-    Mapping_test.h
-    MultiMapping_test.h
-    Multi2Mapping_test.h
-    PrimitiveCreation.h
     Sofa_test.h
-    TestMessageHandler.h
-    #LogMessage.h
 )
 
 set(SOURCE_FILES
-    Elasticity_test.cpp
     InitPlugin_test.cpp
-    PrimitiveCreation.cpp
-    TestMessageHandler.cpp
     Sofa_test.cpp
 )
 
 set(PYTHON_FILES "")
+
+
+############################## COMPONENTS HERE ARE THE LIGHT-SET ###################################
+if(SOFA_BUILD_COMPONENTSET_LIGHT)
+    list(APPEND HEADER_FILES
+
+        )
+    list(APPEND SOURCE_FILES
+
+        )
+endif()
+
+############################## COMPONENTS HERE ARE THE STANDARD-SET ################################
+if(SOFA_BUILD_COMPONENTSET_STANDARD)
+    list(APPEND HEADER_FILES
+        BroadPhase_test.h
+        DataEngine_test.h
+        Elasticity_test.h
+        Elasticity_test.inl
+        ForceField_test.h
+        Mapping_test.h
+        MultiMapping_test.h
+        Multi2Mapping_test.h
+        PrimitiveCreation.h
+        TestMessageHandler.h
+        #LogMessage.h
+        )
+    list(APPEND SOURCE_FILES
+        Elasticity_test.cpp
+        PrimitiveCreation.cpp
+        )
+endif()
+
+############################### COMPONENTS HERE ARE DEPRECATED ####################################
+if(SOFA_BUILD_COMPONENTSET_FULL)
+    list(APPEND HEADER_FILES
+        Elasticity_test_deprecated.h
+        Elasticity_test_deprecated.inl
+        )
+    list(APPEND SOURCE_FILES
+        Elasticity_test_deprecated.cpp
+        )
+
+endif()
+
+
 
 find_package(SofaFramework REQUIRED)
 find_package(SofaMisc REQUIRED)
@@ -54,11 +87,11 @@ if(SofaPython_FOUND)
     target_link_libraries(${PROJECT_NAME} SofaPython)
 endif()
 target_link_libraries(${PROJECT_NAME} SceneCreator SofaComponentBase SofaComponentCommon SofaComponentGeneral SofaComponentAdvanced SofaComponentMisc)
-target_link_libraries(${PROJECT_NAME} gtest)
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_TEST -DSOFA_SRC_DIR=\"${CMAKE_SOURCE_DIR}\"")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
+set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 ## Install rules for the library and headers; CMake package configurations files

@@ -61,6 +61,10 @@ protected:
     Data< Real >  cubesStiffness;
     Data< Real >  cubesDamping;
     Data< bool >  noCompression;
+    Data< bool  > d_draw; // Activation of draw
+    Data< Real >  d_drawMinElongationRange;
+    Data< Real >  d_drawMaxElongationRange;
+    Data< Real >  d_drawSpringSize;
 
     /// optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)
     Data< defaulttype::Vec<2,int> > localRange;
@@ -80,6 +84,10 @@ protected:
         , cubesStiffness(initData(&cubesStiffness,Real(0),"cubesStiffness","Stiffness for the Cubes",true))
         , cubesDamping(initData(&cubesDamping,Real(0),"cubesDamping","Damping for the Cubes",true))
         , noCompression( initData(&noCompression, false, "noCompression", "Only consider elongation", false))
+        , d_draw(initData(&d_draw, false, "draw","Activation of draw"))
+        , d_drawMinElongationRange(initData(&d_drawMinElongationRange, Real(8.), "drawMinElongationRange","Min range of elongation (red eongation - blue neutral - green compression)"))
+        , d_drawMaxElongationRange(initData(&d_drawMaxElongationRange, Real(15.), "drawMaxElongationRange","Max range of elongation (red eongation - blue neutral - green compression)"))
+        , d_drawSpringSize(initData(&d_drawSpringSize, Real(8.), "drawSpringSize","Size of drawed lines"))
         , localRange( initData(&localRange, defaulttype::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
     {
         this->ks.setDisplayed(false);
@@ -165,9 +173,9 @@ public:
         cubesDamping.setValue(val);
     }
 
-    virtual void init();
+    virtual void init() override;
 
-
+    void draw(const core::visual::VisualParams* vparams) override;
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_MESHSPRINGFORCEFIELD_CPP)

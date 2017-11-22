@@ -497,7 +497,7 @@ public:
     core::behavior::MechanicalState<InDataTypes>* getRigidModel() { return rigid; }
     core::behavior::MechanicalState<InDataTypes>* getMechanicalState() { return rigid; }
 
-    void init();
+    void init() override;
 
     CudaDistanceGrid* getGrid(int index=0)
     {
@@ -545,14 +545,14 @@ public:
 
     // -- CollisionModel interface
 
-    void resize(int size);
+    void resize(int size) override;
 
     /// Create or update the bounding volume hierarchy.
-    void computeBoundingTree(int maxDepth=0);
+    void computeBoundingTree(int maxDepth=0) override;
 
-    void draw(const core::visual::VisualParams*,int index);
+    void draw(const core::visual::VisualParams*,int index) override;
 
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams*) override;
 };
 
 inline CudaRigidDistanceGridCollisionElement::CudaRigidDistanceGridCollisionElement(CudaRigidDistanceGridCollisionModel* model, int index)

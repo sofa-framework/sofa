@@ -25,6 +25,9 @@
 #include <sofa/core/collision/CollisionGroupManager.h>
 #include <sofa/core/collision/ContactManager.h>
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
+#include <SofaComponentBase/InfoComponent.h>
+using sofa::component::InfoComponent ;
+
 #include "iconmultinode.xpm"
 #include "iconnode.xpm"
 #include "iconinfo.xpm"
@@ -485,15 +488,18 @@ void GraphListenerQListView::addObject(Node* parent, core::objectmodel::BaseObje
             dmsg_error("GraphListenerQListView") << "Unknown parent node "<<parent->getName()<< "'";
             return;
         }
-        std::string name = sofa::helper::gettypename(typeid(*object));
-        std::string::size_type pos = name.find('<');
-        if (pos != std::string::npos)
-            name.erase(pos);
-        if (!object->toConfigurationSetting())
+
+        std::string name;
+        if(dynamic_cast<InfoComponent*>(object))
         {
-            name += "  ";
-            name += object->getName();
+            name = object->getName() ;
+        }else if(dynamic_cast<ConfigurationSetting*>(object)){
+            name = object->getClassName() ;
+        }else
+        {
+            name = object->getClassName() + " " + object->getName() ;
         }
+
         item->setText(0, name.c_str());
 
         setMessageIconFrom(item, object);

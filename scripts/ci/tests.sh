@@ -149,7 +149,8 @@ run-single-test() {
     rm -f report.xml
     # "$src_dir/scripts/ci/timeout.sh" test "$test_cmd" $timeout | tee $output_dir/$test/output.txt
     bash -c "$test_cmd" | tee $output_dir/$test/output.txt
-    echo "${PIPESTATUS[0]}" > "$output_dir/$test/status.txt"
+    status="${PIPESTATUS[0]}"
+    echo "$status" > "$output_dir/$test/status.txt"
     # if [[ -e test.timeout ]]; then
     #     echo 'Timeout!'
     #     echo timeout > "$output_dir/$test/status.txt"
@@ -160,10 +161,14 @@ run-single-test() {
     # rm -f test.exit_code
 
     if [ -f "$output_file" ]; then
+        if [ "$status" -gt 1 ]; then # report exists but gtest crashed
+            echo "$0: fatal: unexpected crash of $test with code $status" >&2
+            exit $status
+        fi
         fix-test-report "$output_file"
         cp "$output_file" "$output_dir/reports/$test.xml"
-    else
-        echo "$0: error: $test ended with code $(cat $output_dir/$test/status.txt)" >&2
+    else # no report = some subtest crashed. Let's find out which one.
+        echo "$0: error: $test ended with code $status" >&2
         # Run each subtest of this test to avoid results loss
         run-single-test-subtests "$test"
     fi

@@ -65,6 +65,7 @@ list(APPEND CMAKE_MODULE_PATH "${SOFA_KERNEL_SOURCE_DIR}/SofaFramework")
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/extlibs)
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/applications/plugins)
+list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/applications/packages)
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/applications/projects)
 
 # Create etc/sofa.ini: it contains the paths to share/ and examples/. In the
@@ -212,6 +213,42 @@ option(SOFA_USE_MASK "Use mask optimization" ON)
 ### SOFA_DEV_TOOL
 option(SOFA_WITH_DEVTOOLS "Compile with developement extra features." ON)
 
+### SOFA_BUILD_PERIMETER
+### Sofa using type double or float or both
+set(SOFA_BUILD_COMPONENTSET full CACHE STRING
+"Compile SOFA with which set of components (core/full/deprecated)
+- 'core' for only the core components (only base classes)
+- 'light' for stable only component (a minimal set to make simulations)
+ - 'standard' for all non-deprecated components (DEFAULT)
+ - 'full' for standard set + deprecated components")
+set_property(CACHE SOFA_BUILD_COMPONENTSET PROPERTY STRINGS core light standard full)
+
+if(${SOFA_BUILD_COMPONENTSET} STREQUAL core)
+    message(STATUS "   Build SOFA with 'core' compenents set")
+    set(SOFA_BUILD_COMPONENTSET_LIGHT 0)
+    set(SOFA_BUILD_COMPONENTSET_STANDARD 0)
+    set(SOFA_BUILD_COMPONENTSET_FULL 0)
+    set(SOFAGUI_QQT 0)
+elseif(${SOFA_BUILD_COMPONENTSET} STREQUAL light)
+    message(STATUS "   Build SOFA with 'light' compenents set")
+    set(SOFA_BUILD_COMPONENTSET_LIGHT 1)
+    set(SOFA_BUILD_COMPONENTSET_STANDARD 0)
+    set(SOFA_BUILD_COMPONENTSET_FULL 0)
+    set(SOFAGUI_QQT 0)
+elseif(${SOFA_BUILD_COMPONENTSET} STREQUAL standard)
+    message(STATUS "   Build SOFA with 'standard' compenents set")
+    set(SOFA_BUILD_COMPONENTSET_LIGHT 1)
+    set(SOFA_BUILD_COMPONENTSET_STANDARD 1)
+    set(SOFA_BUILD_COMPONENTSET_FULL 0)
+elseif(${SOFA_BUILD_COMPONENTSET} STREQUAL full)
+    message(STATUS "   Build SOFA with 'full' compenents set (incuding deprecated components)")
+    set(SOFA_BUILD_COMPONENTSET_LIGHT 1)
+    set(SOFA_BUILD_COMPONENTSET_STANDARD 1)
+    set(SOFA_BUILD_COMPONENTSET_FULL 1)
+else()
+    message(STATUS "   Unrecognize option for components set. Possible ones are: core, light, standard and full")
+endif()
+
 ### Threading
 option(SOFA_WITH_THREADING "Compile sofa with thread-safetiness support (PARTIAL/EXPERIMENTAL)" ON)
 
@@ -282,7 +319,6 @@ add_subdirectory(SofaGui)
 # SofaTest depends on SofaPython, so we add SofaPython before SofaTest.
 sofa_add_plugin( applications/plugins/SofaPython SofaPython )
 
-
 ## Scene creator option
 option(SOFA_BUILD_SCENECREATOR "Compile the C++ API located in applications/plugins/SceneCreator" OFF)
 
@@ -318,6 +354,9 @@ endif()
 
 ## Plugins
 add_subdirectory(applications/plugins)
+
+## Packages
+add_subdirectory(applications/packages)
 
 ## Applications
 add_subdirectory(applications/projects)
@@ -369,9 +408,6 @@ if(SOFA_INSTALL_RESOURCES_FILES)
     install(DIRECTORY share/ DESTINATION share/sofa)
     install(DIRECTORY examples/ DESTINATION share/sofa/examples)	
 endif()
-
-## Temporary (todo: think about this typedef thing)
-install(DIRECTORY modules/sofa/component/typedef/ DESTINATION include/sofa/component/typedef)
 
 
 #CPack install

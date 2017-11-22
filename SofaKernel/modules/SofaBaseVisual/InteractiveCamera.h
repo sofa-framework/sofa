@@ -57,10 +57,10 @@ private:
     int lastMousePosX, lastMousePosY;
     helper::gl::Trackball currentTrackball;
 
-    void internalUpdate();
+    void internalUpdate() override;
 protected:
     void moveCamera(int x, int y);
-    void manageEvent(core::objectmodel::Event* e);
+    void manageEvent(core::objectmodel::Event* e) override;
     void processMouseEvent(core::objectmodel::MouseEvent* me);
     void processKeyPressedEvent(core::objectmodel::KeypressedEvent* kpe);
     void processKeyReleasedEvent(core::objectmodel::KeyreleasedEvent* kre);

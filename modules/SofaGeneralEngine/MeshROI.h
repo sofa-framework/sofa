@@ -72,10 +72,10 @@ protected:
     virtual ~MeshROI() {}
 public:
 
-    virtual void init();
-    virtual void reinit();
-    virtual void update();
-    virtual void draw(const core::visual::VisualParams*);
+    virtual void init() override;
+    virtual void reinit() override;
+    virtual void update() override;
+    virtual void draw(const core::visual::VisualParams*) override;
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
@@ -99,7 +99,7 @@ public:
         return core::objectmodel::BaseObject::create(tObj, context, arg);
     }
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }

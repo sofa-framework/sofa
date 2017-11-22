@@ -1,3 +1,24 @@
+# Welcome
+
+Welcome to the SOFA Community! Here is a brief summary of how it is structured:
+- SOFA Users: people using SOFA by writing scenes or using the SOFA API.
+- SOFA Developpers: people programming into SOFA, modifying the API, writing plugins.
+- SOFA Contributors: (awesome) people proposing their changes in SOFA code via pull-requests.
+- SOFA Reviewers: people reviewing and merging the pull-requests. This group is validated by the Scientific and Technical Committee (STC).
+- SOFA Consortium: research centers and companies willing to share the cost of development and maintenance of SOFA, hosted by the Inria Foundation.
+- SOFA Consortium Staff: administrators of SOFA and its ecosystem. This group is directed by the Executive Committee (EC).
+
+All SOFA Developpers are gladly invited to the SOFA-dev meetings.  
+They take place remotely every Wednesday at 10 a.m. CET and are animated by the SOFA Reviewers + the Consortium Staff.  
+[Subscribe to SOFA-dev mailing-list](https://sympa.inria.fr/sympa/subscribe/sofa-dev) to get the agenda, reports and conference room url.
+
+About the steering committees:
+- SOFA Scientific and Technical Committee (STC): defines the technical roadmap twice a year, validate the contribution rules, the Reviewers team and discuss every technical point in SOFA.
+- SOFA Executive Committee (EC): decides on evolutions of the membership contract, the communication policy and the priorities of the Consortium.
+
+A more detailed definition of the committees is available [in the SOFA website](https://www.sofa-framework.org/consortium/presentation/).
+
+
 # Getting started
 
 Please **read carefully** [the GitHub guide on Contributing to Open Source](https://guides.github.com/activities/contributing-to-open-source/). We also recommend you to check this [more detailed documentation on issues and pull requests](https://help.github.com/categories/collaborating-with-issues-and-pull-requests/).
@@ -67,9 +88,18 @@ Reviewing:
 - **Control the builds**: Dashboard > Details in the pull request checks.
 - Merge method: **prefer "merge"** or "squash" over "rebase".
 
-Remember that
+Remember that:
 
 - You can **add commits** in a pull request: see [GitHub documentation](https://help.github.com/articles/committing-changes-to-a-pull-request-branch-created-from-a-fork/).
 - If the pull request contains out of scope commits (from a previous merge with master), **consider rebasing it**.
 
 For more information on forks and pull request, check out [this GitHub guide](https://guides.github.com/activities/forking/).
+
+### SOFA Contributor License Agreement ("Agreement"), v1.0
+
+Note that by submitting a "Contribution" (shall mean the code, documentation or other original works of authorship) to SOFA, through the Pull Request mechanism in github or by other means, "You" (the entity that is making this Contribution) hereby accept and agree to the following terms and conditions for Your present and future Contributions:
+
+- You certify that You have authored 100% of the content, or in the event part or all of the content has been authored by a third party, you have appropriate permissions to include their work in your Contribution,
+- You certify You have the necessary rights to license the Contribution (i.e. if You are employed You have received the necessary permissions from Your employer to make the Contribution),
+- You grant a perpetual, irrevocable, non-exclusive, royalty-free, worldwide license to distribute this Contribution under the license agreement commonly known as the [LGPL License](https://opensource.org/licenses/LGPL-2.1).
+- You will remain the copyright holder of your Contribution.

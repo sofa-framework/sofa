@@ -106,8 +106,8 @@ namespace loader
 
 
 #define SOFA_BASE_CAST_IMPLEMENTATION(CLASSNAME) \
-virtual const CLASSNAME* to##CLASSNAME() const { return this; } \
-virtual       CLASSNAME* to##CLASSNAME()       { return this; }
+virtual const CLASSNAME* to##CLASSNAME() const override { return this; } \
+virtual       CLASSNAME* to##CLASSNAME()       override { return this; }
 
 
 

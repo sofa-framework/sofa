@@ -22,6 +22,8 @@
 #ifndef SOFA_CORE_BEHAVIOR_BASEMECHANICALSTATE_H
 #define SOFA_CORE_BEHAVIOR_BASEMECHANICALSTATE_H
 
+#include <sofa/config/build_option_experimental_features.h>
+
 #include <sofa/core/BaseState.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/defaulttype/BaseMatrix.h>
@@ -135,11 +137,6 @@ public:
     /// \li v = a + b
     /// \li v = b * f
     virtual void vOp(const ExecParams* params, VecId v, ConstVecId a = ConstVecId::null(), ConstVecId b = ConstVecId::null(), SReal f = 1.0 ) = 0;
-#ifdef SOFA_SMP
-    virtual void vOp(const ExecParams* params, VecId v, ConstVecId a, ConstVecId b, SReal f, a1::Shared<SReal> * fSh ) = 0;
-    virtual void vOpMEq(const ExecParams* params, VecId v, ConstVecId a = ConstVecId::null(), a1::Shared<SReal> * fSh=NULL ) = 0;
-    virtual void vDot(const ExecParams* params, a1::Shared<SReal> *result,ConstVecId a, ConstVecId b ) = 0;
-#endif
     /// Data structure describing a set of linear operation on vectors
     /// \see vMultiOp
     class VMultiOpEntry : public std::pair< MultiVecId, helper::vector< std::pair< ConstMultiVecId, SReal > > >
@@ -391,8 +388,8 @@ public:
 
     /// @}getPotent
 
-    virtual bool insertInNode( objectmodel::BaseNode* node );
-    virtual bool removeInNode( objectmodel::BaseNode* node );
+    virtual bool insertInNode( objectmodel::BaseNode* node ) override;
+    virtual bool removeInNode( objectmodel::BaseNode* node ) override;
 
 };
 

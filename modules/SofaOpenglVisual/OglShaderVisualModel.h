@@ -68,24 +68,24 @@ protected:
     OglShaderVisualModel();
     virtual ~OglShaderVisualModel();
 public:
-    void init();
-    void initVisual();
+    void init() override;
+    void initVisual() override;
 
-    void updateVisual();
+    void updateVisual() override;
 
     //void putRestPositions(const Vec3fTypes::VecCoord& positions);
 
-    virtual void bwdDraw(core::visual::VisualParams*);
-    virtual void fwdDraw(core::visual::VisualParams*);
+    virtual void bwdDraw(core::visual::VisualParams*) override;
+    virtual void fwdDraw(core::visual::VisualParams*) override;
 
     // handle topological changes
-    virtual void handleTopologyChange();
+    virtual void handleTopologyChange() override;
     void computeRestPositions();
     void computeRestNormals();
 
 private:
-    virtual void pushTransformMatrix(float* matrix);
-    virtual void popTransformMatrix();
+    virtual void pushTransformMatrix(float* matrix) override;
+    virtual void popTransformMatrix() override;
 
 
 };

@@ -26,16 +26,6 @@
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/objectmodel/Link.h>
-#ifdef SOFA_SMP
-#include <sofa/defaulttype/SharedTypes.h>
-#include <sofa/core/objectmodel/Context.h>
-#include <sofa/core/objectmodel/BaseObjectTasks.h>
-#include <sofa/helper/set.h>
-#endif
-#ifdef SOFA_SMP_NUMA
-#include <numa.h>
-#endif
-
 
 namespace sofa
 {
@@ -80,9 +70,6 @@ enum class ComponentState {
  *
  */
 class SOFA_CORE_API BaseObject : public virtual Base
-#ifdef SOFA_SMP
-    , public BaseObjectTasks
-#endif
 {
 public:
     SOFA_CLASS(BaseObject, Base);
@@ -117,7 +104,7 @@ public:
     }
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters
-    virtual void parse ( BaseObjectDescription* arg );
+    virtual void parse ( BaseObjectDescription* arg ) override;
 
     /// Initialization method called at graph creation and modification, during top-down traversal.
     virtual void init();
@@ -170,9 +157,9 @@ public:
 
     virtual void removeSlave(BaseObject::SPtr s);
 
-    virtual void copyAspect(int destAspect, int srcAspect);
+    virtual void copyAspect(int destAspect, int srcAspect) override;
 
-    virtual void releaseAspect(int aspect);
+    virtual void releaseAspect(int aspect) override;
 
     /// @}
 
@@ -460,13 +447,8 @@ public:
     /// Use it before scene graph insertion
     void setSrc(const std::string &v, const BaseObject *loader, std::vector< std::string > *attributeList=0);
 
-    void* findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link);
+    void* findLinkDestClass(const BaseClass* destType, const std::string& path, const BaseLink* link) override;
 
-#ifdef SOFA_SMP
-    void setPartition(Iterative::IterativePartition* p);
-    Iterative::IterativePartition*  getPartition();
-    Iterative::IterativePartition*  prepareTask();
-#endif
 
     /// Return the full path name of this object
     virtual std::string getPathName() const;
@@ -491,9 +473,6 @@ protected:
     // BaseNode can set the context of its own objects
     friend class BaseNode;
 
-#ifdef SOFA_SMP
-    Iterative::IterativePartition *partition_;
-#endif
 
 public:
 

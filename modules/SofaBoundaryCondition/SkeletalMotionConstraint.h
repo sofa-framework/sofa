@@ -72,24 +72,24 @@ protected:
 
 public:
 
-    void init();
-    void reset();
+    void init() override;
+    void reset() override;
 
 	float getAnimationSpeed() const			{return animationSpeed.getValue();}
 	void setAnimationSpeed(float speed)		{animationSpeed.setValue(speed);}
 
     void findKeyTimes(Real ct);
 
-    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData);
-    void projectVelocity(const core::MechanicalParams* /*mparams*/, DataVecDeriv& vData);
-    void projectPosition(const core::MechanicalParams* /*mparams*/, DataVecCoord& xData);
-    void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData);
+    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData) override;
+    void projectVelocity(const core::MechanicalParams* /*mparams*/, DataVecDeriv& vData) override;
+    void projectPosition(const core::MechanicalParams* /*mparams*/, DataVecCoord& xData) override;
+    void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;
 
     using core::behavior::ProjectiveConstraintSet<TDataTypes>::applyConstraint;
     void applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset);
     void applyConstraint(defaulttype::BaseVector *vect, unsigned int offset);
 
-	void projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned offset )
+	void projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned offset ) override
 	{
 		unsigned blockSize = DataTypes::deriv_total_size;	
 		unsigned size = this->mstate->getSize();
@@ -99,7 +99,7 @@ public:
 		}
 	}
 
-    virtual void draw(const core::visual::VisualParams* vparams);
+    virtual void draw(const core::visual::VisualParams* vparams) override;
 
     template<class MyCoord>
     void localToGlobal(typename std::enable_if<std::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >::value, VecCoord>::type& x);

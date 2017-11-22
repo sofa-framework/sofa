@@ -272,7 +272,7 @@ public:
     using SPtr = sofa::core::sptr<MyType>;                              \
                                                                         \
     static const MyClass* GetClass() { return MyClass::get(); }         \
-    virtual const ::sofa::core::objectmodel::BaseClass* getClass() const \
+    virtual const ::sofa::core::objectmodel::BaseClass* getClass() const override \
     { return GetClass(); }                                              \
 	static const char* HeaderFileLocation() { return __FILE__; }         \
     template<class SOFA_T> ::sofa::core::objectmodel::BaseData::BaseInitData \

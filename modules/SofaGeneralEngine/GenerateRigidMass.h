@@ -48,11 +48,11 @@ public:
     ~GenerateRigidMass();
 
     /// Initialization method called at graph modification, during bottom-up traversal.
-    virtual void init();
+    virtual void init() override;
     /// Update method called when variables used in precomputation are modified.
-    virtual void reinit();
+    virtual void reinit() override;
     /// Update the output values
-    virtual void update();
+    virtual void update() override;
 
 protected:
 
@@ -104,7 +104,7 @@ public:
         return core::DataEngine::canCreate (obj, context, arg);
     }
 
-    virtual std::string getTemplateName() const;
+    virtual std::string getTemplateName() const override;
     static std::string templateName(const GenerateRigidMass<DataTypes,MassType>*);
 
 };
