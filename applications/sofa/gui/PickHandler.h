@@ -35,12 +35,12 @@ namespace component
 {
 namespace collision
 {
-	class ComponentMouseInteraction;
-	class RayModel;
+    class ComponentMouseInteraction;
+    class RayModel;
 }
 namespace configurationsetting
 {
-	class MouseButtonSetting;
+    class MouseButtonSetting;
 }
 }
 
@@ -175,7 +175,8 @@ protected:
     bool needToCastRay();
     void setCompatibleInteractor();
 
-	double m_defaultLength;
+    /// Default length of the ray. Set by constructor.
+    double m_defaultLength;
 };
 }
 }

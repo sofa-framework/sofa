@@ -60,7 +60,7 @@ PickHandler::PickHandler(double defaultLength):
     renderCallback(NULL),
     pickingMethod(RAY_CASTING),
     _fboAllocated(false),
-	m_defaultLength(defaultLength)
+    m_defaultLength(defaultLength)
 {
     operations[LEFT] = operations[MIDDLE] = operations[RIGHT] = NULL;
 }
@@ -70,11 +70,11 @@ PickHandler::~PickHandler()
 {
     for (unsigned int i=0; i<operations.size(); ++i)
     {
-		if (operations[i])
-		{
-			delete operations[i];
-			operations[i] = NULL;
-		}
+        if (operations[i])
+        {
+            delete operations[i];
+            operations[i] = NULL;
+        }
     }
     if(mouseNode)
     {
@@ -204,11 +204,11 @@ void PickHandler::unload()
 
 Operation *PickHandler::changeOperation(sofa::component::configurationsetting::MouseButtonSetting* setting)
 {
-	if (operations[setting->button.getValue().getSelectedId()])
-	{
-		delete operations[setting->button.getValue().getSelectedId()];
-		operations[setting->button.getValue().getSelectedId()] = NULL;
-	}
+    if (operations[setting->button.getValue().getSelectedId()])
+    {
+        delete operations[setting->button.getValue().getSelectedId()];
+        operations[setting->button.getValue().getSelectedId()] = NULL;
+    }
     Operation *mouseOp=OperationFactory::Instanciate(setting->getOperationType());
     mouseOp->configure(this,setting);
     operations[setting->button.getValue().getSelectedId()]=mouseOp;
@@ -217,11 +217,11 @@ Operation *PickHandler::changeOperation(sofa::component::configurationsetting::M
 
 Operation *PickHandler::changeOperation(MOUSE_BUTTON button, const std::string &op)
 {
-	if (operations[button])
-	{
-		delete operations[button];
-		operations[button] = NULL;
-	}
+    if (operations[button])
+    {
+        delete operations[button];
+        operations[button] = NULL;
+    }
     Operation *mouseOp=OperationFactory::Instanciate(op);
     mouseOp->configure(this,button);
     operations[button]=mouseOp;
@@ -233,11 +233,11 @@ void PickHandler::activateRay(int width, int height, core::objectmodel::BaseNode
 {
     if (!interactorInUse)
     {
-		if (mouseNode)
-		{
-			root->addChild(mouseNode);
-			interaction->attach(mouseNode.get());
-		}
+        if (mouseNode)
+        {
+            root->addChild(mouseNode);
+            interaction->attach(mouseNode.get());
+        }
 
         if( pickingMethod == SELECTION_BUFFER)
         {
@@ -251,12 +251,12 @@ void PickHandler::deactivateRay()
 {
     if (interactorInUse )
     {
-		if (mouseNode)
-			mouseNode->detachFromGraph();
+        if (mouseNode)
+            mouseNode->detachFromGraph();
 
-		if (operations[LEFT]) operations[LEFT]->endOperation();			
-		if (operations[MIDDLE]) operations[MIDDLE]->endOperation();
-		if (operations[RIGHT]) operations[RIGHT]->endOperation();
+        if (operations[LEFT]) operations[LEFT]->endOperation();            
+        if (operations[MIDDLE]) operations[MIDDLE]->endOperation();
+        if (operations[RIGHT]) operations[RIGHT]->endOperation();
 
         interaction->detach();
         if( pickingMethod == SELECTION_BUFFER)
@@ -291,8 +291,8 @@ void PickHandler::setCompatibleInteractor()
             {
                 interaction->detach();
                 interaction = instanceComponents[i];
-				if (mouseNode) 
-					interaction->attach(mouseNode.get());					
+                if (mouseNode) 
+                    interaction->attach(mouseNode.get());
             }
         }
     }
@@ -306,8 +306,8 @@ void PickHandler::setCompatibleInteractor()
             {
                 interaction->detach();
                 interaction = instanceComponents[i];
-				if (mouseNode) 
-					interaction->attach(mouseNode.get());
+                if (mouseNode) 
+                    interaction->attach(mouseNode.get());
             }
         }
     }
@@ -335,7 +335,7 @@ void PickHandler::updateRay(const sofa::defaulttype::Vector3 &position,const sof
             callbacks[i]->execute(lastPicked);
         }
     }
-	
+    
 
     if(mouseButton != NONE)
     {
@@ -349,13 +349,13 @@ void PickHandler::updateRay(const sofa::defaulttype::Vector3 &position,const sof
         }
         case RELEASED:
         {
-			if (operations[mouseButton]) operations[mouseButton]->end();
+            if (operations[mouseButton]) operations[mouseButton]->end();
             mouseStatus=DEACTIVATED;
             break;
         }
         case ACTIVATED:
         {
-			if (operations[mouseButton]) operations[mouseButton]->execution();
+            if (operations[mouseButton]) operations[mouseButton]->execution();
         }
         case DEACTIVATED:
         {
@@ -364,8 +364,8 @@ void PickHandler::updateRay(const sofa::defaulttype::Vector3 &position,const sof
     }
     for (unsigned int i=0; i<operations.size(); ++i)
     {
-		if (operations[i])
-			operations[i]->wait();
+        if (operations[i])
+            operations[i]->wait();
     }
 }
 
@@ -412,12 +412,12 @@ component::collision::BodyPicked PickHandler::findCollision()
 
 component::collision::BodyPicked PickHandler::findCollisionUsingPipeline()
 {
-	BodyPicked result;
+    BodyPicked result;
 
-	if (!mouseCollision) {
-		dmsg_error("PickHandler") << "No mouseCollision.";
-		return result;
-	}
+    if (!mouseCollision) {
+        dmsg_error("PickHandler") << "No mouseCollision.";
+        return result;
+    }
 
     const defaulttype::Vector3& origin          = mouseCollision->getRay(0).origin();
     const defaulttype::Vector3& direction       = mouseCollision->getRay(0).direction();
