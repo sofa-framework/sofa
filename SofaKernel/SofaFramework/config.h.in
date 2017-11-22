@@ -42,8 +42,6 @@
 
 #cmakedefine SOFA_HAVE_BOOST_SYSTEM
 
-#cmakedefine SOFA_HAVE_BOOST_PROGRAM_OPTION
-
 #cmakedefine SOFA_HAVE_BOOST_DATE_TIME
 
 #cmakedefine SOFA_HAVE_BOOST_LOCALE
