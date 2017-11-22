@@ -6,6 +6,7 @@ set(SOURCE_FILES
     core/loader/MeshLoader_test.cpp
     core/objectmodel/AspectPool_test.cpp
     core/objectmodel/Data_test.cpp
+    core/objectmodel/BaseLink_test.cpp
     core/objectmodel/BaseObjectDescription_test.cpp
     core/objectmodel/DataFileName_test.cpp
     core/DataEngine_test.cpp

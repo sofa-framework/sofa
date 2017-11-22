@@ -19,55 +19,61 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "SceneLoaderPY.h"
-#include <SofaPython/config.h>
-#include "PythonEnvironment.h"
+/******************************************************************************
+ * Contributors:
+ *      - damien.marchal@univ-lille1.fr
+ ******************************************************************************/
+#include <SofaSimulationGraph/testing/BaseSimulationTest.h>
+using sofa::helper::testing::BaseSimulationTest ;
 
-
-extern "C" {
-
-SOFA_SOFAPYTHON_API void initExternalModule()
+class SetOfPythonScenes
 {
-    static bool first = true;
-    if (first)
+public:
+    std::vector<std::string> m_scenes ;
+
+    SetOfPythonScenes(const std::initializer_list<std::string>& s)
     {
-        sofa::simulation::PythonEnvironment::Init();
-        first = false;
+        for(auto& i : s)
+        {
+            addATestScene(i) ;
+        }
     }
-}
 
-SOFA_SOFAPYTHON_API const char* getModuleName()
+    void addATestScene(const std::string s)
+    {
+        static const std::string rootPath = std::string(SOFAPYTHON_TEST_PYTHON_DIR);
+        m_scenes.push_back(rootPath+"/"+s);
+    }
+} ;
+
+class PythonBinding_tests :  public BaseSimulationTest
+                            ,public ::testing::WithParamInterface<std::string>
 {
-    return "SofaPython";
-}
+public:
 
-SOFA_SOFAPYTHON_API const char* getModuleVersion()
+    PythonBinding_tests()
+    {
+        importPlugin("SofaPython") ;
+    }
+
+    void runTest(const std::string& filename){
+        SceneInstance c=SceneInstance::LoadFromFile(filename) ;
+    }
+} ;
+
+SetOfPythonScenes scenes = {"test_BindingBase.py",
+                            "test_BindingData.py",
+                            "test_BindingLink.py",
+                            "test_BindingSofa.py"} ;
+
+TEST_P(PythonBinding_tests, scene)
 {
-    return SOFAPYTHON_VERSION_STR;
+   this->runTest(GetParam());
 }
 
-SOFA_SOFAPYTHON_API const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-SOFA_SOFAPYTHON_API const char* getModuleDescription()
-{
-    return "Python Environment and modules for scripting in Sofa";
-}
-
-SOFA_SOFAPYTHON_API const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    return "PythonScriptController";
-}
-
-}
-
-/// Use the SOFA_LINK_CLASS macro for each class, to enable linking on all platforms
-SOFA_LINK_CLASS(PythonScriptController)
+INSTANTIATE_TEST_CASE_P(PythonBinding,
+						PythonBinding_tests,
+                        ::testing::ValuesIn(scenes.m_scenes));
 
 
-/// register the loader in the factory
-const sofa::simulation::SceneLoader* loaderPY = sofa::simulation::SceneLoaderFactory::getInstance()->addEntry(new sofa::simulation::SceneLoaderPY());
 

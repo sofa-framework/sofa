@@ -33,6 +33,8 @@
 #ifndef SOFA_SIMULATION_CORE_NODE_H
 #define SOFA_SIMULATION_CORE_NODE_H
 
+#include <type_traits>
+
 #include <sofa/core/ExecParams.h>
 #include <sofa/core/objectmodel/Context.h>
 // moved from GNode (27/04/08)
@@ -347,14 +349,39 @@ public:
         getObjects(class_info, container, sofa::core::objectmodel::TagSet(), dir);
     }
 
-
-
-
     /// List all objects of this node deriving from a given class
     template<class Object, class Container>
     void getNodeObjects(Container* list)
     {
-        this->get<Object, Container>(list, Local);
+       return BaseContext::getObjects<Object, Container>(list, Local) ;
+    }
+
+    /// Returns a list of object of type passed as a parameter.
+    template<class Container>
+    Container* getNodeObjects(Container* result)
+    {
+        return BaseContext::getObjects(result, Local) ;
+    }
+
+    /// Returns a list of object of type passed as a parameter
+    template<class Container>
+    Container& getNodeObjects(Container& result)
+    {
+        return BaseContext::getObjects(result, Local);
+    }
+
+    /// Returns a list of object of type passed as a parameter.
+    /// This function is return object by copy but should be compatible with
+    /// Return Value Optimization so the copy should be removed by the compiler.
+    /// Eg:
+    ///     for( BaseObject* o : node->getNodeObjects() ) { ... }
+    ///     for( VisualModel* v : node->getNodeObjects<VisualModel>() ) { ... }
+    template<class Object=sofa::core::objectmodel::BaseObject>
+    std::vector<Object*> getNodeObjects()
+    {
+        std::vector<Object*> tmp ;
+        BaseContext::getObjects(tmp, Local);
+        return tmp;
     }
 
     /// Return an object of this node deriving from a given class, or NULL if not found.
@@ -377,6 +404,36 @@ public:
     {
         this->get<Object, Container>(list, SearchDown);
     }
+
+    /// List all objects of this node and sub-nodes deriving from a given class
+    template<class Container>
+    Container* getTreeObjects(Container* result)
+    {
+        return BaseContext::getObjects(result,  SearchDown);
+    }
+
+    /// List all objects of this node and sub-nodes deriving from a given class
+    template<class Container>
+    Container& getTreeObjects(Container& result)
+    {
+        return BaseContext::getObjects(result,  SearchDown);
+    }
+
+    /// List all objects of this node and sub-nodes deriving from a given class
+    /// This function is return a std::vector by copy but should be compatible with
+    /// Return Value Optimization so the copy should be removed by the compiler.
+    /// Eg:
+    ///     for( BaseObject* o : node->getTreeObjects() ) { ... }
+    ///     for( VisualModel* v : node->getTreeObjects<VisualModel>() ) { ... }
+    template<class Object=sofa::core::objectmodel::BaseObject>
+    std::vector<Object*> getTreeObjects()
+    {
+        std::vector<Object*> tmp ;
+        BaseContext::getObjects(tmp, SearchDown);
+        return tmp;
+    }
+
+
 
     /// Return an object of this node and sub-nodes deriving from a given class, or NULL if not found.
     /// Note that only the first object is returned.
@@ -500,7 +557,7 @@ protected:
     virtual void notifyAddObject(sofa::core::objectmodel::BaseObject::SPtr obj);
     virtual void notifyRemoveObject(sofa::core::objectmodel::BaseObject::SPtr obj);
     virtual void notifyMoveObject(sofa::core::objectmodel::BaseObject::SPtr obj, Node* prev);
-	virtual void notifySleepChanged();
+    virtual void notifySleepChanged();
 
 
     BaseContext* _context;

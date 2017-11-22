@@ -22,6 +22,8 @@
 *  Contributors:                                                              *
 *  - damien.marchal@univ-lille1.fr                                            *
 ******************************************************************************/
+#ifndef SOFA_APIVERSION_H
+#define SOFA_APIVERSION_H
 #include <sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject ;
 
@@ -60,3 +62,5 @@ using _apiversion_::APIVersion ;
 } // namespace component
 
 } // namespace sofa
+
+#endif /// SOFA_APIVERSION_H

@@ -19,55 +19,25 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "SceneLoaderPY.h"
-#include <SofaPython/config.h>
-#include "PythonEnvironment.h"
+/******************************************************************************
+ * Contributors:
+ *     - damien.marchal@univ-lille1.fr
+ *****************************************************************************/
 
+#include <sofa/core/objectmodel/BaseContext.h>
+using sofa::core::objectmodel::BaseContext ;
 
-extern "C" {
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest ;
 
-SOFA_SOFAPYTHON_API void initExternalModule()
+class BaseContext_unittest: public BaseTest
 {
-    static bool first = true;
-    if (first)
-    {
-        sofa::simulation::PythonEnvironment::Init();
-        first = false;
-    }
-}
+public:
 
-SOFA_SOFAPYTHON_API const char* getModuleName()
+};
+
+TEST_F(BaseContext_unittest , testDefaultBehavior )
 {
-    return "SofaPython";
+    BaseContext bc;
 }
-
-SOFA_SOFAPYTHON_API const char* getModuleVersion()
-{
-    return SOFAPYTHON_VERSION_STR;
-}
-
-SOFA_SOFAPYTHON_API const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-SOFA_SOFAPYTHON_API const char* getModuleDescription()
-{
-    return "Python Environment and modules for scripting in Sofa";
-}
-
-SOFA_SOFAPYTHON_API const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    return "PythonScriptController";
-}
-
-}
-
-/// Use the SOFA_LINK_CLASS macro for each class, to enable linking on all platforms
-SOFA_LINK_CLASS(PythonScriptController)
-
-
-/// register the loader in the factory
-const sofa::simulation::SceneLoader* loaderPY = sofa::simulation::SceneLoaderFactory::getInstance()->addEntry(new sofa::simulation::SceneLoaderPY());
 

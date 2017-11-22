@@ -4,8 +4,10 @@ project(SofaFrameworkExtra_test)
 
 set(SOURCE_FILES
     core/TrackedData_test.cpp
+    core/objectmodel/BaseContext_test.cpp
     helper/AdvancedTimer_test.cpp
     simulation/DefaultAnimationLoop_test.cpp
+    simulation/Node_test.cpp
 )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

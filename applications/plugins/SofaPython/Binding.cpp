@@ -60,7 +60,6 @@
 #include "Binding_DataEngine.h"
 #include "PythonFactory.h"
 
-
 using sofa::PythonFactory;
 
 
@@ -111,7 +110,7 @@ void bindSofaPythonModule()
     SP_ADD_CLASS_IN_FACTORY(PointSetTopologyModifier,sofa::component::topology::PointSetTopologyModifier)
     SP_ADD_CLASS_IN_FACTORY(TriangleSetTopologyModifier,sofa::component::topology::TriangleSetTopologyModifier)
 
-    /// Custom Exception to embed
+    /// Custom Exception
     PyObject* PyExc_SofaException = PyErr_NewExceptionWithDoc(
         (char*) "Sofa.SofaException",
         (char*) "Base exception class for the SofaPython module.",
@@ -119,7 +118,6 @@ void bindSofaPythonModule()
 
     if ( PyExc_SofaException )
         PyModule_AddObject(PythonFactory::s_sofaPythonModule, "SofaException", PyExc_SofaException);
-
 }
 
 

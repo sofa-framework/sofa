@@ -86,11 +86,11 @@ public:
 protected:
     BaseContext();
     virtual ~BaseContext();
-	
-private:	
-	BaseContext(const BaseContext&);
+
+private:
+    BaseContext(const BaseContext&);
     BaseContext& operator=(const BaseContext& );
-    
+
 public:
     /// Get the default Context object, that contains the default values for
     /// all parameters and can be used when no local context is defined.
@@ -108,11 +108,11 @@ public:
     /// State of the context
     virtual void setActive(bool) {}
 
-	/// Sleeping state of the context
-	virtual bool isSleeping() const;
+    /// Sleeping state of the context
+    virtual bool isSleeping() const;
 
-	/// Whether the context can change its sleeping state or not
-	virtual bool canChangeSleepingState() const;
+    /// Whether the context can change its sleeping state or not
+    virtual bool canChangeSleepingState() const;
 
     /// Simulation time
     virtual SReal getTime() const;
@@ -236,6 +236,42 @@ public:
     ///
     /// Note that the template wrapper method should generally be used to have the correct return type,
     virtual void getObjects(const ClassInfo& class_info, GetObjectsCallBack& container, const TagSet& tags, SearchDirection dir = SearchUp) const;
+
+    /// List all objects of this node deriving from a given class
+    template<class Object, class Container>
+    void getObjects(Container* list, SearchDirection dir = SearchUp)
+    {
+        this->get<Object, Container>(list, dir);
+    }
+
+    /// Returns a list of object of type passed as a parameter.
+    template<class Container>
+    Container* getObjects(Container* result, SearchDirection dir = SearchUp){
+        this->get<typename std::remove_pointer<typename Container::value_type>::type, Container>(result, dir);
+        return result ;
+    }
+
+    /// Returns a list of object of type passed as a parameter.
+    /// eg:
+    ///       sofa::helper::vector<VisualModel*> results;
+    ///       context->getObjects(results) ;
+    template<class Container>
+    Container& getObjects(Container& result, SearchDirection dir = SearchUp){
+        this->get<typename std::remove_pointer<typename Container::value_type>::type, Container>(&result, dir);
+        return result ;
+    }
+
+    /// Returns a list of object of type passed as a parameter. There shoud be no
+    /// Copy constructor because of Return Value Optimization.
+    /// eg:
+    ///    for(BaseObject* o : context->getObjects() ){ ... }
+    ///    for(VisualModel* o : context->getObjects<VisualModel>() ){ ... }
+    template<class Object=sofa::core::objectmodel::BaseObject>
+    std::vector<Object*> getObjects(SearchDirection dir = SearchUp){
+        std::vector<Object*> o;
+        getObjects(o, dir) ;
+        return o ;
+    }
 
 
     /// Generic object access template wrapper, possibly searching up or down from the current context
@@ -373,13 +409,13 @@ public:
     virtual void setAnimate(bool /*val*/)
     { }
 
-	/// Sleeping state of the context
-	virtual void setSleeping(bool /*val*/) 
-	{ }
+    /// Sleeping state of the context
+    virtual void setSleeping(bool /*val*/)
+    { }
 
-	/// Sleeping state change of the context
-	virtual void setChangeSleepingState(bool /*val*/)
-	{ }
+    /// Sleeping state change of the context
+    virtual void setChangeSleepingState(bool /*val*/)
+    { }
 
 #ifdef SOFA_SUPPORT_MULTIRESOLUTION
     /// Multiresolution support (UNSTABLE) : Set the current level, return false if l >= coarsestLevel
