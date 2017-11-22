@@ -1685,8 +1685,6 @@ void RealGUI::parseOptions()
     po::variables_map vm = mArgumentParser->getVariableMap();
     if(vm.find("enableInteraction") != vm.end())
         m_enableInteraction = vm["enableInteraction"].as<bool>();
-    if(vm.find("noViewers") != vm.end()) /// TODO, missing args, what was the use ?
-        mCreateViewersOpt = vm["noViewers"].as<bool>();
     if(vm.find("msaa") != vm.end())
         m_viewerMSAANbSampling = vm["msaa"].as<unsigned int>();
 }
