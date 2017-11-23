@@ -32,6 +32,7 @@
 #include <fstream>
 #include <string.h>
 #include <math.h>
+#include <stdlib.h>
 
 #include <qevent.h>
 
@@ -153,6 +154,10 @@ QtViewer::QtViewer(QWidget* parent, const char* name, const unsigned int nbMSAAS
     : QOpenGLWidget(setupGLFormat(nbMSAASamples), parent)
 #endif // defined(QT_VERSION) && QT_VERSION >= 0x050400
 {
+#ifdef __linux__
+    ::setenv("MESA_GL_VERSION_OVERRIDE", "3.0", 1);
+#endif // __linux
+
     this->setObjectName(name);
 
 #if defined(QT_VERSION) && QT_VERSION >= 0x050400
