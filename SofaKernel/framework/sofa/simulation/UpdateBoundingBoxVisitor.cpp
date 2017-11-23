@@ -42,7 +42,8 @@ Visitor::Result UpdateBoundingBoxVisitor::processNodeTopDown(Node* node)
     helper::vector<BaseObject*>::iterator object;
     node->get<BaseObject>(&objectList,BaseContext::Local);
     sofa::defaulttype::BoundingBox* nodeBBox = node->f_bbox.beginEdit(params);
-    nodeBBox->invalidate();
+    if(!node->f_bbox.isSet())
+        nodeBBox->invalidate();
     for ( object = objectList.begin(); object != objectList.end(); ++object)
     {
         // warning the second parameter should NOT be false
