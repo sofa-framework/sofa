@@ -424,7 +424,11 @@ public:
 
     virtual void addSubKToMatrix(sofa::defaulttype::BaseMatrix *mat, const helper::vector<unsigned> & subMatrixIndex, SReal k, unsigned int &offset) override;
 
+
     void draw(const core::visual::VisualParams* vparams) override;
+
+	void computeBBox(const core::ExecParams* params, bool onlyVisible);
+
 
     // Getting the stiffness matrix of index i
     void getElementStiffnessMatrix(Real* stiffness, unsigned int nodeIdx);
