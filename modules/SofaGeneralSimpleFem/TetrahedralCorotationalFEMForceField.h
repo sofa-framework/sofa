@@ -220,7 +220,11 @@ public:
     void getElementStiffnessMatrix(Real* stiffness, unsigned int nodeIdx);
     void getElementStiffnessMatrix(Real* stiffness, core::topology::BaseMeshTopology::Tetrahedron& te);
 
+
     void draw(const core::visual::VisualParams* vparams) override;
+
+	void computeBBox(const core::ExecParams* params, bool onlyVisible);
+
 
 protected:
 
