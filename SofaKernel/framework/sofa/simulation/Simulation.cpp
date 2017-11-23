@@ -209,15 +209,6 @@ void Simulation::init ( Node* root )
 
     root->execute<UpdateBoundingBoxVisitor>(params);
 
-    //Check the validity of the BBox
-    const sofa::defaulttype::BoundingBox& nodeBBox = root->getContext()->f_bbox.getValue();
-    if(nodeBBox.isNegligeable())
-    {
-        msg_error("Simulation") << "Global Bounding Box seems invalid ; please implement updateBBox in your components "
-                                << "or force a value by adding the parameter bbox=\"minX minY minZ maxX maxY maxZ\" in your root node \n";
-        msg_error("Simulation") << "Your viewer settings (based on the bbox) are likely invalid.";
-    }
-
     // propagate the visualization settings (showVisualModels, etc.) in the whole graph
     updateVisualContext(root);
 }
