@@ -106,8 +106,10 @@ int main(int argc, char** argv)
     sofa::component::initComponentBase();
     sofa::component::initComponentCommon();
 
+    bool showHelp = false;
     unsigned int idExample = 0;
     ArgumentParser* argParser = new ArgumentParser(argc, argv);
+    argParser->addArgument(po::value<bool>(&showHelp)->default_value(false)->implicit_value(true),                  "help,h", "Display this help message");
     argParser->addArgument(po::value<unsigned int>(&idExample)->default_value(0)->notifier([](unsigned int value)
     {
         if (value < 0 || value > 9) {
