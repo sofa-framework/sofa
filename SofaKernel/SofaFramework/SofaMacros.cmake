@@ -162,7 +162,14 @@ endmacro()
 macro(sofa_add_generic directory name type)
 
     if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/${directory}" AND IS_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/${directory}")
+        set(absdirectory "${CMAKE_CURRENT_LIST_DIR}/${directory}")
+        set(type-ext "")
+    else()
+        set(absdirectory "${directory}")
+        set(type-ext "(out-of-tree location)")
+    endif()
 
+    if(EXISTS "${absdirectory}" AND IS_DIRECTORY "${absdirectory}")
         string(TOUPPER ${type}_${name} option)
 
         # optional parameter to activate/desactivate the option
@@ -176,7 +183,7 @@ macro(sofa_add_generic directory name type)
 
         option(${option} "Build the ${name} ${type}." ${active})
         if(${option})
-            message("Adding ${type} ${name}")
+            message("Adding ${type} ${name} ${type-ext}")
             add_subdirectory(${directory} ${name})
             #Check if the target has been successfully added
             if(TARGET ${name})
@@ -188,7 +195,7 @@ macro(sofa_add_generic directory name type)
         set_property(GLOBAL APPEND PROPERTY __GlobalTargetList__ ${name})
         set_property(GLOBAL APPEND PROPERTY __GlobalTargetNameList__ ${option})
     else()
-        message("${type} ${name} (${CMAKE_CURRENT_LIST_DIR}/${directory}) does not exist and will be ignored.")
+        message("${type} ${name} (${absdirectory}) does not exist and will be ignored.")
     endif()
 endmacro()
 

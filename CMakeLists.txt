@@ -1,5 +1,12 @@
 cmake_minimum_required(VERSION 3.1)
+# Force cmake to use the NEW policy regaring the find_package() policy management.
+# The OLD policy was generating a warning because we are shipping our own findThreads.cmake
+# which is overriding the one install on the host system. This warning is supress by
+# using the NEW policy. You can have more info by calling: "cmake --help-policy CMP0017"
+cmake_policy(SET CMP0017 NEW)
+
 project(Sofa)
+
 
 set(SOFA_KERNEL_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaKernel" CACHE STRING "Path to SofaKernel")
 
@@ -373,6 +380,16 @@ if(NOT "${SOFA_EXTERNAL_DIRECTORIES}" STREQUAL "")
         get_filename_component(name ${dir} NAME) # Get the name of the actual directory
         message("Adding external directory: ${name} (${dir})")
         add_subdirectory(${dir} "${CMAKE_CURRENT_BINARY_DIR}/external_directories/${name}")
+    endforeach()
+endif()
+
+## Build external plugins at the same time
+set(SOFA_EXTERNAL_PLUGINS "" CACHE STRING "list of paths separated by ';'")
+if(NOT "${SOFA_EXTERNAL_PLUGINS}" STREQUAL "")
+    foreach(dir ${SOFA_EXTERNAL_PLUGINS})
+        get_filename_component(name ${dir} NAME) # Get the name of the actual directory
+        message("Adding external plugin: ${name} (${dir})")
+        sofa_add_plugin(${dir} ${name})
     endforeach()
 endif()
 
