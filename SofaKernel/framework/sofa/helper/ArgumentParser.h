@@ -48,10 +48,6 @@ namespace helper
 /** Command line parser
 
 This object parses arguments from a command line or from an input stream.
-The arguments are described using a pointer, a short name, a long name and a help message. Mandatory arguments are declared using method "parameter", optional arguments are declared using method "option".
-Once all arguments declared, operator () does the parsing.
-The special option -h or --help displays help on all arguments.
-See examples argumentParserLine_test.cpp and argumentParserFile_test.cpp
 @see Argument
 */
 
@@ -62,28 +58,61 @@ class SOFA_HELPER_API ArgumentParser
 
 public:
 
-    ArgumentParser(int a, char *b[]);
+    /**
+     *****************************************************************************************
+     *  @brief      constructor
+     *     *
+     *  @param      argc from command line
+     *  @param      argv from command line
+     ****************************************************************************************/
+
+    ArgumentParser(int argc, char **argv);
     ~ArgumentParser();
 
+    /**
+     *****************************************************************************************
+     *  @brief      addArgument
+     *
+     *  @usage      Can be call if you want to add parameters
+     *
+     *  @param      s boost_program_option semantic for examples @see runSofa/main.cpp
+     *  @param      name argument name such as "help,h" after the comma it's a character use as short name
+     *  @param      help describing the argument
+     ****************************************************************************************/
+
     void addArgument(const po::value_semantic* s, const std::string name, const std::string help);
+    /**
+     *****************************************************************************************
+     *  @brief      addArgument
+     *
+     *  @usage      Can be call if you want to add parameters
+     *
+     *  @param      name argument name such as "help,h" after the comma it's a character use as short name
+     *  @param      help describing the argument
+     ****************************************************************************************/
     void addArgument(const std::string name, const std::string help);
+
+    /// simply display the help (You need to add -h --help options in your main and call this function by yourself @see runSofa/main.cpp)
     void showHelp();
+    /// this is the main function. You have to call this function if you want to parse the arguments given to the constructor
     void parse();
+    /// display args with values
     void showArgs();
 
     po::variables_map getVariableMap();
     std::vector<std::string> getInputFileList();
 
     /** last parsed extra arguments */
-    static std::vector<std::string> extra;
+    static std::vector<std::string> extra; ///< extra parameter needed for python (arguments)
+    /// return extra_args needed for python (arguments)
     static const std::vector<std::string> extra_args() { return extra; }
 
 private:
-    int argc;
-    char **argv;
-    po::variables_map vm;
-    po::options_description desc;
-    po::positional_options_description p;
+    int m_argc; ///< simple argc parameter copied from constructor
+    char **m_argv; ///< simple argv parameter copied from constructor
+    po::variables_map vm; ///< Variable map containing the variable name with its value obtained from parse
+    po::options_description desc; ///< desc contains every options you want to parse. Each options has argument name, help, variables ref ...
+    po::positional_options_description positional_option; ///< this is used for parsing input files without any parameters
 
 
 

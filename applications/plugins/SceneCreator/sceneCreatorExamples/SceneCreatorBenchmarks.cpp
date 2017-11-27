@@ -107,10 +107,22 @@ int main(int argc, char** argv)
     sofa::component::initComponentCommon();
 
     unsigned int idExample = 0;
-    // ArgumentParser TODO
-//    sofa::helper::parse("This is a SOFA application. Here are the command line arguments")
-//            .parameter(&idExample,"e","example","Example Number to enter from (0 - 9)")
-//    (argc,argv);
+    ArgumentParser* argParser = new ArgumentParser(argc, argv);
+    argParser->addArgument(po::value<unsigned int>(&idExample)->default_value(0)->notifier([](unsigned int value)
+    {
+        if (value < 0 || value > 9) {
+            std::cerr << "Example Number to enter from (0 - 9), current value: " << value << std::endl;
+            exit( EXIT_FAILURE );
+        }
+    }),                                                                                                             "example,e", "Example Number to enter from (0 - 9)");
+
+    argParser->parse();
+
+    if(showHelp)
+    {
+        argParser->showHelp();
+        exit( EXIT_SUCCESS );
+    }
 
     // init GUI
     sofa::gui::initMain();
