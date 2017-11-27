@@ -353,20 +353,6 @@ int main(int argc, char** argv)
 
     PluginManager::getInstance().init();
 
-    //    if(enableInteraction){
-    //        msg_warning("Main") << "you activated the interactive mode. This is currently an experimental feature "
-    //                               "that may change or be removed in the future. " ;
-    //        GUIManager::AddGUIOption("enableInteraction");
-    //    }
-
-    //    if(nbMSSASamples > 1)
-    //    {
-    //        ostringstream oss ;
-    //        oss << "msaa=";
-    //        oss << nbMSSASamples;
-    //        GUIManager::AddGUIOption(oss.str().c_str());
-    //    }
-
     if (int err = GUIManager::Init(argv[0],gui.c_str()))
         return err;
 
