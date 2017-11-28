@@ -208,7 +208,7 @@ if(MSVC)
 endif()
 
 ### Mask
-option(SOFA_USE_MASK "Use mask optimization" ON)
+option(SOFA_USE_MASK "Use mask optimization" OFF)
 
 ### SOFA_DEV_TOOL
 option(SOFA_WITH_DEVTOOLS "Compile with developement extra features." ON)
