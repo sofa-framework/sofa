@@ -23,22 +23,16 @@
 #define SOFA_GUI_GLUT_HEADLESSRECORDER_H
 
 #include <sofa/gui/BaseGUI.h>
-#include <sofa/gui/PickHandler.h>
 
-#include <sofa/helper/system/thread/CTime.h>
-#include <sofa/helper/system/gl.h>
+#include <sofa/simulation/Simulation.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/visual/DrawToolGL.h>
 #include <SofaBaseVisual/InteractiveCamera.h>
 #include <sofa/helper/gl/RAII.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sys/time.h>
-#include <thread>
 
-timeval t1, t2;
 // LIBAV
 extern "C" {
-
 #include <libavcodec/avcodec.h>
 #include <libavutil/imgutils.h>
 #include <libavutil/opt.h>
@@ -55,18 +49,12 @@ extern "C" {
 
 namespace sofa
 {
- namespace gui
+
+namespace gui
 {
 
 namespace hRecorder
 {
-
-using namespace sofa::defaulttype;
-using namespace sofa::helper::system::thread;
-using namespace sofa::component::collision;
-#ifdef SOFA_SMP
-class MainLoopTask;
-#endif
 
 class HeadlessRecorder : public sofa::gui::BaseGUI
 {

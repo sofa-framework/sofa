@@ -31,7 +31,6 @@ namespace hRecorder
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::helper::gl;
 using sofa::simulation::getSimulation;
 
 SOFA_DECL_CLASS(HeadlessRecorder)
@@ -40,8 +39,8 @@ static sofa::core::ObjectFactory::ClassEntry::SPtr classVisualModel;
 HeadlessRecorder::HeadlessRecorder(const std::vector<std::string>& options)
 {
     groot = NULL;
-    m_width = 1920;
-    m_height = 1080;
+    m_width = 1920; // will be redefined by the command argument
+    m_height = 1080; // will be redefined by the command argument
     m_fps = 60;
     m_nFrames = 0;
     m_recordTimeInSeconds = 5.0;
@@ -66,24 +65,46 @@ HeadlessRecorder::~HeadlessRecorder()
 
 int HeadlessRecorder::InitGUI(const char* /*name*/, const std::vector<std::string>& /*options*/)
 {
-    // Replace generic visual models with OglModel
-    sofa::core::ObjectFactory::AddAlias("VisualModel", "OglModel", true, &classVisualModel);
     return 0;
 }
 
 BaseGUI* HeadlessRecorder::CreateGUI(const char* /*name*/, const std::vector<std::string>& options, sofa::simulation::Node::SPtr groot, const char* filename)
 {
+
     EGLDisplay display;
     EGLConfig config;
     EGLContext context;
     EGLint num_config;
 
     display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-    eglInitialize(display, nullptr, nullptr);
-    eglChooseConfig(display, nullptr, &config, 1, &num_config);
+    if (display == EGL_NO_DISPLAY)
+    {
+        std:: cout << "ERROR: EGL could not be initialized"<< std::endl;
+        exit(EXIT_FAILURE);
+    }
+    if (!eglInitialize(display, nullptr, nullptr))
+    {
+        std:: cout << "ERROR: Could not start EGL display connection"<< std::endl;
+        exit(EXIT_FAILURE);
+    }
+    if (eglChooseConfig(display, nullptr, &config, 1, &num_config) != EGL_TRUE)
+    {
+        std:: cout << "ERROR: Configuration selection failed" << std::endl;
+        exit(EXIT_FAILURE);
+    }
     eglBindAPI(EGL_OPENGL_API);
     context = eglCreateContext(display, config, EGL_NO_CONTEXT, NULL);
-    eglMakeCurrent(display, EGL_NO_SURFACE, EGL_NO_SURFACE, context);
+    if (eglMakeCurrent(display, EGL_NO_SURFACE, EGL_NO_SURFACE, context) != EGL_TRUE) {
+        std:: cout << "ERROR: Display was not made current one"<< std::endl;
+        exit(EXIT_FAILURE);
+    }
+
+    GLenum err = glewInit();
+    if (GLEW_OK != err)
+    {
+        std:: cout << "GLEW Error: " << glewGetErrorString(err) << std::endl;
+        exit(EXIT_FAILURE);
+    }
 
     HeadlessRecorder* gui = new HeadlessRecorder(options);
     gui->setScene(groot, filename);
@@ -97,8 +118,7 @@ void HeadlessRecorder::parseOptions(const std::vector<std::string>& options)
     {
         size_t cursor = 0;
         std::string opt = options[i];
-        //Set number of iterations
-        //(option = "nbIterations=N where N is the number of iterations)
+
         if ( (cursor = opt.find("width=")) != std::string::npos )
         {
             int width;
@@ -133,9 +153,7 @@ void HeadlessRecorder::parseOptions(const std::vector<std::string>& options)
             iss.str(opt.substr(cursor+std::string("seconds=").length(), std::string::npos));
             iss >> seconds;
             m_recordTimeInSeconds = seconds;
-
         }
-
     }
 }
 
@@ -150,7 +168,6 @@ int HeadlessRecorder::closeGUI()
 // -----------------------------------------------------------------
 void HeadlessRecorder::initializeGL(void)
 {
-    static GLfloat    specref[4];
     static GLfloat    specular[4];
     static GLfloat    ambientLight[4];
     static GLfloat    diffuseLight[4];
@@ -181,15 +198,6 @@ void HeadlessRecorder::initializeGL(void)
         specular[1] = 1.0f;
         specular[2] = 1.0f;
         specular[3] = 1.0f;
-
-        specref[0] = 1.0f;
-        specref[1] = 1.0f;
-        specref[2] = 1.0f;
-        specref[3] = 1.0f;
-
-        glewInit();
-        if (!GLEW_ARB_multitexture)
-            msg_error("HeadlessRecorder") << "Error: GL_ARB_multitexture not supported";
 
         // Set light model
         glLightModelfv(GL_LIGHT_MODEL_LOCAL_VIEWER, lmodel_local);
@@ -249,7 +257,7 @@ int HeadlessRecorder::mainLoop()
         if (currentSimulation() && currentSimulation()->getContext()->getAnimate())
             step();
         else
-            CTime::sleep(0.01);
+            sleep(0.01);
         redraw();
         record();
         m_nFrames++;
@@ -470,16 +478,10 @@ sofa::simulation::Node* HeadlessRecorder::currentSimulation()
 
 void HeadlessRecorder::setViewerResolution(int width, int height)
 {
-
-    //    if (width > 0 && height > 0)
-    //    {
-    //        m_width = width;
-    //        m_height = height;
-    //    }
 }
 
 // -----------------------------------------------------------------
-// --- Screenshot
+// --- FrameRecord
 // -----------------------------------------------------------------
 void HeadlessRecorder::record()
 {
@@ -663,7 +665,7 @@ void HeadlessRecorder::videoGLToFrame()
     m_rgb = (uint8_t*)realloc(m_rgb, nvals * sizeof(uint8_t));
     GLubyte *pixels = (GLubyte*)malloc(nvals * sizeof(GLubyte));
     glReadPixels(0, 0, m_width, m_height, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-    gettimeofday(&t1, NULL);
+
     for (i = 0; i < m_height; i++) {
         for (j = 0; j < m_width; j++) {
             cur_gl  = format_nchannels * (m_width * (m_height - i - 1) + j);
