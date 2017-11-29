@@ -144,7 +144,6 @@ set(CUDA_SOURCES
     sofa/gpu/cuda/CudaLinearMovementConstraint.cu
     sofa/gpu/cuda/CudaMechanicalObject.cu
     sofa/gpu/cuda/CudaMeshMatrixMass.cu
-    sofa/gpu/cuda/CudaParticleSource.cu
     sofa/gpu/cuda/CudaPenalityContactForceField.cu
     sofa/gpu/cuda/CudaPlaneForceField.cu
     sofa/gpu/cuda/CudaRigidMapping.cu
@@ -209,9 +208,10 @@ else()
     message(STATUS "SofaCUDA: SofaDistanceGrid was not enabled, therefore CudaDistanceGridCollisionModel will not be compiled.")
 endif()
 
-find_package(SofaSphFluid QUIET)
-if(SofaSphFluid_FOUND)
-    list(APPEND HEADER_FILES
+if (PLUGIN_SOFASPHFLUID)
+    find_package(SofaSphFluid QUIET)
+    if(SofaSphFluid_FOUND)
+        list(APPEND HEADER_FILES
             sofa/gpu/cuda/CudaParticleSource.h
             sofa/gpu/cuda/CudaParticleSource.inl
             sofa/gpu/cuda/CudaSPHFluidForceField.h
@@ -221,21 +221,24 @@ if(SofaSphFluid_FOUND)
             sofa/gpu/cuda/CudaSpatialGridContainer.h
             sofa/gpu/cuda/CudaSpatialGridContainer.inl
             )
-    list(APPEND SOURCE_FILES
+        list(APPEND SOURCE_FILES
         sofa/gpu/cuda/CudaParticleSource.cpp
         sofa/gpu/cuda/CudaSPHFluidForceField.cpp
         sofa/gpu/cuda/CudaParticlesRepulsionForceField.cpp
         sofa/gpu/cuda/CudaSpatialGridContainer.cpp
         )
-    list(APPEND CUDA_SOURCES
+        list(APPEND CUDA_SOURCES
         sofa/gpu/cuda/CudaParticleSource.cu
         sofa/gpu/cuda/CudaSPHFluidForceField.cu
         sofa/gpu/cuda/CudaParticlesRepulsionForceField.cu
         sofa/gpu/cuda/CudaSpatialGridContainer.cu
         )
-    message(STATUS "SofaCUDA: optional dependency to SofaSphFluid found. ")
+        message(STATUS "SofaCUDA: optional dependency to SofaSphFluid found. ")
+    else()
+        message(STATUS "SofaCUDA: optional dependency SofaSphFluid not found. ")
+    endif()
 else()
-    message(STATUS "SofaCUDA: optional dependency SofaSphFluid not found. ")
+    message(STATUS "SofaCUDA: optional dependency SofaSphFluid not enabled. ")
 endif()
 
 
@@ -316,7 +319,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>"
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFACUDA_COMPILE_DEFINITIONS}")
-target_link_libraries(${PROJECT_NAME} SofaOpenglVisual SofaGeneralEngine SofaGeneralDeformable SofaEngine SofaSphFluid SofaUserInteraction SofaComponentAdvanced SofaComponentMisc)
+target_link_libraries(${PROJECT_NAME} SofaOpenglVisual SofaGeneralEngine SofaGeneralDeformable SofaEngine SofaUserInteraction SofaComponentAdvanced SofaComponentMisc)
 
 if(SofaDistanceGrid_FOUND)
     target_link_libraries(${PROJECT_NAME} SofaDistanceGrid)
