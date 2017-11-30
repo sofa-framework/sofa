@@ -476,7 +476,7 @@ sofa::simulation::Node* HeadlessRecorder::currentSimulation()
     return groot.get();
 }
 
-void HeadlessRecorder::setViewerResolution(int width, int height)
+void HeadlessRecorder::setViewerResolution(int /*width*/, int /*height*/)
 {
 }
 
@@ -561,6 +561,7 @@ void HeadlessRecorder::videoEncoderStart(const char *filename, int codec_id)
 {
     AVCodec *codec;
     int ret;
+    msg_info("HeadlessRecorder") << "Start recording ... " << filename;
     avcodec_register_all();
     codec = avcodec_find_encoder((AVCodecID)codec_id);
     if (!codec) {
@@ -612,13 +613,28 @@ void HeadlessRecorder::videoEncoderStart(const char *filename, int codec_id)
     }
 }
 
+int HeadlessRecorder::encode(int *got_packet)
+{
+    int ret;
+    *got_packet = 0;
+    ret = avcodec_send_frame(c, m_frame);
+    if (ret < 0)
+        return ret;
+    ret = avcodec_receive_packet(c, &m_avPacket);
+    if (!ret)
+        *got_packet = 1;
+    if (ret == AVERROR(EAGAIN))
+        return 0;
+    return ret;
+}
+
 void HeadlessRecorder::videoEncoderStop()
 {
     uint8_t endcode[] = { 0, 0, 1, 0xb7 };
     int got_output, ret;
     do {
         fflush(stdout);
-        ret = avcodec_encode_video2(c, &m_avPacket, NULL, &got_output);
+        ret = encode(&got_output);
         if (ret < 0) {
             msg_error("HeadlessRecorder") << "Error encoding frame";
             exit(1);
@@ -645,8 +661,7 @@ void HeadlessRecorder::videoFrameEncoder()
     m_avPacket.data = NULL;
     m_avPacket.size = 0;
     m_frame->pts = m_nFrames;
-
-    ret = avcodec_encode_video2(c, &m_avPacket, m_frame, &got_output);
+    ret = encode(&got_output);
     if (ret < 0) {
         msg_error("HeadlessRecorder") << "Error encoding frame";
         exit(1);
@@ -659,8 +674,8 @@ void HeadlessRecorder::videoFrameEncoder()
 
 void HeadlessRecorder::videoGLToFrame()
 {
-    size_t i, j, k, cur_gl, cur_rgb, nvals;
-    const size_t format_nchannels = 4;
+    int i, j, k, cur_gl, cur_rgb, nvals;
+    const int format_nchannels = 4;
     nvals = format_nchannels * m_width * m_height;
     m_rgb = (uint8_t*)realloc(m_rgb, nvals * sizeof(uint8_t));
     GLubyte *pixels = (GLubyte*)malloc(nvals * sizeof(GLubyte));

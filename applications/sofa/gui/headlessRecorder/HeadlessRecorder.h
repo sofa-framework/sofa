@@ -95,6 +95,7 @@ private:
     void screenshotPNG(std::string fileName);
     void videoYUVToRGB();
     void videoEncoderStart(const char *filename, int codec_id);
+    int encode(int *got_packet);
     void videoEncoderStop(void);
     void videoFrameEncoder();
     void videoGLToFrame();
