@@ -192,6 +192,37 @@ bool MeshVTKLoader::setInputsMesh()
 
     d_positions.endEdit();
 
+	vector<Vector3>& my_normals = *(d_normals.beginEdit());
+	if(reader->inputNormals)
+	{
+		BaseVTKReader::VTKDataIO<double>* vtkpd =  dynamic_cast<BaseVTKReader::VTKDataIO<double>* > (reader->inputNormals);
+		BaseVTKReader::VTKDataIO<float>* vtkpf =  dynamic_cast<BaseVTKReader::VTKDataIO<float>* > (reader->inputNormals);
+
+		if (vtkpd)
+		{
+			const double* inNormals = (vtkpd->data);
+			if (inNormals)
+				for (int i=0; i < vtkpd->dataSize; i+=3)
+					my_normals.push_back(Vector3 ((double)inNormals[i+0], (double)inNormals[i+1], (double)inNormals[i+2]));
+			else return false;
+		}
+		else if (vtkpf)
+		{
+			const float* inNormals = (vtkpf->data);
+			if (inNormals)
+				for (int i=0; i < vtkpf->dataSize; i+=3)
+					my_normals.push_back(Vector3 ((float)inNormals[i+0], (float)inNormals[i+1], (float)inNormals[i+2]));
+			else return false;
+		}
+		else
+		{
+			msg_info(this) << "Type of coordinate (X,Y,Z) not supported" ;
+			return false;
+		}
+	}
+
+	d_normals.endEdit();
+
     helper::vector<Edge >& my_edges = *(d_edges.beginEdit());
     helper::vector<Triangle >& my_triangles = *(d_triangles.beginEdit());
     helper::vector<Quad >& my_quads = *(d_quads.beginEdit());
@@ -417,6 +448,7 @@ bool MeshVTKLoader::setInputsMesh()
 
     }
     if (reader->inputPoints) delete reader->inputPoints;
+	if (reader->inputNormals) delete reader->inputNormals;
     if (reader->inputPolygons) delete reader->inputPolygons;
     if (reader->inputCells) delete reader->inputCells;
     if (reader->inputCellTypes) delete reader->inputCellTypes;
@@ -635,6 +667,34 @@ bool LegacyVTKReader::readFile(const char* filename)
                     }
 
                 }
+				else if (dataStructure == "NORMALS")
+				{
+					string dataName, dataType;
+					lnData >> dataName >> dataType;
+					inputNormals = newVTKDataIO(dataType, 3);
+					if (inputNormals == NULL) return false;
+					if (!inputNormals->read(inVTKFile, nb_ele, binary)) return false;
+				}
+				else if (dataStructure == "VECTORS")
+				{
+					string dataName, dataType;
+					lnData >> dataName >> dataType;
+					BaseVTKDataIO*  data = newVTKDataIO(dataType, 3);
+					if (data != NULL)
+					{
+						if (data->read(inVTKFile, nb_ele, binary))
+						{
+							inputDataVector.push_back(data);
+							data->name = dataName;
+							if (kw == "CELL_DATA"){
+								msg_info(this) << "Read cell data: " << data->name;
+							}else{
+								msg_info(this) << "Read point data: " << data->name;
+							}
+						} else
+							delete data;
+					}
+				}
                 else if (dataStructure == "FIELD")
                 {
                     std::string fieldName;

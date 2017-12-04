@@ -43,7 +43,7 @@ namespace basevtkreader
 {
 
 
-BaseVTKReader::BaseVTKReader():inputPoints (NULL), inputPolygons(NULL), inputCells(NULL),
+BaseVTKReader::BaseVTKReader():inputPoints (NULL), inputNormals (NULL), inputPolygons(NULL), inputCells(NULL),
                                inputCellOffsets(NULL), inputCellTypes(NULL),
                                numberOfPoints(0),numberOfCells(0)
 {}

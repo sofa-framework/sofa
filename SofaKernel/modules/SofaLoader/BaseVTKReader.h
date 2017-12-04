@@ -102,6 +102,7 @@ public:
     BaseVTKDataIO* newVTKDataIO(const string& typestr, int num) ;
 
     BaseVTKDataIO* inputPoints;
+	BaseVTKDataIO* inputNormals;
     BaseVTKDataIO* inputPolygons;
     BaseVTKDataIO* inputCells;
     BaseVTKDataIO* inputCellOffsets;
