@@ -199,7 +199,7 @@ bool MeshVTKLoader::setInputsMesh()
 		BaseVTKReader::VTKDataIO<float>* vtkpf =  dynamic_cast<BaseVTKReader::VTKDataIO<float>* > (reader->inputNormals);
 
 		if (vtkpd)
-		{
+		{			
 			const double* inNormals = (vtkpd->data);
 			if (inNormals)
 				for (int i=0; i < vtkpd->dataSize; i+=3)
@@ -668,12 +668,12 @@ bool LegacyVTKReader::readFile(const char* filename)
 
                 }
 				else if (dataStructure == "NORMALS")
-				{
+				{					
 					string dataName, dataType;
 					lnData >> dataName >> dataType;
-					inputNormals = newVTKDataIO(dataType, 3);
+					inputNormals = newVTKDataIO(dataType);
 					if (inputNormals == NULL) return false;
-					if (!inputNormals->read(inVTKFile, nb_ele, binary)) return false;
+					if (!inputNormals->read(inVTKFile, 3*nb_ele, binary)) return false;
 				}
 				else if (dataStructure == "VECTORS")
 				{
