@@ -70,19 +70,19 @@ public:
     SetIndex points;
 
     /// applied force for all the points
-    Data< Real > force;
+    Data< Real > d_force;
 
     /// the key frames when the forces are defined by the user
-    Data< helper::vector< Real > > keyTimes;
+    Data< helper::vector< Real > > d_keyTimes;
 
     /// forces corresponding to the key frames
-    Data< VecDeriv > keyForces;
+    Data< VecDeriv > d_keyForces;
 
     /// for drawing. The sign changes the direction, 0 doesn't draw arrow
-    Data< SReal > arrowSizeCoef;
+    Data< SReal > d_arrowSizeCoef;
 protected:
     LinearForceField();
-    virtual ~LinearForceField() { delete data; };
+    virtual ~LinearForceField() override { delete data; }
 
 public:
     void draw(const core::visual::VisualParams* vparams) override;
@@ -113,7 +113,7 @@ public:
     {
         //TODO: remove this line (avoid warning message) ...
         mparams->setKFactorUsed(true);
-    };
+    }
 
     virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * matrix, SReal kFact, unsigned int &offset) override;
 
