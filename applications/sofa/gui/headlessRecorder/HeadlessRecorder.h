@@ -42,7 +42,7 @@ extern "C" {
 // OPENGL
 #define GL_GLEXT_PROTOTYPES 1
 #include <GL/gl.h>
-#include <EGL/egl.h>
+#include <GL/glx.h>
 
 // PNG
 #include <png.h>

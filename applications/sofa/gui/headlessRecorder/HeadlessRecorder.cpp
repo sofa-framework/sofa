@@ -35,6 +35,10 @@ using sofa::simulation::getSimulation;
 
 SOFA_DECL_CLASS(HeadlessRecorder)
 static sofa::core::ObjectFactory::ClassEntry::SPtr classVisualModel;
+typedef GLXContext (*glXCreateContextAttribsARBProc)(Display*, GLXFBConfig, GLXContext, Bool, const int*);
+typedef Bool (*glXMakeContextCurrentARBProc)(Display*, GLXDrawable, GLXDrawable, GLXContext);
+static glXCreateContextAttribsARBProc glXCreateContextAttribsARB = 0;
+static glXMakeContextCurrentARBProc glXMakeContextCurrentARB = 0;
 
 HeadlessRecorder::HeadlessRecorder(const std::vector<std::string>& options)
 {
@@ -71,32 +75,70 @@ int HeadlessRecorder::InitGUI(const char* /*name*/, const std::vector<std::strin
 BaseGUI* HeadlessRecorder::CreateGUI(const char* /*name*/, const std::vector<std::string>& options, sofa::simulation::Node::SPtr groot, const char* filename)
 {
 
-    EGLDisplay display;
-    EGLConfig config;
-    EGLContext context;
-    EGLint num_config;
+    int WIDTH = 1920;
+    int HEIGHT = 1080;
 
-    display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-    if (display == EGL_NO_DISPLAY)
-    {
-        std:: cout << "ERROR: EGL could not be initialized"<< std::endl;
-        exit(EXIT_FAILURE);
+
+    int context_attribs[] = {
+        GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
+        GLX_CONTEXT_MINOR_VERSION_ARB, 0,
+        None
+    };
+
+    Display* m_display;
+    int fbcount = 0;
+    GLXFBConfig* fbc = NULL;
+    GLXContext ctx;
+    GLXPbuffer pbuf;
+
+    /* open display */
+    if ( ! (m_display = XOpenDisplay(0)) ){
+        fprintf(stderr, "Failed to open display\n");
+        exit(1);
     }
-    if (!eglInitialize(display, nullptr, nullptr))
-    {
-        std:: cout << "ERROR: Could not start EGL display connection"<< std::endl;
-        exit(EXIT_FAILURE);
+
+    /* get framebuffer configs, any is usable (might want to add proper attribs) */
+    if ( !(fbc = glXChooseFBConfig(m_display, DefaultScreen(m_display), NULL, &fbcount) ) ){
+        fprintf(stderr, "Failed to get FBConfig\n");
+        exit(1);
     }
-    if (eglChooseConfig(display, nullptr, &config, 1, &num_config) != EGL_TRUE)
-    {
-        std:: cout << "ERROR: Configuration selection failed" << std::endl;
-        exit(EXIT_FAILURE);
+
+    /* get the required extensions */
+    glXCreateContextAttribsARB = (glXCreateContextAttribsARBProc)glXGetProcAddressARB( (const GLubyte *) "glXCreateContextAttribsARB");
+    glXMakeContextCurrentARB = (glXMakeContextCurrentARBProc)glXGetProcAddressARB( (const GLubyte *) "glXMakeContextCurrent");
+    if ( !(glXCreateContextAttribsARB && glXMakeContextCurrentARB) ){
+        fprintf(stderr, "missing support for GLX_ARB_create_context\n");
+        XFree(fbc);
+        exit(1);
     }
-    eglBindAPI(EGL_OPENGL_API);
-    context = eglCreateContext(display, config, EGL_NO_CONTEXT, NULL);
-    if (eglMakeCurrent(display, EGL_NO_SURFACE, EGL_NO_SURFACE, context) != EGL_TRUE) {
-        std:: cout << "ERROR: Display was not made current one"<< std::endl;
-        exit(EXIT_FAILURE);
+
+    /* create a context using glXCreateContextAttribsARB */
+    if ( !( ctx = glXCreateContextAttribsARB(m_display, fbc[0], 0, True, context_attribs)) ){
+        fprintf(stderr, "Failed to create opengl context\n");
+        XFree(fbc);
+        exit(1);
+    }
+
+    /* create temporary pbuffer */
+    int pbuffer_attribs[] = {
+        GLX_PBUFFER_WIDTH, WIDTH,
+        GLX_PBUFFER_HEIGHT, HEIGHT,
+        None
+    };
+    pbuf = glXCreatePbuffer(m_display, fbc[0], pbuffer_attribs);
+
+    XFree(fbc);
+    XSync(m_display, False);
+
+    /* try to make it the current context */
+    if ( !glXMakeContextCurrent(m_display, pbuf, pbuf, ctx) ){
+        /* some drivers does not support context without default framebuffer, so fallback on
+                    * using the default window.
+                    */
+        if ( !glXMakeContextCurrent(m_display, DefaultRootWindow(m_display), DefaultRootWindow(m_display), ctx) ){
+            fprintf(stderr, "failed to make current\n");
+            exit(1);
+        }
     }
 
     GLenum err = glewInit();
@@ -495,7 +537,7 @@ void HeadlessRecorder::record()
         if (initVideoRecorder)
         {
             std::string fileName = m_fileNameVideo;
-            fileName.append(".mkv");
+            fileName.append(".avi");
             videoEncoderStart(fileName.c_str(), AV_CODEC_ID_H264);
             initVideoRecorder = false;
         }

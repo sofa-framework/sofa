@@ -9,7 +9,7 @@ set(SOURCE_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-target_link_libraries(${PROJECT_NAME} -lpng -lEGL -lavcodec -lswscale -lavutil SofaGuiCommon)
+target_link_libraries(${PROJECT_NAME} -lpng -lX11 -lavcodec -lswscale -lavutil SofaGuiCommon)
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAGUIHEADLESSRECORDER")
 
 sofa_install_targets(SofaGui SofaHeadlessRecorder "")
