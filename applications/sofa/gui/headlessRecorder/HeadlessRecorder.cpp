@@ -74,6 +74,9 @@ int HeadlessRecorder::InitGUI(const char* /*name*/, const std::vector<std::strin
 
 BaseGUI* HeadlessRecorder::CreateGUI(const char* /*name*/, const std::vector<std::string>& options, sofa::simulation::Node::SPtr groot, const char* filename)
 {
+    msg_warning("HeadlessRecorder") << "This is an experimental feature. Works only on linux";
+    msg_warning("HeadlessRecorder") << "For any suggestion/help/bug please report to:";
+    msg_warning("HeadlessRecorder") << "https://github.com/sofa-framework/sofa/issues/537";
 
     int WIDTH = 1920;
     int HEIGHT = 1080;
