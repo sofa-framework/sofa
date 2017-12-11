@@ -25,8 +25,6 @@ public:
     ServerCommunicationZMQ();
     virtual ~ServerCommunicationZMQ();
 
-    std::string getArgumentType(std::string value);
-    std::string getArgumentValue(std::string value);
     std::vector<std::string> stringToArgumentList(std::string dataString);
 
     //////////////////////////////// Factory OSC type /////////////////////////////////
@@ -46,13 +44,16 @@ protected:
     //////////////////////////////// Inherited from ServerCommunication /////////////////////////////////
     virtual void sendData();
     virtual void receiveData();
+
+    virtual std::string getArgumentType(std::string value) override;
+    virtual std::string getArgumentValue(std::string value) override;
     /////////////////////////////////////////////////////////////////////////////////
 
     void sendRequest();
     void receiveRequest();
 
     std::string dataToString(CommunicationSubscriber* subscriber, std::string argument);
-    void stringToData(std::string dataString);
+    void processMessage(std::string dataString);
 
 };
 

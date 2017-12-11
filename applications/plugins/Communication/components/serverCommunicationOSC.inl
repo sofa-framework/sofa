@@ -56,12 +56,14 @@ ServerCommunicationOSC::OSCDataFactory* ServerCommunicationOSC::getFactoryInstan
 
 void ServerCommunicationOSC::initTypeFactory()
 {
-    getFactoryInstance()->registerCreator("f", new DataCreator<float>());
-    getFactoryInstance()->registerCreator("d", new DataCreator<double>());
-    getFactoryInstance()->registerCreator("i", new DataCreator<int>());
-    getFactoryInstance()->registerCreator("s", new DataCreator<std::string>());
+    getFactoryInstance()->registerCreator("float32", new DataCreator<float>());
+    getFactoryInstance()->registerCreator("double", new DataCreator<double>());
+    getFactoryInstance()->registerCreator("int32", new DataCreator<int>());
+    getFactoryInstance()->registerCreator("OSC-string", new DataCreator<std::string>());
 
-    getFactoryInstance()->registerCreator("matrixf", new DataCreator<FullMatrix<SReal>>());
+    getFactoryInstance()->registerCreator("matrixfloat32", new DataCreator<FullMatrix<SReal>>());
+    getFactoryInstance()->registerCreator("matrixdouble", new DataCreator<FullMatrix<SReal>>());
+    getFactoryInstance()->registerCreator("matrixint32", new DataCreator<FullMatrix<SReal>>());
 }
 
 void ServerCommunicationOSC::sendData()
@@ -161,18 +163,20 @@ osc::OutboundPacketStream ServerCommunicationOSC::createOSCMessage()
 
 void ServerCommunicationOSC::ProcessMessage( const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint )
 {
+    std::cout << m.ArgumentCount() << std::endl;
     if (!m_running)
         m_socket->Break();
-    const char* address = m.AddressPattern();
+    const char* subject = m.AddressPattern();
     osc::ReceivedMessageArgumentIterator it = m.ArgumentsBegin();
+    if (argumentList.size() == 0)
+        return;
 
-    BaseData* data;
-    CommunicationSubscriber * subscriber = getSubscriberFor(address);
+    CommunicationSubscriber * subscriber = getSubscriberFor(subject);
     if (!subscriber)
         return;
-    SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK> source = subscriber->getSource();
 
-    std::string firstArg = convertArgumentToStringValue(it);
+    SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK> source = subscriber->getSource();
+    std::string firstArg = getArgumentValue(argumentList.at(0));
     if (firstArg.compare("matrix") == 0)
     {
         int row = 0, col = 0;
@@ -190,10 +194,10 @@ void ServerCommunicationOSC::ProcessMessage( const osc::ReceivedMessage& m, cons
                 return;
             }
         } else
-            msg_warning() << address << " is matrix, but message size is not correct. Should be : /subject matrix rows cols value value value... ";
+            msg_warning() << subject << " is matrix, but message size is not correct. Should be : /subject matrix rows cols value value value... ";
         std::string argument = subscriber->getArgumentName(0);
-        std::string type = std::string("matrix") + (++it)->TypeTag();
-        data = fetchData(source, type, argument);
+        std::string type = std::string("matrix") + getArgumentType(*();
+        BaseData* data = fetchData(source, type, argument);
         if (!data)
             return;
 
@@ -228,17 +232,7 @@ void ServerCommunicationOSC::ProcessMessage( const osc::ReceivedMessage& m, cons
     }
     else
     {
-        if (!isSubscribedTo(m.AddressPattern(), m.ArgumentCount()))
-            return;
-        int i = 0;
-        for ( it ; it != m.ArgumentsEnd(); it++)
-        {
-            data = fetchData(source, std::string(1, it->TypeTag()), subscriber->getArgumentName(i));
-            if (!data)
-                continue;
-            data->read(convertArgumentToStringValue(it));
-            i++;
-        }
+        writeData(source, subscriber, subject, convertMessagesToArgumentList(m.ArgumentsBegin()));
     }
 }
 
@@ -259,6 +253,40 @@ std::string ServerCommunicationOSC::convertArgumentToStringValue(osc::ReceivedMe
         stringData = stream.str();
     }
     return stringData;
+}
+
+std::vector<std::string> ServerCommunicationOSC::convertMessagesToArgumentList(osc::ReceivedMessageArgumentIterator it)
+{
+    std::vector<std::string> argumentList;
+    for(it; it != m.ArgumentsEnd(); it++)
+    {
+        std::stringstream stream;
+        stream << (*it);
+        argumentList.push_back(stream.str());
+    }
+    return argumentList;
+}
+
+std::string ServerCommunicationOSC::getArgumentValue(std::string value)
+{
+    std::string stringData = value;
+    std::string returnValue;
+    size_t pos = stringData.find(":");
+    stringData.erase(0, pos+1);
+    std::remove_copy(stringData.begin(), stringData.end(), std::back_inserter(returnValue), '\'');
+    /// remove the first character for OSC-String which is "`"
+    returnValue.erase(std::remove(returnValue.begin(), returnValue.end(), '`'), returnValue.end());
+    return returnValue;
+}
+
+std::string ServerCommunicationOSC::getArgumentType(std::string value)
+{
+    std::string stringType = value;
+    size_t pos = stringType.find(":");
+    if (pos == std::string::npos)
+        return "s";
+    stringType.erase(pos, stringType.size()-1);
+    return stringType;
 }
 
 } /// communication

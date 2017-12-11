@@ -130,13 +130,18 @@ protected:
     pthread_t                                       m_thread;
     bool                                            m_running = true;
 
-    BaseData* fetchData(SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK> source, std::string keyTypeMessage, std::string argumentName);
-
     virtual void openCommunication();
     virtual void closeCommunication();
     static void* thread_launcher(void*);
     virtual void sendData() =0;
     virtual void receiveData() =0;
+
+    BaseData* fetchData(SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK> source, std::string keyTypeMessage, std::string argumentName);
+
+    bool writeData(SingleLink<CommunicationSubscriber, BaseObject, BaseLink::FLAG_DOUBLELINK> source, CommunicationSubscriber * subscriber, std::string subject, std::vector<std::string> argumentList);
+
+    virtual std::string getArgumentType(std::string argument) =0;
+    virtual std::string getArgumentValue(std::string argument) =0;
 
 };
 

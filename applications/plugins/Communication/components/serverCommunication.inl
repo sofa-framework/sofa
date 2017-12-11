@@ -137,11 +137,27 @@ BaseData* ServerCommunication::fetchData(SingleLink<CommunicationSubscriber, Bas
             data->setName(argumentName);
             data->setHelp("Auto generated help from communication");
             source->addData(data, argumentName);
-            msg_info(source->getName()) << " data field named : " << argumentName << " has been created";
+            msg_info(source->getName()) << " data field named : " << argumentName << " of type " << keyTypeMessage << " has been created";
         }
     } else
         data = itData->second;
     return data;
+}
+
+bool ServerCommunication::writeData(SingleLink<CommunicationSubscriber, BaseObject, BaseLink::FLAG_DOUBLELINK> source, CommunicationSubscriber * subscriber, std::string subject, std::vector<std::string> argumentList)
+{
+    int i = 0;
+    if (!isSubscribedTo(subject, argumentList.size()))
+        return false;
+    for (std::vector<std::string>::iterator it = argumentList.begin(); it != argumentList.end(); it++)
+    {
+        BaseData* data = fetchData(source, getArgumentType(*it), subscriber->getArgumentName(i));
+        if (!data)
+            continue;
+        data->read(getArgumentValue(*it));
+        i++;
+    }
+    return true;
 }
 
 

@@ -68,11 +68,15 @@ protected:
     UdpListeningReceiveSocket* m_socket;
 
     osc::OutboundPacketStream createOSCMessage();
+    std::vector<std::string> convertMessagesToArgumentList(osc::ReceivedMessageArgumentIterator it);
     std::string convertArgumentToStringValue(osc::ReceivedMessageArgumentIterator);
 
     //////////////////////////////// Inherited from ServerCommunication /////////////////////////////////
     virtual void sendData() override;
     virtual void receiveData() override;
+
+    virtual std::string getArgumentType(std::string value) override;
+    virtual std::string getArgumentValue(std::string value) override;
     /////////////////////////////////////////////////////////////////////////////////
 
 };

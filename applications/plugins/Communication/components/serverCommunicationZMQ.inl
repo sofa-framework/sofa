@@ -121,7 +121,7 @@ void ServerCommunicationZMQ::receiveData()
         if(status)
         {
             std::string rpl = std::string(static_cast<char*>(reply.data()), reply.size());
-            stringToData(rpl);
+            processMessage(rpl);
         }
         else
             msg_warning(this) << "Problem with communication";
@@ -225,27 +225,7 @@ std::vector<std::string> ServerCommunicationZMQ::stringToArgumentList(std::strin
 }
 
 
-std::string ServerCommunicationZMQ::getArgumentValue(std::string value)
-{
-    std::string stringData = value;
-    std::string returnValue;
-    size_t pos = stringData.find(":"); // That's how ZMQ messages could be. Type:value
-    stringData.erase(0, pos+1);
-    std::remove_copy(stringData.begin(), stringData.end(), std::back_inserter(returnValue), '\'');
-    return returnValue;
-}
-
-std::string ServerCommunicationZMQ::getArgumentType(std::string value)
-{
-    std::string stringType = value;
-    size_t pos = stringType.find(":"); // That's how ZMQ messages could be. Type:value
-    if (pos == std::string::npos)
-        return "string";
-    stringType.erase(pos, stringType.size()-1);
-    return stringType;
-}
-
-void ServerCommunicationZMQ::stringToData(std::string dataString)
+void ServerCommunicationZMQ::processMessage(std::string dataString)
 {
     BaseData* data;
     std::string subject;
@@ -303,17 +283,7 @@ void ServerCommunicationZMQ::stringToData(std::string dataString)
     }
     else
     {
-        if (!isSubscribedTo(subject, argumentList.size()-1)) // remove subject
-            return;
-        int i = 0;
-        for ( it ; it != argumentList.end(); it++)
-        {
-            data = fetchData(source, getArgumentType(*it), subscriber->getArgumentName(i));
-            if (!data)
-                continue;
-            data->read(getArgumentValue(*it));
-            i++;
-        }
+        writeData(source, subscriber, subject, argumentList);
     }
 }
 
@@ -329,6 +299,25 @@ void ServerCommunicationZMQ::receiveRequest()
     m_socket->recv(&request);
 }
 
+std::string ServerCommunicationZMQ::getArgumentValue(std::string value)
+{
+    std::string stringData = value;
+    std::string returnValue;
+    size_t pos = stringData.find(":"); // That's how ZMQ messages could be. Type:value
+    stringData.erase(0, pos+1);
+    std::remove_copy(stringData.begin(), stringData.end(), std::back_inserter(returnValue), '\'');
+    return returnValue;
+}
+
+std::string ServerCommunicationZMQ::getArgumentType(std::string value)
+{
+    std::string stringType = value;
+    size_t pos = stringType.find(":"); // That's how ZMQ messages could be. Type:value
+    if (pos == std::string::npos)
+        return "string";
+    stringType.erase(pos, stringType.size()-1);
+    return stringType;
+}
 
 }   /// namespace communication
 }   /// namespace component
