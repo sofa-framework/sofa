@@ -428,14 +428,12 @@ int main(int argc, char** argv)
         sofa::helper::AdvancedTimer::setInterval("Init", 1);
         sofa::helper::AdvancedTimer::setOutputType("Init", computationTimeOutputType);
         sofa::helper::AdvancedTimer::begin("Init");
-        sofa::helper::AdvancedTimer::end("Init");
-        sofa::helper::AdvancedTimer::begin("Init");
     }
 
     sofa::simulation::getSimulation()->init(groot.get());
     if( computationTimeAtBegin )
     {
-        std::cout << sofa::helper::AdvancedTimer::end("Init", groot.get()) << std::endl;
+        msg_info("") << sofa::helper::AdvancedTimer::end("Init", groot.get());
     }
     GUIManager::SetScene(groot,fileName.c_str(), temporaryFile);
 
