@@ -287,6 +287,15 @@ void ServerCommunicationZMQ::stringToData(std::string dataString)
         data = fetchData(source, "matrix" + getArgumentType(*(++it)), subscriber->getArgumentName(0));
         if (!data)
             return;
+
+
+        if(row*col != argumentList.size()-3-1) // -1 due to subject count in
+        {
+            msg_error() << "argument list size is != row/cols; " << argumentList.size()-3-1 << " instead of " << row*col;
+            return;
+        }
+
+
         std::stringstream stream;
         for ( it ; it != argumentList.end(); it++)
             stream << getArgumentValue(*it) << " ";

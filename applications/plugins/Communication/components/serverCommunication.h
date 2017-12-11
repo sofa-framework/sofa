@@ -53,6 +53,9 @@ using sofa::defaulttype::AbstractTypeInfo ;
 
 using sofa::helper::vector;
 
+#include <SofaBaseLinearSolver/FullMatrix.h>
+using sofa::component::linearsolver::FullMatrix;
+
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/Factory.inl>
 using sofa::helper::Factory;
@@ -128,7 +131,6 @@ protected:
     bool                                            m_running = true;
 
     BaseData* fetchData(SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK> source, std::string keyTypeMessage, std::string argumentName);
-
 
     virtual void openCommunication();
     virtual void closeCommunication();

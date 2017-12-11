@@ -61,7 +61,7 @@ void ServerCommunicationOSC::initTypeFactory()
     getFactoryInstance()->registerCreator("i", new DataCreator<int>());
     getFactoryInstance()->registerCreator("s", new DataCreator<std::string>());
 
-    getFactoryInstance()->registerCreator("matrixf", new DataCreator<vector<float>>());
+    getFactoryInstance()->registerCreator("matrixf", new DataCreator<FullMatrix<SReal>>());
 }
 
 void ServerCommunicationOSC::sendData()
@@ -190,17 +190,41 @@ void ServerCommunicationOSC::ProcessMessage( const osc::ReceivedMessage& m, cons
                 return;
             }
         } else
-            msg_warning() << address << " is matrix, but message size is not correct. Should be : /subject matrix width height value value value... ";
+            msg_warning() << address << " is matrix, but message size is not correct. Should be : /subject matrix rows cols value value value... ";
         std::string argument = subscriber->getArgumentName(0);
         std::string type = std::string("matrix") + (++it)->TypeTag();
         data = fetchData(source, type, argument);
         if (!data)
             return;
 
-        std::stringstream stream;
-        for ( it ; it != m.ArgumentsEnd(); it++)
-            stream << convertArgumentToStringValue(it) << " ";
-        data->read(stream.str());
+        if(row*col != m.ArgumentCount()-3)
+        {
+            msg_error() << "argument list size is != row/cols; " << m.ArgumentCount()-3 << " instead of " << row*col;
+            return;
+        }
+
+        if(data->getValueTypeString().compare("FullMatrix<double>") == 0|| data->getValueTypeString().compare("FullMatrix<float>") == 0)
+        {
+            void* a = data->beginEditVoidPtr();
+            FullMatrix<SReal> * b = static_cast<FullMatrix<SReal>*>(a);
+            b->resize(row, col);
+            for(int i = 0; i < b->rows(); i++)
+            {
+                for(int j = 0; j < b->cols(); j++)
+                {
+                    b->set(i, j, it->AsDoubleUnchecked());
+                    ++it;
+                }
+            }
+        } else
+        {
+            std::string value = "";
+            for ( it ; it != m.ArgumentsEnd(); it++)
+            {
+                value.append(" " + convertArgumentToStringValue(it));
+            }
+            data->read(value);
+        }
     }
     else
     {
@@ -236,7 +260,6 @@ std::string ServerCommunicationOSC::convertArgumentToStringValue(osc::ReceivedMe
     }
     return stringData;
 }
-
 
 } /// communication
 
