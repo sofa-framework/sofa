@@ -25,6 +25,7 @@
 #include "InvertibleFVMForceField.h"
 #include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawTool.h>
 #include <SofaBaseTopology/GridTopology.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/helper/decompose.h>
@@ -32,7 +33,6 @@
 #include <assert.h>
 #include <iostream>
 #include <set>
-//#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 
 
 
