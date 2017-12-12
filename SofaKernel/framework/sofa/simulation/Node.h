@@ -74,12 +74,15 @@ namespace sofa
 namespace simulation
 {
 class Visitor;
+class TestFORWARD;
 }
 }
 
 #include <sofa/helper/system/thread/CTime.h>
 #include <string>
 #include <stack>
+
+
 
 namespace sofa
 {
@@ -297,6 +300,8 @@ public:
     Single<sofa::core::collision::Pipeline> collisionPipeline;
 
     Sequence<sofa::core::objectmodel::BaseObject> unsorted;
+
+    Sequence<sofa::simulation::TestFORWARD> testForward;
 
     /// @}
 
