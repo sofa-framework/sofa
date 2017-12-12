@@ -22,6 +22,7 @@
 #define SOFA_HELPER_ADVANCEDTIMER_CPP
 #include <sofa/helper/AdvancedTimer.h>
 
+#include <sofa/simulation/Node.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/system/thread/thread_specific_ptr.h>
 #include <sofa/helper/system/atomic.h>

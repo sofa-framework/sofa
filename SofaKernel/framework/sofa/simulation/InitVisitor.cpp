@@ -22,11 +22,10 @@
 #include <sofa/simulation/InitVisitor.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/defaulttype/BoundingBox.h>
-
-//#include "MechanicalIntegration.h"
 
 namespace sofa
 {

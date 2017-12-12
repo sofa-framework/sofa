@@ -41,7 +41,7 @@
 #include <sofa/simulation/Visitor.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/defaulttype/BaseVector.h>
-
+#include <sofa/core/MechanicalParams.h>
 
 namespace sofa
 {

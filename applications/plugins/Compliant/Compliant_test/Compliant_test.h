@@ -99,7 +99,7 @@ protected:
     ///@{
 
     /// Helper method to create strings used in various tests.
-    simulation::Node::SPtr createCompliantString(simulation::Node::SPtr parent, Vec3 startPoint, Vec3 endPoint, unsigned numParticles, SReal totalMass, SReal complianceValue=0/*, SReal dampingRatio=0*/, bool isCompliant=true, SReal totalRestLength = -1 )
+    simulation::NodeSPtr createCompliantString(simulation::NodeSPtr parent, Vec3 startPoint, Vec3 endPoint, unsigned numParticles, SReal totalMass, SReal complianceValue=0/*, SReal dampingRatio=0*/, bool isCompliant=true, SReal totalRestLength = -1 )
     {
         static unsigned numObject = 1;
         std::ostringstream oss;
@@ -107,7 +107,7 @@ protected:
         SReal totalLength = totalRestLength<0 ? (endPoint-startPoint).norm() : totalRestLength;
 
         //--------
-        simulation::Node::SPtr  string_node = parent->createChild(oss.str());
+        simulation::NodeSPtr  string_node = parent->createChild(oss.str());
 
         MechanicalObject3::SPtr DOF = core::objectmodel::New<MechanicalObject3>();
         string_node->addObject(DOF);
@@ -122,7 +122,7 @@ protected:
 
 
         //--------
-        simulation::Node::SPtr extension_node = string_node->createChild( oss.str()+"_ExtensionNode");
+        simulation::NodeSPtr extension_node = string_node->createChild( oss.str()+"_ExtensionNode");
 
         MechanicalObject1::SPtr extensions = core::objectmodel::New<MechanicalObject1>();
         extension_node->addObject(extensions);
@@ -169,17 +169,17 @@ protected:
       */
     struct ParticleString
     {
-        simulation::Node::SPtr  string_node; ///< root
+        simulation::NodeSPtr  string_node; ///< root
         MechanicalObject3::SPtr DOF; ///< particle states
         UniformMass3::SPtr mass;
 
-        simulation::Node::SPtr extension_node;
+        simulation::NodeSPtr extension_node;
         MechanicalObject1::SPtr extensions;
         EdgeSetTopologyContainer::SPtr edgeSet;
         DistanceMapping31::SPtr extensionMapping;
         UniformCompliance1::SPtr compliance;
 
-        ParticleString(simulation::Node::SPtr parent, Vec3 startPoint, Vec3 endPoint, unsigned numParticles, SReal totalMass )
+        ParticleString(simulation::NodeSPtr parent, Vec3 startPoint, Vec3 endPoint, unsigned numParticles, SReal totalMass )
         {
         static unsigned numObject = 1;
         std::ostringstream oss;

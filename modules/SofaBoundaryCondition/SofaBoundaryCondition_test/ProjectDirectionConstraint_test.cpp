@@ -57,7 +57,7 @@ struct ProjectDirectionConstraint_test : public Sofa_test<typename _DataTypes::R
     typedef component::topology::PointSetTopologyContainer PointSetTopologyContainer;
     typedef container::MechanicalObject<DataTypes> MechanicalObject;
 
-    simulation::Node::SPtr root;                 ///< Root of the scene graph, created by the constructor an re-used in the tests
+    simulation::NodeSPtr root;                 ///< Root of the scene graph, created by the constructor an re-used in the tests
     simulation::Simulation* simulation;          ///< created by the constructor an re-used in the tests
 
     unsigned numNodes;                         ///< number of particles used for the test

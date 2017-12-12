@@ -31,7 +31,7 @@
 //
 //
 #include <sofa/simulation/PropagateEventVisitor.h>
-
+#include <sofa/simulation/Node.h>
 namespace sofa
 {
 

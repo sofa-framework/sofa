@@ -64,7 +64,7 @@ struct ForceField_test : public Sofa_test<typename _ForceFieldType::DataTypes::R
     /// {
     typename DOF::SPtr dof;
     typename ForceField::SPtr force;
-    simulation::Node::SPtr node;
+    simulation::NodeSPtr node;
     /// }
 
     /// @name Precision and control parameters

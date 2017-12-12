@@ -46,7 +46,7 @@ void IdentityContactMapper<TCollisionModel,DataTypes>::cleanup()
         simulation::Node* parent = dynamic_cast<simulation::Node*>(model->getContext());
         if (parent!=NULL)
         {
-            simulation::Node::SPtr child = dynamic_cast<simulation::Node*>(mapping->getContext());
+            simulation::NodeSPtr child = dynamic_cast<simulation::Node*>(mapping->getContext());
             child->detachFromGraph();
             child->execute<simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
             child.reset(); //delete child;
@@ -64,7 +64,7 @@ typename IdentityContactMapper<TCollisionModel,DataTypes>::MMechanicalState* Ide
         msg_error("IdentityContactMapper") << "IdentityContactMapper only works for scenegraph scenes.";
         return NULL;
     }
-    simulation::Node::SPtr child = parent->createChild(name);
+    simulation::NodeSPtr child = parent->createChild(name);
     typename MMechanicalState::SPtr mstate = sofa::core::objectmodel::New<MMechanicalObject>(); child->addObject(mstate);
     mapping = sofa::core::objectmodel::New<MMapping>(model->getMechanicalState(), mstate); child->addObject(mapping);
     return mstate.get();

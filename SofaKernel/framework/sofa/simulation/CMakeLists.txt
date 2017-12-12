@@ -34,6 +34,7 @@ set(HEADER_FILES
     Node.h
     Node_fwd.h
     Node.inl
+    Sequence.h
     ParallelVisitorScheduler.h
     PauseEvent.h
     PipelineImpl.h

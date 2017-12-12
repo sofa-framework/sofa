@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/simulation/Node.h>
 #include <sofa/simulation/DeactivatedNodeVisitor.h>
 
 namespace sofa

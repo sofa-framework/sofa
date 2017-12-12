@@ -23,6 +23,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/simulation/UpdateContextVisitor.h>
 
 namespace sofa
@@ -59,7 +60,6 @@ VisualStyle::VisualStyle()
     :displayFlags(initData(&displayFlags,"displayFlags","Display Flags"))
 {
     displayFlags.setWidget("widget_displayFlags");
-//    displayFlags.setGroup("Display Flags");
 }
 
 void VisualStyle::fwdDraw(VisualParams* vparams)
@@ -73,11 +73,10 @@ void VisualStyle::bwdDraw(VisualParams* vparams)
     vparams->displayFlags() = backupFlags;
 }
 
-helper::WriteAccessor<sofa::core::visual::DisplayFlags> addVisualStyle( simulation::Node::SPtr node )
+helper::WriteAccessor<sofa::core::visual::DisplayFlags> addVisualStyle( simulation::NodeSPtr node )
 {
     VisualStyle::SPtr visualStyle = New<sofa::component::visualmodel::VisualStyle>();
     node->addObject(visualStyle);
-//    return visualStyle->displayFlags.setValue(displayFlags);
     return helper::write(visualStyle->displayFlags);
 
 }

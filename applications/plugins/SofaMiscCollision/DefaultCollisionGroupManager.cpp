@@ -64,16 +64,16 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
     int groupIndex = 1;
 
     // Map storing group merging history
-    std::map<simulation::Node*, simulation::Node::SPtr > mergedGroups;
-    sofa::helper::vector< simulation::Node::SPtr > contactGroup;
-    sofa::helper::vector< simulation::Node::SPtr > removedGroup;
+    std::map<simulation::Node*, simulation::NodeSPtr > mergedGroups;
+    sofa::helper::vector< simulation::NodeSPtr > contactGroup;
+    sofa::helper::vector< simulation::NodeSPtr > removedGroup;
     contactGroup.reserve(contacts.size());
     for(sofa::helper::vector<Contact::SPtr>::const_iterator cit = contacts.begin(); cit != contacts.end(); ++cit)
     {
         Contact* contact = cit->get();
         simulation::Node* group1 = getIntegrationNode(contact->getCollisionModels().first);
         simulation::Node* group2 = getIntegrationNode(contact->getCollisionModels().second);
-        simulation::Node::SPtr group = NULL;
+        simulation::NodeSPtr group = NULL;
         if (group1==NULL || group2==NULL)
         {
         }
@@ -204,7 +204,7 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
     for(unsigned int i=0; i<contacts.size(); i++)
     {
         Contact* contact = contacts[i].get();
-        simulation::Node::SPtr group = contactGroup[i];
+        simulation::NodeSPtr group = contactGroup[i];
         while (group!=NULL && mergedGroups.find(group.get())!=mergedGroups.end())
             group = mergedGroups[group.get()];
         if (group!=NULL)
@@ -214,9 +214,9 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
     }
 
     // delete removed groups
-    for (sofa::helper::vector<simulation::Node::SPtr>::iterator it = removedGroup.begin(); it!=removedGroup.end(); ++it)
+    for (sofa::helper::vector<simulation::NodeSPtr>::iterator it = removedGroup.begin(); it!=removedGroup.end(); ++it)
     {
-        simulation::Node::SPtr node = *it;
+        simulation::NodeSPtr node = *it;
         node->detachFromGraph();
         node->execute<simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
         it->reset();
@@ -225,14 +225,14 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
 
     // finally recreate group vector
     groups.clear();
-    for (std::set<simulation::Node::SPtr>::iterator it = groupSet.begin(); it!=groupSet.end(); ++it)
+    for (std::set<simulation::NodeSPtr>::iterator it = groupSet.begin(); it!=groupSet.end(); ++it)
         groups.push_back(*it);
 }
 
 
 void DefaultCollisionGroupManager::clearGroups(core::objectmodel::BaseContext* /*scene*/)
 {
-    for (std::set<simulation::Node::SPtr>::iterator it = groupSet.begin(); it!=groupSet.end(); ++it)
+    for (std::set<simulation::NodeSPtr>::iterator it = groupSet.begin(); it!=groupSet.end(); ++it)
     {
         if (*it) clearGroup( (*it)->getParents(), *it );
     }

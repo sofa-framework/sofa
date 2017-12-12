@@ -22,7 +22,7 @@ struct PyScene_test : public ::testing::Test
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
         /// Scene creation
-        simulation::Node::SPtr root =  simulation::getSimulation()->load ( scenePath.c_str() );
+        simulation::NodeSPtr root =  simulation::getSimulation()->load ( scenePath.c_str() );
         simulation::getSimulation()->init(root.get());
 
         // get the python script controller
@@ -45,7 +45,7 @@ struct PyScene_test : public ::testing::Test
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
 
         /// Scene creation
-        simulation::Node::SPtr root =  simulation::getSimulation()->load ( scenePath.c_str() );
+        simulation::NodeSPtr root =  simulation::getSimulation()->load ( scenePath.c_str() );
         simulation::getSimulation()->init(root.get());
 
         // get the python script controller

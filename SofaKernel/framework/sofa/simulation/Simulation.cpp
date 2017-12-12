@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/simulation/PrintVisitor.h>
 #include <sofa/simulation/ExportGnuplotVisitor.h>
 #include <sofa/simulation/InitVisitor.h>
@@ -60,20 +61,6 @@
 #include <string.h>
 
 #include <sofa/helper/logging/Messaging.h>
-
-// #include <SofaSimulationCommon/FindByTypeVisitor.h>
-
-
-
-// #include <sofa/helper/system/FileRepository.h>
-
-// #include <fstream>
-// #include <string.h>
-// #ifndef WIN32
-// #include <locale.h>
-// #endif
-
-
 
 namespace sofa
 {
@@ -461,7 +448,7 @@ void Simulation::dumpState ( Node* root, std::ofstream& out )
 
 
 /// Load a scene from a file
-Node::SPtr Simulation::load ( const char *filename )
+NodeSPtr Simulation::load ( const char *filename )
 {
     if( sofa::helper::system::SetDirectory::GetFileName(filename).empty() || // no filename
             sofa::helper::system::SetDirectory::GetExtension(filename).empty() ) // filename with no extension
@@ -477,7 +464,7 @@ Node::SPtr Simulation::load ( const char *filename )
 }
 
 /// Delete a scene from memory. After this call the pointer is invalid
-void Simulation::unload(Node::SPtr root)
+void Simulation::unload(NodeSPtr root)
 {
     if ( !root ) return;
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();

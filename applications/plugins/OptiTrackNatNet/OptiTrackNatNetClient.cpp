@@ -25,7 +25,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/DrawTool.h>
-
+#include <sofa/core/visual/DisplayFlags.h>
 #include <boost/bind.hpp>
 
 namespace SofaOptiTrackNatNet

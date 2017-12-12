@@ -223,21 +223,21 @@ void Node::moveObject(BaseObject::SPtr obj)
 
 
 
-void Node::notifyAddChild(Node::SPtr node)
+void Node::notifyAddChild(NodeSPtr node)
 {
     for (helper::vector<MutationListener*>::const_iterator it = listener.begin(); it != listener.end(); ++it)
         (*it)->addChild(this, node.get());
 }
 
 
-void Node::notifyRemoveChild(Node::SPtr node)
+void Node::notifyRemoveChild(NodeSPtr node)
 {
     for (helper::vector<MutationListener*>::const_iterator it = listener.begin(); it != listener.end(); ++it)
         (*it)->removeChild(this, node.get());
 }
 
 
-void Node::notifyMoveChild(Node::SPtr node, Node* prev)
+void Node::notifyMoveChild(NodeSPtr node, Node* prev)
 {
     for (helper::vector<MutationListener*>::const_iterator it = listener.begin(); it != listener.end(); ++it)
         (*it)->moveChild(prev, this, node.get());
@@ -972,7 +972,7 @@ void Node::sortComponents()
 }
 
 
-Node::SPtr Node::create( const std::string& name )
+NodeSPtr Node::create( const std::string& name )
 {
     return getSimulation()->createNewNode(name);
 }

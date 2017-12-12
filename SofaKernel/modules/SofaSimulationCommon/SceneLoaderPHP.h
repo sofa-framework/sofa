@@ -37,7 +37,7 @@ public:
     virtual bool canLoadFileExtension(const char *extension);
 
     /// load the file
-    virtual sofa::simulation::Node::SPtr load(const char *filename);
+    virtual sofa::simulation::NodeSPtr load(const char *filename);
 
     /// get the file type description
     virtual std::string getFileTypeDesc();

@@ -37,6 +37,7 @@ namespace helper
 namespace testing
 {
 using sofa::simulation::Node ;
+using sofa::simulation::NodeSPtr ;
 using sofa::simulation::Simulation ;
 
 class SOFA_SIMULATION_GRAPH_API BaseSimulationTest : public virtual BaseTest
@@ -56,7 +57,7 @@ public:
         /// Create a new scene instance from the content of the filename using the factory.
         static SceneInstance LoadFromFile(const std::string& filename) ;
 
-        Node::SPtr root ;
+        NodeSPtr root ;
         Simulation* simulation {nullptr} ;
 
         void initScene() ;

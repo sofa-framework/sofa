@@ -52,7 +52,7 @@ struct ComplementaryROI_test : public Sofa_test<typename _DataTypes::Real>,
     typedef _DataTypes DataTypes;
 
     Simulation* m_simu;
-    Node::SPtr m_node;
+    NodeSPtr m_node;
     typename ThisClass::SPtr m_thisObject;
 
 

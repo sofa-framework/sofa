@@ -29,7 +29,7 @@ struct DampedOscillator_test : public CompliantSolver_test
     SReal x0;
     SReal v0;
 
-    simulation::Node::SPtr node;
+    simulation::NodeSPtr node;
     MechanicalObject1::SPtr DOF;
     UniformCompliance1::SPtr compliance;
 
@@ -56,7 +56,7 @@ struct DampedOscillator_test : public CompliantSolver_test
         node->setGravity( Vec3(0,0,0) );
 
         // The oscillator
-        simulation::Node::SPtr oscillator = node->createChild("oscillator");
+        simulation::NodeSPtr oscillator = node->createChild("oscillator");
 
         DOF = addNew<MechanicalObject1>(oscillator,"DOF");
         DOF->resize(1);
@@ -266,7 +266,7 @@ TEST_F(DampedOscillator_test, compliance_second_degree )
     node->setGravity( Vec3(0,0,0) );
 
     // The oscillator
-    simulation::Node::SPtr oscillator = node->createChild("oscillator");
+    simulation::NodeSPtr oscillator = node->createChild("oscillator");
 
     DOF = addNew<MechanicalObject1>(oscillator,"DOF");
     DOF->resize(1);
@@ -276,7 +276,7 @@ TEST_F(DampedOscillator_test, compliance_second_degree )
     UniformMass1::SPtr Mass = addNew<UniformMass1>(oscillator,"mass");
     Mass->d_mass.setValue( mass );
 
-    simulation::Node::SPtr constraint = oscillator->createChild( "constraint" );
+    simulation::NodeSPtr constraint = oscillator->createChild( "constraint" );
 
     MechanicalObject1::SPtr constraintDOF = addNew<MechanicalObject1>(constraint,"DOF");
     constraintDOF->resize(1);

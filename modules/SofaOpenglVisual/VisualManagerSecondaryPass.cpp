@@ -28,6 +28,7 @@
 
 #include <SofaOpenglVisual/VisualManagerSecondaryPass.h>
 #include <sofa/simulation/Node.h>
+#include <sofa/simulation/Sequence.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/FileRepository.h>
 
@@ -113,9 +114,9 @@ void VisualManagerSecondaryPass::initShaderInputTexId()
     nbFbo=0;
 
     sofa::simulation::Node* gRoot = dynamic_cast<simulation::Node*>(this->getContext());
-    sofa::simulation::Node::Sequence<core::visual::VisualManager>::iterator begin = gRoot->visualManager.begin();
-    sofa::simulation::Node::Sequence<core::visual::VisualManager>::iterator end = gRoot->visualManager.end();
-    sofa::simulation::Node::Sequence<core::visual::VisualManager>::iterator it;
+    sofa::simulation::Sequence<core::visual::VisualManager>::iterator begin = gRoot->visualManager.begin();
+    sofa::simulation::Sequence<core::visual::VisualManager>::iterator end = gRoot->visualManager.end();
+    sofa::simulation::Sequence<core::visual::VisualManager>::iterator it;
     for (it = begin; it != end; ++it)
     {
         VisualManagerPass *currentPass=dynamic_cast<VisualManagerPass*>((*it));
@@ -219,9 +220,9 @@ void VisualManagerSecondaryPass::bindInput(core::visual::VisualParams* /*vp*/)
     nbFbo=0;
 
     sofa::simulation::Node* gRoot = dynamic_cast<simulation::Node*>(this->getContext());
-    sofa::simulation::Node::Sequence<core::visual::VisualManager>::iterator begin = gRoot->visualManager.begin();
-    sofa::simulation::Node::Sequence<core::visual::VisualManager>::iterator end = gRoot->visualManager.end();
-    sofa::simulation::Node::Sequence<core::visual::VisualManager>::iterator it;
+    sofa::simulation::Sequence<core::visual::VisualManager>::iterator begin = gRoot->visualManager.begin();
+    sofa::simulation::Sequence<core::visual::VisualManager>::iterator end = gRoot->visualManager.end();
+    sofa::simulation::Sequence<core::visual::VisualManager>::iterator it;
     for (it = begin; it != end; ++it)
     {
         VisualManagerPass *currentPass=dynamic_cast<VisualManagerPass*>((*it));

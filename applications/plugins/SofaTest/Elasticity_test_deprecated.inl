@@ -63,8 +63,8 @@ typedef component::projectiveconstraintset::FixedConstraint<defaulttype::Vec3Typ
 typedef component::mass::UniformMass<defaulttype::Vec3Types, SReal> UniformMass3;
 
 template<class DataTypes>
-simulation::Node::SPtr Elasticity_test_deprecated<DataTypes>::createSunPlanetSystem(
-        simulation::Node::SPtr root,
+simulation::NodeSPtr Elasticity_test_deprecated<DataTypes>::createSunPlanetSystem(
+        simulation::NodeSPtr root,
         double mSun,
         double mPlanet,
         double g,

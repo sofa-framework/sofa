@@ -110,7 +110,7 @@ def createScene(rootNode):
 			sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
 
 			// load scene
-			Node::SPtr root = sofa::simulation::getSimulation()->load(pythonControllerPath.c_str());
+			NodeSPtr root = sofa::simulation::getSimulation()->load(pythonControllerPath.c_str());
 
 			ASSERT_NE(root, nullptr);
 

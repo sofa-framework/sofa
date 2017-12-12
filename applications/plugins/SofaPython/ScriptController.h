@@ -25,7 +25,7 @@
 #include <SofaUserInteraction/Controller.h>
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
-#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Node_fwd.h>
 #include "ScriptEvent.h"
 #include "ScriptFunction.h"
 

@@ -41,16 +41,16 @@ public:
     virtual bool canWriteFileExtension(const char *extension);
 
     /// load the file
-    virtual sofa::simulation::Node::SPtr load(const char *filename);
+    virtual sofa::simulation::NodeSPtr load(const char *filename);
 
     /// write the file
     virtual void write(sofa::simulation::Node* node, const char *filename);
 
     /// generic function to process xml tree (after loading the xml structure)
-    static Node::SPtr processXML(xml::BaseElement* xml, const char *filename);
+    static NodeSPtr processXML(xml::BaseElement* xml, const char *filename);
 
     /// load a scene from memory (typically : an xml into a string)
-    static Node::SPtr loadFromMemory ( const char *filename, const char *data, unsigned int size );
+    static NodeSPtr loadFromMemory ( const char *filename, const char *data, unsigned int size );
 
     /// get the file type description
     virtual std::string getFileTypeDesc();

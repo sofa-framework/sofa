@@ -61,7 +61,7 @@ struct TetrahedronHyperelasticityFEMForceField_params_test : public Sofa_test<ty
     /// @name Scene elements
     /// {
     typename DOF::SPtr dof;
-    simulation::Node::SPtr root, hyperelasticNode;
+    simulation::NodeSPtr root, hyperelasticNode;
     std::string sceneFilename;
     /// }
 

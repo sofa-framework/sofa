@@ -22,9 +22,12 @@
 #ifndef SOFA_SIMULATION_NODE_FWD_H
 #define SOFA_SIMULATION_NODE_FWD_H
 
+#include <sofa/core/sptr.h>
+
 namespace sofa {
     namespace simulation {
         class Node ;
+        using NodeSPtr = sofa::core::sptr<Node>;
     }
 }
 

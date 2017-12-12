@@ -64,7 +64,7 @@ protected:
 
 public:
     //Pure Virtual method from Node
-    virtual Node::SPtr createChild(const std::string& nodeName) override;
+    virtual NodeSPtr createChild(const std::string& nodeName) override;
 
     //Pure Virtual method from BaseNode
     /// Add a child node
@@ -187,11 +187,11 @@ protected:
 
 
     // need to update the ancestor descendancy
-    virtual void notifyAddChild(Node::SPtr node) override;
+    virtual void notifyAddChild(NodeSPtr node) override;
     // need to update the ancestor descendancy
-    virtual void notifyRemoveChild(Node::SPtr node) override;
+    virtual void notifyRemoveChild(NodeSPtr node) override;
     // need to update the ancestor descendancy
-    virtual void notifyMoveChild(Node::SPtr node, Node* prev) override;
+    virtual void notifyMoveChild(NodeSPtr node, Node* prev) override;
 
 
     /// traversal flags

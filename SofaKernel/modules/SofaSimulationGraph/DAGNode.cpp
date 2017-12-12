@@ -53,7 +53,7 @@ DAGNode::~DAGNode()
 }
 
 /// Create, add, then return the new child of this Node
-Node::SPtr DAGNode::createChild(const std::string& nodeName)
+NodeSPtr DAGNode::createChild(const std::string& nodeName)
 {
     DAGNode::SPtr newchild = sofa::core::objectmodel::New<DAGNode>(nodeName);
     this->addChild(newchild); newchild->updateSimulationContext();
@@ -132,19 +132,19 @@ void DAGNode::detachFromGraph()
 
 
 
-void DAGNode::notifyAddChild(Node::SPtr node)
+void DAGNode::notifyAddChild(NodeSPtr node)
 {
     setDirtyDescendancy();
     Node::notifyAddChild(node);
 }
 
-void DAGNode::notifyRemoveChild(Node::SPtr node)
+void DAGNode::notifyRemoveChild(NodeSPtr node)
 {
     setDirtyDescendancy();
     Node::notifyRemoveChild(node);
 }
 
-void DAGNode::notifyMoveChild(Node::SPtr node, Node* prev)
+void DAGNode::notifyMoveChild(NodeSPtr node, Node* prev)
 {
     setDirtyDescendancy();
     Node::notifyMoveChild(node,prev);

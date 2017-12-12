@@ -23,9 +23,10 @@
 #define SOFA_SIMULATION_SCENELOADERFACTORY_H
 
 #include <sofa/simulation/simulationcore.h>
-#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Node_fwd.h>
 #include <sofa/helper/system/SetDirectory.h>
-
+#include <vector>
+#include <set>
 
 namespace sofa
 {
@@ -67,7 +68,7 @@ public:
 
     /// load the file
     /// @warning do not forgot to call notifyLoadingScene()
-    virtual sofa::simulation::Node::SPtr load(const char *filename) = 0;
+    virtual sofa::simulation::NodeSPtr load(const char *filename) = 0;
 
     /// write scene graph in the file
     virtual void write(sofa::simulation::Node* /*node*/, const char * /*filename*/) {}

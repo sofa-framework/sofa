@@ -133,7 +133,7 @@ protected:
                  "    externalComponent.helloWorld()   \n" ;
         f.close();
 
-        Node::SPtr root = simulation::getSimulation()->load(scenePath.c_str());
+        NodeSPtr root = simulation::getSimulation()->load(scenePath.c_str());
         ASSERT_NE(root, nullptr);
 
         BaseObject* aComponent = root->getObject("second") ;

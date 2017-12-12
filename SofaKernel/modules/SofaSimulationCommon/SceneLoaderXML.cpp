@@ -66,9 +66,9 @@ void SceneLoaderXML::getExtensionList(ExtensionList* list)
     list->push_back("scn");
 }
 
-sofa::simulation::Node::SPtr SceneLoaderXML::load(const char *filename)
+sofa::simulation::NodeSPtr SceneLoaderXML::load(const char *filename)
 {
-    sofa::simulation::Node::SPtr root;
+    sofa::simulation::NodeSPtr root;
 
     if (!canLoadFileName(filename))
         return 0;
@@ -89,7 +89,7 @@ void SceneLoaderXML::write(Node *node, const char *filename)
 }
 
 /// Load a scene from a file
-Node::SPtr SceneLoaderXML::processXML(xml::BaseElement* xml, const char *filename)
+NodeSPtr SceneLoaderXML::processXML(xml::BaseElement* xml, const char *filename)
 {
     loadSucceed = true;
 
@@ -128,7 +128,7 @@ Node::SPtr SceneLoaderXML::processXML(xml::BaseElement* xml, const char *filenam
         return NULL;
     }
 
-    Node::SPtr root = down_cast<Node> ( baseroot );
+    NodeSPtr root = down_cast<Node> ( baseroot );
 
     // Find the Simulation component in the scene
     FindByTypeVisitor<Simulation> findSimu(params);
@@ -140,13 +140,13 @@ Node::SPtr SceneLoaderXML::processXML(xml::BaseElement* xml, const char *filenam
 }
 
 /// Load from a string in memory
-Node::SPtr SceneLoaderXML::loadFromMemory ( const char *filename, const char *data, unsigned int size )
+NodeSPtr SceneLoaderXML::loadFromMemory ( const char *filename, const char *data, unsigned int size )
 {
     notifyLoadingScene();
 
     xml::BaseElement* xml = xml::loadFromMemory (filename, data, size );
 
-    Node::SPtr root = processXML(xml, filename);
+    NodeSPtr root = processXML(xml, filename);
 
     delete xml;
     return root;

@@ -20,6 +20,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/simulation/Node.h>
 #include "PythonMacros.h"
 #include "PythonScriptEvent.h"
 
@@ -34,7 +35,7 @@ namespace objectmodel
 
 SOFA_EVENT_CPP( PythonScriptEvent )
 
-PythonScriptEvent::PythonScriptEvent(sofa::simulation::Node::SPtr sender, const char* eventName, PyObject* userData)
+PythonScriptEvent::PythonScriptEvent(sofa::simulation::NodeSPtr sender, const char* eventName, PyObject* userData)
     : sofa::core::objectmodel::ScriptEvent(sender,eventName)
     , m_userData(userData)
 {

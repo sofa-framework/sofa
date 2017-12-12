@@ -32,6 +32,7 @@
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <SofaBaseMechanics/AddMToMatrixFunctor.h>
 #include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/Node.h>
 #include <iostream>
 #include <string.h>
 

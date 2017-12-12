@@ -30,7 +30,7 @@ struct CompliantNLImplicitSolver_test : public sofa::CompliantSolver_test
     void testLinearOneFixedOneSpringV100( bool compliant, bool debug=false )
     {
         SReal dt=0.1;
-        Node::SPtr root = clearScene();
+        NodeSPtr root = clearScene();
         root->setDt(dt);
         root->setGravity( Vec3(0,0,0) );
 
@@ -109,7 +109,7 @@ struct CompliantNLImplicitSolver_test : public sofa::CompliantSolver_test
     void testLinearOneFixedOneSpringX200( bool compliant, bool debug=false )
     {
         SReal dt=0.1;
-        Node::SPtr root = clearScene();
+        NodeSPtr root = clearScene();
         root->setGravity( Vec3(0,0,0) );
         root->setDt(dt);
 
@@ -188,7 +188,7 @@ struct CompliantNLImplicitSolver_test : public sofa::CompliantSolver_test
     void testLinearOneFixedOneSpringGravity( bool isCompliance, bool debug=false, unsigned iterations=3, SReal precision=1e-6 )
     {
         SReal dt=4.1;
-        Node::SPtr root = clearScene();
+        NodeSPtr root = clearScene();
         root->setGravity( Vec3(0,100,0) );
         root->setDt(dt);
 
@@ -284,7 +284,7 @@ struct CompliantNLImplicitSolver_test : public sofa::CompliantSolver_test
     void testNonlinear( bool compliance, bool debug=false )
     {
         SReal dt=1.0;
-        Node::SPtr root = clearScene();
+        NodeSPtr root = clearScene();
         root->setDt(dt);
         root->setGravity( Vec3(0,0,0) );
 

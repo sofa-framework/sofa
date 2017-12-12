@@ -34,7 +34,7 @@ void DeleteVisitor::processNodeBottomUp(Node* node)
 {
     while (!node->child.empty())
     {
-        Node::SPtr child = *node->child.begin();
+        NodeSPtr child = *node->child.begin();
         node->removeChild(child);
         child.reset();
     }

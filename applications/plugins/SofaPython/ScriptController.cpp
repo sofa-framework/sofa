@@ -28,9 +28,10 @@
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 
-
 #include <sofa/core/objectmodel/IdleEvent.h>
 using sofa::core::objectmodel::IdleEvent ;
+
+#include <sofa/simulation/Node.h>
 
 using namespace sofa::simulation;
 using namespace sofa::core::objectmodel;

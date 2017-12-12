@@ -16,6 +16,7 @@ using sofa::helper::system::PluginManager ;
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 using sofa::simulation::Node ;
+using sofa::simulation::NodeSPtr ;
 
 /////////////////////// COMPONENT DEFINITION & DECLARATION /////////////////////////////////////////
 /// This component is only for testing the APIVersion system.
@@ -59,7 +60,7 @@ struct SceneChecker_test : public Sofa_test<>
               << "      <PythonScriptController classname='AClass' />                            \n"
               << "</Node>                                                                        \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+        NodeSPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                           scene.str().c_str(),
                                                           scene.str().size()) ;
 
@@ -102,7 +103,7 @@ struct SceneChecker_test : public Sofa_test<>
               << "    </Node>                                                                    \n"
               << "</Node>                                                                        \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+        NodeSPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                           scene.str().c_str(),
                                                           scene.str().size()) ;
 
@@ -144,7 +145,7 @@ struct SceneChecker_test : public Sofa_test<>
               << "      <ComponentDeprecated />                                                  \n"
               << "</Node>                                                                        \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+        NodeSPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                           scene.str().c_str(),
                                                           scene.str().size()) ;
 

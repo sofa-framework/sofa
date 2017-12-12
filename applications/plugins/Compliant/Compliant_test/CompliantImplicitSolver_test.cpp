@@ -34,7 +34,7 @@ struct CompliantImplicitSolver_test : public CompliantSolver_test
     void testLinearOneFixedOneStiffnessSpringV100(bool debug)
     {
         SReal dt=0.1; // currently, this must be set in the root node AND passed to the animate function
-        Node::SPtr root = clearScene();
+        NodeSPtr root = clearScene();
         root->setGravity( Vec3(0,0,0) );
         root->setDt(dt);
 
@@ -109,7 +109,7 @@ struct CompliantImplicitSolver_test : public CompliantSolver_test
     void testLinearOneFixedOneComplianceSpringV100( bool debug )
     {
         SReal dt=0.1; // currently, this must be set in the root node AND passed to the animate function
-        Node::SPtr root = clearScene();
+        NodeSPtr root = clearScene();
         root->setGravity( Vec3(0,0,0) );
         root->setDt(dt);
 
@@ -186,7 +186,7 @@ struct CompliantImplicitSolver_test : public CompliantSolver_test
     void testLinearOneFixedOneStiffnessSpringX200( bool debug )
     {
         SReal dt=0.1;   // currently, this must be set in the root node AND passed to the animate function
-        Node::SPtr root = clearScene();
+        NodeSPtr root = clearScene();
         root->setGravity( Vec3(0,0,0) );
         root->setDt(dt);
 
@@ -265,7 +265,7 @@ struct CompliantImplicitSolver_test : public CompliantSolver_test
     void testLinearOneFixedOneComplianceSpringX200( bool debug )
     {
         SReal dt=1;
-        Node::SPtr root = clearScene();
+        NodeSPtr root = clearScene();
         root->setGravity( Vec3(0,0,0) );
         root->setDt(dt);
 
@@ -370,7 +370,7 @@ struct CompliantImplicitSolver_test : public CompliantSolver_test
     /// only ensuring that Assembly is not crashing
     void testEmptyMState( bool debug )
     {
-        Node::SPtr root = clearScene();
+        NodeSPtr root = clearScene();
 
         // The solver
         typedef odesolver::CompliantImplicitSolver OdeSolver;
@@ -391,7 +391,7 @@ struct CompliantImplicitSolver_test : public CompliantSolver_test
         mass->d_totalMass.setValue(1);
 
 
-        Node::SPtr mappedComplianceNode = root->createChild("mappedComplianceNode");
+        NodeSPtr mappedComplianceNode = root->createChild("mappedComplianceNode");
         MechanicalObject1::SPtr mappedComplianceDOF = addNew<MechanicalObject1>(mappedComplianceNode);
         mappedComplianceDOF->resize(0);
 
@@ -404,7 +404,7 @@ struct CompliantImplicitSolver_test : public CompliantSolver_test
         compliance->compliance = 1e-5;
 
 
-        Node::SPtr mappedStiffnessNode = root->createChild("mappedStiffnessNode");
+        NodeSPtr mappedStiffnessNode = root->createChild("mappedStiffnessNode");
         MechanicalObject1::SPtr mappedStiffnessDOF = addNew<MechanicalObject1>(mappedStiffnessNode);
         mappedStiffnessDOF->resize(0);
 

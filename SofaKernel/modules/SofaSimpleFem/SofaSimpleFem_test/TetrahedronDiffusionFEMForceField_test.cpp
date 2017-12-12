@@ -77,7 +77,7 @@ struct TetrahedronDiffusionFEMForceField_test : public Sofa_test<typename _Force
     /// @name Scene elements
     /// {
     typename DOF::SPtr dof;
-    simulation::Node::SPtr root, tetraNode, temperatureNode;
+    simulation::NodeSPtr root, tetraNode, temperatureNode;
     std::string sceneFilename;
     Coord theorX;
     /// }

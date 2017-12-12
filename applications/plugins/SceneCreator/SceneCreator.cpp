@@ -22,6 +22,7 @@
 #include "SceneCreator.h"
 #include <SofaGeneral/config.h>
 
+#include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include "GetVectorVisitor.h"
@@ -59,18 +60,19 @@ using sofa::simulation::GetAssembledSizeVisitor ;
 using sofa::simulation::GetVectorVisitor ;
 using sofa::simulation::Simulation ;
 using sofa::simulation::Node ;
+using sofa::simulation::NodeSPtr ;
 
 using sofa::core::objectmodel::BaseData ;
 using sofa::core::objectmodel::New ;
 
 using sofa::helper::system::DataRepository ;
 
-static sofa::simulation::Node::SPtr root = NULL;
+static sofa::simulation::NodeSPtr root = NULL;
 
 using sofa::core::objectmodel::BaseObject ;
 
 
-Node::SPtr createRootWithCollisionPipeline(const std::string& responseType)
+NodeSPtr createRootWithCollisionPipeline(const std::string& responseType)
 {
     root = simulation::getSimulation()->createNewGraph("root");
     simpleapi::createObject(root, "DefaultPipeline", {{"name","Collision Pipeline"}}) ;
@@ -88,9 +90,9 @@ Node::SPtr createRootWithCollisionPipeline(const std::string& responseType)
     return root;
 }
 
-Node::SPtr  createEulerSolverNode(Node::SPtr parent, const std::string& name, const std::string &scheme)
+NodeSPtr  createEulerSolverNode(NodeSPtr parent, const std::string& name, const std::string &scheme)
 {
-    Node::SPtr node = simpleapi::createChild(parent, name);
+    NodeSPtr node = simpleapi::createChild(parent, name);
 
     if (scheme == "Explicit")
     {
@@ -132,11 +134,11 @@ Node::SPtr  createEulerSolverNode(Node::SPtr parent, const std::string& name, co
 }
 
 
-Node::SPtr createObstacle(Node::SPtr  parent, const std::string &filenameCollision,
+NodeSPtr createObstacle(NodeSPtr  parent, const std::string &filenameCollision,
                           const std::string filenameVisual,  const std::string& color,
                           const Deriv3& translation, const Deriv3 &rotation)
 {
-    Node::SPtr nodeFixed = simpleapi::createChild(parent, "Fixed") ;
+    NodeSPtr nodeFixed = simpleapi::createChild(parent, "Fixed") ;
 
     simpleapi::createObject(nodeFixed, "MeshObjLoader", {
                                 {"name","loader"},
@@ -191,13 +193,13 @@ Node::SPtr createObstacle(Node::SPtr  parent, const std::string &filenameCollisi
 }
 
 
-Node::SPtr createCollisionNodeVec3(Node::SPtr  parent, BaseObject::SPtr  dof,
+NodeSPtr createCollisionNodeVec3(NodeSPtr  parent, BaseObject::SPtr  dof,
                                    const std::string &filename,
                                    const std::vector<std::string> &elements,
                                    const Deriv3& translation, const Deriv3 &rotation)
 {
     SOFA_UNUSED(dof) ;
-    Node::SPtr  node = simpleapi::createChild(parent, "Collision");
+    NodeSPtr  node = simpleapi::createChild(parent, "Collision");
     simpleapi::createObject(node, "MeshObjLoader", {
                                 {"name", "loader"},
                                 {"filename", DataRepository.getFile(filename)}});
@@ -220,14 +222,14 @@ Node::SPtr createCollisionNodeVec3(Node::SPtr  parent, BaseObject::SPtr  dof,
     return node;
 }
 
-simulation::Node::SPtr createVisualNodeVec3(simulation::Node::SPtr  parent,
+simulation::NodeSPtr createVisualNodeVec3(simulation::NodeSPtr  parent,
                                             BaseObject::SPtr  dof,
                                             const std::string &filename, const std::string& color,
                                             const Deriv3& translation, const Deriv3 &rotation,
                                             const MappingType &mappingT)
 {
     SOFA_UNUSED(dof) ;
-    Node::SPtr  node = simpleapi::createChild(parent, "visualNode") ;
+    NodeSPtr  node = simpleapi::createChild(parent, "visualNode") ;
 
     std::string mappingType ;
     const std::string nameVisual="Visual";
@@ -266,7 +268,7 @@ simulation::Node::SPtr createVisualNodeVec3(simulation::Node::SPtr  parent,
 
 
 
-Node::SPtr createCollisionNodeRigid(Node::SPtr  parent, BaseObject::SPtr  dofRigid,
+NodeSPtr createCollisionNodeRigid(NodeSPtr  parent, BaseObject::SPtr  dofRigid,
                                     const std::string &filename,
                                     const std::vector<std::string> &elements,
                                     const Deriv3& translation, const Deriv3 &rotation)
@@ -275,7 +277,7 @@ Node::SPtr createCollisionNodeRigid(Node::SPtr  parent, BaseObject::SPtr  dofRig
     const std::string dofSurfName = "CollisionObject";
     const std::string refdofSurf = "@"+dofSurfName;
 
-    Node::SPtr node=simpleapi::createChild(parent, "Collision");
+    NodeSPtr node=simpleapi::createChild(parent, "Collision");
 
     simpleapi::createObject(node, "MeshObjLoader", {
                                 {"name","loader"},
@@ -297,7 +299,7 @@ Node::SPtr createCollisionNodeRigid(Node::SPtr  parent, BaseObject::SPtr  dofRig
     return node;
 }
 
-Node::SPtr createVisualNodeRigid(Node::SPtr  parent, BaseObject::SPtr  dofRigid,
+NodeSPtr createVisualNodeRigid(NodeSPtr  parent, BaseObject::SPtr  dofRigid,
                                  const std::string &filename, const std::string& color,
                                  const Deriv3& translation, const Deriv3 &rotation)
 {
@@ -305,7 +307,7 @@ Node::SPtr createVisualNodeRigid(Node::SPtr  parent, BaseObject::SPtr  dofRigid,
     const std::string refVisual="@"+nameVisual;
     const std::string refdofRigid="@../"+dofRigid->getName();
 
-    Node::SPtr node=simpleapi::createChild(parent, "Visu");
+    NodeSPtr node=simpleapi::createChild(parent, "Visu");
 
     simpleapi::createObject(node, "VisualModel", {
                                 {"name",nameVisual},
@@ -324,7 +326,7 @@ Node::SPtr createVisualNodeRigid(Node::SPtr  parent, BaseObject::SPtr  dofRigid,
 }
 
 
-void addCollisionModels(Node::SPtr parent, const std::vector<std::string> &elements)
+void addCollisionModels(NodeSPtr parent, const std::vector<std::string> &elements)
 {
     std::map<std::string, std::string> alias = {
         {"Triangle", "TriangleModel"},
@@ -347,7 +349,7 @@ void addCollisionModels(Node::SPtr parent, const std::vector<std::string> &eleme
 }
 
 
-void addTetraFEM(simulation::Node::SPtr parent, const std::string& objectName,
+void addTetraFEM(simulation::NodeSPtr parent, const std::string& objectName,
                  SReal totalMass, SReal young, SReal poisson)
 {
     simpleapi::createObject(parent, "UniformMass", {
@@ -364,7 +366,7 @@ void addTetraFEM(simulation::Node::SPtr parent, const std::string& objectName,
                             });
 }
 
-void addTriangleFEM(simulation::Node::SPtr node, const std::string& objectName,
+void addTriangleFEM(simulation::NodeSPtr node, const std::string& objectName,
                     SReal totalMass, SReal young, SReal poisson)
 {
     simpleapi::createObject(node, "UniformMass", {
@@ -380,7 +382,7 @@ void addTriangleFEM(simulation::Node::SPtr node, const std::string& objectName,
 }
 
 
-simulation::Node::SPtr addCube(simulation::Node::SPtr parent, const std::string& objectName,
+simulation::NodeSPtr addCube(simulation::NodeSPtr parent, const std::string& objectName,
                                const Deriv3& gridSize, SReal totalMass, SReal young, SReal poisson,
                                const Deriv3& translation, const Deriv3 &rotation, const Deriv3 &scale)
 {
@@ -403,7 +405,7 @@ simulation::Node::SPtr addCube(simulation::Node::SPtr parent, const std::string&
         isRigid = true;
 
     // Add Cube Node
-    sofa::simulation::Node::SPtr cube;
+    sofa::simulation::NodeSPtr cube;
     if (isRigid)
         cube = parent->createChild(objectName + "_node");
     else
@@ -443,7 +445,7 @@ simulation::Node::SPtr addCube(simulation::Node::SPtr parent, const std::string&
 }
 
 
-simulation::Node::SPtr addRigidCube(simulation::Node::SPtr parent, const std::string& objectName,
+simulation::NodeSPtr addRigidCube(simulation::NodeSPtr parent, const std::string& objectName,
                                     const Deriv3& gridSize,
                                     const Deriv3& translation, const Deriv3 &rotation, const Deriv3 &scale)
 {
@@ -452,7 +454,7 @@ simulation::Node::SPtr addRigidCube(simulation::Node::SPtr parent, const std::st
 
 
 
-simulation::Node::SPtr addCylinder(simulation::Node::SPtr parent, const std::string& objectName,
+simulation::NodeSPtr addCylinder(simulation::NodeSPtr parent, const std::string& objectName,
                                    const Deriv3& gridSize, const Deriv3& axis, SReal radius, SReal length,
                                    SReal totalMass, SReal young, SReal poisson,
                                    const Deriv3& translation, const Deriv3 &rotation, const Deriv3 &scale)
@@ -476,7 +478,7 @@ simulation::Node::SPtr addCylinder(simulation::Node::SPtr parent, const std::str
         isRigid = true;
 
     // Add Cylinder Node
-    sofa::simulation::Node::SPtr cylinder;
+    sofa::simulation::NodeSPtr cylinder;
     if (isRigid)
         cylinder = parent->createChild(objectName + "_node");
     else
@@ -509,14 +511,14 @@ simulation::Node::SPtr addCylinder(simulation::Node::SPtr parent, const std::str
 }
 
 
-simulation::Node::SPtr addRigidCylinder(simulation::Node::SPtr parent, const std::string& objectName,
+simulation::NodeSPtr addRigidCylinder(simulation::NodeSPtr parent, const std::string& objectName,
                                         const Deriv3& gridSize, const Deriv3& axis, SReal radius, SReal length,
                                         const Deriv3& translation, const Deriv3 &rotation, const Deriv3 &scale)
 {
     return addCylinder(parent, objectName, gridSize, axis, radius, length, -1.f, -1.f, -1.f, translation, rotation, scale);
 }
 
-simulation::Node::SPtr addSphere(simulation::Node::SPtr parent, const std::string& objectName,
+simulation::NodeSPtr addSphere(simulation::NodeSPtr parent, const std::string& objectName,
                                  const Deriv3& gridSize, const Deriv3& axis, SReal radius,
                                  SReal totalMass, SReal young, SReal poisson,
                                  const Deriv3& translation, const Deriv3 &rotation, const Deriv3 &scale)
@@ -540,7 +542,7 @@ simulation::Node::SPtr addSphere(simulation::Node::SPtr parent, const std::strin
         isRigid = true;
 
     // Add Sphere Node
-    sofa::simulation::Node::SPtr sphere;
+    sofa::simulation::NodeSPtr sphere;
     if (isRigid)
         sphere = parent->createChild(objectName + "_node");
     else
@@ -569,7 +571,7 @@ simulation::Node::SPtr addSphere(simulation::Node::SPtr parent, const std::strin
 }
 
 
-simulation::Node::SPtr addRigidSphere(simulation::Node::SPtr parent, const std::string& objectName,
+simulation::NodeSPtr addRigidSphere(simulation::NodeSPtr parent, const std::string& objectName,
                                       const Deriv3& gridSize, const Deriv3& axis, SReal radius,
                                       const Deriv3& translation, const Deriv3 &rotation, const Deriv3 &scale)
 {
@@ -577,7 +579,7 @@ simulation::Node::SPtr addRigidSphere(simulation::Node::SPtr parent, const std::
 }
 
 
-simulation::Node::SPtr addPlane(simulation::Node::SPtr parent, const std::string& objectName,
+simulation::NodeSPtr addPlane(simulation::NodeSPtr parent, const std::string& objectName,
                                 const Deriv3& gridSize, SReal totalMass, SReal young, SReal poisson,
                                 const Deriv3& translation, const Deriv3 &rotation, const Deriv3 &scale)
 {
@@ -600,7 +602,7 @@ simulation::Node::SPtr addPlane(simulation::Node::SPtr parent, const std::string
         isRigid = true;
 
     // Add plane node
-    sofa::simulation::Node::SPtr plane;
+    sofa::simulation::NodeSPtr plane;
     if (isRigid)
         plane = parent->createChild(objectName + "_node");
     else
@@ -629,7 +631,7 @@ simulation::Node::SPtr addPlane(simulation::Node::SPtr parent, const std::string
     return plane;
 }
 
-simulation::Node::SPtr addRigidPlane(simulation::Node::SPtr parent, const std::string& objectName,
+simulation::NodeSPtr addRigidPlane(simulation::NodeSPtr parent, const std::string& objectName,
                                      const Deriv3& gridSize, const Deriv3& translation,
                                      const Deriv3 &rotation, const Deriv3 &scale)
 {
@@ -637,7 +639,7 @@ simulation::Node::SPtr addRigidPlane(simulation::Node::SPtr parent, const std::s
 }
 
 /// Create a stiff string
-Node::SPtr massSpringString(Node::SPtr parent,
+NodeSPtr massSpringString(NodeSPtr parent,
                             double x0, double y0, double z0, // start point,
                             double x1, double y1, double z1, // end point
                             unsigned numParticles,
@@ -667,7 +669,7 @@ Node::SPtr massSpringString(Node::SPtr parent,
         }
     }
 
-    Node::SPtr node = simpleapi::createChild(parent, oss.str()) ;
+    NodeSPtr node = simpleapi::createChild(parent, oss.str()) ;
     simpleapi::createObject(node, "MechanicalObject", {
                                 {"name", oss.str()+"_DOF"},
                                 {"size", str(numParticles)},
@@ -686,27 +688,27 @@ Node::SPtr massSpringString(Node::SPtr parent,
     return node;
 }
 
-Node::SPtr initSofa()
+NodeSPtr initSofa()
 {
     setSimulation(new simulation::graph::DAGSimulation());
     root = simulation::getSimulation()->createNewGraph("root");
     return root;
 }
 
-Node::SPtr getRoot()
+NodeSPtr getRoot()
 {
     if(root==nullptr)
         initSofa();
     return root;
 }
 
-void initScene(Node::SPtr _root)
+void initScene(NodeSPtr _root)
 {
     root = _root;
     sofa::simulation::getSimulation()->init(root.get());
 }
 
-Node::SPtr clearScene()
+NodeSPtr clearScene()
 {
     if( root )
         Simulation::theSimulation->unload( root );

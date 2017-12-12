@@ -28,6 +28,7 @@
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <sofa/simulation/MechanicalVisitor.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/AdvancedTimer.h>
 
@@ -52,7 +53,6 @@ MinResLinearSolver<TMatrix,TVector>::MinResLinearSolver()
     , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
 {
     f_graph.setWidget("graph");
-//    f_graph.setReadOnly(true);
 
 	f_maxIter.setRequired(true);
 	f_tolerance.setRequired(true);

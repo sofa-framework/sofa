@@ -21,6 +21,8 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_POINTMODEL_CPP
 #include <SofaMeshCollision/PointModel.inl>
+#include <sofa/simulation/Node.h>
+
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

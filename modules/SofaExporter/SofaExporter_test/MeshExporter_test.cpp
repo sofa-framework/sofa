@@ -84,7 +84,7 @@ public:
                 "   <MeshExporter name='exporter1' format='"<< format <<"' printLog='true' filename='"<< filename << "' exportAtBegin='true' /> \n"
                 "</Node>                                                           \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+        NodeSPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                           scene1.str().c_str(),
                                                           scene1.str().size()) ;
 
@@ -116,7 +116,7 @@ public:
                 "   <MeshExporter name='exporterA' format='"<< format <<"' printLog='true' filename='"<< filename << "' exportEveryNumberOfSteps='5' /> \n"
                 "</Node>                                                           \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+        NodeSPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                           scene1.str().c_str(),
                                                           scene1.str().size()) ;
 

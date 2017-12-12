@@ -44,7 +44,10 @@ using sofa::component::initBaseMechanics ;
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
 using sofa::simulation::graph::DAGSimulation ;
+
+#include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
+using sofa::simulation::NodeSPtr ;
 using sofa::simulation::setSimulation ;
 using sofa::core::objectmodel::BaseObject ;
 using sofa::core::objectmodel::BaseData ;
@@ -64,8 +67,8 @@ struct BoxROITest :  public ::testing::Test
 {
     typedef BoxROI<TDataType> TheBoxROI;
     Simulation* m_simu  {nullptr} ;
-    Node::SPtr m_root ;
-    Node::SPtr m_node ;
+    NodeSPtr m_root ;
+    NodeSPtr m_node ;
     typename TheBoxROI::SPtr m_boxroi;
 
     virtual void SetUp()
@@ -129,7 +132,7 @@ struct BoxROITest :  public ::testing::Test
                 "   </Node>                                                  "
                 "</Node>                                                     " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+        NodeSPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                           scene.c_str(),
                                                           scene.size()) ;
         EXPECT_NE(root.get(), nullptr) ;
@@ -158,7 +161,7 @@ struct BoxROITest :  public ::testing::Test
                 "   </Node>                                                  "
                 "</Node>                                                     " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+        NodeSPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                           scene.c_str(),
                                                           scene.size()) ;
         EXPECT_NE(root.get(), nullptr) ;
@@ -181,7 +184,7 @@ struct BoxROITest :  public ::testing::Test
                 "   </Node>                                                    "
                 "</Node>                                                       " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+        NodeSPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                           scene.c_str(),
                                                           scene.size()) ;
         EXPECT_NE(root.get(), nullptr) ;
@@ -203,7 +206,7 @@ struct BoxROITest :  public ::testing::Test
                 "   </Node>                                                    "
                 "</Node>                                                       " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+        NodeSPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                           scene.c_str(),
                                                           scene.size()) ;
         EXPECT_NE(root.get(), nullptr) ;
@@ -225,7 +228,7 @@ struct BoxROITest :  public ::testing::Test
                 "   </Node>                                                    "
                 "</Node>                                                       " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+        NodeSPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                           scene.c_str(),
                                                           scene.size()) ;
         EXPECT_NE(root.get(), nullptr) ;

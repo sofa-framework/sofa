@@ -42,6 +42,7 @@ using sofa::component::collision::DefaultPipeline ;
 using sofa::simulation::graph::DAGSimulation ;
 using sofa::simulation::Simulation ;
 using sofa::simulation::Node ;
+using sofa::simulation::NodeSPtr ;
 
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
@@ -82,7 +83,7 @@ void TestDefaultPipeLine::checkDefaultPipelineWithNoAttributes()
              "  <DiscreteIntersection name='interaction'/>                                    \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+    NodeSPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
     ASSERT_NE(root.get(), nullptr) ;
@@ -106,7 +107,7 @@ void TestDefaultPipeLine::checkDefaultPipelineWithMissingIntersection()
              "  <DefaultPipeline name='pipeline'/>                                           \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+    NodeSPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
     ASSERT_NE(root.get(), nullptr) ;
@@ -127,7 +128,7 @@ int TestDefaultPipeLine::checkDefaultPipelineWithMonkeyValueForDepth(int dvalue)
              "  <DiscreteIntersection name='interaction'/>                                    \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+    NodeSPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
     //EXPECT_NE( (root.get()), NULL) ;

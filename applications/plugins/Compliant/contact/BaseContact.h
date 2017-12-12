@@ -1,7 +1,6 @@
 #ifndef BASECONTACT_H
 #define BASECONTACT_H
 
-#include <SofaBaseCollision/DefaultContactManager.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/collision/DetectionOutput.h>
 #include <SofaBaseCollision/BaseContactMapper.h>
@@ -12,8 +11,6 @@
 
 #include "../constraint/Restitution.h"
 #include "../constraint/HolonomicConstraintValue.h"
-
-//#include <sofa/simulation/DeactivatedNodeVisitor.h>
 
 #include <sofa/helper/cast.h>
 

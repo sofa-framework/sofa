@@ -25,7 +25,7 @@
 #include <SofaPython/config.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <string>
-#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Node_fwd.h>
 
 
 namespace sofa
@@ -49,7 +49,7 @@ public:
     /**
      * @brief Constructor.
      */
-    ScriptEvent(sofa::simulation::Node::SPtr sender, const char* eventName);
+    ScriptEvent(sofa::simulation::NodeSPtr sender, const char* eventName);
 
     /**
      * @brief Destructor.
@@ -59,7 +59,7 @@ public:
     /**
      * @brief Get the sender name
      */
-    const sofa::simulation::Node::SPtr getSender(void) const {return m_sender;}
+    const sofa::simulation::NodeSPtr getSender(void) const {return m_sender;}
 
     /**
      * @brief Get the event name
@@ -69,7 +69,7 @@ public:
     virtual const char* getClassName() const { return "ScriptEvent"; }
 private:
 
-    sofa::simulation::Node::SPtr m_sender;
+    sofa::simulation::NodeSPtr m_sender;
     std::string m_eventName;
 
 };

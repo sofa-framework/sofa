@@ -85,7 +85,7 @@ public:
     virtual sofa::simulation::Node* getScene();
     virtual const std::string& getSceneFileName();
     virtual void setSceneFileName(const std::string &f);
-    virtual void setScene(sofa::simulation::Node::SPtr scene, const char* filename = NULL, bool /*keepParams*/= false);
+    virtual void setScene(sofa::simulation::NodeSPtr scene, const char* filename = NULL, bool /*keepParams*/= false);
     virtual void setCameraMode(core::visual::VisualParams::CameraType);
 
     /// true when the viewer keep the hand on the render
@@ -145,7 +145,7 @@ protected:
     virtual void redraw() = 0;
 
     /// the sofa root note of the current scene
-    sofa::simulation::Node::SPtr groot;
+    sofa::simulation::NodeSPtr groot;
 
     sofa::component::visualmodel::BaseCamera::SPtr currentCamera;
 

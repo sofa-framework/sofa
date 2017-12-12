@@ -38,9 +38,9 @@ void rotz(double angle,Vec3 & x,Vec3 & y,Vec3 & z){
 }
 
 
-sofa::component::collision::OBBModel::SPtr makeOBB(const Vec3 & p,const double *angles,const int *order,const Vec3 &v,const Vec3 &extents, sofa::simulation::Node::SPtr &father){
+sofa::component::collision::OBBModel::SPtr makeOBB(const Vec3 & p,const double *angles,const int *order,const Vec3 &v,const Vec3 &extents, sofa::simulation::NodeSPtr &father){
     //creating node containing OBBModel
-    sofa::simulation::Node::SPtr obb = father->createChild("obb");
+    sofa::simulation::NodeSPtr obb = father->createChild("obb");
 
     //creating a mechanical object which will be attached to the OBBModel
     MechanicalObjectRigid3::SPtr obbDOF = New<MechanicalObjectRigid3>();
@@ -99,9 +99,9 @@ sofa::component::collision::OBBModel::SPtr makeOBB(const Vec3 & p,const double *
 }
 
 
-sofa::component::collision::TriangleModel::SPtr makeTri(const Vec3 & p0,const Vec3 & p1,const Vec3 & p2,const Vec3 & v, sofa::simulation::Node::SPtr &father){
+sofa::component::collision::TriangleModel::SPtr makeTri(const Vec3 & p0,const Vec3 & p1,const Vec3 & p2,const Vec3 & v, sofa::simulation::NodeSPtr &father){
     //creating node containing TriangleModel
-    sofa::simulation::Node::SPtr tri = father->createChild("tri");
+    sofa::simulation::NodeSPtr tri = father->createChild("tri");
 
     //creating a mechanical object which will be attached to the OBBModel
     MechanicalObject3::SPtr triDOF = New<MechanicalObject3>();
@@ -151,9 +151,9 @@ sofa::component::collision::TriangleModel::SPtr makeTri(const Vec3 & p0,const Ve
 
 
 sofa::component::collision::CapsuleModel::SPtr makeCap(const Vec3 & p0,const Vec3 & p1,double radius,const Vec3 & v,
-                                                                   sofa::simulation::Node::SPtr & father){
+                                                                   sofa::simulation::NodeSPtr & father){
     //creating node containing OBBModel
-    sofa::simulation::Node::SPtr cap = father->createChild("cap");
+    sofa::simulation::NodeSPtr cap = father->createChild("cap");
 
     //creating a mechanical object which will be attached to the OBBModel
     MechanicalObject3::SPtr capDOF = New<MechanicalObject3>();
@@ -203,9 +203,9 @@ sofa::component::collision::CapsuleModel::SPtr makeCap(const Vec3 & p0,const Vec
 
 
 sofa::component::collision::RigidSphereModel::SPtr makeRigidSphere(const Vec3 & p,SReal radius,const Vec3 &v,const double *angles,const int *order,
-                                                                            sofa::simulation::Node::SPtr & father){
+                                                                            sofa::simulation::NodeSPtr & father){
     //creating node containing OBBModel
-    sofa::simulation::Node::SPtr sphere = father->createChild("sphere");
+    sofa::simulation::NodeSPtr sphere = father->createChild("sphere");
 
     //creating a mechanical object which will be attached to the OBBModel
     MechanicalObjectRigid3::SPtr sphereDOF = New<MechanicalObjectRigid3>();
@@ -263,9 +263,9 @@ sofa::component::collision::RigidSphereModel::SPtr makeRigidSphere(const Vec3 & 
 }
 
 
-sofa::component::collision::SphereModel::SPtr makeSphere(const Vec3 & p,SReal radius,const Vec3 & v,sofa::simulation::Node::SPtr & father){
+sofa::component::collision::SphereModel::SPtr makeSphere(const Vec3 & p,SReal radius,const Vec3 & v,sofa::simulation::NodeSPtr & father){
     //creating node containing OBBModel
-    sofa::simulation::Node::SPtr sphere = father->createChild("sphere");
+    sofa::simulation::NodeSPtr sphere = father->createChild("sphere");
 
     //creating a mechanical object which will be attached to the OBBModel
     MechanicalObject3::SPtr sphereDOF = New<MechanicalObject3>();

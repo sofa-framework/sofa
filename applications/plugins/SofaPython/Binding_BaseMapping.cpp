@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
+#include <sofa/defaulttype/BaseMatrix.h>
 #include "Binding_BaseMapping.h"
 #include "Binding_BaseObject.h"
 #include "PythonFactory.h"

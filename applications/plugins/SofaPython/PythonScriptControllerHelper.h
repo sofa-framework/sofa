@@ -26,10 +26,10 @@
 
 #include <vector>
 #include <string>
-
 #include <SofaPython/config.h>
 
 #include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/Node.h>
 
 #include "PythonScriptController.h"
 #include "PythonScriptFunction.h"
@@ -81,7 +81,7 @@ PyObject* PythonScript_parametersToTuple(ParametersType... parameters)
  * If the controller functions returns \c None, or if you are not interested by the returned value, call it with \c nullptr as first parameter.
  */
 template<typename ResultType, typename... ParametersType>
-void PythonScriptController_call(ResultType * result, sofa::simulation::Node::SPtr root, std::string const& pythonScriptControllerName, std::string const& funcName, ParametersType... parameters)
+void PythonScriptController_call(ResultType * result, sofa::simulation::NodeSPtr root, std::string const& pythonScriptControllerName, std::string const& funcName, ParametersType... parameters)
 {
     sofa::component::controller::PythonScriptController* controller = nullptr;
     controller = dynamic_cast<sofa::component::controller::PythonScriptController*>(root->getObject(pythonScriptControllerName.c_str()));
@@ -104,7 +104,7 @@ void PythonScriptController_call(ResultType * result, sofa::simulation::Node::SP
 }
 
 template<typename... ParametersType>
-void PythonScriptController_call(std::nullptr_t /*result*/, sofa::simulation::Node::SPtr root, std::string const& pythonScriptControllerName, std::string const& funcName, ParametersType... parameters)
+void PythonScriptController_call(std::nullptr_t /*result*/, sofa::simulation::NodeSPtr root, std::string const& pythonScriptControllerName, std::string const& funcName, ParametersType... parameters)
 {
     int* none=nullptr;
     PythonScriptController_call(none, root, pythonScriptControllerName, funcName, parameters...);

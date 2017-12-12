@@ -41,8 +41,6 @@
 #include <sofa/simulation/Visitor.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/defaulttype/BaseVector.h>
-#include <Eigen/Dense>
-
 
 namespace sofa
 {
@@ -57,7 +55,6 @@ namespace simulation
 class SOFA_SCENECREATOR_API GetVectorVisitor: public Visitor
 {
 public:
-//    typedef Eigen::Matrix<SReal, Eigen::Dynamic, 1> Vector;
     typedef defaulttype::BaseVector Vector;
     GetVectorVisitor( const sofa::core::ExecParams* params, Vector* vec, core::ConstVecId src );
     virtual ~GetVectorVisitor();

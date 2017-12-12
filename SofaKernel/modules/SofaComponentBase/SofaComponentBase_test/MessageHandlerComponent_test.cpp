@@ -32,6 +32,7 @@ using sofa::simulation::Simulation ;
 
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
+using sofa::simulation::NodeSPtr ;
 
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
@@ -70,7 +71,7 @@ TEST(MessageHandlerComponent, simpleInit)
 
     sofa::simulation::setSimulation(new DAGSimulation());
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ( "test1",
+    NodeSPtr root = SceneLoaderXML::loadFromMemory ( "test1",
                                                        scene.c_str(),
                                                        scene.size() ) ;
     EXPECT_TRUE(root!=NULL) ;
@@ -92,7 +93,7 @@ TEST(MessageHandlerComponent, missingHandler)
         "       <MessageHandlerComponent/>                   "
         "</Node>                                                             " ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ( "test1",
+    NodeSPtr root = SceneLoaderXML::loadFromMemory ( "test1",
                                                        scene.c_str(),
                                                        scene.size() ) ;
 
@@ -112,7 +113,7 @@ TEST(MessageHandlerComponent, invalidHandler)
         "       <MessageHandlerComponent handler='thisisinvalid'/>           "
         "</Node>                                                             " ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ( "test1",
+    NodeSPtr root = SceneLoaderXML::loadFromMemory ( "test1",
                                                        scene.c_str(),
                                                        scene.size() ) ;
 
@@ -132,7 +133,7 @@ TEST(MessageHandlerComponent, clangHandler)
         "       <MessageHandlerComponent handler='clang'/>                   "
         "</Node>                                                             " ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ( "test1",
+    NodeSPtr root = SceneLoaderXML::loadFromMemory ( "test1",
                                                        scene.c_str(),
                                                        scene.size() ) ;
 

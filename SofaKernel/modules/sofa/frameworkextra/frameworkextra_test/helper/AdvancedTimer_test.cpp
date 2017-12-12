@@ -53,14 +53,10 @@ protected:
 		scene << "<?xml version='1.0'?>"
 				 "<Node 	name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
 				 "</Node>                                                                        \n" ;
-
-		//root = SceneLoaderXML::loadFromMemory ("testscene",
-		//									scene.str().c_str(),
-		//									scene.str().size()) ;
 	}
 
 public:
-	Node::SPtr root;
+	simulation::NodeSPtr root;
 };
 
 TEST_F(AdvancedTimerTest, IsEnabled)

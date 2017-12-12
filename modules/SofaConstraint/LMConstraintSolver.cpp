@@ -26,7 +26,7 @@
 #include <SofaBaseLinearSolver/FullMatrix.h>
 #include <SofaBaseLinearSolver/FullVector.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
-
+#include <sofa/simulation/Node.h>
 #include <sofa/defaulttype/Quat.h>
 
 #include <sofa/core/ObjectFactory.h>

@@ -23,7 +23,7 @@
 #define SOFA_GUI_BATCHGUI_H
 
 #include <sofa/gui/BaseGUI.h>
-#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Node_fwd.h>
 #include <sofa/helper/ArgumentParser.h>
 
 using sofa::helper::ArgumentParser;
@@ -44,7 +44,7 @@ public:
 
     BatchGUI();
 
-    void setScene(sofa::simulation::Node::SPtr groot, const char* filename="", bool temporaryFile=false);
+    void setScene(sofa::simulation::NodeSPtr groot, const char* filename="", bool temporaryFile=false);
 
     void resetScene();
 
@@ -60,7 +60,7 @@ public:
     /// @name registration of each GUI
     /// @{
 
-    static BaseGUI* CreateGUI(const char* name, sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
+    static BaseGUI* CreateGUI(const char* name, sofa::simulation::NodeSPtr groot = NULL, const char* filename = NULL);
     static int RegisterGUIParameters(ArgumentParser* argumentParser);
 
 
@@ -76,7 +76,7 @@ protected:
 
     std::ostringstream m_dumpVisitorStream;
 
-    sofa::simulation::Node::SPtr groot;
+    sofa::simulation::NodeSPtr groot;
     std::string filename;
     static unsigned int nbIter;
 };

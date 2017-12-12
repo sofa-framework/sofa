@@ -64,12 +64,12 @@ TreeSimulation::~TreeSimulation()
 }
 
 
-Node::SPtr TreeSimulation::createNewGraph(const std::string& name)
+NodeSPtr TreeSimulation::createNewGraph(const std::string& name)
 {
     return createNewNode(name);
 }
 
-Node::SPtr TreeSimulation::createNewNode(const std::string& name)
+NodeSPtr TreeSimulation::createNewNode(const std::string& name)
 {
     return sofa::core::objectmodel::New<GNode>(name);
 }

@@ -35,6 +35,8 @@
 
 #include <type_traits>
 
+#include <sofa/simulation/Node_fwd.h>
+#include <sofa/simulation/Sequence.h>
 #include <sofa/core/ExecParams.h>
 #include <sofa/core/objectmodel/Context.h>
 // moved from GNode (27/04/08)
@@ -61,6 +63,7 @@
 #include <sofa/core/behavior/ConstraintSolver.h>
 #include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/core/visual/VisualLoop.h>
+#include <sofa/core/visual/VisualParams_fwd.h>
 #include <sofa/core/collision/Pipeline.h>
 #include <sofa/core/loader/BaseLoader.h>
 #include <sofa/core/objectmodel/Event.h>
@@ -69,31 +72,20 @@
 #include <sofa/simulation/MutationListener_fwd.h>
 #include <sofa/simulation/VisitorScheduler_fwd.h>
 
-namespace sofa
-{
-namespace simulation
-{
-class Visitor;
-}
-}
-
 #include <sofa/helper/system/thread/CTime.h>
 #include <string>
 #include <stack>
 
 
+namespace sofa {
+namespace simulation {
+        class Visitor;
+    }
+}
+
 
 namespace sofa
 {
-
-namespace core
-{
-namespace visual
-{
-class VisualParams;
-} // namespace visual
-} // namespace core
-
 namespace simulation
 {
 
@@ -117,7 +109,7 @@ protected:
     virtual ~Node();
 public:
     /// Create, add, then return the new child of this Node
-    virtual Node::SPtr createChild(const std::string& nodeName)=0;
+    virtual sofa::simulation::NodeSPtr createChild(const std::string& nodeName)=0;
 
     /// @name High-level interface
     /// @{
@@ -161,7 +153,7 @@ public:
     }
 
     /// Execute a recursive action starting from this node
-    template<class Act, class Params = core::visual::VisualParams* >
+    template<class Act, class Params = sofa::core::visual::VisualParams* >
     void execute(const Params* params, bool precomputedOrder=false)
     {
         Act action(params);
@@ -170,7 +162,7 @@ public:
     }
 
     /// Execute a recursive action starting from this node
-    template<class Act, class Params = core::visual::VisualParams* >
+    template<class Act, class Params = sofa::core::visual::VisualParams* >
     void execute(Params* params, bool precomputedOrder=false)
     {
         Act action(params);
@@ -189,75 +181,7 @@ public:
     /// @{
     // methods moved from GNode (27/04/08)
 
-    /// Sequence class to hold a list of objects. Public access is only readonly using an interface similar to std::vector (size/[]/begin/end).
-    /// UPDATE: it is now an alias for the Link pointer container
-    template < class T, bool strong = false >
-    class Sequence : public MultiLink<Node, T, BaseLink::FLAG_DOUBLELINK|(strong ? BaseLink::FLAG_STRONGLINK : BaseLink::FLAG_DUPLICATE)>
-    {
-    public:
-        typedef MultiLink<Node, T, BaseLink::FLAG_DOUBLELINK|(strong ? BaseLink::FLAG_STRONGLINK : BaseLink::FLAG_DUPLICATE)> Inherit;
-        typedef T pointed_type;
-        typedef typename Inherit::DestPtr value_type;
-        //typedef TPtr value_type;
-        typedef typename Inherit::const_iterator const_iterator;
-        typedef typename Inherit::const_reverse_iterator const_reverse_iterator;
-        typedef const_iterator iterator;
-        typedef const_reverse_iterator reverse_iterator;
 
-        Sequence(const BaseLink::InitLink<Node>& init)
-            : Inherit(init)
-        {
-        }
-
-        value_type operator[](unsigned int i) const
-        {
-            return this->get(i);
-        }
-
-        /// Swap two values in the list. Uses a const_cast to violate the read-only iterators.
-        void swap( iterator a, iterator b )
-        {
-            value_type& wa = const_cast<value_type&>(*a);
-            value_type& wb = const_cast<value_type&>(*b);
-            value_type tmp = *a;
-            wa = *b;
-            wb = tmp;
-        }
-    };
-
-    /// Class to hold 0-or-1 object. Public access is only readonly using an interface similar to std::vector (size/[]/begin/end), plus an automatic convertion to one pointer.
-    /// UPDATE: it is now an alias for the Link pointer container
-    template < class T, bool duplicate = true >
-    class Single : public SingleLink<Node, T, BaseLink::FLAG_DOUBLELINK|(duplicate ? BaseLink::FLAG_DUPLICATE : BaseLink::FLAG_NONE)>
-    {
-    public:
-        typedef SingleLink<Node, T, BaseLink::FLAG_DOUBLELINK|(duplicate ? BaseLink::FLAG_DUPLICATE : BaseLink::FLAG_NONE)> Inherit;
-        typedef T pointed_type;
-        typedef typename Inherit::DestPtr value_type;
-        //typedef TPtr value_type;
-        typedef typename Inherit::const_iterator const_iterator;
-        typedef typename Inherit::const_reverse_iterator const_reverse_iterator;
-        typedef const_iterator iterator;
-        typedef const_reverse_iterator reverse_iterator;
-
-        Single(const BaseLink::InitLink<Node>& init)
-            : Inherit(init)
-        {
-        }
-
-        T* operator->() const
-        {
-            return this->get();
-        }
-        T& operator*() const
-        {
-            return *this->get();
-        }
-        operator T*() const
-        {
-            return this->get();
-        }
-    };
 
     Sequence<Node,true> child;
     typedef Sequence<Node,true>::iterator ChildIterator;
@@ -533,10 +457,10 @@ public:
     virtual void setDefaultVisualContextValue();
 
     template <class RealObject>
-    static Node::SPtr create(RealObject*, core::objectmodel::BaseObjectDescription* arg);
+    static NodeSPtr create(RealObject*, core::objectmodel::BaseObjectDescription* arg);
 
 
-    static Node::SPtr create( const std::string& name );
+    static NodeSPtr create( const std::string& name );
 
     /// return the smallest common parent between this and node2 (returns NULL if separated sub-graphes)
     virtual Node* findCommonParent( simulation::Node* node2 ) = 0;
@@ -554,9 +478,9 @@ protected:
 
     std::stack<Visitor*> actionStack;
 
-    virtual void notifyAddChild(Node::SPtr node);
-    virtual void notifyRemoveChild(Node::SPtr node);
-    virtual void notifyMoveChild(Node::SPtr node, Node* prev);
+    virtual void notifyAddChild(NodeSPtr node);
+    virtual void notifyRemoveChild(NodeSPtr node);
+    virtual void notifyMoveChild(NodeSPtr node, Node* prev);
     virtual void notifyAddObject(sofa::core::objectmodel::BaseObject::SPtr obj);
     virtual void notifyRemoveObject(sofa::core::objectmodel::BaseObject::SPtr obj);
     virtual void notifyMoveObject(sofa::core::objectmodel::BaseObject::SPtr obj, Node* prev);

@@ -56,7 +56,7 @@ struct TriangleNumericalIntegration_test : public Sofa_test<typename _DataTypes:
     typedef typename sofa::component::topology::NumericalIntegrationDescriptor<Real, 3> NumericalIntegrationDescriptor;
     //  typedef typename sofa::component::topology::lfactorial lfactorial;
     /// Root of the scene graph
-    simulation::Node::SPtr root;
+    simulation::NodeSPtr root;
     /// Simulation
     simulation::Simulation* simulation;
     // the geometry algorithm algorithm

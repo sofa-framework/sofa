@@ -74,7 +74,7 @@ typedef component::projectiveconstraintset::FixedConstraint<defaulttype::Vec3Typ
 
 template<class DataTypes> PatchTestStruct<DataTypes>
 Elasticity_test<DataTypes>::createRegularGridScene(
-        simulation::Node::SPtr root,
+        simulation::NodeSPtr root,
         Coord startPoint,
         Coord endPoint,
         int numX,
@@ -101,7 +101,7 @@ Elasticity_test<DataTypes>::createRegularGridScene(
     root->setDt(0.05);
 
     // Node square
-    simulation::Node::SPtr SquareNode = root->createChild("Square");
+    simulation::NodeSPtr SquareNode = root->createChild("Square");
 
     // Euler implicit solver and cglinear solver
     component::odesolver::EulerImplicitSolver::SPtr solver = modeling::addNew<component::odesolver::EulerImplicitSolver>(SquareNode,"EulerImplicitSolver");
@@ -158,7 +158,7 @@ CylinderTractionStruct<DataTypes>  Elasticity_test<DataTypes>::createCylinderTra
     typedef typename component::container::MechanicalObject<DataTypes> MechanicalObject;
     typedef typename component::engine::BoxROI<DataTypes> BoxRoi;
     typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
-    typename simulation::Node::SPtr root;
+    typename simulation::NodeSPtr root;
     CylinderTractionStruct<DataTypes> tractionStruct;
 
     // Root node
@@ -243,7 +243,7 @@ CylinderTractionStruct<DataTypes>  Elasticity_test<DataTypes>::createCylinderTra
 
 /// Create an assembly of a siff hexahedral grid with other objects
 template<typename DT>
-simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
+simulation::NodeSPtr Elasticity_test<DT>::createGridScene(
         Coord  startPoint,
         Coord endPoint,
         int numX,
@@ -257,13 +257,13 @@ simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
     using core::objectmodel::New;
 
     // The graph root node
-    simulation::Node::SPtr  root = simulation::getSimulation()->createNewGraph("root");
+    simulation::NodeSPtr  root = simulation::getSimulation()->createNewGraph("root");
     root->setGravity( Coord(0,-10,0) );
     root->setAnimate(false);
     root->setDt(0.01);
     component::visualmodel::addVisualStyle(root)->setShowVisual(false).setShowCollision(false).setShowMapping(true).setShowBehavior(true);
 
-    simulation::Node::SPtr simulatedScene = root->createChild("simulatedScene");
+    simulation::NodeSPtr simulatedScene = root->createChild("simulatedScene");
 
     component::odesolver::EulerImplicitSolver::SPtr eulerImplicitSolver = New<component::odesolver::EulerImplicitSolver>();
     simulatedScene->addObject( eulerImplicitSolver );
@@ -271,23 +271,23 @@ simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
     simulatedScene->addObject(cgLinearSolver);
 
     // The rigid object
-    simulation::Node::SPtr rigidNode = simulatedScene->createChild("rigidNode");
+    simulation::NodeSPtr rigidNode = simulatedScene->createChild("rigidNode");
     MechanicalObjectRigid3::SPtr rigid_dof = modeling::addNew<MechanicalObjectRigid3>(rigidNode, "dof");
     UniformMassRigid3::SPtr rigid_mass = modeling::addNew<UniformMassRigid3>(rigidNode,"mass");
     FixedConstraintRigid3::SPtr rigid_fixedConstraint = modeling::addNew<FixedConstraintRigid3>(rigidNode,"fixedConstraint");
 
     // Particles mapped to the rigid object
-    simulation::Node::SPtr mappedParticles = rigidNode->createChild("mappedParticles");
+    simulation::NodeSPtr mappedParticles = rigidNode->createChild("mappedParticles");
     MechanicalObject3::SPtr mappedParticles_dof = modeling::addNew< MechanicalObject3>(mappedParticles,"dof");
     RigidMappingRigid3_to_3::SPtr mappedParticles_mapping = modeling::addNew<RigidMappingRigid3_to_3>(mappedParticles,"mapping");
     mappedParticles_mapping->setModels( rigid_dof.get(), mappedParticles_dof.get() );
 
     // The independent particles
-    simulation::Node::SPtr independentParticles = simulatedScene->createChild("independentParticles");
+    simulation::NodeSPtr independentParticles = simulatedScene->createChild("independentParticles");
     MechanicalObject3::SPtr independentParticles_dof = modeling::addNew< MechanicalObject3>(independentParticles,"dof");
 
     // The deformable grid, connected to its 2 parents using a MultiMapping
-    simulation::Node::SPtr deformableGrid = independentParticles->createChild("deformableGrid"); // first parent
+    simulation::NodeSPtr deformableGrid = independentParticles->createChild("deformableGrid"); // first parent
     mappedParticles->addChild(deformableGrid);                                       // second parent
 
     component::topology::RegularGridTopology::SPtr deformableGrid_grid = modeling::addNew<component::topology::RegularGridTopology>( deformableGrid, "grid" );
@@ -400,8 +400,8 @@ simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
 }
 
 template<class DataTypes>
-simulation::Node::SPtr Elasticity_test<DataTypes>::createMassSpringSystem(
-        simulation::Node::SPtr root,
+simulation::NodeSPtr Elasticity_test<DataTypes>::createMassSpringSystem(
+        simulation::NodeSPtr root,
         double stiffness,
         double mass,
         double restLength,
@@ -412,7 +412,7 @@ simulation::Node::SPtr Elasticity_test<DataTypes>::createMassSpringSystem(
 {
 
     // Fixed point
-    simulation::Node::SPtr fixedPointNode = root->createChild("FixedPointNode");
+    simulation::NodeSPtr fixedPointNode = root->createChild("FixedPointNode");
     MechanicalObject3::SPtr FixedPoint = modeling::addNew<MechanicalObject3>(fixedPointNode,"fixedPoint");
 
     // Set position and velocity
@@ -427,7 +427,7 @@ simulation::Node::SPtr Elasticity_test<DataTypes>::createMassSpringSystem(
 
 
 // Mass
-simulation::Node::SPtr massNode = root->createChild("MassNode");
+simulation::NodeSPtr massNode = root->createChild("MassNode");
 MechanicalObject3::SPtr massDof = modeling::addNew<MechanicalObject3>(massNode,"massNode");
 
 // Set position and velocity

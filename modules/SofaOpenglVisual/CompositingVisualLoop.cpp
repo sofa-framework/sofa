@@ -32,6 +32,7 @@
 #include <SofaBaseVisual/VisualStyle.h>
 #include <sofa/core/visual/DisplayFlags.h>
 #include <sofa/simulation/VisualVisitor.h>
+#include <sofa/simulation/Node.h>
 
 
 #include <sofa/helper/AdvancedTimer.h>
@@ -54,7 +55,6 @@ CompositingVisualLoop::CompositingVisualLoop(simulation::Node* _gnode)
       vertFilename(initData(&vertFilename, (std::string) "shaders/compositing.vert", "vertFilename", "Set the vertex shader filename to load")),
       fragFilename(initData(&fragFilename, (std::string) "shaders/compositing.frag", "fragFilename", "Set the fragment shader filename to load"))
 {
-    //assert(gRoot);
 }
 
 CompositingVisualLoop::~CompositingVisualLoop()
@@ -116,7 +116,7 @@ void CompositingVisualLoop::drawStep(sofa::core::visual::VisualParams* vparams)
 #ifdef SOFA_HAVE_GLEW
         if (renderingState == sofa::core::visual::tristate::false_value || renderingState == sofa::core::visual::tristate::neutral_value) return;
 
-        sofa::simulation::Node::Sequence<core::visual::VisualManager>::iterator begin = gRoot->visualManager.begin(), end = gRoot->visualManager.end(), it;
+        sofa::simulation::Sequence<core::visual::VisualManager>::iterator begin = gRoot->visualManager.begin(), end = gRoot->visualManager.end(), it;
         //preDraw sequence
         it=begin;
         for (it = begin; it != end; ++it)
@@ -140,7 +140,7 @@ void CompositingVisualLoop::drawStep(sofa::core::visual::VisualParams* vparams)
         }
 
         //postDraw sequence
-        sofa::simulation::Node::Sequence<core::visual::VisualManager>::reverse_iterator rbegin = gRoot->visualManager.rbegin(), rend = gRoot->visualManager.rend(), rit;
+        sofa::simulation::Sequence<core::visual::VisualManager>::reverse_iterator rbegin = gRoot->visualManager.rbegin(), rend = gRoot->visualManager.rend(), rit;
         for (rit = rbegin; rit != rend; ++rit)
             (*rit)->postDrawScene(vparams);
 

@@ -22,7 +22,7 @@ struct RequiredPlugin_test : public Sofa_test<>
                  "   <RequiredPlugin name=\"notExist\" pluginName=\"SofaNotExist\" />            \n"
                  "</Node>                                                                        \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+        NodeSPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                           scene.str().c_str(),
                                                           scene.str().size()) ;
 
@@ -40,7 +40,7 @@ struct RequiredPlugin_test : public Sofa_test<>
                  "   <RequiredPlugin />            \n"
                  "</Node>                                                                        \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+        NodeSPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                           scene.str().c_str(),
                                                           scene.str().size()) ;
 

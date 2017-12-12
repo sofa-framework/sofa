@@ -27,7 +27,8 @@
 #include <sofa/core/ExecParams.h>
 #include <sofa/simulation/simulationcore.h>
 #include <sofa/simulation/Simulation.h>
-#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Node_fwd.h>
+#include <sofa/simulation/Sequence.h>
 #include <sofa/simulation/Visitor.h>
 
 namespace sofa
@@ -88,7 +89,7 @@ protected:
     virtual void integrate(const core::ExecParams* params, SReal dt);
 
 
-    typedef simulation::Node::Sequence<core::behavior::OdeSolver> Solvers;
+    typedef simulation::Sequence<core::behavior::OdeSolver> Solvers;
     typedef core::collision::Pipeline Pipeline;
     const Solvers& getSolverSequence();
 

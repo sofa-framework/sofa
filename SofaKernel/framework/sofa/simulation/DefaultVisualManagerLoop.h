@@ -25,7 +25,7 @@
 #include <sofa/core/visual/VisualLoop.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/simulation/simulationcore.h>
-#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Node_fwd.h>
 
 namespace sofa
 {

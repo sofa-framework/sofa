@@ -43,8 +43,8 @@ struct Node_test : public BaseSimulationTest
         EXPECT_MSG_NOEMIT(Error, Warning);
 
         SceneInstance si("R") ;
-        Node::SPtr A = createChild(si.root, "A");
-        Node::SPtr B = createChild(A, "B");
+        NodeSPtr A = createChild(si.root, "A");
+        NodeSPtr B = createChild(A, "B");
 
         EXPECT_EQ("", si.root->getPathName());
         EXPECT_EQ("/A/B", B->getPathName());

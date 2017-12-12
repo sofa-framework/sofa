@@ -31,7 +31,7 @@
 #include <sstream>
 #include <map>
 
-#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Node_fwd.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 
@@ -43,21 +43,22 @@ namespace simpleapi
 using sofa::core::objectmodel::BaseObject ;
 using sofa::simulation::Simulation ;
 using sofa::simulation::Node ;
+using sofa::simulation::NodeSPtr ;
 
 void SOFA_SCENECREATOR_API importPlugin(const std::string& name) ;
 
 Simulation::SPtr SOFA_SCENECREATOR_API createSimulation(const std::string& type="DAG") ;
 
-Node::SPtr SOFA_SCENECREATOR_API createRootNode( Simulation::SPtr, const std::string& name,
+NodeSPtr SOFA_SCENECREATOR_API createRootNode( Simulation::SPtr, const std::string& name,
     const std::map<std::string, std::string>& params = std::map<std::string, std::string>{} );
 
-BaseObject::SPtr SOFA_SCENECREATOR_API createObject( Node::SPtr parent, const std::string& type,
+BaseObject::SPtr SOFA_SCENECREATOR_API createObject( NodeSPtr parent, const std::string& type,
     const std::map<std::string, std::string>& params = std::map<std::string, std::string>{} );
 
-Node::SPtr SOFA_SCENECREATOR_API createChild( Node::SPtr& node, const std::string& name,
+NodeSPtr SOFA_SCENECREATOR_API createChild( NodeSPtr& node, const std::string& name,
     const std::map<std::string, std::string>& params = std::map<std::string, std::string>{} );
 
-void SOFA_SCENECREATOR_API dumpScene(Node::SPtr root) ;
+void SOFA_SCENECREATOR_API dumpScene(NodeSPtr root) ;
 
 template<class T>
 std::string str(const T& t)

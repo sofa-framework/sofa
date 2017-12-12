@@ -65,7 +65,7 @@ struct BeamMaterial_test : public Sofa_test<typename Vec3Types::Real>
     typedef component::container::MechanicalObject<Affine3Types> AffineMechanicalObject;
     typedef sofa::component::forcefield::HookeForceField<EType> HookeForceField;
     typedef typename sofa::component::forcefield::HookeForceField<EType>::SPtr HookeForceFieldSPtr;
-    typedef HookeForceFieldSPtr (BeamMaterial_test<DataTypes>::*LinearElasticityFF)(simulation::Node::SPtr,double,double,double);
+    typedef HookeForceFieldSPtr (BeamMaterial_test<DataTypes>::*LinearElasticityFF)(simulation::NodeSPtr,double,double,double);
     typename component::forcefield::SurfacePressureForceField<Vec3Types>* bottomForceField;
     typename component::forcefield::SurfacePressureForceField<Vec3Types>* topForceField;
 
@@ -74,11 +74,11 @@ struct BeamMaterial_test : public Sofa_test<typename Vec3Types::Real>
     /// Affine dofs
     AffineMechanicalObject::SPtr affineDofs;
     /// Root node of the tested scene
-    simulation::Node::SPtr root;
+    simulation::NodeSPtr root;
 	/// index of the vertex used to compute the deformation
 	size_t vIndex;
     // Strain node for the force field
-    simulation::Node::SPtr strainNode;
+    simulation::NodeSPtr strainNode;
    
 
      // Define the path for the scenes directory
@@ -99,9 +99,9 @@ struct BeamMaterial_test : public Sofa_test<typename Vec3Types::Real>
        root = down_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()).get() );
 
        // Get child nodes
-       simulation::Node::SPtr flexibleNode = root->getChild("Flexible");
-       simulation::Node::SPtr collisionNode = flexibleNode->getChild("collision");
-       simulation::Node::SPtr behaviorNode = flexibleNode->getChild("behavior");
+       simulation::NodeSPtr flexibleNode = root->getChild("Flexible");
+       simulation::NodeSPtr collisionNode = flexibleNode->getChild("collision");
+       simulation::NodeSPtr behaviorNode = flexibleNode->getChild("behavior");
        strainNode = behaviorNode->getChild("Strain");
 
        // Get force field for bottom face
@@ -117,7 +117,7 @@ struct BeamMaterial_test : public Sofa_test<typename Vec3Types::Real>
 
     }
 
-	HookeForceFieldSPtr addHookeForceField(simulation::Node::SPtr node,
+	HookeForceFieldSPtr addHookeForceField(simulation::NodeSPtr node,
         double youngModulus,double poissonRatio, double viscosity)
 	{
         // Hooke Force Field

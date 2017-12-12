@@ -42,7 +42,7 @@ struct Assembly_test : public CompliantSolver_test
 
     /// assembling the system with the given params (useful to assemble the mass or stiffness matrices alone)
     /// @warning the scene must be initialized
-    static SparseMatrix getAssembledImplicitMatrix( Node::SPtr node, const core::MechanicalParams* mparams )
+    static SparseMatrix getAssembledImplicitMatrix( NodeSPtr node, const core::MechanicalParams* mparams )
     {
         simulation::AssemblyVisitor assemblyVisitor(mparams);
         node->getContext()->executeVisitor( &assemblyVisitor );
@@ -54,7 +54,7 @@ struct Assembly_test : public CompliantSolver_test
 
     /// assembling the mass matrix alone
     /// @warning the scene must be initialized
-    static SparseMatrix getAssembledMassMatrix( Node::SPtr node, core::MechanicalParams mparams=*core::MechanicalParams::defaultInstance() )
+    static SparseMatrix getAssembledMassMatrix( NodeSPtr node, core::MechanicalParams mparams=*core::MechanicalParams::defaultInstance() )
     {
         mparams.setMFactor( 1 );
         mparams.setBFactor( 0 );
@@ -64,7 +64,7 @@ struct Assembly_test : public CompliantSolver_test
 
     /// assembling the stiffness matrix alone
     /// @warning the scene must be initialized
-    static SparseMatrix getAssembledStiffnessMatrix( Node::SPtr node, core::MechanicalParams mparams=*core::MechanicalParams::defaultInstance() )
+    static SparseMatrix getAssembledStiffnessMatrix( NodeSPtr node, core::MechanicalParams mparams=*core::MechanicalParams::defaultInstance() )
     {
         mparams.setMFactor( 0 );
         mparams.setBFactor( 0 );
@@ -112,7 +112,7 @@ struct Assembly_test : public CompliantSolver_test
       */
     void testHardString( unsigned n )
     {
-        Node::SPtr root = clearScene();
+        NodeSPtr root = clearScene();
         root->setGravity( Vec3(0,0,0) );
 
         // The solver
@@ -127,7 +127,7 @@ struct Assembly_test : public CompliantSolver_test
         (void) response;
 
         // The string
-        simulation::Node::SPtr  string1 = createCompliantString( root, Vec3(0,0,0), Vec3(1,0,0), n, 1.0*n, 0. );
+        simulation::NodeSPtr  string1 = createCompliantString( root, Vec3(0,0,0), Vec3(1,0,0), n, 1.0*n, 0. );
 
         // Opposite forces applied to the ends
         ConstantForceField3::SPtr ff = New<ConstantForceField3>();
@@ -203,7 +203,7 @@ struct Assembly_test : public CompliantSolver_test
       */
     void testAttachedHardString( unsigned n )
     {
-        Node::SPtr root = clearScene();
+        NodeSPtr root = clearScene();
         SReal g=10;
         root->setGravity( Vec3(g,0,0) );
 
@@ -219,7 +219,7 @@ struct Assembly_test : public CompliantSolver_test
         (void) response;
 
         // The string
-        simulation::Node::SPtr  string1 = createCompliantString( root, Vec3(0,0,0), Vec3(1,0,0), n, 1.0*n, 0. );
+        simulation::NodeSPtr  string1 = createCompliantString( root, Vec3(0,0,0), Vec3(1,0,0), n, 1.0*n, 0. );
 
         // attached
         FixedConstraint3::SPtr fixed1 = addNew<FixedConstraint3>(string1);
@@ -283,7 +283,7 @@ struct Assembly_test : public CompliantSolver_test
       */
     void testConstrainedHardString( unsigned n )
     {
-        Node::SPtr root = clearScene();
+        NodeSPtr root = clearScene();
         SReal g=10;
         root->setGravity( Vec3(g,0,0) );
 
@@ -299,11 +299,11 @@ struct Assembly_test : public CompliantSolver_test
 
         // The string
         Vec3 startPoint(0,0,0);
-        simulation::Node::SPtr  string1 = createCompliantString( root, startPoint, Vec3(1,0,0), n, 1.0*n, 0. );
+        simulation::NodeSPtr  string1 = createCompliantString( root, startPoint, Vec3(1,0,0), n, 1.0*n, 0. );
 
         //-------- fix a particle using a constraint: map the distance of the particle to its initial position, and constrain this to 0
         std::string nodeName = "fixDistance_";
-        Node::SPtr fixNode = string1->createChild(nodeName + "Node");
+        NodeSPtr fixNode = string1->createChild(nodeName + "Node");
         MechanicalObject1::SPtr extensions = New<MechanicalObject1>();
         extensions->setName(nodeName+"DOF");
         fixNode->addObject(extensions);
@@ -396,12 +396,12 @@ struct Assembly_test : public CompliantSolver_test
       */
     void testExternallyConstrainedHardString( unsigned n )
     {
-        Node::SPtr root = clearScene();
+        NodeSPtr root = clearScene();
         SReal g=10;
         root->setGravity( Vec3(g,0,0) );
 
         // ======== object out of scope
-        Node::SPtr  outOfScope = root->createChild("outOfScope");
+        NodeSPtr  outOfScope = root->createChild("outOfScope");
         MechanicalObject3::SPtr outOfScopeDOF = addNew<MechanicalObject3>(outOfScope,"outOfScopeDOF");
         outOfScopeDOF->resize(1);
         MechanicalObject3::WriteVecCoord x = outOfScopeDOF->writePositions();
@@ -409,7 +409,7 @@ struct Assembly_test : public CompliantSolver_test
 
 
         // ======== object controlled by the solver
-        Node::SPtr  solverObject = root->createChild("solverObject");
+        NodeSPtr  solverObject = root->createChild("solverObject");
 
         // The solver
         complianceSolver = addNew<OdeSolver>(solverObject);
@@ -424,11 +424,11 @@ struct Assembly_test : public CompliantSolver_test
 
 
         // ========  string
-        Node::SPtr  string1 = createCompliantString( solverObject, Vec3(0,0,0), Vec3(1,0,0), n, 1.0*n, 0 );
+        NodeSPtr  string1 = createCompliantString( solverObject, Vec3(0,0,0), Vec3(1,0,0), n, 1.0*n, 0 );
 
 
         // .=======  Node with multiple parents to create an interaction using a MultiMapping
-        Node::SPtr commonChild = string1->createChild("commonChild");
+        NodeSPtr commonChild = string1->createChild("commonChild");
         outOfScope->addChild(commonChild);
 
         MechanicalObject3::SPtr mappedDOF = addNew<MechanicalObject3>(commonChild); // to contain particles from the two strings
@@ -443,7 +443,7 @@ struct Assembly_test : public CompliantSolver_test
         commonChild->addObject(multimapping);
 
         // ..========  Node to handle the extension of the interaction link
-        Node::SPtr extension_node = commonChild->createChild("ConnectionExtensionNode");
+        NodeSPtr extension_node = commonChild->createChild("ConnectionExtensionNode");
 
         MechanicalObject1::SPtr extensions = New<MechanicalObject1>();
         extension_node->addObject(extensions);
@@ -546,7 +546,7 @@ struct Assembly_test : public CompliantSolver_test
       */
     void testAttachedConnectedHardStrings( unsigned n )
     {
-        Node::SPtr root = clearScene();
+        NodeSPtr root = clearScene();
         SReal g=10;
         root->setGravity( Vec3(g,0,0) );
 
@@ -562,8 +562,8 @@ struct Assembly_test : public CompliantSolver_test
         (void) response;
 
         // ========  strings
-        Node::SPtr  string1 = createCompliantString( root, Vec3(0,0,0), Vec3(1,0,0), n, 1.0*n, 0 );
-        Node::SPtr  string2 = createCompliantString( root, Vec3(2,0,0), Vec3(3,0,0), n, 1.0*n, 0 );
+        NodeSPtr  string1 = createCompliantString( root, Vec3(0,0,0), Vec3(1,0,0), n, 1.0*n, 0 );
+        NodeSPtr  string2 = createCompliantString( root, Vec3(2,0,0), Vec3(3,0,0), n, 1.0*n, 0 );
 
         // string1 is attached
         FixedConstraint3::SPtr fixed1 = New<FixedConstraint3>();
@@ -571,7 +571,7 @@ struct Assembly_test : public CompliantSolver_test
 
 
         // ========  Node with multiple parents to create an interaction using a MultiMapping
-        Node::SPtr commonChild = string1->createChild("commonChild");
+        NodeSPtr commonChild = string1->createChild("commonChild");
         string2->addChild(commonChild);
 
         MechanicalObject3::SPtr mappedDOF = New<MechanicalObject3>(); // to contain particles from the two strings
@@ -588,7 +588,7 @@ struct Assembly_test : public CompliantSolver_test
         commonChild->addObject(multimapping);
 
         //  ========  Node to handle the extension of the interaction link
-        Node::SPtr extension_node = commonChild->createChild("ConnectionExtensionNode");
+        NodeSPtr extension_node = commonChild->createChild("ConnectionExtensionNode");
 
         MechanicalObject1::SPtr extensions = New<MechanicalObject1>();
         extension_node->addObject(extensions);
@@ -695,7 +695,7 @@ struct Assembly_test : public CompliantSolver_test
     */
     void testRigidConnectedToString( unsigned n )
     {
-        Node::SPtr root = clearScene();
+        NodeSPtr root = clearScene();
         SReal g=10;
         root->setGravity( Vec3(g,0,0) );
 
@@ -711,7 +711,7 @@ struct Assembly_test : public CompliantSolver_test
         (void) response;
 
         // ========= The rigid object
-        simulation::Node::SPtr rigid = root->createChild("rigid");
+        simulation::NodeSPtr rigid = root->createChild("rigid");
         MechanicalObjectRigid3::SPtr rigidDOF = addNew<MechanicalObjectRigid3>(rigid);
         rigidDOF->resize(1);
         MechanicalObjectRigid3::WriteVecCoord x = rigidDOF->writePositions();
@@ -719,7 +719,7 @@ struct Assembly_test : public CompliantSolver_test
         UniformMassRigid3::SPtr rigidMass = addNew<UniformMassRigid3>(rigid);
 
         // .========= Particle attached to the rigid object
-        simulation::Node::SPtr particleOnRigid = rigid->createChild("particleOnRigid");
+        simulation::NodeSPtr particleOnRigid = rigid->createChild("particleOnRigid");
         MechanicalObject3::SPtr particleOnRigidDOF = addNew<MechanicalObject3>(particleOnRigid);
         particleOnRigidDOF->resize(1);
 
@@ -727,14 +727,14 @@ struct Assembly_test : public CompliantSolver_test
         particleOnRigidMapping->setModels(rigidDOF.get(),particleOnRigidDOF.get());
 
         // ========= The string
-        simulation::Node::SPtr  string1 = createCompliantString( root, Vec3(0,0,0), Vec3(1,0,0), n, 1.0*n, 0. );
+        simulation::NodeSPtr  string1 = createCompliantString( root, Vec3(0,0,0), Vec3(1,0,0), n, 1.0*n, 0. );
 
         // Fix the first particle of the string
         FixedConstraint3::SPtr fixed1 = New<FixedConstraint3>();
         string1->addObject( fixed1 );
 
         // ..======== Mixed subset containing the last particle of the string and the particle attached to the rigid object
-        simulation::Node::SPtr pointPair = particleOnRigid->createChild("pointPair");
+        simulation::NodeSPtr pointPair = particleOnRigid->createChild("pointPair");
         string1->addChild(pointPair); // two parents: particleOnRigid and string1
 
         MechanicalObject3::SPtr pointPairDOF = addNew<MechanicalObject3>(pointPair);
@@ -746,7 +746,7 @@ struct Assembly_test : public CompliantSolver_test
         pointPairMapping->addPoint(particleOnRigid->mechanicalState,0 );
 
         //  ...========  Distance between the particles in pointPair
-        Node::SPtr extension = pointPair->createChild("extension");
+        NodeSPtr extension = pointPair->createChild("extension");
 
         MechanicalObject1::SPtr extensionDOF = addNew<MechanicalObject1>(extension);
 
@@ -830,7 +830,7 @@ struct Assembly_test : public CompliantSolver_test
         /////// SUBSETMULTIMAPPING + DISTANCEMAPPING
 
 
-        Node::SPtr root = clearScene();
+        NodeSPtr root = clearScene();
         root->setGravity( Vec3(0,0,0) );
 
         const Vec3 p0(0,0,0), p1(2,0,0); // make it deformed at start, such as it creates a force and geometric stiffness
@@ -845,7 +845,7 @@ struct Assembly_test : public CompliantSolver_test
         (void) response;
 
         // ========= DOF1
-        simulation::Node::SPtr node1 = root->createChild("node1");
+        simulation::NodeSPtr node1 = root->createChild("node1");
         MechanicalObject3::SPtr dof1 = addNew<MechanicalObject3>(node1);
         dof1->resize(1);
         MechanicalObject3::WriteVecCoord x1 = dof1->writePositions();
@@ -854,7 +854,7 @@ struct Assembly_test : public CompliantSolver_test
         mass1->setTotalMass( 1 );
 
         // ========= DOF2
-        simulation::Node::SPtr node2 = root->createChild("node2");
+        simulation::NodeSPtr node2 = root->createChild("node2");
         MechanicalObject3::SPtr dof2 = addNew<MechanicalObject3>(node2);
         dof2->resize(1);
         MechanicalObject3::WriteVecCoord x2 = dof2->writePositions();
@@ -863,7 +863,7 @@ struct Assembly_test : public CompliantSolver_test
         mass1->setTotalMass( 1 );
 
         // =========== common DOFs
-        simulation::Node::SPtr subset_node = node1->createChild( "SubsetNode");
+        simulation::NodeSPtr subset_node = node1->createChild( "SubsetNode");
         node2->addChild( subset_node );
         MechanicalObject3::SPtr allDofs = addNew<MechanicalObject3>(subset_node);
         SubsetMultiMapping3_to_3::SPtr subsetMapping = addNew<SubsetMultiMapping3_to_3>(subset_node);
@@ -874,7 +874,7 @@ struct Assembly_test : public CompliantSolver_test
         subsetMapping->addPoint( dof2.get(), 0 );
 
         // ========= extension
-        simulation::Node::SPtr extension_node = subset_node->createChild( "ExtensionNode");
+        simulation::NodeSPtr extension_node = subset_node->createChild( "ExtensionNode");
 
         MechanicalObject1::SPtr extensions = addNew<MechanicalObject1>(extension_node);
         EdgeSetTopologyContainer::SPtr edgeSet = addNew<EdgeSetTopologyContainer>(extension_node);

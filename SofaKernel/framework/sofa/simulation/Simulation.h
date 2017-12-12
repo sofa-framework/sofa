@@ -22,7 +22,9 @@
 #ifndef SOFA_SIMULATION_CORE_SIMULATION_H
 #define SOFA_SIMULATION_CORE_SIMULATION_H
 
-#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Node_fwd.h>
+#include <sofa/core/visual/VisualParams_fwd.h>
+#include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/visual/DisplayFlags.h>
 #include <memory>
 
@@ -111,16 +113,16 @@ public:
     virtual void dumpState( Node* root, std::ofstream& out );
 
     /// Load a scene from a file
-    virtual Node::SPtr load(const char* /* filename */);
+    virtual NodeSPtr load(const char* /* filename */);
 
     /// Unload a scene from a Node.
-    virtual void unload(Node::SPtr root);
+    virtual void unload(NodeSPtr root);
 
     /// create a new graph(or tree) and return its root node.
-    virtual Node::SPtr createNewGraph(const std::string& name)=0;//Todo replace newNode method
+    virtual NodeSPtr createNewGraph(const std::string& name)=0;//Todo replace newNode method
 
     /// creates and returns a new node.
-    virtual Node::SPtr createNewNode(const std::string& name)=0;
+    virtual NodeSPtr createNewNode(const std::string& name)=0;
 
     /// @warning this singleton has one limitation: it is easy to create several types of
     /// simulations at the same time (e.g. DAGSimulation + TreeSimulation)

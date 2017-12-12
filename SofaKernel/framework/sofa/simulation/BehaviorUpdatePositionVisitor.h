@@ -29,7 +29,7 @@
 
 #include <sofa/core/ExecParams.h>
 #include <sofa/simulation/Visitor.h>
-#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Node_fwd.h>
 #include <sofa/core/BehaviorModel.h>
 
 namespace sofa

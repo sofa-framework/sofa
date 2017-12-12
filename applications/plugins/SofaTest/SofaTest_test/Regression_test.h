@@ -76,7 +76,7 @@ protected:
         simulation::Simulation* simulation = simulation::getSimulation();
 
         // Load the scene
-        sofa::simulation::Node::SPtr root = simulation->load(scene.c_str());
+        sofa::simulation::NodeSPtr root = simulation->load(scene.c_str());
 
         simulation->init(root.get());
 

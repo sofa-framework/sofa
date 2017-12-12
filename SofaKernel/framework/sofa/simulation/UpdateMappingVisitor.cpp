@@ -20,8 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/simulation/UpdateMappingVisitor.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/core/VecId.h>
-//#include <sofa/component/System.h>
+
 
 namespace sofa
 {

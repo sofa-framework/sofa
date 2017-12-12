@@ -73,7 +73,7 @@ void BaseViewer::setSceneFileName(const std::string &f)
     sceneFileName = f;
 }
 
-void BaseViewer::setScene(sofa::simulation::Node::SPtr scene, const char* filename /* = NULL */, bool /* = false */)
+void BaseViewer::setScene(sofa::simulation::NodeSPtr scene, const char* filename /* = NULL */, bool /* = false */)
 {
     std::string prefix = "";
     if (filename)

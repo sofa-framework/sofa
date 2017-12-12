@@ -50,10 +50,10 @@ public:
     ~TreeSimulation(); // this is a terminal class
 
     /// create a new graph(or tree) and return its root node.
-    virtual Node::SPtr createNewGraph(const std::string& name) override;
+    virtual NodeSPtr createNewGraph(const std::string& name) override;
 
     /// creates and returns a new node.
-    virtual Node::SPtr createNewNode(const std::string& name) override;
+    virtual NodeSPtr createNewNode(const std::string& name) override;
 
     /// Can the simulation handle a directed acyclic graph?
     virtual bool isDirectedAcyclicGraph() override { return false; }

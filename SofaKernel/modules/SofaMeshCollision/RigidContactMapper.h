@@ -72,7 +72,7 @@ public:
     typedef mapping::RigidMapping< InDataTypes, typename RigidContactMapper::DataTypes > MMapping;
 
     MCollisionModel* model;
-    simulation::Node::SPtr child;
+    simulation::NodeSPtr child;
     typename MMapping::SPtr mapping;
     typename MMechanicalState::SPtr outmodel;
     int nbp;

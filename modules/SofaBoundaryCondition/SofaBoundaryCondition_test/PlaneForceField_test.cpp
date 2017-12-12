@@ -106,7 +106,7 @@ struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Re
 
     /// Root of the scene graph, created by the constructor and re-used in the tests
     simulation::Simulation*               m_simulation {nullptr};
-    simulation::Node::SPtr                m_root;
+    simulation::NodeSPtr                m_root;
 
     typename PlaneForceFieldType::SPtr      m_planeForceFieldSPtr;
     typename MechanicalObjectType::SPtr     m_mechanicalObj;
@@ -204,7 +204,7 @@ struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Re
                  "  </Node>                                                                      \n"
                  "</Node>                                                                        \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+        NodeSPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                           scene.str().c_str(),
                                                           scene.str().size()) ;
         EXPECT_NE(root.get(), nullptr) ;
@@ -241,7 +241,7 @@ struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Re
                  "  </Node>                                                                      \n"
                  "</Node>                                                                        \n" ;
 
-            Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+            NodeSPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                               scene.str().c_str(),
                                                               scene.str().size()) ;
             EXPECT_NE(root.get(), nullptr) ;
@@ -276,7 +276,7 @@ struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Re
                  "  </Node>                                                                      \n"
                  "</Node>                                                                        \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+        NodeSPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                           scene.str().c_str(),
                                                           scene.str().size()) ;
         EXPECT_NE(root.get(), nullptr) ;
@@ -309,7 +309,7 @@ struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Re
                  "  </Node>                                                                      \n"
                  "</Node>                                                                        \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+        NodeSPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                           scene.str().c_str(),
                                                           scene.str().size()) ;
 

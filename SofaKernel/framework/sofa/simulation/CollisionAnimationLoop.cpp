@@ -36,7 +36,7 @@
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
 #include <sofa/simulation/UpdateContextVisitor.h>
 #include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
-
+#include <sofa/simulation/Node.h>
 
 #include <stdlib.h>
 #include <math.h>

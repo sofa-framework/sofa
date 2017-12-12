@@ -70,7 +70,7 @@ struct StabilizedNeoHookeHexahedraMaterial_test : public Sofa_test<typename Vec3
     typedef sofa::component::forcefield::StabilizedNeoHookeanForceField<StrainType> StabilizedNeoHookeanForceField;
     typedef typename sofa::component::forcefield::StabilizedNeoHookeanForceField<StrainType>::SPtr StabilizedNeoHookeanForceFieldSPtr;
     typedef typename sofa::core::behavior::ForceField<StrainType>::SPtr ForceFieldSPtr;
-    typedef ForceFieldSPtr (StabilizedNeoHookeHexahedraMaterial_test<DataTypes>::*LinearElasticityFF)(simulation::Node::SPtr,double,double);
+    typedef ForceFieldSPtr (StabilizedNeoHookeHexahedraMaterial_test<DataTypes>::*LinearElasticityFF)(simulation::NodeSPtr,double,double);
     typename component::forcefield::QuadPressureForceField<Vec3Types>::SPtr pressureForceField;
 
     /// Simulation
@@ -80,7 +80,7 @@ struct StabilizedNeoHookeHexahedraMaterial_test : public Sofa_test<typename Vec3
 	/// index of the vertex used to compute the deformation
 	size_t vIndex;
     // Strain node for the force field
-    simulation::Node::SPtr strainNode;
+    simulation::NodeSPtr strainNode;
 
     // Create the context for the scene
     void SetUp()
@@ -97,8 +97,8 @@ struct StabilizedNeoHookeHexahedraMaterial_test : public Sofa_test<typename Vec3
        tractionStruct.root = down_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()).get() );
 
        // Get child nodes
-       simulation::Node::SPtr quadNode = tractionStruct.root->getChild("Quads");
-       simulation::Node::SPtr behaviorNode = tractionStruct.root->getChild("behavior");
+       simulation::NodeSPtr quadNode = tractionStruct.root->getChild("Quads");
+       simulation::NodeSPtr behaviorNode = tractionStruct.root->getChild("behavior");
        strainNode = behaviorNode->getChild("Strain");
 
        // Get force field
@@ -121,7 +121,7 @@ struct StabilizedNeoHookeHexahedraMaterial_test : public Sofa_test<typename Vec3
 
     }
 
-    ForceFieldSPtr addStabilizedNeoHookeanForceField(simulation::Node::SPtr node,
+    ForceFieldSPtr addStabilizedNeoHookeanForceField(simulation::NodeSPtr node,
         double youngModulus,double poissonRatio)
     {
         // Hooke Force Field

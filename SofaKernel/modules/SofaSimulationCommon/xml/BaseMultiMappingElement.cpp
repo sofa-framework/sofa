@@ -24,6 +24,7 @@
 #include <sofa/core/BaseState.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/BaseNode.h>
+#include <sofa/simulation/Node.h>
 #include <SofaSimulationCommon/xml/NodeElement.h>
 #include <SofaSimulationCommon/xml/Element.h>
 

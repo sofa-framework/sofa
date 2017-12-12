@@ -28,6 +28,7 @@
 
 #include <sofa/simulation/InitVisitor.h>
 #include <sofa/simulation/DeleteVisitor.h>
+#include <sofa/simulation/Node.h>
 
 #include <SofaBaseCollision/SphereModel.h>
 #include <SofaMeshCollision/TriangleModel.h>
@@ -60,7 +61,7 @@ void FixParticlePerformer<DataTypes>::start()
     }
 
     simulation::Node* nodeCollision = static_cast<simulation::Node*>(mstateCollision->getContext());
-    simulation::Node::SPtr nodeFixation = nodeCollision->createChild("FixationPoint");
+    simulation::NodeSPtr nodeFixation = nodeCollision->createChild("FixationPoint");
     fixations.push_back( nodeFixation.get() );
 
     //Create the Container of points
