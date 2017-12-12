@@ -32,7 +32,10 @@ using std::vector;
 
 #include <sofa/helper/ArgumentParser.h>
 #include <SofaSimulationCommon/common.h>
-#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Node_fwd.h>
+using sofa::simulation::Node;
+using sofa::simulation::NodeSPtr;
+
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/simulation/config.h> // #defines SOFA_HAVE_DAG (or not)
 #include <SofaSimulationCommon/init.h>
@@ -42,7 +45,7 @@ using std::vector;
 #endif
 #include <SofaSimulationTree/init.h>
 #include <SofaSimulationTree/TreeSimulation.h>
-using sofa::simulation::Node;
+
 
 #include <SofaComponentCommon/initComponentCommon.h>
 #include <SofaComponentBase/initComponentBase.h>

@@ -24,7 +24,7 @@
 
 
 #include <sofa/core/objectmodel/Base.h>
-#include <sofa/simulation/Node_fwd.h>
+#include <sofa/simulation/Node.h>
 
 #include <QObject>
 #include <vector>

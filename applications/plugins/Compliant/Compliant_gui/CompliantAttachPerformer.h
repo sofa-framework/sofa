@@ -29,7 +29,7 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/gui/MouseOperations.h>
-
+#include <sofa/simulation/Node_fwd.h>
 #include <SofaOpenglVisual/OglModel.h>
 
 #include "../misc/CompliantAttachButtonSetting.h"
