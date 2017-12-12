@@ -220,6 +220,12 @@ void ServerCommunicationOSC::ProcessMessage( const osc::ReceivedMessage& m, cons
     }
 }
 
+/******************************************************************************
+*                                                                             *
+* MESSAGE CONVERTION PART                                                     *
+*                                                                             *
+******************************************************************************/
+
 std::vector<std::string> ServerCommunicationOSC::convertMessagesToArgumentList(osc::ReceivedMessageArgumentIterator it, osc::ReceivedMessageArgumentIterator itEnd)
 {
     std::vector<std::string> argumentList;

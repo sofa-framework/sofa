@@ -187,44 +187,6 @@ std::string ServerCommunicationZMQ::dataToString(CommunicationSubscriber* subscr
     return messageStr.str();
 }
 
-std::vector<std::string> ServerCommunicationZMQ::stringToArgumentList(std::string dataString)
-{
-    std::regex rgx("\\s+");
-    std::sregex_token_iterator iter(dataString.begin(), dataString.end(), rgx, -1);
-    std::sregex_token_iterator end;
-    std::vector<std::string> listArguments;
-    while (iter != end)
-    {
-        std::string tmp = *iter;
-        if (tmp.find("string:'") != std::string::npos && tmp.find_last_of("'") != tmp.length()-1)
-        {
-            bool stop = false;
-            std::string concat = tmp;
-            iter++;
-            while (iter != end && !stop)
-            {
-                std::string anotherTmp = *iter;
-                if (anotherTmp.find("string:'") != std::string::npos)
-                    stop = true;
-                else
-                {
-                    concat.append(" ");
-                    concat.append(anotherTmp);
-                    iter++;
-                }
-            }
-            listArguments.push_back(concat);
-        }
-        else
-        {
-            iter++;
-            listArguments.push_back(tmp);
-        }
-    }
-    return listArguments;
-}
-
-
 void ServerCommunicationZMQ::processMessage(std::string dataString)
 {
     BaseData* data;
@@ -263,23 +225,29 @@ void ServerCommunicationZMQ::processMessage(std::string dataString)
                 msg_warning() << "out of range : " << getArgumentValue(*(++it));
                 return;
             }
-        }
-        data = fetchData(source, "matrix" + getArgumentType(*(++it)), subscriber->getArgumentName(0));
-        if (!data)
-            return;
+        } else
+            msg_warning() << subject << " is matrix, but message size is not correct. Should be : /subject matrix rows cols value value value... ";
 
+        ++it; // needed for the accessing the correct first argument
+        std::vector<std::string> matrixArgumentList;
+        for (it; it != argumentList.end();it++)
+            matrixArgumentList.push_back(*it);
 
-        if(row*col != argumentList.size()-3-1) // -1 due to subject count in
+        if(matrixArgumentList.size() == 0)
         {
-            msg_error() << "argument list size is != row/cols; " << argumentList.size()-3-1 << " instead of " << row*col;
+            msg_error() << "argument list size is empty";
             return;
         }
 
+        if((unsigned int)row*col != matrixArgumentList.size())
+        {
+            msg_error() << "argument list size is != row/cols; " << matrixArgumentList.size() << " instead of " << row*col;
+            return;
+        }
 
-        std::stringstream stream;
-        for ( it ; it != argumentList.end(); it++)
-            stream << getArgumentValue(*it) << " ";
-        data->read(stream.str());
+        if (!writeDataToFullMatrix(source, subscriber, subject, matrixArgumentList, row, col))
+            if (!writeDataToContainer(source, subscriber, subject, matrixArgumentList))
+                msg_error() << "something went wrong while converting network data into sofa matrix";
     }
     else
     {
@@ -297,6 +265,49 @@ void ServerCommunicationZMQ::receiveRequest()
 {
     zmq::message_t request;
     m_socket->recv(&request);
+}
+
+/******************************************************************************
+*                                                                             *
+* MESSAGE CONVERTION PART                                                     *
+*                                                                             *
+******************************************************************************/
+
+std::vector<std::string> ServerCommunicationZMQ::stringToArgumentList(std::string dataString)
+{
+    std::regex rgx("\\s+");
+    std::sregex_token_iterator iter(dataString.begin(), dataString.end(), rgx, -1);
+    std::sregex_token_iterator end;
+    std::vector<std::string> listArguments;
+    while (iter != end)
+    {
+        std::string tmp = *iter;
+        if (tmp.find("string:'") != std::string::npos && tmp.find_last_of("'") != tmp.length()-1)
+        {
+            bool stop = false;
+            std::string concat = tmp;
+            iter++;
+            while (iter != end && !stop)
+            {
+                std::string anotherTmp = *iter;
+                if (anotherTmp.find("string:'") != std::string::npos)
+                    stop = true;
+                else
+                {
+                    concat.append(" ");
+                    concat.append(anotherTmp);
+                    iter++;
+                }
+            }
+            listArguments.push_back(concat);
+        }
+        else
+        {
+            iter++;
+            listArguments.push_back(tmp);
+        }
+    }
+    return listArguments;
 }
 
 std::string ServerCommunicationZMQ::getArgumentValue(std::string value)
