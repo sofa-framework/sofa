@@ -48,6 +48,7 @@
 #include "SofaVideoRecorderManager.h"
 #include "WDoubleLineEdit.h"
 #include "QSofaStatWidget.h"
+#include "FilterLibrary.h"
 #include "viewer/SofaViewer.h"
 
 #include <sofa/gui/BaseViewer.h>
@@ -56,10 +57,20 @@
 #include <SofaBaseVisual/VisualStyle.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/system/SetDirectory.h>
+using sofa::helper::system::SetDirectory ;
+
+#include <sofa/helper/system/FileSystem.h>
+using sofa::helper::system::FileSystem ;
+
+#include <sofa/helper/system/FileRepository.h>
+using sofa::helper::system::DataRepository ;
 
 #include <sofa/simulation/SceneLoaderFactory.h>
+using sofa::simulation::SceneLoaderFactory ;
+
 #include <sofa/simulation/ExportGnuplotVisitor.h>
 
+#include <QHBoxLayout>
 #include <QApplication>
 #include <QTimer>
 #include <QTextBrowser>
@@ -75,6 +86,8 @@
 #include <QDockWidget>
 #include <QSettings>
 #include <QMimeData>
+#include <QCompleter>
+#include <QDesktopServices>
 
 #   ifdef SOFA_GUI_INTERACTION
 #    include <QCursor>
@@ -100,6 +113,12 @@ using sofa::simulation::SceneCheckerVisitor ;
 
 #include <SofaGraphComponent/SceneCheckAPIChanges.h>
 using sofa::simulation::scenecheckers::SceneCheckAPIChange ;
+
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory ;
+
+#include "panels/QDocBrowser.h"
+using sofa::gui::qt::DocBrowser ;
 
 using sofa::core::ExecParams ;
 
@@ -162,6 +181,8 @@ QApplication* application = NULL;
 
 const char* progname="";
 
+
+
 class RealGUIFileListener : public sofa::helper::system::FileEventListener
 {
 public:
@@ -201,8 +222,8 @@ BaseGUI* RealGUI::CreateGUI ( const char* name, sofa::simulation::Node::SPtr roo
 
 void RealGUI::SetPixmap(std::string pixmap_filename, QPushButton* b)
 {
-    if ( sofa::helper::system::DataRepository.findFile ( pixmap_filename ) )
-        pixmap_filename = sofa::helper::system::DataRepository.getFile ( pixmap_filename );
+    if ( DataRepository.findFile ( pixmap_filename ) )
+        pixmap_filename = DataRepository.getFile ( pixmap_filename );
 
     b->setIcon(QIcon(QPixmap(QPixmap::fromImage(QImage(pixmap_filename.c_str())))));
 }
@@ -228,7 +249,7 @@ void RealGUI::CreateApplication(int /*_argc*/, char** /*_argv*/)
 
 void RealGUI::InitApplication( RealGUI* _gui)
 {
-    QString pathIcon=(sofa::helper::system::DataRepository.getFirstPath() + std::string( "/icons/SOFA.png" )).c_str();
+    QString pathIcon=(DataRepository.getFirstPath() + std::string( "/icons/SOFA.png" )).c_str();
     application->setWindowIcon(QIcon(pathIcon));
 
 #ifdef SOFA_GUI_NATIVE_MENU
@@ -296,8 +317,7 @@ RealGUI::RealGUI ( const char* viewername)
       recentlyOpenedFilesManager(sofa::gui::BaseGUI::getConfigDirectoryPath() + "/runSofa.ini"),
       saveReloadFile(false),
       displayFlag(NULL),
-      descriptionScene(NULL),
-      htmlPage(NULL),
+      m_docbrowser(NULL),
       animationState(false),
       frameCounter(0),
       m_viewerMSAANbSampling(1)
@@ -385,8 +405,6 @@ RealGUI::RealGUI ( const char* viewername)
 
     createWindowVisitor();
 
-    createSceneDescription();
-
     SofaMouseManager::getInstance()->hide();
     SofaVideoRecorderManager::getInstance()->hide();
 
@@ -426,6 +444,10 @@ RealGUI::RealGUI ( const char* viewername)
     if(mCreateViewersOpt)
         getQtViewer()->getQWidget()->installEventFilter(this);
 #endif
+
+    m_docbrowser = new DocBrowser(this) ;
+    /// Signal to the realGUI that the visibility has changed (eg: to update the menu bar)
+    connect(m_docbrowser, SIGNAL(visibilityChanged(bool)), this, SLOT(docBrowserVisibilityChanged(bool)));
 
     m_filelistener = new RealGUIFileListener(this) ;
 }
@@ -472,19 +494,6 @@ void RealGUI::setTraceVisitors(bool b)
 }
 #endif
 
-//------------------------------------
-
-void RealGUI::changeHtmlPage( const QUrl& u)
-{
-    std::string path=u.path().toStdString();
-#ifdef WIN32
-    path = path.substr(1);
-#endif // WIN32
-
-    path  = sofa::helper::system::DataRepository.getFile(path);
-    std::string extension=sofa::helper::system::SetDirectory::GetExtension(path.c_str());
-    if (extension == "xml" || extension == "scn") fileOpen(path);
-}
 
 //------------------------------------
 
@@ -623,7 +632,7 @@ bool RealGUI::eventFilter(QObject * /*obj*/, QEvent *e)
 void RealGUI::pmlOpen ( const char* filename, bool /*resetView*/ )
 {
     std::string scene = "PML/default.scn";
-    if ( !sofa::helper::system::DataRepository.findFile ( scene ) )
+    if ( !DataRepository.findFile ( scene ) )
     {
         msg_info("RealGUI") << "File '" << scene << "' not found " ;
         return;
@@ -667,6 +676,14 @@ void RealGUI::lmlOpen ( const char* filename )
 
 //======================= METHODS ========================= {
 
+void RealGUI::docBrowserVisibilityChanged(bool visibility)
+{
+    if(visibility)
+        helpShowDocBrowser->setText("Hide doc browser");
+    else
+        helpShowDocBrowser->setText("Show doc browser");
+}
+
 void RealGUI::stepMainLoop () {
     application->processEvents();
 }
@@ -681,7 +698,7 @@ int RealGUI::mainLoop()
     else
     {
         const std::string &filename=windowFilePath().toStdString();
-        const std::string &extension=sofa::helper::system::SetDirectory::GetExtension(filename.c_str());
+        const std::string &extension=SetDirectory::GetExtension(filename.c_str());
         if (extension == "simu") fileOpenSimu(filename);
         retcode = application->exec();
     }
@@ -713,23 +730,21 @@ sofa::simulation::Node* RealGUI::currentSimulation()
 
 void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
 {
-    const std::string &extension=sofa::helper::system::SetDirectory::GetExtension(filename.c_str());
+    const std::string &extension=SetDirectory::GetExtension(filename.c_str());
     if (extension == "simu")
     {
         return fileOpenSimu(filename);
     }
 
     startButton->setChecked(false);
-    descriptionScene->hide();
-    htmlPage->clear();
     startDumpVisitor();
     update();
 
     //Hide all the dialogs to modify the graph
     emit ( newScene() );
 
-    if ( sofa::helper::system::DataRepository.findFile (filename) )
-        filename = sofa::helper::system::DataRepository.getFile ( filename );
+    if ( DataRepository.findFile (filename) )
+        filename = DataRepository.getFile ( filename );
     else
         return;
 
@@ -861,9 +876,9 @@ void RealGUI::fileOpenSimu ( std::string s )
                 >> writeName >> writeName;
         in.close();
 
-        if ( sofa::helper::system::DataRepository.findFile (filename) )
+        if ( DataRepository.findFile (filename) )
         {
-            filename = sofa::helper::system::DataRepository.getFile ( filename );
+            filename = DataRepository.getFile ( filename );
             simulation_name = s;
             std::string::size_type pointSimu = simulation_name.rfind(".simu");
             simulation_name.resize(pointSimu);
@@ -889,8 +904,8 @@ void RealGUI::setSceneWithoutMonitor (Node::SPtr root, const char* filename, boo
         if (!temporaryFile)
             recentlyOpenedFilesManager.openFile(filename);
         saveReloadFile=temporaryFile;
-        setTitle ( filename );
-        loadHtmlDescription( filename );
+        setTitle ( filename ) ;
+        m_docbrowser->loadHtml( filename ) ;
     }
 
     if (root)
@@ -976,8 +991,8 @@ void RealGUI::setTitle ( std::string windowTitle )
 void RealGUI::fileNew()
 {
     std::string newScene("config/newScene.scn");
-    if (sofa::helper::system::DataRepository.findFile (newScene))
-        fileOpen(sofa::helper::system::DataRepository.getFile ( newScene ).c_str());
+    if (DataRepository.findFile (newScene))
+        fileOpen(DataRepository.getFile ( newScene ).c_str());
 }
 
 //------------------------------------
@@ -1076,6 +1091,11 @@ void RealGUI::editGnuplotDirectory()
 }
 
 //------------------------------------
+
+void RealGUI::showDocBrowser()
+{
+    m_docbrowser->flipVisibility() ;
+}
 
 void RealGUI::showPluginManager()
 {
@@ -1421,28 +1441,6 @@ void RealGUI::createDisplayFlags(Node::SPtr root)
 
 //------------------------------------
 
-void RealGUI::loadHtmlDescription(const char* filename)
-{
-    std::string extension=sofa::helper::system::SetDirectory::GetExtension(filename);
-    std::string htmlFile=filename;
-    htmlFile.resize(htmlFile.size()-extension.size()-1);
-    htmlFile+=".html";
-
-    if (sofa::helper::system::DataRepository.findFile (htmlFile,"",NULL))
-    {
-#ifdef WIN32
-        htmlFile = "file:///"+htmlFile;
-#endif
-        descriptionScene->show();
-
-        std::string path = helper::system::SetDirectory::GetParentDir(filename);
-        htmlPage->setSearchPaths(QStringList(QString(path.c_str())));
-        htmlPage->setSource(QUrl(QString(htmlFile.c_str())));
-    }
-}
-
-//------------------------------------
-
 // Update sofa Simulation with the time step
 void RealGUI::eventNewStep()
 {
@@ -1606,7 +1604,10 @@ void RealGUI::stopDumpVisitor()
         m_dumpVisitorStream.flush();
         //Creation of the graph
         std::string xmlDoc=m_dumpVisitorStream.str();
-        handleTraceVisitor->load(xmlDoc);
+        handleTraceVisitor->load(xmlDo
+                                 /// This is use to retrieve the execution context when browsing the
+                                 /// history of sofa scene execution.
+                                 BrowserHistory* m_browserhistory ;c);
         m_dumpVisitorStream.str("");
     }
 #endif
@@ -1786,19 +1787,10 @@ void RealGUI::createPropertyWidget()
 
     dockProperty->setAllowedAreas(Qt::RightDockWidgetArea | Qt::LeftDockWidgetArea);
     dockProperty->setMaximumSize(QSize(300,300));
-    //dockProperty->setFeatures();
-
-    //	dockProperty->setResizeEnabled(true);
-    //	dockProperty->setFixedExtentWidth(300);
-    //	dockProperty->setFixedExtentHeight(300);
-    //	this->moveDockWindow( dockProperty, Qt::DockLeft);
-    //	this->topDock()->setAcceptDockWindow(dockProperty, false);
-    //	this->bottomDock()->setAcceptDockWindow(dockProperty, false);
-
     dockProperty->setWidget(propertyWidget);
 
-    connect(dockProperty, SIGNAL(dockLocationChanged(QDockWidget::DockWidgetArea)), this, SLOT(propertyDockMoved(QDockWidget::DockWidgetArea)));
-
+    connect(dockProperty, SIGNAL(dockLocationChanged(QDockWidget::DockWidgetArea)),
+            this, SLOT(propertyDockMoved(QDockWidget::DockWidgetArea)));
     simulationGraph->setPropertyWidget(propertyWidget);
 }
 
@@ -1806,7 +1798,7 @@ void RealGUI::createPropertyWidget()
 
 void RealGUI::createWindowVisitor()
 {
-    pathDumpVisitor = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + std::string( "/dumpVisitor.xml" );
+    pathDumpVisitor = SetDirectory::GetParentDir(DataRepository.getFirstPath().c_str()) + std::string( "/dumpVisitor.xml" );
 #ifndef SOFA_DUMP_VISITOR_INFO
     //Remove option to see visitor trace
     this->exportVisitorCheckbox->hide();
@@ -1821,23 +1813,6 @@ void RealGUI::createWindowVisitor()
 #endif
 }
 
-//------------------------------------
-
-void RealGUI::createSceneDescription()
-{
-    descriptionScene = new QDialog(this);
-    descriptionScene->resize(600,600);
-    QVBoxLayout *descriptionLayout = new QVBoxLayout(descriptionScene);
-    htmlPage = new QTextBrowser(descriptionScene);
-    descriptionLayout->addWidget(htmlPage);
-
-    connect(htmlPage, SIGNAL(sourceChanged(const QUrl&)), this, SLOT(changeHtmlPage(const QUrl&)));
-}
-//======================= METHODS ========================= }
-
-
-
-//======================= SIGNALS-SLOTS ========================= {
 void RealGUI::NewRootNode(sofa::simulation::Node* root, const char* path)
 {
     std::string filename(this->windowFilePath().toStdString());
@@ -2182,7 +2157,7 @@ void RealGUI::screenshot()
                         );
         } else {
             prefix = QString::fromStdString(
-                        sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(filename.toStdString().c_str()) + "_");
+                        SetDirectory::GetFileNameWithoutExtension(filename.toStdString().c_str()) + "_");
         }
 
         if (!prefix.isEmpty())
