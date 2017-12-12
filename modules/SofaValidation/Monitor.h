@@ -57,23 +57,23 @@ protected:
     ~Monitor ();
 public:
     /// init data
-    virtual void init ();
+    virtual void init () override;
 
     /// reset Monitored values
-    virtual void reset ();
+    virtual void reset () override;
 
     /** initialize gnuplot files
         * called when ExportGnuplot box is checked
     */
-    virtual void reinit();
+    virtual void reinit() override;
 
     /** function called at every step of simulation;
         * store mechanical state vectors (forces, positions, velocities) into
         * the MonitorData nested class. The filter (which position(s), velocity(ies) or *force(s) are displayed) is made in the gui
     */
-    virtual void handleEvent( core::objectmodel::Event* ev );
+    virtual void handleEvent( core::objectmodel::Event* ev ) override;
 
-    virtual void draw (const core::visual::VisualParams* vparams);
+    virtual void draw (const core::visual::VisualParams* vparams) override;
 
     /// create gnuplot files
     virtual void initGnuplot ( const std::string path );
@@ -81,7 +81,7 @@ public:
     /// write in gnuplot files the Monitored desired data (velocities,positions,forces)
     virtual void exportGnuplot ( Real time );
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }

@@ -307,7 +307,7 @@ public:
 
         if( scale < 0 ) return;
 
-        glEnable(GL_LIGHTING);
+        vparams->drawTool()->enableLighting();
 
         typename core::behavior::MechanicalState<TIn>::ReadVecCoord pos = this->getFromModel()->readPositions();
         const pairs_type& p = d_pairs.getValue();
@@ -639,7 +639,7 @@ public:
 
         if( scale < 0 ) return;
 
-        glEnable(GL_LIGHTING);
+        vparams->drawTool()->enableLighting();
 
         typename core::behavior::MechanicalState<TIn>::ReadVecCoord pos = this->getFromModel()->readPositions();
         const helper::vector< unsigned >& indices = d_indices.getValue();

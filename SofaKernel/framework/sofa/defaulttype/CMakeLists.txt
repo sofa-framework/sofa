@@ -9,8 +9,6 @@ set(HEADER_FILES
     BoundingBox.h
     DataTypeInfo.h
     Frame.h
-    LaparoscopicRigidTypes.h
-    LaparoscopicRigidTypes_fwd.h
     MapMapSparseMatrix.h
     Mat.h
     MatSym.h
@@ -34,6 +32,12 @@ set(HEADER_FILES
     init.h
     Color.h
 )
+
+if(EIGEN3_FOUND OR Eigen3_FOUND)
+    list(APPEND HEADER_FILES 
+         MapMapSparseMatrixEigenUtils.h
+        )
+endif()
 
 set(SOURCE_FILES
     BaseMatrix.cpp

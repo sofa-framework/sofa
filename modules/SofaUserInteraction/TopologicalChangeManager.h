@@ -174,11 +174,6 @@ private:
         /// Information of first incision for successive incisions
         bool firstCut;
 
-
-#ifdef SOFA_DEV
-        CuttingPoint* cutB;
-        CuttingPoint* cutA;
-#endif
     }	incision;
 };
 

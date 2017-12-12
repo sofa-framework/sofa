@@ -116,7 +116,7 @@ list-scenes() {
 
 get-lib() {
     pushd "$build_dir/lib/" > /dev/null
-    ls {lib,}"$1".{dylib,so,lib}* 2> /dev/null | xargs echo
+    ls {lib,}"$1"{,d,_d}.{dylib,so,lib}* 2> /dev/null | xargs echo
     popd > /dev/null
 }
 
@@ -344,8 +344,23 @@ extract-crashes() {
     done < "$output_dir/all-tested-scenes.txt" > "$output_dir/crashes.txt"
 }
 
+extract-successes() {
+    while read scene; do
+        if [[ -e "$output_dir/$scene/status.txt" ]]; then
+            local status="$(cat "$output_dir/$scene/status.txt")"
+            if [[ "$status" == 0 ]]; then
+                grep --silent "\[ERROR\]" "$output_dir/$scene/output.txt" || echo "$scene"
+            fi
+        fi
+    done < "$output_dir/all-tested-scenes.txt" > "$output_dir/successes.txt"
+}
+
 count-tested-scenes() {
     wc -l < "$output_dir/all-tested-scenes.txt" | tr -d '   '
+}
+
+count-successes() {
+    sort "$output_dir/successes.txt" | uniq | wc -l | tr -d ' 	'
 }
 
 count-warnings() {
@@ -363,6 +378,7 @@ count-crashes() {
 print-summary() {
     echo "Scene testing summary:"
     echo "- $(count-tested-scenes) scene(s) tested"
+    echo "- $(count-successes) success(es)"
     echo "- $(count-warnings) warning(s)"
     
     local errors='$(count-errors)'
@@ -402,11 +418,16 @@ print-summary() {
 if [[ "$command" = run ]]; then
     initialize-scene-testing
     test-all-scenes
+    extract-successes
     extract-warnings
     extract-errors
     extract-crashes
 elif [[ "$command" = print-summary ]]; then
     print-summary
+elif [[ "$command" = count-tested-scenes ]]; then
+    count-tested-scenes
+elif [[ "$command" = count-successes ]]; then
+    count-successes
 elif [[ "$command" = count-warnings ]]; then
     count-warnings
 elif [[ "$command" = count-errors ]]; then

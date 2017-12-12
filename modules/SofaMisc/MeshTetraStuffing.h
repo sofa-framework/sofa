@@ -69,9 +69,9 @@ protected:
 
 public:
 
-    virtual void init();
+    virtual void init() override;
 
-    virtual void draw(const core::visual::VisualParams* vparams);
+    virtual void draw(const core::visual::VisualParams* vparams) override;
 
     Data< helper::fixed_array<Point,2> > vbbox;
     Data< Real > size;

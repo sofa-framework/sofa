@@ -63,17 +63,17 @@ protected:
 public:
     /** \brief Initializes the target BaseTopology from the source BaseTopology.
      */
-    virtual void init();
+    virtual void init() override;
 
     /// Method called at each topological changes propagation which comes from the INPUT topology to adapt the OUTPUT topology :
-    virtual void updateTopologicalMappingTopDown();
+    virtual void updateTopologicalMappingTopDown() override;
 
-    virtual unsigned int getGlobIndex(unsigned int ind)
+    virtual unsigned int getGlobIndex(unsigned int ind) override
     {
         return ind;
     }
 
-    virtual unsigned int getFromIndex(unsigned int ind)
+    virtual unsigned int getFromIndex(unsigned int ind) override
     {
         return ind;
     }

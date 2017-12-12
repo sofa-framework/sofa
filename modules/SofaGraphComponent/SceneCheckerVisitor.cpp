@@ -34,6 +34,12 @@
 #include "APIVersion.h"
 using sofa::component::APIVersion ;
 
+#include "SceneCheckerVisitor.h"
+#include "RequiredPlugin.h"
+
+#include "APIVersion.h"
+using sofa::component::APIVersion ;
+
 namespace sofa
 {
 namespace simulation

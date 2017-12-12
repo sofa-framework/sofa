@@ -26,7 +26,6 @@
 
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/SolidTypes.h>
-#include <sofa/helper/gl/Axis.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 
 #include <tinyxml.h>

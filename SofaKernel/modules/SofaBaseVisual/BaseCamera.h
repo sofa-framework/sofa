@@ -98,9 +98,9 @@ public:
     BaseCamera();
     virtual ~BaseCamera();
 
-    virtual void init();
-    virtual void reinit();
-    virtual void bwdInit();
+    virtual void init() override;
+    virtual void reinit() override;
+    virtual void bwdInit() override;
 
     void activate();
     void desactivate();
@@ -234,7 +234,7 @@ public:
     virtual void manageEvent(core::objectmodel::Event* e)=0;
     virtual void internalUpdate() {}
 
-    void handleEvent(sofa::core::objectmodel::Event* event);
+    void handleEvent(sofa::core::objectmodel::Event* event) override;
     void computeZ();
 
     virtual bool isStereo()

@@ -99,19 +99,19 @@ void LinearForceFieldInternalData< gpu::cuda::CudaRigidTypes<N, real> >::addForc
 
     Real cT = (Real) m->getContext()->getTime();
 
-	if (m->keyTimes.getValue().size() != 0 && cT >= *m->keyTimes.getValue().begin() && cT <= *m->keyTimes.getValue().rbegin())
+    if (m->d_keyTimes.getValue().size() != 0 && cT >= *m->d_keyTimes.getValue().begin() && cT <= *m->d_keyTimes.getValue().rbegin())
     {
-        m->nextT = *m->keyTimes.getValue().begin();
+        m->nextT = *m->d_keyTimes.getValue().begin();
         m->prevT = m->nextT;
 
         bool finished = false;
 
-        typename helper::vector< Real >::const_iterator it_t = m->keyTimes.getValue().begin();
-        typename VecDeriv::const_iterator it_f = m->keyForces.getValue().begin();
+        typename helper::vector< Real >::const_iterator it_t = m->d_keyTimes.getValue().begin();
+        typename VecDeriv::const_iterator it_f = m->d_keyForces.getValue().begin();
 
         // WARNING : we consider that the key-events are in chronological order
         // here we search between which keyTimes we are.
-        while( it_t != m->keyTimes.getValue().end() && !finished)
+        while( it_t != m->d_keyTimes.getValue().end() && !finished)
         {
             if ( *it_t <= cT)
             {
@@ -132,7 +132,7 @@ void LinearForceFieldInternalData< gpu::cuda::CudaRigidTypes<N, real> >::addForc
         {
             Deriv slope = (m->nextF - m->prevF)*(1.0/(m->nextT - m->prevT));
             Deriv ff = slope*(cT - m->prevT) + m->prevF;
-            ff = ff*m->force.getValue();
+            ff = ff*m->d_force.getValue();
 
             Kernels::addForce(
                 data.size,

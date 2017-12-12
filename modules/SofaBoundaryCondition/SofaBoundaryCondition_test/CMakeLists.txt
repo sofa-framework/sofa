@@ -4,11 +4,22 @@ project(SofaBoundaryCondition_test)
 
 message(STATUS "SofaBoundaryCondition_test:")
 ################################ COMPONENTS HERE ARE THE NG-SET ####################################
-set(SOURCE_FILES)
+set(SOURCE_FILES ../../empty.cpp)
 
-############################## COMPONENTS HERE ARE THE FULL-SET ####################################
-if(SOFA_BUILD_FULLSETCOMPONENTS)
+############################## COMPONENTS HERE ARE THE LIGHT-SET ###################################
+if(SOFA_BUILD_COMPONENTSET_LIGHT)
+    list(APPEND HEADER_FILES
+
+        )
     list(APPEND SOURCE_FILES
+
+        )
+endif()
+
+############################## COMPONENTS HERE ARE THE STANDARD-SET ################################
+if(SOFA_BUILD_COMPONENTSET_STANDARD)
+    list(APPEND SOURCE_FILES
+
         AffineMovementConstraint_test.cpp
         FixedConstraint_test.cpp
         PartialFixedConstraint.cpp
@@ -22,21 +33,16 @@ if(SOFA_BUILD_FULLSETCOMPONENTS)
         SkeletalMotionConstraint_test.cpp
         TrianglePressureForceField_test.cpp
         ConstantForceField_test.cpp
+        loadPlugins.cpp
         )
-    message(STATUS "   With all maintained sofa components.")
-else()
-    message(STATUS "   With only a minimal set of components.")
 endif()
 
 ############################### COMPONENTS HERE ARE DEPRECATED ####################################
-if(SOFA_BUILD_DEPRECATEDCOMPONENTS)
-    message(STATUS "  With deprecated components.")
-else()
-    message(STATUS "  Without deprecated components.")
+if(SOFA_BUILD_COMPONENTSET_FULL)
 endif()
 
 add_definitions("-DSOFABOUNDARYCONDITION_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest)
+target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest SceneCreator)
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

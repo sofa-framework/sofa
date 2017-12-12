@@ -67,15 +67,15 @@ protected:
     PostProcessManager();
     virtual ~PostProcessManager();
 public:
-    void init() ;
-    void reinit() { };
-    void initVisual();
+    void init() override;
+    void reinit() override { };
+    void initVisual() override;
 
-    void preDrawScene(core::visual::VisualParams* vp);
-    bool drawScene(core::visual::VisualParams* vp);
-    void postDrawScene(core::visual::VisualParams* vp);
+    void preDrawScene(core::visual::VisualParams* vp) override;
+    bool drawScene(core::visual::VisualParams* vp) override;
+    void postDrawScene(core::visual::VisualParams* vp) override;
 
-    void handleEvent(sofa::core::objectmodel::Event* event);
+    void handleEvent(sofa::core::objectmodel::Event* event) override;
 };
 
 } //visualmodel

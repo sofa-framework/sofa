@@ -39,7 +39,8 @@ public:
 
     ImageCImg (const std::string &filename)
     {
-        load(filename);
+        if(!filename.empty())
+            load(filename);
     }
 
     static void setCimgCreators();

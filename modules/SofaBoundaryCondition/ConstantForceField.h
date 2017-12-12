@@ -82,33 +82,33 @@ public:
 
 public:
     /// Init function
-    void init();
-    void parse(sofa::core::objectmodel::BaseObjectDescription *arg) ;
+    void init() override;
+    void parse(sofa::core::objectmodel::BaseObjectDescription *arg) override;
 
     /// Add the forces
     virtual void addForce (const core::MechanicalParams* params, DataVecDeriv& f,
-                           const DataVecCoord& x, const DataVecDeriv& v);
+                           const DataVecCoord& x, const DataVecDeriv& v) override;
 
     /// Constant force has null variation
     virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df ,
-                           const DataVecDeriv& d_dx) ;
+                           const DataVecDeriv& d_dx) override;
 
     using Inherit::addKToMatrix;
 
     /// Constant force has null variation
     virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m,
-                              SReal kFactor, unsigned int &offset);
+                              SReal kFactor, unsigned int &offset) override;
 
     /// Constant force has null variation
     virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/,
                               SReal /*kFact*/) ;
 
     virtual SReal getPotentialEnergy(const core::MechanicalParams* params,
-                                     const DataVecCoord& x) const;
+                                     const DataVecCoord& x) const override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
-    virtual void updateForceMask();
+    virtual void updateForceMask() override;
 
     /// Set a force to a given particle
     void setForce( unsigned i, const Deriv& f );

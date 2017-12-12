@@ -91,6 +91,8 @@
 #include "math.h"
 #include "Vector2.h"
 
+#include <algorithm>
+
 using namespace vrender ;
 using namespace std ;
 

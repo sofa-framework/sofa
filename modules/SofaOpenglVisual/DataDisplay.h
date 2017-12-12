@@ -66,12 +66,12 @@ public:
     core::topology::BaseMeshTopology* topology;
     Real oldMin, oldMax;
 
-    void init();
-    void drawVisual(const core::visual::VisualParams* vparams);
-    void updateVisual();
+    void init() override;
+    void drawVisual(const core::visual::VisualParams* vparams) override;
+    void updateVisual() override;
 
-    virtual bool insertInNode( core::objectmodel::BaseNode* node ) { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
-    virtual bool removeInNode( core::objectmodel::BaseNode* node ) { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
+    virtual bool insertInNode( core::objectmodel::BaseNode* node ) override { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
+    virtual bool removeInNode( core::objectmodel::BaseNode* node ) override { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
 
 protected:
     void computeNormals();

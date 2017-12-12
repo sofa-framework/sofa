@@ -6,9 +6,13 @@ set(HEADER_FILES
 )
 
 set(SOURCE_FILES
-    TestMessageHandler_test.cpp
     Regression_test.cpp
 )
+
+set(TEST_FILES
+    scenes/damping.py
+    python_tests/python_test_test.py
+    )
 
 find_package(SofaPython QUIET)
 
@@ -19,7 +23,7 @@ if(SofaPython_FOUND)
     target_link_libraries(SofaPython)
 endif()
 
-add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES})
+add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${HEADER_FILES} ${TEST_FILES})
 add_definitions("-DSOFA_SRC_DIR=\"${CMAKE_SOURCE_DIR}\"")
 target_link_libraries(${PROJECT_NAME} SofaTest SofaGTestMain)
 

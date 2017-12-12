@@ -57,7 +57,7 @@ std::ostream& operator<< ( std::ostream& os, const std::list<T>& l )
 template<class T>
 std::istream& operator>> ( std::istream& in, std::list<T>& l )
 {
-    T t;
+    T t {};
     l.clear();
     while(in>>t)
         l.push_back(t);

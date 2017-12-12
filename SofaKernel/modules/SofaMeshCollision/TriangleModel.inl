@@ -33,7 +33,6 @@
 #include <SofaBaseTopology/RegularGridTopology.h>
 #include <sofa/core/CollisionElement.h>
 #include <vector>
-#include <sofa/helper/gl/template.h>
 #include <iostream>
 
 #include <sofa/core/topology/TopologyChange.h>
@@ -544,12 +543,6 @@ template<class DataTypes>
 void TTriangleModel<DataTypes>::draw(const core::visual::VisualParams* vparams ,int index)
 {
     Element t(this,index);
-    //        glBegin(GL_TRIANGLES);
-    //        helper::gl::glNormalT(t.n());
-    //        helper::gl::glVertexT(t.p1());
-    //        helper::gl::glVertexT(t.p2());
-    //        helper::gl::glVertexT(t.p3());
-    //        glEnd();
 
     vparams->drawTool()->setPolygonMode(0,vparams->displayFlags().getShowWireFrame());
     vparams->drawTool()->setLightingEnabled(true);

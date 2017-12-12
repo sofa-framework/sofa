@@ -24,8 +24,9 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/Utils.h>
-#include <gtest/gtest.h>
-#include <SofaTest/TestMessageHandler.h>
+
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest ;
 
 #include <fstream>
 
@@ -51,19 +52,13 @@ const std::string separator = "/";
 const std::string prefix = "lib";
 #endif // WIN32
 
-struct PluginManager_test: public ::testing::Test
+struct PluginManager_test: public BaseTest
 {
     std::string pluginDir;
 
     void SetUp()
     {
-        // Add the plugin directory to PluginRepository
-#ifdef WIN32
-        pluginDir = sofa::helper::Utils::getExecutableDirectory();
-#else
-        pluginDir = sofa::helper::Utils::getSofaPathPrefix() + "/lib";
-#endif
-        sofa::helper::system::PluginRepository.addFirstPath(pluginDir);
+        pluginDir = sofa::helper::system::PluginRepository.getFirstPath();
     }
 
     void TearDown()
@@ -91,27 +86,52 @@ TEST_F(PluginManager_test, loadTestPluginByPath)
     std::string pluginPath = pluginDir + separator + prefix + pluginFileName + dotExt;
     std::string nonpluginPath = pluginDir + separator + prefix + nonpluginName + dotExt;
 
-    std::cout << pm.getPluginMap().size() << std::endl;
-    ASSERT_TRUE(pm.loadPluginByPath(pluginPath));
-    std::cout << pm.getPluginMap().size() << std::endl;
-    ASSERT_FALSE(pm.loadPluginByPath(nonpluginPath));
-    std::cout << pm.getPluginMap().size() << std::endl;
+    /// Check that existing plugins are correctly handled and returns no
+    /// error/warning message.
+    {
+        EXPECT_MSG_NOEMIT(Warning, Error) ;
 
-    ASSERT_GT(pm.findPlugin(pluginName).size(), 0u);
-    ASSERT_EQ(pm.findPlugin(nonpluginName).size(), 0u);
+        std::cout << pm.getPluginMap().size() << std::endl;
+        ASSERT_TRUE(pm.loadPluginByPath(pluginPath));
+        ASSERT_GT(pm.findPlugin(pluginName).size(), 0u);
+    }
 
+    /// Check that non existing plugin are currectly handled and returns an
+    /// error message.
+    {
+        EXPECT_MSG_NOEMIT(Warning) ;
+        EXPECT_MSG_EMIT(Error) ;
+
+        std::cout << pm.getPluginMap().size() << std::endl;
+        ASSERT_FALSE(pm.loadPluginByPath(nonpluginPath));
+        ASSERT_EQ(pm.findPlugin(nonpluginName).size(), 0u);
+        std::cout << pm.getPluginMap().size() << std::endl;
+    }
 }
 
 TEST_F(PluginManager_test, loadTestPluginByName )
 {
     PluginManager&pm = PluginManager::getInstance();
 
-    ASSERT_TRUE(pm.loadPluginByName(pluginName) );
-    ASSERT_FALSE(pm.loadPluginByName(nonpluginName));
+    /// Check that existing plugins are correctly handled and returns no
+    /// error/warning message.
+    {
+        EXPECT_MSG_NOEMIT(Warning, Error) ;
 
-    std::string pluginPath = pm.findPlugin(pluginName);
-    ASSERT_GT(pluginPath.size(), 0u);
-    ASSERT_EQ(pm.findPlugin(nonpluginName).size(), 0u);
+        ASSERT_TRUE(pm.loadPluginByName(pluginName) );
+        std::string pluginPath = pm.findPlugin(pluginName);
+        ASSERT_GT(pluginPath.size(), 0u);
+    }
+
+    /// Check that non existing plugin are currectly handled and returns an
+    /// error message.
+    {
+        EXPECT_MSG_NOEMIT(Warning) ;
+        EXPECT_MSG_EMIT(Error) ;
+        ASSERT_FALSE(pm.loadPluginByName(nonpluginName));
+
+        ASSERT_EQ(pm.findPlugin(nonpluginName).size(), 0u);
+    }
 }
 
 TEST_F(PluginManager_test, pluginEntries)

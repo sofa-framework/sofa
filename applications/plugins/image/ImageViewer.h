@@ -141,7 +141,7 @@ public:
 
     typedef component::visualmodel::VisualModelImpl VisuModelType;
     
-    std::string getTemplateName() const  {	return templateName(this);	}
+    std::string getTemplateName() const  override {	return templateName(this);	}
     static std::string templateName(const ImageViewer<ImageTypes>* = NULL)	{ return ImageTypes::Name(); }
     
     ImageViewer() : Inherited()
@@ -186,7 +186,7 @@ public:
 #endif //SOFA_NO_OPENGL
     }
     
-    virtual void init()
+    virtual void init() override
     {
         
         // getvisuals
@@ -219,7 +219,7 @@ public:
     }
     
     
-    virtual void reinit()
+    virtual void reinit() override
     {
         waHisto whisto(this->histo);
         waPlane wplane(this->plane);
@@ -231,7 +231,7 @@ public:
 
     }
     
-    virtual void handleEvent( sofa::core::objectmodel::Event* event)
+    virtual void handleEvent( sofa::core::objectmodel::Event* event) override
     {
         typename ImagePlaneType::pCoord pc(0,0,0);
 
@@ -323,7 +323,7 @@ public:
         }
     }
     
-    virtual void draw(const core::visual::VisualParams* vparams)
+    virtual void draw(const core::visual::VisualParams* vparams) override
     {
 #ifndef SOFA_NO_OPENGL
         if (!vparams->displayFlags().getShowVisualModels() || display.getValue()==false) return;
@@ -424,7 +424,7 @@ public:
         for(unsigned int i=0;i<p.size();i++) c[i]=rtransform->fromImage(p[i]);
     }
 
-    virtual void computeBBox(const core::ExecParams*  params, bool /*onlyVisible=false*/ )
+    virtual void computeBBox(const core::ExecParams*  params, bool /*onlyVisible=false*/ ) override
     {
         //        if( onlyVisible) return;
         defaulttype::Vec<8,defaulttype::Vector3> c;

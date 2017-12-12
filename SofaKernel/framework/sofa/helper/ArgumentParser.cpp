@@ -19,10 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//========================================================
-// Yet another command line parser.
-// Francois Faure, iMAGIS-GRAVIR, May 2001
-//========================================================
 #include "ArgumentParser.h"
 #include <sofa/helper/logging/Messaging.h>
 
@@ -32,174 +28,118 @@ namespace sofa
 namespace helper
 {
 
-typedef std::istringstream istrstream;
+std::vector<std::string> ArgumentParser::extra = std::vector<std::string>();
 
-ArgumentParser::extra_type ArgumentParser::extra;
-
-ArgumentBase::ArgumentBase(char s, string l, string h, bool m)
-    : shortName(s)
-    , longName(l)
-    , help(h)
-    , mandatory(m)
-    , isSet(false)
-{}
-
-/// Base destructor: does nothing.
-ArgumentBase::~ArgumentBase()
-{}
-
-/// print short name, long name, help
-void ArgumentBase::print () const
-{
-    std::cout << "-" << shortName <<",\t--"<< longName <<":\t" << help;
-    if( mandatory ) std::cout<< " (required) ";
-    std::cout << "  (default: ";  printValue();
-    std::cout << ")" << std::endl;
+ArgumentParser::ArgumentParser(int argc, char **argv){
+    m_argc = argc;
+    m_argv = argv;
+    positional_option.add("input-file", -1);
+    desc.add_options()("input-file", po::value<std::vector<std::string> >(), "input file");
 }
 
+ArgumentParser::~ArgumentParser(){}
 
-//========================================================================
-/// Constructor using a global help string
-ArgumentParser::ArgumentParser( const string& helpstr, char hlpShrt, const string& hlpLng )
-    : files(NULL)
-    , globalHelp( helpstr )
-    , helpShortName(hlpShrt)
-    , helpLongName(hlpLng)
-{}
-
-/// Constructor using a global help string and a list of filenames
-ArgumentParser::ArgumentParser( std::vector<std::string>* files, const string& helpstr, char hlpShrt, const string& hlpLng )
-    : files(files)
-    , globalHelp( helpstr )
-    , helpShortName(hlpShrt)
-    , helpLongName(hlpLng)
-{}
-
-/// Constructor using a global help string
-ArgumentParser::~ArgumentParser()
+void ArgumentParser::addArgument(const po::value_semantic* s, const std::string name, const std::string help)
 {
-    for( ArgVec::const_iterator a=commands.begin(), aend=commands.end(); a!=aend; ++a )
-        delete (*a);
+    desc.add_options()(name.c_str(), s, help.c_str());
 }
 
-/** Parse a command line
-\param argc number of arguments + 1, as usual in C
-\param argv arguments
-*/
-void ArgumentParser::operator () ( int argc, char** argv )
+void ArgumentParser::addArgument(const std::string name, const std::string help)
 {
-    std::list<std::string> str(argv + 1, argv + argc);
-    (*this)(str);
+    desc.add_options()(name.c_str(), help.c_str());
 }
 
-void ArgumentParser::operator () ( std::list<std::string> str )
+void ArgumentParser::showHelp()
 {
-    string shHelp("-");  shHelp.push_back( helpShortName );
-    string lgHelp("--"); lgHelp.append( helpLongName );
-    string name;
+    std::cout << "This is a SOFA application. Here are the command line arguments" << std::endl;
+    std::cout << desc << '\n';
+}
 
-    static const std::string extra_opt = "--argv";
-    
-    while( !str.empty() )
-    {
-        name = str.front();
-        str.pop_front();
+void ArgumentParser::parse()
+{
+    try {
+        po::store(po::command_line_parser(m_argc, m_argv).options(desc).positional(positional_option).run(), vm);
 
-        // display help
-        if( name == shHelp || name == lgHelp )
-        {
-            if( globalHelp.size()>0 ) std::cout<< globalHelp <<std::endl;
-            
-            std::cout << "(short name, long name, description, default value)\n-h,\t--help: this help" << std::endl;
-            std::cout << std::boolalpha;
-            for( ArgVec::const_iterator a=commands.begin(), aend=commands.end(); a!=aend; ++a )
-                (*a)->print();
-            std::cout << std::noboolalpha;
+        if (vm.find("argv") != vm.end())
+            extra = vm.at("argv").as<std::vector<std::string> >();
+    }
+    catch (po::error const& e) {
+        std::cerr << e.what() << '\n';
+        exit( EXIT_FAILURE );
+    }
+    po::notify(vm);
 
-            std::cout << "--argv [...]\t" << "forward extra args to the python interpreter" << std::endl;
-            
-            if( files )
-                std::cout << "others: file names" << std::endl;
-            
-            
-            exit(EXIT_FAILURE);
+}
+
+void ArgumentParser::showArgs()
+{
+    for (po::variables_map::iterator it = vm.begin(); it != vm.end(); it++) {
+        std::cout << "> " << it->first;
+        if (((boost::any)it->second.value()).empty()) {
+            std::cout << "(empty)";
+        }
+        if (vm[it->first].defaulted() || it->second.defaulted()) {
+            std::cout << "(default)";
+        }
+        std::cout << "=";
+
+        bool is_char;
+        try {
+            boost::any_cast<const char *>(it->second.value());
+            is_char = true;
+        } catch (const boost::bad_any_cast &) {
+            is_char = false;
+        }
+        bool is_str;
+        try {
+            boost::any_cast<std::string>(it->second.value());
+            is_str = true;
+        } catch (const boost::bad_any_cast &) {
+            is_str = false;
         }
 
-        // not an option
-        else if( files && name[0]!='-' )
-        {
-            files->push_back(name);
-        }
-
-        // indicating the next argument is not an option
-        else if( files && name=="--" )
-        {
-            files->push_back(str.front());
-            str.pop_front();
-        }
-
-        // extra args
-        else if( name == extra_opt ) {
-            extra = extra_type(str.begin(), str.end());
-            return;
-        }
-        
-        // long name
-        else if( name.length() > 1 && name[0]=='-' && name[1]=='-' )
-        {
-            string a;
-            for( unsigned int i=2; i<name.length(); ++i )
-            {
-                a += name[i];
+        if (((boost::any)it->second.value()).type() == typeid(int)) {
+            std::cout << vm[it->first].as<int>() << std::endl;
+        } else if (((boost::any)it->second.value()).type() == typeid(bool)) {
+            std::cout << vm[it->first].as<bool>() << std::endl;
+        } else if (((boost::any)it->second.value()).type() == typeid(unsigned int)) {
+            std::cout << vm[it->first].as<unsigned int>() << std::endl;
+        } else if (((boost::any)it->second.value()).type() == typeid(double)) {
+            std::cout << vm[it->first].as<double>() << std::endl;
+        } else if (is_char) {
+            std::cout << vm[it->first].as<const char * >() << std::endl;
+        } else if (is_str) {
+            std::string temp = vm[it->first].as<std::string>();
+            if (temp.size()) {
+                std::cout << temp << std::endl;
+            } else {
+                std::cout << "true" << std::endl;
             }
-            if( longName.find(a) != longName.end() )
-            {
-                if( !(longName[ a ]->read( str )))
-                    msg_warning("ArgumentParser") << "Could not read value for option: " << name;
-                else parameter_set[longName[ a ]] = true;
-            }
-            else
-                msg_warning("ArgumentParser") << "Unknown option: " << name;
-        }
-
-        // short names (possibly concatenated)
-        else if( name.length() > 1 && name[0]=='-' && name[1]!='-' )
-        {
-            for( unsigned int i=1; i<name.length(); ++i )
-            {
-                char a = name[i];
-                if( shortName.find(a) != shortName.end() )
-                {
-                    if( !(shortName[ a ]->read( str )))
-                        msg_warning("ArgumentParser") << "Could not read value for option: " << name;
-
-                    else parameter_set[shortName[ a ]] = true;
+        } else { // Assumes that the only remainder is vector<string>
+            try {
+                std::vector<std::string> vect = vm[it->first].as<std::vector<std::string> >();
+                unsigned int i = 0;
+                for (std::vector<std::string>::iterator oit=vect.begin();
+                     oit != vect.end(); oit++, ++i) {
+                    std::cout << "\r> " << it->first << "[" << i << "]=" << (*oit) << std::endl;
                 }
-                else
-                    msg_warning("ArgumentParser") << "Unknown option: " << name;
+            } catch (const boost::bad_any_cast &) {
+                std::cout << "UnknownType(" << ((boost::any)it->second.value()).type().name() << ")" << std::endl;
             }
         }
-
-        else
-            msg_warning("ArgumentParser") << "Unknown option: " << name;
-
     }
+}
 
-    // Unset mandatory arguments ?
-    bool unset = false;
-    for( ArgVec::const_iterator cm = commands.begin(), cmend=commands.end(); cm != cmend; ++cm )
-    {
-        if( (*cm)->mandatory && !(*cm)->isSet )
-        {
-            if( !unset )
-            {
-                std::cout << "Please set the following parameters: (short name, long name, description)" << std::endl;
-                unset = true;
-            }
-            (*cm)->print();
-        }
-    }
-    if( unset ) exit(EXIT_FAILURE);
+std::vector<std::string> ArgumentParser::getInputFileList()
+{
+    if (vm.find("input-file") != vm.end())
+        return vm.at("input-file").as<std::vector<std::string> >();
+    return std::vector<std::string>();
+}
+
+po::variables_map ArgumentParser::getVariableMap()
+{
+    return vm;
 }
 
 } // namespace helper

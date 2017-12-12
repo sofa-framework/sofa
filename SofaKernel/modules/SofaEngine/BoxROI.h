@@ -91,13 +91,13 @@ public:
     typedef BaseMeshTopology::Quad Quad;
 
 public:
-    void init();
-    void reinit();
-    void update();
-    void draw(const VisualParams*);
+    void init() override;
+    void reinit() override;
+    void update() override;
+    void draw(const VisualParams*) override;
 
-    virtual void computeBBox(const ExecParams*  params, bool onlyVisible=false );
-    virtual void handleEvent(Event *event);
+    virtual void computeBBox(const ExecParams*  params, bool onlyVisible=false ) override;
+    virtual void handleEvent(Event *event) override;
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
@@ -121,7 +121,7 @@ public:
         return BaseObject::create(tObj, context, arg);
     }
 
-    virtual string getTemplateName() const
+    virtual string getTemplateName() const override
     {
         return templateName(this);
     }

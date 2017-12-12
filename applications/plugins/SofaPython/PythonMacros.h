@@ -27,7 +27,7 @@
 #include <sofa/config.h>
 
 #include "PythonCommon.h"
-#include <boost/intrusive_ptr.hpp>
+#include <sofa/core/sptr.h>
 
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -40,6 +40,9 @@
 #include <SofaPython/config.h>
 #include <SofaPython/PythonEnvironment.h>
 
+/// This function converts an PyObject into a sofa string.
+/// string that can be safely parsed in helper::vector<int> or helper::vector<double>
+extern std::ostream& pythonToSofaDataString(PyObject* value, std::ostream& out) ;
 
 // =============================================================================
 // Python structures names in sofa...
@@ -83,7 +86,8 @@ template <class T>
 struct PySPtr
 {
     PyObject_HEAD
-    boost::intrusive_ptr<T> object;
+    sofa::core::sptr<T> object;
+    
 //    PySPtr()        { object=0; }
 //    PySPtr(T *obj)  { object=obj; }
 

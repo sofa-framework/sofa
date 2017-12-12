@@ -110,8 +110,8 @@ protected:
 public:
     Data< unsigned int > m_constraintIndex; /// Constraint index (first index in the right hand term resolution vector)
 
-    virtual bool insertInNode( objectmodel::BaseNode* node );
-    virtual bool removeInNode( objectmodel::BaseNode* node );
+    virtual bool insertInNode( objectmodel::BaseNode* node ) override;
+    virtual bool removeInNode( objectmodel::BaseNode* node ) override;
     unsigned m_cId;
 
 };

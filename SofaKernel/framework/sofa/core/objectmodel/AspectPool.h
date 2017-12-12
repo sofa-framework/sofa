@@ -27,7 +27,8 @@
 #include <sofa/helper/system/atomic.h>
 #include <sofa/helper/system/thread/CircularQueue.h>
 #include <sofa/helper/vector.h>
-#include <boost/intrusive_ptr.hpp>
+#include <sofa/core/sptr.h>
+
 #include <functional>
 
 namespace sofa
@@ -42,7 +43,9 @@ namespace objectmodel
 class Aspect;
 class AspectPool;
 class AspectBuffer;
-typedef boost::intrusive_ptr<Aspect> AspectRef;
+
+using AspectRef = sptr<Aspect>;
+
 SOFA_CORE_API void intrusive_ptr_add_ref(Aspect* b);
 SOFA_CORE_API void intrusive_ptr_release(Aspect* b);
 

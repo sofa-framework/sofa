@@ -28,8 +28,6 @@
 #include <limits>
 
 #include <SofaEngine/BoxROI.h>
-#include <sofa/helper/gl/template.h>
-#include <sofa/helper/gl/BasicShapes.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/BoundingBox.h>
 #include <sofa/core/topology/BaseTopology.h>

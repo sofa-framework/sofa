@@ -277,9 +277,6 @@ int EulerImplicitSolverClass = core::RegisterObject("Time integrator using impli
         .addAlias("EulerImplicit")
         .addAlias("ImplicitEulerSolver")
         .addAlias("ImplicitEuler")
-#ifdef SOFA_SMP
-        .addAlias("ParallelEulerImplicit")
-#endif
         ;
 
 } // namespace odesolver

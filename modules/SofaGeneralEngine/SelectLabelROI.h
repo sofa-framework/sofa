@@ -61,10 +61,10 @@ public:
     //Output
     Data<helper::vector<Index> > d_indices;
 
-    virtual std::string getTemplateName() const    {        return templateName(this);    }
+    virtual std::string getTemplateName() const    override {        return templateName(this);    }
     static std::string templateName(const SelectLabelROI* = NULL)    {       return sofa::defaulttype::DataTypeName<T>::name();    }
 
-    virtual void init()
+    virtual void init() override
     {
         addInput(&d_labels);
         addInput(&d_selectLabels);
@@ -72,7 +72,7 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit()
+    virtual void reinit() override
     {
         update();
     }
@@ -88,7 +88,7 @@ protected:
 
     virtual ~SelectLabelROI() {}
 
-    virtual void update()
+    virtual void update() override
     {
         helper::ReadAccessor< Data< helper::vector<T>  > > selectLabels = d_selectLabels;
         // convert to set for efficient look-up

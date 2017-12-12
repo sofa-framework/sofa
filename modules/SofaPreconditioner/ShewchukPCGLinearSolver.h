@@ -62,9 +62,9 @@ public:
 protected:
     ShewchukPCGLinearSolver();
 public:
-    void solve (Matrix& M, Vector& x, Vector& b);
-    void init();
-    void setSystemMBKMatrix(const core::MechanicalParams* mparams);
+    void solve (Matrix& M, Vector& x, Vector& b) override;
+    void init() override;
+    void setSystemMBKMatrix(const core::MechanicalParams* mparams) override;
     //void setSystemRHVector(VecId v);
     //void setSystemLHVector(VecId v);
 
@@ -82,7 +82,7 @@ protected:
     /// It computes: x += p*alpha, r -= q*alpha
     inline void cgstep_alpha(Vector& x,Vector& p,double alpha);
 
-    void handleEvent(sofa::core::objectmodel::Event* event);
+    void handleEvent(sofa::core::objectmodel::Event* event) override;
 
 
 };

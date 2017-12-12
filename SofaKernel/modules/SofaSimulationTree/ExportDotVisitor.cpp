@@ -63,6 +63,8 @@ ExportDotVisitor::ExportDotVisitor(const sofa::core::ExecParams* params, std::os
       labelObjectClass(true)
 {
     *out << "digraph G {" << std::endl;
+    //*out << "graph [concentrate=true]" << std::endl;
+    //*out << "graph [splines=curved]" << std::endl;
 }
 
 ExportDotVisitor::~ExportDotVisitor()
@@ -180,6 +182,7 @@ bool ExportDotVisitor::display(core::objectmodel::BaseObject* obj, const char **
 /// Returns an empty string if not found.
 std::string ExportDotVisitor::getParentName(core::objectmodel::BaseObject* obj)
 {
+    if (!obj) return "";
     GNode* node = dynamic_cast<GNode*>(obj->getContext());
     if (!node) return "";
     if (display(node))
@@ -193,11 +196,13 @@ std::string ExportDotVisitor::getParentName(core::objectmodel::BaseObject* obj)
                 obj->toCollisionGroupManager()))
         return getName(node->collisionPipeline);
     /// \todo consider all solvers instead of the first one (FF)
-    if (node->mechanicalState!=obj && node->solver[0]!=obj  && node->animationManager!=obj && display(node->mechanicalState))
+    if (!node->mechanicalState.empty() && node->mechanicalState!=obj && node->linearSolver[0]!=obj && node->solver[0]!=obj  && node->animationManager!=obj && display(node->mechanicalState))
         return getName(node->mechanicalState);
-    if (node->solver[0]!=obj && node->animationManager!=obj && display(node->solver[0]))
+    if (!node->linearSolver.empty() && node->linearSolver[0]!=obj && node->solver[0]!=obj && node->animationManager!=obj && display(node->linearSolver[0]))
+        return getName(node->linearSolver[0]);
+    if (!node->solver.empty() && node->solver[0]!=obj && node->animationManager!=obj && display(node->solver[0]))
         return getName(node->solver[0]);
-    if (node->animationManager!=obj && display(node->solver[0]))
+    if (!node->animationManager.empty() && node->animationManager!=obj && display(node->solver[0]))
         return getName(node->animationManager);
     if ((node->mechanicalState==obj || node->solver[0]==obj) && !node->mechanicalMapping && node->getFirstParent() && display(static_cast<GNode*>(node->getFirstParent())->solver[0]))
         return getName(static_cast<GNode*>(node->getFirstParent())->solver[0]);
@@ -209,6 +214,7 @@ std::string ExportDotVisitor::getParentName(core::objectmodel::BaseObject* obj)
 /// Compute the name of a given node or object
 std::string ExportDotVisitor::getName(core::objectmodel::Base* o, std::string prefix)
 {
+    if (!o) return "";
     if (names.count(o)>0)
         return names[o];
     std::string oname = o->getName();
@@ -277,9 +283,27 @@ void ExportDotVisitor::processObject(GNode* /*node*/, core::objectmodel::BaseObj
         {
             *out << pname << " -> " << name;
             if (obj->toBaseMapping())
-                *out << "[constraint=false]";
+                *out << "[constraint=false,weight=10]";
+            else
+                *out << "[weight=10]";
             *out << ";" << std::endl;
         }
+        /*
+        core::behavior::BaseMechanicalState* bms = dynamic_cast<core::behavior::BaseMechanicalState*>(obj);
+        if (bms!=NULL)
+        {
+            core::objectmodel::BaseLink* l_topology = bms->findLink("topology");
+            if (l_topology)
+            {
+                core::topology::BaseMeshTopology* topo = dynamic_cast<core::topology::BaseMeshTopology*>(l_topology->getLinkedBase());
+                if (topo)
+                {
+                    if (display(topo))
+                        *out << name << " -> " << getName(topo) << " [style=\"dashed\",constraint=false,color=\"#808080\",arrowhead=\"none\"];" << std::endl;
+                }
+            }
+        }
+        */
         core::behavior::BaseInteractionForceField* iff = obj->toBaseInteractionForceField();
         if (iff!=NULL)
         {
@@ -341,7 +365,7 @@ simulation::Visitor::Result ExportDotVisitor::processNodeTopDown(GNode* node)
         *out << "\"];" << std::endl;
         if (node->getFirstParent())
         {
-            *out << getName(node->getFirstParent()) << " -> " << getName(node)<< " [minlen=2,style=\"bold\"];" << std::endl;
+            *out << getName(node->getFirstParent()) << " -> " << getName(node)<< " [minlen=2,style=\"bold\",weight=10];" << std::endl;
         }
     }
 

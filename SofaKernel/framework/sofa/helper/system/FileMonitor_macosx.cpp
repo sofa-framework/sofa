@@ -117,16 +117,18 @@ private:
     {
         MonitoredFile *mf = (MonitoredFile*)clientCallBackInfo;
         mf->m_changed=true;
-//printf("#################################################  eventCallback file=%s\n",mf->m_filename.c_str());
-//fflush(stdout);
+
+        //printf("#################################################  eventCallback file=%s\n",mf->m_filename.c_str());
+        //printf("... numEvent %d\n", numEvents );
+        //fflush(stdout);
     }
 
-    FSEventStreamRef    m_eventStream;
-    bool                m_changed;
+    FSEventStreamRef    m_eventStream ;
+    bool                m_changed {false} ;
 
 public:
-    FileEventListener   *m_listener;
-    string              m_filename;
+    FileEventListener   *m_listener {nullptr} ;
+    string              m_filename ;
 };
 
 typedef list<MonitoredFile*> ListOfMonitors ;
@@ -216,7 +218,7 @@ int FileMonitor::updates(int timeout)
         {
             if (!(*it_monitor)->update())
             {
-//                printf("FileListener::fileHasChanged(%s) called...\n",(*it_monitor)->m_filename.c_str());
+                //printf("FileListener::fileHasChanged(%s) called...\n",(*it_monitor)->m_filename.c_str());
                 (*it_monitor)->m_listener->fileHasChanged((*it_monitor)->m_filename);
                 keep_going = 0; // we're done
             }

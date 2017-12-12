@@ -1,5 +1,6 @@
 <!-- Automatic incision example: incision path is define in: ./IncisionTrianglesProcess.txt -->
 <Node name="root" gravity="0 0 -50" dt="0.01">
+    <RequiredPlugin name='SofaMiscCollision'/>
     <VisualStyle displayFlags="showVisual showWireframe" />
     <DefaultPipeline name="default0" verbose="0" />
     <BruteForceDetection name="N2" />

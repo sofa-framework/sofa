@@ -1,0 +1,16 @@
+# CMake package configuration file for SofaCommon
+
+@PACKAGE_INIT@
+
+find_package(SofaFramework REQUIRED)
+find_package(SofaMisc REQUIRED)
+
+if(NOT TARGET SofaCommon)
+	include("${CMAKE_CURRENT_LIST_DIR}/SofaCommonTargets.cmake")
+endif()
+
+check_required_components(SofaCommon)
+
+set(SofaCommon_LIBRARIES SofaCommon)
+set(SofaCommon_INCLUDE_DIRS @PACKAGE_SOFACOMMON_INCLUDE_DIR@)
+

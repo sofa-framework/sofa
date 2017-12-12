@@ -54,7 +54,7 @@ namespace simulation
   The two values may be different, such as for rigid objects.
     Francois Faure, 2013
 */
- class SOFA_SceneCreator_API GetAssembledSizeVisitor: public Visitor
+ class SOFA_SCENECREATOR_API GetAssembledSizeVisitor: public Visitor
 {
 public:
     GetAssembledSizeVisitor( const sofa::core::ExecParams* params=core::MechanicalParams::defaultInstance() );

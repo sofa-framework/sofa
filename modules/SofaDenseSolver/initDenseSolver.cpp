@@ -56,15 +56,6 @@ void initDenseSolver()
     }
 }
 
-#ifdef SOFA_BUILD_FULLSETCOMPONENTS
-/// Put here component that are maintained but not in SofaNG.
-SOFA_LINK_CLASS(LULinearSolver)
-#endif ///
-
-#ifdef SOFA_BUILD_DEPRECATEDCOMPONENTS
-#endif
-
-
 } // namespace component
 
 } // namespace sofa
