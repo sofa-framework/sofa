@@ -138,14 +138,14 @@ protected:
 public:
     //virtual void init(){}
 
-    void reinit() { init(); bwdInit();}
+    void reinit() override { init(); bwdInit();}
 
-    void reset() {reinit();}
+    void reset() override {reinit();}
 
     /**
       * @brief Scene graph backward initialization method
       */
-    void bwdInit();
+    void bwdInit() override;
 
 
     /**

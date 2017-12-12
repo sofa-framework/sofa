@@ -24,8 +24,5 @@ endif()
 if(NOT SOFA_NO_OPENGL)
     target_link_libraries(${PROJECT_NAME} PUBLIC SofaOpenglVisual)
 endif()
-if(SOFA_HAVE_TAUCS)
-    target_link_libraries(${PROJECT_NAME} PUBLIC SofaTaucsSolver)
-endif()
 
 sofa_install_targets(SofaGeneral ${PROJECT_NAME} ${PROJECT_NAME})

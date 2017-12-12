@@ -210,10 +210,10 @@ CylinderTractionStruct<DataTypes>  Elasticity_test<DataTypes>::createCylinderTra
     // FixedConstraint
     typename component::projectiveconstraintset::FixedConstraint<DataTypes>::SPtr fc=
         modeling::addNew<typename component::projectiveconstraintset::FixedConstraint<DataTypes> >(root);
-    sofa::modeling::setDataLink(&boxRoi1->d_indices,&fc->f_indices);
+    sofa::modeling::setDataLink(&boxRoi1->d_indices,&fc->d_indices);
     // FixedPlaneConstraint
     typename component::projectiveconstraintset::FixedPlaneConstraint<DataTypes>::SPtr fpc=
-        modeling::addNew<typename component::projectiveconstraintset::FixedPlaneConstraint<DataTypes> >(root);
+            modeling::addNew<typename component::projectiveconstraintset::FixedPlaneConstraint<DataTypes> >(root);
     fpc->dmin= -0.01;
     fpc->dmax= 0.01;
     fpc->direction=Coord(0,0,1);
@@ -225,12 +225,12 @@ CylinderTractionStruct<DataTypes>  Elasticity_test<DataTypes>::createCylinderTra
     boxRoi2->d_computeTriangles=true;
     /// TrianglePressureForceField
     typename component::forcefield::TrianglePressureForceField<DataTypes>::SPtr tpff=
-        modeling::addNew<typename component::forcefield::TrianglePressureForceField<DataTypes> >(root);
+            modeling::addNew<typename component::forcefield::TrianglePressureForceField<DataTypes> >(root);
     tractionStruct.forceField=tpff;
     sofa::modeling::setDataLink(&boxRoi2->d_triangleIndices,&tpff->triangleList);
     // ProjectToLineConstraint
     typename component::projectiveconstraintset::ProjectToLineConstraint<DataTypes>::SPtr ptlc=
-        modeling::addNew<typename component::projectiveconstraintset::ProjectToLineConstraint<DataTypes> >(root);
+            modeling::addNew<typename component::projectiveconstraintset::ProjectToLineConstraint<DataTypes> >(root);
     ptlc->f_direction=Coord(1,0,0);
     ptlc->f_origin=Coord(0,0,0);
     sofa::helper::vector<unsigned> vArray;
@@ -328,11 +328,11 @@ simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
 
     // first box, x=xmin
     boxes[0] = sofa::defaulttype::BoundingBox(sofa::defaulttype::Vec3d(startPoint[0]-eps, startPoint[1]-eps, startPoint[2]-eps),
-                           sofa::defaulttype::Vec3d(startPoint[0]+eps,   endPoint[1]+eps,   endPoint[2]+eps));
+            sofa::defaulttype::Vec3d(startPoint[0]+eps,   endPoint[1]+eps,   endPoint[2]+eps));
 
     // second box, x=xmax
     boxes[1] = sofa::defaulttype::BoundingBox(sofa::defaulttype::Vec3d(endPoint[0]-eps, startPoint[1]-eps, startPoint[2]-eps),
-                           sofa::defaulttype::Vec3d(endPoint[0]+eps,   endPoint[1]+eps,   endPoint[2]+eps));
+            sofa::defaulttype::Vec3d(endPoint[0]+eps,   endPoint[1]+eps,   endPoint[2]+eps));
     rigid_dof->resize(numRigid);
     MechanicalObjectRigid3::WriteVecCoord xrigid = rigid_dof->writePositions();
     xrigid[0].getCenter()=Coord(startPoint[0], 0.5*(startPoint[1]+endPoint[1]), 0.5*(startPoint[2]+endPoint[2]));
@@ -411,19 +411,19 @@ simulation::Node::SPtr Elasticity_test<DataTypes>::createMassSpringSystem(
         VecDeriv vMass)
 {
 
-// Fixed point
-simulation::Node::SPtr fixedPointNode = root->createChild("FixedPointNode");
-MechanicalObject3::SPtr FixedPoint = modeling::addNew<MechanicalObject3>(fixedPointNode,"fixedPoint");
+    // Fixed point
+    simulation::Node::SPtr fixedPointNode = root->createChild("FixedPointNode");
+    MechanicalObject3::SPtr FixedPoint = modeling::addNew<MechanicalObject3>(fixedPointNode,"fixedPoint");
 
-// Set position and velocity
-FixedPoint->resize(1);
-MechanicalObject3::WriteVecCoord xdof = FixedPoint->writePositions();
-copyToData( xdof, xFixedPoint );
-MechanicalObject3::WriteVecDeriv vdof = FixedPoint->writeVelocities();
-copyToData( vdof, vFixedPoint );
+    // Set position and velocity
+    FixedPoint->resize(1);
+    MechanicalObject3::WriteVecCoord xdof = FixedPoint->writePositions();
+    copyToData( xdof, xFixedPoint );
+    MechanicalObject3::WriteVecDeriv vdof = FixedPoint->writeVelocities();
+    copyToData( vdof, vFixedPoint );
 
-FixedConstraint3::SPtr fixed = modeling::addNew<FixedConstraint3>(fixedPointNode,"FixedPointNode");
-fixed->addConstraint(0);      // attach particle
+    FixedConstraint3::SPtr fixed = modeling::addNew<FixedConstraint3>(fixedPointNode,"FixedPointNode");
+    fixed->addConstraint(0);      // attach particle
 
 
 // Mass
@@ -448,57 +448,6 @@ spring->addSpring(0,0,stiffness ,0, restLength);
 return root;
 
 }
-
-template<class DataTypes>
-simulation::Node::SPtr Elasticity_test<DataTypes>::createSunPlanetSystem(
-        simulation::Node::SPtr root,
-        double mSun,
-        double mPlanet,
-        double g,
-        Coord xSun,
-        Deriv vSun,
-        Coord xPlanet,
-        Deriv vPlanet)
-{
-
-// Mechanical object with 2 dofs: first sun, second planet
-MechanicalObject3::SPtr sunPlanet_dof = modeling::addNew<MechanicalObject3>(root,"sunPlanet_MO");
-
-// Set position and velocity
-sunPlanet_dof->resize(2);
-// Position
-MechanicalObject3::VecCoord positions(2);
-positions[0] = xSun;
-positions[1]= xPlanet;
-MechanicalObject3::WriteVecCoord xdof = sunPlanet_dof->writePositions();
-copyToData( xdof, positions );
-// Velocity
-MechanicalObject3::VecDeriv velocities(2);
-velocities[0] = vSun;
-velocities[1]= vPlanet;
-MechanicalObject3::WriteVecDeriv vdof = sunPlanet_dof->writeVelocities();
-copyToData( vdof, velocities );
-
-// Fix sun
-FixedConstraint3::SPtr fixed = modeling::addNew<FixedConstraint3>(root,"FixedSun");
-fixed->addConstraint(0);
-
-// Uniform Mass
-UniformMass3::SPtr massPtr = modeling::addNew<UniformMass3>(root,"mass");
-massPtr->d_totalMass.setValue(mPlanet + mSun);
-
-// Lennard Jones Force Field
-typename component::forcefield::LennardJonesForceField<DataTypes>::SPtr ff =
-    modeling::addNew<typename component::forcefield::LennardJonesForceField<DataTypes> >(root);
-// Set froce field parameters
-ff->setAlpha(1);
-ff->setBeta(-1);
-ff->setAInit(mPlanet*mSun*g);
-
-return root;
-
-}
-
 
 }// sofa
 

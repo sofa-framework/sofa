@@ -100,6 +100,7 @@ public:
     Data < Real > f_radius;
     Data < bool > f_handleTopologyChange;
     Data < bool > f_ignoreNotFound;
+    Data < bool > f_resizeToModel; 
     SubsetMappingInternalData<In, Out> data;
     void postInit();
 protected:
@@ -109,26 +110,26 @@ public:
 
     int addPoint(int index);
 
-    void init();
+    void init() override;
 
     // handle topology changes depending on the topology
     //void handleTopologyChange(core::topology::Topology* t);
 
     virtual ~SubsetMapping();
 
-    virtual void apply ( const core::MechanicalParams* mparams, OutDataVecCoord& dOut, const InDataVecCoord& dIn );
+    virtual void apply ( const core::MechanicalParams* mparams, OutDataVecCoord& dOut, const InDataVecCoord& dIn ) override;
 
-    virtual void applyJ( const core::MechanicalParams* mparams, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn );
+    virtual void applyJ( const core::MechanicalParams* mparams, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn ) override;
 
-    virtual void applyJT ( const core::MechanicalParams* mparams, InDataVecDeriv& dOut, const OutDataVecDeriv& dIn );
+    virtual void applyJT ( const core::MechanicalParams* mparams, InDataVecDeriv& dOut, const OutDataVecDeriv& dIn ) override;
 
-    virtual void applyJT ( const core::ConstraintParams* /*cparams*/, InDataMatrixDeriv& dOut, const OutDataMatrixDeriv& dIn);
+    virtual void applyJT ( const core::ConstraintParams* /*cparams*/, InDataMatrixDeriv& dOut, const OutDataMatrixDeriv& dIn) override;
 
-    const sofa::defaulttype::BaseMatrix* getJ();
+    const sofa::defaulttype::BaseMatrix* getJ() override;
 
 public:
     typedef helper::vector< defaulttype::BaseMatrix* > js_type;
-    virtual const js_type* getJs();
+    virtual const js_type* getJs() override;
 
 protected:
     typedef linearsolver::EigenSparseMatrix<In, Out> eigen_type;

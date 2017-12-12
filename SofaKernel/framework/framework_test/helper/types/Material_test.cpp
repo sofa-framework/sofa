@@ -31,12 +31,13 @@ using sofa::core::objectmodel::Data ;
 #include <sofa/helper/types/Material.h>
 using sofa::helper::types::Material ;
 
-#include <SofaTest/Sofa_test.h>
-using sofa::Sofa_test ;
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest ;
+
 
 namespace sofa {
 
-class Material_test : public Sofa_test<>
+class Material_test : public BaseTest
 {
 public:
 

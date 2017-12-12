@@ -27,6 +27,8 @@
 
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/gl/template.h>
+
 namespace sofa
 {
 

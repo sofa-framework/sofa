@@ -51,6 +51,7 @@ const char* BaseGUI::mProgramName = NULL;
 std::string BaseGUI::mGuiName = "";
 std::string BaseGUI::configDirectoryPath = ".";
 std::string BaseGUI::screenshotDirectoryPath = ".";
+ArgumentParser* BaseGUI::mArgumentParser = NULL;
 
 BaseGUI::BaseGUI()
 {

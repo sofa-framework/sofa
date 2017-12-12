@@ -1,0 +1,17 @@
+# CMake package configuration file for the SofaMiscCollision plugin
+
+@PACKAGE_INIT@
+
+find_package(SofaFramework REQUIRED)
+
+if(NOT TARGET SofaMiscCollision)
+        include("${CMAKE_CURRENT_LIST_DIR}/SofaMiscCollisionTargets.cmake")
+endif()
+
+set(SOFA_HAVE_SOFAMISCCOLLISION "@SOFA_HAVE_SOFAMISCCOLLISION@")
+
+check_required_components(SofaMiscCollision)
+set(SofaMiscCollision_LIBRARIES SOFAMISCCOLLISION)
+set(SofaMiscCollision_INCLUDE_DIRS @PACKAGE_SOFAMISCCOLLISION_INCLUDE_DIR@ ${SOFAMISCCOLLISION_INCLUDE_DIR})
+
+

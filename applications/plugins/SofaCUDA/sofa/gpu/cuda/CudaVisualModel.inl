@@ -318,7 +318,7 @@ void CudaVisualModel< TDataTypes >::internalDraw(const core::visual::VisualParam
     if (vparams->displayFlags().getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    glEnable(GL_LIGHTING);
+    vparams->drawTool()->enableLighting();
 
     bool transparent = (matDiffuse.getValue()[3] < 1.0);
 

@@ -19,11 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #include "../Node_test.h"
-#include <SofaTest/Sofa_test.h>
-#include <SofaTest/TestMessageHandler.h>
 
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest ;
 
 #include <SceneCreator/SceneCreator.h>
 #include <sofa/simulation/Visitor.h>
@@ -43,7 +42,7 @@ using namespace simulation;
  * The traversal order is recorded in a string, and compared with an expected one.
  * @author Francois Faure, Matthieu Nesme @date 2014
  */
-struct DAG_test : public Sofa_test<>
+struct DAG_test : public BaseTest
 {
     DAG_test()
     {

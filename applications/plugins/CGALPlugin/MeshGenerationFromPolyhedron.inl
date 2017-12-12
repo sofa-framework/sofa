@@ -30,7 +30,9 @@
 #define CGALPLUGIN_MESHGENERATIONFROMPOLYHEDRON_INL
 #include "MeshGenerationFromPolyhedron.h"
 
+#if CGAL_VERSION_NR <= CGAL_VERSION_NUMBER(4,9,1)
 #include <CGAL/AABB_intersections.h>
+#endif
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include <CGAL/Mesh_3/Robust_intersection_traits_3.h>
 

@@ -22,9 +22,6 @@
 #include "BatchGUI.h"
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/UpdateContextVisitor.h>
-#ifdef SOFA_SMP
-#include <athapascan-1>
-#endif
 #include <sofa/helper/system/thread/CTime.h>
 #include <iostream>
 #include <sstream>
@@ -136,36 +133,18 @@ sofa::simulation::Node* BatchGUI::currentSimulation()
     return groot.get();
 }
 
-
-int BatchGUI::InitGUI(const char* /*name*/, const std::vector<std::string>& options)
-{
-    setNumIterations(DEFAULT_NUMBER_OF_ITERATIONS);
-
-    //parse options
-    for (unsigned int i=0 ; i<options.size() ; i++)
-    {
-        size_t cursor = 0;
-        std::string opt = options[i];
-        //Set number of iterations
-        //(option = "nbIterations=N where N is the number of iterations)
-        if ( (cursor = opt.find("nbIterations=")) != std::string::npos )
-        {
-            unsigned int nbIterations;
-            std::istringstream iss;
-            iss.str(opt.substr(cursor+std::string("nbIterations=").length(), std::string::npos));
-            iss >> nbIterations;
-            setNumIterations(nbIterations);
-        }
-    }
-    return 0;
-}
-
-BaseGUI* BatchGUI::CreateGUI(const char* name, const std::vector<std::string>& /*options*/, sofa::simulation::Node::SPtr groot, const char* filename)
+BaseGUI* BatchGUI::CreateGUI(const char* name, sofa::simulation::Node::SPtr groot, const char* filename)
 {
     BatchGUI::mGuiName = name;
     BatchGUI* gui = new BatchGUI();
     gui->setScene(groot, filename);
     return gui;
+}
+
+int BatchGUI::RegisterGUIParameters(ArgumentParser* argumentParser)
+{
+    argumentParser->addArgument(po::value<unsigned int>(&nbIter)->default_value(DEFAULT_NUMBER_OF_ITERATIONS), "nbIter,n", "(only batch) Number of iterations of the simulation");
+    return 0;
 }
 
 } // namespace gui

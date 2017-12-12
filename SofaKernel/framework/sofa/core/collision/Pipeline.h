@@ -86,7 +86,7 @@ private:
 	
 	
 public:
-    virtual void reset()=0;
+    virtual void reset() override = 0;
 
     /// Remove collision response from last step
     virtual void computeCollisionReset()=0;
@@ -122,8 +122,8 @@ protected:
 
 public:
 
-    virtual bool insertInNode( objectmodel::BaseNode* node );
-    virtual bool removeInNode( objectmodel::BaseNode* node );
+    virtual bool insertInNode( objectmodel::BaseNode* node ) override;
+    virtual bool removeInNode( objectmodel::BaseNode* node ) override;
 };
 
 } // namespace collision

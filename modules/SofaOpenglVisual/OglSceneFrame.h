@@ -65,10 +65,10 @@ public:
         alignment.setValue(alignmentOptions);
     }
 
-    virtual void init();
-    virtual void reinit();
-    virtual void draw(const core::visual::VisualParams*);
-    virtual void updateVisual();
+    virtual void init() override;
+    virtual void reinit() override;
+    virtual void draw(const core::visual::VisualParams*) override;
+    virtual void updateVisual() override;
 
 
 protected:

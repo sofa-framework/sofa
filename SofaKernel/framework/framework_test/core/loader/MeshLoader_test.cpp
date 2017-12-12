@@ -21,7 +21,8 @@
 ******************************************************************************/
 #include <sofa/core/loader/MeshLoader.h>
 
-#include <gtest/gtest.h>
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest ;
 
 namespace sofa {
 
@@ -47,7 +48,7 @@ public:
  *
  * @author Thomas Lemaire @date 2014
  */
-class MeshLoader_test : public ::testing::Test
+class MeshLoader_test : public BaseTest
 {
 protected:
     MeshLoader_test() {}

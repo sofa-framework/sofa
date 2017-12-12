@@ -74,7 +74,7 @@ public:
     Data< SeqTriangles > triangles;
     Data< SeqQuads > quads;
 
-    virtual std::string getTemplateName() const    { return templateName(this);    }
+    virtual std::string getTemplateName() const    override { return templateName(this);    }
     static std::string templateName(const MeshSubsetEngine<DataTypes>* = NULL) { return DataTypes::Name();    }
 
 protected:
@@ -95,7 +95,7 @@ protected:
     virtual ~MeshSubsetEngine() {}
 
 public:
-    virtual void init()
+    virtual void init() override
     {
         addInput(&inputPosition);
         addInput(&inputEdges);
@@ -109,8 +109,8 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit()    { update();  }
-    void update();
+    virtual void reinit()    override { update();  }
+    void update() override;
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_MeshSubsetEngine_CPP)

@@ -135,20 +135,7 @@ void CollisionResponseVisitor::processCollisionPipeline(simulation::Node*
 #endif
 }
 
-#ifdef SOFA_SMP
 
-void ParallelCollisionVisitor::processCollisionPipeline(simulation::Node*, core::collision::ParallelPipeline* obj)
-{
-    obj->parallelComputeCollisions();
-}
-void ParallelCollisionVisitor::processCollisionPipeline(simulation::Node* node, core::collision::Pipeline* obj)
-{
-    core::collision::ParallelPipeline* p = dynamic_cast<core::collision::ParallelPipeline*>(obj);
-    if (p)
-        processCollisionPipeline(node, p);
-}
-
-#endif
 
 } // namespace simulation
 

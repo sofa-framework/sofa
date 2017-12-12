@@ -23,8 +23,6 @@
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/core/ObjectFactory.h>
-//#include <SofaBaseMechanics/MechanicalObject.inl>
-//#include <sofa/helper/gl/glText.inl>
 
 namespace sofa
 {
@@ -55,9 +53,9 @@ void TriangleSetTopologyContainer::addTriangle( int a, int b, int c )
 {
     helper::WriteAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = d_triangle;
     m_triangle.push_back(Triangle(a,b,c));
-    if (a >= getNbPoints()) nbPoints.setValue(a+1);
-    if (b >= getNbPoints()) nbPoints.setValue(b+1);
-    if (c >= getNbPoints()) nbPoints.setValue(c+1);
+    if (a >= getNbPoints()) setNbPoints(a+1);
+    if (b >= getNbPoints()) setNbPoints(b+1);
+    if (c >= getNbPoints()) setNbPoints(c+1);
 
 #ifndef NDEBUG
     sout << "ADD TRIANGLE" << sendl;

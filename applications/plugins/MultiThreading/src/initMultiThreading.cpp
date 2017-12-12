@@ -21,9 +21,19 @@
 ******************************************************************************/
 #include <MultiThreading/config.h>
 
-
-extern "C"
+namespace sofa
 {
+namespace component
+{
+
+extern "C" {
+SOFA_MULTITHREADING_PLUGIN_API void initExternalModule();
+SOFA_MULTITHREADING_PLUGIN_API const char* getModuleName();
+SOFA_MULTITHREADING_PLUGIN_API const char* getModuleVersion();
+SOFA_MULTITHREADING_PLUGIN_API const char* getModuleLicense();
+SOFA_MULTITHREADING_PLUGIN_API const char* getModuleDescription();
+SOFA_MULTITHREADING_PLUGIN_API const char* getModuleComponentList();
+}
 
 void initExternalModule()
 {
@@ -59,12 +69,5 @@ const char* getModuleComponentList()
     return "DataExchange, AnimationLoopParallelScheduler ";
 }
 
-}
-
-
-// Fix this it doesn't compile with these lines !!
-//#ifdef SOFA_HAVE_BOOST
-//SOFA_LINK_CLASS(AnimationLoopParallelScheduler)
-//#endif
-//SOFA_LINK_CLASS(DataExchange)
-
+} // namespace component
+} // namespace sofa

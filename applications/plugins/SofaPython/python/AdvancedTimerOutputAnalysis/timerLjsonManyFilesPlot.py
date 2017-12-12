@@ -49,7 +49,7 @@ class TimerLjsonManyFilesPlot() :
 
             # First analys to take Steps informations
             if firstPass == 1 :
-                row = ["Steps", k]
+                row = ["Steps", int(k)]
                 parsedInformations.append(row)
                 # Take informations from the target componant
                 for kbis, vbis in v.items() :
@@ -98,8 +98,13 @@ class TimerLjsonManyFilesPlot() :
                     openedFile.close()
                 return 0
 
+            try:
+                jsonParsedFile = json.load(openedJsonFile, object_pairs_hook=OrderedDict)
+            except:
+                print "[ERROR] Could not parse json file " + jsonFile
+                continue
+
             jsonOpenedFiles.append(openedJsonFile)
-            jsonParsedFile = json.load(openedJsonFile, object_pairs_hook=OrderedDict)
             jsonAnalysedFiles.append(self.parseJsonComponantsId(jsonParsedFile, componantID, value))
 
 

@@ -98,6 +98,13 @@ public:
     virtual Base* getOwnerBase() const = 0;
     virtual BaseData* getOwnerData() const = 0;
 
+    /// Set one of the flags.
+    void setFlag(LinkFlagsEnum flag, bool b)
+    {
+        if(b) m_flags |= (LinkFlags)flag;
+        else m_flags &= ~(LinkFlags)flag;
+    }
+
     /// Get one flag
     bool getFlag(LinkFlagsEnum flag) const { return (m_flags&(LinkFlags)flag)!=0; }
 
@@ -109,6 +116,7 @@ public:
     bool storePath() const { return getFlag(FLAG_STOREPATH); }
 
     /// Alias to match BaseData API
+    void setPersistent(bool b) { setFlag(FLAG_STOREPATH, b); }
     bool isPersistent() const { return storePath(); }
 
     /// Alias to match BaseData API

@@ -67,7 +67,7 @@ protected:
     ~TriangleBendingSprings();
 public:
     /// Searches triangle topology and creates the bending springs
-    virtual void init();
+    virtual void init() override;
 
     //virtual void draw()
     //{

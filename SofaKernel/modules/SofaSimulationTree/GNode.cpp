@@ -340,6 +340,35 @@ bool GNode::hasAncestor(const BaseContext* context) const
     return false;
 }
 
+/// Mesh Topology that is relevant for this context
+/// (within it or its parents until a mapping is reached that does not preserve topologies).
+core::topology::BaseMeshTopology* GNode::getActiveMeshTopology() const
+{
+    if (this->meshTopology)
+        return this->meshTopology;
+    // Check if a local mapping stops the search
+    if (this->mechanicalMapping && !this->mechanicalMapping->sameTopology())
+    {
+        return NULL;
+    }
+    for ( Sequence<core::BaseMapping>::iterator i=this->mapping.begin(), iend=this->mapping.end(); i!=iend; ++i )
+    {
+        if (!(*i)->sameTopology())
+        {
+            return NULL;
+        }
+    }
+    // No mapping with a different topology, continue on to the parent
+    GNode* p = parent();
+    if (!p)
+    {
+        return NULL;
+    }
+    else
+    {
+        return p->getActiveMeshTopology();
+    }
+}
 
 /// Execute a recursive action starting from this node
 void GNode::doExecuteVisitor(simulation::Visitor* action, bool)

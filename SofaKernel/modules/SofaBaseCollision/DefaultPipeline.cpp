@@ -155,7 +155,7 @@ void DefaultPipeline::doCollisionDetection(const helper::vector<core::CollisionM
             else
                 (*it)->computeBoundingTree(used_depth);
 
-                vectBoundingVolume.push_back ((*it)->getFirst());
+            vectBoundingVolume.push_back ((*it)->getFirst());
             ++nActive;
         }
 

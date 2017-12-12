@@ -22,16 +22,14 @@
 #include <sofa/helper/io/MeshOBJ.h>
 #include <sofa/helper/system/FileRepository.h>
 
-#include <gtest/gtest.h>
-
-#include <SofaTest/TestMessageHandler.h>
-using sofa::helper::logging::Message;
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest ;
 
 namespace sofa {
 
 using namespace core::loader;
 
-class MeshOBJ_test : public ::testing::Test
+class MeshOBJ_test : public BaseTest
 {
 protected:
     void SetUp()
