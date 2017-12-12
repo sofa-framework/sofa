@@ -1,7 +1,7 @@
 #ifndef FAILNODE_H
 #define FAILNODE_H
 
-#include <sofa/simulation/Node_fwd.h>
+#include <sofa/simulation/Node.h>
 
 namespace sofa {
 namespace simulation {

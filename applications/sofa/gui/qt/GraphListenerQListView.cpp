@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
+#include <sofa/simulation/Node.h>
 #include "GraphListenerQListView.h"
 #include <sofa/simulation/Colors.h>
 #include <sofa/core/collision/CollisionGroupManager.h>

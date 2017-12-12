@@ -3,7 +3,7 @@
 
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaBaseCollision/NewProximityIntersection.h>
-#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Node_fwd.h>
 #include <SofaSimulationTree/GNode.h>
 
 #include <gtest/gtest.h>

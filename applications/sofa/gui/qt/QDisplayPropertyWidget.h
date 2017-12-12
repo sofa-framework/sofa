@@ -29,7 +29,6 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/fixed_array.h>
-#include <sofa/simulation/Node.h>
 #include <SofaValidation/Monitor.h>
 #include <sofa/gui/qt/QTransformationWidget.h>
 #ifdef SOFA_HAVE_QWT

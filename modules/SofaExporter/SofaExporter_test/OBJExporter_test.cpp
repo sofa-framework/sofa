@@ -36,6 +36,7 @@ using sofa::core::objectmodel::BaseObject ;
 using sofa::simulation::Simulation ;
 using sofa::simulation::graph::DAGSimulation ;
 using sofa::simulation::Node ;
+using sofa::simulation::NodeSPtr ;
 
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;

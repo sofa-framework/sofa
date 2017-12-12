@@ -12,7 +12,8 @@ using sofa::Sofa_test;
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/simulation/Node.h>
-using sofa::simulation::Node;
+using sofa::simulation::Node ;
+using sofa::simulation::NodeSPtr ;
 using sofa::Data ;
 
 #include <sofa/core/ObjectFactory.h>

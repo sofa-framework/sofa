@@ -29,6 +29,8 @@
 #include "QTabulationModifyObject.h"
 #include <sofa/core/ObjectFactory.h>
 
+#include <sofa/simulation/Node.h>
+
 #include <sofa/helper/logging/Messaging.h>
 using sofa::helper::logging::Message ;
 

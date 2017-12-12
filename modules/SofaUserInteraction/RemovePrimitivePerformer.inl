@@ -23,6 +23,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/TopologicalMapping.h>
 #include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/Node.h>
 
 namespace sofa
 {

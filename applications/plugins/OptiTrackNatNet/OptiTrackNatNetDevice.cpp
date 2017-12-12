@@ -29,6 +29,7 @@
 #include <sofa/simulation/DeactivatedNodeVisitor.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/visual/DrawTool.h>
+#include <sofa/core/visual/DisplayFlags.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/glut.h>
 #include <algorithm>

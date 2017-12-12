@@ -22,6 +22,7 @@
 #ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_DISTANCEGRIDFORCEFIELD_INL
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_DISTANCEGRIDFORCEFIELD_INL
 
+#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/visual/DrawTool.h>
 #include <sofa/simulation/Simulation.h>
@@ -31,7 +32,6 @@
 #include <sofa/helper/gl/template.h>
 #include <assert.h>
 #include <iostream>
-
 
 
 namespace sofa

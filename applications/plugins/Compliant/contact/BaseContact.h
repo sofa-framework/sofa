@@ -4,7 +4,7 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/collision/DetectionOutput.h>
 #include <SofaBaseCollision/BaseContactMapper.h>
-
+#include <sofa/core/collision/Contact.h>
 #include <Compliant/config.h>
 
 #include "../mapping/DifferenceMapping.h"
@@ -13,6 +13,8 @@
 #include "../constraint/HolonomicConstraintValue.h"
 
 #include <sofa/helper/cast.h>
+
+#include <sofa/simulation/Node.h>
 
 
 namespace sofa

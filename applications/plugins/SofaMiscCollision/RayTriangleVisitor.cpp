@@ -25,6 +25,8 @@
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <SofaOpenglVisual/OglModel.h>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/simulation/Sequence.h>
+#include <sofa/simulation/Node.h>
 
 namespace sofa
 {
@@ -173,8 +175,8 @@ simulation::Visitor::Result RayTriangleVisitor::processNodeTopDown(simulation::N
 {
     using core::visual::VisualModel;
     using sofa::component::visualmodel::OglModel;
-    typedef simulation::Node::Sequence<core::CollisionModel> CollisionModels;
-    typedef simulation::Node::Sequence<VisualModel> VisualModels;
+    typedef simulation::Sequence<core::CollisionModel> CollisionModels;
+    typedef simulation::Sequence<VisualModel> VisualModels;
     using component::collision::TriangleModel;
 
     for( CollisionModels::const_iterator it=node->collisionModel.begin(), iend=node->collisionModel.end(); it!=iend; it++ )

@@ -27,6 +27,7 @@
 #include <sofa/simulation/BehaviorUpdatePositionVisitor.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/SolveVisitor.h>
+#include <sofa/simulation/Node.h>
 
 #include <sofa/simulation/Simulation.h>
 #include <sofa/helper/gl/template.h>

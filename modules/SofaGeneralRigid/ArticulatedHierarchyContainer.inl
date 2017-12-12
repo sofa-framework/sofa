@@ -27,6 +27,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/Node.h>
 
 namespace sofa
 {

@@ -29,6 +29,8 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QScrollArea>
+
+#include <sofa/simulation/Node.h>
 // uncomment to show traces of GUI operations in this file
 //#define DEBUG_GUI
 
@@ -54,13 +56,6 @@ QTabulationModifyObject::QTabulationModifyObject(QWidget* parent,
     vbox->setSpacing(0);
 
     this->setLayout(vbox);
-
-//    //add a scrollable area for data properties
-//    QScrollArea* m_scrollArea = new QScrollArea();
-//    m_scrollArea->setMinimumSize(400,100);
-//    m_scrollArea->setWidgetResizable(true);
-//    this->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-//    m_scrollArea->setWidget(this);
 
     //find correct maxPixelSize according to the current screen resolution
     pixelMaxSize = screenHeight - 300;

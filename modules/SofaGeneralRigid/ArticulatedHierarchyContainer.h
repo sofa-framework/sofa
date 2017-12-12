@@ -25,7 +25,7 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Node_fwd.h>
 #include <sofa/helper/io/bvh/BVHLoader.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/defaulttype/SolidTypes.h>

@@ -8,7 +8,7 @@
 
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/OwnershipSPtr.h>
-
+#include <sofa/simulation/Node.h>
 
 namespace sofa {
 
