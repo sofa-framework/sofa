@@ -107,8 +107,7 @@ public:
     /// @name registration of each GUI
     /// @{
 
-    static int InitGUI(const char* name, const std::vector<std::string>& options);
-    static BaseGUI* CreateGUI(const char* name, const std::vector<std::string>& options, sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
+    static BaseGUI* CreateGUI(const char* name, sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
 
     /// @}
 

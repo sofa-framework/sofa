@@ -138,6 +138,11 @@ void loadVerificationData(string& directory, string& filename, Node* node)
     v_read.execute(node);
 }
 
+void addGUIParameters(ArgumentParser* argumentParser)
+{
+    GUIManager::RegisterParameters(argumentParser);
+}
+
 // ---------------------------------------------------------------------
 // ---
 // ---------------------------------------------------------------------
@@ -172,14 +177,14 @@ int main(int argc, char** argv)
 
     string fileName ;
     bool        startAnim = false;
+    bool        showHelp = false;
     bool        printFactory = false;
     bool        loadRecent = false;
     bool        temporaryFile = false;
     bool        testMode = false;
     bool        noAutoloadPlugins = false;
-    int         nbIterations = BatchGUI::DEFAULT_NUMBER_OF_ITERATIONS;
     unsigned int nbMSSASamples = 1;
-    unsigned    computationTimeSampling=0; ///< Frequency of display of the computation time statistics, in number of animation steps. 0 means never.
+    unsigned int computationTimeSampling=0; ///< Frequency of display of the computation time statistics, in number of animation steps. 0 means never.
 
     string gui = "";
     string verif = "";
@@ -192,6 +197,11 @@ int main(int argc, char** argv)
 
     vector<string> plugins;
     vector<string> files;
+#ifdef SOFA_SMP
+    string nProcs="";
+    bool        disableStealing = false;
+    bool        affinity = false;
+#endif
     string colorsStatus = "auto";
     string messageHandler = "auto";
     bool enableInteraction = false ;
@@ -200,25 +210,49 @@ int main(int argc, char** argv)
     gui_help += GUIManager::ListSupportedGUI('|');
     gui_help += ")";
 
-    sofa::helper::parse(&files, "This is a SOFA application. Here are the command line arguments")
-    // alphabetical order on short name
-    .option(&startAnim,'a',"start","start the animation loop")
-    .option(&computationTimeSampling,'c',"computationTimeSampling","Frequency of display of the computation time statistics, in number of animation steps. 0 means never.")
-    .option(&gui,'g',"gui",gui_help.c_str())
-    .option(&plugins,'l',"load","load given plugins")
-    .option(&noAutoloadPlugins, '0', "noautoload", "disable plugins autoloading")
-    .option(&nbMSSASamples, 'm', "msaa", "number of samples for MSAA (Multi Sampling Anti Aliasing ; value < 2 means disabled")
-    .option(&nbIterations,'n',"nb_iterations","(only batch) Number of iterations of the simulation")
-    .option(&printFactory,'p',"factory","print factory logs")
-    .option(&loadRecent,'r',"recent","load most recently opened file")
-    .option(&simulationType,'s',"simu","select the type of simulation (bgl, dag, tree)")
-    .option(&temporaryFile,'t',"temporary","the loaded scene won't appear in history of opened files")
-    .option(&testMode,'x',"test","select test mode with xml output after N iteration")
-    .option(&verif,'v',"verification","load verification data for the scene")
-    .option(&colorsStatus,'z',"colors","use colors on stdout and stderr (yes, no, auto)")
-    .option(&messageHandler,'f',"formatting","select the message formatting to use (auto, clang, sofa, rich, test)")
-    .option(&enableInteraction, 'i', "interactive", "enable interactive mode for the GUI which includes idle and mouse events (EXPERIMENTAL)")
-    (argc,argv);
+    ArgumentParser* argParser = new ArgumentParser(argc, argv);
+    argParser->addArgument(po::value<bool>(&showHelp)->default_value(false)->implicit_value(true),                  "help,h", "Display this help message");
+    argParser->addArgument(po::value<bool>(&startAnim)->default_value(false)->implicit_value(true),                 "start,a", "start the animation loop");
+    argParser->addArgument(po::value<unsigned int>(&computationTimeSampling)->default_value(0),                     "computationTimeSampling", "Frequency of display of the computation time statistics, in number of animation steps. 0 means never.");
+    argParser->addArgument(po::value<std::string>(&gui)->default_value(""),                                         "gui,g", gui_help.c_str());
+    argParser->addArgument(po::value<std::vector<std::string>>(&plugins),                                           "load,l", "load given plugins");
+    argParser->addArgument(po::value<bool>(&noAutoloadPlugins)->default_value(false)->implicit_value(true),         "noautoload", "disable plugins autoloading");
+
+    // example of an option using lambda function which ensure the value passed is > 0
+    argParser->addArgument(po::value<unsigned int>(&nbMSSASamples)->default_value(1)->notifier([](unsigned int value)
+    {
+        if (value < 1) {
+            std::cerr << "msaa sample cannot be lower than 1" << std::endl;
+            exit( EXIT_FAILURE );
+        }
+    }),                                                                                                             "msaa,m", "number of samples for MSAA (Multi Sampling Anti Aliasing ; value < 2 means disabled");
+
+    argParser->addArgument(po::value<bool>(&printFactory)->default_value(false)->implicit_value(true),              "factory,p", "print factory logs");
+    argParser->addArgument(po::value<bool>(&loadRecent)->default_value(false)->implicit_value(true),                "recent,r", "load most recently opened file");
+    argParser->addArgument(po::value<std::string>(&simulationType),                                                 "simu,s", "select the type of simulation (bgl, dag, tree)");
+    argParser->addArgument(po::value<bool>(&temporaryFile)->default_value(false)->implicit_value(true),             "tmp", "the loaded scene won't appear in history of opened files");
+    argParser->addArgument(po::value<bool>(&testMode)->default_value(false)->implicit_value(true),                  "test", "select test mode with xml output after N iteration");
+    argParser->addArgument(po::value<std::string>(&verif)->default_value(""), "verification,v",                     "load verification data for the scene");
+    argParser->addArgument(po::value<std::string>(&colorsStatus)->default_value("auto")->implicit_value("yes"),     "colors,c", "use colors on stdout and stderr (yes, no, auto)");
+    argParser->addArgument(po::value<std::string>(&messageHandler)->default_value("auto"), "formatting,f",          "select the message formatting to use (auto, clang, sofa, rich, test)");
+    argParser->addArgument(po::value<bool>(&enableInteraction)->default_value(false)->implicit_value(true),         "interactive,i", "enable interactive mode for the GUI which includes idle and mouse events (EXPERIMENTAL)");
+    argParser->addArgument(po::value<std::vector<std::string> >()->multitoken(), "argv",                            "forward extra args to the python interpreter");
+
+#ifdef SOFA_SMP
+    argParser->addArgument(po::value<bool>(&disableStealing)->default_value(false)->implicit_value(true),           "disableStealing,w", "Disable Work Stealing")
+    argParser->addArgument(po::value<std::string>(&nProcs)->default_value(""),                                      "nprocs", "Number of processor")
+    argParser->addArgument(po::value<bool>(&affinity)->default_value(false)->implicit_value(true),                  "affinity", "Enable aFfinity base Work Stealing")
+#endif
+
+    addGUIParameters(argParser);
+    argParser->parse();
+    files = argParser->getInputFileList();
+
+    if(showHelp)
+    {
+        argParser->showHelp();
+        exit( EXIT_SUCCESS );
+    }
 
     // Note that initializations must be done after ArgumentParser that can exit the application (without cleanup)
     // even if everything is ok e.g. asking for help
@@ -318,28 +352,6 @@ int main(int argc, char** argv)
         msg_info("runSofa") << "Automatic plugin loading disabled.";
 
     PluginManager::getInstance().init();
-
-    if(gui.compare("batch") == 0 && nbIterations >= 0)
-    {
-        ostringstream oss ;
-        oss << "nbIterations=";
-        oss << nbIterations;
-        GUIManager::AddGUIOption(oss.str().c_str());
-    }
-
-    if(enableInteraction){
-        msg_warning("Main") << "you activated the interactive mode. This is currently an experimental feature "
-                               "that may change or be removed in the future. " ;
-        GUIManager::AddGUIOption("enableInteraction");
-    }
-
-    if(nbMSSASamples > 1)
-    {
-        ostringstream oss ;
-        oss << "msaa=";
-        oss << nbMSSASamples;
-        GUIManager::AddGUIOption(oss.str().c_str());
-    }
 
     if (int err = GUIManager::Init(argv[0],gui.c_str()))
         return err;

@@ -216,8 +216,8 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
         graph_den.push_back(den);
 
 
-        /// Break condition = THRESHOLD criterion regarding the denominator is reached
-        if( fabs(den)<f_smallDenominatorThreshold.getValue() )
+        /// Break condition = THRESHOLD criterion regarding the denominator is reached (but do at least one iteration)
+        if( fabs(den)<f_smallDenominatorThreshold.getValue() && nb_iter>1)
         {
             endcond = "threshold";
             if( verbose )
