@@ -136,6 +136,7 @@ protected:
 
     bool getShow(const core::objectmodel::BaseObject* /*m*/, const core::visual::VisualParams* vparams) const ;
     bool getShow(const core::BaseMapping* /*m*/, const core::visual::VisualParams* vparams) const ;
+
     virtual void updateForceMask() override { /*already done in applyJT*/ }
 };
 

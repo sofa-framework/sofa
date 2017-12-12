@@ -23,12 +23,12 @@
 #ifndef SOFA_CORE_VISUAL_VISUALPARAMS_FWD_H
 #define SOFA_CORE_VISUAL_VISUALPARAMS_FWD_H
 
-namespace sofa  {
-namespace core {
-namespace visual {
-    class VisualParams ;
-} /// namespace visual
-} /// namespace core
+namespace sofa {
+    namespace core {
+        namespace visual {
+           class VisualParams ;
+        } /// namespace visual
+    } /// namespace core
 } /// namespace sofa
 
-#endif /// SOFA_CORE_VISUAL_VISUALPARAMS_FWD_H
+#endif // SOFA_CORE_VISUAL_VISUALPARAMS_FWD_H

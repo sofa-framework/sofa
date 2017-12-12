@@ -41,9 +41,9 @@
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/VisualVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
+<<<<<<< HEAD
 #include <sofa/simulation/MutationListener.h>
 #include <sofa/core/behavior/LinearSolver.h>
-#include <sofa/core/visual/Shader.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/Factory.inl>
 #include <sofa/helper/cast.h>

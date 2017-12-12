@@ -143,6 +143,7 @@ set(HEADER_FILES
     visual/VisualManager.h
     visual/VisualModel.h
     visual/VisualParams.h
+    visual/VisualParams_fwd.h
     logging/RichConsoleStyleMessageFormatter.h
     logging/PerComponentLoggingMessageHandler.h
 )
