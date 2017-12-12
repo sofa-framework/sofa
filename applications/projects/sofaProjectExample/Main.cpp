@@ -39,10 +39,8 @@
 #include <SofaBaseCollision/BruteForceDetection.h>
 #include <SofaBaseCollision/NewProximityIntersection.h>
 #include <SofaBaseCollision/DefaultContactManager.h>
-#include <SofaMiscCollision/DefaultCollisionGroupManager.h>
 #include <SofaMeshCollision/TriangleModel.h>
 
-//#include <sofa/component/typedef/Sofa_typedef.h>
 #include <SofaOpenglVisual/OglModel.h>
 #include <SofaBaseMechanics/BarycentricMapping.h>
 #include <SofaComponentMain/init.h>

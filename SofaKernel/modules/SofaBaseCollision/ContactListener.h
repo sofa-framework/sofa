@@ -88,9 +88,9 @@ namespace sofa
 
 			public:				
 
-				virtual void init(void);			
+                virtual void init(void) override;
 
-				virtual void handleEvent( core::objectmodel::Event* event );
+				virtual void handleEvent( core::objectmodel::Event* event ) override;
 
 
 

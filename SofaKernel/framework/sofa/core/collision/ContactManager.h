@@ -90,7 +90,7 @@ protected:
 
     std::map<Instance,ContactVector> storedContacts;
 
-    virtual void changeInstance(Instance inst)
+    virtual void changeInstance(Instance inst) override
     {
         storedIntersectionMethod[instance] = intersectionMethod;
         intersectionMethod = storedIntersectionMethod[inst];

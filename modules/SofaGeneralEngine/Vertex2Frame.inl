@@ -84,7 +84,11 @@ void Vertex2Frame<DataTypes>::update()
 
     if (nbVertices <= 0)
     {
-        msg_error(this) << "Vertex2Frame : no vertices found. Component will not compute anything";
+        /// Here I set the message to info because there is scenario of usage that initially
+        /// does not have vertices and after few frame, vertices pop-up and we don't want
+        /// to have message in that case. Using msg_info() allow user to control what it displayed.
+        /// with the printLog='true/false' attribute.
+        msg_info(this) << "Vertex2Frame : no vertices found. Component will not compute anything";
         return ;
     }
 

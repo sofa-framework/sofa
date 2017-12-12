@@ -584,6 +584,25 @@ static PyObject * Sofa_getAvailableComponents(PyObject * /*self*/, PyObject * ar
     return pyList;
 }
 
+static PyObject * Sofa_getAliasesFor(PyObject * /*self*/, PyObject * args)
+{
+    char* componentname;
+    if (!PyArg_ParseTuple(args, "s", &componentname)) {
+        return NULL;
+    }
+
+    const ObjectFactory::ClassEntry& entry = ObjectFactory::getInstance()->getEntry(componentname) ;
+
+    PyObject *pyList = PyList_New(entry.aliases.size());
+    unsigned int i=0;
+    for (auto& alias : entry.aliases){
+        PyList_SetItem(pyList, (Py_ssize_t)i, Py_BuildValue("s", alias.c_str()));
+        i++;
+    }
+
+    return pyList;
+}
+
 // -----------------
 
 
@@ -840,7 +859,8 @@ SP_MODULE_METHOD(Sofa,unload)
 SP_MODULE_METHOD(Sofa,loadPythonSceneWithArguments)
 SP_MODULE_METHOD(Sofa,loadPlugin)
 SP_MODULE_METHOD(Sofa,path)
-SP_MODULE_METHOD(Sofa,getAvailableComponents)
+SP_MODULE_METHOD_DOC(Sofa,getAvailableComponents, "Returns the list of the available components in the factory.")
+SP_MODULE_METHOD_DOC(Sofa,getAliasesFor, "Returns the list of the aliases for a given component")
 SP_MODULE_METHOD_DOC(Sofa, timerClear, "Method : Sofa_clear \nDesc   : Wrapper for python usage. Clear the timer. \nParam  : PyObject*, self - Object of the python script \nReturn : return None")
 SP_MODULE_METHOD_DOC(Sofa, timerIsEnabled, "Method : Sofa_isEnabled \nDesc   : Wrapper for python usage. Return if the timer is enable or not. \nParam  : PyObject*, self - Object of the python script \nParam  : PyObject*, args - given arguments to apply to the method \nReturn : None")
 SP_MODULE_METHOD_DOC(Sofa, timerSetEnabled, "Method : Sofa_setEnabled \nDesc   : Wrapper for python usage. /!\\ Need to pass an int in arguments insteed of a bool in the python script. \nParam  : PyObject*, self - Object of the python script \nParam  : PyObject*, args - given arguments to apply to the method \nReturn : None")

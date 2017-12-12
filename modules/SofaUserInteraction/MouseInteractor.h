@@ -66,18 +66,18 @@ public:
 protected:
     BaseMouseInteractor(): isAttached(false),distanceFromMouse(0) {}
 public:
-    virtual void draw(const core::visual::VisualParams* vparams);
+    virtual void draw(const core::visual::VisualParams* vparams) override;
 
-    void cleanup();
+    void cleanup() override;
 
 
     //Interactions handling
     void addInteractionPerformer(InteractionPerformer *i);
     bool removeInteractionPerformer( InteractionPerformer *i);
     //Called at each time step: launch all the performers
-    void updatePosition( SReal dt);
+    void updatePosition( SReal dt) override;
     //Propagate an event in case to all the performers
-    void handleEvent(core::objectmodel::Event *e);
+    void handleEvent(core::objectmodel::Event *e) override;
 
 
     virtual core::behavior::BaseMechanicalState *getMouseContainer()=0;
@@ -121,12 +121,12 @@ public:
     MouseInteractor():mouseInSofa(NULL) {}
     ~MouseInteractor() {}
 
-    void init();
+    void init() override;
 
-    core::behavior::BaseMechanicalState *getMouseContainer() {return mouseInSofa;}
+    core::behavior::BaseMechanicalState *getMouseContainer() override {return mouseInSofa;}
 
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }

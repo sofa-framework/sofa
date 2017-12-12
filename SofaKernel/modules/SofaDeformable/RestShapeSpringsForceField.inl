@@ -27,7 +27,6 @@
 #include <sofa/helper/system/config.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/helper/gl/template.h>
 
 #include <sofa/defaulttype/RGBAColor.h>
 
@@ -71,6 +70,17 @@ RestShapeSpringsForceField<DataTypes>::RestShapeSpringsForceField()
 {
 }
 
+template<class DataTypes>
+void RestShapeSpringsForceField<DataTypes>::parse(core::objectmodel::BaseObjectDescription *arg)
+{
+    const char* attr = arg->getAttribute("external_rest_shape") ;
+    if( attr != nullptr && attr[0] != '@')
+    {
+            msg_error() << "RestShapeSpringsForceField have changed since 17.06. The parameter 'external_rest_shape' is now a Link. To fix your scene you need to add and '@' in front of the provided path. See PR#315" ;
+    }
+
+    Inherit::parse(arg) ;
+}
 
 template<class DataTypes>
 void RestShapeSpringsForceField<DataTypes>::bwdInit()

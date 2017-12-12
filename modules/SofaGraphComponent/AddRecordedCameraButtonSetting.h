@@ -43,7 +43,7 @@ public:
 protected:
     AddRecordedCameraButtonSetting(){};
 public:
-    std::string getOperationType() {return "Add recorded camera's position and orientation";}
+    std::string getOperationType() override {return "Add recorded camera's position and orientation";}
 
 };
 
@@ -54,7 +54,7 @@ public:
 protected:
     StartNavigationButtonSetting(){};
 public:
-    std::string getOperationType() {return "Start navigation if some view poins have been saved";}
+    std::string getOperationType() override {return "Start navigation if some view poins have been saved";}
 };
 
 }

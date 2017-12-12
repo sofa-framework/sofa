@@ -29,6 +29,14 @@ using sofa::core::objectmodel::Base ;
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/helper/system/FileRepository.h>
 
+#include <sofa/helper/deprecatedcomponents.h>
+using sofa::helper::deprecatedcomponents::components ;
+using sofa::helper::deprecatedcomponents::messages ;
+using sofa::helper::deprecatedcomponents::indexName ;
+using sofa::helper::deprecatedcomponents::indexMessage ;
+
+
+
 #include "SceneCheckAPIChanges.h"
 #include "RequiredPlugin.h"
 
@@ -42,32 +50,15 @@ namespace simulation
 namespace _scenecheckapichange_
 {
 
-//// Here are the message we will all the time reproduct.
-#define DEPMSG 0
-#define DEPREP 1
-std::map<std::string, std::string> s_commonMessages =
+SceneCheckAPIChange::SceneCheckAPIChange()
 {
-    {"deprecated-17.06", " has been deprecated since sofa 17.12. Please consider updating your scene as using "
-                         " deprecated component may result in poor performance and undefined behavior."
-                         " If this component is crucial to you please report that to sofa-dev@ so we can  "
-                         " reconsider this component for future re-integration. "
-    },
-    {"removed-17.06", " has been removed since sofa 17.12. Please consider updating your scene."
-                      " If this component is crucial to you please report that to sofa-dev@ so we can  "
-                      " reconsider this component for future re-integration. "
-    },
-} ;
+    installDefaultChangeSets() ;
+}
 
-
-////// Here is the list of component that are removed or deprecated.
-/// Component name, the error message to use among
-std::map<std::string, std::vector<std::string>> deprecatedComponents =
+SceneCheckAPIChange::~SceneCheckAPIChange()
 {
-    {"ComponentA", {"deprecated-17.06", "Possible replacement with "}},
-    {"ComponentB", {"deprecated-17.06", "Possible replacement with "}},
-    {"ComponentC", {"deprecated-17.06", "Possible replacement with "}}
-};
 
+}
 
 const std::string SceneCheckAPIChange::getName()
 {
@@ -102,6 +93,9 @@ void SceneCheckAPIChange::doInit(Node* node)
 
 void SceneCheckAPIChange::doCheckOn(Node* node)
 {
+    if(node==nullptr)
+        return ;
+
     for (auto& object : node->object )
     {
         if(m_selectedApiLevel != m_currentApiLevel && m_changesets.find(m_selectedApiLevel) != m_changesets.end())
@@ -119,29 +113,32 @@ void SceneCheckAPIChange::doCheckOn(Node* node)
 void SceneCheckAPIChange::installDefaultChangeSets()
 {
     addHookInChangeSet("17.06", [](Base* o){
-        if(o->getClassName() == "RestShapeSpringsForceField" && o->findData("external_rest_shape")->isSet())
-            msg_warning(o) << "RestShapeSpringsForceField have changed since 17.06. The parameter 'external_rest_shape' is now a Link. To fix your scene you need to add and '@' in front of the provided path. See PR#315" ;
-    }) ;
-
-    addHookInChangeSet("17.06", [](Base* o){
         if(o->getClassName() == "BoxStiffSpringForceField" )
             msg_warning(o) << "BoxStiffSpringForceField have changed since 17.06. To use the old behavior you need to set parameter 'forceOldBehavior=true'" ;
     }) ;
 
     addHookInChangeSet("17.06", [](Base* o){
-        if( deprecatedComponents.find( o->getClassName() ) != deprecatedComponents.end() )
+        if( components.find( o->getClassName() ) != components.end() )
         {
-            auto& msg = deprecatedComponents[o->getClassName()] ;
-            std::string str = msg[DEPMSG];
+            auto& msg = components[o->getClassName()] ;
+            std::string str = msg[indexName];
 
             /// Replace the string by the default one.
-            if( s_commonMessages.find( str ) != s_commonMessages.end() ){
-                str = s_commonMessages[str] ;
+            if( messages.find( str ) != messages.end() ){
+                str = messages[str] ;
             }
 
-            msg_warning(o) << o->getClassName()
+            if(msg.size() >= indexMessage )
+            {
+                msg_warning(o) << o->getClassName()
+                                   << str ;
+            }
+            else {
+                msg_warning(o) << o->getClassName()
                                << str
-                               << msg[DEPREP] ;
+                               << msg[indexMessage] ;
+
+            }
         }
     }) ;
 }

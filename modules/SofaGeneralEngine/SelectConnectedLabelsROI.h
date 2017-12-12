@@ -64,7 +64,7 @@ public:
     //Output
     Data<helper::vector<Index> > d_indices;
 
-    virtual std::string getTemplateName() const    {        return templateName(this);    }
+    virtual std::string getTemplateName() const    override {        return templateName(this);    }
     static std::string templateName(const SelectConnectedLabelsROI* = NULL)    {       return sofa::defaulttype::DataTypeName<T>::name();    }
 
     SelectConnectedLabelsROI(): Inherited()
@@ -78,7 +78,7 @@ public:
 
     virtual ~SelectConnectedLabelsROI() {}
 
-    virtual void init()
+    virtual void init() override
     {
         addInput(&d_nbLabels);
         d_labels.resize(d_nbLabels.getValue());
@@ -87,7 +87,7 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit()
+    virtual void reinit() override
     {
         d_labels.resize(d_nbLabels.getValue());
         update();
@@ -95,14 +95,14 @@ public:
 
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters
-    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
+    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override
     {
         d_labels.parseSizeData(arg, d_nbLabels);
         Inherit1::parse(arg);
     }
 
     /// Assign the field values stored in the given map of name -> value pairs
-    void parseFields ( const std::map<std::string,std::string*>& str )
+    void parseFields ( const std::map<std::string,std::string*>& str ) override
     {
         d_labels.parseFieldsSizeData(str, d_nbLabels);
         Inherit1::parseFields(str);
@@ -111,7 +111,7 @@ public:
 protected:
 
 
-    virtual void update()
+    virtual void update() override
     {
         updateAllInputsIfDirty();
         cleanDirty();

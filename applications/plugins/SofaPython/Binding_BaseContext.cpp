@@ -82,83 +82,6 @@ static PyObject * BaseContext_getRootContext(PyObject *self, PyObject * /*args*/
 }
 
 
-/// This function converts an PyObject into a sofa string.
-/// string that can be safely parsed in helper::vector<int> or helper::vector<double>
-static std::ostream& pythonToSofaDataString(PyObject* value, std::ostream& out)
-{
-    /// String are just returned as string.
-    if (PyString_Check(value))
-    {
-        return out << PyString_AsString(value) ;
-    }
-
-    /// Unicode are converted to string.
-    if(PyUnicode_Check(value))
-    {
-        PyObject* tmpstr = PyUnicode_AsUTF8String(value);
-        out << PyString_AsString(tmpstr) ;
-        Py_DECREF(tmpstr);
-
-        return out;
-    }
-
-    if( PySequence_Check(value) )
-    {
-        if(!PyList_Check(value))
-        {
-            msg_warning("SofaPython") << "A sequence which is not a list will be convert to a sofa string.";
-        }
-        /// It is a sequence...so we can iterate over it.
-        PyObject *iterator = PyObject_GetIter(value);
-        if(iterator)
-        {
-            bool first = true;
-            while(PyObject* next = PyIter_Next(iterator))
-            {
-                if(first) first = false;
-                else out << ' ';
-
-                pythonToSofaDataString(next, out);
-                Py_DECREF(next);
-            }
-            Py_DECREF(iterator);
-
-            if (PyErr_Occurred())
-            {
-                msg_error("SofaPython") << "error while iterating." << msgendl
-                                        << PythonEnvironment::getStackAsString() ;
-            }
-            return out;
-        }
-    }
-
-
-    /// Check if the object has an explicit conversion to a Sofa path. If this is the case
-    /// we use it.
-    if( PyObject_HasAttrString(value, "getAsACreateObjectParameter") ){
-        PyObject* retvalue = PyObject_CallMethod(value, (char*)"getAsACreateObjectParameter", nullptr) ;
-        return pythonToSofaDataString(retvalue, out);
-    }
-
-    /// Default conversion for standard type:
-    if( !(PyInt_Check(value) || PyLong_Check(value) || PyFloat_Check(value) || PyBool_Check(value) ))
-    {
-        msg_warning("SofaPython") << "You are trying to convert a non primitive type to Sofa using the 'str' operator." << msgendl
-                                  << "Automatic conversion is provided for: String, Integer, Long, Float and Bool and Sequences." << msgendl
-                                  << "Other objects should implement the method getAsACreateObjectParameter(). " << msgendl
-                                  << "This function should return a string usable as a parameter in createObject()." << msgendl
-                                  << "So to remove this message you must add a method getAsCreateObjectParameter(self) "
-                                     "to the object you are passing the createObject function." << msgendl
-                                  << PythonEnvironment::getStackAsString() ;
-    }
-
-
-    PyObject* tmpstr=PyObject_Repr(value);
-    out << PyString_AsString(tmpstr) ;
-    Py_DECREF(tmpstr) ;
-    return out ;
-}
-
 
 /// object factory
 static PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * args, PyObject * kw, bool printWarnings)
@@ -205,13 +128,26 @@ static PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * args
     if (obj==0)
     {
         std::stringstream msg;
-        msg << "createObject: component '" << desc.getName() << "' of type '" << desc.getAttribute("type","")<< "' in node '"<<context->getName()<<"'" ;
+        msg << "Unable to create '" << desc.getName() << "' of type '" << desc.getAttribute("type","")<< "' in node '"<<context->getName()<<"'." ;
         for (std::vector< std::string >::const_iterator it = desc.getErrors().begin(); it != desc.getErrors().end(); ++it)
             msg << " " << *it << msgendl ;
+
+        //todo(STC4) do it or remove it ?
+        //todo(dmarchal 2017/10/01) I don't like that because it is weird to have error reporting
+        //strategy into the createObject implementation instead of into a dedicated exception.
+        //in addition this is the first time we are not using the macro from msg_*
+        BaseObjectDescription desc("InfoComponent", "InfoComponent") ;
+        BaseObject::SPtr obj = ObjectFactory::getInstance()->createObject(context,&desc) ;
+        obj->setName( "Not created ("+std::string(type)+")" ) ;
+        sofa::helper::logging::Message m(sofa::helper::logging::Message::Runtime,
+                                         sofa::helper::logging::Message::Error) ;
+        m << msg.str() ;
+        obj->addMessage(  m ) ;
+        //todo(STC4) end of do it or remove it.
+
         PyErr_SetString(PyExc_RuntimeError, msg.str().c_str()) ;
         return NULL;
     }
-
 
     if( warning )
     {
@@ -366,7 +302,7 @@ static PyObject * BaseContext_getObjects(PyObject * self, PyObject * args)
         }
     }
 
-    sofa::helper::vector< boost::intrusive_ptr<BaseObject> > list;
+    sofa::helper::vector< BaseObject::SPtr > list;
     context->get<BaseObject>(&list,search_direction_enum);
 
     PyObject *pyList = PyList_New(0);

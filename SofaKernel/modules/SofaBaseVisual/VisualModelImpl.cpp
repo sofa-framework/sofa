@@ -35,7 +35,6 @@
 #include <SofaBaseTopology/SparseGridTopology.h>
 #include <SofaBaseTopology/CommonAlgorithms.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <sofa/helper/gl/RAII.h>
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/core/ObjectFactory.h>
@@ -147,9 +146,6 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
     , m_scale           (initData   (&m_scale, Vec3Real(1.0,1.0,1.0), "scale3d", "Initial Scale of the object"))
     , m_scaleTex        (initData   (&m_scaleTex, TexCoord(1.0,1.0), "scaleTex", "Scale of the texture"))
     , m_translationTex  (initData   (&m_translationTex, TexCoord(0.0,0.0), "translationTex", "Translation of the texture"))
-    #ifdef SOFA_SMP
-    , previousProcessorColor(false)
-    #endif
     , material			(initData	(&material, "material", "Material")) // tex(NULL)
     , putOnlyTexCoords	(initData	(&putOnlyTexCoords, (bool) false, "putOnlyTexCoords", "Give Texture Coordinates without the texture binding"))
     , srgbTexturing		(initData	(&srgbTexturing, (bool) false, "srgbTexturing", "When sRGB rendering is enabled, is the texture in sRGB colorspace?"))
@@ -157,10 +153,6 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
     , groups			(initData	(&groups, "groups", "Groups of triangles and quads using a given material"))
     , xformsModified(false)
 {
-#ifdef SOFA_SMP
-    originalMaterial = material.getValue();
-#endif
-
     m_topology = 0;
 
     //material.setDisplayed(false);
@@ -265,9 +257,6 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
         Material M;
         M = materialImport;
         material.setValue(M);
-#ifdef SOFA_SMP
-        originalMaterial=M;
-#endif
     }
 
     if (!objLoader.getGroups().empty())
@@ -1101,9 +1090,6 @@ void VisualModelImpl::setColor(float r, float g, float b, float a)
     Material M = material.getValue();
     M.setColor(r,g,b,a);
     material.setValue(M);
-#ifdef SOFA_SMP
-    originalMaterial=M;
-#endif
 }
 
 void VisualModelImpl::setColor(std::string color)
@@ -1119,29 +1105,6 @@ void VisualModelImpl::setColor(std::string color)
     setColor(theColor.r(),theColor.g(),theColor.b(),theColor.a());
 }
 
-#ifdef SOFA_SMP
-struct colors
-{
-    float r;
-    float g;
-    float b;
-};
-static colors colorTab[]=
-{
-    {1.0f,0.0f,0.0f},
-    {1.0f,1.0f,0.0f},
-    {0.0f,1.0f,0.0f},
-    {0.0f,1.0f,1.0f},
-    {0.0f,0.0f,1.0f},
-    {0.5f,.5f,.5f},
-    {0.5f,0.0f,0.0f},
-    {.5f,.5f,0.0f},
-    {0.0f,1.0f,0.0f},
-    {0.0f,1.0f,1.0f},
-    {0.0f,0.0f,1.0f},
-    {0.5f,.5f,.5f}
-};
-#endif
 
 void VisualModelImpl::updateVisual()
 {
@@ -1153,9 +1116,6 @@ void VisualModelImpl::updateVisual()
             last = m_vtexcoords.getValue().size();
         }
     */
-#ifdef SOFA_SMP
-    modified = true;
-#endif
     //sout << "VMI::updateVisual()" << sendl;
     //if ((m_positions.getValue()).size()>10)
     //    sout << "positions[10] = " << m_positions.getValue()[10] << sendl;
@@ -1200,35 +1160,6 @@ void VisualModelImpl::updateVisual()
     m_triangles.updateIfDirty();
     m_quads.updateIfDirty();
 
-#ifdef SOFA_SMP
-
-    if(vparams->displayFlags().getShowProcessorColor())
-    {
-        sofa::core::objectmodel::Context *context=dynamic_cast<sofa::core::objectmodel::Context *>(this->getContext());
-        if(context&&context->getPartition())
-        {
-
-            if(context->getPartition()->getThread()&&context->getPartition()->getThread()->get_processor())
-            {
-                unsigned int proc =context->getPartition()->getThread()->get_processor()->get_pid();
-                this->setColor(colorTab[proc].r,colorTab[proc].g,colorTab[proc].b,1.0f);
-            }
-            else if(context->getPartition()->getCPU()!=-1)
-            {
-                unsigned int proc=context->getPartition()->getCPU();
-                this->setColor(colorTab[proc].r,colorTab[proc].g,colorTab[proc].b,1.0f);
-
-            }
-
-        }
-    }
-
-    if(previousProcessorColor&&!vparams->displayFlags().getShowProcessorColor())
-    {
-        material.setValue(originalMaterial);
-    }
-    previousProcessorColor=vparams->displayFlags().getShowProcessorColor();
-#endif
 }
 
 

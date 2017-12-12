@@ -22,12 +22,15 @@
 #ifndef SOFA_CONFIG_H
 #define SOFA_CONFIG_H
 
+#include <sofa/config/sharedlibrary_defines.h>
+#include <sofa/config/build_option_dump_visitor.h>
+#include <sofa/config/build_option_opengl.h>
+#include <sofa/config/build_option_threading.h>
+
 // fixes CGAL plugin build errors (default value: 5)
 #define BOOST_PARAMETER_MAX_ARITY 12
 
 #cmakedefine SOFA_HAVE_ZLIB
-
-#cmakedefine SOFA_HAVE_PNG
 
 #cmakedefine SOFA_HAVE_GLEW
 
@@ -41,11 +44,11 @@
 
 #cmakedefine SOFA_HAVE_BOOST_DATE_TIME
 
+#cmakedefine SOFA_HAVE_BOOST_LOCALE
+
+#cmakedefine SOFA_HAVE_BOOST_FILESYSTEM
+
 #cmakedefine SOFA_HAVE_TINYXML
-
-#cmakedefine SOFA_DUMP_VISITOR_INFO
-
-#cmakedefine SOFA_NO_OPENGL
 
 #cmakedefine SOFA_NO_UPDATE_BBOX
 
@@ -64,17 +67,6 @@
 #cmakedefine SOFA_USE_MASK
 
 #cmakedefine SOFA_WITH_DEVTOOLS
-
-/// This can be either true or false
-#define SOFA_BUILD_DEPRECATEDCOMPONENTS ${SOFA_BUILD_DEPRECATEDCOMPONENTS_}
-
-/// This can be either true or false
-#define SOFA_BUILD_FULLSETCOMPONENTS ${SOFA_BUILD_FULLSETCOMPONENTS_}
-
-/// This can be either true or false
-#define SOFA_WITH_THREADING ${SOFA_WITH_THREADING_}
-
-#define SOFA_WITH_EXPERIMENTAL_FEATURES ${SOFA_WITH_EXPERIMENTAL_FEATURES_}
 
 #ifdef _MSC_VER
 #define EIGEN_DONT_ALIGN
@@ -104,18 +96,6 @@ typedef double SReal;
 // supported by all majors compilers.)
 #ifndef SOFA_NO_EXTERN_TEMPLATE
 #  define SOFA_EXTERN_TEMPLATE
-#endif
-
-#ifndef WIN32
-#	define SOFA_EXPORT_DYNAMIC_LIBRARY
-#   define SOFA_IMPORT_DYNAMIC_LIBRARY
-#else
-#	define SOFA_EXPORT_DYNAMIC_LIBRARY __declspec( dllexport )
-#   define SOFA_IMPORT_DYNAMIC_LIBRARY __declspec( dllimport )
-#   ifdef _MSC_VER
-#       pragma warning(disable : 4231)
-#       pragma warning(disable : 4910)
-#   endif
 #endif
 
 #ifdef SOFA_BUILD_HELPER

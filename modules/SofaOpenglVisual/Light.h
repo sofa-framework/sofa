@@ -103,11 +103,11 @@ public:
     void setID(const GLint& id);
 
     //VisualModel
-    virtual void initVisual();
-    void init();
+    virtual void initVisual() override;
+    void init() override;
     virtual void drawLight();
-    virtual void reinit();
-    virtual void updateVisual();
+    virtual void reinit() override;
+    virtual void updateVisual() override;
 
     GLfloat getZNear();
     GLfloat getZFar();
@@ -143,13 +143,13 @@ public:
 
     DirectionalLight();
     virtual ~DirectionalLight();
-    virtual void preDrawShadow(core::visual::VisualParams* vp);
-    virtual void drawLight();
-    virtual void draw(const core::visual::VisualParams* vparams);
-    virtual GLuint getDepthTexture();
-    virtual GLuint getColorTexture();
-    virtual defaulttype::Vector3 getDirection() { return d_direction.getValue(); }
-    LightType getLightType() { return LightType::DIRECTIONAL; }
+    virtual void preDrawShadow(core::visual::VisualParams* vp) override;
+    virtual void drawLight() override;
+    virtual void draw(const core::visual::VisualParams* vparams) override;
+    virtual GLuint getDepthTexture() override;
+    virtual GLuint getColorTexture() override;
+    virtual defaulttype::Vector3 getDirection() override { return d_direction.getValue(); }
+    LightType getLightType() override { return LightType::DIRECTIONAL; }
 private:
     void computeClippingPlane(const core::visual::VisualParams* vp, float& left, float& right, float& top, float& bottom, float& zNear, float& zFar);
     void computeOpenGLProjectionMatrix(GLfloat mat[16], float& left, float& right, float& top, float& bottom, float& zNear, float& zFar);
@@ -168,10 +168,10 @@ public:
 
     PositionalLight();
     virtual ~PositionalLight();
-    virtual void drawLight();
-    virtual void draw(const core::visual::VisualParams* vparams);
-    virtual const sofa::defaulttype::Vector3 getPosition() { return d_position.getValue(); }
-    LightType getLightType() { return LightType::POSITIONAL; }
+    virtual void drawLight() override;
+    virtual void draw(const core::visual::VisualParams* vparams) override;
+    virtual const sofa::defaulttype::Vector3 getPosition() override { return d_position.getValue(); }
+    LightType getLightType() override { return LightType::POSITIONAL; }
 };
 
 class SOFA_OPENGL_VISUAL_API SpotLight : public PositionalLight
@@ -186,14 +186,14 @@ public:
 
     SpotLight();
     virtual ~SpotLight();
-    virtual void drawLight();
-    virtual void draw(const core::visual::VisualParams* vparams);
+    virtual void drawLight() override;
+    virtual void draw(const core::visual::VisualParams* vparams) override;
 
-    void preDrawShadow(core::visual::VisualParams*  vp);
-    GLuint getDepthTexture();
-    GLuint getColorTexture();
-    defaulttype::Vector3 getDirection() { return d_direction.getValue(); }
-    LightType getLightType() { return LightType::SPOTLIGHT; }
+    void preDrawShadow(core::visual::VisualParams*  vp) override;
+    GLuint getDepthTexture() override;
+    GLuint getColorTexture() override;
+    defaulttype::Vector3 getDirection() override { return d_direction.getValue(); }
+    LightType getLightType() override { return LightType::SPOTLIGHT; }
 
 private:
     void computeClippingPlane(const core::visual::VisualParams* vp, float& zNear, float& zFar);

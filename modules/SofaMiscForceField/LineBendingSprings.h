@@ -63,7 +63,7 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
 
     /// Searches Line topology and creates the bending springs
-    virtual void init();
+    virtual void init() override;
 
 protected:
     LineBendingSprings();

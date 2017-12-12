@@ -133,16 +133,16 @@ protected:
     */
     virtual ~LCPConstraintSolver();
 public:
-    void init();
+    void init() override;
 
-    void cleanup();
+    void cleanup() override;
 
-    bool prepareStates(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null());
-    bool buildSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null());
-    bool solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null());
-    bool applyCorrection(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null());
+    bool prepareStates(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
+    bool buildSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
+    bool solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
+    bool applyCorrection(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
 
     Data<bool> displayDebug;
@@ -169,10 +169,10 @@ public:
     Data<defaulttype::Vector3> showTranslation;
     Data<defaulttype::Vector3> showLevelTranslation;
 
-    ConstraintProblem* getConstraintProblem();
-    void lockConstraintProblem(ConstraintProblem* p1, ConstraintProblem* p2=0); ///< Do not use the following LCPs until the next call to this function. This is used to prevent concurent access to the LCP when using a LCPForceFeedback through an haptic thread
+    ConstraintProblem* getConstraintProblem() override;
+    void lockConstraintProblem(ConstraintProblem* p1, ConstraintProblem* p2=0) override; ///< Do not use the following LCPs until the next call to this function. This is used to prevent concurent access to the LCP when using a LCPForceFeedback through an haptic thread
 
-    virtual void removeConstraintCorrection(core::behavior::BaseConstraintCorrection *s);
+    virtual void removeConstraintCorrection(core::behavior::BaseConstraintCorrection *s) override;
 
     private:
     std::vector<core::behavior::BaseConstraintCorrection*> constraintCorrections;

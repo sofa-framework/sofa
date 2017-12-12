@@ -148,12 +148,7 @@ void VisualUpdateVisitor::processVisualModel(simulation::Node*, core::visual::Vi
 {
     vm->updateVisual();
 }
-#ifdef SOFA_SMP
-void ParallelVisualUpdateVisitor::processVisualModel(simulation::Node*, core::visual::VisualModel* vm)
-{
-    vm->parallelUpdateVisual();
-}
-#endif
+
 
 Visitor::Result VisualInitVisitor::processNodeTopDown(simulation::Node* node)
 {

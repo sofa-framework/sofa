@@ -99,9 +99,9 @@ void PluginManager::readFromIniFile(const std::string& path)
         else
             is >> version; // information not used for now
         if(loadPlugin(pluginPath))
-        {
+    {
             m_pluginMap[pluginPath].initExternalModule();
-        }
+    }
     }
     instream.close();
 }
@@ -119,14 +119,22 @@ void PluginManager::writeToIniFile(const std::string& path)
     outstream.close();
 }
 
+/// Get the default suffix applied to plugin names to find the actual lib to load
+/// (depends on platform, version, debug/release build)
+std::string PluginManager::getDefaultSuffix()
+{
+#ifdef SOFA_LIBSUFFIX
+    return sofa_tostring(SOFA_LIBSUFFIX);
+#else
+    return std::string();
+#endif
+}
+
 bool PluginManager::loadPluginByPath(const std::string& pluginPath, std::ostream* errlog)
 {
     if (pluginIsLoaded(pluginPath))
     {
-        const std::string msg = "Plugin already loaded: " + pluginPath;
-//        Logger::getMainLogger().log(Logger::Warning, msg, "PluginManager");
-        if (errlog) (*errlog) << msg << std::endl;
-        return false;
+        return true;
     }
 
     if (!FileSystem::exists(pluginPath))
@@ -170,17 +178,17 @@ bool PluginManager::loadPluginByPath(const std::string& pluginPath, std::ostream
     return true;
 }
 
-bool PluginManager::loadPluginByName(const std::string& pluginName, std::ostream* errlog)
+bool PluginManager::loadPluginByName(const std::string& pluginName, const std::string& suffix, bool ignoreCase, std::ostream* errlog)
 {
-    std::string pluginPath = findPlugin(pluginName);
+    std::string pluginPath = findPlugin(pluginName, suffix, ignoreCase);
 
-    if (pluginPath != "")
+    if (!pluginPath.empty())
     {
         return loadPluginByPath(pluginPath, errlog);
     }
     else
     {
-        const std::string msg = "Plugin not found: \"" + pluginName + "\"";
+        const std::string msg = "Plugin not found: \"" + pluginName + suffix + "\"";
         if (errlog) (*errlog) << msg << std::endl;
         else msg_error("PluginManager") << msg;
 
@@ -188,14 +196,18 @@ bool PluginManager::loadPluginByName(const std::string& pluginName, std::ostream
     }
 }
 
-bool PluginManager::loadPlugin(const std::string& plugin, std::ostream* errlog)
+bool PluginManager::loadPlugin(const std::string& plugin, const std::string& suffix, bool ignoreCase, std::ostream* errlog)
 {
     // If 'plugin' ends with ".so", ".dll" or ".dylib", this is a path
     const std::string dotExt = "." + DynamicLibrary::extension;
     if (std::equal(dotExt.rbegin(), dotExt.rend(), plugin.rbegin()))
-        return loadPluginByPath(plugin, errlog);
+    {
+        return loadPluginByPath(plugin,  errlog);
+    }
     else
-        return loadPluginByName(plugin, errlog);
+    {
+        return loadPluginByName(plugin, suffix, ignoreCase, errlog);
+    }
 }
 
 bool PluginManager::unloadPlugin(const std::string &pluginPath, std::ostream* errlog)
@@ -247,25 +259,20 @@ void PluginManager::init()
 
 void PluginManager::init(const std::string& pluginPath)
 {
-	PluginMap::iterator iter = m_pluginMap.find(pluginPath);
-	if(m_pluginMap.end() != iter)
-	{
+    PluginMap::iterator iter = m_pluginMap.find(pluginPath);
+    if(m_pluginMap.end() != iter)
+    {
         Plugin& plugin = iter->second;
         plugin.initExternalModule();
-	}
+    }
 }
 
 
 
-std::string PluginManager::findPlugin(const std::string& pluginName, bool ignoreCase)
+std::string PluginManager::findPlugin(const std::string& pluginName, const std::string& suffix, bool ignoreCase)
 {
     std::string name(pluginName);
-#ifdef SOFA_LIBSUFFIX
-    name += sofa_tostring(SOFA_LIBSUFFIX);
-#endif
-#if defined(_DEBUG) && defined(_MSC_VER) 
-	 name += "_d";
-#endif
+    name  += suffix;
     const std::string libName = DynamicLibrary::prefix + name + "." + DynamicLibrary::extension;
 
     // First try: case sensitive
@@ -289,12 +296,13 @@ std::string PluginManager::findPlugin(const std::string& pluginName, bool ignore
             {
                 const std::string& filename = *j;
                 const std::string downcaseFilename = Utils::downcaseString(filename);
-                if (downcaseFilename == downcaseLibName)
+                if (downcaseFilename == downcaseLibName) {
                     return dir + "/" + filename;
+                }
             }
         }
     }
-    return "";
+    return std::string();
 }
 
 bool PluginManager::pluginIsLoaded(const std::string& pluginPath)

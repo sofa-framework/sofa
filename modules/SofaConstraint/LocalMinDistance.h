@@ -59,7 +59,7 @@ public:
 protected:
     LocalMinDistance();
 public:
-    virtual void init();
+    virtual void init() override;
 
     bool testIntersection(Cube& ,Cube&);
 
@@ -95,10 +95,10 @@ public:
     bool testValidity(Line&, const defaulttype::Vector3&);
     bool testValidity(Triangle&, const defaulttype::Vector3&);
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
     /// Actions to accomplish when the broadPhase is started. By default do nothing.
-    virtual void beginBroadPhase() {}
+    virtual void beginBroadPhase() override {}
 
     int beginIntersection(sofa::core::CollisionModel* /*model1*/, sofa::core::CollisionModel* /*model2*/, OutputVector* /*contacts*/)
     {

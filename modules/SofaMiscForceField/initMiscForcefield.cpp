@@ -39,10 +39,6 @@ void initMiscForcefield()
     }
 }
 
-SOFA_LINK_CLASS(MatrixMass)
-SOFA_LINK_CLASS(MeshMatrixMass)
-SOFA_LINK_CLASS(LennardJonesForceField)
-SOFA_LINK_CLASS(WashingMachineForceField)
 
 } // namespace component
 

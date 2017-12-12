@@ -51,7 +51,7 @@ public:
     Data<sofa::defaulttype::Vector3> f_gravity; ///< Gravity in the world coordinate system
 
     /// Modify the context of the Node
-    void apply();
+    void apply() override;
 };
 
 } // namespace contextobject

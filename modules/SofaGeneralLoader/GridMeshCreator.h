@@ -46,8 +46,8 @@ public:
 
     SOFA_CLASS(GridMeshCreator,sofa::core::loader::MeshLoader);
     virtual std::string type() { return "This object is procedurally created"; }
-    virtual bool canLoad() { return true; }
-    virtual bool load(); ///< create the grid
+    virtual bool canLoad() override { return true; }
+    virtual bool load() override; ///< create the grid
 
     template <class T>
     static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg ) { return BaseLoader::canCreate (obj, context, arg); }

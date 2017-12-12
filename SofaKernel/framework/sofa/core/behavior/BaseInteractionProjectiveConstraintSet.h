@@ -58,7 +58,7 @@ public:
     virtual BaseMechanicalState* getMechModel2() = 0;
 
 
-    virtual helper::vector< core::BaseState* > getModels()
+    virtual helper::vector< core::BaseState* > getModels() override
     {
         helper::vector< core::BaseState* > models;
         models.push_back( getMechModel1() );

@@ -84,7 +84,7 @@ public:
 
     ~ImageTransform() {}
 
-    void init()
+    void init() override
     {
         container = this->getContext()->template get<ImageContainer>(core::objectmodel::BaseContext::SearchUp);
         if (!container)
@@ -93,7 +93,7 @@ public:
         reinit();
     }
 
-    void reinit()
+    void reinit() override
     {
         update();
     }
@@ -112,7 +112,7 @@ protected:
 
     ImageContainer* container;
 
-    virtual void update()
+    virtual void update() override
     {
         if (!container) return;
 
@@ -127,19 +127,19 @@ protected:
 
 public:
 
-    virtual void draw(const core::visual::VisualParams*)
+    virtual void draw(const core::visual::VisualParams*) override
     {
         if (_update.getValue().getSelectedId()==EVERY_DRAW)
             update();
     }
 
-    void handleEvent(core::objectmodel::Event *event)
+    void handleEvent(core::objectmodel::Event *event) override
     {
         if (sofa::simulation::AnimateBeginEvent::checkEventType(event) && _update.getValue().getSelectedId()==EVERY_TIMESTEP)
             update();
     }
 
-    virtual std::string getTemplateName() const    { return templateName(this);    }
+    virtual std::string getTemplateName() const    override { return templateName(this);    }
     static std::string templateName(const ImageTransform<ImageTypes>* = NULL) { return ImageTypes::Name(); }
 
 };

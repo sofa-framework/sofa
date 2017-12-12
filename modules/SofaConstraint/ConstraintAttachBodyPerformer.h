@@ -49,7 +49,7 @@ protected:
     ConstraintAttachBodyButtonSetting() {}
 public:
 //        Data<SReal> snapDistance;
-    std::string getOperationType() {return  "ConstraintAttachBody";}
+    std::string getOperationType() override {return  "ConstraintAttachBody";}
 };
 
 struct BodyPicked;

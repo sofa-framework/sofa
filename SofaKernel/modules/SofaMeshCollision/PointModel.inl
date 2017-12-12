@@ -30,17 +30,12 @@
 #include <iostream>
 #include <algorithm>
 
-
-
-
 #include <SofaMeshCollision/PointModel.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaMeshCollision/PointLocalMinDistanceFilter.h>
 #include <SofaBaseCollision/CubeModel.h>
 #include <sofa/core/ObjectFactory.h>
 #include <vector>
-#include <sofa/helper/system/gl.h>
-#include <sofa/helper/gl/template.h>
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 

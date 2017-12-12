@@ -19,9 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-#include <gtest/gtest.h>
-
 #include "SofaLoader/MeshVTKLoader.h"
 #include "SofaLoader/BaseVTKReader.h"
 using sofa::component::loader::MeshVTKLoader ;
@@ -32,23 +29,16 @@ using sofa::helper::system::DataRepository ;
 #include <sofa/helper/BackTrace.h>
 using sofa::helper::BackTrace ;
 
-#include <SofaTest/TestMessageHandler.h>
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest ;
 
 namespace sofa
 {
 namespace meshvtkloader_test
 {
 
-int initTestEnvironment()
-{
-    BackTrace::autodump() ;
-    return 0;
-}
-int s_autodump = initTestEnvironment() ;
-
-
-struct MeshVTKLoaderTest : public ::testing::Test,
-                            public MeshVTKLoader
+struct MeshVTKLoaderTest : public BaseTest,
+                           public MeshVTKLoader
 {
     using BaseVTKDataIO = component::loader::BaseVTKReader::BaseVTKDataIO;
     template<typename T>

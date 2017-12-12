@@ -49,35 +49,35 @@ protected:
     virtual ~GenericConstraintCorrection();
 
 public:
-    virtual void bwdInit();
+    virtual void bwdInit() override;
     
-    virtual void cleanup();
+    virtual void cleanup() override;
 
-    virtual void addConstraintSolver(core::behavior::ConstraintSolver *s);
-    virtual void removeConstraintSolver(core::behavior::ConstraintSolver *s);
+    virtual void addConstraintSolver(core::behavior::ConstraintSolver *s) override;
+    virtual void removeConstraintSolver(core::behavior::ConstraintSolver *s) override;
 private:
     std::list<core::behavior::ConstraintSolver*> constraintsolvers;
 
 public:
-    virtual void addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, defaulttype::BaseMatrix* W);
+    virtual void addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, defaulttype::BaseMatrix* W) override;
 
-    virtual void getComplianceMatrix(defaulttype::BaseMatrix* ) const;
+    virtual void getComplianceMatrix(defaulttype::BaseMatrix* ) const override;
 
-    virtual void computeAndApplyMotionCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::MultiVecCoordId x, sofa::core::MultiVecDerivId v, sofa::core::MultiVecDerivId f, const defaulttype::BaseVector * lambda);
+    virtual void computeAndApplyMotionCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::MultiVecCoordId x, sofa::core::MultiVecDerivId v, sofa::core::MultiVecDerivId f, const defaulttype::BaseVector * lambda) override;
 
-    virtual void computeAndApplyPositionCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::MultiVecCoordId x, sofa::core::MultiVecDerivId f, const defaulttype::BaseVector *lambda);
+    virtual void computeAndApplyPositionCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::MultiVecCoordId x, sofa::core::MultiVecDerivId f, const defaulttype::BaseVector *lambda) override;
 
-    virtual void computeAndApplyVelocityCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::MultiVecDerivId v, sofa::core::MultiVecDerivId f, const sofa::defaulttype::BaseVector *lambda);
+    virtual void computeAndApplyVelocityCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::MultiVecDerivId v, sofa::core::MultiVecDerivId f, const sofa::defaulttype::BaseVector *lambda) override;
 
-    virtual void applyPredictiveConstraintForce(const sofa::core::ConstraintParams * /*cparams*/, sofa::core::MultiVecDerivId /*f*/, const defaulttype::BaseVector *lambda);
+    virtual void applyPredictiveConstraintForce(const sofa::core::ConstraintParams * /*cparams*/, sofa::core::MultiVecDerivId /*f*/, const defaulttype::BaseVector *lambda) override;
 
-    virtual void rebuildSystem(double massFactor, double forceFactor);
+    virtual void rebuildSystem(double massFactor, double forceFactor) override;
 
-    virtual void applyContactForce(const defaulttype::BaseVector *f);
+    virtual void applyContactForce(const defaulttype::BaseVector *f) override;
 
-    virtual void resetContactForce();
+    virtual void resetContactForce() override;
 
-    virtual void computeResidual(const sofa::core::ExecParams* /*params*/, sofa::defaulttype::BaseVector *lambda);
+    virtual void computeResidual(const sofa::core::ExecParams* /*params*/, sofa::defaulttype::BaseVector *lambda) override;
 
     Data< helper::vector< std::string > >  solverName;
 

@@ -24,6 +24,7 @@
 
 #include "CudaSPHFluidForceField.h"
 #include <SofaSphFluid/SPHFluidForceField.inl>
+#include <sofa/helper/gl/template.h>
 //#include <sofa/gpu/cuda/CudaSpatialGridContainer.inl>
 
 namespace sofa

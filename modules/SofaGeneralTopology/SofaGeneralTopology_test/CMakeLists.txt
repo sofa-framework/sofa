@@ -2,11 +2,34 @@ cmake_minimum_required(VERSION 3.1)
 
 project(SofaGeneralTopology_test)
 
-set(SOURCE_FILES
-    #BezierTetrahedronTopology_test.cpp
-    CylinderGridTopology_test.cpp
-    SphereGridTopology_test.cpp
-    )
+message(STATUS "SofaGeneralTopology_test:")
+################################ COMPONENTS HERE ARE THE NG-SET ####################################
+set(SOURCE_FILES ../../empty.cpp)
+
+############################## COMPONENTS HERE ARE THE LIGHT-SET ###################################
+if(SOFA_BUILD_COMPONENTSET_LIGHT)
+    list(APPEND HEADER_FILES
+
+        )
+    list(APPEND SOURCE_FILES
+
+        )
+endif()
+
+############################## COMPONENTS HERE ARE THE STANDARD-SET ################################
+if(SOFA_BUILD_COMPONENTSET_STANDARD)
+    list(APPEND SOURCE_FILES
+        #BezierTetrahedronTopology_test.cpp
+        CylinderGridTopology_test.cpp
+        SphereGridTopology_test.cpp
+        )
+
+endif()
+
+############################### COMPONENTS HERE ARE DEPRECATED ####################################
+if(SOFA_BUILD_COMPONENTSET_FULL)
+endif()
+
 
 add_definitions("-DSOFAGENERALTOPOLOGY_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

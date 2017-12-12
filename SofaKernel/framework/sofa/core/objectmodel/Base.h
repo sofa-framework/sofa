@@ -35,7 +35,7 @@
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/objectmodel/Tag.h>
 
-#include <boost/intrusive_ptr.hpp>
+#include <sofa/core/sptr.h>
 
 #include <deque>
 #include <string>
@@ -106,8 +106,8 @@ namespace loader
 
 
 #define SOFA_BASE_CAST_IMPLEMENTATION(CLASSNAME) \
-virtual const CLASSNAME* to##CLASSNAME() const { return this; } \
-virtual       CLASSNAME* to##CLASSNAME()       { return this; }
+virtual const CLASSNAME* to##CLASSNAME() const override { return this; } \
+virtual       CLASSNAME* to##CLASSNAME()       override { return this; }
 
 
 
@@ -133,8 +133,9 @@ class SOFA_CORE_API Base
 public:
 
     typedef Base* Ptr;
-    typedef boost::intrusive_ptr<Base> SPtr;
 
+    using SPtr = sptr<Base>;
+    
     typedef TClass< Base, void > MyClass;
     static const MyClass* GetClass() { return MyClass::get(); }
     virtual const BaseClass* getClass() const { return GetClass(); }
