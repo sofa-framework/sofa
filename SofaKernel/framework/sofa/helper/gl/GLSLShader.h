@@ -127,6 +127,8 @@ public:
     // This loads all shaders previously set with Set*ShaderFileName() methods
     void InitShaders();
 
+    void forceReloadShaderFromFile(const std::string& filename) ;
+
 #ifdef GL_GEOMETRY_SHADER_EXT
     /// This loads a vertex, geometry and fragment shader
     void InitShaders(const std::string& strVertex, const std::string& strGeometry, const std::string& strFragment)

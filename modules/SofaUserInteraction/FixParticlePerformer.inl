@@ -65,7 +65,6 @@ void FixParticlePerformer<DataTypes>::start()
 
     //Create the Container of points
     typename MouseContainer::SPtr mstateFixation = sofa::core::objectmodel::New< MouseContainer >();
-    mstateFixation->setIgnoreLoader(true);
 
     mstateFixation->resize(1);
     {
@@ -77,7 +76,7 @@ void FixParticlePerformer<DataTypes>::start()
 
     //Fix all the points
     typename projectiveconstraintset::FixedConstraint<DataTypes>::SPtr fixFixation = sofa::core::objectmodel::New< projectiveconstraintset::FixedConstraint<DataTypes> >();
-    fixFixation->f_fixAll.setValue(true);
+    fixFixation->d_fixAll.setValue(true);
     nodeFixation->addObject(fixFixation);
 
     //Add Interaction ForceField

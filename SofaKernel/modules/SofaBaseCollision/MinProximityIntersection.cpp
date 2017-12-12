@@ -30,7 +30,6 @@
 #include <sofa/core/collision/Intersection.inl>
 #include <iostream>
 #include <algorithm>
-#include <sofa/helper/gl/template.h>
 #include <SofaBaseCollision/BaseIntTool.h>
 
 #define DYNAMIC_CONE_ANGLE_COMPUTATION

@@ -63,16 +63,16 @@ public:
 
 	VariationalSymplecticSolver();
 
-	void init();
+	void init() override;
 	std::ofstream energies;
-   void solve (const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult);
+   void solve (const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 
    int cpt;
    /// Given a displacement as computed by the linear system inversion, how much will it affect the velocity
    ///
    /// This method is used to compute the compliance for contact corrections
    /// For Euler methods, it is typically dt.
-   virtual double getVelocityIntegrationFactor() const
+   virtual double getVelocityIntegrationFactor() const override
    {
        return 0; // getContext()->getDt();
    }
@@ -81,13 +81,13 @@ public:
    ///
    /// This method is used to compute the compliance for contact corrections
    /// For Euler methods, it is typically dt².
-   virtual double getPositionIntegrationFactor() const
+   virtual double getPositionIntegrationFactor() const override
    {
        return 0; //*getContext()->getDt());
    }
 
 
-       double getIntegrationFactor(int /*inputDerivative*/, int /*outputDerivative*/) const
+       double getIntegrationFactor(int /*inputDerivative*/, int /*outputDerivative*/) const override
        {
 
                        return 0;
@@ -95,7 +95,7 @@ public:
        }
 
 
-       double getSolutionIntegrationFactor(int /*outputDerivative*/) const
+       double getSolutionIntegrationFactor(int /*outputDerivative*/) const override
        {
 
                        return 0;

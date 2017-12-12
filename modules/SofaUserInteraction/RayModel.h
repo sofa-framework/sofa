@@ -70,15 +70,15 @@ public:
 protected:
     RayModel(SReal defaultLength=1);
 public:
-    void init();
+    void init() override;
 
     // -- CollisionModel interface
-    virtual void resize(int size);
+    virtual void resize(int size) override;
 
-    virtual void computeBoundingTree(int maxDepth);
+    virtual void computeBoundingTree(int maxDepth) override;
 
-    void draw(const core::visual::VisualParams*,int index);
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams*,int index) override;
+    void draw(const core::visual::VisualParams* vparams) override;
 
     core::behavior::MechanicalState<defaulttype::Vec3Types>* getMechanicalState() { return mstate; }
     // ----------------------------

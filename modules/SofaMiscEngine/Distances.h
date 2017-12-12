@@ -108,11 +108,11 @@ public:
     Data<std::map<unsigned int, unsigned int> > zonesFramePair;
     Data<double> harmonicMaxValue;
 
-    void init();
+    void init() override;
 
-    void reinit();
+    void reinit() override;
 
-    void update();
+    void update() override;
 
     /** \brief Compute the distance map depending ion the distance type.
     *
@@ -138,7 +138,7 @@ public:
     */
     void getDistances ( VVD& distances, VecVecCoord& gradients, const VecCoord& goals );
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
     /// Pre-construction check method called by ObjectFactory.
     ///
@@ -188,7 +188,7 @@ public:
 
         return obj;
     }
-    std::string getTemplateName() const
+    std::string getTemplateName() const override
     {
         return templateName(this);
     }

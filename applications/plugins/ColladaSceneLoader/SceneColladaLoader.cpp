@@ -400,7 +400,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
 								nameStream << componentIndex++;
 							currentFixedConstraint->setName(nameStream.str());
 
-							currentFixedConstraint->f_fixAll.setValue(true);
+                                                        currentFixedConstraint->d_fixAll.setValue(true);
 						}
                     }
 

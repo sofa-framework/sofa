@@ -76,9 +76,6 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
         ff->setName( getName() );
         setInteractionTags(mstate1, mstate2);
         ff->init();
-#ifdef SOFA_SMP
-        ff->setPartition(mstate1->getPartition());
-#endif
 
     }
 

@@ -37,11 +37,6 @@ template class SOFA_HELPER_API Factory<std::string, sofa::helper::io::Image, std
 namespace io
 {
 
-SOFA_LINK_CLASS(ImageBMP)
-#ifdef SOFA_HAVE_PNG
-SOFA_LINK_CLASS(ImagePNG)
-#endif
-
 const char *Image::strFromDataType[COUNT_OF_DATA_TYPES+1] =
 {
     "UNORM8",
@@ -389,20 +384,54 @@ void Image::init(unsigned width, unsigned height, unsigned bpp)
         channels = RGBA;
         break;
     default:
-        msg_error("Image") << "init(): Unsupported bpp: " << bpp << msgendl;
+        msg_error() << "init(): Unsupported bpp: " << bpp << msgendl;
         return;
     }
 
     init(width, height, 1, 1, type, channels);
 }
 
+
+bool Image::load(std::string filename)
+{
+    SOFA_UNUSED(filename);
+
+    msg_warning() << "This Image format did not implement load()";
+    return false;
+}
+
+bool Image::save(std::string filename, int compression_level)
+{
+    SOFA_UNUSED(filename);
+    SOFA_UNUSED(compression_level);
+
+    msg_warning() << "This Image format did not implement save()";
+    return false;
+}
+
 Image* Image::Create(std::string filename)
 {
-    std::string loader="default";
+    std::string extension="default";
     std::string::size_type p = filename.rfind('.');
     if (p!=std::string::npos)
-        loader = std::string(filename, p+1);
-    return FactoryImage::CreateObject(loader, filename);
+        extension = std::string(filename, p+1);
+    Image* createdImage = FactoryImage::CreateObject(extension, filename);
+    if( extension != "default" )
+    {
+        if(!createdImage )
+        {
+            helper::vector<std::string> validExtensions;
+            helper::io::Image::FactoryImage::getInstance()->uniqueKeys(std::back_inserter(validExtensions));
+            msg_error("Image") << "Could not load image with extension " << extension << ". Valid extensions: " << validExtensions;
+        }
+    }
+    else
+    {
+        helper::vector<std::string> validExtensions;
+        helper::io::Image::FactoryImage::getInstance()->uniqueKeys(std::back_inserter(validExtensions));
+        msg_error("Image") << "No extension detected. Valid extensions: " << validExtensions;
+    }
+    return createdImage;
 }
 
 } // namespace io

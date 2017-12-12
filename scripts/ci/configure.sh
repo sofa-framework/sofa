@@ -135,12 +135,15 @@ case $CI_OPTIONS in
         else
             append "-DPLUGIN_BULLETCOLLISIONDETECTION=OFF"
         fi
-        # Missing CGAL library
-        append "-DPLUGIN_CGALPLUGIN=OFF"
-        # For Windows, there is the dll of the assimp library *inside* the repository
+        if [[ -n "$CI_HAVE_CGAL" ]]; then
+            append "-DPLUGIN_CGALPLUGIN=ON"
+        else
+            append "-DPLUGIN_CGALPLUGIN=OFF"
+        fi
         if [[ ( $(uname) = Darwin || $(uname) = Linux ) && -z "$CI_HAVE_ASSIMP" ]]; then
             append "-DPLUGIN_COLLADASCENELOADER=OFF"
         else
+            # For Windows, Assimp dll is in the repository
             append "-DPLUGIN_COLLADASCENELOADER=ON"
         fi
         append "-DPLUGIN_COMPLIANT=ON"

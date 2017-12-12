@@ -64,15 +64,15 @@ public:
     Data< float > f_alpha0;
     Data< VecCoord > f_interpValues;
 
-    void bwdInit();
+    void bwdInit() override;
 
     void interpolation();//VecCoord &interpXs);
 
-    void handleEvent(core::objectmodel::Event *);
+    void handleEvent(core::objectmodel::Event *) override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
-	virtual std::string getTemplateName() const
+	virtual std::string getTemplateName() const override
     {
       return templateName(this);
     }

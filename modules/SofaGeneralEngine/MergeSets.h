@@ -54,11 +54,11 @@ protected:
 
     virtual ~MergeSets();
 public:
-    void init();
+    void init() override;
 
-    void reinit();
+    void reinit() override;
 
-    void update();
+    void update() override;
 
     Data<VecIndex> f_in1;
     Data<VecIndex> f_in2;

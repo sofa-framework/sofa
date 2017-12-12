@@ -26,7 +26,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/helper/decompose.h>
-#include <sofa/helper/gl/template.h>
 #include <assert.h>
 #include <iostream>
 #include <set>

@@ -56,13 +56,13 @@ protected:
     PointSplatModel();
     virtual ~PointSplatModel();
 public:
-    virtual void init();
+    virtual void init() override;
 
-    virtual void reinit();
+    virtual void reinit() override;
 
     virtual bool isTransparent() {return true;}
 
-    virtual void drawTransparent(const core::visual::VisualParams* vparams);
+    virtual void drawTransparent(const core::visual::VisualParams* vparams) override;
 
 private:
     Data<float>		radius;

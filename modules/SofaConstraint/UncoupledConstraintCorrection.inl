@@ -49,6 +49,7 @@ UncoupledConstraintCorrection<DataTypes>::UncoupledConstraintCorrection(sofa::co
     , compliance(initData(&compliance, "compliance", "compliance value on each dof"))
     , defaultCompliance(initData(&defaultCompliance, (Real)0.00001, "defaultCompliance", "Default compliance value for new dof or if all should have the same (in which case compliance vector should be empty)"))
     , f_verbose( initData(&f_verbose,false,"verbose","Dump the constraint matrix at each iteration") )
+    , d_handleTopologyChange(initData(&d_handleTopologyChange, true, "handleTopologyChange", "Enable support of topological changes for compliance vector (disable if another component takes care of this)"))
 {
 }
 
@@ -105,6 +106,9 @@ void UncoupledConstraintCorrection< DataTypes >::handleTopologyChange()
     using sofa::core::topology::TopologyChange;
     using sofa::core::topology::TopologyChangeType;
     using sofa::core::topology::BaseMeshTopology;
+
+    if (!d_handleTopologyChange.getValue())
+        return; // another component takes care of updating compliance vector
 
     BaseMeshTopology *topology = this->getContext()->getMeshTopology();
     if (!topology)

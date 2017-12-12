@@ -246,18 +246,18 @@ void Base::processStream(std::ostream& out)
 {
     if (serr==out)
     {
-        addMessage( (MessageDispatcher::log(serr.messageClass(),
-                                            serr.messageType(), sofa::helper::logging::getComponentInfo(this),
-                                            serr.fileInfo()) << serr.str()).getMessage() );
+        MessageDispatcher::log(serr.messageClass(),
+                               serr.messageType(), sofa::helper::logging::getComponentInfo(this),
+                               serr.fileInfo()) << serr.str() ;
         serr.clear();
     }
     else if (sout==out)
     {
         if (f_printLog.getValue())
         {
-            addMessage( (MessageDispatcher::log(sout.messageClass(),
-                                                  sout.messageType(), sofa::helper::logging::getComponentInfo(this),
-                                                  sout.fileInfo()) << sout.str()).getMessage() );
+            MessageDispatcher::log(sout.messageClass(),
+                                   sout.messageType(), sofa::helper::logging::getComponentInfo(this),
+                                   sout.fileInfo()) << sout.str();
         }
 
         sout.clear();

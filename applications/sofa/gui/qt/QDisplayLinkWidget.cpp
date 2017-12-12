@@ -62,19 +62,6 @@ QDisplayLinkWidget::QDisplayLinkWidget(QWidget* parent,
     parent->layout()->addWidget(this);
     parent->setContentsMargins(0,0,0,0);
 
-    /*
-    const std::string label_text = link_->getHelp();
-
-    if (label_text != "TODO")
-    {
-        linkinfowidget_ = new QDisplayLinkInfoWidget(this,label_text,link_,flags.LINKPATH_MODIFIABLE_FLAG);
-        linkinfowidget_->setContentsMargins(0, 0, 0, 0);
-        linkinfowidget_->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-
-        numWidgets_ += linkinfowidget_->getNumLines()/3;
-    }
-    */
-
     setToolTip(link->getHelp());
 
     LinkWidget::CreatorArgument dwarg;
@@ -133,19 +120,11 @@ QDisplayLinkWidget::QDisplayLinkWidget(QWidget* parent,
 
         setStyleSheet("QGroupBox{border:0;}");
         setContentsMargins(0, 0, 0, 0);
-        //setInsideMargin(0);
-        //setInsideSpacing(0);
-
-        //setColumns(numWidgets_);
     }
     else
     {
         setTitle(link_->getName().c_str());
         setContentsMargins(2,2,4,4);
-        //setInsideMargin(4);
-        //setInsideSpacing(2);
-
-        //setColumns(numWidgets_); //linkwidget_->numColumnWidget()
     }
     gridLayout_->addWidget(linkwidget_);
 }
@@ -213,19 +192,22 @@ void QLinkSimpleEdit::readFromLink()
 
 void QLinkSimpleEdit::writeToLink()
 {
-    if(getBaseLink())
+    if(!getBaseLink())
+        return ;
+
+    if(getBaseLink()->isReadOnly())
+        return;
+
+    std::string value;
+    if( innerWidget_.type == TEXTEDIT)
     {
-        std::string value;
-        if( innerWidget_.type == TEXTEDIT)
-        {
-            value = innerWidget_.widget.textEdit->toPlainText().toStdString();
-        }
-        else if( innerWidget_.type == LINEEDIT)
-        {
-            value = innerWidget_.widget.lineEdit->text().toStdString();
-        }
-        getBaseLink()->read(value);
+        value = innerWidget_.widget.textEdit->toPlainText().toStdString();
     }
+    else if( innerWidget_.type == LINEEDIT)
+    {
+        value = innerWidget_.widget.lineEdit->text().toStdString();
+    }
+    getBaseLink()->read(value);
 }
 
 } // namespace qt

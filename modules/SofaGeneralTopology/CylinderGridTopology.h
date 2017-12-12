@@ -55,7 +55,7 @@ public:
     /** \brief Overload method of @sa GridTopology::getPointInGrid.
      * Get Point in grid @return Vector3 given its position in grid @param i, @param j, @param k
      * */
-    Vector3 getPointInGrid(int i, int j, int k) const;
+    Vector3 getPointInGrid(int i, int j, int k) const override;
 
     /// Set Cylinder grid center by @param 3 SReal
     void setCenter(SReal x, SReal y, SReal z);

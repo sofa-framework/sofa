@@ -19,9 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Sofa_test.h>
-#include <SofaTest/TestMessageHandler.h>
+#include <sofa/helper/testing/NumericTest.h>
+using sofa::helper::testing::NumericTest ;
 
+#include <sofa/defaulttype/Vec3Types.h>
+using sofa::defaulttype::Vec3Types ;
+
+#include <SofaBaseMechanics/MechanicalObject.h>
+typedef sofa::component::container::MechanicalObject<Vec3Types> MechanicalObject3;
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <SofaSimulationTree/TreeSimulation.h>
@@ -57,7 +62,7 @@ struct ParentObject : public O1
 
 /** Test the Simulation class
 */
-struct Scene_test: public Sofa_test<SReal>
+struct Scene_test: public NumericTest<SReal>
 {
     // root
     simulation::Simulation* simulation;
@@ -65,9 +70,7 @@ struct Scene_test: public Sofa_test<SReal>
 
     Scene_test()
     {
-        //msg_info("SimulationTest") << "Simulation_test::Simulation_test" ;
         sofa::simulation::setSimulation(simulation = new sofa::simulation::graph::DAGSimulation());
-        //sofa::simulation::setSimulation(simulation = new sofa::simulation::tree::TreeSimulation());
     }
 
     /// Test Simulation::computeBBox

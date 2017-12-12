@@ -32,9 +32,6 @@ set(SOURCE_FILES
     initBaseMechanics.cpp
 )
 
-if(SOFA-MISC_SMP)
-    list(APPEND HEADER_FILES MechanicalObjectTasks.inl)
-endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaBaseTopology)

@@ -81,7 +81,7 @@ protected:
     GLuint vbo, iboEdges, iboTriangles, iboQuads;
     bool canUseVBO, VBOGenDone, initDone, useEdges, useTriangles, useQuads, canUsePatches;
     unsigned int oldVerticesSize, oldNormalsSize, oldTexCoordsSize, oldTangentsSize, oldBitangentsSize, oldEdgesSize, oldTrianglesSize, oldQuadsSize;
-    void internalDraw(const core::visual::VisualParams* vparams, bool transparent);
+    void internalDraw(const core::visual::VisualParams* vparams, bool transparent) override;
 
     void drawGroup(int ig, bool transparent);
     void drawGroups(bool transparent);
@@ -101,17 +101,17 @@ protected:
     ~OglModel();
 public:
 
-    bool loadTexture(const std::string& filename);
-    bool loadTextures() ;
+    bool loadTexture(const std::string& filename) override;
+    bool loadTextures() override;
 
     void initTextures();
-    virtual void initVisual();
+    virtual void initVisual() override;
 
-    virtual void init() { VisualModelImpl::init(); }
+    virtual void init() override { VisualModelImpl::init(); }
 
-    virtual void updateBuffers();
+    virtual void updateBuffers() override;
 
-    bool hasTransparent();
+    bool hasTransparent() override;
     bool hasTexture();
 
 public:

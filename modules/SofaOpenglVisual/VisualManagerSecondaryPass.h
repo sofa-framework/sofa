@@ -65,16 +65,16 @@ protected:
     virtual void traceFullScreenQuad();
 
 public:
-    void init();
-    void initVisual();
+    void init() override;
+    void initVisual() override;
 
-    void preDrawScene(core::visual::VisualParams* vp);
-    bool drawScene(core::visual::VisualParams* vp);
+    void preDrawScene(core::visual::VisualParams* vp) override;
+    bool drawScene(core::visual::VisualParams* vp) override;
 
     void bindInput(core::visual::VisualParams* /*vp*/);
     void unbindInput();
 
-    helper::gl::FrameBufferObject* getFBO() {return fbo;};
+    helper::gl::FrameBufferObject* getFBO() override {return fbo;};
 
     const sofa::core::objectmodel::TagSet& getOutputTags() {return output_tags.getValue();};
 

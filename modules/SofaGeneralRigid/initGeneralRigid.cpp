@@ -39,11 +39,6 @@ void initGeneralRigid()
     }
 }
 
-SOFA_LINK_CLASS(ArticulatedHierarchyContainer)
-SOFA_LINK_CLASS(LaparoscopicRigidMapping)
-SOFA_LINK_CLASS(LineSetSkinningMapping)
-SOFA_LINK_CLASS(SkinningMapping)
-
 } // namespace component
 
 } // namespace sofa
