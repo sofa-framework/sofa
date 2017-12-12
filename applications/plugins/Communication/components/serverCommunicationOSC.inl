@@ -163,22 +163,22 @@ osc::OutboundPacketStream ServerCommunicationOSC::createOSCMessage()
 
 void ServerCommunicationOSC::ProcessMessage( const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint )
 {
-    std::cout << m.ArgumentCount() << std::endl;
     if (!m_running)
         m_socket->Break();
     const char* subject = m.AddressPattern();
-    osc::ReceivedMessageArgumentIterator it = m.ArgumentsBegin();
-    if (argumentList.size() == 0)
-        return;
-
     CommunicationSubscriber * subscriber = getSubscriberFor(subject);
     if (!subscriber)
+        return;
+
+    std::vector<std::string> argumentList = convertMessagesToArgumentList(m.ArgumentsBegin(), m.ArgumentsEnd());
+    if (argumentList.size() == 0)
         return;
 
     SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK> source = subscriber->getSource();
     std::string firstArg = getArgumentValue(argumentList.at(0));
     if (firstArg.compare("matrix") == 0)
     {
+        osc::ReceivedMessageArgumentIterator it = m.ArgumentsBegin();
         int row = 0, col = 0;
         if (m.ArgumentCount() >= 3)
         {
@@ -195,70 +195,35 @@ void ServerCommunicationOSC::ProcessMessage( const osc::ReceivedMessage& m, cons
             }
         } else
             msg_warning() << subject << " is matrix, but message size is not correct. Should be : /subject matrix rows cols value value value... ";
-        std::string argument = subscriber->getArgumentName(0);
-        std::string type = std::string("matrix") + getArgumentType(*();
-        BaseData* data = fetchData(source, type, argument);
-        if (!data)
-            return;
 
-        if(row*col != m.ArgumentCount()-3)
+        argumentList = convertMessagesToArgumentList(++it, m.ArgumentsEnd());
+
+        if(argumentList.size() == 0)
         {
-            msg_error() << "argument list size is != row/cols; " << m.ArgumentCount()-3 << " instead of " << row*col;
+            msg_error() << "argument list size is empty";
             return;
         }
 
-        if(data->getValueTypeString().compare("FullMatrix<double>") == 0|| data->getValueTypeString().compare("FullMatrix<float>") == 0)
+        if((unsigned int)row*col != argumentList.size())
         {
-            void* a = data->beginEditVoidPtr();
-            FullMatrix<SReal> * b = static_cast<FullMatrix<SReal>*>(a);
-            b->resize(row, col);
-            for(int i = 0; i < b->rows(); i++)
-            {
-                for(int j = 0; j < b->cols(); j++)
-                {
-                    b->set(i, j, it->AsDoubleUnchecked());
-                    ++it;
-                }
-            }
-        } else
-        {
-            std::string value = "";
-            for ( it ; it != m.ArgumentsEnd(); it++)
-            {
-                value.append(" " + convertArgumentToStringValue(it));
-            }
-            data->read(value);
+            msg_error() << "argument list size is != row/cols; " << argumentList.size() << " instead of " << row*col;
+            return;
         }
+
+        if (!writeDataToFullMatrix(source, subscriber, subject, argumentList, row, col))
+            if (!writeDataToContainer(source, subscriber, subject, argumentList))
+                msg_error() << "something went wrong while converting network data into sofa matrix";
     }
     else
     {
-        writeData(source, subscriber, subject, convertMessagesToArgumentList(m.ArgumentsBegin()));
+        writeData(source, subscriber, subject, argumentList);
     }
 }
 
-std::string ServerCommunicationOSC::convertArgumentToStringValue(osc::ReceivedMessageArgumentIterator it)
-{
-    std::string stringData;
-    try
-    {
-        stringData = it->AsString();
-    } catch (osc::WrongArgumentTypeException e)
-    {
-        std::stringstream stream;
-        stream << (*it);
-        std::string s = stream.str();
-        size_t pos = s.find(":"); // That's how OSC message works -> Type:Value
-        s.erase(0, pos+1);
-        stream.str(s);
-        stringData = stream.str();
-    }
-    return stringData;
-}
-
-std::vector<std::string> ServerCommunicationOSC::convertMessagesToArgumentList(osc::ReceivedMessageArgumentIterator it)
+std::vector<std::string> ServerCommunicationOSC::convertMessagesToArgumentList(osc::ReceivedMessageArgumentIterator it, osc::ReceivedMessageArgumentIterator itEnd)
 {
     std::vector<std::string> argumentList;
-    for(it; it != m.ArgumentsEnd(); it++)
+    for(it; it != itEnd; it++)
     {
         std::stringstream stream;
         stream << (*it);

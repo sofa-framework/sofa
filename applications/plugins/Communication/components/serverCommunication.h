@@ -139,6 +139,8 @@ protected:
     BaseData* fetchData(SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK> source, std::string keyTypeMessage, std::string argumentName);
 
     bool writeData(SingleLink<CommunicationSubscriber, BaseObject, BaseLink::FLAG_DOUBLELINK> source, CommunicationSubscriber * subscriber, std::string subject, std::vector<std::string> argumentList);
+    bool writeDataToContainer(SingleLink<CommunicationSubscriber, BaseObject, BaseLink::FLAG_DOUBLELINK> source, CommunicationSubscriber * subscriber, std::string subject, std::vector<std::string> argumentList);
+    bool writeDataToFullMatrix(SingleLink<CommunicationSubscriber, BaseObject, BaseLink::FLAG_DOUBLELINK> source, CommunicationSubscriber * subscriber, std::string subject, std::vector<std::string> argumentList, int rows, int cols);
 
     virtual std::string getArgumentType(std::string argument) =0;
     virtual std::string getArgumentValue(std::string argument) =0;

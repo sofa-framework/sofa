@@ -160,6 +160,47 @@ bool ServerCommunication::writeData(SingleLink<CommunicationSubscriber, BaseObje
     return true;
 }
 
+bool ServerCommunication::writeDataToFullMatrix(SingleLink<CommunicationSubscriber, BaseObject, BaseLink::FLAG_DOUBLELINK> source, CommunicationSubscriber * subscriber, std::string subject, std::vector<std::string> argumentList, int rows, int cols)
+{
+    std::string type = std::string("matrix") + getArgumentType(argumentList.at(0));
+    BaseData* data = fetchData(source, type, subscriber->getArgumentName(0));
+    std::string dataType = data->getValueTypeString();
+
+    if(dataType.compare("FullMatrix<double>") == 0|| dataType.compare("FullMatrix<float>") == 0)
+    {
+        void* a = data->beginEditVoidPtr();
+        FullMatrix<SReal> * b = static_cast<FullMatrix<SReal>*>(a);
+        std::vector<std::string>::iterator it = argumentList.begin();
+        b->resize(rows, cols);
+        for(int i = 0; i < b->rows(); i++)
+        {
+            for(int j = 0; j < b->cols(); j++)
+            {
+                b->set(i, j, stod(getArgumentValue(*it)));
+                ++it;
+            }
+        }
+        return true;
+    }
+    return false;
+}
+
+bool ServerCommunication::writeDataToContainer(SingleLink<CommunicationSubscriber, BaseObject, BaseLink::FLAG_DOUBLELINK> source, CommunicationSubscriber * subscriber, std::string subject, std::vector<std::string> argumentList)
+{
+    std::string type = std::string("matrix") + getArgumentType(argumentList.at(0));
+    BaseData* data = fetchData(source, type, subscriber->getArgumentName(0));
+    const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
+
+    if (!typeinfo->Container())
+        return false;
+    std::string value = "";
+    for (std::vector<std::string>::iterator it = argumentList.begin(); it != argumentList.end(); it++)
+    {
+        value.append(" " + getArgumentValue(*it));
+    }
+    data->read(value);
+    return true;
+}
 
 } /// communication
 
