@@ -69,8 +69,8 @@ int BatchGUI::mainLoop()
         t = sofa::helper::system::thread::CTime::getFastTime()-t;
         rt = sofa::helper::system::thread::CTime::getRefTime()-rt;
 
-        msg_info("BatchGUI") << "nbIter << " iterations done in "<< ((double)t)/((double)tfreq) << " s ( " << (((double)tfreq)*nbIter)/((double)t) << " FPS)." << msgendl;
-        msg_info("BatchGUI") << "nbIter << " iterations done in "<< ((double)rt)/((double)rtfreq) << " s ( " << (((double)rtfreq)*nbIter)/((double)rt) << " FPS)." << msgendl;
+        msg_info("BatchGUI") << nbIter << " iterations done in " << ((double)t)/((double)tfreq) << " s ( " << (((double)tfreq)*nbIter)/((double)t) << " FPS)." << msgendl;
+        msg_info("BatchGUI") << nbIter << " iterations done in " << ((double)rt)/((double)rtfreq) << " s ( " << (((double)rtfreq)*nbIter)/((double)rt) << " FPS)." << msgendl;
     }
     return 0;
 }
