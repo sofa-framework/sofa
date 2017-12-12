@@ -46,7 +46,7 @@
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/visual/VisualManager.h>
-#include <sofa/core/visual/Shader_fwd.h>
+#include <sofa/core/visual/Shader.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/Mapping.h>
 #include <sofa/core/behavior/ForceField.h>
@@ -61,7 +61,7 @@
 #include <sofa/core/behavior/ConstraintSolver.h>
 #include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/core/visual/VisualLoop.h>
-#include <sofa/core/collision/Pipeline_fwd.h>
+#include <sofa/core/collision/Pipeline.h>
 #include <sofa/core/loader/BaseLoader.h>
 #include <sofa/core/objectmodel/Event.h>
 
