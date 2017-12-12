@@ -74,7 +74,6 @@ namespace sofa
 namespace simulation
 {
 class Visitor;
-class TestFORWARD;
 }
 }
 
@@ -300,8 +299,6 @@ public:
     Single<sofa::core::collision::Pipeline> collisionPipeline;
 
     Sequence<sofa::core::objectmodel::BaseObject> unsorted;
-
-    Sequence<sofa::simulation::TestFORWARD> testForward;
 
     /// @}
 

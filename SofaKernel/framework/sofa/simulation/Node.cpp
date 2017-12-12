@@ -40,7 +40,12 @@
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/VisualVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
+#include <sofa/simulation/MutationListener.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/visual/Shader.h>
+#include <sofa/core/behavior/BaseMass.h>
+
+#include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/helper/Factory.inl>
 #include <sofa/helper/cast.h>
 #include <iostream>
@@ -57,13 +62,6 @@ namespace sofa
 
 namespace simulation
 {
-
-class TestFORWARD : public BaseObject
-{
-    SOFA_CLASS(TestFORWARD, BaseObject) ;
-public:
-
-} ;
 
 using core::objectmodel::BaseNode;
 using core::objectmodel::BaseObject;

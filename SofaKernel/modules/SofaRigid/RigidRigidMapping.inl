@@ -764,14 +764,6 @@ bool RigidRigidMapping<TIn, TOut>::getShow(const core::BaseMapping* /*m*/,
 
 
 template <class TIn, class TOut>
-bool RigidRigidMapping<TIn, TOut>::getShow(const core::objectmodel::BaseObject* /*m*/, const core::visual::VisualParams* vparams) const
-{ return vparams->displayFlags().getShowMappings(); }
-
-template <class TIn, class TOut>
-bool RigidRigidMapping<TIn, TOut>::getShow(const core::BaseMapping* /*m*/, const core::visual::VisualParams* vparams) const
-{ return vparams->displayFlags().getShowMechanicalMappings(); }
-
-template <class TIn, class TOut>
 void RigidRigidMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
 	if (!getShow(this,vparams)) return;

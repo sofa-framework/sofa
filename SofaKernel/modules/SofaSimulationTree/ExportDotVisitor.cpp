@@ -28,6 +28,7 @@
 #include <sofa/core/collision/CollisionGroupManager.h>
 #include <sofa/core/collision/ContactManager.h>
 #include <sofa/core/collision/Pipeline.h>
+#include <sofa/core/behavior/LinearSolver.h>
 
 namespace sofa
 {

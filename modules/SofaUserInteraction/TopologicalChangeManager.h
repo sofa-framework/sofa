@@ -30,7 +30,6 @@
 
 #include <SofaMeshCollision/TriangleModel.h>
 #include <SofaBaseCollision/SphereModel_fwd.h>
-#include <SofaUserInteraction/CuttingPoint.h>
 
 #include <SofaBaseCollision/SphereModel_fwd.h>
 
