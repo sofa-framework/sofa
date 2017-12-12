@@ -48,10 +48,10 @@ int BatchGUI::mainLoop()
 {
     if (groot)
     {
-        std::cout << "Computing "<<nbIter<<" iterations." << std::endl;
+        msg_info("BatchGUI") << "Computing " << nbIter << " iterations." << msgendl;
         sofa::helper::AdvancedTimer::begin("Animate");
         sofa::simulation::getSimulation()->animate(groot.get());
-        std::cout << sofa::helper::AdvancedTimer::end("Animate", groot.get()) << std::endl;
+        msg_info("BatchGUI") << sofa::helper::AdvancedTimer::end("Animate", groot.get()) << msgendl;
         //As no visualization is done by the Batch GUI, these two lines are not necessary.
         sofa::simulation::getSimulation()->updateVisual(groot.get());
         sofa::simulation::Visitor::ctime_t rtfreq = sofa::helper::system::thread::CTime::getRefTicksPerSec();
@@ -62,15 +62,15 @@ int BatchGUI::mainLoop()
         {
             sofa::helper::AdvancedTimer::begin("Animate");
             sofa::simulation::getSimulation()->animate(groot.get());
-            msg_info("") << sofa::helper::AdvancedTimer::end("Animate", groot.get());
+            msg_info("BatchGUI") << sofa::helper::AdvancedTimer::end("Animate", groot.get()) << msgendl;
             //As no visualization is done by the Batch GUI, these two lines are not necessary.
             sofa::simulation::getSimulation()->updateVisual(groot.get());
         }
         t = sofa::helper::system::thread::CTime::getFastTime()-t;
         rt = sofa::helper::system::thread::CTime::getRefTime()-rt;
 
-        std::cout << nbIter << " iterations done in "<< ((double)t)/((double)tfreq) << " s ( " << (((double)tfreq)*nbIter)/((double)t) << " FPS)." << std::endl;
-        std::cout << nbIter << " iterations done in "<< ((double)rt)/((double)rtfreq) << " s ( " << (((double)rtfreq)*nbIter)/((double)rt) << " FPS)." << std::endl;
+        msg_info("BatchGUI") << "nbIter << " iterations done in "<< ((double)t)/((double)tfreq) << " s ( " << (((double)tfreq)*nbIter)/((double)t) << " FPS)." << msgendl;
+        msg_info("BatchGUI") << "nbIter << " iterations done in "<< ((double)rt)/((double)rtfreq) << " s ( " << (((double)rtfreq)*nbIter)/((double)rt) << " FPS)." << msgendl;
     }
     return 0;
 }
