@@ -48,7 +48,6 @@
 #include "SofaVideoRecorderManager.h"
 #include "WDoubleLineEdit.h"
 #include "QSofaStatWidget.h"
-#include "FilterLibrary.h"
 #include "viewer/SofaViewer.h"
 
 #include <sofa/gui/BaseViewer.h>

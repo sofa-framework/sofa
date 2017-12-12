@@ -257,7 +257,7 @@ void DocBrowser::goTo(const QUrl& u)
 
 void DocBrowser::goToHome()
 {
-    loadHtml(sofa::helper::system::DataRepository.getFile("docs/sofa.html").c_str());
+    loadHtml(GuiDataRepository.getFile("docs/runsofa.html").c_str());
 }
 
 void DocBrowser::flipVisibility()

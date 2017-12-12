@@ -213,9 +213,8 @@ endif()
 
 
 sofa_install_targets(SofaGui SofaGuiQt "")
-# Copy the files into the share/sofa/runSofa/ressource.s
 
-file(COPY "ressources" DESTINATION "../../share/sofa/runSofa/")
+file(INSTALL "ressources" DESTINATION "../../share/sofa/runSofa/")
 install(DIRECTORY "ressources" DESTINATION "share/sofa/runSofa/")
 install(FILES ${HEADER_FILES} DESTINATION "include/sofa/gui/qt")
 install(FILES ${MOC_HEADER_FILES} DESTINATION "include/sofa/gui/qt")
