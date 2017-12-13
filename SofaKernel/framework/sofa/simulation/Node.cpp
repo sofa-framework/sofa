@@ -53,6 +53,17 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/topological_sort.hpp>
 
+/// SPECIZALIZATION...
+#include <sofa/core/behavior/BaseMass.h>
+namespace sofa
+{
+namespace simulation
+{
+    template class Single<sofa::core::behavior::BaseMass>;
+}
+}
+
+
 /// If you want to activate/deactivate that please set them to true/false
 #define DEBUG_VISITOR false
 #define DEBUG_LINK false

@@ -76,6 +76,15 @@
 #include <string>
 #include <stack>
 
+/// EXTERN TEMPLATE INSTANTIATION.
+namespace sofa
+{
+namespace simulation
+{
+    extern template class SOFA_SIMULATION_CORE_API Single<sofa::core::behavior::BaseMass>;
+}
+}
+
 
 namespace sofa {
 namespace simulation {
