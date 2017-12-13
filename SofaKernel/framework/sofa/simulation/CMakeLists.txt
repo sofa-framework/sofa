@@ -18,6 +18,7 @@ set(HEADER_FILES
     DefaultAnimationLoop.h
     DefaultAnimationLoop.inl
     DefaultVisualManagerLoop.h
+    DefaultVisualManagerLoop.inl
     DeleteVisitor.h
     ExportGnuplotVisitor.h
     ExportOBJVisitor.h

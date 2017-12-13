@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/DefaultVisualManagerLoop.h>
+#include "DefaultVisualManagerLoop.inl"
 #include <sofa/simulation/Node.h>
 
 #include <sofa/core/ObjectFactory.h>
