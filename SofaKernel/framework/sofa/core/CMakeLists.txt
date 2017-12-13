@@ -54,6 +54,7 @@ set(HEADER_FILES
     behavior/LMConstraint.h
     behavior/LMConstraint.inl
     behavior/LinearSolver.h
+    behavior/LinearSolver_fwd.h
     behavior/Mass.h
     behavior/Mass.inl
     behavior/MechanicalState.h

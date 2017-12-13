@@ -30,8 +30,7 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#include <sofa/simulation/Node.h>
-#include <sofa/simulation/Node.inl>
+
 #include <sofa/simulation/PropagateEventVisitor.h>
 #include <sofa/simulation/UpdateMappingEndEvent.h>
 #include <sofa/simulation/AnimateVisitor.h>
@@ -52,6 +51,9 @@
 
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/topological_sort.hpp>
+
+#include "Node.inl"
+
 
 /// SPECIZALIZATION...
 #include <sofa/core/behavior/BaseMass.h>
