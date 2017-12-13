@@ -59,6 +59,9 @@ namespace sofa
 {
 namespace simulation
 {
+    //template class Single<sofa::core::BaseState> ;
+    //template class Single<sofa::core::behavior::BaseMechanicalState> ;
+    //template class Single<sofa::core::BaseMapping> ;
     template class Single<sofa::core::behavior::BaseMass>;
 }
 }
