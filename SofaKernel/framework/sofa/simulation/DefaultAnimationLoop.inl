@@ -19,56 +19,28 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_DEFAULTANIMATIONLOOP_H
-#define SOFA_SIMULATION_DEFAULTANIMATIONLOOP_H
+#ifndef SOFA_SIMULATION_DEFAULTANIMATIONLOOP_INL
+#define SOFA_SIMULATION_DEFAULTANIMATIONLOOP_INL
 
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/behavior/BaseAnimationLoop.h>
-#include <sofa/core/ExecParams.h>
-#include <sofa/simulation/simulationcore.h>
-#include <sofa/simulation/Node_fwd.h>
+#include <sofa/simulation/Node.h>
+#include "DefaultAnimationLoop.h"
 
 namespace sofa
 {
-
 namespace simulation
 {
 
-/**
- *  \brief Default Animation Loop to be created when no AnimationLoop found on simulation::node.
- *
- *
- */
-class SOFA_SIMULATION_CORE_API DefaultAnimationLoop : public sofa::core::behavior::BaseAnimationLoop
+template<class T>
+typename T::SPtr DefaultAnimationLoop::create(T*, BaseContext* context, BaseObjectDescription* arg)
 {
-public:
-    typedef sofa::core::behavior::BaseAnimationLoop Inherit;
-    typedef sofa::core::objectmodel::BaseContext BaseContext;
-    typedef sofa::core::objectmodel::BaseObjectDescription BaseObjectDescription;
-    SOFA_CLASS(DefaultAnimationLoop,sofa::core::behavior::BaseAnimationLoop);
-
-    /// Set the simulation node this animation loop is controlling
-    virtual void setNode( simulation::Node* );
-
-    /// Set the simulation node to the local context if not specified previously
-    virtual void init() override;
-
-    /// perform one animation step
-    virtual void step(const sofa::core::ExecParams* params, SReal dt) override;
-
-    /// Construction method called by ObjectFactory.
-    template<class T>
-    static typename T::SPtr create(T*, BaseContext* context, BaseObjectDescription* arg) ;
-
-protected :
-    DefaultAnimationLoop(simulation::Node* gnode = NULL);
-    virtual ~DefaultAnimationLoop();
-
-    simulation::Node* gnode;  ///< the node controlled by the loop
-};
+    simulation::Node* gnode = dynamic_cast<simulation::Node*>(context);
+    typename T::SPtr obj = sofa::core::objectmodel::New<T>(gnode);
+    if (context) context->addObject(obj);
+    if (arg) obj->parse(arg);
+    return obj;
+}
 
 } // namespace simulation
-
 } // namespace sofa
 
-#endif  /* SOFA_SIMULATION_DEFAULTANIMATIONLOOP_H */
+#endif  /* SOFA_SIMULATION_DEFAULTANIMATIONLOOP_INL */

@@ -16,6 +16,7 @@ set(HEADER_FILES
     CopyAspectVisitor.h
     DeactivatedNodeVisitor.h
     DefaultAnimationLoop.h
+    DefaultAnimationLoop.inl
     DefaultVisualManagerLoop.h
     DeleteVisitor.h
     ExportGnuplotVisitor.h

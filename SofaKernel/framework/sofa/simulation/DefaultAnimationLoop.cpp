@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/DefaultAnimationLoop.h>
+#include "DefaultAnimationLoop.inl"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/Node.h>
 
@@ -35,7 +35,6 @@
 
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/AdvancedTimer.h>
-
 #include <sofa/core/visual/VisualParams.h>
 
 #include <stdlib.h>
@@ -60,7 +59,6 @@ DefaultAnimationLoop::DefaultAnimationLoop(simulation::Node* _gnode)
     : Inherit()
     , gnode(_gnode)
 {
-    //assert(gnode);
 }
 
 DefaultAnimationLoop::~DefaultAnimationLoop()
