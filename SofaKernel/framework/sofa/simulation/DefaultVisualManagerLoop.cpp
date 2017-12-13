@@ -31,7 +31,6 @@
 #include <sofa/simulation/UpdateMappingEndEvent.h>
 #include <sofa/simulation/PropagateEventVisitor.h>
 
-
 #include <sofa/helper/AdvancedTimer.h>
 
 namespace sofa
