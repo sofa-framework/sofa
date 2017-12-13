@@ -156,21 +156,6 @@ const DDGNode::DDGLinkContainer& DDGNode::getOutputs()
     return outputs.getValue();
 }
 
-sofa::core::objectmodel::Base* LinkTraitsPtrCasts<DDGNode>::getBase(sofa::core::objectmodel::DDGNode* n)
-{
-    if (!n) return NULL;
-    return n->getOwner();
-    //sofa::core::objectmodel::BaseData* d = dynamic_cast<sofa::core::objectmodel::BaseData*>(n);
-    //if (d) return d->getOwner();
-    //return dynamic_cast<sofa::core::objectmodel::Base*>(n);
-}
-
-sofa::core::objectmodel::BaseData* LinkTraitsPtrCasts<DDGNode>::getData(sofa::core::objectmodel::DDGNode* n)
-{
-    if (!n) return NULL;
-    return n->getData();
-    //return dynamic_cast<sofa::core::objectmodel::BaseData*>(n);
-}
 
 bool DDGNode::findDataLinkDest(DDGNode*& ptr, const std::string& path, const BaseLink* link)
 {

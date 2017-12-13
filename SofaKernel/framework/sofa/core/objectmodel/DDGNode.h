@@ -47,14 +47,6 @@ class BaseData;
 class DDGNode;
 class BaseObjectDescription;
 
-template<>
-class LinkTraitsPtrCasts<DDGNode>
-{
-public:
-    static sofa::core::objectmodel::Base* getBase(sofa::core::objectmodel::DDGNode* n);
-    static sofa::core::objectmodel::BaseData* getData(sofa::core::objectmodel::DDGNode* n);
-};
-
 /**
  *  \brief Abstract base to manage data dependencies. BaseData and DataEngine inherites from this class
  *
@@ -264,6 +256,23 @@ private:
 };
 
 } // namespace objectmodel
+
+template<>
+inline sofa::core::objectmodel::Base* As(sofa::core::objectmodel::DDGNode* n)
+{
+    if (!n)
+        return nullptr;
+    return n->getOwner();
+}
+
+template<>
+inline sofa::core::objectmodel::BaseData* As(sofa::core::objectmodel::DDGNode* n)
+{
+    if (!n)
+        return nullptr;
+    return n->getData();
+}
+
 
 } // namespace core
 

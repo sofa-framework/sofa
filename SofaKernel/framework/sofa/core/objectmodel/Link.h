@@ -28,6 +28,7 @@
 
 #include <sofa/core/objectmodel/BaseLink.h>
 #include <sofa/core/ExecParams.h>
+#include <sofa/core/typetraits.h>
 #include <sofa/helper/stable_vector.h>
 
 #include <sstream>
@@ -306,9 +307,6 @@ public:
     }
 };
 
-template<class Type>
-class LinkTraitsPtrCasts;
-
 /**
  *  \brief Container of all links in the scenegraph, from a given type of object (Owner) to another (Dest)
  *
@@ -330,8 +328,6 @@ public:
     typedef typename Container::const_iterator const_iterator;
     typedef typename Container::const_reverse_iterator const_reverse_iterator;
     typedef LinkTraitsFindDest<OwnerType, DestType, ACTIVEFLAG(FLAG_DATALINK)> TraitsFindDest;
-    typedef LinkTraitsPtrCasts<TOwnerType> TraitsOwnerCasts;
-    typedef LinkTraitsPtrCasts<TDestType> TraitsDestCasts;
 #undef ACTIVEFLAG
 
     TLink()
@@ -472,19 +468,20 @@ public:
         {
             DestType* ptr = TraitsDestPtr::get(TraitsValueType::get(value));
             if (ptr)
-                path = BaseLink::CreateString(TraitsDestCasts::getBase(ptr), TraitsDestCasts::getData(ptr),
-                        TraitsOwnerCasts::getBase(m_owner));
+                path = BaseLink::CreateString(As<Base>(ptr),
+                                              As<BaseData>(ptr),
+                                              As<Base>(m_owner));
         }
         return path;
     }
 
     Base* getLinkedBase(unsigned int index=0) const
     {
-        return TraitsDestCasts::getBase(getIndex(index));
+        return As<Base>(getIndex(index));
     }
     BaseData* getLinkedData(unsigned int index=0) const
     {
-        return TraitsDestCasts::getData(getIndex(index));
+        return As<BaseData>(getIndex(index));
     }
     std::string getLinkedPath(unsigned int index=0) const
     {
@@ -613,11 +610,11 @@ public:
 
     sofa::core::objectmodel::Base* getOwnerBase() const
     {
-        return TraitsOwnerCasts::getBase(m_owner);
+        return As<Base>(m_owner);
     }
     sofa::core::objectmodel::BaseData* getOwnerData() const
     {
-        return TraitsOwnerCasts::getData(m_owner);
+        return As<BaseData>(m_owner);
     }
 
     void setOwner(OwnerType* owner)
@@ -660,8 +657,6 @@ public:
     typedef typename Inherit::ValueType ValueType;
     typedef typename Inherit::TraitsContainer TraitsContainer;
     typedef typename Inherit::Container Container;
-    typedef typename Inherit::TraitsOwnerCasts TraitsOwnerCasts;
-    typedef typename Inherit::TraitsDestCasts TraitsDestCasts;
     typedef typename Inherit::TraitsFindDest TraitsFindDest;
 
     typedef void (OwnerType::*ValidatorFn)(DestPtr v, unsigned int index, bool add);
@@ -784,8 +779,6 @@ public:
     typedef typename Inherit::ValueType ValueType;
     typedef typename Inherit::TraitsContainer TraitsContainer;
     typedef typename Inherit::Container Container;
-    typedef typename Inherit::TraitsOwnerCasts TraitsOwnerCasts;
-    typedef typename Inherit::TraitsDestCasts TraitsDestCasts;
     typedef typename Inherit::TraitsFindDest TraitsFindDest;
 
     typedef void (OwnerType::*ValidatorFn)(DestPtr before, DestPtr& after);

@@ -23,35 +23,26 @@
 #define SOFA_SIMULATION_NODE_FWD_H
 
 #include <sofa/core/sptr.h>
-#include <sofa/core/objectmodel/Link.h>
+#include <sofa/core/typetraits.h>
 
 namespace sofa {
     namespace simulation {
         class Node ;
         using NodeSPtr = sofa::core::sptr<Node>;
-
-
     }
 
     namespace core {
         namespace objectmodel {
             class Base;
             class BaseData;
+           }
 
-        template<>
-        class LinkTraitsPtrCasts<sofa::simulation::Node>
-        {
-        public:
-            static sofa::core::objectmodel::Base* getBase(sofa::simulation::Node* b) { return reinterpret_cast<sofa::core::objectmodel::Base*>(b) ; }
-            static sofa::core::objectmodel::BaseData* getData(sofa::simulation::Node* /*b*/) { return NULL; }
-        };
+        template <>
+        inline sofa::core::objectmodel::Base* As(sofa::simulation::Node* o) { return reinterpret_cast<sofa::core::objectmodel::Base*>(o) ; }
 
-        }
+        template <>
+        inline sofa::core::objectmodel::BaseData* As(sofa::simulation::Node* o) { return nullptr ; }
     }
 }
-
-
-
-
 
 #endif // SOFA_SIMULATION_NODE_FWD

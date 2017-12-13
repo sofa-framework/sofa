@@ -380,17 +380,28 @@ public:
     }
 };
 
-template<class Type>
-class LinkTraitsPtrCasts
-{
-public:
-    static sofa::core::objectmodel::Base* getBase(sofa::core::objectmodel::Base* b) { return b; }
-    static sofa::core::objectmodel::Base* getBase(sofa::core::objectmodel::BaseData* d) { return d->getOwner(); }
-    static sofa::core::objectmodel::BaseData* getData(sofa::core::objectmodel::Base* /*b*/) { return NULL; }
-    static sofa::core::objectmodel::BaseData* getData(sofa::core::objectmodel::BaseData* d) { return d; }
-};
+//template<class Type>
+//class LinkTraitsPtrCasts
+//{
+//public:
+//    static sofa::core::objectmodel::Base* getBase(sofa::core::objectmodel::Base* b) { return b; }
+//    static sofa::core::objectmodel::Base* getBase(sofa::core::objectmodel::BaseData* d) { return d->getOwner(); }
+//    static sofa::core::objectmodel::BaseData* getData(sofa::core::objectmodel::Base* /*b*/) { return NULL; }
+//    static sofa::core::objectmodel::BaseData* getData(sofa::core::objectmodel::BaseData* d) { return d; }
+//};
+
 
 } // namespace objectmodel
+
+template<>
+inline sofa::core::objectmodel::Base* As(sofa::core::objectmodel::Base* b){ return b; }
+template<>
+inline sofa::core::objectmodel::BaseData* As(sofa::core::objectmodel::BaseData *b) { return b; }
+template<>
+inline sofa::core::objectmodel::BaseData* As(sofa::core::objectmodel::Base*){ return nullptr; }
+template<>
+inline sofa::core::objectmodel::Base* As(sofa::core::objectmodel::BaseData*) { return nullptr; }
+
 
 } // namespace core
 

@@ -50,6 +50,7 @@
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/core/visual/VisualManager.h>
+#include <sofa/core/visual/VisualParams_fwd.h>
 #include <sofa/core/visual/Shader.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/Mapping.h>
@@ -166,8 +167,7 @@ public:
     bool isInitialized() {return initialized;}
     /// Apply modifications to the components
     void reinit(const sofa::core::ExecParams* params);
-    /// Do one step forward in time
-//    void animate(const core::ExecParams* params, SReal dt);
+
     /// Draw the objects (using visual visitors)
     void draw(sofa::core::visual::VisualParams* params);
     /// @}

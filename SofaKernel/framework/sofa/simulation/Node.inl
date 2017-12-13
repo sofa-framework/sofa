@@ -34,8 +34,6 @@
 #include <sofa/simulation/Simulation.h>
 #include <sofa/core/visual/VisualParams.h>
 
-
-
 namespace sofa
 {
 namespace simulation
@@ -48,6 +46,8 @@ NodeSPtr Node::create( RealObject*, sofa::core::objectmodel::BaseObjectDescripti
     obj->parse(arg);
     return obj;
 }
+
+
 
 }
 
