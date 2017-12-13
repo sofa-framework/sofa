@@ -394,13 +394,13 @@ public:
 } // namespace objectmodel
 
 template<>
-inline sofa::core::objectmodel::Base* As(sofa::core::objectmodel::Base* b){ return b; }
+sofa::core::objectmodel::Base* As(sofa::core::objectmodel::Base* b) ;
 template<>
-inline sofa::core::objectmodel::BaseData* As(sofa::core::objectmodel::BaseData *b) { return b; }
+sofa::core::objectmodel::BaseData* As(sofa::core::objectmodel::BaseData *b) ;
 template<>
-inline sofa::core::objectmodel::BaseData* As(sofa::core::objectmodel::Base*){ return nullptr; }
+sofa::core::objectmodel::BaseData* As(sofa::core::objectmodel::Base*) ;
 template<>
-inline sofa::core::objectmodel::Base* As(sofa::core::objectmodel::BaseData*) { return nullptr; }
+sofa::core::objectmodel::Base* As(sofa::core::objectmodel::BaseData*) ;
 
 
 } // namespace core

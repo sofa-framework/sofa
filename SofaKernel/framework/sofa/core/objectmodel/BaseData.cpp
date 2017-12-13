@@ -346,6 +346,15 @@ std::string BaseData::decodeTypeName(const std::type_info& t)
 
 } // namespace objectmodel
 
+template<>
+sofa::core::objectmodel::Base* As(sofa::core::objectmodel::Base* b){ return b; }
+template<>
+sofa::core::objectmodel::BaseData* As(sofa::core::objectmodel::BaseData *b) { return b; }
+template<>
+sofa::core::objectmodel::BaseData* As(sofa::core::objectmodel::Base*){ return nullptr; }
+template<>
+sofa::core::objectmodel::Base* As(sofa::core::objectmodel::BaseData*) { return nullptr; }
+
 } // namespace core
 
 } // namespace sofa
