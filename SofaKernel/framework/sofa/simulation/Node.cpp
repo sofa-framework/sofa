@@ -69,6 +69,18 @@ namespace simulation
 }
 
 
+namespace sofa
+{
+namespace core
+{
+    template <>
+    sofa::core::objectmodel::Base* As(sofa::simulation::Node* o) { return reinterpret_cast<sofa::core::objectmodel::Base*>(o) ; }
+
+    template <>
+    sofa::core::objectmodel::BaseData* As(sofa::simulation::Node*) { return nullptr ; }
+}
+}
+
 /// If you want to activate/deactivate that please set them to true/false
 #define DEBUG_VISITOR false
 #define DEBUG_LINK false

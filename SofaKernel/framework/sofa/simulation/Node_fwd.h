@@ -38,10 +38,10 @@ namespace sofa {
            }
 
         template <>
-        inline sofa::core::objectmodel::Base* As(sofa::simulation::Node* o) { return reinterpret_cast<sofa::core::objectmodel::Base*>(o) ; }
+        sofa::core::objectmodel::Base* As(sofa::simulation::Node* o) ;
 
         template <>
-        inline sofa::core::objectmodel::BaseData* As(sofa::simulation::Node*) { return nullptr ; }
+        sofa::core::objectmodel::BaseData* As(sofa::simulation::Node*) ;
     }
 }
 
