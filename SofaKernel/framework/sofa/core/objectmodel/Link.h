@@ -455,12 +455,12 @@ public:
 
     const BaseClass* getDestClass() const
     {
-        return DestType::GetClass();
+        return GetClass((DestType*)nullptr);
     }
 
     const BaseClass* getOwnerClass() const
     {
-        return OwnerType::GetClass();
+        return GetClass(m_owner);
     }
 
     size_t getSize() const

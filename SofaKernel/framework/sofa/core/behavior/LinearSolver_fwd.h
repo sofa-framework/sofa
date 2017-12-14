@@ -22,6 +22,8 @@
 #ifndef SOFA_CORE_BEHAVIOR_LINEARSOLVER_FWD_H
 #define SOFA_CORE_BEHAVIOR_LINEARSOLVER_FWD_H
 
+#include <sofa/core/objectmodel/BaseData_fwd.h>
+
 namespace sofa
 {
 namespace core
@@ -33,6 +35,12 @@ class BaseLinearSolver ;
 class LinearSolver ;
 
 } // namespace behavior
+
+inline sofa::core::objectmodel::Base* AsBase(sofa::core::behavior::BaseLinearSolver* n) { return reinterpret_cast<sofa::core::objectmodel::Base*>(n) ; }
+inline sofa::core::objectmodel::BaseData* AsData(sofa::core::behavior::BaseLinearSolver*) { return nullptr; }
+
+inline sofa::core::objectmodel::Base* AsBase(sofa::core::behavior::LinearSolver* n) { return reinterpret_cast<sofa::core::objectmodel::Base*>(n) ; }
+inline sofa::core::objectmodel::BaseData* AsData(sofa::core::behavior::LinearSolver*) { return nullptr; }
 
 } // namespace core
 

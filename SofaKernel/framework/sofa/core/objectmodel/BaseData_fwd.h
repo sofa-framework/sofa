@@ -32,6 +32,7 @@ namespace objectmodel
 {
     class Base;
     class BaseData;
+    class BaseClass;
 }
 
 inline sofa::core::objectmodel::Base* AsBase(sofa::core::objectmodel::Base* b){ return b; }
@@ -39,6 +40,9 @@ inline sofa::core::objectmodel::BaseData* AsData(sofa::core::objectmodel::Base*)
 
 inline sofa::core::objectmodel::Base* AsBase(sofa::core::objectmodel::BaseData*){ return nullptr; }
 inline sofa::core::objectmodel::BaseData* AsData(sofa::core::objectmodel::BaseData* d){ return d; }
+
+const sofa::core::objectmodel::BaseClass* GetClass(sofa::core::objectmodel::Base *o) ;
+const sofa::core::objectmodel::BaseClass *GetClass(sofa::core::objectmodel::BaseData *o) ;
 
 } /// namespace core
 } /// namespace sofa

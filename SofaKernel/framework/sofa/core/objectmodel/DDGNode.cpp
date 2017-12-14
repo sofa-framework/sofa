@@ -233,6 +233,11 @@ sofa::core::objectmodel::BaseData* AsData(sofa::core::objectmodel::DDGNode* n)
     return n->getData();
 }
 
+const sofa::core::objectmodel::BaseClass* GetClass(sofa::core::objectmodel::DDGNode* n)
+{
+    return n->getClass() ;
+}
+
 
 } // namespace core
 

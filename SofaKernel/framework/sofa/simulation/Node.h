@@ -36,7 +36,7 @@
 #include <type_traits>
 
 #include <sofa/simulation/Node_fwd.h>
-#include <sofa/core/behavior/LinearSolver.h>
+#include <sofa/core/behavior/LinearSolver_fwd.h>
 
 #include <sofa/simulation/Sequence.h>
 #include <sofa/core/ExecParams.h>

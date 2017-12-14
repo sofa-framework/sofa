@@ -23,6 +23,7 @@
 #define SOFA_SIMULATION_NODE_FWD_H
 
 #include <sofa/core/sptr.h>
+#include <sofa/core/objectmodel/BaseData_fwd.h>
 
 namespace sofa {
     namespace simulation {

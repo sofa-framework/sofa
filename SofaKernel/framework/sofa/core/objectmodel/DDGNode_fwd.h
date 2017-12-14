@@ -29,11 +29,14 @@ namespace core
     namespace objectmodel
     {
         class DDGNode;
+        class Base;
+        class BaseData;
+        class BaseClass;
     }
 
     sofa::core::objectmodel::Base* AsBase(sofa::core::objectmodel::DDGNode* n) ;
     sofa::core::objectmodel::BaseData* AsData(sofa::core::objectmodel::DDGNode* n) ;
-
+    const sofa::core::objectmodel::BaseClass* GetClass(sofa::core::objectmodel::DDGNode* n) ;
 } ///core
 } ///sofa
 
