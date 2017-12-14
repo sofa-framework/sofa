@@ -24,7 +24,7 @@
 
 #include "ImplicitSurfaceMapping.h"
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/rmath.h>
+
 #include <map>
 #include <list>
 

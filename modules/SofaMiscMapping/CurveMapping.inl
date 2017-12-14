@@ -43,7 +43,7 @@
 
 #include <sofa/defaulttype/Mat.h>
 
-#include <sofa/helper/rmath.h>
+
 #include <sofa/helper/gl/template.h>
 
 #include <sofa/simulation/AnimateBeginEvent.h>

@@ -26,7 +26,7 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/vector.h>
-#include <sofa/helper/rmath.h>
+
 #include <iostream>
 
 #include <sofa/helper/helper.h>

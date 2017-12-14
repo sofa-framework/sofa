@@ -24,7 +24,7 @@
 
 #include <SofaMiscEngine/ProjectiveTransformEngine.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/rmath.h> //M_PI
+ //M_PI
 
 namespace sofa
 {

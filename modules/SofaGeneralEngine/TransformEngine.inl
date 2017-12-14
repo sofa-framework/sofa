@@ -25,7 +25,7 @@
 #include <sofa/core/objectmodel/Base.h>
 #include <SofaGeneralEngine/TransformEngine.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/rmath.h> //M_PI
+ //M_PI
 
 #include <cassert>
 

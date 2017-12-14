@@ -30,7 +30,7 @@
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/helper/vector.h>
-#include <sofa/helper/rmath.h>
+
 #include <sofa/helper/random.h>
 #ifdef SOFA_SMP
 #include <sofa/defaulttype/SharedTypes.h>

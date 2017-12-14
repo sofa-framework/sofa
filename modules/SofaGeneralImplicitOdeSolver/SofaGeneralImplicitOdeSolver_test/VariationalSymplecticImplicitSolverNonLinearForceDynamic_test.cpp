@@ -39,7 +39,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 // For atan2 ??
-//#include <sofa/helper/rmath.h>
+//
 
 namespace sofa {
 

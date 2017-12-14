@@ -20,8 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
-#include <sofa/helper/vector.h>
-#include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/simulation/Node.h>
 
 namespace sofa

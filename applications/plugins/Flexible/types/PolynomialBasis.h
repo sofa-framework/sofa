@@ -24,7 +24,7 @@
 #define FLEXIBLE_PolynomialBasis_H
 
 #include <sofa/helper/vector.h>
-#include <sofa/helper/rmath.h>
+
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Mat.h>

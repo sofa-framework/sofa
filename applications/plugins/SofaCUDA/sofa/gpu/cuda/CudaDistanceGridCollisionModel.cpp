@@ -32,7 +32,7 @@
 #include <SofaBaseCollision/CubeModel.h>
 #include <fstream>
 #include <sofa/helper/gl/template.h>
-#include <sofa/helper/rmath.h>
+
 
 namespace sofa
 {

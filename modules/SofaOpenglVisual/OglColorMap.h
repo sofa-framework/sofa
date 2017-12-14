@@ -30,7 +30,7 @@
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/helper/ColorMap.h>
 #include <sofa/helper/vector.h>
-#include <sofa/helper/rmath.h>
+
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/Vec.h>
 #include <string>

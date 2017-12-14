@@ -23,7 +23,7 @@
 #define SOFA_COMPONENT_ENGINE_GENERATESPHERE_INL
 
 #include "GenerateSphere.h"
-#include <sofa/helper/rmath.h> //M_PI
+ //M_PI
 #include <sofa/helper/system/config.h>
 
 namespace sofa

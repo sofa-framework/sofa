@@ -23,7 +23,7 @@
 #define SOFA_COMPONENT_ENGINE_GENERATECYLINDER_INL
 
 #include "GenerateCylinder.h"
-#include <sofa/helper/rmath.h> //M_PI
+ //M_PI
 
 namespace sofa
 {

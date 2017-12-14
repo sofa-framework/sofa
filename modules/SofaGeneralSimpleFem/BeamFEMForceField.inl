@@ -31,7 +31,7 @@
 #include <sofa/simulation/Simulation.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/Axis.h>
-#include <sofa/helper/rmath.h>
+
 #include <assert.h>
 #include <iostream>
 #include <set>

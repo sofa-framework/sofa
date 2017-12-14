@@ -28,7 +28,7 @@
 #include <sofa/core/visual/DisplayFlags.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/system/config.h>
-#include <sofa/helper/rmath.h>
+
 #include <assert.h>
 #include <iostream>
 
