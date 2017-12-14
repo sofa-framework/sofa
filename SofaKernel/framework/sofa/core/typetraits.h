@@ -1,8 +1,9 @@
 #ifndef SOFA_CORE_TYPETRAITS_H
 #define SOFA_CORE_TYPETRAITS_H
-
 namespace sofa {
 namespace core {
+
+#include <type_traits>
 
 ////////////////////////////////////////////////////////////////////////////////////////
 /// A static type conversion.
@@ -19,8 +20,12 @@ namespace core {
 /// has is inheritence graph changed. So use this function with care.
 ///
 ////////////////////////////////////////////////////////////////////////////////////////
-template<class T, class C>
-T* As(C*) ;
+/*template<class T, class C, typename std::enable_if<std::is_same<C, T>::value, int>::type = 0  >
+inline T* As(C*)
+{
+    static_assert(std::is_same<C, C>::value, "You should implement the As conversion") ;
+    return nullptr ;
+}*/
 
 }
 }

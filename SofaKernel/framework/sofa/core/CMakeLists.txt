@@ -102,6 +102,7 @@ set(HEADER_FILES
     objectmodel/BaseClass.h
     objectmodel/BaseContext.h
     objectmodel/BaseData.h
+    objectmodel/BaseData_fwd.h
     objectmodel/BaseLink.h
     objectmodel/BaseNode.h
     objectmodel/BaseObject.h
@@ -111,6 +112,7 @@ set(HEADER_FILES
     objectmodel/Context.h
     objectmodel/ContextObject.h
     objectmodel/DDGNode.h
+    objectmodel/DDGNode_fwd.h
     objectmodel/Data.h
     objectmodel/DataFileName.h
     objectmodel/DetachNodeEvent.h

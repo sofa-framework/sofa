@@ -27,20 +27,30 @@
 #endif
 
 #include <sofa/core/objectmodel/BaseLink.h>
+#include <sofa/core/objectmodel/BaseData_fwd.h>
 #include <sofa/core/ExecParams.h>
 #include <sofa/core/typetraits.h>
 #include <sofa/helper/stable_vector.h>
+
+#include <sofa/core/typetraits.h>
 
 #include <sstream>
 #include <string>
 #include <utility>
 #include <vector>
-
+#include <iostream>
 namespace sofa
 {
 
 namespace core
 {
+
+namespace objectmodel
+{
+    class Base;
+    class BaseData;
+    class DDGNode ;
+}
 
 namespace objectmodel
 {
@@ -466,22 +476,24 @@ public:
         const ValueType& value = m_value[aspect][index];
         if (!TraitsValueType::path(value, path))
         {
+
             DestType* ptr = TraitsDestPtr::get(TraitsValueType::get(value));
+            sofa::core::AsBase(ptr) ;
             if (ptr)
-                path = BaseLink::CreateString(As<Base>(ptr),
-                                              As<BaseData>(ptr),
-                                              As<Base>(m_owner));
+                path = BaseLink::CreateString(sofa::core::AsBase(ptr),
+                                              sofa::core::AsData(ptr),
+                                              sofa::core::AsBase(m_owner));
         }
         return path;
     }
 
     Base* getLinkedBase(unsigned int index=0) const
     {
-        return As<Base>(getIndex(index));
+        return AsBase(getIndex(index));
     }
     BaseData* getLinkedData(unsigned int index=0) const
     {
-        return As<BaseData>(getIndex(index));
+        return AsData(getIndex(index));
     }
     std::string getLinkedPath(unsigned int index=0) const
     {
@@ -610,11 +622,11 @@ public:
 
     sofa::core::objectmodel::Base* getOwnerBase() const
     {
-        return As<Base>(m_owner);
+        return AsBase(m_owner);
     }
     sofa::core::objectmodel::BaseData* getOwnerData() const
     {
-        return As<BaseData>(m_owner);
+        return AsData(m_owner);
     }
 
     void setOwner(OwnerType* owner)

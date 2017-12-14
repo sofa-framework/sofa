@@ -31,6 +31,7 @@
 #include <sofa/core/core.h>
 #include <sofa/core/objectmodel/Link.h>
 #include <sofa/core/objectmodel/BaseClass.h>
+#include <sofa/core/objectmodel/DDGNode_fwd.h>
 #include <list>
 
 namespace sofa
@@ -38,6 +39,15 @@ namespace sofa
 
 namespace core
 {
+
+    namespace objectmodel
+    {
+        class DDGNode;
+    }
+
+    sofa::core::objectmodel::Base* AsBase(sofa::core::objectmodel::DDGNode* n) ;
+    sofa::core::objectmodel::BaseData* AsData(sofa::core::objectmodel::DDGNode* n) ;
+
 
 namespace objectmodel
 {
@@ -257,21 +267,6 @@ private:
 
 } // namespace objectmodel
 
-template<>
-inline sofa::core::objectmodel::Base* As(sofa::core::objectmodel::DDGNode* n)
-{
-    if (!n)
-        return nullptr;
-    return n->getOwner();
-}
-
-template<>
-inline sofa::core::objectmodel::BaseData* As(sofa::core::objectmodel::DDGNode* n)
-{
-    if (!n)
-        return nullptr;
-    return n->getData();
-}
 
 
 } // namespace core

@@ -19,26 +19,28 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_NODE_FWD_H
-#define SOFA_SIMULATION_NODE_FWD_H
+#ifndef SOFA_CORE_OBJECTMODEL_BASEDATA_FWD_H
+#define SOFA_CORE_OBJECTMODEL_BASEDATA_FWD_H
 
-#include <sofa/core/sptr.h>
+namespace sofa
+{
 
-namespace sofa {
-    namespace simulation {
-        class Node ;
-        using NodeSPtr = sofa::core::sptr<Node>;
-    }
+namespace core
+{
 
-    namespace core {
-        namespace objectmodel {
-            class Base;
-            class BaseData;
-           }
-
-        inline sofa::core::objectmodel::Base* AsBase(sofa::simulation::Node* o) { return reinterpret_cast<sofa::core::objectmodel::Base*>(o) ;  }
-        inline sofa::core::objectmodel::BaseData* AsData(sofa::simulation::Node*) { return nullptr; }
-    }
+namespace objectmodel
+{
+    class Base;
+    class BaseData;
 }
 
-#endif // SOFA_SIMULATION_NODE_FWD
+inline sofa::core::objectmodel::Base* AsBase(sofa::core::objectmodel::Base* b){ return b; }
+inline sofa::core::objectmodel::BaseData* AsData(sofa::core::objectmodel::Base*){ return nullptr; }
+
+inline sofa::core::objectmodel::Base* AsBase(sofa::core::objectmodel::BaseData*){ return nullptr; }
+inline sofa::core::objectmodel::BaseData* AsData(sofa::core::objectmodel::BaseData* d){ return d; }
+
+} /// namespace core
+} /// namespace sofa
+
+#endif

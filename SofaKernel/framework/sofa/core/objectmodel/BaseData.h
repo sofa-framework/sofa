@@ -34,6 +34,8 @@
 #include <sofa/core/objectmodel/DDGNode.h>
 #include <sofa/core/objectmodel/BaseLink.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
+#include <sofa/core/typetraits.h>
+#include "BaseData_fwd.h"
 
 namespace sofa
 {
@@ -393,37 +395,7 @@ public:
 
 } // namespace objectmodel
 
-/*
-template<>
-sofa::core::objectmodel::Base* As(sofa::core::objectmodel::Base* b) ;
-template<>
-sofa::core::objectmodel::BaseData* As(sofa::core::objectmodel::BaseData *b) ;
-template<>
-sofa::core::objectmodel::BaseData* As(sofa::core::objectmodel::Base*) ;
-template<>
-sofa::core::objectmodel::Base* As(sofa::core::objectmodel::BaseData*) ;
-*/
 
-template<>
-inline sofa::core::objectmodel::Base* As(sofa::core::objectmodel::Base* b){ return b; }
-template<>
-inline sofa::core::objectmodel::BaseData* As(sofa::core::objectmodel::BaseData *b) { return b; }
-template<>
-inline sofa::core::objectmodel::BaseData* As(sofa::core::objectmodel::Base*){ return nullptr; }
-template<>
-inline sofa::core::objectmodel::Base* As(sofa::core::objectmodel::BaseData*) { return nullptr; }
-
-inline void test()
-{
-    sofa::core::objectmodel::Base* tmp = nullptr ;
-    tmp = As<sofa::core::objectmodel::Base>(tmp) ;
-
-    sofa::core::objectmodel::BaseData* data = nullptr ;
-    data = As<sofa::core::objectmodel::BaseData>(data) ;
-
-    tmp = As<sofa::core::objectmodel::Base>(data) ;
-    data = As<sofa::core::objectmodel::BaseData>(tmp) ;
-}
 
 
 } // namespace core

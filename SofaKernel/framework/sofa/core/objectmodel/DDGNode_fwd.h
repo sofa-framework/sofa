@@ -19,26 +19,22 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_NODE_FWD_H
-#define SOFA_SIMULATION_NODE_FWD_H
+#ifndef SOFA_CORE_OBJECTMODEL_DDGNODE_FWD_H
+#define SOFA_CORE_OBJECTMODEL_DDGNODE_FWD_H
 
-#include <sofa/core/sptr.h>
-
-namespace sofa {
-    namespace simulation {
-        class Node ;
-        using NodeSPtr = sofa::core::sptr<Node>;
+namespace sofa
+{
+namespace core
+{
+    namespace objectmodel
+    {
+        class DDGNode;
     }
 
-    namespace core {
-        namespace objectmodel {
-            class Base;
-            class BaseData;
-           }
+    sofa::core::objectmodel::Base* AsBase(sofa::core::objectmodel::DDGNode* n) ;
+    sofa::core::objectmodel::BaseData* AsData(sofa::core::objectmodel::DDGNode* n) ;
 
-        inline sofa::core::objectmodel::Base* AsBase(sofa::simulation::Node* o) { return reinterpret_cast<sofa::core::objectmodel::Base*>(o) ;  }
-        inline sofa::core::objectmodel::BaseData* AsData(sofa::simulation::Node*) { return nullptr; }
-    }
-}
+} ///core
+} ///sofa
 
-#endif // SOFA_SIMULATION_NODE_FWD
+#endif ///

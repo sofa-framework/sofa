@@ -219,6 +219,21 @@ void DDGNode::addLink(BaseLink* /*l*/)
 
 } // namespace objectmodel
 
+sofa::core::objectmodel::Base* AsBase(sofa::core::objectmodel::DDGNode* n)
+{
+    if (!n)
+        return nullptr;
+    return n->getOwner();
+}
+
+sofa::core::objectmodel::BaseData* AsData(sofa::core::objectmodel::DDGNode* n)
+{
+    if (!n)
+        return nullptr;
+    return n->getData();
+}
+
+
 } // namespace core
 
 } // namespace sofa
