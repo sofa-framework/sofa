@@ -28,6 +28,7 @@
 
 #include <sofa/core/objectmodel/BaseLink.h>
 #include <sofa/core/objectmodel/BaseData_fwd.h>
+#include <sofa/core/objectmodel/DDGNode_fwd.h>
 #include <sofa/core/ExecParams.h>
 #include <sofa/core/typetraits.h>
 #include <sofa/helper/stable_vector.h>
