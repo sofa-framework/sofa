@@ -128,7 +128,7 @@ namespace objectmodel
  *  All classes deriving from Base should use the SOFA_CLASS macro within their declaration (see BaseClass.h).
  *
  */
-class SOFA_CORE_API Base : public sofa::core::objectmodel::MetaClass
+class SOFA_CORE_API Base : public virtual sofa::core::objectmodel::MetaClass
 {
 public:
 

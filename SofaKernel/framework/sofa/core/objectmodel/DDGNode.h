@@ -52,7 +52,7 @@ class BaseObjectDescription;
  *  \brief Abstract base to manage data dependencies. BaseData and DataEngine inherites from this class
  *
  */
-class SOFA_CORE_API DDGNode : public sofa::core::objectmodel::MetaClass
+class SOFA_CORE_API DDGNode : public virtual sofa::core::objectmodel::MetaClass
 {
 public:
 
