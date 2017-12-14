@@ -44,8 +44,9 @@ extern "C" {
 #include <GL/gl.h>
 #include <GL/glx.h>
 
-// PNG
-#include <png.h>
+// SCREENSHOT
+#include <sofa/helper/io/Image.h>>
+#include <sofa/helper/system/SetDirectory.h>
 
 namespace sofa
 {

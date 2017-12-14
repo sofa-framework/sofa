@@ -552,50 +552,38 @@ void HeadlessRecorder::record()
 // -----------------------------------------------------------------
 // --- Screenshot
 // -----------------------------------------------------------------
-void HeadlessRecorder::screenshotPNG(std::string fileName)
+void HeadlessRecorder::screenshotPNG(std::string filename)
 {
-    int i, nvals;
-    const size_t format_nchannels = 4;
-    FILE *f = fopen(fileName.c_str(), "wb");
-    nvals = format_nchannels * m_width * m_height;
+    std::string extension = sofa::helper::system::SetDirectory::GetExtension(filename.c_str());
+    std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
 
-    GLubyte *pixels = (GLubyte *)malloc(nvals * sizeof(GLubyte));
-    png_byte *png_bytes = (png_byte *)malloc(nvals * sizeof(png_byte));
-    png_byte **png_rows = (png_byte **)malloc(m_height * sizeof(png_byte*));
+    //test if we can export in lossless image
+    bool imageSupport = helper::io::Image::FactoryImage::getInstance()->hasKey(extension);
+    if (!imageSupport)
+    {
+        msg_error("Capture") << "Could not write " << extension << "image format (no support found)";
+        return;
+    }
+    helper::io::Image* img = helper::io::Image::FactoryImage::getInstance()->createObject(extension, "");
+    bool success = false;
+    if (img)
+    {
+        img->init(m_width, m_height, 1, 1, sofa::helper::io::Image::UNORM8, sofa::helper::io::Image::RGBA);
+        glReadPixels(0, 0, m_width, m_height, GL_RGBA, GL_UNSIGNED_BYTE, img->getPixels());
 
-    glReadPixels(0, 0, m_width, m_height, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-    for (i = 0; i < nvals; i++)
-        (png_bytes)[i] = (pixels)[i];
-    for (i = 0; i < m_height; i++)
-        (png_rows)[m_height - i - 1] = &(png_bytes)[i * m_width * format_nchannels];
+        success = img->save(filename, 0);
 
-    png_structp png = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-    if (!png) abort();
+        if (success)
+        {
+            msg_info("Capture") << "Saved " << img->getWidth() << "x" << img->getHeight() << " screen image to " << filename;
+        }
+        delete img;
+    }
 
-    png_infop info = png_create_info_struct(png);
-    if (!info) abort();
-    if (setjmp(png_jmpbuf(png))) abort();
-    png_init_io(png, f);
-    png_set_IHDR(
-                png,
-                info,
-                m_width,
-                m_height,
-                8,
-                PNG_COLOR_TYPE_RGBA,
-                PNG_INTERLACE_NONE,
-                PNG_COMPRESSION_TYPE_DEFAULT,
-                PNG_FILTER_TYPE_DEFAULT
-                );
-    png_write_info(png, info);
-    png_write_image(png, png_rows);
-    png_write_end(png, NULL);
-    png_destroy_write_struct(&png, &info);
-    fclose(f);
-    free(pixels);
-    free(png_bytes);
-    free(png_rows);
-
+    if(!success)
+    {
+        msg_error("Capture") << "Unknown error while saving screen image to " << filename;
+    }
 }
 
 // -----------------------------------------------------------------
