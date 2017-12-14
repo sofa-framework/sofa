@@ -39,7 +39,6 @@ class BaseMass ;
 
 inline sofa::core::objectmodel::Base* AsBase(sofa::core::behavior::BaseMass* o) { return reinterpret_cast<sofa::core::objectmodel::Base*>(o) ;  }
 inline sofa::core::objectmodel::BaseData* AsData(sofa::core::behavior::BaseMass*) { return nullptr; }
-inline const sofa::core::objectmodel::BaseClass* GetClass(sofa::core::behavior::BaseMass* n) ;
 
 
 } /// namespace core

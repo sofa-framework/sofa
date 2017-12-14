@@ -346,16 +346,6 @@ std::string BaseData::decodeTypeName(const std::type_info& t)
 
 } // namespace objectmodel
 
-const sofa::core::objectmodel::BaseClass* GetClass(sofa::core::objectmodel::Base *o)
-{
-    return o->getClass() ;
-}
-
-const sofa::core::objectmodel::BaseClass* GetClass(sofa::core::objectmodel::BaseData *o)
-{
-    return o->getClass() ;
-}
-
 } // namespace core
 
 } // namespace sofa

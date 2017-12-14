@@ -27,6 +27,7 @@
 #endif
 
 #include <sofa/core/objectmodel/BaseLink.h>
+#include <sofa/core/objectmodel/BaseClass.h>
 #include <sofa/core/objectmodel/BaseData_fwd.h>
 #include <sofa/core/objectmodel/DDGNode_fwd.h>
 #include <sofa/core/ExecParams.h>
@@ -455,12 +456,12 @@ public:
 
     const BaseClass* getDestClass() const
     {
-        return GetClass((DestType*)nullptr);
+        return sofa::core::objectmodel::TClass<DestType>::get() ;
     }
 
     const BaseClass* getOwnerClass() const
     {
-        return GetClass(m_owner);
+        return sofa::core::objectmodel::TClass<OwnerType>::get() ;
     }
 
     size_t getSize() const

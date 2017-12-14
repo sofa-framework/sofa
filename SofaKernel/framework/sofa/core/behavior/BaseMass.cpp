@@ -45,12 +45,6 @@ bool BaseMass::removeInNode( objectmodel::BaseNode* node )
     return true;
 }
 
-const sofa::core::objectmodel::BaseClass* GetClass(sofa::core::behavior::BaseMass* n)
-{
-    return n->getClass() ;
-}
-
-
 
 } // namespace behavior
 

@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <sofa/core/objectmodel/DDGNode.h>
 #include <sofa/core/objectmodel/BaseData.h>
+#include <sofa/core/objectmodel/BaseClass.h>
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/DataEngine.h>
 
@@ -231,11 +232,6 @@ sofa::core::objectmodel::BaseData* AsData(sofa::core::objectmodel::DDGNode* n)
     if (!n)
         return nullptr;
     return n->getData();
-}
-
-const sofa::core::objectmodel::BaseClass* GetClass(sofa::core::objectmodel::DDGNode* n)
-{
-    return n->getClass() ;
 }
 
 

@@ -43,7 +43,7 @@
 #include <sofa/core/objectmodel/Context.h>
 // moved from GNode (27/04/08)
 #include <sofa/core/objectmodel/BaseNode.h>
-#include <sofa/core/objectmodel/BaseObjectDescription.h>
+#include <sofa/core/objectmodel/BaseObjectDescription_fwd.h>
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
 #include <sofa/core/BehaviorModel.h>
 #include <sofa/core/objectmodel/ContextObject.h>
