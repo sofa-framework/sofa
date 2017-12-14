@@ -19,53 +19,24 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/ExportOBJVisitor.h>
-#include <sofa/helper/system/config.h>
-#include <sofa/helper/Factory.h>
-#include <sofa/simulation/Node.h>
-#include <sofa/core/objectmodel/BaseContext.h>
-#include <sofa/core/visual/VisualModel.h>
+#ifndef SOFA_CORE_BEHAVIOR_BASEANIMATIONLOOP_FWD_H
+#define SOFA_CORE_BEHAVIOR_BASEANIMATIONLOOP_FWD_H
+
 namespace sofa
 {
 
-namespace simulation
+namespace core
 {
 
-
-ExportOBJVisitor::ExportOBJVisitor(const core::ExecParams* params, std::ostream* out)
-    : Visitor(params) , out(out), mtl(NULL), ID(0), vindex(0), nindex(0), tindex(0), count(0)
+namespace behavior
 {
-}
 
-ExportOBJVisitor::ExportOBJVisitor(const core::ExecParams* params, std::ostream* out,std::ostream* mtl)
-    : Visitor(params) , out(out), mtl(mtl), ID(0), vindex(0), nindex(0), tindex(0), count(0)
-{
-}
+class BaseAnimationLoop  ;
 
-ExportOBJVisitor::~ExportOBJVisitor()
-{
-}
+} /// namespace behavior
 
-void ExportOBJVisitor::processVisualModel(Node* /*node*/, core::visual::VisualModel* vm)
-{
-    std::ostringstream oname;
-    oname << ++ID << "_" << vm->getName();
+} /// namespace core
 
-    vm->exportOBJ(oname.str(),out,mtl,vindex,nindex,tindex, ++count);
-}
+} /// namespace sofa
 
-simulation::Visitor::Result ExportOBJVisitor::processNodeTopDown(Node* node)
-{
-    for_each(this, node, node->visualModel,              &ExportOBJVisitor::processVisualModel);
-    count = 0;
-    return RESULT_CONTINUE;
-}
-
-void ExportOBJVisitor::processNodeBottomUp(Node* /*node*/)
-{
-}
-
-} // namespace simulation
-
-} // namespace sofa
-
+#endif

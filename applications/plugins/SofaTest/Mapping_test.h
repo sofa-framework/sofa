@@ -42,6 +42,8 @@
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <SceneCreator/SceneCreator.h>
 
+#include <sofa/core/Mapping.h>
+
 #include <sofa/helper/logging/Messaging.h>
 
 namespace sofa {

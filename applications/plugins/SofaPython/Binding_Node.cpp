@@ -33,6 +33,8 @@ using namespace sofa::simulation;
 using namespace sofa::core;
 using namespace sofa::core::objectmodel;
 
+#include <sofa/core/visual/VisualLoop.h>
+
 #include "Binding_Node.h"
 #include "Binding_Context.h"
 #include "PythonVisitor.h"

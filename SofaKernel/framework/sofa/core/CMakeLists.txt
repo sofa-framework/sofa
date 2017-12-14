@@ -3,8 +3,10 @@ project(SofaCore)
 
 set(HEADER_FILES
     BaseMapping.h
+    BaseMapping_fwd.h
     BaseState.h
     BehaviorModel.h
+    BehaviorModel_fwd.h
     CategoryLibrary.h
     CollisionElement.h
     CollisionModel.h    
@@ -15,6 +17,7 @@ set(HEADER_FILES
     DataEngine.h
     DataTracker.h
     ExecParams.h
+    ExecParams_fwd.h
     Mapping.h
     Mapping.inl
     MechanicalParams.h
@@ -29,9 +32,11 @@ set(HEADER_FILES
     State.inl
     VecId.h
     behavior/BaseAnimationLoop.h
+    behavior/BaseAnimationLoop_fwd.h
     behavior/BaseConstraint.h
     behavior/BaseConstraintCorrection.h
     behavior/BaseConstraintSet.h
+    behavior/BaseConstraintSet_fwd.h
     behavior/BaseController.h
     behavior/BaseForceField.h
     behavior/BaseInteractionConstraint.h
@@ -41,6 +46,7 @@ set(HEADER_FILES
     behavior/BaseMass.h
     behavior/BaseMass_fwd.h
     behavior/BaseMechanicalState.h
+    behavior/BaseMechanicalState_fwd.h
     behavior/BaseProjectiveConstraintSet.h
     behavior/BaseRotationFinder.h
     behavior/BaseVectorOperations.h
@@ -49,6 +55,7 @@ set(HEADER_FILES
     behavior/ConstraintCorrection.h
     behavior/ConstraintCorrection.inl
     behavior/ConstraintSolver.h
+    behavior/ConstraintSolver_fwd.h
     behavior/ForceField.h
     behavior/ForceField.inl
     behavior/LMConstraint.h
@@ -110,14 +117,17 @@ set(HEADER_FILES
     objectmodel/BaseObjectDescription_fwd.h
     objectmodel/ClassInfo.h
     objectmodel/ConfigurationSetting.h
+    objectmodel/ConfigurationSetting_fwd.h
     objectmodel/Context.h
     objectmodel/ContextObject.h
+    objectmodel/ContextObject_fwd.h
     objectmodel/DDGNode.h
     objectmodel/DDGNode_fwd.h
     objectmodel/Data.h
     objectmodel/DataFileName.h
     objectmodel/DetachNodeEvent.h
     objectmodel/Event.h
+    objectmodel/Event_fwd.h
     objectmodel/GUIEvent.h
     objectmodel/HapticDeviceEvent.h
     objectmodel/JoystickEvent.h
@@ -129,12 +139,15 @@ set(HEADER_FILES
     objectmodel/SPtr.h
     objectmodel/Tag.h
     topology/BaseMeshTopology.h
+    topology/BaseMeshTopology_fwd.h
     topology/BaseTopology.h
     topology/BaseTopologyData.h
     topology/BaseTopologyEngine.h
     topology/BaseTopologyObject.h
+    topology/BaseTopologyObject_fwd.h
     topology/TopologicalMapping.h
     topology/Topology.h
+    topology/Topology_fwd.h
     topology/TopologyChange.h
     topology/TopologyElementHandler.h
     topology/TopologyHandler.h
@@ -144,8 +157,11 @@ set(HEADER_FILES
     visual/Shader.h
     visual/Shader_fwd.h
     visual/VisualLoop.h
+    visual/VisualLoop_fwd.h
     visual/VisualManager.h
+    visual/VisualManager_fwd.h
     visual/VisualModel.h
+    visual/VisualModel_fwd.h
     visual/VisualParams.h
     visual/VisualParams_fwd.h
     logging/RichConsoleStyleMessageFormatter.h

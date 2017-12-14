@@ -31,6 +31,7 @@ using sofa::core::objectmodel::BaseContext ;
 using sofa::helper::testing::BaseSimulationTest ;
 using sofa::simulation::Node ;
 
+#include <sofa/core/visual/VisualModel.h>
 using sofa::core::visual::VisualModel ;
 
 class BaseContext_test: public BaseSimulationTest

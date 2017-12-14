@@ -21,6 +21,8 @@
 ******************************************************************************/
 #define SOFA_SIMULATION_MECHANICALVISITOR_CPP
 #include <sofa/core/behavior/BaseMass.h>
+#include <sofa/core/CollisionModel.h>
+#include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/Node.h>
 #include <iostream>

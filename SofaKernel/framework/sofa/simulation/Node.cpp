@@ -41,10 +41,18 @@
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/MutationListener.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/visual/Shader.h>
+#include <sofa/core/CollisionModel.h>
 #include <sofa/core/behavior/BaseMass.h>
-
+#include <sofa/core/objectmodel/ContextObject.h>
+#include <sofa/core/objectmodel/ConfigurationSetting.h>
+#include <sofa/core/visual/Shader.h>
+#include <sofa/core/visual/VisualLoop.h>
+#include <sofa/core/visual/VisualModel.h>
+#include <sofa/core/visual/VisualManager.h>
 #include <sofa/core/behavior/LinearSolver.h>
+#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/BaseTopologyObject.h>
 #include <sofa/helper/Factory.inl>
 #include <sofa/helper/cast.h>
 #include <iostream>
@@ -56,7 +64,6 @@
 
 
 /// SPECIZALIZATION...
-#include <sofa/core/behavior/BaseMass.h>
 namespace sofa
 {
 namespace simulation

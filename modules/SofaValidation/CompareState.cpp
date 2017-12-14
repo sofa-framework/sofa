@@ -33,6 +33,7 @@
 #include <SofaSimulationCommon/xml/XML.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
+#include <sofa/core/behavior/OdeSolver.h>
 
 #include <sstream>
 #include <algorithm>

@@ -33,49 +33,44 @@
 #ifndef SOFA_SIMULATION_CORE_NODE_H
 #define SOFA_SIMULATION_CORE_NODE_H
 
-#include <type_traits>
-
 #include <sofa/simulation/Node_fwd.h>
-#include <sofa/core/behavior/LinearSolver_fwd.h>
-
 #include <sofa/simulation/Sequence.h>
-#include <sofa/core/ExecParams.h>
-#include <sofa/core/objectmodel/Context.h>
-// moved from GNode (27/04/08)
-#include <sofa/core/objectmodel/BaseNode.h>
-#include <sofa/core/objectmodel/BaseObjectDescription_fwd.h>
-#include <sofa/core/objectmodel/ConfigurationSetting.h>
-#include <sofa/core/BehaviorModel.h>
-#include <sofa/core/objectmodel/ContextObject.h>
-#include <sofa/core/CollisionModel.h>
-#include <sofa/core/visual/VisualModel.h>
-#include <sofa/core/visual/VisualManager.h>
-#include <sofa/core/visual/VisualParams_fwd.h>
-#include <sofa/core/visual/Shader.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/Mapping.h>
-#include <sofa/core/behavior/ForceField.h>
-#include <sofa/core/behavior/BaseInteractionForceField.h>
-#include <sofa/core/behavior/BaseMass_fwd.h>
-#include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
-#include <sofa/core/behavior/BaseConstraintSet.h>
-#include <sofa/core/topology/Topology.h>
-#include <sofa/core/topology/BaseTopologyObject.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/behavior/OdeSolver.h>
-#include <sofa/core/behavior/ConstraintSolver.h>
-#include <sofa/core/behavior/BaseAnimationLoop.h>
-#include <sofa/core/visual/VisualLoop.h>
-#include <sofa/core/visual/VisualParams_fwd.h>
-#include <sofa/core/collision/Pipeline.h>
-#include <sofa/core/loader/BaseLoader.h>
-#include <sofa/core/objectmodel/Event.h>
-
-#include <sofa/simulation/simulationcore.h>
 #include <sofa/simulation/MutationListener_fwd.h>
 #include <sofa/simulation/VisitorScheduler_fwd.h>
 
-#include <sofa/helper/system/thread/CTime.h>
+#include <sofa/core/BehaviorModel_fwd.h>
+#include <sofa/core/CollisionModel_fwd.h>
+#include <sofa/core/ExecParams_fwd.h>
+#include <sofa/core/BaseMapping_fwd.h>
+#include <sofa/core/objectmodel/Context.h>
+#include <sofa/core/objectmodel/BaseNode.h>
+#include <sofa/core/objectmodel/BaseObjectDescription_fwd.h>
+#include <sofa/core/objectmodel/ConfigurationSetting_fwd.h>
+#include <sofa/core/objectmodel/ContextObject_fwd.h>
+#include <sofa/core/visual/VisualModel_fwd.h>
+#include <sofa/core/visual/VisualManager_fwd.h>
+#include <sofa/core/visual/VisualParams_fwd.h>
+#include <sofa/core/visual/Shader_fwd.h>
+#include <sofa/core/behavior/BaseMechanicalState_fwd.h>
+#include <sofa/core/behavior/LinearSolver_fwd.h>
+#include <sofa/core/behavior/BaseForceField.h> //
+#include <sofa/core/behavior/BaseInteractionForceField_fwd.h>  //
+#include <sofa/core/behavior/BaseMass_fwd.h>
+#include <sofa/core/behavior/BaseProjectiveConstraintSet_fwd.h> ///
+#include <sofa/core/behavior/BaseConstraintSet_fwd.h>       //
+#include <sofa/core/topology/Topology_fwd.h>
+#include <sofa/core/topology/BaseTopologyObject_fwd.h>
+#include <sofa/core/topology/BaseMeshTopology_fwd.h>
+#include <sofa/core/behavior/OdeSolver_fwd.h>
+#include <sofa/core/behavior/ConstraintSolver_fwd.h>
+#include <sofa/core/behavior/BaseAnimationLoop_fwd.h>
+#include <sofa/core/visual/VisualLoop_fwd.h>
+#include <sofa/core/visual/VisualParams_fwd.h>
+#include <sofa/core/collision/Pipeline_fwd.h>
+#include <sofa/core/objectmodel/Event_fwd.h>
+
+#include <sofa/simulation/simulationcore.h>
+
 #include <string>
 #include <stack>
 

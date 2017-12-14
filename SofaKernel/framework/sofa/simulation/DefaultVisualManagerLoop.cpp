@@ -24,7 +24,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
-
+#include <sofa/core/visual/VisualManager.h>
 #include <sofa/simulation/VisualVisitor.h>
 #include <sofa/simulation/UpdateContextVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
