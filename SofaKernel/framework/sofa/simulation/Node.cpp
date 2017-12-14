@@ -61,10 +61,38 @@ namespace sofa
 {
 namespace simulation
 {
-    //template class Single<sofa::core::BaseState> ;
-    //template class Single<sofa::core::behavior::BaseMechanicalState> ;
-    //template class Single<sofa::core::BaseMapping> ;
-    template class Single<sofa::core::behavior::BaseMass>;
+template class Single<sofa::core::behavior::BaseAnimationLoop> ;
+template class Single<sofa::core::visual::VisualLoop> ;
+
+template class Sequence<sofa::core::BehaviorModel> ;
+template class Sequence<sofa::core::BaseMapping> ;
+template class Sequence<sofa::core::behavior::OdeSolver> ;
+template class Sequence<sofa::core::behavior::ConstraintSolver> ;
+template class Sequence<sofa::core::behavior::BaseLinearSolver> ;
+
+template class Single<sofa::core::topology::Topology> ;
+template class Single<sofa::core::topology::BaseMeshTopology> ;
+template class Sequence<sofa::core::topology::BaseTopologyObject> ;
+template class Single<sofa::core::BaseState> ;
+template class Single<sofa::core::behavior::BaseMechanicalState> ;
+template class Single<sofa::core::BaseMapping> ;
+template class Single<sofa::core::behavior::BaseMass>;
+
+template class Sequence<sofa::core::behavior::BaseForceField> ;
+template class Sequence<sofa::core::behavior::BaseInteractionForceField> ;
+template class Sequence<sofa::core::behavior::BaseProjectiveConstraintSet> ;
+template class Sequence<sofa::core::behavior::BaseConstraintSet> ;
+template class Sequence<sofa::core::objectmodel::ContextObject> ;
+template class Sequence<sofa::core::objectmodel::ConfigurationSetting> ;
+
+template class Sequence<sofa::core::visual::Shader> ;
+template class Sequence<sofa::core::visual::VisualModel> ;
+template class Sequence<sofa::core::visual::VisualManager> ;
+
+template class Sequence<sofa::core::CollisionModel> ;
+template class Single<sofa::core::collision::Pipeline> ;
+
+template class Sequence<sofa::core::objectmodel::BaseObject> ;
 }
 }
 
@@ -371,7 +399,7 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
         int index = atoi(pathStr.c_str()+ppos+1);
 
         if(DEBUG_LINK)
-           dmsg_info() << "  index-based path to " << index ;
+            dmsg_info() << "  index-based path to " << index ;
 
         ObjectReverseIterator it = object.rbegin();
         ObjectReverseIterator itend = object.rend();
@@ -408,7 +436,7 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
     while(ppos < psize)
     {
         if ((ppos+1 < psize && pathStr.substr(ppos,2) == "./")
-            || pathStr.substr(ppos) == ".")
+                || pathStr.substr(ppos) == ".")
         {
             // this must be this node
             if(DEBUG_LINK)
@@ -418,7 +446,7 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
             based = true;
         }
         else if ((ppos+2 < psize && pathStr.substr(ppos,3) == "../") // relative
-                || pathStr.substr(ppos) == "..")
+                 || pathStr.substr(ppos) == "..")
         {
             ppos += 3;
             if (master)

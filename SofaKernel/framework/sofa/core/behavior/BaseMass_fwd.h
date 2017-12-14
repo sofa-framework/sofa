@@ -22,11 +22,24 @@
 #ifndef SOFA_CORE_BEHAVIOR_BASEMASS_FWD_H
 #define SOFA_CORE_BEHAVIOR_BASEMASS_FWD_H
 
-namespace sofa {
-namespace core {
-namespace behavior {
-    class BaseMass ;
+#include <sofa/core/objectmodel/BaseData_fwd.h>
+
+namespace sofa
+{
+
+namespace core
+{
+
+namespace behavior
+{
+
+class BaseMass ;
+
 } /// namespace behavior
+
+inline sofa::core::objectmodel::Base* AsBase(sofa::core::behavior::BaseMass* o) { return reinterpret_cast<sofa::core::objectmodel::Base*>(o) ;  }
+inline sofa::core::objectmodel::BaseData* AsData(sofa::core::behavior::BaseMass*) { return nullptr; }
+
 } /// namespace core
 } /// namespace sofa
 

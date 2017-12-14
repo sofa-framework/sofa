@@ -40,15 +40,6 @@ namespace sofa
 namespace core
 {
 
-    namespace objectmodel
-    {
-        class DDGNode;
-    }
-
-    sofa::core::objectmodel::Base* AsBase(sofa::core::objectmodel::DDGNode* n) ;
-    sofa::core::objectmodel::BaseData* AsData(sofa::core::objectmodel::DDGNode* n) ;
-
-
 namespace objectmodel
 {
 

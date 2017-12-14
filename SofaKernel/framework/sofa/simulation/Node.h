@@ -84,40 +84,41 @@ namespace sofa
 {
 namespace simulation
 {
-//    extern template class SOFA_SIMULATION_CORE_API Sequence<Node,true> ;
-//    extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::objectmodel::BaseObject,true> ;
-//    extern template class SOFA_SIMULATION_CORE_API Single<sofa::core::behavior::BaseAnimationLoop> ;
-//    extern template class SOFA_SIMULATION_CORE_API Single<sofa::core::visual::VisualLoop> ;
 
-//    extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::BehaviorModel> ;
-//    extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::BaseMapping> ;
-//    extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::behavior::OdeSolver> ;
-//    extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::behavior::ConstraintSolver> ;
-//    extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::behavior::BaseLinearSolver> ;
+//      extern template class SOFA_SIMULATION_CORE_API Sequence<Node,true> ;
+//      extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::objectmodel::BaseObject,true> ;
+      extern template class SOFA_SIMULATION_CORE_API Single<sofa::core::behavior::BaseAnimationLoop> ;
+      extern template class SOFA_SIMULATION_CORE_API Single<sofa::core::visual::VisualLoop> ;
 
-//    extern template class SOFA_SIMULATION_CORE_API Single<sofa::core::topology::Topology> ;
-//    extern template class SOFA_SIMULATION_CORE_API Single<sofa::core::topology::BaseMeshTopology> ;
-//    extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::topology::BaseTopologyObject> ;
-//    extern template class SOFA_SIMULATION_CORE_API Single<sofa::core::BaseState> ;
-//    extern template class SOFA_SIMULATION_CORE_API Single<sofa::core::behavior::BaseMechanicalState> ;
-//    extern template class SOFA_SIMULATION_CORE_API Single<sofa::core::BaseMapping> ;
-    extern template class SOFA_SIMULATION_CORE_API Single<sofa::core::behavior::BaseMass>;
+      extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::BehaviorModel> ;
+      extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::BaseMapping> ;
+      extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::behavior::OdeSolver> ;
+      extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::behavior::ConstraintSolver> ;
+      extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::behavior::BaseLinearSolver> ;
 
-//    extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::behavior::BaseForceField> forceField;
-//    extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::behavior::BaseInteractionForceField> interactionForceField;
-//    extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::behavior::BaseProjectiveConstraintSet> projectiveConstraintSet;
-//    extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::behavior::BaseConstraintSet> constraintSet;
-//    extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::objectmodel::ContextObject> ;
-//    extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::objectmodel::ConfigurationSetting> ;
+      extern template class SOFA_SIMULATION_CORE_API Single<sofa::core::topology::Topology> ;
+      extern template class SOFA_SIMULATION_CORE_API Single<sofa::core::topology::BaseMeshTopology> ;
+      extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::topology::BaseTopologyObject> ;
+      extern template class SOFA_SIMULATION_CORE_API Single<sofa::core::BaseState> ;
+      extern template class SOFA_SIMULATION_CORE_API Single<sofa::core::behavior::BaseMechanicalState> ;
+      extern template class SOFA_SIMULATION_CORE_API Single<sofa::core::BaseMapping> ;
+      extern template class SOFA_SIMULATION_CORE_API Single<sofa::core::behavior::BaseMass>;
 
-//    extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::visual::Shader> ;
-//    extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::visual::VisualModel> ;
-//    extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::visual::VisualManager> ;
+      extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::behavior::BaseForceField> ;
+      extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::behavior::BaseInteractionForceField> ;
+      extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::behavior::BaseProjectiveConstraintSet> ;
+      extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::behavior::BaseConstraintSet> ;
+      extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::objectmodel::ContextObject> ;
+      extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::objectmodel::ConfigurationSetting> ;
 
-//    extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::CollisionModel> ;
-//    extern template class SOFA_SIMULATION_CORE_API Single<sofa::core::collision::Pipeline> ;
+      extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::visual::Shader> ;
+      extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::visual::VisualModel> ;
+      extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::visual::VisualManager> ;
 
-//    extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::objectmodel::BaseObject> ;
+      extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::CollisionModel> ;
+      extern template class SOFA_SIMULATION_CORE_API Single<sofa::core::collision::Pipeline> ;
+
+      extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::objectmodel::BaseObject> ;
 }
 }
 
