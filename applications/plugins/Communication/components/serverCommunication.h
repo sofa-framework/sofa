@@ -77,6 +77,8 @@ namespace component
 namespace communication
 {
 
+static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+
 template<typename DataType>
 class DataCreator : public sofa::helper::BaseCreator<BaseData>
 {
@@ -126,7 +128,6 @@ public:
 protected:
 
     std::map<std::string, CommunicationSubscriber*> m_subscriberMap;
-    pthread_mutex_t                                 mutex;
     pthread_t                                       m_thread;
     bool                                            m_running = true;
 

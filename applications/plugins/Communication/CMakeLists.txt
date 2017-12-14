@@ -1,9 +1,7 @@
 Cmake_minimum_required(VERSION 3.1)
 project(Communication)
 
-
 add_subdirectory(Communication_test)
-
 
 set(HEADER_FILES
     config.h
@@ -31,8 +29,19 @@ set(EXTRA_FILES
 
 find_package(SofaFramework REQUIRED)
 
+
+###################################################################### ZMQ
+find_package(ZMQ REQUIRED)
+if (ZMQ_FOUND)
+        message("Found ZMQ libraries")
+        include_directories(${ZMQ_INCLUDE_DIRS})
+else (ZMQ_FOUND)
+        message("Can't find ZMQ !")
+endif (ZMQ_FOUND)
+
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
-target_link_libraries(${PROJECT_NAME} -lpthread -loscpack -lzmq ${}SofaCore SofaSimulationGraph)
+target_link_libraries(${PROJECT_NAME} -loscpack ${ZMQ_LIBRARIES} SofaCore SofaSimulationGraph)
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_Communication")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 

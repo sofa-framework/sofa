@@ -149,6 +149,7 @@ bool ServerCommunication::writeData(SingleLink<CommunicationSubscriber, BaseObje
     int i = 0;
     if (!isSubscribedTo(subject, argumentList.size()))
         return false;
+    pthread_mutex_lock(&mutex);
     for (std::vector<std::string>::iterator it = argumentList.begin(); it != argumentList.end(); it++)
     {
         BaseData* data = fetchData(source, getArgumentType(*it), subscriber->getArgumentName(i));
@@ -157,6 +158,7 @@ bool ServerCommunication::writeData(SingleLink<CommunicationSubscriber, BaseObje
         data->read(getArgumentValue(*it));
         i++;
     }
+    pthread_mutex_unlock(&mutex);
     return true;
 }
 
@@ -168,6 +170,7 @@ bool ServerCommunication::writeDataToFullMatrix(SingleLink<CommunicationSubscrib
 
     if(dataType.compare("FullMatrix<double>") == 0|| dataType.compare("FullMatrix<float>") == 0)
     {
+        pthread_mutex_lock(&mutex);
         void* a = data->beginEditVoidPtr();
         FullMatrix<SReal> * b = static_cast<FullMatrix<SReal>*>(a);
         std::vector<std::string>::iterator it = argumentList.begin();
@@ -180,6 +183,7 @@ bool ServerCommunication::writeDataToFullMatrix(SingleLink<CommunicationSubscrib
                 ++it;
             }
         }
+        pthread_mutex_unlock(&mutex);
         return true;
     }
     return false;
@@ -198,7 +202,9 @@ bool ServerCommunication::writeDataToContainer(SingleLink<CommunicationSubscribe
     {
         value.append(" " + getArgumentValue(*it));
     }
+    pthread_mutex_lock(&mutex);
     data->read(value);
+    pthread_mutex_unlock(&mutex);
     return true;
 }
 

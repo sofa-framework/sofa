@@ -207,6 +207,10 @@ void ServerCommunicationZMQ::processMessage(std::string dataString)
 
     std::string firstArg = getArgumentValue(*(++it));
 
+    std::vector<std::string> onlyArgumentList;
+    for (it; it != argumentList.end();it++)
+        onlyArgumentList.push_back(*it);
+
     if (firstArg.compare("matrix") == 0)
     {
         int row = 0, col = 0;
@@ -229,29 +233,26 @@ void ServerCommunicationZMQ::processMessage(std::string dataString)
             msg_warning() << subject << " is matrix, but message size is not correct. Should be : /subject matrix rows cols value value value... ";
 
         ++it; // needed for the accessing the correct first argument
-        std::vector<std::string> matrixArgumentList;
-        for (it; it != argumentList.end();it++)
-            matrixArgumentList.push_back(*it);
 
-        if(matrixArgumentList.size() == 0)
+        if(onlyArgumentList.size() == 0)
         {
             msg_error() << "argument list size is empty";
             return;
         }
 
-        if((unsigned int)row*col != matrixArgumentList.size())
+        if((unsigned int)row*col != onlyArgumentList.size())
         {
-            msg_error() << "argument list size is != row/cols; " << matrixArgumentList.size() << " instead of " << row*col;
+            msg_error() << "argument list size is != row/cols; " << onlyArgumentList.size() << " instead of " << row*col;
             return;
         }
 
-        if (!writeDataToFullMatrix(source, subscriber, subject, matrixArgumentList, row, col))
-            if (!writeDataToContainer(source, subscriber, subject, matrixArgumentList))
+        if (!writeDataToFullMatrix(source, subscriber, subject, onlyArgumentList, row, col))
+            if (!writeDataToContainer(source, subscriber, subject, onlyArgumentList))
                 msg_error() << "something went wrong while converting network data into sofa matrix";
     }
     else
     {
-        writeData(source, subscriber, subject, argumentList);
+        writeData(source, subscriber, subject, onlyArgumentList);
     }
 }
 
