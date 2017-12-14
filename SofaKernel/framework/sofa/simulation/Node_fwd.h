@@ -39,6 +39,8 @@ namespace sofa {
 
         inline sofa::core::objectmodel::Base* AsBase(sofa::simulation::Node* o) { return reinterpret_cast<sofa::core::objectmodel::Base*>(o) ;  }
         inline sofa::core::objectmodel::BaseData* AsData(sofa::simulation::Node*) { return nullptr; }
+
+
     }
 }
 

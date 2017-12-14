@@ -82,6 +82,8 @@ public:
     static const MyClass* GetClass() { return MyClass::get(); }
     virtual const BaseClass* getClass() const
     { return GetClass(); }
+
+    virtual BaseData* asBaseData(){ return this; }
     /// @}
 
     /// This internal class is used by the initData() methods to store initialization parameters of a Data

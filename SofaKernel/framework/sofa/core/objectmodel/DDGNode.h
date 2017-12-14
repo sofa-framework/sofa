@@ -52,7 +52,7 @@ class BaseObjectDescription;
  *  \brief Abstract base to manage data dependencies. BaseData and DataEngine inherites from this class
  *
  */
-class SOFA_CORE_API DDGNode
+class SOFA_CORE_API DDGNode : public sofa::core::objectmodel::MetaClass
 {
 public:
 
@@ -78,68 +78,6 @@ public:
     {
         ptr = NULL; // DDGNode does not derive from Base
     }
-
-    /// Helper method to get the type name of a type derived from this class
-    ///
-    /// This method should be used as follow :
-    /// \code  T* ptr = NULL; std::string type = T::typeName(ptr); \endcode
-    /// This way derived classes can redefine the typeName method
-    template<class T>
-    static std::string typeName(const T* ptr= NULL)
-    {
-        return BaseClass::defaultTypeName(ptr);
-    }
-
-    /// Helper method to get the class name of a type derived from this class
-    ///
-    /// This method should be used as follow :
-    /// \code  T* ptr = NULL; std::string type = T::className(ptr); \endcode
-    /// This way derived classes can redefine the className method
-    template<class T>
-    static std::string className(const T* ptr= NULL)
-    {
-        return BaseClass::defaultClassName(ptr);
-    }
-
-    /// Helper method to get the namespace name of a type derived from this class
-    ///
-    /// This method should be used as follow :
-    /// \code  T* ptr = NULL; std::string type = T::namespaceName(ptr); \endcode
-    /// This way derived classes can redefine the namespaceName method
-    template<class T>
-    static std::string namespaceName(const T* ptr= NULL)
-    {
-        return BaseClass::defaultNamespaceName(ptr);
-    }
-
-    /// Helper method to get the template name of a type derived from this class
-    ///
-    /// This method should be used as follow :
-    /// \code  T* ptr = NULL; std::string type = T::templateName(ptr); \endcode
-    /// This way derived classes can redefine the templateName method
-    template<class T>
-    static std::string templateName(const T* ptr= NULL)
-    {
-        return BaseClass::defaultTemplateName(ptr);
-    }
-
-    /// Helper method to get the shortname of a type derived from this class.
-    /// The default implementation return the class name.
-    ///
-    /// This method should be used as follow :
-    /// \code  T* ptr = NULL; std::string type = T::shortName(ptr); \endcode
-    /// This way derived classes can redefine the shortName method
-    template< class T>
-    static std::string shortName( const T* ptr = NULL, BaseObjectDescription* = NULL )
-    {
-        std::string shortname = T::className(ptr);
-        if( !shortname.empty() )
-        {
-            *shortname.begin() = ::tolower(*shortname.begin());
-        }
-        return shortname;
-    }
-    /// @}
 
     /// Add a new input to this node
     void addInput(DDGNode* n);

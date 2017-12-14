@@ -35,6 +35,7 @@
 #include <sofa/helper/stable_vector.h>
 
 #include <sofa/core/typetraits.h>
+#include <type_traits>
 
 #include <sstream>
 #include <string>
@@ -480,23 +481,24 @@ public:
         {
 
             DestType* ptr = TraitsDestPtr::get(TraitsValueType::get(value));
-            sofa::core::AsBase(ptr) ;
             if (ptr)
-                path = BaseLink::CreateString(sofa::core::AsBase(ptr),
-                                              sofa::core::AsData(ptr),
-                                              sofa::core::AsBase(m_owner));
+                path = BaseLink::CreateString(ptr->asBase(),
+                                              ptr->asBaseData(),
+                                              m_owner->asBase());
         }
         return path;
     }
 
     Base* getLinkedBase(unsigned int index=0) const
     {
-        return AsBase(getIndex(index));
+        return getIndex(index)->asBase() ;
     }
+
     BaseData* getLinkedData(unsigned int index=0) const
     {
-        return AsData(getIndex(index));
+        return getIndex(index)->asBaseData()  ;
     }
+
     std::string getLinkedPath(unsigned int index=0) const
     {
         return getPath(index);
@@ -505,7 +507,7 @@ public:
     /// @name Serialization API
     /// @{
 
-    /// Read the command line
+    /// Read a string version of the link
     virtual bool read( const std::string& str )
     {
         if (str.empty())
@@ -624,11 +626,12 @@ public:
 
     sofa::core::objectmodel::Base* getOwnerBase() const
     {
-        return AsBase(m_owner);
+        return m_owner->asBase();
     }
+
     sofa::core::objectmodel::BaseData* getOwnerData() const
     {
-        return AsData(m_owner);
+        return m_owner->asBaseData();
     }
 
     void setOwner(OwnerType* owner)

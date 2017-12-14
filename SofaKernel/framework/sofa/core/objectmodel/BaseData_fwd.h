@@ -41,6 +41,8 @@ inline sofa::core::objectmodel::BaseData* AsData(sofa::core::objectmodel::Base*)
 inline sofa::core::objectmodel::Base* AsBase(sofa::core::objectmodel::BaseData*){ return nullptr; }
 inline sofa::core::objectmodel::BaseData* AsData(sofa::core::objectmodel::BaseData* d){ return d; }
 
+template<class T>
+sofa::core::objectmodel::BaseClass* GetClass(T*) ;
 
 } /// namespace core
 } /// namespace sofa
