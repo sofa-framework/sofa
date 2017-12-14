@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "BaseMass.h"
-#include <sofa/core/objectmodel/BaseNode.h>
+#ifndef SOFA_CORE_OBJECTMODEL_BASEOBJECTDESCRIPTION_FWD_H
+#define SOFA_CORE_OBJECTMODEL_BASEOBJECTDESCRIPTION_FWD_H
 
 namespace sofa
 {
@@ -28,33 +28,15 @@ namespace sofa
 namespace core
 {
 
-namespace behavior
+namespace objectmodel
 {
 
-bool BaseMass::insertInNode( objectmodel::BaseNode* node )
-{
-    node->addMass(this);
-    Inherit1::insertInNode(node);
-    return true;
-}
+class BaseObjectDescription ;
 
-bool BaseMass::removeInNode( objectmodel::BaseNode* node )
-{
-    node->removeMass(this);
-    Inherit1::removeInNode(node);
-    return true;
-}
-
-const sofa::core::objectmodel::BaseClass* GetClass(sofa::core::behavior::BaseMass* n)
-{
-    return n->getClass() ;
-}
-
-
-
-} // namespace behavior
+} // namespace objectmodel
 
 } // namespace core
 
 } // namespace sofa
 
+#endif

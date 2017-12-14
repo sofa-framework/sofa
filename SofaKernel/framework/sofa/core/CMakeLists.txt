@@ -107,6 +107,7 @@ set(HEADER_FILES
     objectmodel/BaseNode.h
     objectmodel/BaseObject.h
     objectmodel/BaseObjectDescription.h
+    objectmodel/BaseObjectDescription_fwd.h
     objectmodel/ClassInfo.h
     objectmodel/ConfigurationSetting.h
     objectmodel/Context.h
