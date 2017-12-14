@@ -24,6 +24,7 @@
 
 #include <string>
 
+#include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/DataEngine.h>

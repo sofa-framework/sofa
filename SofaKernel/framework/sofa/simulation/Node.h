@@ -53,11 +53,11 @@
 #include <sofa/core/visual/Shader_fwd.h>
 #include <sofa/core/behavior/BaseMechanicalState_fwd.h>
 #include <sofa/core/behavior/LinearSolver_fwd.h>
-#include <sofa/core/behavior/BaseForceField.h> //
-#include <sofa/core/behavior/BaseInteractionForceField_fwd.h>  //
+#include <sofa/core/behavior/BaseForceField.h>
+#include <sofa/core/behavior/BaseInteractionForceField_fwd.h>
 #include <sofa/core/behavior/BaseMass_fwd.h>
-#include <sofa/core/behavior/BaseProjectiveConstraintSet_fwd.h> ///
-#include <sofa/core/behavior/BaseConstraintSet_fwd.h>       //
+#include <sofa/core/behavior/BaseProjectiveConstraintSet_fwd.h>
+#include <sofa/core/behavior/BaseConstraintSet_fwd.h>
 #include <sofa/core/topology/Topology_fwd.h>
 #include <sofa/core/topology/BaseTopologyObject_fwd.h>
 #include <sofa/core/topology/BaseMeshTopology_fwd.h>

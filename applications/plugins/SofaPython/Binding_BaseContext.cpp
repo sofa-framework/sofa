@@ -192,8 +192,6 @@ static PyObject * BaseContext_getObject(PyObject * self, PyObject * args, PyObje
         return NULL;
     }
 
-    bool emitWarningMessage = true;
-
     if (kw && PyDict_Size(kw)>0)
     {
         PyObject* keys = PyDict_Keys(kw);
@@ -201,12 +199,9 @@ static PyObject * BaseContext_getObject(PyObject * self, PyObject * args, PyObje
         for (int i=0; i<PyDict_Size(kw); i++)
         {
             PyObject *key = PyList_GetItem(keys,i);
-            PyObject *value = PyList_GetItem(values,i);
             if( !strcmp(PyString_AsString(key),"warning") )
             {
-                if PyBool_Check(value)
-                        emitWarningMessage = (value==Py_True);
-                break;
+                    break;
             }
         }
         Py_DecRef(keys);

@@ -23,6 +23,7 @@
 #define SOFA_COMPONENT_MECHANICALOBJECT_INL
 
 #include <sofa/config/build_option_experimental_features.h>
+#include <sofa/core/objectmodel/BaseObjectDescription.h>
 
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/visual/VisualParams.h>

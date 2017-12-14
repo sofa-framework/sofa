@@ -23,6 +23,7 @@
 #define SOFA_COMPONENT_TOPOLOGY_GRIDTOPOLOGY_H
 #include "config.h"
 
+#include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <SofaBaseTopology/MeshTopology.h>
 #include <sofa/core/DataEngine.h>
 namespace sofa

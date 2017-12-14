@@ -22,7 +22,7 @@
 #include <SofaBaseCollision/BruteForceDetection.h>
 #include <sofa/core/visual/VisualParams.h>
 
-#include <sofa/helper/FnDispatcher.h>
+
 #include <sofa/core/ObjectFactory.h>
 #include <map>
 #include <queue>

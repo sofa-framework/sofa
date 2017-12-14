@@ -22,6 +22,7 @@
 #ifndef SOFA_CORE_BEHAVIOR_MECHANICALSTATE_H
 #define SOFA_CORE_BEHAVIOR_MECHANICALSTATE_H
 
+#include <sofa/helper/StringUtils.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/VecId.h>
 #include <sofa/core/State.h>

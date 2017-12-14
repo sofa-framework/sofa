@@ -22,8 +22,7 @@
 #include <SofaMiscCollision/SolverMerger.h>
 #include <sofa/core/visual/VisualParams.h>
 
-#include <sofa/helper/FnDispatcher.h>
-#include <sofa/helper/FnDispatcher.inl>
+
 #include <SofaExplicitOdeSolver/EulerSolver.h>
 #include <SofaGeneralExplicitOdeSolver/RungeKutta4Solver.h>
 #include <SofaImplicitOdeSolver/StaticSolver.h>

@@ -24,6 +24,7 @@
 
 
 #include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/State.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -63,10 +64,6 @@ namespace sofa
 		{
 		public:
 			SOFA_CLASS(SOFA_TEMPLATE(DataExchange, DataTypes ), objectmodel::BaseObject);
-
-			//typedef typename DataTypes::Real        Real;
-			//typedef typename DataTypes::Coord       Coord;
-			//typedef typename DataTypes::VecCoord    VecCoord;
 
 		protected:
 
@@ -141,50 +138,15 @@ namespace sofa
 			//SingleLink< DataExchange<DataTypes>, Data<DataTypes>, BaseLink::FLAG_DATALINK|BaseLink::FLAG_DUPLICATE> mSourceObject;
 			/// dest
 			//SingleLink< DataExchange<DataTypes>, Data<DataTypes>, BaseLink::FLAG_DATALINK|BaseLink::FLAG_DUPLICATE> mDestinationObject;
-
-
-
 			DataTypes* mSourcePtr;
 			DataTypes* mDestinationPtr;
-			//VecCoord mDataCopy;
 
 			std::string fromPath;
 			std::string toPath;
-			//core::objectmodel::BaseObjectDescription* desc;
 
 			std::size_t mSizeInBytes;
-
 		};
-
-
-
-
-
-		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Vec3dTypes >;
-		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Vec2dTypes >;
-		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Vec1dTypes >;
-		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Vec6dTypes >;
-		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Vec3dTypes >;
-		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Rigid3dTypes >;
-		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Rigid2dTypes >;
-		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Rigid3dTypes >;
-		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Rigid3dTypes >;
-		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Rigid2dTypes >;
-
-		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Vec3fTypes >;
-		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Vec2fTypes >;
-		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Vec1fTypes >;
-		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Vec6fTypes >;
-		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Vec3fTypes >;
-		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Rigid3fTypes >;
-		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Rigid2fTypes >;
-		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Rigid3fTypes >;
-		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Rigid3fTypes >;
-		//extern template class SOFA_XICATHPLUGIN_API DataExchange< sofa::defaulttype::Rigid2fTypes >;
-
-
 	}
-
 }
 
 #endif // SOFA_EXCHANGE_DATA_H

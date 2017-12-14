@@ -39,8 +39,10 @@ set(HEADER_FILES
     behavior/BaseConstraintSet_fwd.h
     behavior/BaseController.h
     behavior/BaseForceField.h
+    behavior/BaseForceField_fwd.h
     behavior/BaseInteractionConstraint.h
     behavior/BaseInteractionForceField.h
+    behavior/BaseInteractionForceField_fwd.h
     behavior/BaseInteractionProjectiveConstraintSet.h
     behavior/BaseLMConstraint.h
     behavior/BaseMass.h
@@ -48,6 +50,7 @@ set(HEADER_FILES
     behavior/BaseMechanicalState.h
     behavior/BaseMechanicalState_fwd.h
     behavior/BaseProjectiveConstraintSet.h
+    behavior/BaseProjectiveConstraintSet_fwd.h
     behavior/BaseRotationFinder.h
     behavior/BaseVectorOperations.h
     behavior/Constraint.h
@@ -107,15 +110,18 @@ set(HEADER_FILES
     objectmodel/AspectPool.h
     objectmodel/Base.h
     objectmodel/BaseClass.h
+    objectmodel/BaseClass_fwd.h
     objectmodel/BaseContext.h
     objectmodel/BaseData.h
     objectmodel/BaseData_fwd.h
     objectmodel/BaseLink.h
+    objectmodel/BaseLink_fwd.h
     objectmodel/BaseNode.h
     objectmodel/BaseObject.h
     objectmodel/BaseObjectDescription.h
     objectmodel/BaseObjectDescription_fwd.h
     objectmodel/ClassInfo.h
+    objectmodel/ClassInfo_fwd.h
     objectmodel/ConfigurationSetting.h
     objectmodel/ConfigurationSetting_fwd.h
     objectmodel/Context.h

@@ -29,7 +29,6 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <map>
 
-#include <sofa/core/BaseMapping.h>
 #include <sofa/core/behavior/MechanicalState.h>
 
 #include <SofaGeneralSimpleFem/RadiusContainer.h>

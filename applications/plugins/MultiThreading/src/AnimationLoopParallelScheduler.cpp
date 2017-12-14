@@ -5,6 +5,7 @@
 #include "DataExchange.h"
 
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/CollisionModel.h>
 #include <sofa/simulation/PrintVisitor.h>
 #include <SofaSimulationCommon/FindByTypeVisitor.h>
 #include <sofa/simulation/ExportGnuplotVisitor.h>
@@ -37,7 +38,7 @@
 #include <sofa/helper/system/atomic.h>
 
 #include <sofa/core/visual/VisualParams.h>
-
+#include <sofa/core/behavior/ConstraintSolver.h>
 #include <sofa/helper/AdvancedTimer.h>
 
 #include <stdlib.h>

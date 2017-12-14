@@ -23,7 +23,6 @@
 #define SOFA_COMPONENT_TOPOLOGY_CENTERPOINTTOPOLOGICALMAPPING_H
 #include "config.h"
 
-#include <sofa/core/BaseMapping.h>
 #include <sofa/core/topology/TopologicalMapping.h>
 
 namespace sofa

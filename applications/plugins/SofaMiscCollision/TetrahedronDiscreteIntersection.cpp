@@ -21,7 +21,6 @@
 ******************************************************************************/
 #include <SofaMiscCollision/TetrahedronDiscreteIntersection.h>
 #include <sofa/helper/system/config.h>
-#include <sofa/helper/FnDispatcher.inl>
 #include <SofaBaseCollision/DiscreteIntersection.h>
 #include <sofa/core/collision/Intersection.inl>
 #include <iostream>

@@ -154,8 +154,6 @@ protected:
         return BaseLink::InitLink<DDGNode>(this, name, help);
     }
 
-    //std::list<DDGNode*> inputs;
-    //std::list<DDGNode*> outputs;
     DDGLink inputs;
     DDGLink outputs;
 
@@ -195,8 +193,6 @@ private:
 };
 
 } // namespace objectmodel
-
-
 
 } // namespace core
 

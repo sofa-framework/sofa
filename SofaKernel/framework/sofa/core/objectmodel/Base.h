@@ -26,13 +26,12 @@
 #include <sofa/helper/system/atomic.h>
 #include <sofa/helper/system/SofaOStream.h>
 #include <sofa/helper/vector.h>
-#include <sofa/helper/StringUtils.h>
 #include <sofa/defaulttype/BoundingBox.h>
-#include <sofa/core/objectmodel/BaseClass.h>
+#include <sofa/core/objectmodel/BaseClass_fwd.h>
 #include <sofa/core/objectmodel/SPtr.h>
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/core/objectmodel/BaseLink.h>
-#include <sofa/core/objectmodel/BaseObjectDescription.h>
+#include <sofa/core/objectmodel/BaseLink_fwd.h>
+#include <sofa/core/objectmodel/BaseObjectDescription_fwd.h>
 #include <sofa/core/objectmodel/Tag.h>
 
 #include <sofa/core/sptr.h>

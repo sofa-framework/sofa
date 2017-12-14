@@ -31,6 +31,7 @@ set(HEADER_FILES
     RandomGenerator.h
     SVector.h
     SimpleTimer.h
+    TypeInfo.h
     SortedPermutation.h
     StringUtils.h
     TagFactory.h
@@ -140,6 +141,7 @@ set(SOURCE_FILES
     OptionsGroup.cpp
     StateMask.cpp
     SVector.cpp
+    StringUtils.cpp
     Polynomial_LD.cpp
     Quater.cpp
     RandomGenerator.cpp

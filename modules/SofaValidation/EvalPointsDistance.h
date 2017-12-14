@@ -24,7 +24,7 @@
 #include "config.h"
 
 #include <sofa/core/behavior/MechanicalState.h>
-
+#include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/core/objectmodel/DataFileName.h>

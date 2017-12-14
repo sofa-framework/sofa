@@ -483,9 +483,6 @@ public:
     }
     /// @}
 
-
-    //typedef TClass<MetaClass> MyClass;
-    //static const MyClass* GetClass() { return MyClass::get(); }
 };
 
 

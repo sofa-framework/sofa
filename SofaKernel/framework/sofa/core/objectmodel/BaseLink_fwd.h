@@ -19,22 +19,26 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_STRING_UTILS_H
-#define SOFA_HELPER_STRING_UTILS_H
-
-#include <sofa/helper/helper.h>
-#include <string>
+#ifndef SOFA_CORE_OBJECTMODEL_BASELINK_FWD_H
+#define SOFA_CORE_OBJECTMODEL_BASELINK_FWD_H
 
 namespace sofa
 {
 
-namespace helper
+namespace core
 {
 
-void SOFA_HELPER_API replaceAll(std::string& str, const std::string& search, const std::string& replace) ;
+namespace objectmodel
+{
 
-} // namespace helper
+class BaseLink ;
 
-} // namespace sofa
+} /// namespace objectmodel
 
-#endif //SOFA_HELPER_STRING_UTILS_H
+} /// namespace core
+
+using core::objectmodel::BaseLink;
+
+} /// namespace sofa
+
+#endif

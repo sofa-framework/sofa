@@ -19,11 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_STRING_UTILS_H
-#define SOFA_HELPER_STRING_UTILS_H
+#ifndef SOFA_HELPER_TYPEINFO_H
+#define SOFA_HELPER_TYPEINFO_H
+
+#include <typeinfo>
 
 #include <sofa/helper/helper.h>
-#include <string>
 
 namespace sofa
 {
@@ -31,10 +32,23 @@ namespace sofa
 namespace helper
 {
 
-void SOFA_HELPER_API replaceAll(std::string& str, const std::string& search, const std::string& replace) ;
+class TypeInfo
+{
+public:
+    const std::type_info* pt;
+    TypeInfo(const std::type_info& t) : pt(&t) { }
+    operator const std::type_info&() const { return *pt; }
+    bool operator==(const TypeInfo& t) const { return *pt == *t.pt; }
+    bool operator!=(const TypeInfo& t) const { return *pt != *t.pt; }
+#ifdef _MSC_VER
+    bool operator<(const TypeInfo& t) const { return (pt->before(*t.pt)!=0); }
+#else
+    bool operator<(const TypeInfo& t) const { return pt->before(*t.pt); }
+#endif
+};
 
 } // namespace helper
 
 } // namespace sofa
 
-#endif //SOFA_HELPER_STRING_UTILS_H
+#endif

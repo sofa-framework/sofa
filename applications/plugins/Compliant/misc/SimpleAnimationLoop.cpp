@@ -1,9 +1,9 @@
 #include "SimpleAnimationLoop.h"
 
-
 #include <sofa/simulation/AnimateVisitor.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/simulation/PropagateEventVisitor.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>

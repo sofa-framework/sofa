@@ -25,7 +25,7 @@
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/State.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
-
+#include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
 

@@ -35,6 +35,7 @@
 #include <sofa/core/loader/MeshLoader.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/OptionsGroup.h>
+#include <sofa/core/objectmodel/BaseObjectDescription.h>
 
 namespace sofa
 {

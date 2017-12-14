@@ -19,11 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_STRING_UTILS_H
-#define SOFA_HELPER_STRING_UTILS_H
-
-#include <sofa/helper/helper.h>
-#include <string>
+#include "StringUtils.h"
 
 namespace sofa
 {
@@ -31,10 +27,17 @@ namespace sofa
 namespace helper
 {
 
-void SOFA_HELPER_API replaceAll(std::string& str, const std::string& search, const std::string& replace) ;
+void replaceAll(std::string& str, const std::string& search, const std::string& replace)
+{
+    size_t pos = 0;
+    while((pos = str.find(search, pos)) != std::string::npos)
+    {
+        str.replace(pos, search.length(), replace);
+        pos += replace.length();
+    }
+}
 
-} // namespace helper
+} /// namespace helper
 
-} // namespace sofa
+} /// namespace sofa
 
-#endif //SOFA_HELPER_STRING_UTILS_H

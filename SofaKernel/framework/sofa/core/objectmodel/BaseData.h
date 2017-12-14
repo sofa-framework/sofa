@@ -22,19 +22,13 @@
 #ifndef SOFA_CORE_OBJECTMODEL_BASEDATA_H
 #define SOFA_CORE_OBJECTMODEL_BASEDATA_H
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
-#include <list>
-#include <iostream>
-#include <typeinfo>
+//#include <iostream>
+//#include <typeinfo>
 #include <sofa/core/core.h>
 #include <sofa/core/ExecParams.h>
 #include <sofa/core/objectmodel/DDGNode.h>
 #include <sofa/core/objectmodel/BaseLink.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
-#include <sofa/core/typetraits.h>
 #include "BaseData_fwd.h"
 
 namespace sofa
@@ -239,7 +233,6 @@ public:
     /// @}
 
     /// If we use the Data as a link and not as value directly
-    //void setLinkPath(const std::string &path) { m_linkPath = path; }
     std::string getLinkPath() const { return parentBaseData.getPath(); }
     /// Return whether this %Data can be used as a linkPath.
     ///
@@ -363,8 +356,6 @@ protected:
     Base* m_owner;
     /// Data name within the Base component
     std::string m_name;
-//    /// Link to another Data, if used as an input from another Data (@ typo).
-//    std::string m_linkPath;
     /// Parent Data
     SingleLink<BaseData,BaseData,BaseLink::FLAG_STOREPATH|BaseLink::FLAG_DATALINK|BaseLink::FLAG_DUPLICATE> parentBaseData;
 
@@ -384,21 +375,7 @@ public:
     }
 };
 
-//template<class Type>
-//class LinkTraitsPtrCasts
-//{
-//public:
-//    static sofa::core::objectmodel::Base* getBase(sofa::core::objectmodel::Base* b) { return b; }
-//    static sofa::core::objectmodel::Base* getBase(sofa::core::objectmodel::BaseData* d) { return d->getOwner(); }
-//    static sofa::core::objectmodel::BaseData* getData(sofa::core::objectmodel::Base* /*b*/) { return NULL; }
-//    static sofa::core::objectmodel::BaseData* getData(sofa::core::objectmodel::BaseData* d) { return d; }
-//};
-
-
 } // namespace objectmodel
-
-
-
 
 } // namespace core
 
