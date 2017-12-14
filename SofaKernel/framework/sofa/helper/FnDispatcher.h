@@ -73,8 +73,6 @@ public:
     bool isSupported(BaseClass &arg1, BaseClass &arg2);
 };
 
-//std::size_t hash_value(const TypeInfo & t){return hash_value(t.pt);}
-
 template <class BaseClass, typename ResulT>
 class FnDispatcher : public BasicDispatcher<BaseClass, ResulT>
 {
