@@ -184,6 +184,13 @@ public:
         return DataTypes::Name();
     }
 
+    /// These lines are there to detect the correct inclusion of the .inl file when template
+    /// are instantiated. If your code is failing on this function... this is probably
+    /// because you are instantiating the class but miss the .inl files. So you
+    /// need to add #include the .inl associated with this class.
+    constexpr static int SofaError_TheMethodDefinitionsAreMissing() ;
+    constexpr static int SofaError_CannotInstantiateTheTemplate = SofaError_TheMethodDefinitionsAreMissing() ;
+
 protected:
     SingleLink<ProjectiveConstraintSet<DataTypes>,MechanicalState<DataTypes>,BaseLink::FLAG_STRONGLINK> mstate;
 };
