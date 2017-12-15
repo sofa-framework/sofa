@@ -33,6 +33,9 @@ public:
     virtual void initTypeFactory() override;
     /////////////////////////////////////////////////////////////////////////////////
 
+    virtual std::string getArgumentType(std::string value) override;
+    virtual std::string getArgumentValue(std::string value) override;
+
     Data<helper::OptionsGroup>  d_pattern;
 
 
@@ -44,9 +47,6 @@ protected:
     //////////////////////////////// Inherited from ServerCommunication /////////////////////////////////
     virtual void sendData();
     virtual void receiveData();
-
-    virtual std::string getArgumentType(std::string value) override;
-    virtual std::string getArgumentValue(std::string value) override;
     /////////////////////////////////////////////////////////////////////////////////
 
     void sendRequest();

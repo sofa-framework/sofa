@@ -43,9 +43,10 @@ void ServerCommunicationZMQ::initTypeFactory()
     getFactoryInstance()->registerCreator("double", new DataCreator<double>());
     getFactoryInstance()->registerCreator("int", new DataCreator<int>());
     getFactoryInstance()->registerCreator("string", new DataCreator<std::string>());
-    //TODO Correct value for matrix
-    getFactoryInstance()->registerCreator("matrixfloat", new DataCreator<helper::vector<float>>());
-    getFactoryInstance()->registerCreator("matrixint", new DataCreator<helper::vector<int>>());
+
+    getFactoryInstance()->registerCreator("matrixfloat", new DataCreator<FullMatrix<SReal>>());
+    getFactoryInstance()->registerCreator("matrixdouble", new DataCreator<FullMatrix<SReal>>());
+    getFactoryInstance()->registerCreator("matrixint", new DataCreator<FullMatrix<SReal>>());
 }
 
 void ServerCommunicationZMQ::sendData()

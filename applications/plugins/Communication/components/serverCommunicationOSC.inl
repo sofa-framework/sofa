@@ -104,7 +104,7 @@ osc::OutboundPacketStream ServerCommunicationOSC::createOSCMessage()
         for (std::vector<std::string>::iterator itArgument = argumentList.begin(); itArgument != argumentList.end(); itArgument++ )
         {
 
-            BaseData* data = fetchData(source, "s", *itArgument); // s for std::string in case of non existing argument
+            BaseData* data = fetchData(source, "OSC-string", *itArgument); // s for std::string in case of non existing argument
             if (!data)
             {
                 messageName = subscriber->getSubject();
@@ -161,7 +161,7 @@ osc::OutboundPacketStream ServerCommunicationOSC::createOSCMessage()
     return p;
 }
 
-void ServerCommunicationOSC::ProcessMessage( const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint )
+void ServerCommunicationOSC::ProcessMessage( const osc::ReceivedMessage& m, const IpEndpointName& /*remoteEndpoint*/ )
 {
     if (!m_running)
         m_socket->Break();

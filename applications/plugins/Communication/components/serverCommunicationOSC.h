@@ -61,6 +61,9 @@ public:
     virtual void ProcessMessage( const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint );
     /////////////////////////////////////////////////////////////////////////////////
 
+    virtual std::string getArgumentType(std::string value) override;
+    virtual std::string getArgumentValue(std::string value) override;
+
     Data<int> d_packetSize;
 
 protected:
@@ -74,9 +77,6 @@ protected:
     //////////////////////////////// Inherited from ServerCommunication /////////////////////////////////
     virtual void sendData() override;
     virtual void receiveData() override;
-
-    virtual std::string getArgumentType(std::string value) override;
-    virtual std::string getArgumentValue(std::string value) override;
     /////////////////////////////////////////////////////////////////////////////////
 
 };

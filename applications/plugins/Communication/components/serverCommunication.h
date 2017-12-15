@@ -109,6 +109,9 @@ public:
     bool isRunning() { return m_running;}
     void setRunning(bool value) {m_running = value;}
 
+    virtual std::string getArgumentType(std::string argument) =0;
+    virtual std::string getArgumentValue(std::string argument) =0;
+
     //////////////////////////////// Factory type /////////////////////////////////
     typedef sofa::helper::Factory< std::string, BaseData> CommunicationDataFactory;
     virtual CommunicationDataFactory* getFactoryInstance() =0;
@@ -142,9 +145,6 @@ protected:
     bool writeData(SingleLink<CommunicationSubscriber, BaseObject, BaseLink::FLAG_DOUBLELINK> source, CommunicationSubscriber * subscriber, std::string subject, std::vector<std::string> argumentList);
     bool writeDataToContainer(SingleLink<CommunicationSubscriber, BaseObject, BaseLink::FLAG_DOUBLELINK> source, CommunicationSubscriber * subscriber, std::string subject, std::vector<std::string> argumentList);
     bool writeDataToFullMatrix(SingleLink<CommunicationSubscriber, BaseObject, BaseLink::FLAG_DOUBLELINK> source, CommunicationSubscriber * subscriber, std::string subject, std::vector<std::string> argumentList, int rows, int cols);
-
-    virtual std::string getArgumentType(std::string argument) =0;
-    virtual std::string getArgumentValue(std::string argument) =0;
 
 };
 

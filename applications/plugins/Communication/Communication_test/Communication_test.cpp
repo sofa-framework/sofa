@@ -100,28 +100,79 @@ public:
 
     virtual void init() override
     {
-        std::stringstream ss;
-        for (int i =0; i <100; i++)
-            ss << std::to_string(static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/1.0))) << " ";
-        d_vectorOut.read(ss.str());
+        void* a = d_vectorIn.beginEditVoidPtr();
+        FullMatrix<SReal> * b = static_cast<FullMatrix<SReal>*>(a);
+        b->resize(10, 10);
+        for(int i = 0; i < b->rows(); i++)
+            for(int j = 0; j < b->cols(); j++)
+                b->set(i, j, 1.0);
+
+        a = d_vectorOut.beginEditVoidPtr();
+        b = static_cast<FullMatrix<SReal>*>(a);
+        b->resize(10, 10);
+        for(int i = 0; i < b->rows(); i++)
+            for(int j = 0; j < b->cols(); j++)
+                b->set(i, j, 2.0);
+
     }
 
     virtual void handleEvent(sofa::core::objectmodel::Event *event) override
     {
-        //        std::cout << "event " << std::endl;
-        //        for(Data<Vec3f>* t : d_positionsOut)
-        //        {
-        //            Vec3f a;
-        //            a.at(0) = a.at(0)+1.0f;
-        //            a.at(1) = a.at(1)+1.0f;
-        //            a.at(2) = a.at(2)+1.0f;
-        //            t->setValue(a);
-        //        }
+        std::cout << "Test thread safe" << std::endl;
+        void* voidInput = d_vectorIn.beginEditVoidPtr();
+        FullMatrix<SReal> * input = static_cast<FullMatrix<SReal>*>(voidInput);
+        void* voidOutput = d_vectorOut.beginEditVoidPtr();
+        FullMatrix<SReal> * output = static_cast<FullMatrix<SReal>*>(voidOutput);
+
+        EXPECT_EQ(input->rows(), output->rows());
+        EXPECT_EQ(input->cols(), output->cols());
+
+
+        // for the next step we increase the value of the ouput
+        SReal firstValue = input->element(0,0);
+        for(int i = 0; i < input->rows(); i++)
+        {
+            for(int j = 0; j < input->cols(); j++)
+            {
+                if(input->element(i,j) != firstValue)
+                {
+                    EXPECT_EQ(input->element(i,j), firstValue);
+                    std::cout << "Input: " << d_vectorIn.getValueString() << "\nOutput: " << d_vectorOut.getValueString() << std::endl;
+                    break;
+                }
+            }
+        }
+
+
+
+        // for the next step we increase the value of the ouput
+        for(int i = 0; i < output->rows(); i++)
+        {
+            for(int j = 0; j < output->cols(); j++)
+            {
+                output->set(i, j, output->element(i,j)+1.0);
+            }
+        }
+    }
+
+
+    FullMatrix<SReal>* getInput()
+    {
+        void* a = d_vectorIn.beginEditVoidPtr();
+        FullMatrix<SReal> * b = static_cast<FullMatrix<SReal>*>(a);
+        return b;
+    }
+
+    FullMatrix<SReal>* getOutput()
+    {
+        void* a = d_vectorOut.beginEditVoidPtr();
+        FullMatrix<SReal> * b = static_cast<FullMatrix<SReal>*>(a);
+        return b;
     }
 
     //    vectorData<Vec3f> d_pos;
-    Data<vector<float>> d_vectorIn;
-    Data<vector<float>> d_vectorOut;
+    Data<FullMatrix<SReal>> d_vectorIn;
+    Data<FullMatrix<SReal>> d_vectorOut;
 } ;
 
 int mclass = sofa::core::RegisterObject("").add<MyComponent>();
@@ -534,7 +585,7 @@ public:
         std::stringstream scene1 ;
         scene1 <<
                   "<?xml version='1.0' ?>                                                       \n"
-                  "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                  \n"
+                  "<Node  name='root' gravity='0 0 0' time='0' animate='0'   >                  \n"
                   "   <RequiredPlugin name='Communication' />                                   \n"
                   "   <MyComponent name='aComponent' />                                         \n"
                   "   <ServerCommunicationZMQ name='Sender' job='sender' port='6000' pattern='publish/subscribe' refreshRate='100000'/> \n"
@@ -557,24 +608,17 @@ public:
         EXPECT_NE(aComponent, nullptr);
 
 
-        for(unsigned int i=0; i<10000; i++)
+        for(unsigned int i=0; i<100; i++)
         {
-            //            for(Data<Vec3f>* a : aComponent->d_positionsIn)
-            //            {
-            //                Vec3f value = a->getValue();
-            //                std::cout << value << std::endl;
-            //                EXPECT_FLOAT_EQ(value.at(0), value.at(1));
-            //                EXPECT_FLOAT_EQ(value.at(1), value.at(2));
-            //            }
-            //            sofa::simulation::getSimulation()->animate(root.get(), 0.01);
+            usleep(1000);
+            aComponent->handleEvent(NULL);
+
         }
 
-
         aServerCommunicationReceiver->setRunning(false);
-        usleep(100000);
+        std::cout << "Wait for end of communication" << std::endl;
+        usleep(10000); // wait 5 seconds for the changes
         aServerCommunicationSender->setRunning(false);
-
-        EXPECT_STREQ(aComponent->d_vectorIn.getValueString().c_str(), aComponent->d_vectorOut.getValueString().c_str()); // crappy but it's not the final test. The test have to be inside the animation loop and test this easch step
 
     }
 };
