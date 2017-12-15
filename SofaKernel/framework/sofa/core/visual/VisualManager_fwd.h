@@ -34,6 +34,15 @@ namespace visual
 
 } // namespace visual
 
+namespace objectmodel
+{
+    class Base;
+    class BaseData;
+}
+
+inline sofa::core::objectmodel::Base* AsBase(sofa::core::visual::VisualManager* n) { return reinterpret_cast<sofa::core::objectmodel::Base*>(n) ; }
+inline sofa::core::objectmodel::BaseData* AsData(sofa::core::visual::VisualManager*) { return nullptr; }
+
 } // namespace core
 
 } // namespace sofa

@@ -128,6 +128,9 @@ public:
 
 } // namespace collision
 
+inline sofa::core::objectmodel::Base* AsBase(sofa::core::collision::Pipeline* n) { return reinterpret_cast<sofa::core::objectmodel::Base*>(n) ; }
+inline sofa::core::objectmodel::BaseData* AsData(sofa::core::collision::Pipeline*) { return nullptr; }
+
 } // namespace core
 
 } // namespace sofa
