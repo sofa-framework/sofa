@@ -23,6 +23,7 @@
 #define FLEXIBLE_DiffusionShapeFunction_H
 
 #include <Flexible/config.h>
+#include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include "../shapeFunction/BaseShapeFunction.h"
 #include "../shapeFunction/BaseImageShapeFunction.h"
 #include "../types/PolynomialBasis.h"
@@ -35,14 +36,6 @@
 #include <iostream>
 #include <map>
 #include <string>
-
-//#include <Eigen/SparseCore>
-//#include <Eigen/SparseCholesky>
-//#include <Eigen/IterativeLinearSolvers>
-
-//#define HARMONIC 0
-//#define BIHARMONIC 1
-//#define ANISOTROPIC 2
 
 #define GAUSS_SEIDEL 0
 #define JACOBI 1
