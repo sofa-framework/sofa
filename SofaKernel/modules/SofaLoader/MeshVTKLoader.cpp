@@ -85,7 +85,7 @@ protected:
 ////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////// MeshVTKLoader IMPLEMENTATION //////////////////////////////////
 MeshVTKLoader::MeshVTKLoader() : MeshLoader()
-    , reader(NULL)
+  , reader(NULL)
 {
 }
 
@@ -192,36 +192,36 @@ bool MeshVTKLoader::setInputsMesh()
 
     d_positions.endEdit();
 
-	vector<Vector3>& my_normals = *(d_normals.beginEdit());
-	if(reader->inputNormals)
-	{
-		BaseVTKReader::VTKDataIO<double>* vtkpd =  dynamic_cast<BaseVTKReader::VTKDataIO<double>* > (reader->inputNormals);
-		BaseVTKReader::VTKDataIO<float>* vtkpf =  dynamic_cast<BaseVTKReader::VTKDataIO<float>* > (reader->inputNormals);
+    vector<Vector3>& my_normals = *(d_normals.beginEdit());
+    if(reader->inputNormals)
+    {
+        BaseVTKReader::VTKDataIO<double>* vtkpd =  dynamic_cast<BaseVTKReader::VTKDataIO<double>* > (reader->inputNormals);
+        BaseVTKReader::VTKDataIO<float>* vtkpf =  dynamic_cast<BaseVTKReader::VTKDataIO<float>* > (reader->inputNormals);
 
-		if (vtkpd)
-		{			
-			const double* inNormals = (vtkpd->data);
-			if (inNormals)
-				for (int i=0; i < vtkpd->dataSize; i+=3)
-					my_normals.push_back(Vector3 ((double)inNormals[i+0], (double)inNormals[i+1], (double)inNormals[i+2]));
-			else return false;
-		}
-		else if (vtkpf)
-		{
-			const float* inNormals = (vtkpf->data);
-			if (inNormals)
-				for (int i=0; i < vtkpf->dataSize; i+=3)
-					my_normals.push_back(Vector3 ((float)inNormals[i+0], (float)inNormals[i+1], (float)inNormals[i+2]));
-			else return false;
-		}
-		else
-		{
-			msg_info(this) << "Type of coordinate (X,Y,Z) not supported" ;
-			return false;
-		}
-	}
+        if (vtkpd)
+        {
+            const double* inNormals = (vtkpd->data);
+            if (inNormals)
+                for (int i=0; i < vtkpd->dataSize; i+=3)
+                    my_normals.push_back(Vector3 ((double)inNormals[i+0], (double)inNormals[i+1], (double)inNormals[i+2]));
+            else return false;
+        }
+        else if (vtkpf)
+        {
+            const float* inNormals = (vtkpf->data);
+            if (inNormals)
+                for (int i=0; i < vtkpf->dataSize; i+=3)
+                    my_normals.push_back(Vector3 ((float)inNormals[i+0], (float)inNormals[i+1], (float)inNormals[i+2]));
+            else return false;
+        }
+        else
+        {
+            msg_info(this) << "Type of coordinate (X,Y,Z) not supported" ;
+            return false;
+        }
+    }
 
-	d_normals.endEdit();
+    d_normals.endEdit();
 
     helper::vector<Edge >& my_edges = *(d_edges.beginEdit());
     helper::vector<Triangle >& my_triangles = *(d_triangles.beginEdit());
@@ -366,61 +366,61 @@ bool MeshVTKLoader::setInputsMesh()
                 break;
             case 21: // QUADRATIC Edge
                 addEdge(&my_edges, inFP[i+0], inFP[i+1]);
-                {
-                    HighOrderEdgePosition hoep;
-                    hoep[0]= inFP[i+2];
-                    hoep[1]=my_edges.size()-1;
-                    hoep[2]=1;
-                    hoep[3]=1;
-                    my_highOrderEdgePositions.push_back(hoep);
-                }
+            {
+                HighOrderEdgePosition hoep;
+                hoep[0]= inFP[i+2];
+                hoep[1]=my_edges.size()-1;
+                hoep[2]=1;
+                hoep[3]=1;
+                my_highOrderEdgePositions.push_back(hoep);
+            }
                 break;
             case 22: // QUADRATIC Triangle
                 addTriangle(&my_triangles,inFP[i+0], inFP[i+1], inFP[i+2]);
-                {
-                    HighOrderEdgePosition hoep;
-                    for(j=0;j<3;++j) {
-                        size_t v0=std::min( inFP[i+edgesInQuadraticTriangle[j][0]],
+            {
+                HighOrderEdgePosition hoep;
+                for(j=0;j<3;++j) {
+                    size_t v0=std::min( inFP[i+edgesInQuadraticTriangle[j][0]],
                             inFP[i+edgesInQuadraticTriangle[j][1]]);
-                        size_t v1=std::max( inFP[i+edgesInQuadraticTriangle[j][0]],
+                    size_t v1=std::max( inFP[i+edgesInQuadraticTriangle[j][0]],
                             inFP[i+edgesInQuadraticTriangle[j][1]]);
-                        Edge e(v0,v1);
-                        if (edgeSet.find(e)==edgeSet.end()) {
-                            edgeSet.insert(e);
-                            addEdge(&my_edges, v0, v1);
-                            hoep[0]= inFP[i+j+3];
-                            hoep[1]=my_edges.size()-1;
-                            hoep[2]=1;
-                            hoep[3]=1;
-                            my_highOrderEdgePositions.push_back(hoep);
-                        }
+                    Edge e(v0,v1);
+                    if (edgeSet.find(e)==edgeSet.end()) {
+                        edgeSet.insert(e);
+                        addEdge(&my_edges, v0, v1);
+                        hoep[0]= inFP[i+j+3];
+                        hoep[1]=my_edges.size()-1;
+                        hoep[2]=1;
+                        hoep[3]=1;
+                        my_highOrderEdgePositions.push_back(hoep);
                     }
                 }
+            }
 
                 break;
             case 24: // QUADRATIC Tetrahedron
                 addTetrahedron(&my_tetrahedra, inFP[i+0], inFP[i+1], inFP[i+2], inFP[i+3]);
-                {
-                     HighOrderEdgePosition hoep;
-                    for(j=0;j<6;++j) {
-                        size_t v0=std::min( inFP[i+edgesInQuadraticTetrahedron[j][0]],
+            {
+                HighOrderEdgePosition hoep;
+                for(j=0;j<6;++j) {
+                    size_t v0=std::min( inFP[i+edgesInQuadraticTetrahedron[j][0]],
                             inFP[i+edgesInQuadraticTetrahedron[j][1]]);
-                        size_t v1=std::max( inFP[i+edgesInQuadraticTetrahedron[j][0]],
+                    size_t v1=std::max( inFP[i+edgesInQuadraticTetrahedron[j][0]],
                             inFP[i+edgesInQuadraticTetrahedron[j][1]]);
-                        Edge e(v0,v1);
-                        if (edgeSet.find(e)==edgeSet.end()) {
-                            edgeSet.insert(e);
-                            addEdge(&my_edges, v0, v1);
-                            hoep[0]= inFP[i+j+4];
-                            hoep[1]=my_edges.size()-1;
-                            hoep[2]=1;
-                            hoep[3]=1;
-                            my_highOrderEdgePositions.push_back(hoep);
-                        }
+                    Edge e(v0,v1);
+                    if (edgeSet.find(e)==edgeSet.end()) {
+                        edgeSet.insert(e);
+                        addEdge(&my_edges, v0, v1);
+                        hoep[0]= inFP[i+j+4];
+                        hoep[1]=my_edges.size()-1;
+                        hoep[2]=1;
+                        hoep[3]=1;
+                        my_highOrderEdgePositions.push_back(hoep);
                     }
                 }
+            }
                 break;
-            // more types are defined in vtkCellType.h in libvtk
+                // more types are defined in vtkCellType.h in libvtk
             default:
                 msg_error(this) << "ERROR: unsupported cell type " << t << sendl;
             }
@@ -448,7 +448,7 @@ bool MeshVTKLoader::setInputsMesh()
 
     }
     if (reader->inputPoints) delete reader->inputPoints;
-	if (reader->inputNormals) delete reader->inputNormals;
+    if (reader->inputNormals) delete reader->inputNormals;
     if (reader->inputPolygons) delete reader->inputPolygons;
     if (reader->inputCells) delete reader->inputCells;
     if (reader->inputCellTypes) delete reader->inputCellTypes;
@@ -535,7 +535,7 @@ bool LegacyVTKReader::readFile(const char* filename)
         std::getline(inVTKFile, line);
     while (line.empty());
     if (line != "DATASET POLYDATA" && line != "DATASET UNSTRUCTURED_GRID"
-        && line != "DATASET POLYDATA\r" && line != "DATASET UNSTRUCTURED_GRID\r" )
+            && line != "DATASET POLYDATA\r" && line != "DATASET UNSTRUCTURED_GRID\r" )
     {
         msg_error(this) << "Error: Unsupported data type in file '" << filename << "'." << sendl;
         return false;
@@ -586,7 +586,7 @@ bool LegacyVTKReader::readFile(const char* filename)
             if (!inputCells->read(inVTKFile, ni, binary)) return false;
             numberOfCells = n;
         }
-         else if (kw == "LINES")
+        else if (kw == "LINES")
         {
             int n, ni;
             ln >> n >> ni;
@@ -620,7 +620,7 @@ bool LegacyVTKReader::readFile(const char* filename)
             {
                 std::ifstream::pos_type previousPos = inVTKFile.tellg();
                 /// line defines the type and name such as SCALAR dataset
-                 do {
+                do {
                     std::getline(inVTKFile,line);
                 } while (!inVTKFile.eof() && line.empty());
 
@@ -667,34 +667,35 @@ bool LegacyVTKReader::readFile(const char* filename)
                     }
 
                 }
-				else if (dataStructure == "NORMALS")
-				{					
-					string dataName, dataType;
-					lnData >> dataName >> dataType;
-					inputNormals = newVTKDataIO(dataType);
-					if (inputNormals == NULL) return false;
-					if (!inputNormals->read(inVTKFile, 3*nb_ele, binary)) return false;
-				}
-				else if (dataStructure == "VECTORS")
-				{
-					string dataName, dataType;
-					lnData >> dataName >> dataType;
-					BaseVTKDataIO*  data = newVTKDataIO(dataType, 3);
-					if (data != NULL)
-					{
-						if (data->read(inVTKFile, nb_ele, binary))
-						{
-							inputDataVector.push_back(data);
-							data->name = dataName;
-							if (kw == "CELL_DATA"){
-								msg_info(this) << "Read cell data: " << data->name;
-							}else{
-								msg_info(this) << "Read point data: " << data->name;
-							}
-						} else
-							delete data;
-					}
-				}
+                else if (dataStructure == "NORMALS")
+                {
+                    string dataName, dataType;
+                    lnData >> dataName >> dataType;
+                    msg_info(this) << "Reading normals named \""<< dataName << "\" of type \"" << dataType << "\".";
+                    inputNormals = newVTKDataIO(dataType);
+                    if (inputNormals == NULL) return false;
+                    if (!inputNormals->read(inVTKFile, 3*nb_ele, binary)) return false;
+                }
+                else if (dataStructure == "VECTORS")
+                {
+                    string dataName, dataType;
+                    lnData >> dataName >> dataType;
+                    BaseVTKDataIO*  data = newVTKDataIO(dataType, 3);
+                    if (data != NULL)
+                    {
+                        if (data->read(inVTKFile, nb_ele, binary))
+                        {
+                            inputDataVector.push_back(data);
+                            data->name = dataName;
+                            if (kw == "CELL_DATA"){
+                                msg_info(this) << "Read cell data: " << data->name;
+                            }else{
+                                msg_info(this) << "Read point data: " << data->name;
+                            }
+                        } else
+                            delete data;
+                    }
+                }
                 else if (dataStructure == "FIELD")
                 {
                     std::string fieldName;
@@ -812,7 +813,7 @@ bool XMLVTKReader::readFile(const char* filename)
     //read VTK data format type
     const char* datasetFormatStrTemp = pElem->Attribute("type");
     checkErrorMsg(datasetFormatStrTemp, "Dataset format not defined")
-    string datasetFormatStr = string(datasetFormatStrTemp);
+            string datasetFormatStr = string(datasetFormatStrTemp);
     VTKDatasetFormat datasetFormat;
 
     if (datasetFormatStr.compare("UnstructuredGrid") == 0)
