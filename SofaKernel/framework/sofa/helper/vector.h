@@ -434,7 +434,6 @@ void removeIndex( std::vector<T,TT>& v, size_t index )
     v.pop_back();
 }
 
-
 } // namespace helper
 } // namespace sofa
 

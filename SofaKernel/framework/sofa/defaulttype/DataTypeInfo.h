@@ -23,10 +23,10 @@
 #define SOFA_DEFAULTTYPE_DATATYPEINFO_H
 
 #include <vector>
-#include <sofa/helper/fixed_array.h>
-#include <sofa/helper/vector.h>
+//#include <sofa/helper/fixed_array.h>
+//#include <sofa/helper/vector.h>
 #include <sstream>
-#include <typeinfo>
+//#include <typeinfo>
 #include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
@@ -1252,12 +1252,15 @@ struct DataTypeInfo<std::string> : public TextTypeInfo<std::string>
     static void* getValuePtr(std::string& data) { return &data[0]; }
 };
 
+#ifdef SOFA_HELPER_FIXED_ARRAY_H
 template<class T, std::size_t N>
 struct DataTypeInfo< sofa::helper::fixed_array<T,N> > : public FixedArrayTypeInfo<sofa::helper::fixed_array<T,N> >
 {
     static std::string name() { std::ostringstream o; o << "fixed_array<" << DataTypeName<T>::name() << "," << N << ">"; return o.str(); }
 };
+#endif /// SOFA_HELPER_FIXED_ARRAY_H
 
+#ifdef SOFA_HELPER_VECTOR_H
 template<class T, class Alloc>
 struct DataTypeInfo< std::vector<T,Alloc> > : public VectorTypeInfo<std::vector<T,Alloc> >
 {
@@ -1281,6 +1284,7 @@ struct DataTypeInfo< sofa::helper::vector<bool,Alloc> > : public VectorTypeInfo<
     static const void* getValuePtr(const sofa::helper::vector<bool,Alloc>& /*data*/) { return NULL; }
     static void* getValuePtr(sofa::helper::vector<bool,Alloc>& /*data*/) { return NULL; }
 };
+#endif
 
 template<class T, class Compare, class Alloc>
 struct DataTypeInfo< std::set<T,Compare,Alloc> > : public SetTypeInfo<std::set<T,Compare,Alloc> >

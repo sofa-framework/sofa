@@ -482,21 +482,22 @@ public:
 
             DestType* ptr = TraitsDestPtr::get(TraitsValueType::get(value));
             if (ptr)
-                path = BaseLink::CreateString(ptr->asBase(),
-                                              ptr->asBaseData(),
-                                              m_owner->asBase());
+                path = BaseLink::CreateString(sofa::core::AsBase(ptr),
+                                              sofa::core::AsData(ptr),
+                                              sofa::core::AsBase(m_owner));
         }
         return path;
     }
 
+
     Base* getLinkedBase(unsigned int index=0) const
     {
-        return getIndex(index)->asBase() ;
+        return sofa::core::AsBase(getIndex(index)) ;
     }
 
     BaseData* getLinkedData(unsigned int index=0) const
     {
-        return getIndex(index)->asBaseData()  ;
+        return sofa::core::AsData(getIndex(index))  ;
     }
 
     std::string getLinkedPath(unsigned int index=0) const
@@ -626,12 +627,12 @@ public:
 
     sofa::core::objectmodel::Base* getOwnerBase() const
     {
-        return m_owner->asBase();
+        return sofa::core::AsBase(m_owner) ;
     }
 
     sofa::core::objectmodel::BaseData* getOwnerData() const
     {
-        return m_owner->asBaseData();
+        return sofa::core::AsData(m_owner) ;
     }
 
     void setOwner(OwnerType* owner)
