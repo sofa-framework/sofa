@@ -25,6 +25,8 @@
 #ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_STIFFSPRINGFORCEFIELD_INL
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_STIFFSPRINGFORCEFIELD_INL
 
+#include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <SofaDeformable/StiffSpringForceField.h>
 #include <sofa/helper/AdvancedTimer.h>
 

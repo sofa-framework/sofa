@@ -28,6 +28,7 @@
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/helper/StringUtils.h>
 
 namespace sofa
 {

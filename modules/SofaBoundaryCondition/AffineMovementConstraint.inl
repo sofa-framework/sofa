@@ -23,6 +23,7 @@
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_AFFINEMOVEMENTCONSTRAINT_INL
 
 #include <SofaBoundaryCondition/AffineMovementConstraint.h>
+#include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/visual/DrawTool.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>

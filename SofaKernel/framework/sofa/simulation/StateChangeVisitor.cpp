@@ -23,6 +23,7 @@
 #include <sofa/simulation/StateChangeVisitor.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/topology/TopologicalMapping.h>
+#include <sofa/core/BaseMapping.h>
 
 namespace sofa
 {

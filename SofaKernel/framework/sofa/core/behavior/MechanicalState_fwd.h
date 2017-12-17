@@ -31,6 +31,7 @@ namespace core
 namespace behavior
 {
 
+template<class TDataTypes>
 class MechanicalState ;
 
 } /// namespace behavior

@@ -29,6 +29,7 @@
 #include <sofa/simulation/Simulation.h>
 #include <sofa/helper/decompose.h>
 #include <sofa/helper/gl/template.h>
+#include <sofa/defaulttype/BaseMatrix.h>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <assert.h>
 #include <iostream>

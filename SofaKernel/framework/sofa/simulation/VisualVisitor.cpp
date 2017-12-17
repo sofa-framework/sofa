@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <sofa/simulation/VisualVisitor.h>
 #include <sofa/simulation/Node.h>
+#include <sofa/core/BehaviorModel.h>
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/visual/Shader.h>

@@ -28,6 +28,7 @@
 #include <sofa/core/visual/DisplayFlags.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/helper/gl/template.h>
+#include <sofa/defaulttype/BaseMatrix.h>
 #include <vector>
 #include <set>
 #include <iostream>

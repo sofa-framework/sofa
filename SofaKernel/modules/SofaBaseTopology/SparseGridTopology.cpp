@@ -23,13 +23,13 @@
 #include <SofaBaseTopology/SparseGridTopology.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/polygon_cube_intersection/polygon_cube_intersection.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/defaulttype/VecTypes.h>
-
 #include <fstream>
 #include <string>
 #include <math.h>

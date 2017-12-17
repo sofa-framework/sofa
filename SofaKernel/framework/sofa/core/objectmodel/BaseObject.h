@@ -26,7 +26,7 @@
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/BaseObjectDescription_fwd.h>
 #include <sofa/core/objectmodel/Link.h>
-
+#include <sofa/core/objectmodel/BaseObject_fwd.h>
 namespace sofa
 {
 

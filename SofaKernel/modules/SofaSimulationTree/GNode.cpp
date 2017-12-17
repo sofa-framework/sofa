@@ -24,6 +24,7 @@
 #include <SofaSimulationCommon/xml/NodeElement.h>
 #include <sofa/helper/Factory.inl>
 #include <sofa/helper/cast.h>
+#include <sofa/core/BaseMapping.h>
 
 namespace sofa
 {
