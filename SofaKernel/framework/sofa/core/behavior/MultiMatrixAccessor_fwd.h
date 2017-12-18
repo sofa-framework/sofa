@@ -19,8 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_MECHANICALSTATE_FWD_H
-#define SOFA_CORE_BEHAVIOR_MECHANICALSTATE_FWD_H
+#ifndef SOFA_CORE_BEHAVIOR_MULTIMATRIXACCESSOR_FWD_H
+#define SOFA_CORE_BEHAVIOR_MULTIMATRIXACCESSOR_FWD_H
+
 
 namespace sofa
 {
@@ -31,13 +32,12 @@ namespace core
 namespace behavior
 {
 
-template<class TDataTypes>
-class MechanicalState ;
+class MultiMatrixAccessor ;
 
-} /// namespace behavior
+} // namespace behavior
 
-} /// namespace core
+} // namespace core
 
-} /// namespace sofa
+} // namespace sofa
 
 #endif

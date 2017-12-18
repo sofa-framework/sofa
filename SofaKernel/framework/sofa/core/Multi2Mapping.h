@@ -26,7 +26,8 @@
 #include <sofa/core/BaseMapping.h>
 #include <sofa/core/core.h>
 #include <sofa/core/VecId.h>
-
+#include <sofa/core/State.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
 {

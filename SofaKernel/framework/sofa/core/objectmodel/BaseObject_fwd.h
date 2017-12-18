@@ -19,8 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_MECHANICALSTATE_FWD_H
-#define SOFA_CORE_BEHAVIOR_MECHANICALSTATE_FWD_H
+#ifndef SOFA_CORE_OBJECTMODEL_BASEOBJECT_FWD_H
+#define SOFA_CORE_OBJECTMODEL_BASEOBJECT_FWD_H
+
+#include <sofa/core/sptr.h>
+#include <sofa/core/objectmodel/BaseData_fwd.h>
 
 namespace sofa
 {
@@ -28,16 +31,16 @@ namespace sofa
 namespace core
 {
 
-namespace behavior
+namespace objectmodel
 {
+    class BaseObject ;
+    using BaseObjectSPtr = sofa::core::sptr<BaseObject>;
+} // namespace objectmodel
 
-template<class TDataTypes>
-class MechanicalState ;
+    inline sofa::core::objectmodel::Base* AsBase(sofa::core::objectmodel::BaseObject* o) { return reinterpret_cast<sofa::core::objectmodel::Base*>(o) ;  }
+    inline sofa::core::objectmodel::BaseData* AsData(sofa::core::objectmodel::BaseObject*) { return nullptr; }
+} // namespace core
 
-} /// namespace behavior
-
-} /// namespace core
-
-} /// namespace sofa
+} // namespace sofa
 
 #endif

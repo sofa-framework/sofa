@@ -32,6 +32,7 @@
 #include <sofa/core/objectmodel/ContextObject.h>
 #include <sofa/core/topology/Topology.h>
 #include <sofa/core/visual/VisualModel.h>
+#include <sofa/core/BehaviorModel.h>
 
 namespace sofa
 {

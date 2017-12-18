@@ -27,6 +27,7 @@
 #include <sofa/core/State.h>
 #include <sofa/core/core.h>
 #include <sofa/core/VecId.h>
+#include <sofa/helper/StringUtils.h>
 
 namespace sofa
 {

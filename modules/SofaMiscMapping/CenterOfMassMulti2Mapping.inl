@@ -27,7 +27,8 @@
 #include <sofa/core/visual/DrawTool.h>
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/simulation/Simulation.h>
-
+#include <sofa/core/State.inl>
+#include <sofa/core/objectmodel/Link.h>
 #include <algorithm>
 #include <functional>
 

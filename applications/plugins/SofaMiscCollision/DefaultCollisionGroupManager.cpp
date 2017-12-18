@@ -26,6 +26,7 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/BaseMapping.h>
 
 namespace sofa
 {

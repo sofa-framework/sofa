@@ -39,7 +39,7 @@
 
 #include <iostream>
 #include <fstream>
-
+#include <climits>
 
 #if defined(WIN32) && _MSC_VER<=1700  // before or equal to visual studio 2012
    #include <boost/math/special_functions/erf.hpp>

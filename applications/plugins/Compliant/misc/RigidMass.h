@@ -1,6 +1,7 @@
 #ifndef RIGIDMASS_H
 #define RIGIDMASS_H
 
+#include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/core/behavior/Mass.h>
 #include <sofa/core/behavior/MechanicalState.h>
 

@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <SofaSimulationGraph/DAGNode.h>
 #include <SofaSimulationCommon/xml/NodeElement.h>
+#include <sofa/core/BaseMapping.h>
 #include <sofa/helper/Factory.inl>
 
 namespace sofa

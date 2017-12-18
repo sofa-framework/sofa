@@ -30,6 +30,9 @@
 #include <sofa/helper/gl/template.h>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/helper/decompose.h>
+#include <sofa/core/behavior/MultiMatrix.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
+#include <sofa/defaulttype/BaseMatrix.h>
 
 namespace sofa
 {

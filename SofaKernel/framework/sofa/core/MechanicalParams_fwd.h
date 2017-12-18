@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_BEHAVIOR_MECHANICALSTATE_FWD_H
-#define SOFA_CORE_BEHAVIOR_MECHANICALSTATE_FWD_H
+#ifndef SOFA_CORE_MECHANICALPARAMS_FWD_H
+#define SOFA_CORE_MECHANICALPARAMS_FWD_H
 
 namespace sofa
 {
@@ -28,16 +28,11 @@ namespace sofa
 namespace core
 {
 
-namespace behavior
-{
+/// Class gathering parameters use by mechanical components methods, and transmitted by mechanical visitors
+class MechanicalParams ;
 
-template<class TDataTypes>
-class MechanicalState ;
+} // namespace core
 
-} /// namespace behavior
-
-} /// namespace core
-
-} /// namespace sofa
+} // namespace sofa
 
 #endif

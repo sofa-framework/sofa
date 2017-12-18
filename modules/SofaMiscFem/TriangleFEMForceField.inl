@@ -23,6 +23,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGLEFEMFORCEFIELD_INL
 
 #include "TriangleFEMForceField.h"
+#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/visual/DisplayFlags.h>
 #include <sofa/core/ObjectFactory.h>

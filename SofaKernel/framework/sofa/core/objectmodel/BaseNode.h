@@ -23,7 +23,7 @@
 #define SOFA_CORE_OBJECTMODEL_BASENODE_H
 
 #include "BaseContext.h"
-#include "BaseObject.h"
+#include "BaseObject_fwd.h"
 
 namespace sofa
 {
@@ -104,13 +104,13 @@ public:
     virtual void moveChild(BaseNode::SPtr node) = 0;
 
     /// Add a generic object
-    virtual bool addObject(BaseObject::SPtr obj) = 0;
+    virtual bool addObject(BaseObjectSPtr obj) = 0;
 
     /// Remove a generic object
-    virtual bool removeObject(BaseObject::SPtr obj) = 0;
+    virtual bool removeObject(BaseObjectSPtr obj) = 0;
 
     /// Move an object from a node to another node
-    virtual void moveObject(BaseObject::SPtr obj) = 0;
+    virtual void moveObject(BaseObjectSPtr obj) = 0;
 
     /// Test if the given node is a parent of this node.
     virtual bool hasParent(const BaseNode* node) const = 0;
@@ -150,10 +150,10 @@ public:
     /// @}
 protected:
     /// Set the context of an object to this
-    void setObjectContext(BaseObject::SPtr obj);
+    void setObjectContext(BaseObjectSPtr obj);
 
     /// Reset the context of an object
-    void clearObjectContext(BaseObject::SPtr obj);
+    void clearObjectContext(BaseObjectSPtr obj);
 
 
     /// @name virtual functions to add/remove special components direclty in the right Sequence
