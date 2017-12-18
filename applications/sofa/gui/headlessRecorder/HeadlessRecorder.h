@@ -45,7 +45,7 @@ extern "C" {
 #include <GL/glx.h>
 
 // SCREENSHOT
-#include <sofa/helper/io/Image.h>>
+#include <sofa/helper/io/Image.h>
 #include <sofa/helper/system/SetDirectory.h>
 
 namespace sofa
@@ -112,6 +112,7 @@ private:
     sofa::component::visualmodel::BaseCamera::SPtr currentCamera;
 
     static int width, height, recordTimeInSeconds, fps;
+    static std::string fileName;
     static bool saveAsScreenShot, saveAsVideo;
 
     int m_nFrames;
@@ -130,7 +131,6 @@ private:
     bool initTexturesDone;
     bool initVideoRecorder;
     bool m_isRecording;
-    std::string m_fileName;
 
 };
 

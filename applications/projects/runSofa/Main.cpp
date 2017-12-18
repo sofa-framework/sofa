@@ -205,11 +205,8 @@ int main(int argc, char** argv)
     string colorsStatus = "auto";
     string messageHandler = "auto";
     bool enableInteraction = false ;
-    string recordVideo = "";
-    string recordPNG = "";
     int width = 800;
     int height = 600;
-    int seconds = 5;
 
     string gui_help = "choose the UI (";
     gui_help += GUIManager::ListSupportedGUI('|');
@@ -258,7 +255,6 @@ int main(int argc, char** argv)
         argParser->showHelp();
         exit( EXIT_SUCCESS );
     }
-//>>>>>>> sofaFramework/master
 
     // Note that initializations must be done after ArgumentParser that can exit the application (without cleanup)
     // even if everything is ok e.g. asking for help

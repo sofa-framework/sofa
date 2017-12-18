@@ -34,6 +34,7 @@ int HeadlessRecorder::width = 1920;
 int HeadlessRecorder::height = 1080;
 int HeadlessRecorder::recordTimeInSeconds = 5;
 int HeadlessRecorder::fps = 60;
+std::string HeadlessRecorder::fileName = "tmp";
 bool HeadlessRecorder::saveAsVideo = false;
 bool HeadlessRecorder::saveAsScreenShot = false;
 
@@ -52,12 +53,6 @@ HeadlessRecorder::HeadlessRecorder()
 {
     groot = NULL;
     m_nFrames = 0;
-    std::vector<std::string> nameList = mArgumentParser->getInputFileList();
-    if (nameList.size() == 0)
-        m_fileName = "tmp";
-    else
-        m_fileName = "tmp";
-
     initVideoRecorder = true;
     initTexturesDone = false;
     vparams = core::visual::VisualParams::defaultInstance();
@@ -76,6 +71,7 @@ int HeadlessRecorder::RegisterGUIParameters(ArgumentParser* argumentParser)
 {
     argumentParser->addArgument(po::value<bool>(&saveAsScreenShot)->default_value(false)->implicit_value(true),         "picture", "enable picture mode (save as png)");
     argumentParser->addArgument(po::value<bool>(&saveAsVideo)->default_value(false)->implicit_value(true),         "video", "enable video mode (save as avi, x264)");
+    argumentParser->addArgument(po::value<std::string>(&fileName)->default_value("tmp"), "filename", "(only HeadLessRecorder) name of the file");
     argumentParser->addArgument(po::value<int>(&recordTimeInSeconds)->default_value(5), "recordTime", "(only HeadLessRecorder) seconds of recording, video or pictures of the simulation");
     argumentParser->addArgument(po::value<int>(&width)->default_value(1920), "width", "(only HeadLessRecorder) video or picture width");
     argumentParser->addArgument(po::value<int>(&height)->default_value(1080), "height", "(only HeadLessRecorder) video or picture height");
@@ -255,7 +251,7 @@ int HeadlessRecorder::mainLoop()
 
     if (!saveAsVideo && !saveAsScreenShot)
     {
-        msg_warning("HeadlessRecorder") <<  "Please, use at least one option: recordPNG or recordAsVideo.";
+        msg_error("HeadlessRecorder") <<  "Please, use at least one option: picture or video mode.";
         return 0;
     }
 
@@ -495,15 +491,15 @@ void HeadlessRecorder::record()
 
     if (saveAsScreenShot)
     {
-        std::string filename = m_fileName + std::to_string(m_nFrames) + ".png" ;
-        screenshotPNG(filename);
+        std::string pngFilename = fileName + std::to_string(m_nFrames) + ".png" ;
+        screenshotPNG(pngFilename);
     } else if (saveAsVideo)
     {
         if (initVideoRecorder)
         {
-            std::string fileName = m_fileName;
-            fileName.append(".avi");
-            videoEncoderStart(fileName.c_str(), AV_CODEC_ID_H264);
+            std::string videoFilename = fileName;
+            videoFilename.append(".avi");
+            videoEncoderStart(videoFilename.c_str(), AV_CODEC_ID_H264);
             initVideoRecorder = false;
         }
         videoGLToFrame();
