@@ -1,5 +1,3 @@
-##Headless Recorder
-
 HeadlessRecorder is, as its name suggest, a new gui plugin who allow users to records sofa visualisation without any windows (batch only)
 
 ⚠ Linux only ⚠
