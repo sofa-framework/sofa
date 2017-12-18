@@ -287,6 +287,8 @@ public:
 
     /// @}
 
+   	/** \brief Returns the type of the topology */
+   	virtual sofa::core::topology::TopologyObjectType getTopologyType() const override {return sofa::core::topology::TETRAHEDRON;}
 
     inline friend std::ostream& operator<< (std::ostream& out, const TetrahedronSetTopologyContainer& t)
     {

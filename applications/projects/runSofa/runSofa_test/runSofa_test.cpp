@@ -24,7 +24,6 @@
 #include <gtest/gtest.h>
 #include <SofaTest/Sofa_test.h>
 
-#include <sofa/helper/Utils.h>
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/helper/system/FileRepository.h>
 
@@ -48,7 +47,7 @@ protected:
 
     void SetUp()
     {
-        const std::string& pluginDir = helper::Utils::getPluginDirectory();
+        const std::string& pluginDir = PluginRepository.getFirstPath();
 
         m_testConfigPluginName = "test_plugin_list.conf";
         m_testConfigPluginPath = pluginDir + "/" + m_testConfigPluginName;

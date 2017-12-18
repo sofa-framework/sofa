@@ -33,10 +33,119 @@ using namespace sofa::core::objectmodel;
 #include "PythonFactory.h"
 #include "PythonToSofa.inl"
 
+#include "PythonEnvironment.h"
+using sofa::simulation::PythonEnvironment ;
+
 static Base* get_base(PyObject* self) {
     return sofa::py::unwrap<Base>(self);
 }
 
+
+static PyObject * Base_addData(PyObject *self, PyObject *args )
+{
+    Base* obj = get_base(self);
+    PyObject* pydata;
+
+    if (!PyArg_ParseTuple(args, "O", &pydata)) {
+        return NULL;
+    }
+
+    BaseData* data = sofa::py::unwrap<BaseData>(pydata);
+    obj->addData(data) ;
+
+    Py_RETURN_NONE;
+}
+
+static char* getStringCopy(char *c)
+{
+    char* tmp = new char[strlen(c)+1] ;
+    strcpy(tmp,c);
+    return tmp ;
+}
+
+static PyObject * Base_addNewData(PyObject *self, PyObject *args ) {
+    Base* obj = get_base(self);
+    char* dataName;
+    char* dataClass;
+    char* dataHelp;
+    char* dataRawType;
+    PyObject* dataValue;
+
+    if (!PyArg_ParseTuple(args, "ssssO", &dataName, &dataClass, &dataHelp, &dataRawType, &dataValue)) {
+        return NULL;
+    }
+
+    dataName = getStringCopy(dataName) ;
+    dataClass = getStringCopy(dataClass) ;
+    dataHelp  = getStringCopy(dataHelp) ;
+
+    BaseData* bd = nullptr ;
+    if(dataRawType[0] == 's'){
+        Data<std::string>* t = new Data<std::string>() ;
+        t = new(t) Data<std::string>(obj->initData(t, std::string(""), dataName, dataHelp)) ;
+        bd = t;
+    }
+    else if(dataRawType[0] == 'b'){
+        Data<bool>* t = new Data<bool>();
+        t = new(t) Data<bool>(obj->initData(t, true, dataName, dataHelp)) ;
+        bd = t;
+    }
+    else if(dataRawType[0] == 'd'){
+        Data<int>* t = new Data<int>();
+        t = new (t) Data<int> (obj->initData(t, 0, dataName, dataHelp)) ;
+        bd = t;
+    }
+    else if(dataRawType[0] == 'f'){
+        Data<float>* t = new Data<float>();
+        t = new (t) Data<float>(obj->initData(t, 0.0f, dataName, dataHelp)) ;
+        bd = t;
+    }
+    else{
+        std::stringstream msg;
+        msg << "Invalid data type '" << dataRawType << "'. Supported type are: s(tring), d(ecimal), f(float), b(oolean)" ;
+        PyErr_SetString(PyExc_TypeError, msg.str().c_str());
+        return NULL;
+    }
+
+    std::stringstream tmp;
+    pythonToSofaDataString(dataValue, tmp) ;
+    bd->read( tmp.str() ) ;
+    bd->setGroup(dataClass);
+
+    Py_RETURN_NONE ;
+}
+
+static PyObject * Base_getData(PyObject *self, PyObject *args ) {
+    Base* obj = get_base(self);
+    char *dataName;
+    if (!PyArg_ParseTuple(args, "s", &dataName)) {
+        return NULL;
+    }
+
+    BaseData * data = obj->findData(dataName);
+    if (!data)
+    {
+        Py_RETURN_NONE ;
+    }
+
+    return SP_BUILD_PYPTR(Data,BaseData,data,false);
+}
+
+static PyObject * Base_getLink(PyObject *self, PyObject *args ) {
+    Base* obj = get_base(self);
+    char *dataName;
+    if (!PyArg_ParseTuple(args, "s", &dataName)) {
+        return NULL;
+    }
+
+    BaseLink *link = obj->findLink(dataName);
+    if (!link)
+    {
+        Py_RETURN_NONE ;
+    }
+
+    return SP_BUILD_PYPTR(Link,BaseLink,link,false);
+}
 
 static PyObject * Base_findData(PyObject *self, PyObject *args ) {
     Base* obj = get_base(self);
@@ -177,6 +286,37 @@ static PyObject * Base_getDataFields(PyObject *self, PyObject * /*args*/) {
 }
 
 
+/// This function is named this way because someone give the getDataFields to the one
+/// that returns a dictionary of (name, value) which is not coherente with the c++
+/// name of the function.
+/// If you are a brave hacker, courageous enough to break backward compatibility you can
+/// probably fix all this mess.
+static PyObject * Base_getListOfDataFields(PyObject *self, PyObject * /*args*/) {
+    Base * component = get_base(self);
+
+    const sofa::helper::vector<BaseData*> dataFields = component->getDataFields();
+
+    PyObject * pyList = PyList_New(dataFields.size());
+    for (unsigned int i = 0; i < dataFields.size(); ++i) {
+        PyList_SetItem(pyList, i, SP_BUILD_PYPTR(Data,BaseData,dataFields[i],false)) ;
+    }
+
+    return pyList;
+}
+
+static PyObject * Base_getListOfLinks(PyObject *self, PyObject * /*args*/) {
+    Base * component = get_base(self);
+
+    const sofa::helper::vector<BaseLink*> links = component->getLinks() ;
+
+    PyObject * pyList = PyList_New(links.size());
+    for (unsigned int i = 0; i < links.size(); ++i) {
+        PyList_SetItem(pyList, i, SP_BUILD_PYPTR(Link, BaseLink, links[i], false)) ;
+    }
+
+    return pyList;
+}
+
 /// down cast to the lowest type known by the factory
 /// there is maybe a more pythonish way to do so? :)
 static PyObject * Base_downCast(PyObject *self, PyObject * /*args*/) {
@@ -185,12 +325,32 @@ static PyObject * Base_downCast(PyObject *self, PyObject * /*args*/) {
 }
 
 SP_CLASS_METHODS_BEGIN(Base)
-SP_CLASS_METHOD(Base,findData)
-SP_CLASS_METHOD(Base,findLink)
+SP_CLASS_METHOD_DOC(Base,addNewData, "Add a new Data field to the current object. \n"
+                                        "Eg:                                         \n"
+                                        "  obj.addNewData('myDataName1','theDataGroupA','help message','f',1.0)  \n"
+                                        "  obj.addNewData('myDataName2','theDataGroupA','help message','b',True) \n"
+                                        "  obj.addNewData('myDataName3','theDataGroupB','help message','d',1)     \n"
+                                        "  obj.addNewData('myDataName4','theDataGroupB','help message','s','hello') \n")
+SP_CLASS_METHOD_DOC(Base,addData, "Adds an existing data field to the current object")
+SP_CLASS_METHOD_DOC(Base,findData, "Returns the data field if there is one associated \n"
+                                   "with the provided name and downcasts it to the lowest known type. \n"
+                                   "Returns None otherwhise.")
+SP_CLASS_METHOD_DOC(Base,findLink, "Returns a link field if there is one associated \n"
+                                   "with the provided name, returns None otherwhise")
+SP_CLASS_METHOD_DOC(Base,getData, "Returns the data field if there is one associated \n"
+                              "with the provided name but don't downcasts it to the lowest known type. \n"
+                              "Returns None is there is no field with this name.")
+SP_CLASS_METHOD_DOC(Base,getLink, "Returns the link field if there is one associated \n"
+                              "with the provided name but. \n"
+                              "Returns None is there is no field with this name.")
 SP_CLASS_METHOD(Base,getClassName)
 SP_CLASS_METHOD(Base,getTemplateName)
 SP_CLASS_METHOD(Base,getName)
-SP_CLASS_METHOD(Base,getDataFields)
+
+SP_CLASS_METHOD_DOC(Base,getDataFields, "Returns a list with the *content* of all the data fields converted in python"
+                                        " type. \n")
+SP_CLASS_METHOD_DOC(Base,getListOfDataFields, "Returns the list of data fields.")
+SP_CLASS_METHOD_DOC(Base,getListOfLinks, "Returns the list of link fields.")
 SP_CLASS_METHOD(Base,downCast)
 SP_CLASS_METHODS_END;
 

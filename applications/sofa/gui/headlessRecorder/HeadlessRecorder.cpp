@@ -30,6 +30,14 @@ namespace gui
 namespace hRecorder
 {
 
+int HeadlessRecorder::width = 1920;
+int HeadlessRecorder::height = 1080;
+int HeadlessRecorder::recordTimeInSeconds = 5;
+int HeadlessRecorder::fps = 60;
+bool HeadlessRecorder::saveAsVideo = false;
+bool HeadlessRecorder::saveAsScreenShot = false;
+
+
 using namespace sofa::defaulttype;
 using sofa::simulation::getSimulation;
 
@@ -40,23 +48,20 @@ typedef Bool (*glXMakeContextCurrentARBProc)(Display*, GLXDrawable, GLXDrawable,
 static glXCreateContextAttribsARBProc glXCreateContextAttribsARB = 0;
 static glXMakeContextCurrentARBProc glXMakeContextCurrentARB = 0;
 
-HeadlessRecorder::HeadlessRecorder(const std::vector<std::string>& options)
+HeadlessRecorder::HeadlessRecorder()
 {
     groot = NULL;
-    m_width = 1920; // will be redefined by the command argument
-    m_height = 1080; // will be redefined by the command argument
-    m_fps = 60;
     m_nFrames = 0;
-    m_recordTimeInSeconds = 5.0;
-    m_fileNameVideo = "tmp";
-    m_fileNamePNG = "tmp";
-    saveAsScreenShot = false;
-    saveAsVideo = false;
+    std::vector<std::string> nameList = mArgumentParser->getInputFileList();
+    if (nameList.size() == 0)
+        m_fileName = "tmp";
+    else
+        m_fileName = "tmp";
+
     initVideoRecorder = true;
     initTexturesDone = false;
     vparams = core::visual::VisualParams::defaultInstance();
     vparams->drawTool() = &drawTool;
-    parseOptions(options);
     startRecording();
 }
 
@@ -67,20 +72,22 @@ HeadlessRecorder::~HeadlessRecorder()
     glDeleteRenderbuffers(1, &rbo_depth);
 }
 
-int HeadlessRecorder::InitGUI(const char* /*name*/, const std::vector<std::string>& /*options*/)
+int HeadlessRecorder::RegisterGUIParameters(ArgumentParser* argumentParser)
 {
+    argumentParser->addArgument(po::value<bool>(&saveAsScreenShot)->default_value(false)->implicit_value(true),         "picture", "enable picture mode (save as png)");
+    argumentParser->addArgument(po::value<bool>(&saveAsVideo)->default_value(false)->implicit_value(true),         "video", "enable video mode (save as avi, x264)");
+    argumentParser->addArgument(po::value<int>(&recordTimeInSeconds)->default_value(5), "recordTime", "(only HeadLessRecorder) seconds of recording, video or pictures of the simulation");
+    argumentParser->addArgument(po::value<int>(&width)->default_value(1920), "width", "(only HeadLessRecorder) video or picture width");
+    argumentParser->addArgument(po::value<int>(&height)->default_value(1080), "height", "(only HeadLessRecorder) video or picture height");
+    argumentParser->addArgument(po::value<int>(&fps)->default_value(60), "fps", "(only HeadLessRecorder) define how many frame per second HeadlessRecorder will generate");
     return 0;
 }
 
-BaseGUI* HeadlessRecorder::CreateGUI(const char* /*name*/, const std::vector<std::string>& options, sofa::simulation::Node::SPtr groot, const char* filename)
+BaseGUI* HeadlessRecorder::CreateGUI(const char* /*name*/, sofa::simulation::Node::SPtr groot, const char* filename)
 {
     msg_warning("HeadlessRecorder") << "This is an experimental feature. Works only on linux";
     msg_warning("HeadlessRecorder") << "For any suggestion/help/bug please report to:";
-    msg_warning("HeadlessRecorder") << "https://github.com/sofa-framework/sofa/issues/537";
-
-    int WIDTH = 1920;
-    int HEIGHT = 1080;
-
+    msg_warning("HeadlessRecorder") << "https://github.com/sofa-framework/sofa/pull/538";
 
     int context_attribs[] = {
         GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
@@ -124,8 +131,8 @@ BaseGUI* HeadlessRecorder::CreateGUI(const char* /*name*/, const std::vector<std
 
     /* create temporary pbuffer */
     int pbuffer_attribs[] = {
-        GLX_PBUFFER_WIDTH, WIDTH,
-        GLX_PBUFFER_HEIGHT, HEIGHT,
+        GLX_PBUFFER_WIDTH, width,
+        GLX_PBUFFER_HEIGHT, height,
         None
     };
     pbuf = glXCreatePbuffer(m_display, fbc[0], pbuffer_attribs);
@@ -151,55 +158,10 @@ BaseGUI* HeadlessRecorder::CreateGUI(const char* /*name*/, const std::vector<std
         exit(EXIT_FAILURE);
     }
 
-    HeadlessRecorder* gui = new HeadlessRecorder(options);
+    HeadlessRecorder* gui = new HeadlessRecorder();
     gui->setScene(groot, filename);
     gui->initializeGL();
     return gui;
-}
-
-void HeadlessRecorder::parseOptions(const std::vector<std::string>& options)
-{
-    for (unsigned int i=0 ; i<options.size() ; i++)
-    {
-        size_t cursor = 0;
-        std::string opt = options[i];
-
-        if ( (cursor = opt.find("width=")) != std::string::npos )
-        {
-            int width;
-            std::istringstream iss;
-            iss.str(opt.substr(cursor+std::string("width=").length(), std::string::npos));
-            iss >> width;
-            m_width = width;
-        } else if ((cursor = opt.find("height=")) != std::string::npos)
-        {
-            int height;
-            std::istringstream iss;
-            iss.str(opt.substr(cursor+std::string("height=").length(), std::string::npos));
-            iss >> height;
-            m_height = height;
-
-        } else if ((cursor = opt.find("recordVideo=")) != std::string::npos)
-        {
-            saveAsVideo = true;
-            std::string fileName = opt.substr(cursor+std::string("recordVideo=").length(), std::string::npos);
-            m_fileNameVideo = fileName.empty() ? m_fileNameVideo : fileName;
-
-        } else if ((cursor = opt.find("recordPNG=")) != std::string::npos)
-        {
-            saveAsScreenShot = true;
-            std::string fileName = opt.substr(cursor+std::string("recordPNG=").length(), std::string::npos);
-            m_fileNamePNG = fileName.empty() ? m_fileNamePNG : fileName;
-
-        } else if ((cursor = opt.find("seconds=")) != std::string::npos)
-        {
-            int seconds;
-            std::istringstream iss;
-            iss.str(opt.substr(cursor+std::string("seconds=").length(), std::string::npos));
-            iss >> seconds;
-            m_recordTimeInSeconds = seconds;
-        }
-    }
 }
 
 int HeadlessRecorder::closeGUI()
@@ -266,13 +228,13 @@ void HeadlessRecorder::initializeGL(void)
         // color render buffer
         glGenRenderbuffers(1, &rbo_color);
         glBindRenderbuffer(GL_RENDERBUFFER, rbo_color);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_RGB, m_width, m_height);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_RGB, width, height);
         glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, rbo_color);
 
         /* Depth renderbuffer. */
         glGenRenderbuffers(1, &rbo_depth);
         glBindRenderbuffer(GL_RENDERBUFFER, rbo_depth);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, m_width, m_height);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width, height);
         glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo_depth);
         glReadBuffer(GL_COLOR_ATTACHMENT0);
 
@@ -288,7 +250,7 @@ void HeadlessRecorder::initializeGL(void)
 int HeadlessRecorder::mainLoop()
 {
     if(currentCamera)
-        currentCamera->setViewport(m_width, m_height);
+        currentCamera->setViewport(width, height);
     calcProjection();
 
     if (!saveAsVideo && !saveAsScreenShot)
@@ -297,7 +259,7 @@ int HeadlessRecorder::mainLoop()
         return 0;
     }
 
-    while((float)m_nFrames/(float)m_fps < m_recordTimeInSeconds)
+    while((float)m_nFrames/(float)fps < recordTimeInSeconds)
     {
         if (currentSimulation() && currentSimulation()->getContext()->getAnimate())
             step();
@@ -307,7 +269,7 @@ int HeadlessRecorder::mainLoop()
         record();
         m_nFrames++;
     }
-    msg_info("HeadlessRecorder") << "Recording time: " << m_recordTimeInSeconds << " seconds at: " << m_fps << " fps.";
+    msg_info("HeadlessRecorder") << "Recording time: " << recordTimeInSeconds << " seconds at: " << fps << " fps.";
     return 0;
 }
 
@@ -375,22 +337,22 @@ void HeadlessRecorder::calcProjection()
     yNear = 0.35 * vparams->zNear();
     offset = 0.001 * vparams->zNear(); // for foreground and background planes
 
-    if ((m_height != 0) && (m_width != 0))
+    if ((height != 0) && (width != 0))
     {
-        if (m_height > m_width)
+        if (height > width)
         {
             xFactor = 1.0;
-            yFactor = (double) m_height / (double) m_width;
+            yFactor = (double) height / (double) width;
         }
         else
         {
-            xFactor = (double) m_width / (double) m_height;
+            xFactor = (double) width / (double) height;
             yFactor = 1.0;
         }
     }
-    vparams->viewport() = sofa::helper::make_array(0,0,m_width,m_height);
+    vparams->viewport() = sofa::helper::make_array(0,0,width,height);
 
-    glViewport(0, 0, m_width, m_height);
+    glViewport(0, 0, width, height);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
@@ -401,7 +363,7 @@ void HeadlessRecorder::calcProjection()
     zBackground = -vparams->zFar() + offset;
 
     if (currentCamera->getCameraType() == core::visual::VisualParams::PERSPECTIVE_TYPE)
-        gluPerspective(currentCamera->getFieldOfView(), (double) m_width / (double) m_height, vparams->zNear(), vparams->zFar());
+        gluPerspective(currentCamera->getFieldOfView(), (double) width / (double) height, vparams->zNear(), vparams->zFar());
     else
     {
         float ratio = (float)( vparams->zFar() / (vparams->zNear() * 20) );
@@ -533,13 +495,13 @@ void HeadlessRecorder::record()
 
     if (saveAsScreenShot)
     {
-        std::string filename = m_fileNamePNG + std::to_string(m_nFrames) + ".png" ;
+        std::string filename = m_fileName + std::to_string(m_nFrames) + ".png" ;
         screenshotPNG(filename);
     } else if (saveAsVideo)
     {
         if (initVideoRecorder)
         {
-            std::string fileName = m_fileNameVideo;
+            std::string fileName = m_fileName;
             fileName.append(".avi");
             videoEncoderStart(fileName.c_str(), AV_CODEC_ID_H264);
             initVideoRecorder = false;
@@ -568,8 +530,8 @@ void HeadlessRecorder::screenshotPNG(std::string filename)
     bool success = false;
     if (img)
     {
-        img->init(m_width, m_height, 1, 1, sofa::helper::io::Image::UNORM8, sofa::helper::io::Image::RGBA);
-        glReadPixels(0, 0, m_width, m_height, GL_RGBA, GL_UNSIGNED_BYTE, img->getPixels());
+        img->init(width, height, 1, 1, sofa::helper::io::Image::UNORM8, sofa::helper::io::Image::RGBA);
+        glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, img->getPixels());
 
         success = img->save(filename, 0);
 
@@ -606,11 +568,11 @@ void HeadlessRecorder::videoEncoderStart(const char *filename, int codec_id)
         msg_error("HeadlessRecorder") << "Could not allocate video codec context";
         exit(1);
     }
-    c->bit_rate = 80000000;
-    c->width = m_width;
-    c->height = m_height;
+    c->bit_rate = 80000000; // maybe I need to adjust it
+    c->width = width;
+    c->height = height;
     c->time_base.num = 1;
-    c->time_base.den = m_fps;
+    c->time_base.den = fps;
     c->gop_size = 10;
     c->max_b_frames = 1;
     c->pix_fmt = AV_PIX_FMT_YUV420P;
@@ -709,15 +671,15 @@ void HeadlessRecorder::videoGLToFrame()
 {
     int i, j, k, cur_gl, cur_rgb, nvals;
     const int format_nchannels = 4;
-    nvals = format_nchannels * m_width * m_height;
+    nvals = format_nchannels * width * height;
     m_rgb = (uint8_t*)realloc(m_rgb, nvals * sizeof(uint8_t));
     GLubyte *pixels = (GLubyte*)malloc(nvals * sizeof(GLubyte));
-    glReadPixels(0, 0, m_width, m_height, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+    glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 
-    for (i = 0; i < m_height; i++) {
-        for (j = 0; j < m_width; j++) {
-            cur_gl  = format_nchannels * (m_width * (m_height - i - 1) + j);
-            cur_rgb = format_nchannels * (m_width * i + j);
+    for (i = 0; i < height; i++) {
+        for (j = 0; j < width; j++) {
+            cur_gl  = format_nchannels * (width * (height - i - 1) + j);
+            cur_rgb = format_nchannels * (width * i + j);
             for (k = 0; k < format_nchannels; k++)
                 (m_rgb)[cur_rgb + k] = (pixels)[cur_gl + k];
         }

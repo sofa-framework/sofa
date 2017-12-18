@@ -40,6 +40,9 @@
 #include <SofaPython/config.h>
 #include <SofaPython/PythonEnvironment.h>
 
+/// This function converts an PyObject into a sofa string.
+/// string that can be safely parsed in helper::vector<int> or helper::vector<double>
+extern std::ostream& pythonToSofaDataString(PyObject* value, std::ostream& out) ;
 
 // =============================================================================
 // Python structures names in sofa...

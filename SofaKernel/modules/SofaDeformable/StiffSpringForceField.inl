@@ -44,7 +44,6 @@ template<class DataTypes>
 void StiffSpringForceField<DataTypes>::init()
 {
     this->SpringForceField<DataTypes>::init();
-    // sout<<"StiffSpringForceField<DataTypes> initialized "<<sendl;
 }
 
 template<class DataTypes>
@@ -64,7 +63,7 @@ void StiffSpringForceField<DataTypes>::addSpringForce(
     int b = spring.m2;
     Coord u = p2[b]-p1[a];
     Real d = u.norm();
-    if( d>1.0e-9 && (!spring.elongationOnly || d>spring.initpos))
+    if( spring.enabled && d>1.0e-9 && (!spring.elongationOnly || d>spring.initpos))
     {
         // F =   k_s.(l-l_0 ).U + k_d((V_b - V_a).U).U = f.U   where f is the intensity and U the direction
         Real inverseLength = 1.0f/d;
@@ -75,10 +74,7 @@ void StiffSpringForceField<DataTypes>::addSpringForce(
         Real elongationVelocity = dot(u,relativeVelocity);
         Real forceIntensity = (Real)(spring.ks*elongation+spring.kd*elongationVelocity);
         Deriv force = u*forceIntensity;
-//        serr<<"StiffSpringForceField<DataTypes>::addSpringForce, p1 = "<<p1<<sendl;
-//        serr<<"StiffSpringForceField<DataTypes>::addSpringForce, p2 = "<<p2<<sendl;
-//        serr<<"StiffSpringForceField<DataTypes>::addSpringForce, new potential energy = "<<potentialEnergy<<sendl;
-//        serr<<"StiffSpringForceField<DataTypes>::addSpringForce, force = "<< force <<sendl;
+
         f1[a]+=force;
         f2[b]-=force;
 
@@ -120,11 +116,9 @@ void StiffSpringForceField<DataTypes>::addSpringDForce(VecDeriv& df1,const  VecD
     const Coord d = dx2[b]-dx1[a];
     Deriv dforce = this->dfdx[i]*d;
     dforce *= kFactor;
-    //                serr<<"StiffSpringForceField<DataTypes>::addSpringDForce, a="<<a<<", b="<<b<<", dx1 ="<<  dx1 <<", dx2 ="<<  dx2 <<sendl;
-    //                serr<<"StiffSpringForceField<DataTypes>::addSpringDForce, a="<<a<<", b="<<b<<", dforce ="<<dforce<<sendl;
+
     df1[a]+=dforce;
     df2[b]-=dforce;
-    //                serr<<"StiffSpringForceField<DataTypes>::addSpringDForce, a="<<a<<", b="<<b<<", df1 after ="<<df1<<", df2 after ="<<df2<<sendl;
 }
 
 template<class DataTypes>
@@ -163,14 +157,11 @@ void StiffSpringForceField<DataTypes>::addDForce(const core::MechanicalParams* m
     const helper::vector<Spring>& springs = this->springs.getValue();
     df1.resize(dx1.size());
     df2.resize(dx2.size());
-    //serr<<"StiffSpringForceField<DataTypes>::addDForce, dx1 = "<<dx1<<sendl;
-    //serr<<"StiffSpringForceField<DataTypes>::addDForce, df1 before = "<<f1<<sendl;
+
     for (unsigned int i=0; i<springs.size(); i++)
     {
         this->addSpringDForce(df1,dx1,df2,dx2, i, springs[i], kFactor, bFactor);
     }
-    //serr<<"StiffSpringForceField<DataTypes>::addDForce, df1 = "<<f1<<sendl;
-    //serr<<"StiffSpringForceField<DataTypes>::addDForce, df2 = "<<f2<<sendl;
 
     data_df1.endEdit();
     data_df2.endEdit();

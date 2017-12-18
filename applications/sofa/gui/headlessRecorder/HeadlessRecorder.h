@@ -64,7 +64,7 @@ public:
     typedef sofa::core::visual::VisualParams VisualParams;
     typedef sofa::core::visual::DrawToolGL   DrawToolGL;
 
-    HeadlessRecorder(const std::vector<std::string>& options = std::vector<std::string>());
+    HeadlessRecorder();
     ~HeadlessRecorder();
 
     int mainLoop();
@@ -84,14 +84,10 @@ public:
     virtual void setViewerResolution(int width, int height) override;
 
     // Needed for the registration
-    static int InitGUI(const char* name, const std::vector<std::string>& options);
-    static BaseGUI* CreateGUI(const char* name, const std::vector<std::string>& options, sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
-
+    static BaseGUI* CreateGUI(const char* name, sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
+    static int RegisterGUIParameters(ArgumentParser* argumentParser);
 
 private:
-
-    void parseOptions(const std::vector<std::string>& options);
-
     void record();
     void screenshotPNG(std::string fileName);
     void videoYUVToRGB();
@@ -115,10 +111,10 @@ private:
     std::string sceneFileName;
     sofa::component::visualmodel::BaseCamera::SPtr currentCamera;
 
-    int m_width, m_height;
+    static int width, height, recordTimeInSeconds, fps;
+    static bool saveAsScreenShot, saveAsVideo;
+
     int m_nFrames;
-    int m_fps;
-    int m_recordTimeInSeconds;
     FILE* m_file;
 
     AVCodecContext *c = NULL;
@@ -132,9 +128,9 @@ private:
     double lastProjectionMatrix[16];
     double lastModelviewMatrix[16];
     bool initTexturesDone;
-    bool saveAsScreenShot, saveAsVideo, initVideoRecorder;
+    bool initVideoRecorder;
     bool m_isRecording;
-    std::string m_fileNameVideo, m_fileNamePNG;
+    std::string m_fileName;
 
 };
 

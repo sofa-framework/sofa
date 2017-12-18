@@ -132,7 +132,9 @@ public:
     virtual const Triangle getTriangle(TriangleID i) { return getTriangles()[i]; }
     virtual const Quad getQuad(QuadID i)             { return getQuads()[i]; }
     virtual const Tetra getTetrahedron(TetraID i)    { return getTetrahedra()[i]; }
-    virtual const Hexa getHexahedron(HexaID i)       { return getHexahedra()[i]; }
+    virtual const Hexa getHexahedron(HexaID i)       { return getHexahedra()[i]; }   
+	   
+    virtual sofa::core::topology::TopologyObjectType getTopologyType() const = 0 ;
     /// @}
 
     /// Bridge from old functions (using Tetra/Tetras and Hexa/Hexas) to new ones

@@ -561,6 +561,12 @@ core::topology::BaseMeshTopology* Node::getMeshTopology() const
         return get<core::topology::BaseMeshTopology>(SearchParents);
 }
 
+/// Mesh Topology that is local to this context (i.e. not within parent contexts)
+core::topology::BaseMeshTopology* Node::getLocalMeshTopology() const
+{
+    return this->meshTopology;
+}
+
 /// Degrees-of-Freedom
 core::BaseState* Node::getState() const
 {

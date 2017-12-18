@@ -73,6 +73,7 @@ static const std::string& getExecutablePath();
 static const std::string& getExecutableDirectory();
 
 /// @brief Get the path where plugins are located
+/// @deprecated Use sofa::helper::system::PluginRepository.getFirstPath() instead.
 static const std::string& getPluginDirectory();
 
 /// @brief Get the path to the "root" path of Sofa (i.e. the build directory or

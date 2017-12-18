@@ -126,7 +126,7 @@ void SpringForceField<DataTypes>::addSpringForce(Real& ener, VecDeriv& f1, const
     int b = spring.m2;
     Coord u = p2[b]-p1[a];
     Real d = u.norm();
-    if( d<1.0e-4 ) // null length => no force
+    if( spring.enabled && d<1.0e-4 ) // null length => no force
         return;
     Real inverseLength = 1.0f/d;
     u *= inverseLength;
@@ -171,7 +171,7 @@ void SpringForceField<DataTypes>::addForce(
 template<class DataTypes>
 void SpringForceField<DataTypes>::addDForce(const core::MechanicalParams*, DataVecDeriv&, DataVecDeriv&, const DataVecDeriv&, const DataVecDeriv& )
 {
-    serr << "SpringForceField does not support implicit integration. Use StiffSpringForceField instead."<<sendl;
+    msg_error() << "SpringForceField does not support implicit integration. Use StiffSpringForceField instead.";
 }
 
 
@@ -201,7 +201,7 @@ SReal SpringForceField<DataTypes>::getPotentialEnergy(const core::MechanicalPara
 template<class DataTypes>
 void SpringForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *, SReal, unsigned int &)
 {
-    serr << "SpringForceField does not support implicit integration. Use StiffSpringForceField instead."<<sendl;
+    msg_error() << "SpringForceField does not support implicit integration. Use StiffSpringForceField instead.";
 }
 
 
@@ -222,6 +222,7 @@ void SpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams
     const helper::vector<Spring>& springs = this->springs.getValue();
     for (unsigned int i=0; i<springs.size(); i++)
     {
+        if (!springs[i].enabled) continue;
         Real d = (p2[springs[i].m2]-p1[springs[i].m1]).norm();
         Vector3 point2,point1;
         point1 = DataTypes::getCPos(p1[springs[i].m1]);
@@ -293,8 +294,10 @@ void SpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams
         for (unsigned int i=0; i<numLines2; ++i) vparams->drawTool()->drawArrow(points[2][2*i+1], points[2][2*i], showArrowSize.getValue(), c2);
         for (unsigned int i=0; i<numLines3; ++i) vparams->drawTool()->drawArrow(points[3][2*i+1], points[3][2*i], showArrowSize.getValue(), c3);
     }
-    else serr << "No proper drawing mode found!" << sendl;
-
+    else
+    {
+        msg_error()<< "No proper drawing mode found!";
+    }
 }
 
 template<class DataTypes>

@@ -44,7 +44,7 @@ protected:
     std::stack<void*> stack;
 public:
     CactusStackStorage()
-        : up(NULL), down(NULL)
+        : up(nullptr), down(nullptr)
     {
     }
     void setParent(CactusStackStorage* parent)

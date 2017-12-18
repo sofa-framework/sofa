@@ -23,7 +23,6 @@
 #include <gtest/gtest.h>
 
 #include <sofa/helper/system/FileSystem.h>
-#include <SofaTest/TestMessageHandler.h>
 
 using sofa::helper::Utils;
 using sofa::helper::system::FileSystem;

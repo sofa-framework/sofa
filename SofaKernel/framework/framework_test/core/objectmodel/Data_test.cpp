@@ -23,7 +23,9 @@
 #include <sofa/helper/vectorData.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
-#include <gtest/gtest.h>
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest ;
+
 
 namespace sofa {
 
@@ -33,7 +35,7 @@ using namespace core::objectmodel;
 Create two datas and a link between them.
 Set the value of data1 and check if the boolean is dirty of data2 is true and that the value of data2 is right.
   */
-struct DataLink_test: public ::testing::Test
+struct DataLink_test: public BaseTest
 {
     Data<int> data1;
     Data<int> data2;

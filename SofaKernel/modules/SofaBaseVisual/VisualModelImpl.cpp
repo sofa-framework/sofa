@@ -306,7 +306,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
             g.quad0 = facet2tq[g0.p0][NBQ];
             g.nbq = facet2tq[g0.p0+g0.nbp][NBQ] - g.quad0;
             if (g.materialId == -1 && !g0.materialName.empty())
-                sout << "face group " << ig << " name " << g0.materialName << " uses missing material " << g0.materialName << "   " << sendl;
+                msg_info() << "face group " << ig << " name " << g0.materialName << " uses missing material " << g0.materialName << "   ";
         }
     }
 
@@ -337,7 +337,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
         nbVOut += s;
     }
 
-    sout << nbVIn << " input positions, " << nbVOut << " final vertices.   " << sendl;
+    msg_info() << nbVIn << " input positions, " << nbVOut << " final vertices.   ";
 
     if (nbVIn != nbVOut)
         vsplit = true;
@@ -440,7 +440,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
             idxs[j] = vertTexNormMap[verts[j]][std::make_pair((tex?texs[j]:-1), (m_useNormals.getValue() ? norms[j] : 0))];
             if ((unsigned)idxs[j] >= (unsigned)nbVOut)
             {
-                serr << this->getPathName()<<" index "<<idxs[j]<<" out of range"<<sendl;
+                msg_error() << this->getPathName()<<" index "<<idxs[j]<<" out of range";
                 idxs[j] = 0;
             }
         }
@@ -481,11 +481,17 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
         std::string textureFilename(textureName);
         if (sofa::helper::system::DataRepository.findFile(textureFilename))
         {
-            sout << "loading file " << textureName << sendl;
-            loadTexture(textureName);
+            msg_info() << "loading file " << textureName;
+            bool textureLoaded = loadTexture(textureName);
+            if(!textureLoaded)
+            {
+                msg_error()<<"Texture "<<textureName<<" cannot be loaded";
+            }
         }
         else
-            serr << "Texture \"" << textureName << "\" not found" << sendl;
+        {
+            msg_error() << "Texture \"" << textureName << "\" not found";
+        }
     }
 
     // Make sure all Data are up-to-date
@@ -554,14 +560,14 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
         }
         else
         {
-            serr << "Mesh \"" << filename << "\" not found" << sendl;
+            msg_error() << "Mesh \"" << filename << "\" not found";
         }
     }
     else
     {
         if ((m_positions.getValue()).size() == 0 && (m_vertices2.getValue()).size() == 0)
         {
-            sout << "VisualModel: will use Topology." << sendl;
+            msg_info() << "will use Topology.";
             useTopology = true;
         }
 
@@ -770,7 +776,7 @@ void VisualModelImpl::init()
     }
     else
     {
-        sout << "Use topology " << m_topology->getName() << sendl;
+        msg_info() << "Use topology " << m_topology->getName();
         // add the functions to handle topology changes.
         if (m_handleDynamicTopology.getValue())
         {
@@ -817,7 +823,6 @@ void VisualModelImpl::computeNormals()
     if (vertNormIdx.empty())
     {
         int nbn = (vertices).size();
-        //serr << "CN0("<<nbn<<")"<<sendl;
 
         ResizableExtVector<Deriv>& normals = *(m_vnormals.beginEdit());
 
@@ -868,7 +873,6 @@ void VisualModelImpl::computeNormals()
             if (vertNormIdx[i] >= nbn)
                 nbn = vertNormIdx[i]+1;
         }
-        //serr << "CN1("<<nbn<<")"<<sendl;
 
         normals.resize(nbn);
         for (int i = 0; i < nbn; i++)
@@ -1116,11 +1120,6 @@ void VisualModelImpl::updateVisual()
             last = m_vtexcoords.getValue().size();
         }
     */
-    //sout << "VMI::updateVisual()" << sendl;
-    //if ((m_positions.getValue()).size()>10)
-    //    sout << "positions[10] = " << m_positions.getValue()[10] << sendl;
-    //if ((m_vertices.getValue()).size()>10)
-    //    sout << "vertices[10] = " << m_vertices.getValue()[10] << sendl;
     if (modified && (!getVertices().empty() || useTopology))
     {
         if (useTopology)
@@ -1515,16 +1514,16 @@ void VisualModelImpl::handleTopologyChange()
 
                                 if(!is_in_shell)
                                 {
-                                    sout << "INFO_print : Vis - triangle is forgotten in SHELL !!! global indices (point, triangle) = ( "  << last << " , " << ind_forgotten  << " )" << sendl;
+                                    msg_info() << "INFO_print : Vis - triangle is forgotten in SHELL !!! global indices (point, triangle) = ( "  << last << " , " << ind_forgotten  << " )";
 
                                     if(ind_forgotten<m_topology->getNbTriangles())
                                     {
                                         const core::topology::BaseMeshTopology::Triangle t_forgotten = m_topology->getTriangle(ind_forgotten);
-                                        sout << "INFO_print : Vis - last = " << last << sendl;
-                                        sout << "INFO_print : Vis - lastIndexVec[i] = " << lastIndexVec[i] << sendl;
-                                        sout << "INFO_print : Vis - tab.size() = " << tab.size() << " , tab = " << tab << sendl;
-                                        sout << "INFO_print : Vis - t_local rectified = " << triangles[j_loc] << sendl;
-                                        sout << "INFO_print : Vis - t_global = " << t_forgotten << sendl;
+                                        msg_info() << "Vis - last = " << last << msgendl
+                                                   << "Vis - lastIndexVec[i] = " << lastIndexVec[i] << msgendl
+                                                   << "Vis - tab.size() = " << tab.size() << " , tab = " << tab << msgendl
+                                                   << "Vis - t_local rectified = " << triangles[j_loc] << msgendl
+                                                   << "Vis - t_global = " << t_forgotten;
                                     }
                                 }
                             }

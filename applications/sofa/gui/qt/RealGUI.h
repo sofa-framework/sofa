@@ -102,8 +102,7 @@ class SOFA_SOFAGUIQT_API RealGUI : public QMainWindow, public Ui::GUI, public so
 
 //-----------------STATIC METHODS------------------------{
 public:
-    static int InitGUI(const char* name, const std::vector<std::string>& options);
-    static BaseGUI* CreateGUI(const char* name, const std::vector<std::string>& options, sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
+    static BaseGUI* CreateGUI(const char* name, sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
 
     static void SetPixmap(std::string pixmap_filename, QPushButton* b);
 
@@ -116,8 +115,7 @@ protected:
 
 //-----------------CONSTRUCTOR - DESTRUCTOR ------------------------{
 public:
-    RealGUI( const char* viewername,
-            const std::vector<std::string>& options = std::vector<std::string>() );
+    RealGUI( const char* viewername);
 
     ~RealGUI();
 //-----------------CONSTRUCTOR - DESTRUCTOR ------------------------}
@@ -338,7 +336,7 @@ private:
     void addViewer();//? where is the implementation ?
 
     /// Parse options from the RealGUI constructor
-    void parseOptions(const std::vector<std::string>& options);
+    void parseOptions();
 
     void createPluginManager();
 

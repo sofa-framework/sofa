@@ -65,6 +65,7 @@ list(APPEND CMAKE_MODULE_PATH "${SOFA_KERNEL_SOURCE_DIR}/SofaFramework")
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/extlibs)
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/applications/plugins)
+list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/applications/packages)
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/applications/projects)
 
 # Create etc/sofa.ini: it contains the paths to share/ and examples/. In the
@@ -207,7 +208,7 @@ if(MSVC)
 endif()
 
 ### Mask
-option(SOFA_USE_MASK "Use mask optimization" ON)
+option(SOFA_USE_MASK "Use mask optimization" OFF)
 
 ### SOFA_DEV_TOOL
 option(SOFA_WITH_DEVTOOLS "Compile with developement extra features." ON)
@@ -353,6 +354,9 @@ endif()
 
 ## Plugins
 add_subdirectory(applications/plugins)
+
+## Packages
+add_subdirectory(applications/packages)
 
 ## Applications
 add_subdirectory(applications/projects)
