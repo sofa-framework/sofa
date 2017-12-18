@@ -564,7 +564,7 @@ void HeadlessRecorder::videoEncoderStart(const char *filename, int codec_id)
         msg_error("HeadlessRecorder") << "Could not allocate video codec context";
         exit(1);
     }
-    c->bit_rate = 80000000; // maybe I need to adjust it
+    c->bit_rate = 20000000; // maybe I need to adjust it
     c->width = width;
     c->height = height;
     c->time_base.num = 1;
