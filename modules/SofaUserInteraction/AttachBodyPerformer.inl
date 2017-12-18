@@ -23,6 +23,7 @@
 #define SOFA_COMPONENT_COLLISION_ATTACHBODYPERFORMER_INL
 
 #include <SofaUserInteraction/AttachBodyPerformer.h>
+#include <sofa/core/BaseMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaUserInteraction/MouseInteractor.h>
 #include <sofa/simulation/Node.h>

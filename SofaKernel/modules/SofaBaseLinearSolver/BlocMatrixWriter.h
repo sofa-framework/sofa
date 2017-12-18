@@ -26,6 +26,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Mat.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 
 namespace sofa
 {

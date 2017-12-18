@@ -23,6 +23,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_SURFACEPRESSUREFORCEFIELD_INL
 
 #include <SofaBoundaryCondition/SurfacePressureForceField.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/visual/DrawTool.h>
 #include <sofa/core/visual/DisplayFlags.h>

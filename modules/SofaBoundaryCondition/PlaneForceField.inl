@@ -23,6 +23,7 @@
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_PLANEFORCEFIELD_INL
 
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/visual/DrawTool.h>
 #include <sofa/simulation/Simulation.h>
 #include <SofaBoundaryCondition/PlaneForceField.h>

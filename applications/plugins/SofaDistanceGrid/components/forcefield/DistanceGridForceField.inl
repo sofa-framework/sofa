@@ -23,6 +23,8 @@
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_DISTANCEGRIDFORCEFIELD_INL
 
 #include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
+#include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/visual/DrawTool.h>
 #include <sofa/simulation/Simulation.h>
