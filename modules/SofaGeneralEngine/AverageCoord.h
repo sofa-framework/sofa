@@ -59,20 +59,20 @@ protected:
 
     virtual ~AverageCoord() {}
 public:
-    void init();
+    void init() override;
 
-    void reinit();
+    void reinit() override;
 
-    void update();
+    void update() override;
 
     Data<VecIndex> d_indices;    ///< indices of the coordinates to average
     Data<unsigned> d_vecId;  ///< index of the vector (default value corresponds to core::VecCoordId::position() )
     Data<Coord> d_average;       ///< result
 
-    void handleEvent(core::objectmodel::Event *event);
+    void handleEvent(core::objectmodel::Event *event) override;
     void onBeginAnimationStep(const double /*dt*/);
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }

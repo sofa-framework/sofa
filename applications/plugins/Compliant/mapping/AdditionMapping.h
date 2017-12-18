@@ -127,7 +127,7 @@ class SOFA_Compliant_API AdditionMapping : public ConstantAssembledMapping<TIn, 
 
         if( scale < 0 ) return;
 
-        glEnable(GL_LIGHTING);
+        vparams->drawTool()->enableLighting();
 
         typename core::behavior::MechanicalState<TIn>::ReadVecCoord pos = this->getFromModel()->readPositions();
         const pairs_type& p = pairs.getValue();

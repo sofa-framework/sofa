@@ -20,10 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/gl/Capture.h>
-#include <sofa/helper/io/ImageBMP.h>
-#ifdef SOFA_HAVE_PNG
-#include <sofa/helper/io/ImagePNG.h>
-#endif
+#include <sofa/helper/system/SetDirectory.h>
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -47,29 +44,60 @@ Capture::Capture()
 
 bool Capture::saveScreen(const std::string& filename, int compression_level)
 {
-#ifdef SOFA_HAVE_PNG
-    io::ImagePNG img;
-#else
-    io::ImageBMP img;
-#endif
-    GLint viewport[4];
-    glGetIntegerv(GL_VIEWPORT,viewport);
-    img.init(viewport[2], viewport[3], 1, 1, io::Image::UNORM8, io::Image::RGB);
-    glReadBuffer(GL_FRONT);
-    glPixelStorei(GL_PACK_ALIGNMENT, 1);
-    glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_RGB, GL_UNSIGNED_BYTE, img.getPixels());
+    std::string extension = sofa::helper::system::SetDirectory::GetExtension(filename.c_str());
+    std::transform(extension.begin(), extension.end(), extension.begin(), ::tolower);
 
-    if (!img.save(filename, compression_level))
+    //test if we can export in lossless image
+    bool imageSupport = helper::io::Image::FactoryImage::getInstance()->hasKey(extension);
+    if (!imageSupport)
+    {
+        msg_error("Capture") << "Could not write " << extension << "image format (no support found)";
         return false;
+    }
 
-    msg_info("Capture") << "Saved "<<img.getWidth()<<"x"<<img.getHeight()<<" screen image to "<<filename ;
-    glReadBuffer(GL_BACK);
-    return true;
+    helper::io::Image* img = helper::io::Image::FactoryImage::getInstance()->createObject(extension, "");
+    bool success = false;
+    if (img)
+    {
+        GLint viewport[4];
+        glGetIntegerv(GL_VIEWPORT, viewport);
+        img->init(viewport[2], viewport[3], 1, 1, io::Image::UNORM8, io::Image::RGB);
+        glReadBuffer(GL_FRONT);
+        glPixelStorei(GL_PACK_ALIGNMENT, 1);
+        glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_RGB, GL_UNSIGNED_BYTE, img->getPixels());
+
+        success = img->save(filename, compression_level);
+
+        if (success)
+        {
+            msg_info("Capture") << "Saved " << img->getWidth() << "x" << img->getHeight() << " screen image to " << filename;
+        }
+
+        glReadBuffer(GL_BACK);
+        delete img;
+    }
+
+    if(!success)
+    {
+        msg_error("Capture") << "Unknown error while saving screen image to " << filename;
+    }
+
+    return success;
 }
 
 std::string Capture::findFilename()
 {
-    std::string filename;
+    bool pngSupport = helper::io::Image::FactoryImage::getInstance()->hasKey("png")
+            || helper::io::Image::FactoryImage::getInstance()->hasKey("PNG");
+
+    bool bmpSupport = helper::io::Image::FactoryImage::getInstance()->hasKey("bmp")
+            || helper::io::Image::FactoryImage::getInstance()->hasKey("BMP");
+
+    std::string filename = "";
+
+    if(!pngSupport && !bmpSupport)
+        return filename;
+
 #ifndef PS3
     char buf[32];
     int c;
@@ -81,11 +109,10 @@ std::string Capture::findFilename()
         sprintf(buf, "%08d",c);
         filename = prefix;
         filename += buf;
-#ifdef SOFA_HAVE_PNG
-        filename += ".png";
-#else
-        filename += ".bmp";
-#endif
+        if(pngSupport)
+            filename += ".png";
+        else
+            filename += ".bmp";
     }
     while (stat(filename.c_str(),&st)==0);
     counter = c+1;
@@ -93,12 +120,12 @@ std::string Capture::findFilename()
     sprintf(buf, "%08d",c);
     filename = prefix;
     filename += buf;
-#ifdef SOFA_HAVE_PNG
-    filename += ".png";
-#else
-    filename += ".bmp";
+    if(pngSupport)
+        filename += ".png";
+    else
+        filename += ".bmp";
 #endif
-#endif
+
     return filename;
 }
 

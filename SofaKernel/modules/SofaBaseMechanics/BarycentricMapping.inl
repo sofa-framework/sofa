@@ -43,7 +43,6 @@
 #include <SofaBaseTopology/TopologyData.inl>
 
 #include <sofa/helper/vector.h>
-#include <sofa/helper/gl/template.h>
 #include <sofa/helper/system/config.h>
 
 #include <sofa/simulation/Simulation.h>
@@ -668,7 +667,7 @@ void BarycentricMapperTriangleSetTopology<In,Out>::init ( const typename Out::Ve
 {
     _fromContainer->getContext()->get ( _fromGeomAlgo );
 
-    // Why do we need that ? is reset the map in case of topology change
+    // Why do we need that ? it reset the map in case of topology change
 //    if (this->toTopology)
 //    {
 //        map.createTopologicalEngine(this->toTopology);
@@ -3690,6 +3689,82 @@ void BarycentricMapping<TIn, TOut>::handleTopologyChange ( core::topology::Topol
     reinit(); // we now recompute the entire mapping when there is a topologychange
 }
 
+#ifdef BARYCENTRIC_MAPPER_TOPOCHANGE_REINIT
+template <class In, class Out>
+void BarycentricMapperTriangleSetTopology<In,Out>::handleTopologyChange(core::topology::Topology* t)
+{
+    using core::topology::TopologyChange;
+
+    if (t != this->fromTopology) return;
+
+    if ( this->fromTopology->beginChange() == this->fromTopology->endChange() )
+        return;
+
+    MechanicalState< In >* mStateFrom = NULL;
+    MechanicalState< Out >* mStateTo = NULL;
+
+    this->fromTopology->getContext()->get(mStateFrom);
+    this->toTopology->getContext()->get(mStateTo);
+
+    if ((mStateFrom == NULL) || (mStateTo == NULL))
+        return;
+
+    const typename MechanicalState< In >::VecCoord& in = *(mStateFrom->getX0());
+    const typename MechanicalState< Out >::VecCoord& out = *(mStateTo->getX0());
+
+	for (std::list< const TopologyChange *>::const_iterator it = this->fromTopology->beginChange(), itEnd = this->fromTopology->endChange(); it != itEnd; ++it)
+	{
+		const core::topology::TopologyChangeType& changeType = (*it)->getChangeType();
+
+		switch ( changeType )
+		{
+        case core::topology::ENDING_EVENT :
+        {
+            const helper::vector< topology::Triangle >& triangles = this->fromTopology->getTriangles();
+            helper::vector< Mat3x3d > bases;
+            helper::vector< Vector3 > centers;
+
+            // clear and reserve space for 2D mapping
+            this->clear(out.size());
+            bases.resize(triangles.size());
+            centers.resize(triangles.size());
+
+            for ( unsigned int t = 0; t < triangles.size(); t++ )
+            {
+                Mat3x3d m,mt;
+                m[0] = in[triangles[t][1]]-in[triangles[t][0]];
+                m[1] = in[triangles[t][2]]-in[triangles[t][0]];
+                m[2] = cross ( m[0],m[1] );
+                mt.transpose ( m );
+                bases[t].invert ( mt );
+                centers[t] = ( in[triangles[t][0]]+in[triangles[t][1]]+in[triangles[t][2]] ) /3;
+            }
+
+            for ( unsigned int i=0; i<out.size(); i++ )
+            {
+                Vec3d pos = Out::getCPos(out[i]);
+                Vector3 coefs;
+                int index = -1;
+                double distance = 1e10;
+                for ( unsigned int t = 0; t < triangles.size(); t++ )
+                {
+                    Vec3d v = bases[t] * ( pos - in[triangles[t][0]] );
+                    double d = std::max ( std::max ( -v[0],-v[1] ),std::max ( ( v[2]<0?-v[2]:v[2] )-0.01,v[0]+v[1]-1 ) );
+                    if ( d>0 ) d = ( pos-centers[t] ).norm2();
+                    if ( d<distance ) { coefs = v; distance = d; index = t; }
+                }
+
+                this->addPointInTriangle ( index, coefs.ptr() );
+            }
+            break;
+        }
+		default:
+			break;
+		}
+	}
+}
+
+#endif // BARYCENTRIC_MAPPER_TOPOCHANGE_REINIT
 
 
 template<class TIn, class TOut>

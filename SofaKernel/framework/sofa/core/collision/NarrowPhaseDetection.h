@@ -127,7 +127,7 @@ public:
 protected:
     bool _zeroCollision;//true if the last narrow phase detected no collision, to use after endNarrowPhase
 
-    virtual void changeInstanceNP(Instance inst)
+    virtual void changeInstanceNP(Instance inst) override
     {
         m_storedOutputsMap[instance].swap(m_outputsMap);
         m_outputsMap.swap(m_storedOutputsMap[inst]);

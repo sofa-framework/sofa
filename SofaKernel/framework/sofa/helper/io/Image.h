@@ -133,11 +133,14 @@ public:
     static Image* Create(std::string filename);
 
     template<class Object>
-    static Object* create(Object*, std::string arg)
+    static Object* create(Object*, std::string arg = "")
     {
         return new Object(arg);
     }
 	bool isLoaded() const { return (m_bLoaded>0); }
+
+    virtual bool load(std::string filename);
+    virtual bool save(std::string filename, int compression_level=-1);
 
 protected:
 	unsigned char m_bLoaded;
@@ -158,5 +161,8 @@ extern template class SOFA_HELPER_API Factory<std::string, io::Image, std::strin
 } // namespace helper
 
 } // namespace sofa
+
+/// This line register Image to the messaging system
+MSG_REGISTER_CLASS(sofa::helper::io::Image, "Image")
 
 #endif

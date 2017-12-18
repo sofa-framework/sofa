@@ -5,6 +5,7 @@ set(HEADER_FILES
     DAGNode.h
     DAGNodeMultiMappingElement.h
     DAGSimulation.h
+    SimpleApi.h
     init.h
     graph.h
 )
@@ -13,8 +14,14 @@ set(SOURCE_FILES
     DAGNode.cpp
     DAGNodeMultiMappingElement.cpp
     DAGSimulation.cpp
+    SimpleApi.cpp
     init.cpp
 )
+
+if(SOFA_BUILD_TESTS)
+    list(APPEND HEADER_FILES testing/BaseSimulationTest.h)
+    list(APPEND SOURCE_FILES testing/BaseSimulationTest.cpp)
+endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCommon)

@@ -687,7 +687,31 @@ public:
 
 /// Easy syntax for getting read/write access to a Data using operator ->. Example: write(someFlagData)->setFlagValue(true);
 template<class T>
-inline WriteAccessor<core::objectmodel::Data<T> > write(core::objectmodel::Data<T>& data) { return WriteAccessor<core::objectmodel::Data<T> >(data); }
+inline WriteAccessor<core::objectmodel::Data<T> > write(core::objectmodel::Data<T>& data, const core::ExecParams* params)
+{
+    return WriteAccessor<core::objectmodel::Data<T> >(params,data);
+}
+
+
+template<class T>
+inline WriteAccessor<core::objectmodel::Data<T> > write(core::objectmodel::Data<T>& data) 
+{ 
+    return write(data,sofa::core::ExecParams::defaultInstance() ); 
+}
+
+
+template<class T>
+inline ReadAccessor<core::objectmodel::Data<T> > read(const core::objectmodel::Data<T>& data, const core::ExecParams* params)
+{
+    return ReadAccessor<core::objectmodel::Data<T> >(params, data);
+}
+
+
+template<class T>
+inline ReadAccessor<core::objectmodel::Data<T> > read(core::objectmodel::Data<T>& data)
+{
+    return read(data, sofa::core::ExecParams::defaultInstance());
+}
 
 /// Easy syntax for getting write only access to a Data using operator ->. Example: writeOnly(someFlagData)->setFlagValue(true);
 template<class T>

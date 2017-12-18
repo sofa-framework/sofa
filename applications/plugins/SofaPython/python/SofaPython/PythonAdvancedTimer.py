@@ -21,7 +21,7 @@ def measureAnimationTime(node, timerName, timerInterval, timerOutputType, result
     with open(resultFileName, "w+") as outputFile :
         outputFile.write("{")
         i = 0
-        Sofa.timerSetOutPutType(timerName, timerOutputType)
+        Sofa.timerSetOutputType(timerName, timerOutputType)
         while i < iterations:
             Sofa.timerBegin(timerName)
             rootNode.simulationStep(simulationDeltaTime)

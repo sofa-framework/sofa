@@ -81,7 +81,7 @@ protected:
 
     std::map<Instance,sofa::helper::vector<core::objectmodel::BaseContext::SPtr> > storedGroups;
 
-    virtual void changeInstance(Instance inst)
+    virtual void changeInstance(Instance inst) override
     {
         storedGroups[instance].swap(groups);
         groups.swap(storedGroups[inst]);

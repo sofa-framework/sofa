@@ -17,7 +17,6 @@ install(FILES "${CMAKE_BINARY_DIR}/include/SofaMisc/config.h" DESTINATION "inclu
 set(SOFAMISC_TARGETS
     SofaComponentMisc
     SofaMisc
-    SofaMiscCollision
     SofaMiscEngine
     SofaMiscFem
     SofaMiscForceField

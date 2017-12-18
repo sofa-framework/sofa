@@ -45,7 +45,7 @@ public:
     BaseMaterial() {}
     virtual ~BaseMaterial() {}
 
-    virtual void init()
+    virtual void init() override
     {
         this->core::objectmodel::BaseObject::init();
     }
@@ -60,7 +60,7 @@ public:
     virtual void computeDStress (defaulttype::Vector3 & ,defaulttype::Vector3 &) {}
 
     virtual void computeStress (unsigned int /*iElement*/)=0;//to be pure virtual
-    virtual void handleTopologyChange()
+    virtual void handleTopologyChange() override
     {
         serr<<"ERROR(BaseMaterial) this method handleTopologyChange() is not already implemented in base class"<<sendl;
     }

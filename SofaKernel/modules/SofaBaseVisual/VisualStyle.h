@@ -69,8 +69,8 @@ public:
 protected:
     VisualStyle();
 public:
-    void fwdDraw(VisualParams* );
-    void bwdDraw(VisualParams* );
+    void fwdDraw(VisualParams* ) override;
+    void bwdDraw(VisualParams* ) override;
 
     Data<DisplayFlags> displayFlags;
 

@@ -96,6 +96,12 @@ public:
         : vCenter(Vec<3,real2>(v.data())), vOrientation(Vec<3,real2>(v.data()+3))
     {}
 
+    template<typename real2>
+    RigidDeriv(const real2* ptr)
+        :vCenter(ptr),vOrientation(ptr+3)
+    {
+    }
+
     void clear()
     {
         vCenter.clear();

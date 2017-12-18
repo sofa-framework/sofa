@@ -51,11 +51,11 @@ protected:
     virtual ~TestEngine() {}
 public:
     SOFA_CLASS(TestEngine,core::DataEngine);
-    void init();
+    void init() override;
 
-    void reinit();
+    void reinit() override;
 
-    void update();
+    void update() override;
 
     // To see how many times update function is called
     int getCounterUpdate();

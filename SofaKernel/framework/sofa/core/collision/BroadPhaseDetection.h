@@ -77,7 +77,7 @@ protected:
     sofa::helper::vector< std::pair<core::CollisionModel*, core::CollisionModel*> > cmPairs;
     std::map<Instance,sofa::helper::vector< std::pair<core::CollisionModel*, core::CollisionModel*> > > storedCmPairs;
 
-    virtual void changeInstanceBP(Instance inst)
+    virtual void changeInstanceBP(Instance inst) override
     {
         storedCmPairs[instance].swap(cmPairs);
         cmPairs.swap(storedCmPairs[inst]);

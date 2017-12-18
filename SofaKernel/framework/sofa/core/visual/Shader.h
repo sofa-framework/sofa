@@ -62,8 +62,8 @@ public:
     ///or manually (value true : useful when another component wants to use it for itself only)
     virtual bool isActive() = 0;
 
-    virtual bool insertInNode( objectmodel::BaseNode* node );
-    virtual bool removeInNode( objectmodel::BaseNode* node );
+    virtual bool insertInNode( objectmodel::BaseNode* node ) override;
+    virtual bool removeInNode( objectmodel::BaseNode* node ) override;
 };
 
 /**

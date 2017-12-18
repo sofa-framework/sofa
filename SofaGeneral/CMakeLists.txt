@@ -54,10 +54,6 @@ if(NOT SOFA_NO_OPENGL)
     list(APPEND SOFAGENERAL_TARGETS SofaOpenglVisual)
 endif()
 
-if(SOFA_HAVE_TAUCS)
-    list(APPEND SOFAGENERAL_TARGETS SofaTaucsSolver)
-endif()
-
 foreach(TARGET ${SOFAGENERAL_TARGETS})
     add_subdirectory(../modules/${TARGET} ${CMAKE_CURRENT_BINARY_DIR}/${TARGET})
     target_include_directories(${TARGET} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../modules>")
