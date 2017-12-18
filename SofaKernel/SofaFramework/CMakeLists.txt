@@ -150,19 +150,23 @@ if(SOFA_HAVE_BOOST_SYSTEM
     sofa_create_target(BoostSystem SofaFramework "${Boost_SYSTEM_LIBRARY}" "${Boost_INCLUDE_DIRS}")
     sofa_create_target(BoostLocale SofaFramework "${Boost_LOCALE_LIBRARY}" "${Boost_INCLUDE_DIRS}")
     sofa_create_target(BoostFileSystem SofaFramework "${Boost_FILESYSTEM_LIBRARY}" "${Boost_INCLUDE_DIRS}")
+    sofa_create_target(BoostProgramOptions SofaFramework "${Boost_PROGRAM_OPTIONS_LIBRARY}" "${Boost_INCLUDE_DIRS}")
 
     list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostSystem_Target})
     list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostLocale_Target})
     list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostFileSystem_Target})
+    list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostProgramOptions_Target})
 
     sofa_install_libraries("${Boost_SYSTEM_LIBRARY}")
     sofa_install_libraries("${Boost_LOCALE_LIBRARY}")
     sofa_install_libraries("${Boost_FILESYSTEM_LIBRARY}")
+    sofa_install_libraries("${Boost_PROGRAM_OPTIONS_LIBRARY}")
 
     if(WIN32)
         sofa_copy_libraries("${Boost_SYSTEM_LIBRARY}")
         sofa_copy_libraries("${Boost_LOCALE_LIBRARY}")
         sofa_copy_libraries("${Boost_FILESYSTEM_LIBRARY}")
+        sofa_copy_libraries("${Boost_PROGRAM_OPTIONS_LIBRARY}")
     endif()
 
     if(SOFA_HAVE_BOOST_DATE_TIME)

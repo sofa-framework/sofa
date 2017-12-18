@@ -48,6 +48,8 @@
 
 #cmakedefine SOFA_HAVE_BOOST_FILESYSTEM
 
+#cmakedefine SOFA_HAVE_BOOST_PROGRAM_OPTION
+
 #cmakedefine SOFA_HAVE_TINYXML
 
 #cmakedefine SOFA_NO_UPDATE_BBOX
