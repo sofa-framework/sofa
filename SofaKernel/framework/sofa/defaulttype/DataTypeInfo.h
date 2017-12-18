@@ -23,10 +23,7 @@
 #define SOFA_DEFAULTTYPE_DATATYPEINFO_H
 
 #include <vector>
-//#include <sofa/helper/fixed_array.h>
-//#include <sofa/helper/vector.h>
 #include <sstream>
-//#include <typeinfo>
 #include <sofa/helper/logging/Messaging.h>
 
 namespace sofa

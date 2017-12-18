@@ -30,6 +30,7 @@
 #include <string>
 #include <sstream>
 
+#include <sofa/helper/vector.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glu.h>
 #include <sofa/helper/fixed_array.h>

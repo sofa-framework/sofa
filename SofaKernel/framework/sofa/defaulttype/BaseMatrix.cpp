@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <sofa/helper/system/config.h>
 #include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/defaulttype/BaseVector.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/logging/Messaging.h>
