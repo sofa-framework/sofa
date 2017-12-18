@@ -16,21 +16,9 @@ $ ./runSofa -h
 
 Here is an example for recording a video in 1920x1080 
 ```
-$ ./runSofa -g hRecorder --recordAsVideo myFileName --width 1920 --height 1080
+$ ./runSofa -g hRecorder --video filename="myFileName" --width 1920 --height 1080 --recordTime 10 --fps 60 -a
 ```
-
-## Troubleshooting
-
-### Missing GL version
-This error may be related to the nvidia driver installed on your linux OS.
-The 384.90 nvidia driver has a bug with EGL (library used by this plugin)
-Bug report: https://bugs.launchpad.net/ubuntu/+source/nvidia-graphics-drivers-384/+bug/1731968
-Please ensure your version is different:
-```
-$ dpkg -l | grep nvidia
-```
-
-Here is a link to the wiki of ubuntu in case you need to downgrade/upgrade your nvidia driver : https://help.ubuntu.com/community/BinaryDriverHowto/Nvidia
+This example will record in a video file named myFileName a footage of the default runSofa scene (aka caduceus). The dimensions of the video will be 1920x1080, the framerate is set to 60fps, the recording time will be 10 seconds and the option -a animate the scene.
 
 ## Information
 
