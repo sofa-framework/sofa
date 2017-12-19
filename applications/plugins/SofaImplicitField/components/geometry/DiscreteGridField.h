@@ -71,8 +71,10 @@ public:
     int getNextDomain();
 
     sofa::core::objectmodel::DataFileName d_distanceMapHeader;
-    Data< int > d_maxDomains;
-    Data< double > dx, dy, dz;    // translation of original image
+    Data< int > d_maxDomains; ///< Number of domains available for caching
+    Data< double > dx;    // translation of original image
+    Data< double > dy;    // translation of original image
+    Data< double > dz;    // translation of original image
 
     int m_usedDomains;              // number of domains already given out
     unsigned int m_imgSize[3];      // number of voxels
