@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 2.8.12)
 project(CImgPlugin)
 
+set(${PROJECT_NAME}_MAJOR_VERSION 0)
+set(${PROJECT_NAME}_MINOR_VERSION 1)
+set(${PROJECT_NAME}_VERSION ${${PROJECT_NAME}_MAJOR_VERSION}.${${PROJECT_NAME}_MINOR_VERSION})
+
 ## RPATH
 if(UNIX)
     if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
@@ -93,10 +97,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CUR
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CImg_INCLUDE_DIRS}>")
 
-install(TARGETS ${PROJECT_NAME}
-        COMPONENT CImgPlugin_libraries
-        EXPORT CImgPluginTargets
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib)
+## Install rules for the library; CMake package configurations files
+sofa_create_package(${PROJECT_NAME} ${${PROJECT_NAME}_VERSION} ${PROJECT_NAME} ${PROJECT_NAME})
 
