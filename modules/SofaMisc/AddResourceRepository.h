@@ -54,7 +54,7 @@ protected:
     virtual ~AddResourceRepository();
 public:
     //cannot be a DataFilename
-    Data<std::string> d_repositoryPath;
+    Data<std::string> d_repositoryPath; ///< Path to add to the pool of resources
 
     void parse(sofa::core::objectmodel::BaseObjectDescription* arg) override;
     void cleanup() override;

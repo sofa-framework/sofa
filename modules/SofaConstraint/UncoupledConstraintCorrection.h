@@ -124,7 +124,7 @@ public:
 
     Data<bool> f_verbose; ///< Dump the constraint matrix at each iteration
 
-    Data < bool > d_handleTopologyChange;
+    Data < bool > d_handleTopologyChange; ///< Enable support of topological changes for compliance vector (disable if another component takes care of this)
 
 private:
     // new :  for non building the constraint system during solving process //
