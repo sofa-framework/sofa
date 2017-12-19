@@ -77,14 +77,14 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    Data< helper::vector< unsigned int > > points;
-    Data< VecReal > stiffness;
-    Data< VecReal > angularStiffness;
-    Data< helper::vector< CPos > > pivotPoints;
-    Data< helper::vector< unsigned int > > external_points;
-    Data< bool > recompute_indices;
-    Data< bool > drawSpring;
-    Data< defaulttype::RGBAColor > springColor;
+    Data< helper::vector< unsigned int > > points; ///< points controlled by the rest shape springs
+    Data< VecReal > stiffness; ///< stiffness values between the actual position and the rest shape position
+    Data< VecReal > angularStiffness; ///< angularStiffness assigned when controlling the rotation of the points
+    Data< helper::vector< CPos > > pivotPoints; ///< global pivot points used when translations instead of the rigid mass centers
+    Data< helper::vector< unsigned int > > external_points; ///< points from the external Mechancial State that define the rest shape springs
+    Data< bool > recompute_indices; ///< Recompute indices (should be false for BBOX)
+    Data< bool > drawSpring; ///< draw Spring
+    Data< defaulttype::RGBAColor > springColor; ///< spring color. (default=[0.0,1.0,0.0,1.0])
 
     SingleLink<RestShapeSpringsForceField<DataTypes>, sofa::core::behavior::MechanicalState< DataTypes >, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> restMState;
     linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> matS;

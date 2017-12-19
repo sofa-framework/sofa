@@ -57,7 +57,7 @@ public:
     Data<unsigned int> d_exportEveryNbSteps;
     Data<bool>         d_exportAtBegin;
     Data<bool>         d_exportAtEnd;
-    Data<bool>         d_isEnabled;
+    Data<bool>         d_isEnabled; ///< Enable or disable the component. (default=true)
 
     /// Don't override this function anymore. But you can do you init in the doInit.
     virtual void init() override final;

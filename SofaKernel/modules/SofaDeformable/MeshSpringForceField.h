@@ -50,21 +50,21 @@ public:
     typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
 
 protected:
-    Data< Real >  linesStiffness;
-    Data< Real >  linesDamping;
-    Data< Real >  trianglesStiffness;
-    Data< Real >  trianglesDamping;
-    Data< Real >  quadsStiffness;
-    Data< Real >  quadsDamping;
-    Data< Real >  tetrahedraStiffness;
-    Data< Real >  tetrahedraDamping;
-    Data< Real >  cubesStiffness;
-    Data< Real >  cubesDamping;
-    Data< bool >  noCompression;
+    Data< Real >  linesStiffness; ///< Stiffness for the Lines
+    Data< Real >  linesDamping; ///< Damping for the Lines
+    Data< Real >  trianglesStiffness; ///< Stiffness for the Triangles
+    Data< Real >  trianglesDamping; ///< Damping for the Triangles
+    Data< Real >  quadsStiffness; ///< Stiffness for the Quads
+    Data< Real >  quadsDamping; ///< Damping for the Quads
+    Data< Real >  tetrahedraStiffness; ///< Stiffness for the Tetrahedra
+    Data< Real >  tetrahedraDamping; ///< Damping for the Tetrahedra
+    Data< Real >  cubesStiffness; ///< Stiffness for the Cubes
+    Data< Real >  cubesDamping; ///< Damping for the Cubes
+    Data< bool >  noCompression; ///< Only consider elongation
     Data< bool  > d_draw; // Activation of draw
-    Data< Real >  d_drawMinElongationRange;
-    Data< Real >  d_drawMaxElongationRange;
-    Data< Real >  d_drawSpringSize;
+    Data< Real >  d_drawMinElongationRange; ///< Min range of elongation (red eongation - blue neutral - green compression)
+    Data< Real >  d_drawMaxElongationRange; ///< Max range of elongation (red eongation - blue neutral - green compression)
+    Data< Real >  d_drawSpringSize; ///< Size of drawed lines
 
     /// optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)
     Data< defaulttype::Vec<2,int> > localRange;
