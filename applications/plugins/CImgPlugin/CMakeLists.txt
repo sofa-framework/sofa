@@ -87,7 +87,7 @@ if(SOFA_BUILD_TESTS)
 endif()
 
 configure_file(CImgPlugin.h.in CImgPlugin/CImgPlugin.h)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}/CImgPlugin.h DESTINATION "include/CImgPlugin")
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}/CImgPlugin.h DESTINATION "include/CImgPlugin" COMPONENT headers)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 

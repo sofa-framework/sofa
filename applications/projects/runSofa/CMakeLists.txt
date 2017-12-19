@@ -65,5 +65,5 @@ endif()
 
 # if MSVC then plugins are located in bin/ instead of lib/ on Mac and Linux
 
-install(FILES "${_defaultConfigPluginFilePath}" DESTINATION ${_pluginLocation}/)
+install(FILES "${_defaultConfigPluginFilePath}" DESTINATION ${_pluginLocation}/ COMPONENT applications)
 

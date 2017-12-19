@@ -154,7 +154,7 @@ add_definitions("-DSOFA_SRC_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/../../..\"")
 
 # SofaPython/config.h
 configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/SofaPython/config.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/SofaPython/config.h" DESTINATION "include/SofaPython")
+install(FILES "${CMAKE_BINARY_DIR}/include/SofaPython/config.h" DESTINATION "include/SofaPython" COMPONENT headers)
 
 # Config files and install rules for pythons scripts
 sofa_set_python_directory(${PROJECT_NAME} "python")
@@ -185,4 +185,4 @@ set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}"
 sofa_create_package(SofaPython ${SOFAPYTHON_VERSION} ${PROJECT_NAME} SofaPython)
 
 ## Install rules for the resources
-install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
+install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME} COMPONENT resources)
