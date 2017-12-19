@@ -75,13 +75,13 @@ protected:
 
     virtual ~ReadState();
 public:
-    virtual void init();
+    virtual void init() override;
 
-    virtual void reset();
+    virtual void reset() override;
 
     void setTime(double time);
 
-    virtual void handleEvent(sofa::core::objectmodel::Event* event);
+    virtual void handleEvent(sofa::core::objectmodel::Event* event) override;
 
     void processReadState();
     void processReadState(double time);

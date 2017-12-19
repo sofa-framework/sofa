@@ -799,14 +799,14 @@ public:
 
     void invert(SubMatrix& Inv, const BlocType& m);
 
-    void invert(Matrix& M);
+    void invert(Matrix& M) override;
 
     void computeMinvBlock(Index i, Index j);
 
     double getMinvElement(Index i, Index j);
 
     /// Solve Mx=b
-    void solve (Matrix& /*M*/, Vector& x, Vector& b);
+    void solve (Matrix& /*M*/, Vector& x, Vector& b) override;
 
 
 
@@ -815,11 +815,11 @@ public:
     /// @param result the variable where the result will be added
     /// @param J the matrix J to use
     /// @return false if the solver does not support this operation, of it the system matrix is not invertible
-    bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact);
+    bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact) override;
 
 
     /// Init the partial solve
-    void init_partial_solve();
+    void init_partial_solve() override;
 
     using MatrixLinearSolver<Matrix,Vector>::partial_solve;
     /// partial solve :
@@ -828,7 +828,7 @@ public:
     /// partial_x is a sparse vector (with sparse map given) that provide the result of M x = b+db
     /// Solve Mx=b
     //void partial_solve_old(ListIndex&  Iout, ListIndex&  Iin , bool NewIn);
-    void partial_solve(ListIndex&  Iout, ListIndex&  Iin , bool NewIn);
+    void partial_solve(ListIndex&  Iout, ListIndex&  Iin , bool NewIn) override;
 
 
 

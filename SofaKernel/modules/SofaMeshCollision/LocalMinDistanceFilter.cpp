@@ -102,16 +102,12 @@ void LocalMinDistanceFilter::invalidate()
     if(this->isRigid())
         return;         // If the object is rigid, the filters are pre-built
 
-    //std::cout<<"invalidate is called on Filter "<<this->getName()<<std::endl;
-    //std::cout<<"m_revision before : "<<m_revision;
-
     /// TODO: this does not do anything...
     //m_revision = m_revision++;
 
     if (m_revision >= std::numeric_limits< unsigned int >::max())
         m_revision=0;
 
-    //std::cout<<"  m_revision after: "<<m_revision<<std::endl;
 }
 
 bool InfoFilter::isValid(void)

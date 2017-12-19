@@ -122,12 +122,12 @@ public:
     /**
      * @brief Scene graph initialization method.
      */
-    void init();
+    void init() override;
 
     /**
      * @brief Handle topological changes.
      */
-    void handleTopologyChange();
+    void handleTopologyChange() override;
 
     /**
      * @name These methods check the validity of a found intersection.

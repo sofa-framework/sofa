@@ -61,7 +61,7 @@ protected:
     SVDLinearSolver();
 public:
     /// Solve Mx=b
-    void solve (Matrix& M, Vector& x, Vector& b);
+    void solve (Matrix& M, Vector& x, Vector& b) override;
     Data<Real> f_conditionNumber; ///< Condition number of the matrix: ratio between the largest and smallest singular values. Computed in method solve.
 
 #ifdef DISPLAY_TIME

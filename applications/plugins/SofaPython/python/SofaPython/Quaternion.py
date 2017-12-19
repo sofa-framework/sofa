@@ -37,7 +37,8 @@ def angle(q):
 
 # TODO optimize
 def prod(a, b):
-    """product"""
+    """ use this product to compose the rotations represented by two quaterions """ 
+    """here is a readable version : array([ qa[3]*qb[0] + qb[3]*qa[0] + qa[1]*qb[2] - qa[2]*qb[1],qa[3]*qb[1] + qb[3]*qa[1] + qa[2]*qb[0] - qa[0]*qb[2], qa[3]*qb[2] + qb[3]*qa[2] + qa[0]*qb[1] - qa[1]*qb[0], qa[3]*qb[3] - qb[0]*qa[0] - qa[1]*qb[1] - qa[2]*qb[2] ])"""
     return hstack( (re(a)*im(b) + re(b)*im(a) + numpy.cross( im(a), im(b) ), [re(a) * re(b) - dot( im(a), im(b))] ))
 
 # TODO optimize

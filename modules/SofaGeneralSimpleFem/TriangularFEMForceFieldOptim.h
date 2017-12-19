@@ -127,19 +127,19 @@ protected:
 
     virtual ~TriangularFEMForceFieldOptim();
 public:
-    virtual void init();
-    virtual void reinit();
-    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx);
-    virtual void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix);
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const;
+    virtual void init() override;
+    virtual void reinit() override;
+    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
+    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx) override;
+    virtual void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const override;
     void getTrianglePrincipalStress(unsigned int i, Real& stressValue, Deriv& stressDirection);
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
     //}
 
     // parse method attribute (for compatibility with non-optimized version)
-    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
+    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override
     {
         const char* method = arg->getAttribute("method");
         if (method && *method && std::string(method) != std::string("large"))

@@ -63,7 +63,6 @@ Node::SPtr DAGNode::createChild(const std::string& nodeName)
 /// Add a child node
 void DAGNode::doAddChild(DAGNode::SPtr node)
 {
-//    printf("DAGNode::doAddChild this=%X(%s) child=%X(%s)\n",this,getName().c_str(),node.get(),node->getName().c_str());
     child.add(node);
     node->l_parents.add(this);
     node->l_parents.updateLinks(); // to fix load-time unresolved links
@@ -423,6 +422,40 @@ bool DAGNode::hasAncestor(const BaseContext* context) const
 }
 
 
+/// Mesh Topology that is relevant for this context
+/// (within it or its parents until a mapping is reached that does not preserve topologies).
+core::topology::BaseMeshTopology* DAGNode::getActiveMeshTopology() const
+{
+    if (this->meshTopology)
+        return this->meshTopology;
+    // Check if a local mapping stops the search
+    if (this->mechanicalMapping && !this->mechanicalMapping->sameTopology())
+    {
+        return NULL;
+    }
+    for ( Sequence<core::BaseMapping>::iterator i=this->mapping.begin(), iend=this->mapping.end(); i!=iend; ++i )
+    {
+        if (!(*i)->sameTopology())
+        {
+            return NULL;
+        }
+    }
+    // No mapping with a different topology, continue on to the parents
+    const LinkParents::Container &parents = l_parents.getValue();
+    for ( unsigned int i = 0; i < parents.size() ; i++ )
+    {
+        // if the visitor is run from a sub-graph containing a multinode linked with a node outside of the subgraph, do not consider the outside node by looking on the sub-graph descendancy
+        if ( parents[i] )
+        {
+            core::topology::BaseMeshTopology* res = parents[i]->getActiveMeshTopology();
+            if (res)
+                return res;
+        }
+    }
+    return NULL; // not found in any parents
+}
+
+
 void DAGNode::precomputeTraversalOrder( const core::ExecParams* params )
 {
     // acumulating traversed Nodes
@@ -581,7 +614,6 @@ void DAGNode::executeVisitorTopDown(simulation::Visitor* action, NodeList& execu
         // do not execute the visitor on this node
         statusMap[this] = PRUNED;
 
-//        std::cout << "...pruned (all parents pruned)" ;
         // ... but continue the recursion anyway!
         if( action->childOrderReversed(this) )
             for(unsigned int i = child.size(); i>0;)

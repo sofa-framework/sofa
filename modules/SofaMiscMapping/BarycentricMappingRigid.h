@@ -94,22 +94,22 @@ protected:
     virtual ~BarycentricMapperTetrahedronSetTopologyRigid() {}
 
 public:
-    void clear(int reserve=0);
+    void clear(int reserve=0) override;
 
-    int addPointInTetra(const int index, const SReal* baryCoords);
+    int addPointInTetra(const int index, const SReal* baryCoords) override;
     int addPointOrientationInTetra( const int tetraIndex, const sofa::defaulttype::Matrix3 baryCoorsOrient );
 
-    void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
+    void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
 
-    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
-    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
-    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
-    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
+    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) override;
+    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) override;
+    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in ) override;
+    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) override;
 
-    virtual const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize);
+    virtual const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize) override;
 
-    void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in);
-    virtual void resize( core::State<Out>* toModel );
+    void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
+    virtual void resize( core::State<Out>* toModel ) override;
 
     //virtual int addContactPointFromInputMapping(const typename In::VecDeriv& in, const sofa::defaulttype::Vector3& /*pos*/, std::vector< std::pair<int, double> > & /*baryCoords*/);
 };

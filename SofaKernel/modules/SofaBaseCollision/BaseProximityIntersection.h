@@ -47,19 +47,19 @@ protected:
     virtual ~BaseProximityIntersection() { }
 public:
     /// Returns true if algorithm uses proximity
-    virtual bool useProximity() const { return true; }
+    virtual bool useProximity() const override { return true; }
 
     /// Returns the alarm distance (must returns 0 if useProximity() is false)
-    SReal getAlarmDistance() const { return alarmDistance.getValue(); }
+    SReal getAlarmDistance() const override { return alarmDistance.getValue(); }
 
     /// Returns the contact distance (must returns 0 if useProximity() is false)
-    SReal getContactDistance() const { return contactDistance.getValue(); }
+    SReal getContactDistance() const override { return contactDistance.getValue(); }
 
     /// Sets the alarm distance (if useProximity() is false, the alarm distance is equal to 0)
-    void setAlarmDistance(SReal v) { alarmDistance.setValue(v); }
+    void setAlarmDistance(SReal v) override { alarmDistance.setValue(v); }
 
     /// Sets the contact distance (if useProximity() is false, the contact distance is equal to 0)
-    void setContactDistance(SReal v) { contactDistance.setValue(v); }
+    void setContactDistance(SReal v) override { contactDistance.setValue(v); }
 };
 
 } // namespace collision

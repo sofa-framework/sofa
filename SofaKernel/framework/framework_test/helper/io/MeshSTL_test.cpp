@@ -19,16 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/io/MeshSTL.h>
 
-#include <gtest/gtest.h>
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest ;
 
-#include <SofaTest/TestMessageHandler.h>
-using sofa::helper::logging::Message;
 
 namespace sofa {
 
-class MeshSTL_test : public ::testing::Test
+class MeshSTL_test : public BaseTest
 {
 protected:
 

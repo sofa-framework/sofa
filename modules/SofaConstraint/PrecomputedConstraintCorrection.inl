@@ -38,14 +38,14 @@
 
 #include <sofa/core/behavior/RotationFinder.h>
 
+#include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/Quater.h>
 
 #include <SofaConstraint/LMConstraintSolver.h>
 #include <sofa/simulation/Node.h>
 
-
-//#include <glib.h>
+#include <fstream>
 #include <sstream>
 #include <list>
 #include <iomanip>
@@ -1134,8 +1134,6 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
 
 #ifdef NEW_METHOD_UNBUILT  // Fill constraint_F => provide the present constraint forces
         double fC = f[rowIt.index()];
-        // debug
-        //std::cout<<"f["<<indexC<<"] = "<<fC<<std::endl;
 
         if (fC != 0.0)
         {

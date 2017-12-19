@@ -24,6 +24,9 @@
 
 #include <sofa/simulation/Node.h>
 #include <sofa/core/ObjectFactory.h>
+
+#include <algorithm>
+
 namespace sofa
 {
 
@@ -33,6 +36,25 @@ namespace component
 namespace topology
 {
 
+namespace
+{
+
+struct GeneratePointID
+{
+    typedef sofa::core::topology::BaseMeshTopology::PointID PointID;
+
+    GeneratePointID( PointID startId = PointID(0) )
+    :current(startId)
+    {
+    }
+
+    PointID operator() () { return current++; }
+
+    PointID current;
+};
+
+}
+
 using namespace sofa::defaulttype;
 
 SOFA_DECL_CLASS(PointSetTopologyContainer)
@@ -41,16 +63,28 @@ int PointSetTopologyContainerClass = core::RegisterObject("Point set topology co
         ;
 
 PointSetTopologyContainer::PointSetTopologyContainer(int npoints)
-    : nbPoints (initData(&nbPoints, (unsigned int )npoints, "nbPoints", "Number of points"))
-    , d_initPoints (initData(&d_initPoints, "position", "Initial position of points"))
+    : d_initPoints (initData(&d_initPoints, "position", "Initial position of points",true,true))
     , m_pointTopologyDirty(false)
+    , nbPoints (initData(&nbPoints, (unsigned int )npoints, "nbPoints", "Number of points"))
+    , points(initData(&points, "points","List of point indices"))
 {
     addAlias(&d_initPoints,"points");
 }
 
 void PointSetTopologyContainer::setNbPoints(int n)
 {
-    nbPoints.setValue(n);
+
+    int diffSize = n - (int)nbPoints.getValue();
+    sofa::helper::WriteAccessor< sofa::Data< sofa::helper::vector<PointID> > > points = this->points;
+    points.resize(n);
+
+    if( diffSize > 0 )
+    {
+        GeneratePointID generator( PointID( nbPoints.getValue() ) );
+        std::generate( points.begin()+nbPoints.getValue(), points.end(), generator );
+    }
+
+    nbPoints.setValue(n);  
 }
 
 unsigned int PointSetTopologyContainer::getNumberOfElements() const
@@ -68,14 +102,22 @@ void PointSetTopologyContainer::clear()
     nbPoints.setValue(0);
     helper::WriteAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
     initPoints.clear();
+    sofa::helper::WriteAccessor< sofa::Data< sofa::helper::vector<PointID> > > points = this->points;
+    points.clear();
 }
 
 void PointSetTopologyContainer::addPoint(double px, double py, double pz)
 {
+    // NB: This implementation of addPoint was and is still very dangerous to use since it compromises any prior 
+    // modifications that were done on the container. The new size is imposed by the size of the initPoints array,
+    // which is not maintained whatsoever by the other add / remove point methods.
+
     helper::WriteAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
     initPoints.push_back(InitTypes::Coord((SReal)px, (SReal)py, (SReal)pz));
     if (initPoints.size() > nbPoints.getValue())
-        nbPoints.setValue((unsigned int)initPoints.size());
+    {
+        setNbPoints(initPoints.size());
+    }
 }
 
 bool PointSetTopologyContainer::hasPos() const
@@ -114,30 +156,37 @@ SReal PointSetTopologyContainer::getPZ(int i) const
 void PointSetTopologyContainer::init()
 {
     core::topology::TopologyContainer::init();
-
     helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
-    if (nbPoints.getValue() == 0 && !initPoints.empty())
-        nbPoints.setValue((unsigned int)initPoints.size());
+    int pointsDiff = (int)initPoints.size() - (int)getNbPoints(); 
+    if( pointsDiff > 0 )
+    {
+        addPoints( pointsDiff );
+    }
+
 }
 
 void PointSetTopologyContainer::addPoints(const unsigned int nPoints)
 {
-    nbPoints.setValue( nbPoints.getValue() + nPoints);
+    //nbPoints.setValue( nbPoints.getValue() + nPoints);
+    setNbPoints( nbPoints.getValue() + nPoints );
 }
 
 void PointSetTopologyContainer::removePoints(const unsigned int nPoints)
 {
-    nbPoints.setValue(nbPoints.getValue() - nPoints);
+    //nbPoints.setValue(nbPoints.getValue() - nPoints);
+    setNbPoints( nbPoints.getValue() - nPoints );
 }
 
 void PointSetTopologyContainer::addPoint()
 {
-    nbPoints.setValue(nbPoints.getValue()+1);
+    //nbPoints.setValue(nbPoints.getValue()+1);
+    setNbPoints( nbPoints.getValue() + 1 );
 }
 
 void PointSetTopologyContainer::removePoint()
 {
-    nbPoints.setValue(nbPoints.getValue()-1);
+    //nbPoints.setValue(nbPoints.getValue()-1);
+    setNbPoints( nbPoints.getValue() -1 );
 }
 
 
@@ -150,6 +199,11 @@ void PointSetTopologyContainer::updateTopologyEngineGraph()
 void PointSetTopologyContainer::addEngineToList(sofa::core::topology::TopologyEngine *_engine)
 {
     this->m_enginesList.push_back(_engine);
+}
+
+const sofa::helper::vector< PointSetTopologyContainer::PointID >& PointSetTopologyContainer::getPoints() const
+{
+    return points.getValue();
 }
 
 
@@ -250,26 +304,12 @@ void PointSetTopologyContainer::updateDataEngineGraph(sofa::core::objectmodel::B
     // Reorder engine graph by inverting order and avoiding duplicate engines
     std::list<sofa::core::topology::TopologyEngine *>::reverse_iterator it_engines_rev;
 
-#ifndef NDEBUG
-//    std::cout << " ***** DEBUG: _engines size: " << _engines.size() << std::endl;
-#endif
-
     for ( it_engines_rev = _engines.rbegin(); it_engines_rev != _engines.rend(); ++it_engines_rev)
     {
-#ifndef NDEBUG
-//        std::string name = (*it_engines_rev)->getName();
-//        std::cout << "DEBUG: engine name: " << name << std::endl;
-//        std::cout << "DEBUG: engine: " << (*it_engines_rev) << std::endl;
-#endif
         bool find = false;
 
         for ( it_engines = my_enginesList.begin(); it_engines!=my_enginesList.end(); ++it_engines)
         {
-#ifndef NDEBUG
-            // std::string nameStored = (*it_engines)->getName();
-            // std::cout << "DEBUG: engine name stored: " << nameStored << std::endl;
-            // std::cout << "DEBUG: engine name stored: " << (*it_engines) << std::endl;
-#endif
             if ((*it_engines_rev) == (*it_engines))
             {
                 find = true;
@@ -289,13 +329,11 @@ void PointSetTopologyContainer::displayDataGraph(sofa::core::objectmodel::BaseDa
 {
     // A cout very lite version
     std::string name;
-
+    std::stringstream tmpmsg;
     name = my_Data.getName();
-    std::cout << name << std::endl;
-    std::cout << std::endl;
+    tmpmsg << name << msgendl << msgendl;
 
     unsigned int cpt_engine = 0;
-
 
 
     for (unsigned int i=0; i<this->m_enginesGraph.size(); ++i ) // per engine level
@@ -305,14 +343,14 @@ void PointSetTopologyContainer::displayDataGraph(sofa::core::objectmodel::BaseDa
         unsigned int cpt_engine_tmp = cpt_engine;
         for (unsigned int j=0; j<enginesNames.size(); ++j) // per engine on the same level
         {
-            std::cout << enginesNames[j];
+            tmpmsg << enginesNames[j];
 
             for (unsigned int k=0; k<this->m_enginesGraph[cpt_engine].size(); ++k) // create espace between engines name
-                std::cout << "     ";
+                tmpmsg << "     ";
 
             cpt_engine++;
         }
-        std::cout << std::endl;
+        tmpmsg << msgendl;
         cpt_engine = cpt_engine_tmp;
 
 
@@ -320,13 +358,13 @@ void PointSetTopologyContainer::displayDataGraph(sofa::core::objectmodel::BaseDa
         {
             sofa::helper::vector <std::string> dataNames = this->m_dataGraph[cpt_engine];
             for (unsigned int k=0; k<dataNames.size(); ++k)
-                std::cout << dataNames[k] << "     " ;
-            std::cout << "            ";
+                tmpmsg << dataNames[k] << "     " ;
+            tmpmsg << "            ";
 
             cpt_engine++;
         }
-        std::cout << std::endl;
-        std::cout << std::endl;
+        tmpmsg << msgendl ;
+        msg_info() << tmpmsg.str() ;
     }
 }
 

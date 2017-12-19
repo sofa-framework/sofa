@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <fstream>
 
 #include "GUIManager.h"
 #include "BaseGUI.h"
@@ -31,7 +32,7 @@
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/Utils.h>
 #include <sofa/helper/logging/Messaging.h>
-
+#include <sofa/helper/system/FileRepository.h>
 
 using sofa::helper::system::FileSystem;
 using sofa::helper::Utils;
@@ -45,8 +46,8 @@ namespace gui
 /*STATIC FIELD DEFINITIONS */
 BaseGUI* GUIManager::currentGUI = NULL;
 std::list<GUIManager::GUICreator> GUIManager::guiCreators;
-std::vector<std::string> GUIManager::guiOptions;
 const char* GUIManager::valid_guiname = NULL;
+ArgumentParser* GUIManager::currentArgumentParser = NULL;
 
 
 BaseGUI* GUIManager::getGUI()
@@ -54,9 +55,14 @@ BaseGUI* GUIManager::getGUI()
     return currentGUI;
 }
 
-void GUIManager::AddGUIOption(const char* option)
+void GUIManager::RegisterParameters(ArgumentParser* argumentParser)
 {
-    guiOptions.push_back(option);
+    currentArgumentParser = argumentParser;
+    for(std::list<GUICreator>::iterator it =guiCreators.begin(), itend =guiCreators.end(); it != itend; ++it)
+    {
+        if (it->parameters)
+            it->parameters(argumentParser);
+    }
 }
 
 const std::string &GUIManager::GetCurrentGUIName()
@@ -64,7 +70,7 @@ const std::string &GUIManager::GetCurrentGUIName()
     return currentGUI->GetGUIName();
 }
 
-int GUIManager::RegisterGUI(const char* name, CreateGUIFn* creator, InitGUIFn* init, int priority)
+int GUIManager::RegisterGUI(const char* name, CreateGUIFn* creator, RegisterGUIParameters* parameters, int priority)
 {
     if(guiCreators.size())
     {
@@ -82,7 +88,7 @@ int GUIManager::RegisterGUI(const char* name, CreateGUIFn* creator, InitGUIFn* i
     GUICreator entry;
     entry.name = name;
     entry.creator = creator;
-    entry.init = init;
+    entry.parameters = parameters;
     entry.priority = priority;
     guiCreators.push_back(entry);
     return 0;
@@ -185,6 +191,7 @@ GUIManager::GUICreator* GUIManager::GetGUICreator(const char* name)
 int GUIManager::Init(const char* argv0, const char* name)
 {
     BaseGUI::SetProgramName(argv0);
+    BaseGUI::SetArgumentParser(currentArgumentParser);
     sofa::simulation::common::init();
 
     static bool first = true;
@@ -240,10 +247,7 @@ int GUIManager::Init(const char* argv0, const char* name)
     }
     valid_guiname = name; // at this point we must have a valid name for the gui.
 
-    if (creator->init)
-        return (*creator->init)(valid_guiname, guiOptions);
-    else
-        return 0;
+    return 0;
 }
 
 
@@ -256,7 +260,7 @@ int GUIManager::createGUI(sofa::simulation::Node::SPtr groot, const char* filena
         {
             return 1;
         }
-        currentGUI = (*creator->creator)(valid_guiname, guiOptions, groot, filename);
+        currentGUI = (*creator->creator)(valid_guiname, groot, filename);
         if (!currentGUI)
         {
             msg_error("GUIManager") << "GUI '"<<valid_guiname<<"' creation failed." ;
@@ -318,25 +322,25 @@ void GUIManager::SetDimension(int  width , int  height )
 {
     if (currentGUI)
     {
-//        std::string viewerFileName;
-//        std::string path = sofa::helper::system::DataRepository.getFirstPath();
-//        viewerFileName = path.append("/share/config/sofaviewer.ini");
+        //        std::string viewerFileName;
+        //        std::string path = sofa::helper::system::DataRepository.getFirstPath();
+        //        viewerFileName = path.append("/share/config/sofaviewer.ini");
 
-//        if(sofa::helper::system::DataRepository.findFile(viewerFileName))
-//        {
-//            std::string configPath = sofa::helper::system::DataRepository.getFile(viewerFileName);
-//            std::string w, h;
-//            std::ifstream viewerStream(configPath.c_str());
-//            std::getline(viewerStream,w);
-//            std::getline(viewerStream,h);
-//            viewerStream.close();
+        //        if(sofa::helper::system::DataRepository.findFile(viewerFileName))
+        //        {
+        //            std::string configPath = sofa::helper::system::DataRepository.getFile(viewerFileName);
+        //            std::string w, h;
+        //            std::ifstream viewerStream(configPath.c_str());
+        //            std::getline(viewerStream,w);
+        //            std::getline(viewerStream,h);
+        //            viewerStream.close();
 
-//            std::stringstream convertW(w);
-//            convertW >> width;
+        //            std::stringstream convertW(w);
+        //            convertW >> width;
 
-//            std::stringstream convertH(h);
-//            convertH >> height;
-//        }
+        //            std::stringstream convertH(h);
+        //            convertH >> height;
+        //        }
         currentGUI->setViewerResolution(width,height);
     }
 }
@@ -345,7 +349,6 @@ void GUIManager::SetFullScreen()
     if (currentGUI) currentGUI->setFullScreen();
     else{ msg_error("GUIManager") <<"no currentGUI" ; }
 }
-
 void GUIManager::SaveScreenshot(const char* filename)
 {
     if (currentGUI) {

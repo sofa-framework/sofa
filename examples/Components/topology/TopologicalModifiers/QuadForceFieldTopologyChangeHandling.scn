@@ -8,10 +8,10 @@
     <TreeCollisionGroupManager name="default2" />
 
     <Node name="QuadularSprings">
-        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <RegularGrid name="grid" nx="20" ny="1" nz="20" xmin="12" xmax="-12" ymin="7" ymax="7" zmin="-12" zmax="12" />
-        <MechanicalObject src="@grid"/>
+        <MechanicalObject src="@grid" topology="@grid"/>
 	<include href="Objects/QuadSetTopology.xml" src="@grid" />
         <UniformMass totalmass="100" />
 <RegularGridSpringForceField name="Springs" stiffness="200" damping="2" />
@@ -38,7 +38,7 @@
         <EulerImplicit name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <RegularGrid name="grid" nx="20" ny="1" nz="20" xmin="14" xmax="38" ymin="7" ymax="7" zmin="-12" zmax="12" />
-        <MechanicalObject src="@grid"/>
+        <MechanicalObject src="@grid" topology="@grid"/>
 	<include href="Objects/QuadSetTopology.xml" src="@grid" />
         <UniformMass totalmass="100" />
 	<RegularGridSpringForceField name="Springs" stiffness="200" damping="2" />

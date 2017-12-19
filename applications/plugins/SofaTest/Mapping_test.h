@@ -145,7 +145,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         /// Child node
         simulation::Node::SPtr childNode = root->createChild("childNode");
         outDofs = modeling::addNew<OutDOFs>(childNode);
-        mapping = modeling::addNew<Mapping>(root).get();
+        mapping = modeling::addNew<Mapping>(childNode).get();
         mapping->setModels(inDofs.get(),outDofs.get());
     }
 

@@ -1,5 +1,5 @@
 <Node name="HexaFEM">
-	<EulerImplicitSolver rayleighStiffness="0.01" />
+	<EulerImplicitSolver rayleighStiffness="0.01"  rayleighMass="0.1" />
 	<CGLinearSolver iterations="25" threshold="0.00000001"  />
 	<SparseGrid n="6 6 6" filename="file"/>
 	<MechanicalObject translation="0 0 0" rotation="0 0 0" scale3d="1.0 1.0 1.0" />

@@ -43,6 +43,8 @@
 
 #include <time.h>
 
+#include <sofa/helper/system/FileMonitor.h>
+
 // Recorder GUI is not used (broken in most scenes)
 #define SOFA_GUI_QT_NO_RECORDER
 
@@ -100,8 +102,7 @@ class SOFA_SOFAGUIQT_API RealGUI : public QMainWindow, public Ui::GUI, public so
 
 //-----------------STATIC METHODS------------------------{
 public:
-    static int InitGUI(const char* name, const std::vector<std::string>& options);
-    static BaseGUI* CreateGUI(const char* name, const std::vector<std::string>& options, sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
+    static BaseGUI* CreateGUI(const char* name, sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
 
     static void SetPixmap(std::string pixmap_filename, QPushButton* b);
 
@@ -114,8 +115,7 @@ protected:
 
 //-----------------CONSTRUCTOR - DESTRUCTOR ------------------------{
 public:
-    RealGUI( const char* viewername,
-            const std::vector<std::string>& options = std::vector<std::string>() );
+    RealGUI( const char* viewername);
 
     ~RealGUI();
 //-----------------CONSTRUCTOR - DESTRUCTOR ------------------------}
@@ -244,10 +244,13 @@ public:
     virtual int mainLoop();
     virtual int closeGUI();
     virtual sofa::simulation::Node* currentSimulation();
-    virtual void fileOpen(std::string filename, bool temporaryFile=false);
+    virtual void fileOpen(std::string filename, bool temporaryFile=false, bool reload=false);
+
     // virtual void fileOpen();
     virtual void fileOpenSimu(std::string filename);
     virtual void setScene(Node::SPtr groot, const char* filename=NULL, bool temporaryFile=false);
+    virtual void setSceneWithoutMonitor(Node::SPtr groot, const char* filename=NULL, bool temporaryFile=false);
+
     virtual void unloadScene(bool _withViewer = true);
 
     virtual void setTitle( std::string windowTitle );
@@ -328,11 +331,12 @@ protected:
 
     sofa::simulation::Node::SPtr mSimulation;
 
+    sofa::helper::system::FileEventListener* m_filelistener {nullptr};
 private:
     void addViewer();//? where is the implementation ?
 
     /// Parse options from the RealGUI constructor
-    void parseOptions(const std::vector<std::string>& options);
+    void parseOptions();
 
     void createPluginManager();
 
@@ -388,7 +392,7 @@ public slots:
     virtual void currentTabChanged(int index);
 
     virtual void fileNew();
-    virtual void fileOpen();
+    virtual void popupOpenFileSelector();
     virtual void fileReload();
     virtual void fileSave();
     virtual void fileExit();

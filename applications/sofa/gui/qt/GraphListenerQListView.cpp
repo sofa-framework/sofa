@@ -25,6 +25,9 @@
 #include <sofa/core/collision/CollisionGroupManager.h>
 #include <sofa/core/collision/ContactManager.h>
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
+#include <SofaComponentBase/InfoComponent.h>
+using sofa::component::InfoComponent ;
+
 #include "iconmultinode.xpm"
 #include "iconnode.xpm"
 #include "iconinfo.xpm"
@@ -113,21 +116,68 @@ const std::string getClass(core::objectmodel::Base* obj){
 
 QPixmap* getPixmap(core::objectmodel::Base* obj, bool haveInfo, bool haveWarning, bool haveErrors)
 {
+    static QPixmap pixInfo((const char**)iconinfo_xpm);
+    static QImage imgInfo8 = pixInfo.scaledToWidth(16).toImage();
+
+    static QPixmap pixError((const char**)iconerror_xpm);
+    static QImage imgError8 = pixError.scaledToWidth(16).toImage();
+
+    static QPixmap pixWarning((const char**)iconwarning_xpm);
+    static QImage imgWarning8 = pixWarning.scaledToWidth(16).toImage();
+
+
     using namespace sofa::simulation::Colors;
     unsigned int flags=0;
 
     if (obj->toBaseNode())
     {
-        if (obj->toBaseNode()->getContext()->isSleeping())
-        {
-            static QPixmap pixNode((const char**)iconsleep_xpm);
-            return &pixNode;
+        int flags = 0 ;
+        const char** icon = (const char**)iconsleep_xpm ;
+        if( !obj->toBaseNode()->getContext()->isSleeping() ){
+            icon = (const char**)iconnode_xpm ;
+            flags = 1 ;
         }
-        else
+
+        if(haveInfo)
+            flags |= 1 << (2) ;
+
+        if(haveWarning)
+            flags |= 1 << (3) ;
+
+        if(haveErrors)
+            flags |= 1 << (4) ;
+
+
+        static std::map<unsigned int, QPixmap*> pixmaps;
+        if (!pixmaps.count(flags))
         {
-            static QPixmap pixNode((const char**)iconnode_xpm);
-            return &pixNode;
+            /// Create a new image from pixmap
+            QImage timg(icon) ;
+            QImage* img = new QImage(timg.convertToFormat(QImage::Format_ARGB32)) ;
+
+            QImage* overlaysymbol=nullptr;
+            if( haveInfo )
+                overlaysymbol = &imgInfo8 ;
+            if( haveWarning )
+                overlaysymbol = &imgWarning8 ;
+            if( haveErrors )
+                overlaysymbol = &imgError8 ;
+
+            if(overlaysymbol){
+                for (int x=0;x<16;x++)
+                {
+                    for(int y=0;y<16;y++)
+                    {
+                        if( qAlpha(overlaysymbol->pixel(x,y)) == 255 ){
+                            img->setPixel(x, y,  overlaysymbol->pixel(x,y) );
+                        }
+                    }
+                }
+            }
+            pixmaps[flags] = new QPixmap(QPixmap::fromImage(*img));
         }
+
+        return pixmaps[flags] ;
     }
     else if (obj->toBaseObject())
     {
@@ -230,16 +280,6 @@ QPixmap* getPixmap(core::objectmodel::Base* obj, bool haveInfo, bool haveWarning
         // right line Line
         for (int y=iconMargin ; y < iconHeight ; y++)
             img->setPixel(2+iconWidth*nc-1,y,qRgba(0,0,0,255));
-
-        static QPixmap pixInfo((const char**)iconinfo_xpm);
-        static QImage imgInfo8 = pixInfo.scaledToWidth(16).toImage();
-
-        static QPixmap pixError((const char**)iconerror_xpm);
-        static QImage imgError8 = pixError.scaledToWidth(16).toImage();
-
-        static QPixmap pixWarning((const char**)iconwarning_xpm);
-        static QImage imgWarning8 = pixWarning.scaledToWidth(16).toImage();
-
 
         QImage* overlaysymbol=nullptr;
         if( haveInfo )
@@ -448,15 +488,18 @@ void GraphListenerQListView::addObject(Node* parent, core::objectmodel::BaseObje
             dmsg_error("GraphListenerQListView") << "Unknown parent node "<<parent->getName()<< "'";
             return;
         }
-        std::string name = sofa::helper::gettypename(typeid(*object));
-        std::string::size_type pos = name.find('<');
-        if (pos != std::string::npos)
-            name.erase(pos);
-        if (!object->toConfigurationSetting())
+
+        std::string name;
+        if(dynamic_cast<InfoComponent*>(object))
         {
-            name += "  ";
-            name += object->getName();
+            name = object->getName() ;
+        }else if(dynamic_cast<ConfigurationSetting*>(object)){
+            name = object->getClassName() ;
+        }else
+        {
+            name = object->getClassName() + " " + object->getName() ;
         }
+
         item->setText(0, name.c_str());
 
         setMessageIconFrom(item, object);

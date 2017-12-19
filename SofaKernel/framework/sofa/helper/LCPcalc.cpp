@@ -955,8 +955,8 @@ void projection(LCP &fineLevel, LCP &coarseLevel, int nbContactsCoarse, const st
 /// output=> change value of F in fineLevel
 
 void prolongation(LCP &fineLevel, LCP &coarseLevel, const std::vector<int> &projectionTable, const std::vector<int> &projectionConstraints, std::vector<double> & projectionValues, std::vector<bool> &contact_is_projected, bool verbose)
-
 {
+    SOFA_UNUSED(verbose) ;
 
     int numContactsFine = fineLevel.getDim()/3;
 
@@ -1108,13 +1108,13 @@ int nlcp_multiGrid_Nlevels(int dim, double *dfree, double**W, double *f, double 
 
         // projection step & construction of the coarse LCP
         hierarchicalLevels[h+1] = new LCP();
-        if(verbose)
-            std::cout<<"Hierarchical level "<<h<<": allocation of size"<<Tab_num_group[h]<<" at coarse level"<<std::endl;
+
+        dmsg_info_when(verbose, "LCPCalc") << "Hierarchical level "<<h<<": allocation of size"<<Tab_num_group[h]<<" at coarse level" ;
+
         hierarchicalLevels[h+1]->allocate(3*Tab_num_group[h]); // allocation of the memory for the coarse LCP
         hierarchicalLevels[h+1]->setDim(3*Tab_num_group[h]);
 
         // call to projection function
-
         projection((*hierarchicalLevels[h]), (*hierarchicalLevels[h+1]), Tab_num_group[h], contact_group_hierarchy[h], constraint_group_hierarchy[h], constraint_group_fact_hierarchy[h], contact_is_projected[h], verbose);
     }
 
@@ -1324,8 +1324,6 @@ int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, doub
         }
         else
             contact_is_projected[c1]= false;
-
-        //      std::cout<<"contact "<<c1<<" is in group "<< contact_group[c1]<<std::endl;
     }
     std::stringstream tmp ;
     tmp <<"STEP 2, d = "<< msgendl ;
@@ -1627,7 +1625,11 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, do
             if (minW != 0.0 && fabs(W[3*index1  ][3*index1  ]) <= minW)
             {
                 // constraint compliance is too small
-                if (it == 0) std::cout<<"NLCP WARNING: compliance too small for contact " << index1 << ": |" << std::scientific << W[3*index1  ][3*index1  ] << "| < " << minW << std::fixed << std::endl;
+                if(it==0){
+                    std::stringstream tmpmsg;
+                    tmpmsg << "Compliance too small for contact " << index1 << ": |" << std::scientific << W[3*index1  ][3*index1  ] << "| < " << minW << std::fixed ;
+                    dmsg_warning("LCPcalc") << tmpmsg.str() ;
+                }
 
                 fn=0; ft=0; fs=0;
             }
@@ -1876,17 +1878,17 @@ void gaussSeidelLCP1(int dim, FemClipsReal * q, FemClipsReal ** M, FemClipsReal 
             if (minW != 0.0 && fabs(M[compteur2][compteur2]) <= minW)
             {
                 // constraint compliance is too small
-                if (compteur == 0) std::cout<<"LCP WARNING: compliance too small for constraint " << compteur2 << ": |" << std::scientific << M[compteur2][compteur2] << "| < " << minW << std::fixed << std::endl;
+                if (compteur == 0)
+                {
+                    std::stringstream tmpmsg;
+                    tmpmsg <<"Compliance too small for constraint " << compteur2 << ": |" << std::scientific << M[compteur2][compteur2] << "| < " << minW << std::fixed ;
+                    dmsg_warning("LCPcalc") << tmpmsg.str() ;
+                }
                 res[dim+compteur2]=(FemClipsReal)0.0;
             }
             else if (res[compteur2]<0)
             {
                 res[dim+compteur2]=-res[compteur2]/M[compteur2][compteur2];
-                // if (maxF != 0.0 && compteur >= 3 && fabs(res[dim+compteur2]) >= maxF)
-                // { // constraint force is too large
-                //     std::cout<<"LCP WARNING: force too large for constraint " << compteur2 << " at iteration " << compteur << " : |" << std::scientific << res[dim+compteur2] << "| > " << maxF << std::fixed << std::endl;
-                //     res[dim+compteur2]=(FemClipsReal)0.0;
-                // }
             }
             else
             {
@@ -1900,7 +1902,6 @@ void gaussSeidelLCP1(int dim, FemClipsReal * q, FemClipsReal ** M, FemClipsReal 
         if (residuals) residuals->push_back(error);
         if (error < tol)
         {
-            //	std::cout << "convergence in gaussSeidelLCP1 with " << compteur << " iterations\n";
             break;
         }
 
@@ -1914,7 +1915,10 @@ void gaussSeidelLCP1(int dim, FemClipsReal * q, FemClipsReal ** M, FemClipsReal 
             if (fabs(res[dim+compteur2]) >= maxF)
             {
                 // constraint force is too large
-                std::cout<<"LCP WARNING: force too large for constraint " << compteur2 << " : |" << std::scientific << res[dim+compteur2] << "| > " << maxF << std::fixed << std::endl;
+                std::stringstream tmpmsg;
+                tmpmsg << "force too large for constraint " << compteur2 << " : |" << std::scientific << res[dim+compteur2] << "| > " << maxF << std::fixed ;
+                dmsg_warning("LCPcalc") << tmpmsg.str() ;
+
                 res[dim+compteur2]=(FemClipsReal)0.0;
             }
         }
@@ -1925,8 +1929,7 @@ void gaussSeidelLCP1(int dim, FemClipsReal * q, FemClipsReal ** M, FemClipsReal 
 
     if (error >= tol)
     {
-        std::cout << "No convergence in gaussSeidelLCP1 : error = " << error << std::endl;
-        //	afficheLCP(q, M, res, dim);
+        dmsg_error("LCPcalc") << "No convergence in gaussSeidelLCP1 : error = " << error ;
     }
 }
 

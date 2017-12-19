@@ -91,7 +91,7 @@ namespace sofa
 
                 static const char* Name(){return "Blender exporter";}
 
-                virtual std::string getTemplateName() const
+                virtual std::string getTemplateName() const override
                 {
                     return templateName(this);
                 }
@@ -101,11 +101,11 @@ namespace sofa
                     return T::Name();
                 }
 
-                void init();
+                void init() override;
 
-                void reset();
+                void reset() override;
 
-                void handleEvent(sofa::core::objectmodel::Event* event);
+                void handleEvent(sofa::core::objectmodel::Event* event) override;
 
                 /// Pre-construction check method called by ObjectFactory.
                 /// Check that DataTypes matches the MechanicalState.

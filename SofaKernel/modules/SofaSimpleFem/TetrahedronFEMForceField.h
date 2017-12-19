@@ -197,7 +197,7 @@ public:
         }
     }
 
-    void getRotations(defaulttype::BaseMatrix * rotations,int offset = 0)
+    void getRotations(defaulttype::BaseMatrix * rotations,int offset = 0) override
     {
         unsigned int nbdof = this->mstate->getSize();
 
@@ -407,24 +407,24 @@ public:
 
     void setUpdateStiffnessMatrix(bool val) { this->_updateStiffnessMatrix.setValue(val); }
 
-    virtual void reset();
-    virtual void init();
-    virtual void reinit();
+    virtual void reset() override;
+    virtual void init() override;
+    virtual void reinit() override;
 
-    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
+    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
+    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
 
     // Make other overloaded version of getPotentialEnergy() to show up in subclass.
     using InheritForceField::getPotentialEnergy;
     // getPotentialEnergy is implemented for small method
-    virtual SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&   x) const;
+    virtual SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&   x) const override;
 
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset);
-    virtual void addKToMatrix(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/ );
+    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset) override;
+    virtual void addKToMatrix(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/ ) override;
 
-    virtual void addSubKToMatrix(sofa::defaulttype::BaseMatrix *mat, const helper::vector<unsigned> & subMatrixIndex, SReal k, unsigned int &offset);
+    virtual void addSubKToMatrix(sofa::defaulttype::BaseMatrix *mat, const helper::vector<unsigned> & subMatrixIndex, SReal k, unsigned int &offset) override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
     // Getting the stiffness matrix of index i
     void getElementStiffnessMatrix(Real* stiffness, unsigned int nodeIdx);
@@ -470,14 +470,14 @@ protected:
     void applyStiffnessCorotational( Vector& f, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3, SReal fact=1.0  );
 
 
-    void handleTopologyChange()
+    void handleTopologyChange() override
     {
         needUpdateTopology = true;
     }
 
     void computeVonMisesStress();
 
-    void handleEvent(core::objectmodel::Event *event);
+    void handleEvent(core::objectmodel::Event *event) override;
 
 };
 

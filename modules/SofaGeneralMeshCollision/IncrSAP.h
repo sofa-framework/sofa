@@ -257,24 +257,24 @@ protected:
 public:
     void setDraw(bool val) { bDraw.setValue(val); }
 
-    void init();
-    void reinit();
+    void init() override;
+    void reinit() override;
 
-    void addCollisionModel (core::CollisionModel *cm);
+    void addCollisionModel (core::CollisionModel *cm) override;
 
     /**
       *Unuseful methods because all is done in addCollisionModel
       */
-    void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& ){}
-    void addCollisionPairs (const helper::vector<std::pair<core::CollisionModel*, core::CollisionModel*> >&){}
+    virtual void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& ) override {}
+    virtual void addCollisionPairs (const helper::vector<std::pair<core::CollisionModel*, core::CollisionModel*> >&) override {}
 
-    virtual void beginNarrowPhase();
+    virtual void beginNarrowPhase() override;
 
 
     /* for debugging */
-    inline void draw(const core::visual::VisualParams*){}
+    virtual void draw(const core::visual::VisualParams*) override {}
 
-    inline virtual bool needsDeepBoundingTree()const{return false;}
+    inline virtual bool needsDeepBoundingTree()const override {return false;}
 
     void showEndPoints()const;
 

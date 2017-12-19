@@ -71,7 +71,7 @@ private:
         typedef MeshTopology::Hexa Hexa;
         SOFA_CLASS(GridUpdate,sofa::core::DataEngine);
         GridUpdate(GridTopology* t);
-        void update();
+        virtual void update() override;
     protected:
         void updateEdges();
         void updateQuads();
@@ -111,10 +111,10 @@ protected:
 
 public:
     /// BaseObject method should be overwritten by children
-    virtual void init();
+    virtual void init() override;
 
     /// BaseObject method should be overwritten by children
-    virtual void reinit();
+    virtual void reinit() override;
 
 
     /** \brief Set grid resolution in the 3 directions
@@ -147,7 +147,7 @@ public:
     unsigned getIndex( int i, int j, int k ) const;
 
     /// Overwrite from @sa MeshTopology::hasPos always @return bool true
-    bool hasPos()  const { return true; }
+    virtual bool hasPos()  const override { return true; }
 
     /// Get Point in grid @return Vector3 given its @param id i. Will call @sa getPointInGrid. This method should be overwritten by children.
     virtual Vector3 getPoint(int i) const;
@@ -156,14 +156,14 @@ public:
     virtual Vector3 getPointInGrid(int i, int j, int k) const;
 
     /// get X from Point index @param i, will call @sa getPoint
-    SReal getPX(int i)  const { return getPoint(i)[0]; }
+    virtual SReal getPX(int i)  const override { return getPoint(i)[0]; }
     /// get Y from Point index @param i, will call @sa getPoint
-    SReal getPY(int i) const { return getPoint(i)[1]; }
+    virtual SReal getPY(int i) const override { return getPoint(i)[1]; }
     /// get Z from Point index @param i, will call @sa getPoint
-    SReal getPZ(int i) const { return getPoint(i)[2]; }
+    virtual SReal getPZ(int i) const override { return getPoint(i)[2]; }
 
     /// Overload method from \sa BaseObject::parse . /// Parse the given description to assign values to this object's fields and potentially other parameters
-    void parse(core::objectmodel::BaseObjectDescription* arg)
+    virtual void parse(core::objectmodel::BaseObjectDescription* arg) override
     {
         this->MeshTopology::parse(arg);
 
@@ -180,7 +180,7 @@ public:
 
 
     /// Overload Method from @sa MeshTopology::getNbHexahedra
-    virtual int getNbHexahedra() { return (d_n.getValue()[0]-1)*(d_n.getValue()[1]-1)*(d_n.getValue()[2]-1); }
+    virtual int getNbHexahedra() override { return (d_n.getValue()[0]-1)*(d_n.getValue()[1]-1)*(d_n.getValue()[2]-1); }
     /// Overload Method from @sa MeshTopology::getQuad
     Quad getQuad(int x, int y, int z);
 

@@ -60,18 +60,18 @@ protected:
 
     virtual ~ValuesFromIndices();
 public:
-    void init();
+    void init() override;
 
-    void reinit();
+    void reinit() override;
 
-    void update();
+    void update() override;
 
     Data<VecValue> f_in; ///< input values
     Data<VecIndex> f_indices; ///< Indices of the values
     Data<VecValue> f_out; ///< Output values corresponding to the indices
     Data<std::string> f_outStr; ///< Output values corresponding to the indices, converted as a string
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }

@@ -134,7 +134,6 @@ void Visitor::dumpInfo( const std::string &info)
 
 void Visitor::startDumpVisitor(std::ostream *s, SReal time)
 {
-//    std::cout << "startDumpVisitor" << std::endl;
     initDumpTime = sofa::helper::system::thread::CTime::getRefTime();
     printActivated=true; outputVisitor=s;
     //std::string initDump;
@@ -143,7 +142,6 @@ void Visitor::startDumpVisitor(std::ostream *s, SReal time)
 };
 void Visitor::stopDumpVisitor()
 {
-//    std::cout << "stopDumpVisitor" << std::endl;
     std::ostringstream s;
     s << "<TotalTime value=\"" << getTimeSpent(initDumpTime,  sofa::helper::system::thread::CTime::getRefTime() ) << "\" />\n";
     s << "</TraceVisitor>\n";
@@ -178,7 +176,6 @@ void Visitor::printVector(core::behavior::BaseMechanicalState *mm, core::ConstVe
 
 void Visitor::printNode(const std::string &type, const std::string &name, const TRACE_ARGUMENT &arguments)
 {
-//    std::cout << "printNode " << type << " " << name << std::endl;
     if (Visitor::printActivated)
     {
         std::ostringstream s;

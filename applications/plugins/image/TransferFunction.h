@@ -127,7 +127,7 @@ public:
 
     Data< OutImageTypes > outputImage;
 
-    virtual std::string getTemplateName() const    { return templateName(this);    }
+    virtual std::string getTemplateName() const    override { return templateName(this);    }
     static std::string templateName(const TransferFunction<InImageTypes,OutImageTypes>* = NULL) { return InImageTypes::Name()+std::string(",")+OutImageTypes::Name(); }
 
     TransferFunction()    :   Inherited()
@@ -146,18 +146,18 @@ public:
 
     virtual ~TransferFunction() {}
 
-    virtual void init()
+    virtual void init() override
     {
         addInput(&inputImage);
         addOutput(&outputImage);
         setDirtyValue();
     }
 
-    virtual void reinit() { update(); }
+    virtual void reinit() override { update(); }
 
 protected:
 
-    virtual void update()
+    virtual void update() override
     {
         TransferFunctionSpecialization<InImageTypes,OutImageTypes>::update( *this );
         cleanDirty();

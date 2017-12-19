@@ -379,17 +379,11 @@ int BuoyantForceField<DataTypes>::isTriangleInFluid(const Triangle &tri, const V
 template<class DataTypes>
 void BuoyantForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!this->mstate) return;
 
-    glPushAttrib( GL_ALL_ATTRIB_BITS);
-
-
-    if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT, GL_LINE);
-
-    glDisable(GL_LIGHTING);
-
+    vparams->drawTool()->saveLastState();
+    vparams->drawTool()->setPolygonMode(1, vparams->displayFlags().getShowWireFrame());
+    vparams->drawTool()->disableLighting();
 
     if (m_showBoxOrPlane.getValue())
     {
@@ -398,78 +392,69 @@ void BuoyantForceField<DataTypes>::draw(const core::visual::VisualParams* vparam
 
         if ( fluidModel == AABOX)
         {
-            glLineWidth(5.0f);
-            glBegin(GL_LINE_LOOP);
-            glColor4f(0.f, 0.f, 1.0f, 1.f);
-            glVertex3d(min[0],min[1],min[2]);
-            glVertex3d(min[0],min[1],max[2]);
-            glVertex3d(min[0],max[1],max[2]);
-            glVertex3d(min[0],max[1],min[2]);
-            glEnd();
+            vparams->drawTool()->drawLineLoop({
+                {min[0], min[1], min[2]},
+                {min[0], min[1], max[2]},
+                {min[0], max[1], max[2]},
+                {min[0], max[1], min[2]}},
+                5.0f, {0.f, 0.f, 1.0f, 1.f});
 
-            glBegin(GL_LINE_LOOP);
-            glColor4f(0.f, 1.f, 1.0f, 1.f);
-            glVertex3d(min[0],max[1],min[2]);
-            glVertex3d(min[0],max[1],max[2]);
-            glVertex3d(max[0],max[1],max[2]);
-            glVertex3d(max[0],max[1],min[2]);
-            glEnd();
+            vparams->drawTool()->drawLineLoop({
+                {min[0], max[1], min[2]},
+                {min[0], max[1], max[2]},
+                {max[0], max[1], max[2]},
+                {max[0], max[1], min[2]}},
+                5.0f, {0.f, 1.f, 1.0f, 1.f});
 
-            glBegin(GL_LINE_LOOP);
-            glColor4f(1.f, 0.f, 1.0f, 1.f);
-            glVertex3d(min[0],min[1],max[2]);
-            glVertex3d(max[0],min[1],max[2]);
-            glVertex3d(max[0],max[1],max[2]);
-            glVertex3d(min[0],max[1],max[2]);
-            glEnd();
+            vparams->drawTool()->drawLineLoop(
+                {{min[0], min[1], max[2]},
+                {max[0], min[1], max[2]},
+                {max[0], max[1], max[2]},
+                {min[0], max[1], max[2]}},
+                5.f, {1.f, 0.f, 1.0f, 1.f});
 
-            glBegin(GL_LINE_LOOP);
-            glColor4f(1.f, 1.f, 1.0f, 1.f);
-            glVertex3d(max[0],min[1],min[2]);
-            glVertex3d(max[0],min[1],max[2]);
-            glVertex3d(max[0],max[1],max[2]);
-            glVertex3d(max[0],max[1],min[2]);
-            glEnd();
+            vparams->drawTool()->drawLineLoop(
+                {{max[0], min[1], min[2]},
+                {max[0], min[1], max[2]},
+                {max[0], max[1], max[2]},
+                {max[0], max[1], min[2]}},
+                5.0f, {1.f, 1.f, 1.0f, 1.f});
 
-            glBegin(GL_LINE_LOOP);
-            glColor4f(1.f, 0.f, 0.0f, 1.f);
-            glVertex3d(min[0],min[1],min[2]);
-            glVertex3d(min[0],min[1],max[2]);
-            glVertex3d(max[0],min[1],max[2]);
-            glVertex3d(max[0],min[1],min[2]);
-            glEnd();
+            vparams->drawTool()->drawLineLoop(
+                {{min[0],min[1],min[2]},
+                {min[0],min[1],max[2]},
+                {max[0],min[1],max[2]},
+                {max[0],min[1],min[2]}},
+                0.5f, {1.f, 0.f, 0.0f, 1.f});
 
-            glBegin(GL_LINE_LOOP);
-            glColor4f(1.f, 1.f, 0.0f, 1.f);
-            glVertex3d(min[0],min[1],min[2]);
-            glVertex3d(max[0],min[1],min[2]);
-            glVertex3d(max[0],max[1],min[2]);
-            glVertex3d(min[0],max[1],min[2]);
-            glEnd();
+            vparams->drawTool()->drawLineLoop(
+                {{min[0],min[1],min[2]},
+                {max[0],min[1],min[2]},
+                {max[0],max[1],min[2]},
+                {min[0],max[1],min[2]}},
+                5.0f, {1.f, 1.f, 0.0f, 1.f});
 
-            glColor4f(1.f, 0.f, 0.0f, 1.f);
-            glBegin(GL_LINES);
-            glVertex3d(m_fluidSurfaceOrigin[0],m_fluidSurfaceOrigin[1],m_fluidSurfaceOrigin[2]);
-            glVertex3d(m_fluidSurfaceOrigin[0] +m_fluidSurfaceDirection[0],
-                    m_fluidSurfaceOrigin[1] +m_fluidSurfaceDirection[1],
-                    m_fluidSurfaceOrigin[2] +m_fluidSurfaceDirection[2]);
-            glEnd();
+            vparams->drawTool()->drawLines(
+                {{m_fluidSurfaceOrigin[0],m_fluidSurfaceOrigin[1],m_fluidSurfaceOrigin[2]},
+                {m_fluidSurfaceOrigin[0] +m_fluidSurfaceDirection[0],
+                 m_fluidSurfaceOrigin[1] +m_fluidSurfaceDirection[1],
+                 m_fluidSurfaceOrigin[2] +m_fluidSurfaceDirection[2]}},
+                5.f, {1.f, 0.f, 0.0f, 1.f});
 
-            glColor4f(0.f, 1.f, 1.0f, 1.f);
 
-            glPointSize(10.0f);
-            glBegin(GL_POINTS);
-            glVertex3d(min[0],min[1],min[2]);
-            glVertex3d(max[0],min[1],min[2]);
-            glVertex3d(max[0],max[1],min[2]);
-            glVertex3d(min[0],max[1],min[2]);
-            glVertex3d(min[0],min[1],max[2]);
-            glVertex3d(max[0],min[1],max[2]);
-            glVertex3d(min[0],max[1],max[2]);
-            glVertex3d(max[0],max[1],max[2]);
-            glColor4f(1.f, 0.f, 0.0f, 1.f); glPointSize(20.0f);
-            glVertex3d(m_fluidSurfaceOrigin[0],m_fluidSurfaceOrigin[1],m_fluidSurfaceOrigin[2]);
-            glEnd();
+            vparams->drawTool()->drawPoints(
+                {{min[0],min[1],min[2]},
+                {max[0],min[1],min[2]},
+                {max[0],max[1],min[2]},
+                {min[0],max[1],min[2]},
+                {min[0],min[1],max[2]},
+                {max[0],min[1],max[2]},
+                {min[0],max[1],max[2]},
+                {max[0],max[1],max[2]}},
+                10.0f, {0.f, 1.f, 1.0f, 1.f});
+
+            vparams->drawTool()->drawPoints({{m_fluidSurfaceOrigin[0],m_fluidSurfaceOrigin[1],m_fluidSurfaceOrigin[2]}},
+                                            20.0f, {1.f, 0.f, 0.0f, 1.f});
         }
         else if (fluidModel == PLANE)
         {
@@ -525,20 +510,16 @@ void BuoyantForceField<DataTypes>::draw(const core::visual::VisualParams* vparam
                 }
 
                 //disable depth test to draw transparency
-                glDisable(GL_DEPTH_TEST);
+                vparams->drawTool()->disableDepthTest();
+                vparams->drawTool()->enableBlending();
 
-                glEnable (GL_BLEND);
-                glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                vparams->drawTool()->drawQuads(
+                {{firstPoint[0],firstPoint[1],firstPoint[2]},
+                 {secondPoint[0],secondPoint[1],secondPoint[2]},
+                 {thirdPoint[0],thirdPoint[1],thirdPoint[2]},
+                 {fourthPoint[0],fourthPoint[1],fourthPoint[2]}}, {1.f, 1.f, 1.0f, 0.2f});
 
-                glBegin(GL_QUADS);
-                glColor4f(1.f, 1.f, 1.0f, 0.2f);
-                glVertex3d(firstPoint[0],firstPoint[1],firstPoint[2]);
-                glVertex3d(secondPoint[0],secondPoint[1],secondPoint[2]);
-                glVertex3d(thirdPoint[0],thirdPoint[1],thirdPoint[2]);
-                glVertex3d(fourthPoint[0],fourthPoint[1],fourthPoint[2]);
-                glEnd();
-
-                glEnable(GL_DEPTH_TEST);
+                vparams->drawTool()->enableDepthTest();
             }
         }
     }
@@ -549,167 +530,31 @@ void BuoyantForceField<DataTypes>::draw(const core::visual::VisualParams* vparam
         {
             if (this->m_showPressureForces.getValue())
             {
-                glColor4f(1.f, 0.f, 0.0f, 1.0f);
+                sofa::helper::vector<sofa::defaulttype::Vector3> lines;
 
-                glBegin(GL_LINES);
                 for ( unsigned int i = 0 ; i < m_showPosition.size() ; i++)
                 {
-                    glVertex3d(m_showPosition[i][0], m_showPosition[i][1], m_showPosition[i][2]);
-                    glVertex3d(m_showPosition[i][0] - m_showForce[i][0]*m_showFactorSize.getValue(), m_showPosition[i][1] -  m_showForce[i][1]*m_showFactorSize.getValue(), m_showPosition[i][2] - m_showForce[i][2]*m_showFactorSize.getValue());
+                    lines.push_back({m_showPosition[i][0], m_showPosition[i][1], m_showPosition[i][2]});
+                    lines.push_back({m_showPosition[i][0] - m_showForce[i][0]*m_showFactorSize.getValue(), m_showPosition[i][1] -  m_showForce[i][1]*m_showFactorSize.getValue(), m_showPosition[i][2] - m_showForce[i][2]*m_showFactorSize.getValue()});
                 }
-                glEnd();
+
+                vparams->drawTool()->drawLines(lines, 1.f, {1.f, 0.f, 0.0f, 1.0f});
             }
             if (this->m_showViscosityForces.getValue())
             {
-                glColor4f(0.f, 1.f, 1.0f, 1.0f);
+                sofa::helper::vector<sofa::defaulttype::Vector3> lines;
 
-                glBegin(GL_LINES);
                 for ( unsigned int i = 0 ; i < m_showPosition.size() ; i++)
                 {
-                    glVertex3d(m_showPosition[i][0], m_showPosition[i][1], m_showPosition[i][2]);
-                    glVertex3d(m_showPosition[i][0] - m_showViscosityForce[i][0]*m_showFactorSize.getValue(), m_showPosition[i][1] -  m_showViscosityForce[i][1]*m_showFactorSize.getValue(), m_showPosition[i][2] - m_showViscosityForce[i][2]*m_showFactorSize.getValue());
+                    lines.push_back({m_showPosition[i][0], m_showPosition[i][1], m_showPosition[i][2]});
+                    lines.push_back({m_showPosition[i][0] - m_showViscosityForce[i][0]*m_showFactorSize.getValue(), m_showPosition[i][1] -  m_showViscosityForce[i][1]*m_showFactorSize.getValue(), m_showPosition[i][2] - m_showViscosityForce[i][2]*m_showFactorSize.getValue()});
                 }
-                glEnd();
+                vparams->drawTool()->drawLines(lines, 1.f, {0.f, 1.f, 1.0f, 1.0f});
             }
         }
 
-    glPopAttrib();
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->restoreLastState();
 }
-
-
-/*  OLD IMPLEMENTATION
-
- compute the immersed volume but maybe useless
- Real immersedVolume = static_cast<Real>(0.0f);
- for (int i = 0 ; i < m_topology->getNbTetrahedra() ; i++)
- {
-     Tetra tetra = m_tetraContainer->getTetra(i);
-     int nbPointsInside = isTetraInFluid(tetra, x);
-
-     if ( nbPointsInside > 0)
-     {
-       immersedVolume += m_tetraGeo->computeTetrahedronVolume(i);
-     }
- }
- m_immersedVolume.setValue(immersedVolume);
-           std::cout << "Immersed Volume >> " << m_immersedVolume.getValue() << std::endl;
-
-
-
-template <class DataTypes>
-int BuoyantForceField<DataTypes>::isTetraInFluid(const Tetra &tetra, const VecCoord& x)
-{
-    int nbPointsInFluid = 0;
-
-    for (unsigned int i = 0 ; i < 4 ; i++)
-    {
-        if (isPointInFluid(x[ tetra[i] ] )  )
-        {
-            nbPointsInFluid++;
-        }
-    }
-
-    return nbPointsInFluid;
-}
-
-template <class DataTypes>
-bool BuoyantForceField<DataTypes>::isCornerInTetra(const Tetra &tetra, const VecCoord& x) const
-{
-        if ( fluidModel == AABOX)
-        {
-        Deriv a = x[tetra[0]];
-        Deriv b = x[tetra[ (0 + 1)%4 ]];
-        Deriv c = x[tetra[ (0 + 2)%4 ]];
-        Deriv d = x[tetra[ (0 + 3)%4 ]];
-
-        Deriv ab = b - a;
-        Deriv ac = c - a;
-        Deriv ad = d - a;
-
-        for ( int i = 0 ; i < 1 ; i++)
-        {
-            for (int j = 0 ; j < 1 ; j++)
-            {
-                for (int k = 0 ; k < 1 ; k++)
-                {
-                    Deriv corner(
-                            i%2 ? m_minBox.getValue()[0] : m_maxBox.getValue()[0],
-                            j%2 ? m_minBox.getValue()[1] : m_maxBox.getValue()[1],
-                            k%2 ? m_minBox.getValue()[2] : m_maxBox.getValue()[2]
-                            );
-
-                    Real c0 = dot(ab.cross(ac), corner - a);
-                    Real c1 = dot((c-b).cross(b-d), corner - b);
-                    Real c2 = dot((b-a).cross(d-a), corner - a);
-                    Real c3 = dot((c-a).cross(d-a), corner - a);
-
-                    if ( c0 < 0 || c1 < 0 || c2 < 0 || c3 < 0 )
-                    {
-                        return true;
-                    }
-                }
-            }
-        }
-        }
-        return false;
-}
-
-template <class DataTypes>
-typename BuoyantForceField<DataTypes>::Real BuoyantForceField<DataTypes>::getImmersedVolume(const Tetra &tetra, const VecCoord& x)
-{
-    Real immersedVolume = static_cast<Real>(0.f);
-
-    int nbPointsInside = isTetraInFluid(tetra, x);
-
-    if ( nbPointsInside > 0)
-    {
-        //the whole tetra is in the fluid
-        if ( nbPointsInside == 4)
-        {
-
-            int index = m_topology->getTetrahedronIndex(tetra[0], tetra[1], tetra[2], tetra[3]);
-//            Deriv ab = x[tetra[1]] - x[tetra[0]];
-//            Deriv ac = x[tetra[2]] - x[tetra[0]];
-//            Deriv ad = x[tetra[3]] - x[tetra[0]];
-
-            return m_tetraGeo->computeTetrahedronVolume(index);
-        }
-        //the tetra is partially in the fluid
-//        else if ( nbPointsInside < 4)
-//        {
-//            int firstPointInside = 0;
-//
-//            //find the first point which is in the fluid
-//            for ( int i = 0 ; i < 4 ; i++)
-//            {
-//                if (isPointInFluid(x[ tetra[i] ] )  )
-//                {
-//                    firstPointInside = i;
-//                    break;
-//                }
-//            }
-//
-//            Deriv a = x[tetra[ firstPointInside ] ];
-//            Deriv b = x[tetra[ (firstPointInside + 1)%4 ]];
-//            Deriv c = x[tetra[ (firstPointInside + 2)%4 ]];
-//            Deriv d = x[tetra[ (firstPointInside + 3)%4 ]];
-//
-//            //check if a corner of the box (fluid) is inside the tetrahedron
-//            if ( isCornerInTetra(tetra, x))
-//            {
-//                //then a corner of the box (fluid) is in a tetrahedron and it's a annoying
-//                return 0.f;
-//            }
-
-            return immersedVolume;
-
-//        }
-    }
-
-    return immersedVolume;
-}*/
-
 
 
 } // namespace forcefield

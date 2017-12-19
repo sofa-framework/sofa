@@ -136,7 +136,7 @@ public:
     /**
      * @brief Scene graph initialization method.
      */
-    void init();
+    void init() override;
 
     /**
      * @name These methods check the validity of a found intersection.

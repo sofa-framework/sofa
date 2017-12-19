@@ -57,18 +57,18 @@ protected:
     virtual ~MergeVectors();
 public:
     /// Parse the given description to assign values to this object's fields and potentially other parameters
-    void parse( sofa::core::objectmodel::BaseObjectDescription* arg );
+    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
 
     /// Assign the field values stored in the given map of name -> value pairs
-    void parseFields( const std::map<std::string,std::string*>& str );
+    void parseFields( const std::map<std::string,std::string*>& str ) override;
 
-    void init();
+    void init() override;
 
-    void reinit();
+    void reinit() override;
 
-    void update();
+    void update() override;
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }

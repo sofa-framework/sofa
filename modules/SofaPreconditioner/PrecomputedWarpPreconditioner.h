@@ -31,6 +31,7 @@
 #include <SofaBaseLinearSolver/FullMatrix.h>
 #include <sofa/helper/map.h>
 #include <math.h>
+#include <fstream>
 
 namespace sofa
 {
@@ -123,15 +124,15 @@ public:
 protected:
     PrecomputedWarpPreconditioner();
 public:
-    void solve (TMatrix& M, TVector& x, TVector& b);
-    void invert(TMatrix& M);
-    void setSystemMBKMatrix(const core::MechanicalParams* mparams);
-    bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact);
-    void draw(const core::visual::VisualParams* vparams);
-    void init();
+    void solve (TMatrix& M, TVector& x, TVector& b) override;
+    void invert(TMatrix& M) override;
+    void setSystemMBKMatrix(const core::MechanicalParams* mparams) override;
+    bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact) override;
+    void draw(const core::visual::VisualParams* vparams) override;
+    void init() override;
     void loadMatrix(TMatrix& M);
 
-    bool hasUpdatedMatrix() {return false;}
+    bool hasUpdatedMatrix() override {return false;}
 
     TBaseMatrix * getSystemMatrixInv()
     {
@@ -147,7 +148,7 @@ public:
         return sofa::core::objectmodel::BaseObject::canCreate(obj, context, arg);
     }
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }

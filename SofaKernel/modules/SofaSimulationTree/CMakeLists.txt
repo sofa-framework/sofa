@@ -19,10 +19,6 @@ set(SOURCE_FILES
     init.cpp
 )
 
-if(SOFA-MISC_SMP)
-    list(APPEND HEADER_FILES SMPSimulation.h)
-    list(APPEND SOURCE_FILES SMPSimulation.cpp)
-endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCommon)

@@ -55,7 +55,7 @@ public:
 protected:
     PythonMainScriptController( const char* filename );
 
-    void handleEvent(core::objectmodel::Event *event);
+    void handleEvent(core::objectmodel::Event *event) override;
 
     /// @name Script interface
     ///   Function that needs to be implemented for each script language
@@ -81,7 +81,7 @@ protected:
     virtual void script_onMouseButtonLeft(const int posX,const int posY,const bool pressed) override;
     virtual void script_onMouseButtonRight(const int posX,const int posY,const bool pressed) override;
     virtual void script_onMouseButtonMiddle(const int posX,const int posY,const bool pressed) override;
-    virtual void script_onMouseWheel(const int posX,const int posY,const int delta);
+    virtual void script_onMouseWheel(const int posX,const int posY,const int delta) override;
 
     /// called each frame
     virtual void script_onBeginAnimationStep(const double dt) override ;

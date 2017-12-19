@@ -7,7 +7,7 @@
     <CollisionResponse name="Response" response="FrictionContact" />
     <LCPConstraintSolver tolerance="0.001" maxIt="1000"/>
     <Node>
-        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <CollisionGroup name="Group" />
         <Node name="TORUS">

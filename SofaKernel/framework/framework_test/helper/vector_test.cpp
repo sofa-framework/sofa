@@ -19,8 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Sofa_test.h>
-using sofa::Sofa_test;
+#include <sofa/helper/testing/NumericTest.h>
+using sofa::helper::testing::NumericTest ;
+
 using testing::Types;
 
 #include <sofa/helper/vector.h>
@@ -38,7 +39,7 @@ using sofa::helper::logging::MessageDispatcher ;
 using sofa::helper::logging::Message ;
 
 template<class T>
-class vector_test : public Sofa_test<>,
+class vector_test : public NumericTest<>,
         public ::testing::WithParamInterface<std::vector<std::string>>
 {
 public:
@@ -193,7 +194,7 @@ INSTANTIATE_TEST_CASE_P(checkReadWriteBehavior,
 ///
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 template<class T>
-class vector_benchmark : public Sofa_test<>,
+class vector_benchmark : public NumericTest<>,
         public ::testing::WithParamInterface<std::vector<std::string>>
 {
 public:

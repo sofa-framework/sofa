@@ -19,14 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <limits>
 #include <sofa/helper/kdTree.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/random.h>
 
-#include <gtest/gtest.h>
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest ;
 
-#include <limits>
 
 namespace sofa {
 
@@ -36,7 +37,7 @@ namespace sofa {
  * @date 2014
  */
 
-struct KdTreeTest: public ::testing::Test
+struct KdTreeTest: public BaseTest
 {
     typedef SReal Real;
     typedef defaulttype::Vec<3,Real> Coord;

@@ -81,7 +81,7 @@ public:
     /**
      * @brief SceneGraph callback initialization method.
      */
-    void init();
+    void init() override;
 
     /**
      * @name Controller Interface
@@ -91,7 +91,7 @@ public:
     /**
      * @brief Mouse event callback.
      */
-    void onMouseEvent(core::objectmodel::MouseEvent *mev);
+    void onMouseEvent(core::objectmodel::MouseEvent *mev) override;
 
     /**
      * @brief HapticDevice event callback.
@@ -101,7 +101,7 @@ public:
     /**
      * @brief Begin Animation event callback.
      */
-    void onBeginAnimationStep(const double dt);
+    void onBeginAnimationStep(const double dt) override;
 
     //@}
 
@@ -147,7 +147,7 @@ public:
      */
     void applyController(void);
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }

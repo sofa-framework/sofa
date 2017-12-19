@@ -90,11 +90,11 @@ protected:
 
     virtual ~WriteTopology();
 public:
-    virtual void init();
+    virtual void init() override;
 
-    virtual void reset();
+    virtual void reset() override;
 
-    virtual void handleEvent(sofa::core::objectmodel::Event* event);
+    virtual void handleEvent(sofa::core::objectmodel::Event* event) override;
 
 
     /// Pre-construction check method called by ObjectFactory.

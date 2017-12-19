@@ -55,12 +55,12 @@ public:
 
     ~CatchAllVector() {}
 
-    void init()
+    void init() override
     {
         reinit();
     }
 
-    void reinit()
+    void reinit() override
     {
     }
 
@@ -68,7 +68,7 @@ public:
 
 protected:
 
-    virtual void update()
+    virtual void update() override
     {
     }
 

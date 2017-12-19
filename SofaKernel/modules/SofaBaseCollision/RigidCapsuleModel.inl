@@ -135,7 +135,6 @@ void TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::computeBounding
     }
 
     if (!isMoving() && !cubeModel->empty() && !updated){
-        std::cout<<"immobile..."<<std::endl;
         return; // No need to recompute BBox if immobile
     }
 
@@ -143,8 +142,6 @@ void TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::computeBounding
     if (!empty())
     {
         typename TCapsule<defaulttype::StdRigidTypes<3,MyReal> >::Real r;
-
-        //const typename TCapsule<StdRigidTypes<3,MyReal> >::Real distance = (typename TCapsule<StdRigidTypes<3,MyReal> >::Real)this->proximity.getValue();
         for (int i=0; i<ncap; i++)
         {
             const Coord p1 = point1(i);
@@ -182,7 +179,7 @@ void TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::draw(const core
 
 template<class MyReal>
 void TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::draw(const core::visual::VisualParams* vparams)
-{   
+{
     if (vparams->displayFlags().getShowCollisionModels())
     {
         sofa::defaulttype::Vec<4,float> col4f(getColor4f());
@@ -190,8 +187,6 @@ void TCapsuleModel<sofa::defaulttype::StdRigidTypes<3,MyReal> >::draw(const core
         vparams->drawTool()->setLightingEnabled(true); //Enable lightning
 
         // Check topological modifications
-        //const int npoints = _mstate->getSize()/2;
-
         for (int i=0; i<size; i++){
             vparams->drawTool()->drawCapsule(point1(i),point2(i),(float)radius(i),col4f);
         }

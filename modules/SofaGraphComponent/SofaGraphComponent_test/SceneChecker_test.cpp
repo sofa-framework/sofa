@@ -4,6 +4,12 @@ using sofa::Sofa_test;
 #include <SofaGraphComponent/SceneCheckerVisitor.h>
 using sofa::simulation::SceneCheckerVisitor ;
 
+#include <SofaGraphComponent/SceneChecks.h>
+using namespace sofa::simulation::scenecheckers ;
+
+#include <SofaGraphComponent/SceneCheckAPIChanges.h>
+using sofa::simulation::scenecheckers::SceneCheckAPIChange ;
+
 #include <sofa/helper/system/PluginManager.h>
 using sofa::helper::system::PluginManager ;
 
@@ -60,16 +66,68 @@ struct SceneChecker_test : public Sofa_test<>
         ASSERT_NE(root.get(), nullptr) ;
         root->init(ExecParams::defaultInstance()) ;
 
+        SceneCheckerVisitor checker(ExecParams::defaultInstance());
+        checker.addCheck( SceneCheckMissingRequiredPlugin::newSPtr() );
+
         if(missing)
         {
             EXPECT_MSG_EMIT(Warning);
-            SceneCheckerVisitor checker(ExecParams::defaultInstance());
             checker.validate(root.get()) ;
         }else{
             EXPECT_MSG_NOEMIT(Warning);
-            SceneCheckerVisitor checker(ExecParams::defaultInstance());
             checker.validate(root.get()) ;
         }
+    }
+
+    void checkDuplicatedNames()
+    {
+        std::stringstream scene ;
+        scene << "<?xml version='1.0'?>"
+              << "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >                   \n"
+              << "    <Node name='nodeCheck'>                                                    \n"
+              << "      <Node name='nodeA' />                                                    \n"
+              << "      <Node name='nodeA' />                                                    \n"
+              << "    </Node>                                                                    \n"
+              << "    <Node name='objectCheck'>                                                  \n"
+              << "      <OglModel name='objectA' />                                              \n"
+              << "      <OglModel name='objectA' />                                              \n"
+              << "    </Node>                                                                    \n"
+              << "    <Node name='mixCheck'>                                                     \n"
+              << "      <Node name='mixA' />                                                     \n"
+              << "      <OglModel name='mixA' />                                                 \n"
+              << "    </Node>                                                                    \n"
+              << "    <Node name='nothingCheck'>                                                 \n"
+              << "      <Node name='nodeA' />                                                    \n"
+              << "      <OglModel name='objectA' />                                              \n"
+              << "    </Node>                                                                    \n"
+              << "</Node>                                                                        \n" ;
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+                                                          scene.str().c_str(),
+                                                          scene.str().size()) ;
+
+        ASSERT_NE(root.get(), nullptr) ;
+        root->init(ExecParams::defaultInstance()) ;
+
+        SceneCheckerVisitor checker(ExecParams::defaultInstance());
+        checker.addCheck( SceneCheckDuplicatedName::newSPtr() );
+
+        std::vector<std::string> nodenames = {"nodeCheck", "objectCheck", "mixCheck"} ;
+        for( auto& nodename : nodenames )
+        {
+            EXPECT_MSG_NOEMIT(Error) ;
+            EXPECT_MSG_EMIT(Warning);
+            ASSERT_NE(root->getChild(nodename), nullptr) ;
+            checker.validate(root->getChild(nodename)) ;
+        }
+
+        {
+            EXPECT_MSG_NOEMIT(Error);
+            EXPECT_MSG_NOEMIT(Warning);
+            ASSERT_NE(root->getChild("nothingCheck"), nullptr) ;
+            checker.validate(root->getChild("nothingCheck")) ;
+        }
+
     }
 
     void checkAPIVersion(bool shouldWarn)
@@ -82,7 +140,7 @@ struct SceneChecker_test : public Sofa_test<>
         std::stringstream scene ;
         scene << "<?xml version='1.0'?>"
               << "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >                   \n"
-              << "      <APIVersion level='"<< lvl <<"'/>                                              \n"
+              << "      <APIVersion level='"<< lvl <<"'/>                                        \n"
               << "      <ComponentDeprecated />                                                  \n"
               << "</Node>                                                                        \n" ;
 
@@ -94,21 +152,20 @@ struct SceneChecker_test : public Sofa_test<>
         root->init(ExecParams::defaultInstance()) ;
 
         SceneCheckerVisitor checker(ExecParams::defaultInstance());
+        SceneCheckAPIChange::SPtr apichange = SceneCheckAPIChange::newSPtr() ;
+        apichange->installDefaultChangeSets() ;
+        apichange->addHookInChangeSet("17.06", [](Base* o){
+            if(o->getClassName() == "ComponentDeprecated")
+                msg_warning(o) << "ComponentDeprecated have changed since 17.06." ;
+        }) ;
+        checker.addCheck(apichange) ;
+
         if(shouldWarn){
             /// We check that running a scene set to 17.12 generate a warning on a 17.06 component
             EXPECT_MSG_EMIT(Warning) ;
-            checker.addHookInChangeSet("17.06", [](Base* o){
-                if(o->getClassName() == "ComponentDeprecated")
-                    msg_warning(o) << "ComponentDeprecated have changed since 17.06." ;
-            }) ;
             checker.validate(root.get()) ;
         }
         else {
-            /// We check that running a scene set to 17.12 generate a warning on a 17.06 component
-            checker.addHookInChangeSet("17.06", [](Base* o){
-                if(o->getClassName() == "ComponentDeprecated")
-                    msg_warning(o) << "RestShapeSpringsForceField have changed since 17.06." ;
-            }) ;
             checker.validate(root.get()) ;
         }
     }
@@ -137,4 +194,9 @@ TEST_F(SceneChecker_test, checkAPIVersionCurrent )
 TEST_F(SceneChecker_test, checkAPIVersionDeprecated )
 {
     checkAPIVersion(true) ;
+}
+
+TEST_F(SceneChecker_test, checkDuplicatedNames )
+{
+    checkDuplicatedNames() ;
 }

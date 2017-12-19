@@ -247,9 +247,6 @@ int LocalMinDistance::computeIntersection(CubicBezierCurve<FLAG>& e2, Point& e1,
         detection->baryCoords[0][1]=projectX;
         detection->baryCoords[0][2]=projectY;
 #endif
-        //	std::cout<<contacts->size()<<" contacts.size() LocalMinDistance::1607  "<<"e1.getIndex() " <<e1.getIndex() <<"  e2.getIndex()" <<e2.getIndex()
-        //			 << " t0:"<< e2.t0()<<"   alpha:"<<alpha <<"  t1:" << e2.t1()<<"  t:"<<t
-        //			 <<"     P : " <<P <<"   Q : " <<Q <<std::endl;//////////////////////////////////
     }
     else if ( e2.isCubicBezier () )
     {
@@ -476,9 +473,6 @@ int LocalMinDistance::computeIntersection(CubicBezierCurve<FLAG>& e2, Sphere& e1
         detection->baryCoords[0][1]=projectX;
         detection->baryCoords[0][2]=projectY;
 #endif
-        //	std::cout<<contacts->size()<<" contacts.size() LocalMinDistance::1706  "<<"e1.getIndex() " <<e1.getIndex() <<"  e2.getIndex()" <<e2.getIndex()
-        //			 << " t0:"<< e2.t0()<<"   alpha:"<<alpha <<"  t1:" << e2.t1()<<"  t:"<<t
-        //			 <<"     P : " <<P <<"   Q : " <<Q <<std::endl;//////////////////////////////////
     }
     else if( e2.isCubicBezier () )
     {

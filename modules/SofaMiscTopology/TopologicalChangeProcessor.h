@@ -118,13 +118,13 @@ protected:
     std::vector<unsigned int>    errorTrianglesIndices;
 
 public:
-    virtual void init();
+    virtual void init() override;
 
-    virtual void reinit();
+    virtual void reinit() override;
 
     virtual void readDataFile();
 
-    virtual void handleEvent(sofa::core::objectmodel::Event* event);
+    virtual void handleEvent(sofa::core::objectmodel::Event* event) override;
 
     void setTime(double time);
 
@@ -144,7 +144,7 @@ public:
         return BaseObject::canCreate(obj, context, arg);
     }
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
     void updateTriangleIncisionInformation();
 

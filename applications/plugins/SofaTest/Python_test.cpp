@@ -1,4 +1,5 @@
 #include <SofaPython/PythonScriptEvent.h>
+#include <fstream>
 
 #include "Python_test.h"
 
@@ -14,97 +15,6 @@
 #include <SofaPython/PythonFactory.h>
 
 namespace sofa {
-
-
-
-Python_test::Python_test()
-{
-    static const std::string plugin = "SofaPython";
-    sofa::helper::system::PluginManager::getInstance().loadPlugin(plugin);
-}
-
-
-
-void Python_test::run( const Python_test_data& data ) {
-
-    msg_info("Python_test") << "running " << data.filepath;
-
-    {
-        // Check the file exists
-        std::ifstream file(data.filepath.c_str());
-        bool scriptFound = file.good();
-        ASSERT_TRUE(scriptFound) << " ("<<data.filepath<<")";
-    }
-
-    ASSERT_TRUE( loader.loadTestWithArguments(data.filepath.c_str(),data.arguments) ) << " ("<<data.filepath<<")";
-
-}
-
-
-static bool ends_with(const std::string& suffix, const std::string& full){
-    const std::size_t lf = full.length();
-    const std::size_t ls = suffix.length();
-
-    if(lf < ls) return false;
-
-    return (0 == full.compare(lf - ls, ls, suffix));
-}
-
-static bool starts_with(const std::string& prefix, const std::string& full){
-    const std::size_t lf = full.length();
-    const std::size_t lp = prefix.length();
-
-    if(lf < lp) return false;
-
-    return (0 == full.compare(0, lp, prefix));
-}
-
-
-
-
-void Python_test_list::addTestDir(const std::string& dir, const std::string& prefix) {
-
-    std::vector<std::string> files;
-    helper::system::FileSystem::listDirectory(dir, files);
-
-    for(const std::string& file : files) {
-        if( starts_with(prefix, file) && ends_with(".py", file) ) {
-            addTest(file, dir);
-        }
-    }
-
-}
-
-
-
-////////////////////////////////////////////////////
-////////////////////////////////////////////////////
-////////////////////////////////////////////////////
-
-
-struct Listener : core::objectmodel::BaseObject {
-
-    Listener() {
-        f_listening = true;
-    }
-
-    virtual void handleEvent(core::objectmodel::Event * event) {
-        if (core::objectmodel::PythonScriptEvent::checkEventType(event)
-              || core::objectmodel::ScriptEvent::checkEventType(event) )
-       {
-            core::objectmodel::ScriptEvent* e = static_cast<core::objectmodel::ScriptEvent*>(event);
-            std::string name = e->getEventName();
-            if( name == "success" ) {
-                throw Python_scene_test::result(true);
-            } else if (name == "failure") {
-                throw Python_scene_test::result(false);
-            }
-        }
-    }
-
-};
-
-
 
 
 
@@ -176,6 +86,8 @@ static PyMethodDef except_hook_def = {
 
 static void install_sys_excepthook(char* flags) {
     if(!default_excepthook){
+        sofa::simulation::PythonEnvironment::gil lock(__func__);
+        
         default_excepthook = PySys_GetObject((char*)"excepthook") || fail("cannot get default excepthook");
 
         PyObject* self = PyCapsule_New(flags, NULL, NULL) || fail("cant wrap flags pointer");
@@ -186,6 +98,113 @@ static void install_sys_excepthook(char* flags) {
         PySys_SetObject((char*)"excepthook", excepthook) || fail("cannot set sys.excepthook");
     }
 }
+
+
+///////////////////////// Python_test Definition  //////////////////////////////////////////////////
+Python_test::Python_test()
+{
+    static const std::string plugin = "SofaPython";
+    sofa::helper::system::PluginManager::getInstance().loadPlugin(plugin);
+}
+
+
+void Python_test::run( const Python_test_data& data ) {
+
+    msg_info("Python_test") << "running " << data.filepath;
+
+    // Check the file exists
+    std::ifstream file(data.filepath.c_str());
+    bool scriptFound = file.good();
+    if( !scriptFound )
+        FAIL() << " missing file ("<<data.filepath<<")";
+
+    char flags = 0;
+    try {
+        install_sys_excepthook(&flags);
+    } catch( std::runtime_error& e) {
+        FAIL() << "error setting up python excepthook, aborting test" << " ("<<data.filepath<<")";
+    }
+
+    try{
+        if( !loader.loadTestWithArguments(data.filepath.c_str(),data.arguments) )
+            FAIL() << " unable to run test ("<<data.filepath<<")";
+
+        if( flags & flag::test_failure ) {
+            FAIL() << "test failure in ("<<data.filepath<<")";
+        }
+
+        if( flags & flag::python_error) {
+            FAIL() << "python error in ("<<data.filepath<<")";
+        }
+    } catch( simulation::PythonEnvironment::system_exit& e) {
+        SUCCEED() << "test terminated normally";
+    } catch( const result& test_result ) {
+        ASSERT_TRUE(test_result.value) << " ("<<data.filepath<<")";
+    }
+}
+
+static bool ends_with(const std::string& suffix, const std::string& full){
+    const std::size_t lf = full.length();
+    const std::size_t ls = suffix.length();
+
+    if(lf < ls) return false;
+
+    return (0 == full.compare(lf - ls, ls, suffix));
+}
+
+static bool starts_with(const std::string& prefix, const std::string& full){
+    const std::size_t lf = full.length();
+    const std::size_t lp = prefix.length();
+
+    if(lf < lp) return false;
+
+    return (0 == full.compare(0, lp, prefix));
+}
+
+void Python_test_list::addTestDir(const std::string& dir, const std::string& prefix) {
+
+    std::vector<std::string> files;
+    helper::system::FileSystem::listDirectory(dir, files);
+
+    for(const std::string& file : files) {
+        if( starts_with(prefix, file) && ends_with(".py", file) ) {
+            addTest(file, dir);
+        }
+    }
+
+}
+
+
+
+///////////////////////// Python_scene_test Definition  ////////////////////////////////////////////
+////////////////////////////////////////////////////
+////////////////////////////////////////////////////
+////////////////////////////////////////////////////
+struct Listener : core::objectmodel::BaseObject {
+
+    Listener() {
+        f_listening = true;
+    }
+
+    virtual void handleEvent(core::objectmodel::Event * event) {
+        if (core::objectmodel::PythonScriptEvent::checkEventType(event)
+                || core::objectmodel::ScriptEvent::checkEventType(event) )
+        {
+            core::objectmodel::ScriptEvent* e = static_cast<core::objectmodel::ScriptEvent*>(event);
+            std::string name = e->getEventName();
+            if( name == "success" ) {
+                throw Python_scene_test::result(true);
+            } else if (name == "failure") {
+                throw Python_scene_test::result(false);
+            }
+        }
+    }
+
+};
+
+
+
+
 
 
 Python_scene_test::Python_scene_test()

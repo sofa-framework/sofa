@@ -75,13 +75,13 @@ public:
     VecDouble _previousVonMisesStrain;
 
     PlasticMaterial();
-    void computeStress (Vector3& stress, Vector3& strain, unsigned int& elementIndex);
-    void computeDStress (Vector3& dstress, Vector3& dstrain);
+    void computeStress (Vector3& stress, Vector3& strain, unsigned int& elementIndex) override;
+    void computeDStress (Vector3& dstress, Vector3& dstrain) override;
 
     SReal computeVonMisesStrain(Vector3 &strain);
     void computeStressOnSection(Vector3& Stress, Vector3 Strain, int section);	// computes the stress on a given section of the piecewise function
 
-    virtual void computeStress (unsigned int /*iElement*/){}
+    virtual void computeStress (unsigned int /*iElement*/) override {}
 
 };
 

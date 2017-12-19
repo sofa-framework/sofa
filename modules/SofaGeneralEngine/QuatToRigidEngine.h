@@ -58,9 +58,9 @@ protected:
     QuatToRigidEngine();
     virtual ~QuatToRigidEngine();
 public:
-    void update();
-    void init();
-    void reinit();
+    void update() override;
+    void init() override;
+    void reinit() override;
 
     /// Construction method called by ObjectFactory.
     template<class T>
@@ -69,7 +69,7 @@ public:
         return core::objectmodel::BaseObject::create(tObj, context, arg);
     }
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }

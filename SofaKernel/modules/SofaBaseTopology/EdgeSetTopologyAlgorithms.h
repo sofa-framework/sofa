@@ -62,7 +62,7 @@ protected:
 
     virtual ~EdgeSetTopologyAlgorithms() {}
 public:
-    virtual void init();
+    virtual void init() override;
 
 private:
     EdgeSetTopologyContainer*					m_container;

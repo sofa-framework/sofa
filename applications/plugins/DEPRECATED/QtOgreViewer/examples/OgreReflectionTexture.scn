@@ -9,7 +9,7 @@
 	<OgreReflectionTexture name="reflectionTexture"  tags="reflect" normal="0 1 0" blendingFactor="0.1" distance="-14" size="150 150"/>
 	<OgreVisualModel template="ExtVec3f" name="FloorV" tags="reflect" OGREmaterialFile="reflectionTexture"  fileMesh="mesh/floor2.obj"  translation="0 -12.5 0"  material="Default Diffuse 1 0.74902 0.74902 0.74902 1 Ambient 1 0.2 0.2 0.2 1 Specular 0 1 1 1 1 Emissive 0 0 0 0 0 Shininess 0 45" />
 	<Node 	name="cubeFEM" gravity="0 -9.81 0"  >
-		<EulerImplicitSolver name="cg_odesolver"  printLog="0" />
+		<EulerImplicitSolver name="cg_odesolver"  printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
 		<CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25"  tolerance="1e-09"  threshold="1e-09" />
 		<MechanicalObject template="Vec3d" name="default1"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1" />
 		<UniformMass template="Vec3d" name="default2"  mass="0.25" />

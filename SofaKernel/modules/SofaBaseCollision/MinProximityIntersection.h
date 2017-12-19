@@ -55,11 +55,11 @@ protected:
 public:
     typedef core::collision::IntersectorFactory<MinProximityIntersection> IntersectorFactory;
 
-    virtual void init();
+    virtual void init() override;
 
     bool getUseSurfaceNormals();
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
 private:
     SReal mainAlarmDistance;

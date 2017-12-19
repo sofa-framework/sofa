@@ -262,25 +262,25 @@ protected:
 
 public:
 
-    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
+    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override
     {
         vl_input.parseSizeLinks(arg, d_nbInput);
         Inherit1::parse(arg);
     }
-    void parseFields ( const std::map<std::string,std::string*>& str )
+    void parseFields ( const std::map<std::string,std::string*>& str ) override
     {
         vl_input.parseFieldsSizeLinks(str, d_nbInput);
         Inherit1::parseFields(str);
     }
 
-    void init()
+    void init() override
     {
         vl_input.resize(d_nbInput.getValue());
         Inherit1::init();
         update();
     }
 
-    void reinit()
+    void reinit() override
     {
         vl_input.resize(d_nbInput.getValue());
         Inherit1::reinit();

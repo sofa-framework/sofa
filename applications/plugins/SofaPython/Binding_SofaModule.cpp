@@ -39,11 +39,14 @@
 #include <sofa/simulation/SceneLoaderFactory.h>
 
 #include <sofa/helper/logging/Messaging.h>
+using sofa::helper::logging::ComponentInfo ;
+using sofa::helper::logging::SofaComponentInfo ;
 #include <sofa/helper/Utils.h>
-
 #include "SceneLoaderPY.h"
 
 #include <sofa/helper/system/PluginManager.h>
+
+using namespace sofa::helper;
 
 using namespace sofa::core;
 using namespace sofa::core::objectmodel;
@@ -64,6 +67,8 @@ using sofa::gui::GUIManager ;
 using sofa::gui::BaseViewer ;
 
 using sofa::PythonFactory ;
+
+
 
 /// set the viewer resolution
 static PyObject * Sofa_getSofaPythonVersion(PyObject * /*self*/, PyObject *)
@@ -156,7 +161,7 @@ static PyObject * Sofa_sendGUIMessage(PyObject * /*self*/, PyObject * args) {
     gui->sendMessage(msgType,msgValue);
 
 
-    Py_RETURN_NONE;
+    return NULL;
 }
 
 /// ask the GUI to save a screenshot
@@ -234,9 +239,7 @@ static PyObject * Sofa_setViewerCamera(PyObject * /*self*/, PyObject * args)
     float px = 0.0f, py = 0.0f, pz = 0.0f;
     float qx = 0.0f, qy = 0.0f, qz = 0.0f, qw = 1.0f;
 
-    if (!PyArg_ParseTuple(args, "fffffff", &px, &py, &pz, &qx, &qy, &qz, &qw))
-    {
-        PyErr_BadArgument();
+	if (!PyArg_ParseTuple(args, "fffffff", &px, &py, &pz, &qx, &qy, &qz, &qw)) {
         return NULL;
     }
 
@@ -346,76 +349,109 @@ static PyObject * Sofa_updateVisual(PyObject * /*self*/, PyObject * args) {
     Simulation* simulation = getSimulation();
 
     simulation->updateVisual(node);
-    Py_RETURN_NONE;
+    return NULL;
 }
 
 static const std::string s_emitter = "PythonScript";
 
 template<class Action>
 static PyObject* parse_emitter_message_then(PyObject* args, const Action& action) {
+    PyObject* py_emitter {nullptr};
+    PyObject* py_message {nullptr};
+
     const size_t argSize = PyTuple_Size(args);
-    char* message;
 
-    /// the logic would be to have the optional arg in last position :-/
-    if( argSize == 2 ) {
-        char* emitter;
-        if( !PyArg_ParseTuple(args, "ss", &emitter, &message) ) {
-            return NULL;
-        }
-
-        action(emitter, message, PythonEnvironment::getPythonCallingPointAsFileInfo());
-    }
-    else if ( argSize == 1 )
-    {
+    if( argSize == 1 ) {
+        /// no emitter
+        char* message;
         if( !PyArg_ParseTuple(args, "s", &message) ) {
             return NULL;
         }
 
-        action(s_emitter, message, PythonEnvironment::getPythonCallingPointAsFileInfo());
-    }
-    else if (argSize == 3)
-    {
+        action(ComponentInfo::SPtr(new ComponentInfo(s_emitter)), message, PythonEnvironment::getPythonCallingPointAsFileInfo());
+    } else if( argSize == 2 ) {
+        /// SOURCE, "Message"
+        if( !PyArg_ParseTuple(args, "OO", &py_emitter, &py_message) ){
+            return NULL;
+        }
+        if( !PyString_Check(py_message) ){
+            PyErr_SetString(PyExc_TypeError, "The second parameter must be a string");
+            return NULL;
+        }
+
+        if( PyString_Check(py_emitter) ){
+            action(ComponentInfo::SPtr(new ComponentInfo(PyString_AsString(py_emitter))), PyString_AsString(py_message), PythonEnvironment::getPythonCallingPointAsFileInfo() );
+        }else if (PyObject_IsInstance(py_emitter, reinterpret_cast<PyObject*>(&SP_SOFAPYTYPEOBJECT(Base)))) {
+            Base* base=(((PySPtr<Base>*)py_emitter)->object).get();
+            action(ComponentInfo::SPtr(new SofaComponentInfo(base)), PyString_AsString(py_message), PythonEnvironment::getPythonCallingPointAsFileInfo() );
+        }else{
+            PyErr_SetString(PyExc_TypeError, "The first parameter must be a string or a Sofa.Base");
+            return NULL;
+        }
+    } else if( argSize == 3 ){
+        /// "Message", "FILENAME", LINENO
+        char* message;
         char* filename;
         int   lineno;
         if( !PyArg_ParseTuple(args, "ssi", &message, &filename, &lineno) ) {
             return NULL;
         }
-
-        action(s_emitter, message, SOFA_FILE_INFO_COPIED_FROM(filename, lineno));
+        action(ComponentInfo::SPtr(new ComponentInfo(s_emitter)), message, SOFA_FILE_INFO_COPIED_FROM(filename, lineno));
+    } else if (argSize == 4 ){
+        /// SOURCE, "Message", "FILENAME", LINENO
+        char* filename;
+        int   lineno;
+        if( !PyArg_ParseTuple(args, "OOsi", &py_emitter, &py_message, &filename, &lineno) ){
+            return NULL;
+        }
+        if( !PyString_Check(py_message) ){
+            PyErr_SetString(PyExc_TypeError, "The second parameter must be a string");
+            return NULL;
+        }
+        if( PyString_Check(py_emitter) ){
+            action(ComponentInfo::SPtr(new ComponentInfo(PyString_AsString(py_emitter))),
+                   PyString_AsString(py_message),  SOFA_FILE_INFO_COPIED_FROM(filename, lineno));
+        }else if (PyObject_IsInstance(py_emitter, reinterpret_cast<PyObject*>(&SP_SOFAPYTYPEOBJECT(Base)))) {
+            Base* base=(((PySPtr<Base>*)py_emitter)->object).get();
+            action(ComponentInfo::SPtr(new SofaComponentInfo(base)),
+                   PyString_AsString(py_message),  SOFA_FILE_INFO_COPIED_FROM(filename, lineno));
+        }else{
+            PyErr_SetString(PyExc_TypeError, "The first parameter must be a string or a Sofa.Base");
+            return NULL;
+        }
     }
-    Py_RETURN_NONE;
+
+	Py_RETURN_NONE;
 }
 
-/// also, we'd probably would be better off having 'error', 'fatal', 'info' as
-/// argument
 static PyObject * Sofa_msg_info(PyObject * /*self*/, PyObject * args) {
-    return parse_emitter_message_then(args, [](const std::string& emitter, const char* message, const sofa::helper::logging::FileInfo::SPtr& fileinfo) {
-            msg_info(emitter) << message << fileinfo ;
-        });
+    return parse_emitter_message_then(args, [](const ComponentInfo::SPtr& emitter, const char* message, const sofa::helper::logging::FileInfo::SPtr& fileinfo) {
+        msg_info(emitter) << message << fileinfo;
+    });
 }
 
 static PyObject * Sofa_msg_deprecated(PyObject * /*self*/, PyObject * args) {
-    return parse_emitter_message_then(args, [](const std::string& emitter, const char* message, const sofa::helper::logging::FileInfo::SPtr& fileinfo) {
-            msg_deprecated(emitter) << message << fileinfo ;
-        });
+    return parse_emitter_message_then(args, [](const ComponentInfo::SPtr& emitter, const char* message, const sofa::helper::logging::FileInfo::SPtr& fileinfo) {
+        msg_deprecated(emitter) << message << fileinfo;
+    });
 }
 
 static PyObject * Sofa_msg_warning(PyObject * /*self*/, PyObject * args) {
-    return parse_emitter_message_then(args, [](const std::string& emitter, const char* message, const sofa::helper::logging::FileInfo::SPtr& fileinfo) {
-            msg_warning(emitter) << message << fileinfo ;
-        });
+    return parse_emitter_message_then(args, [](const ComponentInfo::SPtr& emitter, const char* message, const sofa::helper::logging::FileInfo::SPtr& fileinfo) {
+        msg_warning(emitter) << message << fileinfo;
+    });
 }
 
 static PyObject * Sofa_msg_error(PyObject * /*self*/, PyObject * args) {
-    return parse_emitter_message_then(args, [](const std::string& emitter, const char* message, const sofa::helper::logging::FileInfo::SPtr& fileinfo) {
-            msg_error(emitter) << message << fileinfo ;
-        });
+    return parse_emitter_message_then(args, [](const ComponentInfo::SPtr& emitter, const char* message, const sofa::helper::logging::FileInfo::SPtr& fileinfo) {
+        msg_error(emitter) << message << fileinfo;
+    });
 }
 
 static PyObject * Sofa_msg_fatal(PyObject * /*self*/, PyObject * args) {
-    return parse_emitter_message_then(args, [](const std::string& emitter, const char* message, const sofa::helper::logging::FileInfo::SPtr& fileinfo) {
-            msg_fatal(emitter) << message << fileinfo ;
-        });
+    return parse_emitter_message_then(args, [](const ComponentInfo::SPtr& emitter, const char* message, const sofa::helper::logging::FileInfo::SPtr& fileinfo) {
+        msg_fatal(emitter) << message << fileinfo;
+    });
 }
 
 static PyObject * Sofa_loadScene(PyObject * /*self*/, PyObject * args)
@@ -427,7 +463,7 @@ static PyObject * Sofa_loadScene(PyObject * /*self*/, PyObject * args)
 
     if( sofa::helper::system::SetDirectory::GetFileName(filename).empty() || // no filename
             sofa::helper::system::SetDirectory::GetExtension(filename).empty() ) // filename with no extension
-        Py_RETURN_NONE;
+        return NULL;
 
     sofa::simulation::SceneLoader *loader = SceneLoaderFactory::getInstance()->getEntryFileName(filename);
 
@@ -440,7 +476,7 @@ static PyObject * Sofa_loadScene(PyObject * /*self*/, PyObject * args)
     SP_MESSAGE_ERROR( "Sofa_loadScene: extension ("
                       << sofa::helper::system::SetDirectory::GetExtension(filename)<<") not handled" );
 
-    Py_RETURN_NONE;
+    return NULL;
 }
 
 
@@ -453,13 +489,12 @@ static PyObject * Sofa_unload(PyObject * /*self*/, PyObject * args)
 
     Node* node = sofa::py::unwrap<Node>(pyNode);
     if (!node) {
-        PyErr_BadArgument();
         return NULL;
     }
 
     sofa::simulation::getSimulation()->unload( node );
 
-    Py_RETURN_NONE;
+    return NULL;
 }
 
 static PyObject * Sofa_loadPythonSceneWithArguments(PyObject * /*self*/, PyObject * args)
@@ -549,6 +584,253 @@ static PyObject * Sofa_getAvailableComponents(PyObject * /*self*/, PyObject * ar
     return pyList;
 }
 
+static PyObject * Sofa_getAliasesFor(PyObject * /*self*/, PyObject * args)
+{
+    char* componentname;
+    if (!PyArg_ParseTuple(args, "s", &componentname)) {
+        return NULL;
+    }
+
+    const ObjectFactory::ClassEntry& entry = ObjectFactory::getInstance()->getEntry(componentname) ;
+
+    PyObject *pyList = PyList_New(entry.aliases.size());
+    unsigned int i=0;
+    for (auto& alias : entry.aliases){
+        PyList_SetItem(pyList, (Py_ssize_t)i, Py_BuildValue("s", alias.c_str()));
+        i++;
+    }
+
+    return pyList;
+}
+
+// -----------------
+
+
+/**
+ * Method : Sofa_clear
+ * Desc   : Wrapper for python usage. Clear the timer.
+ * Param  : PyObject*, self - Object of the python script
+ * Return : NULL
+ */
+static PyObject * Sofa_timerClear(PyObject* /*self*/, PyObject * /*args*/)
+{
+    AdvancedTimer::clear();  // Method call
+    Py_RETURN_NONE;
+}
+
+
+/**
+ * Method : Sofa_isEnabled
+ * Desc   : Wrapper for python usage. Return if the timer is enable or not.
+ * Param  : PyObject*, self - Object of the python script
+ * Param  : PyObject*, args - given arguments to apply to the method
+ * Return : NULL
+ */
+static PyObject * Sofa_timerIsEnabled(PyObject* /*self*/, PyObject *args)
+{
+    char* id;
+    bool answer = false;
+
+    if(!PyArg_ParseTuple(args, "s", &id))
+    {
+        return NULL;
+    }
+
+    answer = AdvancedTimer::isEnabled(id);  // Method call
+
+    if(answer)
+    {
+        Py_RETURN_TRUE;
+    }
+    Py_RETURN_FALSE;
+}
+
+
+/**
+ * Method : Sofa_setEnabled
+ * Desc   : Wrapper for python usage. /!\ Need to pass an int in arguments insteed of a bool in the python script.
+ * Param  : PyObject*, self - Object of the python script
+ * Param  : PyObject*, args - given arguments to apply to the method
+ * Return : NULL
+ */
+static PyObject * Sofa_timerSetEnabled(PyObject* /*self*/, PyObject *args)
+{
+    char* id;
+    PyObject* val;
+
+    if(!PyArg_ParseTuple(args, "sO", &id, &val))
+    {
+        Py_RETURN_NONE;
+    }
+
+    AdvancedTimer::setEnabled(id, PyObject_IsTrue(val));  // Method call
+    Py_RETURN_NONE;
+}
+
+
+/**
+ * Method : Sofa_getInterval
+ * Desc   : Wrapper for python usage.
+ * Param  : PyObject*, self - Object of the python script
+ * Param  : PyObject*, args - given arguments to apply to the method
+ * Return : NULL
+ */
+static PyObject * Sofa_timerGetInterval(PyObject* /*self*/, PyObject *args)
+{
+    char* id;
+    int answer = 0;
+
+    if(!PyArg_ParseTuple(args, "s", &id))
+    {
+        return NULL;
+    }
+
+    answer = AdvancedTimer::getInterval(id);  // Method call
+
+    return PyInt_FromLong(static_cast<long int>(answer));
+}
+
+
+/**
+ * Method : Sofa_setInterval
+ * Desc   : Wrapper for python usage.
+ * Param  : PyObject*, self - Object of the python script
+ * Param  : PyObject*, args - given arguments to apply to the method
+ * Return : NULL
+ */
+static PyObject * Sofa_timerSetInterval(PyObject* /*self*/, PyObject *args)
+{
+    char* id;
+    int newValue = 0;
+
+    if(!PyArg_ParseTuple(args, "si", &id, &newValue))
+    {
+        return NULL;
+    }
+
+    AdvancedTimer::setInterval(id, newValue);  // Method call
+
+
+    Py_RETURN_NONE;
+}
+
+
+/**
+ * Method : Sofa_begin
+ * Desc   : Wrapper for python usage.
+ * Param  : PyObject*, self - Object of the python script
+ * Param  : PyObject*, args - given arguments to apply to the method
+ * Return : NULL
+ */
+static PyObject * Sofa_timerBegin(PyObject* /*self*/, PyObject *args)
+{
+    char* id;
+
+    if(!PyArg_ParseTuple(args, "s", &id))
+    {
+        return NULL;
+    }
+
+    AdvancedTimer::begin(id);  // Method call
+
+    Py_RETURN_NONE;
+}
+
+
+/**
+ * Method : Sofa_timerStepBegin
+ * Desc   : Wrapper for python usage.
+ * Param  : PyObject*, args - given arguments to apply to the method
+ * Return : NULL
+ */
+static PyObject * Sofa_timerStepBegin(PyObject*, PyObject* args)
+{
+    char* id;
+
+    if(!PyArg_ParseTuple(args, "s", &id))
+    {
+        return NULL;
+    }
+
+    AdvancedTimer::stepBegin(id);  // Method call
+
+    Py_RETURN_NONE;
+}
+
+
+/**
+ * Method : Sofa_timerStepEnd
+ * Desc   : Wrapper for python usage.
+ * Param  : PyObject*, args - given arguments to apply to the method
+ * Return : NULL
+ */
+static PyObject * Sofa_timerStepEnd(PyObject*, PyObject* args)
+{
+    char* id;
+
+    if(!PyArg_ParseTuple(args, "s", &id))
+    {
+        return NULL;
+    }
+
+    AdvancedTimer::stepEnd(id);  // Method call
+
+    Py_RETURN_NONE;
+}
+
+
+/**
+ * Method : Sofa_timerEnd
+ * Desc   : Wrapper for python usage.
+ * Param  : PyObject*, self - Object of the python script
+ * Param  : PyObject*, args - given arguments to apply to the method
+ * Return : string
+ */
+static PyObject * Sofa_timerEnd(PyObject* /*self*/, PyObject *args)
+{
+    char* id = NULL;
+    void* tempNode = NULL;
+    Node* node = NULL;
+    std::string result;
+
+    if(!PyArg_ParseTuple(args, "sO", &id, &tempNode))
+    {
+        return NULL;
+    }
+
+    node = down_cast<Node>(((PySPtr<Base>*)tempNode)->object->toBaseNode());
+
+    result = AdvancedTimer::end(id, node);
+
+    if(std::string("null").compare(result) == 0)
+        Py_RETURN_NONE;
+
+    return PyString_FromString(result.c_str());  // Method call
+}
+
+
+/**
+ * Method : Sofa_timerSetOutputType
+ * Desc   : Wrapper for python usage. Used to change output type of the given timer
+ * Param  : PyObject*, self - Object of the python script
+ * Param  : PyObject*, args - given arguments to apply to the method
+ * Return : NULL
+ */
+static PyObject * Sofa_timerSetOutputType(PyObject* /*self*/, PyObject *args)
+{
+    char* id = NULL;
+    char* newOutputType = NULL;
+
+    if(!PyArg_ParseTuple(args, "ss", &id, &newOutputType))
+    {
+        return NULL;
+    }
+
+    AdvancedTimer::setOutputType(id, newOutputType);
+
+    Py_RETURN_NONE;
+}
+
 
 
 /// Methods of the module
@@ -577,5 +859,16 @@ SP_MODULE_METHOD(Sofa,unload)
 SP_MODULE_METHOD(Sofa,loadPythonSceneWithArguments)
 SP_MODULE_METHOD(Sofa,loadPlugin)
 SP_MODULE_METHOD(Sofa,path)
-SP_MODULE_METHOD(Sofa,getAvailableComponents)
+SP_MODULE_METHOD_DOC(Sofa,getAvailableComponents, "Returns the list of the available components in the factory.")
+SP_MODULE_METHOD_DOC(Sofa,getAliasesFor, "Returns the list of the aliases for a given component")
+SP_MODULE_METHOD_DOC(Sofa, timerClear, "Method : Sofa_clear \nDesc   : Wrapper for python usage. Clear the timer. \nParam  : PyObject*, self - Object of the python script \nReturn : return None")
+SP_MODULE_METHOD_DOC(Sofa, timerIsEnabled, "Method : Sofa_isEnabled \nDesc   : Wrapper for python usage. Return if the timer is enable or not. \nParam  : PyObject*, self - Object of the python script \nParam  : PyObject*, args - given arguments to apply to the method \nReturn : None")
+SP_MODULE_METHOD_DOC(Sofa, timerSetEnabled, "Method : Sofa_setEnabled \nDesc   : Wrapper for python usage. /!\\ Need to pass an int in arguments insteed of a bool in the python script. \nParam  : PyObject*, self - Object of the python script \nParam  : PyObject*, args - given arguments to apply to the method \nReturn : None")
+SP_MODULE_METHOD_DOC(Sofa, timerGetInterval, "Method : Sofa_getInterval \nDesc   : Wrapper for python usage. \nParam  : PyObject*, self - Object of the python script \nParam  : PyObject*, args - given arguments to apply to the method \nReturn : None")
+SP_MODULE_METHOD_DOC(Sofa, timerSetInterval, "Method : Sofa_setInterval \nDesc   : Wrapper for python usage. \nParam  : PyObject*, self - Object of the python script \nParam  : PyObject*, args - given arguments to apply to the method \nReturn : None")
+SP_MODULE_METHOD_DOC(Sofa, timerBegin, "Method : Sofa_begin \nDesc   : Wrapper for python usage. \nParam  : PyObject*, self - Object of the python script \nParam  : PyObject*, args - given arguments to apply to the method \nReturn : return None")
+SP_MODULE_METHOD_DOC(Sofa, timerStepBegin, "Method : Sofa_timerStepBegin \nDesc   : Wrapper for python usage. \nParam  : PyObject*, args - given arguments to apply to the method \nReturn : None")
+SP_MODULE_METHOD_DOC(Sofa, timerStepEnd, "Method : Sofa_timerStepEnd \nDesc   : Wrapper for python usage. \nParam  : PyObject*, args - given arguments to apply to the method \nReturn : None")
+SP_MODULE_METHOD_DOC(Sofa, timerSetOutputType, "Method : Sofa_timerSetOutputType \nDesc   : Wrapper for python usage. \nParam  : PyObject*, self - Object of the python script \nParam  : PyObject*, args - given arguments to apply to the method \nReturn : None")
+SP_MODULE_METHOD_DOC(Sofa, timerEnd, "Method : Sofa_timerEnd \nDesc   : Wrapper for python usage. Used to change output type of the given timer \nParam  : PyObject*, self - Object of the python script \nParam  : PyObject*, args - given arguments to apply to the method \nReturn : return None")
 SP_MODULE_METHODS_END

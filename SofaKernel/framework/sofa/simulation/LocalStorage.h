@@ -22,7 +22,6 @@
 #ifndef SOFA_SIMULATION_TREE_LOCALSTORAGE_H
 #define SOFA_SIMULATION_TREE_LOCALSTORAGE_H
 
-#include <sofa/core/objectmodel/BaseObject.h>
 #include "ClassSystem.h"
 
 namespace sofa

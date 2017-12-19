@@ -115,30 +115,30 @@ public:
     int addPoint(const Coord& c);
     int addPoint(const Coord& c, unsigned int indexFrom);
 
-    virtual void init();
+    virtual void init() override;
 
     /// Compute the local coordinates based on the current output coordinates.
-    virtual void reinit();
+    virtual void reinit() override;
 
-    virtual void apply(const core::MechanicalParams *mparams, Data<VecCoord>& out, const Data<InVecCoord>& in);
+    virtual void apply(const core::MechanicalParams *mparams, Data<VecCoord>& out, const Data<InVecCoord>& in) override;
 
-    virtual void applyJ(const core::MechanicalParams *mparams, Data<VecDeriv>& out, const Data<InVecDeriv>& in);
+    virtual void applyJ(const core::MechanicalParams *mparams, Data<VecDeriv>& out, const Data<InVecDeriv>& in) override;
 
-    virtual void applyJT(const core::MechanicalParams *mparams, Data<InVecDeriv>& out, const Data<VecDeriv>& in);
+    virtual void applyJT(const core::MechanicalParams *mparams, Data<InVecDeriv>& out, const Data<VecDeriv>& in) override;
 
-    virtual void applyJT(const core::ConstraintParams *cparams, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in);
+    virtual void applyJT(const core::ConstraintParams *cparams, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in) override;
 
-    virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce );
+    virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce ) override;
 
-    virtual const sofa::defaulttype::BaseMatrix* getJ();
+    virtual const sofa::defaulttype::BaseMatrix* getJ() override;
 
-    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs();
+    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
 
-    virtual void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId );
-    virtual const defaulttype::BaseMatrix* getK();
+    virtual void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId ) override;
+    virtual const defaulttype::BaseMatrix* getK() override;
 
 
-    virtual void draw(const core::visual::VisualParams* vparams);
+    virtual void draw(const core::visual::VisualParams* vparams) override;
 
     void clear(int reserve = 0);
 
@@ -148,7 +148,7 @@ public:
     void setRepartition(unsigned int value);
     void setRepartition(sofa::helper::vector<unsigned int> values);
 
-    void parse(core::objectmodel::BaseObjectDescription* arg);
+    void parse(core::objectmodel::BaseObjectDescription* arg) override;
 
 protected:
     class Loader;

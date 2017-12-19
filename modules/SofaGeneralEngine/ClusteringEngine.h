@@ -80,10 +80,10 @@ public:
 
     virtual ~ClusteringEngine() {}
 
-    void init();
-    void update();
+    void init() override;
+    void update() override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
     Data<bool> d_useTopo; ///< Use avalaible topology to compute neighborhood.
     //Data<unsigned int> maxIter;
@@ -98,7 +98,7 @@ public:
     sofa::core::objectmodel::DataFileName input_filename; ///< import precomputed clusters
     sofa::core::objectmodel::DataFileName output_filename; ///< export clusters
 
-    virtual std::string getTemplateName() const    { return templateName(this);    }
+    virtual std::string getTemplateName() const    override { return templateName(this);    }
     static std::string templateName(const ClusteringEngine<DataTypes>* = NULL) {   return DataTypes::Name(); }
 
 private:

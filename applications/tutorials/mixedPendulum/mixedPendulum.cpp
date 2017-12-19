@@ -43,8 +43,6 @@
 #include <SofaComponentAdvanced/initComponentAdvanced.h>
 #include <SofaComponentMisc/initComponentMisc.h>
 
-#include <sofa/component/typedef/Sofa_typedef.h>
-
 using namespace sofa::simulation::tree;
 typedef sofa::component::odesolver::EulerSolver Solver;
 using sofa::core::objectmodel::Data;

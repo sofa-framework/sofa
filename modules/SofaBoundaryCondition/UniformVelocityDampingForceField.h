@@ -64,15 +64,15 @@ namespace sofa
 
             public:
 
-                virtual void addForce (const core::MechanicalParams*, DataVecDeriv&, const DataVecCoord&, const DataVecDeriv&);
+                virtual void addForce (const core::MechanicalParams*, DataVecDeriv&, const DataVecCoord&, const DataVecDeriv&) override;
 
-                virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df , const DataVecDeriv& d_dx);
+                virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df , const DataVecDeriv& d_dx) override;
 
-                virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *, SReal, unsigned int &){}
+                virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *, SReal, unsigned int &) override {}
 
-                virtual void addBToMatrix(sofa::defaulttype::BaseMatrix * mat, SReal bFact, unsigned int& offset);
+                virtual void addBToMatrix(sofa::defaulttype::BaseMatrix * mat, SReal bFact, unsigned int& offset) override;
 
-                virtual SReal getPotentialEnergy(const core::MechanicalParams* params, const DataVecCoord& x) const;
+                virtual SReal getPotentialEnergy(const core::MechanicalParams* params, const DataVecCoord& x) const override;
 
 
             };

@@ -34,6 +34,12 @@ if(MSVC)
     option(SOFA_VECTORIZE "Enable the use of SSE2 instructions by the compiler (Only available for MSVC)." OFF)
 endif()
 
+if(SOFA_WITH_DEPRECATED)
+    set(SOFA_WITH_DEPRECATED_ "1")
+else()
+    set(SOFA_WITH_DEPRECATED_ "0")
+endif()
+
 if(SOFA_WITH_THREADING)
     set(SOFA_WITH_THREADING_ "1")
 else()
@@ -115,58 +121,80 @@ if(ZLIB_FOUND)
 endif()
 set(SOFA_HAVE_ZLIB ${ZLIB_FOUND})
 
-## PNG
-find_package(PNG)
-if(PNG_FOUND)
-    sofa_create_target(PNG SofaFramework "${PNG_LIBRARY}" "${PNG_INCLUDE_DIRS}")
-        list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${PNG_Target})
-
-
-    sofa_install_get_libraries("${PNG_LIBRARY}/libpng")
-endif()
-set(SOFA_HAVE_PNG ${PNG_FOUND})
-
 ## Boost
-# optional boost libraries
-find_package(Boost REQUIRED system filesystem locale
-                   OPTIONAL_COMPONENTS thread date_time)
-set(SOFA_HAVE_BOOST_THREAD ${Boost_THREAD_FOUND})
+# required boost libraries
+find_package(Boost REQUIRED system filesystem locale program_options
+    OPTIONAL_COMPONENTS thread date_time )
+
 set(SOFA_HAVE_BOOST_DATE_TIME ${Boost_DATE_TIME_FOUND})
+set(SOFA_HAVE_BOOST_SYSTEM ${Boost_SYSTEM_FOUND})
+set(SOFA_HAVE_BOOST_LOCALE ${Boost_LOCALE_FOUND})
+set(SOFA_HAVE_BOOST_FILESYSTEM ${Boost_FILESYSTEM_FOUND})
+set(SOFA_HAVE_BOOST_THREAD ${Boost_THREAD_FOUND})
 
 list(APPEND Boost_INCLUDE_DIRS ${Boost_INCLUDE_DIR})
 
-# if(SOFA_HAVE_BOOST_SYSTEM
-#    AND SOFA_HAVE_BOOST_THREAD
-#    AND SOFA_HAVE_BOOST_DATE_TIME)
-#     set(SOFA_HAVE_BOOST 1)
+if(SOFA_HAVE_BOOST_SYSTEM
+   AND SOFA_HAVE_BOOST_FILESYSTEM
+   AND SOFA_HAVE_BOOST_LOCALE)
 
-#     sofa_create_target(BoostSystem SofaFramework "${Boost_SYSTEM_LIBRARY}" "${Boost_INCLUDE_DIRS}")
-#     sofa_create_target(BoostThread SofaFramework "${Boost_THREAD_LIBRARY}" "${Boost_INCLUDE_DIRS}")
-#     sofa_create_target(BoostDateTime SofaFramework "${Boost_DATE_TIME_LIBRARY}" "${Boost_INCLUDE_DIRS}")
+    set(SOFA_HAVE_BOOST 1)
 
-# 	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostSystem_Target})
-# 	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostThread_Target})
-#     list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostDateTime_Target})
+    sofa_create_target(BoostSystem SofaFramework "${Boost_SYSTEM_LIBRARY}" "${Boost_INCLUDE_DIRS}")
+    sofa_create_target(BoostLocale SofaFramework "${Boost_LOCALE_LIBRARY}" "${Boost_INCLUDE_DIRS}")
+    sofa_create_target(BoostFileSystem SofaFramework "${Boost_FILESYSTEM_LIBRARY}" "${Boost_INCLUDE_DIRS}")
 
-#     sofa_install_get_libraries(${Boost_SYSTEM_LIBRARY})
-#     sofa_install_get_libraries(${Boost_THREAD_LIBRARY})
-#     sofa_install_get_libraries(${Boost_DATE_TIME_LIBRARY})
-# else()
-#     list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIRS})
-# endif()
+	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostSystem_Target})
+    list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostLocale_Target})
+    list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostFileSystem_Target})
 
-list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIRS})
+    sofa_install_get_libraries(${Boost_SYSTEM_LIBRARY})
+    sofa_install_get_libraries(${Boost_LOCALE_LIBRARY})
+    sofa_install_get_libraries(${Boost_FILESYSTEM_LIBRARY})
+
+    if(SOFA_HAVE_BOOST_DATE_TIME)
+        sofa_create_target(BoostDateTime SofaFramework "${Boost_DATE_TIME_LIBRARY}" "${Boost_INCLUDE_DIRS}")
+        list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostDateTime_Target})
+        sofa_install_get_libraries(${Boost_DATE_TIME_LIBRARY})
+    endif()
+
+    if(SOFA_HAVE_BOOST_THREAD)
+        sofa_create_target(BoostThread SofaFramework "${Boost_THREAD_LIBRARY}" "${Boost_INCLUDE_DIRS}")
+        list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostThread_Target})
+        sofa_install_get_libraries(${Boost_THREAD_LIBRARY})
+    endif()
+
+else()
+    list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIRS})
+endif()
 
 ## Eigen
 find_package(Eigen3 REQUIRED)
 list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${EIGEN3_INCLUDE_DIR})
 
+## JSON
+list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${JSON_INCLUDE_DIR})
 
-## sofa/config.h
-configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/sofa/config.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/sofa/config.h" DESTINATION "include/sofa")
+## Generate & install the different files that contains the defines associated with
+## the state of the build option.
+set(SOFA_BUILD_OPTIONS_SRC
+        sharedlibrary_defines.h
+        build_option_componentset.h
+        build_option_dump_visitor.h
+        build_option_experimental_features.h
+        build_option_opengl.h
+        build_option_threading.h
+    )
+foreach(NAME ${SOFA_BUILD_OPTIONS_SRC})
+    configure_file("${NAME}.in" "${CMAKE_BINARY_DIR}/include/sofa/config/${NAME}")
+    install(FILES "${CMAKE_BINARY_DIR}/include/sofa/config/${NAME}" DESTINATION "include/sofa/config")
+endforeach()
+
+configure_file("config.h.in" "${CMAKE_BINARY_DIR}/include/sofa/config.h")
+install(FILES "${CMAKE_BINARY_DIR}/include/sofa/config.h" DESTINATION "include/sofa/")
+
 # make sure everyone in the build tree can see <sofa/config.h>
-list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR})
+#list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR})
 list(REMOVE_DUPLICATES SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES)
 
 ## Version

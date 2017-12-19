@@ -102,19 +102,19 @@ protected:
     {
     }
 public:
-    virtual void init();
+    virtual void init() override;
 
     virtual void buildConstraintMatrix(const core::ConstraintParams* cParams, DataMatrixDeriv &c1, DataMatrixDeriv &c2, unsigned int &cIndex
-            , const DataVecCoord &x1, const DataVecCoord &x2);
+            , const DataVecCoord &x1, const DataVecCoord &x2) override;
 
     void getConstraintViolation(const core::ConstraintParams* cParams, defaulttype::BaseVector *v, const DataVecCoord &x1, const DataVecCoord &x2
-            , const DataVecDeriv &v1, const DataVecDeriv &v2);
+            , const DataVecDeriv &v1, const DataVecDeriv &v2) override;
 
     virtual void getConstraintResolution(const core::ConstraintParams*,
                                          std::vector<core::behavior::ConstraintResolution*>& resTab,
-                                         unsigned int& offset);
+                                         unsigned int& offset) override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONSTRAINTSET_SLIDINGCONSTRAINT_CPP)

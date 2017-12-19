@@ -30,7 +30,9 @@
 #define CGALPLUGIN_MESHGENERATIONFROMPOLYHEDRON_INL
 #include "MeshGenerationFromPolyhedron.h"
 
+#if CGAL_VERSION_NR <= CGAL_VERSION_NUMBER(4,9,1)
 #include <CGAL/AABB_intersections.h>
+#endif
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include <CGAL/Mesh_3/Robust_intersection_traits_3.h>
 
@@ -355,7 +357,7 @@ void MeshGenerationFromPolyhedron<DataTypes>::update()
             if (newPoints.empty())
                 bbmin = bbmax = p;
             else
-                for (int c=0; c<p.size(); c++)
+                for (size_t c=0; c<p.size(); c++)
                             if (p[c] < bbmin[c]) bbmin[c] = p[c]; else if (p[c] > bbmax[c]) bbmax[c] = p[c];
             newPoints.push_back(p);
         }
@@ -403,7 +405,7 @@ void MeshGenerationFromPolyhedron<DataTypes>::update()
         helper::vector< std::pair<int,int> > sortArray2;
         for (int e=0; e<nbe; ++e)
         {
-            int p = tetrahedra[e][0];
+            unsigned p = tetrahedra[e][0];
             for (int i=0; i<4; i++)
                 if (tetrahedra[e][i] < p) p = tetrahedra[e][i];
             sortArray2.push_back(std::make_pair(p,e));
@@ -438,7 +440,7 @@ void MeshGenerationFromPolyhedron<DataTypes>::draw(const sofa::core::visual::Vis
 
         vparams->drawTool()->setLightingEnabled(false);
         std::vector< defaulttype::Vector3 > points[4];
-        for(unsigned int i=0; i<tetrahedra.size(); ++i)
+        for(size_t i=0; i<tetrahedra.size(); ++i)
         {
             int a = tetrahedra[i][0];
             int b = tetrahedra[i][1];
@@ -490,7 +492,7 @@ void MeshGenerationFromPolyhedron<DataTypes>::draw(const sofa::core::visual::Vis
 
         vparams->drawTool()->setLightingEnabled(false);
         std::vector< defaulttype::Vector3 > points;
-        for(unsigned int i=0; i<triangles.size(); ++i)
+        for(size_t i=0; i<triangles.size(); ++i)
         {
             int a = triangles[i][0];
             int b = triangles[i][1];
@@ -502,7 +504,7 @@ void MeshGenerationFromPolyhedron<DataTypes>::draw(const sofa::core::visual::Vis
             points.push_back(pb);
             points.push_back(pc);
         }
-        for(unsigned int i=0; i<quads.size(); ++i)
+        for(size_t i=0; i<quads.size(); ++i)
         {
             int a = quads[i][0];
             int b = quads[i][1];

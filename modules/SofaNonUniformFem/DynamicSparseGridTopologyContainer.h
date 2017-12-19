@@ -59,7 +59,7 @@ protected:
     DynamicSparseGridTopologyContainer();
     virtual ~DynamicSparseGridTopologyContainer() {}
 public:
-    void init();
+    void init() override;
 
 };
 

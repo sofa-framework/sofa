@@ -70,14 +70,14 @@ public:
     typedef sofa::core::topology::BaseMeshTopology::Triangle Element;
     typedef sofa::core::topology::BaseMeshTopology::SeqTriangles VecElement;
 
-    void init();
-    void reinit();
-    void draw(const core::visual::VisualParams* vparams);
+    void init() override;
+    void reinit() override;
+    void draw(const core::visual::VisualParams* vparams) override;
 protected:
     TriangularAnisotropicFEMForceField();
     ~TriangularAnisotropicFEMForceField();
 public:
-    void computeMaterialStiffness(int i, Index& a, Index& b, Index& c);
+    void computeMaterialStiffness(int i, Index& a, Index& b, Index& c) override;
     void getFiberDir(int element, Deriv& dir);
 
     //Data<Real> f_poisson2;

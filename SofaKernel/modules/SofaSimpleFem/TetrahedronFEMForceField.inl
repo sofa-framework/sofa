@@ -27,7 +27,6 @@
 #include <SofaBaseTopology/GridTopology.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/helper/decompose.h>
-#include <sofa/helper/gl/template.h>
 #include <assert.h>
 #include <iostream>
 #include <set>
@@ -1901,16 +1900,12 @@ void TetrahedronFEMForceField<DataTypes>::draw(const core::visual::VisualParams*
             maxVMN = (vMN[i] > maxVMN) ? vMN[i] : maxVMN;
         }
 
-        //std::cout << "Min VMs: " << minVM << "   max: " << maxVM << std::endl;
         maxVM*=_showStressAlpha.getValue();
         maxVMN*=_showStressAlpha.getValue();
 
     }
 
     vparams->drawTool()->setLightingEnabled(false);
-    //glEnable(GL_BLEND) ;
-    //glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-    //glDepthMask(0);
 
 #ifdef SIMPLEFEM_COLORMAP
     if (_showVonMisesStressPerNode.getValue()) {
@@ -2485,8 +2480,6 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
     for (size_t i = 0; i < X0.size(); i++)
         U[i] = X[i] - X0[i];
 
-    //std::cout << "Displ = " << U << std::endl;
-
     typename VecElement::const_iterator it;
     size_t el;
     helper::WriteAccessor<Data<helper::vector<Real> > > vME =  _vonMisesPerElement;
@@ -2506,7 +2499,6 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
                         gradU[k][l] += shf[l+1][m] * U[(*it)[m]][k];
                 }
             }
-            //std::cout << "gradU = " << gradU<< std::endl;
 
             Mat33 strain = ((Real)0.5)*(gradU + gradU.transposed() + gradU.transposed()*gradU);
 
@@ -2604,10 +2596,6 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
             vStrain[3] = strain[1][2];
             vStrain[4] = strain[0][2];
             vStrain[5] = strain[0][1];
-
-            //std::cout << "D= " << D << std::endl;
-            //std::cout << "vStrain= " << D << std::endl;
-
         }
 
         Real lambda=elemLambda[el];
@@ -2632,8 +2620,6 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
         vME[el] = helper::rsqrt(s[0]*s[0] + s[1]*s[1] + s[2]*s[2] - s[0]*s[1] - s[1]*s[2] - s[2]*s[0] + 3*s[3]*s[3] + 3*s[4]*s[4] + 3*s[5]*s[5]);
         if (vME[el] < 1e-10)
             vME[el] = 0.0;
-
-        //std::cout << "VMStress: " << vM[el] << std::endl;
     }
 
     const VecCoord& dofs = this->mstate->read(core::ConstVecCoordId::position())->getValue();
@@ -2667,7 +2653,6 @@ void TetrahedronFEMForceField<DataTypes>::computeVonMisesStress()
         maxVM = prevMaxStress;
 
 #ifdef SIMPLEFEM_COLORMAP
-    //std::cout << "Min VMs: " << minVM << "   max: " << maxVM << std::endl;
     maxVM*=_showStressAlpha.getValue();
     vonMisesStressColors.resize(_mesh->getNbPoints());
     vonMisesStressColorsCoeff.resize(_mesh->getNbPoints());

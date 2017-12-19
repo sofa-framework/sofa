@@ -63,7 +63,8 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
     if(data_ == NULL)
         return;
 
-    const std::string label_text = data_->getHelp();
+    const char* help_text = data_->getHelp();
+    const std::string label_text = help_text == NULL ? "" : help_text;
 
     if (label_text != "TODO")
     {
@@ -117,7 +118,6 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
     if (!valuetype.empty())
         datawidget_->setToolTip(valuetype.c_str());
 
-    //std::cout << "WIDGET created for data " << dwarg.data << " : " << dwarg.name << " : " << dwarg.data->getValueTypeString() << std::endl;
     numWidgets_ += datawidget_->sizeWidget();
     connect(datawidget_,SIGNAL(WidgetDirty(bool)), this, SIGNAL ( WidgetDirty(bool) ) );
     connect(this, SIGNAL( WidgetUpdate() ), datawidget_, SLOT( updateWidgetValue() ) );
@@ -151,19 +151,11 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
 
         setStyleSheet("QGroupBox{border:0;}");
         setContentsMargins(0, 0, 0, 0);
-        //setInsideMargin(0);
-        //setInsideSpacing(0);
-
-        //setColumns(numWidgets_);
     }
     else
     {
         setTitle(data_->getName().c_str());
         setContentsMargins(0,0,0,0);
-        //setInsideMargin(4);
-        //setInsideSpacing(2);
-
-        //setColumns(numWidgets_); //datawidget_->numColumnWidget());
     }
     gridLayout_->setContentsMargins(10,10,10,10);
     gridLayout_->addWidget(datawidget_, 0, 1);
@@ -237,23 +229,24 @@ void QDataSimpleEdit::readFromData()
 
 void QDataSimpleEdit::writeToData()
 {
-    if(getBaseData())
+    if(!getBaseData())
+        return ;
+
+    if(getBaseData()->isReadOnly())
+        return ;
+    std::string value;
+    if( innerWidget_.type == TEXTEDIT)
     {
-        std::string value;
-        if( innerWidget_.type == TEXTEDIT)
-        {
-            value = innerWidget_.widget.textEdit->toPlainText().toStdString();
-        }
-        else if( innerWidget_.type == LINEEDIT)
-        {
-            value = innerWidget_.widget.lineEdit->text().toStdString();
-        }
-        getBaseData()->read(value);
+        value = innerWidget_.widget.textEdit->toPlainText().toStdString();
     }
+    else if( innerWidget_.type == LINEEDIT)
+    {
+        value = innerWidget_.widget.lineEdit->text().toStdString();
+    }
+    getBaseData()->read(value);
 }
 
 /* QPoissonRatioWidget */
-
 QPoissonRatioWidget::QPoissonRatioWidget(QWidget * parent, const char * name, sofa::core::objectmodel::Data<double> *data)
     :TDataWidget<double>(parent,name,data)
 {

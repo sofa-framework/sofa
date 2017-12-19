@@ -3,7 +3,7 @@
     <RequiredPlugin name="VolumetricRendering" />
 
     <Node name="HexaRaptor" >
-        <EulerImplicit />
+        <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="100" tolerance="1.0e-7" threshold="1.0e-7"/>
 
 		<MeshVTKLoader name="loader" filename="mesh/raptorTetra_8418.vtu" />

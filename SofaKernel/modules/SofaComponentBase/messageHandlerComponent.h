@@ -64,7 +64,7 @@ public:
     /// Inherited from BaseObject.
     /// Parse the given description to assign values to this object's fields and
     /// potentially other parameters.
-    virtual void parse ( core::objectmodel::BaseObjectDescription* arg ) ;
+    virtual void parse ( core::objectmodel::BaseObjectDescription* arg ) override;
 
     Data<std::string>        d_type       ;
     bool                m_isValid    ;
@@ -85,7 +85,7 @@ public:
     /// Inherited from BaseObject.
     /// Parse the given description to assign values to this object's fields and
     /// potentially other parameters.
-    virtual void parse ( core::objectmodel::BaseObjectDescription* arg ) ;
+    virtual void parse ( core::objectmodel::BaseObjectDescription* arg ) override;
 
     Data<std::string>        d_filename        ; ///< Name of the file into which the message will be saved in.
     helper::logging::MessageHandler*     m_handler         ;

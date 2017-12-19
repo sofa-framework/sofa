@@ -62,7 +62,7 @@ protected:
 public:
 
 
-    void init();
+    void init() override;
 
     void setFilename(std::string f) {filename.setValue(f);}
 

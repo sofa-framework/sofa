@@ -5,7 +5,7 @@
     <CollisionResponse name="Response" response="default" />
     <CollisionGroup name="Group" />
     <Node name="Frog">
-        <EulerImplicit />
+        <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="30" tolerance="1e-5" threshold="1e-5"/>
         <SparseGridTopology n="10 5 10" fileTopology="mesh/frog.obj" />
         <MechanicalObject dx="-10.0" />

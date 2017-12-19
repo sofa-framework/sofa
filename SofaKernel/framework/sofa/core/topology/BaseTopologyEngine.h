@@ -53,7 +53,7 @@ protected:
 
 public:
 
-    virtual void init()
+    virtual void init() override
     {
         sofa::core::DataEngine::init();
         // TODO: see if necessary or not....
@@ -65,7 +65,7 @@ public:
         this->createEngineName();
     }
 
-    virtual void handleTopologyChange() {}
+    virtual void handleTopologyChange() override {}
 
 
 public:

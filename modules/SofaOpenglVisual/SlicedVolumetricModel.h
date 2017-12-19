@@ -58,13 +58,13 @@ protected:
     SlicedVolumetricModel();
     virtual ~SlicedVolumetricModel();
 public:
-    virtual void init();
+    virtual void init() override;
 
-    virtual void reinit();
+    virtual void reinit() override;
 
     virtual bool isTransparent() {return true;}
 
-    virtual void drawTransparent(const core::visual::VisualParams* vparams);
+    virtual void drawTransparent(const core::visual::VisualParams* vparams) override;
 
 protected:
 //    void setColor(float r, float g, float b);

@@ -170,11 +170,11 @@ void MechanicalOperations::projectPosition(core::MultiVecCoordId x, SReal time)
 void MechanicalOperations::computeEnergy(SReal &kineticEnergy, SReal &potentialEnergy)
 {
     kineticEnergy=0;
-	potentialEnergy=0;
-	sofa::simulation::MechanicalComputeEnergyVisitor *energyVisitor = new sofa::simulation::MechanicalComputeEnergyVisitor(&mparams);
+    potentialEnergy=0;
+    sofa::simulation::MechanicalComputeEnergyVisitor *energyVisitor = new sofa::simulation::MechanicalComputeEnergyVisitor(&mparams);
     executeVisitor(energyVisitor);
-	kineticEnergy=energyVisitor->getKineticEnergy();
-	potentialEnergy=energyVisitor->getPotentialEnergy();
+    kineticEnergy=energyVisitor->getKineticEnergy();
+    potentialEnergy=energyVisitor->getPotentialEnergy();
 }
 /// Apply projective constraints to the given velocity vector
 void MechanicalOperations::projectVelocity(core::MultiVecDerivId v, SReal time)
@@ -517,7 +517,6 @@ void MechanicalOperations::addMBK_ToMatrix(const sofa::core::behavior::MultiMatr
     mparams.setKFactor(kFact);
     if (matrix != NULL)
     {
-        //std::cout << "MechanicalAddMBK_ToMatrixVisitor "<< mFact << " " << bFact << " " << kFact << " " << offset << std::endl;
         executeVisitor( MechanicalAddMBK_ToMatrixVisitor(&mparams, matrix) );
     }
 }
@@ -529,7 +528,6 @@ void MechanicalOperations::addSubMBK_ToMatrix(const sofa::core::behavior::MultiM
     mparams.setKFactor(kFact);
     if (matrix != NULL)
     {
-        //std::cout << "MechanicalAddMBK_ToMatrixVisitor "<< mFact << " " << bFact << " " << kFact << " " << offset << std::endl;
         executeVisitor( MechanicalAddSubMBK_ToMatrixVisitor(&mparams, matrix, subMatrixIndex) );
     }
 }

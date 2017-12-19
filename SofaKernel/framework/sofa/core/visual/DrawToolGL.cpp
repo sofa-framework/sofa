@@ -82,7 +82,7 @@ void DrawToolGL::drawPoints(const std::vector<Vector3> &points, float size, cons
 {
     setMaterial(colour);
     glPointSize(size);
-    glDisable(GL_LIGHTING);
+    disableLighting();
     glBegin(GL_POINTS);
     {
         for (unsigned int i=0; i<points.size(); ++i)
@@ -90,7 +90,7 @@ void DrawToolGL::drawPoints(const std::vector<Vector3> &points, float size, cons
             internalDrawPoint(points[i], colour);
         }
     } glEnd();
-    if (getLightEnabled()) glEnable(GL_LIGHTING);
+    if (getLightEnabled()) enableLighting();
     resetMaterial(colour);
     glPointSize(1);
 }
@@ -98,14 +98,14 @@ void DrawToolGL::drawPoints(const std::vector<Vector3> &points, float size, cons
 void DrawToolGL::drawPoints(const std::vector<Vector3> &points, float size, const std::vector<Vec4f>& colour)
 {
     glPointSize(size);
-    glDisable(GL_LIGHTING);
+    disableLighting();
     glBegin(GL_POINTS);
     {
         for (unsigned int i=0; i<points.size(); ++i)
         {
             setMaterial(colour[i]);
             internalDrawPoint(points[i], colour[i]);
-            if (getLightEnabled()) glEnable(GL_LIGHTING);
+            if (getLightEnabled()) enableLighting();
             resetMaterial(colour[i]);
         }
     } glEnd();
@@ -129,7 +129,7 @@ void DrawToolGL::drawLines(const std::vector<Vector3> &points, float size, const
 {
     setMaterial(colour);
     glLineWidth(size);
-    glDisable(GL_LIGHTING);
+    disableLighting();
     glBegin(GL_LINES);
     {
         for (unsigned int i=0; i<points.size()/2; ++i)
@@ -137,7 +137,7 @@ void DrawToolGL::drawLines(const std::vector<Vector3> &points, float size, const
             internalDrawLine(points[2*i],points[2*i+1]  , colour );
         }
     } glEnd();
-    if (getLightEnabled()) glEnable(GL_LIGHTING);
+    if (getLightEnabled()) enableLighting();
     resetMaterial(colour);
     glLineWidth(1);
 }
@@ -145,7 +145,7 @@ void DrawToolGL::drawLines(const std::vector<Vector3> &points, float size, const
 void DrawToolGL::drawLines(const std::vector<Vector3> &points, float size, const std::vector<Vec<4,float> >& colours)
 {
     glLineWidth(size);
-    glDisable(GL_LIGHTING);
+    disableLighting();
     glBegin(GL_LINES);
     {
         for (unsigned int i=0; i<points.size()/2; ++i)
@@ -155,7 +155,7 @@ void DrawToolGL::drawLines(const std::vector<Vector3> &points, float size, const
             resetMaterial(colours[i]);
         }
     } glEnd();
-    if (getLightEnabled()) glEnable(GL_LIGHTING);
+    if (getLightEnabled()) enableLighting();
     glLineWidth(1);
 }
 
@@ -165,7 +165,7 @@ void DrawToolGL::drawLines(const std::vector<Vector3> &points, const std::vector
 {
     setMaterial(colour);
     glLineWidth(size);
-    glDisable(GL_LIGHTING);
+    disableLighting();
     glBegin(GL_LINES);
     {
         for (unsigned int i=0; i<index.size(); ++i)
@@ -173,7 +173,7 @@ void DrawToolGL::drawLines(const std::vector<Vector3> &points, const std::vector
             internalDrawLine(points[ index[i][0] ],points[ index[i][1] ], colour );
         }
     } glEnd();
-    if (getLightEnabled()) glEnable(GL_LIGHTING);
+    if (getLightEnabled()) enableLighting();
     resetMaterial(colour);
     glLineWidth(1);
 }
@@ -184,7 +184,7 @@ void DrawToolGL::drawLineStrip(const std::vector<Vector3> &points, float size, c
 {
     setMaterial(colour);
     glLineWidth(size);
-    glDisable(GL_LIGHTING);
+    disableLighting();
     glBegin(GL_LINE_STRIP);
     {
         for (unsigned int i=0; i<points.size(); ++i)
@@ -192,13 +192,31 @@ void DrawToolGL::drawLineStrip(const std::vector<Vector3> &points, float size, c
             internalDrawPoint(points[i]  , colour );
         }
     } glEnd();
-    if (getLightEnabled()) glEnable(GL_LIGHTING);
+    if (getLightEnabled()) enableLighting();
     resetMaterial(colour);
     glLineWidth(1);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+void DrawToolGL::drawLineLoop(const std::vector<Vector3> &points, float size, const Vec<4,float>& colour)
+{
+    setMaterial(colour);
+    glLineWidth(size);
+    disableLighting();
+    glBegin(GL_LINE_LOOP);
+    {
+        for (unsigned int i=0; i<points.size(); ++i)
+        {
+            internalDrawPoint(points[i]  , colour );
+        }
+    } glEnd();
+    if (getLightEnabled()) enableLighting();
+    resetMaterial(colour);
+    glLineWidth(1);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void DrawToolGL::drawTriangles(const std::vector<Vector3> &points, const Vec<4,float>& colour)
 {
@@ -1081,8 +1099,8 @@ void DrawToolGL::setPolygonMode(int _mode, bool _wireframe)
 void DrawToolGL::setLightingEnabled(bool _isAnabled)
 {
     mLightEnabled = _isAnabled;
-    if (this->getLightEnabled()) glEnable(GL_LIGHTING);
-    else glDisable(GL_LIGHTING);
+    if (this->getLightEnabled()) enableLighting();
+    else disableLighting();
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1220,6 +1238,27 @@ void DrawToolGL::disableBlending()
 {
     glDisable(GL_BLEND);
 }
+
+void DrawToolGL::enableLighting()
+{
+    glEnable(GL_LIGHTING);
+}
+
+void DrawToolGL::disableLighting()
+{
+    glDisable(GL_LIGHTING);
+}
+
+void DrawToolGL::enableDepthTest()
+{
+    glEnable(GL_DEPTH_TEST);
+}
+
+void DrawToolGL::disableDepthTest()
+{
+    glDisable(GL_DEPTH_TEST);
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void DrawToolGL::draw3DText(const Vector3 &p, float scale, const Vec4f &color, const char* text)
 {

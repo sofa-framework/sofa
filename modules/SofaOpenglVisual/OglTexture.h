@@ -83,11 +83,11 @@ protected:
     OglTexture();
     virtual ~OglTexture();
 public:
-    virtual void init();
-    void initVisual();
-    void reinit();
-    void fwdDraw(core::visual::VisualParams*);
-    void bwdDraw(core::visual::VisualParams*);
+    virtual void init() override;
+    void initVisual() override;
+    void reinit() override;
+    void fwdDraw(core::visual::VisualParams*) override;
+    void bwdDraw(core::visual::VisualParams*) override;
 
     std::string getTextureName();
     unsigned short getTextureUnit() { return textureUnit.getValue(); }
@@ -99,11 +99,11 @@ public:
     static void setActiveTexture(unsigned short unit);
 
     /// Returns the type of shader element (texture, macro, variable, or attribute)
-    virtual ShaderElementType getSEType() const { return core::visual::ShaderElement::SE_TEXTURE; }
+    virtual ShaderElementType getSEType() const override { return core::visual::ShaderElement::SE_TEXTURE; }
     // Returns the value of the shader element
-    virtual const core::objectmodel::BaseData* getSEValue() const { return &textureFilename; }
+    virtual const core::objectmodel::BaseData* getSEValue() const override { return &textureFilename; }
     // Returns the value of the shader element
-    virtual core::objectmodel::BaseData* getSEValue() { return &textureFilename; }
+    virtual core::objectmodel::BaseData* getSEValue() override { return &textureFilename; }
 };
 
 class SOFA_OPENGL_VISUAL_API OglTexture2D : public OglTexture
@@ -118,7 +118,7 @@ public:
     OglTexture2D();
     virtual ~OglTexture2D();
 
-    virtual void init();
+    virtual void init() override;
 };
 
 }

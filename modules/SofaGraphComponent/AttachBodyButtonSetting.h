@@ -42,10 +42,10 @@ public:
 protected:
     AttachBodyButtonSetting();
 public:
-    std::string getOperationType() {return "Attach";}
-    Data<SReal> stiffness; ///< Stiffness of the spring to attach a particule
-    Data<SReal> arrowSize; ///< Size of the drawn spring: if >0 an arrow will be drawn
-    Data<SReal> showFactorSize; ///< Show factor size of the JointSpringForcefield  when interacting with rigids
+    std::string getOperationType() override {return "Attach";}
+    Data<SReal> stiffness;
+    Data<SReal> arrowSize;
+    Data<SReal> showFactorSize;
 };
 
 }

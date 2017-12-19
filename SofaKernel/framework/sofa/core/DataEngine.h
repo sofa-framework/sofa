@@ -161,19 +161,19 @@ public:
     /// @}
 
     /// This method is needed by DDGNode
-    const std::string& getName() const
+    const std::string& getName() const override
     {
         return objectmodel::BaseObject::getName();
     }
 
     /// This method is needed by DDGNode
-    objectmodel::Base* getOwner() const
+    objectmodel::Base* getOwner() const override
     {
         return const_cast<DataEngine*>(this);
     }
 
     /// This method is needed by DDGNode
-    objectmodel::BaseData* getData() const
+    objectmodel::BaseData* getData() const override
     {
         return NULL;
     }

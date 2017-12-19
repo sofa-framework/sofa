@@ -56,12 +56,6 @@ void initDenseSolver()
     }
 }
 
-SOFA_LINK_CLASS(LULinearSolver)
-
-
-
-
-
 } // namespace component
 
 } // namespace sofa

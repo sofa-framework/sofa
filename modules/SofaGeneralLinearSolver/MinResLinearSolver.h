@@ -67,12 +67,12 @@ protected:
     MinResLinearSolver();
 
 public:
-    void resetSystem();
+    void resetSystem() override;
 
-    void setSystemMBKMatrix(const sofa::core::MechanicalParams* mparams);
+    void setSystemMBKMatrix(const sofa::core::MechanicalParams* mparams) override;
 
     /// Solve Mx=b
-    void solve (Matrix& M, Vector& x, Vector& b);
+    void solve (Matrix& M, Vector& x, Vector& b) override;
 
 };
 

@@ -1,24 +1,19 @@
 <!-- Mechanical SphereForceField Example -->
 <Node name="root" gravity="0.0 -2.0 0.0" dt="0.04">
-    <CollisionPipeline verbose="0" />
-    <BruteForceDetection name="N2" />
-    <CollisionResponse name="Response" />
-    <NewProximityIntersection alarmDistance="0.002" contactDistance="0.001" />
+    <VisualStyle displayFlags="hideBehaviorModels showForceFields hideCollisionModels hideVisualModels" />
+
     <Node name="Floor">
         <RegularGrid nx="2" ny="1" nz="2" xmin="20" xmax="-20" ymin="-3.05" ymax="-3.05" zmin="-20" zmax="20" />
         <MechanicalObject />
-        <!--
-		<Triangle simulated="0" moving="0" />
-		<Line simulated="0" moving="0" />
-		<Point simulated="0" moving="0" />
-			  -->
+
         <Node name="Visu">
             <OglModel name="Visual" color="red" />
             <IdentityMapping input="@.." output="@Visual" />
         </Node>
     </Node>
+    
     <Node name="SquareCloth1">
-        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <RegularGrid nx="20" ny="1" nz="20" xmin="12" xmax="-12" ymin="7" ymax="7" zmin="-12" zmax="12" />
         <MechanicalObject />
@@ -26,25 +21,17 @@
         <BoxConstraint box="-12 7 12 -10 7 12    10 7 12 12 7 12" />
         <MeshSpringForceField name="Springs" stiffness="1000" damping="0" />
         <QuadBendingSprings name="Bend" stiffness="2000" damping="1" />
-        <SphereForceField stiffness="1000" damping="1" center="0 1 3" radius="4" />
-        <PlaneForceField stiffness="1000" damping="20" normal="0 1 0" d="-3" />
+
+        <!-- Two ForceFields mimicking collision : a sphere and plane model -->
+        <SphereForceField stiffness="1000" damping="1" center="0 1 3" radius="4" draw="1" />
+        <PlaneForceField stiffness="1000" damping="20" normal="0 1 0" d="-3" draw="1" />
+        
         <Node name="Visu">
             <OglModel name="Visual" color="green" />
             <IdentityMapping input="@.." output="@Visual" />
         </Node>
-        <Node>
-            <RegularGrid nx="4" ny="1" nz="4" xmin="12" xmax="-12" ymin="7" ymax="7" zmin="-12" zmax="12" />/
-            <MechanicalObject />
-            <SphereModel radius="1.0" contactStiffness="1" />
-            <SubsetMapping/>
-        </Node>
-        <Node name="Surf">
-            <MechanicalObject />
-            <RegularGrid nx="20" ny="1" nz="20" xmin="12" xmax="-12" ymin="7" ymax="7" zmin="-12" zmax="12" />
-            <IdentityMapping />
-            <Triangle />
-        </Node>
     </Node>
+    
     <Node name="Sphere">
         <OglModel name="Visual" fileMesh="mesh/sphere.obj" scale="3.95" dx="0" dy="1" dz="3" color="blue" />
     </Node>

@@ -8,10 +8,10 @@
     <TreeCollisionGroupManager name="default2" />
 
     <Node name="HexahedralFEMForceField">
-        <EulerImplicitSolver name="cg_odesolver" printLog="0" />
+        <EulerImplicitSolver name="cg_odesolver" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
         <RegularGridTopology name="grid" n="6 6 6" min="-10 -10 -10" max="10 10 10" p0="-10 -10 -10" />
-        <MechanicalObject template="Vec3d" name="HexahedralFEMForceField" src="@grid"/>
+        <MechanicalObject template="Vec3d" name="HexahedralFEMForceField" src="@grid" topology="@grid"/>
 	<include href="Objects/HexahedronSetTopology.xml" src="@grid" />
 	<HexahedralFEMForceField name="FEM" youngModulus="100" poissonRatio="0.1" method="large" />
         <UniformMass template="Vec3d" name="default25" mass="0.25" />

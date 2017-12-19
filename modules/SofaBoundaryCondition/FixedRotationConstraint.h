@@ -61,14 +61,14 @@ protected:
     FixedRotationConstraint();
     virtual ~FixedRotationConstraint();
 public:
-    void init();
+    void init() override;
 
-    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& dx);
-    void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& dx);
-    void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& x);
-    void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& c);
+    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& dx) override;
+    void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& dx) override;
+    void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& x) override;
+    void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& c) override;
 
-    virtual void draw(const core::visual::VisualParams* vparams);
+    virtual void draw(const core::visual::VisualParams* vparams) override;
 
 
 protected :

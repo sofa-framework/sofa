@@ -8,7 +8,7 @@
     <CollisionGroup />
     <Node name="QuadularSprings">
         <!-- <StaticSolver iterations="140" /> -->
-        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MeshGmshLoader filename="mesh/nine_quads.msh" name="loader" />
         <MechanicalObject src="@loader" name="Quads" />

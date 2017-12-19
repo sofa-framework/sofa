@@ -124,7 +124,7 @@ void PointSetTopologyModifier::addPointsWarning(const unsigned int nPoints,
 
     m_container->setPointTopologyToDirty();
 
-    // Compute standard points construction info based on ancestor points 
+    // Compute standard points construction info based on ancestor points
     // related to topology elems and local coordinates
 
     const unsigned int startIndex = m_container->getNbPoints() - nPoints;
@@ -136,12 +136,12 @@ void PointSetTopologyModifier::addPointsWarning(const unsigned int nPoints,
     newPointIndices.resize(nPoints);
     ancestorPointIndices.resize(nPoints);
     baryCoefs.resize(nPoints);
-    
+
     for(unsigned int i = 0; i < nPoints; ++i)
     {
         newPointIndices[i] = startIndex + i;
         unsigned int ancestorIndex = ancestorElems[i].index;
-        // check if this new point has indeed an ancestor. 
+        // check if this new point has indeed an ancestor.
         if (ancestorIndex != core::topology::BaseMeshTopology::InvalidID )
         {
             core::topology::PointAncestorElem::LocalCoords localCoords = ancestorElems[i].localCoords;
@@ -375,15 +375,6 @@ void PointSetTopologyModifier::propagateTopologicalChanges()
 {
     if (m_container->beginChange() == m_container->endChange()) return; // nothing to do if no event is stored
 
-    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
-    sofa::simulation::TopologyChangeVisitor a(params, m_container);
-
-    // sout << getName() << " propagation du truc: " << getContext()->getName() << sendl;
-    // for( std::list<const core::topology::TopologyChange *>::const_iterator it = m_container->beginChange(); it != m_container->endChange(); it++)
-    // std:: cout << (*it)->getChangeType() << sendl;
-
-    getContext()->executeVisitor(&a);
-
     //TODO: temporary code to test topology engine pipeline.
 #ifndef NDEBUG
     sout << sendl << "******* START ENGINE PROCESSING *********" << sendl;
@@ -405,6 +396,15 @@ void PointSetTopologyModifier::propagateTopologicalChanges()
 #ifndef NDEBUG
     sout << sendl << "******* START ENGINE PROCESSING END *********" << sendl;
 #endif
+    
+    sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
+    sofa::simulation::TopologyChangeVisitor a(params, m_container);
+
+    // sout << getName() << " propagation du truc: " << getContext()->getName() << sendl;
+    // for( std::list<const core::topology::TopologyChange *>::const_iterator it = m_container->beginChange(); it != m_container->endChange(); it++)
+    // std:: cout << (*it)->getChangeType() << sendl;
+
+    getContext()->executeVisitor(&a);
 
     // remove the changes we just propagated, so that we don't send them again next time
     m_container->resetTopologyChangeList();
@@ -440,8 +440,8 @@ void PointSetTopologyModifier::propagateTopologicalEngineChanges()
     std::list<sofa::core::topology::TopologyEngine *>::iterator it;
 
 #ifndef NDEBUG
-    std::cout << "points is dirty" << std::endl;
-    std::cout << "PointSetTopologyModifier - Number of outputs for point array: " << m_container->m_enginesList.size() << std::endl;
+    dmsg_info() << "points is dirty" << msgendl
+                << "PointSetTopologyModifier - Number of outputs for point array: " << m_container->m_enginesList.size();
 #endif
     for ( it = m_container->m_enginesList.begin(); it!=m_container->m_enginesList.end(); ++it)
     {

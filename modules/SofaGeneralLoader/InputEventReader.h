@@ -70,14 +70,14 @@ public:
     /**
      * @brief SceneGraph callback initialization method.
      */
-    void init();
+    void init() override;
 
     /**
      * @brief handle an event.
      *
      * At every simulation step transforms the mouse Linux events in SOFA mouse events and propagates them
      */
-    virtual void handleEvent(core::objectmodel::Event *event);
+    virtual void handleEvent(core::objectmodel::Event *event) override;
 
 private:
 

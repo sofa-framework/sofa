@@ -76,7 +76,7 @@ public:
     /**
      * @brief SceneGraph callback initialization method.
      */
-    void init();
+    void init() override;
 
     /**
      * @brief Switch between subnodes
@@ -92,12 +92,12 @@ public:
     /**
      * @brief HapticDevice event callback.
      */
-    void onHapticDeviceEvent(core::objectmodel::HapticDeviceEvent *mev);
+    void onHapticDeviceEvent(core::objectmodel::HapticDeviceEvent *mev) override;
 
 	    /**
     * @brief Key Press event callback.
     */
-    void onKeyPressedEvent(core::objectmodel::KeypressedEvent *oev);
+    void onKeyPressedEvent(core::objectmodel::KeypressedEvent *oev) override;
 	
     /**
      * @brief Mouse event callback.
@@ -112,7 +112,7 @@ public:
     /**
      * @brief Begin Animation event callback.
      */
-    void onBeginAnimationStep(const double /*dt*/);
+    void onBeginAnimationStep(const double /*dt*/) override;
 
     //@}
 

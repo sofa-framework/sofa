@@ -13,7 +13,7 @@
 			/>
 		<MechanicalObject name="surface" dx="10" scale="0.01"/>
 		<Node name="victoria_tetra" >
-			<EulerImplicit />
+			<EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
 			<CGLinearSolver iterations="5" />
 			<TetrahedronSetTopologyContainer name="Container"/>
 			<TetrahedronSetTopologyModifier name="Modifier"/>

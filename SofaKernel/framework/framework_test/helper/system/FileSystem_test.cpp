@@ -24,8 +24,9 @@
 #include <gtest/gtest.h>
 #include <exception>
 #include <algorithm>
-#include <SofaTest/TestMessageHandler.h>
-using sofa::helper::logging::Message;
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest ;
+
 
 
 using sofa::helper::system::FileSystem;

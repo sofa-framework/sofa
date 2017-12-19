@@ -68,7 +68,7 @@ public:
         return copy;
     }
 
-    void handleEvent(sofa::core::objectmodel::Event* event)
+    void handleEvent(sofa::core::objectmodel::Event* event) override
     {
         if (simulation::AnimateEndEvent::checkEventType(event))
         {
@@ -82,7 +82,7 @@ public:
         }
     }
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }

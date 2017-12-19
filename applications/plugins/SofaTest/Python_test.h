@@ -11,7 +11,7 @@ namespace sofa {
 
 
 /// a Python_test is defined by a python filepath and optional arguments
-struct SOFA_TestPlugin_API Python_test_data
+struct SOFA_SOFATEST_API Python_test_data
 {
     Python_test_data( const std::string& filepath,
                       const std::vector<std::string>& arguments )
@@ -22,7 +22,7 @@ struct SOFA_TestPlugin_API Python_test_data
 };
 
 /// utility to build a static list of Python_test_data
-struct SOFA_TestPlugin_API Python_test_list
+struct SOFA_SOFATEST_API Python_test_list
 {
     std::vector<Python_test_data> list;
 protected:
@@ -57,7 +57,7 @@ private:
 
 
 /// A test written in python (but not as a sofa class to perform unitary testing on python functions)
-class SOFA_TestPlugin_API Python_test : public ::testing::TestWithParam<Python_test_data> {
+class SOFA_SOFATEST_API Python_test : public ::testing::TestWithParam<Python_test_data> {
 
 protected:
 
@@ -83,7 +83,7 @@ public:
 
 
 /// A test written as a sofa scene in python
-class SOFA_TestPlugin_API Python_scene_test : public Python_test {
+class SOFA_SOFATEST_API Python_scene_test : public Python_test {
 
 public:
     std::size_t max_steps;

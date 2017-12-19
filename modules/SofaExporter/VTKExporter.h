@@ -96,11 +96,11 @@ protected:
     VTKExporter();
     virtual ~VTKExporter();
 public:
-    void init();
-    void cleanup();
-    void bwdInit();
+    void init() override;
+    void cleanup() override;
+    void bwdInit() override;
 
-    void handleEvent(sofa::core::objectmodel::Event *);
+    void handleEvent(sofa::core::objectmodel::Event *) override;
 };
 
 }

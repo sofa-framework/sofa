@@ -67,8 +67,8 @@ public:
     /// @}
 
 
-    virtual bool insertInNode( objectmodel::BaseNode* node );
-    virtual bool removeInNode( objectmodel::BaseNode* node );
+    virtual bool insertInNode( objectmodel::BaseNode* node ) override;
+    virtual bool removeInNode( objectmodel::BaseNode* node ) override;
 
 };
 

@@ -118,16 +118,16 @@ protected:
     OglShader();
     virtual ~OglShader();
 public:
-    void initVisual();
-    void init();
-    void reinit();
-    void drawVisual(const core::visual::VisualParams* vparams);
-    void updateVisual();
-    void parse(core::objectmodel::BaseObjectDescription* arg);
+    void initVisual() override;
+    void init() override;
+    void reinit() override;
+    void drawVisual(const core::visual::VisualParams* vparams) override;
+    void updateVisual() override;
+    void parse(core::objectmodel::BaseObjectDescription* arg) override;
 
-    void start();
-    void stop();
-    bool isActive();
+    void start() override;
+    void stop() override;
+    bool isActive() override;
 
     unsigned int getNumberOfShaders();
     unsigned int getCurrentIndex();
@@ -180,8 +180,8 @@ public:
     void  setGeometryVerticesOut(const unsigned int index, GLint v);
 
 
-    virtual bool insertInNode( core::objectmodel::BaseNode* node ) { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
-    virtual bool removeInNode( core::objectmodel::BaseNode* node ) { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
+    virtual bool insertInNode( core::objectmodel::BaseNode* node ) override { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
+    virtual bool removeInNode( core::objectmodel::BaseNode* node ) override { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
 
 };
 

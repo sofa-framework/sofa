@@ -23,18 +23,31 @@
 #include "STLExporter.h"
 
 #include <sstream>
+#include <fstream>
 #include <string>
 #include <cstdlib>
 #include <cstdio>
 
 #include <sofa/core/ObjectFactory.h>
 
+
+#include <sofa/core/behavior/BaseMechanicalState.h>
+
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
+#include <sofa/core/objectmodel/GUIEvent.h>
+#include <SofaBaseVisual/VisualModelImpl.h>
 
+using sofa::core::objectmodel::KeypressedEvent ;
+using sofa::simulation::AnimateBeginEvent ;
+using sofa::simulation::AnimateEndEvent ;
+using sofa::core::objectmodel::GUIEvent ;
+using sofa::core::objectmodel::BaseContext ;
+using sofa::core::objectmodel::BaseData ;
+using sofa::core::objectmodel::ComponentState ;
 
 namespace sofa
 {
@@ -42,114 +55,106 @@ namespace sofa
 namespace component
 {
 
-namespace misc
+namespace _stlexporter_
 {
 
 SOFA_DECL_CLASS(STLExporter)
 
-int STLExporterClass = core::RegisterObject("Read State vectors from file at each timestep")
+int STLExporterClass = core::RegisterObject("Save a topology in file")
         .add< STLExporter >();
 
 STLExporter::STLExporter()
-    : stepCounter(0)
-    , maxStep(0)
-    , stlFilename( initData(&stlFilename, "filename", "output STL file name"))
-    , d_binaryFormat( initData(&d_binaryFormat, (bool)true, "binaryformat", "if true, save in binary format, otherwise in ascii"))
-    , m_position( initData(&m_position, "position", "points coordinates"))
-    , m_triangle( initData(&m_triangle, "triangle", "triangles indices"))
-    , m_quad( initData(&m_quad, "quad", "quads indices"))
-    , exportEveryNbSteps( initData(&exportEveryNbSteps, (unsigned int)0, "exportEveryNumberOfSteps", "export file only at specified number of steps (0=disable)"))
-    , exportAtBegin( initData(&exportAtBegin, (bool)false, "exportAtBegin", "export file at the initialization"))
-    , exportAtEnd( initData(&exportAtEnd, (bool)false, "exportAtEnd", "export file when the simulation is finished"))
+    : d_binaryFormat( initData(&d_binaryFormat, (bool)true, "binaryformat", "if true, save in binary format, otherwise in ascii"))
+    , d_position( initData(&d_position, "position", "points coordinates"))
+    , d_triangle( initData(&d_triangle, "triangle", "triangles indices"))
+    , d_quad( initData(&d_quad, "quad", "quads indices"))
 {
-        this->addAlias(&m_triangle, "triangles");
-        this->addAlias(&m_quad, "quads");
+    this->addAlias(&d_triangle, "triangles");
+    this->addAlias(&d_quad, "quads");
 }
 
-STLExporter::~STLExporter()
+STLExporter::~STLExporter(){}
+
+void STLExporter::doInit()
 {
-    if (outfile)
-        delete outfile;
+    doReInit() ;
 }
 
-void STLExporter::init()
+void STLExporter::doReInit()
 {
-    sofa::core::objectmodel::BaseContext* context = this->getContext();
+    BaseContext* context = this->getContext();
 
-    context->get(topology, sofa::core::objectmodel::BaseContext::Local);
-    context->get(mstate, sofa::core::objectmodel::BaseContext::Local);
-    context->get(vmodel, sofa::core::objectmodel::BaseContext::Local);
+    context->get(m_inputtopology, BaseContext::Local);
+    context->get(m_inputmstate, BaseContext::Local);
+    context->get(m_inputvmodel, BaseContext::Local);
 
     // Test if the position has not been modified
-    if(!m_position.isSet())
+    if(!d_position.isSet())
     {
-        sofa::core::objectmodel::BaseData* pos = NULL;
-        sofa::core::objectmodel::BaseData* tri = NULL;
-        sofa::core::objectmodel::BaseData* qua = NULL;
-        if(vmodel)
+        BaseData* pos = NULL;
+        BaseData* tri = NULL;
+        BaseData* qua = NULL;
+        if(m_inputvmodel)
         {
-            pos = vmodel->findData("position");
-            tri = vmodel->findData("triangles");
-            qua = vmodel->findData("quads");
+            pos = m_inputvmodel->findData("position");
+            tri = m_inputvmodel->findData("triangles");
+            qua = m_inputvmodel->findData("quads");
         }
-        else if(topology)
+        else if(m_inputtopology)
         {
-            pos = topology->findData("position");
-            tri = topology->findData("triangles");
-            qua = topology->findData("quads");
+            pos = m_inputtopology->findData("position");
+            tri = m_inputtopology->findData("triangles");
+            qua = m_inputtopology->findData("quads");
         }
         else
         {
-            serr << "STLExporter : error, STLExporter needs VisualModel or Topology" << sendl;
-            return;
+            msg_error() << "STLExporter needs VisualModel or Topology." ;
+            m_componentstate = ComponentState::Invalid ;
+            return ;
         }
 
-        m_position.setParent(pos);
-        m_triangle.setParent(tri);
-        m_quad.setParent(qua);
+        d_position.setParent(pos);
+        d_triangle.setParent(tri);
+        d_quad.setParent(qua);
     }
-
-    // Activate the listening to the event in order to be able to export file at the nth-step
-    if(exportEveryNbSteps.getValue() != 0)
-        this->f_listening.setValue(true);
-
-    nbFiles = 0;
-
+    m_componentstate = ComponentState::Valid ;
 }
 
-void STLExporter::writeSTL()
+bool STLExporter::write()
 {
-    std::string filename = stlFilename.getFullPath();
+    if(m_componentstate != ComponentState::Valid)
+        return false ;
 
-    if (maxStep)
-    {
-        std::ostringstream oss;
-        oss.width(5);
-        oss.fill('0');
-        oss << nbFiles;
-        filename += oss.str();
-    }
+    if(d_binaryFormat.getValue())
+        return writeSTL();
+    return writeSTLBinary();
+}
+
+bool STLExporter::writeSTL(bool autonumbering)
+{
+    if(m_componentstate != ComponentState::Valid)
+        return false ;
+
+    std::string filename = getOrCreateTargetPath(d_filename.getValue(), d_exportEveryNbSteps.getValue() && autonumbering) ;
     filename += ".stl";
 
-    outfile = new std::ofstream(filename.c_str());
-    if( !outfile->is_open() )
+    std::ofstream outfile(filename.c_str());
+    if( !outfile.is_open() )
     {
-        serr << "Error creating file " << filename << sendl;
-        delete outfile;
-        outfile = NULL;
-        return;
+        msg_error() << "Unable to open file '" << filename << "'";
+        return false;
     }
 
-    helper::ReadAccessor< Data< helper::vector< core::topology::BaseMeshTopology::Triangle > > > triangleIndices = m_triangle;
-    helper::ReadAccessor< Data< helper::vector< core::topology::BaseMeshTopology::Quad > > > quadIndices = m_quad;
-    helper::ReadAccessor<Data<defaulttype::Vec3Types::VecCoord> > positionIndices = m_position;
+    helper::ReadAccessor< Data< helper::vector< BaseMeshTopology::Triangle > > > triangleIndices = d_triangle;
+    helper::ReadAccessor< Data< helper::vector< BaseMeshTopology::Quad > > > quadIndices = d_quad;
+    helper::ReadAccessor<Data<defaulttype::Vec3Types::VecCoord> > positionIndices = d_position;
 
-    helper::vector< core::topology::BaseMeshTopology::Triangle > vecTri;
+    helper::vector< BaseMeshTopology::Triangle > vecTri;
 
     if(positionIndices.empty())
     {
-        serr << "STLExporter::writeSTL : error, no positions in topology" << sendl;
-        return;
+        msg_error() << "No positions in topology." ;
+        return false ;
     }
     if(!triangleIndices.empty())
     {
@@ -160,7 +165,7 @@ void STLExporter::writeSTL()
     }
     else if(!quadIndices.empty())
     {
-        core::topology::BaseMeshTopology::Triangle tri;
+        BaseMeshTopology::Triangle tri;
         for(unsigned int i=0;i<quadIndices.size();i++)
         {
             for(int j=0;j<3;j++)
@@ -176,8 +181,8 @@ void STLExporter::writeSTL()
     }
     else
     {
-        serr << "STLExporter::writeSTLBinary : error, neither triangles nor quads" << sendl;
-        return;
+        msg_error() << "No triangles nor quads in topology.";
+        return false;
     }
 
     /* Get number of facets */
@@ -187,63 +192,58 @@ void STLExporter::writeSTL()
     std::cout.precision(6);
 
     /* solid */
-    *outfile << "solid Exported from Sofa" << std::endl;
+    outfile << "solid Exported from Sofa" << std::endl;
 
 
     for(int i=0;i<nbt;i++)
     {
         /* normal */
-        *outfile << "facet normal 0 0 0" << std::endl;
-        *outfile << "outer loop" << std::endl;
+        outfile << "facet normal 0 0 0" << std::endl;
+        outfile << "outer loop" << std::endl;
         for (int j=0;j<3;j++)
         {
             /* vertices */
-            *outfile << "vertex " << std::fixed << positionIndices[ vecTri[i][j] ] << std::endl;
+            outfile << "vertex " << std::fixed << positionIndices[ vecTri[i][j] ] << std::endl;
         }
-        *outfile << "endloop" << std::endl;
-        *outfile << "endfacet" << std::endl;
+        outfile << "endloop" << std::endl;
+        outfile << "endfacet" << std::endl;
     }
 
     /* endsolid */
-    *outfile << "endsolid Exported from Sofa" << std::endl;
+    outfile << "endsolid Exported from Sofa" << std::endl;
 
-    outfile->close();
-    msg_info("STLExporter") << filename << " written" ;
-    nbFiles++;
+    outfile.close();
+
+    msg_info() << "File '" << filename << "' written" ;
+    return true ;
 }
 
-void STLExporter::writeSTLBinary()
+bool STLExporter::writeSTLBinary(bool autonumbering)
 {
-    std::string filename = stlFilename.getFullPath();
-    if (maxStep)
-    {
-        std::ostringstream oss;
-        oss.width(5);
-        oss.fill('0');
-        oss << nbFiles;
-        filename += oss.str();
-    }
+    if(m_componentstate != ComponentState::Valid)
+        return false ;
+
+    std::string filename = getOrCreateTargetPath(d_filename.getValue(),
+                                                 d_exportEveryNbSteps.getValue() && autonumbering) ;
     filename += ".stl";
 
-    outfile = new std::ofstream(filename.c_str(), std::ios::out | std::ios::binary);
-    if( !outfile->is_open() )
+    std::ofstream outfile(filename.c_str(), std::ios::out | std::ios::binary);
+    if( !outfile.is_open() )
     {
-        serr << "Error creating file " << filename << sendl;
-        delete outfile;
-        outfile = NULL;
-        return;
+        msg_error() << "Unable to open file '" << filename << "'";
+        return false;
     }
 
-    helper::ReadAccessor< Data< helper::vector< core::topology::BaseMeshTopology::Triangle > > > triangleIndices = m_triangle;
-    helper::ReadAccessor< Data< helper::vector< core::topology::BaseMeshTopology::Quad > > > quadIndices = m_quad;
-    helper::ReadAccessor<Data<defaulttype::Vec3Types::VecCoord> > positionIndices = m_position;
+    helper::ReadAccessor< Data< helper::vector< BaseMeshTopology::Triangle > > > triangleIndices = d_triangle;
+    helper::ReadAccessor< Data< helper::vector< BaseMeshTopology::Quad > > > quadIndices = d_quad;
+    helper::ReadAccessor< Data< defaulttype::Vec3Types::VecCoord> > positionIndices = d_position;
 
-    helper::vector< core::topology::BaseMeshTopology::Triangle > vecTri;
+    helper::vector< BaseMeshTopology::Triangle > vecTri;
 
     if(positionIndices.empty())
     {
-        serr << "STLExporter::writeSTLBinary : error, no positions in topology" << sendl;
-        return;
+        msg_error() << "No positions in topology." ;
+        return false;
     }
     if(!triangleIndices.empty())
     {
@@ -254,7 +254,7 @@ void STLExporter::writeSTLBinary()
     }
     else if(!quadIndices.empty())
     {
-        core::topology::BaseMeshTopology::Triangle tri;
+        BaseMeshTopology::Triangle tri;
         for(unsigned int i=0;i<quadIndices.size();i++)
         {
             for(int j=0;j<3;j++)
@@ -270,8 +270,8 @@ void STLExporter::writeSTLBinary()
     }
     else
     {
-        serr << "STLExporter::writeSTLBinary : error, neither triangles nor quads" << sendl;
-        return;
+        msg_error() << "No triangles nor quads in topology.";
+        return false;
     }
 
     // Sets the floatfield format flag for the str stream to fixed
@@ -285,108 +285,82 @@ void STLExporter::writeSTLBinary()
         buffer[i]='\0';
     }
     strcpy(buffer, "Exported from Sofa");
-    outfile->write(buffer,80);
+    outfile.write(buffer,80);
 
     /* Number of facets */
     const unsigned int nbt = vecTri.size();
-    outfile->write((char*)&nbt,4);
+    outfile.write((char*)&nbt,4);
 
     // Parsing facets
     for(unsigned long i=0;i<nbt;i++)
     {
         /* normal */
         float nul = 0.; // normals are set to 0
-        outfile->write((char*)&nul, 4);
-        outfile->write((char*)&nul, 4);
-        outfile->write((char*)&nul, 4);
+        outfile.write((char*)&nul, 4);
+        outfile.write((char*)&nul, 4);
+        outfile.write((char*)&nul, 4);
         for (int j=0;j<3;j++)
         {
             /* vertices */
             float iOne = (float)positionIndices[ vecTri[i][j] ][0];
             float iTwo = (float)positionIndices[ vecTri[i][j] ][1];
             float iThree = (float)positionIndices[ vecTri[i][j] ][2];
-            outfile->write( (char*)&iOne, 4);
-            outfile->write( (char*)&iTwo, 4);
-            outfile->write( (char*)&iThree, 4);
+            outfile.write( (char*)&iOne, 4);
+            outfile.write( (char*)&iTwo, 4);
+            outfile.write( (char*)&iThree, 4);
         }
 
         /* Attribute byte count */
         // attribute count is currently not used, it's garbage
         unsigned int zero = 0;
-        outfile->write((char*)&zero, 2);
+        outfile.write((char*)&zero, 2);
     }
 
-    outfile->close();
-    msg_info() << filename << " written." ;
-    nbFiles++;
+    outfile.close();
+    msg_info() << "File '" << filename << "' written" ;
+    return true;
 }
 
-void STLExporter::handleEvent(sofa::core::objectmodel::Event *event)
+void STLExporter::handleEvent(Event *event)
 {
-    if (sofa::core::objectmodel::KeypressedEvent::checkEventType(event))
+    if(m_componentstate != ComponentState::Valid)
+        return ;
+
+    if (KeypressedEvent::checkEventType(event))
     {
-        sofa::core::objectmodel::KeypressedEvent *ev = static_cast<sofa::core::objectmodel::KeypressedEvent *>(event);
+        KeypressedEvent *ev = static_cast<KeypressedEvent *>(event);
         switch(ev->getKey())
         {
 
         case 'E':
         case 'e':
+            //todo(18.06) remove the behavior
+            msg_deprecated() << "Hard coded interaction behavior in component is now a deprecated behavior."
+                                "Scene specific interaction should be implement using an external controller or pythonScriptController."
+                                "Please update your scene because this behavior will be removed in Sofa 18.06";
             if(d_binaryFormat.getValue())
-                writeSTLBinary();
+                writeSTLBinary(false);
             else
-                writeSTL();
-            break;
-
-        case 'F':
-        case 'f':
+                writeSTL(false);
             break;
         }
     }
 
 
-    if ( /*simulation::AnimateEndEvent* ev =*/ simulation::AnimateEndEvent::checkEventType(event))
+    if (GUIEvent::checkEventType(event))
     {
-        maxStep = exportEveryNbSteps.getValue();
-        if (maxStep == 0) return;
-
-        stepCounter++;
-        if(stepCounter % maxStep == 0)
-        {
-            if(d_binaryFormat.getValue())
-                writeSTLBinary();
-            else
-                writeSTL();
-        }
-    }
-
-
-    if (sofa::core::objectmodel::GUIEvent::checkEventType(event))
-    {
-        maxStep = 0; // to keep the name of the file set as input
-
-        sofa::core::objectmodel::GUIEvent *guiEvent = static_cast<sofa::core::objectmodel::GUIEvent *>(event);
+        GUIEvent *guiEvent = static_cast<GUIEvent *>(event);
 
         if (guiEvent->getValueName().compare("STLExport") == 0)
         {
             if(d_binaryFormat.getValue())
-                writeSTLBinary();
+                writeSTLBinary(false);
             else
-                writeSTL();
+                writeSTL(false);
         }
     }
-}
 
-void STLExporter::cleanup()
-{
-    if (exportAtEnd.getValue())
-        (d_binaryFormat.getValue()) ? writeSTLBinary() : writeSTL();
-
-}
-
-void STLExporter::bwdInit()
-{
-    if (exportAtBegin.getValue())
-        (d_binaryFormat.getValue()) ? writeSTLBinary() : writeSTL();
+    BaseSimulationExporter::handleEvent(event) ;
 }
 
 } // namespace misc

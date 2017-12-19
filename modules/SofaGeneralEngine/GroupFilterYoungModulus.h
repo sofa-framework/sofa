@@ -58,9 +58,9 @@ protected:
     GroupFilterYoungModulus();
     ~GroupFilterYoungModulus() {}
 public:
-    void init();
-    void reinit();
-    void update();
+    void init() override;
+    void reinit() override;
+    void update() override;
 
     //Input
     Data<helper::vector<sofa::core::loader::PrimitiveGroup > > f_groups; ///< Groups
@@ -73,7 +73,7 @@ public:
     Data<Real> p_defaultModulus; ///< Default value if the primitive is not in a group
     Data<helper::vector<Real> > p_groupMod; ///< list of young modulus for each group
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }

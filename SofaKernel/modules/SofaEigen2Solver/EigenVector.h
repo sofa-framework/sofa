@@ -37,7 +37,6 @@ namespace linearsolver
 {
 
 //#define EigenVector_CHECK
-//#define EigenVector_VERBOSE
 
 
 /** Container of a vector of the Eigen library. Not an eigenvector of a matrix.
@@ -101,9 +100,6 @@ public:
 
     void set(Index i, double v)
     {
-#ifdef EigenVector_VERBOSE
-        std::cout << /*this->Name() <<*/ "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v<<std::endl;
-#endif
 #ifdef EigenVector_CHECK
         if (i >= rowSize() || j >= colSize())
         {
@@ -116,9 +112,6 @@ public:
 
     void setBlock(Index i, const Block& v)
     {
-#ifdef EigenVector_VERBOSE
-        std::cout << /*this->Name() <<*/ "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v<<std::endl;
-#endif
 #ifdef EigenVector_CHECK
         if (i >= rowSize()/Nout || j >= colSize()/Nin )
         {
@@ -135,9 +128,6 @@ public:
 
     void add(Index i, double v)
     {
-#ifdef EigenVector_VERBOSE
-        std::cout << /*this->Name() << */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") += "<<v<<std::endl;
-#endif
 #ifdef EigenVector_CHECK
         if (i >= rowSize() || j >= colSize())
         {
@@ -150,9 +140,6 @@ public:
 
     void clear(Index i)
     {
-#ifdef EigenVector_VERBOSE
-        std::cout << /*this->Name() <<*/ "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = 0"<<std::endl;
-#endif
 #ifdef EigenVector_CHECK
         if (i >= rowSize() || j >= colSize())
         {
@@ -248,9 +235,6 @@ public:
 
     void set(Index i, double v)
     {
-#ifdef EigenVector_VERBOSE
-        std::cout << /*this->Name() <<*/ "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v<<std::endl;
-#endif
 #ifdef EigenVector_CHECK
         if (i >= rowSize() || j >= colSize())
         {
@@ -267,9 +251,6 @@ public:
 
     void add(Index i, double v)
     {
-#ifdef EigenVector_VERBOSE
-        std::cout << /*this->Name() << */"("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") += "<<v<<std::endl;
-#endif
 #ifdef EigenVector_CHECK
         if (i >= rowSize() || j >= colSize())
         {
@@ -282,9 +263,6 @@ public:
 
     void clear(Index i)
     {
-#ifdef EigenVector_VERBOSE
-        std::cout << /*this->Name() <<*/ "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = 0"<<std::endl;
-#endif
 #ifdef EigenVector_CHECK
         if (i >= rowSize() || j >= colSize())
         {
@@ -301,17 +279,6 @@ public:
     {
         eigenVector.setZero();
     }
-
-
-//    friend std::ostream& operator << (std::ostream& out, const EigenVector<double>& v )
-//    {
-//        IndexEigen ny = v.size();
-//        for (IndexEigen y=0;y<ny;++y)
-//        {
-//                out << " " << v.element(y);
-//        }
-//        return out;
-//    }
 
     static const char* Name();
 

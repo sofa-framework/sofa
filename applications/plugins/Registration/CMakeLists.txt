@@ -37,6 +37,8 @@ set(PYTHON_FILES
 set(README_FILES README.txt)
 
 find_package(SofaGui REQUIRED)
+find_package(SofaMiscCollision REQUIRED)
+
 find_package(image QUIET)
 
 if(image_FOUND)
@@ -57,7 +59,7 @@ install(FILES "${CMAKE_BINARY_DIR}/include/Registration/config.h" DESTINATION "i
 sofa_set_python_directory(Registration "python")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
-target_link_libraries(${PROJECT_NAME} SofaMeshCollision SofaBaseCollision SofaGuiCommon SofaBaseVisual SofaExporter SofaLoader SofaMiscForceField SofaGeneralEngine)
+target_link_libraries(${PROJECT_NAME} SofaMeshCollision SofaMiscCollision SofaBaseCollision SofaGuiCommon SofaBaseVisual SofaExporter SofaLoader SofaMiscForceField SofaGeneralEngine)
 
 if(image_FOUND)
     target_link_libraries(${PROJECT_NAME} image)
@@ -75,6 +77,14 @@ set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}"
 find_package(SofaTest QUIET)
 if(SofaTest_FOUND)
     add_subdirectory(Registration_test)
+endif()
+
+find_package(SofaDistanceGrid QUIET)
+if(SofaDistanceGrid_FOUND)
+    add_definitions("-DSOFA_HAVE_SOFADISTANCEGRID")
+    target_link_libraries(${PROJECT_NAME} SofaDistanceGrid)
+else()
+    message(STATUS "Registration: could not find SOFADISTANCEGRID, won't build RegistrationContact for RigidDistanceGridCollisionModel.")
 endif()
 
 ## Install rules for the library; CMake package configurations files

@@ -53,9 +53,9 @@ public:
 protected:
     JacobiPreconditioner();
 public:
-    void setSystemMBKMatrix(const core::MechanicalParams* mparams);
-    void solve (Matrix& M, Vector& x, Vector& b);
-    void invert(Matrix& M);
+    void setSystemMBKMatrix(const core::MechanicalParams* mparams) override;
+    void solve (Matrix& M, Vector& x, Vector& b) override;
+    void invert(Matrix& M) override;
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
@@ -65,7 +65,7 @@ public:
         return sofa::core::objectmodel::BaseObject::canCreate(obj, context, arg);
     }
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }

@@ -22,8 +22,6 @@ set(HEADER_FILES
     MultiMapping.inl
     MultiVecId.h
     ObjectFactory.h
-    # Plugin.h
-    # PluginManager.h
     SofaLibrary.h
     State.h
     State.inl
@@ -192,6 +190,7 @@ set(SOURCE_FILES
     collision/Intersection.cpp
     collision/Pipeline.cpp
     init.cpp
+    loader/BaseLoader.cpp
     loader/MeshLoader.cpp
     loader/SceneLoader.cpp
     loader/VoxelLoader.cpp
@@ -248,22 +247,7 @@ if(Boost_thread_FOUND)
     list(APPEND SOURCE_FILES objectmodel/AspectPool.cpp)
 endif()
 
-if(SOFA-MISC_SMP)
-    list(APPEND HEADER_FILES
-        CallContext.h
-        ParallelCollisionModel.h
-        behavior/ParallelMultiVec.h
-        collision/ParallelNarrowPhaseDetection.h
-        collision/ParallelPipeline.h
-        objectmodel/BaseObjectTasks.h
-    )
 
-    list(APPEND SOURCE_FILES
-        CallContext.cpp
-        collision/ParallelPipeline.cpp
-        objectmodel/BaseObjectTasks.cpp
-    )
-endif()
 
 # # TODO?
 # if(SOFA-MISC_SUPPORT_MOVING_FRAMES)

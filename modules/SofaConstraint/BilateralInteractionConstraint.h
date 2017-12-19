@@ -140,23 +140,23 @@ protected:
 
     virtual ~BilateralInteractionConstraint(){}
 public:
-    virtual void init();
+    virtual void init() override;
 
-    virtual void bwdInit() {}
+    virtual void bwdInit() override {}
 
-    virtual void reinit();
+    virtual void reinit() override;
 
-    virtual void reset();
+    virtual void reset() override;
 
-    void buildConstraintMatrix(const ConstraintParams* cParams,
+    virtual void buildConstraintMatrix(const ConstraintParams* cParams,
                                DataMatrixDeriv &c1, DataMatrixDeriv &c2,
                                unsigned int &cIndex,
-                               const DataVecCoord &x1, const DataVecCoord &x2);
+                               const DataVecCoord &x1, const DataVecCoord &x2) override;
 
-    void getConstraintViolation(const ConstraintParams* cParams,
+    virtual void getConstraintViolation(const ConstraintParams* cParams,
                                 BaseVector *v,
                                 const DataVecCoord &x1, const DataVecCoord &x2,
-                                const DataVecDeriv &v1, const DataVecDeriv &v2);
+                                const DataVecDeriv &v1, const DataVecDeriv &v2) override;
 
     void getVelocityViolation(BaseVector *v,
                               const DataVecCoord &x1, const DataVecCoord &x2,
@@ -164,11 +164,11 @@ public:
 
     virtual void getConstraintResolution(const ConstraintParams* cParams,
                                          std::vector<ConstraintResolution*>& resTab,
-                                         unsigned int& offset);
+                                         unsigned int& offset) override;
 
-    void handleEvent(sofa::core::objectmodel::Event *event);
+    virtual void handleEvent(sofa::core::objectmodel::Event *event) override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    virtual void draw(const core::visual::VisualParams* vparams) override;
 
     void clear(int reserve = 0) ;
 

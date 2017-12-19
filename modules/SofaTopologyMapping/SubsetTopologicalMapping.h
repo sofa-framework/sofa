@@ -76,7 +76,7 @@ public:
     Data<SetIndex> hexahedronS2D; ///< Internal source -> destination topology hexahedra map
     Data<SetIndex> hexahedronD2S; ///< Internal destination -> source topology hexahedra map
 
-    virtual void init();
+    virtual void init() override;
 
     /** \brief Translates the TopologyChange objects from the source to the target.
      *
@@ -84,11 +84,11 @@ public:
      * reflect the effects of the first topology changes on the second topology.
      *
      */
-    virtual void updateTopologicalMappingTopDown();
+    virtual void updateTopologicalMappingTopDown() override;
 
-    virtual bool isTheOutputTopologySubdividingTheInputOne() { return true; }
-    virtual unsigned int getGlobIndex(unsigned int ind);
-    virtual unsigned int getFromIndex(unsigned int ind);
+    virtual bool isTheOutputTopologySubdividingTheInputOne() override { return true; }
+    virtual unsigned int getGlobIndex(unsigned int ind) override;
+    virtual unsigned int getFromIndex(unsigned int ind) override;
 
 };
 

@@ -1,11 +1,13 @@
 <Node name="root" dt="0.02">
-    <VisualStyle displayFlags="showForceFields" />
+    <VisualStyle displayFlags="showForceFields showInteractionForceFields" />
+    <RequiredPlugin name='SofaMiscCollision' />
+
     <CollisionPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <NewProximityIntersection name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
     <CollisionResponse name="Response" response="default" />
     <CollisionGroup name="Group" />
-    <EulerImplicit />
+    <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGLinearSolver iterations="25" tolerance="1e-5" threshold="1e-5"/>
     <Node name="Liver1">
         <!--<CGImplicit iterations="25"/>-->
@@ -69,6 +71,6 @@
             <BarycentricMapping />
         </Node>
     </Node>
-    <BoxStiffSpringForceField template="Vec3d" name="Spring" stiffness="100000" object1="@Liver1/Surf" object2="@Liver2/Surf" box_object1="0.5 3 -1 2 6 2" box_object2="7 3 -1 9.5 6 2" />
-    <BoxStiffSpringForceField template="Vec3d" name="Spring" stiffness="1000000" object1="@Liver2" object2="@Liver3" box_object1="13 0 -3 15 1 2" box_object2="18 3 -1 20 6 0" />
+    <BoxStiffSpringForceField template="Vec3d" name="Spring12" stiffness="100000" object1="@Liver1/Surf" object2="@Liver2/Surf" box_object1="0.5 3 -1 2 6 2" box_object2="7 3 -1 9.5 6 2" forceOldBehavior="0" />
+    <BoxStiffSpringForceField template="Vec3d" name="Spring23" stiffness="1000000" object1="@Liver2" object2="@Liver3" box_object1="13 0 -3 15 1 2" box_object2="18 3 -1 20 6 0" forceOldBehavior="0"/>
 </Node>

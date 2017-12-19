@@ -2,7 +2,7 @@
 <Node name="root" dt="0.05" gravity="0 0 0">
     <VisualStyle displayFlags="showBehaviorModels showVisual" />
     <Node name="M0">
-        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject position="0 0 0  1 0 0  1 1 0  0 1 0" velocity="0 0 0  0 0 0  0 0 0  0 0 0" />
         <UniformMass mass="0.1" />
@@ -10,10 +10,10 @@
         <TriangleFEMForceField name="FEM0" youngModulus="100" poissonRatio="0.3" method="large" />
 
         <BoxROI template="Vec3d" name="box_roi1" box="0 0 0  1 0.5 0"/>
-        <ConstantForceField points="@box_roi1.indices" force="0 -1 0" arrowSizeCoef=".2"/>
+        <ConstantForceField indices="@box_roi1.indices" force="0 -1 0" arrowSizeCoef=".2"/>
 
         <BoxROI template="Vec3d" name="box_roi2" box="0 0.5 0  1 1 0"/>
-        <ConstantForceField points="@box_roi2.indices" force="0 1 0" arrowSizeCoef=".2"/>
+        <ConstantForceField indices="@box_roi2.indices" force="0 1 0" arrowSizeCoef=".2"/>
 
         <Node name="Visu">
             <OglModel name="Visual" color="red" />

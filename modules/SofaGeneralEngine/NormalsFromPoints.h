@@ -57,11 +57,11 @@ protected:
 
     virtual ~NormalsFromPoints() {}
 public:
-    void init();
+    void init() override;
 
-    void reinit();
+    void reinit() override;
 
-    void update();
+    void update() override;
 
     Data< VecCoord > position; ///< Vertices of the mesh
     Data< helper::vector< helper::fixed_array <unsigned int,3> > > triangles; ///< Triangles of the mesh
@@ -70,7 +70,7 @@ public:
     Data<bool> invertNormals; ///< Swap normals
     Data<bool> useAngles; ///< Use incident angles to weight faces normal contributions at each vertex
 
-    virtual std::string getTemplateName() const    { return templateName(this);    }
+    virtual std::string getTemplateName() const    override { return templateName(this);    }
     static std::string templateName(const NormalsFromPoints<DataTypes>* = NULL) { return DataTypes::Name();    }
 
 };

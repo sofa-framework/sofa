@@ -105,13 +105,13 @@ public:
 
     CudaTetrahedronTLEDForceField();
     virtual ~CudaTetrahedronTLEDForceField();
-    void init();
-    void reinit();
+    void init() override;
+    void reinit() override;
 //    void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/);
-    virtual void addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv& dataF, const DataVecCoord& dataX, const DataVecDeriv& /*dataV*/ ) ;
+    virtual void addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv& dataF, const DataVecCoord& dataX, const DataVecDeriv& /*dataV*/ ) override;
 //    void addDForce (VecDeriv& /*df*/, const VecDeriv& /*dx*/);
-    virtual void addDForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv& datadF, const DataVecDeriv& datadX ) ;
-    SReal getPotentialEnergy(const sofa::core::MechanicalParams* , const DataVecCoord&) const { return 0.0; }
+    virtual void addDForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv& datadF, const DataVecDeriv& datadX ) override;
+    SReal getPotentialEnergy(const sofa::core::MechanicalParams* , const DataVecCoord&) const override { return 0.0; }
     // Computes lambda and mu based on Young's modulus and Poisson ratio
     void updateLameCoefficients();
     // Computes element volumes for tetrahedral elements

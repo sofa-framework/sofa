@@ -1,0 +1,10 @@
+<Node name="root" gravity="0 -9.81 0">
+    <Node name="node">
+      <EulerImplicit rayleighStiffness="0" printLog="false" />
+      <CGLinearSolver iterations="100" threshold="0.00000001" tolerance="1e-5"/>
+      <MeshGmshLoader name="loader" filename="mesh/smCube27.msh" createSubelements="true" />
+      <MechanicalObject template="Rigid3d" src="@loader" name="MO" />
+      <Monitor template="Rigid3d" name="monitor" listening="1" indices="0" ExportPositions="true" ExportVelocities="true" ExportForces="true" />
+      <UniformMass totalmass="1" />
+    </Node>
+</Node>

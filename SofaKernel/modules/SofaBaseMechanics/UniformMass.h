@@ -109,34 +109,34 @@ public:
     void loadRigidMass(const std::string& filename);
     // -- Mass interface
 
-    void reinit();
-    void init();
+    void reinit() override;
+    void init() override;
 
-    void handleTopologyChange();
-    void addMDx(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor);
+    void handleTopologyChange() override;
+    void addMDx(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor) override;
 
-    void accFromF(const core::MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f);
+    void accFromF(const core::MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f) override;
 
-    void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
+    void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
 
-    SReal getKineticEnergy(const core::MechanicalParams* mparams, const DataVecDeriv& d_v) const;  ///< vMv/2 using dof->getV()
+    SReal getKineticEnergy(const core::MechanicalParams* mparams, const DataVecDeriv& d_v) const override;  ///< vMv/2 using dof->getV() override
 
-    SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const;   ///< Mgx potential in a uniform gravity field, null at origin
+    SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const override;   ///< Mgx potential in a uniform gravity field, null at origin
 
-    defaulttype::Vector6 getMomentum(const core::MechanicalParams* mparams, const DataVecCoord& x, const DataVecDeriv& v) const;  ///< (Mv,cross(x,Mv)+Iw)
+    defaulttype::Vector6 getMomentum(const core::MechanicalParams* mparams, const DataVecCoord& x, const DataVecDeriv& v) const override;  ///< (Mv,cross(x,Mv)+Iw) override
 
     void addMDxToVector(defaulttype::BaseVector *resVect, const VecDeriv *dx, SReal mFact, unsigned int& offset);
 
-    void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v);
+    void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v) override;
 
-    void addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix); /// Add Mass contribution to global Matrix assembling
+    void addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override; /// Add Mass contribution to global Matrix assembling
 
-    SReal getElementMass(unsigned int index) const;
-    void getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const;
+    SReal getElementMass(unsigned int index) const override;
+    void getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const override;
 
-    bool isDiagonal() {return true;}
+    bool isDiagonal() override {return true;}
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
 private:
     template<class T>

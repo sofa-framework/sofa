@@ -74,7 +74,13 @@ std::string cleanPath( const std::string& path )
     return p;
 }
 
-FileRepository PluginRepository("SOFA_PLUGIN_PATH");
+/// Initialize PluginRepository with the current working directory
+#ifdef WIN32
+FileRepository PluginRepository("SOFA_PLUGIN_PATH", "../bin" );
+#else
+FileRepository PluginRepository("SOFA_PLUGIN_PATH", "../lib");
+#endif
+
 FileRepository DataRepository("SOFA_DATA_PATH");
 
 #if defined (_XBOX) || defined(PS3)
@@ -166,7 +172,6 @@ void FileRepository::addLastPath(const std::string& p)
         p0 = p1+1;
     }
     vpath.insert(vpath.end(), entries.begin(), entries.end());
-    //     std::cout << path << std::endl;
 }
 
 void FileRepository::removePath(const std::string& path)
@@ -189,9 +194,6 @@ void FileRepository::removePath(const std::string& path)
     {
         vpath.erase( find(vpath.begin(), vpath.end(), *it) );
     }
-
-    // Display
-    // std::cout<<(*this)<<std::endl;
 }
 
 std::string FileRepository::getFirstPath()
@@ -207,11 +209,9 @@ bool FileRepository::findFileIn(std::string& filename, const std::string& path)
     std::string newfname = SetDirectory::GetRelativeFromDir(filename.c_str(), path.c_str());
     boost::filesystem::path::imbue( boost::locale::generator().generate("") );
     boost::filesystem::path p(newfname);
-    //std::cout << "Looking for " << newfname <<std::endl;
     if (boost::filesystem::exists(p))
     {
         // File found
-        //std::cout << "File "<<filename<<" found in "<<path.substr(p0,p1-p0)<<std::endl;
         filename = newfname;
         return true;
     }
@@ -267,6 +267,7 @@ void FileRepository::print()
     for (std::vector<std::string>::const_iterator it = vpath.begin(); it != vpath.end(); ++it)
         std::cout << *it << std::endl;
 }
+
 /*static*/
 std::string FileRepository::relativeToPath(std::string path, std::string refPath, bool doLowerCaseOnWin32)
 {

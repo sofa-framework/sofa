@@ -236,11 +236,11 @@ protected:
     virtual ~ConstraintAnimationLoop();
 public:
 
-    virtual void step(const core::ExecParams* params, SReal dt);
+    virtual void step(const core::ExecParams* params, SReal dt) override;
 
     //virtual void propagatePositionAndVelocity(double t, VecId x, VecId v);
 
-    virtual void init();
+    virtual void init() override;
 
     Data<bool> displayTime; ///< Display time for each important step of ConstraintAnimationLoop.
     Data<double> _tol; ///< Tolerance of the Gauss-Seidel
