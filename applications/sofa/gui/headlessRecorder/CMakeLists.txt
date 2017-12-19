@@ -41,7 +41,6 @@ if(UNIX AND NOT APPLE)
     add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
     target_link_libraries(${PROJECT_NAME} PUBLIC SofaGuiCommon)
-    #target_link_libraries(${PROJECT_NAME} -lpng -lX11 -lavcodec -lswscale -lavutil SofaGuiCommon)
     target_link_libraries(${PROJECT_NAME} PUBLIC ${FFMPEG_LIBRARIES} ${X11_LIBRARIES})
     set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAGUIHEADLESSRECORDER")
 
