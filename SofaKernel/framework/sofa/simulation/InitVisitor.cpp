@@ -42,7 +42,8 @@ Visitor::Result InitVisitor::processNodeTopDown(simulation::Node* node)
     node->initialize();
 
     sofa::defaulttype::BoundingBox* nodeBBox = node->f_bbox.beginEdit(params);
-    nodeBBox->invalidate();
+    if(!node->f_bbox.isSet())
+        nodeBBox->invalidate();
 
     for(unsigned int i=0; i<node->object.size(); ++i)
     {

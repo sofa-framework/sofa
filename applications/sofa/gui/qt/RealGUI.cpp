@@ -903,6 +903,15 @@ void RealGUI::setSceneWithoutMonitor (Node::SPtr root, const char* filename, boo
         checker.addCheck(simulation::SceneCheckMissingRequiredPlugin::newSPtr());
         checker.validate(root.get()) ;
 
+        //Check the validity of the BBox
+        const sofa::defaulttype::BoundingBox& nodeBBox = root->getContext()->f_bbox.getValue();
+        if(nodeBBox.isNegligeable())
+        {
+            msg_error("RealGUI") << "Global Bounding Box seems invalid ; please implement updateBBox in your components "
+                                    << "or force a value by adding the parameter bbox=\"minX minY minZ maxX maxY maxZ\" in your root node \n";
+            msg_error("RealGUI") << "Your viewer settings (based on the bbox) are likely invalid.";
+        }
+
         mSimulation = root;
         eventNewTime();
         startButton->setChecked(root->getContext()->getAnimate() );
