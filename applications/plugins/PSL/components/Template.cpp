@@ -76,82 +76,9 @@ Template::~Template(){}
 
 void Template::handleEvent(Event *event)
 {
-    if (dynamic_cast<sofa::core::objectmodel::IdleEvent *>(event))
-        checkAndDoUpdates() ;
-    else
-        BaseObject::handleEvent(event);
+    BaseObject::handleEvent(event);
 }
 
-void Template::checkAndDoUpdates()
-{
-    PythonEnvironment::gil lock();
-
-    std::map<Base*, Base*> updateList ;
-    for(BaseData* data : m_trackedDatas)
-    {
-        if(m_dataTracker.isDirty(*data))
-        {
-            if(data->getName()=="psl_source") {
-                std::cout << "Template re-instanciation..." << data->getValueString() << std::endl ;
-
-                Base* base = data->getOwner() ;
-                Node* node = dynamic_cast<Node*>(base) ;
-
-                /// Re-instantiate it.
-                PyObject* pDict = PyModule_GetDict(PyImport_AddModule("pslengine"));
-                PyObject* pFunc = PyDict_GetItemString(pDict, "reinstanciateAllTemplates");
-
-                if(!pDict || !pFunc)
-                {
-                    std::cout << "UNABLE TO GET FUNCTIOn " << pFunc << std::endl ;
-                    return;
-                }
-
-                if (PyCallable_Check(pFunc))
-                {
-                    PyObject* tgt = PythonFactory::toPython(data->getOwner());
-                    PyObject* res = PyObject_CallFunction(pFunc, "O", tgt) ;
-
-                    if(PyErr_Occurred())
-                        PyErr_Print();
-                }
-            }
-            else
-            {
-                updateList[data->getOwner()] = data->getOwner() ;
-            }
-        }
-
-    }
-    m_dataTracker.clean();
-
-    for( auto& kv : updateList )
-    {
-        std::cout << "C++ update of Template" << kv.first->getName() << std::endl ;
-
-        /// Re-instantiate it.
-        PyObject* pDict = PyModule_GetDict(PyImport_AddModule("pslengine"));
-        PyObject* pFunc = PyDict_GetItemString(pDict, "reinstanciateATemplateInstance");
-
-        if(!pDict || !pFunc)
-        {
-            std::cout << "UNABLE TO GET FUNCTIOn " << pFunc << std::endl ;
-            return;
-        }
-
-        if (PyCallable_Check(pFunc))
-        {
-            Node* targetInstance = dynamic_cast<Node*>(kv.first) ;
-            PyObject* src = PythonFactory::toPython(this);
-            PyObject* tgt = PythonFactory::toPython(targetInstance);
-            PyObject* res = PyObject_CallFunction(pFunc, "OO", tgt, src) ;
-
-            if(PyErr_Occurred())
-                PyErr_Print();
-        }
-
-    }
-}
 
 void Template::addDataToTrack(BaseData* d)
 {
@@ -226,84 +153,10 @@ static PyObject * Template_trackData(PyObject *self, PyObject * args)
     Py_RETURN_NONE ;
 }
 
-
-static Base* get_base(PyObject* self) {
-    return sofa::py::unwrap<Base>(self);
-}
-
-
-//TODO(dmarchal 2017-07-15) Factor that before PR.
-char* getStringCopy(char *c)
-{
-    char* tmp = new char[strlen(c)+1] ;
-    strcpy(tmp,c);
-    return tmp ;
-}
-
-static PyObject * Template_createATrackedData(PyObject *self, PyObject *args ) {
-    PythonEnvironment::gil lock();
-
-    Base* obj = get_base(self);
-    char* dataName;
-    char* dataClass;
-    char* dataHelp;
-    char* dataRawType;
-    PyObject* dataValue;
-
-    if (!PyArg_ParseTuple(args, "ssssO", &dataName, &dataClass, &dataHelp, &dataRawType, &dataValue)) {
-        return NULL;
-    }
-
-    dataName = getStringCopy(dataName) ;
-    dataClass = getStringCopy(dataClass) ;
-    dataHelp  = getStringCopy(dataHelp) ;
-
-
-    //TODO(dmarchal 2017-07-15) il y a une fuite mémoire ici. A cause de l'init qui ne fait
-    // pas de copie des chaines... mais juste du swallow du coup on se retrouve à copier les nom
-    // à chaque template. C'est méga naze !
-    BaseData* bd = nullptr ;
-    if(dataRawType[0] == 's'){
-        Data<std::string>* t = new Data<std::string>() ;
-        bd = t;
-    }
-    else if(dataRawType[0] == 'b'){
-        Data<bool>* t = new Data<bool>();
-        bd = t;
-    }
-    else if(dataRawType[0] == 'd'){
-        Data<int>* t = new Data<int>();
-        bd = t;
-    }
-    else if(dataRawType[0] == 'f'){
-        Data<float>* t = new Data<float>();
-        bd = t;
-    }
-    else{
-        std::stringstream msg;
-        msg << "Invalid data type '" << dataRawType << "'. Supported type are: s(tring), d(ecimal), f(float), b(oolean)" ;
-        PyErr_SetString(PyExc_TypeError, msg.str().c_str());
-        return NULL;
-    }
-
-
-    std::stringstream tmp;
-    pythonToSofaDataString(dataValue, tmp) ;
-    bd->setName(dataName) ;
-    bd->setHelp(dataHelp);
-    bd->read( tmp.str() ) ;
-    bd->setGroup(dataClass);
-
-    return SP_BUILD_PYPTR(Data,BaseData,bd,false);
-}
-
-
-
 SP_CLASS_METHODS_BEGIN(Template)
 SP_CLASS_METHOD(Template, setTemplate)
 SP_CLASS_METHOD(Template, getTemplate)
 SP_CLASS_METHOD(Template, trackData)
-SP_CLASS_METHOD(Template, createATrackedData)
 SP_CLASS_METHODS_END
 
 SP_CLASS_TYPE_SPTR(Template,Template,BaseObject)

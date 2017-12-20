@@ -69,7 +69,6 @@ public:
     void addDataToTrack(BaseData*) ;
     virtual void handleEvent(Event *event) override ;
 private:
-    void checkAndDoUpdates() ;
     DataTracker m_dataTracker ;
     vector<BaseData*> m_trackedDatas ;
 };
