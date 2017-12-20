@@ -1,0 +1,11 @@
+Node : {
+    name : "root"
+
+    LightManager : {}
+    SpotLight : {}
+    SpotLight : {}
+
+    TestResult : "Success"
+}
+
+

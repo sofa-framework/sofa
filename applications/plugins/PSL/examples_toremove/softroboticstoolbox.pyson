@@ -1,0 +1,99 @@
+Template : {
+                name : "PulleyMotor"
+
+                properties : {
+                        aname : "pulleymotor"
+                        model : "model1"
+                        models : '["HiTec3", "HiTec5b"]'
+                }
+
+                Node : {
+                        Python : '''
+                            if not (model in ["HiTec3", "HiTec5b"]):
+                                    Sofa.msg_error(self, "The model is not allowed : " +str(model)+ "supported models are {HiTec3, HiTec5b }")
+                               '''
+
+                        name : p"aname"
+                        Node : {
+                                name : "mechanical"
+                                MechanicalObject : {
+                                        name : "mstate"
+                                        position : "0 0 0 0 0 1 0 0 2"
+                                }
+                        }
+
+                        Node : {
+                                name : "visualmodel"
+                                OglModel : {
+                                        filename : p"str(model)+'.obj'"
+                                }
+                        }
+                                                Node : {
+                                name : "structure"
+                                OglModel : {
+                                        filename : p"'struct.obj'"
+                                }
+                        }
+                }
+}
+
+
+Template : {
+                name : "Cube"
+                Node : {
+                    MechanicalObject : {}
+                    OglModel : {
+                        filename : "cube.obj"
+                    }
+                }
+}
+
+Template : {
+                name : "Sphere"
+                Node : {
+                    MechanicalObject : {}
+                    OglModel : {
+                        filename : "sphere.obj"
+                    }
+                }
+}
+
+
+Template : {
+        name : "PressureActuator"
+
+        properties : {
+                aname : "pulleymotor"
+                model : "model1"
+                models : ["HiTec3", "HiTec5b"]
+        }
+
+        Node : {
+                name : p"aname"
+                Python : '''
+                        if not (model in models):
+                            Sofa.msg_error(self, "Model '" +str(model)+ "' is not a valid model. Model can be ["+models+"]")
+                       '''
+
+                Node : {
+                        name : "mechanical"
+                        MechanicalObject : {
+                                name : "mstate"
+                                position : "0 0 0 0 0 1 0 0 2"
+                        }
+                }
+
+                Node : {
+                        name : "visualmodel"
+                        OglModel : {
+                                filename : p"str(model)+'.obj'"
+                        }
+                }
+                                        Node : {
+                        name : "structure"
+                        OglModel : {
+                                filename : p"'struct.obj'"
+                        }
+                }
+        }
+}

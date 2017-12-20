@@ -1,0 +1,10 @@
+<Node name="root">
+
+    <LightManager/>
+    <SpotLight/>
+    <SpotLight/>
+
+    <TestResult result="Success"/>
+</Node>
+
+
