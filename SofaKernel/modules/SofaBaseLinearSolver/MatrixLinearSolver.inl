@@ -403,11 +403,14 @@ bool MatrixLinearSolver<Matrix,Vector>::addMInvJt(defaulttype::BaseMatrix* resul
 template<class Matrix, class Vector>
 bool MatrixLinearSolver<Matrix,Vector>::buildComplianceMatrix(defaulttype::BaseMatrix* result, double fact)
 {
-    if (result->rowSize()==0) return true;
-
     JMatrixType * j_local = internalData.getLocalJ();
     j_local->clear();
-    j_local->resize(result->rowSize(),currentGroup->systemMatrix->colSize());
+    j_local->resize(result->rowSize(), currentGroup->systemMatrix->colSize());
+
+    if (result->rowSize() == 0)
+    {
+        return true;
+    }
 
     executeVisitor(simulation::MechanicalGetConstraintJacobianVisitor(core::ExecParams::defaultInstance(),j_local));
 
@@ -415,7 +418,8 @@ bool MatrixLinearSolver<Matrix,Vector>::buildComplianceMatrix(defaulttype::BaseM
 }
 
 template<class Matrix, class Vector>
-void MatrixLinearSolver<Matrix,Vector>::applyContactForce(const defaulttype::BaseVector* f,double positionFactor,double velocityFactor) {
+void MatrixLinearSolver<Matrix,Vector>::applyContactForce(const defaulttype::BaseVector* f, double positionFactor, double velocityFactor)
+{    
     currentGroup->systemRHVector->clear();
     currentGroup->systemRHVector->resize(currentGroup->systemMatrix->colSize());
 
