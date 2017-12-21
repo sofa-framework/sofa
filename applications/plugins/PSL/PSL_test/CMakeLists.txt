@@ -43,8 +43,6 @@ set(PSL_FILES
         pslfiles/test_import.psl
         pslfiles/test_importpython.psl
         pslfiles/test_importedpythondsl.psl
-        pslfiles/test_objects_lightmanager.psl
-        pslfiles/test_objects_lightmanager.pslx
         pslfiles/importedlib.psl
         pslfiles/importedpython.py
         pslfiles/importedpythondsl.py

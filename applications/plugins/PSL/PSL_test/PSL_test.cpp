@@ -154,9 +154,7 @@ std::vector<std::vector<std::string>> testvalues = {
     {"test_properties.psl", "Success", "NoError"},
     {"test_properties_raw.psl", "Success", "NoError"},
     {"test_pslversion.psl", "Success", "NoError"},
-    {"test_pslversion_invalid.psl", "Fail", "Error"},
-    {"test_objects_lightmanager.psl", "Success", "NoError"},
-    {"test_objects_lightmanager.pslx", "Success", "NoError"}
+    {"test_pslversion_invalid.psl", "Fail", "Error"}
 };
 
 
