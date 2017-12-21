@@ -7,29 +7,21 @@ set(HEADER_FILES
 set(SOURCE_FILES
     HeadlessRecorder.cpp)
 
-###################################################################### FFMPEG
-find_package(FFMPEG REQUIRED)
-if (FFMPEG_FOUND)
-        message("Found FFMPEG/LibAV libraries")
-        include_directories(${FFMPEG_INCLUDE_DIR})
-else (FFMPEG_FOUND)
-        message("Can't find libavcodec, libavformat or libavutil. Add them!")
-endif (FFMPEG_FOUND)
-set(SOFA_HAVE_AVCODEC ${AVCODEC_FOUND})
-
-
-
-###################################################################### OS SPECIFIC BUILD
-if(MSVS OR MSYS OR MINGW)
-    message("HeadlessRecorder is not implemented for Windows")
-endif()
-
-if(APPLE)
-    message("HeadlessRecorder is not implemented for Mac")
-endif()
 
 if(UNIX AND NOT APPLE)
     message("HeadlessRecorder for linux")
+	
+	###################################################################### FFMPEG
+	find_package(FFMPEG REQUIRED)
+	if (FFMPEG_FOUND)
+			message("Found FFMPEG/LibAV libraries")
+			include_directories(${FFMPEG_INCLUDE_DIR})
+	else (FFMPEG_FOUND)
+			message("Can't find libavcodec, libavformat or libavutil. Add them!")
+	endif (FFMPEG_FOUND)
+	set(SOFA_HAVE_AVCODEC ${AVCODEC_FOUND})
+
+	###################################################################### X11
     find_package(X11 REQUIRED)
     if (X11_FOUND)
             message("Found X11 libraries")

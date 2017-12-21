@@ -81,14 +81,19 @@ if(NOT SOFA_NO_OPENGL)
             list(APPEND SOFAGUI_TARGETS SofaGuiGlut)
             add_subdirectory(../applications/sofa/gui/glut ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiGlut)
         endif()
-        option(SOFAGUI_HEADLESS_RECORDER "Compile the Glut headless recorder" OFF)
-        if(SOFAGUI_HEADLESS_RECORDER)
-            set(SOFA_GUI_HEADLESS_RECORDER 1) # cmakedefine
-            list(APPEND SOFAGUI_TARGETS SofaHeadlessRecorder)
-            add_subdirectory(../applications/sofa/gui/headlessRecorder ${CMAKE_CURRENT_BINARY_DIR}/SofaHeadlessRecorder)
-        endif()
     endif()
-
+	
+	if(UNIX AND NOT APPLE)
+		option(SOFAGUI_HEADLESS_RECORDER "Compile the headless recorder" OFF)
+		if(SOFAGUI_HEADLESS_RECORDER)
+			set(SOFA_GUI_HEADLESS_RECORDER 1) # cmakedefine
+			list(APPEND SOFAGUI_TARGETS SofaHeadlessRecorder)
+			add_subdirectory(../applications/sofa/gui/headlessRecorder ${CMAKE_CURRENT_BINARY_DIR}/SofaHeadlessRecorder)
+		endif()
+    else()
+        message("HeadlessRecorder is not available on windows/mac")
+    endif()
+	
     ## Qt GUI
     # Check if Qt(4/5) is present ; if not, disable ability to compile Qt things
     set(SOFA_HAVE_QT_LIBRARIES 1)
