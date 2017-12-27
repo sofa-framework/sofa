@@ -30,10 +30,6 @@
 #include <boost/thread.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/condition.hpp>
-//#include <boost/detail/atomic_count.hpp>
-
-//#include <boost/pool/singleton_pool.hpp>
-
 
 
 namespace sofa
