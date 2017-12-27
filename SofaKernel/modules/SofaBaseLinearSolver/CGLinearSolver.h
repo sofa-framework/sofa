@@ -74,6 +74,9 @@ protected:
     inline void cgstep_alpha(const core::ExecParams* params, Vector& x, Vector& r, Vector& p, Vector& q, SReal alpha);
 
 public:
+    void init() override ;
+    void reinit() override ;
+
     void resetSystem() override;
 
     void setSystemMBKMatrix(const sofa::core::MechanicalParams* mparams) override;

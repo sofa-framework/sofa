@@ -73,6 +73,27 @@ void CGLinearSolver<TMatrix,TVector>::resetSystem()
 }
 
 template<class TMatrix, class TVector>
+void CGLinearSolver<TMatrix,TVector>::init()
+{
+    /// Force the print log to follow the value of verbose. Otherwise it is very confusing
+    /// for user to check the verbosity but nothing is printed.
+    if( f_verbose.getValue() )
+        this->f_printLog.setValue( true ) ;
+    Inherit::init() ;
+}
+
+template<class TMatrix, class TVector>
+void CGLinearSolver<TMatrix,TVector>::reinit()
+{
+    /// Force the print log to follow the value of verbose. Otherwise it is very confusing
+    /// for user to check the verbosity but nothing is printed.
+    if( f_verbose.getValue() )
+        this->f_printLog.setValue( true ) ;
+    Inherit::reinit() ;
+}
+
+
+template<class TMatrix, class TVector>
 void CGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(const sofa::core::MechanicalParams* mparams)
 {
 #ifdef DISPLAY_TIME
@@ -146,7 +167,6 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode("VectorAllocation");
 #endif
-
 
     for( nb_iter=1; nb_iter<=f_maxIter.getValue(); nb_iter++ )
     {
