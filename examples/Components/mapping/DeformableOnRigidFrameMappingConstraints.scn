@@ -31,13 +31,16 @@
             <SparseGrid filename="mesh/torus_for_collision.obj" n="7 2 4" />
             <MechanicalObject />
             <TetrahedronFEMForceField youngModulus="1e4" poissonRatio="0.45"/>
+            <UniformMass mass='0.00001'/>
             <BoxConstraint box="-1 -1 -1 1 1 1" />
             <PrecomputedConstraintCorrection recompute="true" />
             <Node name="DeformableMappedModel">
                 <SparseGrid filename="mesh/torus_for_collision.obj" n="7 2 4" />
                 <MechanicalObject name="deformedMO" />
                 <DeformableOnRigidFrameMapping input1="@.." input2="@../../TorusRigid/rigidframe" output="@deformedMO" printLog="0" />
+                <UniformMass mass='0.00001'/>
                 <Node name="TorusCollisLocal">
+                    <UniformMass mass='0.00001'/>
                     <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />
                     <Mesh src="@loader" />
                     <MechanicalObject src="@loader" />
