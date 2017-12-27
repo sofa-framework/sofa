@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<Node name="root" gravity="0 0 0" dt="0.02">
+<Node name="root" gravity="0 -9.8 0" dt="0.02">
     <VisualStyle displayFlags="showVisual showBehaviorModels showForceFields" />
     <CollisionPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
