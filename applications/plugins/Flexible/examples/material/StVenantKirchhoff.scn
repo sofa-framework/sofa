@@ -102,9 +102,9 @@
 	     <UniformMass totalMass="200"/>
 
              <Node>
+                  <EdgeSetTopologyContainer src="@../mesh"/>
                   <MechanicalObject template="Vec1d" name="parent" />
                   <HEMLStVKForceField youngModulus="2000" poissonRatio="0.2"/>
-                  <EdgeSetTopologyContainer src="@../mesh"/>
                   <SquareDistanceMapping  applyRestPosition="1" computeDistance="1" geometricStiffness="2"/>   <!--warning rest pos must be computed -->
             </Node>
 
