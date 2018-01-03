@@ -427,7 +427,7 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-	void computeBBox(const core::ExecParams* params, bool onlyVisible);
+    void computeBBox(const core::ExecParams* params, bool onlyVisible);
 
 
     // Getting the stiffness matrix of index i
