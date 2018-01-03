@@ -130,8 +130,6 @@ protected:
         Mat3x3 restRotation; // used for QR decomposition
         //unsigned int v[4]; // the indices of the 4 vertices
 
-        PointRestInformation *pointInfo[6]; // shortcut to the 4 vertex information
-        EdgeRestInformation *edgeInfo[6];  // shortcut to the 6 edge information
         Real edgeOrientation[6];
 
 

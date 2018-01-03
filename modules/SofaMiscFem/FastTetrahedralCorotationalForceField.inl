@@ -267,16 +267,8 @@ void FastTetrahedralCorotationalForceField<DataTypes>::updateTopologyInformation
         /// describe the jth vertex index of triangle no i
         const core::topology::BaseMeshTopology::Tetrahedron &ta= _topology->getTetrahedron(i);
 
-        for (j=0; j<4; ++j)
-        {
-            //tetinfo->v[j]=ta[j];
-            tetinfo->pointInfo[j] = &pointInf[ta[j]];
-        }
-
         for (j=0; j<6; ++j)
         {
-            /// store the pointer to the local edge information
-            tetinfo->edgeInfo[j]=& edgeInf[tea[j]];
             /// store the information about the orientation of the edge : 1 if the edge orientation matches the orientation in getLocalEdgesInTetrahedron
             /// ie edgesInTetrahedronArray[6][2] = {{0,1}, {0,2}, {0,3}, {1,2}, {1,3}, {2,3}};
             if (ta[ _topology->getLocalEdgesInTetrahedron(j)[0]]== _topology->getEdge(tea[j])[0])
@@ -464,12 +456,11 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addDForce(const sofa::cor
         for(i=0; i<nbTetrahedra; i++ )
         {
             tetinfo=&tetrahedronInf[i];
-
+            const core::topology::BaseMeshTopology::EdgesInTetrahedron &tea = _topology->getEdgesInTetrahedron(i);
 
             for (j=0; j<6; ++j)
             {
-
-                einfo=tetinfo->edgeInfo[j];
+                unsigned int edgeID = tea[j];
 
                 // test if the tetrahedron edge has the same orientation as the global edge
                 tmp=tetinfo->linearDfDx[j]*tetinfo->rotation;
@@ -477,11 +468,11 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addDForce(const sofa::cor
                 if (tetinfo->edgeOrientation[j]==1)
                 {
                     // store the two edge matrices since the stiffness matrix is not symmetric
-                    einfo->DfDx+=tetinfo->rotation.transposed()*tmp;
+                    edgeInf[edgeID].DfDx += tetinfo->rotation.transposed()*tmp;
                 }
                 else
                 {
-                    einfo->DfDx+= tmp.transposed()*tetinfo->rotation;
+                    edgeInf[edgeID].DfDx += tmp.transposed()*tetinfo->rotation;
                 }
             }
         }
@@ -553,19 +544,21 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addKToMatrix(sofa::defaul
         for(i=0; i<nbTetrahedra; i++ )
         {
             tetinfo=&tetrahedronInf[i];
+            const core::topology::BaseMeshTopology::EdgesInTetrahedron &tea = _topology->getEdgesInTetrahedron(i);
 
             for (j=0; j<6; ++j)
             {
-                einfo=tetinfo->edgeInfo[j];
+                unsigned int edgeID = tea[j];
+
                 // test if the tetrahedron edge has the same orientation as the global edge
                 tmp=tetinfo->linearDfDx[j]*tetinfo->rotation;
 
                 if (tetinfo->edgeOrientation[j]==1) {
                     // store the two edge matrices since the stiffness sub-matrix is not symmetric
-                    einfo->DfDx+=tetinfo->rotation.transposed()*tmp;
+                    edgeInf[edgeID].DfDx += tetinfo->rotation.transposed()*tmp;
                 }
                 else {
-                    einfo->DfDx+= tmp.transposed()*tetinfo->rotation;
+                    edgeInf[edgeID].DfDx += tmp.transposed()*tetinfo->rotation;
                 }
 
             }
@@ -578,10 +571,13 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addKToMatrix(sofa::defaul
 
     for(i=0; i<nbTetrahedra; i++ ) {
         tetinfo=&tetrahedronInf[i];
+        const core::topology::BaseMeshTopology::Tetrahedron& t = _topology->getTetrahedron(i);
+
         for (j = 0; j < 4; ++j) {
-            pinfo=tetinfo->pointInfo[j];
+            unsigned int Id = t[j];
+            
             tmp = tetinfo->rotation.transposed() * tetinfo->linearDfDxDiag[j] * tetinfo->rotation;
-            pinfo->DfDx+=tmp;
+            pointInf[Id].DfDx+=tmp;
         }
     }
 
