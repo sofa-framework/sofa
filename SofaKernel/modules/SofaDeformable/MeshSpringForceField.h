@@ -61,7 +61,7 @@ protected:
     Data< Real >  cubesStiffness; ///< Stiffness for the Cubes
     Data< Real >  cubesDamping; ///< Damping for the Cubes
     Data< bool >  noCompression; ///< Only consider elongation
-    Data< bool  > d_draw; // Activation of draw
+    Data< bool  > d_draw; ///< Activation of draw
     Data< Real >  d_drawMinElongationRange; ///< Min range of elongation (red eongation - blue neutral - green compression)
     Data< Real >  d_drawMaxElongationRange; ///< Max range of elongation (red eongation - blue neutral - green compression)
     Data< Real >  d_drawSpringSize; ///< Size of drawed lines

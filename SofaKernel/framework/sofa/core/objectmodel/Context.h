@@ -55,8 +55,8 @@ public:
     Data<SReal> dt_; ///< Time step
     Data<SReal> time_; ///< Current time
     Data<bool> animate_; ///< Animate the Simulation(applied at initialization only)
-	Data<bool> d_isSleeping;				/// Tells if the context is sleeping, and thus ignored by visitors
-	Data<bool> d_canChangeSleepingState;	/// Tells if the context can change its sleeping state
+	Data<bool> d_isSleeping;				///< Tells if the context is sleeping, and thus ignored by visitors
+	Data<bool> d_canChangeSleepingState;	///< Tells if the context can change its sleeping state
 #ifdef SOFA_SUPPORT_MULTIRESOLUTION
     /// @name For multiresolution (UNSTABLE)
     /// @{
