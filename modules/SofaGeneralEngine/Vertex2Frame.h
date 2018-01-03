@@ -79,7 +79,7 @@ public:
 protected:
     typename sofa::core::behavior::MechanicalState<DataTypes>::SPtr m_mstate;
     Data< helper::vector<CPos> > d_vertices; ///< Vertices of the mesh loaded
-    Data< helper::vector<sofa::defaulttype::Vector2> > d_texCoords; // for the moment, we suppose that texCoords is order 2 (2 texCoords for a vertex)
+    Data< helper::vector<sofa::defaulttype::Vector2> > d_texCoords; ///< for the moment, we suppose that texCoords is order 2 (2 texCoords for a vertex)
     Data< helper::vector<CPos> > d_normals; ///< Normals of the mesh loaded
 
     Data<VecCoord> d_frames; ///< Frames at output

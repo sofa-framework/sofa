@@ -155,7 +155,7 @@ public :
     bool  m_meshSaved ;
 
     Data<bool> d_stiffnessMatrixRegularizationWeight; ///< Regularization of the Stiffness Matrix (between true or false)
-    Data<string> d_materialName; /// the name of the material
+    Data<string> d_materialName; ///< the name of the material
     Data<SetParameterArray> d_parameterSet; ///< The global parameters specifying the material
     Data<SetAnisotropyDirectionArray> d_anisotropySet; ///< The global directions of anisotropy of the material
 
