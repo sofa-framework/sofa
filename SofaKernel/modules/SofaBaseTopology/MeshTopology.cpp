@@ -2645,14 +2645,9 @@ void MeshTopology::draw(const core::visual::VisualParams* vparams)
         {
             const Edge& c = getEdge(i);
             pos.push_back(defaulttype::Vector3(getPosX(c[0]), getPosY(c[0]), getPosZ(c[0])));
-			pos.push_back(defaulttype::Vector3(getPosX(c[1]), getPosY(c[1]), getPosZ(c[1])));
-
-			float rad = (float)( (defaulttype::Vector3(getPosX(c[0]), getPosY(c[0]), getPosZ(c[0]))-defaulttype::Vector3(getPosX(c[1]), getPosY(c[1]), getPosZ(c[1]))).norm()/20.0 );
-			vparams->drawTool()->drawArrow(defaulttype::Vector3(getPosX(c[0]), getPosY(c[0]), getPosZ(c[0])), defaulttype::Vector3(getPosX(c[1]), getPosY(c[1]), getPosZ(c[1])), rad, defaulttype::Vec4f(0.4f,1.0f,0.3f,1.0f));
+            pos.push_back(defaulttype::Vector3(getPosX(c[1]), getPosY(c[1]), getPosZ(c[1])));
         }
-
-
-//        vparams->drawTool()->drawLines(pos, 1.0f, defaulttype::Vec4f(0.4f,1.0f,0.3f,1.0f));
+        vparams->drawTool()->drawLines(pos, 1.0f, defaulttype::Vec4f(0.4f,1.0f,0.3f,1.0f));
     }
 
     //Draw Triangles
