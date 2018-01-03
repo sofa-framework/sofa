@@ -53,7 +53,7 @@ force-one-lined-data-declarations() {
             continue
         fi
 
-        # CONVERT one-lined Data declarations to separated Data declarations.
+        # CONVERT multiple Data declaration to one-lined Data declarations.
         while grep -Eq "$grep_pattern" "$file"; do
             sed -ie 's/^\(.*Data[	 ]*<.*>[	 ]*\)\([A-Za-z_-]*\)[	 ]*,[	 ]*\(.*\);\(.*\)$/\1\2;\4\n\1\3;\4/g' "$file"
             rm -f "$file"e 2> /dev/null # Created by Windows only
@@ -73,8 +73,8 @@ fix-inline-comment() {
     local member="$2"
 
     # FIX inline comments: "// DataComment" and "/// DataComment" to "///< DataComment"
-    if grep -q '^[	 A-Za-z:_-]*Data[	 ]*<.*>[	 ]*'"$member"'[	 ]*;[	 ]*///? ?$' "$file_h"; then
-        sed -ie 's/^\(.*Data[	 ]*<.*>[	 ]*'"$member"'[	 ]*;[	 ]*\)\/\/\/? ?\(.*\)$/\1\/\/\/< \2/g' "$file_h"
+    if grep -q '^[	 A-Za-z:_-]*Data[	 ]*<.*>[	 ]*'"$member"'[	 ]*;[	 ]*///*[	 ][	 ]*' "$file_h"; then
+        sed -ie 's/^\([	 A-Za-z:_-]*Data[	 ]*<.*>[	 ]*'"$member"'[	 ]*;[	 ]*\)\/\/\/*[	 ][	 ]*\(.*\)$/\1\/\/\/< \2/g' "$file_h"
         rm -f "$file_h"e 2> /dev/null # Created by Windows only
     fi
 }
@@ -127,7 +127,6 @@ generate-doxygen-data-comments() {
     count="$(wc -l < "$TMP_FILE")"
     echo "$count calls counted."
 
-    echo "Starting detection..."
     # For each initData call that is on one line
     i=1
     while read -r line; do
@@ -150,7 +149,6 @@ generate-doxygen-data-comments() {
         fix-inline-comment "$file_h" "$member"
 
         add-comment "$file_h" "$member" "$description"
-
     done < "$TMP_FILE"
 
     echo ""
