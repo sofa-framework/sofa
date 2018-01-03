@@ -147,10 +147,16 @@ protected:
     linearsolver::FullMatrix<SReal> refMinv; ///< reference inverse matrix
 #endif
 
+    /*
+    * @brief Compute the compliance matrix
+    */
+
+    virtual void computeJ(sofa::defaulttype::BaseMatrix* W);
+
     /**
      * @brief Compute dx correction from motion space force vector.
      */
-    void computeDx(sofa::core::MultiVecDerivId f);
+    virtual void computeDx(sofa::core::MultiVecDerivId f);
 
 private:
     // new :  for non building the constraint system during solving process //

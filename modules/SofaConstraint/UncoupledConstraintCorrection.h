@@ -24,6 +24,7 @@
 #include "config.h"
 
 #include <sofa/core/behavior/ConstraintCorrection.h>
+#include <sofa/core/behavior/OdeSolver.h>
 
 
 namespace sofa
@@ -125,6 +126,11 @@ public:
     Data<bool> f_verbose; ///< Dump the constraint matrix at each iteration
 
     Data < bool > d_handleTopologyChange; ///< Enable support of topological changes for compliance vector (disable if another component takes care of this)
+      
+    Data< Real > d_correctionVelocityFactor;
+    Data< Real > d_correctionPositionFactor;
+
+    Data < bool > d_useOdeSolverIntegrationFactors;
 
 private:
     // new :  for non building the constraint system during solving process //
@@ -134,6 +140,9 @@ private:
     //std::vector< std::vector<int> >  dof_constraint_table;   // table of indices of each point involved with each constraint
 
 protected:
+
+    sofa::core::behavior::OdeSolver* m_pOdeSolver;
+
     /**
      * @brief Compute dx correction from motion space force vector.
      */
@@ -147,22 +156,8 @@ template<>
 void UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Types >::init();
 
 template<>
-void UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Types >::addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, sofa::defaulttype::BaseMatrix * /*W*/);
-
-template<>
 void UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Types >::getComplianceMatrix(sofa::defaulttype::BaseMatrix * /*m*/) const;
 
-template<>
-void UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Types >::computeDx(const sofa::core::objectmodel::Data< VecDeriv > &/*f*/);
-
-template<>
-void UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Types >::applyContactForce(const sofa::defaulttype::BaseVector * /*f*/);
-
-template<>
-void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::setConstraintDForce(double * /*df*/, int /*begin*/, int /*end*/, bool /*update*/);
-
-template<>
-void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getBlockDiagonalCompliance(defaulttype::BaseMatrix * /*W*/, int /*begin*/, int /*end*/);
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONSTRAINTSET_UNCOUPLEDCONSTRAINTCORRECTION_CPP)
 #ifndef SOFA_FLOAT

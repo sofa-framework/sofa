@@ -29,7 +29,7 @@
 #include <SofaConstraint/BilateralInteractionConstraint.h>
 #include <sofa/helper/Factory.h>
 #include <SofaBaseCollision/BaseContactMapper.h>
-#include <SofaConstraint/FrictionContact.h>
+#include <SofaConstraint/ContactIdentifier.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/BaseMapping.h>
 
@@ -43,7 +43,7 @@ namespace collision
 {
 
 template <class TCollisionModel1, class TCollisionModel2>
-class StickContactConstraint : public core::collision::Contact, public Identifier
+class StickContactConstraint : public core::collision::Contact, public ContactIdentifier
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(StickContactConstraint, TCollisionModel1, TCollisionModel2), core::collision::Contact);

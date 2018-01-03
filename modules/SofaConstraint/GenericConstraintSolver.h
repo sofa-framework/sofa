@@ -103,8 +103,8 @@ public:
 
 	bool prepareStates(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
 	bool buildSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
-        void rebuildSystem(double massFactor, double forceFactor) override;
-        bool solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
+    void rebuildSystem(double massFactor, double forceFactor) override;
+    bool solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
 	bool applyCorrection(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
     void computeResidual(const core::ExecParams* /*params*/) override;
 
@@ -129,15 +129,19 @@ public:
     Data<bool> reverseAccumulateOrder; ///< True to accumulate constraints from nodes in reversed order (can be necessary when using multi-mappings or interaction constraints not following the node hierarchy)
 
 	ConstraintProblem* getConstraintProblem() override;
-	void lockConstraintProblem(ConstraintProblem* p1, ConstraintProblem* p2=0) override;
+	void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2=0) override;
 
     virtual void removeConstraintCorrection(core::behavior::BaseConstraintCorrection *s) override;
 
 protected:
-	GenericConstraintProblem cp1, cp2, cp3;
+    enum { CP_BUFFER_SIZE = 10 };
+    sofa::helper::fixed_array<GenericConstraintProblem,CP_BUFFER_SIZE> m_cpBuffer;
+    sofa::helper::fixed_array<bool,CP_BUFFER_SIZE> m_cpIsLocked;
 	GenericConstraintProblem *current_cp, *last_cp;
 	std::vector<core::behavior::BaseConstraintCorrection*> constraintCorrections;
 	std::vector<char> constraintCorrectionIsActive; // for each constraint correction, a boolean that is false if the parent node is sleeping
+
+    void clearConstraintProblemLocks();
 
 	simulation::Node *context;
 
@@ -202,114 +206,6 @@ private:
 
     std::vector<core::behavior::ConstraintResolution*>& _res;
     unsigned int _offset;
-};
-
-class SOFA_CONSTRAINT_API MechanicalSetConstraint : public simulation::BaseMechanicalVisitor
-{
-public:
-	MechanicalSetConstraint(const core::ConstraintParams* _cparams, core::MultiMatrixDerivId _res, unsigned int &_contactId)
-		: simulation::BaseMechanicalVisitor(_cparams)
-		, res(_res)
-		, contactId(_contactId)
-		, cparams(_cparams)
-	{
-#ifdef SOFA_DUMP_VISITOR_INFO
-		setReadWriteVectors();
-#endif
-	}
-
-	virtual Result fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* c)
-	{
-		ctime_t t0 = begin(node, c);
-
-        c->setConstraintId(contactId);
-		c->buildConstraintMatrix(cparams, res, contactId);
-
-		end(node, c, t0);
-		return RESULT_CONTINUE;
-	}
-
-	/// Return a class name for this visitor
-	/// Only used for debugging / profiling purposes
-	virtual const char* getClassName() const
-	{
-		return "MechanicalSetConstraint";
-	}
-
-	virtual bool isThreadSafe() const
-	{
-		return false;
-	}
-
-    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
-    {
-        return false; // !map->isMechanical();
-    }
-
-#ifdef SOFA_DUMP_VISITOR_INFO
-	void setReadWriteVectors()
-	{
-	}
-#endif
-
-protected:
-
-	sofa::core::MultiMatrixDerivId res;
-    unsigned int &contactId;
-	const sofa::core::ConstraintParams *cparams;
-};
-
-
-class SOFA_CONSTRAINT_API MechanicalAccumulateConstraint2 : public simulation::BaseMechanicalVisitor
-{
-public:
-	MechanicalAccumulateConstraint2(const core::ConstraintParams* _cparams, core::MultiMatrixDerivId _res, bool _reverseOrder = false)
-		: simulation::BaseMechanicalVisitor(_cparams)
-		, res(_res)
-		, cparams(_cparams)
-        , reverseOrder(_reverseOrder)
-	{
-#ifdef SOFA_DUMP_VISITOR_INFO
-		setReadWriteVectors();
-#endif
-	}
-    
-    /// Return true to reverse the order of traversal of child nodes
-    virtual bool childOrderReversed(simulation::Node* /*node*/) { return reverseOrder; }
-
-
-	virtual void bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map)
-	{
-		ctime_t t0 = begin(node, map);
-		map->applyJT(cparams, res, res);
-		end(node, map, t0);
-	}
-
-	/// Return a class name for this visitor
-	/// Only used for debugging / profiling purposes
-	virtual const char* getClassName() const { return "MechanicalAccumulateConstraint2"; }
-
-	virtual bool isThreadSafe() const
-	{
-		return false;
-	}
-    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
-    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
-    {
-        return false; // !map->isMechanical();
-    }
-
-#ifdef SOFA_DUMP_VISITOR_INFO
-	void setReadWriteVectors()
-	{
-	}
-#endif
-
-protected:
-	core::MultiMatrixDerivId res;
-	const sofa::core::ConstraintParams *cparams;
-    bool reverseOrder;
 };
 
 } // namespace constraintset
