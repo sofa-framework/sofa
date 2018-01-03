@@ -1856,7 +1856,7 @@ void TetrahedronFEMForceField<DataTypes>::computeBBox(const core::ExecParams* pa
 	helper::ReadAccessor<DataVecCoord> x = this->mstate->read(core::VecCoordId::position());
 
 	static const Real max_real = std::numeric_limits<Real>::max();
-	static const Real min_real = std::numeric_limits<Real>::min();
+	static const Real min_real = std::numeric_limits<Real>::lowest();
 	Real maxBBox[3] = {min_real,min_real,min_real};
 	Real minBBox[3] = {max_real,max_real,max_real};
 	for (size_t i=0; i<x.size(); i++)
