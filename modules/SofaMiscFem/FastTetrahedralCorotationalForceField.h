@@ -75,7 +75,8 @@ public:
     typedef core::topology::BaseMeshTopology::Tetra Tetra;
     typedef core::topology::BaseMeshTopology::EdgesInTetrahedron EdgesInTetrahedron;
     typedef core::topology::BaseMeshTopology::Tetra Tetrahedron;
-
+    typedef unsigned int Index;
+    
 
 protected:
 
@@ -83,7 +84,6 @@ protected:
     {
     public:
         Mat3x3 DfDx;  /// the vertex stiffness matrix
-        unsigned int v;
 
         PointRestInformation() {}
 
@@ -101,12 +101,8 @@ protected:
     {
     public:
         Mat3x3 DfDx; /// the edge stiffness matrix
-        unsigned int v[2];
-        Coord restDp;
 
-        EdgeRestInformation()
-        {
-        }
+        EdgeRestInformation() {}
         /// Output stream
         inline friend std::ostream& operator<< ( std::ostream& os, const EdgeRestInformation& /*eri*/ )
         {

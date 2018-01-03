@@ -259,17 +259,6 @@ void FastTetrahedralCorotationalForceField<DataTypes>::updateTopologyInformation
     helper::vector<typename FastTetrahedralCorotationalForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
     helper::vector<typename FastTetrahedralCorotationalForceField<DataTypes>::PointRestInformation>& pointInf = *(pointInfo.beginEdit());
 
-    for (i = 0; i < nbPoints; i++) {
-        pointInf[i].v = i;
-    }
-
-    for(i=0; i<nbEdges; i++ )
-    {
-        einfo=&edgeInf[i];
-        einfo->v[0]=_topology->getEdge(i)[0];
-        einfo->v[1]=_topology->getEdge(i)[1];
-    }
-
     for(i=0; i<nbTetrahedra; i++ )
     {
         tetinfo=&tetrahedronInf[i];
@@ -296,10 +285,12 @@ void FastTetrahedralCorotationalForceField<DataTypes>::updateTopologyInformation
                 tetinfo->edgeOrientation[j]= -1;
         }
 
-    }
-    updateTopologyInfo=false;
+    }    
     edgeInfo.endEdit();
     tetrahedronInfo.endEdit();
+    pointInfo.endEdit();
+
+    updateTopologyInfo = false;
 }
 template<class DataTypes>
 void FastTetrahedralCorotationalForceField<DataTypes>::computeQRRotation( Mat3x3 &r, const Coord *dp)
@@ -357,10 +348,10 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addForce(const sofa::core
     for(i=0; i<nbTetrahedra; i++ )
     {
         tetinfo=&tetrahedronInf[i];
-
+        const core::topology::BaseMeshTopology::Tetrahedron &ta = _topology->getTetrahedron(i);
         for (j=0; j<6; ++j)
         {
-            dp[j]=x[tetinfo->pointInfo[edgesInTetrahedronArray[j][1]]->v]-x[tetinfo->pointInfo[edgesInTetrahedronArray[j][0]]->v];
+            dp[j]=x[ta[edgesInTetrahedronArray[j][1]]]-x[ta[edgesInTetrahedronArray[j][0]]];
         }
 
         if (decompositionMethod==POLAR_DECOMPOSITION)
@@ -425,7 +416,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addForce(const sofa::core
         }
         for (j=0; j<4; ++j)
         {
-            f[tetinfo->pointInfo[j]->v]+=R*force[j];
+            f[ta[j]]+=R*force[j];
         }
 
 
@@ -508,13 +499,11 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addDForce(const sofa::cor
     for(i=0; i<nbEdges; i++ )
     {
         einfo=&edgeInf[i];
+        const core::topology::BaseMeshTopology::Edge& edge = _topology->getEdge(i);
 
-        v0=einfo->v[0];
-        v1=einfo->v[1];
-
-        deltax= dx[v1] -dx[v0];
-        df[v1]+= einfo->DfDx*(deltax * kFactor);
-        df[v0]-= einfo->DfDx.multTranspose(deltax * kFactor);
+        deltax= dx[edge[1]] -dx[edge[0]];
+        df[edge[1]]+= einfo->DfDx*(deltax * kFactor);
+        df[edge[0]]-= einfo->DfDx.multTranspose(deltax * kFactor);
     }
 
     datadF.endEdit();
@@ -599,12 +588,11 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addKToMatrix(sofa::defaul
     /// construct the diagonal blocks from point data
     for (i=0; i<nbPoints; i++) {
         pinfo = &pointInf[i];
-        int v = pinfo->v;
 
         for (int m = 0; m < 3; m++) {
-            matRow = offset + 3*v + m;
+            matRow = offset + 3*i + m;
             for (int n = 0; n < 3; n++) {
-                matCol = offset + 3*v + n;
+                matCol = offset + 3*i + n;
                 mat->add(matRow, matCol, -kFactor*pinfo->DfDx[m][n]);
             }
         }
@@ -615,13 +603,12 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addKToMatrix(sofa::defaul
     {
         einfo=&edgeInf[i];
 
-        int v0=einfo->v[0];
-        int v1=einfo->v[1];
+        const core::topology::BaseMeshTopology::Edge& edge = _topology->getEdge(i);
 
         for (int m = 0; m < 3; m++) {
-            matRow = offset + 3*v0 + m;
+            matRow = offset + 3*edge[0] + m;
             for (int n = 0; n < 3; n++) {
-                matCol = offset + 3*v1 + n;
+                matCol = offset + 3*edge[1] + n;
                 mat->add(matRow, matCol, -kFactor*einfo->DfDx[n][m]);
                 mat->add(matCol, matRow, -kFactor*einfo->DfDx[n][m]);
 
