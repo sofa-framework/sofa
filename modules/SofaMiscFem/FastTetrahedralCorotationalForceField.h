@@ -199,6 +199,12 @@ protected:
     Real lambda;  /// first Lame coefficient
     Real mu;    /// second Lame coefficient
 
+    Data<bool> f_drawing; ///<  draw the forcefield if true
+    Data<defaulttype::Vec4f> drawColor1; ///<  draw color for faces 1
+    Data<defaulttype::Vec4f> drawColor2; ///<  draw color for faces 2
+    Data<defaulttype::Vec4f> drawColor3; ///<  draw color for faces 3
+    Data<defaulttype::Vec4f> drawColor4; ///<  draw color for faces 4
+
     FastTetrahedralCorotationalForceField();
 
     virtual ~FastTetrahedralCorotationalForceField();

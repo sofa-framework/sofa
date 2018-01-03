@@ -155,6 +155,11 @@ template <class DataTypes> FastTetrahedralCorotationalForceField<DataTypes>::Fas
     , f_youngModulus(initData(&f_youngModulus,(Real)1000.,"youngModulus","Young modulus in Hooke's law"))
     , lambda(0)
     , mu(0)
+    , f_drawing(initData(&f_drawing, true, "drawing", " draw the forcefield if true"))
+    , drawColor1(initData(&drawColor1, defaulttype::Vec4f(0.0f, 0.0f, 1.0f, 1.0f), "drawColor1", " draw color for faces 1"))
+    , drawColor2(initData(&drawColor2, defaulttype::Vec4f(0.0f, 0.5f, 1.0f, 1.0f), "drawColor2", " draw color for faces 2"))
+    , drawColor3(initData(&drawColor3, defaulttype::Vec4f(0.0f, 1.0f, 1.0f, 1.0f), "drawColor3", " draw color for faces 3"))
+    , drawColor4(initData(&drawColor4, defaulttype::Vec4f(0.5f, 1.0f, 1.0f, 1.0f), "drawColor4", " draw color for faces 4"))
     , tetrahedronHandler(NULL)
 {
     tetrahedronHandler = new FTCFTetrahedronHandler(this,&tetrahedronInfo);
@@ -641,17 +646,60 @@ void FastTetrahedralCorotationalForceField<DataTypes>::updateLameCoefficients()
 template<class DataTypes>
 void FastTetrahedralCorotationalForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
+    if (!f_drawing.getValue()) return;
+
+    const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        vparams->drawTool()->setPolygonMode(0, true);
 
+
+    std::vector< defaulttype::Vector3 > points[4];
+    for (int i = 0; i<_topology->getNbTetrahedra(); ++i)
+    {
+        const core::topology::BaseMeshTopology::Tetrahedron t = _topology->getTetrahedron(i);
+
+        Index a = t[0];
+        Index b = t[1];
+        Index c = t[2];
+        Index d = t[3];
+        Coord center = (x[a] + x[b] + x[c] + x[d])*0.125;
+        Coord pa = (x[a] + center)*(Real)0.666667;
+        Coord pb = (x[b] + center)*(Real)0.666667;
+        Coord pc = (x[c] + center)*(Real)0.666667;
+        Coord pd = (x[d] + center)*(Real)0.666667;
+
+        // 		glColor4f(0,0,1,1);
+        points[0].push_back(pa);
+        points[0].push_back(pb);
+        points[0].push_back(pc);
+
+        // 		glColor4f(0,0.5,1,1);
+        points[1].push_back(pb);
+        points[1].push_back(pc);
+        points[1].push_back(pd);
+
+        // 		glColor4f(0,1,1,1);
+        points[2].push_back(pc);
+        points[2].push_back(pd);
+        points[2].push_back(pa);
+
+        // 		glColor4f(0.5,1,1,1);
+        points[3].push_back(pd);
+        points[3].push_back(pa);
+        points[3].push_back(pb);
+    }
+
+    vparams->drawTool()->drawTriangles(points[0], drawColor1.getValue());
+    vparams->drawTool()->drawTriangles(points[1], drawColor2.getValue());
+    vparams->drawTool()->drawTriangles(points[2], drawColor3.getValue());
+    vparams->drawTool()->drawTriangles(points[3], drawColor4.getValue());
 
     if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-#endif /* SOFA_NO_OPENGL */
+        vparams->drawTool()->setPolygonMode(0, false);
+
 }
 
 } // namespace forcefield
