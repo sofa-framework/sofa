@@ -193,6 +193,7 @@ void ServerCommunicationZMQ::processMessage(std::string dataString)
     BaseData* data;
     std::string subject;
     CommunicationSubscriber * subscriber;
+    std::vector<std::string> onlyArgumentList;
     std::vector<std::string> argumentList = stringToArgumentList(dataString);
     SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK> source;
 
@@ -207,27 +208,25 @@ void ServerCommunicationZMQ::processMessage(std::string dataString)
     source = subscriber->getSource();
 
     std::string firstArg = getArgumentValue(*(++it));
-
-    std::vector<std::string> onlyArgumentList;
-    for (it; it != argumentList.end();it++)
-        onlyArgumentList.push_back(*it);
-
     if (firstArg.compare("matrix") == 0)
     {
         int row = 0, col = 0;
         if (argumentList.size() >= 3+1) // +1 due to subject count in
         {
+            for (it = argumentList.begin()+4; it != argumentList.end();it++)
+                onlyArgumentList.push_back(*it);
             try
             {
-                row = std::stoi(getArgumentValue(*(++it)));
-                col = std::stoi(getArgumentValue(*(++it)));
+                row = std::stoi(getArgumentValue(argumentList.at(2)));
+                col = std::stoi(getArgumentValue(argumentList.at(3)));
+                std::cout << row << " " << col << std::endl;
                 if (row < 0 || col < 0)
                     return;
             } catch(std::invalid_argument& e){
-                msg_warning() << "no available conversion for: " << getArgumentValue(*(++it));
+                msg_warning() << "no available conversion for: " << e.what();
                 return;
             } catch(std::out_of_range& e){
-                msg_warning() << "out of range : " << getArgumentValue(*(++it));
+                msg_warning() << "out of range : " << e.what();
                 return;
             }
         } else
@@ -253,6 +252,8 @@ void ServerCommunicationZMQ::processMessage(std::string dataString)
     }
     else
     {
+        for (it = argumentList.begin()+1; it != argumentList.end();it++)
+            onlyArgumentList.push_back(*it);
         writeData(source, subscriber, subject, onlyArgumentList);
     }
 }
