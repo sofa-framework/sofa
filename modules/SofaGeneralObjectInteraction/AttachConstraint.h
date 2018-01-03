@@ -92,7 +92,7 @@ public:
     Data< Real > d_positionFactor;      ///< IN: Factor applied to projection of position
     Data< Real > d_velocityFactor;      ///< IN: Factor applied to projection of velocity
     Data< Real > d_responseFactor;      ///< IN: Factor applied to projection of force/acceleration
-    Data< helper::vector<Real> > d_constraintFactor; /// Constraint factor per pair of points constrained. 0 -> the constraint is released. 1 -> the constraint is fully constrained
+    Data< helper::vector<Real> > d_constraintFactor; ///< Constraint factor per pair of points constrained. 0 -> the constraint is released. 1 -> the constraint is fully constrained
 
     helper::vector<bool> activeFlags;
     helper::vector<bool> constraintReleased;

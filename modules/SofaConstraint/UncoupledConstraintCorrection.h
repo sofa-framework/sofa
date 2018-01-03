@@ -127,10 +127,10 @@ public:
 
     Data < bool > d_handleTopologyChange; ///< Enable support of topological changes for compliance vector (disable if another component takes care of this)
       
-    Data< Real > d_correctionVelocityFactor;
-    Data< Real > d_correctionPositionFactor;
+    Data< Real > d_correctionVelocityFactor; ///< Factor applied to the constraint forces when correcting the velocities
+    Data< Real > d_correctionPositionFactor; ///< Factor applied to the constraint forces when correcting the positions
 
-    Data < bool > d_useOdeSolverIntegrationFactors;
+    Data < bool > d_useOdeSolverIntegrationFactors; ///< Use odeSolver integration factors instead of correctionVelocityFactor and correctionPositionFactor
 
 private:
     // new :  for non building the constraint system during solving process //
