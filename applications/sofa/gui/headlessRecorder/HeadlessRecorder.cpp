@@ -67,6 +67,7 @@ HeadlessRecorder::HeadlessRecorder()
     vparams->drawTool() = &drawTool;
 
     signal(SIGTERM, static_handler);
+    signal(SIGINT, static_handler);
 }
 
 HeadlessRecorder::~HeadlessRecorder()
@@ -263,7 +264,7 @@ bool HeadlessRecorder::canRecord()
     {
         return currentSimulation() && currentSimulation()->getContext()->getAnimate();
     }
-    return (float)m_nFrames/(float)fps < recordTimeInSeconds;
+    return (float)m_nFrames/(float)fps <= recordTimeInSeconds;
 }
 
 int HeadlessRecorder::mainLoop()
@@ -605,8 +606,8 @@ void HeadlessRecorder::videoEncoderStart(const char *filename, int codec_id)
     c->bit_rate = 8000000; // maybe I need to adjust it
     c->width = width;
     c->height = height;
-    c->time_base = (AVRational){1, fps};
-    c->framerate = (AVRational){fps, 1};
+    c->time_base = (AVRational){1000, fps};
+    c->framerate = (AVRational){fps, 1000};
     c->gop_size = 10;
     c->max_b_frames = 1;
     c->pix_fmt = AV_PIX_FMT_YUV420P;
@@ -646,6 +647,7 @@ void HeadlessRecorder::videoEncoderStart(const char *filename, int codec_id)
 void HeadlessRecorder::encode()
 {
     int ret;
+    m_frame->pts = m_nFrames;
     ret = avcodec_send_frame(c, m_frame);
     if (ret < 0) {
         msg_error("HeadlessRecorder") << "Error sending a frame for encoding";
@@ -675,7 +677,6 @@ void HeadlessRecorder::videoFrameEncoder()
         exit(1);
     }
     videoYUVToRGB();
-    m_frame->pts = m_nFrames;
     encode();
 }
 
