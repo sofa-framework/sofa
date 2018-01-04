@@ -38,7 +38,7 @@ void ScriptDataEngine::update()
 
 void ScriptDataEngine::init()
 {
-
+    DataEngine::init();
 }
 
 void ScriptDataEngine::reinit()

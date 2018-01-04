@@ -44,6 +44,7 @@ protected:
     PyObject *m_ScriptDataEngineClass      {nullptr} ;   // class implemented in the script to use
                                                          // to instanciate the python controller
     PyObject *m_ScriptDataEngineInstance   {nullptr} ;   // instance of m_ScriptControllerClass
+    PyObject *m_Func_update                {nullptr} ;
 
     virtual void script_update() override;
     virtual void loadScript() override;

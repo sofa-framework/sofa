@@ -90,25 +90,30 @@ PythonScriptDataEngine::PythonScriptDataEngine()
 }
 PythonScriptDataEngine::~PythonScriptDataEngine()
 {
-
+    if(m_filelistener)
+    {
+        FileMonitor::removeListener(m_filelistener) ;
+        delete m_filelistener ;
+    }
 }
 
 void PythonScriptDataEngine::script_update()
 {
     msg_warning() << "wee, passing in script_update()";
+    PythonEnvironment::gil lock(__func__);
+    SP_CALL_MODULEFUNC_NOPARAM(m_Func_update)
 }
 
 
 void PythonScriptDataEngine::refreshBinding()
 {
-    //BIND_OBJECT_METHOD_DATA_ENGINE(update)
+    BIND_OBJECT_METHOD_DATA_ENGINE(update)
             //BIND_OBJECT_METHOD(update)
 }
 
 void PythonScriptDataEngine::doLoadScript()
 {
     loadScript() ;
-    msg_warning() << "wee, loading script in DataEngine";
 }
 
 void PythonScriptDataEngine::loadScript()
@@ -155,6 +160,7 @@ void PythonScriptDataEngine::loadScript()
     msg_warning() << " DataEngine Script loaded successfully.";
 
     refreshBinding();
+    script_update();
 }
 
 
