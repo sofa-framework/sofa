@@ -32,6 +32,7 @@
 #include <limits>
 #include <sofa/core/topology/BaseTopology.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
@@ -514,6 +515,7 @@ bool BoxROI<DataTypes>::isQuadInBoxes(const Quad& q)
 template <class DataTypes>
 void BoxROI<DataTypes>::update()
 {
+    //msg_warning(this) << "was here" << msgendl;
     if(m_componentstate==ComponentState::Invalid){
         cleanDirty() ;
         return ;

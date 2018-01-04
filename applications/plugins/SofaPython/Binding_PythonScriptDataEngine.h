@@ -19,56 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "SceneLoaderPY.h"
-#include <SofaPython/config.h>
-#include "PythonEnvironment.h"
+
+#ifndef BINDING_PYTHONSCRIPTDATAENGINE_H
+#define BINDING_PYTHONSCRIPTDATAENGINE_H
+
+#include "PythonMacros.h"
+#include "PythonScriptDataEngine.h"
+
+SP_DECLARE_CLASS_TYPE(PythonScriptDataEngine)
+
+#endif // BINDING_PYTHONSCRIPTDATAENGINE_H
 
 
-extern "C" {
-
-SOFA_SOFAPYTHON_API void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {
-        sofa::simulation::PythonEnvironment::Init();
-        first = false;
-    }
-}
-
-SOFA_SOFAPYTHON_API const char* getModuleName()
-{
-    return "SofaPython";
-}
-
-SOFA_SOFAPYTHON_API const char* getModuleVersion()
-{
-    return SOFAPYTHON_VERSION_STR;
-}
-
-SOFA_SOFAPYTHON_API const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-SOFA_SOFAPYTHON_API const char* getModuleDescription()
-{
-    return "Python Environment and modules for scripting in Sofa";
-}
-
-SOFA_SOFAPYTHON_API const char* getModuleComponentList()
-{
-    /// string containing the names of the classes provided by the plugin
-    return "PythonScriptController";
-}
-
-}
-
-
-/// Use the SOFA_LINK_CLASS macro for each class, to enable linking on all platforms
-SOFA_LINK_CLASS(PythonScriptController)
-SOFA_LINK_CLASS(PythonScriptDataEngine)
-
-
-// register the loader in the factory
-const sofa::simulation::SceneLoader* loaderPY = sofa::simulation::SceneLoaderFactory::getInstance()->addEntry(new sofa::simulation::SceneLoaderPY());

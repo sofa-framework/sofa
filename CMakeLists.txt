@@ -322,7 +322,7 @@ sofa_add_plugin( applications/plugins/SofaPython SofaPython )
 option(SOFA_BUILD_SCENECREATOR "Compile the C++ API located in applications/plugins/SceneCreator" OFF)
 
 ## Tutorials option
-option(SOFA_BUILD_TUTORIALS "Build (most of) the tutorials available." OFF)
+option(SOFA_BUILD_TUTORIALS "Build (most of) the tutorials available." ON)
 
 
 # Activate SceneCreator when required
@@ -361,6 +361,8 @@ add_subdirectory(applications/projects)
 if(SOFA_BUILD_TUTORIALS)
     add_subdirectory(applications/tutorials)
 endif()
+
+#add_subdirectory(applications/tutorials)
 
 ## Build external projects at the same time
 set(SOFA_EXTERNAL_DIRECTORIES "" CACHE STRING "list of paths separated by ';'")
