@@ -286,7 +286,6 @@ int HeadlessRecorder::mainLoop()
             step();
         else
             sleep(0.01);
-        redraw();
         m_nFrames++;
         if(m_nFrames % fps == 0)
         {
@@ -434,7 +433,6 @@ void HeadlessRecorder::step()
     getSimulation()->animate(groot.get());
 #endif
     getSimulation()->updateVisual(groot.get());
-
     redraw();
 }
 
@@ -720,6 +718,7 @@ void HeadlessRecorder::videoYUVToRGB() {
                                        c->width, c->height, AV_PIX_FMT_RGBA,
                                        c->width, c->height, AV_PIX_FMT_YUV420P,
                                        0, NULL, NULL, NULL);
+
     sws_scale(sws_context, (const uint8_t * const *)&m_rgb, in_linesize, 0, c->height, m_frame->data, m_frame->linesize);
 }
 
