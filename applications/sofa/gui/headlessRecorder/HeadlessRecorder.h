@@ -33,6 +33,11 @@
 
 #include <signal.h>
 
+#include <iostream>
+#include <chrono>
+#include <ctime>
+#include <iomanip>
+
 // LIBAV
 extern "C" {
 #include <libavcodec/avcodec.h>
@@ -112,7 +117,6 @@ private:
     sofa::simulation::Node::SPtr groot;
     std::string sceneFileName;
     sofa::component::visualmodel::BaseCamera::SPtr currentCamera;
-
 
     int m_nFrames;
     FILE* m_file;

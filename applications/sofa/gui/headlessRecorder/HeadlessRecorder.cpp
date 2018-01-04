@@ -21,10 +21,6 @@
 ******************************************************************************/
 #include "HeadlessRecorder.h"
 
-#include <iostream>
-#include <chrono>
-#include <ctime>
-
 namespace sofa
 {
 
@@ -82,9 +78,13 @@ HeadlessRecorder::~HeadlessRecorder()
 
 int HeadlessRecorder::RegisterGUIParameters(ArgumentParser* argumentParser)
 {
+    auto in_time_t = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+    std::stringstream ss;
+    ss << std::put_time(std::localtime(&in_time_t), "%F-%X");
+
     argumentParser->addArgument(po::value<bool>(&saveAsScreenShot)->default_value(false)->implicit_value(true),         "picture", "enable picture mode (save as png)");
     argumentParser->addArgument(po::value<bool>(&saveAsVideo)->default_value(false)->implicit_value(true),         "video", "enable video mode (save as avi, x264)");
-    argumentParser->addArgument(po::value<std::string>(&fileName)->default_value("tmp"), "filename", "(only HeadLessRecorder) name of the file");
+    argumentParser->addArgument(po::value<std::string>(&fileName)->default_value(ss.str()), "filename", "(only HeadLessRecorder) name of the file");
     argumentParser->addArgument(po::value<int>(&recordTimeInSeconds)->default_value(5), "recordTime", "(only HeadLessRecorder) seconds of recording, video or pictures of the simulation");
     argumentParser->addArgument(po::value<int>(&width)->default_value(1920), "width", "(only HeadLessRecorder) video or picture width");
     argumentParser->addArgument(po::value<int>(&height)->default_value(1080), "height", "(only HeadLessRecorder) video or picture height");
