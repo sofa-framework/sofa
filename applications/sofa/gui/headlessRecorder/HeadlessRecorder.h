@@ -31,6 +31,8 @@
 #include <sofa/helper/gl/RAII.h>
 #include <sofa/core/ObjectFactory.h>
 
+#include <signal.h>
+
 // LIBAV
 extern "C" {
 #include <libavcodec/avcodec.h>
@@ -87,22 +89,22 @@ public:
     static BaseGUI* CreateGUI(const char* name, sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
     static int RegisterGUIParameters(ArgumentParser* argumentParser);
 
+    static int recordTimeInSeconds; // public for SIGTERM
+    static bool recordUntilStopAnimate; // public for SIGTERM
+
 private:
     void record();
+    bool canRecord();
     void screenshotPNG(std::string fileName);
     void videoYUVToRGB();
     void videoEncoderStart(const char *filename, int codec_id);
-    int encode(int *got_packet);
+    void encode();
     void videoEncoderStop(void);
     void videoFrameEncoder();
     void videoGLToFrame();
-
     void displayOBJs();
     void drawScene();
     void calcProjection();
-
-    void stopRecording() { m_isRecording = false;}
-    void startRecording() { m_isRecording = true;}
 
     VisualParams* vparams;
     DrawToolGL   drawTool;
@@ -111,16 +113,13 @@ private:
     std::string sceneFileName;
     sofa::component::visualmodel::BaseCamera::SPtr currentCamera;
 
-    static int width, height, recordTimeInSeconds, fps;
-    static std::string fileName;
-    static bool saveAsScreenShot, saveAsVideo;
 
     int m_nFrames;
     FILE* m_file;
 
     AVCodecContext *c = NULL;
     AVFrame *m_frame;
-    AVPacket m_avPacket;
+    AVPacket* m_avPacket;
     struct SwsContext *sws_context = NULL;
     uint8_t *m_rgb = NULL;
 
@@ -130,7 +129,11 @@ private:
     double lastModelviewMatrix[16];
     bool initTexturesDone;
     bool initVideoRecorder;
-    bool m_isRecording;
+
+    static int width, height, fps;
+    static std::string fileName;
+    static bool saveAsScreenShot, saveAsVideo;
+    static HeadlessRecorder instance;
 
 };
 

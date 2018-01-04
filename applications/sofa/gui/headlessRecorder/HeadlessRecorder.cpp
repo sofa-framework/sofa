@@ -21,6 +21,10 @@
 ******************************************************************************/
 #include "HeadlessRecorder.h"
 
+#include <iostream>
+#include <chrono>
+#include <ctime>
+
 namespace sofa
 {
 
@@ -37,7 +41,7 @@ int HeadlessRecorder::fps = 60;
 std::string HeadlessRecorder::fileName = "tmp";
 bool HeadlessRecorder::saveAsVideo = false;
 bool HeadlessRecorder::saveAsScreenShot = false;
-
+bool HeadlessRecorder::recordUntilStopAnimate = false;
 
 using namespace sofa::defaulttype;
 using sofa::simulation::getSimulation;
@@ -49,6 +53,14 @@ typedef Bool (*glXMakeContextCurrentARBProc)(Display*, GLXDrawable, GLXDrawable,
 static glXCreateContextAttribsARBProc glXCreateContextAttribsARB = 0;
 static glXMakeContextCurrentARBProc glXMakeContextCurrentARB = 0;
 
+void static_handler(int /*signum*/)
+{
+    std::cout << "KILL " << std::endl;
+    HeadlessRecorder::recordUntilStopAnimate = false;
+    HeadlessRecorder::recordTimeInSeconds = 0;
+}
+
+// Class
 HeadlessRecorder::HeadlessRecorder()
 {
     groot = NULL;
@@ -57,7 +69,8 @@ HeadlessRecorder::HeadlessRecorder()
     initTexturesDone = false;
     vparams = core::visual::VisualParams::defaultInstance();
     vparams->drawTool() = &drawTool;
-    startRecording();
+
+    signal(SIGTERM, static_handler);
 }
 
 HeadlessRecorder::~HeadlessRecorder()
@@ -76,6 +89,7 @@ int HeadlessRecorder::RegisterGUIParameters(ArgumentParser* argumentParser)
     argumentParser->addArgument(po::value<int>(&width)->default_value(1920), "width", "(only HeadLessRecorder) video or picture width");
     argumentParser->addArgument(po::value<int>(&height)->default_value(1080), "height", "(only HeadLessRecorder) video or picture height");
     argumentParser->addArgument(po::value<int>(&fps)->default_value(60), "fps", "(only HeadLessRecorder) define how many frame per second HeadlessRecorder will generate");
+    argumentParser->addArgument(po::value<bool>(&recordUntilStopAnimate)->default_value(false)->implicit_value(true),         "recordUntilEndAnimate", "(only HeadLessRecorder) recording until the end of animation does not care how many seconds have been set");
     return 0;
 }
 
@@ -243,6 +257,15 @@ void HeadlessRecorder::initializeGL(void)
     resetView();
 }
 
+bool HeadlessRecorder::canRecord()
+{
+    if(recordUntilStopAnimate)
+    {
+        return currentSimulation() && currentSimulation()->getContext()->getAnimate();
+    }
+    return (float)m_nFrames/(float)fps < recordTimeInSeconds;
+}
+
 int HeadlessRecorder::mainLoop()
 {
     if(currentCamera)
@@ -255,15 +278,24 @@ int HeadlessRecorder::mainLoop()
         return 0;
     }
 
-    while((float)m_nFrames/(float)fps < recordTimeInSeconds)
+    std::chrono::time_point<std::chrono::system_clock> start, end;
+    start = std::chrono::system_clock::now();
+    while(canRecord())
     {
         if (currentSimulation() && currentSimulation()->getContext()->getAnimate())
             step();
         else
             sleep(0.01);
         redraw();
-        record();
         m_nFrames++;
+        if(m_nFrames % fps == 0)
+        {
+            end = std::chrono::system_clock::now();
+            int elapsed_milliSeconds = std::chrono::duration_cast<std::chrono::milliseconds>(end-start).count();
+            msg_info("HeadlessRecorder") << "Encoding : " << m_nFrames/fps << " seconds. Encoding time : " << elapsed_milliSeconds << " ms";
+            start = std::chrono::system_clock::now();
+        }
+        record();
     }
     msg_info("HeadlessRecorder") << "Recording time: " << recordTimeInSeconds << " seconds at: " << fps << " fps.";
     return 0;
@@ -503,7 +535,10 @@ void HeadlessRecorder::record()
             initVideoRecorder = false;
         }
         videoGLToFrame();
-        videoFrameEncoder();
+        if (canRecord())
+            videoFrameEncoder();
+        else
+            videoEncoderStop();
     }
 }
 
@@ -564,17 +599,22 @@ void HeadlessRecorder::videoEncoderStart(const char *filename, int codec_id)
         msg_error("HeadlessRecorder") << "Could not allocate video codec context";
         exit(1);
     }
-    c->bit_rate = 20000000; // maybe I need to adjust it
+
+    m_avPacket = av_packet_alloc();
+    if (!m_avPacket)
+        exit(1);
+
+    c->bit_rate = 8000000; // maybe I need to adjust it
     c->width = width;
     c->height = height;
-    c->time_base.num = 1;
-    c->time_base.den = fps;
+    c->time_base = (AVRational){1, fps};
+    c->framerate = (AVRational){fps, 1};
     c->gop_size = 10;
     c->max_b_frames = 1;
     c->pix_fmt = AV_PIX_FMT_YUV420P;
 
     if (codec_id == AV_CODEC_ID_H264)
-        av_opt_set(c->priv_data, "preset", "veryslow", 0);
+        av_opt_set(c->priv_data, "preset", "slow", 0);
 
     if (avcodec_open2(c, codec, NULL) < 0)
     {
@@ -596,71 +636,62 @@ void HeadlessRecorder::videoEncoderStart(const char *filename, int codec_id)
     m_frame->format = c->pix_fmt;
     m_frame->width  = c->width;
     m_frame->height = c->height;
-    ret = av_image_alloc(m_frame->data, m_frame->linesize, c->width, c->height, c->pix_fmt, 32);
+
+    ret = av_frame_get_buffer(m_frame, 32);
     if (ret < 0)
     {
-        msg_error("HeadlessRecorder") << "Could not allocate raw picture buffer";
+        msg_error("HeadlessRecorder") << "Could not allocate the video frame data";
         exit(1);
     }
 }
 
-int HeadlessRecorder::encode(int *got_packet)
+void HeadlessRecorder::encode()
 {
     int ret;
-    *got_packet = 0;
     ret = avcodec_send_frame(c, m_frame);
+    if (ret < 0) {
+        msg_error("HeadlessRecorder") << "Error sending a frame for encoding";
+        exit(1);
+    }
+
+    while (ret >= 0) {
+        ret = avcodec_receive_packet(c, m_avPacket);
+        if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
+            return;
+        else if (ret < 0) {
+            msg_error("HeadlessRecorder") << "Error during encoding";
+            exit(1);
+        }
+        fwrite(m_avPacket->data, 1, m_avPacket->size, m_file);
+        av_packet_unref(m_avPacket);
+    }
+}
+
+void HeadlessRecorder::videoFrameEncoder()
+{
+    int ret;
+    ret = av_frame_make_writable(m_frame);
     if (ret < 0)
-        return ret;
-    ret = avcodec_receive_packet(c, &m_avPacket);
-    if (!ret)
-        *got_packet = 1;
-    if (ret == AVERROR(EAGAIN))
-        return 0;
-    return ret;
+    {
+        msg_error("HeadlessRecorder") << "Frame is not writable";
+        exit(1);
+    }
+    videoYUVToRGB();
+    m_frame->pts = m_nFrames;
+    encode();
 }
 
 void HeadlessRecorder::videoEncoderStop()
 {
     uint8_t endcode[] = { 0, 0, 1, 0xb7 };
-    int got_output, ret;
-    do {
-        fflush(stdout);
-        ret = encode(&got_output);
-        if (ret < 0) {
-            msg_error("HeadlessRecorder") << "Error encoding frame";
-            exit(1);
-        }
-        if (got_output) {
-            fwrite(m_avPacket.data, 1, m_avPacket.size, m_file);
-            av_packet_unref(&m_avPacket);
-        }
-    } while (got_output);
+    encode();
 
     fwrite(endcode, 1, sizeof(endcode), m_file);
     fclose(m_file);
-    avcodec_close(c);
-    av_free(c);
-    av_freep(&m_frame->data[0]);
-    av_frame_free(&m_frame);
-}
 
-void HeadlessRecorder::videoFrameEncoder()
-{
-    int ret, got_output;
-    videoYUVToRGB();
-    av_init_packet(&m_avPacket);
-    m_avPacket.data = NULL;
-    m_avPacket.size = 0;
-    m_frame->pts = m_nFrames;
-    ret = encode(&got_output);
-    if (ret < 0) {
-        msg_error("HeadlessRecorder") << "Error encoding frame";
-        exit(1);
-    }
-    if (got_output) {
-        fwrite(m_avPacket.data, 1, m_avPacket.size, m_file);
-        av_packet_unref(&m_avPacket);
-    }
+    avcodec_free_context(&c);
+    av_frame_free(&m_frame);
+    av_packet_free(&m_avPacket);
 }
 
 void HeadlessRecorder::videoGLToFrame()
