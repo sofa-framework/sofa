@@ -189,7 +189,6 @@ namespace sofa
 			mTaskCount		= 0;
 			mFinished		= false;
 			mCurrentStatus = NULL;
-			mTaskMutex = BOOST_DETAIL_SPINLOCK_INIT;
 		}
 
 

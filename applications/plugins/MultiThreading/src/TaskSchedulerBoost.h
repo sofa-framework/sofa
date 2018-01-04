@@ -161,7 +161,7 @@ namespace sofa
 
 		
 
-			mutable boost::detail::spinlock		mTaskMutex;
+            mutable boost::detail::spinlock		mTaskMutex {BOOST_DETAIL_SPINLOCK_INIT};
 			Task*		mTask[Max_TasksPerThread];
 			unsigned			mTaskCount;								
 			Task::Status*	mCurrentStatus;	
