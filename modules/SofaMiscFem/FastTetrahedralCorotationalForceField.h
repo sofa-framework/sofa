@@ -78,43 +78,7 @@ public:
     typedef unsigned int Index;
     
 
-protected:
-
-    class PointRestInformation
-    {
-    public:
-        Mat3x3 DfDx;  /// the vertex stiffness matrix
-
-        PointRestInformation() {}
-
-        inline friend std::ostream& operator<< ( std::ostream& os, const PointRestInformation& /*eri*/ ) {
-            return os;
-        }
-
-        /// Input stream
-        inline friend std::istream& operator>> ( std::istream& in, PointRestInformation& /*eri*/ ) {
-            return in;
-        }
-    };
-
-    class EdgeRestInformation
-    {
-    public:
-        Mat3x3 DfDx; /// the edge stiffness matrix
-
-        EdgeRestInformation() {}
-        /// Output stream
-        inline friend std::ostream& operator<< ( std::ostream& os, const EdgeRestInformation& /*eri*/ )
-        {
-            return os;
-        }
-
-        /// Input stream
-        inline friend std::istream& operator>> ( std::istream& in, EdgeRestInformation& /*eri*/ )
-        {
-            return in;
-        }
-    };
+protected:    
     /// data structure stored for each tetrahedron
     class TetrahedronRestInformation
     {
@@ -173,8 +137,8 @@ protected:
 
     };
 
-    topology::PointData<sofa::helper::vector<PointRestInformation> > pointInfo;
-    topology::EdgeData<sofa::helper::vector<EdgeRestInformation> > edgeInfo;
+    topology::PointData<sofa::helper::vector<Mat3x3> > pointInfo;
+    topology::EdgeData<sofa::helper::vector<Mat3x3> > edgeInfo;
     topology::TetrahedronData<sofa::helper::vector<TetrahedronRestInformation> > tetrahedronInfo;
 
 
@@ -247,7 +211,7 @@ protected :
 
     static void computeQRRotation( Mat3x3 &r, const Coord *dp);
 
-    topology::EdgeData<sofa::helper::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
+    topology::EdgeData<sofa::helper::vector<Mat3x3> > &getEdgeInfo() {return edgeInfo;}
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_FASTTETRAHEDRALCOROTATIONALFORCEFIELD_CPP)

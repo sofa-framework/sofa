@@ -202,14 +202,14 @@ template <class DataTypes> void FastTetrahedralCorotationalForceField<DataTypes>
     tetrahedronInf.resize(_topology->getNbTetrahedra());
 
 
-    helper::vector<EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
+    helper::vector<Mat3x3>& edgeInf = *(edgeInfo.beginEdit());
     /// prepare to store info in the edge array
     edgeInf.resize(_topology->getNbEdges());
     edgeInfo.createTopologicalEngine(_topology);
     edgeInfo.registerTopologicalData();
     edgeInfo.endEdit();
 
-    helper::vector<PointRestInformation>& pointInf = *(pointInfo.beginEdit());
+    helper::vector<Mat3x3>& pointInf = *(pointInfo.beginEdit());
     /// prepare to store info in the point array
     pointInf.resize(_topology->getNbPoints());
     pointInfo.createTopologicalEngine(_topology);
@@ -251,13 +251,9 @@ void FastTetrahedralCorotationalForceField<DataTypes>::updateTopologyInformation
     int nbEdges=_topology->getNbEdges();
     int nbTetrahedra=_topology->getNbTetrahedra();
 
-    //PointRestInformation *pinfo;
-    EdgeRestInformation *einfo;
     TetrahedronRestInformation *tetinfo;
 
     helper::vector<typename FastTetrahedralCorotationalForceField<DataTypes>::TetrahedronRestInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
-    helper::vector<typename FastTetrahedralCorotationalForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
-    helper::vector<typename FastTetrahedralCorotationalForceField<DataTypes>::PointRestInformation>& pointInf = *(pointInfo.beginEdit());
 
     for(i=0; i<nbTetrahedra; i++ )
     {
@@ -278,9 +274,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::updateTopologyInformation
         }
 
     }    
-    edgeInfo.endEdit();
     tetrahedronInfo.endEdit();
-    pointInfo.endEdit();
 
     updateTopologyInfo = false;
 }
@@ -438,19 +432,18 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addDForce(const sofa::cor
     {
         // the matrix must be stored in edges
         helper::vector<TetrahedronRestInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
-        helper::vector<EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
+        helper::vector<Mat3x3>& edgeDfDx = *(edgeInfo.beginEdit());
 
         TetrahedronRestInformation *tetinfo;
-        EdgeRestInformation *einfo;
         int nbTetrahedra=_topology->getNbTetrahedra();
         Mat3x3 tmp;
 
         updateMatrix=false;
 
         // reset all edge matrices
-        for(einfo=&edgeInf[0],i=0; i<nbEdges; i++,einfo++ )
+        for(i=0; i<edgeDfDx.size(); i++)
         {
-            einfo->DfDx.clear();
+            edgeDfDx[i].clear();
         }
 
         for(i=0; i<nbTetrahedra; i++ )
@@ -468,11 +461,11 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addDForce(const sofa::cor
                 if (tetinfo->edgeOrientation[j]==1)
                 {
                     // store the two edge matrices since the stiffness matrix is not symmetric
-                    edgeInf[edgeID].DfDx += tetinfo->rotation.transposed()*tmp;
+                    edgeDfDx[edgeID] += tetinfo->rotation.transposed()*tmp;
                 }
                 else
                 {
-                    edgeInf[edgeID].DfDx += tmp.transposed()*tetinfo->rotation;
+                    edgeDfDx[edgeID] += tmp.transposed()*tetinfo->rotation;
                 }
             }
         }
@@ -481,20 +474,18 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addDForce(const sofa::cor
         edgeInfo.endEdit();
     }
 
-    const helper::vector<EdgeRestInformation> &edgeInf= edgeInfo.getValue();
+    const helper::vector<Mat3x3> &edgeDfDx = edgeInfo.getValue();
     unsigned int v0,v1;
-    const EdgeRestInformation *einfo;
     Coord deltax;
 
     // use the already stored matrix
     for(i=0; i<nbEdges; i++ )
     {
-        einfo=&edgeInf[i];
         const core::topology::BaseMeshTopology::Edge& edge = _topology->getEdge(i);
 
         deltax= dx[edge[1]] -dx[edge[0]];
-        df[edge[1]]+= einfo->DfDx*(deltax * kFactor);
-        df[edge[0]]-= einfo->DfDx.multTranspose(deltax * kFactor);
+        df[edge[1]]+= edgeDfDx[i] *(deltax * kFactor);
+        df[edge[0]]-= edgeDfDx[i].multTranspose(deltax * kFactor);
     }
 
     datadF.endEdit();
@@ -523,22 +514,19 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addKToMatrix(sofa::defaul
     int nbTetrahedra=_topology->getNbTetrahedra();
 
     helper::vector<TetrahedronRestInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
-    helper::vector<EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
-    helper::vector<PointRestInformation>& pointInf = *(pointInfo.beginEdit());
+    helper::vector<Mat3x3>& edgeDfDx = *(edgeInfo.beginEdit());
+    helper::vector<Mat3x3>& pointDfDx = *(pointInfo.beginEdit());
 
     TetrahedronRestInformation *tetinfo;
-    EdgeRestInformation *einfo;
-    PointRestInformation *pinfo;
-
     Mat3x3 tmp;
 
     if (updateMatrix==true) {
         /// if not done in addDForce: update off-diagonal blocks ("edges") of each element matrix
         updateMatrix=false;
         // reset all edge matrices
-        for(einfo=&edgeInf[0],i=0; i<nbEdges; i++,einfo++ )
+        for(i=0; i<edgeDfDx.size(); i++)
         {
-            einfo->DfDx.clear();
+            edgeDfDx[i].clear();
         }
 
         for(i=0; i<nbTetrahedra; i++ )
@@ -555,10 +543,10 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addKToMatrix(sofa::defaul
 
                 if (tetinfo->edgeOrientation[j]==1) {
                     // store the two edge matrices since the stiffness sub-matrix is not symmetric
-                    edgeInf[edgeID].DfDx += tetinfo->rotation.transposed()*tmp;
+                    edgeDfDx[edgeID] += tetinfo->rotation.transposed()*tmp;
                 }
                 else {
-                    edgeInf[edgeID].DfDx += tmp.transposed()*tetinfo->rotation;
+                    edgeDfDx[edgeID] += tmp.transposed()*tetinfo->rotation;
                 }
 
             }
@@ -566,8 +554,8 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addKToMatrix(sofa::defaul
     }
 
     /// must update point data since these are not computed in addDForce
-    for (pinfo=&pointInf[0], i=0; i < nbPoints; i++, pinfo++)
-        pinfo->DfDx.clear();
+    for (i=0; i < pointDfDx.size(); i++)
+        pointDfDx[i].clear();
 
     for(i=0; i<nbTetrahedra; i++ ) {
         tetinfo=&tetrahedronInf[i];
@@ -577,19 +565,19 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addKToMatrix(sofa::defaul
             unsigned int Id = t[j];
             
             tmp = tetinfo->rotation.transposed() * tetinfo->linearDfDxDiag[j] * tetinfo->rotation;
-            pointInf[Id].DfDx+=tmp;
+            pointDfDx[Id] += tmp;
         }
     }
 
     /// construct the diagonal blocks from point data
     for (i=0; i<nbPoints; i++) {
-        pinfo = &pointInf[i];
+        tmp = pointDfDx[i];
 
         for (int m = 0; m < 3; m++) {
             matRow = offset + 3*i + m;
             for (int n = 0; n < 3; n++) {
                 matCol = offset + 3*i + n;
-                mat->add(matRow, matCol, -kFactor*pinfo->DfDx[m][n]);
+                mat->add(matRow, matCol, -kFactor*tmp[m][n]);
             }
         }
     }
@@ -597,7 +585,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addKToMatrix(sofa::defaul
     /// construct the off-diagonal blocks from edge data
     for(i=0; i<nbEdges; i++ )
     {
-        einfo=&edgeInf[i];
+        tmp = edgeDfDx[i];
 
         const core::topology::BaseMeshTopology::Edge& edge = _topology->getEdge(i);
 
@@ -605,8 +593,8 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addKToMatrix(sofa::defaul
             matRow = offset + 3*edge[0] + m;
             for (int n = 0; n < 3; n++) {
                 matCol = offset + 3*edge[1] + n;
-                mat->add(matRow, matCol, -kFactor*einfo->DfDx[n][m]);
-                mat->add(matCol, matRow, -kFactor*einfo->DfDx[n][m]);
+                mat->add(matRow, matCol, -kFactor*tmp[n][m]);
+                mat->add(matCol, matRow, -kFactor*tmp[n][m]);
 
             }
         }
