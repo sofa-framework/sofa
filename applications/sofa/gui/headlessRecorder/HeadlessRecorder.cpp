@@ -287,6 +287,7 @@ int HeadlessRecorder::mainLoop()
             step();
         else
             sleep(0.01);
+        redraw();
         m_nFrames++;
         if(m_nFrames % fps == 0)
         {
@@ -606,8 +607,8 @@ void HeadlessRecorder::videoEncoderStart(const char *filename, int codec_id)
     c->bit_rate = 8000000; // maybe I need to adjust it
     c->width = width;
     c->height = height;
-    c->time_base = (AVRational){1000, fps};
-    c->framerate = (AVRational){fps, 1000};
+    c->time_base = (AVRational){1, fps};
+    c->framerate = (AVRational){fps, 1};
     c->gop_size = 10;
     c->max_b_frames = 1;
     c->pix_fmt = AV_PIX_FMT_YUV420P;
@@ -728,3 +729,4 @@ void HeadlessRecorder::videoYUVToRGB() {
 } // namespace gui
 
 } // namespace sofa
+
