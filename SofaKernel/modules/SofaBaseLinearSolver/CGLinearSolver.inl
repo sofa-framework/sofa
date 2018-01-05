@@ -64,6 +64,29 @@ CGLinearSolver<TMatrix,TVector>::CGLinearSolver()
 }
 
 template<class TMatrix, class TVector>
+void CGLinearSolver<TMatrix,TVector>::init()
+{
+    if(f_maxIter.getValue() < 0)
+    {
+        msg_warning() << "'iterations' must be a positive value" << msgendl
+                      << "default value used: 25";
+        f_maxIter.setValue(25);
+    }
+    if(f_tolerance.getValue() < 0.0)
+    {
+        msg_warning() << "'tolerance' must be a positive value" << msgendl
+                      << "default value used: 1e-5";
+        f_tolerance.setValue(1e-5);
+    }
+    if(f_smallDenominatorThreshold.getValue() < 0.0)
+    {
+        msg_warning() << "'threshold' must be a positive value" << msgendl
+                      << "default value used: 1e-5";
+        f_smallDenominatorThreshold.setValue(1e-5);
+    }
+}
+
+template<class TMatrix, class TVector>
 void CGLinearSolver<TMatrix,TVector>::resetSystem()
 {
     f_graph.beginEdit()->clear();
@@ -163,26 +186,33 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
         /// Compute p = r^2
         rho = r.dot(r);
 
-        /// If NOT the first step
-        if (nb_iter>1)
+        /// Compute the error from the norm of ρ and b
+        double normr = sqrt(rho);
+        double err = normr/normb;
+
+        graph_error.push_back(err);
+
+
+        /// Break condition = TOLERANCE criterion regarding the error err is reached
+        if (err <= f_tolerance.getValue())
         {
-            /// Compute the error from the norm of ρ and b
-            double normr = sqrt(rho);
-            double err = normr/normb;
-
-            graph_error.push_back(err);
-
-            /// Break condition = TOLERANCE criterion regarding the error err is reached
-            if (err <= f_tolerance.getValue())
+            /// Tolerance met at first step, tolerance value might not be relevant (do one more step)
+            if(nb_iter == 1)
+            {
+                msg_warning() << "tolerance reached at first iteration of CG" << msgendl
+                              << "Check the 'tolerance' data field, you might decrease it";
+            }
+            else
             {
                 endcond = "tolerance";
-#ifdef SOFA_DUMP_VISITOR_INFO
+    #ifdef SOFA_DUMP_VISITOR_INFO
                 if (simulation::Visitor::isPrintActivated())
                     simulation::Visitor::printCloseNode(comment.str());
-#endif
+    #endif
                 break;
             }
         }
+
 
         /// Compute the value of p, conjugate with x
         if( nb_iter==1 )    // FIRST step
@@ -212,37 +242,14 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
         /// Compute the denominator : p M p
         double den = p.dot(q);
 
-
         graph_den.push_back(den);
 
 
         /// Break condition = THRESHOLD criterion regarding the denominator is reached (but do at least one iteration)
-        if( fabs(den)<f_smallDenominatorThreshold.getValue())
+        if (fabs(den) <= f_smallDenominatorThreshold.getValue())
         {
-            if(nb_iter == 1 && den == 0.0)
-            {
-                if(f_warmStart.getValue())
-                {
-                    msg_info() << "Equilibrium found at first step";
-                }
-                else
-                {
-                    msg_info() << "b or A is zero (in Ax=b system), i.e. no external force or no mass is defined";
-                }
-
-                endcond = "threshold";
-                if( verbose )
-                {
-                    msg_info() << "CGLinearSolver, den = " << den <<", smallDenominatorThreshold = " << f_smallDenominatorThreshold.getValue();
-                }
-
-    #ifdef SOFA_DUMP_VISITOR_INFO
-                if (simulation::Visitor::isPrintActivated())
-                    simulation::Visitor::printCloseNode(comment.str());
-    #endif
-                break;
-            }
-            else if(nb_iter == 1)
+            /// Threshold met at first step, threshold value might not be relevant (do one more step)
+            if(nb_iter == 1 && den != 0.0)
             {
                 msg_warning() << "denominator threshold reached at first iteration of CG" << msgendl
                               << "Check the 'threshold' data field, you might decrease it";
@@ -262,6 +269,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
                 break;
             }
         }
+
 
         /// Compute the coefficient α for the conjugate direction
         alpha = rho/den;
