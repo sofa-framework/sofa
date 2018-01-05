@@ -182,7 +182,6 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
         }
 #endif
 
-
         /// Compute p = r^2
         rho = r.dot(r);
 
@@ -224,7 +223,6 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
             /// Update p = p*beta + r;
             cgstep_beta(params, p,r,beta);
         }
-
 
         if( verbose )
         {
@@ -276,7 +274,6 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
 
         /// End of the CG step : update x and r
         cgstep_alpha(params, x,r,p,q,alpha);
-
 
         if( verbose )
         {
