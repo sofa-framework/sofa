@@ -321,7 +321,9 @@ extract-warnings() {
             sed -ne "/^\[WARNING\] [^]]*/s:\([^]]*\):$scene\: \1:p \
                 " "$output_dir/$scene/output.txt"
         fi
-    done < "$output_dir/all-tested-scenes.txt" > "$output_dir/warnings.txt"
+    done < "$output_dir/all-tested-scenes.txt" > "$output_dir/warnings.tmp"
+    sort "$output_dir/warnings.tmp" | uniq > "$output_dir/warnings.txt"
+    rm -f "$output_dir/warnings.tmp"
 }
 
 extract-errors() {
@@ -330,7 +332,9 @@ extract-errors() {
             sed -ne "/^\[ERROR\] [^]]*/s:\([^]]*\):$scene\: \1:p \
                 " "$output_dir/$scene/output.txt"
         fi
-    done < "$output_dir/all-tested-scenes.txt" > "$output_dir/errors.txt"
+    done < "$output_dir/all-tested-scenes.txt" > "$output_dir/errors.tmp"
+    sort "$output_dir/errors.tmp" | uniq > "$output_dir/errors.txt"
+    rm -f "$output_dir/errors.tmp"
 }
 
 extract-crashes() {
@@ -341,7 +345,9 @@ extract-crashes() {
                 echo "$scene: error: $status"
             fi
         fi
-    done < "$output_dir/all-tested-scenes.txt" > "$output_dir/crashes.txt"
+    done < "$output_dir/all-tested-scenes.txt" > "$output_dir/crashes.tmp"
+    sort "$output_dir/crashes.tmp" | uniq > "$output_dir/crashes.txt"
+    rm -f "$output_dir/crashes.tmp"
 }
 
 extract-successes() {
@@ -352,7 +358,9 @@ extract-successes() {
                 grep --silent "\[ERROR\]" "$output_dir/$scene/output.txt" || echo "$scene"
             fi
         fi
-    done < "$output_dir/all-tested-scenes.txt" > "$output_dir/successes.txt"
+    done < "$output_dir/all-tested-scenes.txt" > "$output_dir/successes.tmp"
+    sort "$output_dir/successes.tmp" | uniq > "$output_dir/successes.txt"
+    rm -f "$output_dir/successes.tmp"
 }
 
 count-tested-scenes() {
@@ -360,11 +368,11 @@ count-tested-scenes() {
 }
 
 count-successes() {
-    sort "$output_dir/successes.txt" | uniq | wc -l | tr -d ' 	'
+    wc -l < "$output_dir/successes.txt" | tr -d ' 	'
 }
 
 count-warnings() {
-    sort "$output_dir/warnings.txt" | uniq | wc -l | tr -d ' 	'
+    wc -l < "$output_dir/warnings.txt" | tr -d ' 	'
 }
 
 count-errors() {
