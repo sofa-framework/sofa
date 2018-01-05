@@ -109,7 +109,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     double rho, rho_1=0, alpha, beta;
 
 
-    msg_info_when(verbose) <<" CGLinearSolver, b = "<< b ;
+    msg_info_when(verbose) << " CGLinearSolver, b = " << b ;
 
 
     /// Compute the initial residual r
@@ -198,7 +198,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
 
         if( verbose )
         {
-            sout<<"p : "<<p<<sendl;
+            msg_info() << "p : " << p;
         }
 
         /// Compute the matrix-vector product : M p
@@ -206,7 +206,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
 
         if( verbose )
         {
-            sout<<"q = M p : "<<q<<sendl;
+            msg_info() << "q = M p : " << q;
         }
 
         /// Compute the denominator : p M p
@@ -217,18 +217,50 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
 
 
         /// Break condition = THRESHOLD criterion regarding the denominator is reached (but do at least one iteration)
-        if( fabs(den)<f_smallDenominatorThreshold.getValue() && nb_iter>1)
+        if( fabs(den)<f_smallDenominatorThreshold.getValue())
         {
-            endcond = "threshold";
-            if( verbose )
+            if(nb_iter == 1 && den == 0.0)
             {
-                sout<<"CGLinearSolver, den = "<<den<<", smallDenominatorThreshold = "<<f_smallDenominatorThreshold.getValue()<<sendl;
+                if(f_warmStart.getValue())
+                {
+                    msg_info() << "Equilibrium found at first step (x=A^{-1}b)";
+                }
+                else
+                {
+                    msg_warning() << "b or A is zero (in Ax=b system), i.e. no external force or no mass is defined.";
+                }
+
+                endcond = "threshold";
+                if( verbose )
+                {
+                    msg_info() << "CGLinearSolver, den = " << den <<", smallDenominatorThreshold = " << f_smallDenominatorThreshold.getValue();
+                }
+
+    #ifdef SOFA_DUMP_VISITOR_INFO
+                if (simulation::Visitor::isPrintActivated())
+                    simulation::Visitor::printCloseNode(comment.str());
+    #endif
+                break;
             }
-#ifdef SOFA_DUMP_VISITOR_INFO
-            if (simulation::Visitor::isPrintActivated())
-                simulation::Visitor::printCloseNode(comment.str());
-#endif
-            break;
+            else if(nb_iter == 1)
+            {
+                msg_warning() << "denominator threshold reached at first iteration of CG" << msgendl
+                                 "Check the 'threshold' data field, you might decrease it";
+            }
+            else
+            {
+                endcond = "threshold";
+                if( verbose )
+                {
+                    msg_info() << "CGLinearSolver, den = " << den <<", smallDenominatorThreshold = " << f_smallDenominatorThreshold.getValue();
+                }
+
+    #ifdef SOFA_DUMP_VISITOR_INFO
+                if (simulation::Visitor::isPrintActivated())
+                    simulation::Visitor::printCloseNode(comment.str());
+    #endif
+                break;
+            }
         }
 
         /// Compute the coefficient α for the conjugate direction
@@ -240,9 +272,9 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
 
         if( verbose )
         {
-            sout<<"den = "<<den<<", alpha = "<<alpha<<sendl;
-            sout<<"x : "<<x<<sendl;
-            sout<<"r : "<<r<<sendl;
+            msg_info() << "den = " << den << ", alpha = " << alpha;
+            msg_info() << "x : " << x;
+            msg_info() << "r : " << r;
         }
 
         rho_1 = rho;
@@ -262,10 +294,10 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
 
     // x is the solution of the system
 #ifdef DISPLAY_TIME
-    dmsg_info() << " solve, CG = "<<time1<<" build = "<< time2 ;
+    dmsg_info() << " solve, CG = " << time1 << " build = " << time2;
 #endif
 
-    dmsg_info() << "solve, nbiter = "<<nb_iter<<" stop because of "<<endcond ;
+    dmsg_info() << "solve, nbiter = "<<nb_iter<<" stop because of "<<endcond;
     dmsg_info_when( verbose ) <<"solve, solution = "<< x ;
 
     vtmp.deleteTempVector(&p);
