@@ -223,11 +223,11 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
             {
                 if(f_warmStart.getValue())
                 {
-                    msg_info() << "Equilibrium found at first step (x=A^{-1}b)";
+                    msg_info() << "Equilibrium found at first step";
                 }
                 else
                 {
-                    msg_warning() << "b or A is zero (in Ax=b system), i.e. no external force or no mass is defined.";
+                    msg_info() << "b or A is zero (in Ax=b system), i.e. no external force or no mass is defined";
                 }
 
                 endcond = "threshold";
@@ -245,7 +245,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
             else if(nb_iter == 1)
             {
                 msg_warning() << "denominator threshold reached at first iteration of CG" << msgendl
-                                 "Check the 'threshold' data field, you might decrease it";
+                              << "Check the 'threshold' data field, you might decrease it";
             }
             else
             {
