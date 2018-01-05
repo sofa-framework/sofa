@@ -1,8 +1,7 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 -0.5 0 " dt="1"  >
   
-      <RequiredPlugin pluginName="Flexible"/>
-  
+    <RequiredPlugin name='Flexible' />
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <DefaultAnimationLoop />
     <DefaultVisualManagerLoop />
