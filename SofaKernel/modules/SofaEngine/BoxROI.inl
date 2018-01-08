@@ -311,7 +311,7 @@ void BoxROI<DataTypes>::init()
     m_componentstate = ComponentState::Valid ;
 
     /// The following is a trick to force the initial selection of the element by the engine.
-    bool tmp=d_doUpdate.getValue() ;
+    bool tmp=d_doUpdate.getValue();
     d_doUpdate.setValue(true);
     setDirtyValue();
     reinit();

@@ -50,6 +50,7 @@ protected:
     virtual void loadScript() = 0;      // load & bind functions
 
     virtual void script_update() = 0;
+    virtual void script_init() = 0;
     //virtual void script_onLoaded(sofa::simulation::Node* node) = 0;   // called once, immediately after the script is loaded
 
 };

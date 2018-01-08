@@ -33,6 +33,7 @@ ScriptDataEngine::~ScriptDataEngine()
 void ScriptDataEngine::update()
 {
     // DataEngine::update(); doesn't make sense, probably?
+    cleanDirty();
     script_update();
 }
 

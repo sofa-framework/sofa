@@ -2,6 +2,8 @@
 #include "PythonMacros.h"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/AdvancedTimer.h>
+#include <sofa/simulation/AnimateBeginEvent.h>
+
 using sofa::helper::AdvancedTimer;
 
 
@@ -20,6 +22,7 @@ using sofa::helper::system::FileEventListener ;
 
 #include <sofa/core/objectmodel/IdleEvent.h>
 using sofa::core::objectmodel::IdleEvent ;
+using sofa::simulation::AnimateBeginEvent ;
 
 #include "PythonFactory.h"
 
@@ -84,9 +87,18 @@ PythonScriptDataEngine::PythonScriptDataEngine()
                                 "Default value is set to false" ) )
     , m_ScriptDataEngineClass(0)
     , m_ScriptDataEngineInstance(0)
+    , d_tetrahedra(initData(&d_tetrahedra, "tetrahedra", "Tetrahedron Topology"))
+    , d_tetrahedronIndices(initData(&d_tetrahedronIndices, "tetrahedronIndices","Indices of the tetrahedra contained in the ROI"))
+    , d_tetrahedraComputed(initData(&d_tetrahedraComputed, "tetrahedraComputed","Tetrahedra which are computed by the DataEngine"))
+    , d_tetrahedraOutliers(initData(&d_tetrahedraOutliers, "tetrahedraOutlier","Complement set of the tetrahedra, which are computed by the DataEngine"))
+    , d_X0( initData (&d_X0, "position", "Rest position coordinates of the degrees of freedom. \n"
+                                         "If empty the positions from a MechanicalObject then a MeshLoader are searched in the current context. \n"
+                                         "If none are found the parent's context is searched for MechanicalObject." ) )
 {
     m_filelistener = new MyyFileEventListener(this) ;
-    msg_warning() << "in constructor ";
+//    Data<float>* blah=  new Data<float>();
+//    this->addData(blah, "mydata") ;
+//    this->addInput(blah);
 }
 PythonScriptDataEngine::~PythonScriptDataEngine()
 {
@@ -99,7 +111,7 @@ PythonScriptDataEngine::~PythonScriptDataEngine()
 
 void PythonScriptDataEngine::script_update()
 {
-    msg_warning() << "wee, passing in script_update()";
+    //msg_warning() << "wee, passing in script_update()";
     PythonEnvironment::gil lock(__func__);
     SP_CALL_MODULEFUNC_NOPARAM(m_Func_update)
 }
@@ -108,6 +120,7 @@ void PythonScriptDataEngine::script_update()
 void PythonScriptDataEngine::refreshBinding()
 {
     BIND_OBJECT_METHOD_DATA_ENGINE(update)
+    BIND_OBJECT_METHOD_DATA_ENGINE(init)
             //BIND_OBJECT_METHOD(update)
 }
 
@@ -157,10 +170,12 @@ void PythonScriptDataEngine::loadScript()
         return;
     }
 
-    msg_warning() << " DataEngine Script loaded successfully.";
 
+
+    //msg_warning() << " DataEngine Script loaded successfully.";
+    //this->setDirtyValue(true);
     refreshBinding();
-    script_update();
+    //script_update();
 }
 
 
@@ -183,7 +198,37 @@ void PythonScriptDataEngine::setInstance(PyObject* instance) {
     refreshBinding();
 }
 
+// Ok, so in the end we're stuck with using the AnimationBeginEvent? (copied from BoxROI code)
+void PythonScriptDataEngine::handleEvent(Event *event)
+{
+    if (AnimateBeginEvent::checkEventType(event))
+    {
+        setDirtyValue();
+        update();
+    }
+}
 
+void PythonScriptDataEngine::init()
+{
+    addInput(&d_tetrahedra);
+    addInput(&d_X0);
+    addOutput(&d_tetrahedronIndices);
+    addOutput(&d_tetrahedraComputed);
+    addOutput(&d_tetrahedraOutliers);
+    bool tmp=d_doUpdate.getValue() ;
+    d_doUpdate.setValue(true);
+    setDirtyValue();
+    reinit();
+    d_doUpdate.setValue(tmp);
+    script_init();
+}
+
+void PythonScriptDataEngine::script_init()
+{
+    //msg_warning() << "wee, passing in script_update()";
+    PythonEnvironment::gil lock(__func__);
+    SP_CALL_MODULEFUNC_NOPARAM(m_Func_init)
+}
 
 }
 }
