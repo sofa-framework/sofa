@@ -46,9 +46,9 @@ namespace linearsolver
 /// Linear system solver using the conjugate gradient iterative algorithm
 template<class TMatrix, class TVector>
 CGLinearSolver<TMatrix,TVector>::CGLinearSolver()
-    : f_maxIter( initData(&f_maxIter,(unsigned)25,"iterations","maximum number of iterations of the Conjugate Gradient solution") )
-    , f_tolerance( initData(&f_tolerance,(SReal)1e-5,"tolerance","desired precision of the Conjugate Gradient Solution (ratio of current residual norm over initial residual norm)") )
-    , f_smallDenominatorThreshold( initData(&f_smallDenominatorThreshold,(SReal)1e-5,"threshold","minimum value of the denominator in the conjugate Gradient solution") )
+    : f_maxIter( initData(&f_maxIter,(unsigned)25,"iterations","Maximum number of iterations of the Conjugate Gradient solution") )
+    , f_tolerance( initData(&f_tolerance,(SReal)1e-5,"tolerance","Desired accuracy of the Conjugate Gradient solution (ratio of current residual norm over initial residual norm)") )
+    , f_smallDenominatorThreshold( initData(&f_smallDenominatorThreshold,(SReal)1e-5,"threshold","Minimum value of the denominator in the conjugate Gradient solution") )
     , f_warmStart( initData(&f_warmStart,false,"warmStart","Use previous solution as initial solution") )
     , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
     , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
@@ -201,15 +201,18 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
                 msg_warning() << "tolerance reached at first iteration of CG" << msgendl
                               << "Check the 'tolerance' data field, you might decrease it";
             }
-            else
+
+            endcond = "tolerance";
+            if( verbose )
             {
-                endcond = "tolerance";
-    #ifdef SOFA_DUMP_VISITOR_INFO
-                if (simulation::Visitor::isPrintActivated())
-                    simulation::Visitor::printCloseNode(comment.str());
-    #endif
-                break;
+                msg_info() << "CGLinearSolver, error = " << err <<", tolerance = " << f_tolerance.getValue();
             }
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+            if (simulation::Visitor::isPrintActivated())
+                simulation::Visitor::printCloseNode(comment.str());
+#endif
+            break;
         }
 
 
@@ -252,20 +255,18 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
                 msg_warning() << "denominator threshold reached at first iteration of CG" << msgendl
                               << "Check the 'threshold' data field, you might decrease it";
             }
-            else
-            {
-                endcond = "threshold";
-                if( verbose )
-                {
-                    msg_info() << "CGLinearSolver, den = " << den <<", smallDenominatorThreshold = " << f_smallDenominatorThreshold.getValue();
-                }
 
-    #ifdef SOFA_DUMP_VISITOR_INFO
-                if (simulation::Visitor::isPrintActivated())
-                    simulation::Visitor::printCloseNode(comment.str());
-    #endif
-                break;
+            endcond = "threshold";
+            if( verbose )
+            {
+                msg_info() << "CGLinearSolver, den = " << den <<", smallDenominatorThreshold = " << f_smallDenominatorThreshold.getValue();
             }
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+            if (simulation::Visitor::isPrintActivated())
+                simulation::Visitor::printCloseNode(comment.str());
+#endif
+            break;
         }
 
 
