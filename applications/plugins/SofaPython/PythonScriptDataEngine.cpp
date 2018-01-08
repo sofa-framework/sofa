@@ -90,7 +90,7 @@ PythonScriptDataEngine::PythonScriptDataEngine()
     , d_tetrahedra(initData(&d_tetrahedra, "tetrahedra", "Tetrahedron Topology"))
     , d_tetrahedronIndices(initData(&d_tetrahedronIndices, "tetrahedronIndices","Indices of the tetrahedra contained in the ROI"))
     , d_tetrahedraComputed(initData(&d_tetrahedraComputed, "tetrahedraComputed","Tetrahedra which are computed by the DataEngine"))
-    , d_tetrahedraOutliers(initData(&d_tetrahedraOutliers, "tetrahedraOutlier","Complement set of the tetrahedra, which are computed by the DataEngine"))
+    , d_tetrahedraOutliers(initData(&d_tetrahedraOutliers, "tetrahedraOutliers","Complement set of the tetrahedra, which are computed by the DataEngine"))
     , d_X0( initData (&d_X0, "position", "Rest position coordinates of the degrees of freedom. \n"
                                          "If empty the positions from a MechanicalObject then a MeshLoader are searched in the current context. \n"
                                          "If none are found the parent's context is searched for MechanicalObject." ) )
