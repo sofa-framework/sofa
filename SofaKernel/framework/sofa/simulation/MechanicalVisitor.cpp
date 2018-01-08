@@ -20,6 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_SIMULATION_MECHANICALVISITOR_CPP
+#include <sofa/core/behavior/BaseMass.h>
+#include <sofa/core/CollisionModel.h>
+#include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/Node.h>
 #include <iostream>
@@ -135,28 +138,28 @@ Visitor::Result BaseMechanicalVisitor::processNodeTopDown(simulation::Node* node
 
     if (res != RESULT_PRUNE)
     {
-        res = for_each_r<BaseMechanicalVisitor,VisitorContext,sofa::simulation::Node::Sequence<core::behavior::ConstraintSolver>,core::behavior::ConstraintSolver>(this, ctx, node->constraintSolver, &MechanicalVisitor::fwdConstraintSolver);
+        res = for_each_r<BaseMechanicalVisitor,VisitorContext, Sequence<core::behavior::ConstraintSolver>,core::behavior::ConstraintSolver>(this, ctx, node->constraintSolver, &MechanicalVisitor::fwdConstraintSolver);
     }
 
     if (res != RESULT_PRUNE)
     {
-        res = for_each_r<BaseMechanicalVisitor,VisitorContext,sofa::simulation::Node::Sequence<core::behavior::BaseForceField>,core::behavior::BaseForceField>(this, ctx, node->forceField, &MechanicalVisitor::fwdForceField);
+        res = for_each_r<BaseMechanicalVisitor,VisitorContext, Sequence<core::behavior::BaseForceField>,core::behavior::BaseForceField>(this, ctx, node->forceField, &MechanicalVisitor::fwdForceField);
     }
 
     if (res != RESULT_PRUNE)
     {
-        res = for_each_r<BaseMechanicalVisitor,VisitorContext,sofa::simulation::Node::Sequence<core::behavior::BaseInteractionForceField>,core::behavior::BaseInteractionForceField>(this, ctx, node->interactionForceField, &MechanicalVisitor::fwdInteractionForceField);
+        res = for_each_r<BaseMechanicalVisitor,VisitorContext, Sequence<core::behavior::BaseInteractionForceField>,core::behavior::BaseInteractionForceField>(this, ctx, node->interactionForceField, &MechanicalVisitor::fwdInteractionForceField);
     }
 
 
     if (res != RESULT_PRUNE)
     {
-        res = for_each_r<BaseMechanicalVisitor,VisitorContext,sofa::simulation::Node::Sequence<core::behavior::BaseProjectiveConstraintSet>,core::behavior::BaseProjectiveConstraintSet>(this, ctx, node->projectiveConstraintSet, &MechanicalVisitor::fwdProjectiveConstraintSet);
+        res = for_each_r<BaseMechanicalVisitor,VisitorContext, Sequence<core::behavior::BaseProjectiveConstraintSet>,core::behavior::BaseProjectiveConstraintSet>(this, ctx, node->projectiveConstraintSet, &MechanicalVisitor::fwdProjectiveConstraintSet);
     }
 
     if (res != RESULT_PRUNE)
     {
-        res = for_each_r<BaseMechanicalVisitor,VisitorContext,sofa::simulation::Node::Sequence<core::behavior::BaseConstraintSet>,core::behavior::BaseConstraintSet>(this, ctx, node->constraintSet, &MechanicalVisitor::fwdConstraintSet);
+        res = for_each_r<BaseMechanicalVisitor,VisitorContext, Sequence<core::behavior::BaseConstraintSet>,core::behavior::BaseConstraintSet>(this, ctx, node->constraintSet, &MechanicalVisitor::fwdConstraintSet);
     }
 
 
@@ -166,9 +169,9 @@ Visitor::Result BaseMechanicalVisitor::processNodeTopDown(simulation::Node* node
 
 void BaseMechanicalVisitor::processNodeBottomUp(simulation::Node* node, VisitorContext* ctx)
 {
-    for_each<BaseMechanicalVisitor,VisitorContext,sofa::simulation::Node::Sequence<core::behavior::BaseProjectiveConstraintSet>,core::behavior::BaseProjectiveConstraintSet>(this, ctx, node->projectiveConstraintSet, &MechanicalVisitor::bwdProjectiveConstraintSet);
-    for_each<BaseMechanicalVisitor,VisitorContext,sofa::simulation::Node::Sequence<core::behavior::BaseConstraintSet>,core::behavior::BaseConstraintSet>(this, ctx, node->constraintSet, &MechanicalVisitor::bwdConstraintSet);
-    for_each<BaseMechanicalVisitor,VisitorContext,sofa::simulation::Node::Sequence<core::behavior::ConstraintSolver>,core::behavior::ConstraintSolver>(this, ctx, node->constraintSolver, &MechanicalVisitor::bwdConstraintSolver);
+    for_each<BaseMechanicalVisitor,VisitorContext,Sequence<core::behavior::BaseProjectiveConstraintSet>,core::behavior::BaseProjectiveConstraintSet>(this, ctx, node->projectiveConstraintSet, &MechanicalVisitor::bwdProjectiveConstraintSet);
+    for_each<BaseMechanicalVisitor,VisitorContext,Sequence<core::behavior::BaseConstraintSet>,core::behavior::BaseConstraintSet>(this, ctx, node->constraintSet, &MechanicalVisitor::bwdConstraintSet);
+    for_each<BaseMechanicalVisitor,VisitorContext,Sequence<core::behavior::ConstraintSolver>,core::behavior::ConstraintSolver>(this, ctx, node->constraintSolver, &MechanicalVisitor::bwdConstraintSolver);
 
     if (node->mechanicalState != NULL)
     {

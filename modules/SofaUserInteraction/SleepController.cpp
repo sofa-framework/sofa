@@ -28,6 +28,7 @@
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/simulation/CollisionEndEvent.h>
+#include <sofa/simulation/Node.h>
 
 namespace sofa
 {

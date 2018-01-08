@@ -24,11 +24,15 @@
 
 #include <SofaMiscFem/FastTetrahedralCorotationalForceField.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DisplayFlags.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
 #include <sofa/helper/gl/template.h>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/helper/decompose.h>
+#include <sofa/core/behavior/MultiMatrix.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
+#include <sofa/defaulttype/BaseMatrix.h>
 
 namespace sofa
 {

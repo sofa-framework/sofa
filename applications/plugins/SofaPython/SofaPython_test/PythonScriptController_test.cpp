@@ -11,11 +11,12 @@ using sofa::Sofa_test;
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/simulation/Node.h>
+using sofa::simulation::Node ;
+using sofa::simulation::NodeSPtr ;
 
 #include <sofa/core/ObjectFactory.h>
 #include <SofaPython/PythonToSofa.inl>
 
-using sofa::simulation::Node;
 
 #include <sofa/core/ObjectFactory.h>
 
@@ -65,7 +66,7 @@ protected:
                  "      <PythonScriptController classname='AClass' />                            \n"
                  "</Node>                                                                        \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+        NodeSPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                           scene.str().c_str(),
                                                           scene.str().size()) ;
 
@@ -112,7 +113,7 @@ class TestController(Sofa.PythonScriptController):
               <<   "      <PythonScriptController classname='TestController' filename='"<<pythonControllerPath<< "'/>    \n"
               <<   "</Node>                                                                                \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+        NodeSPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                           scene.str().c_str(),
                                                           scene.str().size()) ;
 

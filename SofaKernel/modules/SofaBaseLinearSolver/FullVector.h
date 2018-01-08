@@ -24,9 +24,9 @@
 #include "config.h"
 
 #include <sofa/defaulttype/BaseVector.h>
-#include <sofa/helper/rmath.h>
-#include <sofa/helper/vector.h>
 
+#include <sofa/helper/vector.h>
+#include <sofa/helper/rmath.h>
 #include <iostream>
 #include <vector>
 

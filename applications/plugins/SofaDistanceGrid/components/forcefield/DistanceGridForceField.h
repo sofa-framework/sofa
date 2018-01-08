@@ -23,11 +23,12 @@
 #define SOFA_COMPONENT_INTERACTIONFORCEFIELD_DISTANCEGRIDFORCEFIELD_H
 #include <SofaDistanceGrid/config.h>
 #include <SofaDistanceGrid/DistanceGrid.h>
-
+#include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/helper/types/RGBAColor.h>
 
 namespace sofa
 {
@@ -160,7 +161,7 @@ public:
     Data<Real> stiffnessVolume;
     bool flipNormals;
 
-    Data<defaulttype::RGBAColor> color;
+    Data<sofa::helper::types::RGBAColor> color;
     Data<bool> bDraw;
     Data<bool> drawPoints;
     Data<Real> drawSize;
@@ -184,7 +185,7 @@ protected:
         , stiffnessArea(initData(&stiffnessArea, (Real)100, "stiffnessArea", "force stiffness if a triangle have an area less than minArea"))
         , minVolume(initData(&minVolume, (Real)0, "minVolume", "minimal volume for each tetrahedron (a flipped triangle will have a negative volume)"))
         , stiffnessVolume(initData(&stiffnessVolume, (Real)0, "stiffnessVolume", "force stiffness if a tetrahedron have an volume less than minVolume"))
-        , color(initData(&color, defaulttype::RGBAColor(0.0f,0.5f,0.2f,1.0f), "color", "display color.(default=[0.0,0.5,0.2,1.0])"))
+        , color(initData(&color, sofa::helper::types::RGBAColor(0.0f,0.5f,0.2f,1.0f), "color", "display color.(default=[0.0,0.5,0.2,1.0])"))
         , bDraw(initData(&bDraw, false, "draw", "enable/disable drawing of distancegrid"))
         , drawPoints(initData(&drawPoints, false, "drawPoints", "enable/disable drawing of distancegrid"))
         , drawSize(initData(&drawSize, (Real)10.0f, "drawSize", "display size if draw is enabled"))

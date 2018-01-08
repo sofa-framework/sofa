@@ -43,7 +43,7 @@ class SOFA_MISC_COLLISION_API DefaultCollisionGroupManager : public core::collis
 public:
     SOFA_CLASS(DefaultCollisionGroupManager,sofa::core::collision::CollisionGroupManager);
 
-    typedef std::set<simulation::Node::SPtr> GroupSet;
+    typedef std::set<simulation::NodeSPtr> GroupSet;
     GroupSet groupSet;
 
 protected:
@@ -74,7 +74,7 @@ protected:
     }
 
     template <typename Container>
-    void clearGroup(const Container &inNodes, simulation::Node::SPtr group)
+    void clearGroup(const Container &inNodes, simulation::NodeSPtr group)
     {
         core::objectmodel::BaseNode::SPtr parent = *inNodes.begin();
         while(!group->child.empty()) parent->moveChild(*group->child.begin());

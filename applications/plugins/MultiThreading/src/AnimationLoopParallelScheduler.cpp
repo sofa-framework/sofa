@@ -5,6 +5,7 @@
 #include "DataExchange.h"
 
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/CollisionModel.h>
 #include <sofa/simulation/PrintVisitor.h>
 #include <SofaSimulationCommon/FindByTypeVisitor.h>
 #include <sofa/simulation/ExportGnuplotVisitor.h>
@@ -37,14 +38,14 @@
 #include <sofa/helper/system/atomic.h>
 
 #include <sofa/core/visual/VisualParams.h>
-
+#include <sofa/core/behavior/ConstraintSolver.h>
 #include <sofa/helper/AdvancedTimer.h>
 
 #include <stdlib.h>
 #include <math.h>
 #include <algorithm>
 
-
+#include <sofa/core/behavior/LinearSolver.h>
 #include <boost/pool/pool.hpp>
 
 
@@ -95,23 +96,11 @@ namespace simulation
 			mNbThread = threadNumber.getValue();
 		}
 
-		//TaskScheduler::getInstance().stop();
-
 		TaskScheduler::getInstance().start( mNbThread );
-
 
 		sofa::core::objectmodel::classidT<sofa::core::behavior::ConstraintSolver>();
 		sofa::core::objectmodel::classidT<sofa::core::behavior::LinearSolver>();
 		sofa::core::objectmodel::classidT<sofa::core::CollisionModel>();
-
-		//simulation::Node* root = dynamic_cast<simulation::Node*>(getContext());
-		//if(root == NULL) return;
-		//std::vector<core::behavior::ConstraintSolver*> constraintSolver;
-		//root->getTreeObjects<core::behavior::ConstraintSolver>(&constraintSolver);
-
-
-		//TaskScheduler::getInstance().stop();
-
 	}
 
 
@@ -148,9 +137,7 @@ namespace simulation
 
 		WorkerThread* thread = WorkerThread::getCurrent();	
 
-
-
-		typedef Node::Sequence<simulation::Node,true>::iterator ChildIterator;
+		typedef Sequence<simulation::Node,true>::iterator ChildIterator;
 		for (ChildIterator it = gnode->child.begin(), itend = gnode->child.end(); it != itend; ++it)
 		{
 			if ( core::behavior::BaseAnimationLoop* aloop = (*it)->getAnimationLoop() )

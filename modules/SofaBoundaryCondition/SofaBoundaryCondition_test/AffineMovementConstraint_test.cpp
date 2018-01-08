@@ -49,7 +49,7 @@ struct AffineMovementConstraint_test : public Elasticity_test<_DataTypes>
     typedef typename component::interactionforcefield::MeshSpringForceField<DataTypes> MeshSpringForceField;
 
     /// Root of the scene graph
-    simulation::Node::SPtr root;
+    simulation::NodeSPtr root;
     /// Tested simulation
     simulation::Simulation* simulation;
     /// Structure which contains current node and pointers to the mechanical object and the affine constraint
@@ -85,7 +85,7 @@ struct AffineMovementConstraint_test : public Elasticity_test<_DataTypes>
                         Vec<6,SReal>(-0.1,-0.1,0,1.1,1.1,0), // inclusive box of pair box roi
                         Vec<6,SReal>(0.1,0.1,0,0.9,0.9,0)); // included box of pair box roi
 
-        simulation::Node::SPtr SquareNode = patchStruct.SquareNode;
+        simulation::NodeSPtr SquareNode = patchStruct.SquareNode;
 
         //Force field for 2D Grid
         typename MeshSpringForceField::SPtr meshSpringForceField = modeling::addNew<MeshSpringForceField> (SquareNode,"forceField");

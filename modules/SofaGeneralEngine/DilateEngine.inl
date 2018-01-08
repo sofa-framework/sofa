@@ -25,7 +25,7 @@
 #include <SofaGeneralEngine/DilateEngine.h>
 #include <SofaGeneralMeshCollision/TriangleOctree.h>
 #include <SofaMeshCollision/RayTriangleIntersection.h>
-#include <sofa/helper/rmath.h> //M_PI
+ //M_PI
 #include <sofa/helper/logging/Messaging.h>
 
 namespace sofa

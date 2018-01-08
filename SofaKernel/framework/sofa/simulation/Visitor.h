@@ -23,11 +23,13 @@
 #define SOFA_SIMULATION_VISITOR_H
 
 #include <sofa/simulation/simulationcore.h>
-#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Node_fwd.h>
 #include <sofa/simulation/LocalStorage.h>
 
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/ExecParams.h>
+
+#include <sofa/helper/system/thread/CTime.h>
 
 #include <sofa/helper/set.h>
 #include <iostream>
@@ -41,7 +43,7 @@ namespace sofa
 
 namespace simulation
 {
-
+class Node ;
 class LocalStorage;
 
 /// Base class for visitors propagated recursively through the scenegraph

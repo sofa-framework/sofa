@@ -35,6 +35,7 @@
 #include <SofaOpenglVisual/OrderIndependentTransparencyManager.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/VisualVisitor.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/FileRepository.h>
 

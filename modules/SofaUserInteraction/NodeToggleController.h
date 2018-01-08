@@ -41,7 +41,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/HapticDeviceEvent.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
-#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Node_fwd.h>
 
 namespace sofa
 {

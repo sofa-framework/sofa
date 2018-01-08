@@ -22,6 +22,7 @@
 #ifndef SOFA_CORE_VISUAL_VISUALMANAGER_H
 #define SOFA_CORE_VISUAL_VISUALMANAGER_H
 
+#include <sofa/core/visual/VisualManager_fwd.h>
 #include <sofa/core/visual/VisualModel.h>
 
 namespace sofa

@@ -28,8 +28,6 @@
 #include <sofa/defaulttype/Vec.h>
 #include <map>
 
-#include <sofa/core/BaseMapping.h>
-
 
 namespace sofa
 {

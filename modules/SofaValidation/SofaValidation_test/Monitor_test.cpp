@@ -55,7 +55,7 @@ struct MonitorTest : public Monitor<Rigid3>
 
 struct Monitor_test : public sofa::Sofa_test<>
 {
-    sofa::simulation::Node::SPtr root;
+    sofa::simulation::NodeSPtr root;
     sofa::simulation::SceneLoaderXML loader;
     MonitorTest* monitor;
     MechanicalObject<Rigid3>::SPtr mo;

@@ -22,7 +22,7 @@
 #ifndef SOFA_GUI_QT_TRANSFORMATIONWIDGET_H
 #define SOFA_GUI_QT_TRANSFORMATIONWIDGET_H
 
-#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Node_fwd.h>
 #include "WDoubleLineEdit.h"
 
 #include <QWidget>

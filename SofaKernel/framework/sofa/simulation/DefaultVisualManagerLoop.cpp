@@ -19,16 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/DefaultVisualManagerLoop.h>
+#include "DefaultVisualManagerLoop.inl"
+#include <sofa/simulation/Node.h>
+
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
-
+#include <sofa/core/visual/VisualManager.h>
 #include <sofa/simulation/VisualVisitor.h>
 #include <sofa/simulation/UpdateContextVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/UpdateMappingEndEvent.h>
 #include <sofa/simulation/PropagateEventVisitor.h>
-
 
 #include <sofa/helper/AdvancedTimer.h>
 
@@ -122,7 +123,7 @@ void DefaultVisualManagerLoop::drawStep(sofa::core::visual::VisualParams* vparam
     }
     else
     {
-        Node::Sequence<core::visual::VisualManager>::iterator begin = gRoot->visualManager.begin(), end = gRoot->visualManager.end(), it;
+        Sequence<core::visual::VisualManager>::iterator begin = gRoot->visualManager.begin(), end = gRoot->visualManager.end(), it;
         for (it = begin; it != end; ++it)
             (*it)->preDrawScene(vparams);
         bool rendered = false; // true if a manager did the rendering
@@ -144,7 +145,7 @@ void DefaultVisualManagerLoop::drawStep(sofa::core::visual::VisualParams* vparam
             act2.setTags(this->getTags());
             gRoot->execute ( &act2 );
         }
-        Node::Sequence<core::visual::VisualManager>::reverse_iterator rbegin = gRoot->visualManager.rbegin(), rend = gRoot->visualManager.rend(), rit;
+        Sequence<core::visual::VisualManager>::reverse_iterator rbegin = gRoot->visualManager.rbegin(), rend = gRoot->visualManager.rend(), rit;
         for (rit = rbegin; rit != rend; ++rit)
             (*rit)->postDrawScene(vparams);
     }

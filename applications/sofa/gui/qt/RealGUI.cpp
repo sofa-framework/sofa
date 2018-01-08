@@ -180,7 +180,7 @@ public:
 
 //======================= STATIC METHODS ========================= {
 
-BaseGUI* RealGUI::CreateGUI ( const char* name, sofa::simulation::Node::SPtr root, const char* filename )
+BaseGUI* RealGUI::CreateGUI ( const char* name, sofa::simulation::NodeSPtr root, const char* filename )
 {
     CreateApplication();
 
@@ -885,7 +885,7 @@ void RealGUI::fileOpenSimu ( std::string s )
 
 //------------------------------------
 
-void RealGUI::setSceneWithoutMonitor (Node::SPtr root, const char* filename, bool temporaryFile)
+void RealGUI::setSceneWithoutMonitor (NodeSPtr root, const char* filename, bool temporaryFile)
 {
     if (filename)
     {
@@ -944,7 +944,7 @@ void RealGUI::setSceneWithoutMonitor (Node::SPtr root, const char* filename, boo
     }
 }
 
-void RealGUI::setScene(Node::SPtr root, const char* filename, bool temporaryFile)
+void RealGUI::setScene(NodeSPtr root, const char* filename, bool temporaryFile)
 {
     if(m_enableInteraction &&  filename){
         FileMonitor::removeListener(m_filelistener) ;
@@ -1405,7 +1405,7 @@ void RealGUI::init()
 
 //------------------------------------
 
-void RealGUI::createDisplayFlags(Node::SPtr root)
+void RealGUI::createDisplayFlags(NodeSPtr root)
 {
     if( displayFlag != NULL)
     {

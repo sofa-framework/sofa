@@ -35,12 +35,14 @@ using sofa::core::objectmodel::BaseObjectDescription ;
 #include <sofa/simulation/XMLPrintVisitor.h>
 using sofa::simulation::XMLPrintVisitor ;
 
+#include <sofa/simulation/Node.h>
+
 namespace sofa
 {
 namespace simpleapi
 {
 
-void dumpScene(Node::SPtr root)
+void dumpScene(NodeSPtr root)
 {
     XMLPrintVisitor p(sofa::core::ExecParams::defaultInstance(), std::cout) ;
     p.execute(root.get()) ;
@@ -58,10 +60,10 @@ Simulation::SPtr createSimulation(const std::string& type)
 }
 
 
-Node::SPtr createRootNode(Simulation::SPtr s, const std::string& name,
+NodeSPtr createRootNode(Simulation::SPtr s, const std::string& name,
                                               const std::map<std::string, std::string>& params)
 {
-    Node::SPtr root = s->createNewNode(name) ;
+    NodeSPtr root = s->createNewNode(name) ;
 
     BaseObjectDescription desc(name.c_str(), "Node");
     for(auto& kv : params)
@@ -74,7 +76,7 @@ Node::SPtr createRootNode(Simulation::SPtr s, const std::string& name,
 }
 
 
-BaseObject::SPtr createObject(Node::SPtr parent, const std::string& type, const std::map<std::string, std::string>& params)
+BaseObject::SPtr createObject(NodeSPtr parent, const std::string& type, const std::map<std::string, std::string>& params)
 {
     /// temporarily, the name is set to the type name.
     /// if a "name" parameter is provided, it will overwrite it.
@@ -98,14 +100,14 @@ BaseObject::SPtr createObject(Node::SPtr parent, const std::string& type, const 
     return obj ;
 }
 
-Node::SPtr createChild(Node::SPtr& node, const std::string& name, const std::map<std::string, std::string>& params)
+NodeSPtr createChild(NodeSPtr& node, const std::string& name, const std::map<std::string, std::string>& params)
 {
     BaseObjectDescription desc(name.c_str(), "Node");
     for(auto& kv : params)
     {
         desc.setAttribute(kv.first.c_str(), kv.second.c_str());
     }
-    Node::SPtr tmp = node->createChild(name);
+    NodeSPtr tmp = node->createChild(name);
     tmp->parse(&desc);
     return tmp;
 }

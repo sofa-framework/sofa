@@ -31,6 +31,7 @@
 //
 #include "GetVectorVisitor.h"
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/simulation/Node.h>
 
 namespace sofa
 {
@@ -52,10 +53,8 @@ void GetVectorVisitor::setIndependentOnly(bool b){ independentOnly=b; }
 
 Visitor::Result GetVectorVisitor::processNodeTopDown( simulation::Node* gnode )
 {
-//    cerr << "GetVectorVisitor::processNodeTopDown, node "<< gnode->getName() << endl;
     if (gnode->mechanicalState != NULL && ( gnode->mechanicalMapping ==NULL || independentOnly==false) )
     {
-//        cerr << "GetVectorVisitor::processNodeTopDown, node has mechanical state "<< endl;
         gnode->mechanicalState->copyToBaseVector(vec,src,offset);
     }
     return Visitor::RESULT_CONTINUE;

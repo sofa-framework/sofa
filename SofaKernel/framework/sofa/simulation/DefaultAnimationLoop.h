@@ -26,8 +26,7 @@
 #include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/core/ExecParams.h>
 #include <sofa/simulation/simulationcore.h>
-#include <sofa/simulation/Node.h>
-#include <sofa/helper/AdvancedTimer.h>
+#include <sofa/simulation/Node_fwd.h>
 
 namespace sofa
 {
@@ -40,7 +39,6 @@ namespace simulation
  *
  *
  */
-
 class SOFA_SIMULATION_CORE_API DefaultAnimationLoop : public sofa::core::behavior::BaseAnimationLoop
 {
 public:
@@ -48,11 +46,7 @@ public:
     typedef sofa::core::objectmodel::BaseContext BaseContext;
     typedef sofa::core::objectmodel::BaseObjectDescription BaseObjectDescription;
     SOFA_CLASS(DefaultAnimationLoop,sofa::core::behavior::BaseAnimationLoop);
-protected:
-    DefaultAnimationLoop(simulation::Node* gnode = NULL);
 
-    virtual ~DefaultAnimationLoop();
-public:
     /// Set the simulation node this animation loop is controlling
     virtual void setNode( simulation::Node* );
 
@@ -60,24 +54,17 @@ public:
     virtual void init() override;
 
     /// perform one animation step
-    virtual void step(const core::ExecParams* params, SReal dt) override;
-
+    virtual void step(const sofa::core::ExecParams* params, SReal dt) override;
 
     /// Construction method called by ObjectFactory.
     template<class T>
-    static typename T::SPtr create(T*, BaseContext* context, BaseObjectDescription* arg)
-    {
-        simulation::Node* gnode = dynamic_cast<simulation::Node*>(context);
-        typename T::SPtr obj = sofa::core::objectmodel::New<T>(gnode);
-        if (context) context->addObject(obj);
-        if (arg) obj->parse(arg);
-        return obj;
-    }
+    static typename T::SPtr create(T*, BaseContext* context, BaseObjectDescription* arg) ;
 
 protected :
+    DefaultAnimationLoop(simulation::Node* gnode = NULL);
+    virtual ~DefaultAnimationLoop();
 
     simulation::Node* gnode;  ///< the node controlled by the loop
-
 };
 
 } // namespace simulation

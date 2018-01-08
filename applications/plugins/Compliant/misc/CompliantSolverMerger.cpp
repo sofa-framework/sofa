@@ -2,7 +2,6 @@
 #include "CompliantSolverMerger.h"
 
 #include <SofaMiscCollision/SolverMerger.h>
-#include <sofa/helper/FnDispatcher.inl>
 
 #include "../odesolver/CompliantImplicitSolver.h"
 #include "../odesolver/CompliantNLImplicitSolver.h"

@@ -140,7 +140,7 @@ struct StiffSpringForceField_test : public ForceField_test<_StiffSpringForceFiel
             Vec3 f0)
     {
         // create a child node with its own DOF
-        simulation::Node::SPtr child = this->node->createChild("childNode");
+        simulation::NodeSPtr child = this->node->createChild("childNode");
         typename DOF::SPtr childDof = addNew<DOF>(child);
 
         // replace the spring with another one, between the parent and the child

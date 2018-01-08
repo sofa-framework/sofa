@@ -19,15 +19,24 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CLASSSYSTEM_H
-#define SOFA_CLASSSYSTEM_H
+#ifndef SOFA_CORE_OBJECTMODEL_BASEOBJECTDESCRIPTION_FWD_H
+#define SOFA_CORE_OBJECTMODEL_BASEOBJECTDESCRIPTION_FWD_H
 
 namespace sofa
 {
-namespace simulation
+
+namespace core
 {
-class Node;
-}
-}
+
+namespace objectmodel
+{
+
+class BaseObjectDescription ;
+
+} // namespace objectmodel
+
+} // namespace core
+
+} // namespace sofa
 
 #endif

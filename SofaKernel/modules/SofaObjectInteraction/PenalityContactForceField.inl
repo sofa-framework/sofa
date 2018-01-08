@@ -24,6 +24,8 @@
 
 #include <SofaObjectInteraction/PenalityContactForceField.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawTool.h>
+
 #include <sofa/helper/system/config.h>
 #include <cassert>
 #include <iostream>

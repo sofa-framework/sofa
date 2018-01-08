@@ -23,7 +23,7 @@
 #define SOFA_GUI_QGLVIEWER_GENGRAPHFORM_H
 
 #include <ui_BaseGenGraphForm.h>
-#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Node_fwd.h>
 
 #include "QProcess"
 #include "QStringList"

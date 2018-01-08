@@ -304,28 +304,8 @@ public :
 
     virtual void createGroups(const core::MechanicalParams* mparams);
 
-    int getNbGroups() const
-    {
-        if (isMultiGroup())
-            return (int)this->groups.size();
-        else
-            return 1;
-    }
-
-    void setGroup(int i)
-    {
-        //serr << "setGroup("<<i<<")" << sendl;
-        if (isMultiGroup() && (unsigned)i < this->groups.size())
-        {
-            currentNode = groups[i];
-            currentGroup = &(gData[currentNode]);
-        }
-        else
-        {
-            currentNode = dynamic_cast<simulation::Node*>(this->getContext());
-            currentGroup = &defaultGroup;
-        }
-    }
+    int getNbGroups() const ;
+    void setGroup(int i) ;
 
 public:
 

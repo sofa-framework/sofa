@@ -30,7 +30,6 @@
 #include <SofaBaseTopology/TopologyData.h>
 
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/AdvancedTimer.h>
 
 namespace sofa
 {
@@ -40,7 +39,6 @@ namespace component
 
 namespace collision
 {
-using sofa::helper::AdvancedTimer;
 
 /**
  * @brief LocalMinDistance cone information class for a Triangle collision primitive.

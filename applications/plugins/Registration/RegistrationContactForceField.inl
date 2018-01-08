@@ -29,6 +29,7 @@
 #include <sofa/helper/gl/template.h>
 #include <iostream>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawTool.h>
 #include <sofa/simulation/Simulation.h>
 
 

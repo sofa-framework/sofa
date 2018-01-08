@@ -22,7 +22,7 @@
 #include "CudaTypes.h"
 #include "CudaParticleSource.inl"
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/behavior/ProjectiveConstraintSet.h>
+#include <sofa/core/behavior/ProjectiveConstraintSet.inl>
 #include <SofaSphFluid/ParticleSource.h>
 
 namespace sofa

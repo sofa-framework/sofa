@@ -24,14 +24,14 @@
 
 #include <sofa/simulation/simulationcore.h>
 #include <sofa/simulation/Visitor.h>
-#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Node_fwd.h>
 #include <sofa/core/VecId.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/ExecParams.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/BehaviorModel.h>
 #include <sofa/core/behavior/BaseInteractionForceField.h>
-#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/behavior/OdeSolver_fwd.h>
 #include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/core/collision/Pipeline.h>
 

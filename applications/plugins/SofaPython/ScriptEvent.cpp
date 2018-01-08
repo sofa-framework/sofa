@@ -19,6 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/simulation/Node.h>
+
 #include "ScriptEvent.h"
 
 namespace sofa
@@ -32,7 +34,7 @@ namespace objectmodel
 
 SOFA_EVENT_CPP( ScriptEvent )
 
-ScriptEvent::ScriptEvent(sofa::simulation::Node::SPtr sender, const char* eventName)
+ScriptEvent::ScriptEvent(sofa::simulation::NodeSPtr sender, const char* eventName)
     : sofa::core::objectmodel::Event()
     , m_sender(sender)
     , m_eventName(eventName)

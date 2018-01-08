@@ -28,6 +28,7 @@
 #include <sofa/gui/ColourPickingVisitor.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/helper/gl/FrameBufferObject.h>
+#include <sofa/simulation/Node_fwd.h>
 
 namespace sofa
 {
@@ -132,7 +133,7 @@ protected:
     MOUSE_BUTTON mouseButton;
 
 
-    Node::SPtr                mouseNode;
+    sofa::simulation::NodeSPtr mouseNode;
     MouseContainer::SPtr      mouseContainer;
     MouseCollisionModel::SPtr mouseCollision;
 

@@ -467,7 +467,7 @@ void QSofaListView::RemoveNode()
     if( object_.type == typeNode)
     {
         emit Lock(true);
-        Node::SPtr node = object_.ptr.Node;
+        NodeSPtr node = object_.ptr.Node;
         if ( node == node->getRoot() )
         {
             if ( QMessageBox::warning ( this, "Removing root", "root node cannot be removed" ) )

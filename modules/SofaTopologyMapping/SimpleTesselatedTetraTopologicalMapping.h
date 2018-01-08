@@ -29,7 +29,6 @@
 #include <map>
 #include <set>
 
-#include <sofa/core/BaseMapping.h>
 #include <SofaBaseTopology/TopologyData.h>
 
 namespace sofa

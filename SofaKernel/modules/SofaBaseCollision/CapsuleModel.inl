@@ -23,6 +23,8 @@
 #include <sofa/helper/proximity.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/core/visual/DrawTool.h>
+
 #include <iostream>
 #include <algorithm>
 

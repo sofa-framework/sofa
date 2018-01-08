@@ -40,8 +40,8 @@ namespace sofa {
 		typedef typename DOFs::Deriv  Deriv;
 
 		/// Create sun-planet system
-		simulation::Node::SPtr createSunPlanetSystem(
-			simulation::Node::SPtr root,
+		simulation::NodeSPtr createSunPlanetSystem(
+			simulation::NodeSPtr root,
 			double mSun,
 			double mPlanet,
 			double g,

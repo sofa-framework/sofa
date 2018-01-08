@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include "BatchGUI.h"
 #include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/simulation/UpdateContextVisitor.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <iostream>
@@ -81,7 +82,7 @@ int BatchGUI::closeGUI()
     return 0;
 }
 
-void BatchGUI::setScene(sofa::simulation::Node::SPtr groot, const char* filename, bool )
+void BatchGUI::setScene(sofa::simulation::NodeSPtr groot, const char* filename, bool )
 {
     this->groot = groot;
     this->filename = (filename?filename:"");
@@ -129,7 +130,7 @@ sofa::simulation::Node* BatchGUI::currentSimulation()
     return groot.get();
 }
 
-BaseGUI* BatchGUI::CreateGUI(const char* name, sofa::simulation::Node::SPtr groot, const char* filename)
+BaseGUI* BatchGUI::CreateGUI(const char* name, sofa::simulation::NodeSPtr groot, const char* filename)
 {
     BatchGUI::mGuiName = name;
     BatchGUI* gui = new BatchGUI();

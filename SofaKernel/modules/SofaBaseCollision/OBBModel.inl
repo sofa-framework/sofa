@@ -38,6 +38,7 @@
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/simulation/Simulation.h>
+#include <sofa/core/visual/DrawTool.h>
 
 namespace sofa
 {

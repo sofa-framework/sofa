@@ -39,6 +39,7 @@
 #include <sofa/helper/system/glu.h>
 
 #include <sofa/helper/Factory.inl>
+#include <sofa/core/visual/DrawTool.h>
 
 #include <sofa/simulation/Simulation.h>
 

@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <sofa/core/objectmodel/DDGNode.h>
 #include <sofa/core/objectmodel/BaseData.h>
+#include <sofa/core/objectmodel/BaseClass.h>
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/DataEngine.h>
 
@@ -156,21 +157,6 @@ const DDGNode::DDGLinkContainer& DDGNode::getOutputs()
     return outputs.getValue();
 }
 
-sofa::core::objectmodel::Base* LinkTraitsPtrCasts<DDGNode>::getBase(sofa::core::objectmodel::DDGNode* n)
-{
-    if (!n) return NULL;
-    return n->getOwner();
-    //sofa::core::objectmodel::BaseData* d = dynamic_cast<sofa::core::objectmodel::BaseData*>(n);
-    //if (d) return d->getOwner();
-    //return dynamic_cast<sofa::core::objectmodel::Base*>(n);
-}
-
-sofa::core::objectmodel::BaseData* LinkTraitsPtrCasts<DDGNode>::getData(sofa::core::objectmodel::DDGNode* n)
-{
-    if (!n) return NULL;
-    return n->getData();
-    //return dynamic_cast<sofa::core::objectmodel::BaseData*>(n);
-}
 
 bool DDGNode::findDataLinkDest(DDGNode*& ptr, const std::string& path, const BaseLink* link)
 {
@@ -233,6 +219,21 @@ void DDGNode::addLink(BaseLink* /*l*/)
 }
 
 } // namespace objectmodel
+
+sofa::core::objectmodel::Base* AsBase(sofa::core::objectmodel::DDGNode* n)
+{
+    if (!n)
+        return nullptr;
+    return n->getOwner();
+}
+
+sofa::core::objectmodel::BaseData* AsData(sofa::core::objectmodel::DDGNode* n)
+{
+    if (!n)
+        return nullptr;
+    return n->getData();
+}
+
 
 } // namespace core
 

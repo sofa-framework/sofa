@@ -39,7 +39,7 @@ struct UncoupledConstraintCorrection_test: public Sofa_test<SReal>
 {
     // root
     simulation::Simulation* simulation;
-    simulation::Node::SPtr root;
+    simulation::NodeSPtr root;
 
     UncoupledConstraintCorrection_test()
     {
@@ -62,7 +62,7 @@ struct UncoupledConstraintCorrection_test: public Sofa_test<SReal>
         root->addObject(lcpConstraintSolver);
         root->addObject(core::objectmodel::New<FreeMotionAnimationLoop>(root.get()));
 
-        simulation::Node::SPtr child = root->createChild("collision");
+        simulation::NodeSPtr child = root->createChild("collision");
         child->addObject(core::objectmodel::New<MechanicalObject3>());
         child->addObject(core::objectmodel::New<UncoupledConstraintCorrection>());
 
@@ -70,7 +70,7 @@ struct UncoupledConstraintCorrection_test: public Sofa_test<SReal>
 
         // removal
         {
-            simulation::Node::SPtr nodeToRemove = child;
+            simulation::NodeSPtr nodeToRemove = child;
             nodeToRemove->detachFromGraph();
             nodeToRemove->execute<simulation::CleanupVisitor>(sofa::core::ExecParams::defaultInstance());
             nodeToRemove->execute<simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());

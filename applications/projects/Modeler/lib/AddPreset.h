@@ -22,7 +22,7 @@
 #ifndef ADDPRESET_H
 #define ADDPRESET_H
 
-#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Node_fwd.h>
 
 #include <QDialog>
 

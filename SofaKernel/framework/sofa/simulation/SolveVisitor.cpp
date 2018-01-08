@@ -20,8 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/simulation/SolveVisitor.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
-
+#include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/helper/AdvancedTimer.h>
 
 namespace sofa

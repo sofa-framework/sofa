@@ -24,7 +24,7 @@
 
 #include <sofa/core/ExecParams.h>
 #include <sofa/simulation/Visitor.h>
-#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Node_fwd.h>
 #include <string>
 #include <iostream>
 

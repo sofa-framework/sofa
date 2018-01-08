@@ -24,9 +24,12 @@
 
 #include "SphereForceField.h"
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawTool.h>
+#include <sofa/core/visual/DisplayFlags.h>
 #include <sofa/helper/system/config.h>
-#include <sofa/helper/rmath.h>
 #include <sofa/helper/system/gl.h>
+#include <sofa/defaulttype/BaseMatrix.h>
+
 #include <assert.h>
 #include <iostream>
 

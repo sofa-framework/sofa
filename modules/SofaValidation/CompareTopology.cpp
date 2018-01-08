@@ -25,6 +25,7 @@
 
 #include <SofaValidation/CompareTopology.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
 

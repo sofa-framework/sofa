@@ -24,8 +24,6 @@
 
 #include "SparseGridRamificationTopology.h"
 
-// #include <sofa/helper/proximity.h>
-
 namespace sofa
 {
 

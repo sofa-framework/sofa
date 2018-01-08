@@ -3,16 +3,21 @@ project(SofaCore)
 
 set(HEADER_FILES
     BaseMapping.h
+    BaseMapping_fwd.h
     BaseState.h
     BehaviorModel.h
+    BehaviorModel_fwd.h
     CategoryLibrary.h
     CollisionElement.h
-    CollisionModel.h
+    CollisionModel.h    
+    CollisionModel_fwd.h
     ComponentLibrary.h
     ConstraintParams.h
+    ConstraintParams_fwd.h
     DataEngine.h
     DataTracker.h
     ExecParams.h
+    ExecParams_fwd.h
     Mapping.h
     Mapping.inl
     MechanicalParams.h
@@ -27,18 +32,25 @@ set(HEADER_FILES
     State.inl
     VecId.h
     behavior/BaseAnimationLoop.h
+    behavior/BaseAnimationLoop_fwd.h
     behavior/BaseConstraint.h
     behavior/BaseConstraintCorrection.h
     behavior/BaseConstraintSet.h
+    behavior/BaseConstraintSet_fwd.h
     behavior/BaseController.h
     behavior/BaseForceField.h
+    behavior/BaseForceField_fwd.h
     behavior/BaseInteractionConstraint.h
     behavior/BaseInteractionForceField.h
+    behavior/BaseInteractionForceField_fwd.h
     behavior/BaseInteractionProjectiveConstraintSet.h
     behavior/BaseLMConstraint.h
     behavior/BaseMass.h
+    behavior/BaseMass_fwd.h
     behavior/BaseMechanicalState.h
+    behavior/BaseMechanicalState_fwd.h
     behavior/BaseProjectiveConstraintSet.h
+    behavior/BaseProjectiveConstraintSet_fwd.h
     behavior/BaseRotationFinder.h
     behavior/BaseVectorOperations.h
     behavior/Constraint.h
@@ -46,11 +58,13 @@ set(HEADER_FILES
     behavior/ConstraintCorrection.h
     behavior/ConstraintCorrection.inl
     behavior/ConstraintSolver.h
+    behavior/ConstraintSolver_fwd.h
     behavior/ForceField.h
     behavior/ForceField.inl
     behavior/LMConstraint.h
     behavior/LMConstraint.inl
     behavior/LinearSolver.h
+    behavior/LinearSolver_fwd.h
     behavior/Mass.h
     behavior/Mass.inl
     behavior/MechanicalState.h
@@ -62,6 +76,7 @@ set(HEADER_FILES
     behavior/MultiMatrixAccessor.h
     behavior/MultiVec.h
     behavior/OdeSolver.h
+    behavior/OdeSolver_fwd.h
     behavior/PairInteractionConstraint.h
     behavior/PairInteractionConstraint.inl
     behavior/PairInteractionForceField.h
@@ -95,21 +110,30 @@ set(HEADER_FILES
     objectmodel/AspectPool.h
     objectmodel/Base.h
     objectmodel/BaseClass.h
+    objectmodel/BaseClass_fwd.h
     objectmodel/BaseContext.h
     objectmodel/BaseData.h
+    objectmodel/BaseData_fwd.h
     objectmodel/BaseLink.h
+    objectmodel/BaseLink_fwd.h
     objectmodel/BaseNode.h
     objectmodel/BaseObject.h
     objectmodel/BaseObjectDescription.h
+    objectmodel/BaseObjectDescription_fwd.h
     objectmodel/ClassInfo.h
+    objectmodel/ClassInfo_fwd.h
     objectmodel/ConfigurationSetting.h
+    objectmodel/ConfigurationSetting_fwd.h
     objectmodel/Context.h
     objectmodel/ContextObject.h
+    objectmodel/ContextObject_fwd.h
     objectmodel/DDGNode.h
+    objectmodel/DDGNode_fwd.h
     objectmodel/Data.h
     objectmodel/DataFileName.h
     objectmodel/DetachNodeEvent.h
     objectmodel/Event.h
+    objectmodel/Event_fwd.h
     objectmodel/GUIEvent.h
     objectmodel/HapticDeviceEvent.h
     objectmodel/JoystickEvent.h
@@ -121,22 +145,31 @@ set(HEADER_FILES
     objectmodel/SPtr.h
     objectmodel/Tag.h
     topology/BaseMeshTopology.h
+    topology/BaseMeshTopology_fwd.h
     topology/BaseTopology.h
     topology/BaseTopologyData.h
     topology/BaseTopologyEngine.h
     topology/BaseTopologyObject.h
+    topology/BaseTopologyObject_fwd.h
     topology/TopologicalMapping.h
     topology/Topology.h
+    topology/Topology_fwd.h
     topology/TopologyChange.h
     topology/TopologyElementHandler.h
     topology/TopologyHandler.h
     visual/DisplayFlags.h
+    visual/DisplayFlags_fwd.h
     visual/DrawTool.h
     visual/Shader.h
+    visual/Shader_fwd.h
     visual/VisualLoop.h
+    visual/VisualLoop_fwd.h
     visual/VisualManager.h
+    visual/VisualManager_fwd.h
     visual/VisualModel.h
+    visual/VisualModel_fwd.h
     visual/VisualParams.h
+    visual/VisualParams_fwd.h
     logging/RichConsoleStyleMessageFormatter.h
     logging/PerComponentLoggingMessageHandler.h
 )

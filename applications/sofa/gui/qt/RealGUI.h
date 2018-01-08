@@ -102,7 +102,7 @@ class SOFA_SOFAGUIQT_API RealGUI : public QMainWindow, public Ui::GUI, public so
 
 //-----------------STATIC METHODS------------------------{
 public:
-    static BaseGUI* CreateGUI(const char* name, sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
+    static BaseGUI* CreateGUI(const char* name, sofa::simulation::NodeSPtr groot = NULL, const char* filename = NULL);
 
     static void SetPixmap(std::string pixmap_filename, QPushButton* b);
 
@@ -246,16 +246,14 @@ public:
     virtual sofa::simulation::Node* currentSimulation();
     virtual void fileOpen(std::string filename, bool temporaryFile=false, bool reload=false);
 
-    // virtual void fileOpen();
     virtual void fileOpenSimu(std::string filename);
-    virtual void setScene(Node::SPtr groot, const char* filename=NULL, bool temporaryFile=false);
-    virtual void setSceneWithoutMonitor(Node::SPtr groot, const char* filename=NULL, bool temporaryFile=false);
+    virtual void setScene(simulation::NodeSPtr groot, const char* filename=NULL, bool temporaryFile=false);
+    virtual void setSceneWithoutMonitor(simulation::NodeSPtr groot, const char* filename=NULL, bool temporaryFile=false);
 
     virtual void unloadScene(bool _withViewer = true);
 
     virtual void setTitle( std::string windowTitle );
     virtual void fileSaveAs(Node* node,const char* filename);
-//    virtual void saveXML();
 
     virtual void setViewerResolution(int w, int h);
     virtual void setFullScreen() { setFullScreen(true); }
@@ -299,7 +297,7 @@ public:
 protected:
     /// init data member from RealGUI for the viewer initialisation in the GUI
     void init();
-    void createDisplayFlags(Node::SPtr root);
+    void createDisplayFlags(simulation::NodeSPtr root);
     void loadHtmlDescription(const char* filename);
     void loadSimulation(bool one_step=false);//? where is the implementation ?
     void eventNewStep();
@@ -329,7 +327,7 @@ protected:
         while (goal > clock()/(float)CLOCKS_PER_SEC) t++;
     }
 
-    sofa::simulation::Node::SPtr mSimulation;
+    sofa::simulation::NodeSPtr mSimulation;
 
     sofa::helper::system::FileEventListener* m_filelistener {nullptr};
 private:

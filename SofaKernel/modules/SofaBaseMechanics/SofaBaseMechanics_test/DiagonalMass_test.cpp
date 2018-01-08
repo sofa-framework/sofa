@@ -38,6 +38,7 @@ using sofa::core::ExecParams ;
 
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
+using sofa::simulation::NodeSPtr ;
 
 #include <sofa/simulation/Simulation.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
@@ -81,8 +82,8 @@ public:
     typedef DiagonalMass<TDataTypes, TMassType> TheDiagonalMass ;
 
     simulation::Simulation* simulation;
-    simulation::Node::SPtr root;
-    simulation::Node::SPtr node;
+    simulation::NodeSPtr root;
+    simulation::NodeSPtr node;
     typename MechanicalObject<DataTypes>::SPtr mstate;
     typename DiagonalMass<DataTypes, MassType>::SPtr mass;
 
@@ -144,7 +145,7 @@ public:
                 "   <DiagonalMass name='m_mass'/>                            "
                 "</Node>                                                     " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+        NodeSPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
                                                           scene.size()) ;
 
@@ -181,7 +182,7 @@ public:
                 "    <DiagonalMass name='m_mass' massDensity='1.0' />                                           "
                 "</Node>                                                                                        " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+        NodeSPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
                                                           scene.size()) ;
 
@@ -209,7 +210,7 @@ public:
                 "    <DiagonalMass name='m_mass' totalMass='10'/>                                               "
                 "</Node>                                                                                        " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+        NodeSPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
                                                           scene.size()) ;
 
@@ -236,7 +237,7 @@ public:
                 "    <DiagonalMass name='m_mass' massDensity='1.0' totalMass='10'/>                             "
                 "</Node>                                                                                        " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+        NodeSPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
                                                           scene.size()) ;
         ASSERT_NE(root.get(), nullptr) ;
@@ -269,7 +270,7 @@ public:
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+        NodeSPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
                                                           scene.size()) ;
         ASSERT_NE(root.get(), nullptr) ;
@@ -302,7 +303,7 @@ public:
                 "    </Node>                                                                                        "
                 "</Node>                                                                                            " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+        NodeSPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
                                                           scene.size()) ;
 
@@ -328,7 +329,7 @@ public:
                  "   <DiagonalMass name='m_mass' filename='"<< filename <<"'/>      "
                  "</Node>                                                     " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+        NodeSPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.str().c_str(),
                                                           scene.str().size()) ;
         ASSERT_NE(root.get(), nullptr) ;

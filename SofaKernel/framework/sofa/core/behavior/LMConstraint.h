@@ -23,6 +23,7 @@
 #define SOFA_CORE_BEHAVIOR_LMCONSTRAINT_H
 
 #include <sofa/core/core.h>
+#include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/behavior/BaseLMConstraint.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/BaseObject.h>

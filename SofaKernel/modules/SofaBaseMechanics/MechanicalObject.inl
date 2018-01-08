@@ -23,12 +23,14 @@
 #define SOFA_COMPONENT_MECHANICALOBJECT_INL
 
 #include <sofa/config/build_option_experimental_features.h>
+#include <sofa/core/objectmodel/BaseObjectDescription.h>
 
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <sofa/core/topology/BaseTopology.h>
 #include <sofa/core/topology/TopologyChange.h>
+#include <sofa/core/visual/DrawTool.h>
 
 #include <sofa/defaulttype/DataTypeInfo.h>
 

@@ -36,6 +36,7 @@
 #include <sofa/helper/logging/Messaging.h>
 using sofa::helper::logging::Message ;
 
+#include <sofa/simulation/Node.h>
 
 #include <iostream>
 

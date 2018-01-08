@@ -13,7 +13,7 @@ struct PythonScriptControllerHelper_test : public ::testing::Test
 {
 protected:
 
-    sofa::simulation::Node::SPtr root;
+    sofa::simulation::NodeSPtr root;
 
     virtual void SetUp()
     {

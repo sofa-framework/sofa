@@ -25,12 +25,13 @@
 #include <SofaBaseTopology/TopologyData.inl>
 #include "BeamFEMForceField.h"
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawTool.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaBaseTopology/GridTopology.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/Axis.h>
-#include <sofa/helper/rmath.h>
+
 #include <assert.h>
 #include <iostream>
 #include <set>

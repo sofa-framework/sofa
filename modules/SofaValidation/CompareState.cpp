@@ -25,12 +25,15 @@
 
 #include <SofaValidation/CompareState.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawTool.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/core/ObjectFactory.h>
 #include <SofaSimulationCommon/xml/XML.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
+#include <sofa/core/behavior/OdeSolver.h>
 
 #include <sstream>
 #include <algorithm>

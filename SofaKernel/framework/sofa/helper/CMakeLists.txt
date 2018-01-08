@@ -31,6 +31,7 @@ set(HEADER_FILES
     RandomGenerator.h
     SVector.h
     SimpleTimer.h
+    TypeInfo.h
     SortedPermutation.h
     StringUtils.h
     TagFactory.h
@@ -140,6 +141,7 @@ set(SOURCE_FILES
     OptionsGroup.cpp
     StateMask.cpp
     SVector.cpp
+    StringUtils.cpp
     Polynomial_LD.cpp
     Quater.cpp
     RandomGenerator.cpp
@@ -282,6 +284,7 @@ if(NOT SOFA_NO_OPENGL)
         list(APPEND HEADER_FILES
             gl/FrameBufferObject.h
             gl/GLSLShader.h
+            gl/GLSLShader_fwd.h
             gl/Texture.h
         )
         list(APPEND SOURCE_FILES

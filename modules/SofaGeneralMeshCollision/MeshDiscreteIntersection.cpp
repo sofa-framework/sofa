@@ -21,9 +21,7 @@
 ******************************************************************************/
 #include <SofaGeneralMeshCollision/MeshDiscreteIntersection.inl>
 #include <sofa/helper/system/config.h>
-#include <sofa/helper/FnDispatcher.inl>
 #include <sofa/core/collision/Intersection.inl>
-#include <sofa/helper/proximity.h>
 #include <iostream>
 #include <algorithm>
 #include <sofa/core/collision/IntersectorFactory.h>

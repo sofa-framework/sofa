@@ -33,7 +33,6 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>
 #include <SofaBaseCollision/BaseContactMapper.h>
-#include <SofaBaseCollision/SphereModel.h>
 #include <SofaMeshCollision/TriangleModel.h>
 #include <SofaMeshCollision/LineModel.h>
 #include <SofaMeshCollision/PointModel.h>
@@ -66,7 +65,7 @@ public:
     typedef component::container::MechanicalObject<typename SubsetContactMapper::DataTypes> MMechanicalObject;
     typedef mapping::SubsetMapping< InDataTypes, typename SubsetContactMapper::DataTypes > MMapping;
     MCollisionModel* model;
-    simulation::Node::SPtr child;
+    simulation::NodeSPtr child;
     typename MMapping::SPtr mapping;
     typename MMechanicalState::SPtr outmodel;
     int nbp;

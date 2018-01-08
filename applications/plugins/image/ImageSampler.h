@@ -33,6 +33,7 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 
+#include <sofa/core/visual/DrawTool.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/OptionsGroup.h>
 

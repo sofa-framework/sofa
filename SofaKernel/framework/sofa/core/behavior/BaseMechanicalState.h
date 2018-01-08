@@ -26,8 +26,8 @@
 
 #include <sofa/core/BaseState.h>
 #include <sofa/core/MultiVecId.h>
-#include <sofa/defaulttype/BaseMatrix.h>
-#include <sofa/defaulttype/BaseVector.h>
+#include <sofa/defaulttype/BaseMatrix_fwd.h>
+#include <sofa/defaulttype/BaseVector_fwd.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/helper/StateMask.h>

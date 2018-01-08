@@ -39,7 +39,7 @@ namespace qt
 {
 
 using sofa::core::objectmodel::Base;
-using sofa::simulation::Node;
+using sofa::simulation::NodeSPtr;
 
 class GraphModeler;
 
@@ -59,7 +59,7 @@ public:
         {}
 
         Base::SPtr sofaComponent;
-        Node::SPtr parent;
+        NodeSPtr parent;
         Base::SPtr above;
         op ID;
         std::string info;

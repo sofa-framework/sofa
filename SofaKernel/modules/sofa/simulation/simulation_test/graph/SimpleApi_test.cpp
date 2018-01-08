@@ -16,7 +16,7 @@ public:
 bool SimpleApi_test::testParamAPI()
 {
     Simulation::SPtr simu = createSimulation("DAG") ;
-    Node::SPtr root = createRootNode(simu, "root") ;
+    NodeSPtr root = createRootNode(simu, "root") ;
 
     auto meca1 = createObject(root, MechanicalObject::objectname, {
                      {MechanicalObject::data::name, "aMechanicalObject1"},
@@ -38,7 +38,7 @@ bool SimpleApi_test::testParamAPI()
 bool SimpleApi_test::testParamString()
 {
     Simulation::SPtr simu = createSimulation("DAG") ;
-    Node::SPtr root = createRootNode(simu, "root") ;
+    NodeSPtr root = createRootNode(simu, "root") ;
 
     auto meca1 = createObject(root, "MechanicalObject", {
                      {"name", "aMechanicalObject1"},

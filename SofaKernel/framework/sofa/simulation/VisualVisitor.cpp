@@ -20,9 +20,11 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/simulation/VisualVisitor.h>
+#include <sofa/simulation/Node.h>
+#include <sofa/core/BehaviorModel.h>
 
 #include <sofa/core/visual/VisualParams.h>
-
+#include <sofa/core/visual/Shader.h>
 #ifdef DEBUG_DRAW
 #define DO_DEBUG_DRAW true
 #else
@@ -34,6 +36,8 @@ namespace sofa
 
 namespace simulation
 {
+
+
 
 
 Visitor::Result VisualDrawVisitor::processNodeTopDown(simulation::Node* node)
@@ -54,6 +58,18 @@ Visitor::Result VisualDrawVisitor::processNodeTopDown(simulation::Node* node)
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
     glPopMatrix();
 #endif
+    return RESULT_CONTINUE;
+}
+
+VisualVisitor::VisualVisitor(core::visual::VisualParams* params)
+    : Visitor(params)
+    ,vparams(params)
+{}
+
+VisualVisitor::Result VisualVisitor::processNodeTopDown(simulation::Node* node)
+{
+    for_each(this, node, node->object, &VisualVisitor::processObject);
+    for_each(this, node, node->visualModel, &VisualVisitor::processVisualModel);
     return RESULT_CONTINUE;
 }
 
@@ -137,6 +153,9 @@ void VisualDrawVisitor::processVisualModel(simulation::Node* node, core::visual:
     }
 }
 
+VisualUpdateVisitor::VisualUpdateVisitor(const core::ExecParams* params) : Visitor(params)
+{}
+
 Visitor::Result VisualUpdateVisitor::processNodeTopDown(simulation::Node* node)
 {
     for_each(this, node, node->visualModel,              &VisualUpdateVisitor::processVisualModel);
@@ -167,6 +186,16 @@ VisualComputeBBoxVisitor::VisualComputeBBoxVisitor(const core::ExecParams* param
     minBBox[0] = minBBox[1] = minBBox[2] = 1e10;
     maxBBox[0] = maxBBox[1] = maxBBox[2] = -1e10;
 }
+
+VisualVisitor::Result VisualComputeBBoxVisitor::processNodeTopDown(simulation::Node* node)
+{
+    for_each(this, node, node->behaviorModel,  &VisualComputeBBoxVisitor::processBehaviorModel);
+    for_each(this, node, node->mechanicalState, &VisualComputeBBoxVisitor::processMechanicalState);
+    for_each(this, node, node->visualModel,     &VisualComputeBBoxVisitor::processVisualModel);
+
+    return RESULT_CONTINUE;
+}
+
 
 void VisualComputeBBoxVisitor::processMechanicalState(simulation::Node*, core::behavior::BaseMechanicalState* vm)
 {

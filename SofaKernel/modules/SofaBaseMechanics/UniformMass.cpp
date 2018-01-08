@@ -24,9 +24,13 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
+
+#include <sofa/core/visual/DrawTool.h>
+
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/Locale.h>
 using sofa::helper::system::TemporaryLocale ;
+
 
 #include <sstream>
 

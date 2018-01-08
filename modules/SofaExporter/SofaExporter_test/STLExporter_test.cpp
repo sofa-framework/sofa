@@ -35,7 +35,8 @@ using sofa::core::objectmodel::BaseObject ;
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
 using sofa::simulation::graph::DAGSimulation ;
-using sofa::simulation::Node ;
+using sofa::simulation::NodeSPtr ;
+using sofa::simulation::Node;
 
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
@@ -80,7 +81,7 @@ public:
                 "   <STLExporter name='exporter1' printLog='true' filename='"<< filename << "' exportAtBegin='true' /> \n"
                 "</Node>                                                           \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+        NodeSPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                           scene1.str().c_str(),
                                                           scene1.str().size()) ;
 
@@ -112,7 +113,7 @@ public:
                 "   <STLExporter name='exporterA' printLog='true' filename='"<< filename << "' exportEveryNumberOfSteps='5' /> \n"
                 "</Node>                                                           \n" ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+        NodeSPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                           scene1.str().c_str(),
                                                           scene1.str().size()) ;
 

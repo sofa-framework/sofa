@@ -25,6 +25,7 @@
 
 #include <sofa/helper/vector.h>
 #include <sofa/core/objectmodel/Event.h>
+#include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <SofaValidation/DevMonitor.h>
 #include <sofa/defaulttype/VecTypes.h>

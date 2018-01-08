@@ -24,6 +24,8 @@
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DisplayFlags.h>
+#include <sofa/core/visual/DrawTool.h>
 
 #ifdef SOFA_HAVE_GLEW
 #include <sofa/helper/gl/GLSLShader.h>

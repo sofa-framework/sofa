@@ -2,7 +2,7 @@
 
 #include "../assembly/AssemblyVisitor.h"
 
-#include <sofa/helper/rmath.h>
+
 
 
 namespace sofa {

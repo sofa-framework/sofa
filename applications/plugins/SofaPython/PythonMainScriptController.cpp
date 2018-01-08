@@ -24,6 +24,8 @@
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::RegisterObject;
 
+#include <sofa/simulation/Node.h>
+
 #include <sofa/helper/AdvancedTimer.h>
 using sofa::helper::ScopedAdvancedTimer;
 

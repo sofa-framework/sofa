@@ -25,6 +25,7 @@
 
 #include <SofaMeshCollision/LineModel.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawTool.h>
 #include <SofaMeshCollision/LineLocalMinDistanceFilter.h>
 #include <SofaBaseCollision/CubeModel.h>
 #include <SofaMeshCollision/Line.h>

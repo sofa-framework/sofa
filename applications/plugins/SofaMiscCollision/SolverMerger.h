@@ -26,7 +26,7 @@
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/behavior/ConstraintSolver.h>
-#include <sofa/helper/FnDispatcher.h>
+#include <sofa/helper/FnDispatcher.inl>
 
 
 namespace sofa

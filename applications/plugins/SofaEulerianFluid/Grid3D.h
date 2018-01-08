@@ -25,7 +25,7 @@
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/helper/rmath.h>
+
 #include <iostream>
 
 

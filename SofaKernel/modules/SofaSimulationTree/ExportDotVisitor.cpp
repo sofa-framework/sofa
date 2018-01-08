@@ -24,9 +24,15 @@
 #include <sofa/helper/Factory.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Colors.h>
-
+#include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/core/BaseMapping.h>
 #include <sofa/core/collision/CollisionGroupManager.h>
 #include <sofa/core/collision/ContactManager.h>
+#include <sofa/core/collision/Pipeline.h>
+#include <sofa/core/behavior/LinearSolver.h>
+#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/behavior/BaseAnimationLoop.h>
+#include <sofa/core/behavior/BaseInteractionForceField.h>
 
 namespace sofa
 {

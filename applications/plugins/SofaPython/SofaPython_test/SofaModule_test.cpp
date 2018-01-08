@@ -8,10 +8,12 @@ using sofa::Sofa_test;
 #include <sofa/core/ObjectFactory.h>
 #include <SofaPython/Binding_BaseObject.h>
 
+#include <sofa/helper/AdvancedTimer.h>
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/simulation/Node.h>
-using sofa::simulation::Node;
+using sofa::simulation::Node ;
+using sofa::simulation::NodeSPtr ;
 using sofa::Data ;
 
 #include <sofa/core/ObjectFactory.h>
@@ -109,7 +111,7 @@ def createScene(rootNode):
 			sofa::simulation::setSimulation(new sofa::simulation::graph::DAGSimulation());
 
 			// load scene
-			Node::SPtr root = sofa::simulation::getSimulation()->load(pythonControllerPath.c_str());
+			NodeSPtr root = sofa::simulation::getSimulation()->load(pythonControllerPath.c_str());
 
 			ASSERT_NE(root, nullptr);
 

@@ -26,6 +26,7 @@
 #include <typeinfo>
 
 #include <sofa/helper/helper.h>
+#include <sofa/helper/TypeInfo.h>
 
 namespace sofa
 {
@@ -33,23 +34,8 @@ namespace sofa
 namespace helper
 {
 
-class TypeInfo
-{
-public:
-    const std::type_info* pt;
-    TypeInfo(const std::type_info& t) : pt(&t) { }
-    operator const std::type_info&() const { return *pt; }
-    bool operator==(const TypeInfo& t) const { return *pt == *t.pt; }
-    bool operator!=(const TypeInfo& t) const { return *pt != *t.pt; }
-#ifdef _MSC_VER
-    bool operator<(const TypeInfo& t) const { return (pt->before(*t.pt)!=0); }
-#else
-    bool operator<(const TypeInfo& t) const { return pt->before(*t.pt); }
-#endif
-};
-
 template <class BaseClass, typename ResulT = void>
-class BasicDispatcher
+class SOFA_HELPER_API BasicDispatcher
 {
 public:
     typedef ResulT (*F)(BaseClass &,BaseClass &);
@@ -86,8 +72,6 @@ public:
     /// Return true if a pair of argument correspond to a callback function (different than ignoreFn)
     bool isSupported(BaseClass &arg1, BaseClass &arg2);
 };
-
-//std::size_t hash_value(const TypeInfo & t){return hash_value(t.pt);}
 
 template <class BaseClass, typename ResulT>
 class FnDispatcher : public BasicDispatcher<BaseClass, ResulT>
@@ -129,30 +113,12 @@ public:
 
 
 template <class BaseClass, typename ResulT>
-class SingletonFnDispatcher : public FnDispatcher<BaseClass, ResulT>
+class SOFA_HELPER_API SingletonFnDispatcher : public FnDispatcher<BaseClass, ResulT>
 {
 protected:
     SingletonFnDispatcher();
 public:
     static SingletonFnDispatcher<BaseClass, ResulT>* getInstance();
-    /*
-    template <class ConcreteClass1,class ConcreteClass2,ResulT (*F)(ConcreteClass1&,ConcreteClass2&), bool symetric>
-    static void Add()
-    {
-    	getInstance()->add<ConcreteClass1,ConcreteClass2,F,symetric>();
-    }
-
-    template <class ConcreteClass1, class ConcreteClass2, bool symetric>
-    static void Ignore()
-    {
-    	getInstance()->ignore<ConcreteClass1,ConcreteClass2,symetric>();
-    }
-
-    static ResulT Go(BaseClass &arg1,BaseClass &arg2)
-    {
-    	getInstance()->go(arg1,arg2);
-    }
-    */
 };
 
 } // namespace helper

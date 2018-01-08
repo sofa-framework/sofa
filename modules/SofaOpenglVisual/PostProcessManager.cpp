@@ -28,6 +28,7 @@
 
 #include "PostProcessManager.h"
 #include <sofa/simulation/VisualVisitor.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 
 

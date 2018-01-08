@@ -22,6 +22,7 @@
 #ifndef SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PARTIALFIXEDCONSTRAINT_INL
 #define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PARTIALFIXEDCONSTRAINT_INL
 
+#include <sofa/core/visual/DrawTool.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaBoundaryCondition/PartialFixedConstraint.h>
 #include <sofa/simulation/Simulation.h>

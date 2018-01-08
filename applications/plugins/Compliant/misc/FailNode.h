@@ -28,7 +28,7 @@ public:
 							const sofa::core::objectmodel::TagSet& tags, 
 							SearchDirection dir = SearchUp) const;
 
-	virtual Node::SPtr createChild(const std::string& nodeName);
+	virtual NodeSPtr createChild(const std::string& nodeName);
 
 	virtual Parents getParents() const;
 	virtual Children getChildren() const;

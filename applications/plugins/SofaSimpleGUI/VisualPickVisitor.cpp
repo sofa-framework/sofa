@@ -1,5 +1,10 @@
 #include "VisualPickVisitor.h"
+#include <sofa/simulation/Node.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/Shader.h>
+
 #include <iostream>
+
 using std::cout;
 using std::cerr;
 using std::endl;

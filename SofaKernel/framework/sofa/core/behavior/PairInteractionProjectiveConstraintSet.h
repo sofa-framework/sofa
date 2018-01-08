@@ -23,6 +23,7 @@
 #define SOFA_CORE_BEHAVIOR_PAIRINTERACTIONPROJECTIVECONSTRAINTSET_H
 
 #include <sofa/core/core.h>
+#include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/behavior/BaseInteractionProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
 

@@ -36,6 +36,7 @@
 #include <sofa/simulation/UpdateContextVisitor.h>
 #include <sofa/simulation/UpdateMappingEndEvent.h>
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/LCPcalc.h>
 

@@ -30,8 +30,7 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#include <sofa/simulation/Node.h>
-#include <sofa/simulation/Node.inl>
+
 #include <sofa/simulation/PropagateEventVisitor.h>
 #include <sofa/simulation/UpdateMappingEndEvent.h>
 #include <sofa/simulation/AnimateVisitor.h>
@@ -40,14 +39,69 @@
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/VisualVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
-
+#include <sofa/simulation/MutationListener.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/CollisionModel.h>
+#include <sofa/core/behavior/BaseMass.h>
+#include <sofa/core/objectmodel/ContextObject.h>
+#include <sofa/core/objectmodel/ConfigurationSetting.h>
+#include <sofa/core/visual/Shader.h>
+#include <sofa/core/visual/VisualLoop.h>
+#include <sofa/core/visual/VisualModel.h>
+#include <sofa/core/visual/VisualManager.h>
+#include <sofa/core/behavior/LinearSolver.h>
+#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/topology/BaseTopologyObject.h>
 #include <sofa/helper/Factory.inl>
 #include <sofa/helper/cast.h>
 #include <iostream>
 
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/topological_sort.hpp>
+
+#include "Node.inl"
+
+
+/// SPECIZALIZATION...
+namespace sofa
+{
+namespace simulation
+{
+template class Single<sofa::core::behavior::BaseAnimationLoop> ;
+template class Single<sofa::core::visual::VisualLoop> ;
+
+template class Sequence<sofa::core::BehaviorModel> ;
+template class Sequence<sofa::core::BaseMapping> ;
+template class Sequence<sofa::core::behavior::OdeSolver> ;
+template class Sequence<sofa::core::behavior::ConstraintSolver> ;
+template class Sequence<sofa::core::behavior::BaseLinearSolver> ;
+
+template class Single<sofa::core::topology::Topology> ;
+template class Single<sofa::core::topology::BaseMeshTopology> ;
+template class Sequence<sofa::core::topology::BaseTopologyObject> ;
+template class Single<sofa::core::BaseState> ;
+template class Single<sofa::core::behavior::BaseMechanicalState> ;
+template class Single<sofa::core::BaseMapping> ;
+template class Single<sofa::core::behavior::BaseMass>;
+
+template class Sequence<sofa::core::behavior::BaseForceField> ;
+template class Sequence<sofa::core::behavior::BaseInteractionForceField> ;
+template class Sequence<sofa::core::behavior::BaseProjectiveConstraintSet> ;
+template class Sequence<sofa::core::behavior::BaseConstraintSet> ;
+template class Sequence<sofa::core::objectmodel::ContextObject> ;
+template class Sequence<sofa::core::objectmodel::ConfigurationSetting> ;
+
+template class Sequence<sofa::core::visual::Shader> ;
+template class Sequence<sofa::core::visual::VisualModel> ;
+template class Sequence<sofa::core::visual::VisualManager> ;
+
+template class Sequence<sofa::core::CollisionModel> ;
+template class Single<sofa::core::collision::Pipeline> ;
+
+template class Sequence<sofa::core::objectmodel::BaseObject> ;
+}
+}
 
 /// If you want to activate/deactivate that please set them to true/false
 #define DEBUG_VISITOR false
@@ -58,6 +112,7 @@ namespace sofa
 
 namespace simulation
 {
+
 using core::objectmodel::BaseNode;
 using core::objectmodel::BaseObject;
 
@@ -218,21 +273,21 @@ void Node::moveObject(BaseObject::SPtr obj)
 
 
 
-void Node::notifyAddChild(Node::SPtr node)
+void Node::notifyAddChild(NodeSPtr node)
 {
     for (helper::vector<MutationListener*>::const_iterator it = listener.begin(); it != listener.end(); ++it)
         (*it)->addChild(this, node.get());
 }
 
 
-void Node::notifyRemoveChild(Node::SPtr node)
+void Node::notifyRemoveChild(NodeSPtr node)
 {
     for (helper::vector<MutationListener*>::const_iterator it = listener.begin(); it != listener.end(); ++it)
         (*it)->removeChild(this, node.get());
 }
 
 
-void Node::notifyMoveChild(Node::SPtr node, Node* prev)
+void Node::notifyMoveChild(NodeSPtr node, Node* prev)
 {
     for (helper::vector<MutationListener*>::const_iterator it = listener.begin(); it != listener.end(); ++it)
         (*it)->moveChild(prev, this, node.get());
@@ -351,7 +406,7 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
         int index = atoi(pathStr.c_str()+ppos+1);
 
         if(DEBUG_LINK)
-           dmsg_info() << "  index-based path to " << index ;
+            dmsg_info() << "  index-based path to " << index ;
 
         ObjectReverseIterator it = object.rbegin();
         ObjectReverseIterator itend = object.rend();
@@ -388,7 +443,7 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
     while(ppos < psize)
     {
         if ((ppos+1 < psize && pathStr.substr(ppos,2) == "./")
-            || pathStr.substr(ppos) == ".")
+                || pathStr.substr(ppos) == ".")
         {
             // this must be this node
             if(DEBUG_LINK)
@@ -398,7 +453,7 @@ void* Node::findLinkDestClass(const core::objectmodel::BaseClass* destType, cons
             based = true;
         }
         else if ((ppos+2 < psize && pathStr.substr(ppos,3) == "../") // relative
-                || pathStr.substr(ppos) == "..")
+                 || pathStr.substr(ppos) == "..")
         {
             ppos += 3;
             if (master)
@@ -967,7 +1022,7 @@ void Node::sortComponents()
 }
 
 
-Node::SPtr Node::create( const std::string& name )
+NodeSPtr Node::create( const std::string& name )
 {
     return getSimulation()->createNewNode(name);
 }

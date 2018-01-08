@@ -26,7 +26,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/helper/Quater.h>
+#include <sofa/defaulttype/Quat.h>
 
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>

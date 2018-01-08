@@ -67,7 +67,7 @@ struct VariationalSymplecticImplicitSolverDynamic_test : public Elasticity_test<
     typedef component::linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix, component::linearsolver::GraphScatteredVector> CGLinearSolver;
 
     /// Root of the scene graph
-    simulation::Node::SPtr root;      
+    simulation::NodeSPtr root;      
     /// Tested simulation
     simulation::Simulation* simulation;  
     /// Position and velocity array
@@ -175,7 +175,7 @@ struct VariationalSymplecticImplicitSolverDynamic_test : public Elasticity_test<
         double time = root->getTime();
 
         // Get mechanical object
-        simulation::Node::SPtr massNode = root->getChild("MassNode");
+        simulation::NodeSPtr massNode = root->getChild("MassNode");
         typename MechanicalObject::SPtr dofs = massNode->get<MechanicalObject>(root->SearchDown);
 
         // Animate

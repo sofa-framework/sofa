@@ -24,6 +24,7 @@
 #include <SofaSimulationCommon/xml/NodeElement.h>
 #include <sofa/helper/Factory.inl>
 #include <sofa/helper/cast.h>
+#include <sofa/core/BaseMapping.h>
 
 namespace sofa
 {
@@ -52,7 +53,7 @@ GNode::~GNode()
 }
 
 /// Create, add, then return the new child of this Node
-Node::SPtr GNode::createChild(const std::string& nodeName)
+NodeSPtr GNode::createChild(const std::string& nodeName)
 {
     GNode::SPtr newchild = sofa::core::objectmodel::New<GNode>(nodeName);
     this->addChild(newchild); newchild->updateSimulationContext();

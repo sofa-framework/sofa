@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
+#include <sofa/simulation/Node.h>
 #include "CopyAspectVisitor.h"
 
 namespace sofa

@@ -31,9 +31,11 @@
 //
 //
 #include <SofaUserInteraction/ArticulatedHierarchyBVHController.h>
+#include <sofa/core/MechanicalParams.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/simulation/Node.h>
 
 namespace sofa
 {

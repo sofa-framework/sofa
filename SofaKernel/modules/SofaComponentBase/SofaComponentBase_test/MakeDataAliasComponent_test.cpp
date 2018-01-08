@@ -32,6 +32,7 @@ using sofa::simulation::Simulation ;
 
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
+using sofa::simulation::NodeSPtr ;
 
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
@@ -97,7 +98,7 @@ TEST(MakeDataAliasComponent, checkGracefullHandlingOfMissingAttributes)
         "       <MakeDataAlias/>                                             "
         "</Node>                                                             " ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ( "test1",
+    NodeSPtr root = SceneLoaderXML::loadFromMemory ( "test1",
                                                        scene.c_str(),
                                                        scene.size() ) ;
     EXPECT_TRUE(root!=nullptr) ;
@@ -123,7 +124,7 @@ TEST(MakeDataAliasComponent, checkGracefullHandlingOfMissingTargetAttributes)
         "       <MakeDataAlias                             alias='NewName'/>      "
         "</Node>                                                             " ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ( "test1",
+    NodeSPtr root = SceneLoaderXML::loadFromMemory ( "test1",
                                                        scene.c_str(),
                                                        scene.size() ) ;
     EXPECT_TRUE(root!=nullptr) ;
@@ -149,7 +150,7 @@ TEST(MakeDataAliasComponent, checkGracefullHandlingOfMissingAliasAttributes)
         "       <MakeDataAlias targetcomponent='MakeAlias'/>                     "
         "</Node>                                                             " ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ( "test1",
+    NodeSPtr root = SceneLoaderXML::loadFromMemory ( "test1",
                                                        scene.c_str(),
                                                        scene.size() ) ;
     EXPECT_TRUE(root!=nullptr) ;
@@ -174,7 +175,7 @@ TEST(MakeDataAliasComponent, checkGracefullHandlingOfInvalidTargetName)
         "       <MakeDataAlias componentname='InvalidComponentName' dataname='position' alias='rest_position'/> \n"
         "</Node>                                                             \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ( "test1",
+    NodeSPtr root = SceneLoaderXML::loadFromMemory ( "test1",
                                                        scene.c_str(),
                                                        scene.size() ) ;
     EXPECT_TRUE(root!=nullptr) ;
@@ -200,7 +201,7 @@ TEST(MakeDataAliasComponent, checkGracefullHandlingOfInvalidDataName)
         "       <MechanicalObject position='1 2 3 4'/>                                                           \n"
         "</Node>                                                             \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ( "test1",
+    NodeSPtr root = SceneLoaderXML::loadFromMemory ( "test1",
                                                        scene.c_str(),
                                                        scene.size() ) ;
     EXPECT_TRUE(root!=nullptr) ;
@@ -224,7 +225,7 @@ TEST(MakeDataAliasComponent, checkValidBehavior)
         "       <MechanicalObject myrest_position='1 2 3 '/>                                                 \n"
         "</Node>                                                             \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ( "test",
+    NodeSPtr root = SceneLoaderXML::loadFromMemory ( "test",
                                                        ascene.c_str(),
                                                        ascene.size() ) ;
     EXPECT_TRUE(root!=nullptr) ;

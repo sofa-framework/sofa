@@ -27,19 +27,33 @@
 #endif
 
 #include <sofa/core/objectmodel/BaseLink.h>
+#include <sofa/core/objectmodel/BaseClass.h>
+#include <sofa/core/objectmodel/BaseData_fwd.h>
+#include <sofa/core/objectmodel/DDGNode_fwd.h>
 #include <sofa/core/ExecParams.h>
+#include <sofa/core/typetraits.h>
 #include <sofa/helper/stable_vector.h>
+
+#include <sofa/core/typetraits.h>
+#include <type_traits>
 
 #include <sstream>
 #include <string>
 #include <utility>
 #include <vector>
-
+#include <iostream>
 namespace sofa
 {
 
 namespace core
 {
+
+namespace objectmodel
+{
+    class Base;
+    class BaseData;
+    class DDGNode ;
+}
 
 namespace objectmodel
 {
@@ -306,9 +320,6 @@ public:
     }
 };
 
-template<class Type>
-class LinkTraitsPtrCasts;
-
 /**
  *  \brief Container of all links in the scenegraph, from a given type of object (Owner) to another (Dest)
  *
@@ -330,8 +341,6 @@ public:
     typedef typename Container::const_iterator const_iterator;
     typedef typename Container::const_reverse_iterator const_reverse_iterator;
     typedef LinkTraitsFindDest<OwnerType, DestType, ACTIVEFLAG(FLAG_DATALINK)> TraitsFindDest;
-    typedef LinkTraitsPtrCasts<TOwnerType> TraitsOwnerCasts;
-    typedef LinkTraitsPtrCasts<TDestType> TraitsDestCasts;
 #undef ACTIVEFLAG
 
     TLink()
@@ -448,12 +457,12 @@ public:
 
     const BaseClass* getDestClass() const
     {
-        return DestType::GetClass();
+        return sofa::core::objectmodel::TClass<DestType>::get() ;
     }
 
     const BaseClass* getOwnerClass() const
     {
-        return OwnerType::GetClass();
+        return sofa::core::objectmodel::TClass<OwnerType>::get() ;
     }
 
     size_t getSize() const
@@ -470,22 +479,27 @@ public:
         const ValueType& value = m_value[aspect][index];
         if (!TraitsValueType::path(value, path))
         {
+
             DestType* ptr = TraitsDestPtr::get(TraitsValueType::get(value));
             if (ptr)
-                path = BaseLink::CreateString(TraitsDestCasts::getBase(ptr), TraitsDestCasts::getData(ptr),
-                        TraitsOwnerCasts::getBase(m_owner));
+                path = BaseLink::CreateString(sofa::core::AsBase(ptr),
+                                              sofa::core::AsData(ptr),
+                                              sofa::core::AsBase(m_owner));
         }
         return path;
     }
 
+
     Base* getLinkedBase(unsigned int index=0) const
     {
-        return TraitsDestCasts::getBase(getIndex(index));
+        return sofa::core::AsBase(getIndex(index)) ;
     }
+
     BaseData* getLinkedData(unsigned int index=0) const
     {
-        return TraitsDestCasts::getData(getIndex(index));
+        return sofa::core::AsData(getIndex(index))  ;
     }
+
     std::string getLinkedPath(unsigned int index=0) const
     {
         return getPath(index);
@@ -494,7 +508,7 @@ public:
     /// @name Serialization API
     /// @{
 
-    /// Read the command line
+    /// Read a string version of the link
     virtual bool read( const std::string& str )
     {
         if (str.empty())
@@ -613,11 +627,12 @@ public:
 
     sofa::core::objectmodel::Base* getOwnerBase() const
     {
-        return TraitsOwnerCasts::getBase(m_owner);
+        return sofa::core::AsBase(m_owner) ;
     }
+
     sofa::core::objectmodel::BaseData* getOwnerData() const
     {
-        return TraitsOwnerCasts::getData(m_owner);
+        return sofa::core::AsData(m_owner) ;
     }
 
     void setOwner(OwnerType* owner)
@@ -660,8 +675,6 @@ public:
     typedef typename Inherit::ValueType ValueType;
     typedef typename Inherit::TraitsContainer TraitsContainer;
     typedef typename Inherit::Container Container;
-    typedef typename Inherit::TraitsOwnerCasts TraitsOwnerCasts;
-    typedef typename Inherit::TraitsDestCasts TraitsDestCasts;
     typedef typename Inherit::TraitsFindDest TraitsFindDest;
 
     typedef void (OwnerType::*ValidatorFn)(DestPtr v, unsigned int index, bool add);
@@ -784,8 +797,6 @@ public:
     typedef typename Inherit::ValueType ValueType;
     typedef typename Inherit::TraitsContainer TraitsContainer;
     typedef typename Inherit::Container Container;
-    typedef typename Inherit::TraitsOwnerCasts TraitsOwnerCasts;
-    typedef typename Inherit::TraitsDestCasts TraitsDestCasts;
     typedef typename Inherit::TraitsFindDest TraitsFindDest;
 
     typedef void (OwnerType::*ValidatorFn)(DestPtr before, DestPtr& after);

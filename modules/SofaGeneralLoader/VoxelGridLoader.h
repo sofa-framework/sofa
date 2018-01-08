@@ -25,7 +25,6 @@
 
 #include <sofa/core/loader/VoxelLoader.h>
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/helper/fixed_array.h>
 
 namespace sofa

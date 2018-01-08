@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "SingleMatrixAccessor.h"
+#include <sofa/defaulttype/BaseMatrix.h>
 #include <iostream>
 
 namespace sofa
@@ -41,6 +42,9 @@ void SingleMatrixAccessor::setMatrix( BaseMatrix* m )
     matrix = m;
     matRef.matrix = m;
 }
+
+int SingleMatrixAccessor::getGlobalDimension() const { return matrix->rowSize(); }
+
 
 SingleMatrixAccessor::InteractionMatrixRef SingleMatrixAccessor::getMatrix(const core::behavior::BaseMechanicalState*, const core::behavior::BaseMechanicalState* ) const
 {

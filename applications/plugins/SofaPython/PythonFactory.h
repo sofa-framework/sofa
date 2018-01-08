@@ -41,6 +41,7 @@
 #include <SofaPython/Binding_PointSetTopologyModifier.h>
 #include <SofaPython/Binding_TriangleSetTopologyModifier.h>
 #include <SofaPython/Binding_Data.h>
+#include <sofa/simulation/Node.h>
 
 #include <type_traits>
 

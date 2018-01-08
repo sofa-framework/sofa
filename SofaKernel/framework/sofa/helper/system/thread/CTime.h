@@ -22,10 +22,10 @@
 #ifndef SOFA_HELPER_SYSTEM_THREAD_CTIME_H
 #define SOFA_HELPER_SYSTEM_THREAD_CTIME_H
 
-#include <time.h>
-#include <sofa/helper/helper.h>
+#include "sofa/config.h"  // for SOFA_HELPER_API
 
 #ifdef WIN32
+#include <time.h>
 # include <windows.h>
 #endif
 

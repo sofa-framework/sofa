@@ -22,15 +22,13 @@
 #ifndef SOFA_SIMULATION_TREE_LOCALSTORAGE_H
 #define SOFA_SIMULATION_TREE_LOCALSTORAGE_H
 
-#include "ClassSystem.h"
-
 namespace sofa
 {
 
 namespace simulation
 {
 
-
+class Node ;
 class Visitor;
 
 /// Abstract class allowing actions to store local data as a stack while traversing the graph.

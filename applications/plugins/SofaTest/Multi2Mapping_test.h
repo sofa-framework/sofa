@@ -107,8 +107,8 @@ struct Multi2Mapping_test : public Sofa_test<typename _MultiMapping::Real>
     vector<In2DOFs*>  in2Dofs; ///< mapping input
     OutDOFs* outDofs; ///< mapping output
     simulation::Node* root; ///< Root of the scene graph, created by the constructor an re-used in the tests
-    simulation::Node::SPtr child; ///< Child node, created by setupScene
-    simulation::Node::SPtr parentsIn1, parentsIn2; ///< Parent nodes, created by setupScene
+    simulation::NodeSPtr child; ///< Child node, created by setupScene
+    simulation::NodeSPtr parentsIn1, parentsIn2; ///< Parent nodes, created by setupScene
     simulation::Simulation* simulation; ///< created by the constructor an re-used in the tests
     std::pair<Real, Real> deltaRange; ///< The minimum and maximum magnitudes of the change of each scalar value of the small displacement is deltaRange * numeric_limits<Real>::epsilon. This epsilon is 1.19209e-07 for float and 2.22045e-16 for double.
     Real errorMax; ///< The test is successfull if the (infinite norm of the) difference is less than  maxError * numeric_limits<Real>::epsilon

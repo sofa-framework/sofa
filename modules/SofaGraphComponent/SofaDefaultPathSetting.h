@@ -24,7 +24,6 @@
 #include "config.h"
 
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
-#include <sofa/core/objectmodel/DataFileName.h>
 
 namespace sofa
 {

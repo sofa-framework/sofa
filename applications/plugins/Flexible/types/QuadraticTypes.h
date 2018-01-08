@@ -26,7 +26,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/vector.h>
-#include <sofa/helper/rmath.h>
+
 #include <sofa/helper/decompose.h>
 #ifdef SOFA_SMP
 #include <sofa/defaulttype/SharedTypes.h>

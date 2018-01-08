@@ -29,10 +29,10 @@
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/simulation/Simulation.h>
-
+#include <sofa/simulation/Node.h>
 #include <SofaMeshCollision/TriangleModel.h>
 #include <SofaBaseCollision/SphereModel.h>
-
+#include <sofa/core/collision/Pipeline.h>
 #include <SofaGraphComponent/MouseButtonSetting.h>
 
 #include <iostream>
@@ -79,7 +79,6 @@ PickHandler::~PickHandler()
     if(mouseNode)
     {
         mouseNode->execute<sofa::simulation::DeleteVisitor>(sofa::core::ExecParams::defaultInstance());
-        //delete mouseNode;
         mouseNode.reset();
     }
     std::vector< ComponentMouseInteraction *>::iterator it;

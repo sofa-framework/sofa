@@ -31,7 +31,7 @@ using std::endl;
 
 #include <Compliant/compliance/UniformCompliance.h>
 #include <sofa/simulation/InitVisitor.h>
-
+#include <sofa/simulation/Node.h>
 
 
 
@@ -50,7 +50,6 @@ CompliantAttachPerformer<DataTypes>::CompliantAttachPerformer(BaseMouseInteracto
     , mapper(0)
     , mouseState(0)
 {
-    //    cerr<<"CompliantAttachPerformer<DataTypes>::CompliantAttachPerformer()" << endl;
     this->interactor->setMouseAttached(false);
     _compliance = 1e-3;
     _isCompliance = true;
@@ -61,15 +60,12 @@ CompliantAttachPerformer<DataTypes>::CompliantAttachPerformer(BaseMouseInteracto
 template <class DataTypes>
 CompliantAttachPerformer<DataTypes>::~CompliantAttachPerformer()
 {
-//    cerr<<"CompliantAttachPerformer<DataTypes>::~CompliantAttachPerformer()" << endl;
     clear();
 }
 
 template <class DataTypes>
 void CompliantAttachPerformer<DataTypes>::clear()
 {
-////    cerr<<"CompliantAttachPerformer<DataTypes>::clear()" << endl;
-
     if( interactionNode )
     {
         if( pickedNode )
@@ -102,17 +98,12 @@ static defaulttype::Vec3d initialMousePos(0,0,0);
 template <class DataTypes>
 void CompliantAttachPerformer<DataTypes>::start()
 {
-
-//    cerr<<"CompliantAttachPerformer<DataTypes>::start()" << endl;
-
     if (interactionNode)  // previous interaction still holding
     {
         cerr<<"CompliantAttachPerformer<DataTypes>::start(), releasing previous interaction" << endl;
         clear();            // release it
         return;
     }
-    //    cerr<<"CompliantAttachPerformer<DataTypes>::start()" << endl;
-
 
     //--------- Picked object
     BodyPicked picked=this->interactor->getBodyPicked();
@@ -125,8 +116,6 @@ void CompliantAttachPerformer<DataTypes>::start()
 
     if (picked.body)  // picked a collision element: create a MechanicalState mapped under the collision model, to store the picked point - NOT TESTED YET !!!!
     {
-//        std::cerr<<"mapped\n";
-
         pickedNode = down_cast<simulation::Node>(picked.body->getContext());
 
         mapper = MouseContactMapper::Create(picked.body);
@@ -145,11 +134,6 @@ void CompliantAttachPerformer<DataTypes>::start()
         Real r=0.0;
 
         pickedParticleIndex = mapper->addPoint(pointPicked, idx, r);
-//        mapper->addPointB(pointPicked, idx, r
-//#ifdef DETECTIONOUTPUT_BARYCENTRICINFO
-//                , picked.baryCoords
-//#endif
-//                                 );
         mapper->update();
 
         // copy the tags of the collision model to the mapped state
@@ -173,15 +157,9 @@ void CompliantAttachPerformer<DataTypes>::start()
     }
     else // picked an existing particle
     {
-//        std::cerr<<"Already\n";
-
-
-//        typedef mapping::DistanceFromTargetMapping< MouseTypes,DataTypes1 >  DistanceFromTargetMappingMouse;
-
         pickedNode = down_cast<simulation::Node>(picked.mstate->getContext());
 
         mstateCollision = dynamic_cast< core::behavior::MechanicalState<DataTypes>*  >(picked.mstate);
-        //        cerr<<"CompliantAttachPerformer<DataTypes>::attach, pickedParticleIndex = " << pickedParticleIndex << endl;
         if (!mstateCollision)
         {
             this->interactor->serr << "incompatible MState during Mouse Interaction " << this->interactor->sendl;
@@ -199,28 +177,18 @@ void CompliantAttachPerformer<DataTypes>::start()
     //-------- Mouse manipulator
     mouseMapping = this->interactor->core::objectmodel::BaseObject::template searchUp<sofa::core::BaseMapping>();
     this->mouseState = down_cast<Point3dState>(this->interactor->getMouseContainer());
-//    typename Point3dState::ReadVecCoord xmouse = mouseState->readPositions();
-//    typename Point3dState::Coord pointOnRay = mouseState->readPositions()[0];
-
-
 
     // set target point to closest point on the ray
     SReal distanceFromMouse=picked.rayLength;
     Ray ray = this->interactor->getMouseRayModel()->getRay(0);
     defaulttype::Vector3 pointOnRay = ray.origin() + ray.direction()*distanceFromMouse;
-//    ray.setOrigin(pointOnRay);
     this->interactor->setMouseAttached(true);
     this->interactor->setDistanceFromMouse(distanceFromMouse);
 
 
     initialMousePos = DataTypes::getCPos(mouseState->readPositions()[0]);
 
-//    cerr<<"CompliantAttachPerformer<DataTypes>::start() "<<mouseState->readPositions()[0]<<" "<<pointOnRay<< endl;
-
-//    mouseState->writePositions()[0] = pointOnRay;
-
     //---------- Set up the interaction
-
     // look for existing interactions
     static const std::string distanceMappingName="InteractionDistanceFromTargetMapping_createdByCompliantAttachPerformer";
 
@@ -230,9 +198,6 @@ void CompliantAttachPerformer<DataTypes>::start()
     typename MechanicalObject1::SPtr extensions = core::objectmodel::New<MechanicalObject1>();
     interactionNode->addObject(extensions);
     extensions->setName("extensionValues");
-
-
-
 
     if( mstateCollisionVec )
     {
@@ -279,13 +244,7 @@ void CompliantAttachPerformer<DataTypes>::start()
         _vm->m_triangles.endEdit();
         interactionNode->addObject( _vm );
         _vm->setName("mouse");
-//        std::cerr<<"mouse: "<<interactionNode->getPathName()<<std::endl;
     }
-
-
-
-
-    //       cerr<<"CompliantAttachPerformer<DataTypes>::start(), create target of " << picked.indexCollisionElement << " at " <<  (*_baseCollisionMState->getX())[picked.indexCollisionElement] << " to " << pointOnRay << ", distance = " << (picked.point-pointOnRay).norm() << endl;
 
     typedef forcefield::UniformCompliance<DataTypes1> UniformCompliance1;
     typename UniformCompliance1::SPtr compliance = core::objectmodel::New<UniformCompliance1>();
@@ -319,14 +278,7 @@ void CompliantAttachPerformer<DataTypes>::execute()
         vmpos[0] = visualmodel::OglModel::Coord( _baseCollisionMState->getPX(pickedParticleIndex), _baseCollisionMState->getPY(pickedParticleIndex), _baseCollisionMState->getPZ(pickedParticleIndex) );
         vmpos[1] = DataTypes::getCPos(xmouse[0]);
         _vm->m_positions.endEdit();
-    //    std::cerr<<"mouse: "<<mstateCollision->getName()<<" "<<mstateCollision->getPX(pickedParticleIndex)<<std::endl;
     }
-
-
-
-
-//    mouseMapping->apply(core::MechanicalParams::defaultInstance());
-//    mouseMapping->applyJ(core::MechanicalParams::defaultInstance());
 
     this->interactor->setMouseAttached(true);
 }

@@ -25,7 +25,7 @@
 #include <sofa/core/visual/VisualLoop.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/simulation/simulationcore.h>
-#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Node_fwd.h>
 
 namespace sofa
 {
@@ -47,13 +47,13 @@ namespace simulation
  *
  */
 
-class SOFA_SIMULATION_CORE_API DefaultVisualManagerLoop : public core::visual::VisualLoop
+class SOFA_SIMULATION_CORE_API DefaultVisualManagerLoop : public sofa::core::visual::VisualLoop
 {
 public:
-    typedef core::visual::VisualLoop Inherit;
+    typedef sofa::core::visual::VisualLoop Inherit;
     typedef sofa::core::objectmodel::BaseContext BaseContext;
     typedef sofa::core::objectmodel::BaseObjectDescription BaseObjectDescription;
-    SOFA_CLASS(DefaultVisualManagerLoop,core::visual::VisualLoop);
+    SOFA_CLASS(DefaultVisualManagerLoop,sofa::core::visual::VisualLoop);
 protected:
     DefaultVisualManagerLoop(simulation::Node* gnode = NULL);
 
@@ -79,14 +79,7 @@ public:
 
     /// Construction method called by ObjectFactory.
     template<class T>
-    static typename T::SPtr create(T*, BaseContext* context, BaseObjectDescription* arg)
-    {
-        simulation::Node* gnode = dynamic_cast<simulation::Node*>(context);
-        typename T::SPtr obj = sofa::core::objectmodel::New<T>(gnode);
-        if (context) context->addObject(obj);
-        if (arg) obj->parse(arg);
-        return obj;
-    }
+    static typename T::SPtr create(T*, BaseContext* context, BaseObjectDescription* arg) ;
 
 protected:
 

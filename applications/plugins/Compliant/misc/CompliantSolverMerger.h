@@ -2,6 +2,7 @@
 #define __COMPLIANT_COMPLIANTSOLVERMERGER_H__
 
 #include <Compliant/config.h>
+#include <sofa/helper/FnDispatcher.inl>
 #include <sofa/core/behavior/LinearSolver.h>
 
 namespace sofa

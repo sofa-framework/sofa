@@ -22,7 +22,9 @@
 #ifndef SOFA_CORE_BEHAVIOR_FORCEFIELD_INL
 #define SOFA_CORE_BEHAVIOR_FORCEFIELD_INL
 
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/core/behavior/ForceField.h>
+#include <sofa/defaulttype/BaseMatrix.h>
 #include <iostream>
 
 namespace sofa
@@ -187,6 +189,39 @@ void ForceField<DataTypes>::updateForceMask()
     // the default implementation adds every dofs to the mask
     // this sould be overloaded by each forcefield to only add the implicated dofs subset to the mask
     mstate->forceMask.assign( mstate->getSize(), true );
+}
+
+
+/** Accumulate an element matrix to a global assembly matrix. This is a helper for addKToMatrix, to accumulate each (square) element matrix in the (square) assembled matrix.
+  \param bm the global assembly matrix
+  \param offset start index of the local DOFs within the global matrix
+  \param nodeIndex indices of the nodes of the element within the local nodes, as stored in the topology
+  \param em element matrix, typically a stiffness, damping, mass, or weighted sum thereof
+  \param scale weight applied to the matrix, typically ±params->kfactor() for a stiffness matrix
+  */
+template<class DataTypes>
+template<class IndexArray, class ElementMat>
+void  ForceField<DataTypes>::addToMatrix(sofa::defaulttype::BaseMatrix* bm, unsigned offset, const IndexArray& nodeIndex, const ElementMat& em, SReal scale )
+{
+    const unsigned  S = DataTypes::deriv_total_size; // size of node blocks
+    for (unsigned n1=0; n1<nodeIndex.size(); n1++)
+    {
+        for(unsigned i=0; i<S; i++)
+        {
+            unsigned ROW = offset + S*nodeIndex[n1] + i;  // i-th row associated with node n1 in BaseMatrix
+            unsigned row = S*n1+i;                        // i-th row associated with node n1 in the element matrix
+
+            for (unsigned n2=0; n2<nodeIndex.size(); n2++)
+            {
+                for (unsigned j=0; j<S; j++)
+                {
+                    unsigned COLUMN = offset + S*nodeIndex[n2] +j; // j-th column associated with node n2 in BaseMatrix
+                    unsigned column = 3*n2+j;                      // j-th column associated with node n2 in the element matrix
+                    bm->add( ROW,COLUMN, em[row][column]* scale );
+                }
+            }
+        }
+    }
 }
 
 

@@ -32,7 +32,10 @@ using std::vector;
 
 #include <sofa/helper/ArgumentParser.h>
 #include <SofaSimulationCommon/common.h>
-#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Node_fwd.h>
+using sofa::simulation::Node;
+using sofa::simulation::NodeSPtr;
+
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/simulation/config.h> // #defines SOFA_HAVE_DAG (or not)
 #include <SofaSimulationCommon/init.h>
@@ -42,7 +45,7 @@ using std::vector;
 #endif
 #include <SofaSimulationTree/init.h>
 #include <SofaSimulationTree/TreeSimulation.h>
-using sofa::simulation::Node;
+
 
 #include <SofaComponentCommon/initComponentCommon.h>
 #include <SofaComponentBase/initComponentBase.h>
@@ -65,7 +68,7 @@ using sofa::gui::GUIManager;
 #include <sofa/gui/BatchGUI.h>  // For the default number of iterations
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/atomic.h>
-
+#include <sofa/helper/AdvancedTimer.h>
 using sofa::core::ExecParams ;
 
 #include <sofa/helper/system/console.h>
@@ -378,7 +381,7 @@ int main(int argc, char** argv)
     //To set a specific resolution for the viewer, use the component ViewerSetting in you scene graph
     GUIManager::SetDimension(800,600);
 
-    Node::SPtr groot = sofa::simulation::getSimulation()->load(fileName.c_str());
+    NodeSPtr groot = sofa::simulation::getSimulation()->load(fileName.c_str());
     if( !groot )
         groot = sofa::simulation::getSimulation()->createNewGraph("");
 

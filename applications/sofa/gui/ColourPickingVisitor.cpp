@@ -23,8 +23,10 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/core/objectmodel/BaseContext.h>
+#include <sofa/core/visual/DrawTool.h>
 #include <sofa/helper/gl/BasicShapes.h>
 #include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/Node.h>
 
 namespace sofa
 {
@@ -48,7 +50,6 @@ void decodeCollisionElement(const sofa::defaulttype::Vec4f colour,  sofa::compon
     {
 
         helper::vector<core::CollisionModel*> listCollisionModel;
-        //sofa::simulation::getSimulation()->getContext()->get<core::CollisionModel>(&listCollisionModel,BaseContext::SearchRoot);
         if (body.body) body.body->getContext()->get<core::CollisionModel>(&listCollisionModel,BaseContext::SearchRoot);
         const std::size_t totalCollisionModel = listCollisionModel.size();
         const int indexListCollisionModel = (int) ( colour[0] * (float)totalCollisionModel + 0.5) - 1;

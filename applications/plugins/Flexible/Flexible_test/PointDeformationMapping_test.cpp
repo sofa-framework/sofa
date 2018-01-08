@@ -80,7 +80,7 @@ namespace sofa {
             this->SetRandomAffineTransform();
 
             // Get rotation from affine constraint
-            simulation::Node::SPtr rootNode =  Inherited::root;
+            simulation::NodeSPtr rootNode =  Inherited::root;
             typename InAffineMovementConstraint::SPtr affineConstraint = rootNode->get<InAffineMovementConstraint>(rootNode->SearchDown);
             affineConstraint->m_rotation.setValue(testedRotation);
             affineConstraint->m_translation.setValue(testedTranslation);

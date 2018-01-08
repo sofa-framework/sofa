@@ -24,6 +24,7 @@
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawTool.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 

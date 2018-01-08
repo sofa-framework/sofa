@@ -63,7 +63,7 @@ BaseGUI::~BaseGUI()
 
 }
 
-void BaseGUI::configureGUI(sofa::simulation::Node::SPtr groot)
+void BaseGUI::configureGUI(sofa::simulation::NodeSPtr groot)
 {
 
     sofa::component::configurationsetting::SofaDefaultPathSetting *defaultPath;

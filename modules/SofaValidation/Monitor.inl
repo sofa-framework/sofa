@@ -24,6 +24,7 @@
 
 #include <SofaValidation/Monitor.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawTool.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/defaulttype/DataTypeInfo.h>

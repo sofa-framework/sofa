@@ -29,7 +29,7 @@
 #include <sofa/core/visual/VisualModel.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/helper/vector.h>
-#include <sofa/helper/rmath.h>
+
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/Vec.h>
 #include <SofaGraphComponent/BackgroundSetting.h>

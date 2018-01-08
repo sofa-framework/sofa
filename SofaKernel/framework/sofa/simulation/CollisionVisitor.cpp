@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <sofa/simulation/CollisionVisitor.h>
 #include <sofa/simulation/Node.h>
+#include <sofa/core/behavior/BaseConstraintSet.h>
 
 namespace sofa
 {

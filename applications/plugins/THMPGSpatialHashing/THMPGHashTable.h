@@ -10,7 +10,6 @@
 #endif
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/core/collision/NarrowPhaseDetection.h>
-#include <sofa/helper/AdvancedTimer.h>
 #include <boost/functional/hash.hpp>
 #include <SofaBaseCollision/CubeModel.h>
 

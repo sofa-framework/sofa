@@ -24,6 +24,8 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/fixed_array.h>
+#include <sofa/core/visual/DrawTool.h>
+
 #include <set>
 #include <string.h>
 

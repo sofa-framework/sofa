@@ -24,6 +24,7 @@
 
 #include <SofaMeshCollision/TriangleModel.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawTool.h>
 #include <SofaMeshCollision/TriangleLocalMinDistanceFilter.h>
 #include <SofaBaseCollision/CubeModel.h>
 #include <SofaMeshCollision/Triangle.h>

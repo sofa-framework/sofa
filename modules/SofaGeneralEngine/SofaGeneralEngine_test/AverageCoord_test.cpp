@@ -53,7 +53,7 @@ struct AverageCoord_test : public Sofa_test<typename _DataTypes::Real>,
 
 
     Simulation* m_simu;
-    Node::SPtr m_node;
+    NodeSPtr m_node;
     typename ThisClass::SPtr m_thisObject;
     typename MechanicalObject<DataTypes>::SPtr m_mecaobject;
 

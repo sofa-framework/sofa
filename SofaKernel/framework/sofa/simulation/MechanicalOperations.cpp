@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/simulation/Node.h>
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/MechanicalMatrixVisitor.h>
@@ -27,6 +28,7 @@
 #include <sofa/core/VecId.h>
 #include <sofa/core/ConstraintParams.h>
 #include <sofa/core/behavior/LinearSolver.h>
+#include <sofa/core/behavior/ConstraintSolver.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 
 using namespace sofa::core;

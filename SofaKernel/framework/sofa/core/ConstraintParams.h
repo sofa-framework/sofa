@@ -24,7 +24,7 @@
 
 #include <sofa/core/ExecParams.h>
 #include <sofa/core/MultiVecId.h>
-
+#include <sofa/core/ConstraintParams_fwd.h>
 
 namespace sofa
 {
@@ -36,8 +36,6 @@ namespace core
 class SOFA_CORE_API ConstraintParams : public sofa::core::ExecParams
 {
 public:
-
-    /// Description of the order of the constraint
     enum ConstOrder
     {
         POS = 0,
@@ -63,16 +61,16 @@ public:
         std::string result;
         switch ( m_constOrder )
         {
-        case POS :
+        case ConstOrder::POS :
             result += "POSITION";
             break;
-        case VEL :
+        case ConstOrder::VEL :
             result += "VELOCITY";
             break;
-        case ACC :
+        case ConstOrder::ACC :
             result += "ACCELERATION";
             break;
-        case POS_AND_VEL :
+        case ConstOrder::POS_AND_VEL :
             result += "POSITION AND VELOCITY";
             break;
         default :
@@ -144,7 +142,7 @@ public:
         : sofa::core::ExecParams(p)
         , m_x (ConstVecCoordId::position())
         , m_v (ConstVecDerivId::velocity())
-        , m_constOrder (POS_AND_VEL)
+        , m_constOrder (ConstOrder::POS_AND_VEL)
 		, m_smoothFactor (1)
     {
     }

@@ -33,66 +33,100 @@
 #ifndef SOFA_SIMULATION_CORE_NODE_H
 #define SOFA_SIMULATION_CORE_NODE_H
 
-#include <type_traits>
+#include <sofa/simulation/Node_fwd.h>
+#include <sofa/simulation/Sequence.h>
+#include <sofa/simulation/MutationListener_fwd.h>
+#include <sofa/simulation/VisitorScheduler_fwd.h>
 
-#include <sofa/core/ExecParams.h>
+#include <sofa/core/BehaviorModel_fwd.h>
+#include <sofa/core/CollisionModel_fwd.h>
+#include <sofa/core/ExecParams_fwd.h>
+#include <sofa/core/BaseMapping_fwd.h>
 #include <sofa/core/objectmodel/Context.h>
-// moved from GNode (27/04/08)
 #include <sofa/core/objectmodel/BaseNode.h>
-#include <sofa/core/objectmodel/BaseObjectDescription.h>
-#include <sofa/core/objectmodel/ConfigurationSetting.h>
-#include <sofa/core/BehaviorModel.h>
-#include <sofa/core/objectmodel/ContextObject.h>
-#include <sofa/core/CollisionModel.h>
-#include <sofa/core/visual/VisualModel.h>
-#include <sofa/core/visual/VisualManager.h>
-#include <sofa/core/visual/Shader.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/Mapping.h>
-#include <sofa/core/behavior/ForceField.h>
-#include <sofa/core/behavior/BaseInteractionForceField.h>
-#include <sofa/core/behavior/Mass.h>
-#include <sofa/core/behavior/BaseProjectiveConstraintSet.h>
-#include <sofa/core/behavior/BaseConstraintSet.h>
-#include <sofa/core/topology/Topology.h>
-#include <sofa/core/topology/BaseTopologyObject.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/behavior/LinearSolver.h>
-#include <sofa/core/behavior/OdeSolver.h>
-#include <sofa/core/behavior/ConstraintSolver.h>
-#include <sofa/core/behavior/BaseAnimationLoop.h>
-#include <sofa/core/visual/VisualLoop.h>
-#include <sofa/core/collision/Pipeline.h>
-#include <sofa/core/loader/BaseLoader.h>
-#include <sofa/core/objectmodel/Event.h>
+#include <sofa/core/objectmodel/BaseObjectDescription_fwd.h>
+#include <sofa/core/objectmodel/ConfigurationSetting_fwd.h>
+#include <sofa/core/objectmodel/ContextObject_fwd.h>
+#include <sofa/core/visual/VisualModel_fwd.h>
+#include <sofa/core/visual/VisualManager_fwd.h>
+#include <sofa/core/visual/VisualParams_fwd.h>
+#include <sofa/core/visual/Shader_fwd.h>
+#include <sofa/core/behavior/BaseMechanicalState_fwd.h>
+#include <sofa/core/behavior/LinearSolver_fwd.h>
+#include <sofa/core/behavior/BaseForceField_fwd.h>
+#include <sofa/core/behavior/BaseInteractionForceField_fwd.h>
+#include <sofa/core/behavior/BaseMass_fwd.h>
+#include <sofa/core/behavior/BaseProjectiveConstraintSet_fwd.h>
+#include <sofa/core/behavior/BaseConstraintSet_fwd.h>
+#include <sofa/core/topology/Topology_fwd.h>
+#include <sofa/core/topology/BaseTopologyObject_fwd.h>
+#include <sofa/core/topology/BaseMeshTopology_fwd.h>
+#include <sofa/core/behavior/OdeSolver_fwd.h>
+#include <sofa/core/behavior/ConstraintSolver_fwd.h>
+#include <sofa/core/behavior/BaseAnimationLoop_fwd.h>
+#include <sofa/core/visual/VisualLoop_fwd.h>
+#include <sofa/core/visual/VisualParams_fwd.h>
+#include <sofa/core/collision/Pipeline_fwd.h>
+#include <sofa/core/objectmodel/Event_fwd.h>
 
 #include <sofa/simulation/simulationcore.h>
-#include <sofa/simulation/MutationListener.h>
-#include <sofa/simulation/VisitorScheduler.h>
 
+#include <string>
+#include <stack>
+
+/// EXTERN TEMPLATE INSTANTIATION.
 namespace sofa
 {
 namespace simulation
 {
-class Visitor;
+
+//      extern template class SOFA_SIMULATION_CORE_API Sequence<Node,true> ;
+//      extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::objectmodel::BaseObject,true> ;
+      extern template class SOFA_SIMULATION_CORE_API Single<sofa::core::behavior::BaseAnimationLoop> ;
+      extern template class SOFA_SIMULATION_CORE_API Single<sofa::core::visual::VisualLoop> ;
+
+      extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::BehaviorModel> ;
+      extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::BaseMapping> ;
+      extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::behavior::OdeSolver> ;
+      extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::behavior::ConstraintSolver> ;
+      extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::behavior::BaseLinearSolver> ;
+
+      extern template class SOFA_SIMULATION_CORE_API Single<sofa::core::topology::Topology> ;
+      extern template class SOFA_SIMULATION_CORE_API Single<sofa::core::topology::BaseMeshTopology> ;
+      extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::topology::BaseTopologyObject> ;
+      extern template class SOFA_SIMULATION_CORE_API Single<sofa::core::BaseState> ;
+      extern template class SOFA_SIMULATION_CORE_API Single<sofa::core::behavior::BaseMechanicalState> ;
+      extern template class SOFA_SIMULATION_CORE_API Single<sofa::core::BaseMapping> ;
+      extern template class SOFA_SIMULATION_CORE_API Single<sofa::core::behavior::BaseMass>;
+
+      extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::behavior::BaseForceField> ;
+      extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::behavior::BaseInteractionForceField> ;
+      extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::behavior::BaseProjectiveConstraintSet> ;
+      extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::behavior::BaseConstraintSet> ;
+      extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::objectmodel::ContextObject> ;
+      extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::objectmodel::ConfigurationSetting> ;
+
+      extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::visual::Shader> ;
+      extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::visual::VisualModel> ;
+      extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::visual::VisualManager> ;
+
+      extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::CollisionModel> ;
+      extern template class SOFA_SIMULATION_CORE_API Single<sofa::core::collision::Pipeline> ;
+
+      extern template class SOFA_SIMULATION_CORE_API Sequence<sofa::core::objectmodel::BaseObject> ;
 }
 }
 
-#include <sofa/helper/system/thread/CTime.h>
-#include <string>
-#include <stack>
+
+namespace sofa {
+namespace simulation {
+        class Visitor;
+    }
+}
+
 
 namespace sofa
 {
-
-namespace core
-{
-namespace visual
-{
-class VisualParams;
-} // namespace visual
-} // namespace core
-
 namespace simulation
 {
 
@@ -116,7 +150,7 @@ protected:
     virtual ~Node();
 public:
     /// Create, add, then return the new child of this Node
-    virtual Node::SPtr createChild(const std::string& nodeName)=0;
+    virtual sofa::simulation::NodeSPtr createChild(const std::string& nodeName)=0;
 
     /// @name High-level interface
     /// @{
@@ -129,8 +163,7 @@ public:
     bool isInitialized() {return initialized;}
     /// Apply modifications to the components
     void reinit(const sofa::core::ExecParams* params);
-    /// Do one step forward in time
-//    void animate(const core::ExecParams* params, SReal dt);
+
     /// Draw the objects (using visual visitors)
     void draw(sofa::core::visual::VisualParams* params);
     /// @}
@@ -160,7 +193,7 @@ public:
     }
 
     /// Execute a recursive action starting from this node
-    template<class Act, class Params>
+    template<class Act, class Params = sofa::core::visual::VisualParams* >
     void execute(const Params* params, bool precomputedOrder=false)
     {
         Act action(params);
@@ -169,13 +202,15 @@ public:
     }
 
     /// Execute a recursive action starting from this node
-    template<class Act>
-    void execute(core::visual::VisualParams* vparams, bool precomputedOrder=false)
+    template<class Act, class Params = sofa::core::visual::VisualParams* >
+    void execute(Params* params, bool precomputedOrder=false)
     {
-        Act action(vparams);
+        Act action(params);
         simulation::Visitor* p = &action;
         executeVisitor(p, precomputedOrder);
     }
+
+
 
     /// Possible optimization with traversal precomputation, not mandatory and does nothing by default
     virtual void precomputeTraversalOrder( const sofa::core::ExecParams* ) {}
@@ -186,75 +221,7 @@ public:
     /// @{
     // methods moved from GNode (27/04/08)
 
-    /// Sequence class to hold a list of objects. Public access is only readonly using an interface similar to std::vector (size/[]/begin/end).
-    /// UPDATE: it is now an alias for the Link pointer container
-    template < class T, bool strong = false >
-    class Sequence : public MultiLink<Node, T, BaseLink::FLAG_DOUBLELINK|(strong ? BaseLink::FLAG_STRONGLINK : BaseLink::FLAG_DUPLICATE)>
-    {
-    public:
-        typedef MultiLink<Node, T, BaseLink::FLAG_DOUBLELINK|(strong ? BaseLink::FLAG_STRONGLINK : BaseLink::FLAG_DUPLICATE)> Inherit;
-        typedef T pointed_type;
-        typedef typename Inherit::DestPtr value_type;
-        //typedef TPtr value_type;
-        typedef typename Inherit::const_iterator const_iterator;
-        typedef typename Inherit::const_reverse_iterator const_reverse_iterator;
-        typedef const_iterator iterator;
-        typedef const_reverse_iterator reverse_iterator;
 
-        Sequence(const BaseLink::InitLink<Node>& init)
-            : Inherit(init)
-        {
-        }
-
-        value_type operator[](unsigned int i) const
-        {
-            return this->get(i);
-        }
-
-        /// Swap two values in the list. Uses a const_cast to violate the read-only iterators.
-        void swap( iterator a, iterator b )
-        {
-            value_type& wa = const_cast<value_type&>(*a);
-            value_type& wb = const_cast<value_type&>(*b);
-            value_type tmp = *a;
-            wa = *b;
-            wb = tmp;
-        }
-    };
-
-    /// Class to hold 0-or-1 object. Public access is only readonly using an interface similar to std::vector (size/[]/begin/end), plus an automatic convertion to one pointer.
-    /// UPDATE: it is now an alias for the Link pointer container
-    template < class T, bool duplicate = true >
-    class Single : public SingleLink<Node, T, BaseLink::FLAG_DOUBLELINK|(duplicate ? BaseLink::FLAG_DUPLICATE : BaseLink::FLAG_NONE)>
-    {
-    public:
-        typedef SingleLink<Node, T, BaseLink::FLAG_DOUBLELINK|(duplicate ? BaseLink::FLAG_DUPLICATE : BaseLink::FLAG_NONE)> Inherit;
-        typedef T pointed_type;
-        typedef typename Inherit::DestPtr value_type;
-        //typedef TPtr value_type;
-        typedef typename Inherit::const_iterator const_iterator;
-        typedef typename Inherit::const_reverse_iterator const_reverse_iterator;
-        typedef const_iterator iterator;
-        typedef const_reverse_iterator reverse_iterator;
-
-        Single(const BaseLink::InitLink<Node>& init)
-            : Inherit(init)
-        {
-        }
-
-        T* operator->() const
-        {
-            return this->get();
-        }
-        T& operator*() const
-        {
-            return *this->get();
-        }
-        operator T*() const
-        {
-            return this->get();
-        }
-    };
 
     Sequence<Node,true> child;
     typedef Sequence<Node,true>::iterator ChildIterator;
@@ -530,10 +497,10 @@ public:
     virtual void setDefaultVisualContextValue();
 
     template <class RealObject>
-    static Node::SPtr create(RealObject*, core::objectmodel::BaseObjectDescription* arg);
+    static NodeSPtr create(RealObject*, core::objectmodel::BaseObjectDescription* arg);
 
 
-    static Node::SPtr create( const std::string& name );
+    static NodeSPtr create( const std::string& name );
 
     /// return the smallest common parent between this and node2 (returns NULL if separated sub-graphes)
     virtual Node* findCommonParent( simulation::Node* node2 ) = 0;
@@ -551,9 +518,9 @@ protected:
 
     std::stack<Visitor*> actionStack;
 
-    virtual void notifyAddChild(Node::SPtr node);
-    virtual void notifyRemoveChild(Node::SPtr node);
-    virtual void notifyMoveChild(Node::SPtr node, Node* prev);
+    virtual void notifyAddChild(NodeSPtr node);
+    virtual void notifyRemoveChild(NodeSPtr node);
+    virtual void notifyMoveChild(NodeSPtr node, Node* prev);
     virtual void notifyAddObject(sofa::core::objectmodel::BaseObject::SPtr obj);
     virtual void notifyRemoveObject(sofa::core::objectmodel::BaseObject::SPtr obj);
     virtual void notifyMoveObject(sofa::core::objectmodel::BaseObject::SPtr obj, Node* prev);

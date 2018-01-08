@@ -40,7 +40,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/helper/rmath.h>
+
 #include <list>
 
 

@@ -28,7 +28,7 @@ struct SmoothMeshEngine_test : public Sofa_test<typename _DataTypes::Real>,
 	typedef sofa::defaulttype::Vec<3,Real> Vec3;
 
 	Simulation* m_simu;
-	Node::SPtr m_node;
+	NodeSPtr m_node;
 	typename ThisClass::SPtr m_thisObject;
 
 	void SetUp()

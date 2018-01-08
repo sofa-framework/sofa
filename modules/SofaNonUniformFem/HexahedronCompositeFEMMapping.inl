@@ -24,6 +24,7 @@
 
 #include <SofaNonUniformFem/HexahedronCompositeFEMMapping.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawTool.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/gl/template.h>

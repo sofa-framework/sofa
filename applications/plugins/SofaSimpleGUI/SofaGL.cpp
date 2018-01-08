@@ -1,8 +1,12 @@
 #include <GL/glew.h>
+#include <sofa/core/visual/DrawTool.h>
+#include <sofa/core/visual/VisualLoop.h>
 #include "SofaGL.h"
 #include "VisualPickVisitor.h"
 #include <sofa/core/objectmodel/Tag.h>
+#include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/MechanicalVisitor.h>
+#include <sofa/simulation/Node.h>
 
 using std::cout;
 using std::cerr;

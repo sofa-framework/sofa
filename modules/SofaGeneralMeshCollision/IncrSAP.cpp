@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <sofa/core/ObjectFactory.h>
 #include <SofaGeneralMeshCollision/IncrSAP.h>
+#include <sofa/helper/AdvancedTimer.h>
 
 namespace sofa
 {

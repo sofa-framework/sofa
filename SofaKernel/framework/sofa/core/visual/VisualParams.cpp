@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DisplayFlags.h>
 #include <sofa/helper/system/thread/thread_specific_ptr.h>
 #include <sofa/helper/BackTrace.h>
 #include <cassert>
@@ -40,13 +41,20 @@ VisualParams::VisualParams()
     , m_zFar(0)
     , m_cameraType(PERSPECTIVE_TYPE)
     , m_pass(Std)
+    , m_displayFlags(new sofa::core::visual::DisplayFlags())
     , m_drawTool(NULL)
     , m_boundFrameBuffer(NULL)
     , m_x (ConstVecCoordId::position())
     , m_v (ConstVecDerivId::velocity())
     , m_supportedAPIs(0)
 {
-    m_displayFlags.setShowVisualModels(true); // BUGFIX: visual models are visible by default
+    m_displayFlags->setShowVisualModels(true); // BUGFIX: visual models are visible by default
+}
+
+VisualParams::~VisualParams()
+{
+    if(m_displayFlags)
+        delete m_displayFlags ;
 }
 
 /// Get the default VisualParams, to be used to provide a default values for method parameters

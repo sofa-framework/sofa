@@ -23,12 +23,14 @@
 #define SOFA_GUI_BASEGUI_H
 
 #include "SofaGUI.h"
-#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Node_fwd.h>
 #include <sofa/defaulttype/Vec.h>
 #include <SofaGraphComponent/ViewerSetting.h>
 #include <SofaGraphComponent/MouseButtonSetting.h>
 #include <sofa/helper/ArgumentParser.h>
 using sofa::helper::ArgumentParser;
+
+#include <sofa/helper/types/RGBAColor.h>
 
 #include <list>
 
@@ -55,13 +57,13 @@ public:
     /// Close the GUI
     virtual int closeGUI()=0;
     /// Register the scene in our GUI
-    virtual void setScene(sofa::simulation::Node::SPtr groot, const char* filename=NULL, bool temporaryFile=false)=0;
+    virtual void setScene(sofa::simulation::NodeSPtr groot, const char* filename=NULL, bool temporaryFile=false)=0;
     /// Get the rootNode of the sofa scene
     virtual sofa::simulation::Node* currentSimulation() = 0;
     /// @}
 
     /// Use a component setting to configure our GUI
-    virtual void configureGUI(sofa::simulation::Node::SPtr groot);
+    virtual void configureGUI(sofa::simulation::NodeSPtr groot);
 
     /// @name methods to configure the GUI
     /// @{
@@ -78,7 +80,7 @@ public:
     virtual void setViewerConfiguration(sofa::component::configurationsetting::ViewerSetting* /*viewerConf*/) {}
     virtual void setViewerResolution(int /* width */, int /* height */) {}
     virtual void setFullScreen() {}
-    virtual void setBackgroundColor(const defaulttype::RGBAColor& /*color*/) {}
+    virtual void setBackgroundColor(const sofa::helper::types::RGBAColor& /*color*/) {}
     virtual void setBackgroundImage(const std::string& /*image*/) {}
 
     virtual BaseViewer* getViewer() {return NULL;}

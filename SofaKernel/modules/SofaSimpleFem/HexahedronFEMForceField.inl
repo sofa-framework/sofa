@@ -24,6 +24,8 @@
 
 #include "HexahedronFEMForceField.h"
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawTool.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/helper/decompose.h>
 #include <assert.h>

@@ -27,6 +27,7 @@
 #include <sofa/core/collision/NarrowPhaseDetection.h>
 #include <sofa/core/collision/CollisionGroupManager.h>
 #include <sofa/core/collision/ContactManager.h>
+#include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/simulation/Node.h>

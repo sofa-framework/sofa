@@ -30,6 +30,7 @@
 #include <sofa/helper/gl/template.h>
 
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DisplayFlags.h>
 
 namespace sofa
 {

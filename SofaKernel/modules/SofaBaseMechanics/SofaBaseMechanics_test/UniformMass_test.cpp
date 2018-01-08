@@ -40,7 +40,9 @@ using sofa::component::initBaseMechanics ;
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::Simulation ;
 using sofa::simulation::graph::DAGSimulation ;
+#include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
+using sofa::simulation::NodeSPtr ;
 using sofa::simulation::setSimulation ;
 using sofa::core::objectmodel::New ;
 using sofa::core::objectmodel::BaseData ;
@@ -70,8 +72,8 @@ struct UniformMassTest :  public ::testing::Test
     typedef typename TTemplateTypes::MassTypes MassTypes ;
 
     Simulation* m_simu  {nullptr} ;
-    Node::SPtr m_root ;
-    Node::SPtr m_node ;
+    NodeSPtr m_root ;
+    NodeSPtr m_node ;
     typename TheUniformMass::SPtr m_mass ;
     typename MechanicalObject<DataTypes>::SPtr m_mecaobject;
     bool todo  {true} ;
@@ -128,7 +130,7 @@ struct UniformMassTest :  public ::testing::Test
                 "   <UniformMass name='m_mass'/>                             "
                 "</Node>                                                     " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+        NodeSPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
                                                           scene.size()) ;
 
@@ -152,7 +154,7 @@ struct UniformMassTest :  public ::testing::Test
                 "   <UniformMass name='m_mass' mass='4.0' />                 "
                 "</Node>                                                     " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+        NodeSPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
                                                           (int)scene.size()) ;
 
@@ -176,7 +178,7 @@ struct UniformMassTest :  public ::testing::Test
                 "   <UniformMass name='m_mass' totalmass='4.0' />            "
                 "</Node>                                                     " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+        NodeSPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
                                                           (int)scene.size()) ;
 
@@ -200,7 +202,7 @@ struct UniformMassTest :  public ::testing::Test
                 "   <UniformMass name='m_mass' totalmass='91.0' mass=2.0/>   "
                 "</Node>                                                     " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+        NodeSPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
                                                           (int)scene.size()) ;
 
@@ -224,7 +226,7 @@ struct UniformMassTest :  public ::testing::Test
                 "   <UniformMass name='m_mass' totalmass='-1.0' mass=-3.0/>   "
                 "</Node>                                                     " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+        NodeSPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
                                                           scene.size()) ;
 
@@ -246,7 +248,7 @@ struct UniformMassTest :  public ::testing::Test
                 "   <MechanicalObject template='Rigid3' position='0 0 0 1 0 0 1 0 0 0 1 0 0 1'/>                     "
                 "   <UniformMass filename='BehaviorModels/card.rigid'/>        "
                 "</Node>                                                     " ;
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadFromAValidFile",
+        NodeSPtr root = SceneLoaderXML::loadFromMemory ("loadFromAValidFile",
                                                           scene.c_str(), (int)scene.size()) ;
         root->init(ExecParams::defaultInstance()) ;
 
@@ -266,7 +268,7 @@ struct UniformMassTest :  public ::testing::Test
                 "   <MechanicalObject position='0 0 0'/>                     "
                 "   <UniformMass filename='BehaviorModels/card.rigid'/>        "
                 "</Node>                                                     " ;
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadFromAValidFile",
+        NodeSPtr root = SceneLoaderXML::loadFromMemory ("loadFromAValidFile",
                                                           scene.c_str(), (int)scene.size()) ;
         root->init(ExecParams::defaultInstance()) ;
     }
@@ -278,7 +280,7 @@ struct UniformMassTest :  public ::testing::Test
                 "   <MechanicalObject position='0 0 0'/>                     "
                 "   <UniformMass filename='invalid_uniformmatrix.txt'/>        "
                 "</Node>                                                     " ;
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadFromAnInValidFile",
+        NodeSPtr root = SceneLoaderXML::loadFromMemory ("loadFromAnInValidFile",
                                                           scene.c_str(), (int)scene.size()) ;
         root->init(ExecParams::defaultInstance()) ;
     }
@@ -290,7 +292,7 @@ struct UniformMassTest :  public ::testing::Test
                 "   <MechanicalObject position='0 0 0'/>                     "
                 "   <UniformMass filename='invalid_uniformmatrix.txt'/>        "
                 "</Node>                                                     " ;
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadFromAnInValidFile",
+        NodeSPtr root = SceneLoaderXML::loadFromMemory ("loadFromAnInValidFile",
                                                           scene.c_str(), (int)scene.size()) ;
         root->init(ExecParams::defaultInstance()) ;
     }

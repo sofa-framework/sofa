@@ -86,7 +86,7 @@ public:
     Node *getRoot() {return graphRoot.get(); } //getNode(firstChild());}
 
     /// Set the Root of the simulation
-    Node::SPtr setRoot(Node::SPtr node=NULL, bool saveHistory=true) {clearGraph(saveHistory); return addNode(NULL, node, saveHistory);}
+    NodeSPtr setRoot(NodeSPtr node=NULL, bool saveHistory=true) {clearGraph(saveHistory); return addNode(NULL, node, saveHistory);}
 
     /// Clear the contents of the current Graph
     void clearGraph(bool saveHistory=true);
@@ -159,7 +159,7 @@ public:
     /// expande all the nodes below the current one
     void expandNode(QTreeWidgetItem* item);
     /// load a node as a child of the current one
-    Node::SPtr loadNode(QTreeWidgetItem* item, std::string filename="", bool saveHistory=true);
+    NodeSPtr loadNode(QTreeWidgetItem* item, std::string filename="", bool saveHistory=true);
     /// Save the whole graphe
     void save(const std::string &fileName);
     /// Save components
@@ -171,7 +171,7 @@ public:
     /// Delete a componnent
     void deleteComponent(QTreeWidgetItem *item, bool saveHistory=true);
     /// Construct a node from a BaseElement, by passing the factory
-    Node::SPtr buildNodeFromBaseElement(Node::SPtr node,xml::BaseElement *elem, bool saveHistory=false);
+    NodeSPtr buildNodeFromBaseElement(NodeSPtr node,xml::BaseElement *elem, bool saveHistory=false);
     void configureElement(Base* b, xml::BaseElement *elem);
 
     /// Used to know what component is about to be created by a drag&drop
@@ -206,7 +206,7 @@ public slots:
     /// Context Menu Operation: expanding all the nodes below the current one
     void expandNode();
     /// Context Menu Operation: loading a node as a child of the current one
-    Node::SPtr loadNode();
+    NodeSPtr loadNode();
     /// Context Menu Operation: process to a global modification of a Data
     void globalModification();
 
@@ -214,7 +214,7 @@ public slots:
     void linkComponent();
 
     /// Load a file given the node in which it will be added
-    Node::SPtr loadNode(Node::SPtr, std::string, bool saveHistory=true);
+    NodeSPtr loadNode(NodeSPtr, std::string, bool saveHistory=true);
     /// Context Menu Operation: loading a preset: open the window of configuration
     void loadPreset(std::string presetName);
     /// Context Menu Operation: loading a preset: actually creating the node, given its parameters (path to files, and initial position)
@@ -250,9 +250,9 @@ protected:
     QTreeWidgetItem *getItem(Base *component) const;
 
     /// Insert a Node in the scene
-    Node::SPtr addNode(Node::SPtr parent, Node::SPtr node=NULL, bool saveHistory=true);
+    NodeSPtr addNode(NodeSPtr parent, NodeSPtr node=NULL, bool saveHistory=true);
     /// Insert a Component in the scene
-    BaseObject::SPtr addComponent(Node::SPtr parent, const ClassEntry::SPtr entry, const std::string& templateName, bool saveHistory=true, bool displayWarning=true );
+    BaseObject::SPtr addComponent(NodeSPtr parent, const ClassEntry::SPtr entry, const std::string& templateName, bool saveHistory=true, bool displayWarning=true );
 
     void changeComponentDataValue(const std::string &name, const std::string &value, Base* component) const ;
 
@@ -271,7 +271,7 @@ protected:
     void updatePresetNode(xml::BaseElement &elem, std::string meshFile, std::string translation, std::string rotation, std::string scale);
 
     GraphListenerQListView *graphListener; // Management of the list: Listener of the sofa tree
-    Node::SPtr graphRoot; ///< root node of the graph (it is now necessary to hold a smart pointer to it in order to keep it from being deleted)
+    NodeSPtr graphRoot; ///< root node of the graph (it is now necessary to hold a smart pointer to it in order to keep it from being deleted)
     SofaLibrary *sofaLibrary;
     QMenu *preset;  //Preset menu selection appearing when right click on a node
     AddPreset *DialogAdd; //Single Window appearing when adding a preset

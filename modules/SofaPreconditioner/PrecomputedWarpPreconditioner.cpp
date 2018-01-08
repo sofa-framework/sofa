@@ -23,6 +23,7 @@
 //
 // Copyright: See COPYING file that comes with this distribution
 
+#include <sofa/core/ObjectFactory.h>
 #include <SofaPreconditioner/PrecomputedWarpPreconditioner.inl>
 
 namespace sofa

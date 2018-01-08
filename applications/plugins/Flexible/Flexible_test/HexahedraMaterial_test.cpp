@@ -73,7 +73,7 @@ struct HexahedraMaterial_test : public Sofa_test<typename Vec3Types::Real>
     typedef typename container::MechanicalObject<Vec3Types> MechanicalObject;
     typedef sofa::component::forcefield::HookeForceField<EType> HookeForceField;
     typedef typename sofa::component::forcefield::HookeForceField<EType>::SPtr HookeForceFieldSPtr;
-    typedef HookeForceFieldSPtr (HexahedraMaterial_test<DataTypes>::*LinearElasticityFF)(simulation::Node::SPtr,double,double,double);
+    typedef HookeForceFieldSPtr (HexahedraMaterial_test<DataTypes>::*LinearElasticityFF)(simulation::NodeSPtr,double,double,double);
     typename component::forcefield::QuadPressureForceField<Vec3Types>::SPtr forceField;
 
     /// Simulation
@@ -83,7 +83,7 @@ struct HexahedraMaterial_test : public Sofa_test<typename Vec3Types::Real>
     /// index of the vertex used to compute the deformation
     size_t vIndex;
     // Strain node for the force field
-    simulation::Node::SPtr strainNode;
+    simulation::NodeSPtr strainNode;
    
 
     // Create the context for the scene
@@ -101,8 +101,8 @@ struct HexahedraMaterial_test : public Sofa_test<typename Vec3Types::Real>
        tractionStruct.root = down_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()).get() );
 
        // Get child nodes
-       simulation::Node::SPtr quadNode = tractionStruct.root->getChild("Quads");
-       simulation::Node::SPtr behaviorNode = tractionStruct.root->getChild("behavior");
+       simulation::NodeSPtr quadNode = tractionStruct.root->getChild("Quads");
+       simulation::NodeSPtr behaviorNode = tractionStruct.root->getChild("behavior");
        strainNode = behaviorNode->getChild("Strain");
 
        // Get force field
@@ -129,7 +129,7 @@ struct HexahedraMaterial_test : public Sofa_test<typename Vec3Types::Real>
 
     }
 
-	HookeForceFieldSPtr addHookeForceField(simulation::Node::SPtr node,
+	HookeForceFieldSPtr addHookeForceField(simulation::NodeSPtr node,
         double youngModulus,double poissonRatio, double viscosity)
 	{
         // Hooke Force Field

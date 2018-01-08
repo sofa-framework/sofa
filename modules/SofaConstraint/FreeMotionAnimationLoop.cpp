@@ -26,6 +26,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/VecId.h>
+#include <sofa/core/behavior/MultiVec.h>
 
 #include <sofa/helper/AdvancedTimer.h>
 
@@ -40,7 +41,7 @@
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/UpdateMappingEndEvent.h>
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
-
+#include <sofa/simulation/Node.h>
 
 namespace sofa
 {

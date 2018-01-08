@@ -31,7 +31,6 @@
 #include <SofaBaseCollision/BaseContactMapper.h>
 #include <SofaConstraint/ContactIdentifier.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/BaseMapping.h>
 
 namespace sofa
 {

@@ -41,7 +41,7 @@
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/helper/io/MeshOBJ.h>
 #include <sofa/helper/io/MeshSTL.h>
-#include <sofa/helper/rmath.h>
+
 #include <sofa/helper/accessor.h>
 #include <sstream>
 #include <map>

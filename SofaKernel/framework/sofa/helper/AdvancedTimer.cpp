@@ -22,6 +22,7 @@
 #define SOFA_HELPER_ADVANCEDTIMER_CPP
 #include <sofa/helper/AdvancedTimer.h>
 
+#include <sofa/simulation/Node.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/system/thread/thread_specific_ptr.h>
 #include <sofa/helper/system/atomic.h>
@@ -29,7 +30,7 @@
 #include <sofa/helper/map.h>
 #include <../extlibs/json/json.h>
 
-
+#include <sofa/simulation/Simulation.h>
 #include <cmath>
 #include <cstdlib>
 #include <stack>

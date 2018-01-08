@@ -36,6 +36,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/objectmodel/BaseNode.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/simulation/DeactivatedNodeVisitor.h>
 #include <sofa/helper/cast.h>
 

@@ -23,6 +23,8 @@
 #define SOFA_CORE_BEHAVIOR_PAIRINTERACTIONCONSTRAINT_H
 
 #include <sofa/core/core.h>
+
+#include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/behavior/BaseInteractionConstraint.h>
 #include <sofa/core/behavior/MechanicalState.h>
 

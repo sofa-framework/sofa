@@ -30,11 +30,13 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/loader/MeshLoader.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/VisualParams_fwd.h>
+
 
 namespace sofa
 {

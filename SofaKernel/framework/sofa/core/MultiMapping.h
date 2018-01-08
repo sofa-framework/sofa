@@ -23,9 +23,11 @@
 #define SOFA_CORE_MULTIMAPPING_H
 
 #include <sofa/core/BaseMapping.h>
+#include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/State.h>
 #include <sofa/core/core.h>
 #include <sofa/core/VecId.h>
+#include <sofa/helper/StringUtils.h>
 
 namespace sofa
 {

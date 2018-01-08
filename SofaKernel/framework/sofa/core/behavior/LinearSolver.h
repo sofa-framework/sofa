@@ -26,8 +26,9 @@
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/core/MechanicalParams.h>
-#include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/defaulttype/BaseMatrix_fwd.h>
 #include <sofa/defaulttype/BaseVector.h>
+#include "LinearSolver_fwd.h"
 
 namespace sofa
 {

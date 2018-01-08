@@ -24,10 +24,12 @@
 
 #include <SofaBoundaryCondition/ConicalForceField.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawTool.h>
+#include <sofa/core/visual/DisplayFlags.h>
 #include <sofa/defaulttype/Quat.h>
 
 #include <sofa/helper/system/config.h>
-#include <sofa/helper/rmath.h>
+
 #include <assert.h>
 #include <iostream>
 

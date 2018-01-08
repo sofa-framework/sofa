@@ -28,6 +28,7 @@
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <sofa/simulation/MechanicalVisitor.h>
+#include <sofa/simulation/Node.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/AdvancedTimer.h>
 

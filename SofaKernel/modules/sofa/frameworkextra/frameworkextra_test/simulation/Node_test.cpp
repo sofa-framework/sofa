@@ -31,6 +31,7 @@ using sofa::simulation::Node ;
 using sofa::helper::testing::BaseSimulationTest ;
 using sofa::simulation::Node ;
 
+#include <sofa/core/visual/VisualModel.h>
 using sofa::core::visual::VisualModel ;
 
 #include <sofa/helper/system/PluginManager.h>

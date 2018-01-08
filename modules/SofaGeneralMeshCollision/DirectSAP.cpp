@@ -26,11 +26,12 @@
 #include <SofaMeshCollision/Triangle.h>
 #include <SofaMeshCollision/Line.h>
 #include <SofaMeshCollision/Point.h>
-#include <sofa/helper/FnDispatcher.h>
+
 #include <sofa/core/ObjectFactory.h>
 #include <map>
 #include <queue>
 #include <stack>
+#include <sofa/helper/AdvancedTimer.h>
 
 #include <sofa/helper/system/gl.h>
 

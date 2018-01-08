@@ -24,7 +24,8 @@
 
 #include <SofaRigid/RigidRigidMapping.h>
 #include <sofa/core/visual/VisualParams.h>
-
+#include <sofa/core/visual/DrawTool.h>
+#include <sofa/core/visual/DisplayFlags.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
@@ -749,6 +750,18 @@ void RigidRigidMapping<TIn, TOut>::computeAccFromMapping(const core::MechanicalP
 
     dAcc_out.endEdit();
 }
+
+
+template <class TIn, class TOut>
+bool RigidRigidMapping<TIn, TOut>::getShow(const core::objectmodel::BaseObject* /*m*/,
+                                           const core::visual::VisualParams* vparams) const
+{ return vparams->displayFlags().getShowMappings(); }
+
+template <class TIn, class TOut>
+bool RigidRigidMapping<TIn, TOut>::getShow(const core::BaseMapping* /*m*/,
+                                           const core::visual::VisualParams* vparams) const
+{ return vparams->displayFlags().getShowMechanicalMappings(); }
+
 
 template <class TIn, class TOut>
 void RigidRigidMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)

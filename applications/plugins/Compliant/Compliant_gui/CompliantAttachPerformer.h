@@ -28,9 +28,8 @@
 #include <SofaMiscMapping/DistanceFromTargetMapping.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/simulation/Node.h>
 #include <sofa/gui/MouseOperations.h>
-
+#include <sofa/simulation/Node_fwd.h>
 #include <SofaOpenglVisual/OglModel.h>
 
 #include "../misc/CompliantAttachButtonSetting.h"
@@ -81,9 +80,9 @@ class SOFA_Compliant_gui_API CompliantAttachPerformer: public TInteractionPerfor
     typedef defaulttype::StdVectorTypes< defaulttype::Vec<1,Real>, defaulttype::Vec<1,Real>  >  DataTypes1;
 
 
-    simulation::Node::SPtr pickedNode;       ///< Node containing the picked MechanicalState
+    simulation::NodeSPtr pickedNode;       ///< Node containing the picked MechanicalState
     int pickedParticleIndex;                 ///< Index of the picked particle in the picked state
-    simulation::Node::SPtr interactionNode;  ///< Node used to create the interaction components to constrain the picked point
+    simulation::NodeSPtr interactionNode;  ///< Node used to create the interaction components to constrain the picked point
     core::BaseMapping::SPtr mouseMapping;   ///< Mapping from the mouse position to the 3D point on the ray
     MouseContactMapper* mapper;
     Point3dState* mouseState;                  ///< Mouse state container  (position, velocity)

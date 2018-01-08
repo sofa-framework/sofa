@@ -24,9 +24,9 @@
 #include "config.h"
 
 #include <SofaUserInteraction/InteractionPerformer.h>
-
 #include <SofaDeformable/StiffSpringForceField.h>
 #include <SofaUserInteraction/MouseInteractor.h>
+#include <sofa/simulation/Node_fwd.h>
 
 namespace sofa
 {

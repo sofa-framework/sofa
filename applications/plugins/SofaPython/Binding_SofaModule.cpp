@@ -37,7 +37,7 @@
 #include <sofa/helper/GenerateRigid.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/SceneLoaderFactory.h>
-
+#include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/logging/Messaging.h>
 using sofa::helper::logging::ComponentInfo ;
 using sofa::helper::logging::SofaComponentInfo ;
@@ -83,7 +83,7 @@ static PyObject * Sofa_createNode(PyObject * /*self*/, PyObject * args)
         return NULL;
     }
 
-    Node::SPtr node = Node::create( name );
+    NodeSPtr node = Node::create( name );
 
     return PythonFactory::toPython(node.get());
 }
@@ -469,7 +469,7 @@ static PyObject * Sofa_loadScene(PyObject * /*self*/, PyObject * args)
 
     if (loader)
     {
-        Node::SPtr node = loader->load(filename);
+        NodeSPtr node = loader->load(filename);
         return PythonFactory::toPython(node.get());
     }
 
@@ -519,7 +519,7 @@ static PyObject * Sofa_loadPythonSceneWithArguments(PyObject * /*self*/, PyObjec
     }
 
     SceneLoaderPY loader;
-    Node::SPtr root;
+    NodeSPtr root;
     loader.loadSceneWithArguments(filename, arguments, &root);
     return PythonFactory::toPython(root.get());
 }

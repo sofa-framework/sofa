@@ -22,13 +22,13 @@
 #ifndef SOFA_SIMULATION_TREE_COLLISIONANIMATIONLOOP_H
 #define SOFA_SIMULATION_TREE_COLLISIONANIMATIONLOOP_H
 
-#include <sofa/helper/AdvancedTimer.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/core/ExecParams.h>
 #include <sofa/simulation/simulationcore.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/Node.h>
+#include <sofa/simulation/Sequence.h>
 #include <sofa/simulation/Visitor.h>
 
 namespace sofa
@@ -89,7 +89,7 @@ protected:
     virtual void integrate(const core::ExecParams* params, SReal dt);
 
 
-    typedef simulation::Node::Sequence<core::behavior::OdeSolver> Solvers;
+    typedef simulation::Sequence<core::behavior::OdeSolver> Solvers;
     typedef core::collision::Pipeline Pipeline;
     const Solvers& getSolverSequence();
 

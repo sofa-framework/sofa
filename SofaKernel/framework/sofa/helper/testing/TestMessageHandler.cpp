@@ -24,6 +24,7 @@
  *    - damien.marchal@univ-lille1.fr
  ******************************************************************************/
 #include <sofa/helper/testing/TestMessageHandler.h>
+#include <sofa/helper/system/config.h>
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// This file organization:

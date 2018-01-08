@@ -22,6 +22,7 @@
 #ifndef SOFA_COMPONENT_MISC_WRITESTATE_INL
 #define SOFA_COMPONENT_MISC_WRITESTATE_INL
 
+#include <sofa/core/behavior/BaseMass.h>
 #include <SofaExporter/WriteState.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Node.h>

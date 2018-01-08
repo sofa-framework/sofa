@@ -28,7 +28,6 @@
 #include <sofa/core/behavior/MultiVec.h>
 #include <sofa/core/behavior/MultiMatrix.h>
 #include <sofa/core/behavior/ConstraintSolver.h>
-#include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/BaseVector.h>
 
 namespace sofa

@@ -59,7 +59,7 @@ struct PlaneROI_test : public Sofa_test<typename _DataTypes::Real>,
 
 
     Simulation* m_simu;
-    Node::SPtr m_node1, m_node2;
+    NodeSPtr m_node1, m_node2;
     typename ThisClass::SPtr m_thisObject;
 
     void SetUp()

@@ -26,7 +26,6 @@
 #include <SofaBaseCollision/BaseProximityIntersection.h>
 #include <sofa/helper/FnDispatcher.h>
 #include <SofaBaseCollision/CapsuleModel.h>
-#include <SofaBaseCollision/SphereModel.h>
 #include <SofaBaseCollision/CubeModel.h>
 #include <SofaBaseCollision/BaseIntTool.h>
 

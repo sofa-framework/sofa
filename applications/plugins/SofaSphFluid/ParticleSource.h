@@ -38,6 +38,8 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawTool.h>
+#include <sofa/core/visual/DisplayFlags.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>

@@ -24,7 +24,6 @@
 #include "config.h"
 
 #include <sofa/core/DataEngine.h>
-#include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/Vec.h>

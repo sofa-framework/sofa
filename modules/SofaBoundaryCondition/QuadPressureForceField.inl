@@ -25,6 +25,7 @@
 #include <SofaBoundaryCondition/QuadPressureForceField.h>
 #include <SofaBaseTopology/TopologySparseData.inl>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DisplayFlags.h>
 #include <SofaBaseTopology/QuadSetGeometryAlgorithms.h>
 #include <sofa/helper/gl/template.h>
 #include <vector>

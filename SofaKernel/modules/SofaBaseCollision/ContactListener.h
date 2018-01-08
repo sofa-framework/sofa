@@ -24,11 +24,10 @@
 #include "config.h"
 
 #include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/collision/Contact.h>
-//#include <sofa/core/collision/DetectionOutput.h>
 #include <sofa/helper/vector.h>
 
-//#include <sofa/core/CollisionModel.h>
 
 namespace sofa
 {

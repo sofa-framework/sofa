@@ -29,7 +29,6 @@
 
 #include <sofa/simulation/MechanicalVisitor.h>
 // #include <sofa/core/behavior/BaseMechanicalMapping.h>
-#include <sofa/core/behavior/Mass.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/behavior/BaseInteractionForceField.h>
 #include <sofa/core/behavior/BaseInteractionConstraint.h>
@@ -38,8 +37,6 @@
 #include <sofa/core/behavior/BaseConstraintSet.h>
 #include <sofa/defaulttype/SharedTypes.h>
 
-//#include <sofa/defaulttype/BaseMatrix.h>
-//#include <sofa/defaulttype/BaseVector.h>
 #include <iostream>
 using std::cerr;
 using std::endl;

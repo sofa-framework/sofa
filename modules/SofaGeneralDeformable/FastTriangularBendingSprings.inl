@@ -34,7 +34,9 @@
 #define SOFA_COMPONENT_FORCEFIELD_FastTriangularBendingSprings_INL
 
 #include <SofaGeneralDeformable/FastTriangularBendingSprings.h>
+#include <sofa/core/behavior/ForceField.inl>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DisplayFlags.h>
 #include <sofa/core/topology/TopologyChange.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging

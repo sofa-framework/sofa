@@ -20,6 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_CORE_OBJECTMODEL_BASE_CPP
+
+#include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/logging/Messaging.h>

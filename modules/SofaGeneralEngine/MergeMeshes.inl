@@ -25,6 +25,7 @@
 #include <SofaGeneralEngine/MergeMeshes.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>
+#include <sofa/core/objectmodel/BaseObjectDescription.h>
 
 namespace sofa
 {

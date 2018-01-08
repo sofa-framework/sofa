@@ -23,6 +23,7 @@
 #define SOFA_COMPONENT_MISC_WRITETOPOLOGY_INL
 
 #include <SofaExporter/WriteTopology.h>
+#include <sofa/core/BaseMapping.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/core/objectmodel/DataFileName.h>

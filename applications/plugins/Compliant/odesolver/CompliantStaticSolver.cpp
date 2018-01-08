@@ -2,6 +2,8 @@
 
 #include <sofa/core/ObjectFactory.h>
 
+#include <sofa/simulation/Node.h>
+
 #include <boost/math/tools/minima.hpp>
 #include <tuple>
 
@@ -9,6 +11,7 @@
 #include "../utils/scoped.h"
 
 #include "../constraint/Constraint.h"
+
 
 namespace sofa {
 namespace component {

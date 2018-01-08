@@ -76,7 +76,7 @@ struct NeoHookeHexahedraMaterial_test : public Sofa_test<typename Vec3Types::Rea
     typedef sofa::component::forcefield::NeoHookeanForceField<StrainType> NeoHookeForceField;
     typedef typename sofa::component::forcefield::NeoHookeanForceField<StrainType>::SPtr NeoHookeForceFieldSPtr;
     typedef typename sofa::core::behavior::ForceField<StrainType>::SPtr ForceFieldSPtr;
-    typedef ForceFieldSPtr (NeoHookeHexahedraMaterial_test<DataTypes>::*LinearElasticityFF)(simulation::Node::SPtr,double,double);
+    typedef ForceFieldSPtr (NeoHookeHexahedraMaterial_test<DataTypes>::*LinearElasticityFF)(simulation::NodeSPtr,double,double);
     typename component::forcefield::QuadPressureForceField<Vec3Types>::SPtr pressureForceField;
 
     /// Simulation
@@ -86,7 +86,7 @@ struct NeoHookeHexahedraMaterial_test : public Sofa_test<typename Vec3Types::Rea
 	/// index of the vertex used to compute the deformation
 	size_t vIndex;
     // Strain node for the force field
-    simulation::Node::SPtr strainNode;
+    simulation::NodeSPtr strainNode;
 
     // Create the context for the scene
     void SetUp()
@@ -103,8 +103,8 @@ struct NeoHookeHexahedraMaterial_test : public Sofa_test<typename Vec3Types::Rea
        tractionStruct.root = down_cast<sofa::simulation::Node>( sofa::simulation::getSimulation()->load(fileName.c_str()).get() );
 
        // Get child nodes
-       simulation::Node::SPtr quadNode = tractionStruct.root->getChild("Quads");
-       simulation::Node::SPtr behaviorNode = tractionStruct.root->getChild("behavior");
+       simulation::NodeSPtr quadNode = tractionStruct.root->getChild("Quads");
+       simulation::NodeSPtr behaviorNode = tractionStruct.root->getChild("behavior");
        strainNode = behaviorNode->getChild("Strain");
 
        // Get force field
@@ -127,7 +127,7 @@ struct NeoHookeHexahedraMaterial_test : public Sofa_test<typename Vec3Types::Rea
 
     }
 
-    ForceFieldSPtr addNeoHookeForceField(simulation::Node::SPtr node,
+    ForceFieldSPtr addNeoHookeForceField(simulation::NodeSPtr node,
         double youngModulus,double poissonRatio)
     {
         // Hooke Force Field
@@ -142,7 +142,7 @@ struct NeoHookeHexahedraMaterial_test : public Sofa_test<typename Vec3Types::Rea
 
     }
 
-    ForceFieldSPtr addMooneyRivlinForceField(simulation::Node::SPtr node,
+    ForceFieldSPtr addMooneyRivlinForceField(simulation::NodeSPtr node,
         double youngModulus,double poissonRatio)
     {
         // Mooney Rivlin Force Field

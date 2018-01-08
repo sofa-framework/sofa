@@ -28,7 +28,6 @@
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/Texture.h>
-#include <sofa/core/objectmodel/DataFileName.h>
 #include <SofaOpenglVisual/OglShader.h>
 #include <SofaOpenglVisual/OglTexture.h>
 

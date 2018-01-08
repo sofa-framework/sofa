@@ -5,8 +5,12 @@
 
 #include "AssembledMapping.h"
 #include "AssembledMultiMapping.h"
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/defaulttype/RGBAColor.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawTool.h>
+#include <sofa/core/visual/DisplayFlags.h>
 
 namespace sofa
 {

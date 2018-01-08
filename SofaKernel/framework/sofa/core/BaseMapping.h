@@ -27,8 +27,8 @@
 #include <iostream>
 
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/BehaviorModel.h>
-#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/BaseMechanicalState.h>
+#include <sofa/core/behavior/MechanicalState_fwd.h>
 #include <sofa/core/ConstraintParams.h>
 #include <sofa/core/MechanicalParams.h>
 #include <sofa/core/VecId.h>

@@ -27,6 +27,7 @@
 #include <sofa/core/collision/Intersection.h>
 #include <SofaConstraint/DistanceLMContactConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawTool.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/defaulttype/VecTypes.h>

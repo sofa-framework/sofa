@@ -41,7 +41,7 @@ namespace sofa {
 template<class T>
 struct PatchTestStruct
 {
-    simulation::Node::SPtr SquareNode;
+    simulation::NodeSPtr SquareNode;
     typename component::projectiveconstraintset::AffineMovementConstraint<T>::SPtr affineConstraint;
     typename component::container::MechanicalObject<T>::SPtr dofs;
 };
@@ -50,7 +50,7 @@ struct PatchTestStruct
 template<class T>
 struct CylinderTractionStruct
 {
-    simulation::Node::SPtr root;
+    simulation::NodeSPtr root;
     typename component::container::MechanicalObject<T>::SPtr dofs;
     typename component::forcefield::TrianglePressureForceField<T>::SPtr forceField;
 };
@@ -76,7 +76,7 @@ struct SOFA_SOFATEST_API Elasticity_test: public Sofa_test<typename DataTypes::R
 /// Create a scene with a regular grid and an affine constraint for patch test
 
 PatchTestStruct<DataTypes> createRegularGridScene(
-        simulation::Node::SPtr root,
+        simulation::NodeSPtr root,
         Coord startPoint,
         Coord endPoint,
         int numX,
@@ -94,7 +94,7 @@ CylinderTractionStruct<DataTypes>  createCylinderTractionScene(
 
 
 /// Create an assembly of a siff hexahedral grid with other objects
-simulation::Node::SPtr createGridScene(
+simulation::NodeSPtr createGridScene(
         Coord startPoint,
         Coord endPoint,
         int numX,
@@ -105,8 +105,8 @@ simulation::Node::SPtr createGridScene(
         SReal dampingRatio );
 
 /// Create a mass srping system
-simulation::Node::SPtr createMassSpringSystem(
-        simulation::Node::SPtr root,
+simulation::NodeSPtr createMassSpringSystem(
+        simulation::NodeSPtr root,
         double stiffness,
         double mass,
         double restLength,

@@ -23,7 +23,11 @@
 #define SOFA_COMPONENT_MAPPING_DistanceMapping_INL
 
 #include "DistanceMapping.h"
+#include <sofa/core/behavior/MechanicalState.h>
+#include <sofa/core/behavior/BaseForceField.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DrawTool.h>
+#include <sofa/core/visual/DisplayFlags.h>
 #include <iostream>
 #include <sofa/simulation/Node.h>
 

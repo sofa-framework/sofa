@@ -26,10 +26,9 @@
 #include <sofa/core/CollisionModel.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/accessor.h>
-//#include <SofaMeshCollision/RigidContactMapper.h>
+#include <SofaBaseCollision/SphereModel_fwd.h>
 
 namespace sofa
 {
@@ -43,9 +42,6 @@ namespace collision
 
 template<class DataTypes>
 class TSphereModel;
-
-//template <class TDataTypes>
-//class TSphere;
 
 template<class TDataTypes>
 class TSphere : public core::TCollisionElementIterator< TSphereModel<TDataTypes> >

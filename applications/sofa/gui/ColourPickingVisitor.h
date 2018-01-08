@@ -23,13 +23,14 @@
 #define SOFA_GUI_COLOURPICKING_VISITOR
 
 #include <sofa/gui/SofaGUI.h>
-#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Node_fwd.h>
 #include <sofa/simulation/Visitor.h>
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/ExecParams.h>
 #include <SofaMeshCollision/TriangleModel.h>
 #include <SofaBaseCollision/SphereModel.h>
 #include <SofaUserInteraction/MouseInteractor.h>
+#include <sofa/core/visual/VisualParams.h>
 
 namespace sofa
 {

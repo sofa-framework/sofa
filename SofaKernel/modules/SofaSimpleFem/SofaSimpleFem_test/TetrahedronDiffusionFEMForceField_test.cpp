@@ -39,7 +39,7 @@
 
 #include <iostream>
 #include <fstream>
-
+#include <climits>
 
 #if defined(WIN32) && _MSC_VER<=1700  // before or equal to visual studio 2012
    #include <boost/math/special_functions/erf.hpp>
@@ -77,7 +77,7 @@ struct TetrahedronDiffusionFEMForceField_test : public Sofa_test<typename _Force
     /// @name Scene elements
     /// {
     typename DOF::SPtr dof;
-    simulation::Node::SPtr root, tetraNode, temperatureNode;
+    simulation::NodeSPtr root, tetraNode, temperatureNode;
     std::string sceneFilename;
     Coord theorX;
     /// }

@@ -36,7 +36,7 @@ void FailNode::getObjects(const sofa::core::objectmodel::ClassInfo& /*class_info
 	fail();
 }
 
-Node::SPtr FailNode::createChild(const std::string& /*nodeName*/) { fail(); return 0;}
+NodeSPtr FailNode::createChild(const std::string& /*nodeName*/) { fail(); return 0;}
 
 FailNode::Parents FailNode::getParents() const { fail();  FailNode::Parents oNull; return oNull; }
 FailNode::Children FailNode::getChildren() const { fail();  FailNode::Parents oNull; return oNull; }

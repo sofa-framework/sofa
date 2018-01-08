@@ -40,7 +40,6 @@
 #include <SofaMeshCollision/PointModel.h>
 #include <SofaBaseCollision/SphereModel.h>
 #include <SofaMeshCollision/CollisionPM.h>
-#include <sofa/helper/AdvancedTimer.h>
 #include <vector>
 
 namespace sofa

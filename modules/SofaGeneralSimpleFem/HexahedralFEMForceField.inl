@@ -23,7 +23,10 @@
 #define SOFA_COMPONENT_FORCEFIELD_HEXAHEDRALFEMFORCEFIELD_INL
 
 #include "HexahedralFEMForceField.h"
+#include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DisplayFlags.h>
+#include <sofa/core/behavior/MultiMatrixAccessor.h>
 #include <sofa/helper/decompose.h>
 #include <sofa/helper/gl/template.h>
 #include <assert.h>

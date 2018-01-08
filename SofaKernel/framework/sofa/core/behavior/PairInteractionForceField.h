@@ -29,6 +29,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 
 #include <sofa/core/objectmodel/Data.h>
+#include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/defaulttype/Vec.h>
 
 #include <sofa/defaulttype/Vec3Types.h>

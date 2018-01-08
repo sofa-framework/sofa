@@ -1,3 +1,4 @@
+#include <sofa/simulation/Node.h>
 #include "PythonMacros.h"
 #include "PythonVisitor.h"
 #include "PythonFactory.h"

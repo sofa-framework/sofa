@@ -25,6 +25,7 @@
 
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
+#include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/helper/SVector.h>
 #include <type_traits>
 

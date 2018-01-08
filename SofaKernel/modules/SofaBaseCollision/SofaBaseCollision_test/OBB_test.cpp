@@ -53,7 +53,7 @@ struct TestCapOBB  : public ::testing::Test{
 
 struct TestSphereOBB : public ::testing::Test{
     sofa::component::collision::RigidSphereModel::SPtr makeMyRSphere(const Vec3 & center,double radius,const Vec3 & v,
-                                                                       sofa::simulation::Node::SPtr & father);
+                                                                       sofa::simulation::NodeSPtr & father);
 
     bool vertex();
     bool edge();
@@ -80,9 +80,9 @@ typedef sofa::component::container::MechanicalObject<sofa::defaulttype::StdRigid
 typedef MechanicalObjectRigid3d MechanicalObjectRigid3;
 
 sofa::component::collision::RigidSphereModel::SPtr TestSphereOBB::makeMyRSphere(const Vec3 & center,double radius,const Vec3 & v,
-                                                                   sofa::simulation::Node::SPtr & father){
+                                                                   sofa::simulation::NodeSPtr & father){
     //creating node containing SphereModel
-    sofa::simulation::Node::SPtr sph = father->createChild("cap");
+    sofa::simulation::NodeSPtr sph = father->createChild("cap");
 
     //creating a mechanical object which will be attached to the SphereModel
     MechanicalObjectRigid3::SPtr sphDOF = New<MechanicalObjectRigid3>();
@@ -136,7 +136,7 @@ bool TestOBB::faceVertex(){
     //first, we create the transformation to make the first OBB (which is axes aligned)
     double angles[3] = {0,0,0};
     int order[3] = {0,1,2};
-    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::simulation::NodeSPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbmodel0 = makeOBB(Vec3(0,0,-1),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
@@ -207,7 +207,7 @@ bool TestOBB::vertexVertex(){
     angles[1] = acos(1/sqrt(3.0));
     angles[2] = M_PI_4;
 
-    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::simulation::NodeSPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbmodel0 = makeOBB(Vec3(0,0,-sqrt(3.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
     sofa::component::collision::OBBModel::SPtr obbmodel1 = makeOBB(Vec3(0,0,sqrt(3.0) + 0.01),angles,order,Vec3(0,0,-10),Vec3(1,1,1),scn);
 
@@ -246,7 +246,7 @@ bool TestOBB::vertexVertex(){
 bool TestOBB::faceFace(){
     double angles[3] = {0,0,0};
     int order[3] = {0,1,2};
-    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::simulation::NodeSPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbmodel0 = makeOBB(Vec3(0,0,-1),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
     sofa::component::collision::OBBModel::SPtr obbmodel1 = makeOBB(Vec3(0,1,1.01),angles,order,Vec3(0,0,-10),Vec3(1,1,1),scn);
 
@@ -293,7 +293,7 @@ bool TestOBB::faceFace(){
 bool TestOBB::faceEdge(){
     double angles[3] = {0,0,0};
     int order[3] = {0,1,2};
-    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::simulation::NodeSPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbmodel0 = makeOBB(Vec3(0,0,-1),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
     order[0] = 2;
@@ -354,7 +354,7 @@ bool TestOBB::edgeEdge(){
     angles[1] = M_PI_2;
     angles[2] = M_PI_4;
 
-    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::simulation::NodeSPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbmodel0 = makeOBB(Vec3(0,0,-sqrt(2.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
     sofa::component::collision::OBBModel::SPtr obbmodel1 = makeOBB(Vec3(0,0,sqrt(2.0) + 0.01),angles,order,Vec3(0,0,-10),Vec3(1,1,1),scn);
 
@@ -386,7 +386,7 @@ bool TestOBB::edgeVertex(){
     angles[1] = M_PI_2;
     angles[2] = M_PI_4;
 
-    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::simulation::NodeSPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbmodel0 = makeOBB(Vec3(0,0,-sqrt(2.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
     order[0] = 2;
@@ -418,7 +418,7 @@ bool TestCapOBB::faceVertex(){
     //first, we create the transformation to make the first OBB (which is axes aligned)
     double angles[3] = {0,0,0};
     int order[3] = {0,1,2};
-    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::simulation::NodeSPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbmodel =
             makeOBB(Vec3(0,0,-1),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
@@ -458,7 +458,7 @@ bool TestCapOBB::faceEdge(){
     //first, we create the transformation to make the first OBB (which is axes aligned)
     double angles[3] = {0,0,0};
     int order[3] = {0,1,2};
-    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::simulation::NodeSPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbmodel =
             makeOBB(Vec3(0,0,-1),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
@@ -506,7 +506,7 @@ bool TestCapOBB::edgeVertex(){
     angles[1] = M_PI_2;
     angles[2] = M_PI_4;
 
-    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::simulation::NodeSPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbmodel =
             makeOBB(Vec3(0,0,-sqrt(2.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
@@ -554,7 +554,7 @@ bool TestCapOBB::edgeEdge(){
     angles[1] = M_PI_2;
     angles[2] = M_PI_4;
 
-    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::simulation::NodeSPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbmodel =
             makeOBB(Vec3(0,0,-sqrt(2.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
@@ -603,7 +603,7 @@ bool TestCapOBB::vertexEdge(){
     angles[1] = acos(1/sqrt(3.0));
     angles[2] = M_PI_4;
 
-    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::simulation::NodeSPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(3.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
@@ -651,7 +651,7 @@ bool TestCapOBB::vertexVertex(){
     angles[1] = acos(1/sqrt(3.0));
     angles[2] = M_PI_4;
 
-    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::simulation::NodeSPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(3.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
@@ -697,7 +697,7 @@ bool TestSphereOBB::vertex(){
     angles[1] = acos(1/sqrt(3.0));
     angles[2] = M_PI_4;
 
-    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::simulation::NodeSPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(3.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
@@ -747,7 +747,7 @@ bool TestSphereOBB::edge(){
     angles[1] = M_PI_2;
     angles[2] = M_PI_4;
 
-    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::simulation::NodeSPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(2.0)),angles,order,Vec3(0,0,-10),Vec3(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
@@ -788,7 +788,7 @@ bool TestSphereOBB::face(){
     double angles[3] = {0,0,0};
     int order[3] = {0,1,2};
 
-    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::simulation::NodeSPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3(0,0,-1),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);//this OBB is not moving and the contact face will be z = 0 since
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
@@ -826,7 +826,7 @@ bool TestSphereOBB::face(){
 bool TestTriOBB::faceFace(){
     double angles[3] = {0,0,0};
     int order[3] = {0,1,2};
-    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::simulation::NodeSPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3(0,0,-1),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
@@ -856,7 +856,7 @@ bool TestTriOBB::faceFace(){
 bool TestTriOBB::faceVertex_out(){
     double angles[3] = {0,0,0};
     int order[3] = {0,1,2};
-    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::simulation::NodeSPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3(-1.01,0,1.01),angles,order,Vec3(0,0,-10),Vec3(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
@@ -891,7 +891,7 @@ bool TestTriOBB::faceVertex_out(){
 bool TestTriOBB::faceVertex_out2(){
     double angles[3] = {0,0,0};
     int order[3] = {0,1,2};
-    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::simulation::NodeSPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3(-1.01,0,-1.01),angles,order,Vec3(0,0,10),Vec3(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
@@ -926,7 +926,7 @@ bool TestTriOBB::faceVertex_out2(){
 bool TestTriOBB::faceEdge(){
     double angles[3] = {0,0,0};
     int order[3] = {0,1,2};
-    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::simulation::NodeSPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3(0,0,-1),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
@@ -956,7 +956,7 @@ bool TestTriOBB::faceEdge(){
 bool TestTriOBB::faceVertex(){
     double angles[3] = {0,0,0};
     int order[3] = {0,1,2};
-    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::simulation::NodeSPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3(0,0,-1),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
@@ -993,7 +993,7 @@ bool TestTriOBB::edgeFace(){
     angles[1] = M_PI_2;
     angles[2] = M_PI_4;
 
-    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::simulation::NodeSPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(2.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
@@ -1030,7 +1030,7 @@ bool TestTriOBB::edgeEdge(){
     angles[1] = M_PI_2;
     angles[2] = M_PI_4;
 
-    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::simulation::NodeSPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(2.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
@@ -1067,7 +1067,7 @@ bool TestTriOBB::edgeEdge2(){
     angles[1] = M_PI_2;
     angles[2] = M_PI_4;
 
-    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::simulation::NodeSPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(2.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
@@ -1103,7 +1103,7 @@ bool TestTriOBB::edgeVertex(){
     angles[1] = M_PI_2;
     angles[2] = M_PI_4;
 
-    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::simulation::NodeSPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(2.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
@@ -1140,7 +1140,7 @@ bool TestTriOBB::vertexFace(){
     angles[1] = acos(1/sqrt(3.0));
     angles[2] = M_PI_4;
 
-    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::simulation::NodeSPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(3.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
@@ -1177,7 +1177,7 @@ bool TestTriOBB::vertexEdge(){
     angles[1] = acos(1/sqrt(3.0));
     angles[2] = M_PI_4;
 
-    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::simulation::NodeSPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(3.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;
@@ -1214,7 +1214,7 @@ bool TestTriOBB::vertexVertex(){
     angles[1] = acos(1/sqrt(3.0));
     angles[2] = M_PI_4;
 
-    sofa::simulation::Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+    sofa::simulation::NodeSPtr scn = New<sofa::simulation::tree::GNode>();
     sofa::component::collision::OBBModel::SPtr obbmodel = makeOBB(Vec3(0,0,-sqrt(3.0)),angles,order,Vec3(0,0,0),Vec3(1,1,1),scn);
 
     int tri_flg = sofa::component::collision::TriangleModel::FLAG_POINTS | sofa::component::collision::TriangleModel::FLAG_EDGES;

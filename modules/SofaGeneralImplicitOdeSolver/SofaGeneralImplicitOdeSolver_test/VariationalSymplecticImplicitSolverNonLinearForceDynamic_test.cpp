@@ -39,7 +39,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 // For atan2 ??
-//#include <sofa/helper/rmath.h>
+//
 
 namespace sofa {
 
@@ -80,7 +80,7 @@ struct VariationalSymplecticImplicitSolverNonLinearForceDynamic_test : public El
 
 
     /// Root of the scene graph
-    simulation::Node::SPtr root;      
+    simulation::NodeSPtr root;      
     /// Tested simulation
     simulation::Simulation* simulation;  
     /// Position and velocity array

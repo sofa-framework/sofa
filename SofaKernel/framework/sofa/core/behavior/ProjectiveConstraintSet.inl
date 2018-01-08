@@ -43,6 +43,9 @@ ProjectiveConstraintSet<DataTypes>::ProjectiveConstraintSet(MechanicalState<Data
 }
 
 template<class DataTypes>
+constexpr int ProjectiveConstraintSet<DataTypes>::SofaError_TheMethodDefinitionsAreMissing(){ return 1; }
+
+template<class DataTypes>
 ProjectiveConstraintSet<DataTypes>::~ProjectiveConstraintSet()
 {
 }

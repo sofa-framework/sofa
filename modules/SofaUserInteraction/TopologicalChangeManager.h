@@ -29,13 +29,14 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 
 #include <SofaMeshCollision/TriangleModel.h>
-#include <SofaBaseCollision/SphereModel.h>
+#include <SofaBaseCollision/SphereModel_fwd.h>
+
+#include <SofaBaseCollision/SphereModel_fwd.h>
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Vec3Types.h>
 
 #include <SofaBaseMechanics/MechanicalObject.h>
-#include <sofa/simulation/Node.h>
 
 
 namespace sofa

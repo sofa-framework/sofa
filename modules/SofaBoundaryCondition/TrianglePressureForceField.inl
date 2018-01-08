@@ -27,6 +27,7 @@
 #include <SofaBaseTopology/CommonAlgorithms.h>
 #include <SofaBaseTopology/TopologySparseData.inl>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/visual/DisplayFlags.h>
 #include <sofa/helper/gl/template.h>
 #include <vector>
 #include <set>

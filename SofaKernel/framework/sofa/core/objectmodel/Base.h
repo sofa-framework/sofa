@@ -26,13 +26,12 @@
 #include <sofa/helper/system/atomic.h>
 #include <sofa/helper/system/SofaOStream.h>
 #include <sofa/helper/vector.h>
-#include <sofa/helper/StringUtils.h>
 #include <sofa/defaulttype/BoundingBox.h>
-#include <sofa/core/objectmodel/BaseClass.h>
+#include <sofa/core/objectmodel/BaseClass_fwd.h>
 #include <sofa/core/objectmodel/SPtr.h>
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/core/objectmodel/BaseLink.h>
-#include <sofa/core/objectmodel/BaseObjectDescription.h>
+#include <sofa/core/objectmodel/BaseLink_fwd.h>
+#include <sofa/core/objectmodel/BaseObjectDescription_fwd.h>
 #include <sofa/core/objectmodel/Tag.h>
 
 #include <sofa/core/sptr.h>
@@ -128,7 +127,7 @@ namespace objectmodel
  *  All classes deriving from Base should use the SOFA_CLASS macro within their declaration (see BaseClass.h).
  *
  */
-class SOFA_CORE_API Base
+class SOFA_CORE_API Base : public virtual sofa::core::objectmodel::MetaClass
 {
 public:
 
@@ -136,7 +135,7 @@ public:
 
     using SPtr = sptr<Base>;
     
-    typedef TClass< Base, void > MyClass;
+    typedef TClass< Base> MyClass;
     static const MyClass* GetClass() { return MyClass::get(); }
     virtual const BaseClass* getClass() const { return GetClass(); }
 
@@ -145,6 +144,8 @@ public:
     {
         ptr = dynamic_cast<T*>(b);
     }
+
+    virtual Base* asBase() override { return this; }
 
 protected:
     /// Constructor cannot be called directly
@@ -381,69 +382,6 @@ protected:
     {
         initData0( field, res, name, help, isDisplayed, isReadOnly );
         res.value = value;
-    }
-
-public:
-
-    /// Helper method to get the type name of a type derived from this class
-    ///
-    /// This method should be used as follow :
-    /// \code  T* ptr = NULL; std::string type = T::typeName(ptr); \endcode
-    /// This way derived classes can redefine the typeName method
-    template<class T>
-    static std::string typeName(const T* ptr= NULL)
-    {
-        return BaseClass::defaultTypeName(ptr);
-    }
-
-    /// Helper method to get the class name of a type derived from this class
-    ///
-    /// This method should be used as follow :
-    /// \code  T* ptr = NULL; std::string type = T::className(ptr); \endcode
-    /// This way derived classes can redefine the className method
-    template<class T>
-    static std::string className(const T* ptr= NULL)
-    {
-        return BaseClass::defaultClassName(ptr);
-    }
-
-    /// Helper method to get the namespace name of a type derived from this class
-    ///
-    /// This method should be used as follow :
-    /// \code  T* ptr = NULL; std::string type = T::namespaceName(ptr); \endcode
-    /// This way derived classes can redefine the namespaceName method
-    template<class T>
-    static std::string namespaceName(const T* ptr= NULL)
-    {
-        return BaseClass::defaultNamespaceName(ptr);
-    }
-
-    /// Helper method to get the template name of a type derived from this class
-    ///
-    /// This method should be used as follow :
-    /// \code  T* ptr = NULL; std::string type = T::templateName(ptr); \endcode
-    /// This way derived classes can redefine the templateName method
-    template<class T>
-    static std::string templateName(const T* ptr= NULL)
-    {
-        return BaseClass::defaultTemplateName(ptr);
-    }
-
-    /// Helper method to get the shortname of a type derived from this class.
-    /// The default implementation return the class name.
-    ///
-    /// This method should be used as follow :
-    /// \code  T* ptr = NULL; std::string type = T::shortName(ptr); \endcode
-    /// This way derived classes can redefine the shortName method
-    template< class T>
-    static std::string shortName( const T* ptr = NULL, BaseObjectDescription* = NULL )
-    {
-        std::string shortname = T::className(ptr);
-        if( !shortname.empty() )
-        {
-            *shortname.begin() = ::tolower(*shortname.begin());
-        }
-        return shortname;
     }
 
 protected:

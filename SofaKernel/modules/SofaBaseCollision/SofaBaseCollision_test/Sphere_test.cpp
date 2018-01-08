@@ -104,7 +104,7 @@ bool TestSphere::rigidRigid1(){
     angles[1] = 0;
     angles[2] = 0;
 
-   Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+   NodeSPtr scn = New<sofa::simulation::tree::GNode>();
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling sphere
@@ -160,7 +160,7 @@ bool TestSphere::rigidRigid2(){
     angles_2[1] = 0;
     angles_2[2] = 0;
 
-   Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+   NodeSPtr scn = New<sofa::simulation::tree::GNode>();
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling sphere
@@ -207,7 +207,7 @@ bool TestSphere::rigidSoft2(){
     angles[1] = M_PI/4;
     angles[2] = M_PI/3;
 
-   Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+   NodeSPtr scn = New<sofa::simulation::tree::GNode>();
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling sphere
@@ -254,7 +254,7 @@ bool TestSphere::rigidSoft1(){
     angles[1] = 0;
     angles[2] = 0;
 
-   Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+   NodeSPtr scn = New<sofa::simulation::tree::GNode>();
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling sphere
@@ -302,7 +302,7 @@ bool TestSphere::rigidSoft3(){
     angles[1] = M_PI/4;
     angles[2] = M_PI/3;
 
-   Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+   NodeSPtr scn = New<sofa::simulation::tree::GNode>();
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling sphere
@@ -349,7 +349,7 @@ bool TestSphere::rigidSoft4(){
     angles[1] = 0;
     angles[2] = 0;
 
-   Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+   NodeSPtr scn = New<sofa::simulation::tree::GNode>();
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling sphere
@@ -396,7 +396,7 @@ bool TestSphere::rigidTriangle(Intersector &bi){
     angles[1] = 0;
     angles[2] = 0;
 
-   Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+   NodeSPtr scn = New<sofa::simulation::tree::GNode>();
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling sphere
@@ -435,7 +435,7 @@ bool TestSphere::rigidTriangle(Intersector &bi){
 
 template <class Intersector>
 bool TestSphere::softTriangle(Intersector &bi){
-   Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+   NodeSPtr scn = New<sofa::simulation::tree::GNode>();
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling sphere
@@ -473,7 +473,7 @@ bool TestSphere::softTriangle(Intersector &bi){
 
 
 bool TestSphere::softSoft1(){
-   Node::SPtr scn = New<sofa::simulation::tree::GNode>();
+   NodeSPtr scn = New<sofa::simulation::tree::GNode>();
                                         //the center of this OBB is (0,0,-1) and its extent is 1
 
     //we construct the falling sphere
@@ -519,7 +519,7 @@ void checkAttributes()
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+    NodeSPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
     EXPECT_NE(root.get(), nullptr) ;
@@ -549,7 +549,7 @@ void checkSceneWithVec3MechanicalModel()
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+    NodeSPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
     EXPECT_NE(root.get(), nullptr) ;
@@ -570,7 +570,7 @@ void checkSceneWithRigid3dMechanicalModel()
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+    NodeSPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
     EXPECT_NE(root.get(), nullptr) ;
@@ -592,7 +592,7 @@ void checkGracefulHandlingWhenMechanicalModelIsMissing()
              "  </Node>                                                                      \n"
              "</Node>                                                                        \n" ;
 
-    Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+    NodeSPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                       scene.str().c_str(),
                                                       scene.str().size()) ;
     EXPECT_NE(root.get(), nullptr) ;

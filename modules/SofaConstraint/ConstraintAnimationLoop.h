@@ -33,7 +33,7 @@
 
 #include <sofa/simulation/CollisionAnimationLoop.h>
 #include <sofa/simulation/MechanicalVisitor.h>
-#include <sofa/simulation/Node.h>
+#include <sofa/simulation/Node_fwd.h>
 
 
 #include <vector>

@@ -27,6 +27,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/Node.h>
 
 namespace sofa
 {
@@ -102,7 +103,7 @@ void ArticulatedHierarchyContainer::buildCenterArticulationsTree(sofa::helper::i
     str.append("/");
     str.append(bvhjoint->getName());
 
-    simulation::Node::SPtr nodeOfArticulationCenters =node->createChild(str);
+    simulation::NodeSPtr nodeOfArticulationCenters =node->createChild(str);
 
     ArticulationCenter::SPtr ac = sofa::core::objectmodel::New<ArticulationCenter>();
     nodeOfArticulationCenters->addObject(ac);
@@ -113,7 +114,7 @@ void ArticulatedHierarchyContainer::buildCenterArticulationsTree(sofa::helper::i
     ac->parentIndex.setValue(id_buf);
     ac->childIndex.setValue(bvhjoint->getId()+1);
 
-    simulation::Node::SPtr nodeOfArticulations = nodeOfArticulationCenters->createChild("articulations");
+    simulation::NodeSPtr nodeOfArticulations = nodeOfArticulationCenters->createChild("articulations");
 
     sofa::helper::io::bvh::BVHChannels* channels = bvhjoint->getChannels();
     sofa::helper::io::bvh::BVHMotion* motion = bvhjoint->getMotion();
@@ -220,7 +221,7 @@ void ArticulatedHierarchyContainer::init ()
 
     if (joint != NULL)
     {
-        simulation::Node::SPtr articulationCenters = context->createChild("ArticulationCenters");
+        simulation::NodeSPtr articulationCenters = context->createChild("ArticulationCenters");
 
         buildCenterArticulationsTree(joint, 0, "Root", articulationCenters.get());
 

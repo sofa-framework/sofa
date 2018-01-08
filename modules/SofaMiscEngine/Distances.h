@@ -23,12 +23,9 @@
 #define SOFA_COMPONENT_ENGINE_DISTANCES_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <SofaNonUniformFem/DynamicSparseGridTopologyContainer.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/helper/SVector.h>

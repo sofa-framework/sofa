@@ -27,7 +27,7 @@
 #endif
 
 #include <sofa/simulation/Visitor.h>
-#include <sofa/core/behavior/OdeSolver.h>
+#include <sofa/core/behavior/OdeSolver_fwd.h>
 
 namespace sofa
 {

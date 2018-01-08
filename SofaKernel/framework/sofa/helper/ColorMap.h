@@ -25,7 +25,7 @@
 #include <sofa/helper/helper.h>
 
 #include <sofa/helper/vector.h>
-#include <sofa/helper/rmath.h>
+
 #include <sofa/defaulttype/Vec.h>
 #include <string>
 //#include <sofa/helper/OptionsGroup.h>

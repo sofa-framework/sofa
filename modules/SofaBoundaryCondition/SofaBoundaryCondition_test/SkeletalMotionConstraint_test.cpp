@@ -57,7 +57,7 @@ struct SkeletalMotionConstraint_test : public Sofa_test<typename _DataTypes::Rea
     typedef projectiveconstraintset::SkeletonJoint<DataTypes> SkeletonJoint;
     typedef container::MechanicalObject<DataTypes> MechanicalObject;
 
-    simulation::Node::SPtr root;                 ///< Root of the scene graph, created by the constructor an re-used in the tests
+    simulation::NodeSPtr root;                 ///< Root of the scene graph, created by the constructor an re-used in the tests
     simulation::Simulation* simulation;          ///< created by the constructor an re-used in the tests
 
     helper::SVector<SkeletonJoint> joints;        ///< skeletal joint

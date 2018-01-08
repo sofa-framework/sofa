@@ -70,7 +70,7 @@ public:
     }
 
     //Components
-    simulation::Node::SPtr nodeRayPick;
+    simulation::NodeSPtr nodeRayPick;
     sofa::core::behavior::BaseMechanicalState::SPtr mouseInSofa;
     sofa::component::collision::BaseMouseInteractor::SPtr mouseInteractor;
 };
