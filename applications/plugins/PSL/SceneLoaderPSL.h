@@ -19,22 +19,63 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAPYTHON_CONFIG_H
-#define SOFAPYTHON_CONFIG_H
+#ifndef SCENELOADERPYSON_H
+#define SCENELOADERPYSON_H
 
-#include <sofa/config/sharedlibrary_defines.h>
+#include <PSL/config.h>
+#include <sofa/simulation/SceneLoaderFactory.h>
 
-#define SOFAPYTHON_VERSION_STR "${SOFAPYTHON_VERSION}"
-#define SOFAPYTHON_MAJOR_VERSION ${SOFAPYTHON_MAJOR_VERSION}
-#define SOFAPYTHON_MINOR_VERSION ${SOFAPYTHON_MINOR_VERSION}
 
-#define SOFA_HAVE_PYTHON
+#include <sofa/simulation/Visitor.h>
+#include <string>
+#include <map>
 
-#ifdef SOFA_BUILD_SOFAPYTHON
-#  define SOFA_TARGET SofaPython
-#  define SOFA_SOFAPYTHON_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_SOFAPYTHON_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+extern "C" {
+    struct PyMethodDef;
+}
 
-#endif
+namespace sofa
+{
+
+namespace simulation
+{
+
+namespace _sceneloaderpsl_
+{
+
+/// The scene loader/exporter for python scene files
+class SOFA_PSL_API SceneLoaderPSL : public SceneLoader
+{
+public:
+    /// Pre-loading check
+    virtual bool canLoadFileExtension(const char *extension) override ;
+
+    /// Pre-saving check
+    virtual bool canWriteFileExtension(const char *extension) override ;
+
+    /// load the file
+    virtual Node::SPtr load(const char *filename) override ;
+
+    /// write the file
+    virtual void write(Node* node, const char *filename) override ;
+
+    /// get the file type description
+    virtual std::string getFileTypeDesc() override ;
+
+    /// get the list of file extensions
+    virtual void getExtensionList(ExtensionList* list) override;
+};
+
+
+
+} // namespace _sceneloaderpyson_
+
+using _sceneloaderpsl_::SceneLoaderPSL ;
+
+} // namespace simulation
+
+} // namespace sofa
+
+
+
+#endif // SCENELOADERPY_H

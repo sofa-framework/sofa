@@ -1,0 +1,32 @@
+/// Attaching a Python : {} to existing sofa Object
+Node : {
+    name : "father"
+
+    Node : {
+        name : "subgraph"
+
+        /// This does not make sense to attach Python code to a component ?
+        /// Where to store the data.
+        VisualModel : {
+            name : "?"
+            Python : '''Something'''
+        }
+
+        /// Crée un type accédant à visual model.
+        /// class MixIn<VisualModel> : VisualModel
+        /// Le balance dans le graph
+        MixIn : {
+            VisualModel : {}
+            onDraw : {
+                self.position...
+            }
+        }
+
+
+        OglModel : {
+            onDraw : "toto"
+        }
+
+    }
+
+}

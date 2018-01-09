@@ -15,26 +15,72 @@
 * You should have received a copy of the GNU Lesser General Public License    *
 * along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAPYTHON_CONFIG_H
-#define SOFAPYTHON_CONFIG_H
+/******************************************************************************
+*  Contributors:                                                              *
+*  - damien.marchal@univ-lille1.fr                                            *
+******************************************************************************/
+#ifndef SOFAPYTHON_TEMPLATE_H
+#define SOFAPYTHON_TEMPLATE_H
+#include <sofa/core/objectmodel/BaseContext.h>
+using sofa::core::objectmodel::BaseObject ;
 
-#include <sofa/config/sharedlibrary_defines.h>
+#include <sofa/helper/vector.h>
 
-#define SOFAPYTHON_VERSION_STR "${SOFAPYTHON_VERSION}"
-#define SOFAPYTHON_MAJOR_VERSION ${SOFAPYTHON_MAJOR_VERSION}
-#define SOFAPYTHON_MINOR_VERSION ${SOFAPYTHON_MINOR_VERSION}
+#include <sofa/core/DataTracker.h>
 
-#define SOFA_HAVE_PYTHON
+#include <SofaPython/PythonMacros.h>
+SP_DECLARE_CLASS_TYPE(Template)
 
-#ifdef SOFA_BUILD_SOFAPYTHON
-#  define SOFA_TARGET SofaPython
-#  define SOFA_SOFAPYTHON_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_SOFAPYTHON_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+namespace sofa {
+    namespace core {
+        namespace objectmodel {
+            class BaseData ;
+        }
+    }
+}
 
-#endif
+namespace sofa
+{
+
+namespace component
+{
+
+namespace _template_
+{
+using sofa::core::objectmodel::BaseData;
+using sofa::core::objectmodel::Event;
+using sofa::core::DataTracker;
+using sofa::helper::vector ;
+
+class Template : public BaseObject
+{
+public:
+    SOFA_CLASS(Template, BaseObject);
+
+    Template() ;
+    virtual ~Template() ;
+
+    PyObject* m_rawTemplate { nullptr };
+    Data<std::string> m_template  ;
+
+    void addDataToTrack(BaseData*) ;
+    virtual void handleEvent(Event *event) override ;
+private:
+    DataTracker m_dataTracker ;
+    vector<BaseData*> m_trackedDatas ;
+};
+
+
+} // namespace _template_
+
+using _template_::Template ;
+
+} // namespace component
+
+} // namespace sofa
+
+#endif /// SOFAPYTHON_TEMPLATE_H
+

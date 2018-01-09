@@ -1,0 +1,34 @@
+Node : {
+    name : "root"
+
+    Python : '''
+             import pprint
+             import psl
+             from psl.dsl import *
+
+             Node(root)
+             Node(root, name="aName")
+             Node(root, name="aName", printLog=True)
+             MechanicalObject(root, name="coucou")
+             '''
+
+    Python : '''
+             import pprint
+             import psl
+             from psl.dsl import *
+
+             @psltemplate
+             def MyTemplate(node, name="undefined"):
+                 MechanicalObject(node, name="coucou1")
+                 MechanicalObject(node, name="coucou2")
+
+             MyTemplate(root, name="MyTemplate1")
+             MyTemplate(root, name="MyTemplate2")
+
+             '''
+
+
+    TestResult : "Success"
+}
+
+

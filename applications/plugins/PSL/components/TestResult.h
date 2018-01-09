@@ -15,26 +15,43 @@
 * You should have received a copy of the GNU Lesser General Public License    *
 * along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAPYTHON_CONFIG_H
-#define SOFAPYTHON_CONFIG_H
+/******************************************************************************
+*  Contributors:                                                              *
+*  - damien.marchal@univ-lille1.fr                                            *
+******************************************************************************/
+#include <PSL/config.h>
+#include <sofa/core/objectmodel/BaseObject.h>
+using sofa::core::objectmodel::BaseObject ;
 
-#include <sofa/config/sharedlibrary_defines.h>
+namespace sofa
+{
 
-#define SOFAPYTHON_VERSION_STR "${SOFAPYTHON_VERSION}"
-#define SOFAPYTHON_MAJOR_VERSION ${SOFAPYTHON_MAJOR_VERSION}
-#define SOFAPYTHON_MINOR_VERSION ${SOFAPYTHON_MINOR_VERSION}
+namespace component
+{
 
-#define SOFA_HAVE_PYTHON
+namespace _testresult_
+{
 
-#ifdef SOFA_BUILD_SOFAPYTHON
-#  define SOFA_TARGET SofaPython
-#  define SOFA_SOFAPYTHON_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_SOFAPYTHON_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+class SOFA_PSL_API TestResult : public BaseObject
+{
+public:
+    SOFA_CLASS(TestResult, BaseObject) ;
 
-#endif
+    TestResult() ;
+    virtual ~TestResult();
+    virtual void init() override ;
+
+public:
+    Data<std::string> m_result ;
+};
+
+} // namespace _testresult_
+
+using sofa::component::_testresult_::TestResult ;
+
+} // namespace component
+
+} // namespace sofa

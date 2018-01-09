@@ -15,26 +15,60 @@
 * You should have received a copy of the GNU Lesser General Public License    *
 * along with this program. If not, see <http://www.gnu.org/licenses/>.        *
 *******************************************************************************
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFAPYTHON_CONFIG_H
-#define SOFAPYTHON_CONFIG_H
+/******************************************************************************
+ * Contributors:                                                              *
+ *    - damien.marchal@univ-lille1.fr                                         *
+ *****************************************************************************/
 
-#include <sofa/config/sharedlibrary_defines.h>
+#include <vector>
 
-#define SOFAPYTHON_VERSION_STR "${SOFAPYTHON_VERSION}"
-#define SOFAPYTHON_MAJOR_VERSION ${SOFAPYTHON_MAJOR_VERSION}
-#define SOFAPYTHON_MINOR_VERSION ${SOFAPYTHON_MINOR_VERSION}
+#include <SofaTest/Python_test.h>
+using sofa::Python_test ;
+using sofa::Python_test_list ;
 
-#define SOFA_HAVE_PYTHON
 
-#ifdef SOFA_BUILD_SOFAPYTHON
-#  define SOFA_TARGET SofaPython
-#  define SOFA_SOFAPYTHON_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_SOFAPYTHON_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+#include <sofa/helper/system/PluginManager.h>
+using sofa::helper::system::PluginManager ;
 
-#endif
+using std::vector;
+using std::string;
+
+namespace
+{
+
+/// Be sure that PSL & SofaPython plugin are loaded.
+void anInit(){
+    static bool _inited_ = false;
+    if(!_inited_){
+        PluginManager::getInstance().loadPlugin("PSL") ;
+        PluginManager::getInstance().loadPlugin("SofaPython") ;
+    }
+}
+
+/// static build of the test list
+static struct Tests : public Python_test_list
+{
+    Tests()
+    {
+        static const std::string testPath = std::string(PYTHON_TESTFILES_DIR);
+
+        addTest( "pslloader_test.py", testPath, {} );
+
+    }
+} python_tests;
+
+
+/// run test list
+INSTANTIATE_TEST_CASE_P(Batch,
+                        Python_test,
+                        ::testing::ValuesIn(python_tests.list));
+
+TEST_P(Python_test, psl_python_tests)
+{
+    anInit();
+    run(GetParam());
+}
+
+}
