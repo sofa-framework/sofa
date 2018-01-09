@@ -22,9 +22,10 @@
 #ifndef INVERTIBLEFVM_CONFIG_H
 #define INVERTIBLEFVM_CONFIG_H
 
-#include <sofa/helper/system/config.h>
+#include <sofa/config/sharedlibrary_defines.h>
 
 #ifdef SOFA_BUILD_INVERTIBLEFVM
+#  define SOFA_TARGET InvertibleFVM
 #  define SOFA_InvertibleFVM_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
 #  define SOFA_InvertibleFVM_API  SOFA_IMPORT_DYNAMIC_LIBRARY
