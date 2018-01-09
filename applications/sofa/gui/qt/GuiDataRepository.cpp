@@ -32,7 +32,7 @@ namespace gui
 {
 namespace qt
 {
-    sofa::helper::system::FileRepository GuiDataRepository("RUNSOFA_DATA_PATH", "../share/sofa/runSofa/ressources/");
+    sofa::helper::system::FileRepository GuiDataRepository("GUI_DATA_PATH", "../share/sofa/gui/ressources/");
 }
 }
 }
