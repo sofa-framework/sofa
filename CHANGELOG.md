@@ -10,7 +10,7 @@
 ### Deprecated
 
 **Kernel modules**
-- Will be removed in v17.06
+- Will be removed in v17.12
     - [all]
         - SMP support [#457](https://github.com/sofa-framework/sofa/pull/457) - no more maintained
     - [SofaDefaultType]
