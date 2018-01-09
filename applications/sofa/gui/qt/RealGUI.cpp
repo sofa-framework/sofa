@@ -756,11 +756,15 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
 
     /// We want to warn user that there is component that are implemented in specific plugin
     /// and that there is no RequiredPlugin in their scene.
-    SceneCheckerVisitor checker(ExecParams::defaultInstance()) ;
-    checker.addCheck(simulation::SceneCheckAPIChange::newSPtr());
-    checker.addCheck(simulation::SceneCheckDuplicatedName::newSPtr());
-    checker.addCheck(simulation::SceneCheckMissingRequiredPlugin::newSPtr());
-    checker.validate(mSimulation.get()) ;
+    /// But we don't want that to happen each reload in interactive mode.
+    if(reload)
+    {
+        SceneCheckerVisitor checker(ExecParams::defaultInstance()) ;
+        checker.addCheck(simulation::SceneCheckAPIChange::newSPtr());
+        checker.addCheck(simulation::SceneCheckDuplicatedName::newSPtr());
+        checker.addCheck(simulation::SceneCheckMissingRequiredPlugin::newSPtr());
+        checker.validate(mSimulation.get()) ;
+    }
 }
 
 
@@ -902,6 +906,15 @@ void RealGUI::setSceneWithoutMonitor (Node::SPtr root, const char* filename, boo
         checker.addCheck(simulation::SceneCheckDuplicatedName::newSPtr());
         checker.addCheck(simulation::SceneCheckMissingRequiredPlugin::newSPtr());
         checker.validate(root.get()) ;
+
+        //Check the validity of the BBox
+        const sofa::defaulttype::BoundingBox& nodeBBox = root->getContext()->f_bbox.getValue();
+        if(nodeBBox.isNegligeable())
+        {
+            msg_error("RealGUI") << "Global Bounding Box seems invalid ; please implement updateBBox in your components "
+                                    << "or force a value by adding the parameter bbox=\"minX minY minZ maxX maxY maxZ\" in your root node \n";
+            msg_error("RealGUI") << "Your viewer settings (based on the bbox) are likely invalid.";
+        }
 
         mSimulation = root;
         eventNewTime();

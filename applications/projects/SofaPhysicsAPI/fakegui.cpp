@@ -24,7 +24,7 @@
 #include <sofa/gui/GUIManager.h>
 
 
-static sofa::gui::BaseGUI* CreateFakeGUI(const char* /*name*/, const std::vector<std::string>& /*options*/, sofa::simulation::Node::SPtr /*groot*/, const char* /*filename*/)
+static sofa::gui::BaseGUI* CreateFakeGUI(const char* /*name*/, sofa::simulation::Node::SPtr /*groot*/, const char* /*filename*/)
 {
     return new FakeGUI();
 }
@@ -32,7 +32,7 @@ static sofa::gui::BaseGUI* CreateFakeGUI(const char* /*name*/, const std::vector
 void FakeGUI::Create()
 {
     // sofa FakeGUI
-    sofa::gui::GUIManager::RegisterGUI("fake",CreateFakeGUI);
+    sofa::gui::GUIManager::RegisterGUI("fake", CreateFakeGUI, NULL);
     sofa::gui::GUIManager::Init(0,"fake");
     sofa::gui::GUIManager::createGUI(NULL,NULL);
 }

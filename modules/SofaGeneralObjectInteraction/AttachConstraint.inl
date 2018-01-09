@@ -390,6 +390,10 @@ AttachConstraint<DataTypes>::AttachConstraint()
     , f_lastDir( initData(&f_lastDir,"lastDir", "direction from lastPos at which the attach coustraint should become inactive") )
     , f_clamp( initData(&f_clamp, false,"clamp", "true to clamp particles at lastPos instead of freeing them.") )
     , f_minDistance( initData(&f_minDistance, (Real)-1,"minDistance", "the constraint become inactive if the distance between the points attached is bigger than minDistance.") )
+    , d_positionFactor(initData(&d_positionFactor, (Real)1.0, "positionFactor", "IN: Factor applied to projection of position"))
+    , d_velocityFactor(initData(&d_velocityFactor, (Real)1.0, "velocityFactor", "IN: Factor applied to projection of velocity"))
+    , d_responseFactor(initData(&d_responseFactor, (Real)1.0, "responseFactor", "IN: Factor applied to projection of force/acceleration"))
+    , d_constraintFactor( initData(&d_constraintFactor,"constraintFactor","Constraint factor per pair of points constrained. 0 -> the constraint is released. 1 -> the constraint is fully constrained") )
 {
     // default to indice 0
 //     f_indices1.beginEdit()->push_back(0);
@@ -412,6 +416,10 @@ AttachConstraint<DataTypes>::AttachConstraint(core::behavior::MechanicalState<Da
     , f_lastDir( initData(&f_lastDir,"lastDir", "direction from lastPos at which the attach coustraint should become inactive") )
     , f_clamp( initData(&f_clamp, false,"clamp", "true to clamp particles at lastPos instead of freeing them.") )
     , f_minDistance( initData(&f_minDistance, (Real)-1,"minDistance", "the constraint become inactive if the distance between the points attached is bigger than minDistance.") )
+    , d_positionFactor(initData(&d_positionFactor, (Real)1.0, "positionFactor", "IN: Factor applied to projection of position"))
+    , d_velocityFactor(initData(&d_velocityFactor, (Real)1.0, "velocityFactor", "IN: Factor applied to projection of velocity"))
+    , d_responseFactor(initData(&d_responseFactor, (Real)1.0, "responseFactor", "IN: Factor applied to projection of force/acceleration"))
+    , d_constraintFactor( initData(&d_constraintFactor,"constraintFactor","Constraint factor per pair of points constrained. 0 -> the constraint is released. 1 -> the constraint is fully constrained") )
 {
     // default to indice 0
 //     f_indices1.beginEdit()->push_back(0);
@@ -495,7 +503,50 @@ void AttachConstraint<DataTypes>::init()
                 addConstraint(best, i2);
             }
         }
+
+        helper::vector<Real>& constraintFactor = *d_constraintFactor.beginEdit();
+
+        // constraintFactor default behavior
+        // if NOT set : initialize all constraints active
+        if(!d_constraintFactor.isSet())
+        {
+            int size = f_indices2.getValue().size();
+
+            constraintFactor.clear();
+            constraintFactor.resize(size);
+
+            for (unsigned int j=0; j<size; ++j)
+            {
+                constraintFactor[j] = 1.0;
+            }
+        }
+        // if set : check size
+        else
+        {
+            if(constraintFactor.size() != f_indices2.getValue().size())
+            {
+                msg_error() << "Size of vector constraintFactor, do not fit number of indices attached";
+            }
+            else
+            {
+                for (unsigned int j=0; j<constraintFactor.size(); ++j)
+                {
+                    if((constraintFactor[j] > 1.0) || (constraintFactor[j] < 0.0))
+                    {
+                        msg_warning() << "Value of vector constraintFactor at indice "<<j<<" is out of bounds [0.0 - 1.0]";
+                    }
+                }
+            }
+        }
+        d_constraintFactor.endEdit();
     }
+
+    // Check coherency of size between indices vectors 1 and 2
+    if(f_indices1.getValue().size() != f_indices2.getValue().size())
+    {
+        msg_error() << "Size mismatch between indices1 and indices2";
+    }
+
 #if 0
     // Initialize functions and parameters
     topology::PointSubset my_subset = f_indices.getValue();
@@ -522,6 +573,12 @@ void AttachConstraint<DataTypes>::calcRestRotations()
 template <>
 void AttachConstraint<sofa::defaulttype::Rigid3dTypes>::calcRestRotations();
 #endif
+
+
+template<class DataTypes>
+void AttachConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, core::MultiMatrixDerivId /*cId*/)
+{
+}
 
 template <class DataTypes>
 void AttachConstraint<DataTypes>::projectPosition(const core::MechanicalParams * /*mparams*/, DataVecCoord& res1_d, DataVecCoord& res2_d)

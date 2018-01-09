@@ -1331,7 +1331,7 @@ ConstraintProblem* LCPConstraintSolver::getConstraintProblem()
     return last_lcp;
 }
 
-void LCPConstraintSolver::lockConstraintProblem(ConstraintProblem* l1, ConstraintProblem* l2)
+void LCPConstraintSolver::lockConstraintProblem(sofa::core::objectmodel::BaseObject* /*from*/, ConstraintProblem* l1, ConstraintProblem* l2)
 {
     if((lcp!=l1)&&(lcp!=l2)) // Le lcp courant n'est pas locké
         return;
