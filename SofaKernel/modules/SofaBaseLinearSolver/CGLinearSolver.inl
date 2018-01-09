@@ -237,7 +237,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
 
 
         /// Break condition = THRESHOLD criterion regarding the denominator is reached (but do at least one iteration)
-        if( fabs(den)<f_smallDenominatorThreshold.getValue() && nb_iter > 1 )
+        if( fabs(den)<f_smallDenominatorThreshold.getValue() && nb_iter>1)
         {
             endcond = "threshold";
             if( verbose )
@@ -250,20 +250,6 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
 #endif
             break;
         }
-
-         if( fabs(den) == 0.0 )
-         {
-             endcond = "div by zero. You scene is probably buggy.";
-             if( verbose )
-             {
-                 sout<<"CGLinearSolver, den = "<<den<<", smallDenominatorThreshold = "<<f_smallDenominatorThreshold.getValue()<<sendl;
-             }
- #ifdef SOFA_DUMP_VISITOR_INFO
-             if (simulation::Visitor::isPrintActivated())
-                 simulation::Visitor::printCloseNode(comment.str());
- #endif
-             break;
-         }
 
         /// Compute the coefficient α for the conjugate direction
         alpha = rho/den;
