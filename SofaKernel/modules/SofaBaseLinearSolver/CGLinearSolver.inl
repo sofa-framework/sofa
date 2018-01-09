@@ -66,6 +66,11 @@ CGLinearSolver<TMatrix,TVector>::CGLinearSolver()
 template<class TMatrix, class TVector>
 void CGLinearSolver<TMatrix,TVector>::init()
 {
+    if(f_verbose.getValue())
+    {
+        this->f_printLog.setValue(true);
+    }
+
     if(f_maxIter.getValue() < 0)
     {
         msg_warning() << "'iterations' must be a positive value" << msgendl
@@ -132,7 +137,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     double rho, rho_1=0, alpha, beta;
 
 
-    msg_info_when(verbose) << " CGLinearSolver, b = " << b ;
+    msg_info_when(verbose) << "b = " << b ;
 
 
     /// Compute the initial residual r
@@ -205,7 +210,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
             endcond = "tolerance";
             if( verbose )
             {
-                msg_info() << "CGLinearSolver, error = " << err <<", tolerance = " << f_tolerance.getValue();
+                msg_info() << "error = " << err <<", tolerance = " << f_tolerance.getValue();
             }
 
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -259,7 +264,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
             endcond = "threshold";
             if( verbose )
             {
-                msg_info() << "CGLinearSolver, den = " << den <<", smallDenominatorThreshold = " << f_smallDenominatorThreshold.getValue();
+                msg_info() << "den = " << den <<", smallDenominatorThreshold = " << f_smallDenominatorThreshold.getValue();
             }
 
 #ifdef SOFA_DUMP_VISITOR_INFO
@@ -278,9 +283,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
 
         if( verbose )
         {
-            msg_info() << "den = " << den << ", alpha = " << alpha;
-            msg_info() << "x : " << x;
-            msg_info() << "r : " << r;
+            msg_info() << "den = " << den << ", alpha = " << alpha << ", x = " << x << ", r = " << r;
         }
 
         rho_1 = rho;
