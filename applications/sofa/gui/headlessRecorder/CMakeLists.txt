@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaHeadlessRecorder)
+message("-- HeadlessRecorder is a 17.12 experimental feature, use it at your own risk.")
 
 set(HEADER_FILES
     HeadlessRecorder.h)

@@ -51,7 +51,6 @@ static glXMakeContextCurrentARBProc glXMakeContextCurrentARB = 0;
 
 void static_handler(int /*signum*/)
 {
-    std::cout << "KILL " << std::endl;
     HeadlessRecorder::recordUntilStopAnimate = false;
     HeadlessRecorder::recordTimeInSeconds = 0;
 }
@@ -96,9 +95,7 @@ int HeadlessRecorder::RegisterGUIParameters(ArgumentParser* argumentParser)
 
 BaseGUI* HeadlessRecorder::CreateGUI(const char* /*name*/, sofa::simulation::Node::SPtr groot, const char* filename)
 {
-    msg_warning("HeadlessRecorder") << "This is an experimental feature. Works only on linux";
-    msg_warning("HeadlessRecorder") << "For any suggestion/help/bug please report to:";
-    msg_warning("HeadlessRecorder") << "https://github.com/sofa-framework/sofa/pull/538";
+    msg_warning("HeadlessRecorder") << "This is an experimental feature. Works only on linux.\n\t" << "For any suggestion/help/bug please report to:\n\t" << "https://github.com/sofa-framework/sofa/pull/538";
 
     int context_attribs[] = {
         GLX_CONTEXT_MAJOR_VERSION_ARB, 3,
