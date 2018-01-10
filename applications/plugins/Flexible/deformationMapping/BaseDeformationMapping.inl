@@ -556,7 +556,8 @@ void BaseDeformationMappingT<JacobianBlockType>::apply(const core::MechanicalPar
         }
     }
     dOut.endEdit();
-    msg_info() << tmp.str();
+
+    msg_info_when(!tmp.str().empty()) << tmp.str() ;
 
     if(this->assemble.getValue() && ( !BlockType::constant ) ) eigenJacobian.resize(0,0); // J needs to be updated later where the dof mask can be activated
 
