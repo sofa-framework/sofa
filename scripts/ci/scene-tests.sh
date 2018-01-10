@@ -22,7 +22,7 @@ usage() {
     echo "Usage: scene-tests.sh [run|count-warnings|count-errors|print-summary] <build-dir> <src-dir>"
 }
 
-if [[ "$#" = 3 ]]; then
+if [ "$#" -ge 3 ]; then
     command="$1"
     build_dir="$2"
     src_dir="$3"
@@ -383,6 +383,24 @@ count-crashes() {
     wc -l < "$output_dir/crashes.txt" | tr -d '   '
 }
 
+clamp-warnings() {
+    clamp_limit=$1
+    echo "INFO: scene-test warnings limited to $clamp_limit"
+    if [ -e  "$output_dir/warnings.txt" ]; then
+        warnings_lines="$(count-warnings)"
+        if [ $warnings_lines -gt $clamp_limit ]; then
+            echo "-------------------------------------------------------------"
+            echo "ALERT: TOO MANY SCENE-TEST WARNINGS (>$clamp_limit), CLAMPING TO $clamp_limit"
+            echo "-------------------------------------------------------------"
+            cat "$output_dir/warnings.txt" > "$output_dir/warnings.tmp"
+            head -n$clamp_limit "$output_dir/warnings.tmp" > "$output_dir/warnings.txt"
+            rm -f "$output_dir/warnings.tmp"
+
+            echo "$output_dir/warnings.txt: [ERROR]   [JENKINS] TOO MANY SCENE-TEST WARNINGS (>$clamp_limit), CLAMPING FILE TO $clamp_limit" >> "$output_dir/errors.txt"
+        fi
+    fi
+}
+
 print-summary() {
     echo "Scene testing summary:"
     echo "- $(count-tested-scenes) scene(s) tested"
@@ -442,6 +460,8 @@ elif [[ "$command" = count-errors ]]; then
     count-errors
 elif [[ "$command" = count-crashes ]]; then
     count-crashes
+elif [[ "$command" = clamp-warnings ]]; then
+    clamp-warnings $4
 else
     echo "Unknown command: $command"
 fi
