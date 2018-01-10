@@ -31,7 +31,8 @@
 #include <sofa/helper/map.h>
 #include <limits>
 #include <sofa/core/objectmodel/DataFileName.h>
-#include <../extlibs/CImg/CImg.h>
+
+#include <CImgPlugin/SOFACImg.h>
 
 #include <sofa/helper/system/gl.h>
 
