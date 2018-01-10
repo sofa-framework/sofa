@@ -92,6 +92,15 @@ void CGLinearSolver<TMatrix,TVector>::init()
 }
 
 template<class TMatrix, class TVector>
+void CGLinearSolver<TMatrix,TVector>::reinit()
+{
+    if(f_verbose.getValue())
+    {
+        this->f_printLog.setValue(true);
+    }
+}
+
+template<class TMatrix, class TVector>
 void CGLinearSolver<TMatrix,TVector>::resetSystem()
 {
     f_graph.beginEdit()->clear();
