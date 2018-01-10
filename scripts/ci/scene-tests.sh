@@ -390,13 +390,15 @@ clamp-warnings() {
         warnings_lines="$(count-warnings)"
         if [ $warnings_lines -gt $clamp_limit ]; then
             echo "-------------------------------------------------------------"
-            echo "ALERT: TOO MANY SCENE-TEST WARNINGS (>$clamp_limit), CLAMPING TO $clamp_limit"
+            echo "ALERT: TOO MANY SCENE-TEST WARNINGS ($warnings_lines > $clamp_limit), CLAMPING TO $clamp_limit"
             echo "-------------------------------------------------------------"
             cat "$output_dir/warnings.txt" > "$output_dir/warnings.tmp"
             head -n$clamp_limit "$output_dir/warnings.tmp" > "$output_dir/warnings.txt"
             rm -f "$output_dir/warnings.tmp"
 
             echo "$output_dir/warnings.txt: [ERROR]   [JENKINS] TOO MANY SCENE-TEST WARNINGS (>$clamp_limit), CLAMPING FILE TO $clamp_limit" >> "$output_dir/errors.txt"
+        else
+            echo "INFO: clamping not needed ($warnings_lines < $clamp_limit)"
         fi
     fi
 }
