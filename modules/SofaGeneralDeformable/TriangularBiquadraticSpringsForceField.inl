@@ -281,6 +281,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(const core::Mec
     if (f_useAngularSprings.getValue()==true)
     {
         Real JJ;
+        std::vector<int> flippedTriangles ;
         for(int i=0; i<nbTriangles; i++ )
         {
             tinfo=&triangleInf[i];
@@ -322,7 +323,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(const core::Mec
                             tinfo->lastValidNormal=tinfo->currentNormal;
                         else
                         {
-                            serr << "triangle "<<i<<" has flipped"<<sendl;
+                            flippedTriangles.push_back(i);
                             tinfo->currentNormal*= -1.0;
                         }
                     }
@@ -336,8 +337,23 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(const core::Mec
                 }
             }
         }
-        //	serr << "tinfo->gamma[0] "<<tinfo->gamma[0]<<sendl;
-
+        /// Prints the flipped triangles in a single message to avoid flooding the user.
+        /// Only the 50 first indices are showned.
+        if(flippedTriangles.size()!=0){
+            std::stringstream tmp ;
+            tmp << "[" ;
+            for(size_t i=0;i<std::min((size_t)50, flippedTriangles.size());i++)
+            {
+                tmp << ", " << flippedTriangles[i] ;
+            }
+            if(flippedTriangles.size()>=50){
+                tmp << ", ..." << flippedTriangles.size()-50 << " more]" ;
+            }
+            else{
+                tmp << "]" ;
+            }
+            msg_warning() << "The following triangles have flipped: " << tmp.str() ;
+        }
     }
     edgeInfo.endEdit();
     triangleInfo.endEdit();
