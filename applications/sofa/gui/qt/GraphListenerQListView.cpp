@@ -28,13 +28,13 @@
 #include <SofaComponentBase/InfoComponent.h>
 using sofa::component::InfoComponent ;
 
-#include "ressources/icons/iconmultinode.xpm"
-#include "ressources/icons/iconnode.xpm"
-#include "ressources/icons/iconinfo.xpm"
-#include "ressources/icons/iconwarning.xpm"
-#include "ressources/icons/iconerror.xpm"
-#include "ressources/icons/icondata.xpm"
-#include "ressources/icons/iconsleep.xpm"
+#include "resources/icons/iconmultinode.xpm"
+#include "resources/icons/iconnode.xpm"
+#include "resources/icons/iconinfo.xpm"
+#include "resources/icons/iconwarning.xpm"
+#include "resources/icons/iconerror.xpm"
+#include "resources/icons/icondata.xpm"
+#include "resources/icons/iconsleep.xpm"
 
 
 #include <sofa/helper/logging/Messaging.h>

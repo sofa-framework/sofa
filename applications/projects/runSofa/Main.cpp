@@ -151,7 +151,7 @@ void addGUIParameters(ArgumentParser* argumentParser)
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
-    GuiDataRepository.addFirstPath(SetDirectory::GetRelativeFromProcess("../share/sofa/gui/runSofa/ressources/")) ;
+    GuiDataRepository.addFirstPath(SetDirectory::GetRelativeFromProcess("../share/sofa/gui/runSofa/resources/")) ;
     sofa::helper::BackTrace::autodump();
 
     ExecParams::defaultInstance()->setAspectID(0);
