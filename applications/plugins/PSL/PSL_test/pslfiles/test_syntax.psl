@@ -1,0 +1,74 @@
+Node : {
+    Python : '''
+             pythonname="pythonname"
+             def getPrintCode():
+                print("PRINT-2")
+             '''
+
+    Node : {
+        name : "child1"
+    }
+    Node : {
+        name : pythonname
+    }
+    Node : {
+        properties : {
+            p0 : "0"
+            p1 : 1.0
+            p2 : pythonname
+        }
+    }
+    Node : {
+        properties : {
+        }
+    }
+    Node : {
+        OglModel : {}
+    }
+    Node : {
+        name : "invalid1"
+        OglModel : []
+    }
+    Node : {
+        name : "invalid2"
+        OglModel : "rien"
+    }
+    Node : {
+        name : "invalid3"
+        OglModel : '''test'''
+    }
+    Node : {
+        name : "invalid4"
+        name : { }
+    }
+    Node : {
+        name : "invalid5"
+        name : [ "s1", 1.0 ]
+    }
+
+    ## Check python fragment
+    Python : '''print("PRINT-1")'''
+    Python : "print('PRINT-2')"
+    Python : {}
+    Python : 1.0
+    Python : getPrintCode()
+
+    Template : {}
+    Template : {
+        name : "t1"
+    }
+    Template : {
+        name : {}
+    }
+    Template : {
+        name : pythoname
+    }
+    Template : {
+        name : '''A LONG NAME'''
+    }
+    Template : {
+        name : 1.0
+    }
+
+}
+

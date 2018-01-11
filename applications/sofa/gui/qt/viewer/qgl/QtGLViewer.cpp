@@ -1160,13 +1160,13 @@ void QtGLViewer::setView(const Vec3d& pos, const Quat &ori)
 void QtGLViewer::setSizeW( int size )
 {
     resizeGL( size, _H );
-    updateGL();
+    update();
 }
 
 void QtGLViewer::setSizeH( int size )
 {
     resizeGL( _W, size );
-    updateGL();
+    update();
 
 }
 

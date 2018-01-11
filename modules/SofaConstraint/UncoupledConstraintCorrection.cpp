@@ -46,6 +46,13 @@ template<>
 SOFA_CONSTRAINT_API UncoupledConstraintCorrection< sofa::defaulttype::Rigid3Types >::UncoupledConstraintCorrection(sofa::core::behavior::MechanicalState<sofa::defaulttype::Rigid3Types> *mm)
     : Inherit(mm)
     , compliance(initData(&compliance, "compliance", "Rigid compliance value: 1st value for translations, 6 others for upper-triangular part of symmetric 3x3 rotation compliance matrix"))
+    , defaultCompliance(initData(&defaultCompliance, (Real)0.00001, "defaultCompliance", "Default compliance value for new dof or if all should have the same (in which case compliance vector should be empty)"))
+    , f_verbose( initData(&f_verbose,false,"verbose","Dump the constraint matrix at each iteration") )
+    , d_handleTopologyChange(initData(&d_handleTopologyChange, false, "handleTopologyChange", "Enable support of topological changes for compliance vector (should be disabled for rigids)"))
+    , d_correctionVelocityFactor(initData(&d_correctionVelocityFactor, (Real)1.0, "correctionVelocityFactor", "Factor applied to the constraint forces when correcting the velocities"))
+    , d_correctionPositionFactor(initData(&d_correctionPositionFactor, (Real)1.0, "correctionPositionFactor", "Factor applied to the constraint forces when correcting the positions"))
+    , d_useOdeSolverIntegrationFactors(initData(&d_useOdeSolverIntegrationFactors, false, "useOdeSolverIntegrationFactors", "Use odeSolver integration factors instead of correctionVelocityFactor and correctionPositionFactor"))
+    , m_pOdeSolver(NULL)
 {
 }
 
@@ -54,10 +61,31 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
 {
     Inherit::init();
 
-    double dt = this->getContext()->getDt();
+
     const VecReal& comp = compliance.getValue();
 
     VecReal usedComp;
+    double  odeFactor = 1.0;
+
+    this->getContext()->get(m_pOdeSolver);
+    if (!m_pOdeSolver)
+    {
+        if (d_useOdeSolverIntegrationFactors.getValue() == true)
+        {
+            serr << "Can't find any odeSolver" << sendl;
+            d_useOdeSolverIntegrationFactors.setValue(false);
+        }
+        d_useOdeSolverIntegrationFactors.setReadOnly(true);
+    }
+    else
+    {
+        if( !d_useOdeSolverIntegrationFactors.getValue() )
+        {
+            const double dt = this->getContext()->getDt();
+            odeFactor = dt*dt; // W = h^2 * JMinvJt : only correct when solving in constraint equation in position. Must be deprecated.
+        }
+    }
+
 
     if (comp.size() != 7)
     {
@@ -85,171 +113,33 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
         {
             serr << "\n WARNING : node is not found => massValue could be incorrect in addComplianceInConstraintSpace function" << sendl;
         }
+        
 
-        const double dt2 = dt * dt;
+        if (defaultCompliance.isSet())
+        {
+            usedComp.push_back(defaultCompliance.getValue());
+        }
+        else
+        {
+            usedComp.push_back(odeFactor / massValue.mass);
+        }
 
-        usedComp.push_back(dt2 / massValue.mass);
-        usedComp.push_back(dt2 * massValue.invInertiaMassMatrix[0][0]);
-        usedComp.push_back(dt2 * massValue.invInertiaMassMatrix[0][1]);
-        usedComp.push_back(dt2 * massValue.invInertiaMassMatrix[0][2]);
-        usedComp.push_back(dt2 * massValue.invInertiaMassMatrix[1][1]);
-        usedComp.push_back(dt2 * massValue.invInertiaMassMatrix[1][2]);
-        usedComp.push_back(dt2 * massValue.invInertiaMassMatrix[2][2]);
+        usedComp.push_back( odeFactor * massValue.invInertiaMassMatrix[0][0]);
+        usedComp.push_back( odeFactor * massValue.invInertiaMassMatrix[0][1]);
+        usedComp.push_back( odeFactor * massValue.invInertiaMassMatrix[0][2]);
+        usedComp.push_back( odeFactor * massValue.invInertiaMassMatrix[1][1]);
+        usedComp.push_back( odeFactor * massValue.invInertiaMassMatrix[1][2]);
+        usedComp.push_back( odeFactor * massValue.invInertiaMassMatrix[2][2]);
         compliance.setValue(usedComp);
     }
     else
     {
         sout << "COMPLIANCE VALUE FOUND" << sendl;
     }
+    
+
 }
 
-
-#ifndef NEW_VERSION
-template<>
-SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::addComplianceInConstraintSpace(const sofa::core::ConstraintParams * /*cparams*/, defaulttype::BaseMatrix *W)
-{
-    const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
-
-    Deriv weightedNormal;
-    Deriv comp_wN;
-
-    const VecReal& usedComp = compliance.getValue();
-
-    MatrixDerivRowConstIterator rowIt = constraints.begin();
-    MatrixDerivRowConstIterator rowItEnd = constraints.end();
-
-    while (rowIt != rowItEnd)
-    {
-        const unsigned int indexCurRowConst = rowIt.index();
-
-        MatrixDerivColConstIterator colIt = rowIt.begin();
-        MatrixDerivColConstIterator colItEnd = rowIt.end();
-
-        while (colIt != colItEnd)
-        {
-            unsigned int dof = colIt.index();
-            Deriv n = colIt.val();
-
-            getVCenter(weightedNormal) = getVCenter(n);
-            getVOrientation(weightedNormal) = getVOrientation(n);
-
-            getVCenter(comp_wN) = getVCenter(weightedNormal) * usedComp[0];
-
-            const double wn3 = weightedNormal[3];
-            const double wn4 = weightedNormal[4];
-            const double wn5 = weightedNormal[5];
-
-            comp_wN[3] =  usedComp[1] * wn3 +  usedComp[2] * wn4 +  usedComp[3] * wn5;
-            comp_wN[4] =  usedComp[2] * wn3 +  usedComp[4] * wn4 +  usedComp[5] * wn5;
-            comp_wN[5] =  usedComp[3] * wn3 +  usedComp[5] * wn4 +  usedComp[6] * wn5;
-
-            MatrixDerivRowConstIterator rowIt2 = rowIt;
-
-            while (rowIt2 != rowItEnd)
-            {
-                const unsigned int indexCurColConst = rowIt2.index();
-
-                MatrixDerivColConstIterator colIt2 = rowIt2.begin();
-                MatrixDerivColConstIterator colIt2End = rowIt2.end();
-
-                while (colIt2 != colIt2End)
-                {
-                    unsigned int dof2 = colIt2.index();
-                    Deriv n2 = colIt2.val();
-
-                    if (dof == dof2)
-                    {
-                        double w = n2 * comp_wN;
-
-                        W->add(indexCurRowConst, indexCurColConst, w);
-
-                        if (indexCurRowConst != indexCurColConst)
-                            W->add(indexCurColConst, indexCurRowConst, w);
-                    }
-
-                    ++colIt2;
-                }
-
-                ++rowIt2;
-            }
-
-            ++colIt;
-        }
-
-        ++rowIt;
-    }
-}
-
-#else
-
-template<>
-SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::addComplianceInConstraintSpace(const ConstraintParams * /*cparams*/, defaulttype::BaseMatrix *W)
-{
-    const MatrixDeriv& constraints = *this->mstate->getC();
-    const VecReal& usedComp = compliance.getValue();
-
-    Deriv weightedNormal;
-    Deriv comp_wN;
-
-    typedef std::list< std::pair< int, Deriv > > CIndicesAndValues;
-
-    helper::vector< CIndicesAndValues > dofsIndexedConstraints;
-    const unsigned int numDOFs = this->mstate->getSize();
-    dofsIndexedConstraints.resize(numDOFs);
-
-    for (MatrixDerivRowConstIterator rowIt = constraints.begin(), rowItEnd = constraints.end(); rowIt != rowItEnd; ++rowIt)
-    {
-        int indexCurRowConst = rowIt.index();
-
-        for (MatrixDerivColConstIterator colIt = rowIt.begin(), colItEnd = rowIt.end(); colIt != colItEnd; ++colIt)
-        {
-            dofsIndexedConstraints[colIt.index()].push_back(std::make_pair(indexCurRowConst, colIt.val()));
-        }
-    }
-
-    for (MatrixDerivRowConstIterator rowIt = constraints.begin(), rowItEnd = constraints.end(); rowIt != rowItEnd; ++rowIt)
-    {
-        const unsigned int indexCurRowConst = rowIt.index();
-
-        for (MatrixDerivColConstIterator colIt = rowIt.begin(), colItEnd = rowIt.end(); colIt != colItEnd; ++colIt)
-        {
-            unsigned int dof = colIt.index();
-
-            CIndicesAndValues &dofsConstraint = dofsIndexedConstraints[dof];
-
-            if (!dofsConstraint.empty())
-            {
-                Deriv n = colIt.val();
-
-                getVCenter(weightedNormal) = getVCenter(n);
-                getVOrientation(weightedNormal) = getVOrientation(n);
-
-                getVCenter(comp_wN) = getVCenter(weightedNormal) * usedComp[0];
-
-                const double wn3 = weightedNormal[3];
-                const double wn4 = weightedNormal[4];
-                const double wn5 = weightedNormal[5];
-
-                comp_wN[3] =  usedComp[1] * wn3 +  usedComp[2] * wn4 +  usedComp[3] * wn5;
-                comp_wN[4] =  usedComp[2] * wn3 +  usedComp[4] * wn4 +  usedComp[5] * wn5;
-                comp_wN[5] =  usedComp[3] * wn3 +  usedComp[5] * wn4 +  usedComp[6] * wn5;
-
-                double w = dofsConstraint.front().second * comp_wN;
-                W->add(indexCurRowConst, indexCurRowConst, w);
-                dofsConstraint.pop_front();
-
-                for (CIndicesAndValues::const_iterator it = dofsConstraint.begin(), itEnd = dofsConstraint.end(); it != itEnd; ++it)
-                {
-                    w = it->second * comp_wN;
-                    W->add(indexCurRowConst, it->first, w);
-                    W->add(it->first, indexCurRowConst, w);
-                }
-            }
-        }
-    }
-}
-
-#endif
 
 template<>
 SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::getComplianceMatrix(defaulttype::BaseMatrix *m) const
@@ -285,231 +175,6 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
         m->set(d6 + 5, d6 + 4, comp[d7 + 5]);
 
         m->set(d6 + 5, d6 + 5, comp[d7 + 6]);
-    }
-
-    /*
-    for (unsigned int l=0;l<s;++l)
-    {
-        for (unsigned int c=0;c<s;++c)
-        {
-            if (l==c)
-                m->set(l,c,comp[l]);
-            else
-                m->set(l,c,0);
-        }
-    }
-    */
-}
-
-
-template<>
-SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::computeDx(const Data< VecDeriv > &f_d)
-{
-    const VecDeriv& f = f_d.getValue();
-
-    Data< VecDeriv > &dx_d = *this->mstate->write(core::VecDerivId::dx());
-    VecDeriv& dx = *dx_d.beginEdit();
-
-    const VecReal& usedComp = compliance.getValue();
-
-    dx.resize(f.size());
-
-    for (unsigned int i = 0; i < dx.size(); i++)
-    {
-        getVCenter(dx[i]) = getVCenter(f[i]) * usedComp[0];
-        dx[i][3] =  usedComp[1] * f[i][3] +  usedComp[2] * f[i][4] +  usedComp[3] * f[i][5];
-        dx[i][4] =  usedComp[2] * f[i][3] +  usedComp[4] * f[i][4] +  usedComp[5] * f[i][5];
-        dx[i][5] =  usedComp[3] * f[i][3] +  usedComp[5] * f[i][4] +  usedComp[6] * f[i][5];
-    }
-
-    dx_d.endEdit();
-}
-
-
-template<>
-SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::applyContactForce(const defaulttype::BaseVector *f)
-{
-    helper::WriteAccessor<Data<VecDeriv> > forceData = *this->mstate->write(core::VecDerivId::externalForce());
-    VecDeriv& force = forceData.wref();
-    const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
-
-    unsigned int dof;
-    Deriv weightedNormal;
-
-    const VecReal& usedComp = compliance.getValue();
-
-    force.resize((this->mstate->read(core::ConstVecCoordId::position())->getValue()).size());
-
-    MatrixDerivRowConstIterator rowIt = constraints.begin();
-    MatrixDerivRowConstIterator rowItEnd = constraints.end();
-
-    while (rowIt != rowItEnd)
-    {
-        const double fC1 = f->element(rowIt.index());
-
-        if (fC1 != 0.0)
-        {
-            MatrixDerivColConstIterator colIt = rowIt.begin();
-            MatrixDerivColConstIterator colItEnd = rowIt.end();
-
-            while (colIt != colItEnd)
-            {
-                dof = colIt.index();
-                weightedNormal = colIt.val();
-
-                getVCenter(force[dof]) += getVCenter(weightedNormal) * fC1;
-                getVOrientation(force[dof]) += getVOrientation(weightedNormal) * fC1;
-
-                ++colIt;
-            }
-        }
-
-        ++rowIt;
-    }
-
-    helper::WriteAccessor<Data<VecDeriv> > dxData = *this->mstate->write(core::VecDerivId::dx());
-    VecDeriv& dx = dxData.wref();
-    helper::WriteAccessor<Data<VecCoord> > xData = *this->mstate->write(core::VecCoordId::position());
-    VecCoord& x = xData.wref();
-    helper::WriteAccessor<Data<VecDeriv> > vData = *this->mstate->write(core::VecDerivId::velocity());
-    VecDeriv& v = vData.wref();
-
-    const VecDeriv& v_free = this->mstate->read(core::ConstVecDerivId::freeVelocity())->getValue();
-    const VecCoord& x_free = this->mstate->read(core::ConstVecCoordId::freePosition())->getValue();
-
-    const double dt = this->getContext()->getDt();
-
-    // Euler integration... will be done in the "integrator" as soon as it exists !
-    dx.resize(v.size());
-
-    for (unsigned int i = 0; i < dx.size(); i++)
-    {
-        x[i] = x_free[i];
-        v[i] = v_free[i];
-
-        // compliance * force
-        getVCenter(dx[i]) = getVCenter(force[i]) * usedComp[0];
-        dx[i][3] =  usedComp[1] * force[i][3] +  usedComp[2] * force[i][4] +  usedComp[3] * force[i][5];
-        dx[i][4] =  usedComp[2] * force[i][3] +  usedComp[4] * force[i][4] +  usedComp[5] * force[i][5];
-        dx[i][5] =  usedComp[3] * force[i][3] +  usedComp[5] * force[i][4] +  usedComp[6] * force[i][5];
-        dx[i] *= (1.0 / dt);
-        v[i] += dx[i];
-        dx[i] *= dt;
-        x[i] += dx[i];
-    }
-}
-
-
-template<>
-SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::setConstraintDForce(double * df, int begin, int end, bool update)
-{
-    const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
-    const VecReal& usedComp = compliance.getValue();
-
-    if (!update)
-        return;
-
-    for (int id = begin; id <= end; id++)
-    {
-
-        MatrixDerivRowConstIterator curConstraint = constraints.readLine(id);
-
-        if (curConstraint != constraints.end())
-        {
-            MatrixDerivColConstIterator colIt = curConstraint.begin();
-            MatrixDerivColConstIterator colItEnd = curConstraint.end();
-
-            while (colIt != colItEnd)
-            {
-                Deriv n = colIt.val();
-                unsigned int dof = colIt.index();
-
-                constraint_force[dof] += n * df[id];
-
-                Deriv dx;
-                getVCenter(dx) = getVCenter(constraint_force[dof]) * usedComp[0];
-
-                defaulttype::Vec3d wrench = getVOrientation(constraint_force[dof]);
-                getVOrientation(dx)[0] = usedComp[1] * wrench[0] + usedComp[2] * wrench[1] + usedComp[3] * wrench[2];
-                getVOrientation(dx)[1] = usedComp[2] * wrench[0] + usedComp[4] * wrench[1] + usedComp[5] * wrench[2];
-                getVOrientation(dx)[2] = usedComp[3] * wrench[0] + usedComp[5] * wrench[1] + usedComp[6] * wrench[2];
-
-                constraint_disp[dof] = dx;
-
-                ++colIt;
-            }
-        }
-    }
-}
-
-
-///////////////////// ATTENTION : passer un indice début - fin (comme pour force et déplacement) pour calculer le block complet
-///////////////////// et pas uniquement la diagonale.
-template<>
-SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, int begin, int end)
-{
-    const MatrixDeriv& constraints = this->mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
-    const VecReal& usedComp = compliance.getValue();
-
-    msg_info()<<"getBlockDiagonalCompliance called for lines and columns "<< begin<< " to "<< end ;
-
-    Deriv weightedNormal, C_n;
-
-    for (int id1 = begin; id1 <= end; id1++)
-    {
-
-        MatrixDerivRowConstIterator curConstraint = constraints.readLine(id1);
-
-        if (curConstraint != constraints.end())
-        {
-            MatrixDerivColConstIterator colIt = curConstraint.begin();
-            MatrixDerivColConstIterator colItEnd = curConstraint.end();
-
-            while (colIt != colItEnd)
-            {
-                weightedNormal = colIt.val();
-                unsigned int dof1 = colIt.index();
-
-                getVCenter(C_n) = getVCenter(weightedNormal) * usedComp[0];
-                defaulttype::Vec3d wrench = getVOrientation(weightedNormal) ;
-
-                getVOrientation(C_n)[0] = usedComp[1] * wrench[0] + usedComp[2] * wrench[1] + usedComp[3] * wrench[2];
-                getVOrientation(C_n)[1] = usedComp[2] * wrench[0] + usedComp[4] * wrench[1] + usedComp[5] * wrench[2];
-                getVOrientation(C_n)[2] = usedComp[3] * wrench[0] + usedComp[5] * wrench[1] + usedComp[6] * wrench[2];
-
-                for (int id2 = id1; id2 <= end; id2++)
-                {
-
-                    MatrixDerivRowConstIterator curConstraint2 = constraints.readLine(id2);
-
-                    if (curConstraint2 != constraints.end())
-                    {
-                        MatrixDerivColConstIterator colIt2 = curConstraint2.begin();
-                        MatrixDerivColConstIterator colItEnd2 = curConstraint2.end();
-
-                        while (colIt2 != colItEnd2)
-                        {
-                            unsigned int dof2 = colIt2.index();
-
-                            if (dof1 == dof2)
-                            {
-                                Deriv n2 = colIt2.val();
-                                double w = n2 * C_n;
-
-                                W->add(id1, id2, w);
-
-                                if (id1 != id2)
-                                    W->add(id2, id1, w);
-                            }
-
-                            ++colIt2;
-                        }
-                    }
-                }
-
-                ++colIt;
-            }
-        }
     }
 }
 

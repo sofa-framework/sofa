@@ -1926,6 +1926,8 @@ protected:
 };
 
 
+/// Call each BaseConstraintSet to build the Jacobian matrices and accumulate it through the mappings up to the independant DOFs
+/// @deprecated use MechanicalBuildConstraintMatrix followed by MechanicalAccumulateMatrixDeriv
 class SOFA_SIMULATION_CORE_API MechanicalAccumulateConstraint : public BaseMechanicalVisitor
 {
 public:
@@ -1972,6 +1974,103 @@ protected:
     sofa::core::MultiMatrixDerivId res;
     unsigned int &contactId;
     const sofa::core::ConstraintParams *cparams;
+};
+
+/// Call each BaseConstraintSet to build the Jacobian matrices
+class SOFA_SIMULATION_CORE_API MechanicalBuildConstraintMatrix : public BaseMechanicalVisitor
+{
+public:
+    MechanicalBuildConstraintMatrix(const sofa::core::ConstraintParams* _cparams,
+                                   sofa::core::MultiMatrixDerivId _res, unsigned int &_contactId)
+        : BaseMechanicalVisitor(_cparams)
+        , res(_res)
+        , contactId(_contactId)
+        , cparams(_cparams)
+    {
+#ifdef SOFA_DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
+
+    const core::ConstraintParams* constraintParams() const { return cparams; }
+
+    virtual Result fwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* c);
+
+    /// This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
+    {
+        return false; // !map->isMechanical();
+    }
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalBuildConstraintMatrix"; }
+
+    virtual bool isThreadSafe() const
+    {
+        return false;
+    }
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+    }
+#endif
+
+protected:
+    sofa::core::MultiMatrixDerivId res;
+    unsigned int &contactId;
+    const sofa::core::ConstraintParams *cparams;
+};
+
+/// Accumulate Jacobian matrices through the mappings up to the independant DOFs
+class SOFA_SIMULATION_CORE_API MechanicalAccumulateMatrixDeriv : public BaseMechanicalVisitor
+{
+public:
+    MechanicalAccumulateMatrixDeriv(const sofa::core::ConstraintParams* _cparams,
+                                   sofa::core::MultiMatrixDerivId _res, bool _reverseOrder = false)
+        : BaseMechanicalVisitor(_cparams)
+        , res(_res)
+        , cparams(_cparams)
+        , reverseOrder(_reverseOrder)
+    {
+#ifdef SOFA_DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
+
+    const core::ConstraintParams* constraintParams() const { return cparams; }
+
+    virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map);
+
+    /// Return true to reverse the order of traversal of child nodes
+    virtual bool childOrderReversed(simulation::Node* /*node*/) { return reverseOrder; }
+
+    /// This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
+    {
+        return false; // !map->isMechanical();
+    }
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalAccumulateMatrixDeriv"; }
+
+    virtual bool isThreadSafe() const
+    {
+        return false;
+    }
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+    }
+#endif
+
+protected:
+    sofa::core::MultiMatrixDerivId res;
+    const sofa::core::ConstraintParams *cparams;
+    bool reverseOrder;
 };
 
 class SOFA_SIMULATION_CORE_API MechanicalRenumberConstraint : public MechanicalVisitor

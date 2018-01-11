@@ -1,0 +1,11 @@
+# CMake package configuration file for the CImgPlugin plugin
+
+@PACKAGE_INIT@
+
+find_package(SofaGeneral REQUIRED)
+
+if(NOT TARGET CImgPlugin)
+    include("${CMAKE_CURRENT_LIST_DIR}/CImgPluginTargets.cmake")
+endif()
+
+check_required_components(CImgPlugin)

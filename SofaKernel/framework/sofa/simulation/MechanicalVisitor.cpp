@@ -1336,17 +1336,34 @@ Visitor::Result MechanicalWriteLMConstraint::fwdConstraintSet(simulation::Node* 
 }
 
 
-Visitor::Result MechanicalAccumulateConstraint::fwdConstraintSet(simulation::Node* /*node*/, core::behavior::BaseConstraintSet* c)
+Visitor::Result MechanicalAccumulateConstraint::fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* c)
 {
-    c->setConstraintId(contactId);
+    ctime_t t0 = begin(node, c);
     c->buildConstraintMatrix(cparams, res, contactId);
+    end(node, c, t0);
     return RESULT_CONTINUE;
 }
 
-
-void MechanicalAccumulateConstraint::bwdMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* map)
+void MechanicalAccumulateConstraint::bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map)
 {
+    ctime_t t0 = begin(node, map);
     map->applyJT(cparams, res, res);
+    end(node, map, t0);
+}
+
+Visitor::Result MechanicalBuildConstraintMatrix::fwdConstraintSet(simulation::Node* node, core::behavior::BaseConstraintSet* c)
+{
+    ctime_t t0 = begin(node, c);
+    c->buildConstraintMatrix(cparams, res, contactId);
+    end(node, c, t0);
+    return RESULT_CONTINUE;
+}
+
+void MechanicalAccumulateMatrixDeriv::bwdMechanicalMapping(simulation::Node* node, core::BaseMapping* map)
+{
+    ctime_t t0 = begin(node, map);
+    map->applyJT(cparams, res, res);
+    end(node, map, t0);
 }
 
 

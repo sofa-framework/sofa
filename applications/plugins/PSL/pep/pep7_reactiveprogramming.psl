@@ -1,0 +1,26 @@
+/// How to make scene transform that are in the editor (not in the scene)
+Node : {
+    DataTracker : {
+        onIdle: '''
+            for i in monitoredchanged:
+                if changed:
+                    call update.
+                '''
+    }
+    Node : {
+        properties : {
+            youngModulus : 10
+        }
+
+        Template : {
+            name : "Test"
+            Node : {
+                younModulus : d"3 * youngModulus"
+            }
+        }
+
+        Python : '''for i in range(0,10):
+                        self.addChild(instantiate())
+                 '''
+    }
+}
