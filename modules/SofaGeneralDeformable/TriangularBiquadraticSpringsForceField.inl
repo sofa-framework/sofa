@@ -183,13 +183,12 @@ template <class DataTypes> TriangularBiquadraticSpringsForceField<DataTypes>::~T
 
 template <class DataTypes> void TriangularBiquadraticSpringsForceField<DataTypes>::init()
 {
-//	serr << "initializing TriangularBiquadraticSpringsForceField" << sendl;
     this->Inherited::init();
     _topology = this->getContext()->getMeshTopology();
 
     if (_topology->getNbTriangles()==0)
     {
-        serr << "ERROR(TriangularBiquadraticSpringsForceField): object must have a Triangular Set Topology."<<sendl;
+        msg_error() << "Object must have a Triangular Set Topology." ;
         return;
     }
     updateLameCoefficients();
@@ -389,7 +388,6 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addDForce(const core::Me
         Coord dpj,dpk,dpi,dp;
         Mat3 m1,m2;
 
-        //	serr <<"updating matrix"<<sendl;
         updateMatrix=false;
         for(int l=0; l<nbTriangles; l++ )
         {
@@ -397,7 +395,6 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addDForce(const core::Me
             /// describe the jth edge index of triangle no i
             const EdgesInTriangle &tea= _topology->getEdgesInTriangle(l);
             /// describe the jth vertex index of triangle no i
-//			const Triangle &ta= _topology->getTriangle(l);
 
             // store points
             for(k=0; k<3; ++k)
@@ -531,7 +528,6 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::updateLameCoefficients()
 {
     lambda= f_youngModulus.getValue()*f_poissonRatio.getValue()/(1-f_poissonRatio.getValue()*f_poissonRatio.getValue());
     mu = f_youngModulus.getValue()*(1-f_poissonRatio.getValue())/(1-f_poissonRatio.getValue()*f_poissonRatio.getValue());
-//	serr << "initialized Lame coef : lambda=" <<lambda<< " mu="<<mu<<sendl;
 }
 
 
