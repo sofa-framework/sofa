@@ -100,6 +100,9 @@ using  sofa::helper::logging::MainPerComponentLoggingMessageHandler ;
 #include <windows.h>
 #endif
 
+#include <sofa/gui/qt/GuiDataRepository.h>
+using sofa::gui::qt::GuiDataRepository ;
+
 using sofa::helper::system::DataRepository;
 using sofa::helper::system::PluginRepository;
 using sofa::helper::system::PluginManager;
@@ -148,6 +151,7 @@ void addGUIParameters(ArgumentParser* argumentParser)
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
+    GuiDataRepository.addFirstPath(SetDirectory::GetRelativeFromProcess("../share/sofa/gui/runSofa/resources/")) ;
     sofa::helper::BackTrace::autodump();
 
     ExecParams::defaultInstance()->setAspectID(0);
