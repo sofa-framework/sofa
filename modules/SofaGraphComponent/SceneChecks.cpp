@@ -59,7 +59,8 @@ void SceneCheckDuplicatedName::doInit(Node* node)
 {
     SOFA_UNUSED(node) ;
     m_hasDuplicates = false ;
-    m_duplicatedMsg = std::stringstream();
+    m_duplicatedMsg.str("") ;
+    m_duplicatedMsg.clear() ;
 }
 
 void SceneCheckDuplicatedName::doCheckOn(Node* node)
