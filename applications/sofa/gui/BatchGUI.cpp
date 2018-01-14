@@ -48,25 +48,29 @@ int BatchGUI::mainLoop()
 {
     if (groot)
     {
+        msg_info("BatchGUI") << "Computing " << nbIter << " iterations." << msgendl;
+        sofa::helper::AdvancedTimer::begin("Animate");
         sofa::simulation::getSimulation()->animate(groot.get());
+        msg_info("BatchGUI") << sofa::helper::AdvancedTimer::end("Animate", groot.get()) << msgendl;
         //As no visualization is done by the Batch GUI, these two lines are not necessary.
         sofa::simulation::getSimulation()->updateVisual(groot.get());
-        std::cout << "Computing "<<nbIter<<" iterations." << std::endl;
         sofa::simulation::Visitor::ctime_t rtfreq = sofa::helper::system::thread::CTime::getRefTicksPerSec();
         sofa::simulation::Visitor::ctime_t tfreq = sofa::helper::system::thread::CTime::getTicksPerSec();
         sofa::simulation::Visitor::ctime_t rt = sofa::helper::system::thread::CTime::getRefTime();
         sofa::simulation::Visitor::ctime_t t = sofa::helper::system::thread::CTime::getFastTime();
-        for (unsigned int i=0; i<nbIter; i++)
+        for (unsigned int i=0; i<nbIter-1; i++) // one simulation step is animated above
         {
+            sofa::helper::AdvancedTimer::begin("Animate");
             sofa::simulation::getSimulation()->animate(groot.get());
+            msg_info("BatchGUI") << sofa::helper::AdvancedTimer::end("Animate", groot.get()) << msgendl;
             //As no visualization is done by the Batch GUI, these two lines are not necessary.
             sofa::simulation::getSimulation()->updateVisual(groot.get());
         }
         t = sofa::helper::system::thread::CTime::getFastTime()-t;
         rt = sofa::helper::system::thread::CTime::getRefTime()-rt;
 
-        std::cout << nbIter << " iterations done in "<< ((double)t)/((double)tfreq) << " s ( " << (((double)tfreq)*nbIter)/((double)t) << " FPS)." << std::endl;
-        std::cout << nbIter << " iterations done in "<< ((double)rt)/((double)rtfreq) << " s ( " << (((double)rtfreq)*nbIter)/((double)rt) << " FPS)." << std::endl;
+        msg_info("BatchGUI") << nbIter << " iterations done in " << ((double)t)/((double)tfreq) << " s ( " << (((double)tfreq)*nbIter)/((double)t) << " FPS)." << msgendl;
+        msg_info("BatchGUI") << nbIter << " iterations done in " << ((double)rt)/((double)rtfreq) << " s ( " << (((double)rtfreq)*nbIter)/((double)rt) << " FPS)." << msgendl;
     }
     return 0;
 }
