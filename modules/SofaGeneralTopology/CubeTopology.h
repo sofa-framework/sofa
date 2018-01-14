@@ -59,10 +59,6 @@ public:
     virtual void init() override;
     virtual void reinit() override;
 
-    //int getNbQuads();
-    //Quad getQuad(int i);
-    //Quad getQuad(int x, int y, int z);
-
     enum Plane { PLANE_UNKNOWN=0,
             PLANE_X0,
             PLANE_X1,
@@ -72,7 +68,7 @@ public:
             PLANE_Z1
                };
 
-    int point(int x, int y, int z, Plane p = PLANE_UNKNOWN) const; // { return x+nx.getValue()*(y+ny.getValue()*z); }
+    int point(int x, int y, int z, Plane p = PLANE_UNKNOWN) const;
 
     void setP0(const Vector3& val) { p0 = val; }
     void setDx(const Vector3& val) { dx = val; inv_dx2 = 1/(dx*dx); }
@@ -113,9 +109,9 @@ protected:
     SReal inv_dx2, inv_dy2, inv_dz2;
 
     virtual void setSize();
+    void updatePoints();
     void updateEdges();
     void updateQuads();
-    //void updateHexahedra();
 };
 
 } // namespace topology
