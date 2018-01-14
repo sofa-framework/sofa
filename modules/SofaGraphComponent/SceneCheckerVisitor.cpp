@@ -89,6 +89,11 @@ void SceneCheckerVisitor::validate(Node* node)
                              << tmp.str() ;
 
     execute(node) ;
+
+    for(SceneCheck::SPtr& check : m_checkset)
+    {
+        check->doPrintSummary() ;
+    }
 }
 
 
