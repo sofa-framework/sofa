@@ -171,6 +171,9 @@ void SceneCheckMissingRequiredPlugin::doInit(Node* node)
     helper::vector< RequiredPlugin* > plugins ;
     node->getTreeObjects< RequiredPlugin >(&plugins) ;
 
+    m_requiredPlugins.clear() ;
+    m_loadedPlugins.clear() ;
+
     for(auto& plugin : plugins)
     {
         for(auto& pluginName : plugin->d_pluginName.getValue())
