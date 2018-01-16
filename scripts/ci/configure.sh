@@ -184,7 +184,10 @@ case $CI_OPTIONS in
         append "-DPLUGIN_SOFADISTANCEGRID=ON"
         # Requires HAPI libraries.
         append "-DPLUGIN_SOFAHAPI=OFF"
-        append "-DPLUGIN_SOFAHEADLESSRECORDER=ON"
+        # HeadlessRecorder is Linux only for now
+        if [[ $(uname) = Linux ]]; then 
+            append "-DPLUGIN_SOFAHEADLESSRECORDER=ON"
+        fi
         append "-DPLUGIN_SOFAIMPLICITFIELD=ON"
         # Not sure if worth maintaining
         append "-DPLUGIN_SOFASIMPLEGUI=ON"
