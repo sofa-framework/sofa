@@ -2,33 +2,39 @@ cmake_minimum_required(VERSION 3.1)
 project(SofaHeadlessRecorder)
 message("-- HeadlessRecorder is a 17.12 experimental feature, use it at your own risk.")
 
+
 set(HEADER_FILES
     HeadlessRecorder.h)
 
 set(SOURCE_FILES
     HeadlessRecorder.cpp)
 
+set(EXTRA_FILES
+    headlessRecorder_test
+)
 
 if(UNIX AND NOT APPLE)
     message("HeadlessRecorder for linux")
-	
-	###################################################################### FFMPEG
-	find_package(FFMPEG REQUIRED)
-	if (FFMPEG_FOUND)
-			message("Found FFMPEG/LibAV libraries")
-			include_directories(${FFMPEG_INCLUDE_DIR})
-	else (FFMPEG_FOUND)
-			message("Can't find libavcodec, libavformat or libavutil. Add them!")
-	endif (FFMPEG_FOUND)
-	set(SOFA_HAVE_AVCODEC ${AVCODEC_FOUND})
+    configure_file(headlessRecorder_test ${CMAKE_BINARY_DIR}/bin/headlessRecorder_test COPYONLY)
 
-	###################################################################### X11
+
+    ###################################################################### FFMPEG
+    find_package(FFMPEG REQUIRED)
+    if (FFMPEG_FOUND)
+        message("Found FFMPEG/LibAV libraries")
+        include_directories(${FFMPEG_INCLUDE_DIR})
+    else (FFMPEG_FOUND)
+        message("Can't find libavcodec, libavformat or libavutil. Add them!")
+    endif (FFMPEG_FOUND)
+    set(SOFA_HAVE_AVCODEC ${AVCODEC_FOUND})
+
+    ###################################################################### X11
     find_package(X11 REQUIRED)
     if (X11_FOUND)
-            message("Found X11 libraries")
-            include_directories(${X11_INCLUDE_DIR})
+        message("Found X11 libraries")
+        include_directories(${X11_INCLUDE_DIR})
     else (X11_FOUND)
-            message("Can't find X11 libraries")
+        message("Can't find X11 libraries")
     endif (X11_FOUND)
 
     add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
