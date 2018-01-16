@@ -19,22 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Sofa_test.h>
-#include <SofaTest/TestMessageHandler.h>
+#include <SofaSimulationGraph/testing/BaseSimulationTest.h>
+using sofa::helper::testing::BaseSimulationTest ;
 
-
-#include <SofaSimulationGraph/DAGSimulation.h>
-#include <SceneCreator/SceneCreator.h>
-
-#include <sofa/simulation/Node.h>
+#include <SofaSimulationGraph/SimpleApi.h>
+using namespace sofa::simpleapi ;
 
 namespace sofa {
 
-using namespace modeling;
-
-struct Node_test : public Sofa_test<>
+struct Node_test : public BaseSimulationTest
 {
-    Node_test()
+    void test1()
     {
         /* create trivial DAG :
          *
@@ -45,26 +40,20 @@ struct Node_test : public Sofa_test<>
          * B
          *
          */
-        sofa::simulation::setSimulation(new simulation::graph::DAGSimulation());
-        root = clearScene();
-        root->setName("R");
-        A = root->createChild("A");
-        B = A->createChild("B");
+        EXPECT_MSG_NOEMIT(Error, Warning);
 
+        SceneInstance si("R") ;
+        Node::SPtr A = createChild(si.root, "A");
+        Node::SPtr B = createChild(A, "B");
+
+        EXPECT_EQ("", si.root->getPathName());
+        EXPECT_EQ("/A/B", B->getPathName());
     }
-
-    simulation::Node::SPtr root;
-    simulation::Node::SPtr A;
-    simulation::Node::SPtr B;
-
 };
 
 TEST_F( Node_test, getPathName)
 {
-    EXPECT_MSG_NOEMIT(Error, Warning);
-
-    EXPECT_EQ("", root->getPathName());
-    EXPECT_EQ("/A/B", B->getPathName());
+    this->test1() ;
 }
 
 }// namespace sofa

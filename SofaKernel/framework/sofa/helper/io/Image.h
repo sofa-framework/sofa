@@ -162,4 +162,7 @@ extern template class SOFA_HELPER_API Factory<std::string, io::Image, std::strin
 
 } // namespace sofa
 
+/// This line register Image to the messaging system
+MSG_REGISTER_CLASS(sofa::helper::io::Image, "Image")
+
 #endif

@@ -624,7 +624,9 @@ public:
     /** \brief Returns for each index (between 0 and 12) the two vertex indices that are adjacent to that edge */
     Edge getLocalEdgesInHexahedron (const unsigned int i) const override;
 
-
+  	/** \ brief returns the topologyType */
+	  virtual sofa::core::topology::TopologyObjectType getTopologyType() const override {return UpperTopology;}
+  
     int revision;
 
     // To draw the mesh, the topology position must be linked with the mechanical object position 

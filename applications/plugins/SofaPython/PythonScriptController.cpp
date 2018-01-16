@@ -91,6 +91,7 @@ public:
         if(!m_controller->scriptControllerInstance()){
             m_controller->doLoadScript();
         }else{
+            PythonEnvironment::gil state {__func__ } ;
             std::string file=filepath;
             SP_CALL_FILEFUNC(const_cast<char*>("onReimpAFile"),
                              const_cast<char*>("s"),

@@ -1,0 +1,41 @@
+### Hi all this is a very simple psl file.
+### The syntax is very close to QML files.
+###
+Node : {
+    Import : "shapes"
+    Import : "sceneinit"
+    Import : "mytemplates"
+    name : "MyNameIsRoot"
+
+    #sceneinit.BasicSceneSetup : {}
+
+    Python : '''
+             from psl.dsl import whatis
+             Sofa.msg_info(self, str(whatis("GridRepeat",10)))
+             '''
+
+    mytemplates.GridRepeat : {
+        target : "shapes.Sphere"
+        nx : 5
+        ny : 5
+    }
+
+    mytemplates.Armadillo : {
+        name : "John2"
+        position : "0 0 0"
+        color : "1.0 0.4 5.0"
+    }
+
+    mytemplates.Armadillo : {
+        name : "Roger"
+        position : "10 0 0"
+        color : "0.0 0.7 1.0"
+    }
+
+    Python : '''
+             print("Hello world")
+             for i in range(0, 10):
+                self.createChild("child_"+str(i))
+             '''
+
+}

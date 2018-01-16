@@ -1,0 +1,15 @@
+# In this PEP I propose to import Python as template definition. As this can be easily done
+# Eg:
+Node : {
+    name : "root"
+    Import : "pythontemplates.py"
+}
+
+## In pythontemplates.py we have
+#
+# Templates : ["Template1", "Template2", "Template3"]
+#
+# def Template1(self, arg1, arg2, arg3):
+#
+#
+#

@@ -24,7 +24,7 @@
 
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glu.h>
-#include <sofa/helper/io/ImageBMP.h>
+#include <sofa/helper/io/Image.h>
 #include <sofa/helper/gl/RAII.h>
 
 #include <SofaSimulationTree/TreeSimulation.h>
@@ -651,9 +651,20 @@ void SofaPhysicsSimulation::drawGL()
         glewInit();
 #endif
         //Load texture for logo
-        texLogo = new sofa::helper::gl::Texture(new sofa::helper::io::ImageBMP( sofa::helper::system::DataRepository.getFile("textures/SOFA_logo.bmp")));
-        texLogo->init();
+        std::string imageFileName = "textures/SOFA_logo.bmp";
+        if (sofa::helper::system::DataRepository.findFile(imageFileName))
+        {            
+            if (texLogo)
+            {
+                delete texLogo;
+                texLogo = NULL;
+            }
 
+            sofa::helper::io::Image* image = sofa::helper::io::Image::FactoryImage::getInstance()->createObject("bmp", sofa::helper::system::DataRepository.getFile(imageFileName));
+            texLogo = new sofa::helper::gl::Texture(image);
+            texLogo->init();
+        }
+        
         initGLDone = true;
     }
 

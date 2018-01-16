@@ -187,7 +187,9 @@ public:
     virtual const VecEdgeID getElementAroundElements(VecEdgeID elems) override;
     /// @}
 
-
+	  /** \brief Returns the type of the topology */
+	  virtual sofa::core::topology::TopologyObjectType getTopologyType() const override {return sofa::core::topology::EDGE;}
+    
 
 protected:
 

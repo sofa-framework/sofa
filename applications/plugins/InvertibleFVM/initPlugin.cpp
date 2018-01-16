@@ -20,14 +20,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <InvertibleFVM/config.h>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
 
 namespace component
 {
-
-//Here are just several convenient functions to help user to know what contains the plugin
 
 extern "C" {
     SOFA_InvertibleFVM_API void initExternalModule();
@@ -70,7 +69,9 @@ const char* getModuleDescription()
 
 const char* getModuleComponentList()
 {
-    return "InvertibleFVMForceField";
+     /// string containing the names of the classes provided by the plugin
+     static std::string classes = sofa::core::ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+     return classes.c_str();
 }
 
 }

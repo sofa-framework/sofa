@@ -109,17 +109,6 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     if (dt == 0)
         dt = this->gnode->getDt();
 
-#ifdef SOFA_DUMP_VISITOR_INFO
-    simulation::Visitor::printNode("Step");
-#endif
-
-    {
-        sofa::helper::AdvancedTimer::stepBegin("AnimateBeginEvent");
-        AnimateBeginEvent ev ( dt );
-        PropagateEventVisitor act ( params, &ev );
-        this->gnode->execute ( act );
-        sofa::helper::AdvancedTimer::stepEnd("AnimateBeginEvent");
-    }
 
     double startTime = this->gnode->getTime();
 
@@ -132,12 +121,9 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     MultiVecDeriv freeVel(&vop, core::VecDerivId::freeVelocity() );
 
     {
-    MultiVecDeriv dx(&vop, core::VecDerivId::dx() ); dx.realloc( &vop, true, true );
-    MultiVecDeriv df(&vop, core::VecDerivId::dforce() ); df.realloc( &vop, true, true );
+        MultiVecDeriv dx(&vop, core::VecDerivId::dx() ); dx.realloc( &vop, true, true );
+        MultiVecDeriv df(&vop, core::VecDerivId::dforce() ); df.realloc( &vop, true, true );
     }
-
-
-
 
     // This solver will work in freePosition and freeVelocity vectors.
     // We need to initialize them if it's not already done.
@@ -146,6 +132,19 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     simulation::MechanicalVInitVisitor< core::V_DERIV >(params, core::VecDerivId::freeVelocity(), core::ConstVecDerivId::velocity(), true).execute(this->gnode);
 
     sofa::helper::AdvancedTimer::stepEnd("MechanicalVInitVisitor");
+
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printNode("Step");
+#endif
+
+    {
+        sofa::helper::AdvancedTimer::stepBegin("AnimateBeginEvent");
+        AnimateBeginEvent ev ( dt );
+        PropagateEventVisitor act ( params, &ev );
+        this->gnode->execute ( act );
+        sofa::helper::AdvancedTimer::stepEnd("AnimateBeginEvent");
+    }
 
     BehaviorUpdatePositionVisitor beh(params , dt);
 

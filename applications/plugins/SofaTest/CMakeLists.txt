@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.1)
 project(SofaTest)
 
 set(SOFATEST_VERSION 0.1)
-
 ################################ COMPONENTS HERE ARE THE NG-SET ####################################
 
 set(HEADER_FILES
@@ -46,7 +45,6 @@ if(SOFA_BUILD_COMPONENTSET_STANDARD)
     list(APPEND SOURCE_FILES
         Elasticity_test.cpp
         PrimitiveCreation.cpp
-        TestMessageHandler.cpp
         )
 endif()
 
@@ -89,7 +87,6 @@ if(SofaPython_FOUND)
     target_link_libraries(${PROJECT_NAME} SofaPython)
 endif()
 target_link_libraries(${PROJECT_NAME} SceneCreator SofaComponentBase SofaComponentCommon SofaComponentGeneral SofaComponentAdvanced SofaComponentMisc)
-target_link_libraries(${PROJECT_NAME} gtest)
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_TEST -DSOFA_SRC_DIR=\"${CMAKE_SOURCE_DIR}\"")

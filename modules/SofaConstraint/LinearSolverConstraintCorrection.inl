@@ -27,7 +27,6 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/behavior/ConstraintCorrection.inl>
 
 #include <sstream>
 #include <list>
@@ -120,6 +119,38 @@ void LinearSolverConstraintCorrection<DataTypes>::init()
 #endif
 }
 
+template<class TDataTypes>
+void LinearSolverConstraintCorrection<TDataTypes>::computeJ(sofa::defaulttype::BaseMatrix* W)
+{
+    const unsigned int numDOFs = this->mstate->getSize();
+    const unsigned int N = Deriv::size();
+    const unsigned int numDOFReals = numDOFs*N;
+    const MatrixDeriv& c = this->mstate->read(core::ConstMatrixDerivId::holonomicC())->getValue();
+    const unsigned int totalNumConstraints = W->rowSize();
+
+    J.resize(totalNumConstraints, numDOFReals);
+
+    MatrixDerivRowConstIterator rowItEnd = c.end();
+
+    for (MatrixDerivRowConstIterator rowIt = c.begin(); rowIt != rowItEnd; ++rowIt)
+    {
+        const int cid = rowIt.index();
+
+        MatrixDerivColConstIterator colItEnd = rowIt.end();
+
+        for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
+        {
+            const unsigned int dof = colIt.index();
+            const Deriv n = colIt.val();
+
+            for (unsigned int r = 0; r < N; ++r)
+            {
+                J.add(cid, dof * N + r, n[r]);
+            }
+        }
+    }
+}
+
 template<class DataTypes>
 void LinearSolverConstraintCorrection<DataTypes>::addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, sofa::defaulttype::BaseMatrix* W)
 {
@@ -181,30 +212,7 @@ void LinearSolverConstraintCorrection<DataTypes>::addComplianceInConstraintSpace
 #endif
 
     // Compute J
-    const MatrixDeriv& c = this->mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
-    const unsigned int totalNumConstraints = W->rowSize();
-
-    J.resize(totalNumConstraints, numDOFReals);
-
-    MatrixDerivRowConstIterator rowItEnd = c.end();
-
-    for (MatrixDerivRowConstIterator rowIt = c.begin(); rowIt != rowItEnd; ++rowIt)
-    {
-        const int cid = rowIt.index();
-
-        MatrixDerivColConstIterator colItEnd = rowIt.end();
-
-        for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
-        {
-            const unsigned int dof = colIt.index();
-            const Deriv n = colIt.val();
-
-            for (unsigned int r = 0; r < N; ++r)
-            {
-                J.add(cid, dof * N + r, n[r]);
-            }
-        }
-    }
+    this->computeJ(W);
 
     // use the Linear solver to compute J*inv(M)*Jt, where M is the mechanical linear system matrix
     for (unsigned i = 0; i < linearsolvers.size(); i++)

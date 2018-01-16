@@ -73,6 +73,7 @@ PyObject* PythonFactory::toPython(sofa::core::objectmodel::Base* obj)
     }
     else if( obj->toBaseContext() ) return toPython( obj->toBaseContext() );
 
+
     return toPython( s_boundComponents[Base], obj, &SP_SOFAPYTYPEOBJECT(Base) );
 }
 

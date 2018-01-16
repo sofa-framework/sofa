@@ -316,6 +316,9 @@ public:
 
     /// @}
 
+    /** \brief Returns the type of the topology */
+	  virtual sofa::core::topology::TopologyObjectType getTopologyType() const override {return sofa::core::topology::HEXAHEDRON;}
+
 
 protected:
 

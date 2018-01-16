@@ -422,6 +422,40 @@ bool DAGNode::hasAncestor(const BaseContext* context) const
 }
 
 
+/// Mesh Topology that is relevant for this context
+/// (within it or its parents until a mapping is reached that does not preserve topologies).
+core::topology::BaseMeshTopology* DAGNode::getActiveMeshTopology() const
+{
+    if (this->meshTopology)
+        return this->meshTopology;
+    // Check if a local mapping stops the search
+    if (this->mechanicalMapping && !this->mechanicalMapping->sameTopology())
+    {
+        return NULL;
+    }
+    for ( Sequence<core::BaseMapping>::iterator i=this->mapping.begin(), iend=this->mapping.end(); i!=iend; ++i )
+    {
+        if (!(*i)->sameTopology())
+        {
+            return NULL;
+        }
+    }
+    // No mapping with a different topology, continue on to the parents
+    const LinkParents::Container &parents = l_parents.getValue();
+    for ( unsigned int i = 0; i < parents.size() ; i++ )
+    {
+        // if the visitor is run from a sub-graph containing a multinode linked with a node outside of the subgraph, do not consider the outside node by looking on the sub-graph descendancy
+        if ( parents[i] )
+        {
+            core::topology::BaseMeshTopology* res = parents[i]->getActiveMeshTopology();
+            if (res)
+                return res;
+        }
+    }
+    return NULL; // not found in any parents
+}
+
+
 void DAGNode::precomputeTraversalOrder( const core::ExecParams* params )
 {
     // acumulating traversed Nodes

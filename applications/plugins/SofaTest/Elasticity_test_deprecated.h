@@ -28,7 +28,7 @@
 namespace sofa {
 
 template< class DataTypes>
-struct SOFA_TestPlugin_API Elasticity_test_deprecated: public Elasticity_test<DataTypes>
+struct SOFA_SOFATEST_API Elasticity_test_deprecated: public Elasticity_test<DataTypes>
 {
     typedef component::container::MechanicalObject<DataTypes> DOFs;
     typedef typename DOFs::Coord  Coord;

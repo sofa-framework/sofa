@@ -123,8 +123,8 @@ set(SOFA_HAVE_ZLIB ${ZLIB_FOUND})
 
 ## Boost
 # required boost libraries
-find_package(Boost REQUIRED system filesystem locale 
-                   OPTIONAL_COMPONENTS thread date_time )
+find_package(Boost REQUIRED system filesystem locale program_options
+    OPTIONAL_COMPONENTS thread date_time )
 
 set(SOFA_HAVE_BOOST_DATE_TIME ${Boost_DATE_TIME_FOUND})
 set(SOFA_HAVE_BOOST_SYSTEM ${Boost_SYSTEM_FOUND})
