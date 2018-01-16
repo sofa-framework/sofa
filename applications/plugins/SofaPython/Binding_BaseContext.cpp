@@ -162,7 +162,7 @@ static std::ostream& pythonToSofaDataString(PyObject* value, std::ostream& out)
 
 /// object factory
 static PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * args, PyObject * kw, bool printWarnings)
-{
+{    
     BaseContext* context = get_basecontext( self );
 
     char *type;

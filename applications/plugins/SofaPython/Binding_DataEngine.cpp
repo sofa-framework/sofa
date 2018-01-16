@@ -32,6 +32,11 @@ static DataEngine* get_dataengine(PyObject* self) {
     return sofa::py::unwrap<DataEngine>(self);
 }
 
+static PyObject * DataEngine_addField(PyObject *self, PyObject* args, PyObject * kw)
+{
+    msg_warning("Binding") << "ok, can trigger call from within python DataEngine";
+    DataEngine* engine = get_dataengine( self );
+}
 
 static PyObject * DataEngine_updateIfDirty(PyObject *self, PyObject * /*args*/)
 {
@@ -62,6 +67,7 @@ SP_CLASS_METHODS_BEGIN(DataEngine)
 SP_CLASS_METHOD(DataEngine,updateIfDirty)
 SP_CLASS_METHOD(DataEngine,update)
 SP_CLASS_METHOD(DataEngine,isDirty)
+SP_CLASS_METHOD_KW(DataEngine,addField)
 SP_CLASS_METHODS_END
 
 SP_CLASS_TYPE_SPTR(DataEngine,DataEngine,BaseObject)

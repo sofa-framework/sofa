@@ -96,9 +96,6 @@ PythonScriptDataEngine::PythonScriptDataEngine()
                                          "If none are found the parent's context is searched for MechanicalObject." ) )
 {
     m_filelistener = new MyyFileEventListener(this) ;
-//    Data<float>* blah=  new Data<float>();
-//    this->addData(blah, "mydata") ;
-//    this->addInput(blah);
 }
 PythonScriptDataEngine::~PythonScriptDataEngine()
 {
@@ -210,6 +207,14 @@ void PythonScriptDataEngine::handleEvent(Event *event)
 
 void PythonScriptDataEngine::init()
 {
+    Data<float>* blah;
+    blah = new Data<float>(this->initData(blah,"myblah","blup"));
+    blah->setValue(50);
+
+    addInput(blah);
+
+    //    d_Test(initData(&d_Test, "Test","Some info Text"));
+
     addInput(&d_tetrahedra);
     addInput(&d_X0);
     addOutput(&d_tetrahedronIndices);
@@ -226,9 +231,16 @@ void PythonScriptDataEngine::init()
 void PythonScriptDataEngine::script_init()
 {
     //msg_warning() << "wee, passing in script_update()";
+//    msg_warning()<< "awa, passing through here again";
     PythonEnvironment::gil lock(__func__);
     SP_CALL_MODULEFUNC_NOPARAM(m_Func_init)
 }
+
+PyObject * PythonScriptDataEngine::script_addField(PyObject *self, PyObject * args, PyObject *kw)
+{
+
+}
+
 
 }
 }

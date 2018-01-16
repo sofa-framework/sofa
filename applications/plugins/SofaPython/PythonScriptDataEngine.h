@@ -6,6 +6,8 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include "ScriptDataEngine.h"
 #include <sofa/defaulttype/Vec3Types.h>
+#include "PythonFactory.h"
+#include "PythonToSofa.inl"
 
 
 
@@ -65,14 +67,15 @@ protected:
     sofa::helper::system::FileEventListener* m_filelistener {nullptr} ;
 
     PyObject *m_ScriptDataEngineClass      {nullptr} ;   // class implemented in the script to use
-                                                         // to instanciate the python controller
-    PyObject *m_ScriptDataEngineInstance   {nullptr} ;   // instance of m_ScriptControllerClass
+                                                         // to instanciate the python DataEngine
+    PyObject *m_ScriptDataEngineInstance   {nullptr} ;   // instance of m_ScriptDataEngineClass
     PyObject *m_Func_update                {nullptr} ;
     PyObject *m_Func_init                  {nullptr} ;
 
     virtual void script_update() override;
     virtual void script_init() override;
     virtual void loadScript() override;
+    static PyObject * script_addField(PyObject * self, PyObject * args, PyObject * kw);
     void init() override;
 
 
@@ -90,6 +93,7 @@ public:
     sofa::core::objectmodel::Data<vector<Tetra> > d_tetrahedraComputed; // Consider that the goal is to use the script to compute a set of tetrahedra
     sofa::core::objectmodel::Data<vector<Tetra> > d_tetrahedraOutliers; // Consider that the goal is to use the script to compute a set of tetrahedra
     sofa::core::objectmodel::Data<SetIndex> d_tetrahedronIndices;
+    sofa::core::objectmodel::Data<float> d_Test;
 };
 
 }
