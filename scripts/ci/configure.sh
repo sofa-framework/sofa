@@ -129,7 +129,7 @@ case $CI_OPTIONS in
         fi
         
         # HeadlessRecorder is Linux only for now
-        if [[ $(uname) = Linux ]] && [ -x "$(command -v ffmpeg)" ]; then
+        if [[ $(uname) = Linux ]]; then
             append "-DSOFAGUI_HEADLESS_RECORDER=ON"
         fi
 
