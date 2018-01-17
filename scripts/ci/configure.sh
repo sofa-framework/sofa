@@ -127,6 +127,11 @@ case $CI_OPTIONS in
         if [[ -n "$CI_BULLET_DIR" ]]; then
             append "-DBullet_DIR=$CI_BULLET_DIR"
         fi
+        
+        # HeadlessRecorder is Linux only for now
+        if [[ $(uname) = Linux ]] && [ -x "$(command -v ffmpeg)" ]; then
+            append "-DSOFAGUI_HEADLESS_RECORDER=ON"
+        fi
 
         ### Plugins
         append "-DPLUGIN_ARTRACK=ON"
@@ -184,10 +189,6 @@ case $CI_OPTIONS in
         append "-DPLUGIN_SOFADISTANCEGRID=ON"
         # Requires HAPI libraries.
         append "-DPLUGIN_SOFAHAPI=OFF"
-        # HeadlessRecorder is Linux only for now
-        if [[ $(uname) = Linux ]]; then 
-            append "-DPLUGIN_SOFAHEADLESSRECORDER=ON"
-        fi
         append "-DPLUGIN_SOFAIMPLICITFIELD=ON"
         # Not sure if worth maintaining
         append "-DPLUGIN_SOFASIMPLEGUI=ON"
