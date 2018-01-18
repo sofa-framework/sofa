@@ -76,6 +76,10 @@ static const std::string& getExecutableDirectory();
 /// @deprecated Use sofa::helper::system::PluginRepository.getFirstPath() instead.
 static const std::string& getPluginDirectory();
 
+
+/// @brief Get the relative path for the root directory from the executable dir
+static const char* sofaRootFromExecutable();
+
 /// @brief Get the path to the "root" path of Sofa (i.e. the build directory or
 /// the installation prefix).
 ///

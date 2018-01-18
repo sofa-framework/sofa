@@ -219,6 +219,31 @@ static std::string computeExecutablePath()
     return FileSystem::cleanPath(path);
 }
 
+/*static*/
+const char* Utils::sofaRootFromExecutable()
+{
+	// Read the paths to the share/ and examples/ directories from etc/sofa.ini,
+	const std::string etcDir = Utils::getSofaPathPrefix() + "/etc";
+	const std::string sofaIniFilePath = etcDir + "/sofa.ini";
+	std::map<std::string, std::string> iniFileValues = Utils::readBasicIniFile(sofaIniFilePath);
+	if (iniFileValues.find("SOFAROOT_FROM_EXECUTABLE") != iniFileValues.end())
+	{
+		std::string rootFromExecutable_Dir = iniFileValues["SOFAROOT_FROM_EXECUTABLE"];
+		char* test = (char*)malloc(1 + strlen(rootFromExecutable_Dir.c_str()) * sizeof(char));
+		if (test)
+		{
+			strcpy(test, rootFromExecutable_Dir.c_str());
+			return test;
+		}
+	}
+	else
+	{
+		msg_error("Utils") << "SOFAROOT_FROM_EXECUTABLE is missing from sofa ini file";
+	}
+	msg_warning("Utils") << "Default './' sofa root from executable will be use, this is not an expected behavior.";
+	return "./"; // Default behavior
+}
+
 const std::string& Utils::getExecutablePath()
 {
     static const std::string path = computeExecutablePath();
