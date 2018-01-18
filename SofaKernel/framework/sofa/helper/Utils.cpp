@@ -224,7 +224,7 @@ const char* Utils::sofaRootFromExecutable()
 {
 	// Read the paths to the share/ and examples/ directories from etc/sofa.ini,
 	const std::string etcDir = Utils::getSofaPathPrefix() + "/etc";
-	const std::string sofaIniFilePath = etcDir + "/sofa.ini";
+	const std::string sofaIniFilePath = etcDir + "/installedSofa.ini";
 	std::map<std::string, std::string> iniFileValues = Utils::readBasicIniFile(sofaIniFilePath);
 	if (iniFileValues.find("SOFAROOT_FROM_EXECUTABLE") != iniFileValues.end())
 	{
