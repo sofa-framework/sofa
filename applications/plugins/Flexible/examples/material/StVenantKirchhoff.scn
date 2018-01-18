@@ -1,8 +1,7 @@
 <?xml version="1.0"?>
 <Node 	name="Root" gravity="0 -0.5 0 " dt="1"  >
   
-      <RequiredPlugin pluginName="Flexible"/>
-  
+    <RequiredPlugin name='Flexible' />
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <DefaultAnimationLoop />
     <DefaultVisualManagerLoop />
@@ -102,9 +101,9 @@
 	     <UniformMass totalMass="200"/>
 
              <Node>
+                  <EdgeSetTopologyContainer src="@../mesh"/>
                   <MechanicalObject template="Vec1d" name="parent" />
                   <HEMLStVKForceField youngModulus="2000" poissonRatio="0.2"/>
-                  <EdgeSetTopologyContainer src="@../mesh"/>
                   <SquareDistanceMapping  applyRestPosition="1" computeDistance="1" geometricStiffness="2"/>   <!--warning rest pos must be computed -->
             </Node>
 
