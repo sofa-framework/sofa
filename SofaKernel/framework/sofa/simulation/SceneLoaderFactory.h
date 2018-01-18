@@ -135,6 +135,10 @@ public:
     /// Get the list of loaders
     SceneLoaderList* getEntries() {return &registry;}
 
+    /// Get the list of supported extension. It returns a vector of string
+    /// but it is RVO optimized so the overhead is reduced.
+    std::vector<std::string> extensions() ;
+
 };
 
 } // namespace simulation
