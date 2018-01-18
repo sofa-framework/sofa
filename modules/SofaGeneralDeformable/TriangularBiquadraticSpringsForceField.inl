@@ -183,13 +183,12 @@ template <class DataTypes> TriangularBiquadraticSpringsForceField<DataTypes>::~T
 
 template <class DataTypes> void TriangularBiquadraticSpringsForceField<DataTypes>::init()
 {
-//	serr << "initializing TriangularBiquadraticSpringsForceField" << sendl;
     this->Inherited::init();
     _topology = this->getContext()->getMeshTopology();
 
     if (_topology->getNbTriangles()==0)
     {
-        serr << "ERROR(TriangularBiquadraticSpringsForceField): object must have a Triangular Set Topology."<<sendl;
+        msg_error() << "Object must have a Triangular Set Topology." ;
         return;
     }
     updateLameCoefficients();
@@ -281,6 +280,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(const core::Mec
     if (f_useAngularSprings.getValue()==true)
     {
         Real JJ;
+        std::vector<int> flippedTriangles ;
         for(int i=0; i<nbTriangles; i++ )
         {
             tinfo=&triangleInf[i];
@@ -322,7 +322,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(const core::Mec
                             tinfo->lastValidNormal=tinfo->currentNormal;
                         else
                         {
-                            serr << "triangle "<<i<<" has flipped"<<sendl;
+                            flippedTriangles.push_back(i);
                             tinfo->currentNormal*= -1.0;
                         }
                     }
@@ -336,8 +336,23 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(const core::Mec
                 }
             }
         }
-        //	serr << "tinfo->gamma[0] "<<tinfo->gamma[0]<<sendl;
-
+        /// Prints the flipped triangles in a single message to avoid flooding the user.
+        /// Only the 50 first indices are showned.
+        if(flippedTriangles.size()!=0){
+            std::stringstream tmp ;
+            tmp << "[" ;
+            for(size_t i=0;i<std::min((size_t)50, flippedTriangles.size());i++)
+            {
+                tmp << ", " << flippedTriangles[i] ;
+            }
+            if(flippedTriangles.size()>=50){
+                tmp << ", ..." << flippedTriangles.size()-50 << " more]" ;
+            }
+            else{
+                tmp << "]" ;
+            }
+            msg_warning() << "The following triangles have flipped: " << tmp.str() ;
+        }
     }
     edgeInfo.endEdit();
     triangleInfo.endEdit();
@@ -373,7 +388,6 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addDForce(const core::Me
         Coord dpj,dpk,dpi,dp;
         Mat3 m1,m2;
 
-        //	serr <<"updating matrix"<<sendl;
         updateMatrix=false;
         for(int l=0; l<nbTriangles; l++ )
         {
@@ -381,7 +395,6 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addDForce(const core::Me
             /// describe the jth edge index of triangle no i
             const EdgesInTriangle &tea= _topology->getEdgesInTriangle(l);
             /// describe the jth vertex index of triangle no i
-//			const Triangle &ta= _topology->getTriangle(l);
 
             // store points
             for(k=0; k<3; ++k)
@@ -515,7 +528,6 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::updateLameCoefficients()
 {
     lambda= f_youngModulus.getValue()*f_poissonRatio.getValue()/(1-f_poissonRatio.getValue()*f_poissonRatio.getValue());
     mu = f_youngModulus.getValue()*(1-f_poissonRatio.getValue())/(1-f_poissonRatio.getValue()*f_poissonRatio.getValue());
-//	serr << "initialized Lame coef : lambda=" <<lambda<< " mu="<<mu<<sendl;
 }
 
 
