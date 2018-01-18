@@ -4,7 +4,7 @@
 
 find_package(SofaBase REQUIRED)
 find_package(Newmat REQUIRED)
-find_package(CImg REQUIRED)
+find_package(CImgPlugin REQUIRED)
 find_package(Freenect QUIET)
 find_package(DiffusionSolver CONFIG REQUIRED)
 

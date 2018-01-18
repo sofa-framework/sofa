@@ -75,15 +75,10 @@ if( SofaPython_FOUND )
     list(APPEND HEADER_FILES python/Binding_ImageData.h python/Binding_ImageData.inl)
 endif()
 
-
-
-
-
 find_package(SofaBase REQUIRED)
 find_package(SofaGeneral REQUIRED)
 find_package(Newmat REQUIRED)
-find_package(CImg REQUIRED)
-
+find_package(CImgPlugin REQUIRED)
 
 configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/image/config.h")
 install(FILES "${CMAKE_BINARY_DIR}/include/image/config.h" DESTINATION "include/image")
@@ -130,7 +125,7 @@ endif()
 find_package(DiffusionSolver CONFIG REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
-target_link_libraries(${PROJECT_NAME} SofaCore SofaComponentBase SofaGeneralVisual)
+target_link_libraries(${PROJECT_NAME} SofaCore SofaComponentBase SofaGeneralVisual CImgPlugin)
 target_link_libraries(${PROJECT_NAME} DiffusionSolver)
 target_link_libraries(${PROJECT_NAME} newmat)
 
@@ -141,7 +136,7 @@ endif()
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CImg_INCLUDE_DIRS}>")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CImgPlugin_INCLUDE_DIRS}>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 if(FREENECT_FOUND)
     target_include_directories(${PROJECT_NAME} PUBLIC "${FREENECT_INCLUDE_DIR}")

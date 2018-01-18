@@ -80,15 +80,18 @@ void SceneCheckerVisitor::validate(Node* node)
     std::stringstream tmp;
     for(SceneCheck::SPtr& check : m_checkset)
     {
-        tmp << "- " << check->getName() << msgendl ;
+        tmp << check->getName() << ", " ;
         check->doInit(node) ;
     }
 
-    msg_info("SceneChecker") << "Validating node '"<< node->getPathName() << "'. " << msgendl
-                             << "Activate checkers: " << msgendl
-                             << tmp.str() ;
+    msg_info("SceneChecker") << "Validating node '"<< node->getPathName() << " with: [" << tmp.str() << "]" ;
 
     execute(node) ;
+
+    for(SceneCheck::SPtr& check : m_checkset)
+    {
+        check->doPrintSummary() ;
+    }
 }
 
 

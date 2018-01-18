@@ -1,20 +1,18 @@
 cmake_minimum_required(VERSION 3.1)
 
-# Common extlibs dependency(ies)
-add_subdirectory(../../extlibs/CImg extlibs/CImg)
-
 find_package(SofaFramework)
 
+sofa_add_plugin(CImgPlugin CImgPlugin ON) # ON by default and first as it is used by other plugins.
 sofa_add_plugin(SofaEulerianFluid SofaEulerianFluid)
 sofa_add_plugin(SofaSphFluid SofaSphFluid ON)
 sofa_add_plugin(SofaMiscCollision SofaMiscCollision ON)
 sofa_add_plugin(SofaDistanceGrid SofaDistanceGrid)
 sofa_add_plugin(SofaImplicitField SofaImplicitField)
 sofa_add_plugin(SofaVolumetricData SofaVolumetricData)  ##TRANSITIONAL DEPEND ON DISTANCEGRID & IMPLICIT
-sofa_add_plugin(image image)
+sofa_add_plugin(image image)           # Depends on CImagePlugin
 sofa_add_plugin(Compliant Compliant)
 sofa_add_plugin(CGALPlugin CGALPlugin) # Depends on image
-sofa_add_plugin(Flexible Flexible)     # Depends on image
+sofa_add_plugin(Flexible Flexible)     # Depends on image & CImagePlugin
 sofa_add_plugin(Registration Registration) # Depends on image, SofaPython, SofaSimpleGUI and #SOFADISTANCEGRID
 sofa_add_plugin(BulletCollisionDetection BulletCollisionDetection) # Depends on Compliant
 sofa_add_plugin(ColladaSceneLoader ColladaSceneLoader) # Depends on Flexible and image
@@ -43,7 +41,6 @@ sofa_add_plugin(SofaCarving SofaCarving)
 sofa_add_plugin(RigidScale RigidScale)
 sofa_add_plugin(LeapMotion LeapMotion)
 sofa_add_plugin(Geomagic Geomagic)
-sofa_add_plugin(CImgPlugin CImgPlugin ON) # ON by default
 
 # SOFA_WITH_EXPERIMENTAL_FEATURES_17_12
 sofa_add_plugin(PSL PSL ON)

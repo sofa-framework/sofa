@@ -4,7 +4,6 @@ project(CImg)
 
 install(FILES
         CImg.h
-        SOFACImg.h
         DESTINATION include/CImg
         COMPONENT CImg_headers)
 

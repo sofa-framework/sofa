@@ -77,9 +77,17 @@ void RequiredPlugin::loadPlugin()
     }
     if (suffixVec.empty())
         suffixVec.push_back(defaultSuffix);
+
+    /// In case the pluginName is not set we copy the provided name into the set to load.
+    if(!d_pluginName.isSet() && name.isSet())
+    {
+        helper::WriteOnlyAccessor<Data<helper::vector<std::string>>> pluginsName = d_pluginName ;
+        pluginsName.push_back(this->getName());
+    }
+
     const helper::vector<std::string>& nameVec = d_pluginName.getValue();
     helper::vector<std::string> nameVecCopy=nameVec;
-    if(nameVec.empty()) nameVecCopy.push_back(this->getName());
+
     helper::vector< std::string > loaded;
     helper::vector< std::string > failed;
     std::ostringstream errmsg;
