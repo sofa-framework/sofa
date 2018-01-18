@@ -1,9 +1,7 @@
 #ifndef __DIFFUSIONSOLVER_H__
 #define __DIFFUSIONSOLVER_H__
 
-#define cimg_display 0
-#include <CImg/CImg.h>
-
+#include <CImgPlugin/SOFACImg.h>
 
 #ifdef WIN32
 #	define EXPORT_DYNAMIC_LIBRARY __declspec( dllexport )
