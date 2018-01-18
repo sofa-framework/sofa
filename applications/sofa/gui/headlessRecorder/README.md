@@ -6,7 +6,7 @@ HeadlessRecorder is, as its name suggest, a new gui plugin who allow users to re
 
 Ubuntu :
 ```
-$ sudo apt-get install libavcodec-dev libswscale-dev libavutil-dev 
+$ sudo apt-get install libavcodec-dev libswscale-dev libavutil-dev libavformat-dev 
 ```
 
 ## How to use it
