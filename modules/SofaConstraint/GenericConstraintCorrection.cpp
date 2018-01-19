@@ -36,19 +36,18 @@ namespace component
 namespace constraintset 
 {
 
-using helper::vector;
-using std::string;
-using core::objectmodel::BaseContext;
-using core::behavior::LinearSolver;
+using sofa::helper::vector;
+using sofa::core::objectmodel::BaseContext;
+using sofa::core::behavior::LinearSolver;
 using sofa::core::behavior::BaseConstraintCorrection;
-using core::behavior::ConstraintSolver;
-using defaulttype::BaseMatrix;
-using core::ConstraintParams;
-using core::MultiVecDerivId;
-using core::MultiVecCoordId;
-using core::ExecParams;
-using defaulttype::BaseVector;
-using core::RegisterObject;
+using sofa::core::behavior::ConstraintSolver;
+using sofa::defaulttype::BaseMatrix;
+using sofa::core::ConstraintParams;
+using sofa::core::MultiVecDerivId;
+using sofa::core::MultiVecCoordId;
+using sofa::core::ExecParams;
+using sofa::defaulttype::BaseVector;
+using sofa::core::RegisterObject;
 
 
 GenericConstraintCorrection::GenericConstraintCorrection()
@@ -67,7 +66,7 @@ void GenericConstraintCorrection::bwdInit()
 
     // Find linear solvers
     m_linearSolvers.clear();
-    const vector<string>& solverNames = d_linearSolversName.getValue();
+    const vector<std::string>& solverNames = d_linearSolversName.getValue();
     if(solverNames.size() == 0)
     {
         LinearSolver* s = NULL;
@@ -246,7 +245,7 @@ void GenericConstraintCorrection::computeAndApplyVelocityCorrection(const Constr
         m_linearSolvers[i]->applyContactForce(lambda,0.0,velocityFactor);
 }
 
-void GenericConstraintCorrection::applyContactForce(const defaulttype::BaseVector *f)
+void GenericConstraintCorrection::applyContactForce(const BaseVector *f)
 {
     if (!m_ODESolver) return;
 
@@ -257,7 +256,7 @@ void GenericConstraintCorrection::applyContactForce(const defaulttype::BaseVecto
         m_linearSolvers[i]->applyContactForce(f,positionFactor,velocityFactor);
 }
 
-void GenericConstraintCorrection::getComplianceMatrix(defaulttype::BaseMatrix* Minv) const
+void GenericConstraintCorrection::getComplianceMatrix(BaseMatrix* Minv) const
 {
     if (!m_ODESolver) return;
 
