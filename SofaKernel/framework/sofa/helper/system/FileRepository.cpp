@@ -43,6 +43,8 @@
 #include <sstream>
 #include <sofa/helper/logging/Messaging.h>
 
+#include <sofa/helper/Utils.h>
+
 #ifdef WIN32
 #define ON_WIN32 true
 #else
@@ -76,7 +78,7 @@ std::string cleanPath( const std::string& path )
 
 /// Initialize PluginRepository with the current working directory
 #ifdef WIN32
-FileRepository PluginRepository("SOFA_PLUGIN_PATH", "../bin" );
+FileRepository PluginRepository("SOFA_PLUGIN_PATH", Utils::sofaRootFromExecutable());
 #else
 FileRepository PluginRepository("SOFA_PLUGIN_PATH", "../lib");
 #endif
@@ -106,12 +108,11 @@ FileRepository::FileRepository(const char* envVar, const char* relativePath)
             if (p1>p0+1)
             {
                 std::string p = path.substr(p0,p1-p0);
-                addLastPath(SetDirectory::GetRelativeFromProcess(p.c_str()));
+	            addLastPath(SetDirectory::GetRelativeFromProcess(p.c_str()));
             }
             p0 = p1+1;
         }
     }
-    //print();
 }
 
 FileRepository::~FileRepository()

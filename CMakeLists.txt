@@ -398,6 +398,11 @@ install(FILES "${CMAKE_SOURCE_DIR}/Authors.txt" DESTINATION .)
 ## build directory, this one contains relative paths to the installed resource directory.
 set(SHARE_DIR "../share/sofa")
 set(EXAMPLES_DIR "../share/sofa/examples")
+if(MSVC)
+	set(SOFAROOT_FROM_EXECUTABLE ".\\")
+else()
+	set(SOFAROOT_FROM_EXECUTABLE "./")
+endif()
 configure_file(${SOFA_KERNEL_SOURCE_DIR}/etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/installedSofa.ini")
 install(FILES "${CMAKE_BINARY_DIR}/etc/installedSofa.ini" DESTINATION etc RENAME sofa.ini)
 
