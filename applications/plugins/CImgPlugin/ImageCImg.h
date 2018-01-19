@@ -1,17 +1,10 @@
 #ifndef SOFA_HELPER_IO_IMAGECIMG_H
 #define SOFA_HELPER_IO_IMAGECIMG_H
 
-#include <CImgPlugin.h>
-
-#include <sofa/helper/io/Image.h>
 #include <string>
-#include <cassert>
 #include <vector>
-
-#include <sofa/helper/system/config.h>
-#include <sofa/helper/logging/MessageDispatcher.h>
-#include <sofa/helper/logging/CountingMessageHandler.h>
-#include <sofa/helper/logging/LoggingMessageHandler.h>
+#include <sofa/helper/io/Image.h>
+#include <CImgPlugin.h>
 
 namespace sofa
 {

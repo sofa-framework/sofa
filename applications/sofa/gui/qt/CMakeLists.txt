@@ -29,10 +29,12 @@ set(MOC_HEADER_FILES
     SofaPluginManager.h
     SofaVideoRecorderManager.h
     WDoubleLineEdit.h
+    panels/QDocBrowser.h
 )
 
 # these header files do not need MOCcing
 set(HEADER_FILES
+    GuiDataRepository.h
     FileManagement.h
     GraphListenerQListView.h
     PickHandlerCallBacks.h
@@ -80,6 +82,8 @@ set(SOURCE_FILES
     TableDataWidget.cpp
     WDoubleLineEdit.cpp
     viewer/SofaViewer.cpp
+    panels/QDocBrowser.cpp
+    GuiDataRepository.cpp
 )
 
 set(UI_FILES
@@ -90,6 +94,7 @@ set(UI_FILES
     PluginManager.ui
     VideoRecorderManager.ui
 )
+
 
 if(SOFA_DUMP_VISITOR_INFO)
     list(APPEND MOC_HEADER_FILES
@@ -214,3 +219,7 @@ endif()
 
 
 sofa_install_targets(SofaGui SofaGuiQt "sofa/gui/qt")
+
+file(INSTALL "resources" DESTINATION "../../share/sofa/gui/qt")
+install(FILES ${HEADER_FILES} DESTINATION "include/sofa/gui/qt")
+install(FILES ${MOC_HEADER_FILES} DESTINATION "include/sofa/gui/qt")

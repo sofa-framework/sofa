@@ -22,7 +22,7 @@
 #ifndef SOFAPYTHON_CONFIG_H
 #define SOFAPYTHON_CONFIG_H
 
-#include <SofaGui/config.h>
+#include <sofa/config/sharedlibrary_defines.h>
 
 #define SOFAPYTHON_VERSION_STR "${SOFAPYTHON_VERSION}"
 #define SOFAPYTHON_MAJOR_VERSION ${SOFAPYTHON_MAJOR_VERSION}

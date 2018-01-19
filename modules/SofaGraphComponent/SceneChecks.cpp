@@ -55,6 +55,14 @@ const std::string SceneCheckDuplicatedName::getDesc()
     return "Check there is not duplicated name in the scenegraph";
 }
 
+void SceneCheckDuplicatedName::doInit(Node* node)
+{
+    SOFA_UNUSED(node) ;
+    m_hasDuplicates = false ;
+    m_duplicatedMsg.str("") ;
+    m_duplicatedMsg.clear() ;
+}
+
 void SceneCheckDuplicatedName::doCheckOn(Node* node)
 {
     std::map<std::string, int> duplicated ;
@@ -77,15 +85,26 @@ void SceneCheckDuplicatedName::doCheckOn(Node* node)
     {
         if(p.second!=1)
         {
-            tmp << "- duplicated '" << p.first << "'" << msgendl ;
+            tmp << "'" << p.first << "', " ;
         }
     }
+
     if(!tmp.str().empty())
     {
-       msg_warning("SceneCheckDuplicatedName") << "In '"<<  node->getPathName() <<"'" << msgendl
-                                               << tmp.str() ;
+        m_hasDuplicates = true ;
+        m_duplicatedMsg << "- Found duplicated names "<<"' [" << tmp.str() << "] in node '"<<  node->getPathName() << "'" << msgendl ;
     }
+}
 
+void SceneCheckDuplicatedName::doPrintSummary()
+{
+    if(m_hasDuplicates)
+    {
+        msg_warning("SceneCheckDuplicatedName") << msgendl
+                                                << m_duplicatedMsg.str()
+                                                << "Nodes with similar names at the same leve of your scene can "
+                                                   "crash certain operations, please them rename" ;
+    }
 }
 
 const std::string SceneCheckMissingRequiredPlugin::getName()
@@ -110,16 +129,40 @@ void SceneCheckMissingRequiredPlugin::doCheckOn(Node* node)
                 std::string pluginName = it->second->getTarget() ;
                 std::string path = PluginManager::getInstance().findPlugin(pluginName) ;
                 if( PluginManager::getInstance().pluginIsLoaded(path)
-                        && m_requiredPlugins.find(pluginName) == m_requiredPlugins.end() )
+                        && m_loadedPlugins.find(pluginName) == m_loadedPlugins.end() )
                 {
-                    msg_warning("SceneChecker")
-                            << "This scene is using component '" << object->getClassName() << "'. " << msgendl
-                            << "This component is part of the '" << pluginName << "' plugin but there is no <RequiredPlugin name='" << pluginName << "' /> directive in your scene." << msgendl
-                            << "Your scene may not work on a sofa environment that does not have pre-loaded the plugin." << msgendl
-                            << "To fix your scene and remove this warning you need to add the RequiredPlugin directive at the beginning of your scene. ";
+                    if( m_requiredPlugins.empty() ){
+                        m_requiredPlugins[pluginName].push_back(object->getClassName()) ;
+                    }else{
+                        std::vector<std::string>& t = m_requiredPlugins[pluginName] ;
+                        if( std::find(t.begin(), t.end(), object->getClassName()) ==t.end() )
+                            t.push_back(object->getClassName()) ;
+                    }
                 }
             }
         }
+    }
+}
+
+void SceneCheckMissingRequiredPlugin::doPrintSummary()
+{
+    if(!m_requiredPlugins.empty())
+    {
+        std::stringstream tmp ;
+        for(auto& kv : m_requiredPlugins)
+        {
+            tmp << "<RequiredPlugin name='"<<kv.first<<"'> <!-- Needed to use components [" ;
+            for(auto& name : kv.second)
+            {
+                tmp << name << ", " ;
+            }
+            tmp <<"]-->" << msgendl ;
+        }
+        msg_warning("SceneChecker")
+                << "This scene is using component defined in plugins but are not importing the requierd plugins." << msgendl
+                << "Your scene may not work on a sofa environment with different pre-loaded plugins." << msgendl
+                << "To fix your scene and remove this warning you just need to cut & paste the following lines at the begining of your scene (if it is a .scn): " << msgendl
+                << tmp.str() ;
     }
 }
 
@@ -128,8 +171,16 @@ void SceneCheckMissingRequiredPlugin::doInit(Node* node)
     helper::vector< RequiredPlugin* > plugins ;
     node->getTreeObjects< RequiredPlugin >(&plugins) ;
 
+    m_requiredPlugins.clear() ;
+    m_loadedPlugins.clear() ;
+
     for(auto& plugin : plugins)
-        m_requiredPlugins[plugin->getName()] = true ;
+    {
+        for(auto& pluginName : plugin->d_pluginName.getValue())
+        {
+            m_loadedPlugins[pluginName] = true ;
+        }
+    }
 }
 
 

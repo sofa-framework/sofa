@@ -1,0 +1,24 @@
+Node : {
+    name : "root"
+
+    Python : '''aGlobal="Fail"'''
+
+    Node : {
+        ### This should modify the global value
+        name : "child"
+        Python : '''
+                 print("BEFORE: Value of A GLOBAL "+aGlobal)
+                 aGlobal="Success"
+                 print("Value of A GLOBAL "+aGlobal)
+                 '''
+    }
+
+    Python : '''
+             print("AFTER: Value of A GLOBAL "+aGlobal)
+             '''
+
+
+    TestResult : aGlobal
+}
+
+

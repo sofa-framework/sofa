@@ -114,6 +114,9 @@ fi
 "$src_dir/scripts/ci/tests.sh" print-summary "$build_dir" "$src_dir"
 if [[ -n "$CI_TEST_SCENES" ]]; then
     "$src_dir/scripts/ci/scene-tests.sh" print-summary "$build_dir" "$src_dir"
+
+    # Clamping warning file to avoid Jenkins overflow
+    "$src_dir/scripts/ci/scene-tests.sh" clamp-warnings "$build_dir" "$src_dir" 5000
 fi
 
 send-message-to-dashboard "status=success"

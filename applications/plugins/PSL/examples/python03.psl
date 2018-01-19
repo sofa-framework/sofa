@@ -1,0 +1,8 @@
+Node : {
+    name : "root"
+
+    MechanicalObject : {
+        name : 'dynamicName'+str(3)
+        position : range(0,100)
+    }
+}
