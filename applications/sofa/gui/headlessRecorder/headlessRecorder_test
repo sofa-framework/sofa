@@ -2,6 +2,7 @@
 
 date=`date '+%Y-%m-%dT%H:%M:%S'`
 testName="headlessRecorder_test"
+arg0=$0
 arg1=$1
 output="${arg1#*:}"
 reportBegin="<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
@@ -14,6 +15,8 @@ tests=0
 failures=0
 errors=0
 timer=0
+echo "$arg0"
+echo "OK"
 
 # first test, check result file size
 run_test()
@@ -25,7 +28,7 @@ run_test()
 
     echo "[ RUN      ] $testName.$currentTestName"
     STARTTIME=$(date +%s%N | cut -b1-13)
-    /home/douaille/SOFA/build-headlessRecorder-Desktop_Qt_5_9_2_GCC_64bit-Default/bin/runSofa -g hRecorder --video --fps=60 -a --filename tmp
+    ${arg0/$testName/runSofa} -g hRecorder --video --fps=60 -a --filename tmp
     ENDTIME=$(date +%s%N | cut -b1-13)
     local fileSize=$(stat -c%s "tmp.avi")
     rm tmp.avi
