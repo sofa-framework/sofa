@@ -85,13 +85,6 @@ int main(int argc, char** argv)
         sofa::helper::system::DataRepository.addFirstPath(examplesDir);
     }
 
-#ifdef WIN32
-    const std::string pluginDir = Utils::getExecutableDirectory();
-#else
-    const std::string pluginDir = Utils::getSofaPathPrefix() + "/lib";
-#endif
-    sofa::helper::system::PluginRepository.addFirstPath(pluginDir);
-
 	Q_INIT_RESOURCE(icons);
     sofa::gui::qt::SofaModeler* sofaModeler = new sofa::gui::qt::SofaModeler();
 
