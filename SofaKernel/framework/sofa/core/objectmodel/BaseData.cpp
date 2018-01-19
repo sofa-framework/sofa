@@ -89,6 +89,21 @@ BaseData::BaseData( const BaseInitData& init)
     if (m_owner) m_owner->addData(this, m_name);
 }
 
+BaseData::BaseData( const BaseInitData& init, int nothing)
+    : help(init.helpMsg), ownerClass(init.ownerClass), group(init.group), widget(init.widget)
+    , m_counters(), m_isSets(), m_dataFlags(init.dataFlags)
+    , m_owner(init.owner), m_name(init.name)
+    , parentBaseData(initLink("parent", "Linked Data, from which values are automatically copied"))
+{
+    addLink(&inputs);
+    addLink(&outputs);
+    m_counters.assign(0);
+    m_isSets.assign(false);
+    //setAutoLink(true);
+    if (m_owner) m_owner->addData(this, m_name);
+}
+
+
 BaseData::~BaseData()
 {
 }

@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include "binding_basefcn.h"
 #include "Binding_Base.h"
 #include "Binding_Data.h"
 #include "Binding_Link.h"
@@ -63,7 +64,7 @@ static char* getStringCopy(char *c)
     return tmp ;
 }
 
-static PyObject * Base_addNewData(PyObject *self, PyObject *args ) {
+PyObject * Base_addNewData(PyObject *self, PyObject *args ) {
     Base* obj = get_base(self);
     char* dataName;
     char* dataClass;

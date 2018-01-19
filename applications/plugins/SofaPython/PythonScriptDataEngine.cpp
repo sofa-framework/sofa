@@ -208,7 +208,8 @@ void PythonScriptDataEngine::handleEvent(Event *event)
 void PythonScriptDataEngine::init()
 {
     Data<float>* blah;
-    blah = new Data<float>(this->initData(blah,"myblah","blup"));
+    blah = new Data<float>(PythonScriptDataEngine::initData_("myblah","blup", this),0);
+//    blah = new Data<float>(this->initData(blah,"myblah","blup"));
     blah->setValue(50);
 
     addInput(blah);

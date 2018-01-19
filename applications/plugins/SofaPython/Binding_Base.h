@@ -25,5 +25,6 @@
 #include "PythonMacros.h"
 
 SP_DECLARE_CLASS_TYPE(Base)
+//static PyObject * Base_addNewData(PyObject *self, PyObject *args );
 
 #endif // BINDING_BASE_H

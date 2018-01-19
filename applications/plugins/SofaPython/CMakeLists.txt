@@ -14,6 +14,7 @@ set(SOFA_HAVE_PYTHON 1)
 set(HEADER_FILES
     Binding.h
     Binding_Base.h
+    binding_basefcn.h
     Binding_BaseContext.h
     Binding_BaseLoader.h
     Binding_BaseMapping.h
