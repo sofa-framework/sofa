@@ -74,7 +74,7 @@ using defaulttype::BaseMatrix;
 
 template <class DataTypes, class MassType>
 UniformMass<DataTypes, MassType>::UniformMass()
-    : d_mass ( initData ( &d_mass, MassType ( 1.0f ), "mass",
+    : d_vertexMass ( initData ( &d_vertexMass, MassType ( 1.0f ), "mass",
                           "Specify a unique mass for all the particles.                      "
                           "If the mass attribute is set then totalmass is deduced from it     "
                           "using the following formula: totalmass = mass * number of particules"
@@ -139,7 +139,7 @@ void UniformMass<DataTypes, MassType>::constructor_message()
 template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::setMass ( const MassType& m )
 {
-    d_mass.setValue ( m );
+    d_vertexMass.setValue ( m );
 }
 
 template <class DataTypes, class MassType>
@@ -185,30 +185,30 @@ void UniformMass<DataTypes, MassType>::reinit()
             indices.push_back(i);
         m_doesTopoChangeAffect = true;
     }
-    if(d_totalMass.getValue() < 0.0 || d_mass.getValue() < 0.0){
+    if(d_totalMass.getValue() < 0.0 || d_vertexMass.getValue() < 0.0){
         msg_warning(this) << "The mass or totalmass data field cannot have negative values.\n"
                              "Switching back to the default value, mass = 1.0 and totalmass = mass * num_position. \n"
                              "To remove this warning you need to use positive values in totalmass and mass data field";
 
         d_totalMass.setValue(0.0) ;
-        d_mass.setValue(1.0) ;
+        d_vertexMass.setValue(1.0) ;
     }
 
     //Update mass and totalMass
     if (d_totalMass.getValue() > 0)
     {
-        if (d_mass.isSet()) {
+        if (d_vertexMass.isSet()) {
             msg_warning(this) << "Totalmass value overriding the value of the attribute Mass.\n"
                                  "Mass = TotalMass / num_position. \n"
                                  "To remove this warning you need to set either totalmass or mass data field but not both.";
         }
-        MassType *m = d_mass.beginEdit();
+        MassType *m = d_vertexMass.beginEdit();
         *m = ( ( typename DataTypes::Real ) d_totalMass.getValue() / indices.size() );
-        d_mass.endEdit();
+        d_vertexMass.endEdit();
 
     }
     else
-        d_totalMass.setValue ( indices.size() * (Real)d_mass.getValue() );
+        d_totalMass.setValue ( indices.size() * (Real)d_vertexMass.getValue() );
 
 }
 
@@ -246,9 +246,9 @@ void UniformMass<DataTypes, MassType>::handleTopologyChange()
             case core::topology::POINTSADDED:
                 if ( d_handleTopoChange.getValue() && m_doesTopoChangeAffect)
                 {
-                    MassType* m = d_mass.beginEdit();
+                    MassType* m = d_vertexMass.beginEdit();
                     *m = ( ( typename DataTypes::Real ) d_totalMass.getValue() / mstate->getSize() );
-                    d_mass.endEdit();
+                    d_vertexMass.endEdit();
                 }
                 break;
 
@@ -256,9 +256,9 @@ void UniformMass<DataTypes, MassType>::handleTopologyChange()
                 if ( d_handleTopoChange.getValue() && m_doesTopoChangeAffect)
                 {
                     if (!d_preserveTotalMass.getValue())
-                        d_totalMass.setValue (mstate->getSize() * (Real)d_mass.getValue() );
+                        d_totalMass.setValue (mstate->getSize() * (Real)d_vertexMass.getValue() );
                     else
-                        d_mass.setValue( static_cast< MassType >( ( typename DataTypes::Real ) d_totalMass.getValue() / mstate->getSize()) );
+                        d_vertexMass.setValue( static_cast< MassType >( ( typename DataTypes::Real ) d_totalMass.getValue() / mstate->getSize()) );
                 }
                 break;
 
@@ -284,7 +284,7 @@ void UniformMass<DataTypes, MassType>::addMDx ( const core::MechanicalParams*,
 
     WriteAccessor<Data<vector<int> > > indices = d_indices;
 
-    MassType m = d_mass.getValue();
+    MassType m = d_vertexMass.getValue();
     if ( factor != 1.0 )
         m *= ( typename DataTypes::Real ) factor;
 
@@ -303,7 +303,7 @@ void UniformMass<DataTypes, MassType>::accFromF ( const core::MechanicalParams*,
 
     ReadAccessor<Data<vector<int> > > indices = d_indices;
 
-    MassType m = d_mass.getValue();
+    MassType m = d_vertexMass.getValue();
     for ( unsigned int i=0; i<indices.size(); i++ )
         a[indices[i]] = f[indices[i]] / m;
 }
@@ -370,10 +370,10 @@ void UniformMass<DataTypes, MassType>::addForce ( const core::MechanicalParams*,
     Deriv theGravity;
     DataTypes::set
     ( theGravity, g[0], g[1], g[2] );
-    const MassType& m = d_mass.getValue();
+    const MassType& m = d_vertexMass.getValue();
     Deriv mg = theGravity * m;
 
-    dmsg_info() <<" addForce, mg = "<<d_mass<<" * "<<theGravity<<" = "<<mg;
+    dmsg_info() <<" addForce, mg = "<<d_vertexMass<<" * "<<theGravity<<" = "<<mg;
 
 
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
@@ -432,7 +432,7 @@ SReal UniformMass<DataTypes, MassType>::getKineticEnergy ( const MechanicalParam
     ReadAccessor<Data<vector<int> > > indices = d_indices;
 
     SReal e = 0;
-    const MassType& m = d_mass.getValue();
+    const MassType& m = d_vertexMass.getValue();
 
     for ( unsigned int i=0; i<indices.size(); i++ )
         e+= v[indices[i]]*m*v[indices[i]];
@@ -449,7 +449,7 @@ SReal UniformMass<DataTypes, MassType>::getPotentialEnergy ( const MechanicalPar
     ReadAccessor<Data<vector<int> > > indices = d_indices;
 
     SReal e = 0;
-    const MassType& m = d_mass.getValue();
+    const MassType& m = d_vertexMass.getValue();
 
     Vec3d g( getContext()->getGravity());
     Deriv gravity;
@@ -487,7 +487,7 @@ template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::addMToMatrix (const MechanicalParams *mparams,
                                                      const MultiMatrixAccessor* matrix)
 {
-    const MassType& m = d_mass.getValue();
+    const MassType& m = d_vertexMass.getValue();
 
     const size_t N = DataTypeInfo<Deriv>::size();
 
@@ -505,7 +505,7 @@ void UniformMass<DataTypes, MassType>::addMToMatrix (const MechanicalParams *mpa
 template <class DataTypes, class MassType>
 SReal UniformMass<DataTypes, MassType>::getElementMass ( unsigned int ) const
 {
-    return ( SReal ) ( d_mass.getValue() );
+    return ( SReal ) ( d_vertexMass.getValue() );
 }
 
 
@@ -520,7 +520,7 @@ void UniformMass<DataTypes, MassType>::getElementMass ( unsigned int  index ,
         m->resize ( dimension, dimension );
 
     m->clear();
-    AddMToMatrixFunctor<Deriv,MassType>() ( m, d_mass.getValue(), 0, 1 );
+    AddMToMatrixFunctor<Deriv,MassType>() ( m, d_vertexMass.getValue(), 0, 1 );
 }
 
 

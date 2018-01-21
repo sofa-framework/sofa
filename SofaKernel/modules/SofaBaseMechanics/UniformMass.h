@@ -55,7 +55,7 @@ public:
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
     typedef TMassType MassType;
 
-    Data<MassType>                        d_mass;         ///< the mass of each particle
+    Data<MassType>                        d_vertexMass;   ///< single value defining the mass of each particle
     Data<SReal>                           d_totalMass;    ///< if >0 : total mass of this body
     sofa::core::objectmodel::DataFileName d_filenameMass; ///< a .rigid file to automatically load the inertia matrix and other parameters
 
@@ -97,8 +97,8 @@ protected:
     void constructor_message() ;
 
 public:
-    void setMass(const MassType& d_mass);
-    const MassType& getMass() const { return d_mass.getValue(); }
+    void setMass(const MassType& d_vertexMass);
+    const MassType& getMass() const { return d_vertexMass.getValue(); }
 
     SReal getTotalMass() const { return d_totalMass.getValue(); }
     void setTotalMass(SReal m);
