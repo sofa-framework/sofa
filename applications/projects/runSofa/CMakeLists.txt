@@ -69,6 +69,7 @@ else()
 endif()
 
 # if MSVC then plugins are located in bin/ instead of lib/ on Mac and Linux
-file(INSTALL "resources" DESTINATION "../../../share/sofa/gui/runSofa")
+file(INSTALL "resources" DESTINATION "${CMAKE_BINARY_DIR}/share/sofa/gui/runSofa")
+install(DIRECTORY "resources" DESTINATION "share/sofa/gui/runSofa" COMPONENT resources)
 install(FILES "${_defaultConfigPluginFilePath}" DESTINATION ${_pluginLocation}/ COMPONENT applications)
 
