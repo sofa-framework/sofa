@@ -75,50 +75,10 @@ public:
     typedef core::topology::BaseMeshTopology::Tetra Tetra;
     typedef core::topology::BaseMeshTopology::EdgesInTetrahedron EdgesInTetrahedron;
     typedef core::topology::BaseMeshTopology::Tetra Tetrahedron;
+    typedef unsigned int Index;
+    
 
-
-protected:
-
-    class PointRestInformation
-    {
-    public:
-        Mat3x3 DfDx;  /// the vertex stiffness matrix
-        unsigned int v;
-
-        PointRestInformation() {}
-
-        inline friend std::ostream& operator<< ( std::ostream& os, const PointRestInformation& /*eri*/ ) {
-            return os;
-        }
-
-        /// Input stream
-        inline friend std::istream& operator>> ( std::istream& in, PointRestInformation& /*eri*/ ) {
-            return in;
-        }
-    };
-
-    class EdgeRestInformation
-    {
-    public:
-        Mat3x3 DfDx; /// the edge stiffness matrix
-        unsigned int v[2];
-        Coord restDp;
-
-        EdgeRestInformation()
-        {
-        }
-        /// Output stream
-        inline friend std::ostream& operator<< ( std::ostream& os, const EdgeRestInformation& /*eri*/ )
-        {
-            return os;
-        }
-
-        /// Input stream
-        inline friend std::istream& operator>> ( std::istream& in, EdgeRestInformation& /*eri*/ )
-        {
-            return in;
-        }
-    };
+protected:    
     /// data structure stored for each tetrahedron
     class TetrahedronRestInformation
     {
@@ -134,8 +94,6 @@ protected:
         Mat3x3 restRotation; // used for QR decomposition
         //unsigned int v[4]; // the indices of the 4 vertices
 
-        PointRestInformation *pointInfo[6]; // shortcut to the 4 vertex information
-        EdgeRestInformation *edgeInfo[6];  // shortcut to the 6 edge information
         Real edgeOrientation[6];
 
 
@@ -179,8 +137,8 @@ protected:
 
     };
 
-    topology::PointData<sofa::helper::vector<PointRestInformation> > pointInfo;
-    topology::EdgeData<sofa::helper::vector<EdgeRestInformation> > edgeInfo;
+    topology::PointData<sofa::helper::vector<Mat3x3> > pointInfo;
+    topology::EdgeData<sofa::helper::vector<Mat3x3> > edgeInfo;
     topology::TetrahedronData<sofa::helper::vector<TetrahedronRestInformation> > tetrahedronInfo;
 
 
@@ -198,6 +156,12 @@ protected:
 
     Real lambda;  /// first Lame coefficient
     Real mu;    /// second Lame coefficient
+
+    Data<bool> f_drawing; ///<  draw the forcefield if true
+    Data<defaulttype::Vec4f> drawColor1; ///<  draw color for faces 1
+    Data<defaulttype::Vec4f> drawColor2; ///<  draw color for faces 2
+    Data<defaulttype::Vec4f> drawColor3; ///<  draw color for faces 3
+    Data<defaulttype::Vec4f> drawColor4; ///<  draw color for faces 4
 
     FastTetrahedralCorotationalForceField();
 
@@ -247,7 +211,7 @@ protected :
 
     static void computeQRRotation( Mat3x3 &r, const Coord *dp);
 
-    topology::EdgeData<sofa::helper::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
+    topology::EdgeData<sofa::helper::vector<Mat3x3> > &getEdgeInfo() {return edgeInfo;}
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_FASTTETRAHEDRALCOROTATIONALFORCEFIELD_CPP)
