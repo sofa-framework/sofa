@@ -247,7 +247,7 @@ macro(sofa_install_targets package_name the_targets install_include_subdir)
         foreach(target ${the_targets})
             get_target_property(public_header ${target} PUBLIC_HEADER)
             if("${public_header}" STREQUAL "public_header-NOTFOUND")
-                message("Full install: ${CMAKE_CURRENT_SOURCE_DIR}")
+                message("Full install (no PUBLIC_HEADER): ${CMAKE_CURRENT_SOURCE_DIR}")
                 # the trailing slash is IMPORTANT, see https://cmake.org/pipermail/cmake/2009-December/033850.html
                 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
                         DESTINATION include/${install_include_subdir}
@@ -255,6 +255,16 @@ macro(sofa_install_targets package_name the_targets install_include_subdir)
                         FILES_MATCHING PATTERN "*.h" PATTERN "*.inl")
             endif()
         endforeach()
+    endif()
+
+    ## Install rules for the resources
+    get_filename_component(PARENT_DIR ${CMAKE_CURRENT_SOURCE_DIR} DIRECTORY)
+    get_filename_component(PARENT_DIR_NAME ${PARENT_DIR} NAME)
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/examples/")
+        install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/examples/ DESTINATION share/sofa/${PARENT_DIR_NAME}/${PROJECT_NAME} COMPONENT resources)
+    endif()
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/scenes/")
+        install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scenes/ DESTINATION share/sofa/${PARENT_DIR_NAME}/${PROJECT_NAME} COMPONENT resources)
     endif()
 endmacro()
 
