@@ -757,15 +757,19 @@ void DiagonalMass<DataTypes, MassType>::init()
     if (_topology)
     {
         if (_topology->getNbTetrahedra() > 0 && !tetraGeo)
-            serr << "Tetrahedron topology but no geometry algorithms found. Add the component TetrahedronSetGeometryAlgorithms." << sendl;
+            msg_error() << "Tetrahedron topology but no geometry algorithms found. Add the component TetrahedronSetGeometryAlgorithms.";
         else if (_topology->getNbTriangles() > 0 && !triangleGeo)
-            serr << "Triangle topology but no geometry algorithms found. Add the component TriangleSetGeometryAlgorithms." << sendl;
+            msg_error() << "Triangle topology but no geometry algorithms found. Add the component TriangleSetGeometryAlgorithms.";
         else if (_topology->getNbHexahedra() > 0 && !hexaGeo)
-            serr << "Hexahedron topology but no geometry algorithms found. Add the component HexahedronSetGeometryAlgorithms." << sendl;
+            msg_error() << "Hexahedron topology but no geometry algorithms found. Add the component HexahedronSetGeometryAlgorithms.";
        else if (_topology->getNbQuads() > 0 && !quadGeo)
-           serr << "Quad topology but no geometry algorithms found. Add the component QuadSetGeometryAlgorithms." << sendl;
+            msg_error() << "Quad topology but no geometry algorithms found. Add the component QuadSetGeometryAlgorithms.";
         else if (_topology->getNbEdges() > 0 && !edgeGeo)
-            serr << "Edge topology but no geometry algorithms found. Add the component EdgeSetGeometryAlgorithms." << sendl;
+            msg_error() << "Edge topology but no geometry algorithms found. Add the component EdgeSetGeometryAlgorithms.";
+    }
+    else
+    {
+        msg_error() << "Topology not found.";
     }
 
     Inherited::init();
