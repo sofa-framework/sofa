@@ -25,7 +25,6 @@
 
 #include "PythonMacros.h"
 #include "PythonScriptDataEngine.h"
-#include "binding_basefcn.h"
 
 SP_DECLARE_CLASS_TYPE(PythonScriptDataEngine)
 

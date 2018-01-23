@@ -23,8 +23,11 @@
 #define BINDING_BASE_H
 
 #include "PythonMacros.h"
+#include <sofa/core/DataEngine.h>
+#include <sofa/core/objectmodel/Base.h>
 
 SP_DECLARE_CLASS_TYPE(Base)
-//static PyObject * Base_addNewData(PyObject *self, PyObject *args );
+//PyObject * Base_addNewData(PyObject *self, PyObject *args, sofa::core::DataEngine * DataEnginePtr=NULL);
+int helper_addNewData(PyObject *args, sofa::core::objectmodel::Base* obj);
 
 #endif // BINDING_BASE_H

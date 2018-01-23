@@ -19,14 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "binding_basefcn.h"
+
 #include "Binding_Base.h"
 #include "Binding_Data.h"
 #include "Binding_Link.h"
 
 #include <sofa/helper/vector.h>
-#include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/BaseData.h>
+#include <sofa/core/DataEngine.h>
+#include <sofa/defaulttype/Vec3Types.h>
 using namespace sofa::core::objectmodel;
 
 #include <sofa/helper/logging/Messaging.h>
@@ -36,11 +37,179 @@ using namespace sofa::core::objectmodel;
 
 #include "PythonEnvironment.h"
 using sofa::simulation::PythonEnvironment ;
+using sofa::core::topology::BaseMeshTopology ;
+using sofa::helper::vector ;
+
+typedef BaseMeshTopology::Tetra Tetra;
 
 static Base* get_base(PyObject* self) {
     return sofa::py::unwrap<Base>(self);
 }
 
+static char* getStringCopy(char *c)
+{
+    char* tmp = new char[strlen(c)+1] ;
+    strcpy(tmp,c);
+    return tmp ;
+}
+
+//
+
+Tetra parseTetra(PyObject * value)
+{
+
+    vector<unsigned int> PointIdxs; // Better way to go for PointID?
+    if( PySequence_Check(value) )
+    {
+        if(!PyList_Check(value))
+        {
+            msg_warning("SofaPython") << "A sequence which is not a list will be convert to a sofa string.";
+        }
+        // It is a sequence...so we can iterate over it.
+        PyObject *iterator = PyObject_GetIter(value);
+        // get pointer to TetrasVec from Data
+        if(iterator)
+        {
+            bool first = true;
+            while(PyObject* next = PyIter_Next(iterator))
+            {
+
+                if(first) first = false;
+//                else out << ' ';
+                if(PyInt_Check(next))
+                {
+                    PointIdxs.push_back(PyInt_AsSsize_t(next));
+                }
+//                msg_warning("single tetra binding") << "." << PointIdxs << msgendl;
+                Py_DECREF(next);
+            }
+
+            Py_DECREF(iterator);
+
+            if (PyErr_Occurred())
+            {
+                msg_error("SofaPython") << "error while iterating." << msgendl
+                                        << PythonEnvironment::getStackAsString() ;
+            }
+        }
+    }
+    if (PointIdxs.size()!=4)
+    {
+        msg_error("Binding_Base")<< "Tetra in vector of Teras does not have size 4!" << msgendl;
+        Tetra EmptyTetra;
+        return EmptyTetra;
+    }
+    else{
+        Tetra CurrentTetra(PointIdxs[0],PointIdxs[1],PointIdxs[2],PointIdxs[3]);
+        return CurrentTetra;
+    }
+}
+
+void parseTetraVector(PyObject * value, Data<sofa::helper::vector<Tetra>> * TetrasData)
+{
+    if( PySequence_Check(value) )
+    {
+        if(!PyList_Check(value))
+        {
+            msg_warning("SofaPython") << "A sequence which is not a list will be convert to a sofa string.";
+        }
+        // It is a sequence...so we can iterate over it.
+        PyObject *iterator = PyObject_GetIter(value);
+        // get pointer to TetrasVec from Data
+        sofa::helper::vector<Tetra>* TetrasVec = TetrasData->beginEdit();
+        if(iterator)
+        {
+            bool first = true;
+            while(PyObject* next = PyIter_Next(iterator))
+            {
+                if(first) first = false;
+                TetrasVec->push_back(parseTetra(next));
+                Py_DECREF(next);
+            }
+
+            Py_DECREF(iterator);
+
+            if (PyErr_Occurred())
+            {
+                msg_error("SofaPython") << "error while iterating." << msgendl
+                                        << PythonEnvironment::getStackAsString() ;
+            }
+        }
+
+    }
+    TetrasData->endEdit();
+}
+
+// helper function for parsing Python arguments
+// not defined static in order to be able to use this fcn somewhere else also
+int helper_addNewData(PyObject *args, Base * obj) {
+    //Base* obj = get_base(self);
+    char* dataName;
+    char* dataClass;
+    char* dataHelp;
+    char* dataRawType;
+    PyObject* dataValue;
+
+    if (!PyArg_ParseTuple(args, "ssssO", &dataName, &dataClass, &dataHelp, &dataRawType, &dataValue)) {
+        return 0;
+    }
+
+    dataName = getStringCopy(dataName) ;
+    dataClass = getStringCopy(dataClass) ;
+    dataHelp  = getStringCopy(dataHelp) ;
+
+    BaseData* bd = nullptr ;
+    bool OldSchoolParsing = false;
+    if(dataRawType[0] == 's'){
+        Data<std::string>* t = new Data<std::string>() ;
+        t = new(t) Data<std::string>(obj->initData(t, std::string(""), dataName, dataHelp)) ;
+        bd = t;
+        OldSchoolParsing = true;
+    }
+    else if(dataRawType[0] == 'b'){
+        Data<bool>* t = new Data<bool>();
+        t = new(t) Data<bool>(obj->initData(t, true, dataName, dataHelp)) ;
+        bd = t;
+        OldSchoolParsing = true;
+    }
+    else if(dataRawType[0] == 'd'){
+        Data<int>* t = new Data<int>();
+        t = new (t) Data<int> (obj->initData(t, 0, dataName, dataHelp)) ;
+        bd = t;
+        OldSchoolParsing = true;
+    }
+    else if(dataRawType[0] == 'f'){
+        Data<float>* t = new Data<float>();
+        t = new (t) Data<float>(obj->initData(t, 0.0f, dataName, dataHelp)) ;
+        bd = t;
+        OldSchoolParsing = true;
+    }
+    else if(dataRawType[0] == 't')
+    {
+        Data<vector<Tetra>>* t = new Data<vector<Tetra>>();
+        t = new(t) Data<vector<Tetra>>(obj->initData(t,dataName, dataHelp));
+//        sofa::core::DataEngine * de =  (sofa::core::DataEngine*)t;
+//        de->addInput(t);
+        parseTetraVector(dataValue,t);
+        OldSchoolParsing = false;
+    }
+    else{
+        std::stringstream msg;
+        msg << "Invalid data type '" << dataRawType << "'. Supported type are: s(tring), d(ecimal), f(float), b(oolean)" ;
+        PyErr_SetString(PyExc_TypeError, msg.str().c_str());
+        return 0;
+    }
+
+    if(OldSchoolParsing)
+    {
+        std::stringstream tmp;
+        pythonToSofaDataString(dataValue, tmp) ;
+        bd->read( tmp.str() ) ;
+        bd->setGroup(dataClass);
+    }
+
+    return 1;
+}
 
 static PyObject * Base_addData(PyObject *self, PyObject *args )
 {
@@ -57,63 +226,11 @@ static PyObject * Base_addData(PyObject *self, PyObject *args )
     Py_RETURN_NONE;
 }
 
-static char* getStringCopy(char *c)
-{
-    char* tmp = new char[strlen(c)+1] ;
-    strcpy(tmp,c);
-    return tmp ;
-}
 
-PyObject * Base_addNewData(PyObject *self, PyObject *args ) {
+static PyObject * Base_addNewData(PyObject *self, PyObject *args) {
     Base* obj = get_base(self);
-    char* dataName;
-    char* dataClass;
-    char* dataHelp;
-    char* dataRawType;
-    PyObject* dataValue;
-
-    if (!PyArg_ParseTuple(args, "ssssO", &dataName, &dataClass, &dataHelp, &dataRawType, &dataValue)) {
-        return NULL;
-    }
-
-    dataName = getStringCopy(dataName) ;
-    dataClass = getStringCopy(dataClass) ;
-    dataHelp  = getStringCopy(dataHelp) ;
-
-    BaseData* bd = nullptr ;
-    if(dataRawType[0] == 's'){
-        Data<std::string>* t = new Data<std::string>() ;
-        t = new(t) Data<std::string>(obj->initData(t, std::string(""), dataName, dataHelp)) ;
-        bd = t;
-    }
-    else if(dataRawType[0] == 'b'){
-        Data<bool>* t = new Data<bool>();
-        t = new(t) Data<bool>(obj->initData(t, true, dataName, dataHelp)) ;
-        bd = t;
-    }
-    else if(dataRawType[0] == 'd'){
-        Data<int>* t = new Data<int>();
-        t = new (t) Data<int> (obj->initData(t, 0, dataName, dataHelp)) ;
-        bd = t;
-    }
-    else if(dataRawType[0] == 'f'){
-        Data<float>* t = new Data<float>();
-        t = new (t) Data<float>(obj->initData(t, 0.0f, dataName, dataHelp)) ;
-        bd = t;
-    }
-    else{
-        std::stringstream msg;
-        msg << "Invalid data type '" << dataRawType << "'. Supported type are: s(tring), d(ecimal), f(float), b(oolean)" ;
-        PyErr_SetString(PyExc_TypeError, msg.str().c_str());
-        return NULL;
-    }
-
-    std::stringstream tmp;
-    pythonToSofaDataString(dataValue, tmp) ;
-    bd->read( tmp.str() ) ;
-    bd->setGroup(dataClass);
-
-    Py_RETURN_NONE ;
+    helper_addNewData(args, obj);
+    Py_RETURN_NONE;
 }
 
 static PyObject * Base_getData(PyObject *self, PyObject *args ) {

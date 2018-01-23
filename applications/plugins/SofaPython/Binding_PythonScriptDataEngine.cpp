@@ -1,5 +1,6 @@
 #include "Binding_PythonScriptDataEngine.h"
 #include "Binding_BaseObject.h"
+#include "Binding_Base.h"
 
 
 using namespace sofa::component::controller;
@@ -59,53 +60,30 @@ static PyObject * PythonScriptDataEngine_init(PyObject * self, PyObject * /*args
 
 static PyObject * PythonScriptDataEngine_addField(PyObject *self, PyObject* args, PyObject * kw)
 {
-//    DataEngine* engine = get_dataengine( self );
+     DataEngine* engine = get_dataengine( self );
 
-//      return self->addNewData(self,args);
-//      return Base_addNewData(self, args );
+     helper_addNewData(args,engine);
+
+     char* dataName;
+     char* dataClass;
+     char* dataHelp;
+     char* dataRawType;
+     PyObject* dataValue;
+
+     if (!PyArg_ParseTuple(args, "ssssO", &dataName, &dataClass, &dataHelp, &dataRawType, &dataValue)) {
+         return 0;
+     }
+     BaseData* NewData = engine->findData(dataName);
+     NewData->setGroup(nullptr);
+
+     msg_warning("binding") << "hui!";
+     if (NewData->getOwner() == engine)// && (!NewData->getGroup() || !NewData->getGroup()[0]))
+         msg_warning("binding") << "well..";
+
+     engine->addInput(NewData);
 
 
-//    msg_warning("Binding") << "ok, can trigger call from within python";
-//    DataEngine* engine = get_dataengine( self );
-//    char *FieldType; // Input or Output
-//    char *type;
-
-//    if (!PyArg_ParseTuple(args, "s",&FieldType))
-//    {
-//        return NULL;
-//    }
-
-//    BaseObjectDescription desc(FieldType,FieldType);
-
-//    if (kw && PyDict_Size(kw)>0)
-//    {
-//        PyObject* keys = PyDict_Keys(kw);
-//        PyObject* values = PyDict_Values(kw);
-//        for (int i=0; i<PyDict_Size(kw); i++)
-//        {
-//            PyObject *key = PyList_GetItem(keys,i);
-//            PyObject *value = PyList_GetItem(values,i);
-
-////            if( !strcmp( PyString_AsString(key), "warning") )
-////            {
-////                if PyBool_Check(value)
-////                        warning = (value==Py_True);
-////            }
-////            else
-////            {
-//                std::stringstream s;
-//                pythonToSofaDataString_(value, s) ;
-//                desc.setAttribute(PyString_AsString(key),s.str().c_str());
-////            }
-//        }
-//        Py_DecRef(keys);
-//        Py_DecRef(values);
-//    }
-
-//    // TODO: After "parsing" create Input or output here!
-//    //BaseObject::SPtr obj = ObjectFactory::getInstance()->createObject(context,&desc);
-
-//    Py_RETURN_NONE;
+     Py_RETURN_NONE;
 }
 
 
