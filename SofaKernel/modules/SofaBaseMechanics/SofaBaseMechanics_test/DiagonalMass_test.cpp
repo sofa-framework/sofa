@@ -154,7 +154,7 @@ public:
         TheDiagonalMass* mass = root->getTreeObject<TheDiagonalMass>() ;
         EXPECT_TRUE( mass != nullptr ) ;
 
-        EXPECT_TRUE( mass->findData("mass") != nullptr ) ;
+        EXPECT_TRUE( mass->findData("vertexMass") != nullptr ) ;
         EXPECT_TRUE( mass->findData("totalMass") != nullptr ) ;
         EXPECT_TRUE( mass->findData("massDensity") != nullptr ) ;
         EXPECT_TRUE( mass->findData("computeMassOnRest") != nullptr ) ;
