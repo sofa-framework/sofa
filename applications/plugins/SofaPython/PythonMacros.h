@@ -42,7 +42,7 @@
 
 /// This function converts an PyObject into a sofa string.
 /// string that can be safely parsed in helper::vector<int> or helper::vector<double>
-extern std::ostream& pythonToSofaDataString(PyObject* value, std::ostream& out) ;
+SOFA_SOFAPYTHON_API std::ostream& pythonToSofaDataString(PyObject* value, std::ostream& out) ;
 
 // =============================================================================
 // Python structures names in sofa...
@@ -369,10 +369,10 @@ static PyTypeObject DummyChild_PyTypeObject = {
 
 
 // get python exceptions and print their error message
-void printPythonExceptions();
+SOFA_SOFAPYTHON_API void printPythonExceptions();
 
 // deal with SystemExit before PyErr_Print does
-void handle_python_error(const char* message);
+SOFA_SOFAPYTHON_API void handle_python_error(const char* message);
 
 
 // =============================================================================

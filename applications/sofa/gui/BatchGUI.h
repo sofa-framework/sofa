@@ -24,6 +24,9 @@
 
 #include <sofa/gui/BaseGUI.h>
 #include <sofa/simulation/Node.h>
+#include <sofa/helper/ArgumentParser.h>
+
+using sofa::helper::ArgumentParser;
 
 namespace sofa
 {
@@ -57,8 +60,9 @@ public:
     /// @name registration of each GUI
     /// @{
 
-    static int InitGUI(const char* name, const std::vector<std::string>& options);
-    static BaseGUI* CreateGUI(const char* name, const std::vector<std::string>& options, sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
+    static BaseGUI* CreateGUI(const char* name, sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
+    static int RegisterGUIParameters(ArgumentParser* argumentParser);
+
 
     static const unsigned int DEFAULT_NUMBER_OF_ITERATIONS;
     /// @}

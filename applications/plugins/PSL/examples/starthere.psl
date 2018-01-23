@@ -1,0 +1,38 @@
+Node : {
+        name : "root2"
+
+        Template : {
+            name : "MyTemplate"
+            properties : {
+                name : "default"
+                numchild : 10
+            }
+            Node : {
+                name : name
+                Python : '''
+                         print("TEST:" +str(numchild))
+                         for i in range(0,numchild):
+                            self.createChild("lefile"+str(i))
+                         '''
+            }
+        }
+
+        MyTemplate : {
+            name : "Toto"
+            numchild : 2
+        }
+
+        MyTemplate : {
+            name : "Titi"
+
+        }
+
+        OglModel : {
+            properties : {
+                maProperties : 10
+            }
+            filename : "mesh/ball.obj"
+        }
+
+
+}

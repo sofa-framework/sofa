@@ -33,11 +33,11 @@ if(SOFA_BUILD_COMPONENTSET_STANDARD)
         ConstraintAttachBodyPerformer.inl
         ConstraintSolverImpl.h
         ContactDescription.h
+        ContactIdentifier.h
         FreeMotionAnimationLoop.h
         FrictionContact.h
         FrictionContact.inl
         GenericConstraintCorrection.h
-        GenericConstraintCorrection.inl
         GenericConstraintSolver.h
         LCPConstraintSolver.h
         LMDNewProximityIntersection.h
@@ -76,6 +76,7 @@ if(SOFA_BUILD_COMPONENTSET_STANDARD)
         ConstraintAnimationLoop.cpp
         ConstraintAttachBodyPerformer.cpp
         ConstraintSolverImpl.cpp
+        ContactIdentifier.cpp
         FreeMotionAnimationLoop.cpp
         FrictionContact.cpp
         GenericConstraintCorrection.cpp

@@ -22,6 +22,9 @@
 #ifndef SOFA_GUI_VIEWER_REALGUI_H
 #define SOFA_GUI_VIEWER_REALGUI_H
 
+#include <string>
+#include <vector>
+
 #include <SofaGui/config.h>
 #include <ui_GUI.h>
 #include <sofa/gui/qt/SofaGUIQt.h>
@@ -40,7 +43,7 @@
 #include <QTimer>
 #include <QTextBrowser>
 #include <QDockWidget>
-
+#include <QWindow>
 #include <time.h>
 
 #include <sofa/helper/system/FileMonitor.h>
@@ -72,6 +75,8 @@ class BaseViewer;
 namespace qt
 {
 
+class DocBrowser ;
+
 #ifndef SOFA_GUI_QT_NO_RECORDER
 class QSofaRecorder;
 #endif
@@ -98,12 +103,11 @@ class SofaViewer;
 
 class SOFA_SOFAGUIQT_API RealGUI : public QMainWindow, public Ui::GUI, public sofa::gui::BaseGUI
 {
-    Q_OBJECT
+    Q_OBJECT    
 
 //-----------------STATIC METHODS------------------------{
 public:
-    static int InitGUI(const char* name, const std::vector<std::string>& options);
-    static BaseGUI* CreateGUI(const char* name, const std::vector<std::string>& options, sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
+    static BaseGUI* CreateGUI(const char* name, sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
 
     static void SetPixmap(std::string pixmap_filename, QPushButton* b);
 
@@ -116,8 +120,7 @@ protected:
 
 //-----------------CONSTRUCTOR - DESTRUCTOR ------------------------{
 public:
-    RealGUI( const char* viewername,
-            const std::vector<std::string>& options = std::vector<std::string>() );
+    RealGUI( const char* viewername);
 
     ~RealGUI();
 //-----------------CONSTRUCTOR - DESTRUCTOR ------------------------}
@@ -136,9 +139,6 @@ public:
 #endif
 
     virtual void showFPS(double fps);
-
-public slots:
-    virtual void changeHtmlPage( const QUrl&);
 
 protected:
 #ifdef SOFA_GUI_INTERACTION
@@ -229,9 +229,8 @@ private:
     //currently unused: scale is experimental
     float object_Scale[2];
     bool saveReloadFile;
-    DisplayFlagsDataWidget *displayFlag;
-    QDialog* descriptionScene;
-    QTextBrowser* htmlPage;
+    DisplayFlagsDataWidget*  displayFlag  {nullptr};
+    DocBrowser*              m_docbrowser {nullptr};
     bool animationState;
     int frameCounter;
     unsigned int m_viewerMSAANbSampling;
@@ -302,8 +301,7 @@ protected:
     /// init data member from RealGUI for the viewer initialisation in the GUI
     void init();
     void createDisplayFlags(Node::SPtr root);
-    void loadHtmlDescription(const char* filename);
-    void loadSimulation(bool one_step=false);//? where is the implementation ?
+    void loadSimulation(bool one_step=false); //? where is the implementation ?
     void eventNewStep();
     void eventNewTime();
     void keyPressEvent ( QKeyEvent * e );
@@ -338,7 +336,7 @@ private:
     void addViewer();//? where is the implementation ?
 
     /// Parse options from the RealGUI constructor
-    void parseOptions(const std::vector<std::string>& options);
+    void parseOptions();
 
     void createPluginManager();
 
@@ -349,12 +347,7 @@ private:
     void createSimulationGraph();
     void createPropertyWidget();
     void createWindowVisitor();
-    void createSceneDescription();
-//----------------- METHODS------------------------}
 
-
-
-//-----------------SIGNALS-SLOTS------------------------{
 public slots:
     virtual void NewRootNode(sofa::simulation::Node* root, const char* path);
     virtual void ActivateNode(sofa::simulation::Node* , bool );
@@ -401,16 +394,14 @@ public slots:
     virtual void fileSaveAs() {
         fileSaveAs((Node *)NULL);
     }
-    virtual void helpIndex() { /* TODO */ }
-    virtual void helpContents() { /* TODO */ }
     virtual void helpAbout() { /* TODO */ }
     virtual void editRecordDirectory();
     virtual void editGnuplotDirectory();
+    virtual void showDocBrowser() ;
     virtual void showPluginManager();
     virtual void showMouseManager();
     virtual void showVideoRecorderManager();
     virtual void toolsDockMoved();
-
 
 protected slots:
     /// Allow to dynamicly change viewer. Called when click on another viewer in GUI Qt viewer list (see viewerMap).
@@ -424,6 +415,8 @@ protected slots:
     void propertyDockMoved(Qt::DockWidgetArea a);
 
     void appendToDataLogFile(QString);
+
+    void docBrowserVisibilityChanged(bool) ;
 
 signals:
     void reload();
@@ -477,7 +470,6 @@ protected:
     std::string pixmap_filename;
     bool active;
     GraphListenerQListView* listener;
-
 };
 
 } // namespace qt

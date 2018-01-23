@@ -170,7 +170,7 @@ public:
     Data<defaulttype::Vector3> showLevelTranslation;
 
     ConstraintProblem* getConstraintProblem() override;
-    void lockConstraintProblem(ConstraintProblem* p1, ConstraintProblem* p2=0) override; ///< Do not use the following LCPs until the next call to this function. This is used to prevent concurent access to the LCP when using a LCPForceFeedback through an haptic thread
+    void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2=0) override; ///< Do not use the following LCPs until the next call to this function. This is used to prevent concurent access to the LCP when using a LCPForceFeedback through an haptic thread
 
     virtual void removeConstraintCorrection(core::behavior::BaseConstraintCorrection *s) override;
 

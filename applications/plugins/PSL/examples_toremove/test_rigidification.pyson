@@ -1,0 +1,86 @@
+Node : {
+    name : "root"
+
+    Node : {
+        SparseLDLSolver : {}
+        name : "RigidifiedSystem"
+        Node : {
+            name : "FreeNode"
+            MechanicalObject : {
+                template : "Vec3d"
+                position : "1 1 1 2 2 2 3 3 3 4 4 4 5 5 5 6 6 6 7 7 7"
+            }
+        }
+
+        Node : {
+
+
+            name : "Rigid"
+            MechanicalObject : {
+                template : "Rigid"
+                position : "1 2 3 4 5 6 8"
+            }
+
+            Node : {
+                name : "RigidMappedNode"
+                MechanicalObject : {
+                    template : "Vec3d"
+                    position : "1 2 3 4 5 6"
+            }
+
+            Node : {
+                    name : "FEM"
+                    MeshTopology : {}
+                    MechanicalObject : {
+                        position : p"srange(0,100)"
+                    }
+                    UniformMass : {}
+                    Python : '''
+                        RigidifiedSystem.getChild('FreeNode').addChild(self)'''
+
+                    //SubsetMultiMapping : {
+                    //    input : p"RigidMappedNode.getPath() RigidMappedNode.getPath()"
+                    //    output : "dd"
+                    //}
+                }
+            }
+        }
+    }
+        Python : '''
+                 import xml
+                 a="Test"
+                 '''
+
+        Python : '''
+                 print("Hello world is"+str(dir(xml)))
+                 print("Value of a="+a)
+                 '''
+
+        Template : {
+            name : "Rigidification"
+            properties : {
+                rigids : {}
+            }
+
+
+            Node : {
+                name : "Rigid"
+                MechanicalObject : {}
+                Python : '''for name,points in rigids:
+                                c= Rigid.createChild("RigidMappedNode["+name+"]")
+                                c.createObject("MechanicalObject", template="Vec3d")
+                                '''
+                #Python : '''self.parse(conte)'''
+            }
+        }
+
+        Rigidification : {
+            rigids : {
+                      "rigid1":[1,2,3],
+                      "rigid2":[4,5,6]
+                     }
+
+        }
+}
+
+

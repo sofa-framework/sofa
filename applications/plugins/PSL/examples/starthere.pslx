@@ -1,0 +1,12 @@
+<Node name="root">
+    <Node name="aNode">
+        <MechanicalObject name="mstate" position='p"srange(1,10)"'/>
+        <OglModel name="visual" filename="meshes/pslx.obj"/>
+    </Node>
+    <Node name="test">
+        <Python>
+for i in range(0,10):
+        self.createChild("cc"+str(i))
+        </Python>
+    </Node>
+</Node>

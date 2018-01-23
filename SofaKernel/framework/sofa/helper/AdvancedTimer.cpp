@@ -115,7 +115,7 @@ public:
     helper::vector<AdvancedTimer::IdVal> vals;
 
     TimerData()
-        : nbIter(-1), interval(0), defaultInterval(DEFAULT_INTERVAL), timerOutputType(AdvancedTimer::STDOUT)
+        : nbIter(0), interval(0), defaultInterval(DEFAULT_INTERVAL), timerOutputType(AdvancedTimer::STDOUT)
     {
     }
 

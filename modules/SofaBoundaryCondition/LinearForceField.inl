@@ -43,10 +43,10 @@ template<class DataTypes>
 LinearForceField<DataTypes>::LinearForceField()
     : data(new LinearForceFieldInternalData<DataTypes>())
     , points(initData(&points, "points", "points where the force is applied"))
-    , force(initData(&force, (Real)1.0, "force", "applied force to all points"))
-    , keyTimes(initData(&keyTimes, "times", "key times for the interpolation"))
-    , keyForces(initData(&keyForces, "forces", "forces corresponding to the key times"))
-    , arrowSizeCoef(initData(&arrowSizeCoef,(SReal)0.0, "arrowSizeCoef", "Size of the drawn arrows (0->no arrows, sign->direction of drawing"))
+    , d_force(initData(&d_force, (Real)1.0, "force", "applied force to all points"))
+    , d_keyTimes(initData(&d_keyTimes, "times", "key times for the interpolation"))
+    , d_keyForces(initData(&d_keyForces, "forces", "forces corresponding to the key times"))
+    , d_arrowSizeCoef(initData(&d_arrowSizeCoef,(SReal)0.0, "arrowSizeCoef", "Size of the drawn arrows (0->no arrows, sign->direction of drawing"))
 { }
 
 
@@ -91,20 +91,20 @@ template<class DataTypes>
 void LinearForceField<DataTypes>::addKeyForce(Real time, Deriv force)
 {
     // TODO : sort the key force while adding a new one
-    keyTimes.beginEdit()->push_back( time);
-    keyTimes.endEdit();
-    keyForces.beginEdit()->push_back( force );
-    keyForces.endEdit();
+    d_keyTimes.beginEdit()->push_back( time);
+    d_keyTimes.endEdit();
+    d_keyForces.beginEdit()->push_back( force );
+    d_keyForces.endEdit();
 
 }// LinearForceField::addKeyForce
 
 template<class DataTypes>
 void LinearForceField<DataTypes>::clearKeyForces()
 {
-    keyTimes.beginEdit()->clear();
-    keyTimes.endEdit();
-    keyForces.beginEdit()->clear();
-    keyForces.endEdit();
+    d_keyTimes.beginEdit()->clear();
+    d_keyTimes.endEdit();
+    d_keyForces.beginEdit()->clear();
+    d_keyForces.endEdit();
 
 }// LinearForceField::clearKeyForces
 
@@ -115,47 +115,52 @@ void LinearForceField<DataTypes>::addForce(const core::MechanicalParams* /*mpara
 
     Real cT = (Real) this->getContext()->getTime();
 
-    if (keyTimes.getValue().size() != 0 && cT >= *keyTimes.getValue().begin() && cT <= *keyTimes.getValue().rbegin())
+    if (d_keyTimes.getValue().size() != 0 && cT >= *d_keyTimes.getValue().begin())
     {
-        nextT = *keyTimes.getValue().begin();
-        prevT = nextT;
-
-        bool finished = false;
-
-        typename helper::vector< Real >::const_iterator it_t = keyTimes.getValue().begin();
-        typename VecDeriv::const_iterator it_f = keyForces.getValue().begin();
-
-        // WARNING : we consider that the key-events are in chronological order
-        // here we search between which keyTimes we are.
-        while( it_t != keyTimes.getValue().end() && !finished)
+        Deriv targetForce;
+        if (cT < *d_keyTimes.getValue().rbegin())
         {
-            if ( *it_t <= cT )
+            nextT = *d_keyTimes.getValue().begin();
+            prevT = nextT;
+
+            bool finished = false;
+
+            typename helper::vector< Real >::const_iterator it_t = d_keyTimes.getValue().begin();
+            typename VecDeriv::const_iterator it_f = d_keyForces.getValue().begin();
+
+            // WARNING : we assume that the key-events are in chronological order
+            // here we search between which keyTimes we are.
+            while( it_t != d_keyTimes.getValue().end() && !finished)
             {
-                prevT = *it_t;
-                prevF = *it_f;
+                if ( *it_t <= cT )
+                {
+                    prevT = *it_t;
+                    prevF = *it_f;
+                }
+                else
+                {
+                    nextT = *it_t;
+                    nextF = *it_f;
+                    finished = true;
+                }
+                it_t++;
+                it_f++;
             }
-            else
+            if (finished)
             {
-                nextT = *it_t;
-                nextF = *it_f;
-                finished = true;
+                Deriv slope = (nextF - prevF)*(1.0/(nextT - prevT));
+                targetForce = slope*(cT - prevT) + prevF;
+                targetForce *= d_force.getValue();
             }
-            it_t++;
-            it_f++;
         }
-        const SetIndexArray& indices = points.getValue();
-        if (finished)
+        else
         {
+            targetForce = d_keyForces.getValue()[d_keyTimes.getValue().size() - 1];
+        }
 
-            Deriv slope = (nextF - prevF)*(1.0/(nextT - prevT));
-            Deriv ff = slope*(cT - prevT) + prevF;
-
-            Real f = force.getValue();
-
-            for(unsigned i = 0; i < indices.size(); i++)
-            {
-                _f1[indices[i]] += ff*f;
-            }
+        for(auto index : points.getValue())
+        {
+            _f1[index] += targetForce;
         }
     }
 }// LinearForceField::addForce
@@ -175,12 +180,12 @@ SReal LinearForceField<DataTypes>::getPotentialEnergy(const core::MechanicalPara
     const VecCoord& _x = x.getValue();
     const SetIndexArray& indices = points.getValue();
     SReal e=0;
-    if (keyTimes.getValue().size() != 0 && cT >= *keyTimes.getValue().begin() && cT <= *keyTimes.getValue().rbegin() && prevT != nextT)
+    if (d_keyTimes.getValue().size() != 0 && cT >= *d_keyTimes.getValue().begin() && cT <= *d_keyTimes.getValue().rbegin() && prevT != nextT)
     {
         Real dt = (cT - prevT)/(nextT - prevT);
         Deriv ff = (nextF - prevF)*dt + prevF;
 
-        Real f = force.getValue();
+        Real f = d_force.getValue();
 
         for(unsigned i = 0; i < indices.size(); i++)
         {
