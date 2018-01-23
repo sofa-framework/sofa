@@ -41,6 +41,10 @@ if(TIFF_FOUND)
   link_directories(${TIFF_LIB_DIRS})
   include_directories(${TIFF_INCLUDE_DIR})
   SET(EXTERNAL_LIBS ${EXTERNAL_LIBS} ${TIFF_LIBRARIES})
+  if(WIN32)
+      sofa_copy_libraries_from_targets(TIFF::TIFF) # Windows dll -> bin
+  endif()
+  sofa_install_libraries_from_targets(TIFF::TIFF)
 else()
   message(STATUS "CImgPlugin: Did not find TIFF library")
 endif()
@@ -56,6 +60,10 @@ if(JPEG_FOUND)
   link_directories(${JPEG_LIB_DIRS})
   include_directories(${JPEG_INCLUDE_DIR})
   SET(EXTERNAL_LIBS ${EXTERNAL_LIBS} ${JPEG_LIBRARIES})
+  if(WIN32)
+      sofa_copy_libraries(${JPEG_LIBRARIES}) # Windows dll -> bin
+  endif()
+  sofa_install_libraries(${JPEG_LIBRARIES})
 else()
   message(STATUS "CImgPlugin: Did not find JPEG library")
 endif()
@@ -74,7 +82,7 @@ if (ZLIB_FOUND)
     include_directories(${PNG_INCLUDE_DIR} )
     SET( EXTERNAL_LIBS ${EXTERNAL_LIBS} ${PNG_LIBRARIES} )
     if(WIN32)
-        sofa_copy_libraries_from_targets(PNG::PNG) # Windows dependency pack
+        sofa_copy_libraries_from_targets(PNG::PNG) # Windows dll -> bin
     endif()
     sofa_install_libraries_from_targets(PNG::PNG)
   else()
@@ -86,8 +94,6 @@ endif()
 
 #Remove CImg sys calls
 SET(CIMG_CFLAGS "${CIMG_CFLAGS} -Dcimg_no_system_calls")
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}/CImgPlugin.h DESTINATION "include/CImgPlugin" COMPONENT headers)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
