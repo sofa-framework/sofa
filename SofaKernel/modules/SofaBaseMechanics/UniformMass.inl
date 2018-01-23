@@ -195,7 +195,7 @@ void UniformMass<DataTypes, MassType>::reinit()
             //By default use the totalMass
             useDefault = true;
         }
-        //Check for negative or null value, by default use the totalMass
+        //Check for negative or null value, if wrongly set use the totalMass instead
         else if(d_vertexMass.getValue() <= 0.0 )
         {
             msg_warning(this) << "vertexMass data can not have a negative value. \n"
@@ -221,7 +221,7 @@ void UniformMass<DataTypes, MassType>::reinit()
         {
             msg_info() << "No information about the mass is given. Default totatMass is used as reference.";
         }
-        //Check for negative or null value, by default use totalMass = 1.0
+        //Check for negative or null value, if wrongly set use the default value totalMass = 1.0
         if(d_totalMass.getValue() <= 0.0)
         {
             msg_warning(this) << "totalMass data can not have a negative value. \n"

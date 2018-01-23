@@ -190,6 +190,9 @@ public:
     Data< float > d_showAxisSize;
     core::objectmodel::DataFileName d_fileMass;
 
+    /// value defining the initialization process of the mass (0 : totalMass, 1 : massDensity, 2 : vertexMass)
+    int initializationProcess;
+
 protected:
     ////////////////////////// Inherited attributes ////////////////////////////
     /// https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html

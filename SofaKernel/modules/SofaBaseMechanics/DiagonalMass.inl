@@ -52,7 +52,7 @@ DiagonalMass<DataTypes, MassType>::DiagonalMass()
     , d_massDensity( initData(&d_massDensity, (Real)1.0,"massDensity","Specify one single real and positive value for the mass density. \n"
                                                                       "If unspecified or wrongly set, the totalMass information is used.") )
     , d_computeMassOnRest(initData(&d_computeMassOnRest, false, "computeMassOnRest", "If true, the mass of every element is computed based on the rest position rather than the position"))
-    , d_totalMass(initData(&d_totalMass, (Real)-1.0, "totalMass", "Specify the total mass resulting from all particles. \n"
+    , d_totalMass(initData(&d_totalMass, (Real)1.0, "totalMass", "Specify the total mass resulting from all particles. \n"
                                                                   "If unspecified or wrongly set, the default value is used: totalMass = 1.0"))
     , d_showCenterOfGravity( initData(&d_showCenterOfGravity, false, "showGravityCenter", "Display the center of gravity of the system" ) )
     , d_showAxisSize( initData(&d_showAxisSize, 1.0f, "showAxisSizeFactor", "Factor length of the axis displayed (only used for rigids)" ) )
@@ -787,22 +787,187 @@ void DiagonalMass<DataTypes, MassType>::init()
         d_vertexMass.endEdit();
     }
 
-    if (d_totalMass.isSet())
+    //Select mass initialization process :
+    //0 (default) relies on the totalMass
+    //1 relies on the massDensity
+    //2 relies on the vertexMass
+    initializationProcess = 0;
+
+    //If user defines the vertexMass, use this as the mass
+    if(d_vertexMass.isSet())
     {
-        if(d_massDensity.isSet())
+        //Check double definition : both totalMass and vertexMass are user-defined
+        if (d_totalMass.isSet())
         {
-            msg_warning("DiagonalMass") << "both massDensity and totalMass are set, totalMass will be applied (recomputes the density)";
+            msg_warning(this) << "totalMass value overriding the value of the attribute vertexMass.\n"
+                              << "To remove this warning you need to set either vertexMass or totalMass data field, but not both.";
+            if(d_totalMass.getValue() <= 0.0)
+            {
+                msg_warning(this) << "totalMass data can not have a negative value.\n"
+                                  << "Switching back to default values: totalMass = 1.0\n"
+                                  << "To remove this warning, you need to set a positive values to the totalMass data";
+                d_totalMass.setValue(1.0) ;
+            }
+            //If double definition with valid values, use totalMass instead
+            initializationProcess = 0;
         }
+        //Check double definition : both massDensity and vertexMass are user-defined
+        else if(d_massDensity.isSet())
+        {
+            msg_warning(this) << "massDensity value overriding the value of the attribute vertexMass.\n"
+                              << "To remove this warning you need to set either vertexMass or massDensity data field, but not both.";
+            if(d_massDensity.getValue() <= 0.0)
+            {
+                msg_warning(this) << "totalMass data can not have a negative value.\n"
+                                  << "Switching back to default values: totalMass = 1.0\n"
+                                  << "To remove this warning, you need to set a positive values to the totalMass data";
+                d_massDensity.setValue(1.0) ;
+                d_totalMass.setValue(1.0) ;
+                initializationProcess = 0;
+            }
+            else
+            {
+                //If double definition with valid values, use massDensity instead
+                initializationProcess = 1;
+            }
+        }
+        //If no problem detected, then use the vertexMass
+        else
+        {
+            const sofa::helper::vector<Real> &vertexMass = d_vertexMass.getValue();
+            //Check size
+            if (vertexMass.size() != (unsigned)this->mstate->getSize())
+            {
+                msg_error() << "Inconsistent size of vertexMass vector compared to the DOFs size.\n"
+                               "Back to default case : use totalMass = 1.0";
+                d_totalMass.setValue(1.0) ;
+                initializationProcess = 0;
+            }
+            else
+            {
+                //Use vertexMass
+                initializationProcess = 2;
+
+                //Check that the vertexMass vector has only positive values
+                for(size_t i=0; i<vertexMass.size(); i++)
+                {
+                    if(vertexMass[i]<=0)
+                    {
+                        msg_warning() << "Negative value of vertexMass vector: vertexMass[" << i << "] = " << vertexMass[i];
+                    }
+                }
+            }
+        }
+    }
+    //If user defines the massDensity, use it to compute the mass at each vertex
+    else if(d_massDensity.isSet())
+    {
+        //Check double definition : both massDensity and totalMass are user-defined
+        if(d_totalMass.isSet())
+        {
+            msg_warning(this) << "totalMass value overriding the value of the attribute massDensity.\n"
+                              << "To remove this warning you need to set either massDensity or totalMass data field, but not both.";
+            d_massDensity.setValue(1.0) ;
+            if(d_totalMass.getValue() <= 0.0)
+            {
+                msg_warning(this) << "totalMass data can not have a negative value.\n"
+                                  << "Switching back to default values: totalMass = 1.0\n"
+                                  << "To remove this warning, you need to set a positive values to the totalMass data";
+                d_totalMass.setValue(1.0) ;
+            }
+            if(d_massDensity.getValue() <= 0.0)
+            {
+                msg_warning(this) << "totalMass data can not have a negative value.\n"
+                                  << "To remove this warning, you need to set a positive values to the totalMass data";
+            }
+            //If double definition with valid values, use totalMass instead
+            initializationProcess = 0;
+        }
+        //Check for negative or null value, if wrongly set use the totalMass instead
+        else if(d_massDensity.getValue() <= 0.0)
+        {
+            msg_warning(this) << "totalMass data can not have a negative value.\n"
+                              << "Switching back to default values: totalMass = 1.0\n"
+                              << "To remove this warning, you need to set a positive values to the totalMass data";
+            d_massDensity.setValue(1.0) ;
+            d_totalMass.setValue(1.0) ;
+            initializationProcess = 0;
+        }
+        //If no problem detected, then use the massDensity
+        else
+        {
+            initializationProcess = 1;
+        }
+    }
+    //else totalMass is used
+    else
+    {
+        if(!d_totalMass.isSet())
+        {
+            msg_info() << "No information about the mass is given." << msgendl
+                          "Default : totalMass = 1.0";
+        }
+        //Check for negative or null value, if wrongly set use the default value totalMass = 1.0
+        if(d_totalMass.getValue() <= 0.0)
+        {
+            msg_warning(this) << "totalMass data can not have a negative value.\n"
+                              << "Switching back to default values: totalMass = 1.0\n"
+                              << "To remove this warning, you need to set a positive values to the totalMass data";
+            d_totalMass.setValue(1.0) ;
+        }
+        initializationProcess = 0;
+    }
+
+    //If the mass is based on the totalMass information
+    if(initializationProcess==0)
+    {
+        msg_info() << "totalMass information is used";
         Real totalMassTemp = d_totalMass.getValue();
         reinit();
         d_massDensity.setValue(totalMassTemp/d_totalMass.getValue());
         reinit();
     }
-
-    if ((d_vertexMass.getValue().size()==0) && (_topology!=0))
+    //If the mass is based on the massDensity information
+    else if(initializationProcess==1)
     {
+        msg_info() << "massDensity information is used";
         reinit();
     }
+    //If the mass is based on the vertexMass information
+    else if(initializationProcess==2)
+    {
+        msg_info() << "vertexMass information is used";
+        helper::WriteAccessor<Data<MassVector> > vertexMass = d_vertexMass;
+        sofa::helper::vector<MassType> vertexMassSave = d_vertexMass.getValue();
+        Real totalMassSave = 0.0;
+        for(size_t i=0; i<vertexMass.size(); i++)
+        {
+            totalMassSave += vertexMass[i];
+        }
+
+        //Compute the volume
+        d_massDensity.setValue(1.0);
+        reinit();
+        for(size_t i=0; i<vertexMass.size(); i++)
+        {
+            vertexMass[i] = vertexMassSave[i];
+        }
+        Real volume = d_totalMass.getValue();
+
+        //Update all computed values
+        d_massDensity.setValue(totalMassSave/volume);
+        d_totalMass.setValue(totalMassSave);
+    }
+    //Error : initializationProcess should be [0;1;2]
+    else
+    {
+        msg_error(this) << "error in the initialization process";
+    }
+
+    //Info post-reinit
+    msg_info() << "totalMass   = " << d_totalMass.getValue() << msgendl
+               << "massDensity = " << d_massDensity.getValue() << msgendl
+               << "vertexMass  = " << d_vertexMass.getValue();
 }
 
 template <class DataTypes, class MassType>
