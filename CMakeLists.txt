@@ -301,10 +301,7 @@ if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/custom.cmake")
 endif()
 
 
-# Install configuration:
-## when installing, keep an eye on options/params/sources used for compilation
-## this should be internal and not delivered, but this is definitively useful
-sofa_install_git_version( "sofa" ${CMAKE_CURRENT_SOURCE_DIR} )
+# Install configuration
 #install(FILES "${CMAKE_BINARY_DIR}/CMakeCache.txt" DESTINATION . COMPONENT headers)
 install(FILES "${CMAKE_SOURCE_DIR}/README.md" DESTINATION . COMPONENT applications)
 install(FILES "${CMAKE_SOURCE_DIR}/CHANGELOG.md" DESTINATION . COMPONENT applications)
