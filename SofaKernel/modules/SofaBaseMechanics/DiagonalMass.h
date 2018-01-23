@@ -97,7 +97,7 @@ public:
     typedef typename DiagonalMassInternalData<DataTypes,TMassType>::MassVector MassVector;
     typedef typename DiagonalMassInternalData<DataTypes,TMassType>::GeometricalTypes GeometricalTypes;
 
-    VecMass d_mass;
+    VecMass d_vertexMass;
 
     typedef core::topology::BaseMeshTopology::Point Point;
     typedef core::topology::BaseMeshTopology::Edge Edge;
@@ -250,7 +250,7 @@ public:
     }
 
     SReal getTotalMass() const { return d_totalMass.getValue(); }
-    int getMassCount() { return d_mass.getValue().size(); }
+    int getMassCount() { return d_vertexMass.getValue().size(); }
 
 
     void addMass(const MassType& mass);

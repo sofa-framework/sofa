@@ -46,7 +46,7 @@ namespace mass
 
 template <class DataTypes, class MassType>
 DiagonalMass<DataTypes, MassType>::DiagonalMass()
-    : d_mass( initData(&d_mass, "mass", "values of the particles masses") )
+    : d_vertexMass( initData(&d_vertexMass, "mass", "values of the particles masses") )
     , m_pointHandler(NULL)
     , d_massDensity( initData(&d_massDensity, (Real)1.0,"massDensity", "mass density that allows to compute the  particles masses from a mesh topology and geometry.\nOnly used if > 0") )
     , d_computeMassOnRest(initData(&d_computeMassOnRest, false, "computeMassOnRest", "if true, the mass of every element is computed based on the rest position rather than the position"))
@@ -396,32 +396,32 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(co
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::clear()
 {
-    MassVector& masses = *d_mass.beginEdit();
+    MassVector& masses = *d_vertexMass.beginEdit();
     masses.clear();
-    d_mass.endEdit();
+    d_vertexMass.endEdit();
 }
 
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::addMass(const MassType& m)
 {
-    MassVector& masses = *d_mass.beginEdit();
+    MassVector& masses = *d_vertexMass.beginEdit();
     masses.push_back(m);
-    d_mass.endEdit();
+    d_vertexMass.endEdit();
 }
 
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::resize(int vsize)
 {
-    MassVector& masses = *d_mass.beginEdit();
+    MassVector& masses = *d_vertexMass.beginEdit();
     masses.resize(vsize);
-    d_mass.endEdit();
+    d_vertexMass.endEdit();
 }
 
 // -- Mass interface
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::addMDx(const core::MechanicalParams* /*mparams*/, DataVecDeriv& res, const DataVecDeriv& dx, SReal factor)
 {
-    const MassVector &masses= d_mass.getValue();
+    const MassVector &masses= d_vertexMass.getValue();
     helper::WriteAccessor< DataVecDeriv > _res = res;
     helper::ReadAccessor< DataVecDeriv > _dx = dx;
 
@@ -450,7 +450,7 @@ template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::accFromF(const core::MechanicalParams* /*mparams*/, DataVecDeriv& a, const DataVecDeriv& f)
 {
 
-    const MassVector &masses= d_mass.getValue();
+    const MassVector &masses= d_vertexMass.getValue();
     helper::WriteOnlyAccessor< DataVecDeriv > _a = a;
     const VecDeriv& _f = f.getValue();
 
@@ -464,7 +464,7 @@ template <class DataTypes, class MassType>
 SReal DiagonalMass<DataTypes, MassType>::getKineticEnergy( const core::MechanicalParams* /*mparams*/, const DataVecDeriv& v ) const
 {
 
-    const MassVector &masses= d_mass.getValue();
+    const MassVector &masses= d_vertexMass.getValue();
     helper::ReadAccessor< DataVecDeriv > _v = v;
     SReal e = 0.0;
     for (unsigned int i=0; i<masses.size(); i++)
@@ -478,7 +478,7 @@ template <class DataTypes, class MassType>
 SReal DiagonalMass<DataTypes, MassType>::getPotentialEnergy( const core::MechanicalParams* /*mparams*/, const DataVecCoord& x ) const
 {
 
-    const MassVector &masses= d_mass.getValue();
+    const MassVector &masses= d_vertexMass.getValue();
     helper::ReadAccessor< DataVecCoord > _x = x;
     SReal e = 0;
     // gravity
@@ -503,7 +503,7 @@ DiagonalMass<DataTypes, MassType>::getMomentum ( const core::MechanicalParams*, 
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-    const MassVector &masses= d_mass.getValue();
+    const MassVector &masses= d_vertexMass.getValue();
     const int N = defaulttype::DataTypeInfo<Deriv>::size();
     AddMToMatrixFunctor<Deriv,MassType> calc;
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
@@ -516,7 +516,7 @@ void DiagonalMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalParam
 template <class DataTypes, class MassType>
 SReal DiagonalMass<DataTypes, MassType>::getElementMass(unsigned int index) const
 {
-    return (SReal)(d_mass.getValue()[index]);
+    return (SReal)(d_vertexMass.getValue()[index]);
 }
 
 
@@ -528,18 +528,18 @@ void DiagonalMass<DataTypes, MassType>::getElementMass(unsigned int index, defau
     if (m->rowSize() != dimension || m->colSize() != dimension) m->resize(dimension,dimension);
 
     m->clear();
-    AddMToMatrixFunctor<Deriv,MassType>()(m, d_mass.getValue()[index], 0, 1);
+    AddMToMatrixFunctor<Deriv,MassType>()(m, d_vertexMass.getValue()[index], 0, 1);
 }
 
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::reinit()
 {
-    if (_topology && (d_massDensity.getValue() > 0 || d_mass.getValue().size() == 0))
+    if (_topology && (d_massDensity.getValue() > 0 || d_vertexMass.getValue().size() == 0))
     {
         if (_topology->getNbTetrahedra()>0 && tetraGeo)
         {
 
-            MassVector& masses = *d_mass.beginEdit();
+            MassVector& masses = *d_vertexMass.beginEdit();
             m_topologyType=TOPOLOGY_TETRAHEDRONSET;
 
             // resize array
@@ -571,11 +571,11 @@ void DiagonalMass<DataTypes, MassType>::reinit()
                 }
             }
             d_totalMass.setValue(total_mass);
-            d_mass.endEdit();
+            d_vertexMass.endEdit();
         }
         else if (_topology->getNbTriangles()>0 && triangleGeo)
         {
-            MassVector& masses = *d_mass.beginEdit();
+            MassVector& masses = *d_vertexMass.beginEdit();
             m_topologyType=TOPOLOGY_TRIANGLESET;
 
             // resize array
@@ -606,13 +606,13 @@ void DiagonalMass<DataTypes, MassType>::reinit()
                 }
             }
             d_totalMass.setValue(total_mass);
-            d_mass.endEdit();
+            d_vertexMass.endEdit();
         }
 
         else if (_topology->getNbHexahedra()>0)
         {
 
-            MassVector& masses = *d_mass.beginEdit();
+            MassVector& masses = *d_vertexMass.beginEdit();
             m_topologyType=TOPOLOGY_HEXAHEDRONSET;
 
             masses.resize(this->mstate->getSize());
@@ -642,11 +642,11 @@ void DiagonalMass<DataTypes, MassType>::reinit()
             }
 
             d_totalMass.setValue(total_mass);
-            d_mass.endEdit();
+            d_vertexMass.endEdit();
 
         }
         else if (_topology->getNbQuads()>0 && quadGeo) {
-            MassVector& masses = *d_mass.beginEdit();
+            MassVector& masses = *d_vertexMass.beginEdit();
             m_topologyType=TOPOLOGY_QUADSET;
 
             // resize array
@@ -677,12 +677,12 @@ void DiagonalMass<DataTypes, MassType>::reinit()
                 }
             }
             d_totalMass.setValue(total_mass);
-            d_mass.endEdit();
+            d_vertexMass.endEdit();
         }
         else if (_topology->getNbEdges()>0 && edgeGeo)
         {
 
-            MassVector& masses = *d_mass.beginEdit();
+            MassVector& masses = *d_vertexMass.beginEdit();
             m_topologyType=TOPOLOGY_EDGESET;
 
             // resize array
@@ -713,7 +713,7 @@ void DiagonalMass<DataTypes, MassType>::reinit()
                 }
             }
             d_totalMass.setValue(total_mass);
-            d_mass.endEdit();
+            d_vertexMass.endEdit();
         }
     }
 }
@@ -722,19 +722,19 @@ template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::initTopologyHandlers()
 {
     // add the functions to handle topology changes.
-    m_pointHandler = new DMassPointHandler(this, &d_mass);
-    d_mass.createTopologicalEngine(_topology, m_pointHandler);
+    m_pointHandler = new DMassPointHandler(this, &d_vertexMass);
+    d_vertexMass.createTopologicalEngine(_topology, m_pointHandler);
     if (edgeGeo)
-        d_mass.linkToEdgeDataArray();
+        d_vertexMass.linkToEdgeDataArray();
     if (triangleGeo)
-        d_mass.linkToTriangleDataArray();
+        d_vertexMass.linkToTriangleDataArray();
     if (quadGeo)
-        d_mass.linkToQuadDataArray();
+        d_vertexMass.linkToQuadDataArray();
     if (tetraGeo)
-        d_mass.linkToTetrahedronDataArray();
+        d_vertexMass.linkToTetrahedronDataArray();
     if (hexaGeo)
-        d_mass.linkToHexahedronDataArray();
-    d_mass.registerTopologicalData();
+        d_vertexMass.linkToHexahedronDataArray();
+    d_vertexMass.registerTopologicalData();
 }
 
 template <class DataTypes, class MassType>
@@ -769,15 +769,15 @@ void DiagonalMass<DataTypes, MassType>::init()
     initTopologyHandlers();
 
     // TODO(dmarchal 2017-05-16): this code is duplicated with the one in RigidImpl we should factor it (remove in 1 year if not done or update the dates)
-    if (this->mstate && d_mass.getValue().size() > 0 && d_mass.getValue().size() < (unsigned)this->mstate->getSize())
+    if (this->mstate && d_vertexMass.getValue().size() > 0 && d_vertexMass.getValue().size() < (unsigned)this->mstate->getSize())
     {
-        MassVector &masses= *d_mass.beginEdit();
+        MassVector &masses= *d_vertexMass.beginEdit();
         size_t i = masses.size()-1;
         size_t n = (size_t)this->mstate->getSize();
         masses.reserve(n);
         while (masses.size() < n)
             masses.push_back(masses[i]);
-        d_mass.endEdit();
+        d_vertexMass.endEdit();
     }
 
     if (d_totalMass.isSet())
@@ -792,7 +792,7 @@ void DiagonalMass<DataTypes, MassType>::init()
         reinit();
     }
 
-    if ((d_mass.getValue().size()==0) && (_topology!=0))
+    if ((d_vertexMass.getValue().size()==0) && (_topology!=0))
     {
         reinit();
     }
@@ -824,7 +824,7 @@ template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v)
 {
 
-    const MassVector &masses= d_mass.getValue();
+    const MassVector &masses= d_vertexMass.getValue();
     helper::WriteAccessor< DataVecDeriv > _f = f;
     helper::ReadAccessor< DataVecCoord > _x = x;
     helper::ReadAccessor< DataVecDeriv > _v = v;
@@ -860,7 +860,7 @@ void DiagonalMass<DataTypes, MassType>::addForce(const core::MechanicalParams* /
     if(this->m_separateGravity.getValue())
         return;
 
-    const MassVector &masses= d_mass.getValue();
+    const MassVector &masses= d_vertexMass.getValue();
     helper::WriteAccessor< DataVecDeriv > _f = f;
 
     // gravity
@@ -883,7 +883,7 @@ void DiagonalMass<DataTypes, MassType>::draw(const core::visual::VisualParams* v
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
-    const MassVector &masses= d_mass.getValue();
+    const MassVector &masses= d_vertexMass.getValue();
     if (masses.empty())
         return;
 

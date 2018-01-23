@@ -46,7 +46,7 @@ SReal DiagonalMass<RigidTypes, RigidMass>::getPotentialEnergyRigidImpl( const Me
 {
     SOFA_UNUSED(mparams) ;
     SReal e = 0;
-    const MassVector &masses= d_mass.getValue();
+    const MassVector &masses= d_vertexMass.getValue();
     const VecCoord& _x = x.getValue();
 
     // gravity
@@ -65,7 +65,7 @@ template <class RigidTypes, class RigidMass>
 template <class T>
 void DiagonalMass<RigidTypes, RigidMass>::drawRigid3dImpl(const VisualParams* vparams)
 {
-    const MassVector &masses= d_mass.getValue();
+    const MassVector &masses= d_vertexMass.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
 
@@ -114,7 +114,7 @@ template <class RigidTypes, class RigidMass>
 template <class T>
 void DiagonalMass<RigidTypes, RigidMass>::drawRigid2dImpl(const VisualParams* vparams)
 {
-    const MassVector &masses= d_mass.getValue();
+    const MassVector &masses= d_vertexMass.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
     for (unsigned int i=0; i<x.size(); i++)
@@ -168,14 +168,14 @@ void DiagonalMass<RigidTypes, RigidMass>::initRigidImpl()
     // Initialize the f_mass vector. The f_mass vector is enlarged to contains
     // as much as value as the 'mstate'. The new entries are initialized with the
     // last value of f_mass.
-    if (!this->mstate && d_mass.getValue().size() > 0 && d_mass.getValue().size() < (unsigned)this->mstate->getSize())
+    if (!this->mstate && d_vertexMass.getValue().size() > 0 && d_vertexMass.getValue().size() < (unsigned)this->mstate->getSize())
     {
-        MassVector &masses= *d_mass.beginEdit();
+        MassVector &masses= *d_vertexMass.beginEdit();
         size_t i = masses.size()-1;
         size_t n = (size_t)this->mstate->getSize();
         while (masses.size() < n)
             masses.push_back(masses[i]);
-        d_mass.endEdit();
+        d_vertexMass.endEdit();
     }
 
     m_componentstate = ComponentState::Valid ;
@@ -190,7 +190,7 @@ Vector6 DiagonalMass<RigidTypes,RigidMass>::getMomentumRigid3Impl ( const Mechan
     ReadAccessor<DataVecDeriv> v = vv;
     ReadAccessor<DataVecCoord> x = vx;
 
-    const MassVector &masses = d_mass.getValue();
+    const MassVector &masses = d_vertexMass.getValue();
 
     defaulttype::Vector6 momentum;
 
@@ -215,7 +215,7 @@ Vector6 DiagonalMass<Vec3Types, Vec3Mass>::getMomentumVec3Impl( const Mechanical
     ReadAccessor<DataVecDeriv> v = vv;
     ReadAccessor<DataVecCoord> x = vx;
 
-    const MassVector &masses = d_mass.getValue();
+    const MassVector &masses = d_vertexMass.getValue();
 
     Vector6 momentum;
 
