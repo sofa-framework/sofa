@@ -43,7 +43,7 @@ sofa_add_plugin(LeapMotion LeapMotion)
 sofa_add_plugin(Geomagic Geomagic)
 
 # SOFA_WITH_EXPERIMENTAL_FEATURES_17_12
-sofa_add_plugin(PSL PSL ON)
+sofa_add_plugin_experimental(PSL PSL)
 
 if((${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU") AND (${CMAKE_SYSTEM_NAME} MATCHES "Linux"))
     sofa_add_plugin(SofaPardisoSolver SofaPardisoSolver) # SofaPardisoSolver is only available under linux with gcc
