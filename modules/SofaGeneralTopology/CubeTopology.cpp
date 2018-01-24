@@ -127,6 +127,7 @@ void CubeTopology::setSize()
     invalidate();
 
     // FF: add the following functions which seem to be missing, but I am not sure…
+    updatePoints();
     updateEdges();
     updateQuads();
 }
@@ -181,6 +182,18 @@ int CubeTopology::point(int x, int y, int z, Plane p) const
     }
     else
         return x+nx*(y+ny*z);
+}
+
+
+void CubeTopology::updatePoints()
+{
+    SeqPoints& points = *seqPoints.beginEdit();
+    points.resize(nbPoints) ;
+    for(int i;i<nbPoints;i++)
+    {
+        points[i] = getPoint(i);
+    }
+    seqPoints.endEdit();
 }
 
 void CubeTopology::updateEdges()

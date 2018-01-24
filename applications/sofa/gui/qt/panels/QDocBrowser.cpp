@@ -175,7 +175,6 @@ DocBrowser::DocBrowser(RealGUI* g) : QWidget()
 void DocBrowser::loadHtml(const std::string& filename)
 {
     bool showView = true ;
-    std::string scenefile = filename ;
     std::string htmlfile = filename ;
     std::string rootdir = FileSystem::getParentDirectory(filename) ;
 
@@ -185,9 +184,12 @@ void DocBrowser::loadHtml(const std::string& filename)
 
     /// Check if there exists an .html  file associated with the provided file.
     /// If nor and the history is empty we load a default document from the share repository.
-    if (!DataRepository.findFile(htmlfile, "", NULL) && m_browserhistory->size() == 0)
+    if (!DataRepository.findFile(htmlfile, "", NULL))
     {
-        htmlfile = GuiDataRepository.getFile("docs/runsofa.html").c_str() ;
+        if( m_browserhistory->size() == 0 )
+        {
+            htmlfile = GuiDataRepository.getFile("docs/runsofa.html").c_str() ;
+        }
         showView = false ;
     }
 
@@ -208,10 +210,7 @@ void DocBrowser::loadHtml(const std::string& filename)
         m_browserhistory->push(htmlfile, filename, rootdir) ;
     }
 
-    if(showView)
-    {
-        setVisible(true);
-    }
+    setVisible(showView);
 }
 
 void DocBrowser::goToPrev()

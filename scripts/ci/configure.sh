@@ -191,6 +191,7 @@ case $CI_OPTIONS in
         # Requires XiRobot library.
         append "-DPLUGIN_XITACT=OFF"
         append "-DPLUGIN_RIGIDSCALE=ON"
+        append "-DPLUGIN_SOFAEULERIANFLUID=ON"
         ;;
 esac
 

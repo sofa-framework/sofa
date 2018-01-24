@@ -1,5 +1,0 @@
-<Node>
-	<RequiredPlugin name="SofaImplicitField" /> 
-	<CustomField name="field" function="customfield.evalField"/>
-	<PointCloudImplicitFieldVisualization field="@field"/>
-</Node>
