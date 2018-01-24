@@ -58,7 +58,7 @@ static PyObject * PythonScriptDataEngine_init(PyObject * self, PyObject * /*args
     Py_RETURN_NONE;
 }
 
-static PyObject * PythonScriptDataEngine_addField(PyObject *self, PyObject* args, PyObject * kw)
+static PyObject * PythonScriptDataEngine_addInput(PyObject *self, PyObject* args, PyObject * kw)
 {
      DataEngine* engine = get_dataengine( self );
 
@@ -85,6 +85,35 @@ static PyObject * PythonScriptDataEngine_addField(PyObject *self, PyObject* args
 
      Py_RETURN_NONE;
 }
+
+static PyObject * PythonScriptDataEngine_addOutput(PyObject *self, PyObject* args, PyObject * kw)
+{
+     DataEngine* engine = get_dataengine( self );
+
+     helper_addNewData(args,engine);
+
+     char* dataName;
+     char* dataClass;
+     char* dataHelp;
+     char* dataRawType;
+     PyObject* dataValue;
+
+     if (!PyArg_ParseTuple(args, "ssssO", &dataName, &dataClass, &dataHelp, &dataRawType, &dataValue)) {
+         return 0;
+     }
+     BaseData* NewData = engine->findData(dataName);
+     NewData->setGroup(nullptr);
+
+     msg_warning("binding") << "hui!";
+     if (NewData->getOwner() == engine)// && (!NewData->getGroup() || !NewData->getGroup()[0]))
+         msg_warning("binding") << "well..";
+
+     engine->addOutput(NewData);
+
+
+     Py_RETURN_NONE;
+}
+
 
 
 
@@ -129,7 +158,15 @@ static PyObject * PythonScriptDataEngine_new(PyTypeObject * cls, PyObject * args
 SP_CLASS_METHODS_BEGIN(PythonScriptDataEngine)
 SP_CLASS_METHOD(PythonScriptDataEngine,update)
 SP_CLASS_METHOD(PythonScriptDataEngine,init)
-SP_CLASS_METHOD_KW_DOC(PythonScriptDataEngine,addField,
+SP_CLASS_METHOD_DOC(PythonScriptDataEngine,addInput,
+               "Creates a Sofa object and then adds it to the node. "
+               "First argument is the type name, parameters are passed as subsequent keyword arguments.\n"
+               "Automatic conversion is performed for Scalar, Integer, String, List & Sequence as well as \n"
+               "object with a getAsCreateObjectParameter(self)."
+               "example:\n"
+               "   object = node.createObject('MechanicalObject',name='mObject', dx=1, dy=2, dz=3)"
+               )
+SP_CLASS_METHOD_DOC(PythonScriptDataEngine,addOutput,
                "Creates a Sofa object and then adds it to the node. "
                "First argument is the type name, parameters are passed as subsequent keyword arguments.\n"
                "Automatic conversion is performed for Scalar, Integer, String, List & Sequence as well as \n"
