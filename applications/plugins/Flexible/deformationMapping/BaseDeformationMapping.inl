@@ -556,7 +556,8 @@ void BaseDeformationMappingT<JacobianBlockType>::apply(const core::MechanicalPar
         }
     }
     dOut.endEdit();
-    msg_info() << tmp.str();
+
+    msg_info_when(!tmp.str().empty()) << tmp.str() ;
 
     msg_info_when(!tmp.str().empty()) << tmp.str() ;
 
