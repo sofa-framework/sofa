@@ -113,6 +113,13 @@ if [[ -n "$CI_HAVE_BOOST" ]]; then
     append "-DBOOST_ROOT=$CI_BOOST_PATH"
 fi
 
+# Also enable pluginized modules
+append "-DPLUGIN_SOFAEULERIANFLUID=ON"
+append "-DPLUGIN_SOFASPHFLUID=ON"
+append "-DPLUGIN_SOFAMISCCOLLISION=ON"
+append "-DPLUGIN_SOFADISTANCEGRID=ON"
+append "-DPLUGIN_SOFAIMPLICITFIELD=ON"
+
 case $CI_OPTIONS in
     # Build with as many options enabled as possible
     *options*)
@@ -149,8 +156,7 @@ case $CI_OPTIONS in
         append "-DPLUGIN_COMPLIANT=ON"
         append "-DPLUGIN_EXTERNALBEHAVIORMODEL=ON"
         append "-DPLUGIN_FLEXIBLE=ON"
-        # Requires specific libraries.
-        append "-DPLUGIN_HAPTION=OFF"
+        append "-DPLUGIN_HAPTION=OFF" # Requires specific libraries.
         append "-DPLUGIN_IMAGE=ON"
         append "-DPLUGIN_INVERTIBLEFVM=ON"
         append "-DPLUGIN_MANIFOLDTOPOLOGIES=ON"
@@ -162,19 +168,17 @@ case $CI_OPTIONS in
         fi
         append "-DPLUGIN_MULTITHREADING=ON"
         append "-DPLUGIN_OPTITRACKNATNET=ON"
-        # Does not compile, but it just needs to be updated.
-        append "-DPLUGIN_PERSISTENTCONTACT=OFF"
+        append "-DPLUGIN_PERSISTENTCONTACT=OFF" # Does not compile, but it just needs to be updated.
         append "-DPLUGIN_PLUGINEXAMPLE=ON"
         append "-DPLUGIN_REGISTRATION=ON"
-        # Requires OpenHaptics libraries.
-        append "-DPLUGIN_SENSABLE=OFF"
+        append "-DPLUGIN_RIGIDSCALE=ON"
+        append "-DPLUGIN_SENSABLE=OFF" # Requires OpenHaptics libraries.
         if [[ -n "$CI_HAVE_BOOST" ]]; then
             append "-DPLUGIN_SENSABLEEMULATION=ON"
         else
             append "-DPLUGIN_SENSABLEEMULATION=OFF"
         fi
-        # Requires Sixense libraries.
-        append "-DPLUGIN_SIXENSEHYDRA=OFF"
+        append "-DPLUGIN_SIXENSEHYDRA=OFF" # Requires Sixense libraries.
         append "-DPLUGIN_SOFACARVING=ON"
         if [[ -n "$CI_HAVE_CUDA" ]]; then
             append "-DPLUGIN_SOFACUDA=ON"
@@ -182,16 +186,10 @@ case $CI_OPTIONS in
             append "-DPLUGIN_SOFACUDA=OFF"
         fi
         append "-DPLUGIN_SOFADISTANCEGRID=ON"
-        # Requires HAPI libraries.
-        append "-DPLUGIN_SOFAHAPI=OFF"
-        append "-DPLUGIN_SOFAIMPLICITFIELD=ON"
-        # Not sure if worth maintaining
-        append "-DPLUGIN_SOFASIMPLEGUI=ON"
+        append "-DPLUGIN_SOFAHAPI=OFF" # Requires HAPI libraries.
+        append "-DPLUGIN_SOFASIMPLEGUI=ON" # Not sure if worth maintaining
         append "-DPLUGIN_THMPGSPATIALHASHING=ON"
-        # Requires XiRobot library.
-        append "-DPLUGIN_XITACT=OFF"
-        append "-DPLUGIN_RIGIDSCALE=ON"
-        append "-DPLUGIN_SOFAEULERIANFLUID=ON"
+        append "-DPLUGIN_XITACT=OFF" # Requires XiRobot library.
         ;;
 esac
 
