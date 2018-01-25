@@ -22,7 +22,7 @@ int main () {
         std::cout << "Request" << std::endl;
 
         std::string mesg = "/colorLight ";
-        mesg += "float:" + std::to_string(static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/1.0))) + " ";
+        mesg += "float:" + std::to_string(static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/100.0))) + " ";
 
         zmq::message_t reply (mesg.size());
         memcpy (reply.data (), mesg.c_str(), mesg.size());
