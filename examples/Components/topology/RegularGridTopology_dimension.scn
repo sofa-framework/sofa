@@ -59,7 +59,6 @@
         <BoxROI template="Vec3d" name="box_roi" box="17 9 -11 20 11 -9" indices="0" drawBoxes="0" />
         <FixedConstraint template="Vec3d" name="default27" indices="@box_roi.indices" drawSize="0" />
 
-        <EdgeSet />
         <Node name="Visu">
             <OglModel name="Visual" color="white" edges="@../grid.edges" />
             <IdentityMapping input="@../Edge" output="@Visual" />

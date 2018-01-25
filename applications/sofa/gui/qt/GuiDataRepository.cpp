@@ -25,6 +25,10 @@
 *******************************************************************************/
 
 #include "GuiDataRepository.h"
+#include <sofa/helper/Utils.h>
+
+using sofa::helper::system::FileRepository;
+using sofa::helper::Utils;
 
 namespace sofa
 {
@@ -32,7 +36,9 @@ namespace gui
 {
 namespace qt
 {
-    sofa::helper::system::FileRepository GuiDataRepository("GUI_DATA_PATH", "../share/sofa/gui/qt/resources/");
+
+FileRepository GuiDataRepository("GUI_DATA_PATH", Utils::getSofaPathTo("share/sofa/gui/qt/resources").c_str());
+
 }
 }
 }

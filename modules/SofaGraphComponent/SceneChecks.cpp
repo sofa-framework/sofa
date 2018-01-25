@@ -92,7 +92,7 @@ void SceneCheckDuplicatedName::doCheckOn(Node* node)
     if(!tmp.str().empty())
     {
         m_hasDuplicates = true ;
-        m_duplicatedMsg << "- Found duplicated names "<<"' [" << tmp.str() << "] in node '"<<  node->getPathName() << "'" << msgendl ;
+        m_duplicatedMsg << "- Found duplicated names [" << tmp.str() << "] in node '"<<  node->getPathName() << "'" << msgendl ;
     }
 }
 
@@ -102,8 +102,8 @@ void SceneCheckDuplicatedName::doPrintSummary()
     {
         msg_warning("SceneCheckDuplicatedName") << msgendl
                                                 << m_duplicatedMsg.str()
-                                                << "Nodes with similar names at the same leve of your scene can "
-                                                   "crash certain operations, please them rename" ;
+                                                << "Nodes with similar names at the same level in your scene can "
+                                                   "crash certain operations, please rename them" ;
     }
 }
 
@@ -151,7 +151,7 @@ void SceneCheckMissingRequiredPlugin::doPrintSummary()
         std::stringstream tmp ;
         for(auto& kv : m_requiredPlugins)
         {
-            tmp << "<RequiredPlugin name='"<<kv.first<<"'> <!-- Needed to use components [" ;
+            tmp << "<RequiredPlugin name='"<<kv.first<<"'/> <!-- Needed to use components [" ;
             for(auto& name : kv.second)
             {
                 tmp << name << ", " ;

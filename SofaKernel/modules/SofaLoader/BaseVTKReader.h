@@ -56,7 +56,8 @@ using std::string ;
 
 enum class VTKDatasetFormat { IMAGE_DATA, STRUCTURED_POINTS,
                               STRUCTURED_GRID, RECTILINEAR_GRID,
-                              POLYDATA, UNSTRUCTURED_GRID };
+                              POLYDATA, UNSTRUCTURED_GRID
+                            };
 
 class BaseVTKReader : public BaseObject
 {
@@ -86,7 +87,13 @@ public:
     public:
         T* data;
         VTKDataIO() : data(NULL) {}
-        ~VTKDataIO() { if (data) delete[] data; }
+        ~VTKDataIO()
+        {
+            if (data)
+            {
+                delete[] data;
+            }
+        }
         virtual const void* getData() ;
         virtual void resize(int n) ;
         static T swapT(T t, int nestedDataSize) ;
@@ -102,6 +109,7 @@ public:
     BaseVTKDataIO* newVTKDataIO(const string& typestr, int num) ;
 
     BaseVTKDataIO* inputPoints;
+    BaseVTKDataIO* inputNormals;
     BaseVTKDataIO* inputPolygons;
     BaseVTKDataIO* inputCells;
     BaseVTKDataIO* inputCellOffsets;
