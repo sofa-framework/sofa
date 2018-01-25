@@ -1,6 +1,13 @@
 Cmake_minimum_required(VERSION 3.1)
 project(Communication)
 
+option(PLUGIN_COMMUNICATION_OSC "Make use of the OSC protocol" OFF)
+option(PLUGIN_COMMUNICATION_ZMQ "Make use of the ZMQ protocol" OFF)
+
+set(COMMUNICATION_MAJOR_VERSION 1)
+set(COMMUNICATION_MINOR_VERSION 0)
+set(COMMUNICATION_VERSION ${COMMUNICATION_MAJOR_VERSION}.${COMMUNICATION_MINOR_VERSION})
+
 add_subdirectory(Communication_test)
 
 set(HEADER_FILES
