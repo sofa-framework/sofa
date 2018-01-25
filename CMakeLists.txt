@@ -389,4 +389,9 @@ if(TEMP_CPACK_COMPONENTS_ALL)
     set(CPACK_COMPONENTS_ALL ${TEMP_CPACK_COMPONENTS_ALL})
 endif()
 
+if(NOT ${CPACK_PACKAGE_VERSION_PATCH} STREQUAL "dev" AND EXISTS "${CMAKE_CURRENT_LIST_DIR}/package.cmake")
+    message("Using package.cmake")
+    include( "package.cmake" )
+endif()
+
 INCLUDE(CPack)
