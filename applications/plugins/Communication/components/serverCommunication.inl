@@ -39,7 +39,7 @@ ServerCommunication::ServerCommunication()
     , d_port(initData(&d_port, (int)(6000), "port", "Port to listen (default=6000)"))
     , d_refreshRate(initData(&d_refreshRate, (double)(30.0), "refreshRate", "Refres rate aka frequency (default=30), only used by sender"))
 {
-    //    pthread_mutex_init(&mutex, NULL);
+    pthread_mutex_init(&mutex, NULL);
 }
 
 ServerCommunication::~ServerCommunication()
@@ -56,6 +56,48 @@ void ServerCommunication::init()
 
 void ServerCommunication::handleEvent(Event * event)
 {
+    if (AnimateBeginEvent::checkEventType(event))
+    {
+        Datas data = fetchArgumentsFromBuffer();
+        if (data.source == NULL) // simply check if the data is not null
+        {
+            msg_error() << "something went wrong with received datas, fetched datas from buffer is null";
+            return;
+        }
+        if(data.rows == -1 && data.cols == -1)
+        {
+            writeData(data);
+            return;
+        }
+
+        if (!writeDataToFullMatrix(data))
+            if (!writeDataToContainer(data))
+                msg_error() << "something went wrong while converting network data into sofa matrix";
+    }
+}
+
+bool ServerCommunication::saveArgumentsToBuffer(Datas data)
+{
+    try
+    {
+        receiveDataBuffer->add(data);
+    } catch (std::exception &exception) {
+        msg_info("ServerCommunication") << exception.what();
+        return false;
+    }
+    return true;
+}
+
+ServerCommunication::Datas ServerCommunication::fetchArgumentsFromBuffer()
+{
+    try
+    {
+        return receiveDataBuffer->get();
+    } catch (std::exception &exception) {
+        msg_info("ServerCommunication") << exception.what();
+        return Datas();
+    }
+    return Datas();
 }
 
 void ServerCommunication::openCommunication()
@@ -144,37 +186,37 @@ BaseData* ServerCommunication::fetchData(SingleLink<CommunicationSubscriber, Bas
     return data;
 }
 
-bool ServerCommunication::writeData(SingleLink<CommunicationSubscriber, BaseObject, BaseLink::FLAG_DOUBLELINK> source, CommunicationSubscriber * subscriber, std::string subject, std::vector<std::string> argumentList)
+bool ServerCommunication::writeData(Datas data)
 {
     int i = 0;
-    if (!isSubscribedTo(subject, argumentList.size()))
+    if (!isSubscribedTo(data.subject, data.argumentList.size()))
         return false;
     pthread_mutex_lock(&mutex);
-    for (std::vector<std::string>::iterator it = argumentList.begin(); it != argumentList.end(); it++)
+    for (std::vector<std::string>::iterator it = data.argumentList.begin(); it != data.argumentList.end(); it++)
     {
-        BaseData* data = fetchData(source, getArgumentType(*it), subscriber->getArgumentName(i));
-        if (!data)
+        BaseData* baseData = fetchData(data.source, getArgumentType(*it), data.subscriber->getArgumentName(i));
+        if (!baseData)
             continue;
-        data->read(getArgumentValue(*it));
+        baseData->read(getArgumentValue(*it));
         i++;
     }
     pthread_mutex_unlock(&mutex);
     return true;
 }
 
-bool ServerCommunication::writeDataToFullMatrix(SingleLink<CommunicationSubscriber, BaseObject, BaseLink::FLAG_DOUBLELINK> source, CommunicationSubscriber * subscriber, std::string subject, std::vector<std::string> argumentList, int rows, int cols)
+bool ServerCommunication::writeDataToFullMatrix(Datas data)
 {
-    std::string type = std::string("matrix") + getArgumentType(argumentList.at(0));
-    BaseData* data = fetchData(source, type, subscriber->getArgumentName(0));
-    std::string dataType = data->getValueTypeString();
+    std::string type = std::string("matrix") + getArgumentType(data.argumentList.at(0));
+    BaseData* baseData = fetchData(data.source, type, data.subscriber->getArgumentName(0));
+    std::string dataType = baseData->getValueTypeString();
 
     if(dataType.compare("FullMatrix<double>") == 0|| dataType.compare("FullMatrix<float>") == 0)
     {
         pthread_mutex_lock(&mutex);
-        void* a = data->beginEditVoidPtr();
+        void* a = baseData->beginEditVoidPtr();
         FullMatrix<SReal> * b = static_cast<FullMatrix<SReal>*>(a);
-        std::vector<std::string>::iterator it = argumentList.begin();
-        b->resize(rows, cols);
+        std::vector<std::string>::iterator it = data.argumentList.begin();
+        b->resize(data.rows, data.cols);
         for(int i = 0; i < b->rows(); i++)
         {
             for(int j = 0; j < b->cols(); j++)
@@ -189,21 +231,21 @@ bool ServerCommunication::writeDataToFullMatrix(SingleLink<CommunicationSubscrib
     return false;
 }
 
-bool ServerCommunication::writeDataToContainer(SingleLink<CommunicationSubscriber, BaseObject, BaseLink::FLAG_DOUBLELINK> source, CommunicationSubscriber * subscriber, std::string subject, std::vector<std::string> argumentList)
+bool ServerCommunication::writeDataToContainer(Datas data)
 {
-    std::string type = std::string("matrix") + getArgumentType(argumentList.at(0));
-    BaseData* data = fetchData(source, type, subscriber->getArgumentName(0));
-    const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
+    std::string type = std::string("matrix") + getArgumentType(data.argumentList.at(0));
+    BaseData* baseData = fetchData(data.source, type, data.subscriber->getArgumentName(0));
+    const AbstractTypeInfo *typeinfo = baseData->getValueTypeInfo();
 
     if (!typeinfo->Container())
         return false;
     std::string value = "";
-    for (std::vector<std::string>::iterator it = argumentList.begin(); it != argumentList.end(); it++)
+    for (std::vector<std::string>::iterator it = data.argumentList.begin(); it != data.argumentList.end(); it++)
     {
         value.append(" " + getArgumentValue(*it));
     }
     pthread_mutex_lock(&mutex);
-    data->read(value);
+    baseData->read(value);
     pthread_mutex_unlock(&mutex);
     return true;
 }

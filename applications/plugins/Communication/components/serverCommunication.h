@@ -45,8 +45,8 @@ using sofa::helper::OptionsGroup;
 
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
-#include <sofa/simulation/AnimateEndEvent.h>
 using sofa::core::objectmodel::Event;
+using sofa::simulation::AnimateBeginEvent ;
 
 #include <sofa/defaulttype/DataTypeInfo.h>
 using sofa::defaulttype::AbstractTypeInfo ;
@@ -59,6 +59,8 @@ using sofa::component::linearsolver::FullMatrix;
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/Factory.inl>
 using sofa::helper::Factory;
+
+#include <sofa/helper/system/thread/CircularQueue.h>
 
 #include <pthread.h>
 #include <iostream>
@@ -78,6 +80,60 @@ namespace communication
 {
 
 static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+
+template <class T>
+class CircularBuffer
+{
+public:
+    CircularBuffer(int size)
+    {
+        this->data = new T[size];
+        this->size = size;
+    }
+
+    ~CircularBuffer()
+    {
+        delete this->data;
+    }
+
+    void add(T aData)
+    {
+        if (isFull())
+            throw std::out_of_range("Circular buffer is full");
+        pthread_mutex_lock(&mutex);
+        data[rear] = aData;
+        rear = ((this->rear + 1) % this->size);
+        pthread_mutex_unlock(&mutex);
+    }
+
+    T get()
+    {
+        if (isEmpty())
+            throw std::out_of_range("Circular buffer is empty");
+        pthread_mutex_lock(&mutex);
+        T aData = this->data[front];
+        front = (front + 1) % size;
+        pthread_mutex_unlock(&mutex);
+        return aData;
+    }
+
+    bool isEmpty()
+    {
+        return rear == front;
+    }
+
+    bool isFull()
+    {
+        return ((this->rear + 1) % this->size) == front;
+    }
+
+private:
+    int front = 0;
+    int rear = 0;
+    T * data;
+    int size;
+};
+
 
 template<typename DataType>
 class DataCreator : public sofa::helper::BaseCreator<BaseData>
@@ -123,6 +179,19 @@ public:
     virtual void handleEvent(Event *) override;
     /////////////////////////////////////////////////////////////////////////
 
+    typedef std::vector<std::string> ArgumentList;
+    typedef struct {
+        SingleLink<CommunicationSubscriber, BaseObject, BaseLink::FLAG_DOUBLELINK> source;
+        CommunicationSubscriber * subscriber;
+        std::string subject;
+        ArgumentList argumentList;
+        int rows ;
+        int cols ;
+    } Datas;
+
+    bool saveArgumentsToBuffer(Datas data);
+    Datas fetchArgumentsFromBuffer();
+
     Data<helper::OptionsGroup>  d_job;
     Data<std::string>           d_address;
     Data<int>                   d_port;
@@ -130,6 +199,7 @@ public:
 
 protected:
 
+    CircularBuffer<Datas> * receiveDataBuffer = new CircularBuffer<Datas>(3);
     std::map<std::string, CommunicationSubscriber*> m_subscriberMap;
     pthread_t                                       m_thread;
     bool                                            m_running = true;
@@ -140,11 +210,11 @@ protected:
     virtual void sendData() =0;
     virtual void receiveData() =0;
 
-    BaseData* fetchData(SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK> source, std::string keyTypeMessage, std::string argumentName);
 
-    bool writeData(SingleLink<CommunicationSubscriber, BaseObject, BaseLink::FLAG_DOUBLELINK> source, CommunicationSubscriber * subscriber, std::string subject, std::vector<std::string> argumentList);
-    bool writeDataToContainer(SingleLink<CommunicationSubscriber, BaseObject, BaseLink::FLAG_DOUBLELINK> source, CommunicationSubscriber * subscriber, std::string subject, std::vector<std::string> argumentList);
-    bool writeDataToFullMatrix(SingleLink<CommunicationSubscriber, BaseObject, BaseLink::FLAG_DOUBLELINK> source, CommunicationSubscriber * subscriber, std::string subject, std::vector<std::string> argumentList, int rows, int cols);
+    BaseData* fetchData(SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK> source, std::string keyTypeMessage, std::string argumentName);
+    bool writeData(Datas data);
+    bool writeDataToContainer(Datas data);
+    bool writeDataToFullMatrix(Datas data);
 
 };
 

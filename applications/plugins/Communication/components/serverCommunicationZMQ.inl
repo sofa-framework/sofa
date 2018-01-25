@@ -246,16 +246,32 @@ void ServerCommunicationZMQ::processMessage(std::string dataString)
             return;
         }
 
-        if (!writeDataToFullMatrix(source, subscriber, subject, onlyArgumentList, row, col))
-            if (!writeDataToContainer(source, subscriber, subject, onlyArgumentList))
-                msg_error() << "something went wrong while converting network data into sofa matrix";
+        //        if (!writeDataToFullMatrix(source, subscriber, subject, onlyArgumentList, row, col))
+        //            if (!writeDataToContainer(source, subscriber, subject, onlyArgumentList))
+        //                msg_error() << "something went wrong while converting network data into sofa matrix";
+        //    }
+        //    else
+        //    {
+        //        for (it = argumentList.begin()+1; it != argumentList.end();it++)
+        //            onlyArgumentList.push_back(*it);
+        //        writeData(source, subscriber, subject, onlyArgumentList);
+        //    }
+
+        Datas receiveData = {source, subscriber, subject, argumentList, row, col};
+        saveArgumentsToBuffer(receiveData);
+        //        if (!writeDataToFullMatrix(source, subscriber, subject, argumentList, row, col))
+        //            if (!writeDataToContainer(source, subscriber, subject, argumentList))
+        //                msg_error() << "something went wrong while converting network data into sofa matrix";
     }
     else
     {
         for (it = argumentList.begin()+1; it != argumentList.end();it++)
             onlyArgumentList.push_back(*it);
-        writeData(source, subscriber, subject, onlyArgumentList);
+        Datas receiveData = {source, subscriber, subject, onlyArgumentList, -1, -1};
+        saveArgumentsToBuffer(receiveData);
+        //        writeData(source, subscriber, subject, argumentList);
     }
+
 }
 
 void ServerCommunicationZMQ::sendRequest()
