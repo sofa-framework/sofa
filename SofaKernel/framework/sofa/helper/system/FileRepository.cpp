@@ -42,6 +42,7 @@
 #include <algorithm>
 #include <sstream>
 #include <sofa/helper/logging/Messaging.h>
+#include <sofa/helper/Utils.h>
 
 #ifdef WIN32
 #define ON_WIN32 true
@@ -76,9 +77,9 @@ std::string cleanPath( const std::string& path )
 
 /// Initialize PluginRepository with the current working directory
 #ifdef WIN32
-FileRepository PluginRepository("SOFA_PLUGIN_PATH", "../bin" );
+FileRepository PluginRepository( "SOFA_PLUGIN_PATH", Utils::getExecutableDirectory().c_str() );
 #else
-FileRepository PluginRepository("SOFA_PLUGIN_PATH", "../lib");
+FileRepository PluginRepository( "SOFA_PLUGIN_PATH", Utils::getSofaPathTo("lib").c_str() );
 #endif
 
 FileRepository DataRepository("SOFA_DATA_PATH");
