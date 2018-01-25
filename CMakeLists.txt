@@ -411,10 +411,10 @@ endif()
 
 
 #CPack install
-SET(CPACK_PACKAGE_VERSION "17.dev.0")
+SET(CPACK_PACKAGE_VERSION "17.12.00")
 SET(CPACK_PACKAGE_VERSION_MAJOR "17")
-SET(CPACK_PACKAGE_VERSION_MINOR "dev")
-SET(CPACK_PACKAGE_VERSION_PATCH "0")
+SET(CPACK_PACKAGE_VERSION_MINOR "12")
+SET(CPACK_PACKAGE_VERSION_PATCH "00")
 
 #dirty hack to pack component we want (named BundlePack from runSofa for example, and that will install .app + share)
 #if not set, it will install everything as usual
