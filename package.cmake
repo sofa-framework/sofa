@@ -39,6 +39,8 @@ setSofaOption(PLUGIN_SOFASPHFLUID OFF)
 setSofaOption(PLUGIN_SOFADISTANCEGRID OFF)
 setSofaOption(PLUGIN_SOFAIMPLICITFIELD OFF)
 
+setSofaOption(PLUGIN_PSL OFF)
+
 # Copy resources files (etc/, share/, examples/) when installing 
 setSofaOption(SOFA_INSTALL_RESOURCES_FILES ON)
 # MacOS bundle creation
