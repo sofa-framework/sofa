@@ -3,7 +3,7 @@ project(runSofa)
 
 option(RUNSOFA_INSTALL_AS_BUNDLE "Create a bundle containing all the installation files (Only Mac OS X for now)" OFF)
 
-set(RESSOURCE_FILES
+set(RESOURCE_FILES
     resources/docs/runsofa.html
     )
 
@@ -18,9 +18,9 @@ find_package(SofaFramework) # to get SOFA_HAVE_GLUT
 include(cmake/GeneratePluginConfig.cmake)
 # if MSVC then plugins are located in bin/ instead of lib/ on Mac and Linux
 if(MSVC)
-	set(_pluginLocation "bin")
+    set(_pluginLocation "bin")
 else()
-	set(_pluginLocation "lib")
+    set(_pluginLocation "lib")
 endif()
 set(_configPluginFileName plugin_list.conf)
 set(_defaultConfigPluginFileName "${_configPluginFileName}.default")
@@ -29,17 +29,17 @@ sofa_generate_plugin_config(${_defaultConfigPluginFilePath})
 message("Write Plugin list at ${_defaultConfigPluginFilePath}")
 
 if(APPLE)
-	set_source_files_properties(${RC_FILES} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
+    set_source_files_properties(${RC_FILES} PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
 endif()
 
 if(APPLE AND RUNSOFA_INSTALL_AS_BUNDLE)
-	add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${RC_FILES} Main.cpp )
+    add_executable(${PROJECT_NAME} MACOSX_BUNDLE ${RC_FILES} ${RESOURCE_FILES} Main.cpp )
 else()
-	add_executable(${PROJECT_NAME} ${RC_FILES} ${RESOURCE_FILES} Main.cpp)
+    add_executable(${PROJECT_NAME} ${RC_FILES} ${RESOURCE_FILES} Main.cpp)
 endif()
 
 if(APPLE)
-	set_target_properties( ${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_ICON_FILE "runSOFA.icns" )
+    set_target_properties( ${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_ICON_FILE "runSOFA.icns" )
 endif()
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC "CONFIG_PLUGIN_FILENAME=${_configPluginFileName}")
@@ -50,7 +50,7 @@ target_link_libraries(${PROJECT_NAME} SofaGuiMain)
 
 
 if(SOFA_HAVE_GLUT)
-	target_compile_definitions(${PROJECT_NAME} PUBLIC "SOFA_HAVE_GLUT_GUI")
+    target_compile_definitions(${PROJECT_NAME} PUBLIC "SOFA_HAVE_GLUT_GUI")
 endif()
 
 if(SOFA_BUILD_TESTS)
@@ -61,11 +61,11 @@ if(SOFA_BUILD_TESTS)
 endif()
 
 if(APPLE AND RUNSOFA_INSTALL_AS_BUNDLE)
-	# set(CPACK_COMPONENTS_ALL BundlePack)
-	set_property(GLOBAL PROPERTY RUNSOFA_CPACK_COMPONENTS_ALL BundlePack)
-	include(cmake/bundle.cmake)
+    # set(CPACK_COMPONENTS_ALL BundlePack)
+    set_property(GLOBAL PROPERTY RUNSOFA_CPACK_COMPONENTS_ALL BundlePack)
+    include(cmake/bundle.cmake)
 else()
-	sofa_install_targets(SofaGui runSofa "")
+    sofa_install_targets(SofaGui runSofa "")
 endif()
 
 # if MSVC then plugins are located in bin/ instead of lib/ on Mac and Linux
