@@ -246,6 +246,10 @@ BaseData* helper_addNewDataKW(PyObject *args, PyObject * kw, Base * obj) {
         bd->read( tmp.str() ) ;
         bd->setGroup(dataClass);
     }
+    else
+    {
+        msg_warning("SofaPython") << "No data provided, initializing empty data ...";
+    }
     return bd;
 }
 
