@@ -206,7 +206,7 @@ void DocBrowser::loadHtml(const std::string& filename)
     if (DataRepository.findFile(htmlfile, "", NULL))
     {
         m_htmlPage->setSearchPaths(QStringList(QString(rootdir.c_str())));
-        m_htmlPage->setSource( QUrl(QString(htmlfile.c_str())) );
+        m_htmlPage->setSource(QUrl::fromLocalFile(QString(htmlfile.c_str())) );
         m_browserhistory->push(htmlfile, filename, rootdir) ;
     }
 
