@@ -207,12 +207,16 @@ void PythonScriptDataEngine::handleEvent(Event *event)
 
 void PythonScriptDataEngine::init()
 {
-    Data<float>* blah;
-    blah = new Data<float>(PythonScriptDataEngine::initData_("myblah","blup", this),0);
-//    blah = new Data<float>(this->initData(blah,"myblah","blup"));
-    blah->setValue(50);
+//    Data<float>* blah;
+//    blah = new Data<float>(PythonScriptDataEngine::initData_("myblah","blup", this),0);
+////    blah = new Data<float>(this->initData(blah,"myblah","blup"));
+//    blah->setValue(50);
 
-    addInput(blah);
+//    addInput(blah);
+
+//    msg_warning("awawa") << "asda" << (*TetraTest)[0];
+//    msg_warning("awawa") << "asda" << *TetraTest;
+
 
     //    d_Test(initData(&d_Test, "Test","Some info Text"));
 

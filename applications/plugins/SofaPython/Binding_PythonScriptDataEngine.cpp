@@ -58,63 +58,57 @@ static PyObject * PythonScriptDataEngine_init(PyObject * self, PyObject * /*args
     Py_RETURN_NONE;
 }
 
-static PyObject * PythonScriptDataEngine_addInput(PyObject *self, PyObject* args, PyObject * kw)
+BaseData * helper_addNewIO(PyObject * self, PyObject * args, PyObject * kw)
+{
+    DataEngine* engine = get_dataengine( self );
+    BaseData* NewData;
+
+    NewData = helper_addNewDataKW(args,kw,engine);
+
+    if(NewData==nullptr)
+    {
+        msg_error("SofaPython") << "Adding new IO failed!";
+        return nullptr;
+    }
+    NewData->setGroup(""); // Needed to assign to groups Input or Output
+
+    return NewData;
+
+}
+
+static PyObject * PythonScriptDataEngine_addNewInput(PyObject *self, PyObject* args, PyObject * kw)
 {
      DataEngine* engine = get_dataengine( self );
 
-     helper_addNewData(args,engine);
+     BaseData * NewData = helper_addNewIO(self, args, kw);
 
-     char* dataName;
-     char* dataClass;
-     char* dataHelp;
-     char* dataRawType;
-     PyObject* dataValue;
-
-     if (!PyArg_ParseTuple(args, "ssssO", &dataName, &dataClass, &dataHelp, &dataRawType, &dataValue)) {
-         return 0;
+     if (NewData == nullptr)
+     {
+         Py_RETURN_NONE;
      }
-     BaseData* NewData = engine->findData(dataName);
-     NewData->setGroup(nullptr);
-
-     msg_warning("binding") << "hui!";
-     if (NewData->getOwner() == engine)// && (!NewData->getGroup() || !NewData->getGroup()[0]))
-         msg_warning("binding") << "well..";
 
      engine->addInput(NewData);
-
-
      Py_RETURN_NONE;
 }
 
-static PyObject * PythonScriptDataEngine_addOutput(PyObject *self, PyObject* args, PyObject * kw)
+static PyObject * PythonScriptDataEngine_addNewOutput(PyObject *self, PyObject* args, PyObject * kw)
 {
-     DataEngine* engine = get_dataengine( self );
+    DataEngine* engine = get_dataengine( self );
 
-     helper_addNewData(args,engine);
+    BaseData * NewData = helper_addNewIO(self,args, kw);
 
-     char* dataName;
-     char* dataClass;
-     char* dataHelp;
-     char* dataRawType;
-     PyObject* dataValue;
+    if (NewData == nullptr)
+    {
+        Py_RETURN_NONE;
+    }
 
-     if (!PyArg_ParseTuple(args, "ssssO", &dataName, &dataClass, &dataHelp, &dataRawType, &dataValue)) {
-         return 0;
-     }
-     BaseData* NewData = engine->findData(dataName);
-     NewData->setGroup(nullptr);
-
-     msg_warning("binding") << "hui!";
-     if (NewData->getOwner() == engine)// && (!NewData->getGroup() || !NewData->getGroup()[0]))
-         msg_warning("binding") << "well..";
-
-     engine->addOutput(NewData);
-
-
-     Py_RETURN_NONE;
+    engine->addOutput(NewData);
+    Py_RETURN_NONE;
 }
 
-
+//static PyObject * PythonScriptDataEngine_testKwargs(PyObject * self, PyObject* args, PyObject *kw)
+//{
+//}
 
 
 struct error { };
@@ -158,22 +152,13 @@ static PyObject * PythonScriptDataEngine_new(PyTypeObject * cls, PyObject * args
 SP_CLASS_METHODS_BEGIN(PythonScriptDataEngine)
 SP_CLASS_METHOD(PythonScriptDataEngine,update)
 SP_CLASS_METHOD(PythonScriptDataEngine,init)
-SP_CLASS_METHOD_DOC(PythonScriptDataEngine,addInput,
-               "Creates a Sofa object and then adds it to the node. "
-               "First argument is the type name, parameters are passed as subsequent keyword arguments.\n"
-               "Automatic conversion is performed for Scalar, Integer, String, List & Sequence as well as \n"
-               "object with a getAsCreateObjectParameter(self)."
-               "example:\n"
-               "   object = node.createObject('MechanicalObject',name='mObject', dx=1, dy=2, dz=3)"
+SP_CLASS_METHOD_KW_DOC(PythonScriptDataEngine,addNewInput,
+               "Creates a new sofa Data of the desired type and adds it as input to the PSDE-object. "
                )
-SP_CLASS_METHOD_DOC(PythonScriptDataEngine,addOutput,
-               "Creates a Sofa object and then adds it to the node. "
-               "First argument is the type name, parameters are passed as subsequent keyword arguments.\n"
-               "Automatic conversion is performed for Scalar, Integer, String, List & Sequence as well as \n"
-               "object with a getAsCreateObjectParameter(self)."
-               "example:\n"
-               "   object = node.createObject('MechanicalObject',name='mObject', dx=1, dy=2, dz=3)"
+SP_CLASS_METHOD_KW_DOC(PythonScriptDataEngine,addNewOutput,
+               "Creates a new sofa Data of the desired type and adds it as output to the PSDE-object. "
                )
+//SP_CLASS_METHOD_KW_DOC(PythonScriptDataEngine,testKwargs,"help!")
 SP_CLASS_METHODS_END
 
 

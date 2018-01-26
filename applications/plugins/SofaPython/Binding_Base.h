@@ -25,9 +25,13 @@
 #include "PythonMacros.h"
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/Base.h>
+#include <sofa/core/objectmodel/BaseData.h>
 
+
+using namespace sofa::core::objectmodel;
 SP_DECLARE_CLASS_TYPE(Base)
 //PyObject * Base_addNewData(PyObject *self, PyObject *args, sofa::core::DataEngine * DataEnginePtr=NULL);
-int helper_addNewData(PyObject *args, sofa::core::objectmodel::Base* obj);
+BaseData * helper_addNewData(PyObject *args, sofa::core::objectmodel::Base* obj);
+BaseData * helper_addNewDataKW(PyObject *args, PyObject * kw, Base * obj);
 
 #endif // BINDING_BASE_H

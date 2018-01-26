@@ -97,19 +97,20 @@ static PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * args
     /// temporarily, the name is set to the type name.
     /// if a "name" parameter is provided, it will overwrite it.
     BaseObjectDescription desc(type,type);
-
+//    msg_warning("SofaPython") << type;
     bool warning = printWarnings;
     if (kw && PyDict_Size(kw)>0)
     {
         PyObject* keys = PyDict_Keys(kw);
         PyObject* values = PyDict_Values(kw);
+
         for (int i=0; i<PyDict_Size(kw); i++)
         {
             PyObject *key = PyList_GetItem(keys,i);
             PyObject *value = PyList_GetItem(values,i);
 
             if( !strcmp( PyString_AsString(key), "warning") )
-            {
+            {                
                 if PyBool_Check(value)
                         warning = (value==Py_True);
             }
@@ -117,9 +118,15 @@ static PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * args
             {
                 std::stringstream s;
                 pythonToSofaDataString(value, s) ;
+//                if(strcmp(PyString_AsString(key),"PythonScriptDataEngine"))
+//                {
+//                    msg_warning("tetrablah") << s.str().c_str();
+//                }
+//                msg_warning("wh") << PyString_AsString(key) << " content " << s.str().c_str() << " " << i;
                 desc.setAttribute(PyString_AsString(key),s.str().c_str());
             }
         }
+//        msg_warning("number of params") << i;
         Py_DecRef(keys);
         Py_DecRef(values);
     }
