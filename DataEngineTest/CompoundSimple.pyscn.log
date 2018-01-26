@@ -1,0 +1,44 @@
+
+--- NEW SESSION: 20/12/2017 16:30:51 ---
+/model/tetras.showObject = 1
+/model/FEM.drawHeterogeneousTetra = 0
+/model/FEM.drawAsEdges = 0
+/model/FEM.drawAsEdges = 0
+/model/modelSubTopoS1/FEMS1.drawAsEdges = 1
+/model/modelSubTopoS1/FEMS1.drawAsEdges = 0
+/model/boxROISubTopoS1.drawBoxes = 1
+/model/boxROISubTopoS1.drawTetrahedra = 1
+/model/boxROISubTopoS1.drawTetrahedra = 0
+/model/boxROISubTopoS1.drawSize = 0
+
+--- NEW SESSION: 04/01/2018 14:05:06 ---
+/model/PythonScriptDataEngine.printLog = 1
+/model/PythonScriptDataEngine.variables =   
+/model/PythonScriptDataEngine.autoreload = 1
+
+--- NEW SESSION: 04/01/2018 14:56:56 ---
+/model/PythonScriptDataEngine.listening = 1
+/model/PythonScriptDataEngine.printLog = 1
+
+--- NEW SESSION: 04/01/2018 16:51:41 ---
+/model/boxROISubTopoS1.listening = 1
+
+--- NEW SESSION: 05/01/2018 14:51:37 ---
+/model/PythonScriptDataEngine.autoreload = 1
+
+--- NEW SESSION: 05/01/2018 15:33:14 ---
+/model/PythonScriptDataEngine.listening = 1
+
+--- NEW SESSION: 05/01/2018 15:33:14 ---
+/model/PythonScriptDataEngine.listening = 1
+/model/PythonScriptDataEngine.listening = 1
+
+--- NEW SESSION: 08/01/2018 16:45:20 ---
+/model/modelSubTopoS1/FEMS1.drawHeterogeneousTetra = 1
+/model/modelSubTopoS1/FEMS1.drawAsEdges = 1
+
+--- NEW SESSION: 10/01/2018 16:07:56 ---
+/model/PythonScriptDataEngine.myblah = 57
+
+--- NEW SESSION: 24/01/2018 16:13:38 ---
+/model/PythonScriptDataEngine.MrT = 48462032 0 22255040 0 4027560960 32703 0 32703 0 1075970048 0 3220176896 839188481 65536 0 0 96 0 9 0 0 1082953728 0 0
