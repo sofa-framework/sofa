@@ -61,8 +61,6 @@ class MeshMatrixMassInternalData
 };
 
 
-
-// template<class Vec> void readVec1(Vec& vec, const char* str);
 template <class DataTypes, class TMassType>
 class MeshMatrixMass : public core::behavior::Mass<DataTypes>
 {
@@ -106,44 +104,42 @@ public:
 
 
     /// Mass info are stocked on vertices and edges (if lumped matrix)
-    topology::PointData<helper::vector<MassType> >  vertexMassInfo;
-    topology::EdgeData<helper::vector<MassType> >   edgeMassInfo;
+    topology::PointData<helper::vector<MassType> >  d_vertexMassInfo;
+    topology::EdgeData<helper::vector<MassType> >   d_edgeMassInfo;
 
     /* ---------- Specific data for Bezier Elements ------*/
     /// use this data structure to store mass for Bezier tetrahedra. 
     //// The size of the vector is nbControlPoints*(nbControlPoints+1)/2 where nbControlPoints=(degree+1)*(degree+2)*(degree+3)/2
-    topology::TetrahedronData<helper::vector<MassVector> > tetrahedronMassInfo;
-    // array of Tetrahedral Bezier indices
-    //sofa::helper::vector<TetrahedronBezierIndex> tbiArray;
+    topology::TetrahedronData<helper::vector<MassVector> > d_tetrahedronMassInfo;
     /* ---------- end ------*/
 
     /// the mass density used to compute the mass from a mesh topology and geometry
-    Data< Real >         m_massDensity;
+    Data< Real >         d_massDensity;
 
     /// to display the center of gravity of the system
-    Data< bool >         showCenterOfGravity;
-    Data< Real >         showAxisSize;
+    Data< bool >         d_showCenterOfGravity;
+    Data< Real >         d_showAxisSize;
     /// if mass lumping should be performed (only compute mass on vertices)
-    Data< bool >         lumping;
+    Data< bool >         d_lumping;
     /// if specific mass information should be outputed
-    Data< bool >         printMass;
+    Data< bool >         d_printMass;
     Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
     /// the order of integration for numerical integration
-    Data<size_t>	     numericalIntegrationOrder;
+    Data<size_t>	     d_numericalIntegrationOrder;
     /// the type of numerical integration method chosen
-    Data<size_t>	     numericalIntegrationMethod;
+    Data<size_t>	     d_numericalIntegrationMethod;
     /// the type of integration method chosen for non linear element.
     Data<std::string>	 d_integrationMethod; 
-    IntegrationMethod    integrationMethod;
+    IntegrationMethod    m_integrationMethod;
 
 
 
 protected:
 
     /// The type of topology to build the mass from the topology
-    TopologyType topologyType;
-    Real massLumpingCoeff;
-    Real savedMass;
+    TopologyType m_topologyType;
+    Real m_massLumpingCoeff;
+    Real m_savedMass;
 
     MeshMatrixMass();
     ~MeshMatrixMass();
@@ -170,23 +166,23 @@ public:
 
     TopologyType getMassTopologyType() const
     {
-        return topologyType;
+        return m_topologyType;
     }
 
     void setMassTopologyType(TopologyType t)
     {
-        topologyType = t;
+        m_topologyType = t;
     }
 
 
     Real getMassDensity() const
     {
-        return m_massDensity.getValue();
+        return d_massDensity.getValue();
     }
 
     void setMassDensity(Real m)
     {
-        m_massDensity.setValue(m);
+        d_massDensity.setValue(m);
     }
 
     /// Copy the vertex mass scalar (in case of CudaTypes)
@@ -221,7 +217,7 @@ public:
     virtual void draw(const core::visual::VisualParams* vparams) override;
 
     /// Answer wether mass matrix is lumped or not
-    bool isLumped() { return lumping.getValue(); }
+    bool isLumped() { return d_lumping.getValue(); }
 
 
 protected:
@@ -313,7 +309,7 @@ protected:
     protected:
         MeshMatrixMass<DataTypes,TMassType>* m;
     };
-    VertexMassHandler* vertexMassHandler;
+    VertexMassHandler* m_vertexMassHandler;
 
     class EdgeMassHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,MassVector>
     {
@@ -399,7 +395,7 @@ protected:
         MeshMatrixMass<DataTypes,TMassType>* m;
     };
 
-    EdgeMassHandler* edgeMassHandler;
+    EdgeMassHandler* m_edgeMassHandler;
 
     class TetrahedronMassHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron,MassVectorVector>
     {
@@ -420,7 +416,7 @@ protected:
         MeshMatrixMass<DataTypes,TMassType>* m;
     };
 
-    TetrahedronMassHandler* tetrahedronMassHandler;
+    TetrahedronMassHandler* m_tetrahedronMassHandler;
 
 };
 
