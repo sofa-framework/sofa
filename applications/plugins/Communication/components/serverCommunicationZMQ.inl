@@ -219,7 +219,6 @@ void ServerCommunicationZMQ::processMessage(std::string dataString)
             {
                 row = std::stoi(getArgumentValue(argumentList.at(2)));
                 col = std::stoi(getArgumentValue(argumentList.at(3)));
-                std::cout << row << " " << col << std::endl;
                 if (row < 0 || col < 0)
                     return;
             } catch(std::invalid_argument& e){
@@ -246,22 +245,8 @@ void ServerCommunicationZMQ::processMessage(std::string dataString)
             return;
         }
 
-        //        if (!writeDataToFullMatrix(source, subscriber, subject, onlyArgumentList, row, col))
-        //            if (!writeDataToContainer(source, subscriber, subject, onlyArgumentList))
-        //                msg_error() << "something went wrong while converting network data into sofa matrix";
-        //    }
-        //    else
-        //    {
-        //        for (it = argumentList.begin()+1; it != argumentList.end();it++)
-        //            onlyArgumentList.push_back(*it);
-        //        writeData(source, subscriber, subject, onlyArgumentList);
-        //    }
-
-        Datas receiveData = {source, subscriber, subject, argumentList, row, col};
+        Datas receiveData = {source, subscriber, subject, onlyArgumentList, row, col};
         saveArgumentsToBuffer(receiveData);
-        //        if (!writeDataToFullMatrix(source, subscriber, subject, argumentList, row, col))
-        //            if (!writeDataToContainer(source, subscriber, subject, argumentList))
-        //                msg_error() << "something went wrong while converting network data into sofa matrix";
     }
     else
     {
