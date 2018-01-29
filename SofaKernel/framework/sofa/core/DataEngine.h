@@ -95,7 +95,6 @@ public:
     /// Add a new output to this engine
     void addOutput(objectmodel::BaseData* n);
 
-    void addField(objectmodel::BaseData* n);
 
     // The methods below must be redefined because of the
     // double inheritance from Base and DDGNode

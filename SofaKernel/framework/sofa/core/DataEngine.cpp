@@ -55,11 +55,6 @@ void DataEngine::addOutput(objectmodel::BaseData* n)
     core::objectmodel::DDGNode::addOutput(n);
 }
 
-void DataEngine::addField(objectmodel::BaseData* n){}
-
-
-
-
 } // namespace core
 
 } // namespace sofa

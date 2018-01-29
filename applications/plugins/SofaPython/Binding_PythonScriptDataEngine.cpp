@@ -58,68 +58,6 @@ static PyObject * PythonScriptDataEngine_init(PyObject * self, PyObject * /*args
     Py_RETURN_NONE;
 }
 
-BaseData * helper_addNewIO(PyObject * self, PyObject * args, PyObject * kw)
-{
-    DataEngine* engine = get_dataengine( self );
-    BaseData* NewData;
-
-    NewData = helper_addNewDataKW(args,kw,engine);
-
-    if(NewData==nullptr)
-    {
-        msg_error("SofaPython") << "Adding new IO failed!";
-        return nullptr;
-    }
-    NewData->setGroup(""); // Needs to be empty before it can be set to Input or Output ...
-
-    return NewData;
-
-}
-
-static PyObject * PythonScriptDataEngine_addNewInput(PyObject *self, PyObject* args, PyObject * kw)
-{
-     DataEngine* engine = get_dataengine( self );
-
-     BaseData * NewData = helper_addNewIO(self, args, kw);
-
-     if (NewData == nullptr)
-     {
-         Py_RETURN_NONE;
-     }
-
-     // Check IO stuff
-     // TODO (Stefan Escaida 29.01.2018): maybe in the long term enforce that an Input can either be constant or only linked to an Output (for dat that Simulink feelz)
-     BaseData* Parent = NewData->getParent();
-     char * ParentGroup;
-     if (Parent!=nullptr && strcmp(Parent->getGroup(), "Outputs")!=0)
-     {
-        msg_warning("SofaPython") << "Linking a Data defined as Input to a Data that is not an Output";
-     }
-
-     engine->addInput(NewData);
-     Py_RETURN_NONE;
-}
-
-static PyObject * PythonScriptDataEngine_addNewOutput(PyObject *self, PyObject* args, PyObject * kw)
-{
-    DataEngine* engine = get_dataengine( self );
-
-    BaseData * NewData = helper_addNewIO(self,args, kw);
-
-    if (NewData == nullptr)
-    {
-        Py_RETURN_NONE;
-    }
-
-    engine->addOutput(NewData);
-    Py_RETURN_NONE;
-}
-
-//static PyObject * PythonScriptDataEngine_testKwargs(PyObject * self, PyObject* args, PyObject *kw)
-//{
-//}
-
-
 struct error { };
 
 template<class T>
@@ -159,15 +97,6 @@ static PyObject * PythonScriptDataEngine_new(PyTypeObject * cls, PyObject * args
 
 
 SP_CLASS_METHODS_BEGIN(PythonScriptDataEngine)
-SP_CLASS_METHOD(PythonScriptDataEngine,update)
-SP_CLASS_METHOD(PythonScriptDataEngine,init)
-SP_CLASS_METHOD_KW_DOC(PythonScriptDataEngine,addNewInput,
-               "Creates a new sofa Data of the desired type and adds it as input to the PSDE-object. "
-               )
-SP_CLASS_METHOD_KW_DOC(PythonScriptDataEngine,addNewOutput,
-               "Creates a new sofa Data of the desired type and adds it as output to the PSDE-object. "
-               )
-//SP_CLASS_METHOD_KW_DOC(PythonScriptDataEngine,testKwargs,"help!")
 SP_CLASS_METHODS_END
 
 
