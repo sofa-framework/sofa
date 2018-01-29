@@ -22,13 +22,19 @@ int main()
         std::string messageName = "/colorLight";
         p << osc::BeginMessage(messageName.c_str());
 
-	p << static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/MAX));
+        //////////// full RGB color example
+        //        std::string tmp = "" + std::to_string(static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/1.0)));
+        //        tmp += " " + std::to_string(static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/1.0)));
+        //        tmp += " " + std::to_string(static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/1.0)));
+        //        p << tmp.c_str();
+
+        p << static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/1.0));
 
         p << osc::EndMessage;
         p << osc::EndBundle;
         transmitSocket.Send( p.Data(), p.Size() );
 
-        usleep(100000);
+        usleep(10000);
     }
 
     return 0;

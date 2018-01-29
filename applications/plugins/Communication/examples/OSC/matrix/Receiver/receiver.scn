@@ -10,7 +10,7 @@
 
     <RequiredPlugin name="Communication" pluginName="Communication" />
     <ServerCommunicationOSC name="osc1" job="receiver" port="6000"/>
-    <CommunicationSubscriber name="sub1" communication="@osc1" subject="/colorLight" source="@light1" arguments="color"/>
+    <CommunicationSubscriber name="sub1" communication="@osc1" subject="/colorLight" source="@light1" arguments="aMatrix"/>
 
 </Node>
 

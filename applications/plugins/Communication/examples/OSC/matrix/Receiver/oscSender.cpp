@@ -22,31 +22,19 @@ int main()
         std::string messageName = "/colorLight";
         p << osc::BeginMessage(messageName.c_str());
 
-        std::string str;
-        str += std::to_string(static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/1.0)));
-        str += " ";
-        str += std::to_string(static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/1.0)));
-        str += " ";
-        str += std::to_string(static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/1.0)));
-        str += " ";
-        str += std::to_string(1.0);
-        p << str.c_str();
-
-        /// ANOTHER WAY TO SEND COLOR, using matrix style. Color is a vector, then you can use matrix syle
-        /// matrix style is more consistent than using string
-        //        p << "matrix";
-        //        p << 3 ;
-        //        p << 1 ;
-        //        p << static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/MAX));
-        //        p << static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/MAX));
-        //        p << static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/MAX));
+        p << "matrix";
+        p << 3 ;
+        p << 1 ;
+        p << static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/1.0));
+        p << static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/1.0));
+        p << static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/1.0));
 
 
         p << osc::EndMessage;
         p << osc::EndBundle;
         transmitSocket.Send( p.Data(), p.Size() );
 
-        usleep(100000);
+        usleep(10000);
     }
 
     return 0;
