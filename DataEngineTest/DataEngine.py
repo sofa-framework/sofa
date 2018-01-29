@@ -86,8 +86,9 @@ class MyDataEngine(Sofa.PythonScriptDataEngine):
 		for j in range(0,len(MrTT[i])):			
 			MrTT[i][j] = MrTT[i][j]+1
 
-	self.addNewOutput('output1', datatype='t',value=MrTT)	
 
+	self.addNewOutput('output1', datatype='t',value=MrTT)	
+	self.addField('bluuup')
         
 
 

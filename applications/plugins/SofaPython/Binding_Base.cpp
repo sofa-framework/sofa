@@ -223,7 +223,7 @@ BaseData* helper_addNewDataKW(PyObject *args, PyObject * kw, Base * obj) {
     }
     else{
         std::stringstream msg;
-        msg << "Invalid data type '" << dataRawType << "'. Supported type are: s(tring), d(ecimal), f(float), b(oolean)" ;
+        msg << "Invalid data type '" << dataRawType << "'. Supported type are: s(tring), d(ecimal), f(float), b(oolean), (t)etrahedra" ;
         PyErr_SetString(PyExc_TypeError, msg.str().c_str());
         return nullptr;
     }

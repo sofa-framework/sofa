@@ -36,6 +36,7 @@ static PyObject * DataEngine_addField(PyObject *self, PyObject* args, PyObject *
 {
     msg_warning("Binding") << "ok, can trigger call from within python DataEngine";
     DataEngine* engine = get_dataengine( self );
+    Py_RETURN_NONE;
 }
 
 static PyObject * DataEngine_updateIfDirty(PyObject *self, PyObject * /*args*/)
