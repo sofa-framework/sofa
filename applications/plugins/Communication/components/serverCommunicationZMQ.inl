@@ -254,7 +254,6 @@ void ServerCommunicationZMQ::processMessage(std::string dataString)
             onlyArgumentList.push_back(*it);
         Datas receiveData = {source, subscriber, subject, onlyArgumentList, -1, -1};
         saveArgumentsToBuffer(receiveData);
-        //        writeData(source, subscriber, subject, argumentList);
     }
 
 }
