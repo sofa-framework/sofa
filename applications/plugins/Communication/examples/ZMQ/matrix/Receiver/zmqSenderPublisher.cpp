@@ -20,12 +20,11 @@ int main () {
         mesg += "float:" + std::to_string(static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/1.0))) + " ";
         mesg += "float:" + std::to_string(static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/1.0))) + " ";
         mesg += "float:" + std::to_string(static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/1.0))) + " ";
-        mesg += "float:1.0";
 
         zmq::message_t reply (mesg.size());
         memcpy (reply.data (), mesg.c_str(), mesg.size());
         socket.send (reply);
-        usleep(100000);
+        usleep(10000);
     }
     return 0;
 }

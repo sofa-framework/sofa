@@ -10,7 +10,7 @@
 
     <RequiredPlugin name="Communication" pluginName="Communication" />
     <ServerCommunicationZMQ name="zmq1" job="receiver" pattern="publish/subscribe" port="6000"/>
-    <CommunicationSubscriber name="sub1" communication="@zmq1" subject="/colorLight" source="@light1" arguments="color"/>
+    <CommunicationSubscriber name="sub1" communication="@zmq1" subject="/colorLight" source="@light1" arguments="aMatrix"/>
 
 </Node>
 
