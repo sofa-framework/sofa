@@ -79,15 +79,46 @@ namespace component
 namespace communication
 {
 
+//forward declaration
+class CommunicationSubscriber;
+
 static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
-template <class T>
+typedef std::vector<std::string> ArgumentList;
+
+class BufferData
+{
+public:
+    BufferData(){}
+    BufferData(SingleLink<CommunicationSubscriber, BaseObject, BaseLink::FLAG_DOUBLELINK> source,
+    CommunicationSubscriber * subscriber,
+    std::string subject,
+    ArgumentList argumentList,
+    int rows,
+    int cols)
+    {
+        this->source = source;
+        this->subscriber = subscriber;
+        this->subject = subject;
+        this->argumentList = argumentList;
+        this->rows = rows;
+        this->cols = cols;
+    }
+
+    SingleLink<CommunicationSubscriber, BaseObject, BaseLink::FLAG_DOUBLELINK> source;
+    CommunicationSubscriber * subscriber;
+    std::string subject;
+    ArgumentList argumentList;
+    int rows ;
+    int cols ;
+};
+
 class CircularBuffer
 {
 public:
     CircularBuffer(int size)
     {
-        this->data = new T[size];
+        this->data[size] = {};
         this->size = size;
     }
 
@@ -96,22 +127,28 @@ public:
         delete this->data;
     }
 
-    void add(T aData)
+    void add(
+            SingleLink<CommunicationSubscriber, BaseObject, BaseLink::FLAG_DOUBLELINK> source,
+            CommunicationSubscriber * subscriber,
+            std::string subject,
+            ArgumentList argumentList,
+            int rows ,
+            int cols)
     {
         if (isFull())
             throw std::out_of_range("Circular buffer is full");
         pthread_mutex_lock(&mutex);
-        data[rear] = aData;
+        data[rear] = new BufferData(source, subscriber, subject, argumentList, rows, cols);
         rear = ((this->rear + 1) % this->size);
         pthread_mutex_unlock(&mutex);
     }
 
-    T get()
+    BufferData* get()
     {
         if (isEmpty())
             throw std::out_of_range("Circular buffer is empty");
         pthread_mutex_lock(&mutex);
-        T aData = this->data[front];
+        BufferData* aData = this->data[front];
         front = (front + 1) % size;
         pthread_mutex_unlock(&mutex);
         return aData;
@@ -130,7 +167,7 @@ public:
 private:
     int front = 0;
     int rear = 0;
-    T * data;
+    BufferData ** data;
     int size;
 };
 
@@ -142,9 +179,6 @@ public:
     virtual BaseData* createInstance(sofa::helper::NoArgument) override { return new sofa::core::objectmodel::Data<DataType>(); }
     virtual const std::type_info& type() override { return typeid(BaseData);}
 };
-
-//forward declaration
-class CommunicationSubscriber;
 
 class SOFA_COMMUNICATION_API ServerCommunication : public BaseObject
 {
@@ -179,18 +213,14 @@ public:
     virtual void handleEvent(Event *) override;
     /////////////////////////////////////////////////////////////////////////
 
-    typedef std::vector<std::string> ArgumentList;
-    typedef struct {
-        SingleLink<CommunicationSubscriber, BaseObject, BaseLink::FLAG_DOUBLELINK> source;
-        CommunicationSubscriber * subscriber;
-        std::string subject;
-        ArgumentList argumentList;
-        int rows ;
-        int cols ;
-    } Datas;
-
-    bool saveArgumentsToBuffer(Datas data);
-    Datas fetchArgumentsFromBuffer();
+    bool saveArgumentsToBuffer(
+            SingleLink<CommunicationSubscriber, BaseObject, BaseLink::FLAG_DOUBLELINK> source,
+            CommunicationSubscriber * subscriber,
+            std::string subject,
+            ArgumentList argumentList,
+            int rows ,
+            int cols );
+    BufferData* fetchArgumentsFromBuffer();
 
     Data<helper::OptionsGroup>  d_job;
     Data<std::string>           d_address;
@@ -199,7 +229,7 @@ public:
 
 protected:
 
-    CircularBuffer<Datas> * receiveDataBuffer = new CircularBuffer<Datas>(3);
+    CircularBuffer* receiveDataBuffer = new CircularBuffer(3);
     std::map<std::string, CommunicationSubscriber*> m_subscriberMap;
     pthread_t                                       m_thread;
     bool                                            m_running = true;
@@ -212,9 +242,9 @@ protected:
 
 
     BaseData* fetchData(SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK> source, std::string keyTypeMessage, std::string argumentName);
-    bool writeData(Datas data);
-    bool writeDataToContainer(Datas data);
-    bool writeDataToFullMatrix(Datas data);
+    bool writeData(BufferData* data);
+    bool writeDataToContainer(BufferData* data);
+    bool writeDataToFullMatrix(BufferData* data);
 
 };
 

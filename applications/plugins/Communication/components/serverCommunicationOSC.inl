@@ -209,14 +209,11 @@ void ServerCommunicationOSC::ProcessMessage( const osc::ReceivedMessage& m, cons
             msg_error() << "argument list size is != row/cols; " << argumentList.size() << " instead of " << row*col;
             return;
         }
-
-        Datas receiveData = {source, subscriber, subject, argumentList, row, col};
-        saveArgumentsToBuffer(receiveData);
+        saveArgumentsToBuffer(source, subscriber, subject, argumentList, row, col);
     }
     else
     {
-        Datas receiveData = {source, subscriber, subject, argumentList, -1, -1};
-        saveArgumentsToBuffer(receiveData);
+        saveArgumentsToBuffer(source, subscriber, subject, argumentList, -1, -1);
     }
 }
 

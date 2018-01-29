@@ -245,15 +245,13 @@ void ServerCommunicationZMQ::processMessage(std::string dataString)
             return;
         }
 
-        Datas receiveData = {source, subscriber, subject, onlyArgumentList, row, col};
-        saveArgumentsToBuffer(receiveData);
+        saveArgumentsToBuffer(source, subscriber, subject, onlyArgumentList, row, col);
     }
     else
     {
         for (it = argumentList.begin()+1; it != argumentList.end();it++)
             onlyArgumentList.push_back(*it);
-        Datas receiveData = {source, subscriber, subject, onlyArgumentList, -1, -1};
-        saveArgumentsToBuffer(receiveData);
+        saveArgumentsToBuffer(source, subscriber, subject, onlyArgumentList, -1, -1);
     }
 
 }
