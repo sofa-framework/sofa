@@ -166,15 +166,13 @@ void ServerCommunicationOSC::ProcessMessage( const osc::ReceivedMessage& m, cons
     if (!m_running)
         m_socket->Break();
     const char* subject = m.AddressPattern();
-    CommunicationSubscriber * subscriber = getSubscriberFor(subject);
-    if (!subscriber)
+    if (!getSubscriberFor(subject))
         return;
 
     std::vector<std::string> argumentList = convertMessagesToArgumentList(m.ArgumentsBegin(), m.ArgumentsEnd());
     if (argumentList.size() == 0)
         return;
 
-    SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK> source = subscriber->getSource();
     std::string firstArg = getArgumentValue(argumentList.at(0));
     if (firstArg.compare("matrix") == 0)
     {
@@ -209,11 +207,11 @@ void ServerCommunicationOSC::ProcessMessage( const osc::ReceivedMessage& m, cons
             msg_error() << "argument list size is != row/cols; " << argumentList.size() << " instead of " << row*col;
             return;
         }
-        saveArgumentsToBuffer(source, subscriber, subject, argumentList, row, col);
+        saveArgumentsToBuffer(subject, argumentList, row, col);
     }
     else
     {
-        saveArgumentsToBuffer(source, subscriber, subject, argumentList, -1, -1);
+        saveArgumentsToBuffer(subject, argumentList, -1, -1);
     }
 }
 

@@ -90,23 +90,24 @@ class BufferData
 {
 public:
     BufferData(){}
-    BufferData(SingleLink<CommunicationSubscriber, BaseObject, BaseLink::FLAG_DOUBLELINK> source,
-    CommunicationSubscriber * subscriber,
-    std::string subject,
-    ArgumentList argumentList,
-    int rows,
-    int cols)
+    BufferData(std::string subject, ArgumentList argumentList, int rows, int cols)
     {
-        this->source = source;
-        this->subscriber = subscriber;
         this->subject = subject;
         this->argumentList = argumentList;
         this->rows = rows;
         this->cols = cols;
     }
 
-    SingleLink<CommunicationSubscriber, BaseObject, BaseLink::FLAG_DOUBLELINK> source;
-    CommunicationSubscriber * subscriber;
+    int getRows() const;
+
+    int getCols() const;
+
+    ArgumentList getArgumentList() const;
+
+    std::string getSubject() const;
+
+
+private:
     std::string subject;
     ArgumentList argumentList;
     int rows ;
@@ -128,8 +129,6 @@ public:
     }
 
     void add(
-            SingleLink<CommunicationSubscriber, BaseObject, BaseLink::FLAG_DOUBLELINK> source,
-            CommunicationSubscriber * subscriber,
             std::string subject,
             ArgumentList argumentList,
             int rows ,
@@ -138,7 +137,7 @@ public:
         if (isFull())
             throw std::out_of_range("Circular buffer is full");
         pthread_mutex_lock(&mutex);
-        data[rear] = new BufferData(source, subscriber, subject, argumentList, rows, cols);
+        data[rear] = new BufferData(subject, argumentList, rows, cols);
         rear = ((this->rear + 1) % this->size);
         pthread_mutex_unlock(&mutex);
     }
@@ -214,8 +213,6 @@ public:
     /////////////////////////////////////////////////////////////////////////
 
     bool saveArgumentsToBuffer(
-            SingleLink<CommunicationSubscriber, BaseObject, BaseLink::FLAG_DOUBLELINK> source,
-            CommunicationSubscriber * subscriber,
             std::string subject,
             ArgumentList argumentList,
             int rows ,

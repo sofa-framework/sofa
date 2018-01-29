@@ -190,22 +190,17 @@ std::string ServerCommunicationZMQ::dataToString(CommunicationSubscriber* subscr
 
 void ServerCommunicationZMQ::processMessage(std::string dataString)
 {
-    BaseData* data;
     std::string subject;
-    CommunicationSubscriber * subscriber;
     std::vector<std::string> onlyArgumentList;
     std::vector<std::string> argumentList = stringToArgumentList(dataString);
-    SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK> source;
 
     if (argumentList.empty())
         return;
 
     std::vector<std::string>::iterator it = argumentList.begin();
     subject = *it;
-    subscriber = getSubscriberFor(subject);
-    if (!subscriber)
+    if (!getSubscriberFor(subject))
         return;
-    source = subscriber->getSource();
 
     std::string firstArg = getArgumentValue(*(++it));
     if (firstArg.compare("matrix") == 0)
@@ -245,13 +240,13 @@ void ServerCommunicationZMQ::processMessage(std::string dataString)
             return;
         }
 
-        saveArgumentsToBuffer(source, subscriber, subject, onlyArgumentList, row, col);
+        saveArgumentsToBuffer(subject, onlyArgumentList, row, col);
     }
     else
     {
         for (it = argumentList.begin()+1; it != argumentList.end();it++)
             onlyArgumentList.push_back(*it);
-        saveArgumentsToBuffer(source, subscriber, subject, onlyArgumentList, -1, -1);
+        saveArgumentsToBuffer(subject, onlyArgumentList, -1, -1);
     }
 
 }

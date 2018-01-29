@@ -59,34 +59,30 @@ void ServerCommunication::handleEvent(Event * event)
     if (AnimateBeginEvent::checkEventType(event))
     {
         BufferData* data = fetchArgumentsFromBuffer();
-        if (data->source == NULL) // simply check if the data is not null
+        if (data == NULL) // simply check if the data is not null
         {
             msg_error() << "something went wrong with received datas, fetched datas from buffer is null";
             return;
         }
-        if(data->rows == -1 && data->cols == -1)
+        if(data->getRows() == -1 && data->getCols() == -1)
         {
             writeData(data);
+            delete data;
             return;
         }
 
         if (!writeDataToFullMatrix(data))
             if (!writeDataToContainer(data))
                 msg_error() << "something went wrong while converting network data into sofa matrix";
+        delete data;
     }
 }
 
-bool ServerCommunication::saveArgumentsToBuffer(
-        SingleLink<CommunicationSubscriber, BaseObject, BaseLink::FLAG_DOUBLELINK> source,
-        CommunicationSubscriber * subscriber,
-        std::string subject,
-        ArgumentList argumentList,
-        int rows ,
-        int cols )
+bool ServerCommunication::saveArgumentsToBuffer(std::string subject, ArgumentList argumentList, int rows, int cols)
 {
     try
     {
-        receiveDataBuffer->add(source, subscriber, subject, argumentList, rows, cols);
+        receiveDataBuffer->add(subject, argumentList, rows, cols);
     } catch (std::exception &exception) {
         msg_info("ServerCommunication") << exception.what();
         return false;
@@ -101,9 +97,8 @@ BufferData* ServerCommunication::fetchArgumentsFromBuffer()
         return receiveDataBuffer->get();
     } catch (std::exception &exception) {
         msg_info("ServerCommunication") << exception.what();
-        return new BufferData();
     }
-    return new BufferData();
+    return NULL;
 }
 
 void ServerCommunication::openCommunication()
@@ -195,11 +190,17 @@ BaseData* ServerCommunication::fetchData(SingleLink<CommunicationSubscriber, Bas
 bool ServerCommunication::writeData(BufferData* data)
 {
     int i = 0;
-    if (!isSubscribedTo(data->subject, data->argumentList.size()))
+    ArgumentList argumentList = data->getArgumentList();
+    if (!isSubscribedTo(data->getSubject(), argumentList.size()))
         return false;
-    for (std::vector<std::string>::iterator it = data->argumentList.begin(); it != data->argumentList.end(); it++)
+    CommunicationSubscriber * subscriber = getSubscriberFor(data->getSubject());
+    if (!subscriber)
+        return false;
+
+    for (std::vector<std::string>::iterator it = argumentList.begin(); it != argumentList.end(); it++)
     {
-        BaseData* baseData = fetchData(data->source, getArgumentType(*it), data->subscriber->getArgumentName(i));
+        SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK> source = subscriber->getSource();
+        BaseData* baseData = fetchData(source, getArgumentType(*it),subscriber->getArgumentName(i));
         if (!baseData)
             continue;
         baseData->read(getArgumentValue(*it));
@@ -210,44 +211,75 @@ bool ServerCommunication::writeData(BufferData* data)
 
 bool ServerCommunication::writeDataToFullMatrix(BufferData* data)
 {
-    //    std::string type = std::string("matrix") + getArgumentType(data.argumentList.at(0));
-    //    BaseData* baseData = fetchData(data.source, type, data.subscriber->getArgumentName(0));
-    //    std::string dataType = baseData->getValueTypeString();
+    ArgumentList argumentList = data->getArgumentList();
+    CommunicationSubscriber * subscriber = getSubscriberFor(data->getSubject());
+    if (!subscriber)
+        return false;
+    std::string type = std::string("matrix") + getArgumentType(argumentList.at(0));
+    SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK> source = subscriber->getSource();
+    BaseData* baseData = fetchData(source, type, subscriber->getArgumentName(0));
+    std::string dataType = baseData->getValueTypeString();
 
-    //    if(dataType.compare("FullMatrix<double>") == 0|| dataType.compare("FullMatrix<float>") == 0)
-    //    {
-    //        void* a = baseData->beginEditVoidPtr();
-    //        FullMatrix<SReal> * b = static_cast<FullMatrix<SReal>*>(a);
-    //        std::vector<std::string>::iterator it = data.argumentList.begin();
-    //        b->resize(data.rows, data.cols);
-    //        for(int i = 0; i < b->rows(); i++)
-    //        {
-    //            for(int j = 0; j < b->cols(); j++)
-    //            {
-    //                b->set(i, j, stod(getArgumentValue(*it)));
-    //                ++it;
-    //            }
-    //        }
-    //        return true;
-    //    }
-    //    return false;
+    if(dataType.compare("FullMatrix<double>") == 0|| dataType.compare("FullMatrix<float>") == 0)
+    {
+        void* a = baseData->beginEditVoidPtr();
+        FullMatrix<SReal> * b = static_cast<FullMatrix<SReal>*>(a);
+        std::vector<std::string>::iterator it = argumentList.begin();
+        b->resize(data->getRows(), data->getCols());
+        for(int i = 0; i < b->rows(); i++)
+        {
+            for(int j = 0; j < b->cols(); j++)
+            {
+                b->set(i, j, stod(getArgumentValue(*it)));
+                ++it;
+            }
+        }
+        return true;
+    }
+    return false;
 }
 
 bool ServerCommunication::writeDataToContainer(BufferData* data)
 {
-    //    std::string type = std::string("matrix") + getArgumentType(data.argumentList.at(0));
-    //    BaseData* baseData = fetchData(data.source, type, data.subscriber->getArgumentName(0));
-    //    const AbstractTypeInfo *typeinfo = baseData->getValueTypeInfo();
+    ArgumentList argumentList = data->getArgumentList();
+    CommunicationSubscriber * subscriber = getSubscriberFor(data->getSubject());
+    if (!subscriber)
+        return false;
+    std::string type = std::string("matrix") + getArgumentType(argumentList.at(0));
+    SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK> source = subscriber->getSource();
+    BaseData* baseData = fetchData(source, type, subscriber->getArgumentName(0));
+    const AbstractTypeInfo *typeinfo = baseData->getValueTypeInfo();
 
-    //    if (!typeinfo->Container())
-    //        return false;
-    //    std::string value = "";
-    //    for (std::vector<std::string>::iterator it = data.argumentList.begin(); it != data.argumentList.end(); it++)
-    //    {
-    //        value.append(" " + getArgumentValue(*it));
-    //    }
-    //    baseData->read(value);
-    //    return true;
+    if (!typeinfo->Container())
+        return false;
+    std::string value = "";
+    for (std::vector<std::string>::iterator it = argumentList.begin(); it != argumentList.end(); it++)
+    {
+        value.append(" " + getArgumentValue(*it));
+    }
+    baseData->read(value);
+    return true;
+}
+
+
+int BufferData::getRows() const
+{
+    return rows;
+}
+
+int BufferData::getCols() const
+{
+    return cols;
+}
+
+ArgumentList BufferData::getArgumentList() const
+{
+    return argumentList;
+}
+
+std::string BufferData::getSubject() const
+{
+    return subject;
 }
 
 } /// communication
