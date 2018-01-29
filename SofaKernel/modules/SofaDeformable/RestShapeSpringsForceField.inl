@@ -63,6 +63,7 @@ RestShapeSpringsForceField<DataTypes>::RestShapeSpringsForceField()
     , angularStiffness(initData(&angularStiffness, "angularStiffness", "angularStiffness assigned when controlling the rotation of the points"))
     , pivotPoints(initData(&pivotPoints, "pivot_points", "global pivot points used when translations instead of the rigid mass centers"))
     , external_points(initData(&external_points, "external_points", "points from the external Mechancial State that define the rest shape springs"))
+    , updatedStiffness(initData(&updatedStiffness, false, "updatedStiffness", "If true, use the current value of stiffness vector. If not, use initial stiffness values."))
     , recompute_indices(initData(&recompute_indices, true, "recompute_indices", "Recompute indices (should be false for BBOX)"))
     , drawSpring(initData(&drawSpring,false,"drawSpring","draw Spring"))
     , springColor(initData(&springColor, defaulttype::RGBAColor(0.0,1.0,0.0,1.0), "springColor","spring color. (default=[0.0,1.0,0.0,1.0])"))
@@ -222,15 +223,31 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
     }
     else
     {
-        for (unsigned int i=0; i<m_indices.size(); i++)
+        if(updatedStiffness.getValue())
         {
-            const unsigned int index = m_indices[i];
-            unsigned int ext_index = m_indices[i];
-            if(useRestMState)
-                ext_index= m_ext_indices[i];
+            for (unsigned int i=0; i<m_indices.size(); i++)
+            {
+                const unsigned int index = m_indices[i];
+                unsigned int ext_index = m_indices[i];
+                if(useRestMState)
+                    ext_index= m_ext_indices[i];
 
-            Deriv dx = p1[index] - p0[ext_index];
-            f1[index] -=  dx * k[i];
+                Deriv dx = p1[index] - p0[ext_index];
+                f1[index] -=  dx * stiffness.getValue()[i];
+            }
+        }
+        else
+        {
+            for (unsigned int i=0; i<m_indices.size(); i++)
+            {
+                const unsigned int index = m_indices[i];
+                unsigned int ext_index = m_indices[i];
+                if(useRestMState)
+                    ext_index= m_ext_indices[i];
+
+                Deriv dx = p1[index] - p0[ext_index];
+                f1[index] -=  dx * k[i];
+            }
         }
     }
 }
@@ -258,9 +275,19 @@ void RestShapeSpringsForceField<DataTypes>::addDForce(const MechanicalParams* mp
     }
     else
     {
-        for (unsigned int i=0; i<m_indices.size(); i++)
+        if(updatedStiffness.getValue())
         {
-            df1[m_indices[i]] -=  dx1[m_indices[i]] * k[i] * kFactor ;
+            for (unsigned int i=0; i<m_indices.size(); i++)
+            {
+                df1[m_indices[i]] -=  dx1[m_indices[i]] * stiffness.getValue()[i] * kFactor ;
+            }
+        }
+        else
+        {
+            for (unsigned int i=0; i<m_indices.size(); i++)
+            {
+                df1[m_indices[i]] -=  dx1[m_indices[i]] * k[i] * kFactor ;
+            }
         }
     }
 }

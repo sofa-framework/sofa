@@ -82,6 +82,7 @@ public:
     Data< VecReal > angularStiffness;
     Data< helper::vector< CPos > > pivotPoints;
     Data< helper::vector< unsigned int > > external_points;
+    Data< bool > updatedStiffness;
     Data< bool > recompute_indices;
     Data< bool > drawSpring;
     Data< defaulttype::RGBAColor > springColor;
