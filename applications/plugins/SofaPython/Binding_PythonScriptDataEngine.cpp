@@ -70,7 +70,7 @@ BaseData * helper_addNewIO(PyObject * self, PyObject * args, PyObject * kw)
         msg_error("SofaPython") << "Adding new IO failed!";
         return nullptr;
     }
-    NewData->setGroup(""); // Needed to assign to groups Input or Output
+    NewData->setGroup(""); // Needs to be empty before it can be set to Input or Output ...
 
     return NewData;
 
@@ -85,6 +85,15 @@ static PyObject * PythonScriptDataEngine_addNewInput(PyObject *self, PyObject* a
      if (NewData == nullptr)
      {
          Py_RETURN_NONE;
+     }
+
+     // Check IO stuff
+     // TODO (Stefan Escaida 29.01.2018): maybe in the long term enforce that an Input can either be constant or only linked to an Output (for dat that Simulink feelz)
+     BaseData* Parent = NewData->getParent();
+     char * ParentGroup;
+     if (Parent!=nullptr && strcmp(Parent->getGroup(), "Outputs")!=0)
+     {
+        msg_warning("SofaPython") << "Linking a Data defined as Input to a Data that is not an Output";
      }
 
      engine->addInput(NewData);

@@ -144,8 +144,6 @@ void parseTetraVector(PyObject * value, Data<sofa::helper::vector<Tetra>> * Tetr
 // not defined static in order to be able to use this fcn somewhere else also
 BaseData* helper_addNewDataKW(PyObject *args, PyObject * kw, Base * obj) {
 
-
-//    msg_warning("kwargs") << "wee";
     char* dataRawType="";
     char* dataClass="";
     char* dataHelp="";
@@ -191,44 +189,36 @@ BaseData* helper_addNewDataKW(PyObject *args, PyObject * kw, Base * obj) {
     }
     if (dataRawType[0]==0) // only if no type is provided we cannot construct
     {
-        msg_error("SofaPython") << "No type provided for data to add ... ";
+        msg_error("SofaPython") << "No type provided for Data, cannot construct/add";
         return nullptr;
     }
 
     BaseData* bd = nullptr ;
-    bool OldSchoolParsing = false;
+//    bool OldSchoolParsing = false; //TODO (Stefan Escaida 29.01.2018): should a direct parsing mechanism Python-->Sofa be implemented? (instead of going through str)
     if(dataRawType[0] == 's'){
         Data<std::string>* t = new Data<std::string>() ;
         t = new(t) Data<std::string>(obj->initData(t, std::string(""), dataName, dataHelp)) ;
-        bd = t;
-        OldSchoolParsing = true;
+        bd = t;        
     }
     else if(dataRawType[0] == 'b'){
         Data<bool>* t = new Data<bool>();
         t = new(t) Data<bool>(obj->initData(t, true, dataName, dataHelp)) ;
         bd = t;
-        OldSchoolParsing = true;
     }
     else if(dataRawType[0] == 'd'){
         Data<int>* t = new Data<int>();
         t = new (t) Data<int> (obj->initData(t, 0, dataName, dataHelp)) ;
-        bd = t;
-        OldSchoolParsing = true;
+        bd = t;        
     }
     else if(dataRawType[0] == 'f'){
         Data<float>* t = new Data<float>();
         t = new (t) Data<float>(obj->initData(t, 0.0f, dataName, dataHelp)) ;
-        bd = t;
-        OldSchoolParsing = true;
+        bd = t;        
     }
     else if(dataRawType[0] == 't')
     {
         Data<vector<Tetra>>* t = new Data<vector<Tetra>>();
         t = new(t) Data<vector<Tetra>>(obj->initData(t,dataName, dataHelp));
-
-        OldSchoolParsing = true;
-//        OldSchoolParsing = false;
-//        parseTetraVector(dataValue,t);
         bd = t;
     }
     else{
@@ -241,14 +231,25 @@ BaseData* helper_addNewDataKW(PyObject *args, PyObject * kw, Base * obj) {
 
     if(dataValue!=nullptr) // otherwise leave Data with its unintialized value
     {
-        std::stringstream tmp;
-        pythonToSofaDataString(dataValue, tmp) ;
-        bd->read( tmp.str() ) ;
+        std::stringstream tmp;        
+        pythonToSofaDataString(dataValue, tmp);
+        if(tmp.str()[0]=='@' && bd->canBeLinked())
+        {
+            if(!bd->setParent(tmp.str()))
+            {
+                msg_error("SofaPython") << "Could not setup link for Data, initialzing empty";
+            }
+        }
+        else
+        {
+            bd->read( tmp.str() );
+        }
         bd->setGroup(dataClass);
+        Py_DecRef(dataValue);
     }
     else
     {
-        msg_warning("SofaPython") << "No data provided, initializing empty data ...";
+        msg_warning("SofaPython") << "No value(s) provided, initializing empty Data ...";
     }
     return bd;
 }

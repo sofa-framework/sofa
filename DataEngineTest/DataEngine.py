@@ -74,24 +74,21 @@ class MyDataEngine(Sofa.PythonScriptDataEngine):
         #self.myblah = 40
         #print self.myblah
         #self.addNewOutput('teasting','Properties','help','t',[[1,12,4,5],[24,3,4,5],[3,4,5,3],[3,4,5,56]])
-        self.addNewInput('DataNameI',datatype='t', dataclass='sd',help='This input is used for blah')
-        #self.addNewOutput('DataNameO',value=[1,12,4,5,24,3,4,5,3,4,5,3], dataclass='sd',help='This input is used for blah')
-	
-	
-	root=self.getContext()
-	MrT = root.getObject('container').findData('tetrahedra')
-  	#print MrT
-        #self.addNewOutput('MrT', 'Properties','help', 't', MrT)
+        #self.addNewInput('DataNameI', datatype='t', value='@container.tetrahedra',help='This input is used for blah')
 
-        #self.addNewInput(self.root.findData(''))
+        #self.addNewOutput('DataNameO',datatype='t',value=[1,12,4,5,24,3,4,5,3,4,5,3],help='This output is used for blah')
+		
+	#root=self.getContext()
+	#MrT = root.getObject('container').findData('tetrahedra')
+	MrTT= self.findData('tetrahedra').value
+	#MrTT= Tetras
+	for i in range(0,len(MrTT)):
+		for j in range(0,len(MrTT[i])):			
+			MrTT[i][j] = MrTT[i][j]+1
 
-	#self.addNewData('test3','Properties','help','s','asd');
-        #self.addField('Input')
+	self.addNewOutput('output1', datatype='t',value=MrTT)	
+
         
-        #self.init()
-	
-	#print self.tetrahedraOutlierss
-	#MyBoxROI.isTetraInBoxROI(Tetras[1])
 
 
 

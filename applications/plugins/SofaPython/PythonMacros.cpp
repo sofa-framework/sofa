@@ -57,8 +57,7 @@ std::ostream& pythonToSofaDataString(PyObject* value, std::ostream& out)
         /// It is a sequence...so we can iterate over it.
         PyObject *iterator = PyObject_GetIter(value);
         if(iterator)
-        {
-            msg_warning("SofaPython") << ".";
+        {            
             bool first = true;
             while(PyObject* next = PyIter_Next(iterator))
             {

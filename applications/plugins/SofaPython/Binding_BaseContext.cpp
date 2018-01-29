@@ -118,15 +118,11 @@ static PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * args
             {
                 std::stringstream s;
                 pythonToSofaDataString(value, s) ;
-//                if(strcmp(PyString_AsString(key),"PythonScriptDataEngine"))
-//                {
-//                    msg_warning("tetrablah") << s.str().c_str();
-//                }
-//                msg_warning("wh") << PyString_AsString(key) << " content " << s.str().c_str() << " " << i;
                 desc.setAttribute(PyString_AsString(key),s.str().c_str());
             }
+//            Py_DecRef(key);
+//            Py_DecRef(value);
         }
-//        msg_warning("number of params") << i;
         Py_DecRef(keys);
         Py_DecRef(values);
     }
