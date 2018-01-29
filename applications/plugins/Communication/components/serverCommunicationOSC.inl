@@ -212,15 +212,11 @@ void ServerCommunicationOSC::ProcessMessage( const osc::ReceivedMessage& m, cons
 
         Datas receiveData = {source, subscriber, subject, argumentList, row, col};
         saveArgumentsToBuffer(receiveData);
-        //        if (!writeDataToFullMatrix(source, subscriber, subject, argumentList, row, col))
-        //            if (!writeDataToContainer(source, subscriber, subject, argumentList))
-        //                msg_error() << "something went wrong while converting network data into sofa matrix";
     }
     else
     {
         Datas receiveData = {source, subscriber, subject, argumentList, -1, -1};
         saveArgumentsToBuffer(receiveData);
-        //        writeData(source, subscriber, subject, argumentList);
     }
 }
 
