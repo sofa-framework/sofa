@@ -159,24 +159,21 @@ if(Qt5Core_FOUND)
     message("SofaGUIQt: Using Qt5")
     set(QT5_NO_LINK_QTMAIN 1)
 
-    find_package(Qt5 COMPONENTS Gui OpenGL REQUIRED)
+    find_package(Qt5 COMPONENTS Gui OpenGL WebEngine WebEngineWidgets REQUIRED)
 
-    set(EXT_QT_INCLUDES ${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${Qt5OpenGL_INCLUDE_DIRS})
-    # target_include_directories(${EXT_QT_INCLUDES})
-
-    set(EXT_QT_LIBRARIES ${Qt5Core_LIBRARIES} ${Qt5Widgets_LIBRARIES} ${Qt5OpenGL_LIBRARIES})
+    set(EXT_QT_INCLUDES ${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${Qt5OpenGL_INCLUDE_DIRS} ${Qt5WebEngine_INCLUDE_DIRS} ${Qt5WebEngineWidgets_INCLUDE_DIRS})
+    set(EXT_QT_LIBRARIES ${Qt5Core_LIBRARIES} ${Qt5Widgets_LIBRARIES} ${Qt5OpenGL_LIBRARIES} ${Qt5WebEngine_LIBRARIES} ${Qt5WebEngine_LIBRARIES} ${Qt5WebEngineWidgets_LIBRARIES})
 
     qt5_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
     set(MOC_FILES_GROUP "Generated")
     qt5_wrap_ui(FORM_FILES ${UI_FILES})
     set(FORM_FILES_GROUP "Generated")
 
-
 else()
     message("SofaGUIQt: Using Qt4")
 
     set(QT4_NO_LINK_QTMAIN 1)
-    find_package(Qt4 QUIET COMPONENTS qtcore qtgui qtopengl qtxml REQUIRED)
+    find_package(Qt4 QUIET COMPONENTS qtcore qtgui qtopengl qtxml  REQUIRED)
 
     qt4_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
     set(MOC_FILES_GROUP "Generated")
