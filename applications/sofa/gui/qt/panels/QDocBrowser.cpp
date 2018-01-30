@@ -181,7 +181,6 @@ DocBrowser::DocBrowser(RealGUI* g) : QWidget()
 void DocBrowser::loadHtml(const std::string& filename)
 {
     bool showView = true ;
-    std::string scenefile = filename ;
     std::string htmlfile = filename ;
     std::string rootdir = FileSystem::getParentDirectory(filename) ;
 
@@ -214,10 +213,7 @@ void DocBrowser::loadHtml(const std::string& filename)
         m_htmlPage->load( QUrl::fromLocalFile(QString(htmlfile.c_str())) );
     }
 
-    if(showView)
-    {
-        setVisible(true);
-    }
+    setVisible(showView);
 }
 
 void DocBrowser::goToPrev()

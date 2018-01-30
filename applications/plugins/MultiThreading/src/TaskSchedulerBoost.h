@@ -30,10 +30,6 @@
 #include <boost/thread.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/condition.hpp>
-//#include <boost/detail/atomic_count.hpp>
-
-//#include <boost/pool/singleton_pool.hpp>
-
 
 
 namespace sofa
@@ -165,7 +161,7 @@ namespace sofa
 
 		
 
-			mutable boost::detail::spinlock		mTaskMutex;
+            mutable boost::detail::spinlock		mTaskMutex {BOOST_DETAIL_SPINLOCK_INIT};
 			Task*		mTask[Max_TasksPerThread];
 			unsigned			mTaskCount;								
 			Task::Status*	mCurrentStatus;	

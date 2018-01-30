@@ -1616,10 +1616,7 @@ void RealGUI::stopDumpVisitor()
         m_dumpVisitorStream.flush();
         //Creation of the graph
         std::string xmlDoc=m_dumpVisitorStream.str();
-        handleTraceVisitor->load(xmlDo
-                                 /// This is use to retrieve the execution context when browsing the
-                                 /// history of sofa scene execution.
-                                 BrowserHistory* m_browserhistory ;c);
+        handleTraceVisitor->load(xmlDoc);
         m_dumpVisitorStream.str("");
     }
 #endif

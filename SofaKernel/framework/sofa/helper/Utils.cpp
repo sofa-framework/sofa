@@ -265,6 +265,11 @@ const std::string& Utils::getSofaPathPrefix()
     return prefix;
 }
 
+const std::string Utils::getSofaPathTo(const std::string& pathFromBuildDir)
+{
+    return getSofaPathPrefix() + "/" + pathFromBuildDir;
+}
+
 std::map<std::string, std::string> Utils::readBasicIniFile(const std::string& path)
 {
     std::map<std::string, std::string> map;

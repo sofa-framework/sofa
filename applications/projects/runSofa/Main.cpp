@@ -328,7 +328,6 @@ int main(int argc, char** argv)
     // Initialise paths
     BaseGUI::setConfigDirectoryPath(Utils::getSofaPathPrefix() + "/config", true);
     BaseGUI::setScreenshotDirectoryPath(Utils::getSofaPathPrefix() + "/screenshots", true);
-    PluginRepository.addFirstPath( Utils::getPluginDirectory() );
 
     if (!files.empty())
         fileName = files[0];
