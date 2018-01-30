@@ -4,6 +4,7 @@
 #include "serverCommunication.h"
 #include <algorithm>
 #include <string>
+#include <regex>
 #include <zmq.hpp>
 
 namespace sofa

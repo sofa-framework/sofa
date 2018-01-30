@@ -14,17 +14,21 @@ set(HEADER_FILES
     config.h
     components/CommunicationSubscriber.h
     components/CommunicationSubscriber.inl
+    components/communicationCircularBuffer.h
+    components/communicationCircularBuffer.inl
     components/serverCommunication.h
     components/serverCommunication.inl
     components/serverCommunicationOSC.h
     components/serverCommunicationOSC.inl
     components/serverCommunicationZMQ.h
     components/serverCommunicationZMQ.inl
+
 )
 
 set(SOURCE_FILES
     initCommunication.cpp
     components/CommunicationSubscriber.cpp
+    components/communicationCircularBuffer.cpp
     components/serverCommunication.cpp
     components/serverCommunicationOSC.cpp
     components/serverCommunicationZMQ.cpp

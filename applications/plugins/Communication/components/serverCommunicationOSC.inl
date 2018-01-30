@@ -98,13 +98,11 @@ osc::OutboundPacketStream ServerCommunicationOSC::createOSCMessage()
     for (std::map<std::string, CommunicationSubscriber*>::iterator it = subscribersMap.begin(); it != subscribersMap.end(); it++)
     {
         CommunicationSubscriber* subscriber = it->second;
-        SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK> source = subscriber->getSource();
-
         std::vector<std::string> argumentList = subscriber->getArgumentList();
         for (std::vector<std::string>::iterator itArgument = argumentList.begin(); itArgument != argumentList.end(); itArgument++ )
         {
 
-            BaseData* data = fetchData(source, "OSC-string", *itArgument); // s for std::string in case of non existing argument
+            BaseData* data = fetchData(subscriber->getSource(), "OSC-string", *itArgument); // s for std::string in case of non existing argument
             if (!data)
             {
                 messageName = subscriber->getSubject();

@@ -37,7 +37,7 @@ ServerCommunication::ServerCommunication()
     : d_job(initData(&d_job, OptionsGroup(2,"receiver","sender"), "job", "If unspecified, the default value is receiver"))
     , d_address(initData(&d_address, (std::string)"127.0.0.1", "address", "Scale for object display. (default=localhost)"))
     , d_port(initData(&d_port, (int)(6000), "port", "Port to listen (default=6000)"))
-    , d_refreshRate(initData(&d_refreshRate, (double)(30.0), "refreshRate", "Refres rate aka frequency (default=30), only used by sender"))
+    , d_refreshRate(initData(&d_refreshRate, (double)(30.0), "refreshRate", "Refresh rate aka frequency (default=30), only used by sender"))
 {
     pthread_mutex_init(&mutex, NULL);
 }
@@ -262,25 +262,6 @@ bool ServerCommunication::writeDataToContainer(BufferData* data)
 }
 
 
-int BufferData::getRows() const
-{
-    return rows;
-}
-
-int BufferData::getCols() const
-{
-    return cols;
-}
-
-ArgumentList BufferData::getArgumentList() const
-{
-    return argumentList;
-}
-
-std::string BufferData::getSubject() const
-{
-    return subject;
-}
 
 } /// communication
 
