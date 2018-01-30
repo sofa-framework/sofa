@@ -58,6 +58,20 @@ static PyObject * PythonScriptDataEngine_init(PyObject * self, PyObject * /*args
     Py_RETURN_NONE;
 }
 
+static PyObject * PythonScriptDataEngine_parse(PyObject * self, PyObject * /*args*/) {
+    (void) self;
+    msg_error("PythonScriptDataEngine")<< "awa, actually called from Py";
+
+#ifdef LOG_UNIMPLEMENTED_METHODS
+    PythonScriptDataEngine* obj = get_getdataengine(self);
+    msg_error("PythonScriptDataEngine") << obj->m_classname.getValueString()
+                                        << ".parse not implemented in "
+                                        << obj->name.getValueString() << std::endl;
+#endif
+
+    Py_RETURN_NONE;
+}
+
 struct error { };
 
 template<class T>
@@ -97,6 +111,9 @@ static PyObject * PythonScriptDataEngine_new(PyTypeObject * cls, PyObject * args
 
 
 SP_CLASS_METHODS_BEGIN(PythonScriptDataEngine)
+SP_CLASS_METHOD(PythonScriptDataEngine,parse)
+SP_CLASS_METHOD(PythonScriptDataEngine,init)
+SP_CLASS_METHOD(PythonScriptDataEngine,update)
 SP_CLASS_METHODS_END
 
 

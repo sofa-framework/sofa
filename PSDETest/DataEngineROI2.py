@@ -6,6 +6,8 @@ from ROI import BoxROI
 
 class MyDataEngine(Sofa.PythonScriptDataEngine):
 
+    def poarse(self):
+	print 'poarsing 2'	
 
     def update(self):
         print 'blup'        

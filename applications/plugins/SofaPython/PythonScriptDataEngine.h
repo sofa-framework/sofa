@@ -47,42 +47,7 @@ namespace controller
 //template <typename DataTypes>
 class SOFA_SOFAPYTHON_API PythonScriptDataEngine: public ScriptDataEngine
 {
-    static BaseData::BaseInitData initData_(const char* name, const char* help, Base* owner, bool isDisplayed=true, bool isReadOnly=false )
-    {
-        BaseData::BaseInitData res;
-        BaseData::DataFlags flags = BaseData::FLAG_DEFAULT;
-        if(isDisplayed) flags |= (BaseData::DataFlags)BaseData::FLAG_DISPLAYED; else flags &= ~(BaseData::DataFlags)BaseData::FLAG_DISPLAYED;
-        if(isReadOnly)  flags |= (BaseData::DataFlags)BaseData::FLAG_READONLY; else flags &= ~(BaseData::DataFlags)BaseData::FLAG_READONLY;
 
-        // Questionnable optimization: test a single 'uint32_t' rather that four 'char'
-        static const char *draw_str = "draw";
-        static const char *show_str = "show";
-        static uint32_t draw_prefix = *(uint32_t*)draw_str;
-        static uint32_t show_prefix = *(uint32_t*)show_str;
-
-        /*
-            std::string ln(name);
-            if( ln.size()>0 && findField(ln) )
-            {
-                serr << "field name " << ln << " already used in this class or in a parent class !...aborting" << sendl;
-                exit( 1 );
-            }
-            m_fieldVec.push_back( std::make_pair(ln,field));
-            m_aliasData.insert(std::make_pair(ln,field));
-        */
-        res.owner = owner;
-        res.data = NULL;
-        res.name = name;
-        res.helpMsg = help;
-        res.dataFlags = flags;
-
-        uint32_t prefix = *(uint32_t*)name;
-
-        if (prefix == draw_prefix || prefix == show_prefix)
-            res.group = "Visualization";
-
-        return res;
-    }
 
 public:
     typedef BaseMeshTopology::Tetra Tetra;
@@ -96,6 +61,7 @@ public:
     void refreshBinding();
     void doLoadScript();
     virtual void handleEvent(Event *event) override;
+    virtual void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override ;
 
 protected:
     PythonScriptDataEngine();
@@ -109,11 +75,12 @@ protected:
     PyObject *m_ScriptDataEngineInstance   {nullptr} ;   // instance of m_ScriptDataEngineClass
     PyObject *m_Func_update                {nullptr} ;
     PyObject *m_Func_init                  {nullptr} ;
+    PyObject *m_Func_parse                {nullptr} ;
 
     virtual void script_update() override;
     virtual void script_init() override;
-    virtual void loadScript() override;
-    static PyObject * script_addField(PyObject * self, PyObject * args, PyObject * kw);
+    virtual void script_parse() override;
+    virtual void loadScript() override;    
     void init() override;
 
 
@@ -139,3 +106,41 @@ public:
 }
 
 #endif // PYTHONSCRIPTDATAENGINE_H
+
+// was a test ... should probably remove
+//static BaseData::BaseInitData initData_(const char* name, const char* help, Base* owner, bool isDisplayed=true, bool isReadOnly=false )
+//{
+//    BaseData::BaseInitData res;
+//    BaseData::DataFlags flags = BaseData::FLAG_DEFAULT;
+//    if(isDisplayed) flags |= (BaseData::DataFlags)BaseData::FLAG_DISPLAYED; else flags &= ~(BaseData::DataFlags)BaseData::FLAG_DISPLAYED;
+//    if(isReadOnly)  flags |= (BaseData::DataFlags)BaseData::FLAG_READONLY; else flags &= ~(BaseData::DataFlags)BaseData::FLAG_READONLY;
+
+//    // Questionnable optimization: test a single 'uint32_t' rather that four 'char'
+//    static const char *draw_str = "draw";
+//    static const char *show_str = "show";
+//    static uint32_t draw_prefix = *(uint32_t*)draw_str;
+//    static uint32_t show_prefix = *(uint32_t*)show_str;
+
+//    /*
+//        std::string ln(name);
+//        if( ln.size()>0 && findField(ln) )
+//        {
+//            serr << "field name " << ln << " already used in this class or in a parent class !...aborting" << sendl;
+//            exit( 1 );
+//        }
+//        m_fieldVec.push_back( std::make_pair(ln,field));
+//        m_aliasData.insert(std::make_pair(ln,field));
+//    */
+//    res.owner = owner;
+//    res.data = NULL;
+//    res.name = name;
+//    res.helpMsg = help;
+//    res.dataFlags = flags;
+
+//    uint32_t prefix = *(uint32_t*)name;
+
+//    if (prefix == draw_prefix || prefix == show_prefix)
+//        res.group = "Visualization";
+
+//    return res;
+//}

@@ -107,8 +107,7 @@ PythonScriptDataEngine::~PythonScriptDataEngine()
 }
 
 void PythonScriptDataEngine::script_update()
-{
-    //msg_warning() << "wee, passing in script_update()";
+{    
     PythonEnvironment::gil lock(__func__);
     SP_CALL_MODULEFUNC_NOPARAM(m_Func_update)
 }
@@ -118,6 +117,7 @@ void PythonScriptDataEngine::refreshBinding()
 {
     BIND_OBJECT_METHOD_DATA_ENGINE(update)
     BIND_OBJECT_METHOD_DATA_ENGINE(init)
+    BIND_OBJECT_METHOD_DATA_ENGINE(parse)
             //BIND_OBJECT_METHOD(update)
 }
 
@@ -204,22 +204,16 @@ void PythonScriptDataEngine::handleEvent(Event *event)
         update();
     }
 }
+void PythonScriptDataEngine::parse( sofa::core::objectmodel::BaseObjectDescription* arg )
+{
+    ScriptDataEngine::parse(arg);
+    msg_warning("PSDE") << "poarsing";
+    script_parse();
+}
 
 void PythonScriptDataEngine::init()
 {
-//    Data<float>* blah;
-//    blah = new Data<float>(PythonScriptDataEngine::initData_("myblah","blup", this),0);
-////    blah = new Data<float>(this->initData(blah,"myblah","blup"));
-//    blah->setValue(50);
-
-//    addInput(blah);
-
-//    msg_warning("awawa") << "asda" << (*TetraTest)[0];
-//    msg_warning("awawa") << "asda" << *TetraTest;
-
-
-    //    d_Test(initData(&d_Test, "Test","Some info Text"));
-
+    ScriptDataEngine::init();
     addInput(&d_tetrahedra);
     addInput(&d_X0);
     addOutput(&d_tetrahedronIndices);
@@ -234,18 +228,17 @@ void PythonScriptDataEngine::init()
 }
 
 void PythonScriptDataEngine::script_init()
-{
-    //msg_warning() << "wee, passing in script_update()";
-//    msg_warning()<< "awa, passing through here again";
+{    
     PythonEnvironment::gil lock(__func__);
     SP_CALL_MODULEFUNC_NOPARAM(m_Func_init)
 }
 
-PyObject * PythonScriptDataEngine::script_addField(PyObject *self, PyObject * args, PyObject *kw)
+void PythonScriptDataEngine::script_parse()
 {
-
+    msg_warning("PSDE") << "parsing toujours";
+    PythonEnvironment::gil lock(__func__);
+    SP_CALL_MODULEFUNC_NOPARAM(m_Func_parse)
 }
-
 
 }
 }

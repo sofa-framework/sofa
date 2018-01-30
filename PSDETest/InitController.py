@@ -5,9 +5,20 @@ import Sofa
 from datetime import datetime
 
 class InitController(Sofa.PythonScriptController):
+    
+    def __new__(cls, node, instance):
+	print 'huii'
+
+    def __new__(cls, node):
+	print 'huii'		
+    def __init__(self,name):
+	print name
+
+  
 
     def initGraph(self, node):
-            self.node = node
+    	self.node = node
+	 
 
     def bwdInitGraph(self,node):            
             
@@ -18,5 +29,6 @@ class InitController(Sofa.PythonScriptController):
             modelSubTopoS1 = self.node.getChild('model').getChild('modelSubTopoS1')
             YM = modelSubTopoS1.getObject('FEMS1').findData('youngModulus')
             YM = 200
+	    
             
            
