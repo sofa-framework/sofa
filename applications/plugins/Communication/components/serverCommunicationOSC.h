@@ -70,8 +70,8 @@ protected:
 
     UdpListeningReceiveSocket* m_socket;
 
-    osc::OutboundPacketStream createOSCMessage();
-    std::vector<std::string> convertMessagesToArgumentList(osc::ReceivedMessageArgumentIterator it, osc::ReceivedMessageArgumentIterator itEnd);
+    void createOSCMessage(CommunicationSubscriber* subscriber, std::string argument, osc::OutboundPacketStream& packet);
+    ArgumentList convertMessagesToArgumentList(osc::ReceivedMessageArgumentIterator it, osc::ReceivedMessageArgumentIterator itEnd);
     std::string convertArgumentToStringValue(osc::ReceivedMessageArgumentIterator);
 
     //////////////////////////////// Inherited from ServerCommunication /////////////////////////////////

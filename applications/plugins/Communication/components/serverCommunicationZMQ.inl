@@ -49,6 +49,12 @@ void ServerCommunicationZMQ::initTypeFactory()
     getFactoryInstance()->registerCreator("matrixint", new DataCreator<FullMatrix<SReal>>());
 }
 
+/******************************************************************************
+*                                                                             *
+* SEND PART                                                                   *
+*                                                                             *
+******************************************************************************/
+
 void ServerCommunicationZMQ::sendData()
 {
     std::string address = "tcp://*:";
@@ -63,20 +69,23 @@ void ServerCommunicationZMQ::sendData()
     this->m_socket->bind(address.c_str());
     while (this->m_running)
     {
+        std::map<std::string, CommunicationSubscriber*> subscribersMap = getSubscribers();
+        if (subscribersMap.size() == 0)
+            continue;
+
+        std::string messageStr;
+
         if(this->d_pattern.getValue().getSelectedItem() == "request/reply")
             receiveRequest();
-
-        std::map<std::string, CommunicationSubscriber*> subscribersMap = getSubscribers();
-        std::string messageStr;
 
         for (std::map<std::string, CommunicationSubscriber*>::iterator it = subscribersMap.begin(); it != subscribersMap.end(); it++)
         {
             CommunicationSubscriber* subscriber = it->second;
-            std::vector<std::string> argumentList = subscriber->getArgumentList();
+            ArgumentList argumentList = subscriber->getArgumentList();
             messageStr += subscriber->getSubject() + " ";
 
-            for (std::vector<std::string>::iterator itArgument = argumentList.begin(); itArgument != argumentList.end(); itArgument++ )
-                messageStr += dataToString(subscriber, *itArgument);
+            for (ArgumentList::iterator itArgument = argumentList.begin(); itArgument != argumentList.end(); itArgument++ )
+                messageStr += createZMQMessage(subscriber, *itArgument);
 
             zmq::message_t message(messageStr.length());
             memcpy(message.data(), messageStr.c_str(), messageStr.length());
@@ -85,10 +94,72 @@ void ServerCommunicationZMQ::sendData()
             if(!status)
                 msg_warning(this) << "Problem with communication";
             messageStr.clear();
-            std::this_thread::sleep_for(std::chrono::microseconds(int(1000000.0/(double)this->d_refreshRate.getValue())));
         }
+        std::this_thread::sleep_for(std::chrono::microseconds(int(1000000.0/(double)this->d_refreshRate.getValue())));
     }
 }
+
+std::string ServerCommunicationZMQ::createZMQMessage(CommunicationSubscriber* subscriber, std::string argument)
+{
+    std::stringstream messageStr;
+    BaseData* data = fetchData(subscriber->getSource(), "string", argument); // s for std::string in case of non existing argument
+    if (!data)
+        return messageStr.str();
+    const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
+    const void* valueVoidPtr = data->getValueVoidPtr();
+
+    if (typeinfo->Container())
+    {
+        int nbRows = typeinfo->size();
+        int nbCols  = typeinfo->size(data->getValueVoidPtr()) / typeinfo->size();
+        messageStr << "matrix int:" << std::to_string(nbRows) << " int:" << std::to_string(nbCols) << " ";
+
+        if( !typeinfo->Text() && !typeinfo->Scalar() && !typeinfo->Integer() )
+        {
+            msg_advice(data->getOwner()) << "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value" ;
+            messageStr << "string:'" << (data->getValueString()) << "' ";
+        }
+        else if (typeinfo->Text())
+            for (int i=0; i < nbRows; i++)
+                for (int j=0; j<nbCols; j++)
+                    messageStr << "string:" << typeinfo->getTextValue(valueVoidPtr,(i*nbCols) + j).c_str() << " ";
+        else if (typeinfo->Scalar())
+            for (int i=0; i < nbRows; i++)
+                for (int j=0; j<nbCols; j++)
+                    messageStr << "float:" << (float)typeinfo->getScalarValue(valueVoidPtr,(i*nbCols) + j) << " ";
+        else if (typeinfo->Integer())
+            for (int i=0; i < nbRows; i++)
+                for (int j=0; j<nbCols; j++)
+                    messageStr << "int:" << (int)typeinfo->getIntegerValue(valueVoidPtr,(i*nbCols) + j) << " ";
+    }
+    else
+    {
+        if( !typeinfo->Text() && !typeinfo->Scalar() && !typeinfo->Integer() )
+        {
+            msg_advice(data->getOwner()) << "BaseData_getAttr_value unsupported native type=" << data->getValueTypeString() << " for data "<<data->getName()<<" ; returning string value" ;
+            messageStr << "string:'" << (data->getValueString()) << "' ";
+        }
+        if (typeinfo->Text())
+        {
+            messageStr << "string:'" << (data->getValueString()) << "' ";
+        }
+        else if (typeinfo->Scalar())
+        {
+            messageStr << "float:" << (data->getValueString()) << " ";
+        }
+        else if (typeinfo->Integer())
+        {
+            messageStr << "int:" << (data->getValueString()) << " ";
+        }
+    }
+    return messageStr.str();
+}
+
+/******************************************************************************
+*                                                                             *
+* RECEIVE PART                                                                *
+*                                                                             *
+******************************************************************************/
 
 void ServerCommunicationZMQ::receiveData()
 {
@@ -130,69 +201,11 @@ void ServerCommunicationZMQ::receiveData()
     }
 }
 
-std::string ServerCommunicationZMQ::dataToString(CommunicationSubscriber* subscriber, std::string argument)
-{
-    std::stringstream messageStr;
-    BaseData* data = fetchData(subscriber->getSource(), "string", argument); // s for std::string in case of non existing argument
-
-    if (data)
-    {
-        const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
-        const void* valueVoidPtr = data->getValueVoidPtr();
-
-        if (typeinfo->Container())
-        {
-            int nbRows = typeinfo->size();
-            int nbCols  = typeinfo->size(data->getValueVoidPtr()) / typeinfo->size();
-            messageStr << "matrix int:" << std::to_string(nbRows) << " int:" << std::to_string(nbCols) << " ";
-
-            if( !typeinfo->Text() && !typeinfo->Scalar() && !typeinfo->Integer() )
-            {
-                msg_advice(data->getOwner()) << "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value" ;
-                messageStr << "string:'" << (data->getValueString()) << "' ";
-            }
-            else if (typeinfo->Text())
-                for (int i=0; i < nbRows; i++)
-                    for (int j=0; j<nbCols; j++)
-                        messageStr << "string:" << typeinfo->getTextValue(valueVoidPtr,(i*nbCols) + j).c_str() << " ";
-            else if (typeinfo->Scalar())
-                for (int i=0; i < nbRows; i++)
-                    for (int j=0; j<nbCols; j++)
-                        messageStr << "float:" << (float)typeinfo->getScalarValue(valueVoidPtr,(i*nbCols) + j) << " ";
-            else if (typeinfo->Integer())
-                for (int i=0; i < nbRows; i++)
-                    for (int j=0; j<nbCols; j++)
-                        messageStr << "int:" << (int)typeinfo->getIntegerValue(valueVoidPtr,(i*nbCols) + j) << " ";
-        }
-        else
-        {
-            if( !typeinfo->Text() && !typeinfo->Scalar() && !typeinfo->Integer() )
-            {
-                msg_advice(data->getOwner()) << "BaseData_getAttr_value unsupported native type=" << data->getValueTypeString() << " for data "<<data->getName()<<" ; returning string value" ;
-                messageStr << "string:'" << (data->getValueString()) << "' ";
-            }
-            if (typeinfo->Text())
-            {
-                messageStr << "string:'" << (data->getValueString()) << "' ";
-            }
-            else if (typeinfo->Scalar())
-            {
-                messageStr << "float:" << (data->getValueString()) << " ";
-            }
-            else if (typeinfo->Integer())
-            {
-                messageStr << "int:" << (data->getValueString()) << " ";
-            }
-        }
-    }
-    return messageStr.str();
-}
-
 void ServerCommunicationZMQ::processMessage(std::string dataString)
 {
     std::string subject;
-    std::vector<std::string> onlyArgumentList;
-    std::vector<std::string> argumentList = stringToArgumentList(dataString);
+    ArgumentList onlyArgumentList;
+    ArgumentList argumentList = stringToArgumentList(dataString);
 
     if (argumentList.empty())
         return;
@@ -269,12 +282,12 @@ void ServerCommunicationZMQ::receiveRequest()
 *                                                                             *
 ******************************************************************************/
 
-std::vector<std::string> ServerCommunicationZMQ::stringToArgumentList(std::string dataString)
+ArgumentList ServerCommunicationZMQ::stringToArgumentList(std::string dataString)
 {
     std::regex rgx("\\s+");
     std::sregex_token_iterator iter(dataString.begin(), dataString.end(), rgx, -1);
     std::sregex_token_iterator end;
-    std::vector<std::string> listArguments;
+    ArgumentList listArguments;
     while (iter != end)
     {
         std::string tmp = *iter;

@@ -66,6 +66,12 @@ void ServerCommunicationOSC::initTypeFactory()
     getFactoryInstance()->registerCreator("matrixint32", new DataCreator<FullMatrix<SReal>>());
 }
 
+/******************************************************************************
+*                                                                             *
+* SEND PART                                                                   *
+*                                                                             *
+******************************************************************************/
+
 void ServerCommunicationOSC::sendData()
 {
     UdpTransmitSocket transmitSocket( IpEndpointName(this->d_address.getValue().c_str(), this->d_port.getValue()));
@@ -75,88 +81,85 @@ void ServerCommunicationOSC::sendData()
         std::map<std::string, CommunicationSubscriber*> subscribersMap = getSubscribers();
         if (subscribersMap.size() == 0)
             continue;
-        osc::OutboundPacketStream p = createOSCMessage();
-        transmitSocket.Send( p.Data(), p.Size() );
+
+        for (std::map<std::string, CommunicationSubscriber*>::iterator it = subscribersMap.begin(); it != subscribersMap.end(); it++)
+        {
+            CommunicationSubscriber* subscriber = it->second;
+            ArgumentList argumentList = subscriber->getArgumentList();
+            int bufferSize = d_packetSize.getValue();
+            char buffer[bufferSize];
+            osc::OutboundPacketStream packet(buffer, bufferSize);
+            std::string messageName = subscriber->getSubject();
+            packet << osc::BeginMessage(messageName.c_str());
+            for (std::vector<std::string>::iterator itArgument = argumentList.begin(); itArgument != argumentList.end(); itArgument++ )
+                createOSCMessage(subscriber, *itArgument, packet);
+            packet << osc::EndMessage;
+            transmitSocket.Send(packet.Data(), packet.Size());
+        }
         std::this_thread::sleep_for(std::chrono::microseconds(int(1000000.0/(double)this->d_refreshRate.getValue())));
     }
 }
+
+void ServerCommunicationOSC::createOSCMessage(CommunicationSubscriber* subscriber, std::string argument, osc::OutboundPacketStream& packet)
+{    
+
+    BaseData* data = fetchData(subscriber->getSource(), "OSC-string", argument); // s for std::string in case of non existing argument
+    if (!data)
+        return;
+
+    const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
+    const void* valueVoidPtr = data->getValueVoidPtr();
+
+    if (typeinfo->Container())
+    {
+        int nbRows = typeinfo->size();
+        int nbCols  = typeinfo->size(data->getValueVoidPtr()) / typeinfo->size();
+        packet << "matrix" << nbRows << nbCols;
+
+        if( !typeinfo->Text() && !typeinfo->Scalar() && !typeinfo->Integer() )
+        {
+            msg_advice(data->getOwner()) << "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value" ;
+            packet <<  (data->getValueString().c_str());
+        }
+        else if (typeinfo->Text())
+            for (int i=0; i < nbRows; i++)
+                for (int j=0; j<nbCols; j++)
+                    packet << typeinfo->getTextValue(valueVoidPtr,(i*nbCols) + j).c_str();
+        else if (typeinfo->Scalar())
+            for (int i=0; i < nbRows; i++)
+                for (int j=0; j<nbCols; j++)
+                    packet << typeinfo->getScalarValue(valueVoidPtr,(i*nbCols) + j);
+        else if (typeinfo->Integer())
+            for (int i=0; i < nbRows; i++)
+                for (int j=0; j<nbCols; j++)
+                    packet << (int)typeinfo->getIntegerValue(valueVoidPtr,(i*nbCols) + j);
+    }
+    else
+    {
+        if (typeinfo->Text())
+            packet << (typeinfo->getTextValue(valueVoidPtr,0).c_str());
+        else if (typeinfo->Scalar())
+            packet << (typeinfo->getScalarValue(valueVoidPtr,0));
+        else if (typeinfo->Integer())
+            packet << ((int)typeinfo->getIntegerValue(valueVoidPtr,0));
+        else
+        {
+            msg_advice(data->getOwner()) << "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value" ;
+            packet <<  (data->getValueString().c_str());
+        }
+    }
+}
+
+/******************************************************************************
+*                                                                             *
+* RECEIVE PART                                                                *
+*                                                                             *
+******************************************************************************/
 
 void ServerCommunicationOSC::receiveData()
 {
     m_socket = new UdpListeningReceiveSocket(IpEndpointName( IpEndpointName::ANY_ADDRESS, this->d_port.getValue()), this);
     m_socket->Run();
-}
-
-osc::OutboundPacketStream ServerCommunicationOSC::createOSCMessage()
-{
-    int bufferSize = d_packetSize.getValue();
-    char buffer[bufferSize];
-    osc::OutboundPacketStream p(buffer, bufferSize);
-    std::map<std::string, CommunicationSubscriber*> subscribersMap = getSubscribers();
-    std::string messageName;
-
-    for (std::map<std::string, CommunicationSubscriber*>::iterator it = subscribersMap.begin(); it != subscribersMap.end(); it++)
-    {
-        CommunicationSubscriber* subscriber = it->second;
-        std::vector<std::string> argumentList = subscriber->getArgumentList();
-        for (std::vector<std::string>::iterator itArgument = argumentList.begin(); itArgument != argumentList.end(); itArgument++ )
-        {
-
-            BaseData* data = fetchData(subscriber->getSource(), "OSC-string", *itArgument); // s for std::string in case of non existing argument
-            if (!data)
-            {
-                messageName = subscriber->getSubject();
-                p << osc::BeginMessage(messageName.c_str());
-                p << osc::EndMessage;
-            }
-
-            const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
-            const void* valueVoidPtr = data->getValueVoidPtr();
-            messageName = subscriber->getSubject();
-
-            p << osc::BeginMessage(messageName.c_str());
-            if (typeinfo->Container())
-            {
-                int nbRows = typeinfo->size();
-                int nbCols  = typeinfo->size(data->getValueVoidPtr()) / typeinfo->size();
-                p  << "matrix" << nbRows << nbCols;
-
-                if( !typeinfo->Text() && !typeinfo->Scalar() && !typeinfo->Integer() )
-                {
-                    msg_advice(data->getOwner()) << "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value" ;
-                    p <<  (data->getValueString().c_str());
-                }
-                else if (typeinfo->Text())
-                    for (int i=0; i < nbRows; i++)
-                        for (int j=0; j<nbCols; j++)
-                            p << typeinfo->getTextValue(valueVoidPtr,(i*nbCols) + j).c_str();
-                else if (typeinfo->Scalar())
-                    for (int i=0; i < nbRows; i++)
-                        for (int j=0; j<nbCols; j++)
-                            p << typeinfo->getScalarValue(valueVoidPtr,(i*nbCols) + j);
-                else if (typeinfo->Integer())
-                    for (int i=0; i < nbRows; i++)
-                        for (int j=0; j<nbCols; j++)
-                            p << (int)typeinfo->getIntegerValue(valueVoidPtr,(i*nbCols) + j);
-            }
-            else
-            {
-                if (typeinfo->Text())
-                    p << (typeinfo->getTextValue(valueVoidPtr,0).c_str());
-                else if (typeinfo->Scalar())
-                    p << (typeinfo->getScalarValue(valueVoidPtr,0));
-                else if (typeinfo->Integer())
-                    p << ((int)typeinfo->getIntegerValue(valueVoidPtr,0));
-                else
-                {
-                    msg_advice(data->getOwner()) << "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value" ;
-                    p <<  (data->getValueString().c_str());
-                }
-            }
-            p << osc::EndMessage;
-        }
-    }
-    return p;
 }
 
 void ServerCommunicationOSC::ProcessMessage( const osc::ReceivedMessage& m, const IpEndpointName& /*remoteEndpoint*/ )
@@ -167,7 +170,7 @@ void ServerCommunicationOSC::ProcessMessage( const osc::ReceivedMessage& m, cons
     if (!getSubscriberFor(subject))
         return;
 
-    std::vector<std::string> argumentList = convertMessagesToArgumentList(m.ArgumentsBegin(), m.ArgumentsEnd());
+    ArgumentList argumentList = convertMessagesToArgumentList(m.ArgumentsBegin(), m.ArgumentsEnd());
     if (argumentList.size() == 0)
         return;
 
@@ -219,9 +222,9 @@ void ServerCommunicationOSC::ProcessMessage( const osc::ReceivedMessage& m, cons
 *                                                                             *
 ******************************************************************************/
 
-std::vector<std::string> ServerCommunicationOSC::convertMessagesToArgumentList(osc::ReceivedMessageArgumentIterator it, osc::ReceivedMessageArgumentIterator itEnd)
+ArgumentList ServerCommunicationOSC::convertMessagesToArgumentList(osc::ReceivedMessageArgumentIterator it, osc::ReceivedMessageArgumentIterator itEnd)
 {
-    std::vector<std::string> argumentList;
+    ArgumentList argumentList;
     for(it; it != itEnd; it++)
     {
         std::stringstream stream;

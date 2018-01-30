@@ -22,43 +22,40 @@
 #ifndef SOFA_SERVERCOMMUNICATION_H
 #define SOFA_SERVERCOMMUNICATION_H
 
-
 #include <Communication/config.h>
 
 #include <sofa/core/ObjectFactory.h>
-
-#include <sofa/core/objectmodel/BaseObject.h>
-using sofa::core::objectmodel::BaseObject ;
-
 #include <sofa/core/objectmodel/Data.h>
+#include <sofa/core/objectmodel/Event.h>
+#include <sofa/core/objectmodel/BaseObject.h>
+using sofa::helper::vector;
+using sofa::core::objectmodel::Event;
 using sofa::core::objectmodel::Data;
 using sofa::core::objectmodel::BaseData;
+using sofa::core::objectmodel::BaseObject ;
 
 #include <sofa/helper/vectorData.h>
+#include <sofa/helper/Factory.h>
+#include <sofa/helper/Factory.inl>
+#include <sofa/helper/OptionsGroup.h>
+using sofa::helper::OptionsGroup;
+using sofa::helper::Factory;
 using sofa::helper::vectorData;
 using sofa::helper::WriteAccessorVector;
 using sofa::helper::WriteAccessor;
 using sofa::helper::ReadAccessor;
 
-#include <sofa/helper/OptionsGroup.h>
-using sofa::helper::OptionsGroup;
-
-#include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
-using sofa::core::objectmodel::Event;
-using sofa::simulation::AnimateBeginEvent ;
+#include <sofa/simulation/AnimateEndEvent.h>
+using sofa::simulation::AnimateBeginEvent;
+using sofa::simulation::AnimateEndEvent;
 
 #include <sofa/defaulttype/DataTypeInfo.h>
 using sofa::defaulttype::AbstractTypeInfo ;
 
-using sofa::helper::vector;
-
 #include <SofaBaseLinearSolver/FullMatrix.h>
 using sofa::component::linearsolver::FullMatrix;
 
-#include <sofa/helper/Factory.h>
-#include <sofa/helper/Factory.inl>
-using sofa::helper::Factory;
 
 #include <Communication/components/communicationCircularBuffer.h>
 
@@ -124,11 +121,7 @@ public:
     virtual void handleEvent(Event *) override;
     /////////////////////////////////////////////////////////////////////////
 
-    bool saveArgumentsToBuffer(
-            std::string subject,
-            ArgumentList argumentList,
-            int rows ,
-            int cols );
+    bool saveArgumentsToBuffer(std::string subject, ArgumentList argumentList, int rows, int cols);
     BufferData* fetchArgumentsFromBuffer();
 
     Data<helper::OptionsGroup>  d_job;
@@ -148,7 +141,6 @@ protected:
     static void* thread_launcher(void*);
     virtual void sendData() =0;
     virtual void receiveData() =0;
-
 
     BaseData* fetchData(SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK> source, std::string keyTypeMessage, std::string argumentName);
     bool writeData(BufferData* data);

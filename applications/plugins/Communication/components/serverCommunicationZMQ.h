@@ -26,7 +26,7 @@ public:
     ServerCommunicationZMQ();
     virtual ~ServerCommunicationZMQ();
 
-    std::vector<std::string> stringToArgumentList(std::string dataString);
+    ArgumentList stringToArgumentList(std::string dataString);
 
     //////////////////////////////// Factory OSC type /////////////////////////////////
     typedef CommunicationDataFactory ZMQDataFactory;
@@ -46,14 +46,14 @@ protected:
     zmq::socket_t      *m_socket;
 
     //////////////////////////////// Inherited from ServerCommunication /////////////////////////////////
-    virtual void sendData();
-    virtual void receiveData();
+    virtual void sendData() override;
+    virtual void receiveData() override;
     /////////////////////////////////////////////////////////////////////////////////
 
     void sendRequest();
     void receiveRequest();
 
-    std::string dataToString(CommunicationSubscriber* subscriber, std::string argument);
+    std::string createZMQMessage(CommunicationSubscriber* subscriber, std::string argument);
     void processMessage(std::string dataString);
 
 };

@@ -76,6 +76,10 @@ void ServerCommunication::handleEvent(Event * event)
                 msg_error() << "something went wrong while converting network data into sofa matrix";
         delete data;
     }
+    if (AnimateEndEvent::checkEventType(event))
+    {
+       /// TODO
+    }
 }
 
 bool ServerCommunication::saveArgumentsToBuffer(std::string subject, ArgumentList argumentList, int rows, int cols)
