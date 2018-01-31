@@ -54,57 +54,6 @@ void ServerCommunication::init()
     pthread_create(&m_thread, NULL, &ServerCommunication::thread_launcher, this);
 }
 
-void ServerCommunication::handleEvent(Event * event)
-{
-    if (AnimateBeginEvent::checkEventType(event))
-    {
-        BufferData* data = fetchArgumentsFromBuffer();
-        if (data == NULL) // simply check if the data is not null
-        {
-            msg_error() << "something went wrong with received datas, fetched datas from buffer is null";
-            return;
-        }
-        if(data->getRows() == -1 && data->getCols() == -1)
-        {
-            writeData(data);
-            delete data;
-            return;
-        }
-
-        if (!writeDataToFullMatrix(data))
-            if (!writeDataToContainer(data))
-                msg_error() << "something went wrong while converting network data into sofa matrix";
-        delete data;
-    }
-    if (AnimateEndEvent::checkEventType(event))
-    {
-       /// TODO
-    }
-}
-
-bool ServerCommunication::saveArgumentsToBuffer(std::string subject, ArgumentList argumentList, int rows, int cols)
-{
-    try
-    {
-        receiveDataBuffer->add(subject, argumentList, rows, cols);
-    } catch (std::exception &exception) {
-        msg_info("ServerCommunication") << exception.what();
-        return false;
-    }
-    return true;
-}
-
-BufferData* ServerCommunication::fetchArgumentsFromBuffer()
-{
-    try
-    {
-        return receiveDataBuffer->get();
-    } catch (std::exception &exception) {
-        msg_info("ServerCommunication") << exception.what();
-    }
-    return NULL;
-}
-
 void ServerCommunication::openCommunication()
 {
     if (d_job.getValueString().compare("receiver") == 0)
@@ -129,6 +78,40 @@ void * ServerCommunication::thread_launcher(void *voidArgs)
     args->openCommunication();
     return NULL;
 }
+
+void ServerCommunication::handleEvent(Event * event)
+{
+    //    if (AnimateBeginEvent::checkEventType(event))
+    //    {
+    //        BufferData* data = fetchArgumentsFromReceivedBuffer();
+    //        if (data == NULL) // simply check if the data is not null
+    //        {
+    //            msg_error() << "something went wrong with received datas, fetched datas from buffer is null";
+    //            return;
+    //        }
+    //        if(data->getRows() == -1 && data->getCols() == -1)
+    //        {
+    //            writeData(data);
+    //            delete data;
+    //            return;
+    //        }
+
+    //        if (!writeDataToFullMatrix(data))
+    //            if (!writeDataToContainer(data))
+    //                msg_error() << "something went wrong while converting network data into sofa matrix";
+    //        delete data;
+    //    }
+    if (AnimateEndEvent::checkEventType(event))
+    {
+        saveDataToSenderBuffer();
+    }
+}
+
+/******************************************************************************
+*                                                                             *
+* SUBSCRIBER PART                                                             *5
+*                                                                             *
+******************************************************************************/
 
 bool ServerCommunication::isSubscribedTo(std::string subject, unsigned int argumentSize)
 {
@@ -167,6 +150,12 @@ std::map<std::string, CommunicationSubscriber*> ServerCommunication::getSubscrib
 {
     return m_subscriberMap;
 }
+
+/******************************************************************************
+*                                                                             *
+* DATA PART                                                                   *
+*                                                                             *
+******************************************************************************/
 
 BaseData* ServerCommunication::fetchData(SingleLink<CommunicationSubscriber, BaseObject, BaseLink::FLAG_DOUBLELINK> source, std::string keyTypeMessage, std::string argumentName)
 {
@@ -266,6 +255,76 @@ bool ServerCommunication::writeDataToContainer(BufferData* data)
 }
 
 
+
+/******************************************************************************
+*                                                                             *
+* RECEIVED BUFFER PART                                                        *
+*                                                                             *
+******************************************************************************/
+
+bool ServerCommunication::saveArgumentsToReceivedBuffer(std::string subject, ArgumentList argumentList, int rows, int cols)
+{
+    try
+    {
+        receiveDataBuffer->add(subject, argumentList, rows, cols);
+    } catch (std::exception &exception) {
+        msg_info("ServerCommunication") << exception.what();
+        return false;
+    }
+    return true;
+}
+
+BufferData* ServerCommunication::fetchArgumentsFromReceivedBuffer()
+{
+    try
+    {
+        return receiveDataBuffer->get();
+    } catch (std::exception &exception) {
+        msg_info("ServerCommunication") << exception.what();
+    }
+    return NULL;
+}
+
+/******************************************************************************j
+*                                                                             *
+* SENDER BUFFER PART                                                          *
+*                                                                             *
+******************************************************************************/
+
+bool ServerCommunication::saveDataToSenderBuffer()
+{
+
+    std::map<std::string, CommunicationSubscriber*> subscribersMap = getSubscribers();
+    for (std::map<std::string, CommunicationSubscriber*>::iterator it = subscribersMap.begin(); it != subscribersMap.end(); it++)
+    {
+        CommunicationSubscriber* subscriber = it->second;
+        ArgumentList argumentList = subscriber->getArgumentList();
+        for (std::vector<std::string>::iterator itArgument = argumentList.begin(); itArgument != argumentList.end(); itArgument++ )
+        {
+            BaseData* data = fetchData(subscriber->getSource(), defaultDataType(), *itArgument);
+            if (!data)
+                continue;
+            std::string key = subscriber->getName() + *itArgument;
+            std::map<std::string, CircularBufferSender*>::iterator it = senderDataMap.find(key);
+            if(it == senderDataMap.end())
+                senderDataMap.insert(std::pair<std::string, CircularBufferSender*>(key, new CircularBufferSender(3)));
+            CircularBufferSender * buffer = senderDataMap.at(key);
+            buffer->add(data);
+        }
+    }
+    return true;
+}
+
+BaseData* ServerCommunication::fetchDataFromSenderBuffer(CommunicationSubscriber* subscriber, std::string argument)
+{
+    std::string key = subscriber->getName() + argument;
+    std::map<std::string, CircularBufferSender*>::iterator it = senderDataMap.find(key);
+    if(it == senderDataMap.end())
+        return NULL;;
+    CircularBufferSender * buffer = senderDataMap.at(key);
+    return buffer->get();
+
+}
 
 } /// communication
 

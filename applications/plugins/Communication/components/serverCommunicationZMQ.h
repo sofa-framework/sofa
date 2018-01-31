@@ -48,6 +48,7 @@ protected:
     //////////////////////////////// Inherited from ServerCommunication /////////////////////////////////
     virtual void sendData() override;
     virtual void receiveData() override;
+    virtual std::string defaultDataType() override;
     /////////////////////////////////////////////////////////////////////////////////
 
     void sendRequest();

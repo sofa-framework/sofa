@@ -121,9 +121,6 @@ public:
     virtual void handleEvent(Event *) override;
     /////////////////////////////////////////////////////////////////////////
 
-    bool saveArgumentsToBuffer(std::string subject, ArgumentList argumentList, int rows, int cols);
-    BufferData* fetchArgumentsFromBuffer();
-
     Data<helper::OptionsGroup>  d_job;
     Data<std::string>           d_address;
     Data<int>                   d_port;
@@ -131,7 +128,8 @@ public:
 
 protected:
 
-    CircularBuffer* receiveDataBuffer = new CircularBuffer(3);
+    CircularBufferReceiver* receiveDataBuffer = new CircularBufferReceiver(3);
+    std::map<std::string, CircularBufferSender*> senderDataMap;
     std::map<std::string, CommunicationSubscriber*> m_subscriberMap;
     pthread_t                                       m_thread;
     bool                                            m_running = true;
@@ -141,6 +139,14 @@ protected:
     static void* thread_launcher(void*);
     virtual void sendData() =0;
     virtual void receiveData() =0;
+    virtual std::string defaultDataType() =0;
+
+    ////////////////////////// Buffer ////////////////////
+    bool saveDataToSenderBuffer();
+    BaseData* fetchDataFromSenderBuffer(CommunicationSubscriber* subscriber, std::string argument);
+    bool saveArgumentsToReceivedBuffer(std::string subject, ArgumentList argumentList, int rows, int cols);
+    BufferData* fetchArgumentsFromReceivedBuffer();
+    /////////////////////////////////////////////////////////////////////////
 
     BaseData* fetchData(SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK> source, std::string keyTypeMessage, std::string argumentName);
     bool writeData(BufferData* data);

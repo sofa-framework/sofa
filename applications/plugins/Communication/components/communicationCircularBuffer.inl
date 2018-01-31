@@ -51,18 +51,24 @@ std::string BufferData::getSubject() const
     return subject;
 }
 
-CircularBuffer::CircularBuffer(int size)
+/******************************************************************************
+*                                                                             *
+* SENDER BUFFER PART                                                          *
+*                                                                             *
+******************************************************************************/
+
+CircularBufferReceiver::CircularBufferReceiver(int size)
 {
-    this->data[size] = {};
+    this->data = new BufferData*[size];
     this->size = size;
 }
 
-CircularBuffer::~CircularBuffer()
+CircularBufferReceiver::~CircularBufferReceiver()
 {
     delete this->data;
 }
 
-void CircularBuffer::add(std::string subject, ArgumentList argumentList, int rows, int cols)
+void CircularBufferReceiver::add(std::string subject, ArgumentList argumentList, int rows, int cols)
 {
     pthread_mutex_lock(&mutex);
     if (isFull())
@@ -76,7 +82,7 @@ void CircularBuffer::add(std::string subject, ArgumentList argumentList, int row
 }
 
 
-BufferData* CircularBuffer::get()
+BufferData* CircularBufferReceiver::get()
 {
     pthread_mutex_lock(&mutex);
     if (isEmpty())
@@ -90,16 +96,70 @@ BufferData* CircularBuffer::get()
     return aData;
 }
 
-bool CircularBuffer::isEmpty()
+bool CircularBufferReceiver::isEmpty()
 {
     return rear == front;
 }
 
-bool CircularBuffer::isFull()
+bool CircularBufferReceiver::isFull()
 {
     return ((this->rear + 1) % this->size) == front;
 }
 
+/******************************************************************************
+*                                                                             *
+* SENDER BUFFER PART                                                          *
+*                                                                             *
+******************************************************************************/
+
+CircularBufferSender::CircularBufferSender(int size)
+{
+    this->data = new BaseData*[size];
+    this->size = size;
+}
+
+CircularBufferSender::~CircularBufferSender()
+{
+    delete this->data;
+}
+
+void CircularBufferSender::add(BaseData* data)
+{
+    /// TODO
+//    pthread_mutex_lock(&mutex);
+//    if (isFull())
+//    {
+//        pthread_mutex_unlock(&mutex);
+//        throw std::out_of_range("Circular buffer is full");
+//    }
+//    data[rear] = *data;
+//    rear = ((this->rear + 1) % this->size);
+//    pthread_mutex_unlock(&mutex);
+}
+
+BaseData* CircularBufferSender::get()
+{
+    pthread_mutex_lock(&mutex);
+    if (isEmpty())
+    {
+        pthread_mutex_unlock(&mutex);
+        throw std::out_of_range("Circular buffer is empty");
+    }
+    BaseData* aData = this->data[front];
+    front = (front + 1) % size;
+    pthread_mutex_unlock(&mutex);
+    return aData;
+}
+
+bool CircularBufferSender::isEmpty()
+{
+    return rear == front;
+}
+
+bool CircularBufferSender::isFull()
+{
+    return ((this->rear + 1) % this->size) == front;
+}
 
 } /// communication
 

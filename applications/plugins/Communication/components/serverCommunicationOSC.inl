@@ -66,6 +66,12 @@ void ServerCommunicationOSC::initTypeFactory()
     getFactoryInstance()->registerCreator("matrixint32", new DataCreator<FullMatrix<SReal>>());
 }
 
+
+std::string ServerCommunicationOSC::defaultDataType()
+{
+    return "OSC-string";
+}
+
 /******************************************************************************
 *                                                                             *
 * SEND PART                                                                   *
@@ -103,7 +109,7 @@ void ServerCommunicationOSC::sendData()
 void ServerCommunicationOSC::createOSCMessage(CommunicationSubscriber* subscriber, std::string argument, osc::OutboundPacketStream& packet)
 {    
 
-    BaseData* data = fetchData(subscriber->getSource(), "OSC-string", argument); // s for std::string in case of non existing argument
+    BaseData* data = fetchData(subscriber->getSource(), defaultDataType(), argument);
     if (!data)
         return;
 
@@ -208,11 +214,11 @@ void ServerCommunicationOSC::ProcessMessage( const osc::ReceivedMessage& m, cons
             msg_error() << "argument list size is != row/cols; " << argumentList.size() << " instead of " << row*col;
             return;
         }
-        saveArgumentsToBuffer(subject, argumentList, row, col);
+        saveArgumentsToReceivedBuffer(subject, argumentList, row, col);
     }
     else
     {
-        saveArgumentsToBuffer(subject, argumentList, -1, -1);
+        saveArgumentsToReceivedBuffer(subject, argumentList, -1, -1);
     }
 }
 

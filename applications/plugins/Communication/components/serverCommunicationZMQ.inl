@@ -49,6 +49,11 @@ void ServerCommunicationZMQ::initTypeFactory()
     getFactoryInstance()->registerCreator("matrixint", new DataCreator<FullMatrix<SReal>>());
 }
 
+std::string ServerCommunicationZMQ::defaultDataType()
+{
+    return "string";
+}
+
 /******************************************************************************
 *                                                                             *
 * SEND PART                                                                   *
@@ -102,7 +107,7 @@ void ServerCommunicationZMQ::sendData()
 std::string ServerCommunicationZMQ::createZMQMessage(CommunicationSubscriber* subscriber, std::string argument)
 {
     std::stringstream messageStr;
-    BaseData* data = fetchData(subscriber->getSource(), "string", argument); // s for std::string in case of non existing argument
+    BaseData* data = fetchData(subscriber->getSource(), defaultDataType(), argument);
     if (!data)
         return messageStr.str();
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
@@ -253,13 +258,13 @@ void ServerCommunicationZMQ::processMessage(std::string dataString)
             return;
         }
 
-        saveArgumentsToBuffer(subject, onlyArgumentList, row, col);
+        saveArgumentsToReceivedBuffer(subject, onlyArgumentList, row, col);
     }
     else
     {
         for (it = argumentList.begin()+1; it != argumentList.end();it++)
             onlyArgumentList.push_back(*it);
-        saveArgumentsToBuffer(subject, onlyArgumentList, -1, -1);
+        saveArgumentsToReceivedBuffer(subject, onlyArgumentList, -1, -1);
     }
 
 }

@@ -25,6 +25,8 @@
 #include <string>
 #include <vector>
 #include <mutex>
+#include <sofa/core/objectmodel/Data.h>
+using sofa::core::objectmodel::BaseData;
 
 namespace sofa
 {
@@ -63,12 +65,12 @@ private:
     int cols ;
 };
 
-class CircularBuffer
+class CircularBufferReceiver
 {
 public:
 
-    CircularBuffer(int size);
-    ~CircularBuffer();
+    CircularBufferReceiver(int size);
+    ~CircularBufferReceiver();
 
     void add(std::string subject, ArgumentList argumentList, int rows, int cols);
     BufferData* get();
@@ -84,6 +86,29 @@ private:
     bool isFull();
 
 };
+
+class CircularBufferSender
+{
+public:
+
+    CircularBufferSender(int size);
+    ~CircularBufferSender();
+
+    void add(BaseData* data);
+    BaseData* get();
+
+private:
+
+    int front = 0;
+    int rear = 0;
+    BaseData ** data;
+    int size;
+
+    bool isEmpty();
+    bool isFull();
+
+};
+
 } /// namespace communication
 } /// namespace component
 } /// namespace sofa
