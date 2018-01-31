@@ -2,17 +2,14 @@
 #--------------------------------------------------------------------------------
 # Now the installation stuff below
 #--------------------------------------------------------------------------------
-SET(qtconf_dest_dir bin)
-SET(qtplugins_dest_dir bin/plugins/imageformats)
-SET(qtplatforms_dest_dir bin/plugins/platforms)
-SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/${PROJECT_NAME}")
-
-IF(APPLE)
-    SET(qtconf_dest_dir runSofa.app/Contents/Resources)
-    SET(qtplugins_dest_dir runSofa.app/Contents/plugins/imageformats)
-    SET(qtplatforms_dest_dir runSofa.app/Contents/MacOS/platforms)
-    SET(APPS "\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app")
+IF(NOT APPLE)
+    return()
 ENDIF()
+
+SET(qtconf_dest_dir runSofa.app/Contents/Resources)
+SET(qtplugins_dest_dir runSofa.app/Contents/plugins/imageformats)
+SET(qtplatforms_dest_dir runSofa.app/Contents/MacOS/platforms)
+SET(APPS "\${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app")
 
 #--------------------------------------------------------------------------------
 # Install the  application, on Apple, the bundle is at the root of the
@@ -54,8 +51,8 @@ endmacro()
 sofa_set_python_bundle(SofaPython ${CMAKE_SOURCE_DIR}/applications/plugins/SofaPython/python)
 
 ### TODO: split examples/resources between the ones in the package and the ones outside the package
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/share/ DESTINATION share/sofa COMPONENT BundlePack)
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/examples/ DESTINATION share/sofa/examples COMPONENT BundlePack)
+#install(DIRECTORY ${CMAKE_SOURCE_DIR}/share/ DESTINATION share/sofa COMPONENT BundlePack)
+#install(DIRECTORY ${CMAKE_SOURCE_DIR}/examples/ DESTINATION share/sofa/examples COMPONENT BundlePack)
 
 # Own way to get plugins dir
 find_package(Qt5 COMPONENTS Core Gui Widgets) # to get SOFA_HAVE_GLUT
@@ -86,7 +83,7 @@ INSTALL(CODE "
 get_target_property(QtCoreLocation Qt5::Core LOCATION_release)
 get_filename_component(QT_CORE_LIB_DIR ${QtCoreLocation} DIRECTORY)
 get_filename_component(QT_LIB_DIR ${QT_CORE_LIB_DIR} DIRECTORY)
-SET(DIRS ${QT_LIB_DIR}) # ${CMAKE_INSTALL_PREFIX}/lib
+SET(DIRS ${QT_LIB_DIR} ${CMAKE_INSTALL_PREFIX}/lib)
 
 # Now the work of copying dependencies into the bundle/package
 # The quotes are escaped and variables to use at install time have their $ escaped
@@ -96,8 +93,8 @@ SET(DIRS ${QT_LIB_DIR}) # ${CMAKE_INSTALL_PREFIX}/lib
 
 INSTALL(CODE "
     file(GLOB_RECURSE LIBS
-        \"${CMAKE_INSTALL_PREFIX}/${qtplugins_dest_dir}/*${CMAKE_SHARED_LIBRARY_SUFFIX}\"
-        \"${CMAKE_INSTALL_PREFIX}/${qtplatforms_dest_dir}/*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
+        \"\${CMAKE_INSTALL_PREFIX}/${qtplugins_dest_dir}/*${CMAKE_SHARED_LIBRARY_SUFFIX}\"
+        \"\${CMAKE_INSTALL_PREFIX}/${qtplatforms_dest_dir}/*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
     set(BU_CHMOD_BUNDLE_ITEMS ON)
     include(BundleUtilities)
     fixup_bundle(\"${APPS}\" \"\${LIBS}\" \"${DIRS}\")
