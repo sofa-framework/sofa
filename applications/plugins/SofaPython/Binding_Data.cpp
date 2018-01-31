@@ -427,7 +427,7 @@ int SetDataValuePython(BaseData* data, PyObject* args)
 
     if ( PyList_Check(args))
     {
-        msg_warning("SofaPython") << "called ...";
+//        msg_warning("SofaPython") << "called ...";
         return SetDataValuePythonList(data, args, rowWidth, nbRows);
     }
 

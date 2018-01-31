@@ -166,9 +166,11 @@ BaseData* helper_addNewDataKW(PyObject *args, PyObject * kw, Base * obj) {
             PyObject *key = PyList_GetItem(keys,i);
             PyObject *value = PyList_GetItem(values,i);
             std::string KeyStr = PyString_AsString(key);
+            //msg_warning("SofaPython") << "Key Strings: " << KeyStr.c_str();
             if (KeyStr.compare("datatype")==0)
-            {
+            {                
                 dataRawType = getStringCopy(PyString_AsString(value));
+              //  msg_warning("SofaPython") << " " << dataRawType;
             }
             if (KeyStr.compare("help")==0)
             {
@@ -182,12 +184,15 @@ BaseData* helper_addNewDataKW(PyObject *args, PyObject * kw, Base * obj) {
             {
                 dataValue = value;
             }
-            Py_DecRef(key);
+            Py_DecRef(key);            
         }
-        Py_DecRef(keys);
+//        msg_warning("SofaPython") << "crezayyy";
+        //Py_DecRef(keys); // TODO (Stefan Escaida): wtf is happening here??
         Py_DecRef(values);
     }
-    if (dataRawType[0]==0) // only if no type is provided we cannot construct
+//    msg_warning("SofaPython") << "DataType is: " << dataRawType[0];
+
+    if (dataRawType[0]==0) // We cannot construct without a type
     {
         msg_error("SofaPython") << "No type provided for Data, cannot construct/add";
         return nullptr;
@@ -215,24 +220,30 @@ BaseData* helper_addNewDataKW(PyObject *args, PyObject * kw, Base * obj) {
         t = new (t) Data<float>(obj->initData(t, 0.0f, dataName, dataHelp)) ;
         bd = t;        
     }
-    else if(dataRawType[0] == 't')
-    {
+    else if(dataRawType[0] == 't') // Tetrahedra
+    {        
         Data<vector<Tetra>>* t = new Data<vector<Tetra>>();
         t = new(t) Data<vector<Tetra>>(obj->initData(t,dataName, dataHelp));
         bd = t;
     }
+    else if(dataRawType[0] == 'p') // vector of 3D positions
+    {
+        Data<sofa::defaulttype::Vec3dTypes::VecCoord>* t = new Data<sofa::defaulttype::Vec3dTypes::VecCoord>();
+        t = new(t) Data<sofa::defaulttype::Vec3dTypes::VecCoord>(obj->initData(t,dataName, dataHelp));
+        bd = t;
+    }
     else{
         std::stringstream msg;
-        msg << "Invalid data type '" << dataRawType << "'. Supported type are: s(tring), d(ecimal), f(float), b(oolean), (t)etrahedra" ;
+        msg << "Invalid data type '" << dataRawType << "'. Supported type are: (s)tring, (d)ecimal, (f)loat, (b)oolean, (t)etrahedra, 3D (p)ositions" ;
         PyErr_SetString(PyExc_TypeError, msg.str().c_str());
         return nullptr;
     }
-
 
     if(dataValue!=nullptr) // otherwise leave Data with its unintialized value
     {
         std::stringstream tmp;        
         pythonToSofaDataString(dataValue, tmp);
+//        msg_warning("crashy") << tmp.str().c_str();
         if(tmp.str()[0]=='@' && bd->canBeLinked())
         {
             if(!bd->setParent(tmp.str()))

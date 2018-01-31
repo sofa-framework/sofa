@@ -14,7 +14,7 @@ def createScene(rootNode):
 
                 rootNode.createObject('BackgroundSetting', color='0 0.168627 0.211765')
                 rootNode.createObject('OglSceneFrame', style="Arrows", alignment="TopRight")
-                rootNode.createObject('PythonScriptController', filename="InitController2.py", classname="MyControllerClass")
+                rootNode.createObject('PythonScriptController', filename="InitController.py", classname="InitController")
 
 		##########################################
                 # FEM Model                              #
@@ -49,17 +49,20 @@ def createScene(rootNode):
 		# Create selection and inverse selection to give tetras different stiffnesses
 	        # model.createObject('PythonScriptDataEngine', filename="DataEngine.py", classname="MyDataEngine", tetrahedra="@container.tetrahedra", position="@tetras.rest_position")
 
-		print 'Creating PSDEs ...'                
-		model.createObject('PythonScriptDataEngine', name='PSDE1', filename="DataEngineROI1.py", classname="MyDataEngine", tetrahedra='@container.tetrahedra', position="@tetras.rest_position")
-		model.createObject('PythonScriptDataEngine', name='PSDE2', filename="DataEngineROI2.py", classname="MyDataEngine", tetrahedra='@container.tetrahedra', position="@tetras.rest_position")
-		print '... finished creating PSDEs'
+		#model.createObject('PythonScriptDataEngine', name='PSDE1', filename="DataEngineROI1.py", classname="MyDataEngine", position='@tetras.rest_position')
+		model.createObject('PythonScriptDataEngine', name='PSDE1', filename="DataEngineROI1.py", classname="MyDataEngine1")
+		model.createObject('PythonScriptDataEngine', name='PSDE2', filename="DataEngineROI2.py", classname="MyDataEngine2")
+		model.createObject('PythonScriptDataEngine', name='PSDE3', filename="DataEngineROI3.py", classname="MyDataEngine3")
+		#model.createObject('PythonScriptDataEngine', name='PSDE4', filename="DataEngineROI4.py", classname="MyDataEngine")
+
+		#model.createObject('PythonScriptDataEngine', name='PSDE2', filename="DataEngineROI2.py", classname="MyDataEngine", tetrahedra='@container.tetrahedra', position="@tetras.rest_position")
 
                 ##########################################
                 # Sub topology 1                         #
                 ##########################################                
                 
                 modelSubTopoS1 = model.createChild('modelSubTopoS1')
-                modelSubTopoS1.createObject('TetrahedronSetTopologyContainer', position='@loader.position', tetrahedra="@PSDE1.tetrahedraInliers", name='containerS1')
+                modelSubTopoS1.createObject('TetrahedronSetTopologyContainer', position='@loader.position', tetrahedra="@PSDE3.TetrahedraUnion", name='containerS1')
                 modelSubTopoS1.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEMS1', method='large', poissonRatio='0.3',  youngModulus='200',drawAsEdges="0")                  
 
                 #model.createObject('BoxROI', name='boxROISubTopoS1', box='-30 -30 8 0 30 50', drawBoxes='true', position="@tetras.rest_position", tetrahedra="@container.tetrahedra")                          
@@ -68,9 +71,9 @@ def createScene(rootNode):
                 # Sub topology 2                         #
                 ##########################################
                 
-                modelSubTopoS2 = model.createChild('modelSubTopoS2')
-                modelSubTopoS2.createObject('TetrahedronSetTopologyContainer',position='@loader.position',tetrahedra="@PSDE1.tetrahedraOutliers",name='containerS2')                              
-                modelSubTopoS2.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEMS2', method='large', poissonRatio='0.3',  youngModulus='2200',drawAsEdges="0")              
+                #modelSubTopoS2 = model.createChild('modelSubTopoS2')
+                #modelSubTopoS2.createObject('TetrahedronSetTopologyContainer',position='@loader.position',tetrahedra="@PSDE1.tetrahedraOutliers",name='containerS2')                              
+                #modelSubTopoS2.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEMS2', method='large', poissonRatio='0.3',  youngModulus='2200',drawAsEdges="0")              
                     
                 
                 #TetraIndicesInROI = model.getObject('boxROISubTopoS1').findData('tetrahedronIndices')

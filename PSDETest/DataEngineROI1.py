@@ -4,28 +4,26 @@
 import Sofa
 from ROI import BoxROI
 
-class MyDataEngine(Sofa.PythonScriptDataEngine):    
+class MyDataEngine1(Sofa.PythonScriptDataEngine):    
 
-    def parse(self):
-	MyBoxROI = BoxROI(-30, -30, 8, 0, 30, 50, self.position)
-        Tetras = self.tetrahedra	
-        #MyBoxROI.calcTetrasInROI(Tetras)
-	self.addNewOutput('tetrahedraInliers',datatype='t',value=Tetras)
-	#self.addNewOutput('TetrahedraInliers',datatype='t')
-	#self.addNewOutput('TetrahedraOutliers',datatype='t',value=MyBoxROI.Outliers)
-	#self.TetrahedraInliers = MyBoxROI.Inliers
-	#self.TetrahedraInliers = []
-	#self.TetrahedraInliers = MyBoxROI.Inliers	
-	#print self.TetrahedraInliers
-	print 'end parsing ...'
+    def parse(self):        
+        # this is the ideal place to define inputs and outputs!
+        
+        self.addNewInput('Positions',datatype='p',value='@tetras.rest_position')        
+        self.addNewInput('Tetrahedra',datatype='t',value='@container.tetrahedra')        
+        self.addNewOutput('TetrahedraInliers',datatype='t')                
+        self.addNewOutput('TetrahedraOutliers',datatype='t')
 
     def update(self):
-        print 'blup'        
+	pass
 
-    def init(self):
-	print 'Begin init ...'
-
-	print 'end init ...'
+    def init(self):        
+        #self.addNewOutput('TetrahedraOutliers',blup='sd',blep='sd',datatype='t') # works here ... really, really strange
+        MyBoxROI = BoxROI(-30, -30, 8, -5, 30, 40, self.Positions)    
+        MyBoxROI.calcTetrasInROI(self.Tetrahedra)
+        self.TetrahedraInliers = MyBoxROI.Inliers
+        self.TetrahedraOutliers = MyBoxROI.Outliers
+	
 
 
 

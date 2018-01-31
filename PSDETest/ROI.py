@@ -15,7 +15,6 @@ class BoxROI:
 	self.PointCoords = PointCoords
 
     def isTetraInBoxROI(self, Tetra):
-	#print Tetra[0]
 
 	c1 = self.PointCoords[Tetra[0]]
 	c2 = self.PointCoords[Tetra[1]]

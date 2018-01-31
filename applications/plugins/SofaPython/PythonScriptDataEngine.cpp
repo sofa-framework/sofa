@@ -86,14 +86,7 @@ PythonScriptDataEngine::PythonScriptDataEngine()
                                 "Automatically reload the file when the source code is changed. "
                                 "Default value is set to false" ) )
     , m_ScriptDataEngineClass(0)
-    , m_ScriptDataEngineInstance(0)
-    , d_tetrahedra(initData(&d_tetrahedra, "tetrahedra", "Tetrahedron Topology"))
-    , d_tetrahedronIndices(initData(&d_tetrahedronIndices, "tetrahedronIndices","Indices of the tetrahedra contained in the ROI"))
-    , d_tetrahedraComputed(initData(&d_tetrahedraComputed, "tetrahedraComputed","Tetrahedra which are computed by the DataEngine"))
-    , d_tetrahedraOutliers(initData(&d_tetrahedraOutliers, "tetrahedraOutliers","Complement set of the tetrahedra, which are computed by the DataEngine"))
-    , d_X0( initData (&d_X0, "position", "Rest position coordinates of the degrees of freedom. \n"
-                                         "If empty the positions from a MechanicalObject then a MeshLoader are searched in the current context. \n"
-                                         "If none are found the parent's context is searched for MechanicalObject." ) )
+    , m_ScriptDataEngineInstance(0)    
 {
     m_filelistener = new MyyFileEventListener(this) ;
 }
@@ -207,18 +200,13 @@ void PythonScriptDataEngine::handleEvent(Event *event)
 void PythonScriptDataEngine::parse( sofa::core::objectmodel::BaseObjectDescription* arg )
 {
     ScriptDataEngine::parse(arg);
-    msg_warning("PSDE") << "poarsing";
     script_parse();
 }
 
 void PythonScriptDataEngine::init()
 {
     ScriptDataEngine::init();
-    addInput(&d_tetrahedra);
-    addInput(&d_X0);
-    addOutput(&d_tetrahedronIndices);
-    addOutput(&d_tetrahedraComputed);
-    addOutput(&d_tetrahedraOutliers);
+
     bool tmp=d_doUpdate.getValue() ;
     d_doUpdate.setValue(true);
     setDirtyValue();
@@ -235,7 +223,6 @@ void PythonScriptDataEngine::script_init()
 
 void PythonScriptDataEngine::script_parse()
 {
-    msg_warning("PSDE") << "parsing toujours";
     PythonEnvironment::gil lock(__func__);
     SP_CALL_MODULEFUNC_NOPARAM(m_Func_parse)
 }

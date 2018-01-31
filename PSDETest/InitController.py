@@ -4,21 +4,10 @@
 import Sofa
 from datetime import datetime
 
-class InitController(Sofa.PythonScriptController):
-    
-    def __new__(cls, node, instance):
-	print 'huii'
-
-    def __new__(cls, node):
-	print 'huii'		
-    def __init__(self,name):
-	print name
-
-  
+class InitController(Sofa.PythonScriptController):  
 
     def initGraph(self, node):
-    	self.node = node
-	 
+    	self.node = node	 
 
     def bwdInitGraph(self,node):            
             
@@ -26,9 +15,9 @@ class InitController(Sofa.PythonScriptController):
             
             A = Sofa.LinearSpring(0,1,4,5,60)
             
-            modelSubTopoS1 = self.node.getChild('model').getChild('modelSubTopoS1')
-            YM = modelSubTopoS1.getObject('FEMS1').findData('youngModulus')
-            YM = 200
+            #modelSubTopoS1 = self.node.getChild('model').getChild('modelSubTopoS1')
+            #YM = modelSubTopoS1.getObject('FEMS1').findData('youngModulus')
+            #YM = 200
 	    
             
            

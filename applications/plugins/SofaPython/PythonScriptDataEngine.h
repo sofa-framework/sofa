@@ -92,12 +92,10 @@ public:
     sofa::core::objectmodel::Data<bool>         m_doAutoReload;
     sofa::core::objectmodel::Data<bool>         d_doUpdate;
     // Inputs
-    sofa::core::objectmodel::Data<vector<Tetra> > d_tetrahedra;
-    sofa::core::objectmodel::Data<defaulttype::Vec3dTypes::VecCoord> d_X0;
+    //sofa::core::objectmodel::Data<vector<Tetra> > d_tetrahedra;
+//    sofa::core::objectmodel::Data<defaulttype::Vec3dTypes::VecCoord> d_X0;
     // Outputs
-    sofa::core::objectmodel::Data<vector<Tetra> > d_tetrahedraComputed; // Consider that the goal is to use the script to compute a set of tetrahedra
-    sofa::core::objectmodel::Data<vector<Tetra> > d_tetrahedraOutliers; // Consider that the goal is to use the script to compute a set of tetrahedra
-    sofa::core::objectmodel::Data<SetIndex> d_tetrahedronIndices;
+//    sofa::core::objectmodel::Data<SetIndex> d_tetrahedronIndices;
     sofa::core::objectmodel::Data<float> d_Test;
 };
 

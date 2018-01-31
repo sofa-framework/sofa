@@ -20,7 +20,7 @@ def createScene(rootNode):
                 node.createObject('MeshSTLLoader', name='mesh', filename=path+'Cube.stl')
                 node.createObject('MeshGenerationFromPolyhedron', name='gen', template='Vec3d', inputPoints='@mesh.position', inputTriangles='@mesh.triangles', drawTetras='1', 
 				       # This parameter controls the size of mesh tetrahedra. It provides an upper bound on the circumradius of the mesh tetrahedra.
-                                       cellSize="5", 
+                                       cellSize="6", 
                                        
                                        facetAngle="30",
                                        
