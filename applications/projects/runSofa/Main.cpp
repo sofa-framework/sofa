@@ -340,12 +340,12 @@ int main(int argc, char** argv)
 
     if (!noAutoloadPlugins)
     {
-        if (DataRepository.findFile(configPluginPath))
+        if (PluginRepository.findFile(configPluginPath))
         {
             msg_info("runSofa") << "Loading automatically custom plugin list from " << configPluginPath;
             PluginManager::getInstance().readFromIniFile(configPluginPath);
         }
-        else if (DataRepository.findFile(defaultConfigPluginPath))
+        else if (PluginRepository.findFile(defaultConfigPluginPath))
         {
             msg_info("runSofa") << "Loading automatically default plugin list from " << defaultConfigPluginPath;
             PluginManager::getInstance().readFromIniFile(defaultConfigPluginPath);
