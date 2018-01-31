@@ -220,7 +220,6 @@ endif()
 
 sofa_install_targets(SofaGui SofaGuiQt "sofa/gui/qt")
 
-file(INSTALL "resources" DESTINATION "${CMAKE_BINARY_DIR}/share/sofa/gui/qt")
 install(DIRECTORY "resources" DESTINATION "share/sofa/gui/qt" COMPONENT resources)
 install(FILES ${HEADER_FILES} DESTINATION "include/sofa/gui/qt" COMPONENT headers)
 install(FILES ${MOC_HEADER_FILES} DESTINATION "include/sofa/gui/qt" COMPONENT headers)
