@@ -60,15 +60,17 @@ if(SOFA_BUILD_TESTS)
     endif()
 endif()
 
+# if MSVC then plugins are located in bin/ instead of lib/ on Mac and Linux
+install(DIRECTORY "resources" DESTINATION "share/sofa/gui/runSofa" COMPONENT resources)
+install(FILES "${_defaultConfigPluginFilePath}" DESTINATION ${_pluginLocation}/ COMPONENT applications)
+
 if(APPLE AND RUNSOFA_INSTALL_AS_BUNDLE)
-    # set(CPACK_COMPONENTS_ALL BundlePack)
+    find_package(CImgPlugin REQUIRED)
+    find_package(SofaMiscCollision REQUIRED)
+    find_package(SofaPython REQUIRED)
+    target_link_libraries(${PROJECT_NAME} CImgPlugin SofaMiscCollision SofaAllCommonComponents SofaPython)
     set_property(GLOBAL PROPERTY RUNSOFA_CPACK_COMPONENTS_ALL BundlePack)
     include(cmake/bundle.cmake)
 else()
     sofa_install_targets(SofaGui runSofa "")
 endif()
-
-# if MSVC then plugins are located in bin/ instead of lib/ on Mac and Linux
-install(DIRECTORY "resources" DESTINATION "share/sofa/gui/runSofa" COMPONENT resources)
-install(FILES "${_defaultConfigPluginFilePath}" DESTINATION ${_pluginLocation}/ COMPONENT applications)
-
