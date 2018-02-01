@@ -25,10 +25,7 @@ def createScene(rootNode):
                 
 		#Load Tetra geometry from file and initalize physical properties such as mass, etc. and anchor the model with a stiff spring
                 model.createObject('MeshVTKLoader', name='loader', filename=path+'Cube.vtk')
-                model.createObject('TetrahedronSetTopologyContainer', src='@loader', name='container')
-		MrT = model.getObject('container').findData('tetrahedra')
-		
-		#print MrT
+                model.createObject('TetrahedronSetTopologyContainer', src='@loader', name='container')		
 		
 		#model.createObject('TetrahedronSetTopologyContainer', tetrahedra='@PythonScriptDataEngine.tetrahedraOutliers', name='container')
                 model.createObject('TetrahedronSetTopologyModifier')
@@ -39,9 +36,7 @@ def createScene(rootNode):
                 model.createObject('UniformMass', totalmass='0.5')              
                 model.createObject('BoxROI', name='boxROI', box='-30 -30 -5 30 30 3 7', drawBoxes='true', position="@tetras.rest_position", tetrahedra="@container.tetrahedra")
                 model.createObject('RestShapeSpringsForceField', points='@boxROI.indices', stiffness='1e12')
-                model.createObject('LinearSolverConstraintCorrection', solverName='preconditioner')     
-
-		
+                model.createObject('LinearSolverConstraintCorrection', solverName='preconditioner')   
                         
 		# PythonScriptController for controlling stuff
                 model.createObject('PythonScriptController', filename="Controller.py", classname="Controller")           
