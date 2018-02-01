@@ -38,6 +38,22 @@ class BoxROI:
 			self.Inliers.append(Tetras[i])
 		else:
 			self.Outliers.append(Tetras[i])	
+			
+			
+    def calcUnion(self,Tetras1,Tetras2):
+        Union = []
+        while len(Tetras1)!=0:
+            Union = Union + Tetras1[0]      
+            DelIdxs = []
+            for i in range(0,len(Tetras2)):                
+                if Tetras1[0] == Tetras2[i]:                   
+                    DelIdxs = DelIdxs + [i]                    
+            for j in range(0, len(DelIdxs)):
+                del(Tetras2[DelIdxs[-j]])
+            del(Tetras1[0])
+        Union = Union+Tetras2           
+                    
+        return Union    
 
 	
 

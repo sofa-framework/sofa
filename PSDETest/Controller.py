@@ -14,6 +14,7 @@ class Controller(Sofa.PythonScriptController):
   
             inputvalue = self.node.getChild('constantForce').getObject('forceField').findData('forces')
             inputvalue2 = self.node.getChild('constantForce2').getObject('forceField2').findData('forces')
+            inputvalue3 = self.node.getChild('constantForce3').getObject('forceField3').findData('forces')
             #inputvalue2 = []
             
             if (c == "+"):
@@ -31,5 +32,11 @@ class Controller(Sofa.PythonScriptController):
                 
             elif (c == "2"):
                 inputvalue2.value = "0 0 0"
+                
+            elif (c == "3"):
+                inputvalue3.value = "0 -30000 0"
+                
+            elif (c == "4"):
+                inputvalue3.value = "0 0 0"
                
   

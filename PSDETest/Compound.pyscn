@@ -37,7 +37,7 @@ def createScene(rootNode):
                     
                 model.createObject('MechanicalObject', name='tetras', template='Vec3d', showIndices='false', showIndicesScale='0.02', rx='0', dz='0')
                 model.createObject('UniformMass', totalmass='0.5')              
-                model.createObject('BoxROI', name='boxROI', box='-30 -30 -5 30 30 3 5', drawBoxes='true', position="@tetras.rest_position", tetrahedra="@container.tetrahedra")
+                model.createObject('BoxROI', name='boxROI', box='-30 -30 -5 30 30 3 7', drawBoxes='true', position="@tetras.rest_position", tetrahedra="@container.tetrahedra")
                 model.createObject('RestShapeSpringsForceField', points='@boxROI.indices', stiffness='1e12')
                 model.createObject('LinearSolverConstraintCorrection', solverName='preconditioner')     
 
@@ -50,9 +50,13 @@ def createScene(rootNode):
 	        # model.createObject('PythonScriptDataEngine', filename="DataEngine.py", classname="MyDataEngine", tetrahedra="@container.tetrahedra", position="@tetras.rest_position")
 
 		#model.createObject('PythonScriptDataEngine', name='PSDE1', filename="DataEngineROI1.py", classname="MyDataEngine", position='@tetras.rest_position')
-		model.createObject('PythonScriptDataEngine', name='PSDE1', filename="DataEngineROI1.py", classname="MyDataEngine1")
-		model.createObject('PythonScriptDataEngine', name='PSDE2', filename="DataEngineROI2.py", classname="MyDataEngine2")
-		model.createObject('PythonScriptDataEngine', name='PSDE3', filename="DataEngineROI3.py", classname="MyDataEngine3")
+                model.createObject('PythonScriptDataEngine', name='PSDE1', filename="DataEngineROI1.py", classname="MyDataEngine1")
+                model.createObject('PythonScriptDataEngine', name='PSDE2', filename="DataEngineROI2.py", classname="MyDataEngine2")
+                model.createObject('PythonScriptDataEngine', name='PSDE3', filename="DataEngineROI3.py", classname="MyDataEngine3")                
+                model.createObject('PythonScriptDataEngine', name='PSDE4', filename="DataEngineROI4.py", classname="MyDataEngine4")
+                model.createObject('PythonScriptDataEngine', name='PSDEUnion1', filename="DataEngineUnion1.py", classname="MyDataEngineUnion1")
+                model.createObject('PythonScriptDataEngine', name='PSDEUnion2', filename="DataEngineUnion2.py", classname="MyDataEngineUnion2")
+                
 		#model.createObject('PythonScriptDataEngine', name='PSDE4', filename="DataEngineROI4.py", classname="MyDataEngine")
 
 		#model.createObject('PythonScriptDataEngine', name='PSDE2', filename="DataEngineROI2.py", classname="MyDataEngine", tetrahedra='@container.tetrahedra', position="@tetras.rest_position")
@@ -62,7 +66,7 @@ def createScene(rootNode):
                 ##########################################                
                 
                 modelSubTopoS1 = model.createChild('modelSubTopoS1')
-                modelSubTopoS1.createObject('TetrahedronSetTopologyContainer', position='@loader.position', tetrahedra="@PSDE3.TetrahedraUnion", name='containerS1')
+                modelSubTopoS1.createObject('TetrahedronSetTopologyContainer', position='@loader.position', tetrahedra="@PSDEUnion1.TetrahedraUnion", name='containerS1')
                 modelSubTopoS1.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEMS1', method='large', poissonRatio='0.3',  youngModulus='200',drawAsEdges="0")                  
 
                 #model.createObject('BoxROI', name='boxROISubTopoS1', box='-30 -30 8 0 30 50', drawBoxes='true', position="@tetras.rest_position", tetrahedra="@container.tetrahedra")                          
@@ -71,10 +75,14 @@ def createScene(rootNode):
                 # Sub topology 2                         #
                 ##########################################
                 
-                #modelSubTopoS2 = model.createChild('modelSubTopoS2')
-                #modelSubTopoS2.createObject('TetrahedronSetTopologyContainer',position='@loader.position',tetrahedra="@PSDE1.tetrahedraOutliers",name='containerS2')                              
-                #modelSubTopoS2.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEMS2', method='large', poissonRatio='0.3',  youngModulus='2200',drawAsEdges="0")              
-                    
+                modelSubTopoS2 = model.createChild('modelSubTopoS2')
+                modelSubTopoS2.createObject('TetrahedronSetTopologyContainer',position='@loader.position',tetrahedra="@PSDEUnion2.TetrahedraUnion",name='containerS2')                              
+                modelSubTopoS2.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEMS2', method='large', poissonRatio='0.3',  youngModulus='600',drawAsEdges="0")              
+                
+                modelSubTopoS2 = model.createChild('modelSubTopoS3')
+                modelSubTopoS2.createObject('TetrahedronSetTopologyContainer',position='@loader.position',tetrahedra="@PSDE4.TetrahedraOutliers",name='containerS3') # these are the outliers of all PSDE ROIs
+                modelSubTopoS2.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEMS3', method='large', poissonRatio='0.3',  youngModulus='2200',drawAsEdges="0")              
+                
                 
                 #TetraIndicesInROI = model.getObject('boxROISubTopoS1').findData('tetrahedronIndices')
                 #print TetraIndicesInROI.value#[1:len(TetraIndicesInROI.value)][0]                
@@ -99,12 +107,20 @@ def createScene(rootNode):
                 # Constant Force                         #
                 ##########################################
                 constantForce2 = model.createChild('constantForce2')           
-                constantForce2.createObject('MechanicalObject', name="AppliedForce2", position="25 0 25")
+                constantForce2.createObject('MechanicalObject', name="AppliedForce2", position="25 0 70")
                 constantForce2.createObject('ConstantForceField', name="forceField2", indices="0", forces="0 0  0", arrowSizeCoef="0.0001")
                 constantForce2.createObject('BarycentricMapping', mapForces="true", mapMasses="false")                
                 # This create a PythonScriptController that permits to programatically implement new behavior
 				# or interactions using the Python programming langage. The controller is referring to a
 				# file named "controller.py".
+				
+                ##########################################
+                # Constant Force                         #
+                ##########################################
+                constantForce3 = model.createChild('constantForce3')           
+                constantForce3.createObject('MechanicalObject', name="AppliedForce3", position="0 25 50")
+                constantForce3.createObject('ConstantForceField', name="forceField3", indices="0", forces="0 0  0", arrowSizeCoef="0.0001")
+                constantForce3.createObject('BarycentricMapping', mapForces="true", mapMasses="false") 
                 
           
                 
