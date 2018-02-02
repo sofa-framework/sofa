@@ -176,6 +176,32 @@ create-directories() {
     done < "$output_dir/directories.txt"
 }
 
+
+ignore-missing-plugins() {
+	echo "Searching for missing plugins..."
+    while read scene; do
+		if grep -q '^[	 ]*<[	 ]*RequiredPlugin' "$src_dir/examples/$scene"; then
+			grep '^[	 ]*<[	 ]*RequiredPlugin' "$src_dir/examples/$scene" > "$output_dir/grep.tmp"
+			while read match; do
+				if echo "$match" | grep -q 'pluginName'; then
+					plugin="$(echo "$match" | grep -o "pluginName[ 	]*=[\'\"][A-Za-z _-]*[\'\"]" | grep -o [\'\"].*[\'\"] | head -c -2 | tail -c +2)"
+				elif echo "$match" | grep -q 'name'; then
+					plugin="$(echo "$match" | grep -o "name[ 	]*=[\'\"][A-Za-z _-]*[\'\"]" | grep -o [\'\"].*[\'\"] | head -c -2 | tail -c +2)"
+				else
+					echo "ERROR: unknown RequiredPlugin found in $scene"
+					break
+				fi
+				local lib="$(get-lib "$plugin")"
+				if [ -z "$lib" ]; then
+					echo "ignore $scene: missing plugin $plugin"
+					echo "$scene" >> "$output_dir/examples/ignore-patterns.txt"
+				fi
+			done < "$output_dir/grep.tmp"
+			rm -f "$output_dir/grep.tmp"
+		fi
+	done < "$output_dir/examples/scenes.txt"
+}
+
 parse-options-files() {
     # echo "Parsing option files."
     while read path; do
@@ -310,6 +336,7 @@ initialize-scene-testing() {
     touch "$output_dir/errors.txt"
 
     create-directories
+	ignore-missing-plugins
     parse-options-files
 }
 
