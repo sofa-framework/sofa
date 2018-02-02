@@ -532,7 +532,7 @@ bool MeshVTKLoader::setInputsMesh()
         delete reader->inputCellTypes;
     }
 
-    d_polygons.endEdit();
+    d_polylines.endEdit();
     d_edges.endEdit();
     d_triangles.endEdit();
     d_quads.endEdit();
