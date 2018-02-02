@@ -514,8 +514,7 @@ bool BoxROI<DataTypes>::isQuadInBoxes(const Quad& q)
 // The update method is called when the engine is marked as dirty.
 template <class DataTypes>
 void BoxROI<DataTypes>::update()
-{
-    //msg_warning(this) << "was here" << msgendl;
+{    
     if(m_componentstate==ComponentState::Invalid){
         cleanDirty() ;
         return ;

@@ -28,8 +28,3 @@ class MyDataEngine1(Sofa.PythonScriptDataEngine):
         MyBoxROI.calcTetrasInROI(self.Tetrahedra)        
         self.TetrahedraInliers = MyBoxROI.Inliers        
         self.TetrahedraOutliers = MyBoxROI.Outliers
-        
-        
-
-
-
