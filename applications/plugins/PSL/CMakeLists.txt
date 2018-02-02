@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 project(PSL)
 
-message("-- PSL is a 17.12 experimental feature, use it at your own risk.")
-
 ### Plugin dependencies
 find_package(SofaFramework REQUIRED)
 find_package(SofaPython QUIET)
