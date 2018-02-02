@@ -103,8 +103,9 @@ public:
 	} IntegrationMethod;
 
 
-    /// Mass info are stocked on vertices and edges (if lumped matrix)
+    /// Values of the particles masses stored on vertices
     topology::PointData<helper::vector<MassType> >  d_vertexMassInfo;
+    /// Values of the particles masses stored on edges
     topology::EdgeData<helper::vector<MassType> >   d_edgeMassInfo;
 
     /* ---------- Specific data for Bezier Elements ------*/
@@ -121,6 +122,8 @@ public:
     Data< Real >         d_showAxisSize;
     /// if mass lumping should be performed (only compute mass on vertices)
     Data< bool >         d_lumping;
+    /// total mass of the object
+    Data< Real >         d_totalMass;
     /// if specific mass information should be outputed
     Data< bool >         d_printMass;
     Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
@@ -147,6 +150,9 @@ protected:
     /// Internal data required for Cuda computation (copy of vertex mass for deviceRead)
     MeshMatrixMassInternalData<DataTypes, MassType> data;
     friend class MeshMatrixMassInternalData<DataTypes, MassType>;
+
+    /// value defining the initialization process of the mass (0 : totalMass, 1 : massDensity, 2 : vertexMass)
+    int m_initializationProcess;
 
 public:
 
@@ -184,6 +190,16 @@ public:
     {
         d_massDensity.setValue(m);
     }
+
+    int getMassCount() {
+        return d_vertexMassInfo.getValue().size();
+    }
+
+    SReal getTotalMass() const
+    {
+        return d_totalMass.getValue();
+    }
+
 
     /// Copy the vertex mass scalar (in case of CudaTypes)
     void copyVertexMass();

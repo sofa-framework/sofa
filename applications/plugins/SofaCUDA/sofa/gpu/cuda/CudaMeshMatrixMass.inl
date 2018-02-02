@@ -56,13 +56,13 @@ using namespace sofa::gpu::cuda;
 template<>
 void MeshMatrixMass<CudaVec2fTypes, float>::copyVertexMass()
 {
-    helper::vector<MassType>& vertexInf = *(vertexMassInfo.beginEdit());
+    helper::vector<MassType>& vertexInf = *(d_vertexMassInfo.beginEdit());
     data.vMass.resize(_topology->getNbPoints());
 
     for (int i=0; i<this->_topology->getNbPoints(); ++i)
         data.vMass[i] = (float) vertexInf[i];
 
-    vertexMassInfo.endEdit();
+    d_vertexMassInfo.endEdit();
 }
 
 
@@ -73,7 +73,7 @@ void MeshMatrixMass<CudaVec2fTypes, float>::addMDx(const core::MechanicalParams*
     const VecDeriv& dx = d_dx.getValue();
     const CudaVector<float>& vertexMass = data.vMass;
 
-    MeshMatrixMassCuda_addMDx2f(dx.size(),(float) d_factor, (float) massLumpingCoeff, vertexMass.deviceRead() , dx.deviceRead(), f.deviceWrite());
+    MeshMatrixMassCuda_addMDx2f(dx.size(),(float) d_factor, (float) m_massLumpingCoeff, vertexMass.deviceRead() , dx.deviceRead(), f.deviceWrite());
     d_f.endEdit();
 }
 
@@ -85,7 +85,7 @@ void MeshMatrixMass<CudaVec2fTypes, float>::addForce(const core::MechanicalParam
     const CudaVector<float>& vertexMass = data.vMass;
     defaulttype::Vec3d g ( this->getContext()->getGravity() );
 
-    MeshMatrixMassCuda_addForce2f( vertexMass.size(), f.deviceWrite(), vertexMass.deviceRead(), g.ptr(), (float) massLumpingCoeff);
+    MeshMatrixMassCuda_addForce2f( vertexMass.size(), f.deviceWrite(), vertexMass.deviceRead(), g.ptr(), (float) m_massLumpingCoeff);
     d_f.endEdit();
 }
 
@@ -97,7 +97,7 @@ void MeshMatrixMass<CudaVec2fTypes, float>::accFromF(const core::MechanicalParam
     const VecDeriv& _f = f.getValue();
     const CudaVector<float>& vertexMass = data.vMass;
 
-    MeshMatrixMassCuda_accFromF2f( vertexMass.size(), _acc.deviceWrite(), _f.deviceRead(), vertexMass.deviceRead(), (float) massLumpingCoeff);
+    MeshMatrixMassCuda_accFromF2f( vertexMass.size(), _acc.deviceWrite(), _f.deviceRead(), vertexMass.deviceRead(), (float) m_massLumpingCoeff);
     a.endEdit();
 }
 
