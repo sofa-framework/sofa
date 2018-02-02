@@ -191,7 +191,7 @@ public:
     core::objectmodel::DataFileName d_fileMass;
 
     /// value defining the initialization process of the mass (0 : totalMass, 1 : massDensity, 2 : vertexMass)
-    int initializationProcess;
+    int m_initializationProcess;
 
 protected:
     ////////////////////////// Inherited attributes ////////////////////////////

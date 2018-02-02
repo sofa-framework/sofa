@@ -791,7 +791,7 @@ void DiagonalMass<DataTypes, MassType>::init()
     //0 (default) relies on the totalMass
     //1 relies on the massDensity
     //2 relies on the vertexMass
-    initializationProcess = 0;
+    m_initializationProcess = 0;
 
     //If user defines the vertexMass, use this as the mass
     if(d_vertexMass.isSet())
@@ -809,7 +809,7 @@ void DiagonalMass<DataTypes, MassType>::init()
                 d_totalMass.setValue(1.0) ;
             }
             //If double definition with valid values, use totalMass instead
-            initializationProcess = 0;
+            m_initializationProcess = 0;
         }
         //Check double definition : both massDensity and vertexMass are user-defined
         else if(d_massDensity.isSet())
@@ -823,12 +823,12 @@ void DiagonalMass<DataTypes, MassType>::init()
                                   << "To remove this warning, you need to set a positive values to the totalMass data";
                 d_massDensity.setValue(1.0) ;
                 d_totalMass.setValue(1.0) ;
-                initializationProcess = 0;
+                m_initializationProcess = 0;
             }
             else
             {
                 //If double definition with valid values, use massDensity instead
-                initializationProcess = 1;
+                m_initializationProcess = 1;
             }
         }
         //If no problem detected, then use the vertexMass
@@ -841,12 +841,12 @@ void DiagonalMass<DataTypes, MassType>::init()
                 msg_error() << "Inconsistent size of vertexMass vector compared to the DOFs size.\n"
                                "Back to default case : use totalMass = 1.0";
                 d_totalMass.setValue(1.0) ;
-                initializationProcess = 0;
+                m_initializationProcess = 0;
             }
             else
             {
                 //Use vertexMass
-                initializationProcess = 2;
+                m_initializationProcess = 2;
 
                 //Check that the vertexMass vector has only positive values
                 for(size_t i=0; i<vertexMass.size(); i++)
@@ -881,7 +881,7 @@ void DiagonalMass<DataTypes, MassType>::init()
                                   << "To remove this warning, you need to set a positive values to the totalMass data";
             }
             //If double definition with valid values, use totalMass instead
-            initializationProcess = 0;
+            m_initializationProcess = 0;
         }
         //Check for negative or null value, if wrongly set use the totalMass instead
         else if(d_massDensity.getValue() <= 0.0)
@@ -891,12 +891,12 @@ void DiagonalMass<DataTypes, MassType>::init()
                               << "To remove this warning, you need to set a positive values to the totalMass data";
             d_massDensity.setValue(1.0) ;
             d_totalMass.setValue(1.0) ;
-            initializationProcess = 0;
+            m_initializationProcess = 0;
         }
         //If no problem detected, then use the massDensity
         else
         {
-            initializationProcess = 1;
+            m_initializationProcess = 1;
         }
     }
     //else totalMass is used
@@ -915,11 +915,11 @@ void DiagonalMass<DataTypes, MassType>::init()
                               << "To remove this warning, you need to set a positive values to the totalMass data";
             d_totalMass.setValue(1.0) ;
         }
-        initializationProcess = 0;
+        m_initializationProcess = 0;
     }
 
     //If the mass is based on the totalMass information
-    if(initializationProcess==0)
+    if(m_initializationProcess==0)
     {
         msg_info() << "totalMass information is used";
         Real totalMassTemp = d_totalMass.getValue();
@@ -928,26 +928,26 @@ void DiagonalMass<DataTypes, MassType>::init()
         reinit();
     }
     //If the mass is based on the massDensity information
-    else if(initializationProcess==1)
+    else if(m_initializationProcess==1)
     {
         msg_info() << "massDensity information is used";
         reinit();
     }
     //If the mass is based on the vertexMass information
-    else if(initializationProcess==2)
+    else if(m_initializationProcess==2)
     {
         msg_info() << "vertexMass information is used";
-        helper::WriteAccessor<Data<MassVector> > vertexMass = d_vertexMass;
         sofa::helper::vector<MassType> vertexMassSave = d_vertexMass.getValue();
         Real totalMassSave = 0.0;
-        for(size_t i=0; i<vertexMass.size(); i++)
+        for(size_t i=0; i<vertexMassSave.size(); i++)
         {
-            totalMassSave += vertexMass[i];
+            totalMassSave += vertexMassSave[i];
         }
 
         //Compute the volume
         d_massDensity.setValue(1.0);
         reinit();
+        helper::WriteAccessor<Data<MassVector> > vertexMass = d_vertexMass;
         for(size_t i=0; i<vertexMass.size(); i++)
         {
             vertexMass[i] = vertexMassSave[i];
