@@ -120,21 +120,21 @@ CircularBufferSender::CircularBufferSender(int size)
 
 CircularBufferSender::~CircularBufferSender()
 {
-    delete this->data;
+//    delete this->data;
 }
 
 void CircularBufferSender::add(BaseData* data)
 {
-    /// TODO
-//    pthread_mutex_lock(&mutex);
-//    if (isFull())
-//    {
-//        pthread_mutex_unlock(&mutex);
-//        throw std::out_of_range("Circular buffer is full");
-//    }
-//    data[rear] = *data;
-//    rear = ((this->rear + 1) % this->size);
-//    pthread_mutex_unlock(&mutex);
+    pthread_mutex_lock(&mutex);
+    if (isFull())
+    {
+        pthread_mutex_unlock(&mutex);
+        throw std::out_of_range("Circular buffer is full");
+    }
+    this->data[rear] = (data->clone());
+    rear = ((this->rear + 1) % this->size);
+
+    pthread_mutex_unlock(&mutex);
 }
 
 BaseData* CircularBufferSender::get()
