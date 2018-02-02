@@ -178,28 +178,28 @@ create-directories() {
 
 
 ignore-missing-plugins() {
-	echo "Searching for missing plugins..."
+    echo "Searching for missing plugins..."
     while read scene; do
-		if grep -q '^[	 ]*<[	 ]*RequiredPlugin' "$src_dir/examples/$scene"; then
-			grep '^[	 ]*<[	 ]*RequiredPlugin' "$src_dir/examples/$scene" > "$output_dir/grep.tmp"
-			while read match; do
-				if echo "$match" | grep -q 'pluginName'; then
-					plugin="$(echo "$match" | grep -o "pluginName[ 	]*=[\'\"][A-Za-z _-]*[\'\"]" | grep -o [\'\"].*[\'\"] | head -c -2 | tail -c +2)"
-				elif echo "$match" | grep -q 'name'; then
-					plugin="$(echo "$match" | grep -o "name[ 	]*=[\'\"][A-Za-z _-]*[\'\"]" | grep -o [\'\"].*[\'\"] | head -c -2 | tail -c +2)"
-				else
-					echo "ERROR: unknown RequiredPlugin found in $scene"
-					break
-				fi
-				local lib="$(get-lib "$plugin")"
-				if [ -z "$lib" ]; then
-					echo "ignore $scene: missing plugin $plugin"
-					echo "$scene" >> "$output_dir/examples/ignore-patterns.txt"
-				fi
-			done < "$output_dir/grep.tmp"
-			rm -f "$output_dir/grep.tmp"
-		fi
-	done < "$output_dir/examples/scenes.txt"
+        if grep -q '^[	 ]*<[	 ]*RequiredPlugin' "$src_dir/examples/$scene"; then
+            grep '^[	 ]*<[	 ]*RequiredPlugin' "$src_dir/examples/$scene" > "$output_dir/grep.tmp"
+            while read match; do
+                if echo "$match" | grep -q 'pluginName'; then
+                    plugin="$(echo "$match" | grep -o "pluginName[	 ]*=[\'\"][A-Za-z _-]*[\'\"]" | grep -o [\'\"].*[\'\"] | head -c -2 | tail -c +2)"
+                elif echo "$match" | grep -q 'name'; then
+                    plugin="$(echo "$match" | grep -o "name[	 ]*=[\'\"][A-Za-z _-]*[\'\"]" | grep -o [\'\"].*[\'\"] | head -c -2 | tail -c +2)"
+                else
+                    echo "ERROR: unknown RequiredPlugin found in $scene"
+                    break
+                fi
+                local lib="$(get-lib "$plugin")"
+                if [ -z "$lib" ]; then
+                    echo "ignore $scene: missing plugin $plugin"
+                    echo "$scene" >> "$output_dir/examples/ignore-patterns.txt"
+                fi
+            done < "$output_dir/grep.tmp"
+            rm -f "$output_dir/grep.tmp"
+        fi
+    done < "$output_dir/examples/scenes.txt"
 }
 
 parse-options-files() {
@@ -218,7 +218,7 @@ parse-options-files() {
                                 echo "$path/.scene-tests: warning: 'ignore' expects one argument: ignore <pattern>" | log
                             fi
                             ;;
-			add)
+                        add)
                             if [[ "$(count-args "$args")" = 1 ]]; then
                                 scene="$(get-arg "$args" 1)"
                                 echo $scene >> "$output_dir/$path/add-patterns.txt"
@@ -336,7 +336,7 @@ initialize-scene-testing() {
     touch "$output_dir/errors.txt"
 
     create-directories
-	ignore-missing-plugins
+    ignore-missing-plugins
     parse-options-files
 }
 
@@ -462,7 +462,7 @@ print-summary() {
     echo "- $(count-errors) error(s)"
     if [[ "$errors" != 0 ]]; then
         while read error; do
-			echo "  - $error"
+            echo "  - $error"
         done < "$output_dir/errors.txt"
     fi
     
