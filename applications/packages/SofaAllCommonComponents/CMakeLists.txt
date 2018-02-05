@@ -26,3 +26,4 @@ set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}"
 
 ## Install rules for the library and headers; CMake package configurations files
 #sofa_create_package(SofaAllCommonComponents ${SOFAALLCOMMONCOMPONENTS_VERSION} ${PROJECT_NAME} SofaAllCommonComponents)
+sofa_install_targets(${PROJECT_NAME} ${PROJECT_NAME} ${PROJECT_NAME})
