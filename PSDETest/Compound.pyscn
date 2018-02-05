@@ -74,6 +74,10 @@ def createScene(rootNode):
                 modelSubTopoS2.createObject('TetrahedronSetTopologyContainer',position='@loader.position',tetrahedra="@PSDEUnion2.TetrahedraUnion",name='containerS2')                              
                 modelSubTopoS2.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEMS2', method='large', poissonRatio='0.3',  youngModulus='600',drawAsEdges="0")              
                 
+                ##########################################
+                # Sub topology 3                         #
+                ##########################################
+                
                 modelSubTopoS2 = model.createChild('modelSubTopoS3')
                 modelSubTopoS2.createObject('TetrahedronSetTopologyContainer',position='@loader.position',tetrahedra="@PSDE4.TetrahedraOutliers",name='containerS3') # these are the outliers of all PSDE ROIs
                 modelSubTopoS2.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEMS3', method='large', poissonRatio='0.3',  youngModulus='2200',drawAsEdges="0")              
