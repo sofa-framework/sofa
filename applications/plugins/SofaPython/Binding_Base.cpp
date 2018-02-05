@@ -47,6 +47,9 @@ static Base* get_base(PyObject* self) {
 
 static char* getStringCopy(char *c)
 {
+    if (c==nullptr)
+        return nullptr;
+
     char* tmp = new char[strlen(c)+1] ;
     strcpy(tmp,c);
     return tmp ;
@@ -157,40 +160,67 @@ BaseData* helper_addNewDataKW(PyObject *args, PyObject * kw, Base * obj) {
     }
 
     // ... the other values are passed as kwargs
-    if (kw && PyDict_Size(kw)>0)
+//    if (kw && PyDict_Size(kw)>0)
+//    {
+//        PyObject* keys = PyDict_Keys(kw);
+//        PyObject* values = PyDict_Values(kw);
+//        for (int i=0; i<PyDict_Size(kw); i++)
+//        {
+//            PyObject *key = PyList_GetItem(keys,i); // no need to use py_decref for these (using will actually cause segfault)
+//            PyObject *value = PyList_GetItem(values,i);
+//            std::string KeyStr = PyString_AsString(key);
+
+//            if (KeyStr.compare("datatype")==0)
+//            {
+//                dataRawType = getStringCopy(PyString_AsString(value));
+//            }
+//            if (KeyStr.compare("help")==0)
+//            {
+//                dataHelp = getStringCopy(PyString_AsString(value));
+//            }
+//            if (KeyStr.compare("dataclass")==0)
+//            {
+//                dataClass = getStringCopy(PyString_AsString(value));
+//            }
+//            if (KeyStr.compare("value")==0)
+//            {
+//                dataValue = value;
+//            }
+//        }
+//        Py_DecRef(keys); // TODO (Stefan Escaida): wtf is happening here??
+//        Py_DecRef(values);
+//    }
+
+    if(!PyDict_Check(kw))
     {
-        PyObject* keys = PyDict_Keys(kw);
-        PyObject* values = PyDict_Values(kw);
-        for (int i=0; i<PyDict_Size(kw); i++)
-        {
-            PyObject *key = PyList_GetItem(keys,i);
-            PyObject *value = PyList_GetItem(values,i);
-            std::string KeyStr = PyString_AsString(key);
-            //msg_warning("SofaPython") << "Key Strings: " << KeyStr.c_str();
-            if (KeyStr.compare("datatype")==0)
-            {                
-                dataRawType = getStringCopy(PyString_AsString(value));
-              //  msg_warning("SofaPython") << " " << dataRawType;
-            }
-            if (KeyStr.compare("help")==0)
-            {
-                dataHelp = getStringCopy(PyString_AsString(value));
-            }
-            if (KeyStr.compare("dataclass")==0)
-            {
-                dataClass = getStringCopy(PyString_AsString(value));
-            }
-            if (KeyStr.compare("value")==0)
-            {
-                dataValue = value;
-            }
-            Py_DecRef(key);            
-        }
-//        msg_warning("SofaPython") << "crezayyy";
-        //Py_DecRef(keys); // TODO (Stefan Escaida): wtf is happening here??
-        Py_DecRef(values);
+        msg_error("SofaPython") << "Could not parse arguments for adding Data";
+        return nullptr;
     }
-//    msg_warning("SofaPython") << "DataType is: " << dataRawType[0];
+
+    PyObject * tmp;
+    tmp = PyDict_GetItemString(kw,"datatype");
+    if (!(tmp==nullptr)){
+        dataRawType = getStringCopy(PyString_AsString(tmp));
+        msg_warning("SofaPython") << dataRawType;
+    }
+
+    tmp = PyDict_GetItemString(kw,"helptxt");
+    if (!(tmp==nullptr)){
+        dataHelp = getStringCopy(PyString_AsString(tmp));
+        msg_warning("SofaPython") << dataHelp;
+    }
+
+    tmp = PyDict_GetItemString(kw,"dataclass");
+    if (!(tmp==nullptr)){
+        dataClass= getStringCopy(PyString_AsString(tmp));
+        msg_warning("SofaPython") << dataClass;
+    }
+
+    tmp = PyDict_GetItemString(kw,"value");
+    if (!(tmp==nullptr)){
+        dataValue = tmp;
+        Py_IncRef(dataValue); // call to Py_GetItemString doesn't increment the ref count, but we want to hold on to it for a while ...
+    }
 
     if (dataRawType[0]==0) // We cannot construct without a type
     {

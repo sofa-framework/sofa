@@ -13,7 +13,7 @@ class MyDataEngine1(Sofa.PythonScriptDataEngine):
     def parse(self):        
         # this is the ideal place to define inputs and outputs!
         
-        self.addNewInput('Positions',datatype='p',value='@tetras.rest_position')        
+        self.addNewInput('Positions',datatype='p',value='@tetras.rest_position', helptxt='wieu')        
         self.addNewInput('Tetrahedra',datatype='t',value='@container.tetrahedra')        
         self.addNewOutput('TetrahedraInliers',datatype='t')                
         self.addNewOutput('TetrahedraOutliers',datatype='t')
