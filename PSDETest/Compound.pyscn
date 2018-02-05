@@ -6,11 +6,11 @@ path = os.path.dirname(os.path.abspath(__file__))+'/Mesh/'
 def createScene(rootNode):
 
                 rootNode.findData('gravity').value='0 0 -9810'
-                rootNode.createObject('RequiredPlugin', pluginName='SoftRobots')
+                
+                rootNode.createObject('RequiredPlugin', pluginName='SofaPython')                
                 rootNode.createObject('VisualStyle', displayFlags='showVisualModels showBehaviorModels showCollisionModels hideBoundingCollisionModels hideForceFields showInteractionForceFields hideWireframe')
 
-                rootNode.createObject('FreeMotionAnimationLoop')
-                rootNode.createObject('QPInverseProblemSolver')
+                rootNode.createObject('FreeMotionAnimationLoop')                
 
                 rootNode.createObject('BackgroundSetting', color='0 0.168627 0.211765')
                 rootNode.createObject('OglSceneFrame', style="Arrows", alignment="TopRight")

@@ -147,9 +147,9 @@ void parseTetraVector(PyObject * value, Data<sofa::helper::vector<Tetra>> * Tetr
 // not defined static in order to be able to use this fcn somewhere else also
 BaseData* helper_addNewDataKW(PyObject *args, PyObject * kw, Base * obj) {
 
-    char* dataRawType="";
-    char* dataClass="";
-    char* dataHelp="";
+    const char* dataRawType="";
+    const char* dataClass="";
+    const char* dataHelp="";
     PyObject* dataValue = nullptr;
 
     char *dataName; // The desired name is provided using regular args ...
@@ -201,19 +201,16 @@ BaseData* helper_addNewDataKW(PyObject *args, PyObject * kw, Base * obj) {
     tmp = PyDict_GetItemString(kw,"datatype");
     if (!(tmp==nullptr)){
         dataRawType = getStringCopy(PyString_AsString(tmp));
-        msg_warning("SofaPython") << dataRawType;
     }
 
     tmp = PyDict_GetItemString(kw,"helptxt");
     if (!(tmp==nullptr)){
         dataHelp = getStringCopy(PyString_AsString(tmp));
-        msg_warning("SofaPython") << dataHelp;
     }
 
     tmp = PyDict_GetItemString(kw,"dataclass");
     if (!(tmp==nullptr)){
         dataClass= getStringCopy(PyString_AsString(tmp));
-        msg_warning("SofaPython") << dataClass;
     }
 
     tmp = PyDict_GetItemString(kw,"value");
@@ -273,7 +270,6 @@ BaseData* helper_addNewDataKW(PyObject *args, PyObject * kw, Base * obj) {
     {
         std::stringstream tmp;        
         pythonToSofaDataString(dataValue, tmp);
-//        msg_warning("crashy") << tmp.str().c_str();
         if(tmp.str()[0]=='@' && bd->canBeLinked())
         {
             if(!bd->setParent(tmp.str()))
@@ -290,13 +286,14 @@ BaseData* helper_addNewDataKW(PyObject *args, PyObject * kw, Base * obj) {
     }
     else
     {
-        msg_warning("SofaPython") << "No value(s) provided, initializing empty Data ...";
+        msg_info("SofaPython") << "No value(s) provided, initializing empty Data ...";
     }
     return bd;
 }
 
 // helper function for parsing Python arguments
 // not defined static in order to be able to use this fcn somewhere else also
+// TODO (Stefan Escaida 05.02.): to deprecate, because it's not using kwargs. Will break a small set of examples though ...
 BaseData* helper_addNewData(PyObject *args, Base * obj) {
     //Base* obj = get_base(self);
     char* dataName;
