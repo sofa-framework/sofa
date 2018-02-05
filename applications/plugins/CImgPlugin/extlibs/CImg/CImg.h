@@ -2960,10 +2960,25 @@ namespace cimg_library_suffixed {
       int trylock(const unsigned int) { return 0; }
 #endif
     };
+
+#ifndef WIN32
+#   define SOFACIMG_EXPORT_DYNAMIC_LIBRARY
+#   define SOFACIMG_IMPORT_DYNAMIC_LIBRARY
+#else
+#   define SOFACIMG_EXPORT_DYNAMIC_LIBRARY __declspec( dllexport )
+#   define SOFACIMG_IMPORT_DYNAMIC_LIBRARY __declspec( dllimport )
+#   ifdef _MSC_VER
+#       pragma warning(disable : 4231)
+#       pragma warning(disable : 4910)
+#   endif
+#endif
+
 #if defined(cimg_module)
-    Mutex_info& Mutex_attr();
+    extern "C" {
+        SOFACIMG_IMPORT_DYNAMIC_LIBRARY  Mutex_info& Mutex_attr();
+    }
 #elif defined(cimg_main)
-    Mutex_info& Mutex_attr() { static Mutex_info val; return val; }
+    SOFACIMG_EXPORT_DYNAMIC_LIBRARY Mutex_info& Mutex_attr() { static Mutex_info val; return val; }
 #else
     inline Mutex_info& Mutex_attr() { static Mutex_info val; return val; }
 #endif

@@ -44,6 +44,7 @@
 #endif
 
 #include <cassert>
+#include "SetDirectory.h"
 
 namespace sofa
 {
@@ -51,6 +52,16 @@ namespace helper
 {
 namespace system
 {
+
+std::string FileSystem::getExtension(const std::string& filename)
+{
+    std::string s = filename;
+    std::string::size_type pos = s.find_last_of('.');
+    if (pos == std::string::npos)
+        return ""; // no extension
+    else
+        return s.substr(pos+1);
+}
 
 
 #if defined(WIN32)

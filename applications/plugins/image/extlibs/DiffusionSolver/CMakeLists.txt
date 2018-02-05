@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.1)
 project(DiffusionSolver)
 
+find_package(CImgPlugin REQUIRED)
+
 add_library(${PROJECT_NAME} SHARED DiffusionSolver.h DiffusionSolver.cpp)
 
 
@@ -26,10 +28,8 @@ if(CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES RELEASE) # no ne
 
 endif()
 
-
-
-find_package(CImg REQUIRED)
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CImg_INCLUDE_DIRS}>")
+target_link_libraries(${PROJECT_NAME} CImgPlugin)
+target_include_directories(${PROJECT_NAME} PRIVATE ${CImgPlugin_INCLUDE_DIRS})
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 
 install(TARGETS ${PROJECT_NAME}

@@ -34,4 +34,5 @@ timeout "visualization/strainDiscretizer.scn" "50"
 iterations "deformation/linearHexaFEM-comparison.scn" "3"
 timeout "deformation/linearHexaFEM-comparison.scn" "200"
 
-
+# This scene depend on plugin.HighOrder 
+ignore "shapeFunction/BezierTetrahedron.scn"

@@ -85,6 +85,12 @@ static const std::string& getPluginDirectory();
 /// the "bin" directory.)
 static const std::string& getSofaPathPrefix();
 
+/// @brief Construct a path based on the build dir path of Sofa
+///
+/// @warning This function is meant to be used only by the applications that are
+/// distributed with SOFA: it uses getSofaPathPrefix()
+static const std::string getSofaPathTo(const std::string& pathFromBuildDir);
+
 /// @brief Read a file written in a very basic ini-like format.
 ///
 /// For each line that contains a '=' character, (e.g. "key=value"), the returned

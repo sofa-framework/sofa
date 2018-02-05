@@ -43,34 +43,57 @@ namespace basevtkreader
 {
 
 
-BaseVTKReader::BaseVTKReader():inputPoints (NULL), inputPolygons(NULL), inputCells(NULL),
-                               inputCellOffsets(NULL), inputCellTypes(NULL),
-                               numberOfPoints(0),numberOfCells(0)
+BaseVTKReader::BaseVTKReader(): inputPoints (NULL), inputNormals (NULL), inputPolygons(NULL), inputCells(NULL),
+    inputCellOffsets(NULL), inputCellTypes(NULL),
+    numberOfPoints(0), numberOfCells(0)
 {}
 
 BaseVTKReader::BaseVTKDataIO* BaseVTKReader::newVTKDataIO(const string& typestr)
 {
     if  (!strcasecmp(typestr.c_str(), "char") || !strcasecmp(typestr.c_str(), "Int8"))
+    {
         return new VTKDataIO<char>;
+    }
     else if (!strcasecmp(typestr.c_str(), "unsigned_char") || !strcasecmp(typestr.c_str(), "UInt8"))
+    {
         return new VTKDataIO<std::uint8_t>;
+    }
     else if (!strcasecmp(typestr.c_str(), "short") || !strcasecmp(typestr.c_str(), "Int16"))
+    {
         return new VTKDataIO<std::int16_t>;
+    }
     else if (!strcasecmp(typestr.c_str(), "unsigned_short") || !strcasecmp(typestr.c_str(), "UInt16"))
+    {
         return new VTKDataIO<std::uint16_t>;
+    }
     else if (!strcasecmp(typestr.c_str(), "int") || !strcasecmp(typestr.c_str(), "Int32"))
+    {
         return new VTKDataIO<std::int32_t>;
+    }
     else if (!strcasecmp(typestr.c_str(), "unsigned_int") || !strcasecmp(typestr.c_str(), "UInt32"))
+    {
         return new VTKDataIO<std::uint32_t>;
+    }
     else if (!strcasecmp(typestr.c_str(), "long") || !strcasecmp(typestr.c_str(), "Int64"))
+    {
         return new VTKDataIO<std::int64_t>;
+    }
     else if (!strcasecmp(typestr.c_str(), "unsigned_long") || !strcasecmp(typestr.c_str(), "UInt64"))
+    {
         return new VTKDataIO<std::uint64_t>;
+    }
     else if (!strcasecmp(typestr.c_str(), "float") || !strcasecmp(typestr.c_str(), "Float32"))
+    {
         return new VTKDataIO<float>;
+    }
     else if (!strcasecmp(typestr.c_str(), "double") || !strcasecmp(typestr.c_str(), "Float64"))
+    {
         return new VTKDataIO<double>;
-    else return NULL;
+    }
+    else
+    {
+        return NULL;
+    }
 }
 
 BaseVTKReader::BaseVTKDataIO* BaseVTKReader::newVTKDataIO(const string& typestr, int num)
@@ -78,24 +101,26 @@ BaseVTKReader::BaseVTKDataIO* BaseVTKReader::newVTKDataIO(const string& typestr,
     BaseVTKDataIO* result = NULL;
 
     if (num == 1)
+    {
         result = newVTKDataIO(typestr);
+    }
     else
     {
         if (!strcasecmp(typestr.c_str(), "char") || !strcasecmp(typestr.c_str(), "Int8"))
         {
             switch (num)
             {
-            case 2:
-                result = new VTKDataIO<Vec<2, char> >;
-                break;
-            case 3:
-                result = new VTKDataIO<Vec<3, char> >;
-                break;
-            case 4:
-                result = new VTKDataIO<Vec<4, char> >;
-                break;
-            default:
-                return NULL;
+                case 2:
+                    result = new VTKDataIO<Vec<2, char> >;
+                    break;
+                case 3:
+                    result = new VTKDataIO<Vec<3, char> >;
+                    break;
+                case 4:
+                    result = new VTKDataIO<Vec<4, char> >;
+                    break;
+                default:
+                    return NULL;
             }
         }
 
@@ -103,17 +128,17 @@ BaseVTKReader::BaseVTKDataIO* BaseVTKReader::newVTKDataIO(const string& typestr,
         {
             switch (num)
             {
-            case 2:
-                result = new VTKDataIO<Vec<2, std::uint8_t> >;
-                break;
-            case 3:
-                result = new VTKDataIO<Vec<3, std::uint8_t> >;
-                break;
-            case 4:
-                result = new VTKDataIO<Vec<4, std::uint8_t> >;
-                break;
-            default:
-                return NULL;
+                case 2:
+                    result = new VTKDataIO<Vec<2, std::uint8_t> >;
+                    break;
+                case 3:
+                    result = new VTKDataIO<Vec<3, std::uint8_t> >;
+                    break;
+                case 4:
+                    result = new VTKDataIO<Vec<4, std::uint8_t> >;
+                    break;
+                default:
+                    return NULL;
             }
         }
 
@@ -121,17 +146,17 @@ BaseVTKReader::BaseVTKDataIO* BaseVTKReader::newVTKDataIO(const string& typestr,
         {
             switch (num)
             {
-            case 2:
-                result = new VTKDataIO<Vec<2, std::int16_t> >;
-                break;
-            case 3:
-                result = new VTKDataIO<Vec<3, std::int16_t> >;
-                break;
-            case 4:
-                result = new VTKDataIO<Vec<4, std::int16_t> >;
-                break;
-            default:
-                return NULL;
+                case 2:
+                    result = new VTKDataIO<Vec<2, std::int16_t> >;
+                    break;
+                case 3:
+                    result = new VTKDataIO<Vec<3, std::int16_t> >;
+                    break;
+                case 4:
+                    result = new VTKDataIO<Vec<4, std::int16_t> >;
+                    break;
+                default:
+                    return NULL;
             }
         }
 
@@ -139,17 +164,17 @@ BaseVTKReader::BaseVTKDataIO* BaseVTKReader::newVTKDataIO(const string& typestr,
         {
             switch (num)
             {
-            case 2:
-                result = new VTKDataIO<Vec<2, std::uint16_t> >;
-                break;
-            case 3:
-                result = new VTKDataIO<Vec<3, std::uint16_t> >;
-                break;
-            case 4:
-                result = new VTKDataIO<Vec<4, std::uint16_t> >;
-                break;
-            default:
-                return NULL;
+                case 2:
+                    result = new VTKDataIO<Vec<2, std::uint16_t> >;
+                    break;
+                case 3:
+                    result = new VTKDataIO<Vec<3, std::uint16_t> >;
+                    break;
+                case 4:
+                    result = new VTKDataIO<Vec<4, std::uint16_t> >;
+                    break;
+                default:
+                    return NULL;
             }
         }
 
@@ -157,17 +182,17 @@ BaseVTKReader::BaseVTKDataIO* BaseVTKReader::newVTKDataIO(const string& typestr,
         {
             switch (num)
             {
-            case 2:
-                result = new VTKDataIO<Vec<2, std::int32_t> >;
-                break;
-            case 3:
-                result = new VTKDataIO<Vec<3, std::int32_t> >;
-                break;
-            case 4:
-                result = new VTKDataIO<Vec<4, std::int32_t> >;
-                break;
-            default:
-                return NULL;
+                case 2:
+                    result = new VTKDataIO<Vec<2, std::int32_t> >;
+                    break;
+                case 3:
+                    result = new VTKDataIO<Vec<3, std::int32_t> >;
+                    break;
+                case 4:
+                    result = new VTKDataIO<Vec<4, std::int32_t> >;
+                    break;
+                default:
+                    return NULL;
             }
         }
 
@@ -175,17 +200,17 @@ BaseVTKReader::BaseVTKDataIO* BaseVTKReader::newVTKDataIO(const string& typestr,
         {
             switch (num)
             {
-            case 2:
-                result = new VTKDataIO<Vec<2, std::uint32_t> >;
-                break;
-            case 3:
-                result = new VTKDataIO<Vec<3, std::uint32_t> >;
-                break;
-            case 4:
-                result = new VTKDataIO<Vec<4, std::uint32_t> >;
-                break;
-            default:
-                return NULL;
+                case 2:
+                    result = new VTKDataIO<Vec<2, std::uint32_t> >;
+                    break;
+                case 3:
+                    result = new VTKDataIO<Vec<3, std::uint32_t> >;
+                    break;
+                case 4:
+                    result = new VTKDataIO<Vec<4, std::uint32_t> >;
+                    break;
+                default:
+                    return NULL;
             }
         }
 
@@ -193,17 +218,17 @@ BaseVTKReader::BaseVTKDataIO* BaseVTKReader::newVTKDataIO(const string& typestr,
         {
             switch (num)
             {
-            case 2:
-                result = new VTKDataIO<Vec<2, std::int64_t> >;
-                break;
-            case 3:
-                result = new VTKDataIO<Vec<3, std::int64_t> >;
-                break;
-            case 4:
-                result = new VTKDataIO<Vec<4, std::int64_t> >;
-                break;
-            default:
-                return NULL;
+                case 2:
+                    result = new VTKDataIO<Vec<2, std::int64_t> >;
+                    break;
+                case 3:
+                    result = new VTKDataIO<Vec<3, std::int64_t> >;
+                    break;
+                case 4:
+                    result = new VTKDataIO<Vec<4, std::int64_t> >;
+                    break;
+                default:
+                    return NULL;
             }
         }
 
@@ -211,17 +236,17 @@ BaseVTKReader::BaseVTKDataIO* BaseVTKReader::newVTKDataIO(const string& typestr,
         {
             switch (num)
             {
-            case 2:
-                result = new VTKDataIO<Vec<2, std::uint64_t> >;
-                break;
-            case 3:
-                result = new VTKDataIO<Vec<3, std::uint64_t> >;
-                break;
-            case 4:
-                result = new VTKDataIO<Vec<4, std::uint64_t> >;
-                break;
-            default:
-                return NULL;
+                case 2:
+                    result = new VTKDataIO<Vec<2, std::uint64_t> >;
+                    break;
+                case 3:
+                    result = new VTKDataIO<Vec<3, std::uint64_t> >;
+                    break;
+                case 4:
+                    result = new VTKDataIO<Vec<4, std::uint64_t> >;
+                    break;
+                default:
+                    return NULL;
             }
         }
 
@@ -229,34 +254,34 @@ BaseVTKReader::BaseVTKDataIO* BaseVTKReader::newVTKDataIO(const string& typestr,
         {
             switch (num)
             {
-            case 2:
-                result = new VTKDataIO<Vec<2, float> >;
-                break;
-            case 3:
-                result = new VTKDataIO<Vec<3, float> >;
-                break;
-            case 4:
-                result = new VTKDataIO<Vec<4, float> >;
-                break;
-            default:
-                return NULL;
+                case 2:
+                    result = new VTKDataIO<Vec<2, float> >;
+                    break;
+                case 3:
+                    result = new VTKDataIO<Vec<3, float> >;
+                    break;
+                case 4:
+                    result = new VTKDataIO<Vec<4, float> >;
+                    break;
+                default:
+                    return NULL;
             }
         }
         if (!strcasecmp(typestr.c_str(), "double") || !strcasecmp(typestr.c_str(), "Float64"))
         {
             switch (num)
             {
-            case 2:
-                result = new VTKDataIO<Vec<2, double> >;
-                break;
-            case 3:
-                result = new VTKDataIO<Vec<3, double> >;
-                break;
-            case 4:
-                result = new VTKDataIO<Vec<4, double> >;
-                break;
-            default:
-                return NULL;
+                case 2:
+                    result = new VTKDataIO<Vec<2, double> >;
+                    break;
+                case 3:
+                    result = new VTKDataIO<Vec<3, double> >;
+                    break;
+                case 4:
+                    result = new VTKDataIO<Vec<4, double> >;
+                    break;
+                default:
+                    return NULL;
             }
         }
     }

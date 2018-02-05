@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/system/SetDirectory.h>
-
+#include <sofa/helper/system/FileSystem.h>
 #ifdef WIN32
 #include <windows.h>
 #include <direct.h>
@@ -137,12 +137,7 @@ std::string SetDirectory::GetFileNameWithoutExtension(const char* filename)
 
 std::string SetDirectory::GetExtension(const char* filename)
 {
-    std::string s = filename;
-    std::string::size_type pos = s.find_last_of('.');
-    if (pos == std::string::npos)
-        return ""; // no extension
-    else
-        return s.substr(pos+1);
+    return FileSystem::getExtension(filename) ;
 }
 
 std::string SetDirectory::GetRelativeFromDir(const char* filename, const char* basename)
