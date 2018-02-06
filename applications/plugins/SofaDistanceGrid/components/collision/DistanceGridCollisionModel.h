@@ -148,7 +148,7 @@ public:
     core::behavior::MechanicalState<InDataTypes>* getRigidModel() { return rigid; }
     core::behavior::MechanicalState<InDataTypes>* getMechanicalState() { return rigid; }
 
-    void init();
+    void init() override;
 
     DistanceGrid* getGrid(int index=0)
     {
@@ -222,14 +222,14 @@ public:
 
     // -- CollisionModel interface
 
-    void resize(int size);
+    void resize(int size) override;
 
     /// Create or update the bounding volume hierarchy.
-    void computeBoundingTree(int maxDepth=0);
+    void computeBoundingTree(int maxDepth=0) override;
 
-    void draw(const core::visual::VisualParams*, int index);
+    void draw(const core::visual::VisualParams*, int index) override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 };
 
 inline RigidDistanceGridCollisionElement::RigidDistanceGridCollisionElement(RigidDistanceGridCollisionModel* model, int index)
@@ -464,9 +464,9 @@ public:
 
     /// alias used by ContactMapper
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return ffd; }
-    core::topology::BaseMeshTopology* getMeshTopology() { return ffdMesh; }
+    core::topology::BaseMeshTopology* getMeshTopology() override { return ffdMesh; }
 
-    void init();
+    void init() override;
 
     DistanceGrid* getGrid(int index=0)
     {
@@ -481,16 +481,16 @@ public:
     void setGrid(DistanceGrid* surf, int index=0);
 
     /// CollisionModel interface
-    void resize(int size);
+    void resize(int size) override;
 
     /// Create or update the bounding volume hierarchy.
-    void computeBoundingTree(int maxDepth=0);
+    void computeBoundingTree(int maxDepth=0) override;
 
-    bool canCollideWithElement(int index, CollisionModel* model2, int index2);
+    bool canCollideWithElement(int index, CollisionModel* model2, int index2) override;
 
-    void draw(const core::visual::VisualParams*,int index);
+    void draw(const core::visual::VisualParams*,int index) override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 };
 
 inline FFDDistanceGridCollisionElement::FFDDistanceGridCollisionElement(FFDDistanceGridCollisionModel* model, int index)

@@ -247,8 +247,6 @@ void FastTetrahedralCorotationalForceField<DataTypes>::updateTopologyInformation
     int i;
     unsigned int j;
 
-    int nbPoints = _topology->getNbPoints();
-    int nbEdges=_topology->getNbEdges();
     int nbTetrahedra=_topology->getNbTetrahedra();
 
     TetrahedronRestInformation *tetinfo;
@@ -441,9 +439,9 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addDForce(const sofa::cor
         updateMatrix=false;
 
         // reset all edge matrices
-        for(i=0; i<edgeDfDx.size(); i++)
+        for(unsigned int j=0; j<edgeDfDx.size(); j++)
         {
-            edgeDfDx[i].clear();
+            edgeDfDx[j].clear();
         }
 
         for(i=0; i<nbTetrahedra; i++ )
@@ -475,7 +473,6 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addDForce(const sofa::cor
     }
 
     const helper::vector<Mat3x3> &edgeDfDx = edgeInfo.getValue();
-    unsigned int v0,v1;
     Coord deltax;
 
     // use the already stored matrix
@@ -524,9 +521,9 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addKToMatrix(sofa::defaul
         /// if not done in addDForce: update off-diagonal blocks ("edges") of each element matrix
         updateMatrix=false;
         // reset all edge matrices
-        for(i=0; i<edgeDfDx.size(); i++)
+        for(j=0; j<edgeDfDx.size(); j++)
         {
-            edgeDfDx[i].clear();
+            edgeDfDx[j].clear();
         }
 
         for(i=0; i<nbTetrahedra; i++ )
@@ -554,8 +551,8 @@ void FastTetrahedralCorotationalForceField<DataTypes>::addKToMatrix(sofa::defaul
     }
 
     /// must update point data since these are not computed in addDForce
-    for (i=0; i < pointDfDx.size(); i++)
-        pointDfDx[i].clear();
+    for (j=0; j < pointDfDx.size(); j++)
+        pointDfDx[j].clear();
 
     for(i=0; i<nbTetrahedra; i++ ) {
         tetinfo=&tetrahedronInf[i];

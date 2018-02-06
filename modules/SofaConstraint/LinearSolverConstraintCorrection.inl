@@ -175,10 +175,11 @@ void LinearSolverConstraintCorrection<DataTypes>::addComplianceInConstraintSpace
         break;
     }
 
-    const unsigned int numDOFs = this->mstate->getSize();
-    const unsigned int N = Deriv::size();
 
 #if 0 // refMinv is not use in normal case
+
+    const unsigned int numDOFs = this->mstate->getSize();
+    const unsigned int N = Deriv::size();
     const unsigned int numDOFReals = numDOFs*N;
 
     if (refMinv.rowSize() > 0)			// What's for ??
