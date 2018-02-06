@@ -46,11 +46,3 @@ setSofaOption(PLUGIN_PSL OFF)
 setSofaOption(SOFA_INSTALL_RESOURCES_FILES ON)
 # MacOS bundle creation
 setSofaOption(RUNSOFA_INSTALL_AS_BUNDLE ON)
-
-
-# Windows specific
-# setSofaString(CMAKE_C_COMPILER "C:/dev/clcache/4.1.0/bin/clcache.bat")
-# setSofaString(CMAKE_CXX_COMPILER "C:/dev/clcache/4.1.0/bin/clcache.bat")
-# setSofaPath(CMAKE_PREFIX_PATH "$CMAKE_PREFIX_PATH;C:/dev/Qt/5.7/msvc2015_64")
-# setSofaPath(BOOST_ROOT "C:/dev/boost/1.64.0")
-# setSofaPath(BOOST_LIBRARYDIR "C:/dev/boost/1.64.0/lib64-msvc-14.0")
