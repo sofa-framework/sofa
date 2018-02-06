@@ -17,26 +17,26 @@ class Controller(Sofa.PythonScriptController):
             inputvalue3 = self.node.getChild('constantForce3').getObject('forceField3').findData('forces')
             #inputvalue2 = []
             
-            if (c == "+"):
+            if (c == "1"):
                #displacement = inputvalue.value[0][0] + 1.
                 inputvalue.value = "30000 0 0"
                
-            elif (c == "-"):
+            elif (c == "2"):
                #displacement = inputvalue.value[0][0] - 1.
                #if(displacement < 0):
                # displacement = 0
                 inputvalue.value = "0 0 0"
                
-            elif (c == "1"):
+            elif (c == "3"):
                 inputvalue2.value = "-30000 0 0"
                 
-            elif (c == "2"):
+            elif (c == "4"):
                 inputvalue2.value = "0 0 0"
                 
-            elif (c == "3"):
+            elif (c == "5"):
                 inputvalue3.value = "0 -30000 0"
                 
-            elif (c == "4"):
+            elif (c == "6"):
                 inputvalue3.value = "0 0 0"
                
   
