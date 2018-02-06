@@ -107,7 +107,8 @@ void ServerCommunicationZMQ::sendData()
 std::string ServerCommunicationZMQ::createZMQMessage(CommunicationSubscriber* subscriber, std::string argument)
 {
     std::stringstream messageStr;
-    BaseData* data = fetchData(subscriber->getSource(), defaultDataType(), argument);
+    //    BaseData* data = fetchData(subscriber->getSource(), defaultDataType(), argument);
+    BaseData* data = fetchDataFromSenderBuffer(subscriber, argument);
     if (!data)
         return messageStr.str();
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
@@ -188,7 +189,6 @@ void ServerCommunicationZMQ::receiveData()
         m_socket->connect(address.c_str());
     }
 
-
     while (this->m_running)
     {
         if(this->d_pattern.getValue().getSelectedItem() == "request/reply")
@@ -202,7 +202,6 @@ void ServerCommunicationZMQ::receiveData()
         }
         else
             msg_warning(this) << "Problem with communication";
-
     }
 }
 
@@ -266,7 +265,6 @@ void ServerCommunicationZMQ::processMessage(std::string dataString)
             onlyArgumentList.push_back(*it);
         saveArgumentsToReceivedBuffer(subject, onlyArgumentList, -1, -1);
     }
-
 }
 
 void ServerCommunicationZMQ::sendRequest()

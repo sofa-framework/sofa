@@ -109,9 +109,13 @@ void ServerCommunicationOSC::sendData()
 void ServerCommunicationOSC::createOSCMessage(CommunicationSubscriber* subscriber, std::string argument, osc::OutboundPacketStream& packet)
 {    
 
-    BaseData* data = fetchData(subscriber->getSource(), defaultDataType(), argument);
+//    BaseData* data = fetchData(subscriber->getSource(), defaultDataType(), argument);
+    BaseData* data = fetchDataFromSenderBuffer(subscriber, argument);
     if (!data)
+    {
+        std::cout << "null" << std::endl;
         return;
+    }
 
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
     const void* valueVoidPtr = data->getValueVoidPtr();

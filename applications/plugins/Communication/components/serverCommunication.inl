@@ -81,28 +81,29 @@ void * ServerCommunication::thread_launcher(void *voidArgs)
 
 void ServerCommunication::handleEvent(Event * event)
 {
-    //    if (AnimateBeginEvent::checkEventType(event))
-    //    {
-    //        BufferData* data = fetchArgumentsFromReceivedBuffer();
-    //        if (data == NULL) // simply check if the data is not null
-    //        {
-    //            msg_error() << "something went wrong with received datas, fetched datas from buffer is null";
-    //            return;
-    //        }
-    //        if(data->getRows() == -1 && data->getCols() == -1)
-    //        {
-    //            writeData(data);
-    //            delete data;
-    //            return;
-    //        }
+    if (AnimateBeginEvent::checkEventType(event))
+    {
+        BufferData* data = fetchArgumentsFromReceivedBuffer();
+        if (data == NULL) // simply check if the data is not null
+        {
+            msg_error() << "something went wrong with received datas, fetched datas from buffer is null";
+            return;
+        }
+        if(data->getRows() == -1 && data->getCols() == -1)
+        {
+            writeData(data);
+            delete data;
+            return;
+        }
 
-    //        if (!writeDataToFullMatrix(data))
-    //            if (!writeDataToContainer(data))
-    //                msg_error() << "something went wrong while converting network data into sofa matrix";
-    //        delete data;
-    //    }
+        if (!writeDataToFullMatrix(data))
+            if (!writeDataToContainer(data))
+                msg_error() << "something went wrong while converting network data into sofa matrix";
+        delete data;
+    }
     if (AnimateEndEvent::checkEventType(event))
     {
+        std::cout << "UOPDATE " << std::endl;
         saveDataToSenderBuffer();
     }
 }
@@ -309,7 +310,12 @@ bool ServerCommunication::saveDataToSenderBuffer()
             if(it == senderDataMap.end())
                 senderDataMap.insert(std::pair<std::string, CircularBufferSender*>(key, new CircularBufferSender(3)));
             CircularBufferSender * buffer = senderDataMap.at(key);
-            buffer->add(data);
+            try
+            {
+                buffer->add(data);
+            } catch (std::exception &exception) {
+                msg_info("ServerCommunication") << exception.what();
+            }
         }
     }
     return true;
@@ -322,7 +328,14 @@ BaseData* ServerCommunication::fetchDataFromSenderBuffer(CommunicationSubscriber
     if(it == senderDataMap.end())
         return NULL;;
     CircularBufferSender * buffer = senderDataMap.at(key);
-    return buffer->get();
+
+    try
+    {
+        return buffer->get();
+    } catch (std::exception &exception) {
+        msg_info("ServerCommunication") << exception.what();
+    }
+    return NULL;
 
 }
 

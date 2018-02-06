@@ -53,7 +53,7 @@ std::string BufferData::getSubject() const
 
 /******************************************************************************
 *                                                                             *
-* SENDER BUFFER PART                                                          *
+* RECEIVER BUFFER PART                                                        *
 *                                                                             *
 ******************************************************************************/
 
@@ -74,7 +74,7 @@ void CircularBufferReceiver::add(std::string subject, ArgumentList argumentList,
     if (isFull())
     {
         pthread_mutex_unlock(&mutex);
-        throw std::out_of_range("Circular buffer is full");
+        throw std::out_of_range("Receiver circular buffer is full");
     }
     data[rear] = new BufferData(subject, argumentList, rows, cols);
     rear = ((this->rear + 1) % this->size);
@@ -88,7 +88,7 @@ BufferData* CircularBufferReceiver::get()
     if (isEmpty())
     {
         pthread_mutex_unlock(&mutex);
-        throw std::out_of_range("Circular buffer is empty");
+        throw std::out_of_range("Receiver circular buffer is empty");
     }
     BufferData* aData = this->data[front];
     front = (front + 1) % size;
@@ -129,11 +129,12 @@ void CircularBufferSender::add(BaseData* data)
     if (isFull())
     {
         pthread_mutex_unlock(&mutex);
-        throw std::out_of_range("Circular buffer is full");
+        throw std::out_of_range("Sender circular buffer is full");
     }
     this->data[rear] = (data->clone());
+    this->data[rear]->setParent(data);
+    this->data[rear]->update();
     rear = ((this->rear + 1) % this->size);
-
     pthread_mutex_unlock(&mutex);
 }
 
@@ -143,7 +144,7 @@ BaseData* CircularBufferSender::get()
     if (isEmpty())
     {
         pthread_mutex_unlock(&mutex);
-        throw std::out_of_range("Circular buffer is empty");
+        throw std::out_of_range("Sender circular buffer is empty");
     }
     BaseData* aData = this->data[front];
     front = (front + 1) % size;
