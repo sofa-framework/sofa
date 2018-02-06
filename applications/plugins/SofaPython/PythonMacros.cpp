@@ -26,8 +26,6 @@ using sofa::simulation::PythonEnvironment ;
 typedef sofa::component::container::MechanicalObject< sofa::defaulttype::Vec3Types > MechanicalObject3;
 typedef sofa::component::mapping::SubsetMultiMapping< sofa::defaulttype::Vec3Types, sofa::defaulttype::Vec3Types > SubsetMultiMapping3_to_3;
 
-
-
 /// This function converts an PyObject into a sofa string.
 /// string that can be safely parsed in helper::vector<int> or helper::vector<double>
 std::ostream& pythonToSofaDataString(PyObject* value, std::ostream& out)
@@ -57,7 +55,7 @@ std::ostream& pythonToSofaDataString(PyObject* value, std::ostream& out)
         /// It is a sequence...so we can iterate over it.
         PyObject *iterator = PyObject_GetIter(value);
         if(iterator)
-        {            
+        {
             bool first = true;
             while(PyObject* next = PyIter_Next(iterator))
             {

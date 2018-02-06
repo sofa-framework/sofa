@@ -68,11 +68,6 @@ public:
     {
     }
 
-    explicit TData(const BaseInitData& init, int nothing)
-        : BaseData(init,nothing), parentData(initLink("parentSameType", "Linked Data in case it stores exactly the same type of Data, and efficient copies can be made (by value or by sharing pointers with Copy-on-Write)"))
-    {
-    }
-
     TData( const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false)
         : BaseData(helpMsg, isDisplayed, isReadOnly), parentData(initLink("parentSameType", "Linked Data in case it stores exactly the same type of Data, and efficient copies can be made (by value or by sharing pointers with Copy-on-Write)"))
     {
@@ -393,12 +388,6 @@ public:
     /** \copydoc BaseData(const BaseData::BaseInitData& init) */
     explicit Data(const BaseData::BaseInitData& init)
         : TData<T>(init)
-        , shared(NULL)
-    {
-    }
-
-    explicit Data(const BaseData::BaseInitData& init, int nothing)
-        : TData<T>(init,nothing)
         , shared(NULL)
     {
     }

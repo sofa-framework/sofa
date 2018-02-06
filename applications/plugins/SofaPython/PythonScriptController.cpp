@@ -235,8 +235,6 @@ void PythonScriptController::loadScript()
         return;
     }
 
-    //msg_error() << " Controller Script loaded successfully.";
-
     refreshBinding();
 }
 

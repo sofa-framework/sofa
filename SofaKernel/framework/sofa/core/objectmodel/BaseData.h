@@ -99,8 +99,6 @@ public:
 
     /** Constructor used via the Base::initData() methods. */
     explicit BaseData(const BaseInitData& init);
-    explicit BaseData(const BaseInitData& init, int nothing);
-
 
     /** Constructor.
      *  \param helpMsg A help message that describes this %Data.
