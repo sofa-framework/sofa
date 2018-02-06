@@ -85,7 +85,7 @@ static PyObject * BaseContext_getRootContext(PyObject *self, PyObject * /*args*/
 
 /// object factory
 static PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * args, PyObject * kw, bool printWarnings)
-{    
+{
     BaseContext* context = get_basecontext( self );
 
     char *type;
@@ -97,20 +97,19 @@ static PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * args
     /// temporarily, the name is set to the type name.
     /// if a "name" parameter is provided, it will overwrite it.
     BaseObjectDescription desc(type,type);
-//    msg_warning("SofaPython") << type;
+
     bool warning = printWarnings;
     if (kw && PyDict_Size(kw)>0)
     {
         PyObject* keys = PyDict_Keys(kw);
         PyObject* values = PyDict_Values(kw);
-
         for (int i=0; i<PyDict_Size(kw); i++)
         {
             PyObject *key = PyList_GetItem(keys,i);
             PyObject *value = PyList_GetItem(values,i);
 
             if( !strcmp( PyString_AsString(key), "warning") )
-            {                
+            {
                 if PyBool_Check(value)
                         warning = (value==Py_True);
             }
@@ -120,8 +119,6 @@ static PyObject * BaseContext_createObject_Impl(PyObject * self, PyObject * args
                 pythonToSofaDataString(value, s) ;
                 desc.setAttribute(PyString_AsString(key),s.str().c_str());
             }
-//            Py_DecRef(key);
-//            Py_DecRef(value);
         }
         Py_DecRef(keys);
         Py_DecRef(values);

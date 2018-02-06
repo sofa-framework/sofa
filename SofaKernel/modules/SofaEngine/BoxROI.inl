@@ -32,7 +32,6 @@
 #include <limits>
 #include <sofa/core/topology/BaseTopology.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
-#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
