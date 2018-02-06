@@ -3,6 +3,9 @@ import Sofa
 import os
 path = os.path.dirname(os.path.abspath(__file__))+'/Mesh/'
 
+# This scene shows the use of a PSDE as a ROI and how the content of the ROI can be updated with each update() call. After 'Animate' is clicked, the user can deform the object by a force by pressing Ctrl+1 
+# (Ctrl+2 to deactivate the force). The console reports how many tetras are in the ROI.
+
 def createScene(rootNode):
 
                 rootNode.findData('gravity').value='0 0 -9810'

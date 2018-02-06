@@ -3,6 +3,27 @@ import Sofa
 import os
 path = os.path.dirname(os.path.abspath(__file__))+'/Mesh/'
 
+# 
+# This scene should illustrate the functionality of the "PythonScriptDataEngine" (PSDE). First a small introduction the PSDE is given, then the scene itself is explained.
+#
+# The PSDE  works similar to a function block in Simulink or comparable software. The user can define a block (a PSDE) declaring its Inputs, Outputs (I/Os)
+# and its behavior using Python alone. It has some similarities with the "PythonScriptController" (PSC). The two main differences are:
+# - PSDE-objects are not triggered by events (not conceptually at least). Rather, the functionality should be implemented in the update() function of the associated script,
+#   which is called once per simulation frame. 
+# - I/Os can be added directly to the object inside the parse() function of the PSDE-object. Linking using the '@'-syntax also works. Therefore, the PSDE-object behaves like any other object
+#   that has I/Os (or Data in general). Inside the script these newly defined I/Os can be accessed as members of the object, providing an easy syntax.
+# 
+# The line: 
+# model.createObject('PythonScriptDataEngine', name='PSDE1', filename="DataEngineROI1.py", classname="MyDataEngine1")
+# creates a PSDE-object with the name 'PSDE1' and associates the script DataEngineROI1.py. Inside the script there are three functions that the user can implement by the user: parse(),init(),update()
+# - parse() is called when the SOFA factory instantiates the PSDE-object and creates its I/Os. I/O-creation should be done here, especially for linked Data.
+# - init() is called once, when the graph is initialized. Can be used to set initial values, etc.
+# - update() is called once in every frame.
+#
+# The example uses PSDEs to implement the functionality of a ROI (region of interest) and also the union of tetrahedra sets. The functionality shown is, 
+# that arbitrary cuboid regions of tetras can be defined to have different material properties. To illustrate this point, three virtual forces can be applied to the object, showing the different deformations.
+# After pressing 'Animate', Ctrl+1 activates force 1, Ctrl+2 deactivates it, Ctrl+3 activates force 2, etc. This shows the 
+
 def createScene(rootNode):
 
                 rootNode.findData('gravity').value='0 0 -9810'
@@ -43,7 +64,6 @@ def createScene(rootNode):
 		# Create selection and inverse selection to give tetras different stiffnesses
 	        # model.createObject('PythonScriptDataEngine', filename="DataEngine.py", classname="MyDataEngine", tetrahedra="@container.tetrahedra", position="@tetras.rest_position")
 
-		#model.createObject('PythonScriptDataEngine', name='PSDE1', filename="DataEngineROI1.py", classname="MyDataEngine", position='@tetras.rest_position')
                 model.createObject('PythonScriptDataEngine', name='PSDE1', filename="DataEngineROI1.py", classname="MyDataEngine1")
                 model.createObject('PythonScriptDataEngine', name='PSDE2', filename="DataEngineROI2.py", classname="MyDataEngine2")
                 model.createObject('PythonScriptDataEngine', name='PSDE3', filename="DataEngineROI3.py", classname="MyDataEngine3")                
