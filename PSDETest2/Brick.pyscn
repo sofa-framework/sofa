@@ -49,44 +49,20 @@ def createScene(rootNode):
                 
                 modelSubTopoS1 = model.createChild('modelSubTopoS1')
                 modelSubTopoS1.createObject('TetrahedronSetTopologyContainer', position='@loader.position', tetrahedra="@container.tetrahedra", name='containerS1')
-                modelSubTopoS1.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEMS1', method='large', poissonRatio='0.3',  youngModulus='200',drawAsEdges="0")                  
-
-                   
-
+                modelSubTopoS1.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEMS1', method='large', poissonRatio='0.3',  youngModulus='200',drawAsEdges="0")
+                
                 ##########################################
                 # Constant Force                         #
                 ##########################################
                 constantForce = model.createChild('constantForce')           
-                constantForce.createObject('MechanicalObject', name="AppliedForce", position="-25 0 25")
-                constantForce.createObject('ConstantForceField', name="forceField", indices="0", forces="0 0  0", arrowSizeCoef="0.0001")                
-                constantForce.createObject('BarycentricMapping', mapForces="true", mapMasses="false")
-                
-                # This create a PythonScriptController that permits to programatically implement new behavior
-				# or interactions using the Python programming langage. The controller is referring to a
-				# file named "controller.py".
-                
-                
-                
-                ##########################################
-                # Constant Force                         #
-                ##########################################
-                constantForce2 = model.createChild('constantForce2')           
-                constantForce2.createObject('MechanicalObject', name="AppliedForce2", position="25 0 70")
-                constantForce2.createObject('ConstantForceField', name="forceField2", indices="0", forces="0 0  0", arrowSizeCoef="0.0001")
-                constantForce2.createObject('BarycentricMapping', mapForces="true", mapMasses="false")                
+                constantForce.createObject('MechanicalObject', name="AppliedForce", position="25 0 70")
+                constantForce.createObject('ConstantForceField', name="forceField", indices="0", forces="0 0  0", arrowSizeCoef="0.0001")
+                constantForce.createObject('BarycentricMapping', mapForces="true", mapMasses="false")                
                 # This create a PythonScriptController that permits to programatically implement new behavior
 				# or interactions using the Python programming langage. The controller is referring to a
 				# file named "controller.py".
 				
-                ##########################################
-                # Constant Force                         #
-                ##########################################
-                constantForce3 = model.createChild('constantForce3')           
-                constantForce3.createObject('MechanicalObject', name="AppliedForce3", position="0 25 50")
-                constantForce3.createObject('ConstantForceField', name="forceField3", indices="0", forces="0 0  0", arrowSizeCoef="0.0001")
-                constantForce3.createObject('BarycentricMapping', mapForces="true", mapMasses="false") 
-                
-          
+  
                 
                 ##########################################
                 # Visualization                          #
