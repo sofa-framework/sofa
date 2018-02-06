@@ -146,15 +146,8 @@ static int SetDataValuePythonList(BaseData* data, PyObject* args,
         return 0;
     }
 
-// msg_warning("SofaPython") << "awa, thinks ..";
-//    bool blup = PyList_Check(PyList_GetItem(args,0));
-//    PyObject * Item = PyList_GetItem(args,0);
-//    msg_warning("SofaPython") << Item << "craesshhy";
-    // Check if the list have two dimmensions
-    //    if (blup)
     if (PyList_Check(PyList_GetItem(args,0)))
     {        
-//        msg_warning("SofaPython") << "... two";
         /// Handle the two-dimension array case.
         void* editVoidPtr = data->beginEditVoidPtr();
 
@@ -258,7 +251,6 @@ static int SetDataValuePythonList(BaseData* data, PyObject* args,
     }
     else
     {        
-//        msg_warning("SofaPython") << "... one";
         /// it is a one-dimension only array
         void* editVoidPtr = data->beginEditVoidPtr();
 
@@ -427,7 +419,6 @@ int SetDataValuePython(BaseData* data, PyObject* args)
 
     if ( PyList_Check(args))
     {
-//        msg_warning("SofaPython") << "called ...";
         return SetDataValuePythonList(data, args, rowWidth, nbRows);
     }
 
