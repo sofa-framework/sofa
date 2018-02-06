@@ -115,6 +115,7 @@ public:
 
     /// Destructor.
     virtual ~BaseData();
+    virtual BaseData* clone() =0;
 
     /// Assign a value to this %Data from a string representation.
     /// \return true on success.

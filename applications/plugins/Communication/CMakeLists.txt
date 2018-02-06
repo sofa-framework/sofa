@@ -18,37 +18,66 @@ set(HEADER_FILES
     components/communicationCircularBuffer.inl
     components/serverCommunication.h
     components/serverCommunication.inl
-    components/serverCommunicationOSC.h
-    components/serverCommunicationOSC.inl
-    components/serverCommunicationZMQ.h
-    components/serverCommunicationZMQ.inl
 
-)
+    )
 
 set(SOURCE_FILES
     initCommunication.cpp
     components/CommunicationSubscriber.cpp
     components/communicationCircularBuffer.cpp
     components/serverCommunication.cpp
-    components/serverCommunicationOSC.cpp
-    components/serverCommunicationZMQ.cpp
-)
+    )
 
 set(EXTRA_FILES
     README.md
-)
+    )
 
 find_package(SofaFramework REQUIRED)
 
 
-###################################################################### ZMQ
-find_package(ZMQ REQUIRED)
-if (ZMQ_FOUND)
+
+#COMMUNICATION ZMQ
+if(PLUGIN_COMMUNICATION_ZMQ)
+    find_package(ZMQ REQUIRED)
+    if (ZMQ_FOUND)
         message("Found ZMQ libraries")
         include_directories(${ZMQ_INCLUDE_DIRS})
-else (ZMQ_FOUND)
+
+        list(APPEND HEADER_FILES
+            components/serverCommunicationZMQ.h
+            components/serverCommunicationZMQ.inl
+            )
+
+        list(APPEND SOURCE_FILES
+            components/serverCommunicationZMQ.cpp
+            )
+    else (ZMQ_FOUND)
         message("Can't find ZMQ !")
-endif (ZMQ_FOUND)
+    endif (ZMQ_FOUND)
+
+endif()
+
+#COMMUNICATION OSC
+if(PLUGIN_COMMUNICATION_OSC)
+#    find_package(ZMQ REQUIRED)
+#    if (ZMQ_FOUND)
+#        message("Found OSCPACK libraries")
+#        include_directories(${ZMQ_INCLUDE_DIRS})
+
+        list(APPEND HEADER_FILES
+            components/serverCommunicationOSC.h
+            components/serverCommunicationOSC.inl
+            )
+
+        list(APPEND SOURCE_FILES
+            components/serverCommunicationOSC.cpp
+            )
+#    else (ZMQ_FOUND)
+#        message("Can't find OSCPACK !")
+#    endif (ZMQ_FOUND)
+
+endif()
+
 
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
@@ -57,7 +86,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_Com
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 install(TARGETS ${PROJECT_NAME}
-        COMPONENT Communication_libraries
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib)
+    COMPONENT Communication_libraries
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib)

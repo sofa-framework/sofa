@@ -374,6 +374,7 @@ public:
     /// @name Construction / destruction
     /// @{
 
+    virtual BaseData* clone() {return new Data( );}
     /// This internal class is used by the initData() methods to store initialization parameters of a Data
     class InitData : public BaseData::BaseInitData
     {
