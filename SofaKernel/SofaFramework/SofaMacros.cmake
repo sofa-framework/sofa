@@ -217,6 +217,11 @@ macro(sofa_add_plugin directory plugin_name)
     sofa_add_generic( ${directory} ${plugin_name} "Plugin" ${ARGV2} )
 endmacro()
 
+macro(sofa_add_plugin_experimental directory plugin_name)
+    sofa_add_generic( ${directory} ${plugin_name} "Plugin" ${ARGV2} )
+    message("-- ${plugin_name} is an experimental feature, use it at your own risk.")
+endmacro()
+
 
 
 macro(sofa_add_application directory app_name)
