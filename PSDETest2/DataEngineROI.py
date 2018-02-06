@@ -9,7 +9,7 @@ from ROI import BoxROI
 class MyDataEngine(Sofa.PythonScriptDataEngine):       
     
     def parse(self):        
-        # this is the ideal place to define inputs and outputs!
+        # this is the correct place to define inputs and outputs! (linking will not work in init() for instance)
         
         self.addNewInput('Positions',datatype='p',value='@tetras.position')        
         self.addNewInput('Tetrahedra',datatype='t',value='@container.tetrahedra')        
@@ -17,17 +17,18 @@ class MyDataEngine(Sofa.PythonScriptDataEngine):
         self.addNewOutput('TetrahedraOutliers',datatype='t')        
         
 
-    def update(self):
-        
-        print self.Positions[0]        
+    def update(self):        
+
         MyBoxROI = BoxROI(-40, -30, 60, -25, 30, 100, self.Positions)            
         MyBoxROI.calcTetrasInROI(self.Tetrahedra)               
         self.TetrahedraInliers = MyBoxROI.Inliers        
         self.TetrahedraOutliers = MyBoxROI.Outliers
+        print 'Number of Tetras in ROI:' 
+	print len(self.TetrahedraInliers)
 
     def init(self):        
         pass
-        #self.addNewOutput('TetrahedraOutliers',blup='sd',blep='sd',datatype='t') # works here ... really, really strange
+
         
    
    
