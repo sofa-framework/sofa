@@ -39,7 +39,6 @@ ServerCommunication::ServerCommunication()
     , d_port(initData(&d_port, (int)(6000), "port", "Port to listen (default=6000)"))
     , d_refreshRate(initData(&d_refreshRate, (double)(30.0), "refreshRate", "Refresh rate aka frequency (default=30), only used by sender"))
 {
-    pthread_mutex_init(&mutex, NULL);
 }
 
 ServerCommunication::~ServerCommunication()
@@ -51,7 +50,7 @@ void ServerCommunication::init()
 {
     f_listening = true;
     initTypeFactory();
-    pthread_create(&m_thread, NULL, &ServerCommunication::thread_launcher, this);
+	m_thread = std::thread(&ServerCommunication::thread_launcher, this);
 }
 
 void ServerCommunication::openCommunication()
@@ -69,7 +68,7 @@ void ServerCommunication::openCommunication()
 void ServerCommunication::closeCommunication()
 {
     m_running = false;
-    pthread_join(m_thread, NULL);
+	m_thread.join();
 }
 
 void * ServerCommunication::thread_launcher(void *voidArgs)

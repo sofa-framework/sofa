@@ -70,29 +70,29 @@ CircularBufferReceiver::~CircularBufferReceiver()
 
 void CircularBufferReceiver::add(std::string subject, ArgumentList argumentList, int rows, int cols)
 {
-    pthread_mutex_lock(&mutex);
+	mutex.lock();
     if (isFull())
     {
-        pthread_mutex_unlock(&mutex);
+		mutex.unlock();
         throw std::out_of_range("Receiver circular buffer is full");
     }
     data[rear] = new BufferData(subject, argumentList, rows, cols);
     rear = ((this->rear + 1) % this->size);
-    pthread_mutex_unlock(&mutex);
+	mutex.unlock();
 }
 
 
 BufferData* CircularBufferReceiver::get()
 {
-    pthread_mutex_lock(&mutex);
+	mutex.lock();
     if (isEmpty())
     {
-        pthread_mutex_unlock(&mutex);
+		mutex.unlock();
         throw std::out_of_range("Receiver circular buffer is empty");
     }
     BufferData* aData = this->data[front];
     front = (front + 1) % size;
-    pthread_mutex_unlock(&mutex);
+	mutex.unlock();
     return aData;
 }
 
@@ -125,30 +125,30 @@ CircularBufferSender::~CircularBufferSender()
 
 void CircularBufferSender::add(BaseData* data)
 {
-    pthread_mutex_lock(&mutex);
+	mutex.lock();
     if (isFull())
     {
-        pthread_mutex_unlock(&mutex);
+		mutex.unlock();
         throw std::out_of_range("Sender circular buffer is full");
     }
     this->data[rear] = (data->clone());
     this->data[rear]->setParent(data);
     this->data[rear]->update();
     rear = ((this->rear + 1) % this->size);
-    pthread_mutex_unlock(&mutex);
+	mutex.unlock();
 }
 
 BaseData* CircularBufferSender::get()
 {
-    pthread_mutex_lock(&mutex);
+	mutex.lock();
     if (isEmpty())
     {
-        pthread_mutex_unlock(&mutex);
+		mutex.unlock();
         throw std::out_of_range("Sender circular buffer is empty");
     }
     BaseData* aData = this->data[front];
     front = (front + 1) % size;
-    pthread_mutex_unlock(&mutex);
+	mutex.unlock();
     return aData;
 }
 

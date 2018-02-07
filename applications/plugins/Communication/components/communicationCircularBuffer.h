@@ -25,6 +25,7 @@
 #include <string>
 #include <vector>
 #include <mutex>
+#include <thread>
 #include <sofa/core/objectmodel/Data.h>
 using sofa::core::objectmodel::BaseData;
 
@@ -39,7 +40,7 @@ namespace communication
 
 typedef std::vector<std::string> ArgumentList;
 
-static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+static std::mutex mutex;
 
 class BufferData
 {

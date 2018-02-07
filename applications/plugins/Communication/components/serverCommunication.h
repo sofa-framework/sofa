@@ -59,7 +59,6 @@ using sofa::component::linearsolver::FullMatrix;
 
 #include <Communication/components/communicationCircularBuffer.h>
 
-#include <pthread.h>
 #include <iostream>
 #include <chrono>
 #include <thread>
@@ -131,7 +130,7 @@ protected:
     CircularBufferReceiver* receiveDataBuffer = new CircularBufferReceiver(3);
     std::map<std::string, CircularBufferSender*> senderDataMap;
     std::map<std::string, CommunicationSubscriber*> m_subscriberMap;
-    pthread_t                                       m_thread;
+    std::thread                                     m_thread;
     bool                                            m_running = true;
 
     virtual void openCommunication();
