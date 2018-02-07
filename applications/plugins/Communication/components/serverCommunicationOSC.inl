@@ -66,7 +66,6 @@ void ServerCommunicationOSC::initTypeFactory()
     getFactoryInstance()->registerCreator("matrixint32", new DataCreator<FullMatrix<SReal>>());
 }
 
-
 std::string ServerCommunicationOSC::defaultDataType()
 {
     return "OSC-string";
@@ -112,10 +111,7 @@ void ServerCommunicationOSC::createOSCMessage(CommunicationSubscriber* subscribe
 //    BaseData* data = fetchData(subscriber->getSource(), defaultDataType(), argument);
     BaseData* data = fetchDataFromSenderBuffer(subscriber, argument);
     if (!data)
-    {
-        std::cout << "null" << std::endl;
         return;
-    }
 
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
     const void* valueVoidPtr = data->getValueVoidPtr();
