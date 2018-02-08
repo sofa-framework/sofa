@@ -107,8 +107,6 @@ void ServerCommunicationOSC::sendData()
 
 void ServerCommunicationOSC::createOSCMessage(CommunicationSubscriber* subscriber, std::string argument, osc::OutboundPacketStream& packet)
 {    
-
-//    BaseData* data = fetchData(subscriber->getSource(), defaultDataType(), argument);
     BaseData* data = fetchDataFromSenderBuffer(subscriber, argument);
     if (!data)
         return;
@@ -150,10 +148,11 @@ void ServerCommunicationOSC::createOSCMessage(CommunicationSubscriber* subscribe
             packet << ((int)typeinfo->getIntegerValue(valueVoidPtr,0));
         else
         {
-            msg_advice(data->getOwner()) << "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value" ;
+//            msg_advice(data->getOwner()) << "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value" ;
             packet <<  (data->getValueString().c_str());
         }
     }
+    delete data;
 }
 
 /******************************************************************************

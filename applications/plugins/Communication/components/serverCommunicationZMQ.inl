@@ -107,7 +107,6 @@ void ServerCommunicationZMQ::sendData()
 std::string ServerCommunicationZMQ::createZMQMessage(CommunicationSubscriber* subscriber, std::string argument)
 {
     std::stringstream messageStr;
-    //    BaseData* data = fetchData(subscriber->getSource(), defaultDataType(), argument);
     BaseData* data = fetchDataFromSenderBuffer(subscriber, argument);
     if (!data)
         return messageStr.str();
@@ -142,7 +141,7 @@ std::string ServerCommunicationZMQ::createZMQMessage(CommunicationSubscriber* su
     {
         if( !typeinfo->Text() && !typeinfo->Scalar() && !typeinfo->Integer() )
         {
-            msg_advice(data->getOwner()) << "BaseData_getAttr_value unsupported native type=" << data->getValueTypeString() << " for data "<<data->getName()<<" ; returning string value" ;
+//            msg_advice(data->getOwner()) << "BaseData_getAttr_value unsupported native type=" << data->getValueTypeString() << " for data "<<data->getName()<<" ; returning string value" ;
             messageStr << "string:'" << (data->getValueString()) << "' ";
         }
         if (typeinfo->Text())
@@ -158,6 +157,7 @@ std::string ServerCommunicationZMQ::createZMQMessage(CommunicationSubscriber* su
             messageStr << "int:" << (data->getValueString()) << " ";
         }
     }
+    delete data;
     return messageStr.str();
 }
 
