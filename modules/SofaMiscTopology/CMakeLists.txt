@@ -1,44 +1,22 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaMiscTopology)
 
-
 message(STATUS "SofaMiscTopology:")
-################################ COMPONENTS HERE ARE THE NG-SET ####################################
 set(HEADER_FILES
-    config.h
-    initMiscTopology.h
+config.h
+initMiscTopology.h
 )
 
 set(SOURCE_FILES
-    initMiscTopology.cpp
+initMiscTopology.cpp
 )
 
-############################## COMPONENTS HERE ARE THE LIGHT-SET ###################################
-if(SOFA_BUILD_COMPONENTSET_LIGHT)
-    list(APPEND HEADER_FILES
-
-        )
-    list(APPEND SOURCE_FILES
-
-        )
-endif()
-
-############################## COMPONENTS HERE ARE THE STANDARD-SET ################################
-if(SOFA_BUILD_COMPONENTSET_STANDARD)
-    list(APPEND HEADER_FILES
-        TopologicalChangeProcessor.h
-        )
-    list(APPEND SOURCE_FILES
-        TopologicalChangeProcessor.cpp
-        )
-
-endif()
-
-############################### COMPONENTS HERE ARE DEPRECATED ####################################
-if(SOFA_BUILD_COMPONENTSET_FULL)
-
-endif()
-
+list(APPEND HEADER_FILES
+TopologicalChangeProcessor.h
+)
+list(APPEND SOURCE_FILES
+TopologicalChangeProcessor.cpp
+)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology)

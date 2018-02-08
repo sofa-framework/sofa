@@ -2,40 +2,24 @@ cmake_minimum_required(VERSION 3.1)
 project(SofaMisc)
 
 message(STATUS "SofaMisc:")
-################################ COMPONENTS HERE ARE THE NG-SET ####################################
 set(HEADER_FILES
     initMisc.h
-)
+    )
 
 set(SOURCE_FILES
     initMisc.cpp
-)
+    )
 
-############################## COMPONENTS HERE ARE THE LIGHT-SET ###################################
-if(SOFA_BUILD_COMPONENTSET_LIGHT)
-    list(APPEND HEADER_FILES
+list(APPEND HEADER_FILES
+    MeshTetraStuffing.h
+    AddResourceRepository.h
+    )
+list(APPEND SOURCE_FILES
+    MeshTetraStuffing.cpp
+    AddResourceRepository.cpp
+    )
 
-        )
-    list(APPEND SOURCE_FILES
-
-        )
-endif()
-
-############################## COMPONENTS HERE ARE THE STANDARD-SET ################################
-if(SOFA_BUILD_COMPONENTSET_STANDARD)
-    list(APPEND HEADER_FILES
-        MeshTetraStuffing.h
-        AddResourceRepository.h
-        )
-    list(APPEND SOURCE_FILES
-        MeshTetraStuffing.cpp
-        AddResourceRepository.cpp
-        )
-
-endif()
-
-############################### COMPONENTS HERE ARE DEPRECATED ####################################
-if(SOFA_BUILD_COMPONENTSET_FULL)
+if(SOFA_WITH_DEPRECATED_COMPONENTS)
     if(SOFA_HAVE_SMP)
         list(APPEND HEADER_FILES ParallelCGLinearSolver.h)
         list(APPEND HEADER_FILES ParallelCGLinearSolver.inl)
@@ -43,8 +27,6 @@ if(SOFA_BUILD_COMPONENTSET_FULL)
     endif()
 
 endif()
-
-
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaGeneralMeshCollision SofaMiscTopology SofaTopologyMapping)

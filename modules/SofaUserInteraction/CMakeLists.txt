@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.1)
 project(SofaUserInteraction)
 
 message(STATUS "SofaUserInteraction:")
-################################ COMPONENTS HERE ARE THE NG-SET ####################################
 set(HEADER_FILES
     InteractionPerformer.h
     MouseInteractor.h
@@ -17,57 +16,42 @@ set(SOURCE_FILES
     initUserInteraction.cpp
     )
 
-############################## COMPONENTS HERE ARE THE LIGHT-SET ###################################
-if(SOFA_BUILD_COMPONENTSET_LIGHT)
-    list(APPEND HEADER_FILES
+list(APPEND HEADER_FILES
+    # AddFramePerformer.h
+    # AddFramePerformer.inl
+    AttachBodyPerformer.h
+    AttachBodyPerformer.inl
+    ComponentMouseInteraction.h
+    ComponentMouseInteraction.inl
+    Controller.h
+    MechanicalStateController.h
+    MechanicalStateController.inl
+    Ray.h
+    RayContact.h
+    RayDiscreteIntersection.h
+    RayDiscreteIntersection.inl
+    RayModel.h
+    RayNewProximityIntersection.h
+    RayTraceDetection.h
+    SleepController.h
+    TopologicalChangeManager.h
+    )
 
-        )
-    list(APPEND SOURCE_FILES
-
-        )
-endif()
-
-############################## COMPONENTS HERE ARE THE STANDARD-SET ################################
-if(SOFA_BUILD_COMPONENTSET_STANDARD)
-    list(APPEND HEADER_FILES
-        # AddFramePerformer.h
-        # AddFramePerformer.inl
-        AttachBodyPerformer.h
-        AttachBodyPerformer.inl
-        ComponentMouseInteraction.h
-        ComponentMouseInteraction.inl
-        Controller.h
-        MechanicalStateController.h
-        MechanicalStateController.inl  
-        Ray.h
-        RayContact.h
-        RayDiscreteIntersection.h
-        RayDiscreteIntersection.inl
-        RayModel.h
-        RayNewProximityIntersection.h
-        RayTraceDetection.h
-        SleepController.h
-        TopologicalChangeManager.h
-        )
-
-    list(APPEND SOURCE_FILES
-        # AddFramePerformer.cpp
-        AttachBodyPerformer.cpp
-        ComponentMouseInteraction.cpp
-        Controller.cpp
-        MechanicalStateController.cpp
-        RayContact.cpp
-        RayDiscreteIntersection.cpp
-        RayModel.cpp
-        RayNewProximityIntersection.cpp
-        RayTraceDetection.cpp
-        SleepController.cpp
-        TopologicalChangeManager.cpp
-        )
-endif()
-
-############################### COMPONENTS HERE ARE DEPRECATED ####################################
-if(SOFA_BUILD_COMPONENTSET_FULL)
+list(APPEND SOURCE_FILES
+    # AddFramePerformer.cpp
+    AttachBodyPerformer.cpp
+    ComponentMouseInteraction.cpp
+    Controller.cpp
+    MechanicalStateController.cpp
+    RayContact.cpp
+    RayDiscreteIntersection.cpp
+    RayModel.cpp
+    RayNewProximityIntersection.cpp
+    RayTraceDetection.cpp
+    SleepController.cpp
+    TopologicalChangeManager.cpp
+    )
+if(SOFA_WITH_DEPRECATED_COMPONENTS)
     list(APPEND HEADER_FILES
         AddRecordedCameraPerformer.h
         ArticulatedHierarchyBVHController.h
