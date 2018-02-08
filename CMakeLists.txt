@@ -217,6 +217,9 @@ option(SOFA_WITH_THREADING "Compile sofa with thread-safetiness support (PARTIAL
 ### Experimental
 option(SOFA_WITH_EXPERIMENTAL_FEATURES "Compile sofa with exprimental features regarding sparse matrices treatments under mappings" OFF)
 
+### Deprecated components
+option(SOFA_WITH_DEPRECATED_COMPONENTS "Compile sofa with all deprecated components" ON)
+
 ### Testing
 option(SOFA_BUILD_TESTS "Compile the automatic tests for Sofa, along with the gtest library." ON)
 if(SOFA_BUILD_TESTS)
