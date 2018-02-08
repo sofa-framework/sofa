@@ -77,6 +77,9 @@ if(PLUGIN_COMMUNICATION_Oscpack)
     endif ()
 endif()
 
+IF(WIN32)
+	add_definitions(-D_WINSOCKAPI_)
+ENDIF(WIN32)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
 target_link_libraries(${PROJECT_NAME} ${Oscpack_LIBRARIES} ${ZMQ_LIBRARIES} SofaCore SofaSimulationGraph)

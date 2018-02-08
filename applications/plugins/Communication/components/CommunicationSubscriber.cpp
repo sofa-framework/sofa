@@ -34,7 +34,6 @@ namespace communication
 
 int CommunicationSubscriberClass = sofa::core::RegisterObject("Needed for ServerCommunication classes to add received from the network").add<CommunicationSubscriber>();
 
-
 } /// communication
 
 } /// component

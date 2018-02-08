@@ -19,12 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFASCENEASSIST_CONFIG_H
-#define SOFASCENEASSIST_CONFIG_H
+#ifndef SOFA_COMMUNICATION_CONFIG_H
+#define SOFA_COMMUNICATION_CONFIG_H
 
 #include <sofa/helper/system/config.h>
 
-#ifdef SOFA_BUILD_SOFASCENEASSIST
+#ifdef SOFA_BUILD_Communication
 #  define SOFA_COMMUNICATION_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
 #  define SOFA_COMMUNICATION_API SOFA_IMPORT_DYNAMIC_LIBRARY
