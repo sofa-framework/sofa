@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaMisc)
 
-message(STATUS "SofaMisc:")
 set(HEADER_FILES
     initMisc.h
     )
@@ -25,7 +24,6 @@ if(SOFA_WITH_DEPRECATED_COMPONENTS)
         list(APPEND HEADER_FILES ParallelCGLinearSolver.inl)
         list(APPEND SOURCE_FILES ParallelCGLinearSolver.cpp)
     endif()
-
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})

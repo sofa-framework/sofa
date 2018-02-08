@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaGeneralMeshCollision)
 
-message(STATUS "SofaGeneralMeshCollision:")
 set(HEADER_FILES
     config.h
     initGeneralMeshCollision.h

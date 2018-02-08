@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaGeneralImplicitOdeSolver)
 
-message(STATUS "SofaGeneralImplicitOdeSolver:")
 set(HEADER_FILES
     config.h
     initGeneralImplicitODESolver.h

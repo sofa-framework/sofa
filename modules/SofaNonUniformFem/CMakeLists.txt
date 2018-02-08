@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaNonUniformFem)
 
-message(STATUS "SofaNonUniformFem:")
 set(HEADER_FILES
     config.h
     initNonUniformFEM.h

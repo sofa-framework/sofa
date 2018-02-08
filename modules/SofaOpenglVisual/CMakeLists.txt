@@ -6,7 +6,6 @@ message(SEND_ERROR "Warning: CMake flag SOFA_NO_OPENGL is active.")
 message("Flag SOFA_NO_OPENGL incompatible with the SofaOpenglVisual module.")
 endif()
 
-message(STATUS "SofaOpenglVisual:")
 set(HEADER_FILES
     config.h
     initOpenGLVisual.h

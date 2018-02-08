@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaMiscEngine)
 
-message(STATUS "SofaMiscEngine:")
 set(HEADER_FILES
     config.h
     initMiscEngine.h

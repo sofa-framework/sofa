@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaGeneralSimpleFem)
 
-message(STATUS "SofaGeneralSimpleFem:")
 set(HEADER_FILES
     config.h
     initGeneralSimpleFEM.h

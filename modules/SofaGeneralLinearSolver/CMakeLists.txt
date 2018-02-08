@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaGeneralLinearSolver)
 
-message(STATUS "SofaGeneralLinearSolver:")
 set(HEADER_FILES
     config.h
     initGeneralLinearSolver.h

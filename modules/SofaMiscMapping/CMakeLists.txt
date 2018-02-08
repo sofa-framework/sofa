@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaMiscMapping)
 
-message(STATUS "SofaMiscMapping:")
 set(HEADER_FILES
     config.h
     initMiscMapping.h

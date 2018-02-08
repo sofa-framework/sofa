@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.1)
 
 project(SofaOpenglVisual_test)
 
-message(STATUS "SofaOpenglVisual:")
 set(HEADER_FILES)
 
 set(SOURCE_FILES ../../empty.cpp)

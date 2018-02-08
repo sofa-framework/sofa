@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaUserInteraction)
 
-message(STATUS "SofaUserInteraction:")
 set(HEADER_FILES
     InteractionPerformer.h
     MouseInteractor.h
@@ -51,6 +50,7 @@ list(APPEND SOURCE_FILES
     SleepController.cpp
     TopologicalChangeManager.cpp
     )
+
 if(SOFA_WITH_DEPRECATED_COMPONENTS)
     list(APPEND HEADER_FILES
         AddRecordedCameraPerformer.h

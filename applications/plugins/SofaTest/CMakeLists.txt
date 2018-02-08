@@ -33,7 +33,6 @@ list(APPEND SOURCE_FILES
     PrimitiveCreation.cpp
     )
 
-# Deprecated components
 if(SOFA_WITH_DEPRECATED_COMPONENTS)
     list(APPEND HEADER_FILES
         Elasticity_test_deprecated.h

@@ -3,7 +3,6 @@ project(SofaMiscFem_test)
 
 find_package(Metis QUIET)
 
-message(STATUS "SofaMiscFem_test:")
 set(HEADER_FILES)
 set(SOURCE_FILES ../../empty.cpp)
 
@@ -18,13 +17,13 @@ list(APPEND SOURCE_FILES "TetrahedronHyperelasticityFEMForceField_scene_test.cpp
 endif()
 
 if(SOFA_WITH_DEPRECATED_COMPONENTS)
-list(APPEND HEADER_FILES
-LennardJonesForceField_test.h
-LennardJonesForceField_test.inl
-)
-list(APPEND SOURCE_FILES
-LennardJonesForceField_test.cpp
-)
+    list(APPEND HEADER_FILES
+    LennardJonesForceField_test.h
+    LennardJonesForceField_test.inl
+    )
+    list(APPEND SOURCE_FILES
+    LennardJonesForceField_test.cpp
+    )
 endif()
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

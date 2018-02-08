@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.1)
 
 project(SofaGeneralExplicitOdeSolver_test)
 
-message(STATUS "SofaGeneralExplicitOdeSolver_test:")
 set(SOURCE_FILES ../../empty.cpp)
 
 list(APPEND SOURCE_FILES

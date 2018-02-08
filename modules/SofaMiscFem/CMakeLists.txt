@@ -5,7 +5,6 @@ project(SofaMiscFem)
 find_package(Newmat)
 set(SOFA_HAVE_NEWMAT ${Newmat_FOUND})
 
-message(STATUS "SofaMiscFem:")
 set(HEADER_FILES
     config.h
     initMiscFEM.h

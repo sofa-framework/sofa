@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.1)
 
 project(SofaMiscTopology_test)
 
-message(STATUS "SofaMiscTopology_test:")
 set(HEADER_FILES)
 set(SOURCE_FILES ../../empty.cpp)
 

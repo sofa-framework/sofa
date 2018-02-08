@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.1)
 
 project(SofaBoundaryCondition_test)
 
-message(STATUS "SofaBoundaryCondition_test:")
 set(SOURCE_FILES ../../empty.cpp)
 
 list(APPEND SOURCE_FILES

@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.1)
 
 project(SofaGeneralImplicitOdeSolver_test)
 
-message(STATUS "SofaGeneralImplicitOdeSolver_test:")
 set(SOURCE_FILES ""
     )
 
@@ -17,7 +16,6 @@ if(SOFA_WITH_DEPRECATED_COMPONENTS)
     list(APPEND SOURCE_FILES
         VariationalSymplecticImplicitSolverNonLinearForceDynamic_test.cpp
         )
-
 endif()
 
 add_definitions("-DSOFAGENERALIMPLICITODESOLVER_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")

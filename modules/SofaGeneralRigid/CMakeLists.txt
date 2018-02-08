@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaGeneralRigid)
 
-message(STATUS "SofaGeneralRigid:")
 set(HEADER_FILES
     config.h
     initGeneralRigid.h

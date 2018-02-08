@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaMiscTopology)
 
-message(STATUS "SofaMiscTopology:")
 set(HEADER_FILES
 config.h
 initMiscTopology.h

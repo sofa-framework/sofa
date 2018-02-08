@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaMiscForceField)
 
-message(STATUS "SofaMiscForceField:")
 set(HEADER_FILES
     config.h
     initMiscForcefield.h

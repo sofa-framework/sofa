@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaHaptics)
 
-message(STATUS "SofaHaptics:")
 set(HEADER_FILES
     config.h
     initHaptics.h
