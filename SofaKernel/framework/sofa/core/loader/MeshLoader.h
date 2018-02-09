@@ -132,7 +132,7 @@ public:
     Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > d_positions; ///< Vertices of the mesh loaded
 
     //Tab of 1D elements
-    Data< helper::vector< Polyline > > d_polylines;
+    Data< helper::vector< Polyline > > d_polylines; ///< Polylines of the mesh loaded
 
     // Tab of 2D elements composition
     Data< helper::vector< Edge > > d_edges; ///< Edges of the mesh loaded
