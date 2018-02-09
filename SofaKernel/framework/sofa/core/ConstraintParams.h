@@ -203,13 +203,13 @@ public:
     ConstraintParams& setDx(VecDerivId dx)      { m_dx.assign(dx); return *this; }
     ConstraintParams& setDx(MultiVecDerivId dx) { m_dx = dx;   return *this; }
     template<class StateSet>
-    ConstraintParams& setDx(const StateSet& g, MultiVecDerivId v) { m_dx.setId(g, dx); return *this; }
+    ConstraintParams& setDx(const StateSet& g, MultiVecDerivId dx) { m_dx.setId(g, dx); return *this; }
 
     /// Set the IDs where to write the constraint force vector
     ConstraintParams& setLambda(VecDerivId lambda) { m_lambda.assign(lambda); return *this; }
     ConstraintParams& setLambda(MultiVecDerivId lambda) { m_lambda = lambda;   return *this; }
     template<class StateSet>
-    ConstraintParams& setLambda(const StateSet& g, MultiVecDerivId v) { m_lambda.setId(g, dx); return *this; }
+    ConstraintParams& setLambda(const StateSet& g, MultiVecDerivId lambda) { m_lambda.setId(g, lambda); return *this; }
 
     /// @}
 
