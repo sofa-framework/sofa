@@ -142,8 +142,9 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
             for (it3 = entry->creatorMap.begin(); it3 != entry->creatorMap.end(); ++it3)
             {
                 Creator::SPtr c = it3->second;
-                if (c->canCreate(context, arg))
+                if (c->canCreate(context, arg)){
                     creators.push_back(*it3);
+                }
             }
         }
     }

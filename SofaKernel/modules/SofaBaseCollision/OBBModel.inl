@@ -452,7 +452,7 @@ void TOBBModel<DataTypes>::computeBBox(const core::ExecParams* params, bool only
 
 
     static const Real max_real = std::numeric_limits<Real>::max();
-    static const Real min_real = std::numeric_limits<Real>::min();
+    static const Real min_real = std::numeric_limits<Real>::lowest();
     Real maxBBox[3] = {min_real,min_real,min_real};
     Real minBBox[3] = {max_real,max_real,max_real};
 

@@ -20,7 +20,7 @@
             <TetrahedronSetTopologyContainer name="Container2" />
             <TetrahedronSetTopologyModifier />
             <TetrahedronSetTopologyAlgorithms template="Vec3d" />
-            <TetrahedronSetGeometryAlgorithms template="Vec3d" drawTetrahedra="1" drawColorTetrahedra="1 0 0" />
+            <TetrahedronSetGeometryAlgorithms template="Vec3d" drawTetrahedra="1" drawColorTetrahedra="1 0 0 1" />
             <SimpleTesselatedTetraTopologicalMapping input="@Container1" output="@Container2" />
             <MechanicalObject />
             <SimpleTesselatedTetraMechanicalMapping />

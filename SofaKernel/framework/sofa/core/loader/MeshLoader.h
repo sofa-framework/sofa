@@ -56,22 +56,23 @@ public:
     typedef topology::Topology::Pentahedron Pentahedron;
     typedef topology::Topology::Pyramid Pyramid;
     typedef topology::Topology::PointID PointID;
-    /* specify for each control point lying on an edge : the control point index, the index of the  edge, 
+    /* specify for each control point lying on an edge : the control point index, the index of the  edge,
      the 2 integers specifying the position within this edge (i.e. 11 for a quadratic edge, 13 within a quartic edge).. */
-    typedef sofa::helper::fixed_array<PointID,4> HighOrderEdgePosition;
-    /* specify for each control point lying on a triangle  : the control point index, the index of the  triangle, 
+    typedef sofa::helper::fixed_array<PointID, 4> HighOrderEdgePosition;
+    /* specify for each control point lying on a triangle  : the control point index, the index of the  triangle,
      the 3 integers specifying the position within this triangle (i.e. 111 for a cubic triangle , 121 within a quartic triangle).. */
-    typedef sofa::helper::fixed_array<PointID,5> HighOrderTrianglePosition;
-    /* specify for each control point lying on a Quad  : the control point index, the index of the  quad, 
+    typedef sofa::helper::fixed_array<PointID, 5> HighOrderTrianglePosition;
+    /* specify for each control point lying on a Quad  : the control point index, the index of the  quad,
      the 2 integers specifying the degree of the element in the x and y directions, the 2 integers specifying the position within this quad (i.e. 12 for a cubic triangle ).. */
-    typedef sofa::helper::fixed_array<PointID,6> HighOrderQuadPosition;
-    /* specify for each control point lying on a tetrahedron  : the control point index, the index of the  tetrahedron, 
+    typedef sofa::helper::fixed_array<PointID, 6> HighOrderQuadPosition;
+    /* specify for each control point lying on a tetrahedron  : the control point index, the index of the  tetrahedron,
      the 3 integers specifying the position within this tetrahedron (i.e. 1111 for a quartic tetrahedron , 1211 within a quintic tetrahedron).. */
-    typedef sofa::helper::fixed_array<PointID,6> HighOrderTetrahedronPosition;
-    /* specify for each control point lying on a Hexahedron  : the control point index, the index of the  Hexahedron, 
+    typedef sofa::helper::fixed_array<PointID, 6> HighOrderTetrahedronPosition;
+    /* specify for each control point lying on a Hexahedron  : the control point index, the index of the  Hexahedron,
      the 3 integers specifying the degree of the element in the x, y and z directions, the 3 integers specifying the position within this hexahedron (i.e. 121  ).. */
-    typedef sofa::helper::fixed_array<PointID,8> HighOrderHexahedronPosition;
+    typedef sofa::helper::fixed_array<PointID, 8> HighOrderHexahedronPosition;
 
+    typedef sofa::helper::vector<PointID> Polyline;
 
 
 protected:
@@ -92,19 +93,46 @@ public:
 
     /// @name Initial transformations accessors.
     /// @{
-    void setTranslation(SReal dx, SReal dy, SReal dz) {d_translation.setValue(Vector3(dx,dy,dz));}
-    void setRotation(SReal rx, SReal ry, SReal rz) {d_rotation.setValue(Vector3(rx,ry,rz));}
-    void setScale(SReal sx, SReal sy, SReal sz) {d_scale.setValue(Vector3(sx,sy,sz));}
-    void setTransformation(const sofa::defaulttype::Matrix4& t) {d_transformation.setValue(t);}
+    void setTranslation(SReal dx, SReal dy, SReal dz)
+    {
+        d_translation.setValue(Vector3(dx, dy, dz));
+    }
+    void setRotation(SReal rx, SReal ry, SReal rz)
+    {
+        d_rotation.setValue(Vector3(rx, ry, rz));
+    }
+    void setScale(SReal sx, SReal sy, SReal sz)
+    {
+        d_scale.setValue(Vector3(sx, sy, sz));
+    }
+    void setTransformation(const sofa::defaulttype::Matrix4& t)
+    {
+        d_transformation.setValue(t);
+    }
 
-    virtual Vector3 getTranslation() const {return d_translation.getValue();}
-    virtual Vector3 getRotation() const {return d_rotation.getValue();}
-    virtual Vector3 getScale() const {return d_scale.getValue();}
-    virtual sofa::defaulttype::Matrix4 getTransformation() const {return d_transformation.getValue();}
+    virtual Vector3 getTranslation() const
+    {
+        return d_translation.getValue();
+    }
+    virtual Vector3 getRotation() const
+    {
+        return d_rotation.getValue();
+    }
+    virtual Vector3 getScale() const
+    {
+        return d_scale.getValue();
+    }
+    virtual sofa::defaulttype::Matrix4 getTransformation() const
+    {
+        return d_transformation.getValue();
+    }
     /// @}
 
     // Point coordinates in 3D in double.
     Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > d_positions; ///< Vertices of the mesh loaded
+
+    //Tab of 1D elements
+    Data< helper::vector< Polyline > > d_polylines;
 
     // Tab of 2D elements composition
     Data< helper::vector< Edge > > d_edges; ///< Edges of the mesh loaded
@@ -149,10 +177,10 @@ public:
     Data< defaulttype::Matrix4 > d_transformation; ///< 4x4 Homogeneous matrix to transform the DOFs (when present replace any)
 
 
-   virtual void updateMesh();
-   virtual void updateElements();
-   virtual void updatePoints();
-   virtual void updateNormals();
+    virtual void updateMesh();
+    virtual void updateElements();
+    virtual void updatePoints();
+    virtual void updateNormals();
 
 protected:
 
@@ -160,36 +188,38 @@ protected:
     defaulttype::Matrix4 d_previousTransformation;
 
 
-    void addPosition(helper::vector< sofa::defaulttype::Vec<3,SReal> >* pPositions, const sofa::defaulttype::Vec<3,SReal> &p);
-    void addPosition(helper::vector<sofa::defaulttype::Vec<3,SReal> >* pPositions,  SReal x, SReal y, SReal z);
+    void addPosition(helper::vector< sofa::defaulttype::Vec<3, SReal> >* pPositions, const sofa::defaulttype::Vec<3, SReal>& p);
+    void addPosition(helper::vector<sofa::defaulttype::Vec<3, SReal> >* pPositions,  SReal x, SReal y, SReal z);
 
-    void addEdge(helper::vector<Edge>* pEdges, const Edge &p);
+    void addPolyline(helper::vector<Polyline>* pPolylines, Polyline p);
+
+    void addEdge(helper::vector<Edge>* pEdges, const Edge& p);
     void addEdge(helper::vector<Edge>* pEdges, unsigned int p0, unsigned int p1);
 
-    void addTriangle(helper::vector<Triangle>* pTriangles, const Triangle &p);
+    void addTriangle(helper::vector<Triangle>* pTriangles, const Triangle& p);
     void addTriangle(helper::vector<Triangle>* pTriangles, unsigned int p0, unsigned int p1, unsigned int p2);
 
-    void addQuad(helper::vector<Quad>* pQuads, const Quad &p);
+    void addQuad(helper::vector<Quad>* pQuads, const Quad& p);
     void addQuad(helper::vector<Quad>* pQuads, unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3);
 
-    void addPolygon(helper::vector< helper::vector <unsigned int> >* pPolygons, const helper::vector<unsigned int> &p);
+    void addPolygon(helper::vector< helper::vector <unsigned int> >* pPolygons, const helper::vector<unsigned int>& p);
 
-    void addTetrahedron(helper::vector<Tetrahedron>* pTetrahedra, const Tetrahedron &p);
+    void addTetrahedron(helper::vector<Tetrahedron>* pTetrahedra, const Tetrahedron& p);
     void addTetrahedron(helper::vector<Tetrahedron>* pTetrahedra, unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3);
 
-    void addHexahedron(helper::vector< Hexahedron>* pHexahedra, const Hexahedron &p);
+    void addHexahedron(helper::vector< Hexahedron>* pHexahedra, const Hexahedron& p);
     void addHexahedron(helper::vector< Hexahedron>* pHexahedra,
-            unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3,
-            unsigned int p4, unsigned int p5, unsigned int p6, unsigned int p7);
+                       unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3,
+                       unsigned int p4, unsigned int p5, unsigned int p6, unsigned int p7);
 
-    void addPentahedron(helper::vector< Pentahedron>* pPentahedra, const Pentahedron &p);
+    void addPentahedron(helper::vector< Pentahedron>* pPentahedra, const Pentahedron& p);
     void addPentahedron(helper::vector< Pentahedron>* pPentahedra,
-            unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3,
-            unsigned int p4, unsigned int p5);
+                        unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3,
+                        unsigned int p4, unsigned int p5);
 
-    void addPyramid(helper::vector< Pyramid>* pPyramids, const Pyramid &p);
+    void addPyramid(helper::vector< Pyramid>* pPyramids, const Pyramid& p);
     void addPyramid(helper::vector< Pyramid>* pPyramids,
-            unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3, unsigned int p4);
+                    unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3, unsigned int p4);
 };
 
 

@@ -1,0 +1,16 @@
+/// Attaching Data to sofa object. To facilitate write of algorithm and data exchange
+/// We may want to create and attach Data field to object or node.
+Node : {
+    name : "father"
+
+    Node : {
+        name : "subgraph"
+
+        OglModel : {
+            properties : {
+                creationDate : p'str(datetime.now())'
+            }
+        }
+
+    }
+}

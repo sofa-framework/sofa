@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Node animate="1">
-    <RequiredPlugin pluginName="optiTrackNatNet"/>
+    <RequiredPlugin pluginName="OptiTrackNatNet"/>
     <CollisionPipeline verbose="0" />
     <BruteForceDetection name="N2" />
     <CollisionResponse response="default" />

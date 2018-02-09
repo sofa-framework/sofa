@@ -1,0 +1,20 @@
+# Brace Style
+--style=allman
+
+# Indentation
+--indent-switches
+--indent=spaces=4
+--indent-labels
+--indent-col1-comments
+--max-continuation-indent=100
+
+# Padding
+--pad-oper
+--pad-comma
+--align-pointer=type
+--align-reference=type
+
+# Formatting
+--break-one-line-headers
+--add-braces
+--convert-tabs

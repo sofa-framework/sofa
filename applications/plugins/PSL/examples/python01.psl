@@ -1,0 +1,17 @@
+Node : {
+    name : "root"
+
+    Python : '''
+             print("Hello SOFA")
+             '''
+
+    Python : '''
+             Sofa.msg_info(root, "Hello SOFA")
+             '''
+
+    Python : '''
+             Sofa.msg_info(root, "My function are: "+str(dir(root)))
+             '''
+}
+
+

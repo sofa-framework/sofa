@@ -23,14 +23,6 @@ int main(int argc, char **argv)
     sofa::simulation::graph::init();
 #endif
 
-#ifdef WIN32
-    const std::string pluginDirectory = Utils::getExecutableDirectory();
-#else
-    const std::string pluginDirectory = Utils::getSofaPathPrefix() + "/lib";
-#endif
-    sofa::helper::system::PluginRepository.addFirstPath(pluginDirectory);
-    DataRepository.addFirstPath(std::string(SOFA_SRC_DIR) + "/share");
-
     int ret =  RUN_ALL_TESTS();
 
 #ifdef SOFA_HAVE_DAG
