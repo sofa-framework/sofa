@@ -36,79 +36,98 @@ namespace component
 namespace constraintset 
 {
 
+using sofa::helper::vector;
+using sofa::core::objectmodel::BaseContext;
+using sofa::core::behavior::LinearSolver;
+using sofa::core::behavior::BaseConstraintCorrection;
+using sofa::core::behavior::ConstraintSolver;
+using sofa::defaulttype::BaseMatrix;
+using sofa::core::ConstraintParams;
+using sofa::core::MultiVecDerivId;
+using sofa::core::MultiVecCoordId;
+using sofa::core::ExecParams;
+using sofa::defaulttype::BaseVector;
+using sofa::core::RegisterObject;
+using sofa::core::ConstMultiVecDerivId;
+using sofa::core::VecDerivId;
+using sofa::core::VecCoordId;
+
 GenericConstraintCorrection::GenericConstraintCorrection()
-: solverName( initData(&solverName, "solverName", "name of the constraint solver") )
+: d_linearSolversName( initData(&d_linearSolversName, "solverName", "name of the constraint solver") )
 , d_complianceFactor(initData(&d_complianceFactor, 1.0, "complianceFactor", "Factor applied to the position factor and velocity factor used to calculate compliance matrix"))
+, d_ODESolverName( initData(&d_ODESolverName, "ODESolverName", "name of the ode solver") )
 {
-    odesolver = NULL;
+    m_ODESolver = NULL;
 }
 
 GenericConstraintCorrection::~GenericConstraintCorrection() {}
 
 void GenericConstraintCorrection::bwdInit()
 {
-    core::objectmodel::BaseContext* c = this->getContext();
+    BaseContext* context = this->getContext();
 
-    c->get(odesolver, core::objectmodel::BaseContext::Local);
-
-    linearsolvers.clear();
-
-    const helper::vector<std::string>& solverNames = solverName.getValue();
-    if (solverNames.size() == 0) 
+    // Find linear solvers
+    m_linearSolvers.clear();
+    const vector<std::string>& solverNames = d_linearSolversName.getValue();
+    if(solverNames.size() == 0)
     {
-        core::behavior::LinearSolver* s = NULL;
-        c->get(s);
-        if (s)
+        LinearSolver* s = NULL;
+        context->get(s);
+        if(s)
         {
-            if (s->getTemplateName() == "GraphScattered") 
-            {
-                serr << "ERROR GenericConstraintCorrection cannot use the solver " << s->getName() << " because it is templated on GraphScatteredType" << sendl;
-            }
+            if (s->getTemplateName() == "GraphScattered")
+                msg_warning() << "Can not use the solver " << s->getName() << " because it is templated on GraphScatteredType";
             else
-            {
-                linearsolvers.push_back(s);
-            }
+                m_linearSolvers.push_back(s);
         }
     }
     else 
     {
-        for (unsigned int i=0; i<solverNames.size(); ++i)
+        for(unsigned int i=0; i<solverNames.size(); ++i)
         {
-            core::behavior::LinearSolver* s = NULL;
-            c->get(s, solverNames[i]);
+            LinearSolver* s = NULL;
+            context->get(s, solverNames[i]);
 
-            if (s)
+            if(s)
             {
                 if (s->getTemplateName() == "GraphScattered")
-                {
-                    serr << "ERROR GenericConstraintCorrection cannot use the solver " << solverNames[i] << " because it is templated on GraphScatteredType" << sendl;
-                }
+                    msg_warning() << "Can not use the solver " << solverNames[i] << " because it is templated on GraphScatteredType";
                 else
-                {
-                    linearsolvers.push_back(s);
-                }
+                    m_linearSolvers.push_back(s);
             } 
-            else serr << "Solver \"" << solverNames[i] << "\" not found." << sendl;
+            else
+                msg_warning() << "Solver \"" << solverNames[i] << "\" not found.";
+        }
+
+    }
+
+    // Find ODE solver
+    if(d_ODESolverName.isSet())
+        context->get(m_ODESolver, d_ODESolverName.getValue());
+
+    if(m_ODESolver == NULL)
+    {
+        context->get(m_ODESolver, BaseContext::Local);
+        if (m_ODESolver == NULL)
+        {
+            context->get(m_ODESolver, BaseContext::SearchRoot);
+            if (m_ODESolver == NULL)
+            {
+                msg_error() << "No OdeSolver found.";
+                return;
+            }
         }
     }
 
-    if (odesolver == NULL)
+    if (m_linearSolvers.size() == 0)
     {
-        serr << "GenericConstraintCorrection: ERROR no OdeSolver found."<<sendl;
+        msg_error() << "No LinearSolver found.";
         return;
     }
 
-    if (linearsolvers.size() == 0)
-    {
-        serr << "GenericConstraintCorrection: ERROR no LinearSolver found."<<sendl;
-        return;
-    }
-
-    sout << "Found " << linearsolvers.size() << " linearsolvers" << sendl;
-    for (unsigned i = 0; i < linearsolvers.size(); i++)
-    {
-        sout << linearsolvers[i]->getName() << sendl;
-    }
+    msg_info() << "Found " << m_linearSolvers.size() << " m_linearSolvers";
+    for (unsigned i = 0; i < m_linearSolvers.size(); i++)
+        msg_info() << m_linearSolvers[i]->getName();
 }
 
 void GenericConstraintCorrection::cleanup()
@@ -118,30 +137,28 @@ void GenericConstraintCorrection::cleanup()
         constraintsolvers.back()->removeConstraintCorrection(this);
         constraintsolvers.pop_back();
     }
-    sofa::core::behavior::BaseConstraintCorrection::cleanup();
+    BaseConstraintCorrection::cleanup();
 }
 
-void GenericConstraintCorrection::addConstraintSolver(core::behavior::ConstraintSolver *s)
+void GenericConstraintCorrection::addConstraintSolver(ConstraintSolver *s)
 {
     constraintsolvers.push_back(s);
 }
 
-void GenericConstraintCorrection::removeConstraintSolver(core::behavior::ConstraintSolver *s)
+void GenericConstraintCorrection::removeConstraintSolver(ConstraintSolver *s)
 {
     constraintsolvers.remove(s);
 }
 
 void GenericConstraintCorrection::rebuildSystem(double massFactor, double forceFactor)
 {
-    for (unsigned i = 0; i < linearsolvers.size(); i++)
-    {
-        linearsolvers[i]->rebuildSystem(massFactor, forceFactor);
-    }
+    for (unsigned i = 0; i < m_linearSolvers.size(); i++)
+        m_linearSolvers[i]->rebuildSystem(massFactor, forceFactor);
 }
 
-void GenericConstraintCorrection::addComplianceInConstraintSpace(const core::ConstraintParams *cparams, defaulttype::BaseMatrix* W)
+void GenericConstraintCorrection::addComplianceInConstraintSpace(const ConstraintParams *cparams, BaseMatrix* W)
 {
-    if (!odesolver) return;
+    if (!m_ODESolver) return;
     const double complianceFactor = d_complianceFactor.getValue();
 
     // use the OdeSolver to get the position integration factor
@@ -149,14 +166,14 @@ void GenericConstraintCorrection::addComplianceInConstraintSpace(const core::Con
 
     switch (cparams->constOrder())
     {
-        case core::ConstraintParams::POS_AND_VEL :
-        case core::ConstraintParams::POS :
-            factor = odesolver->getPositionIntegrationFactor();
+        case ConstraintParams::POS_AND_VEL :
+        case ConstraintParams::POS :
+            factor = m_ODESolver->getPositionIntegrationFactor();
             break;
 
-        case core::ConstraintParams::ACC :
-        case core::ConstraintParams::VEL :
-            factor = odesolver->getVelocityIntegrationFactor();
+        case ConstraintParams::ACC :
+        case ConstraintParams::VEL :
+            factor = m_ODESolver->getVelocityIntegrationFactor();
             break;
 
         default :
@@ -165,117 +182,121 @@ void GenericConstraintCorrection::addComplianceInConstraintSpace(const core::Con
 
     factor *= complianceFactor;
     // use the Linear solver to compute J*inv(M)*Jt, where M is the mechanical linear system matrix
-    for (unsigned i = 0; i < linearsolvers.size(); i++)
+    for (unsigned i = 0; i < m_linearSolvers.size(); i++)
     {
-        linearsolvers[i]->buildComplianceMatrix(cparams, W, factor);
+        m_linearSolvers[i]->buildComplianceMatrix(cparams, W, factor);
     }
 }
 
-void GenericConstraintCorrection::computeMotionCorrectionFromLambda(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, const defaulttype::BaseVector * lambda)
+void GenericConstraintCorrection::computeMotionCorrectionFromLambda(const ConstraintParams* cparams, MultiVecDerivId dx, const defaulttype::BaseVector * lambda)
 {
-    for (std::size_t i = 0; i < linearsolvers.size(); ++i)
+    for (std::size_t i = 0; i < m_linearSolvers.size(); ++i)
     {
-        linearsolvers[i]->applyConstraintForce(cparams, dx, lambda);
+        m_linearSolvers[i]->applyConstraintForce(cparams, dx, lambda);
     }
 }
 
-void GenericConstraintCorrection::applyMotionCorrection(const core::ConstraintParams* cparams, core::MultiVecCoordId xId, core::MultiVecDerivId vId, 
-    core::MultiVecDerivId dxId, core::ConstMultiVecDerivId correction, double positionFactor, double velocityFactor)
+void GenericConstraintCorrection::applyMotionCorrection(const ConstraintParams* cparams,
+                                                        MultiVecCoordId xId,
+                                                        MultiVecDerivId vId, 
+                                                        MultiVecDerivId dxId,
+                                                        ConstMultiVecDerivId correction,
+                                                        double positionFactor,
+                                                        double velocityFactor)
 {
-    for (std::size_t i = 0; i < linearsolvers.size(); ++i)
+    for (std::size_t i = 0; i < m_linearSolvers.size(); ++i)
     {
-        simulation::MechanicalIntegrateConstraintsVisitor v(cparams, positionFactor, velocityFactor, correction, dxId, xId, vId, linearsolvers[i]->getSystemMultiMatrixAccessor());
-        linearsolvers[i]->getContext()->executeVisitor(&v);
+        simulation::MechanicalIntegrateConstraintsVisitor v(cparams, positionFactor, velocityFactor, correction, dxId, xId, vId, m_linearSolvers[i]->getSystemMultiMatrixAccessor());
+        m_linearSolvers[i]->getContext()->executeVisitor(&v);
     }
 }
 
-void GenericConstraintCorrection::applyMotionCorrection(const core::ConstraintParams * cparams, core::MultiVecCoordId xId, core::MultiVecDerivId vId, core::MultiVecDerivId dxId, core::ConstMultiVecDerivId correction)
+void GenericConstraintCorrection::applyMotionCorrection(const ConstraintParams * cparams,
+                                                        MultiVecCoordId xId,
+                                                        MultiVecDerivId vId,
+                                                        MultiVecDerivId dxId,
+                                                        ConstMultiVecDerivId correction)
 {
-    if (!odesolver) return;
+    if (!m_ODESolver) return;
     const double complianceFactor = d_complianceFactor.getValue();
 
-    const double positionFactor = odesolver->getPositionIntegrationFactor() * complianceFactor;
-    const double velocityFactor = odesolver->getVelocityIntegrationFactor() * complianceFactor;
+    const double positionFactor = m_ODESolver->getPositionIntegrationFactor() * complianceFactor;
+    const double velocityFactor = m_ODESolver->getVelocityIntegrationFactor() * complianceFactor;
 
     applyMotionCorrection(cparams, xId, vId, dxId, correction, positionFactor, velocityFactor);
 }
 
-void GenericConstraintCorrection::applyPositionCorrection(const core::ConstraintParams * cparams, core::MultiVecCoordId xId, core::MultiVecDerivId dxId, core::ConstMultiVecDerivId correctionId)
+void GenericConstraintCorrection::applyPositionCorrection(const ConstraintParams * cparams,
+                                                          MultiVecCoordId xId,
+                                                          MultiVecDerivId dxId,
+                                                          ConstMultiVecDerivId correctionId)
 {
-    if (!odesolver) return;
+    if (!m_ODESolver) return;
 
     const double complianceFactor = d_complianceFactor.getValue();
-    const double positionFactor = odesolver->getPositionIntegrationFactor() * complianceFactor;
+    const double positionFactor = m_ODESolver->getPositionIntegrationFactor() * complianceFactor;
 
-    applyMotionCorrection(cparams, xId, sofa::core::VecDerivId::null(), dxId, correctionId, positionFactor, 0);
+    applyMotionCorrection(cparams, xId, VecDerivId::null(), dxId, correctionId, positionFactor, 0);
 }
 
-void GenericConstraintCorrection::applyVelocityCorrection(const core::ConstraintParams * cparams, core::MultiVecDerivId vId, core::MultiVecDerivId dvId, core::ConstMultiVecDerivId correctionId)
+void GenericConstraintCorrection::applyVelocityCorrection(const ConstraintParams * cparams,
+                                                          MultiVecDerivId vId,
+                                                          MultiVecDerivId dvId,
+                                                          ConstMultiVecDerivId correctionId)
 {
-    if (!odesolver) return;
+    if (!m_ODESolver) return;
 
-    const double velocityFactor = odesolver->getVelocityIntegrationFactor();
+    const double velocityFactor = m_ODESolver->getVelocityIntegrationFactor();
 
-    applyMotionCorrection(cparams, sofa::core::VecCoordId::null(), vId, dvId, correctionId, 0, velocityFactor);
+    applyMotionCorrection(cparams, VecCoordId::null(), vId, dvId, correctionId, 0, velocityFactor);
 }
 
-void GenericConstraintCorrection::applyContactForce(const defaulttype::BaseVector *f)
+void GenericConstraintCorrection::applyContactForce(const BaseVector *f)
 {
-    if (!odesolver) return;
+    if (!m_ODESolver) return;
 
-    sofa::core::ConstraintParams cparams(*sofa::core::ExecParams::defaultInstance());
+    ConstraintParams cparams(*ExecParams::defaultInstance());
 
 
     computeMotionCorrectionFromLambda(&cparams, cparams.dx(), f);
-    applyMotionCorrection(&cparams, sofa::core::VecCoordId::position(), sofa::core::VecDerivId::velocity(), cparams.dx(), cparams.lambda());
+    applyMotionCorrection(&cparams, VecCoordId::position(), VecDerivId::velocity(), cparams.dx(), cparams.lambda());
 }
 
-void GenericConstraintCorrection::computeResidual(const core::ExecParams* params, defaulttype::BaseVector *lambda)
+void GenericConstraintCorrection::computeResidual(const ExecParams* params, defaulttype::BaseVector *lambda)
 {
-    for (unsigned i = 0; i < linearsolvers.size(); i++)
+    for (unsigned i = 0; i < m_linearSolvers.size(); i++)
     {
-        linearsolvers[i]->computeResidual(params, lambda);
+        m_linearSolvers[i]->computeResidual(params, lambda);
     }
 }
 
 
 void GenericConstraintCorrection::getComplianceMatrix(defaulttype::BaseMatrix* Minv) const
 {
-    if (!odesolver) return;
+    if (!m_ODESolver) return;
     const double complianceFactor = d_complianceFactor.getValue();
 
-    sofa::core::ConstraintParams cparams(*sofa::core::ExecParams::defaultInstance());
+    ConstraintParams cparams(*ExecParams::defaultInstance());
     const_cast<GenericConstraintCorrection*>(this)->addComplianceInConstraintSpace(&cparams, Minv);
 }
 
-void GenericConstraintCorrection::applyPredictiveConstraintForce(const core::ConstraintParams * /*cparams*/, core::MultiVecDerivId /*f*/, const defaulttype::BaseVector * /*lambda*/)
+void GenericConstraintCorrection::applyPredictiveConstraintForce(const ConstraintParams * cparams,
+                                                                 MultiVecDerivId f,
+                                                                 const BaseVector * lambda)
 {
-//    printf("GenericConstraintCorrection::applyPredictiveConstraintForce not implemented\n");
-//    if (mstate)
-//    {
-//        Data< VecDeriv > *f_d = f[mstate].write();
-
-//        if (f_d)
-//        {
-//            applyPredictiveConstraintForce(cparams, *f_d, lambda);
-//        }
-//    }
+    SOFA_UNUSED(cparams);
+    SOFA_UNUSED(f);
+    SOFA_UNUSED(lambda);
 }
 
 void GenericConstraintCorrection::resetContactForce()
 {
-//    printf("GenericConstraintCorrection::resetContactForce not implemented\n");
-//    Data<VecDeriv>& forceData = *this->mstate->write(core::VecDerivId::force());
-//    VecDeriv& force = *forceData.beginEdit();
-//    for( unsigned i=0; i<force.size(); ++i )
-//        force[i] = Deriv();
-//    forceData.endEdit();
 }
 
 
 SOFA_DECL_CLASS(GenericConstraintCorrection)
 
-int GenericConstraintCorrectionClass = core::RegisterObject("")
+int GenericConstraintCorrectionClass = RegisterObject("")
 .add< GenericConstraintCorrection >()
 ;
 

@@ -4,6 +4,7 @@
 #include <sofa/helper/system/config.h>
 
 #ifdef SOFA_BUILD_CIMGPLUGIN
+#define SOFA_TARGET CImgPlugin
 #define SOFA_CIMGPLUGIN_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
 #define SOFA_CIMGPLUGIN_API  SOFA_IMPORT_DYNAMIC_LIBRARY

@@ -163,6 +163,7 @@ void Simulation::exportGraph ( Node* root, const char* filename )
 /// Initialize the scene.
 void Simulation::init ( Node* root )
 {
+    sofa::helper::AdvancedTimer::stepBegin("Simulation::init");
     //cerr<<"Simulation::init"<<endl;
     if ( !root ) return;
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
@@ -211,6 +212,7 @@ void Simulation::init ( Node* root )
 
     // propagate the visualization settings (showVisualModels, etc.) in the whole graph
     updateVisualContext(root);
+    sofa::helper::AdvancedTimer::stepEnd("Simulation::init");
 }
 
 

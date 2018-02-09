@@ -1,0 +1,27 @@
+Node : {
+    name : "root"
+
+    ### Declaring a template. It is instanciated later.
+    Template : {
+        name : "MyTemplate"
+
+        Node : {
+            name : "Instance"
+
+            MechanicalObject : {
+                    name : "mstate"
+            }
+
+            Python : '''
+                     for i in range(0,10):
+                        self.createChild("child"+str(i))
+                     '''
+        }
+    }
+
+    ### Instanciating the same template two times.
+    MyTemplate : {}
+    MyTemplate: {}
+}
+
+

@@ -132,19 +132,7 @@ public:
         return p_position.getValue();
     }
 
-    Quat getOrientation()
-    {
-        if(currentLookAt !=  p_lookAt.getValue())
-        {
-            Quat newOrientation = getOrientationFromLookAt(p_position.getValue(), p_lookAt.getValue());
-            p_orientation.setValue(newOrientation);
-
-            currentLookAt = p_lookAt.getValue();
-        }
-
-        return p_orientation.getValue();
-    }
-
+    Quat getOrientation() ;
     Vec3 getLookAt()
     {
         return p_lookAt.getValue();
@@ -161,36 +149,11 @@ public:
         return p_fieldOfView.getValue();
     }
 
-    double getHorizontalFieldOfView()
-    {
-        const sofa::core::visual::VisualParams* vp = sofa::core::visual::VisualParams::defaultInstance();
-        const core::visual::VisualParams::Viewport viewport = vp->viewport();
+    double getHorizontalFieldOfView() ;
 
-        float screenwidth = (float)viewport[2];
-        float screenheight = (float)viewport[3];
-        float aspectRatio = screenwidth / screenheight;
-        float fov_radian = (float)getFieldOfView()* (float)(M_PI/180);
-        float hor_fov_radian = 2.0f * atan ( tan(fov_radian/2.0f) * aspectRatio );
-        return hor_fov_radian*(180/M_PI);
-    }
+    unsigned int getCameraType() const ;
 
-    unsigned int getCameraType() const
-    {
-        return p_type.getValue().getSelectedId();
-    }
-
-    void setCameraType(unsigned int type)
-    {
-        sofa::helper::OptionsGroup* optionsGroup = p_type.beginEdit();
-
-        if (type == core::visual::VisualParams::ORTHOGRAPHIC_TYPE)
-            optionsGroup->setSelectedItem(core::visual::VisualParams::ORTHOGRAPHIC_TYPE);
-        else
-            optionsGroup->setSelectedItem(core::visual::VisualParams::PERSPECTIVE_TYPE);
-
-        p_type.endEdit();
-    }
-
+    void setCameraType(unsigned int type) ;
 
     void setBoundingBox(const Vec3 &min, const Vec3 &max)
     {

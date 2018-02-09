@@ -497,8 +497,6 @@ void UncoupledConstraintCorrection<DataTypes>::applyMotionCorrection(const core:
     const Real xFactor = useOdeIntegrationFactors ? Real(m_pOdeSolver->getPositionIntegrationFactor()) : this->d_correctionPositionFactor.getValue();
     const Real vFactor = useOdeIntegrationFactors ? Real(m_pOdeSolver->getVelocityIntegrationFactor()) : (Real)(this->d_correctionVelocityFactor.getValue() / this->getContext()->getDt());
 
-    const double invDt = 1.0 / this->getContext()->getDt();
-
     for (unsigned int i = 0; i < dx.size(); i++)
     {
         const Deriv dxi = correction[i] * xFactor;

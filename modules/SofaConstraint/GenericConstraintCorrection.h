@@ -78,9 +78,10 @@ public:
 
     virtual void resetContactForce() override;
 
-    virtual void computeResidual(const core::ExecParams* /*params*/, defaulttype::BaseVector *lambda) override;
+    virtual void computeResidual(const core::ExecParams* params, defaulttype::BaseVector *lambda) override;
 
-    Data< helper::vector< std::string > >  solverName;
+    Data< helper::vector< std::string > >  d_linearSolversName;
+    Data< std::string >                    d_ODESolverName;
     Data< double > d_complianceFactor; // Factor applied to the position factor and velocity factor used to calculate compliance matrix.
 
     /// Pre-construction check method called by ObjectFactory.
@@ -95,8 +96,8 @@ protected:
     void applyMotionCorrection(const core::ConstraintParams* cparams, core::MultiVecCoordId xId, core::MultiVecDerivId vId, core::MultiVecDerivId dxId, 
         core::ConstMultiVecDerivId correction, double positionFactor, double velocityFactor);
 
-    core::behavior::OdeSolver* odesolver;
-    std::vector< core::behavior::LinearSolver* > linearsolvers;
+    core::behavior::OdeSolver* m_ODESolver;
+    std::vector< core::behavior::LinearSolver* > m_linearSolvers;
 };
 
 } // namespace collision

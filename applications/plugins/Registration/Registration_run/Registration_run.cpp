@@ -23,13 +23,6 @@ int main(int argc, char** argv)
 {
     glutInit(&argc,argv);
 
-#ifdef WIN32
-    const std::string pluginsDir = "bin";
-#else
-    const std::string pluginsDir = "lib";
-#endif
-    sofa::helper::system::PluginRepository.addFirstPath(Utils::getSofaPathPrefix() + "/" + pluginsDir);
-
     std::string fileName;
     // these can be passed using the command line
 //    fileName = std::string(registration_SRC_DIR) + "/examples/knee/precompute_model.py";
