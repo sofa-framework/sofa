@@ -68,7 +68,8 @@ void ServerCommunication::openCommunication()
 void ServerCommunication::closeCommunication()
 {
     m_running = false;
-	m_thread.join();
+    if(m_thread.joinable())
+        m_thread.join();
 }
 
 void * ServerCommunication::thread_launcher(void *voidArgs)
@@ -85,7 +86,7 @@ void ServerCommunication::handleEvent(Event * event)
         BufferData* data = fetchArgumentsFromReceivedBuffer();
         if (data == NULL) // simply check if the data is not null
         {
-            msg_error() << "something went wrong with received datas, fetched datas from buffer is null";
+//            msg_error() << "something went wrong with received datas, fetched datas from buffer is null";
             return;
         }
         if(data->getRows() == -1 && data->getCols() == -1)
@@ -102,7 +103,6 @@ void ServerCommunication::handleEvent(Event * event)
     }
     if (AnimateEndEvent::checkEventType(event))
     {
-        std::cout << "UOPDATE " << std::endl;
         saveDataToSenderBuffer();
     }
 }
@@ -307,7 +307,7 @@ bool ServerCommunication::saveDataToSenderBuffer()
             std::string key = subscriber->getName() + *itArgument;
             std::map<std::string, CircularBufferSender*>::iterator it = senderDataMap.find(key);
             if(it == senderDataMap.end())
-                senderDataMap.insert(std::pair<std::string, CircularBufferSender*>(key, new CircularBufferSender(3)));
+                senderDataMap.insert(std::pair<std::string, CircularBufferSender*>(key, new CircularBufferSender(this, 3)));
             CircularBufferSender * buffer = senderDataMap.at(key);
             try
             {

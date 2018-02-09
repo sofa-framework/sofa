@@ -148,7 +148,7 @@ void ServerCommunicationOSC::createOSCMessage(CommunicationSubscriber* subscribe
             packet << ((int)typeinfo->getIntegerValue(valueVoidPtr,0));
         else
         {
-//            msg_advice(data->getOwner()) << "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value" ;
+            msg_info(data->getOwner()) << "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value" ;
             packet <<  (data->getValueString().c_str());
         }
     }

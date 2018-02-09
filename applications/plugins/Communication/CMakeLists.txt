@@ -8,8 +8,6 @@ set(COMMUNICATION_MAJOR_VERSION 1)
 set(COMMUNICATION_MINOR_VERSION 0)
 set(COMMUNICATION_VERSION ${COMMUNICATION_MAJOR_VERSION}.${COMMUNICATION_MINOR_VERSION})
 
-add_subdirectory(Communication_test)
-
 set(HEADER_FILES
     config.h
     components/CommunicationSubscriber.h
@@ -33,8 +31,6 @@ set(EXTRA_FILES
     )
 
 find_package(SofaFramework REQUIRED)
-
-
 
 #COMMUNICATION ZMQ
 if(PLUGIN_COMMUNICATION_ZMQ)
@@ -76,6 +72,8 @@ if(PLUGIN_COMMUNICATION_Oscpack)
         message("Can't find Oscpack !")
     endif ()
 endif()
+
+add_subdirectory(Communication_test)
 
 IF(WIN32)
 	add_definitions(-D_WINSOCKAPI_)
