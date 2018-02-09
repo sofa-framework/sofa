@@ -72,7 +72,7 @@ public:
         std::cout << "applyPositionAndFreePosition is not implemented for this mapping" << std::endl;
     }
 
-    Data< std::string > m_nameOfInputMap;
+    Data< std::string > m_nameOfInputMap; ///< if contactDuplicate == true, it provides the name of the input mapping
 };
 
 } // namespace mapping

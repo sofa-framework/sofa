@@ -49,8 +49,8 @@ protected:
     ContactMap contactMap;
 
 public:
-    Data<sofa::helper::OptionsGroup> response;
-    Data<std::string> responseParams;
+    Data<sofa::helper::OptionsGroup> response; ///< contact response class
+    Data<std::string> responseParams; ///< contact response parameters (syntax: name1=value1    Data<std::string> responseParams;name2=value2    Data<std::string> responseParams;...)
 protected:
     DefaultContactManager();
     ~DefaultContactManager();

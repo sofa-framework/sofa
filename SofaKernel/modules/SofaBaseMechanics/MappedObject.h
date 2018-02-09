@@ -70,8 +70,8 @@ protected:
 public:
     virtual void init() override;
 
-    Data<VecCoord> f_X;
-    Data<VecDeriv> f_V;
+    Data<VecCoord> f_X; ///< position vector
+    Data<VecDeriv> f_V; ///< velocity vector
 
     virtual void resize(size_t vsize) override { f_X.beginEdit()->resize(vsize); f_X.endEdit(); f_V.beginEdit()->resize(vsize); f_V.endEdit(); }
 

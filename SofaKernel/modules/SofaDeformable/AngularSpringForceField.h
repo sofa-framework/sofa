@@ -78,11 +78,11 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    Data< helper::vector< unsigned int > > indices;
-    Data< VecReal > angularStiffness;
-    Data<VecReal> angularLimit;
-    Data< bool > drawSpring;
-    Data< sofa::defaulttype::Vec4f > springColor;
+    Data< helper::vector< unsigned int > > indices; ///< index of nodes controlled by the angular springs
+    Data< VecReal > angularStiffness; ///< angular stiffness for the controlled nodes
+    Data<VecReal> angularLimit; ///< angular limit (max; min) values where the force applies
+    Data< bool > drawSpring; ///< draw Spring
+    Data< sofa::defaulttype::Vec4f > springColor; ///< spring color
 
     linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> matS;
 

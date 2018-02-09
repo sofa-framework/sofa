@@ -57,8 +57,8 @@ public:
 
     /** @name  Material parameters */
     //@{
-    Data<helper::vector<Real> > _youngModulus;
-    Data<helper::vector<Real> > _poissonRatio;
+    Data<helper::vector<Real> > _youngModulus; ///< Young Modulus
+    Data<helper::vector<Real> > _poissonRatio; ///< Poisson Ratio ]-1,0.5[
     //@}
 
     virtual void reinit()

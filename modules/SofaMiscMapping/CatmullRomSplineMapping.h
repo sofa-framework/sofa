@@ -93,7 +93,7 @@ protected:
     CatmullRomSplineMapping ();
     virtual ~CatmullRomSplineMapping();
 
-    Data<unsigned int> SplittingLevel;
+    Data<unsigned int> SplittingLevel; ///< Number of recursive splits
     //Data<Real> Radius;
 
     //Both mesh topology must be Edge Mesh

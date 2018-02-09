@@ -79,7 +79,7 @@ protected:
     void setInteractionTags(MechanicalState1* mstate1, MechanicalState2* mstate2);
 
 public:
-    Data<bool> f_keepAlive;
+    Data<bool> f_keepAlive; ///< set to true to keep this contact alive even after collisions are no longer detected
 
     void cleanup() override;
 

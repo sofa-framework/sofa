@@ -56,7 +56,7 @@ namespace sofa
 
                 /// air drag coefficient.
                 Data< Real > dampingCoefficient;
-                Data<bool> d_implicit;
+                Data<bool> d_implicit; ///< should it generate damping matrix df/dv? (explicit otherwise, i.e. only generating a force)
 
             protected:
 

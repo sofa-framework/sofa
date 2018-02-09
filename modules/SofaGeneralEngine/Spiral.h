@@ -79,9 +79,9 @@ public:
         return DataTypes::Name();
     }
 
-    Data<VecCoord> f_X0;
-    Data<VecCoord> f_X;
-    Data<Real> curvature;
+    Data<VecCoord> f_X0; ///< Rest position coordinates of the degrees of freedom
+    Data<VecCoord> f_X; ///< Position coordinates of the degrees of freedom
+    Data<Real> curvature; ///< Spiral curvature factor
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_SPIRAL_CPP)

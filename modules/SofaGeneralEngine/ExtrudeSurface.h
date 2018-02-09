@@ -80,13 +80,13 @@ public:
         return DataTypes::Name();
     }
     bool initialized;
-    Data<bool> isVisible;
-    Data<Real> heightFactor;
-    Data< helper::vector<sofa::core::topology::BaseMeshTopology::Triangle> > f_triangles;
-    Data<VecCoord> f_extrusionVertices;
-    Data<VecCoord> f_surfaceVertices;
-    Data< helper::vector<sofa::core::topology::BaseMeshTopology::Triangle> > f_extrusionTriangles;
-    Data< helper::vector<sofa::core::topology::BaseMeshTopology::TriangleID> > f_surfaceTriangles;
+    Data<bool> isVisible; ///< is Visible ?
+    Data<Real> heightFactor; ///< Factor for the height of the extrusion (based on normal) ?
+    Data< helper::vector<sofa::core::topology::BaseMeshTopology::Triangle> > f_triangles; ///< List of triangle indices
+    Data<VecCoord> f_extrusionVertices; ///< Position coordinates of the extrusion
+    Data<VecCoord> f_surfaceVertices; ///< Position coordinates of the surface
+    Data< helper::vector<sofa::core::topology::BaseMeshTopology::Triangle> > f_extrusionTriangles; ///< Triangles indices of the extrusion
+    Data< helper::vector<sofa::core::topology::BaseMeshTopology::TriangleID> > f_surfaceTriangles; ///< Indices of the triangles of the surface to extrude
 
 
 };

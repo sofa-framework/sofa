@@ -60,8 +60,8 @@ public:
     typedef TMatrix TRotationMatrix;
     typedef typename Inherit::JMatrixType JMatrixType;
 
-    Data <std::string> solverName;
-    Data<unsigned> f_useRotationFinder;
+    Data <std::string> solverName; ///< Name of the solver/preconditioner to warp
+    Data<unsigned> f_useRotationFinder; ///< Which rotation Finder to use
 
 protected:
     WarpPreconditioner();

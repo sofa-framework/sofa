@@ -80,15 +80,15 @@ public:
     typedef helper::WriteOnlyAccessor<Data< TransformType > > waTransform;
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
 
-    Data<helper::OptionsGroup> overlap;
-    Data<helper::OptionsGroup> Interpolation;
-    Data<unsigned int> nbImages;
+    Data<helper::OptionsGroup> overlap; ///< method for handling overlapping regions
+    Data<helper::OptionsGroup> Interpolation; ///< Interpolation method.
+    Data<unsigned int> nbImages; ///< number of images to merge
 
     helper::vectorData<ImageTypes> inputImages;
     helper::vectorData<TransformType> inputTransforms;
 
-    Data<ImageTypes> image;
-    Data<TransformType> transform;
+    Data<ImageTypes> image; ///< Image
+    Data<TransformType> transform; ///< Transform
 
     virtual std::string getTemplateName() const    override { return templateName(this);    }
     static std::string templateName(const MergeImages<ImageTypes>* = NULL) { return ImageTypes::Name(); }

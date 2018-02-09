@@ -58,7 +58,7 @@ public:
     typedef helper::ReadAccessor<Data< ImageTypes > > raImage;
 
     Data< ImageTypes > image;
-    Data< helper::vector<T> > values;
+    Data< helper::vector<T> > values; ///< intensity values for each line
 
     virtual std::string getTemplateName() const    { return templateName(this);    }
     static std::string templateName(const IntensityProfileCreator<ImageTypes>* = NULL) { return ImageTypes::Name(); }

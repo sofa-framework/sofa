@@ -180,7 +180,7 @@ private:
 
     component::topology::MultilevelHexahedronSetTopologyContainer*	_multilevelTopology;
 
-    Data<bool>		_bRecursive;
+    Data<bool>		_bRecursive; ///< Use recursive matrix computation
 
 protected:
 

@@ -125,8 +125,8 @@ public:
         else return false;
     }
 
-    SetIndex f_indices;
-    Data<double> _drawSize;
+    SetIndex f_indices; ///< List of the index of particles to be fixed
+    Data<double> _drawSize; ///< 0 -> point based rendering, >0 -> radius of spheres
 
 
     class FCPointHandler : public sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >

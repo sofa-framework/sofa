@@ -79,7 +79,7 @@ public:
 
 
 protected:
-    Data<int> entryPoint;
+    Data<int> entryPoint; ///< Entry Point for the parameter: the first 4 entries are automatically binded with ambient, diffuse, specular and shininess
     mutable bool dirty;
 };
 

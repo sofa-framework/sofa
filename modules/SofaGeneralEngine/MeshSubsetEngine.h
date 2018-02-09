@@ -63,16 +63,16 @@ public:
 
     /// inputs
     Data< SeqPositions > inputPosition;
-    Data< SeqEdges > inputEdges;
-    Data< SeqTriangles > inputTriangles;
-    Data< SeqQuads > inputQuads;
-    Data< SetIndices > indices;
+    Data< SeqEdges > inputEdges; ///< input edges
+    Data< SeqTriangles > inputTriangles; ///< input triangles
+    Data< SeqQuads > inputQuads; ///< input quads
+    Data< SetIndices > indices; ///< Index lists of the selected vertices
 
     /// outputs
     Data< SeqPositions > position;
-    Data< SeqEdges > edges;
-    Data< SeqTriangles > triangles;
-    Data< SeqQuads > quads;
+    Data< SeqEdges > edges; ///< edges of mesh subset
+    Data< SeqTriangles > triangles; ///< Triangles of mesh subset
+    Data< SeqQuads > quads; ///< Quads of mesh subset
 
     virtual std::string getTemplateName() const    override { return templateName(this);    }
     static std::string templateName(const MeshSubsetEngine<DataTypes>* = NULL) { return DataTypes::Name();    }

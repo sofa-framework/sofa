@@ -139,9 +139,9 @@ protected:
 
 protected:
 
-    Data<bool> debugViewIndices;
-    Data<bool> debugViewIndicesTetra;
-    Data<bool> shellDisplay;
+    Data<bool> debugViewIndices; ///< Debug : view triangles indices
+    Data<bool> debugViewIndicesTetra; ///< Debug : view tetra indices
+    Data<bool> shellDisplay; ///< Debug : view shells tetra
 
 
 };

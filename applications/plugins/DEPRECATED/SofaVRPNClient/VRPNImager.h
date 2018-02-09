@@ -115,8 +115,8 @@ public:
     //Data<Point> rigidPoint;
     //Data<sofa::helper::vector<Vec3 > > f_positions;
     //Data<sofa::helper::vector<Quat> > f_orientations;
-    sofa::core::objectmodel::Data<Point> f_rigidPoint;
-    sofa::core::objectmodel::Data<Real>  f_scale;
+    sofa::core::objectmodel::Data<Point> f_rigidPoint; ///< RigidPoint
+    sofa::core::objectmodel::Data<Real>  f_scale; ///< Scale
 
 private:
     vrpn_Imager_Remote      *g_imager;      //< Imager client object

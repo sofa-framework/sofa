@@ -61,9 +61,9 @@ protected:
 
 public:
     //Add Data here
-    Data <unsigned int> _headerSize;
-    Data <bool> _forceBinary;
-    Data <bool> d_mergePositionUsingMap;
+    Data <unsigned int> _headerSize; ///< Size of the header binary file (just before the number of facet).
+    Data <bool> _forceBinary; ///< Force reading in binary mode. Even in first keyword of the file is solid.
+    Data <bool> d_mergePositionUsingMap; ///< Since positions are duplicated in a STL, they have to be merged. Using a map to do so will temporarily duplicate memory but should be more efficient. Disable it if memory is really an issue.
 
 };
 

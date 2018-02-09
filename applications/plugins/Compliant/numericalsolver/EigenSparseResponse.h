@@ -108,8 +108,8 @@ public:
 
     SOFA_ABSTRACT_CLASS(SOFA_TEMPLATE2(EigenSparseIterativeResponse,LinearSolver,symmetric),SOFA_TEMPLATE2(EigenSparseResponse,LinearSolver,symmetric));
 
-    Data<unsigned> d_iterations;
-    Data<SReal> d_tolerance;
+    Data<unsigned> d_iterations; ///< max iterations
+    Data<SReal> d_tolerance; ///< tolerance
 
     EigenSparseIterativeResponse();
 

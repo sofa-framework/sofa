@@ -248,9 +248,9 @@ protected:
 
     virtual ~VolumeMapping() {}
 
-    Data<helper::vector<Real> > offset;
+    Data<helper::vector<Real> > offset; ///< offsets added to output volumes
 
-    Data<unsigned int> f_nbMeshes;
+    Data<unsigned int> f_nbMeshes; ///< number of meshes to compute the volume for
     helper::vectorData< SeqTriangles > vf_triangles;
     helper::vectorData< SeqQuads > vf_quads;
     Data<bool> f_geometricStiffness; ///< should geometricStiffness be considered?

@@ -57,9 +57,9 @@ public:
 
     SOFA_CLASS(SOFA_TEMPLATE2(PrincipalStretchesMapping,TIn,TOut), SOFA_TEMPLATE(BaseStrainMappingT,BlockType ));
 
-    Data<bool> asStrain;
-    Data<SReal> threshold;
-    Data<bool> f_PSDStabilization;
+    Data<bool> asStrain; ///< compute principal stretches - 1
+    Data<SReal> threshold; ///< threshold the principal stretches to ensure detF=J=U1*U2*U3 is not too close or < 0
+    Data<bool> f_PSDStabilization; ///< project geometric stiffness sub-matrices to their nearest symmetric, positive semi-definite matrices
 
 
     virtual void reinit()

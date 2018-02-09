@@ -247,17 +247,17 @@ protected:
     helper::vector<defaulttype::BaseMatrix*> baseMatrices;      ///< Jacobian of the mapping, in a vector
 
 public:
-    Data< SeqTetrahedra > in_tetrahedra;
-    Data< SeqHexahedra > in_hexahedra;
-    Data< SeqTriangles > in_triangles;
-    Data< SeqQuads > in_quads;
-    Data< SeqEdges > in_edges;
+    Data< SeqTetrahedra > in_tetrahedra; ///< input tetrahedra
+    Data< SeqHexahedra > in_hexahedra; ///< input hexahedra
+    Data< SeqTriangles > in_triangles; ///< input triangles
+    Data< SeqQuads > in_quads; ///< input quads
+    Data< SeqEdges > in_edges; ///< input edges
 
-    Data< SeqTetrahedra > out_tetrahedra;
-    Data< SeqHexahedra > out_hexahedra;
-    Data< SeqTriangles > out_triangles;
-    Data< SeqQuads > out_quads;
-    Data< SeqEdges > out_edges;
+    Data< SeqTetrahedra > out_tetrahedra; ///< output tetrahedra
+    Data< SeqHexahedra > out_hexahedra; ///< output hexahedra
+    Data< SeqTriangles > out_triangles; ///< output triangles
+    Data< SeqQuads > out_quads; ///< output quads
+    Data< SeqEdges > out_edges; ///< output edges
 
 protected:
     VecVecID clusters;  ///< groups of points for which we compute the transformation

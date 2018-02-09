@@ -49,7 +49,7 @@ protected:
     DataController();
     ~DataController() {}
 
-    sofa::core::objectmodel::Data<std::string> data;
+    sofa::core::objectmodel::Data<std::string> data; ///< Controlled data
 };
 
 } // namespace misc

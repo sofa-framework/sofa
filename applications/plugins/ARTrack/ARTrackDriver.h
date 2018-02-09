@@ -64,9 +64,9 @@ public:
     virtual void reinit();
 
 
-    Data<double> aRTrackScale;
-    Data<Vector3> localTrackerPos;
-    Data<double> scaleAngleFinger;
+    Data<double> aRTrackScale; ///< ARTrack scale
+    Data<Vector3> localTrackerPos; ///< Local tracker position
+    Data<double> scaleAngleFinger; ///< Angle Finger scale
 
 private:
 

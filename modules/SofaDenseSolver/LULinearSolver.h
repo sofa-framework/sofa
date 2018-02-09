@@ -45,7 +45,7 @@ class LULinearSolver : public sofa::component::linearsolver::MatrixLinearSolver<
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(LULinearSolver,Matrix,Vector),SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver,Matrix,Vector));
 
-    Data<bool> f_verbose;
+    Data<bool> f_verbose; ///< Dump system state at each iteration
     typename Matrix::LUSolver* solver;
     typename Matrix::InvMatrixType Minv;
     bool computedMinv;

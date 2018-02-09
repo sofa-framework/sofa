@@ -46,7 +46,7 @@ public:
     typedef container::SpatialGridContainer<defaulttype::Vec3Types> GridContainer;
     typedef GridContainer::Grid Grid;
 
-    Data<int> d_leafScale;
+    Data<int> d_leafScale; ///< at which level should the first cube layer be constructed. Note that this must not be greater than GRIDDIM_LOG2
 protected:
     SpatialGridPointModel();
 public:

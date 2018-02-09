@@ -105,14 +105,14 @@ protected:
 
 public:
 
-    Data<Coord> coneCenter;
-    Data<Coord> coneHeight;
-    Data<Real> coneAngle;
+    Data<Coord> coneCenter; ///< cone center
+    Data<Coord> coneHeight; ///< cone height
+    Data<Real> coneAngle; ///< cone angle
 
-    Data<Real> stiffness;
-    Data<Real> damping;
-    Data<defaulttype::RGBAColor> color;
-    Data<bool> bDraw;
+    Data<Real> stiffness; ///< force stiffness
+    Data<Real> damping; ///< force damping
+    Data<defaulttype::RGBAColor> color; ///< cone color. (default=0.0,0.0,0.0,1.0,1.0)
+    Data<bool> bDraw; ///< enable/disable drawing of the cone
 protected:
     ConicalForceField()
         : coneCenter(initData(&coneCenter, "coneCenter", "cone center"))

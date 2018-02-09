@@ -113,7 +113,7 @@ protected:
 public:
     sofa::core::objectmodel::DataFileName       m_filename;
     sofa::core::objectmodel::Data<std::string>  m_classname;
-    sofa::core::objectmodel::Data< helper::vector< std::string > >  m_variables; /// array of string variables (equivalent to a c-like argv), while waiting to have a better way to share variables
+    sofa::core::objectmodel::Data< helper::vector< std::string > >  m_variables; ///< array of string variables (equivalent to a c-like argv), while waiting to have a better way to share variables
     sofa::core::objectmodel::Data<bool>         m_timingEnabled;
     sofa::core::objectmodel::Data<bool>         m_doAutoReload;
 

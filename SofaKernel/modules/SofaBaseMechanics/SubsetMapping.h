@@ -95,12 +95,12 @@ public:
     typedef sofa::component::topology::PointSubsetData< IndexArray > SetIndex;
     SetIndex f_indices;
 
-    Data < int > f_first;
-    Data < int > f_last;
-    Data < Real > f_radius;
-    Data < bool > f_handleTopologyChange;
-    Data < bool > f_ignoreNotFound;
-    Data < bool > f_resizeToModel; 
+    Data < int > f_first; ///< first index (use if indices are sequential)
+    Data < int > f_last; ///< last index (use if indices are sequential)
+    Data < Real > f_radius; ///< search radius to find corresponding points in case no indices are given
+    Data < bool > f_handleTopologyChange; ///< Enable support of topological changes for indices (disable if it is linked from SubsetTopologicalMapping::pointD2S)
+    Data < bool > f_ignoreNotFound; ///< True to ignore points that are not found in the input model, they will be treated as fixed points
+    Data < bool > f_resizeToModel; ///< True to resize the output MechanicalState to match the size of indices
     SubsetMappingInternalData<In, Out> data;
     void postInit();
 protected:

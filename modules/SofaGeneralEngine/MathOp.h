@@ -77,10 +77,10 @@ public:
         return Data<Value>::templateName();
     }
 
-    Data<unsigned int> f_nbInputs;
+    Data<unsigned int> f_nbInputs; ///< Number of input values
     helper::vector<Data<VecValue>*> vf_inputs;
-    sofa::core::objectmodel::Data< sofa::helper::OptionsGroup > f_op;
-    Data<VecValue> f_output;
+    sofa::core::objectmodel::Data< sofa::helper::OptionsGroup > f_op; ///< Selected operation to apply
+    Data<VecValue> f_output; ///< Output values
 
 protected:
     void createInputs(int nb = -1);

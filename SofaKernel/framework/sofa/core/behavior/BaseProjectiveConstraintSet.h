@@ -117,7 +117,7 @@ public:
 
 
 protected:
-    Data<int> group;
+    Data<int> group; ///< ID of the group containing this constraint. This ID is used to specify which constraints are solved by which solver, by specifying in each solver which groups of constraints it should handle.
 
 public:
 

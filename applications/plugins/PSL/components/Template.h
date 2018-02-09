@@ -64,7 +64,7 @@ public:
     virtual ~Template() ;
 
     PyObject* m_rawTemplate { nullptr };
-    Data<std::string> m_template  ;
+    Data<std::string> m_template  ; ///< Current template source
 
     void addDataToTrack(BaseData*) ;
     virtual void handleEvent(Event *event) override ;
