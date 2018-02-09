@@ -65,7 +65,28 @@ using sofa::PythonFactory;
 
 void bindSofaPythonModule()
 {
-    PythonFactory::s_sofaPythonModule = SP_INIT_MODULE(Sofa)
+    static std::string docstring=R"(
+            The Sofa module documentation (from SofaPython plugin).
+
+            Content:
+            ********
+
+            HELLO SPHINX !
+
+            .. autosummary::
+
+                Base
+                Node
+
+            |
+
+            .. autoclass:: Base
+                :members:
+                :undoc-members:
+
+            )";
+
+    PythonFactory::s_sofaPythonModule = SP_INIT_MODULE(Sofa,docstring.c_str())
 
     /// non Base-Inherited types
     SP_ADD_CLASS_IN_SOFAMODULE(Data)

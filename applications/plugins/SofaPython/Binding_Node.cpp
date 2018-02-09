@@ -242,6 +242,9 @@ static PyObject * Node_addObject_Impl(PyObject *self, PyObject * args, PyObject 
         Py_DecRef(values);
     }
 
+
+    std::cout << "ARE YOU SURE ???" << std::endl ;
+
     /// use functions ffs
     BaseObject* object = sofa::py::unwrap<BaseObject>(pyChild);
     if (!object) {

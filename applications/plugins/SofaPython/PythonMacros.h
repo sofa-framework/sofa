@@ -67,7 +67,7 @@ SOFA_SOFAPYTHON_API std::ostream& pythonToSofaDataString(PyObject* value, std::o
 // =============================================================================
 
 // PyObject *MyModule = SP_INIT_MODULE(MyModuleName)
-#define SP_INIT_MODULE(MODULENAME) Py_InitModule(#MODULENAME,MODULENAME##ModuleMethods); sofa::simulation::PythonEnvironment::excludeModuleFromReload(#MODULENAME);
+#define SP_INIT_MODULE(MODULENAME, DOCSTRING) Py_InitModule3(#MODULENAME,MODULENAME##ModuleMethods, DOCSTRING); sofa::simulation::PythonEnvironment::excludeModuleFromReload(#MODULENAME);
 
 #define SP_MODULE_METHODS_BEGIN(MODULENAME) PyMethodDef MODULENAME##ModuleMethods[] = {
 #define SP_MODULE_METHODS_END {NULL,NULL,0,NULL} };

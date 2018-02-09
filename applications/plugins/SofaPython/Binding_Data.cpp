@@ -824,6 +824,46 @@ static PyObject * Data_isDirty(PyObject * self, PyObject * args)
     return PyBool_FromLong( data->isDirty() );
 }
 
+static PyObject * Data_isRequired(PyObject * self, PyObject * args)
+{
+    const size_t argSize = PyTuple_Size(args);
+    if( argSize != 0 ) {
+        PyErr_SetString(PyExc_RuntimeError, "This function does not accept any argument.") ;
+        return NULL;
+    }
+
+    BaseData* data = get_basedata( self );
+    return PyBool_FromLong( data->isRequired() );
+}
+
+static PyObject * Data_isReadOnly(PyObject * self, PyObject * args)
+{
+    const size_t argSize = PyTuple_Size(args);
+    if( argSize != 0 ) {
+        PyErr_SetString(PyExc_RuntimeError, "This function does not accept any argument.") ;
+        return NULL;
+    }
+
+    BaseData* data = get_basedata( self );
+    return PyBool_FromLong( data->isReadOnly() );
+}
+
+
+static PyObject * Data_getHelp(PyObject *self, PyObject * args)
+{
+    const size_t argSize = PyTuple_Size(args);
+    if( argSize != 0 ) {
+        PyErr_SetString(PyExc_RuntimeError, "This function does not accept any argument.") ;
+        return NULL;
+    }
+
+    BaseData* data = get_basedata( self );
+    const char *h = data->getHelp() ;
+    if(h == nullptr)
+        return PyString_FromString("(No help available)");
+    return PyString_FromString(h);
+}
+
 
 /// implementation of __str__ to cast a Data to a string
 static PyObject * Data_str(PyObject *self)
@@ -831,6 +871,7 @@ static PyObject * Data_str(PyObject *self)
     BaseData* data = get_basedata( self );
     return PyString_FromString(data->getValueString().c_str());
 }
+
 
 
 static PyObject * Data_getAsACreateObjectParameter(PyObject * self, PyObject * args)
@@ -853,6 +894,9 @@ SP_CLASS_METHOD(Data,setValue)
 SP_CLASS_METHOD_DOC(Data,getValue, "Return the value at given index if the field is a vector.")
 SP_CLASS_METHOD(Data,getSize)
 SP_CLASS_METHOD(Data,setSize)
+SP_CLASS_METHOD_DOC(Data,isRequired, "Returns True/False if the data field is required.")
+SP_CLASS_METHOD_DOC(Data,isReadOnly, "Returns True/False if the data field is read-only.")
+SP_CLASS_METHOD_DOC(Data,getHelp, "Returns the docstring associated with this data.")
 SP_CLASS_METHOD(Data,unset)
 SP_CLASS_METHOD_DOC(Data,isSet, "Returns True/False if the data field has been setted.\n"
                                 "if field.isSet():                                    \n"
