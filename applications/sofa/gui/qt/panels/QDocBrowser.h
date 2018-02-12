@@ -54,21 +54,10 @@ class SofaEnrichedPage : public QWebEnginePage
 {
     Q_OBJECT
 public:
-    SofaEnrichedPage(QObject* parent = 0) : QWebEnginePage(parent){}
+    SofaEnrichedPage(QObject* parent = 0) ;
+    bool isSofaTarget(const QUrl &url) ;
 
-    bool acceptNavigationRequest(const QUrl & url, QWebEnginePage::NavigationType type, bool)
-    {
-        std::cout << "CLICKED" << std::endl ;
-        if (type == QWebEnginePage::NavigationTypeLinkClicked)
-        {
-            std::cout << "EMIT" << std::endl ;
-
-            emit linkClicked(url);
-            return false;
-        }
-        return true;
-    }
-
+    bool acceptNavigationRequest(const QUrl & url, QWebEnginePage::NavigationType type, bool);
 signals:
     void linkClicked(const QUrl&);
 };

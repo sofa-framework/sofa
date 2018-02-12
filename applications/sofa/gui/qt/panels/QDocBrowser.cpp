@@ -51,6 +51,39 @@ namespace qt
 ///////////////////////////// PRIVATE OBJECTS //////////////////////////////////
 /// May be moved to their own .cpp/.hh if one day someone needs them.
 
+SofaEnrichedPage::SofaEnrichedPage(QObject* parent) : QWebEnginePage(parent)
+{
+}
+
+bool SofaEnrichedPage::isSofaTarget(const QUrl& u)
+{
+    if( u.fileName() == QString("sofa") && u.hasQuery() )
+    {
+        return true ;
+    }else if( u.isLocalFile() && ! u.hasQuery() )
+    {
+        return true ;
+    }
+    return false;
+}
+
+bool SofaEnrichedPage::acceptNavigationRequest(const QUrl & url,
+                                               QWebEnginePage::NavigationType type,
+                                               bool )
+{
+    if (type == QWebEnginePage::NavigationTypeLinkClicked)
+    {
+        if( isSofaTarget(url) )
+        {
+            emit linkClicked(url);
+            return false;
+        }
+    }
+    return true;
+}
+
+
+
 //////////////////////////////// BrowserHistory ////////////////////////////////
 /// Hold an history entry which include the .html file, the sofa scene file and the
 /// root directory. This was needed to implement the backward function of the
@@ -185,8 +218,6 @@ void DocBrowser::loadHtml(const std::string& filename)
     std::string rootdir = FileSystem::getParentDirectory(filename) ;
 
     QUrl currenturl = m_htmlPage->page()->url() ;
-    std::cout << "LOADING FILENAME : " << filename << std::endl ;
-    std::cout << "LOADING HCURRENTURL : " << currenturl.path().toStdString() << std::endl ;
 
     if(currenturl.isLocalFile() && currenturl.path() == asQStr(htmlfile))
     {
@@ -218,13 +249,12 @@ void DocBrowser::loadHtml(const std::string& filename)
 
 void DocBrowser::goToPrev()
 {
-    std::cout << "Hello world" << std::endl ;
     m_htmlPage->pageAction(QWebEnginePage::Back)->trigger() ;
 }
 
 void DocBrowser::onLinkClicked(const QUrl& u)
 {
-    msg_info("DocBrowser") << "Click to " << asStr(u.path()) ;
+    msg_info("DocBrowser") << " query to load " << asStr(u.path()) ;
     if( u.fileName() == QString("sofa") && u.hasQuery() )
     {
         m_realgui->playpauseGUI(true) ;
