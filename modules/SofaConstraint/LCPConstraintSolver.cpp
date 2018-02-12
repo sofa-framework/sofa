@@ -397,7 +397,7 @@ void LCPConstraintSolver::build_Coarse_Compliance(std::vector<int> &constraint_m
 
     _Wcoarse.clear();
 
-    dmsg_error_when( (sizeCoarseSystem==0) ) <<"no constraint" ;
+    dmsg_error_when(sizeCoarseSystem==0) <<"no constraint" ;
 
     _Wcoarse.resize(sizeCoarseSystem,sizeCoarseSystem);
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
