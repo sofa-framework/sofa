@@ -30,6 +30,9 @@ using namespace sofa::core::objectmodel;
 
 #include <sofa/helper/logging/Messaging.h>
 
+#include <sofa/helper/StringUtils.h>
+using sofa::helper::getAStringCopy ;
+
 #include "PythonFactory.h"
 #include "PythonToSofa.inl"
 
@@ -56,12 +59,6 @@ static PyObject * Base_addData(PyObject *self, PyObject *args )
     Py_RETURN_NONE;
 }
 
-static char* getStringCopy(char *c)
-{
-    char* tmp = new char[strlen(c)+1] ;
-    strcpy(tmp,c);
-    return tmp ;
-}
 
 static PyObject * Base_addNewData(PyObject *self, PyObject *args ) {
     Base* obj = get_base(self);
@@ -75,9 +72,9 @@ static PyObject * Base_addNewData(PyObject *self, PyObject *args ) {
         return NULL;
     }
 
-    dataName = getStringCopy(dataName) ;
-    dataClass = getStringCopy(dataClass) ;
-    dataHelp  = getStringCopy(dataHelp) ;
+    dataName = getAStringCopy(dataName) ;
+    dataClass = getAStringCopy(dataClass) ;
+    dataHelp  = getAStringCopy(dataHelp) ;
 
     BaseData* bd = nullptr ;
     if(dataRawType[0] == 's'){

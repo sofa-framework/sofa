@@ -30,6 +30,13 @@ namespace sofa
 namespace helper
 {
 
+static inline char* getAStringCopy(const char *c)
+{
+    char* tmp = new char[strlen(c)+1] ;
+    strcpy(tmp,c);
+    return tmp ;
+}
+
 static inline void replaceAll(std::string& str, const std::string& search, const std::string& replace)
 {
     size_t pos = 0;
