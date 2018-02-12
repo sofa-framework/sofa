@@ -342,13 +342,13 @@ protected:
     virtual bool updateFromParentValue(const BaseData* parent);
 
     /// Help message
-    const char* help;
+    const char* help {nullptr} ;
     /// Owner class
-    const char* ownerClass;
+    const char* ownerClass {nullptr} ;
     /// group
-    const char* group;
+    const char* group {nullptr};
     /// widget
-    const char* widget;
+    const char* widget {nullptr};
     /// Number of changes since creation
     helper::fixed_array<int, SOFA_DATA_MAX_ASPECTS> m_counters;
     /// True if this %Data is set, i.e. its value is different from the default value
@@ -356,7 +356,7 @@ protected:
     /// Flags indicating the purpose and behaviour of this %Data
     DataFlags m_dataFlags;
     /// Return the Base component owning this %Data
-    Base* m_owner;
+    Base* m_owner {nullptr};
     /// Data name within the Base component
     std::string m_name;
 //    /// Link to another Data, if used as an input from another Data (@ typo).
