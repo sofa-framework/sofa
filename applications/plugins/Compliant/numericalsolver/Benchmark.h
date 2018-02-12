@@ -23,10 +23,14 @@ class SOFA_Compliant_API Benchmark : public core::objectmodel::BaseObject {
 	// should not dealloc/realloc, so we should be fine.
 	
 	// duration
-	Data<SReal> factor;
+	Data<SReal> factor; ///< time elapsed during factor
 	
 	// convergence
-    Data< helper::vector<SReal> > primal, dual, complementarity, optimality, duration;
+    Data< helper::vector<SReal> > primal; ///< primal error
+    Data< helper::vector<SReal> > dual; ///< dual error
+    Data< helper::vector<SReal> > complementarity; ///< complementarity error
+    Data< helper::vector<SReal> > optimality; ///< optimality error
+    Data< helper::vector<SReal> > duration; ///< cumulated solve time
 	
 	typedef SReal real;
 	typedef Eigen::Matrix<real, Eigen::Dynamic, 1> vec;

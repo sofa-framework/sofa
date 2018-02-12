@@ -94,7 +94,7 @@ public:
 public:
 
 	// granularity
-	Data<unsigned int> mGrainSize;
+	Data<unsigned int> mGrainSize; ///< minimum number of Beam points for task creation
 
 
 

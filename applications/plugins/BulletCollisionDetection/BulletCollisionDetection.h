@@ -173,12 +173,12 @@ class SOFA_BULLETCOLLISIONDETECTION_API BulletCollisionDetection :
 public:
     SOFA_CLASS2(BulletCollisionDetection, core::collision::BroadPhaseDetection, core::collision::NarrowPhaseDetection);
 
-    Data<bool> useSimpleBroadPhase;
-    Data<bool> useSAP;
+    Data<bool> useSimpleBroadPhase; ///< enable/disable simple broad phase
+    Data<bool> useSAP; ///< enable/disable sweep and prune
     //Data<bool> useMultiSAP;
     //Data<bool> useBdvt;
 
-    Data< helper::fixed_array<defaulttype::Vector3,2> > box;
+    Data< helper::fixed_array<defaulttype::Vector3,2> > box; ///< box used if using sweep and prune
 
 private:
     //sofa::set< > collisionModels;

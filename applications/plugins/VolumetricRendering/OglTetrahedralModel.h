@@ -63,10 +63,10 @@ public:
     typedef sofa::core::topology::BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
     core::topology::BaseMeshTopology* m_topology;
 
-    topology::PointData< sofa::defaulttype::ResizableExtVector<Coord> > m_positions;
+    topology::PointData< sofa::defaulttype::ResizableExtVector<Coord> > m_positions; ///< Vertices coordinates
     Data< sofa::defaulttype::ResizableExtVector<Tetrahedron> > m_tetrahedrons;
-    Data<bool> depthTest;
-    Data<bool> blending;
+    Data<bool> depthTest; ///< Set Depth Test
+    Data<bool> blending; ///< Set Blending
 
     bool modified;
     int lastMeshRev;

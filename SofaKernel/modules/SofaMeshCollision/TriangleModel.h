@@ -133,7 +133,7 @@ public:
 
 	enum { NBARY = 2 };
 
-    Data<bool> bothSide; // to activate collision on both side of the triangle model
+    Data<bool> bothSide; ///< to activate collision on both side of the triangle model
 protected:
 #if 0
     struct TriangleInfo
@@ -170,7 +170,7 @@ protected:
     int getTriangleFlags(int i);
 
     core::behavior::MechanicalState<DataTypes>* mstate;
-    Data<bool> computeNormals;
+    Data<bool> computeNormals; ///< set to false to disable computation of triangles normal
     int meshRevision;
 
     sofa::core::topology::BaseMeshTopology* _topology;

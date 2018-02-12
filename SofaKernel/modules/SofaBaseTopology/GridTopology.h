@@ -208,7 +208,10 @@ public:
     Data<Vec3i> d_n;
 
     /// Data bool to set option to compute topological elements
-    Data<bool> d_computeHexaList, d_computeQuadList, d_computeEdgeList, d_computePointList;
+    Data<bool> d_computeHexaList;
+    Data<bool> d_computeQuadList; ///< put true if the list of Quad is needed during init (default=true)
+    Data<bool> d_computeEdgeList; ///< put true if the list of Lines is needed during init (default=true)
+    Data<bool> d_computePointList; ///< put true if the list of Points is needed during init (default=true)
     /// Data bool to set option to compute texcoords
     Data<bool> d_createTexCoords;
 };

@@ -30,7 +30,7 @@ class SOFA_Compliant_API QuadraticMapping : public AssembledMapping<TIn, TOut>
     typedef QuadraticMapping self;
     typedef typename TOut::Real out_real;
     
-    Data< SReal > stiffness;
+    Data< SReal > stiffness; ///< scalar factor
     
     QuadraticMapping()
         : stiffness( initData(&stiffness, (SReal)1.0, "stiffness", "scalar factor") ) {

@@ -58,9 +58,9 @@ public:
     typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
 
 public:
-    Data< Real > distance;
-    Data< Real > stiffness;
-    Data< Real > damping;
+    Data< Real > distance; ///< Distance to maintain between particles
+    Data< Real > stiffness; ///< Stiffness
+    Data< Real > damping; ///< Damping
 
     typedef sofa::component::container::SpatialGridContainer<DataTypes> Grid;
 

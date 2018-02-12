@@ -137,9 +137,9 @@ protected:
 
     };
 
-    topology::PointData<sofa::helper::vector<Mat3x3> > pointInfo;
-    topology::EdgeData<sofa::helper::vector<Mat3x3> > edgeInfo;
-    topology::TetrahedronData<sofa::helper::vector<TetrahedronRestInformation> > tetrahedronInfo;
+    topology::PointData<sofa::helper::vector<Mat3x3> > pointInfo; ///< Internal point data
+    topology::EdgeData<sofa::helper::vector<Mat3x3> > edgeInfo; ///< Internal edge data
+    topology::TetrahedronData<sofa::helper::vector<TetrahedronRestInformation> > tetrahedronInfo; ///< Internal tetrahedron data
 
 
     sofa::core::topology::BaseMeshTopology* _topology;
@@ -151,8 +151,8 @@ protected:
     Data<std::string> f_method; ///< the computation method of the displacements
     RotationDecompositionMethod decompositionMethod;
 
-    Data<Real> f_poissonRatio;
-    Data<Real> f_youngModulus;
+    Data<Real> f_poissonRatio; ///< Poisson ratio in Hooke's law
+    Data<Real> f_youngModulus; ///< Young modulus in Hooke's law
 
     Real lambda;  /// first Lame coefficient
     Real mu;    /// second Lame coefficient

@@ -57,11 +57,11 @@ public:
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
 
     //Data< helper::vector<std::string> > f_options;
-    Data<int> f_symmetric;
-    Data<bool> f_verbose;
-    Data<std::string> f_exportDataToDir;
-    Data<bool> f_iterativeSolverNumbering;
-    Data<bool> f_saveDataToFile;
+    Data<int> f_symmetric; ///< 0 = nonsymmetric arbitrary matrix, 1 = symmetric matrix, 2 = symmetric positive definite, -1 = structurally symmetric matrix
+    Data<bool> f_verbose; ///< Dump system state at each iteration
+    Data<std::string> f_exportDataToDir; ///< export data (matrix, RHS, solution) to files in given directory
+    Data<bool> f_iterativeSolverNumbering; ///< if true, the naming convention is incN_itM where N is the time step and M is the iteration inside the step
+    Data<bool> f_saveDataToFile; ///< if true, export the data to the current directory (if exportDataToDir not set)
 
     SparsePARDISOSolver();
     ~SparsePARDISOSolver();

@@ -70,10 +70,10 @@ public:
     void init() override;
     void bwdInit() override;
 
-    Data<Vec6>  box_object1;
-    Data<Vec6>  box_object2;
-    Data<SReal> factorRestLength;
-    Data<bool>  forceOldBehavior;
+    Data<Vec6>  box_object1; ///< Box for the object1 where springs will be attached
+    Data<Vec6>  box_object2; ///< Box for the object2 where springs will be attached
+    Data<SReal> factorRestLength; ///< Factor used to compute the rest length of the springs generated
+    Data<bool>  forceOldBehavior; ///< Keep using the old behavior
     // -- VisualModel interface
 
     void draw(const core::visual::VisualParams* vparams) override;

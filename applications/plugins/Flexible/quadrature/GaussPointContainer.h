@@ -50,8 +50,8 @@ public:
     typedef Inherited::waVolume waVolume;
     //@}
 
-    Data< unsigned int > f_volumeDim;
-    Data< helper::vector<Real> > f_inputVolume;
+    Data< unsigned int > f_volumeDim; ///< dimension of quadrature weight vectors
+    Data< helper::vector<Real> > f_inputVolume; ///< weighted volumes (=quadrature weights)
 
     virtual void init()
     {

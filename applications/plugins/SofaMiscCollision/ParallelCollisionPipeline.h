@@ -40,9 +40,9 @@ class SOFA_MISC_COLLISION_API ParallelCollisionPipeline : public sofa::simulatio
 public:
     SOFA_CLASS2(ParallelCollisionPipeline,sofa::simulation::PipelineImpl,sofa::core::collision::ParallelPipeline);
 
-    Data<bool> bVerbose;
-    Data<bool> bDraw;
-    Data<int> depth;
+    Data<bool> bVerbose; ///< Display current step information
+    Data<bool> bDraw; ///< Draw detected collisions
+    Data<int> depth; ///< Max depth of bounding trees
 
     ParallelCollisionPipeline();
 

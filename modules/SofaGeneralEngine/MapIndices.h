@@ -63,11 +63,11 @@ public:
 
     void update() override;
 
-    core::objectmodel::Data<VecValue> f_in;
-    core::objectmodel::Data<VecIndex> f_indices;
-    core::objectmodel::Data<VecValue> f_out;
-    core::objectmodel::Data<std::string> f_outStr;
-    core::objectmodel::Data<bool> f_transpose;
+    core::objectmodel::Data<VecValue> f_in; ///< input indices
+    core::objectmodel::Data<VecIndex> f_indices; ///< array containing in ith cell the input index corresponding to the output index i (or reversively if transpose=true)
+    core::objectmodel::Data<VecValue> f_out; ///< Output indices
+    core::objectmodel::Data<std::string> f_outStr; ///< Output indices, converted as a string
+    core::objectmodel::Data<bool> f_transpose; ///< Should the transposed mapping be used ?
 
     template<class V>
     void applyIndex(V& v, const MapIndex& m)

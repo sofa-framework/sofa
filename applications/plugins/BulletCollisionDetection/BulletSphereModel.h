@@ -32,7 +32,7 @@ public:
     typedef typename DataTypes::VecReal VecReal;
     //typedef TBtTriangle<DataTypes> Element;
 
-    sofa::core::objectmodel::Data<SReal> margin;
+    sofa::core::objectmodel::Data<SReal> margin; ///< Margin used for collision detection within bullet
 
     virtual void initBullet();
     virtual void updateBullet();

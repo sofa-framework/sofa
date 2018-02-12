@@ -58,11 +58,11 @@ public:
         EVOLUTION_COUNT
     };
 
-    Data< int > f_evolution;
-    Data< double > f_period;
-    Data< float > f_alphaMax;
-    Data< float > f_alpha0;
-    Data< VecCoord > f_interpValues;
+    Data< int > f_evolution; ///< O for fixity, 1 for inflation, 2 for deflation
+    Data< double > f_period; ///< time to cover all the interpolation positions between original mesh and alpha*(objective mesh), in seconds 
+    Data< float > f_alphaMax; ///< bound defining the max interpolation between the origina (alpha=0) and the objectiv (alpha=1) meshes
+    Data< float > f_alpha0; ///< alpha value at t=0. (0 < alpha0 < 1)
+    Data< VecCoord > f_interpValues; ///< values or the interpolation
 
     void bwdInit() override;
 

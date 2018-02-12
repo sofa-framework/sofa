@@ -117,7 +117,7 @@ public:
     }
 
     //Edges involving a distance constraint
-    Data< SeqEdges > vecConstraint;
+    Data< SeqEdges > vecConstraint; ///< List of the edges to constrain
 
 protected :
 

@@ -85,18 +85,18 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-    Data<bool> d_useTopo;
+    Data<bool> d_useTopo; ///< Use avalaible topology to compute neighborhood.
     //Data<unsigned int> maxIter;
 
-    Data<Real> d_radius;
-    Data<Real> d_fixedRadius;
-    Data<int> d_nbClusters;
+    Data<Real> d_radius; ///< Neighborhood range.
+    Data<Real> d_fixedRadius; ///< Neighborhood range (for non mechanical particles).
+    Data<int> d_nbClusters; ///< Number of clusters (-1 means that all input points are selected).
     Data< VecCoord > d_fixedPosition;  ///< input (non mechanical particle reference position)
     Data< VecCoord > d_position; ///< input (reference mstate position)
     Data< VVI > d_cluster;       ///< result
 
-    sofa::core::objectmodel::DataFileName input_filename;
-    sofa::core::objectmodel::DataFileName output_filename;
+    sofa::core::objectmodel::DataFileName input_filename; ///< import precomputed clusters
+    sofa::core::objectmodel::DataFileName output_filename; ///< export clusters
 
     virtual std::string getTemplateName() const    override { return templateName(this);    }
     static std::string templateName(const ClusteringEngine<DataTypes>* = NULL) {   return DataTypes::Name(); }

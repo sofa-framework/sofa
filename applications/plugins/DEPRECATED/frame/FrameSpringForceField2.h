@@ -121,8 +121,8 @@ public:
 protected:
     bool maskInUse;
     SReal m_potentialEnergy;
-    Data<double> youngModulus;
-    Data<double> poissonRatio;
+    Data<double> youngModulus; ///< Young Modulus
+    Data<double> poissonRatio; ///< Poisson Ratio.
     Mat66 H;
     VVMatInxIn K;
     VVMatInxIn K0;

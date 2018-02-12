@@ -54,12 +54,12 @@ protected:
     typedef DataTypes::Real Real;
     typedef sofa::defaulttype::Vec<2, float> TexCoord;
     typedef sofa::defaulttype::Vec<3,Real> Vec3Real;
-    Data< Vec3Real > m_translation;
-    Data< Vec3Real > m_rotation;
-    Data< Vec3Real > m_scale;
+    Data< Vec3Real > m_translation; ///< Initial Translation of the object
+    Data< Vec3Real > m_rotation; ///< Initial Rotation of the object
+    Data< Vec3Real > m_scale; ///< Initial Scale of the object
 
-    Data< TexCoord > m_scaleTex;
-    Data< TexCoord > m_translationTex;
+    Data< TexCoord > m_scaleTex; ///< Scale of the texture
+    Data< TexCoord > m_translationTex; ///< Translation of the texture
 
 public:
 

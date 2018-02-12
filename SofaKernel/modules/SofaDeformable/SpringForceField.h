@@ -113,11 +113,11 @@ public:
 
     typedef LinearSpring<Real> Spring;
 
-    Data<SReal> ks;
-    Data<SReal> kd;
-    Data<float> showArrowSize;
+    Data<SReal> ks; ///< uniform stiffness for the all springs
+    Data<SReal> kd; ///< uniform damping for the all springs
+    Data<float> showArrowSize; ///< size of the axis
     Data<int> drawMode;             ///Draw Mode: 0=Line - 1=Cylinder - 2=Arrow
-    Data<sofa::helper::vector<Spring> > springs;
+    Data<sofa::helper::vector<Spring> > springs; ///< pairs of indices, stiffness, damping, rest length
 
 protected:
     core::objectmodel::DataFileName fileSprings;

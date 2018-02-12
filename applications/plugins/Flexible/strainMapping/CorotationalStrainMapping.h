@@ -60,7 +60,7 @@ public:
     */
     //@{
     enum DecompositionMethod { POLAR=0, QR, SMALL, SVD, FROBENIUS, NB_DecompositionMethod };
-    Data<helper::OptionsGroup> f_method;
+    Data<helper::OptionsGroup> f_method; ///< Decomposition method
     //@}
 
 

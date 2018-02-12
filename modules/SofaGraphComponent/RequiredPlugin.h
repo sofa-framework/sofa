@@ -47,13 +47,13 @@ class SOFA_GRAPH_COMPONENT_API RequiredPlugin : public core::objectmodel::BaseOb
 {
 public:
     SOFA_CLASS(RequiredPlugin,core::objectmodel::BaseObject);
-    sofa::core::objectmodel::Data<helper::vector<std::string> > d_pluginName;
-    sofa::core::objectmodel::Data<helper::vector<helper::fixed_array<std::string,2> > > d_suffixMap;
+    sofa::core::objectmodel::Data<helper::vector<std::string> > d_pluginName; ///< plugin name (or several names if you need to load different plugins or a plugin with several alternate names)
+    sofa::core::objectmodel::Data<helper::vector<helper::fixed_array<std::string,2> > > d_suffixMap; ///< standard->custom suffixes pairs (to be used if the plugin is compiled outside of Sofa with a non standard way of differenciating versions), using ! to represent empty suffix
 
-    sofa::core::objectmodel::Data<bool> d_stopAfterFirstNameFound;
-    sofa::core::objectmodel::Data<bool> d_stopAfterFirstSuffixFound;
-    sofa::core::objectmodel::Data<bool> d_requireOne;
-    sofa::core::objectmodel::Data<bool> d_requireAll;
+    sofa::core::objectmodel::Data<bool> d_stopAfterFirstNameFound; ///< Stop after the first plugin name that is loaded successfully
+    sofa::core::objectmodel::Data<bool> d_stopAfterFirstSuffixFound; ///< For each plugin name, stop after the first suffix that is loaded successfully
+    sofa::core::objectmodel::Data<bool> d_requireOne; ///< Display an error message if no plugin names were successfully loaded
+    sofa::core::objectmodel::Data<bool> d_requireAll; ///< Display an error message if any plugin names failed to be loaded
 
 protected:
     RequiredPlugin();

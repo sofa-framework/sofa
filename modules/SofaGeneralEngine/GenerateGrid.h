@@ -93,9 +93,9 @@ public:
     Data<SeqQuads> d_quad; ///< output quads
     Data<SeqTriangles> d_triangle; ///< output triangles
     Data<SeqHexahedra> d_hexahedron; ///< output hexahedra
-    Data<Vec3> d_minCorner; /// the position of the minimum corner 
-    Data<Vec3> d_maxCorner; ///the position of the maximum corner 
-    Data<Vec3Int> d_resolution; /// the resolution in the 3 directions
+    Data<Vec3> d_minCorner; ///< the position of the minimum corner 
+    Data<Vec3> d_maxCorner; ///< the position of the maximum corner 
+    Data<Vec3Int> d_resolution; ///< the resolution in the 3 directions
 };
 
 

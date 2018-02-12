@@ -53,7 +53,7 @@ public:
     const std::string &getTextureName() const {return textureName.getValue();}
 
 protected:
-    Data<int> textureIndex;
+    Data<int> textureIndex; ///< Index of the texture in the pass
     core::objectmodel::DataFileName textureName;
 
 };

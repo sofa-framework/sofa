@@ -263,20 +263,20 @@ public:
     //virtual const helper::vector <PointID>& getPointsOnBorder();
 public:
     typedef helper::vector<defaulttype::Vec<3, SReal > > SeqPoints;
-    Data< SeqPoints > seqPoints;
-    Data<SeqEdges> seqEdges;
-    Data<SeqTriangles> seqTriangles;
-    Data<SeqQuads>       seqQuads;
-    Data<SeqTetrahedra>      seqTetrahedra;
+    Data< SeqPoints > seqPoints; ///< List of point positions
+    Data<SeqEdges> seqEdges; ///< List of edge indices
+    Data<SeqTriangles> seqTriangles; ///< List of triangle indices
+    Data<SeqQuads>       seqQuads; ///< List of quad indices
+    Data<SeqTetrahedra>      seqTetrahedra; ///< List of tetrahedron indices
     /// Suppress field for save as function
     Data < bool > isToPrint;
 #ifdef SOFA_NEW_HEXA
     //SeqHexahedra	   seqHexahedra;
-    Data<SeqHexahedra>	   seqHexahedra;
+    Data<SeqHexahedra>	   seqHexahedra; ///< List of hexahedron indices
 #else
-    Data<SeqCubes>       seqHexahedra;
+    Data<SeqCubes>       seqHexahedra; ///< List of hexahedron indices
 #endif
-    Data<SeqUV>	seqUVs;
+    Data<SeqUV>	seqUVs; ///< List of uv coordinates
 
 protected:
     int  nbPoints;
@@ -630,11 +630,11 @@ public:
     int revision;
 
     // To draw the mesh, the topology position must be linked with the mechanical object position 
-    Data< bool > _drawEdges;
-    Data< bool > _drawTriangles;
-    Data< bool > _drawQuads;
-    Data< bool > _drawTetra;
-    Data< bool > _drawHexa;
+    Data< bool > _drawEdges; ///< if true, draw the topology Edges
+    Data< bool > _drawTriangles; ///< if true, draw the topology Triangles
+    Data< bool > _drawQuads; ///< if true, draw the topology Quads
+    Data< bool > _drawTetra; ///< if true, draw the topology Tetrahedra
+    Data< bool > _drawHexa; ///< if true, draw the topology hexahedra
 
     void invalidate();
 

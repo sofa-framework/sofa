@@ -81,14 +81,14 @@ public:
     void getFiberDir(int element, Deriv& dir);
 
     //Data<Real> f_poisson2;
-    //Data<Real> f_young2;
+    //Data<Real> f_young2; ///< Young modulus along transverse direction
     Data<helper::vector<Real> > f_poisson2;
-    Data<helper::vector<Real> > f_young2;
-    Data<Real> f_theta;
-    Data<VecCoord> f_fiberCenter;
-    Data<bool> showFiber;
+    Data<helper::vector<Real> > f_young2; ///< Young modulus along transverse direction
+    Data<Real> f_theta; ///< Fiber angle in global reference frame (in degrees)
+    Data<VecCoord> f_fiberCenter; ///< Concentric fiber center in global reference frame
+    Data<bool> showFiber; ///< Flag activating rendering of fiber directions within each triangle
 
-    topology::TriangleData <helper::vector< Deriv> > localFiberDirection;
+    topology::TriangleData <helper::vector< Deriv> > localFiberDirection; ///< Computed fibers direction within each triangle
 
     class TRQSTriangleHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle,helper::vector<Deriv> >
     {

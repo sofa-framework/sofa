@@ -51,8 +51,8 @@ public:
     int getPassIndex() const {return passIndex.getValue();}
 
 protected:
-    Data<int> techniqueIndex;
-    Data<int> passIndex;
+    Data<int> techniqueIndex; ///< Index of the technique where we have to add the Texture Unit
+    Data<int> passIndex; ///< Index of the pass where we have to add the Texture Unit
 
 };
 }

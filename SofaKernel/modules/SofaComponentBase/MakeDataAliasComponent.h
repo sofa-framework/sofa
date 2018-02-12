@@ -56,9 +56,9 @@ public:
     /// potentially other parameters.
     virtual void parse ( core::objectmodel::BaseObjectDescription* arg ) override;
 
-    Data<std::string>   d_componentname       ;
-    Data<std::string>   d_dataname            ;
-    Data<std::string>   d_alias               ;
+    Data<std::string>   d_componentname       ; ///< The component class for which to create an alias.
+    Data<std::string>   d_dataname            ; ///< The data field for which to create an alias.
+    Data<std::string>   d_alias               ; ///< The alias of the data field.
 
     /// Inherited virtual function from Base
     static std::string className(const MakeDataAliasComponent* ptr)

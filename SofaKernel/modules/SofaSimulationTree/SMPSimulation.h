@@ -80,7 +80,7 @@ public:
 
 protected:
     Node *visualNode;
-    Data<bool> parallelCompile;
+    Data<bool> parallelCompile; ///< Compile task graph in parallel
 };
 
 

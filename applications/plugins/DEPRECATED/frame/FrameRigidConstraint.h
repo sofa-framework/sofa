@@ -52,7 +52,7 @@ public:
     typedef Data<typename DataTypes::MatrixDeriv> DataMatrixDeriv;
 
     Data<vector<unsigned> > f_index;   ///< Indices of the constrained frames
-    Data<double> _drawSize;
+    Data<double> _drawSize; ///< 0 -> point based rendering, >0 -> radius of spheres
 
     FrameRigidConstraint();
 

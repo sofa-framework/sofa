@@ -96,7 +96,7 @@ protected:
         }
     };
 
-    Data<sofa::helper::vector<Contact> > contacts;
+    Data<sofa::helper::vector<Contact> > contacts; ///< Contacts
 
     // contacts from previous frame
     sofa::helper::vector<Contact> prevContacts;

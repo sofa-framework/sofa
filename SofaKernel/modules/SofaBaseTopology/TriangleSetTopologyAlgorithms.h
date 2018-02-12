@@ -143,8 +143,8 @@ public:
 
 
 protected:
-    Data< sofa::helper::vector< unsigned int> > m_listTriRemove;
-    Data< sofa::helper::vector< Triangle> > m_listTriAdd;
+    Data< sofa::helper::vector< unsigned int> > m_listTriRemove; ///< Debug : Remove a triangle or a list of triangles by using their indices (only while animate).
+    Data< sofa::helper::vector< Triangle> > m_listTriAdd; ///< Debug : Add a triangle or a list of triangles by using their indices (only while animate).
 
 private:
     TriangleSetTopologyContainer*				m_container;

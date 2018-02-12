@@ -54,15 +54,15 @@ protected:
     Grid3D* ftemp;
 
 public:
-    sofa::core::objectmodel::Data<int> f_nx;
-    sofa::core::objectmodel::Data<int> f_ny;
-    sofa::core::objectmodel::Data<int> f_nz;
-    sofa::core::objectmodel::Data<real> f_cellwidth;
-    sofa::core::objectmodel::Data<vec3> f_center;
-    sofa::core::objectmodel::Data<real> f_height;
-    sofa::core::objectmodel::Data<vec3> f_dir;
-    sofa::core::objectmodel::Data<real> f_tstart;
-    sofa::core::objectmodel::Data<real> f_tstop;
+    sofa::core::objectmodel::Data<int> f_nx; ///< grid size along x axis
+    sofa::core::objectmodel::Data<int> f_ny; ///< grid size along y axis
+    sofa::core::objectmodel::Data<int> f_nz; ///< grid size along z axis
+    sofa::core::objectmodel::Data<real> f_cellwidth; ///< width of each cell
+    sofa::core::objectmodel::Data<vec3> f_center; ///< position of grid center
+    sofa::core::objectmodel::Data<real> f_height; ///< initial fluid height
+    sofa::core::objectmodel::Data<vec3> f_dir; ///< initial fluid surface normal
+    sofa::core::objectmodel::Data<real> f_tstart; ///< starting time for fluid source
+    sofa::core::objectmodel::Data<real> f_tstop; ///< stopping time for fluid source
 protected:
     Fluid3D();
     virtual ~Fluid3D();

@@ -58,13 +58,13 @@ public:
     static const unsigned int WIIMOTE_NUMBER_OF_IR_DOTS;
 
     //input
-    sofa::core::objectmodel::Data<sofa::helper::vector<Real> > f_channels;
+    sofa::core::objectmodel::Data<sofa::helper::vector<Real> > f_channels; ///< Channels from VRPN Analog
 
     //output
-    sofa::core::objectmodel::Data<VecCoord> f_dots;
+    sofa::core::objectmodel::Data<VecCoord> f_dots; ///< IR dots in Wiimote camera view
 
     //Parameters
-    sofa::core::objectmodel::Data<bool> p_viewDots;
+    sofa::core::objectmodel::Data<bool> p_viewDots; ///< View Dots
 
     WiimoteDriver();
     virtual ~WiimoteDriver();

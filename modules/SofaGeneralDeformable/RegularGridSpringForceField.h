@@ -56,12 +56,12 @@ public:
 
 
 protected:
-    Data< Real > linesStiffness;
-    Data< Real > linesDamping;
-    Data< Real > quadsStiffness;
-    Data< Real > quadsDamping;
-    Data< Real > cubesStiffness;
-    Data< Real > cubesDamping;
+    Data< Real > linesStiffness; ///< Lines Stiffness
+    Data< Real > linesDamping; ///< Lines Damping
+    Data< Real > quadsStiffness; ///< Quads Stiffness
+    Data< Real > quadsDamping; ///< Quads Damping
+    Data< Real > cubesStiffness; ///< Cubes Stiffness
+    Data< Real > cubesDamping; ///< Cubes Damping
 
 
     RegularGridSpringForceField(core::behavior::MechanicalState<DataTypes>* object1, core::behavior::MechanicalState<DataTypes>* object2)

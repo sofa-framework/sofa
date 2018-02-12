@@ -36,7 +36,7 @@ class SOFA_Compliant_API DotProductMapping : public AssembledMapping<TIn, TOut>
 	typedef defaulttype::Vec<2, unsigned> index_pair;
     typedef helper::vector< index_pair > pairs_type;
 
-    Data< pairs_type > pairs;
+    Data< pairs_type > pairs; ///< index pairs for computing deltas
 
 	
     DotProductMapping()
@@ -237,7 +237,7 @@ class SOFA_Compliant_API DotProductMapping : public AssembledMapping<TIn, TOut>
         typedef defaulttype::Vec<2, unsigned> index_pair;
         typedef defaulttype::Vec<2, index_pair> pair;
         typedef helper::vector< pair > pairs_type;
-        Data< pairs_type > pairs;
+        Data< pairs_type > pairs; ///< index pairs for computing deltas
 
     protected:
 
@@ -372,8 +372,8 @@ class SOFA_Compliant_API DotProductMapping : public AssembledMapping<TIn, TOut>
 
         typedef typename Inherit1::InVecCoord InVecCoord;
 
-        Data< helper::vector< unsigned > > d_indices;
-        Data< InVecCoord > d_targets;
+        Data< helper::vector< unsigned > > d_indices; ///< indices of the dofs used to compute a dot product
+        Data< InVecCoord > d_targets; ///< targets to compute the dot products with
 
 
         DotProductFromTargetMapping()

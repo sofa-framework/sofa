@@ -73,11 +73,11 @@ namespace sofa
 
                 SOFA_CLASS(SOFA_TEMPLATE(BlenderExporter,T),core::objectmodel::BaseObject);
 
-                Data < std::string > path; 
-                Data < std::string > baseName;
-                Data < int > simulationType;
-                Data < int > simulationStep;
-                Data < int > nbPtsByHair;
+                Data < std::string > path; ///< output path
+                Data < std::string > baseName; ///< Base name for the output files
+                Data < int > simulationType; ///< simulation type (0: soft body, 1: particles, 2:cloth, 3:hair)
+                Data < int > simulationStep; ///< save the  simulation result every step frames
+                Data < int > nbPtsByHair; ///< number of element by hair strand
 
             protected:
 

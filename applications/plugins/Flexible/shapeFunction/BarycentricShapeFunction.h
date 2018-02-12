@@ -64,7 +64,7 @@ public:
     enum {spatial_dimensions=Inherit::spatial_dimensions};
     typedef defaulttype::Mat<spatial_dimensions,spatial_dimensions,Real> Basis;
     sofa::helper::vector<Basis> bases;
-    Data< Real > f_tolerance;
+    Data< Real > f_tolerance; ///< minimum weight (allows for mapping outside elements)
     Cell cellIndex;  ///< used by external classes to retrieve the index of the cell where barycentric weights are computed from
 
 

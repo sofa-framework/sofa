@@ -47,8 +47,8 @@ public:
     Vector3 getPoint(int x, int y, int z) const override;
 
 protected:
-    Data< Vector3 > center;
-    Data< SReal > radius;
+    Data< Vector3 > center; ///< Center of the sphere
+    Data< SReal > radius; ///< Radius of the sphere
 };
 
 } // namespace topology

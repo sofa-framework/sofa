@@ -66,7 +66,7 @@ public:
 
     /// Editable Data
     Data< bool > saveWcinToGnuplot;
-    Data< bool > saveWextToGnuplot;
+    Data< bool > saveWextToGnuplot; ///< export Wext of the monitored dofs as gnuplot file
 
     /// to compute the forces resultant on the monitored dof
     /// used only if saveFToGnuplot is set to true (ExportForces)

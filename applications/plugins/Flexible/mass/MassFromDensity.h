@@ -132,7 +132,7 @@ public:
 
     Data< ImageTypes > image;
     Data< TransformType > transform;
-    Data< MassMatrix > massMatrix;
+    Data< MassMatrix > massMatrix; ///< Mass Matrix
 
     enum { NO_LUMPING=0, BLOCK_LUMPING=1, DIAGONAL_LUMPING=2 };
     Data< int > f_lumping; ///< is the mass matrix lumped? (copy each non-diagonal term on the diagonal term of the same line)  0->no, 1->by bloc, 2->diagonal matrix

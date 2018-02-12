@@ -52,9 +52,9 @@ protected:
     virtual void update() =0;
 
 public:
-    sofa::core::objectmodel::Data<std::string> deviceName;
-    sofa::core::objectmodel::Data<std::string> serverName;
-    sofa::core::objectmodel::Data<std::string> serverPort;
+    sofa::core::objectmodel::Data<std::string> deviceName; ///< Name of this device
+    sofa::core::objectmodel::Data<std::string> serverName; ///< VRPN server name
+    sofa::core::objectmodel::Data<std::string> serverPort; ///< VRPN server port
 
     std::string deviceURL;
 
