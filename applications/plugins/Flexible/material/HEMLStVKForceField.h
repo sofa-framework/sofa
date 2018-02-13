@@ -80,8 +80,8 @@ public:
 
     /** @name  Material parameters */
     //@{
-    Data<Real> d_youngModulus;
-    Data<Real> d_poissonRatio;
+    Data<Real> d_youngModulus; ///< Young Modulus
+    Data<Real> d_poissonRatio; ///< Poisson Ratio ]-1,0.5[
     //@}
 
 

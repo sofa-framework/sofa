@@ -51,9 +51,9 @@ private:
     bool needUpdateTopology;
     gpu::cuda::CudaVector<Tetra> tetras;
 
-    Data<bool> depthTest;
-    Data<bool> blending;
-    Data<bool> useVBO;
+    Data<bool> depthTest; ///< Set Depth Test
+    Data<bool> blending; ///< Set Blending
+    Data<bool> useVBO; ///< true to activate Vertex Buffer Object
 
 public:
     OglTetrahedralModel();

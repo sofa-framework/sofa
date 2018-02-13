@@ -77,23 +77,26 @@ public:
 
     };
 
-    Data<Vec3> p_position;
-    Data<Quat> p_orientation;
-    Data<Vec3> p_lookAt;
-    Data<double> p_distance;
+    Data<Vec3> p_position; ///< Camera's position
+    Data<Quat> p_orientation; ///< Camera's orientation
+    Data<Vec3> p_lookAt; ///< Camera's look at
+    Data<double> p_distance; ///< Distance between camera and look at
 
-    Data<double> p_fieldOfView;
-    Data<double> p_zNear, p_zFar;
-    Data<bool> p_computeZClip;
-    Data<Vec3> p_minBBox, p_maxBBox;
-    Data<unsigned int> p_widthViewport, p_heightViewport;
-    Data<sofa::helper::OptionsGroup> p_type;
+    Data<double> p_fieldOfView; ///< Camera's FOV
+    Data<double> p_zNear; ///< Camera's zNear
+    Data<double> p_zFar; ///< Camera's zFar
+    Data<bool> p_computeZClip; ///< Compute Z clip planes (Near and Far) according to the bounding box
+    Data<Vec3> p_minBBox; ///< minBBox
+    Data<Vec3> p_maxBBox; ///< maxBBox
+    Data<unsigned int> p_widthViewport; ///< widthViewport
+    Data<unsigned int> p_heightViewport; ///< heightViewport
+    Data<sofa::helper::OptionsGroup> p_type; ///< Camera Type (0 = Perspective, 1 = Orthographic)
 
-    Data<bool> p_activated;
-	Data<bool> p_fixedLookAtPoint;
+    Data<bool> p_activated; ///< Camera activated ?
+	Data<bool> p_fixedLookAtPoint; ///< keep the lookAt point always fixed
     
-    Data<helper::vector<float> > p_modelViewMatrix;
-    Data<helper::vector<float> > p_projectionMatrix;
+    Data<helper::vector<float> > p_modelViewMatrix; ///< ModelView Matrix
+    Data<helper::vector<float> > p_projectionMatrix; ///< Projection Matrix
 
     BaseCamera();
     virtual ~BaseCamera();

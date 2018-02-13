@@ -95,13 +95,14 @@ public:
     void setSplitNormals(bool b) {splitNormals.setValue(b);}
 
 protected:
-    Data<int> nx;
+    Data<int> nx; ///< z grid resolution
     Data<int> ny;
     Data<int> nz;
-    Data<bool> internalPoints;
-    Data<bool> splitNormals;
+    Data<bool> internalPoints; ///< include internal points (allow a one-to-one mapping between points from RegularGridTopology and CubeTopology)
+    Data<bool> splitNormals; ///< split corner points to have planar normals
 
-    Data< Vector3 > min, max;
+    Data< Vector3 > min; ///< Min
+    Data< Vector3 > max; ///< Max
     /// Position of point 0
     Vector3 p0;
     /// Distance between points in the grid. Must be perpendicular to each other

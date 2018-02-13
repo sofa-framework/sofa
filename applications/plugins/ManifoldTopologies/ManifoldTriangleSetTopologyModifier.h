@@ -120,8 +120,8 @@ public:
 
 protected:
 
-    Data< sofa::helper::vector< unsigned int> > m_triSwap;
-    Data< bool > m_swapMesh;
+    Data< sofa::helper::vector< unsigned int> > m_triSwap; ///< Debug : Test swap function (only while animate).
+    Data< bool > m_swapMesh; ///< If true, optimize the mesh only by swapping edges
 
     /**\brief Preconditions to fulfill before removing triangles. In this class topology should stay manifold.
     * This function call private functions to test the topology:

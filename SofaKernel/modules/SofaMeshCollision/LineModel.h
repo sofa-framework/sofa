@@ -175,7 +175,7 @@ public:
 
     void setFilter(LineLocalMinDistanceFilter * /*lmdFilter*/);
 
-    Data<bool> bothSide; // to activate collision on both-side of the both side of the line model (when surface normals are defined on these lines)
+    Data<bool> bothSide; ///< to activate collision on both-side of the both side of the line model (when surface normals are defined on these lines)
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
@@ -208,8 +208,8 @@ protected:
     int meshRevision;
     LineLocalMinDistanceFilter *m_lmdFilter;
 
-    Data< std::string  > LineActiverPath;
-    Data<bool> m_displayFreePosition;
+    Data< std::string  > LineActiverPath; ///< path of a component LineActiver that activates or deactivates collision line during execution
+    Data<bool> m_displayFreePosition; ///< Display Collision Model Points free position(in green)
 
     LineActiver *myActiver;
 

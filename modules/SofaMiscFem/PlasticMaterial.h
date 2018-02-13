@@ -63,8 +63,8 @@ public:
     typedef sofa::helper::vector<Vector3> VecStress;
 
 	// Material properties
-    Data<SReal> _poissonRatio;
-    Data<SReal> _youngModulus;
+    Data<SReal> _poissonRatio; ///< Poisson ratio in Hooke's law
+    Data<SReal> _youngModulus; ///< Young modulus in Hooke's law
 
     // Stress-strain curve description
     VecDouble _E;

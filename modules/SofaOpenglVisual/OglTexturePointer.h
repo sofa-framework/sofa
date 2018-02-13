@@ -61,8 +61,8 @@ protected:
     OglTexturePointer();
     virtual ~OglTexturePointer();
 
-    Data<unsigned short> textureUnit;
-    Data<bool> enabled;
+    Data<unsigned short> textureUnit; ///< Set the texture unit
+    Data<bool> enabled; ///< enabled ?
 
 public:
     void init() override;

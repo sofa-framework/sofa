@@ -59,7 +59,7 @@ protected:
             DofToMatrix& LMatrix, DofToMatrix& LTMatrix,
             SparseColMajorMatrixEigen &LeftMatrix, DofToMatrix &invMass_Ltrans) const;
 
-    Data<sofa::helper::OptionsGroup> solverAlgorithm;
+    Data<sofa::helper::OptionsGroup> solverAlgorithm; ///< Algorithm used to solve the system W.Lambda=c
 };
 
 } // namespace constraintset

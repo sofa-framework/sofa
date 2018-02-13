@@ -65,7 +65,7 @@ public:
     typedef helper::WriteOnlyAccessor<Data< ImageTypes > > waImage;
     typedef helper::ReadAccessor<Data< ImageTypes > > raImage;
 
-    Data<helper::OptionsGroup> operation;
+    Data<helper::OptionsGroup> operation; ///< operation
 
     Data< ImageTypes > inputImage1;
     Data< ImageTypes > inputImage2;

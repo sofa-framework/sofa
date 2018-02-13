@@ -2546,7 +2546,7 @@ void MechanicalObject<DataTypes>::resetConstraint(const core::ConstraintParams* 
     c_data.endEdit(cParams);
 #if(SOFA_WITH_EXPERIMENTAL_FEATURES==1)
     Data<MatrixDeriv>& m_data = *this->write(core::MatrixDerivId::mappingJacobian());
-    MatrixDeriv *m = m_data.beginEdit(params);
+    MatrixDeriv *m = m_data.beginEdit(cParams);
     m->clear();
     m_data.endEdit(cParams);
 #endif

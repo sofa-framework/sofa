@@ -73,15 +73,15 @@ public:
     }
 
     //Input
-    Data<sofa::helper::vector<Real> > f_inputValues;
-    Data<sofa::helper::vector<Real> > f_indices;
-    Data<sofa::helper::vector<Real> > f_values;
+    Data<sofa::helper::vector<Real> > f_inputValues; ///< Already existing values (can be empty) 
+    Data<sofa::helper::vector<Real> > f_indices; ///< Indices to map value on 
+    Data<sofa::helper::vector<Real> > f_values; ///< Values to map indices on 
 
     //Output
-    Data<sofa::helper::vector<Real> > f_outputValues;
+    Data<sofa::helper::vector<Real> > f_outputValues; ///< New map between indices and values
 
     //Parameter
-    Data<Real> p_defaultValue;
+    Data<Real> p_defaultValue; ///< Default value for indices without any value
 
 };
 

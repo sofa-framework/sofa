@@ -74,10 +74,10 @@ public:
     }
 
     //Input
-    Data<VecCoord > f_points;
-    Data<Real> f_distance ;
+    Data<VecCoord > f_points; ///< Points
+    Data<Real> f_distance ; ///< Distance to merge points
     //Output
-    Data<VecCoord > f_mergedPoints;
+    Data<VecCoord > f_mergedPoints; ///< Merged Points
 
 
 

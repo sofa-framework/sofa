@@ -179,7 +179,7 @@ public:
     typedef typename MatrixLinearSolverInternalData<Vector>::JMatrixType JMatrixType;
     typedef typename MatrixLinearSolverInternalData<Vector>::ResMatrixType ResMatrixType;
 
-    Data<bool> multiGroup;
+    Data<bool> multiGroup; ///< activate multiple system solve, one for each child node
 
     MatrixLinearSolver();
     virtual ~MatrixLinearSolver();

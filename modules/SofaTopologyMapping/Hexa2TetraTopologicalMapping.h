@@ -82,7 +82,7 @@ public:
 
     virtual unsigned int getFromIndex(unsigned int ind) override;
 
-    sofa::core::objectmodel::Data<bool> swapping;
+    sofa::core::objectmodel::Data<bool> swapping; ///< Boolean enabling to swapp hexa-edges  in order to avoid bias effect
 
 };
 

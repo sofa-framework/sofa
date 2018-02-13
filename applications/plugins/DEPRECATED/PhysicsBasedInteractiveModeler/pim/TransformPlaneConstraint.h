@@ -52,7 +52,8 @@ public:
 
     void update();
 
-    Data< sofa::helper::vector<Vec10> > d_planes, d_outPlanes;
+    Data< sofa::helper::vector<Vec10> > d_planes;
+    Data< sofa::helper::vector<Vec10> > d_outPlanes;
     Data<sofa::helper::Quater<double> > d_rotation;
     Data<Vec3d> d_translation;
     Data<double> d_scale;

@@ -462,11 +462,11 @@ public:
     Data<std::string> name;
 
 
-    Data<bool> f_printLog;
+    Data<bool> f_printLog; ///< if true, emits extra messages at runtime.
 
-    Data< sofa::core::objectmodel::TagSet > f_tags;
+    Data< sofa::core::objectmodel::TagSet > f_tags; ///< list of the subsets the objet belongs to
 
-    Data< sofa::defaulttype::BoundingBox > f_bbox;
+    Data< sofa::defaulttype::BoundingBox > f_bbox; ///< this object bounding box
 
     /// @name casting
     ///   trivial cast to a few base components

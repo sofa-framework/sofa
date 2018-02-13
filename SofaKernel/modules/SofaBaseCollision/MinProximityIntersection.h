@@ -43,11 +43,11 @@ class SOFA_BASE_COLLISION_API MinProximityIntersection : public BaseProximityInt
 {
 public:
     SOFA_CLASS(MinProximityIntersection,BaseProximityIntersection);
-    Data<bool> useSphereTriangle;
-    Data<bool> usePointPoint;
-    Data<bool> useSurfaceNormals;
-    Data<bool> useLinePoint;
-    Data<bool> useLineLine;
+    Data<bool> useSphereTriangle; ///< activate Sphere-Triangle intersection tests
+    Data<bool> usePointPoint; ///< activate Point-Point intersection tests
+    Data<bool> useSurfaceNormals; ///< Compute the norms of the Detection Outputs by considering the normals of the surfaces involved.
+    Data<bool> useLinePoint; ///< activate Line-Point intersection tests
+    Data<bool> useLineLine; ///< activate Line-Line  intersection tests
     Data<bool> useTriangleLine;
 
 protected:

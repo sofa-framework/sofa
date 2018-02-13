@@ -78,7 +78,7 @@ protected:
     StickContactConstraint(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod);
     virtual ~StickContactConstraint();
 public:
-    Data<bool> f_keepAlive;
+    Data<bool> f_keepAlive; ///< set to true to keep this contact alive even after collisions are no longer detected
 
     /// Return true if this contact should be kept alive, even if objects are no longer in collision
     virtual bool keepAlive() override { return f_keepAlive.getValue(); }

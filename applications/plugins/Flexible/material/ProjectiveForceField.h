@@ -55,8 +55,8 @@ public:
 
     /** @name  Material parameters */
     //@{
-    Data<helper::vector<Real> > _youngModulus;
-    Data<helper::vector<Real> > _viscosity;
+    Data<helper::vector<Real> > _youngModulus; ///< Young Modulus
+    Data<helper::vector<Real> > _viscosity; ///< Viscosity (stress/strainRate)
     //@}
 
     virtual void reinit()

@@ -49,16 +49,16 @@ public:
     SOFA_CLASS(OglLabel, core::visual::VisualModel);
 
 public:
-    Data<std::string>            d_prefix;
-    Data<std::string>            d_label;
-    Data<std::string>            d_suffix;
-    Data<unsigned int>           d_x;
-    Data<unsigned int>           d_y;
-    Data<unsigned int>           d_fontsize;
-    Data<defaulttype::RGBAColor> d_color;
-    Data<bool>                   d_selectContrastingColor ;
-    Data<unsigned int>           d_updateLabelEveryNbSteps;
-    Data<bool>                   d_visible;
+    Data<std::string>            d_prefix; ///< The prefix of the text to display
+    Data<std::string>            d_label; ///< The text to display
+    Data<std::string>            d_suffix; ///< The suffix of the text to display
+    Data<unsigned int>           d_x; ///< The x position of the text on the screen
+    Data<unsigned int>           d_y; ///< The y position of the text on the screen
+    Data<unsigned int>           d_fontsize; ///< The size of the font used to display the text on the screen
+    Data<defaulttype::RGBAColor> d_color; ///< The color of the text to display. (default='gray')
+    Data<bool>                   d_selectContrastingColor ; ///< Overide the color value but one that contrast with the background color
+    Data<unsigned int>           d_updateLabelEveryNbSteps; ///< Update the display of the label every nb of time steps
+    Data<bool>                   d_visible; ///< Is label displayed
 
     void init() override;
     void reinit() override;

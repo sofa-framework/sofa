@@ -119,18 +119,18 @@ public:
 
     /// @}
 
-    Data< VecReal > compliance;
+    Data< VecReal > compliance; ///< Rigid compliance value: 1st value for translations, 6 others for upper-triangular part of symmetric 3x3 rotation compliance matrix
 
-    Data< Real > defaultCompliance;
+    Data< Real > defaultCompliance; ///< Default compliance value for new dof or if all should have the same (in which case compliance vector should be empty)
 
-    Data<bool> f_verbose;
+    Data<bool> f_verbose; ///< Dump the constraint matrix at each iteration
 
-    Data < bool > d_handleTopologyChange;
+    Data < bool > d_handleTopologyChange; ///< Enable support of topological changes for compliance vector (disable if another component takes care of this)
       
-    Data< Real > d_correctionVelocityFactor;
-    Data< Real > d_correctionPositionFactor;
+    Data< Real > d_correctionVelocityFactor; ///< Factor applied to the constraint forces when correcting the velocities
+    Data< Real > d_correctionPositionFactor; ///< Factor applied to the constraint forces when correcting the positions
 
-    Data < bool > d_useOdeSolverIntegrationFactors;
+    Data < bool > d_useOdeSolverIntegrationFactors; ///< Use odeSolver integration factors instead of correctionVelocityFactor and correctionPositionFactor
 
 private:
     // new :  for non building the constraint system during solving process //

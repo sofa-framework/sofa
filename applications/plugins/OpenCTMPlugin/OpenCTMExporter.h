@@ -74,11 +74,11 @@ public:
     // Data filename where to export CTM file
     sofa::core::objectmodel::DataFileName m_outFilename;
     // Option to set the export of the CTM at the start of the program
-    Data<bool> m_exportAtBegin;
+    Data<bool> m_exportAtBegin; ///< export file at the initialization
     // Option to set the export of the CTM at the close of the program
-    Data<bool> m_exportAtEnd;
+    Data<bool> m_exportAtEnd; ///< export file when the simulation is finished
     // Option to use visual model instead of topology and mechanical components
-    Data<bool> m_useVisualModel;
+    Data<bool> m_useVisualModel; ///< export file using information from current node visual model
 
 private:
     // Current Node Topology component pointer (loaded at init)

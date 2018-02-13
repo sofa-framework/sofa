@@ -54,8 +54,8 @@ protected:
 
     bool readXsp (std::ifstream &file, bool vector_spring);
 
-    Data <helper::vector <defaulttype::Vector3> > gravity;
-    Data <helper::vector <double> > viscosity;
+    Data <helper::vector <defaulttype::Vector3> > gravity; ///< Gravity coordinates loaded in this mesh.
+    Data <helper::vector <double> > viscosity; ///< viscosity values loaded in this mesh.
 
 };
 

@@ -82,7 +82,7 @@ class SOFA_Compliant_API AssembledRigidRigidMapping : public AssembledMapping<TI
 
     typedef std::pair<unsigned, typename TIn::Coord> source_type;
     typedef helper::vector< source_type > source_vectype;
-    Data< helper::vector< source_type > > source;
+    Data< helper::vector< source_type > > source; ///< input dof and rigid offset for each output dof
 
     Data<int> geometricStiffness;
 

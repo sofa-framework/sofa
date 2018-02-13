@@ -64,7 +64,7 @@ public:
     {
     }
 
-    Data< helper::vector<Type> > _data;
+    Data< helper::vector<Type> > _data; ///< data
 
 protected:
 

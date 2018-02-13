@@ -578,7 +578,7 @@ public:
     typedef typename Inherit::ForceMask ForceMask;
 
 protected:
-    topology::PointData< sofa::helper::vector<MappingData > > map;
+    topology::PointData< sofa::helper::vector<MappingData > > map; ///< mapper data
     topology::EdgeSetTopologyContainer*			_fromContainer;
     topology::EdgeSetGeometryAlgorithms<In>*	_fromGeomAlgo;
     MatrixType* matrixJ;
@@ -667,7 +667,7 @@ public:
     typedef typename Inherit::ForceMask ForceMask;
 
 protected:
-    topology::PointData< sofa::helper::vector<MappingData> > map;
+    topology::PointData< sofa::helper::vector<MappingData> > map; ///< mapper data
     topology::TriangleSetTopologyContainer*			_fromContainer;
     topology::TriangleSetGeometryAlgorithms<In>*	_fromGeomAlgo;
     MatrixType* matrixJ;
@@ -762,7 +762,7 @@ public:
     typedef typename Inherit::ForceMask ForceMask;
 
 protected:
-    topology::PointData< sofa::helper::vector<MappingData> >  map;
+    topology::PointData< sofa::helper::vector<MappingData> >  map; ///< mapper data
     topology::QuadSetTopologyContainer*			_fromContainer;
     topology::QuadSetGeometryAlgorithms<In>*	_fromGeomAlgo;
     MatrixType* matrixJ;
@@ -851,7 +851,7 @@ public:
     typedef typename Inherit::ForceMask ForceMask;
 
 protected:
-    topology::PointData< sofa::helper::vector<MappingData > >  map;
+    topology::PointData< sofa::helper::vector<MappingData > >  map; ///< mapper data
 
     VecCoord actualTetraPosition;
 
@@ -916,7 +916,7 @@ public:
     typedef typename Inherit::ForceMask ForceMask;
 
 protected:
-    topology::PointData< sofa::helper::vector<MappingData> >  map;
+    topology::PointData< sofa::helper::vector<MappingData> >  map; ///< mapper data
     topology::HexahedronSetTopologyContainer*		_fromContainer;
     topology::HexahedronSetGeometryAlgorithms<In>*	_fromGeomAlgo;
 
@@ -1038,11 +1038,11 @@ protected:
 
 public:
 
-    Data< bool > useRestPosition;
+    Data< bool > useRestPosition; ///< Use the rest position of the input and output models to initialize the mapping
 
 #ifdef SOFA_DEV
     //--- partial mapping test
-    Data< bool > sleeping;
+    Data< bool > sleeping; ///< is the mapping sleeping (not computed)
 #endif
 protected:
     BarycentricMapping();

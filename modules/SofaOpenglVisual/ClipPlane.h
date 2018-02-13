@@ -41,10 +41,10 @@ class SOFA_OPENGL_VISUAL_API ClipPlane : public core::visual::VisualModel
 public:
     SOFA_CLASS(ClipPlane, core::visual::VisualModel);
 
-    Data<sofa::defaulttype::Vector3> position;
-    Data<sofa::defaulttype::Vector3> normal;
-    Data<int> id;
-    Data<bool> active;
+    Data<sofa::defaulttype::Vector3> position; ///< Point crossed by the clipping plane
+    Data<sofa::defaulttype::Vector3> normal; ///< Normal of the clipping plane, pointing toward the clipped region
+    Data<int> id; ///< Clipping plane OpenGL ID
+    Data<bool> active; ///< Control whether the clipping plane should be applied or not
 
     virtual sofa::core::objectmodel::ComponentState checkDataValues();
     virtual void init() override;

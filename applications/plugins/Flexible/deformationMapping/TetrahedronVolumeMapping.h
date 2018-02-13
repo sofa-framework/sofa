@@ -54,7 +54,7 @@ public:
 
     SOFA_CLASS(SOFA_TEMPLATE2(TetrahedronVolumeMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
 
-    Data<OutVecCoord> d_offsets;
+    Data<OutVecCoord> d_offsets; ///< offsets removed from output volume
 
     /// dispatch the volume per nodes (each node taking a quarter of its incident tetrahedra)
     /// inspired from "Volume Conserving Finite Element Simulations of Deformable Models", Irving, Schroeder, Fedkiw, SIGGRAPH 2007

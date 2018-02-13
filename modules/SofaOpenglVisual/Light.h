@@ -82,23 +82,24 @@ protected:
     void computeShadowMapSize();
     void blurDepthTexture();
 public:
-    Data<defaulttype::RGBAColor> d_color;
-    Data<GLuint> d_shadowTextureSize;
-    Data<bool> d_drawSource;
-    Data<double> d_zNear, d_zFar;
-    Data<bool> d_shadowsEnabled;
-    Data<bool> d_softShadows;
-    Data<float> d_shadowFactor;
-    Data<float> d_VSMLightBleeding;
-    Data<float> d_VSMMinVariance;
-    Data<unsigned short> d_textureUnit;
+    Data<defaulttype::RGBAColor> d_color; ///< Set the color of the light. (default=[1.0,1.0,1.0,1.0])
+    Data<GLuint> d_shadowTextureSize; ///< [Shadowing] Set size for shadow texture 
+    Data<bool> d_drawSource; ///< Draw Light Source
+    Data<double> d_zNear; ///< [Shadowing] Light's ZNear
+    Data<double> d_zFar; ///< [Shadowing] Light's ZFar
+    Data<bool> d_shadowsEnabled; ///< [Shadowing] Enable Shadow from this light
+    Data<bool> d_softShadows; ///< [Shadowing] Turn on Soft Shadow from this light
+    Data<float> d_shadowFactor; ///< [Shadowing] Shadow Factor (decrease/increase darkness)
+    Data<float> d_VSMLightBleeding; ///< [Shadowing] (VSM only) Light bleeding paramter
+    Data<float> d_VSMMinVariance; ///< [Shadowing] (VSM only) Minimum variance parameter
+    Data<unsigned short> d_textureUnit; ///< [Shadowing] Texture unit for the genereated shadow texture
 
 protected:
     Light();
     virtual ~Light();
 public:
-    Data<helper::vector<float> > d_modelViewMatrix;
-    Data<helper::vector<float> > d_projectionMatrix;
+    Data<helper::vector<float> > d_modelViewMatrix; ///< [Shadowing] ModelView Matrix
+    Data<helper::vector<float> > d_projectionMatrix; ///< [Shadowing] Projection Matrix
 
     void setID(const GLint& id);
 
@@ -139,7 +140,7 @@ class SOFA_OPENGL_VISUAL_API DirectionalLight : public Light
 public:
     SOFA_CLASS(DirectionalLight, Light);
 
-    Data<sofa::defaulttype::Vector3> d_direction;
+    Data<sofa::defaulttype::Vector3> d_direction; ///< Set the direction of the light
 
     DirectionalLight();
     virtual ~DirectionalLight();
@@ -162,9 +163,9 @@ class SOFA_OPENGL_VISUAL_API PositionalLight : public Light
 public:
     SOFA_CLASS(PositionalLight, Light);
 
-    Data<bool> d_fixed;
-    Data<sofa::defaulttype::Vector3> d_position;
-    Data<float> d_attenuation;
+    Data<bool> d_fixed; ///< Fix light position from the camera
+    Data<sofa::defaulttype::Vector3> d_position; ///< Set the position of the light
+    Data<float> d_attenuation; ///< Set the attenuation of the light
 
     PositionalLight();
     virtual ~PositionalLight();
@@ -179,10 +180,10 @@ class SOFA_OPENGL_VISUAL_API SpotLight : public PositionalLight
 public:
     SOFA_CLASS(SpotLight, PositionalLight);
 
-    Data<sofa::defaulttype::Vector3> d_direction;
-    Data<float> d_cutoff;
-    Data<float> d_exponent;
-    Data<bool> d_lookat;
+    Data<sofa::defaulttype::Vector3> d_direction; ///< Set the direction of the light
+    Data<float> d_cutoff; ///< Set the angle (cutoff) of the spot
+    Data<float> d_exponent; ///< Set the exponent of the spot
+    Data<bool> d_lookat; ///< If true, direction specify the point at which the spotlight should be pointed to
 
     SpotLight();
     virtual ~SpotLight();

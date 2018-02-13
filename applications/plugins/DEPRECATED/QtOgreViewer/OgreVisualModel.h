@@ -84,8 +84,8 @@ protected:
     void convertManualToMesh();
 
     static int meshName;
-    Data< std::string > materialFile;
-    Data< bool > culling;
+    Data< std::string > materialFile; ///< Entry of material definition in a .material file
+    Data< bool > culling; ///< Activate Back-face culling in Ogre
 
 
     std::string modelName;

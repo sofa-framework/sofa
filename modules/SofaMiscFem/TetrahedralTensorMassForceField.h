@@ -110,8 +110,8 @@ protected:
 
     bool updateMatrix;
 
-    Data<Real> f_poissonRatio;
-    Data<Real> f_youngModulus;
+    Data<Real> f_poissonRatio; ///< Poisson ratio in Hooke's law
+    Data<Real> f_youngModulus; ///< Young modulus in Hooke's law
 
     Real lambda;  /// first Lame coefficient
     Real mu;    /// second Lame coefficient
@@ -180,8 +180,8 @@ public:
 
 protected:
 
-//    EdgeData < typename VecType < EdgeRestInformation > > edgeInfo;
-    topology::EdgeData < edgeRestInfoVector > edgeInfo;
+//    EdgeData < typename VecType < EdgeRestInformation > > edgeInfo; ///< Internal edge data
+    topology::EdgeData < edgeRestInfoVector > edgeInfo; ///< Internal edge data
 
 //    EdgeData < typename VecType < EdgeRestInformation > > &getEdgeInfo() {return edgeInfo;}
     topology::EdgeData < edgeRestInfoVector > &getEdgeInfo() {return edgeInfo;}

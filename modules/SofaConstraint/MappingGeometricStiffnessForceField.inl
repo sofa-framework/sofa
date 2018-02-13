@@ -40,7 +40,7 @@ void MappingGeometricStiffnessForceField<DataTypes>::addDForce(const sofa::core:
 template< class DataTypes>
 void MappingGeometricStiffnessForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-    SReal kFact = (Real)mparams->kFactor();
+    SReal kFact = (SReal)mparams->kFactor();
     if (kFact == 0)
     {
         return;

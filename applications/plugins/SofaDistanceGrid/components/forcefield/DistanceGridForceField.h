@@ -144,26 +144,27 @@ protected:
 public:
 
     // Input data parameters
-    sofa::core::objectmodel::DataFileName fileDistanceGrid;
-    Data< double > scale;
-    Data< helper::fixed_array<DistanceGrid::Coord,2> > box;
-    Data< int > nx;
-    Data< int > ny;
-    Data< int > nz;
+    sofa::core::objectmodel::DataFileName fileDistanceGrid; ///< load distance grid from specified file
+    Data< double > scale; ///< scaling factor for input file
+    Data< helper::fixed_array<DistanceGrid::Coord,2> > box; ///< Field bounding box defined by xmin,ymin,zmin, xmax,ymax,zmax
+    Data< int > nx; ///< number of values on X axis
+    Data< int > ny; ///< number of values on Y axis
+    Data< int > nz; ///< number of values on Z axis
 
-    Data<Real> stiffnessIn, stiffnessOut;
-    Data<Real> damping;
-    Data<Real> maxDist;
-    Data<Real> minArea;
-    Data<Real> stiffnessArea;
-    Data<Real> minVolume;
-    Data<Real> stiffnessVolume;
+    Data<Real> stiffnessIn; ///< force stiffness when inside of the object
+    Data<Real> stiffnessOut; ///< force stiffness when outside of the object
+    Data<Real> damping; ///< force damping coefficient
+    Data<Real> maxDist; ///< max distance of the surface after which no more force is applied
+    Data<Real> minArea; ///< minimal area for each triangle, as seen from the direction of the local surface (i.e. a flipped triangle will have a negative area)
+    Data<Real> stiffnessArea; ///< force stiffness if a triangle have an area less than minArea
+    Data<Real> minVolume; ///< minimal volume for each tetrahedron (a flipped triangle will have a negative volume)
+    Data<Real> stiffnessVolume; ///< force stiffness if a tetrahedron have an volume less than minVolume
     bool flipNormals;
 
-    Data<defaulttype::RGBAColor> color;
-    Data<bool> bDraw;
-    Data<bool> drawPoints;
-    Data<Real> drawSize;
+    Data<defaulttype::RGBAColor> color; ///< display color.(default=[0.0,0.5,0.2,1.0])
+    Data<bool> bDraw; ///< enable/disable drawing of distancegrid
+    Data<bool> drawPoints; ///< enable/disable drawing of distancegrid
+    Data<Real> drawSize; ///< display size if draw is enabled
 
     /// optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)
     Data< defaulttype::Vec<2,int> > localRange;

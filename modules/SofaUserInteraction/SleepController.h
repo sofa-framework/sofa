@@ -83,8 +83,9 @@ public:
 	virtual void reset() override;
 	virtual void handleEvent(core::objectmodel::Event*) override;
 
-	Data<double> d_minTimeSinceWakeUp; // Do not do anything before objects have been moving for this duration
-	Data<SReal> d_speedThreshold, d_rotationThreshold; // Put to sleep objects in which all particules move slower than this value (and rotate slower for rigid particles)
+	Data<double> d_minTimeSinceWakeUp; ///< Do not do anything before objects have been moving for this duration
+	Data<SReal> d_speedThreshold; ///< Speed value under which we consider a particule to be immobile
+	Data<SReal> d_rotationThreshold; ///< If non null, this is the rotation speed value under which we consider a particule to be immobile
 
 protected:
     SleepController();

@@ -251,9 +251,9 @@ protected:
 
 public:
     /** The array that stores the set of edges in the edge set */
-    Data< sofa::helper::vector<Edge> > d_edge;
+    Data< sofa::helper::vector<Edge> > d_edge; ///< List of edge indices
 
-    Data <bool> m_checkConnexity;
+    Data <bool> m_checkConnexity; ///< It true, will check the connexity of the mesh.
 
 
 };

@@ -48,8 +48,8 @@ protected:
     CompliantAttachButtonSetting();
 public:
     std::string getOperationType() {return  "CompliantAttach";}
-    Data<SReal> compliance;
-    Data<bool> isCompliance;
+    Data<SReal> compliance; ///< Compliance of the manipulator. 0 is rigid, the bigger the softer. Negative values make no sense.
+    Data<bool> isCompliance; ///< Is the mouse interaction treated as a compliance? (otherwise as a stiffness)
     Data<SReal> arrowSize;
     Data<defaulttype::RGBAColor> color;
     Data<bool> visualmodel;

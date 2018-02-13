@@ -51,8 +51,8 @@ protected:
     virtual ~VoxelLoader();
 public:
 
-    Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > positions;
-    Data< helper::vector<Hexahedron > > hexahedra;
+    Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > positions; ///< Coordinates of the nodes loaded
+    Data< helper::vector<Hexahedron > > hexahedra; ///< Hexahedra loaded
 
 
     void addHexahedron(helper::vector< Hexahedron >* pHexahedra, const helper::fixed_array<unsigned int,8> &p);

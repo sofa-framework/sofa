@@ -23,7 +23,7 @@ public:
     void reinit();
 
 public:
-    Data<SeqUV> d_uv;
+    Data<SeqUV> d_uv; ///< The uv coordinates for every triangle vertices.
 
 protected:
     ParametricTriangleTopologyContainer();

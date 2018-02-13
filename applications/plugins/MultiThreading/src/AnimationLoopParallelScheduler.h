@@ -51,7 +51,7 @@ public:
 	typedef sofa::core::behavior::BaseAnimationLoop Inherit;
 	SOFA_CLASS(AnimationLoopParallelScheduler,sofa::core::behavior::BaseAnimationLoop);
 
-	Data<int> threadNumber;
+	Data<int> threadNumber; ///< number of thread
 
 
 protected:

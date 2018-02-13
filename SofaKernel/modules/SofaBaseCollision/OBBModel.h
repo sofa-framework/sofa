@@ -148,8 +148,8 @@ public:
     typedef TOBB<DataTypes> Element;
     friend class TOBB<DataTypes>;
 
-    Data<VecCoord> ext;
-    Data<Real> default_ext;
+    Data<VecCoord> ext; ///< Extents in x,y and z directions
+    Data<Real> default_ext; ///< Default extent
 protected:
     TOBBModel();
     TOBBModel(core::behavior::MechanicalState<TDataTypes>* mstate );

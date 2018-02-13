@@ -52,7 +52,7 @@ protected:
     virtual ~APIVersion() ;
     void checkInputData() ;
 private:
-    Data<std::string>  d_level ;
+    Data<std::string>  d_level ; ///< The API Level of the scene ('17.06', '17.12', '18.06', ...)
 };
 
 } // namespace _apiversion_

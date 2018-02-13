@@ -83,9 +83,10 @@ private:
 
     sofa::core::objectmodel::DataFileName filename; ///< file in which the events are read.
     Data<bool> inverseSense; ///< inverse the sense of the mouvement
-    Data<bool> p_printEvent;
-    Data<char> p_key1, p_key2;
-    Data<bool> p_writeEvents;
+    Data<bool> p_printEvent; ///< Print event informations
+    Data<char> p_key1; ///< Key event generated when the left pedal is pressed
+    Data<char> p_key2; ///< Key event generated when the right pedal is pressed
+    Data<bool> p_writeEvents; ///< If true, write incoming events ; if false, read events from that file (if an output filename is provided)
     sofa::core::objectmodel::DataFileName p_outputFilename;
     std::ifstream* inFile;
     std::ofstream* outFile;

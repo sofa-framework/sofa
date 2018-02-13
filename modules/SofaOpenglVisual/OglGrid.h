@@ -44,15 +44,15 @@ public:
 
     enum PLANE {PLANE_X, PLANE_Y, PLANE_Z};
 
-    Data<std::string> plane;
+    Data<std::string> plane; ///< Plane of the grid
     PLANE internalPlane;
 
-    Data<float> size;
-    Data<int> nbSubdiv;
+    Data<float> size; ///< Size of the squared grid
+    Data<int> nbSubdiv; ///< Number of subdivisions
 
-    Data<defaulttype::RGBAColor> color;
-    Data<float> thickness;
-    Data<bool> draw;
+    Data<defaulttype::RGBAColor> color; ///< Color of the lines in the grid. default=(0.34,0.34,0.34,1.0)
+    Data<float> thickness; ///< Thickness of the lines in the grid
+    Data<bool> draw; ///< Display the grid or not
 
     OglGrid():
         plane(initData(&plane, std::string("z"),  "plane", "Plane of the grid")),

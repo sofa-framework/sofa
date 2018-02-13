@@ -53,7 +53,7 @@ public:
     //@{
     Data<helper::vector<Real> > f_L1;
     Data<helper::vector<Real> > f_L2;
-    Data<helper::vector<Real> > f_lambdaL;
+    Data<helper::vector<Real> > f_lambdaL; ///< stretch above which behavior becomes linear
     //@}
 
     virtual void reinit()

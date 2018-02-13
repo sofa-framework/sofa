@@ -71,7 +71,7 @@ protected:
     ~MyMappingPendulumInPlane();
 
 public:
-    Data<vector<OutReal> > f_length;
+    Data<vector<OutReal> > f_length; ///< distances from the fixed point to the end of the pendulum
 
     virtual void init();
     virtual void draw(const core::visual::VisualParams*);

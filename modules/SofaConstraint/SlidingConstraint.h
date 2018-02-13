@@ -63,9 +63,9 @@ protected:
 
     unsigned int cid;
 
-    Data<int> m1;
-    Data<int> m2a;
-    Data<int> m2b;
+    Data<int> m1; ///< index of the spliding point on the first model
+    Data<int> m2a; ///< index of one end of the sliding axis
+    Data<int> m2b; ///< index of the other end of the sliding axis
 
     Real m_dist;	// constraint violation
     Real thirdConstraint; // 0 if A<proj<B, -1 if proj<A, 1 if B<proj

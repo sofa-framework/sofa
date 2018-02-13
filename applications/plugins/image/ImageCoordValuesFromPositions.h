@@ -165,15 +165,15 @@ public:
 
     typedef helper::vector<Coord > SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
-    Data< SeqPositions > position;
+    Data< SeqPositions > position; ///< input positions
 
     Data< helper::OptionsGroup > Interpolation;  ///< nearest, linear, cubic
 
     typedef helper::WriteOnlyAccessor<Data< SeqPositions > > waValues;
     Data< SeqPositions > values;  ///< output interpolated values
-    Data< Real > outValue;
+    Data< Real > outValue; ///< default value outside image
 
-    Data< bool > addPosition;
+    Data< bool > addPosition; ///< add positions to interpolated values (to get translated positions)
 
     virtual std::string getTemplateName() const    override { return templateName(this);    }
     static std::string templateName(const ImageCoordValuesFromPositions<ImageTypes>* = NULL) { return ImageTypes::Name();    }

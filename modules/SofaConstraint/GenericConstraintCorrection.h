@@ -80,9 +80,9 @@ public:
 
     virtual void computeResidual(const core::ExecParams* params, defaulttype::BaseVector *lambda) override;
 
-    Data< helper::vector< std::string > >  d_linearSolversName;
-    Data< std::string >                    d_ODESolverName;
-    Data< double > d_complianceFactor; // Factor applied to the position factor and velocity factor used to calculate compliance matrix.
+    Data< helper::vector< std::string > >  d_linearSolversName; ///< name of the constraint solver
+    Data< std::string >                    d_ODESolverName; ///< name of the ode solver
+    Data< double > d_complianceFactor; ///< Factor applied to the position factor and velocity factor used to calculate compliance matrix.
 
     /// Pre-construction check method called by ObjectFactory.
     template<class T>

@@ -64,8 +64,8 @@ public:
     typedef typename Inherit::ForceMask ForceMask;
 
 protected:
-    topology::PointData< sofa::helper::vector<MappingData > >  map;
-    topology::PointData< sofa::helper::vector<MappingOrientData > >  mapOrient;
+    topology::PointData< sofa::helper::vector<MappingData > >  map; ///< mapper data
+    topology::PointData< sofa::helper::vector<MappingOrientData > >  mapOrient; ///< mapper data for mapped frames
 
     VecCoord actualTetraPosition;
 

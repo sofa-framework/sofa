@@ -131,10 +131,10 @@ protected:
 
     bool updateMatrix;
 
-    Data<Real> f_poissonRatio;
-    Data<Real> f_youngModulus;
-    Data<Real> f_dampingRatio;
-    Data<bool> f_useAngularSprings; // whether angular springs should be included
+    Data<Real> f_poissonRatio; ///< Poisson ratio in Hooke's law
+    Data<Real> f_youngModulus; ///< Young modulus in Hooke's law
+    Data<Real> f_dampingRatio; ///< Ratio damping/stiffness
+    Data<bool> f_useAngularSprings; ///< whether angular springs should be included
 
     Real lambda;  /// first Lam� coefficient
     Real mu;    /// second Lam� coefficient
@@ -209,8 +209,8 @@ public:
 
 
 protected :
-    sofa::component::topology::TriangleData<sofa::helper::vector<TriangleRestInformation> > triangleInfo;
-    sofa::component::topology::EdgeData<sofa::helper::vector<EdgeRestInformation> > edgeInfo;
+    sofa::component::topology::TriangleData<sofa::helper::vector<TriangleRestInformation> > triangleInfo; ///< Internal triangle data
+    sofa::component::topology::EdgeData<sofa::helper::vector<EdgeRestInformation> > edgeInfo; ///< Internal edge data
 
     sofa::component::topology::EdgeData<sofa::helper::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
 

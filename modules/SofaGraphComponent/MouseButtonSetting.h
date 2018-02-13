@@ -47,7 +47,7 @@ public:
     virtual std::string getOperationType()=0;
 
 
-    core::objectmodel::Data<sofa::helper::OptionsGroup> button;
+    core::objectmodel::Data<sofa::helper::OptionsGroup> button; ///< Mouse button used
 
 };
 
