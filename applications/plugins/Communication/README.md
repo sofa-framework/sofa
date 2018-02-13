@@ -21,6 +21,8 @@ Fedora :
 ```
 sudo dnf install libzmq-devel
 ```
+Windows :
+Compile the lib by yourself using this zip file : https://github.com/zeromq/libzmq/releases/download/v4.2.3/zeromq-4.2.3.zip
 
 ## How to use the components
 To learn how to create a SOFA scene, please refer to the tutorial provided by the SOFA Modeler or this documentation.
