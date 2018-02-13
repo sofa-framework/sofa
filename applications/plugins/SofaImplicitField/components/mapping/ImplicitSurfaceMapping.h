@@ -81,9 +81,9 @@ protected:
     {
     }
 public:
-    virtual void init();
+    virtual void init() override;
 
-    virtual void parse(core::objectmodel::BaseObjectDescription* arg);
+    virtual void parse(core::objectmodel::BaseObjectDescription* arg) override;
 
     double getStep() const { return mStep.getValue(); }
     void setStep(double val) { mStep.setValue(val); }
@@ -102,14 +102,14 @@ public:
     void setGridMax(const InCoord& val) { mGridMax.setValue(val); }
     void setGridMax(double x, double y, double z) { mGridMax.setValue( InCoord((InReal)x,(InReal)y,(InReal)z)); }
 
-    void apply(const core::MechanicalParams *mparams, Data<OutVecCoord>& out, const Data<InVecCoord>& in);
-    void applyJ(const core::MechanicalParams *mparams, Data<OutVecDeriv>& out, const Data<InVecDeriv>& in);
-    void applyJT( const sofa::core::MechanicalParams* /*mparams*/, InDataVecDeriv& /*out*/, const OutDataVecDeriv& /*in*/)
+    void apply(const core::MechanicalParams *mparams, Data<OutVecCoord>& out, const Data<InVecCoord>& in) override;
+    void applyJ(const core::MechanicalParams *mparams, Data<OutVecDeriv>& out, const Data<InVecDeriv>& in) override;
+    void applyJT( const sofa::core::MechanicalParams* /*mparams*/, InDataVecDeriv& /*out*/, const OutDataVecDeriv& /*in*/) override
     {
         serr << "applyJT(dx) is not implemented" << sendl;
     }
 
-    void applyJT( const sofa::core::ConstraintParams* /*cparams*/, InDataMatrixDeriv& /*out*/, const OutDataMatrixDeriv& /*in*/)
+    void applyJT( const sofa::core::ConstraintParams* /*cparams*/, InDataMatrixDeriv& /*out*/, const OutDataMatrixDeriv& /*in*/) override
     {
         serr << "applyJT(constraint) is not implemented" << sendl;
     }
@@ -180,8 +180,8 @@ protected:
     }
 
 public:
-    virtual bool insertInNode( core::objectmodel::BaseNode* node ) { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
-    virtual bool removeInNode( core::objectmodel::BaseNode* node ) { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
+    virtual bool insertInNode( core::objectmodel::BaseNode* node ) override { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
+    virtual bool removeInNode( core::objectmodel::BaseNode* node ) override { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
 
 };
 

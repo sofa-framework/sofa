@@ -76,20 +76,20 @@ public:
     int getNz() const { return f_nz.getValue(); }
     void setNz(int v) { f_nz.setValue(v);       }
 
-    virtual void init();
+    virtual void init() override;
 
-    virtual void reset();
+    virtual void reset() override;
 
-    virtual void updatePosition(SReal dt);
+    virtual void updatePosition(SReal dt) override;
 
-    virtual void draw(const core::visual::VisualParams* vparams);
+    virtual void draw(const core::visual::VisualParams* vparams) override;
 
     virtual void exportOBJ(std::string name, std::ostream* out, std::ostream* mtl, int& vindex, int& nindex, int& tindex);
 
 
     virtual void updateVisual();
 
-    virtual void computeBBox(const core::ExecParams*  params, bool onlyVisible=false );
+    virtual void computeBBox(const core::ExecParams*  params, bool onlyVisible=false ) override;
 
 protected:
     // marching cube

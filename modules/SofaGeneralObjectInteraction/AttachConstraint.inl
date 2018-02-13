@@ -510,7 +510,7 @@ void AttachConstraint<DataTypes>::init()
         // if NOT set : initialize all constraints active
         if(!d_constraintFactor.isSet())
         {
-            int size = f_indices2.getValue().size();
+            unsigned int size = f_indices2.getValue().size();
 
             constraintFactor.clear();
             constraintFactor.resize(size);

@@ -223,7 +223,7 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-    void computeBBox(const core::ExecParams* params, bool onlyVisible);
+    void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
 
 
 protected:
