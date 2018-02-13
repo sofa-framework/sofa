@@ -141,7 +141,7 @@ std::string ServerCommunicationZMQ::createZMQMessage(CommunicationSubscriber* su
     {
         if( !typeinfo->Text() && !typeinfo->Scalar() && !typeinfo->Integer() )
         {
-//            msg_advice(data->getOwner()) << "BaseData_getAttr_value unsupported native type=" << data->getValueTypeString() << " for data "<<data->getName()<<" ; returning string value" ;
+            msg_advice(data->getOwner()) << "BaseData_getAttr_value unsupported native type=" << data->getValueTypeString() << " for data "<<data->getName()<<" ; returning string value" ;
             messageStr << "string:'" << (data->getValueString()) << "' ";
         }
         if (typeinfo->Text())
@@ -211,7 +211,7 @@ void ServerCommunicationZMQ::processMessage(std::string dataString)
     ArgumentList onlyArgumentList;
     ArgumentList argumentList = stringToArgumentList(dataString);
 
-    if (argumentList.empty())
+    if (argumentList.empty() || argumentList.size() < 2) // < 2 = subject only
         return;
 
     std::vector<std::string>::iterator it = argumentList.begin();
