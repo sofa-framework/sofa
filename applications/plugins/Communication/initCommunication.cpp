@@ -53,7 +53,7 @@ const char* getModuleLicense()
 
 const char* getModuleDescription()
 {
-    return "Blop";
+    return "Communication plugin for sofa. Allow you to send or receive sofa's data";
 }
 
 const char* getModuleComponentList()

@@ -35,9 +35,10 @@ namespace communication
 
 ServerCommunication::ServerCommunication()
     : d_job(initData(&d_job, OptionsGroup(2,"receiver","sender"), "job", "If unspecified, the default value is receiver"))
-    , d_address(initData(&d_address, (std::string)"127.0.0.1", "address", "Scale for object display. (default=localhost)"))
+    , d_address(initData(&d_address, (std::string)"127.0.0.1", "address", "Connection address. (default=localhost)"))
     , d_port(initData(&d_port, (int)(6000), "port", "Port to listen (default=6000)"))
     , d_refreshRate(initData(&d_refreshRate, (double)(30.0), "refreshRate", "Refresh rate aka frequency (default=30), only used by sender"))
+    , d_verbose(initData(&d_verbose, (bool)(false), "verbose", "Display debug messages (default=false)"))
 {
 }
 
@@ -85,10 +86,7 @@ void ServerCommunication::handleEvent(Event * event)
     {
         BufferData* data = fetchArgumentsFromReceivedBuffer();
         if (data == NULL) // simply check if the data is not null
-        {
-//            msg_error() << "something went wrong with received datas, fetched datas from buffer is null";
             return;
-        }
         if(data->getRows() == -1 && data->getCols() == -1)
         {
             writeData(data);
@@ -98,13 +96,19 @@ void ServerCommunication::handleEvent(Event * event)
 
         if (!writeDataToFullMatrix(data))
             if (!writeDataToContainer(data))
-                msg_error() << "something went wrong while converting network data into sofa matrix";
+                if(isVerbose())
+                    msg_error() << "something went wrong while converting network data into sofa's data";
         delete data;
     }
     if (AnimateEndEvent::checkEventType(event))
     {
         saveDataToSenderBuffer();
     }
+}
+
+bool ServerCommunication::isVerbose()
+{
+    return d_verbose.getValue();
 }
 
 /******************************************************************************
@@ -122,10 +126,12 @@ bool ServerCommunication::isSubscribedTo(std::string subject, unsigned int argum
             return true;
         else
         {
-            msg_warning(this->getName()) << " is subscrided to " << subject << " but arguments should be size of " << subscriber->getArgumentSize() << ", received " << argumentSize << '\n';
+            if(isVerbose())
+                msg_warning(this->getName()) << " is subscrided to " << subject << " but arguments should be size of " << subscriber->getArgumentSize() << ", received " << argumentSize << '\n';
         }
     } catch (const std::out_of_range& oor) {
-        msg_warning(this->getName()) << " is not subscrided to " << subject << '\n';
+        if(isVerbose())
+            msg_warning(this->getName()) << " is not subscrided to " << subject << '\n';
     }
     return false;
 }
@@ -136,7 +142,8 @@ CommunicationSubscriber * ServerCommunication::getSubscriberFor(std::string subj
     {
         return m_subscriberMap.at(subject);
     } catch (const std::out_of_range& oor) {
-        msg_warning(this->getClassName()) << " is not subscrided to " << subject << '\n';
+        if(isVerbose())
+            msg_warning(this->getClassName()) << " is not subscrided to " << subject << '\n';
     }
     return nullptr;
 }
@@ -167,13 +174,15 @@ BaseData* ServerCommunication::fetchData(SingleLink<CommunicationSubscriber, Bas
     {
         data = getFactoryInstance()->createObject(keyTypeMessage, sofa::helper::NoArgument());
         if (data == nullptr)
-            msg_warning() << keyTypeMessage << " is not a known type";
+            if(isVerbose())
+                msg_warning() << keyTypeMessage << " is not a known type";
         else
         {
             data->setName(argumentName);
             data->setHelp("Auto generated help from communication");
             source->addData(data, argumentName);
-            msg_info(source->getName()) << " data field named : " << argumentName << " of type " << keyTypeMessage << " has been created";
+            if(isVerbose())
+                msg_info(source->getName()) << " data field named : " << argumentName << " of type " << keyTypeMessage << " has been created";
         }
     } else
         data = itData->second;
@@ -268,7 +277,8 @@ bool ServerCommunication::saveArgumentsToReceivedBuffer(std::string subject, Arg
     {
         receiveDataBuffer->add(subject, argumentList, rows, cols);
     } catch (std::exception &exception) {
-        msg_info("ServerCommunication") << exception.what();
+        if(isVerbose())
+            msg_info("ServerCommunication") << exception.what();
         return false;
     }
     return true;
@@ -280,7 +290,8 @@ BufferData* ServerCommunication::fetchArgumentsFromReceivedBuffer()
     {
         return receiveDataBuffer->get();
     } catch (std::exception &exception) {
-        msg_info("ServerCommunication") << exception.what();
+        if(isVerbose())
+            msg_info("ServerCommunication") << exception.what();
     }
     return NULL;
 }
@@ -313,7 +324,8 @@ bool ServerCommunication::saveDataToSenderBuffer()
             {
                 buffer->add(data);
             } catch (std::exception &exception) {
-                msg_info("ServerCommunication") << exception.what();
+                if(isVerbose())
+                    msg_info("ServerCommunication") << exception.what();
             }
         }
     }
@@ -332,7 +344,8 @@ BaseData* ServerCommunication::fetchDataFromSenderBuffer(CommunicationSubscriber
     {
         return buffer->get();
     } catch (std::exception &exception) {
-        msg_info("ServerCommunication") << exception.what();
+        if(isVerbose())
+            msg_info("ServerCommunication") << exception.what();
     }
     return NULL;
 

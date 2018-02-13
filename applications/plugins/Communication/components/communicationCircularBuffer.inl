@@ -70,29 +70,29 @@ CircularBufferReceiver::~CircularBufferReceiver()
 
 void CircularBufferReceiver::add(std::string subject, ArgumentList argumentList, int rows, int cols)
 {
-	mutex.lock();
+    mutex.lock();
     if (isFull())
     {
-		mutex.unlock();
+        mutex.unlock();
         throw std::out_of_range("Receiver circular buffer is full");
     }
     data[rear] = new BufferData(subject, argumentList, rows, cols);
     rear = ((this->rear + 1) % this->size);
-	mutex.unlock();
+    mutex.unlock();
 }
 
 
 BufferData* CircularBufferReceiver::get()
 {
-	mutex.lock();
+    mutex.lock();
     if (isEmpty())
     {
-		mutex.unlock();
+        mutex.unlock();
         throw std::out_of_range("Receiver circular buffer is empty");
     }
     BufferData* aData = this->data[front];
     front = (front + 1) % size;
-	mutex.unlock();
+    mutex.unlock();
     return aData;
 }
 
@@ -112,43 +112,51 @@ bool CircularBufferReceiver::isFull()
 *                                                                             *
 ******************************************************************************/
 
-CircularBufferSender::CircularBufferSender(int size)
+CircularBufferSender::CircularBufferSender(Base* base, int size)
 {
+    this->base = base;
     this->data = new BaseData*[size];
     this->size = size;
 }
 
 CircularBufferSender::~CircularBufferSender()
 {
-//    delete this->data;
+    delete this->data;
 }
 
 void CircularBufferSender::add(BaseData* data)
 {
-	mutex.lock();
+    mutex.lock();
     if (isFull())
     {
-		mutex.unlock();
+        mutex.unlock();
         throw std::out_of_range("Sender circular buffer is full");
     }
-    this->data[rear] = (data->clone());
-    this->data[rear]->setParent(data);
-    this->data[rear]->update();
+
+    // not so proud of this part ...
+    // this is the way I found for copying datas without any problem
+    this->data[rear] = (data->getNewInstance());
+    this->data[rear]->setHelp(data->getHelp());
+    this->data[rear]->setName(data->getName());
+    this->data[rear]->setOwner(this->base);
+    this->data[rear]->setOwnerClass(this->base->getClassName().c_str());
+    this->data[rear]->copyValue(data);
+
     rear = ((this->rear + 1) % this->size);
-	mutex.unlock();
+    mutex.unlock();
 }
 
 BaseData* CircularBufferSender::get()
 {
-	mutex.lock();
+    mutex.lock();
     if (isEmpty())
     {
-		mutex.unlock();
+        mutex.unlock();
         throw std::out_of_range("Sender circular buffer is empty");
     }
     BaseData* aData = this->data[front];
     front = (front + 1) % size;
-	mutex.unlock();
+    mutex.unlock();
     return aData;
 }
 

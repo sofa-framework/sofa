@@ -124,6 +124,7 @@ public:
     Data<std::string>           d_address;
     Data<int>                   d_port;
     Data<double>                d_refreshRate;
+    Data<bool>                  d_verbose;
 
 protected:
 
@@ -132,6 +133,8 @@ protected:
     std::map<std::string, CommunicationSubscriber*> m_subscriberMap;
     std::thread                                     m_thread;
     bool                                            m_running = true;
+
+    virtual bool isVerbose();
 
     virtual void openCommunication();
     virtual void closeCommunication();

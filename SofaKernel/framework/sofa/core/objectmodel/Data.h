@@ -33,6 +33,7 @@
 #include <memory>
 #include <string>
 #include <sofa/helper/logging/Message.h>
+
 namespace sofa
 {
 
@@ -373,8 +374,9 @@ public:
 
     /// @name Construction / destruction
     /// @{
+    // It's used for getting a new instance from an existing instance. This function is used by the communication plugin
+    virtual BaseData* getNewInstance() { return new Data();}
 
-    virtual BaseData* clone() {return new Data( );}
     /// This internal class is used by the initData() methods to store initialization parameters of a Data
     class InitData : public BaseData::BaseInitData
     {

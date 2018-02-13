@@ -27,7 +27,9 @@
 #include <mutex>
 #include <thread>
 #include <sofa/core/objectmodel/Data.h>
+#include <sofa/core/objectmodel/Base.h>
 using sofa::core::objectmodel::BaseData;
+using sofa::core::objectmodel::Base;
 
 namespace sofa
 {
@@ -92,7 +94,7 @@ class CircularBufferSender
 {
 public:
 
-    CircularBufferSender(int size);
+    CircularBufferSender(Base* base, int size);
     ~CircularBufferSender();
 
     void add(BaseData* data);
@@ -100,6 +102,7 @@ public:
 
 private:
 
+    Base* base;
     int front = 0;
     int rear = 0;
     BaseData ** data;
