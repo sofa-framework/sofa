@@ -26,10 +26,17 @@
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/BaseData.h>
-
-
-using namespace sofa::core::objectmodel;
+#include <sofa/helper/Factory.h>
+#include <sofa/helper/Factory.inl>
 SP_DECLARE_CLASS_TYPE(Base)
+
+template<typename DataType>
+class DataCreator : public sofa::helper::BaseCreator<BaseData>
+{
+public:
+    virtual BaseData* createInstance(sofa::helper::NoArgument) override { return new sofa::core::objectmodel::Data<DataType>(); }
+    virtual const std::type_info& type() override { return typeid(BaseData);}
+};
 
 BaseData * helper_addNewData(PyObject *args, Base* obj);
 BaseData * helper_addNewDataKW(PyObject *args, PyObject * kw, Base * obj);

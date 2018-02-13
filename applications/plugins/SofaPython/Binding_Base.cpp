@@ -38,8 +38,11 @@
 using sofa::simulation::PythonEnvironment ;
 using sofa::core::topology::BaseMeshTopology ;
 using sofa::helper::vector ;
+using namespace sofa::core::objectmodel;
+using sofa::helper::Factory;
 
-typedef BaseMeshTopology::Tetra Tetra;
+
+typedef sofa::helper::Factory< std::string, BaseData> PSDEDataFactory;
 
 static Base* get_base(PyObject* self) {
     return sofa::py::unwrap<Base>(self);
@@ -55,93 +58,6 @@ static char* getStringCopy(char *c)
     return tmp ;
 }
 
-//
-
-Tetra parseTetra(PyObject * value)
-{
-
-    vector<unsigned int> PointIdxs; // Better way to go for PointID instead of unsigned int?
-    if( PySequence_Check(value) )
-    {
-        if(!PyList_Check(value))
-        {
-            msg_warning("SofaPython") << "A sequence which is not a list will be convert to a sofa string.";
-        }
-        // It is a sequence...so we can iterate over it.
-        PyObject *iterator = PyObject_GetIter(value);
-        // get pointer to TetrasVec from Data
-        if(iterator)
-        {
-            bool first = true;
-            while(PyObject* next = PyIter_Next(iterator))
-            {
-
-                if(first) first = false;
-//                else out << ' ';
-                if(PyInt_Check(next))
-                {
-                    PointIdxs.push_back(PyInt_AsSsize_t(next));
-                }
-//                msg_warning("single tetra binding") << "." << PointIdxs << msgendl;
-                Py_DECREF(next);
-            }
-
-            Py_DECREF(iterator);
-
-            if (PyErr_Occurred())
-            {
-                msg_error("SofaPython") << "error while iterating." << msgendl
-                                        << PythonEnvironment::getStackAsString() ;
-            }
-        }
-    }
-    if (PointIdxs.size()!=4)
-    {
-        msg_error("Binding_Base")<< "Tetra in vector of Teras does not have size 4!" << msgendl;
-        Tetra EmptyTetra;
-        return EmptyTetra;
-    }
-    else{
-        Tetra CurrentTetra(PointIdxs[0],PointIdxs[1],PointIdxs[2],PointIdxs[3]);
-        msg_warning("processing Ts") << PointIdxs;
-        return CurrentTetra;
-    }
-}
-
-void parseTetraVector(PyObject * value, Data<sofa::helper::vector<Tetra>> * TetrasData)
-{
-    if( PySequence_Check(value) )
-    {
-        if(!PyList_Check(value))
-        {
-            msg_warning("SofaPython") << "A sequence which is not a list will be convert to a sofa string.";
-        }
-        // It is a sequence...so we can iterate over it.
-        PyObject *iterator = PyObject_GetIter(value);
-        // get pointer to TetrasVec from Data
-        sofa::helper::vector<Tetra>* TetrasVec = TetrasData->beginEdit();
-        if(iterator)
-        {
-            bool first = true;
-            while(PyObject* next = PyIter_Next(iterator))
-            {
-                if(first) first = false;
-                TetrasVec->push_back(parseTetra(next));
-                Py_DECREF(next);
-            }
-
-            Py_DECREF(iterator);
-
-            if (PyErr_Occurred())
-            {
-                msg_error("SofaPython") << "error while iterating." << msgendl
-                                        << PythonEnvironment::getStackAsString() ;
-            }
-        }
-
-    }
-    TetrasData->endEdit();
-}
 
 // helper function for parsing Python arguments
 // not defined static in order to be able to use this fcn somewhere else also
