@@ -77,8 +77,8 @@ public:
 
     virtual void computeResidual(const core::ExecParams* params, defaulttype::BaseVector *lambda) override;
 
-    Data< helper::vector< std::string > >  d_linearSolversName;
-    Data< std::string >                    d_ODESolverName;
+    Data< helper::vector< std::string > >  d_linearSolversName; ///< name of the constraint solver
+    Data< std::string >                    d_ODESolverName; ///< name of the ode solver
 
     /// Pre-construction check method called by ObjectFactory.
     template<class T>

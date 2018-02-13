@@ -69,12 +69,12 @@ protected:
 
     /// the three points defining the parabol
     Data<Vec3R> m_P1;
-    Data<Vec3R> m_P2;
-    Data<Vec3R> m_P3;
+    Data<Vec3R> m_P2; ///< second point of the parabol
+    Data<Vec3R> m_P3; ///< third point of the parabol
 
     /// the time steps defining the velocity of the movement
     Data<Real> m_tBegin;
-    Data<Real> m_tEnd;
+    Data<Real> m_tEnd; ///< End Time of the motion
 
     /// the 3 points projected in the parabol plan
     Vec3R m_locP1;

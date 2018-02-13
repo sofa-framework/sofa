@@ -72,9 +72,9 @@ public:
 
 
 protected :
-    Data< bool > FixedXRotation;
-    Data< bool > FixedYRotation;
-    Data< bool > FixedZRotation;
+    Data< bool > FixedXRotation; ///< Prevent Rotation around X axis
+    Data< bool > FixedYRotation; ///< Prevent Rotation around Y axis
+    Data< bool > FixedZRotation; ///< Prevent Rotation around Z axis
     helper::vector<defaulttype::Quat> previousOrientation;
 };
 

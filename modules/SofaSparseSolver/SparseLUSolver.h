@@ -78,8 +78,8 @@ public:
 
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector,TThreadManager> Inherit;
 
-    Data<bool> f_verbose;
-    Data<double> f_tol;
+    Data<bool> f_verbose; ///< Dump system state at each iteration
+    Data<double> f_tol; ///< tolerance of factorization
 
     SparseLUSolver();
     void solve (Matrix& M, Vector& x, Vector& b) override;

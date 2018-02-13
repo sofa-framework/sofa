@@ -167,9 +167,9 @@ public:
 
 
 protected:
-    Data< double > mStep;
-    Data< double > mRadius;
-    Data< double > mIsoValue;
+    Data< double > mStep; ///< Step
+    Data< double > mRadius; ///< Radius
+    Data< double > mIsoValue; ///< Iso Value
 
 
     typedef forcefield::SPHFluidForceField<In> SPHForceField;

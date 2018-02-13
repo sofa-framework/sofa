@@ -173,7 +173,7 @@ protected:
 
 public:
 
-    Data<InitTypes::VecCoord> d_initPoints;
+    Data<InitTypes::VecCoord> d_initPoints; ///< Initial position of points
 
 protected:
 
@@ -190,9 +190,9 @@ protected:
 
 private:
     
-    Data<unsigned int> nbPoints;
+    Data<unsigned int> nbPoints; ///< Number of points
 
-    Data<sofa::helper::vector<PointID> > points;
+    Data<sofa::helper::vector<PointID> > points; ///< List of point indices
 };
 
 } // namespace topology

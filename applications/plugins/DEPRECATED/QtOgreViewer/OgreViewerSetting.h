@@ -55,7 +55,7 @@ public:
     */
 
 protected:
-    Data< bool > shadows;
+    Data< bool > shadows; ///< Enabled Shadows
     // Data< helper::vector< std::string > > compositors;
 };
 

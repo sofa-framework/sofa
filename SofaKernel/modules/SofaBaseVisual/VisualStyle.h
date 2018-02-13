@@ -72,7 +72,7 @@ public:
     void fwdDraw(VisualParams* ) override;
     void bwdDraw(VisualParams* ) override;
 
-    Data<DisplayFlags> displayFlags;
+    Data<DisplayFlags> displayFlags; ///< Display Flags
 
 protected:
     DisplayFlags backupFlags;

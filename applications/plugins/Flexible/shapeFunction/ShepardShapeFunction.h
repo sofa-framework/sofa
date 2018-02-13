@@ -67,7 +67,7 @@ public:
 	typedef typename Inherit::VecVHessian VecVHessian;
     typedef ShepardShapeFunctionInternalData<ShapeFunctionTypes_> InternalData;
 
-    Data<Real> power;
+    Data<Real> power; ///< power of the inverse distance
 
     virtual void computeShapeFunction(const Coord& childPosition, VRef& ref, VReal& w, VGradient* dw=NULL,VHessian* ddw=NULL, const Cell /*cell*/=-1)
     {

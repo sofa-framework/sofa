@@ -67,9 +67,9 @@ public:
     SOFA_CLASS(STLExporter, BaseSimulationExporter);
 
     Data<bool> d_binaryFormat;      //0 for Ascii Formats, 1 for Binary File Format
-    Data<defaulttype::Vec3Types::VecCoord>               d_position;
-    Data< helper::vector< BaseMeshTopology::Triangle > > d_triangle;
-    Data< helper::vector< BaseMeshTopology::Quad > >     d_quad;
+    Data<defaulttype::Vec3Types::VecCoord>               d_position; ///< points coordinates
+    Data< helper::vector< BaseMeshTopology::Triangle > > d_triangle; ///< triangles indices
+    Data< helper::vector< BaseMeshTopology::Quad > >     d_quad; ///< quads indices
 
     virtual void doInit() override ;
     virtual void doReInit() override ;

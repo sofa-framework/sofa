@@ -261,6 +261,8 @@ bool MeshVTKLoader::setInputsMesh()
 
     d_normals.endEdit();
 
+
+    helper::vector<Polyline >& my_polylines = *(d_polylines.beginEdit());
     helper::vector<Edge >& my_edges = *(d_edges.beginEdit());
     helper::vector<Triangle >& my_triangles = *(d_triangles.beginEdit());
     helper::vector<Quad >& my_quads = *(d_quads.beginEdit());
@@ -368,12 +370,16 @@ bool MeshVTKLoader::setInputsMesh()
                     addEdge(&my_edges, inFP[i + 0], inFP[i + 1]);
                     break;
                 case 4: // POLY_LINE
+                {
                     numSubPolyLines.push_back(nv);
-                    for (int v = 0; v < nv - 1; ++v)
+                    std::vector<PointID> points;
+                    for (int v = 0; v < nv; ++v)
                     {
-                        addEdge(&my_edges, inFP[i + v + 0], inFP[i + v + 1]);
+                        points.push_back(inFP[i + v]);
                     }
-                    break;
+                    addPolyline(&my_polylines, points);
+                }
+                break;
                 case 5: // TRIANGLE
                     addTriangle(&my_triangles, inFP[i + 0], inFP[i + 1], inFP[i + 2]);
                     break;
@@ -445,7 +451,6 @@ bool MeshVTKLoader::setInputsMesh()
                             }
                         }
                     }
-
                     break;
                 case 24: // QUADRATIC Tetrahedron
                     addTetrahedron(&my_tetrahedra, inFP[i + 0], inFP[i + 1], inFP[i + 2], inFP[i + 3]);
@@ -527,6 +532,7 @@ bool MeshVTKLoader::setInputsMesh()
         delete reader->inputCellTypes;
     }
 
+    d_polylines.endEdit();
     d_edges.endEdit();
     d_triangles.endEdit();
     d_quads.endEdit();

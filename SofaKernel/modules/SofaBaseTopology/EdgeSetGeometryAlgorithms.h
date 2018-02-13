@@ -164,9 +164,9 @@ public:
     NumericalIntegrationDescriptor<Real,1> &getEdgeNumericalIntegrationDescriptor();
 
 protected:
-    Data<bool> showEdgeIndices;
-    Data<bool>  _draw;
-    Data<RGBAColor> _drawColor;
+    Data<bool> showEdgeIndices; ///< Debug : view Edge indices.
+    Data<bool>  _draw; ///< if true, draw the edges in the topology.
+    Data<RGBAColor> _drawColor; ///< RGB code color used to draw edges.
     /// include cubature points
     NumericalIntegrationDescriptor<Real,1> edgeNumericalIntegration;
 };

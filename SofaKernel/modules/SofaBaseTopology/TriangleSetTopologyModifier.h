@@ -285,7 +285,7 @@ protected:
      */
     virtual void addTrianglesPostProcessing(const sofa::helper::vector <Triangle>& triangles);
 
-    Data<sofa::helper::vector <unsigned int> > list_Out;
+    Data<sofa::helper::vector <unsigned int> > list_Out; ///< triangles with at least one null values.
 private:
     TriangleSetTopologyContainer*	m_container;
 };

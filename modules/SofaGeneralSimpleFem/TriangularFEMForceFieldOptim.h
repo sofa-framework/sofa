@@ -259,10 +259,10 @@ public:
     typedef typename VecCoord::template rebind<TriangleState>::other VecTriangleState;
     typedef typename VecCoord::template rebind<VertexInfo>::other VecVertexInfo;
     typedef typename VecCoord::template rebind<EdgeInfo>::other VecEdgeInfo;
-    topology::TriangleData<VecTriangleInfo> triangleInfo;
-    topology::TriangleData<VecTriangleState> triangleState;
-    topology::PointData<VecVertexInfo> vertexInfo;
-    topology::EdgeData<VecEdgeInfo> edgeInfo;
+    topology::TriangleData<VecTriangleInfo> triangleInfo; ///< Internal triangle data (persistent)
+    topology::TriangleData<VecTriangleState> triangleState; ///< Internal triangle data (time-dependent)
+    topology::PointData<VecVertexInfo> vertexInfo; ///< Internal point data
+    topology::EdgeData<VecEdgeInfo> edgeInfo; ///< Internal edge data
 
 
     class TFEMFFOTriangleInfoHandler : public topology::TopologyDataHandler<Triangle,VecTriangleInfo >
@@ -323,19 +323,19 @@ public:
 
     /// Forcefield intern paramaters
     Data<Real> f_poisson;
-    Data<Real> f_young;
-    Data<Real> f_damping;
-    Data<Real> f_restScale;
+    Data<Real> f_young; ///< Young modulus in Hooke's law
+    Data<Real> f_damping; ///< Ratio damping/stiffness
+    Data<Real> f_restScale; ///< Scale factor applied to rest positions (to simulate pre-stretched materials)
 
     /// Display parameters
     Data<bool> showStressValue;
-    Data<bool> showStressVector;
+    Data<bool> showStressVector; ///< Flag activating rendering of stress directions within each triangle
 #ifdef SIMPLEFEM_COLORMAP
-    Data<std::string> showStressColorMap;
+    Data<std::string> showStressColorMap; ///< Color map used to show stress values
 #endif
-    Data<Real> showStressMaxValue;
+    Data<Real> showStressMaxValue; ///< Max value for rendering of stress values
 #ifdef SIMPLEFEM_COLORMAP
-    Data<float> showStressValueAlpha;
+    Data<float> showStressValueAlpha; ///< Alpha (1-transparency) value for rendering of stress values
 #endif
 
 

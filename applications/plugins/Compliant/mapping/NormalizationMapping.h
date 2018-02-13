@@ -36,7 +36,7 @@ class SOFA_Compliant_API NormalizationMapping : public AssembledMapping<T, T>
     typedef typename T::Real Real;
 
     typedef helper::vector<unsigned> Indices;
-    Data<Indices> d_indices;
+    Data<Indices> d_indices; ///< indices of vector to normalize
 
 	
     NormalizationMapping()

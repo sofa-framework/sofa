@@ -46,10 +46,10 @@ public:
 	typedef helper::vector<real> mass_type;
 	typedef helper::vector< defaulttype::Vec<3, real> > inertia_type;
 	
-	Data<mass_type> mass;
-	Data<inertia_type> inertia;
-	Data<bool> inertia_forces;
-    Data<bool> _draw;
+	Data<mass_type> mass; ///< mass of each rigid body
+	Data<inertia_type> inertia; ///< inertia of each rigid body
+	Data<bool> inertia_forces; ///< compute (explicit) inertia forces
+    Data<bool> _draw; ///< debug drawing of the inertia matrix
 	
 	typedef SE3<real> se3;
 

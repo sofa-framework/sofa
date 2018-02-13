@@ -98,7 +98,7 @@ public:
 
 protected:
     sofa::core::objectmodel::DataFileName densityFile;
-    Data< Vec<3,unsigned int> > dimensionDensityFile;
+    Data< Vec<3,unsigned int> > dimensionDensityFile; ///< dimension of the RAW file
     vector< vector < vector<unsigned char > > >voxels;
     // 	  vector< int > stiffnessFactor;
     void computeCoarseElementStiffness( ElementStiffness &K, ElementMass &coarseMassElement, const int elementIndice,  int level);

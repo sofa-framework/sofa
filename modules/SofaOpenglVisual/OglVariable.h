@@ -280,7 +280,7 @@ class SOFA_OPENGL_VISUAL_API OglMatrix2Variable : public OglVariable<helper::vec
 public:
     SOFA_CLASS(OglMatrix2Variable,OglVariable<helper::vector<float> >);
 
-    Data<bool> transpose;
+    Data<bool> transpose; ///< Transpose the matrix (e.g. to use row-dominant matrices in OpenGL
 
     OglMatrix2Variable();
     virtual ~OglMatrix2Variable() { }
@@ -398,7 +398,7 @@ public:
     virtual void init() override;
     virtual void initVisual() override;
 
-    Data<bool> transpose;
+    Data<bool> transpose; ///< Transpose the matrix (e.g. to use row-dominant matrices in OpenGL
     virtual void setTranspose( const bool& v ) { transpose.setValue(v); }
 
 };

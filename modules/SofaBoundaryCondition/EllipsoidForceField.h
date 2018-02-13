@@ -88,18 +88,18 @@ protected:
 
     };
 
-    Data<sofa::helper::vector<Contact> > contacts;
+    Data<sofa::helper::vector<Contact> > contacts; ///< Contacts
 
     EllipsoidForceFieldInternalData<DataTypes> data;
 
 public:
 
-    Data<Coord> center;
-    Data<Coord> vradius;
-    Data<Real> stiffness;
-    Data<Real> damping;
-    Data<defaulttype::RGBAColor> color;
-    Data<bool> bDraw;
+    Data<Coord> center; ///< ellipsoid center
+    Data<Coord> vradius; ///< ellipsoid radius
+    Data<Real> stiffness; ///< force stiffness (positive to repulse outward, negative inward)
+    Data<Real> damping; ///< force damping
+    Data<defaulttype::RGBAColor> color; ///< ellipsoid color. (default=0,0.5,1.0,1.0)
+    Data<bool> bDraw; ///< enable/disable drawing of the ellipsoid
 protected:
     EllipsoidForceField()
         : contacts(initData(&contacts,"contacts", "Contacts"))

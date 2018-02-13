@@ -56,13 +56,13 @@ public:
     typedef unsigned int Index;
 
     //Input
-    Data<unsigned int> d_nbLabels;
+    Data<unsigned int> d_nbLabels; ///< number of label lists
     typedef helper::vector<helper::SVector<T> > VecVLabels;
     helper::vectorData<VecVLabels> d_labels;
-    Data<helper::vector<T> > d_connectLabels;
+    Data<helper::vector<T> > d_connectLabels; ///< Pairs of label to be connected accross different label lists
 
     //Output
-    Data<helper::vector<Index> > d_indices;
+    Data<helper::vector<Index> > d_indices; ///< selected point/cell indices
 
     virtual std::string getTemplateName() const    override {        return templateName(this);    }
     static std::string templateName(const SelectConnectedLabelsROI* = NULL)    {       return sofa::defaulttype::DataTypeName<T>::name();    }

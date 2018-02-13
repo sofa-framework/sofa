@@ -53,8 +53,8 @@ public:
 
     /** @name  Material parameters */
     //@{
-    Data<helper::OptionsGroup> f_method;
-    Data<helper::vector<Real> > f_k;
+    Data<helper::OptionsGroup> f_method; ///< energy form
+    Data<helper::vector<Real> > f_k; ///< bulk modulus: weight ln(J)^2/2 term in energy 
     //@}
 
     virtual void reinit()

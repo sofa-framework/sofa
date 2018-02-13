@@ -35,9 +35,9 @@ public:
 
     Data< Real > compliance;    ///< Same compliance applied to all the DOFs
 
-    Data< Real > damping;
+    Data< Real > damping; ///< uniform viscous damping.
 
-    Data< bool > resizable;
+    Data< bool > resizable; ///< can the associated dofs can be resized? (in which case the matrices must be updated)
 
 
     virtual void init();

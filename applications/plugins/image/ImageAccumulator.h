@@ -70,7 +70,7 @@ public:
     typedef sofa::helper::system::thread::ctime_t ctime_t;
     typedef sofa::helper::system::thread::CTime CTime;
 
-    Data< bool > accumulate;
+    Data< bool > accumulate; ///< accumulate ?
     Data< ImageTypes > inputImage;
     Data< TransformType > inputTransform;
     Data< ImageTypes > outputImage;

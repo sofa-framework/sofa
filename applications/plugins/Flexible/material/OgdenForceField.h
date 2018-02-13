@@ -63,7 +63,7 @@ public:
     Data<helper::vector<Real> > f_d1;
     Data<helper::vector<Real> > f_d2;
     Data<helper::vector<Real> > f_d3;
-    Data<bool > f_PSDStabilization;
+    Data<bool > f_PSDStabilization; ///< project stiffness matrix to its nearest symmetric, positive semi-definite matrix
     //@}
 
     virtual void reinit()

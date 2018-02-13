@@ -421,7 +421,7 @@ public:
     ///   Methods related to Event processing
     /// @{
 
-    Data<bool> f_listening;
+    Data<bool> f_listening; ///< if true, handle the events, otherwise ignore the events
 
     /// Handle an event
     virtual void handleEvent( Event* );

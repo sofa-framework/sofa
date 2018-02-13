@@ -72,7 +72,7 @@ public:
     /// Sum of the forces applied at each point, if per-point forces are not specified
     Data< Deriv >              d_totalForce;
 
-    ///S for drawing. The sign changes the direction, 0 doesn't draw arrow
+    /// S for drawing. The sign changes the direction, 0 doesn't draw arrow
     Data< SReal >              d_arrowSizeCoef;
 
     /// display color

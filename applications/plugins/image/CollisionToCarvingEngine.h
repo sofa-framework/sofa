@@ -87,7 +87,7 @@ public:
     Data< OutImageTypes > outputImage;
     Data< TransformType > outputTransform;
 
-	Data< Vector3 > trackedPosition;
+	Data< Vector3 > trackedPosition; ///< Position de test pour la collision
 
 	// ------ Parameters ---------------------
 	raImagei* in;

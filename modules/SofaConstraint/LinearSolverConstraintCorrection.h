@@ -111,8 +111,8 @@ public:
     /// @name Unbuilt constraint system during resolution
     /// @{
 
-    Data< bool > wire_optimization;
-    Data< helper::vector< std::string > >  solverName;
+    Data< bool > wire_optimization; ///< constraints are reordered along a wire-like topology (from tip to base)
+    Data< helper::vector< std::string > >  solverName; ///< name of the constraint solver
 
     void verify_constraints();
 

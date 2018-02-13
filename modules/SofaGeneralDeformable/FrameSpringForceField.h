@@ -169,7 +169,7 @@ protected:
     VecCoord springRef;
     /// bool to allow the display of the 2 parts of springs torsions
     Data<bool> showLawfulTorsion;
-    Data<bool> showExtraTorsion;
+    Data<bool> showExtraTorsion; ///< dislpay the illicit part of the joint rotation
 
     FrameSpringForceFieldInternalData<DataTypes> data;
 

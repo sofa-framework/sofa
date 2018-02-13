@@ -61,7 +61,7 @@ public:
 public:
     Data<vector<unsigned> > f_index;   ///< Indices of the constrained frames
     Data<vector<VecAllowed > > f_allowed;  ///< Allowed displacements of the constrained frames
-    Data<double> _drawSize;
+    Data<double> _drawSize; ///< 0 -> point based rendering, >0 -> radius of spheres
 
     FrameFixedConstraint();
 

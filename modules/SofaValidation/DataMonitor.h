@@ -49,7 +49,7 @@ protected:
     DataMonitor();
     ~DataMonitor() {}
 
-    sofa::core::objectmodel::Data<std::string> data;
+    sofa::core::objectmodel::Data<std::string> data; ///< Monitored data
 };
 
 } // namespace misc

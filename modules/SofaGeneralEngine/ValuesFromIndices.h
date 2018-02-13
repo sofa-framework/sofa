@@ -66,10 +66,10 @@ public:
 
     void update() override;
 
-    Data<VecValue> f_in;
-    Data<VecIndex> f_indices;
-    Data<VecValue> f_out;
-    Data<std::string> f_outStr;
+    Data<VecValue> f_in; ///< input values
+    Data<VecIndex> f_indices; ///< Indices of the values
+    Data<VecValue> f_out; ///< Output values corresponding to the indices
+    Data<std::string> f_outStr; ///< Output values corresponding to the indices, converted as a string
 
     virtual std::string getTemplateName() const override
     {

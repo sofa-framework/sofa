@@ -131,8 +131,8 @@ namespace sofa
 			}
 
 
-			Data<DataTypes> mSource;
-			Data<DataTypes> mDestination;
+			Data<DataTypes> mSource; ///< source object to copy
+			Data<DataTypes> mDestination; ///< destination object to copy
 
 		private:
 

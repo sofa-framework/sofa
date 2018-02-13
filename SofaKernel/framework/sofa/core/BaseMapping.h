@@ -66,10 +66,10 @@ private:
     BaseMapping& operator=(const BaseMapping& n);
 	
 public:
-    Data<bool> f_mapForces;
-    Data<bool> f_mapConstraints;
-    Data<bool> f_mapMasses;
-    Data<bool> f_mapMatrices;
+    Data<bool> f_mapForces; ///< Are forces mapped ?
+    Data<bool> f_mapConstraints; ///< Are constraints mapped ?
+    Data<bool> f_mapMasses; ///< Are masses mapped ?
+    Data<bool> f_mapMatrices; ///< Are matrix explicit mapped?
 
     /// Apply the transformation from the input model to the output model (like apply displacement from BehaviorModel to VisualModel)
     virtual void apply (const MechanicalParams* mparams = MechanicalParams::defaultInstance(), MultiVecCoordId outPos = VecCoordId::position(), ConstMultiVecCoordId inPos = ConstVecCoordId::position() ) = 0;

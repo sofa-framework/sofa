@@ -54,15 +54,15 @@ public:
     typedef unsigned int Index;
 
     //Input
-    Data<unsigned int> nbROIs;
+    Data<unsigned int> nbROIs; ///< size of indices/value vector
     helper::vectorData<helper::vector<Index> > f_indices;
     helper::vectorData<Real> f_value;
 
     //Output
-    Data<sofa::helper::vector<Real> > f_outputValues;
+    Data<sofa::helper::vector<Real> > f_outputValues; ///< New vector of values
 
     //Parameter
-    Data<Real> p_defaultValue;
+    Data<Real> p_defaultValue; ///< Default value for indices out of ROIs
 
     virtual std::string getTemplateName() const    override {        return templateName(this);    }
     static std::string templateName(const ROIValueMapper* = NULL)    {        return std::string();    }

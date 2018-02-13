@@ -69,10 +69,16 @@ public:
     Data < double > f_period;
     /// Computed distances
     Data < helper::vector<Real> > dist;
-    /// Computed distances (mean, min, max, standard deviation)
-    Data < double > distMean, distMin, distMax, distDev;
-    /// Relative computed distances (mean, min, max, standard deviation)
-    Data < double > rdistMean, rdistMin, rdistMax, rdistDev;
+
+    Data < double > distMean; ///< mean distance (OUTPUT)
+    Data < double > distMin; ///< min distance (OUTPUT)
+    Data < double > distMax; ///< max distance (OUTPUT)
+    Data < double > distDev; ///< distance standard deviation (OUTPUT)
+
+    Data < double > rdistMean; ///< mean relative distance (OUTPUT)
+    Data < double > rdistMin; ///< min relative distance (OUTPUT)
+    Data < double > rdistMax; ///< max relative distance (OUTPUT)
+    Data < double > rdistDev; ///< relative distance standard deviation (OUTPUT)
 
     typedef SingleLink<EvalPointsDistance<DataTypes>,core::behavior::MechanicalState<DataTypes>,BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> LinkMState;
     /// First model mechanical state

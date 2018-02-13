@@ -80,11 +80,11 @@ protected:
     friend class PositionBasedDynamicsConstraintInternalData<DataTypes>;
 
 public:
-    Data< Real > stiffness;
-    Data< VecCoord > position;
+    Data< Real > stiffness; ///< Blending between current pos and target pos.
+    Data< VecCoord > position; ///< Target positions.
 
-    Data < VecDeriv > velocity;
-    Data < VecCoord > old_position;
+    Data < VecDeriv > velocity; ///< Velocities.
+    Data < VecCoord > old_position; ///< Old positions.
 
     PositionBasedDynamicsConstraint();
 

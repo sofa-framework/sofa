@@ -144,12 +144,12 @@ public:
     virtual void draw(const core::visual::VisualParams* vparams) override;
 
 protected:
-    Data<Real> step;
+    Data<Real> step; ///< base step when changing beam length
     Data<Real> minLength; ///< determine the minimum length of the edge set
     Data<Real> maxLength; ///< determine the maximum length of the edge set
     Data<Real> maxDepl; ///< determine the maximum deplacement in a time step
-    Data<Real> speed;
-    Data<bool> reversed;
+    Data<Real> speed; ///< continuous beam length increase/decrease
+    Data<bool> reversed; ///< Extend or retract edgeSet from end
     Data<int>  startingIndex;   ///< index of the edge where a topological change occurs
     Real depl;
 

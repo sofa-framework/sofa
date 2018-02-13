@@ -264,7 +264,7 @@ public:
     }
 
 
-    Data<bool> assemble;
+    Data<bool> assemble; ///< Assemble the needed material matrices (compliance C,stiffness K,damping B)
 
 private:
     BaseMaterialForceFieldT(const BaseMaterialForceFieldT& b);

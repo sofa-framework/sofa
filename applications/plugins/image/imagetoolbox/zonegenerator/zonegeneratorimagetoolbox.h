@@ -85,8 +85,8 @@ public:
     Data<Vec3d> d_p;
     Data<unsigned int> d_axis;
     Data<std::string> d_value;
-    Data<VecCoord> d_vecCoord;
-    Data<VecPixCoord> d_vecPixCoord;
+    Data<VecCoord> d_vecCoord; ///< Output list of space position of each pixel on contour
+    Data<VecPixCoord> d_vecPixCoord; ///< Output list of image position of each pixel on contour
 
     Data<double> threshold;
     Data<int> radius;
@@ -802,9 +802,9 @@ public:
     }*/
 
 protected:
-    Data< ImageTypes >   d_image;
+    Data< ImageTypes >   d_image; ///< Input image
 //    Data< TransformType> d_transform;
-    Data< ImageTypes >   d_imageOut;
+    Data< ImageTypes >   d_imageOut; ///< OutputImage
 
     Data< Vec2d > d_size;
     Data< unsigned int > d_seed;

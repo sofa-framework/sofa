@@ -54,9 +54,9 @@ public:
     SOFA_CLASS(ReadTopology,core::objectmodel::BaseObject);
 
     sofa::core::objectmodel::DataFileName f_filename;
-    Data < double > f_interval;
-    Data < double > f_shift;
-    Data < bool > f_loop;
+    Data < double > f_interval; ///< time duration between inputs
+    Data < double > f_shift; ///< shift between times in the file and times when they will be read
+    Data < bool > f_loop; ///< set to 'true' to re-read the file when reaching the end
 
 protected:
     core::topology::BaseMeshTopology* m_topology;

@@ -842,7 +842,7 @@ public:
 //    Data< helper::vector<sofa::defaulttype::Vec3d> > d_p;
     Data< Vec2ui > d_reso;
     DataFileName d_filename;
-    Data< TransformType> d_transform;
+    Data< TransformType> d_transform; ///< Transform
     Data< Quads > d_outQuads;
     Data< Edges > d_outEdges;
     Data< helper::vector<sofa::defaulttype::Vec3d> > d_outImagePosition;
@@ -902,7 +902,7 @@ public:
 
 
 public:
-    Data< ImageTypes >   d_image;
+    Data< ImageTypes >   d_image; ///< Input image
 };
 
 

@@ -51,8 +51,8 @@ public:
 
     /// @name  Strain offset
     //@{
-    Data<typename Inherit::InVecCoord> d_offset;
-    Data<bool> d_inverted;
+    Data<typename Inherit::InVecCoord> d_offset; ///< Strain offset
+    Data<bool> d_inverted; ///< offset-Strain (rather than Strain-offset )
     //@}
 
     virtual void reinit()

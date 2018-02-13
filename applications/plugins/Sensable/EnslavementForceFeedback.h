@@ -54,11 +54,11 @@ public:
 
 protected:
 	sofa::defaulttype::Vec3d contactForce;
-    Data<double> relativeStiffness;
-    Data<double> attractionDistance;
-    Data<bool> normalsPointOut;
-    Data<double> contactScale;
-    Data<double> penOffset;
+    Data<double> relativeStiffness; ///< Relative Stiffness
+    Data<double> attractionDistance; ///< Distance at which the Omni is attracted to the contact point.
+    Data<bool> normalsPointOut; ///< True if the normals of objects point outwards, false if they point inwards.
+    Data<double> contactScale; ///< Scales the maximum penetration depth.
+    Data<double> penOffset; ///< Distance at which there is no reaction force.
 
 
 };

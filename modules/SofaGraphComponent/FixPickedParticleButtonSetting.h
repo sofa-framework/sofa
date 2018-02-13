@@ -43,7 +43,7 @@ protected:
     FixPickedParticleButtonSetting();
 public:
     std::string getOperationType() override {return "Fix";}
-    Data<SReal> stiffness;
+    Data<SReal> stiffness; ///< Stiffness of the spring to fix a particule
 
 };
 

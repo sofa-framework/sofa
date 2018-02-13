@@ -76,9 +76,9 @@ public:
             return vect[outputDerivative];
     }
 
-    Data<SReal> massCoef;
-    Data<SReal> dampingCoef;
-    Data<SReal> stiffnessCoef;
+    Data<SReal> massCoef; ///< factor associated with the mass matrix in the equation system
+    Data<SReal> dampingCoef; ///< factor associated with the mass matrix in the equation system
+    Data<SReal> stiffnessCoef; ///< factor associated with the mass matrix in the equation system
     Data<bool> applyIncrementFactor; ///< multiply the solution by dt. Default: false
 };
 
