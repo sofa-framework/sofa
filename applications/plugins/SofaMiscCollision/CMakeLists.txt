@@ -59,7 +59,7 @@ if(SOFA_BUILD_COMPONENTSET_STANDARD)
         )
     message(STATUS "SofaMiscModule: build all maintained sofa components.")
 
-    if(SofaSphFluid_FOUND)
+    if(PLUGIN_SOFASPHFLUID AND SofaSphFluid_FOUND)
         list(APPEND HEADER_FILES SpatialGridPointModel.h)
         list(APPEND SOURCE_FILES SpatialGridPointModel.cpp)
         message(STATUS "SofaMiscCollision: optional dependency SofaSphFluid found activing: <SpatialGridPointModel>")
@@ -96,7 +96,7 @@ if(NOT SOFA_NO_OPENGL)
      target_link_libraries(${PROJECT_NAME} PUBLIC SofaOpenglVisual)
 endif()
 
-if(SofaSphFluid_FOUND)
+if(PLUGIN_SOFASPHFLUID AND SofaSphFluid_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC SofaSphFluid)
 endif()
 
