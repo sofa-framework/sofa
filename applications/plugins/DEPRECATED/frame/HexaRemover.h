@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -65,7 +65,7 @@ class HexaRemover: public core::objectmodel::BaseObject
     typedef typename MeshGen::GCoord GCoord;
     typedef typename MeshGen::SCoord SCoord;
 
-    typedef SampleData<DataTypes,false> SData; // = collision FrameBlendingMapping
+    typedef SampleData<DataTypes,false> SData; ///< = collision FrameBlendingMapping
     typedef std::multimap< double, std::multimap<double, std::pair< double, double> > > RasterizedVol; // map< x, map< y, pair< zMin, zMax> > >
     typedef typename defaulttype::Vec3f FPoint;
     typedef typename helper::fixed_array<FPoint, 2> BBox;
@@ -152,8 +152,8 @@ private:
     sofa::helper::set<Coord> parsedHexasCoords;
     sofa::helper::set<Coord> removedHexasCoords;
     sofa::helper::set<Coord> collisionTrianglesCoords;
-    Data<bool> showElements;
-    Data<bool> showVolumes;
+    Data<bool> showElements; ///< Display parsed elements. Blue: triangles parsed. Green: parsed hexas out of intersection volumes. Red: parsed hexas inside intersection volumes to remove.
+    Data<bool> showVolumes; ///< Display intersection volumes
 };
 
 }

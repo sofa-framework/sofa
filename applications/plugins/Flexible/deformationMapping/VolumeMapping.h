@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -248,9 +248,9 @@ protected:
 
     virtual ~VolumeMapping() {}
 
-    Data<helper::vector<Real> > offset;
+    Data<helper::vector<Real> > offset; ///< offsets added to output volumes
 
-    Data<unsigned int> f_nbMeshes;
+    Data<unsigned int> f_nbMeshes; ///< number of meshes to compute the volume for
     helper::vectorData< SeqTriangles > vf_triangles;
     helper::vectorData< SeqQuads > vf_quads;
     Data<bool> f_geometricStiffness; ///< should geometricStiffness be considered?

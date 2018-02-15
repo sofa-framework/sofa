@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -117,12 +117,12 @@ protected:
 
 protected:
 	// every nodes needed in the animation chain
-    Data<helper::SVector<SkeletonJoint<TDataTypes> > >	skeletonJoints;
+    Data<helper::SVector<SkeletonJoint<TDataTypes> > >	skeletonJoints; ///< skeleton joints
     // mesh skeleton bones which need to be updated according to the animated nodes, we use them to fill the mechanical object
-    Data<helper::SVector<SkeletonBone> >				skeletonBones;
+    Data<helper::SVector<SkeletonBone> >				skeletonBones; ///< skeleton bones
 
 	// control how fast the animation is played since animation time is not simulation time
-	Data<float>											animationSpeed;
+	Data<float>											animationSpeed; ///< animation speed
 
     /// is the projective constraint activated?
     Data<bool>                                          active;

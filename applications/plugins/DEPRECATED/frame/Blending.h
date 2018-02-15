@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -129,8 +129,8 @@ public:
     bool mappingHasChanged;
     vector<unsigned int> addedFrameIndices;
     vector<unsigned int> frameLife; // Test of removing frame
-    Data<double> newFrameMinDist;
-    Data<double> adaptativeCriteria;
+    Data<double> newFrameMinDist; ///< Minimal distance between inserted frames.
+    Data<double> adaptativeCriteria; ///< Citeria to insert and remove frames.
 
     BaseFrameBlendingMapping ()
         : mappingHasChanged(false)
@@ -177,7 +177,7 @@ public:
     typedef typename OutDataTypesInfo<Out>::MaterialCoord MaterialCoord;
     typedef typename OutDataTypesInfo<Out>::VecMaterialCoord VecMaterialCoord;
 
-    Data<VecMaterialCoord> f_materialPoints;
+    Data<VecMaterialCoord> f_materialPoints; ///< Coordinates of the samples in object space
 
     SampleData ()
         : BaseFrameBlendingMapping<IsPhysical> ()

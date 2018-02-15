@@ -336,16 +336,16 @@ public:
     /** @name  Corotational methods */
     //@{
     enum DecompositionMethod { POLAR=0, QR, SMALL, SVD, NB_DecompositionMethod };
-    Data<helper::OptionsGroup> d_method;
+    Data<helper::OptionsGroup> d_method; ///< Decomposition method
     //@}
 
     Data<unsigned> d_order; ///< order of spatial integration
 
     /** @name  Material parameters */
     //@{
-    Data<Real> _youngModulus;
-    Data<Real> _poissonRatio;
-    Data<Real> _viscosity;
+    Data<Real> _youngModulus; ///< Young Modulus
+    Data<Real> _poissonRatio; ///< Poisson Ratio
+    Data<Real> _viscosity; ///< Viscosity (stress/strainRate)
     //@}
 
 

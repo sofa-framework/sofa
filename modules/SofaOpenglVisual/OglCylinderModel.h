@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -73,12 +73,12 @@ private:
     void setColor(std::string color);
 
 private:
-    Data<float>		radius;
+    Data<float>		radius; ///< Radius of the cylinder.
     // Data<float>		alpha;
-    Data<defaulttype::RGBAColor>	color;
+    Data<defaulttype::RGBAColor>	color; ///< Color of the cylinders.
 
     typedef sofa::helper::vector<core::topology::Edge>  SeqEdges;
-    Data<SeqEdges> d_edges;
+    Data<SeqEdges> d_edges; ///< List of edge indices
 
 
     float r,g,b,a;

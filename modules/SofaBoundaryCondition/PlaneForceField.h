@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -74,11 +74,11 @@ protected:
     PlaneForceFieldInternalData<DataTypes> m_data;
 
 public:
-    Data<DPos> d_planeNormal;
-    Data<Real> d_planeD;
-    Data<Real> d_stiffness;
-    Data<Real> d_damping;
-    Data<Real> d_maxForce;
+    Data<DPos> d_planeNormal; ///< plane normal. (default=[0,1,0])
+    Data<Real> d_planeD; ///< plane d coef. (default=0)
+    Data<Real> d_stiffness; ///< force stiffness. (default=500)
+    Data<Real> d_damping; ///< force damping. (default=5)
+    Data<Real> d_maxForce; ///< if non-null , the max force that can be applied to the object. (default=0)
 
     /// option bilateral : if true, the force field is applied on both side of the plane
     Data<bool> d_bilateral;
@@ -87,9 +87,9 @@ public:
     /// range are discarded (useful for parallelization using mesh partitionning)
     Data< defaulttype::Vec<2,int> > d_localRange;
 
-    Data<bool>                   d_drawIsEnabled;
-    Data<defaulttype::RGBAColor> d_drawColor;
-    Data<Real>                   d_drawSize;
+    Data<bool>                   d_drawIsEnabled; ///< enable/disable drawing of plane. (default=false)
+    Data<defaulttype::RGBAColor> d_drawColor; ///< plane color. (default=[0.0,0.5,0.2,1.0])
+    Data<Real>                   d_drawSize; ///< plane display size if draw is enabled. (default=10)
 
 protected:
     PlaneForceField() ;

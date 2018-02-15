@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -471,22 +471,22 @@ public:
     typedef typename ImageGaussPointSamplerSpec::IndTypes IndTypes;
     typedef helper::ReadAccessor<Data< IndTypes > > raInd;
     typedef helper::WriteOnlyAccessor<Data< IndTypes > > waInd;
-    Data< IndTypes > f_index;
+    Data< IndTypes > f_index; ///< image of dof indices
 
     typedef ImageTypes_ DistTypes;
     typedef typename DistTypes::T DistT;
     typedef typename DistTypes::imCoord imCoord;
     typedef helper::ReadAccessor<Data< DistTypes > > raDist;
     typedef helper::WriteOnlyAccessor<Data< DistTypes > > waDist;
-    Data< DistTypes > f_w;
+    Data< DistTypes > f_w; ///< weight image
 
     typedef MaskTypes_ MaskTypes;
     typedef typename MaskTypes::T  MaskT;
     typedef helper::ReadAccessor<Data< MaskTypes > > raMask;
-    Data< MaskTypes > f_mask;
+    Data< MaskTypes > f_mask; ///< optional mask to restrict the sampling region
     typedef helper::vector<MaskT> MaskLabelsType;
     typedef helper::ReadAccessor<Data< MaskLabelsType > > raMaskLabels;
-    Data< MaskLabelsType > f_maskLabels;
+    Data< MaskLabelsType > f_maskLabels; ///< Mask labels where sampling is restricted
 
     typedef defaulttype::ImageLPTransform<Real> TransformType;
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
@@ -495,16 +495,16 @@ public:
 
     /** @name  region data */
     //@{
-    Data< IndTypes > f_region;
-    Data< DistTypes > f_error;
+    Data< IndTypes > f_region; ///< sample region : labeled image with sample indices
+    Data< DistTypes > f_error; ///< weigth fitting error
     //@}
 
     /** @name  Options */
     //@{
-    Data<bool> f_clearData;
-    Data<unsigned int> targetNumber;
-    Data<bool> useDijkstra;
-    Data<unsigned int> iterations;
+    Data<bool> f_clearData; ///< clear region and error images after computation
+    Data<unsigned int> targetNumber; ///< target number of samples
+    Data<bool> useDijkstra; ///< Use Dijkstra for geodesic distance computation (use fastmarching otherwise)
+    Data<unsigned int> iterations; ///< maximum number of Lloyd iterations
     Data<bool> evaluateShapeFunction;   ///< If true, ImageGaussPointSampler::bwdInit() is called to evaluate shape functions over integration regions
                                         ///< and writes over values computed by sofa::component::mapping::LinearMapping.
                                         ///< Otherwise shape functions are interpolated only at sample locations using finite differencies in sofa::component::mapping::LinearMapping.

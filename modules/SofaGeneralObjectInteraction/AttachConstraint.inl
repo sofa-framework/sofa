@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -510,7 +510,7 @@ void AttachConstraint<DataTypes>::init()
         // if NOT set : initialize all constraints active
         if(!d_constraintFactor.isSet())
         {
-            int size = f_indices2.getValue().size();
+            unsigned int size = f_indices2.getValue().size();
 
             constraintFactor.clear();
             constraintFactor.resize(size);

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -92,16 +92,16 @@ public:
     }
 
     //Inputs
-    sofa::core::objectmodel::Data<double> m_diameter;
-    sofa::core::objectmodel::Data<double> m_length;
-    sofa::core::objectmodel::Data<int> m_number;
-    sofa::core::objectmodel::Data<bool> m_bScale;
-    sofa::core::objectmodel::Data<bool> m_viewPoints;
-    sofa::core::objectmodel::Data<bool> m_viewTetras;
+    sofa::core::objectmodel::Data<double> m_diameter; ///< Diameter
+    sofa::core::objectmodel::Data<double> m_length; ///< Length
+    sofa::core::objectmodel::Data<int> m_number; ///< Number of intervals
+    sofa::core::objectmodel::Data<bool> m_bScale; ///< Scale or not
+    sofa::core::objectmodel::Data<bool> m_viewPoints; ///< Display Points
+    sofa::core::objectmodel::Data<bool> m_viewTetras; ///< Display Tetrahedra
 
     //Outputs
-    sofa::core::objectmodel::Data<VecCoord> m_points;
-    sofa::core::objectmodel::Data<SeqTetrahedra> m_tetras;
+    sofa::core::objectmodel::Data<VecCoord> m_points; ///< Points
+    sofa::core::objectmodel::Data<SeqTetrahedra> m_tetras; ///< Tetrahedra
 
     //Parameters
     Real m_interval;

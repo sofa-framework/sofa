@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -78,7 +78,7 @@ public:
     Data< helper::vector<unsigned> > f_indices;         ///< indices of the parent points
     Data< OutVecCoord >      f_origins; ///< origins of the lines the point is projected to
     Data< OutVecCoord >      f_normals; ///< directions of the lines the point is projected to (should be normalized, and are normalized in init)
-    Data< Real > d_factor;
+    Data< Real > d_factor; ///< Projection factor (0->nothing, 1->projection on the plane (default), 2->planar symmetry, ...
 
     Data< SReal >            d_drawScale; ///< drawing scale
     Data< defaulttype::RGBAColor >  d_drawColor; ///< drawing color
@@ -176,7 +176,7 @@ public:
     typedef defaulttype::Vec<In::spatial_dimensions> Direction;
 
     Data< helper::vector<unsigned> > f_indices;         ///< indices of the parent points
-    Data< Real > d_factor;
+    Data< Real > d_factor; ///< Projection factor (0->nothing, 1->projection on the plane (default), 2->planar symmetry, ...
 
     Data< SReal >                   d_drawScale; ///< drawing scale
     Data< defaulttype::RGBAColor >  d_drawColor; ///< drawing color

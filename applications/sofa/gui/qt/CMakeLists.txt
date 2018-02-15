@@ -204,10 +204,6 @@ endif()
 # target_compile_definitions(${PROJECT_NAME} PUBLIC "QT3_SUPPORT")
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAGUIQT")
-if(SOFA_ENABLE_QWT)
-    set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAGUIQT")
-endif()
-
 
 sofa_install_targets(SofaGui SofaGuiQt "")
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -97,16 +97,16 @@ public:
     typedef Rigid3dTypes::VecCoord VecCoord;
 
     SOFA_CLASS(NewOmniDriverEmu, Controller);
-    Data<double> scale;
-    Data<double> forceScale;
-    Data<int> simuFreq;
-    Data<Vec3d> positionBase;
-    Data<Quat> orientationBase;
-    Data<Vec3d> positionTool;
-    Data<Quat> orientationTool;
-    Data<bool> permanent;
-    Data<bool> omniVisu;
-    Data<bool> simulateTranslation;
+    Data<double> scale; ///< Default scale applied to the Phantom Coordinates. 
+    Data<double> forceScale; ///< Default forceScale applied to the force feedback. 
+    Data<int> simuFreq; ///< frequency of the "simulated Omni"
+    Data<Vec3d> positionBase; ///< Position of the interface base in the scene world coordinates
+    Data<Quat> orientationBase; ///< Orientation of the interface base in the scene world coordinates
+    Data<Vec3d> positionTool; ///< Position of the tool in the omni end effector frame
+    Data<Quat> orientationTool; ///< Orientation of the tool in the omni end effector frame
+    Data<bool> permanent; ///< Apply the force feedback permanently
+    Data<bool> omniVisu; ///< Visualize the position of the interface in the virtual scene
+    Data<bool> simulateTranslation; ///< do very naive "translation simulation" of omni, with constant orientation <0 0 0 1>
 
     OmniData	data;
 
@@ -137,8 +137,8 @@ public:
     CTime *thTimer;
     double lastStep;
     bool executeAsynchro;
-    Data<VecCoord> trajPts;
-    Data<helper::vector<double> > trajTim;
+    Data<VecCoord> trajPts; ///< Trajectory positions
+    Data<helper::vector<double> > trajTim; ///< Trajectory timing
 
 private:
     void handleEvent(core::objectmodel::Event *);

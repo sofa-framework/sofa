@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -58,10 +58,10 @@ public:
     ~ParallelCGLinearSolver();
 
 //    void solve (double dt);
-    Data<unsigned> f_maxIter;
-    Data<double> f_tolerance;
-    Data<double> f_smallDenominatorThreshold;
-    Data<bool> f_verbose;
+    Data<unsigned> f_maxIter; ///< maximum number of iterations of the Conjugate Gradient solution
+    Data<double> f_tolerance; ///< desired precision of the Conjugate Gradient Solution (ratio of current residual norm over initial residual norm)
+    Data<double> f_smallDenominatorThreshold; ///< minimum value of the denominator in the conjugate Gradient solution
+    Data<bool> f_verbose; ///< Dump system state at each iteration
 
     void resetSystem();
 

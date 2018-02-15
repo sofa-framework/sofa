@@ -48,8 +48,8 @@ class SOFA_Compliant_API AffineMultiMapping : public AssembledMultiMapping<TIn, 
 	
     typedef helper::vector< typename TOut::Real > value_type;
 
-	Data<matrix_type> matrix;
-	Data<value_type> value;		
+	Data<matrix_type> matrix; ///< matrix for the mapping (row-major)
+	Data<value_type> value; ///< offset value
 	Data<bool> hard_positions;
 	
 	AffineMultiMapping() :

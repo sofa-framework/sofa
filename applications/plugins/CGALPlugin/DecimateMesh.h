@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -115,18 +115,18 @@ public:
     bool testVertexAndFindIndex(const Vec3 &vertex, int &index);
 
     //Inputs
-    sofa::core::objectmodel::Data<VecCoord> m_inVertices;
-    sofa::core::objectmodel::Data<SeqTriangles> m_inTriangles;
-    sofa::core::objectmodel::Data<int> m_edgesTarget;
-    sofa::core::objectmodel::Data<float> m_edgesRatio;
+    sofa::core::objectmodel::Data<VecCoord> m_inVertices; ///< List of vertices
+    sofa::core::objectmodel::Data<SeqTriangles> m_inTriangles; ///< List of triangles
+    sofa::core::objectmodel::Data<int> m_edgesTarget; ///< Desired number of edges after simplification
+    sofa::core::objectmodel::Data<float> m_edgesRatio; ///< Ratio between the number of edges and number of initial edges
 
     // Outputs
-    sofa::core::objectmodel::Data<VecCoord> m_outVertices;
-    sofa::core::objectmodel::Data<SeqTriangles> m_outTriangles;
-    sofa::core::objectmodel::Data< helper::vector<Vec3> > m_outNormals;
+    sofa::core::objectmodel::Data<VecCoord> m_outVertices; ///< New vertices after decimation
+    sofa::core::objectmodel::Data<SeqTriangles> m_outTriangles; ///< New triangles after decimation
+    sofa::core::objectmodel::Data< helper::vector<Vec3> > m_outNormals; ///< New normals after decimation
 
     // Parameters
-    sofa::core::objectmodel::Data<bool> m_writeToFile;
+    sofa::core::objectmodel::Data<bool> m_writeToFile; ///< Writes the decimated mesh into a file
 
 
 };

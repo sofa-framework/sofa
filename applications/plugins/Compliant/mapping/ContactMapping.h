@@ -46,7 +46,7 @@ public:
     typedef typename TIn::Real real;
 
     typedef helper::vector< defaulttype::Vec<3, real> > normal_type;
-    Data<normal_type> normal;
+    Data<normal_type> normal; ///< contact normals
 
     helper::vector<bool> mask; ///< flag activated constraints (if empty -default- all constraints are activated)
 

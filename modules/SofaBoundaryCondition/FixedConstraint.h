@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -84,10 +84,10 @@ protected:
 
 public:
     SetIndex d_indices;
-    Data<bool> d_fixAll;
-    Data<bool> d_showObject;
-    Data<SReal> d_drawSize;
-    Data<bool> d_projectVelocity;
+    Data<bool> d_fixAll; ///< filter all the DOF to implement a fixed object
+    Data<bool> d_showObject; ///< draw or not the fixed constraints
+    Data<SReal> d_drawSize; ///< 0 -> point based rendering, >0 -> radius of spheres
+    Data<bool> d_projectVelocity; ///< activate project velocity to set velocity
 
 
 protected:

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -98,15 +98,15 @@ public:
         update();
     }
 
-    Data<Vec3> _translation;
-    Data<Vec3> _euler;
-    Data<Vec3> _scale;
-    Data<int> _isPerspective;
-    Data<Real> _timeOffset;
-    Data<Real> _timeScale;
+    Data<Vec3> _translation; ///< Translation
+    Data<Vec3> _euler; ///< Euler angles
+    Data<Vec3> _scale; ///< Voxel size
+    Data<int> _isPerspective; ///< Is perspective?
+    Data<Real> _timeOffset; ///< Time offset
+    Data<Real> _timeScale; ///< Time scale
 
     enum UPDATE_TYPE{NO_UPDATE = 0, EVERY_TIMESTEP, EVERY_DRAW};
-    Data<sofa::helper::OptionsGroup> _update;
+    Data<sofa::helper::OptionsGroup> _update; ///< Type of update
 
 protected:
 

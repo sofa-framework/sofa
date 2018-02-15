@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -57,9 +57,9 @@ class SOFA_OPENGL_VISUAL_API VisualManagerPass : public core::visual::VisualMana
 public:
     SOFA_CLASS(VisualManagerPass, core::visual::VisualManager);
 
-    Data<float> factor;
-    Data<bool> renderToScreen;
-    Data<std::string> outputName;
+    Data<float> factor; ///< set the resolution factor for the output pass. default value:1.0
+    Data<bool> renderToScreen; ///< if true, this pass will be displayed on screen (only one renderPass in the scene must be defined as renderToScreen)
+    Data<std::string> outputName; ///< name the output texture
 protected:
     bool checkMultipass(sofa::core::objectmodel::BaseContext* con);
     bool multiPassEnabled;

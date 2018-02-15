@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -52,7 +52,8 @@ public:
 
     void update();
 
-    Data< sofa::helper::vector<Vec10> > d_planes, d_outPlanes;
+    Data< sofa::helper::vector<Vec10> > d_planes;
+    Data< sofa::helper::vector<Vec10> > d_outPlanes;
     Data<sofa::helper::Quater<double> > d_rotation;
     Data<Vec3d> d_translation;
     Data<double> d_scale;

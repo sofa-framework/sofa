@@ -51,9 +51,9 @@ public:
 
 
 
-    Data< SReal > damping_ratio;
-    Data<bool> holonomic;
-    Data<bool> keep;
+    Data< SReal > damping_ratio; ///< contact damping (used for stabilization)
+    Data<bool> holonomic; ///< only enforce null relative velocity, do not try to remove penetration during the dynamics pass
+    Data<bool> keep; ///< always keep contact nodes (deactivated when not colliding
 
 protected:
 
@@ -505,8 +505,8 @@ public:
     typedef core::collision::Intersection Intersection;
 
 
-    Data< SReal > compliance_value;
-    Data< SReal > restitution_coef;
+    Data< SReal > compliance_value; ///< contact compliance: use model contact stiffnesses when < 0, use given value otherwise
+    Data< SReal > restitution_coef; ///< global restitution coef
 
 protected:
 

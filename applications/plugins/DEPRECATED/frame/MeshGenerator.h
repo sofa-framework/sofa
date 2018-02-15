@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -182,9 +182,9 @@ public:
 
 protected:
     /**** Input ****/
-    Data< Vec6i > roi;
-    Data< float > mIsoValue;
-    Data< vector<Vec<3, int> > > mCubeSeeds;
+    Data< Vec6i > roi; ///< Region of interest (xmin, ymin, zmin, xmax, ymax, zmax)
+    Data< float > mIsoValue; ///< Iso-value to be used by marching cubes.
+    Data< vector<Vec<3, int> > > mCubeSeeds; ///< Seeds to be used by marching cubes.
 
 
     /**** Utils ****/
@@ -203,22 +203,22 @@ protected:
     TriangleSetTopologyModifier *_to_tstm;
     MState* _to_DOFs;
 
-    Data<unsigned int> smoothIterations;
-    PointData<sofa::helper::vector<typename DataTypes::Coord> > smoothedMesh0;
+    Data<unsigned int> smoothIterations; ///< Number of iterations used to smooth the generated surface.
+    PointData<sofa::helper::vector<typename DataTypes::Coord> > smoothedMesh0; ///< copy of X0 once smoothed.
     OglFloatAttribute* segmentationID; // segmentation ID for each vertex of the mesh
     OglFloat3Attribute* restPosition; // Rest position for each vertex of the mesh
     OglFloat3Attribute* restNormal; // Rest normal for each vertex of the mesh
 
-    Data<bool> showHexas2Tri;
-    Data<bool> showTri2Hexas;
-    Data<bool> showRegularGridIndices;
-    Data<double> showTextScaleFactor;
+    Data<bool> showHexas2Tri; ///< Show hexas to tri relations.
+    Data<bool> showTri2Hexas; ///< Show tri to hexas relations.
+    Data<bool> showRegularGridIndices; ///< Show regular grid indices.
+    Data<double> showTextScaleFactor; ///< Scale to apply on the text.
 
 public:
     GridMat* gridMat;
-    Data< SCoord > voxelSize;
-    Data< SCoord > voxelOrigin;
-    Data< GCoord > voxelDimension;
+    Data< SCoord > voxelSize; ///< Size of the voxels.
+    Data< SCoord > voxelOrigin; ///< Origin of the voxels array.
+    Data< GCoord > voxelDimension; ///< Dimension of the voxels array.
 
 
     void getHexaCoord( Coord& coord, const unsigned int hexaID) const;
