@@ -18,11 +18,15 @@ set(SOURCE_FILES
 list(APPEND HEADER_FILES
     # AddFramePerformer.h
     # AddFramePerformer.inl
+    AddRecordedCameraPerformer.h
     AttachBodyPerformer.h
     AttachBodyPerformer.inl
     ComponentMouseInteraction.h
     ComponentMouseInteraction.inl
     Controller.h
+    FixParticlePerformer.h
+    FixParticlePerformer.inl
+    InciseAlongPathPerformer.h
     MechanicalStateController.h
     MechanicalStateController.inl
     Ray.h
@@ -34,13 +38,21 @@ list(APPEND HEADER_FILES
     RayTraceDetection.h
     SleepController.h
     TopologicalChangeManager.h
+    RemovePrimitivePerformer.h
+    RemovePrimitivePerformer.inl
+    StartNavigationPerformer.h
+    SuturePointPerformer.h
+    SuturePointPerformer.inl
     )
 
 list(APPEND SOURCE_FILES
     # AddFramePerformer.cpp
+    AddRecordedCameraPerformer.cpp
     AttachBodyPerformer.cpp
     ComponentMouseInteraction.cpp
     Controller.cpp
+    FixParticlePerformer.cpp
+    InciseAlongPathPerformer.cpp
     MechanicalStateController.cpp
     RayContact.cpp
     RayDiscreteIntersection.cpp
@@ -49,46 +61,34 @@ list(APPEND SOURCE_FILES
     RayTraceDetection.cpp
     SleepController.cpp
     TopologicalChangeManager.cpp
+    RemovePrimitivePerformer.cpp
+    StartNavigationPerformer.cpp
+    SuturePointPerformer.cpp
     )
 
 if(SOFA_WITH_DEPRECATED_COMPONENTS)
     list(APPEND HEADER_FILES
-        AddRecordedCameraPerformer.h
         ArticulatedHierarchyBVHController.h
         ArticulatedHierarchyController.h
         DisabledContact.h
         EdgeSetController.h
         EdgeSetController.inl
-        FixParticlePerformer.h
-        FixParticlePerformer.inl
         GraspingManager.h
-        InciseAlongPathPerformer.h
         InterpolationController.h
         InterpolationController.inl
         MechanicalStateControllerOmni.h
         MechanicalStateControllerOmni.inl
         NodeToggleController.h
-        RemovePrimitivePerformer.h
-        RemovePrimitivePerformer.inl
-        StartNavigationPerformer.h
-        SuturePointPerformer.h
-        SuturePointPerformer.inl
         )
     list(APPEND SOURCE_FILES
-        AddRecordedCameraPerformer.cpp
         ArticulatedHierarchyBVHController.cpp
         ArticulatedHierarchyController.cpp
         DisabledContact.cpp
         EdgeSetController.cpp
-        FixParticlePerformer.cpp
         GraspingManager.cpp
-        InciseAlongPathPerformer.cpp
         InterpolationController.cpp
         MechanicalStateControllerOmni.cpp
         NodeToggleController.cpp
-        RemovePrimitivePerformer.cpp
-        StartNavigationPerformer.cpp
-        SuturePointPerformer.cpp
         )
 endif()
 
