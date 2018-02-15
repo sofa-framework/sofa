@@ -30,7 +30,7 @@
 #include "TriangularFEMForceField.h"
 
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaOpenglVisual/OglColorMap.h>
+#include <sofa/helper/ColorMap.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/system/gl.h>
 
