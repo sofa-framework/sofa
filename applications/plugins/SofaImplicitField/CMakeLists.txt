@@ -7,7 +7,6 @@ set(SOFA_HAVE_SOFAIMPLICITFIELD 1)
 find_package(SofaDistanceGrid REQUIRED)
 
 set(HEADER_FILES
-    config.h
     initSofaImplicitField.h
 
     # This is backward compatibility

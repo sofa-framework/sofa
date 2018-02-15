@@ -7,7 +7,6 @@ set(SOFA_HAVE_SOFADISTANCEGRID 1)
 find_package(SofaMiscCollision REQUIRED)
 
 set(HEADER_FILES
-    config.h
     initSofaDistanceGrid.h
     DistanceGrid.h
     DistanceGrid.h
