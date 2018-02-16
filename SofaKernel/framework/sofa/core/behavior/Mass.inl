@@ -37,9 +37,16 @@ namespace core
 namespace behavior
 {
 
+
 template<class DataTypes>
 Mass<DataTypes>::Mass(MechanicalState<DataTypes> *mm)
     : ForceField<DataTypes>(mm)
+    , d_vertexMass( initData(&d_vertexMass, "vertexMass", "Specify a vector giving the mass of each vertex. \n"
+                                                                  "If unspecified or wrongly set, another mass information is used.") )
+    , d_massDensity( initData(&d_massDensity, "massDensity", "Specify real and strictly positive value(s) for the mass density. \n"
+                                                                       "If unspecified or wrongly set, the totalMass information is used.") )
+    , d_totalMass( initData(&d_totalMass, (Real) 1.0, "totalMass","Specify the total mass resulting from all particles. \n"
+                                                                  "If unspecified or wrongly set, the default value is used: totalMass = 1.0") )
     , m_gnuplotFileEnergy(NULL)
 {
 }
@@ -55,6 +62,54 @@ void Mass<DataTypes>::init()
     ForceField<DataTypes>::init();
 }
 
+template<class DataTypes>
+bool Mass<DataTypes>::checkTotalMass()
+{
+    //Check for negative or null value, if wrongly set use the default value totalMass = 1.0
+    if(d_totalMass.getValue() <= 0.0)
+    {
+        msg_warning(this) << "totalMass data can not have a negative value.\n"
+                          << "Switching back to default values: totalMass = 1.0\n"
+                          << "To remove this warning, you need to set a strictly positive value to the totalMass data";
+        d_totalMass.setValue(1.0) ;
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
+template<class DataTypes>
+void  Mass<DataTypes>::getVertexMass(sofa::helper::vector< Real >& vertexMass)
+{
+    vertexMass = d_vertexMass.getValue();
+}
+
+template<class DataTypes>
+void  Mass<DataTypes>::getMassDensity(sofa::helper::vector< Real >& massDensity)
+{
+    massDensity = d_massDensity.getValue();
+}
+
+template<class DataTypes>
+void Mass<DataTypes>::getTotalMass(Real& totalMass)
+{
+    totalMass = d_totalMass.getValue();
+}
+
+template<class DataTypes>
+void Mass<DataTypes>::setTotalMass(Real totalMass)
+{
+    Real currentTotalMass = d_totalMass.getValue();
+    d_totalMass.setValue(totalMass);
+    if(!checkTotalMass())
+    {
+        msg_warning() << "Given value to setTotalMass() is not a strictly positive value\n"
+                      << "Previous value is used: totalMass = " << currentTotalMass;
+        d_totalMass.setValue(currentTotalMass);
+    }
+}
 
 template<class DataTypes>
 void Mass<DataTypes>::addMDx(const MechanicalParams* mparams, MultiVecDerivId fid, SReal factor)

@@ -108,22 +108,21 @@ public:
     /// Values of the particles masses stored on edges
     topology::EdgeData<helper::vector<MassType> >   d_edgeMassInfo;
 
+    /// to display the center of gravity of the system
+    Data< sofa::helper::vector< Real > > d_edgeMass;
+
     /* ---------- Specific data for Bezier Elements ------*/
     /// use this data structure to store mass for Bezier tetrahedra. 
     //// The size of the vector is nbControlPoints*(nbControlPoints+1)/2 where nbControlPoints=(degree+1)*(degree+2)*(degree+3)/2
     topology::TetrahedronData<helper::vector<MassVector> > d_tetrahedronMassInfo;
     /* ---------- end ------*/
 
-    /// the mass density used to compute the mass from a mesh topology and geometry
-    Data< Real >         d_massDensity;
-
     /// to display the center of gravity of the system
     Data< bool >         d_showCenterOfGravity;
+    /// scale to change the axis size
     Data< Real >         d_showAxisSize;
     /// if mass lumping should be performed (only compute mass on vertices)
     Data< bool >         d_lumping;
-    /// total mass of the object
-    Data< Real >         d_totalMass;
     /// if specific mass information should be outputed
     Data< bool >         d_printMass;
     Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
@@ -142,7 +141,7 @@ protected:
     /// The type of topology to build the mass from the topology
     TopologyType m_topologyType;
     Real m_massLumpingCoeff;
-    Real m_savedMass;
+    bool homogeneousMassDensity;
 
     MeshMatrixMass();
     ~MeshMatrixMass();
@@ -180,26 +179,26 @@ public:
         m_topologyType = t;
     }
 
-
-    Real getMassDensity() const
-    {
-        return d_massDensity.getValue();
-    }
-
-    void setMassDensity(Real m)
-    {
-        d_massDensity.setValue(m);
-    }
-
     int getMassCount() {
         return d_vertexMassInfo.getValue().size();
     }
 
-    SReal getTotalMass() const
-    {
-        return d_totalMass.getValue();
-    }
+    /// Compute the mass from input values
+    void computeMass();
 
+    /// Check and standard initialization functions from mass information
+    virtual bool checkVertexMass() override;
+    virtual void initFromVertexMass() override;
+    bool checkEdgeMass();
+    void initFromVertexAndEdgeMass();
+    virtual bool checkMassDensity() override;
+    virtual void initFromMassDensity() override;
+    virtual void initFromTotalMass() override;
+
+    /// Write access functions to vertexMass and massDensity information
+    virtual void setVertexMass(sofa::helper::vector< Real > vertexMass);
+    virtual void setMassDensity(sofa::helper::vector< Real > massDensity);
+    virtual void setMassDensity(Real massDensityValue);
 
     /// Copy the vertex mass scalar (in case of CudaTypes)
     void copyVertexMass();
