@@ -390,10 +390,10 @@ static inline T* operator || (T* obj, error e) {
 
 static PyObject * PythonScriptController_new(PyTypeObject * cls, PyObject * args, PyObject* /*kwargs*/) {
 
-    //try {
-        //PyObject* py_node = PyTuple_GetItem(args, 0) || error();
+    try {
+        PyObject* py_node = PyTuple_GetItem(args, 0) || error();
         
-        //BaseContext* ctx = sofa::py::unwrap<BaseContext>(py_node) || error();
+        BaseContext* ctx = sofa::py::unwrap<BaseContext>(py_node) || error();
     
         using controller_type = PythonScriptController;
         controller_type::SPtr controller = New<controller_type>();
@@ -406,15 +406,15 @@ static PyObject * PythonScriptController_new(PyTypeObject * cls, PyObject * args
         PyObject* instance = BuildPySPtr<Base>(controller.get(), cls);
         controller->setInstance(instance);
 
-        //ctx->addObject( controller );
+        ctx->addObject( controller );
 
         return instance;
         
-    //} catch (error e) {
-    //    PyErr_SetString(PyExc_TypeError,
-    //                    "PythonScriptController.__new__ needs a Sofa.BaseContext as first argument");
-    //    return NULL;
-    //};
+    } catch (error e) {
+        PyErr_SetString(PyExc_TypeError,
+                        "PythonScriptController.__new__ needs a Sofa.BaseContext as first argument");
+        return NULL;
+    };
 }
        
 
