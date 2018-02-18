@@ -86,6 +86,8 @@ public:
     Data<  Real > d_totalMass;
     /// @}
 
+    int m_counterVertex, m_counterDensity, m_counterTotalMass;
+
     /// @name Read and write access functions
     /// @{
     virtual void getVertexMass(sofa::helper::vector< Real >& vertexMass);

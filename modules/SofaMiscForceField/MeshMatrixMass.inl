@@ -38,6 +38,7 @@
 #include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/QuadSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.h>
+#include <sofa/simulation/AnimateEndEvent.h>
 
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
 #include <sofa/core/behavior/InertiaForce.h>
@@ -60,7 +61,7 @@ MeshMatrixMass<DataTypes, MassType>::MeshMatrixMass()
     , d_tetrahedronMassInfo( initData(&d_tetrahedronMassInfo, "tetrahedronMass", "values of the particles masses for all control points inside a Bezier tetrahedron") )
     , d_showCenterOfGravity( initData(&d_showCenterOfGravity, false, "showGravityCenter", "display the center of gravity of the system" ) )
     , d_showAxisSize( initData(&d_showAxisSize, (Real)1.0, "showAxisSizeFactor", "factor length of the axis displayed (only used for rigids)" ) )
-    , d_lumping( initData(&d_lumping, true, "lumping","boolean if you need to use a lumped mass matrix") )
+    , d_lumping( initData(&d_lumping, false, "lumping","boolean if you need to use a lumped mass matrix") )
     , d_printMass( initData(&d_printMass, false, "printMass","boolean if you want to check the mass conservation") )
     , f_graph( initData(&f_graph,"graph","Graph of the controlled potential") )
     , d_numericalIntegrationOrder( initData(&d_numericalIntegrationOrder,(size_t)2,"integrationOrder","The order of integration for numerical integration"))
@@ -72,6 +73,8 @@ MeshMatrixMass<DataTypes, MassType>::MeshMatrixMass()
     , m_tetrahedronMassHandler(NULL)
 {
     f_graph.setWidget("graph");
+
+    /// Internal data, not supposed to be accessed by the user
     d_vertexMassInfo.setDisplayed(false);
     d_edgeMassInfo.setDisplayed(false);
 }
@@ -183,7 +186,6 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTriangleCreation
     }
 }
 
-
 /// Destruction fonction for mass stored on vertices
 template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTriangleDestruction(const sofa::helper::vector< unsigned int >& triangleRemoved)
@@ -214,7 +216,6 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTriangleDestru
         }
     }
 }
-
 
 /// Destruction fonction for mass stored on edges
 template< class DataTypes, class MassType>
@@ -327,7 +328,6 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyQuadCreation(c
     }
 }
 
-
 /// Creation fonction for mass stored on edges
 template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyQuadCreation(const sofa::helper::vector< unsigned int >& quadAdded,
@@ -362,7 +362,6 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyQuadCreation(con
         }
     }
 }
-
 
 /// Destruction fonction for mass stored on vertices
 template< class DataTypes, class MassType>
@@ -508,7 +507,6 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTetrahedronCre
     }
 }
 
-
 /// Creation fonction for mass stored on edges
 template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTetrahedronCreation(const sofa::helper::vector< unsigned int >& tetrahedronAdded,
@@ -543,7 +541,6 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTetrahedronCreat
         }
     }
 }
-
 
 /// Destruction fonction for mass stored on vertices
 template< class DataTypes, class MassType>
@@ -688,7 +685,6 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyHexahedronCrea
     }
 }
 
-
 /// Creation fonction for mass stored on edges
 template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyHexahedronCreation(const sofa::helper::vector< unsigned int >& hexahedronAdded,
@@ -724,7 +720,6 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyHexahedronCreati
     }
 }
 
-
 /// Destruction fonction for mass stored on vertices
 template< class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyHexahedronDestruction(const sofa::helper::vector< unsigned int >& hexahedronRemoved)
@@ -755,7 +750,6 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyHexahedronDest
         }
     }
 }
-
 
 /// Destruction fonction for mass stored on edges
 template< class DataTypes, class MassType>
@@ -829,7 +823,6 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::ApplyTopologyChange(c
 // }
 
 
-
 template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::init()
 {
@@ -844,7 +837,7 @@ void MeshMatrixMass<DataTypes, MassType>::init()
         m_integrationMethod= EXACT_INTEGRATION;
     else
     {
-        serr << "cannot recognize method "<< d_integrationMethod.getValue() << ". Must be either  \"exact\", \"analytical\" or \"numerical\"" << sendl;
+        msg_error() << "cannot recognize method "<< d_integrationMethod.getValue() << ". Must be either  \"exact\", \"analytical\" or \"numerical\"";
     }
 
     _topology = this->getContext()->getMeshTopology();
@@ -855,6 +848,10 @@ void MeshMatrixMass<DataTypes, MassType>::init()
     this->getContext()->get(tetraGeo);
     this->getContext()->get(hexaGeo);
 
+    if(!edgeGeo && !triangleGeo && ! quadGeo && ! tetraGeo && ! hexaGeo)
+    {
+        msg_error() << "No pointer to any topology";
+    }
 
     // add the functions to handle topology changes for Vertex informations
     m_vertexMassHandler = new VertexMassHandler(this, &d_vertexMassInfo);
@@ -952,6 +949,8 @@ void MeshMatrixMass<DataTypes, MassType>::init()
         this->initFromTotalMass();
     }
 
+    this->d_vertexMass.setValue(d_vertexMassInfo.getValue());
+    this->d_edgeMass.setValue(d_edgeMassInfo.getValue());
 
     //Info post-init
     msg_info() << "totalMass   = " << this->d_totalMass.getValue() << msgendl
@@ -963,6 +962,11 @@ void MeshMatrixMass<DataTypes, MassType>::init()
     f_graph.endEdit();
 
     this->copyVertexMass();
+
+    //Update the counter of each parameter
+    this->m_counterTotalMass = this->d_totalMass.getCounter();
+    this->m_counterDensity = this->d_massDensity.getCounter();
+    this->m_counterVertex = this->d_vertexMass.getCounter();
 }
 
 
@@ -1064,45 +1068,36 @@ void MeshMatrixMass<DataTypes, MassType>::computeMass()
 template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::reinit()
 {
-    if (this->d_totalMass.isDirty())
+    bool update = false;
+
+    if (this->d_totalMass.isDirty() || this->m_counterTotalMass != this->d_totalMass.getCounter())
     {
-        this->checkTotalMass();
-        this->initFromTotalMass();
-    }
-    else if(this->d_massDensity.isDirty())
-    {
-        if(!this->checkMassDensity())
+        if(this->checkTotalMass())
         {
-            this->checkTotalMass();
             this->initFromTotalMass();
         }
-        else
+        update = true;
+    }
+    else if(this->d_massDensity.isDirty() || this->m_counterDensity != this->d_massDensity.getCounter())
+    {
+        if(this->checkMassDensity())
         {
             this->initFromMassDensity();
         }
+        update = true;
     }
-    else if(this->d_vertexMass.isDirty())
+    else if(this->d_vertexMass.isDirty() || this->m_counterVertex != this->d_vertexMass.getCounter())
     {
         if(d_edgeMass.isDirty())
         {
-            if(!this->checkVertexMass() || !this->checkEdgeMass() )
-            {
-                this->checkTotalMass();
-                this->initFromTotalMass();
-            }
-            else
+            if(this->checkVertexMass() && this->checkEdgeMass() )
             {
                 this->initFromVertexAndEdgeMass();
             }
         }
-        else if(d_lumping.getValue() && !d_edgeMass.isDirty())
+        else if(d_lumping.getValue() && (!d_edgeMass.isDirty() || this->m_counterVertex != this->d_vertexMass.getCounter()))
         {
-            if(!this->checkVertexMass())
-            {
-                this->checkTotalMass();
-                this->initFromTotalMass();
-            }
-            else
+            if(this->checkVertexMass())
             {
                 this->initFromVertexMass();
             }
@@ -1113,6 +1108,23 @@ void MeshMatrixMass<DataTypes, MassType>::reinit()
             this->checkTotalMass();
             this->initFromTotalMass();
         }
+        update = true;
+    }
+
+    if(update)
+    {
+        this->d_vertexMass.setValue(d_vertexMassInfo.getValue());
+        this->d_edgeMass.setValue(d_edgeMassInfo.getValue());
+
+        this->m_counterTotalMass = this->d_totalMass.getCounter();
+        this->m_counterDensity = this->d_massDensity.getCounter();
+        this->m_counterVertex = this->d_vertexMass.getCounter();
+
+        //Info post-init
+        msg_info() << "mass information updated: ";
+        msg_info() << "totalMass   = " << this->d_totalMass.getValue() << msgendl
+                   << "massDensity = " << this->d_massDensity.getValue() << msgendl
+                   << "vertexMass  = " << this->d_vertexMassInfo.getValue();
     }
 }
 
@@ -1463,8 +1475,6 @@ void MeshMatrixMass<DataTypes, MassType>::addMDx(const core::MechanicalParams*, 
         }
 
     }
-
-
     //using a sparse matrix---------------
     else
     {
@@ -1492,8 +1502,11 @@ void MeshMatrixMass<DataTypes, MassType>::addMDx(const core::MechanicalParams*, 
             massTotal += 2*edgeMass[j] * (Real)factor;
         }
     }
+
     if(d_printMass.getValue() && (this->getContext()->getTime()==0.0))
-        sout<<"Total Mass = "<<massTotal<<sendl;
+    {
+        msg_info() <<"Total Mass = "<<massTotal;
+    }
 
     if(d_printMass.getValue())
     {
@@ -1504,7 +1517,6 @@ void MeshMatrixMass<DataTypes, MassType>::addMDx(const core::MechanicalParams*, 
         f_graph.endEdit();
     }
 }
-
 
 
 template <class DataTypes, class MassType>
@@ -1525,12 +1537,10 @@ void MeshMatrixMass<DataTypes, MassType>::accFromF(const core::MechanicalParams*
     {
         (void)a;
         (void)f;
-        serr << "WARNING: the methode 'accFromF' can't be used with MeshMatrixMass as this SPARSE mass matrix can't be inversed easily. \nPlease proceed to mass lumping." << sendl;
+        msg_error() << "WARNING: the methode 'accFromF' can't be used with MeshMatrixMass as this SPARSE mass matrix can't be inversed easily. \nPlease proceed to mass lumping.";
         return;
     }
 }
-
-
 
 
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
@@ -1688,7 +1698,7 @@ void MeshMatrixMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalPar
 
     if((int)mat->colSize() != (_topology->getNbPoints()*N) || (int)mat->rowSize() != (_topology->getNbPoints()*N))
     {
-        serr<<"Wrong size of the input Matrix: need resize in addMToMatrix function."<<sendl;
+        msg_error() <<"Wrong size of the input Matrix: need resize in addMToMatrix function.";
         mat->resize(_topology->getNbPoints()*N,_topology->getNbPoints()*N);
     }
 
@@ -1755,9 +1765,6 @@ void MeshMatrixMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalPar
 }
 
 
-
-
-
 template <class DataTypes, class MassType>
 SReal MeshMatrixMass<DataTypes, MassType>::getElementMass(unsigned int index) const
 {
@@ -1766,7 +1773,6 @@ SReal MeshMatrixMass<DataTypes, MassType>::getElementMass(unsigned int index) co
 
     return mass;
 }
-
 
 
 //TODO: special case for Rigid Mass
@@ -1779,6 +1785,24 @@ void MeshMatrixMass<DataTypes, MassType>::getElementMass(unsigned int index, def
     m->clear();
     AddMToMatrixFunctor<Deriv,MassType>()(m, d_vertexMassInfo.getValue()[index] * m_massLumpingCoeff, 0, 1);
 }
+
+
+template <class DataTypes, class MassType>
+void MeshMatrixMass<DataTypes, MassType>::handleEvent(sofa::core::objectmodel::Event *event)
+{
+    if (sofa::simulation::AnimateEndEvent::checkEventType(event))
+    {
+        if (this->d_totalMass.isDirty() || this->d_massDensity.isDirty() || this->d_edgeMass.isDirty() || this->d_vertexMass.isDirty())
+        {
+            reinit();
+        }
+        if (this->d_edgeMassInfo.isDirty() || this->d_vertexMassInfo.isDirty())
+        {
+            msg_error() << "edgeMassInfo or vertexMassInfo should not be directly accessed";
+        }
+    }
+}
+
 
 template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::draw(const core::visual::VisualParams* vparams)
