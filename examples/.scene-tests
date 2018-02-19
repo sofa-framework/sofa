@@ -38,4 +38,8 @@ ignore "Tutorials/Mappings/TutorialMappingOctopusArticulated.scn"
 # uses the SofaCUDA plugin.
 ignore "Benchmark/Accuracy/cylinder_TLEDTetraSolution.scn"
 
+# is  only working with FlowVR
+ignore "Components/forcefield/DistanceGridForceField-liver.scn"
+
+
 
