@@ -31,6 +31,7 @@ endif()
 target_link_libraries(${PROJECT_NAME} CImgPlugin)
 target_include_directories(${PROJECT_NAME} PRIVATE ${CImgPlugin_INCLUDE_DIRS})
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS ${CImgPlugin_CFLAGS})
 
 install(TARGETS ${PROJECT_NAME}
         COMPONENT DiffusionSolver_libraries
