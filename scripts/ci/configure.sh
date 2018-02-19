@@ -115,13 +115,6 @@ if [[ -n "$CI_HAVE_BOOST" ]]; then
     append "-DBOOST_ROOT=$CI_BOOST_PATH"
 fi
 
-# Also enable pluginized modules
-append "-DPLUGIN_SOFAEULERIANFLUID=ON"
-append "-DPLUGIN_SOFASPHFLUID=ON"
-append "-DPLUGIN_SOFAMISCCOLLISION=ON"
-append "-DPLUGIN_SOFADISTANCEGRID=ON" # Requires MiniFlowVR for DistanceGridForceField-liver.scn
-append "-DPLUGIN_SOFAIMPLICITFIELD=ON"
-
 case $CI_OPTIONS in
     # Build with as many options enabled as possible
     *options*)
@@ -197,8 +190,13 @@ case $CI_OPTIONS in
         else
             append "-DPLUGIN_SOFACUDA=OFF"
         fi
+        append "-DPLUGIN_SOFADISTANCEGRID=ON" # Requires MiniFlowVR for DistanceGridForceField-liver.scn
+        append "-DPLUGIN_SOFAEULERIANFLUID=ON"
         append "-DPLUGIN_SOFAHAPI=OFF" # Requires HAPI libraries.
+        append "-DPLUGIN_SOFAIMPLICITFIELD=ON"
+        append "-DPLUGIN_SOFAMISCCOLLISION=ON"
         append "-DPLUGIN_SOFASIMPLEGUI=ON" # Not sure if worth maintaining
+        append "-DPLUGIN_SOFASPHFLUID=ON"
         append "-DPLUGIN_THMPGSPATIALHASHING=ON"
         append "-DPLUGIN_XITACT=OFF" # Requires XiRobot library.
         ;;
