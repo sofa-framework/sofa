@@ -174,8 +174,10 @@ BaseData* ServerCommunication::fetchData(SingleLink<CommunicationSubscriber, Bas
     {
         data = getFactoryInstance()->createObject(keyTypeMessage, sofa::helper::NoArgument());
         if (data == nullptr)
+        {
             if(isVerbose())
                 msg_warning() << keyTypeMessage << " is not a known type";
+        }
         else
         {
             data->setName(argumentName);
