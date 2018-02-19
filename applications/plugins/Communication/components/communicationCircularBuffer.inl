@@ -81,7 +81,6 @@ void CircularBufferReceiver::add(std::string subject, ArgumentList argumentList,
     mutex.unlock();
 }
 
-
 BufferData* CircularBufferReceiver::get()
 {
     mutex.lock();
