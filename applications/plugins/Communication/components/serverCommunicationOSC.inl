@@ -96,10 +96,16 @@ void ServerCommunicationOSC::sendData()
             osc::OutboundPacketStream packet(buffer, bufferSize);
             std::string messageName = subscriber->getSubject();
             packet << osc::BeginMessage(messageName.c_str());
-            for (std::vector<std::string>::iterator itArgument = argumentList.begin(); itArgument != argumentList.end(); itArgument++ )
-                createOSCMessage(subscriber, *itArgument, packet);
-            packet << osc::EndMessage;
-            transmitSocket.Send(packet.Data(), packet.Size());
+            try
+            {
+                for (std::vector<std::string>::iterator itArgument = argumentList.begin(); itArgument != argumentList.end(); itArgument++ )
+                    createOSCMessage(subscriber, *itArgument, packet);
+                packet << osc::EndMessage;
+                transmitSocket.Send(packet.Data(), packet.Size());
+            } catch(const std::exception& e) {
+                if (isVerbose())
+                    std::cout << e.what() << '\n';
+            }
         }
         std::this_thread::sleep_for(std::chrono::microseconds(int(1000000.0/(double)this->d_refreshRate.getValue())));
     }
@@ -109,7 +115,7 @@ void ServerCommunicationOSC::createOSCMessage(CommunicationSubscriber* subscribe
 {    
     BaseData* data = fetchDataFromSenderBuffer(subscriber, argument);
     if (!data)
-        return;
+        throw std::invalid_argument("data is null");
 
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
     const void* valueVoidPtr = data->getValueVoidPtr();

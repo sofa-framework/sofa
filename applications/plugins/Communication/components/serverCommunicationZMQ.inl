@@ -89,15 +89,21 @@ void ServerCommunicationZMQ::sendData()
             ArgumentList argumentList = subscriber->getArgumentList();
             messageStr += subscriber->getSubject() + " ";
 
-            for (ArgumentList::iterator itArgument = argumentList.begin(); itArgument != argumentList.end(); itArgument++ )
-                messageStr += createZMQMessage(subscriber, *itArgument);
+            try
+            {
+                for (ArgumentList::iterator itArgument = argumentList.begin(); itArgument != argumentList.end(); itArgument++ )
+                    messageStr += createZMQMessage(subscriber, *itArgument);
 
-            zmq::message_t message(messageStr.length());
-            memcpy(message.data(), messageStr.c_str(), messageStr.length());
+                zmq::message_t message(messageStr.length());
+                memcpy(message.data(), messageStr.c_str(), messageStr.length());
 
-            bool status = m_socket->send(message);
-            if(!status)
-                msg_warning(this) << "Problem with communication";
+                bool status = m_socket->send(message);
+                if(!status)
+                    msg_warning(this) << "Problem with communication";
+            } catch(const std::exception& e) {
+                if (isVerbose())
+                    std::cout << e.what() << '\n';
+            }
             messageStr.clear();
         }
         std::this_thread::sleep_for(std::chrono::microseconds(int(1000000.0/(double)this->d_refreshRate.getValue())));
@@ -109,7 +115,7 @@ std::string ServerCommunicationZMQ::createZMQMessage(CommunicationSubscriber* su
     std::stringstream messageStr;
     BaseData* data = fetchDataFromSenderBuffer(subscriber, argument);
     if (!data)
-        return messageStr.str();
+        throw std::invalid_argument("data is null");
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
     const void* valueVoidPtr = data->getValueVoidPtr();
 
