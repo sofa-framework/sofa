@@ -31,14 +31,14 @@
 SP_DECLARE_CLASS_TYPE(Base)
 
 template<typename DataType>
-class DataCreator : public sofa::helper::BaseCreator<BaseData>
+class DataCreator : public sofa::helper::BaseCreator<sofa::core::objectmodel::BaseData>
 {
 public:
-    virtual BaseData* createInstance(sofa::helper::NoArgument) override { return new sofa::core::objectmodel::Data<DataType>(); }
-    virtual const std::type_info& type() override { return typeid(BaseData);}
+    virtual sofa::core::objectmodel::BaseData* createInstance(sofa::helper::NoArgument) override { return new sofa::core::objectmodel::Data<DataType>(); }
+    virtual const std::type_info& type() override { return typeid(sofa::core::objectmodel::BaseData);}
 };
 
-BaseData * helper_addNewData(PyObject *args, Base* obj);
-BaseData * helper_addNewDataKW(PyObject *args, PyObject * kw, Base * obj);
+//sofa::core::objectmodel::BaseData * helper_addNewData(PyObject *args, sofa::core::objectmodel::Base* obj);
+sofa::core::objectmodel::BaseData * helper_addNewData(PyObject *args, PyObject * kw, sofa::core::objectmodel::Base * obj);
 
 #endif // BINDING_BASE_H

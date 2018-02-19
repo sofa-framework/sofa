@@ -37,12 +37,29 @@
 #include "PythonEnvironment.h"
 using sofa::simulation::PythonEnvironment ;
 using sofa::core::topology::BaseMeshTopology ;
-using sofa::helper::vector ;
-using namespace sofa::core::objectmodel;
+typedef BaseMeshTopology::Tetra Tetra;
+using sofa::helper::vector;
 using sofa::helper::Factory;
+using namespace sofa::core::objectmodel;
 
-
+// TODO (Stefan Escaida 13.02.2018): this factory code is redundant to the Communication plugin, but should easily be mergeable, when an adequate spot is found.
 typedef sofa::helper::Factory< std::string, BaseData> PSDEDataFactory;
+
+PSDEDataFactory* getFactoryInstance(){
+    static PSDEDataFactory* s_localfactory = nullptr ;
+    if(s_localfactory==nullptr)
+    {
+        s_localfactory = new PSDEDataFactory() ;
+        s_localfactory->registerCreator("s", new DataCreator<std::string>());
+        s_localfactory->registerCreator("f", new DataCreator<float>());
+        s_localfactory->registerCreator("b", new DataCreator<bool>());
+        s_localfactory->registerCreator("d", new DataCreator<int>());
+        s_localfactory->registerCreator("t", new DataCreator<vector<Tetra>>());
+        s_localfactory->registerCreator("p", new DataCreator<sofa::defaulttype::Vec3dTypes::VecCoord>());
+    }
+    return s_localfactory ;
+}
+
 
 static Base* get_base(PyObject* self) {
     return sofa::py::unwrap<Base>(self);
@@ -61,7 +78,7 @@ static char* getStringCopy(char *c)
 
 // helper function for parsing Python arguments
 // not defined static in order to be able to use this fcn somewhere else also
-BaseData* helper_addNewDataKW(PyObject *args, PyObject * kw, Base * obj) {
+BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
 
     const char* dataRawType="";
     const char* dataClass="";
@@ -69,140 +86,89 @@ BaseData* helper_addNewDataKW(PyObject *args, PyObject * kw, Base * obj) {
     PyObject* dataValue = nullptr;
 
     char *dataName; // The desired name is provided using regular args ...
-    if(!PyArg_ParseTuple(args, "s",&dataName))
-    {
-        msg_error("SosaPython") << "No name provided for the new Data";
-        return nullptr;
-    }
 
-    // ... the other values are passed as kwargs
-//    if (kw && PyDict_Size(kw)>0)
-//    {
-//        PyObject* keys = PyDict_Keys(kw);
-//        PyObject* values = PyDict_Values(kw);
-//        for (int i=0; i<PyDict_Size(kw); i++)
-//        {
-//            PyObject *key = PyList_GetItem(keys,i); // no need to use py_decref for these (using will actually cause segfault)
-//            PyObject *value = PyList_GetItem(values,i);
-//            std::string KeyStr = PyString_AsString(key);
-
-//            if (KeyStr.compare("datatype")==0)
-//            {
-//                dataRawType = getStringCopy(PyString_AsString(value));
-//            }
-//            if (KeyStr.compare("help")==0)
-//            {
-//                dataHelp = getStringCopy(PyString_AsString(value));
-//            }
-//            if (KeyStr.compare("dataclass")==0)
-//            {
-//                dataClass = getStringCopy(PyString_AsString(value));
-//            }
-//            if (KeyStr.compare("value")==0)
-//            {
-//                dataValue = value;
-//            }
-//        }
-//        Py_DecRef(keys); // TODO (Stefan Escaida): wtf is happening here??
-//        Py_DecRef(values);
-//    }
-
-    if(!PyDict_Check(kw))
-    {
-        msg_error("SofaPython") << "Could not parse arguments for adding Data";
-        return nullptr;
-    }
-
-    PyObject * tmp;
-    tmp = PyDict_GetItemString(kw,"datatype");
-    if (!(tmp==nullptr)){
-        dataRawType = getStringCopy(PyString_AsString(tmp));
-    }
-
-    tmp = PyDict_GetItemString(kw,"helptxt");
-    if (!(tmp==nullptr)){
-        dataHelp = getStringCopy(PyString_AsString(tmp));
-    }
-
-    tmp = PyDict_GetItemString(kw,"dataclass");
-    if (!(tmp==nullptr)){
-        dataClass= getStringCopy(PyString_AsString(tmp));
-    }
-
-    tmp = PyDict_GetItemString(kw,"value");
-    if (!(tmp==nullptr)){
-        dataValue = tmp;
-        Py_IncRef(dataValue); // call to Py_GetItemString doesn't increment the ref count, but we want to hold on to it for a while ...
-    }
-
-    if (dataRawType[0]==0) // We cannot construct without a type
-    {
-        msg_error("SofaPython") << "No type provided for Data, cannot construct/add";
-        return nullptr;
-    }
-
-    BaseData* bd = nullptr ;
-//    bool OldSchoolParsing = false; //TODO (Stefan Escaida 29.01.2018): should a direct parsing mechanism Python-->Sofa be implemented? (instead of going through str)
-    if(dataRawType[0] == 's'){
-        Data<std::string>* t = new Data<std::string>() ;
-        t = new(t) Data<std::string>(obj->initData(t, std::string(""), dataName, dataHelp)) ;
-        bd = t;        
-    }
-    else if(dataRawType[0] == 'b'){
-        Data<bool>* t = new Data<bool>();
-        t = new(t) Data<bool>(obj->initData(t, true, dataName, dataHelp)) ;
-        bd = t;
-    }
-    else if(dataRawType[0] == 'd'){
-        Data<int>* t = new Data<int>();
-        t = new (t) Data<int> (obj->initData(t, 0, dataName, dataHelp)) ;
-        bd = t;        
-    }
-    else if(dataRawType[0] == 'f'){
-        Data<float>* t = new Data<float>();
-        t = new (t) Data<float>(obj->initData(t, 0.0f, dataName, dataHelp)) ;
-        bd = t;        
-    }
-    else if(dataRawType[0] == 't') // Tetrahedra
+    bool KwargsOrArgs = 0; //Args = 0, Kwargs = 1
+    if(PyArg_ParseTuple(args, "s",&dataName)) // if we only find one regular args means we search for the other values in the kwargs
     {        
-        Data<vector<Tetra>>* t = new Data<vector<Tetra>>();
-        t = new(t) Data<vector<Tetra>>(obj->initData(t,dataName, dataHelp));
-        bd = t;
+        KwargsOrArgs = 1;
     }
-    else if(dataRawType[0] == 'p') // vector of 3D positions
+    else if(!PyArg_ParseTuple(args, "ssssO", &dataName, &dataClass, &dataHelp, &dataRawType, &dataValue)) // if this succeeds means we're parsing the oldschool way
     {
-        Data<sofa::defaulttype::Vec3dTypes::VecCoord>* t = new Data<sofa::defaulttype::Vec3dTypes::VecCoord>();
-        t = new(t) Data<sofa::defaulttype::Vec3dTypes::VecCoord>(obj->initData(t,dataName, dataHelp));
-        bd = t;
-    }
-    else{
-        std::stringstream msg;
-        msg << "Invalid data type '" << dataRawType << "'. Supported type are: (s)tring, (d)ecimal, (f)loat, (b)oolean, (t)etrahedra, 3D (p)ositions" ;
-        PyErr_SetString(PyExc_TypeError, msg.str().c_str());
         return nullptr;
     }
 
-    if(dataValue!=nullptr) // otherwise leave Data with its unintialized value
+
+    if(KwargsOrArgs) // parse kwargs
     {
-        std::stringstream tmp;        
-        pythonToSofaDataString(dataValue, tmp);
-        if(tmp.str()[0]=='@' && bd->canBeLinked())
+        if(kw==nullptr || !PyDict_Check(kw) )
         {
-            if(!bd->setParent(tmp.str()))
-            {
-                msg_error("SofaPython") << "Could not setup link for Data, initialzing empty";
-            }
+            msg_error("SofaPython") << "Could not parse kwargs for adding Data";
+            return nullptr;
         }
-        else
+
+        PyObject * tmp;
+        tmp = PyDict_GetItemString(kw,"datatype");
+        if (!(tmp==nullptr)){
+            dataRawType = getStringCopy(PyString_AsString(tmp));
+        }
+
+        tmp = PyDict_GetItemString(kw,"helptxt");
+        if (!(tmp==nullptr)){
+            dataHelp = getStringCopy(PyString_AsString(tmp));
+        }
+
+        tmp = PyDict_GetItemString(kw,"dataclass");
+        if (!(tmp==nullptr)){
+            dataClass= getStringCopy(PyString_AsString(tmp));
+        }
+
+        tmp = PyDict_GetItemString(kw,"value");
+        if (!(tmp==nullptr)){
+            dataValue = tmp;
+            Py_IncRef(dataValue); // call to Py_GetItemString doesn't increment the ref count, but we want to hold on to it for a while ...
+        }
+
+        if (dataRawType[0]==0) // We cannot construct without a type
         {
-            bd->read( tmp.str() );
+            msg_error("SofaPython") << "No type provided for Data, cannot construct/add";
+            return nullptr;
         }
-        bd->setGroup(dataClass);
-        Py_DecRef(dataValue);
+    }
+
+    BaseData* bd = getFactoryInstance()->createObject(dataRawType, sofa::helper::NoArgument());
+
+    if (bd == nullptr)
+    {
+        msg_warning("SofaPython") << dataRawType << " is not a known type";
     }
     else
     {
-        msg_info("SofaPython") << "No value(s) provided, initializing empty Data ...";
+        bd->setName(dataName);
+        bd->setHelp(dataHelp);
+        obj->addData(bd);
+//        msg_info(obj->getName()) << " data field named : " << dataName << " of type " << dataRawType << " has been created";
+        if(dataValue!=nullptr) // parse provided data: Py->SofaStr->Data
+        {
+            std::stringstream tmp;
+            pythonToSofaDataString(dataValue, tmp);
+            if(tmp.str()[0]=='@' && bd->canBeLinked())
+            {
+                if(!bd->setParent(tmp.str()))
+                {
+                    msg_error("SofaPython") << "Could not setup link for Data, initialzing empty";
+                }
+            }
+            else
+            {
+                bd->read( tmp.str() );
+            }
+            bd->setGroup(dataClass);
+            Py_DecRef(dataValue);
+        }
+        else
+        {
+            msg_info("SofaPython") << "No value(s) provided, initializing empty Data ...";
+        }
     }
     return bd;
 }
@@ -210,74 +176,74 @@ BaseData* helper_addNewDataKW(PyObject *args, PyObject * kw, Base * obj) {
 // helper function for parsing Python arguments
 // not defined static in order to be able to use this fcn somewhere else also
 // TODO (Stefan Escaida 05.02.): to deprecate, because it's not using kwargs. Will break a small set of examples though ...
-BaseData* helper_addNewData(PyObject *args, Base * obj) {
-    //Base* obj = get_base(self);
-    char* dataName;
-    char* dataClass;
-    char* dataHelp;
-    char* dataRawType;
-    PyObject* dataValue;
+//BaseData* helper_addNewData(PyObject *args, Base * obj) {
+//    //Base* obj = get_base(self);
+//    char* dataName;
+//    char* dataClass;
+//    char* dataHelp;
+//    char* dataRawType;
+//    PyObject* dataValue;
 
-    if (!PyArg_ParseTuple(args, "ssssO", &dataName, &dataClass, &dataHelp, &dataRawType, &dataValue)) {
-        return nullptr;
-    }
+//    if (!PyArg_ParseTuple(args, "ssssO", &dataName, &dataClass, &dataHelp, &dataRawType, &dataValue)) {
+//        return nullptr;
+//    }
 
-    dataName = getStringCopy(dataName) ;
-    dataClass = getStringCopy(dataClass) ;
-    dataHelp  = getStringCopy(dataHelp) ;
+//    dataName = getStringCopy(dataName) ;
+//    dataClass = getStringCopy(dataClass) ;
+//    dataHelp  = getStringCopy(dataHelp) ;
 
-    BaseData* bd = nullptr ;
-    bool OldSchoolParsing = false;
-    if(dataRawType[0] == 's'){
-        Data<std::string>* t = new Data<std::string>() ;
-        t = new(t) Data<std::string>(obj->initData(t, std::string(""), dataName, dataHelp)) ;
-        bd = t;
-        OldSchoolParsing = true;
-    }
-    else if(dataRawType[0] == 'b'){
-        Data<bool>* t = new Data<bool>();
-        t = new(t) Data<bool>(obj->initData(t, true, dataName, dataHelp)) ;
-        bd = t;
-        OldSchoolParsing = true;
-    }
-    else if(dataRawType[0] == 'd'){
-        Data<int>* t = new Data<int>();
-        t = new (t) Data<int> (obj->initData(t, 0, dataName, dataHelp)) ;
-        bd = t;
-        OldSchoolParsing = true;
-    }
-    else if(dataRawType[0] == 'f'){
-        Data<float>* t = new Data<float>();
-        t = new (t) Data<float>(obj->initData(t, 0.0f, dataName, dataHelp)) ;
-        bd = t;
-        OldSchoolParsing = true;
-    }
-    else if(dataRawType[0] == 't')
-    {        
-        Data<vector<Tetra>>* t = new Data<vector<Tetra>>();
-        t = new(t) Data<vector<Tetra>>(obj->initData(t,dataName, dataHelp));
+//    BaseData* bd = nullptr ;
+//    bool OldSchoolParsing = false;
+//    if(dataRawType[0] == 's'){
+//        Data<std::string>* t = new Data<std::string>() ;
+//        t = new(t) Data<std::string>(obj->initData(t, std::string(""), dataName, dataHelp)) ;
+//        bd = t;
+//        OldSchoolParsing = true;
+//    }
+//    else if(dataRawType[0] == 'b'){
+//        Data<bool>* t = new Data<bool>();
+//        t = new(t) Data<bool>(obj->initData(t, true, dataName, dataHelp)) ;
+//        bd = t;
+//        OldSchoolParsing = true;
+//    }
+//    else if(dataRawType[0] == 'd'){
+//        Data<int>* t = new Data<int>();
+//        t = new (t) Data<int> (obj->initData(t, 0, dataName, dataHelp)) ;
+//        bd = t;
+//        OldSchoolParsing = true;
+//    }
+//    else if(dataRawType[0] == 'f'){
+//        Data<float>* t = new Data<float>();
+//        t = new (t) Data<float>(obj->initData(t, 0.0f, dataName, dataHelp)) ;
+//        bd = t;
+//        OldSchoolParsing = true;
+//    }
+//    else if(dataRawType[0] == 't')
+//    {
+//        Data<vector<Tetra>>* t = new Data<vector<Tetra>>();
+//        t = new(t) Data<vector<Tetra>>(obj->initData(t,dataName, dataHelp));
 
-        OldSchoolParsing = true;
-//        OldSchoolParsing = false;
-//        parseTetraVector(dataValue,t);
-        bd = t;
-    }
-    else{
-        std::stringstream msg;
-        msg << "Invalid data type '" << dataRawType << "'. Supported type are: s(tring), d(ecimal), f(float), b(oolean)" ;
-        PyErr_SetString(PyExc_TypeError, msg.str().c_str());
-        return nullptr;
-    }
+//        OldSchoolParsing = true;
+////        OldSchoolParsing = false;
+////        parseTetraVector(dataValue,t);
+//        bd = t;
+//    }
+//    else{
+//        std::stringstream msg;
+//        msg << "Invalid data type '" << dataRawType << "'. Supported type are: s(tring), d(ecimal), f(float), b(oolean)" ;
+//        PyErr_SetString(PyExc_TypeError, msg.str().c_str());
+//        return nullptr;
+//    }
 
-    if(OldSchoolParsing)
-    {
-        std::stringstream tmp;
-        pythonToSofaDataString(dataValue, tmp) ;
-        bd->read( tmp.str() ) ;
-        bd->setGroup(dataClass);
-    }    
-    return bd;
-}
+//    if(OldSchoolParsing)
+//    {
+//        std::stringstream tmp;
+//        pythonToSofaDataString(dataValue, tmp) ;
+//        bd->read( tmp.str() ) ;
+//        bd->setGroup(dataClass);
+//    }
+//    return bd;
+//}
 
 static PyObject * Base_addData(PyObject *self, PyObject *args )
 {
@@ -297,7 +263,7 @@ static PyObject * Base_addData(PyObject *self, PyObject *args )
 
 static PyObject * Base_addNewData(PyObject *self, PyObject *args) {
     Base* obj = get_base(self);
-    helper_addNewData(args, obj);
+    helper_addNewData(args, nullptr, obj);
     Py_RETURN_NONE;
 }
 

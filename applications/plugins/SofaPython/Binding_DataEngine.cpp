@@ -64,7 +64,7 @@ BaseData * helper_addNewIO(PyObject * self, PyObject * args, PyObject * kw)
     DataEngine* engine = get_dataengine( self );
     BaseData* NewData;
 
-    NewData = helper_addNewDataKW(args,kw,engine);
+    NewData = helper_addNewData(args,kw,engine);
 
     if(NewData==nullptr)
     {
