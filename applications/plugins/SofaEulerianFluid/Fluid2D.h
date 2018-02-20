@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -72,15 +72,15 @@ public:
     int getNy() const { return f_ny.getValue(); }
     void setNy(int v) { f_ny.setValue(v);       }
 
-    virtual void init();
+    virtual void init() override;
 
-    virtual void reset();
+    virtual void reset() override;
 
-    virtual void updatePosition(SReal dt);
+    virtual void updatePosition(SReal dt) override;
 
-    virtual void draw(const core::visual::VisualParams* vparams);
+    virtual void draw(const core::visual::VisualParams* vparams) override;
 
-    virtual void computeBBox(const core::ExecParams* /* params */, bool onlyVisible=false);
+    virtual void computeBBox(const core::ExecParams* /* params */, bool onlyVisible=false) override;
 
     virtual void updateVisual();
 

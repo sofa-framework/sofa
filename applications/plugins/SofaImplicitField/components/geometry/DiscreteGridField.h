@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -58,11 +58,11 @@ public:
     DiscreteGridField();
     ~DiscreteGridField();
 
-    virtual void init();
+    virtual void init() override;
 
     virtual double getValue( Vec3d &transformedPos );
-    virtual double getValue( Vec3d &transformedPos, int &domain );
-    virtual int getDomain( Vec3d &pos, int ref_domain ) { (void)pos; return ref_domain; }
+    virtual double getValue( Vec3d &transformedPos, int &domain ) override;
+    virtual int getDomain( Vec3d &pos, int ref_domain ) override { (void)pos; return ref_domain; }
 
     void setFilename(const std::string& filename) ;
     bool loadGridFromMHD( const char *filename ) ;
