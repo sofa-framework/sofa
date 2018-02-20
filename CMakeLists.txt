@@ -81,7 +81,7 @@ if(UNIX)
     # loader to find needed shared libraries.
     #
     # In the build directory, cmake creates binaries with absolute paths in
-    # RPATH.  And by default, it strips RPATH from inTUTORIALSstalled binaries.  Here we
+    # RPATH.  And by default, it strips RPATH from installed binaries.  Here we
     # use CMAKE_INSTALL_RPATH to set a relative RPATH.  By doing so, we avoid
     # the need to play with LD_LIBRARY_PATH to get applications to run.
     set(CMAKE_INSTALL_RPATH "../lib")

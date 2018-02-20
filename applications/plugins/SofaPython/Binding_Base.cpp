@@ -42,7 +42,7 @@ using sofa::helper::vector;
 using sofa::helper::Factory;
 using namespace sofa::core::objectmodel;
 
-// TODO (Stefan Escaida 13.02.2018): this factory code is redundant to the Communication plugin, but should easily be mergeable, when an adequate spot is found.
+// TODO (sescaida 13.02.2018): this factory code is redundant to the Communication plugin, but should easily be mergeable, when an adequate spot is found.
 typedef sofa::helper::Factory< std::string, BaseData> PSDEDataFactory;
 
 PSDEDataFactory* getFactoryInstance(){

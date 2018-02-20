@@ -89,7 +89,7 @@ static PyObject * DataEngine_addNewInput(PyObject *self, PyObject* args, PyObjec
      }
 
      // Check IO stuff
-//     // TODO (Stefan Escaida 29.01.2018): maybe in the long term enforce that an Input can either be constant or only linked to an Output (for dat Simulink feelz)
+//     // TODO (sscaida 29.01.2018): maybe in the long term enforce that an Input can either be constant or only linked to an Output (for dat Simulink feelz)
 //     BaseData* Parent = NewData->getParent();
 //     char * ParentGroup;
 //     if (Parent!=nullptr && strcmp(Parent->getGroup(), "Outputs")!=0)

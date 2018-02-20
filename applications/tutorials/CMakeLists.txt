@@ -1,7 +1,5 @@
 cmake_minimum_required(VERSION 3.1)
 
-find_package(SofaFramework REQUIRED)
-
 set(SOFATUTORIALS_TARGETS
     # No CMakeLists.txt
     # anatomyModelling
@@ -19,4 +17,3 @@ foreach(TARGET ${SOFATUTORIALS_TARGETS})
     add_subdirectory(${TARGET})
     set_target_properties(${TARGET} PROPERTIES FOLDER SofaTutorials) # IDE folder
 endforeach()
-
