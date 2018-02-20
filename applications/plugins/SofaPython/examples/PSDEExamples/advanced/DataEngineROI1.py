@@ -24,7 +24,7 @@ class MyDataEngine1(Sofa.PythonScriptDataEngine):
 
     def init(self):        
         #self.addNewOutput('TetrahedraOutliers',blup='sd',blep='sd',datatype='t') # works here ... really, really strange
-        MyBoxROI = BoxROI(-30, -30, 8, -10, 30, 40, self.Positions)            
+        MyBoxROI = BoxROI(-3, -1, -1.2, -1.3, 1, -0.2, self.Positions)            
         MyBoxROI.calcTetrasInROI(self.Tetrahedra)        
         self.TetrahedraInliers = MyBoxROI.Inliers        
         self.TetrahedraOutliers = MyBoxROI.Outliers
