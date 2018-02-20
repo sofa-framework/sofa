@@ -19,11 +19,13 @@ import os
 # - init() is called once, when the graph is initialized. Can be used to set initial values, etc.
 # - update() is called once in every frame.
 #
-# The scene is very basic and just shows how the PSDE is created with an associated Python script. The PSDE counts the points inside a mesh previously loaded and stores the value in an output.
+# The scene is very basic and just shows how the PSDE is created with an associated Python script. The PSDE counts the points inside a mesh previously loaded and stores the value in an output. 
+# The functionality can be inspected by looking at the properties (Inputs, Outputs) of the PSDE-object in the scene-graph.
+#
 
 path = os.path.dirname(os.path.abspath(__file__))+'/../../../../../../share/mesh/'
         
 def createScene(rootNode):
-        rootNode.createObject("MeshVTKLoader", name="loader", filename=path+'finger0.vtu')
+        rootNode.createObject("MeshVTKLoader", name="loader", filename=path+'liver.vtk')
         rootNode.createObject('PythonScriptDataEngine', name='PSDE', filename="DataEngine.py", classname="MyDataEngine")	
         

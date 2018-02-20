@@ -9,7 +9,7 @@
         <Mesh triangles="0 1 2  0 2 3" />
         <!--		<FixedConstraint indices="2 3"/>-->
         <TriangleFEMForceField name="FEM0" youngModulus="100" poissonRatio="0.3" method="large" />
-        <ConstantForceField points="0 1 2 3" forces="-1.1 -1 0  1 -1 0  1 1 0  -1 1 0" />
+        <ConstantForceField points="0 1 2 3" forces="-1 -1 0  1 -1 0  1 1 0  -1 1 0" />
         <Node name="Visu">
             <OglModel name="Visual" color="red" />
             <IdentityMapping input="@.." output="@Visual" />
@@ -21,7 +21,7 @@
         <MechanicalObject template="Rigid" dx="2" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0" />
         <UniformMass />
         <!-- forces for a rigid is composed of two parts translation of the rigid dof [x y z] and a quaternion for the rotation [x y z w] -->
-        <ConstantForceField points="0" forces="0 0.10 0     0 0 1 0" />
+        <ConstantForceField points="0" forces="0 0.10 0     0 1 0 0" />
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/torus.obj" color="gray" scale="0.3" />
             <RigidMapping input="@.." output="@Visual" />

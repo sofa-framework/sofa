@@ -126,7 +126,6 @@ void PythonScriptDataEngine::loadScript()
     {
         FileMonitor::addFile(m_filename.getFullPath(), m_filelistener) ;
     }
-
     // if the filename is empty, the DataEngine is supposed to be in an already loaded file
     // otherwise load the DataEngine's file
     if( m_filename.isSet() && !m_filename.getRelativePath().empty() && !PythonEnvironment::runFile(m_filename.getFullPath().c_str()) )
@@ -160,12 +159,7 @@ void PythonScriptDataEngine::loadScript()
         return;
     }
 
-
-
-    //msg_warning() << " DataEngine Script loaded successfully.";
-    //this->setDirtyValue(true);
-    refreshBinding();
-    //script_update();
+    refreshBinding();    
 }
 
 
@@ -188,7 +182,7 @@ void PythonScriptDataEngine::setInstance(PyObject* instance) {
     refreshBinding();
 }
 
-// Ok, so in the end we're stuck with using the AnimationBeginEvent? (copied from BoxROI code)
+// Ok, so in the end we're stuck with using the AnimationBeginEvent? (20.02.2018, sescaida)
 void PythonScriptDataEngine::handleEvent(Event *event)
 {
     if (AnimateBeginEvent::checkEventType(event))

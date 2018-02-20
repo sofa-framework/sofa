@@ -4,7 +4,7 @@ find_package(SofaFramework REQUIRED)
 
 set(SOFATUTORIALS_TARGETS
     # No CMakeLists.txt
-    #anatomyModelling
+    # anatomyModelling
     #chainHybrid
     #compositeObject
     #houseOfCards
@@ -20,4 +20,3 @@ foreach(TARGET ${SOFATUTORIALS_TARGETS})
     set_target_properties(${TARGET} PROPERTIES FOLDER SofaTutorials) # IDE folder
 endforeach()
 
-#add_executable(anatomyModelling anatomyModelling.cpp)

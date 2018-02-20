@@ -81,7 +81,7 @@ if(UNIX)
     # loader to find needed shared libraries.
     #
     # In the build directory, cmake creates binaries with absolute paths in
-    # RPATH.  And by default, it strips RPATH from installed binaries.  Here we
+    # RPATH.  And by default, it strips RPATH from inTUTORIALSstalled binaries.  Here we
     # use CMAKE_INSTALL_RPATH to set a relative RPATH.  By doing so, we avoid
     # the need to play with LD_LIBRARY_PATH to get applications to run.
     set(CMAKE_INSTALL_RPATH "../lib")
@@ -323,7 +323,7 @@ sofa_add_plugin( applications/plugins/SofaPython SofaPython )
 option(SOFA_BUILD_SCENECREATOR "Compile the C++ API located in applications/plugins/SceneCreator" OFF)
 
 ## Tutorials option
-option(SOFA_BUILD_TUTORIALS "Build (most of) the tutorials available." ON)
+option(SOFA_BUILD_TUTORIALS "Build (most of) the tutorials available." OFF)
 
 
 # Activate SceneCreator when required
@@ -365,8 +365,6 @@ add_subdirectory(applications/projects)
 if(SOFA_BUILD_TUTORIALS)
     add_subdirectory(applications/tutorials)
 endif()
-
-#add_subdirectory(applications/tutorials)
 
 ## Build external projects at the same time
 set(SOFA_EXTERNAL_DIRECTORIES "" CACHE STRING "list of paths separated by ';'")

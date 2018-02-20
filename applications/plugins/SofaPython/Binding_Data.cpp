@@ -146,8 +146,9 @@ static int SetDataValuePythonList(BaseData* data, PyObject* args,
         return 0;
     }
 
+    /// Check if the list have two dimmensions
     if (PyList_Check(PyList_GetItem(args,0)))
-    {        
+    {
         /// Handle the two-dimension array case.
         void* editVoidPtr = data->beginEditVoidPtr();
 
@@ -250,7 +251,7 @@ static int SetDataValuePythonList(BaseData* data, PyObject* args,
         return 0;
     }
     else
-    {        
+    {
         /// it is a one-dimension only array
         void* editVoidPtr = data->beginEditVoidPtr();
 
