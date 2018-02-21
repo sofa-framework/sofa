@@ -31,6 +31,9 @@
 #include <vector>
 #include <sofa/helper/system/SofaOStream.h>
 
+#include <streambuf>
+#include <ostream>
+
 namespace sofa
 {
 namespace helper
@@ -41,9 +44,6 @@ namespace logging
 // forward declaration
 class MessageHandler;
 
-
-
-
 /// static interface to manage the list of MessageHandlers
 /// that process the Messages
 class SOFA_HELPER_API MessageDispatcher
@@ -51,81 +51,101 @@ class SOFA_HELPER_API MessageDispatcher
 
 public:
 
-        /// a utility interface to automatically process a Message
-        /// at the end of scope of the LoggerStream variable
-        /// (processed by all the handlers of the MessageDispatcher)
-        class SOFA_HELPER_API LoggerStream
+    /// a utility interface to automatically process a Message
+    /// at the end of scope of the LoggerStream variable
+    /// (processed by all the handlers of the MessageDispatcher)
+    class SOFA_HELPER_API LoggerStream
+    {
+
+    public:
+
+        LoggerStream(const LoggerStream& s)
+            : m_message( s.m_message )
+        {}
+
+        LoggerStream(Message::Class mclass, Message::Type type,
+                     const ComponentInfo::SPtr& sender, const FileInfo::SPtr& fileInfo) ;
+
+        ~LoggerStream() ;
+
+        template<class T>
+        LoggerStream& operator<<(const T &x)
         {
+            m_message << x;
+            return *this;
+        }
 
-        public:
-
-            LoggerStream(const LoggerStream& s)
-                : m_message( s.m_message )
-            {}
-
-            LoggerStream(Message::Class mclass, Message::Type type,
-                         const ComponentInfo::SPtr& sender, const FileInfo::SPtr& fileInfo) ;
-
-            ~LoggerStream() ;
-
-            template<class T>
-            LoggerStream& operator<<(const T &x)
-            {
-                m_message << x;
-                return *this;
-            }
-
-            Message getMessage()const { return m_message; }
-
-        private:
-
-            Message m_message;
-
-        };
-
-        /// @internal to be able to redirect Messages to nowhere
-        class SOFA_HELPER_API NullLoggerStream : public std::ostream
-        {
-        public:
-            template<typename T> inline const NullLoggerStream& operator<<(const T& /*v*/) const { return *this; }
-        private:
-            NullLoggerStream(){}
-            NullLoggerStream(const NullLoggerStream&);
-            ~NullLoggerStream(){}
-        protected:
-            friend class MessageDispatcher;
-            static NullLoggerStream& getInstance(){ static NullLoggerStream s_nop; return s_nop; }
-        };
-
-
-
-
-        static int addHandler(MessageHandler* o) ; ///< to add a MessageHandler
-        static int rmHandler(MessageHandler* o) ; ///< to remove a MessageHandler
-        static void clearHandlers() ; ///< to remove every MessageHandlers
-        static std::vector<MessageHandler*>& getHandlers(); ///< the list of MessageHandlers
-
-        static LoggerStream info(Message::Class mclass, const ComponentInfo::SPtr& cinfo, const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
-        static LoggerStream deprecated(Message::Class mclass, const ComponentInfo::SPtr& cinfo, const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
-        static LoggerStream warning(Message::Class mclass, const ComponentInfo::SPtr& cinfo, const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
-        static LoggerStream error(Message::Class mclass, const ComponentInfo::SPtr& cinfo, const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
-        static LoggerStream fatal(Message::Class mclass, const ComponentInfo::SPtr& cinfo, const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
-        static LoggerStream advice(Message::Class mclass, const ComponentInfo::SPtr& cinfo, const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
-
-        static NullLoggerStream& null() { return NullLoggerStream::getInstance(); }
-        static MessageDispatcher::LoggerStream log(Message::Class mclass, Message::Type type, const ComponentInfo::SPtr& cinfo, const FileInfo::SPtr& fileInfo = EmptyFileInfo);
-
-        /// Process the Message by all the Message handlers.
-        /// Called in the destructor of LoggerStream
-        /// and can be called manually on a hand-made (possibly predefined) Message
-        static void process(sofa::helper::logging::Message& m);
+        Message getMessage()const { return m_message; }
 
     private:
 
-        // static interface
-        MessageDispatcher();
-        MessageDispatcher(const MessageDispatcher&);
-        ~MessageDispatcher();
+        Message m_message;
+
+    };
+
+
+    template <class cT, class traits = std::char_traits<cT> >
+    class basic_nullbuf: public std::basic_streambuf<cT, traits> {
+        typename traits::int_type overflow(typename traits::int_type c)
+        {
+            return traits::not_eof(c); // indicate success
+        }
+    };
+
+    template <class cT, class traits = std::char_traits<cT> >
+    class basic_onullstream: public std::basic_ostream<cT, traits> {
+    public:
+        basic_onullstream() :
+            std::basic_ostream<cT, traits>(&m_sbuf)
+        {}
+
+    private:
+        basic_nullbuf<cT, traits> m_sbuf;
+    };
+
+    /// @internal to be able to redirect Messages to nowhere
+    class SOFA_HELPER_API NullLoggerStream : public basic_onullstream<char>
+    {
+    public:
+        template<typename T> inline const NullLoggerStream& operator<<(const T& /*v*/) const { return *this; }
+    private:
+        NullLoggerStream(){}
+        NullLoggerStream(const NullLoggerStream&);
+        ~NullLoggerStream(){}
+    protected:
+        friend class MessageDispatcher;
+        static NullLoggerStream& getInstance(){ static NullLoggerStream s_nop; return s_nop; }
+    };
+
+
+
+
+    static int addHandler(MessageHandler* o) ; ///< to add a MessageHandler
+    static int rmHandler(MessageHandler* o) ; ///< to remove a MessageHandler
+    static void clearHandlers() ; ///< to remove every MessageHandlers
+    static std::vector<MessageHandler*>& getHandlers(); ///< the list of MessageHandlers
+
+    static LoggerStream info(Message::Class mclass, const ComponentInfo::SPtr& cinfo, const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
+    static LoggerStream deprecated(Message::Class mclass, const ComponentInfo::SPtr& cinfo, const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
+    static LoggerStream warning(Message::Class mclass, const ComponentInfo::SPtr& cinfo, const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
+    static LoggerStream error(Message::Class mclass, const ComponentInfo::SPtr& cinfo, const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
+    static LoggerStream fatal(Message::Class mclass, const ComponentInfo::SPtr& cinfo, const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
+    static LoggerStream advice(Message::Class mclass, const ComponentInfo::SPtr& cinfo, const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
+
+    static NullLoggerStream& null() { return NullLoggerStream::getInstance(); }
+    static MessageDispatcher::LoggerStream log(Message::Class mclass, Message::Type type, const ComponentInfo::SPtr& cinfo, const FileInfo::SPtr& fileInfo = EmptyFileInfo);
+
+    /// Process the Message by all the Message handlers.
+    /// Called in the destructor of LoggerStream
+    /// and can be called manually on a hand-made (possibly predefined) Message
+    static void process(sofa::helper::logging::Message& m);
+
+private:
+
+    // static interface
+    MessageDispatcher();
+    MessageDispatcher(const MessageDispatcher&);
+    ~MessageDispatcher();
 
 };
 
