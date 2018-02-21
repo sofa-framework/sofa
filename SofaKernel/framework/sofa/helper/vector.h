@@ -147,39 +147,26 @@ public:
 #endif // SOFA_VECTOR_ACCESS_FAILURE
 
 
-    std::ostream& write(std::ostream& os) const
-    {
-        if( this->size()>0 )
-        {
-            for( size_type i=0; i<this->size()-1; ++i )
-                os<<(*this)[i]<<" ";
-            os<<(*this)[this->size()-1];
-        }
-        return os;
-    }
+    size_t readFromPythonRepr(std::istream& in, std::ostream& errstr=sofa::helper::logging::MessageDispatcher::null()) ;
+    size_t readFromSofaRepr(std::istream& in, std::ostream& errstr=sofa::helper::logging::MessageDispatcher::null()) ;
+    size_t read(std::istream& in, std::ostream& errstr=sofa::helper::logging::MessageDispatcher::null()) ;
 
-    std::istream& read(std::istream& in)
-    {
-        T t=T();
-        this->clear();
-        while(in>>t)
-        {
-            this->push_back(t);
-        }
-        if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
-        return in;
-    }
+    void writeToPythonRepr(std::ostream& in) const ;
+    void writeToSofaRepr(std::ostream& in) const ;
+    void write(std::ostream& in) const ;
 
     /// Output stream
     inline friend std::ostream& operator<< ( std::ostream& os, const vector<T>& vec )
     {
-        return vec.write(os);
+        vec.write(os);
+        return os;
     }
 
     /// Input stream
     inline friend std::istream& operator>> ( std::istream& in, vector<T>& vec )
     {
-        return vec.read(in);
+        vec.read(in) ;
+        return in ;
     }
 
     /// Sets every element to 'value'
@@ -194,186 +181,140 @@ public:
         this->resize(n);
     }
 
+    using std::vector<T>::size ;
+    using std::vector<T>::clear ;
 };
 
-/// Input stream
-/// Specialization for reading vectors of int and unsigned int using "A-B" notation for all integers between A and B, optionnally specifying a step using "A-B-step" notation.
-template<> inline
-std::istream& vector<int>::read( std::istream& in )
+template<class T> inline
+size_t vector<T>::read(std::istream& in, std::ostream& errstr)
 {
-    int t;
-    this->clear();
-    std::string s;
-    std::stringstream msg;
-    unsigned int numErrors=0;
+    std::streampos pos = in.tellg();
+    char c;
 
-    /// Cut the input stream in words using the standard's '<space>' token eparator.
-    while(in>>s)
-    {
-        /// Check if there is the sign '-' in the string s.
-        std::string::size_type hyphen = s.find_first_of('-',1);
+    if (!(in >> c) || in.eof())
+        return 0; // empty stream
 
-        /// If there is no '-' in s
-        if (hyphen == std::string::npos)
-        {
-            /// Convert the word into an integer number.
-            /// Use strtol because it reports error in case of parsing problem.
-            t = getInteger(s, msg, numErrors) ;
-            this->push_back(t);
-        }
-
-        /// If there is at least one '-'
-        else
-        {
-            int t1,t2,tinc;
-            std::string s1(s,0,hyphen);
-            t1 = getInteger(s1, msg, numErrors) ;
-            std::string::size_type hyphen2 = s.find_first_of('-',hyphen+2);
-            if (hyphen2 == std::string::npos)
-            {
-                std::string s2(s,hyphen+1);
-                t2 = getInteger(s2, msg, numErrors) ;
-                tinc = (t1<t2) ? 1 : -1;
-            }
-            else
-            {
-                std::string s2(s,hyphen+1,hyphen2-hyphen-1);
-                std::string s3(s,hyphen2+1);
-                t2 =  getInteger(s2, msg, numErrors) ;
-                tinc =  getInteger(s3, msg, numErrors) ;
-                if (tinc == 0)
-                {
-                    tinc = (t1<t2) ? 1 : -1;
-                    msg << "- Increment 0 is replaced by "<< tinc << msgendl;
-                }
-                if ((t2-t1)*tinc < 0)
-                {
-                    // increment not of the same sign as t2-t1 : swap t1<->t2
-                    t = t1;
-                    t1 = t2;
-                    t2 = t;
-                }
-            }
-
-            /// Go in backward order.
-            if (tinc < 0)
-                for (t=t1; t>=t2; t+=tinc)
-                    this->push_back(t);
-            /// Go in Forward order
-            else
-                for (t=t1; t<=t2; t+=tinc)
-                    this->push_back(t);
-        }
+    in.seekg(pos); // coming-back to the previous character
+    if (c == '[') {
+        return this->readFromPythonRepr(in, errstr);
     }
-    if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
-    if(numErrors!=0)
-    {
-        msg_warning("vector<int>") << "Unable to parse vector values:" << msgendl
-                                   << msg.str() ;
-    }
-    return in;
+
+    return this->readFromSofaRepr(in, errstr);
 }
 
 
 /// Input stream
-/// Specialization for reading vectors of int and unsigned int using "A-B" notation for all integers between A and B
-template<> inline
-std::istream& vector<unsigned int>::read( std::istream& in )
+/// Generic version
+template<class T> inline
+size_t vector<T>::readFromSofaRepr( std::istream& in, std::ostream& )
 {
-    std::stringstream errmsg ;
-    unsigned int errcnt = 0 ;
-    unsigned int t = 0 ;
-
-    this->clear();
-    std::string s;
-    while(in>>s)
+    T t=T();
+    clear();
+    while(in>>t)
     {
-        std::string::size_type hyphen = s.find_first_of('-',1);
-        if (hyphen == std::string::npos)
-        {
-            t = getUnsignedInteger(s, errmsg, errcnt) ;
-            this->push_back(t);
-        }
-        else
-        {
-            unsigned int t1,t2;
-            int tinc;
-            std::string s1(s,0,hyphen);
-            t1 = getUnsignedInteger(s1, errmsg, errcnt) ;
-            std::string::size_type hyphen2 = s.find_first_of('-',hyphen+2);
-            if (hyphen2 == std::string::npos)
-            {
-                std::string s2(s,hyphen+1);
-                t2 = getUnsignedInteger(s2, errmsg, errcnt);
-                tinc = (t1<=t2) ? 1 : -1;
-            }
-            else
-            {
-                std::string s2(s,hyphen+1,hyphen2-hyphen-1);
-                std::string s3(s,hyphen2+1);
-                t2 = getUnsignedInteger(s2, errmsg, errcnt);
-                tinc = getInteger(s3, errmsg, errcnt);
-                if (tinc == 0)
-                {
-                    tinc = (t1<=t2) ? 1 : -1;
-                    errmsg << "- problem while parsing '"<<s<<"': increment is 0. Use " << tinc << " instead." ;
-                }
-                if (((int)(t2-t1))*tinc < 0)
-                {
-                    /// increment not of the same sign as t2-t1 : swap t1<->t2
-                    t = t1;
-                    t1 = t2;
-                    t2 = t;
-                }
-            }
-            if (tinc < 0){
-                for (t=t1; t>t2; t=t+tinc)
-                    this->push_back(t);
-                this->push_back(t2);
-            } else {
-                for (t=t1; t<=t2; t=t+tinc)
-                    this->push_back(t);
-            }
-        }
+        this->push_back(t);
     }
     if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
-    if(errcnt!=0)
-    {
-        msg_warning("vector<unsigned int>") << "Unable to parse values" << msgendl
-                                            << errmsg.str() ;
-    }
-
-    return in;
+    return size();
 }
 
-/// Output stream
-/// Specialization for writing vectors of unsigned char
-template<> inline
-std::ostream& vector<unsigned char>::write(std::ostream& os) const
+/// Input stream
+/// Generic version
+template<class T> inline
+size_t vector<T>::readFromPythonRepr( std::istream& in, std::ostream& errmsg )
+{
+    clear();
+
+    char c;
+    in >> c;
+    if( in.eof() ) // empty stream
+        return 0;
+    if ( c != '[' )
+    {
+        errmsg << "Bad begin character : " << c << ", expected  [";
+        in.setstate(std::ios::failbit);
+        return size();
+    }
+    std::streampos pos = in.tellg();
+    in >> c;
+    if( c == ']' ) // empty vector
+    {
+        return size();
+    }
+    else
+    {
+        T t=T();
+        in.seekg( pos ); // coming-back to previous character
+        c = ' ';
+        while( (in >> t) && (in >> c))
+        {
+            this->push_back ( t );
+            if (c!=',')
+                break;
+        }
+        if ( c != ']' ) {
+            errmsg << "Bad end character : " << c << ", expected  ]";
+            in.setstate(std::ios::failbit);
+        }
+        if (in.eof())
+            in.clear(std::ios::eofbit);
+        if (in.fail())
+            errmsg << "Error reading [,] separated values";
+        return size();
+    }
+    return size();
+}
+
+/// READING SPECIALIZATION
+template<> size_t vector<std::string>::readFromSofaRepr( std::istream& in, std::ostream& o );
+template<> size_t vector<unsigned int>::readFromSofaRepr( std::istream& in, std::ostream& errup) ;
+template<> size_t vector<int>::readFromSofaRepr( std::istream& in, std::ostream& ) ;
+template<> size_t vector<unsigned char>::readFromSofaRepr(std::istream& in, std::ostream& ) ;
+
+template<> size_t vector<std::string>::readFromPythonRepr( std::istream& in, std::ostream& o );
+
+
+/// WRITING SPECIALIZATION
+template<class T>
+inline void vector<T>::writeToSofaRepr( std::ostream& os ) const
 {
     if( this->size()>0 )
     {
         for( size_type i=0; i<this->size()-1; ++i )
-            os<<(int)(*this)[i]<<" ";
-        os<<(int)(*this)[this->size()-1];
+            os<<(*this)[i]<<" ";
+        os<<(*this)[this->size()-1];
     }
-    return os;
 }
 
-/// Input stream
-/// Specialization for reading vectors of unsigned char
-template<> inline
-std::istream& vector<unsigned char>::read(std::istream& in)
+template<> void vector<std::string>::writeToSofaRepr( std::ostream& in ) const ;
+template<> void vector<unsigned char>::writeToSofaRepr(std::ostream& os) const ;
+
+template<class T>
+inline void vector<T>::writeToPythonRepr( std::ostream& os ) const
 {
-    int t;
-    this->clear();
-    while(in>>t)
+    if ( !this->empty() )
     {
-        this->push_back((unsigned char)t);
+        typename vector<T>::const_iterator i = this->begin();
+        os << "[" << *i;
+        ++i;
+        for ( ; i!=this->end(); ++i )
+            os << ", " << *i;
+        os << "]";
+
     }
-    if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
-    return in;
+    else os << "[]"; // empty vector
+    return os;
 }
+template<> void vector<std::string>::writeToPythonRepr( std::ostream& in ) const ;
+template<> void vector<unsigned char>::writeToPythonRepr(std::ostream& os) const ;
+
+template<class T>
+inline void vector<T>::write(std::ostream& os) const
+{
+    this->writeToSofaRepr(os) ;
+}
+
+
 
 
 // ======================  operations on standard vectors

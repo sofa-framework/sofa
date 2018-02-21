@@ -89,58 +89,14 @@ public:
 
     std::ostream& write ( std::ostream& os ) const
     {
-        if ( !this->empty() )
-        {
-            typename SVector<T>::const_iterator i = this->begin();
-            os << "[ " << *i;
-            ++i;
-            for ( ; i!=this->end(); ++i )
-                os << ", " << *i;
-            os << " ]";
-
-        }
-        else os << "[]"; // empty vector
+        this->writeToSofaRepr(os) ;
         return os;
     }
 
     std::istream& read ( std::istream& in )
     {
-        T t;
-        this->clear();
-        char c;
-
-        in >> c;
-
-        if( in.eof() ) return in; // empty stream
-
-        if ( c != '[' )
-        {
-            msg_error("SVector") << "read : Bad begin character : " << c << ", expected  [";
-            return in;
-        }
-        std::streampos pos = in.tellg();
-        in >> c;
-        if( c == ']' ) // empty vector
-        {
-            return in;
-        }
-        else
-        {
-            in.seekg( pos ); // coming-back to previous character
-            c = ',';
-            while( !in.eof() && c == ',')
-            {
-                in >> t;
-                this->push_back ( t );
-                in >> c;
-            }
-            if ( c != ']' )
-            {
-                msg_error("SVector") << "read : Bad end character : " << c << ", expected  ]";
-                return in;
-            }
-        }
-        return in;
+        this->readFromPythonRepr(in) ;
+        return in ;
     }
 
 /// Output stream
@@ -161,8 +117,6 @@ public:
 /// SVector begins by [, ends by ] and separates elements with ,
 /// string elements must be delimited by ' or " (like a list of strings in python).
 /// example: ['string1' ,  "string 2 ",'etc...' ]
-template<>
-std::istream& SVector<std::string>::read( std::istream& in );
 template<>
 std::ostream& SVector<std::string>::write( std::ostream& os ) const;
 
