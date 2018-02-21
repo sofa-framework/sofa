@@ -80,23 +80,43 @@ static char* getStringCopy(char *c)
 // not defined static in order to be able to use this fcn somewhere else also
 BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
 
-    const char* dataRawType="";
-    const char* dataClass="";
-    const char* dataHelp="";
+    char* dataRawType=new char;
+    char* dataClass=new char;
+    char* dataHelp=new char;
     PyObject* dataValue = nullptr;
 
-    char *dataName; // The desired name is provided using regular args ...
+    char *dataName= new char; // The desired name is provided using regular args ...
 
     bool KwargsOrArgs = 0; //Args = 0, Kwargs = 1
-    if(PyArg_ParseTuple(args, "s",&dataName)) // if we only find one regular args means we search for the other values in the kwargs
-    {        
-        KwargsOrArgs = 1;
+
+    if(PyArg_ParseTuple(args, "s|sssO", &dataName, &dataClass, &dataHelp, &dataRawType, &dataValue))
+    {
+        // first argument (name) is mandatory, the rest are optionally found in the args and, if not, in kwargs
+        dataName = getStringCopy(dataName) ;
+
+        if (strcmp(dataName,"")==0)
+        {
+            return nullptr;
+        }
+
+        if (dataValue==nullptr) // the content of dataValue is not set, so parsing normal args didn't succeed fully --> look for kwargs
+        {
+            KwargsOrArgs = 1;
+        }
+        else // arguments are available ...
+        {
+            dataClass = getStringCopy(dataClass) ;
+            dataHelp  = getStringCopy(dataHelp) ;
+            dataRawType  = getStringCopy(dataRawType) ;
+            Py_IncRef(dataValue); // want to hold on it for a while
+        }
     }
-    else if(!PyArg_ParseTuple(args, "ssssO", &dataName, &dataClass, &dataHelp, &dataRawType, &dataValue)) // if this succeeds means we're parsing the oldschool way
+    else
     {
         return nullptr;
     }
 
+    //    PyErr_Clear() ;
 
     if(KwargsOrArgs) // parse kwargs
     {
@@ -105,48 +125,47 @@ BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
             msg_error("SofaPython") << "Could not parse kwargs for adding Data";
             return nullptr;
         }
-
         PyObject * tmp;
         tmp = PyDict_GetItemString(kw,"datatype");
-        if (!(tmp==nullptr)){
+        if (tmp!=nullptr){
             dataRawType = getStringCopy(PyString_AsString(tmp));
         }
 
         tmp = PyDict_GetItemString(kw,"helptxt");
-        if (!(tmp==nullptr)){
+        if (tmp!=nullptr){
             dataHelp = getStringCopy(PyString_AsString(tmp));
         }
 
         tmp = PyDict_GetItemString(kw,"dataclass");
-        if (!(tmp==nullptr)){
+        if (tmp!=nullptr){
             dataClass= getStringCopy(PyString_AsString(tmp));
         }
 
         tmp = PyDict_GetItemString(kw,"value");
-        if (!(tmp==nullptr)){
+        if (tmp!=nullptr){
             dataValue = tmp;
             Py_IncRef(dataValue); // call to Py_GetItemString doesn't increment the ref count, but we want to hold on to it for a while ...
-        }
+        }      
+    }
 
-        if (dataRawType[0]==0) // We cannot construct without a type
-        {
-            msg_error("SofaPython") << "No type provided for Data, cannot construct/add";
-            return nullptr;
-        }
+    if (dataRawType[0]==0) // We cannot construct without a type
+    {
+        msg_error(obj) << "No type provided for Data, cannot construct/add";
+        return nullptr;
     }
 
     BaseData* bd = getFactoryInstance()->createObject(dataRawType, sofa::helper::NoArgument());
 
     if (bd == nullptr)
     {
-        msg_warning("SofaPython") << dataRawType << " is not a known type";
+        msg_warning(obj) << dataRawType << " is not a known type";
+        return nullptr;
     }
     else
     {
         bd->setName(dataName);
         bd->setHelp(dataHelp);
-        obj->addData(bd);
-//        msg_info(obj->getName()) << " data field named : " << dataName << " of type " << dataRawType << " has been created";
+        obj->addData(bd);        
         if(dataValue!=nullptr) // parse provided data: Py->SofaStr->Data
         {
             std::stringstream tmp;
@@ -155,7 +174,7 @@ BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
             {
                 if(!bd->setParent(tmp.str()))
                 {
-                    msg_error("SofaPython") << "Could not setup link for Data, initialzing empty";
+                    msg_warning(obj) << "Could not setup link for Data, initialzing empty";
                 }
             }
             else
@@ -165,10 +184,10 @@ BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
             bd->setGroup(dataClass);
             Py_DecRef(dataValue);
         }
-        else
-        {
-            msg_info("SofaPython") << "No value(s) provided, initializing empty Data ...";
-        }
+//        else
+//        {
+//            msg_info("SofaPython") << "No value(s) provided, initializing empty Data ...";
+//        }
     }
     return bd;
 }
@@ -191,7 +210,8 @@ static PyObject * Base_addData(PyObject *self, PyObject *args )
 
 static PyObject * Base_addNewData(PyObject *self, PyObject *args) {
     Base* obj = get_base(self);
-    helper_addNewData(args, nullptr, obj);
+    if( helper_addNewData(args, nullptr, obj) == nullptr )
+        return nullptr ;
     Py_RETURN_NONE;
 }
 
