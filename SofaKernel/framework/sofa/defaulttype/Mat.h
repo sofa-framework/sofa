@@ -726,6 +726,9 @@ public:
                 this->elems[l][c] = this->elems[c][l] = ( this->elems[l][c] + this->elems[c][l] ) * 0.5f;
     }
 
+    std::istream& read(std::istream& in) ;
+    std::istream& readFromPythonRepr(std::istream& in, std::ostream& errstr=sofa::helper::logging::GetIgnoreMessage()) ;
+    std::istream& readFromSofaRepr(std::istream& in, std::ostream& errstr=sofa::helper::logging::GetIgnoreMessage()) ;
 };
 
 
@@ -1012,18 +1015,68 @@ std::ostream& operator<<(std::ostream& o, const Mat<L,C,real>& m)
     return o;
 }
 
+
 template <int L, int C, typename real>
-std::istream& operator>>(std::istream& in, sofa::defaulttype::Mat<L,C,real>& m)
+std::istream& Mat<L,C,real>::readFromPythonRepr(std::istream& in, std::ostream& errstr)
+{
+    char c;
+
+    if( !(in >> c) || in.eof() )
+        return in; // empty stream
+
+    if ( c != '[' )
+    {
+        errstr << "Unable to parse list with comma separated values, found '" << c << "' while expecting '['";
+        in.setstate(std::ios::failbit);
+        return in;
+    }
+    std::streampos pos = in.tellg();
+    if (!(in >> c)) {
+        errstr << "Unable to parse list with comma separated values, expecting data after [";
+        in.setstate(std::ios::failbit);
+        return in;
+    }
+
+    if( c == ']' ) // empty vector
+    {
+        return in;
+    }
+    else
+    {
+        in.seekg( pos ); // coming-back to previous character
+        std::size_t i=0;
+        c = ' ';
+        while( (i<L) && ( in>>(*this)[i] ) ) {
+            ++i;
+            if ( !( in>>c ) || c!=',')
+                break;
+        }
+
+        if (i != L) {
+            errstr << "Unable to parse list with comma separated values, got '" << i << "' values while '"<< L << "' were expected." ;
+            in.setstate(std::ios::failbit);
+        }else if ( c != ']' ) {
+            errstr << "Unable to parse list with comma separated values, bad terminating character '" << c << "' while ']' was expected.";
+            in.setstate(std::ios::failbit);
+        }else if (in.fail())
+            errstr << "Unable to parse list with comma separated values.";
+
+        return in;
+    }
+    return in ;
+}
+
+template <int L, int C, typename real>
+std::istream& Mat<L,C,real>::readFromSofaRepr(std::istream& in, std::ostream&)
 {
     int c;
     c = in.peek();
-    while (c==' ' || c=='\n' || c=='[')
+    while (c==' ' || c=='\n')
     {
         in.get();
-        if( c=='[' ) break;
         c = in.peek();
     }
-    in >> m[0];
+    in >> (*this)[0];
     for (int i=1; i<L; i++)
     {
         c = in.peek();
@@ -1032,23 +1085,37 @@ std::istream& operator>>(std::istream& in, sofa::defaulttype::Mat<L,C,real>& m)
             in.get();
             c = in.peek();
         }
-        in >> m[i];
+        in >> (*this)[i];
     }
-    c = in.peek();
-    while (c==' ' || c=='\n' || c==']')
-    {
-        in.get();
-        if( c==']' ) break;
-        c = in.peek();
+    return in ;
+}
+
+template <int L, int C, typename real>
+std::istream& Mat<L,C,real>::read(std::istream& in)
+{
+    std::streampos pos = in.tellg();
+    char c;
+
+    if (!(in >> c) || in.eof())
+        return in; // empty stream
+
+    in.seekg(pos); // coming-back to the previous character
+    if (c == '[') {
+        return readFromPythonRepr(in);
     }
-    return in;
+
+    return readFromSofaRepr(in);
 }
 
 
 
+template <int L, int C, typename real>
+std::istream& operator>>(std::istream& in, sofa::defaulttype::Mat<L,C,real>& m)
+{
+    return m.read(in);
+}
 
 /// printing in other software formats
-
 template <int L, int C, typename real>
 void printMatlab(std::ostream& o, const Mat<L,C,real>& m)
 {

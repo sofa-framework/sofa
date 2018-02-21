@@ -58,9 +58,10 @@ static void extractValidatedHexaString(std::istream& in, std::string& s)
 
     s.push_back(c);
     while(in.get(c)){
-        if( !ishexsymbol(c) )
+        if( !ishexsymbol(c) ){
+            in.putback(c) ;
             return;
-
+        }
         s.push_back(c) ;
         if(s.size()>9){
             in.setstate(std::ios_base::failbit) ;
@@ -96,11 +97,16 @@ bool RGBAColor::read(const std::string& str, RGBAColor& color)
 {
     std::stringstream s(str);
     s >> color ;
-    if(s.fail() || !s.eof())
-        return false;
-    return true ;
-}
 
+    if( s.fail() )
+        return false ;
+
+    if( s.peek() && s.eof() ) {
+        return true ;
+    }
+
+    return false ;
+}
 
 void RGBAColor::set(float r, float g, float b, float a)
 {
@@ -109,6 +115,7 @@ void RGBAColor::set(float r, float g, float b, float a)
     this->elems[2]=b;
     this->elems[3]=a;
 }
+
 
 
 RGBAColor RGBAColor::fromString(const std::string& c)
@@ -182,7 +189,6 @@ static std::istream& trimInitialSpaces(std::istream& in)
     return in;
 }
 
-
 SOFA_HELPER_API std::istream& operator>>(std::istream& in, RGBAColor& t)
 {
     float r=0.0,g=0.0, b=0.0, a=1.0;
@@ -194,12 +200,18 @@ SOFA_HELPER_API std::istream& operator>>(std::istream& in, RGBAColor& t)
         return in;
 
     char first = in.peek() ;
-    if (std::isdigit(first, std::locale()))
+    if (std::isdigit(first, std::locale()) || first == '[')
     {
-        in >> r >> g >> b ;
-        if(!in.eof()){
-            in >> a;
+        fixed_array<float, 4> tmp (0.0,0.0,0.0,1.0) ;
+        std::stringstream s ;
+        size_t numRead = tmp.read(in, s) ;
+        if(numRead != 3 && numRead != 4){
+            in.setstate(std::ios::failbit);
+        }else{
+            t = tmp ;
         }
+
+        return in ;
     }
     else if (first=='#')
     {

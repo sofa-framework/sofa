@@ -54,13 +54,14 @@
 
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/helper.h>
-
+#include <sofa/helper/logging/Messaging.h>
 #include <cstddef>
 #include <stdexcept>
 #include <iterator>
 #include <algorithm>
 #include <cmath>
 #include <cassert>
+#include <istream>
 
 
 namespace sofa
@@ -339,6 +340,74 @@ public:
             elems[i] = value;
     }
 
+    size_t read(std::istream& in, std::ostream& errstr=sofa::helper::logging::GetIgnoreMessage())
+    {
+        std::streampos pos = in.tellg();
+        char c;
+
+        if (!(in >> c) || in.eof())
+            return 0; // empty stream
+
+        in.seekg(pos); // coming-back to the previous character
+        if (c == '[') {
+            return this->readFromPythonRepr(in, errstr);
+        }
+
+        return this->readFromSofaRepr(in);
+    }
+
+    size_t readFromSofaRepr(std::istream& in)
+    {
+        size_t numRead = 0;
+        while( !in.eof() && (numRead<N) && ( in>>(*this)[numRead] ) ) {
+            ++numRead;
+        }
+        return numRead;
+    }
+
+    size_t readFromPythonRepr(std::istream& in, std::ostream& errstr=sofa::helper::logging::GetIgnoreMessage())
+    {
+        size_t numRead {0} ;
+        char c;
+
+        if( !(in >> c) || in.eof() )
+            return numRead; // empty stream
+
+        if ( c != '[' )
+        {
+            errstr << "Unable to parse list with comma separated values. Should start with '[', got '" << c << "'";
+            in.setstate(std::ios::failbit);
+            return numRead;
+        }
+        std::streampos pos = in.tellg();
+        if (!(in >> c)) {
+            errstr << "Unable to parse list with comma separated values. Expecting data after '['.";
+            in.setstate(std::ios::failbit);
+            return numRead;
+        }
+
+        if( c == ']' ) // empty vector
+        {
+            return numRead;
+        }
+
+        in.seekg( pos ); // coming-back to previous character
+        c = ' ';
+        while( !in.eof() && (numRead<N) && ( in>>(*this)[numRead] ) ) {
+            ++numRead;
+            if ( !( in>>c ) || c!=',')
+                break;
+        }
+
+        if ( c != ']' ) {
+            errstr << "Unable to parse list with comma separated values. Expecting ']' got '" << c << "'" ;
+            in.setstate(std::ios::failbit);
+        } else if (in.fail())
+            errstr << "Unable to parse list with comma separated values.";
+
+        return numRead;
+    }
+
     //template<int NN = N, typename std::enable_if<NN>0,int>::type = 0>
     inline friend std::ostream& operator << (std::ostream& out, const fixed_array<T,N>& a)
     {
@@ -349,11 +418,15 @@ public:
         return out;
     }
 
-    inline friend std::istream& operator >> (std::istream& in, fixed_array<T,N>& a)
+
+    inline friend std::istream& operator >> (std::istream& in, fixed_array<T, N>& a)
     {
-        for( size_type i=0; i<N; i++ )
-            in>>a.elems[i];
-        return in;
+        size_t numRead = a.read(in) ;
+
+        if(numRead != N)
+            in.setstate(std::ios::failbit);
+
+        return in ;
     }
 
     inline bool operator < (const fixed_array& v ) const

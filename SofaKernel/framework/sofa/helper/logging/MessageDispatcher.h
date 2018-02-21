@@ -41,6 +41,17 @@ namespace logging
 // forward declaration
 class MessageHandler;
 
+class SOFA_HELPER_API DevNullMessaging : public std::ostream
+{
+public:
+
+};
+
+static std::ostream& GetIgnoreMessage(){
+    static DevNullMessaging m;
+    return m;
+}
+
 /// static interface to manage the list of MessageHandlers
 /// that process the Messages
 class SOFA_HELPER_API MessageDispatcher

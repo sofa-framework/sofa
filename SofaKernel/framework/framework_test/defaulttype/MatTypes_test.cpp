@@ -21,7 +21,8 @@
 ******************************************************************************/
 
 #include <iostream>
-
+#include <string>
+#include <vector>
 #include <sofa/defaulttype/Mat.h>
 
 #include <sofa/defaulttype/Quat.h>
@@ -33,6 +34,9 @@ using namespace sofa::helper::testing ;
 using namespace sofa;
 using namespace sofa::helper;
 using namespace sofa::defaulttype;
+
+
+namespace {
 
 void test_transformInverse(Matrix4 const& M)
 {
@@ -89,7 +93,7 @@ TEST(MatTypesTest, transpose)
     EXPECT_EQ(M, Mtest);
 
     M = Matrix4(Matrix4::Line(16, 2, 3, 13), Matrix4::Line(5, 11, 10, 8), Matrix4::Line(9, 7, 6, 12),
-              Matrix4::Line(4, 14, 15, 1));
+                Matrix4::Line(4, 14, 15, 1));
 
     M.transpose();
     EXPECT_EQ(M, Mtest);
@@ -129,4 +133,58 @@ TEST(MatTypesTest, invert)
 
     M.invert(M);
     EXPECT_EQ(M, Mtest);
+}
+
+std::vector<std::vector<std::string>> testvalues = {
+    {"1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 1.0 0.0 0.0 1.0", "S"},
+    {"[[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0], [0.0, 1.0, 2.0]]", "S"},
+
+    {"1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 1.0 0.0 0.0 1.0 4.0", "S"},
+    {"[[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0], [0.0, 1.0, 2.0]], [4.0, 5.0, 6.0]", "S"},
+
+    {"1.0 0.0 0.0 0.0 1.0, 0.0 0.0 0.0 1.0 0.0 0.0 1.0", "F"},
+    {"1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 1.0 0.0 0.0 a", "F"},
+    {"1.0 0.0 a 0.0 1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0", "F"},
+    {"[1.0 0.0 0.0 0.0 1.0 0.0 0.0 0.0 1.0 0.0 0.0 1.0 4.0]", "F"},
+
+    {"[[1.0, 0.0, 0.0], [0.0, 0.0], [0.0, 0.0, 1.0], [0.0, 1.0, 2.0]]", "F"},
+    {"[[1.0, 0.0, 0.0], [0.0, 0.0, 1.0], [0.0, 1.0, 2.0]]", "F"},
+    {"[[1.0, 0.0, 0.0], [0.0, 0.0, 1.0], [0.0, 1.0, 2.0, 4.0]]", "F"},
+    {"[[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0], [0.0, 1.0, 2.0], [4.0, 5.0, 6.0]]", "F"}
+} ;
+
+class Mat_Test : public BaseTest,
+        public ::testing::WithParamInterface<std::vector<std::string>>
+{
+public:
+    void checkStreamingOperator(const std::vector<std::string>&) ;
+};
+
+
+void Mat_Test::checkStreamingOperator(const std::vector<std::string>& aTest)
+{
+    Mat<4,3,double> M;
+
+    std::stringstream in(aTest[0]) ;
+    in >> M ;
+    if(aTest[1] == "S")
+        EXPECT_FALSE(in.fail()) ;
+    else
+        EXPECT_TRUE(in.fail()) ;
+}
+
+
+TEST_P(Mat_Test, checkStreamingOperator)
+{
+    auto& p = GetParam();
+    if(p.size()==2)
+        this->checkStreamingOperator(p);
+    else
+        FAIL() << "There is a problem with this test.";
+}
+
+INSTANTIATE_TEST_CASE_P(checkStreamingOperator,
+                        Mat_Test,
+                        ::testing::ValuesIn(testvalues));
+
 }

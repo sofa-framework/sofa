@@ -36,6 +36,7 @@ class Color_Test : public BaseTest,
 {
 public:
     void checkCreateFromString() ;
+    void checkCreateFromPythonString() ;
     void checkCreateFromDouble() ;
     void checkEquality() ;
     void checkGetSet() ;
@@ -44,6 +45,34 @@ public:
     void checkStreamingOperator(const std::vector<std::string>&) ;
     void checkDoubleStreamingOperator(const std::vector<std::string>&) ;
 };
+
+
+void Color_Test::checkCreateFromPythonString()
+{
+    /// READ RGBA color PYTHON STYLE
+    EXPECT_EQ( RGBAColor::fromString("[1, 2, 3, 4]"), RGBAColor(1.0,2.0,3.0,4.0) ) ;
+    EXPECT_EQ( RGBAColor::fromString("[0, 0, 3, 4]"), RGBAColor(0.0,0.0,3.0,4.0) ) ;
+
+    /// READ RGB color PYTHON STYLE
+    EXPECT_EQ( RGBAColor::fromString("[1, 2, 3]"), RGBAColor(1.0,2.0,3.0,1.0) ) ;
+    EXPECT_EQ( RGBAColor::fromString("[0, 0, 3]"), RGBAColor(0.0,0.0,3.0,1.0) ) ;
+    EXPECT_EQ( RGBAColor::fromString("[0, 0, 3]"), RGBAColor(0.0,0.0,3.0,1.0) ) ;
+
+    /// READ RGBA color PYTHON STYLE
+    RGBAColor color2;
+    EXPECT_TRUE( RGBAColor::read("[1, 2, 3, 4]", color2) ) ;
+    EXPECT_EQ( color2, RGBAColor(1,2,3,4));
+
+    EXPECT_TRUE( RGBAColor::read("[1, 2, 3]", color2) ) ;
+    EXPECT_EQ( color2, RGBAColor(1,2,3,1));
+
+    EXPECT_FALSE( RGBAColor::read("[1, 2]", color2) ) ;
+    EXPECT_FALSE( RGBAColor::read("[]", color2) ) ;
+    EXPECT_FALSE( RGBAColor::read("[1,2,3,4", color2) ) ;
+    EXPECT_FALSE( RGBAColor::read("[1,2,3,[,4", color2) ) ;
+    EXPECT_FALSE( RGBAColor::read("[a,2,3,5,]q", color2) ) ;
+
+}
 
 void Color_Test::checkCreateFromString()
 {
@@ -231,6 +260,12 @@ TEST_F(Color_Test, checkColorDataField)
     this->checkColorDataField() ;
 }
 
+
+TEST_F(Color_Test, checkCreateFromPythonString)
+{
+    this->checkCreateFromPythonString() ;
+}
+
 TEST_F(Color_Test, checkCreateFromString)
 {
     this->checkCreateFromString() ;
@@ -248,6 +283,7 @@ TEST_F(Color_Test, checkEquality)
 
 std::vector<std::vector<std::string>> testvalues =
 {
+    //// SOFA STYLE PARSING
     {"    0 0 0 0","0 0 0 0", "S"},
 
     {"0 0 0 0","0 0 0 0", "S"},
@@ -285,6 +321,15 @@ std::vector<std::vector<std::string>> testvalues =
 
     {"#00ff00ff #ff00ff00","0 1 0 1 and 1 0 1 0", "S","DOUBLE"},
     {"black blue", "0 0 0 1 and 0 0 1 1", "S","DOUBLE"},
+
+    //// PYTHON STYLE PARSING
+    {"[0, 0, 0, 0]","0 0 0 0", "S"},
+    {"[1, 2, 3, 4]","1 2 3 4", "S"},
+    {"[0, 0, 0]","0 0 0 1", "S"},
+    {"[1, 2, 3]","1 2 3 1", "S"},
+
+    {"[1, 2, 3, 4][5, 6, 7, 8]","1 2 3 4 and 5 6 7 8", "S","DOUBLE"},
+    {"[1, 2, 3, 4, 5][5, 6, 7, 8, 5]","", "F", "DOUBLE"},
 } ;
 
 TEST_P(Color_Test, checkStreamingOperator)
