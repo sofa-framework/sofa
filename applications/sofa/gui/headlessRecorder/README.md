@@ -16,9 +16,13 @@ Every needed information are available in runSofa helper.
 $ ./runSofa -h
 ```
 
-Here is an example for recording a video in 1920x1080 
+Here is an example for recording a 5 seconds video in 1920x1080 
 ```
-$ ./runSofa -g hRecorder --video filename="myFileName" --width 1920 --height 1080 --recordTime 10 --fps 60 -a
+$ ./runSofa -g hRecorder --video --width=1920 --height=1080 --fps=60 --recordTime=5 -a --filename aFileName
+```
+Here is an example for screenshots 1920x1080 
+```
+$ ./runSofa -g hRecorder --picture --width=1920 --height=1080 --fps=60 --recordTime=10 -a --filename aFileName
 ```
 This example will record in a video file named myFileName a footage of the default runSofa scene (aka caduceus). The dimensions of the video will be 1920x1080, the framerate is set to 60fps, the recording time will be 10 seconds and the option -a animate the scene.
 
