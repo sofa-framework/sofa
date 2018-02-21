@@ -727,8 +727,8 @@ public:
     }
 
     std::istream& read(std::istream& in) ;
-    std::istream& readFromPythonRepr(std::istream& in, std::ostream& errstr=sofa::helper::logging::GetIgnoreMessage()) ;
-    std::istream& readFromSofaRepr(std::istream& in, std::ostream& errstr=sofa::helper::logging::GetIgnoreMessage()) ;
+    std::istream& readFromPythonRepr(std::istream& in, std::ostream& errstr=sofa::helper::logging::MessageDispatcher::null()) ;
+    std::istream& readFromSofaRepr(std::istream& in, std::ostream& errstr=sofa::helper::logging::MessageDispatcher::null()) ;
 };
 
 

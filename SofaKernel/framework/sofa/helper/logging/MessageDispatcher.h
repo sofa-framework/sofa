@@ -41,16 +41,8 @@ namespace logging
 // forward declaration
 class MessageHandler;
 
-class SOFA_HELPER_API DevNullMessaging : public std::ostream
-{
-public:
 
-};
 
-static std::ostream& GetIgnoreMessage(){
-    static DevNullMessaging m;
-    return m;
-}
 
 /// static interface to manage the list of MessageHandlers
 /// that process the Messages
@@ -92,7 +84,7 @@ public:
         };
 
         /// @internal to be able to redirect Messages to nowhere
-        class SOFA_HELPER_API NullLoggerStream
+        class SOFA_HELPER_API NullLoggerStream : public std::ostream
         {
         public:
             template<typename T> inline const NullLoggerStream& operator<<(const T& /*v*/) const { return *this; }
@@ -102,7 +94,7 @@ public:
             ~NullLoggerStream(){}
         protected:
             friend class MessageDispatcher;
-            static const NullLoggerStream& getInstance(){ static const NullLoggerStream s_nop; return s_nop; }
+            static NullLoggerStream& getInstance(){ static NullLoggerStream s_nop; return s_nop; }
         };
 
 
@@ -120,7 +112,7 @@ public:
         static LoggerStream fatal(Message::Class mclass, const ComponentInfo::SPtr& cinfo, const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
         static LoggerStream advice(Message::Class mclass, const ComponentInfo::SPtr& cinfo, const FileInfo::SPtr& fileInfo = EmptyFileInfo) ;
 
-        static const NullLoggerStream& null() { return NullLoggerStream::getInstance(); }
+        static NullLoggerStream& null() { return NullLoggerStream::getInstance(); }
         static MessageDispatcher::LoggerStream log(Message::Class mclass, Message::Type type, const ComponentInfo::SPtr& cinfo, const FileInfo::SPtr& fileInfo = EmptyFileInfo);
 
         /// Process the Message by all the Message handlers.

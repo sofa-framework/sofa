@@ -340,7 +340,7 @@ public:
             elems[i] = value;
     }
 
-    size_t read(std::istream& in, std::ostream& errstr=sofa::helper::logging::GetIgnoreMessage())
+    size_t read(std::istream& in, std::ostream& errstr=sofa::helper::logging::MessageDispatcher::null())
     {
         std::streampos pos = in.tellg();
         char c;
@@ -365,7 +365,7 @@ public:
         return numRead;
     }
 
-    size_t readFromPythonRepr(std::istream& in, std::ostream& errstr=sofa::helper::logging::GetIgnoreMessage())
+    size_t readFromPythonRepr(std::istream& in, std::ostream& errstr=sofa::helper::logging::MessageDispatcher::null())
     {
         size_t numRead {0} ;
         char c;
