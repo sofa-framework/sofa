@@ -146,7 +146,6 @@ public:
         }
     }
 
-
     FullMatrix<SReal>* getInput()
     {
         void* a = d_vectorIn.beginEditVoidPtr();
@@ -182,6 +181,7 @@ public:
         scene1 <<
                   "<?xml version='1.0' ?>                                                       \n"
                   "<Node name='root'>                                                           \n"
+                  "   <DefaultAnimationLoop/>                                                   \n"
                   "   <RequiredPlugin name='Communication' />                                   \n"
                   "   <ServerCommunicationZMQ name='zmqSender' job='sender' port='6000'  refreshRate='1000'/> \n"
                   "   <CommunicationSubscriber name='sub1' communication='@zmqSender' subject='/test' source='@zmqSender' arguments='x'/>"
@@ -201,6 +201,7 @@ public:
         scene1 <<
                   "<?xml version='1.0' ?>                                                       \n"
                   "<Node name='root'>                                                           \n"
+                  "   <DefaultAnimationLoop/>                                                   \n"
                   "   <RequiredPlugin name='Communication' />                                   \n"
                   "   <ServerCommunicationZMQ name='zmqSender' job='sender' port='6000'  refreshRate='1000'/> \n"
                   "   <CommunicationSubscriber name='sub1' communication='@zmqSender' subject='/test' source='@zmqSender' arguments='x'/>"
@@ -220,24 +221,20 @@ public:
         scene1 <<
                   "<?xml version='1.0' ?>                                                       \n"
                   "<Node name='root'>                                                           \n"
+                  "   <DefaultAnimationLoop/>                                                   \n"
                   "   <RequiredPlugin name='Communication' />                                   \n"
-                  "   <ServerCommunicationZMQ name='zmqSender' job='sender' port='6000' refreshRate='1000'/> \n"
+                  "   <ServerCommunicationZMQ name='zmqSender' job='sender' port='6000' /> \n"
                   "   <CommunicationSubscriber name='sub1' communication='@zmqSender' subject='/test' source='@zmqSender' arguments='x'/>"
                   "</Node>                                                                      \n";
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
         root->init(ExecParams::defaultInstance());
 
-        std::cout << "a" << std::endl;
-        sofa::simulation::graph::getSimulation()->init(root.get());
-        root->setAnimate(true);
-        std::cout << "a" << std::endl;
-
+        for(unsigned int i=0; i<10; i++)
+            sofa::simulation::getSimulation()->animate(root.get(), 0.01);
 
         ServerCommunication* aServerCommunicationZMQ = dynamic_cast<ServerCommunication*>(root->getObject("zmqSender"));
         EXPECT_NE(aServerCommunicationZMQ, nullptr);
-
-        usleep(1000000);
 
         Base::MapData dataMap = aServerCommunicationZMQ->getDataAliases();
         Base::MapData::const_iterator itData;
@@ -266,12 +263,14 @@ public:
         scene1 <<
                   "<?xml version='1.0' ?>                                                       \n"
                   "<Node name='root'>                                                           \n"
+                  "   <DefaultAnimationLoop/>                                                   \n"
                   "   <RequiredPlugin name='Communication' />                                   \n"
                   "   <ServerCommunicationZMQ name='zmqSender' job='sender' port='6000'  refreshRate='1000'/> \n"
                   "</Node>                                                                      \n";
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
         root->init(ExecParams::defaultInstance()) ;
+        usleep(1000000);
     }
 
     void checkSendZMQ()
@@ -280,6 +279,7 @@ public:
         scene1 <<
                   "<?xml version='1.0' ?>                                                       \n"
                   "<Node name='root'>                                                           \n"
+                  "   <DefaultAnimationLoop/>                                                   \n"
                   "   <RequiredPlugin name='Communication' />                                   \n"
                   "   <ServerCommunicationZMQ name='sender' job='sender' port='6000' pattern='publish/subscribe' refreshRate='100'/> \n"
                   "   <CommunicationSubscriber name='subSender' communication='@sender' subject='/test' source='@sender' arguments='port'/>"
@@ -297,13 +297,15 @@ public:
             socket.setsockopt(ZMQ_SUBSCRIBE, "", 0);
             int timeout = 3000; // timeout
             socket.setsockopt(ZMQ_RCVTIMEO, &timeout, sizeof (int));
-
             zmq::message_t reply;
             socket.recv (&reply);
             std::string rpl = std::string(static_cast<char*>(reply.data()), reply.size());
 
             return rpl;
         });
+
+        for( int i = 0; i < 10; i++ )
+            sofa::simulation::getSimulation()->animate(root.get(),0.01);
 
         std::future_status status;
         status = future.wait_for(std::chrono::seconds(3));
@@ -316,6 +318,7 @@ public:
         scene1 <<
                   "<?xml version='1.0' ?>                                                       \n"
                   "<Node name='root'>                                                           \n"
+                  "   <DefaultAnimationLoop/>                                                   \n"
                   "   <RequiredPlugin name='Communication' />                                   \n"
                   "   <ServerCommunicationZMQ name='receiver' job='receiver' port='6000' pattern='publish/subscribe'/> \n"
                   "   <CommunicationSubscriber name='subSender' communication='@receiver' subject='/test' source='@receiver' arguments='x'/>"
@@ -324,22 +327,29 @@ public:
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
         root->init(ExecParams::defaultInstance());
         ServerCommunication* aServerCommunication = dynamic_cast<ServerCommunication*>(root->getObject("receiver"));
-        aServerCommunication->setRunning(false);
+        root->setAnimate(true);
 
+        // sending part
         usleep(10000);
         zmq::context_t context (1);
         zmq::socket_t socket (context, ZMQ_PUB);
-        socket.bind ("tcp://*:6000");
-        for(int i = 0; i <3; i++) // ensure the receiver, receive it at least once
+        socket.connect ("tcp://*:6000");
+        for(int i = 0; i <1000; i++) // a lot ... ensure the receiver, receive at least once
         {
             std::string mesg = "/test ";
             mesg += "int:" + std::to_string(i);
             zmq::message_t reply (mesg.size());
             memcpy (reply.data (), mesg.c_str(), mesg.size());
             socket.send (reply);
-            usleep(100000);
+            usleep(1);
         }
+        socket.close();
         usleep(10000);
+
+        // stop the loop and run animation. This will force the use of buffers
+        aServerCommunication->setRunning(false);
+        for(unsigned int i=0; i<10; i++)
+            sofa::simulation::getSimulation()->animate(root.get(), 0.01);
 
         Base::MapData dataMap = aServerCommunication->getDataAliases();
         Base::MapData::const_iterator itData = dataMap.find("x");
@@ -350,6 +360,8 @@ public:
         {
             data = itData->second;
             EXPECT_NE(data, nullptr) ;
+            std::string value = data->getValueString();
+            std::cout << value << std::endl;
         }
     }
 
@@ -360,6 +372,7 @@ public:
         scene1 <<
                   "<?xml version='1.0' ?>                                                       \n"
                   "<Node name='root'>                                                           \n"
+                  "   <DefaultAnimationLoop/>                                                   \n"
                   "   <RequiredPlugin name='Communication' />                                   \n"
                   "   <ServerCommunicationZMQ name='sender' job='sender' port='6000'  refreshRate='1000'/> \n"
                   "   <CommunicationSubscriber name='subSender' communication='@sender' subject='/test' source='@sender' arguments='x'/>"
@@ -375,6 +388,9 @@ public:
         ServerCommunication* aServerCommunicationReceiver = dynamic_cast<ServerCommunication*>(root->getObject("receiver"));
         EXPECT_NE(aServerCommunicationSender, nullptr);
         EXPECT_NE(aServerCommunicationReceiver, nullptr);
+
+        for( int i = 0; i < 10; i++ )
+            sofa::simulation::getSimulation()->animate(root.get(),0.01);
 
         aServerCommunicationReceiver->setRunning(false);
 
@@ -439,9 +455,10 @@ public:
         scene1 <<
                   "<?xml version='1.0' ?>                                                       \n"
                   "<Node  name='root' gravity='0 0 0' time='0' animate='0'   >                  \n"
+                  "   <DefaultAnimationLoop/>                                                   \n"
                   "   <RequiredPlugin name='Communication' />                                   \n"
                   "   <MyComponent name='aComponent' />                                         \n"
-                  "   <ServerCommunicationZMQ name='Sender' job='sender' port='6000' pattern='publish/subscribe' refreshRate='100000'/> \n"
+                  "   <ServerCommunicationZMQ name='Sender' job='sender' port='6000' refreshRate='100000'/> \n"
                   "   <CommunicationSubscriber name='subSender' communication='@Sender' subject='/test' source='@aComponent' arguments='vectorOut'/>"
                   "   <ServerCommunicationZMQ name='Receiver' job='receiver' port='6000' /> \n"
                   "   <CommunicationSubscriber name='subReceiver' communication='@Receiver' subject='/test' source='@aComponent' arguments='vectorIn'/>"
@@ -450,7 +467,6 @@ public:
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
         root->init(ExecParams::defaultInstance()) ;
-        root->setName("root");
 
         ServerCommunication* aServerCommunicationSender = dynamic_cast<ServerCommunication*>(root->getObject("Sender"));
         ServerCommunication* aServerCommunicationReceiver = dynamic_cast<ServerCommunication*>(root->getObject("Receiver"));
@@ -461,15 +477,11 @@ public:
         EXPECT_NE(aComponent, nullptr);
 
 
-        for(unsigned int i=0; i<100; i++)
-        {
-            usleep(1000);
-            aComponent->handleEvent(NULL);
-
-        }
+        for( int i = 0; i < 10; i++ )
+            sofa::simulation::getSimulation()->animate(root.get(),0.01);
 
         aServerCommunicationReceiver->setRunning(false);
-        std::cout << "Wait for end of communication" << std::endl;
+        std::cout << "Wait for the end of the communication" << std::endl;
         usleep(10000); // wait 5 seconds for the changes
         aServerCommunicationSender->setRunning(false);
 

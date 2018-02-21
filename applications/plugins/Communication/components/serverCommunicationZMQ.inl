@@ -25,6 +25,14 @@ ServerCommunicationZMQ::ServerCommunicationZMQ()
 
 ServerCommunicationZMQ::~ServerCommunicationZMQ()
 {
+    this->m_running = false;
+
+    if(isVerbose())
+        msg_info(this) << "waiting for timeout";
+
+    // this sleep ensure we does not delete/close the socket before its timeout happens
+    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+
     m_socket->close();
     delete m_socket;
     Inherited::closeCommunication();
@@ -44,9 +52,9 @@ void ServerCommunicationZMQ::initTypeFactory()
     getFactoryInstance()->registerCreator("int", new DataCreator<int>());
     getFactoryInstance()->registerCreator("string", new DataCreator<std::string>());
 
-    getFactoryInstance()->registerCreator("matrixfloat", new DataCreator<FullMatrix<SReal>>());
-    getFactoryInstance()->registerCreator("matrixdouble", new DataCreator<FullMatrix<SReal>>());
-    getFactoryInstance()->registerCreator("matrixint", new DataCreator<FullMatrix<SReal>>());
+    getFactoryInstance()->registerCreator("matrixfloat", new DataCreator<FullMatrix<float>>());
+    getFactoryInstance()->registerCreator("matrixdouble", new DataCreator<FullMatrix<double>>());
+    getFactoryInstance()->registerCreator("matrixint", new DataCreator<FullMatrix<int>>());
 }
 
 std::string ServerCommunicationZMQ::defaultDataType()
@@ -102,7 +110,7 @@ void ServerCommunicationZMQ::sendData()
                     msg_warning(this) << "Problem with communication";
             } catch(const std::exception& e) {
                 if (isVerbose())
-                    std::cout << e.what() << '\n';
+                    msg_info("ServerCommunicationZMQ") << e.what();
             }
             messageStr.clear();
         }
@@ -179,6 +187,7 @@ void ServerCommunicationZMQ::receiveData()
     if(d_address.isSet())
         IP = d_address.getValue();
 
+    int timeout = 1000;
     std::string address = "tcp://"+IP+":";
     std::string port = d_port.getValueString();
     address.insert(address.length(), port);
@@ -187,12 +196,14 @@ void ServerCommunicationZMQ::receiveData()
     {
         m_socket = new zmq::socket_t(m_context, ZMQ_SUB);
         m_socket->connect(address.c_str());
-        m_socket->setsockopt(ZMQ_SUBSCRIBE, "", 0); // Arg2: publisher name - Arg3: size of publisher name
+        m_socket->setsockopt(ZMQ_SUBSCRIBE, "", 0);
+        m_socket->setsockopt(ZMQ_RCVTIMEO,&timeout,sizeof(timeout));
     }
     else
     {
         m_socket = new zmq::socket_t(m_context, ZMQ_REQ);
         m_socket->connect(address.c_str());
+        m_socket->setsockopt(ZMQ_RCVTIMEO,&timeout,sizeof(timeout));
     }
 
     while (this->m_running)
@@ -201,13 +212,15 @@ void ServerCommunicationZMQ::receiveData()
             sendRequest();
         zmq::message_t reply;
         bool status = this->m_socket->recv(&reply);
+        std::cout << status << std::endl;
         if(status)
         {
             std::string rpl = std::string(static_cast<char*>(reply.data()), reply.size());
             processMessage(rpl);
         }
         else
-            msg_warning(this) << "Problem with communication";
+            if(isVerbose())
+                msg_warning(this) << "Timeout or problem with communication";
     }
 }
 
