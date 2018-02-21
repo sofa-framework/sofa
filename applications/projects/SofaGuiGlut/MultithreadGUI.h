@@ -23,6 +23,9 @@
 #define SOFA_GUI_GLUT_MULTITHREADGUI_H
 
 #include <sofa/gui/BaseGUI.h>
+
+#include "glut.h"
+
 #include <sofa/gui/PickHandler.h>
 
 #include <sofa/core/objectmodel/AspectPool.h>
@@ -36,7 +39,6 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glu.h>
-#include <sofa/helper/system/glut.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/visual/DrawToolGL.h>
 #include <SofaBaseVisual/InteractiveCamera.h>
