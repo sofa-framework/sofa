@@ -18,6 +18,12 @@ sofa_add_application(GenerateRigid GenerateRigid)
 sofa_add_application(meshconv meshconv OFF)
 sofa_add_application(SofaPhysicsAPI SofaPhysicsAPI)
 
+## Glut GUI
+find_package(GLUT)
+if(GLUT_FOUND)
+	sofa_add_application(SofaGuiGlut SofaGuiGlut OFF)
+endif()
+
 # We activate runSofa only for componentset == standard
 if(SOFA_BUILD_COMPONENTSET_STANDARD)
     sofa_add_application(runSofa runSofa ON)

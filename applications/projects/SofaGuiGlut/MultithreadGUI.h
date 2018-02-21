@@ -52,13 +52,6 @@
 #include <string.h>
 #include <fstream>
 
-
-#ifdef SOFA_BUILD_SOFAGUIGLUT
-#	define SOFA_SOFAGUIGLUT_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#	define SOFA_SOFAGUIGLUT_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
 namespace sofa
 {
 
@@ -81,7 +74,7 @@ using namespace sofa::component::collision;
 class MainLoopTask;
 #endif
 
-class SOFA_SOFAGUIGLUT_API MultithreadGUI : public sofa::gui::BaseGUI
+class MultithreadGUI : public sofa::gui::BaseGUI
 {
 
 public:
@@ -110,6 +103,7 @@ public:
     static BaseGUI* CreateGUI(const char* name, sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
 
     /// @}
+    static int InitGUI(const char* /*name*/, const std::vector<std::string>& /*options*/);
 
 protected:
     /// The destructor should not be called directly. Use the closeGUI() method instead.

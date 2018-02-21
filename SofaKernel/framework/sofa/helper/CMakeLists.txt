@@ -272,12 +272,6 @@ if(NOT SOFA_NO_OPENGL)
         system/gl.cpp
     )
 
-    if(SOFA_HAVE_GLUT)
-        list(APPEND HEADER_FILES
-            system/glut.h
-        )
-    endif()
-
     if(SOFA_HAVE_GLEW)
         list(APPEND HEADER_FILES
             gl/FrameBufferObject.h

@@ -48,13 +48,6 @@
 #include <string.h>
 #include <fstream>
 
-
-#ifdef SOFA_BUILD_SOFAGUIGLUT
-#	define SOFA_SOFAGUIGLUT_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#	define SOFA_SOFAGUIGLUT_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
 namespace sofa
 {
 
@@ -72,7 +65,7 @@ using namespace sofa::component::collision;
 class MainLoopTask;
 #endif
 
-class SOFA_SOFAGUIGLUT_API SimpleGUI : public sofa::gui::BaseGUI
+class SimpleGUI : public sofa::gui::BaseGUI
 {
 
 public:
@@ -99,7 +92,7 @@ public:
     /// @{
 
     static BaseGUI* CreateGUI(const char* name, sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
-
+    void setViewerResolution(int width , int height);
     /// @}
 
 protected:
@@ -183,6 +176,8 @@ private:
     GLint lastViewport[4];
     bool initTexturesDone;
     Capture capture;
+
+    static int _initialW, _initialH;
 public:
 
     void step();
@@ -252,6 +247,8 @@ public:
     int _mouseInteractorSavedPosX;
     int _mouseInteractorSavedPosY;
 
+    static int     InitGUI(const char* /*name*/, const std::vector<std::string>& /*options*/);
+    static sofa::gui::BaseGUI* CreateGUI(const char* /*name*/, const std::vector<std::string>& /*options*/, sofa::simulation::Node::SPtr groot, const char* filename);
 private:
 
     void	InitGFX();
