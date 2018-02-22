@@ -106,6 +106,8 @@ if(SOFA_BUILD_COMPONENTSET_STANDARD)
                              RandomPointDistributionInSurface.inl
                              RigidToQuatEngine.h
                              RigidToQuatEngine.inl
+                             RotatableBoxROI.h
+                             RotatableBoxROI.inl
                              SelectLabelROI.h
                              SelectConnectedLabelsROI.cpp
                              ShapeMatching.h
@@ -177,6 +179,7 @@ if(SOFA_BUILD_COMPONENTSET_STANDARD)
                              ROIValueMapper.cpp
                              RandomPointDistributionInSurface.cpp
                              RigidToQuatEngine.cpp
+                             RotatableBoxROI.cpp
                              SelectLabelROI.cpp
                              SelectConnectedLabelsROI.cpp
                              ShapeMatching.cpp

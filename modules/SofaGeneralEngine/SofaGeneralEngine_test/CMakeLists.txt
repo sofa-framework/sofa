@@ -17,6 +17,7 @@ if(SOFA_BUILD_COMPONENTSET_STANDARD)
             MeshROI_test.cpp
             SphereROI_test.cpp
             PlaneROI_test.cpp
+            RotatableBoxROI_test.cpp
             TransformEngine_test.cpp
             SmoothMeshEngine_test.cpp
             IndicesFromValues_test.cpp
