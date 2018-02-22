@@ -28,6 +28,25 @@ set(SOURCE_FILES
 
 set(EXTRA_FILES
     README.md
+    examples/ZMQ/primitives/Sender/senderRequest.scn
+    examples/ZMQ/primitives/Sender/senderPublisher.scn
+
+    examples/ZMQ/primitives/Receiver/receiverRequest.scn
+    examples/ZMQ/primitives/Receiver/receiverPublisher.scn
+
+    examples/ZMQ/matrix/Sender/senderRequest.scn
+    examples/ZMQ/matrix/Sender/senderPublisher.scn
+
+    examples/ZMQ/matrix/Receiver/receiverRequest.scn
+    examples/ZMQ/matrix/Receiver/receiverPublisher.scn
+
+    examples/OSC/primitives/Sender/sender.scn
+
+    examples/OSC/primitives/Receiver/receiver.scn
+
+    examples/OSC/matrix/Sender/sender.scn
+
+    examples/OSC/matrix/Receiver/receiver.scn
     )
 
 find_package(SofaFramework REQUIRED)
