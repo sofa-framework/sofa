@@ -303,7 +303,7 @@ inline void vector<T>::writeToPythonRepr( std::ostream& os ) const
 
     }
     else os << "[]"; // empty vector
-    return os;
+    return;
 }
 template<> void vector<std::string>::writeToPythonRepr( std::ostream& in ) const ;
 template<> void vector<unsigned char>::writeToPythonRepr(std::ostream& os) const ;
