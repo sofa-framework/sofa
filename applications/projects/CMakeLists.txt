@@ -16,12 +16,15 @@ endif()
 
 sofa_add_application(GenerateRigid GenerateRigid)
 sofa_add_application(meshconv meshconv OFF)
-sofa_add_application(SofaPhysicsAPI SofaPhysicsAPI)
 
 ## Glut GUI
 find_package(GLUT)
 if(GLUT_FOUND)
+	sofa_add_application(SofaPhysicsAPI SofaPhysicsAPI)
 	sofa_add_application(SofaGuiGlut SofaGuiGlut OFF)
+	sofa_add_application(glutOnePick glutOnePick OFF)
+else()
+	message(WARNING "Glut has not been detected on your system ; some projects won't be activated.")
 endif()
 
 # We activate runSofa only for componentset == standard

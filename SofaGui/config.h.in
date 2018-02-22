@@ -24,9 +24,6 @@
 
 #include <sofa/config.h>
 
-// Glut GUI
-#cmakedefine SOFA_GUI_GLUT
-
 // Qt GUI
 #cmakedefine SOFA_GUI_QT
 #cmakedefine SOFA_GUI_QGLVIEWER
