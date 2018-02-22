@@ -22,9 +22,6 @@
 #include <SofaTest/Sofa_test.h>
 using sofa::Sofa_test ;
 
-#include <sofa/defaulttype/Vec.h>
-using sofa::defaulttype::Vec3f;
-
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
 using sofa::core::ExecParams;
@@ -69,8 +66,6 @@ namespace component
 {
 namespace communication
 {
-
-using sofa::defaulttype::Vector3 ;
 
 class Communication_test : public Sofa_test<>
 {
