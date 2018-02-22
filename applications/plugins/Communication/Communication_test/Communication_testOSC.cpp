@@ -81,97 +81,6 @@ namespace component
 namespace communication
 {
 
-using sofa::defaulttype::Vector3 ;
-
-class MyComponentOSC : public BaseObject
-{
-public:
-    MyComponentOSC() :
-        d_vectorIn(initData (&d_vectorIn, "vectorIn", ""))
-      , d_vectorOut(initData (&d_vectorOut, "vectorOut", ""))
-    {
-        f_listening = true ;
-    }
-
-    virtual void init() override
-    {
-        void* a = d_vectorIn.beginEditVoidPtr();
-        FullMatrix<SReal> * b = static_cast<FullMatrix<SReal>*>(a);
-        b->resize(10, 10);
-        for(int i = 0; i < b->rows(); i++)
-            for(int j = 0; j < b->cols(); j++)
-                b->set(i, j, 1.0);
-
-        a = d_vectorOut.beginEditVoidPtr();
-        b = static_cast<FullMatrix<SReal>*>(a);
-        b->resize(10, 10);
-        for(int i = 0; i < b->rows(); i++)
-            for(int j = 0; j < b->cols(); j++)
-                b->set(i, j, 2.0);
-
-    }
-
-    virtual void handleEvent(sofa::core::objectmodel::Event *event) override
-    {
-        std::cout << "Test thread safe" << std::endl;
-        void* voidInput = d_vectorIn.beginEditVoidPtr();
-        FullMatrix<SReal> * input = static_cast<FullMatrix<SReal>*>(voidInput);
-        void* voidOutput = d_vectorOut.beginEditVoidPtr();
-        FullMatrix<SReal> * output = static_cast<FullMatrix<SReal>*>(voidOutput);
-
-        EXPECT_EQ(input->rows(), output->rows());
-        EXPECT_EQ(input->cols(), output->cols());
-
-
-        // for the next step we increase the value of the ouput
-        SReal firstValue = input->element(0,0);
-        for(int i = 0; i < input->rows(); i++)
-        {
-            for(int j = 0; j < input->cols(); j++)
-            {
-                if(input->element(i,j) != firstValue)
-                {
-                    EXPECT_EQ(input->element(i,j), firstValue);
-                    std::cout << "Input: " << d_vectorIn.getValueString() << "\nOutput: " << d_vectorOut.getValueString() << std::endl;
-                    break;
-                }
-            }
-        }
-
-
-
-        // for the next step we increase the value of the ouput
-        for(int i = 0; i < output->rows(); i++)
-        {
-            for(int j = 0; j < output->cols(); j++)
-            {
-                output->set(i, j, output->element(i,j)+1.0);
-            }
-        }
-    }
-
-
-    FullMatrix<SReal>* getInput()
-    {
-        void* a = d_vectorIn.beginEditVoidPtr();
-        FullMatrix<SReal> * b = static_cast<FullMatrix<SReal>*>(a);
-        return b;
-    }
-
-    FullMatrix<SReal>* getOutput()
-    {
-        void* a = d_vectorOut.beginEditVoidPtr();
-        FullMatrix<SReal> * b = static_cast<FullMatrix<SReal>*>(a);
-        return b;
-    }
-
-    //    vectorData<Vec3f> d_pos;
-    Data<FullMatrix<SReal>> d_vectorIn;
-    Data<FullMatrix<SReal>> d_vectorOut;
-} ;
-
-int mOSCclass = sofa::core::RegisterObject("").add<MyComponentOSC>();
-
 class Communication_testOSC : public Sofa_test<>
 {
 private:
@@ -185,8 +94,7 @@ private:
         {
             (void) remoteEndpoint;
 
-            osc::ReceivedMessageArgumentIterator it = m.ArgumentsBegin();
-            for ( it ; it != m.ArgumentsEnd(); it++)
+            for (osc::ReceivedMessageArgumentIterator it = m.ArgumentsBegin() ; it != m.ArgumentsEnd(); it++)
             {
                 std::stringstream stream;
                 stream << *it;
@@ -210,6 +118,7 @@ public:
         scene1 <<
                   "<?xml version='1.0' ?>                                                       \n"
                   "<Node name='root'>                                                           \n"
+                  "   <DefaultAnimationLoop/>                                                   \n"
                   "   <RequiredPlugin name='Communication' />                                   \n"
                   "   <ServerCommunicationOSC name='oscSender' job='sender' port='6000'  refreshRate='1000'/> \n"
                   "   <CommunicationSubscriber name='sub1' communication='@oscSender' subject='/test' source='@oscSender' arguments='x'/>"
@@ -220,7 +129,7 @@ public:
 
         ServerCommunication* aServerCommunicationOSC = dynamic_cast<ServerCommunication*>(root->getObject("oscSender"));
         std::map<std::string, CommunicationSubscriber*> map = aServerCommunicationOSC->getSubscribers();
-        EXPECT_EQ(map.size(), 1);
+        EXPECT_EQ((int)map.size(), 1);
     }
 
     void checkGetSubscriber()
@@ -229,6 +138,7 @@ public:
         scene1 <<
                   "<?xml version='1.0' ?>                                                       \n"
                   "<Node name='root'>                                                           \n"
+                  "   <DefaultAnimationLoop/>                                                   \n"
                   "   <RequiredPlugin name='Communication' />                                   \n"
                   "   <ServerCommunicationOSC name='oscSender' job='sender' port='6000'  refreshRate='1000'/> \n"
                   "   <CommunicationSubscriber name='sub1' communication='@oscSender' subject='/test' source='@oscSender' arguments='x'/>"
@@ -248,6 +158,7 @@ public:
         scene1 <<
                   "<?xml version='1.0' ?>                                                       \n"
                   "<Node name='root'>                                                           \n"
+                  "   <DefaultAnimationLoop/>                                                   \n"
                   "   <RequiredPlugin name='Communication' />                                   \n"
                   "   <ServerCommunicationOSC name='oscSender' job='sender' port='6000' refreshRate='1000'/> \n"
                   "   <CommunicationSubscriber name='sub1' communication='@oscSender' subject='/test' source='@oscSender' arguments='x'/>"
@@ -255,10 +166,12 @@ public:
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
         root->init(ExecParams::defaultInstance());
+
         ServerCommunication* aServerCommunicationOSC = dynamic_cast<ServerCommunication*>(root->getObject("oscSender"));
         EXPECT_NE(aServerCommunicationOSC, nullptr);
 
-        usleep(1000000);
+        for(unsigned int i=0; i<10; i++)
+            sofa::simulation::getSimulation()->animate(root.get(), 0.01);
 
         Base::MapData dataMap = aServerCommunicationOSC->getDataAliases();
         Base::MapData::const_iterator itData;
@@ -287,6 +200,7 @@ public:
         scene1 <<
                   "<?xml version='1.0' ?>                                                       \n"
                   "<Node name='root'>                                                           \n"
+                  "   <DefaultAnimationLoop/>                                                   \n"
                   "   <RequiredPlugin name='Communication' />                                   \n"
                   "   <ServerCommunicationOSC name='oscSender' job='sender' port='6000'  refreshRate='1000'/> \n"
                   "</Node>                                                                      \n";
@@ -301,6 +215,7 @@ public:
         scene1 <<
                   "<?xml version='1.0' ?>                                                       \n"
                   "<Node name='root'>                                                           \n"
+                  "   <DefaultAnimationLoop/>                                                   \n"
                   "   <RequiredPlugin name='Communication' />                                   \n"
                   "   <ServerCommunicationOSC name='oscSender' job='sender' port='6000'  refreshRate='1000'/> \n"
                   "   <CommunicationSubscriber name='sub1' communication='@oscSender' subject='/test' source='@oscSender' arguments='x'/>"
@@ -309,13 +224,22 @@ public:
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
         root->init(ExecParams::defaultInstance()) ;
 
-        OscDumpPacketListener listener;
-        UdpListeningReceiveSocket s(
-                    IpEndpointName( IpEndpointName::ANY_ADDRESS, 6000 ),
-                    &listener );
-        listener.setSocket(&s);
-        s.Run();
-        EXPECT_EQ(listener.m_data.size(), 1);
+        std::future<void> future = std::async(std::launch::async, [](){
+            OscDumpPacketListener listener;
+            UdpListeningReceiveSocket s(
+                        IpEndpointName( IpEndpointName::ANY_ADDRESS, 6000 ),
+                        &listener );
+            listener.setSocket(&s);
+            s.Run();
+            EXPECT_EQ(listener.m_data.size(), 1);
+        });
+
+        for( int i = 0; i < 10; i++ )
+            sofa::simulation::getSimulation()->animate(root.get(),0.01);
+
+        std::future_status status;
+        status = future.wait_for(std::chrono::seconds(3));
+        EXPECT_EQ(status, std::future_status::ready);
     }
 
     void checkReceiveOSC()
@@ -326,6 +250,7 @@ public:
         scene1 <<
                   "<?xml version='1.0' ?>                                                       \n"
                   "<Node name='root'>                                                           \n"
+                  "   <DefaultAnimationLoop/>                                                   \n"
                   "   <RequiredPlugin name='Communication' />                                   \n"
                   "   <ServerCommunicationOSC name='oscReceiver' job='receiver' port='6000' /> \n"
                   "   <CommunicationSubscriber name='sub1' communication='@oscReceiver' subject='/test' source='@oscReceiver' arguments='x'/>"
@@ -337,16 +262,22 @@ public:
         aServerCommunicationOSC->setRunning(false);
         usleep(1000000);
         UdpTransmitSocket transmitSocket( IpEndpointName( "127.0.0.1", 6000 ) );
-        char buffer[1024];
-        osc::OutboundPacketStream p(buffer, 1024 );
-        p << osc::BeginBundleImmediate;
-        p << osc::BeginMessage("/test");
-        p << "";
-        p << osc::EndMessage;
-        p << osc::EndBundle;
-        transmitSocket.Send( p.Data(), p.Size() );
-        usleep(1000000);
+        sofa::simulation::getSimulation()->animate(root.get(), 0.01);
+        for (int i = 0; i < 100; i++)
+        {
+            char buffer[1024];
+            osc::OutboundPacketStream p(buffer, 1024 );
+            p << osc::BeginBundleImmediate;
+            p << osc::BeginMessage("/test");
+            p << "";
+            p << osc::EndMessage;
+            p << osc::EndBundle;
+            transmitSocket.Send( p.Data(), p.Size() );
+        }
+        usleep(10000);
 
+        for(unsigned int i=0; i<10; i++)
+            sofa::simulation::getSimulation()->animate(root.get(), 0.01);
 
         Base::MapData dataMap = aServerCommunicationOSC->getDataAliases();
         Base::MapData::const_iterator itData = dataMap.find("x");
@@ -368,9 +299,10 @@ public:
         scene1 <<
                   "<?xml version='1.0' ?>                                                       \n"
                   "<Node name='root'>                                                           \n"
+                  "   <DefaultAnimationLoop/>                                                   \n"
                   "   <RequiredPlugin name='Communication' />                                   \n"
                   "   <ServerCommunicationOSC name='oscSender' job='sender' port='6000'  refreshRate='1000'/> \n"
-                  "   <CommunicationSubscriber name='subSender' communication='@oscSender' subject='/test' source='@oscSender' arguments='x'/>"
+                  "   <CommunicationSubscriber name='subSender' communication='@oscSender' subject='/test' source='@oscSender' arguments='port'/>"
                   "   <ServerCommunicationOSC name='oscReceiver' job='receiver' port='6000' /> \n"
                   "   <CommunicationSubscriber name='subReceiver' communication='@oscReceiver' subject='/test' source='@oscReceiver' arguments='x'/>"
                   "</Node>                                                                      \n";
@@ -383,11 +315,14 @@ public:
         EXPECT_NE(aServerCommunicationOSCSender, nullptr);
         EXPECT_NE(aServerCommunicationOSCReceiver, nullptr);
 
+        for( int i = 0; i < 100; i++ )
+            sofa::simulation::getSimulation()->animate(root.get(),0.01);
+
         aServerCommunicationOSCReceiver->setRunning(false);
 
-        usleep(1000000);
+        usleep(100000);
 
-        Base::MapData dataMap = aServerCommunicationOSCSender->getDataAliases();
+        Base::MapData dataMap = aServerCommunicationOSCReceiver->getDataAliases();
         Base::MapData::const_iterator itData;
         BaseData* data;
 
@@ -397,23 +332,11 @@ public:
         {
             data = itData->second;
             EXPECT_NE(data, nullptr) ;
-        }
-
-        dataMap = aServerCommunicationOSCSender->getDataAliases();
-        itData = dataMap.find("x");
-        EXPECT_TRUE(itData != dataMap.end());
-        if (itData != dataMap.end())
-        {
-            data = itData->second;
-            EXPECT_NE(data, nullptr) ;
+            EXPECT_STRCASEEQ(data->getValueString().c_str(), "6000") ;
         }
     }
 
 };
-
-TEST_F(Communication_testOSC, checkCreationDestruction) {
-    ASSERT_NO_THROW(this->checkCreationDestruction()) ;
-}
 
 TEST_F(Communication_testOSC, checkAddSubscriber) {
     ASSERT_NO_THROW(this->checkAddSubscriber()) ;
@@ -421,6 +344,14 @@ TEST_F(Communication_testOSC, checkAddSubscriber) {
 
 TEST_F(Communication_testOSC, checkGetSubscriber) {
     ASSERT_NO_THROW(this->checkGetSubscriber()) ;
+}
+
+TEST_F(Communication_testOSC, checkArgumentCreation) {
+    ASSERT_NO_THROW(this->checkArgumentCreation()) ;
+}
+
+TEST_F(Communication_testOSC, checkCreationDestruction) {
+    ASSERT_NO_THROW(this->checkCreationDestruction()) ;
 }
 
 TEST_F(Communication_testOSC, checkSendOSC) {
@@ -433,10 +364,6 @@ TEST_F(Communication_testOSC, checkReceiveOSC) {
 
 TEST_F(Communication_testOSC, checkSendReceiveOSC) {
     ASSERT_NO_THROW(this->checkSendReceiveOSC()) ;
-}
-
-TEST_F(Communication_testOSC, checkArgumentCreation) {
-    ASSERT_NO_THROW(this->checkArgumentCreation()) ;
 }
 
 } // communication

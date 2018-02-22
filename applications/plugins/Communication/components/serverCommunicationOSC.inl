@@ -61,9 +61,9 @@ void ServerCommunicationOSC::initTypeFactory()
     getFactoryInstance()->registerCreator("int32", new DataCreator<int>());
     getFactoryInstance()->registerCreator("OSC-string", new DataCreator<std::string>());
 
-    getFactoryInstance()->registerCreator("matrixfloat32", new DataCreator<FullMatrix<SReal>>());
-    getFactoryInstance()->registerCreator("matrixdouble", new DataCreator<FullMatrix<SReal>>());
-    getFactoryInstance()->registerCreator("matrixint32", new DataCreator<FullMatrix<SReal>>());
+    getFactoryInstance()->registerCreator("matrixfloat32", new DataCreator<FullMatrix<float>>());
+    getFactoryInstance()->registerCreator("matrixdouble", new DataCreator<FullMatrix<double>>());
+    getFactoryInstance()->registerCreator("matrixint32", new DataCreator<FullMatrix<int>>());
 }
 
 std::string ServerCommunicationOSC::defaultDataType()
@@ -104,7 +104,7 @@ void ServerCommunicationOSC::sendData()
                 transmitSocket.Send(packet.Data(), packet.Size());
             } catch(const std::exception& e) {
                 if (isVerbose())
-                    std::cout << e.what() << '\n';
+                    msg_info("ServerCommunicationOSC") << e.what();
             }
         }
         std::this_thread::sleep_for(std::chrono::microseconds(int(1000000.0/(double)this->d_refreshRate.getValue())));
