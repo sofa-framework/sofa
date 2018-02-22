@@ -89,13 +89,14 @@ public:
 
     std::ostream& write ( std::ostream& os ) const
     {
-        this->writeToSofaRepr(os) ;
+        this->writeToPythonRepr(os) ;
         return os;
     }
 
     std::istream& read ( std::istream& in )
     {
-        this->readFromPythonRepr(in) ;
+        std::stringstream s ;
+        this->readFromPythonRepr(in, s) ;
         return in ;
     }
 
@@ -112,14 +113,6 @@ public:
     }
 
 };
-
-/// reading specialization for std::string
-/// SVector begins by [, ends by ] and separates elements with ,
-/// string elements must be delimited by ' or " (like a list of strings in python).
-/// example: ['string1' ,  "string 2 ",'etc...' ]
-template<>
-std::ostream& SVector<std::string>::write( std::ostream& os ) const;
-
 
 } // namespace helper
 

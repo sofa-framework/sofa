@@ -365,6 +365,15 @@ public:
         return numRead;
     }
 
+    void writeToSofaRepr(std::ostream& out) const
+    {
+        static_assert(N>0, "Cannot create a zero size arrays") ;
+        for( size_type i=0; i<N-1; i++ )
+            out << elems[i]<<" ";
+        out << elems[N-1];
+    }
+
+
     size_t readFromPythonRepr(std::istream& in, std::ostream& errstr=sofa::helper::logging::MessageDispatcher::null())
     {
         size_t numRead {0} ;
@@ -408,14 +417,19 @@ public:
         return numRead;
     }
 
+    void writeToPythonRepr(std::ostream& out) const
+    {
+        out << "[";
+        for (std::size_t i = 0; i<N - 1; ++i)
+            out << elems[i] << ", ";
+        out << elems[N-1] << "]";
+    }
+
     //template<int NN = N, typename std::enable_if<NN>0,int>::type = 0>
     inline friend std::ostream& operator << (std::ostream& out, const fixed_array<T,N>& a)
     {
-        static_assert(N>0, "Cannot create a zero size arrays") ;
-        for( size_type i=0; i<N-1; i++ )
-            out << a.elems[i]<<" ";
-        out << a.elems[N-1];
-        return out;
+        a.writeToSofaRepr(out) ;
+        return out ;
     }
 
 

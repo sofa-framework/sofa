@@ -200,7 +200,7 @@ size_t vector<unsigned char>::readFromSofaRepr(std::istream& in, std::ostream& )
 /// Input stream
 /// Specialization for reading vectors of int and unsigned int using "A-B" notation for all integers between A and B, optionnally specifying a step using "A-B-step" notation.
 template<>
-size_t vector<int>::readFromSofaRepr( std::istream& in, std::ostream& )
+size_t vector<int>::readFromSofaRepr( std::istream& in, std::ostream& errmsg)
 {
     int t;
     clear();
@@ -269,7 +269,7 @@ size_t vector<int>::readFromSofaRepr( std::istream& in, std::ostream& )
     if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
     if(numErrors!=0)
     {
-        msg_warning("vector<int>") << "Unable to parse vector values:" << msgendl
+        errmsg << "Unable to parse vector values:" << msgendl
                                    << msg.str() ;
     }
     return size() ;
@@ -293,7 +293,7 @@ size_t vector<std::string>::readFromPythonRepr(std::istream& in, std::ostream& e
     if( f == std::string::npos )
     {
         // a '[' must be present
-        errstr << "read : a '[' is expected as beginning marker.";
+        errstr << "Unable to read. '[' is expected as beginning marker.";
         return 0;
     }
     else
@@ -302,7 +302,7 @@ size_t vector<std::string>::readFromPythonRepr(std::istream& in, std::ostream& e
         if( f2!=std::string::npos && f2 < f )
         {
             // the '[' must be the first character
-            errstr << "read : Bad begin character, expected [";
+            errstr << "Unable to read. Bad begin character, expected [";
             return 0;
         }
     }
@@ -311,7 +311,7 @@ size_t vector<std::string>::readFromPythonRepr(std::istream& in, std::ostream& e
     if( e == std::string::npos )
     {
         // a ']' must be present
-        errstr << "read : a ']' is expected as ending marker.";
+        errstr << "Unable to read. ']' is expected as ending marker.";
         return 0;
     }
     else
@@ -320,7 +320,7 @@ size_t vector<std::string>::readFromPythonRepr(std::istream& in, std::ostream& e
         std::size_t e2 = s.find_last_not_of(' ');
         if( e2!=std::string::npos && e2 > e )
         {
-            errstr << "read : Bad end character, expected ]";
+            errstr << "Unable to read. Bad end character, expected ]";
             return 0;
         }
     }
@@ -338,7 +338,7 @@ size_t vector<std::string>::readFromPythonRepr(std::istream& in, std::ostream& e
         std::size_t f2 = s.find_first_of("\"'",f+1);
         if( f2==std::string::npos )
         {
-            errstr << "read : Bad begin string character, expected \" or '";
+            errstr << "Unable to read. Bad begin string character, expected \" or '";
             this->clear();
             return size();
         }
@@ -346,7 +346,7 @@ size_t vector<std::string>::readFromPythonRepr(std::istream& in, std::ostream& e
         std::size_t i2 = s.find_last_of(s[f2],i-1);
         if( i2==std::string::npos )
         {
-            errstr << "read : Bad end string character, expected "<<s[f2];
+            errstr << "Unable to read. Bad end string character, expected "<<s[f2];
             this->clear();
             return size();
         }

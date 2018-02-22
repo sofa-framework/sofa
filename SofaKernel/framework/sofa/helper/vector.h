@@ -231,7 +231,7 @@ size_t vector<T>::readFromPythonRepr( std::istream& in, std::ostream& errmsg )
         return 0;
     if ( c != '[' )
     {
-        errmsg << "Bad begin character : " << c << ", expected  [";
+        errmsg << "Bad begin character. Found '" << c << "' while expecting '['";
         in.setstate(std::ios::failbit);
         return size();
     }
@@ -253,13 +253,13 @@ size_t vector<T>::readFromPythonRepr( std::istream& in, std::ostream& errmsg )
                 break;
         }
         if ( c != ']' ) {
-            errmsg << "Bad end character : " << c << ", expected  ]";
+            errmsg << "Bad end character. Found '" << c << "' while expecting ']'";
             in.setstate(std::ios::failbit);
         }
         if (in.eof())
             in.clear(std::ios::eofbit);
         if (in.fail())
-            errmsg << "Error reading [,] separated values";
+            errmsg << "Error reading list with comma separated values. ";
         return size();
     }
     return size();

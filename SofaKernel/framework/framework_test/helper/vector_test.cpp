@@ -57,35 +57,19 @@ void vector_test<T>::checkVector(const std::vector<std::string>& params)
     std::stringstream in(params[0]);
     std::stringstream out ;
 
-    CountingMessageHandler& counter = MainCountingMessageHandler::getInstance() ;
-    int numMessage = 0 ;
-    if(errtype == "Error")
-        numMessage =  counter.getMessageCountFor(Message::Error) ;
-    else if(errtype == "Warning")
-        numMessage =  counter.getMessageCountFor(Message::Warning) ;
-    else if(errtype == "None")
-    {
-        numMessage  =  counter.getMessageCountFor(Message::Warning) ;
-        numMessage += counter.getMessageCountFor(Message::Error) ;
-    }
-    MessageDispatcher::addHandler( &counter ) ;
-    v.read(in) ;
+    std::stringstream readerrmsg;
+
+    v.read(in, readerrmsg) ;
     v.write(out) ;
 
     /// If the parsed version is different that the written version & there is no warning...this
     /// means a problem will be un-noticed.
     EXPECT_EQ( result, out.str() ) ;
 
-    if (errtype == "Error")
-        EXPECT_NE( counter.getMessageCountFor(Message::Error), numMessage ) ;
-    else if (errtype == "Warning")
-        EXPECT_NE( counter.getMessageCountFor(Message::Warning), numMessage ) ;
+    if (errtype == "Error"  || errtype == "Warning" )
+        EXPECT_NE( readerrmsg.str().size(), 0 ) ;
     else if (errtype == "None")
-        EXPECT_EQ( counter.getMessageCountFor(Message::Warning)+
-                   counter.getMessageCountFor(Message::Error), numMessage ) ;
-
-
-    MessageDispatcher::rmHandler( &counter ) ;
+        EXPECT_EQ( readerrmsg.str().size(), 0 ) ;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
