@@ -146,11 +146,11 @@ protected:
     ////////////////////////// Buffer ////////////////////
     bool saveDataToSenderBuffer();
     BaseData* fetchDataFromSenderBuffer(CommunicationSubscriber* subscriber, std::string argument);
-    bool saveArgumentsToReceivedBuffer(std::string subject, ArgumentList argumentList, int rows, int cols);
-    BufferData* fetchArgumentsFromReceivedBuffer();
+    bool saveDatasToReceivedBuffer(std::string subject, ArgumentList argumentList, int rows, int cols);
+    BufferData* fetchDatasFromReceivedBuffer();
     /////////////////////////////////////////////////////////////////////////
 
-    BaseData* fetchData(SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK> source, std::string keyTypeMessage, std::string argumentName);
+    BaseData* fetchData(SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK> target, std::string keyTypeMessage, std::string argumentName);
     bool writeData(BufferData* data);
     bool writeDataToContainer(BufferData* data);
     bool writeDataToFullMatrix(BufferData* data);

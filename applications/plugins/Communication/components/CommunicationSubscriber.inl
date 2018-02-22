@@ -32,9 +32,9 @@ namespace communication
 
 CommunicationSubscriber::CommunicationSubscriber()
     : d_subject(initData(&d_subject, (std::string)"", "subject", "ServerCommunication will parse and analyse only subscribed subject (default="")"))
-    , d_argumentsName(initData(&d_argumentsName, (std::string)"x", "arguments", "Arguments name will be used to store data(default=x)"))
+    , d_datasName(initData(&d_datasName, (std::string)"x", "datas", "Datas name will be used to store data(default=x)"))
     , l_communication(initLink("communication","Required link, subscriber will define which kind of subject the communication have to listen"))
-    , l_source(initLink("source","Required link, subscriber will define which BaseObject will be used for read/write data"))
+    , l_target(initLink("target","Required link, subscriber will define which BaseObject will be used for read/write data"))
 {
 }
 
@@ -46,9 +46,9 @@ void CommunicationSubscriber::init()
 {
     // TODO attention python tableau
     std::regex regex{R"([\s]+)"};
-    std::string string = d_argumentsName.getValueString();
+    std::string string = d_datasName.getValueString();
     std::sregex_token_iterator it{string.begin(), string.end(), regex, -1};
-    m_argumentsNameList = std::vector<std::string>{it, {}};
+    m_datasNameList = std::vector<std::string>{it, {}};
     if (l_communication)
         l_communication->addSubscriber(this);
     else
@@ -57,17 +57,17 @@ void CommunicationSubscriber::init()
 
 std::vector<std::string> CommunicationSubscriber::getArgumentList()
 {
-    return m_argumentsNameList;
+    return m_datasNameList;
 }
 
 unsigned int CommunicationSubscriber::getArgumentSize()
 {
-    return m_argumentsNameList.size();
+    return m_datasNameList.size();
 }
 
 std::string CommunicationSubscriber::getArgumentName(unsigned int index)
 {
-     return m_argumentsNameList.at(index);
+     return m_datasNameList.at(index);
 }
 
 std::string CommunicationSubscriber::getSubject()
@@ -75,9 +75,9 @@ std::string CommunicationSubscriber::getSubject()
     return d_subject.getValueString();
 }
 
-SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK> CommunicationSubscriber::getSource()
+SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK> CommunicationSubscriber::getTarget()
 {
-    return l_source;
+    return l_target;
 }
 
 } /// communication

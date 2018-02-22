@@ -84,7 +84,7 @@ void ServerCommunication::handleEvent(Event * event)
 {
     if (AnimateBeginEvent::checkEventType(event))
     {
-        BufferData* data = fetchArgumentsFromReceivedBuffer();
+        BufferData* data = fetchDatasFromReceivedBuffer();
         if (data == NULL) // simply check if the data is not null
             return;
         if(data->getRows() == -1 && data->getCols() == -1)
@@ -127,7 +127,7 @@ bool ServerCommunication::isSubscribedTo(std::string subject, unsigned int argum
         else
         {
             if(isVerbose())
-                msg_warning(this->getName()) << " is subscrided to " << subject << " but arguments should be size of " << subscriber->getArgumentSize() << ", received " << argumentSize << '\n';
+                msg_warning(this->getName()) << " is subscrided to " << subject << " but datas should be size of " << subscriber->getArgumentSize() << ", received " << argumentSize << '\n';
         }
     } catch (const std::out_of_range& oor) {
         if(isVerbose())
@@ -164,9 +164,9 @@ std::map<std::string, CommunicationSubscriber*> ServerCommunication::getSubscrib
 *                                                                             *
 ******************************************************************************/
 
-BaseData* ServerCommunication::fetchData(SingleLink<CommunicationSubscriber, BaseObject, BaseLink::FLAG_DOUBLELINK> source, std::string keyTypeMessage, std::string argumentName)
+BaseData* ServerCommunication::fetchData(SingleLink<CommunicationSubscriber, BaseObject, BaseLink::FLAG_DOUBLELINK> target, std::string keyTypeMessage, std::string argumentName)
 {
-    MapData dataMap = source->getDataAliases();
+    MapData dataMap = target->getDataAliases();
     MapData::const_iterator itData = dataMap.find(argumentName);
     BaseData* data;
 
@@ -182,9 +182,9 @@ BaseData* ServerCommunication::fetchData(SingleLink<CommunicationSubscriber, Bas
         {
             data->setName(argumentName);
             data->setHelp("Auto generated help from communication");
-            source->addData(data, argumentName);
+            target->addData(data, argumentName);
             if(isVerbose())
-                msg_info(source->getName()) << " data field named : " << argumentName << " of type " << keyTypeMessage << " has been created";
+                msg_info(target->getName()) << " data field named : " << argumentName << " of type " << keyTypeMessage << " has been created";
         }
     } else
         data = itData->second;
@@ -203,8 +203,8 @@ bool ServerCommunication::writeData(BufferData* data)
 
     for (std::vector<std::string>::iterator it = argumentList.begin(); it != argumentList.end(); it++)
     {
-        SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK> source = subscriber->getSource();
-        BaseData* baseData = fetchData(source, getArgumentType(*it),subscriber->getArgumentName(i));
+        SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK> target = subscriber->getTarget();
+        BaseData* baseData = fetchData(target, getArgumentType(*it),subscriber->getArgumentName(i));
         if (!baseData)
             continue;
         baseData->read(getArgumentValue(*it));
@@ -220,8 +220,8 @@ bool ServerCommunication::writeDataToFullMatrix(BufferData* data)
     if (!subscriber)
         return false;
     std::string type = std::string("matrix") + getArgumentType(argumentList.at(0));
-    SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK> source = subscriber->getSource();
-    BaseData* baseData = fetchData(source, type, subscriber->getArgumentName(0));
+    SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK> target = subscriber->getTarget();
+    BaseData* baseData = fetchData(target, type, subscriber->getArgumentName(0));
     std::string dataType = baseData->getValueTypeString();
 
     if(dataType.compare("FullMatrix<double>") == 0|| dataType.compare("FullMatrix<float>") == 0)
@@ -250,8 +250,8 @@ bool ServerCommunication::writeDataToContainer(BufferData* data)
     if (!subscriber)
         return false;
     std::string type = std::string("matrix") + getArgumentType(argumentList.at(0));
-    SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK> source = subscriber->getSource();
-    BaseData* baseData = fetchData(source, type, subscriber->getArgumentName(0));
+    SingleLink<CommunicationSubscriber,  BaseObject, BaseLink::FLAG_DOUBLELINK> target = subscriber->getTarget();
+    BaseData* baseData = fetchData(target, type, subscriber->getArgumentName(0));
     const AbstractTypeInfo *typeinfo = baseData->getValueTypeInfo();
 
     if (!typeinfo->Container())
@@ -273,7 +273,7 @@ bool ServerCommunication::writeDataToContainer(BufferData* data)
 *                                                                             *
 ******************************************************************************/
 
-bool ServerCommunication::saveArgumentsToReceivedBuffer(std::string subject, ArgumentList argumentList, int rows, int cols)
+bool ServerCommunication::saveDatasToReceivedBuffer(std::string subject, ArgumentList argumentList, int rows, int cols)
 {
     try
     {
@@ -286,7 +286,7 @@ bool ServerCommunication::saveArgumentsToReceivedBuffer(std::string subject, Arg
     return true;
 }
 
-BufferData* ServerCommunication::fetchArgumentsFromReceivedBuffer()
+BufferData* ServerCommunication::fetchDatasFromReceivedBuffer()
 {
     try
     {
@@ -314,7 +314,7 @@ bool ServerCommunication::saveDataToSenderBuffer()
         ArgumentList argumentList = subscriber->getArgumentList();
         for (std::vector<std::string>::iterator itArgument = argumentList.begin(); itArgument != argumentList.end(); itArgument++ )
         {
-            BaseData* data = fetchData(subscriber->getSource(), defaultDataType(), *itArgument);
+            BaseData* data = fetchData(subscriber->getTarget(), defaultDataType(), *itArgument);
             if (!data)
                 continue;
             std::string key = subscriber->getName() + *itArgument;

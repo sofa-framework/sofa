@@ -285,13 +285,13 @@ void ServerCommunicationZMQ::processMessage(std::string dataString)
             return;
         }
 
-        saveArgumentsToReceivedBuffer(subject, onlyArgumentList, row, col);
+        saveDatasToReceivedBuffer(subject, onlyArgumentList, row, col);
     }
     else
     {
         for (it = argumentList.begin()+1; it != argumentList.end();it++)
             onlyArgumentList.push_back(*it);
-        saveArgumentsToReceivedBuffer(subject, onlyArgumentList, -1, -1);
+        saveDatasToReceivedBuffer(subject, onlyArgumentList, -1, -1);
     }
 }
 

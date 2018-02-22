@@ -52,8 +52,8 @@ Subscriber is a class needed to ServerCommunication. This will allow user to def
 Subscriber DataFields explanation : 
 * subject -> a string. ServerCommunication will receive and send only subscribed subjects. Default value is ""
 * communication -> a ServerCommunication link. A subscriber is attached to a serverCommunication
-* source -> a BaseObject link. This object will be use to read/write data in it
-* arguments -> a string. A list of variables name. Existing or not inside the source
+* target -> a BaseObject link. This object will be use to read/write data in it
+* datas -> a string. A list of variables name. Existing or not inside the target
 
 A serverCommunication should contains at least one subscriber.
 
@@ -62,12 +62,12 @@ A serverCommunication should contains at least one subscriber.
 #### Receive
 ```
 <ServerCommunicationOSC name="aServerCommunicationOSC" job="receiver" port="6000"/>
-<CommunicationSubscriber name="subscriberOSC" communication="@aServerCommunicationOSC" subject="/test" arguments="x y"/>
+<CommunicationSubscriber name="subscriberOSC" communication="@aServerCommunicationOSC" subject="/test" target="@aServerCommunicationOSC" datas="x y"/>
 ```
 #### Send
 ```
 <ServerCommunicationOSC name="aServerCommunicationOSC" job="receiver" port="6000" refreshRate="2"/>
-<CommunicationSubscriber name="subscriberOSC" communication="@aServerCommunicationOSC" subject="/test" arguments="x y"/>
+<CommunicationSubscriber name="subscriberOSC" communication="@aServerCommunicationOSC" subject="/test" target="@aServerCommunicationOSC" datas="x y"/>
 ```
 
 ### How to use ServerCommunication ZMQ
@@ -75,12 +75,12 @@ A serverCommunication should contains at least one subscriber.
 #### Receive
 ```
 <ServerCommunicationZMQ name="aServerCommunicationZMQ" job="receiver" pattern="request/reply" port="6000"/>
-<CommunicationSubscriber name="subscriberZMQ" communication="@aServerCommunicationZMQ" subject="/test" arguments="x y"/>
+<CommunicationSubscriber name="subscriberZMQ" communication="@aServerCommunicationZMQ" subject="/test" target="@aServerCommunicationZMQ" datas="x y"/>
 ```
 #### Send
 ```
 <ServerCommunicationZMQ name="aServerCommunicationZMQ" job="sender" pattern="request/reply" port="6000" refreshRate="2"/>
-<CommunicationSubscriber name="subscriberZMQ" communication="@aServerCommunicationZMQ" subject="/test" arguments="x y"/>
+<CommunicationSubscriber name="subscriberZMQ" communication="@aServerCommunicationZMQ" subject="/test" target="@aServerCommunicationZMQ" datas="x y"/>
 ```
 ### Examples
 

@@ -173,7 +173,7 @@ public:
                   "   <DefaultAnimationLoop/>                                                   \n"
                   "   <RequiredPlugin name='Communication' />                                   \n"
                   "   <ServerCommunicationZMQ name='zmqSender' job='sender' port='6000'  refreshRate='1000'/> \n"
-                  "   <CommunicationSubscriber name='sub1' communication='@zmqSender' subject='/test' source='@zmqSender' arguments='x'/>"
+                  "   <CommunicationSubscriber name='sub1' communication='@zmqSender' subject='/test' target='@zmqSender' datas='x'/>"
                   "</Node>                                                                      \n";
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
@@ -193,7 +193,7 @@ public:
                   "   <DefaultAnimationLoop/>                                                   \n"
                   "   <RequiredPlugin name='Communication' />                                   \n"
                   "   <ServerCommunicationZMQ name='zmqSender' job='sender' port='6000'  refreshRate='1000'/> \n"
-                  "   <CommunicationSubscriber name='sub1' communication='@zmqSender' subject='/test' source='@zmqSender' arguments='x'/>"
+                  "   <CommunicationSubscriber name='sub1' communication='@zmqSender' subject='/test' target='@zmqSender' datas='x'/>"
                   "</Node>                                                                      \n";
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
@@ -213,7 +213,7 @@ public:
                   "   <DefaultAnimationLoop/>                                                   \n"
                   "   <RequiredPlugin name='Communication' />                                   \n"
                   "   <ServerCommunicationZMQ name='zmqSender' job='sender' port='6000' /> \n"
-                  "   <CommunicationSubscriber name='sub1' communication='@zmqSender' subject='/test' source='@zmqSender' arguments='x'/>"
+                  "   <CommunicationSubscriber name='sub1' communication='@zmqSender' subject='/test' target='@zmqSender' datas='x'/>"
                   "</Node>                                                                      \n";
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
@@ -270,7 +270,7 @@ public:
                   "   <DefaultAnimationLoop/>                                                   \n"
                   "   <RequiredPlugin name='Communication' />                                   \n"
                   "   <ServerCommunicationZMQ name='sender' job='sender' port='6000' pattern='publish/subscribe' refreshRate='100'/> \n"
-                  "   <CommunicationSubscriber name='subSender' communication='@sender' subject='/test' source='@sender' arguments='port'/>"
+                  "   <CommunicationSubscriber name='subSender' communication='@sender' subject='/test' target='@sender' datas='port'/>"
 
                   "</Node>                                                                      \n";
 
@@ -309,7 +309,7 @@ public:
                   "   <DefaultAnimationLoop/>                                                   \n"
                   "   <RequiredPlugin name='Communication' />                                   \n"
                   "   <ServerCommunicationZMQ name='receiver' job='receiver' port='6000' pattern='publish/subscribe'/> \n"
-                  "   <CommunicationSubscriber name='subSender' communication='@receiver' subject='/test' source='@receiver' arguments='x'/>"
+                  "   <CommunicationSubscriber name='subSender' communication='@receiver' subject='/test' target='@receiver' datas='x'/>"
                   "</Node>                                                                      \n";
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
@@ -362,10 +362,10 @@ public:
                   "   <DefaultAnimationLoop/>                                                   \n"
                   "   <RequiredPlugin name='Communication' />                                   \n"
                   "   <ServerCommunicationZMQ name='sender' job='sender' port='6000'  refreshRate='1000'/> \n"
-                  "   <CommunicationSubscriber name='subSender' communication='@sender' subject='/test' source='@sender' arguments='port'/>"
+                  "   <CommunicationSubscriber name='subSender' communication='@sender' subject='/test' target='@sender' datas='port'/>"
 
                   "   <ServerCommunicationZMQ name='receiver' job='receiver' port='6000' /> \n"
-                  "   <CommunicationSubscriber name='subReceiver' communication='@receiver' subject='/test' source='@receiver' arguments='x'/>"
+                  "   <CommunicationSubscriber name='subReceiver' communication='@receiver' subject='/test' target='@receiver' datas='x'/>"
                   "</Node>                                                                      \n";
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
@@ -439,9 +439,9 @@ public:
 //                  "   <RequiredPlugin name='Communication' />                                   \n"
 //                  "   <MyComponentZMQ name='aComponent' />                                         \n"
 //                  "   <ServerCommunicationZMQ name='Sender' job='sender' port='6000' refreshRate='100000'/> \n"
-//                  "   <CommunicationSubscriber name='subSender' communication='@Sender' subject='/test' source='@aComponent' arguments='vectorOut'/>"
+//                  "   <CommunicationSubscriber name='subSender' communication='@Sender' subject='/test' target='@aComponent' datas='vectorOut'/>"
 //                  "   <ServerCommunicationZMQ name='Receiver' job='receiver' port='6000' /> \n"
-//                  "   <CommunicationSubscriber name='subReceiver' communication='@Receiver' subject='/test' source='@aComponent' arguments='vectorIn'/>"
+//                  "   <CommunicationSubscriber name='subReceiver' communication='@Receiver' subject='/test' target='@aComponent' datas='vectorIn'/>"
 //                  "</Node>                                                                      \n";
 
 
@@ -465,37 +465,37 @@ public:
 //    }
 };
 
-//TEST_F(Communication_testZMQ, checkAddSubscriber) {
-//    ASSERT_NO_THROW(this->checkAddSubscriber()) ;
-//}
+TEST_F(Communication_testZMQ, checkAddSubscriber) {
+    ASSERT_NO_THROW(this->checkAddSubscriber()) ;
+}
 
-//TEST_F(Communication_testZMQ, checkGetSubscriber) {
-//    ASSERT_NO_THROW(this->checkGetSubscriber()) ;
-//}
+TEST_F(Communication_testZMQ, checkGetSubscriber) {
+    ASSERT_NO_THROW(this->checkGetSubscriber()) ;
+}
 
-//TEST_F(Communication_testZMQ, checkArgumentCreation) {
-//    ASSERT_NO_THROW(this->checkArgumentCreation()) ;
-//}
+TEST_F(Communication_testZMQ, checkArgumentCreation) {
+    ASSERT_NO_THROW(this->checkArgumentCreation()) ;
+}
 
-//TEST_F(Communication_testZMQ, checkCreationDestruction) {
-//    ASSERT_NO_THROW(this->checkCreationDestruction()) ;
-//}
+TEST_F(Communication_testZMQ, checkCreationDestruction) {
+    ASSERT_NO_THROW(this->checkCreationDestruction()) ;
+}
 
-//TEST_F(Communication_testZMQ, checkSendZMQ) {
-//    ASSERT_NO_THROW(this->checkSendZMQ()) ;
-//}
+TEST_F(Communication_testZMQ, checkSendZMQ) {
+    ASSERT_NO_THROW(this->checkSendZMQ()) ;
+}
 
-//TEST_F(Communication_testZMQ, checkReceiveZMQ) {
-//    ASSERT_NO_THROW(this->checkReceiveZMQ()) ;
-//}
+TEST_F(Communication_testZMQ, checkReceiveZMQ) {
+    ASSERT_NO_THROW(this->checkReceiveZMQ()) ;
+}
 
-//TEST_F(Communication_testZMQ, checkSendReceiveZMQ) {
-//    ASSERT_NO_THROW(this->checkSendReceiveZMQ()) ;
-//}
+TEST_F(Communication_testZMQ, checkSendReceiveZMQ) {
+    ASSERT_NO_THROW(this->checkSendReceiveZMQ()) ;
+}
 
-//TEST_F(Communication_testZMQ, checkZMQParsingFunctions) {
-//    ASSERT_NO_THROW(this->checkZMQParsingFunctions()) ;
-//}
+TEST_F(Communication_testZMQ, checkZMQParsingFunctions) {
+    ASSERT_NO_THROW(this->checkZMQParsingFunctions()) ;
+}
 
 //TEST_F(Communication_testZMQ, checkThreadSafeZMQ) {
 //    ASSERT_NO_THROW(this->checkThreadSafeZMQ()) ;

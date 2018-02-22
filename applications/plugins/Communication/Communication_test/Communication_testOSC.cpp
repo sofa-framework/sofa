@@ -121,7 +121,7 @@ public:
                   "   <DefaultAnimationLoop/>                                                   \n"
                   "   <RequiredPlugin name='Communication' />                                   \n"
                   "   <ServerCommunicationOSC name='oscSender' job='sender' port='6000'  refreshRate='1000'/> \n"
-                  "   <CommunicationSubscriber name='sub1' communication='@oscSender' subject='/test' source='@oscSender' arguments='x'/>"
+                  "   <CommunicationSubscriber name='sub1' communication='@oscSender' subject='/test' target='@oscSender' datas='x'/>"
                   "</Node>                                                                      \n";
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
@@ -141,7 +141,7 @@ public:
                   "   <DefaultAnimationLoop/>                                                   \n"
                   "   <RequiredPlugin name='Communication' />                                   \n"
                   "   <ServerCommunicationOSC name='oscSender' job='sender' port='6000'  refreshRate='1000'/> \n"
-                  "   <CommunicationSubscriber name='sub1' communication='@oscSender' subject='/test' source='@oscSender' arguments='x'/>"
+                  "   <CommunicationSubscriber name='sub1' communication='@oscSender' subject='/test' target='@oscSender' datas='x'/>"
                   "</Node>                                                                      \n";
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
@@ -161,7 +161,7 @@ public:
                   "   <DefaultAnimationLoop/>                                                   \n"
                   "   <RequiredPlugin name='Communication' />                                   \n"
                   "   <ServerCommunicationOSC name='oscSender' job='sender' port='6000' refreshRate='1000'/> \n"
-                  "   <CommunicationSubscriber name='sub1' communication='@oscSender' subject='/test' source='@oscSender' arguments='x'/>"
+                  "   <CommunicationSubscriber name='sub1' communication='@oscSender' subject='/test' target='@oscSender' datas='x'/>"
                   "</Node>                                                                      \n";
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
@@ -218,7 +218,7 @@ public:
                   "   <DefaultAnimationLoop/>                                                   \n"
                   "   <RequiredPlugin name='Communication' />                                   \n"
                   "   <ServerCommunicationOSC name='oscSender' job='sender' port='6000'  refreshRate='1000'/> \n"
-                  "   <CommunicationSubscriber name='sub1' communication='@oscSender' subject='/test' source='@oscSender' arguments='x'/>"
+                  "   <CommunicationSubscriber name='sub1' communication='@oscSender' subject='/test' target='@oscSender' datas='x'/>"
                   "</Node>                                                                      \n";
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
@@ -253,7 +253,7 @@ public:
                   "   <DefaultAnimationLoop/>                                                   \n"
                   "   <RequiredPlugin name='Communication' />                                   \n"
                   "   <ServerCommunicationOSC name='oscReceiver' job='receiver' port='6000' /> \n"
-                  "   <CommunicationSubscriber name='sub1' communication='@oscReceiver' subject='/test' source='@oscReceiver' arguments='x'/>"
+                  "   <CommunicationSubscriber name='sub1' communication='@oscReceiver' subject='/test' target='@oscReceiver' datas='x'/>"
                   "</Node>                                                                      \n";
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
@@ -302,9 +302,9 @@ public:
                   "   <DefaultAnimationLoop/>                                                   \n"
                   "   <RequiredPlugin name='Communication' />                                   \n"
                   "   <ServerCommunicationOSC name='oscSender' job='sender' port='6000'  refreshRate='1000'/> \n"
-                  "   <CommunicationSubscriber name='subSender' communication='@oscSender' subject='/test' source='@oscSender' arguments='port'/>"
+                  "   <CommunicationSubscriber name='subSender' communication='@oscSender' subject='/test' target='@oscSender' datas='port'/>"
                   "   <ServerCommunicationOSC name='oscReceiver' job='receiver' port='6000' /> \n"
-                  "   <CommunicationSubscriber name='subReceiver' communication='@oscReceiver' subject='/test' source='@oscReceiver' arguments='x'/>"
+                  "   <CommunicationSubscriber name='subReceiver' communication='@oscReceiver' subject='/test' target='@oscReceiver' datas='x'/>"
                   "</Node>                                                                      \n";
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
