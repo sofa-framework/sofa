@@ -7,6 +7,9 @@ You can find a fully working version here : http://ftp.debian.org/debian/pool/ma
 
 Ubuntu :
 ```
+wget http://ftp.debian.org/debian/pool/main/o/oscpack/liboscpack1_1.1.0-2_amd64.deb
+sudo dpkg -i liboscpack1_1.1.0-2_amd64.deb
+wget http://ftp.debian.org/debian/pool/main/o/oscpack/liboscpack-dev_1.1.0-2_amd64.deb
 sudo dpkg -i liboscpack-dev_1.1.0-2_amd64.deb
 ```
 
