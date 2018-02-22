@@ -80,18 +80,18 @@ static char* getStringCopy(char *c)
 // not defined static in order to be able to use this fcn somewhere else also
 BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
 
-    char* dataRawType=new char;
-    char* dataClass=new char;
-    char* dataHelp=new char;
-    PyObject* dataValue = nullptr;
+    char* dataRawType = new char;
+    char* dataClass = new char;
+    char* dataHelp = new char;
+    char * dataName = new char;
 
-    char *dataName= new char; // The desired name is provided using regular args ...
+    PyObject* dataValue = nullptr;
 
     bool KwargsOrArgs = 0; //Args = 0, Kwargs = 1
 
     if(PyArg_ParseTuple(args, "s|sssO", &dataName, &dataClass, &dataHelp, &dataRawType, &dataValue))
     {
-        // first argument (name) is mandatory, the rest are optionally found in the args and, if not, in kwargs
+        // first argument (name) is mandatory, the rest are optionally found in the args and, if not there, in kwargs
         dataName = getStringCopy(dataName) ;
 
         if (strcmp(dataName,"")==0)
@@ -114,9 +114,7 @@ BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
     else
     {
         return nullptr;
-    }
-
-    //    PyErr_Clear() ;
+    }    
 
     if(KwargsOrArgs) // parse kwargs
     {
@@ -158,7 +156,7 @@ BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
 
     if (bd == nullptr)
     {
-        msg_warning(obj) << dataRawType << " is not a known type";
+        msg_error(obj) << dataRawType << " is not a known type";
         return nullptr;
     }
     else
@@ -166,7 +164,7 @@ BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
         bd->setName(dataName);
         bd->setHelp(dataHelp);
         obj->addData(bd);        
-        if(dataValue!=nullptr) // parse provided data: Py->SofaStr->Data
+        if(dataValue!=nullptr) // parse provided data: Py->SofaStr->Data or link
         {
             std::stringstream tmp;
             pythonToSofaDataString(dataValue, tmp);
@@ -184,10 +182,6 @@ BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
             bd->setGroup(dataClass);
             Py_DecRef(dataValue);
         }
-//        else
-//        {
-//            msg_info("SofaPython") << "No value(s) provided, initializing empty Data ...";
-//        }
     }
     return bd;
 }
