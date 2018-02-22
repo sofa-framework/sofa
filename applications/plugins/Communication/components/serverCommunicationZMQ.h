@@ -40,10 +40,14 @@ public:
     Data<helper::OptionsGroup>  d_pattern;
 
 
+    int getTimeout() const;
+    void setTimeout(int timeout);
+
 protected:
 
     zmq::context_t     m_context{1};
     zmq::socket_t      *m_socket;
+    int                m_timeout;
 
     //////////////////////////////// Inherited from ServerCommunication /////////////////////////////////
     virtual void sendData() override;

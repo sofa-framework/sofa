@@ -21,6 +21,8 @@ ServerCommunicationZMQ::ServerCommunicationZMQ()
                          "request/reply: Message sent are waiting for reply. Allows only an alternating sequence of send\reply calls.\n"
                          "Default is publish/subscribe. WARNING: the pattern should be the same for both sender and receiver to be effective."))
 {
+
+    m_timeout = 1000;
 }
 
 ServerCommunicationZMQ::~ServerCommunicationZMQ()
@@ -31,7 +33,7 @@ ServerCommunicationZMQ::~ServerCommunicationZMQ()
         msg_info(this) << "waiting for timeout";
 
     // this sleep ensure we does not delete/close the socket before its timeout happens
-    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+    std::this_thread::sleep_for(std::chrono::milliseconds(m_timeout * 2));
 
     m_socket->close();
     delete m_socket;
@@ -60,6 +62,16 @@ void ServerCommunicationZMQ::initTypeFactory()
 std::string ServerCommunicationZMQ::defaultDataType()
 {
     return "string";
+}
+
+int ServerCommunicationZMQ::getTimeout() const
+{
+    return m_timeout;
+}
+
+void ServerCommunicationZMQ::setTimeout(int timeout)
+{
+    m_timeout = timeout;
 }
 
 /******************************************************************************
@@ -183,12 +195,11 @@ std::string ServerCommunicationZMQ::createZMQMessage(CommunicationSubscriber* su
 
 void ServerCommunicationZMQ::receiveData()
 {
-    std::string IP ="localhost";
+    std::string ip ="localhost";
     if(d_address.isSet())
-        IP = d_address.getValue();
+        ip = d_address.getValue();
 
-    int timeout = 1000;
-    std::string address = "tcp://"+IP+":";
+    std::string address = "tcp://"+ip+":";
     std::string port = d_port.getValueString();
     address.insert(address.length(), port);
 
@@ -197,13 +208,12 @@ void ServerCommunicationZMQ::receiveData()
         m_socket = new zmq::socket_t(m_context, ZMQ_SUB);
         m_socket->connect(address.c_str());
         m_socket->setsockopt(ZMQ_SUBSCRIBE, "", 0);
-        m_socket->setsockopt(ZMQ_RCVTIMEO,&timeout,sizeof(timeout));
+        m_socket->setsockopt(ZMQ_RCVTIMEO, &m_timeout, sizeof(m_timeout));
     }
     else
     {
         m_socket = new zmq::socket_t(m_context, ZMQ_REQ);
         m_socket->connect(address.c_str());
-        m_socket->setsockopt(ZMQ_RCVTIMEO,&timeout,sizeof(timeout));
     }
 
     while (this->m_running)
@@ -212,7 +222,6 @@ void ServerCommunicationZMQ::receiveData()
             sendRequest();
         zmq::message_t reply;
         bool status = this->m_socket->recv(&reply);
-        std::cout << status << std::endl;
         if(status)
         {
             std::string rpl = std::string(static_cast<char*>(reply.data()), reply.size());

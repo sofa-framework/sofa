@@ -22,9 +22,6 @@
 #include <SofaTest/Sofa_test.h>
 using sofa::Sofa_test ;
 
-#include <sofa/defaulttype/Vec.h>
-using sofa::defaulttype::Vec3f;
-
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
 using sofa::core::ExecParams;
@@ -38,9 +35,6 @@ using sofa::core::objectmodel::BaseData;
 
 #include <sofa/helper/vectorData.h>
 using sofa::helper::vectorData;
-using sofa::helper::WriteAccessorVector;
-using sofa::helper::WriteAccessor;
-using sofa::helper::ReadAccessor;
 
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
@@ -77,8 +71,6 @@ namespace component
 namespace communication
 {
 
-using sofa::defaulttype::Vector3 ;
-
 class MyComponentZMQ : public BaseObject
 {
 public:
@@ -107,7 +99,7 @@ public:
 
     }
 
-    virtual void handleEvent(sofa::core::objectmodel::Event *event) override
+    void checkValues()
     {
         std::cout << "Test thread safe" << std::endl;
         void* voidInput = d_vectorIn.beginEditVoidPtr();
@@ -134,8 +126,6 @@ public:
             }
         }
 
-
-
         // for the next step we increase the value of the ouput
         for(int i = 0; i < output->rows(); i++)
         {
@@ -160,7 +150,6 @@ public:
         return b;
     }
 
-    //    vectorData<Vec3f> d_pos;
     Data<FullMatrix<SReal>> d_vectorIn;
     Data<FullMatrix<SReal>> d_vectorOut;
 } ;
@@ -333,8 +322,8 @@ public:
         usleep(10000);
         zmq::context_t context (1);
         zmq::socket_t socket (context, ZMQ_PUB);
-        socket.connect ("tcp://*:6000");
-        for(int i = 0; i <1000; i++) // a lot ... ensure the receiver, receive at least once
+        socket.bind("tcp://*:6000");
+        for(int i = 0; i <10000; i++) // a lot ... ensure the receiver, receive at least one value
         {
             std::string mesg = "/test ";
             mesg += "int:" + std::to_string(i);
@@ -346,7 +335,7 @@ public:
         socket.close();
         usleep(10000);
 
-        // stop the loop and run animation. This will force the use of buffers
+        // stop the communication loop and run animation. This will force the use of buffers
         aServerCommunication->setRunning(false);
         for(unsigned int i=0; i<10; i++)
             sofa::simulation::getSimulation()->animate(root.get(), 0.01);
@@ -360,8 +349,7 @@ public:
         {
             data = itData->second;
             EXPECT_NE(data, nullptr) ;
-            std::string value = data->getValueString();
-            std::cout << value << std::endl;
+            EXPECT_STRCASENE(data->getValueString().c_str(), "");
         }
     }
 
@@ -375,7 +363,7 @@ public:
                   "   <DefaultAnimationLoop/>                                                   \n"
                   "   <RequiredPlugin name='Communication' />                                   \n"
                   "   <ServerCommunicationZMQ name='sender' job='sender' port='6000'  refreshRate='1000'/> \n"
-                  "   <CommunicationSubscriber name='subSender' communication='@sender' subject='/test' source='@sender' arguments='x'/>"
+                  "   <CommunicationSubscriber name='subSender' communication='@sender' subject='/test' source='@sender' arguments='port'/>"
 
                   "   <ServerCommunicationZMQ name='receiver' job='receiver' port='6000' /> \n"
                   "   <CommunicationSubscriber name='subReceiver' communication='@receiver' subject='/test' source='@receiver' arguments='x'/>"
@@ -389,14 +377,14 @@ public:
         EXPECT_NE(aServerCommunicationSender, nullptr);
         EXPECT_NE(aServerCommunicationReceiver, nullptr);
 
-        for( int i = 0; i < 10; i++ )
+        for( int i = 0; i < 100; i++ )
             sofa::simulation::getSimulation()->animate(root.get(),0.01);
 
         aServerCommunicationReceiver->setRunning(false);
 
         usleep(100000);
 
-        Base::MapData dataMap = aServerCommunicationSender->getDataAliases();
+        Base::MapData dataMap = aServerCommunicationReceiver->getDataAliases();
         Base::MapData::const_iterator itData;
         BaseData* data;
 
@@ -406,16 +394,9 @@ public:
         {
             data = itData->second;
             EXPECT_NE(data, nullptr) ;
+            EXPECT_STRCASEEQ(data->getValueString().c_str(), "6000") ;
         }
 
-        dataMap = aServerCommunicationSender->getDataAliases();
-        itData = dataMap.find("x");
-        EXPECT_TRUE(itData != dataMap.end());
-        if (itData != dataMap.end())
-        {
-            data = itData->second;
-            EXPECT_NE(data, nullptr) ;
-        }
     }
 
     void checkZMQParsingFunctions()
@@ -434,58 +415,55 @@ public:
         std::vector<std::string> argumentList;
 
         argumentList = zmqServer->stringToArgumentList("/test string:'toto' int:26");
-        EXPECT_EQ(argumentList.size(), 3);
+        EXPECT_EQ((int)argumentList.size(), 3);
 
         argumentList = zmqServer->stringToArgumentList("/test string:'toto tata' string:'toto' int:26");
-        EXPECT_EQ(argumentList.size(), 4);
+        EXPECT_EQ((int)argumentList.size(), 4);
 
         argumentList = zmqServer->stringToArgumentList("/test string:'toto tata titi' string:'toto' int:26");
-        EXPECT_EQ(argumentList.size(), 4);
+        EXPECT_EQ((int)argumentList.size(), 4);
 
         argumentList = zmqServer->stringToArgumentList("/test string:'toto tata string:'toto' int:26");
-        EXPECT_EQ(argumentList.size(), 4);
+        EXPECT_EQ((int)argumentList.size(), 4);
 
         argumentList = zmqServer->stringToArgumentList("/test string:'toto tata int:26");
-        EXPECT_EQ(argumentList.size(), 2);
+        EXPECT_EQ((int)argumentList.size(), 2);
     }
 
-    void checkThreadSafeZMQ()
-    {
-        std::stringstream scene1 ;
-        scene1 <<
-                  "<?xml version='1.0' ?>                                                       \n"
-                  "<Node  name='root' gravity='0 0 0' time='0' animate='0'   >                  \n"
-                  "   <DefaultAnimationLoop/>                                                   \n"
-                  "   <RequiredPlugin name='Communication' />                                   \n"
-                  "   <MyComponent name='aComponent' />                                         \n"
-                  "   <ServerCommunicationZMQ name='Sender' job='sender' port='6000' refreshRate='100000'/> \n"
-                  "   <CommunicationSubscriber name='subSender' communication='@Sender' subject='/test' source='@aComponent' arguments='vectorOut'/>"
-                  "   <ServerCommunicationZMQ name='Receiver' job='receiver' port='6000' /> \n"
-                  "   <CommunicationSubscriber name='subReceiver' communication='@Receiver' subject='/test' source='@aComponent' arguments='vectorIn'/>"
-                  "</Node>                                                                      \n";
+//    void checkThreadSafeZMQ()
+//    {
+//        std::stringstream scene1 ;
+//        scene1 <<
+//                  "<?xml version='1.0' ?>                                                       \n"
+//                  "<Node  name='root' gravity='0 0 0' time='0' animate='0'   >                  \n"
+//                  "   <DefaultAnimationLoop/>                                                   \n"
+//                  "   <RequiredPlugin name='Communication' />                                   \n"
+//                  "   <MyComponentZMQ name='aComponent' />                                         \n"
+//                  "   <ServerCommunicationZMQ name='Sender' job='sender' port='6000' refreshRate='100000'/> \n"
+//                  "   <CommunicationSubscriber name='subSender' communication='@Sender' subject='/test' source='@aComponent' arguments='vectorOut'/>"
+//                  "   <ServerCommunicationZMQ name='Receiver' job='receiver' port='6000' /> \n"
+//                  "   <CommunicationSubscriber name='subReceiver' communication='@Receiver' subject='/test' source='@aComponent' arguments='vectorIn'/>"
+//                  "</Node>                                                                      \n";
 
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
-        root->init(ExecParams::defaultInstance()) ;
+//        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene", scene1.str().c_str(), scene1.str().size()) ;
+//        root->init(ExecParams::defaultInstance()) ;
 
-        ServerCommunication* aServerCommunicationSender = dynamic_cast<ServerCommunication*>(root->getObject("Sender"));
-        ServerCommunication* aServerCommunicationReceiver = dynamic_cast<ServerCommunication*>(root->getObject("Receiver"));
-        MyComponentZMQ* aComponent = dynamic_cast<MyComponentZMQ*>(root->getObject("aComponent"));
+//        ServerCommunication* aServerCommunicationSender = dynamic_cast<ServerCommunication*>(root->getObject("Sender"));
+//        ServerCommunication* aServerCommunicationReceiver = dynamic_cast<ServerCommunication*>(root->getObject("Receiver"));
+//        MyComponentZMQ* aComponent = dynamic_cast<MyComponentZMQ*>(root->getObject("aComponent"));
 
-        EXPECT_NE(aServerCommunicationSender, nullptr);
-        EXPECT_NE(aServerCommunicationReceiver, nullptr);
-        EXPECT_NE(aComponent, nullptr);
+//        EXPECT_NE(aServerCommunicationSender, nullptr);
+//        EXPECT_NE(aServerCommunicationReceiver, nullptr);
+//        EXPECT_NE(aComponent, nullptr);
 
 
-        for( int i = 0; i < 10; i++ )
-            sofa::simulation::getSimulation()->animate(root.get(),0.01);
+//        for( int i = 0; i < 10; i++ )
+//            sofa::simulation::getSimulation()->animate(root.get(),0.01);
 
-        aServerCommunicationReceiver->setRunning(false);
-        std::cout << "Wait for the end of the communication" << std::endl;
-        usleep(10000); // wait 5 seconds for the changes
-        aServerCommunicationSender->setRunning(false);
+//        usleep(10000); // wait 5 seconds for the changes
 
-    }
+//    }
 };
 
 TEST_F(Communication_testZMQ, checkAddSubscriber) {
@@ -520,9 +498,9 @@ TEST_F(Communication_testZMQ, checkZMQParsingFunctions) {
     ASSERT_NO_THROW(this->checkZMQParsingFunctions()) ;
 }
 
-TEST_F(Communication_testZMQ, checkThreadSafeZMQ) {
-    ASSERT_NO_THROW(this->checkThreadSafeZMQ()) ;
-}
+//TEST_F(Communication_testZMQ, checkThreadSafeZMQ) {
+//    ASSERT_NO_THROW(this->checkThreadSafeZMQ()) ;
+//}
 
 } // communication
 } // component
