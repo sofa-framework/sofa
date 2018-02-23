@@ -29,11 +29,11 @@ using sofa::core::objectmodel::Base ;
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/helper/system/FileRepository.h>
 
-#include <sofa/helper/deprecatedcomponents.h>
-using sofa::helper::deprecatedcomponents::components ;
-using sofa::helper::deprecatedcomponents::messages ;
-using sofa::helper::deprecatedcomponents::indexName ;
-using sofa::helper::deprecatedcomponents::indexMessage ;
+#include <sofa/helper/deprecated.h>
+using sofa::helper::deprecated::components ;
+using sofa::helper::deprecated::messages ;
+using sofa::helper::deprecated::indexName ;
+using sofa::helper::deprecated::indexMessage ;
 
 
 

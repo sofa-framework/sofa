@@ -19,14 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "deprecatedcomponents.h"
+#include "deprecated.h"
 namespace sofa
 {
 
 namespace helper
 {
 
-namespace deprecatedcomponents
+namespace deprecated
 {
 
 std::map<std::string, std::string>  messages =
@@ -51,29 +51,42 @@ std::map<std::string, std::string>  messages =
 /// Component name, the error message to use among
 std::map<std::string, std::vector<std::string>> components =
 {
-    {"WashingMachineForceField", {"deprecated-17.12"}},
-
+    // SofaBoundaryCondition
     {"BuoyantForceField", {"deprecated-17.12"}},
+    {"VaccumSphereForceField", {"deprecated-17.12"}},
+
+    // SofaMiscForceField
+    {"ForceMaskOff", {"deprecated-17.12"}},
+    {"LineBendingSprings", {"deprecated-17.12"}},
+    {"WashingMachineForceField", {"deprecated-17.12"}},
+    {"LennardJonesForceField", {"deprecated-17.12"}},
+
+    // SofaMiscMapping
     {"CatmullRomSplineMapping", {"deprecated-17.12"}},
     {"CenterPointMechanicalMapping", {"deprecated-17.12"}},
     {"CurveMapping", {"deprecated-17.12"}},
     {"ExternalInterpolationMapping", {"deprecated-17.12"}},
     {"ProjectionToLineMapping", {"deprecated-17.12"}},
-    {"ProjectionToTargetLineMapping_test", {"deprecated-17.12"}},
     {"ProjectionToPlaneMapping", {"deprecated-17.12"}},
-    {"ProjectionToTargetPlaneMapping_test", {"deprecated-17.12"}},
 
-    /// SofaUserInteraction
-    {"AddRecordedCameraPerformer", {"deprecated-17.12"}},
+    // SofaMisc
+    {"ParallelCGLinearSolver", {"deprecated-17.12"}},
+
+    // SofaOpenglVisual
+    {"OglCylinderModel", {"deprecated-17.12"}},
+    {"OglGrid", {"deprecated-17.12"}},
+    {"OglRenderingSRGB", {"deprecated-17.12"}},
+    {"OglLineAxis", {"deprecated-17.12"}},
+    {"OglSceneFrame", {"deprecated-17.12"}},
+
+    // SofaUserInteraction
     {"ArticulatedHierarchyBVHController", {"deprecated-17.12"}},
     {"ArticulatedHierarchyController", {"deprecated-17.12"}},
     {"DisabledContact", {"deprecated-17.12"}},
     {"EdgeSetController", {"deprecated-17.12"}},
-    {"FixParticlePerformer", {"deprecated-17.12"}},
     {"GraspingManager", {"deprecated-17.12"}},
-    {"InciseAlongPathPerformer", {"deprecated-17.12"}},
     {"InterpolationController", {"deprecated-17.12"}},
-	{"MechanicalStateControllerOmni", {"deprecated-17.12"}},
+    {"MechanicalStateControllerOmni", {"deprecated-17.12"}},
     {"NodeToggleController", {"deprecated-17.12"}},
 };
 
@@ -97,7 +110,7 @@ std::map<std::string, std::vector<std::string>> uncreateablecomponents =
     {"ImplicitSurfaceMapping", {"pluginized-17.12", "<RequiredPlugin name='SofaImplicitField'/>"}}
 };
 
-} /// namespace deprecatedcomponents
+} /// namespace deprecated
 
 } /// namespace helper
 

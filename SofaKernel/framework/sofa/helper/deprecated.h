@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_DEPRECATEDCOMPONENTS_H
-#define SOFA_HELPER_DEPRECATEDCOMPONENTS_H
+#ifndef SOFA_HELPER_DEPRECATED_H
+#define SOFA_HELPER_DEPRECATED_H
 
 #include <string>
 #include <vector>
@@ -33,7 +33,7 @@ namespace sofa
 namespace helper
 {
 
-namespace deprecatedcomponents
+namespace deprecated
 {
 
 constexpr int indexName {0};
@@ -44,7 +44,7 @@ extern SOFA_HELPER_API std::map<std::string, std::vector<std::string>> component
 extern SOFA_HELPER_API std::map<std::string, std::vector<std::string>> uncreateablecomponents ;
 
 
-} /// namespace deprecatedcomponents
+} /// namespace deprecated
 
 } /// namespace helper
 
