@@ -130,7 +130,12 @@ case $CI_OPTIONS in
         
         # HeadlessRecorder is Linux only for now
         if [[ $(uname) = Linux ]]; then
-            append "-DSOFAGUI_HEADLESS_RECORDER=ON"
+		id=$(cat /etc/*-release | grep "ID")
+		if [[ $id = *"centos"* ]]; then
+            		append "-DSOFAGUI_HEADLESS_RECORDER=OFF"
+		else
+            		append "-DSOFAGUI_HEADLESS_RECORDER=ON"
+		fi
         fi
 
         ### Plugins
