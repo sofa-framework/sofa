@@ -19,6 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define WIN32_LEAN_AND_MEAN
+
 #include <SofaTest/Sofa_test.h>
 using sofa::Sofa_test ;
 
@@ -55,8 +57,6 @@ using sofa::component::communication::ServerCommunication;
 using sofa::component::communication::ServerCommunicationZMQ;
 using sofa::component::communication::CommunicationSubscriber;
 
-// ZMQ TEST PART
-#include <zmq.hpp>
 
 // TIMEOUT
 #include <iostream>
@@ -318,7 +318,6 @@ public:
         root->setAnimate(true);
 
         // sending part
-        usleep(10000);
         zmq::context_t context (1);
         zmq::socket_t socket (context, ZMQ_PUB);
         socket.bind("tcp://*:6000");
@@ -329,10 +328,8 @@ public:
             zmq::message_t reply (mesg.size());
             memcpy (reply.data (), mesg.c_str(), mesg.size());
             socket.send (reply);
-            usleep(1);
         }
         socket.close();
-        usleep(10000);
 
         // stop the communication loop and run animation. This will force the use of buffers
         aServerCommunication->setRunning(false);
@@ -380,8 +377,6 @@ public:
             sofa::simulation::getSimulation()->animate(root.get(),0.01);
 
         aServerCommunicationReceiver->setRunning(false);
-
-        usleep(100000);
 
         Base::MapData dataMap = aServerCommunicationReceiver->getDataAliases();
         Base::MapData::const_iterator itData;
@@ -460,7 +455,6 @@ public:
 //        for( int i = 0; i < 10; i++ )
 //            sofa::simulation::getSimulation()->animate(root.get(),0.01);
 
-//        usleep(10000); // wait 5 seconds for the changes
 
 //    }
 };
