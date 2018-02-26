@@ -260,7 +260,6 @@ public:
         root->init(ExecParams::defaultInstance());
         ServerCommunication* aServerCommunicationOSC = dynamic_cast<ServerCommunication*>(root->getObject("oscReceiver"));
         aServerCommunicationOSC->setRunning(false);
-        usleep(1000000);
         UdpTransmitSocket transmitSocket( IpEndpointName( "127.0.0.1", 6000 ) );
         sofa::simulation::getSimulation()->animate(root.get(), 0.01);
         for (int i = 0; i < 100; i++)
@@ -274,7 +273,6 @@ public:
             p << osc::EndBundle;
             transmitSocket.Send( p.Data(), p.Size() );
         }
-        usleep(10000);
 
         for(unsigned int i=0; i<10; i++)
             sofa::simulation::getSimulation()->animate(root.get(), 0.01);
@@ -319,8 +317,6 @@ public:
             sofa::simulation::getSimulation()->animate(root.get(),0.01);
 
         aServerCommunicationOSCReceiver->setRunning(false);
-
-        usleep(100000);
 
         Base::MapData dataMap = aServerCommunicationOSCReceiver->getDataAliases();
         Base::MapData::const_iterator itData;

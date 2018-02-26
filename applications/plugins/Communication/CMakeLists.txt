@@ -77,7 +77,7 @@ if(PLUGIN_COMMUNICATION_Oscpack)
     find_package(Oscpack REQUIRED)
     if (Oscpack_FOUND)
         message("Found Oscpack libraries")
-        include_directories(${OSCPACK_INCLUDE_DIRS})
+        include_directories(${Oscpack_INCLUDE_DIRS})
 
         list(APPEND HEADER_FILES
             components/serverCommunicationOSC.h

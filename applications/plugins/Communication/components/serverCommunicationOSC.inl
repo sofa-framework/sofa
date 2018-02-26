@@ -92,7 +92,7 @@ void ServerCommunicationOSC::sendData()
             CommunicationSubscriber* subscriber = it->second;
             ArgumentList argumentList = subscriber->getArgumentList();
             int bufferSize = d_packetSize.getValue();
-            char buffer[bufferSize];
+            char* buffer = new char[bufferSize];
             osc::OutboundPacketStream packet(buffer, bufferSize);
             std::string messageName = subscriber->getSubject();
             packet << osc::BeginMessage(messageName.c_str());
