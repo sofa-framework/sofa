@@ -34,7 +34,7 @@ using sofa::helper::system::FileSystem ;
 
 #include "QDocBrowser.h"
 #include "../RealGUI.h"
-#include "../GuiDataRepository.h"
+#include <sofa/gui/GuiDataRepository.h>
 
 namespace sofa
 {

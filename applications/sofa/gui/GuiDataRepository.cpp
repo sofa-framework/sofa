@@ -34,11 +34,8 @@ namespace sofa
 {
 namespace gui
 {
-namespace qt
-{
 
 FileRepository GuiDataRepository("GUI_DATA_PATH", Utils::getSofaPathTo("share/sofa/gui/qt/resources").c_str());
 
-}
 }
 }

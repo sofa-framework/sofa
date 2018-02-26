@@ -30,9 +30,6 @@ namespace sofa
 {
 namespace gui
 {
-namespace qt
-{
     extern SOFA_HELPER_API sofa::helper::system::FileRepository GuiDataRepository;
-}
 }
 }

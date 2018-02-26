@@ -100,8 +100,8 @@ using  sofa::helper::logging::MainPerComponentLoggingMessageHandler ;
 #include <windows.h>
 #endif
 
-#include <sofa/gui/qt/GuiDataRepository.h>
-using sofa::gui::qt::GuiDataRepository ;
+#include <sofa/gui/GuiDataRepository.h>
+using sofa::gui::GuiDataRepository ;
 
 using sofa::helper::system::DataRepository;
 using sofa::helper::system::PluginRepository;
