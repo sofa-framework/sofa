@@ -235,6 +235,7 @@ void ServerCommunicationZMQ::receiveData()
 
 void ServerCommunicationZMQ::processMessage(std::string dataString)
 {
+    std::cout << "received " << dataString << std::endl;
     std::string subject;
     ArgumentList onlyArgumentList;
     ArgumentList argumentList = stringToArgumentList(dataString);

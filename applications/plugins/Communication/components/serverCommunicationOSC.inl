@@ -236,7 +236,7 @@ void ServerCommunicationOSC::ProcessMessage( const osc::ReceivedMessage& m, cons
 ArgumentList ServerCommunicationOSC::convertMessagesToArgumentList(osc::ReceivedMessageArgumentIterator it, osc::ReceivedMessageArgumentIterator itEnd)
 {
     ArgumentList argumentList;
-    for(it; it != itEnd; it++)
+    for(; it != itEnd; it++)
     {
         std::stringstream stream;
         stream << (*it);
