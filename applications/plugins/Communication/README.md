@@ -5,16 +5,20 @@
 Please ensure oscpack version is >= 1.1.X. Do not use the default packages provided by ubuntu repository (1.0.X version).
 You can find a fully working version here : http://ftp.debian.org/debian/pool/main/o/oscpack/?C=M;O=D
 
-Ubuntu :
+#### Linux :
 ```
 wget http://ftp.debian.org/debian/pool/main/o/oscpack/liboscpack1_1.1.0-2_amd64.deb
 sudo dpkg -i liboscpack1_1.1.0-2_amd64.deb
 wget http://ftp.debian.org/debian/pool/main/o/oscpack/liboscpack-dev_1.1.0-2_amd64.deb
 sudo dpkg -i liboscpack-dev_1.1.0-2_amd64.deb
 ```
+#### Windows :
+Compile the library by yourself using this zip file https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/oscpack/oscpack_1_1_0_RC2.zip
 
 ### ZMQ installation
 Depending of your distribution, the package name can be different.
+
+#### Linux : 
 
 Ubuntu :
 ```
@@ -24,7 +28,7 @@ Fedora :
 ```
 sudo dnf install libzmq-devel
 ```
-Windows :
+#### Windows :
 Compile the lib by yourself using this zip file : https://github.com/zeromq/libzmq/releases/download/v4.2.3/zeromq-4.2.3.zip
 
 ## How to use the components
@@ -96,6 +100,9 @@ Implementing a new protocol is quite easy. Simply extend from ServerCommunicatio
 * initTypeFactory
 * sendData
 * receiveData
+* getArgumentType
+* getArgumentValue
+* defaultDataType
 
 ### Factory in a nutshell
 
@@ -137,5 +144,3 @@ void ServerCommunicationOSC::initTypeFactory()
 The getFactoryInstance function si responsible to return a DataFactory instance. In this case, a singleton. The initTypeFactory is the place where we will do the binding between receveived data type and sofa's type.
 For example, using OSC, if we received a float his tag type will be "f". The equivalent in sofa is the primitive type float.
 Then we bind "f" to float. In case of non existing data with type "f" the serverCommunication will create a sofa float data.
-
-TODO send/receive explanations
