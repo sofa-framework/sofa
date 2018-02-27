@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.1)
 project(SofaGuiGlut)
 
 find_package(SofaSimulation REQUIRED)
-
+find_package(GLUT REQUIRED)
 find_package(Boost COMPONENTS thread chrono )
 
 set(HEADER_FILES
