@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -66,20 +66,20 @@ public:
         bDraw.setValue (val);
     }
     void selfCollision (TriangleOctreeModel * cm1);
-    void addCollisionModel (core::CollisionModel * cm);
-    void addCollisionPair (const std::pair < core::CollisionModel *,
-            core::CollisionModel * >&cmPair);
+    void addCollisionModel (core::CollisionModel * cm) override;
+    virtual void addCollisionPair (const std::pair < core::CollisionModel *,
+            core::CollisionModel * >&cmPair) override;
 
     void findPairsVolume (CubeModel * cm1,
             CubeModel * cm2);
 
-    virtual void beginBroadPhase()
+    virtual void beginBroadPhase() override
     {
         core::collision::BroadPhaseDetection::beginBroadPhase();
         collisionModels.clear();
     }
 
-    void draw (const core::visual::VisualParams* vparams);
+    void draw (const core::visual::VisualParams* vparams) override;
 };
 
 }				// namespace collision

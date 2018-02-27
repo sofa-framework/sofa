@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -122,16 +122,16 @@ public:
     void removeConstraint(unsigned int index);
    
     /// -- Constraint interface
-    void init();
+    void init() override;
 
     /// Cancel the possible forces
-    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData);
+    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData) override;
     /// Cancel the possible velocities
-    void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData);
+    void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData) override;
     /// Apply the computed movements to the border mesh points between beginConstraintTime and endConstraintTime
-    void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData);
+    void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData) override;
 
-    void projectJacobianMatrix(const core::MechanicalParams* /*mparams*/, DataMatrixDeriv& /* cData */)
+    void projectJacobianMatrix(const core::MechanicalParams* /*mparams*/, DataMatrixDeriv& /* cData */) override
     {
         serr << "projectJacobianMatrix not implemented" << sendl;
     }
@@ -140,10 +140,10 @@ public:
     void getFinalPositions (VecCoord& finalPos, DataVecCoord& xData); 
 
     // Implement projectMatrix for assembled solver of compliant
-    virtual void projectMatrix( sofa::defaulttype::BaseMatrix* /*M*/, unsigned /*offset*/ );
+    virtual void projectMatrix( sofa::defaulttype::BaseMatrix* /*M*/, unsigned /*offset*/ ) override;
 
     /// Draw the constrained points (= border mesh points)
-     virtual void draw(const core::visual::VisualParams* vparams);
+     virtual void draw(const core::visual::VisualParams* vparams) override;
 
      class FCPointHandler : public component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >
     {

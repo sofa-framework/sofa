@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -57,23 +57,23 @@ protected:
     ~Monitor ();
 public:
     /// init data
-    virtual void init ();
+    virtual void init () override;
 
     /// reset Monitored values
-    virtual void reset ();
+    virtual void reset () override;
 
     /** initialize gnuplot files
         * called when ExportGnuplot box is checked
     */
-    virtual void reinit();
+    virtual void reinit() override;
 
     /** function called at every step of simulation;
         * store mechanical state vectors (forces, positions, velocities) into
         * the MonitorData nested class. The filter (which position(s), velocity(ies) or *force(s) are displayed) is made in the gui
     */
-    virtual void handleEvent( core::objectmodel::Event* ev );
+    virtual void handleEvent( core::objectmodel::Event* ev ) override;
 
-    virtual void draw (const core::visual::VisualParams* vparams);
+    virtual void draw (const core::visual::VisualParams* vparams) override;
 
     /// create gnuplot files
     virtual void initGnuplot ( const std::string path );
@@ -81,7 +81,7 @@ public:
     /// write in gnuplot files the Monitored desired data (velocities,positions,forces)
     virtual void exportGnuplot ( Real time );
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -94,26 +94,26 @@ public:
     /// Editable Data
     Data< helper::vector<unsigned int> > d_indices;
 
-    Data< bool > d_saveXToGnuplot;
-    Data< bool > d_saveVToGnuplot;
-    Data< bool > d_saveFToGnuplot;
+    Data< bool > d_saveXToGnuplot; ///< export Monitored positions as gnuplot file
+    Data< bool > d_saveVToGnuplot; ///< export Monitored velocities as gnuplot file
+    Data< bool > d_saveFToGnuplot; ///< export Monitored forces as gnuplot file
 
-    Data< bool > d_showPositions;
-    Data<RGBAColor > d_positionsColor;
+    Data< bool > d_showPositions; ///< see the Monitored positions
+    Data<RGBAColor > d_positionsColor; ///< define the color of positions
 
-    Data< bool > d_showVelocities;
-    Data< RGBAColor > d_velocitiesColor;
+    Data< bool > d_showVelocities; ///< see the Monitored velocities
+    Data< RGBAColor > d_velocitiesColor; ///< define the color of velocities
 
-    Data< bool > d_showForces;
-    Data< RGBAColor > d_forcesColor;
+    Data< bool > d_showForces; ///< see the Monitored forces
+    Data< RGBAColor > d_forcesColor; ///< define the color of forces
 
-    Data< double > d_showMinThreshold;
+    Data< double > d_showMinThreshold; ///< under this value, vectors are not represented
 
-    Data< bool > d_showTrajectories;
-    Data< double > d_trajectoriesPrecision;
-    Data< RGBAColor > d_trajectoriesColor;
+    Data< bool > d_showTrajectories; ///< print the trajectory of Monitored particles
+    Data< double > d_trajectoriesPrecision; ///< set the dt between to save of positions
+    Data< RGBAColor > d_trajectoriesColor; ///< define the color of the trajectories
 
-    Data< double > d_showSizeFactor;
+    Data< double > d_showSizeFactor; ///< factor to multiply to arrows
     core::objectmodel::DataFileName  d_fileName;
 
 protected:

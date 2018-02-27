@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -607,8 +607,8 @@ void TriangleSetTopologyModifier::addRemoveTriangles( const unsigned int nTri2Ad
     // Warn for the creation of all the triangles registered to be created
     this->addTrianglesWarning (nTri2Add, triangles2Add, trianglesIndex2Add, ancestors, baryCoefs);
 
-    // Propagate the topological changes *** not necessary ??
-    //m_modifier->propagateTopologicalChanges();
+    // Propagate the topological changes *** not necessary ?? => in some cases yes (chains of topology mapping and topology data containers depending on each other)
+    propagateTopologicalChanges();
 
     // Remove all the triangles registered to be removed
     this->removeTriangles(trianglesIndex2remove, true, true); // (WARNING then PROPAGATION) called before the removal process by the method "removeTriangles"

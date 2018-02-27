@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -87,7 +87,7 @@ protected:
 
     };
 
-    Data<sofa::helper::vector<Contact> > contacts;
+    Data<sofa::helper::vector<Contact> > contacts; ///< Contacts
 
     core::behavior::MechanicalState<DataTypes> * centerDOF;
 
@@ -95,16 +95,16 @@ protected:
 
 public:
 
-    Data<Coord> sphereCenter;
-    Data<Real> sphereRadius;
-    Data<Real> stiffness;
-    Data<Real> damping;
-    Data<defaulttype::RGBAColor> color;
-    Data<bool> bDraw;
-    Data<std::string> centerState;
-    Data < bool > active;
-    Data < char > keyEvent;
-    Data < Real > filter;
+    Data<Coord> sphereCenter; ///< sphere center
+    Data<Real> sphereRadius; ///< sphere radius
+    Data<Real> stiffness; ///< force stiffness
+    Data<Real> damping; ///< force damping
+    Data<defaulttype::RGBAColor> color; ///< sphere color. (default=[0,0,1,1])
+    Data<bool> bDraw; ///< enable/disable drawing of the sphere
+    Data<std::string> centerState; ///< path to the MechanicalState controlling the center point
+    Data < bool > active; ///< Activate this object. Note that this can be dynamically controlled by using a key
+    Data < char > keyEvent; ///< key to press to activate this object until the key is released
+    Data < Real > filter; ///< filter
 protected:
     VaccumSphereForceField()
         : contacts(initData(&contacts,"contacts", "Contacts"))
@@ -138,12 +138,12 @@ protected:
         damping.setValue( damp );
     }
 
-    virtual void init();
+    virtual void init() override;
 
-    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
+    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
+    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
 
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
     {
         serr << "Get potentialEnergy not implemented" << sendl;
         return 0.0;
@@ -151,9 +151,9 @@ protected:
 
     virtual void updateStiffness( const VecCoord& x );
 
-    virtual void handleEvent(sofa::core::objectmodel::Event* event);
+    virtual void handleEvent(sofa::core::objectmodel::Event* event) override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_VACCUMSPHEREFORCEFIELD_CPP)

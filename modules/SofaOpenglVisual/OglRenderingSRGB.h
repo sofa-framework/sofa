@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -56,8 +56,8 @@ class SOFA_OPENGL_VISUAL_API OglRenderingSRGB : public core::visual::VisualManag
 public:
     SOFA_CLASS(OglRenderingSRGB, core::visual::VisualManager);
 
-    void fwdDraw(core::visual::VisualParams* );
-    void bwdDraw(core::visual::VisualParams* );
+    void fwdDraw(core::visual::VisualParams* ) override;
+    void bwdDraw(core::visual::VisualParams* ) override;
 };
 
 }//namespace visualmodel

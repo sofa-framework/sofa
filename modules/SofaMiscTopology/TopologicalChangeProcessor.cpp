@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -935,7 +935,7 @@ void TopologicalChangeProcessor::saveIndices()
                 int triIndex;
                 findElementIndex(Vector3(newPosition), triIndex, -1);
 
-                msg_error_when(triIndex==-1)
+                msg_error_when( (triIndex==-1) )
                         << "Error while searching triangle index." ;
 
                 triangleIncisionInformation[i].triangleIndices[0] = (unsigned int) triIndex;

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -53,12 +53,12 @@ public:
     typedef TVector Vector;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
 
-    Data<bool> f_verbose;
+    Data<bool> f_verbose; ///< Dump system state at each iteration
 
     SparseCholeskySolver();
     ~SparseCholeskySolver();
-    void solve (Matrix& M, Vector& x, Vector& b);
-    void invert(Matrix& M);
+    void solve (Matrix& M, Vector& x, Vector& b) override;
+    void invert(Matrix& M) override;
 
 public :
     cs A;

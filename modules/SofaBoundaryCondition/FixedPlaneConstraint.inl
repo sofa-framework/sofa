@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -259,19 +259,17 @@ void FixedPlaneConstraint<DataTypes>::init()
 template <class DataTypes>
 void FixedPlaneConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    glDisable (GL_LIGHTING);
-    glPointSize(10);
-    glColor4f (1,1.0,0.5,1);
-    glBegin (GL_POINTS);
+    vparams->drawTool()->disableLighting();
+
+    sofa::helper::vector<sofa::defaulttype::Vector3> points;
     for (helper::vector< unsigned int >::const_iterator it = this->indices.getValue().begin(); it != this->indices.getValue().end(); ++it)
     {
-        helper::gl::glVertexT(x[*it]);
+        points.push_back({x[*it][0], x[*it][1], x[*it][2]});
     }
-    glEnd();
-#endif /* SOFA_NO_OPENGL */
+
+    vparams->drawTool()->drawPoints(points, 10, {1,1.0,0.5,1});
 }
 
 } // namespace constraint

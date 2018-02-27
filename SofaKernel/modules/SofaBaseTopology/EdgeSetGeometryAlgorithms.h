@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -83,13 +83,13 @@ protected:
         , _drawColor(initData(&_drawColor, RGBAColor(0.4f,1.0f,0.3f, 1.0f), "drawColorEdges", "RGB code color used to draw edges."))
     {
     }
-    virtual ~EdgeSetGeometryAlgorithms() {}
+    virtual ~EdgeSetGeometryAlgorithms() override {}
 
     void defineEdgeCubaturePoints();
 public:
     //virtual void reinit();
 
-    virtual void draw(const core::visual::VisualParams* vparams);
+    virtual void draw(const core::visual::VisualParams* vparams) override;
 
     /// computes the length of edge no i and returns it
     Real computeEdgeLength(const EdgeID i) const;
@@ -158,15 +158,15 @@ public:
     /** \brief Process the added point initialization according to the topology and local coordinates.
     */
     virtual void initPointAdded(unsigned int indice, const core::topology::PointAncestorElem &ancestorElem
-        , const helper::vector< VecCoord* >& coordVecs, const helper::vector< VecDeriv* >& derivVecs);
+        , const helper::vector< VecCoord* >& coordVecs, const helper::vector< VecDeriv* >& derivVecs) override;
 
     /** return a pointer to the container of cubature points */
     NumericalIntegrationDescriptor<Real,1> &getEdgeNumericalIntegrationDescriptor();
 
 protected:
-    Data<bool> showEdgeIndices;
-    Data<bool>  _draw;
-    Data<RGBAColor> _drawColor;
+    Data<bool> showEdgeIndices; ///< Debug : view Edge indices.
+    Data<bool>  _draw; ///< if true, draw the edges in the topology.
+    Data<RGBAColor> _drawColor; ///< RGB code color used to draw edges.
     /// include cubature points
     NumericalIntegrationDescriptor<Real,1> edgeNumericalIntegration;
 };

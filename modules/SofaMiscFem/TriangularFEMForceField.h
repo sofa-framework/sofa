@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -112,13 +112,13 @@ protected:
 
     virtual ~TriangularFEMForceField();
 public:
-    virtual void init();
-    virtual void reinit();
-    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx);
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const;
+    virtual void init() override;
+    virtual void reinit() override;
+    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
+    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx) override;
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
     //}
 
     /// Class to store FEM information on each triangle, for topology modification handling
@@ -213,8 +213,8 @@ public:
 
     /// Topology Data
     topology::TriangleData<sofa::helper::vector<TriangleInformation> > triangleInfo;
-    topology::PointData<sofa::helper::vector<VertexInformation> > vertexInfo;
-    topology::EdgeData<sofa::helper::vector<EdgeInformation> > edgeInfo;
+    topology::PointData<sofa::helper::vector<VertexInformation> > vertexInfo; ///< Internal point data
+    topology::EdgeData<sofa::helper::vector<EdgeInformation> > edgeInfo; ///< Internal edge data
 
 
     class TRQSTriangleHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Triangle,helper::vector<TriangleInformation> >
@@ -328,26 +328,26 @@ public:
 
     /// Forcefield intern paramaters
     int method;
-    Data<std::string> f_method;
-    Data<helper::vector<Real> > f_poisson;
-    Data<helper::vector<Real> > f_young;
-    Data<Real> f_damping;
+    Data<std::string> f_method; ///< large: large displacements, small: small displacements
+    Data<helper::vector<Real> > f_poisson; ///< Poisson ratio in Hooke's law (vector)
+    Data<helper::vector<Real> > f_young; ///< Young modulus in Hooke's law (vector)
+    Data<Real> f_damping; ///< Ratio damping/stiffness
 
     /// Initial strain parameters (if FEM is initialised with predefine values)
     Data< sofa::helper::vector <helper::fixed_array<Coord,3> > > m_rotatedInitialElements;
-    Data< sofa::helper::vector <Transformation> > m_initialTransformation;
+    Data< sofa::helper::vector <Transformation> > m_initialTransformation; ///< Flag activating rendering of stress directions within each triangle
 
     /// Fracture parameters
     Data<bool> f_fracturable;
-    Data<Real> hosfordExponant;
-    Data<Real> criteriaValue;
+    Data<Real> hosfordExponant; ///< Exponant in the Hosford yield criteria
+    Data<Real> criteriaValue; ///< Fracturable threshold used to draw fracturable triangles
 
     /// Display parameters
     Data<bool> showStressValue;
-    Data<bool> showStressVector;
-    Data<bool> showFracturableTriangles;
+    Data<bool> showStressVector; ///< Flag activating rendering of stress directions within each triangle
+    Data<bool> showFracturableTriangles; ///< Flag activating rendering of triangles to fracture
 
-    Data<bool> f_computePrincipalStress;
+    Data<bool> f_computePrincipalStress; ///< Compute principal stress for each triangle
 
     TRQSTriangleHandler* triangleHandler;
 
@@ -358,12 +358,12 @@ public:
     sofa::helper::vector<std::map<std::string, sofa::helper::vector<double> > > allGraphOrientation;
 
     //the index of element we want to display the graphs
-    Data<Real>  elementID;
+    Data<Real>  elementID; ///< element id to follow for fracture criteria
 
     //data storing the values along time for the element with index elementID
-    Data<std::map < std::string, sofa::helper::vector<double> > > f_graphStress;
-    Data<std::map < std::string, sofa::helper::vector<double> > > f_graphCriteria;
-    Data<std::map < std::string, sofa::helper::vector<double> > > f_graphOrientation;
+    Data<std::map < std::string, sofa::helper::vector<double> > > f_graphStress; ///< Graph of max stress corresponding to the element id
+    Data<std::map < std::string, sofa::helper::vector<double> > > f_graphCriteria; ///< Graph of the fracture criteria corresponding to the element id
+    Data<std::map < std::string, sofa::helper::vector<double> > > f_graphOrientation; ///< Graph of the orientation of the principal stress direction corresponding to the element id
 #endif
 
 };

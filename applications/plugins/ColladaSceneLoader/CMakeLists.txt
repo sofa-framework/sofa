@@ -55,6 +55,12 @@ install(DIRECTORY Demos/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
 
 # Copy Assimp DLLs on Windows
 if(WIN32)
-    file(COPY ${ASSIMP_DLLS} DESTINATION bin)
+    if(CMAKE_CONFIGURATION_TYPES) # Multi-config generator (MSVC)
+        foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
+            file(COPY ${ASSIMP_DLLS} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CONFIG}")
+        endforeach()
+    else()                      # Single-config generator (nmake)
+        file(COPY ${ASSIMP_DLLS} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
+    endif()
     install(FILES ${ASSIMP_DLLS} DESTINATION bin)
 endif()

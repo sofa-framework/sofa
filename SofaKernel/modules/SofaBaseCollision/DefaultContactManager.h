@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -49,8 +49,8 @@ protected:
     ContactMap contactMap;
 
 public:
-    Data<sofa::helper::OptionsGroup> response;
-    Data<std::string> responseParams;
+    Data<sofa::helper::OptionsGroup> response; ///< contact response class
+    Data<std::string> responseParams; ///< contact response parameters (syntax: name1=value1    Data<std::string> responseParams;name2=value2    Data<std::string> responseParams;...)
 protected:
     DefaultContactManager();
     ~DefaultContactManager();
@@ -60,10 +60,10 @@ public:
 
     /// outputsVec fixes the reproducibility problems by storing contacts in the collision detection saved order
     /// if not given, it is still working but with eventual reproducibility problems
-    void createContacts(const DetectionOutputMap& outputs);
+    void createContacts(const DetectionOutputMap& outputs) override;
 
-    void init();
-    void draw(const core::visual::VisualParams* vparams);
+    void init() override;
+    void draw(const core::visual::VisualParams* vparams) override;
 
     template<class T>
     static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
@@ -84,17 +84,17 @@ public:
         return obj;
     }
 
-    void reset();
-    void cleanup();
+    void reset() override;
+    void cleanup() override;
 
-    virtual std::string getContactResponse(core::CollisionModel* model1, core::CollisionModel* model2);
+    virtual std::string getContactResponse(core::CollisionModel* model1, core::CollisionModel* model2) override;
 
     /// virtual methods used for cleaning the pipeline after a dynamic graph node deletion.
     /**
      * Contacts can be attached to a deleted node and their deletion is a problem for the pipeline.
      * @param c is the list of deleted contacts.
      */
-    virtual void removeContacts(const ContactVector &/*c*/);
+    virtual void removeContacts(const ContactVector &/*c*/) override;
     void setDefaultResponseType(const std::string &responseT)
     {
         if (response.getValue().size() == 0)
@@ -120,7 +120,7 @@ protected:
 
     std::map<Instance,ContactMap> storedContactMap;
 
-    virtual void changeInstance(Instance inst)
+    virtual void changeInstance(Instance inst) override
     {
         core::collision::ContactManager::changeInstance(inst);
         storedContactMap[instance].swap(contactMap);

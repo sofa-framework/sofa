@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -74,11 +74,11 @@ protected:
     PlaneForceFieldInternalData<DataTypes> m_data;
 
 public:
-    Data<DPos> d_planeNormal;
-    Data<Real> d_planeD;
-    Data<Real> d_stiffness;
-    Data<Real> d_damping;
-    Data<Real> d_maxForce;
+    Data<DPos> d_planeNormal; ///< plane normal. (default=[0,1,0])
+    Data<Real> d_planeD; ///< plane d coef. (default=0)
+    Data<Real> d_stiffness; ///< force stiffness. (default=500)
+    Data<Real> d_damping; ///< force damping. (default=5)
+    Data<Real> d_maxForce; ///< if non-null , the max force that can be applied to the object. (default=0)
 
     /// option bilateral : if true, the force field is applied on both side of the plane
     Data<bool> d_bilateral;
@@ -87,9 +87,9 @@ public:
     /// range are discarded (useful for parallelization using mesh partitionning)
     Data< defaulttype::Vec<2,int> > d_localRange;
 
-    Data<bool>                   d_drawIsEnabled;
-    Data<defaulttype::RGBAColor> d_drawColor;
-    Data<Real>                   d_drawSize;
+    Data<bool>                   d_drawIsEnabled; ///< enable/disable drawing of plane. (default=false)
+    Data<defaulttype::RGBAColor> d_drawColor; ///< plane color. (default=[0.0,0.5,0.2,1.0])
+    Data<Real>                   d_drawSize; ///< plane display size if draw is enabled. (default=10)
 
 protected:
     PlaneForceField() ;
@@ -111,20 +111,20 @@ public:
     void rotate( Deriv axe, Real angle ); // around the origin (0,0,0)
 
     /// Inherited from ForceField.
-    virtual void init();
+    virtual void init() override;
     virtual void addForce(const core::MechanicalParams* mparams,
-                          DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
+                          DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
     virtual void addDForce(const core::MechanicalParams* mparams,
-                           DataVecDeriv& df, const DataVecDeriv& dx);
+                           DataVecDeriv& df, const DataVecDeriv& dx) override;
     virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/,
-                                     const DataVecCoord&  /* x */) const;
+                                     const DataVecCoord&  /* x */) const override;
     virtual void updateStiffness( const VecCoord& x );
     virtual void addKToMatrix(const core::MechanicalParams*
-                              mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix );
+                              mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix ) override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
     void drawPlane(const core::visual::VisualParams*, float size=0.0f);
-    void computeBBox(const core::ExecParams *, bool onlyVisible=false);
+    void computeBBox(const core::ExecParams *, bool onlyVisible=false) override;
 
 };
 

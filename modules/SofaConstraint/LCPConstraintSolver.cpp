@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -1116,7 +1116,7 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f, std:
     msg_info_when( displayTime.getValue() ) <<" GAUSS_SEIDEL iterations  "
                                            << ( (double) timer.getTime() - time)*timeScale<<" ms" ;
 
-    msg_error() << "No convergence in  unbuilt nlcp gaussseidel function : error ="
+    msg_warning() << "No convergence in  unbuilt nlcp gaussseidel function : error ="
                 <<error <<" after"<< it<<" iterations";
 
     return 0;
@@ -1320,7 +1320,7 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f, std::
 
     sofa::helper::AdvancedTimer::valSet("GS iterations", it);
 
-    msg_error() <<" No convergence in  unbuilt lcp gaussseidel function : error ="
+    msg_warning() <<" No convergence in  unbuilt lcp gaussseidel function : error ="
                 <<error <<" after"<< it<<" iterations";
 
     return 0;
@@ -1331,7 +1331,7 @@ ConstraintProblem* LCPConstraintSolver::getConstraintProblem()
     return last_lcp;
 }
 
-void LCPConstraintSolver::lockConstraintProblem(ConstraintProblem* l1, ConstraintProblem* l2)
+void LCPConstraintSolver::lockConstraintProblem(sofa::core::objectmodel::BaseObject* /*from*/, ConstraintProblem* l1, ConstraintProblem* l2)
 {
     if((lcp!=l1)&&(lcp!=l2)) // Le lcp courant n'est pas locké
         return;

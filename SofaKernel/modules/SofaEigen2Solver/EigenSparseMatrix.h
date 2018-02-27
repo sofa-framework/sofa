@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -652,6 +652,15 @@ template<> inline const char* EigenSparseMatrix<defaulttype::Vec3fTypes, default
     }
 
 
+namespace defaulttype {
+
+template<class TIn, class TOut>
+struct DataTypeInfo< component::linearsolver::EigenSparseMatrix<TIn, TOut> > 
+    : DataTypeInfo< typename component::linearsolver::EigenSparseMatrix<TIn, TOut>::Inherit > {
+    
+};
+
+}
 
 } // namespace sofa
 

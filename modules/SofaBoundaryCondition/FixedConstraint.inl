@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -70,17 +70,18 @@ void FixedConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(unsigned i
 template <class DataTypes>
 FixedConstraint<DataTypes>::FixedConstraint()
     : core::behavior::ProjectiveConstraintSet<DataTypes>(NULL)
-    , f_indices( initData(&f_indices,"indices","Indices of the fixed points") )
-    , f_fixAll( initData(&f_fixAll,false,"fixAll","filter all the DOF to implement a fixed object") )
-    , f_showObject(initData(&f_showObject,true,"showObject","draw or not the fixed constraints"))
-    , f_drawSize( initData(&f_drawSize,(SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
+    , d_indices( initData(&d_indices,"indices","Indices of the fixed points") )
+    , d_fixAll( initData(&d_fixAll,false,"fixAll","filter all the DOF to implement a fixed object") )
+    , d_showObject(initData(&d_showObject,true,"showObject","draw or not the fixed constraints"))
+    , d_drawSize( initData(&d_drawSize,(SReal)0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
+    , d_projectVelocity( initData(&d_projectVelocity,false,"activate_projectVelocity","activate project velocity to set velocity") )
     , data(new FixedConstraintInternalData<DataTypes>())
 {
     // default to indice 0
-    f_indices.beginEdit()->push_back(0);
-    f_indices.endEdit();
+    d_indices.beginEdit()->push_back(0);
+    d_indices.endEdit();
 
-    pointHandler = new FCPointHandler(this, &f_indices);
+    pointHandler = new FCPointHandler(this, &d_indices);
 }
 
 
@@ -96,22 +97,22 @@ FixedConstraint<DataTypes>::~FixedConstraint()
 template <class DataTypes>
 void FixedConstraint<DataTypes>::clearConstraints()
 {
-    f_indices.beginEdit()->clear();
-    f_indices.endEdit();
+    d_indices.beginEdit()->clear();
+    d_indices.endEdit();
 }
 
 template <class DataTypes>
 void FixedConstraint<DataTypes>::addConstraint(unsigned int index)
 {
-    f_indices.beginEdit()->push_back(index);
-    f_indices.endEdit();
+    d_indices.beginEdit()->push_back(index);
+    d_indices.endEdit();
 }
 
 template <class DataTypes>
 void FixedConstraint<DataTypes>::removeConstraint(unsigned int index)
 {
-    removeValue(*f_indices.beginEdit(),index);
-    f_indices.endEdit();
+    removeValue(*d_indices.beginEdit(),index);
+    d_indices.endEdit();
 }
 
 // -- Constraint interface
@@ -128,10 +129,10 @@ void FixedConstraint<DataTypes>::init()
     //    serr << "Can not find the topology." << sendl;
 
     // Initialize functions and parameters
-    f_indices.createTopologicalEngine(topology, pointHandler);
-    f_indices.registerTopologicalData();
+    d_indices.createTopologicalEngine(topology, pointHandler);
+    d_indices.registerTopologicalData();
 
-    const SetIndexArray & indices = f_indices.getValue();
+    const SetIndexArray & indices = d_indices.getValue();
 
     unsigned int maxIndex=this->mstate->getSize();
     for (unsigned int i=0; i<indices.size(); ++i)
@@ -160,7 +161,7 @@ void FixedConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMatrix* M
 {
     static const unsigned blockSize = DataTypes::deriv_total_size;
 
-    if( f_fixAll.getValue()==true )
+    if( d_fixAll.getValue()==true )
     {
         unsigned size = this->mstate->getSize();
         for( unsigned i=0; i<size; i++ )
@@ -171,7 +172,7 @@ void FixedConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMatrix* M
     else
     {
         // clears the rows and columns associated with fixed particles
-        for(SetIndexArray::const_iterator it= f_indices.getValue().begin(), iend=f_indices.getValue().end(); it!=iend; it++ )
+        for(SetIndexArray::const_iterator it= d_indices.getValue().begin(), iend=d_indices.getValue().end(); it!=iend; it++ )
         {
             M->clearRowsCols( offset + (*it) * blockSize, offset + (*it+1) * (blockSize) );
         }
@@ -185,9 +186,9 @@ void FixedConstraint<DataTypes>::projectResponse(const core::MechanicalParams* m
 //    cerr<<"FixedConstraint<DataTypes>::projectResponse is called "<<endl;
 //    assert(false);
     helper::WriteAccessor<DataVecDeriv> res ( mparams, resData );
-    const SetIndexArray & indices = f_indices.getValue(mparams);
+    const SetIndexArray & indices = d_indices.getValue(mparams);
     //serr<<"FixedConstraint<DataTypes>::projectResponse, dx.size()="<<res.size()<<sendl;
-    if( f_fixAll.getValue(mparams) )
+    if( d_fixAll.getValue(mparams) )
     {
         // fix everything
         typename VecDeriv::iterator it;
@@ -211,12 +212,12 @@ template <class DataTypes>
 void FixedConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData)
 {
     helper::WriteAccessor<DataMatrixDeriv> c ( mparams, cData );
-    const SetIndexArray & indices = f_indices.getValue(mparams);
+    const SetIndexArray & indices = d_indices.getValue(mparams);
 
     MatrixDerivRowIterator rowIt = c->begin();
     MatrixDerivRowIterator rowItEnd = c->end();
 
-    if( f_fixAll.getValue(mparams) )
+    if( d_fixAll.getValue(mparams) )
     {
         // fix everything
         while (rowIt != rowItEnd)
@@ -245,12 +246,13 @@ void FixedConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalPar
 // When a new fixed point is added while its velocity vector is already null, projectVelocity is not usefull.
 // But when a new fixed point is added while its velocity vector is not null, it's necessary to fix it to null. If not, the fixed point is going to drift.
 template <class DataTypes>
-void FixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/, DataVecDeriv& /*vData*/)
+void FixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData)
 {
-#if 0 /// @todo ADD A FLAG FOR THIS
-    const SetIndexArray & indices = f_indices.getValue();
-    //serr<<"FixedConstraint<DataTypes>::projectVelocity, res.size()="<<res.size()<<sendl;
-    if( f_fixAll.getValue()==true )    // fix everyting
+    if(!d_projectVelocity.getValue()) return;
+    const SetIndexArray & indices = this->d_indices.getValue();
+    helper::WriteAccessor<DataVecDeriv> res ( mparams, vData );
+
+    if( this->d_fixAll.getValue()==true )    // fix everyting
     {
         for( unsigned i=0; i<res.size(); i++ )
             res[i] = Deriv();
@@ -263,8 +265,8 @@ void FixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /
             res[*it] = Deriv();
         }
     }
-#endif
 }
+
 
 template <class DataTypes>
 void FixedConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/, DataVecCoord& /*xData*/)
@@ -282,7 +284,7 @@ void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* m
         //sout << "applyConstraint in Matrix with offset = " << offset << sendl;
         //cerr<<"FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset) is called "<<endl;
         const unsigned int N = Deriv::size();
-        const SetIndexArray & indices = f_indices.getValue();
+        const SetIndexArray & indices = d_indices.getValue();
 
         //TODO take f_fixAll into account
 
@@ -314,7 +316,7 @@ void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* m
         //TODO take f_fixAll into account
 
 
-        const SetIndexArray & indices = f_indices.getValue();
+        const SetIndexArray & indices = d_indices.getValue();
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
             for (unsigned int c=0; c<N; ++c)
@@ -330,21 +332,21 @@ template <class DataTypes>
 void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
-    if (!f_showObject.getValue()) return;
+    if (!d_showObject.getValue()) return;
     if (!this->isActive()) return;
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     //serr<<"FixedConstraint<DataTypes>::draw(), x.size() = "<<x.size()<<sendl;
 
     vparams->drawTool()->saveLastState();
 
-    const SetIndexArray & indices = f_indices.getValue();
+    const SetIndexArray & indices = d_indices.getValue();
 
-    if( f_drawSize.getValue() == 0) // old classical drawing by points
+    if( d_drawSize.getValue() == 0) // old classical drawing by points
     {
         std::vector< sofa::defaulttype::Vector3 > points;
         sofa::defaulttype::Vector3 point;
         //serr<<"FixedConstraint<DataTypes>::draw(), indices = "<<indices<<sendl;
-        if( f_fixAll.getValue() )
+        if( d_fixAll.getValue() )
             for (unsigned i=0; i<x.size(); i++ )
             {
                 point = DataTypes::getCPos(x[i]);
@@ -367,7 +369,7 @@ void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 
         std::vector< sofa::defaulttype::Vector3 > points;
         sofa::defaulttype::Vector3 point;
-        if( f_fixAll.getValue()==true )
+        if( d_fixAll.getValue()==true )
             for (unsigned i=0; i<x.size(); i++ )
             {
                 point = DataTypes::getCPos(x[i]);
@@ -382,7 +384,7 @@ void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
                 points.push_back(point);
             }
         }
-        vparams->drawTool()->drawSpheres(points, (float)f_drawSize.getValue(), sofa::defaulttype::Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
+        vparams->drawTool()->drawSpheres(points, (float)d_drawSize.getValue(), sofa::defaulttype::Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
     }
 
     vparams->drawTool()->restoreLastState();

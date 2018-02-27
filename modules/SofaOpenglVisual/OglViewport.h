@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -48,18 +48,19 @@ public:
 
     SOFA_CLASS(OglViewport, core::visual::VisualManager);
 
-    Data<defaulttype::Vec<2, int> > p_screenPosition;
-    Data<defaulttype::Vec<2, unsigned int> > p_screenSize;
-    Data<defaulttype::Vec3f> p_cameraPosition;
-    Data<defaulttype::Quat> p_cameraOrientation;
-    Data<RigidCoord > p_cameraRigid;
-    Data<double> p_zNear, p_zFar;
-    Data<double> p_fovy;
-    Data<bool> p_enabled;
-    Data<bool> p_advancedRendering;
-    Data<bool> p_useFBO;
-    Data<bool> p_swapMainView;
-    Data<bool> p_drawCamera;
+    Data<defaulttype::Vec<2, int> > p_screenPosition; ///< Viewport position
+    Data<defaulttype::Vec<2, unsigned int> > p_screenSize; ///< Viewport size
+    Data<defaulttype::Vec3f> p_cameraPosition; ///< Camera's position in eye's space
+    Data<defaulttype::Quat> p_cameraOrientation; ///< Camera's orientation
+    Data<RigidCoord > p_cameraRigid; ///< Camera's rigid coord
+    Data<double> p_zNear; ///< Camera's ZNear
+    Data<double> p_zFar; ///< Camera's ZFar
+    Data<double> p_fovy; ///< Field of View (Y axis)
+    Data<bool> p_enabled; ///< Enable visibility of the viewport
+    Data<bool> p_advancedRendering; ///< If true, viewport will be hidden if advancedRendering visual flag is not enabled
+    Data<bool> p_useFBO; ///< Use a FBO to render the viewport
+    Data<bool> p_swapMainView; ///< Swap this viewport with the main view
+    Data<bool> p_drawCamera; ///< Draw a frame representing the camera (see it in main viewport)
 
     helper::gl::FrameBufferObject fbo;
 
@@ -67,12 +68,12 @@ protected:
     OglViewport();
     virtual ~OglViewport();
 public:
-    void init();
-    void draw(const core::visual::VisualParams* vparams);
-    void initVisual();
-    void preDrawScene(core::visual::VisualParams* vp);
-    bool drawScene(core::visual::VisualParams* vp);
-    void postDrawScene(core::visual::VisualParams* vp);
+    void init() override;
+    void draw(const core::visual::VisualParams* vparams) override;
+    void initVisual() override;
+    void preDrawScene(core::visual::VisualParams* vp) override;
+    bool drawScene(core::visual::VisualParams* vp) override;
+    void postDrawScene(core::visual::VisualParams* vp) override;
 
     bool isVisible(const core::visual::VisualParams* vparams);
 

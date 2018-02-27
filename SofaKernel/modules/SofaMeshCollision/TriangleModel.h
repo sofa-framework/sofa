@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -133,7 +133,7 @@ public:
 
 	enum { NBARY = 2 };
 
-    Data<bool> bothSide; // to activate collision on both side of the triangle model
+    Data<bool> bothSide; ///< to activate collision on both side of the triangle model
 protected:
 #if 0
     struct TriangleInfo
@@ -170,7 +170,7 @@ protected:
     int getTriangleFlags(int i);
 
     core::behavior::MechanicalState<DataTypes>* mstate;
-    Data<bool> computeNormals;
+    Data<bool> computeNormals; ///< set to false to disable computation of triangles normal
     int meshRevision;
 
     sofa::core::topology::BaseMeshTopology* _topology;
@@ -183,23 +183,23 @@ protected:
 
     TTriangleModel();
 public:
-    virtual void init();
+    virtual void init() override;
 
     // -- CollisionModel interface
 
-    virtual void resize(int size);
+    virtual void resize(int size) override;
 
-    virtual void computeBoundingTree(int maxDepth=0);
+    virtual void computeBoundingTree(int maxDepth=0) override;
 
-    virtual void computeContinuousBoundingTree(double dt, int maxDepth=0);
+    virtual void computeContinuousBoundingTree(double dt, int maxDepth=0) override;
 
-    void draw(const core::visual::VisualParams*,int index);
+    void draw(const core::visual::VisualParams*,int index) override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
-    virtual bool canCollideWithElement(int index, CollisionModel* model2, int index2);
+    virtual bool canCollideWithElement(int index, CollisionModel* model2, int index2) override;
 
-    virtual void handleTopologyChange();
+    virtual void handleTopologyChange() override;
 
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return mstate; }
     const core::behavior::MechanicalState<DataTypes>* getMechanicalState() const { return mstate; }
@@ -234,7 +234,7 @@ public:
         return BaseObject::canCreate(obj, context, arg);
     }
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -244,7 +244,7 @@ public:
         return DataTypes::Name();
     }
 
-    virtual void computeBBox(const core::ExecParams* params, bool onlyVisible=false);
+    virtual void computeBBox(const core::ExecParams* params, bool onlyVisible=false) override;
 };
 
 template<class DataTypes>

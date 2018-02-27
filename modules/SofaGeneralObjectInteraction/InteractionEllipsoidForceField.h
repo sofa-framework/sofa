@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -103,7 +103,7 @@ protected:
 
     };
 
-    Data<sofa::helper::vector<Contact> > contacts;
+    Data<sofa::helper::vector<Contact> > contacts; ///< Contacts
 
     InteractionEllipsoidForceFieldInternalData<DataTypes1, DataTypes2> data;
 
@@ -111,15 +111,15 @@ protected:
     void initCalcF();
 
 public:
-    Data<VecCoord1> center;
-    Data<VecCoord1> vradius;
-    Data<Real1> stiffness;
-    Data<Real1> damping;
-    Data<defaulttype::RGBAColor> color;
-    Data<bool> bDraw;
-    Data<int> object2_dof_index;
-    Data<bool> object2_forces;
-    Data<bool> object2_invert;
+    Data<VecCoord1> center; ///< ellipsoid center
+    Data<VecCoord1> vradius; ///< ellipsoid radius
+    Data<Real1> stiffness; ///< force stiffness (positive to repulse outward, negative inward)
+    Data<Real1> damping; ///< force damping
+    Data<defaulttype::RGBAColor> color; ///< ellipsoid color. (default=[0.0,0.5,1.0,1.0])
+    Data<bool> bDraw; ///< enable/disable drawing of the ellipsoid
+    Data<int> object2_dof_index; ///< Dof index of object 2 where the forcefield is attached
+    Data<bool> object2_forces; ///< enable/disable propagation of forces to object 2
+    Data<bool> object2_invert; ///< inverse transform from object 2 (use when object 1 is in local coordinates within a frame defined by object 2)
 
 protected:
     InteractionEllipsoidForceField()
@@ -146,18 +146,18 @@ public:
         damping.setValue( damp );
     }
 
-    virtual void addForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv1& f1, DataVecDeriv2& f2, const DataVecCoord1& x1, const DataVecCoord2& x2, const DataVecDeriv1& v1, const DataVecDeriv2& v2);
+    virtual void addForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv1& f1, DataVecDeriv2& f2, const DataVecCoord1& x1, const DataVecCoord2& x2, const DataVecDeriv1& v1, const DataVecDeriv2& v2) override;
 
     virtual void addForce2(DataVecDeriv1& f1, DataVecDeriv2& f2, const DataVecCoord1& p1, const DataVecCoord2& p2, const DataVecDeriv1& v1, const DataVecDeriv2& v2);
 
-    virtual void addDForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv1& df1, DataVecDeriv2& df2, const DataVecDeriv1& dx1, const DataVecDeriv2& dx2);
+    virtual void addDForce(const sofa::core::MechanicalParams* mparams, DataVecDeriv1& df1, DataVecDeriv2& df2, const DataVecDeriv1& dx1, const DataVecDeriv2& dx2) override;
 
-    virtual SReal getPotentialEnergy(const sofa::core::MechanicalParams* mparams, const DataVecCoord1& x1, const DataVecCoord2& x2)const;
+    virtual SReal getPotentialEnergy(const sofa::core::MechanicalParams* mparams, const DataVecCoord1& x1, const DataVecCoord2& x2)const override;
 
-    void init();
-    void reinit();
+    void init() override;
+    void reinit() override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
 protected:
     struct TempVars

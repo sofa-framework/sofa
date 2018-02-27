@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -76,43 +76,6 @@ void GraphScatteredMatrix::apply(GraphScatteredVector& res, GraphScatteredVector
     parent->projectResponse(res);     // q is projected to the constrained space
 }
 
-#ifdef SOFA_SMP
-void GraphScatteredMatrix::apply(ParallelGraphScatteredVector& res, ParallelGraphScatteredVector& x)
-{
-    // matrix-vector product
-#if 0
-    // may not have their SMP version
-    // new more powerful visitors
-    parent->propagateDxAndResetDf(x,res);
-    parent->addMBKdx(res,mFact,bFact,kFact, false); // df = (m M + b B + k K) dx
-
-#else
-    parent->propagateDx(x);          // dx = p
-    parent->computeDf(res);            // q = K p
-
-    if (parent->mparams.kFactor() != 1.0)
-        res *= parent->mparams.kFactor(); // q = k K p
-
-    // apply global Rayleigh damping
-    // TODO : check
-//    if (parent->mparams.kFactor() == 1.0)
-//    {
-//        parent->addMdx(res); // no need to propagate p as dx again
-//    }
-    /* else */ if (parent->mparams.mFactor() != 0.0)
-    {
-        parent->addMdx(res,core::MultiVecDerivId::null(),parent->mparams.mFactor()); // no need to propagate p as dx again
-    }
-    // q = (m M + k K) p
-
-    /// @TODO: any damping (i.e. the B factor & rayleigh)
-#endif
-
-    // filter the product to take the constraints into account
-    //
-    parent->projectResponse(res);     // q is projected to the constrained space
-}
-#endif
 
 } // namespace linearsolver
 

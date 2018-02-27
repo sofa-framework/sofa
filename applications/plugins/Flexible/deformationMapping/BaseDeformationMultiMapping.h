@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -243,14 +243,14 @@ public:
     Data<VecVRef > f_index2;            ///< The numChildren * numRefs column indices. index2[i][j] is the index of the j-th parent of type 2 influencing child i.
 //    VecVRef f_index_parentToChild1;            ///< Constructed at init from f_index1 to parallelize applyJT. index_parentToChild[i][j] is the index of the j-th children influenced by parent i of type 1.
 //    VecVRef f_index_parentToChild2;            ///< Constructed at init from f_index2 to parallelize applyJT. index_parentToChild[i][j] is the index of the j-th children influenced by parent i of type 2.
-    Data<VecVReal >       f_w;
-    Data<VecVGradient >   f_dw;
-    Data<VecVHessian >    f_ddw;
+    Data<VecVReal >       f_w; ///< influence weights of the Dofs
+    Data<VecVGradient >   f_dw; ///< weight gradients
+    Data<VecVHessian >    f_ddw; ///< weight Hessians
     Data<VMaterialToSpatial>    f_F0;   ///< initial value of deformation gradients
     Data< helper::vector<int> > f_cell;    ///< indices required by shape function in case of overlapping elements
 
 
-    Data<bool> assemble;
+    Data<bool> assemble; ///< Assemble the matrices (Jacobian/Geometric Stiffness) or use optimized Jacobian/vector multiplications
 
 protected:
     BaseDeformationMultiMappingT ();
@@ -299,11 +299,11 @@ protected:
     const core::topology::BaseMeshTopology::SeqTriangles *triangles; // Used for visualization
     const defaulttype::ResizableExtVector<core::topology::BaseMeshTopology::Triangle> *extTriangles;
     const defaulttype::ResizableExtVector<int> *extvertPosIdx;
-    Data< float > showDeformationGradientScale;
-    Data< helper::OptionsGroup > showDeformationGradientStyle;
-    Data< helper::OptionsGroup > showColorOnTopology;
-    Data< float > showColorScale;
-    Data< unsigned > d_geometricStiffness;
+    Data< float > showDeformationGradientScale; ///< Scale for deformation gradient display
+    Data< helper::OptionsGroup > showDeformationGradientStyle; ///< Visualization style for deformation gradients
+    Data< helper::OptionsGroup > showColorOnTopology; ///< Color mapping method
+    Data< float > showColorScale; ///< Color mapping scale
+    Data< unsigned > d_geometricStiffness; ///< 0=no GS, 1=non symmetric, 2=symmetrized
     Data< bool > d_parallel;		///< use openmp ?
 
     virtual void updateForceMask();

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -68,13 +68,13 @@ protected:
 
     ~ProximityROI() {}
 public:
-    void init();
+    void init() override;
 
-    void reinit();
+    void reinit() override;
 
-    void update();
+    void update() override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
@@ -98,7 +98,7 @@ public:
         return core::objectmodel::BaseObject::create(tObj, context, arg);
     }
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -113,23 +113,23 @@ protected:
 
 public:
     //Input
-    Data< helper::vector<Vec3> > centers;
-    Data< helper::vector<Real> > radii;
-    Data<unsigned int> f_num;
-    Data<VecCoord> f_X0;
+    Data< helper::vector<Vec3> > centers; ///< Center(s) of the sphere(s)
+    Data< helper::vector<Real> > radii; ///< Radius(i) of the sphere(s)
+    Data<unsigned int> f_num; ///< Maximum number of points to select
+    Data<VecCoord> f_X0; ///< Rest position coordinates of the degrees of freedom
 
     //Output
-    Data<SetIndex> f_indices;
-    Data<VecCoord > f_pointsInROI;
-    Data< helper::vector<Real> > f_distanceInROI;
+    Data<SetIndex> f_indices; ///< Indices of the points contained in the ROI
+    Data<VecCoord > f_pointsInROI; ///< Points contained in the ROI
+    Data< helper::vector<Real> > f_distanceInROI; ///< distance between the points contained in the ROI and the closest center.
 
-    Data<SetIndex> f_indicesOut;
+    Data<SetIndex> f_indicesOut; ///< Indices of the points not contained in the ROI
 
 
     //Parameter
-    Data<bool> p_drawSphere;
-    Data<bool> p_drawPoints;
-    Data<double> _drawSize;
+    Data<bool> p_drawSphere; ///< Draw shpere(s)
+    Data<bool> p_drawPoints; ///< Draw Points
+    Data<double> _drawSize; ///< rendering size for box and topological elements
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_PROXIMITYROI_CPP)

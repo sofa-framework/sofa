@@ -29,10 +29,6 @@ results = startSofa([ {"GRAVITYXML": "0 0 0", "GRAVITYPY": [1,2,3], "nbIteration
                     filesandtemplates, launcher=SerialLauncher())
 
 for res in results:
-        matrix = scip.loadmatrix(res["directory")+"/"+"toto.mtx") 
-        plot(matrix) 
-
-for res in results:
        print("Results: ")
        print("    directory: "+res["directory"])
        print("        scene: "+res["scene"])

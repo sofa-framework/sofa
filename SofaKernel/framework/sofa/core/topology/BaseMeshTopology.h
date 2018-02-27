@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -99,7 +99,7 @@ public:
 protected:
     BaseMeshTopology()	;
 public:
-    virtual void init();
+    virtual void init() override;
 
     /// Load the topology from a file.
     ///
@@ -132,7 +132,9 @@ public:
     virtual const Triangle getTriangle(TriangleID i) { return getTriangles()[i]; }
     virtual const Quad getQuad(QuadID i)             { return getQuads()[i]; }
     virtual const Tetra getTetrahedron(TetraID i)    { return getTetrahedra()[i]; }
-    virtual const Hexa getHexahedron(HexaID i)       { return getHexahedra()[i]; }
+    virtual const Hexa getHexahedron(HexaID i)       { return getHexahedra()[i]; }   
+	   
+    virtual sofa::core::topology::TopologyObjectType getTopologyType() const = 0 ;
     /// @}
 
     /// Bridge from old functions (using Tetra/Tetras and Hexa/Hexas) to new ones
@@ -254,10 +256,10 @@ public:
     /// @name Initial points accessors (only available if the topology was loaded from a file containing this information).
     /// Note that this data is only used for initialization and is not maintained afterwards (i.e. topological changes may not be applied)
     /// @{
-    virtual bool hasPos() const { return false; }
-    virtual SReal getPX(int) const { return 0.0; }
-    virtual SReal getPY(int) const { return 0.0; }
-    virtual SReal getPZ(int) const { return 0.0; }
+    virtual bool hasPos() const override { return false; }
+    virtual SReal getPX(int) const override { return 0.0; }
+    virtual SReal getPY(int) const override { return 0.0; }
+    virtual SReal getPZ(int) const override { return 0.0; }
     /// @}
 
     /// Procedural creation methods
@@ -335,8 +337,8 @@ protected:
 
 public:
 
-    virtual bool insertInNode( objectmodel::BaseNode* node );
-    virtual bool removeInNode( objectmodel::BaseNode* node );
+    virtual bool insertInNode( objectmodel::BaseNode* node ) override;
+    virtual bool removeInNode( objectmodel::BaseNode* node ) override;
 
 };
 

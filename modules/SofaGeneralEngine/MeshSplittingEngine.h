@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -69,12 +69,12 @@ public:
 
     /// inputs
     Data< SeqPositions > inputPosition;
-    Data< SeqEdges > inputEdges;
-    Data< SeqTriangles > inputTriangles;
-    Data< SeqQuads > inputQuads;
-    Data< SeqTetrahedra > inputTets;
-    Data< SeqHexahedra > inputHexa;
-    Data<unsigned int> nbInputs;
+    Data< SeqEdges > inputEdges; ///< input edges
+    Data< SeqTriangles > inputTriangles; ///< input triangles
+    Data< SeqQuads > inputQuads; ///< input quads
+    Data< SeqTetrahedra > inputTets; ///< input tetrahedra
+    Data< SeqHexahedra > inputHexa; ///< input hexahedra
+    Data<unsigned int> nbInputs; ///< Number of input vectors
     helper::vectorData<SetIndices> indices;
     helper::vectorData<SetIndices> edgeIndices;
     helper::vectorData<SetIndices> triangleIndices;
@@ -86,7 +86,7 @@ public:
     Data< helper::vector<unsigned int> > indexPairs;
     helper::vectorData<SeqPositions> position;
 
-    virtual std::string getTemplateName() const    { return templateName(this);    }
+    virtual std::string getTemplateName() const    override { return templateName(this);    }
     static std::string templateName(const MeshSplittingEngine<DataTypes>* = NULL) { return DataTypes::Name();    }
 
 protected:
@@ -118,7 +118,7 @@ protected:
 
 
 public:
-    virtual void init()
+    virtual void init() override
     {
         addInput(&inputPosition);
         addInput(&inputEdges);
@@ -133,10 +133,10 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit()    { resizeData(); update();  }
+    virtual void reinit()    override { resizeData(); update();  }
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters
-    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
+    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override
     {
         const char* p = arg->getAttribute(nbInputs.getName().c_str());
         if (p) {
@@ -148,7 +148,7 @@ public:
     }
 
     /// Assign the field values stored in the given map of name -> value pairs
-    void parseFields ( const std::map<std::string,std::string*>& str )
+    void parseFields ( const std::map<std::string,std::string*>& str ) override
     {
         std::map<std::string,std::string*>::const_iterator it = str.find(nbInputs.getName());
         if (it != str.end() && it->second)
@@ -160,7 +160,7 @@ public:
     }
 
 
-    void update();
+    void update() override;
 
 protected:
     void resizeData()

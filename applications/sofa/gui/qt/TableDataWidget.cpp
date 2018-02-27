@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -159,9 +159,6 @@ Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::defaultty
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::defaulttype::RigidCoord<3,double> > > > DWClass_vectorRigidCoord3d("default",true);
 //Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::defaulttype::RigidDeriv<3,float> > > > DWClass_vectorRigidDeriv3f("default",true);
 //Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::defaulttype::RigidDeriv<3,double> > > > DWClass_vectorRigidDeriv3d("default",true);
-
-Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::defaulttype::LaparoscopicRigid3Types::Coord > > > DWClass_vectorLaparoRigidCoord3("default",true);
-Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::defaulttype::LaparoscopicRigid3Types::Deriv > > > DWClass_vectorLaparoRigidDeriv3("default",true);
 
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::component::interactionforcefield::LinearSpring<float> > > > DWClass_vectorLinearSpringf("default",true);
 Creator<DataWidgetFactory, TableDataWidget< sofa::helper::vector<sofa::component::interactionforcefield::LinearSpring<double> > > > DWClass_vectorLinearSpringd("default",true);

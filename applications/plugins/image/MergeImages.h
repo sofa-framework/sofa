@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -80,17 +80,17 @@ public:
     typedef helper::WriteOnlyAccessor<Data< TransformType > > waTransform;
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
 
-    Data<helper::OptionsGroup> overlap;
-    Data<helper::OptionsGroup> Interpolation;
-    Data<unsigned int> nbImages;
+    Data<helper::OptionsGroup> overlap; ///< method for handling overlapping regions
+    Data<helper::OptionsGroup> Interpolation; ///< Interpolation method.
+    Data<unsigned int> nbImages; ///< number of images to merge
 
     helper::vectorData<ImageTypes> inputImages;
     helper::vectorData<TransformType> inputTransforms;
 
-    Data<ImageTypes> image;
-    Data<TransformType> transform;
+    Data<ImageTypes> image; ///< Image
+    Data<TransformType> transform; ///< Transform
 
-    virtual std::string getTemplateName() const    { return templateName(this);    }
+    virtual std::string getTemplateName() const    override { return templateName(this);    }
     static std::string templateName(const MergeImages<ImageTypes>* = NULL) { return ImageTypes::Name(); }
 
     MergeImages()    :   Inherited()
@@ -127,7 +127,7 @@ public:
     virtual ~MergeImages()
     { }
 
-    virtual void init()
+    virtual void init() override
     {
         addInput(&nbImages);
         inputImages.resize(nbImages.getValue());
@@ -139,7 +139,7 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit()
+    virtual void reinit() override
     {
         inputImages.resize(nbImages.getValue());
         inputTransforms.resize(nbImages.getValue());
@@ -148,7 +148,7 @@ public:
 
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters
-    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
+    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override
     {
         inputImages.parseSizeData(arg, nbImages);
         inputTransforms.parseSizeData(arg, nbImages);
@@ -156,7 +156,7 @@ public:
     }
 
     /// Assign the field values stored in the given map of name -> value pairs
-    void parseFields ( const std::map<std::string,std::string*>& str )
+    void parseFields ( const std::map<std::string,std::string*>& str ) override
     {
         inputImages.parseFieldsSizeData(str, nbImages);
         inputTransforms.parseFieldsSizeData(str, nbImages);
@@ -172,7 +172,7 @@ protected:
         Coord u;
     };
 
-    virtual void update()
+    virtual void update() override
     {
         unsigned int nb = nbImages.getValue();
         inputImages.resize(nb);

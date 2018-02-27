@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -84,7 +84,10 @@ namespace defaulttype
     generically in non-template code.
 */
 template<class TDataType>
-struct DataTypeInfo
+struct DataTypeInfo;
+
+template<class TDataType>
+struct DefaultDataTypeInfo
 {
     /// Template parameter.
     typedef TDataType DataType;
@@ -139,6 +142,8 @@ struct DataTypeInfo
     {
     }
 
+    // mtournier: wtf is this supposed to do?
+    // mtournier: wtf is this not returning &type?
     static const void* getValuePtr(const DataType& /*type*/)
     {
         return NULL;
@@ -152,6 +157,11 @@ struct DataTypeInfo
     static const char* name() { return "unknown"; }
 
 };
+
+template<class TDataType>
+struct DataTypeInfo : DefaultDataTypeInfo<TDataType> { };
+
+
 
 /// Type name template: default to using DataTypeInfo::name(), but can be overriden for types with shorter typedefs
 template<class TDataType>

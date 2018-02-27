@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -59,13 +59,14 @@ protected:
     virtual ~OglColorMap();
 
 public:
-    Data<unsigned int> f_paletteSize;
-    Data<sofa::helper::OptionsGroup> f_colorScheme;
+    Data<unsigned int> f_paletteSize; ///< How many colors to use
+    Data<sofa::helper::OptionsGroup> f_colorScheme; ///< Color scheme to use
 
-    Data<bool> f_showLegend;
-    Data<defaulttype::Vec2f> f_legendOffset;
-    Data<std::string> f_legendTitle;
-    Data<float> d_min, d_max;
+    Data<bool> f_showLegend; ///< Activate rendering of color scale legend on the side
+    Data<defaulttype::Vec2f> f_legendOffset; ///< Draw the legend on screen with an x,y offset
+    Data<std::string> f_legendTitle; ///< Add a title to the legend
+    Data<float> d_min; ///< min value for drawing the legend without the need to actually use the range with getEvaluator method wich sets the min
+    Data<float> d_max; ///< max value for drawing the legend without the need to actually use the range with getEvaluator method wich sets the max
     Data<float> d_legendRangeScale; ///< to convert unit
 
     sofa::helper::ColorMap m_colorMap;
@@ -73,13 +74,13 @@ public:
 
     void initOld(const std::string &data);
 
-    void init();
-    void reinit();
+    void init() override;
+    void reinit() override;
 
     //void initVisual() { initTextures(); }
     //void clearVisual() { }
     //void initTextures() {}
-    void drawVisual(const core::visual::VisualParams* vparams);
+    void drawVisual(const core::visual::VisualParams* vparams) override;
     //void drawTransparent(const VisualParams* /*vparams*/)
     //void updateVisual();
 

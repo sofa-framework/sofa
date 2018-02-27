@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -171,17 +171,17 @@ public:
 public:
     int method;
     Data<std::string> f_method; ///< the computation method of the displacements
-    Data<Real> _poissonRatio;
-    Data<Real> _youngModulus;
-    Data<VecReal> _localStiffnessFactor;
+    Data<Real> _poissonRatio; ///< FEM Poisson Ratio
+    Data<Real> _youngModulus; ///< FEM Young Modulus
+    Data<VecReal> _localStiffnessFactor; ///< Allow specification of different stiffness per element. If there are N element and M values are specified, the youngModulus factor for element i would be localStiffnessFactor[i*M/N]
     Data<bool> _updateStiffnessMatrix;
     Data<bool> _assembling;
-    Data<bool> f_drawing;
+    Data<bool> f_drawing; ///<  draw the forcefield if true
     Data<bool> _displayWholeVolume;
-    Data<defaulttype::Vec4f> drawColor1;
-    Data<defaulttype::Vec4f> drawColor2;
-    Data<defaulttype::Vec4f> drawColor3;
-    Data<defaulttype::Vec4f> drawColor4;
+    Data<defaulttype::Vec4f> drawColor1; ///<  draw color for faces 1
+    Data<defaulttype::Vec4f> drawColor2; ///<  draw color for faces 2
+    Data<defaulttype::Vec4f> drawColor3; ///<  draw color for faces 3
+    Data<defaulttype::Vec4f> drawColor4; ///<  draw color for faces 4
     Data<std::map < std::string, sofa::helper::vector<double> > > _volumeGraph;
 protected:
     TetrahedralCorotationalFEMForceField();
@@ -198,18 +198,18 @@ public:
 
     void setComputeGlobalMatrix(bool val) { this->_assembling.setValue(val); }
 
-    virtual void init();
-    virtual void reinit();
+    virtual void init() override;
+    virtual void reinit() override;
 
-    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
+    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
+    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
     {
         serr << "Get potentialEnergy not implemented" << sendl;
         return 0.0;
     }
 
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset);
+    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset) override;
 
     // Getting the rotation of the vertex by averaing the rotation of neighboring elements
     void getRotation(Transformation& R, unsigned int nodeIdx);
@@ -220,7 +220,11 @@ public:
     void getElementStiffnessMatrix(Real* stiffness, unsigned int nodeIdx);
     void getElementStiffnessMatrix(Real* stiffness, core::topology::BaseMeshTopology::Tetrahedron& te);
 
-    void draw(const core::visual::VisualParams* vparams);
+
+    void draw(const core::visual::VisualParams* vparams) override;
+
+    void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
+
 
 protected:
 

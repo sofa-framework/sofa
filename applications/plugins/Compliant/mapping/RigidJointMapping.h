@@ -42,8 +42,9 @@ public:
     typedef helper::vector< index_pair > pairs_type;
     typedef typename TIn::Real Real;
 	
-	Data< pairs_type > pairs;
-	Data< bool > rotation, translation;
+	Data< pairs_type > pairs; ///< pairs of rigid frames defining joint in source dofs
+	Data< bool > rotation; ///< compute relative rotation
+	Data< bool > translation; ///< compute relative translation
 //	Data< bool > out_joint_angle;
 	
 	Data< bool > exact_dlog;

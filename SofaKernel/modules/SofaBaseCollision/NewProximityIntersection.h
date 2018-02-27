@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -46,14 +46,14 @@ class SOFA_BASE_COLLISION_API NewProximityIntersection : public BaseProximityInt
 public:
     SOFA_CLASS(NewProximityIntersection,BaseProximityIntersection);
 
-    Data<bool> useLineLine;
+    Data<bool> useLineLine; ///< Line-line collision detection enabled
 protected:
     NewProximityIntersection();
 public:
 
     typedef core::collision::IntersectorFactory<NewProximityIntersection> IntersectorFactory;
 
-    virtual void init();
+    virtual void init() override;
 
     static inline int doIntersectionPointPoint(SReal dist2, const defaulttype::Vector3& p, const defaulttype::Vector3& q, OutputVector* contacts, int id);
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -44,15 +44,15 @@ public:
 
     enum PLANE {PLANE_X, PLANE_Y, PLANE_Z};
 
-    Data<std::string> plane;
+    Data<std::string> plane; ///< Plane of the grid
     PLANE internalPlane;
 
-    Data<float> size;
-    Data<int> nbSubdiv;
+    Data<float> size; ///< Size of the squared grid
+    Data<int> nbSubdiv; ///< Number of subdivisions
 
-    Data<defaulttype::RGBAColor> color;
-    Data<float> thickness;
-    Data<bool> draw;
+    Data<defaulttype::RGBAColor> color; ///< Color of the lines in the grid. default=(0.34,0.34,0.34,1.0)
+    Data<float> thickness; ///< Thickness of the lines in the grid
+    Data<bool> draw; ///< Display the grid or not
 
     OglGrid():
         plane(initData(&plane, std::string("z"),  "plane", "Plane of the grid")),
@@ -63,10 +63,10 @@ public:
         draw(initData(&draw, true,  "draw", "Display the grid or not"))
     {}
 
-    virtual void init();
-    virtual void reinit();
-    virtual void drawVisual(const core::visual::VisualParams*);
-    virtual void updateVisual();
+    virtual void init() override;
+    virtual void reinit() override;
+    virtual void drawVisual(const core::visual::VisualParams*) override;
+    virtual void updateVisual() override;
 
 protected:
 

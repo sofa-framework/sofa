@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,14 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <limits>
 #include <sofa/helper/kdTree.h>
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/random.h>
 
-#include <gtest/gtest.h>
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest ;
 
-#include <limits>
 
 namespace sofa {
 
@@ -36,7 +37,7 @@ namespace sofa {
  * @date 2014
  */
 
-struct KdTreeTest: public ::testing::Test
+struct KdTreeTest: public BaseTest
 {
     typedef SReal Real;
     typedef defaulttype::Vec<3,Real> Coord;

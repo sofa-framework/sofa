@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -99,17 +99,17 @@ public:
     void addConstraint(unsigned int index);
     void removeConstraint(unsigned int index);
 
-    void init();
-    void draw(const core::visual::VisualParams* vparams);
+    void init() override;
+    void draw(const core::visual::VisualParams* vparams) override;
     void initFixedPosition();
-    void reset() {initFixedPosition();}
+    void reset() override {initFixedPosition();}
 
     // -- LMConstraint interface
-    void buildConstraintMatrix(const core::ConstraintParams* cParams, core::MultiMatrixDerivId cId, unsigned int &cIndex);
-    void writeConstraintEquations(unsigned int& lineNumber, core::MultiVecId id, ConstOrder order);
+    void buildConstraintMatrix(const core::ConstraintParams* cParams, core::MultiMatrixDerivId cId, unsigned int &cIndex) override;
+    void writeConstraintEquations(unsigned int& lineNumber, core::MultiVecId id, ConstOrder order) override;
 
 
-    std::string getTemplateName() const
+    std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -118,15 +118,15 @@ public:
         return DataTypes::Name();
     }
 
-    bool isCorrectionComputedWithSimulatedDOF(ConstOrder /*order*/) const
+    bool isCorrectionComputedWithSimulatedDOF(ConstOrder /*order*/) const override
     {
         simulation::Node* node=(simulation::Node*) this->constrainedObject1->getContext();
         if (node->mechanicalMapping.empty()) return true;
         else return false;
     }
 
-    SetIndex f_indices;
-    Data<double> _drawSize;
+    SetIndex f_indices; ///< List of the index of particles to be fixed
+    Data<double> _drawSize; ///< 0 -> point based rendering, >0 -> radius of spheres
 
 
     class FCPointHandler : public sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >

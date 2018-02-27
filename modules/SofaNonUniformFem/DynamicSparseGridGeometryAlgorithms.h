@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -57,9 +57,9 @@ protected:
     virtual ~DynamicSparseGridGeometryAlgorithms() {}
 public:
     /// finds a hexahedron, in its rest position, which is nearest to a given point. Computes barycentric coordinates and a distance measure.
-    virtual int findNearestElementInRestPos(const Coord& pos, defaulttype::Vector3& baryC, Real& distance) const;
+    virtual int findNearestElementInRestPos(const Coord& pos, defaulttype::Vector3& baryC, Real& distance) const override;
 
-    virtual void init();
+    virtual void init() override;
 
     core::topology::BaseMeshTopology::HexaID getTopoIndexFromRegularGridIndex ( unsigned int index, bool& existing );
     unsigned int getRegularGridIndexFromTopoIndex ( core::topology::BaseMeshTopology::HexaID index );

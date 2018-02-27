@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -81,7 +81,7 @@ public:
     /**
      * @brief SceneGraph callback initialization method.
      */
-    void init();
+    void init() override;
 
     /**
      * @name Controller Interface
@@ -91,7 +91,7 @@ public:
     /**
      * @brief Mouse event callback.
      */
-    void onMouseEvent(core::objectmodel::MouseEvent *mev);
+    void onMouseEvent(core::objectmodel::MouseEvent *mev) override;
 
     /**
      * @brief HapticDevice event callback.
@@ -101,7 +101,7 @@ public:
     /**
      * @brief Begin Animation event callback.
      */
-    void onBeginAnimationStep(const double dt);
+    void onBeginAnimationStep(const double dt) override;
 
     //@}
 
@@ -147,7 +147,7 @@ public:
      */
     void applyController(void);
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -160,7 +160,7 @@ protected:
 
     Data< unsigned int > index; ///< Controlled DOF index.
     Data< bool > onlyTranslation; ///< Controlling the DOF only in translation
-    Data< bool > buttonDeviceState;
+    Data< bool > buttonDeviceState; ///< state of ths device button
 
     core::behavior::MechanicalState<DataTypes> *mState; ///< Controlled MechanicalState.
 

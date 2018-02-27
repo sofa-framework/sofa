@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -48,8 +48,6 @@ namespace linearsolver
 
 //#define EigenBaseSparseMatrix_CHECK
 //#define EigenBaseSparseMatrix_VERBOSE
-
-
 
 
 
@@ -476,6 +474,31 @@ template<> inline const char* EigenBaseSparseMatrix<float>::Name()  { return "Ei
 } // namespace linearsolver
 
 } // namespace component
+
+
+namespace defaulttype {
+
+template<class Real>
+struct DataTypeInfo< component::linearsolver::EigenBaseSparseMatrix<Real> > 
+    : DefaultDataTypeInfo<component::linearsolver::EigenBaseSparseMatrix<Real> > {
+
+    using typename DataTypeInfo::DefaultDataTypeInfo::DataType;
+
+    static const char* name() {
+        return DataType::Name();
+    }
+    
+    static const void* getValuePtr(const DataType& type) {
+        return &type.compressedMatrix;
+    }
+
+    static void* getValuePtr(DataType& type) {
+        return &type.compressedMatrix;
+    }
+    
+};
+
+}
 
 } // namespace sofa
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -30,7 +30,9 @@
 #define CGALPLUGIN_MESHGENERATIONFROMPOLYHEDRON_INL
 #include "MeshGenerationFromPolyhedron.h"
 
+#if CGAL_VERSION_NR <= CGAL_VERSION_NUMBER(4,9,1)
 #include <CGAL/AABB_intersections.h>
+#endif
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include <CGAL/Mesh_3/Robust_intersection_traits_3.h>
 

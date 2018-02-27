@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -407,7 +407,11 @@ Polynomial_LD<Real,N>  & Polynomial_LD<Real,N>::operator+=(const Monomial_LD<Rea
             break;
         }
     }
-    if (!added) listOfMonoMial.push_back(b); nbOfMonomial++;
+    if (!added)
+    {
+        listOfMonoMial.push_back(b);
+        nbOfMonomial++;
+    }
     sort();
     return *this;
 }
@@ -428,7 +432,11 @@ Polynomial_LD<Real,N>  & Polynomial_LD<Real,N>::operator+=(const Polynomial_LD<R
                 break;
             }
         }
-        if (!added) listOfMonoMial.push_back((*itb)); nbOfMonomial++;
+        if (!added)
+        {
+            listOfMonoMial.push_back((*itb));
+            nbOfMonomial++;
+        }
     }
     sort();
     return *this;
@@ -449,7 +457,11 @@ Polynomial_LD<Real,N>  & Polynomial_LD<Real,N>::operator-=(const Polynomial_LD<R
                 break;
             }
         }
-        if (!added) listOfMonoMial.push_back(-(*itb)); nbOfMonomial++;
+        if (!added)
+        {
+            listOfMonoMial.push_back(-(*itb));
+            nbOfMonomial++;
+        }
     }
     sort();
     return *this;

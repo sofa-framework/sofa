@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -118,16 +118,7 @@ public:
     virtual Result processNodeTopDown(simulation::Node* node);
     virtual const char* getClassName() const { return "VisualInitVisitor"; }
 };
-#ifdef SOFA_SMP
-class SOFA_SIMULATION_CORE_API ParallelVisualUpdateVisitor : public Visitor
-{
-public:
-    ParallelVisualUpdateVisitor(const core::ExecParams* params) : Visitor(params) {}
 
-    virtual void processVisualModel(simulation::Node*, core::visual::VisualModel* vm);
-    virtual const char* getClassName() const { return "ParallelVisualUpdateVisitor"; }
-};
-#endif
 
 
 class SOFA_SIMULATION_CORE_API VisualComputeBBoxVisitor : public Visitor

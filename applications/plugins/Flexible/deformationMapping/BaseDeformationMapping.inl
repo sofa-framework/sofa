@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -541,18 +541,23 @@ void BaseDeformationMappingT<JacobianBlockType>::apply(const core::MechanicalPar
 #ifdef _OPENMP
 #pragma omp parallel for if (this->d_parallel.getValue())
 #endif
+    std::stringstream tmp ;
     for(helper::IndexOpenMP<unsigned int>::type i=0; i<jacobian.size(); i++)
     {
         out[i]=OutCoord();
-        if (i == 0) serr << "out[0] = " << out[i] << sendl;
+        if (i == 0 && this->f_printLog.getValue())
+            tmp << "out[0] = " << out[i] << msgendl;
         for(size_t j=0; j<jacobian[i].size(); j++)
         {
             size_t index=indices[i][j];
             jacobian[i][j].addapply(out[i],in[index]);
-            if (i == 0) serr << "out["<<i<<"] + jacobian["<<i<<"]["<<j<<"].addapply(out["<<i<<"],in["<<index<<"]) = " << out[i] << sendl;
+            if (i == 0 && this->f_printLog.getValue())
+                tmp << "out["<<i<<"] + jacobian["<<i<<"]["<<j<<"].addapply(out["<<i<<"],in["<<index<<"]) = " << out[i] ;
         }
     }
     dOut.endEdit();
+
+    msg_info_when(!tmp.str().empty()) << tmp.str() ;
 
     if(this->assemble.getValue() && ( !BlockType::constant ) ) eigenJacobian.resize(0,0); // J needs to be updated later where the dof mask can be activated
 

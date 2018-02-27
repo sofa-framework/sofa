@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -63,18 +63,18 @@ public:
 
     /// inputs
     Data< SeqPositions > inputPosition;
-    Data< SeqEdges > inputEdges;
-    Data< SeqTriangles > inputTriangles;
-    Data< SeqQuads > inputQuads;
-    Data< SetIndices > indices;
+    Data< SeqEdges > inputEdges; ///< input edges
+    Data< SeqTriangles > inputTriangles; ///< input triangles
+    Data< SeqQuads > inputQuads; ///< input quads
+    Data< SetIndices > indices; ///< Index lists of the selected vertices
 
     /// outputs
     Data< SeqPositions > position;
-    Data< SeqEdges > edges;
-    Data< SeqTriangles > triangles;
-    Data< SeqQuads > quads;
+    Data< SeqEdges > edges; ///< edges of mesh subset
+    Data< SeqTriangles > triangles; ///< Triangles of mesh subset
+    Data< SeqQuads > quads; ///< Quads of mesh subset
 
-    virtual std::string getTemplateName() const    { return templateName(this);    }
+    virtual std::string getTemplateName() const    override { return templateName(this);    }
     static std::string templateName(const MeshSubsetEngine<DataTypes>* = NULL) { return DataTypes::Name();    }
 
 protected:
@@ -95,7 +95,7 @@ protected:
     virtual ~MeshSubsetEngine() {}
 
 public:
-    virtual void init()
+    virtual void init() override
     {
         addInput(&inputPosition);
         addInput(&inputEdges);
@@ -109,8 +109,8 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit()    { update();  }
-    void update();
+    virtual void reinit()    override { update();  }
+    void update() override;
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_MeshSubsetEngine_CPP)

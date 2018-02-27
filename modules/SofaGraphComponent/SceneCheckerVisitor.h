@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -28,12 +28,13 @@
 #include <map>
 
 #include <sofa/simulation/Visitor.h>
+#include "SceneChecks.h"
 
+/////////////////////////////////////// DECLARATION ////////////////////////////////////////////////
 namespace sofa
 {
 namespace simulation
 {
-typedef std::function<void(sofa::core::objectmodel::Base*)> ChangeSetHookFunction ;
 
 class SOFA_GRAPH_COMPONENT_API SceneCheckerVisitor : public Visitor
 {
@@ -42,22 +43,13 @@ public:
     virtual ~SceneCheckerVisitor() ;
 
     void validate(Node* node) ;
-
-    void enableValidationAPIVersion(Node *node) ;
-    void enableValidationRequiredPlugins(Node* node) ;
-
     virtual Result processNodeTopDown(Node* node) override ;
 
-    void installChangeSets() ;
-    void addHookInChangeSet(const std::string& version, ChangeSetHookFunction fct) ;
-private:
-    std::map<std::string,bool> m_requiredPlugins ;
-    bool m_isRequiredPluginValidationEnabled {true} ;
-    bool m_isAPIVersionValidationEnabled {true} ;
-    std::string m_currentApiLevel;
-    std::string m_selectedApiLevel {"17.06"} ;
+    void addCheck(SceneCheck::SPtr check) ;
+    void removeCheck(SceneCheck::SPtr check) ;
 
-    std::map<std::string, std::vector<ChangeSetHookFunction>> m_changesets ;
+private:
+    std::vector<SceneCheck::SPtr> m_checkset ;
 };
 
 } // namespace simulation

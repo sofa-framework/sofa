@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -57,10 +57,10 @@ public:
     virtual void setNode( simulation::Node* );
 
     /// Set the simulation node to the local context if not specified previously
-    virtual void init();
+    virtual void init() override;
 
     /// perform one animation step
-    virtual void step(const core::ExecParams* params, SReal dt);
+    virtual void step(const core::ExecParams* params, SReal dt) override;
 
 
     /// Construction method called by ObjectFactory.

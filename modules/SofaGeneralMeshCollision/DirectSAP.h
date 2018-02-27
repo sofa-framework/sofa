@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -115,9 +115,9 @@ private:
       */
     void update();
 
-    Data<bool> bDraw;
+    Data<bool> bDraw; ///< enable/disable display of results
 
-    Data< helper::fixed_array<defaulttype::Vector3,2> > box;
+    Data< helper::fixed_array<defaulttype::Vector3,2> > box; ///< if not empty, objects that do not intersect this bounding-box will be ignored
 
     CubeModel::SPtr boxModel;
 
@@ -140,25 +140,25 @@ protected:
 public:
     void setDraw(bool val) { bDraw.setValue(val); }
 
-    void init();
-    void reinit();
+    void init() override;
+    void reinit() override;
 
-    void addCollisionModel (core::CollisionModel *cm);
+    void addCollisionModel (core::CollisionModel *cm) override;
 
     /**
       *Unuseful methods because all is done in addCollisionModel
       */
-    void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& ){}
-    void addCollisionPairs (const helper::vector<std::pair<core::CollisionModel*, core::CollisionModel*> >&){}
+    virtual void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& ) override {}
+    virtual void addCollisionPairs (const helper::vector<std::pair<core::CollisionModel*, core::CollisionModel*> >&) override {}
 
-    virtual void endBroadPhase();
-    virtual void beginNarrowPhase();
+    virtual void endBroadPhase() override;
+    virtual void beginNarrowPhase() override;
 
 
     /* for debugging */
-    inline void draw(const core::visual::VisualParams*){}
+    virtual void draw(const core::visual::VisualParams*) override {}
 
-    inline virtual bool needsDeepBoundingTree()const{return false;}
+    inline virtual bool needsDeepBoundingTree()const override {return false;}
 };
 
 

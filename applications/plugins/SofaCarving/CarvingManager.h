@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -56,18 +56,18 @@ public:
 	typedef core::CollisionModel ToolModel;
     typedef helper::vector<core::collision::DetectionOutput> ContactVector;
 
-    Data < std::string > f_modelTool;
-    Data < std::string > f_modelSurface;
+    Data < std::string > f_modelTool; ///< Tool model path
+    Data < std::string > f_modelSurface; ///< TriangleSetModel or SphereModel path
     Data < Real > f_minDistance;
     Data < Real > f_maxDistance;
     Data < Real > f_edgeDistance;
     
     
-    Data < bool > active;
-    Data < char > keyEvent;
-    Data < char > keySwitchEvent;
-    Data < bool > mouseEvent;
-    Data < bool > omniEvent;
+    Data < bool > active; ///< Activate this object. Note that this can be dynamically controlled by using a key
+    Data < char > keyEvent; ///< key to press to activate this object until the key is released
+    Data < char > keySwitchEvent; ///< key to activate this object until the key is pressed again
+    Data < bool > mouseEvent; ///< Activate carving with middle mouse button
+    Data < bool > omniEvent; ///< Activate carving with omni button
     
 protected:
     ToolModel* modelTool;
@@ -80,11 +80,11 @@ protected:
 
     virtual ~CarvingManager();
 public:
-    virtual void init();
+    virtual void init() override;
 
-    virtual void reset();
+    virtual void reset() override;
     
-    virtual void handleEvent(sofa::core::objectmodel::Event* event);
+    virtual void handleEvent(sofa::core::objectmodel::Event* event) override;
 
     virtual void doCarve();
 

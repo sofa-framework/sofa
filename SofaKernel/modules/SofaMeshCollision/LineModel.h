@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -138,21 +138,21 @@ public:
     typedef TLine<DataTypes> Element;
     friend class TLine<DataTypes>;
 
-    virtual void init();
+    virtual void init() override;
 
     // -- CollisionModel interface
 
-    virtual void resize(int size);
+    virtual void resize(int size) override;
 
-    virtual void computeBoundingTree(int maxDepth=0);
+    virtual void computeBoundingTree(int maxDepth=0) override;
 
-    virtual void computeContinuousBoundingTree(double dt, int maxDepth=0);
+    virtual void computeContinuousBoundingTree(double dt, int maxDepth=0) override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
-    virtual void handleTopologyChange();
+    virtual void handleTopologyChange() override;
 
-    bool canCollideWithElement(int index, CollisionModel* model2, int index2);
+    bool canCollideWithElement(int index, CollisionModel* model2, int index2) override;
 
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return mstate; }
 
@@ -175,7 +175,7 @@ public:
 
     void setFilter(LineLocalMinDistanceFilter * /*lmdFilter*/);
 
-    Data<bool> bothSide; // to activate collision on both-side of the both side of the line model (when surface normals are defined on these lines)
+    Data<bool> bothSide; ///< to activate collision on both-side of the both side of the line model (when surface normals are defined on these lines)
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
@@ -187,7 +187,7 @@ public:
         return BaseObject::canCreate(obj, context, arg);
     }
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -197,7 +197,7 @@ public:
         return DataTypes::Name();
     }
 
-    virtual void computeBBox(const core::ExecParams* params, bool onlyVisible);
+    virtual void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
 
 
 protected:
@@ -208,8 +208,8 @@ protected:
     int meshRevision;
     LineLocalMinDistanceFilter *m_lmdFilter;
 
-    Data< std::string  > LineActiverPath;
-    Data<bool> m_displayFreePosition;
+    Data< std::string  > LineActiverPath; ///< path of a component LineActiver that activates or deactivates collision line during execution
+    Data<bool> m_displayFreePosition; ///< Display Collision Model Points free position(in green)
 
     LineActiver *myActiver;
 

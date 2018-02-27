@@ -37,7 +37,7 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    Data<SReal> d_factor;
+    Data<SReal> d_factor; ///< scalar factor
 
     virtual SReal getPotentialEnergy( const core::MechanicalParams* /*mparams*/,
                                       const DataVecCoord& x ) const {

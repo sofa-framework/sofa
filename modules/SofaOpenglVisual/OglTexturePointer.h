@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -61,15 +61,15 @@ protected:
     OglTexturePointer();
     virtual ~OglTexturePointer();
 
-    Data<unsigned short> textureUnit;
-    Data<bool> enabled;
+    Data<unsigned short> textureUnit; ///< Set the texture unit
+    Data<bool> enabled; ///< enabled ?
 
 public:
-    void init();
-    void initVisual();
-    void reinit();
-    void fwdDraw(core::visual::VisualParams*);
-    void bwdDraw(core::visual::VisualParams*);
+    void init() override;
+    void initVisual() override;
+    void reinit() override;
+    void fwdDraw(core::visual::VisualParams*) override;
+    void bwdDraw(core::visual::VisualParams*) override;
 
     unsigned short getTextureUnit() { return textureUnit.getValue(); }
 
@@ -80,11 +80,11 @@ public:
     static void setActiveTexture(unsigned short unit);
 
     /// Returns the type of shader element (texture, macro, variable, or attribute)
-    virtual ShaderElementType getSEType() const { return core::visual::ShaderElement::SE_TEXTURE; }
+    virtual ShaderElementType getSEType() const override { return core::visual::ShaderElement::SE_TEXTURE; }
     // Returns the value of the shader element
-    virtual const core::objectmodel::BaseData* getSEValue() const { return &textureUnit; }
+    virtual const core::objectmodel::BaseData* getSEValue() const override { return &textureUnit; }
     // Returns the value of the shader element
-    virtual core::objectmodel::BaseData* getSEValue() { return &textureUnit; }
+    virtual core::objectmodel::BaseData* getSEValue() override { return &textureUnit; }
 };
 
 }

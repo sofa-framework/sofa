@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -55,12 +55,12 @@ public:
     /** \brief Overload method of @sa GridTopology::getPoint.
      * Get Point in grid @return Vector3 given its @param id i. Will call @sa getPointInGrid.
      * */
-    Vector3 getPoint(int i) const;
+    Vector3 getPoint(int i) const override;
 
     /** \brief Overload method of @sa GridTopology::getPointInGrid.
      * Get Point in grid @return Vector3 given its position in grid @param i, @param j, @param k
      * */
-    Vector3 getPointInGrid(int i, int j, int k) const;
+    Vector3 getPointInGrid(int i, int j, int k) const override;
 
     /// Set Sphere grid center by @param 3 SReal
     void setCenter(SReal x, SReal y, SReal z);

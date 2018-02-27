@@ -93,7 +93,7 @@ public:
     
     }
     
-    virtual void init()
+    virtual void init() override
     {
         //addOutput(&d_ip);
         //addOutput(&d_p);
@@ -140,7 +140,7 @@ public:
 
     }
     
-    virtual sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QWidget*parent=NULL)
+    virtual sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QWidget*parent=NULL) override
     {
         return new sofa::gui::qt::LabelGridImageToolBoxAction(this,parent);
     }
@@ -842,7 +842,7 @@ public:
 //    Data< helper::vector<sofa::defaulttype::Vec3d> > d_p;
     Data< Vec2ui > d_reso;
     DataFileName d_filename;
-    Data< TransformType> d_transform;
+    Data< TransformType> d_transform; ///< Transform
     Data< Quads > d_outQuads;
     Data< Edges > d_outEdges;
     Data< helper::vector<sofa::defaulttype::Vec3d> > d_outImagePosition;
@@ -886,7 +886,7 @@ public:
 
     }
 
-    virtual void init()
+    virtual void init() override
     {
         Inherited::init();
         addInput(&d_image);
@@ -902,7 +902,7 @@ public:
 
 
 public:
-    Data< ImageTypes >   d_image;
+    Data< ImageTypes >   d_image; ///< Input image
 };
 
 

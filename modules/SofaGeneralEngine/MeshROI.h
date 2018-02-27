@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -72,10 +72,10 @@ protected:
     virtual ~MeshROI() {}
 public:
 
-    virtual void init();
-    virtual void reinit();
-    virtual void update();
-    virtual void draw(const core::visual::VisualParams*);
+    virtual void init() override;
+    virtual void reinit() override;
+    virtual void update() override;
+    virtual void draw(const core::visual::VisualParams*) override;
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
@@ -99,7 +99,7 @@ public:
         return core::objectmodel::BaseObject::create(tObj, context, arg);
     }
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -126,50 +126,50 @@ protected:
 public:
     //Input
     // Global mesh
-    Data<VecCoord> d_X0;
-    Data<helper::vector<Edge> > d_edges;
-    Data<helper::vector<Triangle> > d_triangles;
-    Data<helper::vector<Tetra> > d_tetrahedra;
+    Data<VecCoord> d_X0; ///< Rest position coordinates of the degrees of freedom
+    Data<helper::vector<Edge> > d_edges; ///< Edge Topology
+    Data<helper::vector<Triangle> > d_triangles; ///< Triangle Topology
+    Data<helper::vector<Tetra> > d_tetrahedra; ///< Tetrahedron Topology
     // ROI mesh
-    Data<VecCoord> d_X0_i;
-    Data<helper::vector<Edge> > d_edges_i;
-    Data<helper::vector<Triangle> > d_triangles_i;
+    Data<VecCoord> d_X0_i; ///< ROI position coordinates of the degrees of freedom
+    Data<helper::vector<Edge> > d_edges_i; ///< ROI Edge Topology
+    Data<helper::vector<Triangle> > d_triangles_i; ///< ROI Triangle Topology
 
-    Data<bool> d_computeEdges;
-    Data<bool> d_computeTriangles;
-    Data<bool> d_computeTetrahedra;
-    Data<bool> d_computeTemplateTriangles;
+    Data<bool> d_computeEdges; ///< If true, will compute edge list and index list inside the ROI.
+    Data<bool> d_computeTriangles; ///< If true, will compute triangle list and index list inside the ROI.
+    Data<bool> d_computeTetrahedra; ///< If true, will compute tetrahedra list and index list inside the ROI.
+    Data<bool> d_computeTemplateTriangles; ///< Compute with the mesh (not only bounding box)
 
     //Output
-    Data<Vec6> d_box;
-    Data<SetIndex> d_indices;
-    Data<SetIndex> d_edgeIndices;
-    Data<SetIndex> d_triangleIndices;
-    Data<SetIndex> d_tetrahedronIndices;
-    Data<VecCoord > d_pointsInROI;
-    Data<helper::vector<Edge> > d_edgesInROI;
-    Data<helper::vector<Triangle> > d_trianglesInROI;
-    Data<helper::vector<Tetra> > d_tetrahedraInROI;
+    Data<Vec6> d_box; ///< Bounding box defined by xmin,ymin,zmin, xmax,ymax,zmax
+    Data<SetIndex> d_indices; ///< Indices of the points contained in the ROI
+    Data<SetIndex> d_edgeIndices; ///< Indices of the edges contained in the ROI
+    Data<SetIndex> d_triangleIndices; ///< Indices of the triangles contained in the ROI
+    Data<SetIndex> d_tetrahedronIndices; ///< Indices of the tetrahedra contained in the ROI
+    Data<VecCoord > d_pointsInROI; ///< Points contained in the ROI
+    Data<helper::vector<Edge> > d_edgesInROI; ///< Edges contained in the ROI
+    Data<helper::vector<Triangle> > d_trianglesInROI; ///< Triangles contained in the ROI
+    Data<helper::vector<Tetra> > d_tetrahedraInROI; ///< Tetrahedra contained in the ROI
 
-    Data<VecCoord > d_pointsOutROI;
-    Data<helper::vector<Edge> > d_edgesOutROI;
-    Data<helper::vector<Triangle> > d_trianglesOutROI;
-    Data<helper::vector<Tetra> > d_tetrahedraOutROI;
-    Data<SetIndex> d_indicesOut;
-    Data<SetIndex> d_edgeOutIndices;
-    Data<SetIndex> d_triangleOutIndices;
-    Data<SetIndex> d_tetrahedronOutIndices;
+    Data<VecCoord > d_pointsOutROI; ///< Points not contained in the ROI
+    Data<helper::vector<Edge> > d_edgesOutROI; ///< Edges not contained in the ROI
+    Data<helper::vector<Triangle> > d_trianglesOutROI; ///< Triangles not contained in the ROI
+    Data<helper::vector<Tetra> > d_tetrahedraOutROI; ///< Tetrahedra not contained in the ROI
+    Data<SetIndex> d_indicesOut; ///< Indices of the points not contained in the ROI
+    Data<SetIndex> d_edgeOutIndices; ///< Indices of the edges not contained in the ROI
+    Data<SetIndex> d_triangleOutIndices; ///< Indices of the triangles not contained in the ROI
+    Data<SetIndex> d_tetrahedronOutIndices; ///< Indices of the tetrahedra not contained in the ROI
 
     //Parameter
-    Data<bool> d_drawOut;
-    Data<bool> d_drawMesh;
-    Data<bool> d_drawBox;
-    Data<bool> d_drawPoints;
-    Data<bool> d_drawEdges;
-    Data<bool> d_drawTriangles;
-    Data<bool> d_drawTetrahedra;
-    Data<double> d_drawSize;
-    Data<bool> d_doUpdate;
+    Data<bool> d_drawOut; ///< Draw the data not contained in the ROI
+    Data<bool> d_drawMesh; ///< Draw Mesh used for the ROI
+    Data<bool> d_drawBox; ///< Draw the Bounding box around the mesh used for the ROI
+    Data<bool> d_drawPoints; ///< Draw Points
+    Data<bool> d_drawEdges; ///< Draw Edges
+    Data<bool> d_drawTriangles; ///< Draw Triangles
+    Data<bool> d_drawTetrahedra; ///< Draw Tetrahedra
+    Data<double> d_drawSize; ///< rendering size for mesh and topological elements
+    Data<bool> d_doUpdate; ///< Update the computation (not only at the init)
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_MESHROI_CPP)

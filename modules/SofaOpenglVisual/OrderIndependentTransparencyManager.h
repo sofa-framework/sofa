@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -88,25 +88,25 @@ public:
     SOFA_CLASS(OrderIndependentTransparencyManager, core::visual::VisualManager);
 
 public:
-    Data<float> depthScale;
+    Data<float> depthScale; ///< Depth scale
 
 protected:
     OrderIndependentTransparencyManager();
     virtual ~OrderIndependentTransparencyManager();
 
 public:
-    void init();
-    void bwdInit();
-    void reinit();
-    void initVisual();
+    void init() override;
+    void bwdInit() override;
+    void reinit() override;
+    void initVisual() override;
 
-    void preDrawScene(core::visual::VisualParams* vp);
-    bool drawScene(core::visual::VisualParams* vp);
-    void postDrawScene(core::visual::VisualParams* vp);
+    void preDrawScene(core::visual::VisualParams* vp) override;
+    bool drawScene(core::visual::VisualParams* vp) override;
+    void postDrawScene(core::visual::VisualParams* vp) override;
 
-    void draw(const core::visual::VisualParams* vparams);
-    void fwdDraw(core::visual::VisualParams*);
-    void bwdDraw(core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams* vparams) override;
+    void fwdDraw(core::visual::VisualParams*) override;
+    void bwdDraw(core::visual::VisualParams*) override;
 
 protected:
     void drawOpaques(core::visual::VisualParams* vp);

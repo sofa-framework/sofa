@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -62,13 +62,13 @@ protected:
 
     ~TransformEngine() {}
 public:
-    void init();
+    void init() override;
 
-    void reinit();
+    void reinit() override;
 
-    void update();
+    void update() override;
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -79,13 +79,13 @@ public:
     }
 
 protected:
-    Data<VecCoord> f_inputX; // input position
-    Data<VecCoord> f_outputX; // ouput position
-    Data<defaulttype::Vector3> translation; // translation
-    Data<defaulttype::Vector3> rotation; // rotation
-    Data<defaulttype::Quaternion> quaternion; // quaternion rotation
-    Data<defaulttype::Vector3> scale; // scale
-    Data<bool> inverse;
+    Data<VecCoord> f_inputX; ///< input position
+    Data<VecCoord> f_outputX; ///< ouput position
+    Data<defaulttype::Vector3> translation; ///< translation
+    Data<defaulttype::Vector3> rotation; ///< rotation
+    Data<defaulttype::Quaternion> quaternion; ///< quaternion rotation
+    Data<defaulttype::Vector3> scale; ///< scale
+    Data<bool> inverse; ///< true to apply inverse transformation
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_TRANSFORMENGINE_CPP)

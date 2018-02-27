@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -30,8 +30,6 @@
 
 #include <SofaMeshCollision/TriangleModel.h>
 #include <SofaBaseCollision/SphereModel.h>
-#include <SofaUserInteraction/CuttingPoint.h>
-
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Vec3Types.h>
@@ -173,11 +171,6 @@ private:
         /// Information of first incision for successive incisions
         bool firstCut;
 
-
-#ifdef SOFA_DEV
-        CuttingPoint* cutB;
-        CuttingPoint* cutA;
-#endif
     }	incision;
 };
 

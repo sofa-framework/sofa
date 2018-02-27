@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,16 +38,6 @@ void initGeneralLoader()
         first = false;
     }
 }
-
-SOFA_LINK_CLASS(MeshGmshLoader)
-SOFA_LINK_CLASS(MeshOffLoader)
-SOFA_LINK_CLASS(MeshTrianLoader)
-SOFA_LINK_CLASS(MeshSTLLoader)
-SOFA_LINK_CLASS(MeshXspLoader)
-SOFA_LINK_CLASS(OffSequenceLoader)
-SOFA_LINK_CLASS(InputEventReader)
-SOFA_LINK_CLASS(ReadState)
-SOFA_LINK_CLASS(ReadTopology)
 
 } // namespace component
 

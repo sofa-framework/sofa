@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -77,7 +77,7 @@ protected:
     sofa::helper::vector< std::pair<core::CollisionModel*, core::CollisionModel*> > cmPairs;
     std::map<Instance,sofa::helper::vector< std::pair<core::CollisionModel*, core::CollisionModel*> > > storedCmPairs;
 
-    virtual void changeInstanceBP(Instance inst)
+    virtual void changeInstanceBP(Instance inst) override
     {
         storedCmPairs[instance].swap(cmPairs);
         cmPairs.swap(storedCmPairs[inst]);

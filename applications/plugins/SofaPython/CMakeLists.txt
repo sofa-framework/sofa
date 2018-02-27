@@ -124,6 +124,7 @@ set(SOURCE_FILES
     ScriptEvent.cpp
     ScriptFunction.cpp
     initSofaPython.cpp
+    ctypes.cpp
 )
 
 set(PYTHON_FILES
@@ -138,6 +139,7 @@ set(PYTHON_FILES
     python/SofaPython/units.py
     python/SofaPython/noPicking.py
     python/SofaPython/livecoding.py
+    python/SofaPython/PythonAdvancedTimer.py
 )
 
 

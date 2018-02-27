@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -154,13 +154,13 @@ public :
     bool m_updateMatrix;
     bool  m_meshSaved ;
 
-    Data<bool> d_stiffnessMatrixRegularizationWeight;
-    Data<string> d_materialName; /// the name of the material
-    Data<SetParameterArray> d_parameterSet;
-    Data<SetAnisotropyDirectionArray> d_anisotropySet;
+    Data<bool> d_stiffnessMatrixRegularizationWeight; ///< Regularization of the Stiffness Matrix (between true or false)
+    Data<string> d_materialName; ///< the name of the material
+    Data<SetParameterArray> d_parameterSet; ///< The global parameters specifying the material
+    Data<SetAnisotropyDirectionArray> d_anisotropySet; ///< The global directions of anisotropy of the material
 
-    TetrahedronData<sofa::helper::vector<TetrahedronRestInformation> > m_tetrahedronInfo;
-    EdgeData<sofa::helper::vector<EdgeInformation> > m_edgeInfo;
+    TetrahedronData<sofa::helper::vector<TetrahedronRestInformation> > m_tetrahedronInfo; ///< Internal tetrahedron data
+    EdgeData<sofa::helper::vector<EdgeInformation> > m_edgeInfo; ///< Internal edge data
    
 public:
 
@@ -201,14 +201,14 @@ public:
 
   //  virtual void parse(core::objectmodel::BaseObjectDescription* arg);
 
-    virtual void init();
+    virtual void init() override;
     
-    virtual void addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
-    virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
-    virtual SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&) const;
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset);
+    virtual void addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
+    virtual void addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
+    virtual SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&) const override;
+    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset) override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
     Mat<3,3,double> getPhi( int tetrahedronIndex);
 

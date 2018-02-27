@@ -60,7 +60,7 @@ public:
     
     }
     
-    virtual void init()
+    virtual void init() override
     {/*
         d_ip.setGroup("PixelClicked");
         d_p.setGroup("PixelClicked");
@@ -71,7 +71,7 @@ public:
         addOutput(&d_vecPixCoord);*/
     }
     
-    virtual sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QWidget*parent=NULL)
+    virtual sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QWidget*parent=NULL) override
     {
         return new sofa::gui::qt::DistanceZoneImageToolBoxAction(this,parent);
     }
@@ -86,8 +86,8 @@ public:
     Data<Vec3d> d_p;
     Data<unsigned int> d_axis;
     Data<std::string> d_value;
-    Data<VecCoord> d_vecCoord;
-    Data<VecPixCoord> d_vecPixCoord;
+    Data<VecCoord> d_vecCoord; ///< Output list of space position of each pixel on contour
+    Data<VecPixCoord> d_vecPixCoord; ///< Output list of image position of each pixel on contour
 
     Data<double> threshold;
     Data<int> radius;
@@ -121,7 +121,7 @@ public:
     
     }
     
-    virtual void init()
+    virtual void init() override
     {
         Inherited::init();
         addInput(&d_image);
@@ -135,7 +135,7 @@ public:
     }
 
 
-    virtual void generate()
+    virtual void generate() override
     {
         raImage im_in(this->d_image);
         waImage im_out(this->d_imageOut);
@@ -237,9 +237,9 @@ public:
 
 
 protected:
-    Data< ImageTypes >   d_image;
+    Data< ImageTypes >   d_image; ///< Input image
 //    Data< TransformType> d_transform;
-    Data< ImageTypes >   d_imageOut;
+    Data< ImageTypes >   d_imageOut; ///< OutputImage
 
 //    Data<T> color;
 //    vector<pixCoord> processList;

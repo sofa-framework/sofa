@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -135,59 +135,6 @@ void MultiMapping<In,Out>::init()
         apply(MechanicalParams::defaultInstance(), VecCoordId::restPosition(), ConstVecCoordId::restPosition());
 }
 
-#ifdef SOFA_SMP
-template<class T>
-struct ParallelMultiMappingApply
-{
-    void operator()(const MechanicalParams* mparams , void *m, Shared_rw<defaulttype::SharedVector<typename T::Out::VecCoord*> > out, Shared_r<defaulttype::SharedVector<const typename T::In::VecCoord*> > in)
-    {
-        ((T *)m)->apply(mparams , out.access(), in.read());
-    }
-};
-
-template<class T>
-struct ParallelMultiMappingApplyJ
-{
-    void operator()(void *m, Shared_rw<defaulttype::SharedVector<typename T::Out::VecDeriv*> > out, Shared_r<defaulttype::SharedVector<const typename T::In::VecDeriv*> > in)
-    {
-        ((T *)m)->applyJ(out.access(), in.read());
-    }
-};
-
-template<class T>
-struct accessOutPos
-{
-    void operator()(void *m, Shared_rw<typename T::Out::VecCoord> out)
-    {
-        out.access();
-    }
-};
-
-template<class T>
-struct ParallelMultiMappingApply3
-{
-    void operator()(void *m, Shared_rw<typename T::Out::VecCoord> out, Shared_r<typename T::In::VecCoord> in1, Shared_r<typename T::In::VecCoord> in2)
-    {
-        out.access();
-        in1.read();
-        in2.read();
-        ((T *)m)->apply(((T *)m)->VecOutPos,((T *)m)->VecInPos);
-    }
-};
-
-template<class T>
-struct ParallelMultiMappingApplyJ3
-{
-    void operator()(void *m, Shared_rw<typename T::Out::VecDeriv> out, Shared_r<typename T::In::VecDeriv> in1,Shared_r<typename T::In::VecDeriv> in2)
-    {
-        out.access();
-        in1.read();
-        in2.read();
-        ((T *)m)->applyJ(((T *)m)->VecOutVel,((T *)m)->VecInVel);
-    }
-};
-#endif /* SOFA_SMP */
-
 template <class In, class Out>
 void MultiMapping<In,Out>::apply(const MechanicalParams* mparams, MultiVecCoordId outPos, ConstMultiVecCoordId inPos)
 {
@@ -195,13 +142,6 @@ void MultiMapping<In,Out>::apply(const MechanicalParams* mparams, MultiVecCoordI
     getVecOutCoord(outPos, vecOutPos);
     helper::vector<const InDataVecCoord*> vecInPos;
     getConstVecInCoord(inPos, vecInPos);
-
-#ifdef SOFA_SMP
-//		if (mparams->execMode() == ExecParams::EXEC_KAAPI)
-//			Task<ParallelMultiMappingApply< MultiMapping<In,Out> > >(mparams, this,
-//					**defaulttype::getShared(*out), **defaulttype::getShared(*in));
-//		else
-#endif /* SOFA_SMP */
     this->apply(mparams, vecOutPos, vecInPos);
 
 #ifdef SOFA_USE_MASK
@@ -216,13 +156,6 @@ void MultiMapping<In,Out>::applyJ(const MechanicalParams* mparams, MultiVecDeriv
     getVecOutDeriv(outVel, vecOutVel);
     helper::vector<const InDataVecDeriv*> vecInVel;
     getConstVecInDeriv(inVel, vecInVel);
-
-#ifdef SOFA_SMP
-//		if (mparams->execMode() == ExecParams::EXEC_KAAPI)
-//			Task<ParallelMultiMappingApplyJ< MultiMapping<In,Out> > >(mparams, this,
-//					**defaulttype::getShared(*out), **defaulttype::getShared(*in));
-//		else
-#endif /* SOFA_SMP */
     this->applyJ(mparams, vecOutVel, vecInVel);
 }// MultiMapping::applyJ
 

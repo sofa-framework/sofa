@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -31,6 +31,7 @@
 
 // Including mechanical object
 #include <SofaBaseMechanics/MechanicalObject.h>
+using MechanicalObject3 = sofa::component::container::MechanicalObject<Vec3Types> ;
 
 // Solvers
 #include <SofaMiscSolver/NewmarkImplicitSolver.h>

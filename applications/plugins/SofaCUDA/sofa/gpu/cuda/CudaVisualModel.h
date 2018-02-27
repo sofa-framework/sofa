@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -88,10 +88,13 @@ public:
     /// Index of elements attached to each points (layout per bloc of NBLOC vertices, with first element of each vertex, then second element, etc)
     gpu::cuda::CudaVector<int> velems;
 
-    Data<defaulttype::Vec4f> matAmbient, matDiffuse, matSpecular, matEmissive;
-    Data<float> matShininess;
-    Data<bool> useVBO;
-    Data<bool> computeNormals;
+    Data<defaulttype::Vec4f> matAmbient; ///< material ambient color
+    Data<defaulttype::Vec4f> matDiffuse; ///< material diffuse color and alpha
+    Data<defaulttype::Vec4f> matSpecular; ///< material specular color
+    Data<defaulttype::Vec4f> matEmissive; ///< material emissive color
+    Data<float> matShininess; ///< material specular shininess
+    Data<bool> useVBO; ///< true to activate Vertex Buffer Object
+    Data<bool> computeNormals; ///< true to compute smooth normals
 
     CudaVisualModel()
         : state(NULL), topology(NULL), needUpdateTopology(true), nbElement(0), nbVertex(0), nbElementPerVertex(0)
@@ -104,18 +107,18 @@ public:
         , computeNormals( initData( &computeNormals, false, "computeNormals", "true to compute smooth normals") )
     {}
 
-    virtual void init();
-    virtual void reinit();
+    virtual void init() override;
+    virtual void reinit() override;
     virtual void internalDraw(const core::visual::VisualParams* vparams);
-    virtual void drawVisual(const core::visual::VisualParams*);
-    virtual void drawTransparent(const core::visual::VisualParams*);
-    virtual void drawShadow(const core::visual::VisualParams*);
-    virtual void updateVisual();
+    virtual void drawVisual(const core::visual::VisualParams*) override;
+    virtual void drawTransparent(const core::visual::VisualParams*) override;
+    virtual void drawShadow(const core::visual::VisualParams*) override;
+    virtual void updateVisual() override;
     virtual void updateTopology();
     virtual void updateNormals();
-    virtual void handleTopologyChange();
+    virtual void handleTopologyChange() override;
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -125,7 +128,7 @@ public:
     }
 
 
-    virtual void computeBBox(const core::ExecParams* params, bool=false);
+    virtual void computeBBox(const core::ExecParams* params, bool=false) override;
 
 protected:
 

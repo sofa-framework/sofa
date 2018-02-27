@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -39,19 +39,6 @@ void initNonUniformFEM()
     }
 }
 
-SOFA_LINK_CLASS(NonUniformHexahedralFEMForceFieldAndMass)
-//SOFA_LINK_CLASS(NonUniformHexahedronFEMForceFieldDensity)
-SOFA_LINK_CLASS(DynamicSparseGridGeometryAlgorithms)
-SOFA_LINK_CLASS(DynamicSparseGridTopologyAlgorithms)
-SOFA_LINK_CLASS(DynamicSparseGridTopologyContainer)
-SOFA_LINK_CLASS(DynamicSparseGridTopologyModifier)
-SOFA_LINK_CLASS(MultilevelHexahedronSetTopologyContainer)
-SOFA_LINK_CLASS(SparseGridMultipleTopology)
-SOFA_LINK_CLASS(SparseGridRamificationTopology)
-#ifdef SOFA_HAVE_NEWMAT
-SOFA_LINK_CLASS(HexahedronCompositeFEMForceFieldAndMass)
-#endif
-SOFA_LINK_CLASS(HexahedronCompositeFEMMapping)
 
 } // namespace component
 

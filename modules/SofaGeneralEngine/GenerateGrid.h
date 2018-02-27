@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -71,13 +71,13 @@ public:
 
     ~GenerateGrid() {}
 
-    void init();
+    void init() override;
 
-    void reinit();
+    void reinit() override;
 
-    void update();
+    void update() override;
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -93,9 +93,9 @@ public:
     Data<SeqQuads> d_quad; ///< output quads
     Data<SeqTriangles> d_triangle; ///< output triangles
     Data<SeqHexahedra> d_hexahedron; ///< output hexahedra
-    Data<Vec3> d_minCorner; /// the position of the minimum corner 
-    Data<Vec3> d_maxCorner; ///the position of the maximum corner 
-    Data<Vec3Int> d_resolution; /// the resolution in the 3 directions
+    Data<Vec3> d_minCorner; ///< the position of the minimum corner 
+    Data<Vec3> d_maxCorner; ///< the position of the maximum corner 
+    Data<Vec3Int> d_resolution; ///< the resolution in the 3 directions
 };
 
 

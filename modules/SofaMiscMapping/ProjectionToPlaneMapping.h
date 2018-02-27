@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -78,41 +78,41 @@ public:
     Data< helper::vector<unsigned> > f_indices;         ///< indices of the parent points
     Data< OutVecCoord >      f_origins; ///< origins of the lines the point is projected to
     Data< OutVecCoord >      f_normals; ///< directions of the lines the point is projected to (should be normalized, and are normalized in init)
-    Data< Real > d_factor;
+    Data< Real > d_factor; ///< Projection factor (0->nothing, 1->projection on the plane (default), 2->planar symmetry, ...
 
     Data< SReal >            d_drawScale; ///< drawing scale
     Data< defaulttype::RGBAColor >  d_drawColor; ///< drawing color
 
 
-    virtual void init();
-    virtual void reinit();
+    virtual void init() override;
+    virtual void reinit() override;
 
-    virtual void apply(const core::MechanicalParams *mparams, Data<OutVecCoord>& out, const Data<InVecCoord>& in);
+    virtual void apply(const core::MechanicalParams *mparams, Data<OutVecCoord>& out, const Data<InVecCoord>& in) override;
 
-    virtual void applyJ(const core::MechanicalParams *mparams, Data<OutVecDeriv>& out, const Data<InVecDeriv>& in);
+    virtual void applyJ(const core::MechanicalParams *mparams, Data<OutVecDeriv>& out, const Data<InVecDeriv>& in) override;
 
-    virtual void applyJT(const core::MechanicalParams *mparams, Data<InVecDeriv>& out, const Data<OutVecDeriv>& in);
+    virtual void applyJT(const core::MechanicalParams *mparams, Data<InVecDeriv>& out, const Data<OutVecDeriv>& in) override;
 
-    virtual void applyJT(const core::ConstraintParams *cparams, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in);
-
-
-    virtual const sofa::defaulttype::BaseMatrix* getJ();
-    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs();
+    virtual void applyJT(const core::ConstraintParams *cparams, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in) override;
 
 
-    virtual void draw(const core::visual::VisualParams* vparams);
+    virtual const sofa::defaulttype::BaseMatrix* getJ() override;
+    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
+
+
+    virtual void draw(const core::visual::VisualParams* vparams) override;
 
     // no geometric stiffness
-    virtual void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*parentForce*/, core::ConstMultiVecDerivId  /*childForce*/ ){}
-    virtual void updateK( const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId /*childForce*/ ){}
-    virtual const defaulttype::BaseMatrix* getK(){ return NULL; }
+    virtual void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*parentForce*/, core::ConstMultiVecDerivId  /*childForce*/ ) override {}
+    virtual void updateK( const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId /*childForce*/ ) override {}
+    virtual const defaulttype::BaseMatrix* getK() override { return NULL; }
 
-    virtual void updateForceMask();
+    virtual void updateForceMask() override;
 
 
 protected:
     ProjectionToTargetPlaneMapping();
-    virtual ~ProjectionToTargetPlaneMapping() {}
+    virtual ~ProjectionToTargetPlaneMapping() override {}
 
     SparseMatrixEigen jacobian;                      ///< Jacobian of the mapping
     helper::vector<defaulttype::BaseMatrix*> baseMatrices;   ///< Jacobian of the mapping, in a vector
@@ -176,35 +176,35 @@ public:
     typedef defaulttype::Vec<In::spatial_dimensions> Direction;
 
     Data< helper::vector<unsigned> > f_indices;         ///< indices of the parent points
-    Data< Real > d_factor;
+    Data< Real > d_factor; ///< Projection factor (0->nothing, 1->projection on the plane (default), 2->planar symmetry, ...
 
     Data< SReal >                   d_drawScale; ///< drawing scale
     Data< defaulttype::RGBAColor >  d_drawColor; ///< drawing color
 
-    virtual void init();
-    virtual void reinit();
+    virtual void init() override;
+    virtual void reinit() override;
 
-    virtual void apply(const core::MechanicalParams *mparams, const helper::vector<OutDataVecCoord*>& dataVecOutPos, const helper::vector<const InDataVecCoord*>& dataVecInPos);
-    virtual void applyJ(const core::MechanicalParams *mparams, const helper::vector<OutDataVecDeriv*>& dataVecOutVel, const helper::vector<const InDataVecDeriv*>& dataVecInVel);
-    virtual void applyJT(const core::MechanicalParams *mparams, const helper::vector<InDataVecDeriv*>& dataVecOutForce, const helper::vector<const OutDataVecDeriv*>& dataVecInForce);
-
-
-    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs();
+    virtual void apply(const core::MechanicalParams *mparams, const helper::vector<OutDataVecCoord*>& dataVecOutPos, const helper::vector<const InDataVecCoord*>& dataVecInPos) override;
+    virtual void applyJ(const core::MechanicalParams *mparams, const helper::vector<OutDataVecDeriv*>& dataVecOutVel, const helper::vector<const InDataVecDeriv*>& dataVecInVel) override;
+    virtual void applyJT(const core::MechanicalParams *mparams, const helper::vector<InDataVecDeriv*>& dataVecOutForce, const helper::vector<const OutDataVecDeriv*>& dataVecInForce) override;
 
 
-    virtual void draw(const core::visual::VisualParams* vparams);
+    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
+
+
+    virtual void draw(const core::visual::VisualParams* vparams) override;
 
     // no geometric stiffness
-    virtual void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*parentForce*/, core::ConstMultiVecDerivId /*childForce*/ ){}
-    virtual void updateK(const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId /*childForce*/ ){}
-    virtual const defaulttype::BaseMatrix* getK(){ return NULL; }
-    virtual void applyJT( const core::ConstraintParams* /* cparams */, const helper::vector< InDataMatrixDeriv* >& /* dataMatOutConst */, const helper::vector< const OutDataMatrixDeriv* >& /* dataMatInConst */ ) {}
+    virtual void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*parentForce*/, core::ConstMultiVecDerivId /*childForce*/ ) override {}
+    virtual void updateK(const core::MechanicalParams* /*mparams*/, core::ConstMultiVecDerivId /*childForce*/ ) override {}
+    virtual const defaulttype::BaseMatrix* getK() override { return NULL; }
+    virtual void applyJT( const core::ConstraintParams* /* cparams */, const helper::vector< InDataMatrixDeriv* >& /* dataMatOutConst */, const helper::vector< const OutDataMatrixDeriv* >& /* dataMatInConst */ ) override {}
 
-    virtual void updateForceMask();
+    virtual void updateForceMask() override;
 
 protected:
     ProjectionToPlaneMultiMapping();
-    virtual ~ProjectionToPlaneMultiMapping() {}
+    virtual ~ProjectionToPlaneMultiMapping() override {}
 
     SparseMatrixEigen jacobian0, jacobian1;                      ///< Jacobians of the mapping
     helper::vector<defaulttype::BaseMatrix*> baseMatrices;   ///< Jacobians of the mapping, in a vector

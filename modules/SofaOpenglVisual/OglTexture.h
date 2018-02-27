@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -55,18 +55,18 @@ public:
 
 protected:
     sofa::core::objectmodel::DataFileName textureFilename;
-    Data<unsigned short> textureUnit;
-    Data<bool> enabled;
-    Data<bool> repeat;
-    Data<bool> linearInterpolation;
-    Data<bool> generateMipmaps;
-    Data<bool> srgbColorspace;
-    Data<float> minLod;
-    Data<float> maxLod;
-    Data<unsigned int> proceduralTextureWidth;
-    Data<unsigned int> proceduralTextureHeight;
-    Data<unsigned int> proceduralTextureNbBits;
-    Data<helper::vector<unsigned int> > proceduralTextureData;
+    Data<unsigned short> textureUnit; ///< Set the texture unit
+    Data<bool> enabled; ///< enabled ?
+    Data<bool> repeat; ///< Repeat Texture ?
+    Data<bool> linearInterpolation; ///< Interpolate Texture ?
+    Data<bool> generateMipmaps; ///< Generate mipmaps ?
+    Data<bool> srgbColorspace; ///< SRGB colorspace ?
+    Data<float> minLod; ///< Minimum mipmap lod ?
+    Data<float> maxLod; ///< Maximum mipmap lod ?
+    Data<unsigned int> proceduralTextureWidth; ///< Width of procedural Texture
+    Data<unsigned int> proceduralTextureHeight; ///< Height of procedural Texture
+    Data<unsigned int> proceduralTextureNbBits; ///< Nb bits per color
+    Data<helper::vector<unsigned int> > proceduralTextureData; ///< Data of procedural Texture 
     sofa::core::objectmodel::DataFileName cubemapFilenamePosX;
     sofa::core::objectmodel::DataFileName cubemapFilenamePosY;
     sofa::core::objectmodel::DataFileName cubemapFilenamePosZ;
@@ -83,11 +83,11 @@ protected:
     OglTexture();
     virtual ~OglTexture();
 public:
-    virtual void init();
-    void initVisual();
-    void reinit();
-    void fwdDraw(core::visual::VisualParams*);
-    void bwdDraw(core::visual::VisualParams*);
+    virtual void init() override;
+    void initVisual() override;
+    void reinit() override;
+    void fwdDraw(core::visual::VisualParams*) override;
+    void bwdDraw(core::visual::VisualParams*) override;
 
     std::string getTextureName();
     unsigned short getTextureUnit() { return textureUnit.getValue(); }
@@ -99,11 +99,11 @@ public:
     static void setActiveTexture(unsigned short unit);
 
     /// Returns the type of shader element (texture, macro, variable, or attribute)
-    virtual ShaderElementType getSEType() const { return core::visual::ShaderElement::SE_TEXTURE; }
+    virtual ShaderElementType getSEType() const override { return core::visual::ShaderElement::SE_TEXTURE; }
     // Returns the value of the shader element
-    virtual const core::objectmodel::BaseData* getSEValue() const { return &textureFilename; }
+    virtual const core::objectmodel::BaseData* getSEValue() const override { return &textureFilename; }
     // Returns the value of the shader element
-    virtual core::objectmodel::BaseData* getSEValue() { return &textureFilename; }
+    virtual core::objectmodel::BaseData* getSEValue() override { return &textureFilename; }
 };
 
 class SOFA_OPENGL_VISUAL_API OglTexture2D : public OglTexture
@@ -118,7 +118,7 @@ public:
     OglTexture2D();
     virtual ~OglTexture2D();
 
-    virtual void init();
+    virtual void init() override;
 };
 
 }

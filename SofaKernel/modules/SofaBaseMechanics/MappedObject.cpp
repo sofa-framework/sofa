@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,7 +22,6 @@
 #define SOFA_COMPONENT_CONTAINER_MAPPEDOBJECT_CPP
 #include <SofaBaseMechanics/MappedObject.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -63,7 +62,6 @@ int MappedObjectClass = core::RegisterObject("Mapped state vectors")
 #endif
         .add< MappedObject<Vec3dTypes> >(true) // default template
 #endif
-        .add< MappedObject<LaparoscopicRigid3Types> >()
         ;
 
 // template specialization must be in the same namespace as original namespace for GCC 4.1
@@ -84,7 +82,6 @@ template class MappedObject<Vec6fTypes>;
 template class MappedObject<Rigid3fTypes>;
 template class MappedObject<Rigid2fTypes>;
 #endif
-template class MappedObject<LaparoscopicRigid3Types>;
 
 }
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -80,7 +80,21 @@ bool ObjectElement::initNode()
         obj = Factory::CreateObject(this->getType(), this);
     if (obj == NULL)
     {
-        getParent()->logError(std::string("Object type \"" + getType() + "\" creation Failed" ));
+        BaseObjectDescription desc("InfoComponent", "InfoComponent") ;
+        desc.setAttribute("name", ("Not created ("+getType()+")").c_str());
+        obj = core::ObjectFactory::CreateObject(ctx, &desc) ;
+        std::stringstream tmp ;
+        for(auto& s : this->getErrors())
+            tmp << s << msgendl ;
+
+        if(obj)
+        {
+           obj->init() ;
+           msg_error(obj.get()) << tmp.str() ;
+           return false;
+        }
+
+        msg_error(ctx) << tmp.str() ;
         return false;
     }
     setObject(obj);

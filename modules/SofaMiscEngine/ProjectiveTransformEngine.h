@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -64,13 +64,13 @@ protected:
 
     ~ProjectiveTransformEngine() {}
 public:
-    void init();
+    void init() override;
 
-    void reinit();
+    void reinit() override;
 
-    void update();
+    void update() override;
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -81,10 +81,10 @@ public:
     }
 
 protected:
-    Data<VecCoord> f_inputX;   // input position
-    Data<VecCoord> f_outputX;  // output position: Z=focal_distance
-    Data<ProjMat> proj_mat;        // 3x4 projection matrix
-    Data<Real> focal_distance; // focal distance i.e. distance between the optical center and the image plane
+    Data<VecCoord> f_inputX;   ///< input position
+    Data<VecCoord> f_outputX;  ///< output position: Z=focal_distance
+    Data<ProjMat> proj_mat;        ///< 3x4 projection matrix
+    Data<Real> focal_distance; ///< focal distance i.e. distance between the optical center and the image plane
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_PROJECTIVETRANSFORMENGINE_CPP)

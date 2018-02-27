@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,7 +24,7 @@
 
 #include <SofaGeneralMeshCollision/DirectSAP.h>
 #include <SofaGeneralMeshCollision/IncrSAP.h>
-#include <sofa/component/typedef/Sofa_typedef.h>
+#include <SofaBaseCollision/NewProximityIntersection.h>
 #include <SofaSimulationTree/GNode.h>
 
 #include <gtest/gtest.h>
@@ -34,6 +34,9 @@ using sofa::core::objectmodel::Data;
 using sofa::defaulttype::Vector3;
 using sofa::defaulttype::Rigid3Types;
 using sofa::defaulttype::Quaternion;
+
+typedef sofa::component::container::MechanicalObject<sofa::defaulttype::StdRigidTypes<3, double> > MechanicalObjectRigid3d;
+typedef MechanicalObjectRigid3d MechanicalObjectRigid3;
 
 struct MyBox{
 

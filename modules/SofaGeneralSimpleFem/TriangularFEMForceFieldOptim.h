@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -127,19 +127,19 @@ protected:
 
     virtual ~TriangularFEMForceFieldOptim();
 public:
-    virtual void init();
-    virtual void reinit();
-    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx);
-    virtual void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix);
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const;
+    virtual void init() override;
+    virtual void reinit() override;
+    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
+    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx) override;
+    virtual void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const override;
     void getTrianglePrincipalStress(unsigned int i, Real& stressValue, Deriv& stressDirection);
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
     //}
 
     // parse method attribute (for compatibility with non-optimized version)
-    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
+    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override
     {
         const char* method = arg->getAttribute("method");
         if (method && *method && std::string(method) != std::string("large"))
@@ -259,10 +259,10 @@ public:
     typedef typename VecCoord::template rebind<TriangleState>::other VecTriangleState;
     typedef typename VecCoord::template rebind<VertexInfo>::other VecVertexInfo;
     typedef typename VecCoord::template rebind<EdgeInfo>::other VecEdgeInfo;
-    topology::TriangleData<VecTriangleInfo> triangleInfo;
-    topology::TriangleData<VecTriangleState> triangleState;
-    topology::PointData<VecVertexInfo> vertexInfo;
-    topology::EdgeData<VecEdgeInfo> edgeInfo;
+    topology::TriangleData<VecTriangleInfo> triangleInfo; ///< Internal triangle data (persistent)
+    topology::TriangleData<VecTriangleState> triangleState; ///< Internal triangle data (time-dependent)
+    topology::PointData<VecVertexInfo> vertexInfo; ///< Internal point data
+    topology::EdgeData<VecEdgeInfo> edgeInfo; ///< Internal edge data
 
 
     class TFEMFFOTriangleInfoHandler : public topology::TopologyDataHandler<Triangle,VecTriangleInfo >
@@ -323,19 +323,19 @@ public:
 
     /// Forcefield intern paramaters
     Data<Real> f_poisson;
-    Data<Real> f_young;
-    Data<Real> f_damping;
-    Data<Real> f_restScale;
+    Data<Real> f_young; ///< Young modulus in Hooke's law
+    Data<Real> f_damping; ///< Ratio damping/stiffness
+    Data<Real> f_restScale; ///< Scale factor applied to rest positions (to simulate pre-stretched materials)
 
     /// Display parameters
     Data<bool> showStressValue;
-    Data<bool> showStressVector;
+    Data<bool> showStressVector; ///< Flag activating rendering of stress directions within each triangle
 #ifdef SIMPLEFEM_COLORMAP
-    Data<std::string> showStressColorMap;
+    Data<std::string> showStressColorMap; ///< Color map used to show stress values
 #endif
-    Data<Real> showStressMaxValue;
+    Data<Real> showStressMaxValue; ///< Max value for rendering of stress values
 #ifdef SIMPLEFEM_COLORMAP
-    Data<float> showStressValueAlpha;
+    Data<float> showStressValueAlpha; ///< Alpha (1-transparency) value for rendering of stress values
 #endif
 
 

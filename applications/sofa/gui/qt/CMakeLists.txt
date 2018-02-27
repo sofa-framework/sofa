@@ -29,13 +29,14 @@ set(MOC_HEADER_FILES
     SofaPluginManager.h
     SofaVideoRecorderManager.h
     WDoubleLineEdit.h
+    panels/QDocBrowser.h
 )
 
 # these header files do not need MOCcing
 set(HEADER_FILES
+    GuiDataRepository.h
     FileManagement.h
     GraphListenerQListView.h
-    ImageQt.h
     PickHandlerCallBacks.h
     QMenuFilesRecentlyOpened.h
     QModelViewTableDataContainer.h
@@ -54,7 +55,6 @@ set(SOURCE_FILES
     FileManagement.cpp
     GenGraphForm.cpp
     GraphListenerQListView.cpp
-    ImageQt.cpp
     LinkWidget.cpp
     MaterialDataWidget.cpp
     RGBAColorDataWidget.cpp
@@ -82,6 +82,8 @@ set(SOURCE_FILES
     TableDataWidget.cpp
     WDoubleLineEdit.cpp
     viewer/SofaViewer.cpp
+    panels/QDocBrowser.cpp
+    GuiDataRepository.cpp
 )
 
 set(UI_FILES
@@ -92,6 +94,7 @@ set(UI_FILES
     PluginManager.ui
     VideoRecorderManager.ui
 )
+
 
 if(SOFA_DUMP_VISITOR_INFO)
     list(APPEND MOC_HEADER_FILES
@@ -201,12 +204,9 @@ endif()
 # target_compile_definitions(${PROJECT_NAME} PUBLIC "QT3_SUPPORT")
 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAGUIQT")
-if(SOFA_ENABLE_QWT)
-    set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAGUIQT")
-endif()
-
 
 sofa_install_targets(SofaGui SofaGuiQt "")
 
+file(INSTALL "resources" DESTINATION "../../share/sofa/gui/qt")
 install(FILES ${HEADER_FILES} DESTINATION "include/sofa/gui/qt")
 install(FILES ${MOC_HEADER_FILES} DESTINATION "include/sofa/gui/qt")

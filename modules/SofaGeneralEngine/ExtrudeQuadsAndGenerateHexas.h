@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -63,15 +63,15 @@ protected:
 
     ~ExtrudeQuadsAndGenerateHexas() {}
 public:
-    void init();
+    void init() override;
 
-    void reinit();
+    void reinit() override;
 
-    void update();
+    void update() override;
 
-    void draw( const core::visual::VisualParams* );
+    void draw( const core::visual::VisualParams* ) override;
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -82,18 +82,18 @@ public:
     }
 
     bool                                             initialized;
-    Data<bool>                                       isVisible;
-    Data<Coord>                                      f_scale;
+    Data<bool>                                       isVisible; ///< is Visible ?
+    Data<Coord>                                      f_scale; ///< Apply a scaling factor to the extruded mesh
     Data<Real>                                       f_thickness;
-    Data<Real>                                       f_thicknessIn;
-    Data<Real>                                       f_thicknessOut;
-    Data<int>                                        f_numberOfSlices;
-    Data<VecCoord>                                   f_surfaceVertices;
-    Data< helper::vector<sofa::core::topology::BaseMeshTopology::Quad> >   f_surfaceQuads;
-    Data<VecCoord>                                   f_extrudedVertices;
-    Data< helper::vector<sofa::core::topology::BaseMeshTopology::Quad> >   f_extrudedSurfaceQuads;
-    Data< helper::vector<sofa::core::topology::BaseMeshTopology::Quad> >   f_extrudedQuads;
-    Data< helper::vector<sofa::core::topology::BaseMeshTopology::Hexa> >   f_extrudedHexas;
+    Data<Real>                                       f_thicknessIn; ///< Thickness of the extruded volume in the opposite direction of the normals
+    Data<Real>                                       f_thicknessOut; ///< Thickness of the extruded volume in the direction of the normals
+    Data<int>                                        f_numberOfSlices; ///< Number of slices / steps in the extrusion
+    Data<VecCoord>                                   f_surfaceVertices; ///< Position coordinates of the surface
+    Data< helper::vector<sofa::core::topology::BaseMeshTopology::Quad> >   f_surfaceQuads; ///< Indices of the quads of the surface to extrude
+    Data<VecCoord>                                   f_extrudedVertices; ///< Coordinates of the extruded vertices
+    Data< helper::vector<sofa::core::topology::BaseMeshTopology::Quad> >   f_extrudedSurfaceQuads; ///< List of new surface quads generated during the extrusion
+    Data< helper::vector<sofa::core::topology::BaseMeshTopology::Quad> >   f_extrudedQuads; ///< List of all quads generated during the extrusion
+    Data< helper::vector<sofa::core::topology::BaseMeshTopology::Hexa> >   f_extrudedHexas; ///< List of hexahedra generated during the extrusion
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_EXTRUDEQUADSANDGENERATEHEXAS_CPP)

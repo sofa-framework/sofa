@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -98,23 +98,23 @@ protected:
         initColorContactState();
     }
 
-    ~DistanceLMContactConstraint() {}
+    ~DistanceLMContactConstraint() override {}
 public:
     // -- LMConstraint interface
-    void buildConstraintMatrix(const core::ConstraintParams* cParams, core::MultiMatrixDerivId cId, unsigned int &cIndex);
+    void buildConstraintMatrix(const core::ConstraintParams* cParams, core::MultiMatrixDerivId cId, unsigned int &cIndex) override;
 
-    void writeConstraintEquations(unsigned int& lineNumber, core::MultiVecId id, ConstOrder order);
+    void writeConstraintEquations(unsigned int& lineNumber, core::MultiVecId id, ConstOrder order) override;
     void LagrangeMultiplierEvaluation(const SReal* Wptr, const SReal* cptr, SReal* LambdaInitptr,
-            core::behavior::ConstraintGroup * group);
+            core::behavior::ConstraintGroup * group) override;
 
-    bool isCorrectionComputedWithSimulatedDOF(ConstOrder order) const;
+    bool isCorrectionComputedWithSimulatedDOF(ConstOrder order) const override;
     //
     void clear();
     /// register a new contact
     void addContact(unsigned m1, unsigned m2);
-    virtual void draw(const core::visual::VisualParams* vparams);
+    virtual void draw(const core::visual::VisualParams* vparams) override;
 
-    std::string getTemplateName() const
+    std::string getTemplateName() const override
     {
         return templateName(this);
     }

@@ -2,20 +2,25 @@
     <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels showMappings" />
     <Node>
         <RungeKutta4 />
-        <MechanicalObject name="MModel" />
+        <MechanicalObject name="MModel" showObject="1"/>
         <!-- A topology is used here just to set initial particles positions. It is a bad idea because this object has no real topology, but it works... -->
         <RegularGrid nx="8" ny="6" nz="10" xmin="-9" xmax="5" ymin="-8" ymax="2" zmin="-9" zmax="9" />
         <UniformMass name="M1" mass="0.5" />
         <LennardJonesForceField alpha="8" beta="9" p0="-50" d0="1" dmax="4" fmax="2" />
         <!-- The following force fields handle collision with walls and an inclined floor -->
-        <PlaneForceField normal="1 0 0" d="-10" />
-        <PlaneForceField normal="-1 0 0" d="-10" />
-        <PlaneForceField normal="0.1 1 0" d="-10" />
-        <PlaneForceField normal="0 0 1" d="-10" />
-        <PlaneForceField normal="0 0 -1" d="-10" />
+        <PlaneForceField normal="1 0 0" d="-10" draw="1" />
+        <PlaneForceField normal="-1 0 0" d="-10" draw="1" />
+        <PlaneForceField normal="0.1 1 0" d="-10" draw="1" />
+        <PlaneForceField normal="0 0 1" d="-10" draw="1" />
+        <PlaneForceField normal="0 0 -1" d="-10" draw="0" />
+        
+        <!--
+        To have a nice visualization based on MarchingCube, you can uncomment the code below (wiht : <RequiredPlugin name="SofaImplicitField"/>)
+
         <Node id="Visual">
             <OglModel name="VModel" color="blue" useVBO="false" />
             <ImplicitSurfaceMapping name="MarchingCube" input="@../MModel" output="@VModel" isoValue="0.75" radius="3" step="0.75" />
         </Node>
+        -->
     </Node>
 </Node>

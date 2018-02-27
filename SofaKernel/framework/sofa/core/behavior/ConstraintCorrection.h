@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -71,12 +71,12 @@ protected:
     {
     };
 public:
-    void init();
+    void init() override;
 
-    virtual void cleanup();
+    virtual void cleanup() override;
 
-    virtual void addConstraintSolver(core::behavior::ConstraintSolver *s);
-    virtual void removeConstraintSolver(core::behavior::ConstraintSolver *s);
+    virtual void addConstraintSolver(core::behavior::ConstraintSolver *s) override;
+    virtual void removeConstraintSolver(core::behavior::ConstraintSolver *s) override;
 private:
     std::list<core::behavior::ConstraintSolver*> constraintsolvers;
 
@@ -89,7 +89,7 @@ public:
     /// @param v is the velocity result VecId
     /// @param f is the motion space force vector
     /// @param lambda is the constraint space force vector
-    virtual void computeAndApplyMotionCorrection(const core::ConstraintParams * cparams, core::MultiVecCoordId x, core::MultiVecDerivId v, core::MultiVecDerivId f, const defaulttype::BaseVector * lambda);
+    virtual void computeAndApplyMotionCorrection(const core::ConstraintParams * cparams, core::MultiVecCoordId x, core::MultiVecDerivId v, core::MultiVecDerivId f, const defaulttype::BaseVector * lambda) override;
 
     virtual void computeAndApplyMotionCorrection(const core::ConstraintParams * cparams, Data< VecCoord > &x, Data< VecDeriv > &v, Data< VecDeriv > &f, const defaulttype::BaseVector * lambda) = 0;
 
@@ -99,7 +99,7 @@ public:
     /// @param x is the position result VecId
     /// @param f is the motion space force vector
     /// @param lambda is the constraint space force vector
-    virtual void computeAndApplyPositionCorrection(const core::ConstraintParams * cparams, core::MultiVecCoordId x, core::MultiVecDerivId f, const defaulttype::BaseVector * lambda);
+    virtual void computeAndApplyPositionCorrection(const core::ConstraintParams * cparams, core::MultiVecCoordId x, core::MultiVecDerivId f, const defaulttype::BaseVector * lambda) override;
 
     virtual void computeAndApplyPositionCorrection(const core::ConstraintParams * cparams, Data< VecCoord > &x, Data< VecDeriv > &f, const defaulttype::BaseVector * lambda)  = 0;
 
@@ -109,7 +109,7 @@ public:
     /// @param v is the velocity result VecId
     /// @param f is the motion space force vector
     /// @param lambda is the constraint space force vector
-    virtual void computeAndApplyVelocityCorrection(const core::ConstraintParams * cparams, core::MultiVecDerivId v, core::MultiVecDerivId f, const defaulttype::BaseVector * lambda);
+    virtual void computeAndApplyVelocityCorrection(const core::ConstraintParams * cparams, core::MultiVecDerivId v, core::MultiVecDerivId f, const defaulttype::BaseVector * lambda) override;
 
     virtual void computeAndApplyVelocityCorrection(const core::ConstraintParams * cparams, Data< VecDeriv > &v, Data< VecDeriv > &f, const defaulttype::BaseVector * lambda) = 0;
 
@@ -118,7 +118,7 @@ public:
     /// @param cparams
     /// @param f is the motion space force vector
     /// @param lambda is the constraint space force vector
-    virtual void applyPredictiveConstraintForce(const core::ConstraintParams * cparams, core::MultiVecDerivId f, const defaulttype::BaseVector *lambda);
+    virtual void applyPredictiveConstraintForce(const core::ConstraintParams * cparams, core::MultiVecDerivId f, const defaulttype::BaseVector *lambda) override;
 
     virtual void applyPredictiveConstraintForce(const core::ConstraintParams * /*cparams*/, Data< VecDeriv > &/*f*/, const defaulttype::BaseVector * /*lambda*/) {};
 
@@ -167,7 +167,7 @@ public:
         return BaseObject::canCreate(obj, context, arg);
     }
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }

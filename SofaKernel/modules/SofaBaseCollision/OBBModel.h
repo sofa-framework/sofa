@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -148,25 +148,25 @@ public:
     typedef TOBB<DataTypes> Element;
     friend class TOBB<DataTypes>;
 
-    Data<VecCoord> ext;
-    Data<Real> default_ext;
+    Data<VecCoord> ext; ///< Extents in x,y and z directions
+    Data<Real> default_ext; ///< Default extent
 protected:
     TOBBModel();
     TOBBModel(core::behavior::MechanicalState<TDataTypes>* mstate );
 public:
-    virtual void init();
+    virtual void init() override;
 
     // -- CollisionModel interface
 
-    virtual void resize(int size);
+    virtual void resize(int size) override;
 
-    virtual void computeBoundingTree(int maxDepth=0);
+    virtual void computeBoundingTree(int maxDepth=0) override;
 
     //virtual void computeContinuousBoundingTree(SReal dt, int maxDepth=0);
 
-    void draw(const core::visual::VisualParams* vparams,int index);
+    void draw(const core::visual::VisualParams* vparams,int index) override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return _mstate; }
 
@@ -181,7 +181,7 @@ public:
         return BaseObject::canCreate(obj, context, arg);
     }
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -264,7 +264,7 @@ public:
     Data<VecCoord> & writeExtents();
 
 
-    virtual void computeBBox(const core::ExecParams* params, bool onlyVisible=false);
+    virtual void computeBBox(const core::ExecParams* params, bool onlyVisible=false) override;
 
 protected:
     core::behavior::MechanicalState<DataTypes>* _mstate;

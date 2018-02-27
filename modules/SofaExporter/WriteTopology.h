@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -63,11 +63,11 @@ public:
     SOFA_CLASS(WriteTopology,core::objectmodel::BaseObject);
 
     sofa::core::objectmodel::DataFileName f_filename;
-    Data < bool > f_writeContainers;
-    Data < bool > f_writeShellContainers;
-    Data < double > f_interval;
-    Data < helper::vector<double> > f_time;
-    Data < double > f_period;
+    Data < bool > f_writeContainers; ///< flag enabling output of common topology containers.
+    Data < bool > f_writeShellContainers; ///< flag enabling output of specific shell topology containers.
+    Data < double > f_interval; ///< time duration between outputs
+    Data < helper::vector<double> > f_time; ///< set time to write outputs
+    Data < double > f_period; ///< period between outputs
     //    Data < helper::vector<unsigned int> > f_DOFsX;
     //    Data < helper::vector<unsigned int> > f_DOFsV;
     //    Data < double > f_stopAt;
@@ -90,11 +90,11 @@ protected:
 
     virtual ~WriteTopology();
 public:
-    virtual void init();
+    virtual void init() override;
 
-    virtual void reset();
+    virtual void reset() override;
 
-    virtual void handleEvent(sofa::core::objectmodel::Event* event);
+    virtual void handleEvent(sofa::core::objectmodel::Event* event) override;
 
 
     /// Pre-construction check method called by ObjectFactory.

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -26,7 +26,6 @@
 #include <sofa/core/BaseState.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 #include <limits>
 
 namespace sofa
@@ -142,13 +141,13 @@ public:
     /// @name BaseData vectors access API based on VecId
     /// @{
 
-    virtual objectmodel::BaseData* baseWrite(VecId v);
-    virtual const objectmodel::BaseData* baseRead(ConstVecId v) const;
+    virtual objectmodel::BaseData* baseWrite(VecId v) override;
+    virtual const objectmodel::BaseData* baseRead(ConstVecId v) const override;
 
     /// @}
 
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -158,7 +157,7 @@ public:
         return TDataTypes::Name();
     }
 
-    virtual void computeBBox(const core::ExecParams* params, bool onlyVisible=false);
+    virtual void computeBBox(const core::ExecParams* params, bool onlyVisible=false) override;
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_CORE_STATE_CPP)
@@ -182,8 +181,6 @@ extern template class SOFA_CORE_API State<defaulttype::Rigid3fTypes>;
 #endif
 
 extern template class SOFA_CORE_API State<defaulttype::ExtVec3fTypes>;
-
-extern template class SOFA_CORE_API State<defaulttype::LaparoscopicRigid3Types>;
 
 #endif
 } // namespace core

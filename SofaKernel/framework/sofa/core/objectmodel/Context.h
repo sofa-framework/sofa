@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -29,11 +29,6 @@
 #include <iostream>
 #include <map>
 
-#ifdef SOFA_SMP
-#include <IterativePartition.h>
-#include <AthapascanIterative.h>
-#endif
-
 
 namespace sofa
 {
@@ -55,28 +50,23 @@ public:
 
 
 
-    Data<bool> is_activated;
+    Data<bool> is_activated; ///< To Activate a node
     Data<Vec3> worldGravity_;  ///< Gravity IN THE WORLD COORDINATE SYSTEM.
-    Data<SReal> dt_;
-    Data<SReal> time_;
-    Data<bool> animate_;
-	Data<bool> d_isSleeping;				/// Tells if the context is sleeping, and thus ignored by visitors
-	Data<bool> d_canChangeSleepingState;	/// Tells if the context can change its sleeping state
+    Data<SReal> dt_; ///< Time step
+    Data<SReal> time_; ///< Current time
+    Data<bool> animate_; ///< Animate the Simulation(applied at initialization only)
+	Data<bool> d_isSleeping;				///< Tells if the context is sleeping, and thus ignored by visitors
+	Data<bool> d_canChangeSleepingState;	///< Tells if the context can change its sleeping state
 #ifdef SOFA_SUPPORT_MULTIRESOLUTION
     /// @name For multiresolution (UNSTABLE)
     /// @{
     Data<int> currentLevel_;
-    Data<int> coarsestLevel_;
-    Data<int> finestLevel_;
+    Data<int> coarsestLevel_; ///< Coarsest level of details
+    Data<int> finestLevel_; ///< Finest level of details
     /// @}
 #endif
 
-#ifdef SOFA_SMP
-    Data<int> processor;
-    Data<bool> gpuPrioritary;
-    Data<bool> is_partition_;
-    Iterative::IterativePartition *partition_;
-#endif
+
 
 protected:
     Context();
@@ -88,29 +78,29 @@ public:
     /// @{
 
     /// The Context is active
-    virtual bool isActive() const;
+    virtual bool isActive() const override;
     /// State of the context
-    virtual void setActive(bool val);
+    virtual void setActive(bool val) override;
 
 	/// The Context is sleeping
-	virtual bool isSleeping() const;
+	virtual bool isSleeping() const override;
 
 	/// The Context can change its sleeping state
-	virtual bool canChangeSleepingState() const;
+	virtual bool canChangeSleepingState() const override;
 
     /// Gravity in local coordinates
-    virtual const Vec3& getGravity() const;
+    virtual const Vec3& getGravity() const override;
     /// Gravity in local coordinates
-    virtual void setGravity( const Vec3& );
+    virtual void setGravity( const Vec3& ) override;
 
     /// Simulation timestep
-    virtual SReal getDt() const;
+    virtual SReal getDt() const override;
 
     /// Simulation time
-    virtual SReal getTime() const;
+    virtual SReal getTime() const override;
 
     /// Animation flag
-    virtual bool getAnimate() const;
+    virtual bool getAnimate() const override;
 
 #ifdef SOFA_SUPPORT_MULTIRESOLUTION
     /// Multiresolution support (UNSTABLE)
@@ -161,19 +151,19 @@ public:
     /// @{
 
     /// Simulation timestep
-    virtual void setDt( SReal dt );
+    virtual void setDt( SReal dt ) override;
 
     /// Simulation time
     virtual void setTime( SReal t );
 
     /// Animation flag
-    virtual void setAnimate(bool val);
+    virtual void setAnimate(bool val) override;
 
 	/// Sleeping state of the context
-	virtual void setSleeping(bool val);
+	virtual void setSleeping(bool val) override;
 
 	/// Sleeping state change of the context
-	virtual void setChangeSleepingState(bool val);
+	virtual void setChangeSleepingState(bool val) override;
 
     /// Display flags: Gravity
     virtual void setDisplayWorldGravity(bool val) { worldGravity_.setDisplayed(val); }
@@ -187,13 +177,7 @@ public:
     virtual void setFinestLevel(int l);
 #endif
 
-#ifdef SOFA_SMP
-    inline bool is_partition()const {return is_partition_.getValue();}
-    inline Iterative::IterativePartition *getPartition()const {return partition_;}
-    /// Accessor to the object processor
-    int getProcessor() const;
-    void setProcessor(int);
-#endif
+
 
     /// @}
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -27,6 +27,7 @@
 #include <cmath>
 #include <sofa/helper/system/thread/CTime.h>
 #include <vector>
+#include <ostream>
 
 
 namespace sofa
@@ -111,7 +112,7 @@ SOFA_HELPER_API int resoudreLCP(int, double *, double **, double *);
 SOFA_HELPER_API void afficheSyst(double *q,double **M, int *base, double **mat, int dim);
 SOFA_HELPER_API void afficheLCP(double *q, double **M, int dim);
 SOFA_HELPER_API void afficheLCP(double *q, double **M, double *f, int dim);
-SOFA_HELPER_API void afficheResult(double *f, int dim);
+SOFA_HELPER_API void resultToString(std::ostream& s, double *f, int dim);
 
 typedef SOFA_HELPER_API double FemClipsReal;
 SOFA_HELPER_API void gaussSeidelLCP1(int dim, FemClipsReal * q, FemClipsReal ** M, FemClipsReal * res, double tol, int numItMax, double minW=0.0, double maxF=0.0, std::vector<double>* residuals = NULL);

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -36,11 +36,16 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/operations.hpp>
+using namespace boost::filesystem;
 
 #include "FileSystem.h"
 using sofa::helper::system::FileSystem ;
 
 #include "FileMonitor.h"
+
+#include <boost/filesystem.hpp>
 
 using namespace std ;
 
@@ -92,15 +97,24 @@ int FileMonitor_init()
 }
 
 void FileMonitor::removeFileListener(const string& filename,
-                                     FileEventListener *listener){
+                                     FileEventListener *listener)
+{
+    path prefix(FileSystem::getParentDirectory(filename)) ;
+    path name(FileSystem::stripDirectory(filename)) ;
 
+    path fullPath = prefix/name;
+
+    if(! exists(status(fullPath)) )
+        return;
+
+    path absolutePath = canonical(fullPath) ;
     map<string, ListOfListeners>::iterator cur = file2listener.begin() ;
     map<string, ListOfListeners>::iterator end = file2listener.end() ;
 
     for(;cur!=end;++cur){
 
         if(std::find(cur->second.begin(),cur->second.end(), listener)
-                != cur->second.end() && cur->first ==  filename){
+                != cur->second.end() && cur->first ==  absolutePath){
             cur->second.erase(std::remove(cur->second.begin(),
                                           cur->second.end(), listener),
                               cur->second.end());
@@ -148,33 +162,44 @@ int FileMonitor::addFile(const std::string& parentname,
     if(listener == NULL)
         return -1 ;
 
-    if(!FileSystem::exists(parentname))
+    path prefix(parentname) ;
+    path name(filename) ;
+
+    path fullPath = prefix/name;
+
+    if(! exists(status(fullPath)) )
         return -1;
 
-    if(!FileSystem::exists(parentname+"/"+filename))
+    path absolutePath = canonical(fullPath) ;
+
+
+    if(! exists(status(absolutePath)) )
         return -1;
 
     if(filemonitor_inotifyfd<0)
         FileMonitor_init() ;
 
+    std::string parentnameL = absolutePath.parent_path().string() ;
+    std::string filenameL = absolutePath.filename().string() ;
+
     // Is the directory in the already monitored files ?
-    if( dir2files.find(parentname) != dir2files.end() ) {
+    if( dir2files.find(parentnameL) != dir2files.end() ) {
         // If so, is the file in the monitored files ?
-        addAFileListenerInDict(parentname+"/"+filename,listener);
-        ListOfFiles& lf=dir2files[parentname];
-        if(find(lf.begin(), lf.end(), filename)==lf.end()){
-            dir2files[parentname].push_back(filename) ;
+        addAFileListenerInDict(parentnameL+"/"+filenameL,listener);
+        ListOfFiles& lf=dir2files[parentnameL];
+        if(find(lf.begin(), lf.end(), filenameL)==lf.end()){
+            dir2files[parentnameL].push_back(filenameL) ;
         }
     } else {
         // If the directory is not yet monitored we add it to the system.
-        dir2files[parentname] = ListOfFiles() ;
+        dir2files[parentnameL] = ListOfFiles() ;
         int wd=inotify_add_watch( filemonitor_inotifyfd,
-                                  parentname.c_str(),
+                                  parentnameL.c_str(),
                                   IN_CLOSE | IN_MOVED_TO ) ;
-        fd2fn[wd]=string(parentname) ;
-        addAFileListenerInDict(parentname+"/"+filename,listener);
+        fd2fn[wd]=string(parentnameL) ;
+        addAFileListenerInDict(parentnameL+"/"+filenameL,listener);
 
-        dir2files[parentname].push_back(filename) ;
+        dir2files[parentnameL].push_back(filenameL) ;
     }
 
     return 1 ;
@@ -224,6 +249,7 @@ int FileMonitor::updates(int timeout)
                 if(dir2files.find(fd2fn[pevent->wd])!=dir2files.end()) {
                     ListOfFiles& dl=dir2files[fd2fn[pevent->wd]] ;
                     string fullname = string(fd2fn[pevent->wd])+"/"+string(pevent->name) ;
+
                     if(find(dl.begin(), dl.end(), pevent->name)!=dl.end()) {
                         if(find(changedfiles.begin(), changedfiles.end(), fullname)==changedfiles.end()) {
                             changedfiles.push_back(fullname) ;
@@ -233,6 +259,7 @@ int FileMonitor::updates(int timeout)
             }
             buffer_i += sizeof(struct inotify_event)+pevent->len ;
         }
+
 
         for(vector<string>::iterator f=changedfiles.begin(); f!=changedfiles.end(); f++) {
             ListOfListeners::iterator it = file2listener[*f].begin() ;

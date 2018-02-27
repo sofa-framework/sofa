@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -54,11 +54,11 @@ public:
     /// Inherited from BaseObject.
     /// Parse the given description to assign values to this object's fields and
     /// potentially other parameters.
-    virtual void parse ( core::objectmodel::BaseObjectDescription* arg ) ;
+    virtual void parse ( core::objectmodel::BaseObjectDescription* arg ) override;
 
-    Data<std::string>   d_componentname       ;
-    Data<std::string>   d_dataname            ;
-    Data<std::string>   d_alias               ;
+    Data<std::string>   d_componentname       ; ///< The component class for which to create an alias.
+    Data<std::string>   d_dataname            ; ///< The data field for which to create an alias.
+    Data<std::string>   d_alias               ; ///< The alias of the data field.
 
     /// Inherited virtual function from Base
     static std::string className(const MakeDataAliasComponent* ptr)
@@ -67,7 +67,7 @@ public:
         return "MakeDataAlias" ;
     }
 
-    virtual std::string getClassName() const
+    virtual std::string getClassName() const override
     {
         return "MakeDataAlias" ;
     }

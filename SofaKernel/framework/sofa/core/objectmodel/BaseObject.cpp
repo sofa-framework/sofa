@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -44,9 +44,6 @@ BaseObject::BaseObject()
     , l_context(initLink("context","Graph Node containing this object (or BaseContext::getDefault() if no graph is used"))
     , l_slaves(initLink("slaves","Sub-objects used internally by this object"))
     , l_master(initLink("master","NULL for regular objects, or master object for which this object is one sub-objects"))
-#ifdef SOFA_SMP
-    ,partition_(NULL)
-#endif
 {
     l_context.setValidator(&sofa::core::objectmodel::BaseObject::changeContextLink);
     l_context.set(BaseContext::getDefault());
@@ -185,22 +182,7 @@ void* BaseObject::findLinkDestClass(const BaseClass* destType, const std::string
         return this->getContext()->findLinkDestClass(destType, path, link);
 }
 
-#ifdef SOFA_SMP
 
-void BaseObject::setPartition(Iterative::IterativePartition* p)
-{
-    partition_=p;
-}
-Iterative::IterativePartition*  BaseObject::getPartition()
-{
-    if(partition_)
-        return partition_;
-    if(getContext()&&getContext()->is_partition())
-        return getContext()->getPartition();
-    return 0;
-}
-
-#endif
 const BaseContext* BaseObject::getContext() const
 {
     return l_context.get();
@@ -285,10 +267,7 @@ void BaseObject::releaseAspect(int aspect)
 
 void BaseObject::init()
 {
-#ifdef SOFA_SMP
-    if(!context_||!context_->is_partition())
-        setPartition(new Iterative::IterativePartition());
-#endif
+
 
 	for(VecData::const_iterator iData = this->m_vecData.begin(); iData != this->m_vecData.end(); ++iData)
 	{

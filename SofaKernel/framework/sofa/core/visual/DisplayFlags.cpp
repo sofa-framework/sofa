@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -185,9 +185,6 @@ DisplayFlags::DisplayFlags():
     m_showRendering(FlagTreeItem("showRendering","hideRendering",&m_showOptions)),
     m_showWireframe(FlagTreeItem("showWireframe","hideWireframe",&m_showOptions)),
     m_showNormals(FlagTreeItem("showNormals","hideNormals",&m_showOptions))
-#ifdef SOFA_SMP
-    m_showProcessorColor(FlagTreeItem("showProcessorColor","hideProcessorColor",&m_showOptions))
-#endif
 {
     m_showVisualModels.setValue(tristate::neutral_value);
     m_showBehaviorModels.setValue(tristate::neutral_value);
@@ -200,9 +197,6 @@ DisplayFlags::DisplayFlags():
     m_showRendering.setValue(tristate::neutral_value);
     m_showWireframe.setValue(tristate::neutral_value);
     m_showNormals.setValue(tristate::neutral_value);
-#ifdef SOFA_SMP
-    m_showProcessorColor.setValue(tristate::neutral_value);
-#endif
 }
 
 DisplayFlags::DisplayFlags(const DisplayFlags & other):
@@ -224,9 +218,6 @@ DisplayFlags::DisplayFlags(const DisplayFlags & other):
     m_showRendering(FlagTreeItem("showRendering","hideRendering",&m_showOptions)),
     m_showWireframe(FlagTreeItem("showWireframe","hideWireframe",&m_showOptions)),
     m_showNormals(FlagTreeItem("showNormals","hideNormals",&m_showOptions))
-#ifdef SOFA_SMP
-    m_showProcessorColor(FlagTreeItem("showProcessorColor","hideProcessorColor",&m_showOptions))
-#endif
 {
     m_showVisualModels.setValue(other.m_showVisualModels.state());
     m_showBehaviorModels.setValue(other.m_showBehaviorModels.state());
@@ -239,9 +230,6 @@ DisplayFlags::DisplayFlags(const DisplayFlags & other):
     m_showRendering.setValue(other.m_showRendering.state());
     m_showWireframe.setValue(other.m_showWireframe.state());
     m_showNormals.setValue(other.m_showNormals.state());
-#ifdef SOFA_SMP
-    m_showProcessorColor.setValue(other.m_showProcessorColor.state());
-#endif
 }
 
 DisplayFlags& DisplayFlags::operator =(const DisplayFlags& other)
@@ -259,9 +247,6 @@ DisplayFlags& DisplayFlags::operator =(const DisplayFlags& other)
         m_showRendering.setValue(other.m_showRendering.state());
         m_showWireframe.setValue(other.m_showWireframe.state());
         m_showNormals.setValue(other.m_showNormals.state());
-#ifdef SOFA_SMP
-        m_showProcessorColor.setValue(other.m_showProcessorColor.state());
-#endif
     }
     return *this;
 }
@@ -279,9 +264,6 @@ bool DisplayFlags::isNeutral() const
             && m_showRendering.state().state == tristate::neutral_value
             && m_showWireframe.state().state == tristate::neutral_value
             && m_showNormals.state().state == tristate::neutral_value
-#ifdef SOFA_SMP
-            && m_showProcessorColor.state().state == tristate::neutral_value
-#endif
             ;
 }
 
@@ -299,9 +281,6 @@ DisplayFlags merge_displayFlags(const DisplayFlags &previous, const DisplayFlags
     merge.m_showRendering.setValue( merge_tristate(previous.m_showRendering.state(),current.m_showRendering.state()) );
     merge.m_showWireframe.setValue( merge_tristate(previous.m_showWireframe.state(),current.m_showWireframe.state()) );
     merge.m_showNormals.setValue( merge_tristate(previous.m_showNormals.state(),current.m_showNormals.state()) );
-#ifdef SOFA_SMP
-    merge.m_showProcessorColor.setValue( merge_tristate(previous.m_showProcessorColor.state(),current.m_showProcessorColor.state()) )
-#endif
     return merge;
 }
 
@@ -319,9 +298,6 @@ DisplayFlags difference_displayFlags(const DisplayFlags& previous, const Display
     difference.m_showRendering.setValue( difference_tristate(previous.m_showRendering.state(),current.m_showRendering.state()) );
     difference.m_showWireframe.setValue( difference_tristate(previous.m_showWireframe.state(),current.m_showWireframe.state()) );
     difference.m_showNormals.setValue( difference_tristate(previous.m_showNormals.state(),current.m_showNormals.state()) );
-#ifdef SOFA_SMP
-    difference.m_showProcessorColor.setValue( difference_tristate(previous.m_showProcessorColor.state(),current.m_showProcessorColor.state()) )
-#endif
     return difference;
 }
 }

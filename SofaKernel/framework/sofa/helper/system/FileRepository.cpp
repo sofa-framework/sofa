@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -42,6 +42,7 @@
 #include <algorithm>
 #include <sstream>
 #include <sofa/helper/logging/Messaging.h>
+#include <sofa/helper/Utils.h>
 
 #ifdef WIN32
 #define ON_WIN32 true
@@ -74,7 +75,13 @@ std::string cleanPath( const std::string& path )
     return p;
 }
 
-FileRepository PluginRepository("SOFA_PLUGIN_PATH");
+/// Initialize PluginRepository with the current working directory
+#ifdef WIN32
+FileRepository PluginRepository( "SOFA_PLUGIN_PATH", Utils::getExecutableDirectory().c_str() );
+#else
+FileRepository PluginRepository( "SOFA_PLUGIN_PATH", Utils::getSofaPathTo("lib").c_str() );
+#endif
+
 FileRepository DataRepository("SOFA_DATA_PATH");
 
 #if defined (_XBOX) || defined(PS3)

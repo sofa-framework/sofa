@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -69,14 +69,14 @@ public:
 
     virtual ~MeshSampler() {}
 
-    virtual void reinit()    { update();  }
-    virtual void init();
-    void update();
+    virtual void reinit()    override { update();  }
+    virtual void init() override;
+    void update() override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
 
-    Data<unsigned int> number;
+    Data<unsigned int> number; ///< Sample number
     Data< VecCoord > position; ///< input positions
     Data< SeqEdges > f_edges;  ///< input edges for geodesic sampling
     Data< VecCoord > fixedPosition;  ///< User defined sample positions.
@@ -84,7 +84,7 @@ public:
     Data< VI > outputIndices;       ///< selected point indices
     Data< VecCoord > outputPosition;       ///< selected point coordinates
 
-    virtual std::string getTemplateName() const    { return templateName(this);    }
+    virtual std::string getTemplateName() const    override { return templateName(this);    }
     static std::string templateName(const MeshSampler<DataTypes>* = NULL) {   return DataTypes::Name(); }
 
 private:

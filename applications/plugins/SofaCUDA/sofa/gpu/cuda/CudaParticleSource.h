@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,44 +23,5 @@
 #define SOFA_GPU_CUDA_CUDAPARTICLESOURCE_H
 
 #include "CudaTypes.h"
-#include <SofaSphFluid/ParticleSource.h>
-#include <sofa/core/behavior/ProjectiveConstraintSet.inl>
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace misc
-{
-
-// template <>
-// void ParticleSource<gpu::cuda::CudaVec3fTypes>::projectResponse(VecDeriv& res);
-
-// template <>
-// void ParticleSource<gpu::cuda::CudaVec3fTypes>::projectVelocity(VecDeriv& res);
-
-// template <>
-// void ParticleSource<gpu::cuda::CudaVec3fTypes>::projectPosition(VecCoord& res);
-
-// #ifdef SOFA_GPU_CUDA_DOUBLE
-
-// template <>
-// void ParticleSource<gpu::cuda::CudaVec3dTypes>::projectResponse(VecDeriv& res);
-
-// template <>
-// void ParticleSource<gpu::cuda::CudaVec3dTypes>::projectVelocity(VecDeriv& res);
-
-// template <>
-// void ParticleSource<gpu::cuda::CudaVec3dTypes>::projectPosition(VecCoord& res);
-
-// #endif // SOFA_GPU_CUDA_DOUBLE
-
-} // namespace misc
-
-} // namespace component
-
-} // namespace sofa
 
 #endif

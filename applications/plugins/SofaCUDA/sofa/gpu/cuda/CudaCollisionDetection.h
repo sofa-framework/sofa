@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -338,9 +338,9 @@ public:
 
     TestMap tests;
 
-    virtual void beginNarrowPhase();
-    virtual void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& cmPair);
-    virtual void endNarrowPhase();
+    virtual void beginNarrowPhase() override;
+    virtual void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& cmPair) override;
+    virtual void endNarrowPhase() override;
 
 protected:
     Test* createTest(core::CollisionModel* model1, core::CollisionModel* model2);

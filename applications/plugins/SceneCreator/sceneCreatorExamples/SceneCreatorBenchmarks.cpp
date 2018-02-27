@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2016 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -13,11 +13,8 @@
 * more details.                                                               *
 *                                                                             *
 * You should have received a copy of the GNU General Public License along     *
-* with this program; if not, write to the Free Software Foundation, Inc., 51  *
-* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
+* with this program. If not, see <http://www.gnu.org/licenses/>.              *
 *******************************************************************************
-*                            SOFA :: Applications                             *
-*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -35,7 +32,6 @@
 #include <SofaComponentCommon/initComponentCommon.h>
 #include <SofaComponentBase/initComponentBase.h>
 
-//#include <sofa/component/typedef/Sofa_typedef.h>
 
 void fallingCubeExample(sofa::simulation::Node::SPtr root)
 {
@@ -107,10 +103,25 @@ int main(int argc, char** argv)
     sofa::component::initComponentBase();
     sofa::component::initComponentCommon();
 
+    bool showHelp = false;
     unsigned int idExample = 0;
-    sofa::helper::parse("This is a SOFA application. Here are the command line arguments")
-            .option(&idExample,'e',"example","Example Number to enter from (0 - 9)")
-    (argc,argv);
+    ArgumentParser* argParser = new ArgumentParser(argc, argv);
+    argParser->addArgument(po::value<bool>(&showHelp)->default_value(false)->implicit_value(true),                  "help,h", "Display this help message");
+    argParser->addArgument(po::value<unsigned int>(&idExample)->default_value(0)->notifier([](unsigned int value)
+    {
+        if (value < 0 || value > 9) {
+            std::cerr << "Example Number to enter from (0 - 9), current value: " << value << std::endl;
+            exit( EXIT_FAILURE );
+        }
+    }),                                                                                                             "example,e", "Example Number to enter from (0 - 9)");
+
+    argParser->parse();
+
+    if(showHelp)
+    {
+        argParser->showHelp();
+        exit( EXIT_SUCCESS );
+    }
 
     // init GUI
     sofa::gui::initMain();

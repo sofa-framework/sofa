@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -102,19 +102,19 @@ public:
 protected:
     TPointModel();
 public:
-    virtual void init();
+    virtual void init() override;
 
     // -- CollisionModel interface
 
-    virtual void resize(int size);
+    virtual void resize(int size) override;
 
-    virtual void computeBoundingTree(int maxDepth=0);
+    virtual void computeBoundingTree(int maxDepth=0) override;
 
-    virtual void computeContinuousBoundingTree(double dt, int maxDepth=0);
+    virtual void computeContinuousBoundingTree(double dt, int maxDepth=0) override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
-    virtual bool canCollideWithElement(int index, CollisionModel* model2, int index2);
+    virtual bool canCollideWithElement(int index, CollisionModel* model2, int index2) override;
 
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return mstate; }
 
@@ -135,7 +135,7 @@ public:
 
     const Deriv& velocity(int index) const;
 
-    Data<bool> bothSide; // to activate collision on both side of the point model (when surface normals are defined on these points)
+    Data<bool> bothSide; ///< to activate collision on both side of the point model (when surface normals are defined on these points)
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
@@ -147,7 +147,7 @@ public:
         return BaseObject::canCreate(obj, context, arg);
     }
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -157,22 +157,22 @@ public:
         return DataTypes::Name();
     }
 
-    virtual void computeBBox(const core::ExecParams* params, bool onlyVisible);
+    virtual void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
 
 protected:
 
     core::behavior::MechanicalState<DataTypes>* mstate;
 
-    Data<bool> computeNormals;
+    Data<bool> computeNormals; ///< activate computation of normal vectors (required for some collision detection algorithms)
 
-    Data<std::string> PointActiverPath;
+    Data<std::string> PointActiverPath; ///< path of a component PointActiver that activate or deactivate collision point during execution
 
     VecDeriv normals;
 
     PointLocalMinDistanceFilter *m_lmdFilter;
     EmptyFilter m_emptyFilter;
 
-    Data<bool> m_displayFreePosition;
+    Data<bool> m_displayFreePosition; ///< Display Collision Model Points free position(in green)
 
     void updateNormals();
 

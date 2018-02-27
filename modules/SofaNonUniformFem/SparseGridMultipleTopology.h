@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -49,7 +49,7 @@ public :
 protected:
     SparseGridMultipleTopology( bool _isVirtual=false );
 public:
-    virtual void init()
+    virtual void init() override
     {
         if(_computeRamifications.getValue())
             SparseGridRamificationTopology::init(  );
@@ -57,18 +57,18 @@ public:
             SparseGridTopology::init(  );
     }
 
-    virtual void buildAsFinest();
-    virtual void buildFromFiner()
+    virtual void buildAsFinest() override;
+    virtual void buildFromFiner() override
     {
         if(_computeRamifications.getValue())
             SparseGridRamificationTopology::buildFromFiner(  );
         else
             SparseGridTopology::buildFromFiner(  );
     }
-    virtual void buildVirtualFinerLevels();
+    virtual void buildVirtualFinerLevels() override;
 
 
-    virtual int findCube(const Vector3 &pos, SReal &fx, SReal &fy, SReal &fz)
+    virtual int findCube(const Vector3 &pos, SReal &fx, SReal &fy, SReal &fz) override
     {
         if(_computeRamifications.getValue())
             return SparseGridRamificationTopology::findCube( pos,fx,fy,fz  );
@@ -76,7 +76,7 @@ public:
             return SparseGridTopology::findCube( pos,fx,fy,fz );
     }
 
-    virtual int findNearestCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz)
+    virtual int findNearestCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz) override
     {
         if(_computeRamifications.getValue())
             return SparseGridRamificationTopology::findNearestCube( pos,fx,fy,fz );
@@ -89,11 +89,11 @@ public:
 protected :
 
 
-    Data< helper::vector< std::string > > _fileTopologies;
-    Data< helper::vector< float > > _dataStiffnessCoefs;
-    Data< helper::vector< float > > _dataMassCoefs;
-    Data<bool> _computeRamifications;
-    Data<bool> _erasePreviousCoef;
+    Data< helper::vector< std::string > > _fileTopologies; ///< All topology filenames
+    Data< helper::vector< float > > _dataStiffnessCoefs; ///< A stiffness coefficient for each topology filename
+    Data< helper::vector< float > > _dataMassCoefs; ///< A mass coefficient for each topology filename
+    Data<bool> _computeRamifications; ///< Are ramifications wanted?
+    Data<bool> _erasePreviousCoef; ///< Does a new stiffness/mass coefficient replace the previous or blend half/half with it?
 
 
 

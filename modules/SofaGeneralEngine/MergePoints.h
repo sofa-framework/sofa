@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -56,13 +56,13 @@ protected:
 
     ~MergePoints() {}
 public:
-    void init();
+    void init() override;
 
-    void reinit();
+    void reinit() override;
 
-    void update();
+    void update() override;
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -74,13 +74,13 @@ public:
 
     bool           initDone;
 
-    Data<VecCoord> f_X1;
-    Data<VecCoord> f_X2;
-    Data<SetIndex> f_X2_mapping;
-    Data<SetIndex> f_indices1;
-    Data<SetIndex> f_indices2;
-    Data<VecCoord> f_points;
-    Data<bool>     f_noUpdate;
+    Data<VecCoord> f_X1; ///< position coordinates of the degrees of freedom of the first object
+    Data<VecCoord> f_X2; ///< Rest position coordinates of the degrees of freedom of the second object
+    Data<SetIndex> f_X2_mapping; ///< Mapping of indices to inject position2 inside position1 vertex buffer
+    Data<SetIndex> f_indices1; ///< Indices of the points of the first object
+    Data<SetIndex> f_indices2; ///< Indices of the points of the second object
+    Data<VecCoord> f_points; ///< position coordinates of the merge
+    Data<bool>     f_noUpdate; ///< do not update the output at eacth time step (false)
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_MERGEPOINTS_CPP)

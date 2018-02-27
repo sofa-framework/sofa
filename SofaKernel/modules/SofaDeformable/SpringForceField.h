@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -49,19 +49,20 @@ class LinearSpring
 {
 public:
     typedef T Real;
-    int     m1, m2;  ///< the two extremities of the spring: masses m1 and m2
-    Real  ks;      ///< spring stiffness
-    Real  kd;      ///< damping factor
-    Real  initpos; ///< rest length of the spring
-    bool elongationOnly; //only forbid elongation, not compression
+    int  m1, m2;            ///< the two extremities of the spring: masses m1 and m2
+    Real ks;                ///< spring stiffness
+    Real kd;                ///< damping factor
+    Real initpos;           ///< rest length of the spring
+    bool elongationOnly;    ///< only forbid elongation, not compression
+    bool enabled;           ///< false to disable this spring (i.e. broken)
 
-    LinearSpring(int m1=0, int m2=0, double ks=0.0, double kd=0.0, double initpos=0.0, bool noCompression=false)
-        : m1(m1), m2(m2), ks((Real)ks), kd((Real)kd), initpos((Real)initpos), elongationOnly(noCompression)
+    LinearSpring(int m1=0, int m2=0, double ks=0.0, double kd=0.0, double initpos=0.0, bool noCompression=false, bool enabled=true)
+        : m1(m1), m2(m2), ks((Real)ks), kd((Real)kd), initpos((Real)initpos), elongationOnly(noCompression), enabled(enabled)
     {
     }
 
-    LinearSpring(int m1, int m2, float ks, float kd=0, float initpos=0, bool noCompression=false)
-        : m1(m1), m2(m2), ks((Real)ks), kd((Real)kd), initpos((Real)initpos), elongationOnly(noCompression)
+    LinearSpring(int m1, int m2, float ks, float kd=0, float initpos=0, bool noCompression=false, bool enabled=true)
+        : m1(m1), m2(m2), ks((Real)ks), kd((Real)kd), initpos((Real)initpos), elongationOnly(noCompression), enabled(enabled)
     {
     }
 
@@ -112,11 +113,13 @@ public:
 
     typedef LinearSpring<Real> Spring;
 
-    Data<SReal> ks;
-    Data<SReal> kd;
-    Data<float> showArrowSize;
-    Data<int> drawMode; //Draw Mode: 0=Line - 1=Cylinder - 2=Arrow
-    Data<sofa::helper::vector<Spring> > springs;
+    Data<SReal> ks; ///< uniform stiffness for the all springs
+    Data<SReal> kd; ///< uniform damping for the all springs
+    Data<float> showArrowSize; ///< size of the axis
+    Data<int> drawMode;             ///Draw Mode: 0=Line - 1=Cylinder - 2=Arrow
+    Data<sofa::helper::vector<Spring> > springs; ///< pairs of indices, stiffness, damping, rest length
+
+protected:
     core::objectmodel::DataFileName fileSprings;
 
 protected:
@@ -141,15 +144,15 @@ public:
 
     const sofa::helper::vector< Spring >& getSprings() const {return springs.getValue();}
 
-    virtual void reinit();
-    virtual void init();
+    virtual void reinit() override;
+    virtual void init() override;
 
-    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f1, DataVecDeriv& f2, const DataVecCoord& x1, const DataVecCoord& x2, const DataVecDeriv& v1, const DataVecDeriv& v2);
-    virtual void addDForce(const core::MechanicalParams*, DataVecDeriv& df1, DataVecDeriv& df2, const DataVecDeriv& dx1, const DataVecDeriv& dx2 );
+    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f1, DataVecDeriv& f2, const DataVecCoord& x1, const DataVecCoord& x2, const DataVecDeriv& v1, const DataVecDeriv& v2) override;
+    virtual void addDForce(const core::MechanicalParams*, DataVecDeriv& df1, DataVecDeriv& df2, const DataVecDeriv& dx1, const DataVecDeriv& dx2 ) override;
 
     // Make other overloaded version of getPotentialEnergy() to show up in subclass.
     using Inherit::getPotentialEnergy;
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& data_x1, const DataVecCoord& data_x2) const;
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* /* PARAMS FIRST */, const DataVecCoord& data_x1, const DataVecCoord& data_x2) const override;
 
     using Inherit::addKToMatrix;
     virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, SReal /*kFact*/, unsigned int &/*offset*/);
@@ -163,7 +166,7 @@ public:
     int getDrawMode() const {return drawMode.getValue();}
     void setDrawMode(int m) {drawMode.setValue(m);}
 
-    virtual void draw(const core::visual::VisualParams* vparams);
+    virtual void draw(const core::visual::VisualParams* vparams) override;
 
     // -- Modifiers
 
@@ -197,15 +200,15 @@ public:
         springs.endEdit();
     }
 
-    virtual void updateForceMask();
+    virtual void updateForceMask() override;
 
-    virtual void handleTopologyChange(core::topology::Topology *topo);
+    virtual void handleTopologyChange(core::topology::Topology *topo) override;
 
     /// initialization to export kinetic, potential energy  and force intensity to gnuplot files format
-    virtual void initGnuplot(const std::string path);
+    virtual void initGnuplot(const std::string path) override;
 
     /// export kinetic and potential energy state at "time" to a gnuplot file
-    virtual void exportGnuplot(SReal time);
+    virtual void exportGnuplot(SReal time) override;
 
     protected:
     /// stream to export Potential Energy to gnuplot files

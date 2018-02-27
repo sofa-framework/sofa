@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -58,8 +58,8 @@ public:
     typedef typename Out::MatrixDeriv OutMatrixDeriv;
 
 public:
-    Data< defaulttype::Vector3 > pivot;
-    Data< defaulttype::Quat > rotation;
+    Data< defaulttype::Vector3 > pivot; ///< Pivot point position
+    Data< defaulttype::Quat > rotation; ///< TODO-rotation
 protected:
     LaparoscopicRigidMapping()
         : Inherit()
@@ -76,15 +76,15 @@ public:
     //void setPivot(const defaulttype::Vector3& val) { this->pivot = val; }
     //void setRotation(const defaulttype::Quat& val) { this->rotation = val; this->rotation.normalize(); }
 
-    void init();
+    void init() override;
 
-    void apply(const core::MechanicalParams *mparams, Data<OutVecCoord>& out, const Data<InVecCoord>& in);
+    void apply(const core::MechanicalParams *mparams, Data<OutVecCoord>& out, const Data<InVecCoord>& in) override;
 
-    void applyJ(const core::MechanicalParams *mparams, Data<OutVecDeriv>& out, const Data<InVecDeriv>& in);
+    void applyJ(const core::MechanicalParams *mparams, Data<OutVecDeriv>& out, const Data<InVecDeriv>& in) override;
 
-    void applyJT(const core::MechanicalParams *mparams, Data<InVecDeriv>& out, const Data<OutVecDeriv>& in);
+    void applyJT(const core::MechanicalParams *mparams, Data<InVecDeriv>& out, const Data<OutVecDeriv>& in) override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
 
 protected:

@@ -37,7 +37,7 @@ class SOFA_Compliant_API DifferenceMapping : public ConstantAssembledMapping<TIn
     typedef defaulttype::Vec<2, unsigned> index_pair;
     typedef helper::vector< index_pair > pairs_type;
 
-    Data< pairs_type > pairs;
+    Data< pairs_type > pairs; ///< index pairs for computing deltas
     Data< SReal > d_showObjectScale; ///< drawing size
     Data< defaulttype::RGBAColor > d_color; ///< drawing color
 
@@ -122,7 +122,7 @@ class SOFA_Compliant_API DifferenceMapping : public ConstantAssembledMapping<TIn
 
         if( scale < 0 ) return;
 
-        glEnable(GL_LIGHTING);
+        vparams->drawTool()->enableLighting();
 
         typename core::behavior::MechanicalState<TIn>::ReadVecCoord pos = this->getFromModel()->readPositions();
         const pairs_type& p = pairs.getValue();
@@ -255,7 +255,7 @@ class SOFA_Compliant_API DifferenceMapping : public ConstantAssembledMapping<TIn
         typedef defaulttype::Vec<2, unsigned> index_pair;
         typedef helper::vector< index_pair > pairs_type;
 
-        Data< pairs_type > pairs;
+        Data< pairs_type > pairs; ///< index pairs for computing deltas
 
     protected:
 

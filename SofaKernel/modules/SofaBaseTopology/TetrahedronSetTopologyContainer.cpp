@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -61,10 +61,10 @@ void TetrahedronSetTopologyContainer::addTetra( int a, int b, int c, int d )
 {
     helper::WriteAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
     m_tetrahedron.push_back(Tetra(a,b,c,d));
-    if (a >= getNbPoints()) nbPoints.setValue(a+1);
-    if (b >= getNbPoints()) nbPoints.setValue(b+1);
-    if (c >= getNbPoints()) nbPoints.setValue(c+1);
-    if (d >= getNbPoints()) nbPoints.setValue(d+1);
+    if (a >= getNbPoints()) setNbPoints(a+1);
+    if (b >= getNbPoints()) setNbPoints(b+1);
+    if (c >= getNbPoints()) setNbPoints(c+1);
+    if (d >= getNbPoints()) setNbPoints(d+1);
 }
 
 void TetrahedronSetTopologyContainer::init()
@@ -79,7 +79,7 @@ void TetrahedronSetTopologyContainer::init()
             for(unsigned int j=0; j<4; ++j)
             {
                 int a = m_tetrahedron[i][j];
-                if (a >= getNbPoints()) nbPoints.setValue(a+1);
+                if (a >= getNbPoints()) setNbPoints(a+1);
             }
         }
     }

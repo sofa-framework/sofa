@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -64,15 +64,15 @@ protected:
 
     ~RandomPointDistributionInSurface() {}
 public:
-    void init();
+    void init() override;
 
-    void reinit();
+    void reinit() override;
 
-    void update();
+    void update() override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -83,17 +83,17 @@ public:
     }
     bool initialized;
     helper::RandomGenerator rg;
-    Data<unsigned int> randomSeed;
-    Data<bool> isVisible;
-    Data<bool> drawOutputPoints;
-    Data<Real> minDistanceBetweenPoints;
-    Data<unsigned int> numberOfInPoints;
-    Data<unsigned int> numberOfTests;
+    Data<unsigned int> randomSeed; ///< Set a specified seed for random generation (0 for "true pseudo-randomness" 
+    Data<bool> isVisible; ///< is Visible ?
+    Data<bool> drawOutputPoints; ///< Output points visible ?
+    Data<Real> minDistanceBetweenPoints; ///< Min Distance between 2 points (-1 for true randomness)
+    Data<unsigned int> numberOfInPoints; ///< Number of points inside
+    Data<unsigned int> numberOfTests; ///< Number of tests to find if the point is inside or not (odd number)
 
-    Data<VecCoord> f_vertices;
-    Data< helper::vector<sofa::core::topology::BaseMeshTopology::Triangle> > f_triangles;
-    Data<VecCoord> f_inPoints;
-    Data<VecCoord> f_outPoints;
+    Data<VecCoord> f_vertices; ///< Vertices
+    Data< helper::vector<sofa::core::topology::BaseMeshTopology::Triangle> > f_triangles; ///< Triangles indices
+    Data<VecCoord> f_inPoints; ///< Points inside the surface
+    Data<VecCoord> f_outPoints; ///< Points outside the surface
 
     unsigned int safeCounter;
     unsigned int safeLimit;

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -67,16 +67,16 @@ protected:
     BoxStiffSpringForceField(MechanicalState* object1, MechanicalState* object2, double ks=100.0, double kd=5.0);
     BoxStiffSpringForceField(double ks=100.0, double kd=5.0);
 public:
-    void init();
-    void bwdInit();
+    void init() override;
+    void bwdInit() override;
 
-    Data<Vec6>  box_object1;
-    Data<Vec6>  box_object2;
-    Data<SReal> factorRestLength;
-    Data<bool>  forceOldBehavior;
+    Data<Vec6>  box_object1; ///< Box for the object1 where springs will be attached
+    Data<Vec6>  box_object2; ///< Box for the object2 where springs will be attached
+    Data<SReal> factorRestLength; ///< Factor used to compute the rest length of the springs generated
+    Data<bool>  forceOldBehavior; ///< Keep using the old behavior
     // -- VisualModel interface
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
 };
 

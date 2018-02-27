@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -70,15 +70,15 @@ public:
 protected:
     RayModel(SReal defaultLength=1);
 public:
-    void init();
+    void init() override;
 
     // -- CollisionModel interface
-    virtual void resize(int size);
+    virtual void resize(int size) override;
 
-    virtual void computeBoundingTree(int maxDepth);
+    virtual void computeBoundingTree(int maxDepth) override;
 
-    void draw(const core::visual::VisualParams*,int index);
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams*,int index) override;
+    void draw(const core::visual::VisualParams* vparams) override;
 
     core::behavior::MechanicalState<defaulttype::Vec3Types>* getMechanicalState() { return mstate; }
     // ----------------------------
@@ -99,7 +99,7 @@ protected:
     sofa::helper::vector<SReal> length;
     sofa::helper::vector<defaulttype::Vector3> direction;
 
-    Data<SReal> defaultLength;
+    Data<SReal> defaultLength; ///< TODO
 
     std::set<BaseRayContact*> contacts;
     core::behavior::MechanicalState<defaulttype::Vec3Types>* mstate;

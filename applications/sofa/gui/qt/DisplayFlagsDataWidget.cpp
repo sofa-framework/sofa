@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -99,11 +99,6 @@ DisplayFlagWidget::DisplayFlagWidget(QWidget* parent, const char* name,  Qt::Win
     this->setTreeWidgetCheckable(itemShowFlag[WIREFRAME], "Wire Frame");
     itemShowFlag[NORMALS]   = new QTreeWidgetItem(itemShowOptions, itemShowFlag[WIREFRAME]);
     this->setTreeWidgetCheckable(itemShowFlag[NORMALS], "Normals");
-
-#ifdef SOFA_SMP
-    itemShowFlag[PROCESSORCOLOR]   = new QTreeWidgetItem(itemShowOptions, itemShowFlag[NORMALS]);
-    this->setTreeWidgetCheckable(itemShowFlag[PROCESSORCOLOR], "Processor Color");
-#endif
     this->addTopLevelItem(itemShowAll);
     itemShowAll->addChild(itemShowVisual); itemShowAll->setExpanded(true);
     itemShowVisual->addChild(itemShowFlag[VISUALMODELS]);
@@ -122,9 +117,6 @@ DisplayFlagWidget::DisplayFlagWidget(QWidget* parent, const char* name,  Qt::Win
     itemShowOptions->addChild(itemShowFlag[RENDERING]);
     itemShowOptions->addChild(itemShowFlag[WIREFRAME]);
     itemShowOptions->addChild(itemShowFlag[NORMALS]);
-#ifdef SOFA_SMP
-    itemShowOptions->addChild(itemShowFlag[PROCESSORCOLOR]);
-#endif
     for (int i=0; i<ALLFLAGS; ++i)  mapFlag.insert(std::make_pair(itemShowFlag[i],i));
 }
 
@@ -204,9 +196,6 @@ void DisplayFlagsDataWidget::readFromData()
     flags->setFlag(DisplayFlagWidget::RENDERING, displayFlags.getShowRendering());
     flags->setFlag(DisplayFlagWidget::WIREFRAME, displayFlags.getShowWireFrame());
     flags->setFlag(DisplayFlagWidget::NORMALS, displayFlags.getShowNormals());
-#ifdef SOFA_SMP
-    flags->setFlag(DisplayFlagWidget::PROCESSORCOLOR, displayFlags.getShowProcessorColor());
-#endif
 }
 
 void DisplayFlagsDataWidget::writeToData()
@@ -224,9 +213,6 @@ void DisplayFlagsDataWidget::writeToData()
     displayFlags.setShowRendering(flags->getFlag(DisplayFlagWidget::RENDERING));
     displayFlags.setShowWireFrame(flags->getFlag(DisplayFlagWidget::WIREFRAME));
     displayFlags.setShowNormals(flags->getFlag(DisplayFlagWidget::NORMALS));
-#ifdef SOFA_SMP
-    displayFlags.setShowProcessorColor(flags->getFlag(DisplayFlagWidget::PROCESSORCOLOR));
-#endif
     this->getData()->endEdit();
 
 }

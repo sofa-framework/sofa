@@ -1,7 +1,7 @@
  
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -53,13 +53,13 @@ public:
 
     virtual ~DifferenceEngine() {}
 
-    void init();
+    void init() override;
 
-    void reinit();
+    void reinit() override;
 
-    void update();
+    void update() override;
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -72,9 +72,9 @@ public:
 
 protected:
 
-    Data<VecData> d_input;
-    Data<VecData> d_substractor;
-    Data<VecData> d_output;
+    Data<VecData> d_input; ///< input vector
+    Data<VecData> d_substractor; ///< vector to substract to input
+    Data<VecData> d_output; ///< output vector = input-substractor
 
 };
 

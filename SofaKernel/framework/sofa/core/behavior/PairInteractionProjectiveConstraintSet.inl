@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -77,34 +77,7 @@ void PairInteractionProjectiveConstraintSet<DataTypes>::projectJacobianMatrix(co
     serr << "NOT IMPLEMENTED YET" << sendl;
 }
 
-#ifdef SOFA_SMP
-template<class DataTypes>
-struct PairConstraintProjectResponseTask
-{
-    void operator()(const MechanicalParams* mparams, PairInteractionProjectiveConstraintSet<DataTypes>  *c, Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv> > dx1,Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv> > dx2)
-    {
-        c->projectResponse(mparams, dx1.access(), dx2.access());
-    }
-};
 
-template<class DataTypes>
-struct PairConstraintProjectVelocityTask
-{
-    void operator()(const MechanicalParams* mparams, PairInteractionProjectiveConstraintSet<DataTypes>  *c, Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv> > v1, Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv> > v2)
-    {
-        c->projectVelocity(mparams, v1.access(), v2.access());
-    }
-};
-
-template<class DataTypes>
-struct PairConstraintProjectPositionTask
-{
-    void operator()(const MechanicalParams* mparams, PairInteractionProjectiveConstraintSet<DataTypes>  *c, Shared_rw< objectmodel::Data< typename DataTypes::VecCoord> > x1, Shared_rw< objectmodel::Data< typename DataTypes::VecCoord> > x2)
-    {
-        c->projectPosition(mparams, x1.access(), x2.access());
-    }
-};
-#endif /* SOFA_SMP */
 
 template<class DataTypes>
 void PairInteractionProjectiveConstraintSet<DataTypes>::projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId)
@@ -114,11 +87,7 @@ void PairInteractionProjectiveConstraintSet<DataTypes>::projectResponse(const Me
     {
         this->mask1 = &mstate1->forceMask;
         this->mask2 = &mstate2->forceMask;
-#ifdef SOFA_SMP
-        if (mparams->execMode() == ExecParams::EXEC_KAAPI)
-            Task<PairConstraintProjectResponseTask<DataTypes> >(mparams, this, **defaulttype::getShared(*dxId[mstate1.get(mparams)].write()), **defaulttype::getShared(*dxId[mstate2.get(mparams)].write()));
-        else
-#endif /* SOFA_SMP */
+
             projectResponse(mparams, *dxId[mstate1.get(mparams)].write(), *dxId[mstate2.get(mparams)].write());
     }
 }
@@ -131,11 +100,7 @@ void PairInteractionProjectiveConstraintSet<DataTypes>::projectVelocity(const Me
     {
         this->mask1 = &mstate1->forceMask;
         this->mask2 = &mstate2->forceMask;
-#ifdef SOFA_SMP
-        if (mparams->execMode() == ExecParams::EXEC_KAAPI)
-            Task<PairConstraintProjectVelocityTask<DataTypes> >(mparams, this, **defaulttype::getShared(*vId[mstate1.get(mparams)].write()), **defaulttype::getShared(*vId[mstate2.get(mparams)].write()));
-        else
-#endif /* SOFA_SMP */
+
             projectVelocity(mparams, *vId[mstate1.get(mparams)].write(), *vId[mstate2.get(mparams)].write());
     }
 }
@@ -148,11 +113,6 @@ void PairInteractionProjectiveConstraintSet<DataTypes>::projectPosition(const Me
     {
         this->mask1 = &mstate1->forceMask;
         this->mask2 = &mstate2->forceMask;
-#ifdef SOFA_SMP
-        if (mparams->execMode() == ExecParams::EXEC_KAAPI)
-            Task<PairConstraintProjectPositionTask<DataTypes> >(mparams, this, **defaulttype::getShared(*xId[mstate1.get(mparams)].write()), **defaulttype::getShared(*xId[mstate2.get(mparams)].write()));
-        else
-#endif /* SOFA_SMP */
             projectPosition(mparams, *xId[mstate1.get(mparams)].write(), *xId[mstate2.get(mparams)].write());
     }
 }

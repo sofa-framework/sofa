@@ -1,4 +1,6 @@
 <Node dt="0.005" gravity="0 -10 0">
+    <RequiredPlugin name="SofaImplicitField"/>
+    <RequiredPlugin name='SofaSphFluid' />
     <VisualStyle displayFlags="showBehaviorModels showForceFields showWireframe" />
     <Node name="Fluid">
         <RungeKutta4 />

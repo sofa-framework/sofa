@@ -94,53 +94,55 @@ if(NOT SOFA_NO_OPENGL)
         endif()
     endif()
 
-    if(SOFA_HAVE_QT_LIBRARIES)
-        option(SOFAGUI_QT "Compile the Qt GUI" ON)
-        if(SOFAGUI_QT)
+    if(SOFA_HAVE_QT_LIBRARIES)        
+        if(SOFA_BUILD_COMPONENTSET_STANDARD)
+           option(SOFAGUI_QT "Compile the Qt GUI" ON)
+            if(SOFAGUI_QT)
 
-            ## Qt GUI options, used in the relevant CMakeLists.txt
+               ## Qt GUI options, used in the relevant CMakeLists.txt
 
-            ## SOFA_GUI_INTERACTION
-            option(SOFAGUI_QT_INTERACTION
-                    "Enable interaction mode for the Qt GUI, whatever that means (this
-                     will define the SOFA_GUI_INTERACTION macro)." OFF)
-            if(SOFAGUI_QT_INTERACTION)
-                set(SOFA_GUI_INTERACTION 1) # cmakedefine
-            endif()
+               ## SOFA_GUI_INTERACTION
+                option(SOFAGUI_QT_INTERACTION
+                       "Enable interaction mode for the Qt GUI, whatever that means (this
+                         will define the SOFA_GUI_INTERACTION macro)." OFF)
+               if(SOFAGUI_QT_INTERACTION)
+                    set(SOFA_GUI_INTERACTION 1) # cmakedefine
+             endif()
 
-            ## QtViewer
-            option(SOFAGUI_QTVIEWER "Compile the QtViewer for the Qt GUI" ON)
-            if(SOFAGUI_QTVIEWER)
-                set(SOFA_GUI_QTVIEWER 1) # cmakedefine
-            endif()
+                ## QtViewer
+                option(SOFAGUI_QTVIEWER "Compile the QtViewer for the Qt GUI" ON)
+                if(SOFAGUI_QTVIEWER)
+                    set(SOFA_GUI_QTVIEWER 1) # cmakedefine
+                endif()
 
             ## QglViewer
             option(SOFAGUI_QGLVIEWER "Compile the QGLViewer for the Qt GUI" ON)
             if(SOFAGUI_QGLVIEWER)
                 set(SOFA_GUI_QGLVIEWER 1) # cmakedefine
-                add_subdirectory(${CMAKE_SOURCE_DIR}/extlibs/libQGLViewer-2.6.3/QGLViewer ${CMAKE_BINARY_DIR}/extlibs/QGLViewer)
+                add_subdirectory(${CMAKE_SOURCE_DIR}/extlibs/libQGLViewer-2.7.1/QGLViewer ${CMAKE_BINARY_DIR}/extlibs/QGLViewer)
             endif()
 
-           ## QWT
-           option(SOFAGUI_ENABLE_QWT "Enable QWT for Qt GUIs")
-           if(SOFAGUI_ENABLE_QWT)
-                set(SOFA_HAVE_QWT 1) # cmakedefine
-            endif()
+               ## QWT
+               option(SOFAGUI_ENABLE_QWT "Enable QWT for Qt GUIs")
+               if(SOFAGUI_ENABLE_QWT)
+                    set(SOFA_HAVE_QWT 1) # cmakedefine
+                endif()
 
-            ## Qt native menu
-            set(DEFAULT_SOFAGUI_ENABLE_NATIVE_MENU ON)
-            if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-                set(DEFAULT_SOFAGUI_ENABLE_NATIVE_MENU OFF)
-            endif()
+                ## Qt native menu
+                set(DEFAULT_SOFAGUI_ENABLE_NATIVE_MENU ON)
+                if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+                    set(DEFAULT_SOFAGUI_ENABLE_NATIVE_MENU OFF)
+                endif()
 
-            option(SOFAGUI_ENABLE_NATIVE_MENU "Enable Qt to use the operating system's native menu for the Qt GUI" ${DEFAULT_SOFAGUI_ENABLE_NATIVE_MENU})
-            if(SOFAGUI_ENABLE_NATIVE_MENU)
-                set(SOFA_GUI_NATIVE_MENU 1)
-            endif()
+                option(SOFAGUI_ENABLE_NATIVE_MENU "Enable Qt to use the operating system's native menu for the Qt GUI" ${DEFAULT_SOFAGUI_ENABLE_NATIVE_MENU})
+                if(SOFAGUI_ENABLE_NATIVE_MENU)
+                    set(SOFA_GUI_NATIVE_MENU 1)
+                endif()
 
-            set(SOFA_GUI_QT 1) # cmakedefine
-            list(APPEND SOFAGUI_TARGETS SofaGuiQt)
-            add_subdirectory(../applications/sofa/gui/qt ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiQt)
+                set(SOFA_GUI_QT 1) # cmakedefine
+                list(APPEND SOFAGUI_TARGETS SofaGuiQt)
+                add_subdirectory(../applications/sofa/gui/qt ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiQt)
+            endif()
         endif()
     else()
         message("Cannot find any Qt libraries on your system, please set Qt5_DIR or Qt4_DIR if you want to compile GUIs using Qt")

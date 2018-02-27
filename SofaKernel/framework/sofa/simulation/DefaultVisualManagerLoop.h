@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -59,22 +59,22 @@ protected:
 
     virtual ~DefaultVisualManagerLoop();
 public:
-    virtual void init();
+    virtual void init() override;
 
     /// Initialize the textures
-    virtual void initStep(sofa::core::ExecParams* params);
+    virtual void initStep(sofa::core::ExecParams* params) override;
 
     /// Update the Visual Models: triggers the Mappings
-    virtual void updateStep(sofa::core::ExecParams* params);
+    virtual void updateStep(sofa::core::ExecParams* params) override;
 
     /// Update contexts. Required before drawing the scene if root flags are modified.
-    virtual void updateContextStep(sofa::core::visual::VisualParams* vparams);
+    virtual void updateContextStep(sofa::core::visual::VisualParams* vparams) override;
 
     /// Render the scene
-    virtual void drawStep(sofa::core::visual::VisualParams* vparams);
+    virtual void drawStep(sofa::core::visual::VisualParams* vparams) override;
 
     /// Compute the bounding box of the scene. If init is set to "true", then minBBox and maxBBox will be initialised to a default value
-    virtual void computeBBoxStep(sofa::core::visual::VisualParams* vparams, SReal* minBBox, SReal* maxBBox, bool init);
+    virtual void computeBBoxStep(sofa::core::visual::VisualParams* vparams, SReal* minBBox, SReal* maxBBox, bool init) override;
 
 
     /// Construction method called by ObjectFactory.

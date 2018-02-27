@@ -39,6 +39,7 @@ set(HEADER_FILES
     accessor.h
     decompose.h
     decompose.inl
+    deprecatedcomponents.h
     deque.h
     fixed_array.h
     hash.h
@@ -51,7 +52,6 @@ set(HEADER_FILES
     io/FileAccess.h
     io/File.h
     io/Image.h
-    io/ImageBMP.h
     io/ImageDDS.h
     io/ImageRAW.h
     io/MassSpringLoader.h
@@ -147,6 +147,7 @@ set(SOURCE_FILES
     UnitTest.cpp
     Utils.cpp
     decompose.cpp
+    deprecatedcomponents.cpp
     gl/Trackball.cpp
     gl/Transformation.cpp
     init.cpp
@@ -154,7 +155,6 @@ set(SOURCE_FILES
     io/FileAccess.cpp
     io/File.cpp
     io/Image.cpp
-    io/ImageBMP.cpp
     io/ImageDDS.cpp
     io/ImageRAW.cpp
     io/MassSpringLoader.cpp
@@ -216,10 +216,16 @@ if(CMAKE_SYSTEM_NAME STREQUAL Windows)
     list(APPEND SOURCE_FILES  system/FileMonitor_windows.cpp)
 endif()
 
+if(SOFA_BUILD_TESTS)
 
-if(SOFA_HAVE_PNG)
-    list(APPEND HEADER_FILES  io/ImagePNG.h)
-    list(APPEND SOURCE_FILES  io/ImagePNG.cpp)
+    list(APPEND HEADER_FILES testing/BaseTest.h
+                             testing/NumericTest.h
+                             testing/TestMessageHandler.h
+        )
+    list(APPEND SOURCE_FILES testing/BaseTest.cpp
+                             testing/NumericTest.cpp
+                             testing/TestMessageHandler.cpp
+        )
 endif()
 
 if(Boost_thread_FOUND)
@@ -361,17 +367,28 @@ if(APPLE)
     # on macOS, -framework CoreServices is needed for FileMonitor
     list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK "-framework CoreServices")
 endif()
-target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAFRAMEWORK_DEPENDENCY_LINK} ${Boost_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAFRAMEWORK_DEPENDENCY_LINK} ${Boost_LIBRARIES} )
+
+if(SOFA_BUILD_TESTS)
+    target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAFRAMEWORK_DEPENDENCY_LINK} ${Boost_LIBRARIES} gtest)
+else()
+    target_link_libraries(${PROJECT_NAME} PUBLIC ${SOFAFRAMEWORK_DEPENDENCY_LINK} ${Boost_LIBRARIES})
+endif()
+
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../..>")
-target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES}>")
+target_include_directories(${PROJECT_NAME} SYSTEM PUBLIC "$<BUILD_INTERFACE:${SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES}>")
 # For generated files, like sofa/config.h
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 set(SOFAHELPER_COMPILE_FLAGS "-DSOFA_BUILD_HELPER")
-if(${CMAKE_BUILD_TYPE} STREQUAL Debug)
-    set(SOFAHELPER_COMPILE_FLAGS "${SOFAHELPER_COMPILE_FLAGS} -DSOFA_LIBSUFFIX=_d")
-endif()
+
+# The default binary suffix for libraries/plugins is "_d" when using a debug build.
+# since this is configuration specific it is a bit more convenient to put it as a debug compile definition for 
+# PluginManager.cpp, at the expense of being much less visible compare to having it in the generated 
+# SofaFramework/config.h
+set_property(SOURCE system/PluginManager.cpp APPEND PROPERTY COMPILE_DEFINITIONS_DEBUG "SOFA_LIBSUFFIX=_d" )
+
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${SOFAHELPER_COMPILE_FLAGS}")
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION "${SOFAFRAMEWORK_VERSION}")

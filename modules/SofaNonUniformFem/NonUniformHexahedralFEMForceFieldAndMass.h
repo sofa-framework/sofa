@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -99,11 +99,11 @@ public:
 protected:
     NonUniformHexahedralFEMForceFieldAndMass();
 public:
-    virtual void init();
-    virtual void reinit();
+    virtual void init() override;
+    virtual void reinit() override;
 
     // handle topological changes
-    virtual void handleTopologyChange(core::topology::Topology*);
+    virtual void handleTopologyChange(core::topology::Topology*) override;
 
 protected:
     /// condensate matrice from finest level to the actual mechanical level
@@ -180,7 +180,7 @@ private:
 
     component::topology::MultilevelHexahedronSetTopologyContainer*	_multilevelTopology;
 
-    Data<bool>		_bRecursive;
+    Data<bool>		_bRecursive; ///< Use recursive matrix computation
 
 protected:
 
@@ -197,7 +197,7 @@ protected:
     /** Matrix-vector product for implicit methods with iterative solvers.
         If the MBK matrix is ill-conditionned, recompute it, and correct it to avoid too small singular values.
     */
-    virtual void addMBKdx(const core::MechanicalParams* mparams, core::MultiVecDerivId dfId);
+    virtual void addMBKdx(const core::MechanicalParams* mparams, core::MultiVecDerivId dfId) override;
 
     bool matrixIsDirty;                      ///< Matrix \f$ \alpha M + \beta B + \gamma C \f$ needs to be recomputed
     helper::vector< ElementMass > mbkMatrix; ///< Matrix \f$ \alpha M + \beta B + \gamma C \f$

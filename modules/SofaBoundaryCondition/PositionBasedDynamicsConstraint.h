@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -80,30 +80,30 @@ protected:
     friend class PositionBasedDynamicsConstraintInternalData<DataTypes>;
 
 public:
-    Data< Real > stiffness;
-    Data< VecCoord > position;
+    Data< Real > stiffness; ///< Blending between current pos and target pos.
+    Data< VecCoord > position; ///< Target positions.
 
-    Data < VecDeriv > velocity;
-    Data < VecCoord > old_position;
+    Data < VecDeriv > velocity; ///< Velocities.
+    Data < VecCoord > old_position; ///< Old positions.
 
     PositionBasedDynamicsConstraint();
 
     virtual ~PositionBasedDynamicsConstraint();
 
     // -- Constraint interface
-    virtual void init();
-    virtual void reset();
+    virtual void init() override;
+    virtual void reset() override;
 
-    void projectResponse(const core::MechanicalParams* , DataVecDeriv& ) {}
-    void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData);
-    void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData);
-    void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData);
+    void projectResponse(const core::MechanicalParams* , DataVecDeriv& ) override {}
+    void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData) override;
+    void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData) override;
+    void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;
 
 //    void applyConstraint(defaulttype::BaseMatrix *, unsigned int ) {}
 //    void applyConstraint(defaulttype::BaseVector *, unsigned int ) {}
 
     // Handle topological changes
-    virtual void handleTopologyChange();
+    virtual void handleTopologyChange() override;
 
 protected :
 

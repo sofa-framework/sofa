@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -63,13 +63,13 @@ protected:
     PointSetGeometryAlgorithms();
 
 
-    virtual ~PointSetGeometryAlgorithms() {}
+    virtual ~PointSetGeometryAlgorithms() override {}
 public:
-    virtual void init();
+    virtual void init() override;
 
-    virtual void reinit();
+    virtual void reinit() override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
     /** return the centroid of the set of points */
     Coord getPointSetCenter() const;
@@ -102,7 +102,7 @@ public:
         return BaseObject::canCreate(obj, context, arg);
     }
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -116,7 +116,7 @@ public:
      * points according to the topology (topology element & local coordinates) 
      */
     void initPointsAdded(const helper::vector< unsigned int > &indices, const helper::vector< core::topology::PointAncestorElem > &ancestorElems
-        , const helper::vector< core::VecCoordId >& coordVecs, const helper::vector< core::VecDerivId >& derivVecs );
+        , const helper::vector< core::VecCoordId >& coordVecs, const helper::vector< core::VecDerivId >& derivVecs ) override;
 
     /** \brief Process the added point initialization according to the topology and local coordinates.
     */
@@ -126,8 +126,8 @@ protected:
     /** the object where the mechanical DOFs are stored */
     sofa::core::behavior::MechanicalState<DataTypes> *object;
     sofa::core::topology::BaseMeshTopology* m_topology;
-    Data<float> d_showIndicesScale;
-    Data<bool> d_showPointIndices;
+    Data<float> d_showIndicesScale; ///< Debug : scale for view topology indices
+    Data<bool> d_showPointIndices; ///< Debug : view Point indices
     /// Tage of the Mechanical State associated with the vertex position
     Data<std::string> d_tagMechanics;
 };

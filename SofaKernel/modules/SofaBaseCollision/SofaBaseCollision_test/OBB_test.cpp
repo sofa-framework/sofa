@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -20,9 +20,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaTest/PrimitiveCreation.h>
-#include <sofa/component/typedef/Sofa_typedef.h>
-
 #include <SofaTest/TestMessageHandler.h>
+
+#include <SofaBaseCollision/OBBIntTool.h>
+#include <SofaBaseCollision/CapsuleIntTool.h>
 
 
 using namespace sofa::PrimitiveCreationTest;
@@ -75,6 +76,8 @@ struct TestTriOBB : public ::testing::Test{
     bool vertexEdge();
 };
 
+typedef sofa::component::container::MechanicalObject<sofa::defaulttype::StdRigidTypes<3, double> > MechanicalObjectRigid3d;
+typedef MechanicalObjectRigid3d MechanicalObjectRigid3;
 
 sofa::component::collision::RigidSphereModel::SPtr TestSphereOBB::makeMyRSphere(const Vec3 & center,double radius,const Vec3 & v,
                                                                    sofa::simulation::Node::SPtr & father){

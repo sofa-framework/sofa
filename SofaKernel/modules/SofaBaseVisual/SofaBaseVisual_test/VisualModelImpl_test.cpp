@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -96,17 +96,10 @@ TEST( VisualModelImpl_test , checkThatMembersAreCorrectlyConstructed )
     ASSERT_EQ(component::visualmodel::VisualModelImpl::TexCoord(1.0,1.0), visualModel.m_scaleTex.getValue());
     ASSERT_EQ(component::visualmodel::VisualModelImpl::TexCoord(0.0,0.0), visualModel.m_translationTex.getValue());
 
-#ifdef SOFA_SMP
-    ASSERT_EQ(false_var, visualModel.previousProcessorColor);
-#endif
     ASSERT_EQ(core::loader::Material().name, visualModel.material.getValue().name);
     ASSERT_EQ(false_var, visualModel.putOnlyTexCoords.getValue());
     ASSERT_EQ(false_var, visualModel.srgbTexturing.getValue());
     ASSERT_EQ(false_var, visualModel.xformsModified);
-
-#ifdef SOFA_SMP
-    ASSERT_EQ(core::loader::Material().name, visualModel.originalMaterial.getValue().name);
-#endif
     ASSERT_EQ(0, visualModel.m_topology);
     ASSERT_EQ(true_var, visualModel.getDataAliases().find("filename") != visualModel.getDataAliases().end());
 

@@ -93,7 +93,7 @@ public:
     {
     }
     
-    virtual void init()
+    virtual void init() override
     {
         addInput(&d_transform);
         addInput(&d_filename);
@@ -123,7 +123,7 @@ public:
 
     }
     
-    virtual sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QWidget*parent=NULL)
+    virtual sofa::gui::qt::LabelImageToolBoxAction* createTBAction(QWidget*parent=NULL) override
     {
         return new sofa::gui::qt::DepthImageToolBoxAction(this,parent);
     }
@@ -1574,7 +1574,7 @@ public:
     DataFileName d_filename;
     DataFileName d_scnfilename;
 
-    Data< TransformType> d_transform;
+    Data< TransformType> d_transform; ///< Transform
 
     Data< VecDouble > d_outImagePosition;
 

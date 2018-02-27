@@ -2,11 +2,15 @@
 #include <SceneCreator/SceneCreator.h>
 
 #include <SofaSimpleFem/TetrahedronFEMForceField.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
 using sofa::component::container::MechanicalObject ;
+typedef sofa::component::container::MechanicalObject<Vec3Types>                   MechanicalObject3;
 
 #include <SofaMiscFem/TriangularFEMForceField.h>
 using sofa::component::forcefield::TetrahedronFEMForceField;
 using sofa::component::forcefield::TriangularFEMForceField;
+typedef sofa::component::forcefield::TetrahedronFEMForceField<Vec3Types>          TetrahedronFEMForceField3;
+typedef sofa::component::forcefield::TriangularFEMForceField<Vec3Types>           TriangularFEMForceField3;
 
 #include <SofaBaseTopology/RegularGridTopology.h>
 #include <SofaGeneralTopology/CylinderGridTopology.h>
@@ -19,9 +23,6 @@ using sofa::component::topology::SphereGridTopology;
 using sofa::core::objectmodel::BaseContext;
 using sofa::defaulttype::Vec3Types;
 
-typedef sofa::component::container::MechanicalObject<Vec3Types>                   MechanicalObject3;
-typedef sofa::component::forcefield::TetrahedronFEMForceField<Vec3Types>          TetrahedronFEMForceField3;
-typedef sofa::component::forcefield::TriangularFEMForceField<Vec3Types>           TriangularFEMForceField3;
 
 #include <sofa/simulation/Simulation.h>
 using sofa::simulation::Node;
@@ -30,9 +31,12 @@ typedef MechanicalObject<sofa::defaulttype::Vec3Types>      MechanicalObject3;
 typedef TetrahedronFEMForceField<Vec3Types>                 TetrahedronFEMForceField3;
 typedef TriangularFEMForceField<Vec3Types>                  TriangularFEMForceField3;
 
-struct SceneCreator_test : public sofa::Sofa_test<>
-{
+#include <sofa/helper/system/PluginManager.h>
+using sofa::helper::system::PluginManager ;
 
+class SceneCreator_test : public sofa::Sofa_test<>
+{
+public:
     bool createCubeFailed();
     bool createCubeSuccess();
     bool createRigidCubeSuccess();

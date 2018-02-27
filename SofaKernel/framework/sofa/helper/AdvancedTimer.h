@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -22,10 +22,13 @@
 #ifndef SOFA_HELPER_ADVANCEDTIMER_H
 #define SOFA_HELPER_ADVANCEDTIMER_H
 #include <sofa/helper/helper.h>
+#include <sofa/simulation/Simulation.h>
+
 
 #include <iostream>
 #include <string>
 #include <vector>
+
 
 namespace sofa
 {
@@ -253,15 +256,64 @@ public:
     typedef Id<Val> IdVal;
     typedef Id<Obj> IdObj;
 
+    enum outputType
+    {
+        STDOUT,
+        LJSON,
+        JSON
+    };
+
+
     static bool isEnabled(IdTimer id);
     static void setEnabled(IdTimer id, bool val);
     static int  getInterval(IdTimer id);
     static void setInterval(IdTimer id, int val);
 
+	/**
+	 * @brief convertOutputType convert a string to the output type
+	 * @param type std::string, output type name (example : "json")
+	 * @return outputType, output type enum
+	 */
+	static AdvancedTimer::outputType convertOutputType(std::string type);
+
+    /**
+     * @brief setOutputType Set the outputType for the given AdvancedTimer.
+     * @param id IdTimer, id of the timer
+	 * @param type std::string, output type name (example : "json")
+     **/
+	static void setOutputType(IdTimer id, const std::string& type);
+
+	/**
+	 * @brief getOutputType Get the outputType for the given AdvancedTimer.
+	 * @param id idTimer, id of the timer
+	 * @return the output type
+	 */
+	static AdvancedTimer::outputType getOutputType(IdTimer id);
+
+
+    /**
+     * @brief getTimeAnalysis Return the result of the AdvancedTimer
+     * @param id IdTimer, id of the timer
+     * @param node Node*, pointeur on a node to get the scene simulation context
+     * @return The timer value in JSON
+     */
+    static std::string getTimeAnalysis(IdTimer id, simulation::Node* node);
+
+
     static void clear();
     static void begin(IdTimer id);
     static void end  (IdTimer id);
     static void end  (IdTimer id, std::ostream& result);
+
+
+    /**
+     * @brief end Ovveride fo the end method in which you can use JSON or old format
+     * @param id IdTimer, the id of the used timer
+     * @param node Node*, node used to get the scene cotext
+     * @return std::string, the output if JSON format is set
+     */
+    static std::string end(IdTimer id, simulation::Node* node);
+
     static bool isActive();
 
     class TimerVar

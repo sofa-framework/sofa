@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -84,11 +84,14 @@ public:
     virtual ~MyFileEventListener(){}
 
     virtual void fileHasChanged(const std::string& filepath){
+        PythonEnvironment::gil lock {__func__} ;
+
         /// This function is called when the file has changed. Two cases have
         /// to be considered if the script was already loaded once or not.
         if(!m_controller->scriptControllerInstance()){
             m_controller->doLoadScript();
         }else{
+            PythonEnvironment::gil state {__func__ } ;
             std::string file=filepath;
             SP_CALL_FILEFUNC(const_cast<char*>("onReimpAFile"),
                              const_cast<char*>("s"),
@@ -242,7 +245,6 @@ void PythonScriptController::doLoadScript()
 
 void PythonScriptController::script_onIdleEvent(const IdleEvent* /*event*/)
 {
-    
     FileMonitor::updates(0);
 
     {

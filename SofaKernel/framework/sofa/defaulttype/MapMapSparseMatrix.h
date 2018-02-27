@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,6 +23,7 @@
 #define SOFA_DEFAULTTYPE_MAPMAPSPARSEMATRIX_H
 
 #include <map>
+#include "BaseVector.h"
 
 namespace sofa
 {
@@ -110,6 +111,23 @@ public:
         }
 
         return in;
+    }
+
+    template< class VecDeriv>
+    void multTransposeBaseVector(VecDeriv& res, const sofa::defaulttype::BaseVector* lambda ) const
+    {
+        typedef typename VecDeriv::value_type Deriv;
+
+        static_assert(std::is_same<Deriv, T>::value, "res must contain same type as MapMapSparseMatrix type");
+
+        for (auto rowIt = begin(), rowItEnd = end(); rowIt != rowItEnd; ++rowIt)
+        {
+            const SReal f = lambda->element(rowIt.index());
+            for (auto colIt = rowIt.begin(), colItEnd = rowIt.end(); colIt != colItEnd; ++colIt)
+            {
+                res[colIt.index()] += colIt.val() * f;
+            }
+        }
     }
 
 protected:
@@ -588,7 +606,7 @@ public:
             return m_internal > it2.m_internal;
         }
 
-        void addCol(KeyT id, T value)
+        void addCol(KeyT id, const T& value)
         {
             RowType& row = m_internal->second;
             typename RowType::iterator it = row.find(id);
@@ -603,7 +621,7 @@ public:
             }
         }
 
-        void setCol(KeyT id, T value)
+        void setCol(KeyT id, const T& value)
         {
             RowType& row = m_internal->second;
             typename RowType::iterator it = row.find(id);

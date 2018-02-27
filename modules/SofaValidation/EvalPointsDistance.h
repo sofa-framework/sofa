@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -69,10 +69,16 @@ public:
     Data < double > f_period;
     /// Computed distances
     Data < helper::vector<Real> > dist;
-    /// Computed distances (mean, min, max, standard deviation)
-    Data < double > distMean, distMin, distMax, distDev;
-    /// Relative computed distances (mean, min, max, standard deviation)
-    Data < double > rdistMean, rdistMin, rdistMax, rdistDev;
+
+    Data < double > distMean; ///< mean distance (OUTPUT)
+    Data < double > distMin; ///< min distance (OUTPUT)
+    Data < double > distMax; ///< max distance (OUTPUT)
+    Data < double > distDev; ///< distance standard deviation (OUTPUT)
+
+    Data < double > rdistMean; ///< mean relative distance (OUTPUT)
+    Data < double > rdistMin; ///< min relative distance (OUTPUT)
+    Data < double > rdistMax; ///< max relative distance (OUTPUT)
+    Data < double > rdistDev; ///< relative distance standard deviation (OUTPUT)
 
     typedef SingleLink<EvalPointsDistance<DataTypes>,core::behavior::MechanicalState<DataTypes>,BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> LinkMState;
     /// First model mechanical state
@@ -87,11 +93,11 @@ protected:
     virtual ~EvalPointsDistance();
 public:
     /// Init the computation of the distances
-    virtual void init();
+    virtual void init() override;
     /// Update
-    virtual void reinit();
+    virtual void reinit() override;
     /// Reset the computation of the distances
-    virtual void reset() { reinit(); }
+    virtual void reset() override { reinit(); }
 
     /** Distance computation */
 
@@ -101,8 +107,8 @@ public:
     virtual SReal doEval(const VecCoord& x1, const VecCoord& x2, const VecCoord& x0);
 
 
-    virtual void handleEvent(sofa::core::objectmodel::Event* event);
-    virtual void draw(const core::visual::VisualParams* vparams);
+    virtual void handleEvent(sofa::core::objectmodel::Event* event) override;
+    virtual void draw(const core::visual::VisualParams* vparams) override;
     virtual void doDraw(const VecCoord& x1, const VecCoord& x2);
 
     /// Retrieve the associated MechanicalState (First model)
@@ -129,7 +135,7 @@ public:
         return core::objectmodel::BaseObject::canCreate(obj, context, arg);
     }
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }

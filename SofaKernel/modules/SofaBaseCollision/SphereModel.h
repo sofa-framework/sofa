@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -118,19 +118,19 @@ protected:
 
     TSphereModel(core::behavior::MechanicalState<TDataTypes>* _mstate );
 public:
-    virtual void init();
+    virtual void init() override;
 
     // -- CollisionModel interface
 
-    virtual void resize(int size);
+    virtual void resize(int size) override;
 
-    virtual void computeBoundingTree(int maxDepth=0);
+    virtual void computeBoundingTree(int maxDepth=0) override;
 
-    virtual void computeContinuousBoundingTree(SReal dt, int maxDepth=0);
+    virtual void computeContinuousBoundingTree(SReal dt, int maxDepth=0) override;
 
-    void draw(const core::visual::VisualParams*,int index);
+    void draw(const core::visual::VisualParams*,int index) override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
 
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return mstate; }
@@ -175,7 +175,7 @@ public:
     }
 
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -186,12 +186,12 @@ public:
     }
 
     //TODO(dmarchal) guideline de sofa.
-    Data< VecReal > radius;
-    Data< SReal > defaultRadius;
-    Data< bool > d_showImpostors;
+    Data< VecReal > radius; ///< Radius of each sphere
+    Data< SReal > defaultRadius; ///< Default Radius
+    Data< bool > d_showImpostors; ///< Draw spheres as impostors instead of "real" spheres
 
 
-    virtual void computeBBox(const core::ExecParams* params, bool onlyVisible=false);
+    virtual void computeBBox(const core::ExecParams* params, bool onlyVisible=false) override;
 
 protected:
     core::behavior::MechanicalState<DataTypes>* mstate;

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -97,17 +97,17 @@ protected:
 
     virtual ~LMConstraint();
 public:
-    virtual void init();
+    virtual void init() override;
 
     /// get Mechanical State 1 where the constraint will be expressed (can be a Mapped mechanical state)
-    virtual BaseMechanicalState* getConstrainedMechModel1() const {return constrainedObject1;}
+    virtual BaseMechanicalState* getConstrainedMechModel1() const override {return constrainedObject1;}
     /// get Mechanical State 2 where the constraint will be expressed (can be a Mapped mechanical state)
-    virtual BaseMechanicalState* getConstrainedMechModel2() const {return constrainedObject2;}
+    virtual BaseMechanicalState* getConstrainedMechModel2() const override {return constrainedObject2;}
 
     /// get Mechanical State 1 where the constraint will be solved
-    virtual BaseMechanicalState* getSimulatedMechModel1() const {return simulatedObject1;}
+    virtual BaseMechanicalState* getSimulatedMechModel1() const override {return simulatedObject1;}
     /// get Mechanical State 2 where the constraint will be solved
-    virtual BaseMechanicalState* getSimulatedMechModel2() const {return simulatedObject2;}
+    virtual BaseMechanicalState* getSimulatedMechModel2() const override {return simulatedObject2;}
 
     /// Pre-construction check method called by ObjectFactory.
     template<class T>
@@ -149,7 +149,7 @@ public:
         return obj;
     }
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -168,7 +168,7 @@ protected:
 
 
     /// Mask are handled manually in LMConstraints (MUST be setted in buildConstaintMatrix)
-    virtual void updateForceMask() {}
+    virtual void updateForceMask() override {}
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_CORE_BEHAVIOR_LMCONSTRAINT_CPP)

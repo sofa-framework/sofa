@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,6 +23,7 @@
 
 #include <sofa/defaulttype/TemplatesAliases.h>
 #include <sofa/helper/logging/Messaging.h>
+#include <sofa/helper/deprecatedcomponents.h>
 
 namespace sofa
 {
@@ -107,6 +108,7 @@ void ObjectFactory::resetAlias(std::string name, ClassEntry::SPtr previous)
     registry[name] = previous;
 }
 
+
 objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
 {
     objectmodel::BaseObject::SPtr object = NULL;
@@ -140,47 +142,65 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
             for (it3 = entry->creatorMap.begin(); it3 != entry->creatorMap.end(); ++it3)
             {
                 Creator::SPtr c = it3->second;
-                if (c->canCreate(context, arg))
+                if (c->canCreate(context, arg)){
                     creators.push_back(*it3);
+                }
             }
         }
     }
 
     if (creators.empty())
-    {	// The object cannot be created
-        arg->logError("Object type " + classname + std::string("<") + templatename + std::string("> creation failed"));
+    {
+        //// The object cannot be created
+        arg->logError("Object type " + classname + std::string("<") + templatename + std::string("> was not created"));
+        using sofa::helper::deprecatedcomponents::uncreateablecomponents ;
+        using sofa::helper::deprecatedcomponents::messages ;
+        using sofa::helper::deprecatedcomponents::indexName ;
+
+        if( uncreateablecomponents.find(classname) != uncreateablecomponents.end() )
+        {
+            auto& msg = uncreateablecomponents[classname] ;
+            std::string str = msg[indexName];
+
+            /// Replace the string by the default one.
+            if( messages.find( str ) != messages.end() ){
+                str = messages[str] ;
+            }
+
+            std::stringstream tmp;
+            tmp << classname << str ;
+            for(unsigned int i=1;i<msg.size();i++)
+            {
+                tmp << msg[i] ;
+            }
+
+            arg->logError(tmp.str());
+        }else if(it == registry.end())
+        {
+            arg->logError("The object is not in the factory.");
+        }else{
+            arg->logError("The object is in the factory but cannot be created.");
+        }
     }
     else
     {
         object = creators[0].second->createInstance(context, arg);
 
-        // The object has been created, but not with the template given by the user
+        /// The object has been created, but not with the template given by the user
         if (!usertemplatename.empty() && object->getTemplateName() != userresolved)
         {
-            std::string w = "Template <" + usertemplatename + std::string("> incorrect, used <") + object->getTemplateName() + std::string(">");
-            object->serr << w << object->sendl;
+            std::string w = "Template " + usertemplatename + std::string(" incorrect, used ") + object->getTemplateName();
+            msg_warning(object.get()) << w;
         }
         else if (creators.size() > 1)
         {	// There was multiple possibilities, we used the first one (not necessarily the default, as it can be incompatible)
-            std::string w = "Template <" + templatename + std::string("> incorrect, used <") + object->getTemplateName() + std::string("> in the list:");
+            std::string w = "Template " + templatename + std::string(" incorrect, used ") + object->getTemplateName() + std::string(" in the list:");
             for(unsigned int i = 0; i < creators.size(); ++i)
                 w += std::string("\n\t* ") + creators[i].first;
-            object->serr << w << object->sendl;
+            msg_warning(object.get()) << w;
         }
-        //TODO(dmarchal): Improve the error message & update the URL.
-        //TODO(dmarchal): This code may be used to inform users that the Component has
-        //been created with an Alias and thus
-        // that it should be removed.
-        /*if(classname != object->getClassName()){
-            msg_info("ObjectFactory") <<  "The object '"<< object->getClassName()
-                                      << "' was created using the alias '" << classname << "'.  \n"
-                                      << "You can find more informations about aliasing in sofa at this address: 'http://www.sofa-framework.org/wiki/alias'  \n"
-                                      << "To remove this message you can replace <" << classname <<"/> with <'" << object->getClassName() << "'/> in your scene.";
-        }*/
 
         ///////////////////////// All this code is just there to implement the MakeDataAlias component.
-        // TODO(dmarchal): I'm not sure it should stay there but I cannot find a better way with a
-        // minimal number of change.
         std::vector<std::string> todelete;
         for(auto& kv : entry->m_dataAlias)
         {

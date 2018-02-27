@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -56,25 +56,25 @@ protected:
     PointSplatModel();
     virtual ~PointSplatModel();
 public:
-    virtual void init();
+    virtual void init() override;
 
-    virtual void reinit();
+    virtual void reinit() override;
 
     virtual bool isTransparent() {return true;}
 
-    virtual void drawTransparent(const core::visual::VisualParams* vparams);
+    virtual void drawTransparent(const core::visual::VisualParams* vparams) override;
 
 private:
-    Data<float>		radius;
-    Data<int>		textureSize;
-    Data<float>		alpha;
-    Data<defaulttype::RGBAColor>	color;
+    Data<float>		radius; ///< Radius of the spheres.
+    Data<int>		textureSize; ///< Size of the billboard texture.
+    Data<float>		alpha; ///< Opacity of the billboards. 1.0 is 100% opaque.
+    Data<defaulttype::RGBAColor>	color; ///< Billboard color.(default=[1.0,1.0,1.0,1.0])
 
     core::topology::BaseMeshTopology*	_topology;
     core::behavior::BaseMechanicalState* _mstate;
 
     unsigned char *texture_data;
-    component::topology::PointData<sofa::helper::vector<unsigned char> >		pointData;
+    component::topology::PointData<sofa::helper::vector<unsigned char> >		pointData; ///< scalar field modulating point colors
 
     typedef defaulttype::ExtVec3fTypes::Coord Coord;
     typedef defaulttype::ExtVec3fTypes::VecCoord VecCoord;

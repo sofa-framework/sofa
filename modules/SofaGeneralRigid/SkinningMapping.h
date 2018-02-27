@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -97,7 +97,7 @@ public:
 protected:
 
 
-    Data<OutVecCoord> f_initPos;  // initial child coordinates in the world reference frame
+    Data<OutVecCoord> f_initPos;  ///< initial child coordinates in the world reference frame
 
     // data for linear blending
     helper:: vector<helper::vector<OutCoord> > f_localPos; /// initial child coordinates in local frame x weight :   dp = dMa_i (w_i \bar M_i f_localPos)
@@ -110,46 +110,46 @@ protected:
     helper::vector<helper::vector< Mat44 > > f_TE; /// Dual part of blended quaternion Jacobian : db = [T0,TE] dq
     helper::vector<helper::vector< Mat33 > > f_Pa; /// dp = Pa.Omega_i  : affine part
     helper::vector<helper::vector< Mat33 > > f_Pt; /// dp = Pt.dt_i : translation part
-    Data<bool> useDQ;  // use dual quat blending instead of linear blending
+    Data<bool> useDQ;  ///< use dual quat blending instead of linear blending
 #endif
 
-    Data< helper::vector<unsigned int> > nbRef; // Number of primitives influencing each point.
-    Data< helper::vector<sofa::helper::SVector<unsigned int> > > f_index; // indices of primitives influencing each point.
-    Data< helper::vector<sofa::helper::SVector<InReal> > > weight;
+    Data< helper::vector<unsigned int> > nbRef; ///< Number of primitives influencing each point.
+    Data< helper::vector<sofa::helper::SVector<unsigned int> > > f_index; ///< indices of primitives influencing each point.
+    Data< helper::vector<sofa::helper::SVector<InReal> > > weight; ///< influence weights of the Dofs.
     void updateWeights();
 
 public:
     void setWeights(const helper::vector<sofa::helper::SVector<InReal> >& weights, const helper::vector<sofa::helper::SVector<unsigned int> >& indices, const helper::vector<unsigned int>& nbrefs);
 
 public:
-    Data<unsigned int> showFromIndex;
-    Data<bool> showWeights;
+    Data<unsigned int> showFromIndex; ///< Displayed From Index.
+    Data<bool> showWeights; ///< Show influence.
 protected:
     SkinningMapping ();
     virtual ~SkinningMapping();
     
 public:
-    void init();
-    void reinit();
+    void init() override;
+    void reinit() override;
 
-    virtual void apply( const sofa::core::MechanicalParams* mparams, OutDataVecCoord& out, const InDataVecCoord& in);
+    virtual void apply( const sofa::core::MechanicalParams* mparams, OutDataVecCoord& out, const InDataVecCoord& in) override;
     //void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
 
-    virtual void applyJ( const sofa::core::MechanicalParams* mparams, OutDataVecDeriv& out, const InDataVecDeriv& in);
+    virtual void applyJ( const sofa::core::MechanicalParams* mparams, OutDataVecDeriv& out, const InDataVecDeriv& in) override;
     //void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
 
-    virtual void applyJT( const sofa::core::MechanicalParams* mparams, InDataVecDeriv& out, const OutDataVecDeriv& in);
+    virtual void applyJT( const sofa::core::MechanicalParams* mparams, InDataVecDeriv& out, const OutDataVecDeriv& in) override;
     //void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
 
-    virtual void applyJT( const sofa::core::ConstraintParams* cparams, InDataMatrixDeriv& out, const OutDataMatrixDeriv& in);
+    virtual void applyJT( const sofa::core::ConstraintParams* cparams, InDataMatrixDeriv& out, const OutDataMatrixDeriv& in) override;
     //void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in );
 
     // additional Compliant methods
-    const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs();
-    const sofa::defaulttype::BaseMatrix* getJ();
+    const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
+    const sofa::defaulttype::BaseMatrix* getJ() override;
 
     SeqTriangles triangles; // Topology of toModel (used for weight display)
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
 };
 

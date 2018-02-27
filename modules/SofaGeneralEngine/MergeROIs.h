@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -54,16 +54,16 @@ public:
     typedef unsigned int Index;
 
     //Input
-    Data<unsigned int> nbROIs;
+    Data<unsigned int> nbROIs; ///< size of indices/value vector
     helper::vectorData<helper::vector<Index> > f_indices;
 
     //Output
-    Data<helper::vector<helper::SVector<Index> > > f_outputIndices;
+    Data<helper::vector<helper::SVector<Index> > > f_outputIndices; ///< Vector of ROIs
 
-    virtual std::string getTemplateName() const    {        return templateName(this);    }
+    virtual std::string getTemplateName() const    override {        return templateName(this);    }
     static std::string templateName(const MergeROIs* = NULL)    {        return std::string();    }
 
-    virtual void init()
+    virtual void init() override
     {
         addInput(&nbROIs);
         f_indices.resize(nbROIs.getValue());
@@ -71,7 +71,7 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit()
+    virtual void reinit() override
     {
         f_indices.resize(nbROIs.getValue());
         update();
@@ -79,14 +79,14 @@ public:
 
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters
-    void parse ( core::objectmodel::BaseObjectDescription* arg )
+    void parse ( core::objectmodel::BaseObjectDescription* arg ) override
     {
         f_indices.parseSizeData(arg, nbROIs);
         Inherit1::parse(arg);
     }
 
     /// Assign the field values stored in the given map of name -> value pairs
-    void parseFields ( const std::map<std::string,std::string*>& str )
+    void parseFields ( const std::map<std::string,std::string*>& str ) override
     {
         f_indices.parseFieldsSizeData(str, nbROIs);
         Inherit1::parseFields(str);
@@ -103,7 +103,7 @@ protected:
 
     virtual ~MergeROIs() {}
 
-    virtual void update()
+    virtual void update() override
     {
         size_t nb = nbROIs.getValue();
         f_indices.resize(nb);

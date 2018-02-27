@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -87,19 +87,19 @@ public:
     virtual void apply(
         const core::MechanicalParams* mparams, const helper::vector<OutDataVecCoord*>& dataVecOutPos,
         const helper::vector<const In1DataVecCoord*>& dataVecIn1Pos ,
-        const helper::vector<const In2DataVecCoord*>& dataVecIn2Pos);
+        const helper::vector<const In2DataVecCoord*>& dataVecIn2Pos) override;
     virtual void applyJ(
         const core::MechanicalParams* mparams, const helper::vector< OutDataVecDeriv*>& dataVecOutVel,
         const helper::vector<const In1DataVecDeriv*>& dataVecIn1Vel,
-        const helper::vector<const In2DataVecDeriv*>& dataVecIn2Vel);
+        const helper::vector<const In2DataVecDeriv*>& dataVecIn2Vel) override;
     virtual void applyJT(
         const core::MechanicalParams* mparams, const helper::vector< In1DataVecDeriv*>& dataVecOut1Force,
         const helper::vector< In2DataVecDeriv*>& dataVecOut2Force,
-        const helper::vector<const OutDataVecDeriv*>& dataVecInForce);
+        const helper::vector<const OutDataVecDeriv*>& dataVecInForce) override;
     virtual void applyJT(
         const core::ConstraintParams* /*cparams*/, const helper::vector< In1DataMatrixDeriv*>& /* dataMatOut1Const */ ,
         const helper::vector< In2DataMatrixDeriv*>&  /*dataMatOut2Const*/ ,
-        const helper::vector<const OutDataMatrixDeriv*>& /*dataMatInConst*/)
+        const helper::vector<const OutDataMatrixDeriv*>& /*dataMatInConst*/) override
     {
         serr << "applyJT(constraint) not implemented" << sendl;
     }
@@ -108,10 +108,10 @@ public:
     //virtual void apply(const vecOutVecCoord& outPos, const vecConstIn1VecCoord& inPos1 , const vecConstIn2VecCoord& inPos2 );
     //virtual void applyJ(const helper::vector< OutVecDeriv*>& outDeriv, const helper::vector<const In1VecDeriv*>& inDeriv1, const helper::vector<const In2VecDeriv*>& inDeriv2);
     //virtual void applyJT( const helper::vector<In1VecDeriv*>& outDeriv1 ,const helper::vector<In2VecDeriv*>& outDeriv2 , const helper::vector<const OutVecDeriv*>& inDeriv );
-    virtual void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/) {}
+    virtual void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/) override {}
 
-    virtual void init();
-    void draw(const core::visual::VisualParams* vparams);
+    virtual void init() override;
+    void draw(const core::visual::VisualParams* vparams) override;
 
 protected:
 

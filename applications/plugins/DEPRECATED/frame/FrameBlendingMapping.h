@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -144,7 +144,7 @@ protected:
     bool inverseApply( InCoord& restCoord, InCoord& coord, const InCoord& targetCoord);
     inline void initFrames (const bool& setFramePos = true, const bool& updateFramePosFromOldOne = false);
     inline void initSamples();
-    Data<bool> useLinearWeights;
+    Data<bool> useLinearWeights; ///< use linearly interpolated weights between the two closest frames.
     inline void updateWeights ();
     inline void normalizeWeights();
     virtual void LumpMassesToFrames (MassVector& f_mass0, MassVector& f_mass);
@@ -166,9 +166,9 @@ protected:
     PointData<sofa::helper::vector<Vec<nbRef,unsigned int> > > f_index;   ///< The numChildren * numRefs column indices. index[i][j] is the index of the j-th parent influencing child i.
     PointData<sofa::helper::vector<unsigned int> > f_groups;              ///< child group for restricting interpolation (initialized from trianglegroups)
 
-    PointData<sofa::helper::vector<Vec<nbRef,InReal> > >       weight;
-    PointData<sofa::helper::vector<Vec<nbRef,MaterialCoord> > > weightDeriv;
-    PointData<sofa::helper::vector<Vec<nbRef,MaterialMat> > >   weightDeriv2;
+    PointData<sofa::helper::vector<Vec<nbRef,InReal> > >       weight; ///< influence weights of the Dofs
+    PointData<sofa::helper::vector<Vec<nbRef,MaterialCoord> > > weightDeriv; ///< weight gradients
+    PointData<sofa::helper::vector<Vec<nbRef,MaterialMat> > >   weightDeriv2; ///< weight Hessians
 
     core::topology::BaseMeshTopology* to_topo; // Used to manage topological changes
 
@@ -189,21 +189,21 @@ protected:
     FramePointHandler* pointHandler;
 
 public:
-    Data<bool> showBlendedFrame;
-    Data<unsigned int> showFromIndex;
-    Data<bool> showWeights;
-    Data<double> showGammaCorrection;
-    Data<bool> showWeightsValues;
-    Data<bool> showReps;
-    Data<int> showValuesNbDecimals;
-    Data<double> showTextScaleFactor;
-    Data<bool> showGradients;
-    Data<bool> showGradientsValues;
-    Data<double> showGradientsScaleFactor;
-    Data<bool> showStrain;
-    Data<double> showStrainScaleFactor;
-    Data<bool> showDetF;
-    Data<double> showDetFScaleFactor;
+    Data<bool> showBlendedFrame; ///< weights list for the influences of the references Dofs
+    Data<unsigned int> showFromIndex; ///< Displayed From Index.
+    Data<bool> showWeights; ///< Show coeficients.
+    Data<double> showGammaCorrection; ///< Correction of the Gamma by a power
+    Data<bool> showWeightsValues; ///< Show coeficients values.
+    Data<bool> showReps; ///< Show repartition.
+    Data<int> showValuesNbDecimals; ///< Multiply floating point by 10^n.
+    Data<double> showTextScaleFactor; ///< Text Scale Factor.
+    Data<bool> showGradients; ///< Show gradients.
+    Data<bool> showGradientsValues; ///< Show Gradients Values.
+    Data<double> showGradientsScaleFactor; ///< Gradients Scale Factor.
+    Data<bool> showStrain; ///< Show Computed Strain Tensors.
+    Data<double> showStrainScaleFactor; ///< Strain Tensors Scale Factor.
+    Data<bool> showDetF; ///< Show Computed Det F.
+    Data<double> showDetFScaleFactor; ///< Det F Scale Factor.
     Data<bool> isAdaptive;
 
 

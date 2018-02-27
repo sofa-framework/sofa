@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -43,9 +43,9 @@ public:
     enum  { TRACKBALL_MODE, PAN_MODE, ZOOM_MODE, WHEEL_ZOOM_MODE, NONE_MODE };
     enum  { CAMERA_LOOKAT_PIVOT = 0, CAMERA_POSITION_PIVOT = 1, SCENE_CENTER_PIVOT = 2, WORLD_CENTER_PIVOT = 3};
 
-    Data<double> p_zoomSpeed;
-    Data<double> p_panSpeed;
-    Data<int> p_pivot;
+    Data<double> p_zoomSpeed; ///< Zoom Speed
+    Data<double> p_panSpeed; ///< Pan Speed
+    Data<int> p_pivot; ///< Pivot (0 => Camera lookAt, 1 => Camera position, 2 => Scene center, 3 => World center
 
 protected:
     InteractiveCamera();
@@ -57,10 +57,10 @@ private:
     int lastMousePosX, lastMousePosY;
     helper::gl::Trackball currentTrackball;
 
-    void internalUpdate();
+    void internalUpdate() override;
 protected:
     void moveCamera(int x, int y);
-    void manageEvent(core::objectmodel::Event* e);
+    void manageEvent(core::objectmodel::Event* e) override;
     void processMouseEvent(core::objectmodel::MouseEvent* me);
     void processKeyPressedEvent(core::objectmodel::KeypressedEvent* kpe);
     void processKeyReleasedEvent(core::objectmodel::KeyreleasedEvent* kre);

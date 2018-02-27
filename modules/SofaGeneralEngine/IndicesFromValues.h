@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -58,17 +58,17 @@ protected:
 
     virtual ~IndicesFromValues();
 public:
-    void init();
+    void init() override;
 
-    void reinit();
+    void reinit() override;
 
-    void update();
+    void update() override;
 
-    core::objectmodel::Data<VecValue> f_values;
-    core::objectmodel::Data<VecValue> f_global;
-    core::objectmodel::Data<VecIndex> f_indices;
-    core::objectmodel::Data<VecIndex> f_otherIndices;
-    core::objectmodel::Data<bool> f_recursiveSearch;
+    core::objectmodel::Data<VecValue> f_values; ///< input values
+    core::objectmodel::Data<VecValue> f_global; ///< Global values, in which the input values are searched
+    core::objectmodel::Data<VecIndex> f_indices; ///< Output indices of the given values, searched in global
+    core::objectmodel::Data<VecIndex> f_otherIndices; ///< Output indices of the other values, (NOT the given ones) searched in global
+    core::objectmodel::Data<bool> f_recursiveSearch; ///< if set to true, output are indices of the "global" data matching with one of the values
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_INDICESFROMVALUES_CPP)

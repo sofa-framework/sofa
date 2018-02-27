@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -56,7 +56,8 @@ using std::string ;
 
 enum class VTKDatasetFormat { IMAGE_DATA, STRUCTURED_POINTS,
                               STRUCTURED_GRID, RECTILINEAR_GRID,
-                              POLYDATA, UNSTRUCTURED_GRID };
+                              POLYDATA, UNSTRUCTURED_GRID
+                            };
 
 class BaseVTKReader : public BaseObject
 {
@@ -86,7 +87,13 @@ public:
     public:
         T* data;
         VTKDataIO() : data(NULL) {}
-        ~VTKDataIO() { if (data) delete[] data; }
+        ~VTKDataIO()
+        {
+            if (data)
+            {
+                delete[] data;
+            }
+        }
         virtual const void* getData() ;
         virtual void resize(int n) ;
         static T swapT(T t, int nestedDataSize) ;
@@ -102,6 +109,7 @@ public:
     BaseVTKDataIO* newVTKDataIO(const string& typestr, int num) ;
 
     BaseVTKDataIO* inputPoints;
+    BaseVTKDataIO* inputNormals;
     BaseVTKDataIO* inputPolygons;
     BaseVTKDataIO* inputCells;
     BaseVTKDataIO* inputCellOffsets;

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -57,18 +57,18 @@ protected:
     virtual ~MergeVectors();
 public:
     /// Parse the given description to assign values to this object's fields and potentially other parameters
-    void parse( sofa::core::objectmodel::BaseObjectDescription* arg );
+    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
 
     /// Assign the field values stored in the given map of name -> value pairs
-    void parseFields( const std::map<std::string,std::string*>& str );
+    void parseFields( const std::map<std::string,std::string*>& str ) override;
 
-    void init();
+    void init() override;
 
-    void reinit();
+    void reinit() override;
 
-    void update();
+    void update() override;
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -78,9 +78,9 @@ public:
         return Data<Value>::templateName();
     }
 
-    Data<unsigned int> f_nbInputs;
+    Data<unsigned int> f_nbInputs; ///< Number of input vectors
     helper::vectorData<VecValue> vf_inputs;
-    Data<VecValue> f_output;
+    Data<VecValue> f_output; ///< Output vector
 
 };
 

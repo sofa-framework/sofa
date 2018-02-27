@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -417,10 +417,10 @@ public:
 
     /** @name  Options */
     //@{
-    Data<bool> f_clearData;
-    Data<helper::OptionsGroup> method;
-    Data<bool> biasDistances;
-    Data<bool> useDijkstra;
+    Data<bool> f_clearData; ///< clear voronoi and distance images after computation
+    Data<helper::OptionsGroup> method; ///< method (param)
+    Data<bool> biasDistances; ///< Bias distances using inverse pixel values
+    Data<bool> useDijkstra; ///< Use Dijkstra for geodesic distance computation (use fastmarching otherwise)
     //@}
 
     virtual std::string getTemplateName() const    { return templateName(this); }

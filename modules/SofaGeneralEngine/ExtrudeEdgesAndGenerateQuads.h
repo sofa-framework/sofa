@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -64,12 +64,12 @@ protected:
     virtual ~ExtrudeEdgesAndGenerateQuads() {}
 public:
 
-    virtual void init();
-    virtual void bwdInit();
-    virtual void reinit();
-    virtual void update();
+    virtual void init() override;
+    virtual void bwdInit() override;
+    virtual void reinit() override;
+    virtual void update() override;
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -80,16 +80,16 @@ public:
     }
 
     bool                                             initialized;
-    Data<Coord>                                      d_direction;
+    Data<Coord>                                      d_direction; ///< Direction along which to extrude the curve
     Data<Real>                                       d_thickness;
-    Data<Real>                                       d_thicknessIn;
-    Data<Real>                                       d_thicknessOut;
-    Data<int>                                        d_nbSections;
-    Data<VecCoord>                                   d_curveVertices;
-    Data<helper::vector<sofa::core::topology::BaseMeshTopology::Edge> >   d_curveEdges;
-    Data<VecCoord>                                   d_extrudedVertices;
-    Data<helper::vector<sofa::core::topology::BaseMeshTopology::Edge> >   d_extrudedEdges;
-    Data<helper::vector<sofa::core::topology::BaseMeshTopology::Quad> >   d_extrudedQuads;
+    Data<Real>                                       d_thicknessIn; ///< Thickness of the extruded volume in the opposite direction of the normals
+    Data<Real>                                       d_thicknessOut; ///< Thickness of the extruded volume in the direction of the normals
+    Data<int>                                        d_nbSections; ///< Number of sections / steps in the extrusion
+    Data<VecCoord>                                   d_curveVertices; ///< Position coordinates along the initial curve
+    Data<helper::vector<sofa::core::topology::BaseMeshTopology::Edge> >   d_curveEdges; ///< Indices of the edges of the curve to extrude
+    Data<VecCoord>                                   d_extrudedVertices; ///< Coordinates of the extruded vertices
+    Data<helper::vector<sofa::core::topology::BaseMeshTopology::Edge> >   d_extrudedEdges; ///< List of all edges generated during the extrusion
+    Data<helper::vector<sofa::core::topology::BaseMeshTopology::Quad> >   d_extrudedQuads; ///< List of all quads generated during the extrusion
 
 protected:
 

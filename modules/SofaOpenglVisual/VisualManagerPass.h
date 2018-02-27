@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -57,9 +57,9 @@ class SOFA_OPENGL_VISUAL_API VisualManagerPass : public core::visual::VisualMana
 public:
     SOFA_CLASS(VisualManagerPass, core::visual::VisualManager);
 
-    Data<float> factor;
-    Data<bool> renderToScreen;
-    Data<std::string> outputName;
+    Data<float> factor; ///< set the resolution factor for the output pass. default value:1.0
+    Data<bool> renderToScreen; ///< if true, this pass will be displayed on screen (only one renderPass in the scene must be defined as renderToScreen)
+    Data<std::string> outputName; ///< name the output texture
 protected:
     bool checkMultipass(sofa::core::objectmodel::BaseContext* con);
     bool multiPassEnabled;
@@ -74,19 +74,19 @@ public:
     virtual ~VisualManagerPass();
 
 
-    virtual void init();
-    virtual void initVisual();
+    virtual void init() override;
+    virtual void initVisual() override;
 
-    virtual void preDrawScene(core::visual::VisualParams* vp);
-    virtual bool drawScene(core::visual::VisualParams* vp);
-    virtual void postDrawScene(core::visual::VisualParams* vp);
+    virtual void preDrawScene(core::visual::VisualParams* vp) override;
+    virtual bool drawScene(core::visual::VisualParams* vp) override;
+    virtual void postDrawScene(core::visual::VisualParams* vp) override;
 
 
-    virtual void draw(const core::visual::VisualParams* vparams);
-    virtual void fwdDraw(core::visual::VisualParams*);
-    virtual void bwdDraw(core::visual::VisualParams*);
+    virtual void draw(const core::visual::VisualParams* vparams) override;
+    virtual void fwdDraw(core::visual::VisualParams*) override;
+    virtual void bwdDraw(core::visual::VisualParams*) override;
 
-    virtual void handleEvent(sofa::core::objectmodel::Event* /*event*/);
+    virtual void handleEvent(sofa::core::objectmodel::Event* /*event*/) override;
 
     virtual bool isPrerendered() {return prerendered;};
 

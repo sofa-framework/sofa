@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -106,22 +106,22 @@ public:
     const VecToModels& getToModels();
 
     /// Return a container of input models statically casted as BaseObject*
-    helper::vector<BaseState*> getFrom();
+    helper::vector<BaseState*> getFrom() override;
     /// Return container of output model statically casted as BaseObject*.
-    helper::vector<BaseState*> getTo();
+    helper::vector<BaseState*> getTo() override;
 
     /// Get the source (upper) model.
-    virtual helper::vector<behavior::BaseMechanicalState*> getMechFrom();
+    virtual helper::vector<behavior::BaseMechanicalState*> getMechFrom() override;
 
     /// Get the destination (lower, mapped) model.
-    virtual helper::vector<behavior::BaseMechanicalState*> getMechTo();
+    virtual helper::vector<behavior::BaseMechanicalState*> getMechTo() override;
 
     /// Apply ///
     /// Apply the mapping to position vectors.
     ///
     /// If the Mapping can be represented as a matrix J, this method computes
     /// $ out = J in $
-    virtual void apply (const MechanicalParams* mparams, MultiVecCoordId outPos, ConstMultiVecCoordId inPos )
+    virtual void apply (const MechanicalParams* mparams, MultiVecCoordId outPos, ConstMultiVecCoordId inPos ) override
     {
         helper::vector<OutDataVecCoord*> vecOutPos;
         getVecOutCoord(outPos, vecOutPos);
@@ -149,7 +149,7 @@ public:
     /// This method computes
     /// $ out = J in $
     /// where J is the tangent operator (the linear approximation) of the mapping
-    virtual void applyJ (const MechanicalParams* mparams, MultiVecDerivId outVel, ConstMultiVecDerivId inVel )
+    virtual void applyJ (const MechanicalParams* mparams, MultiVecDerivId outVel, ConstMultiVecDerivId inVel ) override
     {
         helper::vector<OutDataVecDeriv*> vecOutVel;
         getVecOutDeriv(outVel, vecOutVel);
@@ -197,7 +197,7 @@ public:
 
     /// ApplyJT (Force)///
     /// Apply the mapping to Force vectors.
-    virtual void applyJT (const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce )
+    virtual void applyJT (const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce ) override
     {
         helper::vector<In1DataVecDeriv*> vecOut1Force;
         getVecIn1Deriv(inForce, vecOut1Force);
@@ -226,7 +226,7 @@ public:
         const helper::vector<const OutDataVecDeriv*>& dataVecInForce) = 0;
 
     /// ApplyJT (Constraint)///
-    virtual void applyJT(const ConstraintParams* cparams, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst )
+    virtual void applyJT(const ConstraintParams* cparams, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst ) override
     {
         helper::vector<In1DataMatrixDeriv*> matOut1Const;
         getMatIn1Deriv(inConst, matOut1Const);
@@ -247,7 +247,7 @@ public:
     }
 
     /// computeAccFromMapping
-    virtual void computeAccFromMapping(const MechanicalParams* mparams, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc )
+    virtual void computeAccFromMapping(const MechanicalParams* mparams, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc ) override
     {
         helper::vector<OutDataVecDeriv*> vecOutAcc;
         getVecOutDeriv(outAcc, vecOutAcc);
@@ -274,14 +274,14 @@ public:
     {
     }
 
-    virtual void init();
+    virtual void init() override;
 
     /// Disable the mapping to get the original coordinates of the mapped model.
     ///
     /// It is for instance used in RigidMapping to get the local coordinates of the object.
-    virtual void disable();
+    virtual void disable() override;
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -374,7 +374,7 @@ protected:
     ///
     /// That way, we can optimize Jacobian sparsity.
     /// Every Dofs are inserted by default. The mappings using only a subset of dofs should only insert these dofs in the mask.
-    virtual void updateForceMask();
+    virtual void updateForceMask() override;
 
     /// keep pointers on the masks
     helper::vector<helper::StateMask*> maskFrom1, maskFrom2, maskTo;

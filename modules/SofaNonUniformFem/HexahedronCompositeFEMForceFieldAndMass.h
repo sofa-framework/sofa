@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -94,21 +94,21 @@ protected:
 
 public:
 
-    virtual void init();
-    virtual void reinit()
+    virtual void init() override;
+    virtual void reinit() override
     {
         serr<<"WARNING : composite mechanical properties can't be updated, changes on mechanical properties (young, poisson, density) are not taken into account."<<sendl;
         if(_drawSize.getValue()==-1)
             _drawSize.setValue( (float)((this->_sparseGrid->getMax()[0]-this->_sparseGrid->getMin()[0]) * .004f) );
     }
 
-    virtual void draw(const core::visual::VisualParams* vparams);
+    virtual void draw(const core::visual::VisualParams* vparams) override;
 
 
-    Data<bool> _finestToCoarse;
-    Data<int> _homogenizationMethod;
-    Data<bool> _completeInterpolation;
-    Data<bool> _useRamification;
+    Data<bool> _finestToCoarse; ///< Does the homogenization is done directly from the finest level to the coarse one?
+    Data<int> _homogenizationMethod; ///< 0->static, 1->constrained static, 2->modal analysis
+    Data<bool> _completeInterpolation; ///< Is the non-linear, complete interpolation used?
+    Data<bool> _useRamification; ///< If SparseGridRamification, are ramifications taken into account?
     Data<int> _drawType;
     Data<int> _drawColor;
     Data<float> _drawSize;
@@ -129,7 +129,7 @@ public:
 
     // surcharge NonUniformHexahedronFEMForceFieldAndMass::computeMechanicalMatricesByCondensation
 //         virtual void computeMechanicalMatricesByCondensation( ElementStiffness &K, ElementMass &M, const int elementIndice,  int level);
-    virtual void computeMechanicalMatricesByCondensation( );
+    virtual void computeMechanicalMatricesByCondensation( ) override;
 
 
 

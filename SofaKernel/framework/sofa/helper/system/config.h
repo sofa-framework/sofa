@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -123,8 +123,8 @@ typedef double SReal;
 #define sofa_tostring(a) sofa_do_tostring(a)
 #define sofa_do_tostring(a) #a
 
-#define SOFA_DECL_CLASS(name) extern "C" { int sofa_concat(class_,name) = 0; }
-#define SOFA_LINK_CLASS(name) extern "C" { extern int sofa_concat(class_,name); int sofa_concat(link_,name) = sofa_concat(class_,name); }
+#define SOFA_DECL_CLASS(name) ///extern "C" { int sofa_concat(class_,name) = 0; }
+#define SOFA_LINK_CLASS(name) ///extern "C" { extern int sofa_concat(class_,name); int sofa_concat(link_,name) = sofa_concat(class_,name); }
 
 // Prevent compiler warnings about 'unused variables'.
 // This should be used when a parameter name is needed (e.g. for

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -105,27 +105,27 @@ class SOFA_IMPLICIT_ODE_SOLVER_API EulerImplicitSolver : public sofa::core::beha
 public:
     SOFA_CLASS(EulerImplicitSolver, sofa::core::behavior::OdeSolver);
 
-    Data<SReal> f_rayleighStiffness;
-    Data<SReal> f_rayleighMass;
-    Data<SReal> f_velocityDamping;
-    Data<bool> f_firstOrder;
-    Data<bool> f_verbose;
-    Data<bool> d_trapezoidalScheme;
-    Data<bool> f_solveConstraint;
+    Data<SReal> f_rayleighStiffness; ///< Rayleigh damping coefficient related to stiffness, > 0
+    Data<SReal> f_rayleighMass; ///< Rayleigh damping coefficient related to mass, > 0
+    Data<SReal> f_velocityDamping; ///< Velocity decay coefficient (no decay if null)
+    Data<bool> f_firstOrder; ///< Use backward Euler scheme for first order ode system.
+    Data<bool> f_verbose; ///< Dump system state at each iteration
+    Data<bool> d_trapezoidalScheme; ///< Optional: use the trapezoidal scheme instead of the implicit Euler scheme and get second order accuracy in time
+    Data<bool> f_solveConstraint; ///< Apply ConstraintSolver (requires a ConstraintSolver in the same node as this solver, disabled by by default for now)
 protected:
     EulerImplicitSolver();
 public:
-    void init();
+    void init() override;
 
-    void cleanup();
+    void cleanup() override;
 
-    void solve (const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult);
+    void solve (const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 
     /// Given a displacement as computed by the linear system inversion, how much will it affect the velocity
     ///
     /// This method is used to compute the compliance for contact corrections
     /// For Euler methods, it is typically dt.
-    virtual double getVelocityIntegrationFactor() const
+    virtual double getVelocityIntegrationFactor() const override
     {
         return 1.0; // getContext()->getDt();
     }
@@ -134,7 +134,7 @@ public:
     ///
     /// This method is used to compute the compliance for contact corrections
     /// For Euler methods, it is typically dt².
-    virtual double getPositionIntegrationFactor() const
+    virtual double getPositionIntegrationFactor() const override
     {
         return getPositionIntegrationFactor(getContext()->getDt());
     }
@@ -159,7 +159,7 @@ public:
     /// v_{t+dt}     0    1      0    1
     /// a_{t+dt}     0    0      0    1/dt
     /// The last column is returned by the getSolutionIntegrationFactor method.
-    double getIntegrationFactor(int inputDerivative, int outputDerivative) const
+    double getIntegrationFactor(int inputDerivative, int outputDerivative) const override
     {
         return getIntegrationFactor(inputDerivative, outputDerivative, getContext()->getDt());
     }
@@ -180,7 +180,7 @@ public:
 
     /// Given a solution of the linear system,
     /// how much will it affect the output derivative of the given order.
-    double getSolutionIntegrationFactor(int outputDerivative) const
+    double getSolutionIntegrationFactor(int outputDerivative) const override
     {
         return getSolutionIntegrationFactor(outputDerivative, getContext()->getDt());
     }

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -58,21 +58,22 @@ protected:
 
     virtual ~SmoothMeshEngine() {}
 public:
-    void init();
-    void reinit();
-    void update();
-    virtual void draw(const core::visual::VisualParams* vparams);
+    void init() override;
+    void reinit() override;
+    void update() override;
+	void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
+    virtual void draw(const core::visual::VisualParams* vparams) override;
 
-    Data<VecCoord> input_position;
-    Data<helper::vector <unsigned int> > input_indices;
-    Data<VecCoord> output_position;
+    Data<VecCoord> input_position; ///< Input position
+    Data<helper::vector <unsigned int> > input_indices; ///< Position indices that need to be smoothed, leave empty for all positions
+    Data<VecCoord> output_position; ///< Output position
 
-    Data<unsigned int> nb_iterations;
+    Data<unsigned int> nb_iterations; ///< Number of iterations of laplacian smoothing
 
-    Data<bool> showInput;
-    Data<bool> showOutput;
+    Data<bool> showInput; ///< showInput
+    Data<bool> showOutput; ///< showOutput
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }

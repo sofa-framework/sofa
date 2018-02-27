@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -45,9 +45,9 @@ public:
 
     typedef core::visual::VisualParams::Viewport Viewport;
 
-    Data<bool> drawFrame;
-    Data<sofa::helper::OptionsGroup> style;
-    Data<sofa::helper::OptionsGroup> alignment;
+    Data<bool> drawFrame; ///< Display the frame or not
+    Data<sofa::helper::OptionsGroup> style; ///< Style of the frame
+    Data<sofa::helper::OptionsGroup> alignment; ///< Alignment of the frame in the view
 
     OglSceneFrame():
         drawFrame(initData(&drawFrame, true,  "draw", "Display the frame or not")),
@@ -65,10 +65,10 @@ public:
         alignment.setValue(alignmentOptions);
     }
 
-    virtual void init();
-    virtual void reinit();
-    virtual void draw(const core::visual::VisualParams*);
-    virtual void updateVisual();
+    virtual void init() override;
+    virtual void reinit() override;
+    virtual void draw(const core::visual::VisualParams*) override;
+    virtual void updateVisual() override;
 
 
 protected:

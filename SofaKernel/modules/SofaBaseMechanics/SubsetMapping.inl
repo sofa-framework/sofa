@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -45,6 +45,7 @@ SubsetMapping<TIn, TOut>::SubsetMapping()
     , f_radius( initData(&f_radius, (Real)1.0e-5, "radius", "search radius to find corresponding points in case no indices are given"))
     , f_handleTopologyChange( initData(&f_handleTopologyChange, true, "handleTopologyChange", "Enable support of topological changes for indices (disable if it is linked from SubsetTopologicalMapping::pointD2S)"))
     , f_ignoreNotFound( initData(&f_ignoreNotFound, false, "ignoreNotFound", "True to ignore points that are not found in the input model, they will be treated as fixed points"))
+    , f_resizeToModel( initData(&f_resizeToModel, false, "resizeToModel", "True to resize the output MechanicalState to match the size of indices"))
     , matrixJ()
     , updateJ(false)
 {
@@ -169,9 +170,12 @@ void SubsetMapping<TIn, TOut>::init()
 
     topology = this->getContext()->getMeshTopology();
 
-    // Initialize functions and parameters
-    f_indices.createTopologicalEngine(topology);
-    f_indices.registerTopologicalData();
+    if (f_handleTopologyChange.getValue())
+    {
+        // Initialize functions and parameters for topological changes
+        f_indices.createTopologicalEngine(topology);
+        f_indices.registerTopologicalData();
+    }
 
     postInit();
 }
@@ -187,7 +191,15 @@ template <class TIn, class TOut>
 void SubsetMapping<TIn, TOut>::apply ( const core::MechanicalParams* /*mparams*/, OutDataVecCoord& dOut, const InDataVecCoord& dIn )
 {
     const IndexArray& indices = f_indices.getValue();
-
+    
+    if (f_resizeToModel.getValue() || this->toModel->getSize() < indices.size())
+    { 
+        if (this->toModel->getSize() != indices.size()) 
+        { 
+            this->toModel->resize(indices.size()); 
+        } 
+    }
+    
     const InVecCoord& in = dIn.getValue();
     const OutVecCoord& out0 = this->toModel->read(core::ConstVecCoordId::restPosition())->getValue();
     OutVecCoord& out = *dOut.beginEdit();

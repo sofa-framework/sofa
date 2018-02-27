@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -337,7 +337,7 @@ public:
         template<class Real2>
         Transform& operator*=(Real2 a)
         {
-            dmsg_info() << "SolidTypes<R>::Transform::operator *=";
+            dmsg_info("Transform") << "SolidTypes<R>::Transform::operator *=";
             origin_ *= a;
             return *this;
         }

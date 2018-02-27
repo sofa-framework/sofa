@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -50,7 +50,7 @@ protected:
     void readMeshTexCoords(Ogre::VertexData* vertexData, helper::vector< sofa::defaulttype::Vector2>& coord);
     //void readMeshIndices(Ogre::VertexData* vertexData, helper::vector< helper::fixed_array <unsigned int,3> >& indices);
 
-    Data< helper::vector<sofa::defaulttype::Vector2> > texCoords;
+    Data< helper::vector<sofa::defaulttype::Vector2> > texCoords; ///< Texture coordinates of the mesh
 
 };
 

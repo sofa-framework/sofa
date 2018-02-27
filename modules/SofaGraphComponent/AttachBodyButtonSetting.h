@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -42,10 +42,10 @@ public:
 protected:
     AttachBodyButtonSetting();
 public:
-    std::string getOperationType() {return "Attach";}
-    Data<SReal> stiffness;
-    Data<SReal> arrowSize;
-    Data<SReal> showFactorSize;
+    std::string getOperationType() override {return "Attach";}
+    Data<SReal> stiffness; ///< Stiffness of the spring to attach a particule
+    Data<SReal> arrowSize; ///< Size of the drawn spring: if >0 an arrow will be drawn
+    Data<SReal> showFactorSize; ///< Show factor size of the JointSpringForcefield  when interacting with rigids
 };
 
 }

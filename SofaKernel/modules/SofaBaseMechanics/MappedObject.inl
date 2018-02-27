@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -52,8 +52,8 @@ void MappedObject<DataTypes>::init()
 {
     if (getSize() == 0)
     {
-        sofa::core::topology::BaseMeshTopology* topo = this->getContext()->getMeshTopology();
-        if (topo!=NULL && topo->hasPos() && topo->getContext() == this->getContext())
+        sofa::core::topology::BaseMeshTopology* topo = this->getContext()->getActiveMeshTopology();
+        if (topo!=NULL && topo->hasPos())
         {
             VecCoord& x = *getX();
             int nbp = topo->getNbPoints();

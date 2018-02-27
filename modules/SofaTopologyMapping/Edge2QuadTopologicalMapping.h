@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -97,7 +97,7 @@ protected:
 public:
     /** \brief Initializes the target BaseTopology from the source BaseTopology.
     */
-    virtual void init();
+    virtual void init() override;
 
 
     /** \brief Translates the TopologyChange objects from the source to the target.
@@ -106,16 +106,16 @@ public:
     * reflect the effects of the first topology changes on the second topology.
     *
     */
-    virtual void updateTopologicalMappingTopDown();
+    virtual void updateTopologicalMappingTopDown() override;
 
-    virtual unsigned int getFromIndex(unsigned int ind);
+    virtual unsigned int getFromIndex(unsigned int ind) override;
 
 protected:
-    Data<unsigned int> m_nbPointsOnEachCircle; // number of points to create along the circles around each point of the input topology (10 by default)
-    Data<double> m_radius;	// radius of the circles around each point of the input topology (1 by default)
+    Data<unsigned int> m_nbPointsOnEachCircle; ///< number of points to create along the circles around each point of the input topology (10 by default)
+    Data<double> m_radius;	///< radius of the circles around each point of the input topology (1 by default)
 
-    Data<VecIndex> edgeList;
-    Data<bool> flipNormals;
+    Data<VecIndex> edgeList; ///< list of input edges for the topological mapping: by default, all considered
+    Data<bool> flipNormals; ///< Flip Normal ? (Inverse point order when creating quad)
 
     
     container::RadiusContainer* m_radiusContainer;

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -66,13 +66,13 @@ public:
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
     typedef PlaneForceField<DataTypes> PlaneForceFieldT;
 protected:
-    core::objectmodel::Data<Coord> _center;
-    core::objectmodel::Data<Deriv> _size;
-    core::objectmodel::Data<Real> _speed;
-    core::objectmodel::Data<Deriv> _axis;
+    core::objectmodel::Data<Coord> _center; ///< box center
+    core::objectmodel::Data<Deriv> _size; ///< box size
+    core::objectmodel::Data<Real> _speed; ///< rotation speed
+    core::objectmodel::Data<Deriv> _axis; ///< rotation axis
 
-    core::objectmodel::Data<Real> _stiffness;
-    core::objectmodel::Data<Real> _damping;
+    core::objectmodel::Data<Real> _stiffness; ///< penality force stiffness
+    core::objectmodel::Data<Real> _damping; ///< penality force damping
 
     defaulttype::Vec<6, typename PlaneForceFieldT::SPtr> _planes;
 
@@ -95,7 +95,7 @@ protected:
 
 public:
 
-    virtual void init()
+    virtual void init() override
     {
         _alreadyInit=true;
 
@@ -128,7 +128,7 @@ public:
         _planes[5]->setDrawColor( defaulttype::RGBAColor( 0.4f,0.5f,0.5f,1.0f ) );
     }
 
-    virtual void reinit()
+    virtual void reinit() override
     {
         Inherit::reinit();
 
@@ -158,14 +158,14 @@ public:
 
     }
 
-    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx);
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
+    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
+    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx) override;
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
     {
         serr << "Get potentialEnergy not implemented" << sendl;
         return 0.0;
     }
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
     bool addBBox(SReal* minBBox, SReal* maxBBox);
 
 

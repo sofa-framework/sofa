@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -100,16 +100,16 @@ public:
 #endif
 
 #ifdef GL_TESS_CONTROL_SHADER
-    Data<GLfloat> tessellationOuterLevel;
-    Data<GLfloat> tessellationInnerLevel;
+    Data<GLfloat> tessellationOuterLevel; ///< For tessellation without control shader: default outer level (edge subdivisions)
+    Data<GLfloat> tessellationInnerLevel; ///< For tessellation without control shader: default inner level (face subdivisions)
 #endif
 
-    Data<unsigned int> indexActiveShader;
+    Data<unsigned int> indexActiveShader; ///< Set current active shader
 
     // enable writing gl_BackColor in the vertex shader
-    Data<bool> backfaceWriting;
+    Data<bool> backfaceWriting; ///< it enables writing to gl_BackColor inside a GLSL vertex shader
 
-    Data<bool> clampVertexColor;
+    Data<bool> clampVertexColor; ///< clamp the vertex color between 0 and 1
 
 protected:
     ///OpenGL shader
@@ -118,16 +118,16 @@ protected:
     OglShader();
     virtual ~OglShader();
 public:
-    void initVisual();
-    void init();
-    void reinit();
-    void drawVisual(const core::visual::VisualParams* vparams);
-    void updateVisual();
-    void parse(core::objectmodel::BaseObjectDescription* arg);
+    void initVisual() override;
+    void init() override;
+    void reinit() override;
+    void drawVisual(const core::visual::VisualParams* vparams) override;
+    void updateVisual() override;
+    void parse(core::objectmodel::BaseObjectDescription* arg) override;
 
-    void start();
-    void stop();
-    bool isActive();
+    void start() override;
+    void stop() override;
+    bool isActive() override;
 
     unsigned int getNumberOfShaders();
     unsigned int getCurrentIndex();
@@ -180,8 +180,8 @@ public:
     void  setGeometryVerticesOut(const unsigned int index, GLint v);
 
 
-    virtual bool insertInNode( core::objectmodel::BaseNode* node ) { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
-    virtual bool removeInNode( core::objectmodel::BaseNode* node ) { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
+    virtual bool insertInNode( core::objectmodel::BaseNode* node ) override { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
+    virtual bool removeInNode( core::objectmodel::BaseNode* node ) override { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
 
 };
 

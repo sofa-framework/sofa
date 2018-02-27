@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -122,68 +122,42 @@ public:
 
     Data< VecCoord > _initialPoints; ///< the intial positions of the points
 
-    Data<Real> _poissonRatio;
-    Data<VecReal > _youngModulus;
-    Data<VecReal> _localStiffnessFactor;
+    Data<Real> _poissonRatio; ///< FEM Poisson Ratio [0,0.5[
+    Data<VecReal > _youngModulus; ///< FEM Young Modulus
+    Data<VecReal> _localStiffnessFactor; ///< Allow specification of different stiffness per element. If there are N element and M values are specified, the youngModulus factor for element i would be localStiffnessFactor[i*M/N]
 
 
-    Data< bool > drawHeterogeneousTetra;
-    Data< bool > drawAsEdges;
+    Data< bool > drawHeterogeneousTetra; ///< Draw Heterogeneous Tetra in different color
+    Data< bool > drawAsEdges; ///< Draw as edges instead of tetrahedra
 
-    Data< bool > _verbose;
+    Data< bool > _verbose; ///< Print debug stuff
 
     Real minYoung;
     Real maxYoung;
 protected:
-    InvertibleFVMForceField()
-        : _mesh(NULL)
-        , _indexedTetra(NULL)
-        , _initialPoints(initData(&_initialPoints, "initialPoints", "Initial Position"))
-        , _poissonRatio(initData(&_poissonRatio,(Real)0.45f,"poissonRatio","FEM Poisson Ratio [0,0.5["))
-        , _youngModulus(initData(&_youngModulus,"youngModulus","FEM Young Modulus"))
-        , _localStiffnessFactor(initData(&_localStiffnessFactor, "localStiffnessFactor","Allow specification of different stiffness per element. If there are N element and M values are specified, the youngModulus factor for element i would be localStiffnessFactor[i*M/N]"))
-        , drawHeterogeneousTetra(initData(&drawHeterogeneousTetra,false,"drawHeterogeneousTetra","Draw Heterogeneous Tetra in different color"))
-        , drawAsEdges(initData(&drawAsEdges,false,"drawAsEdges","Draw as edges instead of tetrahedra"))
-        , _verbose(initData(&_verbose,false,"verbose","Print debug stuff"))
-    {
-        minYoung = 0.0;
-        maxYoung = 0.0;
-    }
-
-    virtual ~InvertibleFVMForceField() {}
+    InvertibleFVMForceField() ;
+    virtual ~InvertibleFVMForceField() ;
 
 public:
+    void setPoissonRatio(Real val) ;
+    void setYoungModulus(Real val) ;
 
-    void setPoissonRatio(Real val) { this->_poissonRatio.setValue(val); }
+    virtual void reset() override ;
+    virtual void init() override ;
+    virtual void reinit()override ;
 
-    void setYoungModulus(Real val)
-    {
-        VecReal newY;
-        newY.resize(1);
-        newY[0] = val;
-        _youngModulus.setValue(newY);
-    }
+    virtual void addForce(const core::MechanicalParams* mparams,
+                          DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override ;
 
+    virtual void addDForce(const core::MechanicalParams* mparams,
+                           DataVecDeriv& , const DataVecDeriv& ) override ;
 
-    virtual void reset();
-    virtual void init();
-    virtual void reinit();
+    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset) override ;
 
-    virtual void addForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
-    virtual void addDForce(const core::MechanicalParams*  /* PARAMS FIRST */, DataVecDeriv& , const DataVecDeriv& );
-
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset);
-
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
-    {
-        serr << "getPotentialEnergy() not implemented" << sendl;
-        return 0.0;
-    }
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* mparams,
+                                     const DataVecCoord&  x) const override ;
 
     void draw(const core::visual::VisualParams* vparams);
-
-
-
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_InvertibleFVMForceField_CPP)

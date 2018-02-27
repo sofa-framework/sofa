@@ -103,14 +103,16 @@
     <property name="title">
      <string>&amp;View</string>
     </property>
+    <addaction name="separator"/>
+    <addaction name="separator"/>
+    <addaction name="separator"/>
    </widget>
    <widget class="QMenu" name="helpMenu">
     <property name="title">
      <string>Help</string>
     </property>
-    <addaction name="helpContentsAction"/>
-    <addaction name="helpIndexAction"/>
     <addaction name="separator"/>
+    <addaction name="helpShowDocBrowser"/>
     <addaction name="helpAboutAction"/>
    </widget>
    <addaction name="fileMenu"/>
@@ -698,40 +700,6 @@
     <cstring>fileExitAction</cstring>
    </property>
   </action>
-  <action name="helpContentsAction">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>&amp;Contents...</string>
-   </property>
-   <property name="iconText">
-    <string>Contents</string>
-   </property>
-   <property name="shortcut">
-    <string/>
-   </property>
-   <property name="name" stdset="0">
-    <cstring>helpContentsAction</cstring>
-   </property>
-  </action>
-  <action name="helpIndexAction">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>&amp;Index...</string>
-   </property>
-   <property name="iconText">
-    <string>Index</string>
-   </property>
-   <property name="shortcut">
-    <string/>
-   </property>
-   <property name="name" stdset="0">
-    <cstring>helpIndexAction</cstring>
-   </property>
-  </action>
   <action name="helpAboutAction">
    <property name="enabled">
     <bool>false</bool>
@@ -829,6 +797,17 @@
    </property>
    <property name="name" stdset="0">
     <cstring>VideoRecorderManagerAction</cstring>
+   </property>
+  </action>
+  <action name="helpShowDocBrowser">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Show doc browser</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>false</bool>
    </property>
   </action>
  </widget>
@@ -935,54 +914,6 @@
    </hints>
   </connection>
   <connection>
-   <sender>helpIndexAction</sender>
-   <signal>triggered()</signal>
-   <receiver>GUI</receiver>
-   <slot>helpIndex()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>helpContentsAction</sender>
-   <signal>triggered()</signal>
-   <receiver>GUI</receiver>
-   <slot>helpContents()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>helpAboutAction</sender>
-   <signal>triggered()</signal>
-   <receiver>GUI</receiver>
-   <slot>helpAbout()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>20</x>
-     <y>20</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>editRecordDirectoryAction</sender>
    <signal>triggered()</signal>
    <receiver>GUI</receiver>
@@ -1059,6 +990,22 @@
     <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>helpShowDocBrowser</sender>
+   <signal>triggered()</signal>
+   <receiver>GUI</receiver>
+   <slot>showDocBrowser()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>399</x>
+     <y>299</y>
     </hint>
    </hints>
   </connection>

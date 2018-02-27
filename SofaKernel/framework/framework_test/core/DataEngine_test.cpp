@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -21,7 +21,9 @@
 ******************************************************************************/
 #include <sofa/core/DataEngine.h>
 
-#include <gtest/gtest.h>
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest ;
+
 
 namespace sofa {
 
@@ -48,7 +50,7 @@ public:
 
     ~TestEngine() {}
 
-    void init()
+    void init() override
     {
         addInput(&input);
         m_dataTracker.trackData(input); // to connect a DataTracker to the Data 'input'
@@ -58,12 +60,12 @@ public:
         setDirtyValue();
     }
 
-    void reinit()
+    void reinit() override
     {
         update();
     }
 
-    void update()
+    void update() override
     {
         // true only iff the DataTracker associated to the Data 'input' is Dirty
         // that could only happen if 'input' was dirtied since last update
@@ -78,7 +80,7 @@ public:
 };
 
 
-struct DataEngine_test: public ::testing::Test
+struct DataEngine_test: public BaseTest
 {
     TestEngine engine;
 

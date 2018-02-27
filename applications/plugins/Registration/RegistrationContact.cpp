@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -26,8 +26,9 @@
 #include <SofaMeshCollision/IdentityContactMapper.inl>
 #include <SofaMeshCollision/RigidContactMapper.inl>
 #include <SofaMiscCollision/TetrahedronModel.h>
-#ifdef SOFA_HAVE_MINIFLOWVR
-#include <SofaVolumetricData/DistanceGridCollisionModel.h>
+
+#ifdef SOFA_HAVE_SOFADISTANCEGRID
+#include <SofaDistanceGrid/components/collision/DistanceGridCollisionModel.h>
 #endif
 
 
@@ -63,7 +64,7 @@ Creator<Contact::Factory, RegistrationContact<TetrahedronModel, LineModel> > Tet
 Creator<Contact::Factory, RegistrationContact<TetrahedronModel, TriangleModel> > TetrahedronTriangleRegistrationContactClass("registration",true);
 Creator<Contact::Factory, RegistrationContact<TetrahedronModel, TetrahedronModel> > TetrahedronTetrahedronRegistrationContactClass("registration",true);
 
-#ifdef SOFA_HAVE_MINIFLOWVR
+#ifdef SOFA_HAVE_SOFADISTANCEGRID
 Creator<Contact::Factory, RegistrationContact<RigidDistanceGridCollisionModel, RigidDistanceGridCollisionModel> > DistanceGridDistanceGridRegistrationContactClass("registration", true);
 Creator<Contact::Factory, RegistrationContact<RigidDistanceGridCollisionModel, PointModel> > DistanceGridPointRegistrationContactClass("registration", true);
 Creator<Contact::Factory, RegistrationContact<RigidDistanceGridCollisionModel, SphereModel> > DistanceGridSphereRegistrationContactClass("registration", true);

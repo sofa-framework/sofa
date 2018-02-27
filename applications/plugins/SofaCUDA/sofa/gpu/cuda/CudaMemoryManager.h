@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -67,11 +67,6 @@ public :
         mycudaMallocHost(hPointer,n);
     }
 
-    static void memsetHost(host_pointer hPointer, int value,size_t n)
-    {
-        memset((void*) hPointer, value, n);
-    }
-
     static void hostFree(const host_pointer hSrcPointer)
     {
         mycudaFreeHost(hSrcPointer);
@@ -86,6 +81,8 @@ public :
     {
         mycudaFree(dSrcPointer,d);
     }
+
+    static void memsetHost(host_pointer hPointer, int value,size_t n) { memset((void*) hPointer, value, n); }
 
     static void memcpyHostToDevice(int d, device_pointer dDestPointer, const host_pointer hSrcPointer, size_t n)
     {

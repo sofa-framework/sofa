@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -107,15 +107,15 @@ public:
     void removeConstraint(unsigned int index);
 
 
-    void init();
-    void draw(const core::visual::VisualParams* vparams);
-    void resetConstraint();
+    void init() override;
+    void draw(const core::visual::VisualParams* vparams) override;
+    void resetConstraint() override;
 
     // -- LMConstraint interface
-    void buildConstraintMatrix(const core::ConstraintParams* cParams, core::MultiMatrixDerivId cId, unsigned int &cIndex);
-    void writeConstraintEquations(unsigned int& lineNumber, core::MultiVecId id, ConstOrder order);
+    void buildConstraintMatrix(const core::ConstraintParams* cParams, core::MultiMatrixDerivId cId, unsigned int &cIndex) override;
+    void writeConstraintEquations(unsigned int& lineNumber, core::MultiVecId id, ConstOrder order) override;
 
-    std::string getTemplateName() const
+    std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -125,17 +125,17 @@ public:
         return DataTypes::Name();
     }
 
-    bool isCorrectionComputedWithSimulatedDOF(ConstOrder /*order*/) const
+    bool isCorrectionComputedWithSimulatedDOF(ConstOrder /*order*/) const override
     {
         simulation::Node* node=(simulation::Node*) this->constrainedObject1->getContext();
         if (node->mechanicalMapping.empty()) return true;
         else return false;
     }
 
-    Data<helper::vector<Deriv> > BlockedAxis;
-    Data<helper::vector<SReal> > factorAxis;
-    SetIndex f_indices;
-    Data<SReal> showSizeAxis;
+    Data<helper::vector<Deriv> > BlockedAxis; ///< List of rotation axis to constrain
+    Data<helper::vector<SReal> > factorAxis; ///< Factor to apply in order to block only a certain amount of rotation along the axis
+    SetIndex f_indices; ///< List of the index of particles to be fixed
+    Data<SReal> showSizeAxis; ///< size of the vector used to display the constrained axis
 
     class FCTPointHandler : public sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, helper::vector<unsigned int> >
     {

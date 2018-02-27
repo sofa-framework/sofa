@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -60,25 +60,25 @@ protected:
     OglCylinderModel();
     virtual ~OglCylinderModel();
 public:
-    virtual void init();
+    virtual void init() override;
 
-    virtual void reinit();
+    virtual void reinit() override;
 
-    virtual void drawVisual(const core::visual::VisualParams* vparams);
+    virtual void drawVisual(const core::visual::VisualParams* vparams) override;
 
-    virtual void exportOBJ(std::string /*name*/, std::ostream* /*out*/, std::ostream* /*mtl*/, int& /*vindex*/, int& /*nindex*/, int& /*tindex*/, int& /*count*/);
+    virtual void exportOBJ(std::string /*name*/, std::ostream* /*out*/, std::ostream* /*mtl*/, int& /*vindex*/, int& /*nindex*/, int& /*tindex*/, int& /*count*/) override;
 
 private:
     void setColor(float r, float g, float b, float a);
     void setColor(std::string color);
 
 private:
-    Data<float>		radius;
+    Data<float>		radius; ///< Radius of the cylinder.
     // Data<float>		alpha;
-    Data<defaulttype::RGBAColor>	color;
+    Data<defaulttype::RGBAColor>	color; ///< Color of the cylinders.
 
     typedef sofa::helper::vector<core::topology::Edge>  SeqEdges;
-    Data<SeqEdges> d_edges;
+    Data<SeqEdges> d_edges; ///< List of edge indices
 
 
     float r,g,b,a;
@@ -89,8 +89,8 @@ private:
     typedef defaulttype::ExtVec3fTypes::Real Real;
 
 public:
-    virtual bool insertInNode( core::objectmodel::BaseNode* node ) { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
-    virtual bool removeInNode( core::objectmodel::BaseNode* node ) { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
+    virtual bool insertInNode( core::objectmodel::BaseNode* node ) override { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
+    virtual bool removeInNode( core::objectmodel::BaseNode* node ) override { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
 };
 
 } // namespace visualmodel

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -100,13 +100,15 @@ public :
     ///initial constrained DOFs position
     VecCoord x0;
 
-    core::objectmodel::Data<bool> linearMovementBetweenNodesInIndices;
-    core::objectmodel::Data<unsigned> mainIndice;
-    core::objectmodel::Data<unsigned> minDepIndice;
-    core::objectmodel::Data<unsigned> maxDepIndice;
+    core::objectmodel::Data<bool> linearMovementBetweenNodesInIndices; ///< Take into account the linear movement between the constrained points
+    core::objectmodel::Data<unsigned> mainIndice; ///< The main indice node in the list of constrained nodes, it defines how to apply the linear movement between this constrained nodes 
+    core::objectmodel::Data<unsigned> minDepIndice; ///< The indice node in the list of constrained nodes, which is imposed the minimum displacment 
+    core::objectmodel::Data<unsigned> maxDepIndice; ///< The indice node in the list of constrained nodes, which is imposed the maximum displacment 
     core::objectmodel::Data<helper::vector<Real> > m_imposedDisplacmentOnMacroNodes; ///< imposed displacement at  u1 u2 u3 u4 for 2d case
     ///< and u1 u2 u3 u4 u5 u6 u7 u8 for 3d case
-    Data<Real> X0,Y0,Z0;
+    Data<Real> X0; ///< Size of specimen in X-direction
+    Data<Real> Y0; ///< Size of specimen in Y-direction
+    Data<Real> Z0; ///< Size of specimen in Z-direction
 
     enum { NumDimensions = Deriv::total_size };
     typedef sofa::helper::fixed_array<bool,NumDimensions> VecBool;
@@ -130,18 +132,18 @@ public:
 
 
     /// -- Constraint interface
-    void init();
-    void reset();
+    void init() override;
+    void reset() override;
 
-    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData);
-    void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData);
-    void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData);
-    void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData);
+    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData) override;
+    void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& vData) override;
+    void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData) override;
+    void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;
 
-    virtual void applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix);
-    virtual void applyConstraint(const core::MechanicalParams* mparams, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix);
+    virtual void applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
+    virtual void applyConstraint(const core::MechanicalParams* mparams, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
-    virtual void draw(const core::visual::VisualParams*);
+    virtual void draw(const core::visual::VisualParams*) override;
 
     class FCPointHandler : public sofa::component::topology::TopologySubsetDataHandler<core::topology::BaseMeshTopology::Point, SetIndexArray >
     {

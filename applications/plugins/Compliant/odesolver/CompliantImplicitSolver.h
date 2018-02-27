@@ -11,8 +11,7 @@
 #include <sofa/simulation/MechanicalOperations.h>
 #include <sofa/simulation/VectorOperations.h>
 
-// TODO forward instead ?
-#include "../numericalsolver/KKTSolver.h"
+#include <Compliant/assembly/AssembledSystem.h>
 
 #include <sofa/helper/OptionsGroup.h>
 
@@ -34,6 +33,7 @@ namespace component {
 
 namespace linearsolver {
 class AssembledSystem;
+class KKTSolver;
 }
 
 
@@ -189,9 +189,11 @@ class SOFA_Compliant_API CompliantImplicitSolver : public sofa::core::behavior::
     enum { NO_STABILIZATION=0, PRE_STABILIZATION, POST_STABILIZATION_RHS, POST_STABILIZATION_ASSEMBLY, NB_STABILIZATION };
     Data<helper::OptionsGroup> stabilization;
 
-    Data<bool> warm_start, debug;
+    Data<bool> warm_start;
+    Data<bool> debug;
     Data<helper::OptionsGroup> constraint_forces;
-    Data<SReal> alpha, beta;     ///< the \alpha and \beta parameters of the integration scheme
+    Data<SReal> alpha;     ///< the \alpha and \beta parameters of the integration scheme
+    Data<SReal> beta;     ///< the \alpha and \beta parameters of the integration scheme
 	Data<SReal> stabilization_damping;
 
     enum { FORMULATION_VEL=0, FORMULATION_DV, FORMULATION_ACC, NB_FORMULATION };
@@ -228,7 +230,7 @@ class SOFA_Compliant_API CompliantImplicitSolver : public sofa::core::behavior::
 	
 	// linear solver: TODO hide in pimpl ?
 	typedef linearsolver::KKTSolver kkt_type;
-	kkt_type::SPtr kkt;
+    core::sptr<kkt_type> kkt;
 
 
 

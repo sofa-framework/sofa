@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -50,13 +50,13 @@ public:
     ~TreeSimulation(); // this is a terminal class
 
     /// create a new graph(or tree) and return its root node.
-    virtual Node::SPtr createNewGraph(const std::string& name);
+    virtual Node::SPtr createNewGraph(const std::string& name) override;
 
     /// creates and returns a new node.
-    virtual Node::SPtr createNewNode(const std::string& name);
+    virtual Node::SPtr createNewNode(const std::string& name) override;
 
     /// Can the simulation handle a directed acyclic graph?
-    virtual bool isDirectedAcyclicGraph() { return false; }
+    virtual bool isDirectedAcyclicGraph() override { return false; }
 };
 
 /** Get the (unique) simulation which controls the scene.

@@ -4,7 +4,7 @@
 
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -68,7 +68,7 @@ public:
     typedef typename ImageTypes::T T;
     typedef typename ImageTypes::imCoord imCoord;
     typedef helper::ReadAccessor<Data< ImageTypes > > raImage;
-    Data< ImageTypes > image;
+    Data< ImageTypes > image; ///< input image
     
     // @name ToolBoxData
     /**@{*/
@@ -121,7 +121,7 @@ public:
      typedef sofa::component::engine::LabelImageToolBox Label;
     typedef helper::vector<Label*> VecLabel;
         
-    std::string getTemplateName() const  {	return templateName(this);	}
+    std::string getTemplateName() const  override {	return templateName(this);	}
     static std::string templateName(const ImageToolBox<ImageTypes>* = NULL)	{ return ImageTypes::Name(); }
     
     ImageToolBox() : Inherited()
@@ -157,7 +157,7 @@ public:
         //for(unsigned int i=0;i<3;i++)	if(cutplane_tex[i]) delete cutplane_tex[i];
     }
     
-    virtual void init()
+    virtual void init() override
     {
         
         // getvisuals
@@ -215,7 +215,7 @@ public:
     }
     
     
-    virtual void reinit()
+    virtual void reinit() override
     {
         /*waHisto whisto(this->histo);
         waPlane wplane(this->plane);
@@ -226,7 +226,7 @@ public:
         wplane->setClamp(whisto->getClamp());*/
     }
     
-    virtual void handleEvent( sofa::core::objectmodel::Event* /*event*/)
+    virtual void handleEvent( sofa::core::objectmodel::Event* /*event*/) override
     {
         /*typename ImagePlaneType::pCoord pc(0,0,0);
 
@@ -274,7 +274,7 @@ public:
         }*/
     }
     
-    virtual void draw(const core::visual::VisualParams* /*vparams*/)
+    virtual void draw(const core::visual::VisualParams* /*vparams*/) override
     {}
     
     

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -172,7 +172,7 @@ protected:
     //just for draw forces
     VecDeriv _forces;
 
-    topology::EdgeData< sofa::helper::vector<BeamInfo> > beamsData;
+    topology::EdgeData< sofa::helper::vector<BeamInfo> > beamsData; ///< Internal element data
     linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> matS;
 
     class BeamFFEdgeHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,sofa::helper::vector<BeamInfo> >
@@ -197,13 +197,13 @@ protected:
     const VecElement *_indexedElements;
 //	unsigned int maxPoints;
 //	int _method; ///< the computation method of the displacements
-    Data<Real> _poissonRatio;
-    Data<Real> _youngModulus;
+    Data<Real> _poissonRatio; ///< Potion Ratio
+    Data<Real> _youngModulus; ///< Young Modulus
 //	Data<bool> _timoshenko;
-    Data<Real> _radius;
-    Data<Real> _radiusInner;
-    Data< VecIndex > _list_segment;
-    Data< bool> _useSymmetricAssembly;
+    Data<Real> _radius; ///< radius of the section
+    Data<Real> _radiusInner; ///< inner radius of the section for hollow beams
+    Data< VecIndex > _list_segment; ///< apply the forcefield to a subset list of beam segments. If no segment defined, forcefield applies to the whole topology
+    Data< bool> _useSymmetricAssembly; ///< use symmetric assembly of the matrix K
     bool _partial_list_segment;
 
     bool _updateStiffnessMatrix;
@@ -233,22 +233,23 @@ public:
 
     void setComputeGlobalMatrix(bool val) { this->_assembling= val; }
 
-    virtual void init();
-    virtual void bwdInit();
-    virtual void reinit();
+    virtual void init() override;
+    virtual void bwdInit() override;
+    virtual void reinit() override;
     virtual void reinitBeam(unsigned int i);
 
-    virtual void addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV );
-    virtual void addDForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv&   datadF , const DataVecDeriv&   datadX );
-    virtual void addKToMatrix(const sofa::core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix );
+    virtual void addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV ) override;
+    virtual void addDForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv&   datadF , const DataVecDeriv&   datadX ) override;
+    virtual void addKToMatrix(const sofa::core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix ) override;
 
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
     {
         serr << "Get potentialEnergy not implemented" << sendl;
         return 0.0;
     }
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
+    void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
 
     void setBeam(unsigned int i, double E, double L, double nu, double r, double rInner);
     void initBeams(unsigned int size);

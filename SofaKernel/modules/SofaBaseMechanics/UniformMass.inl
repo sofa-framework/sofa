@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -544,29 +544,6 @@ void UniformMass<DataTypes, MassType>::draw(const VisualParams* vparams)
         gravityCenter += x[indices[i]];
     }
 
-
-#ifdef SOFA_SMP
-    static float colorTab[][4]=
-    {
-        {1.0f,0.0f,0.0f,1.0f},
-        {1.0f,1.0f,0.0f,1.0f},
-        {0.0f,1.0f,0.0f,1.0f},
-        {0.0f,1.0f,1.0f,1.0f},
-        {0.0f,0.0f,1.0f,1.0f},
-        {0.5f,.5f,.5f,1.0f},
-        {0.5f,0.0f,0.0f,1.0f},
-        {.5f,.5f,0.0f,1.0f},
-        {0.0f,1.0f,0.0f,1.0f},
-        {0.0f,1.0f,1.0f,1.0f},
-        {0.0f,0.0f,1.0f,1.0f},
-        {0.5f,.5f,.5f,1.0f}
-    };
-    if(vparams->displayFlags().getShowProcessorColor())
-    {
-        unsigned int proc=Core::Processor::get_current()->get_pid();
-        color = colorTab[proc%12];
-    }
-#endif
 
     if ( d_showCenterOfGravity.getValue() )
     {

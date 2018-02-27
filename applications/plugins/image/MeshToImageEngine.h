@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -67,12 +67,12 @@ public:
 
     typedef SReal Real;
 
-    Data< helper::vector<Real> > voxelSize; // should be a Vec<3,Real>, but it is easier to be backward-compatible that way
+    Data< helper::vector<Real> > voxelSize; ///< should be a Vec<3,Real>, but it is easier to be backward-compatible that way
     typedef helper::WriteOnlyAccessor<Data< helper::vector<Real> > > waVecReal;
-    Data< defaulttype::Vec<3,unsigned> > nbVoxels;
-    Data< bool > rotateImage;
-    Data< unsigned int > padSize;
-    Data< unsigned int > subdiv;
+    Data< defaulttype::Vec<3,unsigned> > nbVoxels; ///< number of voxel (redondant with and priority over voxelSize)
+    Data< bool > rotateImage; ///< orient the image bounding box according to the mesh (OBB)
+    Data< unsigned int > padSize; ///< size of border in number of voxels
+    Data< unsigned int > subdiv; ///< number of subdivisions for face rasterization (if needed, increase to avoid holes)
 
     typedef _ImageTypes ImageTypes;
     typedef typename ImageTypes::T T;
@@ -118,16 +118,16 @@ public:
     helper::vectorData<SeqValues> vf_roiValue;   ///< values for each roi
     typedef helper::ReadAccessor<Data< VecSeqIndex > > raIndex;
 
-    Data< ValueType > backgroundValue;
+    Data< ValueType > backgroundValue; ///< pixel value at background
 
-    Data<unsigned int> f_nbMeshes;
+    Data<unsigned int> f_nbMeshes; ///< number of meshes to voxelize (Note that the last one write on the previous ones)
 
-    Data<bool> gridSnap;
+    Data<bool> gridSnap; ///< align voxel centers on voxelSize multiples for perfect image merging (nbVoxels and rotateImage should be off)
 
-    Data<bool> worldGridAligned;
+    Data<bool> worldGridAligned; ///< perform rasterization on a world aligned grid using nbVoxels and voxelSize
 
 
-    virtual std::string getTemplateName() const    { return templateName(this);    }
+    virtual std::string getTemplateName() const    override { return templateName(this);    }
     static std::string templateName(const MeshToImageEngine<ImageTypes>* = NULL) { return ImageTypes::Name();    }
 
     MeshToImageEngine()    :   Inherited()
@@ -174,7 +174,7 @@ public:
     {
     }
 
-    virtual void init()
+    virtual void init() override
     {
         // backward compatibility (if InsideValue is not set: use first value)
         for( size_t meshId=0; meshId<vf_InsideValues.size() ; ++meshId )
@@ -208,7 +208,7 @@ public:
         im.fill((T)0);
     }
 
-    virtual void reinit()
+    virtual void reinit() override
     {
         vf_positions.resize(f_nbMeshes.getValue());
         vf_edges.resize(f_nbMeshes.getValue());
@@ -222,7 +222,7 @@ public:
     }
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters
-    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
+    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override
     {
         vf_positions.parseSizeData(arg, f_nbMeshes);
         vf_edges.parseSizeData(arg, f_nbMeshes);
@@ -236,7 +236,7 @@ public:
     }
 
     /// Assign the field values stored in the given map of name -> value pairs
-    void parseFields ( const std::map<std::string,std::string*>& str )
+    void parseFields ( const std::map<std::string,std::string*>& str ) override
     {
         vf_positions.parseFieldsSizeData(str, f_nbMeshes);
         vf_edges.parseFieldsSizeData(str, f_nbMeshes);
@@ -251,7 +251,7 @@ public:
 
 protected:
 
-    virtual void update()
+    virtual void update() override
     {
         updateAllInputsIfDirty();
         cleanDirty();
@@ -541,7 +541,7 @@ protected:
 
 
 
-    virtual void draw(const core::visual::VisualParams* /*vparams*/)
+    virtual void draw(const core::visual::VisualParams* /*vparams*/) override
     {
     }
 

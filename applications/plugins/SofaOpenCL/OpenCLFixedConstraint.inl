@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -81,7 +81,7 @@ void FixedConstraintInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,T
     data.maxIndex = -1;
     data.OpenCLIndices.clear();
     m->core::behavior::template ProjectiveConstraintSet<DataTypes>::init();
-    const SetIndexArray& indices = m->f_indices.getValue();
+    const SetIndexArray& indices = m->d_indices.getValue();
     if (!indices.empty())
     {
         // put indices in a set to sort them and remove duplicates
@@ -110,8 +110,8 @@ void FixedConstraintInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,T
 {
     Data& data = *m->data;
     //std::cout << "OpenCLFixedConstraint::addConstraint("<<index<<")\n";
-    m->f_indices.beginEdit()->push_back(index);
-    m->f_indices.endEdit();
+    m->d_indices.beginEdit()->push_back(index);
+    m->d_indices.endEdit();
     if (data.OpenCLIndices.empty())
     {
         if (data.minIndex == -1)
@@ -156,8 +156,8 @@ template<class TCoord, class TDeriv, class TReal>
 void FixedConstraintInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> >::removeConstraint(Main* m, unsigned int index)
 {
     Data& data = *m->data;
-    removeValue(*m->f_indices.beginEdit(),index);
-    m->f_indices.endEdit();
+    removeValue(*m->d_indices.beginEdit(),index);
+    m->d_indices.endEdit();
     if (data.OpenCLIndices.empty())
     {
         if (data.minIndex <= (int)index && (int)index <= data.maxIndex)
@@ -210,7 +210,7 @@ void FixedConstraintInternalData< gpu::opencl::OpenCLRigidTypes<N, real> >::init
     data.maxIndex = -1;
     data.OpenCLIndices.clear();
     m->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
-    const SetIndexArray& indices = m->f_indices.getValue();
+    const SetIndexArray& indices = m->d_indices.getValue();
     if (!indices.empty())
     {
         // put indices in a set to sort them and remove duplicates
@@ -239,8 +239,8 @@ void FixedConstraintInternalData< gpu::opencl::OpenCLRigidTypes<N, real> >::addC
 {
     Data& data = *m->data;
     //std::cout << "OpenCLFixedConstraint::addConstraint("<<index<<")\n";
-    m->f_indices.beginEdit()->push_back(index);
-    m->f_indices.endEdit();
+    m->d_indices.beginEdit()->push_back(index);
+    m->d_indices.endEdit();
     if (data.OpenCLIndices.empty())
     {
         if (data.minIndex == -1)
@@ -285,8 +285,8 @@ template<int N, class real>
 void FixedConstraintInternalData< gpu::opencl::OpenCLRigidTypes<N, real> >::removeConstraint(Main* m, unsigned int index)
 {
     Data& data = *m->data;
-    removeValue(*m->f_indices.beginEdit(),index);
-    m->f_indices.endEdit();
+    removeValue(*m->d_indices.beginEdit(),index);
+    m->d_indices.endEdit();
     if (data.OpenCLIndices.empty())
     {
         if (data.minIndex <= (int)index && (int)index <= data.maxIndex)

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -60,14 +60,14 @@ public:
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
     typedef typename TMatrix::Bloc SubMatrix;
 
-    Data<bool> f_verbose;
+    Data<bool> f_verbose; ///< Dump system state at each iteration
 protected:
     BlockJacobiPreconditioner();
 public:
-    void solve (Matrix& M, Vector& x, Vector& b);
-    void invert(Matrix& M);
+    void solve (Matrix& M, Vector& x, Vector& b) override;
+    void invert(Matrix& M) override;
 
-    BlockJacobiPreconditionerInternalData<TVector> internalData; //not use in CPU
+    BlockJacobiPreconditionerInternalData<TVector> internalData; ///< not use in CPU
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
@@ -77,7 +77,7 @@ public:
         return sofa::core::objectmodel::BaseObject::canCreate(obj, context, arg);
     }
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }

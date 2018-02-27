@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -52,7 +52,7 @@ public:
     SOFA_CLASS(MergeVisualModels,OglModel);
 
 
-    Data<unsigned int> d_nbInput;
+    Data<unsigned int> d_nbInput; ///< number of input visual models to merge
 
     typedef core::objectmodel::SingleLink< MergeVisualModels, VisualModelImpl, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> LinkVisualModel;
     helper::VectorLinks< LinkVisualModel, MergeVisualModels > vl_input;
@@ -262,25 +262,25 @@ protected:
 
 public:
 
-    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg )
+    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override
     {
         vl_input.parseSizeLinks(arg, d_nbInput);
         Inherit1::parse(arg);
     }
-    void parseFields ( const std::map<std::string,std::string*>& str )
+    void parseFields ( const std::map<std::string,std::string*>& str ) override
     {
         vl_input.parseFieldsSizeLinks(str, d_nbInput);
         Inherit1::parseFields(str);
     }
 
-    void init()
+    void init() override
     {
         vl_input.resize(d_nbInput.getValue());
         Inherit1::init();
         update();
     }
 
-    void reinit()
+    void reinit() override
     {
         vl_input.resize(d_nbInput.getValue());
         Inherit1::reinit();

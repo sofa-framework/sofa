@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -89,15 +89,15 @@ public:
 protected:
     HexahedronSetTopologyContainer();
 
-    virtual ~HexahedronSetTopologyContainer() {}
+    virtual ~HexahedronSetTopologyContainer() override {}
 public:
-    virtual void init();
+    virtual void init() override;
 
 
     /// Procedural creation methods
     /// @{
-    virtual void clear();
-    virtual void addHexa( int a, int b, int c, int d, int e, int f, int g, int h );
+    virtual void clear() override;
+    virtual void addHexa( int a, int b, int c, int d, int e, int f, int g, int h ) override;
     /// @}
 
 
@@ -105,7 +105,7 @@ public:
     /// @{
 
     /** \brief Get the array of hexahedra. */
-    virtual const SeqHexahedra& getHexahedra()
+    virtual const SeqHexahedra& getHexahedra() override
     {
         return getHexahedronArray();
     }
@@ -118,7 +118,7 @@ public:
      * @param i The index of a hexahedron.
      * @return The corresponding hexahedron.
      */
-    virtual const Hexahedron getHexahedron(HexaID i);
+    virtual const Hexahedron getHexahedron(HexaID i) override;
 
 	 /** \brief Get the local hexahedron index (0<i<8) from its 3 binary indices.
      *
@@ -139,7 +139,7 @@ public:
      * @return The index of the corresponding hexahedron if it exists, -1 otherwise.
      */
     virtual int getHexahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4,
-				   PointID v5, PointID v6, PointID v7, PointID v8);
+                   PointID v5, PointID v6, PointID v7, PointID v8) override;
 
 
     /** \brief Get the 12 edges that form a hexahedron.
@@ -147,7 +147,7 @@ public:
      * @param i The index of a hexahedron.
      * @return An EdgesInHexahedron containing the indices of the edges.
      */
-    virtual const EdgesInHexahedron& getEdgesInHexahedron(HexaID i) ;
+    virtual const EdgesInHexahedron& getEdgesInHexahedron(HexaID i) override;
 
 
     /** \brief Get the 6 quads that form a hexahedron.
@@ -155,7 +155,7 @@ public:
      * @param i The index of a hexahedron.
      * @return A QuadsInHexahedron containing the indices of the quads.
      */
-    virtual const QuadsInHexahedron& getQuadsInHexahedron(HexaID i) ;
+    virtual const QuadsInHexahedron& getQuadsInHexahedron(HexaID i) override;
 
 
     /** \brief Get the hexahedra around a vertex.
@@ -163,7 +163,7 @@ public:
      * @param i The index of a vertex.
      * @return A HexahedraAroundVertex containing the indices of the hexahedra this vertex belongs to.
      */
-    virtual const HexahedraAroundVertex& getHexahedraAroundVertex(PointID i) ;
+    virtual const HexahedraAroundVertex& getHexahedraAroundVertex(PointID i) override;
 
 
     /** \brief Get the hexahedra around an edge.
@@ -171,7 +171,7 @@ public:
      * @param i The index of an edge.
      * @return A HexahedraAroundEdge containing the indices of the hexahedra this edge belongs to.
      */
-    virtual const HexahedraAroundEdge& getHexahedraAroundEdge(EdgeID i) ;
+    virtual const HexahedraAroundEdge& getHexahedraAroundEdge(EdgeID i) override;
 
 
     /** \brief Get the hexahedra around a quad.
@@ -179,7 +179,7 @@ public:
      * @param i The index of a quad.
      * @return A HexahedraAroundQuad containing the indices of the hexahedra this quad belongs to.
      */
-    virtual const HexahedraAroundQuad& getHexahedraAroundQuad(QuadID i) ;
+    virtual const HexahedraAroundQuad& getHexahedraAroundQuad(QuadID i) override;
 
 
     /** \brief Get the position of a vertex in a hexahedron from its index.
@@ -188,7 +188,7 @@ public:
      * @param vertexIndex The index of a vertex.
      * @return The position (between 0 and 7) of this vertex in the Hexahedron if it is present, -1 otherwise.
      */
-    int getVertexIndexInHexahedron(const Hexahedron& t, PointID vertexIndex) const;
+    int getVertexIndexInHexahedron(const Hexahedron& t, PointID vertexIndex) const override;
 
 
     /** \brief Get the position of an edge in a hexahedron from its index.
@@ -197,7 +197,7 @@ public:
      * @param edgeIndex The index of an edge.
      * @return The position (between 0 and 11) of this edge in the Hexahedron if it is present, -1 otherwise.
      */
-    int getEdgeIndexInHexahedron(const EdgesInHexahedron& t, EdgeID edgeIndex) const;
+    int getEdgeIndexInHexahedron(const EdgesInHexahedron& t, EdgeID edgeIndex) const override;
 
 
     /** \brief Get the position of a quad in a hexahedron from its index.
@@ -206,19 +206,19 @@ public:
      * @param quadIndex The index of a quad.
      * @return The position (between 0 and 5) of this quad in the Hexahedron if it is present, -1 otherwise.
      */
-    int getQuadIndexInHexahedron(const QuadsInHexahedron& t, QuadID quadIndex) const;
+    int getQuadIndexInHexahedron(const QuadsInHexahedron& t, QuadID quadIndex) const override;
 
 
     /** \brief Returns for each index (between 0 and 11) the two vertex local indices that are adjacent to/forming that edge
      *
      */
-    virtual Edge getLocalEdgesInHexahedron (const EdgeID i) const;
+    virtual Edge getLocalEdgesInHexahedron (const EdgeID i) const override;
 
 
     /** \brief Returns for each index (between 0 and 5) the four vertices local indices that are adjacent to/forming that quad
      *
      */
-    virtual Quad getLocalQuadsInHexahedron (const QuadID i) const;
+    virtual Quad getLocalQuadsInHexahedron (const QuadID i) const override;
 
     /** \brief Given an EdgesInQuad and a QuadsInHexahedron index in a hexahedron, returns the QuadsInHexahedron index of the quad sharing the same edge.
      *
@@ -242,7 +242,7 @@ public:
      * @see m_hexahedraAroundEdge
      * @see m_hexahedraAroundQuad
      */
-    virtual bool checkTopology() const;
+    virtual bool checkTopology() const override;
 
 
     /// Get information about connexity of the mesh
@@ -251,18 +251,18 @@ public:
       *
       * @return true if only one connected component
       */
-    virtual bool checkConnexity();
+    virtual bool checkConnexity() override;
 
     /// Returns the number of connected component.
-    virtual unsigned int getNumberOfConnectedComponent();
+    virtual unsigned int getNumberOfConnectedComponent() override;
 
     /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
-    virtual const VecHexaID getConnectedElement(HexaID elem);
+    virtual const VecHexaID getConnectedElement(HexaID elem) override;
 
     /// Returns the set of element indices adjacent to a given element (i.e. sharing a link)
-    virtual const VecHexaID getElementAroundElement(HexaID elem);
+    virtual const VecHexaID getElementAroundElement(HexaID elem) override;
     /// Returns the set of element indices adjacent to a given list of elements (i.e. sharing a link)
-    virtual const VecHexaID getElementAroundElements(VecHexaID elems);
+    virtual const VecHexaID getElementAroundElements(VecHexaID elems) override;
     /// @}
 
 
@@ -275,7 +275,7 @@ public:
     /** \brief Returns the number of topological element of the current topology.
      * This function avoids to know which topological container is in used.
      */
-    virtual unsigned int getNumberOfElements() const;
+    virtual unsigned int getNumberOfElements() const override;
 
 
     /** \brief Returns the Hexahedron array. */
@@ -316,6 +316,9 @@ public:
 
     /// @}
 
+    /** \brief Returns the type of the topology */
+	  virtual sofa::core::topology::TopologyObjectType getTopologyType() const override {return sofa::core::topology::HEXAHEDRON;}
+
 
 protected:
 
@@ -323,14 +326,14 @@ protected:
      *
      * Create the set of edges when needed.
      */
-    virtual void createEdgeSetArray();
+    virtual void createEdgeSetArray() override;
 
 
     /** \brief Creates the QuadSet array.
      *
      * Create the array of quads when needed.
      */
-    virtual void createQuadSetArray();
+    virtual void createQuadSetArray() override;
 
 
     /** \brief Creates the HexahedronSet array.
@@ -420,7 +423,7 @@ protected:
 
 
     /// \brief Function creating the data graph linked to d_hexahedron
-    virtual void updateTopologyEngineGraph();
+    virtual void updateTopologyEngineGraph() override;
 
 
     /// Use a specific boolean @see m_hexahedronTopologyDirty in order to know if topology Data is dirty or not.

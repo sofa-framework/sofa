@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -47,7 +47,7 @@ protected:
 
     virtual ~DynamicSparseGridTopologyModifier() {}
 public:
-    virtual void init();
+    virtual void init() override;
 
     /** \brief Actually Add some hexahedra to this topology. Wrong way to add some hexahedra for the moment !
     *
@@ -55,7 +55,7 @@ public:
     *
     * \sa addHexahedraWarning
     */
-    virtual void addHexahedraProcess ( const sofa::helper::vector< Hexahedron > &hexahedra );
+    virtual void addHexahedraProcess ( const sofa::helper::vector< Hexahedron > &hexahedra ) override;
 
     /** \brief Actually Add some hexahedra to this topology.
     *
@@ -73,7 +73,7 @@ public:
     * \sa removeHexahedraWarning
     * @param removeIsolatedItems if true remove isolated quads, edges and vertices
     */
-    virtual void removeHexahedraProcess(const sofa::helper::vector<unsigned int>&indices, const bool removeIsolatedItems = false);
+    virtual void removeHexahedraProcess(const sofa::helper::vector<unsigned int>&indices, const bool removeIsolatedItems = false) override;
 
     /** \brief Renumber the attributes of this class
     *

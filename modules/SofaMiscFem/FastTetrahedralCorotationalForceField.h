@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -75,50 +75,10 @@ public:
     typedef core::topology::BaseMeshTopology::Tetra Tetra;
     typedef core::topology::BaseMeshTopology::EdgesInTetrahedron EdgesInTetrahedron;
     typedef core::topology::BaseMeshTopology::Tetra Tetrahedron;
+    typedef unsigned int Index;
+    
 
-
-protected:
-
-    class PointRestInformation
-    {
-    public:
-        Mat3x3 DfDx;  /// the vertex stiffness matrix
-        unsigned int v;
-
-        PointRestInformation() {}
-
-        inline friend std::ostream& operator<< ( std::ostream& os, const PointRestInformation& /*eri*/ ) {
-            return os;
-        }
-
-        /// Input stream
-        inline friend std::istream& operator>> ( std::istream& in, PointRestInformation& /*eri*/ ) {
-            return in;
-        }
-    };
-
-    class EdgeRestInformation
-    {
-    public:
-        Mat3x3 DfDx; /// the edge stiffness matrix
-        unsigned int v[2];
-        Coord restDp;
-
-        EdgeRestInformation()
-        {
-        }
-        /// Output stream
-        inline friend std::ostream& operator<< ( std::ostream& os, const EdgeRestInformation& /*eri*/ )
-        {
-            return os;
-        }
-
-        /// Input stream
-        inline friend std::istream& operator>> ( std::istream& in, EdgeRestInformation& /*eri*/ )
-        {
-            return in;
-        }
-    };
+protected:    
     /// data structure stored for each tetrahedron
     class TetrahedronRestInformation
     {
@@ -134,8 +94,6 @@ protected:
         Mat3x3 restRotation; // used for QR decomposition
         //unsigned int v[4]; // the indices of the 4 vertices
 
-        PointRestInformation *pointInfo[6]; // shortcut to the 4 vertex information
-        EdgeRestInformation *edgeInfo[6];  // shortcut to the 6 edge information
         Real edgeOrientation[6];
 
 
@@ -179,9 +137,9 @@ protected:
 
     };
 
-    topology::PointData<sofa::helper::vector<PointRestInformation> > pointInfo;
-    topology::EdgeData<sofa::helper::vector<EdgeRestInformation> > edgeInfo;
-    topology::TetrahedronData<sofa::helper::vector<TetrahedronRestInformation> > tetrahedronInfo;
+    topology::PointData<sofa::helper::vector<Mat3x3> > pointInfo; ///< Internal point data
+    topology::EdgeData<sofa::helper::vector<Mat3x3> > edgeInfo; ///< Internal edge data
+    topology::TetrahedronData<sofa::helper::vector<TetrahedronRestInformation> > tetrahedronInfo; ///< Internal tetrahedron data
 
 
     sofa::core::topology::BaseMeshTopology* _topology;
@@ -193,11 +151,17 @@ protected:
     Data<std::string> f_method; ///< the computation method of the displacements
     RotationDecompositionMethod decompositionMethod;
 
-    Data<Real> f_poissonRatio;
-    Data<Real> f_youngModulus;
+    Data<Real> f_poissonRatio; ///< Poisson ratio in Hooke's law
+    Data<Real> f_youngModulus; ///< Young modulus in Hooke's law
 
     Real lambda;  /// first Lame coefficient
     Real mu;    /// second Lame coefficient
+
+    Data<bool> f_drawing; ///<  draw the forcefield if true
+    Data<defaulttype::Vec4f> drawColor1; ///<  draw color for faces 1
+    Data<defaulttype::Vec4f> drawColor2; ///<  draw color for faces 2
+    Data<defaulttype::Vec4f> drawColor3; ///<  draw color for faces 3
+    Data<defaulttype::Vec4f> drawColor4; ///<  draw color for faces 4
 
     FastTetrahedralCorotationalForceField();
 
@@ -205,19 +169,19 @@ protected:
 
 public:
 
-    virtual void init();
+    virtual void init() override;
 
 
-    virtual void addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV ) ;
-    virtual void addDForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv&   datadF , const DataVecDeriv&   datadX ) ;
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
+    virtual void addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV ) override;
+    virtual void addDForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv&   datadF , const DataVecDeriv&   datadX ) override;
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
     {
         serr << "Get potentialEnergy not implemented" << sendl;
         return 0.0;
     }
 
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset);
-    virtual void addKToMatrix(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/ );
+    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset) override;
+    virtual void addKToMatrix(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/ ) override;
 
     void updateTopologyInformation();
 
@@ -236,7 +200,7 @@ public:
     {
         decompositionMethod=m;
     }
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
     /// compute lambda and mu based on the Young modulus and Poisson ratio
     void updateLameCoefficients();
 
@@ -247,7 +211,7 @@ protected :
 
     static void computeQRRotation( Mat3x3 &r, const Coord *dp);
 
-    topology::EdgeData<sofa::helper::vector<EdgeRestInformation> > &getEdgeInfo() {return edgeInfo;}
+    topology::EdgeData<sofa::helper::vector<Mat3x3> > &getEdgeInfo() {return edgeInfo;}
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_FASTTETRAHEDRALCOROTATIONALFORCEFIELD_CPP)

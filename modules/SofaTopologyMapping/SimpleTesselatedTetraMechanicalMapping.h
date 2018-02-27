@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -76,15 +76,15 @@ protected:
 
 public:
 
-    void init();
+    void init() override;
 
-    virtual void apply(const core::MechanicalParams* mparams, OutDataVecCoord& dOut, const InDataVecCoord& dIn);
+    virtual void apply(const core::MechanicalParams* mparams, OutDataVecCoord& dOut, const InDataVecCoord& dIn) override;
 
-    virtual void applyJ(const core::MechanicalParams* mparams, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn);
+    virtual void applyJ(const core::MechanicalParams* mparams, OutDataVecDeriv& dOut, const InDataVecDeriv& dIn) override;
 
-    virtual void applyJT(const core::MechanicalParams* mparams, InDataVecDeriv& dOut, const OutDataVecDeriv& dIn);
+    virtual void applyJT(const core::MechanicalParams* mparams, InDataVecDeriv& dOut, const OutDataVecDeriv& dIn) override;
 
-    virtual void applyJT(const core::ConstraintParams* cparams, InDataMatrixDeriv& dOut, const OutDataMatrixDeriv& dIn);
+    virtual void applyJT(const core::ConstraintParams* cparams, InDataMatrixDeriv& dOut, const OutDataMatrixDeriv& dIn) override;
 
 protected:
     topology::SimpleTesselatedTetraTopologicalMapping* topoMap;

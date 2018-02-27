@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -58,7 +58,7 @@ public:
     typedef helper::ReadAccessor<Data< ImageTypes > > raImage;
 
     Data< ImageTypes > image;
-    Data< helper::vector<T> > values;
+    Data< helper::vector<T> > values; ///< intensity values for each line
 
     virtual std::string getTemplateName() const    { return templateName(this);    }
     static std::string templateName(const IntensityProfileCreator<ImageTypes>* = NULL) { return ImageTypes::Name(); }

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -32,7 +32,6 @@
 #include <SofaBaseTopology/RegularGridTopology.h>
 #include <sofa/core/CollisionElement.h>
 #include <vector>
-#include <sofa/helper/gl/template.h>
 #include <iostream>
 
 #include <sofa/core/topology/TopologyChange.h>
@@ -543,12 +542,6 @@ template<class DataTypes>
 void TTriangleModel<DataTypes>::draw(const core::visual::VisualParams* vparams ,int index)
 {
     Element t(this,index);
-    //        glBegin(GL_TRIANGLES);
-    //        helper::gl::glNormalT(t.n());
-    //        helper::gl::glVertexT(t.p1());
-    //        helper::gl::glVertexT(t.p2());
-    //        helper::gl::glVertexT(t.p3());
-    //        glEnd();
 
     vparams->drawTool()->setPolygonMode(0,vparams->displayFlags().getShowWireFrame());
     vparams->drawTool()->setLightingEnabled(true);
@@ -815,7 +808,7 @@ void TTriangleModel<DataTypes>::computeBBox(const core::ExecParams* params, bool
     if( !onlyVisible ) return;
 
     static const Real max_real = std::numeric_limits<Real>::max();
-    static const Real min_real = std::numeric_limits<Real>::min();
+    static const Real min_real = std::numeric_limits<Real>::lowest();
     Real maxBBox[3] = {min_real,min_real,min_real};
     Real minBBox[3] = {max_real,max_real,max_real};
 

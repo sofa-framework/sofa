@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -59,17 +59,17 @@ public:
     SOFA_CLASS(WriteState,core::objectmodel::BaseObject);
 
     sofa::core::objectmodel::DataFileName f_filename;
-    Data < bool > f_writeX;
-    Data < bool > f_writeX0;
-    Data < bool > f_writeV;
-    Data < bool > f_writeF;
-    Data < double > f_interval;
-    Data < helper::vector<double> > f_time;
-    Data < double > f_period;
-    Data < helper::vector<unsigned int> > f_DOFsX;
-    Data < helper::vector<unsigned int> > f_DOFsV;
-    Data < double > f_stopAt;
-    Data < double > f_keperiod;
+    Data < bool > f_writeX; ///< flag enabling output of X vector
+    Data < bool > f_writeX0; ///< flag enabling output of X0 vector
+    Data < bool > f_writeV; ///< flag enabling output of V vector
+    Data < bool > f_writeF; ///< flag enabling output of F vector
+    Data < double > f_interval; ///< time duration between outputs
+    Data < helper::vector<double> > f_time; ///< set time to write outputs
+    Data < double > f_period; ///< period between outputs
+    Data < helper::vector<unsigned int> > f_DOFsX; ///< set the position DOFs to write
+    Data < helper::vector<unsigned int> > f_DOFsV; ///< set the velocity DOFs to write
+    Data < double > f_stopAt; ///< stop the simulation when the given threshold is reached
+    Data < double > f_keperiod; ///< set the period to measure the kinetic energy increase
 
 protected:
     core::behavior::BaseMechanicalState* mmodel;
@@ -88,13 +88,13 @@ protected:
 
     virtual ~WriteState();
 public:
-    virtual void init();
+    virtual void init() override;
 
-    virtual void reinit();
+    virtual void reinit() override;
 
-    virtual void reset();
+    virtual void reset() override;
 
-    virtual void handleEvent(sofa::core::objectmodel::Event* event);
+    virtual void handleEvent(sofa::core::objectmodel::Event* event) override;
 
 
     /// Pre-construction check method called by ObjectFactory.

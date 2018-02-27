@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -78,21 +78,21 @@ public:
     Data<SReal> endTime;  ///< Time when the constraint becomes inactive (-1 for infinitely active)
     virtual bool isActive() const; ///< if false, the constraint does nothing
 
-    virtual void init();
+    virtual void init() override;
 
     /// Retrieve the associated MechanicalState
     MechanicalState<DataTypes1>* getMState1() { return mstate1; }
-    BaseMechanicalState* getMechModel1() { return mstate1; }
+    BaseMechanicalState* getMechModel1() override { return mstate1; }
     /// Retrieve the associated MechanicalState
     MechanicalState<DataTypes2>* getMState2() { return mstate2; }
-    BaseMechanicalState* getMechModel2() { return mstate2; }
+    BaseMechanicalState* getMechModel2() override { return mstate2; }
 
     using BaseConstraintSet::getConstraintViolation;
     /// Construct the Constraint violations vector of each constraint
     ///
     /// \param v is the result vector that contains the whole constraints violations
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
-    virtual void getConstraintViolation(const ConstraintParams* cParams, defaulttype::BaseVector *v);
+    virtual void getConstraintViolation(const ConstraintParams* cParams, defaulttype::BaseVector *v) override;
 
     /// Construct the Constraint violations vector of each constraint
     ///
@@ -110,7 +110,7 @@ public:
     /// \param cId is the result constraint sparse matrix Id
     /// \param cIndex is the index of the next constraint equation: when building the constraint matrix, you have to use this index, and then update it
     /// \param cParams defines the state vectors to use for positions and velocities. Also defines the order of the constraint (POS, VEL, ACC)
-    virtual void buildConstraintMatrix(const ConstraintParams* cParams, MultiMatrixDerivId cId, unsigned int &cIndex);
+    virtual void buildConstraintMatrix(const ConstraintParams* cParams, MultiMatrixDerivId cId, unsigned int &cIndex) override;
 
     /// Construct the Jacobian Matrix
     ///
@@ -145,7 +145,7 @@ public:
         return obj;
     }
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -167,7 +167,7 @@ protected:
     ///
     /// That way, we can optimize the time spent to transfer quantities through the mechanical mappings.
     /// Every Dofs are inserted by default. The Constraint using only a subset of dofs should only insert these dofs in the mask.
-    virtual void updateForceMask();
+    virtual void updateForceMask() override;
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_CORE_BEHAVIOR_MIXEDINTERACTIONCONSTRAINT_CPP)

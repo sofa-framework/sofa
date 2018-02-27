@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -400,7 +400,7 @@ bool SceneColladaLoader::readDAE (std::ifstream &/*file*/, const char* /*filenam
 								nameStream << componentIndex++;
 							currentFixedConstraint->setName(nameStream.str());
 
-							currentFixedConstraint->f_fixAll.setValue(true);
+                                                        currentFixedConstraint->d_fixAll.setValue(true);
 						}
                     }
 

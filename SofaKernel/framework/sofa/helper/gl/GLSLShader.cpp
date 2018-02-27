@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -49,10 +49,11 @@ public:
     }
 
     /// Inherited from FileEventListener
-    void fileHasChanged(const std::string&){
+    void fileHasChanged(const std::string& filename){
         /// We are recompiling & re-initializing all the shaders...
         /// If this become a bottleneck we can do finer grain updates to
         /// speed up the thing.
+        m_glslshader->forceReloadShaderFromFile(filename);
         m_glslshader->InitShaders() ;
     }
 };
@@ -143,6 +144,16 @@ void GLSLShader::SetShaderFileName(GLint target, const std::string& filename)
         m_hShaderContents[target] = sc;
         if(m_filelistener)
             FileMonitor::addFile(filename, m_filelistener.get()) ;
+    }
+}
+
+void GLSLShader::forceReloadShaderFromFile(const std::string& filename)
+{
+    for(auto& fn : m_hShaderContents){
+        if(fn.second.filename == filename)
+        {
+            fn.second.text = "" ;
+        }
     }
 }
 

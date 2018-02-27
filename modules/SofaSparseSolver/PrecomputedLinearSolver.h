@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -87,22 +87,22 @@ public:
     typedef typename TMatrix::Real Real;
     typedef typename PrecomputedLinearSolverInternalData<TMatrix,TVector>::TBaseMatrix TBaseMatrix;
 
-    Data<bool> jmjt_twostep;
-    Data<bool> f_verbose;
-    Data<bool> use_file;
+    Data<bool> jmjt_twostep; ///< Use two step algorithm to compute JMinvJt
+    Data<bool> f_verbose; ///< Dump system state at each iteration
+    Data<bool> use_file; ///< Dump system matrix in a file
     Data<int> init_MaxIter;
     Data<double> init_Tolerance;
     Data<double> init_Threshold;
 
     PrecomputedLinearSolver();
-    void solve (TMatrix& M, TVector& x, TVector& b);
-    void invert(TMatrix& M);
-    void setSystemMBKMatrix(const core::MechanicalParams* mparams);
+    void solve (TMatrix& M, TVector& x, TVector& b) override;
+    void invert(TMatrix& M) override;
+    void setSystemMBKMatrix(const core::MechanicalParams* mparams) override;
     void loadMatrix(TMatrix& M);
 #ifdef SOFA_HAVE_CSPARSE
     void loadMatrixWithCSparse(TMatrix& M);
 #endif
-    bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact);
+    bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact) override;
 
 
     /// Pre-construction check method called by ObjectFactory.
@@ -113,7 +113,7 @@ public:
         return core::objectmodel::BaseObject::canCreate(obj, context, arg);
     }
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }

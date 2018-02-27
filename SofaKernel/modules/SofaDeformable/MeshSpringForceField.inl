@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -170,6 +170,64 @@ void MeshSpringForceField<DataTypes>::init()
     this->StiffSpringForceField<DataTypes>::init();
 }
 
+
+template<class DataTypes>
+void MeshSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
+{
+    if( d_draw.getValue() )
+    {
+        typedef typename Inherit1::Spring  Spring;
+        sofa::helper::vector<Spring >& ss = *this->springs.beginEdit();
+        
+        const VecCoord& p1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
+        const VecCoord& p2 = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
+        
+        Real minElongation = std::numeric_limits<Real>::max();
+        Real maxElongation = 0.;
+        for (unsigned int i=0; i<ss.size(); ++i)
+        {
+            Spring& s = ss[i];
+            Deriv v = p1[s.m1] - p2[s.m2];
+            Real elongation = (s.initpos - v.norm()) / s.initpos;
+            maxElongation = std::max(maxElongation, elongation);
+            minElongation = std::min(minElongation, elongation);
+        }
+        
+        const Real minElongationRange = d_drawMinElongationRange.getValue();
+        const Real maxElongationRange = d_drawMaxElongationRange.getValue();
+        Real range = std::min(std::max(maxElongation, std::abs(minElongation)), maxElongationRange) - minElongationRange;
+        range = (range < 0.) ? 1. : range;
+        const Real drawSpringSize = d_drawSpringSize.getValue();
+
+        for (unsigned int i=0; i<ss.size(); ++i)
+        {
+            Spring& s = ss[i];
+            const Coord pa[2] = {p1[s.m1], p2[s.m2]};
+            const std::vector<sofa::defaulttype::Vector3> points(pa, pa+2);
+            Deriv v = pa[0] - pa[1];
+            Real elongation = (s.initpos - v.norm()) / s.initpos;
+            Real R = 0.;
+            Real G = 0.;
+            Real B = 1.;
+            if(elongation < 0.)
+            {
+                elongation = std::abs(elongation);
+                B = (range-std::min(elongation - minElongationRange, range))/range;
+                B = (B < 0.) ? 0. : B;
+                R = 1. - B;
+            }
+            else
+            {
+                B = (range-std::min(elongation - minElongationRange, range))/range;
+                B = (B < 0.) ? 0. : B;
+                G = 1. - B;
+            }
+
+            vparams->drawTool()->drawLines(points, drawSpringSize, sofa::defaulttype::Vec4f(R, G, B, 1.f));
+        }
+        this->springs.endEdit();
+    }
+}
 
 } // namespace interactionforcefield
 

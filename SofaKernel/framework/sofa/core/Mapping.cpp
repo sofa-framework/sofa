@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,7 +23,6 @@
 #include "Mapping.inl"
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 
 namespace sofa
 {
@@ -121,8 +120,6 @@ template class SOFA_CORE_API Mapping< sofa::defaulttype::Vec3fTypes, sofa::defau
 template class SOFA_CORE_API Mapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::ExtVec3dTypes >;
 #endif
 #endif
-
-template class SOFA_CORE_API Mapping< sofa::defaulttype::LaparoscopicRigidTypes, sofa::defaulttype::RigidTypes >;
 
 } // namespace core
 

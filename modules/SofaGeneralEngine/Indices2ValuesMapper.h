@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -58,11 +58,11 @@ protected:
     Indices2ValuesMapper();
     ~Indices2ValuesMapper() {}
 public:
-    void init();
-    void reinit();
-    void update();
+    void init() override;
+    void reinit() override;
+    void update() override;
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -73,15 +73,15 @@ public:
     }
 
     //Input
-    Data<sofa::helper::vector<Real> > f_inputValues;
-    Data<sofa::helper::vector<Real> > f_indices;
-    Data<sofa::helper::vector<Real> > f_values;
+    Data<sofa::helper::vector<Real> > f_inputValues; ///< Already existing values (can be empty) 
+    Data<sofa::helper::vector<Real> > f_indices; ///< Indices to map value on 
+    Data<sofa::helper::vector<Real> > f_values; ///< Values to map indices on 
 
     //Output
-    Data<sofa::helper::vector<Real> > f_outputValues;
+    Data<sofa::helper::vector<Real> > f_outputValues; ///< New map between indices and values
 
     //Parameter
-    Data<Real> p_defaultValue;
+    Data<Real> p_defaultValue; ///< Default value for indices without any value
 
 };
 

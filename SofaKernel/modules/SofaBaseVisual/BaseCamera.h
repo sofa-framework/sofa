@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -77,30 +77,33 @@ public:
 
     };
 
-    Data<Vec3> p_position;
-    Data<Quat> p_orientation;
-    Data<Vec3> p_lookAt;
-    Data<double> p_distance;
+    Data<Vec3> p_position; ///< Camera's position
+    Data<Quat> p_orientation; ///< Camera's orientation
+    Data<Vec3> p_lookAt; ///< Camera's look at
+    Data<double> p_distance; ///< Distance between camera and look at
 
-    Data<double> p_fieldOfView;
-    Data<double> p_zNear, p_zFar;
-    Data<bool> p_computeZClip;
-    Data<Vec3> p_minBBox, p_maxBBox;
-    Data<unsigned int> p_widthViewport, p_heightViewport;
-    Data<sofa::helper::OptionsGroup> p_type;
+    Data<double> p_fieldOfView; ///< Camera's FOV
+    Data<double> p_zNear; ///< Camera's zNear
+    Data<double> p_zFar; ///< Camera's zFar
+    Data<bool> p_computeZClip; ///< Compute Z clip planes (Near and Far) according to the bounding box
+    Data<Vec3> p_minBBox; ///< minBBox
+    Data<Vec3> p_maxBBox; ///< maxBBox
+    Data<unsigned int> p_widthViewport; ///< widthViewport
+    Data<unsigned int> p_heightViewport; ///< heightViewport
+    Data<sofa::helper::OptionsGroup> p_type; ///< Camera Type (0 = Perspective, 1 = Orthographic)
 
-    Data<bool> p_activated;
-	Data<bool> p_fixedLookAtPoint;
+    Data<bool> p_activated; ///< Camera activated ?
+	Data<bool> p_fixedLookAtPoint; ///< keep the lookAt point always fixed
     
-    Data<helper::vector<float> > p_modelViewMatrix;
-    Data<helper::vector<float> > p_projectionMatrix;
+    Data<helper::vector<float> > p_modelViewMatrix; ///< ModelView Matrix
+    Data<helper::vector<float> > p_projectionMatrix; ///< Projection Matrix
 
     BaseCamera();
     virtual ~BaseCamera();
 
-    virtual void init();
-    virtual void reinit();
-    virtual void bwdInit();
+    virtual void init() override;
+    virtual void reinit() override;
+    virtual void bwdInit() override;
 
     void activate();
     void desactivate();
@@ -132,19 +135,7 @@ public:
         return p_position.getValue();
     }
 
-    Quat getOrientation()
-    {
-        if(currentLookAt !=  p_lookAt.getValue())
-        {
-            Quat newOrientation = getOrientationFromLookAt(p_position.getValue(), p_lookAt.getValue());
-            p_orientation.setValue(newOrientation);
-
-            currentLookAt = p_lookAt.getValue();
-        }
-
-        return p_orientation.getValue();
-    }
-
+    Quat getOrientation() ;
     Vec3 getLookAt()
     {
         return p_lookAt.getValue();
@@ -161,36 +152,11 @@ public:
         return p_fieldOfView.getValue();
     }
 
-    double getHorizontalFieldOfView()
-    {
-        const sofa::core::visual::VisualParams* vp = sofa::core::visual::VisualParams::defaultInstance();
-        const core::visual::VisualParams::Viewport viewport = vp->viewport();
+    double getHorizontalFieldOfView() ;
 
-        float screenwidth = (float)viewport[2];
-        float screenheight = (float)viewport[3];
-        float aspectRatio = screenwidth / screenheight;
-        float fov_radian = (float)getFieldOfView()* (float)(M_PI/180);
-        float hor_fov_radian = 2.0f * atan ( tan(fov_radian/2.0f) * aspectRatio );
-        return hor_fov_radian*(180/M_PI);
-    }
+    unsigned int getCameraType() const ;
 
-    unsigned int getCameraType() const
-    {
-        return p_type.getValue().getSelectedId();
-    }
-
-    void setCameraType(unsigned int type)
-    {
-        sofa::helper::OptionsGroup* optionsGroup = p_type.beginEdit();
-
-        if (type == core::visual::VisualParams::ORTHOGRAPHIC_TYPE)
-            optionsGroup->setSelectedItem(core::visual::VisualParams::ORTHOGRAPHIC_TYPE);
-        else
-            optionsGroup->setSelectedItem(core::visual::VisualParams::PERSPECTIVE_TYPE);
-
-        p_type.endEdit();
-    }
-
+    void setCameraType(unsigned int type) ;
 
     void setBoundingBox(const Vec3 &min, const Vec3 &max)
     {
@@ -234,7 +200,7 @@ public:
     virtual void manageEvent(core::objectmodel::Event* e)=0;
     virtual void internalUpdate() {}
 
-    void handleEvent(sofa::core::objectmodel::Event* event);
+    void handleEvent(sofa::core::objectmodel::Event* event) override;
     void computeZ();
 
     virtual bool isStereo()

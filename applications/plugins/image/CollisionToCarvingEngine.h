@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -87,7 +87,7 @@ public:
     Data< OutImageTypes > outputImage;
     Data< TransformType > outputTransform;
 
-	Data< Vector3 > trackedPosition;
+	Data< Vector3 > trackedPosition; ///< Position de test pour la collision
 
 	// ------ Parameters ---------------------
 	raImagei* in;
@@ -95,7 +95,7 @@ public:
 	waImageo* out;
 	waTransform* outT;
 
-    virtual std::string getTemplateName() const    { return templateName(this);    }
+    virtual std::string getTemplateName() const    override { return templateName(this);    }
     static std::string templateName(const CollisionToCarvingEngine<InImageTypes,OutImageTypes>* = NULL) { return InImageTypes::Name()+std::string(",")+OutImageTypes::Name(); }
 
     CollisionToCarvingEngine()    :   Inherited()
@@ -123,7 +123,7 @@ public:
 		delete outT;
     }
 
-    virtual void init()
+    virtual void init() override
     {
 		//cout<<"init"<<endl;
 		addInput(&inputImage);
@@ -133,11 +133,11 @@ public:
 		setDirtyValue();
     }
 
-    virtual void reinit() { update(); }
+    virtual void reinit() override { update(); }
 
 protected:
 	
-    virtual void update()
+    virtual void update() override
     {
 		
 		bool updateImage = this->inputImage.isDirty();	// change of input image -> update output image
@@ -184,7 +184,7 @@ protected:
 		if (updateTransform) (*outT)->update(); // update internal data
     }
 
-    void handleEvent(sofa::core::objectmodel::Event *event)
+    void handleEvent(sofa::core::objectmodel::Event *event) override
     {
 		
         if ( simulation::AnimateBeginEvent::checkEventType(event) )
@@ -194,7 +194,7 @@ protected:
 		}
     }
 
-    virtual void draw(const core::visual::VisualParams* /*vparams*/)
+    virtual void draw(const core::visual::VisualParams* /*vparams*/) override
     {
 
     }

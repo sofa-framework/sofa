@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -73,6 +73,7 @@ public:
     virtual void drawLines(const std::vector<Vector3> &points, const std::vector< Vec2i > &index , float size, const Vec4f& colour) = 0 ;
 
     virtual void drawLineStrip(const std::vector<Vector3> &points, float size, const Vec4f& colour) = 0 ;
+    virtual void drawLineLoop(const std::vector<Vector3> &points, float size, const Vec4f& colour) = 0 ;
 
     virtual void drawTriangles(const std::vector<Vector3> &points, const Vec4f& colour) = 0 ;
     virtual void drawTriangles(const std::vector<Vector3> &points, const Vector3& normal, const Vec4f& colour) = 0 ;
@@ -191,6 +192,12 @@ public:
 
     virtual void enableBlending() = 0;
     virtual void disableBlending() = 0;
+
+    virtual void enableLighting() = 0;
+    virtual void disableLighting() = 0;
+
+    virtual void enableDepthTest() = 0;
+    virtual void disableDepthTest() = 0;
 
     /// @name States (save/restore)
     virtual void saveLastState() = 0;

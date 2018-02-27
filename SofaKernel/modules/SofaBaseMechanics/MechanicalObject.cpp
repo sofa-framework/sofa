@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,9 +19,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifdef SOFA_SMP
-#include <SofaBaseMechanics/MechanicalObjectTasks.inl>
-#endif
 #define SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_CPP
 #include <SofaBaseMechanics/MechanicalObject.inl>
 #include <sofa/helper/Quater.h>
@@ -93,7 +90,6 @@ int MechanicalObjectClass = core::RegisterObject("mechanical state vectors")
         .add< MechanicalObject<Rigid3fTypes> >()
         .add< MechanicalObject<Rigid2fTypes> >()
 #endif
-        .add< MechanicalObject<LaparoscopicRigid3Types> >()
         ;
 
 // template specialization must be in the same namespace as original namespace for GCC 4.1
@@ -114,7 +110,6 @@ template class SOFA_BASE_MECHANICS_API MechanicalObject<Vec6fTypes>;
 template class SOFA_BASE_MECHANICS_API MechanicalObject<Rigid3fTypes>;
 template class SOFA_BASE_MECHANICS_API MechanicalObject<Rigid2fTypes>;
 #endif
-template class SOFA_BASE_MECHANICS_API MechanicalObject<LaparoscopicRigid3Types>;
 
 
 
@@ -267,8 +262,9 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::draw(const core::visual::Visua
 
     if (showObject.getValue())
     {
-        const float& scale = showObjectScale.getValue();
+        const float scale = showObjectScale.getValue();
         helper::ReadAccessor<Data<VecCoord> > x = *this->read(core::VecCoordId::position());
+        const size_t vsize = d_size.getValue();
         for (size_t i = 0; i < vsize; ++i)
         {
             vparams->drawTool()->pushMatrix();
@@ -465,8 +461,9 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::draw(const core::visual::Visua
 
     if (showObject.getValue())
     {
-        const float& scale = showObjectScale.getValue();
+        const float scale = showObjectScale.getValue();
         helper::ReadAccessor<Data<VecCoord> > x = *this->read(core::VecCoordId::position());
+        const size_t vsize = d_size.getValue();
         for (size_t i = 0; i < vsize; ++i)
         {
             vparams->drawTool()->pushMatrix();
@@ -506,59 +503,6 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::draw(const core::visual::Visua
 }
 
 #endif
-
-template<>
-void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::draw(const core::visual::VisualParams* vparams)
-{
-    vparams->drawTool()->saveLastState();
-    vparams->drawTool()->setLightingEnabled(false);
-
-	if (showIndices.getValue())
-	{
-        drawIndices(vparams);
-	}
-
-    if (showObject.getValue())
-    {
-        const float& scale = showObjectScale.getValue();
-        helper::ReadAccessor<Data<VecCoord> > x = *this->read(core::VecCoordId::position());
-        for (size_t i = 0; i < vsize; ++i)
-        {
-            vparams->drawTool()->pushMatrix();
-            vparams->drawTool()->translate((float)getPX(i), (float)getPY(i), (float)getPZ(i));
-            vparams->drawTool()->scale ( scale );
-
-            switch( drawMode.getValue() )
-            {
-                case 1:
-                    vparams->drawTool()->drawFrame ( Vector3(), x[i].getOrientation(), Vector3 ( 1,1,1 ), Vec4f(0,1,0,1) );
-                    break;
-                case 2:
-                    vparams->drawTool()->drawFrame ( Vector3(), x[i].getOrientation(), Vector3 ( 1,1,1 ), Vec4f(1,0,0,1) );
-                    break;
-                case 3:
-                    vparams->drawTool()->drawFrame ( Vector3(), x[i].getOrientation(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
-                    break;
-                case 4:
-                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(1,1,0,1) );
-                    break;
-                case 5:
-                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(1,0,1,1) );
-                    break;
-                case 6:
-                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,1,1,1) );
-                    break;
-                default:
-                    vparams->drawTool()->drawFrame ( Vector3(), x[i].getOrientation(), Vector3 ( 1,1,1 ) );
-            }
-
-            vparams->drawTool()->popMatrix();
-        }
-    }
-
-    vparams->drawTool()->restoreLastState();
-}
-
 
 }
 

@@ -22,7 +22,7 @@ usage() {
     echo "Usage: scene-tests.sh [run|count-warnings|count-errors|print-summary] <build-dir> <src-dir>"
 }
 
-if [[ "$#" = 3 ]]; then
+if [ "$#" -ge 3 ]; then
     command="$1"
     build_dir="$2"
     src_dir="$3"
@@ -116,7 +116,7 @@ list-scenes() {
 
 get-lib() {
     pushd "$build_dir/lib/" > /dev/null
-    ls {lib,}"$1".{dylib,so,lib}* 2> /dev/null | xargs echo
+    ls {lib,}"$1"{,d,_d}.{dylib,so,lib}* 2> /dev/null | xargs echo
     popd > /dev/null
 }
 
@@ -321,7 +321,9 @@ extract-warnings() {
             sed -ne "/^\[WARNING\] [^]]*/s:\([^]]*\):$scene\: \1:p \
                 " "$output_dir/$scene/output.txt"
         fi
-    done < "$output_dir/all-tested-scenes.txt" > "$output_dir/warnings.txt"
+    done < "$output_dir/all-tested-scenes.txt" > "$output_dir/warnings.tmp"
+    sort "$output_dir/warnings.tmp" | uniq > "$output_dir/warnings.txt"
+    rm -f "$output_dir/warnings.tmp"
 }
 
 extract-errors() {
@@ -330,7 +332,9 @@ extract-errors() {
             sed -ne "/^\[ERROR\] [^]]*/s:\([^]]*\):$scene\: \1:p \
                 " "$output_dir/$scene/output.txt"
         fi
-    done < "$output_dir/all-tested-scenes.txt" > "$output_dir/errors.txt"
+    done < "$output_dir/all-tested-scenes.txt" > "$output_dir/errors.tmp"
+    sort "$output_dir/errors.tmp" | uniq > "$output_dir/errors.txt"
+    rm -f "$output_dir/errors.tmp"
 }
 
 extract-crashes() {
@@ -341,15 +345,34 @@ extract-crashes() {
                 echo "$scene: error: $status"
             fi
         fi
-    done < "$output_dir/all-tested-scenes.txt" > "$output_dir/crashes.txt"
+    done < "$output_dir/all-tested-scenes.txt" > "$output_dir/crashes.tmp"
+    sort "$output_dir/crashes.tmp" | uniq > "$output_dir/crashes.txt"
+    rm -f "$output_dir/crashes.tmp"
+}
+
+extract-successes() {
+    while read scene; do
+        if [[ -e "$output_dir/$scene/status.txt" ]]; then
+            local status="$(cat "$output_dir/$scene/status.txt")"
+            if [[ "$status" == 0 ]]; then
+                grep --silent "\[ERROR\]" "$output_dir/$scene/output.txt" || echo "$scene"
+            fi
+        fi
+    done < "$output_dir/all-tested-scenes.txt" > "$output_dir/successes.tmp"
+    sort "$output_dir/successes.tmp" | uniq > "$output_dir/successes.txt"
+    rm -f "$output_dir/successes.tmp"
 }
 
 count-tested-scenes() {
     wc -l < "$output_dir/all-tested-scenes.txt" | tr -d '   '
 }
 
+count-successes() {
+    wc -l < "$output_dir/successes.txt" | tr -d ' 	'
+}
+
 count-warnings() {
-    sort "$output_dir/warnings.txt" | uniq | wc -l | tr -d ' 	'
+    wc -l < "$output_dir/warnings.txt" | tr -d ' 	'
 }
 
 count-errors() {
@@ -360,9 +383,30 @@ count-crashes() {
     wc -l < "$output_dir/crashes.txt" | tr -d '   '
 }
 
+clamp-warnings() {
+    clamp_limit=$1
+    echo "INFO: scene-test warnings limited to $clamp_limit"
+    if [ -e  "$output_dir/warnings.txt" ]; then
+        warnings_lines="$(count-warnings)"
+        if [ $warnings_lines -gt $clamp_limit ]; then
+            echo "-------------------------------------------------------------"
+            echo "ALERT: TOO MANY SCENE-TEST WARNINGS ($warnings_lines > $clamp_limit), CLAMPING TO $clamp_limit"
+            echo "-------------------------------------------------------------"
+            cat "$output_dir/warnings.txt" > "$output_dir/warnings.tmp"
+            head -n$clamp_limit "$output_dir/warnings.tmp" > "$output_dir/warnings.txt"
+            rm -f "$output_dir/warnings.tmp"
+
+            echo "$output_dir/warnings.txt: [ERROR]   [JENKINS] TOO MANY SCENE-TEST WARNINGS (>$clamp_limit), CLAMPING FILE TO $clamp_limit" >> "$output_dir/errors.txt"
+        else
+            echo "INFO: clamping not needed ($warnings_lines < $clamp_limit)"
+        fi
+    fi
+}
+
 print-summary() {
     echo "Scene testing summary:"
     echo "- $(count-tested-scenes) scene(s) tested"
+    echo "- $(count-successes) success(es)"
     echo "- $(count-warnings) warning(s)"
     
     local errors='$(count-errors)'
@@ -402,17 +446,24 @@ print-summary() {
 if [[ "$command" = run ]]; then
     initialize-scene-testing
     test-all-scenes
+    extract-successes
     extract-warnings
     extract-errors
     extract-crashes
 elif [[ "$command" = print-summary ]]; then
     print-summary
+elif [[ "$command" = count-tested-scenes ]]; then
+    count-tested-scenes
+elif [[ "$command" = count-successes ]]; then
+    count-successes
 elif [[ "$command" = count-warnings ]]; then
     count-warnings
 elif [[ "$command" = count-errors ]]; then
     count-errors
 elif [[ "$command" = count-crashes ]]; then
     count-crashes
+elif [[ "$command" = clamp-warnings ]]; then
+    clamp-warnings $4
 else
     echo "Unknown command: $command"
 fi

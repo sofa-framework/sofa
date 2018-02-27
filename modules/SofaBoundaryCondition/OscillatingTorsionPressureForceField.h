@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -85,18 +85,18 @@ protected:
     std::ofstream file;
 
 public:
-    sofa::component::topology::TriangleSparseData<sofa::helper::vector <TrianglePressureInformation> > trianglePressureMap;
+    sofa::component::topology::TriangleSparseData<sofa::helper::vector <TrianglePressureInformation> > trianglePressureMap; ///< map between edge indices and their pressure
     sofa::core::topology::BaseMeshTopology* _topology;
 
-    Data<Real> moment;   // total moment/torque applied
-    Data<sofa::helper::vector<unsigned int> > triangleList;
-    Data<Deriv> axis;    // axis of rotation and normal used to define the edge subjected to the pressure force
-    Data<Coord> center;  // center of rotation
-    Data<Real> penalty;  // strength of penalty force
-    Data<Real> frequency; // frequency of change
-    Data<Real> dmin;     // coordinates min of the plane for the vertex selection
-    Data<Real> dmax;     // coordinates max of the plane for the vertex selection
-    Data<bool> p_showForces;
+    Data<Real> moment;   ///< total moment/torque applied
+    Data<sofa::helper::vector<unsigned int> > triangleList; ///< Indices of triangles separated with commas where a pressure is applied
+    Data<Deriv> axis;    ///< axis of rotation and normal used to define the edge subjected to the pressure force
+    Data<Coord> center;  ///< center of rotation
+    Data<Real> penalty;  ///< strength of penalty force
+    Data<Real> frequency; ///< frequency of change
+    Data<Real> dmin;     ///< coordinates min of the plane for the vertex selection
+    Data<Real> dmax;     ///< coordinates max of the plane for the vertex selection
+    Data<bool> p_showForces; ///< draw triangles which have a given pressure
 
 protected:
 
@@ -127,23 +127,23 @@ protected:
 
     virtual ~OscillatingTorsionPressureForceField();
 public:
-    virtual void init();
+    virtual void init() override;
 
-    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */)
+    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
+    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */) override
     {
         //TODO: remove this line (avoid warning message) ...
         mparams->setKFactorUsed(true);
     }
 
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
     {
         serr << "Get potentialEnergy not implemented" << sendl;
         return 0.0;
     }
 
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
     void setDminAndDmax(const SReal _dmin, const SReal _dmax)
     {

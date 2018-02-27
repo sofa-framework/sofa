@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -55,13 +55,13 @@ public:
     typedef typename TVector::Real Real;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
 
-    Data<bool> f_verbose;
-    Data<Real> f_minSingularValue;
+    Data<bool> f_verbose; ///< Dump system state at each iteration
+    Data<Real> f_minSingularValue; ///< Thershold under which a singular value is set to 0, for the stabilization of ill-conditioned system.
 protected:
     SVDLinearSolver();
 public:
     /// Solve Mx=b
-    void solve (Matrix& M, Vector& x, Vector& b);
+    void solve (Matrix& M, Vector& x, Vector& b) override;
     Data<Real> f_conditionNumber; ///< Condition number of the matrix: ratio between the largest and smallest singular values. Computed in method solve.
 
 #ifdef DISPLAY_TIME

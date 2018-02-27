@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -55,10 +55,14 @@ public:
 
 protected:
     Real a,b;
-    Data<Real> aInit;
-    Data<Real> alpha,beta,dmax,fmax;
-    Data<Real> d0,p0;
-    Data<Real> damping;
+    Data<Real> aInit; ///< a for Gravitational FF which corresponds to G*m1*m2 alpha should be equal to 1 and beta to 0.
+    Data<Real> alpha; ///< Alpha
+    Data<Real> beta; ///< Beta
+    Data<Real> dmax; ///< DMax
+    Data<Real> fmax; ///< FMax
+    Data<Real> d0; ///< d0
+    Data<Real> p0; ///< p0
+    Data<Real> damping; ///< Damping
 
     struct DForce
     {
@@ -94,13 +98,13 @@ public:
     void setDamping(Real v) { damping.setValue(v); }
 
 
-    virtual void init();
+    virtual void init() override;
 
-    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
-    virtual SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& d_x) const;
+    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
+    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
+    virtual SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& d_x) const override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
 };
 

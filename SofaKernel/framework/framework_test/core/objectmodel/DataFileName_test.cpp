@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -15,18 +15,10 @@
 * You should have received a copy of the GNU General Public License along     *
 * with this program. If not, see <http://www.gnu.org/licenses/>.              *
 *******************************************************************************
-* Contributors:                                                               *
-*     - damien.marchal@univ-lille1.fr                                         *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Sofa_test.h>
-using sofa::Sofa_test ;
-
-#include <SofaTest/TestMessageHandler.h>
-using sofa::helper::logging::Message ;
-using sofa::helper::logging::ExpectMessage ;
-
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 using sofa::core::objectmodel::BaseObjectDescription ;
 
@@ -39,9 +31,12 @@ using sofa::helper::system::DataRepository ;
 #include <sofa/helper/system/SetDirectory.h>
 using sofa::helper::system::SetDirectory ;
 
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest ;
+
 #define filename "UtilsTest.ini"
 
-class DataFileName_test: public Sofa_test<>
+class DataFileName_test: public BaseTest
 {
     DataFileName d_filename;
 public:

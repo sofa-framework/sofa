@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -58,9 +58,6 @@ BaseContext* BaseContext::getDefault()
 
 /// The Context is active
 bool BaseContext::isActive() const { return true; }
-#ifdef SOFA_SMP
-bool BaseContext::is_partition() const { return false; }
-#endif
 
 /// The Context is not sleeping by default
 bool BaseContext::isSleeping() const { return false; }
@@ -102,16 +99,7 @@ bool BaseContext::getAnimate() const
     return true;
 }
 
-#ifdef SOFA_SMP
-int BaseContext::getProcessor() const
-{
-    return -1;
-}
-Iterative::IterativePartition* BaseContext::getPartition() const
-{
-    return 0;
-}
-#endif
+
 
 
 #ifdef SOFA_SUPPORT_MULTIRESOLUTION
@@ -239,10 +227,24 @@ core::topology::Topology* BaseContext::getTopology() const
 {
     return this->get<sofa::core::topology::Topology>();
 }
+
 /// Mesh Topology (unified interface for both static and dynamic topologies)
 core::topology::BaseMeshTopology* BaseContext::getMeshTopology() const
 {
     return this->get<sofa::core::topology::BaseMeshTopology>();
+}
+
+/// Mesh Topology that is local to this context (i.e. not within parent contexts)
+core::topology::BaseMeshTopology* BaseContext::getLocalMeshTopology() const
+{
+    return this->get<sofa::core::topology::BaseMeshTopology>(Local);
+}
+
+/// Mesh Topology that is relevant for this context
+/// (within it or its parents until a mapping is reached that does not preserve topologies).
+core::topology::BaseMeshTopology* BaseContext::getActiveMeshTopology() const
+{
+    return this->get<sofa::core::topology::BaseMeshTopology>(Local);
 }
 
 /// Shader

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -73,13 +73,13 @@ protected:
 
     ~PlaneROI() {}
 public:
-    void init();
+    void init() override;
 
-    void reinit();
+    void reinit() override;
 
-    void update();
+    void update() override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
@@ -103,7 +103,7 @@ public:
         return core::objectmodel::BaseObject::create(tObj, context, arg);
     }
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -126,32 +126,32 @@ protected:
 
 public:
     //Input
-    Data< helper::vector<Vec10> > planes;
-    Data<VecCoord> f_X0;
-    Data<helper::vector<Edge> > f_edges;
-    Data<helper::vector<Triangle> > f_triangles;
-    Data<helper::vector<Tetra> > f_tetrahedra; // NOT YET
-    Data<bool> f_computeEdges;
-    Data<bool> f_computeTriangles;
-    Data<bool> f_computeTetrahedra;
+    Data< helper::vector<Vec10> > planes; ///< Plane defined by 3 points and a depth distance
+    Data<VecCoord> f_X0; ///< Rest position coordinates of the degrees of freedom
+    Data<helper::vector<Edge> > f_edges; ///< Edge Topology
+    Data<helper::vector<Triangle> > f_triangles; ///< Triangle Topology
+    Data<helper::vector<Tetra> > f_tetrahedra; ///< NOT YET
+    Data<bool> f_computeEdges; ///< If true, will compute edge list and index list inside the ROI.
+    Data<bool> f_computeTriangles; ///< If true, will compute triangle list and index list inside the ROI.
+    Data<bool> f_computeTetrahedra; ///< If true, will compute tetrahedra list and index list inside the ROI.
 
     //Output
-    Data<SetIndex> f_indices;
-    Data<SetIndex> f_edgeIndices;
-    Data<SetIndex> f_triangleIndices;
-    Data<SetIndex> f_tetrahedronIndices;
-    Data<VecCoord > f_pointsInROI;
-    Data<helper::vector<Edge> > f_edgesInROI;
-    Data<helper::vector<Triangle> > f_trianglesInROI;
-    Data<helper::vector<Tetra> > f_tetrahedraInROI;
+    Data<SetIndex> f_indices; ///< Indices of the points contained in the ROI
+    Data<SetIndex> f_edgeIndices; ///< Indices of the edges contained in the ROI
+    Data<SetIndex> f_triangleIndices; ///< Indices of the triangles contained in the ROI
+    Data<SetIndex> f_tetrahedronIndices; ///< Indices of the tetrahedra contained in the ROI
+    Data<VecCoord > f_pointsInROI; ///< Points contained in the ROI
+    Data<helper::vector<Edge> > f_edgesInROI; ///< Edges contained in the ROI
+    Data<helper::vector<Triangle> > f_trianglesInROI; ///< Triangles contained in the ROI
+    Data<helper::vector<Tetra> > f_tetrahedraInROI; ///< Tetrahedra contained in the ROI
 
     //Parameter
-    Data<bool> p_drawBoxes;
-    Data<bool> p_drawPoints;
-    Data<bool> p_drawEdges;
-    Data<bool> p_drawTriangles;
-    Data<bool> p_drawTetrahedra;
-    Data<double> _drawSize;
+    Data<bool> p_drawBoxes; ///< Draw Box(es)
+    Data<bool> p_drawPoints; ///< Draw Points
+    Data<bool> p_drawEdges; ///< Draw Edges
+    Data<bool> p_drawTriangles; ///< Draw Triangles
+    Data<bool> p_drawTetrahedra; ///< Draw Tetrahedra
+    Data<double> _drawSize; ///< rendering size for box and topological elements
 
 private:
 

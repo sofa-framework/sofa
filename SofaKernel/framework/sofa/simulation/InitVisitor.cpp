@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -40,16 +40,10 @@ Visitor::Result InitVisitor::processNodeTopDown(simulation::Node* node)
     if (!rootNode) rootNode=node;
 
     node->initialize();
-#ifdef SOFA_SMP_NUMA
-    if(node->getProcessor()!=-1)
-    {
-        msg_info()<<"set preferred cpu "<<node->getProcessor()/2<<std::endl;
-        numa_set_preferred(node->getProcessor()/2);
-    }
-#endif
 
     sofa::defaulttype::BoundingBox* nodeBBox = node->f_bbox.beginEdit(params);
-    nodeBBox->invalidate();
+    if(!node->f_bbox.isSet())
+        nodeBBox->invalidate();
 
     for(unsigned int i=0; i<node->object.size(); ++i)
     {

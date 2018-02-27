@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -197,7 +197,7 @@ public:
         }
     }
 
-    void getRotations(defaulttype::BaseMatrix * rotations,int offset = 0)
+    void getRotations(defaulttype::BaseMatrix * rotations,int offset = 0) override
     {
         unsigned int nbdof = this->mstate->getSize();
 
@@ -249,10 +249,10 @@ public:
     int method;
     Data<std::string> f_method; ///< the computation method of the displacements
 
-    Data<Real> _poissonRatio;
-    //Data<Real> _youngModulus;
-    Data<VecReal > _youngModulus;
-    Data<VecReal> _localStiffnessFactor;
+    Data<Real> _poissonRatio; ///< FEM Poisson Ratio [0,0.5[
+    //Data<Real> _youngModulus; ///< FEM Young Modulus
+    Data<VecReal > _youngModulus; ///< FEM Young Modulus
+    Data<VecReal> _localStiffnessFactor; ///< Allow specification of different stiffness per element. If there are N element and M values are specified, the youngModulus factor for element i would be localStiffnessFactor[i*M/N]
     Data<bool> _updateStiffnessMatrix;
     Data<bool> _assembling;
 
@@ -260,15 +260,15 @@ public:
     /// @name Plasticity such as "Interactive Virtual Materials", Muller & Gross, GI 2004
     /// @{
     Data<Real> _plasticMaxThreshold;
-    Data<Real> _plasticYieldThreshold;
+    Data<Real> _plasticYieldThreshold; ///< Plastic Yield Threshold (2-norm of the strain)
     Data<Real> _plasticCreep; ///< this parameters is different from the article, here it includes the multiplication by dt
     /// @}
 
 
-    Data< sofa::helper::OptionsGroup > _gatherPt; //use in GPU version
-    Data< sofa::helper::OptionsGroup > _gatherBsize; //use in GPU version
-    Data< bool > drawHeterogeneousTetra;
-    Data< bool > drawAsEdges;
+    Data< sofa::helper::OptionsGroup > _gatherPt; ///< use in GPU version
+    Data< sofa::helper::OptionsGroup > _gatherBsize; ///< use in GPU version
+    Data< bool > drawHeterogeneousTetra; ///< Draw Heterogeneous Tetra in different color
+    Data< bool > drawAsEdges; ///< Draw as edges instead of tetrahedra
 
     Real minYoung, maxYoung;
 
@@ -283,22 +283,22 @@ public:
     Real prevMaxStress;
 
 
-    Data<int> _computeVonMisesStress;
-    Data<helper::vector<Real> > _vonMisesPerElement;
-    Data<helper::vector<Real> > _vonMisesPerNode;
-    Data<helper::vector<defaulttype::Vec4f> > _vonMisesStressColors;
+    Data<int> _computeVonMisesStress; ///< compute and display von Mises stress: 0: no computations, 1: using corotational strain, 2: using full Green strain
+    Data<helper::vector<Real> > _vonMisesPerElement; ///< von Mises Stress per element
+    Data<helper::vector<Real> > _vonMisesPerNode; ///< von Mises Stress per node
+    Data<helper::vector<defaulttype::Vec4f> > _vonMisesStressColors; ///< Vector of colors describing the VonMises stress
     
 
 #ifdef SOFATETRAHEDRONFEMFORCEFIELD_COLORMAP
     helper::ColorMap m_VonMisesColorMap;
 
-    Data<std::string> _showStressColorMap;
-    Data<float> _showStressAlpha;
-    Data<bool> _showVonMisesStressPerNode;
+    Data<std::string> _showStressColorMap; ///< Color map used to show stress values
+    Data<float> _showStressAlpha; ///< Alpha for vonMises visualisation
+    Data<bool> _showVonMisesStressPerNode; ///< draw points  showing vonMises stress interpolated in nodes
 #endif
     /// Suppress field for save as function
     Data < bool > isToPrint;
-    Data<bool>  _updateStiffness;
+    Data<bool>  _updateStiffness; ///< udpate structures (precomputed in init) using stiffness parameters in each iteration (set listening=1)
 
     helper::vector<defaulttype::Vec<6,Real> > elemDisplacements;
 
@@ -407,24 +407,28 @@ public:
 
     void setUpdateStiffnessMatrix(bool val) { this->_updateStiffnessMatrix.setValue(val); }
 
-    virtual void reset();
-    virtual void init();
-    virtual void reinit();
+    virtual void reset() override;
+    virtual void init() override;
+    virtual void reinit() override;
 
-    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
+    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
+    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
 
     // Make other overloaded version of getPotentialEnergy() to show up in subclass.
     using InheritForceField::getPotentialEnergy;
     // getPotentialEnergy is implemented for small method
-    virtual SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&   x) const;
+    virtual SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&   x) const override;
 
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset);
-    virtual void addKToMatrix(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/ );
+    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset) override;
+    virtual void addKToMatrix(const core::MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/ ) override;
 
-    virtual void addSubKToMatrix(sofa::defaulttype::BaseMatrix *mat, const helper::vector<unsigned> & subMatrixIndex, SReal k, unsigned int &offset);
+    virtual void addSubKToMatrix(sofa::defaulttype::BaseMatrix *mat, const helper::vector<unsigned> & subMatrixIndex, SReal k, unsigned int &offset) override;
 
-    void draw(const core::visual::VisualParams* vparams);
+
+    void draw(const core::visual::VisualParams* vparams) override;
+
+    void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
+
 
     // Getting the stiffness matrix of index i
     void getElementStiffnessMatrix(Real* stiffness, unsigned int nodeIdx);
@@ -470,14 +474,14 @@ protected:
     void applyStiffnessCorotational( Vector& f, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3, SReal fact=1.0  );
 
 
-    void handleTopologyChange()
+    void handleTopologyChange() override
     {
         needUpdateTopology = true;
     }
 
     void computeVonMisesStress();
 
-    void handleEvent(core::objectmodel::Event *event);
+    void handleEvent(core::objectmodel::Event *event) override;
 
 };
 

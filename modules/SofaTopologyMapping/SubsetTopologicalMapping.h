@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -57,20 +57,26 @@ protected:
     virtual ~SubsetTopologicalMapping();
 public:
 
-    Data<bool> samePoints;
-    Data<bool> handleEdges;
-    Data<bool> handleTriangles;
-    Data<bool> handleQuads;
-    Data<bool> handleTetrahedra;
-    Data<bool> handleHexahedra;
-    Data<SetIndex> pointS2D, pointD2S;
-    Data<SetIndex> edgeS2D, edgeD2S;
-    Data<SetIndex> triangleS2D, triangleD2S;
-    Data<SetIndex> quadS2D, quadD2S;
-    Data<SetIndex> tetrahedronS2D, tetrahedronD2S;
-    Data<SetIndex> hexahedronS2D, hexahedronD2S;
+    Data<bool> samePoints; ///< True if the same set of points is used in both topologies
+    Data<bool> handleEdges; ///< True if edges events and mapping should be handled
+    Data<bool> handleTriangles; ///< True if triangles events and mapping should be handled
+    Data<bool> handleQuads; ///< True if quads events and mapping should be handled
+    Data<bool> handleTetrahedra; ///< True if tetrahedra events and mapping should be handled
+    Data<bool> handleHexahedra; ///< True if hexahedra events and mapping should be handled
+    Data<SetIndex> pointS2D; ///< Internal source -> destination topology points map
+    Data<SetIndex> pointD2S; ///< Internal destination -> source topology points map (link to SubsetMapping::indices to handle the mechanical-side of the mapping
+    Data<SetIndex> edgeS2D; ///< Internal source -> destination topology edges map
+    Data<SetIndex> edgeD2S; ///< Internal destination -> source topology edges map
+    Data<SetIndex> triangleS2D; ///< Internal source -> destination topology triangles map
+    Data<SetIndex> triangleD2S; ///< Internal destination -> source topology triangles map
+    Data<SetIndex> quadS2D; ///< Internal source -> destination topology quads map
+    Data<SetIndex> quadD2S; ///< Internal destination -> source topology quads map
+    Data<SetIndex> tetrahedronS2D; ///< Internal source -> destination topology tetrahedra map
+    Data<SetIndex> tetrahedronD2S; ///< Internal destination -> source topology tetrahedra map
+    Data<SetIndex> hexahedronS2D; ///< Internal source -> destination topology hexahedra map
+    Data<SetIndex> hexahedronD2S; ///< Internal destination -> source topology hexahedra map
 
-    virtual void init();
+    virtual void init() override;
 
     /** \brief Translates the TopologyChange objects from the source to the target.
      *
@@ -78,11 +84,11 @@ public:
      * reflect the effects of the first topology changes on the second topology.
      *
      */
-    virtual void updateTopologicalMappingTopDown();
+    virtual void updateTopologicalMappingTopDown() override;
 
-    virtual bool isTheOutputTopologySubdividingTheInputOne() { return true; }
-    virtual unsigned int getGlobIndex(unsigned int ind);
-    virtual unsigned int getFromIndex(unsigned int ind);
+    virtual bool isTheOutputTopologySubdividingTheInputOne() override { return true; }
+    virtual unsigned int getGlobIndex(unsigned int ind) override;
+    virtual unsigned int getFromIndex(unsigned int ind) override;
 
 };
 

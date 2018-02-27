@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -476,19 +476,19 @@ protected:
 public:
     // Input data parameters
     sofa::core::objectmodel::DataFileName fileCudaRigidDistanceGrid;
-    Data< double > scale;
-    Data< double > sampling;
-    Data< helper::fixed_array<CudaDistanceGrid::Coord,2> > box;
-    Data< int > nx;
-    Data< int > ny;
-    Data< int > nz;
+    Data< double > scale; ///< scaling factor for input file
+    Data< double > sampling; ///< if not zero: sample the surface with points approximately separated by the given sampling distance (expressed in voxels if the value is negative)
+    Data< helper::fixed_array<CudaDistanceGrid::Coord,2> > box; ///< Field bounding box defined by xmin,ymin,zmin, xmax,ymax,zmax
+    Data< int > nx; ///< number of values on X axis
+    Data< int > ny; ///< number of values on Y axis
+    Data< int > nz; ///< number of values on Z axis
     sofa::core::objectmodel::DataFileName dumpfilename;
 
     typedef Rigid3Types InDataTypes;
     typedef Vec3Types DataTypes;
     typedef CudaRigidDistanceGridCollisionElement Element;
 
-    Data< bool > usePoints;
+    Data< bool > usePoints; ///< use mesh vertices for collision detection
 
     CudaRigidDistanceGridCollisionModel();
 
@@ -497,7 +497,7 @@ public:
     core::behavior::MechanicalState<InDataTypes>* getRigidModel() { return rigid; }
     core::behavior::MechanicalState<InDataTypes>* getMechanicalState() { return rigid; }
 
-    void init();
+    void init() override;
 
     CudaDistanceGrid* getGrid(int index=0)
     {
@@ -545,14 +545,14 @@ public:
 
     // -- CollisionModel interface
 
-    void resize(int size);
+    void resize(int size) override;
 
     /// Create or update the bounding volume hierarchy.
-    void computeBoundingTree(int maxDepth=0);
+    void computeBoundingTree(int maxDepth=0) override;
 
-    void draw(const core::visual::VisualParams*,int index);
+    void draw(const core::visual::VisualParams*,int index) override;
 
-    void draw(const core::visual::VisualParams*);
+    void draw(const core::visual::VisualParams*) override;
 };
 
 inline CudaRigidDistanceGridCollisionElement::CudaRigidDistanceGridCollisionElement(CudaRigidDistanceGridCollisionModel* model, int index)

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -50,17 +50,21 @@ public:
     typedef core::objectmodel::Data<VecCoord>    DataVecCoord;
 
 protected:
-    Data< Real >  linesStiffness;
-    Data< Real >  linesDamping;
-    Data< Real >  trianglesStiffness;
-    Data< Real >  trianglesDamping;
-    Data< Real >  quadsStiffness;
-    Data< Real >  quadsDamping;
-    Data< Real >  tetrahedraStiffness;
-    Data< Real >  tetrahedraDamping;
-    Data< Real >  cubesStiffness;
-    Data< Real >  cubesDamping;
-    Data< bool >  noCompression;
+    Data< Real >  linesStiffness; ///< Stiffness for the Lines
+    Data< Real >  linesDamping; ///< Damping for the Lines
+    Data< Real >  trianglesStiffness; ///< Stiffness for the Triangles
+    Data< Real >  trianglesDamping; ///< Damping for the Triangles
+    Data< Real >  quadsStiffness; ///< Stiffness for the Quads
+    Data< Real >  quadsDamping; ///< Damping for the Quads
+    Data< Real >  tetrahedraStiffness; ///< Stiffness for the Tetrahedra
+    Data< Real >  tetrahedraDamping; ///< Damping for the Tetrahedra
+    Data< Real >  cubesStiffness; ///< Stiffness for the Cubes
+    Data< Real >  cubesDamping; ///< Damping for the Cubes
+    Data< bool >  noCompression; ///< Only consider elongation
+    Data< bool  > d_draw; ///< Activation of draw
+    Data< Real >  d_drawMinElongationRange; ///< Min range of elongation (red eongation - blue neutral - green compression)
+    Data< Real >  d_drawMaxElongationRange; ///< Max range of elongation (red eongation - blue neutral - green compression)
+    Data< Real >  d_drawSpringSize; ///< Size of drawed lines
 
     /// optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)
     Data< defaulttype::Vec<2,int> > localRange;
@@ -80,6 +84,10 @@ protected:
         , cubesStiffness(initData(&cubesStiffness,Real(0),"cubesStiffness","Stiffness for the Cubes",true))
         , cubesDamping(initData(&cubesDamping,Real(0),"cubesDamping","Damping for the Cubes",true))
         , noCompression( initData(&noCompression, false, "noCompression", "Only consider elongation", false))
+        , d_draw(initData(&d_draw, false, "draw","Activation of draw"))
+        , d_drawMinElongationRange(initData(&d_drawMinElongationRange, Real(8.), "drawMinElongationRange","Min range of elongation (red eongation - blue neutral - green compression)"))
+        , d_drawMaxElongationRange(initData(&d_drawMaxElongationRange, Real(15.), "drawMaxElongationRange","Max range of elongation (red eongation - blue neutral - green compression)"))
+        , d_drawSpringSize(initData(&d_drawSpringSize, Real(8.), "drawSpringSize","Size of drawed lines"))
         , localRange( initData(&localRange, defaulttype::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
     {
         this->ks.setDisplayed(false);
@@ -165,9 +173,9 @@ public:
         cubesDamping.setValue(val);
     }
 
-    virtual void init();
+    virtual void init() override;
 
-
+    void draw(const core::visual::VisualParams* vparams) override;
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_MESHSPRINGFORCEFIELD_CPP)

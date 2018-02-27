@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <SofaTest/Sofa_test.h>
 #include <SceneCreator/SceneCreator.h>
+#include <SceneCreator/SceneUtils.h>
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
 #include <SofaBaseLinearSolver/CGLinearSolver.h>
 #include <SofaBaseMechanics/UniformMass.h>
@@ -156,9 +157,6 @@ struct EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium  : publi
         UniformMass<Vec3Types, SReal>::SPtr mass = addNew<UniformMass<Vec3Types, SReal> >(root,"mass");
         mass->d_mass.setValue( 1. );
 
-
-//        FixedConstraint3::SPtr fixed = modeling::addNew<FixedConstraint3>(root,"fixedConstraint");
-//        fixed->addConstraint(0);      // attach first particle
 
         // create a child node with its own DOF
         simulation::Node::SPtr child = root->createChild("childNode");

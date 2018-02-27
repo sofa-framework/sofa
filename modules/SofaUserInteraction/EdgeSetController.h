@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -86,7 +86,7 @@ public:
     /**
      * @brief SceneGraph callback initialization method.
      */
-    virtual void init();
+    virtual void init() override;
 
     /**
      * @name Controller Interface
@@ -96,18 +96,18 @@ public:
     /**
      * @brief Mouse event callback.
      */
-    virtual void onMouseEvent(core::objectmodel::MouseEvent *);
+    virtual void onMouseEvent(core::objectmodel::MouseEvent *) override;
 
     /**
      * @brief Keyboard key pressed event callback.
      */
-    virtual void onKeyPressedEvent(core::objectmodel::KeypressedEvent *);
+    virtual void onKeyPressedEvent(core::objectmodel::KeypressedEvent *) override;
 
 
     /**
      * @brief Begin Animation event callback.
      */
-    virtual void onBeginAnimationStep(const double dt);
+    virtual void onBeginAnimationStep(const double dt) override;
 
     //@}
 
@@ -116,7 +116,7 @@ public:
      */
     //@{
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -141,15 +141,15 @@ public:
     /**
      * @brief
      */
-    virtual void draw(const core::visual::VisualParams* vparams);
+    virtual void draw(const core::visual::VisualParams* vparams) override;
 
 protected:
-    Data<Real> step;
+    Data<Real> step; ///< base step when changing beam length
     Data<Real> minLength; ///< determine the minimum length of the edge set
     Data<Real> maxLength; ///< determine the maximum length of the edge set
     Data<Real> maxDepl; ///< determine the maximum deplacement in a time step
-    Data<Real> speed;
-    Data<bool> reversed;
+    Data<Real> speed; ///< continuous beam length increase/decrease
+    Data<bool> reversed; ///< Extend or retract edgeSet from end
     Data<int>  startingIndex;   ///< index of the edge where a topological change occurs
     Real depl;
 

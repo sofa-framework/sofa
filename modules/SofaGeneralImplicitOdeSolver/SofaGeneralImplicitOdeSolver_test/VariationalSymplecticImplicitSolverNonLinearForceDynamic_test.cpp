@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaTest/Elasticity_test.h>
+#include <SofaTest/Elasticity_test_deprecated.h>
 #include <SceneCreator/SceneCreator.h>
 
 #include <sofa/core/ExecParams.h>
@@ -67,7 +67,7 @@ Check if Hamiltonian energy is constant during simulation: variational solver is
 */
 
 template <typename _DataTypes>
-struct VariationalSymplecticImplicitSolverNonLinearForceDynamic_test : public Elasticity_test<_DataTypes>
+struct VariationalSymplecticImplicitSolverNonLinearForceDynamic_test : public Elasticity_test_deprecated<_DataTypes>
 {
     typedef _DataTypes DataTypes;
     typedef typename DataTypes::Coord Coord;

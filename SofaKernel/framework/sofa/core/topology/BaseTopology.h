@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -79,7 +79,7 @@ protected:
     virtual ~TopologyAlgorithms()
     {}
 public:
-    virtual void init();
+    virtual void init() override;
 
 protected:
     /** \brief Adds a TopologyChange object to the list of the topology this object describes.
@@ -109,7 +109,7 @@ protected:
     virtual ~GeometryAlgorithms()
     {}
 public:
-    virtual void init();
+    virtual void init() override;
 
     /** \brief Called by the MechanicalObject state change callback to initialize added
     * points according to the topology (topology element & local coordinates)
@@ -139,7 +139,7 @@ protected:
     virtual ~TopologyModifier()
     { }
 public:
-    virtual void init();
+    virtual void init() override;
 
     /** \brief Called by a topology to warn the Mechanical Object component that points have been added or will be removed.
     *
@@ -206,21 +206,21 @@ protected:
     /// Destructor
     virtual ~TopologyContainer();
 public:
-    virtual void init();
+    virtual void init() override;
 
     /// BaseMeshTopology API
     /// @{
-    virtual const SeqEdges& getEdges()         { static SeqEdges     empty; return empty; }
-    virtual const SeqTriangles& getTriangles() { static SeqTriangles empty; return empty; }
-    virtual const SeqQuads& getQuads()         { static SeqQuads     empty; return empty; }
-    virtual const SeqTetrahedra& getTetrahedra()       { static SeqTetrahedra    empty; return empty; }
-    virtual const SeqHexahedra& getHexahedra()         { static SeqHexahedra     empty; return empty; }
+    virtual const SeqEdges& getEdges()         override { static SeqEdges     empty; return empty; }
+    virtual const SeqTriangles& getTriangles() override { static SeqTriangles empty; return empty; }
+    virtual const SeqQuads& getQuads()         override { static SeqQuads     empty; return empty; }
+    virtual const SeqTetrahedra& getTetrahedra()       override { static SeqTetrahedra    empty; return empty; }
+    virtual const SeqHexahedra& getHexahedra()         override { static SeqHexahedra     empty; return empty; }
 
     /** \brief Get the current revision of this mesh.
     *
     * This can be used to detect changes, however topological changes event should be used whenever possible.
     */
-    virtual int getRevision() const { return m_changeList.getCounter(); }
+    virtual int getRevision() const override { return m_changeList.getCounter(); }
 
     /// @}
 
@@ -250,19 +250,19 @@ public:
 
     /** \brief Provides an iterator on the first element in the list of TopologyChange objects.
      */
-    std::list<const TopologyChange *>::const_iterator beginChange() const;
+    std::list<const TopologyChange *>::const_iterator beginChange() const override;
 
     /** \brief Provides an iterator on the last element in the list of TopologyChange objects.
      */
-    std::list<const TopologyChange *>::const_iterator endChange() const;
+    std::list<const TopologyChange *>::const_iterator endChange() const override;
 
     /** \brief Provides an iterator on the first element in the list of StateChange objects.
      */
-    std::list<const TopologyChange *>::const_iterator beginStateChange() const;
+    std::list<const TopologyChange *>::const_iterator beginStateChange() const override;
 
     /** \brief Provides an iterator on the last element in the list of StateChange objects.
      */
-    std::list<const TopologyChange *>::const_iterator endStateChange() const;
+    std::list<const TopologyChange *>::const_iterator endStateChange() const override;
 
 
     /** \brief Free each Topology changes in the list and remove them from the list
@@ -283,16 +283,16 @@ public:
 
     /** \brief Adds a TopologyEngine to the list.
     */
-    virtual void addTopologyEngine(TopologyEngine* _topologyEngine);
+    virtual void addTopologyEngine(TopologyEngine* _topologyEngine) override;
 
 
     /** \brief Provides an iterator on the first element in the list of TopologyEngine objects.
      */
-    std::list<TopologyEngine *>::const_iterator beginTopologyEngine() const;
+    std::list<TopologyEngine *>::const_iterator beginTopologyEngine() const override;
 
     /** \brief Provides an iterator on the last element in the list of TopologyEngine objects.
      */
-    std::list<TopologyEngine *>::const_iterator endTopologyEngine() const;
+    std::list<TopologyEngine *>::const_iterator endTopologyEngine() const override;
 
     /** \brief Free each Topology changes in the list and remove them from the list
     *
@@ -318,8 +318,8 @@ protected:
 public:
 
 
-    virtual bool insertInNode( objectmodel::BaseNode* node ) { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
-    virtual bool removeInNode( objectmodel::BaseNode* node ) { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
+    virtual bool insertInNode( objectmodel::BaseNode* node ) override { Inherit1::insertInNode(node); Inherit2::insertInNode(node); return true; }
+    virtual bool removeInNode( objectmodel::BaseNode* node ) override { Inherit1::removeInNode(node); Inherit2::removeInNode(node); return true; }
 
 };
 

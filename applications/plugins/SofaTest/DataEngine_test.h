@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -48,7 +48,7 @@ public:
     {}
 
 
-    virtual void update()
+    virtual void update() override
     {
         DataEngineType::update();
 
@@ -119,7 +119,11 @@ struct DataEngine_test : public Sofa_test<>
     /// To do so, you can inherit this class and add a test function that takes inputs and ouputs to test
     void run_basic_test()
     {
-        init();
+        /// The comp
+        {
+            IGNORE_MSG(Error) ;
+            init();
+        }
 
         m_engine->resetCounter();
 

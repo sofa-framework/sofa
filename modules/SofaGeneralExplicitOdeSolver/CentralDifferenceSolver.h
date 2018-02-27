@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -47,14 +47,14 @@ public:
 protected:
     CentralDifferenceSolver();
 public:
-    void solve (const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult);
+    void solve (const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 
-    Data<SReal> f_rayleighMass;
+    Data<SReal> f_rayleighMass; ///< Rayleigh damping coefficient related to mass
 
 
     /// Given an input derivative order (0 for position, 1 for velocity, 2 for acceleration),
     /// how much will it affect the output derivative of the given order.
-    virtual double getIntegrationFactor(int inputDerivative, int outputDerivative) const
+    virtual double getIntegrationFactor(int inputDerivative, int outputDerivative) const override
     {
         const SReal dt = getContext()->getDt();
         double matrix[3][3] =
@@ -72,7 +72,7 @@ public:
     /// Given a solution of the linear system,
     /// how much will it affect the output derivative of the given order.
     ///
-    virtual double getSolutionIntegrationFactor(int outputDerivative) const
+    virtual double getSolutionIntegrationFactor(int outputDerivative) const override
     {
         const SReal dt = getContext()->getDt();
         double vect[3] = { dt*dt, dt, 1};

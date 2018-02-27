@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -62,24 +62,24 @@ protected:
 
 public:
     SOFA_CLASS(NewmarkImplicitSolver, sofa::core::behavior::OdeSolver);
-    Data<double> f_rayleighStiffness;
-    Data<double> f_rayleighMass;
-    Data<double> f_velocityDamping;
-    Data<bool> f_verbose;
+    Data<double> f_rayleighStiffness; ///< Rayleigh damping coefficient related to stiffness
+    Data<double> f_rayleighMass; ///< Rayleigh damping coefficient related to mass
+    Data<double> f_velocityDamping; ///< Velocity decay coefficient (no decay if null)
+    Data<bool> f_verbose; ///< Dump system state at each iteration
 
-    Data<double> f_gamma;
-    Data<double> f_beta;
+    Data<double> f_gamma; ///< Newmark scheme gamma coefficient
+    Data<double> f_beta; ///< Newmark scheme beta coefficient
 
-    void solve (const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult);
+    void solve (const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 
     /// Given a displacement as computed by the linear system inversion, how much will it affect the velocity
-    virtual double getVelocityIntegrationFactor() const
+    virtual double getVelocityIntegrationFactor() const override
     {
         return 1.0; // getContext()->getDt();
     }
 
     /// Given a displacement as computed by the linear system inversion, how much will it affect the position
-    virtual double getPositionIntegrationFactor() const
+    virtual double getPositionIntegrationFactor() const override
     {
         return getContext()->getDt(); //*getContext()->getDt());
     }
@@ -99,7 +99,7 @@ public:
     /// v_{t+dt}     0    1      0    1
     /// a_{t+dt}     0    0      0    1/dt
     /// The last column is returned by the getSolutionIntegrationFactor method.
-    double getIntegrationFactor(int inputDerivative, int outputDerivative) const
+    double getIntegrationFactor(int inputDerivative, int outputDerivative) const override
     {
         const double dt = getContext()->getDt();
         double matrix[3][3] =
@@ -116,7 +116,7 @@ public:
 
     /// Given a solution of the linear system,
     /// how much will it affect the output derivative of the given order.
-    double getSolutionIntegrationFactor(int outputDerivative) const
+    double getSolutionIntegrationFactor(int outputDerivative) const override
     {
         const double dt = getContext()->getDt();
         double vect[3] = { dt, 1, 1/dt};

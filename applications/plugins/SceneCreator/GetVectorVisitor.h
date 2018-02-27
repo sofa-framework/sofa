@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -54,7 +54,7 @@ namespace simulation
     Only the independent DOFs are used.
     Francois Faure, 2013
 */
-class SOFA_SceneCreator_API GetVectorVisitor: public Visitor
+class SOFA_SCENECREATOR_API GetVectorVisitor: public Visitor
 {
 public:
 //    typedef Eigen::Matrix<SReal, Eigen::Dynamic, 1> Vector;

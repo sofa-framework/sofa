@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -69,23 +69,23 @@ protected:
 
 public:
 
-    virtual void init();
+    virtual void init() override;
 
-    virtual void draw(const core::visual::VisualParams* vparams);
+    virtual void draw(const core::visual::VisualParams* vparams) override;
 
-    Data< helper::fixed_array<Point,2> > vbbox;
-    Data< Real > size;
-    Data<SeqPoints> inputPoints;
-    Data<SeqTriangles> inputTriangles;
-    Data<SeqQuads> inputQuads;
-    Data<SeqPoints> outputPoints;
-    Data<SeqTetrahedra> outputTetrahedra;
+    Data< helper::fixed_array<Point,2> > vbbox; ///< BBox to restrict the volume to
+    Data< Real > size; ///< Size of the generate tetrahedra. If negative, number of grid cells in the largest bbox dimension
+    Data<SeqPoints> inputPoints; ///< Input surface mesh points
+    Data<SeqTriangles> inputTriangles; ///< Input surface mesh triangles
+    Data<SeqQuads> inputQuads; ///< Input surface mesh quads
+    Data<SeqPoints> outputPoints; ///< Output volume mesh points
+    Data<SeqTetrahedra> outputTetrahedra; ///< Output volume mesh tetrahedra
 
-    Data< Real > alphaLong;
-    Data< Real > alphaShort;
-    Data< bool > bSnapPoints;
-    Data< bool > bSplitTetrahedra;
-    Data< bool > bDraw;
+    Data< Real > alphaLong; ///< Minimum alpha values on long edges when snapping points
+    Data< Real > alphaShort; ///< Minimum alpha values on short edges when snapping points
+    Data< bool > bSnapPoints; ///< Snap points to the surface if intersections on edges are closed to given alpha values
+    Data< bool > bSplitTetrahedra; ///< Split tetrahedra crossing the surface
+    Data< bool > bDraw; ///< Activate rendering of internal datasets
 
     Real cellsize;
     int gsize[3];

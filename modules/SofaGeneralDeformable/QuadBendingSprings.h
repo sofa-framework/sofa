@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -57,9 +57,9 @@ protected:
     ~QuadBendingSprings();
 public:
     /// Searches triangle topology and creates the bending springs
-    virtual void init();
+    virtual void init() override;
 
-    virtual void draw(const core::visual::VisualParams*) {}
+    virtual void draw(const core::visual::VisualParams*) override {}
 
     void setObject1(MechanicalState* object1) {this->mstate1=object1;}
     void setObject2(MechanicalState* object2) {this->mstate2=object2;}

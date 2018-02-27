@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -90,7 +90,7 @@ private:
     bool _is_initialized;
     sofa::helper::vector<core::CollisionModel*> collisionModels;
 
-    Data< helper::fixed_array<sofa::defaulttype::Vector3,2> > box;
+    Data< helper::fixed_array<sofa::defaulttype::Vector3,2> > box; ///< if not empty, objects that do not intersect this bounding-box will be ignored
 
     CubeModel::SPtr boxModel;
 
@@ -104,21 +104,21 @@ protected:
 
 public:
 
-    void init();
-    void reinit();
+    void init() override;
+    void reinit() override;
 
-    void addCollisionModel (core::CollisionModel *cm);
-    void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& cmPair);
+    void addCollisionModel (core::CollisionModel *cm) override;
+    void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& cmPair) override;
 
-    virtual void beginBroadPhase()
+    virtual void beginBroadPhase() override
     {
         core::collision::BroadPhaseDetection::beginBroadPhase();
         collisionModels.clear();
     }
 
-    void draw(const core::visual::VisualParams* /* vparams */) { }
+    void draw(const core::visual::VisualParams* /* vparams */) override { }
 
-    inline virtual bool needsDeepBoundingTree()const{return true;}
+    inline virtual bool needsDeepBoundingTree()const override {return true;}
 };
 
 } // namespace collision

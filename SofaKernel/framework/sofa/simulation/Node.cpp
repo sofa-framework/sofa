@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -561,6 +561,12 @@ core::topology::BaseMeshTopology* Node::getMeshTopology() const
         return get<core::topology::BaseMeshTopology>(SearchParents);
 }
 
+/// Mesh Topology that is local to this context (i.e. not within parent contexts)
+core::topology::BaseMeshTopology* Node::getLocalMeshTopology() const
+{
+    return this->meshTopology;
+}
+
 /// Degrees-of-Freedom
 core::BaseState* Node::getState() const
 {
@@ -710,9 +716,6 @@ void Node::setDefaultVisualContextValue()
     if (getShowInteractionForceFields() == -1)  setShowInteractionForceFields(false);
     if (getShowWireFrame() == -1)               setShowWireFrame(false);
     if (getShowNormals() == -1)                 setShowNormals(false);
-    #ifdef SOFA_SMP
-    if (showProcessorColor_.getValue() == -1)                 showProcessorColor_.setValue(false);
-    #endif
     */
 }
 
@@ -963,24 +966,6 @@ void Node::sortComponents()
     }
 }
 
-#ifdef SOFA_SMP
-Iterative::IterativePartition* Node::getFirstPartition()
-{
-    if(is_partition())
-        return partition_;
-    for (sofa::simulation::Node::ChildIterator it= child.begin(); it != child.end(); ++it)
-    {
-        sofa::simulation::Node *g=static_cast<sofa::simulation::Node *>(*it);
-        if(g)
-        {
-            Iterative::IterativePartition* p= g->getFirstPartition();
-            if(p)
-                return p;
-        }
-    }
-    return NULL;
-}
-#endif
 
 Node::SPtr Node::create( const std::string& name )
 {

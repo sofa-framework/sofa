@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -33,6 +33,7 @@
 #include <assert.h>
 #include <float.h>
 #include <stdlib.h>
+#include <fstream>
 
 namespace sofa
 {
@@ -56,11 +57,11 @@ public:
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
 
     //Data< helper::vector<std::string> > f_options;
-    Data<int> f_symmetric;
-    Data<bool> f_verbose;
-    Data<std::string> f_exportDataToDir;
-    Data<bool> f_iterativeSolverNumbering;
-    Data<bool> f_saveDataToFile;
+    Data<int> f_symmetric; ///< 0 = nonsymmetric arbitrary matrix, 1 = symmetric matrix, 2 = symmetric positive definite, -1 = structurally symmetric matrix
+    Data<bool> f_verbose; ///< Dump system state at each iteration
+    Data<std::string> f_exportDataToDir; ///< export data (matrix, RHS, solution) to files in given directory
+    Data<bool> f_iterativeSolverNumbering; ///< if true, the naming convention is incN_itM where N is the time step and M is the iteration inside the step
+    Data<bool> f_saveDataToFile; ///< if true, export the data to the current directory (if exportDataToDir not set)
 
     SparsePARDISOSolver();
     ~SparsePARDISOSolver();

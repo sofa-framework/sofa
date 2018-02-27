@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -68,12 +68,12 @@ protected:
 
     virtual ~MappedObject();
 public:
-    virtual void init();
+    virtual void init() override;
 
-    Data<VecCoord> f_X;
-    Data<VecDeriv> f_V;
+    Data<VecCoord> f_X; ///< position vector
+    Data<VecDeriv> f_V; ///< velocity vector
 
-    virtual void resize(size_t vsize) { f_X.beginEdit()->resize(vsize); f_X.endEdit(); f_V.beginEdit()->resize(vsize); f_V.endEdit(); }
+    virtual void resize(size_t vsize) override { f_X.beginEdit()->resize(vsize); f_X.endEdit(); f_V.beginEdit()->resize(vsize); f_V.endEdit(); }
 
     VecCoord* getX()  { return f_X.beginEdit(); }
     VecDeriv* getV()  { return f_V.beginEdit(); }
@@ -81,12 +81,12 @@ public:
     const VecCoord* getX()  const { return &f_X.getValue();  }
     const VecDeriv* getV()  const { return &f_V.getValue();  }
 
-    size_t getSize() const
+    size_t getSize() const override
     {
         return f_X.getValue().size();
     }
 
-    Data< VecCoord >* write(core::VecCoordId v)
+    Data< VecCoord >* write(core::VecCoordId v) override
     {
         if(v == core::VecCoordId::position())
             return &f_X;
@@ -94,7 +94,7 @@ public:
         return NULL;
     }
 
-    const Data< VecCoord >* read(core::ConstVecCoordId v) const
+    const Data< VecCoord >* read(core::ConstVecCoordId v) const override
     {
         if(v == core::ConstVecCoordId::position())
             return &f_X;
@@ -102,7 +102,7 @@ public:
             return NULL;
     }
 
-    Data< VecDeriv >* write(core::VecDerivId v)
+    Data< VecDeriv >* write(core::VecDerivId v) override
     {
         if(v == core::VecDerivId::velocity())
             return &f_V;
@@ -110,7 +110,7 @@ public:
             return NULL;
     }
 
-    const Data< VecDeriv >* read(core::ConstVecDerivId v) const
+    const Data< VecDeriv >* read(core::ConstVecDerivId v) const override
     {
         if(v == core::ConstVecDerivId::velocity())
             return &f_V;
@@ -118,12 +118,12 @@ public:
             return NULL;
     }
 
-    Data< MatrixDeriv >* write(core::MatrixDerivId /*v*/)
+    Data< MatrixDeriv >* write(core::MatrixDerivId /*v*/) override
     {
         return NULL;
     }
 
-    const Data< MatrixDeriv >* read(core::ConstMatrixDerivId /*v*/) const
+    const Data< MatrixDeriv >* read(core::ConstMatrixDerivId /*v*/) const override
     {
         return NULL;
     }
@@ -146,7 +146,6 @@ extern template class MappedObject<defaulttype::Vec6fTypes>;
 extern template class MappedObject<defaulttype::Rigid3fTypes>;
 extern template class MappedObject<defaulttype::Rigid2fTypes>;
 #endif
-extern template class MappedObject<defaulttype::LaparoscopicRigid3Types>;
 #endif
 
 } // namespace container

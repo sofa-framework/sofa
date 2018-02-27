@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -545,13 +545,13 @@ void MeshTopology::init()
     if (nbPoints==0)
     {
         // looking for upper topology
-        if (seqHexahedra.isSet())
+        if (!seqHexahedra.getValue().empty())
             UpperTopology = sofa::core::topology::HEXAHEDRON;
-        else if (seqTetrahedra.isSet())
+        else if (!seqTetrahedra.getValue().empty())
             UpperTopology = sofa::core::topology::TETRAHEDRON;
-        else if (seqQuads.isSet())
+        else if (!seqQuads.getValue().empty())
             UpperTopology = sofa::core::topology::QUAD;
-        else if (seqTriangles.isSet())
+        else if (!seqTriangles.getValue().empty())
             UpperTopology = sofa::core::topology::TRIANGLE;
         else
             UpperTopology = sofa::core::topology::EDGE;
@@ -988,6 +988,9 @@ void MeshTopology::createOrientedTrianglesAroundVertexArray()
         unsigned int nextEdge = InvalidID;
         unsigned int lastTri = InvalidID;
 
+        // skip points not attached to any edge
+        if (m_edgesAroundVertex[i].empty()) continue;
+
         //find the start edge for a boundary point
         for(unsigned int j = 0; j < m_edgesAroundVertex[i].size() && startEdge == InvalidID; ++j)
             //for each edge adjacent to the point: m_edgesAroundVertex[i][j]
@@ -1070,7 +1073,7 @@ void MeshTopology::createOrientedTrianglesAroundVertexArray()
         //begin the loop to find the next edge around the point i
         currentEdge = nextEdge;
         nextEdge = InvalidID;
-        while(currentEdge != startEdge)
+        while(currentEdge != startEdge && currentEdge != InvalidID)
         {
             const TrianglesAroundEdge& eTris = getTrianglesAroundEdge(currentEdge);
             if(eTris.size() == 1)
@@ -1100,7 +1103,16 @@ void MeshTopology::createOrientedTrianglesAroundVertexArray()
             }
             currentEdge = nextEdge;
             nextEdge = InvalidID;
+            // FIX: check is currentEdge is not already in orientedEdgesAroundVertex to avoid infinite loops in case of non manifold topology
+            for (unsigned int j = 0; i < m_orientedEdgesAroundVertex[i].size(); ++i)
+            {
+                if (m_orientedEdgesAroundVertex[i][j] == currentEdge)
+                {
+                    currentEdge = InvalidID; // go out of the while loop
+                    break;
         }
+    }
+}
     }
 }
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -57,16 +57,16 @@ protected:
     virtual ~EdgeSetTopologyContainer() {}
 public:
 
-    virtual void init();
+    virtual void init() override;
 
-    virtual void reinit();
+    virtual void reinit() override;
 
 
 
     /// Procedural creation methods
     /// @{
-    virtual void clear();
-    virtual void addEdge( int a, int b );
+    virtual void clear() override;
+    virtual void addEdge( int a, int b ) override;
     /// @}
 
 
@@ -77,7 +77,7 @@ public:
     /** \brief Returns the edge array.
      *
      */
-    virtual const SeqEdges& getEdges()
+    virtual const SeqEdges& getEdges() override
     {
         return getEdgeArray();
     }
@@ -87,7 +87,7 @@ public:
      * @param i The ID of the Edge.
      * @return The corresponding Edge.
      */
-    virtual const Edge getEdge(EdgeID i);
+    virtual const Edge getEdge(EdgeID i) override;
 
 
     /** \brief Get the index of the edge joining two vertices.
@@ -96,7 +96,7 @@ public:
      * @param v@ The second vertex
      * @return The index of the Edge if it exists, -1 otherwise.
     */
-    virtual int getEdgeIndex(PointID v1, PointID v2);
+    virtual int getEdgeIndex(PointID v1, PointID v2) override;
 
 
     /** \brief Get the indices of the edges around a vertex.
@@ -104,7 +104,7 @@ public:
      * @param i The ID of the vertex.
      * @return An EdgesAroundVertex containing the indices of the edges.
      */
-    virtual const EdgesAroundVertex& getEdgesAroundVertex(PointID i);
+    virtual const EdgesAroundVertex& getEdgesAroundVertex(PointID i) override;
 
     /// @}
 
@@ -120,7 +120,7 @@ public:
      * @see m_edge
      * @return bool true if topology is coherent.
      */
-    virtual bool checkTopology() const;
+    virtual bool checkTopology() const override;
 
 
     /** \brief Returns the number of edges in this topology.
@@ -133,7 +133,7 @@ public:
     /** \brief Returns the number of topological element of the current topology.
      * This function avoids to know which topological container is in used.
      */
-    virtual unsigned int getNumberOfElements() const;
+    virtual unsigned int getNumberOfElements() const override;
 
 
     /** \brief Returns the number of connected components from the graph containing all edges and give, for each vertex, which component it belongs to  (use BOOST GRAPH LIBRAIRY)
@@ -173,21 +173,23 @@ public:
       *
       * @return true if only one connected component
       */
-    virtual bool checkConnexity();
+    virtual bool checkConnexity() override;
 
     /// Returns the number of connected component.
-    virtual unsigned int getNumberOfConnectedComponent();
+    virtual unsigned int getNumberOfConnectedComponent() override;
 
     /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
-    virtual const VecEdgeID getConnectedElement(EdgeID elem);
+    virtual const VecEdgeID getConnectedElement(EdgeID elem) override;
 
     /// Returns the set of element indices adjacent to a given element (i.e. sharing a link)
-    virtual const VecEdgeID getElementAroundElement(EdgeID elem);
+    virtual const VecEdgeID getElementAroundElement(EdgeID elem) override;
     /// Returns the set of element indices adjacent to a given list of elements (i.e. sharing a link)
-    virtual const VecEdgeID getElementAroundElements(VecEdgeID elems);
+    virtual const VecEdgeID getElementAroundElements(VecEdgeID elems) override;
     /// @}
 
-
+	  /** \brief Returns the type of the topology */
+	  virtual sofa::core::topology::TopologyObjectType getTopologyType() const override {return sofa::core::topology::EDGE;}
+    
 
 protected:
 
@@ -213,7 +215,7 @@ protected:
 
 
     /// \brief Function creating the data graph linked to d_triangle
-    virtual void updateTopologyEngineGraph();
+    virtual void updateTopologyEngineGraph() override;
 
 
     /// Use a specific boolean @see m_triangleTopologyDirty in order to know if topology Data is dirty or not.
@@ -249,9 +251,9 @@ protected:
 
 public:
     /** The array that stores the set of edges in the edge set */
-    Data< sofa::helper::vector<Edge> > d_edge;
+    Data< sofa::helper::vector<Edge> > d_edge; ///< List of edge indices
 
-    Data <bool> m_checkConnexity;
+    Data <bool> m_checkConnexity; ///< It true, will check the connexity of the mesh.
 
 
 };

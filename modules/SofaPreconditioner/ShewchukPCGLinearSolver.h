@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -50,21 +50,21 @@ public:
     typedef TVector Vector;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
 
-    Data<unsigned> f_maxIter;
-    Data<double> f_tolerance;
-    Data<bool> f_use_precond;
-    Data<unsigned> f_update_step;
-    Data<bool> f_build_precond;
-    Data< std::string > f_preconditioners;
-    Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
+    Data<unsigned> f_maxIter; ///< maximum number of iterations of the Conjugate Gradient solution
+    Data<double> f_tolerance; ///< desired precision of the Conjugate Gradient Solution (ratio of current residual norm over initial residual norm)
+    Data<bool> f_use_precond; ///< Use preconditioner
+    Data<unsigned> f_update_step; ///< Number of steps before the next refresh of precondtioners
+    Data<bool> f_build_precond; ///< Build the preconditioners, if false build the preconditioner only at the initial step
+    Data< std::string > f_preconditioners; ///< If not empty: path to the solvers to use as preconditioners
+    Data<std::map < std::string, sofa::helper::vector<double> > > f_graph; ///< Graph of residuals at each iteration
 
 
 protected:
     ShewchukPCGLinearSolver();
 public:
-    void solve (Matrix& M, Vector& x, Vector& b);
-    void init();
-    void setSystemMBKMatrix(const core::MechanicalParams* mparams);
+    void solve (Matrix& M, Vector& x, Vector& b) override;
+    void init() override;
+    void setSystemMBKMatrix(const core::MechanicalParams* mparams) override;
     //void setSystemRHVector(VecId v);
     //void setSystemLHVector(VecId v);
 
@@ -82,7 +82,7 @@ protected:
     /// It computes: x += p*alpha, r -= q*alpha
     inline void cgstep_alpha(Vector& x,Vector& p,double alpha);
 
-    void handleEvent(sofa::core::objectmodel::Event* event);
+    void handleEvent(sofa::core::objectmodel::Event* event) override;
 
 
 };

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -49,30 +49,30 @@ class SOFA_GENERAL_IMPLICIT_ODE_SOLVER_API VariationalSymplecticSolver : public 
 public:
 	SOFA_CLASS(VariationalSymplecticSolver, sofa::core::behavior::OdeSolver);
 
-    Data<double>       f_newtonError;
-    Data<unsigned int> f_newtonSteps;
-    Data<SReal> f_rayleighStiffness;
-    Data<SReal> f_rayleighMass;
-	Data<bool> f_verbose;
-    Data<bool> f_saveEnergyInFile;
-	Data<bool>       f_explicit;
-    Data<std::string> f_fileName;
-    Data<bool> f_computeHamiltonian;
-    Data<double> f_hamiltonianEnergy;
-    Data<bool> f_useIncrementalPotentialEnergy;
+    Data<double>       f_newtonError; ///< Error tolerance for Newton iterations
+    Data<unsigned int> f_newtonSteps; ///< Maximum number of Newton steps
+    Data<SReal> f_rayleighStiffness; ///< Rayleigh damping coefficient related to stiffness, > 0
+    Data<SReal> f_rayleighMass; ///< Rayleigh damping coefficient related to mass, > 0
+	Data<bool> f_verbose; ///< Dump information on the residual errors and number of Newton iterations
+    Data<bool> f_saveEnergyInFile; ///< If kinetic and potential energies should be dumped in a CSV file at each iteration
+	Data<bool>       f_explicit; ///< Use explicit integration scheme
+    Data<std::string> f_fileName; ///< File name where kinetic and potential energies are saved in a CSV file
+    Data<bool> f_computeHamiltonian; ///< Compute hamiltonian
+    Data<double> f_hamiltonianEnergy; ///< hamiltonian energy
+    Data<bool> f_useIncrementalPotentialEnergy; ///< use real potential energy, if false use approximate potential energy
 
 	VariationalSymplecticSolver();
 
-	void init();
+	void init() override;
 	std::ofstream energies;
-   void solve (const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult);
+   void solve (const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 
    int cpt;
    /// Given a displacement as computed by the linear system inversion, how much will it affect the velocity
    ///
    /// This method is used to compute the compliance for contact corrections
    /// For Euler methods, it is typically dt.
-   virtual double getVelocityIntegrationFactor() const
+   virtual double getVelocityIntegrationFactor() const override
    {
        return 0; // getContext()->getDt();
    }
@@ -81,13 +81,13 @@ public:
    ///
    /// This method is used to compute the compliance for contact corrections
    /// For Euler methods, it is typically dt².
-   virtual double getPositionIntegrationFactor() const
+   virtual double getPositionIntegrationFactor() const override
    {
        return 0; //*getContext()->getDt());
    }
 
 
-       double getIntegrationFactor(int /*inputDerivative*/, int /*outputDerivative*/) const
+       double getIntegrationFactor(int /*inputDerivative*/, int /*outputDerivative*/) const override
        {
 
                        return 0;
@@ -95,7 +95,7 @@ public:
        }
 
 
-       double getSolutionIntegrationFactor(int /*outputDerivative*/) const
+       double getSolutionIntegrationFactor(int /*outputDerivative*/) const override
        {
 
                        return 0;

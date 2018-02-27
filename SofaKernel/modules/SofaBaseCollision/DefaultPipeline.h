@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -45,19 +45,19 @@ public:
 protected:
     DefaultPipeline();
 public:
-    void init();
-    void draw(const core::visual::VisualParams* vparams);
+    void init() override;
+    void draw(const core::visual::VisualParams* vparams) override;
 
     /// get the set of response available with the current collision pipeline
-    std::set< std::string > getResponseList() const;
+    std::set< std::string > getResponseList() const override;
 protected:
     // -- Pipeline interface
     /// Remove collision response from last step
-    virtual void doCollisionReset();
+    virtual void doCollisionReset() override;
     /// Detect new collisions. Note that this step must not modify the simulation graph
-    virtual void doCollisionDetection(const sofa::helper::vector<core::CollisionModel*>& collisionModels);
+    virtual void doCollisionDetection(const sofa::helper::vector<core::CollisionModel*>& collisionModels) override;
     /// Add collision response in the simulation graph
-    virtual void doCollisionResponse();
+    virtual void doCollisionResponse() override;
 
     virtual void checkDataValues() ;
 };

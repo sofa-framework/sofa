@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -46,8 +46,8 @@ class SOFA_HAPTICS_API ForceFeedback : public core::behavior::BaseController
 
 public:
     SOFA_CLASS(ForceFeedback,core::behavior::BaseController);
-    Data<bool> f_activate;
-    Data<int> indice;
+    Data<bool> f_activate; ///< boolean to activate or deactivate the forcefeedback
+    Data<int> indice; ///< Tool indice in the OmniDriver
 
 
     simulation::Node *context;
@@ -58,7 +58,7 @@ protected:
     {
     }
 public:
-    virtual void init() {context = dynamic_cast<simulation::Node *>(this->getContext());};
+    virtual void init() override {context = dynamic_cast<simulation::Node *>(this->getContext());};
     virtual void computeForce(SReal x, SReal y, SReal z, SReal u, SReal v, SReal w, SReal q, SReal& fx, SReal& fy, SReal& fz) = 0;
     virtual void computeWrench(const sofa::defaulttype::SolidTypes<SReal>::Transform &, const sofa::defaulttype::SolidTypes<SReal>::SpatialVector &, sofa::defaulttype::SolidTypes<SReal>::SpatialVector & )=0;
     virtual bool isEnabled() { return this->getContext()->isActive(); }

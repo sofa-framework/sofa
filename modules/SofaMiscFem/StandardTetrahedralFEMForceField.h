@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -155,10 +155,10 @@ public :
    VecCoord  _initialPoints;	/// the intial positions of the points
    bool updateMatrix;
    bool  _meshSaved ;
-   Data<std::string> f_materialName; /// the name of the material
-   Data<SetParameterArray> f_parameterSet;
-   Data<SetAnisotropyDirectionArray> f_anisotropySet;
-   Data<std::string> f_parameterFileName;
+   Data<std::string> f_materialName; ///< the name of the material
+   Data<SetParameterArray> f_parameterSet; ///< The global parameters specifying the material
+   Data<SetAnisotropyDirectionArray> f_anisotropySet; ///< The global directions of anisotropy of the material
+   Data<std::string> f_parameterFileName; ///< the name of the file describing the material parameters for all tetrahedra
 
    
 public:
@@ -181,20 +181,20 @@ public:
 
   //  virtual void parse(core::objectmodel::BaseObjectDescription* arg);
 
-    virtual void init();
+    virtual void init() override;
     //Used for CUDA implementation
     void initNeighbourhoodPoints();
     void initNeighbourhoodEdges();
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * matrix, SReal kFact, unsigned int &offset);
-    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx);
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
+    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * matrix, SReal kFact, unsigned int &offset) override;
+    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
+    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& d_df, const DataVecDeriv& d_dx) override;
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
     {
         serr << "Get potentialEnergy not implemented" << sendl;
         return 0.0;
     }
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
   //  defaulttype::Mat<3,3,double> getPhi( int );
 
@@ -225,9 +225,9 @@ public:
 
 	fem::HyperelasticMaterial<DataTypes> *myMaterial;
 
-        topology::TetrahedronData<tetrahedronRestInfoVector> tetrahedronInfo;
-        //EdgeData<sofa::helper::vector< EdgeInformation> > edgeInfo;
-        topology::EdgeData<edgeInformationVector> edgeInfo;
+        topology::TetrahedronData<tetrahedronRestInfoVector> tetrahedronInfo; ///< Internal tetrahedron data
+        //EdgeData<sofa::helper::vector< EdgeInformation> > edgeInfo; ///< Internal edge data
+        topology::EdgeData<edgeInformationVector> edgeInfo; ///< Internal edge data
 
 
         void testDerivatives();

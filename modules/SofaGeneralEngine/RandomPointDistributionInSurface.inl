@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -222,12 +222,8 @@ void RandomPointDistributionInSurface<DataTypes>::update()
     VecCoord* outPoints = f_outPoints.beginWriteOnly();
     outPoints->clear();
 
-    //Hack : octree is not templated
-#ifdef SOFA_SMP
-    collision::TriangleOctreeRoot::VecCoord verticesD;
-#else
+
     helper::vector<defaulttype::Vector3> verticesD;
-#endif
     for (unsigned int i=0 ; i<vertices.size() ; i++)
         verticesD.push_back(vertices[i]);
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -26,7 +26,6 @@
 
 #cmakedefine SOFA_HAVE_NEWMAT
 #cmakedefine SOFA_HAVE_CSPARSE
-#cmakedefine SOFA_HAVE_TAUCS
 #cmakedefine SOFA_HAVE_PARDISO
 #cmakedefine SOFA_HAVE_METIS
 
@@ -214,15 +213,6 @@
 #  define SOFA_SPARSE_SOLVER_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
 #  define SOFA_SPARSE_SOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-#ifdef SOFA_HAVE_TAUCS
-#  ifdef SOFA_BUILD_TAUCS_SOLVER
-#    define SOFA_TARGET SofaTaucsSolver
-#    define SOFA_TAUCS_SOLVER_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#  else
-#    define SOFA_TAUCS_SOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#  endif
 #endif
 
 #ifdef SOFA_HAVE_PARDISO

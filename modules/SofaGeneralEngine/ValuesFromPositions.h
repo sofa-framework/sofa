@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -71,13 +71,13 @@ protected:
 
     ~ValuesFromPositions() {}
 public:
-    void init();
+    void init() override;
 
-    void reinit();
+    void reinit() override;
 
-    void update();
+    void update() override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
@@ -101,7 +101,7 @@ public:
         return core::objectmodel::BaseObject::create(tObj, context, arg);
     }
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -137,29 +137,29 @@ protected:
 
 public:
     //Input
-    Data<VecReal> f_inputValues;
-    Data<CPos> f_direction;
-    Data<VecCoord> f_X0;
-    Data<helper::vector<Edge> > f_edges;
-    Data<helper::vector<Triangle> > f_triangles;
-    Data<helper::vector<Tetra> > f_tetrahedra;
+    Data<VecReal> f_inputValues; ///< Input values
+    Data<CPos> f_direction; ///< Direction along which the values are interpolated
+    Data<VecCoord> f_X0; ///< Rest position coordinates of the degrees of freedom
+    Data<helper::vector<Edge> > f_edges; ///< Edge Topology
+    Data<helper::vector<Triangle> > f_triangles; ///< Triangle Topology
+    Data<helper::vector<Tetra> > f_tetrahedra; ///< Tetrahedron Topology
 
     //Output scalars
-    Data<VecReal> f_values;
-    Data<VecReal> f_edgeValues;
-    Data<VecReal> f_triangleValues;
-    Data<VecReal> f_tetrahedronValues;
+    Data<VecReal> f_values; ///< Values of the points contained in the ROI
+    Data<VecReal> f_edgeValues; ///< Values of the edges contained in the ROI
+    Data<VecReal> f_triangleValues; ///< Values of the triangles contained in the ROI
+    Data<VecReal> f_tetrahedronValues; ///< Values of the tetrahedra contained in the ROI
 
     //Output vectors
-    Data<sofa::helper::vector<Vec3> > f_pointVectors;
-    Data<sofa::helper::vector<Vec3> > f_edgeVectors;
-    Data<sofa::helper::vector<Vec3> > f_triangleVectors;
-    Data<sofa::helper::vector<Vec3> > f_tetrahedronVectors;
+    Data<sofa::helper::vector<Vec3> > f_pointVectors; ///< Vectors of the points contained in the ROI
+    Data<sofa::helper::vector<Vec3> > f_edgeVectors; ///< Vectors of the edges contained in the ROI
+    Data<sofa::helper::vector<Vec3> > f_triangleVectors; ///< Vectors of the triangles contained in the ROI
+    Data<sofa::helper::vector<Vec3> > f_tetrahedronVectors; ///< Vectors of the tetrahedra contained in the ROI
 
     // parameters
-    sofa::core::objectmodel::Data< sofa::helper::OptionsGroup > p_fieldType;
-    Data <bool> p_drawVectors;
-    Data <float> p_vectorLength;
+    sofa::core::objectmodel::Data< sofa::helper::OptionsGroup > p_fieldType; ///< field type of output elements
+    Data <bool> p_drawVectors; ///< draw vectors line
+    Data <float> p_vectorLength; ///< vector length visualisation. 
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_VALUESFROMPOSITIONS_CPP)

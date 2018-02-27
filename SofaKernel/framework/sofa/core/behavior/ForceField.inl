@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,9 +23,6 @@
 #define SOFA_CORE_BEHAVIOR_FORCEFIELD_INL
 
 #include <sofa/core/behavior/ForceField.h>
-#ifdef SOFA_SMP
-#include <sofa/defaulttype/SharedTypes.h>
-#endif
 #include <iostream>
 
 namespace sofa
@@ -59,25 +56,7 @@ void ForceField<DataTypes>::init()
         mstate.set(dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState()));
 }
 
-#ifdef SOFA_SMP
-template<class DataTypes>
-struct ParallelForceFieldAddForce
-{
-    void operator()(const MechanicalParams *mparams, ForceField< DataTypes > *ff,Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv > > _f,Shared_r< objectmodel::Data< typename DataTypes::VecCoord > > _x,Shared_r< objectmodel::Data< typename DataTypes::VecDeriv> > _v)
-    {
-        ff->addForce(mparams, _f.access(),_x.read(),_v.read());
-    }
-};
 
-template<class DataTypes>
-struct ParallelForceFieldAddDForce
-{
-    void operator()(const MechanicalParams *mparams, ForceField< DataTypes >*ff,Shared_rw< objectmodel::Data< typename DataTypes::VecDeriv> > _df,Shared_r<objectmodel::Data< typename DataTypes::VecDeriv> > _dx)
-    {
-        ff->addDForce(mparams, _df.access(),_dx.read());
-    }
-};
-#endif /* SOFA_SMP */
 
 
 template<class DataTypes>
@@ -85,14 +64,6 @@ void ForceField<DataTypes>::addForce(const MechanicalParams* mparams, MultiVecDe
 {
     if (mparams)
     {
-#ifdef SOFA_SMP
-        if (mparams->execMode() == ExecParams::EXEC_KAAPI)
-            // Task<ParallelForceFieldAddForce< DataTypes > >(mparams, this, sofa::defaulttype::getShared(*fId[mstate.get(mparams)].write()),
-            // 	defaulttype::getShared(*mparams->readX(mstate)), defaulttype::getShared(*mparams->readV(mstate)));
-            Task<ParallelForceFieldAddForce< DataTypes > >(mparams, this, **defaulttype::getShared(*fId[mstate.get(mparams)].write()),
-                    **defaulttype::getShared(*mparams->readX(mstate)), **defaulttype::getShared(*mparams->readV(mstate)));
-        else
-#endif /* SOFA_SMP */
             addForce(mparams, *fId[mstate.get(mparams)].write() , *mparams->readX(mstate), *mparams->readV(mstate));
             updateForceMask();
     }
@@ -103,11 +74,6 @@ void ForceField<DataTypes>::addDForce(const MechanicalParams* mparams, MultiVecD
 {
     if (mparams)
     {
-#ifdef SOFA_SMP
-        if (mparams->execMode() == ExecParams::EXEC_KAAPI)
-            Task<ParallelForceFieldAddDForce< DataTypes > >(mparams, this, **defaulttype::getShared(*dfId[mstate.get(mparams)].write()), **defaulttype::getShared(*mparams->readDx(mstate)));
-        else
-#endif /* SOFA_SMP */
 
 #ifndef NDEBUG
             mparams->setKFactorUsed(false);

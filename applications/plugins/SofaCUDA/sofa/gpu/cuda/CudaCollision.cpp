@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -114,7 +114,7 @@ class CudaProximityIntersection : public sofa::component::collision::NewProximit
 public:
     SOFA_CLASS(CudaProximityIntersection,sofa::component::collision::NewProximityIntersection);
 
-    virtual void init()
+    virtual void init() override
     {
         sofa::component::collision::NewProximityIntersection::init();
         intersectors.add<CudaSphereModel, CudaSphereModel,   DiscreteIntersection>(this);

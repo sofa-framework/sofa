@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -72,11 +72,11 @@ public:
 
     // methods
     DisplacementTransformEngine();
-    void init();   // compute the inverse matrices
-    void update(); // compute the displacements wrt original positions
+    virtual void init() override;   // compute the inverse matrices
+    virtual void update() override; // compute the displacements wrt original positions
 
     // To simplify the template name in the xml file
-    virtual std::string getTemplateName() const { return templateName(this); }
+    virtual std::string getTemplateName() const override { return templateName(this); }
     static std::string templateName(const DisplacementTransformEngine<DataTypes,OutputType>* = NULL) { return DataTypes::Name()+std::string(",")+defaulttype::DataTypeInfo<OutputType>::name(); }
 
 protected:
@@ -121,12 +121,12 @@ public:
     // Method
     DisplacementMatrixEngine();
 
-    void init();   // compute the inverse matrices
-    void reinit(); // compute S*inverse and store it once and for all.
-    void update(); // compute the displacements wrt original positions
+    virtual void init() override;   // compute the inverse matrices
+    virtual void reinit() override; // compute S*inverse and store it once and for all.
+    virtual void update() override; // compute the displacements wrt original positions
 
     // To simplify the template name in the xml file
-    virtual std::string getTemplateName() const { return templateName(this); }
+    virtual std::string getTemplateName() const override { return templateName(this); }
     static std::string templateName(const DisplacementMatrixEngine<DataTypes>* = NULL) { return DataTypes::Name(); }
 
     // inputs

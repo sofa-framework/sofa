@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -66,21 +66,11 @@ public:
     virtual void v_eq(core::MultiVecId v, core::ConstMultiVecId a) = 0; ///< v=a
     virtual void v_eq(core::MultiVecId v, core::ConstMultiVecId a, SReal f) = 0; ///< v=f*a
     virtual void v_peq(core::MultiVecId v, core::ConstMultiVecId a, SReal f=1.0) = 0; ///< v+=f*a
-#ifdef SOFA_SMP
-    virtual void v_peq(core::MultiVecId v, core::ConstMultiVecId a, Shared<SReal> &fSh, SReal f=1.0) = 0; ///< v+=f*a
-    virtual void v_meq(core::MultiVecId v, core::ConstMultiVecId a, Shared<SReal> &fSh) = 0; ///< v+=f*a
-#endif
     virtual void v_teq(core::MultiVecId v, SReal f) = 0; ///< v*=f
     virtual void v_op(core::MultiVecId v, core::ConstMultiVecId a, core::ConstMultiVecId b, SReal f=1.0) = 0; ///< v=a+b*f
-#ifdef SOFA_SMP
-    virtual void v_op(core::MultiVecId v, core::ConstMultiVecId a, core::ConstMultiVecId b, Shared<SReal> &f) = 0; ///< v=a+b*f
-#endif
     virtual void v_multiop(const core::behavior::BaseMechanicalState::VMultiOp& o) = 0;
     virtual void v_dot(core::ConstMultiVecId a, core::ConstMultiVecId b) = 0; ///< a dot b ( get result using finish )
     virtual void v_norm(core::ConstMultiVecId a, unsigned l)=0; ///< Compute the norm of a vector ( get result using finish ). The type of norm is set by parameter l. Use 0 for the infinite norm. Note that the 2-norm is more efficiently computed using the square root of the dot product.
-#ifdef SOFA_SMP
-    virtual void v_dot(Shared<SReal> &result,core::ConstMultiVecId a, core::ConstMultiVecId b) = 0; ///< a dot b
-#endif
     virtual void v_threshold(core::MultiVecId a, SReal threshold) = 0; ///< nullify the values below the given threshold
 
 

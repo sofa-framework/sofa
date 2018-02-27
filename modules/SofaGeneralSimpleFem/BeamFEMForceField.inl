@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -673,6 +673,36 @@ void BeamFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparam
     vparams->drawTool()->drawLines(points[0], 1, defaulttype::Vec<4,float>(1,0,0,1));
     vparams->drawTool()->drawLines(points[1], 1, defaulttype::Vec<4,float>(0,1,0,1));
     vparams->drawTool()->drawLines(points[2], 1, defaulttype::Vec<4,float>(0,0,1,1));
+}
+
+template<class DataTypes>
+void BeamFEMForceField<DataTypes>::computeBBox(const core::ExecParams* params, bool onlyVisible)
+{
+    if( !onlyVisible ) return;
+
+
+    static const Real max_real = std::numeric_limits<Real>::max();
+    static const Real min_real = std::numeric_limits<Real>::lowest();
+    Real maxBBox[3] = {min_real,min_real,min_real};
+    Real minBBox[3] = {max_real,max_real,max_real};
+
+
+    const size_t npoints = this->mstate->getSize();
+    const VecCoord& p = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+
+    for (size_t i=0; i<npoints; i++)
+    {
+        const defaulttype::Vector3 &pt = p[i].getCenter();
+
+        for (int c=0; c<3; c++)
+        {
+            if (pt[c] > maxBBox[c]) maxBBox[c] = pt[c];
+            else if (pt[c] < minBBox[c]) minBBox[c] = pt[c];
+        }
+    }
+
+    this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<Real>(minBBox,maxBBox));
+
 }
 
 template<class DataTypes>

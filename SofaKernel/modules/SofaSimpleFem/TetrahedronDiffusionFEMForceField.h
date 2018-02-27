@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -103,19 +103,19 @@ public:
 
       //@{
       /** Other usual SOFA functions */
-      virtual void init();
-      virtual void reinit();
-      virtual void draw(const core::visual::VisualParams*);
+      virtual void init() override;
+      virtual void reinit() override;
+      virtual void draw(const core::visual::VisualParams*) override;
       //@}
 
       /// Forcefield functions for Matrix system. Adding force to global forcefield vector.
-      virtual void addForce (const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& dF, const DataVecCoord& dX, const DataVecDeriv& /*v*/);
+      virtual void addForce (const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& dF, const DataVecCoord& dX, const DataVecDeriv& /*v*/) override;
       /// Forcefield functions for Matrix system. Adding derivate force to global forcefield vector.
-      virtual void addDForce(const sofa::core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& dF , const DataVecDeriv& dX);
+      virtual void addDForce(const sofa::core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, DataVecDeriv& dF , const DataVecDeriv& dX) override;
       /// Forcefield functions for Matrix system. Adding derivate force to global forcefield vector. (direct solver)
-      void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix);
+      void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
       /// Return Potential energy of the mesh.
-      virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord& x) const;
+      virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord& x) const override;
 
       /// Get diffusion coefficient coefficient
       sofa::helper::vector<Real> getDiffusionCoefficient();

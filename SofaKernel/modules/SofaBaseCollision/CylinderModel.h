@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -100,30 +100,30 @@ public:
     typedef TCylinder<DataTypes> Element;
     friend class TCylinder<DataTypes>;
 protected:
-    Data<VecReal> _cylinder_radii;
-    Data<VecReal> _cylinder_heights;
+    Data<VecReal> _cylinder_radii; ///< Radius of each cylinder
+    Data<VecReal> _cylinder_heights; ///< The cylinder heights
     Data<VecAxisCoord> _cylinder_local_axes;
 
-    Data<Real> _default_radius;
-    Data<Real> _default_height;
-    Data<Coord> _default_local_axis;
+    Data<Real> _default_radius; ///< The default radius
+    Data<Real> _default_height; ///< The default height
+    Data<Coord> _default_local_axis; ///< The default local axis cylinder is modeled around
 
     TCylinderModel();
     TCylinderModel(core::behavior::MechanicalState<DataTypes>* mstate );
 public:
-    virtual void init();
+    virtual void init() override;
 
     // -- CollisionModel interface
 
-    virtual void resize(int size);
+    virtual void resize(int size) override;
 
-    virtual void computeBoundingTree(int maxDepth=0);
+    virtual void computeBoundingTree(int maxDepth=0) override;
 
     //virtual void computeContinuousBoundingTree(SReal dt, int maxDepth=0);
 
-    void draw(const core::visual::VisualParams* vparams,int index);
+    void draw(const core::visual::VisualParams* vparams,int index) override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
 
     core::behavior::MechanicalState<DataTypes>* getMechanicalState() { return _mstate; }
@@ -160,7 +160,7 @@ public:
         return BaseObject::canCreate(obj, context, arg);
     }
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }

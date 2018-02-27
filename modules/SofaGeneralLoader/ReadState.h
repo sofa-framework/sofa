@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -56,10 +56,10 @@ public:
     SOFA_CLASS(ReadState,core::objectmodel::BaseObject);
 
     sofa::core::objectmodel::DataFileName f_filename;
-    Data < double > f_interval;
-    Data < double > f_shift;
-    Data < bool > f_loop;
-    Data < double > f_scalePos;
+    Data < double > f_interval; ///< time duration between inputs
+    Data < double > f_shift; ///< shift between times in the file and times when they will be read
+    Data < bool > f_loop; ///< set to 'true' to re-read the file when reaching the end
+    Data < double > f_scalePos; ///< scale the input mechanical object
 
 protected:
     core::behavior::BaseMechanicalState* mmodel;
@@ -75,13 +75,13 @@ protected:
 
     virtual ~ReadState();
 public:
-    virtual void init();
+    virtual void init() override;
 
-    virtual void reset();
+    virtual void reset() override;
 
     void setTime(double time);
 
-    virtual void handleEvent(sofa::core::objectmodel::Event* event);
+    virtual void handleEvent(sofa::core::objectmodel::Event* event) override;
 
     void processReadState();
     void processReadState(double time);

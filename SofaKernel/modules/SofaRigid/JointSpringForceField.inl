@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -26,10 +26,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/helper/io/MassSpringLoader.h>
-#include <sofa/helper/gl/template.h>
-#include <sofa/helper/gl/Cylinder.h>
-#include <sofa/helper/gl/BasicShapes.h>
-#include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/system/config.h>
 #include <cassert>
 #include <iostream>

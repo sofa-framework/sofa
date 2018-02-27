@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -92,9 +92,9 @@ public:
     typedef typename ImageTypes::T T;
     typedef typename ImageTypes::imCoord imCoord;
     typedef helper::ReadAccessor<Data< ImageTypes > > raImage;
-    Data< ImageTypes > image;
+    Data< ImageTypes > image; ///< input image
     
-    Data<bool> showSlicedModels;
+    Data<bool> showSlicedModels; ///< display visual models on cutPlanes
 
     // @name Histogram
     /**@{*/
@@ -135,12 +135,12 @@ public:
     Data<defaulttype::VectorVis> vectorVisualization;
     /**@}*/
     
-    Data <int> scroll;
+    Data <int> scroll; ///< 0 if no scrolling, 1 for up, 2 for down, 3 left, and 4 for right
     Data <bool> display; ///< Boolean to activate/desactivate the display of the image
 
     typedef component::visualmodel::VisualModelImpl VisuModelType;
     
-    std::string getTemplateName() const  {	return templateName(this);	}
+    std::string getTemplateName() const  override {	return templateName(this);	}
     static std::string templateName(const ImageViewer<ImageTypes>* = NULL)	{ return ImageTypes::Name(); }
     
     ImageViewer() : Inherited()
@@ -185,7 +185,7 @@ public:
 #endif //SOFA_NO_OPENGL
     }
     
-    virtual void init()
+    virtual void init() override
     {
         
         // getvisuals
@@ -218,7 +218,7 @@ public:
     }
     
     
-    virtual void reinit()
+    virtual void reinit() override
     {
         waHisto whisto(this->histo);
         waPlane wplane(this->plane);
@@ -230,7 +230,7 @@ public:
 
     }
     
-    virtual void handleEvent( sofa::core::objectmodel::Event* event)
+    virtual void handleEvent( sofa::core::objectmodel::Event* event) override
     {
         typename ImagePlaneType::pCoord pc(0,0,0);
 
@@ -322,7 +322,7 @@ public:
         }
     }
     
-    virtual void draw(const core::visual::VisualParams* vparams)
+    virtual void draw(const core::visual::VisualParams* vparams) override
     {
 #ifndef SOFA_NO_OPENGL
         if (!vparams->displayFlags().getShowVisualModels() || display.getValue()==false) return;
@@ -423,7 +423,7 @@ public:
         for(unsigned int i=0;i<p.size();i++) c[i]=rtransform->fromImage(p[i]);
     }
 
-    virtual void computeBBox(const core::ExecParams*  params, bool /*onlyVisible=false*/ )
+    virtual void computeBBox(const core::ExecParams*  params, bool /*onlyVisible=false*/ ) override
     {
         //        if( onlyVisible) return;
         defaulttype::Vec<8,defaulttype::Vector3> c;

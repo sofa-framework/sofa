@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -53,7 +53,8 @@ public:
 private:
     static const std::string DEPTH_OF_FIELD_VERTEX_SHADER;
     static const std::string DEPTH_OF_FIELD_FRAGMENT_SHADER;
-    Data<double> zNear, zFar;
+    Data<double> zNear; ///< Set zNear distance (for Depth Buffer)
+    Data<double> zFar; ///< Set zFar distance (for Depth Buffer)
     helper::gl::FrameBufferObject fbo;
     OglShader* dofShader;
     bool postProcessEnabled;
@@ -67,15 +68,15 @@ protected:
     PostProcessManager();
     virtual ~PostProcessManager();
 public:
-    void init() ;
-    void reinit() { };
-    void initVisual();
+    void init() override;
+    void reinit() override { };
+    void initVisual() override;
 
-    void preDrawScene(core::visual::VisualParams* vp);
-    bool drawScene(core::visual::VisualParams* vp);
-    void postDrawScene(core::visual::VisualParams* vp);
+    void preDrawScene(core::visual::VisualParams* vp) override;
+    bool drawScene(core::visual::VisualParams* vp) override;
+    void postDrawScene(core::visual::VisualParams* vp) override;
 
-    void handleEvent(sofa::core::objectmodel::Event* event);
+    void handleEvent(sofa::core::objectmodel::Event* event) override;
 };
 
 } //visualmodel

@@ -2,7 +2,7 @@
 
 @PACKAGE_INIT@
 
-find_package(CImg REQUIRED)
+find_package(CImgPlugin REQUIRED)
 
 check_required_components(DiffusionSolver)
 

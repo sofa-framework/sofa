@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -49,9 +49,9 @@ protected:
         : TopologyModifier()
     {}
 
-    virtual ~PointSetTopologyModifier() {}
+    virtual ~PointSetTopologyModifier() override {}
 public:
-    virtual void init();
+    virtual void init() override;
 
     /** \brief Swap points i1 and i2.
     *
@@ -172,7 +172,7 @@ public:
     * @sa beginChange()
     * @sa endChange()
     */
-    void propagateTopologicalChanges();  // DEPRECATED
+    virtual void propagateTopologicalChanges() override;  // DEPRECATED
 
     /// TODO: doc ??
     void propagateTopologicalChangesWithoutReset();
@@ -191,16 +191,16 @@ public:
     * @sa beginChange()
     * @sa endChange()
     */
-    void propagateStateChanges();
+    void propagateStateChanges() override;
     /// @}
 
     /** \notify the end for the current sequence of topological change events.
     */
-    void notifyEndingEvent();
+    void notifyEndingEvent() override;
 
     /** \brief Generic method to remove a list of items.
     */
-    virtual void removeItems(const sofa::helper::vector< unsigned int >& /*items*/)
+    virtual void removeItems(const sofa::helper::vector< unsigned int >& /*items*/) override
     { }
 
     /** \brief Generic method for points renumbering

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -57,31 +57,35 @@ class SOFA_OPENGL_VISUAL_API OglModel : public VisualModelImpl
 public:
     SOFA_CLASS(OglModel, VisualModelImpl);
 
-    Data<bool> blendTransparency;
+    Data<bool> blendTransparency; ///< Blend transparent parts
 protected:
-    Data<bool> premultipliedAlpha, useVBO, writeZTransparent, alphaBlend, depthTest;
-    Data<int> cullFace;
-    Data<GLfloat> lineWidth;
-    Data<GLfloat> pointSize;
-    Data<bool> lineSmooth;
-    Data<bool> pointSmooth;
+    Data<bool> premultipliedAlpha; ///< is alpha premultiplied ?
+    Data<bool> useVBO; ///< Use VBO for rendering
+    Data<bool> writeZTransparent; ///< Write into Z Buffer for Transparent Object
+    Data<bool> alphaBlend; ///< Enable alpha blending
+    Data<bool> depthTest; ///< Enable depth testing
+    Data<int> cullFace; ///< Face culling (0 = no culling, 1 = cull back faces, 2 = cull front faces)
+    Data<GLfloat> lineWidth; ///< Line width (set if != 1, only for lines rendering)
+    Data<GLfloat> pointSize; ///< Point size (set if != 1, only for points rendering)
+    Data<bool> lineSmooth; ///< Enable smooth line rendering
+    Data<bool> pointSmooth; ///< Enable smooth point rendering
     /// Suppress field for save as function
     Data < bool > isToPrint;
 
     // primitive types
-    Data<sofa::helper::OptionsGroup> primitiveType;
+    Data<sofa::helper::OptionsGroup> primitiveType; ///< Select types of primitives to send (necessary for some shader types such as geometry or tesselation)
 
     //alpha blend function
-    Data<sofa::helper::OptionsGroup> blendEquation;
-    Data<sofa::helper::OptionsGroup> sourceFactor;
-    Data<sofa::helper::OptionsGroup> destFactor;
+    Data<sofa::helper::OptionsGroup> blendEquation; ///< if alpha blending is enabled this specifies how source and destination colors are combined
+    Data<sofa::helper::OptionsGroup> sourceFactor; ///< if alpha blending is enabled this specifies how the red, green, blue, and alpha source blending factors are computed
+    Data<sofa::helper::OptionsGroup> destFactor; ///< if alpha blending is enabled this specifies how the red, green, blue, and alpha destination blending factors are computed
     GLenum blendEq, sfactor, dfactor;
 
     helper::gl::Texture *tex; //this texture is used only if a texture name is specified in the scn
     GLuint vbo, iboEdges, iboTriangles, iboQuads;
     bool canUseVBO, VBOGenDone, initDone, useEdges, useTriangles, useQuads, canUsePatches;
     unsigned int oldVerticesSize, oldNormalsSize, oldTexCoordsSize, oldTangentsSize, oldBitangentsSize, oldEdgesSize, oldTrianglesSize, oldQuadsSize;
-    void internalDraw(const core::visual::VisualParams* vparams, bool transparent);
+    void internalDraw(const core::visual::VisualParams* vparams, bool transparent) override;
 
     void drawGroup(int ig, bool transparent);
     void drawGroups(bool transparent);
@@ -101,17 +105,17 @@ protected:
     ~OglModel();
 public:
 
-    bool loadTexture(const std::string& filename);
-    bool loadTextures() ;
+    bool loadTexture(const std::string& filename) override;
+    bool loadTextures() override;
 
     void initTextures();
-    virtual void initVisual();
+    virtual void initVisual() override;
 
-    virtual void init() { VisualModelImpl::init(); }
+    virtual void init() override { VisualModelImpl::init(); }
 
-    virtual void updateBuffers();
+    virtual void updateBuffers() override;
 
-    bool hasTransparent();
+    bool hasTransparent() override;
     bool hasTexture();
 
 public:

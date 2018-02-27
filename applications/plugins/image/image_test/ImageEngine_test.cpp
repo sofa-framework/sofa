@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -236,7 +236,7 @@ struct ImageEngine_test : public Sofa_test<>
 // Test
 TEST_F(ImageEngine_test , testDataLink )
 {
-    ASSERT_NO_THROW(this->testDataLink());
+    this->testDataLink() ;
 }
 
 TEST_F(ImageEngine_test , testEngineDataLink )

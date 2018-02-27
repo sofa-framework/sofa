@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -86,13 +86,13 @@ public:
 protected:
     ArticulatedSystemMapping();
 
-    virtual ~ArticulatedSystemMapping()
+    virtual ~ArticulatedSystemMapping() override
     {
     }
 public:
-    void init();
-    void bwdInit();
-    void reset();
+    virtual void init() override;
+    virtual void bwdInit() override;
+    virtual void reset() override;
 
     using Inherit::apply;
     using Inherit::applyJ;
@@ -100,10 +100,10 @@ public:
 
     //Apply
     void apply( OutVecCoord& out, const InVecCoord& in, const InRootVecCoord* inroot  );
-    void apply(
+    virtual void apply(
         const core::MechanicalParams* /* mparams */, const helper::vector<OutDataVecCoord*>& dataVecOutPos,
         const helper::vector<const InDataVecCoord*>& dataVecInPos ,
-        const helper::vector<const InRootDataVecCoord*>& dataVecInRootPos)
+        const helper::vector<const InRootDataVecCoord*>& dataVecInRootPos) override
     {
         if(dataVecOutPos.empty() || dataVecInPos.empty())
             return;
@@ -124,10 +124,10 @@ public:
 
     //ApplyJ
     void applyJ( OutVecDeriv& out, const InVecDeriv& in, const InRootVecDeriv* inroot );
-    void applyJ(
+    virtual void applyJ(
         const core::MechanicalParams* /* mparams */, const helper::vector< OutDataVecDeriv*>& dataVecOutVel,
         const helper::vector<const InDataVecDeriv*>& dataVecInVel,
-        const helper::vector<const InRootDataVecDeriv*>& dataVecInRootVel)
+        const helper::vector<const InRootDataVecDeriv*>& dataVecInRootVel) override
     {
         if(dataVecOutVel.empty() || dataVecInVel.empty())
             return;
@@ -148,10 +148,10 @@ public:
 
     //ApplyJT Force
     void applyJT( InVecDeriv& out, const OutVecDeriv& in, InRootVecDeriv* outroot );
-    void applyJT(
+    virtual void applyJT(
         const core::MechanicalParams* /* mparams */, const helper::vector< InDataVecDeriv*>& dataVecOutForce,
         const helper::vector< InRootDataVecDeriv*>& dataVecOutRootForce,
-        const helper::vector<const OutDataVecDeriv*>& dataVecInForce)
+        const helper::vector<const OutDataVecDeriv*>& dataVecInForce) override
     {
         if(dataVecOutForce.empty() || dataVecInForce.empty())
             return;
@@ -172,7 +172,7 @@ public:
             dataVecOutRootForce[0]->endEdit();
     }
 
-    virtual void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/)
+    virtual void applyDJT(const core::MechanicalParams* /*mparams*/, core::MultiVecDerivId /*inForce*/, core::ConstMultiVecDerivId /*outForce*/) override
     {
 //                     serr<<"Warning ! ArticulatedSystemMapping::applyDJT(const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce)  not implemented !"<< sendl;
     }
@@ -181,10 +181,10 @@ public:
 
     //ApplyJT Constraint
     void applyJT( InMatrixDeriv& out, const OutMatrixDeriv& in, InRootMatrixDeriv* outroot );
-    void applyJT(
+    virtual void applyJT(
         const core::ConstraintParams* /* cparams */, const helper::vector< InDataMatrixDeriv*>& dataMatOutConst ,
         const helper::vector< InRootDataMatrixDeriv*>&  dataMatOutRootConst ,
-        const helper::vector<const OutDataMatrixDeriv*>& dataMatInConst)
+        const helper::vector<const OutDataMatrixDeriv*>& dataMatInConst) override
     {
         if(dataMatOutConst.empty() || dataMatInConst.empty())
             return;
@@ -205,9 +205,9 @@ public:
             dataMatOutRootConst[0]->endEdit();
     }
 
-    const sofa::defaulttype::BaseMatrix* getJ() { return NULL; }
+    const sofa::defaulttype::BaseMatrix* getJ() override { return NULL; }
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
     /**
     *	Stores al the articulation centers

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -73,6 +73,7 @@ static const std::string& getExecutablePath();
 static const std::string& getExecutableDirectory();
 
 /// @brief Get the path where plugins are located
+/// @deprecated Use sofa::helper::system::PluginRepository.getFirstPath() instead.
 static const std::string& getPluginDirectory();
 
 /// @brief Get the path to the "root" path of Sofa (i.e. the build directory or
@@ -83,6 +84,12 @@ static const std::string& getPluginDirectory();
 /// executable that is currently running. (It returns the path to the parent of
 /// the "bin" directory.)
 static const std::string& getSofaPathPrefix();
+
+/// @brief Construct a path based on the build dir path of Sofa
+///
+/// @warning This function is meant to be used only by the applications that are
+/// distributed with SOFA: it uses getSofaPathPrefix()
+static const std::string getSofaPathTo(const std::string& pathFromBuildDir);
 
 /// @brief Read a file written in a very basic ini-like format.
 ///

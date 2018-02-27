@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -61,20 +61,20 @@ protected:
     FixedRotationConstraint();
     virtual ~FixedRotationConstraint();
 public:
-    void init();
+    void init() override;
 
-    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& dx);
-    void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& dx);
-    void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& x);
-    void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& c);
+    void projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& dx) override;
+    void projectVelocity(const core::MechanicalParams* mparams, DataVecDeriv& dx) override;
+    void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& x) override;
+    void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& c) override;
 
-    virtual void draw(const core::visual::VisualParams* vparams);
+    virtual void draw(const core::visual::VisualParams* vparams) override;
 
 
 protected :
-    Data< bool > FixedXRotation;
-    Data< bool > FixedYRotation;
-    Data< bool > FixedZRotation;
+    Data< bool > FixedXRotation; ///< Prevent Rotation around X axis
+    Data< bool > FixedYRotation; ///< Prevent Rotation around Y axis
+    Data< bool > FixedZRotation; ///< Prevent Rotation around Z axis
     helper::vector<defaulttype::Quat> previousOrientation;
 };
 

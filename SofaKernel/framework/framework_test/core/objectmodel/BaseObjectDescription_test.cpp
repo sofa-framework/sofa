@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -19,7 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaSimulationCommon/init.h>
+/*
+ * #include <SofaSimulationCommon/init.h>
 using sofa::simulation::common::init ;
 
 #include <SofaSimulationGraph/init.h>
@@ -27,19 +28,16 @@ using sofa::simulation::graph::init ;
 
 #include <SofaComponentBase/initComponentBase.h>
 using sofa::component::initComponentBase ;
-
-#include <SofaTest/Sofa_test.h>
-using sofa::Sofa_test ;
+*/
 
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 using sofa::core::objectmodel::BaseObjectDescription ;
 
-#include <SofaTest/TestMessageHandler.h>
-using sofa::helper::logging::Message ;
+#include <sofa/helper/testing/BaseTest.h>
+using sofa::helper::testing::BaseTest ;
 
 
-
-struct BaseObjectDescription_test: public Sofa_test<>
+struct BaseObjectDescription_test: public BaseTest
 {
     void SetUp()
     {

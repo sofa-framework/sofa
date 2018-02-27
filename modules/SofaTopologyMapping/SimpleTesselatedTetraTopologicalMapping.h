@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -66,7 +66,7 @@ protected:
 public:
     /** \brief Initializes the target BaseTopology from the source BaseTopology.
      */
-    virtual void init();
+    virtual void init() override;
 
     /** \brief Translates the TopologyChange objects from the source to the target.
      *
@@ -74,7 +74,7 @@ public:
      * reflect the effects of the first topology changes on the second topology.
      *
      */
-    virtual void updateTopologicalMappingTopDown();
+    virtual void updateTopologicalMappingTopDown() override;
 
     /** \brief Translates the TopologyChange objects from the target to the source.
      *
@@ -82,13 +82,13 @@ public:
      * reflect the effects of the second topology changes on the first topology.
      *
      */
-    virtual void updateTopologicalMappingBottomUp();
+    virtual void updateTopologicalMappingBottomUp() override;
 
     /// Return true if this mapping is able to propagate topological changes from input to output model
-    virtual bool propagateFromInputToOutputModel() { return true; }
+    virtual bool propagateFromInputToOutputModel() override { return true; }
 
     /// Return true if this mapping is able to propagate topological changes from output to input model
-    virtual bool propagateFromOutputToInputModel() { return true; }
+    virtual bool propagateFromOutputToInputModel() override { return true; }
 
     const helper::vector<int>& getPointMappedFromPoint() const { return d_pointMappedFromPoint.getValue(); }
     const helper::vector<int>& getPointMappedFromEdge() const { return d_pointMappedFromEdge.getValue(); }

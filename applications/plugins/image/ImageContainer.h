@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -340,31 +340,31 @@ public:
     typedef typename ImageTypes::imCoord imCoord;
     typedef helper::WriteAccessor<Data< ImageTypes > > waImage;
     typedef helper::ReadAccessor<Data< ImageTypes > > raImage;
-    Data< ImageTypes > image;
+    Data< ImageTypes > image; ///< image
 
     // transform data
     typedef SReal Real;
     typedef defaulttype::ImageLPTransform<Real> TransformType;
     typedef helper::WriteAccessor<Data< TransformType > > waTransform;
     typedef helper::ReadAccessor<Data< TransformType > > raTransform;
-    Data< TransformType > transform;
+    Data< TransformType > transform; ///< 12-param vector for trans, rot, scale, ...
 
     // input file
     sofa::core::objectmodel::DataFileName m_filename;
 
-    Data<bool> drawBB;
+    Data<bool> drawBB; ///< draw bounding box
 
     /**
     * If true, the container will attempt to load a sequence of images starting from the file given by filename
     */
-    Data<bool> sequence;
+    Data<bool> sequence; ///< load a sequence of images
     /**
     * The number of frames of the sequence to be loaded.
     */
-    Data<unsigned int> nFrames;
+    Data<unsigned int> nFrames; ///< The number of frames of the sequence to be loaded. Default is the entire sequence.
 
 
-    virtual std::string getTemplateName() const	{ return templateName(this); }
+    virtual std::string getTemplateName() const	override { return templateName(this); }
     static std::string templateName(const ImageContainer<ImageTypes>* = NULL) {	return ImageTypes::Name(); }
 
     ImageContainer() : Inherited()
@@ -396,7 +396,7 @@ public:
 
     bool transformIsSet;
 
-    virtual void parse(sofa::core::objectmodel::BaseObjectDescription *arg)
+    virtual void parse(sofa::core::objectmodel::BaseObjectDescription *arg) override
     {
         Inherited::parse(arg);
 
@@ -412,7 +412,7 @@ public:
         ImageContainerSpecialization<ImageTypes>::parse( this, arg );
     }
 
-    virtual void init()
+    virtual void init() override
     {
         ImageContainerSpecialization<ImageTypes>::init( this );
 
@@ -505,7 +505,7 @@ protected:
         return ImageContainerSpecialization<ImageTypes>::loadCamera( this );
     }
 
-    void handleEvent(sofa::core::objectmodel::Event *event)
+    void handleEvent(sofa::core::objectmodel::Event *event) override
     {
         if (simulation::AnimateEndEvent::checkEventType(event))
             loadCamera();
@@ -531,7 +531,7 @@ protected:
         for(unsigned int i=0;i<p.size();i++) c[i]=rtransform->fromImage(p[i]);
     }
 
-    virtual void computeBBox(const core::ExecParams*  params, bool onlyVisible=false )
+    virtual void computeBBox(const core::ExecParams*  params, bool onlyVisible=false ) override
     {
         if( onlyVisible && !drawBB.getValue()) return;
 
@@ -548,7 +548,7 @@ protected:
         this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<Real>(bbmin,bbmax));
     }
 
-    void draw(const core::visual::VisualParams* vparams)
+    void draw(const core::visual::VisualParams* vparams) override
     {
 #ifndef SOFA_NO_OPENGL
         // draw bounding box

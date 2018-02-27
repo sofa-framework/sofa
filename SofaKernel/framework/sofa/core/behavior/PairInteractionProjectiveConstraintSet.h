@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -67,14 +67,14 @@ public:
     Data<SReal> endTime;  ///< Time when the constraint becomes inactive (-1 for infinitely active)
     virtual bool isActive() const; ///< if false, the constraint does nothing
 
-    virtual void init();
+    virtual void init() override;
 
     /// Retrieve the associated MechanicalState
     MechanicalState<DataTypes>* getMState1() { return mstate1.get(); }
-    BaseMechanicalState* getMechModel1() { return mstate1.get(); }
+    BaseMechanicalState* getMechModel1() override { return mstate1.get(); }
     /// Retrieve the associated MechanicalState
     MechanicalState<DataTypes>* getMState2() { return mstate2.get(); }
-    BaseMechanicalState* getMechModel2() { return mstate2.get(); }
+    BaseMechanicalState* getMechModel2() override { return mstate2.get(); }
 
     // to get rid of warnings
     using BaseInteractionProjectiveConstraintSet::projectPosition;
@@ -88,28 +88,28 @@ public:
     /// This method retrieves the dx vector from the MechanicalState and call
     /// the internal projectResponse(VecDeriv&,VecDeriv&) method implemented by
     /// the component.
-    virtual void projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId);
+    virtual void projectResponse(const MechanicalParams* mparams, MultiVecDerivId dxId) override;
 
     /// Project the L matrix of the Lagrange Multiplier equation system.
     ///
     /// This method retrieves the lines of the Jacobian Matrix from the MechanicalState and call
     /// the internal projectResponse(MatrixDeriv&) method implemented by
     /// the component.
-    virtual void projectJacobianMatrix(const MechanicalParams* mparams, MultiMatrixDerivId cId);
+    virtual void projectJacobianMatrix(const MechanicalParams* mparams, MultiMatrixDerivId cId) override;
 
     /// Project v to constrained space (v models a velocity).
     ///
     /// This method retrieves the v vector from the MechanicalState and call
     /// the internal projectVelocity(VecDeriv&,VecDeriv&) method implemented by
     /// the component.
-    virtual void projectVelocity(const MechanicalParams* mparams, MultiVecDerivId vId);
+    virtual void projectVelocity(const MechanicalParams* mparams, MultiVecDerivId vId) override;
 
     /// Project x to constrained space (x models a position).
     ///
     /// This method retrieves the x vector from the MechanicalState and call
     /// the internal projectPosition(VecCoord&,VecCoord&) method implemented by
     /// the component.
-    virtual void projectPosition(const MechanicalParams* mparams, MultiVecCoordId xId);
+    virtual void projectPosition(const MechanicalParams* mparams, MultiVecCoordId xId) override;
 
     /// Project dx to constrained space (dx models an acceleration).
     virtual void projectResponse(const MechanicalParams* /*mparams*/, DataVecDeriv& dx1, DataVecDeriv& dx2) = 0;
@@ -123,13 +123,13 @@ public:
     /// @}
 
     /// Project the global Mechanical Matrix to constrained space using offset parameter
-    virtual void applyConstraint(const MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
+    virtual void applyConstraint(const MechanicalParams* /*mparams*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/) override
     {
 
     }
 
     /// Project the global Mechanical Vector to constrained space using offset parameter
-    virtual void applyConstraint(const MechanicalParams* /*mparams*/, defaulttype::BaseVector* /*vector*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/)
+    virtual void applyConstraint(const MechanicalParams* /*mparams*/, defaulttype::BaseVector* /*vector*/, const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/) override
     {
 
     }
@@ -180,7 +180,7 @@ public:
         return obj;
     }
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -35,7 +35,7 @@
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/objectmodel/Tag.h>
 
-#include <boost/intrusive_ptr.hpp>
+#include <sofa/core/sptr.h>
 
 #include <deque>
 #include <string>
@@ -106,8 +106,8 @@ namespace loader
 
 
 #define SOFA_BASE_CAST_IMPLEMENTATION(CLASSNAME) \
-virtual const CLASSNAME* to##CLASSNAME() const { return this; } \
-virtual       CLASSNAME* to##CLASSNAME()       { return this; }
+virtual const CLASSNAME* to##CLASSNAME() const override { return this; } \
+virtual       CLASSNAME* to##CLASSNAME()       override { return this; }
 
 
 
@@ -133,8 +133,9 @@ class SOFA_CORE_API Base
 public:
 
     typedef Base* Ptr;
-    typedef boost::intrusive_ptr<Base> SPtr;
 
+    using SPtr = sptr<Base>;
+    
     typedef TClass< Base, void > MyClass;
     static const MyClass* GetClass() { return MyClass::get(); }
     virtual const BaseClass* getClass() const { return GetClass(); }
@@ -461,11 +462,11 @@ public:
     Data<std::string> name;
 
 
-    Data<bool> f_printLog;
+    Data<bool> f_printLog; ///< if true, emits extra messages at runtime.
 
-    Data< sofa::core::objectmodel::TagSet > f_tags;
+    Data< sofa::core::objectmodel::TagSet > f_tags; ///< list of the subsets the objet belongs to
 
-    Data< sofa::defaulttype::BoundingBox > f_bbox;
+    Data< sofa::defaulttype::BoundingBox > f_bbox; ///< this object bounding box
 
     /// @name casting
     ///   trivial cast to a few base components

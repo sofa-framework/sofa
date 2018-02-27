@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -56,18 +56,18 @@ protected:
     ~MergeMeshes();
 public:
     /// Parse the given description to assign values to this object's fields and potentially other parameters
-    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg );
+    void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override;
 
     /// Assign the field values stored in the given map of name -> value pairs
-    void parseFields ( const std::map<std::string,std::string*>& str );
+    void parseFields ( const std::map<std::string,std::string*>& str ) override;
 
-    void init();
+    void init() override;
 
-    void reinit();
+    void reinit() override;
 
-    void update();
+    void update() override;
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -77,7 +77,7 @@ public:
         return DataTypes::Name();
     }
 
-    Data<unsigned int> f_nbMeshes;
+    Data<unsigned int> f_nbMeshes; ///< number of meshes to merge
 
     helper::vector<Data<VecCoord>*> vf_positions;
     helper::vector< Data< helper::vector< helper::fixed_array <unsigned int,2> > >* > vf_edges;
@@ -88,14 +88,14 @@ public:
     helper::vector< Data< helper::vector< helper::fixed_array<unsigned int,8> > >* > vf_hexahedra;
 
 
-    Data<unsigned> f_output_npoints;
-    Data<VecCoord> f_output_positions;
-    Data< helper::vector< helper::fixed_array <unsigned int,2> > > f_output_edges;
-    Data< helper::vector< helper::fixed_array <unsigned int,3> > > f_output_triangles;
-    Data< helper::vector< helper::fixed_array <unsigned int,4> > > f_output_quads;
-    Data< helper::vector< helper::vector <unsigned int> > > f_output_polygons;
-    Data< helper::vector< helper::fixed_array<unsigned int,4> > > f_output_tetrahedra;
-    Data< helper::vector< helper::fixed_array<unsigned int,8> > > f_output_hexahedra;
+    Data<unsigned> f_output_npoints; ///< Number Of out points
+    Data<VecCoord> f_output_positions; ///< Output Vertices of the merged mesh
+    Data< helper::vector< helper::fixed_array <unsigned int,2> > > f_output_edges; ///< Output Edges of the merged mesh
+    Data< helper::vector< helper::fixed_array <unsigned int,3> > > f_output_triangles; ///< Output Triangles of the merged mesh
+    Data< helper::vector< helper::fixed_array <unsigned int,4> > > f_output_quads; ///< Output Quads of the merged mesh
+    Data< helper::vector< helper::vector <unsigned int> > > f_output_polygons; ///< Output Polygons of the merged mesh
+    Data< helper::vector< helper::fixed_array<unsigned int,4> > > f_output_tetrahedra; ///< Output Tetrahedra of the merged mesh
+    Data< helper::vector< helper::fixed_array<unsigned int,8> > > f_output_hexahedra; ///< Output Hexahedra of the merged mesh
 
 protected:
     void createInputMeshesData(int nb = -1);

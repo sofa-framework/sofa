@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -73,11 +73,11 @@ namespace sofa
 
                 SOFA_CLASS(SOFA_TEMPLATE(BlenderExporter,T),core::objectmodel::BaseObject);
 
-                Data < std::string > path; 
-                Data < std::string > baseName;
-                Data < int > simulationType;
-                Data < int > simulationStep;
-                Data < int > nbPtsByHair;
+                Data < std::string > path; ///< output path
+                Data < std::string > baseName; ///< Base name for the output files
+                Data < int > simulationType; ///< simulation type (0: soft body, 1: particles, 2:cloth, 3:hair)
+                Data < int > simulationStep; ///< save the  simulation result every step frames
+                Data < int > nbPtsByHair; ///< number of element by hair strand
 
             protected:
 
@@ -91,7 +91,7 @@ namespace sofa
 
                 static const char* Name(){return "Blender exporter";}
 
-                virtual std::string getTemplateName() const
+                virtual std::string getTemplateName() const override
                 {
                     return templateName(this);
                 }
@@ -101,11 +101,11 @@ namespace sofa
                     return T::Name();
                 }
 
-                void init();
+                void init() override;
 
-                void reset();
+                void reset() override;
 
-                void handleEvent(sofa::core::objectmodel::Event* event);
+                void handleEvent(sofa::core::objectmodel::Event* event) override;
 
                 /// Pre-construction check method called by ObjectFactory.
                 /// Check that DataTypes matches the MechanicalState.

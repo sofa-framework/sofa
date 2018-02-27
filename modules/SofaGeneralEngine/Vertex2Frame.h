@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -27,6 +27,7 @@
 #pragma once
 #endif
 
+
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -49,6 +50,8 @@ class Vertex2Frame : public  core::DataEngine
 public:
     SOFA_CLASS(SOFA_TEMPLATE(Vertex2Frame,DataTypes),core::DataEngine);
     typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::CPos CPos;
     typedef typename DataTypes::VecCoord VecCoord;
 
 protected:
@@ -57,13 +60,13 @@ protected:
 
     ~Vertex2Frame() {}
 public:
-    void init();
+    void init() override;
 
-    void reinit();
+    void reinit() override;
 
-    void update();
+    void update() override;
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }
@@ -74,17 +77,22 @@ public:
     }
 
 protected:
-    sofa::core::behavior::MechanicalState<DataTypes>* mstate;
-    Data< helper::vector<sofa::defaulttype::Vector3> > vertices;
-    Data< helper::vector<sofa::defaulttype::Vector3> > texCoords; // for the moment, we suppose that texCoords is order 2 (2 texCoords for a vertex)
-    Data< helper::vector<sofa::defaulttype::Vector3> > normals;
+    typename sofa::core::behavior::MechanicalState<DataTypes>::SPtr m_mstate;
+    Data< helper::vector<CPos> > d_vertices; ///< Vertices of the mesh loaded
+    Data< helper::vector<sofa::defaulttype::Vector2> > d_texCoords; ///< for the moment, we suppose that texCoords is order 2 (2 texCoords for a vertex)
+    Data< helper::vector<CPos> > d_normals; ///< Normals of the mesh loaded
 
-    Data<VecCoord> frames;
-	Data<bool> useNormals;
-	Data<bool> invertNormals;
+    Data<VecCoord> d_frames; ///< Frames at output
+    Data<bool> d_useNormals; ///< Use normals to compute the orientations; if disabled the direction of the x axisof a vertice is the one from this vertice to the next one
+    Data<bool> d_invertNormals; ///< Swap normals
 
-    Data<int> rotation;
-    Data<double> rotationAngle;
+    Data<int> d_rotation; ///< Apply a local rotation on the frames. If 0 a x-axis rotation is applied. If 1 a y-axis rotation is applied, If 2 a z-axis rotation is applied.
+    Data<double> d_rotationAngle; ///< Angle rotation
+
+    defaulttype::Quat computeOrientation(const CPos &xAxis, const CPos &yAxis, const CPos &zAxis);
+
+    static const Real EPSILON;
+
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_VERTEX2FRAME_CPP)

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -112,27 +112,27 @@ public:
 
     typedef sofa::defaulttype::MatNoInit<3, 3, Real> Transformation;
 
-    Data<bool> jmjt_twostep;
-    Data<bool> f_verbose;
-    Data<bool> use_file;
-    Data<bool> share_matrix;
-    Data <std::string> solverName;
-    Data<bool> use_rotations;
-    Data<double> draw_rotations_scale;
+    Data<bool> jmjt_twostep; ///< Use two step algorithm to compute JMinvJt
+    Data<bool> f_verbose; ///< Dump system state at each iteration
+    Data<bool> use_file; ///< Dump system matrix in a file
+    Data<bool> share_matrix; ///< Share the compliance matrix in memory if they are related to the same file (WARNING: might require to reload Sofa when opening a new scene...)
+    Data <std::string> solverName; ///< Name of the solver to use to precompute the first matrix
+    Data<bool> use_rotations; ///< Use Rotations around the preconditioner
+    Data<double> draw_rotations_scale; ///< Scale rotations in draw function
 
     MState * mstate;
 protected:
     PrecomputedWarpPreconditioner();
 public:
-    void solve (TMatrix& M, TVector& x, TVector& b);
-    void invert(TMatrix& M);
-    void setSystemMBKMatrix(const core::MechanicalParams* mparams);
-    bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact);
-    void draw(const core::visual::VisualParams* vparams);
-    void init();
+    void solve (TMatrix& M, TVector& x, TVector& b) override;
+    void invert(TMatrix& M) override;
+    void setSystemMBKMatrix(const core::MechanicalParams* mparams) override;
+    bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact) override;
+    void draw(const core::visual::VisualParams* vparams) override;
+    void init() override;
     void loadMatrix(TMatrix& M);
 
-    bool hasUpdatedMatrix() {return false;}
+    bool hasUpdatedMatrix() override {return false;}
 
     TBaseMatrix * getSystemMatrixInv()
     {
@@ -148,7 +148,7 @@ public:
         return sofa::core::objectmodel::BaseObject::canCreate(obj, context, arg);
     }
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -95,15 +95,15 @@ public:
     Data<VecCoord> points;    ///< mapped points in local coordinates
     VecCoord rotatedPoints;   ///< vectors from frame origin to mapped points, projected to world coordinates
     RigidMappingInternalData<In, Out> data;
-    Data<unsigned int> index;
-    sofa::core::objectmodel::DataFileName fileRigidMapping;
-    Data<bool> useX0;
-    Data<bool> indexFromEnd;
+    Data<unsigned int> index; ///< input DOF index
+    sofa::core::objectmodel::DataFileName fileRigidMapping; ///< Filename
+    Data<bool> useX0; ///< Use x0 instead of local copy of initial positions (to support topo changes)
+    Data<bool> indexFromEnd; ///< input DOF index starts from the end of input DOFs vector
 
-    Data< helper::vector<unsigned int> > rigidIndexPerPoint;
-    Data<bool> globalToLocalCoords;
+    Data< helper::vector<unsigned int> > rigidIndexPerPoint; ///< For each mapped point, the index of the Rigid it is mapped from
+    Data<bool> globalToLocalCoords; ///< are the output DOFs initially expressed in global coordinates
 
-    Data<int> geometricStiffness;
+    Data<int> geometricStiffness; ///< assemble (and use) geometric stiffness (0=no GS, 1=non symmetric, 2=symmetrized)
 
 protected:
     RigidMapping();
@@ -115,30 +115,30 @@ public:
     int addPoint(const Coord& c);
     int addPoint(const Coord& c, unsigned int indexFrom);
 
-    virtual void init();
+    virtual void init() override;
 
     /// Compute the local coordinates based on the current output coordinates.
-    virtual void reinit();
+    virtual void reinit() override;
 
-    virtual void apply(const core::MechanicalParams *mparams, Data<VecCoord>& out, const Data<InVecCoord>& in);
+    virtual void apply(const core::MechanicalParams *mparams, Data<VecCoord>& out, const Data<InVecCoord>& in) override;
 
-    virtual void applyJ(const core::MechanicalParams *mparams, Data<VecDeriv>& out, const Data<InVecDeriv>& in);
+    virtual void applyJ(const core::MechanicalParams *mparams, Data<VecDeriv>& out, const Data<InVecDeriv>& in) override;
 
-    virtual void applyJT(const core::MechanicalParams *mparams, Data<InVecDeriv>& out, const Data<VecDeriv>& in);
+    virtual void applyJT(const core::MechanicalParams *mparams, Data<InVecDeriv>& out, const Data<VecDeriv>& in) override;
 
-    virtual void applyJT(const core::ConstraintParams *cparams, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in);
+    virtual void applyJT(const core::ConstraintParams *cparams, Data<InMatrixDeriv>& out, const Data<OutMatrixDeriv>& in) override;
 
-    virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce );
+    virtual void applyDJT(const core::MechanicalParams* mparams, core::MultiVecDerivId parentForce, core::ConstMultiVecDerivId  childForce ) override;
 
-    virtual const sofa::defaulttype::BaseMatrix* getJ();
+    virtual const sofa::defaulttype::BaseMatrix* getJ() override;
 
-    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs();
+    virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs() override;
 
-    virtual void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId );
-    virtual const defaulttype::BaseMatrix* getK();
+    virtual void updateK( const core::MechanicalParams* mparams, core::ConstMultiVecDerivId childForceId ) override;
+    virtual const defaulttype::BaseMatrix* getK() override;
 
 
-    virtual void draw(const core::visual::VisualParams* vparams);
+    virtual void draw(const core::visual::VisualParams* vparams) override;
 
     void clear(int reserve = 0);
 
@@ -148,7 +148,7 @@ public:
     void setRepartition(unsigned int value);
     void setRepartition(sofa::helper::vector<unsigned int> values);
 
-    void parse(core::objectmodel::BaseObjectDescription* arg);
+    void parse(core::objectmodel::BaseObjectDescription* arg) override;
 
 protected:
     class Loader;

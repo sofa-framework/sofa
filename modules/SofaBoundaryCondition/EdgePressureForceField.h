@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -79,22 +79,22 @@ protected:
         }
     };
 
-    sofa::component::topology::EdgeSparseData<sofa::helper::vector< EdgePressureInformation> > edgePressureMap;
+    sofa::component::topology::EdgeSparseData<sofa::helper::vector< EdgePressureInformation> > edgePressureMap; ///< map between edge indices and their pressure
 
     sofa::core::topology::BaseMeshTopology* _topology;
     sofa::component::topology::TriangleSetTopologyContainer* _completeTopology;
     sofa::component::topology::EdgeSetGeometryAlgorithms<DataTypes>* edgeGeo;
 
-    Data<Deriv> pressure;
-    Data<helper::vector<unsigned int> > edgeIndices;
-    Data<helper::vector<sofa::core::topology::Edge> > edges;
-    Data<Deriv> normal; // the normal used to define the edge subjected to the pressure force
-    Data<Real> dmin; // coordinates min of the plane for the vertex selection
-    Data<Real> dmax;// coordinates max of the plane for the vertex selection
-    Data< SReal > arrowSizeCoef; // for drawing. The sign changes the direction, 0 doesn't draw arrow
-    Data< helper::vector<Real> > p_intensity; // pressure intensity on edge normal
-    Data<Coord> p_binormal; // binormal of the 2D plane
-    Data<bool> p_showForces;
+    Data<Deriv> pressure; ///< Pressure force per unit area
+    Data<helper::vector<unsigned int> > edgeIndices; ///< Indices of edges separated with commas where a pressure is applied
+    Data<helper::vector<sofa::core::topology::Edge> > edges; ///< List of edges where a pressure is applied
+    Data<Deriv> normal; ///< the normal used to define the edge subjected to the pressure force
+    Data<Real> dmin; ///< coordinates min of the plane for the vertex selection
+    Data<Real> dmax;///< coordinates max of the plane for the vertex selection
+    Data< SReal > arrowSizeCoef; ///< for drawing. The sign changes the direction, 0 doesn't draw arrow
+    Data< helper::vector<Real> > p_intensity; ///< pressure intensity on edge normal
+    Data<Coord> p_binormal; ///< binormal of the 2D plane
+    Data<bool> p_showForces; ///< draw arrows of edge pressures
 
 
 
@@ -116,23 +116,23 @@ protected:
 
     virtual ~EdgePressureForceField();
 public:
-    virtual void init();
+    virtual void init() override;
 
-    virtual void addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV ) ;
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */)
+    virtual void addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV ) override;
+    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */) override
     {
         //TODO: remove this line (avoid warning message) ...
         mparams->setKFactorUsed(true);
     }
 
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
     {
         serr << "Get potentialEnergy not implemented" << sendl;
         return 0.0;
     }
 
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
     void setDminAndDmax(const SReal _dmin, const SReal _dmax)
     {

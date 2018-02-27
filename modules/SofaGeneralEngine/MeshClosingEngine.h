@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -66,18 +66,18 @@ public:
 
     /// inputs
     Data< SeqPositions > inputPosition;
-    Data< SeqTriangles > inputTriangles;
-    Data< SeqQuads > inputQuads;
+    Data< SeqTriangles > inputTriangles; ///< input triangles
+    Data< SeqQuads > inputQuads; ///< input quads
 
     /// outputs
     Data< SeqPositions > position;
-    Data< SeqTriangles > triangles;
-    Data< SeqQuads > quads;
-    Data< VecSeqIndex > indices;
-    Data< SeqPositions > closingPosition;
-    Data< SeqTriangles > closingTriangles;
+    Data< SeqTriangles > triangles; ///< Triangles of closed mesh
+    Data< SeqQuads > quads; ///< Quads of closed mesh (=input quads with current method)
+    Data< VecSeqIndex > indices; ///< Index lists of the closing parts
+    Data< SeqPositions > closingPosition; ///< Vertices of the closing parts
+    Data< SeqTriangles > closingTriangles; ///< Triangles of the closing parts
 
-    virtual std::string getTemplateName() const    { return templateName(this);    }
+    virtual std::string getTemplateName() const    override { return templateName(this);    }
     static std::string templateName(const MeshClosingEngine<DataTypes>* = NULL) { return DataTypes::Name();    }
 
 protected:
@@ -98,7 +98,7 @@ protected:
     virtual ~MeshClosingEngine() {}
 
 public:
-    virtual void init()
+    virtual void init() override
     {
         addInput(&inputPosition);
         addInput(&inputTriangles);
@@ -112,8 +112,8 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit()    { update();  }
-    void update();
+    virtual void reinit()    override { update();  }
+    void update() override;
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_MeshClosingEngine_CPP)

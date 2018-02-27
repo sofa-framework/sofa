@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -86,7 +86,7 @@ public:
     /**
      * @brief Init method called during the scene graph initialization.
      */
-    virtual void init();
+    virtual void init() override;
 
     /**
      * @name Controller Interface
@@ -96,17 +96,17 @@ public:
     /**
      * @brief Mouse event callback.
      */
-    void onMouseEvent(core::objectmodel::MouseEvent *);
+    void onMouseEvent(core::objectmodel::MouseEvent *) override;
 
     /**
      * @brief Key press event callback.
      */
-    void onKeyPressedEvent(core::objectmodel::KeypressedEvent *);
+    void onKeyPressedEvent(core::objectmodel::KeypressedEvent *) override;
 
     /**
      * @brief begin animation callback. Called at the beginning of each time step.
      */
-    void onBeginAnimationStep(const double dt);
+    void onBeginAnimationStep(const double dt) override;
     //@}
 
     /**

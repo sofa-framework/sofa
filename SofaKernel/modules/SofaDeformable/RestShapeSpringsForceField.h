@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -77,14 +77,14 @@ public:
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
 
-    Data< helper::vector< unsigned int > > points;
-    Data< VecReal > stiffness;
-    Data< VecReal > angularStiffness;
-    Data< helper::vector< CPos > > pivotPoints;
-    Data< helper::vector< unsigned int > > external_points;
-    Data< bool > recompute_indices;
-    Data< bool > drawSpring;
-    Data< defaulttype::RGBAColor > springColor;
+    Data< helper::vector< unsigned int > > points; ///< points controlled by the rest shape springs
+    Data< VecReal > stiffness; ///< stiffness values between the actual position and the rest shape position
+    Data< VecReal > angularStiffness; ///< angularStiffness assigned when controlling the rotation of the points
+    Data< helper::vector< CPos > > pivotPoints; ///< global pivot points used when translations instead of the rigid mass centers
+    Data< helper::vector< unsigned int > > external_points; ///< points from the external Mechancial State that define the rest shape springs
+    Data< bool > recompute_indices; ///< Recompute indices (should be false for BBOX)
+    Data< bool > drawSpring; ///< draw Spring
+    Data< defaulttype::RGBAColor > springColor; ///< spring color. (default=[0.0,1.0,0.0,1.0])
 
     SingleLink<RestShapeSpringsForceField<DataTypes>, sofa::core::behavior::MechanicalState< DataTypes >, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> restMState;
     linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> matS;
@@ -94,16 +94,16 @@ protected:
 
 public:
     /// BaseObject initialization method.
-    void bwdInit();
-
-    virtual void reinit();
+    void bwdInit() override ;
+    virtual void parse(core::objectmodel::BaseObjectDescription *arg) override ;
+    virtual void reinit() override ;
 
     /// Add the forces.
-    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
+    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
 
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx);
+    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx) override;
 
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const override
     {
         SOFA_UNUSED(mparams);
         SOFA_UNUSED(x);
@@ -113,18 +113,18 @@ public:
     }
 
     /// Brings ForceField contribution to the global system stiffness matrix.
-    virtual void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix );
+    virtual void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix ) override;
 
-    virtual void addSubKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> & addSubIndex );
+    virtual void addSubKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix, const helper::vector<unsigned> & addSubIndex ) override;
 
-    virtual void draw(const core::visual::VisualParams* vparams);
+    virtual void draw(const core::visual::VisualParams* vparams) override;
 
 
     const DataVecCoord* getExtPosition() const;
     const VecIndex& getIndices() const { return m_indices; }
     const VecIndex& getExtIndices() const { return (useRestMState ? m_ext_indices : m_indices); }
 
-    virtual void updateForceMask();
+    virtual void updateForceMask() override;
 
 protected :
 

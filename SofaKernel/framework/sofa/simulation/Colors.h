@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -76,7 +76,7 @@ static const char* COLOR[ALLCOLORS]=
     /*ForceField            =*/ "#bebada", // color 3
     /*Solver                =*/ "#b3de69", // color 7
     /*CollisionPipeline     =*/ "#bc80bd", // color 10
-    /*MechanicalMapping     =*/ "#2b83da", // color spectral4/4
+    /*MechanicalMapping     =*/ "#4ba3fa", // color spectral4/4 (brigher)
     /*Mapping               =*/ "#80b1d3", // color 5
     /*Mass                  =*/ "#ffffb3", // color 2
     /*Topology              =*/ "#ffed6f", // color 12

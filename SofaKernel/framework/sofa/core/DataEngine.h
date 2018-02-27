@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -161,19 +161,19 @@ public:
     /// @}
 
     /// This method is needed by DDGNode
-    const std::string& getName() const
+    const std::string& getName() const override
     {
         return objectmodel::BaseObject::getName();
     }
 
     /// This method is needed by DDGNode
-    objectmodel::Base* getOwner() const
+    objectmodel::Base* getOwner() const override
     {
         return const_cast<DataEngine*>(this);
     }
 
     /// This method is needed by DDGNode
-    objectmodel::BaseData* getData() const
+    objectmodel::BaseData* getData() const override
     {
         return NULL;
     }

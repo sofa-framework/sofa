@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -78,17 +78,21 @@ protected:
     sofa::core::topology::BaseMeshTopology* topology;
 
 public:
-    SetIndex f_indices1;
-    SetIndex f_indices2;
-    Data<Real> f_radius;
-    Data<bool> f_twoWay;
-    Data<bool> f_freeRotations;
-    Data<bool> f_lastFreeRotation;
-    Data<bool> f_restRotations;
-    Data<defaulttype::Vector3> f_lastPos;
-    Data<defaulttype::Vector3> f_lastDir;
-    Data<bool> f_clamp;
-    Data<Real> f_minDistance;
+    SetIndex f_indices1; ///< Indices of the source points on the first model
+    SetIndex f_indices2; ///< Indices of the fixed points on the second model
+    Data<Real> f_radius; ///< Radius to search corresponding fixed point if no indices are given
+    Data<bool> f_twoWay; ///< true if forces should be projected back from model2 to model1
+    Data<bool> f_freeRotations; ///< true to keep rotations free (only used for Rigid DOFs)
+    Data<bool> f_lastFreeRotation; ///< true to keep rotation of the last attached point free (only used for Rigid DOFs)
+    Data<bool> f_restRotations; ///< true to use rest rotations local offsets (only used for Rigid DOFs)
+    Data<defaulttype::Vector3> f_lastPos; ///< position at which the attach constraint should become inactive
+    Data<defaulttype::Vector3> f_lastDir; ///< direction from lastPos at which the attach coustraint should become inactive
+    Data<bool> f_clamp; ///< true to clamp particles at lastPos instead of freeing them.
+    Data<Real> f_minDistance; ///< the constraint become inactive if the distance between the points attached is bigger than minDistance.
+    Data< Real > d_positionFactor;      ///< IN: Factor applied to projection of position
+    Data< Real > d_velocityFactor;      ///< IN: Factor applied to projection of velocity
+    Data< Real > d_responseFactor;      ///< IN: Factor applied to projection of force/acceleration
+    Data< helper::vector<Real> > d_constraintFactor; ///< Constraint factor per pair of points constrained. 0 -> the constraint is released. 1 -> the constraint is fully constrained
 
     helper::vector<bool> activeFlags;
     helper::vector<bool> constraintReleased;
@@ -103,19 +107,20 @@ public:
     void addConstraint(unsigned int index1, unsigned int index2);
 
     // -- Constraint interface
-    void init();
-    void projectResponse(const core::MechanicalParams *mparams, DataVecDeriv& dx1, DataVecDeriv& dx2);
-    void projectVelocity(const core::MechanicalParams *mparams, DataVecDeriv& v1, DataVecDeriv& v2);
-    void projectPosition(const core::MechanicalParams *mparams, DataVecCoord& x1, DataVecCoord& x2);
+    void init() override;
+    void projectJacobianMatrix(const core::MechanicalParams* /*mparams*/ /* PARAMS FIRST */, core::MultiMatrixDerivId /*cId*/) override;
+    void projectResponse(const core::MechanicalParams *mparams, DataVecDeriv& dx1, DataVecDeriv& dx2) override;
+    void projectVelocity(const core::MechanicalParams *mparams, DataVecDeriv& v1, DataVecDeriv& v2) override;
+    void projectPosition(const core::MechanicalParams *mparams, DataVecCoord& x1, DataVecCoord& x2) override;
 
     /// Project the global Mechanical Matrix to constrained space using offset parameter
-    void applyConstraint(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix);
+    void applyConstraint(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
     /// Project the global Mechanical Vector to constrained space using offset parameter
-    void applyConstraint(const core::MechanicalParams *mparams, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix);
+    void applyConstraint(const core::MechanicalParams *mparams, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
 
-    virtual void draw(const core::visual::VisualParams* vparams);
+    virtual void draw(const core::visual::VisualParams* vparams) override;
 
 protected :
 
@@ -134,15 +139,31 @@ protected :
         }
         constraintReleased[index] = false;
 
-        x2 = x1;
+        Coord in1 = x1;
+        Coord in2 = x2;
+
+        sofa::helper::ReadAccessor< Data< helper::vector<Real> > > constraintFactor = d_constraintFactor;
+
+        Deriv corr = (in2-in1)*(0.5*d_positionFactor.getValue()*constraintFactor[index]);
+
+        x1 += corr;
+        x2 -= corr;
     }
 
     void projectVelocity(Deriv& x1, Deriv& x2, bool /*freeRotations*/, unsigned index)
     {
         // do nothing if distance between x2 & x1 is bigger than f_minDistance
         if (constraintReleased[index]) return;
+        
+        Deriv in1 = x1;
+        Deriv in2 = x2;
 
-        x2 = x1;
+        sofa::helper::ReadAccessor< Data< helper::vector<Real> > > constraintFactor = d_constraintFactor;
+
+        Deriv corr = (in2-in1)*(0.5*d_velocityFactor.getValue()*constraintFactor[index]);
+
+        x1 += corr;
+        x2 -= corr;
     }
 
     void projectResponse(Deriv& dx1, Deriv& dx2, bool /*freeRotations*/, bool twoway, unsigned index)
@@ -156,8 +177,13 @@ protected :
         }
         else
         {
-            dx1 += dx2;
-            dx2 = dx1;
+            Deriv in1 = dx1;
+            Deriv in2 = dx2;
+
+            sofa::helper::ReadAccessor< Data< helper::vector<Real> > > constraintFactor = d_constraintFactor;
+
+            dx1 += in2*(d_responseFactor.getValue()*constraintFactor[index]);
+            dx2 += in1*(d_responseFactor.getValue()*constraintFactor[index]);
         }
     }
 

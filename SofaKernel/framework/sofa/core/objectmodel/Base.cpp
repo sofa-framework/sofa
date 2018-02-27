@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -246,18 +246,18 @@ void Base::processStream(std::ostream& out)
 {
     if (serr==out)
     {
-        addMessage( (MessageDispatcher::log(serr.messageClass(),
-                                            serr.messageType(), sofa::helper::logging::getComponentInfo(this),
-                                            serr.fileInfo()) << serr.str()).getMessage() );
+        MessageDispatcher::log(serr.messageClass(),
+                               serr.messageType(), sofa::helper::logging::getComponentInfo(this),
+                               serr.fileInfo()) << serr.str() ;
         serr.clear();
     }
     else if (sout==out)
     {
         if (f_printLog.getValue())
         {
-            addMessage( (MessageDispatcher::log(sout.messageClass(),
-                                                  sout.messageType(), sofa::helper::logging::getComponentInfo(this),
-                                                  sout.fileInfo()) << sout.str()).getMessage() );
+            MessageDispatcher::log(sout.messageClass(),
+                                   sout.messageType(), sofa::helper::logging::getComponentInfo(this),
+                                   sout.fileInfo()) << sout.str();
         }
 
         sout.clear();

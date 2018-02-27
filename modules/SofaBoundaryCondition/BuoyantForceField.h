@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -74,19 +74,19 @@ protected:
 
 
     FLUID fluidModel;
-    Data< Real > m_fluidModel;
+    Data< Real > m_fluidModel; ///< 1 for a plane, 2 for a box
 
     Data< Coord >   m_minBox;                       ///< Lower bound of the liquid box.
     Data< Coord >   m_maxBox;                       ///< Upper bound of the liquid box.
 
-    Data <Real>     m_heightPlane;              //orthogonal to the gravity
+    Data <Real>     m_heightPlane;              ///< orthogonal to the gravity
 
-    Data <Real>     m_fluidDensity;
-    Data <Real>     m_fluidViscosity;
-    Data <Real>     m_atmosphericPressure;
+    Data <Real>     m_fluidDensity; ///< Fluid Density
+    Data <Real>     m_fluidViscosity; ///< Fluid Viscosity
+    Data <Real>     m_atmosphericPressure; ///< atmospheric pressure
 
-    Data<bool>      m_enableViscosity;
-    Data<bool>      m_turbulentFlow;    //1 for turbulent, 0 for laminar
+    Data<bool>      m_enableViscosity; ///< enable the effects of viscosity
+    Data<bool>      m_turbulentFlow;    ///< 1 for turbulent, 0 for laminar
 
     sofa::helper::vector<ID> m_triangles;
 
@@ -94,12 +94,12 @@ protected:
 //    Data<Real>      m_immersedArea;
 //    Data<Real>      m_globalForce;
 
-    Data<bool>      m_flipNormals;
+    Data<bool>      m_flipNormals; ///< flip normals to inverse the forces applied on the object
 
-    Data<bool>      m_showPressureForces;
-    Data<bool>      m_showViscosityForces;
-    Data<bool>      m_showBoxOrPlane;
-    Data<Real>      m_showFactorSize;
+    Data<bool>      m_showPressureForces; ///< Show the pressure forces applied on the surface of the mesh if true
+    Data<bool>      m_showViscosityForces; ///< Show the viscosity forces applied on the surface of the mesh if true
+    Data<bool>      m_showBoxOrPlane; ///< Show the box or the plane
+    Data<Real>      m_showFactorSize; ///< Size factor applied to shown forces
 
     sofa::core::topology::BaseMeshTopology* m_topology;
 
@@ -121,11 +121,11 @@ protected:
     BuoyantForceField();
     virtual ~BuoyantForceField();
 public:
-    virtual void init();
+    virtual void init() override;
 
-    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v);
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv&  d_df , const DataVecDeriv&  d_dx );
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
+    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& d_f, const DataVecCoord& d_x, const DataVecDeriv& d_v) override;
+    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv&  d_df , const DataVecDeriv&  d_dx ) override;
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
     {
         serr << "Get potentialEnergy not implemented" << sendl;
         return 0.0;
@@ -134,7 +134,7 @@ public:
     using core::behavior::ForceField<DataTypes>::addKToMatrix;
     virtual void addKToMatrix(const sofa::core::behavior::MultiMatrixAccessor* /*matrix*/, SReal /*kFact*/) {}
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
 protected:
 

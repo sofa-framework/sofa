@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -45,7 +45,7 @@ class LULinearSolver : public sofa::component::linearsolver::MatrixLinearSolver<
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(LULinearSolver,Matrix,Vector),SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver,Matrix,Vector));
 
-    Data<bool> f_verbose;
+    Data<bool> f_verbose; ///< Dump system state at each iteration
     typename Matrix::LUSolver* solver;
     typename Matrix::InvMatrixType Minv;
     bool computedMinv;
@@ -63,7 +63,7 @@ protected:
     }
 public:
     /// Invert M
-    void invert (Matrix& M)
+    void invert (Matrix& M) override
     {
         if (solver != NULL)
             delete solver;
@@ -72,7 +72,7 @@ public:
     }
 
     /// Solve Mx=b
-    void solve (Matrix& M, Vector& x, Vector& b)
+    void solve (Matrix& M, Vector& x, Vector& b) override
     {
 
 
@@ -170,7 +170,7 @@ public:
     /// @param result the variable where the result will be added
     /// @param J the matrix J to use
     /// @return false if the solver does not support this operation, of it the system matrix is not invertible
-    bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact)
+    bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact) override
     {
         if (FullMatrix<double>* r = dynamic_cast<FullMatrix<double>*>(result))
         {

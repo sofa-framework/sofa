@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -45,7 +45,6 @@
 #include <sofa/helper/gl/glText.inl>
 #include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/gl/RAII.h>
-#include <sofa/helper/io/ImageBMP.h>
 
 #include <sofa/defaulttype/RigidTypes.h>
 
@@ -1161,13 +1160,13 @@ void QtGLViewer::setView(const Vec3d& pos, const Quat &ori)
 void QtGLViewer::setSizeW( int size )
 {
     resizeGL( size, _H );
-    updateGL();
+    update();
 }
 
 void QtGLViewer::setSizeH( int size )
 {
     resizeGL( _W, size );
-    updateGL();
+    update();
 
 }
 

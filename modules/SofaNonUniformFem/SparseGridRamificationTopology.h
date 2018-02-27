@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -43,16 +43,16 @@ protected:
     SparseGridRamificationTopology(bool _isVirtual=false);
     virtual ~SparseGridRamificationTopology();
 public:
-    virtual void init();
+    virtual void init() override;
 
     /// return the cube containing the given point (or -1 if not found),
     /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
-    virtual int findCube(const Vector3 &pos, SReal &fx, SReal &fy, SReal &fz);
+    virtual int findCube(const Vector3 &pos, SReal &fx, SReal &fy, SReal &fz) override;
 // 				virtual int findCube(const Vector3 &pos);
 
     /// return the cube containing the given point (or -1 if not found),
     /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
-    virtual int findNearestCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz);
+    virtual int findNearestCube(const Vector3& pos, SReal& fx, SReal &fy, SReal &fz) override;
 // 				virtual int findNearestCube(const Vector3& pos);
 
 
@@ -65,9 +65,9 @@ public:
 
 
     /// surcharge of functions defined in SparseGridTopology
-    virtual void buildAsFinest();
-    virtual void buildFromFiner();
-    virtual void buildVirtualFinerLevels();
+    virtual void buildAsFinest() override;
+    virtual void buildFromFiner() override;
+    virtual void buildVirtualFinerLevels() override;
 
     /// find the connexion graph between the finest hexahedra
     void findConnexionsAtFinestLevel();
@@ -87,7 +87,7 @@ public:
     enum {UP,DOWN,RIGHT,LEFT,BEFORE,BEHIND,NUM_CONNECTED_NODES};
 
     // Does the connectivity test have to be done at the finest level? (more precise but slow)
-    Data<bool> _finestConnectivity;
+    Data<bool> _finestConnectivity; ///< Test for connectivity at the finest level? (more precise but slower by testing all intersections between the model mesh and the faces between boundary cubes)
 
 
     /// a connexion corresponds to a connexe component in each regular hexa (each non-void hexa has at less one connexion)

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -46,24 +46,24 @@ protected:
     RecordedCamera();
     virtual ~RecordedCamera() {}
 public:
-    virtual void init();
+    virtual void init() override;
 
-    virtual void reinit();
+    virtual void reinit() override;
 
-    virtual void reset();
+    virtual void reset() override;
 
-    virtual void handleEvent(sofa::core::objectmodel::Event *);
+    virtual void handleEvent(sofa::core::objectmodel::Event *) override;
 
     //virtual void rotateWorldAroundPoint(Quat &rotation, const Vec3 &point);
 
     enum  { TRACKBALL_MODE, PAN_MODE, ZOOM_MODE, WHEEL_ZOOM_MODE, NONE_MODE };
     enum  { SCENE_CENTER_PIVOT = 0, WORLD_CENTER_PIVOT = 1};
 
-    Data<double> p_zoomSpeed;
-    Data<double> p_panSpeed;
-    Data<int> p_pivot;
+    Data<double> p_zoomSpeed; ///< Zoom Speed
+    Data<double> p_panSpeed; ///< Pan Speed
+    Data<int> p_pivot; ///< Pivot (0 => Scene center, 1 => World Center
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
 private:
     int currentMode;
@@ -77,7 +77,7 @@ private:
 
     // Kepp functions for mouse interaction (TODO: removed them and allow interactive and recorded camera in same scene)
     void moveCamera_mouse(int x, int y);
-    void manageEvent(core::objectmodel::Event* e);
+    void manageEvent(core::objectmodel::Event* e) override;
     void processMouseEvent(core::objectmodel::MouseEvent* me);
 
     void configureRotation();
@@ -87,24 +87,24 @@ private:
     void drawRotation();
 
 public:
-    Data<SReal> m_startTime;
-    Data<SReal> m_endTime;
+    Data<SReal> m_startTime; ///< Time when the camera moves will start
+    Data<SReal> m_endTime; ///< Time when the camera moves will end (or loop)
 
-    Data <bool> m_rotationMode;
-    Data <bool> m_translationMode;
-    Data <bool> m_navigationMode;
-    Data <SReal> m_rotationSpeed;
-    Data <Vec3> m_rotationCenter;
-    Data <Vec3> m_rotationStartPoint;
-    Data <Vec3> m_rotationLookAt;
-    Data <Vec3> m_rotationAxis;
-    Data <Vec3> m_cameraUp;
+    Data <bool> m_rotationMode; ///< If true, rotation will be performed
+    Data <bool> m_translationMode; ///< If true, translation will be performed
+    Data <bool> m_navigationMode; ///< If true, navigation will be performed
+    Data <SReal> m_rotationSpeed; ///< rotation Speed
+    Data <Vec3> m_rotationCenter; ///< Rotation center coordinates
+    Data <Vec3> m_rotationStartPoint; ///< Rotation start position coordinates
+    Data <Vec3> m_rotationLookAt; ///< Position to be focused during rotation
+    Data <Vec3> m_rotationAxis; ///< Rotation axis
+    Data <Vec3> m_cameraUp; ///< Camera Up axis
 
-    Data <bool> p_drawRotation;
-    Data <bool> p_drawTranslation;
+    Data <bool> p_drawRotation; ///< If true, will draw the rotation path
+    Data <bool> p_drawTranslation; ///< If true, will draw the translation path
 
-    Data <sofa::helper::vector<Vec3> > m_translationPositions;
-    Data <sofa::helper::vector<Quat> > m_translationOrientations;
+    Data <sofa::helper::vector<Vec3> > m_translationPositions; ///< Intermediate camera's positions
+    Data <sofa::helper::vector<Quat> > m_translationOrientations; ///< Intermediate camera's orientations
 
 protected:
     double m_nextStep;

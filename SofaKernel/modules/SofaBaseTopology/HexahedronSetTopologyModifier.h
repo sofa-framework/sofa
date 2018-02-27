@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -60,14 +60,14 @@ protected:
         , removeIsolated( initData(&removeIsolated,true, "removeIsolated", "remove Isolated dof") )
     { }
 
-    virtual ~HexahedronSetTopologyModifier() {}
+    virtual ~HexahedronSetTopologyModifier() override {}
 public:
-    virtual void init();
+    virtual void init() override;
 
     Data< bool > removeIsolated; ///< Controlled DOF index.
 
     /// \brief function to propagate topological change events by parsing the list of topologyEngines linked to this topology.
-    virtual void propagateTopologicalEngineChanges();
+    virtual void propagateTopologicalEngineChanges() override;
 
 
     /** \brief add a set of hexahedra
@@ -136,7 +136,7 @@ public:
     *
     * \sa addQuadsWarning
     */
-    virtual void addQuadsProcess(const sofa::helper::vector< Quad > &quads);
+    virtual void addQuadsProcess(const sofa::helper::vector< Quad > &quads) override;
 
     /** \brief Remove a subset of quads
     *
@@ -146,13 +146,13 @@ public:
     */
     virtual void removeQuadsProcess(const sofa::helper::vector<unsigned int> &indices,
             const bool removeIsolatedEdges = false,
-            const bool removeIsolatedPoints = false);
+            const bool removeIsolatedPoints = false) override;
 
     /** \brief Add some edges to this topology.
     *
     * \sa addEdgesWarning
     */
-    virtual void addEdgesProcess(const sofa::helper::vector< Edge > &edges);
+    virtual void addEdgesProcess(const sofa::helper::vector< Edge > &edges) override;
 
     /** \brief Remove a subset of edges
     *
@@ -163,13 +163,13 @@ public:
     * @param removeIsolatedItems if true remove isolated vertices
     */
     virtual void removeEdgesProcess(const sofa::helper::vector<unsigned int> &indices,
-            const bool removeIsolatedItems = false);
+            const bool removeIsolatedItems = false) override;
 
     /** \brief Add some points to this topology.
     *
     * \sa addPointsWarning
     */
-    virtual void addPointsProcess(const unsigned int nPoints);
+    virtual void addPointsProcess(const unsigned int nPoints) override;
 
     /** \brief Remove a subset of points
     *
@@ -179,7 +179,7 @@ public:
     * \sa removePointsWarning
     * Important : the points are actually deleted from the mechanical object's state vectors iff (removeDOF == true)
     */
-    virtual void removePointsProcess(const sofa::helper::vector<unsigned int> &indices, const bool removeDOF = true);
+    virtual void removePointsProcess(const sofa::helper::vector<unsigned int> &indices, const bool removeDOF = true) override;
 
     /** \brief Reorder this topology.
     *
@@ -188,7 +188,7 @@ public:
     */
     virtual void renumberPointsProcess( const sofa::helper::vector<unsigned int> &index,
             const sofa::helper::vector<unsigned int>& inv_index,
-            const bool renumberDOF = true);
+            const bool renumberDOF = true) override;
 
     /** \brief Remove a set  of hexahedra
     @param hexahedra an array of hexahedron indices to be removed (note that the array is not const since it needs to be sorted)
@@ -198,12 +198,12 @@ public:
 
     /** \brief Generic method to remove a list of items.
     */
-    virtual void removeItems(const sofa::helper::vector<unsigned int> &items);
+    virtual void removeItems(const sofa::helper::vector<unsigned int> &items) override;
 
     /** \brief Generic method for points renumbering
     */
     virtual void renumberPoints( const sofa::helper::vector<unsigned int>& index,
-            const sofa::helper::vector<unsigned int>& inv_index);
+            const sofa::helper::vector<unsigned int>& inv_index) override;
 
 
 private:

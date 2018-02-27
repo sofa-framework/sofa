@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -25,27 +25,6 @@
 #include <SofaCommon/config.h>
 
 #cmakedefine SOFA_HAVE_FLOWVR
-
-#ifdef SOFA_BUILD_EULERIAN_FLUID
-#  define SOFA_TARGET SofaEulerianFluid
-#  define SOFA_EULERIAN_FLUID_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_EULERIAN_FLUID_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-#ifdef SOFA_BUILD_SPH_FLUID
-#  define SOFA_TARGET SofaSphFluid
-#  define SOFA_SPH_FLUID_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_SPH_FLUID_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-
-#ifdef SOFA_BUILD_VOLUMETRIC_DATA
-#  define SOFA_TARGET SofaVolumetricData
-#  define SOFA_VOLUMETRIC_DATA_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_VOLUMETRIC_DATA_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
 
 #ifdef SOFA_BUILD_NON_UNIFORM_FEM
 #  define SOFA_TARGET SofaNonUniformFem

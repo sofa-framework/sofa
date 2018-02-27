@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -31,7 +31,8 @@
 #include <sofa/helper/map.h>
 #include <limits>
 #include <sofa/core/objectmodel/DataFileName.h>
-#include <../extlibs/CImg/CImg.h>
+
+#include <CImgPlugin/SOFACImg.h>
 
 #include <sofa/helper/system/gl.h>
 
@@ -222,7 +223,7 @@ public:
     bool rigidPartsSampling ( VecSCoord& points);
     /// (biased) Uniform sampling (with possibly fixed points stored in points) using Lloyd relaxation
     //  -> returns points and store id/distances in voronoi/distances
-    Data<unsigned int> maxLloydIterations;
+    Data<unsigned int> maxLloydIterations; ///< Maximum iteration number for Lloyd algorithm.
     bool computeUniformSampling ( VecSCoord& points, const unsigned int num_points);
     /// Regular sampling based on step size
     //  -> returns points and store id/distances in voronoi/distances
@@ -254,9 +255,9 @@ protected:
     /*           Grid data           */
     /*********************************/
 public:
-    Data< SCoord > voxelSize;
-    Data< SCoord > origin;
-    Data< GCoord > dimension;
+    Data< SCoord > voxelSize; ///< Voxel size.
+    Data< SCoord > origin; ///< Grid origin.
+    Data< GCoord > dimension; ///< Grid dimensions.
 
     CImg<voxelType> grid;
     unsigned int gridOffset; // Use to enlarge weight interpolation
@@ -266,10 +267,10 @@ public:
 
 protected:
     // material properties
-    Data<mapLabelType> labelToStiffnessPairs;
-    Data<mapLabelType> labelToDensityPairs;
-    Data<mapLabelType> labelToBulkModulusPairs;
-    Data<mapLabelType> labelToPoissonRatioPairs;
+    Data<mapLabelType> labelToStiffnessPairs; ///< Correspondances between grid value and material stiffness.
+    Data<mapLabelType> labelToDensityPairs; ///< Correspondances between grid value and material density.
+    Data<mapLabelType> labelToBulkModulusPairs; ///< Correspondances between grid value and material bulk modulus.
+    Data<mapLabelType> labelToPoissonRatioPairs; ///< Correspondances between grid value and material Poisson Ratio.
 
     // temporary grid data
     //vector<vector<Real> > all_distances; // will soon replace distances (contains all the distances)
@@ -311,10 +312,10 @@ protected:
     /*************************/
 
     // store sample material properties to speed up access during simulation
-    Data<vector<Real> > bulkModulus;
-    Data<vector<Real> > stiffness;
-    Data<vector<Real> > density;
-    Data<vector<Real> > poissonRatio;
+    Data<vector<Real> > bulkModulus; ///< Sample bulk Modulus.
+    Data<vector<Real> > stiffness; ///< Sample stiffness.
+    Data<vector<Real> > density; ///< Sample density.
+    Data<vector<Real> > poissonRatio; ///< Sample poisson Ratio.
 
 public:
     // return the linearly interpolated value from the label/stiffness pairs
@@ -332,9 +333,9 @@ public:
 
 protected:
     Data<OptionsGroup> distanceType;  ///< Geodesic, HeatDiffusion, AnisotropicHeatDiffusion
-    Data<bool> biasDistances;
+    Data<bool> biasDistances; ///< Bias distances according to stiffness.
     Data<Real> distanceBiasFactor; Real biasFactor;
-    Data<bool> useDijkstra;
+    Data<bool> useDijkstra; ///< Use Dijkstra's algorithm to compute the distance fields.
 
     /// diffuse the weights outside the objects to avoid interpolation problems
     void offsetWeightsOutsideObject(unsigned int offestdist=2);
@@ -366,7 +367,7 @@ protected:
     bool SubdivideVoronoiRegion( const unsigned int voronoiindex, const unsigned int newvoronoiindex, const unsigned int max_iterations =100);
 
     // scale the distance according to frame-to-voronoi border paths
-    Data<bool> useDistanceScaleFactor;
+    Data<bool> useDistanceScaleFactor; ///< useDistanceScaleFactor.
     Data<Real> weightSupport;  ///< support of the weight function (2=interpolating, >2 = approximating)
     Data<unsigned int> nbVoronoiSubdivisions;  ///< number of subdvisions of the voronoi during weight computation (1 by default)
 
@@ -388,7 +389,7 @@ protected:
     /*********************************/
 
 public:
-    Data<bool> verbose;
+    Data<bool> verbose; ///< Set the verbose mode
 
     inline int getIndex(const GCoord& icoord) const;
     inline int getIndex(const SCoord& coord) const;
@@ -416,7 +417,7 @@ protected:
     /*********************************/
 
 public:
-    Data<bool> voxelsHaveChanged;
+    Data<bool> voxelsHaveChanged; ///< Voxels Have Changed.
 
     void removeVoxels( const vector<unsigned int>& voxelsToRemove);
     void localyUpdateWeights( const vector<unsigned int>& removedVoxels);
@@ -429,11 +430,11 @@ protected:
     Data<OptionsGroup> showVoxels;    ///< None, Grid Values, Voronoi regions, Distances, Weights
     Data<unsigned int> showWeightIndex;    ///
     GLuint cubeList; GLuint wcubeList;            // storage for the display list
-    Data<GCoord> showPlane;    /// indices of the slices to show (if <0 or >=nbslices, no plane shown in the given direction)
+    Data<GCoord> showPlane;    ///< indices of the slices to show (if <0 or >=nbslices, no plane shown in the given direction)
     bool showWireframe;
     float maxValues[12];
-    Data<float> show3DValuesHeight;
-    Data<bool> vboSupported;
+    Data<float> show3DValuesHeight; ///< When show plane is activated, values are displayed in 3D.
+    Data<bool> vboSupported; ///< Allow to disply 2.5D functions.
     GLuint vboValuesId1; // ID of VBO for 3DValues vertex arrays (to store vertex coords and normals)
     GLuint vboValuesId2; // ID of VBO for 3DValues index array
 

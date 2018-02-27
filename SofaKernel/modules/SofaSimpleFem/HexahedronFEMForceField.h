@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -133,7 +133,7 @@ protected:
 
     typedef defaulttype::Mat<24, 24, Real> ElementStiffness;
     typedef helper::vector<ElementStiffness> VecElementStiffness;
-    Data<VecElementStiffness> _elementStiffnesses;
+    Data<VecElementStiffness> _elementStiffnesses; ///< Stiffness matrices per element (K_i)
 
     typedef defaulttype::Mat<3, 3, Real> Mat33;
 
@@ -169,10 +169,10 @@ public:
     Data<Real> f_youngModulus;
     Data<bool> f_updateStiffnessMatrix;
     Data<bool> f_assembling;
-    Data< sofa::helper::OptionsGroup > _gatherPt; //use in GPU version
-    Data< sofa::helper::OptionsGroup > _gatherBsize; //use in GPU version
-    Data<bool> f_drawing;
-    Data<Real> f_drawPercentageOffset;
+    Data< sofa::helper::OptionsGroup > _gatherPt; ///< use in GPU version
+    Data< sofa::helper::OptionsGroup > _gatherBsize; ///< use in GPU version
+    Data<bool> f_drawing; ///<  draw the forcefield if true
+    Data<Real> f_drawPercentageOffset; ///< size of the hexa
     bool needUpdateTopology;
 
 protected:
@@ -244,14 +244,14 @@ public:
 
     void setComputeGlobalMatrix(bool val) { this->f_assembling.setValue(val); }
 
-    virtual void init();
-    virtual void reinit();
+    virtual void init() override;
+    virtual void reinit() override;
 
-    virtual void addForce (const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v);
+    virtual void addForce (const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
 
-    virtual void addDForce (const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx);
+    virtual void addDForce (const core::MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx) override;
 
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
     {
         serr << "Get potentialEnergy not implemented" << sendl;
         return 0.0;
@@ -260,7 +260,7 @@ public:
     // Make other overloaded version of getPotentialEnergy() to show up in subclass.
     using InheritForceField::getPotentialEnergy;
     // getPotentialEnergy is implemented for polar method
-    virtual SReal getPotentialEnergy(const core::MechanicalParams*) const;
+    virtual SReal getPotentialEnergy(const core::MechanicalParams*) const override;
 
     const Transformation& getElementRotation(const unsigned elemidx);
 
@@ -292,7 +292,7 @@ public:
         R = Rmoy;
     }
 
-    void getRotations(defaulttype::BaseMatrix * rotations,int offset = 0)
+    void getRotations(defaulttype::BaseMatrix * rotations,int offset = 0) override
     {
         unsigned int nbdof = this->mstate->getSize();
 
@@ -340,14 +340,14 @@ public:
         }
     }
 
-    void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix);
+    void addKToMatrix(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix) override;
 
 
-    void computeBBox(const core::ExecParams* params, bool onlyVisible);
+    void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
-    void handleTopologyChange()
+    void handleTopologyChange() override
     {
         needUpdateTopology = true;
     }

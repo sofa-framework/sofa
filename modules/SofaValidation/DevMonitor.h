@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -50,8 +50,8 @@ public:
     typedef typename std::pair< Coord,Real > TData;
 
 
-    Data < double > f_period;
-    Data< sofa::helper::vector< unsigned int > > f_indices;
+    Data < double > f_period; ///< period between outputs
+    Data< sofa::helper::vector< unsigned int > > f_indices; ///< Indices of the points which will be monitored
 
     DevMonitor():
         f_period( initData(&f_period, 1.0, "period", "period between outputs"))
@@ -68,7 +68,7 @@ public:
         return copy;
     }
 
-    void handleEvent(sofa::core::objectmodel::Event* event)
+    void handleEvent(sofa::core::objectmodel::Event* event) override
     {
         if (simulation::AnimateEndEvent::checkEventType(event))
         {
@@ -82,7 +82,7 @@ public:
         }
     }
 
-    virtual std::string getTemplateName() const
+    virtual std::string getTemplateName() const override
     {
         return templateName(this);
     }

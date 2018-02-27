@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -107,7 +107,7 @@ public:
 protected:
     CubeModel();
 public:
-    virtual void resize(int size);
+    virtual void resize(int size) override;
 
     void setParentOf(int childIndex, const sofa::defaulttype::Vector3& min, const sofa::defaulttype::Vector3& max);
     void setLeafCube(int cubeIndex, int childIndex);
@@ -148,15 +148,15 @@ public:
       *the max depth. The division is made along an axis. This axis corresponds to the biggest dimension of the current bounding box.
       *Note : a bounding box is a Cube here.
       */
-    virtual void computeBoundingTree(int maxDepth=0);
+    virtual void computeBoundingTree(int maxDepth=0) override;
 
-    virtual std::pair<core::CollisionElementIterator,core::CollisionElementIterator> getInternalChildren(int index) const;
+    virtual std::pair<core::CollisionElementIterator,core::CollisionElementIterator> getInternalChildren(int index) const override;
 
-    virtual std::pair<core::CollisionElementIterator,core::CollisionElementIterator> getExternalChildren(int index) const;
+    virtual std::pair<core::CollisionElementIterator,core::CollisionElementIterator> getExternalChildren(int index) const override;
 
-    virtual bool isLeaf( int index ) const;
+    virtual bool isLeaf( int index ) const override;
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
     int addCube(Cube subcellsBegin, Cube subcellsEnd);
     void updateCube(int index);

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -42,7 +42,8 @@ Visitor::Result UpdateBoundingBoxVisitor::processNodeTopDown(Node* node)
     helper::vector<BaseObject*>::iterator object;
     node->get<BaseObject>(&objectList,BaseContext::Local);
     sofa::defaulttype::BoundingBox* nodeBBox = node->f_bbox.beginEdit(params);
-    nodeBBox->invalidate();
+    if(!node->f_bbox.isSet())
+        nodeBBox->invalidate();
     for ( object = objectList.begin(); object != objectList.end(); ++object)
     {
         // warning the second parameter should NOT be false

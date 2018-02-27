@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -38,12 +38,6 @@ void initExporter()
         first = false;
     }
 }
-
-SOFA_LINK_CLASS(WriteState)
-SOFA_LINK_CLASS(WriteTopology)
-SOFA_LINK_CLASS(VTKExporter)
-SOFA_LINK_CLASS(OBJExporter)
-SOFA_LINK_CLASS(MeshExporter)
 
 } // namespace component
 

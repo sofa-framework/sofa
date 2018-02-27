@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -138,14 +138,14 @@ protected:
 public:
     //virtual void init(){}
 
-    void reinit() { init(); bwdInit();}
+    void reinit() override { init(); bwdInit();}
 
-    void reset() {reinit();}
+    void reset() override {reinit();}
 
     /**
       * @brief Scene graph backward initialization method
       */
-    void bwdInit();
+    void bwdInit() override;
 
 
     /**

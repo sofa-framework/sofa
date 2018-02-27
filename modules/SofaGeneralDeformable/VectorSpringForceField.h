@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -131,7 +131,7 @@ public:
     /// By default, assume that all edges have the same viscosity
     Data<double> m_viscosity;
 
-    Data<bool> m_useTopology;
+    Data<bool> m_useTopology; ///< Activate/Desactivate topology mode of the component (springs on each edge)
 
     sofa::core::topology::BaseMeshTopology* _topology;
     sofa::component::topology::EdgeSetTopologyContainer* edgeCont;
@@ -151,18 +151,18 @@ public:
     core::behavior::MechanicalState<DataTypes>* getObject1() { return this->mstate1; }
     core::behavior::MechanicalState<DataTypes>* getObject2() { return this->mstate2; }
 
-    virtual void init();
-    virtual void bwdInit();
+    virtual void init() override;
+    virtual void bwdInit() override;
 
     void createDefaultSprings();
 
-    virtual void handleEvent( core::objectmodel::Event* e );
+    virtual void handleEvent( core::objectmodel::Event* e ) override;
 
-    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 );
+    virtual void addForce(const core::MechanicalParams* mparams, DataVecDeriv& data_f1, DataVecDeriv& data_f2, const DataVecCoord& data_x1, const DataVecCoord& data_x2, const DataVecDeriv& data_v1, const DataVecDeriv& data_v2 ) override;
 
-    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2);
+    virtual void addDForce(const core::MechanicalParams* mparams, DataVecDeriv& data_df1, DataVecDeriv& data_df2, const DataVecDeriv& data_dx1, const DataVecDeriv& data_dx2) override;
 
-    virtual SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&, const DataVecCoord& ) const { return m_potentialEnergy; }
+    virtual SReal getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord&, const DataVecCoord& ) const override { return m_potentialEnergy; }
 
     Real getStiffness() const
     {
@@ -177,7 +177,7 @@ public:
         return springArray;
     }
 
-    void draw(const core::visual::VisualParams* vparams);
+    void draw(const core::visual::VisualParams* vparams) override;
 
     // -- Modifiers
 
@@ -196,7 +196,7 @@ public:
     class Loader;
     friend class Loader;
 
-    virtual void updateForceMask();
+    virtual void updateForceMask() override;
 
 };
 

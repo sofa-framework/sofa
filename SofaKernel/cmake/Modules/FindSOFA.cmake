@@ -133,7 +133,7 @@ list(APPEND SOFA_INCLUDE_OTHER_DIRS
     ${SOFA_INCLUDE_EXTLIBS}/fftpack
     ${SOFA_INCLUDE_EXTLIBS}/fishpack
     ${SOFA_INCLUDE_EXTLIBS}/indexedmap
-    ${SOFA_INCLUDE_EXTLIBS}/libQGLViewer-2.3.3
+    ${SOFA_INCLUDE_EXTLIBS}/libQGLViewer-2.7.1
     ${SOFA_INCLUDE_EXTLIBS}/LML
     ${SOFA_INCLUDE_EXTLIBS}/metis
     ${SOFA_INCLUDE_EXTLIBS}/miniFlowVR/include
@@ -290,12 +290,9 @@ list(APPEND SOFA_LIB_ADVANCED_NAME
     #SofaAdvancedFem            SOFA_LIB_ADVANCED_FEM
     #SofaAdvancedInteraction    SOFA_LIB_ADVANCED_INTERACTION
     SofaEigen2Solver           SOFA_LIB_EIGEN2_SOLVER
-    SofaEulerianFluid          SOFA_LIB_EULERIAN_FUILD
     #SofaMjedFem                SOFA_LIB_MJED_FEM
     SofaNonUniformFem          SOFA_LIB_NON_UNIFORM_FEM
     #SofaNonUniformFemDev       SOFA_LIB_NON_UNIFORM_FEM_DEV
-    SofaSphFluid               SOFA_LIB_SPH_FUILD
-    SofaVolumetricData         SOFA_LIB_VOLUMETRIC_DATA
     )
 list(LENGTH SOFA_LIB_GENERAL_NAME sofaAdvancedLibList)
 math(EXPR passToMiscLib "${sofaAdvancedLibList}/2+${passToAdvancedLib}")
@@ -304,8 +301,6 @@ math(EXPR passToMiscLib "${sofaAdvancedLibList}/2+${passToAdvancedLib}")
 ## Put the name of the library SOFA MISC to search and put it associate CMakeName
 list(APPEND SOFA_LIB_MISC_NAME
     SofaMisc                  SOFA_LIB_MISC
-    SofaMiscCollision         SOFA_LIB_MISC_COLLISION
-    #SofaMiscCollisionDev      SOFA_LIB_MISC_COLLISION_DEV
     SofaMiscFem               SOFA_LIB_MISC_FEM
     #SofaMiscDev               SOFA_LIB_MISC_DEV
     #SofaMiscFemDev            SOFA_LIB_MISC_FEM_DEV

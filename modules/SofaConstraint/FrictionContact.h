@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -32,6 +32,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/BaseMapping.h>
 
+#include <SofaConstraint/ContactIdentifier.h>
 namespace sofa
 {
 
@@ -43,44 +44,18 @@ namespace collision
 
 
 
-class SOFA_CONSTRAINT_API Identifier
-{
-public:
-    Identifier()
-    {
-        if (!availableId.empty())
-        {
-            id = availableId.front();
-            availableId.pop_front();
-        }
-        else
-            id = cpt++;
-
-        //	sout << id << sendl;
-    }
-
-    virtual ~Identifier()
-    {
-        availableId.push_back(id);
-    }
-
-protected:
-    static sofa::core::collision::DetectionOutput::ContactId cpt;
-    sofa::core::collision::DetectionOutput::ContactId id;
-    static std::list<sofa::core::collision::DetectionOutput::ContactId> availableId;
-};
-
-
 template <class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes = sofa::defaulttype::Vec3Types >
-class FrictionContact : public core::collision::Contact, public Identifier
+class FrictionContact : public core::collision::Contact, public ContactIdentifier
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE3(FrictionContact, TCollisionModel1, TCollisionModel2, ResponseDataTypes), core::collision::Contact);
     typedef TCollisionModel1 CollisionModel1;
     typedef TCollisionModel2 CollisionModel2;
     typedef core::collision::Intersection Intersection;
-    typedef ResponseDataTypes DataTypes1;
-    typedef ResponseDataTypes DataTypes2;
+    typedef typename TCollisionModel1::DataTypes::CPos TVec1;
+    typedef typename TCollisionModel1::DataTypes::CPos TVec2;
+    typedef sofa::defaulttype::StdVectorTypes<TVec1, TVec2, typename TCollisionModel1::DataTypes::Real > DataTypes1;
+    typedef sofa::defaulttype::StdVectorTypes<TVec1, TVec2, typename TCollisionModel1::DataTypes::Real > DataTypes2;
 
     typedef core::behavior::MechanicalState<DataTypes1> MechanicalState1;
     typedef core::behavior::MechanicalState<DataTypes2> MechanicalState2;
@@ -100,7 +75,8 @@ protected:
     constraintset::UnilateralInteractionConstraint<sofa::defaulttype::Vec3Types>::SPtr m_constraint;
     core::objectmodel::BaseContext* parent;
 
-    Data<double> mu, tol;
+    Data<double> mu; ///< friction coefficient (0 for frictionless contacts)
+    Data<double> tol; ///< tolerance for the constraints resolution (0 for default tolerance)
     std::vector< sofa::core::collision::DetectionOutput* > contacts;
     std::vector< std::pair< std::pair<int, int>, double > > mappedContacts;
 
@@ -113,23 +89,16 @@ protected:
     FrictionContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod);
     virtual ~FrictionContact();
 public:
-    void cleanup();
+    void cleanup() override;
 
-    std::pair<core::CollisionModel*,core::CollisionModel*> getCollisionModels() { return std::make_pair(model1,model2); }
+    std::pair<core::CollisionModel*,core::CollisionModel*> getCollisionModels() override { return std::make_pair(model1,model2); }
 
-    void setDetectionOutputs(OutputVector* outputs);
+    void setDetectionOutputs(OutputVector* outputs) override;
 
-    void createResponse(core::objectmodel::BaseContext* group);
+    void createResponse(core::objectmodel::BaseContext* group) override;
 
-    void removeResponse();
+    void removeResponse() override;
 };
-
-inline long cantorPolynomia(sofa::core::collision::DetectionOutput::ContactId x, sofa::core::collision::DetectionOutput::ContactId y)
-{
-    // Polynome de Cantor de NxN sur N bijectif f(x,y)=((x+y)^2+3x+y)/2
-    return (long)(((x+y)*(x+y)+3*x+y)/2);
-}
-
 
 } // collision
 

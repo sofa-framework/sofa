@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -59,9 +59,9 @@ public:
 
     typedef SReal Real;
 
-    Data< Real > depthFactor;
-    Data< Real > minThreshold;
-    Data< Real > diffThreshold;
+    Data< Real > depthFactor; ///< Intensity to depth factor
+    Data< Real > minThreshold; ///< minimal depth for point creation
+    Data< Real > diffThreshold; ///< maximal depth variation for triangle creation
 
     typedef _ImageTypes ImageTypes;
     typedef typename ImageTypes::T T;
@@ -81,22 +81,22 @@ public:
     typedef helper::vector<defaulttype::Vec<3,Real> > SeqPositions;
     typedef helper::ReadAccessor<Data< SeqPositions > > raPositions;
     typedef helper::WriteOnlyAccessor<Data< SeqPositions > > waPositions;
-    Data< SeqPositions > position;
+    Data< SeqPositions > position; ///< output positions
 
     typedef helper::fixed_array<Real,2> TexCoord;
     typedef helper::vector<TexCoord> SeqTexCoords;
     typedef helper::ReadAccessor<Data< SeqTexCoords > > raTexCoords;
     typedef helper::WriteOnlyAccessor<Data< SeqTexCoords > > waTexCoords;
-    Data< SeqTexCoords > texCoord;
-    Data< TexCoord > texOffset;
+    Data< SeqTexCoords > texCoord; ///< output texture coordinates
+    Data< TexCoord > texOffset; ///< texture offsets (in [0,1])
 
     typedef typename core::topology::BaseMeshTopology::Triangle Triangle;
     typedef typename core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
     typedef helper::ReadAccessor<Data< SeqTriangles > > raTriangles;
     typedef helper::WriteOnlyAccessor<Data< SeqTriangles > > waTriangles;
-    Data< SeqTriangles > triangles;
+    Data< SeqTriangles > triangles; ///< output triangles
 
-    virtual std::string getTemplateName() const    { return templateName(this);    }
+    virtual std::string getTemplateName() const    override { return templateName(this);    }
     static std::string templateName(const DepthMapToMeshEngine<ImageTypes>* = NULL) { return ImageTypes::Name();    }
 
     DepthMapToMeshEngine()    :   Inherited()
@@ -127,7 +127,7 @@ public:
 #endif /* SOFA_NO_OPENGL */
     }
 
-    virtual void init()
+    virtual void init() override
     {
         addInput(&image);
         addInput(&transform);
@@ -137,7 +137,7 @@ public:
         setDirtyValue();
     }
 
-    virtual void reinit() { update(); }
+    virtual void reinit() override { update(); }
 
 protected:
 
@@ -147,7 +147,7 @@ protected:
     static const unsigned texture_res=256;
 #endif /* SOFA_NO_OPENGL */
 
-    virtual void update()
+    virtual void update() override
     {
         raImage in(this->image);
         raTransform inT(this->transform);
@@ -217,7 +217,7 @@ protected:
             }
     }
 
-    void handleEvent(sofa::core::objectmodel::Event *event)
+    void handleEvent(sofa::core::objectmodel::Event *event) override
     {
         if (simulation::AnimateEndEvent::checkEventType(event))
         {
@@ -236,7 +236,7 @@ protected:
         }
     }
 
-    virtual void draw(const core::visual::VisualParams* vparams)
+    virtual void draw(const core::visual::VisualParams* vparams) override
     {
 #ifndef SOFA_NO_OPENGL
 
