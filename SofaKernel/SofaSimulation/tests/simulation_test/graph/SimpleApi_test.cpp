@@ -1,4 +1,4 @@
-#include <SofaSimulationGraph/testing/BaseSimulationTest.h>
+#include <sofa/simulation/helper/testing/BaseSimulationTest.h>
 using sofa::helper::testing::BaseSimulationTest ;
 
 #include <SofaSimulationGraph/SimpleApi.h>

@@ -24,22 +24,30 @@
  *     - damien.marchal@univ-lille1.fr
  *****************************************************************************/
 
-#include <sofa/core/objectmodel/BaseContext.h>
-using sofa::core::objectmodel::BaseContext ;
+#include <sofa/simulation/Node.h>
+using sofa::simulation::Node ;
 
-#include <SofaSimulationGraph/testing/BaseSimulationTest.h>
+#include <sofa/simulation/helper/testing/BaseSimulationTest.h>
 using sofa::helper::testing::BaseSimulationTest ;
 using sofa::simulation::Node ;
 
 using sofa::core::visual::VisualModel ;
 
-class BaseContext_test: public BaseSimulationTest
+#include <sofa/helper/system/PluginManager.h>
+using sofa::helper::system::PluginManager ;
+
+class NodeContext_test: public BaseSimulationTest
 {
 public:
-    void testGetObjects()
+
+
+    NodeContext_test()
     {
-        EXPECT_MSG_NOEMIT(Error, Warning) ;
         importPlugin("SofaAllCommonComponents") ;
+    }
+
+    void testGetNodeObjects()
+    {
         std::stringstream scene ;
         scene << "<?xml version='1.0'?>"
                  "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
@@ -58,39 +66,83 @@ public:
         SceneInstance c("xml", scene.str()) ;
         c.initScene() ;
 
-        Node* root = c.root.get() ;
-        ASSERT_NE(root, nullptr) ;
-        BaseContext* context = root->getChild("child1")->getContext() ;
+        Node* m_root = c.root.get() ;
+        ASSERT_NE(m_root, nullptr) ;
+
+        EXPECT_MSG_NOEMIT(Error, Warning) ;
+        Node* node =m_root->getChild("child1") ;
 
         /// Query a specific model in a container, this is the old API
         std::vector<VisualModel*> results ;
-        context->getObjects<VisualModel, std::vector<VisualModel*> >( &results ) ;
-        ASSERT_EQ( results.size() , 3 ) ;
+        node->getNodeObjects<VisualModel, std::vector<VisualModel*> >( &results ) ;
+        ASSERT_EQ( results.size() , (unsigned int)2 ) ;
 
         /// Query a specific model with a nicer syntax
         std::vector<VisualModel*> results2 ;
-        ASSERT_EQ( context->getObjects(results2).size(), 3 ) ;
+        ASSERT_EQ( node->getNodeObjects(results2).size(), (unsigned int)2 ) ;
+
+        /// Query a specific model with a nicer syntax
+        std::vector<VisualModel*> results3 ;
+        ASSERT_EQ( node->getNodeObjects(&results3)->size(), (unsigned int)2 ) ;
 
         /// Query a specific model with a compact syntax, this returns std::vector<BaseObject*>
         /// So there is 4 base object in the scene.
-        for(auto& m : context->getObjects() ) { SOFA_UNUSED(m); }
-        ASSERT_EQ( context->getObjects().size(), 4 ) ;
+        for(auto& m : node->getNodeObjects() ) { SOFA_UNUSED(m); }
+        ASSERT_EQ( node->getNodeObjects().size(), (unsigned int)3 ) ;
+    }
+
+    void testGetTreeObjects()
+    {
+        std::stringstream scene ;
+        scene << "<?xml version='1.0'?>"
+                 "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >               \n"
+                 "   <OglModel/>                                                             \n"
+                 "   <Node name='child1'>                                                    \n"
+                 "      <OglModel/>                                                          \n"
+                 "      <OglModel/>                                                          \n"
+                 "      <MechanicalObject />                                                 \n"
+                 "      <Node name='child2'>                                                 \n"
+                 "          <OglModel/>                                                      \n"
+                 "          <OglModel/>                                                      \n"
+                 "      </Node>                                                              \n"
+                 "   </Node>                                                                 \n"
+                 "</Node>                                                                    \n" ;
+
+        SceneInstance c("xml", scene.str()) ;
+        c.initScene() ;
+
+        Node* m_root = c.root.get() ;
+        ASSERT_NE(m_root, nullptr) ;
+
+        EXPECT_MSG_NOEMIT(Error, Warning) ;
+        Node* node =m_root->getChild("child1") ;
+
+        /// Query a specific model in a container, this is the old API
+        std::vector<VisualModel*> results ;
+        node->getTreeObjects<VisualModel, std::vector<VisualModel*> >( &results ) ;
+        ASSERT_EQ( results.size() , (unsigned int)4  ) ;
+
+        /// Query a specific model with a nicer syntax
+        std::vector<VisualModel*> results2 ;
+        ASSERT_EQ( node->getTreeObjects(results2).size(), (unsigned int)4 ) ;
+
+        /// Query a specific model with a nicer syntax
+        std::vector<VisualModel*> results3 ;
+        ASSERT_EQ( node->getTreeObjects(&results3)->size(), (unsigned int)4 ) ;
 
         /// Query a specific model with a compact syntax, this returns std::vector<BaseObject*>
-        for(auto& m : context->getObjects(BaseContext::SearchDirection::SearchDown) ) { SOFA_UNUSED(m); }
-        ASSERT_EQ( context->getObjects(BaseContext::SearchDirection::SearchDown).size(), 5) ;
-
-        /// Query a specific model with a compact syntax, this returns std::vector<BaseObject*>
-        ASSERT_EQ( context->getObjects<VisualModel>(BaseContext::SearchDirection::SearchDown).size(), 4) ;
-
-        /// Query a specific model with a compact syntax, this returns std::vector<BaseObject*>
-        ASSERT_EQ( context->getObjects(BaseContext::SearchDirection::Local).size(), 3) ;
-        ASSERT_EQ( context->getObjects<VisualModel>(BaseContext::SearchDirection::Local).size(), 2) ;
+        /// So there is 4 base object in the scene.
+        for(auto& m : node->getTreeObjects() ) { SOFA_UNUSED(m); }
+        ASSERT_EQ( node->getTreeObjects().size(), (unsigned int)5 ) ;
     }
 };
 
-TEST_F(BaseContext_test , testGetObjects )
+TEST_F(NodeContext_test , testGetNodeObjects )
 {
-    this->testGetObjects();
+    this->testGetNodeObjects();
 }
 
+TEST_F(NodeContext_test , testGetTreeObjects )
+{
+    this->testGetTreeObjects();
+}

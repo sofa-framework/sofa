@@ -19,48 +19,29 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaSimulationGraph/testing/BaseSimulationTest.h>
-using sofa::helper::testing::BaseSimulationTest ;
 
-#include <SofaSimulationGraph/SimpleApi.h>
-using namespace sofa::simpleapi ;
+#include "../Node_test.h"
+#include <sofa/helper/testing/SofaGtest.h>
+#include <SofaSimulationTree/GNode.h>
 
-namespace sofa {
+using sofa::simulation::tree::GNode;
 
-struct Node_test : public BaseSimulationTest
+TEST(GNodeTest, objectDestruction_singleObject)
 {
-    void test1()
-    {
-        /* create trivial DAG :
-         *
-         * R
-         * |
-         * A
-         * |
-         * B
-         *
-         */
-        EXPECT_MSG_NOEMIT(Error, Warning);
-
-        SceneInstance si("R") ;
-        Node::SPtr A = createChild(si.root, "A");
-        Node::SPtr B = createChild(A, "B");
-
-        EXPECT_EQ("", si.root->getPathName());
-        EXPECT_EQ("/A/B", B->getPathName());
-    }
-};
-
-TEST_F( Node_test, getPathName)
-{
-    this->test1() ;
+    Node_test_objectDestruction_singleObject<GNode>();
 }
 
-}// namespace sofa
+TEST(GNodeTest, objectDestruction_multipleObjects)
+{
+    Node_test_objectDestruction_multipleObjects<GNode>();
+}
 
+TEST(GNodeTest, objectDestruction_childNode_singleObject)
+{
+    Node_test_objectDestruction_childNode_singleObject<GNode>();
+}
 
-
-
-
-
-
+TEST(GNodeTest, objectDestruction_childNode_complexChild)
+{
+    Node_test_objectDestruction_childNode_complexChild<GNode>();
+}

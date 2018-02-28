@@ -26,7 +26,7 @@ using sofa::simulation::SceneLoaderXML ;
 using sofa::simulation::Node ;
 using sofa::core::ExecParams;
 
-#include <SofaSimulationGraph/testing/BaseSimulationTest.h>
+#include <sofa/simulation/helper/testing/BaseSimulationTest.h>
 using sofa::helper::testing::BaseSimulationTest ;
 
 namespace sofa {
