@@ -15,7 +15,9 @@ set(EXTRA_FILES
 
 if(UNIX AND NOT APPLE)
     message("HeadlessRecorder for linux")
-    configure_file(headlessRecorder_test ${CMAKE_BINARY_DIR}/bin/headlessRecorder_test COPYONLY)
+    
+    ## Commented, it will not be tested anymore
+    ## configure_file(headlessRecorder_test ${CMAKE_BINARY_DIR}/bin/headlessRecorder_test COPYONLY)
 
 
     ###################################################################### FFMPEG
