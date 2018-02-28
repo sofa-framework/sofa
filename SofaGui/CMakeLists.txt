@@ -65,6 +65,14 @@ set(SOFAGUI_TARGETS "")
 ## Version
 set(SOFAGUI_VERSION ${SofaFramework_VERSION})
 
+option(SOFAGUI_BUILD_TESTS "Compile the tests that need a GUI (like headlessRecorder_test)." ON)
+if(NOT SOFA_BUILD_TESTS)
+    if(SOFAGUI_BUILD_TESTS)
+        message(WARNING "SOFAGUI_BUILD_TESTS can't be enabled without SOFA_BUILD_TESTS.")
+    endif()
+    set(SOFAGUI_BUILD_TESTS OFF CACHE BOOL "Compile the tests that need a GUI (like headlessRecorder_test)." FORCE)
+endif()
+
 ### Sub-projects
 
 ## SofaGuiCommon

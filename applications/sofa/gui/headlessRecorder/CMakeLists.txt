@@ -9,16 +9,12 @@ set(HEADER_FILES
 set(SOURCE_FILES
     HeadlessRecorder.cpp)
 
-set(EXTRA_FILES
-    headlessRecorder_test
-)
 
 if(UNIX AND NOT APPLE)
     message("HeadlessRecorder for linux")
-    
-    ## Commented, it will not be tested anymore
-    ## configure_file(headlessRecorder_test ${CMAKE_BINARY_DIR}/bin/headlessRecorder_test COPYONLY)
-
+    if(SOFAGUI_BUILD_TESTS)
+        configure_file(headlessRecorder_test ${CMAKE_BINARY_DIR}/bin/headlessRecorder_test COPYONLY)
+    endif()
 
     ###################################################################### FFMPEG
     find_package(FFMPEG REQUIRED)
