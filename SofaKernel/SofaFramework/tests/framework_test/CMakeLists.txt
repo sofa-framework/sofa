@@ -39,19 +39,11 @@ set(SOURCE_FILES
 #add_subdirectory(plugin-system) ## TODO: check if deprecated or... ?
 add_subdirectory(plugins)
 
-#include_directories(${gtest_SOURCE_DIR}/include)
 
 add_definitions("-DFRAMEWORK_TEST_RESOURCES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/resources\"")
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+
 target_link_libraries(${PROJECT_NAME} SofaHelper SofaHelperTesting SofaCore SofaDefaultType)
-message("FRAMEWORK PATH: " ${SofaHelperTesting_INCLUDE_DIRS} )
-
-
-target_include_directories(${PROJECT_NAME} PRIVATE ${SofaHelperTesting_INCLUDE_DIRS} )
-
-get_target_property(TTT SofaFramework_test INCLUDE_DIRS)
-message("JE NE COMPREND PAS " ${TTT})
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})
-# add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ${PROJECT_NAME} COMMENT "-> Running unit tests..." VERBATIM)
