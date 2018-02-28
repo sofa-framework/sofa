@@ -31,7 +31,8 @@
 #include <sofa/helper/logging/LoggingMessageHandler.h>
 #include <sofa/helper/logging/MessageHandler.h>
 #include <sofa/helper/logging/Message.h>
-#include <gtest/gtest.h>
+#include "SofaGtest.h"
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

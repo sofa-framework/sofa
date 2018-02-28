@@ -27,7 +27,7 @@
 #ifndef SOFA_BASETEST_H
 #define SOFA_BASETEST_H
 
-#include <gtest/gtest.h>
+#include "SofaGtest.h"
 #include <sofa/helper/testing/TestMessageHandler.h>
 
 namespace sofa {

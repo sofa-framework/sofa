@@ -25,7 +25,6 @@
 
 using sofa::helper::SVector;
 
-
 /// testing SVector::read/write
 /// (other vector functions should be tested in helper::vector)
 template<class T>
