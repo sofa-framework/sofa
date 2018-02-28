@@ -63,7 +63,7 @@ bool MeshSTLLoader::load()
     if (!file.good())
     {
         file.close();
-        serr << "Cannot read file '" << m_filename << "'." << sendl;
+        msg_error() << "Cannot read file '" << m_filename << "'.";
         return false;
     }
 
@@ -102,7 +102,6 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
     // Skipping header file
     char buffer[256];
     dataFile.read(buffer, _headerSize.getValue());
-//    sout << "Header binary file: "<< buffer << sendl;
 
     uint32_t nbrFacet;
     dataFile.read((char*)&nbrFacet, 4);

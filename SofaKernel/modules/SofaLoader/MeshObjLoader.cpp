@@ -75,7 +75,7 @@ MeshObjLoader::~MeshObjLoader()
 
 bool MeshObjLoader::load()
 {
-    sout << "Loading OBJ file: " << m_filename << sendl;
+    msg_info() << "Loading OBJ file: " << m_filename;
 
     bool fileRead = false;
 
@@ -214,7 +214,7 @@ bool MeshObjLoader::readOBJ (istream &stream, const char* filename)
                             vtn[j] += (j==0) ? my_positions.size() : (j==2) ? my_normals.size() : 0/*my_texCoords.size()*/;
                         else
                         {
-                            serr << "Invalid index " << tmp << sendl;
+                            msg_error() << "Invalid index " << tmp;
                             vtn[j] = -1;
                         }
                     }
