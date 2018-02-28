@@ -144,3 +144,35 @@ void ServerCommunicationOSC::initTypeFactory()
 The getFactoryInstance function si responsible to return a DataFactory instance. In this case, a singleton. The initTypeFactory is the place where we will do the binding between receveived data type and sofa's type.
 For example, using OSC, if we received a float his tag type will be "f". The equivalent in sofa is the primitive type float.
 Then we bind "f" to float. In case of non existing data with type "f" the serverCommunication will create a sofa float data.
+
+### Receive and send datas
+
+```
+    virtual void sendData() override;
+    virtual void receiveData() override;
+```
+
+Those functions have to be implemented by the new protocols. Both are runs by the mother class inside a thread. This should be the place where you loop for sending or receiving datas. You can find examples in ZMQ or OSC implementations.
+
+For receiving and sending datas you will need to fetch them using the mother class function named fetchDataFromSenderBuffer and saveDatasToReceivedBuffer.
+
+Example for sending datas : 
+
+```
+std::string ServerCommunicationZMQ::createZMQMessage(CommunicationSubscriber* subscriber, std::string argument)
+{
+    std::stringstream messageStr;
+    BaseData* data = fetchDataFromSenderBuffer(subscriber, argument);
+    if (!data)
+        throw std::invalid_argument("data is null");
+    const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
+const void* valueVoidPtr = data->getValueVoidPtr();
+```
+In this example we retrieve the data from a buffer using fetchDataFromSenderBuffer. The argument named argument is the argument name we want to fetch. You can find more details in ZMQ or OSC inl files.
+
+Example for receiving datas :
+
+```
+```
+
+### 
