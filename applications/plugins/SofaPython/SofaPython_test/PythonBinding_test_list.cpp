@@ -23,7 +23,7 @@
  * Contributors:
  *      - damien.marchal@univ-lille1.fr
  ******************************************************************************/
-#include <SofaSimulationGraph/testing/BaseSimulationTest.h>
+#include <sofa/simulation/helper/testing/BaseSimulationTest.h>
 using sofa::helper::testing::BaseSimulationTest ;
 
 class SetOfPythonScenes
