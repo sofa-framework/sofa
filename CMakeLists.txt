@@ -260,7 +260,6 @@ option(SOFA_BUILD_TESTS "Compile the automatic tests for Sofa, along with the gt
 if(SOFA_BUILD_TESTS)
     # Enable testing features of cmake, like the add_test() command.
     enable_testing()
-    add_subdirectory(extlibs/gtest)
 endif()
 
 ### Ninja build pools
@@ -300,15 +299,17 @@ endif()
 ### Extlibs
 add_subdirectory(extlibs)
 
-
 ### Main Sofa subdirectories
 
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework)
-add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaSimulation)
+
 if(SOFA_BUILD_TESTS)
-    # Depends on SofaSimulation
-    add_subdirectory(tools/SofaGTestMain)
-endif()
+    add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaHelperTesting)
+    add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/framework/framework_test)
+endif() 
+
+add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaSimulation)
+
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaBase)
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaCommon)
 add_subdirectory(SofaGeneral)
