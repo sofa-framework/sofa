@@ -27,7 +27,7 @@
 #ifndef SOFA_BASETEST_H
 #define SOFA_BASETEST_H
 
-#include <sofa/config/sharedlibrary_defines.h>
+#include "config.h"
 #include <sofa/helper/testing/SofaGtest.h>
 #include <sofa/helper/testing/TestMessageHandler.h>
 
@@ -39,7 +39,7 @@ const SReal g_minDeltaErrorRatio = .1;
 
 /** @brief Base class for Sofa test fixtures.
   */
-class SOFA_API BaseTest : public ::testing::Test
+class SOFA_SOFAHELPERTESTING_API BaseTest : public ::testing::Test
 {
 public:
     /// To prevent that you simply need to add the line

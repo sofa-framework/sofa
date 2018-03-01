@@ -23,8 +23,8 @@
 #include "NumericTest.h"
 
 #ifdef SOFA_WITH_FLOAT
-template struct SOFA_API sofa::helper::testing::NumericTest<float>;
+template struct SOFA_SOFAHELPERTESTING_API sofa::helper::testing::NumericTest<float>;
 #endif
 #ifdef SOFA_WITH_DOUBLE
-template struct SOFA_API sofa::helper::testing::NumericTest<double>;
+template struct SOFA_SOFAHELPERTESTING_API sofa::helper::testing::NumericTest<double>;
 #endif

@@ -9,6 +9,7 @@ set(HEADER_FILES
     src/sofa/helper/testing/BaseTest.h
     src/sofa/helper/testing/NumericTest.h
     src/sofa/helper/testing/TestMessageHandler.h
+    src/sofa/helper/testing/config.h
 )
 
 set(SOURCE_FILES
@@ -36,8 +37,7 @@ target_include_directories(SofaHelperTesting PUBLIC
     $<INSTALL_INTERFACE:src>
 )
 
-target_compile_options(SofaHelperTesting PRIVATE "-DSOFA_EXPORT_TARGET" )
-target_compile_options(SofaHelperTesting INTERFACE "-DSOFA_IMPORT_TARGET" )
+target_compile_options(SofaHelperTesting PRIVATE "-DSOFA_BUILD_SOFAHELPERTESTING" )
 
 sofa_create_package(SofaHelperTesting 1.0 SofaHelperTesting src)
 

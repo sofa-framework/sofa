@@ -26,6 +26,7 @@
 #ifndef SOFA_HELPER_TESTING_BASESIMULATIONTEST_H
 #define SOFA_HELPER_TESTING_BASESIMULATIONTEST_H
 
+#include "config.h"
 #include <sofa/helper/testing/BaseTest.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/Simulation.h>

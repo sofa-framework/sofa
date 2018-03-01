@@ -1,0 +1,13 @@
+#ifndef SOFA_SOFAHELPERTESTING
+#define SOFA_SOFAHELPERTESTING
+
+#include <sofa/config/sharedlibrary_defines.h>
+
+#ifdef SOFA_BUILD_SOFAHELPERTESTING
+#define SOFA_TARGET SofaHelperTesting
+#define SOFA_SOFAHELPERTESTING_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#define SOFA_SOFAHELPERTESTING_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
+#endif //
