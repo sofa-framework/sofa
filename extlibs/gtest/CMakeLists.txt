@@ -48,7 +48,7 @@ set(SOURCE_FILES
 
 cxx_shared_library(gtest "${cxx_strict}" ${SOURCE_FILES} ${HEADER_FILES})
 
-target_compile_options(gtest PUBLIC "-DGTEST_LINKED_AS_SHARED_LIBRARY=1")
+target_compile_options(gtest INTERFACE "-DGTEST_LINKED_AS_SHARED_LIBRARY=1")
 target_compile_options(gtest PRIVATE "-DGTEST_CREATE_SHARED_LIBRARY=1")
 
 # In Visual Studio 2012 (VC11) _VARIADIC_MAX is by default defined as
