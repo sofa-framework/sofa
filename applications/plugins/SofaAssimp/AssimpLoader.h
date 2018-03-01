@@ -25,9 +25,7 @@
 #include <sofa/core/loader/MeshLoader.h>
 #include <SofaAssimp/config.h>
 
-#include <assimp/Importer.hpp>      // C++ importer interface
-#include <assimp/scene.h>           // Output data structure
-#include <assimp/postprocess.h>     // Post processing flags
+class aiScene;
 
 namespace sofa
 {
@@ -57,19 +55,24 @@ protected:
 public:
     /// Main Load method inherites from \sa sofa::core::loader::MeshLoader::load()
     virtual bool load();
+    
 
-    template <class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        return BaseLoader::canCreate(obj, context, arg);
+    int getpPreprocessing() {
+        return pp_Loadsteps;
     }
+    void  setpPreprocessing(int p) {
+        pp_Loadsteps = p;
+    }
+
+    aiScene* getScene() { return m_assimpScene; }
   
 protected:
     /// Main internal method, implement the loading of OpenCTM mesh file.
-   // bool readOpenCTM(const char* filename);
-
-public:
-
+    bool convertAssimpScene();
+    
+private:
+    aiScene* m_assimpScene;
+    unsigned int pp_Loadsteps;
 };
 
 
