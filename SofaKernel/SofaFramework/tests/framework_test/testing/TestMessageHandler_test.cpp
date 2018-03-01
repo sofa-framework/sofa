@@ -8,6 +8,16 @@ using sofa::helper::testing::BaseTest ;
 /// THE IS EMITTED TO VALDIATE THE BEHAVIOR OF THE FRAMEWORK.
 namespace testing {
 namespace internal{
+
+std::ostream& operator<<(std::ostream& os, const TestPartResult& result) {
+  return os
+      << result.file_name() << ":" << result.line_number() << ": "
+      << (result.type() == TestPartResult::kSuccess ? "Success" :
+          result.type() == TestPartResult::kFatalFailure ? "Fatal failure" :
+          "Non-fatal failure") << ":\n"
+      << result.message() << std::endl;
+}
+
 // This predicate-formatter checks that 'results' contains a test part
 // failure of the given type and that the failure message contains the
 // given substring.
