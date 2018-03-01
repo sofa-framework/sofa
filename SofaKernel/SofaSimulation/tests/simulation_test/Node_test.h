@@ -20,7 +20,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/testing/SofaGtest.h>
+#include <gtest/gtest.h>
 #include <sofa/core/objectmodel/BaseNode.h>
 
 class Dummy: public sofa::core::objectmodel::BaseObject

@@ -24,7 +24,7 @@
  *    - damien.marchal@univ-lille1.fr
  ******************************************************************************/
 #include <sofa/helper/testing/TestMessageHandler.h>
-
+#include <gtest/gtest.h>
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 /// This file organization:
 ///     - PRIVATE DECLARATION  (the class that are only used internally)

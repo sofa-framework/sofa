@@ -20,8 +20,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
+#include <gtest/gtest.h>
 #include "../Node_test.h"
-#include <sofa/helper/testing/SofaGtest.h>
 #include <SofaSimulationTree/GNode.h>
 
 using sofa::simulation::tree::GNode;

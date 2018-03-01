@@ -18,7 +18,7 @@ TEST( PointSetTopology_test, checkPointSetTopologyIsEmptyConstructed )
 {
     PointSetTopologyContainer::SPtr pointContainer = sofa::core::objectmodel::New< PointSetTopologyContainer >();
     EXPECT_EQ( 0, pointContainer->getNbPoints() );
-    EXPECT_EQ( 0, pointContainer->getPoints().size() );
+    EXPECT_EQ( 0u, pointContainer->getPoints().size() );
 }
 
 
@@ -33,7 +33,7 @@ TEST( PointSetTopology_test, checkPointSetTopologyInitialization )
 
     const sofa::helper::vector< PointSetTopologyContainer::PointID >& points = pointContainer->getPoints();
     EXPECT_EQ( 50, pointContainer->getNbPoints() );
-    EXPECT_EQ( 50, points.size() );
+    EXPECT_EQ( 50u, points.size() );
 
     
     for(std::size_t i=0;i<50;++i)
@@ -50,7 +50,7 @@ TEST( PointSetTopology_test, checkAddPoint )
     const sofa::helper::vector< PointSetTopologyContainer::PointID >& points = pointContainer->getPoints();
 
     EXPECT_EQ( 1, pointContainer->getNbPoints() );
-    ASSERT_EQ( 1, points.size() );
+    ASSERT_EQ( 1u, points.size() );
     EXPECT_EQ( PointSetTopologyContainer::PointID(0), points[0] );
 }
 
@@ -62,7 +62,7 @@ TEST( PointSetTopology_test, checkAddPoints )
     const sofa::helper::vector< PointSetTopologyContainer::PointID >& points = pointContainer->getPoints();
 
     EXPECT_EQ( 10, pointContainer->getNbPoints() );
-    ASSERT_EQ( 10, points.size() );
+    ASSERT_EQ( 10u, points.size() );
 
     for(std::size_t i=0;i<10;++i)
     {
@@ -72,7 +72,7 @@ TEST( PointSetTopology_test, checkAddPoints )
     pointContainer->addPoints(5);
 
     EXPECT_EQ( 15, pointContainer->getNbPoints() );
-    ASSERT_EQ( 15, points.size() );
+    ASSERT_EQ( 15u, points.size() );
 
     for(std::size_t i=10;i<15;++i)
     {
@@ -88,7 +88,7 @@ TEST( PointSetTopology_test, checkRemovePoint )
     const sofa::helper::vector< PointSetTopologyContainer::PointID >& points = pointContainer->getPoints();
 
     EXPECT_EQ( 0, pointContainer->getNbPoints() );
-    ASSERT_EQ( 0, points.size() );
+    ASSERT_EQ( 0u, points.size() );
 }
 
 TEST( PointSetTopology_test, checkRemovePoints )
@@ -99,7 +99,7 @@ TEST( PointSetTopology_test, checkRemovePoints )
     const sofa::helper::vector< PointSetTopologyContainer::PointID >& points = pointContainer->getPoints();
 
     EXPECT_EQ( 7, pointContainer->getNbPoints() );
-    ASSERT_EQ( 7, points.size() );
+    ASSERT_EQ( 7u, points.size() );
 
     for(std::size_t i=0;i<7;++i)
     {
@@ -109,7 +109,7 @@ TEST( PointSetTopology_test, checkRemovePoints )
     pointContainer->removePoints(3);
 
     EXPECT_EQ( 4, pointContainer->getNbPoints() );
-    ASSERT_EQ( 4, points.size() );
+    ASSERT_EQ( 4u, points.size() );
 
     for(std::size_t i=0;i<4;++i)
     {

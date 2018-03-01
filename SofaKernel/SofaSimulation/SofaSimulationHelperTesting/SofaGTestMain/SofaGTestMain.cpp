@@ -1,3 +1,5 @@
+#include <gtest/gtest.h>
+
 #include <sofa/helper/Utils.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/FileSystem.h>
@@ -6,8 +8,6 @@
 #  include <SofaSimulationGraph/init.h>
 #endif
 #include <SofaSimulationTree/init.h>
-
-#include <sofa/helper/testing/SofaGtest.h>
 
 using sofa::helper::system::PluginRepository;
 using sofa::helper::system::DataRepository;
