@@ -144,12 +144,12 @@ bool AssimpLoader::convertAssimpScene()
     {
         aiMesh* currentMesh = m_assimpScene->mMeshes[i]; //The ith mesh of the array of meshes.
         unsigned int nbr_pos = currentMesh->mNumVertices;
-
+        
         unsigned int cpt_pos = waPositions.size();
         unsigned int cpt_norm = waNormals.size();
         //unsigned int cpt_uv = m_texCoords.size();
 
-        if (cpt_pos != cpt_norm || cpt_pos/* != cpt_uv*/)
+        if (cpt_pos != cpt_norm /*|| cpt_pos != cpt_uv*/)
             msg_warning() << "No conscistent number of element in mesh: pos: " << cpt_pos
             << " normals: " << cpt_norm/* << " texCoords: " << cpt_uv*/;
 
@@ -206,9 +206,6 @@ bool AssimpLoader::convertAssimpScene()
 
     return true;
 }
-
-
-
 
 } // namespace loader
 
