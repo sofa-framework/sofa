@@ -20,99 +20,71 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "deprecated.h"
+
+
 namespace sofa
 {
-
 namespace helper
 {
-
-namespace deprecated
+namespace lifecycle
 {
 
-std::map<std::string, std::string>  messages =
-{
-    {"pluginized-17.12", " has been moved into a plugin since sofa 17.12. To continue using this component you need "
-                         " to update you scene and add "
-    },
-    {"deprecated-17.12", " has been deprecated since sofa 17.12. Please consider updating your scene as using "
-                         " deprecated component may result in poor performance and undefined behavior."
-                         " If this component is crucial to you please report that to sofa-dev@ so we can  "
-                         " reconsider this component for future re-integration. "
-    },
-    {"removed-17.12", " has been removed since sofa 17.12. Please consider updating your scene."
-                      " If this component is crucial to you please report that to sofa-dev@ so we can  "
-                      " reconsider this component for future re-integration. "
-    },
-} ;
-
-
-
-////// Here is the list of component that are removed or deprecated.
-/// Component name, the error message to use among
-std::map<std::string, std::vector<std::string>> components =
-{
+std::map<std::string, Deprecated> deprecatedComponents = {
     // SofaBoundaryCondition
-    {"BuoyantForceField", {"deprecated-17.12"}},
-    {"VaccumSphereForceField", {"deprecated-17.12"}},
+    {"BuoyantForceField", Deprecated("v17.12", "v18.12")},
+    {"VaccumSphereForceField", Deprecated("v17.12", "v18.12")},
 
     // SofaMiscForceField
-    {"ForceMaskOff", {"deprecated-17.12"}},
-    {"LineBendingSprings", {"deprecated-17.12"}},
-    {"WashingMachineForceField", {"deprecated-17.12"}},
-    {"LennardJonesForceField", {"deprecated-17.12"}},
+    {"ForceMaskOff", Deprecated("v17.12", "v18.12")},
+    {"LineBendingSprings", Deprecated("v17.12", "v18.12")},
+    {"WashingMachineForceField", Deprecated("v17.12", "v18.12")},
+    {"LennardJonesForceField", Deprecated("v17.12", "v18.12")},
 
     // SofaMiscMapping
-    {"CatmullRomSplineMapping", {"deprecated-17.12"}},
-    {"CenterPointMechanicalMapping", {"deprecated-17.12"}},
-    {"CurveMapping", {"deprecated-17.12"}},
-    {"ExternalInterpolationMapping", {"deprecated-17.12"}},
-    {"ProjectionToLineMapping", {"deprecated-17.12"}},
-    {"ProjectionToPlaneMapping", {"deprecated-17.12"}},
+    {"CatmullRomSplineMapping", Deprecated("v17.12", "v18.12")},
+    {"CenterPointMechanicalMapping", Deprecated("v17.12", "v18.12")},
+    {"CurveMapping", Deprecated("v17.12", "v18.12")},
+    {"ExternalInterpolationMapping", Deprecated("v17.12", "v18.12")},
+    {"ProjectionToLineMapping", Deprecated("v17.12", "v18.12")},
+    {"ProjectionToPlaneMapping", Deprecated("v17.12", "v18.12")},
 
     // SofaMisc
-    {"ParallelCGLinearSolver", {"deprecated-17.12"}},
+    {"ParallelCGLinearSolver", Deprecated("v17.12", "v18.12")},
 
     // SofaOpenglVisual
-    {"OglCylinderModel", {"deprecated-17.12"}},
-    {"OglGrid", {"deprecated-17.12"}},
-    {"OglRenderingSRGB", {"deprecated-17.12"}},
-    {"OglLineAxis", {"deprecated-17.12"}},
-    {"OglSceneFrame", {"deprecated-17.12"}},
+    {"OglCylinderModel", Deprecated("v17.12", "v18.12")},
+    {"OglGrid", Deprecated("v17.12", "v18.12")},
+    {"OglRenderingSRGB", Deprecated("v17.12", "v18.12")},
+    {"OglLineAxis", Deprecated("v17.12", "v18.12")},
+    {"OglSceneFrame", Deprecated("v17.12", "v18.12")},
 
     // SofaUserInteraction
-    {"ArticulatedHierarchyBVHController", {"deprecated-17.12"}},
-    {"ArticulatedHierarchyController", {"deprecated-17.12"}},
-    {"DisabledContact", {"deprecated-17.12"}},
-    {"EdgeSetController", {"deprecated-17.12"}},
-    {"GraspingManager", {"deprecated-17.12"}},
-    {"InterpolationController", {"deprecated-17.12"}},
-    {"MechanicalStateControllerOmni", {"deprecated-17.12"}},
-    {"NodeToggleController", {"deprecated-17.12"}},
+    {"ArticulatedHierarchyBVHController", Deprecated("v17.12", "v18.12")},
+    {"ArticulatedHierarchyController", Deprecated("v17.12", "v18.12")},
+    {"DisabledContact", Deprecated("v17.12", "v18.12")},
+    {"EdgeSetController", Deprecated("v17.12", "v18.12")},
+    {"GraspingManager", Deprecated("v17.12", "v18.12")},
+    {"InterpolationController", Deprecated("v17.12", "v18.12")},
+    {"MechanicalStateControllerOmni", Deprecated("v17.12", "v18.12")},
+    {"NodeToggleController", Deprecated("v17.12", "v18.12")},
 };
 
-////// Here is the list of component that are move or removed with a message explaining
-/// what happened. The list is different to the components one as in the other list the
-/// components are still in the factory.
-std::map<std::string, std::vector<std::string>> uncreateablecomponents =
-{
-    /// SofaDistanceGrid is now a Plugin
-    {"BarycentricPenalityContact", {"pluginized-17.12", "<RequiredPlugin name='SofaDistanceGrid'/>"}},
-    {"DistanceGridCollisionModel", {"pluginized-17.12", "<RequiredPlugin name='SofaDistanceGrid'/>"}},
-    {"FFDDistanceGridDiscreteIntersection", {"pluginized-17.12", "<RequiredPlugin name='SofaDistanceGrid'/>"}},
-    {"RayDistanceGridContact", {"pluginized-17.12", "<RequiredPlugin name='SofaDistanceGrid'/>"}},
-    {"RigidDistanceGridDiscreteIntersection", {"pluginized-17.12", "<RequiredPlugin name='SofaDistanceGrid'/>"}},
-    {"DistanceGridForceField", {"pluginized-17.12", "<RequiredPlugin name='SofaDistanceGrid'/>"}},
+std::map<std::string, ComponentChange> uncreatableComponents = {
+    {"BarycentricPenalityContact", Pluginized("v17.12", "SofaDistanceGrid")},
+    {"DistanceGridCollisionModel", Pluginized("v17.12", "SofaDistanceGrid")},
+    {"FFDDistanceGridDiscreteIntersection", Pluginized("v17.12", "SofaDistanceGrid")},
+    {"RayDistanceGridContact", Pluginized("v17.12", "SofaDistanceGrid")},
+    {"RigidDistanceGridDiscreteIntersection", Pluginized("v17.12", "SofaDistanceGrid")},
+    {"DistanceGridForceField", Pluginized("v17.12", "SofaDistanceGrid")},
 
-    /// SofaDistanceGrid is now a Plugin
-    {"ImplicitSurfaceContainer", {"pluginized-17.12", "<RequiredPlugin name='SofaImplicitField'/>"}},
-    {"InterpolatedImplicitSurface", {"pluginized-17.12", "<RequiredPlugin name='SofaImplicitField'/>"}},
-    {"SphereSurface", {"pluginized-17.12", "<RequiredPlugin name='SofaImplicitField'/>"}},
-    {"ImplicitSurfaceMapping", {"pluginized-17.12", "<RequiredPlugin name='SofaImplicitField'/>"}}
+    {"ImplicitSurfaceContainer", Pluginized("v17.12", "SofaImplicitField")},
+    {"InterpolatedImplicitSurface", Pluginized("v17.12", "SofaImplicitField")},
+    {"SphereSurface", Pluginized("v17.12", "SofaImplicitField")},
+    {"ImplicitSurfaceMapping", Pluginized("v17.12", "SofaImplicitField")},
 };
 
-} /// namespace deprecated
 
-} /// namespace helper
-
-} /// namespace sofa
+} // namespace lifecycle
+} // namespace helper
+} // namespace sofa
 
