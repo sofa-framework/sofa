@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaTest)
 
+
+
 set(SOFATEST_VERSION 0.1)
 ################################ COMPONENTS HERE ARE THE NG-SET ####################################
 
@@ -65,6 +67,8 @@ endif()
 find_package(SofaFramework REQUIRED)
 find_package(SofaMisc REQUIRED)
 find_package(SceneCreator REQUIRED)
+find_package(SofaHelperTesting REQUIRED)
+find_package(SofaSimulationHelperTesting REQUIRED)
 
 find_package(SofaPython QUIET)
 if(SofaPython_FOUND)
@@ -86,7 +90,7 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${PYTHON_FILE
 if(SofaPython_FOUND)
     target_link_libraries(${PROJECT_NAME} SofaPython)
 endif()
-target_link_libraries(${PROJECT_NAME} SceneCreator SofaComponentBase SofaComponentCommon SofaComponentGeneral SofaComponentAdvanced SofaComponentMisc)
+target_link_libraries(${PROJECT_NAME} SceneCreator SofaSimulationHelperTesting SofaHelperTesting SofaComponentBase SofaComponentCommon SofaComponentGeneral SofaComponentAdvanced SofaComponentMisc)
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_TEST -DSOFA_SRC_DIR=\"${CMAKE_SOURCE_DIR}\"")

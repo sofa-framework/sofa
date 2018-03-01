@@ -42,9 +42,10 @@ set(PYTHON_FILES
 
 find_package(SofaTest)
 find_package(SofaPython)
+find_package(SofaSimulationHelperTesting REQUIRED)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${PYTHON_FILES})
-target_link_libraries(${PROJECT_NAME} SofaPython SofaTest SofaGTestMain)
+target_link_libraries(${PROJECT_NAME} SofaPython SofaTest SofaSimulationHelperTesting SofaGTestMain)
 add_definitions("-DSOFAPYTHON_TEST_PYTHON_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/python\"")
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

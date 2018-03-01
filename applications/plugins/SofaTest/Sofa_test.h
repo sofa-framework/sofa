@@ -27,7 +27,7 @@
 #include "InitPlugin_test.h"
 #include <sofa/helper/testing/BaseTest.h>
 #include <sofa/helper/testing/NumericTest.h>
-#include <SofaSimulationGraph/testing/BaseSimulationTest.h>
+#include <sofa/simulation/helper/testing/BaseSimulationTest.h>
 
 // Maybe not the right place to put this (private header?)
 #ifndef SOFA_FLOAT

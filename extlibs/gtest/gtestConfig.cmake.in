@@ -1,0 +1,12 @@
+# CMake package configuration file for the gtest library
+
+@PACKAGE_INIT@
+
+if(NOT TARGET gtest)
+	include("${CMAKE_CURRENT_LIST_DIR}/gtestTargets.cmake")
+endif()
+
+check_required_components(gtest)
+
+set(gtest_LIBRARY gtest)
+set(gtest_INCLUDE_DIRS @CMAKE_CURRENT_SOURCE_DIR@/include)

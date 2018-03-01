@@ -57,10 +57,6 @@ endif()
 set(SOFAFRAMEWORK_DEPENDENCY_LINK)
 set(SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES)
 
-
-find_package(GTest CONFIG QUIET)
-set(SOFA_HAVE_GTEST ${GTest_FOUND})
-
 if(NOT SOFA_NO_OPENGL)
 
     # OpenGL (glu)
@@ -212,9 +208,6 @@ add_subdirectory(../framework/sofa/helper ${CMAKE_CURRENT_BINARY_DIR}/SofaHelper
 add_subdirectory(../framework/sofa/defaulttype ${CMAKE_CURRENT_BINARY_DIR}/SofaDefaultType)
 add_subdirectory(../framework/sofa/core ${CMAKE_CURRENT_BINARY_DIR}/SofaCore)
 add_subdirectory(../framework/sofa/simulation ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationCore)
-if(SOFA_BUILD_TESTS)
-    add_subdirectory(../framework/framework_test ${CMAKE_CURRENT_BINARY_DIR}/framework_test)
-endif()
 
 # IDE folder
 set_target_properties(SofaHelper PROPERTIES FOLDER "SofaFramework")
