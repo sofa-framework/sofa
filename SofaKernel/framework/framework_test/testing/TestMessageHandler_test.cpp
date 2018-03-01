@@ -7,8 +7,6 @@ using sofa::helper::testing::BaseTest ;
 ////////////// IMPLEMENTS A TEST PREDICATE TO VALIDE THAT A THERE IS AT LEAST ONE MESSAGE
 /// THE IS EMITTED TO VALDIATE THE BEHAVIOR OF THE FRAMEWORK.
 namespace testing {
-namespace internal{
-
 // Prints a TestPartResult object. (I'm doing this because the 01/03/2018 the operator from gtest
 // is not correctly exporter with a GTEST_API_ So I made my own here.
 // operator<< in gtest-test-part.cc
@@ -20,6 +18,10 @@ std::ostream& operator<<(std::ostream& os, const TestPartResult& result) {
           "Non-fatal failure") << ":\n"
       << result.message() << std::endl;
 }
+
+namespace internal{
+
+
 
 // This predicate-formatter checks that 'results' contains a test part
 // failure of the given type and that the failure message contains the
