@@ -117,7 +117,7 @@ fi
 append "-DPLUGIN_SOFAEULERIANFLUID=ON"
 append "-DPLUGIN_SOFASPHFLUID=ON"
 append "-DPLUGIN_SOFAMISCCOLLISION=ON"
-append "-DPLUGIN_SOFADISTANCEGRID=ON"
+append "-DPLUGIN_SOFADISTANCEGRID=ON" # Requires MiniFlowVR for DistanceGridForceField-liver.scn
 append "-DPLUGIN_SOFAIMPLICITFIELD=ON"
 
 case $CI_OPTIONS in
@@ -185,7 +185,6 @@ case $CI_OPTIONS in
         else
             append "-DPLUGIN_SOFACUDA=OFF"
         fi
-        append "-DPLUGIN_SOFADISTANCEGRID=ON"
         append "-DPLUGIN_SOFAHAPI=OFF" # Requires HAPI libraries.
         append "-DPLUGIN_SOFASIMPLEGUI=ON" # Not sure if worth maintaining
         append "-DPLUGIN_THMPGSPATIALHASHING=ON"
