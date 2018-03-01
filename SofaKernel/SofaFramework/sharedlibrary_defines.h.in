@@ -34,5 +34,12 @@
 #   endif
 #endif
 
+#ifdef SOFA_EXPORT_TARGET
+    #define SOFA_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+    #define SOFA_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif //
+
+
 #endif /// SOFA_CONFIG_SHAREDLIBRARY_DEFINES_H
 

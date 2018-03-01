@@ -36,6 +36,9 @@ target_include_directories(SofaHelperTesting PUBLIC
     $<INSTALL_INTERFACE:src>
 )
 
+target_compile_options(SofaHelperTesting PRIVATE "-DSOFA_EXPORT_TARGET" )
+target_compile_options(SofaHelperTesting INTERFACE "-DSOFA_IMPORT_TARGET" )
+
 sofa_create_package(SofaHelperTesting 1.0 SofaHelperTesting src)
 
 

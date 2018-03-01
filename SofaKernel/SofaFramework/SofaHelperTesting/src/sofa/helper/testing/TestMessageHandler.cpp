@@ -90,7 +90,7 @@ public:
 
 
 
-class SOFA_HELPER_API GtestMessageHandler : public MessageHandler
+class SOFA_API GtestMessageHandler : public MessageHandler
 {
     std::vector<std::vector<GtestMessageFrame*> > m_gtestframes;
 
@@ -104,7 +104,7 @@ public:
     void popFrame(Message::Type type) ;
 };
 
-class SOFA_HELPER_API MainGtestMessageHandlerPrivate
+class SOFA_API MainGtestMessageHandlerPrivate
 {
 public:
     static GtestMessageHandler& getInstance() ;

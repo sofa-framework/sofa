@@ -27,6 +27,8 @@
 #ifndef SOFA_HELPER_NUMERICTEST_H
 #define SOFA_HELPER_NUMERICTEST_H
 
+#include <sofa/config/sharedlibrary_defines.h>
+
 #include "BaseTest.h"
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
@@ -44,7 +46,7 @@ namespace testing {
 /** @brief Helper functions to compare scalars, vectors, matrices, etc.
   */
 template <typename _Real=SReal>
-struct SOFA_HELPER_API NumericTest : public virtual BaseTest
+struct SOFA_API NumericTest : public virtual BaseTest
 {
     NumericTest() {}
 
@@ -315,10 +317,10 @@ void EXPECT_MAT_NEAR(sofa::defaulttype::Mat<L,C,real> const& expected, sofa::def
 
 
 #ifdef SOFA_WITH_FLOAT
-extern template struct SOFA_HELPER_API sofa::helper::testing::NumericTest<float>;
+extern template struct SOFA_API sofa::helper::testing::NumericTest<float>;
 #endif
 #ifdef SOFA_WITH_DOUBLE
-extern template struct SOFA_HELPER_API sofa::helper::testing::NumericTest<double>;
+extern template struct SOFA_API sofa::helper::testing::NumericTest<double>;
 #endif
 
 #endif // SOFA_HELPER_NUMERICTEST_H
