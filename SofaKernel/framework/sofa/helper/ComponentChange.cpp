@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "deprecated.h"
+#include "ComponentChange.h"
 
 
 namespace sofa

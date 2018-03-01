@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_DEPRECATED_H
-#define SOFA_HELPER_DEPRECATED_H
+#ifndef SOFA_HELPER_COMPONENTCHANGE_H
+#define SOFA_HELPER_COMPONENTCHANGE_H
 
 #include <string>
 #include <vector>

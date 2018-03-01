@@ -29,7 +29,7 @@ using sofa::core::objectmodel::Base ;
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/helper/system/FileRepository.h>
 
-#include <sofa/helper/deprecated.h>
+#include <sofa/helper/ComponentChange.h>
 using sofa::helper::lifecycle::ComponentChange;
 using sofa::helper::lifecycle::deprecatedComponents;
 

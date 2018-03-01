@@ -1,4 +1,4 @@
-#include <sofa/helper/deprecated.h>
+#include <sofa/helper/ComponentChange.h>
 #include <SofaUserInteraction/DisabledContact.h>
 #include <iostream>
 

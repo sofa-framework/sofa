@@ -23,7 +23,7 @@
 
 #include <sofa/defaulttype/TemplatesAliases.h>
 #include <sofa/helper/logging/Messaging.h>
-#include <sofa/helper/deprecated.h>
+#include <sofa/helper/ComponentChange.h>
 
 namespace sofa
 {
