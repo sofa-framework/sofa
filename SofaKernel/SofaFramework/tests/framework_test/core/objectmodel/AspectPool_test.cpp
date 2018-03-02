@@ -19,9 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-#include <sofa/core/objectmodel/AspectPool.h>
 #include <gtest/gtest.h>
+#include <sofa/core/objectmodel/AspectPool.h>
 
 using namespace sofa::core::objectmodel;
 using sofa::core::SOFA_DATA_MAX_ASPECTS;

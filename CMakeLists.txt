@@ -316,6 +316,12 @@ add_subdirectory(SofaAdvanced)
 add_subdirectory(SofaMisc)
 add_subdirectory(SofaGui)
 
+if(SOFA_BUILD_TESTS)
+    add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework/SofaHelperTesting)
+    add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework/tests/framework_test)
+endif()
+
+
 # SofaTest depends on SofaPython, so we add SofaPython before SofaTest.
 sofa_add_plugin( applications/plugins/SofaPython SofaPython )
 
