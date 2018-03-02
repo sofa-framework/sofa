@@ -18,11 +18,6 @@ set(SOURCE_FILES
     init.cpp
 )
 
-if(SOFA_BUILD_TESTS)
-    list(APPEND HEADER_FILES testing/BaseSimulationTest.h)
-    list(APPEND SOURCE_FILES testing/BaseSimulationTest.cpp)
-endif()
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCommon)
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SIMULATION_GRAPH")

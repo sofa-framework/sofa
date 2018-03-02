@@ -305,10 +305,6 @@ add_subdirectory(extlibs)
 
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework)
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaSimulation)
-if(SOFA_BUILD_TESTS)
-    # Depends on SofaSimulation
-    add_subdirectory(tools/SofaGTestMain)
-endif()
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaBase)
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaCommon)
 add_subdirectory(SofaGeneral)
@@ -319,6 +315,9 @@ add_subdirectory(SofaGui)
 if(SOFA_BUILD_TESTS)
     add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework/SofaHelperTesting)
     add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework/tests/framework_test)
+    add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaSimulation/SofaSimulationHelperTesting)
+    add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaSimulation/tests/frameworkextra_test)
+    add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaSimulation/tests/simulation_test)
 endif()
 
 
