@@ -3,7 +3,7 @@ project(SofaGTestMain)
 
 ## Dependencies
 find_package(SofaSimulation REQUIRED)
-find_package(GTest CONFIG REQUIRED)
+find_package(gtest CONFIG REQUIRED)
 
 ## Version
 set(SOFAGTESTMAIN_VERSION ${SofaSimulation_VERSION})

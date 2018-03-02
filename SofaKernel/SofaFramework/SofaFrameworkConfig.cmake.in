@@ -20,7 +20,7 @@ set(SOFA_NO_OPENGL "@SOFA_NO_OPENGL@")
 set(SOFA_HAVE_GTEST "@SOFA_HAVE_GTEST@")
 
 if(SOFA_HAVE_GTEST)
-    find_package(GTest CONFIG REQUIRED)
+    find_package(gtest CONFIG REQUIRED)
 endif()
 
 if(SOFA_HAVE_ZLIB)
