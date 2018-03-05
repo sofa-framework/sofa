@@ -271,6 +271,28 @@ parse-options-files() {
     done < "$output_dir/directories.txt"
 }
 
+ignore-deprecated() {
+    SofaDeprecatedComponents="$(ls "$build_dir/bin/SofaDeprecatedComponents"{,d,_d} 2> /dev/null || true)"
+    $SofaDeprecatedComponents > "$output_dir/deprecatedcomponents.txt"
+    echo "Searching for deprecated components..."
+    output_dir_abs="$(cd "$output_dir" && pwd)"
+    cd "$src_dir"
+    while read deprecated_component; do
+        deprecated_component="$(echo "$deprecated_component" | tr -d '\n' | tr -d '\r')"
+        grep -r "$deprecated_component" --include=\*.{scn,py,pyscn} | cut -f1 -d":" | sort | uniq > "$output_dir_abs/grep.tmp"
+        while read line; do
+            if ! grep -q "$line" "$output_dir_abs/all-ignored-scenes.txt"; then
+                echo "$line" >> "$output_dir_abs/all-ignored-scenes.txt"
+            fi
+            if grep -q "$line" "$output_dir_abs/all-tested-scenes.txt"; then
+                grep -v "$line" "$output_dir_abs/all-tested-scenes.txt" > "$output_dir_abs/all-tested-scenes.tmp" && mv "$output_dir_abs/all-tested-scenes.tmp" "$output_dir_abs/all-tested-scenes.txt"
+                rm -f "$output_dir_abs/all-tested-scenes.tmp"
+            fi
+        done < "$output_dir_abs/grep.tmp"
+    done < "$output_dir_abs/deprecatedcomponents.txt"
+    rm -f "$output_dir_abs/grep.tmp"
+}
+
 initialize-scene-testing() {
     echo "Initializing scene testing."
     rm -rf "$output_dir"
@@ -445,6 +467,7 @@ print-summary() {
 
 if [[ "$command" = run ]]; then
     initialize-scene-testing
+    ignore-deprecated
     test-all-scenes
     extract-successes
     extract-warnings
