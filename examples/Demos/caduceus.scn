@@ -24,7 +24,6 @@
         <HexahedronFEMForceField name="FEM" youngModulus="30000.0" poissonRatio="0.3" method="large" updateStiffnessMatrix="false" printLog="0" />
 
 	<UncoupledConstraintCorrection />
-
 	<Node name="Collis">
             <MeshObjLoader name="loader" filename="mesh/meca_snake_900tri.obj" />
             <Mesh src="@loader" />

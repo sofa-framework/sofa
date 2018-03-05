@@ -27,15 +27,6 @@
 #ifdef SOFA_GUI_QT
 #include "qt/RealGUI.h"
 #endif
-#ifdef SOFA_GUI_GLUT
-#include "glut/SimpleGUI.h"
-#endif
-
-#ifdef SOFA_GUI_GLUT
-#ifdef SOFA_HAVE_BOOST
-#include "glut/MultithreadGUI.h"
-#endif
-#endif
 
 namespace sofa
 {
@@ -54,14 +45,6 @@ void initMain()
 }
 
 int BatchGUIClass = GUIManager::RegisterGUI("batch", &BatchGUI::CreateGUI, &BatchGUI::RegisterGUIParameters, -1);
-
-#ifdef SOFA_GUI_GLUT
-int SimpleGUIClass = GUIManager::RegisterGUI("glut", &glut::SimpleGUI::CreateGUI, &glut::SimpleGUI::InitGUI, 0);
-
-#ifdef SOFA_HAVE_BOOST
-int MtGUIClass = GUIManager::RegisterGUI("glut-mt", &glut::MultithreadGUI::CreateGUI, &glut::MultithreadGUI::InitGUI, 0);
-#endif
-#endif
 
 #ifdef SOFA_GUI_QGLVIEWER
 int QGLViewerGUIClass = GUIManager::RegisterGUI ( "qglviewer", &qt::RealGUI::CreateGUI, NULL, 3 );
