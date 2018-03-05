@@ -177,31 +177,6 @@ create-directories() {
 }
 
 
-ignore-missing-plugins() {
-    echo "Searching for missing plugins..."
-    while read scene; do
-        if grep -q '^[	 ]*<[	 ]*RequiredPlugin' "$src_dir/examples/$scene"; then
-            grep '^[	 ]*<[	 ]*RequiredPlugin' "$src_dir/examples/$scene" > "$output_dir/grep.tmp"
-            while read match; do
-                if echo "$match" | grep -q 'pluginName'; then
-                    plugin="$(echo "$match" | grep -o "pluginName[	 ]*=[\'\"][A-Za-z _-]*[\'\"]" | grep -o [\'\"].*[\'\"] | head -c -2 | tail -c +2)"
-                elif echo "$match" | grep -q 'name'; then
-                    plugin="$(echo "$match" | grep -o "name[	 ]*=[\'\"][A-Za-z _-]*[\'\"]" | grep -o [\'\"].*[\'\"] | head -c -2 | tail -c +2)"
-                else
-                    echo "ERROR: unknown RequiredPlugin found in $scene"
-                    break
-                fi
-                local lib="$(get-lib "$plugin")"
-                if [ -z "$lib" ]; then
-                    echo "ignore $scene: missing plugin $plugin"
-                    echo "$scene" >> "$output_dir/examples/ignore-patterns.txt"
-                fi
-            done < "$output_dir/grep.tmp"
-            rm -f "$output_dir/grep.tmp"
-        fi
-    done < "$output_dir/examples/scenes.txt"
-}
-
 parse-options-files() {
     # echo "Parsing option files."
     while read path; do
@@ -297,26 +272,62 @@ parse-options-files() {
     done < "$output_dir/directories.txt"
 }
 
-ignore-deprecated() {
+ignore-scenes-with-deprecated-components() {
+    echo "Searching for deprecated components..."
     SofaDeprecatedComponents="$(ls "$build_dir/bin/SofaDeprecatedComponents"{,d,_d} 2> /dev/null || true)"
     $SofaDeprecatedComponents > "$output_dir/deprecatedcomponents.txt"
-    echo "Searching for deprecated components..."
     output_dir_abs="$(cd "$output_dir" && pwd)"
     cd "$src_dir"
-    while read deprecated_component; do
-        deprecated_component="$(echo "$deprecated_component" | tr -d '\n' | tr -d '\r')"
-        grep -r "$deprecated_component" --include=\*.{scn,py,pyscn} | cut -f1 -d":" | sort | uniq > "$output_dir_abs/grep.tmp"
-        while read line; do
-            if ! grep -q "$line" "$output_dir_abs/all-ignored-scenes.txt"; then
-                echo "$line" >> "$output_dir_abs/all-ignored-scenes.txt"
+    while read component; do
+        component="$(echo "$component" | tr -d '\n' | tr -d '\r')"
+        grep -r "$component" --include=\*.{scn,py,pyscn} | cut -f1 -d":" | sort | uniq > "$output_dir_abs/grep.tmp"
+        while read scene; do
+            echo "  ignore $scene: deprecated component $component"
+            if ! grep -q "$scene" "$output_dir_abs/all-ignored-scenes.txt"; then
+                echo "$scene" >> "$output_dir_abs/all-ignored-scenes.txt"
             fi
-            if grep -q "$line" "$output_dir_abs/all-tested-scenes.txt"; then
-                grep -v "$line" "$output_dir_abs/all-tested-scenes.txt" > "$output_dir_abs/all-tested-scenes.tmp" && mv "$output_dir_abs/all-tested-scenes.tmp" "$output_dir_abs/all-tested-scenes.txt"
+            if grep -q "$scene" "$output_dir_abs/all-tested-scenes.txt"; then
+                grep -v "$scene" "$output_dir_abs/all-tested-scenes.txt" > "$output_dir_abs/all-tested-scenes.tmp" && mv "$output_dir_abs/all-tested-scenes.tmp" "$output_dir_abs/all-tested-scenes.txt"
                 rm -f "$output_dir_abs/all-tested-scenes.tmp"
             fi
         done < "$output_dir_abs/grep.tmp"
     done < "$output_dir_abs/deprecatedcomponents.txt"
     rm -f "$output_dir_abs/grep.tmp"
+    echo "Searching for deprecated components: done."
+}
+
+ignore-scenes-with-missing-plugins() {
+    # Only search in $src_dir/examples because all plugin scenes are already ignored if plugin not built (see list-scene-directories)
+    echo "Searching for missing plugins..."
+    while read scene; do
+        if grep -q '^[	 ]*<[	 ]*RequiredPlugin' "$src_dir/examples/$scene"; then
+            grep '^[	 ]*<[	 ]*RequiredPlugin' "$src_dir/examples/$scene" > "$output_dir/grep.tmp"
+            while read match; do
+                if echo "$match" | grep -q 'pluginName'; then
+                    plugin="$(echo "$match" | grep -o "pluginName[	 ]*=[\'\"][A-Za-z _-]*[\'\"]" | grep -o [\'\"].*[\'\"] | head -c -2 | tail -c +2)"
+                elif echo "$match" | grep -q 'name'; then
+                    plugin="$(echo "$match" | grep -o "name[	 ]*=[\'\"][A-Za-z _-]*[\'\"]" | grep -o [\'\"].*[\'\"] | head -c -2 | tail -c +2)"
+                else
+                    echo "  Warning: unknown RequiredPlugin found in $scene"
+                    break
+                fi
+                local lib="$(get-lib "$plugin")"
+                if [ -z "$lib" ]; then
+                    scene="examples/$scene" # add 'examples' base directory
+                    echo "  ignore $scene: missing plugin $plugin"
+                    if ! grep -q "$scene" "$output_dir/all-ignored-scenes.txt"; then
+                        echo "$scene" >> "$output_dir/all-ignored-scenes.txt"
+                    fi
+                    if grep -q "$scene" "$output_dir/all-tested-scenes.txt"; then
+                        grep -v "$scene" "$output_dir/all-tested-scenes.txt" > "$output_dir/all-tested-scenes.tmp" && mv "$output_dir/all-tested-scenes.tmp" "$output_dir/all-tested-scenes.txt"
+                        rm -f "$output_dir/all-tested-scenes.tmp"
+                    fi
+                fi
+            done < "$output_dir/grep.tmp"
+            rm -f "$output_dir/grep.tmp"
+        fi
+    done < "$output_dir/examples/scenes.txt"
+    echo "Searching for missing plugins: done."
 }
 
 initialize-scene-testing() {
@@ -336,7 +347,6 @@ initialize-scene-testing() {
     touch "$output_dir/errors.txt"
 
     create-directories
-    ignore-missing-plugins
     parse-options-files
 }
 
@@ -494,7 +504,8 @@ print-summary() {
 
 if [[ "$command" = run ]]; then
     initialize-scene-testing
-    ignore-deprecated
+    ignore-scenes-with-deprecated-components
+    ignore-scenes-with-missing-plugins
     test-all-scenes
     extract-successes
     extract-warnings
