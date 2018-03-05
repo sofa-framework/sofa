@@ -276,32 +276,34 @@ ignore-scenes-with-deprecated-components() {
     echo "Searching for deprecated components..."
     SofaDeprecatedComponents="$(ls "$build_dir/bin/SofaDeprecatedComponents"{,d,_d} 2> /dev/null || true)"
     $SofaDeprecatedComponents > "$output_dir/deprecatedcomponents.txt"
-    output_dir_abs="$(cd "$output_dir" && pwd)"
+    base_dir="$(pwd)"
     cd "$src_dir"
     while read component; do
         component="$(echo "$component" | tr -d '\n' | tr -d '\r')"
-        grep -r "$component" --include=\*.{scn,py,pyscn} | cut -f1 -d":" | sort | uniq > "$output_dir_abs/grep.tmp"
+        grep -r "$component" --include=\*.{scn,py,pyscn} | cut -f1 -d":" | sort | uniq > "$base_dir/$output_dir/grep.tmp"
         while read scene; do
-            echo "  ignore $scene: deprecated component $component"
-            if ! grep -q "$scene" "$output_dir_abs/all-ignored-scenes.txt"; then
-                echo "$scene" >> "$output_dir_abs/all-ignored-scenes.txt"
+            if ! grep -q "$scene" "$base_dir/$output_dir/all-ignored-scenes.txt"; then
+                echo "  ignore $scene: deprecated component $component"
+                echo "$scene" >> "$base_dir/$output_dir/all-ignored-scenes.txt"
             fi
-            if grep -q "$scene" "$output_dir_abs/all-tested-scenes.txt"; then
-                grep -v "$scene" "$output_dir_abs/all-tested-scenes.txt" > "$output_dir_abs/all-tested-scenes.tmp" && mv "$output_dir_abs/all-tested-scenes.tmp" "$output_dir_abs/all-tested-scenes.txt"
-                rm -f "$output_dir_abs/all-tested-scenes.tmp"
+            if grep -q "$scene" "$base_dir/$output_dir/all-tested-scenes.txt"; then
+                grep -v "$scene" "$base_dir/$output_dir/all-tested-scenes.txt" > "$base_dir/$output_dir/all-tested-scenes.tmp"
+                mv "$base_dir/$output_dir/all-tested-scenes.tmp" "$base_dir/$output_dir/all-tested-scenes.txt"
+                rm -f "$base_dir/$output_dir/all-tested-scenes.tmp"
             fi
-        done < "$output_dir_abs/grep.tmp"
-    done < "$output_dir_abs/deprecatedcomponents.txt"
-    rm -f "$output_dir_abs/grep.tmp"
+        done < "$base_dir/$output_dir/grep.tmp"
+    done < "$base_dir/$output_dir/deprecatedcomponents.txt"
+    rm -f "$base_dir/$output_dir/grep.tmp"
+    cd "$base_dir"
     echo "Searching for deprecated components: done."
 }
 
 ignore-scenes-with-missing-plugins() {
-    # Only search in $src_dir/examples because all plugin scenes are already ignored if plugin not built (see list-scene-directories)
     echo "Searching for missing plugins..."
+    # Only search in $src_dir/examples because all plugin scenes are already ignored if plugin not built (see list-scene-directories)
     while read scene; do
-        if grep -q '^[	 ]*<[	 ]*RequiredPlugin' "$src_dir/examples/$scene"; then
-            grep '^[	 ]*<[	 ]*RequiredPlugin' "$src_dir/examples/$scene" > "$output_dir/grep.tmp"
+        if grep -q '^[	 ]*<[	 ]*RequiredPlugin' "$src_dir/$scene"; then
+            grep '^[	 ]*<[	 ]*RequiredPlugin' "$src_dir/$scene" > "$output_dir/grep.tmp"
             while read match; do
                 if echo "$match" | grep -q 'pluginName'; then
                     plugin="$(echo "$match" | grep -o "pluginName[	 ]*=[\'\"][A-Za-z _-]*[\'\"]" | grep -o [\'\"].*[\'\"] | head -c -2 | tail -c +2)"
@@ -313,20 +315,20 @@ ignore-scenes-with-missing-plugins() {
                 fi
                 local lib="$(get-lib "$plugin")"
                 if [ -z "$lib" ]; then
-                    scene="examples/$scene" # add 'examples' base directory
-                    echo "  ignore $scene: missing plugin $plugin"
                     if ! grep -q "$scene" "$output_dir/all-ignored-scenes.txt"; then
+                        echo "  ignore $scene: missing plugin $plugin"
                         echo "$scene" >> "$output_dir/all-ignored-scenes.txt"
                     fi
                     if grep -q "$scene" "$output_dir/all-tested-scenes.txt"; then
-                        grep -v "$scene" "$output_dir/all-tested-scenes.txt" > "$output_dir/all-tested-scenes.tmp" && mv "$output_dir/all-tested-scenes.tmp" "$output_dir/all-tested-scenes.txt"
+                        grep -v "$scene" "$output_dir/all-tested-scenes.txt" > "$output_dir/all-tested-scenes.tmp"
+                        mv "$output_dir/all-tested-scenes.tmp" "$output_dir/all-tested-scenes.txt"
                         rm -f "$output_dir/all-tested-scenes.tmp"
                     fi
                 fi
             done < "$output_dir/grep.tmp"
             rm -f "$output_dir/grep.tmp"
         fi
-    done < "$output_dir/examples/scenes.txt"
+    done < <(grep "^examples/" "$output_dir/all-tested-scenes.txt")
     echo "Searching for missing plugins: done."
 }
 
