@@ -88,7 +88,8 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}/CImgPlugin.h DESTINATI
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${CIMG_CFLAGS} -DSOFA_BUILD_CIMGPLUGIN")
+target_compile_definitions(${PROJECT_NAME} PUBLIC "${CIMG_CFLAGS}")
+target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_CIMGPLUGIN")
 target_link_libraries(${PROJECT_NAME} SofaCore ${EXTERNAL_LIBS})
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>/include")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
