@@ -29,6 +29,7 @@ using sofa::simulation::AnimateBeginEvent ;
 namespace sofa
 {
 
+
 namespace component
 {
 
@@ -72,6 +73,8 @@ SOFA_DECL_CLASS(PythonScriptController)
 
 PythonScriptDataEngine::PythonScriptDataEngine()
     :ScriptDataEngine()
+    , m_ScriptDataEngineClass(0)
+    , m_ScriptDataEngineInstance(0)    
     , m_filename(initData(&m_filename, "filename",
                           "Python script filename"))
     , m_classname(initData(&m_classname, "classname",
@@ -82,11 +85,9 @@ PythonScriptDataEngine::PythonScriptDataEngine()
                                "Set this attribute to true or false to activate/deactivate the gathering"
                                " of timing statistics on the python execution time. Default value is set"
                                "to true." ))
-    , m_doAutoReload( initData( &m_doAutoReload, false, "autoreload",
+    , m_doAutoReload(initData(&m_doAutoReload, false, "autoreload",
                                 "Automatically reload the file when the source code is changed. "
                                 "Default value is set to false" ) )
-    , m_ScriptDataEngineClass(0)
-    , m_ScriptDataEngineInstance(0)    
 {
     m_filelistener = new MyyFileEventListener(this) ;
 }

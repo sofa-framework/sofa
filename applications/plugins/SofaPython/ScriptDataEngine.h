@@ -38,7 +38,6 @@ public:
 
 
     virtual void update() override ;
-    virtual void handleEvent(core::objectmodel::Event *event) override;
 
 
 protected:

@@ -46,10 +46,6 @@ void ScriptDataEngine::reinit()
 {
 }
 
-void ScriptDataEngine::handleEvent(core::objectmodel::Event *event)
-{
-}
-
 } // sofa
 } // component
 } // controller

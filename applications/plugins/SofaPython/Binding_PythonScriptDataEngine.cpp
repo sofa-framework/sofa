@@ -27,10 +27,6 @@ static inline PythonScriptDataEngine* get_dataengine(PyObject* obj) {
 }
 #endif
 
-static DataEngine* get_dataengine(PyObject* self) {
-    return sofa::py::unwrap<DataEngine>(self);
-}
-
 static PyObject * PythonScriptDataEngine_update(PyObject * self, PyObject * /*args*/) {
     (void) self;
 
