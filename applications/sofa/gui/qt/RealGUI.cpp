@@ -61,8 +61,14 @@ using sofa::helper::system::SetDirectory ;
 #include <sofa/helper/system/FileSystem.h>
 using sofa::helper::system::FileSystem ;
 
+#include <sofa/helper/Utils.h>
+using sofa::helper::Utils;
+
 #include <sofa/helper/system/FileRepository.h>
 using sofa::helper::system::DataRepository ;
+
+#include <sofa/gui/GuiDataRepository.h>
+using sofa::gui::GuiDataRepository;
 
 #include <sofa/simulation/SceneLoaderFactory.h>
 using sofa::simulation::SceneLoaderFactory ;
@@ -237,6 +243,9 @@ void RealGUI::CreateApplication(int /*_argc*/, char** /*_argv*/)
     argv[0] = strdup ( BaseGUI::GetProgramName() );
     argv[1]=NULL;
     application = new QSOFAApplication ( *argc,argv );
+
+    //Initialize GUI resources path
+    GuiDataRepository.addFirstPath(Utils::getSofaPathTo("share/sofa/gui/qt/resources").c_str());
 
     //force locale to Standard C
     //(must be done immediatly after the QApplication has been created)
