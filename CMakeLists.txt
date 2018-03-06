@@ -305,16 +305,24 @@ add_subdirectory(extlibs)
 
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework)
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaSimulation)
-if(SOFA_BUILD_TESTS)
-    # Depends on SofaSimulation
-    add_subdirectory(tools/SofaGTestMain)
-endif()
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaBase)
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaCommon)
 add_subdirectory(SofaGeneral)
 add_subdirectory(SofaAdvanced)
 add_subdirectory(SofaMisc)
 add_subdirectory(SofaGui)
+
+if(SOFA_BUILD_TESTS)
+    ### We need to build first the testing framework so that we can use them for the real tests
+    add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework/SofaHelperTesting)
+    add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaSimulation/SofaSimulationHelperTesting)
+
+    ### Here we are using the testing framework to really implement tests.
+    add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework/tests/SofaFramework_test)
+    add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework/tests/SofaFrameworkExtra_test)
+    add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaSimulation/tests/SofaSimulation_test)
+endif()
+
 
 # SofaTest depends on SofaPython, so we add SofaPython before SofaTest.
 sofa_add_plugin( applications/plugins/SofaPython SofaPython )
