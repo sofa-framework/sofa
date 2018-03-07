@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -32,10 +32,6 @@
 #include <assert.h>
 #include <iostream>
 #include <set>
-//#include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
-
-
-
 
 namespace sofa
 {
@@ -46,19 +42,46 @@ namespace component
 namespace forcefield
 {
 
-
 using std::set;
-
-
 using namespace sofa::defaulttype;
 
+template <class DataTypes>
+InvertibleFVMForceField<DataTypes>::InvertibleFVMForceField()
+    : _mesh(NULL)
+    , _indexedTetra(NULL)
+    , _initialPoints(initData(&_initialPoints, "initialPoints", "Initial Position"))
+    , _poissonRatio(initData(&_poissonRatio,(Real)0.45f,"poissonRatio","FEM Poisson Ratio [0,0.5["))
+    , _youngModulus(initData(&_youngModulus,"youngModulus","FEM Young Modulus"))
+    , _localStiffnessFactor(initData(&_localStiffnessFactor, "localStiffnessFactor","Allow specification of different stiffness per element. If there are N element and M values are specified, the youngModulus factor for element i would be localStiffnessFactor[i*M/N]"))
+    , drawHeterogeneousTetra(initData(&drawHeterogeneousTetra,false,"drawHeterogeneousTetra","Draw Heterogeneous Tetra in different color"))
+    , drawAsEdges(initData(&drawAsEdges,false,"drawAsEdges","Draw as edges instead of tetrahedra"))
+    , _verbose(initData(&_verbose,false,"verbose","Print debug stuff"))
+{
+    minYoung = 0.0;
+    maxYoung = 0.0;
+}
 
+template <class DataTypes>
+InvertibleFVMForceField<DataTypes>::~InvertibleFVMForceField() {}
 
+template <class DataTypes>
+void InvertibleFVMForceField<DataTypes>::setPoissonRatio(Real val)
+{
+    this->_poissonRatio.setValue(val);
+}
+
+template <class DataTypes>
+void InvertibleFVMForceField<DataTypes>::setYoungModulus(Real val)
+{
+    VecReal newY;
+    newY.resize(1);
+    newY[0] = val;
+    _youngModulus.setValue(newY);
+}
 
 template <class DataTypes>
 void InvertibleFVMForceField<DataTypes>::reset()
 {
-    //serr<<"InvertibleFVMForceField<DataTypes>::reset"<<sendl;
 }
 
 template <class DataTypes>
@@ -81,7 +104,7 @@ void InvertibleFVMForceField<DataTypes>::init()
     _mesh = this->getContext()->getMeshTopology();
     if (_mesh==NULL)
     {
-        serr << "ERROR(InvertibleFVMForceField): object must have a BaseMeshTopology."<<sendl;
+        msg_error() << "Object must have a BaseMeshTopology." ;
         return;
     }
 #ifdef SOFA_NEW_HEXA
@@ -90,7 +113,7 @@ void InvertibleFVMForceField<DataTypes>::init()
     if (_mesh==NULL || (_mesh->getNbTetrahedra()<=0 && _mesh->getNbCubes()<=0))
 #endif
     {
-        serr << "ERROR(InvertibleFVMForceField): object must have a tetrahedric BaseMeshTopology."<<sendl;
+        msg_error() << "Object must have a tetrahedric BaseMeshTopology.";
         return;
     }
     if (!_mesh->getTetrahedra().empty())
@@ -108,14 +131,12 @@ void InvertibleFVMForceField<DataTypes>::init()
         // These values are only correct if the mesh is a grid topology
         int nx = 2;
         int ny = 1;
-//		int nz = 1;
         {
             topology::GridTopology* grid = dynamic_cast<topology::GridTopology*>(_mesh);
             if (grid != NULL)
             {
                 nx = grid->getNx()-1;
                 ny = grid->getNy()-1;
-//				nz = grid->getNz()-1;
             }
         }
 
@@ -123,7 +144,6 @@ void InvertibleFVMForceField<DataTypes>::init()
         tetrahedra->reserve(nbcubes*6);
         for (int i=0; i<nbcubes; i++)
         {
-            // if (flags && !flags->isCubeActive(i)) continue;
 #ifdef SOFA_NEW_HEXA
             core::topology::BaseMeshTopology::Hexa c = _mesh->getHexahedron(i);
 #define swap(a,b) { int t = a; a = b; b = t; }
@@ -180,13 +200,7 @@ void InvertibleFVMForceField<DataTypes>::init()
 
 
     reinit(); // compute per-element stiffness matrices and other precomputed values
-
-//     sout << "InvertibleFVMForceField: init OK, "<<_indexedTetra->size()<<" tetra."<<sendl;
 }
-
-
-
-
 
 template <class DataTypes>
 inline void InvertibleFVMForceField<DataTypes>::reinit()
@@ -196,8 +210,6 @@ inline void InvertibleFVMForceField<DataTypes>::reinit()
     {
         _indexedTetra = & (_mesh->getTetrahedra());
     }
-
-    //serr<<"InvertibleFVMForceField<DataTypes>::reinit"<<sendl;
 
     const VecCoord& p = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
     _initialPoints.setValue(p);
@@ -225,9 +237,6 @@ inline void InvertibleFVMForceField<DataTypes>::reinit()
         Coord ad = initialPoints[d]-initialPoints[a];
         Coord bc = initialPoints[c]-initialPoints[b];
         Coord bd = initialPoints[d]-initialPoints[b];
-        //Coord cd = initialPoints[d]-initialPoints[c];
-
-
 
         // the initial edge matrix
         Transformation A;
@@ -235,75 +244,19 @@ inline void InvertibleFVMForceField<DataTypes>::reinit()
         A[1] = ac;
         A[2] = ad;
 
-        serr<<"A"<< A<<sendl;
-
-
+        msg_info() <<"A"<< A ;
 
         //Transformation R_0_1;
         helper::Decompose<Real>::polarDecomposition( A, _initialRotation[i] );
         _initialRotation[i].transpose();
-        //_initialRotation[i] = R_0_1;
-        if( _verbose.getValue() ) serr<<"InvertibleFVMForceField initialRotation "<<_initialRotation[i]<<sendl;
+
+        msg_info_when(_verbose.getValue())
+                <<"InvertibleFVMForceField initialRotation "<<_initialRotation[i] ;
 
         _initialTransformation[i].invert( _initialRotation[i] * A );
 
-
-        /*serr<<"R_0_1 * A "<<R_0_1 * A<<sendl;
-        serr<<"R_0_1.transposed() * A "<<R_0_1.transposed() * A<<sendl;
-        serr<<" A * R_0_1 "<< A*R_0_1<<sendl;
-        serr<<" A * R_0_1.transposed() "<< A*R_0_1.transposed()<<sendl;
-
-
-        ab = R_0_1.transposed() * ab;
-        ac = R_0_1.transposed() * ac;
-        ad = R_0_1.transposed() * ad;
-        bc = R_0_1.transposed() * bc;
-        bd = R_0_1.transposed() * bd;
-
-        A[0] = ab;
-        A[1] = ac;
-        A[2] = ad;
-
-        serr<<"R_0_1 * edges "<<A<<sendl;
-
-        Coord rotateda = R_0_1.transposed() * initialPoints[a];
-        Coord rotatedb = R_0_1.transposed() * initialPoints[b];
-        Coord rotatedc = R_0_1.transposed() * initialPoints[c];
-        Coord rotatedd = R_0_1.transposed() * initialPoints[d];
-
-        serr<<"rotateda "<<rotateda<<sendl;
-        serr<<"rotatedb "<<rotatedb<<sendl;
-        serr<<"rotatedc "<<rotatedc<<sendl;
-        serr<<"rotatedd "<<rotatedd<<sendl;
-
-        ab = rotatedb-rotateda;
-        ac = rotatedc-rotateda;
-        ad = rotatedd-rotateda;
-        bc = rotatedc-rotatedb;
-        bd = rotatedd-rotatedb;
-
-        A[0] = ab;
-        A[1] = ac;
-        A[2] = ad;
-
-        serr<<"rotated A"<< A<<sendl;*/
-
-
-
-
-
-
-        /* ab = R_0_1 * ab;
-         ac = R_0_1 * ac;
-         ad = R_0_1 * ad;
-         bc = R_0_1 * bc;
-         bd = R_0_1 * bd;*/
-
-
-
-
-        if( _verbose.getValue() ) serr<<"InvertibleFVMForceField _initialTransformation "<<A<<" "<<_initialTransformation[i]<<sendl;
-
+        msg_info_when( _verbose.getValue() )
+                <<"InvertibleFVMForceField _initialTransformation "<<A<<" "<<_initialTransformation[i] ;
 
         // the normals (warning: the cross product gives a normal weighted by 2 times the area of the triangle)
         Coord N3 = cross( ab, ac ); // face (a,b,c)
@@ -314,22 +267,19 @@ inline void InvertibleFVMForceField<DataTypes>::reinit()
         // the node ordering changes the normal directions
         Real coef = determinant(A)>0 ? (Real)(1/6.0) : (Real)(-1/6.0);
 
-        //_initialRotation[i].transpose();
-
         ////// compute b_i = -(Nj+Nk+Nl)/3 where N_j are the area-weighted normals of the triangles incident to the node i
-        _b[i][0] = /*_initialRotation[i] **/ ( N1 + N2 + N3 ) * coef;
-        _b[i][1] = /*_initialRotation[i] **/ ( N0 + N2 + N3 ) * coef;
-        _b[i][2] = /*_initialRotation[i] **/ ( N0 + N1 + N3 ) * coef;
-        //_b[i][3] = ( N0 + N1 + N2 ) * coef;
+        _b[i][0] = ( N1 + N2 + N3 ) * coef;
+        _b[i][1] = ( N0 + N2 + N3 ) * coef;
+        _b[i][2] = ( N0 + N1 + N3 ) * coef;
 
-        if( _verbose.getValue() && determinant(A) < 0 ) serr<<"detA "<<determinant(A)<<sendl;
+        msg_info_when( _verbose.getValue() && determinant(A) < 0 )
+                <<"detA "<<determinant(A) ;
 
-
-        serr<<"InvertibleFVMForceField b "<<sendl;
-        serr<<_b[i][0]<<sendl;
-        serr<<_b[i][1]<<sendl;
-        serr<<_b[i][2]<<sendl;
-
+        msg_info()
+                <<"InvertibleFVMForceField b " << msgendl
+               <<_b[i][0]<<msgendl
+              <<_b[i][1]<<msgendl
+             <<_b[i][2]<<msgendl;
     }
 }
 
@@ -360,33 +310,18 @@ inline void InvertibleFVMForceField<DataTypes>::addForce (const core::Mechanical
         A[1] = p[c]-p[a];
         A[2] = p[d]-p[a];
 
-        // tests
-        //A[0] = Coord(2,0,0)-p[a];
-        //A[1] = Coord(0,2,0)-p[a];
-        //A[2] = Coord(0,0,-2)-p[a];
-        //A[0] = Coord(1,1,0)-p[a];
-        //A[0] = Coord(1,0,-1)-p[a];
-        //A[0] = Coord(0.5,0,0)-p[a];
-        //A[0] = Coord(1,2,0)-p[a];
-        //A[1] = Coord(0.5,0,0)-p[a];
-        //A[2] = Coord(1,0,2)-p[a];
+        msg_info_when( _verbose.getValue() )
+                << "InvertibleFVMForceField currentTransf "<< A ;
 
-        if( _verbose.getValue() ) serr<<"InvertibleFVMForceField currentTransf "<<A<<sendl;
+        Mat<3,3,Real> F = A * _initialTransformation[elementIndex];
 
-
-
-        Mat<3,3,Real> F = /*_initialRotation[elementIndex] **/ A * _initialTransformation[elementIndex];
-
-
-
-        if( _verbose.getValue() )  serr<<"InvertibleFVMForceField F "<<F<<" (det= "<<determinant(F)<<")"<<sendl;
-
+        msg_info_when(_verbose.getValue() )
+                << "InvertibleFVMForceField F "<<F<<" (det= "<<determinant(F)<<")" ;
 
         Mat<3,3,Real> U, V; // the two rotations
         Vec<3,Real> F_diagonal, P_diagonal; // diagonalized strain, diagonalized stress
 
         helper::Decompose<Real>::SVD_stable( F, U, F_diagonal, V );
-
 
         // isotrope hookean material defined by P_diag = 2*mu*(F_diag-Id)+lambda*tr(F_diag-Id)*Id
         const VecReal& localStiffnessFactor = _localStiffnessFactor.getValue();
@@ -404,13 +339,6 @@ inline void InvertibleFVMForceField<DataTypes>::addForce (const core::Mechanical
         Real lambda = (youngModulus*poissonRatio) / ((1+poissonRatio)*(1-2*poissonRatio));
         Real mu     = youngModulus / (/*2**/(1+poissonRatio));
 
-
-        //Real volume = helper::rabs( determinant( A ) ) / (Real)6.;
-        //lambda *= volume;
-        //mu *= volume;
-
-        //serr<<F_diagonal<<sendl;
-
         F_diagonal[0] -= 1;
         F_diagonal[1] -= 1;
         F_diagonal[2] -= 1;
@@ -421,14 +349,8 @@ inline void InvertibleFVMForceField<DataTypes>::addForce (const core::Mechanical
         P_diagonal[2] += tmp;
 
 
-        /*for( int i = 0 ; i<3; ++i )
-            if( fabs(P_diagonal[i]) < 1e-6 )
-                P_diagonal[i] = 0;*/
-
-        if( _verbose.getValue() ) serr<<"InvertibleFVMForceField P_diagonal "<<P_diagonal<<sendl;
-
-
-
+        msg_info_when( _verbose.getValue() )
+                << "InvertibleFVMForceField P_diagonal "<<P_diagonal ;
 
         // TODO optimize this computation without having to use a 3x3 matrix
         Mat<3,3,Real> P; //P_diag_M.clear();
@@ -436,63 +358,44 @@ inline void InvertibleFVMForceField<DataTypes>::addForce (const core::Mechanical
         P[1][1] = P_diagonal[1];
         P[2][2] = P_diagonal[2];
 
-        //if( _verbose.getValue() ) serr<<"InvertibleFVMForceField P "<<P<<sendl;
-
         P = _initialRotation[elementIndex] * U * P * V.transposed();
 
         _U[elementIndex].transpose( U );
         _V[elementIndex] = V;
 
-
-
-        //serr<<F<<sendl;
-//        //F.invert(F);
-//        F[0][0] -= 1;
-//        F[1][1] -= 1;
-//        F[2][2] -= 1;
-//        P = F*/*2**/mu;
-//        tmp = lambda*(F[0][0]+F[1][1]+F[2][2]);
-//        P[0][0] += tmp;
-//        P[1][1] += tmp;
-//        P[2][2] += tmp;
-//        P = _initialRotation[elementIndex].transposed() * P;
-
-
-
         Deriv G0 = P * _b[elementIndex][0];
         Deriv G1 = P * _b[elementIndex][1];
         Deriv G2 = P * _b[elementIndex][2];
-        //Deriv G3 = P * _b[elementIndex][3];
 
-        if( _verbose.getValue() )
-        {
-            serr<<"InvertibleFVMForceField forcesG "<<sendl;
-            serr<<G0<<sendl;
-            serr<<G1<<sendl;
-            serr<<G2<<sendl;
-            serr<<(-G0-G1-G2)<<sendl;
-        }
-
-
+        msg_info_when( _verbose.getValue() )
+                << "InvertibleFVMForceField forcesG "<< msgendl
+                <<G0<<msgendl
+               <<G1<<msgendl
+              <<G2<<msgendl
+             <<(-G0-G1-G2) ;
 
         f[a] += G0;
         f[b] += G1;
         f[c] += G2;
         f[d] += (-G0-G1-G2); // null force sum
-        //f[d] += G3;
-
-        //if( (G3 +G0+G1+G2).norm() > 1e-5 ) serr<<"force sum not null  "<<G3<<" "<<(-(G0+G1+G2))<<sendl;
-
     }
 
     d_f.endEdit();
 }
 
 template<class DataTypes>
+SReal InvertibleFVMForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams*,
+                                                                     const DataVecCoord&) const
+{
+    dmsg_error() << "getPotentialEnergy() not implemented. You may not call it.";
+    return 0.0;
+}
+
+template<class DataTypes>
 inline void InvertibleFVMForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams /* PARAMS FIRST */, DataVecDeriv& d_df, const DataVecDeriv& d_dx)
 {
+    //TODO(dmarchal: 2018-01-09) This look really weird to me !!!
     return;
-    //serr<<"InvertibleFVMForceField::addDForce is not implemented\n";
 
     VecDeriv& df = *d_df.beginEdit();
     const VecDeriv& dx = d_dx.getValue();
@@ -510,12 +413,7 @@ inline void InvertibleFVMForceField<DataTypes>::addDForce(const core::Mechanical
         Index c = (*it)[2];
         Index d = (*it)[3];
 
-
         // edges
-        //const VecCoord &initialPoints=_initialPoints.getValue();
-        /*Coord ab = initialPoints[b]+dx[b]-(initialPoints[a]+dx[a]);
-        Coord ac = initialPoints[c]+dx[c]-(initialPoints[a]+dx[a]);
-        Coord ad = initialPoints[d]+dx[d]-(initialPoints[a]+dx[a]);*/
         Coord ab = dx[b]-(dx[a]);
         Coord ac = dx[c]-(dx[a]);
         Coord ad = dx[d]-(dx[a]);
@@ -527,12 +425,7 @@ inline void InvertibleFVMForceField<DataTypes>::addDForce(const core::Mechanical
         A[2] = ad;
 
         Mat<3,3,Real> F = A * _initialTransformation[i];
-
-        //serr<<"addDForce F "<<F<<sendl;
-
         Mat<3,3,Real> F_diagonal = _U[i] * F * _V[i];
-
-
 
         const VecReal& localStiffnessFactor = _localStiffnessFactor.getValue();
         Real youngModulusElement;
@@ -549,8 +442,6 @@ inline void InvertibleFVMForceField<DataTypes>::addDForce(const core::Mechanical
         Real lambda = (youngModulus*poissonRatio) / ((1+poissonRatio)*(1-2*poissonRatio));
         Real mu     = youngModulus / (/*2**/(1+poissonRatio));
 
-        //serr<<F_diagonal<<sendl;
-
         Mat<3,3,Real> P_diagonal;
 
         F_diagonal[0][0] -= 1;
@@ -562,30 +453,17 @@ inline void InvertibleFVMForceField<DataTypes>::addDForce(const core::Mechanical
         P_diagonal[1][1] += tmp;
         P_diagonal[2][2] += tmp;
 
-
-        //serr<<"addDForce F_diagonal "<<F_diagonal<<sendl;
-        //serr<<"addDForce P_diagonal "<<P_diagonal<<sendl;
-
-
-        //serr<<"InvertibleFVMForceField P_diagonal "<<P_diagonal<<sendl;
-
-
         Mat<3,3,Real> P = _initialRotation[i] * _U[i].transposed() * P_diagonal * _V[i] * kFactor;
-
 
         Deriv G0 = P * _b[i][0];
         Deriv G1 = P * _b[i][1];
         Deriv G2 = P * _b[i][2];
-        //Deriv G3 = forceTmp * _b[elementIndex][3];
 
         df[a] += G0;
         df[b] += G1;
         df[c] += G2;
         df[d] += (-G0-G1-G2);
-
-
     }
-
 
     d_df.endEdit();
 }
@@ -676,32 +554,23 @@ void InvertibleFVMForceField<DataTypes>::draw(const core::visual::VisualParams* 
             Index b = (*it)[1];
             Index c = (*it)[2];
             Index d = (*it)[3];
-            //Coord center = (x[a]+x[b]+x[c]+x[d])*0.125;
-//            Coord pa = (x[a]+center)*(Real)0.666667;
-//            Coord pb = (x[b]+center)*(Real)0.666667;
-//            Coord pc = (x[c]+center)*(Real)0.666667;
-//            Coord pd = (x[d]+center)*(Real)0.666667;
             Coord pa = x[a];
             Coord pb = x[b];
             Coord pc = x[c];
             Coord pd = x[d];
 
-            // 		glColor4f(0,0,1,1);
             points[0].push_back(pa);
             points[0].push_back(pb);
             points[0].push_back(pc);
 
-            // 		glColor4f(0,0.5,1,1);
             points[1].push_back(pb);
             points[1].push_back(pc);
             points[1].push_back(pd);
 
-            // 		glColor4f(0,1,1,1);
             points[2].push_back(pc);
             points[2].push_back(pd);
             points[2].push_back(pa);
 
-            // 		glColor4f(0.5,1,1,1);
             points[3].push_back(pd);
             points[3].push_back(pa);
             points[3].push_back(pb);
@@ -747,9 +616,6 @@ void InvertibleFVMForceField<DataTypes>::draw(const core::visual::VisualParams* 
             vparams->drawTool()->drawPoints( pointsp, 20, Vec<4,float>(0,0,1,1.0f) );
             pointsp[0] = x[d];
             vparams->drawTool()->drawPoints( pointsp, 20, Vec<4,float>(1,1,0,1.0f) );
-
-
-
         }
 
         if(!heterogeneous)
@@ -759,18 +625,14 @@ void InvertibleFVMForceField<DataTypes>::draw(const core::visual::VisualParams* 
             vparams->drawTool()->drawTriangles(points[2], Vec<4,float>(0.0,1.0,1.0,1.0));
             vparams->drawTool()->drawTriangles(points[3], Vec<4,float>(0.5,1.0,1.0,1.0));
         }
-
     }
-
 }
-
-
-
 
 template<class DataTypes>
 void InvertibleFVMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, SReal /*k*/, unsigned int &/*offset*/)
 {
-    serr<<"InvertibleFVMForceField::addKToMatrix is not implemented\n";
+    dmsg_error()
+            <<" addKToMatrix is not implemented. So you may not call it";
 }
 
 } // namespace forcefield

@@ -36,7 +36,7 @@
         <MechanicalObject name="dofs" />
         <UniformMass totalmass="100" />
         <Node name="T">
-            <include href="../../Objects/TriangleSetTopology.xml" />
+            <include href="Objects/TriangleSetTopology.xml" />
             <Quad2TriangleTopologicalMapping input="@../Container" output="@Container" />
             <TriangularFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" method="large" />
             <TriangularBendingSprings name="FEM-Bend" stiffness="300" damping="1.0" />

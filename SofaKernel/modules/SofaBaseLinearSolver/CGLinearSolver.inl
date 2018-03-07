@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -46,9 +46,9 @@ namespace linearsolver
 /// Linear system solver using the conjugate gradient iterative algorithm
 template<class TMatrix, class TVector>
 CGLinearSolver<TMatrix,TVector>::CGLinearSolver()
-    : f_maxIter( initData(&f_maxIter,(unsigned)25,"iterations","maximum number of iterations of the Conjugate Gradient solution") )
-    , f_tolerance( initData(&f_tolerance,(SReal)1e-5,"tolerance","desired precision of the Conjugate Gradient Solution (ratio of current residual norm over initial residual norm)") )
-    , f_smallDenominatorThreshold( initData(&f_smallDenominatorThreshold,(SReal)1e-5,"threshold","minimum value of the denominator in the conjugate Gradient solution") )
+    : f_maxIter( initData(&f_maxIter,(unsigned)25,"iterations","Maximum number of iterations of the Conjugate Gradient solution") )
+    , f_tolerance( initData(&f_tolerance,(SReal)1e-5,"tolerance","Desired accuracy of the Conjugate Gradient solution (ratio of current residual norm over initial residual norm)") )
+    , f_smallDenominatorThreshold( initData(&f_smallDenominatorThreshold,(SReal)1e-5,"threshold","Minimum value of the denominator in the conjugate Gradient solution") )
     , f_warmStart( initData(&f_warmStart,false,"warmStart","Use previous solution as initial solution") )
     , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
     , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
@@ -61,6 +61,43 @@ CGLinearSolver<TMatrix,TVector>::CGLinearSolver()
     f_maxIter.setRequired(true);
     f_tolerance.setRequired(true);
     f_smallDenominatorThreshold.setRequired(true);
+}
+
+template<class TMatrix, class TVector>
+void CGLinearSolver<TMatrix,TVector>::init()
+{
+    if(f_verbose.getValue())
+    {
+        this->f_printLog.setValue(true);
+    }
+
+    if(f_maxIter.getValue() < 0)
+    {
+        msg_warning() << "'iterations' must be a positive value" << msgendl
+                      << "default value used: 25";
+        f_maxIter.setValue(25);
+    }
+    if(f_tolerance.getValue() < 0.0)
+    {
+        msg_warning() << "'tolerance' must be a positive value" << msgendl
+                      << "default value used: 1e-5";
+        f_tolerance.setValue(1e-5);
+    }
+    if(f_smallDenominatorThreshold.getValue() < 0.0)
+    {
+        msg_warning() << "'threshold' must be a positive value" << msgendl
+                      << "default value used: 1e-5";
+        f_smallDenominatorThreshold.setValue(1e-5);
+    }
+}
+
+template<class TMatrix, class TVector>
+void CGLinearSolver<TMatrix,TVector>::reinit()
+{
+    if(f_verbose.getValue())
+    {
+        this->f_printLog.setValue(true);
+    }
 }
 
 template<class TMatrix, class TVector>
@@ -109,7 +146,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     double rho, rho_1=0, alpha, beta;
 
 
-    msg_info_when(verbose) <<" CGLinearSolver, b = "<< b ;
+    msg_info_when(verbose) << "b = " << b ;
 
 
     /// Compute the initial residual r
@@ -159,30 +196,39 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
         }
 #endif
 
-
         /// Compute p = r^2
         rho = r.dot(r);
 
-        /// If NOT the first step
-        if (nb_iter>1)
+        /// Compute the error from the norm of ρ and b
+        double normr = sqrt(rho);
+        double err = normr/normb;
+
+        graph_error.push_back(err);
+
+
+        /// Break condition = TOLERANCE criterion regarding the error err is reached
+        if (err <= f_tolerance.getValue())
         {
-            /// Compute the error from the norm of ρ and b
-            double normr = sqrt(rho);
-            double err = normr/normb;
-
-            graph_error.push_back(err);
-
-            /// Break condition = TOLERANCE criterion regarding the error err is reached
-            if (err <= f_tolerance.getValue())
+            /// Tolerance met at first step, tolerance value might not be relevant (do one more step)
+            if(nb_iter == 1)
             {
-                endcond = "tolerance";
-#ifdef SOFA_DUMP_VISITOR_INFO
-                if (simulation::Visitor::isPrintActivated())
-                    simulation::Visitor::printCloseNode(comment.str());
-#endif
-                break;
+                msg_warning() << "tolerance reached at first iteration of CG" << msgendl
+                              << "Check the 'tolerance' data field, you might decrease it";
             }
+
+            endcond = "tolerance";
+            if( verbose )
+            {
+                msg_info() << "error = " << err <<", tolerance = " << f_tolerance.getValue();
+            }
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+            if (simulation::Visitor::isPrintActivated())
+                simulation::Visitor::printCloseNode(comment.str());
+#endif
+            break;
         }
+
 
         /// Compute the value of p, conjugate with x
         if( nb_iter==1 )    // FIRST step
@@ -195,10 +241,9 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
             cgstep_beta(params, p,r,beta);
         }
 
-
         if( verbose )
         {
-            sout<<"p : "<<p<<sendl;
+            msg_info() << "p : " << p;
         }
 
         /// Compute the matrix-vector product : M p
@@ -206,24 +251,31 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
 
         if( verbose )
         {
-            sout<<"q = M p : "<<q<<sendl;
+            msg_info() << "q = M p : " << q;
         }
 
         /// Compute the denominator : p M p
         double den = p.dot(q);
 
-
         graph_den.push_back(den);
 
 
         /// Break condition = THRESHOLD criterion regarding the denominator is reached (but do at least one iteration)
-        if( fabs(den)<f_smallDenominatorThreshold.getValue() && nb_iter>1)
+        if (fabs(den) <= f_smallDenominatorThreshold.getValue())
         {
+            /// Threshold met at first step, threshold value might not be relevant (do one more step)
+            if(nb_iter == 1 && den != 0.0)
+            {
+                msg_warning() << "denominator threshold reached at first iteration of CG" << msgendl
+                              << "Check the 'threshold' data field, you might decrease it";
+            }
+
             endcond = "threshold";
             if( verbose )
             {
-                sout<<"CGLinearSolver, den = "<<den<<", smallDenominatorThreshold = "<<f_smallDenominatorThreshold.getValue()<<sendl;
+                msg_info() << "den = " << den <<", smallDenominatorThreshold = " << f_smallDenominatorThreshold.getValue();
             }
+
 #ifdef SOFA_DUMP_VISITOR_INFO
             if (simulation::Visitor::isPrintActivated())
                 simulation::Visitor::printCloseNode(comment.str());
@@ -231,18 +283,16 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
             break;
         }
 
+
         /// Compute the coefficient α for the conjugate direction
         alpha = rho/den;
 
         /// End of the CG step : update x and r
         cgstep_alpha(params, x,r,p,q,alpha);
 
-
         if( verbose )
         {
-            sout<<"den = "<<den<<", alpha = "<<alpha<<sendl;
-            sout<<"x : "<<x<<sendl;
-            sout<<"r : "<<r<<sendl;
+            msg_info() << "den = " << den << ", alpha = " << alpha << ", x = " << x << ", r = " << r;
         }
 
         rho_1 = rho;
@@ -262,10 +312,10 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
 
     // x is the solution of the system
 #ifdef DISPLAY_TIME
-    dmsg_info() << " solve, CG = "<<time1<<" build = "<< time2 ;
+    dmsg_info() << " solve, CG = " << time1 << " build = " << time2;
 #endif
 
-    dmsg_info() << "solve, nbiter = "<<nb_iter<<" stop because of "<<endcond ;
+    dmsg_info() << "solve, nbiter = "<<nb_iter<<" stop because of "<<endcond;
     dmsg_info_when( verbose ) <<"solve, solution = "<< x ;
 
     vtmp.deleteTempVector(&p);

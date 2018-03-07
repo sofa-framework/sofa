@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -76,7 +76,7 @@ public:
 
     /// Do not use the following LCPs until the next call to this function.
     /// This is used to prevent concurent access to the LCP when using a LCPForceFeedback through an haptic thread.
-    virtual void lockConstraintProblem(ConstraintProblem* p1, ConstraintProblem* p2=NULL) = 0;
+    virtual void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2=NULL) = 0;
 };
 
 

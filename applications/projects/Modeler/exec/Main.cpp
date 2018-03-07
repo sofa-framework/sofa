@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -84,13 +84,6 @@ int main(int argc, char** argv)
             examplesDir = etcDir + "/" + examplesDir;
         sofa::helper::system::DataRepository.addFirstPath(examplesDir);
     }
-
-#ifdef WIN32
-    const std::string pluginDir = Utils::getExecutableDirectory();
-#else
-    const std::string pluginDir = Utils::getSofaPathPrefix() + "/lib";
-#endif
-    sofa::helper::system::PluginRepository.addFirstPath(pluginDir);
 
 	Q_INIT_RESOURCE(icons);
     sofa::gui::qt::SofaModeler* sofaModeler = new sofa::gui::qt::SofaModeler();

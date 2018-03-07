@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -72,10 +72,10 @@ protected:
 
     void findAndDrawTriangles();
 
-    Data<float>		alpha;
-    Data<defaulttype::RGBAColor>	color;
+    Data<float>		alpha; ///< Opacity of the billboards. 1.0 is 100% opaque.
+    Data<defaulttype::RGBAColor>	color; ///< Billboard color.(default=1.0,1.0,1.0,1.0)
 
-    Data<int> _nbPlanes;
+    Data<int> _nbPlanes; ///< Number of billboards.
     int _nbPlanesOld;
 
     core::topology::BaseMeshTopology*	_topology;

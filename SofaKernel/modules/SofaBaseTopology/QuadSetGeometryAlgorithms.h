@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -111,9 +111,9 @@ public:
     virtual void draw(const core::visual::VisualParams* vparams) override;
 
 protected:
-    Data<bool> showQuadIndices;
-    Data<bool> _drawQuads;
-    Data<sofa::defaulttype::Vec3f> _drawColor;
+    Data<bool> showQuadIndices; ///< Debug : view Quad indices
+    Data<bool> _drawQuads; ///< if true, draw the quads in the topology
+    Data<sofa::defaulttype::Vec3f> _drawColor; ///< RGB code color used to draw quads.
 
 };
 

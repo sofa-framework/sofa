@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -69,19 +69,19 @@ protected:
 
 public:
     sofa::core::objectmodel::DataFileName vtkFilename;
-    Data<bool> fileFormat;	//0 for Simple Legacy Formats, 1 for XML File Format
-    Data<defaulttype::Vec3Types::VecCoord> position;
-    Data<bool> writeEdges;
-    Data<bool> writeTriangles;
-    Data<bool> writeQuads;
-    Data<bool> writeTetras;
-    Data<bool> writeHexas;
-    Data<helper::vector<std::string> > dPointsDataFields;
-    Data<helper::vector<std::string> > dCellsDataFields;
-    Data<unsigned int> exportEveryNbSteps;
-    Data<bool> exportAtBegin;
-    Data<bool> exportAtEnd;
-    Data<bool> overwrite;
+    Data<bool> fileFormat;	///< 0 for Simple Legacy Formats, 1 for XML File Format
+    Data<defaulttype::Vec3Types::VecCoord> position; ///< points position (will use points from topology or mechanical state if this is empty)
+    Data<bool> writeEdges; ///< write edge topology
+    Data<bool> writeTriangles; ///< write triangle topology
+    Data<bool> writeQuads; ///< write quad topology
+    Data<bool> writeTetras; ///< write tetra topology
+    Data<bool> writeHexas; ///< write hexa topology
+    Data<helper::vector<std::string> > dPointsDataFields; ///< Data to visualize (on points)
+    Data<helper::vector<std::string> > dCellsDataFields; ///< Data to visualize (on cells)
+    Data<unsigned int> exportEveryNbSteps; ///< export file only at specified number of steps (0=disable)
+    Data<bool> exportAtBegin; ///< export file at the initialization
+    Data<bool> exportAtEnd; ///< export file when the simulation is finished
+    Data<bool> overwrite; ///< overwrite the file, otherwise create a new file at each export, with suffix in the filename
 
     int nbFiles;
 

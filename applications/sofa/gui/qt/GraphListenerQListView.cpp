@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -28,13 +28,13 @@
 #include <SofaComponentBase/InfoComponent.h>
 using sofa::component::InfoComponent ;
 
-#include "iconmultinode.xpm"
-#include "iconnode.xpm"
-#include "iconinfo.xpm"
-#include "iconwarning.xpm"
-#include "iconerror.xpm"
-#include "icondata.xpm"
-#include "iconsleep.xpm"
+#include "resources/icons/iconmultinode.xpm"
+#include "resources/icons/iconnode.xpm"
+#include "resources/icons/iconinfo.xpm"
+#include "resources/icons/iconwarning.xpm"
+#include "resources/icons/iconerror.xpm"
+#include "resources/icons/icondata.xpm"
+#include "resources/icons/iconsleep.xpm"
 
 
 #include <sofa/helper/logging/Messaging.h>

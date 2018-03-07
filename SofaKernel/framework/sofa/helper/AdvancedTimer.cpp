@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -115,7 +115,7 @@ public:
     helper::vector<AdvancedTimer::IdVal> vals;
 
     TimerData()
-        : nbIter(-1), interval(0), defaultInterval(DEFAULT_INTERVAL), timerOutputType(AdvancedTimer::STDOUT)
+        : nbIter(0), interval(0), defaultInterval(DEFAULT_INTERVAL), timerOutputType(AdvancedTimer::STDOUT)
     {
     }
 

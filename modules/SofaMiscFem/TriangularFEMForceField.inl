@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -30,7 +30,7 @@
 #include "TriangularFEMForceField.h"
 
 #include <sofa/core/visual/VisualParams.h>
-#include <SofaOpenglVisual/OglColorMap.h>
+#include <sofa/helper/ColorMap.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/system/gl.h>
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -251,9 +251,9 @@ protected:
 
 public:
     /** The array that stores the set of edges in the edge set */
-    Data< sofa::helper::vector<Edge> > d_edge;
+    Data< sofa::helper::vector<Edge> > d_edge; ///< List of edge indices
 
-    Data <bool> m_checkConnexity;
+    Data <bool> m_checkConnexity; ///< It true, will check the connexity of the mesh.
 
 
 };

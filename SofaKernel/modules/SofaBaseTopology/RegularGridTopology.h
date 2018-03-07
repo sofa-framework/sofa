@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -132,7 +132,8 @@ public:
 
 public:
     /// Data storing min and max 3D position of the grid bounding box
-    Data< Vector3 > d_min, d_max;
+    Data< Vector3 > d_min;
+    Data< Vector3 > d_max; ///< Max end of the diagonal
 
     /// Data storing Position of point 0
     Data< Vector3 > d_p0;

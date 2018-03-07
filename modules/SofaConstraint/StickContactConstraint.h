@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -29,7 +29,7 @@
 #include <SofaConstraint/BilateralInteractionConstraint.h>
 #include <sofa/helper/Factory.h>
 #include <SofaBaseCollision/BaseContactMapper.h>
-#include <SofaConstraint/FrictionContact.h>
+#include <SofaConstraint/ContactIdentifier.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/BaseMapping.h>
 
@@ -43,7 +43,7 @@ namespace collision
 {
 
 template <class TCollisionModel1, class TCollisionModel2>
-class StickContactConstraint : public core::collision::Contact, public Identifier
+class StickContactConstraint : public core::collision::Contact, public ContactIdentifier
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(StickContactConstraint, TCollisionModel1, TCollisionModel2), core::collision::Contact);
@@ -78,7 +78,7 @@ protected:
     StickContactConstraint(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod);
     virtual ~StickContactConstraint();
 public:
-    Data<bool> f_keepAlive;
+    Data<bool> f_keepAlive; ///< set to true to keep this contact alive even after collisions are no longer detected
 
     /// Return true if this contact should be kept alive, even if objects are no longer in collision
     virtual bool keepAlive() override { return f_keepAlive.getValue(); }

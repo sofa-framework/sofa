@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -735,12 +735,12 @@ class BTDLinearSolver : public sofa::component::linearsolver::MatrixLinearSolver
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(BTDLinearSolver, Matrix, Vector), SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver, Matrix, Vector));
 
-    Data<bool> f_verbose;
-    Data<bool> problem;
-    Data<bool> subpartSolve;
+    Data<bool> f_verbose; ///< Dump system state at each iteration
+    Data<bool> problem; ///< display debug informations about subpartSolve computation
+    Data<bool> subpartSolve; ///< Allows for the computation of a subpart of the system
 
-    Data<bool> verification;
-    Data<bool> test_perf;
+    Data<bool> verification; ///< verification of the subpartSolve
+    Data<bool> test_perf; ///< verification of performance
 
     typedef typename Vector::SubVectorType SubVector;
     typedef typename Matrix::SubMatrixType SubMatrix;
@@ -776,7 +776,7 @@ public:
     helper::vector<Index> nBlockComputedMinv;
     Vector Y;
 
-    Data<int> f_blockSize;
+    Data<int> f_blockSize; ///< dimension of the blocks in the matrix
 protected:
     BTDLinearSolver()
         : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )

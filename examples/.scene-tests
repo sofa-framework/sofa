@@ -3,8 +3,8 @@ iterations "Components/solver/NewmarkImplicitSolver.scn" "5"
 timeout "Components/solver/NewmarkImplicitSolver.scn" "60"
 
 # Idem
-iterations "Components/forcefield/FastTetrahedronCorotationalForceField.scn" "10"
-timeout "Components/forcefield/FastTetrahedronCorotationalForceField.scn" "90"
+iterations "Components/forcefield/FastTetrahedronCorotationalForceField_validation.scn" "10"
+timeout "Components/forcefield/FastTetrahedronCorotationalForceField_validation.scn" "90"
 
 timeout "Components/linearsolver/MatrixContributions123.scn" "60"
 
@@ -37,9 +37,5 @@ ignore "Tutorials/Mappings/TutorialMappingOctopusArticulated.scn"
 # We can't use CUDA on the build slaves, so let's just ignore this scene that
 # uses the SofaCUDA plugin.
 ignore "Benchmark/Accuracy/cylinder_TLEDTetraSolution.scn"
-
-# is  only working with FlowVR
-ignore "Components/forcefield/DistanceGridForceField-liver.scn"
-
 
 

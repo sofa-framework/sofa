@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -32,6 +32,7 @@
 #include <fstream>
 #include <string.h>
 #include <math.h>
+#include <stdlib.h>
 
 #include <qevent.h>
 
@@ -153,6 +154,10 @@ QtViewer::QtViewer(QWidget* parent, const char* name, const unsigned int nbMSAAS
     : QOpenGLWidget(setupGLFormat(nbMSAASamples), parent)
 #endif // defined(QT_VERSION) && QT_VERSION >= 0x050400
 {
+#ifdef __linux__
+    ::setenv("MESA_GL_VERSION_OVERRIDE", "3.0", 1);
+#endif // __linux
+
     this->setObjectName(name);
 
 #if defined(QT_VERSION) && QT_VERSION >= 0x050400
@@ -213,7 +218,19 @@ QtViewer::~QtViewer()
 // -----------------------------------------------------------------
 void QtViewer::initializeGL(void)
 {
-    std::cout << "QtViewer: OpenGL " << glGetString(GL_VERSION) << " context created." << std::endl;
+    std::cout << "QtViewer: OpenGL " << glGetString(GL_VERSION)
+              << " context created." << std::endl;
+    if (std::string((const char*)glGetString(GL_VENDOR)).find("Intel") !=
+            std::string::npos)
+    {
+        const char* mesaEnv = ::getenv("MESA_GL_VERSION_OVERRIDE");
+        if ( !mesaEnv || std::string(mesaEnv) != "3.0")
+            msg_error("runSofa") << "QtViewer is not compatible with Intel drivers on "
+                                    "Linux. To use runSofa, either change the gui to "
+                                    "qglviewer (runSofa -g qglviewer) or set the "
+                                    "environment variable \"MESA_GL_VERSION_OVERRIDE\" "
+                                    "to the value \"3.0\"";
+    }
 
     static GLfloat specref[4];
     static GLfloat ambientLight[4];

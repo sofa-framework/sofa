@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 2.8.12)
 project(CImgPlugin)
 
+
+set(${PROJECT_NAME}_MAJOR_VERSION 0)
+set(${PROJECT_NAME}_MINOR_VERSION 1)
+set(${PROJECT_NAME}_VERSION ${${PROJECT_NAME}_MAJOR_VERSION}.${${PROJECT_NAME}_MINOR_VERSION})
+
 ## RPATH
 if(UNIX)
     set(CMAKE_INSTALL_RPATH "../lib")
@@ -12,12 +17,15 @@ endif(UNIX)
 set(HEADER_FILES
   ImageCImg.h
   CImgPlugin.h
+  SOFACImg.h
 )
 
 set(SOURCE_FILES
   ImageCImg.cpp
   initCImgPlugin.cpp
 )
+
+add_subdirectory(extlibs/CImg extlibs/CImg)
 
 find_package(CImg REQUIRED)
 find_package(SofaFramework REQUIRED)
@@ -42,11 +50,15 @@ if(JPEG_FOUND)
   message(STATUS "CImgPlugin: Enable JPEG Image Format")
   get_filename_component(JPEG_LIB_DIRS ${JPEG_LIBRARIES} PATH)
   SET(CIMG_CFLAGS "${CIMG_CFLAGS} ${CIMG_JPEG_CCFLAGS} -DCIMGPLUGIN_HAVE_JPEG -Dcimg_use_jpeg")
+  if(WIN32)
+      # prevent INT32 redefinition on Windows (see jmorecfg.h)
+      SET(CIMG_CFLAGS "${CIMG_CFLAGS} -DXMD_H")
+  endif()
   link_directories(${JPEG_LIB_DIRS})
   include_directories(${JPEG_INCLUDE_DIR})
   SET(EXTERNAL_LIBS ${EXTERNAL_LIBS} ${JPEG_LIBRARIES})
 else()
-  message(STATUS "CImgPlugin: Did not find libjpeg library")
+  message(STATUS "CImgPlugin: Did not find JPEG library")
 endif()
 
 if (ZLIB_FOUND)
@@ -63,7 +75,7 @@ if (ZLIB_FOUND)
     include_directories(${PNG_INCLUDE_DIR} )
     SET( EXTERNAL_LIBS ${EXTERNAL_LIBS} ${PNG_LIBRARIES} )
   else()
-      message(STATUS "CImgPlugin: Did not find libpneg library")
+      message(STATUS "CImgPlugin: Did not find PNG library")
   endif()
 else()
     message(STATUS "CImgPlugin: Did not find zlib library (required for PNG Image Format)")
@@ -72,14 +84,6 @@ endif()
 #Remove CImg sys calls
 SET(CIMG_CFLAGS "${CIMG_CFLAGS} -Dcimg_no_system_calls")
 
-if(SOFA_BUILD_TESTS)
-    find_package(SofaTest QUIET)
-    if(SofaTest_FOUND)
-        add_subdirectory(CImgPlugin_test)
-    endif()
-endif()
-
-configure_file(CImgPlugin.h.in CImgPlugin/CImgPlugin.h)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}/CImgPlugin.h DESTINATION "include/CImgPlugin")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
@@ -90,10 +94,12 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CUR
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CImg_INCLUDE_DIRS}>")
 
-install(TARGETS ${PROJECT_NAME}
-        COMPONENT CImgPlugin_libraries
-        EXPORT CImgPluginTargets
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib)
+## Install rules for the library; CMake package configurations files
+sofa_create_package(${PROJECT_NAME} ${${PROJECT_NAME}_VERSION} ${PROJECT_NAME} ${PROJECT_NAME})
 
+if(SOFA_BUILD_TESTS)
+    find_package(SofaTest QUIET)
+    if(SofaTest_FOUND)
+        add_subdirectory(CImgPlugin_test)
+    endif()
+endif()

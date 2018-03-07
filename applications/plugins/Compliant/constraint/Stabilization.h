@@ -23,7 +23,7 @@ class SOFA_Compliant_API Stabilization : public BaseConstraintValue {
 
     /// flagging which constraint blocks must be stabilized (if empty, all constraints are stabilized)
     typedef helper::vector<bool> mask_type;
-    Data<mask_type> mask;
+    Data<mask_type> mask; ///< dofs to be stabilized
 	
 	// value for stabilization
     virtual void correction(SReal* dst, unsigned n, unsigned dim, const core::MultiVecCoordId& posId = core::VecCoordId::position(), const core::MultiVecDerivId& velId = core::VecDerivId::velocity()) const;

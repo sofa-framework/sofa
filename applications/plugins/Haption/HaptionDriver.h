@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -89,13 +89,13 @@ public:
     SOFA_CLASS(HaptionDriver, Controller);
     typedef RigidTypes::VecCoord VecCoord;
 
-    Data<double> scale;
-    Data<bool> state_button;
-    Data<bool> haptionVisu;
-    Data<VecCoord> posBase;
-    Data<double> torqueScale;
-    Data<double> forceScale;
-    Data< std::string > ip_haption;
+    Data<double> scale; ///< Default scale applied to the Haption Coordinates. 
+    Data<bool> state_button; ///< state of the first button
+    Data<bool> haptionVisu; ///< Visualize the position of the interface in the virtual scene
+    Data<VecCoord> posBase; ///< Position of the interface base in the scene world coordinates
+    Data<double> torqueScale; ///< Default scale applied to the Haption torque. 
+    Data<double> forceScale; ///< Default scale applied to the Haption force. 
+    Data< std::string > ip_haption; ///< ip of the device
 
     HaptionDriver();
     virtual ~HaptionDriver();

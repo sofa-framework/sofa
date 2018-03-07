@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -105,26 +105,26 @@ public:
     Data< TransformType > refTransform;
     Data< TransformType > transform;
 
-    Data< VecCoord > refDirections;
-    Data< VecCoord > directions;
+    Data< VecCoord > refDirections; ///< Profile reference directions.
+    Data< VecCoord > directions; ///< Profile directions.
 
-    Data< ImageTypes > refProfiles;
-    Data< ImageTypes > profiles;
+    Data< ImageTypes > refProfiles; ///< reference intensity profiles
+    Data< ImageTypes > profiles; ///< computed intensity profiles
 
     typedef typename defaulttype::Image<Real> similarityTypes;
     typedef typename similarityTypes::T Ts;
     typedef helper::ReadAccessor<Data< similarityTypes > > raSimilarity;
     typedef helper::WriteOnlyAccessor<Data< similarityTypes > > waSimilarity;
-    Data < similarityTypes > similarity;
+    Data < similarityTypes > similarity; ///< similarity image
 	
     // mask for values outside images
-    Data < bool > maskOutside;
+    Data < bool > maskOutside; ///< discard profiles outside images
     cimg_library::CImg<bool> refMask;
     cimg_library::CImg<bool> mask;
     cimg_library::CImg<bool> similarityMask;
 
     // use an anisotropic stiffness to cancel tangential stiffness
-    Data<bool> useAnisotropicStiffness;
+    Data<bool> useAnisotropicStiffness; ///< use more accurate but non constant stiffness matrix.
 
 	
 public:
@@ -170,18 +170,18 @@ protected :
     /// the width of the resulting image is 2*searchRange
     void udpateSimilarity();
 
-    Data< defaulttype::Vec<2,unsigned int> > Sizes;
-    Data< Real > Step;
+    Data< defaulttype::Vec<2,unsigned int> > Sizes; ///< Inwards/outwards profile size.
+    Data< Real > Step; ///< Spacing of the profile discretization.
     Data< helper::OptionsGroup > Interpolation;  ///< nearest, linear, cubi
     Data< helper::OptionsGroup > SimilarityMeasure;  ///< ssd,ncc
 
-    Data< Real > threshold;
-    Data< unsigned int > searchRange;
-    Data<Real> ks;
-    Data<Real> kd;
+    Data< Real > threshold; ///< threshold for the distance minimization.
+    Data< unsigned int > searchRange; ///< Number of inwards/outwards steps for searching the most similar profiles.
+    Data<Real> ks; ///< uniform stiffness for the all springs
+    Data<Real> kd; ///< uniform damping for the all springs
 
-    Data<float> showArrowSize;
-    Data<int> drawMode; //Draw Mode: 0=Line - 1=Cylinder - 2=Arrow
+    Data<float> showArrowSize; ///< size of the axis
+    Data<int> drawMode; ///< Draw Mode: 0=Line - 1=Cylinder - 2=Arrow
 };
 
 //#if defined(SOFA_EXTERN_TEMPLATE) && !defined(INTENSITYPROFILEREGISTRATIONFORCEFIELD_CPP)

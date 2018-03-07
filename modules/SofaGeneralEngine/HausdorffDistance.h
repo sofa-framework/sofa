@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -68,15 +68,15 @@ public:
     void update() override;
 
     //Input
-    Data<VecCoord> f_points_1;
-    Data<VecCoord> f_points_2;
+    Data<VecCoord> f_points_1; ///< Points belonging to the first point cloud
+    Data<VecCoord> f_points_2; ///< Points belonging to the second point cloud
 
     //Output
-    Data<Real> d12;
-    Data<Real> d21;
-    Data<Real> max;
+    Data<Real> d12; ///< Distance from point cloud 1 to 2
+    Data<Real> d21; ///< Distance from point cloud 2 to 1
+    Data<Real> max; ///< Symmetrical Hausdorff distance
 
-    Data<bool> f_update;
+    Data<bool> f_update; ///< Recompute every time step
 
     virtual std::string getTemplateName() const override
     {

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -142,8 +142,9 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
             for (it3 = entry->creatorMap.begin(); it3 != entry->creatorMap.end(); ++it3)
             {
                 Creator::SPtr c = it3->second;
-                if (c->canCreate(context, arg))
+                if (c->canCreate(context, arg)){
                     creators.push_back(*it3);
+                }
             }
         }
     }

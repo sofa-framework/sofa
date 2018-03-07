@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -403,11 +403,14 @@ bool MatrixLinearSolver<Matrix,Vector>::addMInvJt(defaulttype::BaseMatrix* resul
 template<class Matrix, class Vector>
 bool MatrixLinearSolver<Matrix,Vector>::buildComplianceMatrix(defaulttype::BaseMatrix* result, double fact)
 {
-    if (result->rowSize()==0) return true;
-
     JMatrixType * j_local = internalData.getLocalJ();
     j_local->clear();
-    j_local->resize(result->rowSize(),currentGroup->systemMatrix->colSize());
+    j_local->resize(result->rowSize(), currentGroup->systemMatrix->colSize());
+
+    if (result->rowSize() == 0)
+    {
+        return true;
+    }
 
     executeVisitor(simulation::MechanicalGetConstraintJacobianVisitor(core::ExecParams::defaultInstance(),j_local));
 
@@ -415,7 +418,8 @@ bool MatrixLinearSolver<Matrix,Vector>::buildComplianceMatrix(defaulttype::BaseM
 }
 
 template<class Matrix, class Vector>
-void MatrixLinearSolver<Matrix,Vector>::applyContactForce(const defaulttype::BaseVector* f,double positionFactor,double velocityFactor) {
+void MatrixLinearSolver<Matrix,Vector>::applyContactForce(const defaulttype::BaseVector* f, double positionFactor, double velocityFactor)
+{    
     currentGroup->systemRHVector->clear();
     currentGroup->systemRHVector->resize(currentGroup->systemMatrix->colSize());
 

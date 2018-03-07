@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -163,6 +163,7 @@ void Simulation::exportGraph ( Node* root, const char* filename )
 /// Initialize the scene.
 void Simulation::init ( Node* root )
 {
+    sofa::helper::AdvancedTimer::stepBegin("Simulation::init");
     //cerr<<"Simulation::init"<<endl;
     if ( !root ) return;
     sofa::core::ExecParams* params = sofa::core::ExecParams::defaultInstance();
@@ -211,6 +212,7 @@ void Simulation::init ( Node* root )
 
     // propagate the visualization settings (showVisualModels, etc.) in the whole graph
     updateVisualContext(root);
+    sofa::helper::AdvancedTimer::stepEnd("Simulation::init");
 }
 
 

@@ -78,8 +78,8 @@ namespace mapping
         typedef defaulttype::Vec<2, index_type> index_pair;
         typedef helper::vector< index_pair > pairs_type;
 
-        Data< pairs_type > d_pairs;
-        Data< Real > d_ratio; // a different ratio for each pair
+        Data< pairs_type > d_pairs; ///< index pairs for computing deltas, 4 values per pair (dofindex0,kinematicdofindex0,dofindex1,kinematicdofindex1) 
+        Data< Real > d_ratio; ///< a different ratio for each pair
 
     protected:
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -327,7 +327,7 @@ public:
     Data< helper::vector<int> > f_cell;    ///< indices required by shape function in case of overlapping elements
 
 
-    Data<bool> assemble;
+    Data<bool> assemble; ///< Assemble the matrices (Jacobian/Geometric Stiffness) or use optimized Jacobian/vector multiplications
 
     Data<VecCoord >    f_pos0; ///< initial spatial positions of children
     VecCoord f_pos;
@@ -376,11 +376,11 @@ protected :
 
 public:
 
-    Data< float > showDeformationGradientScale;
-    Data< helper::OptionsGroup > showDeformationGradientStyle;
-    Data< helper::OptionsGroup > showColorOnTopology;
-    Data< float > showColorScale;
-    Data< unsigned > d_geometricStiffness;
+    Data< float > showDeformationGradientScale; ///< Scale for deformation gradient display
+    Data< helper::OptionsGroup > showDeformationGradientStyle; ///< Visualization style for deformation gradients
+    Data< helper::OptionsGroup > showColorOnTopology; ///< Color mapping method
+    Data< float > showColorScale; ///< Color mapping scale
+    Data< unsigned > d_geometricStiffness; ///< 0=no GS, 1=non symmetric, 2=symmetrized
     Data< bool > d_parallel;		///< use openmp ?
 };
 

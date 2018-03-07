@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -65,17 +65,19 @@ public:
 
 
     //input
-    sofa::core::objectmodel::Data<VecCoord > f_leftDots;
-    sofa::core::objectmodel::Data<VecCoord > f_rightDots;
-    sofa::core::objectmodel::Data<Real> f_distance;
-    sofa::core::objectmodel::Data<Real> f_distanceSide;
-    sofa::core::objectmodel::Data<Real> f_scale;
+    sofa::core::objectmodel::Data<VecCoord > f_leftDots; ///< IR dots from L camera
+    sofa::core::objectmodel::Data<VecCoord > f_rightDots; ///< IR dots from R camera
+    sofa::core::objectmodel::Data<Real> f_distance; ///< Distance between the 2 cameras
+    sofa::core::objectmodel::Data<Real> f_distanceSide; ///< Distance of a side
+    sofa::core::objectmodel::Data<Real> f_scale; ///< Scale
 
     //output
-    sofa::core::objectmodel::Data<VecCoord> f_points;
+    sofa::core::objectmodel::Data<VecCoord> f_points; ///< Computed 3D Points
 
     //Parameters
-    sofa::core::objectmodel::Data<double> p_yErrorCoeff, p_sideErrorCoeff, p_realSideErrorCoeff;
+    sofa::core::objectmodel::Data<double> p_yErrorCoeff; ///< Y Error Coefficient
+    sofa::core::objectmodel::Data<double> p_sideErrorCoeff; ///< Side Error Coefficient
+    sofa::core::objectmodel::Data<double> p_realSideErrorCoeff; ///< Real Side Error Coefficient
 
     void update();
 

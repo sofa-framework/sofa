@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -63,8 +63,8 @@ public:
     typedef sofa::helper::vector<Vector3> VecStress;
 
 	// Material properties
-    Data<SReal> _poissonRatio;
-    Data<SReal> _youngModulus;
+    Data<SReal> _poissonRatio; ///< Poisson ratio in Hooke's law
+    Data<SReal> _youngModulus; ///< Young modulus in Hooke's law
 
     // Stress-strain curve description
     VecDouble _E;

@@ -138,7 +138,7 @@ if(NOT SOFA_NO_OPENGL)
             option(SOFAGUI_QGLVIEWER "Compile the QGLViewer for the Qt GUI" ON)
             if(SOFAGUI_QGLVIEWER)
                 set(SOFA_GUI_QGLVIEWER 1) # cmakedefine
-                add_subdirectory(${CMAKE_SOURCE_DIR}/extlibs/libQGLViewer-2.6.3/QGLViewer ${CMAKE_BINARY_DIR}/extlibs/QGLViewer)
+                add_subdirectory(${CMAKE_SOURCE_DIR}/extlibs/libQGLViewer-2.7.1/QGLViewer ${CMAKE_BINARY_DIR}/extlibs/QGLViewer)
             endif()
 
                ## QWT

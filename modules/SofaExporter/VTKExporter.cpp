@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -37,6 +37,7 @@
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
+#include <sofa/helper/logging/Messaging.h>
 
 namespace sofa
 {
@@ -78,17 +79,24 @@ VTKExporter::~VTKExporter()
 }
 
 void VTKExporter::init()
-{
+{    
     sofa::core::objectmodel::BaseContext* context = this->getContext();
     context->get(topology);
     context->get(mstate);
 
+    // if not set, set the printLog to true to read the msg_info()
+    if(!this->f_printLog.isSet())
+        f_printLog.setValue(true);
+
     if (!topology)
     {
-        serr << "VTKExporter : error, no topology ." << sendl;
+        msg_error() << "VTKExporter : error, no topology ." ;
         return;
     }
-    else sout << "VTKExporter: found topology " << topology->getName() << sendl;
+    else
+    {
+        msg_info() << "VTKExporter: found topology " << topology->getName() ;
+    }
 
     nbFiles = 0;
 
@@ -129,7 +137,7 @@ void VTKExporter::fetchDataFields(const helper::vector<std::string>& strData, he
         }
         else
         {
-            serr << "VTKExporter : error while parsing dataField names" << sendl;
+            msg_error() << "VTKExporter : error while parsing dataField names" ;
             continue;
         }
         if (name.empty()) name = dataFieldName;
@@ -155,13 +163,13 @@ void VTKExporter::writeData(const helper::vector<std::string>& objects, const he
         if (!obj || !field)
         {
             if (!obj)
-                serr << "VTKExporter : error while fetching data field '"
-                     << fields[i] << "' of object '" << objects[i]
-                     << "', check object name" << sendl;
+                msg_error() << "VTKExporter : error while fetching data field '" << msgendl
+                            << fields[i] << "' of object '" << objects[i] << msgendl
+                            << "', check object name"  << msgendl;
             else if (!field)
-                serr << "VTKExporter : error while fetching data field "
-                     << fields[i] << " of object '" << objects[i]
-                     << "', check field name " << sendl;
+                msg_error() << "VTKExporter : error while fetching data field " << msgendl
+                            << fields[i] << " of object '" << objects[i] << msgendl
+                            << "', check field name " << msgendl;
         }
         else
         {
@@ -237,13 +245,13 @@ void VTKExporter::writeDataArray(const helper::vector<std::string>& objects, con
         if (!obj || !field)
         {
             if (!obj)
-                serr << "VTKExporter : error while fetching data field '"
-                     << fields[i] << "' of object '" << objects[i]
-                     << "', check object name" << sendl;
+                msg_error() << "VTKExporter : error while fetching data field '" << msgendl
+                            << fields[i] << "' of object '" << objects[i] << msgendl
+                            << "', check object name" << msgendl;
             else if (!field)
-                serr << "VTKExporter : error while fetching data field "
-                     << fields[i] << " of object '" << objects[i]
-                     << "', check field name " << sendl;
+                msg_error()  << "VTKExporter : error while fetching data field " << msgendl
+                             << fields[i] << " of object '" << objects[i] << msgendl
+                             << "', check field name " << msgendl;
         }
         else
         {
@@ -388,7 +396,7 @@ void VTKExporter::writeVTKSimple()
     outfile = new std::ofstream(filename.c_str());
     if( !outfile->is_open() )
     {
-        serr << "Error creating file "<<filename<<sendl;
+        msg_error() << "Error creating file "<<filename;
         delete outfile;
         outfile = NULL;
         return;
@@ -531,10 +539,12 @@ void VTKExporter::writeVTKSimple()
         *outfile << "CELL_DATA " << numberOfCells << std::endl;
         writeData(cellsDataObject, cellsDataField, cellsDataName);
     }
+
     outfile->close();
-    sout << filename << " written" << sendl;
 
     ++nbFiles;
+
+    msg_info() << "Export VTK in file " << filename << "  done.";
 }
 
 void VTKExporter::writeVTKXML()
@@ -559,7 +569,7 @@ void VTKExporter::writeVTKXML()
     outfile = new std::ofstream(filename.c_str());
     if( !outfile->is_open() )
     {
-        serr << "Error creating file "<<filename<<sendl;
+        msg_error() << "Error creating file "<<filename;
         delete outfile;
         outfile = NULL;
         return;
@@ -749,8 +759,9 @@ void VTKExporter::writeVTKXML()
     *outfile << "  </UnstructuredGrid>" << std::endl;
     *outfile << "</VTKFile>" << std::endl;
     outfile->close();
-    sout << filename << " written" << sendl;
     ++nbFiles;
+
+    msg_info() << "Export VTK XML in file " << filename << "  done.";
 }
 
 void VTKExporter::writeParallelFile()
@@ -762,7 +773,7 @@ void VTKExporter::writeParallelFile()
     outfile = new std::ofstream(filename.c_str());
     if( !outfile->is_open() )
     {
-        serr << "Error creating file "<<filename<<sendl;
+        msg_error() << "Error creating file "<<filename;
         delete outfile;
         outfile = NULL;
         return;
@@ -790,13 +801,13 @@ void VTKExporter::writeParallelFile()
             if (!obj || !field)
             {
                 if (!obj)
-                    serr << "VTKExporter : error while fetching data field '"
-                         << pointsDataField[i] << "' of object '" << pointsDataObject[i]
-                         << "', check object name" << sendl;
+                    msg_error() << "VTKExporter : error while fetching data field '" << msgendl
+                                << pointsDataField[i] << "' of object '" << pointsDataObject[i] << msgendl
+                                << "', check object name" << msgendl;
                 else if (!field)
-                    serr << "VTKExporter : error while fetching data field '"
-                         << pointsDataField[i] << "' of object '" << pointsDataObject[i]
-                         << "', check field name " << sendl;
+                    msg_error() << "VTKExporter : error while fetching data field '" << msgendl
+                                << pointsDataField[i] << "' of object '" << pointsDataObject[i] << msgendl
+                                << "', check field name " << msgendl;
             }
             else
             {
@@ -863,13 +874,13 @@ void VTKExporter::writeParallelFile()
             if (!obj || !field)
             {
                 if (!obj)
-                    serr << "VTKExporter : error while fetching data field '"
+                    msg_error() << "VTKExporter : error while fetching data field '"
                          << cellsDataField[i] << "' of object '" << cellsDataObject[i]
                          << "', check object name" << sendl;
                 else if (!field)
-                    serr << "VTKExporter : error while fetching data field '"
-                         << cellsDataField[i] << "' of object '" << cellsDataObject[i]
-                         << "', check field name " << sendl;
+                    msg_error() << "VTKExporter : error while fetching data field '" << msgendl
+                                << cellsDataField[i] << "' of object '" << cellsDataObject[i] << msgendl
+                                << "', check field name " << msgendl;
             }
             else
             {
@@ -938,7 +949,8 @@ void VTKExporter::writeParallelFile()
     *outfile << "  </PUnstructuredGrid>" << std::endl;
     *outfile << "</VTKFile>" << std::endl;
     outfile->close();
-    sout << "parallel file " << filename << " written" << sendl;
+
+    msg_info() << "Export VTK in file " << filename << "  done.";
 }
 
 

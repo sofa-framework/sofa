@@ -1,0 +1,9 @@
+Node : {
+    name : "root"
+
+    Python : '''raise Exception("I'm raising an Exception and it shouldn't cause armful things")'''
+
+    TestResult : "Success"
+}
+
+

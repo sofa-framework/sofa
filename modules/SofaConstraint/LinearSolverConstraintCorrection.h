@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -111,8 +111,8 @@ public:
     /// @name Unbuilt constraint system during resolution
     /// @{
 
-    Data< bool > wire_optimization;
-    Data< helper::vector< std::string > >  solverName;
+    Data< bool > wire_optimization; ///< constraints are reordered along a wire-like topology (from tip to base)
+    Data< helper::vector< std::string > >  solverName; ///< name of the constraint solver
 
     void verify_constraints();
 
@@ -147,10 +147,16 @@ protected:
     linearsolver::FullMatrix<SReal> refMinv; ///< reference inverse matrix
 #endif
 
+    /*
+    * @brief Compute the compliance matrix
+    */
+
+    virtual void computeJ(sofa::defaulttype::BaseMatrix* W);
+
     /**
      * @brief Compute dx correction from motion space force vector.
      */
-    void computeDx(sofa::core::MultiVecDerivId f);
+    virtual void computeDx(sofa::core::MultiVecDerivId f);
 
 private:
     // new :  for non building the constraint system during solving process //

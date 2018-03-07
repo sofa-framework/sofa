@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -67,20 +67,25 @@ public:
     typedef typename Inherit::ForceMask ForceMask;
 
 protected:
-    Data < OutVecCoord > points;
+    Data < OutVecCoord > points; ///< Initial position of the points
     OutVecCoord pointsR0;
     Mat rotation;
     class Loader;
     void load(const char* filename);
+    /// number of child frames per parent frame.
+    /// If empty, all the children are attached to the parent with index
+    /// given in the "index" attribute. If one value, each parent frame drives
+    /// the given number of children frames. Otherwise, the values are the number
+    /// of child frames driven by each parent frame.
     Data< sofa::helper::vector<unsigned int> >  repartition;
 
 public:
-    Data<unsigned> index;
-    sofa::core::objectmodel::DataFileName fileRigidRigidMapping;
+    Data<unsigned> index; ///< input frame index
+    sofa::core::objectmodel::DataFileName fileRigidRigidMapping; ///< Filename
     //axis length for display
-    Data<double> axisLength;
-    Data< bool > indexFromEnd;
-    Data< bool > globalToLocalCoords;
+    Data<double> axisLength; ///< axis length for display
+    Data< bool > indexFromEnd; ///< input DOF index starts from the end of input DOFs vector
+    Data< bool > globalToLocalCoords; ///< are the output DOFs initially expressed in global coordinates
 
 protected:
     RigidRigidMapping()

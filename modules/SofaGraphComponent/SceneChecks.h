@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -48,6 +48,7 @@ public:
     virtual const std::string getDesc() = 0 ;
     virtual void doInit(Node* node) { SOFA_UNUSED(node); }
     virtual void doCheckOn(Node* node) = 0 ;
+    virtual void doPrintSummary() {}
 };
 
 class SOFA_GRAPH_COMPONENT_API SceneCheckDuplicatedName : public SceneCheck
@@ -57,7 +58,13 @@ public:
     static SPtr newSPtr() { return SPtr(new SceneCheckDuplicatedName()); }
     virtual const std::string getName() override ;
     virtual const std::string getDesc() override ;
+    virtual void doInit(Node* node) override ;
     virtual void doCheckOn(Node* node) override ;
+    virtual void doPrintSummary() override ;
+
+private:
+    bool m_hasDuplicates ;
+    std::stringstream m_duplicatedMsg ;
 };
 
 class SOFA_GRAPH_COMPONENT_API SceneCheckMissingRequiredPlugin : public SceneCheck
@@ -69,9 +76,11 @@ public:
     virtual const std::string getDesc() override ;
     virtual void doInit(Node* node) override ;
     virtual void doCheckOn(Node* node) override ;
+    virtual void doPrintSummary() override ;
 
-private:
-    std::map<std::string,bool> m_requiredPlugins ;
+private:    
+    std::map<std::string, bool > m_loadedPlugins ;
+    std::map<std::string, std::vector<std::string> > m_requiredPlugins ;
 };
 
 

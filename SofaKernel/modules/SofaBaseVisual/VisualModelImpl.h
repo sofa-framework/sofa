@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -82,9 +82,9 @@ namespace visualmodel
 class SOFA_BASE_VISUAL_API ExtVec3fState : public core::State< sofa::defaulttype::ExtVec3fTypes >
 {
 public:
-    topology::PointData< sofa::defaulttype::ResizableExtVector<Coord> > m_positions;
-    topology::PointData< sofa::defaulttype::ResizableExtVector<Coord> > m_restPositions;
-    topology::PointData< sofa::defaulttype::ResizableExtVector<Deriv> > m_vnormals;
+    topology::PointData< sofa::defaulttype::ResizableExtVector<Coord> > m_positions; ///< Vertices coordinates
+    topology::PointData< sofa::defaulttype::ResizableExtVector<Coord> > m_restPositions; ///< Vertices rest coordinates
+    topology::PointData< sofa::defaulttype::ResizableExtVector<Deriv> > m_vnormals; ///< Normals of the model
     bool modified; ///< True if input vertices modified since last rendering
 
     ExtVec3fState()
@@ -206,13 +206,13 @@ public:
     Data<bool> m_fixMergedUVSeams; ///< True if UV seams should be handled even when duplicate UVs are merged
     Data<bool> m_keepLines; ///< keep and draw lines (false by default)
 
-    Data< VecCoord > m_vertices2;
-    topology::PointData< VecTexCoord > m_vtexcoords;
-    topology::PointData< VecCoord > m_vtangents;
-    topology::PointData< VecCoord > m_vbitangents;
-    Data< sofa::defaulttype::ResizableExtVector< Edge > > m_edges;
-    Data< sofa::defaulttype::ResizableExtVector< Triangle > > m_triangles;
-    Data< sofa::defaulttype::ResizableExtVector< Quad > > m_quads;
+    Data< VecCoord > m_vertices2; ///< vertices of the model (only if vertices have multiple normals/texcoords, otherwise positions are used)
+    topology::PointData< VecTexCoord > m_vtexcoords; ///< coordinates of the texture
+    topology::PointData< VecCoord > m_vtangents; ///< tangents for normal mapping
+    topology::PointData< VecCoord > m_vbitangents; ///< tangents for normal mapping
+    Data< sofa::defaulttype::ResizableExtVector< Edge > > m_edges; ///< edges of the model
+    Data< sofa::defaulttype::ResizableExtVector< Triangle > > m_triangles; ///< triangles of the model
+    Data< sofa::defaulttype::ResizableExtVector< Quad > > m_quads; ///< quads of the model
   
 
     /// If vertices have multiple normals/texcoords, then we need to separate them
@@ -238,12 +238,12 @@ public:
     /// @name Initial transformation attributes
     /// @{
     typedef sofa::defaulttype::Vec<3,Real> Vec3Real;
-    Data< Vec3Real > m_translation;
-    Data< Vec3Real > m_rotation;
-    Data< Vec3Real > m_scale;
+    Data< Vec3Real > m_translation; ///< Initial Translation of the object
+    Data< Vec3Real > m_rotation; ///< Initial Rotation of the object
+    Data< Vec3Real > m_scale; ///< Initial Scale of the object
 
-    Data< TexCoord > m_scaleTex;
-    Data< TexCoord > m_translationTex;
+    Data< TexCoord > m_scaleTex; ///< Scale of the texture
+    Data< TexCoord > m_translationTex; ///< Translation of the texture
 
     virtual void applyTranslation(const SReal dx, const SReal dy, const SReal dz) override;
 

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -99,7 +99,7 @@ protected:
         }
     };
 
-    sofa::component::topology::EdgeData<sofa::helper::vector<EdgeRestInformation> > edgeInfo;
+    sofa::component::topology::EdgeData<sofa::helper::vector<EdgeRestInformation> > edgeInfo; ///< Internal edge data
 
     class TriangularTMEdgeHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,helper::vector<EdgeRestInformation> >
     {
@@ -142,8 +142,8 @@ protected:
 
     bool updateMatrix;
 
-    Data<Real> f_poissonRatio;
-    Data<Real> f_youngModulus;
+    Data<Real> f_poissonRatio; ///< Poisson ratio in Hooke's law
+    Data<Real> f_youngModulus; ///< Young modulus in Hooke's law
 
     Real lambda;  /// first Lame coefficient
     Real mu;    /// second Lame coefficient

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -131,7 +131,7 @@ public:
     /// By default, assume that all edges have the same viscosity
     Data<double> m_viscosity;
 
-    Data<bool> m_useTopology;
+    Data<bool> m_useTopology; ///< Activate/Desactivate topology mode of the component (springs on each edge)
 
     sofa::core::topology::BaseMeshTopology* _topology;
     sofa::component::topology::EdgeSetTopologyContainer* edgeCont;

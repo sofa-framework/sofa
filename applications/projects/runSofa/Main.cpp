@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -92,13 +92,12 @@ using  sofa::helper::logging::RichConsoleStyleMessageFormatter ;
 #include <sofa/core/logging/PerComponentLoggingMessageHandler.h>
 using  sofa::helper::logging::MainPerComponentLoggingMessageHandler ;
 
-#ifdef SOFA_HAVE_GLUT_GUI
-#include <sofa/helper/system/glut.h>
-#endif // SOFA_HAVE_GLUT_GUI
-
 #ifdef WIN32
 #include <windows.h>
 #endif
+
+#include <sofa/gui/GuiDataRepository.h>
+using sofa::gui::GuiDataRepository ;
 
 using sofa::helper::system::DataRepository;
 using sofa::helper::system::PluginRepository;
@@ -148,6 +147,7 @@ void addGUIParameters(ArgumentParser* argumentParser)
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
+    GuiDataRepository.addFirstPath(Utils::getSofaPathTo("share/sofa/gui/runSofa/resources").c_str()) ;
     sofa::helper::BackTrace::autodump();
 
     ExecParams::defaultInstance()->setAspectID(0);
@@ -184,7 +184,9 @@ int main(int argc, char** argv)
     bool        testMode = false;
     bool        noAutoloadPlugins = false;
     unsigned int nbMSSASamples = 1;
+    bool computationTimeAtBegin = false;
     unsigned int computationTimeSampling=0; ///< Frequency of display of the computation time statistics, in number of animation steps. 0 means never.
+    string    computationTimeOutputType="stdout";
 
     string gui = "";
     string verif = "";
@@ -215,7 +217,9 @@ int main(int argc, char** argv)
     ArgumentParser* argParser = new ArgumentParser(argc, argv);
     argParser->addArgument(po::value<bool>(&showHelp)->default_value(false)->implicit_value(true),                  "help,h", "Display this help message");
     argParser->addArgument(po::value<bool>(&startAnim)->default_value(false)->implicit_value(true),                 "start,a", "start the animation loop");
+    argParser->addArgument(po::value<bool>(&computationTimeAtBegin)->default_value(false)->implicit_value(true),    "computationTimeAtBegin,b", "Output computation time statistics of the init (at the begin of the simulation)");
     argParser->addArgument(po::value<unsigned int>(&computationTimeSampling)->default_value(0),                     "computationTimeSampling", "Frequency of display of the computation time statistics, in number of animation steps. 0 means never.");
+    argParser->addArgument(po::value<std::string>(&computationTimeOutputType)->default_value("stdout"),             "computationTimeOutputType,o", "Output type for the computation time statistics: either stdout, json or ljson");
     argParser->addArgument(po::value<std::string>(&gui)->default_value(""),                                         "gui,g", gui_help.c_str());
     argParser->addArgument(po::value<std::vector<std::string>>(&plugins),                                           "load,l", "load given plugins");
     argParser->addArgument(po::value<bool>(&noAutoloadPlugins)->default_value(false)->implicit_value(true),         "noautoload", "disable plugins autoloading");
@@ -267,12 +271,6 @@ int main(int argc, char** argv)
     sofa::component::initComponentGeneral();
     sofa::component::initComponentAdvanced();
     sofa::component::initComponentMisc();
-
-#ifndef SOFA_NO_OPENGL
-#ifdef SOFA_HAVE_GLUT_GUI
-    if(gui!="batch") glutInit(&argc,argv);
-#endif // SOFA_HAVE_GLUT_GUI
-#endif // SOFA_NO_OPENGL
 
 #ifdef SOFA_HAVE_DAG
     if (simulationType == "tree")
@@ -391,7 +389,19 @@ int main(int argc, char** argv)
         loadVerificationData(verif, fileName, groot.get());
     }
 
+    if( computationTimeAtBegin )
+    {
+        sofa::helper::AdvancedTimer::setEnabled("Init", true);
+        sofa::helper::AdvancedTimer::setInterval("Init", 1);
+        sofa::helper::AdvancedTimer::setOutputType("Init", computationTimeOutputType);
+        sofa::helper::AdvancedTimer::begin("Init");
+    }
+
     sofa::simulation::getSimulation()->init(groot.get());
+    if( computationTimeAtBegin )
+    {
+        msg_info("") << sofa::helper::AdvancedTimer::end("Init", groot.get());
+    }
     GUIManager::SetScene(groot,fileName.c_str(), temporaryFile);
 
 
@@ -411,6 +421,7 @@ int main(int argc, char** argv)
     {
         sofa::helper::AdvancedTimer::setEnabled("Animate", true);
         sofa::helper::AdvancedTimer::setInterval("Animate", computationTimeSampling);
+        sofa::helper::AdvancedTimer::setOutputType("Animate", computationTimeOutputType);
     }
 
     //=======================================

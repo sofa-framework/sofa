@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -69,12 +69,12 @@ public:
 
     /// inputs
     Data< SeqPositions > inputPosition;
-    Data< SeqEdges > inputEdges;
-    Data< SeqTriangles > inputTriangles;
-    Data< SeqQuads > inputQuads;
-    Data< SeqTetrahedra > inputTets;
-    Data< SeqHexahedra > inputHexa;
-    Data<unsigned int> nbInputs;
+    Data< SeqEdges > inputEdges; ///< input edges
+    Data< SeqTriangles > inputTriangles; ///< input triangles
+    Data< SeqQuads > inputQuads; ///< input quads
+    Data< SeqTetrahedra > inputTets; ///< input tetrahedra
+    Data< SeqHexahedra > inputHexa; ///< input hexahedra
+    Data<unsigned int> nbInputs; ///< Number of input vectors
     helper::vectorData<SetIndices> indices;
     helper::vectorData<SetIndices> edgeIndices;
     helper::vectorData<SetIndices> triangleIndices;

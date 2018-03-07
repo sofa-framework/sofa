@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -88,10 +88,13 @@ public:
     /// Index of elements attached to each points (layout per bloc of NBLOC vertices, with first element of each vertex, then second element, etc)
     gpu::cuda::CudaVector<int> velems;
 
-    Data<defaulttype::Vec4f> matAmbient, matDiffuse, matSpecular, matEmissive;
-    Data<float> matShininess;
-    Data<bool> useVBO;
-    Data<bool> computeNormals;
+    Data<defaulttype::Vec4f> matAmbient; ///< material ambient color
+    Data<defaulttype::Vec4f> matDiffuse; ///< material diffuse color and alpha
+    Data<defaulttype::Vec4f> matSpecular; ///< material specular color
+    Data<defaulttype::Vec4f> matEmissive; ///< material emissive color
+    Data<float> matShininess; ///< material specular shininess
+    Data<bool> useVBO; ///< true to activate Vertex Buffer Object
+    Data<bool> computeNormals; ///< true to compute smooth normals
 
     CudaVisualModel()
         : state(NULL), topology(NULL), needUpdateTopology(true), nbElement(0), nbVertex(0), nbElementPerVertex(0)

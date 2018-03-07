@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,6 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define _USE_MATH_DEFINES // for C++
+#include <cmath>
+
 #include <SofaBaseVisual/BaseCamera.h>
 #include <sofa/core/visual/VisualParams.h>
 
@@ -251,6 +254,52 @@ bool glhUnProjectf(Real winx, Real winy, Real winz, Real *modelview, Real *proje
     objectCoordinate[1] = out[1] * out[3];
     objectCoordinate[2] = out[2] * out[3];
     return true;
+}
+
+BaseCamera::Quat BaseCamera::getOrientation()
+{
+    if(currentLookAt !=  p_lookAt.getValue())
+    {
+        Quat newOrientation = getOrientationFromLookAt(p_position.getValue(), p_lookAt.getValue());
+        p_orientation.setValue(newOrientation);
+
+        currentLookAt = p_lookAt.getValue();
+    }
+
+    return p_orientation.getValue();
+}
+
+
+unsigned int BaseCamera::getCameraType() const
+{
+    return p_type.getValue().getSelectedId();
+}
+
+
+void BaseCamera::setCameraType(unsigned int type)
+{
+    sofa::helper::OptionsGroup* optionsGroup = p_type.beginEdit();
+
+    if (type == core::visual::VisualParams::ORTHOGRAPHIC_TYPE)
+        optionsGroup->setSelectedItem(core::visual::VisualParams::ORTHOGRAPHIC_TYPE);
+    else
+        optionsGroup->setSelectedItem(core::visual::VisualParams::PERSPECTIVE_TYPE);
+
+    p_type.endEdit();
+}
+
+
+double BaseCamera::getHorizontalFieldOfView()
+{
+    const sofa::core::visual::VisualParams* vp = sofa::core::visual::VisualParams::defaultInstance();
+    const core::visual::VisualParams::Viewport viewport = vp->viewport();
+
+    float screenwidth = (float)viewport[2];
+    float screenheight = (float)viewport[3];
+    float aspectRatio = screenwidth / screenheight;
+    float fov_radian = (float)getFieldOfView()* (float)(M_PI/180);
+    float hor_fov_radian = 2.0f * atan ( tan(fov_radian/2.0f) * aspectRatio );
+    return hor_fov_radian*(180/M_PI);
 }
 
 BaseCamera::Vec3 BaseCamera::screenToWorldCoordinates(int x, int y)

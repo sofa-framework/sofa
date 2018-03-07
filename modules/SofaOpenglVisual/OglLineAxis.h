@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -40,10 +40,10 @@ class OglLineAxis : public core::visual::VisualModel
 public:
     SOFA_CLASS(OglLineAxis, VisualModel);
 
-    Data<std::string> axis;
-    Data<float> size;
-    Data<float> thickness;
-    Data<bool> draw;
+    Data<std::string> axis; ///< Axis to draw
+    Data<float> size; ///< Size of the squared grid
+    Data<float> thickness; ///< Thickness of the lines in the grid
+    Data<bool> draw; ///< Display the grid or not
 
     OglLineAxis():
         axis(initData(&axis, std::string("xyz"),  "axis", "Axis to draw")),

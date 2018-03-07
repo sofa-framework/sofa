@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -107,7 +107,7 @@ public:
 
     /// Mass info are stocked on vertices and edges (if lumped matrix)
     topology::PointData<helper::vector<MassType> >  vertexMassInfo;
-    topology::EdgeData<helper::vector<MassType> >   edgeMassInfo;
+    topology::EdgeData<helper::vector<MassType> >   edgeMassInfo; ///< values of the particles masses on edges
 
     /* ---------- Specific data for Bezier Elements ------*/
     /// use this data structure to store mass for Bezier tetrahedra. 
@@ -122,12 +122,12 @@ public:
 
     /// to display the center of gravity of the system
     Data< bool >         showCenterOfGravity;
-    Data< Real >         showAxisSize;
+    Data< Real >         showAxisSize; ///< factor length of the axis displayed (only used for rigids)
     /// if mass lumping should be performed (only compute mass on vertices)
     Data< bool >         lumping;
     /// if specific mass information should be outputed
     Data< bool >         printMass;
-    Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
+    Data<std::map < std::string, sofa::helper::vector<double> > > f_graph; ///< Graph of the controlled potential
     /// the order of integration for numerical integration
     Data<size_t>	     numericalIntegrationOrder;
     /// the type of numerical integration method chosen

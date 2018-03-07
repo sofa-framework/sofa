@@ -1,0 +1,30 @@
+/// I this PEP we are proposing to implement an API to manipulate PSL files and ast representation in python
+Node : {
+    name : "father"
+
+    Node : {
+        name : "subgraph"
+    }
+
+    Template : {
+        name : "MyTemplate"
+    }
+
+    /// Ok for this one.
+    Python : '''
+             father.addChild(instantiate(MyTemplate, {..}))
+             '''
+
+    /// Manipule un arbre général
+    Python : '''
+             txt=psl.load("test1.psl")
+             ast=psl.parse(txt)
+             father.addChild(psl.instantiate( txt, getContext() ))
+             '''
+
+    /// Mwai ça fait un peu tordu.
+    Python : '''
+             ast=father.pslast
+             psl.save( ast )
+             '''
+}
