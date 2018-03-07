@@ -14,6 +14,10 @@ if(SOFA_HAVE_QT_LIBRARIES)
     sofa_add_application(Modeler Modeler ON)
 endif()
 
+if(SOFA_WITH_DEPRECATED_COMPONENTS)
+    sofa_add_application(getDeprecatedComponents getDeprecatedComponents ON)
+endif()
+
 sofa_add_application(GenerateRigid GenerateRigid)
 sofa_add_application(meshconv meshconv OFF)
 sofa_add_application(SofaPhysicsAPI SofaPhysicsAPI)

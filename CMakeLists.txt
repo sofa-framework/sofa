@@ -338,9 +338,6 @@ endif()
 
 ### Deprecated components
 option(SOFA_WITH_DEPRECATED_COMPONENTS "Compile sofa with all deprecated components" ON)
-if(SOFA_WITH_DEPRECATED_COMPONENTS)
-    add_subdirectory(tools/SofaDeprecatedComponents)
-endif()
 
 ## Custom
 if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/custom.cmake")
