@@ -104,7 +104,7 @@ AnyFailureChecker::~AnyFailureChecker() {
 } // internal
 } // testing
 
-#define EXPECT_ATLEASE_ONE_NONFATAL_FAILURE(statement, substr) \
+#define EXPECT_ATLEAST_ONE_NONFATAL_FAILURE(statement, substr) \
   do {\
     ::testing::TestPartResultArray gtest_failures;\
     ::testing::internal::AnyFailureChecker gtest_checker(\
@@ -201,7 +201,7 @@ public:
 /// performing the regression test on every plugins/projects
 TEST_F(TestMessageHandler_test, defaultTestBehavior)
 {
-   EXPECT_ATLEASE_ONE_NONFATAL_FAILURE(this->defaultTestBehavior(), "Message") ;
+   EXPECT_ATLEAST_ONE_NONFATAL_FAILURE(this->defaultTestBehavior(), "Message") ;
 }
 
 /// performing the regression test on every plugins/projects
@@ -213,7 +213,7 @@ TEST_F(TestMessageHandler_test, catchingTestBehavior)
 /// performing the regression test on every plugins/projects
 TEST_F(TestMessageHandler_test, noEmitTestBehavior)
 {
-    EXPECT_ATLEASE_ONE_NONFATAL_FAILURE(this->noEmitTestBehavior(), "Message") ;
+    EXPECT_ATLEAST_ONE_NONFATAL_FAILURE(this->noEmitTestBehavior(), "Message") ;
 }
 
 /// performing the regression test on every plugins/projects
@@ -225,6 +225,6 @@ TEST_F(TestMessageHandler_test, noEmitIgnoredTestBehavior)
 /// performing the regression test on every plugins/projects
 TEST_F(TestMessageHandler_test, complexTestBehavior)
 {
-    EXPECT_ATLEASE_ONE_NONFATAL_FAILURE(this->complexTestBehavior(), "Message") ;
+    EXPECT_ATLEAST_ONE_NONFATAL_FAILURE(this->complexTestBehavior(), "Message") ;
 }
 
