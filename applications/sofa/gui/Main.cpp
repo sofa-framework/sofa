@@ -27,6 +27,9 @@
 #ifdef SOFA_GUI_QT
 #include "qt/RealGUI.h"
 #endif
+#ifdef SOFA_GUI_HEADLESS_RECORDER
+#include "headlessRecorder/HeadlessRecorder.h"
+#endif
 
 namespace sofa
 {
@@ -46,6 +49,10 @@ void initMain()
 
 int BatchGUIClass = GUIManager::RegisterGUI("batch", &BatchGUI::CreateGUI, &BatchGUI::RegisterGUIParameters, -1);
 
+#ifdef SOFA_GUI_HEADLESS_RECORDER
+int HeadlessRecorderClass = GUIManager::RegisterGUI ( "hRecorder", &hRecorder::HeadlessRecorder::CreateGUI, &hRecorder::HeadlessRecorder::RegisterGUIParameters, 2 );
+#endif
+  
 #ifdef SOFA_GUI_QGLVIEWER
 int QGLViewerGUIClass = GUIManager::RegisterGUI ( "qglviewer", &qt::RealGUI::CreateGUI, NULL, 3 );
 #endif

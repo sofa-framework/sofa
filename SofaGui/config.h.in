@@ -24,6 +24,7 @@
 
 #include <sofa/config.h>
 
+#cmakedefine SOFA_GUI_HEADLESS_RECORDER
 // Qt GUI
 #cmakedefine SOFA_GUI_QT
 #cmakedefine SOFA_GUI_QGLVIEWER
