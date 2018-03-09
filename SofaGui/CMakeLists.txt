@@ -66,10 +66,8 @@ set(SOFAGUI_TARGETS "")
 set(SOFAGUI_VERSION ${SofaFramework_VERSION})
 
 option(SOFAGUI_BUILD_TESTS "Compile the tests that need a GUI (like headlessRecorder_test)." ON)
-if(NOT SOFA_BUILD_TESTS)
-    if(SOFAGUI_BUILD_TESTS)
-        message(WARNING "SOFAGUI_BUILD_TESTS can't be enabled without SOFA_BUILD_TESTS.")
-    endif()
+if(SOFAGUI_BUILD_TESTS AND NOT SOFA_BUILD_TESTS)
+    message(WARNING "SOFAGUI_BUILD_TESTS can't be enabled without SOFA_BUILD_TESTS.")
     set(SOFAGUI_BUILD_TESTS OFF CACHE BOOL "Compile the tests that need a GUI (like headlessRecorder_test)." FORCE)
 endif()
 
@@ -90,18 +88,14 @@ if(NOT SOFA_NO_OPENGL)
             add_subdirectory(../applications/sofa/gui/glut ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiGlut)
         endif()
     endif()
-	
-	if(UNIX AND NOT APPLE)
-		option(SOFAGUI_HEADLESS_RECORDER "Compile the headless recorder" OFF)
-		if(SOFAGUI_HEADLESS_RECORDER)
-			set(SOFA_GUI_HEADLESS_RECORDER 1) # cmakedefine
-			list(APPEND SOFAGUI_TARGETS SofaHeadlessRecorder)
-			add_subdirectory(../applications/sofa/gui/headlessRecorder ${CMAKE_CURRENT_BINARY_DIR}/SofaHeadlessRecorder)
-		endif()
-    else()
-        message("HeadlessRecorder is not available on windows/mac")
+
+    option(SOFAGUI_HEADLESS_RECORDER "Compile the headless recorder (Linux only)" OFF)
+    if(SOFAGUI_HEADLESS_RECORDER)
+        set(SOFA_GUI_HEADLESS_RECORDER 1) # cmakedefine
+        list(APPEND SOFAGUI_TARGETS SofaHeadlessRecorder)
+        add_subdirectory(../applications/sofa/gui/headlessRecorder ${CMAKE_CURRENT_BINARY_DIR}/SofaHeadlessRecorder)
     endif()
-	
+
     ## Qt GUI
     # Check if Qt(4/5) is present ; if not, disable ability to compile Qt things
     set(SOFA_HAVE_QT_LIBRARIES 1)
