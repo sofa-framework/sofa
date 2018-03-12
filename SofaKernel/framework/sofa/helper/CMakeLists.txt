@@ -7,6 +7,7 @@ set(HEADER_FILES
     BackTrace.h
     cast.h
     ColorMap.h
+    ComponentChange.h
     DualQuat.h
     DualQuat.inl
     Factory.h
@@ -39,7 +40,6 @@ set(HEADER_FILES
     accessor.h
     decompose.h
     decompose.inl
-    deprecatedcomponents.h
     deque.h
     fixed_array.h
     hash.h
@@ -132,6 +132,7 @@ set(SOURCE_FILES
     ArgumentParser.cpp
     BackTrace.cpp
     ColorMap.cpp
+    ComponentChange.cpp
     DualQuat.cpp
     Factory.cpp
     GenerateRigid.cpp
@@ -147,7 +148,6 @@ set(SOURCE_FILES
     UnitTest.cpp
     Utils.cpp
     decompose.cpp
-    deprecatedcomponents.cpp
     gl/Trackball.cpp
     gl/Transformation.cpp
     init.cpp

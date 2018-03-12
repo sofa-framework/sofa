@@ -11,7 +11,11 @@ if(NOT Qt5Core_FOUND)
 endif()
 
 if(SOFA_HAVE_QT_LIBRARIES)
-        sofa_add_application(Modeler Modeler ON)
+    sofa_add_application(Modeler Modeler ON)
+endif()
+
+if(SOFA_WITH_DEPRECATED_COMPONENTS)
+    sofa_add_application(getDeprecatedComponents getDeprecatedComponents ON)
 endif()
 
 sofa_add_application(GenerateRigid GenerateRigid)
@@ -20,7 +24,4 @@ sofa_add_application(meshconv meshconv OFF)
 sofa_add_application(SofaPhysicsAPI SofaPhysicsAPI)
 sofa_add_application(SofaGuiGlut SofaGuiGlut OFF)
 
-# We activate runSofa only for componentset == standard
-if(SOFA_BUILD_COMPONENTSET_STANDARD)
-    sofa_add_application(runSofa runSofa ON)
-endif()
+sofa_add_application(runSofa runSofa ON)

@@ -106,6 +106,7 @@ append() {
 }
 
 # Options common to all configurations
+append "-DSOFA_WITH_DEPRECATED_COMPONENTS=ON"
 append "-DSOFA_BUILD_TUTORIALS=ON"
 append "-DSOFA_BUILD_TESTS=ON"
 append "-DSOFAGUI_BUILD_TESTS=OFF"
