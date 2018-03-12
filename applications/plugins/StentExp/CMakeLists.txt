@@ -10,6 +10,8 @@ set(HEADER_FILES
 	config.h
 	forceField/MultiBeamForceField.h
 	forceField/MultiBeamForceField.inl
+	quadrature/Gaussian.h
+	quadrature/quadrature.h
 	PoissonContainer.h
 	StiffnessContainer.h
 )
