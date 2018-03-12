@@ -74,22 +74,11 @@ public:
 protected:
 
     typedef defaulttype::Vec<12, Real> Displacement;        ///< the displacement vector
-
-    //typedef Mat<6, 6, Real> MaterialStiffness;    ///< the matrix of material stiffness
-    //typedef vector<MaterialStiffness> VecMaterialStiffness;         ///< a vector of material stiffness matrices
-    //VecMaterialStiffness _materialsStiffnesses;                    ///< the material stiffness matrices vector
-
-    //typedef Mat<12, 6, Real> StrainDisplacement;    ///< the strain-displacement matrix
-    //typedef vector<StrainDisplacement> VecStrainDisplacement;        ///< a vector of strain-displacement matrices
-    //VecStrainDisplacement _strainDisplacements;                       ///< the strain-displacement matrices vector
-
     typedef defaulttype::Mat<3, 3, Real> Transformation; ///< matrix for rigid transformations like rotations
 
 
     typedef defaulttype::Mat<12, 12, Real> StiffnessMatrix;
     typedef defaulttype::Mat<12, 8, Real> plasticityMatrix; ///< contribution of plasticity to internal forces
-    //typedef topology::EdgeData<StiffnessMatrix> VecStiffnessMatrices;         ///< a vector of stiffness matrices
-    //VecStiffnessMatrices _stiffnessMatrices;                    ///< the material stiffness matrices vector
 
     struct BeamInfo
     {
@@ -133,8 +122,6 @@ protected:
         //NewMAT::ColumnVector _u_init;
         //actual deformation of the beam on the local frame
         //NewMAT::ColumnVector _u_actual;
-
-        //NewMAT::Matrix _Ke;
 
         defaulttype::Quat quat;
 
@@ -209,7 +196,7 @@ protected:
     };
 
     /**************************************************************************/
-    /*                      Plasticity - virtual forces                       */
+    /*                         Virtual Force Method                           */
     /**************************************************************************/
 
     /// Virtual Force method, same as in BeamFEMForceField
@@ -240,7 +227,7 @@ protected:
 
 
     /**************************************************************************/
-    /*                  Plasticity - virtual displacement                     */
+    /*                     Virtual Displacement Method                        */
     /**************************************************************************/
 
     /// virtual displacement method, same as in TetrahedronFEMForceField
@@ -265,11 +252,9 @@ protected:
     /**************************************************************************/
 
     const VecElement *_indexedElements;
-//	unsigned int maxPoints;
-//	int _method; ///< the computation method of the displacements
+
     Data<Real> _poissonRatio;
     Data<Real> _youngModulus;
-//	Data<bool> _timoshenko;
     Data<Real> _zSection;
     Data<Real> _ySection;
     Data< VecIndex > _list_segment;
@@ -282,9 +267,7 @@ protected:
     double lastUpdatedStep;
 
     container::StiffnessContainer* stiffnessContainer;
-//	container::LengthContainer* lengthContainer;
     container::PoissonContainer* poissonContainer;
-//	container::RadiusContainer* radiusContainer;
 
     defaulttype::Quat& beamQuat(int i)
     {
@@ -327,28 +310,15 @@ protected:
 
     void drawElement(int i, std::vector< defaulttype::Vector3 >* points, const VecCoord& x);
 
-    //void computeStrainDisplacement( StrainDisplacement &J, Coord a, Coord b, Coord c, Coord d );
     Real peudo_determinant_for_coef ( const defaulttype::Mat<2, 3, Real>&  M );
 
-    //void computeStiffnessMatrix( StiffnessMatrix& S,StiffnessMatrix& SR,const MaterialStiffness &K, const StrainDisplacement &J, const Transformation& Rot );
-
-    //void computeMaterialStiffness(int i, Index&a, Index&b);
     void computeStiffness(int i, Index a, Index b);
 
-    //void computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacement &J );
-
     ////////////// large displacements method
-    //vector<fixed_array<Coord,4> > _rotatedInitialElements;   ///< The initials positions in its frame
-    //VecReal _initialLength;
     helper::vector<Transformation> _nodeRotations;
-    //vector<Quat> _beamQuat;
     void initLarge(int i, Index a, Index b);
-    //void computeRotationLarge( Transformation &r, const Vector &p, Index a, Index b);
     void accumulateForceLarge( VecDeriv& f, const VecCoord& x, int i, Index a, Index b);
-    //void accumulateDampingLarge( Vector& f, Index elementIndex );
     void applyStiffnessLarge( VecDeriv& f, const VecDeriv& x, int i, Index a, Index b, double fact=1.0);
-
-    //sofa::helper::vector< sofa::helper::vector <Real> > subMatrix(unsigned int fr, unsigned int lr, unsigned int fc, unsigned int lc);
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_MULTIBEAMFORCEFIELD_CPP)
