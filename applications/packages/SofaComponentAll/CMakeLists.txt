@@ -1,15 +1,15 @@
 cmake_minimum_required(VERSION 3.1)
-project(SofaAllCommonComponents)
+project(SofaComponentAll)
 
-set(SOFAALLCOMMONCOMPONENTS_VERSION 1.0)
+set(SOFACOMPONENTALL_VERSION 1.0)
 
 set(HEADER_FILES
     config.h
-    initAllCommonComponents.h
+    initComponentAll.h
 )
 
 set(SOURCE_FILES
-    initAllCommonComponents.cpp
+    initComponentAll.cpp
 )
 
 set(EXTRA_FILES
@@ -25,4 +25,4 @@ set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}"
 #include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 ## Install rules for the library and headers; CMake package configurations files
-#sofa_create_package(SofaAllCommonComponents ${SOFAALLCOMMONCOMPONENTS_VERSION} ${PROJECT_NAME} SofaAllCommonComponents)
+#sofa_create_package(SofaComponentAll ${SOFACOMPONENTALL_VERSION} ${PROJECT_NAME} SofaComponentAll)

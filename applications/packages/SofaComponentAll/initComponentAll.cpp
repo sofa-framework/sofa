@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/system/config.h>
-#include <SofaAllCommonComponents/initAllCommonComponents.h>
+#include <SofaComponentAll/initComponentAll.h>
 
 #include <SofaComponentBase/initComponentBase.h>
 #include <SofaComponentCommon/initComponentCommon.h>
@@ -36,12 +36,12 @@ namespace component
 
 /// Convenient functions to help user to know what contains the plugin
 extern "C" {
-    SOFA_SOFAALLCOMMONCOMPONENTS_API void initExternalModule();
-    SOFA_SOFAALLCOMMONCOMPONENTS_API const char* getModuleName();
-    SOFA_SOFAALLCOMMONCOMPONENTS_API const char* getModuleVersion();
-    SOFA_SOFAALLCOMMONCOMPONENTS_API const char* getModuleLicense();
-    SOFA_SOFAALLCOMMONCOMPONENTS_API const char* getModuleDescription();
-    SOFA_SOFAALLCOMMONCOMPONENTS_API const char* getModuleComponentList();
+    SOFA_SOFACOMPONENTALL_API void initExternalModule();
+    SOFA_SOFACOMPONENTALL_API const char* getModuleName();
+    SOFA_SOFACOMPONENTALL_API const char* getModuleVersion();
+    SOFA_SOFACOMPONENTALL_API const char* getModuleLicense();
+    SOFA_SOFACOMPONENTALL_API const char* getModuleDescription();
+    SOFA_SOFACOMPONENTALL_API const char* getModuleComponentList();
 }
 
 void initExternalModule()
@@ -61,7 +61,7 @@ void initExternalModule()
 
 const char* getModuleName()
 {
-    return "SofaAllCommonComponents";
+    return "SofaComponentAll";
 }
 
 const char* getModuleVersion()
