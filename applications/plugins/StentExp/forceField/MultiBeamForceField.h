@@ -87,17 +87,26 @@ protected:
 
 
     typedef defaulttype::Mat<12, 12, Real> StiffnessMatrix;
+    typedef defaulttype::Mat<12, 8, Real> plasticityMatrix; ///< contribution of plasticity to internal forces
     //typedef topology::EdgeData<StiffnessMatrix> VecStiffnessMatrices;         ///< a vector of stiffness matrices
     //VecStiffnessMatrices _stiffnessMatrices;                    ///< the material stiffness matrices vector
 
     struct BeamInfo
     {
+        /*********************************************************************/
+        /*                              Plasticity                           */
+        /*********************************************************************/
+
+        plasticityMatrix _M_loc;
+        StiffnessMatrix _Ke_loc;
+        Eigen::Matrix<double, 6, 6> _materialBehaviour;
+
+        /*********************************************************************/
+
         // 	static const double FLEXIBILITY=1.00000; // was 1.00001
         double _E0,_E; //Young
         double _nu;//Poisson
         double _L; //length
-        //double _r; //radius of the section
-        //double _rInner; //inner radius of the section if beam is hollow
         double _zDim; //for rectangular beams: dimension of the cross-section along z axis
         double _yDim; //for rectangular beams: dimension of the cross-section along y axis
         double _G; //shear modulus
@@ -134,7 +143,7 @@ protected:
         /// Output stream
         inline friend std::ostream& operator<< ( std::ostream& os, const BeamInfo& bi )
         {
-            os	<< bi._E0 << " "
+            os << bi._E0 << " "
                 << bi._E << " "
                 << bi._nu << " "
                 << bi._L << " "
@@ -147,6 +156,8 @@ protected:
                 << bi._A << " "
                 << bi._Asy << " "
                 << bi._Asz << " "
+                << bi._M_loc << " "
+                << bi._Ke_loc << " "
                 << bi._k_loc;
             return os;
         }
@@ -167,6 +178,8 @@ protected:
                 >> bi._A
                 >> bi._Asy
                 >> bi._Asz
+                >> bi._M_loc
+                >> bi._Ke_loc
                 >> bi._k_loc;
             return in;
         }
@@ -195,7 +208,61 @@ protected:
 
     };
 
+    /**************************************************************************/
+    /*                      Plasticity - virtual forces                       */
+    /**************************************************************************/
 
+    /// Virtual Force method, same as in BeamFEMForceField
+
+    defaulttype::Vec<6, Real> _VFPlasticYieldThreshold;
+    Real _VFPlasticMaxThreshold;
+    Real _VFPlasticCreep;
+
+    typedef defaulttype::Vec<8, Real> VFStrain; ///< 6 strain components used in the 3D Timoshenko beam model
+    typedef defaulttype::Vec<12, Real> nodalForces; ///<  Intensities of the nodal forces in the Timoshenko beam element
+    typedef defaulttype::Mat<6, 2, Real> plasticLimits; ///< 6 pairs of 1D interval limits (one for each strain)
+    typedef defaulttype::Vec<6, bool> completePlasticZones; ///< true if the corresponding plastic zone limits are [0,l]
+
+    helper::vector<VFStrain> _VFPlasticStrains; ///< one plastic strain vector per element
+    helper::vector<VFStrain> _VFTotalStrains; ///< one total strain vector per element
+    helper::vector<nodalForces> _nodalForces;
+    helper::vector<plasticLimits> _plasticZones; ///< one plastic zone per element
+    helper::vector<completePlasticZones> _isPlasticZoneComplete;
+
+    virtual void reset() override;
+
+    void initPlasticityMatrix(int i, Index a, Index b);
+    void updatePlasticityMatrix(int i, Index a, Index b);
+    void updatePlasticity(int i, Index a, Index b);
+    void totalStrainEvaluation(int i, Index a, Index b);
+
+    /**************************************************************************/
+
+
+    /**************************************************************************/
+    /*                  Plasticity - virtual displacement                     */
+    /**************************************************************************/
+
+    /// virtual displacement method, same as in TetrahedronFEMForceField
+    Data<bool> _virtualDisplacementMethod;
+
+    void computeVDStiffness(int i, Index a, Index b);
+    void computeMaterialBehaviour(int i, Index a, Index b);
+
+
+    Data<bool> _isPlastic;
+    /// Symmetrical 3x3 stensor written as a vector following the Voigt notation
+    typedef Eigen::Matrix<double, 6, 1> VoigtTensor;
+    typedef Eigen::Matrix<double, 27, 6> elementPlasticStrain; ///< one 6x1 strain tensor for each of the 27 points of integration
+    helper::vector<elementPlasticStrain> _VDPlasticStrains;
+
+    Real _VDPlasticYieldThreshold;
+    Real _VDPlasticCreep;
+
+    void computePlasticForces(int i, Index a, Index b, const Displacement& totalDisplacement, nodalForces& plasticForces);
+    void updatePlasticStrain(int i, Index a, Index b, VoigtTensor& totalStrain, int gaussPointIterator);
+
+    /**************************************************************************/
 
     const VecElement *_indexedElements;
 //	unsigned int maxPoints;
@@ -229,7 +296,7 @@ protected:
 
 
     MultiBeamForceField();
-    MultiBeamForceField(Real poissonRatio, Real youngModulus, Real radius, Real radiusInner, Real zSection, Real ySection);
+    MultiBeamForceField(Real poissonRatio, Real youngModulus, Real zSection, Real ySection, bool useVD, bool isPlastic);
     virtual ~MultiBeamForceField();
 public:
     void setUpdateStiffnessMatrix(bool val) { this->_updateStiffnessMatrix = val; }
