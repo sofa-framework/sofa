@@ -18,7 +18,7 @@ add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaRigid/SofaRigid_test test
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaSimpleFem/SofaSimpleFem_test tests/SofaSimpleFem)
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/sofa/simulation/simulation_test tests/simulation)
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/sofa/frameworkextra/frameworkextra_test tests/frameworkextra)
-add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaComponentBase/SofaComponentBase_test tests/SofaComponentBase)
+add_subdirectory(${CMAKE_SOURCE_DIR}/applications/packages/SofaComponentBase/SofaComponentBase_test tests/SofaComponentBase)
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaBoundaryCondition/SofaBoundaryCondition_test tests/SofaBoundaryCondition)
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaConstraint/SofaConstraint_test tests/SofaConstraint)
 add_subdirectory(${SOFA_EXT_MODULES_SOURCE_DIR}/SofaOpenglVisual/SofaOpenglVisual_test tests/SofaOpenglVisual)
