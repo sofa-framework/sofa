@@ -4,6 +4,8 @@ project(sceneCreatorExamples)
 
 find_package(SofaGui)
 find_package(SceneCreator)
+find_package(SofaComponentBase)
+find_package(SofaComponentCommon)
 
 SET( HEADERS
 
@@ -14,4 +16,4 @@ set( SOURCES
     )
 
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
-target_link_libraries(${PROJECT_NAME} SofaGuiMain SceneCreator)
+target_link_libraries(${PROJECT_NAME} SofaGuiMain SceneCreator SofaComponentBase SofaComponentCommon)
