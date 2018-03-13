@@ -17,6 +17,7 @@ target_link_libraries(${PROJECT_NAME} PUBLIC
     SofaConstraint SofaGeneralEngine SofaExporter SofaGraphComponent SofaHaptics SofaPreconditioner SofaSparseSolver SofaTopologyMapping SofaUserInteraction SofaValidation)
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_COMPONENT_GENERAL")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 
 if(SOFA_HAVE_NEWMAT)
     target_link_libraries(${PROJECT_NAME} PUBLIC SofaDenseSolver)
@@ -25,4 +26,4 @@ if(NOT SOFA_NO_OPENGL)
     target_link_libraries(${PROJECT_NAME} PUBLIC SofaOpenglVisual)
 endif()
 
-sofa_install_targets(SofaGeneral ${PROJECT_NAME} ${PROJECT_NAME})
+sofa_create_package(${PROJECT_NAME} "1.0" ${PROJECT_NAME} ${PROJECT_NAME})

@@ -22,7 +22,4 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CUR
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFACOMPONENTALL -DSOFA_SRC_DIR=\"${CMAKE_SOURCE_DIR}\"")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-#include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
-
-## Install rules for the library and headers; CMake package configurations files
-#sofa_create_package(SofaComponentAll ${SOFACOMPONENTALL_VERSION} ${PROJECT_NAME} SofaComponentAll)
+sofa_create_package(${PROJECT_NAME} "1.0" ${PROJECT_NAME} ${PROJECT_NAME})

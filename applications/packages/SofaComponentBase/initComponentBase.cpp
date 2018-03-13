@@ -27,16 +27,6 @@
 #include <SofaBaseLinearSolver/initBaseLinearSolver.h>
 #include <SofaBaseVisual/initBaseVisual.h>
 
-#include "messageHandlerComponent.h"
-using sofa::component::logging::MessageHandlerComponent ;
-using sofa::component::logging::FileMessageHandlerComponent ;
-
-#include "MakeAliasComponent.h"
-using sofa::component::MakeAliasComponent ;
-
-#include "MakeDataAliasComponent.h"
-using sofa::component::MakeAliasComponent ;
-
 namespace sofa
 {
 
@@ -57,11 +47,6 @@ void initComponentBase()
         first = false;
     }
 }
-
-SOFA_LINK_CLASS(MakeAliasComponent)
-SOFA_LINK_CLASS(MakeDataAliasComponent)
-SOFA_LINK_CLASS(MessageHandlerComponent)
-SOFA_LINK_CLASS(FileMessageHandlerComponent)
 
 } // namespace component
 
