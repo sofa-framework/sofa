@@ -18,7 +18,6 @@ install(FILES "${CMAKE_BINARY_DIR}/include/SofaAdvanced/config.h" DESTINATION "i
 ### Subdirectories
 
 set(SOFAADVANCED_TARGETS
-    SofaComponentAdvanced
     SofaNonUniformFem
 )
 
