@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaComponentBase)
 
+find_package(SofaBase REQUIRED)
+
 set(HEADER_FILES
     config.h
     initComponentBase.h
@@ -23,4 +25,4 @@ target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseTopology SofaBaseMechanics 
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_COMPONENT_BASE")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-sofa_install_targets(SofaBase ${PROJECT_NAME} ${PROJECT_NAME})
+sofa_create_package(${PROJECT_NAME} "1.0" ${PROJECT_NAME} ${PROJECT_NAME})
