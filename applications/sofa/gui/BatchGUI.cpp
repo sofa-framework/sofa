@@ -35,8 +35,8 @@ namespace sofa
 namespace gui
 {
 
-const unsigned int BatchGUI::DEFAULT_NUMBER_OF_ITERATIONS = 1000;
-unsigned int BatchGUI::nbIter = BatchGUI::DEFAULT_NUMBER_OF_ITERATIONS;
+const signed int BatchGUI::DEFAULT_NUMBER_OF_ITERATIONS = 1000;
+signed int BatchGUI::nbIter = BatchGUI::DEFAULT_NUMBER_OF_ITERATIONS;
 
 BatchGUI::BatchGUI()
     : groot(NULL)
@@ -50,27 +50,63 @@ BatchGUI::~BatchGUI()
 int BatchGUI::mainLoop()
 {
     if (groot)
-    {
-
-        sofa::simulation::getSimulation()->animate(groot.get());
-        //As no visualization is done by the Batch GUI, these two lines are not necessary.
-        sofa::simulation::getSimulation()->updateVisual(groot.get());
-        std::cout << "Computing "<<nbIter<<" iterations." << std::endl;
-        sofa::simulation::Visitor::ctime_t rtfreq = sofa::helper::system::thread::CTime::getRefTicksPerSec();
-        sofa::simulation::Visitor::ctime_t tfreq = sofa::helper::system::thread::CTime::getTicksPerSec();
-        sofa::simulation::Visitor::ctime_t rt = sofa::helper::system::thread::CTime::getRefTime();
-        sofa::simulation::Visitor::ctime_t t = sofa::helper::system::thread::CTime::getFastTime();
-        for (unsigned int i=0; i<nbIter; i++)
+    {   
+        if (nbIter >= 0)
         {
             sofa::simulation::getSimulation()->animate(groot.get());
             //As no visualization is done by the Batch GUI, these two lines are not necessary.
             sofa::simulation::getSimulation()->updateVisual(groot.get());
-        }
-        t = sofa::helper::system::thread::CTime::getFastTime()-t;
-        rt = sofa::helper::system::thread::CTime::getRefTime()-rt;
+            std::cout << "Computing "<<nbIter<<" iterations."<< std::endl;
+            sofa::simulation::Visitor::ctime_t rtfreq = sofa::helper::system::thread::CTime::getRefTicksPerSec();
+            sofa::simulation::Visitor::ctime_t tfreq = sofa::helper::system::thread::CTime::getTicksPerSec();
+            sofa::simulation::Visitor::ctime_t rt = sofa::helper::system::thread::CTime::getRefTime();
+            sofa::simulation::Visitor::ctime_t t = sofa::helper::system::thread::CTime::getFastTime();
+                for (signed int i=0; i < nbIter; i++)
+                {
+                    sofa::simulation::getSimulation()->animate(groot.get());
+                    //As no visualization is done by the Batch GUI, these two lines are not necessary.
+                    sofa::simulation::getSimulation()->updateVisual(groot.get());
+                }
 
-        std::cout << nbIter << " iterations done in "<< ((double)t)/((double)tfreq) << " s ( " << (((double)tfreq)*nbIter)/((double)t) << " FPS)." << std::endl;
-        std::cout << nbIter << " iterations done in "<< ((double)rt)/((double)rtfreq) << " s ( " << (((double)rtfreq)*nbIter)/((double)rt) << " FPS)." << std::endl;
+            t = sofa::helper::system::thread::CTime::getFastTime()-t;
+            rt = sofa::helper::system::thread::CTime::getRefTime()-rt;
+            std::cout << nbIter << " iterations done in "<< ((double)t)/((double)tfreq) << " s ( " << (((double)tfreq)*nbIter)/((double)t) << " FPS)." << std::endl;
+            std::cout << nbIter << " iterations done in "<< ((double)rt)/((double)rtfreq) << " s ( " << (((double)rtfreq)*nbIter)/((double)rt) << " FPS)." << std::endl;
+        }
+
+        else if (nbIter == -1)
+        {   
+            unsigned int nbIterInf = 0;
+            unsigned int i = 0;
+
+            sofa::simulation::getSimulation()->animate(groot.get());
+            //As no visualization is done by the Batch GUI, these two lines are not necessary.
+            sofa::simulation::getSimulation()->updateVisual(groot.get());
+            std::cout << "Computing infinite iterations."<< std::endl;
+
+            sofa::simulation::Visitor::ctime_t rtfreq = sofa::helper::system::thread::CTime::getRefTicksPerSec();
+            sofa::simulation::Visitor::ctime_t tfreq = sofa::helper::system::thread::CTime::getTicksPerSec();
+            sofa::simulation::Visitor::ctime_t rt = sofa::helper::system::thread::CTime::getRefTime();
+            sofa::simulation::Visitor::ctime_t t = sofa::helper::system::thread::CTime::getFastTime();
+                do
+                {
+                    sofa::simulation::getSimulation()->animate(groot.get());
+                    //As no visualization is done by the Batch GUI, these two lines are not necessary.
+                    sofa::simulation::getSimulation()->updateVisual(groot.get());
+                    
+                    if (i%1000 == 0 && i != 0)
+                    {   
+                        nbIterInf = i;
+                        t = sofa::helper::system::thread::CTime::getFastTime()-t;
+                        rt = sofa::helper::system::thread::CTime::getRefTime()-rt;
+                        std::cout << nbIterInf << " iterations done in "<< ((double)t)/((double)tfreq) << " s ( " << (((double)tfreq)*nbIterInf)/((double)t) << " FPS)." << std::endl;
+                        std::cout << nbIterInf << " iterations done in "<< ((double)rt)/((double)rtfreq) << " s ( " << (((double)rtfreq)*nbIterInf)/((double)rt) << " FPS)." << std::endl;
+                    }
+                    //After every 1000 iterations, time taken to process will be shown.
+                    i++;
+                }while(1);
+            
+        }   
     }
     return 0;
 }
@@ -135,9 +171,9 @@ sofa::simulation::Node* BatchGUI::currentSimulation()
 
 
 int BatchGUI::InitGUI(const char* /*name*/, const std::vector<std::string>& options)
-{
+{   
     setNumIterations(DEFAULT_NUMBER_OF_ITERATIONS);
-
+    
     //parse options
     for (unsigned int i=0 ; i<options.size() ; i++)
     {
@@ -147,11 +183,18 @@ int BatchGUI::InitGUI(const char* /*name*/, const std::vector<std::string>& opti
         //(option = "nbIterations=N where N is the number of iterations)
         if ( (cursor = opt.find("nbIterations=")) != std::string::npos )
         {
-            unsigned int nbIterations;
+            signed int nbIterations;
             std::istringstream iss;
             iss.str(opt.substr(cursor+std::string("nbIterations=").length(), std::string::npos));
             iss >> nbIterations;
-            setNumIterations(nbIterations);
+            
+            if (nbIterations == -1)
+            {
+                setNumIterations(-1);
+            }
+            //When iterations (n = -1) is set to -1, infinite iterations will take place
+            else
+                 setNumIterations(nbIterations);
         }
     }
     return 0;

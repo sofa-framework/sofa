@@ -215,7 +215,7 @@ int main(int argc, char** argv)
     .option(&gui,'g',"gui",gui_help.c_str())
     .option(&plugins,'l',"load","load given plugins")
     .option(&nbMSSASamples, 'm', "msaa", "number of samples for MSAA (Multi Sampling Anti Aliasing ; value < 2 means disabled")
-    .option(&nbIterations,'n',"nb_iterations","(only batch) Number of iterations of the simulation")
+    .option(&nbIterations,'n',"nb_iterations","(only batch) Number of iterations of the simulation (pass -1 for infinite iterations)")
     .option(&printFactory,'p',"factory","print factory logs")
     .option(&loadRecent,'r',"recent","load most recently opened file")
     .option(&simulationType,'s',"simu","select the type of simulation (bgl, dag, tree, smp)")
@@ -347,13 +347,13 @@ int main(int argc, char** argv)
 
     PluginManager::getInstance().init();
 
-    if(gui.compare("batch") == 0 && nbIterations >= 0)
-    {
-        ostringstream oss ;
-        oss << "nbIterations=";
-        oss << nbIterations;
-        GUIManager::AddGUIOption(oss.str().c_str());
-    }
+    if(gui.compare("batch") == 0 && nbIterations >= -1)
+    {   
+            ostringstream oss ;
+            oss << "nbIterations=";
+            oss << nbIterations;
+            GUIManager::AddGUIOption(oss.str().c_str());
+     }
 
     if(enableInteraction){
         msg_warning("Main") << "you activated the interactive mode. This is currently an experimental feature "

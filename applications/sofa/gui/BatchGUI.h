@@ -49,7 +49,7 @@ public:
     void redraw();
     int closeGUI();
 
-    static void setNumIterations(unsigned int n) {nbIter=n;}
+    static void setNumIterations(signed int n) {nbIter=n;}
     sofa::simulation::Node* currentSimulation();
 
     /// @}
@@ -60,7 +60,7 @@ public:
     static int InitGUI(const char* name, const std::vector<std::string>& options);
     static BaseGUI* CreateGUI(const char* name, const std::vector<std::string>& options, sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
 
-    static const unsigned int DEFAULT_NUMBER_OF_ITERATIONS;
+    static const signed int DEFAULT_NUMBER_OF_ITERATIONS;
     /// @}
 
 protected:
@@ -74,7 +74,7 @@ protected:
 
     sofa::simulation::Node::SPtr groot;
     std::string filename;
-    static unsigned int nbIter;
+    static signed int nbIter;
 };
 
 } // namespace gui
