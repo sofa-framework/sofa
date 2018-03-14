@@ -274,8 +274,8 @@ parse-options-files() {
 
 ignore-scenes-with-deprecated-components() {
     echo "Searching for deprecated components..."
-    SofaDeprecatedComponents="$(ls "$build_dir/bin/SofaDeprecatedComponents"{,d,_d} 2> /dev/null || true)"
-    $SofaDeprecatedComponents > "$output_dir/deprecatedcomponents.txt"
+    getDeprecatedComponents="$(ls "$build_dir/bin/getDeprecatedComponents"{,d,_d} 2> /dev/null || true)"
+    $getDeprecatedComponents > "$output_dir/deprecatedcomponents.txt"
     base_dir="$(pwd)"
     cd "$src_dir"
     while read component; do
