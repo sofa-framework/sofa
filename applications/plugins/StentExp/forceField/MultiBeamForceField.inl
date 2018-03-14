@@ -188,7 +188,7 @@ void MultiBeamForceField<DataTypes>::init()
 template <class DataTypes>
 void MultiBeamForceField<DataTypes>::reinit()
 {
-    unsigned int n = _indexedElements->size();
+    size_t n = _indexedElements->size();
     _forces.resize( this->mstate->getSize() );
 
     if (_virtualDisplacementMethod.getValue())
@@ -832,7 +832,7 @@ void MultiBeamForceField<DataTypes>::draw(const core::visual::VisualParams* vpar
 
     vparams->drawTool()->setPolygonMode(2, true);
     vparams->drawTool()->setLightingEnabled(true);
-    vparams->drawTool()->drawHexahedra(points[0], defaulttype::Vec<4,float>(0.24,0.72,0.96,1.0));
+    vparams->drawTool()->drawHexahedra(points[0], defaulttype::Vec<4,float>(0.24f,0.72f,0.96f,1.0f));
     vparams->drawTool()->setLightingEnabled(false);
     vparams->drawTool()->setPolygonMode(0, false);
 }
@@ -878,7 +878,7 @@ void MultiBeamForceField<DataTypes>::drawElement(int i, std::vector< defaulttype
 }
 
 template<class DataTypes>
-void MultiBeamForceField<DataTypes>::initBeams(unsigned int size)
+void MultiBeamForceField<DataTypes>::initBeams(size_t size)
 {
     helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
     bd.resize(size);

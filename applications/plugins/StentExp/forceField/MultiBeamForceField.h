@@ -361,7 +361,7 @@ public:
     void draw(const core::visual::VisualParams* vparams);
 
     void setBeam(unsigned int i, double E, double L, double nu, double zSection, double ySection);
-    void initBeams(unsigned int size);
+    void initBeams(size_t size);
 
 protected:
 
