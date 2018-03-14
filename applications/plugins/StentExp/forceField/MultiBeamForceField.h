@@ -29,6 +29,9 @@
 #include <SofaBaseTopology/TopologyData.h>
 
 #include <SofaEigen2Solver/EigenSparseMatrix.h>
+#include <Eigen/Core>
+#include <Eigen/Sparse>
+#include <Eigen/Geometry>
 
 
 namespace sofa
@@ -75,7 +78,6 @@ protected:
 
     typedef defaulttype::Vec<12, Real> Displacement;        ///< the displacement vector
     typedef defaulttype::Mat<3, 3, Real> Transformation; ///< matrix for rigid transformations like rotations
-
 
     typedef defaulttype::Mat<12, 12, Real> StiffnessMatrix;
     typedef defaulttype::Mat<12, 8, Real> plasticityMatrix; ///< contribution of plasticity to internal forces
@@ -248,6 +250,61 @@ protected:
 
     void computePlasticForces(int i, Index a, Index b, const Displacement& totalDisplacement, nodalForces& plasticForces);
     void updatePlasticStrain(int i, Index a, Index b, VoigtTensor& totalStrain, int gaussPointIterator);
+
+    /**************************************************************************/
+
+
+    /**************************************************************************/
+    /*                          Plasticity Handler                            */
+    /**************************************************************************/
+
+    /* This class is dedicated to handle the plasticity behaviour of the beam
+       elements, according to the theory and notations exposed in Krabbenhoft's
+       lecture notes on Basic Computation Plasticity
+     */
+
+    class MultiBeamPlasticityHandler
+    {
+
+    public:
+        typedef typename MultiBeamForceField<DataTypes>::BeamInfo BeamInfo;
+        typedef typename core::topology::BaseMeshTopology::Edge Edge;
+
+        typedef Eigen::Matrix<double, 6, 1> VoigtTensor2; //Tensor of order 2
+        typedef Eigen::Matrix<double, 6, 6> VoigtTensor4; //Tensor of order 4
+        typedef Eigen::Matrix<double, 12, 1> Displacement; ///<Nodal displacement
+        typedef Eigen::Matrix<double, 12, 1> plasticNodalForces;
+        typedef Eigen::Matrix<double, 12, 12> tangentStiffnessMatrix;
+        typedef Eigen::Matrix<double, 12, 8> plasticityMatrix; ///< B matrix (as in Krabbenhoft's)
+
+        MultiBeamPlasticityHandler(MultiBeamForceField<DataTypes>* ff);
+
+        // Main function, allowing to compute non-linear reaction forces through an incremental procedure
+        void updateIncrements(tangentStiffnessMatrix &tangentStiffness, plasticNodalForces &plasticForces, const plasticNodalForces &externalLoad);
+
+    protected:
+        //Newton-Raphson parameters
+        double _NRThreshold;
+        unsigned int _NRMaxIterations;
+
+        double _UTS; //Ultimate Tebnsile Strength, used in the Von Mises yield criterion
+
+        tangentStiffnessMatrix _tangentStiffness;
+        plasticNodalForces _nodalForces;
+        MultiBeamForceField<DataTypes>* ff;
+
+        bool inPlasticDeformation(const VoigtTensor2 &stressTensor);
+        bool outOfPlasticDeformation(const VoigtTensor2 &stressTensor, const VoigtTensor2 &stressIncrement);
+
+        //NB: these two functions receive a *local* stress Tensor, which is computed for a given Gauss point
+        double vonMisesYield(const VoigtTensor2 &stressTensor, const double UTS);
+        VoigtTensor2 vonMisesGradient(const VoigtTensor2 &stressTensor, const double UTS);
+        VoigtTensor4 vonMisesHessian(const VoigtTensor2 &stressTensor, const double UTS);
+
+        void solveDispIncrement(const tangentStiffnessMatrix &tangentStiffness, Displacement &du, const plasticNodalForces &residual);
+        void computeStressIncrement(int i, const VoigtTensor2 &initialStress, VoigtTensor2 &stressIncrement, const VoigtTensor2 &strainIncrement, double &lambdaIncrement);
+
+    };
 
     /**************************************************************************/
 

@@ -832,7 +832,7 @@ void MultiBeamForceField<DataTypes>::draw(const core::visual::VisualParams* vpar
 
     vparams->drawTool()->setPolygonMode(2, true);
     vparams->drawTool()->setLightingEnabled(true);
-    vparams->drawTool()->drawHexahedra(points[0], defaulttype::Vec<4,float>(0.24,0.72,0.96,1));
+    vparams->drawTool()->drawHexahedra(points[0], defaulttype::Vec<4,float>(0.24,0.72,0.96,1.0));
     vparams->drawTool()->setLightingEnabled(false);
     vparams->drawTool()->setPolygonMode(0, false);
 }
@@ -1199,7 +1199,6 @@ void MultiBeamForceField<DataTypes>::totalStrainEvaluation(int i, Index a, Index
     _VFTotalStrains[i][6] = (Real)( (_Mz2 - _Mz1) / (2*_E*_Iz) );
     _VFTotalStrains[i][7] = (Real)( (_Mz2 + _Mz1) / (2*_E*_Iz) );
 }
-
 /**************************************************************************/
 
 
@@ -1216,8 +1215,8 @@ void MultiBeamForceField<DataTypes>::computeVDStiffness(int i, Index, Index)
     Real _yDim = (Real)beamsData.getValue()[i]._yDim;
     Real _zDim = (Real)beamsData.getValue()[i]._zDim;
 
+    const Eigen::Matrix<double, 6, 6>& C = beamsData.getValue()[i]._materialBehaviour;
     helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
-    const Eigen::Matrix<double, 6, 6>& C = bd[i]._materialBehaviour;
     StiffnessMatrix& Ke_loc = bd[i]._Ke_loc;
 
     Ke_loc.clear();
@@ -1442,7 +1441,314 @@ void MultiBeamForceField<DataTypes>::updatePlasticStrain(int i, Index a, Index b
         _VDPlasticStrains[i].row(gaussPointIterator) = _VDPlasticCreep*totalStrain; // 6x1 vector
     }
 };
+/**************************************************************************/
 
+
+/**************************************************************************/
+/*                          Plasticity Handler                            */
+/**************************************************************************/
+
+template< class DataTypes>
+MultiBeamForceField<DataTypes>::MultiBeamPlasticityHandler::MultiBeamPlasticityHandler(MultiBeamForceField<DataTypes>* ff)
+    : ff(ff)
+{
+    _NRThreshold = 0.0; //to be changed during iterations
+    _NRMaxIterations = 25;
+
+    //Found UTS of 655MPa for an ASTM F75-07 cobalt-chrome alloy
+    _UTS = 655000000.0;
+
+    _tangentStiffness = tangentStiffnessMatrix::Zero();
+    _nodalForces = plasticNodalForces::Zero();
+}
+
+
+template< class DataTypes>
+void MultiBeamForceField<DataTypes>::MultiBeamPlasticityHandler::updateIncrements(tangentStiffnessMatrix &tangentStiffness,
+                                                                                  plasticNodalForces &plasticForces,
+                                                                                  const plasticNodalForces &externalLoad)
+{
+    //Algo table 2 de Krabbenhoft
+
+    // en local :
+    //      plasticNodalForces externLoad (f_k), loadIncrement
+    //      Displacement disp (u_k), dispIncrement
+    //      matrice B
+    //      VoigtTensor2 strainIncrement (DELTA_epsilon_k), stressIncrement (DELTA_sigma_k)
+    //      ( plasticNodalForce residual )
+    //      Structures pour l'intégration numérique (intervalle et points de Gauss x 1 // fonctions lambda x 2, pour K et q)
+}
+
+
+template< class DataTypes>
+bool MultiBeamForceField<DataTypes>::MultiBeamPlasticityHandler::inPlasticDeformation(const VoigtTensor2 &stressTensor)
+{
+    double yield = vonMisesYield(stressTensor, _UTS);
+    return yield > 0;
+}
+
+
+template< class DataTypes>
+bool MultiBeamForceField<DataTypes>::MultiBeamPlasticityHandler::outOfPlasticDeformation(const VoigtTensor2 &stressTensor,
+                                                                                         const VoigtTensor2 &stressIncrement)
+{
+    Eigen::Matrix<double, 6, 1> gradient = vonMisesGradient(stressTensor, _UTS);
+    double cp = gradient.transpose()*stressIncrement;
+    return cp < 0;
+}
+
+
+template< class DataTypes>
+double MultiBeamForceField<DataTypes>::MultiBeamPlasticityHandler::vonMisesYield(const VoigtTensor2 &stressTensor,
+                                                                                 const double UTS)
+{
+    double res = 0.0;
+    double sigmaX = stressTensor[0];
+    double sigmaY = stressTensor[1];
+    double sigmaZ = stressTensor[2];
+    double sigmaYZ = stressTensor[3];
+    double sigmaZX = stressTensor[4];
+    double sigmaXY = stressTensor[5];
+
+    double aux1 = 0.5*( (sigmaX - sigmaY)*(sigmaX - sigmaY) + (sigmaY - sigmaZ)*(sigmaY - sigmaZ) + (sigmaZ - sigmaX)*(sigmaZ - sigmaX) );
+    double aux2 = 3.0*(sigmaYZ*sigmaYZ + sigmaZX*sigmaZX + sigmaXY*sigmaXY);
+
+    res = helper::rsqrt(aux1 + aux2) - UTS;
+    return res;
+}
+
+
+template< class DataTypes>
+Eigen::Matrix<double, 6, 1> MultiBeamForceField<DataTypes>::MultiBeamPlasticityHandler::vonMisesGradient(const VoigtTensor2 &stressTensor,
+                                                                                                         const double UTS)
+{
+    VoigtTensor2 res = VoigtTensor2::Zero();
+    double sigmaX = stressTensor[0];
+    double sigmaY = stressTensor[1];
+    double sigmaZ = stressTensor[2];
+    double sigmaYZ = stressTensor[3];
+    double sigmaZX = stressTensor[4];
+    double sigmaXY = stressTensor[5];
+
+    double fact = 1 / 2 * (vonMisesYield(stressTensor, UTS) + UTS);
+
+    res[0] = 2 * sigmaX - sigmaY - sigmaZ;
+    res[1] = 2 * sigmaY - sigmaZ - sigmaX;
+    res[2] = 2 * sigmaZ - sigmaX - sigmaY;
+    res[3] = 6 * sigmaYZ;
+    res[4] = 6 * sigmaZX;
+    res[5] = 6 * sigmaXY;
+
+    res *= fact;
+    return res;
+}
+
+
+template< class DataTypes>
+Eigen::Matrix<double, 6, 6> MultiBeamForceField<DataTypes>::MultiBeamPlasticityHandler::vonMisesHessian(const VoigtTensor2 &stressTensor,
+                                                                                                        const double UTS)
+{
+    VoigtTensor4 res = VoigtTensor4::Zero();
+
+    //Order 1 terms
+    double sigmaX = stressTensor[0];
+    double sigmaY = stressTensor[1];
+    double sigmaZ = stressTensor[2];
+    double sigmaYZ = stressTensor[3];
+    double sigmaZX = stressTensor[4];
+    double sigmaXY = stressTensor[5];
+
+    double auxX = 2*sigmaX - sigmaY - sigmaZ;
+    double auxY = 2*sigmaY - sigmaZ - sigmaX;
+    double auxZ = 2*sigmaZ - sigmaX - sigmaY;
+
+    //Order 2 terms
+    double sX2 = sigmaX*sigmaX;
+    double sY2 = sigmaY*sigmaY;
+    double sZ2 = sigmaZ*sigmaZ;
+    double sYsZ = sigmaY*sigmaZ;
+    double sZsX = sigmaZ*sigmaX;
+    double sXsY = sigmaX*sigmaY;
+
+    double sYZ2 = sigmaYZ*sigmaYZ;
+    double sZX2 = sigmaZX*sigmaZX;
+    double sXY2 = sigmaXY*sigmaXY;
+
+    //Others
+    double sigmaE = vonMisesYield(stressTensor, UTS) + UTS;
+    double sigmaE3 = sigmaE*sigmaE*sigmaE;
+    double invSigmaE = 1 / sigmaE;
+
+    res(0, 0) = invSigmaE - (auxX*auxX / (4*sigmaE3));
+    res(0, 1) = -0.5*invSigmaE - ((-2*sX2 - 2*sY2 + sZ2 - sYsZ - sZsX + 5*sXsY) / (4*sigmaE3));
+    res(0, 2) = -0.5*invSigmaE - ((-2*sX2 + sY2 - 2*sZ2 - sYsZ + 5*sZsX - sXsY) / (4*sigmaE3));
+    res(0, 3) = -(6*sigmaYZ*auxX / (4*sigmaE3));
+    res(0, 4) = -(6*sigmaZX*auxX / (4*sigmaE3));
+    res(0, 5) = -(6*sigmaXY*auxX / (4*sigmaE3));
+
+    res(1, 0) = res(0, 1);
+    res(1, 1) = invSigmaE - (auxY*auxY / (4 * sigmaE3));
+    res(1, 2) = -0.5*invSigmaE - ((sX2 - 2*sY2 - 2*sZ2 + 5*sYsZ - sZsX - sXsY) / (4 * sigmaE3));
+    res(1, 3) = -(6*sigmaYZ*auxY / (4 * sigmaE3));
+    res(1, 4) = -(6*sigmaZX*auxY / (4 * sigmaE3));
+    res(1, 5) = -(6*sigmaXY*auxY / (4 * sigmaE3));
+
+    res(2, 0) = res(0, 2);
+    res(2, 1) = res(1, 2);
+    res(2, 2) = invSigmaE - (auxZ*auxZ / (4 * sigmaE3));
+    res(2, 3) = -(6*sigmaYZ*auxZ / (4 * sigmaE3));
+    res(2, 4) = -(6*sigmaZX*auxZ / (4 * sigmaE3));
+    res(2, 5) = -(6*sigmaXY*auxZ / (4 * sigmaE3));
+
+    res(3, 0) = res(0, 3);
+    res(3, 1) = res(1, 3);
+    res(3, 2) = res(2, 3);
+    res(3, 3) = 3*invSigmaE - (9*sYZ2 / sigmaE3);
+    res(3, 4) = -(9*sigmaYZ*sigmaZX / sigmaE3);
+    res(3, 5) = -(9*sigmaYZ*sigmaXY / sigmaE3);
+
+    res(4, 0) = res(0, 4);
+    res(4, 1) = res(1, 4);
+    res(4, 2) = res(2, 4);
+    res(4, 3) = res(3, 4);
+    res(4, 4) = 3*invSigmaE - (9*sZX2 / sigmaE3);
+    res(4, 5) = -(9*sigmaZX*sigmaXY / sigmaE3);
+
+    res(5, 0) = res(0, 5);
+    res(5, 1) = res(1, 5);
+    res(5, 2) = res(2, 5);
+    res(5, 3) = res(3, 5);
+    res(5, 4) = res(4, 5);
+    res(5, 5) = 3*invSigmaE - (9*sXY2 / sigmaE3);
+
+    return res;
+}
+
+template< class DataTypes>
+void MultiBeamForceField<DataTypes>::MultiBeamPlasticityHandler::solveDispIncrement(const tangentStiffnessMatrix &tangentStiffness,
+                                                                                    Displacement &du,
+                                                                                    const plasticNodalForces &residual)
+{
+    //Solve the linear system K*du = residual, for du
+
+    //First try is with the dense LU decomposition provided by the Eigen library
+    //NB: this is not inplace decomposition because we pass a const reference as argument
+    Eigen::FullPivLU<tangentStiffnessMatrix> LU(tangentStiffness);
+    du = LU.solve(residual);
+}
+
+
+template< class DataTypes>
+void MultiBeamForceField<DataTypes>::MultiBeamPlasticityHandler::computeStressIncrement(int i,
+                                                                                        const VoigtTensor2 &initialStress,
+                                                                                        VoigtTensor2 &stressIncrement,
+                                                                                        const VoigtTensor2 &strainIncrement,
+                                                                                        double &lambdaIncrement)
+{
+    /** Material point iterations **/
+    //NB: we consider that the yield function and the plastic flow are equal (f=g)
+    //    This corresponds to an associative flow rule (for plasticity)
+
+    unsigned int nbMaxIterations = 25;
+    double threshold = 1; //TO DO: choose coherent value
+
+    const Eigen::Matrix<double, 6, 6>& C = ff->beamsData.getValue()[i]._materialBehaviour; //Matrix D in Krabbenhoft's
+
+
+    /*****************************/
+    /*   Plastic return method   */
+    /*****************************/
+
+    ////First we compute the elastic predictor
+    //VoigtTensor2 elasticPredictor = C*strainIncrement;
+
+    //VoigtTensor2 currentStressPoint = initialStress + elasticPredictor; //point B in Krabbenhoft's
+
+    //VoigtTensor2 grad, plasticStressIncrement;
+    //double denum, dLambda;
+    //double fSigma = vonMisesYield(currentStressPoint, _UTS); //for the 1st iteration
+
+    ////We start iterations with point B
+    //for (unsigned int i = 0; i < nbMaxIterations; i++)
+    //{
+    //    grad = vonMisesGradient(currentStressPoint, _UTS);
+    //    denum = grad.transpose()*C*grad;
+    //    dLambda = fSigma / denum;
+
+    //    plasticStressIncrement = dLambda*C*grad;
+
+    //    currentStressPoint -= plasticStressIncrement;
+
+    //    fSigma = vonMisesYield(currentStressPoint, _UTS);
+    //    if (fSigma < iterationThreshold)
+    //        break; //Yield condition : the current stress point is on the yield surface
+    //}
+    //// return the total stress increment
+    ////TO DO: return the current stress directly instead?
+    //stressIncrement = currentStressPoint - initialStress;
+
+    /*****************************/
+    /*      Implicit method      */
+    /*****************************/
+
+    //First we compute the elastic predictor
+    VoigtTensor2 elasticPredictor = C*strainIncrement;
+    VoigtTensor2 currentStressPoint = initialStress + elasticPredictor;
+
+    Eigen::Matrix<double, 7, 1> totalIncrement = Eigen::Matrix<double, 7, 1>::Zero();
+    totalIncrement.block<6, 1>(0, 0) = elasticPredictor;
+
+    Eigen::Matrix<double, 7, 1> newIncrement= Eigen::Matrix<double, 7, 1>::Zero();
+
+    //Intermediate variables
+    Eigen::Matrix<double, 6, 6> I6 = Eigen::Matrix<double, 6, 6>::Identity();
+    VoigtTensor2 gradient = vonMisesGradient(currentStressPoint, _UTS);
+    VoigtTensor4 hessian;
+    double yieldCondition;
+
+    //Initialisation of the Jacobian of the nonlinear system of equations
+    Eigen::Matrix<double, 7, 7> J = Eigen::Matrix<double, 7, 7>::Zero();
+    J.block<6, 6>(0, 0) = I6; //at first iteration, dLambda = 0
+    J.block<6, 1>(0, 6) = C*gradient;
+    J.block<1, 6>(6, 0) = gradient.transpose();
+
+    //Initialisation of the second member
+    Eigen::Matrix<double, 7, 1> b = Eigen::Matrix<double, 7, 1>::Zero();
+    //In the first iteration, the (first) stressIncrement is taken as the elasticPredictor
+    //and the lambda increment as 0. Hence b is null
+
+    //solver
+    Eigen::FullPivLU<Eigen::Matrix<double, 7, 7> > LU(J.rows(), J.cols());
+
+    for (unsigned int i = 0; i < nbMaxIterations; i++)
+    {
+        //Computes the new increment
+        LU.compute(J);
+        newIncrement = LU.solve(-b);
+
+        totalIncrement += newIncrement;
+
+        //Updates J and b for the next iteration
+        currentStressPoint = initialStress + totalIncrement.block<6, 1>(0, 0);
+        gradient = vonMisesGradient(currentStressPoint, _UTS);
+        hessian = vonMisesHessian(currentStressPoint, _UTS);
+
+        J.block<6, 6>(0, 0) = I6 + totalIncrement(6, 0)*C*hessian;
+        J.block<6, 1>(0, 6) = C*gradient;
+        J.block<1, 6>(6, 0) = gradient.transpose();
+
+        yieldCondition = vonMisesYield(currentStressPoint, _UTS);
+        if (yieldCondition < threshold)
+            break; //We reach a stress point close enough to the yield surface
+
+        b.block<6, 1>(0, 0) = totalIncrement.block<6, 1>(0, 0) - elasticPredictor + C*totalIncrement(6, 0)*gradient;
+        b(6, 0) = yieldCondition;
+    }
+
+    // return the total stress increment
+    //TO DO: return the current stress directly instead?
+    stressIncrement = currentStressPoint - initialStress;
+}
 /**************************************************************************/
 
 } // namespace forcefield
