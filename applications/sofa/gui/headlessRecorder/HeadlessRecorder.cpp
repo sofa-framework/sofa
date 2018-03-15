@@ -39,6 +39,9 @@ bool HeadlessRecorder::saveAsVideo = false;
 bool HeadlessRecorder::saveAsScreenShot = false;
 bool HeadlessRecorder::recordUntilStopAnimate = false;
 
+FRAMESKIP_TYPE HeadlessRecorder::skipType = NOSKIP;
+float HeadlessRecorder::skipTime = 0;
+
 using namespace sofa::defaulttype;
 using sofa::simulation::getSimulation;
 
@@ -76,6 +79,22 @@ HeadlessRecorder::~HeadlessRecorder()
     glDeleteRenderbuffers(1, &rbo_depth);
 }
 
+void HeadlessRecorder::parseSkipOption(const std::string& skipRaw)
+{
+    if (skipRaw == "noskip") {
+        skipType = NOSKIP;
+        skipTime = 0;
+    }
+    else if (skipRaw == "realtime") {
+        skipType = REALTIME;
+        skipTime = 1.0/fps;
+    }
+    else {
+        skipType = FIXEDTIME;
+        skipTime = std::stof(skipRaw);
+   }
+}
+
 int HeadlessRecorder::RegisterGUIParameters(ArgumentParser* argumentParser)
 {
     auto in_time_t = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
@@ -90,6 +109,7 @@ int HeadlessRecorder::RegisterGUIParameters(ArgumentParser* argumentParser)
     argumentParser->addArgument(po::value<int>(&height)->default_value(1080), "height", "(only HeadLessRecorder) video or picture height");
     argumentParser->addArgument(po::value<int>(&fps)->default_value(60), "fps", "(only HeadLessRecorder) define how many frame per second HeadlessRecorder will generate");
     argumentParser->addArgument(po::value<bool>(&recordUntilStopAnimate)->default_value(false)->implicit_value(true),         "recordUntilEndAnimate", "(only HeadLessRecorder) recording until the end of animation does not care how many seconds have been set");
+    argumentParser->addArgument(po::value<std::string>()->notifier(parseSkipOption), "frameskip", "(only HeadLessRecorder)");
     return 0;
 }
 
@@ -261,7 +281,7 @@ bool HeadlessRecorder::canRecord()
     {
         return currentSimulation() && currentSimulation()->getContext()->getAnimate();
     }
-    return (float)m_nFrames/(float)fps <= recordTimeInSeconds;
+    return static_cast<float>(m_nFrames)/static_cast<float>(fps) <= recordTimeInSeconds;
 }
 
 int HeadlessRecorder::mainLoop()
@@ -275,28 +295,51 @@ int HeadlessRecorder::mainLoop()
         msg_error("HeadlessRecorder") <<  "Please, use at least one option: picture or video mode.";
         return 0;
     }
+    if (skipType == REALTIME && groot->getDt() > 1.0/fps)
+    {
+        msg_error("HeadlessRecorder") << "Scene delta time (" << groot->getDt() << "s) is too big to provide images at the supplied fps; it should be at least <" << 1.0/fps ;
+        return 0;
+    }
+
 
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
     while(canRecord())
     {
+        if (keepFrame())
+	{
+            redraw();
+            m_nFrames++;
+            if(m_nFrames % fps == 0)
+            {
+                end = std::chrono::system_clock::now();
+                int elapsed_milliSeconds = std::chrono::duration_cast<std::chrono::milliseconds>(end-start).count();
+                msg_info("HeadlessRecorder") << "Encoding : " << m_nFrames/fps << " seconds. Encoding time : " << elapsed_milliSeconds << " ms";
+                start = std::chrono::system_clock::now();
+            }
+            record();
+	}
+
         if (currentSimulation() && currentSimulation()->getContext()->getAnimate())
             step();
-        else
+        else {
             sleep(0.01);
-        redraw();
-        m_nFrames++;
-        if(m_nFrames % fps == 0)
-        {
-            end = std::chrono::system_clock::now();
-            int elapsed_milliSeconds = std::chrono::duration_cast<std::chrono::milliseconds>(end-start).count();
-            msg_info("HeadlessRecorder") << "Encoding : " << m_nFrames/fps << " seconds. Encoding time : " << elapsed_milliSeconds << " ms";
-            start = std::chrono::system_clock::now();
-        }
-        record();
+	}
     }
     msg_info("HeadlessRecorder") << "Recording time: " << recordTimeInSeconds << " seconds at: " << fps << " fps.";
     return 0;
+}
+
+bool HeadlessRecorder::keepFrame()
+{
+    switch(skipType)
+    {
+        case NOSKIP :
+            return true;
+        case REALTIME :
+        case FIXEDTIME :
+            return groot->getTime() > m_nFrames * skipTime;
+    }
 }
 
 void HeadlessRecorder::redraw()
