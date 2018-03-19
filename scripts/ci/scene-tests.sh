@@ -282,14 +282,14 @@ ignore-scenes-with-deprecated-components() {
         component="$(echo "$component" | tr -d '\n' | tr -d '\r')"
         grep -r "$component" --include=\*.{scn,py,pyscn} | cut -f1 -d":" | sort | uniq > "$base_dir/$output_dir/grep.tmp"
         while read scene; do
-            if ! grep -q "$scene" "$base_dir/$output_dir/all-ignored-scenes.txt"; then
-                echo "  ignore $scene: deprecated component $component"
-                echo "$scene" >> "$base_dir/$output_dir/all-ignored-scenes.txt"
-            fi
             if grep -q "$scene" "$base_dir/$output_dir/all-tested-scenes.txt"; then
                 grep -v "$scene" "$base_dir/$output_dir/all-tested-scenes.txt" > "$base_dir/$output_dir/all-tested-scenes.tmp"
                 mv "$base_dir/$output_dir/all-tested-scenes.tmp" "$base_dir/$output_dir/all-tested-scenes.txt"
                 rm -f "$base_dir/$output_dir/all-tested-scenes.tmp"
+                if ! grep -q "$scene" "$base_dir/$output_dir/all-ignored-scenes.txt"; then
+                    echo "  ignore $scene: deprecated component $component"
+                    echo "$scene" >> "$base_dir/$output_dir/all-ignored-scenes.txt"
+                fi
             fi
         done < "$base_dir/$output_dir/grep.tmp"
     done < "$base_dir/$output_dir/deprecatedcomponents.txt"
@@ -315,14 +315,14 @@ ignore-scenes-with-missing-plugins() {
                 fi
                 local lib="$(get-lib "$plugin")"
                 if [ -z "$lib" ]; then
-                    if ! grep -q "$scene" "$output_dir/all-ignored-scenes.txt"; then
-                        echo "  ignore $scene: missing plugin $plugin"
-                        echo "$scene" >> "$output_dir/all-ignored-scenes.txt"
-                    fi
                     if grep -q "$scene" "$output_dir/all-tested-scenes.txt"; then
                         grep -v "$scene" "$output_dir/all-tested-scenes.txt" > "$output_dir/all-tested-scenes.tmp"
                         mv "$output_dir/all-tested-scenes.tmp" "$output_dir/all-tested-scenes.txt"
                         rm -f "$output_dir/all-tested-scenes.tmp"
+                        if ! grep -q "$scene" "$output_dir/all-ignored-scenes.txt"; then
+                            echo "  ignore $scene: missing plugin $plugin"
+                            echo "$scene" >> "$output_dir/all-ignored-scenes.txt"
+                        fi
                     fi
                 fi
             done < "$output_dir/grep.tmp"
