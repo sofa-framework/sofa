@@ -43,10 +43,6 @@
 #include "../StiffnessContainer.h"
 #include "../PoissonContainer.h"
 
-#include "../quadrature/Gaussian.h"
-#include "../quadrature/quadrature.h"
-
-
 namespace sofa
 {
 
@@ -910,9 +906,65 @@ void MultiBeamForceField<DataTypes>::BeamInfo::init(double E, double L, double n
     _J = _Iz+_Iy;
     _A = zSection*ySection;
 
-
     _Asy = _A;
     _Asz = _A;
+
+    _integrationInterval = ozp::quadrature::make_interval(0, -ySection / 2, -zSection / 2, L, ySection / 2, zSection / 2);
+
+    //Computation of the Be matrix for this beam element, based on the integration points.
+
+    typedef ozp::quadrature::Gaussian<3> GaussianQuadratureType;
+    typedef std::function<void(double, double, double, double, double, double)> LambdaType;
+
+    int i = 0; //Gauss Point iterator
+    LambdaType initialiseBeMatrix = [&](double u1, double u2, double u3, double w1, double w2, double w3)
+    {
+        // Step 1: total strain computation
+        double xi = u1 / _L;
+        double eta = u2 / _L;
+        double zeta = u3 / _L;
+
+        _BeMatrices[i](0, 0) = -1 / _L;
+        _BeMatrices[i](1, 0) = _BeMatrices[i](2, 0) = _BeMatrices[i](3, 0) = _BeMatrices[i](4, 0) = _BeMatrices[i](5, 0) = 0.0;
+
+        _BeMatrices[i](0, 1) = (6 * eta*(1 - 2 * xi)) / _L;
+        _BeMatrices[i](1, 1) = _BeMatrices[i](2, 1) = _BeMatrices[i](3, 1) = _BeMatrices[i](4, 1) = _BeMatrices[i](5, 1) = 0.0;
+
+        _BeMatrices[i](0, 2) = (6 * zeta*(1 - 2 * xi)) / _L;
+        _BeMatrices[i](1, 2) = _BeMatrices[i](2, 2) = _BeMatrices[i](3, 2) = _BeMatrices[i](4, 2) = _BeMatrices[i](5, 2) = 0.0;
+
+        _BeMatrices[i](0, 3) = _BeMatrices[i](1, 3) = _BeMatrices[i](2, 3) = 0.0;
+        _BeMatrices[i](3, 3) = xi - 1;
+        _BeMatrices[i](4, 3) = eta / 2;
+        _BeMatrices[i](5, 3) = zeta / 2;
+
+        _BeMatrices[i](0, 4) = zeta * (6 * xi - 4);
+        _BeMatrices[i](1, 4) = _BeMatrices[i](2, 4) = _BeMatrices[i](3, 4) = _BeMatrices[i](4, 4) = _BeMatrices[i](5, 4) = 0.0;
+
+        _BeMatrices[i](0, 5) = eta * (4 - 6 * xi);
+        _BeMatrices[i](1, 5) = _BeMatrices[i](2, 5) = _BeMatrices[i](3, 5) = _BeMatrices[i](4, 5) = _BeMatrices[i](5, 5) = 0.0;
+
+        _BeMatrices[i].block<6, 1>(0, 6) = -_BeMatrices[i].block<6, 1>(0, 0);
+
+        _BeMatrices[i].block<6, 1>(0, 7) = -_BeMatrices[i].block<6, 1>(0, 1);
+
+        _BeMatrices[i].block<6, 1>(0, 8) = -_BeMatrices[i].block<6, 1>(0, 2);
+
+        _BeMatrices[i](0, 9) = _BeMatrices[i](1, 9) = _BeMatrices[i](2, 9) = 0.0;
+        _BeMatrices[i](3, 9) = -xi;
+        _BeMatrices[i](4, 9) = -eta / 2;
+        _BeMatrices[i](5, 9) = -zeta / 2;
+
+        _BeMatrices[i](0, 10) = zeta * (6 * xi - 2);
+        _BeMatrices[i](1, 10) = _BeMatrices[i](2, 10) = _BeMatrices[i](3, 10) = _BeMatrices[i](4, 10) = _BeMatrices[i](5, 10) = 0.0;
+
+        _BeMatrices[i](0, 11) = eta * (2 - 6 * xi);
+        _BeMatrices[i](1, 11) = _BeMatrices[i](2, 11) = _BeMatrices[i](3, 11) = _BeMatrices[i](4, 11) = _BeMatrices[i](5, 11) = 0.0;
+
+        i++;
+    };
+    ozp::quadrature::integrate <GaussianQuadratureType, 3, LambdaType>(_integrationInterval, initialiseBeMatrix);
+
 }
 
 
@@ -1228,53 +1280,14 @@ void MultiBeamForceField<DataTypes>::computeVDStiffness(int i, Index, Index)
     // Setting variables for the reduced intergation process defined in quadrature.h
 
     Eigen::Matrix<double, 6, 12> Be;
-    Eigen::Matrix<double, 6, 12> BeT;
+    // Stress matrix, to be integrated
     Eigen::Matrix<double, 12, 12> stressMatrix;
 
-    // Stress matrix, to be integrated
+    int gaussPointIterator = 0; //incremented in the lambda function to iterate over Gauss points
+
     LambdaType computeStressMatrix = [&](double u1, double u2, double u3, double w1, double w2, double w3)
     {
-        double xi = u1 / _L;
-        double eta = u2 / _L;
-        double zeta = u3 / _L;
-
-        // Be
-        Be(0, 0) = -1 / _L;
-        Be(1, 0) = Be(2, 0) = Be(3, 0) = Be(4, 0) = Be(5, 0) = 0.0;
-
-        Be(0, 1) = (6 * eta*(1 - 2 * xi)) / _L;
-        Be(1, 1) = Be(2, 1) = Be(3, 1) = Be(4, 1) = Be(5, 1) = 0.0;
-
-        Be(0, 2) = (6 * zeta*(1 - 2 * xi)) / _L;
-        Be(1, 2) = Be(2, 2) = Be(3, 2) = Be(4, 2) = Be(5, 2) = 0.0;
-
-        Be(0, 3) = Be(1, 3) = Be(2, 3) = 0.0;
-        Be(3, 3) = xi - 1;
-        Be(4, 3) = eta / 2;
-        Be(5, 3) = zeta / 2;
-
-        Be(0, 4) = zeta * (6 * xi - 4);
-        Be(1, 4) = Be(2, 4) = Be(3, 4) = Be(4, 4) = Be(5, 4) = 0.0;
-
-        Be(0, 5) = eta * (4 - 6 * xi);
-        Be(1, 5) = Be(2, 5) = Be(3, 5) = Be(4, 5) = Be(5, 5) = 0.0;
-
-        Be.block<6, 1>(0, 6) = -Be.block<6, 1>(0, 0);
-
-        Be.block<6, 1>(0, 7) = -Be.block<6, 1>(0, 1);
-
-        Be.block<6, 1>(0, 8) = -Be.block<6, 1>(0, 2);
-
-        Be(0, 9) = Be(1, 9) = Be(2, 9) = 0.0;
-        Be(3, 9) = -xi;
-        Be(4, 9) = -eta / 2;
-        Be(5, 9) = -zeta / 2;
-
-        Be(0, 10) = zeta * (6 * xi - 2);
-        Be(1, 10) = Be(2, 10) = Be(3, 10) = Be(4, 10) = Be(5, 10) = 0.0;
-
-        Be(0, 11) = eta * (2 - 6 * xi);
-        Be(1, 11) = Be(2, 11) = Be(3, 11) = Be(4, 11) = Be(5, 11) = 0.0;
+        Be = beamsData.getValue()[i]._BeMatrices[gaussPointIterator];
 
         stressMatrix = Be.transpose()*C*Be;
         stressMatrix *= w1*w2*w3;
@@ -1283,10 +1296,11 @@ void MultiBeamForceField<DataTypes>::computeVDStiffness(int i, Index, Index)
             for (int j= 0; j < 12; j++)
                 Ke_loc[i][j] += stressMatrix(i, j);
 
+        gaussPointIterator++; //next Gauss Point
     };
 
-    ozp::quadrature::detail::Interval<3> integrationInterval = ozp::quadrature::make_interval(0, -_yDim/2, -_zDim/2, _L, _yDim/2, _zDim/2);
-    ozp::quadrature::integrate <GaussianQuadratureType, 3, LambdaType>(integrationInterval, computeStressMatrix);
+    ozp::quadrature::detail::Interval<3> interval = beamsData.getValue()[i]._integrationInterval;
+    ozp::quadrature::integrate <GaussianQuadratureType, 3, LambdaType>(interval, computeStressMatrix);
 
     std::cout << "Ke_loc pour l'element " << i << " : " << std::endl;
     for (int i = 0; i < 12; i++)
@@ -1361,48 +1375,8 @@ void MultiBeamForceField<DataTypes>::computePlasticForces(int i, Index a, Index 
     // Stress matrix, to be integrated
     LambdaType computeStressMatrix = [&](double u1, double u2, double u3, double w1, double w2, double w3)
     {
-        // Step 1: total strain computation
-        double xi = u1 / _L;
-        double eta = u2 / _L;
-        double zeta = u3 / _L;
-
         // Be
-        Be(0, 0) = -1 / _L;
-        Be(1, 0) = Be(2, 0) = Be(3, 0) = Be(4, 0) = Be(5, 0) = 0.0;
-
-        Be(0, 1) = (6 * eta*(1 - 2 * xi)) / _L;
-        Be(1, 1) = Be(2, 1) = Be(3, 1) = Be(4, 1) = Be(5, 1) = 0.0;
-
-        Be(0, 2) = (6 * zeta*(1 - 2 * xi)) / _L;
-        Be(1, 2) = Be(2, 2) = Be(3, 2) = Be(4, 2) = Be(5, 2) = 0.0;
-
-        Be(0, 3) = Be(1, 3) = Be(2, 3) = 0.0;
-        Be(3, 3) = xi - 1;
-        Be(4, 3) = eta / 2;
-        Be(5, 3) = zeta / 2;
-
-        Be(0, 4) = zeta * (6 * xi - 4);
-        Be(1, 4) = Be(2, 4) = Be(3, 4) = Be(4, 4) = Be(5, 4) = 0.0;
-
-        Be(0, 5) = eta * (4 - 6 * xi);
-        Be(1, 5) = Be(2, 5) = Be(3, 5) = Be(4, 5) = Be(5, 5) = 0.0;
-
-        Be.block<6, 1>(0, 6) = -Be.block<6, 1>(0, 0);
-
-        Be.block<6, 1>(0, 7) = -Be.block<6, 1>(0, 1);
-
-        Be.block<6, 1>(0, 8) = -Be.block<6, 1>(0, 2);
-
-        Be(0, 9) = Be(1, 9) = Be(2, 9) = 0.0;
-        Be(3, 9) = -xi;
-        Be(4, 9) = -eta / 2;
-        Be(5, 9) = -zeta / 2;
-
-        Be(0, 10) = zeta * (6 * xi - 2);
-        Be(1, 10) = Be(2, 10) = Be(3, 10) = Be(4, 10) = Be(5, 10) = 0.0;
-
-        Be(0, 11) = eta * (2 - 6 * xi);
-        Be(1, 11) = Be(2, 11) = Be(3, 11) = Be(4, 11) = Be(5, 11) = 0.0;
+        Be = beamsData.getValue()[i]._BeMatrices[gaussPointIterator];
 
         totalStrain = Be*totalDisp;
 
@@ -1412,11 +1386,11 @@ void MultiBeamForceField<DataTypes>::computePlasticForces(int i, Index a, Index 
         //Step3: addition of this Gauss point contribution to the plastic forces
         VoigtTensor plasticStrain = _VDPlasticStrains[i].row(gaussPointIterator);
         fe_pla += (w1*w2*w3)*Be.transpose()*C*plasticStrain;
-        gaussPointIterator++;
+        gaussPointIterator++; //Next Gauss Point
     };
 
-    ozp::quadrature::detail::Interval<3> integrationInterval = ozp::quadrature::make_interval(0, -_yDim / 2, -_zDim / 2, _L, _yDim / 2, _zDim / 2);
-    ozp::quadrature::integrate <GaussianQuadratureType, 3, LambdaType>(integrationInterval, computeStressMatrix);
+    ozp::quadrature::detail::Interval<3> interval = beamsData.getValue()[i]._integrationInterval;
+    ozp::quadrature::integrate <GaussianQuadratureType, 3, LambdaType>(interval, computeStressMatrix);
 
     //Transfer to the force compuation
     for (int i = 0; i < 12; i++)

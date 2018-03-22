@@ -33,6 +33,9 @@
 #include <Eigen/Sparse>
 #include <Eigen/Geometry>
 
+#include "../quadrature/Gaussian.h"
+#include "../quadrature/quadrature.h"
+
 
 namespace sofa
 {
@@ -91,6 +94,12 @@ protected:
         plasticityMatrix _M_loc;
         StiffnessMatrix _Ke_loc;
         Eigen::Matrix<double, 6, 6> _materialBehaviour;
+
+        //Base interval for reduced integration: same for all the beam elements
+        ozp::quadrature::detail::Interval<3> _integrationInterval;
+
+        typedef Eigen::Matrix<double, 6, 12> deformationGradientFunction; ///< derivatives of the shape functions (Be)
+        helper::fixed_array<deformationGradientFunction, 27> _BeMatrices; /// One Be function for each Gauss Point (27 in one beam element)
 
         /*********************************************************************/
 
