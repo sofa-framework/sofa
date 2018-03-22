@@ -1441,6 +1441,7 @@ void MultiBeamForceField<DataTypes>::updatePlasticStrain(int i, Index a, Index b
         _VDPlasticStrains[i].row(gaussPointIterator) = _VDPlasticCreep*totalStrain; // 6x1 vector
     }
 };
+
 /**************************************************************************/
 
 
@@ -1460,6 +1461,9 @@ MultiBeamForceField<DataTypes>::MultiBeamPlasticityHandler::MultiBeamPlasticityH
 
     _tangentStiffness = tangentStiffnessMatrix::Zero();
     _nodalForces = plasticNodalForces::Zero();
+
+    //Initialises the lastPos field with the rest position
+    _lastPos = ff->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 }
 
 
@@ -1748,6 +1752,39 @@ void MultiBeamForceField<DataTypes>::MultiBeamPlasticityHandler::computeStressIn
     // return the total stress increment
     //TO DO: return the current stress directly instead?
     stressIncrement = currentStressPoint - initialStress;
+}
+
+
+template< class DataTypes>
+void MultiBeamForceField<DataTypes>::MultiBeamPlasticityHandler::accumulateNonLinearForce(VecDeriv& f,
+                                                                                          const VecCoord& x,
+                                                                                          int i,
+                                                                                          Index a, Index b)
+{
+    //Concrete implementation of addForce
+    //Computes f += Kx, assuming that this component is linear
+    //All non-linearity has to be handled here (including plasticity)
+
+}
+
+
+template< class DataTypes>
+void MultiBeamForceField<DataTypes>::MultiBeamPlasticityHandler::applyNonLinearStiffness(VecDeriv& f,
+                                                                                         const VecDeriv& x,
+                                                                                         int i,
+                                                                                         Index a, Index b,
+                                                                                         double fact = 1.0)
+{
+    //Concrete implementation of addDForce
+}
+
+
+template< class DataTypes>
+void MultiBeamForceField<DataTypes>::MultiBeamPlasticityHandler::updateTangentStiffness(int i,
+                                                                                        Index a,
+                                                                                        Index b)
+{
+
 }
 /**************************************************************************/
 

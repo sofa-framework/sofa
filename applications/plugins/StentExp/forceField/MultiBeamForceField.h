@@ -238,7 +238,6 @@ protected:
     void computeVDStiffness(int i, Index a, Index b);
     void computeMaterialBehaviour(int i, Index a, Index b);
 
-
     Data<bool> _isPlastic;
     /// Symmetrical 3x3 stensor written as a vector following the Voigt notation
     typedef Eigen::Matrix<double, 6, 1> VoigtTensor;
@@ -293,6 +292,9 @@ protected:
         plasticNodalForces _nodalForces;
         MultiBeamForceField<DataTypes>* ff;
 
+        //Position at the last time step, to handle increments for the plasticity resolution
+        VecCoord _lastPos;
+
         bool inPlasticDeformation(const VoigtTensor2 &stressTensor);
         bool outOfPlasticDeformation(const VoigtTensor2 &stressTensor, const VoigtTensor2 &stressIncrement);
 
@@ -303,6 +305,11 @@ protected:
 
         void solveDispIncrement(const tangentStiffnessMatrix &tangentStiffness, Displacement &du, const plasticNodalForces &residual);
         void computeStressIncrement(int i, const VoigtTensor2 &initialStress, VoigtTensor2 &stressIncrement, const VoigtTensor2 &strainIncrement, double &lambdaIncrement);
+
+        //Methods called by addForce, addDForce and addKToMatrix when deforming plasticly
+        void accumulateNonLinearForce(VecDeriv& f, const VecCoord& x, int i, Index a, Index b);
+        void applyNonLinearStiffness(VecDeriv& f, const VecDeriv& x, int i, Index a, Index b, double fact = 1.0);
+        void updateTangentStiffness(int i, Index a, Index b);
 
     };
 
