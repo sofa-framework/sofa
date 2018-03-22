@@ -194,11 +194,67 @@ SOFA_HELPER_API std::istream& operator>>(std::istream& in, RGBAColor& t)
         return in;
 
     char first = in.peek() ;
-    if (std::isdigit(first, std::locale()))
+    if (std::isdigit(first, std::locale()) || first=='.')
     {
         in >> r >> g >> b ;
         if(!in.eof()){
             in >> a;
+        }
+    }
+    else if (first=='[')
+    {
+        char c;
+        if (!(in >> c) || c != '[') {
+            msg_error("color") << "read: Bad begin character : " << c << ", expected  [";
+            in.setstate(std::ios::badbit);
+            return in;
+        }
+        if (!(in >> r)) {
+            msg_error("color") << "reading [,] separated values";
+            in.setstate(std::ios::badbit);
+            return in;
+        }
+        if (!(in >> c) || c!=',') {
+            msg_error("color") << "reading [,] separated values";
+            in.setstate(std::ios::badbit);
+            return in;
+        }
+        if (!(in >> g)) {
+            msg_error("color") << "reading [,] separated values";
+            in.setstate(std::ios::badbit);
+            return in;
+        }
+        if (!(in >> c) || c!=',') {
+            msg_error("color") << "reading [,] separated values";
+            in.setstate(std::ios::badbit);
+            return in;
+        }
+        if (!(in >> b)) {
+            msg_error("color") << "reading [,] separated values";
+            in.setstate(std::ios::badbit);
+            return in;
+        }
+        if (!(in >> c)) {
+            msg_error("color") << "reading [,] separated values";
+            in.setstate(std::ios::badbit);
+            return in;
+        }
+        if (c==',') {
+            if (!(in >> a)) {
+                msg_error("color") << "reading [,] separated values";
+                in.setstate(std::ios::badbit);
+                return in;
+            }
+            if (!(in >> c) || c!=']') {
+                msg_error("color") << "reading [,] separated values, bad end character : " << c << ", expected  ]";
+                in.setstate(std::ios::badbit);
+                return in;
+            }
+        }
+        else if (c!=']') {
+            msg_error("color") << "reading [,] separated values, expecting data after [";
+            in.setstate(std::ios::badbit);
+            return in;
         }
     }
     else if (first=='#')
@@ -258,17 +314,6 @@ SOFA_HELPER_API std::istream& operator>>(std::istream& in, RGBAColor& t)
     t.set(r,g,b,a) ;
     return in;
 }
-
-
-/// Write to an output stream
-SOFA_HELPER_API std::ostream& operator << ( std::ostream& out, const RGBAColor& v )
-{
-    for( int i=0; i<3; ++i )
-        out<<v[i]<<" ";
-    out<<v[3];
-    return out;
-}
-
 
 } // namespace types
 } // namespace helper

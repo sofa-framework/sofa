@@ -64,10 +64,12 @@ void Color_Test::checkCreateFromString()
     /// READ RGBA colors
     EXPECT_EQ( RGBAColor::fromString("1 2 3 4"), RGBAColor(1.0,2.0,3.0,4.0) ) ;
     EXPECT_EQ( RGBAColor::fromString("0 0 3 4"), RGBAColor(0.0,0.0,3.0,4.0) ) ;
+    EXPECT_EQ( RGBAColor::fromString("[1, 2, 3, 4]"), RGBAColor(1.0,2.0,3.0,4.0) ) ;
 
     /// READ RGB colors
     EXPECT_EQ( RGBAColor::fromString("1 2 3"), RGBAColor(1.0,2.0,3.0,1.0) ) ;
     EXPECT_EQ( RGBAColor::fromString("0 0 3"), RGBAColor(0.0,0.0,3.0,1.0) ) ;
+    EXPECT_EQ( RGBAColor::fromString("[1, 2, 3]"), RGBAColor(1.0,2.0,3.0,1.0) ) ;
 
     RGBAColor color2;
     EXPECT_TRUE( RGBAColor::read("1 2 3 4", color2) ) ;
@@ -248,43 +250,44 @@ TEST_F(Color_Test, checkEquality)
 
 std::vector<std::vector<std::string>> testvalues =
 {
-    {"    0 0 0 0","0 0 0 0", "S"},
+    {"    0 0 0 0","[0, 0, 0, 0]", "S"},
 
-    {"0 0 0 0","0 0 0 0", "S"},
-    {"1 2 3 4","1 2 3 4", "S"},
-    {"0 1 0","0 1 0 1", "S"},
-    {"1 2 3","1 2 3 1", "S"},
-    {"0 0 0 0 #Something","0 0 0 0", "S"},
+    {"0 0 0 0","[0, 0, 0, 0]", "S"},
+    {"1 2 3 4","[1, 2, 3, 4]", "S"},
+    {"0 1 0","[0, 1, 0, 1]", "S"},
+    {"1 2 3","[1, 2, 3, 1]", "S"},
+    {"0 0 0 0 #Something","[0, 0, 0, 0]", "S"},
     {"0 A 0","", "F"},
     {"A 0 0","", "F"},
     {"0 0 A","", "F"},
 
-    {"#00000000","0 0 0 0", "S"},
-    {"#FFFFFFFF","1 1 1 1", "S"},
-    {"#ff00ff00","1 0 1 0", "S"},
-    {"#ff00FF00","1 0 1 0", "S"},
-    {"#000000","0 0 0 1", "S"},
-    {"#FFFFFF","1 1 1 1", "S"},
-    {"#FF00FF #AAFFFAA","1 0 1 1", "S"},
-    {"#F0F #AAAAAA","1 0 1 1", "S"},
-    {"#F0F0 #AAAAAA","1 0 1 0", "S"},
+    {"#00000000","[0, 0, 0, 0]", "S"},
+    {"#FFFFFFFF","[1, 1, 1, 1]", "S"},
+    {"#ff00ff00","[1, 0, 1, 0]", "S"},
+    {"#ff00FF00","[1, 0, 1, 0]", "S"},
+    {"#000000","[0, 0, 0, 1]", "S"},
+    {"#FFFFFF","[1, 1, 1, 1]", "S"},
+    {"#FF00FF #AAFFFAA","[1, 0, 1, 1]", "S"},
+    {"#F0F #AAAAAA","[1, 0, 1, 1]", "S"},
+    {"#F0F0 #AAAAAA","[1, 0, 1, 0]", "S"},
 
     {"#XXZZBBGG", "", "F"},
     {"#AAAFFFFBBDDCC","", "F"},
 
-    {"white", "1 1 1 1", "S"},
-    {"blue", "0 0 1 1", "S"},
-    {"black", "0 0 0 1", "S"},
+    {"white", "[1, 1, 1, 1]", "S"},
+    {"blue", "[0, 0, 1, 1]", "S"},
+    {"black", "[0, 0, 0, 1]", "S"},
     {"white&black", "", "F"},
 
-    {"0 0 0 0 1 1 1 1","0 0 0 0 and 1 1 1 1", "S","DOUBLE"},
-    {"1 2 3 4 5 6 7 8","1 2 3 4 and 5 6 7 8", "S","DOUBLE"},
-    {"1 2 3 4    5 6 7 8","1 2 3 4 and 5 6 7 8", "S","DOUBLE"},
-    {"1 2 3 4   5 6 7 8","1 2 3 4 and 5 6 7 8", "S","DOUBLE"},
+    {"0 0 0 0 1 1 1 1","[0, 0, 0, 0] and [1, 1, 1, 1]", "S","DOUBLE"},
+    {"1 2 3 4 5 6 7 8","[1, 2, 3, 4] and [5, 6, 7, 8]", "S","DOUBLE"},
+    {"[1, 2, 3, 4] [5, 6, 7, 8]","[1, 2, 3, 4] and [5, 6, 7, 8]", "S","DOUBLE"},
+    {"1 2 3 4    5 6 7 8","[1, 2, 3, 4] and [5, 6, 7, 8]", "S","DOUBLE"},
+    {"1 2 3 4   5 6 7 8","[1, 2, 3, 4] and [5, 6, 7, 8]", "S","DOUBLE"},
     {"0 0 0 1 1 1","", "F","DOUBLE"},
 
-    {"#00ff00ff #ff00ff00","0 1 0 1 and 1 0 1 0", "S","DOUBLE"},
-    {"black blue", "0 0 0 1 and 0 0 1 1", "S","DOUBLE"},
+    {"#00ff00ff #ff00ff00","[0, 1, 0, 1] and [1, 0, 1, 0]", "S","DOUBLE"},
+    {"black blue", "[0, 0, 0, 1] and [0, 0, 1, 1]", "S","DOUBLE"},
 } ;
 
 TEST_P(Color_Test, checkStreamingOperator)
