@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaGui)
 
-
 ### Dependencies
 
 ## Sofa
@@ -65,6 +64,12 @@ set(SOFAGUI_TARGETS "")
 ## Version
 set(SOFAGUI_VERSION ${SofaFramework_VERSION})
 
+option(SOFAGUI_BUILD_TESTS "Compile the tests that need a GUI (like headlessRecorder_test)." ON)
+if(SOFAGUI_BUILD_TESTS AND NOT SOFA_BUILD_TESTS)
+    message(WARNING "SOFAGUI_BUILD_TESTS can't be enabled without SOFA_BUILD_TESTS.")
+    set(SOFAGUI_BUILD_TESTS OFF CACHE BOOL "Compile the tests that need a GUI (like headlessRecorder_test)." FORCE)
+endif()
+
 ### Sub-projects
 
 ## SofaGuiCommon
@@ -83,6 +88,13 @@ if(NOT SOFA_NO_OPENGL)
         endif()
     endif()
 
+    option(SOFAGUI_HEADLESS_RECORDER "Compile the headless recorder (Linux only)" OFF)
+    if(SOFAGUI_HEADLESS_RECORDER)
+        set(SOFA_GUI_HEADLESS_RECORDER 1) # cmakedefine
+        list(APPEND SOFAGUI_TARGETS SofaHeadlessRecorder)
+        add_subdirectory(../applications/sofa/gui/headlessRecorder ${CMAKE_CURRENT_BINARY_DIR}/SofaHeadlessRecorder)
+    endif()
+
     ## Qt GUI
     # Check if Qt(4/5) is present ; if not, disable ability to compile Qt things
     set(SOFA_HAVE_QT_LIBRARIES 1)
@@ -94,26 +106,25 @@ if(NOT SOFA_NO_OPENGL)
         endif()
     endif()
 
-    if(SOFA_HAVE_QT_LIBRARIES)        
-        if(SOFA_BUILD_COMPONENTSET_STANDARD)
-           option(SOFAGUI_QT "Compile the Qt GUI" ON)
-            if(SOFAGUI_QT)
+    if(SOFA_HAVE_QT_LIBRARIES)
+        option(SOFAGUI_QT "Compile the Qt GUI" ON)
+        if(SOFAGUI_QT)
 
-               ## Qt GUI options, used in the relevant CMakeLists.txt
+            ## Qt GUI options, used in the relevant CMakeLists.txt
 
-               ## SOFA_GUI_INTERACTION
-                option(SOFAGUI_QT_INTERACTION
-                       "Enable interaction mode for the Qt GUI, whatever that means (this
-                         will define the SOFA_GUI_INTERACTION macro)." OFF)
-               if(SOFAGUI_QT_INTERACTION)
-                    set(SOFA_GUI_INTERACTION 1) # cmakedefine
-             endif()
+            ## SOFA_GUI_INTERACTION
+            option(SOFAGUI_QT_INTERACTION
+                "Enable interaction mode for the Qt GUI, whatever that means (this
+                will define the SOFA_GUI_INTERACTION macro)." OFF)
+            if(SOFAGUI_QT_INTERACTION)
+                set(SOFA_GUI_INTERACTION 1) # cmakedefine
+            endif()
 
-                ## QtViewer
-                option(SOFAGUI_QTVIEWER "Compile the QtViewer for the Qt GUI" ON)
-                if(SOFAGUI_QTVIEWER)
-                    set(SOFA_GUI_QTVIEWER 1) # cmakedefine
-                endif()
+            ## QtViewer
+            option(SOFAGUI_QTVIEWER "Compile the QtViewer for the Qt GUI" ON)
+            if(SOFAGUI_QTVIEWER)
+                set(SOFA_GUI_QTVIEWER 1) # cmakedefine
+            endif()
 
             ## QglViewer
             option(SOFAGUI_QGLVIEWER "Compile the QGLViewer for the Qt GUI" ON)
@@ -122,27 +133,26 @@ if(NOT SOFA_NO_OPENGL)
                 add_subdirectory(${CMAKE_SOURCE_DIR}/extlibs/libQGLViewer-2.7.1/QGLViewer ${CMAKE_BINARY_DIR}/extlibs/QGLViewer)
             endif()
 
-               ## QWT
-               option(SOFAGUI_ENABLE_QWT "Enable QWT for Qt GUIs")
-               if(SOFAGUI_ENABLE_QWT)
-                    set(SOFA_HAVE_QWT 1) # cmakedefine
-                endif()
-
-                ## Qt native menu
-                set(DEFAULT_SOFAGUI_ENABLE_NATIVE_MENU ON)
-                if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-                    set(DEFAULT_SOFAGUI_ENABLE_NATIVE_MENU OFF)
-                endif()
-
-                option(SOFAGUI_ENABLE_NATIVE_MENU "Enable Qt to use the operating system's native menu for the Qt GUI" ${DEFAULT_SOFAGUI_ENABLE_NATIVE_MENU})
-                if(SOFAGUI_ENABLE_NATIVE_MENU)
-                    set(SOFA_GUI_NATIVE_MENU 1)
-                endif()
-
-                set(SOFA_GUI_QT 1) # cmakedefine
-                list(APPEND SOFAGUI_TARGETS SofaGuiQt)
-                add_subdirectory(../applications/sofa/gui/qt ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiQt)
+            ## QWT
+            option(SOFAGUI_ENABLE_QWT "Enable QWT for Qt GUIs")
+            if(SOFAGUI_ENABLE_QWT)
+                set(SOFA_HAVE_QWT 1) # cmakedefine
             endif()
+
+            ## Qt native menu
+            set(DEFAULT_SOFAGUI_ENABLE_NATIVE_MENU ON)
+            if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+                set(DEFAULT_SOFAGUI_ENABLE_NATIVE_MENU OFF)
+            endif()
+
+            option(SOFAGUI_ENABLE_NATIVE_MENU "Enable Qt to use the operating system's native menu for the Qt GUI" ${DEFAULT_SOFAGUI_ENABLE_NATIVE_MENU})
+            if(SOFAGUI_ENABLE_NATIVE_MENU)
+                set(SOFA_GUI_NATIVE_MENU 1)
+            endif()
+
+            set(SOFA_GUI_QT 1) # cmakedefine
+            list(APPEND SOFAGUI_TARGETS SofaGuiQt)
+            add_subdirectory(../applications/sofa/gui/qt ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiQt)
         endif()
     else()
         message("Cannot find any Qt libraries on your system, please set Qt5_DIR or Qt4_DIR if you want to compile GUIs using Qt")
@@ -153,7 +163,6 @@ endif()
 list(APPEND SOFAGUI_TARGETS SofaGuiMain)
 add_subdirectory(../applications/sofa/gui/SofaGuiMain ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiMain)
 
-
 ## IDE folder
 foreach(TARGET ${SOFAGUI_TARGETS})
     set_target_properties(${TARGET} PROPERTIES FOLDER "SofaGui")
@@ -163,7 +172,6 @@ foreach(TARGET ${SOFAGUI_TARGETS})
     set_target_properties(${TARGET} PROPERTIES DEBUG_POSTFIX "_d")
     set_target_properties(${TARGET} PROPERTIES VERSION ${SOFAGUI_VERSION})
 endforeach()
-
 
 ## SofaGuiConfig/config.h
 configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/SofaGui/config.h")

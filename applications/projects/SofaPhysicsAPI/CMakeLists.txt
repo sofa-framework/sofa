@@ -3,6 +3,8 @@ project(SofaPhysicsAPI)
 
 set(SOFAPHYSICSAPI_VERSION 0.1)
 
+find_package(GLUT REQUIRED)
+
 set(HEADER_FILES
     SofaPhysicsAPI.h
     SofaPhysicsDataController_impl.h

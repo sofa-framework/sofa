@@ -6,8 +6,7 @@ if(NOT TARGET gtest)
 	include("${CMAKE_CURRENT_LIST_DIR}/GTestTargets.cmake")
 endif()
 
-check_required_components(gtest gtest_main)
+check_required_components(gtest)
 
 set(GTest_LIBRARY gtest)
-set(GTest_MAIN_LIBRARY gtest_main)
 set(GTest_INCLUDE_DIRS @PACKAGE_GTEST_INCLUDE_DIR@)
