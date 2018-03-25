@@ -1136,7 +1136,7 @@ bool MeshMatrixMass<DataTypes, MassType>::checkVertexMass()
     //Check size of the vector
     if (vertexMass.size() != (size_t)_topology->getNbPoints())
     {
-        msg_warning() << "Inconsistent size of vertexMass vector compared to the DOFs size.\n";
+        msg_warning() << "Inconsistent size of vertexMass vector compared to the DOFs size.";
         return false;
     }
     else
@@ -1193,7 +1193,7 @@ bool MeshMatrixMass<DataTypes, MassType>::checkEdgeMass()
     //Check size of the vector
     if (edgeMass.size() != (size_t)_topology->getNbEdges())
     {
-        msg_warning() << "Inconsistent size of vertexMass vector compared to the DOFs size.\n";
+        msg_warning() << "Inconsistent size of vertexMass vector compared to the DOFs size.";
         return false;
     }
     else
@@ -1268,7 +1268,7 @@ bool MeshMatrixMass<DataTypes, MassType>::checkMassDensity()
 
         if ( massDensity.size() != (size_t)_topology->getNbHexahedra() && massDensity.size() != 1)
         {
-            msg_warning() << "Inconsistent size of massDensity = " << massDensity.size() << ", should be either 1 or " << _topology->getNbHexahedra() << ".\n";
+            msg_warning() << "Inconsistent size of massDensity = " << massDensity.size() << ", should be either 1 or " << _topology->getNbHexahedra();
             return false;
         }
     }
@@ -1278,7 +1278,7 @@ bool MeshMatrixMass<DataTypes, MassType>::checkMassDensity()
 
         if ( massDensity.size() != (size_t)_topology->getNbTetrahedra() && massDensity.size() != 1)
         {
-            msg_warning() << "Inconsistent size of massDensity = " << massDensity.size() << ", should be either 1 or " << _topology->getNbTetrahedra() << ".\n";
+            msg_warning() << "Inconsistent size of massDensity = " << massDensity.size() << ", should be either 1 or " << _topology->getNbTetrahedra();
             return false;
         }
     }
@@ -1288,7 +1288,7 @@ bool MeshMatrixMass<DataTypes, MassType>::checkMassDensity()
 
         if ( massDensity.size() != (size_t)_topology->getNbQuads() && massDensity.size() != 1)
         {
-            msg_warning() << "Inconsistent size of massDensity = " << massDensity.size() << ", should be either 1 or " << _topology->getNbQuads() << ".\n";
+            msg_warning() << "Inconsistent size of massDensity = " << massDensity.size() << ", should be either 1 or " << _topology->getNbQuads();
             return false;
         }
     }
@@ -1298,7 +1298,7 @@ bool MeshMatrixMass<DataTypes, MassType>::checkMassDensity()
 
         if ( massDensity.size() != (size_t)_topology->getNbTriangles() && massDensity.size() != 1)
         {
-            msg_warning() << "Inconsistent size of massDensity = " << massDensity.size() << ", should be either 1 or " << _topology->getNbTriangles() << ".\n";
+            msg_warning() << "Inconsistent size of massDensity = " << massDensity.size() << ", should be either 1 or " << _topology->getNbTriangles();
             return false;
         }
     }
