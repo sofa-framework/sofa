@@ -29,6 +29,8 @@
 #include <iostream>
 #include <algorithm>
 
+template std::vector<sofa::core::collision::BaseIntersectorCreator<sofa::component::collision::NewProximityIntersection>* >::vector<sofa::core::collision::BaseIntersectorCreator<sofa::component::collision::NewProximityIntersection>* >() noexcept;
+template std::vector<sofa::core::collision::BaseIntersectorCreator<sofa::component::collision::NewProximityIntersection>* >& std::vector<sofa::core::collision::BaseIntersectorCreator<sofa::component::collision::NewProximityIntersection>* >::operator=(std::vector<sofa::core::collision::BaseIntersectorCreator<sofa::component::collision::NewProximityIntersection>* >&&) noexcept;
 
 namespace sofa
 {

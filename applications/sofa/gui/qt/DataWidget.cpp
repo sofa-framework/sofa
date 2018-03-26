@@ -29,6 +29,14 @@
 #include <QToolTip>
 
 #define SIZE_TEXT     60
+
+
+template std::multimap<std::string, sofa::helper::BaseCreator<sofa::gui::qt::DataWidget, sofa::gui::qt::DataWidget::CreatorArgument, sofa::gui::qt::DataWidget*>*>&
+std::multimap<std::string, sofa::helper::BaseCreator<sofa::gui::qt::DataWidget, sofa::gui::qt::DataWidget::CreatorArgument, sofa::gui::qt::DataWidget*>*>::operator=(
+    std::multimap<std::string, sofa::helper::BaseCreator<sofa::gui::qt::DataWidget, sofa::gui::qt::DataWidget::CreatorArgument, sofa::gui::qt::DataWidget*>*>&&) noexcept;
+
+
+
 namespace sofa
 {
 namespace helper

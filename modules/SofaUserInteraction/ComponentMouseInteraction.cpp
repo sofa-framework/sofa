@@ -28,6 +28,9 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/Factory.inl>
 
+template std::multimap<std::string, sofa::helper::BaseCreator<sofa::component::collision::ComponentMouseInteraction, sofa::core::objectmodel::BaseContext*>* >& 
+std::multimap<std::string, sofa::helper::BaseCreator<sofa::component::collision::ComponentMouseInteraction, sofa::core::objectmodel::BaseContext*>* >::operator=(
+	std::multimap<std::string, sofa::helper::BaseCreator<sofa::component::collision::ComponentMouseInteraction, sofa::core::objectmodel::BaseContext*>* >&&) noexcept;
 
 using namespace sofa::simulation;
 

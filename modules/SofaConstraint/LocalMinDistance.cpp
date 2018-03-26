@@ -32,6 +32,9 @@
 /// To emit extra debug message set this to true.
 #define EMIT_EXTRA_DEBUG_MESSAGE false
 
+template std::vector<sofa::core::collision::BaseIntersectorCreator<sofa::component::collision::LocalMinDistance>* >::vector<sofa::core::collision::BaseIntersectorCreator<sofa::component::collision::LocalMinDistance>* >() noexcept;
+template std::vector<sofa::core::collision::BaseIntersectorCreator<sofa::component::collision::LocalMinDistance>* >& std::vector<sofa::core::collision::BaseIntersectorCreator<sofa::component::collision::LocalMinDistance>* >::operator=(std::vector<sofa::core::collision::BaseIntersectorCreator<sofa::component::collision::LocalMinDistance>* >&&) noexcept;
+
 namespace sofa
 {
 
