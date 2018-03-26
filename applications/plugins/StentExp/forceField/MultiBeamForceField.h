@@ -88,11 +88,12 @@ protected:
     struct BeamInfo
     {
         /*********************************************************************/
-        /*                              Plasticity                           */
+        /*                     Virtual Displacement method                   */
         /*********************************************************************/
 
         plasticityMatrix _M_loc;
-        StiffnessMatrix _Ke_loc;
+        StiffnessMatrix _Ke_loc; //elastic stiffness
+        StiffnessMatrix _Kt_loc; //tangent stiffness
         Eigen::Matrix<double, 6, 6> _materialBehaviour;
 
         //Base interval for reduced integration: same for all the beam elements
@@ -253,6 +254,16 @@ protected:
     typedef Eigen::Matrix<double, 27, 6> elementPlasticStrain; ///< one 6x1 strain tensor for each of the 27 points of integration
     helper::vector<elementPlasticStrain> _VDPlasticStrains;
 
+    /*************************************************************************/
+    //NB: These elements are used to describe the plastic deforation, but have
+    //to be accessed during the elastic process
+    typedef helper::fixed_array<VoigtTensor, 27>  elementPreviousStresses; ///< one 6x1 strain tensor for each of the 27 points of integration
+    helper::vector<elementPreviousStresses> _prevStresses;
+
+    //Position at the last time step, to handle increments for the plasticity resolution
+    VecCoord _lastPos;
+    /*************************************************************************/
+
     Real _VDPlasticYieldThreshold;
     Real _VDPlasticCreep;
 
@@ -301,8 +312,8 @@ protected:
         plasticNodalForces _nodalForces;
         MultiBeamForceField<DataTypes>* ff;
 
-        //Position at the last time step, to handle increments for the plasticity resolution
-        VecCoord _lastPos;
+        //True if the last time step stress was already in plastic state
+        bool _computeFromPlasticState;
 
         bool inPlasticDeformation(const VoigtTensor2 &stressTensor);
         bool outOfPlasticDeformation(const VoigtTensor2 &stressTensor, const VoigtTensor2 &stressIncrement);
@@ -317,7 +328,7 @@ protected:
 
         //Methods called by addForce, addDForce and addKToMatrix when deforming plasticly
         void accumulateNonLinearForce(VecDeriv& f, const VecCoord& x, int i, Index a, Index b);
-        void applyNonLinearStiffness(VecDeriv& f, const VecDeriv& x, int i, Index a, Index b, double fact = 1.0);
+        void applyNonLinearStiffness(VecDeriv& df, const VecDeriv& dx, int i, Index a, Index b);
         void updateTangentStiffness(int i, Index a, Index b);
 
     };

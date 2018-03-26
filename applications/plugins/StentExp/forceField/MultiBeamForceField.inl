@@ -189,6 +189,10 @@ void MultiBeamForceField<DataTypes>::reinit()
 
     if (_virtualDisplacementMethod.getValue())
     {
+        //Initialises the lastPos field with the rest position
+        _lastPos = mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+
+        _prevStresses.resize(n);
         _VDPlasticStrains.resize(n);
         for (unsigned int i = 0; i < n; i++)
             _VDPlasticStrains[i] = elementPlasticStrain::Zero();
@@ -471,6 +475,9 @@ void MultiBeamForceField<DataTypes>::initLarge(int i, Index a, Index b)
 template<class DataTypes>
 void MultiBeamForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const VecCoord & x, int i, Index a, Index b )
 {
+    //Save the positions computed in the last step before starting the composition of the current step system
+    _lastPos = x;
+
     const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
     beamQuat(i)= x[a].getOrientation();
@@ -1281,7 +1288,7 @@ void MultiBeamForceField<DataTypes>::computeVDStiffness(int i, Index, Index)
 
     Eigen::Matrix<double, 6, 12> Be;
     // Stress matrix, to be integrated
-    Eigen::Matrix<double, 12, 12> stressMatrix;
+    Eigen::Matrix<double, 12, 12> stiffness = Eigen::Matrix<double, 12, 12>::Zero();
 
     int gaussPointIterator = 0; //incremented in the lambda function to iterate over Gauss points
 
@@ -1289,18 +1296,17 @@ void MultiBeamForceField<DataTypes>::computeVDStiffness(int i, Index, Index)
     {
         Be = beamsData.getValue()[i]._BeMatrices[gaussPointIterator];
 
-        stressMatrix = Be.transpose()*C*Be;
-        stressMatrix *= w1*w2*w3;
-
-        for (int i = 0; i < 12;  i++)
-            for (int j= 0; j < 12; j++)
-                Ke_loc[i][j] += stressMatrix(i, j);
+        stiffness += (w1*w2*w3)*Be.transpose()*C*Be;
 
         gaussPointIterator++; //next Gauss Point
     };
 
     ozp::quadrature::detail::Interval<3> interval = beamsData.getValue()[i]._integrationInterval;
     ozp::quadrature::integrate <GaussianQuadratureType, 3, LambdaType>(interval, computeStressMatrix);
+
+    for (int i = 0; i < 12; i++)
+        for (int j = 0; j < 12; j++)
+            Ke_loc[i][j] = stiffness(i, j);
 
     std::cout << "Ke_loc pour l'element " << i << " : " << std::endl;
     for (int i = 0; i < 12; i++)
@@ -1368,7 +1374,6 @@ void MultiBeamForceField<DataTypes>::computePlasticForces(int i, Index a, Index 
 
     // Setting variables for the reduced intergation process defined in quadrature.h
     Eigen::Matrix<double, 6, 12> Be;
-    Eigen::Matrix<double, 6, 12> BeT;
     Eigen::Matrix<double, 12, 1> fe_pla = Eigen::VectorXd::Zero(12);
     int gaussPointIterator = 0;
 
@@ -1436,8 +1441,8 @@ MultiBeamForceField<DataTypes>::MultiBeamPlasticityHandler::MultiBeamPlasticityH
     _tangentStiffness = tangentStiffnessMatrix::Zero();
     _nodalForces = plasticNodalForces::Zero();
 
-    //Initialises the lastPos field with the rest position
-    _lastPos = ff->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+    //Rest state correspond to (null) elastic deformation
+    _computeFromPlasticState = false;
 }
 
 
@@ -1739,17 +1744,197 @@ void MultiBeamForceField<DataTypes>::MultiBeamPlasticityHandler::accumulateNonLi
     //Computes f += Kx, assuming that this component is linear
     //All non-linearity has to be handled here (including plasticity)
 
+    //Computes displacement increment, from last system solution
+    Displacement prevPos; //to compute last stress point
+    Displacement displacementIncrement;
+    defaulttype::Vec<3, Real> u;
+    defaulttype::Quat &q = ff->beamQuat(i); //x[a].getOrientation();
+    q.normalize();
+
+    defaulttype::Vec<3, Real> uLast;
+    defaulttype::Quat qLast = ff->_lastPos[a].getOrientation();
+    qLast.normalize();
+
+    u = q.inverseRotate(x[a].getCenter());
+    uLast = qLast.inverseRotate(ff->_lastPos[a].getCenter());
+    displacementIncrement[0] = u[0] - uLast[0];
+    displacementIncrement[1] = u[1] - uLast[1];
+    displacementIncrement[2] = u[2] - uLast[2];
+    prevPos(0) = uLast[0];
+    prevPos(1) = uLast[1];
+    prevPos(2) = uLast[2];
+
+    u = q.inverseRotate(x[a].getOrientation().toEulerVector());
+    uLast = qLast.inverseRotate(ff->_lastPos[a].getOrientation().toEulerVector());
+    displacementIncrement[3] = u[0] - uLast[0];
+    displacementIncrement[4] = u[1] - uLast[1];
+    displacementIncrement[5] = u[2] - uLast[2];
+    prevPos(3) = uLast[0];
+    prevPos(4) = uLast[1];
+    prevPos(5) = uLast[2];
+
+    u = q.inverseRotate(x[b].getCenter());
+    uLast = qLast.inverseRotate(ff->_lastPos[b].getCenter());
+    displacementIncrement[6] = u[0] - uLast[0];
+    displacementIncrement[7] = u[1] - uLast[1];
+    displacementIncrement[8] = u[2] - uLast[2];
+    prevPos(6) = uLast[0];
+    prevPos(7) = uLast[1];
+    prevPos(8) = uLast[2];
+
+    u = q.inverseRotate(x[b].getOrientation().toEulerVector());
+    uLast = qLast.inverseRotate(ff->_lastPos[b].getOrientation().toEulerVector());
+    displacementIncrement[9] = u[0] - uLast[0];
+    displacementIncrement[10] = u[1] - uLast[1];
+    displacementIncrement[11] = u[2] - uLast[2];
+    prevPos(9) = uLast[0];
+    prevPos(10) = uLast[1];
+    prevPos(11) = uLast[2];
+
+    //All the rest of the force computation is made inside of the lambda function
+    //as the stress and strain are computed for each Gauss point
+
+    typedef ozp::quadrature::Gaussian<3> GaussianQuadratureType;
+    typedef std::function<void(double, double, double, double, double, double)> LambdaType;
+
+    const Eigen::Matrix<double, 6, 6>& C = ff->beamsData.getValue()[i]._materialBehaviour;
+    Eigen::Matrix<double, 6, 12> Be;
+    Eigen::Matrix<double, 12, 1> fint = Eigen::VectorXd::Zero(12);
+
+    VoigtTensor2 initialStressPoint = VoigtTensor2::Zero();
+    VoigtTensor2 strainIncrement = VoigtTensor2::Zero();
+    VoigtTensor2 stressIncrement = VoigtTensor2::Zero();
+    VoigtTensor2 newStressPoint = VoigtTensor2::Zero();
+    double lambdaIncrement = 0;
+
+    int gaussPointIterator = 0;
+
+    // Computation of the new stress point, through material point iterations as in Krabbenhoft lecture notes
+
+    // This function is to be called if the last stress point corresponded to elastic deformation
+    LambdaType computeStressFromElastic = [&](double u1, double u2, double u3, double w1, double w2, double w3)
+    {
+        // Be
+        Be = ff->beamsData.getValue()[i]._BeMatrices[gaussPointIterator];
+
+        //Strain
+        strainIncrement = Be*displacementIncrement;
+
+        //Stress
+        initialStressPoint = C*Be*prevPos; //prevPos was in an elastic configuration
+        computeStressIncrement(i, initialStressPoint, stressIncrement,
+                               strainIncrement, lambdaIncrement);
+        newStressPoint = initialStressPoint + stressIncrement;
+
+        fint += (w1*w2*w3)*Be.transpose()*newStressPoint;
+
+        //Update of _prevStresses for next time step
+        ff->_prevStresses[i][gaussPointIterator] = newStressPoint;
+
+        gaussPointIterator++; //Next Gauss Point
+    };
+
+    // This function is to be called if the last stress point was already in plastic state
+    LambdaType computeStressFromPlastic = [&](double u1, double u2, double u3, double w1, double w2, double w3)
+    {
+        // Be
+        Be = ff->beamsData.getValue()[i]._BeMatrices[gaussPointIterator];
+
+        //Strain
+        strainIncrement = Be*displacementIncrement;
+
+        //Stress
+        initialStressPoint = ff->_prevStresses[i][gaussPointIterator];
+        computeStressIncrement(i, initialStressPoint, stressIncrement,
+                               strainIncrement, lambdaIncrement);
+        newStressPoint = initialStressPoint + stressIncrement;
+
+        fint += (w1*w2*w3)*Be.transpose()*newStressPoint;
+
+        //Update of _prevStresses for next time step
+        ff->_prevStresses[i][gaussPointIterator] = newStressPoint;
+
+        gaussPointIterator++; //Next Gauss Point
+    };
+
+    ozp::quadrature::detail::Interval<3> interval = ff->beamsData.getValue()[i]._integrationInterval;
+
+    if (_computeFromPlasticState)
+        ozp::quadrature::integrate <GaussianQuadratureType, 3, LambdaType>(interval, computeStressFromPlastic);
+    else
+    {
+        ozp::quadrature::integrate <GaussianQuadratureType, 3, LambdaType>(interval, computeStressFromElastic);
+        _computeFromPlasticState = true;
+    }
+
+    //Passes the contribution to the global system
+    nodalForces force;
+
+    for (int i = 0; i < 12; i++)
+        force[i] = fint(i);
+
+    Vec3 fa1 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[0], force[1], force[2]));
+    Vec3 fa2 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[3], force[4], force[5]));
+
+    Vec3 fb1 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[6], force[7], force[8]));
+    Vec3 fb2 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[9], force[10], force[11]));
+
+    f[a] += Deriv(-fa1, -fa2);
+    f[b] += Deriv(-fb1, -fb2);
+
+    //Update the tangent stiffness matrix with the new computed stresses
+    //This matrix will then be used in addDForce and addKToMatrix methods
+    updateTangentStiffness(i, a, b);
 }
 
 
 template< class DataTypes>
-void MultiBeamForceField<DataTypes>::MultiBeamPlasticityHandler::applyNonLinearStiffness(VecDeriv& f,
-                                                                                         const VecDeriv& x,
+void MultiBeamForceField<DataTypes>::MultiBeamPlasticityHandler::applyNonLinearStiffness(VecDeriv& df,
+                                                                                         const VecDeriv& dx,
                                                                                          int i,
-                                                                                         Index a, Index b,
-                                                                                         double fact = 1.0)
+                                                                                         Index a, Index b)
 {
     //Concrete implementation of addDForce
+    //Computes df += Kdx, assuming that this component is linear
+    //All non-linearity has already been handled through the call to
+    //the addForce method
+
+    //Computes displacement increment, from last system solution
+    defaulttype::Vec<12, Real> local_depl;
+    defaulttype::Vec<3, Real> du;
+    defaulttype::Quat &q = ff->beamQuat(i); //x[a].getOrientation();
+    q.normalize();
+
+    du = q.inverseRotate(dx[a].getVCenter());
+    local_depl[0] = du[0];
+    local_depl[1] = du[1];
+    local_depl[2] = du[2];
+
+    du = q.inverseRotate(dx[a].getVOrientation());
+    local_depl[3] = du[0];
+    local_depl[4] = du[1];
+    local_depl[5] = du[2];
+
+    du = q.inverseRotate(dx[b].getVCenter());
+    local_depl[6] = du[0];
+    local_depl[7] = du[1];
+    local_depl[8] = du[2];
+
+    du = q.inverseRotate(dx[b].getVOrientation());
+    local_depl[9] = du[0];
+    local_depl[10] = du[1];
+    local_depl[11] = du[2];
+
+    defaulttype::Vec<12, Real> local_dforce;
+    local_dforce = ff->beamsData.getValue()[i]._Kt_loc * local_depl;
+
+    Vec3 fa1 = q.rotate(defaulttype::Vec3d(local_dforce[0], local_dforce[1], local_dforce[2]));
+    Vec3 fa2 = q.rotate(defaulttype::Vec3d(local_dforce[3], local_dforce[4], local_dforce[5]));
+    Vec3 fb1 = q.rotate(defaulttype::Vec3d(local_dforce[6], local_dforce[7], local_dforce[8]));
+    Vec3 fb2 = q.rotate(defaulttype::Vec3d(local_dforce[9], local_dforce[10], local_dforce[11]));
+
+    df[a] += Deriv(fa1, fa2);
+    df[b] += Deriv(fb1, fb2);
 }
 
 
@@ -1758,7 +1943,57 @@ void MultiBeamForceField<DataTypes>::MultiBeamPlasticityHandler::updateTangentSt
                                                                                         Index a,
                                                                                         Index b)
 {
+    helper::vector<BeamInfo>& bd = *(ff->beamsData.beginEdit());
+    StiffnessMatrix& Kt_loc = bd[i]._Kt_loc;
+    const Eigen::Matrix<double, 6, 6>& C = bd[i]._materialBehaviour;
 
+    // Reduced integration
+    typedef std::function<void(double, double, double, double, double, double)> LambdaType;
+    typedef ozp::quadrature::Gaussian<3> GaussianQuadratureType;
+
+    // Setting variables for the reduced intergation process defined in quadrature.h
+    Eigen::Matrix<double, 6, 12> Be;
+    VoigtTensor4 Cep = VoigtTensor4::Zero(); //plastic behaviour tensor
+    VoigtTensor2 VMgradient;
+
+    //Auxiliary matrices
+    VoigtTensor2 Cgrad;
+    Eigen::Matrix<double, 1, 6> gradTC;
+
+    //Result matrix
+    Eigen::Matrix<double, 12, 12> tangentStiffness = Eigen::Matrix<double, 12, 12>::Zero();
+
+    VoigtTensor2 currentStressPoint;
+    int gaussPointIterator = 0;
+
+    // Stress matrix, to be integrated
+    LambdaType computeTangentStiffness = [&](double u1, double u2, double u3, double w1, double w2, double w3)
+    {
+        // Be
+        Be = bd[i]._BeMatrices[gaussPointIterator];
+
+        //Cep
+        currentStressPoint = ff->_prevStresses[i][gaussPointIterator];
+
+        VMgradient = vonMisesGradient(currentStressPoint, _UTS);
+        Cgrad = C*VMgradient;
+        gradTC = VMgradient.transpose()*C;
+        //Assuming associative flow rule
+        Cep = C - (Cgrad*gradTC) / (gradTC*VMgradient);
+
+        tangentStiffness += (w1*w2*w3)*Be.transpose()*Cep*Be;
+
+        gaussPointIterator++; //Next Gauss Point
+    };
+
+    ozp::quadrature::detail::Interval<3> interval = bd[i]._integrationInterval;
+    ozp::quadrature::integrate <GaussianQuadratureType, 3, LambdaType>(interval, computeTangentStiffness);
+
+    for (int i = 0; i < 12; i++)
+        for (int j = 0; j < 12; j++)
+            Kt_loc[i][j] = tangentStiffness(i, j);
+
+    ff->beamsData.endEdit();
 }
 /**************************************************************************/
 
