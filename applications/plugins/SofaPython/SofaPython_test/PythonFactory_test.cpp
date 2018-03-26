@@ -3,7 +3,7 @@
 #include <SofaTest/Sofa_test.h>
 
 #include <SofaPython/PythonFactory.h>
-#include <SofaPython/Binding_BaseObject.h>
+#include <SofaPython/Bindings/BaseObject.h>
 
 
 #include <SofaSimulationGraph/DAGSimulation.h>

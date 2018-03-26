@@ -1,4 +1,4 @@
-#include <SofaPython/PythonScriptEvent.h>
+#include <SofaPython/ScriptController/PythonScriptEvent.h>
 #include <fstream>
 
 #include "Python_test.h"

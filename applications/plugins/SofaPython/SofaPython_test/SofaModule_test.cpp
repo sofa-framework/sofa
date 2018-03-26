@@ -6,7 +6,7 @@ using sofa::Sofa_test;
 
 #include <SofaPython/PythonFactory.h>
 #include <sofa/core/ObjectFactory.h>
-#include <SofaPython/Binding_BaseObject.h>
+#include <SofaPython/Bindings/BaseObject.h>
 
 
 #include <SofaSimulationGraph/DAGSimulation.h>
@@ -24,7 +24,7 @@ using sofa::simulation::SceneLoaderPY ;
 using sofa::core::objectmodel::BaseObject ;
 using sofa::core::ExecParams ;
 
-#include <SofaPython/PythonScriptController.h>
+#include <SofaPython/ScriptController/PythonScriptController.h>
 using sofa::component::controller::PythonScriptController ;
 
 template <typename charType>

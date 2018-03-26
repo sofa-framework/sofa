@@ -18,7 +18,7 @@
 #include <SofaMiscMapping/SubsetMultiMapping.h>
 #include <SofaBaseTopology/TriangleSetTopologyModifier.h>
 #include <sofa/core/BaseMapping.h>
-#include "PythonScriptController.h"
+#include "ScriptController/PythonScriptController.h"
 #include "PythonEnvironment.h"
 #include "PythonMacros.h"
 using sofa::simulation::PythonEnvironment ;
