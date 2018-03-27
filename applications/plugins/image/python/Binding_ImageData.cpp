@@ -1,6 +1,6 @@
 
 #include <SofaPython/PythonMacros.h>
-#include <SofaPython/Binding_SofaModule.h>
+#include <SofaPython/Bindings/SofaModule.h>
 #include <SofaPython/PythonFactory.h>
 
 #include "Binding_ImageData.h"

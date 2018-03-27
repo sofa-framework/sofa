@@ -1,13 +1,13 @@
 #ifndef PYTHONSCRIPTDATAENGINE_H
 #define PYTHONSCRIPTDATAENGINE_H
 
-#include "PythonEnvironment.h"
+#include "../PythonEnvironment.h"
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include "ScriptDataEngine.h"
 #include <sofa/defaulttype/Vec3Types.h>
-#include "PythonFactory.h"
-#include "PythonToSofa.inl"
+#include "../PythonFactory.h"
+#include "../PythonToSofa.inl"
 
 
 

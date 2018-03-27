@@ -23,8 +23,8 @@
 #ifndef BINDING_PYTHONSCRIPTDATAENGINE_H
 #define BINDING_PYTHONSCRIPTDATAENGINE_H
 
-#include "PythonMacros.h"
-#include "PythonScriptDataEngine.h"
+#include "../PythonMacros.h"
+#include "../ScriptController/PythonScriptDataEngine.h"
 
 SP_DECLARE_CLASS_TYPE(PythonScriptDataEngine)
 

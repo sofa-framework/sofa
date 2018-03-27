@@ -1,6 +1,6 @@
-#include "Binding_PythonScriptDataEngine.h"
-#include "Binding_BaseObject.h"
-#include "Binding_Base.h"
+#include "PythonScriptDataEngine.h"
+#include "BaseObject.h"
+#include "Base.h"
 
 
 using namespace sofa::component::controller;
@@ -9,7 +9,7 @@ using namespace sofa::component::controller;
 using namespace sofa::simulation;
 using namespace sofa::core::objectmodel;
 
-#include "PythonToSofa.inl"
+#include "../PythonToSofa.inl"
 
 #include <sofa/helper/logging/Messaging.h>
 

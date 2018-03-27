@@ -1,5 +1,5 @@
 #include "PythonScriptDataEngine.h"
-#include "PythonMacros.h"
+#include "../PythonMacros.h"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
@@ -10,7 +10,7 @@ using sofa::helper::AdvancedTimer;
 using sofa::core::objectmodel::Base;
 using sofa::simulation::Node;
 
-#include "Binding_PythonScriptDataEngine.h"
+#include "../Bindings/PythonScriptDataEngine.h"
 using sofa::simulation::PythonEnvironment;
 
 #include "PythonScriptEvent.h"
@@ -24,7 +24,7 @@ using sofa::helper::system::FileEventListener ;
 using sofa::core::objectmodel::IdleEvent ;
 using sofa::simulation::AnimateBeginEvent ;
 
-#include "PythonFactory.h"
+#include "../PythonFactory.h"
 
 namespace sofa
 {
