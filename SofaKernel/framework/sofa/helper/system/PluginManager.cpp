@@ -236,7 +236,7 @@ Plugin* PluginManager::getPlugin(const std::string& plugin, const std::string& s
 
     // If 'plugin' ends with ".so", ".dll" or ".dylib", this is a path
     const std::string dotExt = "." + DynamicLibrary::extension;
-    if (!std::equal(dotExt.rbegin(), dotExt.rend(), plugin.rbegin()))
+    if (!(plugin.size() > dotExt.size() && std::equal(dotExt.rbegin(), dotExt.rend(), plugin.rbegin())))
     {
         pluginPath = findPlugin(plugin, suffix, ignoreCase);
     }
@@ -337,7 +337,7 @@ bool PluginManager::pluginIsLoaded(const std::string& plugin)
 
     // If 'plugin' ends with ".so", ".dll" or ".dylib", this is a path
     const std::string dotExt = "." + DynamicLibrary::extension;
-    if (!std::equal(dotExt.rbegin(), dotExt.rend(), plugin.rbegin()))
+    if (!(plugin.size() > dotExt.size() && std::equal(dotExt.rbegin(), dotExt.rend(), plugin.rbegin())))
     {
         pluginPath = findPlugin(plugin);
     }
