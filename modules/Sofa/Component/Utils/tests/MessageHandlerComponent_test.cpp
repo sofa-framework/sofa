@@ -19,6 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <Sofa.Component.Utils.h>
+
 #include <gtest/gtest.h>
 
 #include <string>
@@ -36,10 +38,8 @@ using sofa::simulation::Node ;
 #include <SofaSimulationCommon/SceneLoaderXML.h>
 using sofa::simulation::SceneLoaderXML ;
 
-#include <SofaComponentBase/messageHandlerComponent.h>
-using sofa::component::logging::MessageHandlerComponent ;
-
-#include <SofaComponentBase/initComponentBase.h>
+#include <sofa/component/utils/MessageHandlerComponent.h>
+using sofa::component::utils::logging::MessageHandlerComponent ;
 
 #include <SofaTest/TestMessageHandler.h>
 using sofa::helper::logging::MainGtestMessageHandler ;
@@ -58,7 +58,7 @@ bool inited = perTestInit() ;
 
 TEST(MessageHandlerComponent, simpleInit)
 {
-    sofa::component::initComponentBase();
+    sofa::component::utils::initSofaComponentUtils();
 
     string scene =
         "<?xml version='1.0'?>                                               "
@@ -84,7 +84,7 @@ TEST(MessageHandlerComponent, simpleInit)
 
 TEST(MessageHandlerComponent, missingHandler)
 {
-    sofa::component::initBaseUtils();
+    sofa::component::utils::initSofaComponentUtils();
 
     string scene =
         "<?xml version='1.0'?>                                               "
@@ -104,7 +104,7 @@ TEST(MessageHandlerComponent, missingHandler)
 
 TEST(MessageHandlerComponent, invalidHandler)
 {
-    sofa::component::initBaseUtils();
+    sofa::component::utils::initSofaComponentUtils();
 
     string scene =
         "<?xml version='1.0'?>                                               "
@@ -124,7 +124,7 @@ TEST(MessageHandlerComponent, invalidHandler)
 
 TEST(MessageHandlerComponent, clangHandler)
 {
-    sofa::component::initBaseUtils();
+    sofa::component::utils::initSofaComponentUtils();
 
     string scene =
         "<?xml version='1.0'?>                                               "

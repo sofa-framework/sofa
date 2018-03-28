@@ -26,7 +26,7 @@
 #ifndef SOFA_MESSAGEHANDLERCOMPONENT_H
 #define SOFA_MESSAGEHANDLERCOMPONENT_H
 
-#include "config.h"
+#include <Sofa.Component.Utils.h>
 
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -49,11 +49,13 @@ namespace sofa
 {
 namespace component
 {
+namespace utils
+{
 namespace logging
 {
 
 /// A sofa component to add a MessageHandler to the main logger
-class SOFA_COMPONENT_BASE_API MessageHandlerComponent : public core::objectmodel::BaseObject
+class SOFA_COMPONENT_UTILS_API MessageHandlerComponent : public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(MessageHandlerComponent, core::objectmodel::BaseObject);
@@ -74,7 +76,7 @@ public:
 
 
 /// A sofa component to add a FileMessageHandlerComponent to the main logger
-class SOFA_COMPONENT_BASE_API FileMessageHandlerComponent : public core::objectmodel::BaseObject
+class SOFA_COMPONENT_UTILS_API FileMessageHandlerComponent : public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(FileMessageHandlerComponent, core::objectmodel::BaseObject) ;
@@ -95,6 +97,7 @@ public:
     bool isValid(){ return m_isValid; }
 };
 
+}
 }
 }
 }

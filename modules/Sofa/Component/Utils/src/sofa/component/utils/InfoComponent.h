@@ -26,13 +26,17 @@
 #ifndef SOFA_INFOCOMPONENT_H
 #define SOFA_INFOCOMPONENT_H
 
+#include <Sofa.Component.Utils.h>
+
 #include <sofa/core/objectmodel/BaseObject.h>
-#include "config.h"
+
 #include <string>
 
 namespace sofa
 {
 namespace component
+{
+namespace utils
 {
 
 /// I use a per-file namespace so that I can employ the 'using' keywords without
@@ -45,7 +49,7 @@ using sofa::core::objectmodel::BaseObject ;
 
 /// Despite this component does absolutely nothin... it is very usefull as it can be used to
 /// retain information scene graph.
-class SOFA_COMPONENT_BASE_API InfoComponent : public BaseObject
+class SOFA_COMPONENT_UTILS_API InfoComponent : public BaseObject
 {
 public:
     SOFA_CLASS(InfoComponent, BaseObject);
@@ -59,6 +63,7 @@ public:
 /// Import the component from the per-file namespace.
 using infocomponent::InfoComponent ;
 
+}
 }
 }
 #endif // SOFA_INFOCOMPONENT_H

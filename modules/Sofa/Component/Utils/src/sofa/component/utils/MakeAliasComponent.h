@@ -22,7 +22,7 @@
 #ifndef SOFA_MAKEALIASCOMPONENT_H
 #define SOFA_MAKEALIASCOMPONENT_H
 
-#include "config.h"
+#include <Sofa.Component.Utils.h>
 
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -34,6 +34,8 @@ namespace sofa
 {
 namespace component
 {
+namespace utils
+{
 
 /// I use a per-file namespace so that I can employ the 'using' keywords without
 /// fearing it will leack names into the global namespace. When closing this namespace
@@ -43,7 +45,7 @@ namespace makealiascomponent
 {
 
 /// A component to add alias to other components.
-class SOFA_COMPONENT_BASE_API MakeAliasComponent : public core::objectmodel::BaseObject
+class SOFA_COMPONENT_UTILS_API MakeAliasComponent : public core::objectmodel::BaseObject
 {
 public:
     SOFA_CLASS(MakeAliasComponent, core::objectmodel::BaseObject);
@@ -79,6 +81,7 @@ public:
 /// Import the component from the per-file namespace.
 using makealiascomponent::MakeAliasComponent ;
 
+}
 }
 }
 #endif // SOFA_AliasComponent_H
