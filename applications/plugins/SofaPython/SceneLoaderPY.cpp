@@ -32,7 +32,7 @@
 #include <sstream>
 #include <fstream>
 
-#include "PythonMainScriptController.h"
+#include "ScriptController/PythonMainScriptController.h"
 #include "PythonEnvironment.h"
 #include "PythonFactory.h"
 

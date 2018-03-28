@@ -13,122 +13,122 @@ set(SOFA_HAVE_PYTHON 1)
 
 set(HEADER_FILES
     Binding.h
-    Binding_Base.h
-    Binding_BaseContext.h
-    Binding_BaseLoader.h
-    Binding_BaseMapping.h
-    Binding_BaseMechanicalState.h
-    Binding_BaseMeshTopology.h
-    Binding_BaseObject.h
-    Binding_BaseState.h
-    Binding_BaseTopologyObject.h
-    Binding_Context.h
-    Binding_Data.h
-    Binding_DataEngine.h
-    Binding_DataFileName.h
-    Binding_DataFileNameVector.h
-    Binding_DisplayFlagsData.h
-    Binding_OptionsGroupData.h
-    Binding_GridTopology.h
-    Binding_LinearSpring.h
-    Binding_Link.h
-    Binding_Mapping.h
-#    Binding_MechanicalObject.h
-    Binding_MeshLoader.h
-    Binding_TopologyChange.h
-    Binding_PointSetTopologyModifier.h
-    Binding_TriangleSetTopologyModifier.h
-    Binding_MeshTopology.h
-    Binding_MultiMapping.h
-    Binding_Node.h
-    Binding_OBJExporter.h
-    Binding_STLExporter.h
-    Binding_PythonScriptController.h
-    Binding_PythonScriptDataEngine.h
-    Binding_RegularGridTopology.h
-    Binding_RigidMapping.h
-    Binding_SofaModule.h
-#    Binding_SubsetMultiMapping.h
-    Binding_Topology.h
-    Binding_Vector.h
-    Binding_VectorLinearSpringData.h
-    Binding_VisualModel.h
+    Bindings/Base.h
+    Bindings/BaseContext.h
+    Bindings/BaseLoader.h
+    Bindings/BaseMapping.h
+    Bindings/BaseMechanicalState.h
+    Bindings/BaseMeshTopology.h
+    Bindings/BaseObject.h
+    Bindings/BaseState.h
+    Bindings/BaseTopologyObject.h
+    Bindings/Context.h
+    Bindings/Data.h
+    Bindings/DataEngine.h
+    Bindings/DataFileName.h
+    Bindings/DataFileNameVector.h
+    Bindings/DisplayFlagsData.h
+    Bindings/OptionsGroupData.h
+    Bindings/GridTopology.h
+    Bindings/LinearSpring.h
+    Bindings/Link.h
+    Bindings/Mapping.h
+#    Bindings/MechanicalObject.h
+    Bindings/MeshLoader.h
+    Bindings/TopologyChange.h
+    Bindings/PointSetTopologyModifier.h
+    Bindings/TriangleSetTopologyModifier.h
+    Bindings/MeshTopology.h
+    Bindings/MultiMapping.h
+    Bindings/Node.h
+    Bindings/OBJExporter.h
+    Bindings/STLExporter.h
+    Bindings/PythonScriptController.h
+    Bindings/PythonScriptDataEngine.h
+    Bindings/RegularGridTopology.h
+    Bindings/RigidMapping.h
+    Bindings/SofaModule.h
+#    Bindings/SubsetMultiMapping.h
+    Bindings/Topology.h
+    Bindings/Vector.h
+    Bindings/VectorLinearSpringData.h
+    Bindings/VisualModel.h
     PythonCommon.h
     PythonEnvironment.h
     PythonFactory.h
     PythonMacros.h
-    PythonMainScriptController.h
-    PythonScriptController.h
-    PythonScriptControllerHelper.h
-    PythonScriptDataEngine.h
-    PythonScriptEvent.h
-    PythonScriptFunction.h
+    ScriptController/PythonMainScriptController.h
+    ScriptController/PythonScriptController.h
+    ScriptController/PythonScriptControllerHelper.h
+    ScriptController/PythonScriptDataEngine.h
+    ScriptController/PythonScriptEvent.h
+    ScriptController/PythonScriptFunction.h
     PythonToSofa.inl
     PythonVisitor.h
     SceneLoaderPY.h
-    ScriptController.h
-    ScriptDataEngine.h
-    ScriptEvent.h
-    ScriptFunction.h
+    ScriptController/ScriptController.h
+    ScriptController/ScriptDataEngine.h
+    ScriptController/ScriptEvent.h
+    ScriptController/ScriptFunction.h
 )
 
 set(SOURCE_FILES
     Binding.cpp
-    Binding_Base.cpp
-    Binding_BaseContext.cpp
-    Binding_BaseLoader.cpp
-    Binding_BaseMapping.cpp
-    Binding_BaseMechanicalState.cpp
-    Binding_BaseMeshTopology.cpp
-    Binding_BaseObject.cpp
-    Binding_BaseState.cpp
-    Binding_BaseTopologyObject.cpp
-    Binding_Context.cpp
-    Binding_Data.cpp
-    Binding_DataEngine.cpp
-    Binding_DataFileName.cpp
-    Binding_DataFileNameVector.cpp
-    Binding_DisplayFlagsData.cpp
-    Binding_OptionsGroupData.cpp
-    Binding_GridTopology.cpp
-    Binding_LinearSpring.cpp
-    Binding_Link.cpp
-    Binding_Mapping.cpp
-#    Binding_MechanicalObject.cpp
-    Binding_MeshLoader.cpp
-    Binding_TopologyChange.cpp
-    Binding_PointSetTopologyModifier.cpp
-    Binding_TriangleSetTopologyModifier.cpp
-    Binding_MeshTopology.cpp
-    Binding_MultiMapping.cpp
-    Binding_Node.cpp
-    Binding_OBJExporter.cpp
-    Binding_STLExporter.cpp
-    Binding_PythonScriptController.cpp
-    Binding_PythonScriptDataEngine.cpp
-    Binding_RegularGridTopology.cpp
-    Binding_RigidMapping.cpp
-    Binding_SofaModule.cpp
-#    Binding_SubsetMultiMapping.cpp
-    Binding_Topology.cpp
-    Binding_Vector.cpp
-    Binding_VectorLinearSpringData.cpp
-    Binding_VisualModel.cpp
+    Bindings/Base.cpp
+    Bindings/BaseContext.cpp
+    Bindings/BaseLoader.cpp
+    Bindings/BaseMapping.cpp
+    Bindings/BaseMechanicalState.cpp
+    Bindings/BaseMeshTopology.cpp
+    Bindings/BaseObject.cpp
+    Bindings/BaseState.cpp
+    Bindings/BaseTopologyObject.cpp
+    Bindings/Context.cpp
+    Bindings/Data.cpp
+    Bindings/DataEngine.cpp
+    Bindings/DataFileName.cpp
+    Bindings/DataFileNameVector.cpp
+    Bindings/DisplayFlagsData.cpp
+    Bindings/OptionsGroupData.cpp
+    Bindings/GridTopology.cpp
+    Bindings/LinearSpring.cpp
+    Bindings/Link.cpp
+    Bindings/Mapping.cpp
+#    Bindings/MechanicalObject.cpp
+    Bindings/MeshLoader.cpp
+    Bindings/TopologyChange.cpp
+    Bindings/PointSetTopologyModifier.cpp
+    Bindings/TriangleSetTopologyModifier.cpp
+    Bindings/MeshTopology.cpp
+    Bindings/MultiMapping.cpp
+    Bindings/Node.cpp
+    Bindings/OBJExporter.cpp
+    Bindings/STLExporter.cpp
+    Bindings/PythonScriptController.cpp
+    Bindings/PythonScriptDataEngine.cpp
+    Bindings/RegularGridTopology.cpp
+    Bindings/RigidMapping.cpp
+    Bindings/SofaModule.cpp
+#    Bindings/SubsetMultiMapping.cpp
+    Bindings/Topology.cpp
+    Bindings/Vector.cpp
+    Bindings/VectorLinearSpringData.cpp
+    Bindings/VisualModel.cpp
     PythonEnvironment.cpp
     PythonFactory.cpp
     PythonMacros.cpp
-    PythonMainScriptController.cpp
-    PythonScriptController.cpp
-    PythonScriptDataEngine.cpp
-    PythonScriptControllerHelper.cpp
-    PythonScriptEvent.cpp
-    PythonScriptFunction.cpp
+    ScriptController/PythonMainScriptController.cpp
+    ScriptController/PythonScriptController.cpp
+    ScriptController/PythonScriptDataEngine.cpp
+    ScriptController/PythonScriptControllerHelper.cpp
+    ScriptController/PythonScriptEvent.cpp
+    ScriptController/PythonScriptFunction.cpp
     PythonVisitor.cpp
     SceneLoaderPY.cpp
-    ScriptController.cpp
-    ScriptDataEngine.cpp
-    ScriptEvent.cpp
-    ScriptFunction.cpp
+    ScriptController/ScriptController.cpp
+    ScriptController/ScriptDataEngine.cpp
+    ScriptController/ScriptEvent.cpp
+    ScriptController/ScriptFunction.cpp
     initSofaPython.cpp
     ctypes.cpp
 )

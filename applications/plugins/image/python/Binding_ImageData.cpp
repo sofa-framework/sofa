@@ -1,10 +1,10 @@
 
 #include <SofaPython/PythonMacros.h>
-#include <SofaPython/Binding_SofaModule.h>
+#include <SofaPython/Bindings/SofaModule.h>
 #include <SofaPython/PythonFactory.h>
 
 #include "Binding_ImageData.h"
-#include <SofaPython/Binding_Data.h>
+#include <SofaPython/Bindings/Data.h>
 #include <SofaPython/PythonToSofa.inl>
 
 

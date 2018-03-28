@@ -7,7 +7,7 @@
 
 #include <SofaPython/PythonMacros.h>
 #include <SofaPython/PythonFactory.h>
-#include <SofaPython/Binding_Data.h>
+#include <SofaPython/Bindings/Data.h>
 #include "Binding_AssembledSystem.h"
 
 #include <sofa/helper/cast.h>

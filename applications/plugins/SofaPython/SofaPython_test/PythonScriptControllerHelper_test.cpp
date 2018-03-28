@@ -3,7 +3,7 @@
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <sofa/simulation/Node.h>
 
-#include <SofaPython/PythonScriptControllerHelper.h>
+#include <SofaPython/ScriptController/PythonScriptControllerHelper.h>
 
 using namespace sofa::helper;
 

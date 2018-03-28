@@ -29,7 +29,7 @@
 #include <SofaSimulationCommon/xml/NodeElement.h>
 #include <SofaSimulationCommon/FindByTypeVisitor.h>
 
-#include <SofaPython/Binding_Node.h>
+#include <SofaPython/Bindings/Node.h>
 #include <SofaPython/PythonFactory.h>
 #include <SofaPython/PythonMacros.h>
 #include <SofaPython/PythonEnvironment.h>

@@ -38,7 +38,7 @@ using sofa::core::RegisterObject ;
 
 
 #include <SofaPython/PythonMacros.h>
-#include <SofaPython/Binding_BaseObject.h>
+#include <SofaPython/Bindings/BaseObject.h>
 
 #include <SofaPython/PythonFactory.h>
 using sofa::PythonFactory ;
@@ -49,7 +49,7 @@ using sofa::core::objectmodel::Data ;
 #include "SofaPython/PythonEnvironment.h"
 using sofa::simulation::PythonEnvironment ;
 
-#include "SofaPython/Binding_Base.h"
+#include "SofaPython/Bindings/Base.h"
 #include "SofaPython/PythonToSofa.inl"
 using sofa::core::objectmodel::BaseData ;
 using sofa::component::_template_::Template ;

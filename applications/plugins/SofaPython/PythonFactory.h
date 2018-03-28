@@ -26,21 +26,21 @@
 #include <SofaPython/config.h>
 
 
-#include <SofaPython/Binding_Base.h>
-#include <SofaPython/Binding_BaseObject.h>
-#include <SofaPython/Binding_BaseLoader.h>
-#include <SofaPython/Binding_Topology.h>
-#include <SofaPython/Binding_BaseMeshTopology.h>
-#include <SofaPython/Binding_VisualModel.h>
-#include <SofaPython/Binding_BaseState.h>
-#include <SofaPython/Binding_BaseMechanicalState.h>
-#include <SofaPython/Binding_BaseMapping.h>
-#include <SofaPython/Binding_DataEngine.h>
-#include <SofaPython/Binding_BaseContext.h>
-#include <SofaPython/Binding_BaseTopologyObject.h>
-#include <SofaPython/Binding_PointSetTopologyModifier.h>
-#include <SofaPython/Binding_TriangleSetTopologyModifier.h>
-#include <SofaPython/Binding_Data.h>
+#include <SofaPython/Bindings/Base.h>
+#include <SofaPython/Bindings/BaseObject.h>
+#include <SofaPython/Bindings/BaseLoader.h>
+#include <SofaPython/Bindings/Topology.h>
+#include <SofaPython/Bindings/BaseMeshTopology.h>
+#include <SofaPython/Bindings/VisualModel.h>
+#include <SofaPython/Bindings/BaseState.h>
+#include <SofaPython/Bindings/BaseMechanicalState.h>
+#include <SofaPython/Bindings/BaseMapping.h>
+#include <SofaPython/Bindings/DataEngine.h>
+#include <SofaPython/Bindings/BaseContext.h>
+#include <SofaPython/Bindings/BaseTopologyObject.h>
+#include <SofaPython/Bindings/PointSetTopologyModifier.h>
+#include <SofaPython/Bindings/TriangleSetTopologyModifier.h>
+#include <SofaPython/Bindings/Data.h>
 
 #include <type_traits>
 

@@ -22,7 +22,7 @@
 #include <fstream>
 #include "PythonMacros.h"
 #include "PythonEnvironment.h"
-#include "PythonScriptController.h"
+#include "ScriptController/PythonScriptController.h"
 
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/FileSystem.h>
@@ -250,7 +250,7 @@ bool PythonEnvironment::runString(const std::string& script)
 
     if(0 == result)
     {
-        SP_MESSAGE_ERROR("Script (string) import error")
+        SP_MESSAGE_ERROR("Controller (string) import error")
         PyErr_Print();
 
         return false;
@@ -368,7 +368,7 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
     Py_XDECREF(__file__);  
     
     if(error) {
-        SP_MESSAGE_ERROR("Script (file:" << basename << ") import error")
+        SP_MESSAGE_ERROR("Controller (file:" << basename << ") import error")
         PyErr_Print();
         return false;
     }

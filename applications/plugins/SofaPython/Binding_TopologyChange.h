@@ -1,8 +1,0 @@
-#ifndef BINDING_TOPOLOGYCHANGE_H
-#define BINDING_TOPOLOGYCHANGE_H
-
-#include "PythonMacros.h"
-
-SP_DECLARE_CLASS_TYPE(PointAncestorElem)
-
-#endif // BINDING_TOPOLOGYCHANGE_H
