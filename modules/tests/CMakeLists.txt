@@ -7,7 +7,6 @@ add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaBaseCollision/SofaBaseCol
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaBaseLinearSolver/SofaBaseLinearSolver_test tests/SofaBaseLinearSolver)
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaBaseMechanics/SofaBaseMechanics_test tests/SofaBaseMechanics)
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaBaseTopology/SofaBaseTopology_test tests/SofaBaseTopology)
-add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaBaseUtils/SofaBaseUtils_test tests/SofaBaseUtils)
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaBaseVisual/SofaBaseVisual_test tests/SofaBaseVisual)
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaDeformable/SofaDeformable_test tests/SofaDeformable)
 add_subdirectory(${SOFA_KERNEL_MODULES_SOURCE_DIR}/SofaEngine/SofaEngine_test tests/SofaEngine)
