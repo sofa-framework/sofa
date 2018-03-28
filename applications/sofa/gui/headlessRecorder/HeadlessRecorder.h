@@ -64,7 +64,7 @@ namespace gui
 namespace hRecorder
 {
 
-enum FRAMESKIP_TYPE { NOSKIP, REALTIME, FIXEDTIME };
+enum class RecordMode { wallclocktime, simulationtime, timeinterval };
 
 class HeadlessRecorder : public sofa::gui::BaseGUI
 {
@@ -95,7 +95,7 @@ public:
     // Needed for the registration
     static BaseGUI* CreateGUI(const char* name, sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
     static int RegisterGUIParameters(ArgumentParser* argumentParser);
-    static void parseSkipOption(const std::string& skipRaw);
+    static void parseRecordingModeOption();
 
     static int recordTimeInSeconds; // public for SIGTERM
     static bool recordUntilStopAnimate; // public for SIGTERM
@@ -142,7 +142,8 @@ private:
     static std::string fileName;
     static bool saveAsScreenShot, saveAsVideo;
     static HeadlessRecorder instance;
-    static FRAMESKIP_TYPE skipType;
+    static std::string recordTypeRaw;
+    static RecordMode recordType;
     static float skipTime;
 };
 
