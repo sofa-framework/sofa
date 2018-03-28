@@ -277,6 +277,8 @@ add_subdirectory(SofaAdvanced)
 add_subdirectory(SofaMisc)
 add_subdirectory(SofaGui)
 
+add_subdirectory(modules/Sofa)
+
 ## Packages
 add_subdirectory(applications/packages)
 

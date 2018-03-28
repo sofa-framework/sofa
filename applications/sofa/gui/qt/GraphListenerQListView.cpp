@@ -25,8 +25,8 @@
 #include <sofa/core/collision/CollisionGroupManager.h>
 #include <sofa/core/collision/ContactManager.h>
 #include <sofa/core/objectmodel/ConfigurationSetting.h>
-#include <SofaBaseUtils/InfoComponent.h>
-using sofa::component::InfoComponent ;
+#include <sofa/component/utils/InfoComponent.h>
+using sofa::component::utils::InfoComponent;
 
 #include "resources/icons/iconmultinode.xpm"
 #include "resources/icons/iconnode.xpm"
