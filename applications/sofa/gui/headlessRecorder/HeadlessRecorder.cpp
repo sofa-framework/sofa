@@ -81,15 +81,18 @@ HeadlessRecorder::~HeadlessRecorder()
 
 void HeadlessRecorder::parseSkipOption(const std::string& skipRaw)
 {
-    if (skipRaw == "noskip") {
+    if (skipRaw == "noskip" or skipRaw == "simulationtime")
+    {
         skipType = NOSKIP;
         skipTime = 0;
     }
-    else if (skipRaw == "realtime") {
+    else if (skipRaw == "realtime")
+    {
         skipType = REALTIME;
         skipTime = 1.0/fps;
     }
-    else {
+    else
+    {
         skipType = FIXEDTIME;
         skipTime = std::stof(skipRaw);
    }
@@ -109,7 +112,7 @@ int HeadlessRecorder::RegisterGUIParameters(ArgumentParser* argumentParser)
     argumentParser->addArgument(po::value<int>(&height)->default_value(1080), "height", "(only HeadLessRecorder) video or picture height");
     argumentParser->addArgument(po::value<int>(&fps)->default_value(60), "fps", "(only HeadLessRecorder) define how many frame per second HeadlessRecorder will generate");
     argumentParser->addArgument(po::value<bool>(&recordUntilStopAnimate)->default_value(false)->implicit_value(true),         "recordUntilEndAnimate", "(only HeadLessRecorder) recording until the end of animation does not care how many seconds have been set");
-    argumentParser->addArgument(po::value<std::string>()->notifier(parseSkipOption), "frameskip", "(only HeadLessRecorder)");
+    argumentParser->addArgument(po::value<std::string>()->notifier(parseSkipOption), "frameskip", "(only HeadLessRecorder) define if frames should be skipped during recording; frames can be saved at the same rate as the simulation update with \"noskip\" or \"simulationtime\" (default), or in real time with \"realtime\", or at an arbitrary rate by specifying a float as a skiptime.");
     return 0;
 }
 
@@ -295,9 +298,9 @@ int HeadlessRecorder::mainLoop()
         msg_error("HeadlessRecorder") <<  "Please, use at least one option: picture or video mode.";
         return 0;
     }
-    if (skipType == REALTIME && groot->getDt() > 1.0/fps)
+    if ((skipType == REALTIME || skipType == FIXEDTIME) && groot->getDt() > skipTime)
     {
-        msg_error("HeadlessRecorder") << "Scene delta time (" << groot->getDt() << "s) is too big to provide images at the supplied fps; it should be at least <" << 1.0/fps ;
+        msg_error("HeadlessRecorder") << "Scene delta time (" << groot->getDt() << "s) is too big to provide images at the supplied fps; it should be at least <" << skipTime ;
         return 0;
     }
 
@@ -321,8 +324,11 @@ int HeadlessRecorder::mainLoop()
 	}
 
         if (currentSimulation() && currentSimulation()->getContext()->getAnimate())
+        {
             step();
-        else {
+        }
+        else
+        {
             sleep(0.01);
 	}
     }
