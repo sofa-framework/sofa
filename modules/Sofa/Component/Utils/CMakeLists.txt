@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
-project(Sofa.Component.Utils)
+
+project(Sofa.Component.Utils VERSION 1.0)
 
 find_package(SofaFramework REQUIRED)
 
@@ -35,4 +36,4 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${PROJECT_S
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/deprecated_layout>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>")
 
-sofa_create_package(${PROJECT_NAME} "1.0" ${PROJECT_NAME} ${PROJECT_NAME})
+sofa_create_package(${PROJECT_NAME} ${PROJECT_VERSION} ${PROJECT_NAME} ${PROJECT_NAME})
