@@ -222,7 +222,9 @@ static PyObject * BaseContext_getObject(PyObject * self, PyObject * args, PyObje
     context->get<BaseObject>(sptr,path);
     if (!sptr)
     {
-        return NULL;
+        if( emitWarningMessage )
+            msg_error(context) << "Unable to find : " << path ;
+        Py_RETURN_NONE ;
     }
 
     return sofa::PythonFactory::toPython(sptr.get());
