@@ -506,7 +506,7 @@ print-summary() {
 
 if [[ "$command" = run ]]; then
     initialize-scene-testing
-    if grep -q "SOFA_WITH_DEPRECATED_COMPONENTS:BOOL=ON" "$build_dir/CMakeCache.txt"
+    if grep -q "SOFA_WITH_DEPRECATED_COMPONENTS:BOOL=ON" "$build_dir/CMakeCache.txt"; then
         ignore-scenes-with-deprecated-components
     fi
     ignore-scenes-with-missing-plugins
