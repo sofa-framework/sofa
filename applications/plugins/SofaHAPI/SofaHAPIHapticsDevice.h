@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -66,21 +66,21 @@ namespace sofa
 		{
 		public:
 			SOFA_CLASS(SofaHAPIHapticsDevice, Controller);
-			Data<double> scale;
-			Data<double> forceScale;
-			Data<Vec3d> positionBase;
-			Data<Quat> orientationBase;
-			Data<Vec3d> positionTool;
-			Data<Quat> orientationTool;
-			Data<bool> permanent;
-			Data<bool> toolSelector;
-			Data<int> toolCount;
-			Data<int> toolIndex;
-			Data<double> toolTransitionSpringStiffness;
-			Data<std::string> driverName;
-			Data<bool> drawDevice;
-			Data<float> drawHandleSize;
-			Data<float> drawForceScale;
+			Data<double> scale; ///< Default scale applied to the Phantom Coordinates. 
+			Data<double> forceScale; ///< Default forceScale applied to the force feedback. 
+			Data<Vec3d> positionBase; ///< Position of the interface base in the scene world coordinates
+			Data<Quat> orientationBase; ///< Orientation of the interface base in the scene world coordinates
+			Data<Vec3d> positionTool; ///< Position of the tool in the device end effector frame
+			Data<Quat> orientationTool; ///< Orientation of the tool in the device end effector frame
+			Data<bool> permanent; ///< Apply the force feedback permanently
+			Data<bool> toolSelector; ///< Switch tools with 2nd button
+			Data<int> toolCount; ///< Number of tools to switch between
+			Data<int> toolIndex; ///< Current tool index
+			Data<double> toolTransitionSpringStiffness; ///< Stiffness of haptic springs when switching instruments (0 to disable)
+			Data<std::string> driverName; ///< Name of the HAPI device driver
+			Data<bool> drawDevice; ///< Visualize the position of the interface in the virtual scene
+			Data<float> drawHandleSize; ///< Visualize the handle direction of the interface in the virtual scene
+			Data<float> drawForceScale; ///< Visualize the haptics force in the virtual scene
 
 			//SofaHAPIHapticsDeviceData data;
 			ForceFeedbackTransform data;

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -145,15 +145,15 @@ private:
 
     Assimp::Importer importer;		// the Assimp importer used to easily load the Collada scene
 
-	Data<float> animationSpeed;
-	Data<bool> generateCollisionModels;
+	Data<float> animationSpeed; ///< animation speed
+	Data<bool> generateCollisionModels; ///< generate point/line/triangle collision models for imported meshes
 
 #ifdef SOFA_HAVE_PLUGIN_FLEXIBLE
-	Data<bool> useFlexible;
+	Data<bool> useFlexible; ///< Use the Flexible plugin (it will replace the SkinningMapping with a LinearMapping)
 #endif
 #ifdef SOFA_HAVE_PLUGIN_IMAGE
-    Data<bool> generateShapeFunction;
-    Data<SReal> voxelSize;
+    Data<bool> generateShapeFunction; ///< Generate a shape function that could be used in another simulation
+    Data<SReal> voxelSize; ///< voxelSize used for shape function generation
 #endif
 
 };

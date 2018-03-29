@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -87,7 +87,7 @@ protected:
     Data<SeqTriangles> d_triangles; ///< input triangles
     Data<SeqQuads> d_quads; ///< input quads
     Data<VecCoord> d_normals; ///< ouput normals
-    Data<helper::vector<Real> > d_thickness;
+    Data<helper::vector<Real> > d_thickness; ///< point thickness
     Data<Real> d_distance; ///< distance to move the points (positive for dilatation, negative for erosion)
     Data<Real> d_minThickness; ///< minimal thickness to enforce
 };

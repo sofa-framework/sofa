@@ -38,7 +38,7 @@ class SOFA_Compliant_API BaseSequentialSolver : public IterativeSolver {
 
 	virtual void init();
 
-    Data<SReal> omega;
+    Data<SReal> omega; ///< SOR parameter:  omega < 1 : better, slower convergence, omega = 1 : vanilla gauss-seidel, 2 > omega > 1 : faster convergence, ok for SPD systems, omega > 2 : will probably explode
 
   protected:
 
@@ -139,8 +139,8 @@ public:
 
     SequentialSolver();
 
-    Data<bool> d_iterateOnBilaterals;
-    Data<SReal> d_regularization;
+    Data<bool> d_iterateOnBilaterals; ///< Should the bilateral constraint must be solved iteratively or factorized with the dynamics?
+    Data<SReal> d_regularization; ///< Optional diagonal Tikhonov regularization on bilateral constraints
 
     virtual void factor(const system_type& system);
 

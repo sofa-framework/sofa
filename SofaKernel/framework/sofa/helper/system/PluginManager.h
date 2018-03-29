@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -169,7 +169,7 @@ public:
     void init(const std::string& pluginPath);
 
     std::string findPlugin(const std::string& pluginName, const std::string& suffix = getDefaultSuffix(), bool ignoreCase = true);
-    bool pluginIsLoaded(const std::string& pluginPath);
+    bool pluginIsLoaded(const std::string& plugin);
 
     inline friend std::ostream& operator<< ( std::ostream& os, const PluginManager& pluginManager )
     {
@@ -181,6 +181,9 @@ public:
     }
 
     PluginMap& getPluginMap()  { return m_pluginMap; }
+
+    Plugin* getPlugin(const std::string& plugin, const std::string& suffix = getDefaultSuffix(), bool ignoreCase = true);
+
     std::vector<std::string>& getSearchPaths() { return m_searchPaths; }
 
     void readFromIniFile(const std::string& path);

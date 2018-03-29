@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -23,6 +23,9 @@
 #define SOFA_GUI_GLUT_MULTITHREADGUI_H
 
 #include <sofa/gui/BaseGUI.h>
+
+#include "glut.h"
+
 #include <sofa/gui/PickHandler.h>
 
 #include <sofa/core/objectmodel/AspectPool.h>
@@ -36,7 +39,6 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glu.h>
-#include <sofa/helper/system/glut.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/visual/DrawToolGL.h>
 #include <SofaBaseVisual/InteractiveCamera.h>
@@ -51,13 +53,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <fstream>
-
-
-#ifdef SOFA_BUILD_SOFAGUIGLUT
-#	define SOFA_SOFAGUIGLUT_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#	define SOFA_SOFAGUIGLUT_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
 
 namespace sofa
 {
@@ -81,7 +76,7 @@ using namespace sofa::component::collision;
 class MainLoopTask;
 #endif
 
-class SOFA_SOFAGUIGLUT_API MultithreadGUI : public sofa::gui::BaseGUI
+class MultithreadGUI : public sofa::gui::BaseGUI
 {
 
 public:
@@ -110,6 +105,7 @@ public:
     static BaseGUI* CreateGUI(const char* name, sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
 
     /// @}
+    static int InitGUI(const char* /*name*/, const std::vector<std::string>& /*options*/);
 
 protected:
     /// The destructor should not be called directly. Use the closeGUI() method instead.

@@ -74,7 +74,7 @@ public:
 	typedef defaulttype::Vec<2, unsigned> index_pair;
 
     typedef helper::vector< index_pair > pairs_type;
-	Data< pairs_type > pairs;
+	Data< pairs_type > pairs; ///< index pairs (parent, child) for each joint
 
 	typedef typename TIn::Real in_real;
 	typedef typename TOut::Real out_real;

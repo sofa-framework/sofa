@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -60,10 +60,10 @@ public:
 
     void update() override;
 
-    Data<VecIndex> f_in1;
-    Data<VecIndex> f_in2;
-    Data<VecIndex> f_out;
-    Data<std::string> f_op;
+    Data<VecIndex> f_in1; ///< first set of indices
+    Data<VecIndex> f_in2; ///< second set of indices
+    Data<VecIndex> f_out; ///< merged set of indices
+    Data<std::string> f_op; ///< name of operation to compute (union, intersection, difference, symmetric_difference)
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_MERGESETS_CPP)

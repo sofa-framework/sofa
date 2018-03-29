@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -123,12 +123,6 @@ BoxROI<DataTypes>::BoxROI()
     /// Display as few as possible the deprecated data.
     d_deprecatedX0.setDisplayed(false);
     d_deprecatedIsVisible.setDisplayed(false);
-
-    if(!d_alignedBoxes.isSet() && !d_orientedBoxes.isSet())
-    {
-        d_alignedBoxes.beginEdit()->push_back(Vec6(0,0,0,1,1,1));
-        d_alignedBoxes.endEdit();
-    }
 
     d_indices.beginEdit()->push_back(0);
     d_indices.endEdit();
@@ -320,6 +314,12 @@ void BoxROI<DataTypes>::init()
 template <class DataTypes>
 void BoxROI<DataTypes>::reinit()
 {
+    if(!d_alignedBoxes.isSet() && !d_orientedBoxes.isSet())
+    {
+        d_alignedBoxes.beginEdit()->push_back(Vec6(0,0,0,1,1,1));
+        d_alignedBoxes.endEdit();
+    }
+
     vector<Vec6>& alignedBoxes = *(d_alignedBoxes.beginEdit());
     if (!alignedBoxes.empty())
     {

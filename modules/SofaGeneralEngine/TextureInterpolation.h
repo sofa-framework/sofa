@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -100,15 +100,15 @@ protected:
 
     /// Data for interpolation scale:
     Data <Real> _minVal;
-    Data <Real> _maxVal;
-    Data <bool> _changeScale;
+    Data <Real> _maxVal; ///< maximum value of state value for interpolation.
+    Data <bool> _changeScale; ///< compute texture interpolation on manually scale defined above.
 
     /// Data for interpolation scale:
     Data <bool> drawPotentiels;
-    Data <float> showIndicesScale;
+    Data <float> showIndicesScale; ///< Debug : scale of state values displayed.
 
-    Data <unsigned int> _vertexPloted;
-    Data <std::map < std::string, sofa::helper::vector<Real> > > f_graph;
+    Data <unsigned int> _vertexPloted; ///< Vertex index of values display in graph for each iteration.
+    Data <std::map < std::string, sofa::helper::vector<Real> > > f_graph; ///< Vertex state value per iteration
 
     void updateGraph();
     void resetGraph();

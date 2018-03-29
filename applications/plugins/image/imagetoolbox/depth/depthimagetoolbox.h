@@ -1574,7 +1574,7 @@ public:
     DataFileName d_filename;
     DataFileName d_scnfilename;
 
-    Data< TransformType> d_transform;
+    Data< TransformType> d_transform; ///< Transform
 
     Data< VecDouble > d_outImagePosition;
 

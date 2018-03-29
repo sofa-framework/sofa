@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -69,7 +69,7 @@ using namespace sofa::defaulttype;
 //    0 means no volume conservation, while 0.5 (resp. 1) means perfect volume conservation.
 //    Since a value of 0.5 (resp. 1) leads to a divison by 0, a smaller value should be used instead.
 //    */
-//    Data<Real> poissonRatio;
+//    Data<Real> poissonRatio; ///< Volume conservation, typically denoted using symbol  u. Should be positive and less than 0.5 in 3d, respectively 1 in 2d. 0 means no volume conservation and 0.5 (resp. 1) means perfect volume conservation. Since a value of 0.5 (resp. 1) leads to a divison by 0, a smaller value should be used instead.
 //
 //protected:
 //    Real stressDiagonal, stressOffDiagonal, shear;
@@ -107,7 +107,7 @@ using namespace sofa::defaulttype;
 //    0 means no volume conservation, while 0.5 (resp. 1) means perfect volume conservation.
 //    Since a value of 0.5 (resp. 1) leads to a divison by 0, a smaller value should be used instead.
 //    */
-//    Data<Real> poissonRatio;
+//    Data<Real> poissonRatio; ///< Volume conservation, typically denoted using symbol  u. Should be positive and less than 0.5 in 3d, respectively 1 in 2d. 0 means no volume conservation and 0.5 (resp. 1) means perfect volume conservation. Since a value of 0.5 (resp. 1) leads to a divison by 0, a smaller value should be used instead.
 //
 //protected:
 //    Real stressDiagonal, stressOffDiagonal, shear;
@@ -199,7 +199,7 @@ public:
     0 means no volume conservation, while 0.5 (resp. 1) means perfect volume conservation.
     Since a value of 0.5 (resp. 1) leads to a divison by 0, a smaller value should be used instead.
     */
-    Data<Real> poissonRatio;
+    Data<Real> poissonRatio; ///< Volume conservation, typically denoted using symbol  u. Should be positive and less than 0.5 in 3d, respectively 1 in 2d. 0 means no volume conservation and 0.5 (resp. 1) means perfect volume conservation. Since a value of 0.5 (resp. 1) leads to a divison by 0, a smaller value should be used instead.
 
     static const char* Name();
 

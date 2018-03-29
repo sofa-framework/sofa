@@ -34,12 +34,6 @@ if(MSVC)
     option(SOFA_VECTORIZE "Enable the use of SSE2 instructions by the compiler (Only available for MSVC)." OFF)
 endif()
 
-if(SOFA_WITH_DEPRECATED)
-    set(SOFA_WITH_DEPRECATED_ "1")
-else()
-    set(SOFA_WITH_DEPRECATED_ "0")
-endif()
-
 if(SOFA_WITH_THREADING)
     set(SOFA_WITH_THREADING_ "1")
 else()
@@ -50,6 +44,12 @@ if(SOFA_WITH_EXPERIMENTAL_FEATURES)
     set(SOFA_WITH_EXPERIMENTAL_FEATURES_ "1")
 else()
     set(SOFA_WITH_EXPERIMENTAL_FEATURES_ "0")
+endif()
+
+if(SOFA_WITH_DEPRECATED_COMPONENTS)
+    set(SOFA_WITH_DEPRECATED_COMPONENTS_ "1")
+else()
+    set(SOFA_WITH_DEPRECATED_COMPONENTS_ "0")
 endif()
 
 ### Dependencies
@@ -179,7 +179,7 @@ list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${JSON_INCLUDE_DIR})
 ## the state of the build option.
 set(SOFA_BUILD_OPTIONS_SRC
         sharedlibrary_defines.h
-        build_option_componentset.h
+        build_option_deprecated_components.h
         build_option_dump_visitor.h
         build_option_experimental_features.h
         build_option_opengl.h
@@ -198,11 +198,11 @@ install(FILES "${CMAKE_BINARY_DIR}/include/sofa/config.h" DESTINATION "include/s
 list(REMOVE_DUPLICATES SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES)
 
 ## Version
-set(SOFAFRAMEWORK_VERSION "17.12.dev")
+set(SOFAFRAMEWORK_VERSION "18.06.dev")
 
 ## sofa/version.h
-set(SOFA_VERSION "171299")
-set(SOFA_VERSION_STR "\"17.12.dev\"")
+set(SOFA_VERSION "180699")
+set(SOFA_VERSION_STR "\"18.06.dev\"")
 configure_file(../framework/sofa/version.h.in "${CMAKE_BINARY_DIR}/include/sofa/version.h")
 install(FILES "${CMAKE_BINARY_DIR}/include/sofa/version.h" DESTINATION include/sofa)
 

@@ -56,9 +56,9 @@ class SOFA_Compliant_API PythonMultiMapping : public AssembledMultiMapping<TIn, 
     typedef Eigen::SparseMatrix<typename TIn::Real, Eigen::RowMajor> in_csr_matrix;
     typedef Eigen::SparseMatrix<typename TOut::Real, Eigen::RowMajor> out_csr_matrix;    
     
-    Data< opaque< void(out_vec out, in_vec* in, std::size_t n) > > apply_callback;
-    Data< opaque< void(out_csr_matrix** out, in_vec* in, std::size_t n) > > jacobian_callback;
-    Data< opaque< void(in_csr_matrix* out, in_vec* in, std::size_t n, out_vec f) > > gs_callback;
+    Data< opaque< void(out_vec out, in_vec* in, std::size_t n) > > apply_callback; ///< apply callback
+    Data< opaque< void(out_csr_matrix** out, in_vec* in, std::size_t n) > > jacobian_callback; ///< jacobian callback
+    Data< opaque< void(in_csr_matrix* out, in_vec* in, std::size_t n, out_vec f) > > gs_callback; ///< geometric stiffness callback
     
     
 	PythonMultiMapping();

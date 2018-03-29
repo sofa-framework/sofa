@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -133,7 +133,7 @@ protected:
 
     typedef defaulttype::Mat<24, 24, Real> ElementStiffness;
     typedef helper::vector<ElementStiffness> VecElementStiffness;
-    Data<VecElementStiffness> _elementStiffnesses;
+    Data<VecElementStiffness> _elementStiffnesses; ///< Stiffness matrices per element (K_i)
 
     typedef defaulttype::Mat<3, 3, Real> Mat33;
 
@@ -169,10 +169,10 @@ public:
     Data<Real> f_youngModulus;
     Data<bool> f_updateStiffnessMatrix;
     Data<bool> f_assembling;
-    Data< sofa::helper::OptionsGroup > _gatherPt; //use in GPU version
-    Data< sofa::helper::OptionsGroup > _gatherBsize; //use in GPU version
-    Data<bool> f_drawing;
-    Data<Real> f_drawPercentageOffset;
+    Data< sofa::helper::OptionsGroup > _gatherPt; ///< use in GPU version
+    Data< sofa::helper::OptionsGroup > _gatherBsize; ///< use in GPU version
+    Data<bool> f_drawing; ///<  draw the forcefield if true
+    Data<Real> f_drawPercentageOffset; ///< size of the hexa
     bool needUpdateTopology;
 
 protected:

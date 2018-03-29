@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -399,6 +399,27 @@ SOFA_SOFAPYTHON_API void handle_python_error(const char* message);
                                    PyObject_GetAttrString((PyObject*)&SP_SOFAPYTYPEOBJECT(PythonScriptController), #funcName),Py_NE ) && \
         PyObject_HasAttrString(m_ScriptControllerInstance,#funcName ) ) { \
             m_Func_##funcName = PyObject_GetAttrString(m_ScriptControllerInstance,#funcName); \
+            if (!PyCallable_Check(m_Func_##funcName)) \
+                {m_Func_##funcName=0; sout<<#funcName<<" not callable"<<sendl;} \
+            else \
+                {sout<<#funcName<<" found"<<sendl;} \
+    }else{ \
+        m_Func_##funcName=0; sout<<#funcName<<" not found"<<sendl; } \
+    }
+
+
+
+// =============================================================================
+// Copy of the above with adaption for PythonScriptDataEngine
+// =============================================================================
+
+#define BIND_OBJECT_METHOD_DATA_ENGINE(funcName) \
+    { \
+    if( PyObject_HasAttrString((PyObject*)&SP_SOFAPYTYPEOBJECT(PythonScriptDataEngine),#funcName ) && \
+        PyObject_RichCompareBool( PyObject_GetAttrString(m_ScriptDataEngineClass, #funcName),\
+                                   PyObject_GetAttrString((PyObject*)&SP_SOFAPYTYPEOBJECT(PythonScriptDataEngine), #funcName),Py_NE ) && \
+        PyObject_HasAttrString(m_ScriptDataEngineInstance,#funcName ) ) { \
+            m_Func_##funcName = PyObject_GetAttrString(m_ScriptDataEngineInstance,#funcName); \
             if (!PyCallable_Check(m_Func_##funcName)) \
                 {m_Func_##funcName=0; sout<<#funcName<<" not callable"<<sendl;} \
             else \

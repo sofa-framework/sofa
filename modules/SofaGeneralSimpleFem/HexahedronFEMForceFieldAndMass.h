@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -135,8 +135,8 @@ public:
 protected :
 
     Data<VecElementMass> _elementMasses; ///< mass matrices per element
-    Data<Real> _density;
-    Data<bool> _lumpedMass;
+    Data<Real> _density; ///< density == volumetric mass in english (kg.m-3)
+    Data<bool> _lumpedMass; ///< Does it use lumped masses?
 
     MassVector _particleMasses; ///< masses per particle in order to compute gravity
     helper::vector<Coord> _lumpedMasses; ///< masses per particle computed by lumping mass matrices

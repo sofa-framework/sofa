@@ -36,7 +36,7 @@ public:
     typedef typename Inherit::Intersection Intersection;
 
 
-    Data< SReal > stiffness;
+    Data< SReal > stiffness; ///< Contact Stiffness
 
 
 protected:

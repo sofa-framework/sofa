@@ -58,9 +58,9 @@ public:
 protected:
 
     // Indices
-    Data< helper::vector< Indices > > d_indices;
+    Data< helper::vector< Indices > > d_indices; ///< Indices
     // Weights
-    Data< helper::vector< Weights > > d_weights;
+    Data< helper::vector< Weights > > d_weights; ///< Weights
 
 };
 

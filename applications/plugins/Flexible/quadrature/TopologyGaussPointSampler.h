@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -61,11 +61,11 @@ public:
 
     /** @name  topology */
     //@{
-    Data< SeqPositions > f_inPosition;
+    Data< SeqPositions > f_inPosition; ///< input node positions
     typedef sofa::core::topology::BaseMeshTopology Topo;
     Topo* parentTopology;
-    Data< helper::vector<unsigned int> > f_cell;
-    Data< helper::vector<unsigned int> > f_indices;
+    Data< helper::vector<unsigned int> > f_cell; ///< cell index associated with each sample
+    Data< helper::vector<unsigned int> > f_indices; ///< list of cells where sampling is performed (all by default)
 
     typedef topology::TetrahedronSetGeometryAlgorithms<defaulttype::StdVectorTypes<Coord,Coord,Real> > TetraGeoAlg;
     TetraGeoAlg* tetraGeoAlgo;
@@ -73,11 +73,11 @@ public:
 
     /** @name orientation data */
     //@{
-    Data< SeqPositions > f_orientation; // = rest deformation gradient orientation in each cell (Euler angles)
-    Data< bool > f_useLocalOrientation;
+    Data< SeqPositions > f_orientation; ///< = rest deformation gradient orientation in each cell (Euler angles)
+    Data< bool > f_useLocalOrientation; ///< tells if orientations are defined in the local basis on each cell
     //@}
 
-    Data< helper::vector<Real> > f_fineVolumes;
+    Data< helper::vector<Real> > f_fineVolumes; ///< input cell volumes (typically computed from a fine model)
 
     virtual void init()
     {

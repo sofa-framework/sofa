@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -72,7 +72,7 @@ public:
     /// Sum of the forces applied at each point, if per-point forces are not specified
     Data< Deriv >              d_totalForce;
 
-    ///S for drawing. The sign changes the direction, 0 doesn't draw arrow
+    /// S for drawing. The sign changes the direction, 0 doesn't draw arrow
     Data< SReal >              d_arrowSizeCoef;
 
     /// display color

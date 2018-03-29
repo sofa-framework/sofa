@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -52,9 +52,9 @@ protected:
     virtual void update() =0;
 
 public:
-    sofa::core::objectmodel::Data<std::string> deviceName;
-    sofa::core::objectmodel::Data<std::string> serverName;
-    sofa::core::objectmodel::Data<std::string> serverPort;
+    sofa::core::objectmodel::Data<std::string> deviceName; ///< Name of this device
+    sofa::core::objectmodel::Data<std::string> serverName; ///< VRPN server name
+    sofa::core::objectmodel::Data<std::string> serverPort; ///< VRPN server port
 
     std::string deviceURL;
 

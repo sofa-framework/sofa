@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -92,16 +92,12 @@ using  sofa::helper::logging::RichConsoleStyleMessageFormatter ;
 #include <sofa/core/logging/PerComponentLoggingMessageHandler.h>
 using  sofa::helper::logging::MainPerComponentLoggingMessageHandler ;
 
-#ifdef SOFA_HAVE_GLUT_GUI
-#include <sofa/helper/system/glut.h>
-#endif // SOFA_HAVE_GLUT_GUI
-
 #ifdef WIN32
 #include <windows.h>
 #endif
 
-#include <sofa/gui/qt/GuiDataRepository.h>
-using sofa::gui::qt::GuiDataRepository ;
+#include <sofa/gui/GuiDataRepository.h>
+using sofa::gui::GuiDataRepository ;
 
 using sofa::helper::system::DataRepository;
 using sofa::helper::system::PluginRepository;
@@ -151,7 +147,7 @@ void addGUIParameters(ArgumentParser* argumentParser)
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
-    GuiDataRepository.addFirstPath(SetDirectory::GetRelativeFromProcess("../share/sofa/gui/runSofa/resources/")) ;
+    GuiDataRepository.addFirstPath(Utils::getSofaPathTo("share/sofa/gui/runSofa/resources").c_str()) ;
     sofa::helper::BackTrace::autodump();
 
     ExecParams::defaultInstance()->setAspectID(0);
@@ -211,6 +207,8 @@ int main(int argc, char** argv)
     string colorsStatus = "auto";
     string messageHandler = "auto";
     bool enableInteraction = false ;
+    int width = 800;
+    int height = 600;
 
     string gui_help = "choose the UI (";
     gui_help += GUIManager::ListSupportedGUI('|');
@@ -274,12 +272,6 @@ int main(int argc, char** argv)
     sofa::component::initComponentAdvanced();
     sofa::component::initComponentMisc();
 
-#ifndef SOFA_NO_OPENGL
-#ifdef SOFA_HAVE_GLUT_GUI
-    if(gui!="batch") glutInit(&argc,argv);
-#endif // SOFA_HAVE_GLUT_GUI
-#endif // SOFA_NO_OPENGL
-
 #ifdef SOFA_HAVE_DAG
     if (simulationType == "tree")
         sofa::simulation::setSimulation(new TreeSimulation());
@@ -325,6 +317,11 @@ int main(int argc, char** argv)
     }
     MessageDispatcher::addHandler(&MainPerComponentLoggingMessageHandler::getInstance()) ;
 
+
+    // Add the plugin directory to PluginRepository
+    const std::string& pluginDir = Utils::getPluginDirectory();
+    PluginRepository.addFirstPath(pluginDir);
+
     // Initialise paths
     BaseGUI::setConfigDirectoryPath(Utils::getSofaPathPrefix() + "/config", true);
     BaseGUI::setScreenshotDirectoryPath(Utils::getSofaPathPrefix() + "/screenshots", true);
@@ -335,25 +332,23 @@ int main(int argc, char** argv)
     for (unsigned int i=0; i<plugins.size(); i++)
         PluginManager::getInstance().loadPlugin(plugins[i]);
 
-    std::string configPluginPath = PluginRepository.getFirstPath() + "/" + TOSTRING(CONFIG_PLUGIN_FILENAME);
-    std::string defaultConfigPluginPath = PluginRepository.getFirstPath() + "/" + TOSTRING(DEFAULT_CONFIG_PLUGIN_FILENAME);
+    std::string configPluginPath = pluginDir + "/" + TOSTRING(CONFIG_PLUGIN_FILENAME);
+    std::string defaultConfigPluginPath = pluginDir + "/" + TOSTRING(DEFAULT_CONFIG_PLUGIN_FILENAME);
 
     if (!noAutoloadPlugins)
     {
         if (DataRepository.findFile(configPluginPath))
         {
-            msg_info("runSofa") << "Loading automatically custom plugin list from " << configPluginPath;
+            msg_info("runSofa") << "Loading automatically plugin list in " << configPluginPath;
             PluginManager::getInstance().readFromIniFile(configPluginPath);
         }
         else if (DataRepository.findFile(defaultConfigPluginPath))
         {
-            msg_info("runSofa") << "Loading automatically default plugin list from " << defaultConfigPluginPath;
+            msg_info("runSofa") << "Loading automatically plugin list in " << defaultConfigPluginPath;
             PluginManager::getInstance().readFromIniFile(defaultConfigPluginPath);
         }
         else
-            msg_info("runSofa") << "No plugin will be automatically loaded" << msgendl
-                                << "- No custom list found at " << configPluginPath << msgendl
-                                << "- No default list found at " << defaultConfigPluginPath;
+            msg_info("runSofa") << "No plugin list found. No plugin will be automatically loaded.";
     }
     else
         msg_info("runSofa") << "Automatic plugin loading disabled.";
@@ -383,7 +378,7 @@ int main(int argc, char** argv)
         return err;
 
     //To set a specific resolution for the viewer, use the component ViewerSetting in you scene graph
-    GUIManager::SetDimension(800,600);
+    GUIManager::SetDimension(width, height);
 
     Node::SPtr groot = sofa::simulation::getSimulation()->load(fileName.c_str());
     if( !groot )

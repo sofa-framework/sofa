@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -92,15 +92,15 @@ public:
         return DataTypes::Name();
     }
     bool initialized;
-    Data<std::string> InputMeshName;
-    Data<VecCoord> InputPositions;
-    Data<VecCoord> MappedPointPositions;
-    Data<VecCoord> BarycentricPositions;
-    Data< VecIndices> TableElements;
-    Data<bool> computeLinearInterpolation;
+    Data<std::string> InputMeshName; ///< Name and path of Input mesh Topology
+    Data<VecCoord> InputPositions; ///< Initial positions of the master points
+    Data<VecCoord> MappedPointPositions; ///< Initial positions of the mapped points
+    Data<VecCoord> BarycentricPositions; ///< Output : Barycentric positions of the mapped points
+    Data< VecIndices> TableElements; ///< Output : Table that provides the element index to which each input point belongs
+    Data<bool> computeLinearInterpolation; ///< if true, computes a linear interpolation (debug)
 
-    Data< sofa::helper::vector<sofa::helper::vector< unsigned int > > > f_interpolationIndices;
-    Data< sofa::helper::vector<sofa::helper::vector< Real > > > f_interpolationValues;
+    Data< sofa::helper::vector<sofa::helper::vector< unsigned int > > > f_interpolationIndices; ///< Indices of a linear interpolation
+    Data< sofa::helper::vector<sofa::helper::vector< Real > > > f_interpolationValues; ///< Values of a linear interpolation
 
 private:
 

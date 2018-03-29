@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -51,8 +51,8 @@ public:
     int getPassIndex() const {return passIndex.getValue();}
 
 protected:
-    Data<int> techniqueIndex;
-    Data<int> passIndex;
+    Data<int> techniqueIndex; ///< Index of the technique where we have to add the Texture Unit
+    Data<int> passIndex; ///< Index of the pass where we have to add the Texture Unit
 
 };
 }

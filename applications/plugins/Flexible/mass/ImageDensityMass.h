@@ -85,7 +85,7 @@ public:
 #ifndef SOFA_FLOAT
     Data< defaulttype::ImageD > f_densityImage; ///< the density map
 #else
-	Data< defaulttype::ImageF > f_densityImage;
+	Data< defaulttype::ImageF > f_densityImage; ///< A density map (ratio kg/dm^3)
 #endif 
 
     typedef defaulttype::ImageLPTransform<Real> TransformType;
@@ -104,7 +104,7 @@ public:
 
     //@}
 
-    Data< bool > f_printMassMatrix;
+    Data< bool > f_printMassMatrix; ///< Should the mass matrix be print in console after being precomputed?
 
     Real m_totalMass, m_totalVolume; ///< for debug purpose
 

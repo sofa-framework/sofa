@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -58,13 +58,13 @@ public:
     static const unsigned int WIIMOTE_NUMBER_OF_IR_DOTS;
 
     //input
-    sofa::core::objectmodel::Data<sofa::helper::vector<Real> > f_channels;
+    sofa::core::objectmodel::Data<sofa::helper::vector<Real> > f_channels; ///< Channels from VRPN Analog
 
     //output
-    sofa::core::objectmodel::Data<VecCoord> f_dots;
+    sofa::core::objectmodel::Data<VecCoord> f_dots; ///< IR dots in Wiimote camera view
 
     //Parameters
-    sofa::core::objectmodel::Data<bool> p_viewDots;
+    sofa::core::objectmodel::Data<bool> p_viewDots; ///< View Dots
 
     WiimoteDriver();
     virtual ~WiimoteDriver();

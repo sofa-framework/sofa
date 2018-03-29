@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -58,6 +58,11 @@
 
 //#define NOVISUAL
 #define NOMSG
+
+#include <sofa/gui/GUIManager.h>
+
+int MtGUIClass = sofa::gui::GUIManager::RegisterGUI("glut-mt", &sofa::gui::glut::MultithreadGUI::CreateGUI, NULL, 0);
+
 
 namespace sofa
 {
@@ -216,7 +221,7 @@ int MultithreadGUI::InitGUI(const char* /*name*/, const std::vector<std::string>
     return 0;
 }
 
-BaseGUI* MultithreadGUI::CreateGUI(const char* /*name*/, const std::vector<std::string>& /*options*/, sofa::simulation::Node::SPtr groot, const char* filename)
+BaseGUI* MultithreadGUI::CreateGUI(const char* /*name*/, sofa::simulation::Node::SPtr groot, const char* filename)
 {
 
     glutInitDisplayMode ( GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE );

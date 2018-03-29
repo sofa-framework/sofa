@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -109,7 +109,7 @@ public:
         }
     };
 
-    Data< std::string > d_variables;
+    Data< std::string > d_variables; ///< Define a list of variables to be used inside the rules
     Data< helper::vector<Rule> > rules;
 
     virtual std::string getContactResponse(core::CollisionModel* model1, core::CollisionModel* model2) override;

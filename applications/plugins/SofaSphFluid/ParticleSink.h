@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -85,14 +85,14 @@ public:
     typedef Data<VecDeriv> DataVecDeriv;
     typedef Data<MatrixDeriv> DataMatrixDeriv;
 
-    Data<Deriv> planeNormal;
-    Data<Real> planeD0;
-    Data<Real> planeD1;
-    Data<defaulttype::RGBAColor> color;
-    Data<bool> showPlane;
+    Data<Deriv> planeNormal; ///< plane normal
+    Data<Real> planeD0; ///< plane d coef at which particles acceleration is constrained to 0
+    Data<Real> planeD1; ///< plane d coef at which particles are removed
+    Data<defaulttype::RGBAColor> color; ///< plane color. (default=[0.0,0.5,0.2,1.0])
+    Data<bool> showPlane; ///< enable/disable drawing of plane
 
-    sofa::component::topology::PointSubsetData< SetIndexArray > fixed;
-    //Data< SetIndexArray > fixed;
+    sofa::component::topology::PointSubsetData< SetIndexArray > fixed; ///< indices of fixed particles
+    //Data< SetIndexArray > fixed; ///< indices of fixed particles
 protected:
     ParticleSink()
         : planeNormal(initData(&planeNormal, "normal", "plane normal"))
