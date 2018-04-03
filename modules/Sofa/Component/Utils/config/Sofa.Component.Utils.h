@@ -22,11 +22,13 @@
 #ifndef SOFA_COMPONENT_UTILS_INIT_H
 #define SOFA_COMPONENT_UTILS_INIT_H
 
+#include <sofa/config.h>
+
 #ifdef BUILD_SOFA_COMPONENT_UTILS
 #  define  SOFA_TARGET    Sofa.Component.Utils
-#  define SOFA_COMPONENT_UTILS_API __declspec( dllexport )
+#  define SOFA_COMPONENT_UTILS_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#  define SOFA_COMPONENT_UTILS_API __declspec( dllimport )
+#  define SOFA_COMPONENT_UTILS_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
 namespace sofa

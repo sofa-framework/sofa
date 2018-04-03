@@ -22,11 +22,13 @@
 #ifndef SOFA_INIT_H
 #define SOFA_INIT_H
 
+#include <sofa/config.h>
+
 #ifdef BUILD_SOFA
 #  define  SOFA_TARGET    SofaNg
-#  define SOFA_API __declspec( dllexport )
+#  define SOFA_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#  define SOFA_API __declspec( dllimport )
+#  define SOFA_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
 namespace sofa
