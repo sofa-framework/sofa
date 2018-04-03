@@ -102,6 +102,8 @@ protected:
         typedef Eigen::Matrix<double, 6, 12> deformationGradientFunction; ///< derivatives of the shape functions (Be)
         helper::fixed_array<deformationGradientFunction, 27> _BeMatrices; /// One Be function for each Gauss Point (27 in one beam element)
 
+        helper::fixed_array<bool, 27> _isPlasticPoint;
+
         /*********************************************************************/
 
         // 	static const double FLEXIBILITY=1.00000; // was 1.00001
@@ -157,6 +159,7 @@ protected:
                 << bi._Asz << " "
                 << bi._M_loc << " "
                 << bi._Ke_loc << " "
+                << bi._Kt_loc << " "
                 << bi._k_loc;
             return os;
         }
@@ -179,6 +182,7 @@ protected:
                 >> bi._Asz
                 >> bi._M_loc
                 >> bi._Ke_loc
+                >> bi._Kt_loc
                 >> bi._k_loc;
             return in;
         }
@@ -248,7 +252,7 @@ protected:
     void computeVDStiffness(int i, Index a, Index b);
     void computeMaterialBehaviour(int i, Index a, Index b);
 
-    Data<bool> _isPlastic;
+    Data<bool> _isPlasticMuller;
     /// Symmetrical 3x3 stensor written as a vector following the Voigt notation
     typedef Eigen::Matrix<double, 6, 1> VoigtTensor;
     typedef Eigen::Matrix<double, 27, 6> elementPlasticStrain; ///< one 6x1 strain tensor for each of the 27 points of integration
@@ -262,6 +266,8 @@ protected:
 
     //Position at the last time step, to handle increments for the plasticity resolution
     VecCoord _lastPos;
+
+    bool _isDeformingPlastically;
     /*************************************************************************/
 
     Real _VDPlasticYieldThreshold;
@@ -277,61 +283,53 @@ protected:
     /*                          Plasticity Handler                            */
     /**************************************************************************/
 
-    /* This class is dedicated to handle the plasticity behaviour of the beam
-       elements, according to the theory and notations exposed in Krabbenhoft's
-       lecture notes on Basic Computation Plasticity
+    /* Methods and fields dedicated to handle the plasticity behaviour of the 
+       beam elements, according to the theory and notations exposed in
+       Krabbenhoft's lecture notes on Basic Computation Plasticity
      */
 
-    class MultiBeamPlasticityHandler
-    {
+public:
+    typedef Eigen::Matrix<double, 6, 1> VoigtTensor2; //Tensor of order 2
+    typedef Eigen::Matrix<double, 6, 6> VoigtTensor4; //Tensor of order 4
+    typedef Eigen::Matrix<double, 12, 1> EigenDisplacement; ///<Nodal displacement
+    typedef Eigen::Matrix<double, 12, 1> EigenNodalForces;
+    typedef Eigen::Matrix<double, 12, 12> tangentStiffnessMatrix;
 
-    public:
-        typedef typename MultiBeamForceField<DataTypes>::BeamInfo BeamInfo;
-        typedef typename core::topology::BaseMeshTopology::Edge Edge;
+    // Main function, allowing to compute non-linear reaction forces through an incremental procedure
+    void updateIncrements(tangentStiffnessMatrix &tangentStiffness, EigenNodalForces &plasticForces, const EigenNodalForces &externalLoad);
 
-        typedef Eigen::Matrix<double, 6, 1> VoigtTensor2; //Tensor of order 2
-        typedef Eigen::Matrix<double, 6, 6> VoigtTensor4; //Tensor of order 4
-        typedef Eigen::Matrix<double, 12, 1> Displacement; ///<Nodal displacement
-        typedef Eigen::Matrix<double, 12, 1> plasticNodalForces;
-        typedef Eigen::Matrix<double, 12, 12> tangentStiffnessMatrix;
-        typedef Eigen::Matrix<double, 12, 8> plasticityMatrix; ///< B matrix (as in Krabbenhoft's)
+protected:
+    //Newton-Raphson parameters
+    double _NRThreshold;
+    unsigned int _NRMaxIterations;
 
-        MultiBeamPlasticityHandler(MultiBeamForceField<DataTypes>* ff);
+    double _UTS; //Ultimate Tebnsile Strength, used in the Von Mises yield criterion
+    Data<bool> _isPlasticKrabbenhoft;
 
-        // Main function, allowing to compute non-linear reaction forces through an incremental procedure
-        void updateIncrements(tangentStiffnessMatrix &tangentStiffness, plasticNodalForces &plasticForces, const plasticNodalForces &externalLoad);
+    MultiBeamForceField<DataTypes>* ff;
 
-    protected:
-        //Newton-Raphson parameters
-        double _NRThreshold;
-        unsigned int _NRMaxIterations;
+    bool goInPlasticDeformation(const VoigtTensor2 &stressTensor);
+    bool stayInPlasticDeformation(const VoigtTensor2 &stressTensor, const VoigtTensor2 &stressIncrement);
 
-        double _UTS; //Ultimate Tebnsile Strength, used in the Von Mises yield criterion
+    void solveDispIncrement(const tangentStiffnessMatrix &tangentStiffness, EigenDisplacement &du, const EigenNodalForces &residual);
+    void computeDisplacementIncrement(const VecCoord& pos, const VecCoord& lastPos, Displacement &currentDisp, Displacement &lastDisp,
+                                      Displacement &dispIncrement, int i, Index a, Index b);
+    void computeStressIncrement(int i, const VoigtTensor2 &initialStress, VoigtTensor2 &stressIncrement, 
+                                const VoigtTensor2 &strainIncrement, double &lambdaIncrement, bool isPlasticPoint);
 
-        tangentStiffnessMatrix _tangentStiffness;
-        plasticNodalForces _nodalForces;
-        MultiBeamForceField<DataTypes>* ff;
+    //NB: these two functions receive a *local* stress Tensor, which is computed for a given Gauss point
+    double vonMisesYield(const VoigtTensor2 &stressTensor, const double UTS);
+    VoigtTensor2 vonMisesGradient(const VoigtTensor2 &stressTensor, const double UTS);
+    VoigtTensor2 vonMisesGradientFD(const VoigtTensor2 &currentStressTensor, const double increment, const double UTS);
+    VoigtTensor4 vonMisesHessian(const VoigtTensor2 &stressTensor, const double UTS);
+    VoigtTensor4 vonMisesHessianFD(const VoigtTensor2 &lastStressTensor, const VoigtTensor2 &currentStressTensor, const double UTS);
 
-        //True if the last time step stress was already in plastic state
-        bool _computeFromPlasticState;
+    //Methods called by addForce, addDForce and addKToMatrix when deforming plasticly
+    void accumulateNonLinearForce(VecDeriv& f, const VecCoord& x, int i, Index a, Index b);
+    void applyNonLinearStiffness(VecDeriv& df, const VecDeriv& dx, int i, Index a, Index b, double fact);
+    void updateTangentStiffness(int i, Index a, Index b);
 
-        bool inPlasticDeformation(const VoigtTensor2 &stressTensor);
-        bool outOfPlasticDeformation(const VoigtTensor2 &stressTensor, const VoigtTensor2 &stressIncrement);
-
-        //NB: these two functions receive a *local* stress Tensor, which is computed for a given Gauss point
-        double vonMisesYield(const VoigtTensor2 &stressTensor, const double UTS);
-        VoigtTensor2 vonMisesGradient(const VoigtTensor2 &stressTensor, const double UTS);
-        VoigtTensor4 vonMisesHessian(const VoigtTensor2 &stressTensor, const double UTS);
-
-        void solveDispIncrement(const tangentStiffnessMatrix &tangentStiffness, Displacement &du, const plasticNodalForces &residual);
-        void computeStressIncrement(int i, const VoigtTensor2 &initialStress, VoigtTensor2 &stressIncrement, const VoigtTensor2 &strainIncrement, double &lambdaIncrement);
-
-        //Methods called by addForce, addDForce and addKToMatrix when deforming plasticly
-        void accumulateNonLinearForce(VecDeriv& f, const VecCoord& x, int i, Index a, Index b);
-        void applyNonLinearStiffness(VecDeriv& df, const VecDeriv& dx, int i, Index a, Index b);
-        void updateTangentStiffness(int i, Index a, Index b);
-
-    };
+    bool _isPostPlastic;
 
     /**************************************************************************/
 
@@ -363,7 +361,7 @@ protected:
 
 
     MultiBeamForceField();
-    MultiBeamForceField(Real poissonRatio, Real youngModulus, Real zSection, Real ySection, bool useVD, bool isPlastic);
+    MultiBeamForceField(Real poissonRatio, Real youngModulus, Real zSection, Real ySection, bool useVD, bool isPlasticMuller, bool isPlasticKrabbenhoft);
     virtual ~MultiBeamForceField();
 public:
     void setUpdateStiffnessMatrix(bool val) { this->_updateStiffnessMatrix = val; }

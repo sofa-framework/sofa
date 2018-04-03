@@ -60,7 +60,8 @@ MultiBeamForceField<DataTypes>::MultiBeamForceField()
     , _poissonRatio(initData(&_poissonRatio,(Real)0.49f,"poissonRatio","Potion Ratio"))
     , _youngModulus(initData(&_youngModulus,(Real)5000,"youngModulus","Young Modulus"))
     , _virtualDisplacementMethod(initData(&_virtualDisplacementMethod, true, "virtualDisplacementMethod", "indicates if the stiffness matrix is computed following the virtual displacement method"))
-    , _isPlastic(initData(&_isPlastic, false, "isPlastic", "indicates wether the behaviour model is plastic"))
+    , _isPlasticKrabbenhoft(initData(&_isPlasticKrabbenhoft, false, "isPlasticKrabbenhoft", "indicates wether the behaviour model is plastic, as in Krabbenhoft 2002"))
+    , _isPlasticMuller(initData(&_isPlasticMuller, false, "isPlasticMuller", "indicates wether the behaviour model is plastic, as in Muller et al 2004"))
     , _zSection(initData(&_zSection, (Real)0.2, "zSection", "length of the section in the z direction for rectangular beams"))
     , _ySection(initData(&_ySection, (Real)0.2, "ySection", "length of the section in the y direction for rectangular beams"))
     , _list_segment(initData(&_list_segment,"listSegment", "apply the forcefield to a subset list of beam segments. If no segment defined, forcefield applies to the whole topology"))
@@ -77,13 +78,14 @@ MultiBeamForceField<DataTypes>::MultiBeamForceField()
 }
 
 template<class DataTypes>
-MultiBeamForceField<DataTypes>::MultiBeamForceField(Real poissonRatio, Real youngModulus, Real zSection, Real ySection, bool useVD, bool isPlastic)
+MultiBeamForceField<DataTypes>::MultiBeamForceField(Real poissonRatio, Real youngModulus, Real zSection, Real ySection, bool useVD, bool isPlasticMuller, bool isPlasticKrabbenhoft)
     : beamsData(initData(&beamsData, "beamsData", "Internal element data"))
     , _indexedElements(NULL)
     , _poissonRatio(initData(&_poissonRatio,(Real)poissonRatio,"poissonRatio","Potion Ratio"))
     , _youngModulus(initData(&_youngModulus,(Real)youngModulus,"youngModulus","Young Modulus"))
     , _virtualDisplacementMethod(initData(&_virtualDisplacementMethod, true, "virtualDisplacementMethod", "indicates if the stiffness matrix is computed following the virtual displacement method"))
-    , _isPlastic(initData(&_isPlastic, isPlastic, "isPlastic", "indicates wether the behaviour model is plastic"))
+    , _isPlasticKrabbenhoft(initData(&_isPlasticKrabbenhoft, false, "isPlasticKrabbenhoft", "indicates wether the behaviour model is plastic, as in Krabbenhoft 2002"))
+    , _isPlasticMuller(initData(&_isPlasticMuller, false, "isPlasticMuller", "indicates wether the behaviour model is plastic, as in Muller et al 2004"))
     , _zSection(initData(&_zSection, (Real)zSection, "zSection", "length of the section in the z direction for rectangular beams"))
     , _ySection(initData(&_ySection, (Real)ySection, "ySection", "length of the section in the y direction for rectangular beams"))
     , _list_segment(initData(&_list_segment,"listSegment", "apply the forcefield to a subset list of beam segments. If no segment defined, forcefield applies to the whole topology"))
@@ -192,7 +194,24 @@ void MultiBeamForceField<DataTypes>::reinit()
         //Initialises the lastPos field with the rest position
         _lastPos = mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
+        _isDeformingPlastically = false;
+        _isPostPlastic = false;
+
+        /***** Krabbenhoft plasticity *****/
+
+        _NRThreshold = 0.0; //to be changed during iterations
+        _NRMaxIterations = 25;
+
+        //Found UTS of 655MPa for an ASTM F75-07 cobalt-chrome alloy
+        _UTS = 655000000.0;
+
+        /**********************************/
+
         _prevStresses.resize(n);
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < 27; j++)
+                _prevStresses[i][j] = VoigtTensor::Zero();
+
         _VDPlasticStrains.resize(n);
         for (unsigned int i = 0; i < n; i++)
             _VDPlasticStrains[i] = elementPlasticStrain::Zero();
@@ -235,6 +254,7 @@ void MultiBeamForceField<DataTypes>::reinitBeam(unsigned int i)
 
     if (_virtualDisplacementMethod.getValue())
     {
+        //In first step, we assume elastic deformation
         computeMaterialBehaviour(i, a, b);
         computeVDStiffness(i, a, b);
     }
@@ -242,7 +262,7 @@ void MultiBeamForceField<DataTypes>::reinitBeam(unsigned int i)
     {
         computeStiffness(i, a, b);
 
-        if (_isPlastic.getValue())
+        if (_isPlasticMuller.getValue())
             initPlasticityMatrix(i, a, b);
     }
 
@@ -279,7 +299,11 @@ void MultiBeamForceField<DataTypes>::addForce(const sofa::core::MechanicalParams
             Index a = edge[0];
             Index b = edge[1];
             initLarge(i,a,b);
-            accumulateForceLarge( f, p, i, a, b );
+
+            if (!_isDeformingPlastically)
+                accumulateForceLarge(f, p, i, a, b);
+            else
+                accumulateNonLinearForce(f, p, i, a, b);
         }
     }
     else
@@ -292,7 +316,11 @@ void MultiBeamForceField<DataTypes>::addForce(const sofa::core::MechanicalParams
             Index b = (*it)[1];
 
             initLarge(i,a,b);
-            accumulateForceLarge( f, p, i, a, b );
+            
+            if (!_isDeformingPlastically)
+                accumulateForceLarge(f, p, i, a, b);
+            else
+                accumulateNonLinearForce(f, p, i, a, b);
         }
     }
 
@@ -329,7 +357,10 @@ void MultiBeamForceField<DataTypes>::addDForce(const sofa::core::MechanicalParam
             Index a = (*it)[0];
             Index b = (*it)[1];
 
-            applyStiffnessLarge(df, dx, i, a, b, kFactor);
+            if (!_isDeformingPlastically)
+                applyStiffnessLarge(df, dx, i, a, b, kFactor);
+            else
+                applyNonLinearStiffness(df, dx, i, a, b, kFactor);
         }
     }
 
@@ -475,9 +506,6 @@ void MultiBeamForceField<DataTypes>::initLarge(int i, Index a, Index b)
 template<class DataTypes>
 void MultiBeamForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const VecCoord & x, int i, Index a, Index b )
 {
-    //Save the positions computed in the last step before starting the composition of the current step system
-    _lastPos = x;
-
     const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
     beamQuat(i)= x[a].getOrientation();
@@ -528,20 +556,113 @@ void MultiBeamForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const Ve
 
     if (_virtualDisplacementMethod.getValue())
     {
+
         force = beamsData.getValue()[i]._Ke_loc * depl;
 
-        if (_isPlastic.getValue())
+        helper::fixed_array<VoigtTensor2, 27> newStressvector;
+
+        if (_isPlasticKrabbenhoft.getValue())
+        {            
+            //std::cout << "Fint_local pour l'element " << i << " : " << std::endl << force << " " << std::endl << std::endl; //TO DO: delete, for debug 
+
+            Eigen::Matrix<double, 12, 1> eigenDepl;
+            for (int i = 0; i < 12; i++)
+                eigenDepl(i) = depl[i];
+
+            //Update stresses
+            const Eigen::Matrix<double, 6, 6>& C = beamsData.getValue()[i]._materialBehaviour;
+            Eigen::Matrix<double, 6, 12> Be;
+            helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
+            helper::fixed_array<bool, 27>& isPlasticPoint = bd[i]._isPlasticPoint;
+
+            VoigtTensor2 newStress;
+            bool res;
+            //For each Gauss point, we update the stress value for next iteration
+            for (int j = 0; j < 27; j++)
+            {
+                Be = beamsData.getValue()[i]._BeMatrices[j];
+                newStress = C*Be*eigenDepl;
+
+                res = goInPlasticDeformation(newStress);
+                isPlasticPoint[j] = res;
+                _isDeformingPlastically = _isDeformingPlastically || res;
+
+                newStressvector[j] = newStress;
+            }
+            beamsData.endEdit();
+
+            if (!_isDeformingPlastically)
+            {
+                _prevStresses[i] = newStressvector; //for next time step
+                // Apply lambda transpose (we use the rotation value of point a for the beam)
+                Vec3 fa1 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[0], force[1], force[2]));
+                Vec3 fa2 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[3], force[4], force[5]));
+
+                Vec3 fb1 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[6], force[7], force[8]));
+                Vec3 fb2 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[9], force[10], force[11]));
+
+                f[a] += Deriv(-fa1, -fa2);
+                f[b] += Deriv(-fb1, -fb2);
+
+                _lastPos = x;
+            }
+            else
+            {
+                /******************************************************/
+                /********************** DEBUG *************************/
+                /******************************************************/
+                //TO DO: delete, debug purposes
+                //Eigen::Matrix<double, 12, 1> eigenDepl;
+                //for (int i = 0; i < 12; i++)
+                //    eigenDepl(i) = depl[i];
+
+                ////Update stresses
+                //const Eigen::Matrix<double, 6, 6>& C = beamsData.getValue()[i]._materialBehaviour;
+                //Eigen::Matrix<double, 6, 12> Be;
+
+                //VoigtTensor2 newStress;
+                //bool res;
+                ////For each Gauss point, we update the stress value for next iteration
+                //for (int j = 0; j < 27; j++)
+                //{
+                //    Be = beamsData.getValue()[i]._BeMatrices[j];
+                //    newStress = C*Be*eigenDepl;
+
+                //    res = goInPlasticDeformation(newStress);
+                //}
+                /******************************************************/
+
+                // The computation of these new stresses should be plastic
+                accumulateNonLinearForce(f, x, i, a, b);
+
+            }
+
+        } //endif _isPlasticKrabbenhoft
+        else
         {
-            computePlasticForces(i, a, b, depl, plasticForce);
-            force -= plasticForce;
+            if (_isPlasticMuller.getValue())
+            {
+                computePlasticForces(i, a, b, depl, plasticForce);
+                force -= plasticForce;
+            }
+
+            Vec3 fa1 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[0], force[1], force[2]));
+            Vec3 fa2 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[3], force[4], force[5]));
+
+            Vec3 fb1 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[6], force[7], force[8]));
+            Vec3 fb2 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[9], force[10], force[11]));
+
+            f[a] += Deriv(-fa1, -fa2);
+            f[b] += Deriv(-fb1, -fb2);
         }
-    }
+    } //endif _virtualDisplacementMethod
+
     else
     {
         // this computation can be optimised: (we know that half of "depl" is null)
         force = beamsData.getValue()[i]._k_loc * depl;
 
-        if (_isPlastic.getValue())
+        if (_isPlasticMuller.getValue())
         {
             //Update nodal forces to compute plasticity
             //TO DO: use forces from the previous step?
@@ -551,20 +672,18 @@ void MultiBeamForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const Ve
             plasticForce = beamsData.getValue()[i]._M_loc * _VFPlasticStrains[i];
             force -= plasticForce;
         }
-    }   
 
-    // Apply lambda transpose (we use the rotation value of point a for the beam)
+        // Apply lambda transpose (we use the rotation value of point a for the beam)
+        Vec3 fa1 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[0], force[1], force[2]));
+        Vec3 fa2 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[3], force[4], force[5]));
 
-    Vec3 fa1 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[0],force[1],force[2]));
-    Vec3 fa2 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[3],force[4],force[5]));
-
-    Vec3 fb1 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[6],force[7],force[8]));
-    Vec3 fb2 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[9],force[10],force[11]));
+        Vec3 fb1 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[6], force[7], force[8]));
+        Vec3 fb2 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[9], force[10], force[11]));
 
 
-    f[a] += Deriv(-fa1, -fa2);
-    f[b] += Deriv(-fb1, -fb2);
-
+        f[a] += Deriv(-fa1, -fa2);
+        f[b] += Deriv(-fb1, -fb2);
+    }
 }
 
 template<class DataTypes>
@@ -597,6 +716,9 @@ void MultiBeamForceField<DataTypes>::applyStiffnessLarge(VecDeriv& df, const Vec
     local_depl[10] = u[1];
     local_depl[11] = u[2];
 
+    //if (_isPlasticKrabbenhoft.getValue())
+    //    std::cout << "deplacement vitesse (elastique) pour l'element " << i << " : " << std::endl << local_depl << " " << std::endl << std::endl; //TO DO: delete, debug purposes
+
     Displacement local_force;
 
     if (_virtualDisplacementMethod.getValue())
@@ -611,14 +733,19 @@ void MultiBeamForceField<DataTypes>::applyStiffnessLarge(VecDeriv& df, const Vec
         //TO DO: plasticity?
     }
 
+    //if (_isPlasticKrabbenhoft.getValue())
+        //std::cout << "K*v_local pour l'element " << i << " : " << std::endl << local_force << " " << std::endl << std::endl; //TO DO: delete, debug purposes
+
     Vec3 fa1 = q.rotate(defaulttype::Vec3d(local_force[0],local_force[1] ,local_force[2] ));
     Vec3 fa2 = q.rotate(defaulttype::Vec3d(local_force[3],local_force[4] ,local_force[5] ));
     Vec3 fb1 = q.rotate(defaulttype::Vec3d(local_force[6],local_force[7] ,local_force[8] ));
     Vec3 fb2 = q.rotate(defaulttype::Vec3d(local_force[9],local_force[10],local_force[11]));
 
-
     df[a] += Deriv(-fa1,-fa2) * fact;
     df[b] += Deriv(-fb1,-fb2) * fact;
+
+    //if (_isPlasticKrabbenhoft.getValue())
+    //    std::cout << "K*v_tot (elastique) pour l'element " << i << " : " << std::endl << df << " " << std::endl << std::endl; //TO DO: delete, debug purposes
 }
 
 template<class DataTypes>
@@ -655,7 +782,12 @@ void MultiBeamForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPa
 
                 if (_virtualDisplacementMethod.getValue())
                 {
-                    const StiffnessMatrix& K0 = beamsData.getValue()[i]._Ke_loc;
+                    StiffnessMatrix K0;
+                    if (_isDeformingPlastically)
+                        K0 = beamsData.getValue()[i]._Kt_loc;
+                    else
+                        K0 = beamsData.getValue()[i]._Ke_loc;
+                    
                     for (int x1 = 0; x1<12; x1 += 3)
                         for (int y1 = 0; y1<12; y1 += 3)
                         {
@@ -714,7 +846,12 @@ void MultiBeamForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPa
                
                 if (_virtualDisplacementMethod.getValue())
                 {
-                   const StiffnessMatrix& K0 = beamsData.getValue()[i]._Ke_loc;
+                    StiffnessMatrix K0;
+                    if (_isDeformingPlastically)
+                        K0 = beamsData.getValue()[i]._Kt_loc;
+                    else
+                        K0 = beamsData.getValue()[i]._Ke_loc;
+
                    if (exploitSymmetry) {
                        for (int x1 = 0; x1<12; x1 += 3) {
                            for (int y1 = x1; y1<12; y1 += 3)
@@ -971,6 +1108,9 @@ void MultiBeamForceField<DataTypes>::BeamInfo::init(double E, double L, double n
         i++;
     };
     ozp::quadrature::integrate <GaussianQuadratureType, 3, LambdaType>(_integrationInterval, initialiseBeMatrix);
+
+    //Initialises the plastic indicators
+    _isPlasticPoint.assign(false);
 
 }
 
@@ -1308,16 +1448,7 @@ void MultiBeamForceField<DataTypes>::computeVDStiffness(int i, Index, Index)
         for (int j = 0; j < 12; j++)
             Ke_loc[i][j] = stiffness(i, j);
 
-    std::cout << "Ke_loc pour l'element " << i << " : " << std::endl;
-    for (int i = 0; i < 12; i++)
-    {
-        for (int j = 0; j < 12; j++)
-        {
-            std::cout << Ke_loc[i][j] << " ";
-        }
-        std::cout << std::endl;
-    }
-    std::cout << std::endl << std::endl;
+    std::cout << "Ke pour l'element " << i << " : " << std::endl << stiffness << " " << std::endl << std::endl;
 
     beamsData.endEdit();
 }
@@ -1429,32 +1560,14 @@ void MultiBeamForceField<DataTypes>::updatePlasticStrain(int i, Index a, Index b
 /**************************************************************************/
 
 template< class DataTypes>
-MultiBeamForceField<DataTypes>::MultiBeamPlasticityHandler::MultiBeamPlasticityHandler(MultiBeamForceField<DataTypes>* ff)
-    : ff(ff)
-{
-    _NRThreshold = 0.0; //to be changed during iterations
-    _NRMaxIterations = 25;
-
-    //Found UTS of 655MPa for an ASTM F75-07 cobalt-chrome alloy
-    _UTS = 655000000.0;
-
-    _tangentStiffness = tangentStiffnessMatrix::Zero();
-    _nodalForces = plasticNodalForces::Zero();
-
-    //Rest state correspond to (null) elastic deformation
-    _computeFromPlasticState = false;
-}
-
-
-template< class DataTypes>
-void MultiBeamForceField<DataTypes>::MultiBeamPlasticityHandler::updateIncrements(tangentStiffnessMatrix &tangentStiffness,
-                                                                                  plasticNodalForces &plasticForces,
-                                                                                  const plasticNodalForces &externalLoad)
+void MultiBeamForceField<DataTypes>::updateIncrements(tangentStiffnessMatrix &tangentStiffness,
+                                                      EigenNodalForces &plasticForces,
+                                                      const EigenNodalForces &externalLoad)
 {
     //Algo table 2 de Krabbenhoft
 
     // en local :
-    //      plasticNodalForces externLoad (f_k), loadIncrement
+    //      EigenNodalForces externLoad (f_k), loadIncrement
     //      Displacement disp (u_k), dispIncrement
     //      matrice B
     //      VoigtTensor2 strainIncrement (DELTA_epsilon_k), stressIncrement (DELTA_sigma_k)
@@ -1464,7 +1577,7 @@ void MultiBeamForceField<DataTypes>::MultiBeamPlasticityHandler::updateIncrement
 
 
 template< class DataTypes>
-bool MultiBeamForceField<DataTypes>::MultiBeamPlasticityHandler::inPlasticDeformation(const VoigtTensor2 &stressTensor)
+bool MultiBeamForceField<DataTypes>::goInPlasticDeformation(const VoigtTensor2 &stressTensor)
 {
     double yield = vonMisesYield(stressTensor, _UTS);
     return yield > 0;
@@ -1472,18 +1585,18 @@ bool MultiBeamForceField<DataTypes>::MultiBeamPlasticityHandler::inPlasticDeform
 
 
 template< class DataTypes>
-bool MultiBeamForceField<DataTypes>::MultiBeamPlasticityHandler::outOfPlasticDeformation(const VoigtTensor2 &stressTensor,
-                                                                                         const VoigtTensor2 &stressIncrement)
+bool MultiBeamForceField<DataTypes>::stayInPlasticDeformation(const VoigtTensor2 &stressTensor,
+                                                              const VoigtTensor2 &stressIncrement)
 {
     Eigen::Matrix<double, 6, 1> gradient = vonMisesGradient(stressTensor, _UTS);
     double cp = gradient.transpose()*stressIncrement;
-    return cp < 0;
+    return cp >= 0; //if true, the stress point still represents a plastic state
 }
 
 
 template< class DataTypes>
-double MultiBeamForceField<DataTypes>::MultiBeamPlasticityHandler::vonMisesYield(const VoigtTensor2 &stressTensor,
-                                                                                 const double UTS)
+double MultiBeamForceField<DataTypes>::vonMisesYield(const VoigtTensor2 &stressTensor,
+                                                     const double UTS)
 {
     double res = 0.0;
     double sigmaX = stressTensor[0];
@@ -1502,10 +1615,14 @@ double MultiBeamForceField<DataTypes>::MultiBeamPlasticityHandler::vonMisesYield
 
 
 template< class DataTypes>
-Eigen::Matrix<double, 6, 1> MultiBeamForceField<DataTypes>::MultiBeamPlasticityHandler::vonMisesGradient(const VoigtTensor2 &stressTensor,
-                                                                                                         const double UTS)
+Eigen::Matrix<double, 6, 1> MultiBeamForceField<DataTypes>::vonMisesGradient(const VoigtTensor2 &stressTensor,
+                                                                             const double UTS)
 {
     VoigtTensor2 res = VoigtTensor2::Zero();
+
+    if (stressTensor.isZero())
+        return res;
+
     double sigmaX = stressTensor[0];
     double sigmaY = stressTensor[1];
     double sigmaZ = stressTensor[2];
@@ -1513,7 +1630,7 @@ Eigen::Matrix<double, 6, 1> MultiBeamForceField<DataTypes>::MultiBeamPlasticityH
     double sigmaZX = stressTensor[4];
     double sigmaXY = stressTensor[5];
 
-    double fact = 1 / 2 * (vonMisesYield(stressTensor, UTS) + UTS);
+    double fact = 1 / (2 * (vonMisesYield(stressTensor, UTS) + UTS));
 
     res[0] = 2 * sigmaX - sigmaY - sigmaZ;
     res[1] = 2 * sigmaY - sigmaZ - sigmaX;
@@ -1528,10 +1645,13 @@ Eigen::Matrix<double, 6, 1> MultiBeamForceField<DataTypes>::MultiBeamPlasticityH
 
 
 template< class DataTypes>
-Eigen::Matrix<double, 6, 6> MultiBeamForceField<DataTypes>::MultiBeamPlasticityHandler::vonMisesHessian(const VoigtTensor2 &stressTensor,
-                                                                                                        const double UTS)
+Eigen::Matrix<double, 6, 6> MultiBeamForceField<DataTypes>::vonMisesHessian(const VoigtTensor2 &stressTensor,
+                                                                            const double UTS)
 {
     VoigtTensor4 res = VoigtTensor4::Zero();
+
+    if (stressTensor.isZero())
+        return res;
 
     //Order 1 terms
     double sigmaX = stressTensor[0];
@@ -1607,10 +1727,56 @@ Eigen::Matrix<double, 6, 6> MultiBeamForceField<DataTypes>::MultiBeamPlasticityH
     return res;
 }
 
+
+
+//*****************************************************************************************//
+//***************************************** DEBUG *****************************************//
+//*****************************************************************************************//
+
 template< class DataTypes>
-void MultiBeamForceField<DataTypes>::MultiBeamPlasticityHandler::solveDispIncrement(const tangentStiffnessMatrix &tangentStiffness,
-                                                                                    Displacement &du,
-                                                                                    const plasticNodalForces &residual)
+Eigen::Matrix<double, 6, 1> MultiBeamForceField<DataTypes>::vonMisesGradientFD(const VoigtTensor2 &currentStressTensor,
+                                                                               const double increment,
+                                                                               const double UTS)
+{
+    //increment has to be non-zero
+
+    VoigtTensor2 res = VoigtTensor2::Zero();
+
+    if (currentStressTensor.isZero())
+        return res;
+
+    VoigtTensor2 newStress = currentStressTensor;
+    double Ftph, Ft;
+
+    Ft = vonMisesYield(currentStressTensor, UTS);
+
+    for (int i = 0; i < 6; i++)
+    {
+        newStress[i] += increment;
+        Ftph = vonMisesYield(newStress, UTS);
+        res[i] = (Ftph - Ft) / increment;
+        newStress[i] -= increment;
+    }
+
+    return res;
+}
+
+
+template< class DataTypes>
+Eigen::Matrix<double, 6, 6> MultiBeamForceField<DataTypes>::vonMisesHessianFD(const VoigtTensor2 &lastStressTensor,
+                                                                              const VoigtTensor2 &currentStressTensor,
+                                                                              const double UTS)
+{
+    VoigtTensor4 res = VoigtTensor4::Zero();
+    return res;
+}
+//*****************************************************************************************//
+
+
+template< class DataTypes>
+void MultiBeamForceField<DataTypes>::solveDispIncrement(const tangentStiffnessMatrix &tangentStiffness,
+                                                        EigenDisplacement &du,
+                                                        const EigenNodalForces &residual)
 {
     //Solve the linear system K*du = residual, for du
 
@@ -1621,175 +1787,248 @@ void MultiBeamForceField<DataTypes>::MultiBeamPlasticityHandler::solveDispIncrem
 }
 
 
+
 template< class DataTypes>
-void MultiBeamForceField<DataTypes>::MultiBeamPlasticityHandler::computeStressIncrement(int i,
-                                                                                        const VoigtTensor2 &initialStress,
-                                                                                        VoigtTensor2 &stressIncrement,
-                                                                                        const VoigtTensor2 &strainIncrement,
-                                                                                        double &lambdaIncrement)
+void MultiBeamForceField<DataTypes>::computeDisplacementIncrement(const VecCoord& pos, const VecCoord& lastPos, Displacement &currentDisp,
+                                                                  Displacement &lastDisp, Displacement &dispIncrement, int i, Index a, Index b)
+{
+    const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+
+    // ***** Displacement for current position *****//
+    beamQuat(i) = pos[a].getOrientation();
+    beamQuat(i).normalize();
+
+    beamsData.endEdit();
+
+    defaulttype::Vec<3, Real> u, P1P2, P1P2_0;
+
+    // translations //
+    P1P2_0 = x0[b].getCenter() - x0[a].getCenter();
+    P1P2_0 = x0[a].getOrientation().inverseRotate(P1P2_0);
+    P1P2 = pos[b].getCenter() - pos[a].getCenter();
+    P1P2 = pos[a].getOrientation().inverseRotate(P1P2);
+    u = P1P2 - P1P2_0;
+    currentDisp[0] = 0.0; 	currentDisp[1] = 0.0; 	currentDisp[2] = 0.0;
+    currentDisp[6] = u[0]; currentDisp[7] = u[1]; currentDisp[8] = u[2];
+
+    // rotations //
+    defaulttype::Quat dQ0, dQ;
+
+    // dQ = QA.i * QB ou dQ = QB * QA.i() ??
+    dQ0 = qDiff(x0[b].getOrientation(), x0[a].getOrientation()); // x0[a].getOrientation().inverse() * x0[b].getOrientation();
+    dQ = qDiff(pos[b].getOrientation(), pos[a].getOrientation()); // pos[a].getOrientation().inverse() * pos[b].getOrientation();
+                                                              //u = dQ.toEulerVector() - dQ0.toEulerVector(); // Consider to use quatToRotationVector instead of toEulerVector to have the rotation vector
+
+    dQ0.normalize();
+    dQ.normalize();
+
+    defaulttype::Quat tmpQ = qDiff(dQ, dQ0);
+    tmpQ.normalize();
+
+    u = tmpQ.quatToRotationVector(); //dQ.quatToRotationVector() - dQ0.quatToRotationVector();  // Use of quatToRotationVector instead of toEulerVector:
+                                     // this is done to keep the old behavior (before the
+                                     // correction of the toEulerVector  function). If the
+                                     // purpose was to obtain the Eulerian vector and not the
+                                     // rotation vector please use the following line instead
+                                     //u = tmpQ.toEulerVector(); //dQ.toEulerVector() - dQ0.toEulerVector();
+
+    currentDisp[3] = 0.0; 	currentDisp[4] = 0.0; 	currentDisp[5] = 0.0;
+    currentDisp[9] = u[0]; currentDisp[10] = u[1]; currentDisp[11] = u[2];
+
+
+    // ***** Displacement for last position *****//
+
+    beamQuat(i) = lastPos[a].getOrientation();
+    beamQuat(i).normalize();
+
+    beamsData.endEdit();
+
+    // translations //
+    P1P2 = lastPos[b].getCenter() - lastPos[a].getCenter();
+    P1P2 = lastPos[a].getOrientation().inverseRotate(P1P2);
+    u = P1P2 - P1P2_0;
+    lastDisp[0] = 0.0; 	lastDisp[1] = 0.0; 	lastDisp[2] = 0.0;
+    lastDisp[6] = u[0]; lastDisp[7] = u[1]; lastDisp[8] = u[2];
+
+    // rotations //
+    // dQ = QA.i * QB ou dQ = QB * QA.i() ??
+    dQ0 = qDiff(x0[b].getOrientation(), x0[a].getOrientation()); // x0[a].getOrientation().inverse() * x0[b].getOrientation();
+    dQ = qDiff(lastPos[b].getOrientation(), lastPos[a].getOrientation()); // lastPos[a].getOrientation().inverse() * lastPos[b].getOrientation();
+    
+    dQ0.normalize();
+    dQ.normalize();
+
+    tmpQ = qDiff(dQ, dQ0);
+    tmpQ.normalize();
+
+    u = tmpQ.quatToRotationVector(); 
+
+    lastDisp[3] = 0.0; 	lastDisp[4] = 0.0; 	lastDisp[5] = 0.0;
+    lastDisp[9] = u[0]; lastDisp[10] = u[1]; lastDisp[11] = u[2];
+
+
+    // ***** Displacement increment *****//
+
+    dispIncrement = currentDisp - lastDisp;
+}
+
+
+
+
+template< class DataTypes>
+void MultiBeamForceField<DataTypes>::computeStressIncrement(int i,
+                                                            const VoigtTensor2 &initialStress,
+                                                            VoigtTensor2 &stressIncrement,
+                                                            const VoigtTensor2 &strainIncrement,
+                                                            double &lambdaIncrement,
+                                                            bool isPlasticPoint)
 {
     /** Material point iterations **/
     //NB: we consider that the yield function and the plastic flow are equal (f=g)
     //    This corresponds to an associative flow rule (for plasticity)
 
-    unsigned int nbMaxIterations = 25;
-    double threshold = 1; //TO DO: choose coherent value
+    const Eigen::Matrix<double, 6, 6>& C = beamsData.getValue()[i]._materialBehaviour; //Matrix D in Krabbenhoft's
 
-    const Eigen::Matrix<double, 6, 6>& C = ff->beamsData.getValue()[i]._materialBehaviour; //Matrix D in Krabbenhoft's
-
-
-    /*****************************/
-    /*   Plastic return method   */
-    /*****************************/
-
-    ////First we compute the elastic predictor
-    //VoigtTensor2 elasticPredictor = C*strainIncrement;
-
-    //VoigtTensor2 currentStressPoint = initialStress + elasticPredictor; //point B in Krabbenhoft's
-
-    //VoigtTensor2 grad, plasticStressIncrement;
-    //double denum, dLambda;
-    //double fSigma = vonMisesYield(currentStressPoint, _UTS); //for the 1st iteration
-
-    ////We start iterations with point B
-    //for (unsigned int i = 0; i < nbMaxIterations; i++)
-    //{
-    //    grad = vonMisesGradient(currentStressPoint, _UTS);
-    //    denum = grad.transpose()*C*grad;
-    //    dLambda = fSigma / denum;
-
-    //    plasticStressIncrement = dLambda*C*grad;
-
-    //    currentStressPoint -= plasticStressIncrement;
-
-    //    fSigma = vonMisesYield(currentStressPoint, _UTS);
-    //    if (fSigma < iterationThreshold)
-    //        break; //Yield condition : the current stress point is on the yield surface
-    //}
-    //// return the total stress increment
-    ////TO DO: return the current stress directly instead?
-    //stressIncrement = currentStressPoint - initialStress;
-
-    /*****************************/
-    /*      Implicit method      */
-    /*****************************/
-
-    //First we compute the elastic predictor
-    VoigtTensor2 elasticPredictor = C*strainIncrement;
-    VoigtTensor2 currentStressPoint = initialStress + elasticPredictor;
-
-    Eigen::Matrix<double, 7, 1> totalIncrement = Eigen::Matrix<double, 7, 1>::Zero();
-    totalIncrement.block<6, 1>(0, 0) = elasticPredictor;
-
-    Eigen::Matrix<double, 7, 1> newIncrement= Eigen::Matrix<double, 7, 1>::Zero();
-
-    //Intermediate variables
-    Eigen::Matrix<double, 6, 6> I6 = Eigen::Matrix<double, 6, 6>::Identity();
-    VoigtTensor2 gradient = vonMisesGradient(currentStressPoint, _UTS);
-    VoigtTensor4 hessian;
-    double yieldCondition;
-
-    //Initialisation of the Jacobian of the nonlinear system of equations
-    Eigen::Matrix<double, 7, 7> J = Eigen::Matrix<double, 7, 7>::Zero();
-    J.block<6, 6>(0, 0) = I6; //at first iteration, dLambda = 0
-    J.block<6, 1>(0, 6) = C*gradient;
-    J.block<1, 6>(6, 0) = gradient.transpose();
-
-    //Initialisation of the second member
-    Eigen::Matrix<double, 7, 1> b = Eigen::Matrix<double, 7, 1>::Zero();
-    //In the first iteration, the (first) stressIncrement is taken as the elasticPredictor
-    //and the lambda increment as 0. Hence b is null
-
-    //solver
-    Eigen::FullPivLU<Eigen::Matrix<double, 7, 7> > LU(J.rows(), J.cols());
-
-    for (unsigned int i = 0; i < nbMaxIterations; i++)
+    if (!isPlasticPoint)
     {
-        //Computes the new increment
-        LU.compute(J);
-        newIncrement = LU.solve(-b);
+        //The new stress is just computed elastically
+        stressIncrement = C*strainIncrement;
+    }
+    else
+    {
+        unsigned int nbMaxIterations = 25;
+        double threshold = 1; //TO DO: choose coherent value
 
-        totalIncrement += newIncrement;
+        /*****************************/
+        /*   Plastic return method   */
+        /*****************************/
 
-        //Updates J and b for the next iteration
-        currentStressPoint = initialStress + totalIncrement.block<6, 1>(0, 0);
-        gradient = vonMisesGradient(currentStressPoint, _UTS);
-        hessian = vonMisesHessian(currentStressPoint, _UTS);
+        ////First we compute the elastic predictor
+        //VoigtTensor2 elasticPredictor = C*strainIncrement;
 
-        J.block<6, 6>(0, 0) = I6 + totalIncrement(6, 0)*C*hessian;
+        //VoigtTensor2 currentStressPoint = initialStress + elasticPredictor; //point B in Krabbenhoft's
+
+        //VoigtTensor2 grad, plasticStressIncrement;
+        //double denum, dLambda;
+        //double fSigma = vonMisesYield(currentStressPoint, _UTS); //for the 1st iteration
+
+        ////We start iterations with point B
+        //for (unsigned int i = 0; i < nbMaxIterations; i++)
+        //{
+        //    grad = vonMisesGradient(currentStressPoint, _UTS);
+        //    denum = grad.transpose()*C*grad;
+        //    dLambda = fSigma / denum;
+
+        //    plasticStressIncrement = dLambda*C*grad;
+
+        //    currentStressPoint -= plasticStressIncrement;
+
+        //    fSigma = vonMisesYield(currentStressPoint, _UTS);
+        //    if (fSigma < iterationThreshold)
+        //        break; //Yield condition : the current stress point is on the yield surface
+        //}
+        //// return the total stress increment
+        ////TO DO: return the current stress directly instead?
+        //stressIncrement = currentStressPoint - initialStress;
+
+        /*****************************/
+        /*      Implicit method      */
+        /*****************************/
+
+        //First we compute the elastic predictor
+        VoigtTensor2 elasticPredictor = C*strainIncrement;
+        VoigtTensor2 currentStressPoint = initialStress + elasticPredictor;
+
+        Eigen::Matrix<double, 7, 1> totalIncrement = Eigen::Matrix<double, 7, 1>::Zero();
+        totalIncrement.block<6, 1>(0, 0) = elasticPredictor;
+
+        Eigen::Matrix<double, 7, 1> newIncrement = Eigen::Matrix<double, 7, 1>::Zero();
+
+        //Intermediate variables
+        Eigen::Matrix<double, 6, 6> I6 = Eigen::Matrix<double, 6, 6>::Identity();
+        VoigtTensor2 gradient = vonMisesGradient(currentStressPoint, _UTS);
+
+        double increment = 1e-3; //TO DO: delete, debug purposes
+        VoigtTensor2 gradientFD = vonMisesGradientFD(currentStressPoint, increment, _UTS);
+
+        VoigtTensor4 hessian;
+        double yieldCondition;
+
+        //Initialisation of the Jacobian of the nonlinear system of equations
+        Eigen::Matrix<double, 7, 7> J = Eigen::Matrix<double, 7, 7>::Zero();
+        J.block<6, 6>(0, 0) = I6; //at first iteration, dLambda = 0
         J.block<6, 1>(0, 6) = C*gradient;
         J.block<1, 6>(6, 0) = gradient.transpose();
 
-        yieldCondition = vonMisesYield(currentStressPoint, _UTS);
-        if (yieldCondition < threshold)
-            break; //We reach a stress point close enough to the yield surface
+        //Initialisation of the second member
+        Eigen::Matrix<double, 7, 1> b = Eigen::Matrix<double, 7, 1>::Zero();
+        //In the first iteration, the (first) stressIncrement is taken as the elasticPredictor
+        b(6, 0) = vonMisesYield(currentStressPoint, _UTS);
 
-        b.block<6, 1>(0, 0) = totalIncrement.block<6, 1>(0, 0) - elasticPredictor + C*totalIncrement(6, 0)*gradient;
-        b(6, 0) = yieldCondition;
+        //solver
+        Eigen::FullPivLU<Eigen::Matrix<double, 7, 7> > LU(J.rows(), J.cols());
+
+        for (unsigned int i = 0; i < nbMaxIterations; i++)
+        {
+            //Computes the new increment
+            LU.compute(J);
+            newIncrement = LU.solve(-b);
+
+            totalIncrement += newIncrement;
+
+            //Updates J and b for the next iteration
+            currentStressPoint = initialStress + totalIncrement.block<6, 1>(0, 0);
+            gradient = vonMisesGradient(currentStressPoint, _UTS);
+            gradientFD = vonMisesGradientFD(currentStressPoint, increment, _UTS);
+            hessian = vonMisesHessian(currentStressPoint, _UTS);
+
+            J.block<6, 6>(0, 0) = I6 + totalIncrement(6, 0)*C*hessian;
+            J.block<6, 1>(0, 6) = C*gradient;
+            J.block<1, 6>(6, 0) = gradient.transpose();
+
+            yieldCondition = vonMisesYield(currentStressPoint, _UTS);
+            //if (yieldCondition < threshold)
+            //    break; //We reach a stress point close enough to the yield surface
+
+            b.block<6, 1>(0, 0) = totalIncrement.block<6, 1>(0, 0) - elasticPredictor + C*totalIncrement(6, 0)*gradient;
+            b(6, 0) = yieldCondition;
+        }
+
+        // return the total stress increment
+        //TO DO: return the current stress directly instead?
+        stressIncrement = currentStressPoint - initialStress;
     }
-
-    // return the total stress increment
-    //TO DO: return the current stress directly instead?
-    stressIncrement = currentStressPoint - initialStress;
 }
 
 
 template< class DataTypes>
-void MultiBeamForceField<DataTypes>::MultiBeamPlasticityHandler::accumulateNonLinearForce(VecDeriv& f,
-                                                                                          const VecCoord& x,
-                                                                                          int i,
-                                                                                          Index a, Index b)
+void MultiBeamForceField<DataTypes>::accumulateNonLinearForce(VecDeriv& f,
+                                                              const VecCoord& x,
+                                                              int i,
+                                                              Index a, Index b)
 {
     //Concrete implementation of addForce
     //Computes f += Kx, assuming that this component is linear
     //All non-linearity has to be handled here (including plasticity)
 
     //Computes displacement increment, from last system solution
-    Displacement prevPos; //to compute last stress point
-    Displacement displacementIncrement;
-    defaulttype::Vec<3, Real> u;
-    defaulttype::Quat &q = ff->beamQuat(i); //x[a].getOrientation();
-    q.normalize();
+    Displacement currentDisp;
+    Displacement lastDisp;
+    Displacement dispIncrement;
+    computeDisplacementIncrement(x, _lastPos, currentDisp, lastDisp, dispIncrement, i, a, b);
 
-    defaulttype::Vec<3, Real> uLast;
-    defaulttype::Quat qLast = ff->_lastPos[a].getOrientation();
-    qLast.normalize();
+    //TO DO: delete, debug info
+    //EigenDisplacement displacementIncrement;
+    //double precisionThreshold = 1e-12;
+    //for (int k = 0; k < 12; k++)
+    //    if (dispIncrement[k] > precisionThreshold)
+    //        displacementIncrement(k) = dispIncrement[k];
+    //    else
+    //        displacementIncrement(k) = 0.0;
 
-    u = q.inverseRotate(x[a].getCenter());
-    uLast = qLast.inverseRotate(ff->_lastPos[a].getCenter());
-    displacementIncrement[0] = u[0] - uLast[0];
-    displacementIncrement[1] = u[1] - uLast[1];
-    displacementIncrement[2] = u[2] - uLast[2];
-    prevPos(0) = uLast[0];
-    prevPos(1) = uLast[1];
-    prevPos(2) = uLast[2];
-
-    u = q.inverseRotate(x[a].getOrientation().toEulerVector());
-    uLast = qLast.inverseRotate(ff->_lastPos[a].getOrientation().toEulerVector());
-    displacementIncrement[3] = u[0] - uLast[0];
-    displacementIncrement[4] = u[1] - uLast[1];
-    displacementIncrement[5] = u[2] - uLast[2];
-    prevPos(3) = uLast[0];
-    prevPos(4) = uLast[1];
-    prevPos(5) = uLast[2];
-
-    u = q.inverseRotate(x[b].getCenter());
-    uLast = qLast.inverseRotate(ff->_lastPos[b].getCenter());
-    displacementIncrement[6] = u[0] - uLast[0];
-    displacementIncrement[7] = u[1] - uLast[1];
-    displacementIncrement[8] = u[2] - uLast[2];
-    prevPos(6) = uLast[0];
-    prevPos(7) = uLast[1];
-    prevPos(8) = uLast[2];
-
-    u = q.inverseRotate(x[b].getOrientation().toEulerVector());
-    uLast = qLast.inverseRotate(ff->_lastPos[b].getOrientation().toEulerVector());
-    displacementIncrement[9] = u[0] - uLast[0];
-    displacementIncrement[10] = u[1] - uLast[1];
-    displacementIncrement[11] = u[2] - uLast[2];
-    prevPos(9) = uLast[0];
-    prevPos(10) = uLast[1];
-    prevPos(11) = uLast[2];
+    EigenDisplacement displacementIncrement;
+    for (int k = 0; k < 12; k++)
+        displacementIncrement(k) = dispIncrement[k];
 
     //All the rest of the force computation is made inside of the lambda function
     //as the stress and strain are computed for each Gauss point
@@ -1797,7 +2036,7 @@ void MultiBeamForceField<DataTypes>::MultiBeamPlasticityHandler::accumulateNonLi
     typedef ozp::quadrature::Gaussian<3> GaussianQuadratureType;
     typedef std::function<void(double, double, double, double, double, double)> LambdaType;
 
-    const Eigen::Matrix<double, 6, 6>& C = ff->beamsData.getValue()[i]._materialBehaviour;
+    const Eigen::Matrix<double, 6, 6>& C = beamsData.getValue()[i]._materialBehaviour;
     Eigen::Matrix<double, 6, 12> Be;
     Eigen::Matrix<double, 12, 1> fint = Eigen::VectorXd::Zero(12);
 
@@ -1806,93 +2045,109 @@ void MultiBeamForceField<DataTypes>::MultiBeamPlasticityHandler::accumulateNonLi
     VoigtTensor2 stressIncrement = VoigtTensor2::Zero();
     VoigtTensor2 newStressPoint = VoigtTensor2::Zero();
     double lambdaIncrement = 0;
+    bool isPlastic;
+    bool isNewPlastic;
 
+    helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
+    helper::fixed_array<bool, 27>& isPlasticPoint = bd[i]._isPlasticPoint;
+    bool inPlasticDeformation = false;
     int gaussPointIterator = 0;
 
     // Computation of the new stress point, through material point iterations as in Krabbenhoft lecture notes
 
     // This function is to be called if the last stress point corresponded to elastic deformation
-    LambdaType computeStressFromElastic = [&](double u1, double u2, double u3, double w1, double w2, double w3)
+    LambdaType computePlastic = [&](double u1, double u2, double u3, double w1, double w2, double w3)
     {
-        // Be
-        Be = ff->beamsData.getValue()[i]._BeMatrices[gaussPointIterator];
+        Be = beamsData.getValue()[i]._BeMatrices[gaussPointIterator];
+        isPlastic = isPlasticPoint[gaussPointIterator];
 
         //Strain
         strainIncrement = Be*displacementIncrement;
 
         //Stress
-        initialStressPoint = C*Be*prevPos; //prevPos was in an elastic configuration
+        initialStressPoint = _prevStresses[i][gaussPointIterator];
         computeStressIncrement(i, initialStressPoint, stressIncrement,
-                               strainIncrement, lambdaIncrement);
+                               strainIncrement, lambdaIncrement, isPlastic);
         newStressPoint = initialStressPoint + stressIncrement;
+
+        //For each plastic Gauss point, we update the elastic/plastic state
+        //NB: if this time step is the first of plastic point deformation, this should
+        //not change anything as the point is brought back to the yield surface
+        //TO DO: check if it is indeed the case
+        if (!isPlastic)
+        {
+            isNewPlastic = goInPlasticDeformation(newStressPoint);
+            isPlasticPoint[gaussPointIterator] = isNewPlastic;
+            inPlasticDeformation = inPlasticDeformation || isNewPlastic;
+        }
+        else
+        {
+            isNewPlastic = stayInPlasticDeformation(newStressPoint, stressIncrement);
+            isPlasticPoint[gaussPointIterator] = isNewPlastic;
+            inPlasticDeformation = inPlasticDeformation || isNewPlastic;
+        }
 
         fint += (w1*w2*w3)*Be.transpose()*newStressPoint;
 
         //Update of _prevStresses for next time step
-        ff->_prevStresses[i][gaussPointIterator] = newStressPoint;
+        _prevStresses[i][gaussPointIterator] = newStressPoint;
 
         gaussPointIterator++; //Next Gauss Point
     };
 
-    // This function is to be called if the last stress point was already in plastic state
-    LambdaType computeStressFromPlastic = [&](double u1, double u2, double u3, double w1, double w2, double w3)
-    {
-        // Be
-        Be = ff->beamsData.getValue()[i]._BeMatrices[gaussPointIterator];
+    ozp::quadrature::detail::Interval<3> interval = beamsData.getValue()[i]._integrationInterval;
+    ozp::quadrature::integrate <GaussianQuadratureType, 3, LambdaType>(interval, computePlastic);
+    beamsData.endEdit();
 
-        //Strain
-        strainIncrement = Be*displacementIncrement;
-
-        //Stress
-        initialStressPoint = ff->_prevStresses[i][gaussPointIterator];
-        computeStressIncrement(i, initialStressPoint, stressIncrement,
-                               strainIncrement, lambdaIncrement);
-        newStressPoint = initialStressPoint + stressIncrement;
-
-        fint += (w1*w2*w3)*Be.transpose()*newStressPoint;
-
-        //Update of _prevStresses for next time step
-        ff->_prevStresses[i][gaussPointIterator] = newStressPoint;
-
-        gaussPointIterator++; //Next Gauss Point
-    };
-
-    ozp::quadrature::detail::Interval<3> interval = ff->beamsData.getValue()[i]._integrationInterval;
-
-    if (_computeFromPlasticState)
-        ozp::quadrature::integrate <GaussianQuadratureType, 3, LambdaType>(interval, computeStressFromPlastic);
-    else
-    {
-        ozp::quadrature::integrate <GaussianQuadratureType, 3, LambdaType>(interval, computeStressFromElastic);
-        _computeFromPlasticState = true;
-    }
+    //std::cout << "Nouveaux stress au point de Gauss 0 pour l'element " << i << " : " << std::endl << _prevStresses[i][0] << " " << std::endl << std::endl; //TO DO: delete, debug purposes
 
     //Passes the contribution to the global system
     nodalForces force;
+    Displacement depl;
 
-    for (int i = 0; i < 12; i++)
-        force[i] = fint(i);
+    if (!inPlasticDeformation) 
+    {
+        //all the points are out of plastic state
+        _isDeformingPlastically = false;
 
-    Vec3 fa1 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[0], force[1], force[2]));
-    Vec3 fa2 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[3], force[4], force[5]));
+        force = beamsData.getValue()[i]._Ke_loc * currentDisp;
+    }
+    else
+    {
+        for (int i = 0; i < 12; i++)
+            force[i] = fint(i);
 
-    Vec3 fb1 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[6], force[7], force[8]));
-    Vec3 fb2 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[9], force[10], force[11]));
+        //Update the tangent stiffness matrix with the new computed stresses
+        //This matrix will then be used in addDForce and addKToMatrix methods
+        updateTangentStiffness(i, a, b);
 
-    f[a] += Deriv(-fa1, -fa2);
-    f[b] += Deriv(-fb1, -fb2);
+        //std::cout << "Fint_local pour l'element " << i << " : " << std::endl << force << " " << std::endl << std::endl; //TO DO: delete, for debug 
 
-    //Update the tangent stiffness matrix with the new computed stresses
-    //This matrix will then be used in addDForce and addKToMatrix methods
-    updateTangentStiffness(i, a, b);
+        Vec3 fa1 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[0], force[1], force[2]));
+        Vec3 fa2 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[3], force[4], force[5]));
+
+        Vec3 fb1 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[6], force[7], force[8]));
+        Vec3 fb2 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[9], force[10], force[11]));
+
+        //std::cout << "Fint_monde pour l'element " << i << " : " << std::endl << fa1 << " " << fa2 << " " << fb1 << " " << fb2 << " " << std::endl << std::endl; //TO DO: delete, for debug 
+
+        f[a] += Deriv(-fa1, -fa2);
+        f[b] += Deriv(-fb1, -fb2);
+
+        //std::cout << "Ftot pour l'element " << i << " : " << std::endl << f << " " << std::endl << std::endl; //TO DO: delete, for debug 
+
+        //Save the current positions as a record for the next time step
+        _lastPos = x;
+    }
+    
 }
 
 
 template< class DataTypes>
-void MultiBeamForceField<DataTypes>::MultiBeamPlasticityHandler::applyNonLinearStiffness(VecDeriv& df,
-                                                                                         const VecDeriv& dx,
-                                                                                         int i,
-                                                                                         Index a, Index b)
+void MultiBeamForceField<DataTypes>::applyNonLinearStiffness(VecDeriv& df,
+                                                             const VecDeriv& dx,
+                                                             int i,
+                                                             Index a, Index b, double fact)
 {
     //Concrete implementation of addDForce
     //Computes df += Kdx, assuming that this component is linear
@@ -1900,52 +2155,59 @@ void MultiBeamForceField<DataTypes>::MultiBeamPlasticityHandler::applyNonLinearS
     //the addForce method
 
     //Computes displacement increment, from last system solution
-    defaulttype::Vec<12, Real> local_depl;
-    defaulttype::Vec<3, Real> du;
-    defaulttype::Quat &q = ff->beamQuat(i); //x[a].getOrientation();
+    Displacement local_depl;
+    defaulttype::Vec<3, Real> u;
+    defaulttype::Quat& q = beamQuat(i); //x[a].getOrientation();
     q.normalize();
 
-    du = q.inverseRotate(dx[a].getVCenter());
-    local_depl[0] = du[0];
-    local_depl[1] = du[1];
-    local_depl[2] = du[2];
+    u = q.inverseRotate(getVCenter(dx[a]));
+    local_depl[0] = u[0];
+    local_depl[1] = u[1];
+    local_depl[2] = u[2];
 
-    du = q.inverseRotate(dx[a].getVOrientation());
-    local_depl[3] = du[0];
-    local_depl[4] = du[1];
-    local_depl[5] = du[2];
+    u = q.inverseRotate(getVOrientation(dx[a]));
+    local_depl[3] = u[0];
+    local_depl[4] = u[1];
+    local_depl[5] = u[2];
 
-    du = q.inverseRotate(dx[b].getVCenter());
-    local_depl[6] = du[0];
-    local_depl[7] = du[1];
-    local_depl[8] = du[2];
+    u = q.inverseRotate(getVCenter(dx[b]));
+    local_depl[6] = u[0];
+    local_depl[7] = u[1];
+    local_depl[8] = u[2];
 
-    du = q.inverseRotate(dx[b].getVOrientation());
-    local_depl[9] = du[0];
-    local_depl[10] = du[1];
-    local_depl[11] = du[2];
+    u = q.inverseRotate(getVOrientation(dx[b]));
+    local_depl[9] = u[0];
+    local_depl[10] = u[1];
+    local_depl[11] = u[2];
+
+    //std::cout << "deplacement vitesse pour l'element " << i << " : " << std::endl << local_depl << " " << std::endl << std::endl; //TO DO: delete, debug purposes
 
     defaulttype::Vec<12, Real> local_dforce;
-    local_dforce = ff->beamsData.getValue()[i]._Kt_loc * local_depl;
+    local_dforce = beamsData.getValue()[i]._Kt_loc * local_depl;
+
+    //std::cout << "K*v_local pour l'element " << i << " : " << std::endl << local_dforce << " " << std::endl << std::endl; //TO DO: delete, debug purposes
 
     Vec3 fa1 = q.rotate(defaulttype::Vec3d(local_dforce[0], local_dforce[1], local_dforce[2]));
     Vec3 fa2 = q.rotate(defaulttype::Vec3d(local_dforce[3], local_dforce[4], local_dforce[5]));
     Vec3 fb1 = q.rotate(defaulttype::Vec3d(local_dforce[6], local_dforce[7], local_dforce[8]));
     Vec3 fb2 = q.rotate(defaulttype::Vec3d(local_dforce[9], local_dforce[10], local_dforce[11]));
 
-    df[a] += Deriv(fa1, fa2);
-    df[b] += Deriv(fb1, fb2);
+    df[a] += Deriv(-fa1, -fa2) * fact;
+    df[b] += Deriv(-fb1, -fb2) * fact;
+
+    //std::cout << "K*v_tot pour l'element " << i << " : " << std::endl << df << " " << std::endl << std::endl; //TO DO: delete, debug purposes
 }
 
 
 template< class DataTypes>
-void MultiBeamForceField<DataTypes>::MultiBeamPlasticityHandler::updateTangentStiffness(int i,
-                                                                                        Index a,
-                                                                                        Index b)
+void MultiBeamForceField<DataTypes>::updateTangentStiffness(int i,
+                                                            Index a,
+                                                            Index b)
 {
-    helper::vector<BeamInfo>& bd = *(ff->beamsData.beginEdit());
+    helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
     StiffnessMatrix& Kt_loc = bd[i]._Kt_loc;
     const Eigen::Matrix<double, 6, 6>& C = bd[i]._materialBehaviour;
+        helper::fixed_array<bool, 27>& isPlasticPoint = bd[i]._isPlasticPoint;
 
     // Reduced integration
     typedef std::function<void(double, double, double, double, double, double)> LambdaType;
@@ -1973,13 +2235,19 @@ void MultiBeamForceField<DataTypes>::MultiBeamPlasticityHandler::updateTangentSt
         Be = bd[i]._BeMatrices[gaussPointIterator];
 
         //Cep
-        currentStressPoint = ff->_prevStresses[i][gaussPointIterator];
+        currentStressPoint = _prevStresses[i][gaussPointIterator];
 
         VMgradient = vonMisesGradient(currentStressPoint, _UTS);
-        Cgrad = C*VMgradient;
-        gradTC = VMgradient.transpose()*C;
-        //Assuming associative flow rule
-        Cep = C - (Cgrad*gradTC) / (gradTC*VMgradient);
+
+        if (VMgradient.isZero() || !isPlasticPoint[gaussPointIterator])
+            Cep = C;
+        else
+        {
+            Cgrad = C*VMgradient;
+            gradTC = VMgradient.transpose()*C;
+            //Assuming associative flow rule
+            Cep = C - (Cgrad*gradTC) / (gradTC*VMgradient);
+        }
 
         tangentStiffness += (w1*w2*w3)*Be.transpose()*Cep*Be;
 
@@ -1993,7 +2261,9 @@ void MultiBeamForceField<DataTypes>::MultiBeamPlasticityHandler::updateTangentSt
         for (int j = 0; j < 12; j++)
             Kt_loc[i][j] = tangentStiffness(i, j);
 
-    ff->beamsData.endEdit();
+    //std::cout << "Kt pour l'element " << i << " : " << std::endl << tangentStiffness << " " << std::endl << std::endl; //TO DO: delete, debug purposes
+
+    beamsData.endEdit();
 }
 /**************************************************************************/
 
