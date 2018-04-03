@@ -127,15 +127,10 @@ BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
         return nullptr;
     }    
 
-<<<<<<< HEAD
-    dataName = getAStringCopy(dataName) ;
-    dataClass = getAStringCopy(dataClass) ;
-    dataHelp  = getAStringCopy(dataHelp) ;
-||||||| merged common ancestors
     dataName = getStringCopy(dataName) ;
     dataClass = getStringCopy(dataClass) ;
     dataHelp  = getStringCopy(dataHelp) ;
-=======
+
     if(KwargsOrArgs) // parse kwargs
     {
         if(kw==nullptr || !PyDict_Check(kw) )
@@ -153,7 +148,6 @@ BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
         if (tmp!=nullptr){
             dataHelp = getStringCopy(PyString_AsString(tmp));
         }
->>>>>>> DefrostTutorial2
 
         tmp = PyDict_GetItemString(kw,"dataclass");
         if (tmp!=nullptr){
