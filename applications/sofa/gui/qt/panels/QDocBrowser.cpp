@@ -239,11 +239,10 @@ void DocBrowser::loadHtml(const std::string& filename)
 
     /// Check if either the scene specific html or default provided can be loaded.
     /// If so...load the page and add the entry into the history.
-    if (DataRepository.findFile(htmlfile, "", NULL))
-    {
-        m_htmlPage->load( QUrl::fromLocalFile(QString(htmlfile.c_str())) );
-    }
+    if (!DataRepository.findFile(htmlfile, "", NULL))
+        return;
 
+    m_htmlPage->load( QUrl::fromLocalFile(QString(htmlfile.c_str())) );
     setVisible(showView);
 }
 
