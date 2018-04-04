@@ -52,6 +52,11 @@ int BatchGUI::mainLoop()
         if (nbIter != -1)
         {   
             msg_info("BatchGUI") << "Computing " << nbIter << " iterations." << msgendl;
+        }
+        else
+        {
+            msg_info("BatchGUI") << "Computing infinite iterations." << msgendl;
+        }
             sofa::helper::AdvancedTimer::begin("Animate");
             sofa::simulation::getSimulation()->animate(groot.get());
             msg_info("BatchGUI") << sofa::helper::AdvancedTimer::end("Animate", groot.get()) << msgendl;
@@ -61,6 +66,9 @@ int BatchGUI::mainLoop()
             sofa::simulation::Visitor::ctime_t tfreq = sofa::helper::system::thread::CTime::getTicksPerSec();
             sofa::simulation::Visitor::ctime_t rt = sofa::helper::system::thread::CTime::getRefTime();
             sofa::simulation::Visitor::ctime_t t = sofa::helper::system::thread::CTime::getFastTime();
+            
+        if (nbIter != -1)
+        {
             for (signed int i=0; i<nbIter-1; i++) // one simulation step is animated above
             {
                 sofa::helper::AdvancedTimer::begin("Animate");
@@ -76,16 +84,6 @@ int BatchGUI::mainLoop()
         }
         else
         {
-            msg_info("BatchGUI") << "Computing infinite iterations." << msgendl;
-            sofa::helper::AdvancedTimer::begin("Animate");
-            sofa::simulation::getSimulation()->animate(groot.get());
-            msg_info("BatchGUI") << sofa::helper::AdvancedTimer::end("Animate", groot.get()) << msgendl;
-            //As no visualization is done by the Batch GUI, these two lines are not necessary.
-            sofa::simulation::getSimulation()->updateVisual(groot.get());
-            sofa::simulation::Visitor::ctime_t rtfreq = sofa::helper::system::thread::CTime::getRefTicksPerSec();
-            sofa::simulation::Visitor::ctime_t tfreq = sofa::helper::system::thread::CTime::getTicksPerSec();
-            sofa::simulation::Visitor::ctime_t rt = sofa::helper::system::thread::CTime::getRefTime();
-            sofa::simulation::Visitor::ctime_t t = sofa::helper::system::thread::CTime::getFastTime();
             signed int i=1;
             do // one simulation step is animated above
             {
