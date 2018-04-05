@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -76,9 +76,9 @@ public:
             return vect[outputDerivative];
     }
 
-    Data<SReal> massCoef;
-    Data<SReal> dampingCoef;
-    Data<SReal> stiffnessCoef;
+    Data<SReal> massCoef; ///< factor associated with the mass matrix in the equation system
+    Data<SReal> dampingCoef; ///< factor associated with the mass matrix in the equation system
+    Data<SReal> stiffnessCoef; ///< factor associated with the mass matrix in the equation system
     Data<bool> applyIncrementFactor; ///< multiply the solution by dt. Default: false
 };
 

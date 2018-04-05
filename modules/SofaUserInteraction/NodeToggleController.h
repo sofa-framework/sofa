@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -124,10 +124,10 @@ public:
 
     //@}
 
-    Data<char> d_key;
-    Data<std::string> d_nameNode;
-    Data<bool> d_initStatus;
-    Data<bool> d_firstFrame;
+    Data<char> d_key; ///< Key chosen for toggling the node(s)
+    Data<std::string> d_nameNode; ///< Name of a specific node to toggle
+    Data<bool> d_initStatus; ///< If one node is chosen, this gives the initial status of the node
+    Data<bool> d_firstFrame; ///< Toggle the node at first step
 
 protected:
     sofa::simulation::Node * specificNode;

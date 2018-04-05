@@ -25,8 +25,8 @@ class SOFA_Compliant_API KrylovSolver : public IterativeSolver {
 	
 	KrylovSolver();				
 	
-	Data<bool> verbose;
-    Data<unsigned> restart;
+	Data<bool> verbose; ///< print debug stuff on std::cerr
+    Data<unsigned> restart; ///< restart every n steps
 	
 	virtual void init();
 	
@@ -85,7 +85,7 @@ class SOFA_Compliant_API KrylovSolver : public IterativeSolver {
     
 public:
 
-  Data<bool> parallel;
+  Data<bool> parallel; ///< use openmp to parallelize matrix-vector products when use_schur is false (parallelization per KKT blocks, 4 threads)
 
 };
 

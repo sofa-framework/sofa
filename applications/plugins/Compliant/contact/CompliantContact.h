@@ -56,7 +56,7 @@ public:
     typedef typename Inherit::CollisionModel2 CollisionModel2;
     typedef typename Inherit::Intersection Intersection;
 
-    Data< SReal > viscousFriction;
+    Data< SReal > viscousFriction; ///< 0 <= viscousFriction <= 1
 
 
 protected:

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -77,8 +77,8 @@ public:
 
     virtual void computeResidual(const core::ExecParams* params, defaulttype::BaseVector *lambda) override;
 
-    Data< helper::vector< std::string > >  d_linearSolversName;
-    Data< std::string >                    d_ODESolverName;
+    Data< helper::vector< std::string > >  d_linearSolversName; ///< name of the constraint solver
+    Data< std::string >                    d_ODESolverName; ///< name of the ode solver
 
     /// Pre-construction check method called by ObjectFactory.
     template<class T>

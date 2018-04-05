@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -68,13 +68,13 @@ public:
     void preRenderTargetUpdate(const Ogre::RenderTargetEvent& evt);
     void postRenderTargetUpdate(const Ogre::RenderTargetEvent &evt);
 
-    core::objectmodel::Data< sofa::defaulttype::Vector3 > normalReflectionPlane;
-    core::objectmodel::Data< SReal> distanceToOrigin;
-    core::objectmodel::Data< Vec2i > sizeReflectionPlane;
-    core::objectmodel::Data< Vec2i > resolutionTexture;
+    core::objectmodel::Data< sofa::defaulttype::Vector3 > normalReflectionPlane; ///< Normal of the reflection plane.
+    core::objectmodel::Data< SReal> distanceToOrigin; ///< Distance to origin along normal direction.
+    core::objectmodel::Data< Vec2i > sizeReflectionPlane; ///< Size of the reflection plane.
+    core::objectmodel::Data< Vec2i > resolutionTexture; ///< The resolution of the generated texture.
     core::objectmodel::DataFileName textureFilename;
-    core::objectmodel::Data<SReal>  blendingFactor;
-    core::objectmodel::Data< bool > debugDraw;
+    core::objectmodel::Data<SReal>  blendingFactor; ///< The blending factor between the reflection texture and textureFilename.
+    core::objectmodel::Data< bool > debugDraw; ///< Display a plane textured with the reflectionTexture.
 
 
 protected:

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -54,11 +54,11 @@ public:
     typedef core::CollisionModel ToolModel;
     typedef core::behavior::MechanicalState<defaulttype::Vec1Types> ToolDOFs;
 
-    Data < bool > active;
-    Data < char > keyEvent;
-    Data < char > keySwitchEvent;
-    Data < double > openAngle;
-    Data < double > closedAngle;
+    Data < bool > active; ///< Activate this object. Note that this can be dynamically controlled by using a key
+    Data < char > keyEvent; ///< key to press to activate this object until the key is released
+    Data < char > keySwitchEvent; ///< key to activate this object until the key is pressed again
+    Data < double > openAngle; ///< angle values to set when tool is opened
+    Data < double > closedAngle; ///< angle values to set when tool is closed
 
 protected:
     std::set<ToolModel*> modelTools;

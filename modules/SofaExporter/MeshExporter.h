@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -67,13 +67,13 @@ public:
     SOFA_CLASS(MeshExporter, BaseSimulationExporter);
 
 public:
-    Data<sofa::helper::OptionsGroup> d_fileFormat;
-    Data<defaulttype::Vec3Types::VecCoord> d_position;
-    Data<bool> d_writeEdges;
-    Data<bool> d_writeTriangles;
-    Data<bool> d_writeQuads;
-    Data<bool> d_writeTetras;
-    Data<bool> d_writeHexas;
+    Data<sofa::helper::OptionsGroup> d_fileFormat; ///< File format to use
+    Data<defaulttype::Vec3Types::VecCoord> d_position; ///< points position (will use points from topology or mechanical state if this is empty)
+    Data<bool> d_writeEdges; ///< write edge topology
+    Data<bool> d_writeTriangles; ///< write triangle topology
+    Data<bool> d_writeQuads; ///< write quad topology
+    Data<bool> d_writeTetras; ///< write tetra topology
+    Data<bool> d_writeHexas; ///< write hexa topology
 
     helper::vector<std::string> pointsDataObject;
     helper::vector<std::string> pointsDataField;

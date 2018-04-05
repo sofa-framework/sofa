@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -60,9 +60,9 @@ public:
     using ScalarField::getGradient ;
     using ScalarField::getValueAndGradient ;
 
-    Data<bool> d_inside;
-    Data<double> d_radiusSphere;
-    Data<Vec3d> d_centerSphere;
+    Data<bool> d_inside; ///< If true the field is oriented inside (resp. outside) the sphere. (default = false)
+    Data<double> d_radiusSphere; ///< Radius of Sphere emitting the field. (default = 1)
+    Data<Vec3d> d_centerSphere; ///< Position of the Sphere Surface. (default=0 0 0)
 
 protected:
     Vec3d m_center;

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -60,6 +60,9 @@
 // define this if you want video and OBJ capture to be only done once per N iteration
 //#define CAPTURE_PERIOD 5
 
+#include <sofa/gui/GUIManager.h>
+
+int SimpleGUIClass = sofa::gui::GUIManager::RegisterGUI("glut", &sofa::gui::glut::SimpleGUI::CreateGUI, NULL, 0);
 
 namespace sofa
 {
@@ -182,13 +185,13 @@ int SimpleGUI::InitGUI(const char* /*name*/, const std::vector<std::string>& /*o
     return 0;
 }
 
-BaseGUI* SimpleGUI::CreateGUI(const char* /*name*/, const std::vector<std::string>& /*options*/, sofa::simulation::Node::SPtr groot, const char* filename)
+BaseGUI* SimpleGUI::CreateGUI(const char* /*name*/,  sofa::simulation::Node::SPtr groot, const char* filename)
 {
 
     glutInitDisplayMode ( GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE );
 
     //glutInitWindowPosition ( x0, y0 );
-    //glutInitWindowSize ( nx, ny );
+    glutInitWindowSize (_initialW, _initialH);
     glutCreateWindow ( ":: SOFA ::" );
 
 
@@ -1873,6 +1876,18 @@ void SimpleGUI::setExportGnuplot( bool exp )
         exportGnuplot(groot.get());
     }
 }
+
+int SimpleGUI::_initialW = 800;
+int SimpleGUI::_initialH = 600;
+
+void SimpleGUI::setViewerResolution(int width, int height)
+{
+    glut_reshape(width, height);
+
+}
+
+
+
 
 } // namespace glut
 

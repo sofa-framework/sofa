@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -105,13 +105,13 @@ class SOFA_IMPLICIT_ODE_SOLVER_API EulerImplicitSolver : public sofa::core::beha
 public:
     SOFA_CLASS(EulerImplicitSolver, sofa::core::behavior::OdeSolver);
 
-    Data<SReal> f_rayleighStiffness;
-    Data<SReal> f_rayleighMass;
-    Data<SReal> f_velocityDamping;
-    Data<bool> f_firstOrder;
-    Data<bool> f_verbose;
-    Data<bool> d_trapezoidalScheme;
-    Data<bool> f_solveConstraint;
+    Data<SReal> f_rayleighStiffness; ///< Rayleigh damping coefficient related to stiffness, > 0
+    Data<SReal> f_rayleighMass; ///< Rayleigh damping coefficient related to mass, > 0
+    Data<SReal> f_velocityDamping; ///< Velocity decay coefficient (no decay if null)
+    Data<bool> f_firstOrder; ///< Use backward Euler scheme for first order ode system.
+    Data<bool> f_verbose; ///< Dump system state at each iteration
+    Data<bool> d_trapezoidalScheme; ///< Optional: use the trapezoidal scheme instead of the implicit Euler scheme and get second order accuracy in time
+    Data<bool> f_solveConstraint; ///< Apply ConstraintSolver (requires a ConstraintSolver in the same node as this solver, disabled by by default for now)
 protected:
     EulerImplicitSolver();
 public:

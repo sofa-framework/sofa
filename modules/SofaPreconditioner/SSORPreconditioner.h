@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -59,8 +59,8 @@ public:
     typedef SReal Real;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector,TThreadManager> Inherit;
 
-    Data<bool> f_verbose;
-    Data<double> f_omega;
+    Data<bool> f_verbose; ///< Dump system state at each iteration
+    Data<double> f_omega; ///< Omega coefficient
 protected:
     SSORPreconditioner();
 public:

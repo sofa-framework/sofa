@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -80,11 +80,11 @@ public:
     }
 
     //Inputs
-    sofa::core::objectmodel::Data<VecCoord> f_X0;
+    sofa::core::objectmodel::Data<VecCoord> f_X0; ///< Rest position coordinates of the degrees of freedom
 
     //Outputs
-    sofa::core::objectmodel::Data<VecCoord> f_newX0;
-    sofa::core::objectmodel::Data<SeqTriangles> f_triangles;
+    sofa::core::objectmodel::Data<VecCoord> f_newX0; ///< New Rest position coordinates
+    sofa::core::objectmodel::Data<SeqTriangles> f_triangles; ///< List of triangles
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(CGALPLUGIN_TRIANGULARCONVEXHULL3D_CPP)

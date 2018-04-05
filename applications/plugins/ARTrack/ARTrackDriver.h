@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -64,9 +64,9 @@ public:
     virtual void reinit();
 
 
-    Data<double> aRTrackScale;
-    Data<Vector3> localTrackerPos;
-    Data<double> scaleAngleFinger;
+    Data<double> aRTrackScale; ///< ARTrack scale
+    Data<Vector3> localTrackerPos; ///< Local tracker position
+    Data<double> scaleAngleFinger; ///< Angle Finger scale
 
 private:
 

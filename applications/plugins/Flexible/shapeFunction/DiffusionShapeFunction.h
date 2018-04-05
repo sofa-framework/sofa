@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -410,7 +410,7 @@ public:
     typedef typename Inherit::raDist raDist;
     typedef typename Inherit::waDist waDist;
     Data< DistTypes > f_distances;
-    Data<unsigned int> nbBoundaryConditions;
+    Data<unsigned int> nbBoundaryConditions; ///< Number of boundary condition images provided
     helper::vector<Data<DistTypes>*> f_boundaryConditions;
 
 
@@ -422,15 +422,15 @@ public:
     /** @name  Options */
     //@{
     Data<helper::OptionsGroup> method;
-    Data<helper::OptionsGroup> solver;
-    Data<unsigned int> iterations;
-    Data<Real> tolerance;
+    Data<helper::OptionsGroup> solver; ///< solver (param)
+    Data<unsigned int> iterations; ///< Max number of iterations for iterative solvers
+    Data<Real> tolerance; ///< Error tolerance for iterative solvers
     Data<Real> d_weightThreshold; ///< neglect smaller weights (another way to limit parents with nbref)
-    Data<bool> biasDistances;
+    Data<bool> biasDistances; ///< Bias distances using inverse pixel values
 
 
-    Data<bool> d_clearData;
-    Data<bool> d_outsideDiffusion;
+    Data<bool> d_clearData; ///< clear diffusion image after computation?
+    Data<bool> d_outsideDiffusion; ///< propagate shape function outside of the object? (can be useful for embeddings)
 
     //@}
 

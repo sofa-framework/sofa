@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -137,10 +137,10 @@ public:
     NumericalIntegrationDescriptor<Real,4> &getTetrahedronNumericalIntegrationDescriptor();
 
 protected:
-    Data<bool> d_showTetrahedraIndices;
-    Data<bool> d_drawTetrahedra;
-    Data<float> d_drawScaleTetrahedra;
-    Data<sofa::defaulttype::Vec4f> d_drawColorTetrahedra;
+    Data<bool> d_showTetrahedraIndices; ///< Debug : view Tetrahedrons indices
+    Data<bool> d_drawTetrahedra; ///< if true, draw the tetrahedra in the topology
+    Data<float> d_drawScaleTetrahedra; ///< Scale of the terahedra (between 0 and 1; if <1.0, it produces gaps between the tetrahedra)
+    Data<sofa::defaulttype::Vec4f> d_drawColorTetrahedra; ///< RGBA code color used to draw tetrahedra.
     /// include cubature points
     NumericalIntegrationDescriptor<Real,4> tetrahedronNumericalIntegration;
 };

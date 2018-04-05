@@ -46,9 +46,10 @@ public:
     typedef typename TIn::Real Real;
 
     typedef helper::vector< coord_type > targets_type;
-    Data< targets_type > targets;
+    Data< targets_type > targets; ///< target positions which who computes deltas
 
-    Data< bool > rotation, translation;
+    Data< bool > rotation; ///< compute relative rotation
+    Data< bool > translation; ///< compute relative translation
 	Data< bool > exact_dlog;
 
     RigidJointFromTargetMapping()
@@ -218,7 +219,8 @@ public:
 
     static const coord_type s_worldFrame;
 
-    Data< bool > rotation, translation;
+    Data< bool > rotation; ///< compute relative rotation
+    Data< bool > translation; ///< compute relative translation
 //    Data< bool > exact_dlog;
 
     RigidJointFromWorldFrameMapping()

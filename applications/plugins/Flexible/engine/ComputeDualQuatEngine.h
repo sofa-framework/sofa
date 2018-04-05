@@ -56,12 +56,12 @@ public:
     void update();
 
     // First position
-    Data< VecCoord > d_x0;
+    Data< VecCoord > d_x0; ///< Rest position
     // Current position
-    Data< VecCoord > d_x;
+    Data< VecCoord > d_x; ///< Current position
 
     // The dual quaternions, as vector of Vec4f
-    Data< helper::vector< defaulttype::Vec4f > > d_dualQuats;
+    Data< helper::vector< defaulttype::Vec4f > > d_dualQuats; ///< Dual quaternions, computed from x (or x*x0^-1 if x0 is provided). DualQuats are stored as two vec4f elements, first the orientation, then the dual.
 
 
 };

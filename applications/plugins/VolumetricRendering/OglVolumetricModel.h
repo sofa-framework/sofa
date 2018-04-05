@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -56,13 +56,13 @@ public:
     typedef sofa::core::topology::BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
     typedef sofa::core::topology::BaseMeshTopology::SeqHexahedra SeqHexahedra;
 
-    Data< sofa::defaulttype::ResizableExtVector<Tetrahedron> > d_tetrahedra;
-    Data< sofa::defaulttype::ResizableExtVector<Hexahedron> > d_hexahedra;
+    Data< sofa::defaulttype::ResizableExtVector<Tetrahedron> > d_tetrahedra; ///< Tetrahedra to draw
+    Data< sofa::defaulttype::ResizableExtVector<Hexahedron> > d_hexahedra; ///< Hexahedra to draw
 
-    Data<float> d_volumeScale;
-    Data<bool> d_depthTest;
-    Data<bool> d_blending;
-    Data<defaulttype::Vec4f> d_defaultColor;
+    Data<float> d_volumeScale; ///< Scale for each volumetric primitive
+    Data<bool> d_depthTest; ///< Set Depth Test
+    Data<bool> d_blending; ///< Set Blending
+    Data<defaulttype::Vec4f> d_defaultColor; ///< Color for each volume (if the attribute a_vertexColor is not detected)
 
     virtual ~OglVolumetricModel();
 

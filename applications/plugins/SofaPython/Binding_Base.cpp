@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,14 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+
 #include "Binding_Base.h"
 #include "Binding_Data.h"
 #include "Binding_Link.h"
 
 #include <sofa/helper/vector.h>
-#include <sofa/core/objectmodel/Base.h>
-#include <sofa/core/objectmodel/BaseData.h>
-using namespace sofa::core::objectmodel;
+#include <sofa/core/DataEngine.h>
+#include <sofa/defaulttype/Vec3Types.h>
+
 
 #include <sofa/helper/logging/Messaging.h>
 
@@ -35,11 +36,155 @@ using namespace sofa::core::objectmodel;
 
 #include "PythonEnvironment.h"
 using sofa::simulation::PythonEnvironment ;
+using sofa::core::topology::BaseMeshTopology ;
+typedef BaseMeshTopology::Tetra Tetra;
+using sofa::helper::vector;
+using sofa::helper::Factory;
+using namespace sofa::core::objectmodel;
+
+// TODO (sescaida 13.02.2018): this factory code is redundant to the Communication plugin, but should easily be mergeable, when an adequate spot is found.
+typedef sofa::helper::Factory< std::string, BaseData> PSDEDataFactory;
+
+PSDEDataFactory* getFactoryInstance(){
+    static PSDEDataFactory* s_localfactory = nullptr ;
+    if(s_localfactory==nullptr)
+    {
+        s_localfactory = new PSDEDataFactory() ;
+        s_localfactory->registerCreator("s", new DataCreator<std::string>());
+        s_localfactory->registerCreator("f", new DataCreator<float>());
+        s_localfactory->registerCreator("b", new DataCreator<bool>());
+        s_localfactory->registerCreator("d", new DataCreator<int>());
+        s_localfactory->registerCreator("t", new DataCreator<vector<Tetra>>());
+        s_localfactory->registerCreator("p", new DataCreator<sofa::defaulttype::Vec3dTypes::VecCoord>());
+    }
+    return s_localfactory ;
+}
+
 
 static Base* get_base(PyObject* self) {
     return sofa::py::unwrap<Base>(self);
 }
 
+static char* getStringCopy(char *c)
+{
+    if (c==nullptr)
+        return nullptr;
+
+    char* tmp = new char[strlen(c)+1] ;
+    strcpy(tmp,c);
+    return tmp ;
+}
+
+
+// helper function for parsing Python arguments
+// not defined static in order to be able to use this fcn somewhere else also
+BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
+
+    char* dataRawType = new char;
+    char* dataClass = new char;
+    char* dataHelp = new char;
+    char * dataName = new char;
+
+    PyObject* dataValue = nullptr;
+
+    bool KwargsOrArgs = 0; //Args = 0, Kwargs = 1
+
+    if(PyArg_ParseTuple(args, "s|sssO", &dataName, &dataClass, &dataHelp, &dataRawType, &dataValue))
+    {
+        // first argument (name) is mandatory, the rest are optionally found in the args and, if not there, in kwargs
+        dataName = getStringCopy(dataName) ;
+
+        if (strcmp(dataName,"")==0)
+        {
+            return nullptr;
+        }
+
+        if (dataValue==nullptr) // the content of dataValue is not set, so parsing normal args didn't succeed fully --> look for kwargs
+        {
+            KwargsOrArgs = 1;
+        }
+        else // arguments are available ...
+        {
+            dataClass = getStringCopy(dataClass) ;
+            dataHelp  = getStringCopy(dataHelp) ;
+            dataRawType  = getStringCopy(dataRawType) ;
+            Py_IncRef(dataValue); // want to hold on it for a while
+        }
+    }
+    else
+    {
+        return nullptr;
+    }    
+
+    if(KwargsOrArgs) // parse kwargs
+    {
+        if(kw==nullptr || !PyDict_Check(kw) )
+        {
+            msg_error("SofaPython") << "Could not parse kwargs for adding Data";
+            return nullptr;
+        }
+        PyObject * tmp;
+        tmp = PyDict_GetItemString(kw,"datatype");
+        if (tmp!=nullptr){
+            dataRawType = getStringCopy(PyString_AsString(tmp));
+        }
+
+        tmp = PyDict_GetItemString(kw,"helptxt");
+        if (tmp!=nullptr){
+            dataHelp = getStringCopy(PyString_AsString(tmp));
+        }
+
+        tmp = PyDict_GetItemString(kw,"dataclass");
+        if (tmp!=nullptr){
+            dataClass= getStringCopy(PyString_AsString(tmp));
+        }
+
+        tmp = PyDict_GetItemString(kw,"value");
+        if (tmp!=nullptr){
+            dataValue = tmp;
+            Py_IncRef(dataValue); // call to Py_GetItemString doesn't increment the ref count, but we want to hold on to it for a while ...
+        }      
+    }
+
+    if (dataRawType[0]==0) // We cannot construct without a type
+    {
+        msg_error(obj) << "No type provided for Data, cannot construct/add";
+        return nullptr;
+    }
+
+    BaseData* bd = getFactoryInstance()->createObject(dataRawType, sofa::helper::NoArgument());
+
+    if (bd == nullptr)
+    {
+        msg_error(obj) << dataRawType << " is not a known type";
+        return nullptr;
+    }
+    else
+    {
+        bd->setName(dataName);
+        bd->setHelp(dataHelp);
+        obj->addData(bd);        
+        if(dataValue!=nullptr) // parse provided data: Py->SofaStr->Data or link
+        {
+            std::stringstream tmp;
+            pythonToSofaDataString(dataValue, tmp);
+            if(tmp.str()[0]=='@' && bd->canBeLinked())
+            {
+                if(!bd->setParent(tmp.str()))
+                {
+                    msg_warning(obj) << "Could not setup link for Data, initialzing empty";
+                }
+            }
+            else
+            {
+                bd->read( tmp.str() );
+            }
+            bd->setGroup(dataClass);
+            Py_DecRef(dataValue);
+        }
+    }
+    return bd;
+}
 
 static PyObject * Base_addData(PyObject *self, PyObject *args )
 {
@@ -56,63 +201,12 @@ static PyObject * Base_addData(PyObject *self, PyObject *args )
     Py_RETURN_NONE;
 }
 
-static char* getStringCopy(char *c)
-{
-    char* tmp = new char[strlen(c)+1] ;
-    strcpy(tmp,c);
-    return tmp ;
-}
 
-static PyObject * Base_addNewData(PyObject *self, PyObject *args ) {
+static PyObject * Base_addNewData(PyObject *self, PyObject *args) {
     Base* obj = get_base(self);
-    char* dataName;
-    char* dataClass;
-    char* dataHelp;
-    char* dataRawType;
-    PyObject* dataValue;
-
-    if (!PyArg_ParseTuple(args, "ssssO", &dataName, &dataClass, &dataHelp, &dataRawType, &dataValue)) {
-        return NULL;
-    }
-
-    dataName = getStringCopy(dataName) ;
-    dataClass = getStringCopy(dataClass) ;
-    dataHelp  = getStringCopy(dataHelp) ;
-
-    BaseData* bd = nullptr ;
-    if(dataRawType[0] == 's'){
-        Data<std::string>* t = new Data<std::string>() ;
-        t = new(t) Data<std::string>(obj->initData(t, std::string(""), dataName, dataHelp)) ;
-        bd = t;
-    }
-    else if(dataRawType[0] == 'b'){
-        Data<bool>* t = new Data<bool>();
-        t = new(t) Data<bool>(obj->initData(t, true, dataName, dataHelp)) ;
-        bd = t;
-    }
-    else if(dataRawType[0] == 'd'){
-        Data<int>* t = new Data<int>();
-        t = new (t) Data<int> (obj->initData(t, 0, dataName, dataHelp)) ;
-        bd = t;
-    }
-    else if(dataRawType[0] == 'f'){
-        Data<float>* t = new Data<float>();
-        t = new (t) Data<float>(obj->initData(t, 0.0f, dataName, dataHelp)) ;
-        bd = t;
-    }
-    else{
-        std::stringstream msg;
-        msg << "Invalid data type '" << dataRawType << "'. Supported type are: s(tring), d(ecimal), f(float), b(oolean)" ;
-        PyErr_SetString(PyExc_TypeError, msg.str().c_str());
-        return NULL;
-    }
-
-    std::stringstream tmp;
-    pythonToSofaDataString(dataValue, tmp) ;
-    bd->read( tmp.str() ) ;
-    bd->setGroup(dataClass);
-
-    Py_RETURN_NONE ;
+    if( helper_addNewData(args, nullptr, obj) == nullptr )
+        return nullptr ;
+    Py_RETURN_NONE;
 }
 
 static PyObject * Base_getData(PyObject *self, PyObject *args ) {

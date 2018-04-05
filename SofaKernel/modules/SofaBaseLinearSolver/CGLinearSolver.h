@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -51,12 +51,12 @@ public:
     typedef TMatrix Matrix;
     typedef TVector Vector;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
-    Data<unsigned> f_maxIter;
-    Data<SReal> f_tolerance;
-    Data<SReal> f_smallDenominatorThreshold;
-    Data<bool> f_warmStart;
-    Data<bool> f_verbose;
-    Data<std::map < std::string, sofa::helper::vector<SReal> > > f_graph;
+    Data<unsigned> f_maxIter; ///< maximum number of iterations of the Conjugate Gradient solution
+    Data<SReal> f_tolerance; ///< desired precision of the Conjugate Gradient Solution (ratio of current residual norm over initial residual norm)
+    Data<SReal> f_smallDenominatorThreshold; ///< minimum value of the denominator in the conjugate Gradient solution
+    Data<bool> f_warmStart; ///< Use previous solution as initial solution
+    Data<bool> f_verbose; ///< Dump system state at each iteration
+    Data<std::map < std::string, sofa::helper::vector<SReal> > > f_graph; ///< Graph of residuals at each iteration
 #ifdef DISPLAY_TIME
     SReal time1;
     SReal time2;

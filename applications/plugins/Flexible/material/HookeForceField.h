@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -53,9 +53,9 @@ public:
 
     /** @name  Material parameters */
     //@{
-    Data<helper::vector<Real> > _youngModulus;
-    Data<helper::vector<Real> > _poissonRatio;
-    Data<helper::vector<Real> > _viscosity;
+    Data<helper::vector<Real> > _youngModulus; ///< Young Modulus
+    Data<helper::vector<Real> > _poissonRatio; ///< Poisson Ratio ]-1,0.5[
+    Data<helper::vector<Real> > _viscosity; ///< Viscosity (stress/strainRate)
     //@}
 
     virtual void reinit()
@@ -166,16 +166,16 @@ public:
 
     /** @name  Material parameters */
     //@{
-    Data<helper::vector<Real> > _youngModulusX;
-    Data<helper::vector<Real> > _youngModulusY;
-    Data<helper::vector<Real> > _youngModulusZ;
-    Data<helper::vector<Real> > _poissonRatioXY;
-    Data<helper::vector<Real> > _poissonRatioYZ;
-    Data<helper::vector<Real> > _poissonRatioZX;
-    Data<helper::vector<Real> > _shearModulusXY;
-    Data<helper::vector<Real> > _shearModulusYZ;
-    Data<helper::vector<Real> > _shearModulusZX;
-    Data<helper::vector<Real> > _viscosity;
+    Data<helper::vector<Real> > _youngModulusX; ///< Young Modulus along X
+    Data<helper::vector<Real> > _youngModulusY; ///< Young Modulus along Y
+    Data<helper::vector<Real> > _youngModulusZ; ///< Young Modulus along Z
+    Data<helper::vector<Real> > _poissonRatioXY; ///< Poisson Ratio about XY plane ]-1,0.5[
+    Data<helper::vector<Real> > _poissonRatioYZ; ///< Poisson Ratio about YZ plane ]-1,0.5[
+    Data<helper::vector<Real> > _poissonRatioZX; ///< Poisson Ratio about ZX plane ]-1,0.5[
+    Data<helper::vector<Real> > _shearModulusXY; ///< Shear Modulus about XY plane
+    Data<helper::vector<Real> > _shearModulusYZ; ///< Shear Modulus about YZ plane
+    Data<helper::vector<Real> > _shearModulusZX; ///< Shear Modulus about ZX plane
+    Data<helper::vector<Real> > _viscosity; ///< Viscosity (stress/strainRate)
     //@}
 
     virtual void reinit()
@@ -281,12 +281,12 @@ public:
 
     /** @name  Material parameters */
     //@{
-    Data<helper::vector<Real> > _youngModulusX;
-    Data<helper::vector<Real> > _youngModulusY;
-    Data<helper::vector<Real> > _poissonRatioXY;
-    Data<helper::vector<Real> > _poissonRatioYZ;
-    Data<helper::vector<Real> > _shearModulusXY;
-    Data<helper::vector<Real> > _viscosity;
+    Data<helper::vector<Real> > _youngModulusX; ///< Young Modulus along X
+    Data<helper::vector<Real> > _youngModulusY; ///< Young Modulus along Y
+    Data<helper::vector<Real> > _poissonRatioXY; ///< Poisson Ratio about XY plane ]-1,0.5[
+    Data<helper::vector<Real> > _poissonRatioYZ; ///< Poisson Ratio about YZ plane ]-1,0.5[
+    Data<helper::vector<Real> > _shearModulusXY; ///< Shear Modulus about XY plane
+    Data<helper::vector<Real> > _viscosity; ///< Viscosity (stress/strainRate)
     //@}
 
     virtual void reinit()

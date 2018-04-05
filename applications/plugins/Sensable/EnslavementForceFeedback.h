@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -54,11 +54,11 @@ public:
 
 protected:
 	sofa::defaulttype::Vec3d contactForce;
-    Data<double> relativeStiffness;
-    Data<double> attractionDistance;
-    Data<bool> normalsPointOut;
-    Data<double> contactScale;
-    Data<double> penOffset;
+    Data<double> relativeStiffness; ///< Relative Stiffness
+    Data<double> attractionDistance; ///< Distance at which the Omni is attracted to the contact point.
+    Data<bool> normalsPointOut; ///< True if the normals of objects point outwards, false if they point inwards.
+    Data<double> contactScale; ///< Scales the maximum penetration depth.
+    Data<double> penOffset; ///< Distance at which there is no reaction force.
 
 
 };

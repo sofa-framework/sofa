@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -204,7 +204,7 @@ bool PluginManager::loadPlugin(const std::string& plugin, const std::string& suf
 {
     // If 'plugin' ends with ".so", ".dll" or ".dylib", this is a path
     const std::string dotExt = "." + DynamicLibrary::extension;
-    if (std::equal(dotExt.rbegin(), dotExt.rend(), plugin.rbegin()))
+    if (plugin.size() > dotExt.size() && std::equal(dotExt.rbegin(), dotExt.rend(), plugin.rbegin()))
     {
         return loadPluginByPath(plugin,  errlog);
     }
@@ -236,7 +236,7 @@ Plugin* PluginManager::getPlugin(const std::string& plugin, const std::string& s
 
     // If 'plugin' ends with ".so", ".dll" or ".dylib", this is a path
     const std::string dotExt = "." + DynamicLibrary::extension;
-    if (!std::equal(dotExt.rbegin(), dotExt.rend(), plugin.rbegin()))
+    if (!(plugin.size() > dotExt.size() && std::equal(dotExt.rbegin(), dotExt.rend(), plugin.rbegin())))
     {
         pluginPath = findPlugin(plugin, suffix, ignoreCase);
     }
@@ -337,7 +337,7 @@ bool PluginManager::pluginIsLoaded(const std::string& plugin)
 
     // If 'plugin' ends with ".so", ".dll" or ".dylib", this is a path
     const std::string dotExt = "." + DynamicLibrary::extension;
-    if (!std::equal(dotExt.rbegin(), dotExt.rend(), plugin.rbegin()))
+    if (!(plugin.size() > dotExt.size() && std::equal(dotExt.rbegin(), dotExt.rend(), plugin.rbegin())))
     {
         pluginPath = findPlugin(plugin);
     }

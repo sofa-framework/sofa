@@ -30,7 +30,7 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     //typedef TBtTriangle<DataTypes> Element;
 
-    sofa::core::objectmodel::Data<SReal> margin;
+    sofa::core::objectmodel::Data<SReal> margin; ///< Margin used for collision detection within bullet
 
     typedef sofa::core::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
     virtual void initBullet();

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -337,10 +337,10 @@ public:
     typedef SpatialGridTypes<DataTypes> GridTypes;
     typedef SpatialGrid< GridTypes > Grid;
     Grid* grid;
-    Data<Real> d_cellWidth;
-    Data<bool> d_showGrid;
-    Data<bool> d_autoUpdate;
-    Data<bool> d_sortPoints;
+    Data<Real> d_cellWidth; ///< Width each cell in the grid. If it is used to compute neighboors, it should be greater that the max radius considered.
+    Data<bool> d_showGrid; ///< activate rendering of the grid
+    Data<bool> d_autoUpdate; ///< Automatically update the grid at each iteration.
+    Data<bool> d_sortPoints; ///< Sort points depending on which cell they are in the grid. This is required for efficient collision detection.
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.

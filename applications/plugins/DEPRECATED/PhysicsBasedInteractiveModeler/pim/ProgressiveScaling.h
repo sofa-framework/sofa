@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -70,12 +70,13 @@ public:
 
     void draw();
 
-    Data<VecCoord> f_X0;
-    Data<VecCoord> f_X;
+    Data<VecCoord> f_X0; ///< Rest position coordinates of the degrees of freedom
+    Data<VecCoord> f_X; ///< scaled position coordiates
     VecCoord local_X0;
-    Data<double> from_scale, to_scale;
+    Data<double> from_scale;
+    Data<double> to_scale;
 
-    Data<double> d_scale;
+    Data<double> d_scale; ///< initial scale applied to the degrees of freedom
     Data<Vec3d> d_axis;
     Data<Vec3d> d_center;
     Data<double> d_angle;

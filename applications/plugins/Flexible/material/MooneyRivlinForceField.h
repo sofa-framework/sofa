@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -51,10 +51,10 @@ public:
 
     /** @name  Material parameters */
     //@{
-    Data<helper::vector<Real> > f_C1;
-    Data<helper::vector<Real> > f_C2;
-    Data<helper::vector<Real> > f_bulk;
-    Data<bool > f_PSDStabilization;
+    Data<helper::vector<Real> > f_C1; ///< weight of (~I1-3) term in energy
+    Data<helper::vector<Real> > f_C2; ///< weight of (~I2-3) term in energy
+    Data<helper::vector<Real> > f_bulk; ///< bulk modulus (working on I3=J=detF=volume variation)
+    Data<bool > f_PSDStabilization; ///< project stiffness matrix to its nearest symmetric, positive semi-definite matrix
     //@}
 
     virtual void reinit()

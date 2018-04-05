@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -98,13 +98,13 @@ class DeformableOnRigidFrameMapping : public core::Multi2Mapping<TIn, TInRoot, T
 
     OutVecCoord rotatedPoints;
     DeformableOnRigidFrameMappingInternalData<In, Out> data;
-    Data<unsigned int> index;
-    Data< bool > indexFromEnd;
-    Data<sofa::helper::vector<unsigned int> >  repartition;
-    Data< bool > globalToLocalCoords;
+    Data<unsigned int> index; ///< input DOF index
+    Data< bool > indexFromEnd; ///< input DOF index starts from the end of input DOFs vector
+    Data<sofa::helper::vector<unsigned int> >  repartition; ///< number of dest dofs per entry dof
+    Data< bool > globalToLocalCoords; ///< are the output DOFs initially expressed in global coordinates
 
-    Data< Real > m_rootAngularForceScaleFactor;
-    Data< Real > m_rootLinearForceScaleFactor;
+    Data< Real > m_rootAngularForceScaleFactor; ///< Scale factor applied on the angular force accumulated on the rigid model
+    Data< Real > m_rootLinearForceScaleFactor; ///< Scale factor applied on the linear force accumulated on the rigid model
 
     int addPoint ( const OutCoord& c );
     int addPoint ( const OutCoord& c, int indexFrom );

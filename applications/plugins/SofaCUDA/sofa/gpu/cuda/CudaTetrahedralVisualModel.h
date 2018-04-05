@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -51,9 +51,9 @@ private:
     bool needUpdateTopology;
     gpu::cuda::CudaVector<Tetra> tetras;
 
-    Data<bool> depthTest;
-    Data<bool> blending;
-    Data<bool> useVBO;
+    Data<bool> depthTest; ///< Set Depth Test
+    Data<bool> blending; ///< Set Blending
+    Data<bool> useVBO; ///< true to activate Vertex Buffer Object
 
 public:
     OglTetrahedralModel();
