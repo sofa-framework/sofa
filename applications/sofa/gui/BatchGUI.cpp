@@ -67,37 +67,33 @@ int BatchGUI::mainLoop()
             sofa::simulation::Visitor::ctime_t rt = sofa::helper::system::thread::CTime::getRefTime();
             sofa::simulation::Visitor::ctime_t t = sofa::helper::system::thread::CTime::getFastTime();
           
-        signed int i = 2; //one simulatin step is animated above  
+        signed int i = 1; //one simulatin step is animated above  
        
-        while (nbIter == -1 || i <= nbIter || nbIter == 1) // Exception case when no. of iterations set to 1
+        while (i <= nbIter || nbIter == -1)
         {
-            if (nbIter != 1) 
+            if (i != nbIter)
             {
                 sofa::helper::AdvancedTimer::begin("Animate");
                 sofa::simulation::getSimulation()->animate(groot.get());
                 //As no visualization is done by the Batch GUI, these two lines are not necessary.
                 sofa::simulation::getSimulation()->updateVisual(groot.get());
-            }        
+            }
 
-            if((nbIter == -1 && i%1000 ==0) || i == nbIter || nbIter == 1)
+            if ( i == nbIter || (nbIter == -1 && i%1000 == 0) )
             {
-                if (nbIter == 1)
-                {
-                    i = 1;
-                    nbIter = 0; // To exit the while loop
-                }
-            t = sofa::helper::system::thread::CTime::getFastTime()-t;
-            rt = sofa::helper::system::thread::CTime::getRefTime()-rt;
+                t = sofa::helper::system::thread::CTime::getFastTime()-t;
+                rt = sofa::helper::system::thread::CTime::getRefTime()-rt;
 
-            msg_info("BatchGUI") << i << " iterations done in " << ((double)t)/((double)tfreq) << " s ( " << (((double)tfreq)*i)/((double)t) << " FPS)." << msgendl;
-            msg_info("BatchGUI") << i << " iterations done in " << ((double)rt)/((double)rtfreq) << " s ( " << (((double)rtfreq)*i)/((double)rt) << " FPS)." << msgendl;
+                msg_info("BatchGUI") << i << " iterations done in " << ((double)t)/((double)tfreq) << " s ( " << (((double)tfreq)*i)/((double)t) << " FPS)." << msgendl;
+                msg_info("BatchGUI") << i << " iterations done in " << ((double)rt)/((double)rtfreq) << " s ( " << (((double)rtfreq)*i)/((double)rt) << " FPS)." << msgendl;
                 
-                if(nbIter == -1) //Additional message for infinite iterations
+                if (nbIter == -1) // Additional message for infinite iterations
                 {
                      msg_info("BatchGUI") << "Press Ctrl + C (linux)/ Command + period (mac) to stop " << msgendl;
                 }
             }
-        i++;
+
+            i++;
         }
         
     }
