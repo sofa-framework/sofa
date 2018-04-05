@@ -7,6 +7,7 @@ set(SOFA_HAVE_SOFAIMPLICITFIELD 1)
 find_package(SofaDistanceGrid REQUIRED)
 
 set(HEADER_FILES
+    config.h
     initSofaImplicitField.h
 
     # This is backward compatibility
@@ -41,7 +42,6 @@ set(EXTRA_FILES
 
 add_subdirectory(SofaImplicitField_test)
 
-configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/SofaImplicitField/config.h")
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_HAVE_SOFAIMPLICITFIELD")
