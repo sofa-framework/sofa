@@ -834,7 +834,7 @@ void DiagonalMass<DataTypes, MassType>::init()
         //If no problem detected, then use the vertexMass
         else
         {
-            const sofa::helper::vector<Real> &vertexMass = d_vertexMass.getValue();
+            const MassVector &vertexMass = d_vertexMass.getValue();
             //Check size
             if (vertexMass.size() != (unsigned)this->mstate->getSize())
             {
@@ -937,7 +937,7 @@ void DiagonalMass<DataTypes, MassType>::init()
     else if(m_initializationProcess==2)
     {
         msg_info() << "vertexMass information is used";
-        sofa::helper::vector<MassType> vertexMassSave = d_vertexMass.getValue();
+        const MassVector &vertexMassSave = d_vertexMass.getValue();
         Real totalMassSave = 0.0;
         for(size_t i=0; i<vertexMassSave.size(); i++)
         {
