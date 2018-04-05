@@ -738,6 +738,9 @@ sofa::simulation::Node* RealGUI::currentSimulation()
 
 void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
 {
+    if(reload)
+        saveView();
+
     const std::string &extension=SetDirectory::GetExtension(filename.c_str());
     if (extension == "simu")
     {
@@ -968,6 +971,8 @@ void RealGUI::setScene(Node::SPtr root, const char* filename, bool temporaryFile
         FileMonitor::addFile(filename, m_filelistener) ;
     }
     setSceneWithoutMonitor(root, filename, temporaryFile) ;
+    m_docbrowser->loadHtml( filename ) ;
+
 }
 
 //------------------------------------
