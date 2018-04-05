@@ -37,6 +37,7 @@
 #include <sofa/helper/map.h>
 
 #include <sofa/core/topology/BaseMeshTopology.h>
+#include <sofa/core/DataTracker.h>
 
 namespace sofa
 {
@@ -58,6 +59,13 @@ namespace mass
 template<class DataTypes, class TMassType>
 class MeshMatrixMassInternalData
 {
+public:
+    typedef typename DataTypes::Real Real;
+
+    /// In case of non 3D template
+    typedef defaulttype::Vec<3,Real> Vec3;
+    /// assumes the geometry object type is 3D
+    typedef defaulttype::StdVectorTypes< Vec3, Vec3, Real > GeometricalTypes;
 };
 
 
@@ -79,11 +87,6 @@ public:
     typedef helper::vector<MassType>                        MassVector;
     typedef helper::vector<MassVector>                      MassVectorVector;
 
-    // In case of non 3D template
-    typedef defaulttype::Vec<3,Real> Vec3;
-    /// assumes the geometry object type is 3D
-    typedef defaulttype::StdVectorTypes< Vec3, Vec3, Real > GeometricalTypes ;
-
     /// Topological enum to classify encounter meshes
     typedef enum
     {
@@ -94,13 +97,29 @@ public:
         TOPOLOGY_QUADSET=4,
         TOPOLOGY_HEXAHEDRONSET=5
     } TopologyType;
-	/// the way the mass should be computed on non-linear elements
+
+    typedef typename MeshMatrixMassInternalData<DataTypes,TMassType>::GeometricalTypes GeometricalTypes;
+
+    /*
+    /// the way the mass should be computed on non-linear elements
 	typedef enum 
 	{
 		EXACT_INTEGRATION=1,
 		NUMERICAL_INTEGRATION=2,
 		AFFINE_ELEMENT_INTEGRATION=3
-	} IntegrationMethod;
+    } IntegrationMethod;*/
+
+
+
+    /// @name Data of mass information
+    /// @{
+    /// Mass stored on vertices
+    Data< sofa::helper::vector< Real > > d_vertexMass;
+    /// Mass density of the object
+    Data< sofa::helper::vector< Real > > d_massDensity;
+    /// Total mass of the object
+    Data<  Real > d_totalMass;
+    /// @}
 
 
     /// Values of the particles masses stored on vertices
@@ -111,12 +130,14 @@ public:
     /// to display the center of gravity of the system
     Data< sofa::helper::vector< Real > > d_edgeMass;
 
-    /* ---------- Specific data for Bezier Elements ------*/
+    /* ---------- Specific data for Bezier Elements ------
     /// use this data structure to store mass for Bezier tetrahedra. 
     //// The size of the vector is nbControlPoints*(nbControlPoints+1)/2 where nbControlPoints=(degree+1)*(degree+2)*(degree+3)/2
     topology::TetrahedronData<helper::vector<MassVector> > d_tetrahedronMassInfo;
-    /* ---------- end ------*/
+     ---------- end ------*/
 
+    /// if true, the mass of every element is computed based on the rest position rather than the position
+    Data< bool > d_computeMassOnRest;
     /// to display the center of gravity of the system
     Data< bool >         d_showCenterOfGravity;
     /// scale to change the axis size
@@ -126,13 +147,13 @@ public:
     /// if specific mass information should be outputed
     Data< bool >         d_printMass;
     Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
-    /// the order of integration for numerical integration
-    Data<size_t>	     d_numericalIntegrationOrder;
-    /// the type of numerical integration method chosen
-    Data<size_t>	     d_numericalIntegrationMethod;
-    /// the type of integration method chosen for non linear element.
-    Data<std::string>	 d_integrationMethod; 
-    IntegrationMethod    m_integrationMethod;
+//    /// the order of integration for numerical integration
+//    Data<size_t>	     d_numericalIntegrationOrder;
+//    /// the type of numerical integration method chosen
+//    Data<size_t>	     d_numericalIntegrationMethod;
+//    /// the type of integration method chosen for non linear element.
+//    Data<std::string>	 d_integrationMethod;
+//    IntegrationMethod    m_integrationMethod;
 
 
 
@@ -146,12 +167,21 @@ protected:
     MeshMatrixMass();
     ~MeshMatrixMass();
 
+//    void checkIntegrationMethod();
+    void checkTopology();
+    void initTopologyHandlers();
+    void massInitialization();
+
     /// Internal data required for Cuda computation (copy of vertex mass for deviceRead)
     MeshMatrixMassInternalData<DataTypes, MassType> data;
     friend class MeshMatrixMassInternalData<DataTypes, MassType>;
 
-    /// value defining the initialization process of the mass (0 : totalMass, 1 : massDensity, 2 : vertexMass)
-    int m_initializationProcess;
+    /// Data tracker
+    sofa::core::DataTracker m_dataTrackerVertex;
+    sofa::core::DataTracker m_dataTrackerEdge;
+    sofa::core::DataTracker m_dataTrackerDensity;
+    sofa::core::DataTracker m_dataTrackerTotal;
+
 
 public:
 
@@ -168,8 +198,8 @@ public:
 
     virtual void reinit() override;
     virtual void init() override;
-
     virtual void handleEvent(sofa::core::objectmodel::Event */*event*/) override;
+    void update();
 
     TopologyType getMassTopologyType() const
     {
@@ -188,19 +218,36 @@ public:
     /// Compute the mass from input values
     void computeMass();
 
-    /// Check and standard initialization functions from mass information
-    virtual bool checkVertexMass() override;
-    virtual void initFromVertexMass() override;
-    bool checkEdgeMass();
-    void initFromVertexAndEdgeMass();
-    virtual bool checkMassDensity() override;
-    virtual void initFromMassDensity() override;
-    virtual void initFromTotalMass() override;
 
-    /// Write access functions to vertexMass and massDensity information
+    /// @name Read and write access functions in mass information
+    /// @{
+    virtual void getVertexMass(sofa::helper::vector< Real >& vertexMass);
+    virtual void getMassDensity(sofa::helper::vector< Real >& massDensity);
+    virtual void getTotalMass(Real& totalMass);
+
     virtual void setVertexMass(sofa::helper::vector< Real > vertexMass);
     virtual void setMassDensity(sofa::helper::vector< Real > massDensity);
     virtual void setMassDensity(Real massDensityValue);
+    virtual void setTotalMass(Real totalMass);
+    /// @}
+
+
+    /// @name Check and standard initialization functions from mass information
+    /// @{
+    virtual bool checkVertexMass();
+    virtual void initFromVertexMass();
+
+    virtual bool checkMassDensity();
+    virtual void initFromMassDensity();
+
+    virtual bool checkTotalMass();
+    virtual void checkTotalMassInit();
+    virtual void initFromTotalMass();
+
+    bool checkEdgeMass();
+    void initFromVertexAndEdgeMass();
+    /// @}
+
 
     /// Copy the vertex mass scalar (in case of CudaTypes)
     void copyVertexMass();
@@ -414,7 +461,7 @@ protected:
 
     EdgeMassHandler* m_edgeMassHandler;
 
-    class TetrahedronMassHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron,MassVectorVector>
+    /*class TetrahedronMassHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron,MassVectorVector>
     {
     public:
         typedef typename DataTypes::Real Real;
@@ -427,13 +474,13 @@ protected:
                 const sofa::helper::vector< double >&);
 
                /// Edge coefficient of mass matrix destruction function to handle creation of new tetrahedra
-//        void applyDestructionFunction(const sofa::helper::vector<unsigned int> & /*indices*/);
+//        void applyDestructionFunction(const sofa::helper::vector<unsigned int> & indices);
 
     protected:
         MeshMatrixMass<DataTypes,TMassType>* m;
     };
 
-    TetrahedronMassHandler* m_tetrahedronMassHandler;
+    TetrahedronMassHandler* m_tetrahedronMassHandler;*/
 
 };
 

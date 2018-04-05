@@ -28,6 +28,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/core/DataTracker.h>
 
 namespace sofa
 {
@@ -96,21 +97,40 @@ protected:
     /// @internal fonction called in the constructor that can be specialized
     void constructor_message() ;
 
+    /// Data tracker
+    sofa::core::DataTracker m_dataTrackerVertex;
+    sofa::core::DataTracker m_dataTrackerTotal;
+
 public:
+
+    /// @name Read and write access functions in mass information
+    /// @{
     void setMass(const MassType& d_vertexMass);
     const MassType& getMass() const { return d_vertexMass.getValue(); }
 
     SReal getTotalMass() const { return d_totalMass.getValue(); }
     void setTotalMass(SReal m);
+    /// }@
 
     void setFileMass(const std::string& file) {d_filenameMass.setValue(file);}
     std::string getFileMass() const {return d_filenameMass.getFullPath();}
 
     void loadRigidMass(const std::string& filename);
-    // -- Mass interface
 
     void reinit() override;
     void init() override;
+    void update();
+    virtual void handleEvent(sofa::core::objectmodel::Event */*event*/) override;
+
+    /// @name Check and standard initialization functions from mass information
+    /// @{
+    virtual bool checkVertexMass();
+    virtual void initFromVertexMass();
+
+    virtual bool checkTotalMass();
+    virtual void checkTotalMassInit();
+    virtual void initFromTotalMass();
+    /// @}
 
     void handleTopologyChange() override;
     void addMDx(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor) override;

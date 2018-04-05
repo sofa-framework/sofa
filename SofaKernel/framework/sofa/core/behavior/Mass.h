@@ -76,26 +76,6 @@ public:
     /// Retrieve the associated MechanicalState
     MechanicalState<DataTypes>* getMState() { return this->mstate.get(); }
 
-    /// @name Data of mass information
-    /// @{
-    /// Mass stored on vertices
-    Data< sofa::helper::vector< Real > > d_vertexMass;
-    /// Mass density of the object
-    Data< sofa::helper::vector< Real > > d_massDensity;
-    /// Total mass of the object
-    Data<  Real > d_totalMass;
-    /// @}
-
-    int m_counterVertex, m_counterDensity, m_counterTotalMass;
-
-    /// @name Read and write access functions
-    /// @{
-    virtual void getVertexMass(sofa::helper::vector< Real >& vertexMass);
-    virtual void getMassDensity(sofa::helper::vector< Real >& massDensity);
-
-    virtual void getTotalMass(Real& totalMass);
-    virtual void setTotalMass(Real totalMass);
-    /// @}
 
     /// @name Vector operations
     /// @{
@@ -198,18 +178,6 @@ public:
 protected:
     /// stream to export Kinematic, Potential and Mechanical Energy to gnuplot files
     std::ofstream* m_gnuplotFileEnergy;
-
-    /// @name Check and standard initialization functions from mass information
-    /// @{
-    virtual bool checkVertexMass() { return true; }
-    virtual void initFromVertexMass() {}
-
-    virtual bool checkMassDensity() { return true; }
-    virtual void initFromMassDensity() {}
-
-    virtual bool checkTotalMass();
-    virtual void initFromTotalMass() {}
-    /// @}
 
 public:
     virtual bool insertInNode( objectmodel::BaseNode* node ) override { BaseMass::insertInNode(node); BaseForceField::insertInNode(node); return true; }

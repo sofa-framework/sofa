@@ -31,6 +31,7 @@
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <SofaBaseMechanics/AddMToMatrixFunctor.h>
 #include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/AnimateEndEvent.h>
 #include <iostream>
 #include <string.h>
 
@@ -122,19 +123,38 @@ void UniformMass<DataTypes, MassType>::constructor_message()
 template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::setMass ( const MassType& m )
 {
-    d_vertexMass.setValue ( m );
+    const MassType& currentVertexMass = d_vertexMass.getValue();
+    d_vertexMass.setValue( m );
+    if(!checkVertexMass())
+    {
+        msg_warning() << "Given value to setVertexMass() is not a strictly positive value\n"
+                      << "Previous value is used: vertexMass = " << currentVertexMass;
+        d_vertexMass.setValue(currentVertexMass);
+    }
 }
 
 template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::setTotalMass ( SReal m )
 {
-    d_totalMass.setValue ( m );
+    Real currentTotalMass = d_totalMass.getValue();
+    d_totalMass.setValue( m );
+    if(!checkTotalMass())
+    {
+        msg_warning() << "Given value to setTotalMass() is not a strictly positive value\n"
+                      << "Previous value is used: totalMass = " << currentTotalMass;
+        d_totalMass.setValue(currentTotalMass);
+    }
 }
 
 
 template <class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::reinit()
+void UniformMass<DataTypes, MassType>::init()
 {
+    Mass<DataTypes>::init();
+
+    m_dataTrackerVertex.trackData(d_vertexMass);
+    m_dataTrackerTotal.trackData(d_totalMass);
+
     WriteAccessor<Data<vector<int> > > indices = d_indices;
     m_doesTopoChangeAffect = false;
 
@@ -169,8 +189,7 @@ void UniformMass<DataTypes, MassType>::reinit()
         m_doesTopoChangeAffect = true;
     }
 
-    //Select mass information
-    bool useDefault = true;
+
     //If user defines the vertexMass, use this as the mass
     if (d_vertexMass.isSet())
     {
@@ -180,38 +199,20 @@ void UniformMass<DataTypes, MassType>::reinit()
             msg_warning(this) << "totalMass value overriding the value of the attribute vertexMass. \n"
                                  "vertexMass = totalMass / nb_dofs. \n"
                                  "To remove this warning you need to set either totalMass or vertexMass data field, but not both.";
-            if(d_totalMass.getValue() <= 0.0)
-            {
-                msg_warning(this) << "totalMass data can not have a negative value. \n"
-                                     "Switching back to default value: totalMass = 1.0 \n"
-                                     "To remove this warning, you need to set a positive value to the totalMass data";
-                d_totalMass.setValue(1.0) ;
-            }
-            if(d_vertexMass.getValue() <= 0.0 )
-            {
-                msg_warning(this) << "vertexMass data can not have a negative value. \n"
-                                     "To remove this warning, you need to set one single and positive value to the vertexMass data";
-            }
-            //By default use the totalMass
-            useDefault = true;
+            checkTotalMassInit();
+            initFromTotalMass();
         }
-        //Check for negative or null value, if wrongly set use the totalMass instead
-        else if(d_vertexMass.getValue() <= 0.0 )
-        {
-            msg_warning(this) << "vertexMass data can not have a negative value. \n"
-                                 "Switching back to default value: totalMass = 1.0 \n"
-                                 "To remove this warning, you need to set one single and positive value to the vertexMass data";
-            d_totalMass.setValue(1.0) ;
-            useDefault = true;
-        }
-        //If no problem detected, then use the vertexMass information
-        //totalMass will be computed from it using the formulat : totalMass = vertexMass * number of particules
         else
         {
-            SReal totalMass = d_vertexMass.getValue() * indices.size();
-            d_totalMass.setValue(totalMass);
-            useDefault = false;
-            msg_info() << "vertexMass information is used";
+            if(checkVertexMass())
+            {
+                initFromVertexMass();
+            }
+            else
+            {
+                checkTotalMassInit();
+                initFromTotalMass();
+            }
         }
     }
     //else totalMass is used
@@ -221,26 +222,45 @@ void UniformMass<DataTypes, MassType>::reinit()
         {
             msg_info() << "No information about the mass is given. Default totatMass is used as reference.";
         }
-        //Check for negative or null value, if wrongly set use the default value totalMass = 1.0
-        if(d_totalMass.getValue() <= 0.0)
-        {
-            msg_warning(this) << "totalMass data can not have a negative value. \n"
-                                 "Switching back to default value: totalMass = 1.0 \n"
-                                 "To remove this warning, you need to set a positive value to the totalMass data";
-            d_totalMass.setValue(1.0) ;
-        }
 
-        //If the totalMass attribute is set then the vertexMass is computed from it
-        //using the following formula: vertexMass = totalMass / number of particules
-        useDefault = true;
+        checkTotalMassInit();
+        initFromTotalMass();
     }
 
-    //If the mass is based on the totalMass information
-    if(useDefault)
+    //Info post-reinit
+    msg_info() << "totalMass  = " << d_totalMass.getValue() << " \n"
+                  "vertexMass = " << d_vertexMass.getValue();}
+
+
+template <class DataTypes, class MassType>
+void UniformMass<DataTypes, MassType>::reinit()
+{
+    update();
+}
+
+
+template <class DataTypes, class MassType>
+void UniformMass<DataTypes, MassType>::update()
+{
+    bool update = false;
+
+    if (m_dataTrackerTotal.isDirty())
     {
-        MassType *m = d_vertexMass.beginEdit();
-        *m = ( ( typename DataTypes::Real ) d_totalMass.getValue() / indices.size() );
-        d_vertexMass.endEdit();
+        if(checkTotalMass())
+        {
+            initFromTotalMass();
+            update = true;
+        }
+        m_dataTrackerTotal.clean();
+    }
+    else if(m_dataTrackerVertex.isDirty())
+    {
+        if(checkVertexMass())
+        {
+            initFromVertexMass();
+            update = true;
+        }
+        m_dataTrackerVertex.clean();
     }
 
     //Info post-reinit
@@ -250,10 +270,73 @@ void UniformMass<DataTypes, MassType>::reinit()
 
 
 template <class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::init()
+bool UniformMass<DataTypes, MassType>::checkVertexMass()
 {
-    Mass<DataTypes>::init();
-    reinit();
+    if(d_vertexMass.getValue() <= 0.0 )
+    {
+        msg_warning(this) << "vertexMass data can not have a negative value. \n"
+                             "To remove this warning, you need to set one single, non-zero and positive value to the vertexMass data";
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
+
+template <class DataTypes, class MassType>
+void UniformMass<DataTypes, MassType>::initFromVertexMass()
+{
+    //If the vertexMass attribute is set then the totalMass is computed from it
+    //using the following formula: totalMass = vertexMass * number of particules
+
+    SReal totalMass = d_vertexMass.getValue() * d_indices.getValue().size();
+    d_totalMass.setValue(totalMass);
+    msg_info() << "vertexMass information is used";
+
+}
+
+
+template <class DataTypes, class MassType>
+bool UniformMass<DataTypes, MassType>::checkTotalMass()
+{
+    if(d_totalMass.getValue() <= 0.0)
+    {
+        msg_warning(this) << "totalMass data can not have a negative value. \n"
+                             "To remove this warning, you need to set a non-zero positive value to the totalMass data";
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
+
+template <class DataTypes, class MassType>
+void UniformMass<DataTypes, MassType>::checkTotalMassInit()
+{
+    //Check for negative or null value, if wrongly set use the default value totalMass = 1.0
+    if(!checkTotalMass())
+    {
+        msg_warning(this) << "Switching back to default values: totalMass = 1.0\n";
+        d_totalMass.setValue(1.0) ;
+    }
+}
+
+
+template <class DataTypes, class MassType>
+void UniformMass<DataTypes, MassType>::initFromTotalMass()
+{
+    //If the totalMass attribute is set then the vertexMass is computed from it
+    //using the following formula: vertexMass = totalMass / number of particules
+
+    MassType *m = d_vertexMass.beginEdit();
+    *m = ( ( typename DataTypes::Real ) d_totalMass.getValue() / d_indices.getValue().size() );
+    d_vertexMass.endEdit();
+    msg_info() << "totalMass information is used";
+
 }
 
 
@@ -596,6 +679,20 @@ void UniformMass<DataTypes, MassType>::draw(const VisualParams* vparams)
         vparams->drawTool()->drawCross(temp, (float)axisSize, color);
     }
 }
+
+
+template<class DataTypes, class MassType>
+void UniformMass<DataTypes, MassType>::handleEvent(sofa::core::objectmodel::Event *event)
+{
+    if (sofa::simulation::AnimateEndEvent::checkEventType(event))
+    {
+        if (m_dataTrackerVertex.isDirty() || m_dataTrackerTotal.isDirty())
+        {
+            update();
+        }
+    }
+}
+
 
 template<class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::loadRigidMass( const std::string&  filename)
