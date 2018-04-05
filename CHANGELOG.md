@@ -203,6 +203,7 @@ ____________________________________________________________
 - [all]
     - CMake: Fix and clean boost, when using Sofa as an external lib [#421](https://github.com/sofa-framework/sofa/pull/421)
     - Fix computeBBox functions [#527](https://github.com/sofa-framework/sofa/pull/527)
+    - CMake: FIX Boost::program_options finding in install [#618](https://github.com/sofa-framework/sofa/pull/618)
 - [SofaBaseLinearSolver]
     - FIX no step if condition on denominator is met at first step [#521](https://github.com/sofa-framework/sofa/pull/521)
     - FIX breaking condition in CG at first step regarding threshold [#556](https://github.com/sofa-framework/sofa/pull/556)
