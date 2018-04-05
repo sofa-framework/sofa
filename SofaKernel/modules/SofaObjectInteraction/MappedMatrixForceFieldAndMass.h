@@ -32,7 +32,7 @@
 #include <sofa/core/MechanicalParams.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #include <SofaBaseLinearSolver/DefaultMultiMatrixAccessor.h>
-#include <SofaMiscMapping/config.h>
+#include <SofaObjectInteraction/config.h>
 
 #include <sofa/core/topology/BaseMeshTopology.h>
 
@@ -54,7 +54,7 @@ namespace interactionforcefield
 {
 
 
-class SOFA_CONSTRAINT_API MechanicalAccumulateJacobian : public simulation::BaseMechanicalVisitor
+class MechanicalAccumulateJacobian : public simulation::BaseMechanicalVisitor
 {
 public:
     MechanicalAccumulateJacobian(const core::ConstraintParams* _cparams, core::MultiMatrixDerivId _res)
