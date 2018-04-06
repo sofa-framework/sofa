@@ -113,7 +113,7 @@ int HeadlessRecorder::RegisterGUIParameters(ArgumentParser* argumentParser)
     argumentParser->addArgument(po::value<int>(&height)->default_value(1080), "height", "(only HeadLessRecorder) video or picture height");
     argumentParser->addArgument(po::value<int>(&fps)->default_value(60), "fps", "(only HeadLessRecorder) define how many frame per second HeadlessRecorder will generate");
     argumentParser->addArgument(po::value<bool>(&recordUntilStopAnimate)->default_value(false)->implicit_value(true),         "recordUntilEndAnimate", "(only HeadLessRecorder) recording until the end of animation does not care how many seconds have been set");
-    argumentParser->addArgument(po::value<std::string>(&recordTypeRaw)->default_value("wallclocktime"), "recordingmode", "(only HeadLessRecorder) define how the recording should be made; either \"simulationtime\", \"wallclocktime\" or an arbitrary interval time between each frame as a float.");
+    argumentParser->addArgument(po::value<std::string>(&recordTypeRaw)->default_value("wallclocktime"), "recordingmode", "(only HeadLessRecorder) define how the recording should be made; either \"simulationtime\" (records as if it was simulating in real time and skips frames accordingly), \"wallclocktime\" (records a frame for each time step) or an arbitrary interval time between each frame as a float.");
     return 0;
 }
 
@@ -349,7 +349,7 @@ bool HeadlessRecorder::keepFrame()
             return true;
         case RecordMode::simulationtime :
         case RecordMode::timeinterval :
-            return groot->getTime() > m_nFrames * skipTime;
+            return groot->getTime() >= m_nFrames * skipTime;
     }
     return false;
 }
