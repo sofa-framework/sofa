@@ -85,6 +85,7 @@ protected:
     typedef defaulttype::Mat<12, 12, Real> StiffnessMatrix;
     typedef defaulttype::Mat<12, 8, Real> plasticityMatrix; ///< contribution of plasticity to internal forces
 
+
     struct BeamInfo
     {
         /*********************************************************************/
@@ -94,7 +95,13 @@ protected:
         plasticityMatrix _M_loc;
         StiffnessMatrix _Ke_loc; //elastic stiffness
         StiffnessMatrix _Kt_loc; //tangent stiffness
-        Eigen::Matrix<double, 6, 6> _materialBehaviour;
+
+        typedef Eigen::Matrix<double, 6, 6> BehaviourMatrix;
+        BehaviourMatrix _materialBehaviour;
+        //QR decomposition of C matrix
+        //NB : we can turn to Eigen::FullPivHouseholderQR for more numerical
+        //stability, or to 	Eigen::HouseholderQR for faster computation
+        Eigen::ColPivHouseholderQR<BehaviourMatrix> _QR;
 
         //Base interval for reduced integration: same for all the beam elements
         ozp::quadrature::detail::Interval<3> _integrationInterval;
@@ -103,6 +110,7 @@ protected:
         helper::fixed_array<deformationGradientFunction, 27> _BeMatrices; /// One Be function for each Gauss Point (27 in one beam element)
 
         helper::fixed_array<bool, 27> _isPlasticPoint;
+        helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> _plasticStrainHistory; ///< history of the plastic strain, one tensor for each Gauss point
 
         /*********************************************************************/
 

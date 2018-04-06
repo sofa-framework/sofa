@@ -559,85 +559,153 @@ void MultiBeamForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const Ve
 
         force = beamsData.getValue()[i]._Ke_loc * depl;
 
-        helper::fixed_array<VoigtTensor2, 27> newStressvector;
-
         if (_isPlasticKrabbenhoft.getValue())
         {            
             //std::cout << "Fint_local pour l'element " << i << " : " << std::endl << force << " " << std::endl << std::endl; //TO DO: delete, for debug 
 
-            Eigen::Matrix<double, 12, 1> eigenDepl;
-            for (int i = 0; i < 12; i++)
-                eigenDepl(i) = depl[i];
-
-            //Update stresses
-            const Eigen::Matrix<double, 6, 6>& C = beamsData.getValue()[i]._materialBehaviour;
-            Eigen::Matrix<double, 6, 12> Be;
-            helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
-            helper::fixed_array<bool, 27>& isPlasticPoint = bd[i]._isPlasticPoint;
-
-            VoigtTensor2 newStress;
-            bool res;
-            //For each Gauss point, we update the stress value for next iteration
-            for (int j = 0; j < 27; j++)
+            if (_isDeformingPlastically)
             {
-                Be = beamsData.getValue()[i]._BeMatrices[j];
-                newStress = C*Be*eigenDepl;
-
-                res = goInPlasticDeformation(newStress);
-                isPlasticPoint[j] = res;
-                _isDeformingPlastically = _isDeformingPlastically || res;
-
-                newStressvector[j] = newStress;
-            }
-            beamsData.endEdit();
-
-            if (!_isDeformingPlastically)
-            {
-                _prevStresses[i] = newStressvector; //for next time step
-                // Apply lambda transpose (we use the rotation value of point a for the beam)
-                Vec3 fa1 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[0], force[1], force[2]));
-                Vec3 fa2 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[3], force[4], force[5]));
-
-                Vec3 fb1 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[6], force[7], force[8]));
-                Vec3 fb2 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[9], force[10], force[11]));
-
-                f[a] += Deriv(-fa1, -fa2);
-                f[b] += Deriv(-fb1, -fb2);
-
-                _lastPos = x;
+                // We are already into plastic deformation: no need to check here
+                accumulateNonLinearForce(f, x, i, a, b);
             }
             else
             {
-                /******************************************************/
-                /********************** DEBUG *************************/
-                /******************************************************/
-                //TO DO: delete, debug purposes
-                //Eigen::Matrix<double, 12, 1> eigenDepl;
-                //for (int i = 0; i < 12; i++)
-                //    eigenDepl(i) = depl[i];
+                helper::fixed_array<VoigtTensor2, 27> newStressVector;
+                helper::fixed_array<VoigtTensor2, 27> newStrainVector; //for post-plastic deformation
 
-                ////Update stresses
-                //const Eigen::Matrix<double, 6, 6>& C = beamsData.getValue()[i]._materialBehaviour;
-                //Eigen::Matrix<double, 6, 12> Be;
+                Eigen::Matrix<double, 12, 1> eigenDepl;
+                for (int i = 0; i < 12; i++)
+                    eigenDepl(i) = depl[i];
 
-                //VoigtTensor2 newStress;
-                //bool res;
-                ////For each Gauss point, we update the stress value for next iteration
-                //for (int j = 0; j < 27; j++)
-                //{
-                //    Be = beamsData.getValue()[i]._BeMatrices[j];
-                //    newStress = C*Be*eigenDepl;
+                if (_isPostPlastic)
+                {
+                    //The deformation is elastic, but we must take into consideration
+                    //a history of plastic deformation
 
-                //    res = goInPlasticDeformation(newStress);
-                //}
-                /******************************************************/
+                    //***** Test if we enter in plastic deformation *****//
+                    typedef ozp::quadrature::Gaussian<3> GaussianQuadratureType;
+                    typedef std::function<void(double, double, double, double, double, double)> LambdaType;
 
-                // The computation of these new stresses should be plastic
-                accumulateNonLinearForce(f, x, i, a, b);
+                    helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
 
-            }
+                    const Eigen::Matrix<double, 6, 6>& C = bd[i]._materialBehaviour;
+                    const helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> plasticStrainHistory = bd[i]._plasticStrainHistory;
+                    helper::fixed_array<bool, 27>& isPlasticPoint = bd[i]._isPlasticPoint;
 
+                    Eigen::Matrix<double, 6, 12> Be;
+                    VoigtTensor2 elasticStrain;
+                    VoigtTensor2 elasticStress;
+                    Eigen::Matrix<double, 12, 1> fint = Eigen::VectorXd::Zero(12);
+                    bool res;
+                    bool isDeformingPlastically = false;
+                    int gaussPointIt = 0;
+
+                    // This function is to be called if the last stress point corresponded to elastic deformation
+                    LambdaType computePostPlasticForces = [&](double u1, double u2, double u3, double w1, double w2, double w3)
+                    {
+                        Be = beamsData.getValue()[i]._BeMatrices[gaussPointIt];
+
+                        //Taking into account the plastic history
+                        elasticStrain = Be*eigenDepl - plasticStrainHistory[gaussPointIt];
+
+                        elasticStress = C*elasticStrain;
+
+                        //Check if we go back to plastic deformation
+                        res = goInPlasticDeformation(elasticStress);
+                        isPlasticPoint[gaussPointIt] = res;
+                        isDeformingPlastically = isDeformingPlastically || res;
+
+                        newStressVector[gaussPointIt] = elasticStress;
+
+                        fint += (w1*w2*w3)*Be.transpose()*elasticStress;
+
+                        gaussPointIt++; //Next Gauss Point
+                    };
+
+                    ozp::quadrature::detail::Interval<3> interval = beamsData.getValue()[i]._integrationInterval;
+                    ozp::quadrature::integrate <GaussianQuadratureType, 3, LambdaType>(interval, computePostPlasticForces);
+                    //***************************************************//
+
+                    if (isDeformingPlastically)
+                    {
+                        //At least one point went back to plastic deformation
+                        _isDeformingPlastically = true;
+                        accumulateNonLinearForce(f, x, i, a, b);
+                    }
+                    else
+                    {
+                        _prevStresses[i] = newStressVector; //for next time step
+                        for (int i = 0; i < 12; i++)
+                            force[i] = fint(i);
+                        
+                        // Apply lambda transpose (we use the rotation value of point a for the beam)
+                        Vec3 fa1 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[0], force[1], force[2]));
+                        Vec3 fa2 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[3], force[4], force[5]));
+
+                        Vec3 fb1 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[6], force[7], force[8]));
+                        Vec3 fb2 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[9], force[10], force[11]));
+
+                        f[a] += Deriv(-fa1, -fa2);
+                        f[b] += Deriv(-fb1, -fb2);
+
+                        _lastPos = x;
+                    }
+                } //endif _isPostPlastic (post-elastic case)
+                else
+                {
+                    //Purely elastic deformation
+                    //Here _isDeformingPlastically = false
+
+                    //***** Test if we enter in plastic deformation *****//
+                    const Eigen::Matrix<double, 6, 6>& C = beamsData.getValue()[i]._materialBehaviour;
+                    Eigen::Matrix<double, 6, 12> Be;
+                    helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
+                    helper::fixed_array<bool, 27>& isPlasticPoint = bd[i]._isPlasticPoint;
+
+                    VoigtTensor2 newStress;
+                    bool res;
+
+                    //For each Gauss point, we update the stress value for next iteration
+                    for (int gaussPointIt = 0; gaussPointIt < 27; gaussPointIt++)
+                    {
+                        Be = beamsData.getValue()[i]._BeMatrices[gaussPointIt];
+                        newStress = C*Be*eigenDepl;
+
+                        res = goInPlasticDeformation(newStress);
+                        isPlasticPoint[gaussPointIt] = res;
+                        _isDeformingPlastically = _isDeformingPlastically || res;
+
+                        newStressVector[gaussPointIt] = newStress;
+                    }
+                    beamsData.endEdit();
+                    //***************************************************//
+
+                    if (_isDeformingPlastically)
+                    {
+                        // The computation of these new stresses should be plastic
+                        accumulateNonLinearForce(f, x, i, a, b);
+                    }
+                    else
+                    {
+                        _prevStresses[i] = newStressVector; //for next time step
+
+                        // Apply lambda transpose (we use the rotation value of point a for the beam)
+                        Vec3 fa1 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[0], force[1], force[2]));
+                        Vec3 fa2 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[3], force[4], force[5]));
+
+                        Vec3 fb1 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[6], force[7], force[8]));
+                        Vec3 fb2 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[9], force[10], force[11]));
+
+                        f[a] += Deriv(-fa1, -fa2);
+                        f[b] += Deriv(-fb1, -fb2);
+
+                        _lastPos = x;
+                    }
+
+                } //end if !_isPostPlastic (purely elastic case)
+            } //endif !_isDeformingPlastically (generic elastic case)
         } //endif _isPlasticKrabbenhoft
+
         else
         {
             if (_isPlasticMuller.getValue())
@@ -1477,6 +1545,10 @@ void MultiBeamForceField<DataTypes>::computeMaterialBehaviour(int i, Index a, In
 
     std::cout << "C pour l'element " << i << " : " << std::endl << C << " " << std::endl << std::endl;
 
+    //Computes QR decomposition of the elastic behaviour matrix C, to use in the post-plastic deformation
+    Eigen::ColPivHouseholderQR<Eigen::Matrix<double, 6, 6>> &QR = bd[i]._QR;
+    QR.compute(C);
+
     beamsData.endEdit();
 };
 
@@ -1588,9 +1660,11 @@ template< class DataTypes>
 bool MultiBeamForceField<DataTypes>::stayInPlasticDeformation(const VoigtTensor2 &stressTensor,
                                                               const VoigtTensor2 &stressIncrement)
 {
+    double threshold = -1e-5; //TO DO: use proper threshold
+
     Eigen::Matrix<double, 6, 1> gradient = vonMisesGradient(stressTensor, _UTS);
     double cp = gradient.transpose()*stressIncrement;
-    return cp >= 0; //if true, the stress point still represents a plastic state
+    return !(cp < threshold); //if true, the stress point still represents a plastic state
 }
 
 
@@ -1897,7 +1971,7 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int i,
     else
     {
         unsigned int nbMaxIterations = 25;
-        double threshold = 1; //TO DO: choose coherent value
+        double threshold = 1e-5; //TO DO: choose coherent value
 
         /*****************************/
         /*   Plastic return method   */
@@ -1952,7 +2026,7 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int i,
         VoigtTensor2 gradientFD = vonMisesGradientFD(currentStressPoint, increment, _UTS);
 
         VoigtTensor4 hessian;
-        double yieldCondition;
+        double yieldCondition = 1; //will be changed in the first iteration of the while loop below
 
         //Initialisation of the Jacobian of the nonlinear system of equations
         Eigen::Matrix<double, 7, 7> J = Eigen::Matrix<double, 7, 7>::Zero();
@@ -1968,7 +2042,8 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int i,
         //solver
         Eigen::FullPivLU<Eigen::Matrix<double, 7, 7> > LU(J.rows(), J.cols());
 
-        for (unsigned int i = 0; i < nbMaxIterations; i++)
+        int count = 0;
+        while (helper::rabs(yieldCondition) >= threshold && count < nbMaxIterations)
         {
             //Computes the new increment
             LU.compute(J);
@@ -1987,11 +2062,11 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int i,
             J.block<1, 6>(6, 0) = gradient.transpose();
 
             yieldCondition = vonMisesYield(currentStressPoint, _UTS);
-            //if (yieldCondition < threshold)
-            //    break; //We reach a stress point close enough to the yield surface
 
             b.block<6, 1>(0, 0) = totalIncrement.block<6, 1>(0, 0) - elasticPredictor + C*totalIncrement(6, 0)*gradient;
             b(6, 0) = yieldCondition;
+
+            count++;
         }
 
         // return the total stress increment
@@ -2027,8 +2102,12 @@ void MultiBeamForceField<DataTypes>::accumulateNonLinearForce(VecDeriv& f,
     //        displacementIncrement(k) = 0.0;
 
     EigenDisplacement displacementIncrement;
+    EigenDisplacement eigenLastDisp;
     for (int k = 0; k < 12; k++)
+    {
         displacementIncrement(k) = dispIncrement[k];
+        eigenLastDisp(k) = lastDisp[k];
+    }
 
     //All the rest of the force computation is made inside of the lambda function
     //as the stress and strain are computed for each Gauss point
@@ -2047,25 +2126,27 @@ void MultiBeamForceField<DataTypes>::accumulateNonLinearForce(VecDeriv& f,
     double lambdaIncrement = 0;
     bool isPlastic;
     bool isNewPlastic;
+    bool staysPlastic;
 
     helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
     helper::fixed_array<bool, 27>& isPlasticPoint = bd[i]._isPlasticPoint;
+    helper::fixed_array<VoigtTensor2, 27> newStressvector;
     bool inPlasticDeformation = false;
-    int gaussPointIterator = 0;
+    int gaussPointIt = 0;
 
     // Computation of the new stress point, through material point iterations as in Krabbenhoft lecture notes
 
     // This function is to be called if the last stress point corresponded to elastic deformation
     LambdaType computePlastic = [&](double u1, double u2, double u3, double w1, double w2, double w3)
     {
-        Be = beamsData.getValue()[i]._BeMatrices[gaussPointIterator];
-        isPlastic = isPlasticPoint[gaussPointIterator];
+        Be = beamsData.getValue()[i]._BeMatrices[gaussPointIt];
+        isPlastic = isPlasticPoint[gaussPointIt];
 
         //Strain
         strainIncrement = Be*displacementIncrement;
 
         //Stress
-        initialStressPoint = _prevStresses[i][gaussPointIterator];
+        initialStressPoint = _prevStresses[i][gaussPointIt];
         computeStressIncrement(i, initialStressPoint, stressIncrement,
                                strainIncrement, lambdaIncrement, isPlastic);
         newStressPoint = initialStressPoint + stressIncrement;
@@ -2077,27 +2158,27 @@ void MultiBeamForceField<DataTypes>::accumulateNonLinearForce(VecDeriv& f,
         if (!isPlastic)
         {
             isNewPlastic = goInPlasticDeformation(newStressPoint);
-            isPlasticPoint[gaussPointIterator] = isNewPlastic;
+            isPlasticPoint[gaussPointIt] = isNewPlastic;
             inPlasticDeformation = inPlasticDeformation || isNewPlastic;
         }
         else
         {
-            isNewPlastic = stayInPlasticDeformation(newStressPoint, stressIncrement);
-            isPlasticPoint[gaussPointIterator] = isNewPlastic;
-            inPlasticDeformation = inPlasticDeformation || isNewPlastic;
+            //The test of the out-of-plastic condition has to be called on the
+            //last time step stress state, with the newly computed stress increment
+            staysPlastic = stayInPlasticDeformation(initialStressPoint, stressIncrement);
+            isPlasticPoint[gaussPointIt] = staysPlastic;
+            inPlasticDeformation = inPlasticDeformation || staysPlastic;
         }
 
         fint += (w1*w2*w3)*Be.transpose()*newStressPoint;
 
-        //Update of _prevStresses for next time step
-        _prevStresses[i][gaussPointIterator] = newStressPoint;
+        newStressvector[gaussPointIt] = newStressPoint;
 
-        gaussPointIterator++; //Next Gauss Point
+        gaussPointIt++; //Next Gauss Point
     };
 
     ozp::quadrature::detail::Interval<3> interval = beamsData.getValue()[i]._integrationInterval;
     ozp::quadrature::integrate <GaussianQuadratureType, 3, LambdaType>(interval, computePlastic);
-    beamsData.endEdit();
 
     //std::cout << "Nouveaux stress au point de Gauss 0 pour l'element " << i << " : " << std::endl << _prevStresses[i][0] << " " << std::endl << std::endl; //TO DO: delete, debug purposes
 
@@ -2107,13 +2188,49 @@ void MultiBeamForceField<DataTypes>::accumulateNonLinearForce(VecDeriv& f,
 
     if (!inPlasticDeformation) 
     {
-        //all the points are out of plastic state
-        _isDeformingPlastically = false;
+        //The newly computed stresses don't correspond anymore to plastic 
+        //deformation. We must re-compute them in an elastic way, while
+        //keeping track of the plastic deformation history
 
-        force = beamsData.getValue()[i]._Ke_loc * currentDisp;
+        const StiffnessMatrix Ke = beamsData.getValue()[i]._Ke_loc;
+        Eigen::Matrix<double, 12, 12> Ke_eigen;
+        for (int i = 0; i < 12; i++)
+        {
+            Ke_eigen(i, i) = Ke[i][i];
+            for (int j = 0; j < i; j++)
+                Ke_eigen(i, j) = Ke_eigen(j, i) = Ke[i][j];
+        }
+
+        const Eigen::ColPivHouseholderQR<Eigen::Matrix<double, 6, 6>> &QR = bd[i]._QR;
+        helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> &plasticStrainHistory = bd[i]._plasticStrainHistory;
+        VoigtTensor2 curPlasticStrain;
+        VoigtTensor2 eqElasticStrain;
+        VoigtTensor2 plasticStress;
+
+        //Computation of the remaining plastic strain
+        for (int gaussPointIt = 0; gaussPointIt < 27; gaussPointIt++)
+        {
+            Be = beamsData.getValue()[i]._BeMatrices[gaussPointIt];
+            curPlasticStrain = Be*eigenLastDisp; //strain in the last time step configuration (last plastic step)
+            plasticStress = _prevStresses[i][gaussPointIt];
+            eqElasticStrain = QR.solve(plasticStress); //equivalent elastic strain for the same stress state
+
+            plasticStrainHistory[gaussPointIt] = curPlasticStrain - eqElasticStrain;
+        }
+        beamsData.endEdit();
+
+        _isDeformingPlastically = false;
+        _isPostPlastic = true;
+
+        accumulateForceLarge(f, x, i, a, b);
     }
     else
     {
+        //The newly computed stresses are still compatible with plastic deformation
+        //they are written in _prevStresses for next time step
+        for (int gaussPointIt = 0; gaussPointIt < 27; gaussPointIt++)
+            _prevStresses[i][gaussPointIt] = newStressvector[gaussPointIt];
+
         for (int i = 0; i < 12; i++)
             force[i] = fint(i);
 
@@ -2138,6 +2255,8 @@ void MultiBeamForceField<DataTypes>::accumulateNonLinearForce(VecDeriv& f,
 
         //Save the current positions as a record for the next time step
         _lastPos = x;
+
+        beamsData.endEdit();
     }
     
 }
