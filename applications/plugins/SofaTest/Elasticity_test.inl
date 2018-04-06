@@ -198,7 +198,7 @@ CylinderTractionStruct<DataTypes>  Elasticity_test<DataTypes>::createCylinderTra
     tractionStruct.dofs=meca1;
     // MeshMatrixMass
     typename sofa::component::mass::MeshMatrixMass<DataTypes,Real>::SPtr mass= sofa::modeling::addNew<sofa::component::mass::MeshMatrixMass<DataTypes,Real> >(root,"BezierMass");
-    mass->d_massDensity=1.0;
+    mass->setMassDensity(1.0);
     mass->d_lumping=false;
     /// box fixed
     helper::vector < defaulttype::Vec<6,Real> > vecBox;

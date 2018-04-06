@@ -35,6 +35,7 @@ using sofa::core::ExecParams ;
 #include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
 #include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
+#include <sofa/helper/testing/BaseTest.h>
 
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
@@ -134,15 +135,20 @@ public:
         check(expectedTotalMass, expectedMass);
     }
 
-    /// It is important to freeze what are the available Data field
-    /// of a component and rise warning/errors when some are removed.
-    void checkAttributes(){
+
+    //---------------------------------------------------------------
+    // HEXA topology
+    //---------------------------------------------------------------
+    void check_DefaultAttributes_Hexa(){
         string scene =
-                "<?xml version='1.0'?>"
-                "<Node 	name='Root' gravity='0 0 0' time='0' animate='0'   > "
-                "   <MechanicalObject position='0 0 0 4 5 6'/>               "
-                "   <MeshMatrixMass name='m_mass'/>                            "
-                "</Node>                                                     " ;
+                "<?xml version='1.0'?>                                                                              "
+                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
+                "    <MechanicalObject />                                                                           "
+                "    <HexahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                           "
+                "    <MeshMatrixMass name='m_mass' />                                                               "
+                "</Node>                                                                                            " ;
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
                                                           scene.c_str(),
@@ -161,173 +167,26 @@ public:
         EXPECT_TRUE( mass->findData("showGravityCenter") != nullptr ) ;
         EXPECT_TRUE( mass->findData("showAxisSizeFactor") != nullptr ) ;
 
-        return ;
-    }
-
-
-    void checkTotalMassFromMassDensity_Hexa(){
-        string scene =
-                "<?xml version='1.0'?>                                                                          "
-                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                    "
-                "    <MechanicalObject />                                                                       "
-                "    <RegularGrid nx='2' ny='2' nz='2' xmin='0' xmax='2' ymin='0' ymax='2' zmin='0' zmax='2' /> "
-                "    <HexahedronSetGeometryAlgorithms />                                                        "
-                "    <MeshMatrixMass name='m_mass' massDensity='1.0' />                                           "
-                "</Node>                                                                                        " ;
-
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
-                                                          scene.c_str(),
-                                                          scene.size()) ;
-
-        ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
-
-        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
-        EXPECT_TRUE( mass != nullptr ) ;
-
         if(mass!=nullptr){
             EXPECT_EQ( mass->getMassCount(), 8 ) ;
-            EXPECT_EQ( (float)mass->getTotalMass(), 8 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
+            EXPECT_EQ( (float)mass->getTotalMass(), 1.0 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
+            EXPECT_EQ( (float)mass->getMassDensity()[0], 0.125 ) ;
+            EXPECT_EQ( mass->getVertexMass()[0], 0.05 ) ;
+            EXPECT_EQ( mass->getVertexMass()[7], 0.05 ) ;
         }
-
         return ;
     }
 
-    void checkMassDensityFromTotalMass_Hexa(){
-        string scene =
-                "<?xml version='1.0'?>                                                                          "
-                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                    "
-                "    <MechanicalObject />                                                                       "
-                "    <RegularGrid nx='2' ny='2' nz='2' xmin='0' xmax='2' ymin='0' ymax='2' zmin='0' zmax='2' /> "
-                "    <HexahedronSetGeometryAlgorithms/>                                                         "
-                "    <MeshMatrixMass name='m_mass' totalMass='10'/>                                               "
-                "</Node>                                                                                        " ;
 
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
-                                                          scene.c_str(),
-                                                          scene.size()) ;
-
-        root->init(ExecParams::defaultInstance()) ;
-
-        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
-        EXPECT_TRUE( mass != nullptr ) ;
-
-        if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 8 ) ;
-            EXPECT_EQ( (float)mass->getMassDensity(), 1.25 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
-        }
-
-        return ;
-    }
-
-    void checkTotalMassOverwritesMassDensity_Hexa(){
-        string scene =
-                "<?xml version='1.0'?>                                                                          "
-                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                    "
-                "    <MechanicalObject />                                                                       "
-                "    <RegularGrid nx='2' ny='2' nz='2' xmin='0' xmax='2' ymin='0' ymax='2' zmin='0' zmax='2' /> "
-                "    <HexahedronSetGeometryAlgorithms />                                                        "
-                "    <MeshMatrixMass name='m_mass' massDensity='1.0' totalMass='10'/>                             "
-                "</Node>                                                                                        " ;
-
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
-                                                          scene.c_str(),
-                                                          scene.size()) ;
-        ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
-
-        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
-        EXPECT_TRUE( mass != nullptr ) ;
-
-        if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 8 ) ;
-            EXPECT_EQ( (float)mass->getMassDensity(), 1.25 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
-        }
-
-        return ;
-    }
-
-    void checkTotalMassFromMassDensity_Tetra(){
+    void check_TotalMass_Initialization_Hexa(){
         string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
                 "    <MechanicalObject />                                                                           "
-                "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
-                "    <Node name='Tetra' >                                                                           "
-                "            <TetrahedronSetTopologyContainer name='Container' />                                   "
-                "            <TetrahedronSetTopologyModifier name='Modifier' />                                     "
-                "            <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                  "
-                "            <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                  "
-                "            <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' /> "
-                "            <MeshMatrixMass name='m_mass' massDensity='1.0'/>                                        "
-                "    </Node>                                                                                        "
-                "</Node>                                                                                            " ;
-
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
-                                                          scene.c_str(),
-                                                          scene.size()) ;
-        ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
-
-        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
-        EXPECT_TRUE( mass != nullptr ) ;
-
-        if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 8 ) ;
-            EXPECT_EQ( (float)mass->getTotalMass(), 8 ) ;
-        }
-
-        return ;
-    }
-
-    void checkTotalMassFromNegativeMassDensity_Tetra(){
-        string scene =
-                "<?xml version='1.0'?>                                                                              "
-                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <MechanicalObject />                                                                           "
-                "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
-                "    <Node name='Tetra' >                                                                           "
-                "            <TetrahedronSetTopologyContainer name='Container' />                                   "
-                "            <TetrahedronSetTopologyModifier name='Modifier' />                                     "
-                "            <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                  "
-                "            <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                  "
-                "            <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' /> "
-                "            <MeshMatrixMass name='m_mass' massDensity='-1.0'/>                                        "
-                "    </Node>                                                                                        "
-                "</Node>                                                                                            " ;
-
-        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
-                                                          scene.c_str(),
-                                                          scene.size()) ;
-        ASSERT_NE(root.get(), nullptr) ;
-        root->init(ExecParams::defaultInstance()) ;
-
-        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
-        EXPECT_TRUE( mass != nullptr ) ;
-
-        if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 8 ) ;
-            EXPECT_EQ( (float)mass->getMassDensity(), 0.125 ) ;
-            EXPECT_EQ( (float)mass->getTotalMass(), 1.0 ) ;
-        }
-
-        return ;
-    }
-
-    void checkMassDensityFromTotalMass_Tetra(){
-        string scene =
-                "<?xml version='1.0'?>                                                                              "
-                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
-                "    <MechanicalObject />                                                                           "
-                "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
-                "    <Node name='Tetra' >                                                                           "
-                "            <TetrahedronSetTopologyContainer name='Container' />                                   "
-                "            <TetrahedronSetTopologyModifier name='Modifier' />                                     "
-                "            <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                  "
-                "            <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                  "
-                "            <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' /> "
-                "            <MeshMatrixMass name='m_mass' totalMass='10.0'/>                                        "
-                "    </Node>                                                                                        "
+                "    <HexahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                           "
+                "    <MeshMatrixMass name='m_mass' totalMass='2.0' />                                               "
                 "</Node>                                                                                            " ;
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
@@ -341,27 +200,26 @@ public:
         EXPECT_TRUE( mass != nullptr ) ;
 
         if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 8 ) ;
-            EXPECT_EQ( (float)mass->getMassDensity(), 1.25 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
+            EXPECT_EQ( mass->getMassCount(), 27 ) ;
+            EXPECT_EQ( (float)mass->getTotalMass(), 2.0 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
+            EXPECT_EQ( (float)mass->getMassDensity()[0], 0.25 ) ;
+            EXPECT_EQ( mass->getVertexMass()[0], 0.0125 ) ;
+            EXPECT_EQ( mass->getVertexMass()[1], 0.025 ) ;
         }
 
         return ;
     }
 
-    void checkMassDensityFromNegativeTotalMass_Tetra(){
+
+    void check_MassDensity_Initialization_Hexa(){
         string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
                 "    <MechanicalObject />                                                                           "
-                "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
-                "    <Node name='Tetra' >                                                                           "
-                "            <TetrahedronSetTopologyContainer name='Container' />                                   "
-                "            <TetrahedronSetTopologyModifier name='Modifier' />                                     "
-                "            <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                  "
-                "            <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                  "
-                "            <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' /> "
-                "            <MeshMatrixMass name='m_mass' totalMass='-10.0'/>                                        "
-                "    </Node>                                                                                        "
+                "    <HexahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                           "
+                "    <MeshMatrixMass name='m_mass' massDensity='1.0' />                                             "
                 "</Node>                                                                                            " ;
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
@@ -375,27 +233,26 @@ public:
         EXPECT_TRUE( mass != nullptr ) ;
 
         if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 8 ) ;
-            EXPECT_EQ( (float)mass->getMassDensity(), 0.125 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
+            EXPECT_EQ( mass->getMassCount(), 27 ) ;
+            EXPECT_EQ( (float)mass->getTotalMass(), 8.0 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
+            EXPECT_EQ( (float)mass->getMassDensity()[0], 1.0 ) ;
+            EXPECT_EQ( (float)mass->getVertexMass()[0], (float)0.05 ) ;
         }
 
         return ;
     }
 
-    void checkDoubleDeclaration_MassDensityTotalMass_Tetra(){
+
+    void check_VertexMass_Lumping_Initialization_Hexa(){
         string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
                 "    <MechanicalObject />                                                                           "
-                "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
-                "    <Node name='Tetra' >                                                                           "
-                "            <TetrahedronSetTopologyContainer name='Container' />                                   "
-                "            <TetrahedronSetTopologyModifier name='Modifier' />                                     "
-                "            <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                  "
-                "            <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                  "
-                "            <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' /> "
-                "            <MeshMatrixMass name='m_mass' massDensity='10.0' totalMass='10.0'/>                                        "
-                "    </Node>                                                                                        "
+                "    <HexahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                           "
+                "    <MeshMatrixMass name='m_mass' lumping='1'                                                      "
+                "               vertexMass='1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1' />               "
                 "</Node>                                                                                            " ;
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
@@ -409,28 +266,31 @@ public:
         EXPECT_TRUE( mass != nullptr ) ;
 
         if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 8 ) ;
-            EXPECT_EQ( (float)mass->getMassDensity(), 1.25 ) ;
-            EXPECT_EQ( (float)mass->getTotalMass(), 10.0 ) ;
+            EXPECT_EQ( mass->isLumped(), true ) ;
+            EXPECT_EQ( mass->getMassCount(), 27 ) ;
+            EXPECT_EQ( (float)mass->getTotalMass(), 27.0 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
+            EXPECT_EQ( (float)mass->getMassDensity()[0], 3.375 ) ;
+            EXPECT_EQ( mass->getVertexMass()[0], 1.0 ) ;
         }
 
         return ;
     }
 
-    void checkDoubleDeclaration_NegativeMassDensityTotalMass_Tetra(){
+
+    /// Check for the definition of two concurrent input data
+    /// first, the totalMass info is used if existing (the most generic one)
+    /// second, the massDensity
+    /// at last the vertexMass info
+
+    void check_DoubleDeclaration_TotalMassAndMassDensity_Hexa(){
         string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
                 "    <MechanicalObject />                                                                           "
-                "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
-                "    <Node name='Tetra' >                                                                           "
-                "            <TetrahedronSetTopologyContainer name='Container' />                                   "
-                "            <TetrahedronSetTopologyModifier name='Modifier' />                                     "
-                "            <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                  "
-                "            <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                  "
-                "            <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' /> "
-                "            <MeshMatrixMass name='m_mass' massDensity='-10.0' totalMass='10.0'/>                                        "
-                "    </Node>                                                                                        "
+                "    <HexahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                           "
+                "    <MeshMatrixMass name='m_mass' massDensity='1.0' totalMass='2.0' />                             "
                 "</Node>                                                                                            " ;
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
@@ -444,27 +304,26 @@ public:
         EXPECT_TRUE( mass != nullptr ) ;
 
         if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 8 ) ;
-            EXPECT_EQ( (float)mass->getMassDensity(), 1.25 ) ;
+            EXPECT_EQ( mass->getMassCount(), 27 ) ;
+            EXPECT_EQ( (float)mass->getTotalMass(), 2.0 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
+            EXPECT_EQ( (float)mass->getMassDensity()[0], 0.25 ) ;
+            EXPECT_EQ( mass->getVertexMass()[0], 0.0125 ) ;
         }
 
         return ;
     }
 
-    void checkDoubleDeclaration_MassDensityNegativeTotalMass_Tetra(){
+
+    void check_DoubleDeclaration_TotalMassAndVertexMass_Hexa(){
         string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
                 "    <MechanicalObject />                                                                           "
-                "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
-                "    <Node name='Tetra' >                                                                           "
-                "            <TetrahedronSetTopologyContainer name='Container' />                                   "
-                "            <TetrahedronSetTopologyModifier name='Modifier' />                                     "
-                "            <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                  "
-                "            <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                  "
-                "            <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' /> "
-                "            <MeshMatrixMass name='m_mass' massDensity='10.0' totalMass='-10.0'/>                                        "
-                "    </Node>                                                                                        "
+                "    <HexahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                           "
+                "    <MeshMatrixMass name='m_mass' lumping='1' totalMass='2.0'                                      "
+                "               vertexMass='1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1' />               "
                 "</Node>                                                                                            " ;
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
@@ -478,28 +337,27 @@ public:
         EXPECT_TRUE( mass != nullptr ) ;
 
         if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 8 ) ;
-            EXPECT_EQ( (float)mass->getMassDensity(), 0.125 ) ;
-            EXPECT_EQ( (float)mass->getTotalMass(), 1.0 ) ;
+            EXPECT_EQ( mass->isLumped(), true ) ;
+            EXPECT_EQ( mass->getMassCount(), 27 ) ;
+            EXPECT_EQ( (float)mass->getTotalMass(), 2.0 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
+            EXPECT_EQ( (float)mass->getMassDensity()[0], 0.25 ) ;
+            EXPECT_EQ( (float)mass->getVertexMass()[0], (float)0.0125 ) ;
         }
 
         return ;
     }
 
-    void checkMassDensityTotalMassFromVertexMass_Tetra(){
+
+    void check_DoubleDeclaration_MassDensityAndVertexMass_Hexa(){
         string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
                 "    <MechanicalObject />                                                                           "
-                "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
-                "    <Node name='Tetra' >                                                                           "
-                "            <TetrahedronSetTopologyContainer name='Container' />                                   "
-                "            <TetrahedronSetTopologyModifier name='Modifier' />                                     "
-                "            <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                  "
-                "            <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                  "
-                "            <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' /> "
-                "            <MeshMatrixMass name='m_mass' vertexMass='2 2 2 2 2 2 2 2' lumping='1'/>               "
-                "    </Node>                                                                                        "
+                "    <HexahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                           "
+                "    <MeshMatrixMass name='m_mass' lumping='1' massDensity='1.0'                                    "
+                "               vertexMass='1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1' />               "
                 "</Node>                                                                                            " ;
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
@@ -513,28 +371,29 @@ public:
         EXPECT_TRUE( mass != nullptr ) ;
 
         if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 8 ) ;
-            EXPECT_EQ( (float)mass->getTotalMass(), 16.0 ) ;
-            EXPECT_EQ( (float)mass->getMassDensity(), 2.0 ) ;
+            EXPECT_EQ( mass->isLumped(), true ) ;
+            EXPECT_EQ( mass->getMassCount(), 27 ) ;
+            EXPECT_EQ( (float)mass->getTotalMass(), 8.0 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
+            EXPECT_EQ( (float)mass->getMassDensity()[0], 1.0 ) ;
+            EXPECT_EQ( (float)mass->getVertexMass()[0], (float)0.05 ) ;
         }
 
         return ;
     }
 
-    void checkTotalMassFromNegativeMassDensityVertexMass_Tetra(){
+
+    /// Check wrong input values, in all cases the Mass is initialized
+    /// using the default totalMass value = 1.0
+
+    void check_TotalMass_WrongValue_Hexa(){
         string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
                 "    <MechanicalObject />                                                                           "
-                "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
-                "    <Node name='Tetra' >                                                                           "
-                "            <TetrahedronSetTopologyContainer name='Container' />                                   "
-                "            <TetrahedronSetTopologyModifier name='Modifier' />                                     "
-                "            <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                  "
-                "            <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                  "
-                "            <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' /> "
-                "            <MeshMatrixMass name='m_mass' massDensity = '-1.0' vertexMass='2.08334 1.25 1.25 0.416667 0.416667 1.25 1.25 2.08333'/>"
-                "    </Node>                                                                                        "
+                "    <HexahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                           "
+                "    <MeshMatrixMass name='m_mass' totalMass='-2.0' />                                              "
                 "</Node>                                                                                            " ;
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
@@ -548,28 +407,25 @@ public:
         EXPECT_TRUE( mass != nullptr ) ;
 
         if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 8 ) ;
-            EXPECT_EQ( (float)mass->getMassDensity(), 0.125 ) ;
-            EXPECT_EQ( (float)mass->getTotalMass(), 1.0 ) ;
+            EXPECT_EQ( mass->getMassCount(), 27 ) ;
+            EXPECT_EQ( (float)mass->getTotalMass(), 1.0 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
+            EXPECT_EQ( (float)mass->getMassDensity()[0], 0.125 ) ;
+            EXPECT_EQ( mass->getVertexMass()[0], 0.00625 ) ;
         }
 
         return ;
     }
 
-    void checkWrongSizeVertexMass_Tetra(){
+
+    void check_MassDensity_WrongValue_Hexa(){
         string scene =
                 "<?xml version='1.0'?>                                                                              "
                 "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
                 "    <MechanicalObject />                                                                           "
-                "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
-                "    <Node name='Tetra' >                                                                           "
-                "            <TetrahedronSetTopologyContainer name='Container' />                                   "
-                "            <TetrahedronSetTopologyModifier name='Modifier' />                                     "
-                "            <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                  "
-                "            <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                  "
-                "            <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' /> "
-                "            <MeshMatrixMass name='m_mass' vertexMass='10 2.08334 1.25 1.25 0.416667 0.416667 1.25 1.25 2.08333'/>"
-                "    </Node>                                                                                        "
+                "    <HexahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                           "
+                "    <MeshMatrixMass name='m_mass' massDensity='-1.0' />                                            "
                 "</Node>                                                                                            " ;
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
@@ -583,14 +439,746 @@ public:
         EXPECT_TRUE( mass != nullptr ) ;
 
         if(mass!=nullptr){
-            EXPECT_EQ( mass->getMassCount(), 8 ) ;
-            EXPECT_EQ( (float)mass->getMassDensity(), 0.125 ) ;
-            EXPECT_EQ( (float)mass->getTotalMass(), 1.0 ) ;
+            EXPECT_EQ( mass->getMassCount(), 27 ) ;
+            EXPECT_EQ( (float)mass->getTotalMass(), 1.0 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
+            EXPECT_EQ( (float)mass->getMassDensity()[0], 0.125 ) ;
+            EXPECT_EQ( mass->getVertexMass()[0], 0.00625 ) ;
         }
 
         return ;
     }
-};
+
+
+    void check_MassDensity_WrongSize_Hexa(){
+        string scene =
+                "<?xml version='1.0'?>                                                                              "
+                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
+                "    <MechanicalObject />                                                                           "
+                "    <HexahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                           "
+                "    <MeshMatrixMass name='m_mass' massDensity='1.0 4.0' />                                         "
+                "</Node>                                                                                            " ;
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+                                                          scene.c_str(),
+                                                          scene.size()) ;
+
+        ASSERT_NE(root.get(), nullptr) ;
+        root->init(ExecParams::defaultInstance()) ;
+
+        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
+        EXPECT_TRUE( mass != nullptr ) ;
+
+        if(mass!=nullptr){
+            EXPECT_EQ( mass->getMassCount(), 27 ) ;
+            EXPECT_EQ( (float)mass->getTotalMass(), 1.0 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
+            EXPECT_EQ( (float)mass->getMassDensity()[0], 0.125 ) ;
+            EXPECT_EQ( mass->getVertexMass()[0], 0.00625 ) ;
+        }
+
+        return ;
+    }
+
+
+    void check_VertexMass_WrongValue_Hexa(){
+        string scene =
+                "<?xml version='1.0'?>                                                                              "
+                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
+                "    <MechanicalObject />                                                                           "
+                "    <HexahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                           "
+                "    <MeshMatrixMass name='m_mass' lumping='1'                                                      "
+                "               vertexMass='1 -1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1' />              "
+                "</Node>                                                                                            " ;
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+                                                          scene.c_str(),
+                                                          scene.size()) ;
+
+        ASSERT_NE(root.get(), nullptr) ;
+        root->init(ExecParams::defaultInstance()) ;
+
+        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
+        EXPECT_TRUE( mass != nullptr ) ;
+
+        if(mass!=nullptr){
+            EXPECT_EQ( mass->getMassCount(), 27 ) ;
+            EXPECT_EQ( (float)mass->getTotalMass(), 1.0 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
+            EXPECT_EQ( (float)mass->getMassDensity()[0], 0.125 ) ;
+            EXPECT_EQ( mass->getVertexMass()[0], 0.00625 ) ;
+        }
+
+        return ;
+    }
+
+
+    void check_VertexMass_WrongSize_Hexa(){
+        string scene =
+                "<?xml version='1.0'?>                                                                              "
+                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
+                "    <MechanicalObject />                                                                           "
+                "    <HexahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                           "
+                "    <MeshMatrixMass name='m_mass' lumping='1' vertexMass='1 2' />                                  "
+                "</Node>                                                                                            " ;
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+                                                          scene.c_str(),
+                                                          scene.size()) ;
+
+        ASSERT_NE(root.get(), nullptr) ;
+        root->init(ExecParams::defaultInstance()) ;
+
+        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
+        EXPECT_TRUE( mass != nullptr ) ;
+
+        if(mass!=nullptr){
+            EXPECT_EQ( mass->getMassCount(), 27 ) ;
+            EXPECT_EQ( (float)mass->getTotalMass(), 1.0 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
+            EXPECT_EQ( (float)mass->getMassDensity()[0], 0.125 ) ;
+            EXPECT_EQ( mass->getVertexMass()[0], 0.00625 ) ;
+        }
+
+        return ;
+    }
+
+
+    /// Check coupling of wrong data values/size and concurrent data
+
+    void check_DoubleDeclaration_TotalMassAndMassDensity_WrongValue_Hexa(){
+        string scene =
+                "<?xml version='1.0'?>                                                                              "
+                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
+                "    <MechanicalObject />                                                                           "
+                "    <HexahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                           "
+                "    <MeshMatrixMass name='m_mass' massDensity='1.0' totalMass='-2.0' />                            "
+                "</Node>                                                                                            " ;
+
+        /// Here : default totalMass value will be used since negative value is given
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+                                                          scene.c_str(),
+                                                          scene.size()) ;
+
+        ASSERT_NE(root.get(), nullptr) ;
+        root->init(ExecParams::defaultInstance()) ;
+
+        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
+        EXPECT_TRUE( mass != nullptr ) ;
+
+        if(mass!=nullptr){
+            EXPECT_EQ( mass->getMassCount(), 27 ) ;
+            EXPECT_EQ( (float)mass->getTotalMass(), 1.0 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
+            EXPECT_EQ( (float)mass->getMassDensity()[0], 0.125 ) ;
+            EXPECT_EQ( mass->getVertexMass()[0], 0.00625 ) ;
+        }
+
+        return ;
+    }
+
+
+    void check_DoubleDeclaration_TotalMassAndMassDensity_WrongSize_Hexa(){
+        string scene =
+                "<?xml version='1.0'?>                                                                              "
+                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <RegularGridTopology name='grid' n='3 3 3' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <HexahedronSetTopologyContainer name='Container' src='@grid' />                                "
+                "    <MechanicalObject />                                                                           "
+                "    <HexahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                           "
+                "    <MeshMatrixMass name='m_mass' massDensity='1.0 1.0' totalMass='2.0' />                         "
+                "</Node>                                                                                            " ;
+
+        /// Here : totalMass value will be used due to concurrent data
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+                                                          scene.c_str(),
+                                                          scene.size()) ;
+
+        ASSERT_NE(root.get(), nullptr) ;
+        root->init(ExecParams::defaultInstance()) ;
+
+        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
+        EXPECT_TRUE( mass != nullptr ) ;
+
+        if(mass!=nullptr){
+            EXPECT_EQ( mass->getMassCount(), 27 ) ;
+            EXPECT_EQ( (float)mass->getTotalMass(), 2.0 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
+            EXPECT_EQ( (float)mass->getMassDensity()[0], 0.25 ) ;
+            EXPECT_EQ( mass->getVertexMass()[0], 0.0125 ) ;
+        }
+
+        return ;
+    }
+
+
+
+
+
+    //---------------------------------------------------------------
+    // TETRA topology
+    //---------------------------------------------------------------
+    void check_DefaultAttributes_Tetra(){
+        string scene =
+                "<?xml version='1.0'?>                                                                              "
+                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <MechanicalObject />                                                                           "
+                "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <Node name='Tetra' >                                                                           "
+                "        <MechanicalObject src='@../grid'/>                                                         "
+                "        <TetrahedronSetTopologyContainer name='Container' />                                       "
+                "        <TetrahedronSetTopologyModifier name='Modifier' />                                         "
+                "        <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                      "
+                "        <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                      "
+                "        <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' />     "
+                "        <MeshMatrixMass name='m_mass' />                                                           "
+                "    </Node>                                                                                        "
+                "</Node>                                                                                            ";
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+                                                          scene.c_str(),
+                                                          scene.size()) ;
+
+        ASSERT_NE(root.get(), nullptr) ;
+        root->init(ExecParams::defaultInstance()) ;
+
+        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
+        EXPECT_TRUE( mass != nullptr ) ;
+
+        EXPECT_TRUE( mass->findData("vertexMass") != nullptr ) ;
+        EXPECT_TRUE( mass->findData("totalMass") != nullptr ) ;
+        EXPECT_TRUE( mass->findData("massDensity") != nullptr ) ;
+
+        EXPECT_TRUE( mass->findData("showGravityCenter") != nullptr ) ;
+        EXPECT_TRUE( mass->findData("showAxisSizeFactor") != nullptr ) ;
+
+        if(mass!=nullptr){
+            EXPECT_EQ( mass->getMassCount(), 8 ) ;
+            EXPECT_EQ( (float)mass->getTotalMass(), 1.0 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
+            EXPECT_EQ( (float)mass->getMassDensity()[0], 0.125 ) ;
+            EXPECT_EQ( mass->getVertexMass()[0], (0.25/3.0) ) ;
+            EXPECT_EQ( mass->getVertexMass()[7], (0.25/3.0) ) ;
+        }
+        return ;
+    }
+
+
+    void check_TotalMass_Initialization_Tetra(){
+        string scene =
+                "<?xml version='1.0'?>                                                                              "
+                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <MechanicalObject />                                                                           "
+                "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <Node name='Tetra' >                                                                           "
+                "        <MechanicalObject src='@../grid'/>                                                         "
+                "        <TetrahedronSetTopologyContainer name='Container' />                                       "
+                "        <TetrahedronSetTopologyModifier name='Modifier' />                                         "
+                "        <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                      "
+                "        <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                      "
+                "        <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' />     "
+                "        <MeshMatrixMass name='m_mass' totalMass='2.0'/>                                            "
+                "    </Node>                                                                                        "
+                "</Node>                                                                                            ";
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+                                                          scene.c_str(),
+                                                          scene.size()) ;
+
+        ASSERT_NE(root.get(), nullptr) ;
+        root->init(ExecParams::defaultInstance()) ;
+
+        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
+        EXPECT_TRUE( mass != nullptr ) ;
+
+        if(mass!=nullptr){
+            EXPECT_EQ( mass->getMassCount(), 8 ) ;
+            EXPECT_EQ( (float)mass->getTotalMass(), 2.0 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
+            EXPECT_EQ( (float)mass->getMassDensity()[0], 0.25 ) ;
+            EXPECT_EQ( mass->getVertexMass()[0], (0.5/3.0) ) ;
+            EXPECT_EQ( mass->getVertexMass()[1], 0.1 ) ;
+        }
+
+        return ;
+    }
+
+
+    void check_MassDensity_Initialization_Tetra(){
+        string scene =
+                "<?xml version='1.0'?>                                                                              "
+                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <MechanicalObject />                                                                           "
+                "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <Node name='Tetra' >                                                                           "
+                "        <MechanicalObject src='@../grid'/>                                                         "
+                "        <TetrahedronSetTopologyContainer name='Container' />                                       "
+                "        <TetrahedronSetTopologyModifier name='Modifier' />                                         "
+                "        <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                      "
+                "        <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                      "
+                "        <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' />     "
+                "        <MeshMatrixMass name='m_mass' massDensity='1.0' />                                         "
+                "    </Node>                                                                                        "
+                "</Node>                                                                                            ";
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+                                                          scene.c_str(),
+                                                          scene.size()) ;
+
+        ASSERT_NE(root.get(), nullptr) ;
+        root->init(ExecParams::defaultInstance()) ;
+
+        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
+        EXPECT_TRUE( mass != nullptr ) ;
+
+        if(mass!=nullptr){
+            EXPECT_EQ( mass->getMassCount(), 8 ) ;
+            EXPECT_EQ( (float)mass->getTotalMass(), 8.0 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
+            EXPECT_EQ( (float)mass->getMassDensity()[0], 1.0 ) ;
+            EXPECT_EQ( mass->getVertexMass()[0], (2.0/3.0) ) ;
+        }
+
+        return ;
+    }
+
+
+    void check_VertexMass_Lumping_Initialization_Tetra(){
+        string scene =
+                "<?xml version='1.0'?>                                                                              "
+                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <MechanicalObject />                                                                           "
+                "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <Node name='Tetra' >                                                                           "
+                "        <MechanicalObject src='@../grid'/>                                                         "
+                "        <TetrahedronSetTopologyContainer name='Container' />                                       "
+                "        <TetrahedronSetTopologyModifier name='Modifier' />                                         "
+                "        <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                      "
+                "        <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                      "
+                "        <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' />     "
+                "        <MeshMatrixMass name='m_mass' lumping='1' vertexMass='1 1 1 1 1 1 1 1' />                  "
+                "    </Node>                                                                                        "
+                "</Node>                                                                                            ";
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+                                                          scene.c_str(),
+                                                          scene.size()) ;
+
+        ASSERT_NE(root.get(), nullptr) ;
+        root->init(ExecParams::defaultInstance()) ;
+
+        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
+        EXPECT_TRUE( mass != nullptr ) ;
+
+        if(mass!=nullptr){
+            EXPECT_EQ( mass->isLumped(), true ) ;
+            EXPECT_EQ( mass->getMassCount(), 8 ) ;
+            EXPECT_EQ( (float)mass->getTotalMass(), 8.0 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
+            EXPECT_EQ( (float)mass->getMassDensity()[0], 1.0 ) ;
+            EXPECT_EQ( mass->getVertexMass()[0], 1.0 ) ;
+        }
+
+        return ;
+    }
+
+
+    /// Check for the definition of two concurrent input data
+    /// first, the totalMass info is used if existing (the most generic one)
+    /// second, the massDensity
+    /// at last the vertexMass info
+
+    void check_DoubleDeclaration_TotalMassAndMassDensity_Tetra(){
+        string scene =
+                "<?xml version='1.0'?>                                                                              "
+                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <MechanicalObject />                                                                           "
+                "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <Node name='Tetra' >                                                                           "
+                "        <MechanicalObject src='@../grid'/>                                                         "
+                "        <TetrahedronSetTopologyContainer name='Container' />                                       "
+                "        <TetrahedronSetTopologyModifier name='Modifier' />                                         "
+                "        <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                      "
+                "        <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                      "
+                "        <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' />     "
+                "        <MeshMatrixMass name='m_mass' massDensity='1.0' totalMass='2.0' />                         "
+                "    </Node>                                                                                        "
+                "</Node>                                                                                            ";
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+                                                          scene.c_str(),
+                                                          scene.size()) ;
+
+        ASSERT_NE(root.get(), nullptr) ;
+        root->init(ExecParams::defaultInstance()) ;
+
+        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
+        EXPECT_TRUE( mass != nullptr ) ;
+
+        if(mass!=nullptr){
+            EXPECT_EQ( mass->getMassCount(), 8 ) ;
+            EXPECT_EQ( (float)mass->getTotalMass(), 2.0 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
+            EXPECT_EQ( (float)mass->getMassDensity()[0], 0.25 ) ;
+            EXPECT_EQ( mass->getVertexMass()[0], (0.5/3.0) ) ;
+        }
+
+        return ;
+    }
+
+
+    void check_DoubleDeclaration_TotalMassAndVertexMass_Tetra(){
+        string scene =
+                "<?xml version='1.0'?>                                                                              "
+                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <MechanicalObject />                                                                           "
+                "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <Node name='Tetra' >                                                                           "
+                "        <MechanicalObject src='@../grid'/>                                                         "
+                "        <TetrahedronSetTopologyContainer name='Container' />                                       "
+                "        <TetrahedronSetTopologyModifier name='Modifier' />                                         "
+                "        <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                      "
+                "        <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                      "
+                "        <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' />     "
+                "        <MeshMatrixMass name='m_mass' lumping='1' vertexMass='1 1 1 1 1 1 1 1' totalMass='2.0'/>   "
+                "    </Node>                                                                                        "
+                "</Node>                                                                                            ";
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+                                                          scene.c_str(),
+                                                          scene.size()) ;
+
+        ASSERT_NE(root.get(), nullptr) ;
+        root->init(ExecParams::defaultInstance()) ;
+
+        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
+        EXPECT_TRUE( mass != nullptr ) ;
+
+        if(mass!=nullptr){
+            EXPECT_EQ( mass->isLumped(), true ) ;
+            EXPECT_EQ( mass->getMassCount(), 8 ) ;
+            EXPECT_EQ( (float)mass->getTotalMass(), 2.0 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
+            EXPECT_EQ( (float)mass->getMassDensity()[0], 0.25 ) ;
+            EXPECT_EQ( mass->getVertexMass()[0], (0.5/3.0) ) ;
+        }
+
+        return ;
+    }
+
+
+    void check_DoubleDeclaration_MassDensityAndVertexMass_Tetra(){
+        string scene =
+                "<?xml version='1.0'?>                                                                              "
+                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <MechanicalObject />                                                                           "
+                "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <Node name='Tetra' >                                                                           "
+                "        <MechanicalObject src='@../grid'/>                                                         "
+                "        <TetrahedronSetTopologyContainer name='Container' />                                       "
+                "        <TetrahedronSetTopologyModifier name='Modifier' />                                         "
+                "        <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                      "
+                "        <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                      "
+                "        <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' />     "
+                "        <MeshMatrixMass name='m_mass' vertexMass='1 1 1 1 1 1 1 1' lumping='1' massDensity='1.0' />"
+                "    </Node>                                                                                        "
+                "</Node>                                                                                            ";
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+                                                          scene.c_str(),
+                                                          scene.size()) ;
+
+        ASSERT_NE(root.get(), nullptr) ;
+        root->init(ExecParams::defaultInstance()) ;
+
+        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
+        EXPECT_TRUE( mass != nullptr ) ;
+
+        if(mass!=nullptr){
+            EXPECT_EQ( mass->isLumped(), true ) ;
+            EXPECT_EQ( mass->getMassCount(), 8 ) ;
+            EXPECT_EQ( (float)mass->getTotalMass(), 8.0 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
+            EXPECT_EQ( (float)mass->getMassDensity()[0], 1.0 ) ;
+            EXPECT_EQ( mass->getVertexMass()[0], (2.0/3.0) ) ;
+        }
+
+        return ;
+    }
+
+
+    /// Check wrong input values, in all cases the Mass is initialized
+    /// using the default totalMass value = 1.0
+
+    void check_TotalMass_WrongValue_Tetra(){
+        string scene =
+                "<?xml version='1.0'?>                                                                              "
+                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <MechanicalObject />                                                                           "
+                "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <Node name='Tetra' >                                                                           "
+                "        <MechanicalObject src='@../grid'/>                                                         "
+                "        <TetrahedronSetTopologyContainer name='Container' />                                       "
+                "        <TetrahedronSetTopologyModifier name='Modifier' />                                         "
+                "        <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                      "
+                "        <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                      "
+                "        <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' />     "
+                "        <MeshMatrixMass name='m_mass' totalMass='-2.0'/>                                           "
+                "    </Node>                                                                                        "
+                "</Node>                                                                                            ";
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+                                                          scene.c_str(),
+                                                          scene.size()) ;
+
+        ASSERT_NE(root.get(), nullptr) ;
+        root->init(ExecParams::defaultInstance()) ;
+
+        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
+        EXPECT_TRUE( mass != nullptr ) ;
+
+        if(mass!=nullptr){
+            EXPECT_EQ( mass->getMassCount(), 8 ) ;
+            EXPECT_EQ( (float)mass->getTotalMass(), 1.0 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
+            EXPECT_EQ( (float)mass->getMassDensity()[0], 0.125 ) ;
+            EXPECT_EQ( mass->getVertexMass()[0], (0.25/3.0) ) ;
+        }
+
+        return ;
+    }
+
+
+    void check_MassDensity_WrongValue_Tetra(){
+        string scene =
+                "<?xml version='1.0'?>                                                                              "
+                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <MechanicalObject />                                                                           "
+                "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <Node name='Tetra' >                                                                           "
+                "        <MechanicalObject src='@../grid'/>                                                         "
+                "        <TetrahedronSetTopologyContainer name='Container' />                                       "
+                "        <TetrahedronSetTopologyModifier name='Modifier' />                                         "
+                "        <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                      "
+                "        <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                      "
+                "        <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' />     "
+                "        <MeshMatrixMass name='m_mass' massDensity='-1.0'/>                                         "
+                "    </Node>                                                                                        "
+                "</Node>                                                                                            ";
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+                                                          scene.c_str(),
+                                                          scene.size()) ;
+
+        ASSERT_NE(root.get(), nullptr) ;
+        root->init(ExecParams::defaultInstance()) ;
+
+        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
+        EXPECT_TRUE( mass != nullptr ) ;
+
+        if(mass!=nullptr){
+            EXPECT_EQ( mass->getMassCount(), 8 ) ;
+            EXPECT_EQ( (float)mass->getTotalMass(), 1.0 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
+            EXPECT_EQ( (float)mass->getMassDensity()[0], 0.125 ) ;
+            EXPECT_EQ( mass->getVertexMass()[0], (0.25/3.0) ) ;
+        }
+
+        return ;
+    }
+
+
+    void check_MassDensity_WrongSize_Tetra(){
+        string scene =
+                "<?xml version='1.0'?>                                                                              "
+                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <MechanicalObject />                                                                           "
+                "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <Node name='Tetra' >                                                                           "
+                "        <MechanicalObject src='@../grid'/>                                                         "
+                "        <TetrahedronSetTopologyContainer name='Container' />                                       "
+                "        <TetrahedronSetTopologyModifier name='Modifier' />                                         "
+                "        <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                      "
+                "        <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                      "
+                "        <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' />     "
+                "        <MeshMatrixMass name='m_mass' massDensity='1.0 4.0'/>                                      "
+                "    </Node>                                                                                        "
+                "</Node>                                                                                            ";
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+                                                          scene.c_str(),
+                                                          scene.size()) ;
+
+        ASSERT_NE(root.get(), nullptr) ;
+        root->init(ExecParams::defaultInstance()) ;
+
+        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
+        EXPECT_TRUE( mass != nullptr ) ;
+
+        if(mass!=nullptr){
+            EXPECT_EQ( mass->getMassCount(), 8 ) ;
+            EXPECT_EQ( (float)mass->getTotalMass(), 1.0 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
+            EXPECT_EQ( (float)mass->getMassDensity()[0], 0.125 ) ;
+            EXPECT_EQ( mass->getVertexMass()[0], (0.25/3.0) ) ;
+        }
+
+        return ;
+    }
+
+
+    void check_VertexMass_WrongValue_Tetra(){
+        string scene =
+                "<?xml version='1.0'?>                                                                              "
+                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <MechanicalObject />                                                                           "
+                "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <Node name='Tetra' >                                                                           "
+                "        <MechanicalObject src='@../grid'/>                                                         "
+                "        <TetrahedronSetTopologyContainer name='Container' />                                       "
+                "        <TetrahedronSetTopologyModifier name='Modifier' />                                         "
+                "        <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                      "
+                "        <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                      "
+                "        <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' />     "
+                "        <MeshMatrixMass name='m_mass' vertexMass='1 -1 1 1 1 1 1 1' lumping='1' />                 "
+                "    </Node>                                                                                        "
+                "</Node>                                                                                            ";
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+                                                          scene.c_str(),
+                                                          scene.size()) ;
+
+        ASSERT_NE(root.get(), nullptr) ;
+        root->init(ExecParams::defaultInstance()) ;
+
+        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
+        EXPECT_TRUE( mass != nullptr ) ;
+
+        if(mass!=nullptr){
+            EXPECT_EQ( mass->getMassCount(), 8 ) ;
+            EXPECT_EQ( (float)mass->getTotalMass(), 1.0 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
+            EXPECT_EQ( (float)mass->getMassDensity()[0], 0.125 ) ;
+            EXPECT_EQ( mass->getVertexMass()[0], (0.25/3.0) ) ;
+        }
+
+        return ;
+    }
+
+
+    void check_VertexMass_WrongSize_Tetra(){
+        string scene =
+                "<?xml version='1.0'?>                                                                              "
+                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <MechanicalObject />                                                                           "
+                "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <Node name='Tetra' >                                                                           "
+                "        <MechanicalObject src='@../grid'/>                                                         "
+                "        <TetrahedronSetTopologyContainer name='Container' />                                       "
+                "        <TetrahedronSetTopologyModifier name='Modifier' />                                         "
+                "        <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                      "
+                "        <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                      "
+                "        <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' />     "
+                "        <MeshMatrixMass name='m_mass' vertexMass='1.0 2.0' lumping='1' />                          "
+                "    </Node>                                                                                        "
+                "</Node>                                                                                            ";
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+                                                          scene.c_str(),
+                                                          scene.size()) ;
+
+        ASSERT_NE(root.get(), nullptr) ;
+        root->init(ExecParams::defaultInstance()) ;
+
+        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
+        EXPECT_TRUE( mass != nullptr ) ;
+
+        if(mass!=nullptr){
+            EXPECT_EQ( mass->getMassCount(), 8 ) ;
+            EXPECT_EQ( (float)mass->getTotalMass(), 1.0 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
+            EXPECT_EQ( (float)mass->getMassDensity()[0], 0.125 ) ;
+            EXPECT_EQ( mass->getVertexMass()[0], (0.25/3.0) ) ;
+        }
+
+        return ;
+    }
+
+
+    /// Check coupling of wrong data values/size and concurrent data
+
+    void check_DoubleDeclaration_TotalMassAndMassDensity_WrongValue_Tetra(){
+        string scene =
+                "<?xml version='1.0'?>                                                                              "
+                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <MechanicalObject />                                                                           "
+                "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <Node name='Tetra' >                                                                           "
+                "        <MechanicalObject src='@../grid'/>                                                         "
+                "        <TetrahedronSetTopologyContainer name='Container' />                                       "
+                "        <TetrahedronSetTopologyModifier name='Modifier' />                                         "
+                "        <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                      "
+                "        <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                      "
+                "        <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' />     "
+                "        <MeshMatrixMass name='m_mass' massDensity='1.0' totalMass='-2.0' />                        "
+                "    </Node>                                                                                        "
+                "</Node>                                                                                            ";
+
+        /// Here : default totalMass value will be used since negative value is given
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+                                                          scene.c_str(),
+                                                          scene.size()) ;
+
+        ASSERT_NE(root.get(), nullptr) ;
+        root->init(ExecParams::defaultInstance()) ;
+
+        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
+        EXPECT_TRUE( mass != nullptr ) ;
+
+        if(mass!=nullptr){
+            EXPECT_EQ( mass->getMassCount(), 8 ) ;
+            EXPECT_EQ( (float)mass->getTotalMass(), 1.0 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
+            EXPECT_EQ( (float)mass->getMassDensity()[0], 0.125 ) ;
+            EXPECT_EQ( mass->getVertexMass()[0], (0.25/3.0) ) ;
+        }
+
+        return ;
+    }
+
+
+    void check_DoubleDeclaration_TotalMassAndMassDensity_WrongSize_Tetra(){
+        string scene =
+                "<?xml version='1.0'?>                                                                              "
+                "<Node  name='Root' gravity='0 0 0' time='0' animate='0'   >                                        "
+                "    <MechanicalObject />                                                                           "
+                "    <RegularGridTopology name='grid' n='2 2 2' min='0 0 0' max='2 2 2' p0='0 0 0' />               "
+                "    <Node name='Tetra' >                                                                           "
+                "        <MechanicalObject src='@../grid'/>                                                         "
+                "        <TetrahedronSetTopologyContainer name='Container' />                                       "
+                "        <TetrahedronSetTopologyModifier name='Modifier' />                                         "
+                "        <TetrahedronSetTopologyAlgorithms template='Vec3d' name='TopoAlgo' />                      "
+                "        <TetrahedronSetGeometryAlgorithms template='Vec3d' name='GeomAlgo' />                      "
+                "        <Hexa2TetraTopologicalMapping name='default28' input='@../grid' output='@Container' />     "
+                "        <MeshMatrixMass name='m_mass' massDensity='1.0 1.0' totalMass='2.0' />                     "
+                "    </Node>                                                                                        "
+                "</Node>                                                                                            ";
+
+        /// Here : totalMass value will be used due to concurrent data
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("loadWithNoParam",
+                                                          scene.c_str(),
+                                                          scene.size()) ;
+
+        ASSERT_NE(root.get(), nullptr) ;
+        root->init(ExecParams::defaultInstance()) ;
+
+        TheMeshMatrixMass* mass = root->getTreeObject<TheMeshMatrixMass>() ;
+        EXPECT_TRUE( mass != nullptr ) ;
+
+        if(mass!=nullptr){
+            EXPECT_EQ( mass->getMassCount(), 8 ) ;
+            EXPECT_EQ( (float)mass->getTotalMass(), 2.0 ) ; //casting in float seems due to HexahedronSetGeometryAlgorithms
+            EXPECT_EQ( (float)mass->getMassDensity()[0], 0.25 ) ;
+            EXPECT_EQ( mass->getVertexMass()[0], (0.5/3.0) ) ;
+        }
+
+        return ;
+    }
+
+}
+;
 
 
 typedef MeshMatrixMass_test<Vec3Types, Vec3Types::Real> MeshMatrixMass3_test;
@@ -694,60 +1282,140 @@ TEST_F(MeshMatrixMass3_test, singleHexahedron)
             expectedMass);
 }
 
-TEST_F(MeshMatrixMass3_test, checkAttributes){
-    checkAttributes() ;
+TEST_F(MeshMatrixMass3_test, check_DefaultAttributes_Hexa){
+    check_DefaultAttributes_Hexa() ;
 }
 
-TEST_F(MeshMatrixMass3_test, checkTotalMassFromMassDensity_Hexa){
-    checkTotalMassFromMassDensity_Hexa();
+
+TEST_F(MeshMatrixMass3_test, check_TotalMass_Initialization_Hexa){
+    check_TotalMass_Initialization_Hexa() ;
 }
 
-TEST_F(MeshMatrixMass3_test, checkMassDensityFromTotalMass_Hexa){
-    checkMassDensityFromTotalMass_Hexa();
+
+TEST_F(MeshMatrixMass3_test, check_MassDensity_Initialization_Hexa){
+    check_MassDensity_Initialization_Hexa() ;
 }
 
-TEST_F(MeshMatrixMass3_test, checkTotalMassOverwritesMassDensity_Hexa){
-    checkTotalMassOverwritesMassDensity_Hexa();
+
+TEST_F(MeshMatrixMass3_test, check_VertexMass_Lumping_Initialization_Hexa){
+    check_VertexMass_Lumping_Initialization_Hexa() ;
 }
 
-TEST_F(MeshMatrixMass3_test, checkTotalMassFromMassDensity_Tetra){
-    checkTotalMassFromMassDensity_Tetra();
+
+TEST_F(MeshMatrixMass3_test, check_DoubleDeclaration_TotalMassAndMassDensity_Hexa){
+    check_DoubleDeclaration_TotalMassAndMassDensity_Hexa() ;
 }
 
-TEST_F(MeshMatrixMass3_test, checkTotalMassFromNegativeMassDensity_Tetra){
-    checkTotalMassFromNegativeMassDensity_Tetra();
+
+TEST_F(MeshMatrixMass3_test, check_DoubleDeclaration_TotalMassAndVertexMass_Hexa){
+    check_DoubleDeclaration_TotalMassAndVertexMass_Hexa() ;
 }
 
-TEST_F(MeshMatrixMass3_test, checkMassDensityFromTotalMass_Tetra){
-    checkMassDensityFromTotalMass_Tetra();
+
+TEST_F(MeshMatrixMass3_test, check_DoubleDeclaration_MassDensityAndVertexMass_Hexa){
+    check_DoubleDeclaration_MassDensityAndVertexMass_Hexa() ;
 }
 
-TEST_F(MeshMatrixMass3_test, checkMassDensityFromNegativeTotalMass_Tetra){
-    checkMassDensityFromNegativeTotalMass_Tetra();
+
+TEST_F(MeshMatrixMass3_test, check_TotalMass_WrongValue_Hexa){
+    check_TotalMass_WrongValue_Hexa() ;
 }
 
-TEST_F(MeshMatrixMass3_test, checkDoubleDeclaration_MassDensityTotalMass_Tetra){
-    checkDoubleDeclaration_MassDensityTotalMass_Tetra();
+
+TEST_F(MeshMatrixMass3_test, check_MassDensity_WrongValue_Hexa){
+    check_MassDensity_WrongValue_Hexa() ;
 }
 
-TEST_F(MeshMatrixMass3_test, checkDoubleDeclaration_NegativeMassDensityTotalMass_Tetra){
-    checkDoubleDeclaration_NegativeMassDensityTotalMass_Tetra();
+
+TEST_F(MeshMatrixMass3_test, check_MassDensity_WrongSize_Hexa){
+    check_MassDensity_WrongSize_Hexa() ;
 }
 
-TEST_F(MeshMatrixMass3_test, checkDoubleDeclaration_MassDensityNegativeTotalMass_Tetra){
-    checkDoubleDeclaration_MassDensityNegativeTotalMass_Tetra();
+
+TEST_F(MeshMatrixMass3_test, check_VertexMass_WrongValue_Hexa){
+    check_VertexMass_WrongValue_Hexa() ;
 }
 
-TEST_F(MeshMatrixMass3_test, checkMassDensityTotalMassFromVertexMass_Tetra){
-    checkMassDensityTotalMassFromVertexMass_Tetra();
+
+TEST_F(MeshMatrixMass3_test, check_VertexMass_WrongSize_Hexa){
+    check_VertexMass_WrongSize_Hexa() ;
 }
 
-TEST_F(MeshMatrixMass3_test, checkTotalMassFromNegativeMassDensityVertexMass_Tetra){
-    checkTotalMassFromNegativeMassDensityVertexMass_Tetra();
+
+TEST_F(MeshMatrixMass3_test, check_DoubleDeclaration_TotalMassAndMassDensity_WrongValue_Hexa){
+    check_DoubleDeclaration_TotalMassAndMassDensity_WrongValue_Hexa() ;
 }
 
-TEST_F(MeshMatrixMass3_test, checkWrongSizeVertexMass_Tetra){
-    checkWrongSizeVertexMass_Tetra();
+TEST_F(MeshMatrixMass3_test, check_DoubleDeclaration_TotalMassAndMassDensity_WrongSize_Hexa){
+    check_DoubleDeclaration_TotalMassAndMassDensity_WrongSize_Hexa() ;
+}
+
+TEST_F(MeshMatrixMass3_test, check_DefaultAttributes_Tetra){
+    check_DefaultAttributes_Tetra() ;
+}
+
+
+TEST_F(MeshMatrixMass3_test, check_TotalMass_Initialization_Tetra){
+    check_TotalMass_Initialization_Tetra() ;
+}
+
+
+TEST_F(MeshMatrixMass3_test, check_MassDensity_Initialization_Tetra){
+    check_MassDensity_Initialization_Tetra() ;
+}
+
+
+TEST_F(MeshMatrixMass3_test, check_VertexMass_Lumping_Initialization_Tetra){
+    check_VertexMass_Lumping_Initialization_Tetra() ;
+}
+
+
+TEST_F(MeshMatrixMass3_test, check_DoubleDeclaration_TotalMassAndMassDensity_Tetra){
+    check_DoubleDeclaration_TotalMassAndMassDensity_Tetra() ;
+}
+
+
+TEST_F(MeshMatrixMass3_test, check_DoubleDeclaration_TotalMassAndVertexMass_Tetra){
+    check_DoubleDeclaration_TotalMassAndVertexMass_Tetra() ;
+}
+
+
+TEST_F(MeshMatrixMass3_test, check_DoubleDeclaration_MassDensityAndVertexMass_Tetra){
+    check_DoubleDeclaration_MassDensityAndVertexMass_Tetra() ;
+}
+
+
+TEST_F(MeshMatrixMass3_test, check_TotalMass_WrongValue_Tetra){
+    check_TotalMass_WrongValue_Tetra() ;
+}
+
+
+TEST_F(MeshMatrixMass3_test, check_MassDensity_WrongValue_Tetra){
+    check_MassDensity_WrongValue_Tetra() ;
+}
+
+
+TEST_F(MeshMatrixMass3_test, check_MassDensity_WrongSize_Tetra){
+    check_MassDensity_WrongSize_Tetra() ;
+}
+
+
+TEST_F(MeshMatrixMass3_test, check_VertexMass_WrongValue_Tetra){
+    check_VertexMass_WrongValue_Tetra() ;
+}
+
+
+TEST_F(MeshMatrixMass3_test, check_VertexMass_WrongSize_Tetra){
+    check_VertexMass_WrongSize_Tetra() ;
+}
+
+
+TEST_F(MeshMatrixMass3_test, check_DoubleDeclaration_TotalMassAndMassDensity_WrongValue_Tetra){
+    check_DoubleDeclaration_TotalMassAndMassDensity_WrongValue_Tetra() ;
+}
+
+TEST_F(MeshMatrixMass3_test, check_DoubleDeclaration_TotalMassAndMassDensity_WrongSize_Tetra){
+    check_DoubleDeclaration_TotalMassAndMassDensity_WrongSize_Tetra() ;
 }
 
 
