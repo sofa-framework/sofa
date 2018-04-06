@@ -100,17 +100,6 @@ public:
 
     typedef typename MeshMatrixMassInternalData<DataTypes,TMassType>::GeometricalTypes GeometricalTypes;
 
-    /*
-    /// the way the mass should be computed on non-linear elements
-	typedef enum 
-	{
-		EXACT_INTEGRATION=1,
-		NUMERICAL_INTEGRATION=2,
-		AFFINE_ELEMENT_INTEGRATION=3
-    } IntegrationMethod;*/
-
-
-
     /// @name Data of mass information
     /// @{
     /// Mass stored on vertices
@@ -118,7 +107,7 @@ public:
     /// Mass density of the object
     Data< sofa::helper::vector< Real > > d_massDensity;
     /// Total mass of the object
-    Data<  Real > d_totalMass;
+    Data< Real > d_totalMass;
     /// @}
 
 
@@ -130,12 +119,6 @@ public:
     /// to display the center of gravity of the system
     Data< sofa::helper::vector< Real > > d_edgeMass;
 
-    /* ---------- Specific data for Bezier Elements ------
-    /// use this data structure to store mass for Bezier tetrahedra. 
-    //// The size of the vector is nbControlPoints*(nbControlPoints+1)/2 where nbControlPoints=(degree+1)*(degree+2)*(degree+3)/2
-    topology::TetrahedronData<helper::vector<MassVector> > d_tetrahedronMassInfo;
-     ---------- end ------*/
-
     /// if true, the mass of every element is computed based on the rest position rather than the position
     Data< bool > d_computeMassOnRest;
     /// to display the center of gravity of the system
@@ -146,15 +129,7 @@ public:
     Data< bool >         d_lumping;
     /// if specific mass information should be outputed
     Data< bool >         d_printMass;
-    Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
-//    /// the order of integration for numerical integration
-//    Data<size_t>	     d_numericalIntegrationOrder;
-//    /// the type of numerical integration method chosen
-//    Data<size_t>	     d_numericalIntegrationMethod;
-//    /// the type of integration method chosen for non linear element.
-//    Data<std::string>	 d_integrationMethod;
-//    IntegrationMethod    m_integrationMethod;
-
+    Data< std::map < std::string, sofa::helper::vector<double> > > f_graph;
 
 
 protected:
@@ -221,9 +196,9 @@ public:
 
     /// @name Read and write access functions in mass information
     /// @{
-    virtual void getVertexMass(sofa::helper::vector< Real >& vertexMass);
-    virtual void getMassDensity(sofa::helper::vector< Real >& massDensity);
-    virtual void getTotalMass(Real& totalMass);
+    virtual const sofa::helper::vector< Real > &getVertexMass();
+    virtual const sofa::helper::vector< Real > &getMassDensity();
+    virtual const Real &getTotalMass();
 
     virtual void setVertexMass(sofa::helper::vector< Real > vertexMass);
     virtual void setMassDensity(sofa::helper::vector< Real > massDensity);
@@ -268,7 +243,7 @@ public:
 
     virtual void addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v) override;
 
-    virtual bool isDiagonal() override {return false;}
+    virtual bool isDiagonal() override { return false; }
 
 
 
@@ -460,28 +435,6 @@ protected:
     };
 
     EdgeMassHandler* m_edgeMassHandler;
-
-    /*class TetrahedronMassHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron,MassVectorVector>
-    {
-    public:
-        typedef typename DataTypes::Real Real;
-        TetrahedronMassHandler(MeshMatrixMass<DataTypes,TMassType>* _m, topology::TetrahedronData<helper::vector<MassVector> >* _data) : topology::TopologyDataHandler<core::topology::BaseMeshTopology::Tetrahedron,helper::vector<MassVector> >(_data), m(_m) {}
-
-        /// Edge mass coefficient matrix creation function
-        void applyCreateFunction(unsigned int tetrahedronIndex, MassVector & tetrahedronMass,
-                const core::topology::BaseMeshTopology::Tetrahedron&,
-                const sofa::helper::vector< unsigned int > &,
-                const sofa::helper::vector< double >&);
-
-               /// Edge coefficient of mass matrix destruction function to handle creation of new tetrahedra
-//        void applyDestructionFunction(const sofa::helper::vector<unsigned int> & indices);
-
-    protected:
-        MeshMatrixMass<DataTypes,TMassType>* m;
-    };
-
-    TetrahedronMassHandler* m_tetrahedronMassHandler;*/
-
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MASS_MESHMATRIXMASS_CPP)

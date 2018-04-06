@@ -66,19 +66,14 @@ MeshMatrixMass<DataTypes, MassType>::MeshMatrixMass()
     , d_edgeMassInfo( initData(&d_edgeMassInfo, "edgeMassInfo", "internal values of the particles masses on edges, supporting topological changes") )
     , d_edgeMass( initData(&d_edgeMass, "edgeMass", "values of the particles masses on edges") )
     , d_computeMassOnRest(initData(&d_computeMassOnRest, false, "computeMassOnRest", "If true, the mass of every element is computed based on the rest position rather than the position"))
-//    , d_tetrahedronMassInfo( initData(&d_tetrahedronMassInfo, "tetrahedronMass", "values of the particles masses for all control points inside a Bezier tetrahedron") )
     , d_showCenterOfGravity( initData(&d_showCenterOfGravity, false, "showGravityCenter", "display the center of gravity of the system" ) )
     , d_showAxisSize( initData(&d_showAxisSize, (Real)1.0, "showAxisSizeFactor", "factor length of the axis displayed (only used for rigids)" ) )
     , d_lumping( initData(&d_lumping, false, "lumping","boolean if you need to use a lumped mass matrix") )
     , d_printMass( initData(&d_printMass, false, "printMass","boolean if you want to check the mass conservation") )
     , f_graph( initData(&f_graph,"graph","Graph of the controlled potential") )
-//    , d_numericalIntegrationOrder( initData(&d_numericalIntegrationOrder,(size_t)2,"integrationOrder","The order of integration for numerical integration"))
-//    , d_numericalIntegrationMethod( initData(&d_numericalIntegrationMethod,(size_t)0,"numericalIntegrationMethod","The type of numerical integration method chosen"))
-//    , d_integrationMethod( initData(&d_integrationMethod,std::string("analytical"),"integrationMethod","\"exact\" if closed form expression for high order elements, \"analytical\" if closed form expression for affine element, \"numerical\" if numerical integration is chosen"))
     , m_topologyType(TOPOLOGY_UNKNOWN)
     , m_vertexMassHandler(NULL)
     , m_edgeMassHandler(NULL)
-//    , m_tetrahedronMassHandler(NULL)
 {
     f_graph.setWidget("graph");
 
@@ -92,7 +87,6 @@ MeshMatrixMass<DataTypes, MassType>::~MeshMatrixMass()
 {
     if (m_vertexMassHandler) delete m_vertexMassHandler;
     if (m_edgeMassHandler) delete m_edgeMassHandler;
-//    if (m_tetrahedronMassHandler) delete m_tetrahedronMassHandler;
 }
 
 template< class DataTypes, class MassType>
@@ -111,13 +105,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyCreateFunction(u
 {
     EdgeMass = 0;
 }
-//template< class DataTypes, class MassType>
-//void MeshMatrixMass<DataTypes, MassType>::TetrahedronMassHandler::applyCreateFunction(unsigned int /*tetra*/, MassVector & /*TetrahedronMass*/,
-//        const core::topology::BaseMeshTopology::Tetrahedron&,
-//        const sofa::helper::vector< unsigned int > &,
-//        const sofa::helper::vector< double >&)
-//{
-//}
+
 
 // -------------------------------------------------------
 // ------- Triangle Creation/Destruction functions -------
@@ -137,8 +125,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTriangleCreati
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMassInfo );
         // Initialisation
-        helper::vector<Real> densityM;
-        MMM->getMassDensity(densityM);
+        const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = (typename DataTypes::Real) 0;
 
         for (unsigned int i = 0; i<triangleAdded.size(); ++i)
@@ -151,11 +138,11 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTriangleCreati
             {
                 if(MMM->d_computeMassOnRest.getValue())
                 {
-                    mass=(densityM[i] * MMM->triangleGeo->computeRestTriangleArea(triangleAdded[i]))/(typename DataTypes::Real)6.0;
+                    mass=(densityM[triangleAdded[i]] * MMM->triangleGeo->computeRestTriangleArea(triangleAdded[i]))/(typename DataTypes::Real)6.0;
                 }
                 else
                 {
-                    mass=(densityM[i] * MMM->triangleGeo->computeTriangleArea(triangleAdded[i]))/(typename DataTypes::Real)6.0;
+                    mass=(densityM[triangleAdded[i]] * MMM->triangleGeo->computeTriangleArea(triangleAdded[i]))/(typename DataTypes::Real)6.0;
                 }
             }
 
@@ -179,8 +166,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTriangleCreation
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMassInfo );
         // Initialisation
-        helper::vector<Real> densityM;
-        MMM->getMassDensity(densityM);
+        const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = (typename DataTypes::Real) 0;
 
         for (unsigned int i = 0; i<triangleAdded.size(); ++i)
@@ -193,11 +179,11 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTriangleCreation
             {
                 if(MMM->d_computeMassOnRest.getValue())
                 {
-                    mass=(densityM[i] * MMM->triangleGeo->computeRestTriangleArea(triangleAdded[i]))/(typename DataTypes::Real)12.0;
+                    mass=(densityM[triangleAdded[i]] * MMM->triangleGeo->computeRestTriangleArea(triangleAdded[i]))/(typename DataTypes::Real)12.0;
                 }
                 else
                 {
-                    mass=(densityM[i] * MMM->triangleGeo->computeTriangleArea(triangleAdded[i]))/(typename DataTypes::Real)12.0;
+                    mass=(densityM[triangleAdded[i]] * MMM->triangleGeo->computeTriangleArea(triangleAdded[i]))/(typename DataTypes::Real)12.0;
                 }
             }
 
@@ -217,8 +203,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTriangleDestru
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMassInfo );
         // Initialisation
-        helper::vector<Real> densityM;
-        MMM->getMassDensity(densityM);
+        const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = (typename DataTypes::Real) 0;
 
         for (unsigned int i = 0; i<triangleRemoved.size(); ++i)
@@ -231,11 +216,11 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTriangleDestru
             {
                 if(MMM->d_computeMassOnRest.getValue())
                 {
-                    mass=(densityM[i] * MMM->triangleGeo->computeRestTriangleArea(triangleRemoved[i]))/(typename DataTypes::Real)6.0;
+                    mass=(densityM[triangleRemoved[i]] * MMM->triangleGeo->computeRestTriangleArea(triangleRemoved[i]))/(typename DataTypes::Real)6.0;
                 }
                 else
                 {
-                    mass=(densityM[i] * MMM->triangleGeo->computeTriangleArea(triangleRemoved[i]))/(typename DataTypes::Real)6.0;
+                    mass=(densityM[triangleRemoved[i]] * MMM->triangleGeo->computeTriangleArea(triangleRemoved[i]))/(typename DataTypes::Real)6.0;
                 }
             }
 
@@ -255,8 +240,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTriangleDestruct
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMassInfo );
         // Initialisation
-        helper::vector<Real> densityM;
-        MMM->getMassDensity(densityM);
+        const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = (typename DataTypes::Real) 0;
 
         for (unsigned int i = 0; i<triangleRemoved.size(); ++i)
@@ -269,11 +253,11 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTriangleDestruct
             {
                 if(MMM->d_computeMassOnRest.getValue())
                 {
-                    mass=(densityM[i] * MMM->triangleGeo->computeRestTriangleArea(triangleRemoved[i]))/(typename DataTypes::Real)12.0;
+                    mass=(densityM[triangleRemoved[i]] * MMM->triangleGeo->computeRestTriangleArea(triangleRemoved[i]))/(typename DataTypes::Real)12.0;
                 }
                 else
                 {
-                    mass=(densityM[i] * MMM->triangleGeo->computeTriangleArea(triangleRemoved[i]))/(typename DataTypes::Real)12.0;
+                    mass=(densityM[triangleRemoved[i]] * MMM->triangleGeo->computeTriangleArea(triangleRemoved[i]))/(typename DataTypes::Real)12.0;
                 }
             }
 
@@ -342,8 +326,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyQuadCreation(c
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMassInfo );
         // Initialisation
-        helper::vector<Real> densityM;
-        MMM->getMassDensity(densityM);
+        const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = (typename DataTypes::Real) 0;
 
         for (unsigned int i = 0; i<quadAdded.size(); ++i)
@@ -356,11 +339,11 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyQuadCreation(c
             {
                 if(MMM->d_computeMassOnRest.getValue())
                 {
-                    mass=(densityM[i] * MMM->quadGeo->computeRestQuadArea(quadAdded[i]))/(typename DataTypes::Real)8.0;
+                    mass=(densityM[quadAdded[i]] * MMM->quadGeo->computeRestQuadArea(quadAdded[i]))/(typename DataTypes::Real)8.0;
                 }
                 else
                 {
-                    mass=(densityM[i] * MMM->quadGeo->computeQuadArea(quadAdded[i]))/(typename DataTypes::Real)8.0;
+                    mass=(densityM[quadAdded[i]] * MMM->quadGeo->computeQuadArea(quadAdded[i]))/(typename DataTypes::Real)8.0;
                 }
             }
 
@@ -384,8 +367,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyQuadCreation(con
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMassInfo );
         // Initialisation
-        helper::vector<Real> densityM;
-        MMM->getMassDensity(densityM);
+        const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = (typename DataTypes::Real) 0;
 
         for (unsigned int i = 0; i<quadAdded.size(); ++i)
@@ -398,11 +380,11 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyQuadCreation(con
             {
                 if(MMM->d_computeMassOnRest.getValue())
                 {
-                    mass=(densityM[i] * MMM->quadGeo->computeRestQuadArea(quadAdded[i]))/(typename DataTypes::Real)16.0;
+                    mass=(densityM[quadAdded[i]] * MMM->quadGeo->computeRestQuadArea(quadAdded[i]))/(typename DataTypes::Real)16.0;
                 }
                 else
                 {
-                    mass=(densityM[i] * MMM->quadGeo->computeQuadArea(quadAdded[i]))/(typename DataTypes::Real)16.0;
+                    mass=(densityM[quadAdded[i]] * MMM->quadGeo->computeQuadArea(quadAdded[i]))/(typename DataTypes::Real)16.0;
                 }
             }
 
@@ -422,8 +404,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyQuadDestructio
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMassInfo );
         // Initialisation
-        helper::vector<Real> densityM;
-        MMM->getMassDensity(densityM);
+        const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = (typename DataTypes::Real) 0;
 
         for (unsigned int i = 0; i<quadRemoved.size(); ++i)
@@ -436,11 +417,11 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyQuadDestructio
             {
                 if(MMM->d_computeMassOnRest.getValue())
                 {
-                    mass=(densityM[i] * MMM->quadGeo->computeRestQuadArea(quadRemoved[i]))/(typename DataTypes::Real)8.0;
+                    mass=(densityM[quadRemoved[i]] * MMM->quadGeo->computeRestQuadArea(quadRemoved[i]))/(typename DataTypes::Real)8.0;
                 }
                 else
                 {
-                    mass=(densityM[i] * MMM->quadGeo->computeQuadArea(quadRemoved[i]))/(typename DataTypes::Real)8.0;
+                    mass=(densityM[quadRemoved[i]] * MMM->quadGeo->computeQuadArea(quadRemoved[i]))/(typename DataTypes::Real)8.0;
                 }
             }
 
@@ -460,8 +441,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyQuadDestruction(
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMassInfo );
         // Initialisation
-        helper::vector<Real> densityM;
-        MMM->getMassDensity(densityM);
+        const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = (typename DataTypes::Real) 0;
 
         for (unsigned int i = 0; i<quadRemoved.size(); ++i)
@@ -474,11 +454,11 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyQuadDestruction(
             {
                 if(MMM->d_computeMassOnRest.getValue())
                 {
-                    mass=(densityM[i] * MMM->quadGeo->computeRestQuadArea(quadRemoved[i]))/(typename DataTypes::Real)16.0;
+                    mass=(densityM[quadRemoved[i]] * MMM->quadGeo->computeRestQuadArea(quadRemoved[i]))/(typename DataTypes::Real)16.0;
                 }
                 else
                 {
-                    mass=(densityM[i] * MMM->quadGeo->computeQuadArea(quadRemoved[i]))/(typename DataTypes::Real)16.0;
+                    mass=(densityM[quadRemoved[i]] * MMM->quadGeo->computeQuadArea(quadRemoved[i]))/(typename DataTypes::Real)16.0;
                 }
             }
 
@@ -549,8 +529,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTetrahedronCre
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMassInfo );
         // Initialisation
-        helper::vector<Real> densityM;
-        MMM->getMassDensity(densityM);
+        const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = (typename DataTypes::Real) 0;
 
         for (unsigned int i = 0; i<tetrahedronAdded.size(); ++i)
@@ -563,11 +542,11 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTetrahedronCre
             {
                 if(MMM->d_computeMassOnRest.getValue())
                 {
-                    mass=(densityM[i] * MMM->tetraGeo->computeRestTetrahedronVolume(tetrahedronAdded[i]))/(typename DataTypes::Real)10.0;
+                    mass=(densityM[tetrahedronAdded[i]] * MMM->tetraGeo->computeRestTetrahedronVolume(tetrahedronAdded[i]))/(typename DataTypes::Real)10.0;
                 }
                 else
                 {
-                    mass=(densityM[i] * MMM->tetraGeo->computeTetrahedronVolume(tetrahedronAdded[i]))/(typename DataTypes::Real)10.0;
+                    mass=(densityM[tetrahedronAdded[i]] * MMM->tetraGeo->computeTetrahedronVolume(tetrahedronAdded[i]))/(typename DataTypes::Real)10.0;
                 }
             }
 
@@ -591,8 +570,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTetrahedronCreat
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMassInfo );
         // Initialisation
-        helper::vector<Real> densityM;
-        MMM->getMassDensity(densityM);
+        const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = (typename DataTypes::Real) 0;
 
         for (unsigned int i = 0; i<tetrahedronAdded.size(); ++i)
@@ -605,11 +583,11 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTetrahedronCreat
             {
                 if(MMM->d_computeMassOnRest.getValue())
                 {
-                    mass=(densityM[i] * MMM->tetraGeo->computeRestTetrahedronVolume(tetrahedronAdded[i]))/(typename DataTypes::Real)20.0;
+                    mass=(densityM[tetrahedronAdded[i]] * MMM->tetraGeo->computeRestTetrahedronVolume(tetrahedronAdded[i]))/(typename DataTypes::Real)20.0;
                 }
                 else
                 {
-                    mass=(densityM[i] * MMM->tetraGeo->computeTetrahedronVolume(tetrahedronAdded[i]))/(typename DataTypes::Real)20.0;
+                    mass=(densityM[tetrahedronAdded[i]] * MMM->tetraGeo->computeTetrahedronVolume(tetrahedronAdded[i]))/(typename DataTypes::Real)20.0;
                 }
             }
 
@@ -629,8 +607,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTetrahedronDes
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMassInfo );
         // Initialisation
-        helper::vector<Real> densityM;
-        MMM->getMassDensity(densityM);
+        const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = (typename DataTypes::Real) 0;
 
         for (unsigned int i = 0; i<tetrahedronRemoved.size(); ++i)
@@ -643,11 +620,11 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyTetrahedronDes
             {
                 if(MMM->d_computeMassOnRest.getValue())
                 {
-                    mass=(densityM[i] * MMM->tetraGeo->computeRestTetrahedronVolume(tetrahedronRemoved[i]))/(typename DataTypes::Real)10.0;
+                    mass=(densityM[tetrahedronRemoved[i]] * MMM->tetraGeo->computeRestTetrahedronVolume(tetrahedronRemoved[i]))/(typename DataTypes::Real)10.0;
                 }
                 else
                 {
-                    mass=(densityM[i] * MMM->tetraGeo->computeTetrahedronVolume(tetrahedronRemoved[i]))/(typename DataTypes::Real)10.0;
+                    mass=(densityM[tetrahedronRemoved[i]] * MMM->tetraGeo->computeTetrahedronVolume(tetrahedronRemoved[i]))/(typename DataTypes::Real)10.0;
                 }
             }
 
@@ -667,8 +644,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTetrahedronDestr
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMassInfo );
         // Initialisation
-        helper::vector<Real> densityM;
-        MMM->getMassDensity(densityM);
+        const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = (typename DataTypes::Real) 0;
 
         for (unsigned int i = 0; i<tetrahedronRemoved.size(); ++i)
@@ -681,17 +657,17 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyTetrahedronDestr
             {
                 if(MMM->d_computeMassOnRest.getValue())
                 {
-                    mass=(densityM[i] * MMM->tetraGeo->computeRestTetrahedronVolume(tetrahedronRemoved[i]))/(typename DataTypes::Real)20.0;
+                    mass=(densityM[tetrahedronRemoved[i]] * MMM->tetraGeo->computeRestTetrahedronVolume(tetrahedronRemoved[i]))/(typename DataTypes::Real)20.0;
                 }
                 else
                 {
-                    mass=(densityM[i] * MMM->tetraGeo->computeTetrahedronVolume(tetrahedronRemoved[i]))/(typename DataTypes::Real)20.0;
+                    mass=(densityM[tetrahedronRemoved[i]] * MMM->tetraGeo->computeTetrahedronVolume(tetrahedronRemoved[i]))/(typename DataTypes::Real)20.0;
                 }
             }
 
             // Removing mass edges of concerne triangle
             for (unsigned int j=0; j<6; ++j)
-                EdgeMasses[ te[j] ] -= mass; //?
+                EdgeMasses[ te[j] ] -= mass;
         }
     }
 }
@@ -755,8 +731,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyHexahedronCrea
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMassInfo );
         // Initialisation
-        helper::vector<Real> densityM;
-        MMM->getMassDensity(densityM);
+        const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = (typename DataTypes::Real) 0;
 
         for (unsigned int i = 0; i<hexahedronAdded.size(); ++i)
@@ -769,11 +744,11 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyHexahedronCrea
             {
                 if(MMM->d_computeMassOnRest.getValue())
                 {
-                    mass=(densityM[i] * MMM->hexaGeo->computeRestHexahedronVolume(hexahedronAdded[i]))/(typename DataTypes::Real)20.0;
+                    mass=(densityM[hexahedronAdded[i]] * MMM->hexaGeo->computeRestHexahedronVolume(hexahedronAdded[i]))/(typename DataTypes::Real)20.0;
                 }
                 else
                 {
-                    mass=(densityM[i] * MMM->hexaGeo->computeHexahedronVolume(hexahedronAdded[i]))/(typename DataTypes::Real)20.0;
+                    mass=(densityM[hexahedronAdded[i]] * MMM->hexaGeo->computeHexahedronVolume(hexahedronAdded[i]))/(typename DataTypes::Real)20.0;
                 }
             }
 
@@ -797,8 +772,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyHexahedronCreati
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMassInfo );
         // Initialisation
-        helper::vector<Real> densityM;
-        MMM->getMassDensity(densityM);
+        const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = (typename DataTypes::Real) 0;
 
         for (unsigned int i = 0; i<hexahedronAdded.size(); ++i)
@@ -811,11 +785,11 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyHexahedronCreati
             {
                 if(MMM->d_computeMassOnRest.getValue())
                 {
-                    mass=(densityM[i] * MMM->hexaGeo->computeRestHexahedronVolume(hexahedronAdded[i]))/(typename DataTypes::Real)40.0;
+                    mass=(densityM[hexahedronAdded[i]] * MMM->hexaGeo->computeRestHexahedronVolume(hexahedronAdded[i]))/(typename DataTypes::Real)40.0;
                 }
                 else
                 {
-                    mass=(densityM[i] * MMM->hexaGeo->computeHexahedronVolume(hexahedronAdded[i]))/(typename DataTypes::Real)40.0;
+                    mass=(densityM[hexahedronAdded[i]] * MMM->hexaGeo->computeHexahedronVolume(hexahedronAdded[i]))/(typename DataTypes::Real)40.0;
                 }
             }
 
@@ -835,8 +809,7 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyHexahedronDest
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > VertexMasses ( MMM->d_vertexMassInfo );
         // Initialisation
-        helper::vector<Real> densityM;
-        MMM->getMassDensity(densityM);
+        const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = (typename DataTypes::Real) 0;
 
         for (unsigned int i = 0; i<hexahedronRemoved.size(); ++i)
@@ -849,11 +822,11 @@ void MeshMatrixMass<DataTypes, MassType>::VertexMassHandler::applyHexahedronDest
             {
                 if(MMM->d_computeMassOnRest.getValue())
                 {
-                    mass=(densityM[i] * MMM->hexaGeo->computeRestHexahedronVolume(hexahedronRemoved[i]))/(typename DataTypes::Real)20.0;
+                    mass=(densityM[hexahedronRemoved[i]] * MMM->hexaGeo->computeRestHexahedronVolume(hexahedronRemoved[i]))/(typename DataTypes::Real)20.0;
                 }
                 else
                 {
-                    mass=(densityM[i] * MMM->hexaGeo->computeHexahedronVolume(hexahedronRemoved[i]))/(typename DataTypes::Real)20.0;
+                    mass=(densityM[hexahedronRemoved[i]] * MMM->hexaGeo->computeHexahedronVolume(hexahedronRemoved[i]))/(typename DataTypes::Real)20.0;
                 }
             }
 
@@ -873,8 +846,7 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyHexahedronDestru
     {
         helper::WriteAccessor< Data< helper::vector<MassType> > > EdgeMasses ( MMM->d_edgeMassInfo );
         // Initialisation
-        helper::vector<Real> densityM;
-        MMM->getMassDensity(densityM);
+        const helper::vector<Real> densityM = MMM->getMassDensity();
         typename DataTypes::Real mass = (typename DataTypes::Real) 0;
 
         for (unsigned int i = 0; i<hexahedronRemoved.size(); ++i)
@@ -887,11 +859,11 @@ void MeshMatrixMass<DataTypes, MassType>::EdgeMassHandler::applyHexahedronDestru
             {
                 if(MMM->d_computeMassOnRest.getValue())
                 {
-                    mass=(densityM[i] * MMM->hexaGeo->computeRestHexahedronVolume(hexahedronRemoved[i]))/(typename DataTypes::Real)40.0;
+                    mass=(densityM[hexahedronRemoved[i]] * MMM->hexaGeo->computeRestHexahedronVolume(hexahedronRemoved[i]))/(typename DataTypes::Real)40.0;
                 }
                 else
                 {
-                    mass=(densityM[i] * MMM->hexaGeo->computeHexahedronVolume(hexahedronRemoved[i]))/(typename DataTypes::Real)40.0;
+                    mass=(densityM[hexahedronRemoved[i]] * MMM->hexaGeo->computeHexahedronVolume(hexahedronRemoved[i]))/(typename DataTypes::Real)40.0;
                 }
             }
 
@@ -953,8 +925,6 @@ void MeshMatrixMass<DataTypes, MassType>::init()
 
     m_massLumpingCoeff = 0.0;
 
-//    checkIntegrationMethod();
-
     checkTopology();
     Inherited::init();
     initTopologyHandlers();
@@ -970,22 +940,6 @@ void MeshMatrixMass<DataTypes, MassType>::init()
 }
 
 
-/*template <class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::checkIntegrationMethod()
-{
-    if (d_integrationMethod.getValue() == "analytical")
-        m_integrationMethod= AFFINE_ELEMENT_INTEGRATION;
-    else if (d_integrationMethod.getValue() == "numerical")
-        m_integrationMethod= NUMERICAL_INTEGRATION;
-    else if (d_integrationMethod.getValue() == "exact")
-        m_integrationMethod= EXACT_INTEGRATION;
-    else
-    {
-        msg_error() << "cannot recognize method "<< d_integrationMethod.getValue() << ". Must be either  \"exact\", \"analytical\" or \"numerical\"";
-    }
-}*/
-
-
 template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::checkTopology()
 {
@@ -999,25 +953,64 @@ void MeshMatrixMass<DataTypes, MassType>::checkTopology()
 
     if (_topology)
     {
-        if (_topology->getNbTetrahedra() > 0 && !tetraGeo)
+        if (_topology->getNbHexahedra() > 0)
         {
-            msg_error() << "Tetrahedron topology but no geometry algorithms found. Add the component TetrahedronSetGeometryAlgorithms.";
+            if(!hexaGeo)
+            {
+                msg_error() << "Hexahedron topology but no geometry algorithms found. Add the component HexahedronSetGeometryAlgorithms.";
+            }
+            else
+            {
+                msg_info() << "Hexahedral topology found.";
+            }
         }
-        else if (_topology->getNbTriangles() > 0 && !triangleGeo)
+        else if (_topology->getNbTetrahedra() > 0)
         {
-            msg_error() << "Triangle topology but no geometry algorithms found. Add the component TriangleSetGeometryAlgorithms.";
+            if(!tetraGeo)
+            {
+                msg_error() << "Tetrahedron topology but no geometry algorithms found. Add the component TetrahedronSetGeometryAlgorithms.";
+            }
+            else
+            {
+                msg_info() << "Tetrahedral topology found.";
+            }
         }
-        else if (_topology->getNbHexahedra() > 0 && !hexaGeo)
+        else if (_topology->getNbQuads() > 0)
         {
-            msg_error() << "Hexahedron topology but no geometry algorithms found. Add the component HexahedronSetGeometryAlgorithms.";
+            if(!quadGeo)
+            {
+                msg_error() << "Quad topology but no geometry algorithms found. Add the component QuadSetGeometryAlgorithms.";
+            }
+            else
+            {
+                msg_info() << "Quad topology found.";
+            }
         }
-       else if (_topology->getNbQuads() > 0 && !quadGeo)
+        else if (_topology->getNbTriangles() > 0)
         {
-            msg_error() << "Quad topology but no geometry algorithms found. Add the component QuadSetGeometryAlgorithms.";
+            if(!triangleGeo)
+            {
+                msg_error() << "Triangle topology but no geometry algorithms found. Add the component TriangleSetGeometryAlgorithms.";
+            }
+            else
+            {
+                msg_info() << "Triangular topology found.";
+            }
         }
-        else if (_topology->getNbEdges() > 0 && !edgeGeo)
+        else if (_topology->getNbEdges() > 0)
         {
-            msg_error() << "Edge topology but no geometry algorithms found. Add the component EdgeSetGeometryAlgorithms.";
+            if(!edgeGeo)
+            {
+                msg_error() << "Edge topology but no geometry algorithms found. Add the component EdgeSetGeometryAlgorithms.";
+            }
+            else
+            {
+                msg_info() << "Edge topology found.";
+            }
+        }
+        else
+        {
+            msg_error() << "Topology empty.";
         }
     }
     else
@@ -1134,7 +1127,8 @@ void MeshMatrixMass<DataTypes, MassType>::massInitialization()
     d_edgeMass.setValue(d_edgeMassInfo.getValue());
 
     //Info post-init
-    msg_info() << "totalMass   = " << d_totalMass.getValue() << msgendl
+    msg_info() << "mass information computed :" << msgendl
+               << "totalMass   = " << d_totalMass.getValue() << msgendl
                << "massDensity = " << d_massDensity.getValue() << msgendl
                << "vertexMass  = " << d_vertexMassInfo.getValue();
 }
@@ -1301,8 +1295,8 @@ void MeshMatrixMass<DataTypes, MassType>::update()
         d_edgeMass.setValue(d_edgeMassInfo.getValue());
 
         //Info post-init
-        msg_info() << "mass information updated: ";
-        msg_info() << "totalMass   = " << d_totalMass.getValue() << msgendl
+        msg_info() << "mass information updated :" << msgendl
+                   << "totalMass   = " << d_totalMass.getValue() << msgendl
                    << "massDensity = " << d_massDensity.getValue() << msgendl
                    << "vertexMass  = " << d_vertexMassInfo.getValue();
     }
@@ -1345,7 +1339,7 @@ bool MeshMatrixMass<DataTypes, MassType>::checkVertexMass()
     //Check size of the vector
     if (vertexMass.size() != (size_t)_topology->getNbPoints())
     {
-        msg_warning() << "Inconsistent size of vertexMass vector compared to the DOFs size.";
+        msg_warning() << "Inconsistent size of vertexMass vector ("<< vertexMass.size() <<") compared to the DOFs size ("<< _topology->getNbPoints() <<").";
         return false;
     }
     else
@@ -1658,23 +1652,23 @@ void MeshMatrixMass<DataTypes, MassType>::setTotalMass(Real totalMass)
 
 
 template <class DataTypes, class MassType>
-void  MeshMatrixMass<DataTypes, MassType>::getVertexMass(sofa::helper::vector< Real >& vertexMass)
+const sofa::helper::vector< typename MeshMatrixMass<DataTypes, MassType>::Real > &  MeshMatrixMass<DataTypes, MassType>::getVertexMass()
 {
-    vertexMass = d_vertexMass.getValue();
+    return d_vertexMass.getValue();
 }
 
 
 template <class DataTypes, class MassType>
-void  MeshMatrixMass<DataTypes, MassType>::getMassDensity(sofa::helper::vector< Real >& massDensity)
+const sofa::helper::vector< typename MeshMatrixMass<DataTypes, MassType>::Real > &  MeshMatrixMass<DataTypes, MassType>::getMassDensity()
 {
-    massDensity = d_massDensity.getValue();
+    return d_massDensity.getValue();
 }
 
 
 template <class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::getTotalMass(Real& totalMass)
+const typename MeshMatrixMass<DataTypes, MassType>::Real &MeshMatrixMass<DataTypes, MassType>::getTotalMass()
 {
-    totalMass = d_totalMass.getValue();
+    return d_totalMass.getValue();
 }
 
 
@@ -1687,13 +1681,10 @@ void MeshMatrixMass<DataTypes, MassType>::clear()
 {
     MassVector& vertexMass = *d_vertexMassInfo.beginEdit();
     MassVector& edgeMass = *d_edgeMassInfo.beginEdit();
-//    MassVectorVector& tetrahedronMass = *d_tetrahedronMassInfo.beginEdit();
     vertexMass.clear();
     edgeMass.clear();
-//    tetrahedronMass.clear();
     d_vertexMassInfo.endEdit();
     d_edgeMassInfo.endEdit();
-//    d_tetrahedronMassInfo.endEdit();
 }
 
 
