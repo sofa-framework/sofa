@@ -104,7 +104,7 @@ if(NOT SOFA_NO_OPENGL)
             list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK "${ACTUAL_GLUT_LIBRARIES}")
         endif()
     endif()
-    set(SOFA_HAVE_GLEW (${GLUT_FOUND} AND ${SOFAGUI_GLUT}) )
+    set(SOFA_HAVE_GLUT (${GLUT_FOUND} AND ${SOFAGUI_GLUT}) )
 
 endif()
 
