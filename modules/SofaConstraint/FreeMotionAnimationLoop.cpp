@@ -308,10 +308,16 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
 
 SOFA_DECL_CLASS(FreeMotionAnimationLoop)
 
-int FreeMotionAnimationLoopClass = core::RegisterObject("Constraint solver")
+int FreeMotionAnimationLoopClass = core::RegisterObject("Animation loop to use for simulation with constraints and collisions.")
         .add< FreeMotionAnimationLoop >()
         .addAlias("FreeMotionMasterSolver")
-        ;
+        .addDescription(R"(
+With an FreeAnimationLoop, the loop of one simulation step follows:
+- build and solve all linear systems in the scene without constraints and save the "free" values of the dofs
+- collisions are computed
+- constraints are finally used to correct the "free" dofs in order to take into account the collisions & constraints
+- update the mappings
+- update the bounding box)");
 
 } // namespace animationloop
 
