@@ -88,7 +88,7 @@ endif()
 #Remove CImg sys calls
 list(APPEND CIMG_CFLAGS -Dcimg_no_system_calls)
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}/CImgPlugin.h DESTINATION "include/CImgPlugin")
+
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 

@@ -19,15 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SOFADISTANCEGRID_CONFIG_H
-#define SOFA_SOFADISTANCEGRID_CONFIG_H
+#ifndef SOFA_SOFAIMPLICITFIELD_CONFIG_H
+#define SOFA_SOFAIMPLICITFIELD_CONFIG_H
 
-#include <SofaGui/config.h>
+#include <SofaBase/config.h>
 
-#ifdef SOFA_HAVE_SOFADISTANCEGRID
-#  define SOFA_SOFADISTANCEGRID_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_HAVE_SOFAIMPLICITFIELD
+#  define SOFA_TARGET SofaImplicitField
+#  define SOFA_SOFAIMPLICITFIELD_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#  define SOFA_SOFADISTANCEGRID_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#  define SOFA_SOFAIMPLICITFIELD_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
 #endif
