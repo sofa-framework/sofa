@@ -41,7 +41,7 @@ namespace constraintset
 {
 
 /**
- *  \brief Component computing contact forces within a simulated body using the compliance method.
+ *  \brief Component computing constrained forces within a simulated body using the compliance method.
  */
 template<class TDataTypes>
 class PrecomputedConstraintCorrection : public sofa::core::behavior::ConstraintCorrection< TDataTypes >

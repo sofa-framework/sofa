@@ -49,7 +49,7 @@ class ConstraintSolver;
 /// @todo All methods in this class need to be commented
 
 /**
- *  \brief Component computing contact forces within a simulated body using the compliance method.
+ *  \brief Component computing constrained forces within a simulated body using the compliance method.
  */
 class BaseConstraintCorrection : public virtual objectmodel::BaseObject
 {
