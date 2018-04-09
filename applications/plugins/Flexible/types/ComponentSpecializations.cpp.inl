@@ -939,7 +939,7 @@ void UncoupledConstraintCorrection< defaulttype::TYPEABSTRACTNAME3fTypes >::init
 
 SOFA_DECL_CLASS( EVALUATOR(TYPEABSTRACTNAME,UncoupledConstraintCorrection) )
 // Register in the Factory
-int EVALUATOR(TYPEABSTRACTNAME,UncoupledConstraintCorrectionClass) = core::RegisterObject("Component computing contact forces within a simulated body using the compliance method.")
+int EVALUATOR(TYPEABSTRACTNAME,UncoupledConstraintCorrectionClass) = core::RegisterObject("Component computing constrained forces within a simulated body using the compliance method.")
 #ifndef SOFA_FLOAT
     .add< UncoupledConstraintCorrection<defaulttype::TYPEABSTRACTNAME3dTypes> >()
 #endif
