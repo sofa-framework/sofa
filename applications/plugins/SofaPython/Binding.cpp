@@ -48,6 +48,7 @@
 #include "Binding_BaseMechanicalState.h"
 #include "Binding_MechanicalObject.h"
 #include "Binding_PythonScriptController.h"
+#include "Binding_PythonScriptDataEngine.h"
 #include "Binding_LinearSpring.h"
 #include "Binding_BaseTopologyObject.h"
 #include "Binding_TriangleSetTopologyModifier.h"
@@ -107,6 +108,7 @@ void bindSofaPythonModule()
     SP_ADD_CLASS_IN_FACTORY(OBJExporter,sofa::component::misc::OBJExporter)
     SP_ADD_CLASS_IN_FACTORY(STLExporter,sofa::component::misc::STLExporter)
     SP_ADD_CLASS_IN_FACTORY(PythonScriptController,sofa::component::controller::PythonScriptController)
+    SP_ADD_CLASS_IN_FACTORY(PythonScriptDataEngine,sofa::component::controller::PythonScriptDataEngine)
     SP_ADD_CLASS_IN_FACTORY(PointSetTopologyModifier,sofa::component::topology::PointSetTopologyModifier)
     SP_ADD_CLASS_IN_FACTORY(TriangleSetTopologyModifier,sofa::component::topology::TriangleSetTopologyModifier)
 

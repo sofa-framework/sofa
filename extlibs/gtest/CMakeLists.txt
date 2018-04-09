@@ -22,28 +22,49 @@ if("x${CMAKE_CXX_COMPILER_ID}" STREQUAL "xGNU" OR "x${CMAKE_CXX_COMPILER_ID}" ST
     add_compile_options(-fPIC)
 endif()
 
-cxx_library(gtest "${cxx_strict}" src/gtest-all.cc)
-cxx_library(gtest_main "${cxx_strict}" src/gtest_main.cc)
-target_link_libraries(gtest_main gtest)
+set(HEADER_FILES
+    include/gtest/gtest.h
+    include/gtest/gtest-death-test.h
+    include/gtest/gtest-message.h
+    include/gtest/gtest-param-test.h
+    include/gtest/gtest_pred_impl.h
+    include/gtest/gtest-printers.h
+    include/gtest/gtest_prod.h
+    include/gtest/gtest-spi.h
+    include/gtest/gtest-test-part.h
+    include/gtest/gtest-typed-test.h
+)
+
+set(SOURCE_FILES
+    src/gtest.cc
+    src/gtest-death-test.cc
+    src/gtest-filepath.cc
+    src/gtest-port.cc
+    src/gtest-printers.cc
+    src/gtest-test-part.cc
+    src/gtest-typed-test.cc
+    )
+
+# make the gtest library as a shared library.
+cxx_shared_library(gtest "${cxx_strict}" ${SOURCE_FILES} ${HEADER_FILES})
+
+target_compile_options(gtest INTERFACE "-DGTEST_LINKED_AS_SHARED_LIBRARY=1")
+target_compile_options(gtest PRIVATE "-DGTEST_CREATE_SHARED_LIBRARY=1")
 
 # In Visual Studio 2012 (VC11) _VARIADIC_MAX is by default defined as
 # 5, which is not enough for gtest.  So we ensure that everything that
 # links against gtest defines _VARIADIC_MAX=10
 if(MSVC)
     target_compile_options(gtest PUBLIC "-D_VARIADIC_MAX=10")
-    target_compile_options(gtest_main PUBLIC "-D_VARIADIC_MAX=10")
 else()
     target_compile_options(gtest PRIVATE "-Wno-missing-field-initializers")
-    target_compile_options(gtest_main PRIVATE "-Wno-missing-field-initializers")
 endif()
 
 target_include_directories(gtest PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>")
-target_include_directories(gtest_main PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>")
 target_include_directories(gtest PUBLIC "$<INSTALL_INTERFACE:include>")
-target_include_directories(gtest_main PUBLIC "$<INSTALL_INTERFACE:include>")
 
 include(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework/SofaMacros.cmake)
-sofa_create_package(GTest 2.6.2 "gtest;gtest_main" "")
+sofa_create_package(GTest 2.6.2 "gtest" "")
 
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/gtest
         COMPONENT GTest_headers

@@ -101,6 +101,9 @@ static bool isDirectory(const std::string& path);
 /// @brief Return true if and only if the given file path is absolute.
 static bool isAbsolute(const std::string& path);
 
+/// @brief Return true if and only if the given file path is an existing file.
+static bool isFile(const std::string& path);
+
 /// @brief Replace backslashes with slashes.
 static std::string convertBackSlashesToSlashes(const std::string& path);
 

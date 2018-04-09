@@ -13,8 +13,6 @@ else()
     set(RC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/sofa.rc")
 endif()
 
-find_package(SofaFramework) # to get SOFA_HAVE_GLUT
-
 include(cmake/GeneratePluginConfig.cmake)
 # if MSVC then plugins are located in bin/ instead of lib/ on Mac and Linux
 if(MSVC)
@@ -47,11 +45,6 @@ target_compile_definitions(${PROJECT_NAME} PUBLIC "DEFAULT_CONFIG_PLUGIN_FILENAM
 target_link_libraries(${PROJECT_NAME} SofaComponentAdvanced SofaComponentMisc)
 target_link_libraries(${PROJECT_NAME} SofaSimulationGraph)
 target_link_libraries(${PROJECT_NAME} SofaGuiMain)
-
-
-if(SOFA_HAVE_GLUT)
-	target_compile_definitions(${PROJECT_NAME} PUBLIC "SOFA_HAVE_GLUT_GUI")
-endif()
 
 if(SOFA_BUILD_TESTS)
     find_package(SofaTest QUIET)

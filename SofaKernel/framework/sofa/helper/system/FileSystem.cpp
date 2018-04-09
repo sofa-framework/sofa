@@ -295,6 +295,14 @@ bool FileSystem::isAbsolute(const std::string& path)
                 || path[0] == '/');
 }
 
+bool FileSystem::isFile(const std::string &path)
+{
+    return
+            FileSystem::exists(path) &&
+            !FileSystem::isDirectory(path)
+    ;
+}
+
 std::string FileSystem::convertBackSlashesToSlashes(const std::string& path)
 {
     std::string str = path;
