@@ -43,11 +43,11 @@ public:
 private:
     DataFileName in_filename;
     Coord pmin, pmax;
-    Data<int> in_nx;
-    Data<int> in_ny;
-    Data<int> in_nz;
-    Data<double> in_scale;
-    Data<double> in_sampling;
+    Data<int> in_nx; ///< in_nx
+    Data<int> in_ny; ///< in_ny
+    Data<int> in_nz; ///< in_nz
+    Data<double> in_scale; ///< in_scale
+    Data<double> in_sampling; ///< in_sampling
 
 };
 

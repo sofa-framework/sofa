@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -25,6 +25,7 @@
 #include <sofa/gui/BaseGUI.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/helper/ArgumentParser.h>
+#include <string>
 
 using sofa::helper::ArgumentParser;
 
@@ -52,7 +53,24 @@ public:
     void redraw();
     int closeGUI();
 
-    static void setNumIterations(unsigned int n) {nbIter=n;}
+    static void setNumIterations(const std::string& nbIterInp) 
+    {
+        int inpLen= nbIterInp.length();
+       
+        if (nbIterInp == "infinite")
+        {
+            nbIter = -1;
+        }
+        else if (inpLen)
+        {
+            nbIter = std::stoi(nbIterInp);
+        }
+        else
+        {
+            nbIter = DEFAULT_NUMBER_OF_ITERATIONS;
+        }
+        
+    }
     sofa::simulation::Node* currentSimulation();
 
     /// @}
@@ -64,7 +82,7 @@ public:
     static int RegisterGUIParameters(ArgumentParser* argumentParser);
 
 
-    static const unsigned int DEFAULT_NUMBER_OF_ITERATIONS;
+    static const signed int DEFAULT_NUMBER_OF_ITERATIONS;
     /// @}
 
 protected:
@@ -78,7 +96,8 @@ protected:
 
     sofa::simulation::Node::SPtr groot;
     std::string filename;
-    static unsigned int nbIter;
+    static signed int nbIter;
+    static std::string nbIterInp;
 };
 
 } // namespace gui

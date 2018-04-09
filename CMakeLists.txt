@@ -46,9 +46,9 @@ set(ARCHIVE_OUTPUT_DIRECTORY lib)
 set(RUNTIME_OUTPUT_DIRECTORY bin)
 
 if(WIN32)
-        set(LIBRARY_OUTPUT_DIRECTORY ${RUNTIME_OUTPUT_DIRECTORY})
+    set(LIBRARY_OUTPUT_DIRECTORY ${RUNTIME_OUTPUT_DIRECTORY})
 else()
-        set(LIBRARY_OUTPUT_DIRECTORY ${ARCHIVE_OUTPUT_DIRECTORY})
+    set(LIBRARY_OUTPUT_DIRECTORY ${ARCHIVE_OUTPUT_DIRECTORY})
 endif()
 
 ## Set the output directories globally
@@ -74,7 +74,6 @@ set(SHARE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/share")
 set(EXAMPLES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/examples")
 configure_file(${SOFA_KERNEL_SOURCE_DIR}/etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/sofa.ini")
 
-
 ## RPATH
 if(UNIX)
     # RPATH is a field in ELF binaries that is used as a hint by the system
@@ -94,7 +93,6 @@ if(UNIX)
 endif(UNIX)
 
 include(CompilerOptions)
-
 
 ## Boost (1.54.0 or higher) is now mandatory.
 set(BOOST_MIN_VERSION "1.54.0")
@@ -130,42 +128,6 @@ option(SOFA_USE_MASK "Use mask optimization" OFF)
 ### SOFA_DEV_TOOL
 option(SOFA_WITH_DEVTOOLS "Compile with developement extra features." ON)
 
-### SOFA_BUILD_PERIMETER
-### Sofa using type double or float or both
-set(SOFA_BUILD_COMPONENTSET full CACHE STRING
-"Compile SOFA with which set of components (core/full/deprecated)
-- 'core' for only the core components (only base classes)
-- 'light' for stable only component (a minimal set to make simulations)
- - 'standard' for all non-deprecated components (DEFAULT)
- - 'full' for standard set + deprecated components")
-set_property(CACHE SOFA_BUILD_COMPONENTSET PROPERTY STRINGS core light standard full)
-
-if(${SOFA_BUILD_COMPONENTSET} STREQUAL core)
-    message(STATUS "   Build SOFA with 'core' compenents set")
-    set(SOFA_BUILD_COMPONENTSET_LIGHT 0)
-    set(SOFA_BUILD_COMPONENTSET_STANDARD 0)
-    set(SOFA_BUILD_COMPONENTSET_FULL 0)
-    set(SOFAGUI_QQT 0)
-elseif(${SOFA_BUILD_COMPONENTSET} STREQUAL light)
-    message(STATUS "   Build SOFA with 'light' compenents set")
-    set(SOFA_BUILD_COMPONENTSET_LIGHT 1)
-    set(SOFA_BUILD_COMPONENTSET_STANDARD 0)
-    set(SOFA_BUILD_COMPONENTSET_FULL 0)
-    set(SOFAGUI_QQT 0)
-elseif(${SOFA_BUILD_COMPONENTSET} STREQUAL standard)
-    message(STATUS "   Build SOFA with 'standard' compenents set")
-    set(SOFA_BUILD_COMPONENTSET_LIGHT 1)
-    set(SOFA_BUILD_COMPONENTSET_STANDARD 1)
-    set(SOFA_BUILD_COMPONENTSET_FULL 0)
-elseif(${SOFA_BUILD_COMPONENTSET} STREQUAL full)
-    message(STATUS "   Build SOFA with 'full' compenents set (incuding deprecated components)")
-    set(SOFA_BUILD_COMPONENTSET_LIGHT 1)
-    set(SOFA_BUILD_COMPONENTSET_STANDARD 1)
-    set(SOFA_BUILD_COMPONENTSET_FULL 1)
-else()
-    message(STATUS "   Unrecognize option for components set. Possible ones are: core, light, standard and full")
-endif()
-
 ### Threading
 option(SOFA_WITH_THREADING "Compile sofa with thread-safetiness support (PARTIAL/EXPERIMENTAL)" ON)
 
@@ -185,11 +147,11 @@ option(SOFA_NINJA_BUILD_POOLS "Activate the Ninja build pools feature, to limit 
 
 ### Sofa using type double or float or both
 set(SOFA_FLOATING_POINT_TYPE both CACHE STRING
-"Type used for floating point values in SOFA. It actually determines:
- - what template instanciations will be compiled (via the definition of the
-   SOFA_FLOAT and SOFA_DOUBLE macros)
- - what is the type behind the 'SReal' typedef used throughout SOFA. (If 'both'
-   is selected, SReal defaults to double.)")
+    "Type used for floating point values in SOFA. It actually determines:
+    - what template instanciations will be compiled (via the definition of the
+    SOFA_FLOAT and SOFA_DOUBLE macros)
+    - what is the type behind the 'SReal' typedef used throughout SOFA. (If 'both'
+    is selected, SReal defaults to double.)")
 set_property(CACHE SOFA_FLOATING_POINT_TYPE PROPERTY STRINGS float double both)
 
 if(${SOFA_FLOATING_POINT_TYPE} STREQUAL double)
@@ -217,7 +179,6 @@ endif()
 ### Extlibs
 add_subdirectory(extlibs)
 
-
 ### Main Sofa subdirectories
 
 add_subdirectory(${SOFA_KERNEL_SOURCE_DIR}/SofaFramework)
@@ -241,7 +202,6 @@ option(SOFA_BUILD_SCENECREATOR "Compile the C++ API located in applications/plug
 
 ## Tutorials option
 option(SOFA_BUILD_TUTORIALS "Build (most of) the tutorials available." OFF)
-
 
 # Activate SceneCreator when required
 if(SOFA_BUILD_TESTS OR SOFA_BUILD_TUTORIALS)
@@ -293,6 +253,8 @@ if(NOT "${SOFA_EXTERNAL_DIRECTORIES}" STREQUAL "")
     endforeach()
 endif()
 
+### Deprecated components
+option(SOFA_WITH_DEPRECATED_COMPONENTS "Compile sofa with all deprecated components" ON)
 
 ## Custom
 if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/custom.cmake")
@@ -315,7 +277,6 @@ set(EXAMPLES_DIR "../share/sofa/examples")
 configure_file(${SOFA_KERNEL_SOURCE_DIR}/etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/installedSofa.ini")
 install(FILES "${CMAKE_BINARY_DIR}/etc/installedSofa.ini" DESTINATION etc RENAME sofa.ini COMPONENT applications)
 
-
 option(SOFA_INSTALL_RESOURCES_FILES "Copy resources files (etc/, share/, examples/) when installing" ON)
 ## Install resource files
 if(SOFA_INSTALL_RESOURCES_FILES)
@@ -323,11 +284,10 @@ if(SOFA_INSTALL_RESOURCES_FILES)
     install(DIRECTORY examples/ DESTINATION share/sofa/examples COMPONENT resources)
 endif()
 
-
 #CPack install
-SET(CPACK_PACKAGE_VERSION_MAJOR "17")
-SET(CPACK_PACKAGE_VERSION_MINOR "12")
-SET(CPACK_PACKAGE_VERSION_PATCH "00")
+SET(CPACK_PACKAGE_VERSION_MAJOR "18")
+SET(CPACK_PACKAGE_VERSION_MINOR "06")
+SET(CPACK_PACKAGE_VERSION_PATCH "dev")
 SET(CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
 set(CPACK_PACKAGE_NAME "SOFA v${CPACK_PACKAGE_VERSION}")
 set(CPACK_PACKAGE_FILE_NAME "SOFA_v${CPACK_PACKAGE_VERSION}")

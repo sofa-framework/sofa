@@ -76,7 +76,7 @@ public:
     typedef typename DataTypes::Quat Quaternion;
     typedef TBulletConvexHull<DataTypes> Element;
 
-    sofa::core::objectmodel::Data<SReal> margin;
+    sofa::core::objectmodel::Data<SReal> margin; ///< Margin used for collision detection within bullet
 
     virtual void init();
 
@@ -148,12 +148,12 @@ public:
         return _mstate->read(core::ConstVecCoordId::position())->getValue()[0].getOrientation();
     }
 
-    Data<bool> computeConvexHullDecomposition;
-    Data<bool> drawConvexHullDecomposition;
-    Data<VecCoord> CHPoints;
-    Data<bool> computeNormals;
-    Data<bool> positionDefined;
-    Data<SReal> concavityThreeshold;
+    Data<bool> computeConvexHullDecomposition; ///< compute convex hull decomposition using HACD
+    Data<bool> drawConvexHullDecomposition; ///< draw convex hull decomposition using
+    Data<VecCoord> CHPoints; ///< points defining the convex hull
+    Data<bool> computeNormals; ///< set to false to disable computation of triangles normal
+    Data<bool> positionDefined; ///< set to true if the collision model position is defined in the mechanical object
+    Data<SReal> concavityThreeshold; ///< Threeshold used in the decomposition
 protected:
     void draw_without_decomposition(const core::visual::VisualParams* vparams);
     void draw_decomposition(const core::visual::VisualParams* vparams);

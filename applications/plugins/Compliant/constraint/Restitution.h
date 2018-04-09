@@ -32,9 +32,9 @@ class SOFA_Compliant_API Restitution : public ConstraintValue
     /// flagging which constraint blocks must be activated
     // warning: the constraint can be created before intersection (alarm distance), in that case penetration depth is positive, and no constraint should be applied
     typedef helper::vector<bool> mask_type;
-    Data<mask_type> mask;
+    Data<mask_type> mask; ///< violated constraint
 
-    Data<SReal> restitution;
+    Data<SReal> restitution; ///< restitution coefficient
 
 };
 

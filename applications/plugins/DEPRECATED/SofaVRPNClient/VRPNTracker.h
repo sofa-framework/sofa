@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -66,11 +66,13 @@ public:
 //	void reinit();
 
 private:
-    sofa::core::objectmodel::Data<VecCoord> f_points;
+    sofa::core::objectmodel::Data<VecCoord> f_points; ///< Points from Sensors
 
-    sofa::core::objectmodel::Data<Real> p_dx, p_dy, p_dz;
-    sofa::core::objectmodel::Data<Real> p_scale;
-    sofa::core::objectmodel::Data<bool> p_nullPoint;
+    sofa::core::objectmodel::Data<Real> p_dx; ///< Translation along X axis
+    sofa::core::objectmodel::Data<Real> p_dy; ///< Translation along Y axis
+    sofa::core::objectmodel::Data<Real> p_dz; ///< Translation along Z axis
+    sofa::core::objectmodel::Data<Real> p_scale; ///< Scale (3 axis)
+    sofa::core::objectmodel::Data<bool> p_nullPoint; ///< If not tracked, return a (0, 0, 0) point
 
     std::auto_ptr<vrpn_Tracker_Remote> tkr;
     sofa::helper::RandomGenerator rg;

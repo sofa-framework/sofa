@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -155,10 +155,10 @@ public :
    VecCoord  _initialPoints;	/// the intial positions of the points
    bool updateMatrix;
    bool  _meshSaved ;
-   Data<std::string> f_materialName; /// the name of the material
-   Data<SetParameterArray> f_parameterSet;
-   Data<SetAnisotropyDirectionArray> f_anisotropySet;
-   Data<std::string> f_parameterFileName;
+   Data<std::string> f_materialName; ///< the name of the material
+   Data<SetParameterArray> f_parameterSet; ///< The global parameters specifying the material
+   Data<SetAnisotropyDirectionArray> f_anisotropySet; ///< The global directions of anisotropy of the material
+   Data<std::string> f_parameterFileName; ///< the name of the file describing the material parameters for all tetrahedra
 
    
 public:
@@ -225,9 +225,9 @@ public:
 
 	fem::HyperelasticMaterial<DataTypes> *myMaterial;
 
-        topology::TetrahedronData<tetrahedronRestInfoVector> tetrahedronInfo;
-        //EdgeData<sofa::helper::vector< EdgeInformation> > edgeInfo;
-        topology::EdgeData<edgeInformationVector> edgeInfo;
+        topology::TetrahedronData<tetrahedronRestInfoVector> tetrahedronInfo; ///< Internal tetrahedron data
+        //EdgeData<sofa::helper::vector< EdgeInformation> > edgeInfo; ///< Internal edge data
+        topology::EdgeData<edgeInformationVector> edgeInfo; ///< Internal edge data
 
 
         void testDerivatives();

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -90,33 +90,41 @@ public:
     }
 
     //Inputs
-    sofa::core::objectmodel::Data<VecCoord> f_X0;
-    sofa::core::objectmodel::Data<SeqTriangles> f_triangles;
-    sofa::core::objectmodel::Data<SeqQuads> f_quads;
+    sofa::core::objectmodel::Data<VecCoord> f_X0; ///< Rest position coordinates of the degrees of freedom
+    sofa::core::objectmodel::Data<SeqTriangles> f_triangles; ///< List of triangles
+    sofa::core::objectmodel::Data<SeqQuads> f_quads; ///< List of quads (if no triangles) 
 
     //Outputs
-    sofa::core::objectmodel::Data<VecCoord> f_newX0;
-    sofa::core::objectmodel::Data<SeqTetrahedra> f_tetrahedra;
+    sofa::core::objectmodel::Data<VecCoord> f_newX0; ///< New Rest position coordinates from the tetrahedral generation
+    sofa::core::objectmodel::Data<SeqTetrahedra> f_tetrahedra; ///< List of tetrahedra
 
-    sofa::core::objectmodel::Data<bool> frozen;
+    sofa::core::objectmodel::Data<bool> frozen; ///< true to prohibit recomputations of the mesh
 
     //Parameters
-    sofa::core::objectmodel::Data<double> facetAngle, facetSize, facetApproximation;
-    sofa::core::objectmodel::Data<double> cellRatio, cellSize;
+    sofa::core::objectmodel::Data<double> facetAngle; ///< Lower bound for the angle in degrees of the surface mesh facets
+    sofa::core::objectmodel::Data<double> facetSize; ///< Uniform upper bound for the radius of the surface Delaunay balls
+    sofa::core::objectmodel::Data<double> facetApproximation; ///< Upper bound for the center-center distances of the surface mesh facets
+    sofa::core::objectmodel::Data<double> cellRatio; ///< Upper bound for the radius-edge ratio of the tetrahedra
+    sofa::core::objectmodel::Data<double> cellSize; ///< Uniform upper bound for the circumradii of the tetrahedra in the mesh
 #if CGAL_VERSION_NR >= CGAL_VERSION_NUMBER(3,8,0)
-    sofa::core::objectmodel::Data<double> sharpEdgeAngle;
-    sofa::core::objectmodel::Data<double> sharpEdgeSize;
+    sofa::core::objectmodel::Data<double> sharpEdgeAngle; ///< Threshold angle to detect sharp edges in input surface (activated with CGAL 3.8+ if sharpEdgeSize > 0)
+    sofa::core::objectmodel::Data<double> sharpEdgeSize; ///< Meshing size for sharp feature edges (activated with CGAL 3.8+ if sharpEdgeSize > 0)
 #endif
-    sofa::core::objectmodel::Data<bool> odt, lloyd, perturb, exude;
-    sofa::core::objectmodel::Data<int> odt_max_it, lloyd_max_it;
-    sofa::core::objectmodel::Data<double> perturb_max_time, exude_max_time;
-    sofa::core::objectmodel::Data<int> ordering;
-    sofa::core::objectmodel::Data<bool> constantMeshProcess;
-    sofa::core::objectmodel::Data<unsigned int> meshingSeed;
+    sofa::core::objectmodel::Data<bool> odt; ///< activate odt optimization
+    sofa::core::objectmodel::Data<bool> lloyd; ///< activate lloyd optimization
+    sofa::core::objectmodel::Data<bool> perturb; ///< activate perturb optimization
+    sofa::core::objectmodel::Data<bool> exude; ///< activate exude optimization
+    sofa::core::objectmodel::Data<int> odt_max_it; ///< odt max iteration number
+    sofa::core::objectmodel::Data<int> lloyd_max_it; ///< lloyd max iteration number
+    sofa::core::objectmodel::Data<double> perturb_max_time; ///< perturb maxtime
+    sofa::core::objectmodel::Data<double> exude_max_time; ///< exude max time
+    sofa::core::objectmodel::Data<int> ordering; ///< output points and elements ordering (0 = none, 1 = longest bbox axis)
+    sofa::core::objectmodel::Data<bool> constantMeshProcess; ///< deterministic choice of first point used in meshing process (true = constant output / false = variable output)
+    sofa::core::objectmodel::Data<unsigned int> meshingSeed; ///< seed used when picking first point in meshing process
 
     // Display
-    sofa::core::objectmodel::Data<bool> drawTetras;
-    sofa::core::objectmodel::Data<bool> drawSurface;
+    sofa::core::objectmodel::Data<bool> drawTetras; ///< display generated tetra mesh
+    sofa::core::objectmodel::Data<bool> drawSurface; ///< display input surface mesh
 
     // A modifier creating a triangle with the incremental builder.
     template <class HDS>

@@ -45,7 +45,8 @@ class SerialLauncher(Launcher):
                         logfile.write(astdout)
                         logfile.write("========= STDERR-LOG============\n")
                         logfile.write(astderr) 
-                        
+                        logfile.close()
+
                         results.append({
                                 "directory" : directory,
                                 "scene" : scene,
@@ -75,7 +76,7 @@ class ParallelLauncher(Launcher):
                         
                         begin = time.time()
                         try:
-                                a = Popen(["runSofa", "-g", "-l", "SofaPython", "batch", "-n", str(numiterations), scene], cwd=directory, stdout=PIPE, stderr=PIPE, universal_newlines=True)
+                                a = Popen(["runSofa", "-l", "SofaPython", "-g", "batch", "-n", str(numiterations), scene], cwd=directory, stdout=PIPE, stderr=PIPE, universal_newlines=True)
                         except:
                                 print("Unable to find runSofa, please add the runSofa location to your PATH and restart sofa-launcher.")
                                 sys.exit(-1)
@@ -91,7 +92,8 @@ class ParallelLauncher(Launcher):
                         logfile.write(astdout)
                         logfile.write("========= STDERR-LOG============\n")
                         logfile.write(astderr) 
-                        
+                        logfile.close()
+
                         #logfile.write("========== MATCH-LOG ===========\n")
                         #logfile.write(str(filtering(astdout)))                        
                                                 
@@ -155,8 +157,8 @@ class SSHLauncher(Launcher):
                         logfile.write(astdout)
                         logfile.write("========= STDERR-LOG============\n")
                         logfile.write(astderr) 
-                        
                         logfile.write("========== MATCH-LOG ===========\n")
+                        logfile.close()
                                                 
                         self.pendingtask.task_done()
                         
@@ -203,6 +205,7 @@ def startSofa(parameters, filesandtemplates, launcher):
                         theFile = open(files[i], "w+") 
                         t = Template(template, searchList=param)
                         theFile.write(str(t))
+                        theFile.close()
                         i+=1
                         
                 tasks.append((param["nbIterations"], tempdir, param["FILE0"], tempdir+"/output.log")) 

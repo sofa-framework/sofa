@@ -38,10 +38,10 @@ public:
 
     Data< helper::vector<unsigned> > indices;         ///< indices of the parent points
 
-    Data< InVecCoord > targets;
-    Data< helper::vector<unsigned> > d_targetIndices;
+    Data< InVecCoord > targets; ///< target positions which who computes deltas
+    Data< helper::vector<unsigned> > d_targetIndices; ///< target indices in target positions which who computes deltas
 
-    Data< bool > d_inverted;
+    Data< bool > d_inverted; ///< target-p (rather than p-target)
     Data< SReal > d_showObjectScale; ///< drawing size
     Data< defaulttype::RGBAColor > d_color; ///< drawing color
 

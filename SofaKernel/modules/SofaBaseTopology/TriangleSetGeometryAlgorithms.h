@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -281,13 +281,13 @@ public:
     /// return a pointer to the container of cubature points
     NumericalIntegrationDescriptor<Real,3> &getTriangleNumericalIntegrationDescriptor();
 protected:
-    Data<bool> showTriangleIndices;
-    Data<bool> _draw;
-    Data<sofa::defaulttype::Vec4f> _drawColor;
-    Data<bool> _drawNormals;
-    Data <SReal> _drawNormalLength;
-    Data<bool> p_recomputeTrianglesOrientation;
-    Data<bool> p_flipNormals;
+    Data<bool> showTriangleIndices; ///< Debug : view Triangle indices
+    Data<bool> _draw; ///< if true, draw the triangles in the topology
+    Data<sofa::defaulttype::Vec4f> _drawColor; ///< RGBA code color used to draw edges.
+    Data<bool> _drawNormals; ///< if true, draw the triangles in the topology
+    Data <SReal> _drawNormalLength; ///< Fiber length visualisation.
+    Data<bool> p_recomputeTrianglesOrientation; ///< if true, will recompute triangles orientation according to normals.
+    Data<bool> p_flipNormals; ///< if true, will flip normal of the first triangle used to recompute triangle orientation.
     /// include cubature points
     NumericalIntegrationDescriptor<Real,3> triangleNumericalIntegration;
 };

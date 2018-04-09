@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -81,9 +81,9 @@ public:
 
     virtual unsigned int getFromIndex(unsigned int ind) override;
 protected:
-    Data<bool> flipNormals;
-    Data<bool> noNewTriangles;
-    Data<bool> noInitialTriangles;
+    Data<bool> flipNormals; ///< Flip Normal ? (Inverse point order when creating triangle)
+    Data<bool> noNewTriangles; ///< If true no new triangles are being created
+    Data<bool> noInitialTriangles; ///< If true the list of initial triangles is initially empty. Only additional triangles will be added in the list
 
     std::vector<unsigned int> addedTriangleIndex;
 };

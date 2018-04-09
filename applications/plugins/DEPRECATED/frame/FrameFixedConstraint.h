@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -61,7 +61,7 @@ public:
 public:
     Data<vector<unsigned> > f_index;   ///< Indices of the constrained frames
     Data<vector<VecAllowed > > f_allowed;  ///< Allowed displacements of the constrained frames
-    Data<double> _drawSize;
+    Data<double> _drawSize; ///< 0 -> point based rendering, >0 -> radius of spheres
 
     FrameFixedConstraint();
 

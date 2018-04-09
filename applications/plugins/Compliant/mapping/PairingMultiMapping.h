@@ -43,7 +43,7 @@ public:
 	typedef AssembledMultiMapping<TIn, TOut> base;
 	typedef PairingMultiMapping self;
 
-    Data<SReal> sign;
+    Data<SReal> sign; ///< scalar factor
 
 
     PairingMultiMapping() :

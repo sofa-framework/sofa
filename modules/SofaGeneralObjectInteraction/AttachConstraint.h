@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -78,21 +78,21 @@ protected:
     sofa::core::topology::BaseMeshTopology* topology;
 
 public:
-    SetIndex f_indices1;
-    SetIndex f_indices2;
-    Data<Real> f_radius;
-    Data<bool> f_twoWay;
-    Data<bool> f_freeRotations;
-    Data<bool> f_lastFreeRotation;
-    Data<bool> f_restRotations;
-    Data<defaulttype::Vector3> f_lastPos;
-    Data<defaulttype::Vector3> f_lastDir;
-    Data<bool> f_clamp;
-    Data<Real> f_minDistance;
+    SetIndex f_indices1; ///< Indices of the source points on the first model
+    SetIndex f_indices2; ///< Indices of the fixed points on the second model
+    Data<Real> f_radius; ///< Radius to search corresponding fixed point if no indices are given
+    Data<bool> f_twoWay; ///< true if forces should be projected back from model2 to model1
+    Data<bool> f_freeRotations; ///< true to keep rotations free (only used for Rigid DOFs)
+    Data<bool> f_lastFreeRotation; ///< true to keep rotation of the last attached point free (only used for Rigid DOFs)
+    Data<bool> f_restRotations; ///< true to use rest rotations local offsets (only used for Rigid DOFs)
+    Data<defaulttype::Vector3> f_lastPos; ///< position at which the attach constraint should become inactive
+    Data<defaulttype::Vector3> f_lastDir; ///< direction from lastPos at which the attach coustraint should become inactive
+    Data<bool> f_clamp; ///< true to clamp particles at lastPos instead of freeing them.
+    Data<Real> f_minDistance; ///< the constraint become inactive if the distance between the points attached is bigger than minDistance.
     Data< Real > d_positionFactor;      ///< IN: Factor applied to projection of position
     Data< Real > d_velocityFactor;      ///< IN: Factor applied to projection of velocity
     Data< Real > d_responseFactor;      ///< IN: Factor applied to projection of force/acceleration
-    Data< helper::vector<Real> > d_constraintFactor; /// Constraint factor per pair of points constrained. 0 -> the constraint is released. 1 -> the constraint is fully constrained
+    Data< helper::vector<Real> > d_constraintFactor; ///< Constraint factor per pair of points constrained. 0 -> the constraint is released. 1 -> the constraint is fully constrained
 
     helper::vector<bool> activeFlags;
     helper::vector<bool> constraintReleased;

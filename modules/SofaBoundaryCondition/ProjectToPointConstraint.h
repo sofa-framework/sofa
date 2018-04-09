@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -85,7 +85,7 @@ public:
     SetIndex f_indices;    ///< the indices of the points to project to the target
     Data<Coord> f_point;    ///< the target of the projection
     Data<bool> f_fixAll;    ///< to project all the points, rather than those listed in f_indices
-    Data<SReal> f_drawSize;
+    Data<SReal> f_drawSize; ///< 0 -> point based rendering, >0 -> radius of spheres
 
 
 protected:

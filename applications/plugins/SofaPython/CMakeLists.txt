@@ -44,6 +44,7 @@ set(HEADER_FILES
     Binding_OBJExporter.h
     Binding_STLExporter.h
     Binding_PythonScriptController.h
+    Binding_PythonScriptDataEngine.h
     Binding_RegularGridTopology.h
     Binding_RigidMapping.h
     Binding_SofaModule.h
@@ -59,12 +60,14 @@ set(HEADER_FILES
     PythonMainScriptController.h
     PythonScriptController.h
     PythonScriptControllerHelper.h
+    PythonScriptDataEngine.h
     PythonScriptEvent.h
     PythonScriptFunction.h
     PythonToSofa.inl
     PythonVisitor.h
     SceneLoaderPY.h
     ScriptController.h
+    ScriptDataEngine.h
     ScriptEvent.h
     ScriptFunction.h
 )
@@ -102,6 +105,7 @@ set(SOURCE_FILES
     Binding_OBJExporter.cpp
     Binding_STLExporter.cpp
     Binding_PythonScriptController.cpp
+    Binding_PythonScriptDataEngine.cpp
     Binding_RegularGridTopology.cpp
     Binding_RigidMapping.cpp
     Binding_SofaModule.cpp
@@ -115,12 +119,14 @@ set(SOURCE_FILES
     PythonMacros.cpp
     PythonMainScriptController.cpp
     PythonScriptController.cpp
+    PythonScriptDataEngine.cpp
     PythonScriptControllerHelper.cpp
     PythonScriptEvent.cpp
     PythonScriptFunction.cpp
     PythonVisitor.cpp
     SceneLoaderPY.cpp
     ScriptController.cpp
+    ScriptDataEngine.cpp
     ScriptEvent.cpp
     ScriptFunction.cpp
     initSofaPython.cpp

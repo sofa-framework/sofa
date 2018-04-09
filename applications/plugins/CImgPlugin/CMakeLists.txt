@@ -7,90 +7,96 @@ set(${PROJECT_NAME}_MINOR_VERSION 1)
 set(${PROJECT_NAME}_VERSION ${${PROJECT_NAME}_MAJOR_VERSION}.${${PROJECT_NAME}_MINOR_VERSION})
 
 set(HEADER_FILES
-  ImageCImg.h
-  CImgPlugin.h
-  SOFACImg.h
-)
+    ImageCImg.h
+    CImgPlugin.h
+    SOFACImg.h
+    )
 
 set(SOURCE_FILES
-  ImageCImg.cpp
-  initCImgPlugin.cpp
-)
+    ImageCImg.cpp
+    initCImgPlugin.cpp
+    )
 
 add_subdirectory(extlibs/CImg extlibs/CImg)
 
 find_package(CImg REQUIRED)
 find_package(SofaFramework REQUIRED)
 
-find_package(JPEG)
-find_package(TIFF)
-find_package(PNG)
+find_package(JPEG QUIET)
+find_package(TIFF QUIET)
+find_package(PNG QUIET)
 
 ### Configure Paths according to detected packages
 if(TIFF_FOUND)
-  message(STATUS "CImgPlugin: Enable TIFF Image Format")
-  get_filename_component(TIFF_LIB_DIRS ${TIFF_LIBRARIES} PATH)
-  SET(CIMG_CFLAGS "${CIMG_CFLAGS} ${CIMG_TIFF_CCFLAGS} -DCIMGPLUGIN_HAVE_TIFF -Dcimg_use_tiff")
-  link_directories(${TIFF_LIB_DIRS})
-  include_directories(${TIFF_INCLUDE_DIR})
-  SET(EXTERNAL_LIBS ${EXTERNAL_LIBS} ${TIFF_LIBRARIES})
+    message(STATUS "CImgPlugin: TIFF Image Format enabled")
+    get_filename_component(TIFF_LIB_DIRS ${TIFF_LIBRARIES} PATH)
+    list(APPEND CIMG_CFLAGS ${CIMG_TIFF_CCFLAGS} -DCIMGPLUGIN_HAVE_TIFF -Dcimg_use_tiff)
+    link_directories(${TIFF_LIB_DIRS})
+    include_directories(${TIFF_INCLUDE_DIR})
+    SET(EXTERNAL_LIBS ${EXTERNAL_LIBS} ${TIFF_LIBRARIES})
   if(WIN32)
       sofa_copy_libraries_from_targets(TIFF::TIFF) # Windows dll -> bin
   endif()
   sofa_install_libraries_from_targets(TIFF::TIFF)
 else()
-  message(STATUS "CImgPlugin: Did not find TIFF library")
+    message(STATUS "CImgPlugin: TIFF Image Format disabled")
 endif()
 
 if(JPEG_FOUND)
-  message(STATUS "CImgPlugin: Enable JPEG Image Format")
-  get_filename_component(JPEG_LIB_DIRS ${JPEG_LIBRARIES} PATH)
-  SET(CIMG_CFLAGS "${CIMG_CFLAGS} ${CIMG_JPEG_CCFLAGS} -DCIMGPLUGIN_HAVE_JPEG -Dcimg_use_jpeg")
-  if(WIN32)
-      # prevent INT32 redefinition on Windows (see jmorecfg.h)
-      SET(CIMG_CFLAGS "${CIMG_CFLAGS} -DXMD_H")
-  endif()
-  link_directories(${JPEG_LIB_DIRS})
-  include_directories(${JPEG_INCLUDE_DIR})
-  SET(EXTERNAL_LIBS ${EXTERNAL_LIBS} ${JPEG_LIBRARIES})
+    message(STATUS "CImgPlugin: JPEG Image Format enabled")
+    get_filename_component(JPEG_LIB_DIRS ${JPEG_LIBRARIES} PATH)
+    list(APPEND CIMG_CFLAGS ${CIMG_JPEG_CCFLAGS} -DCIMGPLUGIN_HAVE_JPEG -Dcimg_use_jpeg)
+    if(WIN32)
+        # prevent INT32 redefinition on Windows (see jmorecfg.h)
+        SET(CIMG_CFLAGS "${CIMG_CFLAGS} -DXMD_H")
+    endif()
+    link_directories(${JPEG_LIB_DIRS})
+    include_directories(${JPEG_INCLUDE_DIR})
+    SET(EXTERNAL_LIBS ${EXTERNAL_LIBS} ${JPEG_LIBRARIES})
   if(WIN32)
       sofa_copy_libraries(${JPEG_LIBRARIES}) # Windows dll -> bin
   endif()
   sofa_install_libraries(${JPEG_LIBRARIES})
 else()
-  message(STATUS "CImgPlugin: Did not find JPEG library")
+    message(STATUS "CImgPlugin: JPEG Image Format disabled")
 endif()
 
 if (ZLIB_FOUND)
-  SET(CIMG_CFLAGS "${CIMG_CFLAGS} ${CIMG_ZLIB_CCFLAGS}")
-  link_directories(${ZLIB_LIB_DIRS})
-  include_directories(${ZLIB_INCLUDE_DIR})
-  SET(EXTERNAL_LIBS ${EXTERNAL_LIBS} ${ZLIB_LIBRARIES})
+    list(APPEND CIMG_CFLAGS ${CIMG_ZLIB_CCFLAGS})
+    link_directories(${ZLIB_LIB_DIRS})
+    include_directories(${ZLIB_INCLUDE_DIR})
+    SET(EXTERNAL_LIBS ${EXTERNAL_LIBS} ${ZLIB_LIBRARIES})
 
-  # PNG requires ZLIB
-  if(PNG_FOUND)
-    message(STATUS "CImgPlugin: Enable PNG Image Format")
-    SET(CIMG_CFLAGS "${CIMG_CFLAGS} ${CIMG_PNG_CCFLAGS} -DCIMGPLUGIN_HAVE_PNG -Dcimg_use_png")
-    link_directories(${PNG_LIB_DIRS})
-    include_directories(${PNG_INCLUDE_DIR} )
-    SET( EXTERNAL_LIBS ${EXTERNAL_LIBS} ${PNG_LIBRARIES} )
+    # PNG requires ZLIB
+    if(PNG_FOUND)
+        message(STATUS "CImgPlugin: PNG Image Format enabled")
+        list(APPEND CIMG_CFLAGS ${CIMG_PNG_CCFLAGS} -DCIMGPLUGIN_HAVE_PNG -Dcimg_use_png)
+    if(UNIX)
+        # Prevent pngconf error (see https://bugs.launchpad.net/ubuntu/+source/libpng/+bug/218409)
+        list(APPEND CIMG_CFLAGS -DPNG_SKIP_SETJMP_CHECK)
+    endif()
+        link_directories(${PNG_LIB_DIRS})
+        include_directories(${PNG_INCLUDE_DIR} )
+        SET( EXTERNAL_LIBS ${EXTERNAL_LIBS} ${PNG_LIBRARIES} )
     if(WIN32)
         sofa_copy_libraries_from_targets(PNG::PNG) # Windows dll -> bin
     endif()
     sofa_install_libraries_from_targets(PNG::PNG)
-  else()
-      message(STATUS "CImgPlugin: Did not find PNG library")
-  endif()
+    else()
+        message(STATUS "CImgPlugin: PNG Image Format disabled")
+    endif()
 else()
-    message(STATUS "CImgPlugin: Did not find zlib library (required for PNG Image Format)")
+    message(STATUS "CImgPlugin: Did not find ZLIB library (required for PNG Image Format)")
 endif()
 
 #Remove CImg sys calls
-SET(CIMG_CFLAGS "${CIMG_CFLAGS} -Dcimg_no_system_calls")
+list(APPEND CIMG_CFLAGS -Dcimg_no_system_calls)
+
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "${CIMG_CFLAGS} -DSOFA_BUILD_CIMGPLUGIN")
+target_compile_options(${PROJECT_NAME} PUBLIC ${CIMG_CFLAGS})
+target_compile_options(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_CIMGPLUGIN")
 target_link_libraries(${PROJECT_NAME} SofaCore ${EXTERNAL_LIBS})
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>/include")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")

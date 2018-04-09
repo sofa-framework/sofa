@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -122,15 +122,15 @@ public:
 
     Data< VecCoord > _initialPoints; ///< the intial positions of the points
 
-    Data<Real> _poissonRatio;
-    Data<VecReal > _youngModulus;
-    Data<VecReal> _localStiffnessFactor;
+    Data<Real> _poissonRatio; ///< FEM Poisson Ratio [0,0.5[
+    Data<VecReal > _youngModulus; ///< FEM Young Modulus
+    Data<VecReal> _localStiffnessFactor; ///< Allow specification of different stiffness per element. If there are N element and M values are specified, the youngModulus factor for element i would be localStiffnessFactor[i*M/N]
 
 
-    Data< bool > drawHeterogeneousTetra;
-    Data< bool > drawAsEdges;
+    Data< bool > drawHeterogeneousTetra; ///< Draw Heterogeneous Tetra in different color
+    Data< bool > drawAsEdges; ///< Draw as edges instead of tetrahedra
 
-    Data< bool > _verbose;
+    Data< bool > _verbose; ///< Print debug stuff
 
     Real minYoung;
     Real maxYoung;

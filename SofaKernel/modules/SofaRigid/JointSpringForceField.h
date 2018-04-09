@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -377,16 +377,16 @@ public:
 
     /// the list of the springs
     Data<sofa::helper::vector<Spring> > springs;
-    sofa::core::objectmodel::DataFileName f_outfilename;
-    sofa::core::objectmodel::DataFileName f_infilename;
-    Data < Real > f_period;
-    Data<bool> f_reinit;
+    sofa::core::objectmodel::DataFileName f_outfilename; ///< output file name
+    sofa::core::objectmodel::DataFileName f_infilename; ///< input file containing constant joint force
+    Data < Real > f_period; ///< period between outputs
+    Data<bool> f_reinit; ///< flag enabling reinitialization of the output file at each timestep
     Real lastTime;
 
     /// bool to allow the display of the 2 parts of springs torsions
     Data<bool> showLawfulTorsion;
-    Data<bool> showExtraTorsion;
-    Data<Real> showFactorSize;
+    Data<bool> showExtraTorsion; ///< display the illicit part of the joint rotation
+    Data<Real> showFactorSize; ///< modify the size of the debug information of a given factor
 
     virtual void updateForceMask() override;
 };

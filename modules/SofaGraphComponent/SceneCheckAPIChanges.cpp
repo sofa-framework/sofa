@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -29,11 +29,9 @@ using sofa::core::objectmodel::Base ;
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/helper/system/FileRepository.h>
 
-#include <sofa/helper/deprecatedcomponents.h>
-using sofa::helper::deprecatedcomponents::components ;
-using sofa::helper::deprecatedcomponents::messages ;
-using sofa::helper::deprecatedcomponents::indexName ;
-using sofa::helper::deprecatedcomponents::indexMessage ;
+#include <sofa/helper/ComponentChange.h>
+using sofa::helper::lifecycle::ComponentChange;
+using sofa::helper::lifecycle::deprecatedComponents;
 
 
 
@@ -118,27 +116,9 @@ void SceneCheckAPIChange::installDefaultChangeSets()
     }) ;
 
     addHookInChangeSet("17.06", [](Base* o){
-        if( components.find( o->getClassName() ) != components.end() )
+        if( deprecatedComponents.find( o->getClassName() ) != deprecatedComponents.end() )
         {
-            auto& msg = components[o->getClassName()] ;
-            std::string str = msg[indexName];
-
-            /// Replace the string by the default one.
-            if( messages.find( str ) != messages.end() ){
-                str = messages[str] ;
-            }
-
-            if(msg.size() >= indexMessage )
-            {
-                msg_warning(o) << o->getClassName()
-                                   << str ;
-            }
-            else {
-                msg_warning(o) << o->getClassName()
-                               << str
-                               << msg[indexMessage] ;
-
-            }
+            msg_deprecated(o) << deprecatedComponents.at(o->getClassName()).getMessage();
         }
     }) ;
 }

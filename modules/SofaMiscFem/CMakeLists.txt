@@ -5,89 +5,66 @@ project(SofaMiscFem)
 find_package(Newmat)
 set(SOFA_HAVE_NEWMAT ${Newmat_FOUND})
 
-message(STATUS "SofaMiscFem:")
-################################ COMPONENTS HERE ARE THE NG-SET ####################################
 set(HEADER_FILES
     config.h
     initMiscFEM.h
-)
+    )
 
 set(SOURCE_FILES
     initMiscFEM.cpp
-)
+    )
 
-############################## COMPONENTS HERE ARE THE LIGHT-SET ###################################
-if(SOFA_BUILD_COMPONENTSET_LIGHT)
+list(APPEND HEADER_FILES
+    BaseMaterial.h
+    BoyceAndArruda.h
+    Costa.h
+    FastTetrahedralCorotationalForceField.h
+    FastTetrahedralCorotationalForceField.inl
+    HyperelasticMaterial.h
+    MooneyRivlin.h
+    NeoHookean.h
+    Ogden.h
+    STVenantKirchhoff.h
+    StandardTetrahedralFEMForceField.h
+    StandardTetrahedralFEMForceField.inl
+    TetrahedralTensorMassForceField.h
+    TetrahedralTensorMassForceField.inl
+    VerondaWestman.h
+
+    TetrahedronHyperelasticityFEMForceField.h
+    TetrahedronHyperelasticityFEMForceField.inl
+    TriangleFEMForceField.h
+    TriangleFEMForceField.inl
+    )
+list(APPEND SOURCE_FILES
+    FastTetrahedralCorotationalForceField.cpp
+    StandardTetrahedralFEMForceField.cpp
+    TetrahedralTensorMassForceField.cpp
+
+    TetrahedronHyperelasticityFEMForceField.cpp
+    TriangleFEMForceField.cpp
+    )
+
+if(SOFA_HAVE_NEWMAT)
     list(APPEND HEADER_FILES
-
+        PlasticMaterial.h
+        TriangularAnisotropicFEMForceField.h
+        TriangularAnisotropicFEMForceField.inl
+        TriangularFEMForceField.h
+        TriangularFEMForceField.inl
         )
     list(APPEND SOURCE_FILES
-
+        PlasticMaterial.cpp
+        TriangularAnisotropicFEMForceField.cpp
+        TriangularFEMForceField.cpp
         )
 endif()
-
-############################## COMPONENTS HERE ARE THE STANDARD-SET ################################
-if(SOFA_BUILD_COMPONENTSET_STANDARD)
-    list(APPEND HEADER_FILES
-        BaseMaterial.h
-        BoyceAndArruda.h
-        Costa.h
-        FastTetrahedralCorotationalForceField.h
-        FastTetrahedralCorotationalForceField.inl
-        HyperelasticMaterial.h
-        MooneyRivlin.h
-        NeoHookean.h
-        Ogden.h
-        STVenantKirchhoff.h
-        StandardTetrahedralFEMForceField.h
-        StandardTetrahedralFEMForceField.inl
-        TetrahedralTensorMassForceField.h
-        TetrahedralTensorMassForceField.inl
-        VerondaWestman.h
-
-        TetrahedronHyperelasticityFEMForceField.h
-        TetrahedronHyperelasticityFEMForceField.inl
-        TriangleFEMForceField.h
-        TriangleFEMForceField.inl
-        )
-    list(APPEND SOURCE_FILES
-        FastTetrahedralCorotationalForceField.cpp
-        StandardTetrahedralFEMForceField.cpp
-        TetrahedralTensorMassForceField.cpp
-
-        TetrahedronHyperelasticityFEMForceField.cpp
-        TriangleFEMForceField.cpp
-        )
-
-
-    if(SOFA_HAVE_NEWMAT)
-        list(APPEND HEADER_FILES
-            PlasticMaterial.h
-            TriangularAnisotropicFEMForceField.h
-            TriangularAnisotropicFEMForceField.inl
-            TriangularFEMForceField.h
-            TriangularFEMForceField.inl
-            )
-        list(APPEND SOURCE_FILES
-            PlasticMaterial.cpp
-            TriangularAnisotropicFEMForceField.cpp
-            TriangularFEMForceField.cpp
-            )
-    endif()
-
-endif()
-
-############################### COMPONENTS HERE ARE DEPRECATED ####################################
-if(SOFA_BUILD_COMPONENTSET_FULL)
-
-endif()
-
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimpleFem)
 
 if(NOT SOFA_NO_OPENGL)
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaOpenglVisual)
+    target_link_libraries(${PROJECT_NAME} PUBLIC SofaOpenglVisual)
 endif()
 
 if(SOFA_HAVE_NEWMAT)

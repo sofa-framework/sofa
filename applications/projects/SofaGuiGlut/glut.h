@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,11 +19,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CONFIG_BUILD_OPTION_COMPONENTSET_H
-#define SOFA_CONFIG_BUILD_OPTION_COMPONENTSET_H
+#ifndef SOFA_HELPER_SYSTEM_GLUT_H
+#define SOFA_HELPER_SYSTEM_GLUT_H
 
-#define SOFA_BUILD_COMPONENTSET_LIGHT ${SOFA_BUILD_COMPONENTSET_LIGHT_}
-#define SOFA_BUILD_COMPONENTSET_STANDARD ${SOFA_BUILD_COMPONENTSET_STANDARD_}
-#define SOFA_BUILD_COMPONENTSET_FULL ${SOFA_BUILD_COMPONENTSET_FULL_}
+#ifndef SOFA_NO_OPENGL
 
+#include <sofa/helper/system/gl.h>
+#if defined (__APPLE__)
+#include <GLUT/glut.h>
+#else
+// FIX compilation error with some glut headers combined with GLEW
+#ifndef GLAPIENTRY
+#define GLAPIENTRY
 #endif
+#ifndef PS3
+#include <GL/glut.h>
+#endif
+#endif
+#endif
+
+#endif /* SOFA_NO_OPENGL */
