@@ -1651,8 +1651,10 @@ void MultiBeamForceField<DataTypes>::updateIncrements(tangentStiffnessMatrix &ta
 template< class DataTypes>
 bool MultiBeamForceField<DataTypes>::goInPlasticDeformation(const VoigtTensor2 &stressTensor)
 {
+    double threshold = 1e-5; //TO DO: choose adapted threshold
+
     double yield = vonMisesYield(stressTensor, _UTS);
-    return yield > 0;
+    return yield > threshold;
 }
 
 
@@ -1695,7 +1697,7 @@ Eigen::Matrix<double, 6, 1> MultiBeamForceField<DataTypes>::vonMisesGradient(con
     VoigtTensor2 res = VoigtTensor2::Zero();
 
     if (stressTensor.isZero())
-        return res;
+        return res; //TO DO: is that correct ?
 
     double sigmaX = stressTensor[0];
     double sigmaY = stressTensor[1];
@@ -1725,7 +1727,7 @@ Eigen::Matrix<double, 6, 6> MultiBeamForceField<DataTypes>::vonMisesHessian(cons
     VoigtTensor4 res = VoigtTensor4::Zero();
 
     if (stressTensor.isZero())
-        return res;
+        return res; //TO DO: is that correct ?
 
     //Order 1 terms
     double sigmaX = stressTensor[0];
@@ -2159,6 +2161,13 @@ void MultiBeamForceField<DataTypes>::accumulateNonLinearForce(VecDeriv& f,
         {
             isNewPlastic = goInPlasticDeformation(newStressPoint);
             isPlasticPoint[gaussPointIt] = isNewPlastic;
+            if (isNewPlastic)
+            {
+                //The newly computed elastic stress has to be corrected
+                computeStressIncrement(i, initialStressPoint, stressIncrement,
+                                       strainIncrement, lambdaIncrement, true);
+                newStressPoint = initialStressPoint + stressIncrement;
+            }
             inPlasticDeformation = inPlasticDeformation || isNewPlastic;
         }
         else
@@ -2326,7 +2335,7 @@ void MultiBeamForceField<DataTypes>::updateTangentStiffness(int i,
     helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
     StiffnessMatrix& Kt_loc = bd[i]._Kt_loc;
     const Eigen::Matrix<double, 6, 6>& C = bd[i]._materialBehaviour;
-        helper::fixed_array<bool, 27>& isPlasticPoint = bd[i]._isPlasticPoint;
+    helper::fixed_array<bool, 27>& isPlasticPoint = bd[i]._isPlasticPoint;
 
     // Reduced integration
     typedef std::function<void(double, double, double, double, double, double)> LambdaType;
@@ -2359,7 +2368,7 @@ void MultiBeamForceField<DataTypes>::updateTangentStiffness(int i,
         VMgradient = vonMisesGradient(currentStressPoint, _UTS);
 
         if (VMgradient.isZero() || !isPlasticPoint[gaussPointIterator])
-            Cep = C;
+            Cep = C; //TO DO: is that correct ?
         else
         {
             Cgrad = C*VMgradient;
