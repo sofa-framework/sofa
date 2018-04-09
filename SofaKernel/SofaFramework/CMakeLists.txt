@@ -156,7 +156,6 @@ if(SOFA_HAVE_BOOST_SYSTEM
     sofa_create_target(BoostProgramOptions SofaFramework "${Boost_PROGRAM_OPTIONS_LIBRARY}" "${Boost_INCLUDE_DIRS}")
 
     list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostSystem_Target})
-    list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostLocale_Target})
     list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostFileSystem_Target})
     list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostLocale_Target})
     list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostProgramOptions_Target})
