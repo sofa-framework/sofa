@@ -31,16 +31,20 @@ setSofaOption(SOFA_USE_MASK OFF)
 setSofaOption(SOFA_BUILD_TESTS OFF)
 setSofaOption(SOFA_BUILD_TUTORIALS OFF)
 
+# Set all plugins OFF
+get_cmake_property(_variableNames VARIABLES)
+list (SORT _variableNames)
+foreach (_variableName ${_variableNames})
+    if(_variableName MATCHES "^PLUGIN_")
+        setSofaOption(${_variableName} OFF)
+    endif()
+endforeach()
+
+# Set some plugins ON
 setSofaOption(PLUGIN_SOFAALLCOMMONCOMPONENTS ON)
 setSofaOption(PLUGIN_CIMGPLUGIN ON)
 setSofaOption(PLUGIN_SOFAPYTHON ON)
 setSofaOption(PLUGIN_SOFAMISCCOLLISION ON)
-setSofaOption(PLUGIN_SOFAEULERIANFLUID OFF)
-setSofaOption(PLUGIN_SOFASPHFLUID OFF)
-setSofaOption(PLUGIN_SOFADISTANCEGRID OFF)
-setSofaOption(PLUGIN_SOFAIMPLICITFIELD OFF)
-
-setSofaOption(PLUGIN_PSL OFF)
 
 # Copy resources files (etc/, share/, examples/) when installing 
 setSofaOption(SOFA_INSTALL_RESOURCES_FILES ON)
