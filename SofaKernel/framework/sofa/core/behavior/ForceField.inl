@@ -54,6 +54,9 @@ void ForceField<DataTypes>::init()
 
     if (!mstate.get())
         mstate.set(dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState()));
+
+    if(!mstate.get())
+        msg_error() << "Missing mechanical state, this force field will not work";
 }
 
 
