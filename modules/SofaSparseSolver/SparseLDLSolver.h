@@ -73,14 +73,17 @@ protected :
 
     FullMatrix<Real> Jminv,Jdense;
     sofa::component::linearsolver::CompressedRowSparseMatrix<Real> Mfiltered;
-//    helper::vector<Real> line,res;
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_LINEARSOLVER_SPARSELDLSOLVER_CPP)
+#ifdef SOFA_WITH_DOUBLE
 extern template class SOFA_SPARSE_SOLVER_API SparseLDLSolver< CompressedRowSparseMatrix< double>,FullVector<double> >;
 extern template class SOFA_SPARSE_SOLVER_API SparseLDLSolver< CompressedRowSparseMatrix< defaulttype::Mat<3,3,double> >,FullVector<double> >;
+#endif
+#ifdef SOFA_WITH_FLOAT
 extern template class SOFA_SPARSE_SOLVER_API SparseLDLSolver< CompressedRowSparseMatrix< float>,FullVector<float> >;
 extern template class SOFA_SPARSE_SOLVER_API SparseLDLSolver< CompressedRowSparseMatrix< defaulttype::Mat<3,3,float> >,FullVector<float> >;
+#endif
 #endif
 
 
