@@ -34,11 +34,16 @@
 
 #define DYNAMIC_CONE_ANGLE_COMPUTATION
 
-template std::vector<sofa::core::collision::BaseIntersectorCreator<sofa::component::collision::MinProximityIntersection>* >::vector<sofa::core::collision::BaseIntersectorCreator<sofa::component::collision::MinProximityIntersection>* >() noexcept;
-template std::vector<sofa::core::collision::BaseIntersectorCreator<sofa::component::collision::MinProximityIntersection>* >& std::vector<sofa::core::collision::BaseIntersectorCreator<sofa::component::collision::MinProximityIntersection>* >::operator=(std::vector<sofa::core::collision::BaseIntersectorCreator<sofa::component::collision::MinProximityIntersection>* >&&) noexcept;
-
 namespace sofa
 {
+
+namespace core
+{
+	namespace collision
+    {
+        template class SOFA_BASE_COLLISION_API IntersectorFactory<component::collision::MinProximityIntersection>;
+    }
+}
 
 namespace component
 {
@@ -99,14 +104,6 @@ void MinProximityIntersection::draw(const core::visual::VisualParams* vparams)
 } // namespace collision
 
 } // namespace component
-
-namespace core
-{
-namespace collision
-{
-template class SOFA_BASE_COLLISION_API IntersectorFactory<component::collision::MinProximityIntersection>;
-}
-}
 
 } // namespace sofa
 

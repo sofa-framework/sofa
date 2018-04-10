@@ -32,11 +32,16 @@
 /// To emit extra debug message set this to true.
 #define EMIT_EXTRA_DEBUG_MESSAGE false
 
-template std::vector<sofa::core::collision::BaseIntersectorCreator<sofa::component::collision::LocalMinDistance>* >::vector<sofa::core::collision::BaseIntersectorCreator<sofa::component::collision::LocalMinDistance>* >() noexcept;
-template std::vector<sofa::core::collision::BaseIntersectorCreator<sofa::component::collision::LocalMinDistance>* >& std::vector<sofa::core::collision::BaseIntersectorCreator<sofa::component::collision::LocalMinDistance>* >::operator=(std::vector<sofa::core::collision::BaseIntersectorCreator<sofa::component::collision::LocalMinDistance>* >&&) noexcept;
-
 namespace sofa
 {
+
+namespace core
+{
+    namespace collision
+    {
+        template class SOFA_CONSTRAINT_API IntersectorFactory<component::collision::LocalMinDistance>;
+    }
+}
 
 namespace component
 {
@@ -1483,14 +1488,6 @@ void LocalMinDistance::draw(const core::visual::VisualParams* vparams)
 } // namespace collision
 
 } // namespace component
-
-namespace core
-{
-namespace collision
-{
-template class SOFA_CONSTRAINT_API IntersectorFactory<component::collision::LocalMinDistance>;
-}
-}
 
 } // namespace sofa
 

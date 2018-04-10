@@ -28,14 +28,14 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/Factory.inl>
 
-template std::multimap<std::string, sofa::helper::BaseCreator<sofa::component::collision::ComponentMouseInteraction, sofa::core::objectmodel::BaseContext*>* >& 
-std::multimap<std::string, sofa::helper::BaseCreator<sofa::component::collision::ComponentMouseInteraction, sofa::core::objectmodel::BaseContext*>* >::operator=(
-	std::multimap<std::string, sofa::helper::BaseCreator<sofa::component::collision::ComponentMouseInteraction, sofa::core::objectmodel::BaseContext*>* >&&) noexcept;
-
 using namespace sofa::simulation;
 
 namespace sofa
 {
+    namespace helper
+    {
+        template class SOFA_USER_INTERACTION_API Factory<std::string, component::collision::ComponentMouseInteraction, core::objectmodel::BaseContext*>;
+    }
 
 namespace component
 {
@@ -113,9 +113,7 @@ helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory, TCo
 #endif
 
 }
+
 }
-namespace helper
-{
-template class SOFA_USER_INTERACTION_API Factory<std::string, component::collision::ComponentMouseInteraction, core::objectmodel::BaseContext*>;
-}
+
 }

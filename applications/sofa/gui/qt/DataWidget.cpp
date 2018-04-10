@@ -31,12 +31,6 @@
 #define SIZE_TEXT     60
 
 
-template std::multimap<std::string, sofa::helper::BaseCreator<sofa::gui::qt::DataWidget, sofa::gui::qt::DataWidget::CreatorArgument, sofa::gui::qt::DataWidget*>*>&
-std::multimap<std::string, sofa::helper::BaseCreator<sofa::gui::qt::DataWidget, sofa::gui::qt::DataWidget::CreatorArgument, sofa::gui::qt::DataWidget*>*>::operator=(
-    std::multimap<std::string, sofa::helper::BaseCreator<sofa::gui::qt::DataWidget, sofa::gui::qt::DataWidget::CreatorArgument, sofa::gui::qt::DataWidget*>*>&&) noexcept;
-
-
-
 namespace sofa
 {
 namespace helper
@@ -165,6 +159,22 @@ DataWidget::setWidgetDirty(bool b)
     dirty = b;
     Q_EMIT WidgetDirty(b);
 }
+
+typedef sofa::helper::Factory<std::string, DataWidget, DataWidget::CreatorArgument> DataWidgetFactory;
+
+DataWidget *DataWidget::CreateDataWidget(const DataWidget::CreatorArgument &dwarg)
+{
+    DataWidget *datawidget_ = 0;
+    const std::string &widgetName=dwarg.data->getWidget();
+    if (widgetName.empty())
+        datawidget_ = DataWidgetFactory::CreateAnyObject(dwarg);
+    else
+        datawidget_ = DataWidgetFactory::CreateObject(widgetName, dwarg);
+
+    return datawidget_;
+}
+
+
 /*QDisplayDataInfoWidget definitions */
 
 QDisplayDataInfoWidget::QDisplayDataInfoWidget(QWidget* parent, const std::string& helper,

@@ -29,11 +29,17 @@
 #include <iostream>
 #include <algorithm>
 
-template std::vector<sofa::core::collision::BaseIntersectorCreator<sofa::component::collision::DiscreteIntersection>* >::vector<sofa::core::collision::BaseIntersectorCreator<sofa::component::collision::DiscreteIntersection>* >() noexcept;
-template std::vector<sofa::core::collision::BaseIntersectorCreator<sofa::component::collision::DiscreteIntersection>* >& std::vector<sofa::core::collision::BaseIntersectorCreator<sofa::component::collision::DiscreteIntersection>* >::operator=(std::vector<sofa::core::collision::BaseIntersectorCreator<sofa::component::collision::DiscreteIntersection>* >&&) noexcept;
-
 namespace sofa
 {
+
+namespace core
+{
+    namespace collision
+    {
+        template class SOFA_BASE_COLLISION_API IntersectorFactory<component::collision::DiscreteIntersection>;
+    }
+}
+
 
 namespace component
 {
@@ -75,7 +81,7 @@ DiscreteIntersection::DiscreteIntersection()
     intersectors.add<RigidCapsuleModel,OBBModel,DiscreteIntersection>(this);
     intersectors.add<RigidCapsuleModel,RigidSphereModel,DiscreteIntersection>(this);
 
-    IntersectorFactory::getInstance()->addIntersectors(this);
+	IntersectorFactory::getInstance()->addIntersectors(this);
 }
 
 /// Return the intersector class handling the given pair of collision models, or NULL if not supported.
@@ -88,14 +94,6 @@ ElementIntersector* DiscreteIntersection::findIntersector(core::CollisionModel* 
 } // namespace collision
 
 } // namespace component
-
-namespace core
-{
-namespace collision
-{
-template class SOFA_BASE_COLLISION_API IntersectorFactory<component::collision::DiscreteIntersection>;
-}
-}
 
 } // namespace sofa
 
