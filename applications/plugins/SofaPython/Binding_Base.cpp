@@ -56,6 +56,7 @@ PSDEDataFactory* getFactoryInstance(){
         s_localfactory->registerCreator("d", new DataCreator<int>());
         s_localfactory->registerCreator("t", new DataCreator<vector<Tetra>>());
         s_localfactory->registerCreator("p", new DataCreator<sofa::defaulttype::Vec3dTypes::VecCoord>());
+        s_localfactory->registerCreator("vector<Vec3d>", new DataCreator<sofa::defaulttype::Vec3dTypes::VecCoord>());
     }
     return s_localfactory ;
 }
@@ -73,6 +74,35 @@ static char* getStringCopy(char *c)
     char* tmp = new char[strlen(c)+1] ;
     strcpy(tmp,c);
     return tmp ;
+}
+
+#include <sofa/core/objectmodel/Link.h>
+
+const char* deriveTypeFromParentValue(Base* obj, const std::string& value)
+{
+    BaseObject* o = dynamic_cast<BaseObject*>(obj);
+    if (!o)
+        return nullptr;
+
+    // if data is a link
+    if (value[0] == '@')
+    {
+        std::string componentPath = value.substr(1, value.find('.') - 1);
+        std::string parentDataName = value.substr(value.find('.') + 1);
+
+        if (!o->getContext())
+        {
+            std::cout << "no context" << std::endl;
+            return nullptr;
+        }
+        BaseObject* component;
+        component = o->getContext()->get<BaseObject>(componentPath);
+        if (!component)
+            std::cout << "no object with path " << componentPath << std::endl;
+        BaseData* parentData = component->findData(parentDataName);
+        return parentData->getValueTypeInfo()->name().c_str();
+    }
+    return nullptr;
 }
 
 
@@ -143,7 +173,11 @@ BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
         if (tmp!=nullptr){
             dataValue = tmp;
             Py_IncRef(dataValue); // call to Py_GetItemString doesn't increment the ref count, but we want to hold on to it for a while ...
-        }      
+            std::string val(PyString_AsString(dataValue));
+            const char* str = deriveTypeFromParentValue(obj, val);
+            if (str)
+                strcpy(dataRawType, str);
+        }
     }
 
     if (dataRawType[0]==0) // We cannot construct without a type
@@ -153,7 +187,6 @@ BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
     }
 
     BaseData* bd = getFactoryInstance()->createObject(dataRawType, sofa::helper::NoArgument());
-
     if (bd == nullptr)
     {
         msg_error(obj) << dataRawType << " is not a known type";
@@ -163,7 +196,7 @@ BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
     {
         bd->setName(dataName);
         bd->setHelp(dataHelp);
-        obj->addData(bd);        
+        obj->addData(bd);
         if(dataValue!=nullptr) // parse provided data: Py->SofaStr->Data or link
         {
             std::stringstream tmp;
