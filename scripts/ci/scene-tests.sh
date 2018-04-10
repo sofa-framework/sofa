@@ -287,7 +287,7 @@ ignore-scenes-with-deprecated-components() {
                 mv "$base_dir/$output_dir/all-tested-scenes.tmp" "$base_dir/$output_dir/all-tested-scenes.txt"
                 rm -f "$base_dir/$output_dir/all-tested-scenes.tmp"
                 if ! grep -q "$scene" "$base_dir/$output_dir/all-ignored-scenes.txt"; then
-                    echo "  ignore $scene: deprecated component $component"
+                    echo "  ignore $scene: deprecated component \"$component\""
                     echo "$scene" >> "$base_dir/$output_dir/all-ignored-scenes.txt"
                 fi
             fi
@@ -306,9 +306,9 @@ ignore-scenes-with-missing-plugins() {
             grep '^[	 ]*<[	 ]*RequiredPlugin' "$src_dir/$scene" > "$output_dir/grep.tmp"
             while read match; do
                 if echo "$match" | grep -q 'pluginName'; then
-                    plugin="$(echo "$match" | grep -o "pluginName[	 ]*=[\'\"][A-Za-z _-]*[\'\"]" | grep -o [\'\"].*[\'\"] | head -c -2 | tail -c +2)"
+                    plugin="$(echo "$match" | sed -e "s/.*pluginName[	 ]*=[	 ]*[\'\"]\([A-Za-z _-]*\)[\'\"].*/\1/g")"
                 elif echo "$match" | grep -q 'name'; then
-                    plugin="$(echo "$match" | grep -o "name[	 ]*=[\'\"][A-Za-z _-]*[\'\"]" | grep -o [\'\"].*[\'\"] | head -c -2 | tail -c +2)"
+                    plugin="$(echo "$match" | sed -e "s/.*name[	 ]*=[	 ]*[\'\"]\([A-Za-z _-]*\)[\'\"].*/\1/g")"
                 else
                     echo "  Warning: unknown RequiredPlugin found in $scene"
                     break
@@ -320,7 +320,7 @@ ignore-scenes-with-missing-plugins() {
                         mv "$output_dir/all-tested-scenes.tmp" "$output_dir/all-tested-scenes.txt"
                         rm -f "$output_dir/all-tested-scenes.tmp"
                         if ! grep -q "$scene" "$output_dir/all-ignored-scenes.txt"; then
-                            echo "  ignore $scene: missing plugin $plugin"
+                            echo "  ignore $scene: missing plugin \"$plugin\""
                             echo "$scene" >> "$output_dir/all-ignored-scenes.txt"
                         fi
                     fi
@@ -506,7 +506,8 @@ print-summary() {
 
 if [[ "$command" = run ]]; then
     initialize-scene-testing
-    if grep -q "SOFA_WITH_DEPRECATED_COMPONENTS:BOOL=ON" "$build_dir/CMakeCache.txt"; then
+    if ! grep -q "SOFA_WITH_DEPRECATED_COMPONENTS:BOOL=ON" "$build_dir/CMakeCache.txt" &&
+       grep -q "APPLICATION_GETDEPRECATEDCOMPONENTS:BOOL=ON" "$build_dir/CMakeCache.txt"; then
         ignore-scenes-with-deprecated-components
     fi
     ignore-scenes-with-missing-plugins
