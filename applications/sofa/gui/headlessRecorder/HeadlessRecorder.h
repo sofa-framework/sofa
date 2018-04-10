@@ -64,6 +64,8 @@ namespace gui
 namespace hRecorder
 {
 
+enum class RecordMode { wallclocktime, simulationtime, timeinterval };
+
 class HeadlessRecorder : public sofa::gui::BaseGUI
 {
 
@@ -93,6 +95,7 @@ public:
     // Needed for the registration
     static BaseGUI* CreateGUI(const char* name, sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
     static int RegisterGUIParameters(ArgumentParser* argumentParser);
+    static void parseRecordingModeOption();
 
     static int recordTimeInSeconds; // public for SIGTERM
     static bool recordUntilStopAnimate; // public for SIGTERM
@@ -100,6 +103,7 @@ public:
 private:
     void record();
     bool canRecord();
+    bool keepFrame();
     void screenshotPNG(std::string fileName);
     void videoYUVToRGB();
     void videoEncoderStart(const char *filename, int codec_id);
@@ -138,7 +142,9 @@ private:
     static std::string fileName;
     static bool saveAsScreenShot, saveAsVideo;
     static HeadlessRecorder instance;
-
+    static std::string recordTypeRaw;
+    static RecordMode recordType;
+    static float skipTime;
 };
 
 } // namespace glut
