@@ -1,5 +1,5 @@
 
-message("POST INSTALL SCRIPT")
+message("POST BUNDLE SCRIPT")
 
 
 file(GLOB_RECURSE VERSIONED_LIBS "${CMAKE_INSTALL_PREFIX}/runSofa.app/Contents/MacOS/*.*.dylib")
