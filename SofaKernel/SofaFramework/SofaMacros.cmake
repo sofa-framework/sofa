@@ -2,57 +2,6 @@ include(CMakePackageConfigHelpers)
 include(CMakeParseLibraryList)
 
 
-
-# sofa_write_package_config_files(Foo <version> <build-include-dirs>)
-#
-# Create CMake package configuration files
-# - In the build tree:
-#   - ${CMAKE_BINARY_DIR}/cmake/FooConfig.cmake
-#   - ${CMAKE_BINARY_DIR}/cmake/FooConfigVersion.cmake
-# - In the install tree:
-#   - lib/cmake/Foo/FooConfigVersion.cmake
-#   - lib/cmake/Foo/FooConfig.cmake
-#   - lib/cmake/Foo/FooTargets.cmake
-#
-# This macro factorizes boilerplate CMake code for the different
-# packages in Sofa.  It assumes that there is a FooConfig.cmake.in
-# file template in the same directory.  For example, if a package Foo
-# depends on Bar and Baz, and creates the targets Foo and Qux, here is
-# a typical FooConfig.cmake.in:
-#
-# @PACKAGE_INIT@
-#
-# find_package(Bar REQUIRED)
-# find_package(Baz REQUIRED)
-#
-# if(NOT TARGET Qux)
-# 	include("${CMAKE_CURRENT_LIST_DIR}/FooTargets.cmake")
-# endif()
-#
-# check_required_components(Foo Qux)
-macro(sofa_write_package_config_files package_name version)
-
-    ## <package_name>Targets.cmake
-    install(EXPORT ${package_name}Targets DESTINATION lib/cmake/${package_name} COMPONENT headers)
-
-    ## <package_name>ConfigVersion.cmake
-    set(filename ${package_name}ConfigVersion.cmake)
-    write_basic_package_version_file(${filename} VERSION ${version} COMPATIBILITY ExactVersion)
-    configure_file("${CMAKE_CURRENT_BINARY_DIR}/${filename}"
-                   "${CMAKE_BINARY_DIR}/cmake/${filename}" COPYONLY)
-    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${filename}" DESTINATION lib/cmake/${package_name} COMPONENT headers)
-
-    ### <package_name>Config.cmake
-    configure_package_config_file(${package_name}Config.cmake.in
-                                  "${CMAKE_BINARY_DIR}/cmake/${package_name}Config.cmake"
-                                  INSTALL_DESTINATION lib/cmake/${package_name})
-    install(FILES "${CMAKE_BINARY_DIR}/cmake/${package_name}Config.cmake"
-            DESTINATION lib/cmake/${package_name} COMPONENT headers)
-
-endmacro()
-
-
-
 # - Create an imported target from a library path and an include dir path.
 #   Handle the special case where LIBRARY_PATH is in fact an existing target.
 #   Handle the case where LIBRARY_PATH contains the following syntax supported by cmake:
@@ -175,6 +124,22 @@ macro(sofa_add_generic directory name type)
 endmacro()
 
 
+macro(sofa_add_plugin directory plugin_name)
+    sofa_add_generic( ${directory} ${plugin_name} "Plugin" ${ARGV2} )
+endmacro()
+
+
+macro(sofa_add_plugin_experimental directory plugin_name)
+    sofa_add_generic( ${directory} ${plugin_name} "Plugin" ${ARGV2} )
+    message("-- ${plugin_name} is an experimental feature, use it at your own risk.")
+endmacro()
+
+
+macro(sofa_add_application directory app_name)
+    sofa_add_generic( ${directory} ${app_name} "Application" ${ARGV2} )
+endmacro()
+
+
 
 # Declare a (unique, TODO?) directory containing the python scripts of
 # a plugin.  This macro:
@@ -213,31 +178,9 @@ endmacro()
 
 
 
-macro(sofa_add_plugin directory plugin_name)
-    sofa_add_generic( ${directory} ${plugin_name} "Plugin" ${ARGV2} )
-endmacro()
-
-macro(sofa_add_plugin_experimental directory plugin_name)
-    sofa_add_generic( ${directory} ${plugin_name} "Plugin" ${ARGV2} )
-    message("-- ${plugin_name} is an experimental feature, use it at your own risk.")
-endmacro()
-
-
-
-macro(sofa_add_application directory app_name)
-    sofa_add_generic( ${directory} ${app_name} "Application" ${ARGV2} )
-endmacro()
-
-
-
-
-
-
 ##########################################################
 #################### INSTALL MACROS ######################
 ##########################################################
-# move them in a specific file?
-
 
 
 macro(sofa_install_targets package_name the_targets install_include_subdir)
@@ -271,6 +214,55 @@ macro(sofa_install_targets package_name the_targets install_include_subdir)
     if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/scenes/")
         install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scenes/ DESTINATION share/sofa/${PARENT_DIR_NAME}/${PROJECT_NAME} COMPONENT resources)
     endif()
+endmacro()
+
+
+# sofa_write_package_config_files(Foo <version> <build-include-dirs>)
+#
+# Create CMake package configuration files
+# - In the build tree:
+#   - ${CMAKE_BINARY_DIR}/cmake/FooConfig.cmake
+#   - ${CMAKE_BINARY_DIR}/cmake/FooConfigVersion.cmake
+# - In the install tree:
+#   - lib/cmake/Foo/FooConfigVersion.cmake
+#   - lib/cmake/Foo/FooConfig.cmake
+#   - lib/cmake/Foo/FooTargets.cmake
+#
+# This macro factorizes boilerplate CMake code for the different
+# packages in Sofa.  It assumes that there is a FooConfig.cmake.in
+# file template in the same directory.  For example, if a package Foo
+# depends on Bar and Baz, and creates the targets Foo and Qux, here is
+# a typical FooConfig.cmake.in:
+#
+# @PACKAGE_INIT@
+#
+# find_package(Bar REQUIRED)
+# find_package(Baz REQUIRED)
+#
+# if(NOT TARGET Qux)
+# 	include("${CMAKE_CURRENT_LIST_DIR}/FooTargets.cmake")
+# endif()
+#
+# check_required_components(Foo Qux)
+macro(sofa_write_package_config_files package_name version)
+
+    ## <package_name>Targets.cmake
+    install(EXPORT ${package_name}Targets DESTINATION lib/cmake/${package_name} COMPONENT headers)
+
+    ## <package_name>ConfigVersion.cmake
+    set(filename ${package_name}ConfigVersion.cmake)
+    write_basic_package_version_file(${filename} VERSION ${version} COMPATIBILITY ExactVersion)
+    configure_file("${CMAKE_CURRENT_BINARY_DIR}/${filename}"
+                   "${CMAKE_BINARY_DIR}/cmake/${filename}" COPYONLY)
+    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${filename}" DESTINATION lib/cmake/${package_name} COMPONENT headers)
+
+    ### <package_name>Config.cmake
+    configure_package_config_file(${package_name}Config.cmake.in
+                                  "${CMAKE_BINARY_DIR}/cmake/${package_name}Config.cmake"
+                                  INSTALL_DESTINATION lib/cmake/${package_name})
+    install(FILES "${CMAKE_BINARY_DIR}/cmake/${package_name}Config.cmake"
+            DESTINATION lib/cmake/${package_name} COMPONENT headers)
+
 endmacro()
 
 
@@ -330,7 +322,6 @@ macro(sofa_install_libraries_from_targets the_targets)
 endmacro()
 
 
-
 macro(sofa_copy_libraries libraries)
     foreach(library ${libraries})
         if(EXISTS ${library})
@@ -357,9 +348,6 @@ macro(sofa_copy_libraries_from_targets the_targets)
         sofa_copy_libraries(${target_location})
     endforeach()
 endmacro()
-
-
-
 
 
 
