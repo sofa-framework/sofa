@@ -100,7 +100,7 @@ INSTALL(CODE "
     fixup_bundle(\"${APPS}\" \"\${LIBS}\" \"${DIRS}\")
 " COMPONENT BundlePack)
 
-install(SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/cmake/postInstall.cmake" COMPONENT BundlePack)
+install(SCRIPT "${CMAKE_CURRENT_SOURCE_DIR}/cmake/bundle-post.cmake" COMPONENT BundlePack)
 
 # To Create a package, one can run "cpack -G DragNDrop CPackConfig.cmake" on Mac OS X
 # where CPackConfig.cmake is created by including CPack
