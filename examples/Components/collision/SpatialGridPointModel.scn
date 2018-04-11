@@ -1,4 +1,7 @@
 <Node dt="0.005" gravity="0 -10 0">
+    <RequiredPlugin pluginName="SofaSphFluid"/>
+    <RequiredPlugin pluginName="SofaMiscCollision"/>
+
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <CollisionPipeline verbose="0" />
     <NewProximityIntersection alarmDistance="0.5" contactDistance="0.3" />
