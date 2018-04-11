@@ -274,8 +274,8 @@ endmacro()
 
 
 # Get path of all library versions (involving symbolic links) for a specified library
-macro(sofa_install_libraries libraries)
-    foreach(library ${libraries})
+macro(sofa_install_libraries)
+    foreach(library ${ARGN})
         if(EXISTS ${library})
             get_filename_component(LIB_NAME ${library} NAME_WE)
             get_filename_component(LIB_PATH ${library} PATH)
@@ -314,21 +314,24 @@ macro(sofa_install_libraries libraries)
 endmacro()
 
 
-macro(sofa_install_libraries_from_targets the_targets)
-    foreach(target ${the_targets})
+macro(sofa_install_libraries_from_targets)
+    foreach(target ${ARGN})
         get_target_property(target_location ${target} LOCATION_${CMAKE_BUILD_TYPE})
         sofa_install_libraries(${target_location})
     endforeach()
 endmacro()
 
 
-macro(sofa_copy_libraries libraries)
-    foreach(library ${libraries})
+macro(sofa_copy_libraries)
+    foreach(library ${ARGN})
         if(EXISTS ${library})
             get_filename_component(LIB_NAME ${library} NAME_WE)
             get_filename_component(LIB_PATH ${library} PATH)
 
-            file(GLOB SHARED_LIB "${LIB_PATH}/${LIB_NAME}*${CMAKE_SHARED_LIBRARY_SUFFIX}")
+            file(GLOB SHARED_LIB
+                "${LIB_PATH}/${LIB_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX}"
+                "${LIB_PATH}/${LIB_NAME}[0-9]${CMAKE_SHARED_LIBRARY_SUFFIX}"
+                "${LIB_PATH}/${LIB_NAME}[0-9][0-9]${CMAKE_SHARED_LIBRARY_SUFFIX}")
 
             if(CMAKE_CONFIGURATION_TYPES) # Multi-config generator (MSVC)
                 foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
@@ -342,8 +345,8 @@ macro(sofa_copy_libraries libraries)
 endmacro()
 
 
-macro(sofa_copy_libraries_from_targets the_targets)
-    foreach(target ${the_targets})
+macro(sofa_copy_libraries_from_targets)
+    foreach(target ${ARGN})
         get_target_property(target_location ${target} LOCATION_${CMAKE_BUILD_TYPE})
         sofa_copy_libraries(${target_location})
     endforeach()

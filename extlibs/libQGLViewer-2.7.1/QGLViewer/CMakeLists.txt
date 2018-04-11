@@ -71,8 +71,8 @@ else()
 endif()
 
 if(WIN32)
-    sofa_copy_libraries_from_targets("${QT_TARGETS}")
-    sofa_install_libraries_from_targets("${QT_TARGETS}")
+    sofa_copy_libraries_from_targets(${QT_TARGETS})
+    sofa_install_libraries_from_targets(${QT_TARGETS})
 
     # Installing Qt platforms dll the hard way (dirty)
     list (GET QT_TARGETS 0 QtCore_target)
