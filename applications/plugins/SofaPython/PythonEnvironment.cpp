@@ -317,18 +317,19 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
     const std::string basename = sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(filename);
 
     // setup sys.argv if needed
-    if(!arguments.empty() ) {
-        std::vector<const char*> argv;
-        argv.push_back(basename.c_str());
-        
+    std::vector<const char*> argv;
+    argv.push_back(basename.c_str());
+
+    std::cout << "WTF: " << arguments.size() << std::endl ;
+    if(!arguments.empty()) {
         for(const std::string& arg : arguments) {
             argv.push_back(arg.c_str());
         }
-        
-        Py_SetProgramName((char*) argv[0]); // TODO check what it is doing exactly
-        PySys_SetArgv(argv.size(), (char**)argv.data());
-    }
-    
+    }    
+    Py_SetProgramName((char*) argv[0]); // TODO check what it is doing exactly
+    PySys_SetArgv(argv.size(), (char**)argv.data());
+
+
     // Load the scene script
     PyObject* script = PyFile_FromString((char*)filename, (char*)("r"));
     
