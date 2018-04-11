@@ -48,5 +48,9 @@ setSofaOption(PLUGIN_SOFAMISCCOLLISION ON)
 
 # Copy resources files (etc/, share/, examples/) when installing 
 setSofaOption(SOFA_INSTALL_RESOURCES_FILES ON)
+
 # MacOS bundle creation
 setSofaOption(RUNSOFA_INSTALL_AS_BUNDLE ON)
+
+# install GTest even if SOFA_BUILD_TESTS=OFF
+add_subdirectory(extlibs/gtest)

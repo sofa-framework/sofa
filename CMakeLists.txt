@@ -135,11 +135,11 @@ option(SOFA_WITH_THREADING "Compile sofa with thread-safetiness support (PARTIAL
 option(SOFA_WITH_EXPERIMENTAL_FEATURES "Compile sofa with exprimental features regarding sparse matrices treatments under mappings" OFF)
 
 ### Testing
-add_subdirectory(extlibs/gtest)
 option(SOFA_BUILD_TESTS "Compile the automatic tests for Sofa, along with the gtest library." ON)
 if(SOFA_BUILD_TESTS)
     # Enable testing features of cmake, like the add_test() command.
     enable_testing()
+    add_subdirectory(extlibs/gtest)
 endif()
 
 ### Ninja build pools
