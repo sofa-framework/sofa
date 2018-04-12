@@ -10,7 +10,7 @@
         <MechanicalObject name="MModel" />
         <ParticleSource name="Source" center="&#x0A;-0.375 0 -0.75&#x0A; 0.0   0 -0.75&#x0A; 0.375 0 -0.75&#x0A;-0.75  0 -0.375&#x0A;-0.375 0 -0.375&#x0A; 0.0   0 -0.375&#x0A; 0.375 0 -0.375&#x0A; 0.75  0 -0.375&#x0A;-0.75  0  0.0&#x0A;-0.375 0  0.0&#x0A; 0.0   0  0.0&#x0A; 0.375 0  0.0&#x0A; 0.75  0  0.0&#x0A;-0.75  0  0.375&#x0A;-0.375 0  0.375&#x0A; 0.0   0  0.375&#x0A; 0.375 0  0.375&#x0A; 0.75  0  0.375&#x0A;-0.375 0  0.75&#x0A; 0.0   0  0.75&#x0A; 0.375 0  0.75&#x0A; " translation="0 3 0" radius="0.01 0.1 0.01" velocity="0 -20 0" delay="0.01875" start="-0.1" stop="2" />
         <ParticleSink normal="0 1 0" d0="-10" d1="-11" showPlane="true" printLog="false" />
-        <UniformMass name="M1" mass="1" />
+        <UniformMass name="M1" vertexMass="1" />
         <SpatialGridContainer cellWidth="0.75" sortPoints="true" />
         <SPHFluidForceField radius="0.75" density="15" viscosity="10" pressure="1000" surfaceTension="-1000" />
         <Node id="Visual">

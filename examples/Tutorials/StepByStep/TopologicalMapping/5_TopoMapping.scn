@@ -10,7 +10,7 @@
         <MechanicalObject template="Vec3d" name="Hexa" />
         <RegularGridTopology name="grid" n="6 6 6" min="-10 -10 -10" max="10 10 10" p0="-10 -10 -10" />
         <HexahedronFEMForceField template="Vec3d" name="FEM" poissonRatio="0.3" youngModulus="100" />
-        <DiagonalMass template="Vec3d" name="Mass" mass="1" />
+        <DiagonalMass template="Vec3d" name="Mass" vertexMass="1" />
         <FixedConstraint template="Vec3d" name="Fixed Dofs" indices="30 35 210 215" drawSize="0" />
     </Node>
 </Node>

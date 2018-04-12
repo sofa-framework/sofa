@@ -12,7 +12,7 @@
         <CollisionGroup name="Group" />
         <Node name="TORUS">
             <MechanicalObject template="Rigid" scale="1.0" dx="0.0" dy="0.0" dz="0.0" />
-            <UniformMass totalmass="40.0" />
+            <UniformMass totalMass="40.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visu">
                 <OglModel name="Visual" fileMesh="mesh/torus.obj" color="1.0 0.5 0.25 1.0" scale="1.0" />
@@ -51,7 +51,7 @@
 -->
         <Node name="CUBE">
             <MechanicalObject template="Rigid" scale="0.3" dx="-2.0" dy="-3.5" dz="-0.5" rx="10" />
-            <UniformMass totalmass="100.0" />
+            <UniformMass totalMass="100.0" />
             <UncoupledConstraintCorrection />
             <Node name="Visu">
                 <OglModel name="Visual" fileMesh="mesh/smCube27.obj" color="0.0 0.5 0.5 1.0" scale="0.3" />

@@ -11,7 +11,7 @@
         <CGLinearSolver template="GraphScattered" name="default20" iterations="25" tolerance="1e-09" threshold="1e-09" />
         <SparseGridTopology name="topology" fileTopology="mesh/liver-smooth.obj" n="8 6 6" />
         <MechanicalObject template="Vec3d" name="dofs" translation="0 0 0" rotation="0 0 0" scale="1" />
-        <UniformMass template="Vec3d" name="mass" totalmass="1" />
+        <UniformMass template="Vec3d" name="mass" totalMass="1" />
         <HexahedronFEMForceField template="Vec3d" name="FEM" method="polar" poissonRatio="0.3" youngModulus="250" />
         <FixedConstraint template="Vec3d" name="FixedConstraint" indices="81 80 166" />
         <Node name="VisualNode" gravity="0 -9.81 0">

@@ -5,7 +5,7 @@
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MeshGmshLoader name="loader" filename="mesh/liver.msh" />
         <MechanicalObject src="@loader" name="dofs" />
-        <UniformMass name="M1" mass="1" />
+        <UniformMass name="M1" vertexMass="1" />
         <SPHFluidForceField radius="0.75" density="15" viscosity="10" pressure="1000" surfaceTension="-1000" />
         <SpatialGridContainer />
         <Node id="Visual">
