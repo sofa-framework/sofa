@@ -44,6 +44,7 @@
 #include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.h>
 
 #include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/core/DataTracker.h>
 
 namespace sofa
 {
@@ -175,7 +176,6 @@ public:
     protected:
         DiagonalMass<DataTypes,TMassType>* dm;
     };
-    DMassPointHandler* m_pointHandler;
     /// the mass density used to compute the mass from a mesh topology and geometry
     Data< Real > d_massDensity;
 
@@ -188,10 +188,18 @@ public:
     /// to display the center of gravity of the system
     Data< bool > d_showCenterOfGravity;
     Data< float > d_showAxisSize;
+
     core::objectmodel::DataFileName d_fileMass;
+
+    DMassPointHandler* m_pointHandler;
 
     /// value defining the initialization process of the mass (0 : totalMass, 1 : massDensity, 2 : vertexMass)
     int m_initializationProcess;
+
+    /// Data tracker
+    sofa::core::DataTracker m_dataTrackerVertex;
+    sofa::core::DataTracker m_dataTrackerDensity;
+    sofa::core::DataTracker m_dataTrackerTotal;
 
 protected:
     ////////////////////////// Inherited attributes ////////////////////////////
@@ -230,7 +238,8 @@ public:
 
     virtual void reinit() override;
     virtual void init() override;
-
+    virtual void handleEvent(sofa::core::objectmodel::Event */*event*/) override;
+    void update();
 
     TopologyType getMassTopologyType() const
     {
@@ -243,17 +252,42 @@ public:
     }
 
 protected:
+    bool checkTopology();
     void initTopologyHandlers();
+    void massInitialization();
 
 public:
 
-    void setMassDensity(Real m)
-    {
-        d_massDensity.setValue(m);
-    }
-
     SReal getTotalMass() const { return d_totalMass.getValue(); }
     int getMassCount() { return d_vertexMass.getValue().size(); }
+
+    /// Compute the mass from input values
+    void computeMass();
+
+
+    /// @name Read and write access functions in mass information
+    /// @{
+    virtual const Real &getMassDensity();
+    virtual const Real &getTotalMass();
+
+    virtual void setVertexMass(sofa::helper::vector< Real > vertexMass);
+    virtual void setMassDensity(Real massDensityValue);
+    virtual void setTotalMass(Real totalMass);
+    /// @}
+
+
+    /// @name Check and standard initialization functions from mass information
+    /// @{
+    virtual bool checkVertexMass();
+    virtual void initFromVertexMass();
+
+    virtual bool checkMassDensity();
+    virtual void initFromMassDensity();
+
+    virtual bool checkTotalMass();
+    virtual void checkTotalMassInit();
+    virtual void initFromTotalMass();
+    /// @}
 
 
     void addMass(const MassType& mass);
