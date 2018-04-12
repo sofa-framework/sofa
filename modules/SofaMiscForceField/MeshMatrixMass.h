@@ -137,13 +137,11 @@ protected:
     /// The type of topology to build the mass from the topology
     TopologyType m_topologyType;
     Real m_massLumpingCoeff;
-    bool homogeneousMassDensity;
 
     MeshMatrixMass();
     ~MeshMatrixMass();
 
-//    void checkIntegrationMethod();
-    void checkTopology();
+    bool checkTopology();
     void initTopologyHandlers();
     void massInitialization();
 

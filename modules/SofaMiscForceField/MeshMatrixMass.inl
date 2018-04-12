@@ -925,7 +925,10 @@ void MeshMatrixMass<DataTypes, MassType>::init()
 
     m_massLumpingCoeff = 0.0;
 
-    checkTopology();
+    if(!checkTopology())
+    {
+        return;
+    }
     Inherited::init();
     initTopologyHandlers();
 
@@ -941,7 +944,7 @@ void MeshMatrixMass<DataTypes, MassType>::init()
 
 
 template <class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::checkTopology()
+bool MeshMatrixMass<DataTypes, MassType>::checkTopology()
 {
     _topology = this->getContext()->getMeshTopology();
 
@@ -958,10 +961,12 @@ void MeshMatrixMass<DataTypes, MassType>::checkTopology()
             if(!hexaGeo)
             {
                 msg_error() << "Hexahedron topology but no geometry algorithms found. Add the component HexahedronSetGeometryAlgorithms.";
+                return false;
             }
             else
             {
                 msg_info() << "Hexahedral topology found.";
+                return true;
             }
         }
         else if (_topology->getNbTetrahedra() > 0)
@@ -969,10 +974,12 @@ void MeshMatrixMass<DataTypes, MassType>::checkTopology()
             if(!tetraGeo)
             {
                 msg_error() << "Tetrahedron topology but no geometry algorithms found. Add the component TetrahedronSetGeometryAlgorithms.";
+                return false;
             }
             else
             {
                 msg_info() << "Tetrahedral topology found.";
+                return true;
             }
         }
         else if (_topology->getNbQuads() > 0)
@@ -980,10 +987,12 @@ void MeshMatrixMass<DataTypes, MassType>::checkTopology()
             if(!quadGeo)
             {
                 msg_error() << "Quad topology but no geometry algorithms found. Add the component QuadSetGeometryAlgorithms.";
+                return false;
             }
             else
             {
                 msg_info() << "Quad topology found.";
+                return true;
             }
         }
         else if (_topology->getNbTriangles() > 0)
@@ -991,10 +1000,12 @@ void MeshMatrixMass<DataTypes, MassType>::checkTopology()
             if(!triangleGeo)
             {
                 msg_error() << "Triangle topology but no geometry algorithms found. Add the component TriangleSetGeometryAlgorithms.";
+                return false;
             }
             else
             {
                 msg_info() << "Triangular topology found.";
+                return true;
             }
         }
         else if (_topology->getNbEdges() > 0)
@@ -1002,20 +1013,24 @@ void MeshMatrixMass<DataTypes, MassType>::checkTopology()
             if(!edgeGeo)
             {
                 msg_error() << "Edge topology but no geometry algorithms found. Add the component EdgeSetGeometryAlgorithms.";
+                return false;
             }
             else
             {
                 msg_info() << "Edge topology found.";
+                return true;
             }
         }
         else
         {
             msg_error() << "Topology empty.";
+            return false;
         }
     }
     else
     {
         msg_error() << "Topology not found.";
+        return false;
     }
 }
 
@@ -1363,7 +1378,7 @@ void MeshMatrixMass<DataTypes, MassType>::initFromVertexMass()
 {
     msg_info() << "vertexMass information is used";
 
-    const sofa::helper::vector<MassType>& vertexMass = d_vertexMass.getValue();
+    const sofa::helper::vector<MassType> vertexMass = d_vertexMass.getValue();
     Real totalMassSave = 0.0;
     for(size_t i=0; i<vertexMass.size(); i++)
     {
@@ -1392,7 +1407,7 @@ void MeshMatrixMass<DataTypes, MassType>::initFromVertexMass()
 template <class DataTypes, class MassType>
 bool MeshMatrixMass<DataTypes, MassType>::checkEdgeMass()
 {
-    const sofa::helper::vector<Real> &edgeMass = d_edgeMass.getValue();
+    const sofa::helper::vector<Real> edgeMass = d_edgeMass.getValue();
     //Check size of the vector
     if (edgeMass.size() != (size_t)_topology->getNbEdges())
     {
@@ -1420,8 +1435,8 @@ void MeshMatrixMass<DataTypes, MassType>::initFromVertexAndEdgeMass()
 {
     msg_info() << "verteMass and edgeMass informations are used";
 
-    const sofa::helper::vector<MassType>& vertexMass = d_vertexMass.getValue();
-    const sofa::helper::vector<MassType>& edgeMass = d_edgeMass.getValue();
+    const sofa::helper::vector<MassType> vertexMass = d_vertexMass.getValue();
+    const sofa::helper::vector<MassType> edgeMass = d_edgeMass.getValue();
     Real totalMassSave = 0.0;
     for(size_t i=0; i<vertexMass.size(); i++)
     {
@@ -1568,7 +1583,7 @@ void MeshMatrixMass<DataTypes, MassType>::initFromTotalMass()
 {
     msg_info() << "totalMass information is used";
 
-    const Real &totalMassTemp = d_totalMass.getValue();
+    const Real totalMassTemp = d_totalMass.getValue();
     Real sumMass = 0.0;
     setMassDensity(1.0);
 
@@ -1588,7 +1603,7 @@ void MeshMatrixMass<DataTypes, MassType>::initFromTotalMass()
 template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::setVertexMass(sofa::helper::vector< Real > vertexMass)
 {
-    const sofa::helper::vector< Real > &currentVertexMass = d_vertexMass.getValue();
+    const sofa::helper::vector< Real > currentVertexMass = d_vertexMass.getValue();
     d_vertexMass.setValue(vertexMass);
 
     if(!checkVertexMass())
@@ -1607,7 +1622,7 @@ void MeshMatrixMass<DataTypes, MassType>::setVertexMass(sofa::helper::vector< Re
 template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::setMassDensity(sofa::helper::vector< Real > massDensity)
 {
-    const sofa::helper::vector< Real > &currentMassDensity = d_massDensity.getValue();
+    const sofa::helper::vector< Real > currentMassDensity = d_massDensity.getValue();
     d_massDensity.setValue(massDensity);
 
     if(!checkMassDensity())
@@ -1622,7 +1637,7 @@ void MeshMatrixMass<DataTypes, MassType>::setMassDensity(sofa::helper::vector< R
 template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::setMassDensity(Real massDensityValue)
 {
-    const sofa::helper::vector< Real > &currentMassDensity = d_massDensity.getValue();
+    const sofa::helper::vector< Real > currentMassDensity = d_massDensity.getValue();
     helper::WriteAccessor<Data<sofa::helper::vector< Real > > > massDensity = d_massDensity;
     massDensity.clear();
     massDensity.resize(1);
@@ -1640,7 +1655,7 @@ void MeshMatrixMass<DataTypes, MassType>::setMassDensity(Real massDensityValue)
 template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::setTotalMass(Real totalMass)
 {
-    const Real& currentTotalMass = d_totalMass.getValue();
+    const Real currentTotalMass = d_totalMass.getValue();
     d_totalMass.setValue(totalMass);
     if(!checkTotalMass())
     {
