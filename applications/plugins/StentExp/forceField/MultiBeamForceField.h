@@ -322,8 +322,8 @@ protected:
     void solveDispIncrement(const tangentStiffnessMatrix &tangentStiffness, EigenDisplacement &du, const EigenNodalForces &residual);
     void computeDisplacementIncrement(const VecCoord& pos, const VecCoord& lastPos, Displacement &currentDisp, Displacement &lastDisp,
                                       Displacement &dispIncrement, int i, Index a, Index b);
-    void computeStressIncrement(int i, const VoigtTensor2 &initialStress, VoigtTensor2 &stressIncrement, 
-                                const VoigtTensor2 &strainIncrement, double &lambdaIncrement, bool isPlasticPoint);
+    void computeStressIncrement(int index, int gaussPointIt, const VoigtTensor2 &initialStress, VoigtTensor2 &stressIncrement,
+                                const VoigtTensor2 &strainIncrement, double &lambdaIncrement, bool &isPlasticPoint);
 
     //NB: these two functions receive a *local* stress Tensor, which is computed for a given Gauss point
     double vonMisesYield(const VoigtTensor2 &stressTensor, const double UTS);

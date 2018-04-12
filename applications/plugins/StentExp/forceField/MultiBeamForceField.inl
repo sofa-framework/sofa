@@ -669,6 +669,7 @@ void MultiBeamForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const Ve
                     for (int gaussPointIt = 0; gaussPointIt < 27; gaussPointIt++)
                     {
                         Be = beamsData.getValue()[i]._BeMatrices[gaussPointIt];
+
                         newStress = C*Be*eigenDepl;
 
                         res = goInPlasticDeformation(newStress);
@@ -1686,6 +1687,7 @@ double MultiBeamForceField<DataTypes>::vonMisesYield(const VoigtTensor2 &stressT
     double aux2 = 3.0*(sigmaYZ*sigmaYZ + sigmaZX*sigmaZX + sigmaXY*sigmaXY);
 
     res = helper::rsqrt(aux1 + aux2) - UTS;
+
     return res;
 }
 
@@ -1952,129 +1954,156 @@ void MultiBeamForceField<DataTypes>::computeDisplacementIncrement(const VecCoord
 
 
 template< class DataTypes>
-void MultiBeamForceField<DataTypes>::computeStressIncrement(int i,
+void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
+                                                            int gaussPointIt,
                                                             const VoigtTensor2 &initialStress,
                                                             VoigtTensor2 &stressIncrement,
                                                             const VoigtTensor2 &strainIncrement,
                                                             double &lambdaIncrement,
-                                                            bool isPlasticPoint)
+                                                            bool &isPlasticPoint)
 {
     /** Material point iterations **/
     //NB: we consider that the yield function and the plastic flow are equal (f=g)
     //    This corresponds to an associative flow rule (for plasticity)
 
-    const Eigen::Matrix<double, 6, 6>& C = beamsData.getValue()[i]._materialBehaviour; //Matrix D in Krabbenhoft's
+    const Eigen::Matrix<double, 6, 6>& C = beamsData.getValue()[index]._materialBehaviour; //Matrix D in Krabbenhoft's
+
+    //First we compute the elastic predictor
+    VoigtTensor2 elasticPredictor = C*strainIncrement;
+    VoigtTensor2 currentStressPoint = initialStress + elasticPredictor;
 
     if (!isPlasticPoint)
     {
-        //The new stress is just computed elastically
-        stressIncrement = C*strainIncrement;
+        //If the point is still in elastic state, we have to check if the
+        //deformation becomes plastic
+        bool isNewPlastic = goInPlasticDeformation(initialStress + elasticPredictor);
+
+        if (!isNewPlastic)
+        {
+            stressIncrement = elasticPredictor;
+            return;
+        }
+        else
+        {
+            isPlasticPoint = isNewPlastic;
+            //The new point is then computed plastically below
+        }
     }
     else
     {
-        unsigned int nbMaxIterations = 25;
-        double threshold = 1e-5; //TO DO: choose coherent value
+        bool staysPlastic = stayInPlasticDeformation(initialStress, elasticPredictor);
 
-        /*****************************/
-        /*   Plastic return method   */
-        /*****************************/
+        if (!staysPlastic)
+        {
+            isPlasticPoint = staysPlastic;
+            stressIncrement = elasticPredictor; //TO DO: compute the plastic strain here
+            return;
+        }
+    }
 
-        ////First we compute the elastic predictor
-        //VoigtTensor2 elasticPredictor = C*strainIncrement;
 
-        //VoigtTensor2 currentStressPoint = initialStress + elasticPredictor; //point B in Krabbenhoft's
+    /*****************************/
+    /*   Plastic return method   */
+    /*****************************/
 
-        //VoigtTensor2 grad, plasticStressIncrement;
-        //double denum, dLambda;
-        //double fSigma = vonMisesYield(currentStressPoint, _UTS); //for the 1st iteration
+    ////First we compute the elastic predictor
+    //VoigtTensor2 elasticPredictor = C*strainIncrement;
 
-        ////We start iterations with point B
-        //for (unsigned int i = 0; i < nbMaxIterations; i++)
-        //{
-        //    grad = vonMisesGradient(currentStressPoint, _UTS);
-        //    denum = grad.transpose()*C*grad;
-        //    dLambda = fSigma / denum;
+    //VoigtTensor2 currentStressPoint = initialStress + elasticPredictor; //point B in Krabbenhoft's
 
-        //    plasticStressIncrement = dLambda*C*grad;
+    //VoigtTensor2 grad, plasticStressIncrement;
+    //double denum, dLambda;
+    //double fSigma = vonMisesYield(currentStressPoint, _UTS); //for the 1st iteration
 
-        //    currentStressPoint -= plasticStressIncrement;
+    ////We start iterations with point B
+    //for (unsigned int i = 0; i < nbMaxIterations; i++)
+    //{
+    //    grad = vonMisesGradient(currentStressPoint, _UTS);
+    //    denum = grad.transpose()*C*grad;
+    //    dLambda = fSigma / denum;
 
-        //    fSigma = vonMisesYield(currentStressPoint, _UTS);
-        //    if (fSigma < iterationThreshold)
-        //        break; //Yield condition : the current stress point is on the yield surface
-        //}
-        //// return the total stress increment
-        ////TO DO: return the current stress directly instead?
-        //stressIncrement = currentStressPoint - initialStress;
+    //    plasticStressIncrement = dLambda*C*grad;
 
-        /*****************************/
-        /*      Implicit method      */
-        /*****************************/
+    //    currentStressPoint -= plasticStressIncrement;
 
-        //First we compute the elastic predictor
-        VoigtTensor2 elasticPredictor = C*strainIncrement;
-        VoigtTensor2 currentStressPoint = initialStress + elasticPredictor;
+    //    fSigma = vonMisesYield(currentStressPoint, _UTS);
+    //    if (fSigma < iterationThreshold)
+    //        break; //Yield condition : the current stress point is on the yield surface
+    //}
+    //// return the total stress increment
+    ////TO DO: return the current stress directly instead?
+    //stressIncrement = currentStressPoint - initialStress;
 
-        Eigen::Matrix<double, 7, 1> totalIncrement = Eigen::Matrix<double, 7, 1>::Zero();
-        totalIncrement.block<6, 1>(0, 0) = elasticPredictor;
+    /*****************************/
+    /*      Implicit method      */
+    /*****************************/
 
-        Eigen::Matrix<double, 7, 1> newIncrement = Eigen::Matrix<double, 7, 1>::Zero();
+    unsigned int nbMaxIterations = 25;
+    double threshold = 1e-5; //TO DO: choose coherent value
 
-        //Intermediate variables
-        Eigen::Matrix<double, 6, 6> I6 = Eigen::Matrix<double, 6, 6>::Identity();
-        VoigtTensor2 gradient = vonMisesGradient(currentStressPoint, _UTS);
+    Eigen::Matrix<double, 7, 1> totalIncrement = Eigen::Matrix<double, 7, 1>::Zero();
+    totalIncrement.block<6, 1>(0, 0) = elasticPredictor;
 
-        double increment = 1e-3; //TO DO: delete, debug purposes
-        VoigtTensor2 gradientFD = vonMisesGradientFD(currentStressPoint, increment, _UTS);
+    Eigen::Matrix<double, 7, 1> newIncrement = Eigen::Matrix<double, 7, 1>::Zero();
 
-        VoigtTensor4 hessian;
-        double yieldCondition = 1; //will be changed in the first iteration of the while loop below
+    //Intermediate variables
+    Eigen::Matrix<double, 6, 6> I6 = Eigen::Matrix<double, 6, 6>::Identity();
+    VoigtTensor2 gradient = vonMisesGradient(currentStressPoint, _UTS);
 
-        //Initialisation of the Jacobian of the nonlinear system of equations
-        Eigen::Matrix<double, 7, 7> J = Eigen::Matrix<double, 7, 7>::Zero();
-        J.block<6, 6>(0, 0) = I6; //at first iteration, dLambda = 0
+    double increment = 1e-3; //TO DO: delete, debug purposes
+    VoigtTensor2 gradientFD = vonMisesGradientFD(currentStressPoint, increment, _UTS);
+
+    VoigtTensor4 hessian;
+    double yieldCondition = 1; //will be changed in the first iteration of the while loop below
+
+    //Initialisation of the Jacobian of the nonlinear system of equations
+    Eigen::Matrix<double, 7, 7> J = Eigen::Matrix<double, 7, 7>::Zero();
+    J.block<6, 6>(0, 0) = I6; //at first iteration, dLambda = 0
+    J.block<6, 1>(0, 6) = C*gradient;
+    J.block<1, 6>(6, 0) = gradient.transpose();
+
+    //Initialisation of the second member
+    Eigen::Matrix<double, 7, 1> b = Eigen::Matrix<double, 7, 1>::Zero();
+    //In the first iteration, the (first) stressIncrement is taken as the elasticPredictor
+    b(6, 0) = vonMisesYield(currentStressPoint, _UTS);
+
+    //solver
+    Eigen::FullPivLU<Eigen::Matrix<double, 7, 7> > LU(J.rows(), J.cols());
+
+    int count = 0;
+    while (helper::rabs(yieldCondition) >= threshold && count < nbMaxIterations)
+    {
+        //std::cout << "J pour le point " << gaussPointIt << " iteration " << count << " : " << std::endl << J << " " << std::endl << std::endl; //TO DO: delete, debug purposes
+        //Computes the new increment
+        LU.compute(J);
+
+        //std::cout << "    Determinant LU : " << LU.determinant() << " " << std::endl << std::endl; //TO DO: delete, debug purposes
+
+        newIncrement = LU.solve(-b);
+
+        totalIncrement += newIncrement;
+
+        //Updates J and b for the next iteration
+        currentStressPoint = initialStress + totalIncrement.block<6, 1>(0, 0);
+        gradient = vonMisesGradient(currentStressPoint, _UTS);
+        gradientFD = vonMisesGradientFD(currentStressPoint, increment, _UTS);
+        hessian = vonMisesHessian(currentStressPoint, _UTS);
+
+        J.block<6, 6>(0, 0) = I6 + totalIncrement(6, 0)*C*hessian;
         J.block<6, 1>(0, 6) = C*gradient;
         J.block<1, 6>(6, 0) = gradient.transpose();
 
-        //Initialisation of the second member
-        Eigen::Matrix<double, 7, 1> b = Eigen::Matrix<double, 7, 1>::Zero();
-        //In the first iteration, the (first) stressIncrement is taken as the elasticPredictor
-        b(6, 0) = vonMisesYield(currentStressPoint, _UTS);
+        yieldCondition = vonMisesYield(currentStressPoint, _UTS);
 
-        //solver
-        Eigen::FullPivLU<Eigen::Matrix<double, 7, 7> > LU(J.rows(), J.cols());
+        b.block<6, 1>(0, 0) = totalIncrement.block<6, 1>(0, 0) - elasticPredictor + C*totalIncrement(6, 0)*gradient;
+        b(6, 0) = yieldCondition;
 
-        int count = 0;
-        while (helper::rabs(yieldCondition) >= threshold && count < nbMaxIterations)
-        {
-            //Computes the new increment
-            LU.compute(J);
-            newIncrement = LU.solve(-b);
-
-            totalIncrement += newIncrement;
-
-            //Updates J and b for the next iteration
-            currentStressPoint = initialStress + totalIncrement.block<6, 1>(0, 0);
-            gradient = vonMisesGradient(currentStressPoint, _UTS);
-            gradientFD = vonMisesGradientFD(currentStressPoint, increment, _UTS);
-            hessian = vonMisesHessian(currentStressPoint, _UTS);
-
-            J.block<6, 6>(0, 0) = I6 + totalIncrement(6, 0)*C*hessian;
-            J.block<6, 1>(0, 6) = C*gradient;
-            J.block<1, 6>(6, 0) = gradient.transpose();
-
-            yieldCondition = vonMisesYield(currentStressPoint, _UTS);
-
-            b.block<6, 1>(0, 0) = totalIncrement.block<6, 1>(0, 0) - elasticPredictor + C*totalIncrement(6, 0)*gradient;
-            b(6, 0) = yieldCondition;
-
-            count++;
-        }
-
-        // return the total stress increment
-        //TO DO: return the current stress directly instead?
-        stressIncrement = currentStressPoint - initialStress;
+        count++;
     }
+
+    // return the total stress increment
+    //TO DO: return the current stress directly instead?
+    stressIncrement = currentStressPoint - initialStress;
 }
 
 
@@ -2126,14 +2155,14 @@ void MultiBeamForceField<DataTypes>::accumulateNonLinearForce(VecDeriv& f,
     VoigtTensor2 stressIncrement = VoigtTensor2::Zero();
     VoigtTensor2 newStressPoint = VoigtTensor2::Zero();
     double lambdaIncrement = 0;
-    bool isPlastic;
     bool isNewPlastic;
     bool staysPlastic;
 
     helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
     helper::fixed_array<bool, 27>& isPlasticPoint = bd[i]._isPlasticPoint;
+
     helper::fixed_array<VoigtTensor2, 27> newStressvector;
-    bool inPlasticDeformation = false;
+    bool inPlasticDeformation = true;
     int gaussPointIt = 0;
 
     // Computation of the new stress point, through material point iterations as in Krabbenhoft lecture notes
@@ -2142,42 +2171,16 @@ void MultiBeamForceField<DataTypes>::accumulateNonLinearForce(VecDeriv& f,
     LambdaType computePlastic = [&](double u1, double u2, double u3, double w1, double w2, double w3)
     {
         Be = beamsData.getValue()[i]._BeMatrices[gaussPointIt];
-        isPlastic = isPlasticPoint[gaussPointIt];
+        bool &isPlastic = isPlasticPoint[gaussPointIt];
 
         //Strain
         strainIncrement = Be*displacementIncrement;
 
         //Stress
         initialStressPoint = _prevStresses[i][gaussPointIt];
-        computeStressIncrement(i, initialStressPoint, stressIncrement,
+        computeStressIncrement(i, gaussPointIt, initialStressPoint, stressIncrement,
                                strainIncrement, lambdaIncrement, isPlastic);
         newStressPoint = initialStressPoint + stressIncrement;
-
-        //For each plastic Gauss point, we update the elastic/plastic state
-        //NB: if this time step is the first of plastic point deformation, this should
-        //not change anything as the point is brought back to the yield surface
-        //TO DO: check if it is indeed the case
-        if (!isPlastic)
-        {
-            isNewPlastic = goInPlasticDeformation(newStressPoint);
-            isPlasticPoint[gaussPointIt] = isNewPlastic;
-            if (isNewPlastic)
-            {
-                //The newly computed elastic stress has to be corrected
-                computeStressIncrement(i, initialStressPoint, stressIncrement,
-                                       strainIncrement, lambdaIncrement, true);
-                newStressPoint = initialStressPoint + stressIncrement;
-            }
-            inPlasticDeformation = inPlasticDeformation || isNewPlastic;
-        }
-        else
-        {
-            //The test of the out-of-plastic condition has to be called on the
-            //last time step stress state, with the newly computed stress increment
-            staysPlastic = stayInPlasticDeformation(initialStressPoint, stressIncrement);
-            isPlasticPoint[gaussPointIt] = staysPlastic;
-            inPlasticDeformation = inPlasticDeformation || staysPlastic;
-        }
 
         fint += (w1*w2*w3)*Be.transpose()*newStressPoint;
 
@@ -2188,6 +2191,8 @@ void MultiBeamForceField<DataTypes>::accumulateNonLinearForce(VecDeriv& f,
 
     ozp::quadrature::detail::Interval<3> interval = beamsData.getValue()[i]._integrationInterval;
     ozp::quadrature::integrate <GaussianQuadratureType, 3, LambdaType>(interval, computePlastic);
+
+    beamsData.endEdit();
 
     //std::cout << "Nouveaux stress au point de Gauss 0 pour l'element " << i << " : " << std::endl << _prevStresses[i][0] << " " << std::endl << std::endl; //TO DO: delete, debug purposes
 
@@ -2264,8 +2269,6 @@ void MultiBeamForceField<DataTypes>::accumulateNonLinearForce(VecDeriv& f,
 
         //Save the current positions as a record for the next time step
         _lastPos = x;
-
-        beamsData.endEdit();
     }
     
 }
