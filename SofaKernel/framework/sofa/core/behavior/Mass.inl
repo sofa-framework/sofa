@@ -37,7 +37,6 @@ namespace core
 namespace behavior
 {
 
-
 template<class DataTypes>
 Mass<DataTypes>::Mass(MechanicalState<DataTypes> *mm)
     : ForceField<DataTypes>(mm)
