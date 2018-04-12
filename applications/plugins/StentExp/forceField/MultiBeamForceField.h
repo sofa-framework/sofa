@@ -77,6 +77,14 @@ public:
     typedef helper::vector<unsigned int> VecIndex;
     typedef defaulttype::Vec<3, Real> Vec3;
 
+    //Types of mechanical state in which the (Gauss) integration points can be
+    enum MechanicalState {
+        ELASTIC = 0,
+        PLASTIC = 1,
+        POSTPLASTIC = 2,
+    };
+
+
 protected:
 
     typedef defaulttype::Vec<12, Real> Displacement;        ///< the displacement vector
@@ -109,7 +117,7 @@ protected:
         typedef Eigen::Matrix<double, 6, 12> deformationGradientFunction; ///< derivatives of the shape functions (Be)
         helper::fixed_array<deformationGradientFunction, 27> _BeMatrices; /// One Be function for each Gauss Point (27 in one beam element)
 
-        helper::fixed_array<bool, 27> _isPlasticPoint;
+        helper::fixed_array<MechanicalState, 27> _isPlasticPoint;
         helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> _plasticStrainHistory; ///< history of the plastic strain, one tensor for each Gauss point
 
         /*********************************************************************/
@@ -323,7 +331,7 @@ protected:
     void computeDisplacementIncrement(const VecCoord& pos, const VecCoord& lastPos, Displacement &currentDisp, Displacement &lastDisp,
                                       Displacement &dispIncrement, int i, Index a, Index b);
     void computeStressIncrement(int index, int gaussPointIt, const VoigtTensor2 &initialStress, VoigtTensor2 &stressIncrement,
-                                const VoigtTensor2 &strainIncrement, double &lambdaIncrement, bool &isPlasticPoint);
+                                const VoigtTensor2 &strainIncrement, double &lambdaIncrement, MechanicalState &isPlasticPoint);
 
     //NB: these two functions receive a *local* stress Tensor, which is computed for a given Gauss point
     double vonMisesYield(const VoigtTensor2 &stressTensor, const double UTS);

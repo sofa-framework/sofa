@@ -590,7 +590,7 @@ void MultiBeamForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const Ve
 
                     const Eigen::Matrix<double, 6, 6>& C = bd[i]._materialBehaviour;
                     const helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> plasticStrainHistory = bd[i]._plasticStrainHistory;
-                    helper::fixed_array<bool, 27>& isPlasticPoint = bd[i]._isPlasticPoint;
+                    helper::fixed_array<MechanicalState, 27>& isPlasticPoint = bd[i]._isPlasticPoint;
 
                     Eigen::Matrix<double, 6, 12> Be;
                     VoigtTensor2 elasticStrain;
@@ -612,7 +612,9 @@ void MultiBeamForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const Ve
 
                         //Check if we go back to plastic deformation
                         res = goInPlasticDeformation(elasticStress);
-                        isPlasticPoint[gaussPointIt] = res;
+                        if (res)
+                            isPlasticPoint[gaussPointIt] = PLASTIC;
+
                         isDeformingPlastically = isDeformingPlastically || res;
 
                         newStressVector[gaussPointIt] = elasticStress;
@@ -660,7 +662,7 @@ void MultiBeamForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const Ve
                     const Eigen::Matrix<double, 6, 6>& C = beamsData.getValue()[i]._materialBehaviour;
                     Eigen::Matrix<double, 6, 12> Be;
                     helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
-                    helper::fixed_array<bool, 27>& isPlasticPoint = bd[i]._isPlasticPoint;
+                    helper::fixed_array<MechanicalState, 27>& isPlasticPoint = bd[i]._isPlasticPoint;
 
                     VoigtTensor2 newStress;
                     bool res;
@@ -673,7 +675,8 @@ void MultiBeamForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const Ve
                         newStress = C*Be*eigenDepl;
 
                         res = goInPlasticDeformation(newStress);
-                        isPlasticPoint[gaussPointIt] = res;
+                        if (res)
+                            isPlasticPoint[gaussPointIt] = PLASTIC;
                         _isDeformingPlastically = _isDeformingPlastically || res;
 
                         newStressVector[gaussPointIt] = newStress;
@@ -1179,7 +1182,7 @@ void MultiBeamForceField<DataTypes>::BeamInfo::init(double E, double L, double n
     ozp::quadrature::integrate <GaussianQuadratureType, 3, LambdaType>(_integrationInterval, initialiseBeMatrix);
 
     //Initialises the plastic indicators
-    _isPlasticPoint.assign(false);
+    _isPlasticPoint.assign(ELASTIC);
 
 }
 
@@ -1960,7 +1963,7 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
                                                             VoigtTensor2 &stressIncrement,
                                                             const VoigtTensor2 &strainIncrement,
                                                             double &lambdaIncrement,
-                                                            bool &isPlasticPoint)
+                                                            MechanicalState &isPlasticPoint)
 {
     /** Material point iterations **/
     //NB: we consider that the yield function and the plastic flow are equal (f=g)
@@ -1972,7 +1975,7 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
     VoigtTensor2 elasticPredictor = C*strainIncrement;
     VoigtTensor2 currentStressPoint = initialStress + elasticPredictor;
 
-    if (!isPlasticPoint)
+    if (isPlasticPoint != PLASTIC)
     {
         //If the point is still in elastic state, we have to check if the
         //deformation becomes plastic
@@ -1985,7 +1988,7 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
         }
         else
         {
-            isPlasticPoint = isNewPlastic;
+            isPlasticPoint = PLASTIC;
             //The new point is then computed plastically below
         }
     }
@@ -1995,7 +1998,7 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
 
         if (!staysPlastic)
         {
-            isPlasticPoint = staysPlastic;
+            isPlasticPoint = POSTPLASTIC;
             stressIncrement = elasticPredictor; //TO DO: compute the plastic strain here
             return;
         }
@@ -2070,7 +2073,7 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
     //solver
     Eigen::FullPivLU<Eigen::Matrix<double, 7, 7> > LU(J.rows(), J.cols());
 
-    int count = 0;
+    unsigned int count = 0;
     while (helper::rabs(yieldCondition) >= threshold && count < nbMaxIterations)
     {
         //std::cout << "J pour le point " << gaussPointIt << " iteration " << count << " : " << std::endl << J << " " << std::endl << std::endl; //TO DO: delete, debug purposes
@@ -2155,11 +2158,9 @@ void MultiBeamForceField<DataTypes>::accumulateNonLinearForce(VecDeriv& f,
     VoigtTensor2 stressIncrement = VoigtTensor2::Zero();
     VoigtTensor2 newStressPoint = VoigtTensor2::Zero();
     double lambdaIncrement = 0;
-    bool isNewPlastic;
-    bool staysPlastic;
 
     helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
-    helper::fixed_array<bool, 27>& isPlasticPoint = bd[i]._isPlasticPoint;
+    helper::fixed_array<MechanicalState, 27>& isPlasticPoint = bd[i]._isPlasticPoint;
 
     helper::fixed_array<VoigtTensor2, 27> newStressvector;
     bool inPlasticDeformation = true;
@@ -2171,7 +2172,7 @@ void MultiBeamForceField<DataTypes>::accumulateNonLinearForce(VecDeriv& f,
     LambdaType computePlastic = [&](double u1, double u2, double u3, double w1, double w2, double w3)
     {
         Be = beamsData.getValue()[i]._BeMatrices[gaussPointIt];
-        bool &isPlastic = isPlasticPoint[gaussPointIt];
+        MechanicalState &isPlastic = isPlasticPoint[gaussPointIt];
 
         //Strain
         strainIncrement = Be*displacementIncrement;
@@ -2338,7 +2339,7 @@ void MultiBeamForceField<DataTypes>::updateTangentStiffness(int i,
     helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
     StiffnessMatrix& Kt_loc = bd[i]._Kt_loc;
     const Eigen::Matrix<double, 6, 6>& C = bd[i]._materialBehaviour;
-    helper::fixed_array<bool, 27>& isPlasticPoint = bd[i]._isPlasticPoint;
+    helper::fixed_array<MechanicalState, 27>& isPlasticPoint = bd[i]._isPlasticPoint;
 
     // Reduced integration
     typedef std::function<void(double, double, double, double, double, double)> LambdaType;
@@ -2370,7 +2371,7 @@ void MultiBeamForceField<DataTypes>::updateTangentStiffness(int i,
 
         VMgradient = vonMisesGradient(currentStressPoint, _UTS);
 
-        if (VMgradient.isZero() || !isPlasticPoint[gaussPointIterator])
+        if (VMgradient.isZero() || isPlasticPoint[gaussPointIterator] != PLASTIC)
             Cep = C; //TO DO: is that correct ?
         else
         {
