@@ -108,6 +108,7 @@ public:
         node->addObject(topologyContainer);
         node->addObject(geometryAlgorithms);
         mass = New<DiagonalMass<DataTypes, MassType> >();
+        mass->f_printLog.setValue(1.0);
         node->addObject(mass);
     }
 
