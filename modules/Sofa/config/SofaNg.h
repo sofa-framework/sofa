@@ -31,12 +31,5 @@
 #  define SOFA_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-namespace sofa
-{
-
-void SOFA_API initSofaNg();
-
-} // namespace sofa
-
 #endif
 

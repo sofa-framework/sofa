@@ -31,15 +31,5 @@
 #  define SOFA_COMPONENT_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-namespace sofa
-{
-namespace component
-{
-
-void SOFA_COMPONENT_API initSofaComponent();
-
-} // namespace sofa
-} // namespace component
-
 #endif
 

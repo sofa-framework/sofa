@@ -20,22 +20,57 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <Sofa.Component.h>
-#include <Sofa.Component.Utils.h>
+
+#include <sofa/helper/system/PluginManager.h>
+using sofa::helper::system::PluginManager ;
 
 namespace sofa
 {
 namespace component
 {
 
-void initSofaComponent()
+extern "C" {
+    SOFA_COMPONENT_API void initExternalModule();
+    SOFA_COMPONENT_API const char* getModuleName();
+    SOFA_COMPONENT_API const char* getModuleVersion();
+    SOFA_COMPONENT_API const char* getModuleLicense();
+    SOFA_COMPONENT_API const char* getModuleDescription();
+    SOFA_COMPONENT_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
 {
     static bool first = true;
     if (first)
     {
+        PluginManager::getInstance().loadPlugin("Sofa.Component.Utils") ;
         first = false;
     }
+}
 
-    sofa::component::utils::initSofaComponentUtils();
+const char* getModuleName()
+{
+    return "Sofa.Component";
+}
+
+const char* getModuleVersion()
+{
+    return "1.0";
+}
+
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+const char* getModuleDescription()
+{
+    return getModuleName();
+}
+
+const char* getModuleComponentList()
+{
+    return "";
 }
 
 } // namespace sofa

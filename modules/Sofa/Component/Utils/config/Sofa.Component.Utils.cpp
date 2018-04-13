@@ -28,13 +28,47 @@ namespace component
 namespace utils
 {
 
-void initSofaComponentUtils()
+extern "C" {
+    SOFA_COMPONENT_UTILS_API void initExternalModule();
+    SOFA_COMPONENT_UTILS_API const char* getModuleName();
+    SOFA_COMPONENT_UTILS_API const char* getModuleVersion();
+    SOFA_COMPONENT_UTILS_API const char* getModuleLicense();
+    SOFA_COMPONENT_UTILS_API const char* getModuleDescription();
+    SOFA_COMPONENT_UTILS_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
 {
     static bool first = true;
     if (first)
     {
         first = false;
     }
+}
+
+const char* getModuleName()
+{
+    return "Sofa.Component.Utils";
+}
+
+const char* getModuleVersion()
+{
+    return "1.0";
+}
+
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+const char* getModuleDescription()
+{
+    return getModuleName();
+}
+
+const char* getModuleComponentList()
+{
+    return "InfoComponent, MakeAliasComponent, MakeDataAliasComponent, MessageHandlerComponent";
 }
 
 } // namespace sofa
