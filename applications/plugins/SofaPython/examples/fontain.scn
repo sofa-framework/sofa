@@ -18,9 +18,9 @@
         <MeshObjLoader name="loader" filename="mesh/floor2b.obj" />
         <Mesh src="@loader" />
         <MechanicalObject src="@loader" dy="-10.25" scale="0.5" />
-        <Triangle name="Floor" simulated="0" moving="0" />
-        <Line name="Floor" simulated="0" moving="0" />
-        <Point name="Floor" simulated="0" moving="0" />
+        <Triangle name="Floor" simulated="0" moving="0"  group='2'/>
+        <Line name="Floor" simulated="0" moving="0" group='2'/>
+        <Point name="Floor" simulated="0" moving="0" group='2'/>
         <OglModel name="FloorV" filename="mesh/floor2b.obj" scale="0.5" texturename="textures/floor.bmp" dy="-10" />
     </Node>
 

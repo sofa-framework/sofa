@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -23,7 +23,7 @@
 
 #include <sofa/defaulttype/TemplatesAliases.h>
 #include <sofa/helper/logging/Messaging.h>
-#include <sofa/helper/deprecatedcomponents.h>
+#include <sofa/helper/ComponentChange.h>
 
 namespace sofa
 {
@@ -153,32 +153,19 @@ objectmodel::BaseObject::SPtr ObjectFactory::createObject(objectmodel::BaseConte
     {
         //// The object cannot be created
         arg->logError("Object type " + classname + std::string("<") + templatename + std::string("> was not created"));
-        using sofa::helper::deprecatedcomponents::uncreateablecomponents ;
-        using sofa::helper::deprecatedcomponents::messages ;
-        using sofa::helper::deprecatedcomponents::indexName ;
 
-        if( uncreateablecomponents.find(classname) != uncreateablecomponents.end() )
+        using sofa::helper::lifecycle::ComponentChange;
+        using sofa::helper::lifecycle::uncreatableComponents;
+        if( uncreatableComponents.find(classname) != uncreatableComponents.end() )
         {
-            auto& msg = uncreateablecomponents[classname] ;
-            std::string str = msg[indexName];
-
-            /// Replace the string by the default one.
-            if( messages.find( str ) != messages.end() ){
-                str = messages[str] ;
-            }
-
-            std::stringstream tmp;
-            tmp << classname << str ;
-            for(unsigned int i=1;i<msg.size();i++)
-            {
-                tmp << msg[i] ;
-            }
-
-            arg->logError(tmp.str());
-        }else if(it == registry.end())
+            arg->logError( uncreatableComponents.at(classname).getMessage() );
+        }
+        else if(it == registry.end())
         {
             arg->logError("The object is not in the factory.");
-        }else{
+        }
+        else
+        {
             arg->logError("The object is in the factory but cannot be created.");
         }
     }

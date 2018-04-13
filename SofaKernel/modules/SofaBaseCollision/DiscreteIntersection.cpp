@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -31,6 +31,15 @@
 
 namespace sofa
 {
+
+namespace core
+{
+    namespace collision
+    {
+        template class SOFA_BASE_COLLISION_API IntersectorFactory<component::collision::DiscreteIntersection>;
+    }
+}
+
 
 namespace component
 {
@@ -72,7 +81,7 @@ DiscreteIntersection::DiscreteIntersection()
     intersectors.add<RigidCapsuleModel,OBBModel,DiscreteIntersection>(this);
     intersectors.add<RigidCapsuleModel,RigidSphereModel,DiscreteIntersection>(this);
 
-    IntersectorFactory::getInstance()->addIntersectors(this);
+	IntersectorFactory::getInstance()->addIntersectors(this);
 }
 
 /// Return the intersector class handling the given pair of collision models, or NULL if not supported.
@@ -85,14 +94,6 @@ ElementIntersector* DiscreteIntersection::findIntersector(core::CollisionModel* 
 } // namespace collision
 
 } // namespace component
-
-namespace core
-{
-namespace collision
-{
-template class SOFA_BASE_COLLISION_API IntersectorFactory<component::collision::DiscreteIntersection>;
-}
-}
 
 } // namespace sofa
 

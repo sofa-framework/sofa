@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -29,7 +29,6 @@
 #include <sofa/simulation/DeactivatedNodeVisitor.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/system/glut.h>
 #include <algorithm>
 #include <fstream>
 
@@ -800,33 +799,11 @@ void OptiTrackNatNetDevice::draw(const sofa::core::visual::VisualParams* vparams
         for (unsigned int i =0; i<markersID.size() && i<markers.size(); i++)
         {
             sofa::defaulttype::Vec3f center; center = markers[i];
-            sofa::defaulttype::Vec3f temp = modelviewM.transform(center);
-            {
-                std::ostringstream oss;
-                oss << std::hex << markersID[i];
-                if ((int)i+1 != markersID[i]) oss << "-" << (i+1);
-                std::string str = oss.str();
-                glLoadIdentity();
-                glTranslatef(temp[0], temp[1], temp[2]);
-                glScalef(scale,scale,scale);
-                glColor4fv(drawMarkersColor.getValue().ptr());
-                for (unsigned int c=0; c<str.size(); ++c)
-                    glutStrokeCharacter(GLUT_STROKE_ROMAN, str[c]);
-            }
-            /*
-                        if (i < inMarkers.size())
-                        {
-                            std::ostringstream oss;
-                            oss << inMarkers[i];
-                            std::string str = oss.str();
-                            glLoadIdentity();
-                            glTranslatef(temp[0], temp[1]-scale*100, temp[2]);
-                            glScalef(scale/2,scale/2,scale/2);
-                            glColor4f(1,1,1,1);
-                            for (unsigned int c=0;c<str.size();++c)
-                                glutStrokeCharacter(GLUT_STROKE_ROMAN, str[c]);
-                        }
-            */
+            std::ostringstream oss;
+            oss << std::hex << markersID[i];
+            if ((int)i + 1 != markersID[i]) oss << "-" << (i + 1);
+            std::string str = oss.str();
+            vparams->drawTool()->draw3DText(center, scale, drawMarkersColor.getValue(), str.c_str());
         }
         glPopMatrix();
     }

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -100,6 +100,9 @@ static bool isDirectory(const std::string& path);
 
 /// @brief Return true if and only if the given file path is absolute.
 static bool isAbsolute(const std::string& path);
+
+/// @brief Return true if and only if the given file path is an existing file.
+static bool isFile(const std::string& path);
 
 /// @brief Replace backslashes with slashes.
 static std::string convertBackSlashesToSlashes(const std::string& path);
