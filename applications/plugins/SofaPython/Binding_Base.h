@@ -23,7 +23,22 @@
 #define BINDING_BASE_H
 
 #include "PythonMacros.h"
-
+#include <sofa/core/DataEngine.h>
+#include <sofa/core/objectmodel/Base.h>
+#include <sofa/core/objectmodel/BaseData.h>
+#include <sofa/helper/Factory.h>
+#include <sofa/helper/Factory.inl>
 SP_DECLARE_CLASS_TYPE(Base)
+
+template<typename DataType>
+class DataCreator : public sofa::helper::BaseCreator<sofa::core::objectmodel::BaseData>
+{
+public:
+    virtual sofa::core::objectmodel::BaseData* createInstance(sofa::helper::NoArgument) override { return new sofa::core::objectmodel::Data<DataType>(); }
+    virtual const std::type_info& type() override { return typeid(sofa::core::objectmodel::BaseData);}
+};
+
+//sofa::core::objectmodel::BaseData * helper_addNewData(PyObject *args, sofa::core::objectmodel::Base* obj);
+sofa::core::objectmodel::BaseData * helper_addNewData(PyObject *args, PyObject * kw, sofa::core::objectmodel::Base * obj);
 
 #endif // BINDING_BASE_H

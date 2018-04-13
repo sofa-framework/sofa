@@ -19,12 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "SimpleGUI.h"
+#include "MultithreadGUI.h"
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/system/FileRepository.h>
+//#include <sofa/helper/system/thread/CircularQueue.inl>
+#include <sofa/simulation/CopyAspectVisitor.h>
+#include <sofa/simulation/ReleaseAspectVisitor.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
+#include <sofa/core/ExecParams.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/helper/system/SetDirectory.h>
@@ -36,6 +40,7 @@
 
 #include <sofa/helper/gl/glfont.h>
 #include <sofa/helper/gl/RAII.h>
+#include <sofa/helper/gl/GLSLShader.h>
 
 #include <sofa/helper/system/thread/CTime.h>
 
@@ -47,18 +52,16 @@
 #include <sofa/gui/MouseOperations.h>
 
 #include <sofa/simulation/PropagateEventVisitor.h>
-#ifdef SOFA_SMP
-#include <SofaBaseVisual/VisualModelImpl.h>
-#include <sofa/simulation/AnimateBeginEvent.h>
-#include <sofa/simulation/CollisionVisitor.h>
-#include <sofa/simulation/AnimateEndEvent.h>
-#include <sofa/simulation/PropagateEventVisitor.h>
-#include <sofa/simulation/VisualVisitor.h>
-#include <athapascan-1>
-#include "Multigraph.inl"
-#endif /* SOFA_SMP */
+
 // define this if you want video and OBJ capture to be only done once per N iteration
 //#define CAPTURE_PERIOD 5
+
+//#define NOVISUAL
+#define NOMSG
+
+#include <sofa/gui/GUIManager.h>
+
+int MtGUIClass = sofa::gui::GUIManager::RegisterGUI("glut-mt", &sofa::gui::glut::MultithreadGUI::CreateGUI, NULL, 0);
 
 
 namespace sofa
@@ -75,106 +78,142 @@ using std::endl;
 using namespace sofa::defaulttype;
 using namespace sofa::helper::gl;
 using sofa::simulation::getSimulation;
-#ifdef SOFA_SMP
-using namespace sofa::simulation;
-struct doCollideTask
+
+MultithreadGUI* MultithreadGUI::instance = NULL;
+
+// ---------------------------------------------------------
+// --- Multithread related stuff
+// ---------------------------------------------------------
+
+void MultithreadGUI::initAspects()
 {
-    void operator()()
+    aspectPool.setReleaseCallback(boost::bind(&MultithreadGUI::releaseAspect, this, _1));
+    simuAspect = aspectPool.allocate();
+    core::ExecParams::defaultInstance()->setAspectID(simuAspect->aspectID());
+#ifndef NOMSG
+    renderMsgBuffer = new AspectBuffer(aspectPool);
+#endif
+}
+
+void MultithreadGUI::initThreads()
+{
+    closeSimu = false;
+    simuThread.reset(new boost::thread(boost::bind(&MultithreadGUI::simulationLoop, this)));
+}
+
+void MultithreadGUI::closeThreads()
+{
+    closeSimu = true;
+    simuThread->join();
+}
+
+void MultithreadGUI::simulationLoop()
+{
+    core::ExecParams* ep = core::ExecParams::defaultInstance();
+    ep->setAspectID(simuAspect->aspectID());
+    groot->getContext()->setAnimate(true);
+
+#ifndef NOMSG
+    AspectRef renderAspect = aspectPool.allocate();
+    fprintf(stderr, "Allocated aspect %d for render\nCopy from %d to %d\n", renderAspect->aspectID(), simuAspect->aspectID(), renderAspect->aspectID());
+
+    simulation::CopyAspectVisitor copyAspect(ep, renderAspect->aspectID(), simuAspect->aspectID());
+    groot->execute(copyAspect);
+
+    renderMsgBuffer->push(renderAspect);
+#endif
+
+    while(!closeSimu)
     {
-        //	std::cout << "Recording simulation with base name: " << writeSceneName << "\n";
-        // groot->execute<CollisionVisitor>();
-        // TODO SimpleGUI::instance->getScene()->execute<CollisionVisitor>();
-        // TODO AnimateBeginEvent ev ( 0.0 );
-        // TODO PropagateEventVisitor act ( &ev );
-        // TODO SimpleGUI::instance->getScene()->execute ( act );
-        //	sofa::simulation::tree::getSimulation()->animate(groot.get());
+        CTime::sleep(0.001);
+        step();
+        //boost::thread::sleep(boost::get_system_time() + boost::posix_time::milliseconds(500));
+#ifndef NOMSG
+        AspectRef renderAspect = renderMsgBuffer->allocate();  // aspectPool.allocate();
+        fprintf(stderr, "Allocated aspect %d for render\nCopy from %d to %d\n", renderAspect->aspectID(), simuAspect->aspectID(), renderAspect->aspectID());
+        simulation::CopyAspectVisitor copyAspect(ep, renderAspect->aspectID(), simuAspect->aspectID());
+        groot->execute(copyAspect);
+        renderMsgBuffer->push(renderAspect);
+
+        std::cout << "ASPECTS: simu=" << simuAspect->aspectID() << " render=" << renderAspect->aspectID() << " POOL=[";
+        for (int i=0,n=aspectPool.nbAspects(); i<n; ++i)
+            std::cout << ' ' << aspectPool.getAspectCounter(i);
+        std::cout << "]" << std::endl;
+#endif
+    }
+}
+
+bool MultithreadGUI::processMessages()
+{
+    //fprintf(stderr, "Process Messages\n");
+    bool needUpdate = false;
+#ifndef NOMSG
+    do
+    {
+        if (renderMsgBuffer->pop(glAspect))
+        {
+            fprintf(stderr, "pop aspect\n");
+            needUpdate = true;
+        }
+        if(glAspect == 0)
+        {
+            boost::thread::sleep(boost::get_system_time() + boost::posix_time::milliseconds(20));
+            fprintf(stderr, "null aspect\n");
+            continue;
+        }
 
     }
-};
-struct animateTask
-{
-    void operator()()
+    while(glAspect == 0);
+
+    if (needUpdate)
     {
-        //	std::cout << "Recording simulation with base name: " << writeSceneName << "\n";
-
-        getSimulation()->animate( SimpleGUI::instance->getScene());
-
+#ifndef NOVISUAL
+        // TODO: we need to copy the camera data to the new aspect otherwise we would lose camera motions
+        currentCamera->copyAspect(glAspect->aspectID(), core::ExecParams::defaultInstance()->aspectID());
+//core::ExecParams::defaultInstance()->setAspectID(0);
+#endif
+        core::ExecParams::defaultInstance()->setAspectID(glAspect->aspectID());
+        fprintf(stderr, "Using aspect %d for display\n", core::ExecParams::defaultInstance()->aspectID());
     }
-};
+#endif
+    return needUpdate;
+}
 
-struct collideTask
+void MultithreadGUI::releaseAspect(int aspect)
 {
-    void operator()()
-    {
-        //	std::cout << "Recording simulation with base name: " << writeSceneName << "\n";
+    simulation::ReleaseAspectVisitor releaseAspect(core::ExecParams::defaultInstance(), aspect);
+    groot->execute(releaseAspect);
+}
 
-        //   a1::Fork<doCollideTask>()();
-        //	sofa::simulation::tree::getSimulation()->animate(groot.get());
+// ---------------------------------------------------------
+// --- End of Multithread related stuff
+// ---------------------------------------------------------
 
-    }
-};
-struct visuTask
+int MultithreadGUI::mainLoop()
 {
-    void operator()()
-    {
-        //	std::cout << "Recording simulation with base name: " << writeSceneName << "\n";
-        // TODO AnimateEndEvent ev ( 0.0 );
-        // TODO PropagateEventVisitor act ( &ev );
-        // TODO SimpleGUI::instance->getScene()->execute ( act );
-        // TODO SimpleGUI::instance->getScene()->execute<VisualUpdateVisitor>();
+    instance->initThreads();
 
-    }
-};
-struct MainLoopTask
-{
-
-    void operator()()
-    {
-        //	std::cout << "Recording simulation with base name: " << writeSceneName << "\n";
-        Iterative::Fork<doCollideTask>()();
-        Iterative::Fork<animateTask >(a1::SetStaticSched(1,1,Sched::PartitionTask::SUBGRAPH))();
-        Iterative::Fork<visuTask>()();
-        //a1::Fork<collideTask>(a1::SetStaticSched(1,1,Sched::PartitionTask::SUBGRAPH))();
-    }
-};
-#endif /* SOFA_SMP */
-
-SimpleGUI* SimpleGUI::instance = NULL;
-
-int SimpleGUI::mainLoop()
-{
-#ifdef SOFA_SMP
-    if(groot)
-    {
-// TODO	getScene()->execute<CollisionVisitor>();
-        a1::Sync();
-        mg=new Iterative::Multigraph<MainLoopTask>();
-        mg->compile();
-        mg->deploy();
-
-    }
-#endif /* SOFA_SMP */
     glutMainLoop();
     return 0;
 }
 
-void SimpleGUI::redraw()
+void MultithreadGUI::redraw()
 {
     glutPostRedisplay();
 }
 
-int SimpleGUI::closeGUI()
+int MultithreadGUI::closeGUI()
 {
     delete this;
     return 0;
 }
 
 
-SOFA_DECL_CLASS(SimpleGUI)
+SOFA_DECL_CLASS(MultithreadGUI)
 
 static sofa::core::ObjectFactory::ClassEntry::SPtr classVisualModel;
 
-int SimpleGUI::InitGUI(const char* /*name*/, const std::vector<std::string>& /*options*/)
+int MultithreadGUI::InitGUI(const char* /*name*/, const std::vector<std::string>& /*options*/)
 {
     // Replace generic visual models with OglModel
     sofa::core::ObjectFactory::AddAlias("VisualModel", "OglModel", true,
@@ -182,7 +221,7 @@ int SimpleGUI::InitGUI(const char* /*name*/, const std::vector<std::string>& /*o
     return 0;
 }
 
-BaseGUI* SimpleGUI::CreateGUI(const char* /*name*/, const std::vector<std::string>& /*options*/, sofa::simulation::Node::SPtr groot, const char* filename)
+BaseGUI* MultithreadGUI::CreateGUI(const char* /*name*/, sofa::simulation::Node::SPtr groot, const char* filename)
 {
 
     glutInitDisplayMode ( GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE );
@@ -192,7 +231,7 @@ BaseGUI* SimpleGUI::CreateGUI(const char* /*name*/, const std::vector<std::strin
     glutCreateWindow ( ":: SOFA ::" );
 
 
-#ifndef PS3
+
     std::cout << "Window created:"
             << " red="<<glutGet(GLUT_WINDOW_RED_SIZE)
             << " green="<<glutGet(GLUT_WINDOW_GREEN_SIZE)
@@ -201,7 +240,6 @@ BaseGUI* SimpleGUI::CreateGUI(const char* /*name*/, const std::vector<std::strin
             << " depth="<<glutGet(GLUT_WINDOW_DEPTH_SIZE)
             << " stencil="<<glutGet(GLUT_WINDOW_STENCIL_SIZE)
             << std::endl;
-#endif
 
     glClearColor ( 0.0f, 0.0f, 0.0f, 0.0f );
     glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -209,40 +247,29 @@ BaseGUI* SimpleGUI::CreateGUI(const char* /*name*/, const std::vector<std::strin
     glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     glutSwapBuffers ();
 
+
+    glutReshapeFunc ( glut_reshape );
     glutIdleFunc ( glut_idle );
     glutDisplayFunc ( glut_display );
-
-#ifndef PS3
-    glutReshapeFunc ( glut_reshape );
     glutKeyboardFunc ( glut_keyboard );
     glutSpecialFunc ( glut_special );
     glutMouseFunc ( glut_mouse );
     glutMotionFunc ( glut_motion );
     glutPassiveMotionFunc ( glut_motion );
 
-    SimpleGUI* gui = new SimpleGUI();
+    MultithreadGUI* gui = new MultithreadGUI();
+    gui->initAspects();
     gui->setScene(groot, filename);
 
     gui->initializeGL();
-#else
-    // no glutReshape on PS3 the resoluion is fixed
-    GLuint screen_width;
-    GLuint screen_height;
-    psglGetDeviceDimensions(psglGetCurrentDevice(), &screen_width, &screen_height);
-
-    SimpleGUI* gui = new SimpleGUI();
-    gui->setScene(groot, filename);
-
-    gui->initializeGL();
-    gui->resizeGL(screen_width, screen_height);
-#endif
+    gui->initTextures();
 
     return gui;
 }
 
 
 
-void SimpleGUI::glut_display()
+void MultithreadGUI::glut_display()
 {
     glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
     if (instance)
@@ -252,7 +279,7 @@ void SimpleGUI::glut_display()
     glutSwapBuffers ();
 }
 
-void SimpleGUI::glut_reshape(int w, int h)
+void MultithreadGUI::glut_reshape(int w, int h)
 {
     if (instance)
     {
@@ -260,7 +287,7 @@ void SimpleGUI::glut_reshape(int w, int h)
     }
 }
 
-void SimpleGUI::glut_keyboard(unsigned char k, int, int)
+void MultithreadGUI::glut_keyboard(unsigned char k, int, int)
 {
     if (instance)
     {
@@ -269,7 +296,7 @@ void SimpleGUI::glut_keyboard(unsigned char k, int, int)
     }
 }
 
-void SimpleGUI::glut_mouse(int button, int state, int x, int y)
+void MultithreadGUI::glut_mouse(int button, int state, int x, int y)
 {
     if (instance)
     {
@@ -278,7 +305,7 @@ void SimpleGUI::glut_mouse(int button, int state, int x, int y)
     }
 }
 
-void SimpleGUI::glut_motion(int x, int y)
+void MultithreadGUI::glut_motion(int x, int y)
 {
     if (instance)
     {
@@ -287,7 +314,7 @@ void SimpleGUI::glut_motion(int x, int y)
     }
 }
 
-void SimpleGUI::glut_special(int k, int, int)
+void MultithreadGUI::glut_special(int k, int, int)
 {
     if (instance)
     {
@@ -296,14 +323,19 @@ void SimpleGUI::glut_special(int k, int, int)
     }
 }
 
-void SimpleGUI::glut_idle()
+void MultithreadGUI::glut_idle()
 {
+//    if (instance)
+//    {
+//        if (instance->getScene() && instance->getScene()->getContext()->getAnimate())
+//            instance->step();
+//        else
+//            CTime::sleep(0.01);
+//        instance->animate();
+//    }
     if (instance)
     {
-        if (instance->getScene() && instance->getScene()->getContext()->getAnimate())
-            instance->step();
-        else
-            CTime::sleep(0.01);
+        //CTime::sleep(0.1);
         instance->animate();
     }
 }
@@ -313,7 +345,8 @@ void SimpleGUI::glut_idle()
 // ---------------------------------------------------------
 // --- Constructor
 // ---------------------------------------------------------
-SimpleGUI::SimpleGUI()
+MultithreadGUI::MultithreadGUI()
+    : renderMsgBuffer(NULL)
 {
     instance = this;
 
@@ -336,7 +369,6 @@ SimpleGUI::SimpleGUI()
     _materialMode = 0;
     _facetNormal = GL_FALSE;
     _renderingMode = GL_RENDER;
-    _waitForRender = false;
     texLogo = NULL;
 
     _arrow = gluNewQuadric();
@@ -372,12 +404,9 @@ SimpleGUI::SimpleGUI()
     m_isAltPressed = false;
     m_dumpState = false;
     m_dumpStateStream = 0;
-    m_exportGnuplot = false;
 
     //Register the different Operations possible
     RegisterOperation("Attach").add< AttachOperation >();
-    RegisterOperation("Add recorded camera").add< AddRecordedCameraOperation >();
-    RegisterOperation("Start navigation").add< StartNavigationOperation >();
     RegisterOperation("Fix").add< FixOperation >();
     RegisterOperation("Incise").add< InciseOperation >();
     RegisterOperation("Remove").add< TopologyOperation >();
@@ -389,22 +418,47 @@ SimpleGUI::SimpleGUI()
 
     vparams = core::visual::VisualParams::defaultInstance();
     vparams->drawTool() = &drawTool;
+
+    visuFPS = 0;
+    simuFPS = 0;
 }
 
 
 // ---------------------------------------------------------
 // --- Destructor
 // ---------------------------------------------------------
-SimpleGUI::~SimpleGUI()
+MultithreadGUI::~MultithreadGUI()
 {
+    closeThreads();
+#ifndef NOMSG
+    if (renderMsgBuffer)
+    {
+        renderMsgBuffer->clear();
+        delete renderMsgBuffer;
+    }
+#endif
     if (instance == this) instance = NULL;
+}
+
+void MultithreadGUI::initTextures()
+{
+    if (!initTexturesDone)
+    {
+        std::cout << "-----------------------------------> initTextures\n";
+        //---------------------------------------------------
+#ifndef NOVISUAL
+        simulation::getSimulation()->initTextures(groot.get());
+#endif
+        //---------------------------------------------------
+        initTexturesDone = true;
+    }
 }
 
 // -----------------------------------------------------------------
 // --- OpenGL initialization method - includes light definitions,
 // --- color tracking, etc.
 // -----------------------------------------------------------------
-void SimpleGUI::initializeGL(void)
+void MultithreadGUI::initializeGL(void)
 {
     static GLfloat    specref[4];
     static GLfloat    ambientLight[4];
@@ -448,7 +502,7 @@ void SimpleGUI::initializeGL(void)
         specref[2] = 1.0f;
         specref[3] = 1.0f;
         // Here we initialize our multi-texturing functions
-#if defined(SOFA_HAVE_GLEW) && !defined(PS3)
+#ifdef SOFA_HAVE_GLEW
         glewInit();
         if (!GLEW_ARB_multitexture)
             std::cerr << "Error: GL_ARB_multitexture not supported\n";
@@ -478,13 +532,13 @@ void SimpleGUI::initializeGL(void)
         glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 
         // All materials hereafter have full specular reflectivity with a high shine
-        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specref);
-        glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, 128);
+        glMaterialfv(GL_FRONT, GL_SPECULAR, specref);
+        glMateriali(GL_FRONT, GL_SHININESS, 128);
 
         glShadeModel(GL_SMOOTH);
 
         // Define background color
-        glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
         //glBlendFunc(GL_SRC_ALPHA, GL_ONE);
         //Load texture for logo
@@ -494,7 +548,7 @@ void SimpleGUI::initializeGL(void)
         bool imageSupport = helper::io::Image::FactoryImage::getInstance()->hasKey(extension);
         if(!imageSupport)
         {
-            msg_error("SimpleGUI") << "Could not open sofa logo, " << extension  << " image format (no support found)" ;
+            msg_error("MultithreadGUI") << "Could not open sofa logo, " << extension  << " image format (no support found)" ;
             return;
         } else
         {
@@ -503,17 +557,16 @@ void SimpleGUI::initializeGL(void)
             bool imgLoaded = img->load(filename);
             if (!imgLoaded)
             {
-                msg_error("SimpleGUI") << "Could not open sofa logo, " << filename ;
+                msg_error("MultithreadGUI") << "Could not open sofa logo, " << filename ;
                 return;
             }
             texLogo = new helper::gl::Texture(img);
             texLogo->init();
         }
 
-#ifndef PS3
         glEnableClientState(GL_VERTEX_ARRAY);
         glEnableClientState(GL_NORMAL_ARRAY);
-#endif
+
         // Turn on our light and enable color along with the light
         //glEnable(GL_LIGHTING);
         glEnable(GL_LIGHT0);
@@ -534,7 +587,11 @@ void SimpleGUI::initializeGL(void)
 // ---------------------------------------------------------
 // ---
 // ---------------------------------------------------------
-void SimpleGUI::PrintString(void* font, char* string)
+
+// ---------------------------------------------------------
+// ---
+// ---------------------------------------------------------
+void MultithreadGUI::PrintString(void* font, char* string)
 {
     int    len, i;
 
@@ -548,7 +605,7 @@ void SimpleGUI::PrintString(void* font, char* string)
 // ---------------------------------------------------------
 // ---
 // ---------------------------------------------------------
-void SimpleGUI::Display3DText(float x, float y, float z, char* string)
+void MultithreadGUI::Display3DText(float x, float y, float z, char* string)
 {
     char*    c;
 
@@ -565,7 +622,7 @@ void SimpleGUI::Display3DText(float x, float y, float z, char* string)
 // ---
 // ---
 // ---------------------------------------------------
-void SimpleGUI::DrawAxis(double xpos, double ypos, double zpos,
+void MultithreadGUI::DrawAxis(double xpos, double ypos, double zpos,
         double arrowSize)
 {
     float    fontScale    = (float) (arrowSize / 600.0);
@@ -648,7 +705,8 @@ void SimpleGUI::DrawAxis(double xpos, double ypos, double zpos,
 // ---
 // ---
 // ---------------------------------------------------
-void SimpleGUI::DrawBox(SReal* minBBox, SReal* maxBBox, double r)
+//void MultithreadGUI::DrawBox(double* minBBox, double* maxBBox, double r)
+void MultithreadGUI::DrawBox(SReal* minBBox, SReal* maxBBox, SReal r)//Moreno modif
 {
     //std::cout << "box = < " << minBBox[0] << ' ' << minBBox[1] << ' ' << minBBox[2] << " >-< " << maxBBox[0] << ' ' << maxBBox[1] << ' ' << maxBBox[2] << " >"<< std::endl;
     if (r==0.0)
@@ -753,10 +811,10 @@ void SimpleGUI::DrawBox(SReal* minBBox, SReal* maxBBox, double r)
 // --- Draw a "plane" in wireframe. The "plane" is parallel to the XY axis
 // --- of the main coordinate system
 // ----------------------------------------------------------------------------------
-void SimpleGUI::DrawXYPlane(double zo, double xmin, double xmax, double ymin,
+void MultithreadGUI::DrawXYPlane(double zo, double xmin, double xmax, double ymin,
         double ymax, double step)
 {
-    register double x, y;
+    double x, y;
 
     Enable<GL_DEPTH_TEST> depth;
 
@@ -782,10 +840,10 @@ void SimpleGUI::DrawXYPlane(double zo, double xmin, double xmax, double ymin,
 // --- Draw a "plane" in wireframe. The "plane" is parallel to the XY axis
 // --- of the main coordinate system
 // ----------------------------------------------------------------------------------
-void SimpleGUI::DrawYZPlane(double xo, double ymin, double ymax, double zmin,
+void MultithreadGUI::DrawYZPlane(double xo, double ymin, double ymax, double zmin,
         double zmax, double step)
 {
-    register double y, z;
+    double y, z;
     Enable<GL_DEPTH_TEST> depth;
 
     glBegin(GL_LINES);
@@ -811,10 +869,10 @@ void SimpleGUI::DrawYZPlane(double xo, double ymin, double ymax, double zmin,
 // --- Draw a "plane" in wireframe. The "plane" is parallel to the XY axis
 // --- of the main coordinate system
 // ----------------------------------------------------------------------------------
-void SimpleGUI::DrawXZPlane(double yo, double xmin, double xmax, double zmin,
+void MultithreadGUI::DrawXZPlane(double yo, double xmin, double xmax, double zmin,
         double zmax, double step)
 {
-    register double x, z;
+    double x, z;
     Enable<GL_DEPTH_TEST> depth;
 
     glBegin(GL_LINES);
@@ -837,12 +895,12 @@ void SimpleGUI::DrawXZPlane(double yo, double xmin, double xmax, double zmin,
 // -------------------------------------------------------------------
 // ---
 // -------------------------------------------------------------------
-void SimpleGUI::DrawLogo()
+void MultithreadGUI::DrawLogo()
 {
     int w = 0;
     int h = 0;
 
-    if (texLogo && texLogo->getImage() && texLogo->getImage()->isLoaded())
+    if (texLogo && texLogo->getImage())
     {
         h = texLogo->getImage()->getHeight();
         w = texLogo->getImage()->getWidth();
@@ -886,7 +944,7 @@ void SimpleGUI::DrawLogo()
 // -------------------------------------------------------------------
 // ---
 // -------------------------------------------------------------------
-void SimpleGUI::DisplayOBJs()
+void MultithreadGUI::DisplayOBJs()
 {
 
     Enable<GL_LIGHTING> light;
@@ -897,19 +955,9 @@ void SimpleGUI::DisplayOBJs()
     glColor4f(1,1,1,1);
     glDisable(GL_COLOR_MATERIAL);
 
-
-    vparams->sceneBBox() = groot->f_bbox.getValue();
-
-    if (!initTexturesDone)
+    if (initTexturesDone)
     {
-//         std::cout << "-----------------------------------> initTexturesDone\n";
-        //---------------------------------------------------
-        simulation::getSimulation()->initTextures(groot.get());
-        //---------------------------------------------------
-        initTexturesDone = true;
-    }
-
-    {
+        vparams->sceneBBox() = groot->f_bbox.getValue();
 
         getSimulation()->draw(vparams,groot.get());
 
@@ -928,7 +976,7 @@ void SimpleGUI::DisplayOBJs()
 // -------------------------------------------------------
 // ---
 // -------------------------------------------------------
-void SimpleGUI::DisplayMenu(void)
+void MultithreadGUI::DisplayMenu(void)
 {
     Disable<GL_LIGHTING> light;
 
@@ -954,7 +1002,7 @@ void SimpleGUI::DisplayMenu(void)
 // ---------------------------------------------------------
 // ---
 // ---------------------------------------------------------
-void SimpleGUI::DrawScene(void)
+void MultithreadGUI::DrawScene(void)
 {
     if (!groot) return;
     if(!currentCamera)
@@ -1000,7 +1048,7 @@ void SimpleGUI::DrawScene(void)
 // ---------------------------------------------------------
 // --- Reshape of the window, reset the projection
 // ---------------------------------------------------------
-void SimpleGUI::resizeGL(int width, int height)
+void MultithreadGUI::resizeGL(int width, int height)
 {
 
     _W = width;
@@ -1018,7 +1066,7 @@ void SimpleGUI::resizeGL(int width, int height)
 // ---------------------------------------------------------
 // --- Reshape of the window, reset the projection
 // ---------------------------------------------------------
-void SimpleGUI::calcProjection()
+void MultithreadGUI::calcProjection()
 {
     int width = _W;
     int height = _H;
@@ -1048,10 +1096,10 @@ void SimpleGUI::calcProjection()
     yNear = 0.35 * vparams->zNear();
     offset = 0.001 * vparams->zNear(); // for foreground and background planes
 
-    /*xOrtho = fabs(vparams->sceneTransform().translation[2]) * xNear
-            / vparams->zNear();
-    yOrtho = fabs(vparams->sceneTransform().translation[2]) * yNear
-            / vparams->zNear();*/
+//    xOrtho = fabs(vparams->sceneTransform().translation[2]) * xNear
+//            / vparams->zNear();
+//    yOrtho = fabs(vparams->sceneTransform().translation[2]) * yNear
+//            / vparams->zNear();
 
     if ((height != 0) && (width != 0))
     {
@@ -1084,11 +1132,11 @@ void SimpleGUI::calcProjection()
         gluPerspective(currentCamera->getFieldOfView(), (double) width / (double) height, vparams->zNear(), vparams->zFar());
     else
     {
-        float ratio = (float)( vparams->zFar() / (vparams->zNear() * 20) );
+        float ratio = vparams->zFar() / (vparams->zNear() * 20);
         Vector3 tcenter = vparams->sceneTransform() * center;
         if (tcenter[2] < 0.0)
         {
-            ratio = (float)( -300 * (tcenter.norm2()) / tcenter[2] );
+            ratio = -300 * (tcenter.norm2()) / tcenter[2];
         }
         glOrtho((-xNear * xFactor) * ratio, (xNear * xFactor) * ratio, (-yNear
                 * yFactor) * ratio, (yNear * yFactor) * ratio,
@@ -1113,7 +1161,7 @@ void SimpleGUI::calcProjection()
 // ---------------------------------------------------------
 // ---
 // ---------------------------------------------------------
-void SimpleGUI::paintGL()
+void MultithreadGUI::paintGL()
 {
     //    ctime_t beginDisplay;
     //ctime_t endOfDisplay;
@@ -1144,8 +1192,12 @@ void SimpleGUI::paintGL()
     glClearDepth(1.0);
     glClear(_clearBuffer);
 
+#ifndef NOVISUAL
     // draw the scene
     DrawScene();
+#endif
+
+    eventNewFrame();
 
     if (_video)
     {
@@ -1155,12 +1207,9 @@ void SimpleGUI::paintGL()
 #endif
             screenshot(2);
     }
-
-    if (_waitForRender)
-        _waitForRender = false;
 }
 
-void SimpleGUI::eventNewStep()
+void MultithreadGUI::eventNewFrame()
 {
     static ctime_t beginTime[10];
     static const ctime_t timeTicks = CTime::getRefTicksPerSec();
@@ -1176,9 +1225,9 @@ void SimpleGUI::eventNewStep()
     {
         ctime_t curtime = CTime::getRefTime();
         int i = ((frameCounter/10)%10);
-        double fps = ((double)timeTicks / (curtime - beginTime[i]))*(frameCounter<100?frameCounter:100);
-        char buf[100];
-        sprintf(buf, "%.1f FPS", fps);
+        visuFPS = ((double)timeTicks / (curtime - beginTime[i]))*(frameCounter<100?frameCounter:100);
+        char buf[120];
+        sprintf(buf, "%.1f vFPS, %.1f sFPS", visuFPS, simuFPS);
         std::string title = "SOFA";
         if (!sceneFileName.empty())
         {
@@ -1194,18 +1243,52 @@ void SimpleGUI::eventNewStep()
     }
 }
 
+void MultithreadGUI::eventNewStep()
+{
+    static ctime_t beginTime[10];
+    static const ctime_t timeTicks = CTime::getRefTicksPerSec();
+    static int frameCounter = 0;
+    if (frameCounter==0)
+    {
+        ctime_t t = CTime::getRefTime();
+        for (int i=0; i<10; i++)
+            beginTime[i] = t;
+    }
+    ++frameCounter;
+    if ((frameCounter%10) == 0)
+    {
+        ctime_t curtime = CTime::getRefTime();
+        int i = ((frameCounter/10)%10);
+        simuFPS = ((double)timeTicks / (curtime - beginTime[i]))*(frameCounter<100?frameCounter:100);
+
+        beginTime[i] = curtime;
+        //frameCounter = 0;
+    }
+}
+
 // ---------------------------------------------------------
 // ---
 // ---------------------------------------------------------
-void SimpleGUI::animate(void)
+void MultithreadGUI::animate(void)
 {
+    bool needRedraw = false;
     if (_spinning)
     {
         //_newQuat = _currentQuat + _newQuat;
+        needRedraw = true;
+    }
+    if (processMessages())
+    {
+#ifndef NOVISUAL
+        fprintf(stderr, "Update Visual\n");
+        getSimulation()->updateVisual(groot.get());
+        needRedraw = true;
+#endif
     }
 
     // update the entire scene
-    redraw();
+    if (needRedraw)
+        redraw();
 }
 
 
@@ -1213,39 +1296,36 @@ void SimpleGUI::animate(void)
 // --- Handle events (mouse, keyboard, ...)
 // ----------------------------------------
 
-bool SimpleGUI::isControlPressed() const
+bool MultithreadGUI::isControlPressed() const
 {
     return m_isControlPressed;
     //return glutGetModifiers()&GLUT_ACTIVE_CTRL;
 }
 
-bool SimpleGUI::isShiftPressed() const
+bool MultithreadGUI::isShiftPressed() const
 {
     return m_isShiftPressed;
     //return glutGetModifiers()&GLUT_ACTIVE_SHIFT;
 }
 
-bool SimpleGUI::isAltPressed() const
+bool MultithreadGUI::isAltPressed() const
 {
     return m_isAltPressed;
     //return glutGetModifiers()&GLUT_ACTIVE_ALT;
 }
 
-void SimpleGUI::updateModifiers()
+void MultithreadGUI::updateModifiers()
 {
-#ifndef PS3
     m_isControlPressed =  (glutGetModifiers()&GLUT_ACTIVE_CTRL )!=0;
     m_isShiftPressed   =  (glutGetModifiers()&GLUT_ACTIVE_SHIFT)!=0;
     m_isAltPressed     =  (glutGetModifiers()&GLUT_ACTIVE_ALT  )!=0;
-#endif
 }
 
-void SimpleGUI::keyPressEvent ( int k )
+void MultithreadGUI::keyPressEvent ( int k )
 {
-#ifndef PS3
     if( isControlPressed() ) // pass event to the scene data structure
     {
-        //cerr<<"SimpleGUI::keyPressEvent, key = "<<k<<" with Control pressed "<<endl;
+        //cerr<<"MultithreadGUI::keyPressEvent, key = "<<k<<" with Control pressed "<<endl;
         sofa::core::objectmodel::KeypressedEvent keyEvent(k);
         groot->propagateEvent(core::ExecParams::defaultInstance(), &keyEvent);
     }
@@ -1346,13 +1426,12 @@ void SimpleGUI::keyPressEvent ( int k )
             break;
         }
         }
-#endif
 }
 
 
-void SimpleGUI::keyReleaseEvent ( int k )
+void MultithreadGUI::keyReleaseEvent ( int k )
 {
-    //cerr<<"SimpleGUI::keyReleaseEvent, key = "<<k<<endl;
+    //cerr<<"MultithreadGUI::keyReleaseEvent, key = "<<k<<endl;
     if( isControlPressed() ) // pass event to the scene data structure
     {
         sofa::core::objectmodel::KeyreleasedEvent keyEvent(k);
@@ -1361,9 +1440,9 @@ void SimpleGUI::keyReleaseEvent ( int k )
 }
 
 // ---------------------- Here are the mouse controls for the scene  ----------------------
-void SimpleGUI::mouseEvent ( int type, int eventX, int eventY, int button )
+void MultithreadGUI::mouseEvent ( int type, int eventX, int eventY, int button )
 {
-#ifndef PS3
+
     const sofa::core::visual::VisualParams::Viewport& viewport = vparams->viewport();
 
     MousePosition mousepos;
@@ -1527,8 +1606,8 @@ void SimpleGUI::mouseEvent ( int type, int eventX, int eventY, int button )
             int dy = eventY - _mouseInteractorSavedPosY;
             if (dx || dy)
             {
-                _lightPosition[0] -= dx*0.1f;
-                _lightPosition[1] += dy*0.1f;
+                _lightPosition[0] -= dx*0.1;
+                _lightPosition[1] += dy*0.1;
                 std::cout << "Light = "<< _lightPosition[0] << " "<< _lightPosition[1] << " "<< _lightPosition[2] << std::endl;
                 redraw();
                 _mouseInteractorSavedPosX = eventX;
@@ -1582,10 +1661,6 @@ void SimpleGUI::mouseEvent ( int type, int eventX, int eventY, int button )
                 mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::RightPressed, eventX, eventY);
             else if (button == GLUT_MIDDLE_BUTTON)
                 mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::MiddlePressed, eventX, eventY);
-            else{
-                // A fallback event to rules them all...
-                mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::AnyExtraButtonPressed, eventX, eventY);
-            }
             currentCamera->manageEvent(mEvent);
             _moving = true;
             _spinning = false;
@@ -1611,10 +1686,6 @@ void SimpleGUI::mouseEvent ( int type, int eventX, int eventY, int button )
                 mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::RightReleased, eventX, eventY);
             else if (button == GLUT_MIDDLE_BUTTON)
                 mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::MiddleReleased, eventX, eventY);
-            else{
-                // A fallback event to rules them all...
-                mEvent = new sofa::core::objectmodel::MouseEvent(sofa::core::objectmodel::MouseEvent::AnyExtraButtonReleased, eventX, eventY);
-            }
             currentCamera->manageEvent(mEvent);
             _moving = false;
             _spinning = false;
@@ -1629,30 +1700,18 @@ void SimpleGUI::mouseEvent ( int type, int eventX, int eventY, int button )
 
         redraw();
     }
-#endif
 }
 
-void SimpleGUI::step()
+void MultithreadGUI::step()
 {
     {
-        if (_waitForRender) return;
         //groot->setLogTime(true);
-#ifdef SOFA_SMP
-        mg->step();
-#else
         getSimulation()->animate(groot.get());
-#endif
-        getSimulation()->updateVisual(groot.get());
 
         if( m_dumpState )
             getSimulation()->dumpState( groot.get(), *m_dumpStateStream );
-        if( m_exportGnuplot )
 
-
-            _waitForRender = true;
         eventNewStep();
-
-        redraw();
     }
 
     if (_animationOBJ)
@@ -1668,7 +1727,7 @@ void SimpleGUI::step()
     }
 }
 
-void SimpleGUI::playpause()
+void MultithreadGUI::playpause()
 {
     if (groot)
     {
@@ -1676,7 +1735,7 @@ void SimpleGUI::playpause()
     }
 }
 
-void SimpleGUI::dumpState(bool value)
+void MultithreadGUI::dumpState(bool value)
 {
     m_dumpState = value;
     if( m_dumpState )
@@ -1690,7 +1749,7 @@ void SimpleGUI::dumpState(bool value)
     }
 }
 
-void SimpleGUI::resetScene()
+void MultithreadGUI::resetScene()
 {
     if (groot)
     {
@@ -1699,7 +1758,7 @@ void SimpleGUI::resetScene()
     }
 }
 
-void SimpleGUI::resetView()
+void MultithreadGUI::resetView()
 {
     bool fileRead = false;
 
@@ -1718,12 +1777,12 @@ void SimpleGUI::resetView()
     redraw();
 }
 
-void SimpleGUI::setCameraMode(core::visual::VisualParams::CameraType mode)
+void MultithreadGUI::setCameraMode(core::visual::VisualParams::CameraType mode)
 {
     currentCamera->setCameraType(mode);
 }
 
-void SimpleGUI::getView(Vec3d& pos, Quat& ori) const
+void MultithreadGUI::getView(Vec3d& pos, Quat& ori) const
 {
     if (!currentCamera)
         return;
@@ -1741,7 +1800,7 @@ void SimpleGUI::getView(Vec3d& pos, Quat& ori) const
     ori[3] = camOrientation[3];
 }
 
-void SimpleGUI::setView(const Vec3d& pos, const Quat &ori)
+void MultithreadGUI::setView(const Vec3d& pos, const Quat &ori)
 {
     Vec3d position;
     Quat orientation;
@@ -1758,7 +1817,7 @@ void SimpleGUI::setView(const Vec3d& pos, const Quat &ori)
     redraw();
 }
 
-void SimpleGUI::moveView(const Vec3d& pos, const Quat &ori)
+void MultithreadGUI::moveView(const Vec3d& pos, const Quat &ori)
 {
     if (!currentCamera)
         return;
@@ -1767,7 +1826,7 @@ void SimpleGUI::moveView(const Vec3d& pos, const Quat &ori)
     redraw();
 }
 
-void SimpleGUI::newView()
+void MultithreadGUI::newView()
 {
     if (!currentCamera || !groot)
         return;
@@ -1775,7 +1834,7 @@ void SimpleGUI::newView()
     currentCamera->setDefaultView(groot->getGravity());
 }
 
-void SimpleGUI::saveView()
+void MultithreadGUI::saveView()
 {
     if (!sceneFileName.empty())
     {
@@ -1787,13 +1846,12 @@ void SimpleGUI::saveView()
             std::cout << "Error while saving view parameters in " << viewFileName << std::endl;
     }
 }
-
-void SimpleGUI::screenshot(int compression_level)
+void MultithreadGUI::screenshot(int compression_level)
 {
     capture.saveScreen(compression_level);
 }
 
-void SimpleGUI::exportOBJ(bool exportMTL)
+void MultithreadGUI::exportOBJ(bool exportMTL)
 {
     if (!groot) return;
     std::ostringstream ofilename;
@@ -1821,7 +1879,7 @@ void SimpleGUI::exportOBJ(bool exportMTL)
     getSimulation()->exportOBJ(groot.get(), filename.c_str(),exportMTL);
 }
 
-void SimpleGUI::setScene(sofa::simulation::Node::SPtr scene, const char* filename, bool)
+void MultithreadGUI::setScene(sofa::simulation::Node::SPtr scene, const char* filename, bool)
 {
     std::ostringstream ofilename;
 
@@ -1849,12 +1907,18 @@ void SimpleGUI::setScene(sofa::simulation::Node::SPtr scene, const char* filenam
         {
             currentCamera = sofa::core::objectmodel::New<component::visualmodel::InteractiveCamera>();
             currentCamera->setName(core::objectmodel::Base::shortName(currentCamera.get()));
+
             groot->addObject(currentCamera);
+
             currentCamera->p_position.forceSet();
             currentCamera->p_orientation.forceSet();
             currentCamera->bwdInit();
+
             resetView();
         }
+
+        // TODO: the camera must be removed from the scene graph, otherwise it would not be controllable from the GUI thread
+        groot->removeObject(currentCamera);
 
         vparams->sceneBBox() = groot->f_bbox.getValue();
         currentCamera->setBoundingBox(vparams->sceneBBox().minBBox(), vparams->sceneBBox().maxBBox());
@@ -1862,16 +1926,8 @@ void SimpleGUI::setScene(sofa::simulation::Node::SPtr scene, const char* filenam
         // init pickHandler
         pick.init(groot.get());
     }
+    initTextures();
     redraw();
-}
-
-void SimpleGUI::setExportGnuplot( bool exp )
-{
-    m_exportGnuplot = exp;
-    if( m_exportGnuplot )
-    {
-        exportGnuplot(groot.get());
-    }
 }
 
 } // namespace glut

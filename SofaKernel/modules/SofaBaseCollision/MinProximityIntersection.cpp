@@ -37,6 +37,14 @@
 namespace sofa
 {
 
+namespace core
+{
+	namespace collision
+    {
+        template class SOFA_BASE_COLLISION_API IntersectorFactory<component::collision::MinProximityIntersection>;
+    }
+}
+
 namespace component
 {
 
@@ -96,14 +104,6 @@ void MinProximityIntersection::draw(const core::visual::VisualParams* vparams)
 } // namespace collision
 
 } // namespace component
-
-namespace core
-{
-namespace collision
-{
-template class SOFA_BASE_COLLISION_API IntersectorFactory<component::collision::MinProximityIntersection>;
-}
-}
 
 } // namespace sofa
 

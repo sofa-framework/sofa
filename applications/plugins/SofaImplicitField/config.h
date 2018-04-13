@@ -19,35 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_DEPRECATEDCOMPONENTS_H
-#define SOFA_HELPER_DEPRECATEDCOMPONENTS_H
+#ifndef SOFA_SOFAIMPLICITFIELD_CONFIG_H
+#define SOFA_SOFAIMPLICITFIELD_CONFIG_H
 
-#include <string>
-#include <vector>
-#include <map>
-#include "helper.h"
+#include <SofaBase/config.h>
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace deprecatedcomponents
-{
-
-constexpr int indexName {0};
-constexpr int indexMessage {1};
-
-extern SOFA_HELPER_API std::map<std::string, std::string>  messages ;
-extern SOFA_HELPER_API std::map<std::string, std::vector<std::string>> components ;
-extern SOFA_HELPER_API std::map<std::string, std::vector<std::string>> uncreateablecomponents ;
-
-
-} /// namespace deprecatedcomponents
-
-} /// namespace helper
-
-} /// namespace sofa
+#ifdef SOFA_HAVE_SOFAIMPLICITFIELD
+#  define SOFA_TARGET SofaImplicitField
+#  define SOFA_SOFAIMPLICITFIELD_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_SOFAIMPLICITFIELD_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
 #endif

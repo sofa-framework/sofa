@@ -13,9 +13,65 @@
 
 ### Improvements
 
+**Kernel modules**
+- [SofaLoader]
+    - ADD support to load VTK polylines in legacy formated files [#576](https://github.com/sofa-framework/sofa/pull/576)
+
+**Applications**
+- [SofaPython]
+    - PythonScriptDataEngine (PSDE) [#583](https://github.com/sofa-framework/sofa/pull/583)
+
+**Tools**
+- [tools]
+    - FIX sofa-launcher stdout [#592](https://github.com/sofa-framework/sofa/pull/592)
+
 ### Bug Fixes
 
+**Kernel modules**
+- [all]
+    - FIX warnings [#584](https://github.com/sofa-framework/sofa/pull/584)
+- [SofaHelper]
+    - More robust method to test end of string [#617](https://github.com/sofa-framework/sofa/pull/617)
+- [SofaSimulationGraph]
+    - FIX dependencies [#588](https://github.com/sofa-framework/sofa/pull/588)
+
+**Other modules**
+- [SofaMiscFem]
+    - FIX dependencies [#588](https://github.com/sofa-framework/sofa/pull/588)
+
+**Applications**
+- [CImgPlugin]
+    - Export CImg_CFLAGS [#595](https://github.com/sofa-framework/sofa/pull/595)
+- [runSofa]
+    - Fix compilation when SofaGuiQt is not activated [#599](https://github.com/sofa-framework/sofa/pull/599)
+- [SofaDistanceGrid]
+    - ADD .scene-tests to ignore scene [#594](https://github.com/sofa-framework/sofa/pull/594)
+- [SofaPython]
+    - FIX build for MacOS >10.13.0 [#614](https://github.com/sofa-framework/sofa/pull/614)
+
+**Scenes**
+- FIX collision of the fontain example [#612](https://github.com/sofa-framework/sofa/pull/612)
+
+**Extlibs**
+- [extlibs/gtest] Update gtest  & clean the CMakeLists.txt [#604](https://github.com/sofa-framework/sofa/pull/604)
+
+
 ### Cleaning
+
+**Kernel modules**
+- [All]
+    - CMake: Remove COMPONENTSET, keep DEPRECATED [#586](https://github.com/sofa-framework/sofa/pull/586)
+- [SofaHelper]
+    - CLEAN commented code and double parentheses in Messaging.h [#587](https://github.com/sofa-framework/sofa/pull/587)
+
+**Applications**
+- [CImgPlugin]
+    - Less scary config warnings [#607](https://github.com/sofa-framework/sofa/pull/607)
+- [HeadlessRecorder]
+    - Handle errors in target config [#608](https://github.com/sofa-framework/sofa/pull/608)
+- [SofaGUI]
+    - Move GlutGUI to projects and remove all glut references in SofaFramework [#598](https://github.com/sofa-framework/sofa/pull/598)
+    - CMake: Remove useless if block in qt CMakelists.txt [#590](https://github.com/sofa-framework/sofa/pull/590)
 
 
 ____________________________________________________________
@@ -203,6 +259,7 @@ ____________________________________________________________
 - [all]
     - CMake: Fix and clean boost, when using Sofa as an external lib [#421](https://github.com/sofa-framework/sofa/pull/421)
     - Fix computeBBox functions [#527](https://github.com/sofa-framework/sofa/pull/527)
+    - CMake: FIX Boost::program_options finding in install [#618](https://github.com/sofa-framework/sofa/pull/618)
 - [SofaBaseLinearSolver]
     - FIX no step if condition on denominator is met at first step [#521](https://github.com/sofa-framework/sofa/pull/521)
     - FIX breaking condition in CG at first step regarding threshold [#556](https://github.com/sofa-framework/sofa/pull/556)

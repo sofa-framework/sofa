@@ -29,9 +29,16 @@
 #include <iostream>
 #include <algorithm>
 
-
 namespace sofa
 {
+
+namespace core
+{
+    namespace collision
+    {
+        template class SOFA_BASE_COLLISION_API IntersectorFactory<component::collision::NewProximityIntersection>;
+    }
+}
 
 namespace component
 {
@@ -82,14 +89,6 @@ void NewProximityIntersection::init()
 } // namespace collision
 
 } // namespace component
-
-namespace core
-{
-namespace collision
-{
-template class SOFA_BASE_COLLISION_API IntersectorFactory<component::collision::NewProximityIntersection>;
-}
-}
 
 } // namespace sofa
 
