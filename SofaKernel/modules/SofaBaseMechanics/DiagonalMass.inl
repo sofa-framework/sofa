@@ -658,32 +658,42 @@ template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::init()
 {
     if (!d_fileMass.getValue().empty())
+    {
         load(d_fileMass.getFullPath().c_str());
 
-    m_dataTrackerVertex.trackData(d_vertexMass);
-    m_dataTrackerDensity.trackData(d_massDensity);
-    m_dataTrackerTotal.trackData(d_totalMass);
-
-    if(!checkTopology())
-    {
-        return;
+        msg_warning() << "File given as input for DiagonalMass, in this a case:" << msgendl
+                      << "the topology won't be used to compute the mass" << msgendl
+                      << "the update, the coherency and the tracking of mass information data are disable (listening = false)";
+        this->f_listening.setValue(false);
+        Inherited::init();
     }
-    Inherited::init();
-    initTopologyHandlers();
-
-    // TODO(dmarchal 2017-05-16): this code is duplicated with the one in RigidImpl we should factor it (remove in 1 year if not done or update the dates)
-    if (this->mstate && d_vertexMass.getValue().size() > 0 && d_vertexMass.getValue().size() < (unsigned)this->mstate->getSize())
+    else
     {
-        MassVector &masses= *d_vertexMass.beginEdit();
-        size_t i = masses.size()-1;
-        size_t n = (size_t)this->mstate->getSize();
-        masses.reserve(n);
-        while (masses.size() < n)
-            masses.push_back(masses[i]);
-        d_vertexMass.endEdit();
-    }
+        m_dataTrackerVertex.trackData(d_vertexMass);
+        m_dataTrackerDensity.trackData(d_massDensity);
+        m_dataTrackerTotal.trackData(d_totalMass);
 
-    massInitialization();
+        if(!checkTopology())
+        {
+            return;
+        }
+        Inherited::init();
+        initTopologyHandlers();
+
+        // TODO(dmarchal 2017-05-16): this code is duplicated with the one in RigidImpl we should factor it (remove in 1 year if not done or update the dates)
+        if (this->mstate && d_vertexMass.getValue().size() > 0 && d_vertexMass.getValue().size() < (unsigned)this->mstate->getSize())
+        {
+            MassVector &masses= *d_vertexMass.beginEdit();
+            size_t i = masses.size()-1;
+            size_t n = (size_t)this->mstate->getSize();
+            masses.reserve(n);
+            while (masses.size() < n)
+                masses.push_back(masses[i]);
+            d_vertexMass.endEdit();
+        }
+
+        massInitialization();
+    }
 }
 
 

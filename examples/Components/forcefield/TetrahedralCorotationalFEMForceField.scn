@@ -12,6 +12,7 @@
         <MeshGmshLoader filename="mesh/cylinder.msh" name="loader" />
         <MechanicalObject src="@loader" name="Volume" />
 		<TetrahedronSetTopologyContainer name="Container" position="@loader.position" tetrahedra="@loader.tetrahedra" /> 
+        <TetrahedronSetGeometryAlgorithms />
         <DiagonalMass massDensity="0.5" />
         <FixedPlaneConstraint direction="0 0 1" dmin="-0.1" dmax="0.1" />
         <FixedConstraint indices="0" />
