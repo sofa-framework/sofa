@@ -1,4 +1,6 @@
 <Node dt="0.01" gravity="0 -10 0">
+    <RequiredPlugin pluginName="SofaSphFluid"/>
+
     <VisualStyle displayFlags="showBehaviorModels showForceFields showCollisionModels" />
     <Node>
 <!--        <RungeKutta4 /> -->
