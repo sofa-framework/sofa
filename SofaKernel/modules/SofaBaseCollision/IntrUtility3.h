@@ -30,7 +30,6 @@
 #include <sofa/defaulttype/Vec.h>
 #include <SofaBaseCollision/OBBModel.h>
 
-
 namespace sofa{
 namespace component{
 namespace collision{
