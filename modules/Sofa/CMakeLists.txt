@@ -10,13 +10,8 @@ project(SofaNg VERSION 1.0)
 
 find_package(Sofa.Component REQUIRED)
 
-set(HEADER_FILES
-    config/${PROJECT_NAME}.h
-)
-
-set(SOURCE_FILES
-    config/${PROJECT_NAME}.cpp
-)
+set(HEADER_FILES config/${PROJECT_NAME}.h)
+set(SOURCE_FILES config/${PROJECT_NAME}.cpp)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
 

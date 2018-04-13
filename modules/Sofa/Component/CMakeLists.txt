@@ -8,13 +8,8 @@ add_subdirectory(Utils)
 
 project(Sofa.Component VERSION 1.0)
 
-set(HEADER_FILES
-    config/${PROJECT_NAME}.h
-)
-
-set(SOURCE_FILES
-    config/${PROJECT_NAME}.cpp
-)
+set(HEADER_FILES config/${PROJECT_NAME}.h)
+set(SOURCE_FILES config/${PROJECT_NAME}.cpp)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
 
