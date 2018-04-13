@@ -103,6 +103,7 @@ protected:
 using sofa::component::linearsolver::CompressedRowSparseMatrix ;
 using sofa::core::behavior::MixedInteractionForceField ;
 using sofa::core::behavior::BaseForceField ;
+using sofa::core::behavior::BaseMechanicalState ;
 using sofa::core::behavior::BaseMass ;
 using sofa::core::behavior::MultiMatrixAccessor ;
 using sofa::component::linearsolver::DefaultMultiMatrixAccessor ;
@@ -113,7 +114,8 @@ template<typename TDataTypes1, typename TDataTypes2>
 class MappedMatrixForceFieldAndMass : public MixedInteractionForceField<TDataTypes1, TDataTypes2>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(MappedMatrixForceFieldAndMass, TDataTypes1, TDataTypes2), SOFA_TEMPLATE2(MixedInteractionForceField, TDataTypes1, TDataTypes2));
+    SOFA_CLASS(SOFA_TEMPLATE2(MappedMatrixForceFieldAndMass, TDataTypes1, TDataTypes2),
+               SOFA_TEMPLATE2(MixedInteractionForceField, TDataTypes1, TDataTypes2));
 
     typedef MixedInteractionForceField<TDataTypes1, TDataTypes2> Inherit;
     // Vec3
@@ -154,9 +156,12 @@ public:
 
 
 protected:
-    SingleLink < MappedMatrixForceFieldAndMass<DataTypes1, DataTypes2>, BaseForceField, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK > d_mappedForceField;
-    SingleLink < MappedMatrixForceFieldAndMass<DataTypes1, DataTypes2>, BaseForceField, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK > d_mappedForceField2;
-    SingleLink < MappedMatrixForceFieldAndMass<DataTypes1, DataTypes2>, BaseMass, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK > d_mappedMass;
+    SingleLink < MappedMatrixForceFieldAndMass<DataTypes1, DataTypes2>,
+                 BaseForceField, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK > l_mappedForceField;
+    SingleLink < MappedMatrixForceFieldAndMass<DataTypes1, DataTypes2>,
+                 BaseForceField, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK > l_mappedForceField2;
+    SingleLink < MappedMatrixForceFieldAndMass<DataTypes1, DataTypes2>,
+                 BaseMass, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_STRONGLINK > l_mappedMass;
 
     MappedMatrixForceFieldAndMass() ;
 
@@ -183,19 +188,12 @@ public:
 
     virtual double getPotentialEnergy(const MechanicalParams* mparams,
                                       const DataVecCoord1& x1, const DataVecCoord2& x2) const ;
-
-
-
-
 protected:
-
     virtual void buildIdentityBlocksInJacobian(core::behavior::BaseMechanicalState* mstate, sofa::core::MatrixDerivId Id);
     virtual void accumulateJacobiansOptimized(const MechanicalParams* mparams);
     virtual void addMassToSystem(const MechanicalParams* mparams, const DefaultMultiMatrixAccessor* KAccessor);
     virtual void addPrecomputedMassToSystem(const MechanicalParams* mparams,const unsigned int mstateSize,const Eigen::SparseMatrix<double> &Jeig, Eigen::SparseMatrix<double>& JtKJeig);
     void accumulateJacobians(const MechanicalParams* mparams);
-    //template<typename InputFormat>
-    //void copyMappingJacobianToEigenFormat(const typename InputFormat::MatrixDeriv& J, Eigen::SparseMatrix<double>& Jeig);
     virtual void optimizeAndCopyMappingJacobianToEigenFormat1(const typename DataTypes1::MatrixDeriv& J, Eigen::SparseMatrix<double>& Jeig);
     virtual void optimizeAndCopyMappingJacobianToEigenFormat2(const typename DataTypes2::MatrixDeriv& J, Eigen::SparseMatrix<double>& Jeig);
 
@@ -208,14 +206,10 @@ protected:
     using MixedInteractionForceField<TDataTypes1, TDataTypes2>::mstate1 ;
     using MixedInteractionForceField<TDataTypes1, TDataTypes2>::mstate2 ;
     using MixedInteractionForceField<TDataTypes1, TDataTypes2>::getContext ;
+    using MixedInteractionForceField<TDataTypes1, TDataTypes2>::m_componentstate ;
     ////////////////////////////////////////////////////////////////////////////
 
-//    Data< bool > saveReducedMass;
-//    Data< bool > usePrecomputedMass;
-//    sofa::core::objectmodel::DataFileName precomputedMassPath;
-
-//    Eigen::SparseMatrix<double> JtMJ;
-
+    sofa::core::behavior::BaseMechanicalState* m_childState ;
 };
 
 } // namespace interactionforcefield

@@ -55,10 +55,10 @@ int MappedMatrixForceFieldAndMassClass = core::RegisterObject("Partially rigidif
         .add< MappedMatrixForceFieldAndMass<Vec1fTypes, Vec1fTypes> >()
 #endif
 #ifdef SOFA_WITH_DOUBLE
-        .add< MappedMatrixForceFieldAndMass<Vec3dTypes, Rigid3dTypes> >(true)
-        .add< MappedMatrixForceFieldAndMass<Vec3dTypes, Vec3dTypes> >(true)
-        .add< MappedMatrixForceFieldAndMass<Vec1dTypes, Rigid3dTypes> >(true)
-        .add< MappedMatrixForceFieldAndMass<Vec1dTypes, Vec1dTypes> >(true)
+        .add< MappedMatrixForceFieldAndMass<Vec3dTypes, Rigid3dTypes> >()
+        .add< MappedMatrixForceFieldAndMass<Vec3dTypes, Vec3dTypes> >()
+        .add< MappedMatrixForceFieldAndMass<Vec1dTypes, Rigid3dTypes> >()
+        .add< MappedMatrixForceFieldAndMass<Vec1dTypes, Vec1dTypes> >()
 #endif
         ;
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
