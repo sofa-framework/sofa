@@ -159,6 +159,13 @@ case $CI_OPTIONS in
             # For Windows, Assimp dll is in the repository
             append "-DPLUGIN_COLLADASCENELOADER=ON"
         fi
+		
+		if [ -n "$CI_HAVE_ASSIMP" ]; then
+		    append "-DPLUGIN_SOFAASSIMP=ON"
+        else
+            append "-DPLUGIN_SOFAASSIMP=OFF"
+        fi
+		
         append "-DPLUGIN_COMPLIANT=ON"
         append "-DPLUGIN_EXTERNALBEHAVIORMODEL=ON"
         append "-DPLUGIN_FLEXIBLE=ON"
