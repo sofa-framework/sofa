@@ -19,6 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/core/loader/BaseLoader.h>
 #include <sofa/helper/io/MeshTrian.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/Locale.h>
@@ -54,7 +55,7 @@ void MeshTrian::init (std::string filename)
         return;
     }
     FILE *f = fopen(filename.c_str(), "r");
-    msg_error_when(!f)<<sofa::helper::message::UnableToOpenFile(filename.c_str());
+    msg_error_when(!f)<<sofa::core::loader::BaseLoader::UnableToOpenFile(filename.c_str());
     if (f)
     {
         readTrian (f);

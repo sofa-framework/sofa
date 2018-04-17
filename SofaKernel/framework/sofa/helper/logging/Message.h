@@ -43,13 +43,6 @@ namespace sofa
 namespace helper
 {
 
-namespace message
-{
-
-const std::string UnableToOpenFile(const char* filename);
-
-}
-
 namespace logging
 {
 
