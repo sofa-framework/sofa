@@ -36,6 +36,19 @@ namespace sofa
 namespace helper
 {
 
+namespace message
+{
+
+const std::string UnableToOpenFile(const char* filename)
+{
+    std::string errormsg="Can't open file '";
+    errormsg+=filename;
+    errormsg+="'.";
+    return errormsg;
+}
+
+}
+
 namespace logging
 {
 

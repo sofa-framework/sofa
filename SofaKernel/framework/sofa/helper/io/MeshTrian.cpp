@@ -54,13 +54,12 @@ void MeshTrian::init (std::string filename)
         return;
     }
     FILE *f = fopen(filename.c_str(), "r");
+    msg_error_when(!f)<<sofa::helper::message::UnableToOpenFile(filename.c_str());
     if (f)
     {
         readTrian (f);
         fclose(f);
     }
-    else
-        msg_error() << "File '" << filename << "' not found." ;
 }
 
 void MeshTrian::readTrian (FILE* file)
