@@ -27,6 +27,9 @@
 #include <SofaBaseLinearSolver/initBaseLinearSolver.h>
 #include <SofaBaseVisual/initBaseVisual.h>
 
+#include <sofa/helper/system/PluginManager.h>
+using sofa::helper::system::PluginManager;
+
 namespace sofa
 {
 
@@ -44,6 +47,7 @@ void initComponentBase()
         initBaseCollision();
         initBaseLinearSolver();
         initBaseVisual();
+        PluginManager::getInstance().loadPlugin("Sofa.Component.Utils");
         first = false;
     }
 }

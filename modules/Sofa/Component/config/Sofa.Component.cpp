@@ -22,7 +22,7 @@
 #include <Sofa.Component.h>
 
 #include <sofa/helper/system/PluginManager.h>
-using sofa::helper::system::PluginManager ;
+using sofa::helper::system::PluginManager;
 
 namespace sofa
 {
@@ -43,7 +43,7 @@ void initExternalModule()
     static bool first = true;
     if (first)
     {
-        PluginManager::getInstance().loadPlugin("Sofa.Component.Utils") ;
+        PluginManager::getInstance().loadPlugin("Sofa.Component.Utils");
         first = false;
     }
 }

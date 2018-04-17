@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <Sofa.Component.Utils.h>
+#include <SofaComponentBase/initComponentBase.h>
 
 #include <gtest/gtest.h>
 
@@ -58,7 +58,7 @@ bool inited = perTestInit() ;
 
 TEST(MessageHandlerComponent, simpleInit)
 {
-    sofa::component::utils::initSofaComponentUtils();
+    sofa::component::initComponentBase();
 
     string scene =
         "<?xml version='1.0'?>                                               "
@@ -84,7 +84,7 @@ TEST(MessageHandlerComponent, simpleInit)
 
 TEST(MessageHandlerComponent, missingHandler)
 {
-    sofa::component::utils::initSofaComponentUtils();
+    sofa::component::initComponentBase();
 
     string scene =
         "<?xml version='1.0'?>                                               "
@@ -104,7 +104,7 @@ TEST(MessageHandlerComponent, missingHandler)
 
 TEST(MessageHandlerComponent, invalidHandler)
 {
-    sofa::component::utils::initSofaComponentUtils();
+    sofa::component::initComponentBase();
 
     string scene =
         "<?xml version='1.0'?>                                               "
@@ -124,7 +124,7 @@ TEST(MessageHandlerComponent, invalidHandler)
 
 TEST(MessageHandlerComponent, clangHandler)
 {
-    sofa::component::utils::initSofaComponentUtils();
+    sofa::component::initComponentBase();
 
     string scene =
         "<?xml version='1.0'?>                                               "

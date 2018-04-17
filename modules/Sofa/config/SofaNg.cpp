@@ -41,7 +41,7 @@ void initExternalModule()
     static bool first = true;
     if (first)
     {
-        PluginManager::getInstance().loadPlugin("Sofa.Component") ;
+        PluginManager::getInstance().loadPlugin("Sofa.Component");
         first = false;
     }
 }
