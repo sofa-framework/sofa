@@ -1,81 +1,85 @@
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-	set(ASSIMP_ARCHITECTURE "64")
+    set(ASSIMP_ARCHITECTURE "64")
 elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
-	set(ASSIMP_ARCHITECTURE "32")
+    set(ASSIMP_ARCHITECTURE "32")
 endif(CMAKE_SIZEOF_VOID_P EQUAL 8)
-	
+    
 if(WIN32)
-	set(ASSIMP_ROOT_DIR CACHE PATH "ASSIMP root directory")
+    set(ASSIMP_ROOT_DIR CACHE PATH "ASSIMP root directory")
+ message("ASSIMP_ROOT_DIR: ${ASSIMP_ROOT_DIR}")
+    FIND_PATH( ASSIMP_INCLUDE_DIR 
+      NAMES assimp/postprocess.h assimp/scene.h assimp/version.h assimp/config.h assimp/cimport.h
+      PATHS 
+        "C://Program Files//Assimp//include//" 
+        ${ASSIMP_ROOT_DIR}/include/
+		DOC "The directory where assimp headers reside")
+	FIND_LIBRARY( ASSIMP_LIBRARY_RELEASE
+		NAMES assimp
+		PATH_SUFFIXES lib/x64
+        PATHS
+            "C://Program Files//Assimp" 
+            ${ASSIMP_ROOT_DIR}
+		DOC "The assimp library")
+	FIND_LIBRARY( ASSIMP_LIBRARY_DEBUG
+		NAMES assimp
+		PATH_SUFFIXES lib/x64
+        PATHS
+            "C://Program Files//Assimp" 
+            ${ASSIMP_ROOT_DIR}
+		DOC "The assimp library")
+		
+        
+	IF(ASSIMP_LIBRARY_RELEASE)
+		SET(ASSIMP_LIBRARY_DIR debug ${ASSIMP_LIBRARY_DEBUG} optimized ${ASSIMP_LIBRARY_RELEASE})
+	ELSEIF(ASSIMP_LIBRARY_DEBUG)
+		SET(ASSIMP_LIBRARY_DIR ${ASSIMP_LIBRARY_DEBUG})
+	ENDIF()
 
-	# Find path of each library
-	find_path(ASSIMP_INCLUDE_DIR
-		NAMES
-			assimp/anim.h
-		HINTS
-			${ASSIMP_ROOT_DIR}/include
-	)
+    SET(ASSIMP_MSVC_VERSION "vc140")
+    FUNCTION(ASSIMP_COPY_BINARIES TargetDirectory)
+        ADD_CUSTOM_TARGET(AssimpCopyBinaries
+            COMMAND ${CMAKE_COMMAND} -E copy ${ASSIMP_ROOT_DIR}/bin/${ASSIMP_ARCHITECTURE}/assimp-${ASSIMP_MSVC_VERSION}-mtd.dll     ${TargetDirectory}/Debug/assimp-${ASSIMP_MSVC_VERSION}-mtd.dll
+            COMMAND ${CMAKE_COMMAND} -E copy ${ASSIMP_ROOT_DIR}/bin/${ASSIMP_ARCHITECTURE}/assimp-${ASSIMP_MSVC_VERSION}-mt.dll         ${TargetDirectory}/Release/assimp-${ASSIMP_MSVC_VERSION}-mt.dll
+        COMMENT "Copying Assimp binaries to '${TargetDirectory}'"
+        VERBATIM)
+    ENDFUNCTION(ASSIMP_COPY_BINARIES)
 
-	if(MSVC12)
-		set(ASSIMP_MSVC_VERSION "vc120")
-	elseif(MSVC14)	
-		set(ASSIMP_MSVC_VERSION "vc140")
-	endif(MSVC12)
-	
-	if(MSVC12 OR MSVC14)
-	
-		find_path(ASSIMP_LIBRARY_DIR
-			NAMES
-				assimp-${ASSIMP_MSVC_VERSION}-mt.lib
-			HINTS
-				${ASSIMP_ROOT_DIR}/lib${ASSIMP_ARCHITECTURE}
-		)
-		
-		find_library(ASSIMP_LIBRARY_RELEASE				assimp-${ASSIMP_MSVC_VERSION}-mt.lib 			PATHS ${ASSIMP_LIBRARY_DIR})
-		find_library(ASSIMP_LIBRARY_DEBUG				assimp-${ASSIMP_MSVC_VERSION}-mtd.lib			PATHS ${ASSIMP_LIBRARY_DIR})
-		
-		set(ASSIMP_LIBRARY 
-			optimized 	${ASSIMP_LIBRARY_RELEASE}
-			debug		${ASSIMP_LIBRARY_DEBUG}
-		)
-		
-		set(ASSIMP_LIBRARIES ${ASSIMP_LIBRARY_RELEASE} ${ASSIMP_LIBRARY_DEBUG})
-	
-		FUNCTION(ASSIMP_COPY_BINARIES TargetDirectory)
-			ADD_CUSTOM_TARGET(AssimpCopyBinaries
-				COMMAND ${CMAKE_COMMAND} -E copy ${ASSIMP_ROOT_DIR}/bin${ASSIMP_ARCHITECTURE}/assimp-${ASSIMP_MSVC_VERSION}-mtd.dll 	${TargetDirectory}/Debug/assimp-${ASSIMP_MSVC_VERSION}-mtd.dll
-				COMMAND ${CMAKE_COMMAND} -E copy ${ASSIMP_ROOT_DIR}/bin${ASSIMP_ARCHITECTURE}/assimp-${ASSIMP_MSVC_VERSION}-mt.dll 		${TargetDirectory}/Release/assimp-${ASSIMP_MSVC_VERSION}-mt.dll
-			COMMENT "Copying Assimp binaries to '${TargetDirectory}'"
-			VERBATIM)
-		ENDFUNCTION(ASSIMP_COPY_BINARIES)
-	
-	endif()
-	
+    
 else(WIN32)
+    find_path(ASSIMP_INCLUDE_DIR
+      NAMES assimp/postprocess.h assimp/scene.h assimp/version.h assimp/config.h assimp/cimport.h
+      PATHS 
+      /usr/include
+      /usr/local/include
+      /sw/include
+      /opt/local/include
+      DOC "The directory where assimp headers reside")
 
-	find_path(
-	  assimp_INCLUDE_DIRS
-	  NAMES postprocess.h scene.h version.h config.h cimport.h
-	  PATHS /usr/local/include/
-	)
 
-	find_library(
-	  assimp_LIBRARIES
-	  NAMES assimp
-	  PATHS /usr/local/lib/
-	)
-
-	if (assimp_INCLUDE_DIRS AND assimp_LIBRARIES)
-	  SET(assimp_FOUND TRUE)
-	ENDIF (assimp_INCLUDE_DIRS AND assimp_LIBRARIES)
-
-	if (assimp_FOUND)
-	  if (NOT assimp_FIND_QUIETLY)
-		message(STATUS "Found asset importer library: ${assimp_LIBRARIES}")
-	  endif (NOT assimp_FIND_QUIETLY)
-	else (assimp_FOUND)
-	  if (assimp_FIND_REQUIRED)
-		message(FATAL_ERROR "Could not find asset importer library")
-	  endif (assimp_FIND_REQUIRED)
-	endif (assimp_FOUND)
-	
+    find_library(ASSIMP_LIBRARY_DIR
+      NAMES assimp
+      PATHS 
+      /usr/local/lib/
+      /usr/lib64
+      /usr/lib
+      /usr/local/lib64
+      /usr/local/lib
+      /sw/lib
+      /opt/local/lib
+	  DOC "The assimp library")
+    
 endif(WIN32)
+
+if (ASSIMP_INCLUDE_DIR AND ASSIMP_LIBRARY_DIR)
+  SET(assimp_FOUND TRUE)
+  message("ASSIMP_INCLUDE_DIR: ${ASSIMP_INCLUDE_DIR}")
+  message("ASSIMP_LIBRARY_DIR: ${ASSIMP_LIBRARY_DIR}")
+ENDIF (ASSIMP_INCLUDE_DIR AND ASSIMP_LIBRARY_DIR)
+
+if (assimp_FOUND)
+  if (NOT assimp_FIND_QUIETLY)
+    message(STATUS "Found Assimp importer library: ${ASSIMP_LIBRARY_DIR}")
+  endif (NOT assimp_FIND_QUIETLY)
+else (assimp_FOUND)
+    message(FATAL_ERROR "Could not find Assimp library")
+endif (assimp_FOUND)

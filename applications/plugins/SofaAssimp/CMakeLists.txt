@@ -31,7 +31,7 @@ find_package(Assimp REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
 target_link_libraries(${PROJECT_NAME} SofaCore SofaHelper)
-target_link_libraries(${PROJECT_NAME} ${ASSIMP_LIBRARY_RELEASE})
+target_link_libraries(${PROJECT_NAME} ${ASSIMP_LIBRARY_DIR})
 
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
