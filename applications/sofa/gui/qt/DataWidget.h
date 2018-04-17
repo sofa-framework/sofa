@@ -102,8 +102,22 @@ public:
         }
         return instance;
     }
-   
-    static DataWidget *CreateDataWidget(const DataWidget::CreatorArgument &dwarg);    
+
+    typedef sofa::helper::Factory<std::string, DataWidget, DataWidget::CreatorArgument> DataWidgetFactory;
+
+
+    static DataWidget *CreateDataWidget(const DataWidget::CreatorArgument &dwarg)
+    {
+
+        DataWidget *datawidget_=0;
+        const std::string &widgetName=dwarg.data->getWidget();
+        if (widgetName.empty())
+            datawidget_ = DataWidgetFactory::CreateAnyObject(dwarg);
+        else
+            datawidget_ = DataWidgetFactory::CreateObject(widgetName, dwarg);
+
+        return datawidget_;
+    }
 
 
 public slots:
