@@ -47,6 +47,8 @@ public:
 
     virtual void parse(objectmodel::BaseObjectDescription *arg) override ;
 
+    static const std::string UnableToOpenFile(const char* filename);
+
     void setFilename(std::string f)  ;
     const std::string &getFilename() ;
 
