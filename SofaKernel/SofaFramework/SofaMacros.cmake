@@ -195,7 +195,7 @@ macro(sofa_install_targets package_name the_targets install_include_subdir)
         foreach(target ${the_targets})
             get_target_property(public_header ${target} PUBLIC_HEADER)
             if("${public_header}" STREQUAL "public_header-NOTFOUND")
-                message("Full install (no PUBLIC_HEADER): ${CMAKE_CURRENT_SOURCE_DIR}")
+                #message("Full install (no PUBLIC_HEADER): ${CMAKE_CURRENT_SOURCE_DIR}")
                 # the trailing slash is IMPORTANT, see https://cmake.org/pipermail/cmake/2009-December/033850.html
                 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
                         DESTINATION include/${install_include_subdir}
@@ -311,6 +311,11 @@ macro(sofa_install_libraries)
             install(FILES ${STATIC_LIBS} DESTINATION lib COMPONENT libraries)
         endif()
     endforeach()
+endmacro()
+
+macro(sofa_install_get_libraries library)
+    message(WARNING "sofa_install_get_libraries() is deprecated. Please use sofa_install_libraries() instead.")
+    sofa_install_libraries(${library})
 endmacro()
 
 
