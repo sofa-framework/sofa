@@ -106,10 +106,7 @@ protected:
 
         typedef Eigen::Matrix<double, 6, 6> BehaviourMatrix;
         BehaviourMatrix _materialBehaviour;
-        //QR decomposition of C matrix
-        //NB : we can turn to Eigen::FullPivHouseholderQR for more numerical
-        //stability, or to 	Eigen::HouseholderQR for faster computation
-        Eigen::ColPivHouseholderQR<BehaviourMatrix> _QR;
+        BehaviourMatrix _materialInv;
 
         //Base interval for reduced integration: same for all the beam elements
         ozp::quadrature::detail::Interval<3> _integrationInterval;
@@ -330,8 +327,8 @@ protected:
     void solveDispIncrement(const tangentStiffnessMatrix &tangentStiffness, EigenDisplacement &du, const EigenNodalForces &residual);
     void computeDisplacementIncrement(const VecCoord& pos, const VecCoord& lastPos, Displacement &currentDisp, Displacement &lastDisp,
                                       Displacement &dispIncrement, int i, Index a, Index b);
-    void computeStressIncrement(int index, int gaussPointIt, const VoigtTensor2 &initialStress, VoigtTensor2 &stressIncrement,
-                                const VoigtTensor2 &strainIncrement, double &lambdaIncrement, MechanicalState &isPlasticPoint);
+    void computeStressIncrement(int index, int gaussPointIt, const VoigtTensor2 &initialStress, VoigtTensor2 &newStressPoint, const VoigtTensor2 &strainIncrement,
+                                double &lambdaIncrement, MechanicalState &isPlasticPoint, const Displacement &lastDisp);
 
     //NB: these two functions receive a *local* stress Tensor, which is computed for a given Gauss point
     double vonMisesYield(const VoigtTensor2 &stressTensor, const double UTS);
