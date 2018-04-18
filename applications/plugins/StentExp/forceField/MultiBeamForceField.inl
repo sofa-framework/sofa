@@ -950,27 +950,30 @@ void MultiBeamForceField<DataTypes>::draw(const core::visual::VisualParams* vpar
 
     //std::vector< defaulttype::Vector3 > points[3];
     std::vector<defaulttype::Vector3> points[1];
+    std::vector<defaulttype::Vector3> gaussPoints[1];
 
     if (_partial_list_segment)
     {
         for (unsigned int j=0; j<_list_segment.getValue().size(); j++)
-            drawElement(_list_segment.getValue()[j], points, x);
+            drawElement(_list_segment.getValue()[j], points, gaussPoints, x);
     }
     else
     {
         for (unsigned int i=0; i<_indexedElements->size(); ++i)
-            drawElement(i, points, x);
+            drawElement(i, points, gaussPoints, x);
     }
 
     vparams->drawTool()->setPolygonMode(2, true);
     vparams->drawTool()->setLightingEnabled(true);
-    vparams->drawTool()->drawHexahedra(points[0], defaulttype::Vec<4,float>(0.24f,0.72f,0.96f,1.0f));
+    vparams->drawTool()->drawHexahedra(points[0], defaulttype::Vec<4, float>(0.24f, 0.72f, 0.96f, 1.0f));
+    vparams->drawTool()->drawPoints(gaussPoints[0], 5.0, defaulttype::Vec<4,float>(1.0f,0.015f,0.015f,1.0f));
     vparams->drawTool()->setLightingEnabled(false);
     vparams->drawTool()->setPolygonMode(0, false);
 }
 
 template<class DataTypes>
-void MultiBeamForceField<DataTypes>::drawElement(int i, std::vector< defaulttype::Vector3 >* points, const VecCoord& x)
+void MultiBeamForceField<DataTypes>::drawElement(int i, std::vector< defaulttype::Vector3 >* points,
+                                                 std::vector< defaulttype::Vector3 >* gaussPoints, const VecCoord& x)
 {
     Index a = (*_indexedElements)[i][0];
     Index b = (*_indexedElements)[i][1];
@@ -1007,6 +1010,75 @@ void MultiBeamForceField<DataTypes>::drawElement(int i, std::vector< defaulttype
     points[0].push_back(v5);
     points[0].push_back(v6);
     points[0].push_back(v7);
+
+    //***** Gauss points *****//
+
+    //Compute current displacement
+
+    const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
+
+    beamQuat(i) = x[a].getOrientation();
+    beamQuat(i).normalize();
+
+    beamsData.endEdit();
+
+    defaulttype::Vec<3, Real> u, P1P2, P1P2_0;
+    // local displacement
+    Eigen::Matrix<double, 12, 1> disp;
+
+    // translations //
+    P1P2_0 = x0[b].getCenter() - x0[a].getCenter();
+    P1P2_0 = x0[a].getOrientation().inverseRotate(P1P2_0);
+    P1P2 = x[b].getCenter() - x[a].getCenter();
+    P1P2 = x[a].getOrientation().inverseRotate(P1P2);
+    u = P1P2 - P1P2_0;
+
+    disp[0] = 0.0; 	disp[1] = 0.0; 	disp[2] = 0.0;
+    disp[6] = u[0]; disp[7] = u[1]; disp[8] = u[2];
+
+    // rotations //
+    defaulttype::Quat dQ0, dQ;
+
+    dQ0 = qDiff(x0[b].getOrientation(), x0[a].getOrientation());
+    dQ = qDiff(x[b].getOrientation(), x[a].getOrientation());
+
+    dQ0.normalize();
+    dQ.normalize();
+
+    defaulttype::Quat tmpQ = qDiff(dQ, dQ0);
+    tmpQ.normalize();
+
+    u = tmpQ.quatToRotationVector();
+
+    disp[3] = 0.0; 	disp[4] = 0.0; 	disp[5] = 0.0;
+    disp[9] = u[0]; disp[10] = u[1]; disp[11] = u[2];
+
+    //Compute the positions of the Gauss points
+    typedef std::function<void(double, double, double, double, double, double)> LambdaType;
+    typedef ozp::quadrature::Gaussian<3> GaussianQuadratureType;
+
+    Eigen::Matrix<double, 3, 12> N;
+    int gaussPointIt = 0; //incremented in the lambda function to iterate over Gauss points
+
+    LambdaType computeGaussCoordinates = [&](double u1, double u2, double u3, double w1, double w2, double w3)
+    {
+        //Shape function
+        N = beamsData.getValue()[i]._N[gaussPointIt];
+        Eigen::Matrix<double, 3, 1> u = N*disp;
+
+        //defaulttype::Vec3d beamVec = { p[0] + u1, p[1] + u2, p[2] + u3 };
+        //gaussPoints[0].push_back(q.rotate(beamVec));
+
+        defaulttype::Vec3d beamVec = {u[0]+u1, u[1]+u2, u[2]+u3};
+        defaulttype::Vec3d gp = pa + q.rotate(beamVec);
+        gaussPoints[0].push_back(gp);
+
+        gaussPointIt++; //next Gauss Point
+    };
+
+    ozp::quadrature::detail::Interval<3> interval = beamsData.getValue()[i]._integrationInterval;
+    ozp::quadrature::integrate <GaussianQuadratureType, 3, LambdaType>(interval, computeGaussCoordinates);
+
 }
 
 template<class DataTypes>
@@ -1100,6 +1172,62 @@ void MultiBeamForceField<DataTypes>::BeamInfo::init(double E, double L, double n
         i++;
     };
     ozp::quadrature::integrate <GaussianQuadratureType, 3, LambdaType>(_integrationInterval, initialiseBeMatrix);
+
+
+    int gaussPointIt = 0; //Gauss Point iterator
+    LambdaType initialiseShapeFunctions = [&](double u1, double u2, double u3, double w1, double w2, double w3)
+    {
+        // Step 1: total strain computation
+        double xi = u1 / _L;
+        double eta = u2 / _L;
+        double zeta = u3 / _L;
+
+        double xi2 = xi*xi;
+        double xi3 = xi*xi*xi;
+
+        _N[gaussPointIt](0, 0) = 1 - xi;
+        _N[gaussPointIt](0, 1) = 6*(xi - xi2)*eta;
+        _N[gaussPointIt](0, 2) = 6*(xi - xi2)*zeta;
+        _N[gaussPointIt](0, 3) = 0;
+        _N[gaussPointIt](0, 4) = (1 - 4*xi + 3*xi2)*_L*zeta;
+        _N[gaussPointIt](0, 5) = (-1 +4*xi - 3*xi2)*_L*eta;
+        _N[gaussPointIt](0, 6) = xi;
+        _N[gaussPointIt](0, 7) = 6*(-xi + xi2)*eta;
+        _N[gaussPointIt](0, 8) = 6*(-xi + xi2)*zeta;
+        _N[gaussPointIt](0, 9) = 0;
+        _N[gaussPointIt](0, 10) = (-2*xi* + 3*xi2)*_L*zeta;
+        _N[gaussPointIt](0, 11) = (2*xi - 3*xi2)*_L*eta;
+
+        _N[gaussPointIt](1, 0) = 0;
+        _N[gaussPointIt](1, 1) = 1 - 3*xi2 + 2*xi3;
+        _N[gaussPointIt](1, 2) = 0;
+        _N[gaussPointIt](1, 3) = (xi - 1)*_L*zeta;
+        _N[gaussPointIt](1, 4) = 0;
+        _N[gaussPointIt](1, 5) = (xi - 2*xi2 + xi3)*_L;
+        _N[gaussPointIt](1, 6) = 0;
+        _N[gaussPointIt](1, 7) = 3*xi2 - 2*xi3;
+        _N[gaussPointIt](1, 8) = 0;
+        _N[gaussPointIt](1, 9) = -_L*xi*zeta;
+        _N[gaussPointIt](1, 10) = 0;
+        _N[gaussPointIt](1, 11) = (-xi2 + xi3)*_L;
+
+        _N[gaussPointIt](2, 0) = 0;
+        _N[gaussPointIt](2, 1) = 0;
+        _N[gaussPointIt](2, 2) = 1 - 3*xi2 + 2*xi3;
+        _N[gaussPointIt](2, 3) = (xi - 1)*_L*eta;
+        _N[gaussPointIt](2, 4) = (-xi + 2*xi2 - xi3)*_L;
+        _N[gaussPointIt](2, 5) = 0;
+        _N[gaussPointIt](2, 6) = 0;
+        _N[gaussPointIt](2, 7) = 0;
+        _N[gaussPointIt](2, 8) = 3*xi2 - 2*xi3;
+        _N[gaussPointIt](2, 9) = -_L*xi*eta;
+        _N[gaussPointIt](2, 10) = (xi2 - xi3)*_L;
+        _N[gaussPointIt](2, 11) = 0;
+
+        gaussPointIt++;
+    };
+    ozp::quadrature::integrate <GaussianQuadratureType, 3, LambdaType>(_integrationInterval, initialiseShapeFunctions);
+
 
     //Initialises the plastic indicators
     _isPlasticPoint.assign(ELASTIC);

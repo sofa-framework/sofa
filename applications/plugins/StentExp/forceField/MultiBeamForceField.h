@@ -111,6 +111,9 @@ protected:
         //Base interval for reduced integration: same for all the beam elements
         ozp::quadrature::detail::Interval<3> _integrationInterval;
 
+        typedef Eigen::Matrix<double, 3, 12> shapeFunction;
+        helper::fixed_array<shapeFunction, 27> _N;
+
         typedef Eigen::Matrix<double, 6, 12> deformationGradientFunction; ///< derivatives of the shape functions (Be)
         helper::fixed_array<deformationGradientFunction, 27> _BeMatrices; /// One Be function for each Gauss Point (27 in one beam element)
 
@@ -401,7 +404,7 @@ public:
 
 protected:
 
-    void drawElement(int i, std::vector< defaulttype::Vector3 >* points, const VecCoord& x);
+    void drawElement(int i, std::vector< defaulttype::Vector3 >* points, std::vector< defaulttype::Vector3 >* gaussPoints, const VecCoord& x);
 
     Real peudo_determinant_for_coef ( const defaulttype::Mat<2, 3, Real>&  M );
 
