@@ -342,8 +342,6 @@ protected:
     void applyNonLinearStiffness(VecDeriv& df, const VecDeriv& dx, int i, Index a, Index b, double fact);
     void updateTangentStiffness(int i, Index a, Index b);
 
-    bool _isPostPlastic;
-
     /**************************************************************************/
 
     const VecElement *_indexedElements;
