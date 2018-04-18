@@ -25,6 +25,7 @@
 
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/core/collision/IntersectorFactory.h>
+#include <SofaBaseCollision/BaseIntTool.h>
 
 namespace sofa
 {
