@@ -37,7 +37,12 @@
 #include "PythonEnvironment.h"
 using sofa::simulation::PythonEnvironment ;
 using sofa::core::topology::BaseMeshTopology ;
+typedef BaseMeshTopology::Edge Edge;
+typedef BaseMeshTopology::Triangle Triangle;
+typedef BaseMeshTopology::Quad Quad;
 typedef BaseMeshTopology::Tetra Tetra;
+typedef BaseMeshTopology::Hexa Hexa;
+typedef BaseMeshTopology::Penta Penta;
 using sofa::helper::vector;
 using sofa::helper::Factory;
 using namespace sofa::core::objectmodel;
@@ -47,16 +52,127 @@ typedef sofa::helper::Factory< std::string, BaseData> PSDEDataFactory;
 
 PSDEDataFactory* getFactoryInstance(){
     static PSDEDataFactory* s_localfactory = nullptr ;
-    if(s_localfactory==nullptr)
+    if (s_localfactory == nullptr)
     {
-        s_localfactory = new PSDEDataFactory() ;
-        s_localfactory->registerCreator("s", new DataCreator<std::string>());
-        s_localfactory->registerCreator("f", new DataCreator<float>());
-        s_localfactory->registerCreator("b", new DataCreator<bool>());
-        s_localfactory->registerCreator("d", new DataCreator<int>());
-        s_localfactory->registerCreator("t", new DataCreator<vector<Tetra>>());
-        s_localfactory->registerCreator("p", new DataCreator<sofa::defaulttype::Vec3dTypes::VecCoord>());
-        s_localfactory->registerCreator("vector<Vec3d>", new DataCreator<sofa::defaulttype::Vec3dTypes::VecCoord>());
+        // helper vector style containers
+        std::string containers[] = {"vector", "ResizableExtVector"};
+
+        s_localfactory = new PSDEDataFactory();
+        // Scalars
+        s_localfactory->registerCreator("string", new DataCreator<std::string>());
+        s_localfactory->registerCreator("float", new DataCreator<float>());
+        s_localfactory->registerCreator("double", new DataCreator<double>());
+        s_localfactory->registerCreator("bool", new DataCreator<bool>());
+        s_localfactory->registerCreator("int", new DataCreator<int>());
+
+        // vectors
+        s_localfactory->registerCreator(
+                    "Vec2d", new DataCreator<sofa::defaulttype::Vec2d>());
+        s_localfactory->registerCreator(
+                    "Vec3d", new DataCreator<sofa::defaulttype::Vec3d>());
+        s_localfactory->registerCreator(
+                    "Vec4d", new DataCreator<sofa::defaulttype::Vec4d>());
+        s_localfactory->registerCreator(
+                    "Vec6d", new DataCreator<sofa::defaulttype::Vec6d>());
+        s_localfactory->registerCreator(
+                    "Vec2f", new DataCreator<sofa::defaulttype::Vec2f>());
+        s_localfactory->registerCreator(
+                    "Vec3f", new DataCreator<sofa::defaulttype::Vec3f>());
+        s_localfactory->registerCreator(
+                    "Vec4f", new DataCreator<sofa::defaulttype::Vec4f>());
+        s_localfactory->registerCreator(
+                    "Vec6f", new DataCreator<sofa::defaulttype::Vec6f>());
+
+        // Matrices
+        s_localfactory->registerCreator(
+                    "Mat2x2d", new DataCreator<sofa::defaulttype::Mat2x2d>());
+        s_localfactory->registerCreator(
+                    "Mat3x3d", new DataCreator<sofa::defaulttype::Mat3x3d>());
+        s_localfactory->registerCreator(
+                    "Mat4x4d", new DataCreator<sofa::defaulttype::Mat4x4d>());
+        s_localfactory->registerCreator(
+                    "Mat2x2f", new DataCreator<sofa::defaulttype::Mat2x2f>());
+        s_localfactory->registerCreator(
+                    "Mat3x3f", new DataCreator<sofa::defaulttype::Mat3x3f>());
+        s_localfactory->registerCreator(
+                    "Mat4x4f", new DataCreator<sofa::defaulttype::Mat4x4f>());
+
+        // Topology
+        s_localfactory->registerCreator("Edge", new DataCreator<Tetra>());
+        s_localfactory->registerCreator("Triangle", new DataCreator<Tetra>());
+        s_localfactory->registerCreator("Quad", new DataCreator<Tetra>());
+        s_localfactory->registerCreator("Tetra", new DataCreator<Tetra>());
+        s_localfactory->registerCreator("Hexa", new DataCreator<Tetra>());
+        s_localfactory->registerCreator("Penta", new DataCreator<Tetra>());
+
+        // VECTORS
+        for (const auto& container : containers)
+        {
+            // Scalars
+            s_localfactory->registerCreator(container + "<string>",
+                                            new DataCreator<vector<std::string>>());
+            s_localfactory->registerCreator(container + "<float>",
+                                            new DataCreator<vector<float>>());
+            s_localfactory->registerCreator(container + "<double>",
+                                            new DataCreator<vector<double>>());
+            s_localfactory->registerCreator(container + "<bool>",
+                                            new DataCreator<vector<bool>>());
+            s_localfactory->registerCreator(container + "<int>",
+                                            new DataCreator<vector<int>>());
+
+            // vectors
+            s_localfactory->registerCreator(
+                        container + "<Vec2d>", new DataCreator<vector<sofa::defaulttype::Vec2d>>());
+            s_localfactory->registerCreator(
+                        container + "<Vec3d>", new DataCreator<vector<sofa::defaulttype::Vec3d>>());
+            s_localfactory->registerCreator(
+                        container + "<Vec4d>", new DataCreator<vector<sofa::defaulttype::Vec4d>>());
+            s_localfactory->registerCreator(
+                        container + "<Vec6d>", new DataCreator<vector<sofa::defaulttype::Vec6d>>());
+            s_localfactory->registerCreator(
+                        container + "<Vec2f>", new DataCreator<vector<sofa::defaulttype::Vec2f>>());
+            s_localfactory->registerCreator(
+                        container + "<Vec3f>", new DataCreator<vector<sofa::defaulttype::Vec3f>>());
+            s_localfactory->registerCreator(
+                        container + "<Vec4f>", new DataCreator<vector<sofa::defaulttype::Vec4f>>());
+            s_localfactory->registerCreator(
+                        container + "<Vec6f>", new DataCreator<vector<sofa::defaulttype::Vec6f>>());
+
+            // Matrices
+            s_localfactory->registerCreator(
+                        container + "<Mat2x2d>",
+                        new DataCreator<vector<sofa::defaulttype::Mat2x2d>>());
+            s_localfactory->registerCreator(
+                        container + "<Mat3x3d>",
+                        new DataCreator<vector<sofa::defaulttype::Mat3x3d>>());
+            s_localfactory->registerCreator(
+                        container + "<Mat4x4d>",
+                        new DataCreator<vector<sofa::defaulttype::Mat4x4d>>());
+            s_localfactory->registerCreator(
+                        container + "<Mat2x2f>",
+                        new DataCreator<vector<sofa::defaulttype::Mat2x2f>>());
+            s_localfactory->registerCreator(
+                        container + "<Mat3x3f>",
+                        new DataCreator<vector<sofa::defaulttype::Mat3x3f>>());
+            s_localfactory->registerCreator(
+                        container + "<Mat4x4f>",
+                        new DataCreator<vector<sofa::defaulttype::Mat4x4f>>());
+
+            // Topology
+            s_localfactory->registerCreator(container + "<Edge>",
+                                            new DataCreator<vector<Edge>>());
+            s_localfactory->registerCreator(container + "<Triangle>",
+                                            new DataCreator<vector<Triangle>>());
+            s_localfactory->registerCreator(container + "<Quad>",
+                                            new DataCreator<vector<Quad>>());
+            s_localfactory->registerCreator(container + "<Tetra>",
+                                            new DataCreator<vector<Tetra>>());
+            s_localfactory->registerCreator(container + "<Hexa>",
+                                            new DataCreator<vector<Hexa>>());
+            s_localfactory->registerCreator(container + "<Penta>",
+                                            new DataCreator<vector<Penta>>());
+
+        }
     }
     return s_localfactory ;
 }
@@ -66,7 +182,7 @@ static Base* get_base(PyObject* self) {
     return sofa::py::unwrap<Base>(self);
 }
 
-static char* getStringCopy(char *c)
+static char* getStringCopy(const char *c)
 {
     if (c==nullptr)
         return nullptr;
@@ -78,11 +194,12 @@ static char* getStringCopy(char *c)
 
 #include <sofa/core/objectmodel/Link.h>
 
-const char* deriveTypeFromParentValue(Base* obj, const std::string& value)
+void deriveTypeFromParentValue(Base* obj, const std::string& value,
+                                      char** dataRawType)
 {
     BaseObject* o = dynamic_cast<BaseObject*>(obj);
     if (!o)
-        return nullptr;
+        return;
 
     // if data is a link
     if (value[0] == '@')
@@ -93,16 +210,16 @@ const char* deriveTypeFromParentValue(Base* obj, const std::string& value)
         if (!o->getContext())
         {
             std::cout << "no context" << std::endl;
-            return nullptr;
+            return;
         }
         BaseObject* component;
         component = o->getContext()->get<BaseObject>(componentPath);
         if (!component)
             std::cout << "no object with path " << componentPath << std::endl;
         BaseData* parentData = component->findData(parentDataName);
-        return parentData->getValueTypeInfo()->name().c_str();
+        *dataRawType =
+                getStringCopy(parentData->getValueTypeInfo()->name().c_str());
     }
-    return nullptr;
 }
 
 
@@ -174,9 +291,7 @@ BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
             dataValue = tmp;
             Py_IncRef(dataValue); // call to Py_GetItemString doesn't increment the ref count, but we want to hold on to it for a while ...
             std::string val(PyString_AsString(dataValue));
-            const char* str = deriveTypeFromParentValue(obj, val);
-            if (str)
-                strcpy(dataRawType, str);
+            deriveTypeFromParentValue(obj, val, &dataRawType);
         }
     }
 
