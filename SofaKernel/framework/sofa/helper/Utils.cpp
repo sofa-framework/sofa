@@ -249,7 +249,9 @@ static std::string computeSofaPathPrefix()
         const std::string exePath = Utils::getExecutablePath();
         std::size_t pos = exePath.rfind("/bin/");
         if (pos == std::string::npos) {
+            // This triggers a segfault on MacOS (static call problem): see https://github.com/sofa-framework/sofa/issues/636
             // msg_error("Utils::getSofaPathPrefix()") << "failed to deduce the root path of Sofa from the application path: (" << exePath << ")";
+
             // Safest thing to return in this case, I guess.
             return Utils::getExecutableDirectory();
         }
