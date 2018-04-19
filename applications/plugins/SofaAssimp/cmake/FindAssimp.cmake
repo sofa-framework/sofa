@@ -18,6 +18,7 @@ if(WIN32)
 		PATH_SUFFIXES lib/x64
         PATHS
             "C://Program Files//Assimp" 
+            "C://dev//Assimp//3.3.1"
             ${ASSIMP_ROOT_DIR}
 		DOC "The assimp library")
 	FIND_LIBRARY( ASSIMP_LIBRARY_DEBUG
@@ -25,6 +26,7 @@ if(WIN32)
 		PATH_SUFFIXES lib/x64
         PATHS
             "C://Program Files//Assimp" 
+            "C://dev//Assimp//3.3.1"
             ${ASSIMP_ROOT_DIR}
 		DOC "The assimp library")
 		
