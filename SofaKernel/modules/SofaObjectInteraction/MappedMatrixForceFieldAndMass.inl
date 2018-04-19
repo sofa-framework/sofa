@@ -98,7 +98,7 @@ void MappedMatrixForceFieldAndMass<DataTypes1, DataTypes2>::init()
 template<class DataTypes1, class DataTypes2>
 void MappedMatrixForceFieldAndMass<DataTypes1, DataTypes2>::buildIdentityBlocksInJacobian(core::behavior::BaseMechanicalState* mstate, sofa::core::MatrixDerivId Id)
 {
-    if(m_componentstate==ComponentState::Valid)
+    if(m_componentstate!=ComponentState::Valid)
         return ;
 
     msg_info() << "In buildIdentityBlocksInJacobianPasMOR, performECSW is false du coup " << mstate;
@@ -117,7 +117,7 @@ void MappedMatrixForceFieldAndMass<DataTypes1, DataTypes2>::accumulateJacobiansO
 template<class DataTypes1, class DataTypes2>
 void MappedMatrixForceFieldAndMass<DataTypes1, DataTypes2>::accumulateJacobians(const MechanicalParams* mparams)
 {
-    if(m_componentstate==ComponentState::Valid)
+    if(m_componentstate!=ComponentState::Valid)
         return ;
 
     // STEP1 : accumulate Jacobians J1 and J2
@@ -233,7 +233,7 @@ template<class DataTypes1, class DataTypes2>
 void MappedMatrixForceFieldAndMass<DataTypes1, DataTypes2>::addKToMatrix(const MechanicalParams* mparams,
                                                                          const MultiMatrixAccessor* matrix)
 {
-    if(m_componentstate==ComponentState::Valid)
+    if(m_componentstate!=ComponentState::Valid)
         return ;
 
     sofa::helper::system::thread::CTime *timer;
