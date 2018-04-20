@@ -303,7 +303,7 @@ void MultiBeamForceField<DataTypes>::addForce(const sofa::core::MechanicalParams
                 accumulateForceLarge(f, p, i, a, b);
             else
                 accumulateNonLinearForce(f, p, i, a, b);
-        }
+         }
     }
     else
     {
@@ -322,6 +322,10 @@ void MultiBeamForceField<DataTypes>::addForce(const sofa::core::MechanicalParams
                 accumulateNonLinearForce(f, p, i, a, b);
         }
     }
+
+    //Save the current positions as a record for the next time step
+    //TO DO: check is this is copy operator
+    _lastPos = p;
 
     dataF.endEdit();
 }
@@ -2263,6 +2267,11 @@ void MultiBeamForceField<DataTypes>::accumulateNonLinearForce(VecDeriv& f,
     //Computes f += Kx, assuming that this component is linear
     //All non-linearity has to be handled here (including plasticity)
 
+    //TO DO: delete, debug purposes
+    //std::cout << "Element : " << i << " " << std::endl;
+    //std::cout << "position du point B : " << x[b].getCenter() << " " << std::endl;
+    //std::cout << "orientation du point B : " << x[b].getOrientation() << " " << std::endl << std::endl;
+
     //Computes displacement increment, from last system solution
     Displacement currentDisp;
     Displacement lastDisp;
@@ -2361,11 +2370,7 @@ void MultiBeamForceField<DataTypes>::accumulateNonLinearForce(VecDeriv& f,
     f[a] += Deriv(-fa1, -fa2);
     f[b] += Deriv(-fb1, -fb2);
 
-    //std::cout << "Ftot pour l'element " << i << " : " << std::endl << f << " " << std::endl << std::endl; //TO DO: delete, for debug 
-
-    //Save the current positions as a record for the next time step
-    _lastPos = x;
-    
+    //std::cout << "Ftot pour l'element " << i << " : " << std::endl << f << " " << std::endl << std::endl; //TO DO: delete, for debug
 }
 
 
