@@ -290,8 +290,9 @@ void UniformMass<DataTypes, MassType>::initFromVertexMass()
 {
     //If the vertexMass attribute is set then the totalMass is computed from it
     //using the following formula: totalMass = vertexMass * number of particules
-
-    SReal totalMass = d_vertexMass.getValue() * d_indices.getValue().size();
+    int size = d_indices.getValue().size();
+    SReal vertexMass = (SReal) d_vertexMass.getValue();
+    SReal totalMass = vertexMass * (SReal)size;
     d_totalMass.setValue(totalMass);
     msg_info() << "vertexMass information is used";
 
