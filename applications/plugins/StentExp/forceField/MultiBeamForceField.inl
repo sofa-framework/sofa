@@ -955,29 +955,32 @@ void MultiBeamForceField<DataTypes>::draw(const core::visual::VisualParams* vpar
     //std::vector< defaulttype::Vector3 > points[3];
     std::vector<defaulttype::Vector3> points[1];
     std::vector<defaulttype::Vector3> gaussPoints[1];
+    std::vector<defaulttype::Vec<4, float>> colours[1];
 
     if (_partial_list_segment)
     {
         for (unsigned int j=0; j<_list_segment.getValue().size(); j++)
-            drawElement(_list_segment.getValue()[j], points, gaussPoints, x);
+            drawElement(_list_segment.getValue()[j], points, gaussPoints, colours, x);
     }
     else
     {
         for (unsigned int i=0; i<_indexedElements->size(); ++i)
-            drawElement(i, points, gaussPoints, x);
+            drawElement(i, points, gaussPoints, colours, x);
     }
 
     vparams->drawTool()->setPolygonMode(2, true);
     vparams->drawTool()->setLightingEnabled(true);
     vparams->drawTool()->drawHexahedra(points[0], defaulttype::Vec<4, float>(0.24f, 0.72f, 0.96f, 1.0f));
-    vparams->drawTool()->drawPoints(gaussPoints[0], 5.0, defaulttype::Vec<4,float>(1.0f,0.015f,0.015f,1.0f));
+    vparams->drawTool()->drawPoints(gaussPoints[0], 5.0, colours[0]);
     vparams->drawTool()->setLightingEnabled(false);
     vparams->drawTool()->setPolygonMode(0, false);
 }
 
 template<class DataTypes>
 void MultiBeamForceField<DataTypes>::drawElement(int i, std::vector< defaulttype::Vector3 >* points,
-                                                 std::vector< defaulttype::Vector3 >* gaussPoints, const VecCoord& x)
+                                                 std::vector< defaulttype::Vector3 >* gaussPoints,
+                                                 std::vector<defaulttype::Vec<4, float>>* colours,
+                                                 const VecCoord& x)
 {
     Index a = (*_indexedElements)[i][0];
     Index b = (*_indexedElements)[i][1];
@@ -1062,6 +1065,7 @@ void MultiBeamForceField<DataTypes>::drawElement(int i, std::vector< defaulttype
     typedef ozp::quadrature::Gaussian<3> GaussianQuadratureType;
 
     Eigen::Matrix<double, 3, 12> N;
+    const helper::fixed_array<MechanicalState, 27>& isPlasticPoint = beamsData.getValue()[i]._isPlasticPoint;
     int gaussPointIt = 0; //incremented in the lambda function to iterate over Gauss points
 
     LambdaType computeGaussCoordinates = [&](double u1, double u2, double u3, double w1, double w2, double w3)
@@ -1076,6 +1080,13 @@ void MultiBeamForceField<DataTypes>::drawElement(int i, std::vector< defaulttype
         defaulttype::Vec3d beamVec = {u[0]+u1, u[1]+u2, u[2]+u3};
         defaulttype::Vec3d gp = pa + q.rotate(beamVec);
         gaussPoints[0].push_back(gp);
+
+        if (isPlasticPoint[gaussPointIt] == ELASTIC)
+            colours[0].push_back({1.0f,0.015f,0.015f,1.0f}); //RED
+        else if (isPlasticPoint[gaussPointIt] == PLASTIC)
+            colours[0].push_back({0.051f,0.15f,0.64f,1.0f}); //BLUE
+        else
+            colours[0].push_back({0.078f,0.41f,0.078f,1.0f}); //GREEN
 
         gaussPointIt++; //next Gauss Point
     };

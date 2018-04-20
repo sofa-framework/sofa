@@ -404,7 +404,8 @@ public:
 
 protected:
 
-    void drawElement(int i, std::vector< defaulttype::Vector3 >* points, std::vector< defaulttype::Vector3 >* gaussPoints, const VecCoord& x);
+    void drawElement(int i, std::vector< defaulttype::Vector3 >* points, std::vector< defaulttype::Vector3 >* gaussPoints,
+                     std::vector<defaulttype::Vec<4, float>>* colours, const VecCoord& x);
 
     Real peudo_determinant_for_coef ( const defaulttype::Mat<2, 3, Real>&  M );
 
