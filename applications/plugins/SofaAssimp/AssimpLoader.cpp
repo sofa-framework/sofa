@@ -43,7 +43,7 @@ using namespace sofa::helper;
 
 SOFA_DECL_CLASS(AssimpLoader)
 
-int AssimpLoaderClass = core::RegisterObject("Specific mesh loader for STL file format.")
+int AssimpLoaderClass = core::RegisterObject("Sofa mesh loader component as API to assimp loader library.")
         .add< AssimpLoader >()
         ;
 
