@@ -1,5 +1,7 @@
+<?xml version="1.0" ?>
 <!-- For more details see: https://wiki.sofa-framework.org/tdev/wiki/Notes/NewLoaderArchitecture -->
 <Node name="Root" gravity="0 -9.81 0" dt="0.02">
+    <RequiredPlugin pluginName="SofaAssimp" />
     <VisualStyle displayFlags="showVisual showBehaviorModels showForceFields showCollision showMapping" />
     <DefaultPipeline name="DefaultCollisionPipeline" verbose="0" draw="0" depth="6" />
     <BruteForceDetection name="Detection" />
