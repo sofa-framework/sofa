@@ -35,7 +35,6 @@
 
 #ifdef SOFA_HAVE_GLEW
 #include <SofaOpenglVisual/OglShader.h>
-#include <sofa/helper/gl/FrameBufferObject.h>
 #include <SofaOpenglVisual/VisualManagerPass.h>
 #endif
 
