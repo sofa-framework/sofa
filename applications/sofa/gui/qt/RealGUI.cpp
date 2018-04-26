@@ -1994,46 +1994,10 @@ void RealGUI::playpauseGUI ( bool value )
 
 //------------------------------------
 
-#ifdef SOFA_GUI_INTERACTION
-void RealGUI::interactionGUI ( bool value )
-{
-    interactionButton->setChecked ( value );
-    m_interactionActived = value;
-    getQtViewer()->getQWidget()->setMouseTracking ( ! value);
-    if (value==true)
-        playpauseGUI(value);
-
-    if(value)
-    {
-        interactionButton->setText(QSOFAApplication::translate("GUI", "ESC to qu&it", 0));
-        this->grabMouse();
-        this->grabKeyboard();
-        this->setMouseTracking(true);
-        //this->setCursor(QCursor(Qt::BlankCursor));
-        application->setOverrideCursor( QCursor( Qt::BlankCursor ) );
-        QPoint p = mapToGlobal(QPoint((this->width()+2)/2,(this->height()+2)/2));
-        QCursor::setPos(p);
-    }
-    else
-    {
-        interactionButton->setText(QSOFAApplication::translate("GUI", "&Interaction", 0));
-        this->releaseKeyboard();
-        this->releaseMouse();
-        this->setMouseTracking(false);
-        //this->setCursor(QCursor(Qt::ArrowCursor));
-        application->restoreOverrideCursor();
-    }
-
-    sofa::core::objectmodel::KeypressedEvent keyEvent(value?(char)0x81:(char)0x80);
-    Node* groot = mViewer->getScene();
-    if (groot)
-        groot->propagateEvent(core::ExecParams::defaultInstance(), &keyEvent);
-}
-#else
 void RealGUI::interactionGUI ( bool )
 {
 }
-#endif
+
 
 //------------------------------------
 
