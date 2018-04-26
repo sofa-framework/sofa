@@ -404,11 +404,13 @@ extract-crashes() {
             local status="$(cat "$output_dir/$scene/status.txt")"
             if [[ "$status" != 0 ]]; then
                 echo "$scene: error: $status"
+                if [[ -e "$output_dir/$scene/output.txt" ]]; then
+                    cat "$output_dir/$scene/output.txt"
+                fi
+                echo "### END OF OUTPUT ###"
             fi
         fi
-    done < "$output_dir/all-tested-scenes.txt" > "$output_dir/crashes.tmp"
-    sort "$output_dir/crashes.tmp" | uniq > "$output_dir/crashes.txt"
-    rm -f "$output_dir/crashes.tmp"
+    done < "$output_dir/all-tested-scenes.txt" > "$output_dir/crashes.txt"
 }
 
 extract-successes() {
