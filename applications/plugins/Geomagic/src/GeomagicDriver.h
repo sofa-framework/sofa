@@ -97,6 +97,7 @@ public:
     Data< Coord > d_posDevice; ///< position of the base of the part of the device
     Data<bool> d_button_1; ///< Button state 1
     Data<bool> d_button_2; ///< Button state 2
+    Data<Vector3> d_inputForceFeedback; ///< Input force feedback in case of no LCPForceFeedback is found (manual setting)
 
     GeomagicDriver();
 
