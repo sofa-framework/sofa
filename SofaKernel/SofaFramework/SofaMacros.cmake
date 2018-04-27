@@ -246,135 +246,86 @@ macro(sofa_install_get_libraries library)
     install(FILES ${ABS_LIB} DESTINATION lib)
 endmacro()
 
-### External project management
+
+### External projects management
 #Thanks to http://crascit.com/2015/07/25/cmake-gtest/
 
-macro(sofa_external_add_subdirectory repo_name directory)
+macro(sofa_add_generic_external directory name type)
+    message(WARNING "sofa_add_${type}_external is an experimental feature, use it at your own risk.")
+    message("Adding EXTERNAL ${type} ${name}")
 
     if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/${directory}" AND IS_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/${directory}")
-        set(repo_location "${CMAKE_CURRENT_LIST_DIR}/${directory}")
+        set(location "${CMAKE_CURRENT_LIST_DIR}/${directory}")
 
-        string(TOUPPER EXTERNAL_SUBDIRECTORY_${repo_name} option)
+        string(TOUPPER EXTERNAL_SUBDIRECTORY_${name} option)
 
         # optional parameter to activate/desactivate the option
         set(active OFF)
-        if(${ARGV3})
-            if( ${ARGV3} STREQUAL ON )
+        if(${ARGV4})
+            if( ${ARGV4} STREQUAL ON )
                 set(active ON)
             endif()
         endif()
 
-        option(${option} "Enable external repository ${repo_name}." ${active})
+        option(${option}_FORCE_FETCH "Force ${name} fetch." OFF)
+        if(${option}_FORCE_FETCH)
+            set(${option}_FORCE_FETCH OFF CACHE BOOL "Force ${name} fetch." FORCE)
+            set(${option}_RUN_ONCE FALSE CACHE INTERNAL "run only once the fetching process" FORCE)
+        endif()
 
-        if(${option})
-            if(NOT ${repo_name}_PROJECT_RUN_ONCE)
-                set(${repo_name}_PROJECT_RUN_ONCE TRUE CACHE BOOL "run only once the fetching process")
+        # Setup temporary directory
+        set(${name}_TEMP_DIR "${CMAKE_BINARY_DIR}/externals/${name}/" )
 
-                #setup temporary directory
-                set(${repo_name}_TEMP_DIR "${CMAKE_BINARY_DIR}/Externals/${repo_name}/" )
-                if(NOT EXISTS ${${repo_name}_TEMP_DIR})
-                    message("Creating ${${repo_name}_TEMP_DIR}")
-                    file(MAKE_DIRECTORY ${${repo_name}_TEMP_DIR})
-                endif()
+        # Fetch
+        if(NOT ${option}_RUN_ONCE)
+            set(${option}_RUN_ONCE TRUE CACHE INTERNAL "run only once the fetching process" FORCE)
 
-                # Download and unpack  at configure time
-                configure_file(${repo_location}/CMakeLists.txt.in ${${repo_name}_TEMP_DIR}/CMakeLists.txt)
-               
-                #execute script to get src
-                message("Pulling ${repo_name}... ")
-                execute_process(COMMAND "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .
-                    WORKING_DIRECTORY "${${repo_name}_TEMP_DIR}/" )
-                execute_process(COMMAND "${CMAKE_COMMAND}" --build .
-                    WORKING_DIRECTORY  "${${repo_name}_TEMP_DIR}/" )
+            message("Checking for ${${name}_TEMP_DIR}")
+            if(NOT EXISTS ${${name}_TEMP_DIR})
+                message("Creating ${${name}_TEMP_DIR}")
+                file(MAKE_DIRECTORY ${${name}_TEMP_DIR})
+            endif()
 
-                if(EXISTS "${repo_location}/src")
-                    message("... Done")
-                    # add .gitignore for Sofa
-                    file(WRITE "${repo_location}/.gitignore" "src/*")
-                    add_subdirectory("${repo_location}/src" "${CMAKE_BINARY_DIR}/${repo_name}/build")
-                else()
-                    message(".... error while pulling ${repo_name}")
-                endif()
+            # Download and unpack  at configure time
+            configure_file(${location}/ExternalProjectConfig.cmake.in ${${name}_TEMP_DIR}/CMakeLists.txt)
+
+            #execute script to get src
+            message("Pulling ${name}... ")
+            execute_process(COMMAND "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .
+                WORKING_DIRECTORY "${${name}_TEMP_DIR}/" )
+            execute_process(COMMAND "${CMAKE_COMMAND}" --build .
+                WORKING_DIRECTORY  "${${name}_TEMP_DIR}/" )
+
+            if(EXISTS "${location}/src")
+                message("... Done")
+                # add .gitignore for Sofa
+                file(WRITE "${location}/.gitignore" "src/")
+            else()
+                message("... error while pulling ${name}")
+            endif()
+        endif()
+
+        # Add
+        if(EXISTS "${location}/src" AND IS_DIRECTORY "${location}/src")
+            configure_file(${location}/ExternalProjectConfig.cmake.in ${${name}_TEMP_DIR}/CMakeLists.txt)
+            if(type STREQUAL "subdirectory")
+                add_subdirectory("${location}/src" "${CMAKE_BINARY_DIR}/${name}/build")
+            elseif(type STREQUAL "plugin")
+                sofa_add_plugin("${plugin_name}/src" "${plugin_name}" ${active})
             endif()
         endif()
     else()
-        message("(${CMAKE_CURRENT_LIST_DIR}/${repo_location}) does not exist and will be ignored.")
+        message("(${CMAKE_CURRENT_LIST_DIR}/${location}) does not exist and will be ignored.")
     endif()
 endmacro()
 
-macro(sofa_external_add_plugin plugin_name directory)
-
-    if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/${directory}" AND IS_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/${directory}")
-        set(plugin_location "${CMAKE_CURRENT_LIST_DIR}/${directory}")
-
-        string(TOUPPER EXTERNAL_PLUGIN_${plugin_name} option)
-
-        # optional parameter to activate/desactivate the option
-        set(active OFF)
-        if(${ARGV3})
-            if( ${ARGV3} STREQUAL ON )
-                set(active ON)
-            endif()
-        endif()
-
-        option(${option} "Enable external plugin ${plugin_name}." ${active})
-
-        if(${option})
-            if(NOT ${plugin_name}_PLUGIN_RUN_ONCE)
-                set(${plugin_name}_PLUGIN_RUN_ONCE TRUE CACHE BOOL "run only once the fetching process")
-
-                #setup temporary directory
-                set(${plugin_name}_TEMP_DIR "${CMAKE_BINARY_DIR}/Externals/${plugin_name}/" )
-                if(NOT EXISTS ${${plugin_name}_TEMP_DIR})
-                    message("Creating ${${plugin_name}_TEMP_DIR}")
-                    file(MAKE_DIRECTORY ${${plugin_name}_TEMP_DIR})
-                endif()
-
-                # Download and unpack  at configure time
-                configure_file(${plugin_location}/CMakeLists.txt.in ${${plugin_name}_TEMP_DIR}/CMakeLists.txt)
-
-                #execute script to get src
-                message("Pulling ${plugin_name}...")
-                execute_process(COMMAND "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .
-                    WORKING_DIRECTORY "${${plugin_name}_TEMP_DIR}/" )
-                execute_process(COMMAND "${CMAKE_COMMAND}" --build .
-                    WORKING_DIRECTORY  "${${plugin_name}_TEMP_DIR}/" )
-
-                if(EXISTS "${plugin_location}/src")
-                    message("... Done")
-                    # add .gitignore for Sofa
-                    file(WRITE "${plugin_location}/.gitignore" "src/*")
-
-                    sofa_add_plugin("${plugin_name}/src" "${plugin_name}")
-                else()
-                    message(".... error while pulling ${repo_name}")
-                endif()
-
-            endif()
-        endif()
-    else()
-        message("${plugin_location}) does not exist and will be ignored.")
-    endif()
+macro(sofa_add_subdirectory_external directory name)
+    sofa_add_generic_external(${directory} ${name} "subdirectory")
 endmacro()
 
-# macro(create_external_git_repository_subdirectory project_name git_url git_tag src_dir build_dir)
-#     project(${project_name}_download NONE)
-
-#     include(ExternalProject) #for ExternalProject_add
-#     ExternalProject_Add(${project_name}_download
-#         GIT_REPOSITORY ${git_url}
-#         GIT_TAG ${git_tag}
-#         #SOURCE_DIR "${CMAKE_SOURCE_DIR}/applications/plugins/${project_name}/src"
-#         #BINARY_DIR "${CMAKE_BINARY_DIR}/applications/plugins/${project_name}/build"
-#         SOURCE_DIR "${src_dir}"
-#         BINARY_DIR "${build_dir}"
-#         CONFIGURE_COMMAND ""
-#         BUILD_COMMAND ""
-#         INSTALL_COMMAND ""
-#         TEST_COMMAND ""
-#     )
-# endmacro()
-###
+macro(sofa_add_plugin_external directory name)
+    sofa_add_generic_external(${directory} ${name} "plugin" ${ARGV3})
+endmacro()
 
 
 ##########################################################
