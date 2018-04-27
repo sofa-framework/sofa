@@ -248,8 +248,15 @@ endmacro()
 
 
 ### External projects management
-#Thanks to http://crascit.com/2015/07/25/cmake-gtest/
-
+# Thanks to http://crascit.com/2015/07/25/cmake-gtest/
+#
+# Use this macro (subdirectory or plugin version) to add out-of-repository projects.
+# Usage:
+# Add repository configuration in MyProjectDir/ExternalProjectConfig.cmake.in
+# Call sofa_add_subdirectory_external(MyProjectDir MyProjectName)
+# Or sofa_add_plugin_external(MyProjectDir MyProjectName [ON,OFF])
+# See plugins/SofaHighOrder for example
+#
 macro(sofa_add_generic_external directory name type)
     message(WARNING "sofa_add_${type}_external is an experimental feature, use it at your own risk.")
     message("Adding EXTERNAL ${type} ${name}")
