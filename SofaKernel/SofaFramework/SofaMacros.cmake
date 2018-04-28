@@ -185,8 +185,21 @@ macro(sofa_add_generic directory name type)
             endif()
         endif()
 
-        set_property(GLOBAL APPEND PROPERTY __GlobalTargetList__ ${name})
-        set_property(GLOBAL APPEND PROPERTY __GlobalTargetNameList__ ${option})
+        # Add current target in the internal list only if not present already
+        get_property(_allTargets GLOBAL PROPERTY __GlobalTargetList__)
+        get_property(_allTargetNames GLOBAL PROPERTY __GlobalTargetNameList__)
+
+        # if(NOT ${name} IN_LIST _allTargets) # ONLY CMAKE >= 3.3 and policy to NEW
+        list (FIND _allTargets ${name} _index)
+        if(NOT ${_index} GREATER -1)
+            set_property(GLOBAL APPEND PROPERTY __GlobalTargetList__ ${name})
+        endif()
+
+        #if(NOT ${option} IN_LIST _allTargetNames)# ONLY CMAKE >= 3.3 and policy to NEW
+        list (FIND _allTargetNames ${option} _index)
+        if(NOT ${_index} GREATER -1)
+            set_property(GLOBAL APPEND PROPERTY __GlobalTargetNameList__ ${option})
+        endif()
     else()
         message("${type} ${name} (${CMAKE_CURRENT_LIST_DIR}/${directory}) does not exist and will be ignored.")
     endif()
