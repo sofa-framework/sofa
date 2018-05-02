@@ -202,7 +202,13 @@ void MultiBeamForceField<DataTypes>::reinit()
         _NRMaxIterations = 25;
 
         //Found UTS of 655MPa for an ASTM F75-07 cobalt-chrome alloy
-        _UTS = 655000000.0;
+        //Yield stress values for ASTM F-75 Cobalt Chromium alloy,
+        //    586-614 MPa, source : http://www.matweb.com/search/datasheet.aspx?matguid=df8d3cd30d5149cfaca9a3c6e3268655&ckck=1
+        //    450-560 MPa, source : http://www.arcam.com/wp-content/uploads/Arcam-ASTM-F75-Cobalt-Chrome.pdf
+
+        //Yield stress values for Cobalt Chrome Alloy Co28Cr6Mo
+        //    600 +- 50 MPa, source : https://www.3trpd.co.uk/wp-content/uploads/2015/05/Cobalt-Chrome-Alloy-Co28Cr6Mo.pdf
+        _UTS = 600000000.0;
 
         /**********************************/
 
@@ -1740,7 +1746,7 @@ template< class DataTypes>
 bool MultiBeamForceField<DataTypes>::stayInPlasticDeformation(const VoigtTensor2 &stressTensor,
                                                               const VoigtTensor2 &stressIncrement)
 {
-    double threshold = -1e-5; //TO DO: use proper threshold
+    double threshold = -1e2; //TO DO: use proper threshold
 
     Eigen::Matrix<double, 6, 1> gradient = vonMisesGradient(stressTensor, _UTS);
     double cp = gradient.transpose()*stressIncrement;
@@ -2114,43 +2120,12 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
             isPlasticPoint = POSTPLASTIC;
             newStressPoint = currentStressPoint; //TO DO: check if we should take back the plastic strain
 
-            const StiffnessMatrix Ke = beamsData.getValue()[index]._Ke_loc;
-            Eigen::Matrix<double, 12, 12> Ke_eigen;
-            for (int i = 0; i < 12; i++)
-            {
-                Ke_eigen(i, i) = Ke[i][i];
-                for (int j = 0; j < i; j++)
-                    Ke_eigen(i, j) = Ke_eigen(j, i) = Ke[i][j];
-            }
 
-            const Eigen::Matrix<double, 6, 6>& S = beamsData.getValue()[index]._materialInv;
+            //************ Computation of the remaining plastic strain ************//
 
-            VoigtTensor2 lastPlasticStrain;
-            VoigtTensor2 eqElasticStrain;
-            VoigtTensor2 lastPlasticStress;
-
-            helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
-            helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> &plasticStrainHistory = bd[index]._plasticStrainHistory;
-
-            EigenDisplacement eigenLastDisp;
-            for (int k = 0; k < 12; k++)
-            {
-                eigenLastDisp(k) = lastDisp[k];
-            }
-
-            //Computation of the remaining plastic strain
-
-            const Eigen::Matrix<double, 6, 12> &Be = beamsData.getValue()[index]._BeMatrices[gaussPointIt];
-
-            //Strain and stress in the last plastic point (end of the last time step)
-            lastPlasticStrain = Be*eigenLastDisp;
-            lastPlasticStress = initialStress;
-
-            //equivalent elastic strain for the same stress state
-            eqElasticStrain = S*lastPlasticStress;
-
-            plasticStrainHistory[gaussPointIt] = lastPlasticStrain - eqElasticStrain;
-            beamsData.endEdit();
+            //TO DO: change with some kind of integration of the plastic strain increments over the plastic deformation path.
+            //       For the moment the plastic strain increments are just summed up at the end of the plastic stress
+            //       increment computation
 
             return;
         }
@@ -2256,12 +2231,12 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
         count++;
     }
 
-    //Computation of the associated plastic strain increment
-    //TO DO: delete, debug purposes
-    //helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
-    //helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> &plasticStrainHistory = bd[index]._plasticStrainHistory;
-    //plasticStrainHistory[gaussPointIt] += totalIncrement(6, 0)*gradient;
-    //beamsData.endEdit();
+    //Computation of the plastic strain increment, to keep track of the plastic loading history
+    //TO DO: check if the increments should be stored independently rather than summed
+    helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
+    helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> &plasticStrainHistory = bd[index]._plasticStrainHistory;
+    plasticStrainHistory[gaussPointIt] += totalIncrement(6, 0)*gradient;
+    beamsData.endEdit();
 
     // return the new stress point
     newStressPoint = currentStressPoint;
