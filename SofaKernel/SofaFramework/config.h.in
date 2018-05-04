@@ -27,6 +27,10 @@
 #include <sofa/config/build_option_opengl.h>
 #include <sofa/config/build_option_threading.h>
 
+// Defines paths to examples and shared resources
+#define SOFA_SHARE_DIR @SHARE_DIR@
+#define SOFA_EXAMPLES_DIR @EXAMPLES_DIR@
+
 // fixes CGAL plugin build errors (default value: 5)
 #define BOOST_PARAMETER_MAX_ARITY 12
 
