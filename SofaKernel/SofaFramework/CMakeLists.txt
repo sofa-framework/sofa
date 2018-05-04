@@ -198,8 +198,17 @@ foreach(NAME ${SOFA_BUILD_OPTIONS_SRC})
     install(FILES "${CMAKE_BINARY_DIR}/include/sofa/config/${NAME}" DESTINATION "include/sofa/config")
 endforeach()
 
+# Paths to share/ and examples/. In the
+# build directory, it points to the source tree
+set(SHARE_DIR \"${CMAKE_SOURCE_DIR}/share\")
+set(EXAMPLES_DIR \"${CMAKE_SOURCE_DIR}/examples\")
 configure_file("config.h.in" "${CMAKE_BINARY_DIR}/include/sofa/config.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/sofa/config.h" DESTINATION "include/sofa/")
+
+## Paths to share/ and examples/, this one contains absolute paths to the installed resources directory.
+set(SHARE_DIR \"${CMAKE_INSTALL_PREFIX}/share/sofa\")
+set(EXAMPLES_DIR \"${CMAKE_INSTALL_PREFIX}/share/sofa/examples\")
+configure_file("config.h.in" "${CMAKE_BINARY_DIR}/include/sofa/installedSofaConfig.h")
+install(FILES "${CMAKE_BINARY_DIR}/include/sofa/installedSofaConfig.h" DESTINATION "include/sofa/" RENAME "config.h")
 
 # make sure everyone in the build tree can see <sofa/config.h>
 #list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_BINARY_DIR})
