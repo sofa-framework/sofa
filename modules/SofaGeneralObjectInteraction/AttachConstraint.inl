@@ -266,6 +266,7 @@ AttachConstraint<DataTypes>::AttachConstraint(core::behavior::MechanicalState<Da
     , d_velocityFactor(initData(&d_velocityFactor, (Real)1.0, "velocityFactor", "IN: Factor applied to projection of velocity"))
     , d_responseFactor(initData(&d_responseFactor, (Real)1.0, "responseFactor", "IN: Factor applied to projection of force/acceleration"))
     , d_constraintFactor( initData(&d_constraintFactor,"constraintFactor","Constraint factor per pair of points constrained. 0 -> the constraint is released. 1 -> the constraint is fully constrained") )
+    , dirtyHack(0)
 {
     // default to indice 0
 //     f_indices1.beginEdit()->push_back(0);
@@ -310,7 +311,6 @@ void AttachConstraint<DataTypes>::addConstraint(unsigned int index1, unsigned in
 
 // -- Constraint interface
 
-
 template <class DataTypes>
 void AttachConstraint<DataTypes>::init()
 {
@@ -323,8 +323,9 @@ void AttachConstraint<DataTypes>::init()
 
     f_indices2.createTopologicalEngine(topology);
     f_indices2.registerTopologicalData();
+    //constraintReleased.resize(f_indices2.getValue().size());
 
-    if (f_radius.getValue() >= 0 && f_indices1.getValue().size()==0 && f_indices2.getValue().size()==0 && this->mstate1 && this->mstate2)
+    if (dirtyHack == 1 && f_radius.getValue() >= 0 && f_indices1.getValue().size()==0 && f_indices2.getValue().size()==0 && this->mstate1 && this->mstate2)
     {
         const Real maxR = f_radius.getValue();
         const VecCoord& x1 = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
@@ -347,12 +348,12 @@ void AttachConstraint<DataTypes>::init()
                 addConstraint(best, i2);
             }
         }
-
         helper::vector<Real>& constraintFactor = *d_constraintFactor.beginEdit();
 
         // constraintFactor default behavior
         // if NOT set : initialize all constraints active
-        if(!d_constraintFactor.isSet())
+        //if(!d_constraintFactor.isSet())
+        if(true)
         {
             unsigned int size = f_indices2.getValue().size();
 
@@ -385,7 +386,7 @@ void AttachConstraint<DataTypes>::init()
         d_constraintFactor.endEdit();
     }
 
-    // Moved after, so that f_indices2 can be filled in case of radius option 
+    // Moved after, so that f_indices2 can be filled in case of radius option
     constraintReleased.resize(f_indices2.getValue().size());
 
     // Check coherency of size between indices vectors 1 and 2
@@ -420,6 +421,12 @@ void AttachConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalPa
 template <class DataTypes>
 void AttachConstraint<DataTypes>::projectPosition(const core::MechanicalParams * /*mparams*/, DataVecCoord& res1_d, DataVecCoord& res2_d)
 {
+    if (dirtyHack == 0)
+    {
+        dirtyHack = 1;
+        init();
+        dirtyHack = 2;
+    }
     const SetIndexArray & indices1 = f_indices1.getValue();
     const SetIndexArray & indices2 = f_indices2.getValue();
     const bool freeRotations = f_freeRotations.getValue();

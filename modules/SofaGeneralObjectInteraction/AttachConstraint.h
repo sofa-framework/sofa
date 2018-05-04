@@ -98,6 +98,7 @@ public:
     helper::vector<bool> constraintReleased;
     helper::vector<Real> lastDist;
     helper::vector<defaulttype::Quat> restRotations;
+    int dirtyHack;
 protected:
     AttachConstraint(core::behavior::MechanicalState<DataTypes> *mm1, core::behavior::MechanicalState<DataTypes> *mm2);
     AttachConstraint();
@@ -138,7 +139,8 @@ protected :
             return;
         }
         constraintReleased[index] = false;
-
+        //const VecCoord& x1b = this->mstate1->read(core::ConstVecCoordId::position())->getValue();
+        //const VecCoord& x2b = this->mstate2->read(core::ConstVecCoordId::position())->getValue();
         Coord in1 = x1;
         Coord in2 = x2;
 
