@@ -385,6 +385,9 @@ void AttachConstraint<DataTypes>::init()
         d_constraintFactor.endEdit();
     }
 
+    // Moved after, so that f_indices2 can be filled in case of radius option 
+    constraintReleased.resize(f_indices2.getValue().size());
+
     // Check coherency of size between indices vectors 1 and 2
     if(f_indices1.getValue().size() != f_indices2.getValue().size())
     {
