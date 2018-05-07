@@ -1,4 +1,9 @@
 cmake_minimum_required(VERSION 3.1)
 
-sofa_add_plugin(SofaAllCommonComponents SofaAllCommonComponents ON)
+sofa_add_package(SofaComponentBase SofaComponentBase ON)
+sofa_add_package(SofaComponentCommon SofaComponentCommon ON)
+sofa_add_package(SofaComponentGeneral SofaComponentGeneral ON)
+sofa_add_package(SofaComponentAdvanced SofaComponentAdvanced ON)
+sofa_add_package(SofaComponentMisc SofaComponentMisc ON)
+sofa_add_package(SofaComponentAll SofaComponentAll ON)
 

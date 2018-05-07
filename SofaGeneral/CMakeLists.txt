@@ -33,7 +33,6 @@ set(SOFAGENERAL_TARGETS
     SofaGeneralTopology
     SofaGeneralVisual
     SofaBoundaryCondition
-    SofaComponentGeneral
     SofaConstraint
     SofaGeneralEngine
     SofaExporter

@@ -51,9 +51,15 @@ macro(sofa_write_package_config_files package_name version)
     install(FILES "${CMAKE_CURRENT_BINARY_DIR}/${filename}" DESTINATION lib/cmake/${package_name})
 
     ### <package_name>Config.cmake
-    configure_package_config_file(${package_name}Config.cmake.in
-                                  "${CMAKE_BINARY_DIR}/cmake/${package_name}Config.cmake"
-                                  INSTALL_DESTINATION lib/cmake/${package_name})
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/config/${package_name}.cmake.in")
+        configure_package_config_file(config/${package_name}.cmake.in
+            "${CMAKE_BINARY_DIR}/cmake/${package_name}Config.cmake"
+            INSTALL_DESTINATION lib/cmake/${package_name})
+    else()
+        configure_package_config_file(${package_name}Config.cmake.in
+            "${CMAKE_BINARY_DIR}/cmake/${package_name}Config.cmake"
+            INSTALL_DESTINATION lib/cmake/${package_name})
+    endif()
     install(FILES "${CMAKE_BINARY_DIR}/cmake/${package_name}Config.cmake"
             DESTINATION lib/cmake/${package_name})
 
@@ -234,9 +240,12 @@ macro(sofa_add_plugin_experimental directory plugin_name)
     message("-- ${plugin_name} is an experimental feature, use it at your own risk.")
 endmacro()
 
-
 macro(sofa_add_application directory app_name)
     sofa_add_generic( ${directory} ${app_name} "Application" ${ARGV2} )
+endmacro()
+
+macro(sofa_add_package directory package_name)
+    sofa_add_generic( ${directory} ${package_name} "Package" ${ARGV2} )
 endmacro()
 
 

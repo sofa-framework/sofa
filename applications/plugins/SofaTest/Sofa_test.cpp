@@ -44,7 +44,7 @@ namespace {
           const std::string pluginDir = Utils::getPluginDirectory() ;
           PluginRepository.addFirstPath(pluginDir);
           PluginManager::getInstance().loadPlugin("SceneCreator") ;
-          PluginManager::getInstance().loadPlugin("SofaAllCommonComponents") ;
+          PluginManager::getInstance().loadPlugin("SofaComponentAll") ;
       }
     } singleton;
 }

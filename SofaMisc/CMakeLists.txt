@@ -15,7 +15,6 @@ install(FILES "${CMAKE_BINARY_DIR}/include/SofaMisc/config.h" DESTINATION "inclu
 ### Subdirectories
 
 set(SOFAMISC_TARGETS
-    SofaComponentMisc
     SofaMisc
     SofaMiscEngine
     SofaMiscFem

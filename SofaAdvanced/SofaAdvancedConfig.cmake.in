@@ -10,8 +10,10 @@ if(SOFA_HAVE_MINIFLOWVR)
     find_package(MiniFlowVR REQUIRED)
 endif()
 
-if(NOT TARGET SofaComponentAdvanced)
-	include("${CMAKE_CURRENT_LIST_DIR}/SofaAdvancedTargets.cmake")
-endif()
+foreach(target @SOFAADVANCED_TARGETS@)
+    if(NOT TARGET ${target})
+        include("${CMAKE_CURRENT_LIST_DIR}/${target}Targets.cmake")
+    endif()
+endforeach()
 
 check_required_components(@SOFAADVANCED_TARGETS@)
