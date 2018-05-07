@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -98,7 +98,7 @@ public:
     typedef typename DiagonalMassInternalData<DataTypes,TMassType>::MassVector MassVector;
     typedef typename DiagonalMassInternalData<DataTypes,TMassType>::GeometricalTypes GeometricalTypes;
 
-    VecMass d_vertexMass;
+    VecMass d_vertexMass; ///< values of the particles masses
 
     typedef core::topology::BaseMeshTopology::Point Point;
     typedef core::topology::BaseMeshTopology::Edge Edge;
@@ -187,9 +187,9 @@ public:
 
     /// to display the center of gravity of the system
     Data< bool > d_showCenterOfGravity;
-    Data< float > d_showAxisSize;
 
-    core::objectmodel::DataFileName d_fileMass;
+    Data< float > d_showAxisSize; ///< factor length of the axis displayed (only used for rigids)
+    core::objectmodel::DataFileName d_fileMass; ///< an Xsp3.0 file to specify the mass parameters
 
     DMassPointHandler* m_pointHandler;
 

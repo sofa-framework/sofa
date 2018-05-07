@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -61,8 +61,14 @@ using sofa::helper::system::SetDirectory ;
 #include <sofa/helper/system/FileSystem.h>
 using sofa::helper::system::FileSystem ;
 
+#include <sofa/helper/Utils.h>
+using sofa::helper::Utils;
+
 #include <sofa/helper/system/FileRepository.h>
 using sofa::helper::system::DataRepository ;
+
+#include <sofa/gui/GuiDataRepository.h>
+using sofa::gui::GuiDataRepository;
 
 #include <sofa/simulation/SceneLoaderFactory.h>
 using sofa::simulation::SceneLoaderFactory ;
@@ -237,6 +243,9 @@ void RealGUI::CreateApplication(int /*_argc*/, char** /*_argv*/)
     argv[0] = strdup ( BaseGUI::GetProgramName() );
     argv[1]=NULL;
     application = new QSOFAApplication ( *argc,argv );
+
+    //Initialize GUI resources path
+    GuiDataRepository.addFirstPath(Utils::getSofaPathTo("share/sofa/gui/qt/resources").c_str());
 
     //force locale to Standard C
     //(must be done immediatly after the QApplication has been created)
@@ -1617,8 +1626,6 @@ void RealGUI::stopDumpVisitor()
         //Creation of the graph
         std::string xmlDoc=m_dumpVisitorStream.str();
         handleTraceVisitor->load(xmlDoc);
-                                 /// This is use to retrieve the execution context when browsing the
-                                 /// history of sofa scene execution.
         m_dumpVisitorStream.str("");
     }
 #endif
@@ -1987,46 +1994,10 @@ void RealGUI::playpauseGUI ( bool value )
 
 //------------------------------------
 
-#ifdef SOFA_GUI_INTERACTION
-void RealGUI::interactionGUI ( bool value )
-{
-    interactionButton->setChecked ( value );
-    m_interactionActived = value;
-    getQtViewer()->getQWidget()->setMouseTracking ( ! value);
-    if (value==true)
-        playpauseGUI(value);
-
-    if(value)
-    {
-        interactionButton->setText(QSOFAApplication::translate("GUI", "ESC to qu&it", 0));
-        this->grabMouse();
-        this->grabKeyboard();
-        this->setMouseTracking(true);
-        //this->setCursor(QCursor(Qt::BlankCursor));
-        application->setOverrideCursor( QCursor( Qt::BlankCursor ) );
-        QPoint p = mapToGlobal(QPoint((this->width()+2)/2,(this->height()+2)/2));
-        QCursor::setPos(p);
-    }
-    else
-    {
-        interactionButton->setText(QSOFAApplication::translate("GUI", "&Interaction", 0));
-        this->releaseKeyboard();
-        this->releaseMouse();
-        this->setMouseTracking(false);
-        //this->setCursor(QCursor(Qt::ArrowCursor));
-        application->restoreOverrideCursor();
-    }
-
-    sofa::core::objectmodel::KeypressedEvent keyEvent(value?(char)0x81:(char)0x80);
-    Node* groot = mViewer->getScene();
-    if (groot)
-        groot->propagateEvent(core::ExecParams::defaultInstance(), &keyEvent);
-}
-#else
 void RealGUI::interactionGUI ( bool )
 {
 }
-#endif
+
 
 //------------------------------------
 

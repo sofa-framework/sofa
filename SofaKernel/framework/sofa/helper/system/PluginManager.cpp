@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -87,21 +87,25 @@ PluginManager::~PluginManager()
 void PluginManager::readFromIniFile(const std::string& path)
 {
     std::ifstream instream(path.c_str());
-    std::string pluginPath, line, version;
+    std::string plugin, line, version;
     while(std::getline(instream, line))
     {
         if (line.empty()) continue;
 
         std::istringstream is(line);
-        is >> pluginPath;
+        is >> plugin;
         if (is.eof())
             msg_deprecated("PluginManager") << path << " file is using a deprecated syntax (version information missing). Please update it in the near future.";
         else
             is >> version; // information not used for now
-        if(loadPlugin(pluginPath))
-    {
-            m_pluginMap[pluginPath].initExternalModule();
-    }
+        if(loadPlugin(plugin))
+        {
+            Plugin* p = getPlugin(plugin);
+            if(p) // should always be true as we are protected by if(loadPlugin(...))
+            {
+                p->initExternalModule();
+            }
+        }
     }
     instream.close();
 }
@@ -114,7 +118,7 @@ void PluginManager::writeToIniFile(const std::string& path)
     {
         const std::string& pluginPath = (iter->first);
         outstream << pluginPath << " ";
-        outstream << m_pluginMap[pluginPath].getModuleVersion() << "\n";
+        outstream << getPlugin(pluginPath)->getModuleVersion() << "\n";
     }
     outstream.close();
 }
@@ -198,9 +202,7 @@ bool PluginManager::loadPluginByName(const std::string& pluginName, const std::s
 
 bool PluginManager::loadPlugin(const std::string& plugin, const std::string& suffix, bool ignoreCase, std::ostream* errlog)
 {
-    // If 'plugin' ends with ".so", ".dll" or ".dylib", this is a path
-    const std::string dotExt = "." + DynamicLibrary::extension;
-    if (std::equal(dotExt.rbegin(), dotExt.rend(), plugin.rbegin()))
+    if (FileSystem::isFile(plugin))
     {
         return loadPluginByPath(plugin,  errlog);
     }
@@ -223,6 +225,25 @@ bool PluginManager::unloadPlugin(const std::string &pluginPath, std::ostream* er
     {
         m_pluginMap.erase(m_pluginMap.find(pluginPath));
         return true;
+    }
+}
+
+Plugin* PluginManager::getPlugin(const std::string& plugin, const std::string& suffix, bool ignoreCase)
+{
+    std::string pluginPath = plugin;
+
+    if (!FileSystem::isFile(plugin)) {
+        pluginPath = findPlugin(plugin);
+    }
+
+    if (!pluginPath.empty() && m_pluginMap.find(pluginPath) != m_pluginMap.end())
+    {
+        return &m_pluginMap[pluginPath];
+    }
+    else
+    {
+        msg_info("PluginManager") << "Plugin not found in loaded plugins: " << plugin << msgendl;
+        return NULL;
     }
 }
 
@@ -279,7 +300,7 @@ std::string PluginManager::findPlugin(const std::string& pluginName, const std::
     for (std::vector<std::string>::iterator i = m_searchPaths.begin(); i!=m_searchPaths.end(); i++)
     {
         const std::string path = *i + "/" + libName;
-        if (FileSystem::exists(path))
+        if (FileSystem::isFile(path))
             return path;
     }
     // Second try: case insensitive
@@ -305,8 +326,14 @@ std::string PluginManager::findPlugin(const std::string& pluginName, const std::
     return std::string();
 }
 
-bool PluginManager::pluginIsLoaded(const std::string& pluginPath)
+bool PluginManager::pluginIsLoaded(const std::string& plugin)
 {
+    std::string pluginPath = plugin;
+
+    if (!FileSystem::isFile(plugin)) {
+        pluginPath = findPlugin(plugin);
+    }
+
     return m_pluginMap.find(pluginPath) != m_pluginMap.end();
 }
 

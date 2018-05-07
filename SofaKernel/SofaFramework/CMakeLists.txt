@@ -4,7 +4,9 @@ project(SofaFramework)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 
 include(SofaMacros)
-
+# Clear internal target list (set by the macro sofa_add_generic() )
+set_property(GLOBAL PROPERTY __GlobalTargetList__ "")
+set_property(GLOBAL PROPERTY __GlobalTargetNameList__ "")
 
 ### Options
 
@@ -34,12 +36,6 @@ if(MSVC)
     option(SOFA_VECTORIZE "Enable the use of SSE2 instructions by the compiler (Only available for MSVC)." OFF)
 endif()
 
-if(SOFA_WITH_DEPRECATED)
-    set(SOFA_WITH_DEPRECATED_ "1")
-else()
-    set(SOFA_WITH_DEPRECATED_ "0")
-endif()
-
 if(SOFA_WITH_THREADING)
     set(SOFA_WITH_THREADING_ "1")
 else()
@@ -50,6 +46,12 @@ if(SOFA_WITH_EXPERIMENTAL_FEATURES)
     set(SOFA_WITH_EXPERIMENTAL_FEATURES_ "1")
 else()
     set(SOFA_WITH_EXPERIMENTAL_FEATURES_ "0")
+endif()
+
+if(SOFA_WITH_DEPRECATED_COMPONENTS)
+    set(SOFA_WITH_DEPRECATED_COMPONENTS_ "1")
+else()
+    set(SOFA_WITH_DEPRECATED_COMPONENTS_ "0")
 endif()
 
 ### Dependencies
@@ -123,14 +125,17 @@ set(SOFA_HAVE_ZLIB ${ZLIB_FOUND})
 
 ## Boost
 # required boost libraries
-find_package(Boost REQUIRED system filesystem locale program_options
-    OPTIONAL_COMPONENTS thread date_time )
+find_package(Boost
+    REQUIRED system filesystem locale program_options
+    OPTIONAL_COMPONENTS thread date_time
+    )
 
-set(SOFA_HAVE_BOOST_DATE_TIME ${Boost_DATE_TIME_FOUND})
 set(SOFA_HAVE_BOOST_SYSTEM ${Boost_SYSTEM_FOUND})
-set(SOFA_HAVE_BOOST_LOCALE ${Boost_LOCALE_FOUND})
 set(SOFA_HAVE_BOOST_FILESYSTEM ${Boost_FILESYSTEM_FOUND})
+set(SOFA_HAVE_BOOST_LOCALE ${Boost_LOCALE_FOUND})
+set(SOFA_HAVE_BOOST_PROGRAM_OPTIONS ${Boost_PROGRAM_OPTIONS})
 set(SOFA_HAVE_BOOST_THREAD ${Boost_THREAD_FOUND})
+set(SOFA_HAVE_BOOST_DATE_TIME ${Boost_DATE_TIME_FOUND})
 
 list(APPEND Boost_INCLUDE_DIRS ${Boost_INCLUDE_DIR})
 
@@ -141,16 +146,19 @@ if(SOFA_HAVE_BOOST_SYSTEM
     set(SOFA_HAVE_BOOST 1)
 
     sofa_create_target(BoostSystem SofaFramework "${Boost_SYSTEM_LIBRARY}" "${Boost_INCLUDE_DIRS}")
-    sofa_create_target(BoostLocale SofaFramework "${Boost_LOCALE_LIBRARY}" "${Boost_INCLUDE_DIRS}")
     sofa_create_target(BoostFileSystem SofaFramework "${Boost_FILESYSTEM_LIBRARY}" "${Boost_INCLUDE_DIRS}")
+    sofa_create_target(BoostLocale SofaFramework "${Boost_LOCALE_LIBRARY}" "${Boost_INCLUDE_DIRS}")
+    sofa_create_target(BoostProgramOptions SofaFramework "${Boost_PROGRAM_OPTIONS_LIBRARY}" "${Boost_INCLUDE_DIRS}")
 
-	list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostSystem_Target})
-    list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostLocale_Target})
+    list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostSystem_Target})
     list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostFileSystem_Target})
+    list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostLocale_Target})
+    list(APPEND SOFAFRAMEWORK_DEPENDENCY_LINK ${BoostProgramOptions_Target})
 
     sofa_install_get_libraries(${Boost_SYSTEM_LIBRARY})
     sofa_install_get_libraries(${Boost_LOCALE_LIBRARY})
     sofa_install_get_libraries(${Boost_FILESYSTEM_LIBRARY})
+    sofa_install_get_libraries(${Boost_PROGRAM_OPTIONS_LIBRARY})
 
     if(SOFA_HAVE_BOOST_DATE_TIME)
         sofa_create_target(BoostDateTime SofaFramework "${Boost_DATE_TIME_LIBRARY}" "${Boost_INCLUDE_DIRS}")
@@ -179,7 +187,7 @@ list(APPEND SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES ${JSON_INCLUDE_DIR})
 ## the state of the build option.
 set(SOFA_BUILD_OPTIONS_SRC
         sharedlibrary_defines.h
-        build_option_componentset.h
+        build_option_deprecated_components.h
         build_option_dump_visitor.h
         build_option_experimental_features.h
         build_option_opengl.h
@@ -198,11 +206,11 @@ install(FILES "${CMAKE_BINARY_DIR}/include/sofa/config.h" DESTINATION "include/s
 list(REMOVE_DUPLICATES SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES)
 
 ## Version
-set(SOFAFRAMEWORK_VERSION "17.12.dev")
+set(SOFAFRAMEWORK_VERSION "18.06.dev")
 
 ## sofa/version.h
-set(SOFA_VERSION "171299")
-set(SOFA_VERSION_STR "\"17.12.dev\"")
+set(SOFA_VERSION "180699")
+set(SOFA_VERSION_STR "\"18.06.dev\"")
 configure_file(../framework/sofa/version.h.in "${CMAKE_BINARY_DIR}/include/sofa/version.h")
 install(FILES "${CMAKE_BINARY_DIR}/include/sofa/version.h" DESTINATION include/sofa)
 

@@ -36,8 +36,8 @@ class SOFA_Compliant_API IncompleteCholeskyPreconditioner : public BasePrecondit
     virtual void compute( const rmat& H );
     virtual void apply( vec& res, const vec& v );
 
-    Data<bool> d_constant;
-    Data<real> d_shift;
+    Data<bool> d_constant; ///< reuse first factorization
+    Data<real> d_shift; ///< initial shift
 
   protected:
 

@@ -25,7 +25,8 @@ class Fontain(Sofa.PythonScriptController):
         node.createObject('EulerImplicit')
         node.createObject('CGLinearSolver',iterations=25,tolerance=1.0e-9,threshold=1.0e-9)
         object = node.createObject('MechanicalObject',name='MecaObject',template='Rigid')
-        node.createObject('UniformMass',totalmas=100)
+        node.createObject('UniformMass',totalmass=1)
+        node.createObject('SphereModel',radius='0.5', group='1')
 
         # VisualNode
         VisuNode = node.createChild('Visu')

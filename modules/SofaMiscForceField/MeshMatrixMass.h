@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -124,12 +124,12 @@ public:
     /// to display the center of gravity of the system
     Data< bool >         d_showCenterOfGravity;
     /// scale to change the axis size
-    Data< Real >         d_showAxisSize;
+    Data< Real >         d_showAxisSize;  ///< factor length of the axis displayed (only used for rigids)
     /// if mass lumping should be performed (only compute mass on vertices)
     Data< bool >         d_lumping;
     /// if specific mass information should be outputed
-    Data< bool >         d_printMass;
-    Data< std::map < std::string, sofa::helper::vector<double> > > f_graph;
+    Data< bool >         d_printMass; ///< Boolean to print the mass
+    Data< std::map < std::string, sofa::helper::vector<double> > > f_graph; ///< Graph of the controlled potential
 
 
 protected:

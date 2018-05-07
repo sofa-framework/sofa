@@ -4,8 +4,8 @@ find_package(SofaFramework)
 
 sofa_add_plugin(CImgPlugin CImgPlugin ON) # ON by default and first as it is used by other plugins.
 sofa_add_plugin(SofaEulerianFluid SofaEulerianFluid)
-sofa_add_plugin(SofaSphFluid SofaSphFluid ON)
-sofa_add_plugin(SofaMiscCollision SofaMiscCollision ON)
+sofa_add_plugin(SofaSphFluid SofaSphFluid)
+sofa_add_plugin(SofaMiscCollision SofaMiscCollision ON) # Contains DefaultCollisionGroupManager
 sofa_add_plugin(SofaDistanceGrid SofaDistanceGrid)
 sofa_add_plugin(SofaImplicitField SofaImplicitField)
 sofa_add_plugin(SofaVolumetricData SofaVolumetricData)  ##TRANSITIONAL DEPEND ON DISTANCEGRID & IMPLICIT
@@ -43,7 +43,7 @@ sofa_add_plugin(LeapMotion LeapMotion)
 sofa_add_plugin(Geomagic Geomagic)
 
 # SOFA_WITH_EXPERIMENTAL_FEATURES_17_12
-sofa_add_plugin(PSL PSL ON)
+sofa_add_plugin_experimental(PSL PSL)
 
 if((${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU") AND (${CMAKE_SYSTEM_NAME} MATCHES "Linux"))
     sofa_add_plugin(SofaPardisoSolver SofaPardisoSolver) # SofaPardisoSolver is only available under linux with gcc

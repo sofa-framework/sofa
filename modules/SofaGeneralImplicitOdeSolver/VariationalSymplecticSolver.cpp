@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -56,7 +56,7 @@ VariationalSymplecticSolver::VariationalSymplecticSolver()
     , f_fileName(initData(&f_fileName,"file","File name where kinetic and potential energies are saved in a CSV file"))
     , f_computeHamiltonian( initData(&f_computeHamiltonian,true,"computeHamiltonian","Compute hamiltonian") )
     , f_hamiltonianEnergy( initData(&f_hamiltonianEnergy,0.0,"hamiltonianEnergy","hamiltonian energy") )
-    , f_useIncrementalPotentialEnergy( initData(&f_useIncrementalPotentialEnergy,true,"use incremental potential Energy","use real potential energy, if false use approximate potential energy"))
+    , f_useIncrementalPotentialEnergy( initData(&f_useIncrementalPotentialEnergy,true,"useIncrementalPotentialEnergy","use real potential energy, if false use approximate potential energy"))
 {
     cpt=0;
 }

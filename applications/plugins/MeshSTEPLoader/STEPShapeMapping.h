@@ -27,9 +27,9 @@ public:
     void init();
     void update();
 
-    Data<unsigned int> shapeNumber;
-    Data<unsigned int > indexBegin;
-    Data<unsigned int > indexEnd;
+    Data<unsigned int> shapeNumber; ///< Shape number to be loaded
+    Data<unsigned int > indexBegin; ///< The begin index for this shape with respect to the global mesh
+    Data<unsigned int > indexEnd; ///< The end index for this shape with respect to the global mesh
 public:
 
     template< class T>

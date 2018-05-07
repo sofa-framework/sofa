@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -172,7 +172,7 @@ protected:
     //just for draw forces
     VecDeriv _forces;
 
-    topology::EdgeData< sofa::helper::vector<BeamInfo> > beamsData;
+    topology::EdgeData< sofa::helper::vector<BeamInfo> > beamsData; ///< Internal element data
     linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> matS;
 
     class BeamFFEdgeHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,sofa::helper::vector<BeamInfo> >
@@ -197,13 +197,13 @@ protected:
     const VecElement *_indexedElements;
 //	unsigned int maxPoints;
 //	int _method; ///< the computation method of the displacements
-    Data<Real> _poissonRatio;
-    Data<Real> _youngModulus;
+    Data<Real> _poissonRatio; ///< Potion Ratio
+    Data<Real> _youngModulus; ///< Young Modulus
 //	Data<bool> _timoshenko;
-    Data<Real> _radius;
-    Data<Real> _radiusInner;
-    Data< VecIndex > _list_segment;
-    Data< bool> _useSymmetricAssembly;
+    Data<Real> _radius; ///< radius of the section
+    Data<Real> _radiusInner; ///< inner radius of the section for hollow beams
+    Data< VecIndex > _list_segment; ///< apply the forcefield to a subset list of beam segments. If no segment defined, forcefield applies to the whole topology
+    Data< bool> _useSymmetricAssembly; ///< use symmetric assembly of the matrix K
     bool _partial_list_segment;
 
     bool _updateStiffnessMatrix;

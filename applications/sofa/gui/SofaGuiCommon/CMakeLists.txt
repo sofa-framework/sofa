@@ -13,6 +13,7 @@ set(HEADER_FILES
     ../SofaGUI.h
     ../ViewerFactory.h
     ../GUIManager.h
+    ../GuiDataRepository.h
 )
 
 set(SOURCE_FILES
@@ -25,6 +26,7 @@ set(SOURCE_FILES
     ../PickHandler.cpp
     ../GUIManager.cpp
     ../ViewerFactory.cpp
+    ../GuiDataRepository.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})

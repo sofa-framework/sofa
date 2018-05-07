@@ -102,7 +102,7 @@ public:
 
 	typedef typename DataTypes::Real real;
 
-	Data<real> damping;
+	Data<real> damping; ///< damping value
 
 protected:
 

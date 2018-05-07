@@ -90,7 +90,7 @@ class SOFA_Compliant_API CompliantStaticSolver : public sofa::core::behavior::Od
     SReal previous;
     unsigned iteration;
 
-    Data<SReal> epsilon;
+    Data<SReal> epsilon; ///< division by zero threshold
 
     Data<unsigned> line_search;
     enum {
@@ -99,9 +99,9 @@ class SOFA_Compliant_API CompliantStaticSolver : public sofa::core::behavior::Od
         LS_SECANT
     };
 
-    Data<bool> conjugate;
+    Data<bool> conjugate; ///< conjugate descent directions
     
-    Data<SReal> ls_precision;
+    Data<SReal> ls_precision; ///< line search precision
     Data<unsigned> ls_iterations;
     Data<SReal> ls_step;
 

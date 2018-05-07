@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -120,8 +120,8 @@ public:
 
 protected:
 
-    Data< sofa::helper::vector< unsigned int> > m_triSwap;
-    Data< bool > m_swapMesh;
+    Data< sofa::helper::vector< unsigned int> > m_triSwap; ///< Debug : Test swap function (only while animate).
+    Data< bool > m_swapMesh; ///< If true, optimize the mesh only by swapping edges
 
     /**\brief Preconditions to fulfill before removing triangles. In this class topology should stay manifold.
     * This function call private functions to test the topology:

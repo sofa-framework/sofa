@@ -1,4 +1,6 @@
 <Node name="root" gravity="0.0 -2.0 0.0" dt="0.04">
+    <RequiredPlugin pluginName="SofaSphFluid"/>
+
     <CollisionPipeline verbose="0" />
     <BruteForceDetection name="N2" />
     <CollisionResponse name="Response" />

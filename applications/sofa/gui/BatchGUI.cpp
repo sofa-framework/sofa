@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -25,6 +25,7 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <iostream>
 #include <sstream>
+#include <string>
 
 namespace sofa
 {
@@ -32,9 +33,9 @@ namespace sofa
 namespace gui
 {
 
-const unsigned int BatchGUI::DEFAULT_NUMBER_OF_ITERATIONS = 1000;
-unsigned int BatchGUI::nbIter = BatchGUI::DEFAULT_NUMBER_OF_ITERATIONS;
-
+const signed int BatchGUI::DEFAULT_NUMBER_OF_ITERATIONS = 1000;
+signed int BatchGUI::nbIter = BatchGUI::DEFAULT_NUMBER_OF_ITERATIONS;
+std::string BatchGUI::nbIterInp="";
 BatchGUI::BatchGUI()
     : groot(NULL)
 {
@@ -47,30 +48,54 @@ BatchGUI::~BatchGUI()
 int BatchGUI::mainLoop()
 {
     if (groot)
-    {
-        msg_info("BatchGUI") << "Computing " << nbIter << " iterations." << msgendl;
-        sofa::helper::AdvancedTimer::begin("Animate");
-        sofa::simulation::getSimulation()->animate(groot.get());
-        msg_info("BatchGUI") << sofa::helper::AdvancedTimer::end("Animate", groot.get()) << msgendl;
-        //As no visualization is done by the Batch GUI, these two lines are not necessary.
-        sofa::simulation::getSimulation()->updateVisual(groot.get());
-        sofa::simulation::Visitor::ctime_t rtfreq = sofa::helper::system::thread::CTime::getRefTicksPerSec();
-        sofa::simulation::Visitor::ctime_t tfreq = sofa::helper::system::thread::CTime::getTicksPerSec();
-        sofa::simulation::Visitor::ctime_t rt = sofa::helper::system::thread::CTime::getRefTime();
-        sofa::simulation::Visitor::ctime_t t = sofa::helper::system::thread::CTime::getFastTime();
-        for (unsigned int i=0; i<nbIter-1; i++) // one simulation step is animated above
+    {   
+        if (nbIter != -1)
+        {   
+            msg_info("BatchGUI") << "Computing " << nbIter << " iterations." << msgendl;
+        }
+        else
         {
+            msg_info("BatchGUI") << "Computing infinite iterations." << msgendl;
+        }
             sofa::helper::AdvancedTimer::begin("Animate");
             sofa::simulation::getSimulation()->animate(groot.get());
-            msg_info("BatchGUI") << sofa::helper::AdvancedTimer::end("Animate", groot.get()) << msgendl;
+            msg_info("BatchGUI") << "Processing." << sofa::helper::AdvancedTimer::end("Animate", groot.get()) << msgendl;
             //As no visualization is done by the Batch GUI, these two lines are not necessary.
             sofa::simulation::getSimulation()->updateVisual(groot.get());
-        }
-        t = sofa::helper::system::thread::CTime::getFastTime()-t;
-        rt = sofa::helper::system::thread::CTime::getRefTime()-rt;
+            sofa::simulation::Visitor::ctime_t rtfreq = sofa::helper::system::thread::CTime::getRefTicksPerSec();
+            sofa::simulation::Visitor::ctime_t tfreq = sofa::helper::system::thread::CTime::getTicksPerSec();
+            sofa::simulation::Visitor::ctime_t rt = sofa::helper::system::thread::CTime::getRefTime();
+            sofa::simulation::Visitor::ctime_t t = sofa::helper::system::thread::CTime::getFastTime();
+          
+        signed int i = 1; //one simulatin step is animated above  
+       
+        while (i <= nbIter || nbIter == -1)
+        {
+            if (i != nbIter)
+            {
+                sofa::helper::AdvancedTimer::begin("Animate");
+                sofa::simulation::getSimulation()->animate(groot.get());
+                //As no visualization is done by the Batch GUI, these two lines are not necessary.
+                sofa::simulation::getSimulation()->updateVisual(groot.get());
+            }
 
-        msg_info("BatchGUI") << nbIter << " iterations done in " << ((double)t)/((double)tfreq) << " s ( " << (((double)tfreq)*nbIter)/((double)t) << " FPS)." << msgendl;
-        msg_info("BatchGUI") << nbIter << " iterations done in " << ((double)rt)/((double)rtfreq) << " s ( " << (((double)rtfreq)*nbIter)/((double)rt) << " FPS)." << msgendl;
+            if ( i == nbIter || (nbIter == -1 && i%1000 == 0) )
+            {
+                t = sofa::helper::system::thread::CTime::getFastTime()-t;
+                rt = sofa::helper::system::thread::CTime::getRefTime()-rt;
+
+                msg_info("BatchGUI") << i << " iterations done in " << ((double)t)/((double)tfreq) << " s ( " << (((double)tfreq)*i)/((double)t) << " FPS)." << msgendl;
+                msg_info("BatchGUI") << i << " iterations done in " << ((double)rt)/((double)rtfreq) << " s ( " << (((double)rtfreq)*i)/((double)rt) << " FPS)." << msgendl;
+                
+                if (nbIter == -1) // Additional message for infinite iterations
+                {
+                     msg_info("BatchGUI") << "Press Ctrl + C (linux)/ Command + period (mac) to stop " << msgendl;
+                }
+            }
+
+            i++;
+        }
+        
     }
     return 0;
 }
@@ -143,10 +168,11 @@ BaseGUI* BatchGUI::CreateGUI(const char* name, sofa::simulation::Node::SPtr groo
 
 int BatchGUI::RegisterGUIParameters(ArgumentParser* argumentParser)
 {
-    argumentParser->addArgument(po::value<unsigned int>(&nbIter)->default_value(DEFAULT_NUMBER_OF_ITERATIONS), "nbIter,n", "(only batch) Number of iterations of the simulation");
+    argumentParser->addArgument(po::value<std::string>()->notifier(setNumIterations), "nbIter,n", "(only batch) Number of iterations of the simulation");
+    //Parses the string and passes it to setNumIterations as argument
     return 0;
 }
 
 } // namespace gui
 
-} // namespace sofa
+} // namespace sofaa

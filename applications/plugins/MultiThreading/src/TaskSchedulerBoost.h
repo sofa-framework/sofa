@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -30,10 +30,6 @@
 #include <boost/thread.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/condition.hpp>
-//#include <boost/detail/atomic_count.hpp>
-
-//#include <boost/pool/singleton_pool.hpp>
-
 
 
 namespace sofa
@@ -165,7 +161,7 @@ namespace sofa
 
 		
 
-			mutable boost::detail::spinlock		mTaskMutex;
+            mutable boost::detail::spinlock		mTaskMutex {BOOST_DETAIL_SPINLOCK_INIT};
 			Task*		mTask[Max_TasksPerThread];
 			unsigned			mTaskCount;								
 			Task::Status*	mCurrentStatus;	

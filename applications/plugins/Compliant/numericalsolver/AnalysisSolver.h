@@ -31,10 +31,10 @@ class SOFA_Compliant_API AnalysisSolver : public KKTSolver {
 						 const system_type& system,
 						 const vec& rhs, real damping) const;
 
-    Data<bool> condest; /// estimating the condition number as a ratio largest/smaller singular values (computed by SVD)
-    Data<bool> eigenvaluesign; /// computing the sign of the eigenvalues (of the implicit matrix H)
+    Data<bool> condest; ///< estimating the condition number as a ratio largest/smaller singular values (computed by SVD)
+    Data<bool> eigenvaluesign; ///< computing the sign of the eigenvalues (of the implicit matrix H)
 
-    Data<std::string> dump_qp;       /// dump qp to given filename if non-empty
+    Data<std::string> dump_qp;       ///< dump qp to given filename if non-empty
 
   protected:
 

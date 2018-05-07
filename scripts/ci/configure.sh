@@ -106,8 +106,11 @@ append() {
 }
 
 # Options common to all configurations
+append "-DSOFA_WITH_DEPRECATED_COMPONENTS=ON"
+append "-DAPPLICATION_GETDEPRECATEDCOMPONENTS=ON"
 append "-DSOFA_BUILD_TUTORIALS=ON"
 append "-DSOFA_BUILD_TESTS=ON"
+append "-DSOFAGUI_BUILD_TESTS=OFF"
 append "-DPLUGIN_SOFAPYTHON=ON"
 if [[ -n "$CI_HAVE_BOOST" ]]; then
     append "-DBOOST_ROOT=$CI_BOOST_PATH"
@@ -126,6 +129,16 @@ case $CI_OPTIONS in
 
         if [[ -n "$CI_BULLET_DIR" ]]; then
             append "-DBullet_DIR=$CI_BULLET_DIR"
+        fi
+        
+        # HeadlessRecorder is Linux only for now
+        if [[ $(uname) = Linux ]]; then
+        id=$(cat /etc/*-release | grep "ID")
+        if [[ $id = *"centos"* ]]; then
+            append "-DSOFAGUI_HEADLESS_RECORDER=OFF"
+        else
+            append "-DSOFAGUI_HEADLESS_RECORDER=ON"
+        fi
         fi
 
         ### Plugins
@@ -149,8 +162,7 @@ case $CI_OPTIONS in
         append "-DPLUGIN_COMPLIANT=ON"
         append "-DPLUGIN_EXTERNALBEHAVIORMODEL=ON"
         append "-DPLUGIN_FLEXIBLE=ON"
-        # Requires specific libraries.
-        append "-DPLUGIN_HAPTION=OFF"
+        append "-DPLUGIN_HAPTION=OFF" # Requires specific libraries.
         append "-DPLUGIN_IMAGE=ON"
         append "-DPLUGIN_INVERTIBLEFVM=ON"
         append "-DPLUGIN_MANIFOLDTOPOLOGIES=ON"
@@ -162,35 +174,32 @@ case $CI_OPTIONS in
         fi
         append "-DPLUGIN_MULTITHREADING=ON"
         append "-DPLUGIN_OPTITRACKNATNET=ON"
-        # Does not compile, but it just needs to be updated.
-        append "-DPLUGIN_PERSISTENTCONTACT=OFF"
+        append "-DPLUGIN_PERSISTENTCONTACT=OFF" # Does not compile, but it just needs to be updated.
         append "-DPLUGIN_PLUGINEXAMPLE=ON"
         append "-DPLUGIN_REGISTRATION=ON"
-        # Requires OpenHaptics libraries.
-        append "-DPLUGIN_SENSABLE=OFF"
+        append "-DPLUGIN_RIGIDSCALE=ON"
+        append "-DPLUGIN_SENSABLE=OFF" # Requires OpenHaptics libraries.
         if [[ -n "$CI_HAVE_BOOST" ]]; then
             append "-DPLUGIN_SENSABLEEMULATION=ON"
         else
             append "-DPLUGIN_SENSABLEEMULATION=OFF"
         fi
-        # Requires Sixense libraries.
-        append "-DPLUGIN_SIXENSEHYDRA=OFF"
+        append "-DPLUGIN_SIXENSEHYDRA=OFF" # Requires Sixense libraries.
         append "-DPLUGIN_SOFACARVING=ON"
         if [[ -n "$CI_HAVE_CUDA" ]]; then
             append "-DPLUGIN_SOFACUDA=ON"
         else
             append "-DPLUGIN_SOFACUDA=OFF"
         fi
-        append "-DPLUGIN_SOFADISTANCEGRID=ON"
-        # Requires HAPI libraries.
-        append "-DPLUGIN_SOFAHAPI=OFF"
+        append "-DPLUGIN_SOFADISTANCEGRID=ON" # Requires MiniFlowVR for DistanceGridForceField-liver.scn
+        append "-DPLUGIN_SOFAEULERIANFLUID=ON"
+        append "-DPLUGIN_SOFAHAPI=OFF" # Requires HAPI libraries.
         append "-DPLUGIN_SOFAIMPLICITFIELD=ON"
-        # Not sure if worth maintaining
-        append "-DPLUGIN_SOFASIMPLEGUI=ON"
+        append "-DPLUGIN_SOFAMISCCOLLISION=ON"
+        append "-DPLUGIN_SOFASIMPLEGUI=ON" # Not sure if worth maintaining
+        append "-DPLUGIN_SOFASPHFLUID=ON"
         append "-DPLUGIN_THMPGSPATIALHASHING=ON"
-        # Requires XiRobot library.
-        append "-DPLUGIN_XITACT=OFF"
-        append "-DPLUGIN_RIGIDSCALE=ON"
+        append "-DPLUGIN_XITACT=OFF" # Requires XiRobot library.
         ;;
 esac
 

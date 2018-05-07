@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -34,7 +34,7 @@ using sofa::helper::system::FileSystem ;
 
 #include "QDocBrowser.h"
 #include "../RealGUI.h"
-#include "../GuiDataRepository.h"
+#include <sofa/gui/GuiDataRepository.h>
 
 namespace sofa
 {
@@ -175,7 +175,6 @@ DocBrowser::DocBrowser(RealGUI* g) : QWidget()
 void DocBrowser::loadHtml(const std::string& filename)
 {
     bool showView = true ;
-    std::string scenefile = filename ;
     std::string htmlfile = filename ;
     std::string rootdir = FileSystem::getParentDirectory(filename) ;
 
@@ -185,9 +184,12 @@ void DocBrowser::loadHtml(const std::string& filename)
 
     /// Check if there exists an .html  file associated with the provided file.
     /// If nor and the history is empty we load a default document from the share repository.
-    if (!DataRepository.findFile(htmlfile, "", NULL) && m_browserhistory->size() == 0)
+    if (!DataRepository.findFile(htmlfile, "", NULL))
     {
-        htmlfile = GuiDataRepository.getFile("docs/runsofa.html").c_str() ;
+        if( m_browserhistory->size() == 0 )
+        {
+            htmlfile = GuiDataRepository.getFile("docs/runsofa.html").c_str() ;
+        }
         showView = false ;
     }
 
@@ -204,14 +206,11 @@ void DocBrowser::loadHtml(const std::string& filename)
     if (DataRepository.findFile(htmlfile, "", NULL))
     {
         m_htmlPage->setSearchPaths(QStringList(QString(rootdir.c_str())));
-        m_htmlPage->setSource( QUrl(QString(htmlfile.c_str())) );
+        m_htmlPage->setSource(QUrl::fromLocalFile(QString(htmlfile.c_str())) );
         m_browserhistory->push(htmlfile, filename, rootdir) ;
     }
 
-    if(showView)
-    {
-        setVisible(true);
-    }
+    setVisible(showView);
 }
 
 void DocBrowser::goToPrev()

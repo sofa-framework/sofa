@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -55,8 +55,8 @@ public:
     void drawVisual(const sofa::core::visual::VisualParams* vparams) override;
     void drawTransparent(const sofa::core::visual::VisualParams* vparams) override;
 
-    Data<Coord> transform;
-    Data<bool> recursive;
+    Data<Coord> transform; ///< Transformation to apply
+    Data<bool> recursive; ///< True to apply transform to all nodes below
 
     void push(const sofa::core::visual::VisualParams* vparams);
     void pop(const sofa::core::visual::VisualParams* vparams);

@@ -12,7 +12,7 @@
         <Node name="topoTriangle" >
             <include href="Objects/TriangleSetTopology.xml" />
             <Quad2TriangleTopologicalMapping input="@../cubeTopo" output="@Container"/>
-            <MechanicalObject name="dofs" />
+            <MechanicalObject name="dofs" printLog="1" position="@../cubeTopo.position"/>
             <FixedConstraint name="FixedConstraint" indices="3 39 64" />
             <TriangleFEMForceField name="FEM1" youngModulus="500" poissonRatio="0.3" method="large" />
             <TriangularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0"/>

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -70,7 +70,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
 
-    sofa::core::objectmodel::Data<sofa::helper::vector<Real> > f_channels;
+    sofa::core::objectmodel::Data<sofa::helper::vector<Real> > f_channels; ///< Channels
 
     VRPNAnalogData analogData;
 

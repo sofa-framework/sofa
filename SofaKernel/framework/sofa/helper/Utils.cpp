@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -263,6 +263,11 @@ const std::string& Utils::getSofaPathPrefix()
 {
     static const std::string prefix = computeSofaPathPrefix();
     return prefix;
+}
+
+const std::string Utils::getSofaPathTo(const std::string& pathFromBuildDir)
+{
+    return getSofaPathPrefix() + "/" + pathFromBuildDir;
 }
 
 std::map<std::string, std::string> Utils::readBasicIniFile(const std::string& path)

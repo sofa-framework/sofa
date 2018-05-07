@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -114,20 +114,20 @@ protected:
 
 public:
     // UV point coordinates
-    Data<helper::vector<sofa::defaulttype::Vector2> > _uv;
+    Data<helper::vector<sofa::defaulttype::Vector2> > _uv; ///< UV coordinates
 
     // Deflection parameter for tesselation
-    Data<double> _aDeflection;
+    Data<double> _aDeflection; ///< Deflection parameter for tesselation
 
     // Boolean for debug mode (display information)
-    Data<bool> _debug;
+    Data<bool> _debug; ///< if true, print information for debug mode
 
     // Boolean for keeping duplicated vertices (as vertices are read per face, there are many duplicated vertices)
     // If _keepDuplicate is true, keep the original list of vertices, else remove all duplicated vertices
-    Data<bool> _keepDuplicate;
+    Data<bool> _keepDuplicate; ///< if true, keep duplicated vertices
 
     // Shape number, number of vertices and of triangles of the shape
-    Data<helper::vector<helper::fixed_array <unsigned int,3> > > _indicesComponents;
+    Data<helper::vector<helper::fixed_array <unsigned int,3> > > _indicesComponents; ///< Shape # | number of nodes | number of triangles
 };
 
 }

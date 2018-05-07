@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -64,10 +64,10 @@ protected:
 
 public:
     //Add specific Data here:
-    Data <bool> p_trian2;
-    Data <helper::vector < helper::fixed_array <int,3> > > neighborTable;
-    Data <helper::vector < helper::vector <unsigned int> > > edgesOnBorder;
-    Data <helper::vector <unsigned int> > trianglesOnBorderList;
+    Data <bool> p_trian2; ///< Set to true if the mesh is a trian2 format.
+    Data <helper::vector < helper::fixed_array <int,3> > > neighborTable; ///< Table of neighborhood triangle indices for each triangle.
+    Data <helper::vector < helper::vector <unsigned int> > > edgesOnBorder; ///< List of edges which are on the border of the mesh loaded.
+    Data <helper::vector <unsigned int> > trianglesOnBorderList; ///< List of triangle indices which are on the border of the mesh loaded.
 
 };
 

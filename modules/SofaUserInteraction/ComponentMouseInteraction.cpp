@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -28,11 +28,14 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/Factory.inl>
 
-
 using namespace sofa::simulation;
 
 namespace sofa
 {
+    namespace helper
+    {
+        template class SOFA_USER_INTERACTION_API Factory<std::string, component::collision::ComponentMouseInteraction, core::objectmodel::BaseContext*>;
+    }
 
 namespace component
 {
@@ -110,9 +113,7 @@ helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory, TCo
 #endif
 
 }
+
 }
-namespace helper
-{
-template class SOFA_USER_INTERACTION_API Factory<std::string, component::collision::ComponentMouseInteraction, core::objectmodel::BaseContext*>;
-}
+
 }

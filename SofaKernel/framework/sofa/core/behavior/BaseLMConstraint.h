@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -236,8 +236,8 @@ protected:
     typedef std::map< ConstraintParams::ConstOrder, helper::vector< ConstraintGroup* > > constraintOrder_t;
     constraintOrder_t constraintOrder;
 
-    Data<std::string> pathObject1;
-    Data<std::string> pathObject2;
+    Data<std::string> pathObject1; ///< First Object to constrain
+    Data<std::string> pathObject2; ///< Second Object to constrain
 };
 
 } // namespace behavior

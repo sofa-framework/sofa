@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -82,7 +82,7 @@ public:
     typedef ImageTypes::imCoord imCoord;
     typedef helper::WriteAccessor<Data< ImageTypes > > waImage;
     typedef helper::ReadAccessor<Data< ImageTypes > > raImage;
-    Data< ImageTypes > image;
+    Data< ImageTypes > image; ///< image
 
     // transform data
     typedef SReal Real;
@@ -97,19 +97,19 @@ public:
     typedef DepthTypes::imCoord dCoord;
     typedef helper::WriteAccessor<Data< DepthTypes > > waDepth;
     typedef helper::ReadAccessor<Data< DepthTypes > > raDepth;
-    Data< DepthTypes > depthImage;
+    Data< DepthTypes > depthImage; ///< depth map
     Data< TransformType > depthTransform;
 
-    Data<unsigned int> deviceID;
-    Data<helper::OptionsGroup> resolution;
-    Data<helper::OptionsGroup> videoMode;
-    Data<helper::OptionsGroup> depthMode;
-    Data<helper::OptionsGroup> ledMode;
-    Data<int> tiltAngle;
-    Data<defaulttype::Vector3> accelerometer;
-    Data<bool> drawBB;
-    Data<bool> drawGravity;
-    Data<float> showArrowSize;
+    Data<unsigned int> deviceID; ///< device ID
+    Data<helper::OptionsGroup> resolution; ///< resolution
+    Data<helper::OptionsGroup> videoMode; ///< video mode
+    Data<helper::OptionsGroup> depthMode; ///< depth mode
+    Data<helper::OptionsGroup> ledMode; ///< led mode
+    Data<int> tiltAngle; ///< tilt angle in [-30,30]
+    Data<defaulttype::Vector3> accelerometer; ///< Accelerometer data
+    Data<bool> drawBB; ///< draw bounding box
+    Data<bool> drawGravity; ///< draw acceleration
+    Data<float> showArrowSize; ///< size of the axis
 
 
     virtual std::string getTemplateName() const	{ return templateName(this); }

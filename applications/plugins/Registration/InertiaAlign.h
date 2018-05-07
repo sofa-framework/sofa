@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -53,14 +53,14 @@ public:
       */
     /// input
     Data <sofa::defaulttype::Vector3> targetC;
-    Data <sofa::defaulttype::Vector3> sourceC;
+    Data <sofa::defaulttype::Vector3> sourceC; ///< input: the gravity center of the source mesh
 
-    Data < Mat3x3 > targetInertiaMatrix;
-    Data < Mat3x3 > sourceInertiaMatrix;
+    Data < Mat3x3 > targetInertiaMatrix; ///< input: the inertia matrix of the target mesh
+    Data < Mat3x3 > sourceInertiaMatrix; ///< input: the inertia matrix of the source mesh
 
     /// input//output
     Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > m_positiont;
-    Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > m_positions;
+    Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > m_positions; ///< input: positions of the source vertices
     helper::vector<sofa::defaulttype::Vec<3,SReal> > positionDistSource;
 
     /// Initialization method called at graph modification, during bottom-up traversal.

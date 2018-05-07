@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -171,17 +171,17 @@ public:
 public:
     int method;
     Data<std::string> f_method; ///< the computation method of the displacements
-    Data<Real> _poissonRatio;
-    Data<Real> _youngModulus;
-    Data<VecReal> _localStiffnessFactor;
+    Data<Real> _poissonRatio; ///< FEM Poisson Ratio
+    Data<Real> _youngModulus; ///< FEM Young Modulus
+    Data<VecReal> _localStiffnessFactor; ///< Allow specification of different stiffness per element. If there are N element and M values are specified, the youngModulus factor for element i would be localStiffnessFactor[i*M/N]
     Data<bool> _updateStiffnessMatrix;
     Data<bool> _assembling;
-    Data<bool> f_drawing;
+    Data<bool> f_drawing; ///<  draw the forcefield if true
     Data<bool> _displayWholeVolume;
-    Data<defaulttype::Vec4f> drawColor1;
-    Data<defaulttype::Vec4f> drawColor2;
-    Data<defaulttype::Vec4f> drawColor3;
-    Data<defaulttype::Vec4f> drawColor4;
+    Data<defaulttype::Vec4f> drawColor1; ///<  draw color for faces 1
+    Data<defaulttype::Vec4f> drawColor2; ///<  draw color for faces 2
+    Data<defaulttype::Vec4f> drawColor3; ///<  draw color for faces 3
+    Data<defaulttype::Vec4f> drawColor4; ///<  draw color for faces 4
     Data<std::map < std::string, sofa::helper::vector<double> > > _volumeGraph;
 protected:
     TetrahedralCorotationalFEMForceField();

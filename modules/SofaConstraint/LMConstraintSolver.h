@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -79,14 +79,14 @@ public:
 
 
 
-    Data<bool> constraintAcc;
-    Data<bool> constraintVel;
-    Data<bool> constraintPos;
-    Data<unsigned int> numIterations;
-    Data<double> maxError;
-    mutable Data<std::map < std::string, sofa::helper::vector<double> > > graphGSError;
-    Data< bool > traceKineticEnergy;
-    mutable Data<std::map < std::string, sofa::helper::vector<double> > > graphKineticEnergy;
+    Data<bool> constraintAcc; ///< Constraint the acceleration
+    Data<bool> constraintVel; ///< Constraint the velocity
+    Data<bool> constraintPos; ///< Constraint the position
+    Data<unsigned int> numIterations; ///< Number of iterations for Gauss-Seidel when solving the Constraints
+    Data<double> maxError; ///< threshold for the residue of the Gauss-Seidel algorithm
+    mutable Data<std::map < std::string, sofa::helper::vector<double> > > graphGSError; ///< Graph of residuals at each iteration
+    Data< bool > traceKineticEnergy; ///< Trace the evolution of the Kinetic Energy throughout the solution of the system
+    mutable Data<std::map < std::string, sofa::helper::vector<double> > > graphKineticEnergy; ///< Graph of the kinetic energy of the system
 
 
 

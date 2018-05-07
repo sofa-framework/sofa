@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -126,8 +126,8 @@ protected:
     /** the object where the mechanical DOFs are stored */
     sofa::core::behavior::MechanicalState<DataTypes> *object;
     sofa::core::topology::BaseMeshTopology* m_topology;
-    Data<float> d_showIndicesScale;
-    Data<bool> d_showPointIndices;
+    Data<float> d_showIndicesScale; ///< Debug : scale for view topology indices
+    Data<bool> d_showPointIndices; ///< Debug : view Point indices
     /// Tage of the Mechanical State associated with the vertex position
     Data<std::string> d_tagMechanics;
 };

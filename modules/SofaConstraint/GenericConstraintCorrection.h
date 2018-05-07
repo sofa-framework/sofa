@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -63,9 +63,9 @@ public:
 
     virtual void computeAndApplyMotionCorrection(const core::ConstraintParams *cparams, core::MultiVecCoordId x, core::MultiVecDerivId v, core::MultiVecDerivId f, const defaulttype::BaseVector * lambda) override;
 
-    virtual void computeAndApplyPositionCorrection(const core::ConstraintParams *cparams, core::MultiVecCoordId x, core::MultiVecDerivId f, const defaulttype::BaseVector *lambda) override;
+    virtual void computeAndApplyPositionCorrection(const core::ConstraintParams *cparams, core::MultiVecCoordId xId, core::MultiVecDerivId fId, const defaulttype::BaseVector *lambda) override;
 
-    virtual void computeAndApplyVelocityCorrection(const core::ConstraintParams *cparams, core::MultiVecDerivId v, core::MultiVecDerivId f, const defaulttype::BaseVector *lambda) override;
+    virtual void computeAndApplyVelocityCorrection(const core::ConstraintParams *cparams, core::MultiVecDerivId vId, core::MultiVecDerivId fId, const defaulttype::BaseVector *lambda) override;
 
     virtual void applyPredictiveConstraintForce(const core::ConstraintParams *cparams, core::MultiVecDerivId f, const defaulttype::BaseVector *lambda) override;
 
@@ -75,9 +75,10 @@ public:
 
     virtual void resetContactForce() override;
 
-    virtual void computeResidual(const core::ExecParams* /*params*/, defaulttype::BaseVector *lambda) override;
+    virtual void computeResidual(const core::ExecParams* params, defaulttype::BaseVector *lambda) override;
 
-    Data< helper::vector< std::string > >  solverName;
+    Data< helper::vector< std::string > >  d_linearSolversName; ///< name of the constraint solver
+    Data< std::string >                    d_ODESolverName; ///< name of the ode solver
 
     /// Pre-construction check method called by ObjectFactory.
     template<class T>
@@ -88,8 +89,8 @@ public:
 
 protected:
 
-    core::behavior::OdeSolver* odesolver;
-    std::vector< core::behavior::LinearSolver* > linearsolvers;
+    core::behavior::OdeSolver* m_ODESolver;
+    std::vector< core::behavior::LinearSolver* > m_linearSolvers;
 };
 
 } // namespace collision
