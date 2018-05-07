@@ -1708,29 +1708,6 @@ void MultiBeamForceField<DataTypes>::updatePlasticStrain(int i, Index a, Index b
     }
 };
 
-/**************************************************************************/
-
-
-/**************************************************************************/
-/*                          Plasticity Handler                            */
-/**************************************************************************/
-
-template< class DataTypes>
-void MultiBeamForceField<DataTypes>::updateIncrements(tangentStiffnessMatrix &tangentStiffness,
-                                                      EigenNodalForces &plasticForces,
-                                                      const EigenNodalForces &externalLoad)
-{
-    //Algo table 2 de Krabbenhoft
-
-    // en local :
-    //      EigenNodalForces externLoad (f_k), loadIncrement
-    //      Displacement disp (u_k), dispIncrement
-    //      matrice B
-    //      VoigtTensor2 strainIncrement (DELTA_epsilon_k), stressIncrement (DELTA_sigma_k)
-    //      ( plasticNodalForce residual )
-    //      Structures pour l'intégration numérique (intervalle et points de Gauss x 1 // fonctions lambda x 2, pour K et q)
-}
-
 
 template< class DataTypes>
 bool MultiBeamForceField<DataTypes>::goInPlasticDeformation(const VoigtTensor2 &stressTensor)

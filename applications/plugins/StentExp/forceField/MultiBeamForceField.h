@@ -274,7 +274,6 @@ protected:
     typedef Eigen::Matrix<double, 27, 6> elementPlasticStrain; ///< one 6x1 strain tensor for each of the 27 points of integration
     helper::vector<elementPlasticStrain> _VDPlasticStrains;
 
-    /*************************************************************************/
     //NB: These elements are used to describe the plastic deforation, but have
     //to be accessed during the elastic process
     typedef helper::fixed_array<VoigtTensor, 27>  elementPreviousStresses; ///< one 6x1 strain tensor for each of the 27 points of integration
@@ -284,25 +283,15 @@ protected:
     VecCoord _lastPos;
 
     bool _isDeformingPlastically;
-    /*************************************************************************/
+
+
+    /************** Plasticity elements ***********************/
 
     Real _VDPlasticYieldThreshold;
     Real _VDPlasticCreep;
 
     void computePlasticForces(int i, Index a, Index b, const Displacement& totalDisplacement, nodalForces& plasticForces);
     void updatePlasticStrain(int i, Index a, Index b, VoigtTensor& totalStrain, int gaussPointIterator);
-
-    /**************************************************************************/
-
-
-    /**************************************************************************/
-    /*                          Plasticity Handler                            */
-    /**************************************************************************/
-
-    /* Methods and fields dedicated to handle the plasticity behaviour of the 
-       beam elements, according to the theory and notations exposed in
-       Krabbenhoft's lecture notes on Basic Computation Plasticity
-     */
 
 public:
     typedef Eigen::Matrix<double, 6, 1> VoigtTensor2; //Tensor of order 2
@@ -311,8 +300,6 @@ public:
     typedef Eigen::Matrix<double, 12, 1> EigenNodalForces;
     typedef Eigen::Matrix<double, 12, 12> tangentStiffnessMatrix;
 
-    // Main function, allowing to compute non-linear reaction forces through an incremental procedure
-    void updateIncrements(tangentStiffnessMatrix &tangentStiffness, EigenNodalForces &plasticForces, const EigenNodalForces &externalLoad);
 
 protected:
     //Newton-Raphson parameters
@@ -344,6 +331,8 @@ protected:
     void accumulateNonLinearForce(VecDeriv& f, const VecCoord& x, int i, Index a, Index b);
     void applyNonLinearStiffness(VecDeriv& df, const VecDeriv& dx, int i, Index a, Index b, double fact);
     void updateTangentStiffness(int i, Index a, Index b);
+
+    /**********************************************************/
 
     /**************************************************************************/
 
