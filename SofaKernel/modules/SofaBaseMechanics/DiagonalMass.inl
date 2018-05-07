@@ -756,10 +756,29 @@ void DiagonalMass<DataTypes, MassType>::massInitialization()
     }
 
     //Info post-init
+    const MassVector &vertexM = d_vertexMass.getValue();
+
+    Real average_vertex = 0.0;
+    Real min_vertex = std::numeric_limits<Real>::max();
+    Real max_vertex = 0.0;
+
+    for(unsigned int i=0; i<vertexM.size(); i++)
+    {
+        average_vertex += vertexM[i];
+        if(vertexM[i]<min_vertex)
+            min_vertex = vertexM[i];
+        if(vertexM[i]>max_vertex)
+            max_vertex = vertexM[i];
+    }
+    if(vertexM.size() > 0)
+    {
+        average_vertex /= (Real)(vertexM.size());
+    }
+
     msg_info() << "mass information computed :" << msgendl
                << "totalMass   = " << d_totalMass.getValue() << msgendl
                << "massDensity = " << d_massDensity.getValue() << msgendl
-               << "vertexMass  = " << d_vertexMass.getValue();
+               << "mean vertexMass [min,max] = " << average_vertex << " [" << min_vertex << "," <<  max_vertex <<"]";
 }
 
 
@@ -1191,8 +1210,6 @@ void DiagonalMass<DataTypes, MassType>::update()
 
     if(update)
     {
-//        d_vertexMass.setValue(d_vertexMassInfo.getValue());
-
         //Info post-init
         msg_info() << "mass information updated :" << msgendl
                    << "totalMass   = " << d_totalMass.getValue() << msgendl

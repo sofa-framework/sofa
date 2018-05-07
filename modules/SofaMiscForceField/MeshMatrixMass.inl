@@ -1146,6 +1146,48 @@ void MeshMatrixMass<DataTypes, MassType>::massInitialization()
                << "totalMass   = " << d_totalMass.getValue() << msgendl
                << "massDensity = " << d_massDensity.getValue() << msgendl
                << "vertexMass  = " << d_vertexMassInfo.getValue();
+
+    //Info post-init
+    const MassVector &vertexM = d_vertexMass.getValue();
+    const MassVector &mDensity = d_massDensity.getValue();
+
+    Real average_vertex = 0.0;
+    Real min_vertex = std::numeric_limits<Real>::max();
+    Real max_vertex = 0.0;
+    Real average_density = 0.0;
+    Real min_density = std::numeric_limits<Real>::max();
+    Real max_density = 0.0;
+
+    for(unsigned int i=0; i<vertexM.size(); i++)
+    {
+        average_vertex += vertexM[i];
+        if(vertexM[i]<min_vertex)
+            min_vertex = vertexM[i];
+        if(vertexM[i]>max_vertex)
+            max_vertex = vertexM[i];
+    }
+    if(vertexM.size() > 0)
+    {
+        average_vertex /= (Real)(vertexM.size());
+    }
+
+    for(unsigned int i=0; i<mDensity.size(); i++)
+    {
+        average_density += mDensity[i];
+        if(mDensity[i]<min_density)
+            min_density = mDensity[i];
+        if(mDensity[i]>max_density)
+            max_density = mDensity[i];
+    }
+    if(mDensity.size() > 0)
+    {
+        average_density /= (Real)(mDensity.size());
+    }
+
+    msg_info() << "mass information computed :" << msgendl
+               << "totalMass   = " << d_totalMass.getValue() << msgendl
+               << "mean massDensity [min,max] = " << average_density << " [" << min_density << "," <<  max_density <<"]" << msgendl
+               << "mean vertexMass [min,max] = " << average_vertex << " [" << min_vertex << "," <<  max_vertex <<"]";
 }
 
 

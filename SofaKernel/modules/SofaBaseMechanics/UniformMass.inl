@@ -333,11 +333,17 @@ void UniformMass<DataTypes, MassType>::initFromTotalMass()
     //If the totalMass attribute is set then the vertexMass is computed from it
     //using the following formula: vertexMass = totalMass / number of particules
 
-    MassType *m = d_vertexMass.beginEdit();
-    *m = ( ( typename DataTypes::Real ) d_totalMass.getValue() / d_indices.getValue().size() );
-    d_vertexMass.endEdit();
-    msg_info() << "totalMass information is used";
-
+    if(d_indices.getValue().size() > 0)
+    {
+        MassType *m = d_vertexMass.beginEdit();
+        *m = ( ( typename DataTypes::Real ) d_totalMass.getValue() / d_indices.getValue().size() );
+        d_vertexMass.endEdit();
+        msg_info() << "totalMass information is used";
+    }
+    else
+    {
+        msg_warning() << "indices vector size is <= 0";
+    }
 }
 
 
@@ -354,7 +360,7 @@ void UniformMass<DataTypes, MassType>::handleTopologyChange()
             indices.push_back((int)i);
     }
 
-    if ( meshTopology != 0 )
+    if ( meshTopology != 0 && mstate->getSize()>0 )
     {
         list< const TopologyChange * >::const_iterator it = meshTopology->beginChange();
         list< const TopologyChange * >::const_iterator itEnd = meshTopology->endChange();
