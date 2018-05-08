@@ -19,51 +19,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_LOADER_BASELOADER_H
-#define SOFA_CORE_LOADER_BASELOADER_H
+#ifndef FILEMESSAGE_H
+#define FILEMESSAGE_H
 
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/objectmodel/DataFileName.h>
+#include <iostream>
+#include <string>
+#include <sofa/helper/helper.h>
 
 namespace sofa
 {
 
-namespace core
+namespace helper
 {
 
-namespace loader
+namespace logging
 {
 
-bool SOFA_CORE_API canLoad(const char* filename);
-
-class SOFA_CORE_API BaseLoader : public objectmodel::BaseObject
+class SOFA_HELPER_API FileMessage/*class FileMessage*/
 {
 public:
-    SOFA_ABSTRACT_CLASS(BaseLoader, objectmodel::BaseObject);
-    SOFA_BASE_CAST_IMPLEMENTATION(BaseLoader)
 
-    virtual bool load() = 0;
-    virtual bool canLoad() ;
+    FileMessage() {}
+    static const std::string UnableToOpenFile(const char* filename);
 
-    virtual void parse(objectmodel::BaseObjectDescription *arg) override ;
-
-    void setFilename(std::string f)  ;
-    const std::string &getFilename() ;
-
-    objectmodel::DataFileName m_filename;
-
-protected:
-    BaseLoader() ;
-    virtual ~BaseLoader() ;
-
-    static void skipToEOL(FILE* f) ;
-    static bool readLine(char* buf, int size, FILE* f) ;
 };
 
-} /// namespace loader
+} // logging
+} // helper
+} // sofa
 
-} /// namespace core
-
-} /// namespace sofa
-
-#endif /// SOFA_CORE_LOADER_BASELOADER_H
+#endif // FILEMESSAGE_H
