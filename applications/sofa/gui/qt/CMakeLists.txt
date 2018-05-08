@@ -34,7 +34,6 @@ set(MOC_HEADER_FILES
 
 # these header files do not need MOCcing
 set(HEADER_FILES
-    GuiDataRepository.h
     FileManagement.h
     GraphListenerQListView.h
     PickHandlerCallBacks.h
@@ -83,7 +82,6 @@ set(SOURCE_FILES
     WDoubleLineEdit.cpp
     viewer/SofaViewer.cpp
     panels/QDocBrowser.cpp
-    GuiDataRepository.cpp
 )
 
 set(UI_FILES

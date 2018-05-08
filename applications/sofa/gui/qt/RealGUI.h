@@ -130,10 +130,6 @@ public:
 //-----------------OPTIONS DEFINITIONS------------------------{
 //public:
 
-#ifdef SOFA_GUI_INTERACTION
-    QPushButton *interactionButton;
-#endif
-
 #ifdef SOFA_DUMP_VISITOR_INFO
     virtual void setTraceVisitors(bool);
 #endif
@@ -141,14 +137,6 @@ public:
     virtual void showFPS(double fps);
 
 protected:
-#ifdef SOFA_GUI_INTERACTION
-    void mouseMoveEvent( QMouseEvent * e);
-    void wheelEvent( QWheelEvent * event );
-    void mousePressEvent(QMouseEvent * e);
-    void mouseReleaseEvent(QMouseEvent * e);
-    void keyReleaseEvent(QKeyEvent * e);
-    bool eventFilter(QObject *obj, QEvent *event);
-#endif
 
 #ifndef SOFA_GUI_QT_NO_RECORDER
     QSofaRecorder* recorder;
@@ -159,10 +147,6 @@ protected:
 
 
 private:
-
-#ifdef SOFA_GUI_INTERACTION
-    bool m_interactionActived;
-#endif
 
 #ifdef SOFA_PML
     virtual void pmlOpen(const char* filename, bool resetView=true);

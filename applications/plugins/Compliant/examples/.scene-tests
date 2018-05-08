@@ -17,3 +17,6 @@ add "contact/friction_simple.py"
 
 # sml examples
 add "bielle_manivelle/scene_sml.py"
+
+# This runs slowly, so compute only a few iterations
+iterations "FEM-donuts.scn" "50"

@@ -24,14 +24,11 @@
 
 #include <sofa/config.h>
 
-// Glut GUI
-#cmakedefine SOFA_GUI_GLUT
-
+#cmakedefine SOFA_GUI_HEADLESS_RECORDER
 // Qt GUI
 #cmakedefine SOFA_GUI_QT
 #cmakedefine SOFA_GUI_QGLVIEWER
 #cmakedefine SOFA_GUI_QTVIEWER
-#cmakedefine SOFA_GUI_INTERACTION
 #cmakedefine SOFA_GUI_NATIVE_MENU
 #cmakedefine SOFA_HAVE_QWT
 

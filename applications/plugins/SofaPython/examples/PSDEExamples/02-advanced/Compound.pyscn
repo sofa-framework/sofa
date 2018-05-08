@@ -1,0 +1,140 @@
+import Sofa
+
+import os
+path = os.path.dirname(os.path.abspath(__file__))+'/../../../../../../share/mesh/'
+
+# Please run the scene 'VolumetricMeshGeneration.pyscn' first in order to generate the necessary mesh!
+
+#
+# This more advanced example uses PSDEs to implement the functionality of a ROI (region of interest) and also the union of tetrahedra sets. The functionality shown is, 
+# that arbitrary cuboid regions of tetras can be defined to have different material properties, resulting in a compound object. To illustrate this point, three virtual forces can be applied to the object, resulting in different deformations.
+# After pressing 'Animate', Ctrl+1 activates force 1, Ctrl+2 deactivates it, Ctrl+3 activates force 2, etc. 
+
+def createScene(rootNode):
+
+                rootNode.findData('gravity').value='0 0 -9810'
+                
+                rootNode.createObject('RequiredPlugin', pluginName='SofaPython')                
+                rootNode.createObject('VisualStyle', displayFlags='showVisualModels showBehaviorModels showCollisionModels hideBoundingCollisionModels hideForceFields showInteractionForceFields hideWireframe')
+
+                rootNode.createObject('FreeMotionAnimationLoop')                
+
+                rootNode.createObject('BackgroundSetting', color='0 0.168627 0.211765')
+                rootNode.createObject('OglSceneFrame', style="Arrows", alignment="TopRight")                
+
+		##########################################
+                # FEM Model                              #
+                ##########################################
+                model = rootNode.createChild('model')                
+                model.createObject('EulerImplicit', name='odesolver', rayleighStiffness="0.2", rayleighMass="0.2")
+                model.createObject('SparseLDLSolver', name='preconditioner')
+                
+		#Load Tetra geometry from file and initalize physical properties such as mass, etc. and anchor the model with a stiff spring
+                model.createObject('MeshVTKLoader', name='loader', filename='torus0.vtu')
+                model.createObject('TetrahedronSetTopologyContainer', src='@loader', name='container')		
+		
+		#model.createObject('TetrahedronSetTopologyContainer', tetrahedra='@PythonScriptDataEngine.tetrahedraOutliers', name='container')
+                model.createObject('TetrahedronSetTopologyModifier')
+                model.createObject('TetrahedronSetTopologyAlgorithms', template='Vec3d')
+                model.createObject('TetrahedronSetGeometryAlgorithms', template='Vec3d')
+                    
+                model.createObject('MechanicalObject', name='tetras', template='Vec3d', showIndices='false', showIndicesScale='0.02', rx='0', dz='0')
+                model.createObject('UniformMass', totalmass='0.5')              
+                model.createObject('BoxROI', name='boxROI', box='-3 -0.7 -3 3 -0.4 3', drawBoxes='true', position="@tetras.rest_position", tetrahedra="@container.tetrahedra")
+                model.createObject('RestShapeSpringsForceField', points='@boxROI.indices', stiffness='1e12')
+                model.createObject('LinearSolverConstraintCorrection', solverName='preconditioner')   
+                        
+		# PythonScriptController for controlling stuff
+                model.createObject('PythonScriptController', filename="Controller.py", classname="Controller")           
+
+		# Create selection and inverse selection to give tetras different stiffnesses
+	        # model.createObject('PythonScriptDataEngine', filename="DataEngine.py", classname="MyDataEngine", tetrahedra="@container.tetrahedra", position="@tetras.rest_position")
+
+                model.createObject('PythonScriptDataEngine', name='PSDE1', filename="DataEngineROI1.py", classname="MyDataEngine1")
+                model.createObject('PythonScriptDataEngine', name='PSDE2', filename="DataEngineROI2.py", classname="MyDataEngine2")
+                model.createObject('PythonScriptDataEngine', name='PSDE3', filename="DataEngineROI3.py", classname="MyDataEngine3")                
+                model.createObject('PythonScriptDataEngine', name='PSDE4', filename="DataEngineROI4.py", classname="MyDataEngine4")
+                model.createObject('PythonScriptDataEngine', name='PSDEUnion1', filename="DataEngineUnion1.py", classname="MyDataEngineUnion1")
+                model.createObject('PythonScriptDataEngine', name='PSDEUnion2', filename="DataEngineUnion2.py", classname="MyDataEngineUnion2")
+                
+		#model.createObject('PythonScriptDataEngine', name='PSDE4', filename="DataEngineROI4.py", classname="MyDataEngine")
+
+		#model.createObject('PythonScriptDataEngine', name='PSDE2', filename="DataEngineROI2.py", classname="MyDataEngine", tetrahedra='@container.tetrahedra', position="@tetras.rest_position")
+
+                ##########################################
+                # Sub topology 1                         #
+                ##########################################                
+                
+                modelSubTopoS1 = model.createChild('modelSubTopoS1')
+                modelSubTopoS1.createObject('TetrahedronSetTopologyContainer', position='@loader.position', tetrahedra="@PSDEUnion1.TetrahedraUnion", name='containerS1')                
+                modelSubTopoS1.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEMS1', method='large', poissonRatio='0.3',  youngModulus='1500',drawAsEdges="0")                  
+
+                #model.createObject('BoxROI', name='boxROISubTopoS1', box='-30 -30 8 0 30 50', drawBoxes='true', position="@tetras.rest_position", tetrahedra="@container.tetrahedra")                          
+
+                ##########################################
+                # Sub topology 2                         #
+                ##########################################
+                
+                modelSubTopoS2 = model.createChild('modelSubTopoS2')
+                modelSubTopoS2.createObject('TetrahedronSetTopologyContainer',position='@loader.position',tetrahedra="@PSDEUnion2.TetrahedraUnion",name='containerS2')                              
+                modelSubTopoS2.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEMS2', method='large', poissonRatio='0.3',  youngModulus='5000',drawAsEdges="0")              
+                
+                ##########################################
+                # Sub topology 3                         #
+                ##########################################
+                
+                modelSubTopoS2 = model.createChild('modelSubTopoS3')
+                modelSubTopoS2.createObject('TetrahedronSetTopologyContainer',position='@loader.position',tetrahedra="@PSDE4.TetrahedraOutliers",name='containerS3') # these are the outliers of all PSDE ROIs
+                modelSubTopoS2.createObject('TetrahedronFEMForceField', template='Vec3d', name='FEMS3', method='large', poissonRatio='0.3',  youngModulus='200000',drawAsEdges="0")              
+                
+                
+                #TetraIndicesInROI = model.getObject('boxROISubTopoS1').findData('tetrahedronIndices')
+                #print TetraIndicesInROI.value#[1:len(TetraIndicesInROI.value)][0]                
+                #TotalROIIndices= TotalROIIndices+TetraIndicesInROI.value                
+        
+
+                ##########################################
+                # Constant Force                         #
+                ##########################################
+                constantForce = model.createChild('constantForce')           
+                
+                constantForce.createObject('MechanicalObject', name="AppliedForce", position="-2 0 0.7")
+                constantForce.createObject('ConstantForceField', name="forceField", indices="0", forces="0 0  0", arrowSizeCoef="0.001")                
+                constantForce.createObject('BarycentricMapping', mapForces="true", mapMasses="false")
+                
+                # This create a PythonScriptController that permits to programatically implement new behavior
+				# or interactions using the Python programming langage. The controller is referring to a
+				# file named "controller.py".
+                
+                
+                
+                ##########################################
+                # Constant Force                         #
+                ##########################################
+                constantForce2 = model.createChild('constantForce2')           
+                constantForce2.createObject('MechanicalObject', name="AppliedForce2", position="2 0 0.7")
+                constantForce2.createObject('ConstantForceField', name="forceField2", indices="0", forces="0 0  0", arrowSizeCoef="0.001")
+                constantForce2.createObject('BarycentricMapping', mapForces="true", mapMasses="false")                
+                # This create a PythonScriptController that permits to programatically implement new behavior
+				# or interactions using the Python programming langage. The controller is referring to a
+				# file named "controller.py".
+				
+                ##########################################
+                # Constant Force                         #
+                ##########################################
+                constantForce3 = model.createChild('constantForce3')           
+                constantForce3.createObject('MechanicalObject', name="AppliedForce3", position="0 1 0.7")
+                constantForce3.createObject('ConstantForceField', name="forceField3", indices="0", forces="0 0  0", arrowSizeCoef="0.001")
+                constantForce3.createObject('BarycentricMapping', mapForces="true", mapMasses="false") 
+                
+          
+                
+                ##########################################
+                # Visualization                          #
+                ##########################################
+                modelVisu = model.createChild('visu')                
+                modelVisu.createObject('OglModel', filename=path+"torus.obj", template='ExtVec3f', color='0.7 0.7 0.7 0.6')
+                modelVisu.createObject('BarycentricMapping')
+
+
+                return rootNode

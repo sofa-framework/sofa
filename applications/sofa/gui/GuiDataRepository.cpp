@@ -24,15 +24,18 @@
 *   - damien.marchal@univ-lille1.fr
 *******************************************************************************/
 
-#include <sofa/helper/system/FileRepository.h>
+#include "GuiDataRepository.h"
+#include <sofa/helper/Utils.h>
+
+using sofa::helper::system::FileRepository;
+using sofa::helper::Utils;
 
 namespace sofa
 {
 namespace gui
 {
-namespace qt
-{
-    extern SOFA_HELPER_API sofa::helper::system::FileRepository GuiDataRepository;
-}
+
+FileRepository GuiDataRepository("GUI_DATA_PATH", Utils::getSofaPathTo("share/sofa/gui/common/resources").c_str());
+
 }
 }
