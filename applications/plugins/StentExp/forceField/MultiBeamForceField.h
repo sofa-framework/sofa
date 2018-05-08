@@ -120,6 +120,9 @@ protected:
         helper::fixed_array<MechanicalState, 27> _isPlasticPoint;
         helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> _plasticStrainHistory; ///< history of the plastic strain, one tensor for each Gauss point
 
+        //Hardening parameters
+        helper::fixed_array<double, 27> _yieldStresses;
+
         /*********************************************************************/
 
         // 	static const double FLEXIBILITY=1.00000; // was 1.00001
@@ -306,13 +309,12 @@ protected:
     double _NRThreshold;
     unsigned int _NRMaxIterations;
 
-    double _UTS; //Ultimate Tebnsile Strength, used in the Von Mises yield criterion
     Data<bool> _isPlasticKrabbenhoft;
 
     MultiBeamForceField<DataTypes>* ff;
 
-    bool goInPlasticDeformation(const VoigtTensor2 &stressTensor);
-    bool stayInPlasticDeformation(const VoigtTensor2 &stressTensor, const VoigtTensor2 &stressIncrement);
+    bool goInPlasticDeformation(const VoigtTensor2 &stressTensor, const double yieldStress);
+    bool stayInPlasticDeformation(const VoigtTensor2 &stressTensor, const VoigtTensor2 &stressIncrement, const double yieldStress);
 
     void solveDispIncrement(const tangentStiffnessMatrix &tangentStiffness, EigenDisplacement &du, const EigenNodalForces &residual);
     void computeDisplacementIncrement(const VecCoord& pos, const VecCoord& lastPos, Displacement &currentDisp, Displacement &lastDisp,

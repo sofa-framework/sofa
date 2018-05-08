@@ -201,15 +201,6 @@ void MultiBeamForceField<DataTypes>::reinit()
         _NRThreshold = 0.0; //to be changed during iterations
         _NRMaxIterations = 25;
 
-        //Found UTS of 655MPa for an ASTM F75-07 cobalt-chrome alloy
-        //Yield stress values for ASTM F-75 Cobalt Chromium alloy,
-        //    586-614 MPa, source : http://www.matweb.com/search/datasheet.aspx?matguid=df8d3cd30d5149cfaca9a3c6e3268655&ckck=1
-        //    450-560 MPa, source : http://www.arcam.com/wp-content/uploads/Arcam-ASTM-F75-Cobalt-Chrome.pdf
-
-        //Yield stress values for Cobalt Chrome Alloy Co28Cr6Mo
-        //    600 +- 50 MPa, source : https://www.3trpd.co.uk/wp-content/uploads/2015/05/Cobalt-Chrome-Alloy-Co28Cr6Mo.pdf
-        _UTS = 600000000.0;
-
         /**********************************/
 
         _prevStresses.resize(n);
@@ -596,6 +587,7 @@ void MultiBeamForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const Ve
                 helper::fixed_array<MechanicalState, 27>& isPlasticPoint = bd[i]._isPlasticPoint;
 
                 VoigtTensor2 newStress;
+                double yieldStress;
                 bool res;
 
                 //For each Gauss point, we update the stress value for next iteration
@@ -605,7 +597,8 @@ void MultiBeamForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const Ve
 
                     newStress = C*Be*eigenDepl;
 
-                    res = goInPlasticDeformation(newStress);
+                    yieldStress = beamsData.getValue()[i]._yieldStresses[gaussPointIt];
+                    res = goInPlasticDeformation(newStress, yieldStress);
                     if (res)
                         isPlasticPoint[gaussPointIt] = PLASTIC;
                     _isDeformingPlastically = _isDeformingPlastically || res;
@@ -1253,6 +1246,20 @@ void MultiBeamForceField<DataTypes>::BeamInfo::init(double E, double L, double n
     //Initialises the plastic indicators
     _isPlasticPoint.assign(ELASTIC);
 
+    //****** Hardening parameters ******//
+
+    //Yield stress values for Cobalt Chrome Alloy Co28Cr6Mo
+    //    600 +- 50 MPa, source : https://www.3trpd.co.uk/wp-content/uploads/2015/05/Cobalt-Chrome-Alloy-Co28Cr6Mo.pdf
+
+    _yieldStresses.assign(600000000.0); //Initial yield stress, to be modified if hardening occurs
+
+    //NB:
+    //Found UTS of 655MPa for an ASTM F75-07 cobalt-chrome alloy
+    //Yield stress values for ASTM F-75 Cobalt Chromium alloy,
+    //    586-614 MPa, source : http://www.matweb.com/search/datasheet.aspx?matguid=df8d3cd30d5149cfaca9a3c6e3268655&ckck=1
+    //    450-560 MPa, source : http://www.arcam.com/wp-content/uploads/Arcam-ASTM-F75-Cobalt-Chrome.pdf
+
+    //**********************************//
 }
 
 
@@ -1710,22 +1717,24 @@ void MultiBeamForceField<DataTypes>::updatePlasticStrain(int i, Index a, Index b
 
 
 template< class DataTypes>
-bool MultiBeamForceField<DataTypes>::goInPlasticDeformation(const VoigtTensor2 &stressTensor)
+bool MultiBeamForceField<DataTypes>::goInPlasticDeformation(const VoigtTensor2 &stressTensor,
+                                                            const double yieldStress)
 {
     double threshold = 1e-5; //TO DO: choose adapted threshold
 
-    double yield = vonMisesYield(stressTensor, _UTS);
+    double yield = vonMisesYield(stressTensor, yieldStress);
     return yield > threshold;
 }
 
 
 template< class DataTypes>
 bool MultiBeamForceField<DataTypes>::stayInPlasticDeformation(const VoigtTensor2 &stressTensor,
-                                                              const VoigtTensor2 &stressIncrement)
+                                                              const VoigtTensor2 &stressIncrement,
+                                                              const double yieldStress)
 {
     double threshold = -1e2; //TO DO: use proper threshold
 
-    Eigen::Matrix<double, 6, 1> gradient = vonMisesGradient(stressTensor, _UTS);
+    Eigen::Matrix<double, 6, 1> gradient = vonMisesGradient(stressTensor, yieldStress);
     double cp = gradient.transpose()*stressIncrement;
     return !(cp < threshold); //if true, the stress point still represents a plastic state
 }
@@ -2028,6 +2037,7 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
     //    This corresponds to an associative flow rule (for plasticity)
 
     const Eigen::Matrix<double, 6, 6>& C = beamsData.getValue()[index]._materialBehaviour; //Matrix D in Krabbenhoft's
+    const double yieldStress = beamsData.getValue()[index]._yieldStresses[gaussPointIt];
 
     //First we compute the elastic predictor
     VoigtTensor2 elasticPredictor = C*strainIncrement;
@@ -2037,7 +2047,7 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
     {
         //If the point is still in elastic state, we have to check if the
         //deformation becomes plastic
-        bool isNewPlastic = goInPlasticDeformation(initialStress + elasticPredictor);
+        bool isNewPlastic = goInPlasticDeformation(initialStress + elasticPredictor, yieldStress);
 
         if (!isNewPlastic)
         {
@@ -2070,7 +2080,7 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
 
         //If the point is still in elastic state, we have to check if the
         //deformation becomes plastic
-        bool isNewPlastic = goInPlasticDeformation(currentStressPoint);
+        bool isNewPlastic = goInPlasticDeformation(currentStressPoint, yieldStress);
 
         if (!isNewPlastic)
         {
@@ -2086,7 +2096,7 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
 
     else
     {
-        bool staysPlastic = stayInPlasticDeformation(initialStress, elasticPredictor);
+        bool staysPlastic = stayInPlasticDeformation(initialStress, elasticPredictor, yieldStress);
 
         if (!staysPlastic)
         {
@@ -2120,12 +2130,12 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
 
     //VoigtTensor2 grad, plasticStressIncrement;
     //double denum, dLambda;
-    //double fSigma = vonMisesYield(currentStressPoint, _UTS); //for the 1st iteration
+    //double fSigma = vonMisesYield(currentStressPoint, yieldStress); //for the 1st iteration
 
     ////We start iterations with point B
     //for (unsigned int i = 0; i < nbMaxIterations; i++)
     //{
-    //    grad = vonMisesGradient(currentStressPoint, _UTS);
+    //    grad = vonMisesGradient(currentStressPoint, yieldStress);
     //    denum = grad.transpose()*C*grad;
     //    dLambda = fSigma / denum;
 
@@ -2133,7 +2143,7 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
 
     //    currentStressPoint -= plasticStressIncrement;
 
-    //    fSigma = vonMisesYield(currentStressPoint, _UTS);
+    //    fSigma = vonMisesYield(currentStressPoint, yieldStress);
     //    if (fSigma < iterationThreshold)
     //        break; //Yield condition : the current stress point is on the yield surface
     //}
@@ -2155,10 +2165,10 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
 
     //Intermediate variables
     Eigen::Matrix<double, 6, 6> I6 = Eigen::Matrix<double, 6, 6>::Identity();
-    VoigtTensor2 gradient = vonMisesGradient(currentStressPoint, _UTS);
+    VoigtTensor2 gradient = vonMisesGradient(currentStressPoint, yieldStress);
 
     double increment = 1e-3; //TO DO: delete, debug purposes
-    VoigtTensor2 gradientFD = vonMisesGradientFD(currentStressPoint, increment, _UTS);
+    VoigtTensor2 gradientFD = vonMisesGradientFD(currentStressPoint, increment, yieldStress);
 
     VoigtTensor4 hessian;
     double yieldCondition = 1; //will be changed in the first iteration of the while loop below
@@ -2172,7 +2182,7 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
     //Initialisation of the second member
     Eigen::Matrix<double, 7, 1> b = Eigen::Matrix<double, 7, 1>::Zero();
     //In the first iteration, the (first) stressIncrement is taken as the elasticPredictor
-    b(6, 0) = vonMisesYield(currentStressPoint, _UTS);
+    b(6, 0) = vonMisesYield(currentStressPoint, yieldStress);
 
     //solver
     Eigen::FullPivLU<Eigen::Matrix<double, 7, 7> > LU(J.rows(), J.cols());
@@ -2192,15 +2202,15 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
 
         //Updates J and b for the next iteration
         currentStressPoint = initialStress + totalIncrement.block<6, 1>(0, 0);
-        gradient = vonMisesGradient(currentStressPoint, _UTS);
-        gradientFD = vonMisesGradientFD(currentStressPoint, increment, _UTS);
-        hessian = vonMisesHessian(currentStressPoint, _UTS);
+        gradient = vonMisesGradient(currentStressPoint, yieldStress);
+        gradientFD = vonMisesGradientFD(currentStressPoint, increment, yieldStress);
+        hessian = vonMisesHessian(currentStressPoint, yieldStress);
 
         J.block<6, 6>(0, 0) = I6 + totalIncrement(6, 0)*C*hessian;
         J.block<6, 1>(0, 6) = C*gradient;
         J.block<1, 6>(6, 0) = gradient.transpose();
 
-        yieldCondition = vonMisesYield(currentStressPoint, _UTS);
+        yieldCondition = vonMisesYield(currentStressPoint, yieldStress);
 
         b.block<6, 1>(0, 0) = totalIncrement.block<6, 1>(0, 0) - elasticPredictor + C*totalIncrement(6, 0)*gradient;
         b(6, 0) = yieldCondition;
@@ -2411,6 +2421,7 @@ void MultiBeamForceField<DataTypes>::updateTangentStiffness(int i,
     Eigen::Matrix<double, 6, 12> Be;
     VoigtTensor4 Cep = VoigtTensor4::Zero(); //plastic behaviour tensor
     VoigtTensor2 VMgradient;
+    double yieldStress;
 
     //Auxiliary matrices
     VoigtTensor2 Cgrad;
@@ -2420,20 +2431,21 @@ void MultiBeamForceField<DataTypes>::updateTangentStiffness(int i,
     Eigen::Matrix<double, 12, 12> tangentStiffness = Eigen::Matrix<double, 12, 12>::Zero();
 
     VoigtTensor2 currentStressPoint;
-    int gaussPointIterator = 0;
+    int gaussPointIt = 0;
 
     // Stress matrix, to be integrated
     LambdaType computeTangentStiffness = [&](double u1, double u2, double u3, double w1, double w2, double w3)
     {
         // Be
-        Be = bd[i]._BeMatrices[gaussPointIterator];
+        Be = bd[i]._BeMatrices[gaussPointIt];
 
         //Cep
-        currentStressPoint = _prevStresses[i][gaussPointIterator];
+        currentStressPoint = _prevStresses[i][gaussPointIt];
 
-        VMgradient = vonMisesGradient(currentStressPoint, _UTS);
+        yieldStress = bd[i]._yieldStresses[gaussPointIt];
+        VMgradient = vonMisesGradient(currentStressPoint, yieldStress);
 
-        if (VMgradient.isZero() || isPlasticPoint[gaussPointIterator] != PLASTIC)
+        if (VMgradient.isZero() || isPlasticPoint[gaussPointIt] != PLASTIC)
             Cep = C; //TO DO: is that correct ?
         else
         {
@@ -2445,7 +2457,7 @@ void MultiBeamForceField<DataTypes>::updateTangentStiffness(int i,
 
         tangentStiffness += (w1*w2*w3)*Be.transpose()*Cep*Be;
 
-        gaussPointIterator++; //Next Gauss Point
+        gaussPointIt++; //Next Gauss Point
     };
 
     ozp::quadrature::detail::Interval<3> interval = bd[i]._integrationInterval;
