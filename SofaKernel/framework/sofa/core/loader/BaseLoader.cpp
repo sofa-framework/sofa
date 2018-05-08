@@ -97,15 +97,6 @@ bool BaseLoader::canLoad()
     return true;
 }
 
-const std::string BaseLoader::UnableToOpenFile(const char* filename)
-{
-    std::string errormsg="Can't open file '";
-    errormsg+=filename;
-    errormsg+="'.";
-    return errormsg;
-}
-
-
 void BaseLoader::setFilename(std::string f)
 {
     m_filename.setValue(f);
