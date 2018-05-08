@@ -4,7 +4,9 @@ project(SofaFramework)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 
 include(SofaMacros)
-
+# Clear internal target list (set by the macro sofa_add_generic() )
+set_property(GLOBAL PROPERTY __GlobalTargetList__ "")
+set_property(GLOBAL PROPERTY __GlobalTargetNameList__ "")
 
 ### Options
 

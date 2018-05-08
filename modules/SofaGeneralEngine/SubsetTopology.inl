@@ -935,7 +935,7 @@ void SubsetTopology<DataTypes>::computeBBox(const core::ExecParams*  params , bo
 {
     const helper::vector<Vec6>& vb=boxes.getValue();
     const Real max_real = std::numeric_limits<Real>::max();
-    const Real min_real = std::numeric_limits<Real>::min();
+    const Real min_real = std::numeric_limits<Real>::lowest();
     Real maxBBox[3] = {min_real,min_real,min_real};
     Real minBBox[3] = {max_real,max_real,max_real};
 

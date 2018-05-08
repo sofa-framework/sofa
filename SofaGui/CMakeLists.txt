@@ -112,14 +112,6 @@ if(NOT SOFA_NO_OPENGL)
 
             ## Qt GUI options, used in the relevant CMakeLists.txt
 
-            ## SOFA_GUI_INTERACTION
-            option(SOFAGUI_QT_INTERACTION
-                "Enable interaction mode for the Qt GUI, whatever that means (this
-                will define the SOFA_GUI_INTERACTION macro)." OFF)
-            if(SOFAGUI_QT_INTERACTION)
-                set(SOFA_GUI_INTERACTION 1) # cmakedefine
-            endif()
-
             ## QtViewer
             option(SOFAGUI_QTVIEWER "Compile the QtViewer for the Qt GUI" ON)
             if(SOFAGUI_QTVIEWER)
