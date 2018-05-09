@@ -19,12 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef FILEMESSAGE_H
-#define FILEMESSAGE_H
-
-#include <iostream>
-#include <string>
-#include <sofa/helper/helper.h>
+#include "FileMessage.h"
 
 namespace sofa
 {
@@ -32,20 +27,17 @@ namespace sofa
 namespace helper
 {
 
-namespace logging
+namespace messaging
 {
 
-class SOFA_HELPER_API FileMessage/*class FileMessage*/
+const std::string FileMessage::UnableToOpenFile(const char* filename)
 {
-public:
-
-    FileMessage() {}
-    static const std::string UnableToOpenFile(const char* filename);
-
-};
+    std::string errormsg="Can't open file '";
+    errormsg+=filename;
+    errormsg+="'.";
+    return errormsg;
+}
 
 } // logging
 } // helper
 } // sofa
-
-#endif // FILEMESSAGE_H
