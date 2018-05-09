@@ -1142,11 +1142,13 @@ void MeshMatrixMass<DataTypes, MassType>::massInitialization()
     d_edgeMass.setValue(d_edgeMassInfo.getValue());
 
     //Info post-init
-    msg_info() << "mass information computed :" << msgendl
-               << "totalMass   = " << d_totalMass.getValue() << msgendl
-               << "massDensity = " << d_massDensity.getValue() << msgendl
-               << "vertexMass  = " << d_vertexMassInfo.getValue();
+    printMass();
+}
 
+
+template <class DataTypes, class MassType>
+void MeshMatrixMass<DataTypes, MassType>::printMass()
+{
     //Info post-init
     const MassVector &vertexM = d_vertexMass.getValue();
     const MassVector &mDensity = d_massDensity.getValue();
@@ -1352,10 +1354,8 @@ void MeshMatrixMass<DataTypes, MassType>::update()
         d_edgeMass.setValue(d_edgeMassInfo.getValue());
 
         //Info post-init
-        msg_info() << "mass information updated :" << msgendl
-                   << "totalMass   = " << d_totalMass.getValue() << msgendl
-                   << "massDensity = " << d_massDensity.getValue() << msgendl
-                   << "vertexMass  = " << d_vertexMassInfo.getValue();
+        msg_info() << "mass information updated";
+        printMass();
     }
 }
 

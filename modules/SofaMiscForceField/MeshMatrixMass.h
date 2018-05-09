@@ -188,6 +188,9 @@ public:
         return d_vertexMassInfo.getValue().size();
     }
 
+    /// Print key mass informations (totalMass, vertexMass and massDensity)
+    void printMass();
+
     /// Compute the mass from input values
     void computeMass();
 

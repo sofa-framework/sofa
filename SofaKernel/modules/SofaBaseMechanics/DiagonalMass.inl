@@ -756,6 +756,13 @@ void DiagonalMass<DataTypes, MassType>::massInitialization()
     }
 
     //Info post-init
+    printMass();
+}
+
+
+template <class DataTypes, class MassType>
+void DiagonalMass<DataTypes, MassType>::printMass()
+{
     const MassVector &vertexM = d_vertexMass.getValue();
 
     Real average_vertex = 0.0;
@@ -1211,9 +1218,8 @@ void DiagonalMass<DataTypes, MassType>::update()
     if(update)
     {
         //Info post-init
-        msg_info() << "mass information updated :" << msgendl
-                   << "totalMass   = " << d_totalMass.getValue() << msgendl
-                   << "massDensity = " << d_massDensity.getValue();
+        msg_info() << "mass information updated";
+        printMass();
     }
 }
 
