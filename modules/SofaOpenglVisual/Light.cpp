@@ -82,11 +82,6 @@ const std::string Light::PATH_TO_BLUR_TEXTURE_FRAGMENT_SHADER = "shaders/softSha
 
 Light::Light()
     : m_lightID(0), m_shadowTexWidth(0),m_shadowTexHeight(0)
-#ifdef SOFA_HAVE_GLEW
-    , m_shadowFBO(true, true, true), m_blurHFBO(false,false,true), m_blurVFBO(false,false,true)
-    , m_depthShader(sofa::core::objectmodel::New<OglShader>())
-    , m_blurShader(sofa::core::objectmodel::New<OglShader>())
-#endif
     , d_color(initData(&d_color, defaulttype::RGBAColor(1.0,1.0,1.0,1.0), "color", "Set the color of the light. (default=[1.0,1.0,1.0,1.0])"))
     , d_shadowTextureSize(initData(&d_shadowTextureSize, (GLuint)0, "shadowTextureSize", "[Shadowing] Set size for shadow texture "))
     , d_drawSource(initData(&d_drawSource, (bool) false, "drawSource", "Draw Light Source"))
@@ -219,9 +214,18 @@ void Light::initVisual()
     //Shadow part
     //Shadow texture init
 #ifdef SOFA_HAVE_GLEW
-    m_shadowFBO.init(m_shadowTexWidth, m_shadowTexHeight);
-    m_blurHFBO.init(m_shadowTexWidth, m_shadowTexHeight);
-    m_blurVFBO.init(m_shadowTexWidth, m_shadowTexHeight);
+    m_shadowFBO = std::unique_ptr<helper::gl::FrameBufferObject>(
+                new helper::gl::FrameBufferObject(true, true, true));
+    m_blurHFBO = std::unique_ptr<helper::gl::FrameBufferObject>(
+                new helper::gl::FrameBufferObject(false,false,true));
+    m_blurVFBO = std::unique_ptr<helper::gl::FrameBufferObject>(
+                new helper::gl::FrameBufferObject(false,false,true));
+    m_depthShader = sofa::core::objectmodel::New<OglShader>();
+    m_blurShader = sofa::core::objectmodel::New<OglShader>();
+
+    m_shadowFBO->init(m_shadowTexWidth, m_shadowTexHeight);
+    m_blurHFBO->init(m_shadowTexWidth, m_shadowTexHeight);
+    m_blurVFBO->init(m_shadowTexWidth, m_shadowTexHeight);
     m_depthShader->vertFilename.addPath(PATH_TO_GENERATE_DEPTH_TEXTURE_VERTEX_SHADER,true);
     m_depthShader->fragFilename.addPath(PATH_TO_GENERATE_DEPTH_TEXTURE_FRAGMENT_SHADER,true);
     m_depthShader->init();
@@ -273,7 +277,7 @@ void Light::preDrawShadow(core::visual::VisualParams* /* vp */)
     m_depthShader->setInt(0, "u_lightType", this->getLightType());
     m_depthShader->setFloat(0, "u_shadowFactor", d_shadowFactor.getValue());
     m_depthShader->start();
-    m_shadowFBO.start();
+    m_shadowFBO->start();
 #endif
 }
 
@@ -294,7 +298,7 @@ void Light::postDrawShadow()
 {
 #ifdef SOFA_HAVE_GLEW
     //Unbind fbo
-    m_shadowFBO.stop();
+    m_shadowFBO->stop();
     m_depthShader->stop();
 #endif
 
@@ -327,9 +331,9 @@ void Light::blurDepthTexture()
     glPushMatrix();
     glLoadIdentity();
 
-    m_blurHFBO.start();
+    m_blurHFBO->start();
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, m_shadowFBO.getColorTexture());
+    glBindTexture(GL_TEXTURE_2D, m_shadowFBO->getColorTexture());
 
     m_blurShader->setFloat(0, "mapDimX", (GLfloat) m_shadowTexWidth);
     m_blurShader->setInt(0, "orientation", 0);
@@ -346,11 +350,11 @@ void Light::blurDepthTexture()
     m_blurShader->stop();
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    m_blurHFBO.stop();
+    m_blurHFBO->stop();
 
-    m_blurVFBO.start();
+    m_blurVFBO->start();
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, m_blurHFBO.getColorTexture());
+    glBindTexture(GL_TEXTURE_2D, m_blurHFBO->getColorTexture());
 
     m_blurShader->setFloat(0, "mapDimX", (GLfloat) m_shadowTexWidth);
     m_blurShader->setInt(0, "orientation", 1);
@@ -367,7 +371,7 @@ void Light::blurDepthTexture()
     m_blurShader->stop();
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    m_blurVFBO.stop();
+    m_blurVFBO->stop();
 
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
@@ -612,7 +616,7 @@ GLuint DirectionalLight::getDepthTexture()
     //return debugVisualShadowTexture;
     //return shadowTexture;
 #ifdef SOFA_HAVE_GLEW
-    return m_shadowFBO.getDepthTexture();
+    return m_shadowFBO->getDepthTexture();
 #else
     return 0;
 #endif
@@ -622,9 +626,9 @@ GLuint DirectionalLight::getColorTexture()
 {
 #ifdef SOFA_HAVE_GLEW
     if (d_softShadows.getValue())
-        return m_blurVFBO.getColorTexture();
+        return m_blurVFBO->getColorTexture();
     else
-        return m_shadowFBO.getColorTexture();
+        return m_shadowFBO->getColorTexture();
 #else
     return 0;
 #endif
@@ -979,7 +983,7 @@ void SpotLight::computeOpenGLProjectionMatrix(GLfloat mat[16], float width, floa
 GLuint SpotLight::getDepthTexture()
 {
 #ifdef SOFA_HAVE_GLEW
-    return m_shadowFBO.getDepthTexture();
+    return m_shadowFBO->getDepthTexture();
 #else
     return 0;
 #endif
@@ -989,9 +993,9 @@ GLuint SpotLight::getColorTexture()
 {
 #ifdef SOFA_HAVE_GLEW
     if(d_softShadows.getValue())
-        return m_blurVFBO.getColorTexture();
+        return m_blurVFBO->getColorTexture();
     else
-        return m_shadowFBO.getColorTexture();
+        return m_shadowFBO->getColorTexture();
 #else
     return 0;
 #endif
