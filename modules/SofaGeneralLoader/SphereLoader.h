@@ -21,11 +21,8 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_LOADER_SPHERELOADER_H
 #define SOFA_COMPONENT_LOADER_SPHERELOADER_H
-#include "config.h"
 
 #include <sofa/core/loader/BaseLoader.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/vector.h>
 
 namespace sofa
 {
