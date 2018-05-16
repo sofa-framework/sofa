@@ -79,9 +79,9 @@ void PythonEnvironment::Init()
     {
         Py_Initialize();
     }
-    
+
     PyEval_InitThreads();
-    
+
     // the first gil lock is here
     gil lock(__func__);
 
@@ -154,7 +154,7 @@ void PythonEnvironment::Release()
 
     // obviously can't use raii here
     if( Py_IsInitialized() ) {
-        PyGILState_Ensure();    
+        PyGILState_Ensure();
         Py_Finalize();
     }
 }
@@ -170,7 +170,7 @@ void PythonEnvironment::addPythonModulePath(const std::string& path)
             gil lock(__func__);
             PyRun_SimpleString(std::string("sys.path.insert(1,\""+path+"\")").c_str());
         }
-        
+
         SP_MESSAGE_INFO("Added '" + path + "' to sys.path");
         addedPath.insert(path);
     }
@@ -315,48 +315,47 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
 
     // pro-tip: FileNameWithoutExtension == basename
     const std::string basename = sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(filename);
-
     // setup sys.argv if needed
-    if(!arguments.empty() ) {
-        std::vector<const char*> argv;
-        argv.push_back(basename.c_str());
-        
+    std::vector<const char*> argv;
+    argv.push_back(basename.c_str());
+
+    if(!arguments.empty()) {
         for(const std::string& arg : arguments) {
             argv.push_back(arg.c_str());
         }
-        
-        Py_SetProgramName((char*) argv[0]); // TODO check what it is doing exactly
-        PySys_SetArgv(argv.size(), (char**)argv.data());
     }
-    
+    Py_SetProgramName((char*) argv[0]); // TODO check what it is doing exactly
+    PySys_SetArgv(argv.size(), (char**)argv.data());
+
+
     // Load the scene script
     PyObject* script = PyFile_FromString((char*)filename, (char*)("r"));
-    
+
     if( !script ) {
         SP_MESSAGE_ERROR("cannot open file:" << filename)
         PyErr_Print();
         return false;
     }
-    
+
     PyObject* __main__ = PyModule_GetDict(PyImport_AddModule("__main__"));
 
     // save/restore __main__.__file__
     PyObject* __file__ = PyDict_GetItemString(__main__, "__file__");
     Py_XINCREF(__file__);
-    
+
     // temporarily set __main__.__file__ = filename during file loading
     {
         PyObject* __tmpfile__ = PyString_FromString(filename);
         PyDict_SetItemString(__main__, "__file__", __tmpfile__);
         Py_XDECREF(__tmpfile__);
     }
-    
+
     const int error = PyRun_SimpleFileEx(PyFile_AsFile(script), filename, 0);
-    
+
     // don't wait for gc to close the file
     PyObject_CallMethod(script, (char*) "close", NULL);
     Py_XDECREF(script);
-    
+
     // restore backup if needed
     if(__file__) {
         PyDict_SetItemString(__main__, "__file__", __file__);
@@ -365,8 +364,8 @@ bool PythonEnvironment::runFile( const char *filename, const std::vector<std::st
         assert(!err); (void) err;
     }
 
-    Py_XDECREF(__file__);  
-    
+    Py_XDECREF(__file__);
+
     if(error) {
         SP_MESSAGE_ERROR("Script (file:" << basename << ") import error")
         PyErr_Print();
@@ -393,7 +392,7 @@ void PythonEnvironment::setAutomaticModuleReload( bool b )
 
 void PythonEnvironment::excludeModuleFromReload( const std::string& moduleName )
 {
-    gil lock(__func__);    
+    gil lock(__func__);
     PyRun_SimpleString( std::string( "try: SofaPython.__SofaPythonEnvironment_modulesExcludedFromReload.append('" + moduleName + "')\nexcept:pass" ).c_str() );
 }
 
@@ -405,7 +404,7 @@ static PyGILState_STATE lock(const char* trace) {
     if(debug_gil && trace) {
         std::clog << ">> " << trace << " wants the gil" << std::endl;
     }
-    
+
     // this ensures that we start with no active thread before first locking the
     // gil: this way the last gil unlock lets python threads to run (otherwise
     // the main thread still holds the gil, preventing python threads to run
@@ -427,11 +426,11 @@ PythonEnvironment::gil::gil(const char* trace)
 PythonEnvironment::gil::~gil() {
 
     PyGILState_Release(state);
-    
+
     if(debug_gil && trace) {
         std::clog << "<< " << trace << " released the gil" << std::endl;
     }
-    
+
 }
 
 
@@ -449,7 +448,7 @@ PythonEnvironment::no_gil::~no_gil() {
     if(debug_gil && trace) {
         std::clog << "<< " << trace << " wants to reacquire the gil" << std::endl;
     }
-    
+
     PyEval_RestoreThread(state);
 }
 
