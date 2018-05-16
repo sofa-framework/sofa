@@ -338,9 +338,31 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
 #endif
         }
     }
+    // Case no forces applied, b=0
     else
     {
         endcond = "null norm of vector b";
+
+        // If first step : check the value of threshold
+        if( timeStepCount==0 )
+        {
+            p = r;
+            q = M*p;
+            double den = p.dot(q);
+
+            if(den != 0.0)
+            {
+                if (fabs(den) <= f_smallDenominatorThreshold.getValue())
+                {
+                    msg_warning() << "denominator threshold reached at first iteration of CG" << msgendl
+                                  << "Check the 'threshold' data field, you might decrease it";
+                }
+            }
+            else
+            {
+                msg_info() << "no way to check the validity of : tolerance and threshold value";
+            }
+        }
     }
 
 #ifdef DISPLAY_TIME
