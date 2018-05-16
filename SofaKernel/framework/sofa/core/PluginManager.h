@@ -26,10 +26,6 @@
 #include <sofa/helper/system/DynamicLibrary.h>
 #include <sofa/helper/system/FileSystem.h>
 
-#include <map>
-#include <set>
-#include <string>
-#include <vector>
 
 namespace sofa
 {
