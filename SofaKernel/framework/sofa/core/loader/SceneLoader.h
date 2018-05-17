@@ -23,7 +23,6 @@
 #define SOFA_CORE_LOADER_SceneLoader_H
 
 #include <sofa/core/loader/BaseLoader.h>
-#include <sofa/helper/fixed_array.h>
 
 
 namespace sofa
