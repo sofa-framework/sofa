@@ -20,6 +20,9 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory ;
+using sofa::core::ObjectCreator ;
 
 #include <sofa/core/behavior/BaseController.h>
 #include <sofa/core/behavior/BaseConstraintCorrection.h>
@@ -152,6 +155,7 @@ extern "C" PyObject * BaseObject_getAsACreateObjectParameter(PyObject * self, Py
 
 static PyObject* BaseObject_getCategories(PyObject * self, PyObject *args)
 {
+    SOFA_UNUSED(args);
     BaseObject* obj = get_baseobject( self );
 
     if(!obj)
@@ -224,6 +228,28 @@ static PyObject* BaseObject_getCategories(PyObject * self, PyObject *args)
     return list ;
 }
 
+static PyObject * BaseObject_getTarget(PyObject *self, PyObject * args)
+{
+    SOFA_UNUSED(args);
+    BaseObject* object = get_baseobject( self );
+
+    if(!object)
+        return nullptr ;
+
+    /// Class description are stored in the factory creator.
+    ObjectFactory::ClassEntry entry = ObjectFactory::getInstance()->getEntry(object->getClassName());
+    if (!entry.creatorMap.empty())
+    {
+        ObjectFactory::CreatorMap::iterator it = entry.creatorMap.find(object->getTemplateName());
+        if (it != entry.creatorMap.end() && *it->second->getTarget())
+        {
+            return PyString_FromString(it->second->getTarget()) ;
+        }
+    }
+
+    return nullptr ;
+}
+
 
 SP_CLASS_METHODS_BEGIN(BaseObject)
 SP_CLASS_METHOD(BaseObject,init)
@@ -241,6 +267,8 @@ SP_CLASS_METHOD(BaseObject,getSlaves)
 SP_CLASS_METHOD(BaseObject,getName)
 SP_CLASS_METHOD_DOC(BaseObject, getCategories,
                     "Returns a list of categories the current object belongs.")
+SP_CLASS_METHOD_DOC(BaseObject, getTarget,
+                    "Returns the target (plugin) that contains the current object.")
 SP_CLASS_METHOD(BaseObject,getAsACreateObjectParameter)
 SP_CLASS_METHODS_END
 

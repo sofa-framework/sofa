@@ -8,3 +8,4 @@ def createScene(rootNode):
 
     ASSERT_EQ(type(rootNode.dofs.getCategories()), list)
 
+    ASSERT_EQ(type(rootNode.dofs.getTarget()), str)
