@@ -258,7 +258,6 @@ endmacro()
 # See plugins/SofaHighOrder for example
 #
 macro(sofa_add_generic_external directory name type)
-    message(WARNING "sofa_add_${type}_external is an experimental feature, use it at your own risk.")
     message("Adding EXTERNAL ${type} ${name}")
 
     if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/${directory}" AND IS_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/${directory}")
@@ -318,7 +317,7 @@ macro(sofa_add_generic_external directory name type)
             if("${type}" STREQUAL "subdirectory")
                 add_subdirectory("${location}/src" "${CMAKE_BINARY_DIR}/${name}/build")
             elseif("${type}" STREQUAL "plugin")
-                sofa_add_plugin("${plugin_name}/src" "${plugin_name}" ${active})
+                sofa_add_plugin("${name}/src" "${name}" ${active})
             endif()
         endif()
     else()
