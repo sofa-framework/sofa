@@ -22,17 +22,14 @@
 #ifndef SOFA_CORE_BEHAVIOR_BASEMECHANICALSTATE_H
 #define SOFA_CORE_BEHAVIOR_BASEMECHANICALSTATE_H
 
-#include <sofa/config/build_option_experimental_features.h>
 
 #include <sofa/core/BaseState.h>
 #include <sofa/core/MultiVecId.h>
 #include <sofa/defaulttype/BaseMatrix.h>
-#include <sofa/defaulttype/BaseVector.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/helper/StateMask.h>
 
-#include <iostream>
 
 
 namespace sofa

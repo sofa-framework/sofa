@@ -23,13 +23,8 @@
 #define SOFA_CORE_BEHAVIOR_BASECONSTRAINT_H
 
 #include <sofa/core/behavior/BaseConstraintSet.h>
-#include <sofa/core/behavior/BaseMechanicalState.h>
-#include <sofa/core/behavior/MultiMatrixAccessor.h>
 
-#include <sofa/defaulttype/BaseMatrix.h>
-#include <sofa/defaulttype/BaseVector.h>
 
-#include <vector>
 
 namespace sofa
 {
