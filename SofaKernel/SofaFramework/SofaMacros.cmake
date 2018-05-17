@@ -263,7 +263,7 @@ macro(sofa_add_generic_external directory name type)
     if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/${directory}" AND IS_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/${directory}")
         set(location "${CMAKE_CURRENT_LIST_DIR}/${directory}")
 
-        string(TOUPPER EXTERNAL_SUBDIRECTORY_${name} option)
+        string(TOUPPER "EXTERNAL_${type}_${name}" option)
 
         # optional parameter to activate/desactivate the option
         set(active OFF)
@@ -294,6 +294,7 @@ macro(sofa_add_generic_external directory name type)
 
             # Download and unpack  at configure time
             configure_file(${location}/ExternalProjectConfig.cmake.in ${${name}_TEMP_DIR}/CMakeLists.txt)
+            file(COPY ${location}/ExternalProjectConfig.cmake.in DESTINATION ${${name}_TEMP_DIR})
 
             #execute script to get src
             message("Pulling ${name}... ")
@@ -302,22 +303,23 @@ macro(sofa_add_generic_external directory name type)
             execute_process(COMMAND "${CMAKE_COMMAND}" --build .
                 WORKING_DIRECTORY  "${${name}_TEMP_DIR}/" )
 
-            if(EXISTS "${location}/src")
+            if(EXISTS "${location}/.git")
                 message("... Done")
                 # add .gitignore for Sofa
-                file(WRITE "${location}/.gitignore" "src/")
+                file(WRITE "${location}/.gitignore" "*")
+                file(COPY ${${name}_TEMP_DIR}/ExternalProjectConfig.cmake.in DESTINATION ${location})
             else()
                 message("... error while pulling ${name}")
             endif()
         endif()
 
         # Add
-        if(EXISTS "${location}/src" AND IS_DIRECTORY "${location}/src")
+        if(EXISTS "${location}/.git" AND IS_DIRECTORY "${location}/.git")
             configure_file(${location}/ExternalProjectConfig.cmake.in ${${name}_TEMP_DIR}/CMakeLists.txt)
             if("${type}" STREQUAL "subdirectory")
-                add_subdirectory("${location}/src" "${CMAKE_BINARY_DIR}/${name}/build")
+                add_subdirectory("${location}" "${name}")
             elseif("${type}" STREQUAL "plugin")
-                sofa_add_plugin("${name}/src" "${name}" ${active})
+                sofa_add_plugin("${name}" "${name}" ${active})
             endif()
         endif()
     else()
