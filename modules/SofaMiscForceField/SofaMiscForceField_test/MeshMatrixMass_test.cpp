@@ -35,7 +35,6 @@ using sofa::core::ExecParams ;
 #include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
 #include <SofaBaseTopology/TetrahedronSetGeometryAlgorithms.h>
-#include <sofa/helper/testing/BaseTest.h>
 
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node ;
@@ -49,7 +48,7 @@ using sofa::simulation::SceneLoaderXML ;
 #include <string>
 using std::string ;
 
-#include <gtest/gtest.h>
+#include <SofaTest/Sofa_test.h>
 
 using namespace sofa::defaulttype;
 using namespace sofa::component::topology;
@@ -71,7 +70,7 @@ namespace sofa {
 // Given the positions and the topology, it then checks the expected values for
 // the mass.
 template <class TDataTypes, class TMassType>
-class MeshMatrixMass_test : public ::testing::Test
+class MeshMatrixMass_test : public Sofa_test<>
 {
 public:
     typedef TDataTypes DataTypes;
