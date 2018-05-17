@@ -30,6 +30,8 @@
 #include <sofa/simulation/Node.h>
 
 #include <sofa/helper/Utils.h>
+#include <sofa/helper/StringUtils.h>
+using sofa::helper::getAStringCopy ;
 
 #if defined(__linux__)
 #  include <dlfcn.h>            // for dlopen(), see workaround in Init()
@@ -43,6 +45,59 @@ namespace sofa
 
 namespace simulation
 {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+/// \brief The PythonEnvironmentData class which hold "static" data as long as python is running
+///
+/// The class currently hold the argv that are exposed in the python 'sys.argv'.
+/// The elements added are copied and the object hold the pointer to the memory allocated.
+/// The memory is release when the object is destructed or the reset function called.
+///
+/// Other elements than sys.argv may be added depending on future needs.
+///
+////////////////////////////////////////////////////////////////////////////////////////////////////
+class PythonEnvironmentData
+{
+public:
+    ~PythonEnvironmentData() { reset(); }
+
+    int size() { return m_argv.size(); }
+
+    void add(const std::string& data)
+    {
+        m_argv.push_back( getAStringCopy(data.c_str()) );
+    }
+
+    void reset()
+    {
+        for(auto s : m_argv)
+            delete[] s;
+        m_argv.clear();
+    }
+
+    char* getDataAt(unsigned int index)
+    {
+        return m_argv[index];
+    }
+
+    char** getDataBuffer()
+    {
+        return &m_argv[0];
+    }
+
+private:
+    std::vector<char*> m_argv;
+};
+
+PythonEnvironmentData* PythonEnvironment::getStaticData()
+{
+    static PythonEnvironmentData* m_staticdata { nullptr } ;
+
+    if( !m_staticdata )
+        m_staticdata = new PythonEnvironmentData();
+
+    return m_staticdata;
+}
 
 PyMODINIT_FUNC initModulesHelper(const std::string& name, PyMethodDef* methodDef)
 {
@@ -309,23 +364,26 @@ helper::logging::FileInfo::SPtr PythonEnvironment::getPythonCallingPointAsFileIn
     return SOFA_FILE_INFO_COPIED_FROM("undefined", -1);
 }
 
-bool PythonEnvironment::runFile( const char *filename, const std::vector<std::string>& arguments) {
+bool PythonEnvironment::runFile(const char *filename, const std::vector<std::string>& arguments) {
     const gil lock(__func__);
     const std::string dir = sofa::helper::system::SetDirectory::GetParentDir(filename);
 
     // pro-tip: FileNameWithoutExtension == basename
     const std::string basename = sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(filename);
-    // setup sys.argv if needed
-    std::vector<const char*> argv;
-    argv.push_back(basename.c_str());
+
+    PythonEnvironmentData* data = getStaticData() ;
+    data->reset() ;
+    data->add( basename );
 
     if(!arguments.empty()) {
         for(const std::string& arg : arguments) {
-            argv.push_back(arg.c_str());
+            data->add(arg);
         }
     }
-    Py_SetProgramName((char*) argv[0]); // TODO check what it is doing exactly
-    PySys_SetArgv(argv.size(), (char**)argv.data());
+
+    /// The specification state that the program name should be a 'persistant' memory address
+    Py_SetProgramName( data->getDataAt(0) );
+    PySys_SetArgvEx( data->size(), data->getDataBuffer(), 0);
 
 
     // Load the scene script

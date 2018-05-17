@@ -37,6 +37,9 @@ namespace sofa
 namespace simulation
 {
 
+/// Forward definition
+class PythonEnvironmentData ;
+
 class SOFA_SOFAPYTHON_API PythonEnvironment
 {
 public:
@@ -107,6 +110,9 @@ public:
     };
 
     struct system_exit : std::exception { };
+
+private:
+    static PythonEnvironmentData* getStaticData() ;
 };
 
 
