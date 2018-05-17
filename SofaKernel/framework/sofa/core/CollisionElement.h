@@ -23,6 +23,7 @@
 #define SOFA_CORE_COLLISIONELEMENT_H
 #include <sofa/core/core.h>
 
+#include <cstddef>
 #include <vector>
 
 namespace sofa
