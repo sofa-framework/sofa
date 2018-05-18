@@ -56,6 +56,12 @@ Quater<Real>::Quater( const defaulttype::Vec<3,Real>& axis, Real angle )
     axisToQuat(axis,angle);
 }
 
+template<class Real>
+inline Quater<Real>::Quater(const defaulttype::Vec<3, Real>& vFrom, const defaulttype::Vec<3, Real>& vTo)
+{
+    setFromUnitVectors(vFrom, vTo);
+}
+
 // Destructor
 template<class Real>
 Quater<Real>::~Quater()
@@ -682,6 +688,34 @@ Quater<Real> Quater<Real>::createQuaterFromFrame(const defaulttype::Vec<3, Real>
     }
     q.fromMatrix(m);
     return q;
+}
+
+template<class Real>
+inline void Quater<Real>::setFromUnitVectors(const defaulttype::Vec<3, Real>& vFrom, const defaulttype::Vec<3, Real>& vTo)
+{
+    sofa::defaulttype::Vec<3, Real> v1;
+    Real epsilon = 0.0001;
+    
+    Real res_dot = sofa::defaulttype::dot(vFrom, vTo) + 1;
+    if (res_dot < epsilon)
+    {
+        res_dot = 0;
+        if (fabs(vFrom[0]) > fabs(vFrom[2])) 
+            v1 = sofa::defaulttype::Vec<3, Real>(-vFrom[1], vFrom[0], 0);
+        else
+            v1 = sofa::defaulttype::Vec<3, Real>(0, -vFrom[2], vFrom[1]);
+    }
+    else
+    {
+        v1 = vFrom.cross(vTo);
+    }
+
+    _q[0] = v1[0];
+    _q[1] = v1[1];
+    _q[2] = v1[2];
+    _q[3] = res_dot;
+
+    this->normalize();
 }
 
 /// Print quaternion (C style)
