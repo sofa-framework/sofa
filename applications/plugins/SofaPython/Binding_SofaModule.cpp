@@ -603,30 +603,32 @@ static PyObject * Sofa_getAliasesFor(PyObject * /*self*/, PyObject * args)
     return pyList;
 }
 
-static PyObject * Sofa_getTargetsFor(PyObject *self, PyObject * args)
+static PyObject * Sofa_getComponentsFromTarget(PyObject *self, PyObject * args)
 {
     SOFA_UNUSED(self) ;
-    char* componentname;
-    if (!PyArg_ParseTuple(args, "s", &componentname)) {
-        return NULL;
+    char* targetname;
+    if (!PyArg_ParseTuple(args, "s", &targetname)) {
+        return nullptr;
     }
 
-    const ObjectFactory::ClassEntry& entry = ObjectFactory::getInstance()->getEntry(componentname) ;
-    if (!entry.creatorMap.empty())
-    {
-        PyObject *pyList = PyList_New(entry.creatorMap.size());
-        unsigned int i=0;
-        for (auto& creator : entry.creatorMap){
-            PyList_SetItem(pyList, (Py_ssize_t)i, Py_BuildValue("s", creator.second->getTarget()));
-            i++;
+    std::vector<ObjectFactory::ClassEntry::SPtr> entries;
+    ObjectFactory::getInstance()->getEntriesFromTarget(entries, targetname);
+
+    PyObject *pyList = PyList_New(0);
+    for (auto& entry : entries){
+        PyObject* value = Py_BuildValue("s", entry->className.c_str()) ;
+        if(!PySequence_Contains(pyList, value))
+        {
+           PyList_Append(pyList, value);
         }
-        return pyList;
+        else
+        {
+            Py_DECREF(value) ;
+        }
     }
 
-    PyErr_SetString(PyExc_TypeError, "There is no Sofa component with provided name in the factory.");
-    return nullptr;
+    return pyList;
 }
-
 
 // -----------------
 
@@ -886,7 +888,7 @@ SP_MODULE_METHOD(Sofa,loadPlugin)
 SP_MODULE_METHOD(Sofa,path)
 SP_MODULE_METHOD_DOC(Sofa,getAvailableComponents, "Returns the list of the available components in the factory.")
 SP_MODULE_METHOD_DOC(Sofa,getAliasesFor, "Returns the list of the aliases for a given component")
-SP_MODULE_METHOD_DOC(Sofa,getTargetsFor, "Returns the list of the targets (plugins) containing a given component")
+SP_MODULE_METHOD_DOC(Sofa,getComponentsFromTarget, "Returns a string with the component contained in a given targets (plugins)")
 SP_MODULE_METHOD_DOC(Sofa, timerClear, "Method : Sofa_clear \nDesc   : Wrapper for python usage. Clear the timer. \nParam  : PyObject*, self - Object of the python script \nReturn : return None")
 SP_MODULE_METHOD_DOC(Sofa, timerIsEnabled, "Method : Sofa_isEnabled \nDesc   : Wrapper for python usage. Return if the timer is enable or not. \nParam  : PyObject*, self - Object of the python script \nParam  : PyObject*, args - given arguments to apply to the method \nReturn : None")
 SP_MODULE_METHOD_DOC(Sofa, timerSetEnabled, "Method : Sofa_setEnabled \nDesc   : Wrapper for python usage. /!\\ Need to pass an int in arguments insteed of a bool in the python script. \nParam  : PyObject*, self - Object of the python script \nParam  : PyObject*, args - given arguments to apply to the method \nReturn : None")

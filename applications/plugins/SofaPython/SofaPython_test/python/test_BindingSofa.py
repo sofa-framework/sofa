@@ -5,5 +5,5 @@ from SofaTest import *
 def createScene(rootNode):
     print("Aliases: "+str(Sofa.getAliasesFor("VisualModel")))
     print("Aliases: "+str(Sofa.getAliasesFor("SphereModel")))
-    print("Target for: "+str(Sofa.getAliasesFor("MechanicalObject")))
-    ASSERT_EQ(type(Sofa.getTargetsFor("MechanicalObject")), list)
+    print("Components for target: "+str(Sofa.getComponentsFromTarget("SofaMiscCollision")))
+    ASSERT_EQ(type(Sofa.getComponentsFromTarget("SofaMiscCollision")), list)
