@@ -37,7 +37,7 @@ namespace io
 class SOFA_HELPER_API MeshTopologyLoader
 {
 public:
-    MeshTopologyLoader():mesh(NULL) {}
+    MeshTopologyLoader():m_mesh(NULL) {}
     virtual ~MeshTopologyLoader() {}
     bool load(const char *filename);
     virtual void setNbPoints(int /*n*/) {}
@@ -64,8 +64,8 @@ private:
     bool loadMesh(std::ifstream &file);
     bool loadCGAL(const char *filename);
 
-protected:
-    helper::io::Mesh* mesh;
+private:
+    helper::io::Mesh* m_mesh;
 };
 
 } // namespace io

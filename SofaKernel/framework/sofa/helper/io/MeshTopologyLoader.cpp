@@ -44,19 +44,19 @@ using namespace sofa::defaulttype;
 
 bool MeshTopologyLoader::loadObj(const char *filename)
 {
-    mesh = helper::io::Mesh::Create(filename);
-    if (mesh==NULL)
+    m_mesh = helper::io::Mesh::Create(filename);
+    if (m_mesh ==NULL)
         return false;
 
-    setNbPoints((int)mesh->getVertices().size());
-    for (size_t i=0; i<mesh->getVertices().size(); i++)
+    setNbPoints((int)m_mesh->getVertices().size());
+    for (size_t i=0; i<m_mesh->getVertices().size(); i++)
     {
-        addPoint((SReal)mesh->getVertices()[i][0],
-                (SReal)mesh->getVertices()[i][1],
-                (SReal)mesh->getVertices()[i][2]);
+        addPoint((SReal)m_mesh->getVertices()[i][0],
+                (SReal)m_mesh->getVertices()[i][1],
+                (SReal)m_mesh->getVertices()[i][2]);
     }
 
-    const vector< vector < vector <int> > > & facets = mesh->getFacets();
+    const vector< vector < vector <int> > > & facets = m_mesh->getFacets();
     std::set< std::pair<int,int> > edges;
     for (size_t i=0; i<facets.size(); i++)
     {
@@ -104,24 +104,24 @@ bool MeshTopologyLoader::loadObj(const char *filename)
 #endif
     }
 
-    /// delete mesh;
+    /// delete m_mesh;
     return true;
 }
 
 bool MeshTopologyLoader::loadStl(const char *filename)
 {
-    mesh = helper::io::Mesh::Create(filename);
-    if (mesh==NULL)
+    m_mesh = helper::io::Mesh::Create(filename);
+    if (m_mesh==NULL)
         return false;
 
-    setNbPoints((int)mesh->getVertices().size());
-    const vector< vector < vector <int> > > & facets = mesh->getFacets();
+    setNbPoints((int)m_mesh->getVertices().size());
+    const vector< vector < vector <int> > > & facets = m_mesh->getFacets();
 
-    for (size_t i=0; i<mesh->getVertices().size(); i++)
+    for (size_t i=0; i<m_mesh->getVertices().size(); i++)
     {
-        addPoint((SReal)mesh->getVertices()[i][0],
-                (SReal)mesh->getVertices()[i][1],
-                (SReal)mesh->getVertices()[i][2]);
+        addPoint((SReal)m_mesh->getVertices()[i][0],
+                (SReal)m_mesh->getVertices()[i][1],
+                (SReal)m_mesh->getVertices()[i][2]);
     }
     for (size_t i=0; i<facets.size(); i++)
     {
