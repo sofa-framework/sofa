@@ -626,7 +626,7 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
 }
 
 template<class DataTypes>
-void PrecomputedConstraintCorrection<DataTypes>::computeMotionCorrection(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, core::MultiVecDerivId f)
+void PrecomputedConstraintCorrection<DataTypes>::computeMotionCorrection(const core::ConstraintParams* /*cparams*/, core::MultiVecDerivId dx, core::MultiVecDerivId f)
 {
     computeDx(*dx[this->getMState()].write(), *f[this->getMState()].read(), m_activeDofs);
 }
