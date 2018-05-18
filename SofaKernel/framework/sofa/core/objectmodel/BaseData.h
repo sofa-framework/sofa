@@ -26,14 +26,8 @@
 #pragma once
 #endif
 
-#include <list>
-#include <iostream>
-#include <typeinfo>
 #include <sofa/core/core.h>
-#include <sofa/core/ExecParams.h>
 #include <sofa/core/objectmodel/DDGNode.h>
-#include <sofa/core/objectmodel/BaseLink.h>
-#include <sofa/defaulttype/DataTypeInfo.h>
 
 namespace sofa
 {

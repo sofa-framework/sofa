@@ -23,7 +23,6 @@
 #define SOFA_CORE_OBJECTMODEL_HAPTICDEVICEEVENT_H
 
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/Quat.h>
 
 namespace sofa

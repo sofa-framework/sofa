@@ -22,8 +22,7 @@
 #ifndef SOFA_CORE_OBJECTMODEL_BASENODE_H
 #define SOFA_CORE_OBJECTMODEL_BASENODE_H
 
-#include "BaseContext.h"
-#include "BaseObject.h"
+#include <sofa/core/objectmodel/BaseObject.h>
 
 namespace sofa
 {

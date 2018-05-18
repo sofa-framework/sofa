@@ -29,7 +29,6 @@
 #include <sofa/helper/fixed_array.h>
 #include <sofa/core/core.h>
 #include <sofa/core/ExecParams.h>
-#include <string>
 
 namespace sofa
 {
