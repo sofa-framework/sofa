@@ -231,6 +231,30 @@ protected:
     };
 
     /**************************************************************************/
+    /*                         Multi-beams connexion                          */
+    /**************************************************************************/
+
+    //Vector containing all the local orientations, one for each beam element
+    //TO DO: for the moment, this orientations can be manually provided with the
+    //       Data field _inputLocalOrientations. In this case, the orientations
+    //       must be coherent with the corresponding topology
+    //       the second fields (_beamLocalOrientation) allows to correct these
+    //       user orientations if they are incoherent, and facilitate their
+    //       handling
+    //       In the future, it would be better to automatically compute the
+    //       orientation of each beam, directly from the topology.
+    //Handling of the global to local transform
+    //TO DO: this is a prototype for a model which has the ability to connect
+    //       more than 2 beams. If it works, every redundancy with BeamInfo.quat
+    //       should be suppressed
+    Data< helper::vector<defaulttype::Quat> > _inputLocalOrientations;
+    helper::vector<defaulttype::Quat> _beamLocalOrientations;
+
+    /**************************************************************************/
+
+
+
+    /**************************************************************************/
     /*                         Virtual Force Method                           */
     /**************************************************************************/
 
@@ -323,11 +347,12 @@ protected:
                                 double &lambdaIncrement, MechanicalState &isPlasticPoint, const Displacement &lastDisp);
 
     //NB: these two functions receive a *local* stress Tensor, which is computed for a given Gauss point
-    double vonMisesYield(const VoigtTensor2 &stressTensor, const double UTS);
-    VoigtTensor2 vonMisesGradient(const VoigtTensor2 &stressTensor, const double UTS);
-    VoigtTensor2 vonMisesGradientFD(const VoigtTensor2 &currentStressTensor, const double increment, const double UTS);
-    VoigtTensor4 vonMisesHessian(const VoigtTensor2 &stressTensor, const double UTS);
-    VoigtTensor4 vonMisesHessianFD(const VoigtTensor2 &lastStressTensor, const VoigtTensor2 &currentStressTensor, const double UTS);
+
+    double vonMisesYield(const VoigtTensor2 &stressTensor, const double yieldStress);
+    VoigtTensor2 vonMisesGradient(const VoigtTensor2 &stressTensor, const double yieldStress);
+    VoigtTensor2 vonMisesGradientFD(const VoigtTensor2 &currentStressTensor, const double increment, const double yieldStress);
+    VoigtTensor4 vonMisesHessian(const VoigtTensor2 &stressTensor, const double yieldStress);
+    VoigtTensor4 vonMisesHessianFD(const VoigtTensor2 &lastStressTensor, const VoigtTensor2 &currentStressTensor, const double yieldStress);
 
     //Methods called by addForce, addDForce and addKToMatrix when deforming plasticly
     void accumulateNonLinearForce(VecDeriv& f, const VecCoord& x, int i, Index a, Index b);
@@ -366,7 +391,8 @@ protected:
 
 
     MultiBeamForceField();
-    MultiBeamForceField(Real poissonRatio, Real youngModulus, Real zSection, Real ySection, bool useVD, bool isPlasticMuller, bool isPlasticKrabbenhoft);
+    MultiBeamForceField(Real poissonRatio, Real youngModulus, Real zSection, Real ySection, bool useVD,
+                        bool isPlasticMuller, bool isPlasticKrabbenhoft, helper::vector<defaulttype::Quat> localOrientations);
     virtual ~MultiBeamForceField();
 public:
     void setUpdateStiffnessMatrix(bool val) { this->_updateStiffnessMatrix = val; }

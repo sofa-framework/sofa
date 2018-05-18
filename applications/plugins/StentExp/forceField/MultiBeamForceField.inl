@@ -60,6 +60,7 @@ MultiBeamForceField<DataTypes>::MultiBeamForceField()
     , _poissonRatio(initData(&_poissonRatio,(Real)0.49f,"poissonRatio","Potion Ratio"))
     , _youngModulus(initData(&_youngModulus,(Real)5000,"youngModulus","Young Modulus"))
     , _virtualDisplacementMethod(initData(&_virtualDisplacementMethod, true, "virtualDisplacementMethod", "indicates if the stiffness matrix is computed following the virtual displacement method"))
+    , _inputLocalOrientations(initData(&_inputLocalOrientations, { defaulttype::Quat(0, 0, 0, 1) }, "beamLocalOrientations", "local orientation of each beam element"))
     , _isPlasticKrabbenhoft(initData(&_isPlasticKrabbenhoft, false, "isPlasticKrabbenhoft", "indicates wether the behaviour model is plastic, as in Krabbenhoft 2002"))
     , _isPlasticMuller(initData(&_isPlasticMuller, false, "isPlasticMuller", "indicates wether the behaviour model is plastic, as in Muller et al 2004"))
     , _zSection(initData(&_zSection, (Real)0.2, "zSection", "length of the section in the z direction for rectangular beams"))
@@ -78,12 +79,13 @@ MultiBeamForceField<DataTypes>::MultiBeamForceField()
 }
 
 template<class DataTypes>
-MultiBeamForceField<DataTypes>::MultiBeamForceField(Real poissonRatio, Real youngModulus, Real zSection, Real ySection, bool useVD, bool isPlasticMuller, bool isPlasticKrabbenhoft)
+MultiBeamForceField<DataTypes>::MultiBeamForceField(Real poissonRatio, Real youngModulus, Real zSection, Real ySection, bool useVD, bool isPlasticMuller, bool isPlasticKrabbenhoft, helper::vector<defaulttype::Quat> localOrientations)
     : beamsData(initData(&beamsData, "beamsData", "Internal element data"))
     , _indexedElements(NULL)
     , _poissonRatio(initData(&_poissonRatio,(Real)poissonRatio,"poissonRatio","Potion Ratio"))
     , _youngModulus(initData(&_youngModulus,(Real)youngModulus,"youngModulus","Young Modulus"))
     , _virtualDisplacementMethod(initData(&_virtualDisplacementMethod, true, "virtualDisplacementMethod", "indicates if the stiffness matrix is computed following the virtual displacement method"))
+    , _inputLocalOrientations(initData(&_inputLocalOrientations, localOrientations, "beamLocalOrientations", "local orientation of each beam element"))
     , _isPlasticKrabbenhoft(initData(&_isPlasticKrabbenhoft, false, "isPlasticKrabbenhoft", "indicates wether the behaviour model is plastic, as in Krabbenhoft 2002"))
     , _isPlasticMuller(initData(&_isPlasticMuller, false, "isPlasticMuller", "indicates wether the behaviour model is plastic, as in Muller et al 2004"))
     , _zSection(initData(&_zSection, (Real)zSection, "zSection", "length of the section in the z direction for rectangular beams"))
@@ -197,11 +199,27 @@ void MultiBeamForceField<DataTypes>::reinit()
         _isDeformingPlastically = false;
 
         /***** Krabbenhoft plasticity *****/
-
         _NRThreshold = 0.0; //to be changed during iterations
         _NRMaxIterations = 25;
 
-        /**********************************/
+        /***** Local orientations handling *****/
+        size_t nbQuat = _inputLocalOrientations.getValue().size();
+        _beamLocalOrientations.resize(n);
+        if (nbQuat != n)
+        {
+            //The vector of orientations given by the user doesn't match the topology
+            //TO DO: for now we set all of them with the neutral quaternion, but this
+            //       should be computed automatically from topology
+            for (size_t i = 0; i < n; i++)
+                _beamLocalOrientations[i] = defaulttype::Quat(0, 0, 0, 1);
+        }
+        else
+        {
+            for (size_t i = 0; i < n; i++)
+                _beamLocalOrientations[i] = _inputLocalOrientations.getValue()[i];
+        }
+
+
 
         _prevStresses.resize(n);
         for (int i = 0; i < n; i++)
@@ -736,6 +754,8 @@ void MultiBeamForceField<DataTypes>::applyStiffnessLarge(VecDeriv& df, const Vec
     Vec3 fb1 = q.rotate(defaulttype::Vec3d(local_force[6],local_force[7] ,local_force[8] ));
     Vec3 fb2 = q.rotate(defaulttype::Vec3d(local_force[9],local_force[10],local_force[11]));
 
+    //TO DO: beamsData.endEdit(); consecutive to the call to beamQuat
+
     df[a] += Deriv(-fa1,-fa2) * fact;
     df[b] += Deriv(-fb1,-fb2) * fact;
 
@@ -820,6 +840,7 @@ void MultiBeamForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPa
                         for (int y1 = 0; y1<12; ++y1)
                             mat->add(index[x1], index[y1], -K(x1, y1)*k);
                 }
+                //TO DO: beamsData.endEdit(); consecutive to the call to beamQuat
 
             } //end for _list_segment
         }
@@ -937,6 +958,8 @@ void MultiBeamForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPa
                         for (int y1 = 0; y1<12; ++y1)
                             mat->add(index[x1], index[y1], -K(x1, y1)*k);
                 }
+                //TO DO: beamsData.endEdit(); consecutive to the call to beamQuat
+
             } // end for _indexedElements
         } // end else !_partial_list_segment
     } // end if(r)
@@ -1742,7 +1765,7 @@ bool MultiBeamForceField<DataTypes>::stayInPlasticDeformation(const VoigtTensor2
 
 template< class DataTypes>
 double MultiBeamForceField<DataTypes>::vonMisesYield(const VoigtTensor2 &stressTensor,
-                                                     const double UTS)
+                                                     const double yieldStress)
 {
     double res = 0.0;
     double sigmaX = stressTensor[0];
@@ -1755,7 +1778,7 @@ double MultiBeamForceField<DataTypes>::vonMisesYield(const VoigtTensor2 &stressT
     double aux1 = 0.5*( (sigmaX - sigmaY)*(sigmaX - sigmaY) + (sigmaY - sigmaZ)*(sigmaY - sigmaZ) + (sigmaZ - sigmaX)*(sigmaZ - sigmaX) );
     double aux2 = 3.0*(sigmaYZ*sigmaYZ + sigmaZX*sigmaZX + sigmaXY*sigmaXY);
 
-    res = helper::rsqrt(aux1 + aux2) - UTS;
+    res = helper::rsqrt(aux1 + aux2) - yieldStress;
 
     return res;
 }
@@ -1763,7 +1786,7 @@ double MultiBeamForceField<DataTypes>::vonMisesYield(const VoigtTensor2 &stressT
 
 template< class DataTypes>
 Eigen::Matrix<double, 6, 1> MultiBeamForceField<DataTypes>::vonMisesGradient(const VoigtTensor2 &stressTensor,
-                                                                             const double UTS)
+                                                                             const double yieldStress)
 {
     VoigtTensor2 res = VoigtTensor2::Zero();
 
@@ -1777,7 +1800,7 @@ Eigen::Matrix<double, 6, 1> MultiBeamForceField<DataTypes>::vonMisesGradient(con
     double sigmaZX = stressTensor[4];
     double sigmaXY = stressTensor[5];
 
-    double fact = 1 / (2 * (vonMisesYield(stressTensor, UTS) + UTS));
+    double fact = 1 / (2 * (vonMisesYield(stressTensor, yieldStress) + yieldStress));
 
     res[0] = 2 * sigmaX - sigmaY - sigmaZ;
     res[1] = 2 * sigmaY - sigmaZ - sigmaX;
@@ -1793,7 +1816,7 @@ Eigen::Matrix<double, 6, 1> MultiBeamForceField<DataTypes>::vonMisesGradient(con
 
 template< class DataTypes>
 Eigen::Matrix<double, 6, 6> MultiBeamForceField<DataTypes>::vonMisesHessian(const VoigtTensor2 &stressTensor,
-                                                                            const double UTS)
+                                                                            const double yieldStress)
 {
     VoigtTensor4 res = VoigtTensor4::Zero();
 
@@ -1825,7 +1848,7 @@ Eigen::Matrix<double, 6, 6> MultiBeamForceField<DataTypes>::vonMisesHessian(cons
     double sXY2 = sigmaXY*sigmaXY;
 
     //Others
-    double sigmaE = vonMisesYield(stressTensor, UTS) + UTS;
+    double sigmaE = vonMisesYield(stressTensor, yieldStress) + yieldStress;
     double sigmaE3 = sigmaE*sigmaE*sigmaE;
     double invSigmaE = 1 / sigmaE;
 
@@ -1883,7 +1906,7 @@ Eigen::Matrix<double, 6, 6> MultiBeamForceField<DataTypes>::vonMisesHessian(cons
 template< class DataTypes>
 Eigen::Matrix<double, 6, 1> MultiBeamForceField<DataTypes>::vonMisesGradientFD(const VoigtTensor2 &currentStressTensor,
                                                                                const double increment,
-                                                                               const double UTS)
+                                                                               const double yieldStress)
 {
     //increment has to be non-zero
 
@@ -1895,12 +1918,12 @@ Eigen::Matrix<double, 6, 1> MultiBeamForceField<DataTypes>::vonMisesGradientFD(c
     VoigtTensor2 newStress = currentStressTensor;
     double Ftph, Ft;
 
-    Ft = vonMisesYield(currentStressTensor, UTS);
+    Ft = vonMisesYield(currentStressTensor, yieldStress);
 
     for (int i = 0; i < 6; i++)
     {
         newStress[i] += increment;
-        Ftph = vonMisesYield(newStress, UTS);
+        Ftph = vonMisesYield(newStress, yieldStress);
         res[i] = (Ftph - Ft) / increment;
         newStress[i] -= increment;
     }
@@ -1912,7 +1935,7 @@ Eigen::Matrix<double, 6, 1> MultiBeamForceField<DataTypes>::vonMisesGradientFD(c
 template< class DataTypes>
 Eigen::Matrix<double, 6, 6> MultiBeamForceField<DataTypes>::vonMisesHessianFD(const VoigtTensor2 &lastStressTensor,
                                                                               const VoigtTensor2 &currentStressTensor,
-                                                                              const double UTS)
+                                                                              const double yieldStress)
 {
     VoigtTensor4 res = VoigtTensor4::Zero();
     return res;
