@@ -1763,6 +1763,20 @@ bool MultiBeamForceField<DataTypes>::stayInPlasticDeformation(const VoigtTensor2
 }
 
 
+
+template< class DataTypes>
+double MultiBeamForceField<DataTypes>::tangentModulus(const VoigtTensor2 &stressTensor)
+{
+    //Computation of the tangent modulus, as defined in Krabbenhoft's lecture notes
+
+    //Here we choose to represent the tangent modulus thanks to the Ramberg-Osgood
+    //model, which parameters are those found in TO DO: include ref, for TO DO: include metallic alloy
+
+    return 0;
+}
+
+
+
 template< class DataTypes>
 double MultiBeamForceField<DataTypes>::vonMisesYield(const VoigtTensor2 &stressTensor,
                                                      const double yieldStress)

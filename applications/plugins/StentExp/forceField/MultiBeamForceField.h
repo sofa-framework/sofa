@@ -348,6 +348,7 @@ protected:
 
     //NB: these two functions receive a *local* stress Tensor, which is computed for a given Gauss point
 
+    double tangentModulus(const VoigtTensor2 &stressTensor);
     double vonMisesYield(const VoigtTensor2 &stressTensor, const double yieldStress);
     VoigtTensor2 vonMisesGradient(const VoigtTensor2 &stressTensor, const double yieldStress);
     VoigtTensor2 vonMisesGradientFD(const VoigtTensor2 &currentStressTensor, const double increment, const double yieldStress);
