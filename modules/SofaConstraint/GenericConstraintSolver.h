@@ -107,9 +107,9 @@ public:
     bool solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
 	bool applyCorrection(const core::ConstraintParams * /*cParams*/, MultiVecId res1, MultiVecId res2=MultiVecId::null()) override;
     void computeResidual(const core::ExecParams* /*params*/) override;
-    ConstraintProblem* getConstraintProblem();
-    void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2 = 0);
-    virtual void removeConstraintCorrection(core::behavior::BaseConstraintCorrection *s);
+    ConstraintProblem* getConstraintProblem() override;
+    void lockConstraintProblem(sofa::core::objectmodel::BaseObject* from, ConstraintProblem* p1, ConstraintProblem* p2 = 0) override;
+    virtual void removeConstraintCorrection(core::behavior::BaseConstraintCorrection *s) override;
 
 	Data<bool> displayTime; ///< Display time for each important step of GenericConstraintSolver.
 	Data<int> maxIt; ///< maximal number of iterations of the Gauss-Seidel algorithm

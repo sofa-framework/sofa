@@ -365,7 +365,7 @@ void afficheLCP(std::ostream& file, double *q, double **M, double *f, int dim, b
     file << "      ];" << msgendl << msgendl;
 }
 
-bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * cParams, MultiVecId /*res1*/, MultiVecId /*res2*/)
+bool GenericConstraintSolver::solveSystem(const core::ConstraintParams * /*cParams*/, MultiVecId /*res1*/, MultiVecId /*res2*/)
 {
     current_cp->tolerance = tolerance.getValue();
     current_cp->maxIterations = maxIt.getValue();

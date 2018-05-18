@@ -54,8 +54,8 @@ using sofa::core::VecCoordId;
 
 GenericConstraintCorrection::GenericConstraintCorrection()
 : d_linearSolversName( initData(&d_linearSolversName, "solverName", "name of the constraint solver") )
-, d_complianceFactor(initData(&d_complianceFactor, 1.0, "complianceFactor", "Factor applied to the position factor and velocity factor used to calculate compliance matrix"))
 , d_ODESolverName( initData(&d_ODESolverName, "ODESolverName", "name of the ode solver") )
+, d_complianceFactor(initData(&d_complianceFactor, 1.0, "complianceFactor", "Factor applied to the position factor and velocity factor used to calculate compliance matrix"))
 {
     m_ODESolver = NULL;
 }
@@ -273,8 +273,8 @@ void GenericConstraintCorrection::computeResidual(const ExecParams* params, defa
 
 void GenericConstraintCorrection::getComplianceMatrix(defaulttype::BaseMatrix* Minv) const
 {
-    if (!m_ODESolver) return;
-    const double complianceFactor = d_complianceFactor.getValue();
+    if (!m_ODESolver)
+        return;
 
     ConstraintParams cparams(*ExecParams::defaultInstance());
     const_cast<GenericConstraintCorrection*>(this)->addComplianceInConstraintSpace(&cparams, Minv);
