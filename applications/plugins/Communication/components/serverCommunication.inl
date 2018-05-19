@@ -127,11 +127,11 @@ bool ServerCommunication::isSubscribedTo(std::string subject, unsigned int argum
         else
         {
             if(isVerbose())
-                msg_warning(this->getName()) << " is subscrided to " << subject << " but datas should be size of " << subscriber->getArgumentSize() << ", received " << argumentSize << '\n';
+                msg_warning(this->getName()) << " is subscribed to " << subject << " but datas should be size of " << subscriber->getArgumentSize() << ", received " << argumentSize << '\n';
         }
     } catch (const std::out_of_range& oor) {
         if(isVerbose())
-            msg_warning(this->getName()) << " is not subscrided to " << subject << '\n';
+            msg_warning(this->getName()) << " is not subscribed to " << subject << '\n';
     }
     return false;
 }
@@ -143,7 +143,7 @@ CommunicationSubscriber * ServerCommunication::getSubscriberFor(std::string subj
         return m_subscriberMap.at(subject);
     } catch (const std::out_of_range& oor) {
         if(isVerbose())
-            msg_warning(this->getClassName()) << " is not subscrided to " << subject << '\n';
+            msg_warning(this->getClassName()) << " is not subscribed to " << subject << '\n';
     }
     return nullptr;
 }

@@ -1,4 +1,4 @@
-#Communication Plugin
+# Communication Plugin
 
 ## Installation
 ### LibOscpack installation
@@ -15,6 +15,9 @@ sudo dpkg -i liboscpack-dev_1.1.0-2_amd64.deb
 #### Windows :
 Compile the library by yourself using this zip file https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/oscpack/oscpack_1_1_0_RC2.zip
 
+#### MacOS :
+Compile the library by yourself using this zip file https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/oscpack/oscpack_1_1_0_RC2.zip
+
 ### ZMQ installation
 Depending of your distribution, the package name can be different.
 
@@ -29,7 +32,12 @@ Fedora :
 sudo dnf install libzmq-devel
 ```
 #### Windows :
-Compile the lib by yourself using this zip file : https://github.com/zeromq/libzmq/releases/download/v4.2.3/zeromq-4.2.3.zip
+Compile the library by yourself using this zip file : https://github.com/zeromq/libzmq/releases/download/v4.2.3/zeromq-4.2.3.zip
+
+#### MacOS :
+Compile the library by yourself using this zip file : https://github.com/zeromq/libzmq/releases/download/v4.2.3/zeromq-4.2.3.zip
+
+> Note : `zmq.hpp` is not created by default while compiling the library. While, building sofa if error occurs like `zmq.hpp not found`, manually paste the file in this location `/usr/local/include`. 
 
 ## How to use the components
 To learn how to create a SOFA scene, please refer to the tutorial provided by the SOFA Modeler or this documentation.
