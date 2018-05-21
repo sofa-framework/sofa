@@ -80,7 +80,7 @@ bool MeshTopologyLoader::addMeshtoTopology()
 
 bool MeshTopologyLoader::loadObj(const char *filename)
 {
-    m_mesh = helper::io::Mesh::Create("obj", filename);
+    m_mesh = helper::io::Mesh::Create(filename);
     if (m_mesh ==NULL)
         return false;
 
@@ -304,83 +304,6 @@ bool MeshTopologyLoader::loadMeshFile(const char *filename)
     }
     file.close();
     return 	fileLoaded;
-}
-
-
-bool MeshTopologyLoader::loadCGAL(const char *filename)
-{
-    bool fileLoaded = false;
-    std::string cmd;
-    std::string line;
-
-    std::ifstream file(filename);
-    if (!file.good())
-        return false;
-
-    msg_info() << "Loading CGAL mesh file " << filename << " ... " ;
-
-    std::getline(file, line);
-
-    if (line == "MeshVersionFormatted 1") // Reading CGAL 3.7 or 3.8 file
-    {
-        int npoints = 0;
-        int ntri = 0;
-        int ntetra = 0;
-
-        std::getline(file, line); // we don't care about this line
-        file >> cmd;
-        if (cmd == "Vertices")
-        {
-            file >> npoints;
-            setNbPoints(npoints);
-            for (int i=0; i<npoints; ++i)
-            {
-                double x,y,z,tmp;
-                file >> x >> y >> z >> tmp;
-                addPoint(x, y, z);
-            }
-        }
-
-        file >> cmd;
-        if (cmd == "Triangles")
-        {
-            file >> ntri;
-            setNbTriangles(ntri);
-            for (int i=0; i<ntri; ++i)
-            {
-                int j,k,l,tmp;
-                file >> j >> k >> l >> tmp;
-                addTriangle(j-1, k-1, l-1);
-            }
-        }
-
-        file >> cmd;
-        if (cmd == "Tetrahedra")
-        {
-            file >> ntetra;
-            setNbTetrahedra(ntetra);
-            for (int i=0; i<ntetra; ++i)
-            {
-                int j,k,l,m, tmp;
-                file >> j >> k >> l >> m >> tmp;
-                addTetra(j-1, k-1, l-1, m-1);
-            }
-        }
-
-        msg_info() << "Loading CGAL topology complete:" << msgendl
-                   << "   " << npoints << " points" << msgendl
-                   << "   " << ntri   << " triangles" << msgendl
-                   << "   " << ntetra << " tetrahedra) ";
-        fileLoaded = true;
-    }
-    else
-    {
-        msg_error() << "Incorrect file format - not recognized as CGAL 'MeshVersionFormatted 1' - (aborting)" ;
-    }
-
-    file.close();
-
-    return fileLoaded;
 }
 
 
@@ -730,8 +653,6 @@ bool MeshTopologyLoader::load(const char *filename)
         fileLoaded = loadStl(fname.c_str());
     else if (strlen(filename)>9 && !strcmp(filename+strlen(filename)-9,".vtk_swap"))
         fileLoaded = loadVtk(fname.c_str());
-    else if (strlen(filename)>5 && !strcmp(filename+strlen(filename)-5,".mesh"))
-        fileLoaded = loadCGAL(fname.c_str());
     else // if extension unknown will check header for Gmsh format 1 or 2, Xsp or mehs file.
         fileLoaded = loadMeshFile(fname.c_str());
 

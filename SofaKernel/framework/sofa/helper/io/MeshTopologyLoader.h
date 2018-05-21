@@ -54,25 +54,26 @@ public:
     virtual void addTetra(int /*p1*/, int /*p2*/, int /*p3*/, int /*p4*/) {}
     virtual void addCube(int /*p1*/, int /*p2*/, int /*p3*/, int /*p4*/, int /*p5*/, int /*p6*/, int /*p7*/, int /*p8*/) {}
 private:
-    // method will create a MeshObj which will parse the file. Then data are loaded into the current topology
+    /// method will create a MeshObj which will parse the file. Then data are loaded into the current topology
     bool loadObj(const char *filename);
 
-    // method will create a MeshGmsh which will parse the file. Then will call @see addMeshtoTopology() to add mesh data into topology
+    /// method will create a MeshGmsh which will parse the file. Then will call @see addMeshtoTopology() to add mesh data into topology
     bool loadGmsh(const char *filename);
 
-    // method will create a MeshSTL which will parse the file. Then will call @see addMeshtoTopology() to add mesh data into topology
+    /// method will create a MeshSTL which will parse the file. Then will call @see addMeshtoTopology() to add mesh data into topology
     bool loadStl(const char *filename);
 
-    // method will create a MeshXsp which will parse the file. Then will call @see addMeshtoTopology() to add mesh data into topology
+    /// method will create a MeshXsp which will parse the file. Then will call @see addMeshtoTopology() to add mesh data into topology
     bool loadXsp(const char *filename);
 
-
+    /// method called when format is not found. Will parse header and dispatch into @see loadGmsh or @see loadXsp or @see loadMesh
     bool loadMeshFile(const char *filename);
+    
+
     bool loadVtk(const char *filename);
         
     
     bool loadMesh(std::ifstream &file);
-    bool loadCGAL(const char *filename);
 
     // will take all data from loaded into @see m_mesh and add it to the current topology using methods api.
     bool addMeshtoTopology();
