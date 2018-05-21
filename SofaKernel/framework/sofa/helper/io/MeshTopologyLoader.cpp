@@ -42,9 +42,45 @@ namespace io
 
 using namespace sofa::defaulttype;
 
+bool MeshTopologyLoader::addMeshtoTopology()
+{
+    if (m_mesh == NULL)
+        return false;
+
+    setNbPoints((int)m_mesh->getVertices().size());
+
+    const sofa::helper::vector<Vector3>& vertices = m_mesh->getVertices();
+    const sofa::helper::vector< Topology::Edge > & edges = m_mesh->getEdges();
+    const sofa::helper::vector< Topology::Triangle > & triangles = m_mesh->getTriangles();
+    const sofa::helper::vector< Topology::Quad > & quads = m_mesh->getQuads();
+    const sofa::helper::vector< Topology::Tetrahedron > & tetra = m_mesh->getTetrahedra();
+    const sofa::helper::vector< Topology::Hexahedron > & hexa = m_mesh->getHexahedra();
+
+    for (int i = 0; i < vertices.size(); ++i)
+        addPoint(vertices[i][0], vertices[i][1], vertices[i][2]);
+
+    for (int i = 0; i < edges.size(); ++i)
+        addLine(edges[i][0], edges[i][1]);
+
+    for (int i = 0; i < triangles.size(); ++i)
+        addTriangle(triangles[i][0], triangles[i][1], triangles[i][2]);
+
+    for (int i = 0; i < quads.size(); ++i)
+        addQuad(quads[i][0], quads[i][1], quads[i][2], quads[i][3]);
+
+    for (int i = 0; i < tetra.size(); ++i)
+        addTetra(tetra[i][0], tetra[i][1], tetra[i][2], tetra[i][3]);
+
+    for (int i = 0; i < hexa.size(); ++i)
+        addCube(hexa[i][0], hexa[i][1], hexa[i][2], hexa[i][3],
+            hexa[i][4], hexa[i][5], hexa[i][6], hexa[i][7]);
+
+    return true;
+}
+
 bool MeshTopologyLoader::loadObj(const char *filename)
 {
-    m_mesh = helper::io::Mesh::Create(filename);
+    m_mesh = helper::io::Mesh::Create("obj", filename);
     if (m_mesh ==NULL)
         return false;
 
@@ -110,65 +146,14 @@ bool MeshTopologyLoader::loadObj(const char *filename)
 
 bool MeshTopologyLoader::loadStl(const char *filename)
 {
-    m_mesh = helper::io::Mesh::Create(filename);
-    if (m_mesh==NULL)
-        return false;
-
-    setNbPoints((int)m_mesh->getVertices().size());
-    const vector< vector < vector <int> > > & facets = m_mesh->getFacets();
-
-    for (size_t i=0; i<m_mesh->getVertices().size(); i++)
-    {
-        addPoint((SReal)m_mesh->getVertices()[i][0],
-                (SReal)m_mesh->getVertices()[i][1],
-                (SReal)m_mesh->getVertices()[i][2]);
-    }
-    for (size_t i=0; i<facets.size(); i++)
-    {
-        const vector<int>& facet = facets[i][0];
-        for (size_t j=2; j<facet.size(); j++)
-            addTriangle(facet[0],facet[j-1],facet[j]);
-    }
-    return true;
-
+    m_mesh = helper::io::Mesh::Create("stl", filename);
+    return addMeshtoTopology();
 }
 
 bool MeshTopologyLoader::loadGmsh(const char *filename)
 {
-    std::cout << "loadGmsh" << std::endl;
-    m_mesh = helper::io::Mesh::Create("gmsh", filename);
-    if (m_mesh == NULL)
-        return false;
-
-    setNbPoints((int)m_mesh->getVertices().size());
-    
-    const sofa::helper::vector<Vector3>& vertices = m_mesh->getVertices();
-    const sofa::helper::vector< Topology::Edge > & edges = m_mesh->getEdges();
-    const sofa::helper::vector< Topology::Triangle > & triangles = m_mesh->getTriangles();
-    const sofa::helper::vector< Topology::Quad > & quads = m_mesh->getQuads();
-    const sofa::helper::vector< Topology::Tetrahedron > & tetra = m_mesh->getTetrahedra();
-    const sofa::helper::vector< Topology::Hexahedron > & hexa = m_mesh->getHexahedra();
-
-    for (int i = 0; i < vertices.size(); ++i)
-        addPoint(vertices[i][0], vertices[i][1], vertices[i][2]);
-
-    for (int i = 0; i < edges.size(); ++i)
-        addLine(edges[i][0], edges[i][1]);
-
-    for (int i = 0; i < triangles.size(); ++i)
-        addTriangle(triangles[i][0], triangles[i][1], triangles[i][2]);
-
-    for (int i = 0; i < quads.size(); ++i)
-        addQuad(quads[i][0], quads[i][1], quads[i][2], quads[i][3]);
-
-    for (int i = 0; i < tetra.size(); ++i)
-        addTetra(tetra[i][0], tetra[i][1], tetra[i][2], tetra[i][3]);
-
-    for (int i = 0; i < hexa.size(); ++i)
-        addCube(hexa[i][0], hexa[i][1], hexa[i][2], hexa[i][3],
-            hexa[i][4], hexa[i][5], hexa[i][6], hexa[i][7]);
-
-    return true;
+    m_mesh = helper::io::Mesh::Create("gmsh", filename);      
+    return addMeshtoTopology();
 }
 
 bool MeshTopologyLoader::loadXsp(std::ifstream &file, bool vector_spring)

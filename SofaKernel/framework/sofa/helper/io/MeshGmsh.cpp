@@ -53,8 +53,6 @@ void MeshGmsh::init (std::string filename)
     }
     loaderType = "gmsh";
 
-    std::cout << "passe bien la: MeshGmsh::init "<< std::endl;
-
     std::ifstream file(filename);
     if (!file.good()) return;
 
@@ -101,7 +99,6 @@ bool MeshGmsh::readGmsh(std::ifstream &file, const unsigned int gmshFormat)
     std::string cmd;
 
     file >> npoints; //nb points
-    //setNbPoints(npoints); 
 
     std::vector<int> pmap;
     for (int i = 0; i<npoints; ++i)
@@ -110,7 +107,6 @@ bool MeshGmsh::readGmsh(std::ifstream &file, const unsigned int gmshFormat)
         double x, y, z;
         file >> index >> x >> y >> z;
         m_vertices.push_back(sofa::defaulttype::Vector3(x, y, z));
-        //addPoint(x, y, z);
         if ((int)pmap.size() <= index) pmap.resize(index + 1);
         pmap[index] = i;
     }
@@ -192,27 +188,22 @@ bool MeshGmsh::readGmsh(std::ifstream &file, const unsigned int gmshFormat)
         switch (etype)
         {
         case 1: // Line
-            //addLine(nodes[0], nodes[1]);
             m_edges.push_back(Topology::Edge(nodes[0], nodes[1]));
             ++nlines;
             break;
         case 2: // Triangle
-            //addTriangle(nodes[0], nodes[1], nodes[2]);
             m_triangles.push_back(Topology::Triangle(nodes[0], nodes[1], nodes[2]));
             ++ntris;
             break;
         case 3: // Quad
-            //addQuad(nodes[0], nodes[1], nodes[2], nodes[3]);
             m_quads.push_back(Topology::Quad(nodes[0], nodes[1], nodes[2], nodes[3]));
             ++nquads;
             break;
         case 4: // Tetra
-            //addTetra(nodes[0], nodes[1], nodes[2], nodes[3]);
             m_tetrahedra.push_back(Topology::Tetrahedron(nodes[0], nodes[1], nodes[2], nodes[3]));
             ++ntetrahedra;
             break;
         case 5: // Hexa
-            //addCube(nodes[0], nodes[1], nodes[2], nodes[3], nodes[4], nodes[5], nodes[6], nodes[7]);
             m_hexahedra.push_back(Topology::Hexahedron(nodes[0], nodes[1], nodes[2], nodes[3], nodes[4], nodes[5], nodes[6], nodes[7]));
             ++ncubes;
             break;

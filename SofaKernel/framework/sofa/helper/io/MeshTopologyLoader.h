@@ -57,17 +57,21 @@ private:
     // method will create a MeshObj which will parse the file. Then data are loaded into the current topology
     bool loadObj(const char *filename);
 
-    // method will create a MeshGmsh which will parse the file. Then data are loaded into the current topology
+    // method will create a MeshGmsh which will parse the file. Then will call @see addMeshtoTopology() to add mesh data into topology
     bool loadGmsh(const char *filename);
 
     bool loadMeshFile(const char *filename);
     bool loadVtk(const char *filename);
+    // method will create a MeshSTL which will parse the file. Then will call @see addMeshtoTopology() to add mesh data into topology
     bool loadStl(const char *filename);
 
     
     bool loadXsp(std::ifstream &file, bool);
     bool loadMesh(std::ifstream &file);
     bool loadCGAL(const char *filename);
+
+    // will take all data from loaded into @see m_mesh and add it to the current topology using methods api.
+    bool addMeshtoTopology();
 
 private:
     helper::io::Mesh* m_mesh;
