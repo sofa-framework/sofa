@@ -73,15 +73,15 @@ void MeshTrian::readTrian (FILE* file)
     if (fscanf(file, "%d\n", &nbp) == EOF)
         msg_error() << "fscanf function has encountered an error." ;
 
-    vertices.resize(nbp);
+    m_vertices.resize(nbp);
     Vec3d fromFile;
     for (int p=0; p<nbp; p++)
     {
         if (fscanf(file, "%lf %lf %lf\n", &fromFile[0], &fromFile[1], &fromFile[2]) == EOF)
             msg_error() << "fscanf function has encountered an error." ;
-        vertices[p][0] = (SReal)fromFile[0];
-        vertices[p][1] = (SReal)fromFile[1];
-        vertices[p][2] = (SReal)fromFile[2];
+        m_vertices[p][0] = (SReal)fromFile[0];
+        m_vertices[p][1] = (SReal)fromFile[1];
+        m_vertices[p][2] = (SReal)fromFile[2];
     }
 
     int nbf=0;
@@ -100,14 +100,14 @@ void MeshTrian::readTrian (FILE* file)
             msg_error() << "fscanf function has encountered an error." ;
     }
 
-    if (vertices.size()>0)
+    if (m_vertices.size()>0)
     {
         // compute bbox
-        Vector3 minBB = vertices[0];
-        Vector3 maxBB = vertices[0];
-        for (unsigned int i=1; i<vertices.size(); i++)
+        Vector3 minBB = m_vertices[0];
+        Vector3 maxBB = m_vertices[0];
+        for (unsigned int i=1; i<m_vertices.size(); i++)
         {
-            Vector3 p = vertices[i];
+            Vector3 p = m_vertices[i];
             for (int c=0; c<3; c++)
             {
                 if (minBB[c] > p[c])

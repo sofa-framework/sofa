@@ -87,7 +87,7 @@ void MeshOBJ::readOBJ (std::istream &stream, const std::string &filename)
         {
             /* vertex */
             values >> result[0] >> result[1] >> result[2];
-            vertices.push_back(result);
+            m_vertices.push_back(result);
         }
         else if (token == "vn")
         {
@@ -196,14 +196,14 @@ void MeshOBJ::readOBJ (std::istream &stream, const std::string &filename)
     curGroup.nbp = nbf - curGroup.p0;
     if (curGroup.nbp > 0) groups.push_back(curGroup);
 
-    if (vertices.size()>0)
+    if (m_vertices.size()>0)
     {
         // compute bbox
-        Vector3 minBB = vertices[0];
-        Vector3 maxBB = vertices[0];
-        for (unsigned int i=1; i<vertices.size(); ++i)
+        Vector3 minBB = m_vertices[0];
+        Vector3 maxBB = m_vertices[0];
+        for (unsigned int i=1; i<m_vertices.size(); ++i)
         {
-            Vector3 p = vertices[i];
+            Vector3 p = m_vertices[i];
             for (int c=0; c<3; ++c)
             {
                 if (minBB[c] > p[c])

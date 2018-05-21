@@ -84,19 +84,19 @@ void MeshSTL::init (std::string filename)
     }
 
     // announce the model statistics
-    dmsg_info_when(EMIT_DEBUG_MESSAGE) << " Vertices: " << vertices.size() << msgendl
+    dmsg_info_when(EMIT_DEBUG_MESSAGE) << " Vertices: " << m_vertices.size() << msgendl
                                        << " Normals: " << normals.size() << msgendl
                                        << " Texcoords: " << texCoords.size() << msgendl
                                        << " Triangles: " << facets.size() ;
 
-    if (vertices.size()>0)
+    if (m_vertices.size()>0)
     {
         // compute bbox
-        Vector3 minBB = vertices[0];
-        Vector3 maxBB = vertices[0];
-        for (unsigned int i=1; i<vertices.size(); i++)
+        Vector3 minBB = m_vertices[0];
+        Vector3 maxBB = m_vertices[0];
+        for (unsigned int i=1; i<m_vertices.size(); i++)
         {
-            Vector3 p = vertices[i];
+            Vector3 p = m_vertices[i];
             for (int c=0; c<3; c++)
             {
                 if (minBB[c] > p[c])
@@ -152,7 +152,7 @@ void MeshSTL::readSTL(std::ifstream &file)
             {
                 vertNormTexIndices[0][vertexCounter++] = positionCounter;
                 map[result] = positionCounter++;
-                vertices.push_back(result);
+                m_vertices.push_back(result);
             }
             else
             {
@@ -246,7 +246,7 @@ void MeshSTL::readBinarySTL (const std::string &filename)
             {
                 facet[0][j] = positionCounter;
                 map[result] = positionCounter++;
-                vertices.push_back(result);
+                m_vertices.push_back(result);
             }
             else
             {

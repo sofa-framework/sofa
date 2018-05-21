@@ -27,6 +27,7 @@
 #include <sofa/helper/Factory.h>
 #include <sofa/core/loader/PrimitiveGroup.h>
 #include <sofa/core/loader/Material.h>
+#include <sofa/core/topology/Topology.h>
 
 namespace sofa
 {
@@ -36,7 +37,7 @@ namespace helper
 
 namespace io
 {
-
+    using namespace sofa::core::topology;
 
 class SOFA_HELPER_API Mesh
 {    
@@ -49,8 +50,24 @@ public:
     typedef sofa::core::loader::PrimitiveGroup PrimitiveGroup;
     typedef sofa::core::loader::Material Material;
 
-    sofa::helper::vector<Vector3> & getVertices() { return vertices; }
-    const sofa::helper::vector<Vector3> & getVertices() const { return vertices; }
+    sofa::helper::vector<Vector3> & getVertices() { return m_vertices; }
+    const sofa::helper::vector<Vector3> & getVertices() const { return m_vertices; }
+
+    sofa::helper::vector< Topology::Edge > & getEdges() { return m_edges; }
+    const sofa::helper::vector< Topology::Edge > & getEdges() const { return m_edges; }
+
+    sofa::helper::vector< Topology::Triangle > & getTriangles() { return m_triangles; }
+    const sofa::helper::vector< Topology::Triangle > & getTriangles() const { return m_triangles; }
+
+    sofa::helper::vector< Topology::Quad > & getQuads() { return m_quads; }
+    const sofa::helper::vector< Topology::Quad > & getQuads() const { return m_quads; }
+
+    sofa::helper::vector< Topology::Tetrahedron > & getTetrahedra() { return m_tetrahedra; }
+    const sofa::helper::vector< Topology::Tetrahedron > & getTetrahedra() const { return m_tetrahedra; }
+
+    sofa::helper::vector< Topology::Hexahedron > & getHexahedra() { return m_hexahedra; }
+    const sofa::helper::vector< Topology::Hexahedron > & getHexahedra() const { return m_hexahedra; }
+
     sofa::helper::vector<Vector3> & getTexCoords() { return texCoords; }
     const sofa::helper::vector<Vector3> & getTexCoords() const { return texCoords; }
     sofa::helper::vector<Vector3> & getNormals() { return normals; }
@@ -79,7 +96,16 @@ public:
     
 protected:
 
-    sofa::helper::vector<Vector3> vertices;
+    sofa::helper::vector<Vector3> m_vertices;
+    sofa::helper::vector< Topology::Edge > m_edges;
+    sofa::helper::vector< Topology::Triangle > m_triangles;
+
+    sofa::helper::vector< Topology::Quad > m_quads;
+    sofa::helper::vector< Topology::Tetrahedron > m_tetrahedra;
+    sofa::helper::vector< Topology::Hexahedron > m_hexahedra;
+    
+
+
     sofa::helper::vector<Vector3> texCoords; // for the moment, we suppose that texCoords is order 2 (2 texCoords for a vertex)
     sofa::helper::vector<Vector3> normals;
     sofa::helper::vector< sofa::helper::vector < sofa::helper::vector <int> > > facets;

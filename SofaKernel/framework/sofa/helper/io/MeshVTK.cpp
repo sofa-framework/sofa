@@ -81,7 +81,7 @@ void MeshVTK::readVTU(const std::string &filename)
     for (std::size_t i = 0 ; i < nbPoints ; ++i)
     {
         pointsDataArray >> vertex[0] >> vertex[1] >> vertex[2];
-        vertices.push_back(vertex);
+        m_vertices.push_back(vertex);
     }
 
 
