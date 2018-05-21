@@ -114,6 +114,7 @@ void MeshVTK::readVTU(const std::string &filename)
             vertNormTexIndices.push_back (nIndices);
             vertNormTexIndices.push_back (tIndices);
             facets.push_back(vertNormTexIndices);
+            m_triangles.push_back(Topology::Triangle(vIndices[0], vIndices[1], vIndices[2]));
             break;
         case 9: // quad
             // split quad into two triangles
@@ -125,6 +126,8 @@ void MeshVTK::readVTU(const std::string &filename)
             vertNormTexIndices.push_back (nIndices);
             vertNormTexIndices.push_back (tIndices);
             facets.push_back(vertNormTexIndices);
+            m_triangles.push_back(Topology::Triangle(vIndices[0], vIndices[1], vIndices[2]));
+
             // triangle #2
             vIndices[0]=quad[0];vIndices[1]=quad[2];vIndices[2]=quad[3];
             vertNormTexIndices.clear();
@@ -132,6 +135,8 @@ void MeshVTK::readVTU(const std::string &filename)
             vertNormTexIndices.push_back (nIndices);
             vertNormTexIndices.push_back (tIndices);
             facets.push_back(vertNormTexIndices);
+            m_triangles.push_back(Topology::Triangle(vIndices[0], vIndices[1], vIndices[2]));
+
             break;
         default:
             msg_error() << "In '" << filename << "' - Unsupported cell type: " << cellType ;
