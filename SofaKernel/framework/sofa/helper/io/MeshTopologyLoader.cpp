@@ -156,83 +156,10 @@ bool MeshTopologyLoader::loadGmsh(const char *filename)
     return addMeshtoTopology();
 }
 
-bool MeshTopologyLoader::loadXsp(std::ifstream &file, bool vector_spring)
+bool MeshTopologyLoader::loadXsp(const char *filename)
 {
-    std::string cmd;
-    file >> cmd;
-
-    // then find out number of masses and springs
-    if (cmd == "numm")
-    {
-        int totalNumMasses;
-        file >> totalNumMasses;
-        setNbPoints(totalNumMasses);
-    }
-
-    if (cmd=="nums")
-    {
-        int totalNumSprings;
-        file >> totalNumSprings;
-        setNbLines(totalNumSprings);
-    }
-
-
-    while (!file.eof())
-    {
-        file  >> cmd;
-        if (cmd=="mass")
-        {
-            int index;
-            char location;
-            double px,py,pz,vx,vy,vz,mass=0.0,elastic=0.0;
-            file >> index >> location >> px >> py >> pz >> vx >> vy >> vz >> mass >> elastic;
-            addPoint(px,py,pz);
-        }
-        else if (cmd=="lspg")	// linear springs connector
-        {
-            int	index;
-            int m1,m2;
-            double ks=0.0,kd=0.0,initpos=-1;
-
-            if (vector_spring)
-            {
-                double restx=0.0,resty=0.0,restz=0.0;
-                file >> index >> m1 >> m2 >> ks >> kd >> initpos >> restx >> resty >> restz;
-            }
-            else
-                file >> index >> m1 >> m2 >> ks >> kd >> initpos;
-            --m1;
-            --m2;
-
-            addLine(m1,m2);
-        }
-        else if (cmd == "grav")
-        {
-            double gx,gy,gz;
-            file >> gx >> gy >> gz;
-        }
-        else if (cmd == "visc")
-        {
-            double viscosity;
-            file >> viscosity;
-        }
-        else if (cmd == "step")
-        {
-        }
-        else if (cmd == "frce")
-        {
-        }
-        else if (cmd[0] == '#')	// it's a comment
-        {
-        }
-        else		// it's an unknown keyword
-        {
-            msg_error() << "Unknown MassSpring keyword:" ;
-            return false;
-        }
-    }
-
-    return true;
+    m_mesh = helper::io::Mesh::Create("xsp", filename);
+    return addMeshtoTopology();
 }
 
 bool MeshTopologyLoader::loadMesh(std::ifstream &file)
@@ -359,40 +286,15 @@ bool MeshTopologyLoader::loadMeshFile(const char *filename)
 
     if (cmd == "$MeshFormat") // Reading gmsh 2.0 file
     {
-        gmshFormat = 2;
-        std::string line;
-        std::getline(file, line); // we don't care about this line
-        if (line=="") std::getline(file, line);
-        file >> cmd;
-        if (cmd != "$EndMeshFormat") // it should end with $EndMeshFormat
-        {
-            file.close();
-            return false;
-        }
-        else
-        {
-            file >> cmd;
-        }
+        fileLoaded = loadGmsh(filename);
     }
-    else
-    {
-        gmshFormat = 1;
-    }
-
-
-    if (cmd == "$NOD" || cmd == "$Nodes") // Gmsh format
+    else if (cmd == "$NOD" || cmd == "$Nodes") // Gmsh format
     {
         fileLoaded = loadGmsh(filename);
     }
     else if (cmd == "Xsp")
     {
-        float version = 0.0f;
-        file >> version;
-
-        if (version == 3.0)
-            fileLoaded = loadXsp(file, false);
-        else if (version == 4.0)
-            fileLoaded = loadXsp(file, true);
+        fileLoaded = loadXsp(filename);
     }
     else
     {

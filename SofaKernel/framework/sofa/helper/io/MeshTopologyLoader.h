@@ -60,13 +60,17 @@ private:
     // method will create a MeshGmsh which will parse the file. Then will call @see addMeshtoTopology() to add mesh data into topology
     bool loadGmsh(const char *filename);
 
-    bool loadMeshFile(const char *filename);
-    bool loadVtk(const char *filename);
     // method will create a MeshSTL which will parse the file. Then will call @see addMeshtoTopology() to add mesh data into topology
     bool loadStl(const char *filename);
 
+    // method will create a MeshXsp which will parse the file. Then will call @see addMeshtoTopology() to add mesh data into topology
+    bool loadXsp(const char *filename);
+
+
+    bool loadMeshFile(const char *filename);
+    bool loadVtk(const char *filename);
+        
     
-    bool loadXsp(std::ifstream &file, bool);
     bool loadMesh(std::ifstream &file);
     bool loadCGAL(const char *filename);
 
