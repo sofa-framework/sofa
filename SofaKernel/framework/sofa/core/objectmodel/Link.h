@@ -30,6 +30,7 @@
 #include <sofa/helper/stable_vector.h>
 
 #include <sstream>
+#include <utility>
 #include <vector>
 
 namespace sofa
