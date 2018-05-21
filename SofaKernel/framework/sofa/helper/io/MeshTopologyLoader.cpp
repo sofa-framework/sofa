@@ -164,6 +164,8 @@ bool MeshTopologyLoader::loadXsp(const char *filename)
 
 bool MeshTopologyLoader::loadMesh(std::ifstream &file)
 {
+    return false;
+
     std::string cmd;
     int npoints = 0;
     int nlines = 0;
@@ -300,6 +302,7 @@ bool MeshTopologyLoader::loadMeshFile(const char *filename)
     {
         //Reset the stream to the beginning.
         file.seekg(0, std::ios::beg);
+        msg_error() << "This file format: " << filename << " will not be supported anymore in sofa release 18.06.";
         fileLoaded = loadMesh(file);
     }
     file.close();
