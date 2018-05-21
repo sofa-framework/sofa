@@ -28,8 +28,9 @@
 
 #include <sofa/core/objectmodel/BaseLink.h>
 #include <sofa/helper/stable_vector.h>
-#include <sstream>
 
+#include <sstream>
+#include <vector>
 
 namespace sofa
 {
