@@ -133,140 +133,40 @@ bool MeshTopologyLoader::loadStl(const char *filename)
 
 }
 
-bool MeshTopologyLoader::loadGmsh(std::ifstream &file, const int gmshFormat)
+bool MeshTopologyLoader::loadGmsh(const char *filename)
 {
-    int npoints = 0;
-    int nlines = 0;
-    int ntris = 0;
-    int nquads = 0;
-    int ntetrahedra = 0;
-    int ncubes = 0;
-
-    std::string cmd;
-
-    file >> npoints; //nb points
-    setNbPoints(npoints);
-
-    std::vector<int> pmap;
-    for (int i=0; i<npoints; ++i)
-    {
-        int index = i;
-        double x,y,z;
-        file >> index >> x >> y >> z;
-        addPoint(x, y, z);
-        if ((int)pmap.size() <= index) pmap.resize(index+1);
-        pmap[index] = i;
-    }
-
-    file >> cmd;
-    if (cmd != "$ENDNOD" && cmd != "$EndNodes")
-    {
-        msg_error() << "'$ENDNOD' or '$EndNodes' expected, found '" << cmd << "'" ;
+    std::cout << "loadGmsh" << std::endl;
+    m_mesh = helper::io::Mesh::Create("gmsh", filename);
+    if (m_mesh == NULL)
         return false;
-    }
 
-    file >> cmd;
-    if (cmd != "$ELM" && cmd != "$Elements")
-    {
-        msg_error() << "'$ELM' or '$Elements' expected, found '" << cmd << "'" ;
-        return false;
-    }
+    setNbPoints((int)m_mesh->getVertices().size());
+    
+    const sofa::helper::vector<Vector3>& vertices = m_mesh->getVertices();
+    const sofa::helper::vector< Topology::Edge > & edges = m_mesh->getEdges();
+    const sofa::helper::vector< Topology::Triangle > & triangles = m_mesh->getTriangles();
+    const sofa::helper::vector< Topology::Quad > & quads = m_mesh->getQuads();
+    const sofa::helper::vector< Topology::Tetrahedron > & tetra = m_mesh->getTetrahedra();
+    const sofa::helper::vector< Topology::Hexahedron > & hexa = m_mesh->getHexahedra();
 
+    for (int i = 0; i < vertices.size(); ++i)
+        addPoint(vertices[i][0], vertices[i][1], vertices[i][2]);
 
+    for (int i = 0; i < edges.size(); ++i)
+        addLine(edges[i][0], edges[i][1]);
 
-    int nelems = 0;
-    file >> nelems;
-    for (int i=0; i<nelems; ++i)
-    {
-        int index=-1, etype=-1, nnodes=-1, ntags=-1, tag=-1;
-        if (gmshFormat==1)
-        {
-            // version 1.0 format is
-            // elm-number elm-type reg-phys reg-elem number-of-nodes <node-number-list ...>
-            int rphys=-1, relem=-1;
-            file >> index >> etype >> rphys >> relem >> nnodes;
-        }
-        else if (gmshFormat == 2)
-        {
-            // version 2.0 format is
-            // elm-number elm-type number-of-tags < tag > ... node-number-list
-            file >> index >> etype >> ntags;
+    for (int i = 0; i < triangles.size(); ++i)
+        addTriangle(triangles[i][0], triangles[i][1], triangles[i][2]);
 
-            for (int t=0; t<ntags; t++)
-            {
-                file >> tag;
-                // read the tag but don't use it
-            }
+    for (int i = 0; i < quads.size(); ++i)
+        addQuad(quads[i][0], quads[i][1], quads[i][2], quads[i][3]);
 
-            switch (etype)
-            {
-            case 1: // Line
-                nnodes = 2;
-                break;
-            case 2: // Triangle
-                nnodes = 3;
-                break;
-            case 3: // Quad
-                nnodes = 4;
-                break;
-            case 4: // Tetra
-                nnodes = 4;
-                break;
-            case 5: // Hexa
-                nnodes = 8;
-                break;
-            case 15: // Point
-                nnodes = 1;
-                break;
-            default:
-                msg_error() << "Elements of type 1, 2, 3, 4, 5, or 6 expected. Element of type " << etype << " found." ;
-                nnodes = 0;
-            }
-        }
+    for (int i = 0; i < tetra.size(); ++i)
+        addTetra(tetra[i][0], tetra[i][1], tetra[i][2], tetra[i][3]);
 
-        helper::vector<int> nodes;
-        nodes.resize(nnodes);
-        for (int n=0; n<nnodes; ++n)
-        {
-            int t = 0;
-            file >> t;
-            nodes[n] = (((unsigned int)t)<pmap.size())?pmap[t]:0;
-        }
-        switch (etype)
-        {
-        case 1: // Line
-            addLine(nodes[0], nodes[1]);
-            ++nlines;
-            break;
-        case 2: // Triangle
-            addTriangle(nodes[0], nodes[1], nodes[2]);
-            ++ntris;
-            break;
-        case 3: // Quad
-            addQuad(nodes[0], nodes[1], nodes[2], nodes[3]);
-            ++nquads;
-            break;
-        case 4: // Tetra
-            addTetra(nodes[0], nodes[1], nodes[2], nodes[3]);
-            ++ntetrahedra;
-            break;
-        case 5: // Hexa
-            addCube(nodes[0], nodes[1], nodes[2], nodes[3],nodes[4], nodes[5], nodes[6], nodes[7]);
-            ++ncubes;
-            break;
-        default:
-            //if the type is not handled, skip rest of the line
-            std::string tmp;
-            std::getline(file, tmp);
-        }
-    }
-
-    file >> cmd;
-    if (cmd != "$ENDELM" && cmd!="$EndElements")
-    {
-        msg_error() << "'$ENDELM' or '$EndElements' expected, found '" << cmd << "'" ;
-        return false;
-    }
+    for (int i = 0; i < hexa.size(); ++i)
+        addCube(hexa[i][0], hexa[i][1], hexa[i][2], hexa[i][3],
+            hexa[i][4], hexa[i][5], hexa[i][6], hexa[i][7]);
 
     return true;
 }
@@ -497,7 +397,7 @@ bool MeshTopologyLoader::loadMeshFile(const char *filename)
 
     if (cmd == "$NOD" || cmd == "$Nodes") // Gmsh format
     {
-        fileLoaded = loadGmsh(file, gmshFormat);
+        fileLoaded = loadGmsh(filename);
     }
     else if (cmd == "Xsp")
     {
@@ -933,6 +833,7 @@ bool MeshTopologyLoader::load(const char *filename)
 
     bool fileLoaded;
 
+    // check the extension of the filename
     if ((strlen(filename)>4 && !strcmp(filename+strlen(filename)-4,".obj"))
         || (strlen(filename)>6 && !strcmp(filename+strlen(filename)-6,".trian")))
         fileLoaded = loadObj(fname.c_str());
@@ -944,7 +845,7 @@ bool MeshTopologyLoader::load(const char *filename)
         fileLoaded = loadVtk(fname.c_str());
     else if (strlen(filename)>5 && !strcmp(filename+strlen(filename)-5,".mesh"))
         fileLoaded = loadCGAL(fname.c_str());
-    else
+    else // if extension unknown will check header for Gmsh format 1 or 2, Xsp or mehs file.
         fileLoaded = loadMeshFile(fname.c_str());
 
     if(!fileLoaded)

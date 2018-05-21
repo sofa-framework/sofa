@@ -19,9 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
+#ifndef SOFA_HELPER_IO_MESHGMSH_H
+#define SOFA_HELPER_IO_MESHGMSH_H
+
 #include <sofa/helper/io/Mesh.h>
-#include <sofa/helper/Factory.inl>
+#include <istream>
 
 namespace sofa
 {
@@ -29,29 +31,25 @@ namespace sofa
 namespace helper
 {
 
-template class Factory<std::string, io::Mesh, std::string>;
-
 namespace io
 {
 
-SOFA_LINK_CLASS(MeshOBJ)
-SOFA_LINK_CLASS(MeshGmsh)
-SOFA_LINK_CLASS(MeshTrian)
-SOFA_LINK_CLASS(MeshSTL)
-
-Mesh* Mesh::Create(const std::string& filename)
+class SOFA_HELPER_API MeshGmsh : public Mesh
 {
-    std::string loader="default";
-    std::string::size_type p = filename.rfind('.');
-    if (p!=std::string::npos)
-        loader = std::string(filename, p+1);
-    return FactoryMesh::CreateObject(loader, filename);
-}
+public:
 
-Mesh* Mesh::Create(const std::string& loader, const std::string& filename)
-{
-    return FactoryMesh::CreateObject(loader, filename);
-}
+    MeshGmsh(const std::string& filename)
+    {
+        init (filename);
+    }
+
+    void init (std::string filename);
+
+protected:
+
+    bool readGmsh(std::ifstream &file, const unsigned int gmshFormat);
+
+};
 
 } // namespace io
 
@@ -59,3 +57,4 @@ Mesh* Mesh::Create(const std::string& loader, const std::string& filename)
 
 } // namespace sofa
 
+#endif // SOFA_HELPER_IO_MESHGMSH_H
