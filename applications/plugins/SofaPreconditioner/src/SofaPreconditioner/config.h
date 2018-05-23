@@ -19,22 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_PRECONDITIONER_INIT_H
-#define SOFA_COMPONENT_PRECONDITIONER_INIT_H
-#include "config.h"
+#ifndef SOFAPRECONDITIONER_CONFIG_H
+#define SOFAPRECONDITIONER_CONFIG_H
 
-namespace sofa
-{
+#include <sofa/config/sharedlibrary_defines.h>
 
-namespace component
-{
-
-
-void SOFA_PRECONDITIONER_API initPreconditioner();
-
-} // namespace component
-
-} // namespace sofa
-
+#ifdef SOFA_BUILD_PRECONDITIONER
+#  define SOFA_TARGET SofaPreconditioner
+#  define SOFA_PRECONDITIONER_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_PRECONDITIONER_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
+#endif
