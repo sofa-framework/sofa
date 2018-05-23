@@ -92,6 +92,8 @@ void ExtrudeSurface<DataTypes>::update()
     helper::vector<BaseMeshTopology::Triangle>* extrusionTriangles = f_extrusionTriangles.beginWriteOnly();
     extrusionTriangles->clear();
 
+    helper::vector<BaseMeshTopology::TriangleID>::const_iterator itTriangles;
+
     std::map<int, int> pointMatching;
     std::map<BaseMeshTopology::Edge, bool > edgesOnBorder;
     std::set<int> pointsUsed;
