@@ -19,9 +19,32 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFASPARSESOLVER_CONFIG_H
-#define SOFASPARSESOLVER_CONFIG_H
+// Author: Hadrien Courtecuisse
+//
+// Copyright: See COPYING file that comes with this distribution
+#include <SofaSparseSolver/PrecomputedLinearSolver.inl>
 
-#include <SofaGeneral/config.h>
+namespace sofa
+{
 
-#endif
+namespace component
+{
+
+namespace linearsolver
+{
+
+using namespace sofa::component::odesolver;
+using namespace sofa::component::linearsolver;
+
+SOFA_DECL_CLASS(PrecomputedLinearSolver)
+
+int PrecomputedLinearSolverClass = core::RegisterObject("Linear system solver based on a precomputed inverse matrix")
+        .add< PrecomputedLinearSolver< CompressedRowSparseMatrix<double> , FullVector<double> > >()
+        ;
+
+} // namespace linearsolver
+
+} // namespace component
+
+} // namespace sofa
+
