@@ -1,0 +1,13 @@
+cmake_minimum_required(VERSION 2.8.2)
+
+include(ExternalProject)
+ExternalProject_Add(SofaHighOrder
+    GIT_REPOSITORY https://github.com/sofa-framework/plugin.HighOrder
+    GIT_TAG origin/master
+    SOURCE_DIR "${CMAKE_SOURCE_DIR}/applications/plugins/SofaHighOrder"
+    BINARY_DIR ""
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND ""
+    INSTALL_COMMAND ""
+    TEST_COMMAND ""
+)
