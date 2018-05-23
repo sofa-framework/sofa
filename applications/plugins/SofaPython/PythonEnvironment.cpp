@@ -364,12 +364,9 @@ helper::logging::FileInfo::SPtr PythonEnvironment::getPythonCallingPointAsFileIn
     return SOFA_FILE_INFO_COPIED_FROM("undefined", -1);
 }
 
-bool PythonEnvironment::runFile(const char *filename, const std::vector<std::string>& arguments) {
-    const gil lock(__func__);
-    const std::string dir = sofa::helper::system::SetDirectory::GetParentDir(filename);
-
-    // pro-tip: FileNameWithoutExtension == basename
-    const std::string basename = sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(filename);
+void PythonEnvironment::setArguments(const std::string& filename, const std::vector<std::string>& arguments)
+{
+    const std::string basename = sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(filename.c_str());
 
     PythonEnvironmentData* data = getStaticData() ;
     data->reset() ;
@@ -381,13 +378,20 @@ bool PythonEnvironment::runFile(const char *filename, const std::vector<std::str
         }
     }
 
-    /// The specification state that the program name should be a 'persistant' memory address
-    Py_SetProgramName( data->getDataAt(0) );
     PySys_SetArgvEx( data->size(), data->getDataBuffer(), 0);
+}
 
+bool PythonEnvironment::runFile(const std::string& filename, const std::vector<std::string>& arguments) {
+    const gil lock(__func__);
+    const std::string dir = sofa::helper::system::SetDirectory::GetParentDir(filename.c_str());
+
+    const std::string basename = sofa::helper::system::SetDirectory::GetFileNameWithoutExtension(filename.c_str());
 
     // Load the scene script
-    PyObject* script = PyFile_FromString((char*)filename, (char*)("r"));
+    PyObject* script = PyFile_FromString((char*)filename.c_str(), (char*)("r"));
+
+    if(!arguments.empty())
+        setArguments(filename, arguments);
 
     if( !script ) {
         SP_MESSAGE_ERROR("cannot open file:" << filename)
@@ -403,12 +407,12 @@ bool PythonEnvironment::runFile(const char *filename, const std::vector<std::str
 
     // temporarily set __main__.__file__ = filename during file loading
     {
-        PyObject* __tmpfile__ = PyString_FromString(filename);
+        PyObject* __tmpfile__ = PyString_FromString(filename.c_str());
         PyDict_SetItemString(__main__, "__file__", __tmpfile__);
         Py_XDECREF(__tmpfile__);
     }
 
-    const int error = PyRun_SimpleFileEx(PyFile_AsFile(script), filename, 0);
+    const int error = PyRun_SimpleFileEx(PyFile_AsFile(script), filename.c_str(), 0);
 
     // don't wait for gc to close the file
     PyObject_CallMethod(script, (char*) "close", NULL);

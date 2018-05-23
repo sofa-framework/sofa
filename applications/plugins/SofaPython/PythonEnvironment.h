@@ -59,10 +59,13 @@ public:
     /// add module to python context, Init() must have been called before
     static void addModule(const std::string& name, PyMethodDef* methodDef);
 
+    /// set the content of sys.argv.
+    static void         setArguments(const std::string& filename, const std::vector<std::string>& arguments=std::vector<std::string>(0));
+
     /// basic script functions
     static std::string  getError();
     static bool         runString(const std::string& script);
-    static bool         runFile( const char *filename, const std::vector<std::string>& arguments=std::vector<std::string>(0) );
+    static bool         runFile(const std::string& filename, const std::vector<std::string>& arguments=std::vector<std::string>(0) );
 
     /// returns the file information associated with the current frame.
     static std::string getStackAsString() ;
