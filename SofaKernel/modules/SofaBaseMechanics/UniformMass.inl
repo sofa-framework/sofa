@@ -150,6 +150,13 @@ void UniformMass<DataTypes, MassType>::setTotalMass ( SReal m )
 template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::init()
 {
+    initDefaultImpl();
+}
+
+
+template <class DataTypes, class MassType>
+void UniformMass<DataTypes, MassType>::initDefaultImpl()
+{
     Mass<DataTypes>::init();
 
     m_dataTrackerVertex.trackData(d_vertexMass);
@@ -158,7 +165,8 @@ void UniformMass<DataTypes, MassType>::init()
     WriteAccessor<Data<vector<int> > > indices = d_indices;
     m_doesTopoChangeAffect = false;
 
-    if(mstate==NULL){
+    if(mstate==NULL)
+    {
         msg_warning(this) << "Missing mechanical state. \n"
                              "UniformMass need to be used with an object also having a MechanicalState. \n"
                              "To remove this warning: add a <MechanicalObject/> to the parent node of the one \n"
@@ -166,7 +174,8 @@ void UniformMass<DataTypes, MassType>::init()
         return;
     }
 
-    if ( d_filenameMass.isSet() && d_filenameMass.getValue() != "unused" ){
+    if ( d_filenameMass.isSet() && d_filenameMass.getValue() != "unused" )
+    {
         loadRigidMass(d_filenameMass.getFullPath()) ;
     }
 
@@ -227,9 +236,10 @@ void UniformMass<DataTypes, MassType>::init()
         initFromTotalMass();
     }
 
-    //Info post-reinit
+    //Info post-init
     msg_info() << "totalMass  = " << d_totalMass.getValue() << " \n"
-                  "vertexMass = " << d_vertexMass.getValue();}
+                  "vertexMass = " << d_vertexMass.getValue();
+}
 
 
 template <class DataTypes, class MassType>

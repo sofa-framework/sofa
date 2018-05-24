@@ -119,6 +119,7 @@ public:
 
     void reinit() override;
     void init() override;
+    void initDefaultImpl() ;
     void update();
     virtual void handleEvent(sofa::core::objectmodel::Event */*event*/) override;
 
@@ -159,11 +160,6 @@ public:
     void draw(const core::visual::VisualParams* vparams) override;
 
 private:
-    template<class T>
-    void reinitDefaultImpl() ;
-
-    template<class T>
-    void reinitRigidImpl() ;
 
     template<class T>
     void drawRigid3DImpl(const core::visual::VisualParams* vparams) ;
@@ -203,7 +199,7 @@ private:
 //Specialization for rigids
 #ifdef SOFA_WITH_DOUBLE
 template <>
-void UniformMass<defaulttype::Rigid3dTypes, defaulttype::Rigid3dMass>::reinit();
+void UniformMass<defaulttype::Rigid3dTypes, defaulttype::Rigid3dMass>::init();
 template <>
 void UniformMass<defaulttype::Rigid3dTypes, defaulttype::Rigid3dMass>::loadRigidMass ( const std::string&  );
 template <>
@@ -219,7 +215,7 @@ void UniformMass<defaulttype::Vec6dTypes,double>::draw(const core::visual::Visua
 #endif
 #ifdef SOFA_WITH_FLOAT
 template<>
-void UniformMass<defaulttype::Rigid3fTypes, defaulttype::Rigid3fMass>::reinit();
+void UniformMass<defaulttype::Rigid3fTypes, defaulttype::Rigid3fMass>::init();
 template<>
 void UniformMass<defaulttype::Rigid3fTypes, defaulttype::Rigid3fMass>::loadRigidMass ( const std::string& );
 template <>
