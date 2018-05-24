@@ -738,6 +738,16 @@ sofa::simulation::Node* RealGUI::currentSimulation()
 
 void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
 {
+    std::vector<std::string> expandedNodes;
+
+    if(reload)
+    {
+        saveView();
+
+        if(simulationGraph)
+            simulationGraph->getExpandedNodes(expandedNodes) ;
+    }
+
     const std::string &extension=SetDirectory::GetExtension(filename.c_str());
     if (extension == "simu")
     {
@@ -776,6 +786,11 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
     this->setWindowFilePath(filename.c_str());
     setExportGnuplot(exportGnuplotFilesCheckbox->isChecked());
     stopDumpVisitor();
+
+    if(!expandedNodes.empty())
+    {
+        simulationGraph->expandPathFrom(expandedNodes);
+    }
 
     /// We want to warn user that there is component that are implemented in specific plugin
     /// and that there is no RequiredPlugin in their scene.
@@ -944,6 +959,8 @@ void RealGUI::setSceneWithoutMonitor (Node::SPtr root, const char* filename, boo
         startButton->setChecked(root->getContext()->getAnimate() );
         dtEdit->setText ( QString::number ( root->getDt() ) );
         simulationGraph->Clear(root.get());
+        simulationGraph->collapseAll();
+        simulationGraph->expandToDepth(0);
         statWidget->CreateStats(root.get());
 
 #ifndef SOFA_GUI_QT_NO_RECORDER

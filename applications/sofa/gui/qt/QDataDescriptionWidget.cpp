@@ -41,11 +41,16 @@ void QDataDescriptionWidget::addRow(QGridLayout* grid, const std::string& title,
                                     const std::string& value, unsigned int row,
                                     unsigned int /*minimumWidth*/)
 {
-    QLabel* tmplabel;
-    grid->addWidget(new QLabel(QString(title.c_str())), row, 0);
-    tmplabel = (new QLabel(QString(value.c_str())));
+    QLabel* titlew = new QLabel(QString(title.c_str()));
+    grid->addWidget(titlew, row, 0, Qt::AlignTop);
+
+    QLabel* tmplabel = (new QLabel(QString(value.c_str())));
     tmplabel->setMinimumWidth(20);
-    grid->addWidget(tmplabel, row, 1);
+    tmplabel->setWordWrap(true);
+    tmplabel->setAlignment(Qt::AlignTop);
+    tmplabel->setSizePolicy(QSizePolicy::MinimumExpanding,
+                            QSizePolicy::MinimumExpanding);
+    grid->addWidget(tmplabel, row, 1, Qt::AlignTop);
 }
 
 QDataDescriptionWidget::QDataDescriptionWidget(QWidget* parent, core::objectmodel::Base* object)
@@ -88,7 +93,7 @@ QDataDescriptionWidget::QDataDescriptionWidget(QWidget* parent, core::objectmode
         {
             addRow(boxLayout, "Path", node->getPathName(), nextRow, 20);
             nextRow++;
-         }
+        }
 
         tabLayout->addWidget( box );
     }
@@ -129,6 +134,34 @@ QDataDescriptionWidget::QDataDescriptionWidget(QWidget* parent, core::objectmode
         }
         tabLayout->addWidget( box );
     }
+
+
+
+    //Extra description
+    std::vector<sofa::core::objectmodel::BaseData*> selecteddatum ;
+    for(sofa::core::objectmodel::BaseData* datafield : object->getDataFields())
+    {
+        if( !strcmp(datafield->getGroup(), "Infos" ) )
+            selecteddatum.push_back(datafield) ;
+    }
+
+    if(!selecteddatum.empty())
+    {
+        QGroupBox *box = new QGroupBox(this);
+        tabLayout->addWidget(box);
+        QGridLayout* boxLayout = new QGridLayout();
+
+        box->setLayout(boxLayout);
+
+        box->setTitle(QString("Extra informations"));
+
+        unsigned int row = 0;
+        for(auto& data : selecteddatum)
+        {
+            addRow(boxLayout, data->getName(), data->getValueString(), row++);
+        }
+    }
+
 
     tabLayout->addStretch();
 }
