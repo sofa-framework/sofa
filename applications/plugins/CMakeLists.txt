@@ -45,6 +45,8 @@ sofa_add_plugin(Geomagic Geomagic)
 # SOFA_WITH_EXPERIMENTAL_FEATURES_17_12
 sofa_add_plugin_experimental(PSL PSL)
 
+sofa_add_subdirectory_external(SofaHighOrder SofaHighOrder)
+
 if((${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU") AND (${CMAKE_SYSTEM_NAME} MATCHES "Linux"))
     sofa_add_plugin(SofaPardisoSolver SofaPardisoSolver) # SofaPardisoSolver is only available under linux with gcc
 endif()
@@ -56,4 +58,3 @@ else()
     sofa_add_plugin(SofaSimpleGUI SofaSimpleGUI) # SofaSimpleGUI plugin can't work without OPENGL
     sofa_add_plugin(VolumetricRendering VolumetricRendering) # VolumetricRendering plugin can't work without OPENGL
 endif()
-

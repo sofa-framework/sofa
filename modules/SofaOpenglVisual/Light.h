@@ -66,9 +66,9 @@ protected:
     GLuint m_shadowTexWidth, m_shadowTexHeight;
 
 #ifdef SOFA_HAVE_GLEW
-    helper::gl::FrameBufferObject m_shadowFBO;
-    helper::gl::FrameBufferObject m_blurHFBO;
-    helper::gl::FrameBufferObject m_blurVFBO;
+    std::unique_ptr<helper::gl::FrameBufferObject> m_shadowFBO;
+    std::unique_ptr<helper::gl::FrameBufferObject> m_blurHFBO;
+    std::unique_ptr<helper::gl::FrameBufferObject> m_blurVFBO;
     static const std::string PATH_TO_GENERATE_DEPTH_TEXTURE_VERTEX_SHADER;
     static const std::string PATH_TO_GENERATE_DEPTH_TEXTURE_FRAGMENT_SHADER;
     static const std::string PATH_TO_BLUR_TEXTURE_VERTEX_SHADER;

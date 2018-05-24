@@ -62,7 +62,7 @@ public:
     Data<bool> p_swapMainView; ///< Swap this viewport with the main view
     Data<bool> p_drawCamera; ///< Draw a frame representing the camera (see it in main viewport)
 
-    helper::gl::FrameBufferObject fbo;
+    std::unique_ptr<helper::gl::FrameBufferObject> fbo;
 
 protected:
     OglViewport();

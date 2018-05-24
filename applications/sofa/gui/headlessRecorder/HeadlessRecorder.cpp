@@ -39,6 +39,10 @@ bool HeadlessRecorder::saveAsVideo = false;
 bool HeadlessRecorder::saveAsScreenShot = false;
 bool HeadlessRecorder::recordUntilStopAnimate = false;
 
+std::string HeadlessRecorder::recordTypeRaw = "wallclocktime";
+RecordMode HeadlessRecorder::recordType = RecordMode::wallclocktime;
+float HeadlessRecorder::skipTime = 0;
+
 using namespace sofa::defaulttype;
 using sofa::simulation::getSimulation;
 
@@ -76,6 +80,25 @@ HeadlessRecorder::~HeadlessRecorder()
     glDeleteRenderbuffers(1, &rbo_depth);
 }
 
+void HeadlessRecorder::parseRecordingModeOption()
+{
+    if (recordTypeRaw == "wallclocktime")
+    {
+        recordType = RecordMode::wallclocktime;
+        skipTime = 0;
+    }
+    else if (recordTypeRaw == "simulationtime")
+    {
+        recordType = RecordMode::simulationtime;
+        skipTime = 1.0/fps;
+    }
+    else
+    {
+        recordType = RecordMode::timeinterval;
+        skipTime = std::stof(recordTypeRaw);
+   }
+}
+
 int HeadlessRecorder::RegisterGUIParameters(ArgumentParser* argumentParser)
 {
     auto in_time_t = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
@@ -90,6 +113,7 @@ int HeadlessRecorder::RegisterGUIParameters(ArgumentParser* argumentParser)
     argumentParser->addArgument(po::value<int>(&height)->default_value(1080), "height", "(only HeadLessRecorder) video or picture height");
     argumentParser->addArgument(po::value<int>(&fps)->default_value(60), "fps", "(only HeadLessRecorder) define how many frame per second HeadlessRecorder will generate");
     argumentParser->addArgument(po::value<bool>(&recordUntilStopAnimate)->default_value(false)->implicit_value(true),         "recordUntilEndAnimate", "(only HeadLessRecorder) recording until the end of animation does not care how many seconds have been set");
+    argumentParser->addArgument(po::value<std::string>(&recordTypeRaw)->default_value("wallclocktime"), "recordingmode", "(only HeadLessRecorder) define how the recording should be made; either \"simulationtime\" (records as if it was simulating in real time and skips frames accordingly), \"wallclocktime\" (records a frame for each time step) or an arbitrary interval time between each frame as a float.");
     return 0;
 }
 
@@ -261,11 +285,15 @@ bool HeadlessRecorder::canRecord()
     {
         return currentSimulation() && currentSimulation()->getContext()->getAnimate();
     }
-    return (float)m_nFrames/(float)fps <= recordTimeInSeconds;
+    return static_cast<float>(m_nFrames)/static_cast<float>(fps) <= recordTimeInSeconds;
 }
 
 int HeadlessRecorder::mainLoop()
 {
+    // Boost program_option doesn't take the order or the options inter-dependencies into account,
+    // so we parse this option after we are certain everythin was parsed.
+    parseRecordingModeOption();
+
     if(currentCamera)
         currentCamera->setViewport(width, height);
     calcProjection();
@@ -275,28 +303,55 @@ int HeadlessRecorder::mainLoop()
         msg_error("HeadlessRecorder") <<  "Please, use at least one option: picture or video mode.";
         return 0;
     }
+    if ((recordType == RecordMode::simulationtime || recordType == RecordMode::timeinterval) && groot->getDt() > skipTime)
+    {
+        msg_error("HeadlessRecorder") << "Scene delta time (" << groot->getDt() << "s) is too big to provide images at the supplied fps; it should be at least <" << skipTime ;
+        return 0;
+    }
+
 
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
     while(canRecord())
     {
+        if (keepFrame())
+	{
+            redraw();
+            m_nFrames++;
+            if(m_nFrames % fps == 0)
+            {
+                end = std::chrono::system_clock::now();
+                int elapsed_milliSeconds = std::chrono::duration_cast<std::chrono::milliseconds>(end-start).count();
+                msg_info("HeadlessRecorder") << "Encoding : " << m_nFrames/fps << " seconds. Encoding time : " << elapsed_milliSeconds << " ms";
+                start = std::chrono::system_clock::now();
+            }
+            record();
+	}
+
         if (currentSimulation() && currentSimulation()->getContext()->getAnimate())
-            step();
-        else
-            sleep(0.01);
-        redraw();
-        m_nFrames++;
-        if(m_nFrames % fps == 0)
         {
-            end = std::chrono::system_clock::now();
-            int elapsed_milliSeconds = std::chrono::duration_cast<std::chrono::milliseconds>(end-start).count();
-            msg_info("HeadlessRecorder") << "Encoding : " << m_nFrames/fps << " seconds. Encoding time : " << elapsed_milliSeconds << " ms";
-            start = std::chrono::system_clock::now();
+            step();
         }
-        record();
+        else
+        {
+            sleep(0.01);
+	}
     }
     msg_info("HeadlessRecorder") << "Recording time: " << recordTimeInSeconds << " seconds at: " << fps << " fps.";
     return 0;
+}
+
+bool HeadlessRecorder::keepFrame()
+{
+    switch(recordType)
+    {
+        case RecordMode::wallclocktime :
+            return true;
+        case RecordMode::simulationtime :
+        case RecordMode::timeinterval :
+            return groot->getTime() >= m_nFrames * skipTime;
+    }
+    return false;
 }
 
 void HeadlessRecorder::redraw()

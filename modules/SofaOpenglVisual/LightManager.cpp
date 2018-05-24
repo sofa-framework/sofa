@@ -170,7 +170,7 @@ void LightManager::putLight(Light::SPtr light)
 {
     if (m_lights.size() >= MAX_NUMBER_OF_LIGHTS)
     {
-        msg_error(this) << "The maximum of lights permitted ( "<< MAX_NUMBER_OF_LIGHTS << " ) has been reached." ;
+        msg_warning(this) << "The maximum of lights permitted ( "<< MAX_NUMBER_OF_LIGHTS << " ) has been reached." ;
         return ;
     }
 
