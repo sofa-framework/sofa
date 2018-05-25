@@ -19,9 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_PRECONDITIONER_INIT_H
-#define SOFA_COMPONENT_PRECONDITIONER_INIT_H
-#include "config.h"
+#include <SofaPreconditioner/config.h>
+#include <sofa/core/ObjectFactory.h>
+#include <string>
 
 namespace sofa
 {
@@ -29,12 +29,62 @@ namespace sofa
 namespace component
 {
 
+extern "C" {
+SOFA_PRECONDITIONER_API void initExternalModule();
+SOFA_PRECONDITIONER_API const char* getModuleName();
+SOFA_PRECONDITIONER_API const char* getModuleVersion();
+SOFA_PRECONDITIONER_API const char* getModuleLicense();
+SOFA_PRECONDITIONER_API const char* getModuleDescription();
+SOFA_PRECONDITIONER_API const char* getModuleComponentList();
+}
 
-void SOFA_PRECONDITIONER_API initPreconditioner();
+void initExternalModule()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
 
-} // namespace component
+const char* getModuleName()
+{
+    return "SofaPreconditioner";
+}
 
-} // namespace sofa
+const char* getModuleVersion()
+{
+    return "1.0";
+}
 
-#endif
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+const char* getModuleDescription()
+{
+    return "This plugin contains preconditionners to accelerate the solving of linear systems.";
+}
+
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = sofa::core::ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
+}
+
+SOFA_LINK_CLASS(ShewchukPCGLinearSolver)
+SOFA_LINK_CLASS(JacobiPreconditioner)
+SOFA_LINK_CLASS(BlockJacobiPreconditioner)
+SOFA_LINK_CLASS(SSORPreconditioner)
+SOFA_LINK_CLASS(WarpPreconditioner)
+SOFA_LINK_CLASS(PrecomputedWarpPreconditioner)
+
+} /// component
+
+} /// sofa
+
+
+
 

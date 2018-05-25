@@ -19,9 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <SofaPreconditioner/initPreconditioner.h>
-
+// Author: Hadrien Courtecuisse
+//
+// Copyright: See COPYING file that comes with this distribution
+#include <SofaSparseSolver/PrecomputedLinearSolver.inl>
 
 namespace sofa
 {
@@ -29,24 +30,21 @@ namespace sofa
 namespace component
 {
 
-
-void initPreconditioner()
+namespace linearsolver
 {
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
 
-SOFA_LINK_CLASS(ShewchukPCGLinearSolver)
-SOFA_LINK_CLASS(JacobiPreconditioner)
-SOFA_LINK_CLASS(BlockJacobiPreconditioner)
-SOFA_LINK_CLASS(SSORPreconditioner)
-SOFA_LINK_CLASS(WarpPreconditioner)
-SOFA_LINK_CLASS(PrecomputedWarpPreconditioner)
+using namespace sofa::component::odesolver;
+using namespace sofa::component::linearsolver;
 
+SOFA_DECL_CLASS(PrecomputedLinearSolver)
+
+int PrecomputedLinearSolverClass = core::RegisterObject("Linear system solver based on a precomputed inverse matrix")
+        .add< PrecomputedLinearSolver< CompressedRowSparseMatrix<double> , FullVector<double> > >()
+        ;
+
+} // namespace linearsolver
 
 } // namespace component
 
 } // namespace sofa
+
