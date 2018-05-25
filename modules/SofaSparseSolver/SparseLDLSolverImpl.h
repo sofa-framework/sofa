@@ -290,7 +290,7 @@ protected :
 
         // we test if the matrix has the same struct as previous factorized matrix
         if (data->new_factorization_needed) {
-            sout << "RECOMPUTE NEW FACTORIZATION" << sendl;
+            msg_info() << "Recomputing new factorization" ;
 
             data->perm.clear();data->perm.fastResize(data->n);
             data->invperm.clear();data->invperm.fastResize(data->n);
