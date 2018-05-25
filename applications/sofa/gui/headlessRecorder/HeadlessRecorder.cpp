@@ -585,14 +585,13 @@ void HeadlessRecorder::record()
             videoFilename.append(".avi");
             //videoFilename.append(".mp4");
             videorecorder = std::unique_ptr<VideoRecorderFFmpeg>(new VideoRecorderFFmpeg(fps, width, height, videoFilename.c_str(), AV_CODEC_ID_H264));
-            videorecorder->videoEncoderStart();
+            videorecorder->start();
             initVideoRecorder = false;
         }
-        videorecorder->videoGLToFrame();
         if (canRecord())
-            videorecorder->videoFrameEncoder();
+            videorecorder->encodeFrame();
         else
-            videorecorder->videoEncoderStop();
+            videorecorder->stop();
     }
 }
 

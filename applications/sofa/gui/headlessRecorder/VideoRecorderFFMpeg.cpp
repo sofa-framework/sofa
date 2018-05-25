@@ -45,7 +45,7 @@ VideoRecorderFFmpeg::~VideoRecorderFFmpeg()
 {
 }
 
-void VideoRecorderFFmpeg::videoEncoderStart(void)
+void VideoRecorderFFmpeg::start(void)
 {
     AVCodec *codec;
     int ret;
@@ -53,10 +53,6 @@ void VideoRecorderFFmpeg::videoEncoderStart(void)
     av_register_all();
 
     avformat_alloc_output_context2(&oc, NULL, "mp4", filename.c_str());
-    if (!oc) {
-       msg_info("VideoRecorder") << "Could not deduce output format from file extension: using MPEG.";
-       avformat_alloc_output_context2(&oc, NULL, "mpeg", filename.c_str());
-    }
     if (!oc) {
         msg_error("VideoRecorder") << "Could not allocate format context.";
         exit(1);
@@ -76,7 +72,7 @@ void VideoRecorderFFmpeg::videoEncoderStart(void)
     //st = avformat_new_stream(oc, NULL);
     st = avformat_new_stream(oc, codec);
     if (!st) {
-        fprintf(stderr, "Could not allocate stream\n");
+        msg_error("VideoRecorder") << "Could not allocate stream";
         exit(1);
     }
     st->id = oc->nb_streams-1;
@@ -108,13 +104,6 @@ void VideoRecorderFFmpeg::videoEncoderStart(void)
         exit(1);
     }
 
-    /* copy the stream parameters to the muxer */
-    /*ret = avcodec_parameters_from_context(st->codecpar, enc);
-    if (ret < 0) {
-        fprintf(stderr, "Could not copy the stream parameters\n");
-        exit(1);
-    }*/
-
     /* open the output file, if needed */
     if (!(oc->oformat->flags & AVFMT_NOFILE)) {
         ret = avio_open(&oc->pb, filename.c_str(), AVIO_FLAG_WRITE);
@@ -126,7 +115,7 @@ void VideoRecorderFFmpeg::videoEncoderStart(void)
     /* Write the stream header, if any. */
     ret = avformat_write_header(oc, NULL);
     if (ret < 0) {
-        //fprintf(stderr, "Error occurred when opening output file: %s\n", av_err2str(ret));
+        msg_error("VideoRecorder") << "Could not write header to output file : " << filename;
         exit(1);
     }
 
@@ -148,19 +137,19 @@ void VideoRecorderFFmpeg::videoEncoderStart(void)
     }
 }
 
-void VideoRecorderFFmpeg::encode(void)
+void VideoRecorderFFmpeg::encode(AVFrame* frame)
 {
     int ret;
     //AVPacket pkt = { 0 };
     AVPacket pkt;
     av_init_packet(&pkt);
-    if(m_frame)
+    if(frame)
     {
-        m_frame->pts = av_rescale_q(m_nFrames, (AVRational){1, fps}, st->time_base);
+        frame->pts = av_rescale_q(m_nFrames, (AVRational){1, fps}, st->time_base);
         m_nFrames++;
     }
 
-    ret = avcodec_send_frame(enc, m_frame);
+    ret = avcodec_send_frame(enc, frame);
     if (ret < 0) {
         msg_error("VideoRecorder") << "Error sending a frame for encoding";
         exit(1);
@@ -181,8 +170,9 @@ void VideoRecorderFFmpeg::encode(void)
     }
 }
 
-void VideoRecorderFFmpeg::videoFrameEncoder(void)
+void VideoRecorderFFmpeg::encodeFrame(void)
 {
+    videoGLToFrame();
     int ret = av_frame_make_writable(m_frame);
     if (ret < 0)
     {
@@ -190,15 +180,14 @@ void VideoRecorderFFmpeg::videoFrameEncoder(void)
         exit(1);
     }
     videoRGBToYUV();
-    encode();
+    encode(m_frame);
 }
 
-void VideoRecorderFFmpeg::videoEncoderStop(void)
+void VideoRecorderFFmpeg::stop(void)
 {
     // Free the frame and write remaining frames from the encoder
     av_frame_free(&m_frame);
-    m_frame = nullptr;
-    encode();
+    encode(nullptr);
 
     // Write the file trailer, if any
     av_write_trailer(oc);

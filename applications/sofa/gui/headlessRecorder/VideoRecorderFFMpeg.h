@@ -56,14 +56,15 @@ public:
     VideoRecorderFFmpeg(const int fps, const int width, const int height, const char *filename, const int codec_id);
     ~VideoRecorderFFmpeg();
 
-    void videoEncoderStart(void);
-    void encode(void);
-    void videoEncoderStop(void);
-    void videoFrameEncoder(void);
-    void videoRGBToYUV(void);
-    void videoGLToFrame(void);
+    void start(void);
+    void stop(void);
+    void encodeFrame(void);
 
 private:
+    void videoRGBToYUV(void);
+    void videoGLToFrame(void);
+    void encode(AVFrame* frame);
+
     int fps;
     int width;
     int height;
