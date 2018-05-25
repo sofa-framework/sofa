@@ -39,7 +39,7 @@ namespace behavior
 {
 
 /**
- * Component computing contact forces within a simulated body using the compliance method.
+ * Component computing constraint forces within a simulated body using the compliance method.
  */
 template<class TDataTypes>
 class ConstraintCorrection : public BaseConstraintCorrection

@@ -43,14 +43,8 @@ namespace component
 namespace constraintset
 {
 
-/// to avoid compilation problem under gcc3.3
-extern inline sofa::core::behavior::OdeSolver* getOdeSolver(sofa::core::objectmodel::BaseContext* context)
-{
-    return context->get<sofa::core::behavior::OdeSolver>();
-}
-
 /**
- *  \brief Component computing contact forces within a simulated body using the compliance method.
+ *  \brief Component computing constrained forces within a simulated body using the compliance method.
  */
 template<class TDataTypes>
 class LinearSolverConstraintCorrection : public sofa::core::behavior::ConstraintCorrection< TDataTypes >
@@ -127,14 +121,16 @@ public:
     virtual void getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, int begin, int end) override;
 
     /// Pre-construction check method called by ObjectFactory.
+#if 0
     template<class T>
     static bool canCreate(T*& obj, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
     {
-        if (getOdeSolver(context) == NULL)
+        /*if (getOdeSolver(context) == NULL)
             return false;
-
+        */
         return Inherit::canCreate(obj, context, arg);
     }
+#endif //
 
 protected:
 
@@ -143,20 +139,25 @@ protected:
 
     linearsolver::SparseMatrix<SReal> J; ///< constraint matrix
     linearsolver::FullVector<SReal> F; ///< forces computed from the constraints
-#if 0 // refMinv is not use in normal case    
-    linearsolver::FullMatrix<SReal> refMinv; ///< reference inverse matrix
-#endif
 
-    /*
+    /**
     * @brief Compute the compliance matrix
     */
-
     virtual void computeJ(sofa::defaulttype::BaseMatrix* W);
 
     /**
      * @brief Compute dx correction from motion space force vector.
      */
     virtual void computeDx(sofa::core::MultiVecDerivId f);
+
+    ////////////////////////// Inherited attributes ////////////////////////////
+    /// https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
+    /// Bring inherited attributes and function in the current lookup context.
+    /// otherwise any access to the base::attribute would require
+    /// the "this->" approach.
+    using Inherit::m_componentstate ;
+    using Inherit::mstate ;
+    ////////////////////////////////////////////////////////////////////////////
 
 private:
     // new :  for non building the constraint system during solving process //

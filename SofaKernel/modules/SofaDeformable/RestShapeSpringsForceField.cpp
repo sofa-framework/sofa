@@ -330,7 +330,7 @@ void RestShapeSpringsForceField<Rigid3fTypes>::draw(const core::visual::VisualPa
 #endif // SOFA_DOUBLE
 
 
-int RestShapeSpringsForceFieldClass = core::RegisterObject("Simple elastic springs applied to given degrees of freedom between their current and rest shape position")
+int RestShapeSpringsForceFieldClass = core::RegisterObject("Elastic springs generating forces on degrees of freedom between their current and rest shape position")
 #ifndef SOFA_FLOAT
         .add< RestShapeSpringsForceField<Vec3dTypes> >()
         .add< RestShapeSpringsForceField<Vec1dTypes> >()
