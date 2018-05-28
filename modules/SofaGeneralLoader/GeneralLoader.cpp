@@ -19,61 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LOADER_OFFSEQUENCELOADER_H
-#define SOFA_COMPONENT_LOADER_OFFSEQUENCELOADER_H
-#include "config.h"
+#include <SofaGeneralLoader/Loader.h>
+#include <sofa/core/Plugin.h>
 
-#include <SofaGeneralLoader/MeshOffLoader.h>
-
-namespace sofa
-{
-
-namespace component
-{
-
-namespace loader
-{
-
-/** This class load a sequence of .off mesh files, ordered by index in their name
-*/
-class SOFA_GENERAL_LOADER_API OffSequenceLoader : public MeshOffLoader
-{
+class GeneralLoaderPlugin: public sofa::core::Plugin {
 public:
-    SOFA_CLASS(OffSequenceLoader,sofa::component::loader::MeshOffLoader);
-protected:
-    OffSequenceLoader();
-public:
-    virtual void init() override;
-
-    virtual void reset() override;
-
-    virtual void handleEvent(sofa::core::objectmodel::Event* event) override;
-
-    using MeshOffLoader::load;
-    virtual bool load(const char * filename);
-
-    void clear();
-
-private:
-    /// the number of files in the sequences
-    Data<int> nbFiles;
-    /// duration each file must be loaded
-    Data<double> stepDuration;
-
-    /// index of the first file
-    int firstIndex;
-    /// index of the current read file
-    int currentIndex;
-
-    ///parsed file name
-    std::string m_filenameAndNb;
-
+    GeneralLoaderPlugin(): Plugin("GeneralLoader") {
+        setDescription("");
+        setVersion("");
+        setLicense("LGPL");
+        setAuthors("The SOFA Team");
+    }
 };
 
-}
-
-}
-
-}
-
-#endif
+SOFA_PLUGIN(GeneralLoaderPlugin);
