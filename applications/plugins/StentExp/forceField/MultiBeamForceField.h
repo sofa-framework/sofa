@@ -416,6 +416,7 @@ public:
     }
 
     void draw(const core::visual::VisualParams* vparams);
+    void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
 
     void setBeam(unsigned int i, double E, double L, double nu, double zSection, double ySection);
     void initBeams(size_t size);
