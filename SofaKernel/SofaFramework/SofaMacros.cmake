@@ -185,8 +185,21 @@ macro(sofa_add_generic directory name type)
             endif()
         endif()
 
-        set_property(GLOBAL APPEND PROPERTY __GlobalTargetList__ ${name})
-        set_property(GLOBAL APPEND PROPERTY __GlobalTargetNameList__ ${option})
+        # Add current target in the internal list only if not present already
+        get_property(_allTargets GLOBAL PROPERTY __GlobalTargetList__)
+        get_property(_allTargetNames GLOBAL PROPERTY __GlobalTargetNameList__)
+
+        # if(NOT ${name} IN_LIST _allTargets) # ONLY CMAKE >= 3.3 and policy to NEW
+        list (FIND _allTargets ${name} _index)
+        if(NOT ${_index} GREATER -1)
+            set_property(GLOBAL APPEND PROPERTY __GlobalTargetList__ ${name})
+        endif()
+
+        #if(NOT ${option} IN_LIST _allTargetNames)# ONLY CMAKE >= 3.3 and policy to NEW
+        list (FIND _allTargetNames ${option} _index)
+        if(NOT ${_index} GREATER -1)
+            set_property(GLOBAL APPEND PROPERTY __GlobalTargetNameList__ ${option})
+        endif()
     else()
         message("${type} ${name} (${CMAKE_CURRENT_LIST_DIR}/${directory}) does not exist and will be ignored.")
     endif()
@@ -247,6 +260,93 @@ macro(sofa_install_get_libraries library)
 endmacro()
 
 
+### External projects management
+# Thanks to http://crascit.com/2015/07/25/cmake-gtest/
+#
+# Use this macro (subdirectory or plugin version) to add out-of-repository projects.
+# Usage:
+# Add repository configuration in MyProjectDir/ExternalProjectConfig.cmake.in
+# Call sofa_add_subdirectory_external(MyProjectDir MyProjectName)
+# Or sofa_add_plugin_external(MyProjectDir MyProjectName [ON,OFF])
+# See plugins/SofaHighOrder for example
+#
+macro(sofa_add_generic_external directory name type)
+    message("Adding EXTERNAL ${type} ${name}")
+
+    if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/${directory}" AND IS_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}/${directory}")
+        set(location "${CMAKE_CURRENT_LIST_DIR}/${directory}")
+
+        string(TOUPPER "EXTERNAL_${type}_${name}" option)
+
+        # optional parameter to activate/desactivate the option
+        set(active OFF)
+        if(${ARGV4})
+            if( ${ARGV4} STREQUAL ON )
+                set(active ON)
+            endif()
+        endif()
+
+        option(${option}_FORCE_FETCH "Force ${name} fetch." OFF)
+        if(${option}_FORCE_FETCH)
+            set(${option}_FORCE_FETCH OFF CACHE BOOL "Force ${name} fetch." FORCE)
+            set(${option}_RUN_ONCE FALSE CACHE INTERNAL "run only once the fetching process" FORCE)
+        endif()
+
+        # Setup temporary directory
+        set(${name}_TEMP_DIR "${CMAKE_BINARY_DIR}/externals/${name}/" )
+
+        # Fetch
+        if(NOT ${option}_RUN_ONCE)
+            set(${option}_RUN_ONCE TRUE CACHE INTERNAL "run only once the fetching process" FORCE)
+
+            message("Checking for ${${name}_TEMP_DIR}")
+            if(NOT EXISTS ${${name}_TEMP_DIR})
+                message("Creating ${${name}_TEMP_DIR}")
+                file(MAKE_DIRECTORY ${${name}_TEMP_DIR})
+            endif()
+
+            # Download and unpack  at configure time
+            configure_file(${location}/ExternalProjectConfig.cmake.in ${${name}_TEMP_DIR}/CMakeLists.txt)
+            file(COPY ${location}/ExternalProjectConfig.cmake.in DESTINATION ${${name}_TEMP_DIR})
+
+            #execute script to get src
+            message("Pulling ${name}... ")
+            execute_process(COMMAND "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .
+                WORKING_DIRECTORY "${${name}_TEMP_DIR}/" )
+            execute_process(COMMAND "${CMAKE_COMMAND}" --build .
+                WORKING_DIRECTORY  "${${name}_TEMP_DIR}/" )
+
+            if(EXISTS "${location}/.git")
+                message("... Done")
+                # add .gitignore for Sofa
+                file(WRITE "${location}/.gitignore" "*")
+                file(COPY ${${name}_TEMP_DIR}/ExternalProjectConfig.cmake.in DESTINATION ${location})
+            else()
+                message("... error while pulling ${name}")
+            endif()
+        endif()
+
+        # Add
+        if(EXISTS "${location}/.git" AND IS_DIRECTORY "${location}/.git")
+            configure_file(${location}/ExternalProjectConfig.cmake.in ${${name}_TEMP_DIR}/CMakeLists.txt)
+            if("${type}" STREQUAL "subdirectory")
+                add_subdirectory("${location}" "${name}")
+            elseif("${type}" STREQUAL "plugin")
+                sofa_add_plugin("${name}" "${name}" ${active})
+            endif()
+        endif()
+    else()
+        message("(${CMAKE_CURRENT_LIST_DIR}/${location}) does not exist and will be ignored.")
+    endif()
+endmacro()
+
+macro(sofa_add_subdirectory_external directory name)
+    sofa_add_generic_external(${directory} ${name} "subdirectory")
+endmacro()
+
+macro(sofa_add_plugin_external directory name)
+    sofa_add_generic_external(${directory} ${name} "plugin" ${ARGV3})
+endmacro()
 
 
 ##########################################################

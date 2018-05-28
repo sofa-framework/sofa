@@ -72,6 +72,12 @@ void SparseLDLSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M) {
     int * M_rowind = (int *) &Mfiltered.getColsIndex()[0];
     Real * M_values = (Real *) &Mfiltered.getColsValue()[0];
 
+    if(M_colptr==nullptr || M_rowind==nullptr || M_values==nullptr || Mfiltered.getRowBegin().size() < n )
+    {
+        msg_warning() << "Invalid Linear System to solve. Please insure that there is enough constraints (not rank deficient)." ;
+        return ;
+    }
+
     Inherit::factorize(n,M_colptr,M_rowind,M_values,(InvertData *) this->getMatrixInvertData(&M));
 
     numStep++;
@@ -134,55 +140,6 @@ bool SparseLDLSolver<TMatrix,TVector,TThreadManager>::addJMInvJtLocal(TMatrix * 
             if(i!=j) result->add(i,j,acc*fact);
         }
     }
-
-
-//    //Solve the lower triangular system
-//    res.resize(data->n);
-//    for (typename SparseMatrix<Real>::LineConstIterator jit = J->begin() , jitend = J->end(); jit != jitend; ++jit) {
-//        int row = jit->first;
-
-//        line.clear();
-//        line.resize(data->n);
-
-//        for (typename SparseMatrix<Real>::LElementConstIterator it = jit->second.begin(), i2end = jit->second.end(); it != i2end; ++it) {
-//            int col = data->invperm[it->first];
-//            double val = it->second;
-//            line[col] = val;
-//        }
-
-//        for (int j=0; j<data->n; j++) {
-//            for (int p = data->LT_colptr[j] ; p<data->LT_colptr[j+1] ; p++) {
-//                int col = data->LT_rowind[p];
-//                double val = data->LT_values[p];
-//                line[j] -= val * line[col];
-//            }
-//        }
-
-//        for (int j = data->n-1 ; j >= 0 ; j--) {
-//            line[j] *= data->invD[j];
-
-//            for (int p = data->L_colptr[j] ; p < data->L_colptr[j+1] ; p++) {
-//                int col = data->L_rowind[p];
-//                double val = data->L_values[p];
-//                line[j] -= val * line[col];
-//            }
-
-//            res[data->perm[j]] = line[j];
-//        }
-
-//        for (typename SparseMatrix<Real>::LineConstIterator jit = J->begin() , jitend = J->end(); jit != jitend; ++jit) {
-//            int row2 = jit->first;
-//            double acc = 0.0;
-//            for (typename SparseMatrix<Real>::LElementConstIterator i2 = jit->second.begin(), i2end = jit->second.end(); i2 != i2end; ++i2) {
-//                int col2 = i2->first;
-//                double val2 = i2->second;
-//                acc += val2 * res[col2];
-//            }
-//            acc *= fact;
-//            result->add(row2,row,acc);
-//        }
-//    }
-
 
     return true;
 }

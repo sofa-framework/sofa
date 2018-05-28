@@ -37,7 +37,7 @@ namespace constraintset
 {
 
 /**
- *  \brief Component computing contact forces within a simulated body using the compliance method.
+ *  \brief Component computing constraint forces within a simulated body using the compliance method.
  */
 template<class TDataTypes>
 class UncoupledConstraintCorrection : public sofa::core::behavior::ConstraintCorrection< TDataTypes >

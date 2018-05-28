@@ -64,7 +64,7 @@ protected:
     bool checkMultipass(sofa::core::objectmodel::BaseContext* con);
     bool multiPassEnabled;
 
-    helper::gl::FrameBufferObject* fbo;
+    std::unique_ptr<helper::gl::FrameBufferObject> fbo;
     bool prerendered;
 
     GLint passWidth;
@@ -88,9 +88,9 @@ public:
 
     virtual void handleEvent(sofa::core::objectmodel::Event* /*event*/) override;
 
-    virtual bool isPrerendered() {return prerendered;};
+    virtual bool isPrerendered() {return prerendered;}
 
-    virtual helper::gl::FrameBufferObject* getFBO() {return fbo;};
+    virtual helper::gl::FrameBufferObject& getFBO() {return *fbo;}
     bool hasFilledFbo();
     std::string getOutputName();
 };

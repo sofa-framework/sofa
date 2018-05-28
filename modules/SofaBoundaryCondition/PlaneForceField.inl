@@ -371,7 +371,7 @@ void PlaneForceField<DataTypes>::computeBBox(const core::ExecParams * params, bo
     if (onlyVisible && !d_drawIsEnabled.getValue()) return;
 
     const Real max_real = std::numeric_limits<Real>::max();
-    const Real min_real = std::numeric_limits<Real>::min();
+    const Real min_real = std::numeric_limits<Real>::lowest();
     Real maxBBox[3] = {min_real,min_real,min_real};
     Real minBBox[3] = {max_real,max_real,max_real};
 
