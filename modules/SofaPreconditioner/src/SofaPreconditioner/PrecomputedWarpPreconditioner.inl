@@ -54,7 +54,7 @@
 #include <SofaSparseSolver/SparseCholeskySolver.h>
 #include <SofaBaseLinearSolver/CompressedRowSparseMatrix.h>
 #else
-#include <SofaBaseLinearSolver/CholeskySolver.h>
+#include <SofaGeneralLinearSolver/CholeskySolver.h>
 #endif
 
 
