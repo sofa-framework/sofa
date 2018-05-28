@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <Node name="lroot" gravity="0 -9.81 0" dt="0.02">
-    <RequiredPlugin name="SC" pluginName="SofaCUDA" />
+    <RequiredPlugin name="CUDA computing" pluginName="SofaCUDA" />
 	
     <Node name="Liver" gravity="0 -9.81 0">
         <EulerImplicitSolver name="cg_odesolver"   rayleighStiffness="0.1" rayleighMass="0.1" />

@@ -335,6 +335,16 @@ public:
         return DataTypes::Name();
     }
 
+    //Temporary function to warn the user when old attribute names are used
+    void parse( sofa::core::objectmodel::BaseObjectDescription* arg )
+    {
+        if (arg->getAttribute("mass"))
+        {
+            msg_warning() << "input data 'mass' changed for 'vertexMass', please update your scene (see PR#637)";
+        }
+        Inherited::parse(arg);
+    }
+
 private:
     template <class T>
     SReal getPotentialEnergyRigidImpl( const core::MechanicalParams* mparams,
