@@ -179,7 +179,7 @@ TYPED_TEST( FixedConstraint_test , testValueExplicit )
     EXPECT_TRUE(  this->test(1e-8, std::string("Explicit")) );
 }
 
-#ifdef SOFA_HAVE_METIS
+#ifdef SOFA_HAVE_SOFASPARSESOLVER
 TYPED_TEST( FixedConstraint_test , testValueImplicitWithSparseLDL )
 {
     EXPECT_MSG_NOEMIT(Error) ;
