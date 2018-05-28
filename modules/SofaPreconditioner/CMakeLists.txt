@@ -2,29 +2,29 @@ cmake_minimum_required(VERSION 3.1)
 project(SofaPreconditioner)
 
 set(HEADER_FILES
-    BlockJacobiPreconditioner.h
-    BlockJacobiPreconditioner.inl
-    JacobiPreconditioner.h
-    JacobiPreconditioner.inl
-    PrecomputedWarpPreconditioner.h
-    PrecomputedWarpPreconditioner.inl
-    SSORPreconditioner.h
-    SSORPreconditioner.inl
-    ShewchukPCGLinearSolver.h
-    WarpPreconditioner.h
-    WarpPreconditioner.inl
-    config.h
-    initPreconditioner.h
+    src/SofaPreconditioner/BlockJacobiPreconditioner.h
+    src/SofaPreconditioner/BlockJacobiPreconditioner.inl
+    src/SofaPreconditioner/JacobiPreconditioner.h
+    src/SofaPreconditioner/JacobiPreconditioner.inl
+    src/SofaPreconditioner/PrecomputedWarpPreconditioner.h
+    src/SofaPreconditioner/PrecomputedWarpPreconditioner.inl
+    src/SofaPreconditioner/SSORPreconditioner.h
+    src/SofaPreconditioner/SSORPreconditioner.inl
+    src/SofaPreconditioner/ShewchukPCGLinearSolver.h
+    src/SofaPreconditioner/WarpPreconditioner.h
+    src/SofaPreconditioner/WarpPreconditioner.inl
+    src/SofaPreconditioner/config.h
+    src/SofaPreconditioner/initPreconditioner.h
 )
 
 set(SOURCE_FILES
-    BlockJacobiPreconditioner.cpp
-    JacobiPreconditioner.cpp
-    PrecomputedWarpPreconditioner.cpp
-    SSORPreconditioner.cpp
-    ShewchukPCGLinearSolver.cpp
-    WarpPreconditioner.cpp
-    initPreconditioner.cpp
+    src/SofaPreconditioner/BlockJacobiPreconditioner.cpp
+    src/SofaPreconditioner/JacobiPreconditioner.cpp
+    src/SofaPreconditioner/PrecomputedWarpPreconditioner.cpp
+    src/SofaPreconditioner/SSORPreconditioner.cpp
+    src/SofaPreconditioner/ShewchukPCGLinearSolver.cpp
+    src/SofaPreconditioner/WarpPreconditioner.cpp
+    src/SofaPreconditioner/initPreconditioner.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
@@ -37,5 +37,7 @@ if(SOFA_HAVE_NEWMAT)
 endif()
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_PRECONDITIONER")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
+
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/>")
 
 sofa_install_targets(SofaGeneral ${PROJECT_NAME} ${PROJECT_NAME})
