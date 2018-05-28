@@ -22,7 +22,7 @@
 #ifndef SOFA_HELPER_STRING_UTILS_H
 #define SOFA_HELPER_STRING_UTILS_H
 
-#include <cstring>
+#include <string>
 
 namespace sofa
 {
