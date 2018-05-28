@@ -2,19 +2,19 @@ cmake_minimum_required(VERSION 3.1)
 project(SofaSparseSolver)
 
 set(HEADER_FILES
-    PrecomputedLinearSolver.h
-    PrecomputedLinearSolver.inl
-    SparseCholeskySolver.h
-    SparseLUSolver.h
-    config.h
-    initSparseSolver.h
+    src/SofaSparseSolver/PrecomputedLinearSolver.h
+    src/SofaSparseSolverPrecomputedLinearSolver.inl
+    src/SofaSparseSolverSparseCholeskySolver.h
+    src/SofaSparseSolverSparseLUSolver.h
+    src/SofaSparseSolverconfig.h
+    src/SofaSparseSolverinitSparseSolver.h
 )
 
 set(SOURCE_FILES
-    PrecomputedLinearSolver.cpp
-    SparseCholeskySolver.cpp
-    SparseLUSolver.cpp
-    initSparseSolver.cpp
+    src/SofaSparseSolverPrecomputedLinearSolver.cpp
+    src/SofaSparseSolverSparseCholeskySolver.cpp
+    src/SofaSparseSolverSparseLUSolver.cpp
+    src/SofaSparseSolverinitSparseSolver.cpp
 )
 
 if(SOFA_HAVE_METIS)
