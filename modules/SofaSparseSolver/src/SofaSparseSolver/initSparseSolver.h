@@ -30,7 +30,7 @@ namespace component
 {
 
 
-void SOFA_SPARSE_SOLVER_API initSparseSolver();
+void SOFA_SOFASPARSESOLVER_API initSparseSolver();
 
 } // namespace component
 

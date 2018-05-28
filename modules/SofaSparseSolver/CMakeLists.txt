@@ -1,50 +1,60 @@
 cmake_minimum_required(VERSION 3.1)
-project(SofaSparseSolver)
+project(SofaSparseSolver VERSION 1.0 LANGUAGES CXX)
+
+find_package(Metis QUIET)
+find_package(CSparse QUIET)
 
 set(HEADER_FILES
     src/SofaSparseSolver/PrecomputedLinearSolver.h
-    src/SofaSparseSolverPrecomputedLinearSolver.inl
-    src/SofaSparseSolverSparseCholeskySolver.h
-    src/SofaSparseSolverSparseLUSolver.h
-    src/SofaSparseSolverconfig.h
-    src/SofaSparseSolverinitSparseSolver.h
+    src/SofaSparseSolver/PrecomputedLinearSolver.inl
+    src/SofaSparseSolver/config.h
 )
 
 set(SOURCE_FILES
-    src/SofaSparseSolverPrecomputedLinearSolver.cpp
-    src/SofaSparseSolverSparseCholeskySolver.cpp
-    src/SofaSparseSolverSparseLUSolver.cpp
-    src/SofaSparseSolverinitSparseSolver.cpp
+    src/SofaSparseSolver/PrecomputedLinearSolver.cpp
+    src/SofaSparseSolver/initSparseSolver.cpp
 )
 
-if(SOFA_HAVE_METIS)
-    list(APPEND HEADER_FILES SparseLDLSolver.h SparseLDLSolver.inl SparseLDLSolverImpl.h)
-    list(APPEND SOURCE_FILES SparseLDLSolver.h SparseLDLSolver.cpp)
-    message(STATUS "SofaSparseSolver: metis was found, SparseLDLSolver will be built")
-else()
-    message(STATUS "SofaSparseSolver: metis was not found, SparseLDLSolver won't be built")
-endif()
+set(EXTRA_FILES
+    SofaSparseSolverConfig.cmake.in
+    )
 
-if(SOFA_HAVE_CSPARSE)
-    list(APPEND HEADER_FILES SparseCholeskySolver.h)
-    list(APPEND HEADER_FILES SparseLUSolver.h)
-    list(APPEND SOURCE_FILES SparseCholeskySolver.cpp)
-    list(APPEND SOURCE_FILES SparseLUSolver.cpp)
-    message(STATUS "SofaSparseSolver: csparse was found, SparseLUSolver and SparseCholeskySolver will be built")
-else()
-    message(STATUS "SofaSparseSolver: csparse was not found, SparseLUSolver and SparseCholeskySolver won't be built")
-endif()
-
-
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseLinearSolver SofaImplicitOdeSolver SofaSimpleFem)
 if(Metis_FOUND)
+    list(APPEND HEADER_FILES src/SofaSparseSolver/SparseLDLSolver.h
+                             src/SofaSparseSolver/SparseLDLSolver.inl
+                             src/SofaSparseSolver/SparseLDLSolverImpl.h)
+    list(APPEND SOURCE_FILES src/SofaSparseSolver/SparseLDLSolver.h
+                             src/SofaSparseSolver/SparseLDLSolver.cpp)
+    message(STATUS "-- metis was found, SparseLDLSolver will be built")
+else()
+    message(STATUS "-- metis was not found, SparseLDLSolver won't be built")
+endif()
+
+if(CSparse_FOUND)
+    list(APPEND HEADER_FILES src/SofaSparseSolver/SparseCholeskySolver.h)
+    list(APPEND HEADER_FILES src/SofaSparseSolver/SparseLUSolver.h)
+    list(APPEND SOURCE_FILES src/SofaSparseSolver/SparseCholeskySolver.cpp)
+    list(APPEND SOURCE_FILES src/SofaSparseSolver/SparseLUSolver.cpp)
+    message(STATUS "-- csparse was found, SparseLUSolver and SparseCholeskySolver will be built")
+else()
+    message(STATUS "-- csparse was not found, SparseLUSolver and SparseCholeskySolver won't be built")
+endif()
+
+add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaBaseLinearSolver SofaGeneralLinearSolver SofaImplicitOdeSolver SofaSimpleFem)
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_BUILD_SOFASPARSESOLVER")
+target_compile_definitions(${PROJECT_NAME} PUBLIC "-DSOFA_HAVE_SOFASPARSESOLVER")
+target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>")
+
+if(Metis_FOUND)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_HAVE_METIS")
     target_link_libraries(${PROJECT_NAME} PUBLIC metis)
 endif()
-if(SOFA_HAVE_CSPARSE)
+
+if(CSparse_FOUND)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE "-DSOFA_HAVE_CSPARSE")
     target_link_libraries(${PROJECT_NAME} PUBLIC csparse)
 endif()
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SPARSE_SOLVER")
-set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
-sofa_install_targets(SofaGeneral ${PROJECT_NAME} ${PROJECT_NAME})
+sofa_create_package(SofaSparseSolver ${PROJECT_VERSION} SofaSparseSolver SofaSparseSolver)

@@ -22,7 +22,7 @@
 // Author: Hadrien Courtecuisse
 //
 // Copyright: See COPYING file that comes with this distribution
-#include "PrecomputedLinearSolver.inl"
+#include <SofaSparseSolver/PrecomputedLinearSolver.inl>
 
 namespace sofa
 {

@@ -47,13 +47,13 @@ int SparseLDLSolverClass = core::RegisterObject("Direct Linear Solver using a Sp
 ;
 
 #ifdef SOFA_WITH_DOUBLE
-template class SOFA_SPARSE_SOLVER_API SparseLDLSolver< CompressedRowSparseMatrix<double>,FullVector<double> >;
-template class SOFA_SPARSE_SOLVER_API SparseLDLSolver< CompressedRowSparseMatrix< defaulttype::Mat<3,3,double> >,FullVector<double> >;
+template class SOFA_SOFASPARSESOLVER_API SparseLDLSolver< CompressedRowSparseMatrix<double>,FullVector<double> >;
+template class SOFA_SOFASPARSESOLVER_API SparseLDLSolver< CompressedRowSparseMatrix< defaulttype::Mat<3,3,double> >,FullVector<double> >;
 #endif
 
 #ifdef SOFA_WITH_FLOAT
-template class SOFA_SPARSE_SOLVER_API SparseLDLSolver< CompressedRowSparseMatrix<float>,FullVector<float> >;
-template class SOFA_SPARSE_SOLVER_API SparseLDLSolver< CompressedRowSparseMatrix< defaulttype::Mat<3,3,float> >,FullVector<float> >;
+template class SOFA_SOFASPARSESOLVER_API SparseLDLSolver< CompressedRowSparseMatrix<float>,FullVector<float> >;
+template class SOFA_SOFASPARSESOLVER_API SparseLDLSolver< CompressedRowSparseMatrix< defaulttype::Mat<3,3,float> >,FullVector<float> >;
 #endif
 } // namespace linearsolver
 

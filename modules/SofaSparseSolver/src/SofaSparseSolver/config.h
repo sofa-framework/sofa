@@ -22,6 +22,13 @@
 #ifndef SOFASPARSESOLVER_CONFIG_H
 #define SOFASPARSESOLVER_CONFIG_H
 
-#include <SofaGeneral/config.h>
+#include <sofa/config/sharedlibrary_defines.h>
+
+#ifdef SOFA_BUILD_SOFASPARSESOLVER
+#  define SOFA_TARGET SofaSparseSolver
+#  define SOFA_SOFASPARSESOLVER_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_SOFASPARSESOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
 #endif
