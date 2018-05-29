@@ -73,7 +73,7 @@ DisplayFlagWidget::DisplayFlagWidget(QWidget* parent, const char* name,  Qt::Win
     this->setTreeWidgetNodeCheckable(itemShowBehavior, "Behavior");
 
     itemShowFlag[BEHAVIORMODELS]   = new QTreeWidgetItem(itemShowBehavior);
-    this->setTreeWidgetCheckable(itemShowFlag[BEHAVIORMODELS], "Behavior Model");
+    this->setTreeWidgetCheckable(itemShowFlag[BEHAVIORMODELS], "Behavior Models");
     itemShowFlag[FORCEFIELDS]   = new QTreeWidgetItem(itemShowBehavior, itemShowFlag[BEHAVIORMODELS]);
     this->setTreeWidgetCheckable(itemShowFlag[FORCEFIELDS], "Force Fields");
     itemShowFlag[INTERACTIONFORCEFIELDS]   = new QTreeWidgetItem(itemShowBehavior, itemShowFlag[FORCEFIELDS]);
