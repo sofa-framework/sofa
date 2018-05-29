@@ -97,8 +97,25 @@ inline tristate difference_tristate(const tristate& previous, const tristate& cu
 class SOFA_CORE_API FlagTreeItem
 {
 protected:
-    std::string m_showName;
-    std::string m_hideName;
+    // Creating a case insensitive "find" function for map
+    struct ci_comparison
+    {
+        // case-independent (ci) comparison
+        struct nocase_compare
+        {
+            bool operator() (const unsigned char& c1, const unsigned char& c2) const
+            {
+              return tolower (c1) < tolower (c2);
+            }
+        };
+        bool operator() (const std::string & s1, const std::string & s2) const
+        {
+            return std::lexicographical_compare(s1.begin (), s1.end (), s2.begin (), s2.end (), nocase_compare ());
+        }
+    };
+
+    sofa::helper::vector<std::string> m_showName;
+    sofa::helper::vector<std::string> m_hideName;
     tristate m_state;
 
     FlagTreeItem* m_parent;
@@ -126,13 +143,19 @@ public:
 
     void setValue(const tristate& state);
 
+    void addAliasShow(const std::string& newAlias);
+    void addAliasHide(const std::string& newAlias);
+    void addAlias(sofa::helper::vector<std::string> &name, const std::string &newAlias);
+
 protected:
     void propagateStateDown(FlagTreeItem* origin);
     void propagateStateUp(FlagTreeItem* origin);
-    static std::map<std::string,bool> create_flagmap(FlagTreeItem* root);
-    static void create_parse_map(FlagTreeItem* root, std::map<std::string,bool>& map);
-    static void read_recursive(FlagTreeItem* root, const std::map<std::string,bool>& map);
+    static std::map<std::string,bool, ci_comparison> create_flagmap(FlagTreeItem* root);
+    static void create_parse_map(FlagTreeItem* root, std::map<std::string,bool,ci_comparison>& map);
+    static void read_recursive(FlagTreeItem* root, const std::map<std::string,bool,ci_comparison>& map);
     static void write_recursive(const FlagTreeItem* root,  std::string& str);
+
+
 };
 
 /** \brief Class which describes the display of components in a hierarchical fashion

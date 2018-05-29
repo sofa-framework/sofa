@@ -30,12 +30,31 @@ namespace visual
 {
 
 FlagTreeItem::FlagTreeItem(const std::string& showName, const std::string& hideName, FlagTreeItem* parent):
-    m_showName(showName),
-    m_hideName(hideName),
+    m_showName({showName}),
+    m_hideName({hideName}),
     m_state(tristate::neutral_value),
     m_parent(parent)
 {
     if( m_parent ) m_parent->m_child.push_back(this);
+}
+
+
+void FlagTreeItem::addAliasShow(const std::string& newAlias)
+{
+    this->addAlias(this->m_showName, newAlias);
+}
+
+
+void FlagTreeItem::addAliasHide(const std::string& newAlias)
+{
+    this->addAlias(this->m_hideName, newAlias);
+}
+
+
+void FlagTreeItem::addAlias(sofa::helper::vector<std::string>& name, const std::string& newAlias)
+{
+    name.push_back(newAlias);
+    return;
 }
 
 
@@ -72,7 +91,6 @@ void FlagTreeItem::propagateStateUp(FlagTreeItem* origin)
     propagateStateUp(parent);
 }
 
-
 std::ostream& FlagTreeItem::write(std::ostream &os) const
 {
     std::string s;
@@ -84,13 +102,22 @@ std::ostream& FlagTreeItem::write(std::ostream &os) const
 
 std::istream& FlagTreeItem::read(std::istream &in)
 {
-    std::map<std::string, bool> parse_map;
+    std::map<std::string, bool,  ci_comparison> parse_map;
     create_parse_map(this,parse_map);
     std::string token;
     while(in >> token)
     {
         if( parse_map.find(token) != parse_map.end() )
         {
+            std::map<std::string,bool>::const_iterator iter;
+            iter = parse_map.find(token);
+            std::string string1 = iter->first;
+
+            if(string1 != token)
+            {
+                msg_warning("DisplayFlags") << "FlagTreeItem case is not correct: please use '" << string1 << "' instead of '"<<token<<"'";
+            }
+
             parse_map[token] = true;
         }
         else
@@ -105,10 +132,19 @@ std::istream& FlagTreeItem::read(std::istream &in)
 
 
 /*static*/
-void FlagTreeItem::create_parse_map(FlagTreeItem *root,std::map<std::string,bool>& map)
+void FlagTreeItem::create_parse_map(FlagTreeItem *root, std::map<std::string, bool, ci_comparison> &map)
 {
-    map[root->m_showName] = false;
-    map[root->m_hideName] = false;
+    int sizeShow = root->m_showName.size();
+    int sizeHide = root->m_hideName.size();
+    for(int i=0; i<sizeShow; i++)
+    {
+        map[root->m_showName[i]] = false;
+    }
+    for(int i=0; i<sizeHide; ++i)
+    {
+        map[root->m_hideName[i]] = false;
+    }
+
     ChildIterator iter;
     for( iter = root->m_child.begin(); iter != root->m_child.end(); ++iter)
     {
@@ -116,31 +152,53 @@ void FlagTreeItem::create_parse_map(FlagTreeItem *root,std::map<std::string,bool
     }
 }
 
-void FlagTreeItem::read_recursive(FlagTreeItem *root,const std::map<std::string,bool>& parse_map)
+void FlagTreeItem::read_recursive(FlagTreeItem *root, const std::map<std::string, bool, ci_comparison> &parse_map)
 {
     ChildIterator iter;
     std::map<std::string,bool>::const_iterator iter_show;
     std::map<std::string,bool>::const_iterator iter_hide;
     for( iter = root->m_child.begin(); iter != root->m_child.end(); ++iter)
     {
-        iter_show = parse_map.find((*iter)->m_showName);
-        iter_hide = parse_map.find((*iter)->m_hideName);
-        if( iter_show != parse_map.end() && iter_hide != parse_map.end() )
+        int sizeShow = (*iter)->m_showName.size();
+        int sizeHide = (*iter)->m_hideName.size();
+
+        bool found = false;
+
+        for(int i=0; i<sizeHide; i++)
         {
-            bool show  = iter_show->second;
-            bool hide  = iter_hide->second;
-            if(show || hide)
+            iter_hide = parse_map.find((*iter)->m_hideName[i]);
+            if( iter_hide != parse_map.end() )
             {
-                tristate merge_showhide;
-                if (show) merge_showhide = tristate::true_value;
-                if (hide) merge_showhide = tristate::false_value;
-                (*iter)->setValue(merge_showhide);
+                bool hide = iter_hide->second;
+                if(hide)
+                {
+                    tristate merge_showhide;
+                    if (hide) merge_showhide = tristate::false_value;
+                    (*iter)->setValue(merge_showhide);
+                    found = true;
+                }
             }
-            else
+        }
+        for(int i=0; i<sizeShow; i++)
+        {
+            iter_show = parse_map.find((*iter)->m_showName[i]);
+            if( iter_show != parse_map.end() )
             {
-                (*iter)->m_state = tristate::neutral_value;
-                read_recursive(*iter,parse_map);
+                bool show  = iter_show->second;
+                if(show)
+                {
+                    tristate merge_showhide;
+                    if (show) merge_showhide = tristate::true_value;
+                    (*iter)->setValue(merge_showhide);
+                    found = true;
+                }
             }
+        }
+
+        if(!found)
+        {
+            (*iter)->m_state = tristate::neutral_value;
+            read_recursive(*iter,parse_map);
         }
     }
 }
@@ -153,11 +211,11 @@ void FlagTreeItem::write_recursive(const FlagTreeItem* root, std::string& str )
         switch( (*iter)->m_state.state )
         {
         case tristate::true_value:
-            str.append((*iter)->m_showName);
+            str.append((*iter)->m_showName[0]);
             str.append(" ");
             break;
         case tristate::false_value:
-            str.append((*iter)->m_hideName);
+            str.append((*iter)->m_hideName[0]);
             str.append(" ");
             break;
         case tristate::neutral_value:
@@ -197,6 +255,13 @@ DisplayFlags::DisplayFlags():
     m_showRendering.setValue(tristate::neutral_value);
     m_showWireframe.setValue(tristate::neutral_value);
     m_showNormals.setValue(tristate::neutral_value);
+
+    m_showInteractionForceFields.addAliasShow("showInteractions");
+    m_showInteractionForceFields.addAliasHide("hideInteractions");
+    m_showBoundingCollisionModels.addAliasShow("showBoundingTrees");
+    m_showBoundingCollisionModels.addAliasHide("hideBoundingTrees");
+    m_showRendering.addAliasShow("showAdvancedRendering");
+    m_showRendering.addAliasHide("hideAdvancedRendering");
 }
 
 DisplayFlags::DisplayFlags(const DisplayFlags & other):
@@ -230,6 +295,13 @@ DisplayFlags::DisplayFlags(const DisplayFlags & other):
     m_showRendering.setValue(other.m_showRendering.state());
     m_showWireframe.setValue(other.m_showWireframe.state());
     m_showNormals.setValue(other.m_showNormals.state());
+
+    m_showInteractionForceFields.addAliasShow("showInteractions");
+    m_showInteractionForceFields.addAliasHide("hideInteractions");
+    m_showBoundingCollisionModels.addAliasShow("showBoundingTrees");
+    m_showBoundingCollisionModels.addAliasHide("hideBoundingTrees");
+    m_showRendering.addAliasShow("showAdvancedRendering");
+    m_showRendering.addAliasHide("hideAdvancedRendering");
 }
 
 DisplayFlags& DisplayFlags::operator =(const DisplayFlags& other)
