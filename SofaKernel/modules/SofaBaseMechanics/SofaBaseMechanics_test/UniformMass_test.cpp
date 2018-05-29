@@ -137,7 +137,7 @@ struct UniformMassTest :  public ::testing::Test
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getTotalMass(), 1.0 ) ;
-            EXPECT_EQ( mass->getMass(), 0.5 ) ;
+            EXPECT_EQ( mass->getVertexMass(), 0.5 ) ;
         }
     }
 
@@ -161,7 +161,7 @@ struct UniformMassTest :  public ::testing::Test
         EXPECT_TRUE( mass != nullptr ) ;
 
         if(mass!=nullptr){
-            EXPECT_EQ( mass->getMass(), 4.0 ) ;
+            EXPECT_EQ( mass->getVertexMass(), 4.0 ) ;
             EXPECT_EQ( mass->getTotalMass(), 8.0 ) ;
         }
     }
@@ -186,7 +186,7 @@ struct UniformMassTest :  public ::testing::Test
         EXPECT_TRUE( mass != nullptr ) ;
 
         if(mass!=nullptr){
-            EXPECT_EQ( mass->getMass(), 4.0 ) ;
+            EXPECT_EQ( mass->getVertexMass(), 4.0 ) ;
             EXPECT_EQ( mass->getTotalMass(), 8.0 ) ;
         }
     }
@@ -212,7 +212,7 @@ struct UniformMassTest :  public ::testing::Test
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getTotalMass(), 1.0 ) ;
-            EXPECT_EQ( mass->getMass(), 0.5 ) ;
+            EXPECT_EQ( mass->getVertexMass(), 0.5 ) ;
         }
     }
 
@@ -237,7 +237,7 @@ struct UniformMassTest :  public ::testing::Test
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getTotalMass(), 1.0 ) ;
-            EXPECT_EQ( mass->getMass(), 0.5 ) ;
+            EXPECT_EQ( mass->getVertexMass(), 0.5 ) ;
         }
     }
 
@@ -261,7 +261,7 @@ struct UniformMassTest :  public ::testing::Test
         EXPECT_TRUE( mass != nullptr ) ;
 
         if(mass!=nullptr){
-            EXPECT_EQ( mass->getMass(), 4.0 ) ;
+            EXPECT_EQ( mass->getVertexMass(), 4.0 ) ;
             EXPECT_EQ( mass->getTotalMass(), 8.0 ) ;
         }
     }
@@ -289,7 +289,7 @@ struct UniformMassTest :  public ::testing::Test
 
         if(mass!=nullptr){
             EXPECT_EQ( mass->getTotalMass(), 1.0 ) ;
-            EXPECT_EQ( mass->getMass(), 0.5 ) ;
+            EXPECT_EQ( mass->getVertexMass(), 0.5 ) ;
         }
     }
 
@@ -313,7 +313,7 @@ struct UniformMassTest :  public ::testing::Test
         EXPECT_TRUE( mass != nullptr ) ;
 
         if(mass!=nullptr){
-            EXPECT_EQ( mass->getMass(), 4.0 ) ;
+            EXPECT_EQ( mass->getVertexMass(), 4.0 ) ;
             EXPECT_EQ( mass->getTotalMass(), 8.0 ) ;
         }
     }
@@ -338,7 +338,7 @@ struct UniformMassTest :  public ::testing::Test
         EXPECT_TRUE( mass != nullptr ) ;
 
         if(mass!=nullptr){
-            EXPECT_EQ( mass->getMass(), 0.5 ) ;
+            EXPECT_EQ( mass->getVertexMass(), 0.5 ) ;
             EXPECT_EQ( mass->getTotalMass(), 1.0 ) ;
         }
     }
@@ -359,7 +359,7 @@ struct UniformMassTest :  public ::testing::Test
         EXPECT_TRUE( mass != nullptr ) ;
 
         if(mass!=nullptr){
-            EXPECT_EQ( mass->getMass(), 40.0 ) ;
+            EXPECT_EQ( mass->getVertexMass(), 40.0 ) ;
             EXPECT_EQ( mass->getTotalMass(), 80.0 ) ;
         }
     }

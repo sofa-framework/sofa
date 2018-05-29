@@ -72,7 +72,7 @@ void UniformMass<RigidTypes, MassType>::loadFromFileRigidImpl(const string& file
 
     if (!filename.empty())
     {
-        MassType m = getMass();
+        MassType m = getVertexMass();
         string unconstingFilenameQuirck = filename ;
         if (!DataRepository.findFile(unconstingFilenameQuirck))
             msg_error(this) << "cannot find file '" << filename << "'.\n"  ;

@@ -106,7 +106,8 @@ public:
     /// @name Read and write access functions in mass information
     /// @{
     void setMass(const MassType& d_vertexMass);
-    const MassType& getMass() const { return d_vertexMass.getValue(); }
+    const MassType& getVertexMass() const { return d_vertexMass.getValue(); }
+    const MassType& getMass() const { return this->getVertexMass(); }
 
     SReal getTotalMass() const { return d_totalMass.getValue(); }
     void setTotalMass(SReal m);
