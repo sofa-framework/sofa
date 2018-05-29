@@ -24,6 +24,8 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <iostream>
 #include <fstream>
+#include <sofa/helper/io/Mesh.h>
+
 
 namespace sofa
 {
@@ -97,7 +99,12 @@ bool MeshGmshLoader::load()
     // -- Reading file
     if (node == "$NOD" || node == "$Nodes") // Gmsh format
     {
-        fileRead = readGmsh(file, gmshFormat);
+        //fileRead = readGmsh(file, gmshFormat);
+        file.close();
+        helper::io::Mesh* _mesh = helper::io::Mesh::Create("gmsh", filename);
+
+        copyMeshToData(_mesh);
+        delete _mesh;
     }
     else //if it enter this "else", it means there is a problem before in the factory or in canLoad()
     {
