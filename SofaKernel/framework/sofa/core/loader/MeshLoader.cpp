@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/loader/MeshLoader.h>
+#include <sofa/helper/io/Mesh.h>
 #include <cstdlib>
 
 namespace sofa
@@ -801,6 +802,79 @@ void MeshLoader::addPyramid(helper::vector< Pyramid >* pPyramids,
 void MeshLoader::addPyramid(helper::vector< Pyramid >* pPyramids, const Pyramid& p)
 {
     pPyramids->push_back(p);
+}
+
+void MeshLoader::copyMeshToData(sofa::helper::io::Mesh* _mesh)
+{
+    // copy vertices
+    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(d_positions.beginEdit());
+    my_positions = _mesh->getVertices();
+    d_positions.endEdit();
+
+    // copy 2D topoogy
+    helper::vector<Edge>& my_edges = *(d_edges.beginEdit());
+    my_edges = _mesh->getEdges();
+    d_edges.endEdit();
+
+    helper::vector<Triangle>& my_triangles = *(d_triangles.beginEdit());
+    my_triangles = _mesh->getTriangles();
+    d_triangles.endEdit();
+
+    helper::vector<Quad>& my_quads = *(d_quads.beginEdit());
+    my_quads = _mesh->getQuads();
+    d_quads.endEdit();
+
+
+    // copy 3D elements
+    helper::vector<Tetrahedron>& my_tetrahedra = *(d_tetrahedra.beginEdit());
+    my_tetrahedra = _mesh->getTetrahedra();
+    d_tetrahedra.endEdit();
+
+    helper::vector<Hexahedron>& my_hexahedra = *(d_hexahedra.beginEdit());
+    my_hexahedra = _mesh->getHexahedra();
+    d_hexahedra.endEdit();
+
+    // copy groups
+    helper::vector< sofa::core::loader::PrimitiveGroup>& my_edgesGroups = *(d_edgesGroups.beginEdit());
+    helper::vector< sofa::core::loader::PrimitiveGroup>& my_trianglesGroups = *(d_trianglesGroups.beginEdit());
+    helper::vector< sofa::core::loader::PrimitiveGroup>& my_quadsGroups = *(d_quadsGroups.beginEdit());
+    helper::vector< sofa::core::loader::PrimitiveGroup>& my_polygonsGroups = *(d_polygonsGroups.beginEdit());
+    helper::vector< sofa::core::loader::PrimitiveGroup>& my_tetrahedraGroups = *(d_tetrahedraGroups.beginEdit());
+    helper::vector< sofa::core::loader::PrimitiveGroup>& my_hexahedraGroups = *(d_hexahedraGroups.beginEdit());
+    helper::vector< sofa::core::loader::PrimitiveGroup>& my_pentahedraGroups = *(d_pentahedraGroups.beginEdit());
+    helper::vector< sofa::core::loader::PrimitiveGroup>& my_pyramidsGroups = *(d_pyramidsGroups.beginEdit());
+
+    my_edgesGroups = _mesh->getEdgesGroups();
+    my_trianglesGroups = _mesh->getTrianglesGroups();
+    my_quadsGroups = _mesh->getQuadsGroups();
+    my_polygonsGroups = _mesh->getPolygonsGroups();
+    my_tetrahedraGroups = _mesh->getTetrahedraGroups();
+    my_hexahedraGroups = _mesh->getHexahedraGroups();
+    my_pentahedraGroups = _mesh->getPentahedraGroups();
+    my_pyramidsGroups = _mesh->getPyramidsGroups();
+
+    d_edgesGroups.endEdit();
+    d_trianglesGroups.endEdit();
+    d_quadsGroups.endEdit();
+    d_polygonsGroups.endEdit();
+    d_tetrahedraGroups.endEdit();
+    d_hexahedraGroups.endEdit();
+    d_pentahedraGroups.endEdit();
+    d_pyramidsGroups.endEdit();
+
+    // copy high order
+    helper::vector<HighOrderEdgePosition >& my_highOrderEdgePositions = *(d_highOrderEdgePositions.beginEdit());
+    helper::vector<HighOrderTrianglePosition >& my_highOrderTrianglePositions = *(d_highOrderTrianglePositions.beginEdit());
+    helper::vector<HighOrderQuadPosition >& my_highOrderQuadPositions = *(d_highOrderQuadPositions.beginEdit());
+
+    my_highOrderEdgePositions = _mesh->getHighOrderEdgePositions();
+    my_highOrderTrianglePositions = _mesh->getHighOrderTrianglePositions();
+    my_highOrderQuadPositions = _mesh->getHighOrderQuadPositions();
+
+    d_highOrderEdgePositions.endEdit();
+    d_highOrderTrianglePositions.endEdit();
+    d_highOrderQuadPositions.endEdit();
+
 }
 
 } // namespace loader
