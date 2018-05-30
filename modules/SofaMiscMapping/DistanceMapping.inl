@@ -27,6 +27,7 @@
 #include <sofa/helper/system/gl.h>
 #include <iostream>
 #include <sofa/simulation/Node.h>
+#include <sofa/defaulttype/MapMapSparseMatrixEigenUtils.h>
 
 namespace sofa
 {
@@ -259,8 +260,11 @@ void DistanceMapping<TIn, TOut>::applyDJT(const core::MechanicalParams* mparams,
 }
 
 template <class TIn, class TOut>
-void DistanceMapping<TIn, TOut>::applyJT(const core::ConstraintParams*, Data<InMatrixDeriv>& , const Data<OutMatrixDeriv>& )
+void DistanceMapping<TIn, TOut>::applyJT(const core::ConstraintParams* cparams, Data<InMatrixDeriv>& in, const Data<OutMatrixDeriv>& out)
 {
+    const OutMatrixDeriv& childMat  = sofa::helper::read(out, cparams).ref();
+    InMatrixDeriv&        parentMat = sofa::helper::write(in, cparams).wref();
+    addMultTransposeEigen(parentMat, jacobian.compressedMatrix, childMat);
 }
 
 

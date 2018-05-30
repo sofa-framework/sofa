@@ -337,7 +337,10 @@ if(NOT "${SOFA_EXTERNAL_DIRECTORIES}" STREQUAL "")
 endif()
 
 ### Deprecated components
-option(SOFA_WITH_DEPRECATED_COMPONENTS "Compile sofa with all deprecated components" ON)
+option(SOFA_WITH_DEPRECATED_COMPONENTS "Compile SOFA with all deprecated components" ON)
+if(SOFA_WITH_DEPRECATED_COMPONENTS)
+    message(DEPRECATION "Deprecated components are activated (SOFA_WITH_DEPRECATED_COMPONENTS variable is ON)")
+endif()
 
 ## Custom
 if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/custom.cmake")

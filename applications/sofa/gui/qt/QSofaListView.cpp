@@ -153,6 +153,49 @@ void QSofaListView::modifyUnlock(void* Id)
     map_modifyObjectWindow.erase( Id );
 }
 
+/// Traverse the item tree and retrive the item that are expanded. The path of the node
+/// that are expanded are stored in the the pathes std::vector::std::string>.
+void QSofaListView::getExpandedNodes(QTreeWidgetItem* item, std::vector<std::string>& pathes)
+{
+    if(!item)
+        return;
+
+    /// We have reached a leaf of the hierarchy or it is closed...so we save the path
+    if( !item->isExpanded() && graphListener_->findObject(item)->toBaseNode() != nullptr )
+        return;
+
+    BaseNode* parentNode = graphListener_->findObject(item)->toBaseNode() ;
+    if(parentNode == nullptr)
+        return;
+
+    std::string path = parentNode->getPathName();
+    pathes.push_back(path);
+
+    for(int i=0 ; i<item->childCount() ; i++)
+    {
+        QTreeWidgetItem* child = item->child(i);
+        BaseNode* childNode = graphListener_->findObject(child)->toBaseNode() ;
+
+        if(childNode==nullptr)
+            continue;
+
+        if( childNode->getParents()[0] == parentNode )
+            getExpandedNodes(child, pathes) ;
+    }
+
+    return ;
+}
+
+void QSofaListView::getExpandedNodes(std::vector<std::string>& pathes)
+{
+    emit Lock(true);
+
+    QTreeWidgetItem* rootitem = this->topLevelItem(0) ;
+    getExpandedNodes(rootitem,pathes) ;
+
+    emit Lock(false);
+}
+
 void QSofaListView::collapseNode()
 {
     collapseNode(currentItem());
@@ -170,6 +213,46 @@ void QSofaListView::collapseNode(QTreeWidgetItem* item)
     item->setExpanded ( true );
     emit Lock(false);
 }
+
+void QSofaListView::expandPath(const std::string& path)
+{
+    if(path.empty())
+        return;
+
+    if(path.data()[0] != '/')
+        return;
+
+    Node* match = down_cast<Node>( graphListener_->findObject(this->topLevelItem(0))->toBaseNode() );
+
+    QStringList tokens = QString::fromStdString(path).split('/') ;
+
+    for(int i=1;i<tokens.size();i++)
+    {
+        match = match->getChild(tokens[i].toStdString());
+
+        if(match == nullptr)
+            return;
+
+        if(graphListener_->items.find(match) != graphListener_->items.end())
+        {
+            QTreeWidgetItem* item = graphListener_->items[match] ;
+            item->setExpanded ( true );
+        }
+    }
+}
+
+void QSofaListView::expandPathFrom(const std::vector<std::string>& pathes)
+{
+    emit Lock(true);
+
+    for(auto& path : pathes)
+    {
+        expandPath(path) ;
+    }
+
+    emit Lock(false);
+}
+
 
 void QSofaListView::expandNode()
 {
