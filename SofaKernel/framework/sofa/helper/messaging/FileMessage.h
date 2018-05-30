@@ -40,7 +40,7 @@ class SOFA_HELPER_API FileMessage/*class FileMessage*/
 public:
 
     FileMessage() {}
-    static const std::string UnableToOpenFile(const char* filename);
+    static const std::string unableToOpenFile(const char* filename);
 
 };
 

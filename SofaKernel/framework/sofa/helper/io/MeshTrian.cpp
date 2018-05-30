@@ -55,7 +55,7 @@ void MeshTrian::init (std::string filename)
         return;
     }
     FILE *f = fopen(filename.c_str(), "r");
-    msg_error_when(!f)<<sofa::helper::messaging::FileMessage::UnableToOpenFile(filename.c_str());
+    msg_error_when(!f)<<sofa::helper::messaging::FileMessage::unableToOpenFile(filename.c_str());
     if (f)
     {
         readTrian (f);

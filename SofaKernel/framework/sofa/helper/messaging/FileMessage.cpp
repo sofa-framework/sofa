@@ -30,7 +30,7 @@ namespace helper
 namespace messaging
 {
 
-const std::string FileMessage::UnableToOpenFile(const char* filename)
+const std::string FileMessage::unableToOpenFile(const char* filename)
 {
     std::string errormsg="Can't open file '";
     errormsg+=filename;
