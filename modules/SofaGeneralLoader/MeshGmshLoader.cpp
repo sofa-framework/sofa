@@ -48,8 +48,6 @@ int MeshGmshLoaderClass = core::RegisterObject("Specific mesh loader for Gmsh fi
 
 bool MeshGmshLoader::load()
 {
-    sout << "Loading Gmsh file: " << m_filename << sendl;
-
     string cmd;
     bool fileRead = false;
     unsigned int gmshFormat = 0;
@@ -70,7 +68,7 @@ bool MeshGmshLoader::load()
     {
         gmshFormat = 2;
         string line;
-        std::getline(file, line); // we don't care about this line (2 0 8)
+        std::getline(file, line); // we don't need this line (2 0 8)
         std::getline(file, cmd); // end Version
         std::istringstream endMeshReader(cmd);
         string endMesh;
@@ -91,7 +89,6 @@ bool MeshGmshLoader::load()
     {
         gmshFormat = 1;
     }
-
 
     std::istringstream nodeReader(cmd);
     string node;

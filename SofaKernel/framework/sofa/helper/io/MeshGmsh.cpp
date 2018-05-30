@@ -27,6 +27,7 @@
 #include <sofa/helper/logging/Messaging.h>
 #include <istream>
 #include <fstream>
+#include <string>
 
 namespace sofa
 {
@@ -56,26 +57,32 @@ void MeshGmsh::init (std::string filename)
     std::ifstream file(filename);
     if (!file.good()) return;
 
-    int gmshFormat = 0;
-
+    unsigned int gmshFormat = 0;
     std::string cmd;
-    file >> cmd;
 
-    if (cmd == "$MeshFormat") // Reading gmsh 2.0 file
+    // -- Looking for Gmsh version of this file.
+    std::getline(file, cmd); //Version
+    std::istringstream versionReader(cmd);
+    std::string version;
+    versionReader >> version;
+    if (version == "$MeshFormat") // Reading gmsh 2.0 file
     {
         gmshFormat = 2;
         std::string line;
-        std::getline(file, line); // we don't care about this line
-        if (line == "") std::getline(file, line);
-        file >> cmd;
-        if (cmd != "$EndMeshFormat") // it should end with $EndMeshFormat
+        std::getline(file, line); // we don't nedd this line
+        std::getline(file, cmd);
+        std::istringstream endMeshReader(cmd);
+        std::string endMesh;
+        endMeshReader >> endMesh;
+
+        if (endMesh != std::string("$EndMeshFormat")) // it should end with $EndMeshFormat
         {
             file.close();
             return;
         }
         else
         {
-            file >> cmd;
+            std::getline(file, cmd); // First Command
         }
     }
     else
