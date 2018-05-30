@@ -1299,20 +1299,21 @@ void MechanicalAddMBKdxVisitor::bwdMechanicalMapping(simulation::Node* /*node*/,
 
 void MechanicalAddMBKdxVisitor::bwdMechanicalState(simulation::Node* , core::behavior::BaseMechanicalState* mm)
 {
-    mm->forceMask.activate(false);
+    mm->forceMask.activate(false); 
 }
 
 
 Visitor::Result MechanicalResetConstraintVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
 {
-    mm->resetConstraint(this->params);
+    // mm->setC(res);
+    mm->resetConstraint(m_cparams);
     return RESULT_CONTINUE;
 }
 
 
 Visitor::Result MechanicalResetConstraintVisitor::fwdMappedMechanicalState(simulation::Node* /*node*/, core::behavior::BaseMechanicalState* mm)
 {
-    mm->resetConstraint(this->params);
+    mm->resetConstraint(m_cparams);
     return RESULT_CONTINUE;
 }
 

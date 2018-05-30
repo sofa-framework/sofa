@@ -413,8 +413,6 @@ void BilateralInteractionConstraint<DataTypes>::getVelocityViolation(BaseVector 
                                                                      const DataVecDeriv &d_v1,
                                                                      const DataVecDeriv &d_v2)
 {
-    std::cout<<"getVelocityViolation called "<<std::endl;
-
     const helper::vector<int> &m1Indices = m1.getValue();
     const helper::vector<int> &m2Indices = m2.getValue();
 
@@ -425,26 +423,34 @@ void BilateralInteractionConstraint<DataTypes>::getVelocityViolation(BaseVector 
 
     unsigned minp = std::min(m1Indices.size(), m2Indices.size());
     const VecDeriv& restVector = this->restVector.getValue();
-    std::vector<Deriv> dPrimefree;
 
     if (!merge.getValue())
     {
-        dPrimefree.resize(minp);
+        auto pos1 = this->getMState1()->readPositions();
+        auto pos2 = this->getMState2()->readPositions();
 
-        for (unsigned pid=0; pid<minp; pid++)
+        const SReal dt = this->getContext()->getDt();
+        const SReal invDt = SReal(1.0) / dt;
+
+        for (unsigned pid=0; pid<minp; ++pid)
         {
-            dPrimefree[pid] = v2[m2Indices[pid]] - v1[m1Indices[pid]];
-            if (pid < restVector.size())
-                dPrimefree[pid] -= restVector[pid];
 
-            v->set(cid[pid]  , dPrimefree[pid][0]);
-            v->set(cid[pid]+1, dPrimefree[pid][1]);
-            v->set(cid[pid]+2, dPrimefree[pid][2]);
+            Deriv dPos = (pos2[m2Indices[pid]] - pos1[m1Indices[pid]]);
+            if (pid < restVector.size())
+            {
+                dPos -= -restVector[pid];
+            }
+            dPos *= invDt;
+            const Deriv dVfree = v2[m2Indices[pid]] - v1[m1Indices[pid]];
+
+            v->set(cid[pid]  , dVfree[0] + dPos[0] );
+            v->set(cid[pid]+1, dVfree[1] + dPos[1] );
+            v->set(cid[pid]+2, dVfree[2] + dPos[2] );
         }
     }
     else
     {
-
+        VecDeriv dPrimefree;
         dPrimefree.resize(minp);
         dfree.resize(minp);
 

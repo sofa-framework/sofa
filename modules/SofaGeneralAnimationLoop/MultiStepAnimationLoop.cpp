@@ -90,10 +90,15 @@ void MultiStepAnimationLoop::step(const sofa::core::ExecParams* params, SReal dt
     const int ninteg = integrationSteps.getValue();
 
     SReal stepDt = dt / (ncollis * ninteg);
+
+    // initialize a constraint params object with default MultiVecId for 
+    // constraint jacobian, free positions, free velocity vectors
+    sofa::core::ConstraintParams cparams(*params); 
+
     for (int c = 0; c < ncollis; ++c)
     {
         // First we reset the constraints
-        sofa::simulation::MechanicalResetConstraintVisitor(params).execute(this->getContext());
+        sofa::simulation::MechanicalResetConstraintVisitor(&cparams).execute(this->getContext());
         // Then do collision detection and response creation
         sout << "collision" << sendl;
         computeCollision(params);
