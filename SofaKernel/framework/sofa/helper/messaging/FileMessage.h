@@ -35,7 +35,7 @@ namespace helper
 namespace messaging
 {
 
-class SOFA_HELPER_API FileMessage/*class FileMessage*/
+class SOFA_HELPER_API FileMessage
 {
 public:
 
