@@ -23,15 +23,9 @@
 #define SOFA_COMPONENT_MISC_READSTATE_H
 #include "config.h"
 
-#include <sofa/core/behavior/ForceField.h>
-#include <sofa/core/behavior/BaseMechanicalState.h>
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/simulation/Visitor.h>
-#include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/core/ExecParams.h>
 
 #ifdef SOFA_HAVE_ZLIB
 #include <zlib.h>

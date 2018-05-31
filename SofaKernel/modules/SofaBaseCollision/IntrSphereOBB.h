@@ -23,8 +23,8 @@
 #define SOFA_COMPONENT_COLLISION_INTRSPHEREOBB_H
 #include "config.h"
 
-#include <SofaBaseCollision/OBBModel.h>
 #include <SofaBaseCollision/SphereModel.h>
+#include <SofaBaseCollision/OBBModel.h>
 #include <SofaBaseCollision/IntrUtility3.h>
 #include <SofaBaseCollision/Intersector.h>
 

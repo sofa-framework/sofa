@@ -23,8 +23,6 @@
 #define SOFA_CORE_BEHAVIOR_BASEINTERACTIONFORCEFIELD_H
 
 #include <sofa/core/behavior/BaseForceField.h>
-#include <sofa/core/behavior/BaseMechanicalState.h>
-#include <sofa/core/MechanicalParams.h>
 namespace sofa
 {
 

@@ -24,7 +24,6 @@
 #include "config.h"
 
 #include <sofa/core/loader/MeshLoader.h>
-#include <sofa/core/objectmodel/BaseData.h>
 
 namespace sofa
 {

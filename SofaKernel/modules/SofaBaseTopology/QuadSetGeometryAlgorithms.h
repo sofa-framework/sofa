@@ -24,7 +24,6 @@
 #include "config.h"
 
 #include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
-#include <sofa/defaulttype/Vec.h>
 
 namespace sofa
 {

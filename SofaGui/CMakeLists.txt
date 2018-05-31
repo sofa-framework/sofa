@@ -78,16 +78,7 @@ list(APPEND SOFAGUI_TARGETS SofaGuiCommon)
 
 ## OpenGL-based GUIs
 if(NOT SOFA_NO_OPENGL)
-    ## Glut GUI
-    if(SOFA_HAVE_GLUT)
-        option(SOFAGUI_GLUT "Compile the Glut GUI" OFF)
-        if(SOFAGUI_GLUT)
-            set(SOFA_GUI_GLUT 1) # cmakedefine
-            list(APPEND SOFAGUI_TARGETS SofaGuiGlut)
-            add_subdirectory(../applications/sofa/gui/glut ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiGlut)
-        endif()
-    endif()
-
+    
     option(SOFAGUI_HEADLESS_RECORDER "Compile the headless recorder (Linux only)" OFF)
     if(SOFAGUI_HEADLESS_RECORDER)
         set(SOFA_GUI_HEADLESS_RECORDER 1) # cmakedefine

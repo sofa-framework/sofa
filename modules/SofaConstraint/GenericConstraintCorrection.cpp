@@ -26,6 +26,8 @@
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/core/behavior/ConstraintSolver.h>
+
 
 namespace sofa 
 {

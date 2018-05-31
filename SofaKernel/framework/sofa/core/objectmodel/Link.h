@@ -27,11 +27,9 @@
 #endif
 
 #include <sofa/core/objectmodel/BaseLink.h>
-#include <sofa/core/ExecParams.h>
 #include <sofa/helper/stable_vector.h>
 
 #include <sstream>
-#include <string>
 #include <utility>
 #include <vector>
 
