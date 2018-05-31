@@ -130,7 +130,7 @@
 
 #define FILEINFO(filename, line) sofa::helper::logging::FileInfo(filename, line)
 
-#define FILEINFO(filename, line) sofa::helper::logging::FileInfo(filename, line)
+#define FILEINFO(filename, line) sofa::helper::logging::FileInfo(filename, line)  //rewritten again. delete this?
 
 /// THESE MACRO BEASTS ARE FOR AUTOMATIC DETECTION OF MACRO NO or ONE ARGUMENTS
 #define TWO_FUNC_CHOOSER(_f1, _f2 ,...) _f2

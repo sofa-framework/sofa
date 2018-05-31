@@ -35,14 +35,6 @@
 namespace sofa
 {
 
-namespace core
-{
-    namespace collision
-    {
-        template class SOFA_CONSTRAINT_API IntersectorFactory<component::collision::LocalMinDistance>;
-    }
-}
-
 namespace component
 {
 
@@ -1488,6 +1480,14 @@ void LocalMinDistance::draw(const core::visual::VisualParams* vparams)
 } // namespace collision
 
 } // namespace component
+
+namespace core
+{
+namespace collision
+{
+template class SOFA_CONSTRAINT_API IntersectorFactory<component::collision::LocalMinDistance>;
+}
+}
 
 } // namespace sofa
 
