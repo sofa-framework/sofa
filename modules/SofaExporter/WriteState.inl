@@ -143,7 +143,7 @@ void WriteState::reset()
 
 void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
 {
-    if (/* simulation::AnimateBeginEvent* ev = */simulation::AnimateBeginEvent::checkEventType(event))
+    if (simulation::AnimateBeginEvent::checkEventType(event) or simulation::AnimateEndEvent::checkEventType(event))
     {
         if (!mmodel) return;
         if (!outfile
