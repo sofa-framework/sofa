@@ -147,7 +147,7 @@ public:
     Data< VecDeriv > vfree; ///< free velocity coordinates of the degrees of freedom
     Data< VecCoord > x0; ///< rest position coordinates of the degrees of freedom
     Data< MatrixDeriv > c; ///< constraints applied to the degrees of freedom
-#if(SOFA_WITH_EXPERIMENTAL_FEATURES==1)
+#if(SOFA_WITH_EXPERIMENTAL_FEATURES()==1)
     Data< MatrixDeriv > m; ///< mappingJacobian applied to the degrees of freedom
 #endif
     Data< VecCoord > reset_position; ///< reset position coordinates of the degrees of freedom
@@ -378,7 +378,7 @@ public:
     virtual void resetConstraint(const core::ConstraintParams* cparams) override;
 
     virtual void getConstraintJacobian(const core::ConstraintParams* cparams, sofa::defaulttype::BaseMatrix* J,unsigned int & off) override;
-#if(SOFA_WITH_EXPERIMENTAL_FEATURES==1)
+#if(SOFA_WITH_EXPERIMENTAL_FEATURES()==1)
     virtual void buildIdentityBlocksInJacobian(const sofa::helper::vector<unsigned int>& list_n, core::MatrixDerivId &mID) override;
 #endif
     /// @}
