@@ -157,8 +157,6 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
             return;
 
         double time = getContext()->getTime();
-        // the current time is update after the writeStae event so we add one step
-        time += getContext()->getDt();
         // the time to measure the increase of energy is reached
         if (f_stopAt.getValue())
         {
