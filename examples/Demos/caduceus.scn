@@ -7,7 +7,7 @@
     <CollisionPipeline depth="15" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />
     <MinProximityIntersection name="Proximity" alarmDistance="1.5" contactDistance="1" />
-    <InteractiveCamera position="0 30 90" lookAt="0 30 0"/>
+    <Camera position="0 30 90" lookAt="0 30 0"/>
     <LightManager />
     <SpotLight name="light1" color="1 1 1" position="0 80 25" direction="0 -1 -0.8" cutoff="30" exponent="1" />
     <SpotLight name="light2" color="1 1 1" position="0 40 100" direction="0 0 -1" cutoff="30" exponent="1" />
