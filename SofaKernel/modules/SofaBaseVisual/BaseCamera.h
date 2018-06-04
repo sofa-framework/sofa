@@ -32,6 +32,8 @@
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/OptionsGroup.h>
 
+#include "BackgroundSetting.h"
+
 namespace sofa
 {
 
@@ -94,6 +96,9 @@ public:
     
     Data<helper::vector<float> > p_modelViewMatrix; ///< ModelView Matrix
     Data<helper::vector<float> > p_projectionMatrix; ///< Projection Matrix
+
+    SingleLink<BaseCamera, sofa::component::configurationsetting::BackgroundSetting,
+               BaseLink::FLAG_STOREPATH> l_background ;
 
     BaseCamera();
     virtual ~BaseCamera();

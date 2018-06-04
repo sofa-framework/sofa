@@ -62,6 +62,7 @@ BaseCamera::BaseCamera()
     ,p_fixedLookAtPoint(initData(&p_fixedLookAtPoint, false, "fixedLookAt", "keep the lookAt point always fixed"))
     ,p_modelViewMatrix(initData(&p_modelViewMatrix,  "modelViewMatrix", "ModelView Matrix"))
     ,p_projectionMatrix(initData(&p_projectionMatrix,  "projectionMatrix", "Projection Matrix"))
+    ,l_background(initLink("backgroundSetting", "Link pointing to a BackgroundSetting object set the background parameters for this camera."))
     ,b_setDefaultParameters(false)
 {
     this->f_listening.setValue(true);
@@ -89,7 +90,6 @@ BaseCamera::BaseCamera()
 
 BaseCamera::~BaseCamera()
 {
-
 }
 
 void BaseCamera::activate()
@@ -108,7 +108,7 @@ bool BaseCamera::isActivated()
 }
 
 void BaseCamera::init()
-{
+{    
     if(p_position.isSet())
     {
         if(!p_orientation.isSet())
@@ -153,8 +153,6 @@ void BaseCamera::init()
     currentDistance = p_distance.getValue();
     currentZNear = p_zNear.getValue();
     currentZFar = p_zFar.getValue();
-    std::cout << currentZNear << std::endl ;
-    std::cout << currentZFar << std::endl ;
 }
 
 void BaseCamera::reinit()
