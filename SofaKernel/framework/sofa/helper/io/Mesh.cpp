@@ -38,7 +38,6 @@ SOFA_LINK_CLASS(MeshOBJ)
 SOFA_LINK_CLASS(MeshGmsh)
 SOFA_LINK_CLASS(MeshSTL)
 SOFA_LINK_CLASS(MeshXsp)
-SOFA_LINK_CLASS(MeshVTK)
 
 Mesh* Mesh::Create(const std::string& filename)
 {
