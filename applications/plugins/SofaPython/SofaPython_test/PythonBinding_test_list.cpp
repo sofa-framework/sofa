@@ -62,9 +62,12 @@ public:
 } ;
 
 SetOfPythonScenes scenes = {"test_BindingBase.py",
+                            "test_BindingBaseObject.py",
                             "test_BindingData.py",
                             "test_BindingLink.py",
-                            "test_BindingSofa.py"} ;
+                            "test_BindingNode.py",
+                            "test_BindingSofa.py",
+                            "test_PythonEnvironment.py"} ;
 
 TEST_P(PythonBinding_tests, scene)
 {

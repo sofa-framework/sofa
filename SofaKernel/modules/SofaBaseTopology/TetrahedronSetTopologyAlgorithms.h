@@ -25,7 +25,6 @@
 
 #include <SofaBaseTopology/TriangleSetTopologyAlgorithms.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/defaulttype/Vec.h>
 
 namespace sofa
 {

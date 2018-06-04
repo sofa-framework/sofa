@@ -25,8 +25,6 @@
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/FnDispatcher.h>
 #include <sofa/core/objectmodel/Data.h>
-#include <string>
-#include <map>
 
 
 namespace sofa

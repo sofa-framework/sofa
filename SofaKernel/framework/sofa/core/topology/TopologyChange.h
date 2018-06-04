@@ -23,7 +23,6 @@
 #define SOFA_CORE_TOPOLOGY_TOPOLOGYCHANGE_H
 
 #include <sofa/core/topology/Topology.h>
-#include <iostream>
 
 namespace sofa
 {

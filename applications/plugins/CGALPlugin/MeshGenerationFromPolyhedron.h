@@ -29,7 +29,8 @@
 #ifndef CGALPLUGIN_MESHGENERATIONFROMPOLYHEDRON_H
 #define CGALPLUGIN_MESHGENERATIONFROMPOLYHEDRON_H
 
-#define CGAL_MESH_3_VERBOSE
+#define CGAL_MESH_3_VERBOSE 0
+
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/DataEngine.h>

@@ -28,9 +28,6 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/Quater.h>
 
-#include <sofa/core/objectmodel/KeypressedEvent.h>
-#include <sofa/core/objectmodel/KeyreleasedEvent.h>
-#include <sofa/core/objectmodel/MouseEvent.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/OptionsGroup.h>

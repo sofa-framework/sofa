@@ -43,14 +43,8 @@ namespace component
 namespace constraintset
 {
 
-/// to avoid compilation problem under gcc3.3
-extern inline sofa::core::behavior::OdeSolver* getOdeSolver(sofa::core::objectmodel::BaseContext* context)
-{
-    return context->get<sofa::core::behavior::OdeSolver>();
-}
-
 /**
- *  \brief Component computing contact forces within a simulated body using the compliance method.
+ *  \brief Component computing constrained forces within a simulated body using the compliance method.
  */
 template<class TDataTypes>
 class LinearSolverConstraintCorrection : public sofa::core::behavior::ConstraintCorrection< TDataTypes >
@@ -79,23 +73,18 @@ protected:
 public:
     virtual void init() override;
 
+
     virtual void addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, defaulttype::BaseMatrix* W) override;
 
-    virtual void getComplianceMatrix(defaulttype::BaseMatrix* ) const override;
+    virtual void getComplianceMatrix(defaulttype::BaseMatrix* ) const;
 
-    virtual void computeAndApplyMotionCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::MultiVecCoordId x, sofa::core::MultiVecDerivId v, sofa::core::MultiVecDerivId f, const sofa::defaulttype::BaseVector * lambda) override;
+    virtual void computeMotionCorrection(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, core::MultiVecDerivId f) override;
 
-    virtual void computeAndApplyPositionCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::MultiVecCoordId x, sofa::core::MultiVecDerivId f, const sofa::defaulttype::BaseVector *lambda) override;
+    virtual void applyMotionCorrection(const core::ConstraintParams * cparams, Data< VecCoord > &x, Data< VecDeriv > &v, Data< VecDeriv > &dx, const Data< VecDeriv > &f) override;
 
-    virtual void computeAndApplyVelocityCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::MultiVecDerivId v, sofa::core::MultiVecDerivId f, const sofa::defaulttype::BaseVector *lambda) override;
+    virtual void applyPositionCorrection(const sofa::core::ConstraintParams *cparams, Data< VecCoord >& x, Data< VecDeriv>& dx, const Data< VecDeriv >& f) override;
 
-    virtual void computeAndApplyMotionCorrection(const sofa::core::ConstraintParams * /*cparams*/, sofa::core::objectmodel::Data< VecCoord > &/*x*/, sofa::core::objectmodel::Data< VecDeriv > &/*v*/, sofa::core::objectmodel::Data< VecDeriv > &/*f*/, const sofa::defaulttype::BaseVector * /*lambda*/) override {};
-
-    virtual void computeAndApplyPositionCorrection(const sofa::core::ConstraintParams * /*cparams*/, sofa::core::objectmodel::Data< VecCoord > &/*x*/, sofa::core::objectmodel::Data< VecDeriv > &/*f*/, const sofa::defaulttype::BaseVector * /*lambda*/) override {};
-
-    virtual void computeAndApplyVelocityCorrection(const sofa::core::ConstraintParams * /*cparams*/, sofa::core::objectmodel::Data< VecDeriv > &/*v*/, sofa::core::objectmodel::Data< VecDeriv > &/*f*/, const sofa::defaulttype::BaseVector * /*lambda*/) override {};
-
-    virtual void applyPredictiveConstraintForce(const sofa::core::ConstraintParams *cparams, sofa::core::objectmodel::Data< VecDeriv > &f, const defaulttype::BaseVector *lambda) override;
+    virtual void applyVelocityCorrection(const sofa::core::ConstraintParams *cparams, Data< VecDeriv>& v, Data< VecDeriv>& dv, const Data< VecDeriv >& f) override;
 
     virtual void rebuildSystem(double massFactor, double forceFactor) override;
 
@@ -127,14 +116,16 @@ public:
     virtual void getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, int begin, int end) override;
 
     /// Pre-construction check method called by ObjectFactory.
+#if 0
     template<class T>
     static bool canCreate(T*& obj, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
     {
-        if (getOdeSolver(context) == NULL)
+        /*if (getOdeSolver(context) == NULL)
             return false;
-
+        */
         return Inherit::canCreate(obj, context, arg);
     }
+#endif //
 
 protected:
 
@@ -143,20 +134,21 @@ protected:
 
     linearsolver::SparseMatrix<SReal> J; ///< constraint matrix
     linearsolver::FullVector<SReal> F; ///< forces computed from the constraints
-#if 0 // refMinv is not use in normal case    
-    linearsolver::FullMatrix<SReal> refMinv; ///< reference inverse matrix
-#endif
-
-    /*
-    * @brief Compute the compliance matrix
-    */
-
-    virtual void computeJ(sofa::defaulttype::BaseMatrix* W);
 
     /**
-     * @brief Compute dx correction from motion space force vector.
-     */
-    virtual void computeDx(sofa::core::MultiVecDerivId f);
+    * @brief Compute the compliance matrix
+    */
+    virtual void computeJ(sofa::defaulttype::BaseMatrix* W, const MatrixDeriv& j);
+
+
+    ////////////////////////// Inherited attributes ////////////////////////////
+    /// https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
+    /// Bring inherited attributes and function in the current lookup context.
+    /// otherwise any access to the base::attribute would require
+    /// the "this->" approach.
+    using Inherit::m_componentstate ;
+    using Inherit::mstate ;
+    ////////////////////////////////////////////////////////////////////////////
 
 private:
     // new :  for non building the constraint system during solving process //

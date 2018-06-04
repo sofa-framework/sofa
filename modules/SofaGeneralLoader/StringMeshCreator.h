@@ -25,7 +25,6 @@
 
 #include <sofa/core/loader/MeshLoader.h>
 
-#include <sofa/helper/SVector.h>
 namespace sofa
 {
 

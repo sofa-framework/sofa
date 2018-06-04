@@ -22,6 +22,8 @@
 #ifndef SOFA_COMPONENT_MAPPING_BaseDeformationImpl_INL
 #define SOFA_COMPONENT_MAPPING_BaseDeformationImpl_INL
 
+#include <sofa/helper/system/gl.h>
+
 // NB: These implementations have been factored from BaseDeformationMapping.inl and BaseDeformationMultiMapping.inl
 // so that LinearMapping.h and LinearMultiMapping.h can be included together.
 

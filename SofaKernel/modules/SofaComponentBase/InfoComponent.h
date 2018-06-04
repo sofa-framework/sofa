@@ -28,7 +28,6 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include "config.h"
-#include <string>
 
 namespace sofa
 {
