@@ -24,6 +24,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <iostream>
 #include <fstream>
+#include <sofa/helper/io/Mesh.h>
 
 namespace sofa
 {
@@ -79,10 +80,17 @@ bool MeshXspLoader::load()
         float version = 0.0f;
         file >> version;
 
-        if (version == 3.0)
-            fileRead = readXsp(file, false);
-        else if (version == 4.0)
-            fileRead = readXsp(file, true);
+        //TODO: 2018-04-06 (unify loader api): temporary change to unify loader API
+        //if (version == 3.0)
+        //    fileRead = readXsp(file, false);
+        //else if (version == 4.0)
+        //    fileRead = readXsp(file, true);
+
+        file.close();
+        helper::io::Mesh* _mesh = helper::io::Mesh::Create("xsp", filename);
+        copyMeshToData(_mesh);
+
+        delete _mesh;        
     }
     else
     {
@@ -100,28 +108,22 @@ bool MeshXspLoader::load()
 
 bool MeshXspLoader::readXsp (std::ifstream &file, bool vector_spring)
 {
-    sout << "Reading Xsp file: " << vector_spring << sendl;
-
+    msg_info() << "Reading Xsp file: " << vector_spring;
 
     std::string cmd;
-    //int npoints = 0;
-    //int nlines = 0;
-
     file >> cmd;
 
-    // then find out number of masses and springs
+    // then find out number of masses and springs, not used.
     if (cmd == "numm")
     {
         int totalNumMasses = 0;
         file >> totalNumMasses;
-        //npoints=totalNumMasses;
     }
 
     if (cmd=="nums")
     {
         int totalNumSprings = 0;
         file >> totalNumSprings;
-        //nlines=totalNumSprings;
     }
 
 
@@ -141,19 +143,13 @@ bool MeshXspLoader::readXsp (std::ifstream &file, bool vector_spring)
             double px,py,pz,vx,vy,vz,mass=0.0,elastic=0.0;
             //bool fixed=false;
             file >> index >> location >> px >> py >> pz >> vx >> vy >> vz >> mass >> elastic;
-//            if (mass < 0)
-//            {
-//                // fixed point initialization
-//                mass = -mass;
-//                //fixed = true;
-//            }
             my_positions.push_back(Vector3(px, py, pz));
         }
         else if (cmd=="lspg")	// linear springs connector
         {
             int	index;
             Edge m;
-            double ks=0.0,kd=0.0,initpos=-1;
+            double ks = 0.0, kd = 0.0, initpos = -1;
             if (vector_spring)
             {
                 double restx=0.0,resty=0.0,restz=0.0;

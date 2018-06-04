@@ -119,53 +119,71 @@ void MeshSTL::readSTL(std::ifstream &file)
     Vec3f result;
 
     std::string line;
-    std::map< defaulttype::Vec3f, unsigned > map;
-    unsigned positionCounter = 0u, vertexCounter=0u;
 
-    // there must be a way to perform it at compile time with initializer_list
-    vector< vector<int> > vertNormTexIndices(5); // 3 pos + 1 normal + 1 texcoord
-    {
-        vector<int> nullIndices(3);
-        std::fill( nullIndices.begin(), nullIndices.end(), 0 );
-        std::fill( vertNormTexIndices.begin(), vertNormTexIndices.end(), nullIndices );
-    }
+    std::map< sofa::defaulttype::Vec3f, core::topology::Topology::index_type > my_map;
+    unsigned positionCounter = 0u, vertexCounter=0u;
+    bool useMap = true; //TODO: 2018-04-06 (unify loader api): this field is missing d_mergePositionUsingMap.getValue();
+
+    Topology::Triangle the_tri;
 
     while( std::getline(file,line) )
     {
         if (line.empty()) continue;
         std::istringstream values(line);
-        std::string token;
-        values >> token;
-        if (token == "facet")
+
+        std::string bufferWord;
+        values >> bufferWord;
+        if (bufferWord == "facet")
         {
-            /* normal */
-            values >> token >> result[0] >> result[1] >> result[2];
-            //normals.push_back(result);
+            // Normal
+            values >> bufferWord >> result[0] >> result[1] >> result[2];
+            normals.push_back(result);
         }
-        else if (token == "vertex")
+        else if (bufferWord == "vertex")
         {
-            /* vertex */
+            // Vertex
             values >> result[0] >> result[1] >> result[2];
 
-            auto it = map.find( result );
-            if( it == map.end() )
+            if (useMap)
             {
-                vertNormTexIndices[0][vertexCounter++] = positionCounter;
-                map[result] = positionCounter++;
-                m_vertices.push_back(result);
+                auto it = my_map.find(result);
+                if (it == my_map.end())
+                {
+                    the_tri[vertexCounter] = positionCounter;
+                    my_map[result] = positionCounter++;
+                    m_vertices.push_back(result);
+                }
+                else
+                {
+                    the_tri[vertexCounter] = it->second;
+                }
             }
             else
             {
-                vertNormTexIndices[0][vertexCounter++] = it->second;
+                bool find = false;
+                for (size_t i = 0; i<m_vertices.size(); ++i)
+                    if ((result[0] == m_vertices[i][0]) && (result[1] == m_vertices[i][1]) && (result[2] == m_vertices[i][2]))
+                    {
+                        find = true;
+                        the_tri[vertexCounter] = static_cast<core::topology::Topology::PointID>(i);
+                        break;
+                    }
+
+                if (!find)
+                {
+                    m_vertices.push_back(result);
+                    the_tri[vertexCounter] = static_cast<core::topology::Topology::PointID>(m_vertices.size() - 1);
+                }
             }
+            vertexCounter++;
 
         }
-        else if (token == "endfacet")
+        else if (bufferWord == "endfacet")
         {
-            facets.push_back(vertNormTexIndices);
+            m_triangles.push_back(the_tri);
             vertexCounter=0;
         }
-        else if (token == "endsolid" || token == "end")
+        else if (bufferWord == "endsolid" || bufferWord == "end")
             break;
     }
 
@@ -186,7 +204,7 @@ void MeshSTL::readBinarySTL (const std::string &filename)
 
     std::map< defaulttype::Vec3f, unsigned > map;
     unsigned positionCounter = 0u;
-
+    bool useMap = true; //TODO: 2018-04-06 (unify loader api): this field is missing d_mergePositionUsingMap.getValue();
 
     // Skipping header file
     char buffer[80];
@@ -196,18 +214,10 @@ void MeshSTL::readBinarySTL (const std::string &filename)
     uint32_t nbrFacet;
     dataFile.read((char*)&nbrFacet, 4);
 
-    // preallocating facets
-    // there must be a way to perform part of it at compile time with initializer_list
-    {
-        vector<int> nullIndices(3);
-        std::fill( nullIndices.begin(), nullIndices.end(), 0 );
-        vector<vector<int>> vertNormTexIndices(5); // 3 pos + 1 normal + 1 texcoord
-        std::fill( vertNormTexIndices.begin(), vertNormTexIndices.end(), nullIndices );
-        facets.resize(nbrFacet);
-        std::fill( facets.begin(), facets.end(), vertNormTexIndices );
-    }
-
-
+    m_triangles.resize(nbrFacet); // exact size
+    normals.resize(nbrFacet); // exact size
+    m_vertices.reserve(nbrFacet * 3); // max size
+    
 #ifndef NDEBUG
     {
     // checking that the file is large enough to contain the given nb of facets
@@ -227,13 +237,14 @@ void MeshSTL::readBinarySTL (const std::string &filename)
     // Parsing facets
     for (unsigned int i = 0; i<nbrFacet; ++i)
     {
+        Topology::Triangle& the_tri = m_triangles[i];
+
         // Get normal
         dataFile.read((char*)&result[0], 4);
         dataFile.read((char*)&result[1], 4);
         dataFile.read((char*)&result[2], 4);
-
-        vector< vector<int> >& facet = facets[i];
-
+        normals[i] = result;
+        
         // Get vertex
         for (unsigned int j = 0; j<3; ++j)
         {
@@ -241,16 +252,36 @@ void MeshSTL::readBinarySTL (const std::string &filename)
             dataFile.read((char*)&result[1], 4);
             dataFile.read((char*)&result[2], 4);
 
-            auto it = map.find( result );
-            if( it == map.end() )
+            if (useMap)
             {
-                facet[0][j] = positionCounter;
-                map[result] = positionCounter++;
-                m_vertices.push_back(result);
+                auto it = map.find(result);
+                if (it == map.end())
+                {
+                    the_tri[j] = positionCounter;
+                    map[result] = positionCounter++;
+                    m_vertices.push_back(result);
+                }
+                else
+                {
+                    the_tri[j] = it->second;
+                }
             }
             else
             {
-                facet[0][j] = it->second;
+                bool find = false;
+                for (size_t k = 0; k<m_vertices.size(); ++k)
+                    if ((result[0] == m_vertices[k][0]) && (result[1] == m_vertices[k][1]) && (result[2] == m_vertices[k][2]))
+                    {
+                        find = true;
+                        the_tri[j] = static_cast<core::topology::Topology::PointID>(k);
+                        break;
+                    }
+
+                if (!find)
+                {
+                    m_vertices.push_back(result);
+                    the_tri[j] = m_vertices.size() - 1;
+                }
             }
         }
 

@@ -80,18 +80,17 @@ bool MeshXsp::readXsp(std::ifstream &file, bool vector_spring)
     std::string cmd;
     file >> cmd;
 
-    int npoints = 0;
-    int nlines = 0;
-
-    // then find out number of masses and springs
+    // then find out number of masses and springs, not used.
     if (cmd == "numm")
     {
-        file >> npoints;
+        int totalNumMasses = 0;
+        file >> totalNumMasses;
     }
 
     if (cmd == "nums")
     {
-        file >> nlines;
+        int totalNumSprings = 0;
+        file >> totalNumSprings;
     }
 
 
@@ -109,30 +108,32 @@ bool MeshXsp::readXsp(std::ifstream &file, bool vector_spring)
         else if (cmd == "lspg")	// linear springs connector
         {
             int	index;
-            int m1, m2;
+            Topology::Edge m;
             double ks = 0.0, kd = 0.0, initpos = -1;
 
             if (vector_spring)
             {
                 double restx = 0.0, resty = 0.0, restz = 0.0;
-                file >> index >> m1 >> m2 >> ks >> kd >> initpos >> restx >> resty >> restz;
+                file >> index >> m[0] >> m[1] >> ks >> kd >> initpos >> restx >> resty >> restz;
             }
             else
-                file >> index >> m1 >> m2 >> ks >> kd >> initpos;
-            --m1;
-            --m2;
+                file >> index >> m[0] >> m[1] >> ks >> kd >> initpos;
+            --m[0];
+            --m[1];
 
-            m_edges.push_back(Topology::Edge (m1, m2));
+            m_edges.push_back(m);
         }
         else if (cmd == "grav")
         {
             double gx, gy, gz;
             file >> gx >> gy >> gz;
+            // my_gravity.push_back(Vector3(gx, gy, gz)); //TODO: 2018-04-06 (unify loader api): This buffer is missing in the old loaders.
         }
         else if (cmd == "visc")
         {
             double viscosity;
             file >> viscosity;
+            // my_viscosity.push_back(Vector3(gx, gy, gz)); //TODO: 2018-04-06 (unify loader api): This buffer is missing in the old loaders.
         }
         else if (cmd == "step")
         {

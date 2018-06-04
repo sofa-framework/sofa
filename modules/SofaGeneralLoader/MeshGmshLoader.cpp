@@ -96,6 +96,7 @@ bool MeshGmshLoader::load()
     // -- Reading file
     if (node == "$NOD" || node == "$Nodes") // Gmsh format
     {
+        // TODO 2018-04-06: temporary change to unify loader API
         //fileRead = readGmsh(file, gmshFormat);
         file.close();
         helper::io::Mesh* _mesh = helper::io::Mesh::Create("gmsh", filename);
