@@ -38,14 +38,16 @@ namespace configurationsetting
 {
 
 ///Class for the configuration of background settings.
-class SOFA_GRAPH_COMPONENT_API BackgroundSetting: public core::objectmodel::ConfigurationSetting
+class SOFA_BASE_VISUAL_API BackgroundSetting: public core::objectmodel::ConfigurationSetting
 {
 public:
     SOFA_CLASS(BackgroundSetting,core::objectmodel::ConfigurationSetting);  ///< Sofa macro to define typedef.
+
 protected:
-    BackgroundSetting();    ///< Default constructor
+    BackgroundSetting();                                         ///< Default constructor
+
 public:
-    Data<defaulttype::RGBAColor> color;   ///< Color of the Background of the Viewer.
+    Data<defaulttype::RGBAColor> color;                          ///< Color of the Background of the Viewer.
     sofa::core::objectmodel::DataFileName image;                 ///< Image to be used as background of the viewer.
 
 };
