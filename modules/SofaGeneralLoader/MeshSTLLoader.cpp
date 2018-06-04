@@ -61,8 +61,8 @@ MeshSTLLoader::MeshSTLLoader() : MeshLoader()
 bool MeshSTLLoader::load()
 {
     const char* filename = m_filename.getFullPath().c_str();
-
-    if (!sofa::helper::system::DataRepository.findFile(std::string(filename)))
+    std::string sfilename(filename);
+    if (!sofa::helper::system::DataRepository.findFile(sfilename))
     {
         msg_error() << "File " << filename << " not found ";
         return false;
