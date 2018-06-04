@@ -20,6 +20,16 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
+#include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory ;
+using sofa::core::ObjectCreator ;
+
+#include <sofa/core/behavior/BaseController.h>
+#include <sofa/core/behavior/BaseConstraintCorrection.h>
+#include <sofa/core/collision/CollisionAlgorithm.h>
+#include <sofa/core/topology/TopologicalMapping.h>
+#include <sofa/core/collision/Intersection.h>
+
 #include "Binding_BaseObject.h"
 #include "Binding_Base.h"
 #include "PythonFactory.h"
@@ -142,6 +152,105 @@ extern "C" PyObject * BaseObject_getAsACreateObjectParameter(PyObject * self, Py
     return BaseObject_getLinkPath(self, args);
 }
 
+
+static PyObject* BaseObject_getCategories(PyObject * self, PyObject *args)
+{
+    SOFA_UNUSED(args);
+    BaseObject* obj = get_baseobject( self );
+
+    if(!obj)
+        return nullptr ;
+
+    const sofa::core::objectmodel::BaseClass* mclass=obj->getClass();
+    std::vector<std::string> categories;
+
+    if (mclass->hasParent(sofa::core::objectmodel::ContextObject::GetClass()))
+        categories.push_back("ContextObject");
+    if (mclass->hasParent(sofa::core::visual::VisualModel::GetClass()))
+        categories.push_back("VisualModel");
+    if (mclass->hasParent(sofa::core::BehaviorModel::GetClass()))
+        categories.push_back("BehaviorModel");
+    if (mclass->hasParent(sofa::core::CollisionModel::GetClass()))
+        categories.push_back("CollisionModel");
+    if (mclass->hasParent(sofa::core::behavior::BaseMechanicalState::GetClass()))
+        categories.push_back("MechanicalState");
+    // A Mass is a technically a ForceField, but we don't want it to appear in the ForceField category
+    if (mclass->hasParent(sofa::core::behavior::BaseForceField::GetClass()) && !mclass->hasParent(sofa::core::behavior::BaseMass::GetClass()))
+        categories.push_back("ForceField");
+    if (mclass->hasParent(sofa::core::behavior::BaseInteractionForceField::GetClass()))
+        categories.push_back("InteractionForceField");
+    if (mclass->hasParent(sofa::core::behavior::BaseProjectiveConstraintSet::GetClass()))
+        categories.push_back("ProjectiveConstraintSet");
+    if (mclass->hasParent(sofa::core::behavior::BaseConstraintSet::GetClass()))
+        categories.push_back("ConstraintSet");
+    if (mclass->hasParent(sofa::core::BaseMapping::GetClass()))
+        categories.push_back("Mapping");
+    if (mclass->hasParent(sofa::core::DataEngine::GetClass()))
+        categories.push_back("Engine");
+    if (mclass->hasParent(sofa::core::topology::TopologicalMapping::GetClass()))
+        categories.push_back("TopologicalMapping");
+    if (mclass->hasParent(sofa::core::behavior::BaseMass::GetClass()))
+        categories.push_back("Mass");
+    if (mclass->hasParent(sofa::core::behavior::OdeSolver::GetClass()))
+        categories.push_back("OdeSolver");
+    if (mclass->hasParent(sofa::core::behavior::ConstraintSolver::GetClass()))
+        categories.push_back("ConstraintSolver");
+    if (mclass->hasParent(sofa::core::behavior::BaseConstraintCorrection::GetClass()))
+        categories.push_back("ConstraintSolver");
+    if (mclass->hasParent(sofa::core::behavior::LinearSolver::GetClass()))
+        categories.push_back("LinearSolver");
+    if (mclass->hasParent(sofa::core::behavior::BaseAnimationLoop::GetClass()))
+        categories.push_back("AnimationLoop");
+    // Just like Mass and ForceField, we don't want TopologyObject to appear in the Topology category
+    if (mclass->hasParent(sofa::core::topology::Topology::GetClass()) && !mclass->hasParent(sofa::core::topology::BaseTopologyObject::GetClass()))
+        categories.push_back("Topology");
+    if (mclass->hasParent(sofa::core::topology::BaseTopologyObject::GetClass()))
+        categories.push_back("TopologyObject");
+    if (mclass->hasParent(sofa::core::behavior::BaseController::GetClass()))
+        categories.push_back("Controller");
+    if (mclass->hasParent(sofa::core::loader::BaseLoader::GetClass()))
+        categories.push_back("Loader");
+    if (mclass->hasParent(sofa::core::collision::CollisionAlgorithm::GetClass()))
+        categories.push_back("CollisionAlgorithm");
+    if (mclass->hasParent(sofa::core::collision::Pipeline::GetClass()))
+        categories.push_back("CollisionAlgorithm");
+    if (mclass->hasParent(sofa::core::collision::Intersection::GetClass()))
+        categories.push_back("CollisionAlgorithm");
+    if (mclass->hasParent(sofa::core::objectmodel::ConfigurationSetting::GetClass()))
+        categories.push_back("ConfigurationSetting");
+    if (categories.empty())
+        categories.push_back("Miscellaneous");
+
+    PyObject *list = PyList_New(categories.size());
+    for (unsigned int i=0; i<categories.size(); ++i)
+        PyList_SetItem(list,i, PyString_FromString(categories[i].c_str())) ;
+
+    return list ;
+}
+
+static PyObject * BaseObject_getTarget(PyObject *self, PyObject * args)
+{
+    SOFA_UNUSED(args);
+    BaseObject* object = get_baseobject( self );
+
+    if(!object)
+        return nullptr ;
+
+    /// Class description are stored in the factory creator.
+    ObjectFactory::ClassEntry entry = ObjectFactory::getInstance()->getEntry(object->getClassName());
+    if (!entry.creatorMap.empty())
+    {
+        ObjectFactory::CreatorMap::iterator it = entry.creatorMap.find(object->getTemplateName());
+        if (it != entry.creatorMap.end() && *it->second->getTarget())
+        {
+            return PyString_FromString(it->second->getTarget()) ;
+        }
+    }
+
+    return nullptr ;
+}
+
+
 SP_CLASS_METHODS_BEGIN(BaseObject)
 SP_CLASS_METHOD(BaseObject,init)
 SP_CLASS_METHOD(BaseObject,bwdInit)
@@ -156,6 +265,10 @@ SP_CLASS_METHOD(BaseObject,getPathName)
 SP_CLASS_METHOD(BaseObject,getLinkPath)
 SP_CLASS_METHOD(BaseObject,getSlaves)
 SP_CLASS_METHOD(BaseObject,getName)
+SP_CLASS_METHOD_DOC(BaseObject, getCategories,
+                    "Returns a list of categories the current object belongs.")
+SP_CLASS_METHOD_DOC(BaseObject, getTarget,
+                    "Returns the target (plugin) that contains the current object.")
 SP_CLASS_METHOD(BaseObject,getAsACreateObjectParameter)
 SP_CLASS_METHODS_END
 

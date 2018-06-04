@@ -45,3 +45,7 @@ def createScene(rootNode):
     #good API design.
     ASSERT_EQ(field.getSize(), 0)
     ASSERT_GT(field.getValue(0), 6.0)
+
+    ASSERT_EQ(type(field.isRequired()), bool)
+    ASSERT_EQ(type(field.isReadOnly()), bool)
+    ASSERT_EQ(type(field.getHelp()), str)

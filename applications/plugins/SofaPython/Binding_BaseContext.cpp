@@ -222,7 +222,9 @@ static PyObject * BaseContext_getObject(PyObject * self, PyObject * args, PyObje
     context->get<BaseObject>(sptr,path);
     if (!sptr)
     {
-        return NULL;
+        if( emitWarningMessage )
+            msg_error(context) << "Unable to find : " << path ;
+        Py_RETURN_NONE ;
     }
 
     return sofa::PythonFactory::toPython(sptr.get());
@@ -368,7 +370,8 @@ SP_CLASS_METHOD_KW_DOC(BaseContext,createObject_noWarning,   // deprecated
                "   object = node.createObject_noWarning('MechanicalObject',name='mObject',dx='x',dy='y',dz='z')"
                )
 SP_CLASS_METHOD_KW_DOC(BaseContext,getObject,
-                "Returns the object by its path. Can be in this node or another, in function of the path... \n"
+                "Returns the object by its path. Can be in this node or another, in function of the path.\n"
+                "Returns None if no object with the given name can be found.                            \n"
                 "examples:\n"
                 "   mecanicalState = node.getObject('DOFs')\n"
                 "   mesh = node.getObject('visuNode/OglModel')"
