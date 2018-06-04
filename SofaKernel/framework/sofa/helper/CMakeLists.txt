@@ -61,7 +61,6 @@ set(HEADER_FILES
     io/MeshXsp.h    
     io/MeshSTL.h
     io/MeshTopologyLoader.h
-    io/MeshTrian.h
     io/MeshVTK.h
     io/SphereLoader.h
     io/TriangleLoader.h
@@ -166,7 +165,6 @@ set(SOURCE_FILES
     io/MeshXsp.cpp
     io/MeshSTL.cpp
     io/MeshTopologyLoader.cpp
-    io/MeshTrian.cpp
     io/MeshVTK.cpp
     io/SphereLoader.cpp
     io/TriangleLoader.cpp
