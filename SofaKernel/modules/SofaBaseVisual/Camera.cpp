@@ -19,18 +19,34 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GRAPH_COMPONENT_BACKGROUNDSETTING_H
-#define SOFA_GRAPH_COMPONENT_BACKGROUNDSETTING_H
-
-#include <SofaBaseVisual/BackgroundSetting.h>
+#include <sofa/core/ObjectFactory.h>
+#include <SofaBaseVisual/Camera.h>
 
 namespace sofa
 {
-namespace defaulttype
+
+namespace component
 {
-    using sofa::component::configurationsetting::BackgroundSetting ;
-} // namespace defaulttype
+
+namespace visualmodel
+{
+
+SOFA_DECL_CLASS(Camera)
+
+int CameraClass = core::RegisterObject("A Camera that render the scene from a given location & orientation.")
+                    .add<Camera>() ;
+
+Camera::Camera()
+{
+    p_computeZClip.setValue(false) ;
+}
+
+Camera::~Camera()
+{
+}
+
+} // namespace visualmodel
+
+} // namespace component
+
 } // namespace sofa
-
-
-#endif

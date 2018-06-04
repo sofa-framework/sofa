@@ -194,7 +194,7 @@ public:
     Vec3 getLookAtFromOrientation(const Vec3 &pos, const double &distance,const Quat & orientation);
     Vec3 getPositionFromOrientation(const Vec3 &lookAt, const double &distance, const Quat& orientation);
 
-    virtual void manageEvent(core::objectmodel::Event* e)=0;
+    virtual void manageEvent(core::objectmodel::Event* event) = 0 ;
     virtual void internalUpdate() {}
 
     void handleEvent(sofa::core::objectmodel::Event* event) override;
@@ -244,6 +244,8 @@ public:
     {
         return 1.0;
     }
+
+    virtual void draw(const core::visual::VisualParams*) override ;
 
 protected:
     void updateOutputData();
