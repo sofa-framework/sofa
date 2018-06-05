@@ -122,7 +122,7 @@ void MeshSTL::readSTL(std::ifstream &file)
 
     std::map< sofa::defaulttype::Vec3f, core::topology::Topology::index_type > my_map;
     unsigned positionCounter = 0u, vertexCounter=0u;
-    bool useMap = true; //TODO: 2018-04-06 (unify loader api): this field is missing d_mergePositionUsingMap.getValue();
+    bool useMap = false; //TODO: 2018-04-06 (unify loader api): this field is missing d_mergePositionUsingMap.getValue();
 
     Topology::Triangle the_tri;
 
@@ -204,7 +204,7 @@ void MeshSTL::readBinarySTL (const std::string &filename)
 
     std::map< defaulttype::Vec3f, unsigned > map;
     unsigned positionCounter = 0u;
-    bool useMap = true; //TODO: 2018-04-06 (unify loader api): this field is missing d_mergePositionUsingMap.getValue();
+    bool useMap = false; //TODO: 2018-04-06 (unify loader api): this field is missing d_mergePositionUsingMap.getValue();
 
     // Skipping header file
     char buffer[80];
