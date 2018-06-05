@@ -10,21 +10,19 @@ find_package(SofaAdvanced REQUIRED)
 
 # Qt GUIs are all based on OpenGL
 if(NOT SOFA_NO_OPENGL)
-    ## Qt(Qt4/5)
+    ## Qt5
     set(QT_USE_IMPORTED_TARGETS 1)
 
     # Search for Qt to see if we can auto-enable stuff
     find_package(Qt5 COMPONENTS Core QUIET)
 
     ## Thoses variables are used in SofaGuiConfig.cmake.in
-    if(Qt5_FOUND OR Qt4_FOUND)
+    if(Qt5_FOUND)
         set(SOFA_HAVE_QT 1)
     endif()
-    set(SOFA_QT4 ${Qt4_FOUND})
     set(SOFA_QT5 ${Qt5_FOUND})
 else()
     set(SOFA_HAVE_QT 0)
-    set(SOFA_QT4 0)
     set(SOFA_QT5 0)
 endif()
 
@@ -69,10 +67,7 @@ if(NOT SOFA_NO_OPENGL)
     set(SOFA_HAVE_QT_LIBRARIES 1)
     find_package(Qt5 COMPONENTS Core QUIET)
     if(NOT Qt5Core_FOUND)
-        find_package(Qt4 QUIET COMPONENTS qtcore)
-        if(NOT Qt4_FOUND)
-            set(SOFA_HAVE_QT_LIBRARIES 0)
-        endif()
+        set(SOFA_HAVE_QT_LIBRARIES 0)
     endif()
 
     if(SOFA_HAVE_QT_LIBRARIES)

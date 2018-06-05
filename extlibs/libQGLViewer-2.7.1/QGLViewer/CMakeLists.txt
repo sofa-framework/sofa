@@ -57,17 +57,6 @@ if(Qt5Core_FOUND)
 
     qt5_wrap_cpp(MOC_FILES ${HEADER_FILES})
     qt5_wrap_ui(FORM_FILES ${UI_FILES})
-else()
-    message("QGLViewer: Using Qt4")
-    find_package(Qt4 QUIET REQUIRED QtCore QtOpenGL QtXml QtGui)
-    include(${QT_USE_FILE})
-
-    SET(QT_TARGETS Qt4::Core Qt4::Gui Qt4::Xml Qt4::OpenGL Qt4::Widgets)
-
-    set(EXT_QT_INCLUDES ${QT_INCLUDES})
-    set(EXT_QT_LIBRARIES ${QT_LIBRARIES})
-    qt4_wrap_cpp(MOC_FILES ${HEADER_FILES})
-    qt4_wrap_ui(FORM_FILES ${UI_FILES})
 endif()
 
 if(WIN32)

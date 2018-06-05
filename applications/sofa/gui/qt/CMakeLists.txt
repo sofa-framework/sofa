@@ -167,19 +167,6 @@ if(Qt5Core_FOUND)
     set(MOC_FILES_GROUP "Generated")
     qt5_wrap_ui(FORM_FILES ${UI_FILES})
     set(FORM_FILES_GROUP "Generated")
-else()
-    message("SofaGUIQt: Using Qt4")
-    set(QT4_NO_LINK_QTMAIN 1)
-    find_package(Qt4 QUIET COMPONENTS qtcore qtgui qtopengl qtxml REQUIRED)
-
-    SET(QT_TARGETS Qt4::Core Qt4::Gui Qt4::Xml Qt4::OpenGL)
-
-    qt4_wrap_cpp(MOC_FILES ${MOC_HEADER_FILES})
-    set(MOC_FILES_GROUP "Generated")
-    qt4_wrap_ui(FORM_FILES ${UI_FILES})
-    set(FORM_FILES_GROUP "Generated")
-
-    set(EXT_QT_LIBRARIES ${QT_QTCORE_LIBRARY} ${QT_QTGUI_LIBRARY} ${QT_QTOPENGL_LIBRARY} ${QT_QTXML_LIBRARY})
 endif()
 
 if(WIN32)
