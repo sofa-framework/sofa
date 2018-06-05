@@ -92,9 +92,14 @@ bool MeshSTLLoader::load()
 
     file.close();
     helper::io::Mesh* _mesh = helper::io::Mesh::Create("stl", filename);
-    copyMeshToData(_mesh);
-
-    delete _mesh;
+    
+    if (_mesh != NULL)
+    {
+        copyMeshToData(_mesh);
+        delete _mesh;
+    }
+    else
+        msg_error() << "STL mesh not created from file '" << filename << "'.";
 }
 
 
