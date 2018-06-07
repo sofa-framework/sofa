@@ -115,7 +115,7 @@ std::istream& FlagTreeItem::read(std::istream &in)
 
             if(string1 != token)
             {
-                msg_warning("DisplayFlags") << "FlagTreeItem case is not correct: please use '" << string1 << "' instead of '"<<token<<"'";
+                msg_warning("DisplayFlags") << "Case of FlagTreeItem '" << token << "' is not correct, please use '"<< string1 <<"' instead";
             }
 
             parse_map[token] = true;
@@ -172,6 +172,11 @@ void FlagTreeItem::read_recursive(FlagTreeItem *root, const std::map<std::string
                 bool hide = iter_hide->second;
                 if(hide)
                 {
+                    if(i != 0)
+                    {
+                        msg_warning("DisplayFlags") << "FlagTreeItem '" << (*iter)->m_hideName[i] << "' is deprecated, please use '"<<(*iter)->m_hideName[0]<<"' instead";
+                    }
+
                     tristate merge_showhide;
                     if (hide) merge_showhide = tristate::false_value;
                     (*iter)->setValue(merge_showhide);
@@ -187,6 +192,11 @@ void FlagTreeItem::read_recursive(FlagTreeItem *root, const std::map<std::string
                 bool show  = iter_show->second;
                 if(show)
                 {
+                    if(i != 0)
+                    {
+                        msg_warning("DisplayFlags") << "FlagTreeItem '" << (*iter)->m_showName[i] << "' is deprecated, please use '"<<(*iter)->m_showName[0]<<"' instead";
+                    }
+
                     tristate merge_showhide;
                     if (show) merge_showhide = tristate::true_value;
                     (*iter)->setValue(merge_showhide);
@@ -240,7 +250,7 @@ DisplayFlags::DisplayFlags():
     m_showVisualMappings(FlagTreeItem("showMappings","hideMappings",&m_showMapping)),
     m_showMechanicalMappings(FlagTreeItem("showMechanicalMappings","hideMechanicalMappings",&m_showMapping)),
     m_showOptions(FlagTreeItem("showOptions","hideOptions",&m_root)),
-    m_showRendering(FlagTreeItem("showRendering","hideRendering",&m_showOptions)),
+    m_showAdvancedRendering(FlagTreeItem("showAdvancedRendering","hideAdvancedRendering",&m_showOptions)),
     m_showWireframe(FlagTreeItem("showWireframe","hideWireframe",&m_showOptions)),
     m_showNormals(FlagTreeItem("showNormals","hideNormals",&m_showOptions))
 {
@@ -252,16 +262,12 @@ DisplayFlags::DisplayFlags():
     m_showBoundingCollisionModels.setValue(tristate::neutral_value);
     m_showVisualMappings.setValue(tristate::neutral_value);
     m_showMechanicalMappings.setValue(tristate::neutral_value);
-    m_showRendering.setValue(tristate::neutral_value);
+    m_showAdvancedRendering.setValue(tristate::neutral_value);
     m_showWireframe.setValue(tristate::neutral_value);
     m_showNormals.setValue(tristate::neutral_value);
 
-    m_showInteractionForceFields.addAliasShow("showInteractions");
-    m_showInteractionForceFields.addAliasHide("hideInteractions");
-    m_showBoundingCollisionModels.addAliasShow("showBoundingTrees");
-    m_showBoundingCollisionModels.addAliasHide("hideBoundingTrees");
-    m_showRendering.addAliasShow("showAdvancedRendering");
-    m_showRendering.addAliasHide("hideAdvancedRendering");
+    m_showAdvancedRendering.addAliasShow("showRendering");
+    m_showAdvancedRendering.addAliasHide("hideRendering");
 }
 
 DisplayFlags::DisplayFlags(const DisplayFlags & other):
@@ -280,7 +286,7 @@ DisplayFlags::DisplayFlags(const DisplayFlags & other):
     m_showVisualMappings(FlagTreeItem("showMappings","hideMappings",&m_showMapping)),
     m_showMechanicalMappings(FlagTreeItem("showMechanicalMappings","hideMechanicalMappings",&m_showMapping)),
     m_showOptions(FlagTreeItem("showOptions","hideOptions",&m_root)),
-    m_showRendering(FlagTreeItem("showRendering","hideRendering",&m_showOptions)),
+    m_showAdvancedRendering(FlagTreeItem("showAdvancedRendering","hideAdvancedRendering",&m_showOptions)),
     m_showWireframe(FlagTreeItem("showWireframe","hideWireframe",&m_showOptions)),
     m_showNormals(FlagTreeItem("showNormals","hideNormals",&m_showOptions))
 {
@@ -292,16 +298,12 @@ DisplayFlags::DisplayFlags(const DisplayFlags & other):
     m_showBoundingCollisionModels.setValue(other.m_showBoundingCollisionModels.state());
     m_showVisualMappings.setValue(other.m_showVisualMappings.state());
     m_showMechanicalMappings.setValue(other.m_showMechanicalMappings.state());
-    m_showRendering.setValue(other.m_showRendering.state());
+    m_showAdvancedRendering.setValue(other.m_showAdvancedRendering.state());
     m_showWireframe.setValue(other.m_showWireframe.state());
     m_showNormals.setValue(other.m_showNormals.state());
 
-    m_showInteractionForceFields.addAliasShow("showInteractions");
-    m_showInteractionForceFields.addAliasHide("hideInteractions");
-    m_showBoundingCollisionModels.addAliasShow("showBoundingTrees");
-    m_showBoundingCollisionModels.addAliasHide("hideBoundingTrees");
-    m_showRendering.addAliasShow("showAdvancedRendering");
-    m_showRendering.addAliasHide("hideAdvancedRendering");
+    m_showAdvancedRendering.addAliasShow("showRendering");
+    m_showAdvancedRendering.addAliasHide("hideRendering");
 }
 
 DisplayFlags& DisplayFlags::operator =(const DisplayFlags& other)
@@ -316,7 +318,7 @@ DisplayFlags& DisplayFlags::operator =(const DisplayFlags& other)
         m_showBoundingCollisionModels.setValue(other.m_showBoundingCollisionModels.state());
         m_showVisualMappings.setValue(other.m_showVisualMappings.state());
         m_showMechanicalMappings.setValue(other.m_showMechanicalMappings.state());
-        m_showRendering.setValue(other.m_showRendering.state());
+        m_showAdvancedRendering.setValue(other.m_showAdvancedRendering.state());
         m_showWireframe.setValue(other.m_showWireframe.state());
         m_showNormals.setValue(other.m_showNormals.state());
     }
@@ -333,7 +335,7 @@ bool DisplayFlags::isNeutral() const
             && m_showCollisionModels.state().state == tristate::neutral_value
             && m_showVisualMappings.state().state == tristate::neutral_value
             && m_showMechanicalMappings.state().state == tristate::neutral_value
-            && m_showRendering.state().state == tristate::neutral_value
+            && m_showAdvancedRendering.state().state == tristate::neutral_value
             && m_showWireframe.state().state == tristate::neutral_value
             && m_showNormals.state().state == tristate::neutral_value
             ;
@@ -350,7 +352,7 @@ DisplayFlags merge_displayFlags(const DisplayFlags &previous, const DisplayFlags
     merge.m_showBoundingCollisionModels.setValue( merge_tristate(previous.m_showBoundingCollisionModels.state(),current.m_showBoundingCollisionModels.state()) );
     merge.m_showVisualMappings.setValue( merge_tristate(previous.m_showVisualMappings.state(),current.m_showVisualMappings.state()) );
     merge.m_showMechanicalMappings.setValue( merge_tristate(previous.m_showMechanicalMappings.state(),current.m_showMechanicalMappings.state()) );
-    merge.m_showRendering.setValue( merge_tristate(previous.m_showRendering.state(),current.m_showRendering.state()) );
+    merge.m_showAdvancedRendering.setValue( merge_tristate(previous.m_showAdvancedRendering.state(),current.m_showAdvancedRendering.state()) );
     merge.m_showWireframe.setValue( merge_tristate(previous.m_showWireframe.state(),current.m_showWireframe.state()) );
     merge.m_showNormals.setValue( merge_tristate(previous.m_showNormals.state(),current.m_showNormals.state()) );
     return merge;
@@ -367,7 +369,7 @@ DisplayFlags difference_displayFlags(const DisplayFlags& previous, const Display
     difference.m_showBoundingCollisionModels.setValue( difference_tristate(previous.m_showBoundingCollisionModels.state(),current.m_showBoundingCollisionModels.state()) );
     difference.m_showVisualMappings.setValue( difference_tristate(previous.m_showVisualMappings.state(),current.m_showVisualMappings.state()) );
     difference.m_showMechanicalMappings.setValue( difference_tristate(previous.m_showMechanicalMappings.state(),current.m_showMechanicalMappings.state()) );
-    difference.m_showRendering.setValue( difference_tristate(previous.m_showRendering.state(),current.m_showRendering.state()) );
+    difference.m_showAdvancedRendering.setValue( difference_tristate(previous.m_showAdvancedRendering.state(),current.m_showAdvancedRendering.state()) );
     difference.m_showWireframe.setValue( difference_tristate(previous.m_showWireframe.state(),current.m_showWireframe.state()) );
     difference.m_showNormals.setValue( difference_tristate(previous.m_showNormals.state(),current.m_showNormals.state()) );
     return difference;

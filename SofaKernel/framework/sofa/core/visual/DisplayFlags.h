@@ -205,7 +205,7 @@ public:
     tristate getShowMappings() const { return m_showVisualMappings.state(); }
     tristate getShowMechanicalMappings() const { return m_showMechanicalMappings.state(); }
     tristate getShowOptions() const { return m_showOptions.state(); }
-    tristate getShowRendering() const { return m_showRendering.state(); }
+    tristate getShowAdvancedRendering() const { return m_showAdvancedRendering.state(); }
     tristate getShowWireFrame() const { return m_showWireframe.state(); }
     tristate getShowNormals() const { return m_showNormals.state(); }
 
@@ -223,7 +223,7 @@ public:
     DisplayFlags& setShowMappings(tristate v=true) { m_showVisualMappings.setValue(v); return (*this); }
     DisplayFlags& setShowMechanicalMappings(tristate v=true) { m_showMechanicalMappings.setValue(v); return (*this); }
     DisplayFlags& setShowOptions(tristate v=true) { m_showOptions.setValue(v); return (*this); }
-    DisplayFlags& setShowRendering(tristate v=true) { m_showRendering.setValue(v); return (*this); }
+    DisplayFlags& setShowAdvancedRendering(tristate v=true) { m_showAdvancedRendering.setValue(v); return (*this); }
     DisplayFlags& setShowWireFrame(tristate v=true) { m_showWireframe.setValue(v); return (*this); }
     DisplayFlags& setShowNormals(tristate v=true) { m_showNormals.setValue(v); return (*this); }
     friend std::ostream& operator<< ( std::ostream& os, const DisplayFlags& flags )
@@ -262,7 +262,7 @@ protected:
 
     FlagTreeItem m_showOptions;
 
-    FlagTreeItem m_showRendering;
+    FlagTreeItem m_showAdvancedRendering;
     FlagTreeItem m_showWireframe;
     FlagTreeItem m_showNormals;
 };

@@ -84,7 +84,7 @@ DisplayFlagWidget::DisplayFlagWidget(QWidget* parent, const char* name,  Qt::Win
     itemShowFlag[COLLISIONMODELS]   = new QTreeWidgetItem(itemShowCollision);
     this->setTreeWidgetCheckable(itemShowFlag[COLLISIONMODELS], "Collision Models");
     itemShowFlag[BOUNDINGCOLLISIONMODELS]   = new QTreeWidgetItem(itemShowCollision, itemShowFlag[COLLISIONMODELS]);
-    this->setTreeWidgetCheckable(itemShowFlag[BOUNDINGCOLLISIONMODELS], "Bounding Trees");
+    this->setTreeWidgetCheckable(itemShowFlag[BOUNDINGCOLLISIONMODELS], "Bounding Collision Models");
     QTreeWidgetItem* itemShowMapping   = new QTreeWidgetItem(itemShowAll, itemShowCollision);
     this->setTreeWidgetNodeCheckable(itemShowMapping, "Mapping");
     itemShowFlag[MAPPINGS]   = new QTreeWidgetItem(itemShowMapping);
@@ -193,7 +193,7 @@ void DisplayFlagsDataWidget::readFromData()
     flags->setFlag(DisplayFlagWidget::MECHANICALMAPPINGS, displayFlags.getShowMechanicalMappings());
     flags->setFlag(DisplayFlagWidget::FORCEFIELDS, displayFlags.getShowForceFields());
     flags->setFlag(DisplayFlagWidget::INTERACTIONFORCEFIELDS, displayFlags.getShowInteractionForceFields());
-    flags->setFlag(DisplayFlagWidget::RENDERING, displayFlags.getShowRendering());
+    flags->setFlag(DisplayFlagWidget::RENDERING, displayFlags.getShowAdvancedRendering());
     flags->setFlag(DisplayFlagWidget::WIREFRAME, displayFlags.getShowWireFrame());
     flags->setFlag(DisplayFlagWidget::NORMALS, displayFlags.getShowNormals());
 }
@@ -210,7 +210,7 @@ void DisplayFlagsDataWidget::writeToData()
     displayFlags.setShowMechanicalMappings(flags->getFlag(DisplayFlagWidget::MECHANICALMAPPINGS));
     displayFlags.setShowForceFields(flags->getFlag(DisplayFlagWidget::FORCEFIELDS));
     displayFlags.setShowInteractionForceFields(flags->getFlag(DisplayFlagWidget::INTERACTIONFORCEFIELDS));
-    displayFlags.setShowRendering(flags->getFlag(DisplayFlagWidget::RENDERING));
+    displayFlags.setShowAdvancedRendering(flags->getFlag(DisplayFlagWidget::RENDERING));
     displayFlags.setShowWireFrame(flags->getFlag(DisplayFlagWidget::WIREFRAME));
     displayFlags.setShowNormals(flags->getFlag(DisplayFlagWidget::NORMALS));
     this->getData()->endEdit();
