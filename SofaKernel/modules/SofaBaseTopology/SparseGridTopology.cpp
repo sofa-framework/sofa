@@ -1426,8 +1426,8 @@ void SparseGridTopology::buildVirtualFinerLevels()
     _virtualFinerLevels[0]->_fillWeighted.setValue( _fillWeighted.getValue() );
     _virtualFinerLevels[0]->init();
 
-    msg_info()<<"SparseGridTopology "<<getName()<<" buildVirtualFinerLevels : " << msgendl;
-    msg_info()<<"("<<newnx<<"x"<<newny<<"x"<<newnz<<") -> "<< _virtualFinerLevels[0]->getNbHexahedra() <<" elements , " << msgendl;
+    msg_info()<<"SparseGridTopology "<<getName()<<" buildVirtualFinerLevels : "
+             << "(" << newnx << "y" << newny << "z" << newnz << ") -> "<< _virtualFinerLevels[0]->getNbHexahedra() <<" elements , " << msgendl;
 
     for(int i=1; i<nb; ++i)
     {
@@ -1438,7 +1438,7 @@ void SparseGridTopology::buildVirtualFinerLevels()
 
         _virtualFinerLevels[i]->init();
 
-        msg_info()<<"("<<_virtualFinerLevels[i]->getNx()<<"x"<<_virtualFinerLevels[i]->getNy()<<"x"<<_virtualFinerLevels[i]->getNz()<<") -> "<< _virtualFinerLevels[i]->getNbHexahedra() <<" elements , "<<msgendl;
+        msg_info()<<"("<<_virtualFinerLevels[i]->getNx()<<"x"<<_virtualFinerLevels[i]->getNy()<<"x"<<_virtualFinerLevels[i]->getNz()<<") -> "<< _virtualFinerLevels[i]->getNbHexahedra() <<" elements , ";
     }
 
     this->setFinerSparseGrid(_virtualFinerLevels[nb-1].get());
