@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -315,7 +315,7 @@ int HeadlessRecorder::mainLoop()
     while(canRecord())
     {
         if (keepFrame())
-	{
+        {
             redraw();
             m_nFrames++;
             if(m_nFrames % fps == 0)
@@ -326,7 +326,7 @@ int HeadlessRecorder::mainLoop()
                 start = std::chrono::system_clock::now();
             }
             record();
-	}
+        }
 
         if (currentSimulation() && currentSimulation()->getContext()->getAnimate())
         {
@@ -335,7 +335,7 @@ int HeadlessRecorder::mainLoop()
         else
         {
             sleep(0.01);
-	}
+        }
     }
     msg_info("HeadlessRecorder") << "Recording time: " << recordTimeInSeconds << " seconds at: " << fps << " fps.";
     return 0;
@@ -583,14 +583,15 @@ void HeadlessRecorder::record()
         {
             std::string videoFilename = fileName;
             videoFilename.append(".avi");
-            videoEncoderStart(videoFilename.c_str(), AV_CODEC_ID_H264);
+            //videoFilename.append(".mp4");
+            videorecorder = std::unique_ptr<VideoRecorderFFmpeg>(new VideoRecorderFFmpeg(fps, width, height, videoFilename.c_str(), AV_CODEC_ID_H264));
+            videorecorder->start();
             initVideoRecorder = false;
         }
-        videoGLToFrame();
         if (canRecord())
-            videoFrameEncoder();
+            videorecorder->encodeFrame();
         else
-            videoEncoderStop();
+            videorecorder->stop();
     }
 }
 
@@ -629,151 +630,6 @@ void HeadlessRecorder::screenshotPNG(std::string filename)
     {
         msg_error("Capture") << "Unknown error while saving screen image to " << filename;
     }
-}
-
-// -----------------------------------------------------------------
-// --- Screencast
-// -----------------------------------------------------------------
-
-void HeadlessRecorder::videoEncoderStart(const char *filename, int codec_id)
-{
-    AVCodec *codec;
-    int ret;
-    msg_info("HeadlessRecorder") << "Start recording ... " << filename;
-    avcodec_register_all();
-    codec = avcodec_find_encoder((AVCodecID)codec_id);
-    if (!codec) {
-        msg_error("HeadlessRecorder") << "Codec not found";
-        exit(1);
-    }
-    c = avcodec_alloc_context3(codec);
-    if (!c) {
-        msg_error("HeadlessRecorder") << "Could not allocate video codec context";
-        exit(1);
-    }
-
-    m_avPacket = av_packet_alloc();
-    if (!m_avPacket)
-        exit(1);
-
-    c->bit_rate = 8000000; // maybe I need to adjust it
-    c->width = width;
-    c->height = height;
-    c->time_base = (AVRational){1, fps};
-    c->framerate = (AVRational){fps, 1};
-    c->gop_size = 10;
-    c->max_b_frames = 1;
-    c->pix_fmt = AV_PIX_FMT_YUV420P;
-
-    if (codec_id == AV_CODEC_ID_H264)
-        av_opt_set(c->priv_data, "preset", "slow", 0);
-
-    if (avcodec_open2(c, codec, NULL) < 0)
-    {
-        msg_error("HeadlessRecorder") << "Could not open codec";
-        exit(1);
-    }
-    m_file = fopen(filename, "wb");
-    if (!m_file) {
-        msg_error("HeadlessRecorder") << "Could not open " << filename;
-        exit(1);
-    }
-
-    m_frame = av_frame_alloc();
-    if (!m_frame)
-    {
-        msg_error("HeadlessRecorder") << "Could not allocate video frame";
-        exit(1);
-    }
-    m_frame->format = c->pix_fmt;
-    m_frame->width  = c->width;
-    m_frame->height = c->height;
-
-    ret = av_frame_get_buffer(m_frame, 32);
-    if (ret < 0)
-    {
-        msg_error("HeadlessRecorder") << "Could not allocate the video frame data";
-        exit(1);
-    }
-}
-
-void HeadlessRecorder::encode()
-{
-    int ret;
-    m_frame->pts = m_nFrames;
-    ret = avcodec_send_frame(c, m_frame);
-    if (ret < 0) {
-        msg_error("HeadlessRecorder") << "Error sending a frame for encoding";
-        exit(1);
-    }
-
-    while (ret >= 0) {
-        ret = avcodec_receive_packet(c, m_avPacket);
-        if (ret == AVERROR(EAGAIN) || ret == AVERROR_EOF)
-            return;
-        else if (ret < 0) {
-            msg_error("HeadlessRecorder") << "Error during encoding";
-            exit(1);
-        }
-        fwrite(m_avPacket->data, 1, m_avPacket->size, m_file);
-        av_packet_unref(m_avPacket);
-    }
-}
-
-void HeadlessRecorder::videoFrameEncoder()
-{
-    int ret;
-    ret = av_frame_make_writable(m_frame);
-    if (ret < 0)
-    {
-        msg_error("HeadlessRecorder") << "Frame is not writable";
-        exit(1);
-    }
-    videoYUVToRGB();
-    encode();
-}
-
-void HeadlessRecorder::videoEncoderStop()
-{
-    uint8_t endcode[] = { 0, 0, 1, 0xb7 };
-    encode();
-
-    fwrite(endcode, 1, sizeof(endcode), m_file);
-    fclose(m_file);
-
-    avcodec_free_context(&c);
-    av_frame_free(&m_frame);
-    av_packet_free(&m_avPacket);
-}
-
-void HeadlessRecorder::videoGLToFrame()
-{
-    int i, j, k, cur_gl, cur_rgb, nvals;
-    const int format_nchannels = 4;
-    nvals = format_nchannels * width * height;
-    m_rgb = (uint8_t*)realloc(m_rgb, nvals * sizeof(uint8_t));
-    GLubyte *pixels = (GLubyte*)malloc(nvals * sizeof(GLubyte));
-    glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-
-    for (i = 0; i < height; i++) {
-        for (j = 0; j < width; j++) {
-            cur_gl  = format_nchannels * (width * (height - i - 1) + j);
-            cur_rgb = format_nchannels * (width * i + j);
-            for (k = 0; k < format_nchannels; k++)
-                (m_rgb)[cur_rgb + k] = (pixels)[cur_gl + k];
-        }
-    }
-    free(pixels);
-}
-
-void HeadlessRecorder::videoYUVToRGB() {
-    const int in_linesize[1] = { 4 * c->width };
-    sws_context = sws_getCachedContext(sws_context,
-                                       c->width, c->height, AV_PIX_FMT_RGBA,
-                                       c->width, c->height, AV_PIX_FMT_YUV420P,
-                                       0, NULL, NULL, NULL);
-
-    sws_scale(sws_context, (const uint8_t * const *)&m_rgb, in_linesize, 0, c->height, m_frame->data, m_frame->linesize);
 }
 
 } // namespace hRecorder

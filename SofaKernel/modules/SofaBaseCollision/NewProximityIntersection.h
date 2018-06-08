@@ -24,13 +24,6 @@
 #include "config.h"
 
 #include <SofaBaseCollision/BaseProximityIntersection.h>
-#include <sofa/helper/FnDispatcher.h>
-#include <SofaBaseCollision/CapsuleModel.h>
-#include <SofaBaseCollision/SphereModel.h>
-#include <SofaBaseCollision/CubeModel.h>
-#include <SofaBaseCollision/CapsuleIntTool.h>
-#include <SofaBaseCollision/OBBModel.h>
-#include <SofaBaseCollision/OBBIntTool.h>
 
 namespace sofa
 {

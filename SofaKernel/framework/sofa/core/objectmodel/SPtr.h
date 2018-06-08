@@ -22,7 +22,6 @@
 #ifndef SOFA_CORE_OBJECTMODEL_SPTR_H
 #define SOFA_CORE_OBJECTMODEL_SPTR_H
 
-#include <sofa/helper/system/config.h>
 #include <sofa/helper/vector.h>
 #include <sofa/core/core.h>
 

@@ -23,11 +23,7 @@
 #define SOFA_CORE_VECID_H
 
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/helper/logging/Messaging.h>
 
-#include <sstream>
-#include <iostream>
 
 namespace sofa
 {

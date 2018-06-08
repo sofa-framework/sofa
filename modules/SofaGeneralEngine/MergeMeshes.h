@@ -30,6 +30,8 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
+#include <sofa/helper/StringUtils.h>
+
 namespace sofa
 {
 
@@ -110,7 +112,7 @@ protected:
             ohelp << help << (i+1);
             std::string name_i = oname.str();
             std::string help_i = ohelp.str();
-            Data<T>* d = new Data<T>(help_i.c_str(), true, false);
+            Data<T>* d = new Data<T>(sofa::helper::getAStringCopy(help_i.c_str()), true, false);
             d->setName(name_i);
             vf.push_back(d);
             this->addData(d);

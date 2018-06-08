@@ -45,6 +45,7 @@ list(APPEND SOFAGUI_TARGETS SofaGuiCommon)
 
 ## OpenGL-based GUIs
 if(NOT SOFA_NO_OPENGL)
+    
     option(SOFAGUI_HEADLESS_RECORDER "Compile the headless recorder (Linux only)" OFF)
     if(SOFAGUI_HEADLESS_RECORDER)
         set(SOFA_GUI_HEADLESS_RECORDER 1) # cmakedefine

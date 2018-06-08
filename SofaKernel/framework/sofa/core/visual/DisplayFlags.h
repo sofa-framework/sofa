@@ -24,7 +24,6 @@
 
 #include <sofa/core/core.h>
 #include <sofa/helper/vector.h>
-#include <sstream>
 #include <map>
 
 

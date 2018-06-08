@@ -94,7 +94,6 @@ void RequiredPlugin::loadPlugin()
     for (std::size_t nameIndex = 0; nameIndex < nameVecCopy.size(); ++nameIndex)
     {
         const std::string& name = nameVecCopy[nameIndex];
-        //sout << "Loading " << name << sendl;
         bool nameLoaded = false;
         for (std::size_t suffixIndex = 0; suffixIndex < suffixVec.size(); ++suffixIndex)
         {
@@ -107,7 +106,7 @@ void RequiredPlugin::loadPlugin()
             }
             if (result)
             {
-                msg_info("RequiredPlugin") << "Loaded " << pluginPath;
+                msg_info() << "Loaded " << pluginPath;
                 loaded.push_back(pluginPath);
                 nameLoaded = true;
                 if (d_stopAfterFirstSuffixFound.getValue()) break;
@@ -126,13 +125,13 @@ void RequiredPlugin::loadPlugin()
     {
         if ((d_requireAll.getValue() || (d_requireOne.getValue() && loaded.empty())))
         {
-            msg_error("RequiredPlugin") << errmsg.str();
-            msg_error("RequiredPlugin") <<(failed.size()>1?"s":"")<<" failed to load: " << failed ;
+            msg_error() << errmsg.str();
+            msg_error() <<(failed.size()>1?"s":"")<<" failed to load: " << failed ;
         }
         else
         {
-            msg_warning("RequiredPlugin") << errmsg.str();
-            msg_warning("RequiredPlugin") << "Optional/alternate plugin"<<(failed.size()>1?"s":"")<<" failed to load: " << failed;
+            msg_warning() << errmsg.str();
+            msg_warning() << "Optional/alternate plugin"<<(failed.size()>1?"s":"")<<" failed to load: " << failed;
         }
     }
     pluginManager->init();
