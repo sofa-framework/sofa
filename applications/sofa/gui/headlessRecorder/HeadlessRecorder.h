@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_GLUT_HEADLESSRECORDER_H
-#define SOFA_GUI_GLUT_HEADLESSRECORDER_H
+#ifndef SOFA_GUI_HEADLESSRECORDER_H
+#define SOFA_GUI_HEADLESSRECORDER_H
 
 #include <sofa/gui/BaseGUI.h>
 
@@ -147,7 +147,7 @@ private:
     static float skipTime;
 };
 
-} // namespace glut
+} // namespace hRecorder
 
 } // namespace gui
 

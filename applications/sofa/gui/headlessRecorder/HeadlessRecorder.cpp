@@ -776,7 +776,7 @@ void HeadlessRecorder::videoYUVToRGB() {
     sws_scale(sws_context, (const uint8_t * const *)&m_rgb, in_linesize, 0, c->height, m_frame->data, m_frame->linesize);
 }
 
-} // namespace glut
+} // namespace hRecorder
 
 } // namespace gui
 
