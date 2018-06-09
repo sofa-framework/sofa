@@ -41,41 +41,15 @@ namespace helper
 namespace logging
 {
 
-
-helper::fixed_array<std::string,Message::TypeCount> s_messageTypePrefixes;
-helper::fixed_array<Console::ColorType,Message::TypeCount> s_messageTypeColors;
-DefaultStyleMessageFormatter DefaultStyleMessageFormatter::s_instance;
-
-
-
-
-DefaultStyleMessageFormatter::DefaultStyleMessageFormatter()
+void DefaultStyleMessageFormatter::formatMessage(const Message & m, std::ostream & out)
 {
-    s_messageTypePrefixes[Message::Advice]      = "[SUGGESTION] ";
-    s_messageTypePrefixes[Message::Info]        = "[INFO]    ";
-    s_messageTypePrefixes[Message::Deprecated]  = "[DEPRECATED] ";
-    s_messageTypePrefixes[Message::Warning]     = "[WARNING] ";
-    s_messageTypePrefixes[Message::Error]       = "[ERROR]   ";
-    s_messageTypePrefixes[Message::Fatal]       = "[FATAL]   ";
-    s_messageTypePrefixes[Message::TEmpty]      = "[EMPTY]   ";
 
-    s_messageTypeColors[Message::Advice]     = Console::BRIGHT_GREEN;
-    s_messageTypeColors[Message::Info]       = Console::BRIGHT_GREEN;
-    s_messageTypeColors[Message::Deprecated] = Console::BRIGHT_YELLOW;
-    s_messageTypeColors[Message::Warning]    = Console::BRIGHT_CYAN;
-    s_messageTypeColors[Message::Error]      = Console::BRIGHT_RED;
-    s_messageTypeColors[Message::Fatal]      = Console::BRIGHT_PURPLE;
-    s_messageTypeColors[Message::TEmpty]     = Console::DEFAULT_COLOR;
-}
-
-void DefaultStyleMessageFormatter::formatMessage(const Message& m,std::ostream& out)
-{
-    out << s_messageTypeColors[m.type()] << s_messageTypePrefixes[m.type()];
+    out << getPrefixCode(m.type()) << getPrefixText(m.type());
 
     if (!m.sender().empty())
-        out << Console::BLUE << "[" << m.componentInfo() << "] ";
+        out << Console::Code(Console::BLUE) << "[" << m.componentInfo() << "] ";
 
-    out << Console::DEFAULT_COLOR << m.message().str() << std::endl;
+    out << Console::Code(Console::DEFAULT) << m.message().str() << std::endl;
 }
 
 

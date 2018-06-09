@@ -23,9 +23,10 @@
 * User of this library should read the documentation
 * in the messaging.h file.
 ******************************************************************************/
-#ifndef RICHCONSOLESTYLEMESSAGEFORMATTER_H
-#define RICHCONSOLESTYLEMESSAGEFORMATTER_H
-#include <sofa/helper/logging/MessageFormatter.h>
+
+#include <sofa/helper/system/console.h>
+#include "Message.h"
+#include "MessageFormatter.h"
 
 namespace sofa
 {
@@ -36,40 +37,38 @@ namespace helper
 namespace logging
 {
 
-class Message;
+std::string MessageFormatter::getPrefixText(unsigned int type) const {
+    switch (type) {
+        case Message::Advice     : return "[SUGGESTION] ";
+        case Message::Deprecated : return "[DEPRECATED] ";
+        case Message::Warning    : return "[WARNING] ";
+        case Message::Info       : return "[INFO]    ";
+        case Message::Error      : return "[ERROR]   ";
+        case Message::Fatal      : return "[FATAL]   ";
+        case Message::TEmpty     : return "[EMPTY]   ";
 
-///
-/// \brief The RichConsoleStyleMessageFormatter class
-///
-///  The class implement a message formatter dedicated to console pretty printing on a console
-///  Among other thing it feature formatting using a markdown like syntax:
-///     - color rendering, 'italics' or *italics*
-///     - alignement and wrapping for long message that are then much easier to read.
-///     - automatic reading of the console number of column for prettier display.
-///
-///
-class SOFA_HELPER_API RichConsoleStyleMessageFormatter : public MessageFormatter
-{
-public:
-    static RichConsoleStyleMessageFormatter &getInstance ()
-    {
-        static RichConsoleStyleMessageFormatter instance;
-        return instance;
+        default:
+            return "";
     }
+}
 
-    void formatMessage(const Message& m,std::ostream& out) override;
+std::string MessageFormatter::getPrefixCode(unsigned int type) const {
+    switch (type) {
+        case Message::Advice     : return Console::Code(Console::BRIGHT_GREEN);
+        case Message::Info       : return Console::Code(Console::BRIGHT_GREEN);
+        case Message::Deprecated : return Console::Code(Console::BRIGHT_YELLOW);
+        case Message::Warning    : return Console::Code(Console::BRIGHT_CYAN);
+        case Message::Error      : return Console::Code(Console::BRIGHT_RED);
+        case Message::Fatal      : return Console::Code(Console::BRIGHT_PURPLE);
 
-private:
-    // singleton API
-    RichConsoleStyleMessageFormatter() : m_showFileInfo(false) {}
-    RichConsoleStyleMessageFormatter(const RichConsoleStyleMessageFormatter&);
-    void operator=(const RichConsoleStyleMessageFormatter&);
+        case Message::TEmpty:
+        default:
+            return Console::Code(Console::DEFAULT);
+    }
+}
 
-    bool m_showFileInfo ;
-};
+} // namespace logging
 
-} // logging
-} // helper
-} // sofa
+} // namespace helper
 
-#endif // DEFAULTSTYLEMESSAGEFORMATTER_H
+} // namespace sofa

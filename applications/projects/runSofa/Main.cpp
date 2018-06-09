@@ -307,7 +307,7 @@ int main(int argc, char** argv)
     else if (messageHandler == "rich")
     {
         MessageDispatcher::clearHandlers() ;
-        MessageDispatcher::addHandler( new ConsoleMessageHandler(new RichConsoleStyleMessageFormatter()) ) ;
+        MessageDispatcher::addHandler( new ConsoleMessageHandler(&RichConsoleStyleMessageFormatter::getInstance()) ) ;
     }
     else if (messageHandler == "test"){
         MessageDispatcher::addHandler( new ExceptionMessageHandler() ) ;

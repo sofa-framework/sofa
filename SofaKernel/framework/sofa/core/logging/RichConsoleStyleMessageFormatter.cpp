@@ -48,33 +48,8 @@ namespace helper
 namespace logging
 {
 
-namespace richconsolestylemessageformater
-{
 /////////////////////////////// STATIC ELEMENT SPECIFIC TO RichConsoleStyleMessage /////////////////
 typedef boost::tokenizer<boost::char_separator<char> > tokenizer;
-helper::fixed_array<std::string,Message::TypeCount> s_messageTypePrefixes;
-helper::fixed_array<Console::ColorType,Message::TypeCount> s_messageTypeColors;
-
-int initColors(){
-    s_messageTypePrefixes[Message::Advice]      = "[SUGGESTION] ";
-    s_messageTypePrefixes[Message::Info]        = "[INFO]    ";
-    s_messageTypePrefixes[Message::Deprecated]  = "[DEPRECATED] ";
-    s_messageTypePrefixes[Message::Warning]     = "[WARNING] ";
-    s_messageTypePrefixes[Message::Error]       = "[ERROR]   ";
-    s_messageTypePrefixes[Message::Fatal]       = "[FATAL]   ";
-    s_messageTypePrefixes[Message::TEmpty]      = "[EMPTY]   ";
-
-    s_messageTypeColors[Message::Advice]       = Console::BRIGHT_GREEN;
-    s_messageTypeColors[Message::Info]       = Console::BRIGHT_GREEN;
-    s_messageTypeColors[Message::Deprecated] = Console::BRIGHT_YELLOW;
-    s_messageTypeColors[Message::Warning]    = Console::BRIGHT_CYAN;
-    s_messageTypeColors[Message::Error]      = Console::BRIGHT_RED;
-    s_messageTypeColors[Message::Fatal]      = Console::BRIGHT_PURPLE;
-    s_messageTypeColors[Message::TEmpty]     = Console::DEFAULT_COLOR;
-    return 1;
-}
-
-int s_isInited = initColors();
 
 ///
 /// \brief simpleFormat a text containing our markdown 'tags'
@@ -109,7 +84,7 @@ void simpleFormat(int jsize, const std::string& text, size_t line_length,
             if(isInItalic)
             {
                 isInItalic=false;
-                wrapped << Console::DEFAULT_CODE ;
+                wrapped << Console::Code(Console::DEFAULT) ;
                 wrapped << "'";
                 continue;
             }
@@ -123,13 +98,13 @@ void simpleFormat(int jsize, const std::string& text, size_t line_length,
                         numspaces = 0;
                         space_left--;
                     }else{
-                        wrapped << Console::DEFAULT_CODE << Console::DEFAULT_COLOR << emptyspace ;
+                        wrapped << Console::Code(Console::DEFAULT) << emptyspace ;
                     }
                 }
 
                 wrapped << "'";
-                wrapped << Console::ITALIC ;
-                wrapped << Console::UNDERLINE ;
+                wrapped << Console::Code(Console::ITALIC) ;
+                wrapped << Console::Code(Console::UNDERLINE) ;
                 continue;
             }
         }else if(word==" ")
@@ -153,12 +128,11 @@ void simpleFormat(int jsize, const std::string& text, size_t line_length,
                     numspaces = 0;
                     space_left--;
                 }else{
-                    wrapped << Console::DEFAULT_CODE;
-                    wrapped << Console::DEFAULT_COLOR;
+                    wrapped << Console::Code(Console::DEFAULT);
                     wrapped << emptyspace ;
                     if(isInItalic){
-                        wrapped << Console::ITALIC;
-                        wrapped << Console::UNDERLINE;
+                        wrapped << Console::Code(Console::ITALIC);
+                        wrapped << Console::Code(Console::UNDERLINE);
                     }
                 }
             }
@@ -177,12 +151,11 @@ void simpleFormat(int jsize, const std::string& text, size_t line_length,
                     first=word.substr(curidx,endidx);
 
                     if(beginOfLine){
-                        wrapped << Console::DEFAULT_CODE;
-                        wrapped << Console::DEFAULT_COLOR;
+                        wrapped << Console::Code(Console::DEFAULT);
                         wrapped << emptyspace ;
                         if(isInItalic){
-                            wrapped << Console::ITALIC;
-                            wrapped << Console::UNDERLINE;
+                            wrapped << Console::Code(Console::ITALIC);
+                            wrapped << Console::Code(Console::UNDERLINE);
                         }
                     }
                     beginOfLine=false;
@@ -202,12 +175,11 @@ void simpleFormat(int jsize, const std::string& text, size_t line_length,
             else
             {
                 wrapped << "\n";
-                wrapped << Console::DEFAULT_CODE;
-                wrapped << Console::DEFAULT_COLOR;
+                wrapped << Console::Code(Console::DEFAULT);
                 wrapped << emptyspace ;
                 if(isInItalic){
-                    wrapped << Console::ITALIC;
-                    wrapped << Console::UNDERLINE;
+                    wrapped << Console::Code(Console::ITALIC);
+                    wrapped << Console::Code(Console::UNDERLINE);
                 }
                 wrapped << word ;
                 space_left = line_length-word.length();
@@ -216,12 +188,11 @@ void simpleFormat(int jsize, const std::string& text, size_t line_length,
         else
         {
             if(beginOfLine){
-                wrapped << Console::DEFAULT_CODE;
-                wrapped << Console::DEFAULT_COLOR;
+                wrapped << Console::Code(Console::DEFAULT);
                 wrapped << emptyspace ;
                 if(isInItalic){
-                    wrapped << Console::ITALIC;
-                    wrapped << Console::UNDERLINE;
+                    wrapped << Console::Code(Console::ITALIC);
+                    wrapped << Console::Code(Console::UNDERLINE);
                 }
             }
             beginOfLine=false;
@@ -234,15 +205,12 @@ void simpleFormat(int jsize, const std::string& text, size_t line_length,
 
 
 ////////////////////////////// RichConsoleStyleMessageFormatter Implementation /////////////////////
-RichConsoleStyleMessageFormatter::RichConsoleStyleMessageFormatter(){
-    m_showFileInfo=false;
-}
 
 void RichConsoleStyleMessageFormatter::formatMessage(const Message& m, std::ostream& out)
 {
-    int psize = s_messageTypePrefixes[m.type()].size() ;
+    size_t psize = getPrefixText(m.type()).size() ;
 
-    out << s_messageTypeColors[m.type()] << s_messageTypePrefixes[m.type()];
+    out << getPrefixCode(m.type()) << getPrefixText(m.type());
 
     SofaComponentInfo* nfo = dynamic_cast<SofaComponentInfo*>(m.componentInfo().get()) ;
     if( nfo != nullptr )
@@ -250,15 +218,15 @@ void RichConsoleStyleMessageFormatter::formatMessage(const Message& m, std::ostr
         const std::string& classname= nfo->sender();
         const std::string& name = nfo->name();
         psize +=classname.size()+name.size()+5 ;
-        out << Console::BLUE << "[" << classname << "(" << name << ")] ";
+        out << Console::Code(Console::BLUE) << "[" << classname << "(" << name << ")] ";
     }
     else
     {
         psize +=m.sender().size()+3 ;
-        out << Console::BLUE << "[" << m.sender()<< "] ";
+        out << Console::Code(Console::BLUE) << "[" << m.sender()<< "] ";
     }
 
-    out << Console::DEFAULT_COLOR;
+    out << Console::Code(Console::DEFAULT);
 
     /// Format & align the text and write the result into 'out'.
     simpleFormat(psize , m.message().str(), Console::getColumnCount()-psize, out) ;
@@ -267,17 +235,15 @@ void RichConsoleStyleMessageFormatter::formatMessage(const Message& m, std::ostr
         std::stringstream buf;
         std::string emptyspace(psize, ' ') ;
         buf << "Emitted from '" << m.fileInfo()->filename << "' line " << m.fileInfo()->line ;
-        out << "\n" << Console::DEFAULT_CODE << Console::DEFAULT_COLOR << emptyspace ;
+        out << "\n" << Console::Code(Console::DEFAULT) << emptyspace ;
         simpleFormat(psize , buf.str(), Console::getColumnCount()-psize, out) ;
     }
 
     ///Restore the console rendering attribute.
-    out << Console::DEFAULT_COLOR;
-    out << Console::DEFAULT_CODE;
+    out << Console::Code(Console::DEFAULT);
     out << std::endl ;
 }
 
-} // richconsolestylmessageformatter
 } // logging
 } // helper
 } // sofa

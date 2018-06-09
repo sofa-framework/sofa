@@ -48,16 +48,19 @@ namespace logging
 class SOFA_HELPER_API DefaultStyleMessageFormatter : public MessageFormatter
 {
 public:
-    static MessageFormatter& getInstance() { return s_instance; }
-    virtual void formatMessage(const Message& m,std::ostream& out);
+    static MessageFormatter &getInstance ()
+    {
+        static DefaultStyleMessageFormatter instance;
+        return instance;
+    }
+
+    void formatMessage (const Message &m, std::ostream &out) override;
 
 private:
-        // singleton API
-        DefaultStyleMessageFormatter();
-        DefaultStyleMessageFormatter(const DefaultStyleMessageFormatter&);
-
-        void operator=(const DefaultStyleMessageFormatter&);
-        static DefaultStyleMessageFormatter s_instance;
+    // singleton API
+    DefaultStyleMessageFormatter () {}
+    DefaultStyleMessageFormatter (const DefaultStyleMessageFormatter &);
+    void operator= (const DefaultStyleMessageFormatter &);
 };
 
 } // logging

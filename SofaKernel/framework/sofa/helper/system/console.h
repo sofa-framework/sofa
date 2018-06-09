@@ -41,68 +41,48 @@ class SOFA_HELPER_API Console
 
 public:
 
+#ifdef WIN32
+    typedef unsigned SystemCodeType;
+#else
+    typedef std::string SystemCodeType;
+#endif
+
+    enum Style {
+        DEFAULT,
+        BLUE,
+        GREEN,
+        CYAN,
+        RED,
+        PURPLE,
+        YELLOW,
+        WHITE,
+        BLACK,
+        BRIGHT_BLUE,
+        BRIGHT_GREEN,
+        BRIGHT_CYAN,
+        BRIGHT_RED,
+        BRIGHT_PURPLE,
+        BRIGHT_YELLOW,
+        BRIGHT_WHITE,
+        BRIGHT_BLACK,
+        ITALIC,
+        UNDERLINE
+    };
+
+    enum ColorsStatus {ColorsEnabled, ColorsDisabled, ColorsAuto};
+
     /// @brief Initialize Console.
     ///
     /// Enable or disable colors based on the value of the SOFA_COLOR_TERMINAL
     /// environnement variable (possible values: yes, no, auto).
     static void init();
 
-#ifdef WIN32
-    typedef unsigned SystemColorType;
-    typedef unsigned SystemCodeType;
-#else
-    typedef std::string SystemColorType;
-    typedef std::string SystemCodeType;
-#endif
-
-    /// this color type can be used with stream operator on any system
-    struct ColorType
-    {
-        Console::SystemColorType value;
-        ColorType() : value(DEFAULT_COLOR.value) {}
-        ColorType( const ColorType& c ) : value(c.value) {}
-        ColorType( const Console::SystemColorType& v ) : value(v) {}
-        void operator= ( const ColorType& c ) { value=c.value; }
-        void operator= ( const Console::SystemColorType& v ) { value=v; }
-    };
-
-    struct CodeType
-    {
-        Console::SystemCodeType value;
-        CodeType() : value(DEFAULT_CODE.value) {}
-        CodeType( const CodeType& c ) : value(c.value) {}
-        CodeType( const Console::SystemCodeType& v ) : value(v) {}
-        void operator= ( const CodeType& c ) { value=c.value; }
-        void operator= ( const Console::SystemCodeType& v ) { value=v; }
-    };
+    /// @brief Get the console code for a given style format
+    static SystemCodeType Code(Style s);
 
     /// to use stream operator with a color on any system
-    SOFA_HELPER_API friend std::ostream& operator<<(std::ostream &stream, ColorType color);
-    SOFA_HELPER_API friend std::ostream& operator<<(std::ostream &stream, CodeType color);
+    SOFA_HELPER_API friend std::ostream& operator<<(std::ostream &stream, const SystemCodeType & color);
 
-    static const ColorType BLUE;
-    static const ColorType GREEN;
-    static const ColorType CYAN;
-    static const ColorType RED;
-    static const ColorType PURPLE;
-    static const ColorType YELLOW;
-    static const ColorType WHITE;
-    static const ColorType BLACK;
-    static const ColorType BRIGHT_BLUE;
-    static const ColorType BRIGHT_GREEN;
-    static const ColorType BRIGHT_CYAN;
-    static const ColorType BRIGHT_RED;
-    static const ColorType BRIGHT_PURPLE;
-    static const ColorType BRIGHT_YELLOW;
-    static const ColorType BRIGHT_WHITE;
-    static const ColorType BRIGHT_BLACK;
-    static const ColorType DEFAULT_COLOR;
-
-    static const CodeType ITALIC;
-    static const CodeType UNDERLINE;
-    static const CodeType DEFAULT_CODE;
-
-    enum ColorsStatus {ColorsEnabled, ColorsDisabled, ColorsAuto};
     /// Enable or disable colors in stdout / stderr.
     ///
     /// This controls whether using ColorType values in streams will actually do

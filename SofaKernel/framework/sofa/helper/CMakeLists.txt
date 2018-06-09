@@ -192,6 +192,7 @@ set(SOURCE_FILES
     types/Material.cpp
     logging/Message.cpp
     logging/MessageDispatcher.cpp
+    logging/MessageFormatter.cpp
     logging/ComponentInfo.cpp
     logging/ClangMessageHandler.cpp
     logging/ClangStyleMessageFormatter.cpp
