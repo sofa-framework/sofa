@@ -8,23 +8,12 @@ set(HEADER_FILES config/${PROJECT_NAME}.h)
 set(SOURCE_FILES config/${PROJECT_NAME}.cpp)
 
 list(APPEND HEADER_FILES
-    deprecated_layout/SofaComponentBase/MakeAliasComponent.h
-    deprecated_layout/SofaComponentBase/MakeDataAliasComponent.h
-    deprecated_layout/SofaComponentBase/MessageHandlerComponent.h
-    deprecated_layout/SofaComponentBase/InfoComponent.h
+    src/sofa/component/physicalModel/solidmechanics/fem/BeamFEMForceField.h
+    src/sofa/component/physicalModel/solidmechanics/fem/BeamFEMForceField.inl
     )
 
-list(APPEND HEADER_FILES
-    src/sofa/component/utils/MakeAliasComponent.h
-    src/sofa/component/utils/MakeDataAliasComponent.h
-    src/sofa/component/utils/MessageHandlerComponent.h
-    src/sofa/component/utils/InfoComponent.h
-    )
 list(APPEND SOURCE_FILES
-    src/sofa/component/utils/MakeAliasComponent.cpp
-    src/sofa/component/utils/MakeDataAliasComponent.cpp
-    src/sofa/component/utils/MessageHandlerComponent.cpp
-    src/sofa/component/utils/InfoComponent.cpp
+    src/sofa/component/physicalModel/solidmechanics/fem/BeamFEMForceField.cpp
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})

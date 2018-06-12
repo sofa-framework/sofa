@@ -11,8 +11,6 @@ set(SOURCE_FILES
     )
 
 list(APPEND HEADER_FILES
-    BeamFEMForceField.h
-    BeamFEMForceField.inl
     HexahedralFEMForceField.h
     HexahedralFEMForceField.inl
     HexahedralFEMForceFieldAndMass.h
@@ -29,7 +27,6 @@ list(APPEND HEADER_FILES
     TriangularFEMForceFieldOptim.inl
     )
 list(APPEND SOURCE_FILES
-    BeamFEMForceField.cpp
     HexahedralFEMForceField.cpp
     HexahedralFEMForceFieldAndMass.cpp
     HexahedronFEMForceFieldAndMass.cpp
