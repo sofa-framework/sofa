@@ -31,11 +31,16 @@ namespace sofa
 namespace component
 {
 
-namespace forcefield
+namespace physicalmodel
+{
+
+namespace solidmechanics
+{
+
+namespace fem
 {
 
 using namespace sofa::defaulttype;
-
 
 
 SOFA_DECL_CLASS(BeamFEMForceField)
@@ -57,7 +62,11 @@ template class SOFA_GENERAL_SIMPLE_FEM_API BeamFEMForceField<Rigid3dTypes>;
 template class SOFA_GENERAL_SIMPLE_FEM_API BeamFEMForceField<Rigid3fTypes>;
 #endif
 
-} // namespace forcefield
+} // namespace fem
+
+} // namespace solidmechanics
+
+} // namespace physicalmodel
 
 } // namespace component
 

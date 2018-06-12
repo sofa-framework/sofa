@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_FORCEFIELD_BEAMFEMFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_BEAMFEMFORCEFIELD_H
-#include "config.h"
+#include <sofa/config.h>
 
 
 #include <sofa/core/behavior/ForceField.h>
@@ -36,13 +36,13 @@ namespace sofa
 namespace component
 {
 
-namespace container
+namespace physicalmodel
 {
-class StiffnessContainer;
-class PoissonContainer;
-} // namespace container
 
-namespace forcefield
+namespace solidmechanics
+{
+
+namespace fem
 {
 
 /** Compute Finite Element forces based on 6D beam elements.
@@ -73,21 +73,8 @@ public:
 protected:
 
     typedef defaulttype::Vec<12, Real> Displacement;        ///< the displacement vector
-
-    //typedef Mat<6, 6, Real> MaterialStiffness;    ///< the matrix of material stiffness
-    //typedef vector<MaterialStiffness> VecMaterialStiffness;         ///< a vector of material stiffness matrices
-    //VecMaterialStiffness _materialsStiffnesses;                    ///< the material stiffness matrices vector
-
-    //typedef Mat<12, 6, Real> StrainDisplacement;    ///< the strain-displacement matrix
-    //typedef vector<StrainDisplacement> VecStrainDisplacement;        ///< a vector of strain-displacement matrices
-    //VecStrainDisplacement _strainDisplacements;                       ///< the strain-displacement matrices vector
-
     typedef defaulttype::Mat<3, 3, Real> Transformation; ///< matrix for rigid transformations like rotations
-
-
     typedef defaulttype::Mat<12, 12, Real> StiffnessMatrix;
-    //typedef topology::EdgeData<StiffnessMatrix> VecStiffnessMatrices;         ///< a vector of stiffness matrices
-    //VecStiffnessMatrices _stiffnessMatrices;                    ///< the material stiffness matrices vector
 
     struct BeamInfo
     {
@@ -105,24 +92,6 @@ protected:
         double _Asy; //_Asy is the y-direction effective shear area =  10/9 (for solid circular section) or 0 for a non-Timoshenko beam
         double _Asz; //_Asz is the z-direction effective shear area;
         StiffnessMatrix _k_loc;
-        //new: k_loc is the stiffness in the local frame... to compute Ke we only change lambda
-        //NewMAT::Matrix  _k_loc;
-
-        // _eigenvalue_loc are 4 diagonal matrices (6x6) representing the eigenvalues of each
-        // 6x6 block of _k_loc. _eigenvalue_loc[1] = _eigenvalue_loc[2] since _k_loc[1] = _k_loc[2]
-        //NewMAT::DiagonalMatrix  _eigenvalue_loc[4], _inv_eigenvalue_loc[4];
-        // k_flex is the stiffness matrix + reinforcement of diagonal (used in gauss-seidel process)
-        //NewMAT::Matrix  _k_flex;
-        //lambda is a matrix that contains the direction of the local frame in the global frame
-        //NewMAT::Matrix  _lambda;
-        //non-linear value of the internal forces (computed with previous time step positions) (based on k_loc)
-        //NewMAT::ColumnVector  _f_k;
-        //initial deformation of the beam (gives the curvature) on the local frame
-        //NewMAT::ColumnVector _u_init;
-        //actual deformation of the beam on the local frame
-        //NewMAT::ColumnVector _u_actual;
-
-        //NewMAT::Matrix _Ke;
 
         defaulttype::Quat quat;
 
@@ -194,27 +163,17 @@ protected:
 
 
 
-    const VecElement *_indexedElements;
-//	unsigned int maxPoints;
-//	int _method; ///< the computation method of the displacements
+	const VecElement *_indexedElements;
     Data<Real> _poissonRatio; ///< Potion Ratio
     Data<Real> _youngModulus; ///< Young Modulus
-//	Data<bool> _timoshenko;
     Data<Real> _radius; ///< radius of the section
     Data<Real> _radiusInner; ///< inner radius of the section for hollow beams
-    Data< VecIndex > _list_segment; ///< apply the forcefield to a subset list of beam segments. If no segment defined, forcefield applies to the whole topology
     Data< bool> _useSymmetricAssembly; ///< use symmetric assembly of the matrix K
-    bool _partial_list_segment;
 
     bool _updateStiffnessMatrix;
     bool _assembling;
 
     double lastUpdatedStep;
-
-    container::StiffnessContainer* stiffnessContainer;
-//	container::LengthContainer* lengthContainer;
-    container::PoissonContainer* poissonContainer;
-//	container::RadiusContainer* radiusContainer;
 
     defaulttype::Quat& beamQuat(int i)
     {
@@ -291,7 +250,11 @@ extern template class SOFA_GENERAL_SIMPLE_FEM_API BeamFEMForceField<defaulttype:
 #endif
 #endif
 
-} // namespace forcefield
+} // namespace fem
+
+} // namespace solidmechanics
+
+} // namespace physicalmodel
 
 } // namespace component
 

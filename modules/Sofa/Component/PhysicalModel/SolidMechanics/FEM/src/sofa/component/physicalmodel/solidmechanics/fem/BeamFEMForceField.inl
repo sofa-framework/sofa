@@ -23,10 +23,9 @@
 #define SOFA_COMPONENT_FORCEFIELD_BEAMFEMFORCEFIELD_INL
 
 #include <SofaBaseTopology/TopologyData.inl>
-#include "BeamFEMForceField.h"
+#include <sofa/component/physicalmodel/solidmechanics/fem/BeamFEMForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <SofaBaseTopology/GridTopology.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/Axis.h>
@@ -40,33 +39,30 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/simulation/Node.h>
 
-#include "StiffnessContainer.h"
-#include "PoissonContainer.h"
-
-
 namespace sofa
 {
 
 namespace component
 {
 
-namespace forcefield
+namespace physicalmodel
 {
 
+namespace solidmechanics
+{
+
+namespace fem
+{
 
 template<class DataTypes>
 BeamFEMForceField<DataTypes>::BeamFEMForceField()
     : beamsData(initData(&beamsData, "beamsData", "Internal element data"))
-    , _indexedElements(NULL)
-//  , _method(0)
+	, _indexedElements(NULL)
     , _poissonRatio(initData(&_poissonRatio,(Real)0.49f,"poissonRatio","Potion Ratio"))
     , _youngModulus(initData(&_youngModulus,(Real)5000,"youngModulus","Young Modulus"))
-//  , _timoshenko(initData(&_timoshenko,true,"timoshenko","use Timoshenko beam (non-null section shear area)"))
     , _radius(initData(&_radius,(Real)0.1,"radius","radius of the section"))
     , _radiusInner(initData(&_radiusInner,(Real)0.0,"radiusInner","inner radius of the section for hollow beams"))
-    , _list_segment(initData(&_list_segment,"listSegment", "apply the forcefield to a subset list of beam segments. If no segment defined, forcefield applies to the whole topology"))
     , _useSymmetricAssembly(initData(&_useSymmetricAssembly,false,"useSymmetricAssembly","use symmetric assembly of the matrix K"))
-    , _partial_list_segment(false)
     , _updateStiffnessMatrix(true)
     , _assembling(false)
     , edgeHandler(NULL)
@@ -81,15 +77,11 @@ template<class DataTypes>
 BeamFEMForceField<DataTypes>::BeamFEMForceField(Real poissonRatio, Real youngModulus, Real radius, Real radiusInner)
     : beamsData(initData(&beamsData, "beamsData", "Internal element data"))
     , _indexedElements(NULL)
-//  , _method(0)
     , _poissonRatio(initData(&_poissonRatio,(Real)poissonRatio,"poissonRatio","Potion Ratio"))
     , _youngModulus(initData(&_youngModulus,(Real)youngModulus,"youngModulus","Young Modulus"))
-//  , _timoshenko(initData(&_timoshenko,true,"timoshenko","use Timoshenko beam (non-null section shear area)"))
     , _radius(initData(&_radius,(Real)radius,"radius","radius of the section"))
     , _radiusInner(initData(&_radiusInner,(Real)radiusInner,"radiusInner","inner radius of the section for hollow beams"))
-    , _list_segment(initData(&_list_segment,"listSegment", "apply the forcefield to a subset list of beam segments. If no segment defined, forcefield applies to the whole topology"))
     , _useSymmetricAssembly(initData(&_useSymmetricAssembly,false,"useSymmetricAssembly","use symmetric assembly of the matrix K"))
-    , _partial_list_segment(false)
     , _updateStiffnessMatrix(true)
     , _assembling(false)
     , edgeHandler(NULL)
@@ -125,44 +117,18 @@ void BeamFEMForceField<DataTypes>::init()
 
     _topology = context->getMeshTopology();
 
-
-    stiffnessContainer = context->core::objectmodel::BaseContext::get<container::StiffnessContainer>();
-    poissonContainer = context->core::objectmodel::BaseContext::get<container::PoissonContainer>();
-
-    if (_topology==NULL)
+	if (_topology==nullptr)
     {
-        serr << "ERROR(BeamFEMForceField): object must have a BaseMeshTopology (i.e. EdgeSetTopology or MeshTopology)."<<sendl;
+		msg_error(this) << "The object must have a BaseMeshTopology (i.e. EdgeSetTopology or MeshTopology).";
         return;
     }
-    else
-    {
-        if(_topology->getNbEdges()==0)
-        {
-            serr << "ERROR(BeamFEMForceField): topology is empty."<<sendl;
-            return;
-        }
-        _indexedElements = &_topology->getEdges();
-        if (_list_segment.getValue().size() == 0)
-        {
-            sout<<"Forcefield named "<<this->getName()<<" applies to the wholo topo"<<sendl;
-            _partial_list_segment = false;
-        }
-        else
-        {
-            sout<<"Forcefield named "<<this->getName()<<" applies to a subset of edges"<<sendl;
-            _partial_list_segment = true;
+	else if(_topology->getNbEdges()==0)
+	{
+		msg_error(this) << "The topology is empty.";
+		return;
+	}
 
-            for (unsigned int j=0; j<_list_segment.getValue().size(); j++)
-            {
-                unsigned int i = _list_segment.getValue()[j];
-                if (i>=_indexedElements->size())
-                {
-                    serr<<"WARNING defined listSegment is not compatible with topology"<<sendl;
-                    _partial_list_segment = false;
-                }
-            }
-        }
-    }
+	_indexedElements = &_topology->getEdges();
 
     beamsData.createTopologicalEngine(_topology,edgeHandler);
     beamsData.registerTopologicalData();
@@ -190,10 +156,8 @@ void BeamFEMForceField<DataTypes>::reinitBeam(unsigned int i)
     Index b = (*_indexedElements)[i][1];
 
     const VecCoord& x0 = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-    if (stiffnessContainer)
-        stiffness = stiffnessContainer->getStiffness(i) ;
-    else
-        stiffness =  _youngModulus.getValue() ;
+
+	stiffness =  _youngModulus.getValue() ;
 
     length = (x0[a].getCenter()-x0[b].getCenter()).norm() ;
 
@@ -229,21 +193,7 @@ void BeamFEMForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* 
     //// First compute each node rotation
     typename VecElement::const_iterator it;
 
-    if (_partial_list_segment)
-    {
 
-        for (unsigned int j=0; j<_list_segment.getValue().size(); j++)
-        {
-            unsigned int i = _list_segment.getValue()[j];
-            Element edge= (*_indexedElements)[i];
-            Index a = edge[0];
-            Index b = edge[1];
-            initLarge(i,a,b);
-            accumulateForceLarge( f, p, i, a, b );
-        }
-    }
-    else
-    {
         unsigned int i;
         for(it=_indexedElements->begin(),i=0; it!=_indexedElements->end(); ++it,++i)
         {
@@ -254,7 +204,6 @@ void BeamFEMForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* 
             initLarge(i,a,b);
             accumulateForceLarge( f, p, i, a, b );
         }
-    }
 
     dataF.endEdit();
 }
@@ -268,20 +217,7 @@ void BeamFEMForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams 
 
     df.resize(dx.size());
 
-    if (_partial_list_segment)
-    {
-        for (unsigned int j=0; j<_list_segment.getValue().size(); j++)
-        {
-            unsigned int i = _list_segment.getValue()[j];
-            Element edge= (*_indexedElements)[i];
-            Index a = edge[0];
-            Index b = edge[1];
 
-            applyStiffnessLarge(df, dx, i, a, b, kFactor);
-        }
-    }
-    else
-    {
         typename VecElement::const_iterator it;
         unsigned int i = 0;
         for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
@@ -291,7 +227,6 @@ void BeamFEMForceField<DataTypes>::addDForce(const sofa::core::MechanicalParams 
 
             applyStiffnessLarge(df, dx, i, a, b, kFactor);
         }
-    }
 
     datadF.endEdit();
 }
@@ -541,48 +476,7 @@ void BeamFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPara
 
         unsigned int &offset = r.offset;
 
-        if (_partial_list_segment)
-        {
 
-            for (unsigned int j=0; j<_list_segment.getValue().size(); j++)
-            {
-
-                i = _list_segment.getValue()[j];
-                Element edge= (*_indexedElements)[i];
-                Index a = edge[0];
-                Index b = edge[1];
-
-                Displacement local_depl;
-                defaulttype::Vec3d u;
-                defaulttype::Quat& q = beamQuat(i); //x[a].getOrientation();
-                q.normalize();
-                Transformation R,Rt;
-                q.toMatrix(R);
-                Rt.transpose(R);
-                const StiffnessMatrix& K0 = beamsData.getValue()[i]._k_loc;
-                StiffnessMatrix K;
-                for (int x1=0; x1<12; x1+=3)
-                    for (int y1=0; y1<12; y1+=3)
-                    {
-                        defaulttype::Mat<3,3,Real> m;
-                        K0.getsub(x1,y1, m);
-                        m = R*m*Rt;
-                        K.setsub(x1,y1, m);
-                    }
-                int index[12];
-                for (int x1=0; x1<6; x1++)
-                    index[x1] = offset+a*6+x1;
-                for (int x1=0; x1<6; x1++)
-                    index[6+x1] = offset+b*6+x1;
-                for (int x1=0; x1<12; ++x1)
-                    for (int y1=0; y1<12; ++y1)
-                        mat->add(index[x1], index[y1], - K(x1,y1)*k);
-
-            }
-
-        }
-        else
-        {
             typename VecElement::const_iterator it;
             for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
             {
@@ -643,7 +537,7 @@ void BeamFEMForceField<DataTypes>::addKToMatrix(const sofa::core::MechanicalPara
                         mat->add(index[x1], index[y1], - K(x1,y1)*k);
 
             }
-        }
+
 
     }
 
@@ -660,16 +554,10 @@ void BeamFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparam
 
     std::vector< defaulttype::Vector3 > points[3];
 
-    if (_partial_list_segment)
-    {
-        for (unsigned int j=0; j<_list_segment.getValue().size(); j++)
-            drawElement(_list_segment.getValue()[j], points, x);
-    }
-    else
-    {
+
         for (unsigned int i=0; i<_indexedElements->size(); ++i)
             drawElement(i, points, x);
-    }
+
     vparams->drawTool()->drawLines(points[0], 1, defaulttype::Vec<4,float>(1,0,0,1));
     vparams->drawTool()->drawLines(points[1], 1, defaulttype::Vec<4,float>(0,1,0,1));
     vparams->drawTool()->drawLines(points[2], 1, defaulttype::Vec<4,float>(0,0,1,1));
@@ -767,7 +655,11 @@ void BeamFEMForceField<DataTypes>::BeamInfo::init(double E, double L, double nu,
     _Asz = 0.0;
 }
 
-} // namespace forcefield
+} // namespace fem
+
+} // namespace solidmechanics
+
+} // namespace physicalmodel
 
 } // namespace component
 
