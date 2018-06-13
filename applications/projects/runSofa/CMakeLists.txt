@@ -3,7 +3,7 @@ project(runSofa)
 
 option(RUNSOFA_INSTALL_AS_BUNDLE "Create a bundle containing all the installation files (Only Mac OS X for now)" OFF)
 
-set(RESSOURCE_FILES
+set(RESOURCE_FILES
     resources/docs/runsofa.html
     )
 
@@ -62,6 +62,6 @@ else()
 endif()
 
 # if MSVC then plugins are located in bin/ instead of lib/ on Mac and Linux
-file(INSTALL "resources" DESTINATION "../../../share/sofa/gui/runSofa")
+install(DIRECTORY "resources" DESTINATION "share/sofa/gui/runSofa")
 install(FILES "${_defaultConfigPluginFilePath}" DESTINATION ${_pluginLocation}/)
 

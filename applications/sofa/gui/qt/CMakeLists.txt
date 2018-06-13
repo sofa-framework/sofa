@@ -205,6 +205,6 @@ set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOF
 
 sofa_install_targets(SofaGui SofaGuiQt "")
 
-file(INSTALL "resources" DESTINATION "../../share/sofa/gui/qt")
+install(DIRECTORY "resources" DESTINATION "share/sofa/gui/qt")
 install(FILES ${HEADER_FILES} DESTINATION "include/sofa/gui/qt")
 install(FILES ${MOC_HEADER_FILES} DESTINATION "include/sofa/gui/qt")
