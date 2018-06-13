@@ -19,15 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_BEAMFEMFORCEFIELD_H
-#define SOFA_COMPONENT_FORCEFIELD_BEAMFEMFORCEFIELD_H
-#include <sofa/config.h>
+#ifndef SOFA_COMPONENT_PHYSICALMODEL_SOLIDMECHANICS_FEM_BEAMFEMFORCEFIELD_H
+#define SOFA_COMPONENT_PHYSICALMODEL_SOLIDMECHANICS_FEM_BEAMFEMFORCEFIELD_H
 
+#include <Sofa.Component.PhysicalModel.SolidMechanics.FEM.h>
 
 #include <sofa/core/behavior/ForceField.h>
-#include <SofaBaseTopology/TopologyData.h>
-
-#include <SofaEigen2Solver/EigenSparseMatrix.h>
+#include <sofa/core/topology/BaseMeshTopology.h>
+#include <SofaBaseTopology/TopologyData.inl>
 
 
 namespace sofa
@@ -53,195 +52,108 @@ class BeamFEMForceField : public core::behavior::ForceField<DataTypes>
 public:
     SOFA_CLASS(SOFA_TEMPLATE(BeamFEMForceField,DataTypes), SOFA_TEMPLATE(core::behavior::ForceField,DataTypes));
 
-    typedef typename DataTypes::Real        Real        ;
-    typedef typename DataTypes::Coord       Coord       ;
-    typedef typename DataTypes::Deriv       Deriv       ;
-    typedef typename DataTypes::VecCoord    VecCoord    ;
-    typedef typename DataTypes::VecDeriv    VecDeriv    ;
-    typedef typename DataTypes::VecReal     VecReal     ;
-    typedef Data<VecCoord>                  DataVecCoord;
-    typedef Data<VecDeriv>                  DataVecDeriv;
-    typedef VecCoord Vector;
+	using Real = typename DataTypes::Real;
+	using Coord = typename DataTypes::Coord;
+	using Deriv = typename DataTypes::Deriv;
+	using VecCoord = typename DataTypes::VecCoord;
+	using VecDeriv = typename DataTypes::VecDeriv;
+	using VecReal = typename DataTypes::VecReal;
+	using DataVecCoord = Data<VecCoord>;
+	using DataVecDeriv = Data<VecDeriv>;
+
+	using Index = unsigned int;
+	using Edge = core::topology::BaseMeshTopology::Edge ;
+	using VecEdges = sofa::helper::vector<core::topology::BaseMeshTopology::Edge> ;
+	using VecIndex = helper::vector<Index> ;
+
+	using Quat = helper::Quater<Real>;
+	using Vec3 = defaulttype::Vec<3, Real> ;
+	using Displacement = defaulttype::Vec<12, Real> ; ///< the displacement vector
+	using Transformation = defaulttype::Mat<3, 3, Real>; ///< matrix for rigid transformations like rotations
+	using StiffnessMatrix = defaulttype::Mat<12, 12, Real>;
 
 
-    typedef unsigned int Index;
-    typedef core::topology::BaseMeshTopology::Edge Element;
-    typedef sofa::helper::vector<core::topology::BaseMeshTopology::Edge> VecElement;
-    typedef helper::vector<unsigned int> VecIndex;
-    typedef defaulttype::Vec<3, Real> Vec3;
+	Data< bool> _useSymmetricAssembly; ///< use symmetric assembly of the matrix K
 
-protected:
+	/// Per edge inforation
+	topology::EdgeData< sofa::helper::vector<Real>> d_youngModulus; ///< Young Modulus (E)
+	topology::EdgeData< sofa::helper::vector<Real>> d_poissonRatio; ///< Poisson ratio (nu)
+	topology::EdgeData< sofa::helper::vector<Real>> d_r; ///< radius of the section
+	topology::EdgeData< sofa::helper::vector<Real>> d_innerR; ///< inner radius
+	topology::EdgeData< sofa::helper::vector<Real>> d_L; ///< Length
 
-    typedef defaulttype::Vec<12, Real> Displacement;        ///< the displacement vector
-    typedef defaulttype::Mat<3, 3, Real> Transformation; ///< matrix for rigid transformations like rotations
-    typedef defaulttype::Mat<12, 12, Real> StiffnessMatrix;
+private:
+	sofa::helper::vector<Real> _G; //shear modulus
+	sofa::helper::vector<Real> _Iy;
+	sofa::helper::vector<Real> _Iz; //Iz is the cross-section moment of inertia (assuming mass ratio = 1) about the z axis;
+	sofa::helper::vector<Real> _J;  //Polar moment of inertia (J = Iy + Iz)
+	sofa::helper::vector<Real> _A; // A is the cross-sectional area;
+	sofa::helper::vector<Real> _Asy; //_Asy is the y-direction effective shear area =  10/9 (for solid circular section) or 0 for a non-Timoshenko beam
+	sofa::helper::vector<Real> _Asz; //_Asz is the z-direction effective shear area;
+	sofa::helper::vector<StiffnessMatrix> _k_loc;
+	sofa::helper::vector<Quat> _quat;
 
-    struct BeamInfo
-    {
-        // 	static const double FLEXIBILITY=1.00000; // was 1.00001
-        double _E0,_E; //Young
-        double _nu;//Poisson
-        double _L; //length
-        double _r; //radius of the section
-        double _rInner; //inner radius of the section if beam is hollow
-        double _G; //shear modulus
-        double _Iy;
-        double _Iz; //Iz is the cross-section moment of inertia (assuming mass ratio = 1) about the z axis;
-        double _J;  //Polar moment of inertia (J = Iy + Iz)
-        double _A; // A is the cross-sectional area;
-        double _Asy; //_Asy is the y-direction effective shear area =  10/9 (for solid circular section) or 0 for a non-Timoshenko beam
-        double _Asz; //_Asz is the z-direction effective shear area;
-        StiffnessMatrix _k_loc;
+	const Real _epsilon;
 
-        defaulttype::Quat quat;
-
-        //void localStiffness();
-        void init(double E, double L, double nu, double r, double rInner);
-        /// Output stream
-        inline friend std::ostream& operator<< ( std::ostream& os, const BeamInfo& bi )
-        {
-            os	<< bi._E0 << " "
-                << bi._E << " "
-                << bi._nu << " "
-                << bi._L << " "
-                << bi._r << " "
-                << bi._rInner << " "
-                << bi._G << " "
-                << bi._Iy << " "
-                << bi._Iz << " "
-                << bi._J << " "
-                << bi._A << " "
-                << bi._Asy << " "
-                << bi._Asz << " "
-                << bi._k_loc;
-            return os;
-        }
-
-        /// Input stream
-        inline friend std::istream& operator>> ( std::istream& in, BeamInfo& bi )
-        {
-            in	>> bi._E0
-                >> bi._E
-                >> bi._nu
-                >> bi._L
-                >> bi._r
-                >> bi._rInner
-                >> bi._G
-                >> bi._Iy
-                >> bi._Iz
-                >> bi._J
-                >> bi._A
-                >> bi._Asy
-                >> bi._Asz
-                >> bi._k_loc;
-            return in;
-        }
-    };
-
-    //just for draw forces
-    VecDeriv _forces;
-
-    topology::EdgeData< sofa::helper::vector<BeamInfo> > beamsData; ///< Internal element data
-    linearsolver::EigenBaseSparseMatrix<typename DataTypes::Real> matS;
-
-    class BeamFFEdgeHandler : public topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,sofa::helper::vector<BeamInfo> >
-    {
-    public:
-        typedef typename BeamFEMForceField<DataTypes>::BeamInfo BeamInfo;
-        BeamFFEdgeHandler(BeamFEMForceField<DataTypes>* ff, topology::EdgeData<sofa::helper::vector<BeamInfo> >* data)
-            :topology::TopologyDataHandler<core::topology::BaseMeshTopology::Edge,sofa::helper::vector<BeamInfo> >(data),ff(ff) {}
-
-        void applyCreateFunction(unsigned int edgeIndex, BeamInfo&,
-                                 const core::topology::BaseMeshTopology::Edge& e,
-                                 const sofa::helper::vector<unsigned int> &,
-                                 const sofa::helper::vector< double > &);
-
-    protected:
-        BeamFEMForceField<DataTypes>* ff;
-
-    };
-
-
-
-	const VecElement *_indexedElements;
-    Data<Real> _poissonRatio; ///< Potion Ratio
-    Data<Real> _youngModulus; ///< Young Modulus
-    Data<Real> _radius; ///< radius of the section
-    Data<Real> _radiusInner; ///< inner radius of the section for hollow beams
-    Data< bool> _useSymmetricAssembly; ///< use symmetric assembly of the matrix K
-
-    bool _updateStiffnessMatrix;
-    bool _assembling;
-
-    double lastUpdatedStep;
-
-    defaulttype::Quat& beamQuat(int i)
-    {
-        helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
-        return bd[i].quat;
-    }
     sofa::core::topology::BaseMeshTopology* _topology;
-    BeamFFEdgeHandler* edgeHandler;
-
 
     BeamFEMForceField();
-    BeamFEMForceField(Real poissonRatio, Real youngModulus, Real radius, Real radiusInner);
     virtual ~BeamFEMForceField();
+
 public:
-    void setUpdateStiffnessMatrix(bool val) { this->_updateStiffnessMatrix = val; }
-
-    void setComputeGlobalMatrix(bool val) { this->_assembling= val; }
-
     virtual void init() override;
     virtual void bwdInit() override;
     virtual void reinit() override;
-    virtual void reinitBeam(unsigned int i);
 
     virtual void addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV ) override;
     virtual void addDForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv&   datadF , const DataVecDeriv&   datadX ) override;
     virtual void addKToMatrix(const sofa::core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix ) override;
-
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
-    {
-        serr << "Get potentialEnergy not implemented" << sendl;
-        return 0.0;
-    }
+	virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override;
 
     void draw(const core::visual::VisualParams* vparams) override;
     void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
 
-    void setBeam(unsigned int i, double E, double L, double nu, double r, double rInner);
-    void initBeams(unsigned int size);
+	/// Pre-construction check method called by ObjectFactory.
+	/// Check that DataTypes matches the MechanicalState.
+	template<class T>
+	static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+	{
+		if (dynamic_cast<core::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL && context->getMechanicalState() != NULL)
+			return false;
 
-protected:
+		return core::objectmodel::BaseObject::canCreate(obj, context, arg);
+	}
 
-    void drawElement(int i, std::vector< defaulttype::Vector3 >* points, const VecCoord& x);
+	template<class T>
+	static typename T::SPtr create(T*, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+	{
+		typename T::SPtr obj;
 
-    //void computeStrainDisplacement( StrainDisplacement &J, Coord a, Coord b, Coord c, Coord d );
-    Real peudo_determinant_for_coef ( const defaulttype::Mat<2, 3, Real>&  M );
+		if( context)
+		{
+			obj = sofa::core::objectmodel::New<T>();
+			context->addObject(obj);
+		}
 
-    //void computeStiffnessMatrix( StiffnessMatrix& S,StiffnessMatrix& SR,const MaterialStiffness &K, const StrainDisplacement &J, const Transformation& Rot );
+		if (arg) obj->parse(arg);
 
-    //void computeMaterialStiffness(int i, Index&a, Index&b);
-    void computeStiffness(int i, Index a, Index b);
+		return obj;
+	}
 
-    //void computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacement &J );
+private:
+	void initInternalData();
+	void reinitBeam(std::size_t i);
+	void computeStiffness(std::size_t i);
+
+	void drawElement(std::size_t i, Index a, Index b, std::array<std::vector<defaulttype::Vector3>, 3>& points, const VecCoord& x);
 
     ////////////// large displacements method
-    //vector<fixed_array<Coord,4> > _rotatedInitialElements;   ///< The initials positions in its frame
-    //VecReal _initialLength;
-    helper::vector<Transformation> _nodeRotations;
-    //vector<Quat> _beamQuat;
-    void initLarge(int i, Index a, Index b);
-    //void computeRotationLarge( Transformation &r, const Vector &p, Index a, Index b);
-    void accumulateForceLarge( VecDeriv& f, const VecCoord& x, int i, Index a, Index b);
-    //void accumulateDampingLarge( Vector& f, Index elementIndex );
-    void applyStiffnessLarge( VecDeriv& f, const VecDeriv& x, int i, Index a, Index b, double fact=1.0);
-
-    //sofa::helper::vector< sofa::helper::vector <Real> > subMatrix(unsigned int fr, unsigned int lr, unsigned int fc, unsigned int lc);
+	void initLarge(std::size_t i, Index a, Index b);
+	void accumulateForceLarge( VecDeriv& f, const VecCoord& x, std::size_t i, Index a, Index b);
+	void applyStiffnessLarge(VecDeriv& f, const VecDeriv& x, std::size_t i, Index a, Index b, Real fact=1.0);
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_BEAMFEMFORCEFIELD_CPP)
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_PHYSICALMODEL_SOLIDMECHANICS_FEM_BEAMFEMFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_SIMPLE_FEM_API BeamFEMForceField<defaulttype::Rigid3dTypes>;
 #endif
@@ -260,4 +172,4 @@ extern template class SOFA_GENERAL_SIMPLE_FEM_API BeamFEMForceField<defaulttype:
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENT_FORCEFIELD_BEAMFEMFORCEFIELD_H
+#endif // SOFA_COMPONENT_PHYSICALMODEL_SOLIDMECHANICS_FEM_BEAMFEMFORCEFIELD_H

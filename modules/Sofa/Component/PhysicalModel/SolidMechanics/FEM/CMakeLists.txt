@@ -8,18 +8,20 @@ set(HEADER_FILES config/${PROJECT_NAME}.h)
 set(SOURCE_FILES config/${PROJECT_NAME}.cpp)
 
 list(APPEND HEADER_FILES
+	config/Sofa.Component.PhysicalModel.SolidMechanics.FEM.h
     src/sofa/component/physicalModel/solidmechanics/fem/BeamFEMForceField.h
     src/sofa/component/physicalModel/solidmechanics/fem/BeamFEMForceField.inl
     )
 
 list(APPEND SOURCE_FILES
+	config/Sofa.Component.PhysicalModel.SolidMechanics.FEM.cpp
     src/sofa/component/physicalModel/solidmechanics/fem/BeamFEMForceField.cpp
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
 
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaHelper)
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DBUILD_SOFA_COMPONENT_UTILS")
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaHelper SofaBaseTopology)
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DBUILD_SOFA_COMPONENT_PHYSICALMODEL_SOLIDMECHANICS_FEM_API")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/config>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/deprecated_layout>")
