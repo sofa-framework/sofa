@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <Sofa.Component.PhysicalModel.SolidMechanics.FEM.h>
+#include <SolidMechanics.h>
 
 namespace sofa
 {
@@ -29,12 +29,12 @@ namespace forcefield
 {
 
 extern "C" {
-    SOFA_COMPONENT_PHYSICALMODEL_SOLIDMECHANICS_FEM_API void initExternalModule();
-    SOFA_COMPONENT_PHYSICALMODEL_SOLIDMECHANICS_FEM_API const char* getModuleName();
-    SOFA_COMPONENT_PHYSICALMODEL_SOLIDMECHANICS_FEM_API const char* getModuleVersion();
-    SOFA_COMPONENT_PHYSICALMODEL_SOLIDMECHANICS_FEM_API const char* getModuleLicense();
-    SOFA_COMPONENT_PHYSICALMODEL_SOLIDMECHANICS_FEM_API const char* getModuleDescription();
-    SOFA_COMPONENT_PHYSICALMODEL_SOLIDMECHANICS_FEM_API const char* getModuleComponentList();
+    SOFA_SOLIDMECHANICS_API void initExternalModule();
+    SOFA_SOLIDMECHANICS_API const char* getModuleName();
+    SOFA_SOLIDMECHANICS_API const char* getModuleVersion();
+    SOFA_SOLIDMECHANICS_API const char* getModuleLicense();
+    SOFA_SOLIDMECHANICS_API const char* getModuleDescription();
+    SOFA_SOLIDMECHANICS_API const char* getModuleComponentList();
 }
 
 void initExternalModule()

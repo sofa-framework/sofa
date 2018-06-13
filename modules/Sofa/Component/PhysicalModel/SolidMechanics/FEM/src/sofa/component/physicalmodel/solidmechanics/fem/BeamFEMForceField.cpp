@@ -57,10 +57,10 @@ int BeamFEMForceFieldClass = core::RegisterObject("Beam finite elements")
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_PHYSICALMODEL_SOLIDMECHANICS_FEM_API BeamFEMForceField<Rigid3dTypes>;
+template class SOFA_SOLIDMECHANICS_API BeamFEMForceField<Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_PHYSICALMODEL_SOLIDMECHANICS_FEM_API BeamFEMForceField<Rigid3fTypes>;
+template class SOFA_SOLIDMECHANICS_API BeamFEMForceField<Rigid3fTypes>;
 #endif
 
 } // namespace fem

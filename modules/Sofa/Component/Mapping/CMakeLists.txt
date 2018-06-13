@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 
-project(SolidMechanics VERSION 1.0)
+project(Mapping VERSION 1.0)
 
 find_package(SofaFramework REQUIRED)
 
@@ -8,20 +8,20 @@ set(HEADER_FILES config/${PROJECT_NAME}.h)
 set(SOURCE_FILES config/${PROJECT_NAME}.cpp)
 
 list(APPEND HEADER_FILES
-    config/SolidMechanics.h
-    src/sofa/component/physicalModel/solidmechanics/fem/BeamFEMForceField.h
-    src/sofa/component/physicalModel/solidmechanics/fem/BeamFEMForceField.inl
+    config/Mapping.h
+    src/sofa/component/mapping/BeamLinearMapping.h
+    src/sofa/component/mapping/BeamLinearMapping.inl
 )
 
 list(APPEND SOURCE_FILES
-    config/SolidMechanics.cpp
-    src/sofa/component/physicalModel/solidmechanics/fem/BeamFEMForceField.cpp
+    config/Mapping.cpp
+    src/sofa/component/mapping/BeamLinearMapping.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaHelper SofaBaseTopology)
-set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DBUILD_SOFA_SOLIDMECHANICS_API")
+set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DBUILD_SOFA_MAPPING_API")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/config>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/deprecated_layout>")
