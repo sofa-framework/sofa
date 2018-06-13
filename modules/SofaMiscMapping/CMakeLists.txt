@@ -13,8 +13,6 @@ set(SOURCE_FILES
 list(APPEND HEADER_FILES
     BarycentricMappingRigid.h
     BarycentricMappingRigid.inl
-    BeamLinearMapping.h
-    BeamLinearMapping.inl
     #CatmullRomSplineMapping.h
     #CatmullRomSplineMapping.inl
     CenterOfMassMapping.h
@@ -53,7 +51,6 @@ list(APPEND HEADER_FILES
     )
 list(APPEND SOURCE_FILES
     BarycentricMappingRigid.cpp
-    BeamLinearMapping.cpp
     #CatmullRomSplineMapping.cpp
     CenterOfMassMapping.cpp
     CenterOfMassMulti2Mapping.cpp
