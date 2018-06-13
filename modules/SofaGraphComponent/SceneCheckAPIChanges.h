@@ -56,6 +56,7 @@ public:
     virtual const std::string getDesc() override ;
     virtual void doInit(Node* node) override ;
     virtual void doCheckOn(Node* node) override ;
+    virtual void doPrintSummary() override ;
 
     void installDefaultChangeSets() ;
     void addHookInChangeSet(const std::string& version, ChangeSetHookFunction fct) ;
@@ -64,6 +65,8 @@ private:
     std::string m_selectedApiLevel {"17.06"} ;
 
     std::map<std::string, std::vector<ChangeSetHookFunction>> m_changesets ;
+
+    std::map<std::string, int> m_,numberOfCreationFromAlias ;
 };
 
 } /// _scenechecks_

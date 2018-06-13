@@ -23,8 +23,11 @@
 #include <string>
 #include <sofa/core/objectmodel/Base.h>
 using sofa::core::objectmodel::Base ;
+using sofa::core::objectmodel::BaseObjectDescription ;
 
 #include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory ;
+
 #include <sofa/simulation/Visitor.h>
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/helper/system/FileRepository.h>
@@ -89,6 +92,11 @@ void SceneCheckAPIChange::doInit(Node* node)
     }
 }
 
+void SceneCheckAPIChange::doPrintSummary()
+{
+
+}
+
 void SceneCheckAPIChange::doCheckOn(Node* node)
 {
     if(node==nullptr)
@@ -121,6 +129,16 @@ void SceneCheckAPIChange::installDefaultChangeSets()
             msg_deprecated(o) << deprecatedComponents.at(o->getClassName()).getMessage();
         }
     }) ;
+
+    std::cout << "HELLO " << std::endl ;
+    /// Add a callback to be n
+    ObjectFactory::getInstance()->setCallback([](Base* o, BaseObjectDescription *arg){
+        msg_warning(o) << "Using an Alias: " << o->getClassName() ;
+
+        if(o->getClassName() != arg->getAttribute("type", "") )
+                        msg_warning(o) << "Using an Alias: " << o->getClassName() ;
+
+                }) ;
 }
 
 void SceneCheckAPIChange::addHookInChangeSet(const std::string& version, ChangeSetHookFunction fct)
