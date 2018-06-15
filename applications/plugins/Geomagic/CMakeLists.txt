@@ -32,8 +32,5 @@ if(NOT ${SOFA_NO_OPENGL})
     target_link_libraries(${PROJECT_NAME} SofaOpenglVisual)
 endif()
 
-install(TARGETS ${PROJECT_NAME}
-        COMPONENT ${PROJECT_NAME}
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib)
+## Install rules for the library; CMake package configurations files
+sofa_create_package(${PROJECT_NAME} 1.0 ${PROJECT_NAME} ${PROJECT_NAME})
