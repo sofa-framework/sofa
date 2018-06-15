@@ -31,3 +31,9 @@ target_link_libraries(${PROJECT_NAME} SofaHelper SofaUserInteraction ${OPENHAPTI
 if(NOT ${SOFA_NO_OPENGL})
     target_link_libraries(${PROJECT_NAME} SofaOpenglVisual)
 endif()
+
+install(TARGETS ${PROJECT_NAME}
+        COMPONENT ${PROJECT_NAME}
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)
