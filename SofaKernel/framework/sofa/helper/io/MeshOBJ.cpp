@@ -390,8 +390,9 @@ void MeshOBJ::readMTL(const char* filename)
                     stringFilename.erase(stringFilename.begin(), stringFilename.begin()+1);
                     mat->textureFilename = stringFilename;
                 }
-            }
-            break;
+
+				break;
+            }            
             case 'b':
             {
                 if( !mat )
@@ -417,8 +418,9 @@ void MeshOBJ::readMTL(const char* filename)
                     stringFilename.erase(stringFilename.begin(), stringFilename.begin()+1);
                     mat->bumpTextureFilename = stringFilename;
                 }
-            }
-            break;
+
+				break;
+            }            
             default:
                 /* eat up rest of line */
                 if ( fgets(buf, sizeof(buf), file) == NULL)

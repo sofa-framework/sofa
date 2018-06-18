@@ -149,8 +149,7 @@ void MeshObjLoader::addGroup (const PrimitiveGroup& g)
 
 bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
 {
-    dmsg_info() << " readOBJ";
-
+ 
     const bool handleSeams = d_handleSeams.getValue();
     helper::vector<sofa::defaulttype::Vector3>& my_positions = *(d_positions.beginEdit());
     helper::vector<sofa::defaulttype::Vector2>& my_texCoords = *(texCoordsList.beginEdit());
@@ -202,27 +201,27 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
         if (line.empty()) continue;
         std::istringstream values(line);
         std::string token;
-
         values >> token;
+
         if (token == "#")
         {
-            /* comment */
+            // comment
         }
         else if (token == "v")
         {
-            /* vertex */
+            // vertex
             values >> result[0] >> result[1] >> result[2];
             my_positions.push_back(Vector3(result[0],result[1], result[2]));
         }
         else if (token == "vn")
         {
-            /* normal */
+            // normal 
             values >> result[0] >> result[1] >> result[2];
             my_normals.push_back(Vector3(result[0],result[1], result[2]));
         }
         else if (token == "vt")
         {
-            /* texcoord */
+            // texcoord
             values >> result[0] >> result[1];
             my_texCoords.push_back(Vector2(result[0],result[1]));
         }
@@ -256,7 +255,6 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
                 {
                     if (it->name == curMaterialName)
                     {
-                        // std::cout << "Using material "<<it->name<<std::endl;
                         (*it).activated = true;
                         if (!material.activated)
                             material = *it;
@@ -280,7 +278,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
         }
         else if (token == "l" || token == "f")
         {
-            /* face */
+            // face
             nodes.clear();
             nIndices.clear();
             tIndices.clear();
@@ -311,7 +309,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
                             vtn[j] += (j==0) ? my_positions.size() : (j==1) ? my_texCoords.size() : my_normals.size();
                         else
                         {
-                            serr << "Invalid index " << tmp << sendl;
+                            msg_error() << "Invalid index " << tmp;
                             vtn[j] = -1;
                         }
                     }
@@ -451,17 +449,17 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
             nbVOut += s;
         }
 
-        sout << nbVIn << " input positions, " << nbVOut << " final vertices." << sendl;
+		dmsg_info() << nbVIn << " input positions, " << nbVOut << " final vertices.";
 
         if (nbVIn != nbVOut)
             vsplit = true;
 
         // Then we can create the final arrays
-        helper::WriteAccessor<Data<helper::vector<sofa::defaulttype::Vector3>>> vertices2 = d_positions;
-        helper::WriteAccessor<Data<helper::vector<sofa::defaulttype::Vector3>>> vnormals = d_normals;
-        helper::WriteAccessor<Data<helper::vector<sofa::defaulttype::Vector2>>> vtexcoords = texCoords;
-        helper::WriteAccessor<Data<helper::vector<int>>> vertPosIdx = d_vertPosIdx;
-        helper::WriteAccessor<Data<helper::vector<int>>> vertNormIdx = d_vertNormIdx;
+        helper::WriteAccessor<Data<helper::vector<sofa::defaulttype::Vector3> > > vertices2 = d_positions;
+        helper::WriteAccessor<Data<helper::vector<sofa::defaulttype::Vector3> > > vnormals = d_normals;
+        helper::WriteAccessor<Data<helper::vector<sofa::defaulttype::Vector2> > > vtexcoords = texCoords;
+        helper::WriteAccessor<Data<helper::vector<int> > > vertPosIdx = d_vertPosIdx;
+        helper::WriteAccessor<Data<helper::vector<int> > > vertNormIdx = d_vertNormIdx;
 
         vertices2.resize(nbVOut);
         vnormals.resize(nbVOut);
@@ -522,7 +520,7 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
                 nodes[i] = vertTexNormMap[pi][std::make_pair(ti, ni)];
                 if ((unsigned)nodes[i] >= (unsigned)nbVOut)
                 {
-                    serr << this->getPathName()<<" index "<<nodes[i]<<" out of range"<<sendl;
+                    msg_error() << this->getPathName()<<" index "<<nodes[i]<<" out of range";
                     nodes[i] = 0;
                 }
             }
@@ -623,8 +621,6 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
 // -----------------------------------------------------
 bool MeshObjLoader::readMTL(const char* filename, helper::vector <Material>& materials)
 {
-    sout << "MeshObjLoader::readMTL" << sendl;
-
     FILE* file;
     char buf[128]; // Note: in the strings below, 127 is sizeof(buf)-1
     const char *single_string_format = "%127s"; // Better than "%s" for scanf
@@ -646,10 +642,10 @@ bool MeshObjLoader::readMTL(const char* filename, helper::vector <Material>& mat
                 /* eat up rest of line */
                 if ( fgets(buf, sizeof(buf), file) == NULL)
                 {
-                    if (feof (file) )
-                        serr << "Error: MeshObjLoader: fgets function has encounter end of file. case #." << sendl;
+					if (feof(file))
+						msg_error() << "Error: MeshObjLoader: fgets function has encounter end of file. case #.";
                     else
-                        serr << "Error: MeshObjLoader: fgets function has encounter an error. case #." << sendl;
+                        msg_error() << "Error: MeshObjLoader: fgets function has encounter an error. case #.";
                 }
                 break;
             case 'n':
@@ -664,9 +660,9 @@ bool MeshObjLoader::readMTL(const char* filename, helper::vector <Material>& mat
                 if ( fgets(buf, sizeof(buf), file) == NULL)
                 {
                     if (feof (file) )
-                        serr << "Error: MeshObjLoader: fgets function has encounter end of file. case n." << sendl;
+                        msg_error() << "Error: MeshObjLoader: fgets function has encounter end of file. case n.";
                     else
-                        serr << "Error: MeshObjLoader: fgets function has encounter an error. case n." << sendl;
+                        msg_error() << "Error: MeshObjLoader: fgets function has encounter an error. case n.";
                 }
                 sscanf(buf, double_string_format, buf, buf);
                 mat->name = buf;
@@ -678,15 +674,13 @@ bool MeshObjLoader::readMTL(const char* filename, helper::vector <Material>& mat
                 {
                     float optical_density;
                     if ( fscanf(file, "%f", &optical_density) == EOF )
-                        serr << "Error: MeshObjLoader: fscanf function has encounter an error. case N i." << sendl;
+                        msg_error() << "Error: MeshObjLoader: fscanf function has encounter an error. case N i.";
                     break;
                 }
                 case 's':
                     if (fscanf(file, "%f", &mat->shininess) == EOF )
-                        serr << "Error: MeshObjLoader: fscanf function has encounter an error. case N s." << sendl;
-                    // wavefront shininess is from [0, 1000], so scale for OpenGL
-                    //mat->shininess /= 1000.0;
-                    //mat->shininess *= 128.0;
+                        msg_error() << "Error: MeshObjLoader: fscanf function has encounter an error. case N s.";
+
                     mat->useShininess = true;
                     break;
                 default:
@@ -694,9 +688,9 @@ bool MeshObjLoader::readMTL(const char* filename, helper::vector <Material>& mat
                     if ( fgets(buf, sizeof(buf), file) == NULL)
                     {
                         if (feof (file) )
-                            serr << "Error: MeshObjLoader: fgets function has encounter end of file. case N." << sendl;
+                            msg_error() << "Error: MeshObjLoader: fgets function has encounter end of file. case N.";
                         else
-                            serr << "Error: MeshObjLoader: fgets function has encounter an error. case N." << sendl;
+                            msg_error() << "Error: MeshObjLoader: fgets function has encounter an error. case N.";
                     }
                     break;
                 }
@@ -706,48 +700,107 @@ bool MeshObjLoader::readMTL(const char* filename, helper::vector <Material>& mat
                 {
                 case 'd':
                     if ( fscanf(file, "%f %f %f", &mat->diffuse[0], &mat->diffuse[1], &mat->diffuse[2]) == EOF)
-                        serr << "Error: MeshObjLoader: fscanf function has encounter an error. case K d." << sendl;
+                        msg_error() << "Error: MeshObjLoader: fscanf function has encounter an error. case K d.";
                     mat->useDiffuse = true;
-                    /*sout << mat->name << " diffuse = "<<mat->diffuse[0]<<' '<<mat->diffuse[1]<<'*/ /*'<<mat->diffuse[2]<<sendl;*/
                     break;
                 case 's':
                     if ( fscanf(file, "%f %f %f", &mat->specular[0], &mat->specular[1], &mat->specular[2]) == EOF)
-                        serr << "Error: MeshObjLoader: fscanf function has encounter an error. case K s." << sendl;
+                        msg_error() << "Error: MeshObjLoader: fscanf function has encounter an error. case K s.";
                     mat->useSpecular = true;
-                    /*sout << mat->name << " specular = "<<mat->specular[0]<<' '<<mat->specular[1]<<'*/ /*'<<mat->specular[2]<<sendl;*/
                     break;
                 case 'a':
                     if ( fscanf(file, "%f %f %f", &mat->ambient[0], &mat->ambient[1], &mat->ambient[2]) == EOF)
-                        serr << "Error: MeshObjLoader: fscanf function has encounter an error. case K a." << sendl;
+                        msg_error() << "Error: MeshObjLoader: fscanf function has encounter an error. case K a.";
                     mat->useAmbient = true;
-                    /*sout << mat->name << " ambient = "<<mat->ambient[0]<<' '<<mat->ambient[1]<<'*/ /*'<<mat->ambient[2]<<sendl;*/
                     break;
                 default:
                     /* eat up rest of line */
                     if ( fgets(buf, sizeof(buf), file) == NULL)
                     {
                         if (feof (file) )
-                            serr << "Error: MeshObjLoader: fgets function has encounter end of file. case K." << sendl;
+                            msg_error() << "Error: MeshObjLoader: fgets function has encounter end of file. case K.";
                         else
-                            serr << "Error: MeshObjLoader: fgets function has encounter an error. case K." << sendl;
+                            msg_error() << "Error: MeshObjLoader: fgets function has encounter an error. case K.";
                     }
                     break;
                 }
                 break;
             case 'd':
             case 'T':
+				if (!mat)
+				{
+					msg_error("MeshOBJ") << "readMTL 'T' no material";
+					break;
+				}
                 // transparency value
                 if ( fscanf(file, "%f", &mat->diffuse[3]) == EOF)
-                    serr << "Error: MeshObjLoader: fscanf function has encounter an error. case T i." << sendl;
+                    msg_error() << "Error: MeshObjLoader: fscanf function has encounter an error. case T i.";
                 break;
+
+			case 'm':
+			{
+				if (!mat)
+				{
+					msg_error("MeshOBJ") << "readMTL 'm' no material";
+					break;
+				}
+				//texture map
+				char charFilename[128] = { 0 };
+				if (fgets(charFilename, sizeof(charFilename), file) == NULL)
+				{
+					msg_error("MeshOBJ") << "fgets has encountered an error";
+				}
+				else
+				{
+					mat->useTexture = true;
+
+					//store the filename of the texture map in the material
+					std::string stringFilename(charFilename);
+
+					//delete carriage return from the string assuming the next property of the .mtl file is at the next line
+					stringFilename.erase(stringFilename.end() - 1, stringFilename.end());
+					stringFilename.erase(stringFilename.begin(), stringFilename.begin() + 1);
+					mat->textureFilename = stringFilename;
+				}
+
+				break;
+			}
+			case 'b':
+			{
+				if (!mat)
+				{
+					msg_error("MeshOBJ") << "readMTL 'b' no material";
+					break;
+				}
+				//bump mapping texture map
+				char charFilename[128] = { 0 };
+				if (fgets(charFilename, sizeof(charFilename), file) == NULL)
+				{
+					msg_error("MeshOBJ") << "fgets has encountered an error";
+				}
+				else
+				{
+					mat->useBumpMapping = true;
+
+					//store the filename of the texture map in the material
+					std::string stringFilename(charFilename);
+
+					//delete carriage return from the string assuming the next property of the .mtl file is at the next line
+					stringFilename.erase(stringFilename.end() - 1, stringFilename.end());
+					stringFilename.erase(stringFilename.begin(), stringFilename.begin() + 1);
+					mat->bumpTextureFilename = stringFilename;
+				}
+
+				break;
+			}
             default:
                 /* eat up rest of line */
                 if ( fgets(buf, sizeof(buf), file) == NULL)
                 {
                     if (feof (file) )
-                        serr << "Error: MeshObjLoader: fgets function has encounter end of file. case default." << sendl;
+                        msg_error() << "Error: MeshObjLoader: fgets function has encounter end of file. case default.";
                     else
-                        serr << "Error: MeshObjLoader: fgets function has encounter an error. case default." << sendl;
+                        msg_error() << "Error: MeshObjLoader: fgets function has encounter an error. case default.";
                 }
                 break;
             }
