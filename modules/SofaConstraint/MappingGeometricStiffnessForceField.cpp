@@ -15,9 +15,9 @@ int GeometricStiffnessForceFieldClass = sofa::core::RegisterObject("A ForceField
 #endif
 #ifndef SOFA_DOUBLE
 .add<MappingGeometricStiffnessForceField<sofa::defaulttype::Vec3fTypes> >()
-.add<MappingGeometricStiffnessForceField<sofa::defaulttype::Rigid3fTypes> >();
+.add<MappingGeometricStiffnessForceField<sofa::defaulttype::Rigid3fTypes> >()
 #endif
-
+;
 
 
 }
