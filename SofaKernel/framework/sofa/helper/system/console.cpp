@@ -44,6 +44,10 @@ namespace helper {
 using SystemCodeType = Console::SystemCodeType;
 Console::ColorsStatus Console::s_colorsStatus = Console::ColorsAuto;
 
+#ifdef WIN32
+static SystemCodeType getDefaultColor();
+#endif
+
 void Console::init()
 {
     // Change s_colorsStatus based on the SOFA_COLOR_TERMINAL environnement variable.
@@ -191,7 +195,7 @@ std::ostream &operator<<(std::ostream &stream, const SystemCodeType & code)
 {
     if (Console::shouldUseColors(stream))
 #ifdef WIN32
-        SetConsoleTextAttribute(getOutputHandle(), color.value);
+        SetConsoleTextAttribute(getOutputHandle(), code);
 #else
         return stream << code;
     else
