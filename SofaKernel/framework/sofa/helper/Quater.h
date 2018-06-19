@@ -55,6 +55,11 @@ public:
     Quater(const Quater<Real2>& q) { for (int i=0; i<4; i++) _q[i] = (Real)q[i]; }
     Quater( const defaulttype::Vec<3,Real>& axis, Real angle );
 
+    /** Sets this quaternion to the rotation required to rotate direction vector vFrom to direction vector vTo.        
+        vFrom and vTo are assumed to be normalized.
+    */
+    Quater(const defaulttype::Vec<3, Real>& vFrom, const defaulttype::Vec<3, Real>& vTo);
+
     static Quater identity()
     {
         return Quater(0,0,0,1);
@@ -289,6 +294,9 @@ public:
                                                         // this is done to keep the old behavior (before the
                                                         // correction of the toEulerVector function).
     }
+
+    /// Sets this quaternion to the rotation required to rotate direction vector vFrom to direction vector vTo. vFrom and vTo are assumed to be normalized.
+    void setFromUnitVectors(const defaulttype::Vec<3, Real>& vFrom, const defaulttype::Vec<3, Real>& vTo);
 
 
     // Print the quaternion (C style)

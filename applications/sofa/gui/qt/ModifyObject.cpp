@@ -196,6 +196,11 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
 
             if (currentGroup.empty()) currentGroup="Property";
 
+            // Ignore the data in group "Infos" so they can be putted in the real Infos panel that is
+            // handled in a different way (see QDataDescriptionWidget)
+            if (currentGroup == "Infos")
+                continue;
+
 #ifdef DEBUG_GUI
             std::cout << "GUI: add Data " << data->getName() << " in " << currentGroup << std::endl;
 #endif

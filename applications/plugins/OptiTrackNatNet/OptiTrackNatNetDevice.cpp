@@ -28,6 +28,7 @@
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/DeactivatedNodeVisitor.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/helper/system/gl.h>
 #include <sofa/core/ObjectFactory.h>
 #include <algorithm>
 #include <fstream>

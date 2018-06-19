@@ -87,7 +87,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     , vfree(initData(&vfree, "free_velocity", "free velocity coordinates of the degrees of freedom"))
     , x0(initData(&x0, "rest_position", "rest position coordinates of the degrees of freedom"))
     , c(initData(&c, "constraint", "constraints applied to the degrees of freedom"))
-#if(SOFA_WITH_EXPERIMENTAL_FEATURES==1)
+#if(SOFA_WITH_EXPERIMENTAL_FEATURES()==1)
     , m(initData(&m, "mappingJacobian", "mappingJacobian applied to the degrees of freedom"))
 #endif
     , reset_position(initData(&reset_position, "reset_position", "reset position coordinates of the degrees of freedom"))
@@ -149,7 +149,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     setVecDeriv(core::VecDerivId::freeVelocity().index, &vfree);
     setVecDeriv(core::VecDerivId::resetVelocity().index, &reset_velocity);
     setVecMatrixDeriv(core::MatrixDerivId::constraintJacobian().index, &c);
-#if(SOFA_WITH_EXPERIMENTAL_FEATURES==1)
+#if(SOFA_WITH_EXPERIMENTAL_FEATURES()==1)
     setVecMatrixDeriv(core::MatrixDerivId::mappingJacobian().index, &m);
 #endif
 
@@ -1498,6 +1498,9 @@ Data<typename MechanicalObject<DataTypes>::VecCoord>* MechanicalObject<DataTypes
     if (vectorsCoord[v.index] == NULL)
     {
         vectorsCoord[v.index] = new Data< VecCoord >;
+        vectorsCoord[v.index]->setName(v.getName());
+        vectorsCoord[v.index]->setGroup("Vector");
+        this->addData(vectorsCoord[v.index]);
         if (f_reserve.getValue() > 0)
         {
             vectorsCoord[v.index]->beginWriteOnly()->reserve(f_reserve.getValue());
@@ -1560,6 +1563,9 @@ Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<DataTypes
     if (vectorsDeriv[v.index] == NULL)
     {
         vectorsDeriv[v.index] = new Data< VecDeriv >;
+        vectorsDeriv[v.index]->setName(v.getName());
+        vectorsDeriv[v.index]->setGroup("Vector");
+        this->addData(vectorsDeriv[v.index]);
         if (f_reserve.getValue() > 0)
         {
             vectorsDeriv[v.index]->beginWriteOnly()->reserve(f_reserve.getValue());
@@ -1617,6 +1623,9 @@ Data<typename MechanicalObject<DataTypes>::MatrixDeriv>* MechanicalObject<DataTy
     if (vectorsMatrixDeriv[v.index] == NULL)
     {
         vectorsMatrixDeriv[v.index] = new Data< MatrixDeriv >;
+        vectorsMatrixDeriv[v.index]->setName(v.getName());
+        vectorsMatrixDeriv[v.index]->setGroup("Vector");
+        this->addData(vectorsMatrixDeriv[v.index]);
     }
 
     return vectorsMatrixDeriv[v.index];
@@ -2529,26 +2538,26 @@ void MechanicalObject<DataTypes>::resetAcc(const core::ExecParams* params, core:
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::resetConstraint(const core::ExecParams* params)
+void MechanicalObject<DataTypes>::resetConstraint(const core::ConstraintParams* cParams)
 {
-    Data<MatrixDeriv>& c_data = *this->write(core::MatrixDerivId::constraintJacobian());
-    MatrixDeriv *c = c_data.beginEdit(params);
+    Data<MatrixDeriv>& c_data = *this->write(cParams->j().getId(this));
+    MatrixDeriv *c = c_data.beginEdit(cParams);
     c->clear();
-    c_data.endEdit(params);
-#if(SOFA_WITH_EXPERIMENTAL_FEATURES==1)
+    c_data.endEdit(cParams);
+#if(SOFA_WITH_EXPERIMENTAL_FEATURES()==1)
     Data<MatrixDeriv>& m_data = *this->write(core::MatrixDerivId::mappingJacobian());
-    MatrixDeriv *m = m_data.beginEdit(params);
+    MatrixDeriv *m = m_data.beginEdit(cParams);
     m->clear();
-    m_data.endEdit(params);
+    m_data.endEdit(cParams);
 #endif
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::getConstraintJacobian(const core::ExecParams* /*params*/, sofa::defaulttype::BaseMatrix* J,unsigned int & off)
+void MechanicalObject<DataTypes>::getConstraintJacobian(const core::ConstraintParams* cParams, sofa::defaulttype::BaseMatrix* J,unsigned int & off)
 {
     // Compute J
     const size_t N = Deriv::size();
-    const MatrixDeriv& c = this->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
+    const MatrixDeriv& c = cParams->readJ(this)->getValue(cParams);
 
     MatrixDerivRowConstIterator rowItEnd = c.end();
 
@@ -2571,7 +2580,7 @@ void MechanicalObject<DataTypes>::getConstraintJacobian(const core::ExecParams* 
     off += this->getSize() * N;
 }
 
-#if(SOFA_WITH_EXPERIMENTAL_FEATURES==1)
+#if(SOFA_WITH_EXPERIMENTAL_FEATURES()==1)
 template <class DataTypes>
 void MechanicalObject<DataTypes>::buildIdentityBlocksInJacobian(const sofa::helper::vector<unsigned int>& list_n, core::MatrixDerivId &mID)
 {

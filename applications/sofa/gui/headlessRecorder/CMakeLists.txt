@@ -8,7 +8,6 @@ else()
     message(FATAL_ERROR "${PROJECT_NAME} is a Linux only feature.")
 endif()
 
-
 # FFMPEG
 find_package(FFMPEG QUIET)
 if(FFMPEG_FOUND)
@@ -30,10 +29,12 @@ endif()
 
 
 set(HEADER_FILES
-    HeadlessRecorder.h)
+    HeadlessRecorder.h
+    VideoRecorderFFMpeg.h)
 
 set(SOURCE_FILES
-    HeadlessRecorder.cpp)
+    HeadlessRecorder.cpp
+    VideoRecorderFFMpeg.cpp)
 
 if(SOFAGUI_BUILD_TESTS)
     configure_file(headlessRecorder_test ${CMAKE_BINARY_DIR}/bin/headlessRecorder_test COPYONLY)

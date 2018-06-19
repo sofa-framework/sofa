@@ -25,15 +25,7 @@
 
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/core/collision/IntersectorFactory.h>
-#include <sofa/helper/FnDispatcher.h>
-#include <SofaBaseCollision/SphereModel.h>
-#include <SofaBaseCollision/CubeModel.h>
-#include <SofaBaseCollision/CapsuleModel.h>
-#include <SofaBaseCollision/CapsuleIntTool.h>
-#include <SofaBaseCollision/OBBModel.h>
-#include <SofaBaseCollision/OBBIntTool.h>
 #include <SofaBaseCollision/BaseIntTool.h>
-#include <SofaBaseCollision/RigidCapsuleModel.h>
 
 namespace sofa
 {

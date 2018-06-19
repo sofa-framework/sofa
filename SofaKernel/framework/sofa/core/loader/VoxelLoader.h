@@ -23,9 +23,6 @@
 #define SOFA_CORE_VOXELLOADER_H
 
 #include <sofa/core/loader/BaseLoader.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/helper/fixed_array.h>
 
 namespace sofa
 {

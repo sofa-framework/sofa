@@ -24,8 +24,6 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/BaseConstraintSet.h>
-#include <sofa/core/behavior/BaseMechanicalState.h>
-#include <sofa/core/MechanicalParams.h>
 
 namespace sofa
 {
@@ -106,26 +104,16 @@ public:
     /// @name Resolution DOFs vectors API
     /// @{
 
-    VecDerivId getForce() const
+    virtual MultiVecDerivId getLambda() const
     {
-        return m_fId;
+        return MultiVecDerivId(VecDerivId::externalForce());
     }
 
-    void setForce(VecDerivId id)
+    virtual MultiVecDerivId getDx() const
     {
-        m_fId = id;
+        return MultiVecDerivId(VecDerivId::dx());
     }
-
-    VecDerivId getDx() const
-    {
-        return m_dxId;
-    }
-
-    void setDx(VecDerivId id)
-    {
-        m_dxId = id;
-    }
-
+    
     /// @}
 
     /// Remove reference to ConstraintCorrection
@@ -135,9 +123,6 @@ public:
 
 
 protected:
-
-    VecDerivId m_fId;
-    VecDerivId m_dxId;
 
 public:
 

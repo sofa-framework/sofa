@@ -24,7 +24,6 @@
 
 #include <sofa/core/VecId.h>
 
-#include <map>
 
 namespace sofa
 {

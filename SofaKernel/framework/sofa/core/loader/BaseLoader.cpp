@@ -97,7 +97,6 @@ bool BaseLoader::canLoad()
     return true;
 }
 
-
 void BaseLoader::setFilename(std::string f)
 {
     m_filename.setValue(f);

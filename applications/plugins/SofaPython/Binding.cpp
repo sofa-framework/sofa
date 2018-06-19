@@ -66,7 +66,15 @@ using sofa::PythonFactory;
 
 void bindSofaPythonModule()
 {
-    PythonFactory::s_sofaPythonModule = SP_INIT_MODULE(Sofa)
+    static std::string docstring=R"(
+            Sofa module.
+
+            This module is part of the SofaPython plugin and contains function and binding to the c++
+            objects.
+
+            )";
+
+    PythonFactory::s_sofaPythonModule = SP_INIT_MODULE(Sofa,docstring.c_str())
 
     /// non Base-Inherited types
     SP_ADD_CLASS_IN_SOFAMODULE(Data)

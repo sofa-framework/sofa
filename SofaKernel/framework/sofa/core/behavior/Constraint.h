@@ -25,8 +25,6 @@
 #include <sofa/core/core.h>
 #include <sofa/core/behavior/BaseConstraint.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
 {
@@ -111,6 +109,9 @@ public:
     /// This is the method that should be implemented by the component
     virtual void buildConstraintMatrix(const ConstraintParams* cParams, DataMatrixDeriv & c, unsigned int &cIndex, const DataVecCoord &x) = 0;
 
+
+    virtual void storeLambda(const ConstraintParams* cParams, MultiVecDerivId res, const sofa::defaulttype::BaseVector* lambda) override;
+
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
     template<class T>
@@ -140,6 +141,9 @@ protected:
     /// That way, we can optimize the time spent to transfer quantities through the mechanical mappings.
     /// Every Dofs are inserted by default. The Constraint using only a subset of dofs should only insert these dofs in the mask.
     virtual void updateForceMask() override;
+
+private:
+    void storeLambda(const ConstraintParams* cParams, Data<VecDeriv>& resId, const Data<MatrixDeriv>& jacobian, const sofa::defaulttype::BaseVector* lambda);
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_CORE_BEHAVIOR_CONSTRAINT_CPP)

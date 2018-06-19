@@ -37,6 +37,8 @@
 #include <SofaTest/TestMessageHandler.h>
 #include <sofa/helper/logging/Message.h>
 
+#include <SofaConstraint/GenericConstraintSolver.h>
+
 namespace sofa {
 
 namespace {
@@ -217,7 +219,9 @@ bool BilateralInteractionConstraint_test<Vec3Types>::test_Vec3ConstrainedPositio
             points[i] = meca[i]->read(core::ConstVecCoordId::position())->getValue()[0];
     }
 
-    if(points[0] == points[1]) return true;
+    component::constraintset::GenericConstraintSolver *test;
+    root->get(test);
+    if( vectorMaxDiff(points[0],points[1])<test->tolerance.getValue()) return true;
     else
     {
         ADD_FAILURE() << "Error while testing if two positions are correctly constrained" << std::endl;

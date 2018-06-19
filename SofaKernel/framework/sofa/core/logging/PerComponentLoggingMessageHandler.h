@@ -27,8 +27,6 @@
 #define PERCOMPONENTLOGGINGMESSAGEHANDLER_H
 
 #include <sofa/helper/logging/MessageHandler.h>
-#include <sofa/helper/logging/Message.h>
-#include <vector>
 
 namespace sofa
 {

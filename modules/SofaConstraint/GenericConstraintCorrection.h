@@ -57,15 +57,18 @@ private:
     std::list<core::behavior::ConstraintSolver*> constraintsolvers;
 
 public:
+
+    virtual void computeMotionCorrectionFromLambda(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, const defaulttype::BaseVector * lambda) override;
+
     virtual void addComplianceInConstraintSpace(const core::ConstraintParams *cparams, defaulttype::BaseMatrix* W) override;
 
     virtual void getComplianceMatrix(defaulttype::BaseMatrix* ) const override;
 
-    virtual void computeAndApplyMotionCorrection(const core::ConstraintParams *cparams, core::MultiVecCoordId x, core::MultiVecDerivId v, core::MultiVecDerivId f, const defaulttype::BaseVector * lambda) override;
+    virtual void applyMotionCorrection(const core::ConstraintParams *cparams, core::MultiVecCoordId x, core::MultiVecDerivId v, core::MultiVecDerivId dx, core::ConstMultiVecDerivId correction) override;
 
-    virtual void computeAndApplyPositionCorrection(const core::ConstraintParams *cparams, core::MultiVecCoordId xId, core::MultiVecDerivId fId, const defaulttype::BaseVector *lambda) override;
+    virtual void applyPositionCorrection(const core::ConstraintParams *cparams, core::MultiVecCoordId x, core::MultiVecDerivId dx, core::ConstMultiVecDerivId correction) override;
 
-    virtual void computeAndApplyVelocityCorrection(const core::ConstraintParams *cparams, core::MultiVecDerivId vId, core::MultiVecDerivId fId, const defaulttype::BaseVector *lambda) override;
+    virtual void applyVelocityCorrection(const core::ConstraintParams *cparams, core::MultiVecDerivId v, core::MultiVecDerivId dv, core::ConstMultiVecDerivId correction) override;
 
     virtual void applyPredictiveConstraintForce(const core::ConstraintParams *cparams, core::MultiVecDerivId f, const defaulttype::BaseVector *lambda) override;
 
@@ -79,6 +82,7 @@ public:
 
     Data< helper::vector< std::string > >  d_linearSolversName; ///< name of the constraint solver
     Data< std::string >                    d_ODESolverName; ///< name of the ode solver
+    Data< double > d_complianceFactor; ///< Factor applied to the position factor and velocity factor used to calculate compliance matrix.
 
     /// Pre-construction check method called by ObjectFactory.
     template<class T>
@@ -88,6 +92,9 @@ public:
     }
 
 protected:
+
+    void applyMotionCorrection(const core::ConstraintParams* cparams, core::MultiVecCoordId xId, core::MultiVecDerivId vId, core::MultiVecDerivId dxId, 
+        core::ConstMultiVecDerivId correction, double positionFactor, double velocityFactor);
 
     core::behavior::OdeSolver* m_ODESolver;
     std::vector< core::behavior::LinearSolver* > m_linearSolvers;
