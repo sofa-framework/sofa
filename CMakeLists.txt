@@ -1,6 +1,13 @@
 cmake_minimum_required(VERSION 3.1)
 project(Sofa)
 
+find_program(CCACHE_PROGRAM ccache)
+if(CCACHE_PROGRAM)
+    # Support Unix Makefiles and Ninja
+    #TODO replace by <LANG>_COMPILER_LAUNCHER when min cmake version > 3.4
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
+endif()
+
 set(SOFA_KERNEL_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SofaKernel" CACHE STRING "Path to SofaKernel")
 
 if(NOT EXISTS ${SOFA_KERNEL_SOURCE_DIR}/framework)
