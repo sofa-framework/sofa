@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -24,11 +24,12 @@
 
 #include <MultiThreading/config.h>
 
-#include <boost/detail/atomic_count.hpp>
+#include <atomic>
+//#include <boost/detail/atomic_count.hpp>
 #include <boost/pool/singleton_pool.hpp>
 
-#include <sofa/helper/system/atomic.h>
-#include <boost/thread/mutex.hpp>
+//#include <sofa/helper/system/atomic.h>
+//#include <boost/thread/mutex.hpp>
 
 namespace sofa
 {
@@ -44,27 +45,37 @@ namespace sofa
 		{
 		public:
 
-
-			// Task Status class definition
-			class Status
-			{
-			public:
-				Status();
-
-				bool IsBusy() const;
-
-				
-
-			private:
-
-				void MarkBusy(bool bBusy);
-
-				/*volatile*/ boost::detail::atomic_count mBusy;
-
-				friend class WorkerThread;
-			};
-
-
+            // Task Status class definition
+            class Status
+            {
+            public:
+                Status() : _busy(0) {}
+                
+                bool isBusy() const
+                {
+                    return (_busy.load(std::memory_order_relaxed) > 0);
+                }
+                
+                
+                
+            private:
+                
+                void markBusy(bool busy)
+                {
+                    if (busy)
+                    {
+                        _busy.fetch_add(1, std::memory_order_relaxed);
+                    }
+                    else
+                    {
+                        _busy.fetch_sub(1, std::memory_order_relaxed);
+                    }
+                }
+                
+                std::atomic<int> _busy;
+                
+                friend class WorkerThread;
+            };
 
 		protected:
 
@@ -75,26 +86,22 @@ namespace sofa
 			
 			virtual ~Task();
 
-			//struct TaskTag{};
-			//typedef boost::singleton_pool<TaskTag, sizeof(*this)> memory_pool;
-
-
 			virtual bool run(WorkerThread* thread) = 0;
-
-
+            
 		private:
 
-            Task(const Task& /*task*/) {}
-            Task& operator= (const Task& /*task*/) {return *this;}
+            Task(const Task& task) {}
+            Task& operator= (const Task& task) {return *this;}
 
 
 		protected:
 
-			inline Task::Status* getStatus(void) const;
+			inline Task::Status* getStatus(void) const
+            {
+                return const_cast<Task::Status*>(_status);
+            }
 
-
-
-			const Task::Status*	m_Status;
+			const Task::Status*	_status;
 
 			friend class WorkerThread;
 
@@ -104,15 +111,14 @@ namespace sofa
 
 		// This task is called once by each thread used by the TasScheduler
 		// this is useful to initialize the thread specific variables
-		class SOFA_MULTITHREADING_PLUGIN_API ThreadSpecificTask : public Task
+		class SOFA_MULTITHREADING_PLUGIN_API ThreadSpecificTaskLockFree : public Task
 		{
 
 		public:
 
-			//InitPerThreadDataTask(volatile long* atomicCounter, boost::mutex* mutex, TaskStatus* pStatus );
-            ThreadSpecificTask(helper::system::atomic<int>* atomicCounter, boost::mutex* mutex, Task::Status* pStatus );
+            ThreadSpecificTaskLockFree(std::atomic<int>* atomicCounter, std::mutex* mutex, Task::Status* pStatus );
 
-			virtual ~ThreadSpecificTask();
+			virtual ~ThreadSpecificTaskLockFree();
 
 			virtual bool runThreadSpecific()  {return true;}
 
@@ -123,33 +129,9 @@ namespace sofa
 			virtual bool run(WorkerThread* );
 
 			//volatile long* mAtomicCounter;
-			helper::system::atomic<int>* mAtomicCounter;
+			std::atomic<int>* _atomicCounter;
 
-			boost::mutex*	 mThreadSpecificMutex;
-
-		};
-
-
-
-
-		// not used yet
-		template<class T>
-		class TaskAllocator
-		{
-			struct TaskBaseTag{};
-			typedef boost::singleton_pool<TaskBaseTag, sizeof(T)> memory_pool; 
-
-		public:
-            static inline void* operator new (std::size_t /*size*/)
-			{
-				return memory_pool::malloc();
-			}
-
-			static inline void operator delete (void* ptr) 
-			{
-				memory_pool::free(ptr);
-
-			}
+			std::mutex*	 _threadSpecificMutex;
 
 		};
 
@@ -159,7 +141,7 @@ namespace sofa
 } // namespace sofa
 
 
-#include "Tasks.inl"
+//#include "Tasks.inl"
 
 
-#endif // MultiThreadingTasks_h__
+#endif // MultiThreadingTasksPOC_h__

@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU Lesser General Public License as published by    *
@@ -19,76 +19,91 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef AnimationLoopTasks_h__
-#define AnimationLoopTasks_h__
+#ifndef MultiThreadingLocks_h__
+#define MultiThreadingLocks_h__
 
-#include "TaskScheduler.h"
+#include <MultiThreading/config.h>
 
+#include <thread>
+#include <atomic>
 
 namespace sofa
 {
-    
-    // forawrd declaraion
-    namespace core { namespace behavior {
-        class BaseAnimationLoop;
-    } }
-    
-    //namespace helper { namespace system {
-    //    template<int> class atomic;
-    //} }
-    
-    
-    
-    namespace simulation
-    {
-        
-        using namespace sofa;
-        
-        
-        class StepTask : public Task
+
+	namespace simulation
+	{
+
+
+        class SpinLock
         {
+            enum
+            {
+                CACHE_LINE = 64
+            };
+            
         public:
-            StepTask(core::behavior::BaseAnimationLoop* aloop, const double t, Task::Status* pStatus);
             
-            virtual ~StepTask();
+            SpinLock()
+            {}
             
-            virtual bool run(WorkerThread* );
+            ~SpinLock()
+            {
+                unlock();
+            }
             
+            bool try_lock()
+            {
+                return !_flag.test_and_set( std::memory_order_acquire );
+            }
+            
+            void lock()
+            {
+                while( _flag.test_and_set(std::memory_order_acquire) )
+                {
+                    // cpu busy wait
+                    std::this_thread::yield();
+                }
+            }
+            
+            void unlock()
+            {
+                _flag.clear( std::memory_order_release );
+            }
             
         private:
             
-            core::behavior::BaseAnimationLoop* animationloop;
-            const double dt;
+            std::atomic_flag _flag = ATOMIC_FLAG_INIT;
             
+            char _pad [CACHE_LINE - sizeof(std::atomic_flag)];
         };
         
         
         
-        
-        class InitPerThreadDataTask : public Task
+        class ScopedLock
         {
-            
         public:
             
-            //InitPerThreadDataTask(volatile long* atomicCounter, boost::mutex* mutex, TaskStatus* pStatus );
-            InitPerThreadDataTask(std::atomic<int>* atomicCounter, std::mutex* mutex, Task::Status* pStatus );
+            explicit ScopedLock( SpinLock & lock ): _spinlock( lock )
+            {
+                _spinlock.lock();
+            }
             
-            virtual ~InitPerThreadDataTask();
+            ~ScopedLock()
+            {
+                _spinlock.unlock();
+            }
             
-            virtual bool run(WorkerThread* );
-            
+            ScopedLock( ScopedLock const & ) = delete;
+            ScopedLock & operator=( ScopedLock const & ) = delete;
             
         private:
             
-            std::mutex*     IdFactorygetIDMutex;
-            
-            std::atomic<int>* _atomicCounter;
-            
+            SpinLock& _spinlock;
         };
-        
-        
-    } // namespace simulation
-    
+
+	} // namespace simulation
+
 } // namespace sofa
 
-#endif // AnimationLoopTasks_h__
+
+#endif // MultiThreadingLocks_h__

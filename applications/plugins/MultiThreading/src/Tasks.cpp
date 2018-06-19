@@ -1,6 +1,11 @@
 #include "Tasks.h"
 
-#include <boost/thread.hpp>
+#include "TaskScheduler.h"
+//#include "TasksAllocator.h"
+
+#include <assert.h>
+#include <thread>
+//#include <boost/thread.hpp>
 
 namespace sofa
 {
@@ -9,54 +14,44 @@ namespace sofa
 	{
 
 
-		Task::Task(const Task::Status* pStatus) 
-			: m_Status(pStatus)
+		Task::Task(const Task::Status* pStatus)
+			: _status(pStatus)
 		{
+            
 		}
 
 		Task::~Task()
 		{
-			//m_Status;
-			//delete this;
+//            delete this;
 		}
-
-
-
-		//InitPerThreadDataTask::InitPerThreadDataTask(volatile long* atomicCounter, boost::mutex* mutex, TaskStatus* pStatus ) 
-		ThreadSpecificTask::ThreadSpecificTask(helper::system::atomic<int>* atomicCounter, boost::mutex* mutex, Task::Status* pStatus ) 
+        
+        
+		ThreadSpecificTaskLockFree::ThreadSpecificTaskLockFree(std::atomic<int>* atomicCounter, std::mutex* mutex, Task::Status* pStatus )
 			: Task(pStatus)
-			, mAtomicCounter(atomicCounter) 
-			, mThreadSpecificMutex(mutex)
+			, _atomicCounter(atomicCounter) 
+			, _threadSpecificMutex(mutex)
 		{}
 
-		ThreadSpecificTask::~ThreadSpecificTask()
+		ThreadSpecificTaskLockFree::~ThreadSpecificTaskLockFree()
 		{
-			//mAtomicCounter;
 		}
 
-		bool ThreadSpecificTask::run(WorkerThread* )
+		bool ThreadSpecificTaskLockFree::run(WorkerThread* )
 		{  
 
 			runThreadSpecific();
 
-
 			{
-				boost::lock_guard<boost::mutex> lock(*mThreadSpecificMutex);
-
+				std::lock_guard<std::mutex> lock(*_threadSpecificMutex);
 				runCriticalThreadSpecific();
-
 			}
 
-			//BOOST_INTERLOCKED_DECREMENT( mAtomicCounter );
-			//BOOST_COMPILER_FENCE;
+            _atomicCounter->fetch_sub(1, std::memory_order_acq_rel);
 
-			--(*mAtomicCounter);
-
-
-			while(mAtomicCounter->operator int() > 0)  
+            while(_atomicCounter->load(std::memory_order_relaxed) > 0)
 			{  
 				// yield while waiting  
-				boost::this_thread::yield();
+				std::this_thread::yield();
 			}  
 			return false;
 		}  

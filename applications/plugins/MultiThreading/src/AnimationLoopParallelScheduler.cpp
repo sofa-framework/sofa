@@ -1,6 +1,6 @@
 #include "AnimationLoopParallelScheduler.h"
 
-#include "TaskSchedulerBoost.h"
+#include "TaskScheduler.h"
 #include "AnimationLoopTasks.h"
 #include "DataExchange.h"
 
@@ -69,7 +69,7 @@ namespace simulation
 
 	AnimationLoopParallelScheduler::AnimationLoopParallelScheduler(simulation::Node* _gnode)
 		: Inherit()
-		, threadNumber(initData(&threadNumber, 0, "threadNumber", "number of thread") )
+		, threadNumber(initData(&threadNumber, (unsigned int)0, "threadNumber", "number of thread") )
 		, mNbThread(0)
 		, gnode(_gnode)
 	{
@@ -88,51 +88,39 @@ namespace simulation
 		if (!gnode)
 			gnode = dynamic_cast<simulation::Node*>(this->getContext());
 
-		//TaskScheduler* mScheduler = &TaskScheduler::getInstance(); // boost::shared_ptr<TaskScheduler>(new TaskScheduler());
-
 		if ( threadNumber.getValue() )
 		{
 			mNbThread = threadNumber.getValue();
 		}
 
-		//TaskScheduler::getInstance().stop();
-
-		TaskScheduler::getInstance().start( mNbThread );
-
+		TaskScheduler::getInstance().init( mNbThread );
 
 		sofa::core::objectmodel::classidT<sofa::core::behavior::ConstraintSolver>();
 		sofa::core::objectmodel::classidT<sofa::core::behavior::LinearSolver>();
 		sofa::core::objectmodel::classidT<sofa::core::CollisionModel>();
-
-		//simulation::Node* root = dynamic_cast<simulation::Node*>(getContext());
-		//if(root == NULL) return;
-		//std::vector<core::behavior::ConstraintSolver*> constraintSolver;
-		//root->getTreeObjects<core::behavior::ConstraintSolver>(&constraintSolver);
-
-
-		//TaskScheduler::getInstance().stop();
-
 	}
 
 
 
 	void AnimationLoopParallelScheduler::bwdInit()
 	{
-
 		initThreadLocalData();
-
 	}
 
 
 	void AnimationLoopParallelScheduler::reinit()
 	{
-
-
+        if ( threadNumber.getValue() != TaskScheduler::getInstance().getThreadCount() )
+        {
+            mNbThread = threadNumber.getValue();
+            TaskScheduler::getInstance().init( mNbThread );
+            initThreadLocalData();
+        }
 	}
 
 	void AnimationLoopParallelScheduler::cleanup()
 	{
-		//TaskScheduler::getInstance().stop();
+
 	}
 
 	void AnimationLoopParallelScheduler::step(const core::ExecParams* params, SReal dt)
@@ -182,30 +170,31 @@ namespace simulation
 	void AnimationLoopParallelScheduler::initThreadLocalData()
 	{
 
-		boost::pool<> task_pool(sizeof(InitPerThreadDataTask));
-
-		//volatile long atomicCounter = TaskScheduler::getInstance().size();// mNbThread;
-		helper::system::atomic<int> atomicCounter( TaskScheduler::getInstance().size() );
-
-
-		boost::mutex  InitPerThreadMutex;
-
-		Task::Status status;
-
-
-		WorkerThread* pThread = WorkerThread::getCurrent();	
-		const int nbThread = TaskScheduler::getInstance().size();
-
-		for (int i=0; i<nbThread; ++i)
-		{
-			pThread->addTask( new( task_pool.malloc()) InitPerThreadDataTask( &atomicCounter, &InitPerThreadMutex, &status ) );
-		}
-
-
-		pThread->workUntilDone(&status);
-
-		// it doesn't call the destructor
-		task_pool.purge_memory();
+        boost::pool<> task_pool(sizeof(InitPerThreadDataTask));
+        
+        //volatile long atomicCounter = TaskScheduler::getInstance().size();// mNbThread;
+        std::atomic<int> atomicCounter( TaskScheduler::getInstance().size() );
+        
+        
+        std::mutex  InitPerThreadMutex;
+        
+        Task::Status status;
+        
+        
+        WorkerThread* pThread = WorkerThread::getCurrent();
+        const int nbThread = TaskScheduler::getInstance().size();
+        
+        for (int i=0; i<nbThread; ++i)
+        {
+            pThread->addTask( new( task_pool.malloc()) InitPerThreadDataTask( &atomicCounter, &InitPerThreadMutex, &status ) );
+//            pThread->addTask( new InitPerThreadDataTask( &atomicCounter, &InitPerThreadMutex, &status ) );
+        }
+        
+        
+        pThread->workUntilDone(&status);
+        
+        // it doesn't call the destructor
+        task_pool.purge_memory();
 
 	}
 
