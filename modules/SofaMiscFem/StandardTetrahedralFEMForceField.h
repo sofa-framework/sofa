@@ -238,7 +238,7 @@ public:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_STANDARDTETRAHEDRALFEMFORCEFIELD_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_STANDARDTETRAHEDRALFEMFORCEFIELD_CPP)
 
 #ifndef SOFA_FLOAT
 extern template class SOFA_MISC_FEM_API StandardTetrahedralFEMForceField<sofa::defaulttype::Vec3dTypes>;
@@ -247,7 +247,7 @@ extern template class SOFA_MISC_FEM_API StandardTetrahedralFEMForceField<sofa::d
 extern template class SOFA_MISC_FEM_API StandardTetrahedralFEMForceField<sofa::defaulttype::Vec3fTypes>;
 #endif
 
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_STANDARDTETRAHEDRALFEMFORCEFIELD_CPP)
+#endif //  !defined(SOFA_COMPONENT_FORCEFIELD_STANDARDTETRAHEDRALFEMFORCEFIELD_CPP)
 
 
 } // namespace forcefield

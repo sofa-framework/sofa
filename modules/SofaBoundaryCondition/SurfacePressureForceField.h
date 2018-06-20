@@ -202,7 +202,7 @@ void SurfacePressureForceField<defaulttype::Rigid3fTypes>::draw(const core::visu
 #endif
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_SURFACEPRESSUREFORCEFIELD_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_SURFACEPRESSUREFORCEFIELD_CPP)
 
 #ifndef SOFA_FLOAT
 extern template class SOFA_BOUNDARY_CONDITION_API SurfacePressureForceField<defaulttype::Vec3dTypes>;
@@ -212,7 +212,7 @@ extern template class SOFA_BOUNDARY_CONDITION_API SurfacePressureForceField<defa
 extern template class SOFA_BOUNDARY_CONDITION_API SurfacePressureForceField<defaulttype::Vec3fTypes>;
 extern template class SOFA_BOUNDARY_CONDITION_API SurfacePressureForceField<defaulttype::Rigid3fTypes>;
 #endif
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_SURFACEPRESSUREFORCEFIELD_CPP)
+#endif //  !defined(SOFA_COMPONENT_FORCEFIELD_SURFACEPRESSUREFORCEFIELD_CPP)
 
 
 } // namespace forcefield

@@ -114,7 +114,7 @@ protected:
     void standardLinearInterpolation();
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_TEXTUREINTERPOLATION_CPP)
+#if  !defined(SOFA_COMPONENT_ENGINE_TEXTUREINTERPOLATION_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_ENGINE_API TextureInterpolation<defaulttype::Vec1dTypes>;
 extern template class SOFA_GENERAL_ENGINE_API TextureInterpolation<defaulttype::Vec2dTypes>;

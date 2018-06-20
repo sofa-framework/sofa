@@ -144,7 +144,7 @@ public:
 template <int N, int M, class Real>
 struct IdentityMappingMatrixHelper;
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_IDENTITYMAPPING_CPP)
+#if  !defined(SOFA_COMPONENT_MAPPING_IDENTITYMAPPING_CPP)
 
 #ifndef SOFA_FLOAT
 extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes >;

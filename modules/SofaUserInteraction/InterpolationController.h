@@ -98,7 +98,7 @@ protected:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_INTERPOLATIONCONTROLLER_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_INTERPOLATIONCONTROLLER_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_USER_INTERACTION_API InterpolationController<defaulttype::Vec3dTypes>;
 extern template class SOFA_USER_INTERACTION_API InterpolationController<defaulttype::Rigid3dTypes>;

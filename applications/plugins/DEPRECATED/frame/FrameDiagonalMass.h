@@ -144,7 +144,7 @@ private:
 
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(FRAME_FRAMEDIAGONALMASS_CPP)
+#if  !defined(FRAME_FRAMEDIAGONALMASS_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_FRAME_API FrameDiagonalMass<Rigid3dTypes,Frame3dMass>;
 extern template class SOFA_FRAME_API FrameDiagonalMass<Affine3dTypes,Frame3x12dMass>;

@@ -302,14 +302,14 @@ protected:
     SReal m_potentialEnergy;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_FastTriangularBendingSprings_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_FastTriangularBendingSprings_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_DEFORMABLE_API FastTriangularBendingSprings<defaulttype::Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 extern template class SOFA_GENERAL_DEFORMABLE_API FastTriangularBendingSprings<defaulttype::Vec3fTypes>;
 #endif
-#endif //defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_FastTriangularBendingSprings_CPP)
+#endif // !defined(SOFA_COMPONENT_FORCEFIELD_FastTriangularBendingSprings_CPP)
 
 
 } // namespace forcefield

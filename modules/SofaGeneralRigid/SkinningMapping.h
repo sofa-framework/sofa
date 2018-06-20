@@ -153,7 +153,7 @@ public:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_CPP)
+#if  !defined(SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_RIGID_API SkinningMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::Vec3dTypes >;
 extern template class SOFA_GENERAL_RIGID_API SkinningMapping< sofa::defaulttype::Rigid3dTypes, sofa::defaulttype::ExtVec3fTypes >;
@@ -168,7 +168,7 @@ extern template class SOFA_GENERAL_RIGID_API SkinningMapping< sofa::defaulttype:
 extern template class SOFA_GENERAL_RIGID_API SkinningMapping< sofa::defaulttype::Rigid3fTypes, sofa::defaulttype::Vec3dTypes >;
 #endif
 #endif
-#endif //defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_CPP)
+#endif // !defined(SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_CPP)
 
 
 

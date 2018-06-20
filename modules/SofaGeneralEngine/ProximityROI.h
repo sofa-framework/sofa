@@ -130,7 +130,7 @@ public:
     Data<double> _drawSize; ///< rendering size for box and topological elements
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_PROXIMITYROI_CPP)
+#if  !defined(SOFA_COMPONENT_ENGINE_PROXIMITYROI_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_ENGINE_API ProximityROI<defaulttype::Vec3dTypes>;
 #endif //SOFA_FLOAT

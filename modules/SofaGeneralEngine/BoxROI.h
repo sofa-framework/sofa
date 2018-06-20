@@ -168,7 +168,7 @@ public:
     Data<bool> p_doUpdate; ///< Boolean for updating the Box
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_BOXROI_CPP)
+#if  !defined(SOFA_COMPONENT_ENGINE_BOXROI_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_ENGINE_API BoxROI<defaulttype::Vec3dTypes>;
 extern template class SOFA_ENGINE_API BoxROI<defaulttype::Rigid3dTypes>;
