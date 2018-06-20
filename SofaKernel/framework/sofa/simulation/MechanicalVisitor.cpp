@@ -1650,6 +1650,116 @@ Visitor::Result MechanicalVSizeVisitor::fwdMappedMechanicalState(simulation::Nod
     return RESULT_CONTINUE;
 }
 
+std::string MechanicalVOpVisitor::getInfos() const
+{
+    std::string info="v=";
+    std::string aLabel;
+    std::string bLabel;
+    std::string fLabel;
+
+    std::ostringstream out;
+    out << "f["<<f<<"]";
+    fLabel+= out.str();
+
+    if (!a.isNull())
+    {
+        info+="a";
+        aLabel="a[" + a.getName() + "] ";
+        if (!b.isNull())
+        {
+            info += "+b*f";
+            bLabel += "b[" + b.getName() + "] ";
+        }
+    }
+    else
+    {
+        if (!b.isNull())
+        {
+            info += "b*f";
+            bLabel += "b[" + b.getName() + "] ";
+        }
+        else
+        {
+            info+="zero"; fLabel.clear();
+        }
+    }
+    info += " : with v[" + v.getName() + "] " + aLabel + bLabel + fLabel;
+    return info;
+}
+
+
+std::string MechanicalVMultiOpVisitor::getInfos() const
+{
+    std::ostringstream out;
+    for(VMultiOp::const_iterator it = ops.begin(), itend = ops.end(); it != itend; ++it)
+    {
+        if (it != ops.begin())
+            out << " ;   ";
+        core::MultiVecId r = it->first;
+        out << r.getName();
+        const helper::vector< std::pair< core::ConstMultiVecId, SReal > >& operands = it->second;
+        int nop = (int)operands.size();
+        if (nop==0)
+        {
+            out << " = 0";
+        }
+        else if (nop==1)
+        {
+            if (operands[0].first.getName() == r.getName())
+                out << " *= " << operands[0].second;
+            else
+            {
+                out << " = " << operands[0].first.getName();
+                if (operands[0].second != 1.0)
+                    out << "*"<<operands[0].second;
+            }
+        }
+        else
+        {
+            int i;
+            if (operands[0].first.getName() == r.getName() && operands[0].second == 1.0)
+            {
+                out << " +=";
+                i = 1;
+            }
+            else
+            {
+                out << " =";
+                i = 0;
+            }
+            for (; i<nop; ++i)
+            {
+                out << " " << operands[i].first.getName();
+                if (operands[i].second != 1.0)
+                    out << "*"<<operands[i].second;
+                if (i < nop-1)
+                    out << " +";
+            }
+        }
+    }
+    return out.str();
+}
+
+std::string MechanicalVNormVisitor::getInfos() const
+{
+   std::string name("v= norm(a) with a[");
+   name += a.getName() + "]";
+   return name;
+}
+
+std::string MechanicalWriteLMConstraint::getInfos() const
+{
+    std::string name;
+    if      (order == core::ConstraintParams::ACC)
+        name= "["+sofa::core::VecId::dx().getName()+"]";
+    else if (order == core::ConstraintParams::VEL)
+        name= "["+sofa::core::VecId::velocity().getName()+"]";
+    else if (order == core::ConstraintParams::POS)
+        name= "["+sofa::core::VecId::position().getName()+"]";
+    return name;
+}
+
+
 
 template class SOFA_SIMULATION_CORE_API MechanicalVAvailVisitor<V_COORD>;
 template class SOFA_SIMULATION_CORE_API MechanicalVAvailVisitor<V_DERIV>;

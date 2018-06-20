@@ -26,7 +26,7 @@
 #include <sofa/helper/Factory.h>
 #include <sofa/core/CollisionModel.h>
 #include <sofa/defaulttype/RigidTypes.h>
-
+#include <sofa/defaulttype/Vec3Types.h>
 
 namespace sofa
 {
@@ -50,18 +50,8 @@ namespace collision
 class GenerateStringID
 {
 public :
-
-    static const int length = 15;
-
-    static std::string generate(){
-        static std::string alphanum = "0123456789!@#$%^&*ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-        std::string result;
-        result.resize(length);
-        for (int i = 0; i < length; i++)
-            result[i] = alphanum[rand() % length];
-
-        return result;
-    }
+    static const int length {15};
+    static std::string generate() ;
 };
 
 
@@ -148,8 +138,7 @@ public:
     }
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_BASECONTACTMAPPER_CPP)
-
+#if !defined(SOFA_COMPONENT_COLLISION_BASECONTACTMAPPER_CPP)
 #ifndef SOFA_DOUBLE
 extern template class SOFA_BASE_COLLISION_API BaseContactMapper<defaulttype::Vec3fTypes>;
 extern template class SOFA_BASE_COLLISION_API BaseContactMapper<defaulttype::Rigid3fTypes>;
@@ -158,14 +147,13 @@ extern template class SOFA_BASE_COLLISION_API BaseContactMapper<defaulttype::Rig
 extern template class SOFA_BASE_COLLISION_API BaseContactMapper<defaulttype::Vec3dTypes>;
 extern template class SOFA_BASE_COLLISION_API BaseContactMapper<defaulttype::Rigid3dTypes>;
 #endif
-
 #endif
 
 } // namespace collision
 
 } // namespace component
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COLLISION_BASECONTACTMAPPER_CPP)
+#if !defined(SOFA_COMPONENT_COLLISION_BASECONTACTMAPPER_CPP)
 namespace helper
 {
 #ifndef SOFA_DOUBLE

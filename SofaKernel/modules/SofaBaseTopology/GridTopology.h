@@ -25,6 +25,8 @@
 
 #include <SofaBaseTopology/MeshTopology.h>
 #include <sofa/core/DataEngine.h>
+#include <sofa/defaulttype/VecTypes.h>
+
 namespace sofa
 {
 
@@ -163,21 +165,7 @@ public:
     virtual SReal getPZ(int i) const override { return getPoint(i)[2]; }
 
     /// Overload method from \sa BaseObject::parse . /// Parse the given description to assign values to this object's fields and potentially other parameters
-    virtual void parse(core::objectmodel::BaseObjectDescription* arg) override
-    {
-        this->MeshTopology::parse(arg);
-
-        if (arg->getAttribute("nx")!=NULL && arg->getAttribute("ny")!=NULL && arg->getAttribute("nz")!=NULL )
-        {
-            int nx = arg->getAttributeAsInt("nx", d_n.getValue().x());
-            int ny = arg->getAttributeAsInt("ny", d_n.getValue().y());
-            int nz = arg->getAttributeAsInt("nz", d_n.getValue().z());
-            d_n.setValue(Vec3i(nx,ny,nz));
-        }
-
-        this->setNbGridPoints();
-    }
-
+    virtual void parse(core::objectmodel::BaseObjectDescription* arg) override ;
 
     /// Overload Method from @sa MeshTopology::getNbHexahedra
     virtual int getNbHexahedra() override { return (d_n.getValue()[0]-1)*(d_n.getValue()[1]-1)*(d_n.getValue()[2]-1); }

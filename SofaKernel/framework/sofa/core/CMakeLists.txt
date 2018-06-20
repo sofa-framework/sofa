@@ -8,6 +8,7 @@ set(HEADER_FILES
     CategoryLibrary.h
     CollisionElement.h
     CollisionModel.h
+    CollisionModel.inl
     ComponentLibrary.h
     ConstraintParams.h
     DataEngine.h

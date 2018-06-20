@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "CollisionModel.h"
+#include "CollisionModel.inl"
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <sofa/helper/types/RGBAColor.h>
 
@@ -66,6 +67,83 @@ const float* CollisionModel::getColor4f()
         else            {setColor4f(defaultColorMoving); return defaultColorMoving;}
     else if (isActive()) {setColor4f(defaultColorActive); return defaultColorActive;}
     else            {setColor4f(defaultColor); return defaultColor;}
+}
+
+/// Constructor
+CollisionModel::CollisionModel()
+    : bActive(initData(&bActive, true, "active", "flag indicating if this collision model is active and should be included in default collision detections"))
+    , bMoving(initData(&bMoving, true, "moving", "flag indicating if this object is changing position between iterations"))
+    , bSimulated(initData(&bSimulated, true, "simulated", "flag indicating if this object is controlled by a simulation"))
+    , bSelfCollision(initData(&bSelfCollision, false, "selfCollision", "flag indication if the object can self collide"))
+    , proximity(initData(&proximity, (SReal)0.0, "proximity", "Distance to the actual (visual) surface"))
+    , contactStiffness(initData(&contactStiffness, (SReal)10.0, "contactStiffness", "Contact stiffness"))
+    , contactFriction(initData(&contactFriction, (SReal)0.0, "contactFriction", "Contact friction coefficient (dry or viscous or unused depending on the contact method)"))
+    , contactRestitution(initData(&contactRestitution, (SReal)0.0, "contactRestitution", "Contact coefficient of restitution"))
+    , contactResponse(initData(&contactResponse, "contactResponse", "if set, indicate to the ContactManager that this model should use the given class of contacts.\nNote that this is only indicative, and in particular if both collision models specify a different class it is up to the manager to choose."))
+    , color(initData(&color, defaulttype::RGBAColor(1,0,0,1), "color", "color used to display the collision model if requested"))
+    , group(initData(&group,"group","IDs of the groups containing this model. No collision can occur between collision models included in a common group (e.g. allowing the same object to have multiple collision models)"))
+    , size(0)
+    , numberOfContacts(0)
+    , previous(initLink("previous", "Previous (coarser / upper / parent level) CollisionModel in the hierarchy."))
+    , next(initLink("next", "Next (finer / lower / child level) CollisionModel in the hierarchy."))
+    , userData(NULL)
+{
+}
+
+/// Set the previous (coarser / upper / parent level) CollisionModel in the hierarchy.
+void CollisionModel::setPrevious(CollisionModel::SPtr val)
+{
+    CollisionModel::SPtr p = previous.get();
+    if (p == val) return;
+    if (p)
+    {
+        if (p->next.get()) p->next.get()->previous.reset();
+        p->next.set(NULL);
+    }
+    if (val)
+    {
+        if (val->next.get()) val->next.get()->previous.set(NULL);
+    }
+    previous.set(val);
+    if (val)
+        val->next.set(this);
+}
+
+/// Return the first (i.e. root) CollisionModel in the hierarchy.
+CollisionModel* CollisionModel::getFirst()
+{
+    CollisionModel *cm = this;
+    CollisionModel *cm2;
+    while ((cm2 = cm->getPrevious())!=NULL)
+        cm = cm2;
+    return cm;
+}
+
+/// Return the last (i.e. leaf) CollisionModel in the hierarchy.
+CollisionModel* CollisionModel::getLast()
+{
+    CollisionModel *cm = this;
+    CollisionModel *cm2;
+    while ((cm2 = cm->getNext())!=NULL)
+        cm = cm2;
+    return cm;
+}
+
+bool CollisionModel::canCollideWith(CollisionModel* model)
+{
+    if (model->getContext() == this->getContext()) // models are in the Node -> is self collision activated?
+        return bSelfCollision.getValue();
+    else if( this->group.getValue().empty() || model->group.getValue().empty() ) // one model has no group -> always collide
+        return true;
+    else
+    {
+        std::set<int>::const_iterator it = group.getValue().begin(), itend = group.getValue().end();
+        for( ; it != itend ; ++it )
+            if( model->group.getValue().count(*it)>0 ) // both models are included in the same group -> do not collide
+                return false;
+
+        return true;
+    }
 }
 
 
