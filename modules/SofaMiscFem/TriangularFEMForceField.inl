@@ -23,10 +23,6 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_TRIANGULARFEMFORCEFIELD_INL
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include "TriangularFEMForceField.h"
 
 #include <sofa/core/visual/VisualParams.h>
