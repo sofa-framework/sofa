@@ -29,7 +29,7 @@
 
 
 // for memory :
-// SOFA_NEW_HEXA :
+// HEXA :
 //
 // 	     7----6
 //      /|   /|

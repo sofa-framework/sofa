@@ -38,8 +38,6 @@ namespace core
 namespace topology
 {
 
-#define SOFA_NEW_HEXA
-
 class SOFA_CORE_API BaseMeshTopology : public core::topology::Topology
 {
 public:
@@ -57,11 +55,10 @@ public:
     typedef EdgeID		                LineID;
     typedef Edge		                Line;
     typedef SeqEdges	                SeqLines;
-#ifndef SOFA_NEW_HEXA
+
     typedef HexaID                              CubeID;
     typedef Hexa                                Cube;
     typedef SeqHexahedra                        SeqCubes;
-#endif
     /// @}
 
     /// fixed-size neighbors arrays
@@ -239,11 +236,10 @@ public:
     const SeqLines& getLines() { return getEdges(); }
     int getNbLines() { return getNbEdges(); }
     Line getLine(LineID i) { return getEdge(i); }
-#ifndef SOFA_NEW_HEXA
+
     const SeqCubes& getCubes() { return getHexahedra(); }
     int getNbCubes() { return getNbHexahedra(); }
     Cube getCube(CubeID i) { return getHexahedron(i); }
-#endif
     /// @}
 
     /// @name Initial points accessors (only available if the topology was loaded from a file containing this information).
