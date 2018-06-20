@@ -34,9 +34,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_FastTriangularBendingSprings_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <map>
 

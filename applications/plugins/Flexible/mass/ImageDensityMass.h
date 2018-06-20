@@ -1,9 +1,7 @@
 #ifndef SOFA_FLEXIBLE_ImageDensityMass_H
 #define SOFA_FLEXIBLE_ImageDensityMass_H
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/State.h>

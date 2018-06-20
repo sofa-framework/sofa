@@ -22,10 +22,6 @@
 #ifndef SOFA_COMPONENT_ENGINE_SHAPEMATCHING_INL
 #define SOFA_COMPONENT_ENGINE_SHAPEMATCHING_INL
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaGeneralEngine/ShapeMatching.h>
 #include <sofa/helper/decompose.h>

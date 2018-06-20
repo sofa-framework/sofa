@@ -48,10 +48,6 @@
 #ifndef SOFA_HELPER_FIXED_ARRAY_H
 #define SOFA_HELPER_FIXED_ARRAY_H
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/helper.h>
 
