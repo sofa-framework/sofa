@@ -84,7 +84,7 @@ void SceneCheckAPIChange::doInit(Node* node)
     node->getTreeObject(apiversion) ;
     if(!apiversion)
     {
-        msg_info("SceneChecker") << "The 'APIVersion' directive is missing in the current scene. Switching to the default APIVersion level '"<< m_selectedApiLevel <<"' " ;
+        msg_info("SceneCheckAPIChange") << "The 'APIVersion' directive is missing in the current scene. Switching to the default APIVersion level '"<< m_selectedApiLevel <<"' " ;
     }
     else
     {
@@ -94,7 +94,11 @@ void SceneCheckAPIChange::doInit(Node* node)
 
 void SceneCheckAPIChange::doPrintSummary()
 {
-
+    if(!m_numberOfCreationFromAlias.empty()){
+        if(m_selectedApiLevel=="17.06" || m_selectedApiLevel=="17.12"){
+            msg_warning("SceneCheckAPIChanges") << "Some components have been created using" ;
+        }
+    }
 }
 
 void SceneCheckAPIChange::doCheckOn(Node* node)
@@ -111,7 +115,6 @@ void SceneCheckAPIChange::doCheckOn(Node* node)
                 hook(object.get());
             }
         }
-
     }
 }
 
@@ -131,14 +134,15 @@ void SceneCheckAPIChange::installDefaultChangeSets()
     }) ;
 
     std::cout << "HELLO " << std::endl ;
+
     /// Add a callback to be n
-    ObjectFactory::getInstance()->setCallback([](Base* o, BaseObjectDescription *arg){
+    ObjectFactory::getInstance()->setCallback([this](Base* o, BaseObjectDescription *arg){
         msg_warning(o) << "Using an Alias: " << o->getClassName() ;
-
-        if(o->getClassName() != arg->getAttribute("type", "") )
-                        msg_warning(o) << "Using an Alias: " << o->getClassName() ;
-
-                }) ;
+        if(o->getClassName() != arg->getAttribute("type", "") ){
+            this->m_numberOfCreationFromAlias[o->getClassName()].push_back(arg->getAttribute("type", ""));
+            msg_warning(o) << "Using an Alias: " << o->getClassName() ;
+        }
+    });
 }
 
 void SceneCheckAPIChange::addHookInChangeSet(const std::string& version, ChangeSetHookFunction fct)

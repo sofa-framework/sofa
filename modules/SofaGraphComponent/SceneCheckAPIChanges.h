@@ -25,6 +25,7 @@
 #include "SceneChecks.h"
 #include "config.h"
 #include <map>
+#include <vector>
 
 /////////////////////////////// FORWARD DECLARATION ////////////////////////////////////////////////
 namespace sofa {
@@ -66,7 +67,7 @@ private:
 
     std::map<std::string, std::vector<ChangeSetHookFunction>> m_changesets ;
 
-    std::map<std::string, int> m_,numberOfCreationFromAlias ;
+    std::map<std::string, std::vector<std::string>> m_numberOfCreationFromAlias ;
 };
 
 } /// _scenechecks_
