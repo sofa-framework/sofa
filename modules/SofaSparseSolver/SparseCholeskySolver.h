@@ -72,7 +72,7 @@ public :
     void solveT(float * z, float * r);
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_LINEARSOLVER_SPARSECHOLESKYSOLVER_CPP)
+#if  !defined(SOFA_COMPONENT_LINEARSOLVER_SPARSECHOLESKYSOLVER_CPP)
 extern template class SOFA_SPARSE_SOLVER_API SparseCholeskySolver< CompressedRowSparseMatrix<double>,FullVector<double> >;
 extern template class SOFA_SPARSE_SOLVER_API SparseCholeskySolver< CompressedRowSparseMatrix<float>,FullVector<float> >;
 #endif

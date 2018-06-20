@@ -106,7 +106,7 @@ private:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_SHAPEMATCHING_CPP)
+#if  !defined(SOFA_COMPONENT_ENGINE_SHAPEMATCHING_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_ENGINE_API ShapeMatching<defaulttype::Vec3dTypes>;
 extern template class SOFA_GENERAL_ENGINE_API ShapeMatching<defaulttype::Rigid3dTypes>;

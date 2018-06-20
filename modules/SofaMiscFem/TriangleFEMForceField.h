@@ -171,7 +171,7 @@ protected :
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGLEFEMFORCEFIELD_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGLEFEMFORCEFIELD_CPP)
 
 #ifndef SOFA_FLOAT
 extern template class SOFA_MISC_FEM_API TriangleFEMForceField<sofa::defaulttype::Vec3dTypes>;
@@ -180,7 +180,7 @@ extern template class SOFA_MISC_FEM_API TriangleFEMForceField<sofa::defaulttype:
 extern template class SOFA_MISC_FEM_API TriangleFEMForceField<sofa::defaulttype::Vec3fTypes>;
 #endif
 
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGLEFEMFORCEFIELD_CPP)
+#endif //  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGLEFEMFORCEFIELD_CPP)
 
 } // namespace forcefield
 

@@ -164,7 +164,7 @@ public:
       bool loadedDiffusivity;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONDIFFUSIONFEMFORCEFIELD_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONDIFFUSIONFEMFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec1dTypes>;
 extern template class SOFA_SIMPLE_FEM_API TetrahedronDiffusionFEMForceField<Vec2dTypes>;

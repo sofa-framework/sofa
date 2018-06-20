@@ -191,7 +191,7 @@ public:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_SUBSETTOPOLOGY_CPP)
+#if  !defined(SOFA_COMPONENT_ENGINE_SUBSETTOPOLOGY_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_ENGINE_API SubsetTopology<defaulttype::Vec3dTypes>;
 extern template class SOFA_GENERAL_ENGINE_API SubsetTopology<defaulttype::Rigid3dTypes>;

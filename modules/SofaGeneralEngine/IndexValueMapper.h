@@ -81,7 +81,7 @@ public:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(INDEXVALUEMAPPER_CPP_)
+#if  !defined(INDEXVALUEMAPPER_CPP_)
 #ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_ENGINE_API IndexValueMapper<sofa::defaulttype::Vec3dTypes>;
 #endif //SOFA_FLOAT

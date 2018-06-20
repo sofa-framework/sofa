@@ -110,7 +110,7 @@ public:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_GENERATESPHERE_CPP)
+#if  !defined(SOFA_COMPONENT_ENGINE_GENERATESPHERE_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_ENGINE_API GenerateSphere<defaulttype::Vec3dTypes>;
 #endif

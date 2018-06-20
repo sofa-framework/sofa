@@ -99,7 +99,7 @@ public:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_PROGRESSIVESCALING_CPP)
+#if  !defined(SOFA_COMPONENT_ENGINE_PROGRESSIVESCALING_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_COMPONENT_ENGINE_API ComputeMeshIntersection<defaulttype::Vec3dTypes>;
 #endif //SOFA_FLOAT

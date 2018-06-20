@@ -391,7 +391,7 @@ public:
     virtual void updateForceMask() override;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_JOINTSPRINGFORCEFIELD_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_JOINTSPRINGFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_RIGID_API JointSpring<defaulttype::Rigid3dTypes>;
 extern template class SOFA_RIGID_API JointSpringForceField<defaulttype::Rigid3dTypes>;

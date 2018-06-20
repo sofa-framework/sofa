@@ -439,7 +439,7 @@ public:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_HELPER_ADVANCEDTIMER_CPP)
+#if  !defined(SOFA_HELPER_ADVANCEDTIMER_CPP)
 extern template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Timer>;
 extern template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Step>;
 extern template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Obj>;

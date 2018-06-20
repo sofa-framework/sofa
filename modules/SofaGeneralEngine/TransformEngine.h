@@ -86,7 +86,7 @@ protected:
     Data<bool> inverse; ///< true to apply inverse transformation
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_TRANSFORMENGINE_CPP)
+#if  !defined(SOFA_COMPONENT_ENGINE_TRANSFORMENGINE_CPP)
 
 #ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_ENGINE_API TransformEngine<defaulttype::Vec1dTypes>;

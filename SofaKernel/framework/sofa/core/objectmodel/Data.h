@@ -578,7 +578,7 @@ std::string TData<T>::getValueTypeString() const
 }
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_CORE_OBJECTMODEL_DATA_CPP)
+#if  !defined(SOFA_CORE_OBJECTMODEL_DATA_CPP)
 
 extern template class SOFA_CORE_API TData< std::string >;
 extern template class SOFA_CORE_API Data< std::string >;

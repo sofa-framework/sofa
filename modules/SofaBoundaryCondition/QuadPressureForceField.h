@@ -152,7 +152,7 @@ protected :
     }
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_QUADPRESSUREFORCEFIELD_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_QUADPRESSUREFORCEFIELD_CPP)
 
 #ifndef SOFA_FLOAT
 extern template class SOFA_BOUNDARY_CONDITION_API QuadPressureForceField<defaulttype::Vec3dTypes>;
@@ -161,7 +161,7 @@ extern template class SOFA_BOUNDARY_CONDITION_API QuadPressureForceField<default
 extern template class SOFA_BOUNDARY_CONDITION_API QuadPressureForceField<defaulttype::Vec3fTypes>;
 #endif
 
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_QUADPRESSUREFORCEFIELD_CPP)
+#endif //  !defined(SOFA_COMPONENT_FORCEFIELD_QUADPRESSUREFORCEFIELD_CPP)
 
 
 } // namespace forcefield

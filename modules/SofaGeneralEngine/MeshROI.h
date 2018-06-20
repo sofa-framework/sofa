@@ -170,7 +170,7 @@ public:
     Data<bool> d_doUpdate; ///< Update the computation (not only at the init)
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_MESHROI_CPP)
+#if  !defined(SOFA_COMPONENT_ENGINE_MESHROI_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_ENGINE_API MeshROI<defaulttype::Vec3dTypes>;
 extern template class SOFA_GENERAL_ENGINE_API MeshROI<defaulttype::Rigid3dTypes>;

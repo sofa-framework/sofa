@@ -135,7 +135,7 @@ public:
     Data<double> _drawSize; ///< Draw Size
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_PAIRBOXROI_CPP)
+#if  !defined(SOFA_COMPONENT_ENGINE_PAIRBOXROI_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_ENGINE_API PairBoxROI<defaulttype::Vec3dTypes>;
 extern template class SOFA_GENERAL_ENGINE_API PairBoxROI<defaulttype::Rigid3dTypes>;

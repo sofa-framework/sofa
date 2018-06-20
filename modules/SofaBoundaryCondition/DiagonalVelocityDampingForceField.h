@@ -74,7 +74,7 @@ namespace sofa
 
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_DIAGONALVELOCITYDAMPINGFORCEFIELD_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_DIAGONALVELOCITYDAMPINGFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
             extern template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<defaulttype::Vec3dTypes>;
             extern template class SOFA_BOUNDARY_CONDITION_API DiagonalVelocityDampingForceField<defaulttype::Vec2dTypes>;

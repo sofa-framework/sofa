@@ -45,7 +45,7 @@ protected:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(TESTPLUGIN_COMPONENT_B_CPP)
+#if  !defined(TESTPLUGIN_COMPONENT_B_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_TESTPLUGIN_API ComponentB<double>;
 extern template class SOFA_TESTPLUGIN_API ComponentB<defaulttype::Vec2dTypes>;
@@ -56,7 +56,7 @@ extern template class SOFA_TESTPLUGIN_API ComponentB<float>;
 extern template class SOFA_TESTPLUGIN_API ComponentB<defaulttype::Vec2fTypes>;
 extern template class SOFA_TESTPLUGIN_API ComponentB<defaulttype::Rigid3fTypes>;
 #endif
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(TESTPLUGIN_COMPONENT_B_CPP)
+#endif //  !defined(TESTPLUGIN_COMPONENT_B_CPP)
 
 } // namespace test
 

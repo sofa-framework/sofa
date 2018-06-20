@@ -87,7 +87,7 @@ protected:
     Real m_baryLimit;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETTOPOLOGYALGORITHMS_CPP)
+#if  !defined(SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETTOPOLOGYALGORITHMS_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BASE_TOPOLOGY_API TetrahedronSetTopologyAlgorithms<defaulttype::Vec3dTypes>;
 extern template class SOFA_BASE_TOPOLOGY_API TetrahedronSetTopologyAlgorithms<defaulttype::Vec2dTypes>;

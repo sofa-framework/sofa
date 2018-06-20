@@ -393,7 +393,7 @@ protected:
     bool _alreadyInit;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONFEMFORCEFIELD_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONFEMFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_SIMPLE_FEM_API HexahedronFEMForceField<defaulttype::Vec3dTypes>;
 #endif

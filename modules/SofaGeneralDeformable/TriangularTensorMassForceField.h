@@ -187,7 +187,7 @@ protected :
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARTENSORMASSFORCEFIELD_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARTENSORMASSFORCEFIELD_CPP)
 
 #ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_DEFORMABLE_API TriangularTensorMassForceField<sofa::defaulttype::Vec3dTypes>;
@@ -196,7 +196,7 @@ extern template class SOFA_GENERAL_DEFORMABLE_API TriangularTensorMassForceField
 extern template class SOFA_GENERAL_DEFORMABLE_API TriangularTensorMassForceField<sofa::defaulttype::Vec3fTypes>;
 #endif
 
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARTENSORMASSFORCEFIELD_CPP)
+#endif //  !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARTENSORMASSFORCEFIELD_CPP)
 
 } //namespace forcefield
 

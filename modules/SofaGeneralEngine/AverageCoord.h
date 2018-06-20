@@ -89,7 +89,7 @@ protected:
     sofa::core::behavior::MechanicalState<DataTypes> *mstate;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_AverageCoord_CPP)
+#if  !defined(SOFA_COMPONENT_ENGINE_AverageCoord_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_ENGINE_API AverageCoord<defaulttype::Vec2dTypes>;
 extern template class SOFA_GENERAL_ENGINE_API AverageCoord<defaulttype::Vec3dTypes>;

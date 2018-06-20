@@ -82,7 +82,7 @@ public:
     Data<Real> curvature; ///< Spiral curvature factor
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_SPIRAL_CPP)
+#if  !defined(SOFA_COMPONENT_ENGINE_SPIRAL_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_ENGINE_API Spiral<defaulttype::Vec3dTypes>;
 #endif //SOFA_FLOAT

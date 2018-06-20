@@ -380,7 +380,7 @@ protected:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_CORE_MULTI2MAPPING_CPP)
+#if  !defined(SOFA_CORE_MULTI2MAPPING_CPP)
 
 #ifndef SOFA_FLOAT
 extern template class SOFA_CORE_API Multi2Mapping< defaulttype::Vec1dTypes, defaulttype::Rigid3dTypes, defaulttype::Rigid3dTypes >;

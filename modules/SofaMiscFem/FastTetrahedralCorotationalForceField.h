@@ -212,7 +212,7 @@ protected :
     topology::EdgeData<sofa::helper::vector<Mat3x3> > &getEdgeInfo() {return edgeInfo;}
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_FASTTETRAHEDRALCOROTATIONALFORCEFIELD_CPP)
+#if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_FASTTETRAHEDRALCOROTATIONALFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_MISC_FEM_API FastTetrahedralCorotationalForceField<sofa::defaulttype::Vec3dTypes>;
 #endif

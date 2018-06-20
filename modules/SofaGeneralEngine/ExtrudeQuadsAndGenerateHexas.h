@@ -94,7 +94,7 @@ public:
     Data< helper::vector<sofa::core::topology::BaseMeshTopology::Hexa> >   f_extrudedHexas; ///< List of hexahedra generated during the extrusion
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_EXTRUDEQUADSANDGENERATEHEXAS_CPP)
+#if  !defined(SOFA_COMPONENT_ENGINE_EXTRUDEQUADSANDGENERATEHEXAS_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_ENGINE_API ExtrudeQuadsAndGenerateHexas<defaulttype::Vec3dTypes>;
 #endif //SOFA_FLOAT

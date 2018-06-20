@@ -78,7 +78,7 @@ protected:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_DifferenceEngine_CPP)
+#if  !defined(SOFA_COMPONENT_ENGINE_DifferenceEngine_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_ENGINE_API DifferenceEngine<defaulttype::Vec1d>;
 extern template class SOFA_GENERAL_ENGINE_API DifferenceEngine<defaulttype::Vec3d>;

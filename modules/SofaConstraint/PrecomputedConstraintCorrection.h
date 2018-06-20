@@ -250,7 +250,7 @@ void PrecomputedConstraintCorrection<sofa::defaulttype::Vec1fTypes>::draw(const 
 
 #endif
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONSTRAINTSET_PRECOMPUTEDCONSTRAINTCORRECTION_CPP)
+#if  !defined(SOFA_COMPONENT_CONSTRAINTSET_PRECOMPUTEDCONSTRAINTCORRECTION_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_CONSTRAINT_API PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>;
 extern template class SOFA_CONSTRAINT_API PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>;

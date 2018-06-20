@@ -282,7 +282,7 @@ protected:
     //sofa::helper::vector< sofa::helper::vector <Real> > subMatrix(unsigned int fr, unsigned int lr, unsigned int fc, unsigned int lc);
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_BEAMFEMFORCEFIELD_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_BEAMFEMFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_SIMPLE_FEM_API BeamFEMForceField<defaulttype::Rigid3dTypes>;
 #endif

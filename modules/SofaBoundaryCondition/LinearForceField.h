@@ -149,7 +149,7 @@ template <>
 SReal LinearForceField<defaulttype::Rigid2fTypes>::getPotentialEnergy(const core::MechanicalParams*, const DataVecCoord& ) const;
 #endif
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_LINEARFORCEFIELD_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_LINEARFORCEFIELD_CPP)
 
 #ifndef SOFA_FLOAT
 extern template class SOFA_BOUNDARY_CONDITION_API LinearForceField<sofa::defaulttype::Vec3dTypes>;
@@ -168,7 +168,7 @@ extern template class SOFA_BOUNDARY_CONDITION_API LinearForceField<sofa::default
 // extern template class SOFA_BOUNDARY_CONDITION_API LinearForceField<Rigid2fTypes>;
 #endif
 
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_LINEARFORCEFIELD_CPP)
+#endif //  !defined(SOFA_COMPONENT_FORCEFIELD_LINEARFORCEFIELD_CPP)
 
 
 } // namespace forcefield

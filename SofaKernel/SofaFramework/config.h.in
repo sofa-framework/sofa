@@ -83,21 +83,6 @@ typedef float SReal;
 typedef double SReal;
 #endif
 
-// The SOFA_EXTERN_TEMPLATE macro controls the use of extern templates in Sofa.
-// That is, every extern template declaration in Sofa is inside a block
-// protected by
-//
-//   #if defined(SOFA_EXTERN_TEMPLATE)
-//
-// Not only are extern template declarations necessary for DLLs on windows, but
-// they can also fix some RTTI issues on OS X (typeid, dynamic_cast), and they
-// hugely speed up the build process on every platform, so they are enabled by
-// default. (Even though they were not part of C++ until C++11, they are
-// supported by all majors compilers.)
-#ifndef SOFA_NO_EXTERN_TEMPLATE
-#  define SOFA_EXTERN_TEMPLATE
-#endif
-
 #ifdef SOFA_BUILD_HELPER
 #   define SOFA_TARGET SofaHelper
 #	define SOFA_HELPER_API SOFA_EXPORT_DYNAMIC_LIBRARY
