@@ -36,8 +36,6 @@ namespace sofa
 namespace helper
 {
 
-//#define NULL 0
-
 #define EPSILON_LCP		0.00000000001	// epsilon pour tests = 0
 #define EPSILON_CONV	0.001			// for GS convergence
 #define MAX_BOU	50	// nombre maximal de boucles de calcul
@@ -63,7 +61,6 @@ public:
     ~LCP();
     void reset(void);
     void allocate (unsigned int maxConst);
-    //LCP& operator=(LCP& lcp);
     inline double** getW(void) {return W;};
     inline double& getMu(void) { return mu;};
     inline double* getDfree(void) {return dfree;};
@@ -81,12 +78,9 @@ public:
 
     void setLCP(unsigned int input_dim, double *input_dfree, double **input_W, double *input_f, double &input_mu, double &input_tol, int input_numItMax);
 
-
     void solveNLCP(bool convergenceTest, std::vector<double>* residuals = NULL, std::vector<double>* violations = NULL);
     int it; // to get the number of iteration that is necessary for convergence
     double error; // to get the error at the end of the convergence
-
-
 };
 
 
