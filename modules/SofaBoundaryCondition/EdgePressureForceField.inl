@@ -25,7 +25,6 @@
 #include <SofaBoundaryCondition/EdgePressureForceField.h>
 #include <SofaBaseTopology/TopologySparseData.inl>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RGBAColor.h>
 #include <vector>
 #include <set>
