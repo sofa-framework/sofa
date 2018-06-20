@@ -47,7 +47,7 @@ namespace forcefield
 using sofa::core::objectmodel::ComponentState ;
 
 template<class DataTypes>
-TetrahedronFEMForceField<DataTypes>::TetrahedronFEMForceField<DataTypes>()
+TetrahedronFEMForceField<DataTypes>::TetrahedronFEMForceField()
     : _mesh(NULL)
     , _indexedElements(NULL)
     , needUpdateTopology(false)
