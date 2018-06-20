@@ -19,68 +19,31 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_FNDISPATCHER_H
-#define SOFA_HELPER_FNDISPATCHER_H
+#ifndef SOFA_HELPER_TYPEINFO_H
+#define SOFA_HELPER_TYPEINFO_H
 
-#include <map>
-
+#include <typeinfo>
 #include <sofa/helper/helper.h>
-#include <sofa/helper/TypeInfo.h>
+
 namespace sofa
 {
 
 namespace helper
 {
 
-template <class BaseClass, typename ResulT = void>
-class BasicDispatcher
+class TypeInfo
 {
 public:
-    typedef ResulT (*F)(BaseClass &,BaseClass &);
-
-protected:
-    typedef std::pair<TypeInfo,TypeInfo> KeyType;
-    typedef std::map<KeyType, F> MapType;
-    MapType callBackMap;
-    virtual ~BasicDispatcher() {}
-public:
-    void add(const std::type_info& class1, const std::type_info& class2, F fun) ;
-    void ignore(const std::type_info& class1, const std::type_info& class2) ;
-
-    template <class ConcreteClass1,class ConcreteClass2,ResulT (*F)(ConcreteClass1&,ConcreteClass2&), bool symetric>
-    void ignore() ;
-
-    virtual ResulT defaultFn(BaseClass& arg1, BaseClass& arg2);
-    static ResulT ignoreFn(BaseClass& arg1, BaseClass& arg2);
-    ResulT go(BaseClass &arg1,BaseClass &arg2);
-    /// Return true if a pair of argument correspond to a callback function (different than ignoreFn)
-    bool isSupported(BaseClass &arg1, BaseClass &arg2);
+    const std::type_info* pt;
+    TypeInfo(const std::type_info& t) : pt(&t) { }
+    operator const std::type_info&() const { return *pt; }
+    bool operator==(const TypeInfo& t) const { return *pt == *t.pt; }
+    bool operator!=(const TypeInfo& t) const { return *pt != *t.pt; }
+    bool operator<(const TypeInfo& t) const { return pt->before(*t.pt); }
 };
 
-template <class BaseClass, typename ResulT>
-class FnDispatcher : public BasicDispatcher<BaseClass, ResulT>
-{
-public:
+} /// namespace helper
 
-    template <class ConcreteClass1, class ConcreteClass2, ResulT (*F)(ConcreteClass1&,ConcreteClass2&), bool symetric>
-    void add() ;
+} /// namespace sofa
 
-    template <class ConcreteClass1, class ConcreteClass2, bool symetric>
-    void ignore() ;
-};
-
-
-template <class BaseClass, typename ResulT>
-class SingletonFnDispatcher : public FnDispatcher<BaseClass, ResulT>
-{
-protected:
-    SingletonFnDispatcher();
-public:
-    static SingletonFnDispatcher<BaseClass, ResulT>* getInstance();
-};
-
-} // namespace helper
-
-} // namespace sofa
-
-#endif
+#endif /// SOFA_HELPER_TYPEINFO_H
