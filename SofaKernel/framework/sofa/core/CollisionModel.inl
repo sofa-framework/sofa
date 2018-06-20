@@ -19,58 +19,50 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define TESTPLUGIN_COMPONENT_B_CPP
+#ifndef SOFA_CORE_COLLISIONMODEL_INL
+#define SOFA_CORE_COLLISIONMODEL_INL
 
-#include "ComponentB.h"
-
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/CollisionModel.h>
 
 namespace sofa
 {
-
-namespace test
+namespace core
 {
 
-template<class T>
-ComponentB<T>::ComponentB()
+/// Helper method to get or create the previous model in the hierarchy.
+template<class DerivedModel>
+DerivedModel* CollisionModel::createPrevious()
 {
+    CollisionModel::SPtr prev = previous.get();
+    typename DerivedModel::SPtr pmodel = sofa::core::objectmodel::SPtr_dynamic_cast<DerivedModel>(prev);
+    if (pmodel.get() == NULL)
+    {
+        int level = 0;
+        CollisionModel *cm = getNext();
+        CollisionModel* root = this;
+        while (cm) { root = cm; cm = cm->getNext(); ++level; }
+        pmodel = sofa::core::objectmodel::New<DerivedModel>();
+        pmodel->setName("BVLevel",level);
+        root->addSlave(pmodel); //->setContext(getContext());
+        pmodel->setMoving(isMoving());
+        pmodel->setSimulated(isSimulated());
+        pmodel->proximity.setValue(proximity.getValue());
+        //pmodel->group.setValue(group_old.getValue());
+        pmodel->group.beginEdit()->insert(group.getValue().begin(),group.getValue().end());
+        pmodel->group.endEdit();
+        //previous=pmodel;
+        //pmodel->next = this;
+        setPrevious(pmodel);
+        if (prev)
+        {
+
+        }
+    }
+    return pmodel.get();
 }
 
-
-template<class T>
-ComponentB<T>::~ComponentB()
-{
-}
-
-SOFA_DECL_CLASS(ComponentB)
-
-int ComponentBClass = sofa::core::RegisterObject("Component B")
-#ifndef SOFA_FLOAT
-    .add< ComponentB<double> >()
-    .add< ComponentB<sofa::defaulttype::Vec2dTypes> >()
-    .add< ComponentB<sofa::defaulttype::Rigid3dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-    .add< ComponentB<float> >()
-    .add< ComponentB<sofa::defaulttype::Vec2fTypes> >()
-    .add< ComponentB<sofa::defaulttype::Rigid3fTypes> >()
-#endif
-;
-
-#ifndef SOFA_FLOAT
-template class SOFA_TESTPLUGIN_API ComponentB<double>; 
-template class SOFA_TESTPLUGIN_API ComponentB<sofa::defaulttype::Vec2dTypes>;
-template class SOFA_TESTPLUGIN_API ComponentB<sofa::defaulttype::Rigid3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_TESTPLUGIN_API ComponentB<float>;
-template class SOFA_TESTPLUGIN_API ComponentB<sofa::defaulttype::Vec2fTypes>;
-template class SOFA_TESTPLUGIN_API ComponentB<sofa::defaulttype::Rigid3fTypes>;
-#endif
-
-
-
-} // namespace test
+} // namespace core
 
 } // namespace sofa
+
+#endif

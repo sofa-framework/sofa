@@ -24,7 +24,7 @@
 
 #include <sofa/core/ConstraintParams.h>
 #include <sofa/core/core.h>
-
+#include <sofa/defaulttype/BaseVector.h>
 
 
 namespace sofa

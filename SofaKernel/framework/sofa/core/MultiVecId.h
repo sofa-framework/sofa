@@ -24,7 +24,6 @@
 
 #include <sofa/core/VecId.h>
 
-
 namespace sofa
 {
 
@@ -38,44 +37,6 @@ template<class DataTypes> class State;
 /// This class is templated in order to create different variations (generic versus specific type, read-only vs write access)
 template <VecType vtype, VecAccess vaccess>
 class TMultiVecId;
-
-/*
-/// Helper class to infer the types of elements, vectors, and Data for vectors of the given VecType in states with the given DataTypes
-template<class DataTypes, VecType vtype>
-struct DataTypesVecInfo;
-
-template<class DataTypes>
-struct DataTypesVecInfo<V_COORD>
-{
-    typedef typename DataTypes::Coord T;
-    typedef typename DataTypes::VecCoord VecT;
-    typedef Data<VecT> DataVecT;
-};
-
-template<class DataTypes>
-struct DataTypesVecInfo<V_DERIV>
-{
-    typedef typename DataTypes::Deriv T;
-    typedef typename DataTypes::VecDeriv VecT;
-    typedef Data<VecT> DataVecT;
-};
-
-template<class DataTypes>
-struct DataTypesVecInfo<V_MATDERIV>
-{
-    typedef typename DataTypes::MatrixDeriv T;
-    typedef typename DataTypes::MatrixDeriv VecT;
-    typedef Data<VecT> DataVecT;
-};
-
-template<class DataTypes>
-struct DataTypesVecInfo<V_ALL>
-{
-    typedef void T;
-    typedef void VecT;
-    typedef BaseData DataVecT;
-};
-*/
 
 /// Helper class to access vectors of a given type in a given State
 template<class DataTypes, VecType vtype, VecAccess vaccess>
@@ -201,19 +162,14 @@ struct StateVecAccessor<DataTypes, V_ALL, V_WRITE>
 {
 public:
     typedef TVecId<V_ALL, V_WRITE> MyVecId;
-    //typedef BaseData MyDataVec;
 
     StateVecAccessor(State<DataTypes>* state, const MyVecId& id) : state(state), id(id) {}
     operator MyVecId() const {  return id;  }
-    //const MyDataVec* read()  const {  return state-> read(id);  }
-    //      MyDataVec* write() const {  return state->write(id);  }
 
 protected:
     State<DataTypes>* state;
     MyVecId id;
 };
-
-#define MAP_PTR
 
 template <VecType vtype, VecAccess vaccess>
 class TMultiVecId
@@ -227,20 +183,6 @@ public:
 
 protected:
     MyVecId defaultId;
-
-#ifndef MAP_PTR
-    IdMap idMap;
-    IdMap& writeIdMap()
-    {
-        return idMap;
-    }
-public:
-    bool hasIdMap() const { return !idMap.empty(); }
-    const  IdMap& getIdMap() const
-    {
-        return idMap;
-    }
-#else
 
 private:
     std::shared_ptr< IdMap > idMap_ptr;
@@ -268,8 +210,6 @@ public:
         return *idMap_ptr;
     }
 
-#endif
-
 public:
 
     TMultiVecId()
@@ -290,11 +230,7 @@ public:
     //// Copy constructor
     TMultiVecId( const TMultiVecId<vtype,vaccess>& mv)
         : defaultId( mv.getDefaultId() )
-#ifdef MAP_PTR
         , idMap_ptr( mv.idMap_ptr )
-#else
-        , idMap( mv.idMap )
-#endif
     {
     }
 
@@ -312,27 +248,11 @@ public:
         static_assert( vtype2 == vtype, "" );
         if (mv.hasIdMap())
         {
-#ifdef MAP_PTR
 			// When we assign a V_WRITE version to a V_READ version of the same type, which are binary compatible,
 			// share the maps like with a copy constructor, because otherwise a simple operation like passing a
 			// MultiVecCoordId to a method taking a ConstMultiVecCoordId to indicate it won't modify it
 			// will cause a temporary copy of the map, which this define was meant to avoid!
-#	ifndef _MSC_VER
-#if __GNUC__ > 4 || __GNUC__ == 4 && __GNUC_MINOR__ > 4
-#		pragma GCC diagnostic push
-#		pragma GCC diagnostic ignored "-Wstrict-aliasing" // this should not create problems here
-#endif
-#	endif
             idMap_ptr = *reinterpret_cast<const std::shared_ptr< IdMap > * >(&mv.idMap_ptr);
-#	ifndef _MSC_VER
-#if __GNUC__ > 4 || __GNUC__ == 4 && __GNUC_MINOR__ > 4
-#		pragma GCC diagnostic pop
-#endif
-#	endif
-#else
-			IdMap& map = writeIdMap();
-			std::copy(mv.getIdMap().begin(), mv.getIdMap().end(), std::inserter(map, map.begin()) );
-#endif
         }
     }
     //// Provides explicit conversions from MultiVecId to MultiVecCoordId/...
@@ -377,11 +297,7 @@ public:
     void assign(const MyVecId& id)
     {
         defaultId = id;
-#ifndef MAP_PTR
-        idMap.clear();
-#else
         idMap_ptr.reset();
-#endif
     }
 
     const MyVecId& getId(const BaseState* s) const
@@ -448,10 +364,6 @@ public:
         return true;
     }
 
-    // fId.write(mstate);
-    // fId[mstate].write();   <- THE CURRENT API
-    // mstate->write(fId.getId(mstate));
-
     template <class DataTypes>
     StateVecAccessor<DataTypes,vtype,vaccess> operator[](State<DataTypes>* s) const
     {
@@ -463,22 +375,6 @@ public:
     {
         return StateVecAccessor<DataTypes,vtype,V_READ>(s,getId(s));
     }
-
-    /*
-        template<class DataTypes>
-        typename const typename DataTypesVecInfo<DataTypes,vtype>::DataVecT* read(const State<DataTypes>* s) const
-        {
-            return s->read(getId(s));
-        }
-
-        template<class DataTypes>
-        typename DataTypesVecInfo<DataTypes,vtype>::DataVecT* write(State<DataTypes>* s) const
-        {
-            static_assert(vaccess >= V_WRITE, "");
-            return s->write(getId(s));
-        }
-    */
-
 };
 
 
@@ -495,20 +391,6 @@ public:
 
 protected:
     MyVecId defaultId;
-
-#ifndef MAP_PTR
-    IdMap idMap;
-    IdMap& writeIdMap()
-    {
-        return idMap;
-    }
-public:
-    bool hasIdMap() const { return !idMap.empty(); }
-    const  IdMap& getIdMap() const
-    {
-        return idMap;
-    }
-#else
 
 private:
     std::shared_ptr< IdMap > idMap_ptr;
@@ -536,8 +418,6 @@ public:
         return *idMap_ptr;
     }
 
-#endif
-
 public:
 
     TMultiVecId()
@@ -556,11 +436,7 @@ public:
     //// Copy constructor
     TMultiVecId( const TMultiVecId<V_ALL,vaccess>& mv)
         : defaultId( mv.getDefaultId() )
-#ifdef MAP_PTR
         , idMap_ptr( mv.idMap_ptr )
-#else
-        , idMap( mv.idMap )
-#endif
     {
     }
 
@@ -573,31 +449,14 @@ public:
     TMultiVecId( const TMultiVecId<vtype2,vaccess2>& mv) : defaultId( mv.getDefaultId() )
     {
         static_assert( vaccess2 >= vaccess, "" );
-        //static_assert( vtype == V_ALL || vtype2 == vtype, "" );
 
         if (mv.hasIdMap())
         {
-#ifdef MAP_PTR
 			// When we assign a V_WRITE version to a V_READ version of the same type, which are binary compatible,
 			// share the maps like with a copy constructor, because otherwise a simple operation like passing a
 			// MultiVecCoordId to a method taking a ConstMultiVecCoordId to indicate it won't modify it
 			// will cause a temporary copy of the map, which this define was meant to avoid!
-#	ifndef _MSC_VER
-#if __GNUC__ > 4 || __GNUC__ == 4 && __GNUC_MINOR__ > 4
-#		pragma GCC diagnostic push
-#		pragma GCC diagnostic ignored "-Wstrict-aliasing" // this should not create problems here
-#endif
-#	endif
             idMap_ptr = *reinterpret_cast<const std::shared_ptr< IdMap > * >(&mv.idMap_ptr);
-#	ifndef _MSC_VER
-#if __GNUC__ > 4 || __GNUC__ == 4 && __GNUC_MINOR__ > 4
-#		pragma GCC diagnostic pop
-#endif
-#	endif
-#else
-			IdMap& map = writeIdMap();
-			std::copy(mv.getIdMap().begin(), mv.getIdMap().end(), std::inserter(map, map.begin()) );
-#endif
         }
     }
 
@@ -623,11 +482,7 @@ public:
     void assign(const MyVecId& id)
     {
         defaultId = id;
-#ifndef MAP_PTR
-        idMap.clear();
-#else
         idMap_ptr.reset();
-#endif
     }
 
     const MyVecId& getId(const BaseState* s) const
@@ -694,10 +549,6 @@ public:
         return true;
     }
 
-    // fId.write(mstate);
-    // fId[mstate].write();   <- THE CURRENT API
-    // mstate->write(fId.getId(mstate));
-
     template <class DataTypes>
     StateVecAccessor<DataTypes,V_ALL,vaccess> operator[](State<DataTypes>* s) const
     {
@@ -710,21 +561,6 @@ public:
         return StateVecAccessor<DataTypes,V_ALL,V_READ>(s,getId(s));
     }
 
-    /*
-        template<class DataTypes>
-        typename const typename DataTypesVecInfo<DataTypes,vtype>::DataVecT* read(const State<DataTypes>* s) const
-        {
-            return s->read(getId(s));
-        }
-
-        template<class DataTypes>
-        typename DataTypesVecInfo<DataTypes,vtype>::DataVecT* write(State<DataTypes>* s) const
-        {
-            static_assert(vaccess >= V_WRITE, "");
-            return s->write(getId(s));
-        }
-    */
-
 };
 
 
@@ -736,39 +572,7 @@ typedef TMultiVecId<V_MATDERIV, V_READ> ConstMultiMatrixDerivId;
 typedef TMultiVecId<V_MATDERIV, V_WRITE>     MultiMatrixDerivId;
 typedef TMultiVecId<V_ALL, V_READ>      ConstMultiVecId;
 typedef TMultiVecId<V_ALL, V_WRITE>          MultiVecId;
-/*
-//typedef TMultiVecId<V_ALL, V_READ>      ConstMultiVecId;
-class ConstMultiVecId : public TMultiVecId<V_ALL, V_READ>
-{
-    typedef TMultiVecId<V_ALL, V_READ> Inherit;
-public:
 
-    ConstMultiVecId()
-    {
-    }
-
-    template<VecType vtype2>
-    ConstMultiVecId(const TVecId<vtype2, V_READ>& v) : Inherit((ConstVecId)v)
-    {
-    }
-};
-
-//typedef TMultiVecId<V_ALL, V_WRITE>          MultiVecId;
-class MultiVecId : public TMultiVecId<V_ALL, V_WRITE>
-{
-    typedef TMultiVecId<V_ALL, V_WRITE> Inherit;
-public:
-
-    MultiVecId()
-    {
-    }
-
-    template<VecType vtype2, VecAccess vaccess2>
-    MultiVecId(const TVecId<vtype2, vaccess2>& v) : Inherit((TVecId<V_ALL,vaccess2>)v)
-    {
-    }
-};
-*/
 } // namespace core
 
 } // namespace sofa
