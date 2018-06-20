@@ -12,6 +12,7 @@ set(HEADER_FILES
     DualQuat.inl
     Factory.h
     Factory.inl
+    TypeInfo.h
     FnDispatcher.h
     FnDispatcher.inl
     GenerateRigid.h
