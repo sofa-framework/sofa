@@ -86,7 +86,6 @@ std::string SOFA_HELPER_API gettypename(const std::type_info& t)
     return name;
 }
 
-//static std::string factoryLog;
 static std::string& getFactoryLog()
 {
     static std::string s;
