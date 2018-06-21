@@ -99,9 +99,6 @@ public:
     void projectPosition(const core::MechanicalParams* mparams, DataVecCoord& xData) override;
     void projectJacobianMatrix(const core::MechanicalParams* mparams, DataMatrixDeriv& cData) override;
 
-//    void applyConstraint(defaulttype::BaseMatrix *, unsigned int ) {}
-//    void applyConstraint(defaulttype::BaseVector *, unsigned int ) {}
-
     // Handle topological changes
     virtual void handleTopologyChange() override;
 
@@ -110,6 +107,7 @@ protected :
 
 
 };
+
 
 #if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_POSITIONBASEDDYNAMICSCONSTRAINT_CPP)
 #ifndef SOFA_FLOAT

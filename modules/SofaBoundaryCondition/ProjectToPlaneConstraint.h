@@ -157,6 +157,7 @@ protected :
     SparseMatrix J;        ///< auxiliary variable
 };
 
+
 #if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectToPlaneConstraint_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BOUNDARY_CONDITION_API ProjectToPlaneConstraint<defaulttype::Vec3dTypes>;

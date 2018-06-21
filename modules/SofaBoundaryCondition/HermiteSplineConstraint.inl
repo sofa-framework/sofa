@@ -134,7 +134,6 @@ void HermiteSplineConstraint<DataTypes>::computeDerivateHermiteCoefs( const Real
     //-- time interpolation --> acceleration is itself computed from hemite
     Real u2 = u*u;
     Real u3 = u*u*u;
-    //Real uH00 = 2*u3 -3*u2 +1 ;		//hermite coefs
     Real uH10 = u3 -2*u2 +u;
     Real uH01 = -2*u3 + 3*u2;
     Real uH11 = u3 -u2;

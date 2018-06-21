@@ -125,9 +125,6 @@ void FixedConstraint<DataTypes>::init()
 
     topology = this->getContext()->getMeshTopology();
 
-    //  if (!topology)
-    //    serr << "Can not find the topology." << sendl;
-
     // Initialize functions and parameters
     d_indices.createTopologicalEngine(topology, pointHandler);
     d_indices.registerTopologicalData();
@@ -146,9 +143,6 @@ void FixedConstraint<DataTypes>::init()
     }
 
     reinit();
-
-//  cerr<<"FixedConstraint<DataTypes>::init(), getJ = " << *getJ(0) << endl;
-
 }
 
 template <class DataTypes>
@@ -183,11 +177,8 @@ void FixedConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMatrix* M
 template <class DataTypes>
 void FixedConstraint<DataTypes>::projectResponse(const core::MechanicalParams* mparams, DataVecDeriv& resData)
 {
-//    cerr<<"FixedConstraint<DataTypes>::projectResponse is called "<<endl;
-//    assert(false);
     helper::WriteAccessor<DataVecDeriv> res ( mparams, resData );
     const SetIndexArray & indices = d_indices.getValue(mparams);
-    //serr<<"FixedConstraint<DataTypes>::projectResponse, dx.size()="<<res.size()<<sendl;
     if( d_fixAll.getValue(mparams) )
     {
         // fix everything
@@ -205,7 +196,6 @@ void FixedConstraint<DataTypes>::projectResponse(const core::MechanicalParams* m
             res[*it] = Deriv();
         }
     }
-    //cerr<<"FixedConstraint<DataTypes>::projectResponse is called  res = "<<endl<<res<<endl;
 }
 
 template <class DataTypes>
@@ -219,7 +209,6 @@ void FixedConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalPar
 
     if( d_fixAll.getValue(mparams) )
     {
-        // fix everything
         while (rowIt != rowItEnd)
         {
             rowIt.row().clear();
@@ -238,7 +227,6 @@ void FixedConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalPar
             ++rowIt;
         }
     }
-    //cerr<<"FixedConstraint<DataTypes>::projectJacobianMatrix : helper::WriteAccessor<DataMatrixDeriv> c =  "<<endl<< c<<endl;
 }
 
 // projectVelocity applies the same changes on velocity vector as projectResponse on position vector :
@@ -252,7 +240,7 @@ void FixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* m
     const SetIndexArray & indices = this->d_indices.getValue();
     helper::WriteAccessor<DataVecDeriv> res ( mparams, vData );
 
-    if( this->d_fixAll.getValue()==true )    // fix everyting
+    if( this->d_fixAll.getValue()==true )
     {
         for( unsigned i=0; i<res.size(); i++ )
             res[i] = Deriv();
@@ -281,8 +269,6 @@ void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* m
     core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get(mparams));
     if(r)
     {
-        //sout << "applyConstraint in Matrix with offset = " << offset << sendl;
-        //cerr<<"FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset) is called "<<endl;
         const unsigned int N = Deriv::size();
         const SetIndexArray & indices = d_indices.getValue();
 
@@ -308,9 +294,6 @@ void FixedConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* m
     if (o >= 0)
     {
         unsigned int offset = (unsigned int)o;
-
-        //cerr<<"FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset) is called "<<endl;
-        //sout << "applyConstraint in Vector with offset = " << offset << sendl;
         const unsigned int N = Deriv::size();
 
         //TODO take f_fixAll into account
@@ -335,8 +318,6 @@ void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
     if (!d_showObject.getValue()) return;
     if (!this->isActive()) return;
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    //serr<<"FixedConstraint<DataTypes>::draw(), x.size() = "<<x.size()<<sendl;
-
     vparams->drawTool()->saveLastState();
 
     const SetIndexArray & indices = d_indices.getValue();
@@ -345,7 +326,6 @@ void FixedConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         std::vector< sofa::defaulttype::Vector3 > points;
         sofa::defaulttype::Vector3 point;
-        //serr<<"FixedConstraint<DataTypes>::draw(), indices = "<<indices<<sendl;
         if( d_fixAll.getValue() )
             for (unsigned i=0; i<x.size(); i++ )
             {

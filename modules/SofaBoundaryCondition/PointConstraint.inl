@@ -35,9 +35,6 @@
 
 #include <sofa/helper/gl/BasicShapes.h>
 
-
-
-
 namespace sofa
 {
 
@@ -71,9 +68,6 @@ template <class DataTypes>
 void PointConstraint<DataTypes>::init()
 {
     this->core::behavior::ProjectiveConstraintSet<DataTypes>::init();
-
-    //  cerr<<"PointConstraint<DataTypes>::init(), getJ = " << *getJ(0) << endl;
-
 }
 
 /// Update and return the jacobian. @todo update it when needed using topological engines instead of recomputing it at each call.
@@ -83,7 +77,6 @@ const sofa::defaulttype::BaseMatrix*  PointConstraint<DataTypes>::getJ(const cor
     unsigned numBlocks = this->mstate->getSize();
     unsigned blockSize = DataTypes::deriv_total_size;
     jacobian.resize( numBlocks*blockSize,numBlocks*blockSize );
-    //    cerr<<"PointConstraint<DataTypes>::getJ, numblocs = "<< numBlocks << ", block size = " << blockSize << endl;
 
     for(unsigned i=0; i<numBlocks*blockSize; i++ )
     {
@@ -134,7 +127,6 @@ void PointConstraint<DataTypes>::projectJacobianMatrix(const core::MechanicalPar
     }
 }
 
-// constant velocity: do not change the velocity
 template <class DataTypes>
 void PointConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /*mparams*/, DataVecDeriv& /*vData*/)
 {
@@ -143,10 +135,8 @@ void PointConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* /
 template <class DataTypes>
 void PointConstraint<DataTypes>::projectPosition(const core::MechanicalParams* /*mparams*/, DataVecCoord& /*xData*/)
 {
-    // nothing to do
 }
 
-// Matrix Integration interface
 template <class DataTypes>
 void PointConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset)
 {
@@ -233,8 +223,6 @@ void PointConstraint<defaulttype::Rigid3fTypes >::draw(const core::visual::Visua
 template <>
 void PointConstraint<defaulttype::Rigid2fTypes >::draw(const core::visual::VisualParams* vparams);
 #endif
-
-
 
 } // namespace constraint
 
