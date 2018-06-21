@@ -31,7 +31,7 @@ namespace sofa
 {
 namespace simulation
 {
-namespace _scenechecks_
+namespace _scenechecking_
 {
     
 class SOFA_GRAPH_COMPONENT_API SceneCheckUsingAlias : public SceneCheck
@@ -52,17 +52,14 @@ private:
     std::map<std::string, std::vector<std::string>> m_componentsCreatedUsingAlias;
 };
 
-} /// _scenechecks_
+} // namespace _scenechecking_
 
-using _scenechecks_::SceneCheckUsingAlias;
-
-namespace scenecheckers
+namespace scenechecking
 {
-    using _scenechecks_::SceneCheckUsingAlias;
-} /// checkers
+    using _scenechecking_::SceneCheckUsingAlias;
+}
 
-} /// namespace simulation
+} // namespace simulation
+} // namespace sofa
 
-} /// namespace sofa
-
-#endif /// SOFA_SIMULATION_SCENECHECKUSINGALIAS_H
+#endif // SOFA_SIMULATION_SCENECHECKUSINGALIAS_H

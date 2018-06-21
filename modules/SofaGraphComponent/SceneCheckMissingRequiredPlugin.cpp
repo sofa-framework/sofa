@@ -32,7 +32,7 @@ namespace sofa
 {
 namespace simulation
 {
-namespace _scenechecks_
+namespace _scenechecking_
 {
 
 using sofa::core::objectmodel::Base;
@@ -116,10 +116,6 @@ void SceneCheckMissingRequiredPlugin::doInit(Node* node)
     }
 }
 
-
-} // _scenechecks_
-
+} // namespace _scenechecking_
 } // namespace simulation
-
 } // namespace sofa
-

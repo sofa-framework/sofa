@@ -31,7 +31,7 @@ namespace sofa
 {
 namespace simulation
 {
-namespace _scenechecks_
+namespace _scenechecking_
 {
     
 class SOFA_GRAPH_COMPONENT_API SceneCheckDuplicatedName : public SceneCheck
@@ -50,17 +50,14 @@ private:
     std::stringstream m_duplicatedMsg;
 };
 
-} /// _scenechecks_
+} // namespace _scenechecking_
 
-using _scenechecks_::SceneCheckDuplicatedName;
-
-namespace scenecheckers
+namespace scenechecking
 {
-    using _scenechecks_::SceneCheckDuplicatedName;
-} /// checkers
+    using _scenechecking_::SceneCheckDuplicatedName;
+}
 
-} /// namespace simulation
+} // namespace simulation
+} // namespace sofa
 
-} /// namespace sofa
-
-#endif /// SOFA_SIMULATION_SCENECHECKDUPLICATEDNAME_H
+#endif // SOFA_SIMULATION_SCENECHECKDUPLICATEDNAME_H

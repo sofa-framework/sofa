@@ -28,7 +28,7 @@ namespace sofa
 {
 namespace simulation
 {
-namespace _scenechecks_
+namespace _scenechecking_
 {
 
 using sofa::simulation::Node;
@@ -96,9 +96,6 @@ void SceneCheckDuplicatedName::doPrintSummary()
 }
 
 
-} // _scenechecks_
-
+} // namespace _scenechecking_
 } // namespace simulation
-
 } // namespace sofa
-

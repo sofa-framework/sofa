@@ -2,19 +2,19 @@
 using sofa::Sofa_test;
 
 #include <SofaGraphComponent/SceneCheckerVisitor.h>
-using sofa::simulation::SceneCheckerVisitor;
+using sofa::simulation::scenechecking::SceneCheckerVisitor;
 
 #include <SofaGraphComponent/SceneChecks.h>
-using namespace sofa::simulation::scenecheckers;
+using sofa::simulation::scenechecking::SceneCheck;
 
 #include <SofaGraphComponent/SceneCheckAPIChanges.h>
-using sofa::simulation::scenecheckers::SceneCheckAPIChange;
-#include <SofaGraphComponent/SceneCheckDuplicatedName.h>
-using sofa::simulation::scenecheckers::SceneCheckDuplicatedName;
+using sofa::simulation::scenechecking::SceneCheckAPIChange;
 #include <SofaGraphComponent/SceneCheckMissingRequiredPlugin.h>
-using sofa::simulation::scenecheckers::SceneCheckMissingRequiredPlugin;
+using sofa::simulation::scenechecking::SceneCheckMissingRequiredPlugin;
+#include <SofaGraphComponent/SceneCheckDuplicatedName.h>
+using sofa::simulation::scenechecking::SceneCheckDuplicatedName;
 #include <SofaGraphComponent/SceneCheckUsingAlias.h>
-using sofa::simulation::scenecheckers::SceneCheckUsingAlias;
+using sofa::simulation::scenechecking::SceneCheckUsingAlias;
 
 #include <sofa/helper/system/PluginManager.h>
 using sofa::helper::system::PluginManager;
@@ -177,7 +177,7 @@ struct SceneChecker_test : public Sofa_test<>
     }
 };
 
-TEST_F(SceneChecker_test, checkMissingRequiredPlugin )
+TEST_F(SceneChecker_test, checkSceneCheckMissingRequiredPlugin )
 {
     checkRequiredPlugin(true);
 }

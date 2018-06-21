@@ -27,20 +27,17 @@
 #include <map>
 #include <memory>
 
-/////////////////////////////// FORWARD DECLARATION ////////////////////////////////////////////////
 namespace sofa {
-    namespace simulation {
-        class Node;
-    }
+namespace simulation {
+    class Node;
+}
 }
 
-
-/////////////////////////////////////// DECLARATION ////////////////////////////////////////////////
 namespace sofa
 {
 namespace simulation
 {
-namespace _scenechecks_
+namespace _scenechecking_
 {
 
 class SOFA_GRAPH_COMPONENT_API SceneCheck
@@ -54,17 +51,14 @@ public:
     virtual void doPrintSummary() {}
 };
 
-} /// _scenechecks_
+} // namespace _scenechecking_
 
-using _scenechecks_::SceneCheck;
-
-namespace scenecheckers
+namespace scenechecking
 {
-    using _scenechecks_::SceneCheck;
-} /// checkers
+    using _scenechecking_::SceneCheck;
+}
 
-} /// namespace simulation
+} // namespace simulation
+} // namespace sofa
 
-} /// namespace sofa
-
-#endif /// SOFA_SIMULATION_SCENECHECKS_H
+#endif // SOFA_SIMULATION_SCENECHECKS_H

@@ -28,8 +28,10 @@ namespace sofa
 {
 namespace simulation
 {
-using sofa::core::ExecParams ;
+namespace _scenechecking_
+{
 
+using sofa::core::ExecParams ;
 
 SceneCheckerVisitor::SceneCheckerVisitor(const ExecParams* params) : Visitor(params)
 {
@@ -89,7 +91,6 @@ Visitor::Result SceneCheckerVisitor::processNodeTopDown(Node* node)
     return RESULT_CONTINUE;
 }
 
+} // namespace _scenechecking_
 } // namespace simulation
-
 } // namespace sofa
-

@@ -19,17 +19,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include "SceneCheckUsingAlias.h"
+
 #include <sofa/version.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 
-#include "SceneCheckUsingAlias.h"
 
 namespace sofa
 {
 namespace simulation
 {
-namespace _scenechecks_
+namespace _scenechecking_
 {
 
 using sofa::core::objectmodel::Base;
@@ -99,10 +100,6 @@ void SceneCheckUsingAlias::doPrintSummary()
     msg_warning(this->getName()) << usingAliasesWarning.str();
 }
 
-
-} // _scenechecks_
-
+} // namespace _scenechecking_
 } // namespace simulation
-
 } // namespace sofa
-

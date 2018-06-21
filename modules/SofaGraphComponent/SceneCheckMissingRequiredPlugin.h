@@ -27,20 +27,17 @@
 #include <map>
 #include <vector>
 
-/////////////////////////////// FORWARD DECLARATION ////////////////////////////////////////////////
 namespace sofa {
-    namespace simulation {
+namespace simulation {
         class Node;
-    }
-}
+} // namespace sofa
+} // namespace simulation
 
-
-/////////////////////////////////////// DECLARATION ////////////////////////////////////////////////
 namespace sofa
 {
 namespace simulation
 {
-namespace _scenechecks_
+namespace _scenechecking_
 {
 
 class SOFA_GRAPH_COMPONENT_API SceneCheckMissingRequiredPlugin : public SceneCheck
@@ -59,18 +56,14 @@ private:
     std::map<std::string, std::vector<std::string> > m_requiredPlugins;
 };
 
+} // namespace _scenechecking_
 
-} /// _scenechecks_
-
-using _scenechecks_::SceneCheckMissingRequiredPlugin;
-
-namespace scenecheckers
+namespace scenechecking
 {
-    using _scenechecks_::SceneCheckMissingRequiredPlugin;
-} /// checkers
+    using _scenechecking_::SceneCheckMissingRequiredPlugin;
+}
 
-} /// namespace simulation
+} // namespace simulation
+} // namespace sofa
 
-} /// namespace sofa
-
-#endif /// SOFA_SIMULATION_SCENECHECKMISSINGREQUIREDPLUGIN_H
+#endif // SOFA_SIMULATION_SCENECHECKMISSINGREQUIREDPLUGIN_H

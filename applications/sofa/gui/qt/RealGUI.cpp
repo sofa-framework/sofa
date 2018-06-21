@@ -114,16 +114,16 @@ using sofa::core::objectmodel::IdleEvent;
 using sofa::helper::system::FileMonitor;
 
 #include <SofaGraphComponent/SceneCheckerVisitor.h>
-using sofa::simulation::SceneCheckerVisitor;
+using sofa::simulation::scenechecking::SceneCheckerVisitor;
 
 #include <SofaGraphComponent/SceneCheckAPIChanges.h>
-using sofa::simulation::scenecheckers::SceneCheckAPIChange;
+using sofa::simulation::scenechecking::SceneCheckAPIChange;
 #include <SofaGraphComponent/SceneCheckMissingRequiredPlugin.h>
-using sofa::simulation::scenecheckers::SceneCheckMissingRequiredPlugin;
+using sofa::simulation::scenechecking::SceneCheckMissingRequiredPlugin;
 #include <SofaGraphComponent/SceneCheckDuplicatedName.h>
-using sofa::simulation::scenecheckers::SceneCheckDuplicatedName;
+using sofa::simulation::scenechecking::SceneCheckDuplicatedName;
 #include <SofaGraphComponent/SceneCheckUsingAlias.h>
-using sofa::simulation::scenecheckers::SceneCheckUsingAlias;
+using sofa::simulation::scenechecking::SceneCheckUsingAlias;
 
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory;

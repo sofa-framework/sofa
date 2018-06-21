@@ -41,7 +41,7 @@ namespace sofa
 {
 namespace simulation
 {
-namespace _scenecheckapichange_
+namespace _scenechecking_
 {
 
 SceneCheckAPIChange::SceneCheckAPIChange()
@@ -77,7 +77,7 @@ void SceneCheckAPIChange::doInit(Node* node)
     node->getTreeObject(apiversion);
     if(!apiversion)
     {
-        msg_info("SceneCheckAPIChange") << "The 'APIVersion' directive is missing in the current scene. Switching to the default APIVersion level '"<< m_selectedApiLevel <<"' ";
+        msg_info(this->getName()) << "The 'APIVersion' directive is missing in the current scene. Switching to the default APIVersion level '" << m_selectedApiLevel << "' ";
     }
     else
     {
@@ -127,10 +127,6 @@ void SceneCheckAPIChange::addHookInChangeSet(const std::string& version, ChangeS
     m_changesets[version].push_back(fct);
 }
 
-
-} // _scenecheckapichange_
-
+} // namespace _scenechecking_
 } // namespace simulation
-
 } // namespace sofa
-

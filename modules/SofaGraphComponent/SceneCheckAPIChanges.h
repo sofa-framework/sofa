@@ -28,7 +28,6 @@
 #include <vector>
 #include <functional>
 
-/////////////////////////////// FORWARD DECLARATION ////////////////////////////////////////////////
 namespace sofa {
     namespace simulation {
         class Node;
@@ -40,15 +39,12 @@ namespace sofa {
     }
 }
 
-
-/////////////////////////////////////// DECLARATION ////////////////////////////////////////////////
 namespace sofa
 {
 namespace simulation
 {
-namespace _scenecheckapichange_
+namespace _scenechecking_
 {
-
 
 typedef std::function<void(sofa::core::objectmodel::Base*)> ChangeSetHookFunction;
 class SOFA_GRAPH_COMPONENT_API SceneCheckAPIChange : public SceneCheck
@@ -74,17 +70,15 @@ private:
     std::map<std::string, std::vector<ChangeSetHookFunction>> m_changesets;
 };
 
-} /// _scenechecks_
+} // namespace _scenechecking_
 
-using _scenecheckapichange_::SceneCheckAPIChange;
-
-namespace scenecheckers
+namespace scenechecking
 {
-    using _scenecheckapichange_::SceneCheckAPIChange;
-} /// checkers
+    using _scenechecking_::SceneCheckAPIChange;
+}
 
-} /// namespace simulation
+} // namespace simulation
 
-} /// namespace sofa
+} // namespace sofa
 
-#endif /// SOFA_SIMULATION_SCENECHECKS_H
+#endif // SOFA_SIMULATION_SCENECHECKS_H
