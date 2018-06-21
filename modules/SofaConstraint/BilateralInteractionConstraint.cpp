@@ -81,7 +81,7 @@ public:
             qQ = Q.getOrientation();
             qP.normalize();
             qQ.normalize();
-            dQP = qDiff(qQ, qP);
+            dQP = qP.quatDiff(qQ, qP);
             dQP.normalize();
 
             qQ2 = qP*dQP;
