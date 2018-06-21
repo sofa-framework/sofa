@@ -103,14 +103,6 @@ public:
     typedef sofa::helper::Quater<Real> Quat;
 
 protected:
-
-//    typedef Vec<6, Real> Displacement;					    ///< the displacement vector
-//    typedef Mat<3, 3, Real> MaterialStiffness;				    ///< the matrix of material stiffness
-//    typedef sofa::helper::vector<MaterialStiffness> VecMaterialStiffness;   ///< a vector of material stiffness matrices
-//    typedef Mat<6, 3, Real> StrainDisplacement;				    ///< the strain-displacement matrix
-//    typedef Mat<6, 6, Real> Stiffness;					    ///< the stiffness matrix
-//    typedef sofa::helper::vector<StrainDisplacement> VecStrainDisplacement; ///< a vector of strain-displacement matrices
-//    typedef Mat<3, 3, Real > Transformation;				    ///< matrix for rigid transformations like rotations
     typedef defaulttype::Mat<2, 3, Real > Transformation;				    ///< matrix for rigid transformations like rotations
     enum { DerivSize = DataTypes::deriv_total_size };
     typedef defaulttype::Mat<DerivSize, DerivSize, Real> MatBloc;
@@ -120,7 +112,6 @@ protected:
 
 protected:
     /// ForceField API
-    //{
     TriangularFEMForceFieldOptim();
 
     virtual ~TriangularFEMForceFieldOptim();
@@ -134,7 +125,6 @@ public:
     void getTrianglePrincipalStress(unsigned int i, Real& stressValue, Deriv& stressDirection);
 
     void draw(const core::visual::VisualParams* vparams) override;
-    //}
 
     // parse method attribute (for compatibility with non-optimized version)
     void parse ( sofa::core::objectmodel::BaseObjectDescription* arg ) override

@@ -125,8 +125,6 @@ protected:
     void computeLumpedMasses();
 
 protected:
-    //HFFHexahedronHandler* hexahedronHandler;
-
     Data<Real> _density; ///< density == volumetric mass in english (kg.m-3)
     Data<bool> _useLumpedMass; ///< Does it use lumped masses?
 

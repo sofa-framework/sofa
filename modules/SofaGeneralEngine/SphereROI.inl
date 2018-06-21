@@ -178,7 +178,6 @@ void SphereROI<DataTypes>::init()
     addOutput(&f_edgeIndices);
     addOutput(&f_triangleIndices);
     addOutput(&f_quadIndices);
-//    addOutput(&f_tetrahedronIndices);
     addOutput(&f_pointsInROI);
     addOutput(&f_edgesInROI);
     addOutput(&f_trianglesInROI);
