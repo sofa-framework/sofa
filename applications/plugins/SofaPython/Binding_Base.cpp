@@ -194,12 +194,11 @@ static char* getStringCopy(const char *c)
 
 #include <sofa/core/objectmodel/Link.h>
 
-void deriveTypeFromParentValue(Base* obj, const std::string& value,
-                                      char** dataRawType)
+BaseData* deriveTypeFromParentValue(Base* obj, const std::string& value)
 {
     BaseObject* o = dynamic_cast<BaseObject*>(obj);
     if (!o)
-        return;
+        return nullptr;
 
     // if data is a link
     if (value[0] == '@')
@@ -210,16 +209,16 @@ void deriveTypeFromParentValue(Base* obj, const std::string& value,
         if (!o->getContext())
         {
             std::cout << "no context" << std::endl;
-            return;
+            return nullptr;
         }
         BaseObject* component;
         component = o->getContext()->get<BaseObject>(componentPath);
         if (!component)
             std::cout << "no object with path " << componentPath << std::endl;
         BaseData* parentData = component->findData(parentDataName);
-        *dataRawType =
-                getStringCopy(parentData->getValueTypeInfo()->name().c_str());
+        return parentData->getNewInstance();
     }
+    return nullptr;
 }
 
 
@@ -262,7 +261,7 @@ BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
     {
         return nullptr;
     }    
-
+    BaseData* bd = nullptr;
     if(KwargsOrArgs) // parse kwargs
     {
         if(kw==nullptr || !PyDict_Check(kw) )
@@ -291,21 +290,32 @@ BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
             dataValue = tmp;
             Py_IncRef(dataValue); // call to Py_GetItemString doesn't increment the ref count, but we want to hold on to it for a while ...
             std::string val(PyString_AsString(dataValue));
-            deriveTypeFromParentValue(obj, val, &dataRawType);
+            bd = deriveTypeFromParentValue(obj, val);
         }
     }
 
     if (dataRawType[0]==0) // We cannot construct without a type
     {
-        msg_error(obj) << "No type provided for Data, cannot construct/add";
-        return nullptr;
+        bd = new Data<void*>();
+        bd->setName(dataName);
+        obj->addAlias(bd, "psde_output");
+
+        msg_warning(obj) << "No type provided for Data, creating void* data";
+        return bd;
     }
 
-    BaseData* bd = getFactoryInstance()->createObject(dataRawType, sofa::helper::NoArgument());
+    if (bd == nullptr)
+        bd = getFactoryInstance()->createObject(dataRawType, sofa::helper::NoArgument());
     if (bd == nullptr)
     {
-        msg_error(obj) << dataRawType << " is not a known type";
-        return nullptr;
+        bd = new Data<void*>();
+        bd->setName(dataName);
+        obj->addAlias(bd, "psde_output");
+
+        msg_warning(obj) << "No type provided for Data, creating void* data";
+        return bd;
+//        msg_error(obj) << dataRawType << " is not a known type";
+//        return nullptr;
     }
     else
     {

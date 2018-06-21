@@ -111,7 +111,8 @@ static PyObject * DataEngine_addNewOutput(PyObject *self, PyObject* args, PyObje
     {
         Py_RETURN_NONE;
     }
-
+    if (!engine->findData(NewData->getName()))
+        engine->addData(NewData);
     engine->addOutput(NewData);
     Py_RETURN_NONE;
 }

@@ -28,4 +28,6 @@ path = os.path.dirname(os.path.abspath(__file__))+'/../../../../../../share/mesh
 def createScene(rootNode):
         rootNode.createObject("MeshVTKLoader", name="loader", filename=path+'liver.vtk')
         rootNode.createObject('PythonScriptDataEngine', name='PSDE', filename="DataEngine.py", classname="MyDataEngine")	
+        rootNode.createObject('TransformEngine', name='TE', input_position="@loader.position", translation="@PSDE.firstPos")	
+        rootNode.createObject('OglModel', name="visu", position="@TE.output_position", triangles="@loader.triangles", color="1 0 0 1")
         
