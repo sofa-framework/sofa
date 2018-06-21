@@ -344,19 +344,13 @@ protected:
 
 public :
 
-#ifdef SOFA_NEW_HEXA
+
     virtual const SeqHexahedra& getHexahedra() override
     {
         if( !_alreadyInit ) init();
         return sofa::component::topology::MeshTopology::getHexahedra();
     }
-#else
-    virtual const SeqCubes& getHexahedra()
-    {
-        if( !_alreadyInit ) init();
-        return sofa::component::topology::MeshTopology::getHexahedra();
-    }
-#endif
+
     virtual int getNbPoints() const override
     {
         if( !_alreadyInit ) const_cast<SparseGridTopology*>(this)->init();

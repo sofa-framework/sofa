@@ -79,7 +79,7 @@ void TriangleSetTopologyAlgorithms< DataTypes >::reinit()
         }
         else
         {
-            std::cout << " Nothing added " << std::endl;
+            msg_info() << "Nothing added ";
         }
 
     }
@@ -95,9 +95,6 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::Suture2Points(unsigned int ind_
 {
     // Access the topology
     m_geometryAlgorithms->computeClosestIndexPair(ind_ta, ind_tb, ind1, ind2);
-
-    //this->sout << "INFO_print : ind1 = " << ind1 << this->sendl;
-    //this->sout << "INFO_print : ind2 = " << ind2 << this->sendl;
 
     sofa::defaulttype::Vec<3,double> point_created = m_geometryAlgorithms->computeBaryEdgePoint(ind1, ind2, 0.5);
 
@@ -252,15 +249,6 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(
             is_snap_b0, is_snap_b1, is_snap_b2);
 
     double is_snapping_b = is_snap_b0 || is_snap_b1 || is_snap_b2;
-
-    /*
-      if(is_snapping_a){
-      this->sout << "INFO_print : is_snapping_a" <<  this->sendl;
-      }
-      if(is_snapping_b){
-      this->sout << "INFO_print : is_snapping_b" <<  this->sendl;
-      }
-    */
 
     if(is_validated) // intersection successfull
     {
@@ -486,25 +474,11 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(
                         ind_p=p2;
                     }
 
-                    //this->sout << "INFO_print : is_snapping_p, i = " << i << " on vertex " << ind_p <<  this->sendl;
-
                     sofa::helper::vector< unsigned int > triangles_list_1;
 
                     sofa::helper::vector< unsigned int > triangles_list_2;
 
-                    //this->sout << "INFO_print : DO Prepare_VertexDuplication " <<  this->sendl;
                     m_geometryAlgorithms->prepareVertexDuplication(ind_p, triangles_list[i], triangles_list[i+1], m_container->getEdge(edges_list[i-1]), coords_list[i-1], m_container->getEdge(edges_list[i+1]), coords_list[i+1], triangles_list_1, triangles_list_2);
-                    //this->sout << "INFO_print : DONE Prepare_VertexDuplication " <<  this->sendl;
-
-                    //this->sout << "INFO_print : triangles_list_1.size() = " << triangles_list_1.size() <<  this->sendl;
-                    //for (unsigned int k=0;k<triangles_list_1.size();k++){
-                    //		this->sout << "INFO_print : triangles_list_1 number " << k << " = " << triangles_list_1[k] <<  this->sendl;
-                    //}
-
-                    //this->sout << "INFO_print : triangles_list_2.size() = " << triangles_list_2.size() <<  this->sendl;
-                    //for (unsigned int k=0;k<triangles_list_2.size();k++){
-                    //		this->sout << "INFO_print : triangles_list_2 number " << k << " = " << triangles_list_2[k] <<  this->sendl;
-                    //}
                 }
 
                 /// Register the removal of the current triangle
@@ -836,7 +810,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
                             }
 
                             if (cptSnap != 3)
-                                std::cout << "Error: In snaping border, missing elements to compute barycoefs!" << std::endl;
+                                msg_error() << "Error: In snaping border, missing elements to compute barycoefs!";
 
                             break;
                         }
@@ -932,9 +906,9 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
                 }
                 if(!test)
                 {
-#ifndef NDEBUG
-                    std::cout << " Error: SplitAlongPath: error in POINT::EDGE case, the edge between these points has not been found." << std::endl;
-#endif
+					if (CHECK_TOPOLOGY)
+						msg_error() << "SplitAlongPath: error in POINT::EDGE case, the edge between these points has not been found.";
+
                     error = true;
                 }
 
@@ -972,19 +946,8 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
 
                 if (vertxInTriangle == -1)
                 {
-#ifndef NDEBUG
-                    std::cout << " Error: SplitAlongPath: error in triangle in POINT::EDGE case" << std::endl;
-
-                    std::cout << "*********************************" << std::endl;
-                    std::cout << "topoPath_list: " << topoPath_list << std::endl;
-                    std::cout << "indices_list: " << indices_list << std::endl;
-                    std::cout << "new_edge_points: " << new_edge_points << std::endl;
-                    std::cout << "nb new points: " << p_ancestors.size() << std::endl;
-                    std::cout << "ancestors: " << p_ancestors << std::endl;
-                    std::cout << "baryCoefs: " << p_baryCoefs << std::endl;
-                    std::cout << "points2Snap: " << points2Snap << std::endl;
-                    std::cout << "*********************************" << std::endl;
-#endif
+					if (CHECK_TOPOLOGY)
+						msg_error() << "SplitAlongPath: error in triangle in POINT::EDGE case";
 
                     error = true;
 
@@ -1075,9 +1038,9 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
 
                 if (vertxInTriangle == -1)
                 {
-#ifndef NDEBUG
-                    std::cout << " Error: SplitAlongPath: error in triangle in EDGE::POINT case" << std::endl;
-#endif
+					if (CHECK_TOPOLOGY)
+						msg_error() << " Error: SplitAlongPath: error in triangle in EDGE::POINT case";
+
                     error = true;
                     break;
                 }
@@ -1182,9 +1145,9 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
 
                 if (edgeInTriangle == -1)
                 {
-#ifndef NDEBUG
-                    std::cout << " Error: SplitAlongPath: error in triangle in EDGE::TRIANGLE case" << std::endl;
-#endif
+					if (CHECK_TOPOLOGY)
+						msg_error() << " Error: SplitAlongPath: error in triangle in EDGE::TRIANGLE case";
+
                     error = true;
                     break;
                 }
@@ -1262,9 +1225,9 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
 
                 if (edgeInTriangle == -1)
                 {
-#ifndef NDEBUG
-                    std::cout << " Error: SplitAlongPath: error in triangle in TRIANGLE::EDGE case" << std::endl;
-#endif
+					if (CHECK_TOPOLOGY)
+						msg_error() << " Error: SplitAlongPath: error in triangle in TRIANGLE::EDGE case";
+
                     error = true;
                     break;
                 }
@@ -1300,9 +1263,9 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
 
                 if (triangleIDSecond != triangleIDFirst)
                 {
-#ifndef NDEBUG
-                    std::cout << " Error: SplitAlongPath: incision not in the mesh plan not supported yet, in TRIANGLE::TRIANGLE case" << std::endl;
-#endif
+					if (CHECK_TOPOLOGY)
+						msg_error() << " Error: SplitAlongPath: incision not in the mesh plan not supported yet, in TRIANGLE::TRIANGLE case";
+
                     error = true;
                     break;
                 }
@@ -1484,9 +1447,9 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
 
         if (error)
         {
-#ifndef NDEBUG
-            std::cout << "ERROR: in the incision path. " << std::endl;
-#endif
+			if (CHECK_TOPOLOGY)
+				msg_error() << "ERROR: in the incision path. ";
+
             return -1;
         }
     }
@@ -1566,7 +1529,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
 
     if (nbEdges2 > nbEdges)
     {
-        serr << "SplitAlongPath: auto created edges up to " << nbEdges << ", while ended up with " << nbEdges2 << sendl;
+		msg_error() << "SplitAlongPath: auto created edges up to " << nbEdges << ", while ended up with " << nbEdges2;
     }
 
     //WARNING can produce error TODO: check it
@@ -1614,7 +1577,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
             e = m_container->getEdgeIndex(new_edge_points[i+1], new_edge_points[i]);
 
         if (e == (EdgeID)-1)
-            this->serr << "ERROR: Edge " << new_edge_points[i] << " - " << new_edge_points[i+1] << " NOT FOUND." << this->sendl;
+            msg_error() << "Edge " << new_edge_points[i] << " - " << new_edge_points[i+1] << " NOT FOUND.";
         else
             new_edges.push_back(e);
     }
@@ -1912,7 +1875,6 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapBorderPath (unsigned int pa, 
                             {
                                 if (shell[k] == indices_list[1])
                                 {
-                                    //std::cout << indices_list[1] << std::endl;
                                     topoPath_list.erase (topoPath_list.begin()+1);
                                     indices_list.erase (indices_list.begin()+1);
                                     coords_list.erase (coords_list.begin()+1);
@@ -1943,7 +1905,8 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapBorderPath (unsigned int pa, 
 
                 if ((indices_list[1] == theEdge) && (topoPath_list[1] == core::topology::EDGE)) // Only keep this one? or need to project?
                 {
-                    std::cout <<"************* Just wonder if it is possible!!" << std::endl;
+					if(CHECK_TOPOLOGY)
+						msg_info() <<"************* Just wonder if it is possible!!";
                     topoPath_list.erase (topoPath_list.begin());
                     indices_list.erase (indices_list.begin());
                     coords_list.erase (coords_list.begin());
@@ -1956,7 +1919,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapBorderPath (unsigned int pa, 
                     sofa::helper::vector< double > new_coord =  m_geometryAlgorithms->computePointProjectionOnEdge (theEdge, thePoint, intersected);
 
                     if (!intersected)
-                        std::cout << " Error: TriangleSetTopologyAlgorithms::SnapBorderPath orthogonal projection failed" << std::endl;
+                        msg_error() << "Orthogonal projection failed";
 
                     topoPath_list[0] = core::topology::EDGE;
 
@@ -2047,7 +2010,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapBorderPath (unsigned int pa, 
 
                 if ((indices_list[indices_list.size()-2] == theEdge) && (topoPath_list[topoPath_list.size()-2] == core::topology::EDGE)) // Only keep this one? or need to projection?
                 {
-                    std::cout <<"************* Just wonder if it is possible!!" << std::endl;
+                    msg_error() <<"************* Just wonder if it is possible!!";
                     topoPath_list.pop_back();
                     indices_list.pop_back();
                     coords_list.pop_back();
@@ -2059,7 +2022,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapBorderPath (unsigned int pa, 
                     sofa::helper::vector< double > new_coord =  m_geometryAlgorithms->computePointProjectionOnEdge (theEdge, thePoint, intersected);
 
                     if (!intersected)
-                        std::cout << " Error: TriangleSetTopologyAlgorithms::SnapBorderPath orthogonal projection failed" << std::endl;
+                        msg_error() << "Orthogonal projection failed";
 
                     topoPath_list.back() = core::topology::EDGE;
                     indices_list.back() = theEdge;
@@ -2128,7 +2091,7 @@ bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::h
                 init_points.push_back(edge[0]);
             else
             {
-                this->serr << "ERROR: edges are not connected after number " << i-1 << " : " << edges << this->sendl;
+                msg_error() << "Edges are not connected after number " << i-1 << " : " << edges;
                 return false;
             }
         }
@@ -2140,8 +2103,8 @@ bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::h
         const sofa::helper::vector<TriangleID>& shell = m_container->getTrianglesAroundEdge(edges[i]);
         if (shell.size() != 2)
         {
-            this->serr << "ERROR: cannot split an edge with " << shell.size() << "!=2 attached triangles. Around edge: " << edges[i] << this->sendl;
-            this->serr << "Which is composed of vertex: "<< m_container->getEdge (edges[i]) << this->sendl;
+            msg_error() << "Cannot split an edge with " << shell.size() << "!=2 attached triangles. Around edge: " << edges[i];
+            msg_error() << "Which is composed of vertex: "<< m_container->getEdge (edges[i]);
             return false;
         }
         init_triangles.push_back(std::make_pair(shell[0],shell[1]));
@@ -2264,7 +2227,7 @@ bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::h
         }
         if (!changed)
         {
-            this->serr << "ERROR: Triangle " << tid << " ( " << t << " ) was flagged as updated but no change was found." << this->sendl;
+            msg_error() << "Triangle " << tid << " ( " << t << " ) was flagged as updated but no change was found.";
         }
         else
         {
@@ -2307,7 +2270,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdge(unsigned int ind_e
     const helper::vector<unsigned>& triangles0 = m_container->getTrianglesAroundEdge(ind_edge);
     if (triangles0.size() != 2)
     {
-        this->serr << "InciseAlongEdge: ERROR edge "<<ind_edge<<" is not attached to 2 triangles." << this->sendl;
+        msg_error() << "InciseAlongEdge: ERROR edge "<<ind_edge<<" is not attached to 2 triangles.";
         return -1;
     }
 
@@ -2335,7 +2298,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdge(unsigned int ind_e
         }
         if (j == 3)
         {
-            this->serr << "InciseAlongEdge: ERROR in triangle "<<ind_tria<<this->sendl;
+            msg_error() << "InciseAlongEdge: ERROR in triangle " << ind_tria;
             return -1;
         }
 
@@ -2367,7 +2330,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdge(unsigned int ind_e
         }
         if (j == 3)
         {
-            this->serr << "InciseAlongEdge: ERROR in triangle "<<ind_trib<<this->sendl;
+            msg_error() << "InciseAlongEdge: ERROR in triangle " << ind_trib;
             return -1;
         }
 
@@ -2391,7 +2354,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdge(unsigned int ind_e
 
     if (!pa_is_on_border && !pb_is_on_border)
     {
-        this->serr << "InciseAlongEdge: ERROR edge "<<ind_edge<<" is not on border." << this->sendl;
+        msg_error() << "InciseAlongEdge: ERROR edge "<<ind_edge<<" is not on border.";
         return -1;
     }
 
