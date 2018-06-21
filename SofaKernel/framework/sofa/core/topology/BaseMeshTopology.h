@@ -55,10 +55,6 @@ public:
     typedef EdgeID		                LineID;
     typedef Edge		                Line;
     typedef SeqEdges	                SeqLines;
-
-    typedef HexaID                              CubeID;
-    typedef Hexa                                Cube;
-    typedef SeqHexahedra                        SeqCubes;
     /// @}
 
     /// fixed-size neighbors arrays
@@ -236,10 +232,6 @@ public:
     const SeqLines& getLines() { return getEdges(); }
     int getNbLines() { return getNbEdges(); }
     Line getLine(LineID i) { return getEdge(i); }
-
-    const SeqCubes& getCubes() { return getHexahedra(); }
-    int getNbCubes() { return getNbHexahedra(); }
-    Cube getCube(CubeID i) { return getHexahedron(i); }
     /// @}
 
     /// @name Initial points accessors (only available if the topology was loaded from a file containing this information).
