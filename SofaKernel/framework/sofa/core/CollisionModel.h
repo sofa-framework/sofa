@@ -277,7 +277,35 @@ public:
 
     /// Helper method to get or create the previous model in the hierarchy.
     template<class DerivedModel>
-    DerivedModel* createPrevious();
+    DerivedModel* createPrevious()
+	{
+		CollisionModel::SPtr prev = previous.get();
+		typename DerivedModel::SPtr pmodel = sofa::core::objectmodel::SPtr_dynamic_cast<DerivedModel>(prev);
+		if (pmodel.get() == NULL)
+		{
+			int level = 0;
+			CollisionModel *cm = getNext();
+			CollisionModel* root = this;
+			while (cm) { root = cm; cm = cm->getNext(); ++level; }
+			pmodel = sofa::core::objectmodel::New<DerivedModel>();
+			pmodel->setName("BVLevel", level);
+			root->addSlave(pmodel); //->setContext(getContext());
+			pmodel->setMoving(isMoving());
+			pmodel->setSimulated(isSimulated());
+			pmodel->proximity.setValue(proximity.getValue());
+			//pmodel->group.setValue(group_old.getValue());
+			pmodel->group.beginEdit()->insert(group.getValue().begin(), group.getValue().end());
+			pmodel->group.endEdit();
+			//previous=pmodel;
+			//pmodel->next = this;
+			setPrevious(pmodel);
+			if (prev)
+			{
+
+			}
+		}
+		return pmodel.get();
+	}
 
     /// @name Experimental methods
     /// @{

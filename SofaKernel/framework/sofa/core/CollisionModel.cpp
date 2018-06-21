@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "CollisionModel.h"
-#include "CollisionModel.inl"
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <sofa/helper/types/RGBAColor.h>
 
