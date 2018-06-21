@@ -22,12 +22,15 @@
 #ifndef SOFA_CORE_TOPOLOGY_BASEMESHTOPOLOGY_H
 #define SOFA_CORE_TOPOLOGY_BASEMESHTOPOLOGY_H
 
-
+#include <sofa/core/topology/Topology.h>
 #include <sofa/core/topology/BaseTopologyEngine.h>
-
-
 #include <sofa/core/objectmodel/DataFileName.h>
 
+#ifndef NDEBUG
+#define CHECK_TOPOLOGY true
+#else
+#define CHECK_TOPOLOGY false
+#endif
 
 namespace sofa
 {
