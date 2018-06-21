@@ -180,7 +180,7 @@ static std::string computeExecutablePath()
 {
     std::string path = "";
 
-#if defined(_XBOX) || defined(PS3)
+#if defined(_XBOX)
     msg_error("Utils::computeExecutablePath()") << "Utils::computeExecutablePath() is not implemented on this platform.";
 
 #elif defined(WIN32)

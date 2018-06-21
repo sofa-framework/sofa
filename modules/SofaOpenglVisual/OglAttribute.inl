@@ -174,7 +174,6 @@ void OglAttribute< size, type, DataTypes>::enable()
     if (_index == GLuint(-1))
         return; // index not valid
     glBindBufferARB(GL_ARRAY_BUFFER, _abo);
-#ifndef PS3
     glEnableVertexAttribArrayARB(_index);
 
     //OS X does not support those functions in OpenGL Compatibility Mode
@@ -203,7 +202,6 @@ void OglAttribute< size, type, DataTypes>::enable()
 
 #endif // __APPLE__
 
-#endif // PS3
     glBindBufferARB(GL_ARRAY_BUFFER, 0);
 }
 

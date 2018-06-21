@@ -24,8 +24,6 @@
 # include <Windows.h>
 #elif defined(_XBOX)
 # include <xtl.h>
-#elif defined(PS3)
-# include <sys/prx.h>
 #else
 # include <dlfcn.h>
 #endif
@@ -66,7 +64,7 @@ const std::string& DynamicLibrary::Handle::filename() const
 
 DynamicLibrary::Handle DynamicLibrary::load(const std::string& filename)
 {
-#if defined(_XBOX) || defined(PS3)
+#if defined(_XBOX)
     // not supported
     return Handle();
 #else
@@ -83,7 +81,7 @@ DynamicLibrary::Handle DynamicLibrary::load(const std::string& filename)
 
 int DynamicLibrary::unload(Handle handle)
 {
-#if defined(_XBOX) || defined(PS3)
+#if defined(_XBOX)
     // not supported
     return 1;
 #else
@@ -101,7 +99,7 @@ int DynamicLibrary::unload(Handle handle)
 void * DynamicLibrary::getSymbolAddress(Handle handle,
                                         const std::string& symbol)
 {
-#if defined(_XBOX) || defined(PS3)
+#if defined(_XBOX)
     // not supported
     return NULL;
 #else
@@ -130,7 +128,7 @@ std::string DynamicLibrary::getLastError()
 
 void DynamicLibrary::fetchLastError()
 {
-#if defined(_XBOX) || defined(PS3)
+#if defined(_XBOX)
     // not supported
 #elif defined(WIN32)
     LPTSTR pMsgBuf;
@@ -160,7 +158,7 @@ void DynamicLibrary::fetchLastError()
 const std::string DynamicLibrary::extension = "dll";
 #elif defined(__APPLE__)
 const std::string DynamicLibrary::extension = "dylib";
-#elif defined(_XBOX) || defined(PS3)
+#elif defined(_XBOX)
 const std::string DynamicLibrary::extension = "";
 #else
 const std::string DynamicLibrary::extension = "so";

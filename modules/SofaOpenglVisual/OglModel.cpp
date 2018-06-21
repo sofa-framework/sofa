@@ -730,7 +730,6 @@ void OglModel::initVisual()
 #ifdef NO_VBO
     canUseVBO = false;
 #else
-#if !defined(PS3)
     static bool vboAvailable = false; // check the vbo availability
 
     static bool init = false;
@@ -741,9 +740,6 @@ void OglModel::initVisual()
     }
 
     canUseVBO = vboAvailable;
-#elif PS3
-    canUseVBO = true;
-#endif
 
     if (useVBO.getValue() && !canUseVBO)
     {
@@ -752,7 +748,7 @@ void OglModel::initVisual()
 
 #endif
 
-#if defined(SOFA_HAVE_GLEW) && !defined(PS3)
+#if defined(SOFA_HAVE_GLEW)
     if (primitiveType.getValue().getSelectedId() == 1 && !GLEW_EXT_geometry_shader4)
     {
         msg_warning() << "GL_EXT_geometry_shader4 not supported by your graphics card and/or OpenGL driver." ;

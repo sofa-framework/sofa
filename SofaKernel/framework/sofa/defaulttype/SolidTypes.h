@@ -35,11 +35,7 @@
 #include <iostream>
 #include <map>
 
-#ifdef PS3
-typedef float GLdouble;
-#else
 typedef double GLdouble;
-#endif
 
 namespace sofa
 {
