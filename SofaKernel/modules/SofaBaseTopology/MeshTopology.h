@@ -270,12 +270,10 @@ public:
     Data<SeqTetrahedra>      seqTetrahedra; ///< List of tetrahedron indices
     /// Suppress field for save as function
     Data < bool > isToPrint;
-#ifdef SOFA_NEW_HEXA
+
     //SeqHexahedra	   seqHexahedra;
     Data<SeqHexahedra>	   seqHexahedra; ///< List of hexahedron indices
-#else
-    Data<SeqCubes>       seqHexahedra; ///< List of hexahedron indices
-#endif
+
     Data<SeqUV>	seqUVs; ///< List of uv coordinates
 
 protected:

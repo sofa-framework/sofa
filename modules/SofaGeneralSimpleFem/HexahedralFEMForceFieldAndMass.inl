@@ -322,17 +322,13 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addKToMatrix(const core::Mechani
         for (n1=0; n1<8; n1++)
         {
             n2 = n1; /////////// WARNING Changed to compute only diag elements
-#ifndef SOFA_NEW_HEXA
-            node1 = hexa[_indices[n1]];
-#else
             node1 = hexa[n1];
-#endif
+
+            // find index of node 2
+            //for (n2=0; n2<8; n2++) /////////// WARNING Changed to compute only diag elements
             {
-#ifndef SOFA_NEW_HEXA
-                node2 = hexa[_indices[n2]];
-#else
                 node2 = hexa[n2];
-#endif
+
                 Mat33 tmp = it->rotation.multTranspose( Mat33(Coord(Ke[3*n1+0][3*n2+0],Ke[3*n1+0][3*n2+1],Ke[3*n1+0][3*n2+2]),
                         Coord(Ke[3*n1+1][3*n2+0],Ke[3*n1+1][3*n2+1],Ke[3*n1+1][3*n2+2]),
                         Coord(Ke[3*n1+2][3*n2+0],Ke[3*n1+2][3*n2+1],Ke[3*n1+2][3*n2+2])) ) * it->rotation;
@@ -368,19 +364,13 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addMBKToMatrix (const core::Mech
         for ( n1 = 0; n1 < 8; n1++ )
         {
             n2 = n1; /////////// WARNING Changed to compute only diag elements
-#ifndef SOFA_NEW_HEXA
-            node1 = hexa[_indices[n1]];
-#else
             node1 = hexa[n1];
-#endif
+
             // find index of node 2
             //for (n2=0; n2<8; n2++) /////////// WARNING Changed to compute only diag elements
             {
-#ifndef SOFA_NEW_HEXA
-                node2 = hexa[_indices[n2]];
-#else
                 node2 = hexa[n2];
-#endif
+
                 // add M to matrix
                 Mat33 tmp = Mat33 ( Coord ( Me[3*n1+0][3*n2+0], Me[3*n1+0][3*n2+1], Me[3*n1+0][3*n2+2] ),
                         Coord ( Me[3*n1+1][3*n2+0], Me[3*n1+1][3*n2+1], Me[3*n1+1][3*n2+2] ),
