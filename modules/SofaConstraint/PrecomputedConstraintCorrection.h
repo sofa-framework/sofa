@@ -197,13 +197,8 @@ protected:
      */
     void computeDx(Data<VecDeriv>& dx, const Data< VecDeriv > &f, const std::list< int > &activeDofs);
 
-
-    /// the list of 
     std::list< int > m_activeDofs;
 };
-
-
-/////////////////////////////////////////////////////////////////////////////////
 
 
 #ifndef SOFA_FLOAT

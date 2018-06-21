@@ -107,14 +107,12 @@ inline int LMDNewProximityIntersection::doIntersectionLineLine(double dist2, con
     //const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
     contacts->resize(contacts->size()+1);
     sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
-    //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->id = id;
     detection->point[0]=p;
     detection->point[1]=q;
     detection->normal=pq;
     detection->value = detection->normal.norm();
     detection->normal /= detection->value;
-    //detection->value -= contactDist;
 
     if(debug)
         std::cout<<" --------------------------------- ACCEPTED ! --------------------------------"<<pq<<std::endl;
@@ -134,14 +132,9 @@ inline int LMDNewProximityIntersection::doIntersectionLinePoint(double dist2, co
 
     double alpha = 0.5;
 
-    //if (A < -0.000001 || A > 0.000001)
-    {
-        alpha = b/A;
-        //if (alpha < 0.000001 || alpha > 0.999999)
-        //        return 0;
-        if (alpha < 0.0) alpha = 0.0;
-        else if (alpha > 1.0) alpha = 1.0;
-    }
+    alpha = b/A;
+    if (alpha < 0.0) alpha = 0.0;
+    else if (alpha > 1.0) alpha = 1.0;
 
     defaulttype::Vector3 p,pq, qp;
     p = p1 + AB * alpha;
@@ -355,10 +348,8 @@ inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2
     if (!f2.validPoint(indexPoint2, qp))
         return 0;
 
-    //const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
     contacts->resize(contacts->size()+1);
     sofa::core::collision::DetectionOutput *detection = &*(contacts->end()-1);
-    //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->id = id;
     if (swapElems)
     {
@@ -374,14 +365,6 @@ inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2
     }
     detection->value = detection->normal.norm();
     detection->normal /= detection->value;
-
-    //printf("\n normale : x = %f , y = %f, z = %f",detection->normal.x(),detection->normal.y(),detection->normal.z());
-    //if (e2.getCollisionModel()->isStatic() && detection->normal * e2.n() < -0.95)
-    //{ // The elements are interpenetrating
-    //	detection->normal = -detection->normal;
-    //	detection->value = -detection->value;
-    //}
-    //detection->value -= contactDist;
     return 1;
 }
 
@@ -499,7 +482,6 @@ int LMDNewProximityIntersection::computeIntersection(Triangle& e1, TSphere<T>& e
 
     // verify the edge ordering //
     sofa::core::topology::BaseMeshTopology::Edge edge[3];
-    //std::cout<<"E1 & E2 verif: ";
     for (int i=0; i<3; i++)
     {
         // Verify for E1: convention: Edge1 = P1 P2    Edge2 = P2 P3    Edge3 = P3 P1

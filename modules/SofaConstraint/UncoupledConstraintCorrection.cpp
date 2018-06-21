@@ -98,7 +98,6 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
         Rigid3Mass massValue;
 
         //Should use the BaseMatrix API to get the Mass
-        //void getElementMass(unsigned int index, defaulttype::BaseMatrix *m)
         if (node != NULL)
         {
             core::behavior::BaseMass *m = node->mass;

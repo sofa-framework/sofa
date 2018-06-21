@@ -90,12 +90,9 @@ bool LocalMinDistance::testIntersection(CubicBezierCurve<FLAG>& e2, Point& e1)
 
         alpha = 0.5;
 
-        //if (A < -0.000001 || A > 0.000001)
-        {
-            alpha = b/A;
-            if (alpha < 0.000001 || alpha > 0.999999)
-                return false;
-        }
+        alpha = b/A;
+        if (alpha < 0.000001 || alpha > 0.999999)
+            return false;
 
         P = e1.p();
         Q = e2[0] + AB * alpha;
@@ -190,12 +187,10 @@ int LocalMinDistance::computeIntersection(CubicBezierCurve<FLAG>& e2, Point& e1,
 
         alpha = 0.5;
 
-        //if (A < -0.000001 || A > 0.000001)
-        {
-            alpha = b/A;
-            if (alpha < 0.000001 || alpha > 0.999999)
-                return 0;
-        }
+        alpha = b/A;
+        if (alpha < 0.000001 || alpha > 0.999999)
+            return 0;
+
 
         P = e1.p();
         Q = e2[0] + AB * alpha;
@@ -222,7 +217,6 @@ int LocalMinDistance::computeIntersection(CubicBezierCurve<FLAG>& e2, Point& e1,
 
         const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
 
-        //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
         detection->elem.first = e2;
         detection->elem.second = e1;
         detection->id = e1.getIndex();
@@ -317,7 +311,7 @@ int LocalMinDistance::computeIntersection(CubicBezierCurve<FLAG>& e2, Point& e1,
 #endif
             std::cout<<contacts->size()<<" contacts.size() LocalMinDistance::1607  "<<"e1.getIndex() " <<e1.getIndex() <<"  e2.getIndex()" <<e2.getIndex()
                     << " t0:"<< e2.t0()<<"   alpha:"<<alpha <<"  t1:" << e2.t1()<<"  t:"<<t
-                    <<"     P : " <<P <<"   Q : " <<Q <<std::endl;//////////////////////////////////
+                    <<"     P : " <<P <<"   Q : " <<Q <<std::endl;
         }
     }
 
@@ -325,7 +319,6 @@ int LocalMinDistance::computeIntersection(CubicBezierCurve<FLAG>& e2, Point& e1,
     return 1;
 }
 
-/////////////////////////////////////////////////////////////////
 template<int FLAG>
 bool LocalMinDistance::testIntersection(CubicBezierCurve<FLAG>& e2, Sphere& e1)
 {
@@ -428,12 +421,9 @@ int LocalMinDistance::computeIntersection(CubicBezierCurve<FLAG>& e2, Sphere& e1
 
         alpha = 0.5;
 
-        //if (A < -0.000001 || A > 0.000001)
-        {
-            alpha = b/A;
-            if (alpha < 0.000001 || alpha > 0.999999)
-                return 0;
-        }
+        alpha = b/A;
+        if (alpha < 0.000001 || alpha > 0.999999)
+            return 0;
 
         P = e1.center();
         Q = e2[0] - x32 * alpha;
@@ -447,7 +437,6 @@ int LocalMinDistance::computeIntersection(CubicBezierCurve<FLAG>& e2, Sphere& e1
 
         contacts->resize(contacts->size()+1);
         DetectionOutput *detection = &*(contacts->end()-1);
-        //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
         detection->elem.first = e2;
         detection->elem.second = e1;
         detection->id = e1.getIndex();

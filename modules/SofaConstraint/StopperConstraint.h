@@ -100,21 +100,8 @@ protected:
 
 
 
-    StopperConstraint(MechanicalState* object)
-        : Inherit(object)
-        , index(initData(&index, 0, "index", "index of the stop constraint"))
-        , min(initData(&min, -100.0, "min", "minimum value accepted"))
-        , max(initData(&max, 100.0, "max", "maximum value accepted"))
-    {
-    }
-
-
-    StopperConstraint()
-        : index(initData(&index, 0, "index", "index of the stop constraint"))
-        , min(initData(&min, -100.0, "min", "minimum value accepted"))
-        , max(initData(&max, 100.0, "max", "maximum value accepted"))
-    {
-    }
+    StopperConstraint(MechanicalState* object);
+    StopperConstraint();
 
     virtual ~StopperConstraint() {}
 public:

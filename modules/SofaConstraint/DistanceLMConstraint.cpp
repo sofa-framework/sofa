@@ -87,9 +87,6 @@ void DistanceLMConstraint<Rigid3dTypes>::draw(const core::visual::VisualParams* 
         const SeqEdges &edges =  vecConstraint.getValue();
         for (unsigned int i=0; i<edges.size(); ++i)
         {
-//                 double length     = lengthEdge(edges[i],x1,x2);
-//                 double restLength = this->l0[i];
-//                 double factor = fabs(length - restLength)/length;
             points.push_back(x1[edges[i][0]].getCenter());
             points.push_back(x2[edges[i][1]].getCenter());
         }
@@ -119,9 +116,6 @@ void DistanceLMConstraint<Rigid3fTypes>::draw(const core::visual::VisualParams* 
         const SeqEdges &edges =  vecConstraint.getValue();
         for (unsigned int i=0; i<edges.size(); ++i)
         {
-//                 double length     = lengthEdge(edges[i],x1,x2);
-//                 double restLength = this->l0[i];
-//                 double factor = fabs(length - restLength)/length;
             points.push_back(x1[edges[i][0]].getCenter());
             points.push_back(x2[edges[i][1]].getCenter());
         }

@@ -72,35 +72,12 @@ protected:
 
 
 
-    SlidingConstraint(MechanicalState* object1, MechanicalState* object2)
-        : Inherit(object1, object2)
-        , yetIntegrated(false)
-        , m1(initData(&m1, 0, "sliding_point","index of the spliding point on the first model"))
-        , m2a(initData(&m2a, 0, "axis_1","index of one end of the sliding axis"))
-        , m2b(initData(&m2b, 0, "axis_2","index of the other end of the sliding axis"))
-    {
-    }
+    SlidingConstraint(MechanicalState* object1, MechanicalState* object2);
+    SlidingConstraint(MechanicalState* object);
+    SlidingConstraint();
 
-    SlidingConstraint(MechanicalState* object)
-        : Inherit(object, object)
-        , yetIntegrated(false)
-        , m1(initData(&m1, 0, "sliding_point","index of the spliding point on the first model"))
-        , m2a(initData(&m2a, 0, "axis_1","index of one end of the sliding axis"))
-        , m2b(initData(&m2b, 0, "axis_2","index of the other end of the sliding axis"))
-    {
-    }
+    virtual ~SlidingConstraint(){}
 
-    SlidingConstraint()
-        : yetIntegrated(false)
-        , m1(initData(&m1, 0, "sliding_point","index of the spliding point on the first model"))
-        , m2a(initData(&m2a, 0, "axis_1","index of one end of the sliding axis"))
-        , m2b(initData(&m2b, 0, "axis_2","index of the other end of the sliding axis"))
-    {
-    }
-
-    virtual ~SlidingConstraint()
-    {
-    }
 public:
     virtual void init() override;
 

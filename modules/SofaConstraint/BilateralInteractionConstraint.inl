@@ -28,7 +28,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/gl/template.h>
 
-#include <algorithm> // for std::min
+#include <algorithm>
 
 namespace sofa
 {
@@ -472,12 +472,10 @@ void BilateralInteractionConstraint<DataTypes>::getVelocityViolation(BaseVector 
             {
                 if(squareXYZ[i])
                 {
-                    //std::cout<<" vel viol:"<<2*dPrimefree[pid][i]*dfree[pid][i]<<std::endl;
                     v->add(cid[pid]+i  , 2*dPrimefree[pid][i]*dfree[pid][i]);
                 }
                 else
                 {
-                    //std::cout<<" vel viol:"<<dPrimefree[pid][i]*sign(dfree[pid][i] )<<std::endl;
                     v->add(cid[pid]+i  , dPrimefree[pid][i]*sign(dfree[pid][i] ) );
                 }
             }

@@ -196,10 +196,6 @@ public:
     void build_Coarse_Compliance(std::vector<int> &/*constraint_merge*/, int /*sizeCoarseSystem*/);
     sofa::component::linearsolver::LPtrFullMatrix<double>  _Wcoarse;
 
-    //std::vector< int> _contact_group;
-    //std::vector< int> _constraint_group;
-    //std::vector<int> _group_lead;
-
     std::vector< std::vector< int > > hierarchy_contact_group;
     std::vector< std::vector< int > > hierarchy_constraint_group;
     std::vector< std::vector< double > > hierarchy_constraint_group_fact;
@@ -225,7 +221,6 @@ public:
     int gaussseidel_unbuilt(double *dfree, double *f, std::vector<double>* residuals = NULL) { if (_mu == 0.0) return lcp_gaussseidel_unbuilt(dfree, f, residuals); else return nlcp_gaussseidel_unbuilt(dfree, f, residuals); }
 
     sofa::component::linearsolver::SparseMatrix<double> *_Wdiag;
-    //std::vector<helper::LocalBlock33 *> _Wdiag;
     std::vector<core::behavior::BaseConstraintCorrection*> _cclist_elem1;
     std::vector<core::behavior::BaseConstraintCorrection*> _cclist_elem2;
 

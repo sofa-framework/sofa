@@ -69,11 +69,11 @@ using sofa::defaulttype::Vec3d ;
 #ifdef SOFA_WITH_DOUBLE
     using sofa::defaulttype::Rigid3dTypes ;
     using sofa::defaulttype::Vec3dTypes ;
-#endif //
+#endif
 #ifdef SOFA_WITH_FLOAT
     using sofa::defaulttype::Rigid3fTypes ;
     using sofa::defaulttype::Vec3fTypes ;
-#endif //
+#endif
 
 template<class T>
 class BilateralInteractionConstraintSpecialization {};
