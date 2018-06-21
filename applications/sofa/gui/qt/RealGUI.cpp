@@ -741,8 +741,6 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
     SceneCheckerVisitor checker(ExecParams::defaultInstance()) ;
     std::vector<std::string> expandedNodes;
 
-    std::cout << "RELOAD ..." << reload << std::endl ;
-
     if(reload)
     {
         saveView();
@@ -944,7 +942,6 @@ void RealGUI::setSceneWithoutMonitor (Node::SPtr root, const char* filename, boo
     {
         /// We want to warn user that there is component that are implemented in specific plugin
         /// and that there is no RequiredPlugin in their scene.
-        std::cout << "SET SCENE WITHOUT MONITOR" << std::endl ;
         SceneCheckerVisitor checker(ExecParams::defaultInstance()) ;
         checker.addCheck(simulation::SceneCheckAPIChange::newSPtr());
         checker.addCheck(simulation::SceneCheckDuplicatedName::newSPtr());

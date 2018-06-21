@@ -147,7 +147,7 @@ void SceneCheckAPIChange::installDefaultChangeSets()
             msg_warning(o) << "BoxStiffSpringForceField have changed since 17.06. To use the old behavior you need to set parameter 'forceOldBehavior=true'" ;
     }) ;
 
-    addHookInChangeSet("17.06", [this](Base* o){
+    addHookInChangeSet("17.06", [](Base* o){
         if( deprecatedComponents.find( o->getClassName() ) != deprecatedComponents.end() )
         {
             msg_deprecated(o) << deprecatedComponents.at(o->getClassName()).getMessage();
