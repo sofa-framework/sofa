@@ -103,7 +103,6 @@ void OglAttribute< size, type, DataTypes>::initVisual ()
     {
         sout << "Variable \""<<id.getValue()<<"\" in shader \"" << (*shaders.begin())->vertFilename.getValue() << "\" with index: " << _index << sendl;
     }
-    //enable();
     glBindBufferARB(GL_ARRAY_BUFFER,0);
 }
 
@@ -134,7 +133,6 @@ void OglAttribute< size, type, DataTypes>::updateVisual()
             (char*)data.getData() );
     _needUpdate = false;
     _lastUpdateDataCounter = dataCounter;
-    //enable();
     glBindBufferARB(GL_ARRAY_BUFFER,0);
 }
 
@@ -211,10 +209,8 @@ void OglAttribute< size, type, DataTypes>::disable()
 {
     if (_index == GLuint(-1))
         return; // index not valid
-#ifndef PS3
     glDisableVertexAttribArrayARB ( _index );
     glBindBufferARB(GL_ARRAY_BUFFER,0);
-#endif
 }
 
 template < int size, unsigned int type, class DataTypes>
@@ -259,32 +255,26 @@ void OglAttribute< size, type, DataTypes>::handleTopologyChange()
 
             case core::topology::TRIANGLESADDED:
             {
-                //sout << "INFO_print : Vis - TRIANGLESADDED" << sendl;
-                break;
+               break;
             }
 
             case core::topology::QUADSADDED:
             {
-                //sout << "INFO_print : Vis - QUADSADDED" << sendl;
                 break;
             }
 
             case core::topology::TRIANGLESREMOVED:
             {
-                //sout << "INFO_print : Vis - TRIANGLESREMOVED" << sendl;
                 break;
             }
 
             case core::topology::QUADSREMOVED:
             {
-                //sout << "INFO_print : Vis - QUADSREMOVED" << sendl;
                 break;
             }
 
             case core::topology::POINTSADDED:
             {
-                //sout << "INFO_print : Vis - POINTSADDED" << sendl;
-
                 unsigned int nbPoints = ( static_cast< const sofa::core::topology::PointsAdded * >( *itBegin ) )->getNbAddedVertices();
                 sofa::defaulttype::ResizableExtVector<DataTypes>& data = *value.beginEdit();
                 data.resize( data.size() + nbPoints);
@@ -292,12 +282,8 @@ void OglAttribute< size, type, DataTypes>::handleTopologyChange()
                 break;
             }
 
-            // Case "POINTSREMOVED" added to propagate the treatment to the Visual Model
-
             case core::topology::POINTSREMOVED:
             {
-                //sout << "INFO_print : Vis - POINTSREMOVED" << sendl;
-
                 const sofa::helper::vector<unsigned int> tab = ( static_cast< const sofa::core::topology::PointsRemoved * >( *itBegin ) )->getArray();
                 sofa::defaulttype::ResizableExtVector<DataTypes>& data = *value.beginEdit();
                 unsigned int last = data.size();
@@ -313,12 +299,8 @@ void OglAttribute< size, type, DataTypes>::handleTopologyChange()
                 break;
             }
 
-            // Case "POINTSRENUMBERING" added to propagate the treatment to the Visual Model
-
             case core::topology::POINTSRENUMBERING:
             {
-                //sout << "INFO_print : Vis - POINTSRENUMBERING" << sendl;
-
                 const sofa::helper::vector<unsigned int> tab = ( static_cast< const sofa::core::topology::PointsRenumbering * >( *itBegin ) )->getinv_IndexArray();
                 sofa::defaulttype::ResizableExtVector<DataTypes>& data = *value.beginEdit();
                 helper::vector<DataTypes> tmp;
@@ -338,10 +320,9 @@ void OglAttribute< size, type, DataTypes>::handleTopologyChange()
             default:
                 // Ignore events that are not Triangle  related.
                 break;
-            }; // switch( changeType )
-
+            };
             ++itBegin;
-        } // while( changeIt != last; )
+        }
     }
 }
 

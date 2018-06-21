@@ -738,6 +738,7 @@ sofa::simulation::Node* RealGUI::currentSimulation()
 
 void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
 {
+    SceneCheckerVisitor checker(ExecParams::defaultInstance()) ;
     std::vector<std::string> expandedNodes;
 
     if(reload)
@@ -746,6 +747,12 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
 
         if(simulationGraph)
             simulationGraph->getExpandedNodes(expandedNodes) ;
+    }
+    else
+    {
+        checker.addCheck(simulation::SceneCheckAPIChange::newSPtr());
+        checker.addCheck(simulation::SceneCheckDuplicatedName::newSPtr());
+        checker.addCheck(simulation::SceneCheckMissingRequiredPlugin::newSPtr());
     }
 
     const std::string &extension=SetDirectory::GetExtension(filename.c_str());
@@ -795,12 +802,8 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
     /// We want to warn user that there is component that are implemented in specific plugin
     /// and that there is no RequiredPlugin in their scene.
     /// But we don't want that to happen each reload in interactive mode.
-    if(reload)
+    if(!reload)
     {
-        SceneCheckerVisitor checker(ExecParams::defaultInstance()) ;
-        checker.addCheck(simulation::SceneCheckAPIChange::newSPtr());
-        checker.addCheck(simulation::SceneCheckDuplicatedName::newSPtr());
-        checker.addCheck(simulation::SceneCheckMissingRequiredPlugin::newSPtr());
         checker.validate(mSimulation.get()) ;
     }
 }

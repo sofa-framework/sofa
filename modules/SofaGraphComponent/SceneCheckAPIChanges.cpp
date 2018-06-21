@@ -23,8 +23,11 @@
 #include <string>
 #include <sofa/core/objectmodel/Base.h>
 using sofa::core::objectmodel::Base ;
+using sofa::core::objectmodel::BaseObjectDescription ;
 
 #include <sofa/core/ObjectFactory.h>
+using sofa::core::ObjectFactory ;
+
 #include <sofa/simulation/Visitor.h>
 #include <sofa/helper/system/PluginManager.h>
 #include <sofa/helper/system/FileRepository.h>
@@ -81,11 +84,41 @@ void SceneCheckAPIChange::doInit(Node* node)
     node->getTreeObject(apiversion) ;
     if(!apiversion)
     {
-        msg_info("SceneChecker") << "The 'APIVersion' directive is missing in the current scene. Switching to the default APIVersion level '"<< m_selectedApiLevel <<"' " ;
+        msg_info("SceneCheckAPIChange") << "The 'APIVersion' directive is missing in the current scene. Switching to the default APIVersion level '"<< m_selectedApiLevel <<"' " ;
     }
     else
     {
         m_selectedApiLevel = apiversion->getApiLevel() ;
+    }
+}
+
+void SceneCheckAPIChange::doPrintSummary()
+{
+    // Alias use summary
+    if ( ! this->m_componentsCreatedUsingAlias.empty() )
+    {
+        std::stringstream usingAliasesWarning;
+        usingAliasesWarning << "This scene is using aliases. Aliases are dangerous, use with caution." << msgendl;
+        for (auto i : this->m_componentsCreatedUsingAlias)
+        {
+            if (i.second.size() > 1)
+                usingAliasesWarning << "  - " << i.first << " have been created using the aliases ";
+            else
+                usingAliasesWarning << "  - " << i.first << " has been created using the alias ";
+
+            bool first = true;
+            for (std::string &alias : i.second)
+            {
+                if (first)
+                    usingAliasesWarning << "\"" << alias << "\"";
+                else
+                    usingAliasesWarning << ", \"" << alias << "\"";
+
+                first = false;
+            }
+            usingAliasesWarning << "." << msgendl;
+        }
+        msg_warning("SceneCheckAPIChanges") << usingAliasesWarning.str();
     }
 }
 
@@ -103,7 +136,6 @@ void SceneCheckAPIChange::doCheckOn(Node* node)
                 hook(object.get());
             }
         }
-
     }
 }
 
@@ -121,6 +153,29 @@ void SceneCheckAPIChange::installDefaultChangeSets()
             msg_deprecated(o) << deprecatedComponents.at(o->getClassName()).getMessage();
         }
     }) ;
+
+    for(auto i : this->m_componentsCreatedUsingAlias)
+    {
+        std::string aliases;
+        for (std::string &alias : i.second)
+        {
+            aliases += " " + alias;
+        }
+        msg_warning(i.first) << "Using the aliases: " << aliases;
+    }
+
+    /// Add a callback to be n
+    ObjectFactory::getInstance()->setCallback([this](Base* o, BaseObjectDescription *arg) {
+        if (o->getClassName() != arg->getAttribute("type", "") ) {
+            std::string alias = arg->getAttribute("type", "");
+
+            std::vector<std::string> v = this->m_componentsCreatedUsingAlias[o->getClassName()];
+            if ( std::find(v.begin(), v.end(), alias) == v.end() )
+            {
+                this->m_componentsCreatedUsingAlias[o->getClassName()].push_back(alias);
+            }
+        }
+    });
 }
 
 void SceneCheckAPIChange::addHookInChangeSet(const std::string& version, ChangeSetHookFunction fct)
