@@ -41,11 +41,26 @@ namespace component
 namespace forcefield
 {
 
+template <class DataTypes>
+EdgePressureForceField<DataTypes>::EdgePressureForceField()
+    : edgePressureMap(initData(&edgePressureMap, "edgePressureMap", "map between edge indices and their pressure"))
+    ,pressure(initData(&pressure, "pressure", "Pressure force per unit area"))
+    , edgeIndices(initData(&edgeIndices,"edgeIndices", "Indices of edges separated with commas where a pressure is applied"))
+    , edges(initData(&edges, "edges", "List of edges where a pressure is applied"))
+    , normal(initData(&normal,"normal", "Normal direction for the plane selection of edges"))
+    , dmin(initData(&dmin,(Real)0.0, "dmin", "Minimum distance from the origin along the normal direction"))
+    , dmax(initData(&dmax,(Real)0.0, "dmax", "Maximum distance from the origin along the normal direction"))
+    , arrowSizeCoef(initData(&arrowSizeCoef,(SReal)0.0, "arrowSizeCoef", "Size of the drawn arrows (0->no arrows, sign->direction of drawing"))
+    , p_intensity(initData(&p_intensity,"p_intensity", "pressure intensity on edge normal"))
+    , p_binormal(initData(&p_binormal,"binormal", "Binormal of the 2D plane"))
+    , p_showForces(initData(&p_showForces, (bool)false, "showForces", "draw arrows of edge pressures"))
+{
+    _completeTopology = NULL;
+}
 
 template <class DataTypes> EdgePressureForceField<DataTypes>::~EdgePressureForceField()
 {
 }
-
 
 template <class DataTypes>
 void EdgePressureForceField<DataTypes>::init()
@@ -97,7 +112,6 @@ void EdgePressureForceField<DataTypes>::init()
     initEdgeInformation();
 }
 
-
 template <class DataTypes>
 void EdgePressureForceField<DataTypes>::addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv &  dataF, const DataVecCoord &  /*dataX */, const DataVecDeriv & /*dataV*/ )
 {
@@ -116,6 +130,36 @@ void EdgePressureForceField<DataTypes>::addForce(const sofa::core::MechanicalPar
 
     dataF.endEdit();
     updateEdgeInformation();
+}
+
+template <class DataTypes>
+void EdgePressureForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */)
+{
+    //TODO: remove this line (avoid warning message) ...
+    mparams->setKFactorUsed(true);
+}
+
+template <class DataTypes>
+SReal EdgePressureForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
+{
+    serr << "Get potentialEnergy not implemented" << sendl;
+    return 0.0;
+}
+
+template <class DataTypes>
+void EdgePressureForceField<DataTypes>::setDminAndDmax(const SReal _dmin, const SReal _dmax)
+{
+    dmin.setValue((Real)_dmin); dmax.setValue((Real)_dmax);
+}
+
+template<class DataTypes>
+bool EdgePressureForceField<DataTypes>::isPointInPlane(Coord p)
+{
+    Real d=dot(p,normal.getValue());
+    if ((d>dmin.getValue())&& (d<dmax.getValue()))
+        return true;
+    else
+        return false;
 }
 
 template<class DataTypes>
@@ -234,7 +278,6 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
     return;
 }
 
-
 template<class DataTypes>
 void EdgePressureForceField<DataTypes>::updateEdgeInformation()
 {
@@ -276,7 +319,6 @@ void EdgePressureForceField<DataTypes>::updateEdgeInformation()
     edgePressureMap.endEdit();
     initEdgeInformation();
 }
-
 
 template <class DataTypes>
 void EdgePressureForceField<DataTypes>::selectEdgesAlongPlane()

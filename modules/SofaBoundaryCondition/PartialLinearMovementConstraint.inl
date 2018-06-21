@@ -264,14 +264,8 @@ template <class MyCoord>
 void PartialLinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, typename std::enable_if<!std::is_same<MyCoord, defaulttype::RigidCoord<3, Real> >::value, VecCoord>::type& x)
 {
     const SetIndexArray & indices = m_indices.getValue();
-    //cerr<<"PartialLinearMovementConstraint<DataTypes>::interpolatePosition,  current time cT = "<<cT<<endl;
-    //cerr<<"PartialLinearMovementConstraint<DataTypes>::interpolatePosition,  prevT = "<<prevT<<" ,prevM= "<<prevM<<endl;
-    //cerr<<"PartialLinearMovementConstraint<DataTypes>::interpolatePosition,  nextT = "<<nextT<<" ,nextM= "<<nextM<<endl;
-    //cerr<<"PartialLinearMovementConstraint<DataTypes>::interpolatePosition, current x = "<<x<<endl;
     Real dt = (cT - prevT) / (nextT - prevT);
-    //cerr<<"PartialLinearMovementConstraint<DataTypes>::interpolatePosition, dt = "<<dt<<endl;
     Deriv m = prevM + (nextM-prevM)*dt;
-    //cerr<<"PartialLinearMovementConstraint<DataTypes>::interpolatePosition, movement m = "<<m<<endl;
     VecBool movedDirection = movedDirections.getValue();
     //set the motion to the Dofs
     if(linearMovementBetweenNodesInIndices.getValue())
@@ -344,7 +338,6 @@ void PartialLinearMovementConstraint<DataTypes>::interpolatePosition(Real cT, ty
             for( unsigned j=0; j< NumDimensions; j++)
                 if(movedDirection[j]) x[*it][j] = x0[*it][j] + m[j] ;
         }
-        //cerr<<"PartialLinearMovementConstraint<DataTypes>::interpolatePosition, new x = "<<x<<endl<<endl<<endl;
     }
 
 }
@@ -382,7 +375,6 @@ void PartialLinearMovementConstraint<DataTypes>::projectJacobianMatrix(const cor
         projectResponseT<MatrixDerivRowType>(mparams, rowIt.row());
         ++rowIt;
     }
-    //cerr<<" PartialLinearMovementConstraint<DataTypes>::projectJacobianMatrix c= "<<endl<<c<<endl;
 }
 
 template <class DataTypes>
@@ -424,9 +416,6 @@ void PartialLinearMovementConstraint<DataTypes>::findKeyTimes()
 template <class DataTypes>
 void PartialLinearMovementConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-    //cerr<<"PartialLinearMovementConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset) is called "<<endl;
-    //sout << "applyConstraint in Matrix with offset = " << offset << sendl;
-    //const unsigned int N = Deriv::size();
     const SetIndexArray & indices = m_indices.getValue();
     core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get(mparams));
 
@@ -451,9 +440,6 @@ void PartialLinearMovementConstraint<DataTypes>::applyConstraint(const core::Mec
 template <class DataTypes>
 void PartialLinearMovementConstraint<DataTypes>::applyConstraint(const core::MechanicalParams* mparams, defaulttype::BaseVector* vector, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-    //cerr<<"PartialLinearMovementConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset) is called "<<endl;
-    //sout << "applyConstraint in Vector with offset = " << offset << sendl;
-    //const unsigned int N = Deriv::size();
     int o = matrix->getGlobalOffset(this->mstate.get(mparams));
     if (o >= 0) {
         unsigned int offset = (unsigned int)o;

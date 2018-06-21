@@ -66,11 +66,9 @@ LinearVelocityConstraint<TDataTypes>::LinearVelocityConstraint()
     , m_keyVelocities(  initData(&m_keyVelocities,"velocities","velocities corresponding to the key times") )
     , m_coordinates( initData(&m_coordinates, "coordinates", "coordinates on which to apply velocities") )
 {
-    // default to indice 0
     m_indices.beginEdit()->push_back(0);
     m_indices.endEdit();
 
-    //default valueEvent to 0
     m_keyTimes.beginEdit()->push_back( 0.0 );
     m_keyTimes.endEdit();
     m_keyVelocities.beginEdit()->push_back( Deriv() );

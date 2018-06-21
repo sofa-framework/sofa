@@ -143,7 +143,6 @@ template <class DataDeriv>
 void PartialFixedConstraint<DataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/, DataDeriv& res)
 {
     const VecBool& blockedDirection = fixedDirections.getValue();
-    //serr<<"PartialFixedConstraint<DataTypes>::projectResponse, res.size()="<<res.size()<<sendl;
     if (d_fixAll.getValue() == true)
     {
         // fix everyting
@@ -173,7 +172,6 @@ void PartialFixedConstraint<DataTypes>::projectResponseT(const core::MechanicalP
             }
         }
     }
-    //    cerr<<"PartialFixedConstraint<DataTypes>::projectResponse is called  res = "<<endl<<res<<endl;
 }
 
 template <class DataTypes>
@@ -193,7 +191,6 @@ void PartialFixedConstraint<DataTypes>::projectVelocity(const core::MechanicalPa
     if(!d_projectVelocity.getValue()) return;
     helper::WriteAccessor<DataVecDeriv> res ( mparams, vData );
 
-    //serr<<"PartialFixedConstraint<DataTypes>::projectVelocity, res.size()="<<res.size()<<sendl;
     if( d_fixAll.getValue()==true )
     {
         // fix everyting
@@ -232,16 +229,12 @@ void PartialFixedConstraint<DataTypes>::projectJacobianMatrix(const core::Mechan
         projectResponseT<MatrixDerivRowType>(mparams, rowIt.row());
         ++rowIt;
     }
-    //cerr<<"PartialFixedConstraint<DataTypes>::projectJacobianMatrix : helper::WriteAccessor<DataMatrixDeriv> c =  "<<endl<< c<<endl;
 }
 
 // Matrix Integration interface
 template <class DataTypes>
 void PartialFixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset)
 {
-    //sout << "applyConstraint in Matrix with offset = " << offset << sendl;
-    //cerr<<" PartialFixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset) is called "<<endl;
-
     //TODO take f_fixAll into account
 
     const unsigned int N = Deriv::size();
@@ -266,12 +259,7 @@ void PartialFixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix 
 template <class DataTypes>
 void PartialFixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset)
 {
-    //sout << "applyConstraint in Vector with offset = " << offset << sendl;
-    //cerr<<"PartialFixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int offset) is called "<<endl;
-
     //TODO take f_fixAll into account
-
-
     const unsigned int N = Deriv::size();
 
     const VecBool& blockedDirection = fixedDirections.getValue();
@@ -294,8 +282,6 @@ void PartialFixedConstraint<DataTypes>::applyConstraint(const core::MechanicalPa
     core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate.get(mparams));
     if(r)
     {
-        //sout << "applyConstraint in Matrix with offset = " << offset << sendl;
-        //cerr<<"FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int offset) is called "<<endl;
         const unsigned int N = Deriv::size();
         const VecBool& blockedDirection = fixedDirections.getValue();
         const SetIndexArray & indices = d_indices.getValue();
@@ -371,8 +357,6 @@ void PartialFixedConstraint<DataTypes>::draw(const core::visual::VisualParams* v
     if (!this->isActive())
         return;
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    //serr<<"PartialFixedConstraint<DataTypes>::draw(), x.size() = "<<x.size()<<sendl;
-
 
     const SetIndexArray & indices = d_indices.getValue();
 
@@ -380,7 +364,6 @@ void PartialFixedConstraint<DataTypes>::draw(const core::visual::VisualParams* v
     {
         std::vector<sofa::defaulttype::Vector3> points;
         sofa::defaulttype::Vector3 point;
-        //serr<<"PartialFixedConstraint<DataTypes>::draw(), indices = "<<indices<<sendl;
         if (d_fixAll.getValue() == true)
         {
             for (unsigned i = 0; i < x.size(); i++)
@@ -424,10 +407,6 @@ void PartialFixedConstraint<DataTypes>::draw(const core::visual::VisualParams* v
         vparams->drawTool()->drawSpheres(points, (float) d_drawSize.getValue(), sofa::defaulttype::Vec<4, float> (1.0f, 0.35f, 0.35f, 1.0f));
     }
 }
-
-
-
-
 
 } // namespace constraint
 

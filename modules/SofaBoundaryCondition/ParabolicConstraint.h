@@ -128,6 +128,7 @@ protected:
     sofa::core::topology::BaseMeshTopology* topology;
 };
 
+
 #if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PARABOLICCONSTRAINT_CPP)
 #ifndef SOFA_FLOAT
 extern template class ParabolicConstraint<defaulttype::Rigid3dTypes>;

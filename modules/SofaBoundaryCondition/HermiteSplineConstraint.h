@@ -132,7 +132,8 @@ protected:
 
 };
 
-#if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_HERMITESPLINECONSTRAINT_CPP)
+
+#if !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_HERMITESPLINECONSTRAINT_CPP)
 #ifndef SOFA_FLOAT
 extern template class HermiteSplineConstraint<defaulttype::Rigid3dTypes>;
 extern template class HermiteSplineConstraint<defaulttype::Vec3dTypes>;

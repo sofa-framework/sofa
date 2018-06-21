@@ -30,8 +30,6 @@
 #include <vector>
 #include <set>
 
-// #define DEBUG_TRIANGLEFEM
-
 namespace sofa
 {
 
@@ -41,18 +39,32 @@ namespace component
 namespace forcefield
 {
 
-
-template <class DataTypes> OscillatingTorsionPressureForceField<DataTypes>::~OscillatingTorsionPressureForceField()
+template <class DataTypes>
+OscillatingTorsionPressureForceField<DataTypes>::OscillatingTorsionPressureForceField()
+    : trianglePressureMap(initData(&trianglePressureMap, "trianglePressureMap", "map between edge indices and their pressure"))
+    , moment(initData(&moment, "moment", "Moment force applied on the entire surface"))
+    , triangleList(initData(&triangleList, "triangleList", "Indices of triangles separated with commas where a pressure is applied"))
+    , axis(initData(&axis, Coord(0,0,1), "axis", "Axis of rotation and normal direction for the plane selection of triangles"))
+    , center(initData(&center,"center", "Center of rotation"))
+    , penalty(initData(&penalty, (Real)1000, "penalty", "Strength of the penalty force"))
+    , frequency(initData(&frequency, (Real)1, "frequency", "frequency of oscillation"))
+    , dmin(initData(&dmin,(Real)0.0, "dmin", "Minimum distance from the origin along the normal direction"))
+    , dmax(initData(&dmax,(Real)0.0, "dmax", "Maximum distance from the origin along the normal direction"))
+    , p_showForces(initData(&p_showForces, (bool)false, "showForces", "draw triangles which have a given pressure"))
 {
-    //file.close();
+    rotationAngle = 0;
+}
+
+template <class DataTypes>
+OscillatingTorsionPressureForceField<DataTypes>::~OscillatingTorsionPressureForceField()
+{
 }
 
 
-template <class DataTypes> void OscillatingTorsionPressureForceField<DataTypes>::init()
+template <class DataTypes>
+void OscillatingTorsionPressureForceField<DataTypes>::init()
 {
     this->core::behavior::ForceField<DataTypes>::init();
-    //file.open("testsofa.dat");
-    // normalize axis:
     axis.setValue( axis.getValue() / axis.getValue().norm() );
 
     _topology = this->getContext()->getMeshTopology();
@@ -161,6 +173,19 @@ void OscillatingTorsionPressureForceField<DataTypes>::addForce(const core::Mecha
         }
 }
 
+template <class DataTypes>
+void OscillatingTorsionPressureForceField<DataTypes>::addDForce(const core::MechanicalParams* mparams, DataVecDeriv& /* d_df */, const DataVecDeriv& /* d_dx */)
+{
+    //TODO: remove this line (avoid warning message) ...
+    mparams->setKFactorUsed(true);
+}
+
+template <class DataTypes>
+SReal OscillatingTorsionPressureForceField<DataTypes>::getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const
+{
+    serr << "Get potentialEnergy not implemented" << sendl;
+    return 0.0;
+}
 
 template<class DataTypes>
 void OscillatingTorsionPressureForceField<DataTypes>::initTriangleInformation()
