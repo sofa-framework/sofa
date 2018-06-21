@@ -94,10 +94,31 @@ void SceneCheckAPIChange::doInit(Node* node)
 
 void SceneCheckAPIChange::doPrintSummary()
 {
-    if(!m_numberOfCreationFromAlias.empty()){
-        if(m_selectedApiLevel=="17.06" || m_selectedApiLevel=="17.12"){
-            msg_warning("SceneCheckAPIChanges") << "Some components have been created using" ;
+    // Alias use summary
+    if(!this->m_componentsCreatedUsingAlias.empty())
+    {
+        std::stringstream usingAliasesWarning;
+        usingAliasesWarning << "This scene is using aliases. Aliases are dangerous, use with caution." << msgendl;
+        for(auto i : this->m_componentsCreatedUsingAlias)
+        {
+            if(i.second.size() > 1)
+                usingAliasesWarning << "  - " << i.first << " have been created using the aliases ";
+            else
+                usingAliasesWarning << "  - " << i.first << " has been created using the alias ";
+
+            bool first = true;
+            for (std::string &alias : i.second)
+            {
+                if(first)
+                    usingAliasesWarning << "\"" << alias << "\"";
+                else
+                    usingAliasesWarning << ", \"" << alias << "\"";
+
+                first = false;
+            }
+            usingAliasesWarning << "." << msgendl;
         }
+        msg_warning("SceneCheckAPIChanges") << usingAliasesWarning.str();
     }
 }
 
@@ -126,7 +147,7 @@ void SceneCheckAPIChange::installDefaultChangeSets()
             msg_warning(o) << "BoxStiffSpringForceField have changed since 17.06. To use the old behavior you need to set parameter 'forceOldBehavior=true'" ;
     }) ;
 
-    addHookInChangeSet("17.06", [](Base* o){
+    addHookInChangeSet("17.06", [this](Base* o){
         if( deprecatedComponents.find( o->getClassName() ) != deprecatedComponents.end() )
         {
             msg_deprecated(o) << deprecatedComponents.at(o->getClassName()).getMessage();
@@ -135,12 +156,30 @@ void SceneCheckAPIChange::installDefaultChangeSets()
 
     std::cout << "HELLO " << std::endl ;
 
+    for(auto i : this->m_componentsCreatedUsingAlias)
+    {
+        std::string aliases;
+        for (std::string &alias : i.second)
+        {
+            aliases += " " + alias;
+        }
+        msg_warning(i.first) << "Using the aliases: " << aliases;
+    }
+
     /// Add a callback to be n
-    ObjectFactory::getInstance()->setCallback([this](Base* o, BaseObjectDescription *arg){
-        msg_warning(o) << "Using an Alias: " << o->getClassName() ;
+    ObjectFactory::getInstance()->setCallback([this](Base* o, BaseObjectDescription *arg) {
+        //msg_warning(o) << "Using an Alias: " << o->getClassName() ;
+//        msg_warning(o) << "className = \"" << o->getClassName() << "\" ; usedName = \"" << arg->getAttribute("type", "") << "\"";
+
         if(o->getClassName() != arg->getAttribute("type", "") ){
-            this->m_numberOfCreationFromAlias[o->getClassName()].push_back(arg->getAttribute("type", ""));
-            msg_warning(o) << "Using an Alias: " << o->getClassName() ;
+            std::string alias = arg->getAttribute("type", "");
+
+            std::vector<std::string> v = this->m_componentsCreatedUsingAlias[o->getClassName()];
+            if ( std::find(v.begin(), v.end(), alias) == v.end() )
+            {
+                this->m_componentsCreatedUsingAlias[o->getClassName()].push_back(alias);
+            }
+            //this->m_numberOfCreationFromAlias[o->getClassName()].push_back(alias);
         }
     });
 }

@@ -67,7 +67,7 @@ private:
 
     std::map<std::string, std::vector<ChangeSetHookFunction>> m_changesets ;
 
-    std::map<std::string, std::vector<std::string>> m_numberOfCreationFromAlias ;
+    std::map<std::string, std::vector<std::string>> m_componentsCreatedUsingAlias ;
 };
 
 } /// _scenechecks_
