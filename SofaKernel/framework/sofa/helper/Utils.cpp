@@ -28,8 +28,6 @@
 #ifdef WIN32
 # include <Windows.h>
 # include <StrSafe.h>
-#elif defined _XBOX
-# include <xtl.h>
 #elif defined __APPLE__
 # include <mach-o/dyld.h>       // for _NSGetExecutablePath()
 # include <errno.h>
@@ -135,8 +133,7 @@ std::string Utils::upcaseString(const std::string& s)
 }
 
 
-#if defined WIN32 || defined _XBOX
-# ifdef WIN32
+#if defined WIN32
 std::string Utils::GetLastError() {
     LPVOID lpErrMsgBuf;
     LPVOID lpMessageBuf;
@@ -166,21 +163,13 @@ std::string Utils::GetLastError() {
     LocalFree(lpMessageBuf);
     return narrowString(wsMessage);
 }
-# else  // XBOX
-std::string Utils::GetLastError() {
-    DWORD dwErrorCode = ::GetLastError();
-    char buffer[32];
-    sprintf_s(buffer, 32, "0x%08.8X", dwErrorCode);
-    return buffer;
-}
-# endif
 #endif
 
 static std::string computeExecutablePath()
 {
     std::string path = "";
 
-#if defined(_XBOX) || defined(PS3)
+#if defined(PS3)
     msg_error("Utils::computeExecutablePath()") << "Utils::computeExecutablePath() is not implemented on this platform.";
 
 #elif defined(WIN32)

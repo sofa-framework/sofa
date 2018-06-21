@@ -47,7 +47,7 @@ namespace sofa
 
 namespace helper
 {
-#if defined(_XBOX) || defined(__PS3__)
+#if defined(__PS3__)
 char* getenv(const char* varname) { return NULL; } // NOT IMPLEMENTED
 #endif
 

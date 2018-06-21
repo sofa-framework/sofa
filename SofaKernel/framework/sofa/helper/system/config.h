@@ -26,7 +26,7 @@
 
 #include <cstddef>              // For NULL
 
-#if defined(_WIN32) || defined(_XBOX)
+#if defined(_WIN32)
 #  ifndef NOMINMAX
 #    define NOMINMAX
 #  endif
@@ -34,16 +34,12 @@
 
 // snprintf() has been provided since MSVC++ 14 (Visual Studio 2015).  For other
 // versions, it is simply #defined to _snprintf().
-#if (defined(_MSC_VER) && _MSC_VER < 1900) || defined(_XBOX)
+#if (defined(_MSC_VER) && _MSC_VER < 1900)
 #  define snprintf _snprintf
 #endif
 
 #ifdef _WIN32
 #  include <windows.h>
-#endif
-
-#ifdef _XBOX
-#  include <xtl.h>
 #endif
 
 #ifdef __PS3__

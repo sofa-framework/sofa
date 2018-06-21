@@ -536,7 +536,7 @@ void ConstraintAnimationLoop::step ( const core::ExecParams* params, SReal dt )
 
     ConstraintProblem& CP = (doubleBuffer.getValue() && bufCP1) ? CP2 : CP1;
 
-#if !defined(WIN32) && !defined(_XBOX)
+#if !defined(WIN32)
     if (_realTimeCompensation.getValue())
     {
         if (timer == 0)

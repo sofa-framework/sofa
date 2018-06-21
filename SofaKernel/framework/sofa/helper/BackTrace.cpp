@@ -21,10 +21,10 @@
 ******************************************************************************/
 #include <sofa/helper/BackTrace.h>
 
-#if !defined(_XBOX) && !defined(PS3)
+#if !defined(PS3)
 #include <signal.h>
 #endif
-#if !defined(WIN32) && !defined(_XBOX) && !defined(__APPLE__) && !defined(PS3)
+#if !defined(WIN32) && !defined(__APPLE__) && !defined(PS3)
 #include <execinfo.h>
 #include <unistd.h>
 #endif
@@ -53,7 +53,7 @@ namespace helper
 /// Currently only works on Linux. NOOP on other architectures.
 void BackTrace::dump()
 {
-#if defined(__GNUC__) && !defined(__APPLE__) && !defined(WIN32) && !defined(_XBOX) && !defined(PS3)
+#if defined(__GNUC__) && !defined(__APPLE__) && !defined(WIN32) && !defined(PS3)
     void *array[128];
     int size = backtrace(array, sizeof(array) / sizeof(array[0]));
     if (size > 0)
@@ -109,7 +109,7 @@ void BackTrace::dump()
             backtrace_symbols_fd(array, size, STDERR_FILENO);
         }
     }
-#elif !defined(__GNUC__) && !defined(__APPLE__) && defined(WIN32) && !defined(_XBOX) && !defined(PS3)
+#elif !defined(__GNUC__) && !defined(__APPLE__) && defined(WIN32) && !defined(PS3)
     unsigned int   i;
     void         * stack[100];
     unsigned short frames;
@@ -140,7 +140,7 @@ void BackTrace::dump()
 /// Currently only works on Linux. NOOP on other architectures
 void BackTrace::autodump()
 {
-#if !defined(_XBOX) && !defined(PS3)
+#if !defined(PS3)
     signal(SIGABRT, BackTrace::sig);
     signal(SIGSEGV, BackTrace::sig);
     signal(SIGILL, BackTrace::sig);
@@ -183,7 +183,7 @@ static std::string SigDescription(int sig)
 
 void BackTrace::sig(int sig)
 {
-#if !defined(_XBOX) && !defined(PS3)
+#if !defined(PS3)
     std::cerr << std::endl << "########## SIG " << sig << " - " << SigDescription(sig) << " ##########" << std::endl;
     dump();
     signal(sig,SIG_DFL);

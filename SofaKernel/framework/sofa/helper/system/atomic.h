@@ -34,8 +34,6 @@
 #include <bits/atomicity.h>
 #elif defined(WIN32)
 #include <windows.h>
-#elif defined(_XBOX)
-#include <xtl.h>
 #elif defined(PS3)
 #include <cell/atomic.h>
 #else
@@ -233,7 +231,7 @@ public:
     static const char* getImplName() { return "GLIBC"; }
 };
 
-#elif defined(WIN32) || defined(_XBOX)
+#elif defined(WIN32)
 
 /// Small class used for multi-process reference counting
 template<> class atomic<int>

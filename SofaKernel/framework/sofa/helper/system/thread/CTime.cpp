@@ -26,8 +26,6 @@
 # if _MSC_VER >= 1400
 #  include <intrin.h>
 # endif
-#elif defined(_XBOX)
-#include <xtl.h>
 #elif defined(PS3)
 #include <sys/sys_time.h>
 #include <sys/timer.h>
@@ -56,7 +54,7 @@ namespace system
 
 namespace thread
 {
-#if defined(WIN32) || defined(_XBOX)
+#if defined(WIN32)
 
 ctime_t CTime::getRefTime()
 {
