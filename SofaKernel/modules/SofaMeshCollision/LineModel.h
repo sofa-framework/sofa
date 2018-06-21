@@ -79,10 +79,6 @@ public:
     bool hasFreePosition() const;
 
     bool activated(core::CollisionModel *cm = 0) const;
-
-    // Return respectively the Vertex composing the neighbor Rigt and Left Triangle
-//	const Vector3* tRight() const;
-//	const Vector3* tLeft() const;
 };
 
 class LineActiver
@@ -125,9 +121,6 @@ protected:
     TLineModel();
 
 public:
-//    typedef Vec3Types InDataTypes;
-//    typedef Vec3Types DataTypes;
-//    typedef DataTypes DataTypes;
     typedef TDataTypes DataTypes;
     typedef DataTypes InDataTypes;
     typedef TLineModel<DataTypes> ParentModel;
@@ -163,15 +156,6 @@ public:
     virtual int getElemEdgeIndex(int index) const { return index; }
     
     int getLineFlags(int i);
-
-    //template< class TFilter >
-    //TFilter *getFilter() const
-    //{
-    //	if (m_lmdFilter != 0)
-    //		return m_lmdFilter;
-    //	else
-    //		return &m_emptyFilter;
-    //}
 
     void setFilter(LineLocalMinDistanceFilter * /*lmdFilter*/);
 
@@ -220,15 +204,12 @@ template<class DataTypes>
 inline TLine<DataTypes>::TLine(ParentModel* model, int index)
     : core::TCollisionElementIterator<ParentModel>(model, index)
 {
-//	activated = model->myActiver->activeLine(index);
 }
 
 template<class DataTypes>
 inline TLine<DataTypes>::TLine(const core::CollisionElementIterator& i)
     : core::TCollisionElementIterator<ParentModel>(static_cast<ParentModel*>(i.getCollisionModel()), i.getIndex())
 {
-//	LineModel* CM = static_cast<LineModel*>(i.getCollisionModel());
-//	activated = CM->myActiver->activeLine(i.getIndex());
 }
 
 template<class DataTypes>
@@ -289,57 +270,6 @@ inline bool TLine<DataTypes>::activated(core::CollisionModel *cm) const
 {
     return this->model->myActiver->activeLine(this->index, cm);
 }
-
-//inline const Vector3* Line::tRight() const {
-//	if (model->elems[index].tRight != -1)
-//		return &(*model->mstate->read(sofa::core::ConstVecCoordId::position())->getValue())[model->elems[index].tRight];
-//	else
-//		return NULL;
-//}
-
-//inline const Vector3* Line::tLeft() const {
-//	if (model->elems[index].tLeft != -1)
-//		return &(*model->mstate->read(sofa::core::ConstVecCoordId::position())->getValue())[model->elems[index].tLeft];
-//	else
-//		return NULL;
-//}
-
-//class LineMeshModel : public LineModel
-//{
-//protected:
-//    int meshRevision;
-//    void updateFromTopology();
-//
-//public:
-//    typedef topology::MeshTopology Topology;
-//
-//    LineMeshModel();
-//
-//    virtual void init();
-//
-//    Topology* getMeshTopology() { return mesh; }
-//
-//protected:
-//    Topology* mesh;
-//};
-
-//class LineSetModel : public LineModel
-//{
-//public:
-//
-//    LineSetModel();
-//
-//    ///\Todo
-//    virtual void init();
-//
-//    Topology* getMeshTopology() { return mesh; }
-//
-//protected:
-//
-//    Topology* mesh;
-//
-//    void updateFromTopology();
-//};
 
 typedef TLineModel<sofa::defaulttype::Vec3Types> LineModel;
 typedef TLine<sofa::defaulttype::Vec3Types> Line;

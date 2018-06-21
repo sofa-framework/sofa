@@ -43,7 +43,7 @@ namespace collision
 /**
  * @brief LocalMinDistance cone information class for a Line collision primitive.
  */
-class LineInfo : public InfoFilter //< topology::Edge >
+class LineInfo : public InfoFilter
 {
     typedef sofa::core::topology::BaseMeshTopology::Edge Edge;
     typedef sofa::core::topology::BaseMeshTopology::Triangle Triangle;
@@ -58,7 +58,6 @@ public:
         , m_computedLeftAngleCone(0.0)
         , m_twoTrianglesAroundEdge(false)
     {
-//        todo=false;
     }
 
     /**
@@ -70,7 +69,6 @@ public:
         , m_computedLeftAngleCone(0.0)
         , m_twoTrianglesAroundEdge(false)
     {
-//        todo=false;
     }
 
     /**
@@ -115,7 +113,6 @@ protected:
     double	m_computedRightAngleCone; ///<
     double	m_computedLeftAngleCone; ///<
     bool	m_twoTrianglesAroundEdge; ///<
-//    bool todo;
 };
 
 
