@@ -102,6 +102,35 @@ void StaticSolver::solve(const core::ExecParams* params, SReal dt, sofa::core::M
 
 }
 
+/// Given an input derivative order (0 for position, 1 for velocity, 2 for acceleration),
+/// how much will it affect the output derivative of the given order.
+double StaticSolver::getIntegrationFactor(int inputDerivative, int outputDerivative) const
+{
+    double matrix[3][3] =
+    {
+        { 1, 0, 0},
+        { 0, 1, 0},
+        { 0, 0, 0}
+    };
+    if (inputDerivative >= 3 || outputDerivative >= 3)
+        return 0;
+    else
+        return matrix[outputDerivative][inputDerivative];
+}
+
+/// Given a solution of the linear system,
+/// how much will it affect the output derivative of the given order.
+double StaticSolver::getSolutionIntegrationFactor(int outputDerivative) const
+{
+    double vect[3] = { 1, 0, 0};
+    if (outputDerivative >= 3)
+        return 0;
+    else
+        return vect[outputDerivative];
+}
+
+
+
 int StaticSolverClass = core::RegisterObject("A solver which seeks the static equilibrium of the scene it monitors")
         .add< StaticSolver >();
 

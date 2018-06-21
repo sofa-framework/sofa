@@ -82,7 +82,6 @@ public:
     JointSpring()
         : m1(0), m2(0), kd(0), torsion(0,0,0) ,  lawfulTorsion(0,0,0), KT(0,0,0) , KR(0,0,0)
         , softStiffnessTrans(0), hardStiffnessTrans(10000), softStiffnessRot(0), hardStiffnessRot(10000), blocStiffnessRot(100), needToInitializeTrans(true), needToInitializeRot(true)
-        //, freeMovements(0,0,0,1,1,1), limitAngles(-100000, 100000, -100000, 100000, -100000, 100000)
     {
         freeMovements = sofa::defaulttype::Vec<6,bool>(0,0,0,1,1,1);
         limitAngles = sofa::defaulttype::Vec<6,Real>(-100000, 100000, -100000, 100000, -100000, 100000);
@@ -93,7 +92,6 @@ public:
     JointSpring(int m1, int m2)
         : m1(m1), m2(m2), kd(0),  torsion(0,0,0), lawfulTorsion(0,0,0), KT(0,0,0) , KR(0,0,0)
         , softStiffnessTrans(0), hardStiffnessTrans(10000), softStiffnessRot(0), hardStiffnessRot(10000), blocStiffnessRot(100), needToInitializeTrans(true), needToInitializeRot(true)
-        //, freeMovements(0,0,0,1,1,1), limitAngles(-100000, 100000, -100000, 100000, -100000, 100000)
     {
         freeMovements = sofa::defaulttype::Vec<6,bool>(0,0,0,1,1,1);
         limitAngles = sofa::defaulttype::Vec<6,Real>(-100000, 100000, -100000, 100000, -100000, 100000);
@@ -103,7 +101,6 @@ public:
 
     JointSpring(int m1, int m2, Real softKst, Real hardKst, Real softKsr, Real hardKsr, Real blocKsr, Real axmin, Real axmax, Real aymin, Real aymax, Real azmin, Real azmax, Real kd)
         : m1(m1), m2(m2), kd(kd),  torsion(0,0,0), lawfulTorsion(0,0,0), KT(0,0,0) , KR(0,0,0)
-        //,limitAngles(axmin,axmax,aymin,aymax,azmin,azmax)
         , softStiffnessTrans(softKst), hardStiffnessTrans(hardKst), softStiffnessRot(softKsr), hardStiffnessRot(hardKsr), blocStiffnessRot(blocKsr), needToInitializeTrans(true), needToInitializeRot(true)
     {
         limitAngles = sofa::defaulttype::Vec<6,Real>(axmin,axmax,aymin,aymax,azmin,azmax);
@@ -169,7 +166,6 @@ public:
         //by default no angle limitation is set (bi values for initialisation)
         s.limitAngles = sofa::defaulttype::Vec<6,Real>(-100000., 100000., -100000., 100000., -100000., 100000.);
         bool initTransFound=false;
-//		bool initRotFound=false;
 
         std::string str;
         in>>str;
@@ -203,7 +199,6 @@ public:
                 else if(str == "REST_R")
                 {
                     in>>s.initRot;
-//					  initRotFound=true;
                 }
                 else
                 {
@@ -218,11 +213,9 @@ public:
         s.needToInitializeTrans = initTransFound;
         s.needToInitializeRot = initTransFound;
 
-        //if no blocStiffnessRot was specified (typically 0), we use hardStiffnessRot/100
         if(s.blocStiffnessRot == 0.0)
             s.blocStiffnessRot = s.hardStiffnessRot/100;
 
-        //if limit angle were specified, free rotation axis are set from them
         for (unsigned int i=0; i<3; i++)
         {
             if(s.limitAngles[2*i]==s.limitAngles[2*i+1])
