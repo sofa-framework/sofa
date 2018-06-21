@@ -47,7 +47,7 @@ namespace component
 namespace collision
 {
 
-class GenerateStringID
+class SOFA_BASE_COLLISION_API GenerateStringID
 {
 public :
     static const int length {15};

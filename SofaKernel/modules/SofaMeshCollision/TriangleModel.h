@@ -47,7 +47,7 @@ class TTriangleModel;
 class TriangleLocalMinDistanceFilter;
 
 template<class TDataTypes>
-class SOFA_MESH_COLLISION_API TTriangle : public core::TCollisionElementIterator< TTriangleModel<TDataTypes> >
+class TTriangle : public core::TCollisionElementIterator< TTriangleModel<TDataTypes> >
 {
 public:
     typedef TDataTypes DataTypes;
