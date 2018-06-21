@@ -37,7 +37,6 @@
 #include <map>
 #include <queue>
 #include <stack>
-#include <sofa/helper/system/gl.h>
 
 #include <sofa/helper/system/thread/CTime.h>
 

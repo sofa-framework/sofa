@@ -28,7 +28,6 @@
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/accessor.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/gl/template.h>
 #include <assert.h>
 #include <iostream>
 #include <sofa/defaulttype/BoundingBox.h>

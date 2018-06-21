@@ -25,7 +25,6 @@
 #include "EvalSurfaceDistance.h"
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/simulation/Node.h>
-#include <sofa/helper/gl/template.h>
 
 #include <fstream>
 
