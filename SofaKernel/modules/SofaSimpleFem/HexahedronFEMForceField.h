@@ -106,13 +106,8 @@ public:
     typedef helper::WriteAccessor< Data< VecDeriv > > WDataRefVecDeriv;
 
     typedef core::topology::BaseMeshTopology::index_type Index;
-#ifdef SOFA_NEW_HEXA
     typedef core::topology::BaseMeshTopology::Hexa Element;
     typedef core::topology::BaseMeshTopology::SeqHexahedra VecElement;
-#else
-    typedef core::topology::BaseMeshTopology::Cube Element;
-    typedef core::topology::BaseMeshTopology::SeqCubes VecElement;
-#endif
 
     enum
     {
@@ -151,9 +146,6 @@ protected:
 
 
     defaulttype::Mat<8,3,int> _coef; ///< coef of each vertices to compute the strain stress matrix
-#ifndef SOFA_NEW_HEXA
-    static const int _indices[8]; ///< indices ordering is different than in topology node
-#endif
 
     HexahedronFEMForceFieldInternalData<DataTypes> *data;
     friend class HexahedronFEMForceFieldInternalData<DataTypes>;
@@ -358,11 +350,7 @@ protected:
 
     inline const VecElement *getIndexedElements()
     {
-#ifdef SOFA_NEW_HEXA
         return & (_mesh->getHexahedra());
-#else
-        return & (_mesh->getCubes());
-#endif
     }
 
     virtual void computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const helper::fixed_array<Coord,8> &nodes, const int elementIndice, double stiffnessFactor=1.0);

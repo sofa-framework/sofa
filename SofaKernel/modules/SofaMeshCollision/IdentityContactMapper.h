@@ -52,7 +52,7 @@ namespace collision
 
 /// Base class for IdentityMapping based mappers
 template<class TCollisionModel, class DataTypes>
-class IdentityContactMapper : public BaseContactMapper<DataTypes>
+class SOFA_MESH_COLLISION_API IdentityContactMapper : public BaseContactMapper<DataTypes>
 {
 public:
     typedef typename DataTypes::Real Real;

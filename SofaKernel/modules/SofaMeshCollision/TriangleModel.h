@@ -47,7 +47,7 @@ class TTriangleModel;
 class TriangleLocalMinDistanceFilter;
 
 template<class TDataTypes>
-class TTriangle : public core::TCollisionElementIterator< TTriangleModel<TDataTypes> >
+class SOFA_MESH_COLLISION_API TTriangle : public core::TCollisionElementIterator< TTriangleModel<TDataTypes> >
 {
 public:
     typedef TDataTypes DataTypes;
@@ -101,7 +101,7 @@ public:
 };
 
 template<class TDataTypes>
-class TTriangleModel : public core::CollisionModel
+class SOFA_MESH_COLLISION_API TTriangleModel : public core::CollisionModel
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(TTriangleModel, TDataTypes), core::CollisionModel);
@@ -135,28 +135,6 @@ public:
 
     Data<bool> bothSide; ///< to activate collision on both side of the triangle model
 protected:
-#if 0
-    struct TriangleInfo
-    {
-        //int i1,i2,i3;
-        //int flags;
-        Deriv normal;
-
-        /// Output stream
-        inline friend std::ostream& operator<< ( std::ostream& os, const TriangleInfo& ti )
-        {
-            return os << ti.normal;
-        }
-
-        /// Input stream
-        inline friend std::istream& operator>> ( std::istream& in, TriangleInfo& ti )
-        {
-            return in >> ti.normal;
-        }
-    };
-#endif
-
-    //topology::TriangleData<TriangleInfo> elems;
     VecDeriv normals;
 
     const sofa::core::topology::BaseMeshTopology::SeqTriangles* triangles;
@@ -209,15 +187,6 @@ public:
     const VecDeriv& getNormals() const { return normals; }
 
     TriangleLocalMinDistanceFilter *getFilter() const;
-
-    //template< class TFilter >
-    //TFilter *getFilter() const
-    //{
-    //	if (m_lmdFilter != 0)
-    //		return m_lmdFilter;
-    //	else
-    //		return &m_emptyFilter;
-    //}
 
     void setFilter(TriangleLocalMinDistanceFilter * /*lmdFilter*/);
 

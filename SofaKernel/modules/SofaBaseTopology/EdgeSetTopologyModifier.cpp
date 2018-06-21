@@ -67,28 +67,28 @@ void EdgeSetTopologyModifier::init()
 
 void EdgeSetTopologyModifier::addEdgeProcess(Edge e)
 {
-#ifndef NDEBUG
-    // check if the 2 vertices are different
-    if(e[0] == e[1])
-    {
-        serr << "Error: [EdgeSetTopologyModifier::addEdge] : invalid edge: "
-                << e[0] << ", " << e[1] << sendl;
+	if (CHECK_TOPOLOGY)
+	{
+		// check if the 2 vertices are different
+		if (e[0] == e[1])
+		{
+			msg_error() << "Invalid edge: " << e[0] << ", " << e[1];
 
-        return;
-    }
+			return;
+		}
 
-    // check if there already exists an edge.
-    // Important: getEdgeIndex creates the edge vertex shell array
-    if(m_container->hasEdgesAroundVertex())
-    {
-        if(m_container->getEdgeIndex(e[0],e[1]) != -1)
-        {
-            serr << "Error: [EdgeSetTopologyModifier::addEdgesProcess] : Edge "
-                    << e[0] << ", " << e[1] << " already exists." << sendl;
-            return;
-        }
-    }
-#endif
+		// check if there already exists an edge.
+		// Important: getEdgeIndex creates the edge vertex shell array
+		if (m_container->hasEdgesAroundVertex())
+		{
+			if (m_container->getEdgeIndex(e[0], e[1]) != -1)
+			{
+				msg_error() << "Edge " << e[0] << ", " << e[1] << " already exists.";
+				return;
+			}
+		}
+	}
+
     if (m_container->hasEdgesAroundVertex())
     {
         const unsigned int edgeId = m_container->getNumberOfEdges();
@@ -212,7 +212,7 @@ void EdgeSetTopologyModifier::removeEdgesProcess(const sofa::helper::vector<unsi
 {
     if(!m_container->hasEdges())	// this method should only be called when edges exist
     {
-        sout << "Warning. [EdgeSetTopologyModifier::removeEdgesProcess] edge array is empty." << sendl;
+        msg_warning() << "Edge array is empty.";
         return;
     }
 
@@ -781,31 +781,23 @@ void EdgeSetTopologyModifier::resortCuthillMckee(sofa::helper::vector<int>& inve
 
     property_map<Graph, vertex_index_t>::type index_map = get(vertex_index, G);
 
-    sout << "original bandwidth: " << bandwidth(G) << sendl;
-
     std::vector<Vertex> inv_perm(num_vertices(G));
     std::vector<size_type> perm(num_vertices(G));
 
     //reverse cuthill_mckee_ordering
     cuthill_mckee_ordering(G, inv_perm.rbegin());
 
-    //sout << "Reverse Cuthill-McKee ordering:" << sendl;
-    //sout << "  ";
     unsigned int ind_i = 0;
     for (std::vector<Vertex>::const_iterator it = inv_perm.begin();
             it != inv_perm.end(); ++it)
     {
-        //sout << index_map[*it] << " ";
         inverse_permutation[ind_i++] = (int)index_map[*it];
     }
-    //sout << sendl;
 
     for (size_type c=0; c!=inv_perm.size(); ++c)
         perm[index_map[inv_perm[c]]] = c;
 
-    sout << "  bandwidth: "
-            << bandwidth(G, make_iterator_property_map(&perm[0], index_map, perm[0]))
-            << sendl;
+	msg_info() << "  bandwidth: " << bandwidth(G, make_iterator_property_map(&perm[0], index_map, perm[0]));
 }
 
 
@@ -874,7 +866,7 @@ bool EdgeSetTopologyModifier::removeConnectedComponents(unsigned int elemID)
 {
     if(!m_container)
     {
-        serr << "TopologyContainer pointer is empty." << sendl;
+        msg_error() << "TopologyContainer pointer is empty.";
         return false;
     }
 
@@ -888,7 +880,7 @@ bool EdgeSetTopologyModifier::removeConnectedElements(unsigned int elemID)
 {
     if(!m_container)
     {
-        serr << "TopologyContainer pointer is empty." << sendl;
+        msg_error() << "TopologyContainer pointer is empty.";
         return false;
     }
 
@@ -908,7 +900,7 @@ bool EdgeSetTopologyModifier::removeIsolatedElements(unsigned int scaleElem)
 {
     if(!m_container)
     {
-        serr << "TopologyContainer pointer is empty." << sendl;
+        msg_error() << "TopologyContainer pointer is empty.";
         return false;
     }
 
@@ -975,9 +967,9 @@ void EdgeSetTopologyModifier::propagateTopologicalEngineChanges()
         sofa::core::topology::TopologyEngine* topoEngine = (*it);
         if (topoEngine->isDirty())
         {
-#ifndef NDEBUG
-            msg_info() << "EdgeSetTopologyModifier::performing: " << topoEngine->getName() ;
-#endif
+			if (CHECK_TOPOLOGY)
+				msg_info() << "Performing: " << topoEngine->getName();
+
             topoEngine->update();
         }
     }

@@ -53,7 +53,7 @@ namespace collision
 
 /// Base class for all mappers using BarycentricMapping
 template < class TCollisionModel, class DataTypes >
-class BarycentricContactMapper : public BaseContactMapper<DataTypes>
+class SOFA_MESH_COLLISION_API BarycentricContactMapper : public BaseContactMapper<DataTypes>
 {
 public:
     typedef typename DataTypes::Real Real;

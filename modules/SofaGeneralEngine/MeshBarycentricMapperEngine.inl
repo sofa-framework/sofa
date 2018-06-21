@@ -142,11 +142,8 @@ void MeshBarycentricMapperEngine<DataTypes>::update()
     int outside = 0;
 
     const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = TopoInput->getTetrahedra();
-#ifdef SOFA_NEW_HEXA
     const sofa::core::topology::BaseMeshTopology::SeqHexahedra& cubes = TopoInput->getHexahedra();
-#else
-    const sofa::core::topology::BaseMeshTopology::SeqCubes& cubes = TopoInput->getCubes();
-#endif
+
     const sofa::core::topology::BaseMeshTopology::SeqTriangles& triangles = TopoInput->getTriangles();
     const sofa::core::topology::BaseMeshTopology::SeqQuads& quads = TopoInput->getQuads();
     sofa::helper::vector<Matrix3> bases;
@@ -277,11 +274,7 @@ void MeshBarycentricMapperEngine<DataTypes>::update()
         {
             Mat3x3d m,mt;
             m[0] = (*in)[cubes[c][1]]-(*in)[cubes[c][0]];
-#ifdef SOFA_NEW_HEXA
             m[1] = (*in)[cubes[c][3]]-(*in)[cubes[c][0]];
-#else
-            m[1] = (*in)[cubes[c][2]]-(*in)[cubes[c][0]];
-#endif
             m[2] = (*in)[cubes[c][4]]-(*in)[cubes[c][0]];
             mt.transpose ( m );
             bases[c0+c].invert ( mt );
