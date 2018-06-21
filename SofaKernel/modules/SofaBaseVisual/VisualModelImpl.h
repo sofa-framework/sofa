@@ -46,6 +46,8 @@ namespace component
 namespace visualmodel
 {
 
+using sofa::core::objectmodel::Data ;
+
 class SOFA_BASE_VISUAL_API ExtVec3fState : public core::State< sofa::defaulttype::ExtVec3fTypes >
 {
 public:
@@ -54,72 +56,18 @@ public:
     topology::PointData< sofa::defaulttype::ResizableExtVector<Deriv> > m_vnormals; ///< Normals of the model
     bool modified; ///< True if input vertices modified since last rendering
 
-    ExtVec3fState()
-        : m_positions(initData(&m_positions, "position", "Vertices coordinates"))
-        , m_restPositions(initData(&m_restPositions, "restPosition", "Vertices rest coordinates"))
-        , m_vnormals (initData (&m_vnormals, "normal", "Normals of the model"))
-        , modified(false)
-    {
-        m_positions.setGroup("Vector");
-        m_restPositions.setGroup("Vector");
-        m_vnormals.setGroup("Vector");
-    }
+    ExtVec3fState() ;
 
-    virtual void resize(size_t vsize)
-    {
-        helper::WriteOnlyAccessor< Data<sofa::defaulttype::ResizableExtVector<Coord> > > positions = m_positions;
-        if( positions.size() == vsize ) return;
-        helper::WriteOnlyAccessor< Data<sofa::defaulttype::ResizableExtVector<Coord> > > restPositions = m_restPositions;
-        helper::WriteOnlyAccessor< Data<sofa::defaulttype::ResizableExtVector<Deriv> > > normals = m_vnormals;
-
-        positions.resize(vsize);
-        restPositions.resize(vsize); // todo allocate restpos only when it is necessary
-        normals.resize(vsize);
-
-        modified = true;
-    }
-
-    virtual size_t getSize() const { return m_positions.getValue().size(); }
+    virtual void resize(size_t vsize) ;
+    virtual size_t getSize() const ;
 
     //State API
-    virtual       Data<VecCoord>* write(     core::VecCoordId  v )
-    {
-        modified = true;
+    virtual       Data<VecCoord>* write(core::VecCoordId  v ) ;
+    virtual const Data<VecCoord>* read(core::ConstVecCoordId  v )  const ;
+    virtual Data<VecDeriv>*	write(core::VecDerivId v ) ;
+    virtual const Data<VecDeriv>* read(core::ConstVecDerivId v ) const ;
 
-        if( v == core::VecCoordId::position() )
-            return &m_positions;
-        if( v == core::VecCoordId::restPosition() )
-            return &m_restPositions;
-
-        return NULL;
-    }
-    virtual const Data<VecCoord>*  read(core::ConstVecCoordId  v )  const
-    {
-        if( v == core::VecCoordId::position() )
-            return &m_positions;
-        if( v == core::VecCoordId::restPosition() )
-            return &m_restPositions;
-
-        return NULL;
-    }
-
-    virtual Data<VecDeriv>*	write(core::VecDerivId v )
-    {
-        if( v == core::VecDerivId::normal() )
-            return &m_vnormals;
-
-        return NULL;
-    }
-
-    virtual const Data<VecDeriv>* read(core::ConstVecDerivId v ) const
-    {
-        if( v == core::VecDerivId::normal() )
-            return &m_vnormals;
-
-        return NULL;
-    }
-
-    virtual       Data<MatrixDeriv>*	write(     core::MatrixDerivId /* v */) { return NULL; }
+    virtual       Data<MatrixDeriv>*	write(core::MatrixDerivId /* v */) { return NULL; }
     virtual const Data<MatrixDeriv>*	read(core::ConstMatrixDerivId /* v */) const {  return NULL; }
 };
 
