@@ -95,13 +95,13 @@ void SceneCheckAPIChange::doInit(Node* node)
 void SceneCheckAPIChange::doPrintSummary()
 {
     // Alias use summary
-    if(!this->m_componentsCreatedUsingAlias.empty())
+    if ( ! this->m_componentsCreatedUsingAlias.empty() )
     {
         std::stringstream usingAliasesWarning;
         usingAliasesWarning << "This scene is using aliases. Aliases are dangerous, use with caution." << msgendl;
-        for(auto i : this->m_componentsCreatedUsingAlias)
+        for (auto i : this->m_componentsCreatedUsingAlias)
         {
-            if(i.second.size() > 1)
+            if (i.second.size() > 1)
                 usingAliasesWarning << "  - " << i.first << " have been created using the aliases ";
             else
                 usingAliasesWarning << "  - " << i.first << " has been created using the alias ";
@@ -109,7 +109,7 @@ void SceneCheckAPIChange::doPrintSummary()
             bool first = true;
             for (std::string &alias : i.second)
             {
-                if(first)
+                if (first)
                     usingAliasesWarning << "\"" << alias << "\"";
                 else
                     usingAliasesWarning << ", \"" << alias << "\"";
@@ -154,8 +154,6 @@ void SceneCheckAPIChange::installDefaultChangeSets()
         }
     }) ;
 
-    std::cout << "HELLO " << std::endl ;
-
     for(auto i : this->m_componentsCreatedUsingAlias)
     {
         std::string aliases;
@@ -168,10 +166,7 @@ void SceneCheckAPIChange::installDefaultChangeSets()
 
     /// Add a callback to be n
     ObjectFactory::getInstance()->setCallback([this](Base* o, BaseObjectDescription *arg) {
-        //msg_warning(o) << "Using an Alias: " << o->getClassName() ;
-//        msg_warning(o) << "className = \"" << o->getClassName() << "\" ; usedName = \"" << arg->getAttribute("type", "") << "\"";
-
-        if(o->getClassName() != arg->getAttribute("type", "") ){
+        if (o->getClassName() != arg->getAttribute("type", "") ) {
             std::string alias = arg->getAttribute("type", "");
 
             std::vector<std::string> v = this->m_componentsCreatedUsingAlias[o->getClassName()];
@@ -179,7 +174,6 @@ void SceneCheckAPIChange::installDefaultChangeSets()
             {
                 this->m_componentsCreatedUsingAlias[o->getClassName()].push_back(alias);
             }
-            //this->m_numberOfCreationFromAlias[o->getClassName()].push_back(alias);
         }
     });
 }
