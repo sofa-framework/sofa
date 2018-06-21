@@ -149,22 +149,6 @@ protected:
     FCPointHandler* pointHandler;
 };
 
-
-// Specialization for rigids
-#ifndef SOFA_FLOAT
-template <>
-void PartialFixedConstraint<defaulttype::Rigid3dTypes >::draw(const core::visual::VisualParams* vparams);
-template <>
-void PartialFixedConstraint<defaulttype::Rigid2dTypes >::draw(const core::visual::VisualParams* vparams);
-#endif
-#ifndef SOFA_DOUBLE
-template <>
-void PartialFixedConstraint<defaulttype::Rigid3fTypes >::draw(const core::visual::VisualParams* vparams);
-template <>
-void PartialFixedConstraint<defaulttype::Rigid2fTypes >::draw(const core::visual::VisualParams* vparams);
-#endif
-
-
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_PARTIALFIXEDCONSTRAINT_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BOUNDARY_CONDITION_API PartialFixedConstraint<defaulttype::Vec3dTypes>;

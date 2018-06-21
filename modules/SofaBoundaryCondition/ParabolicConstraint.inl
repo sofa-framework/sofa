@@ -24,8 +24,8 @@
 
 #include <SofaBoundaryCondition/ParabolicConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/gl/template.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
+#include <sofa/defaulttype/RGBAColor.h>
 
 namespace sofa
 {
@@ -221,18 +221,18 @@ void ParabolicConstraint<DataTypes>::projectJacobianMatrix(const core::Mechanica
 template <class DataTypes>
 void ParabolicConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
+    vparams->drawTool()->saveLastState();
+
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
     Real dt = (Real) this->getContext()->getDt();
     Real t = m_tEnd.getValue() - m_tBegin.getValue();
     Real nbStep = t/dt;
 
-    glDisable (GL_LIGHTING);
-    glPointSize(5);
-    glColor4f (1,0.5,0.5,1);
+    vparams->drawTool()->disableLighting();
+    sofa::defaulttype::RGBAColor color(1, 0.5, 0.5, 1);
+    std::vector<sofa::defaulttype::Vector3> vertices;
 
-    glBegin (GL_LINES);
     for (unsigned int i=0 ; i< nbStep ; i++)
     {
         //draw lines between each step of the parabolic trajectory
@@ -243,24 +243,33 @@ void ParabolicConstraint<DataTypes>::draw(const core::visual::VisualParams* vpar
         Vec3R locPos( px , py, 0.0);
         Vec3R worldPos = m_P1.getValue() + m_projection.rotate(locPos);
 
-        helper::gl::glVertexT(worldPos);
+        vertices.push_back(sofa::defaulttype::Vector3(worldPos[0],worldPos[1],worldPos[2]));
 
         relativeTime = (i+1)/nbStep;
         px = m_locP3.x()*relativeTime;
         py = (- m_locP2.y() / (m_locP3.x()*m_locP2.x() - m_locP2.x()*m_locP2.x())) * (px *px) + ( (m_locP3.x()*m_locP2.y()) / (m_locP3.x()*m_locP2.x() - m_locP2.x()*m_locP2.x())) * px;
         locPos = Vec3R( px , py, 0.0);
         worldPos = m_P1.getValue() + m_projection.rotate(locPos);
-        helper::gl::glVertexT(worldPos);
+
+
+        vertices.push_back(sofa::defaulttype::Vector3(worldPos[0],worldPos[1],worldPos[2]));
+
     }
-    glEnd();
+    vparams->drawTool()->drawLines(vertices, 1.0, color);
+    vertices.clear();
 
     //draw points for the 3 control points
-    glBegin(GL_POINTS);
-    helper::gl::glVertexT(m_P1.getValue());
-    helper::gl::glVertexT(m_P2.getValue());
-    helper::gl::glVertexT(m_P3.getValue());
-    glEnd();
-#endif /* SOFA_NO_OPENGL */
+    const Vec3R& mp1 = m_P1.getValue();
+    const Vec3R& mp2 = m_P2.getValue();
+    const Vec3R& mp3 = m_P3.getValue();
+    vertices.push_back(sofa::defaulttype::Vector3(mp1[0],mp1[1],mp1[2]));
+    vertices.push_back(sofa::defaulttype::Vector3(mp2[0],mp2[1],mp2[2]));
+    vertices.push_back(sofa::defaulttype::Vector3(mp3[0],mp3[1],mp3[2]));
+
+    vparams->drawTool()->drawPoints(vertices, 5.0, color);
+
+    vparams->drawTool()->restoreLastState();
+
 }
 
 
