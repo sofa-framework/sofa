@@ -86,8 +86,6 @@ public:
 
     typedef defaulttype::Mat<N, N, Real> Mat;
 
-    //enum { N=((int)Deriv::static_size < (int)InDeriv::static_size ? (int)Deriv::static_size : (int)InDeriv::static_size) };
-
 protected:
     IdentityMapping()
         : Inherit()
@@ -132,9 +130,6 @@ protected:
     typedef helper::vector< defaulttype::BaseMatrix* > js_type;
     js_type Js;
 
-//    size_t previousMaskHash; ///< storing previous dof maskTo to check if it changed from last time step to updateJ in consequence
-//    void updateJ();
-
 public:
 
     const js_type* getJs() override;
@@ -144,7 +139,7 @@ public:
 template <int N, int M, class Real>
 struct IdentityMappingMatrixHelper;
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_IDENTITYMAPPING_CPP)
+#if  !defined(SOFA_COMPONENT_MAPPING_IDENTITYMAPPING_CPP)
 
 #ifndef SOFA_FLOAT
 extern template class SOFA_BASE_MECHANICS_API IdentityMapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes >;

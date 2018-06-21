@@ -23,9 +23,7 @@
 #define SOFA_COMPONENT_MASS_DIAGONALMASS_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/behavior/Mass.h>
@@ -368,7 +366,7 @@ defaulttype::Vector6 DiagonalMass<defaulttype::Rigid3fTypes,defaulttype::Rigid3f
 #endif
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MASS_DIAGONALMASS_CPP)
+#if  !defined(SOFA_COMPONENT_MASS_DIAGONALMASS_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BASE_MECHANICS_API DiagonalMass<defaulttype::Vec3dTypes,double>;
 extern template class SOFA_BASE_MECHANICS_API DiagonalMass<defaulttype::Vec2dTypes,double>;

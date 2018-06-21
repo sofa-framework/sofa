@@ -159,7 +159,7 @@ protected:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_BUOYANTFORCEFIELD_CPP)
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_BUOYANTFORCEFIELD_CPP)
 
 #ifndef SOFA_FLOAT
 extern template class SOFA_BOUNDARY_CONDITION_API BuoyantForceField<defaulttype::Vec3dTypes>;
@@ -167,7 +167,7 @@ extern template class SOFA_BOUNDARY_CONDITION_API BuoyantForceField<defaulttype:
 #ifndef SOFA_DOUBLE
 extern template class SOFA_BOUNDARY_CONDITION_API BuoyantForceField<defaulttype::Vec3fTypes>;
 #endif
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_BuoyantForceField_CPP)
+#endif //  !defined(SOFA_COMPONENT_FORCEFIELD_BuoyantForceField_CPP)
 
 
 } // namespace forcefield

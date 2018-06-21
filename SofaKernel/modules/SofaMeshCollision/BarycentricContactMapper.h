@@ -219,7 +219,7 @@ public:
     }
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_MESH_COLLISION)
+#if  !defined(SOFA_BUILD_MESH_COLLISION)
 extern template class SOFA_MESH_COLLISION_API ContactMapper<LineModel, sofa::defaulttype::Vec3Types>;
 extern template class SOFA_MESH_COLLISION_API ContactMapper<TriangleModel, sofa::defaulttype::Vec3Types>;
 extern template class SOFA_MESH_COLLISION_API ContactMapper<CapsuleModel, sofa::defaulttype::Vec3Types>;

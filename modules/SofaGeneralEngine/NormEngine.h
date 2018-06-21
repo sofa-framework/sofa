@@ -77,7 +77,7 @@ protected:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_NORMENGINE_CPP)
+#if  !defined(SOFA_COMPONENT_ENGINE_NORMENGINE_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_ENGINE_API NormEngine<defaulttype::Vec3d>;
 #endif

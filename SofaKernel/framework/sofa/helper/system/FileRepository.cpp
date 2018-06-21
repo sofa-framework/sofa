@@ -82,9 +82,6 @@ FileRepository PluginRepository( "SOFA_PLUGIN_PATH", Utils::getSofaPathTo("lib")
 
 FileRepository DataRepository("SOFA_DATA_PATH");
 
-#if defined(PS3)
-char* getenv(const char* varname) { return NULL; } // NOT IMPLEMENTED
-#endif
 
 FileRepository::FileRepository(const char* envVar, const char* relativePath)
 {

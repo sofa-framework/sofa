@@ -22,10 +22,6 @@
 #ifndef SOFA_CORE_OBJECTMODEL_DATA_H
 #define SOFA_CORE_OBJECTMODEL_DATA_H
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include <sofa/core/core.h>
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/helper/accessor.h>
@@ -582,7 +578,7 @@ std::string TData<T>::getValueTypeString() const
 }
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_CORE_OBJECTMODEL_DATA_CPP)
+#if  !defined(SOFA_CORE_OBJECTMODEL_DATA_CPP)
 
 extern template class SOFA_CORE_API TData< std::string >;
 extern template class SOFA_CORE_API Data< std::string >;

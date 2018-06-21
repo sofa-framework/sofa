@@ -101,26 +101,11 @@ public:
     Data<defaulttype::RGBAColor> color; ///< ellipsoid color. (default=0,0.5,1.0,1.0)
     Data<bool> bDraw; ///< enable/disable drawing of the ellipsoid
 protected:
-    EllipsoidForceField()
-        : contacts(initData(&contacts,"contacts", "Contacts"))
-        , center(initData(&center, "center", "ellipsoid center"))
-        , vradius(initData(&vradius, "vradius", "ellipsoid radius"))
-        , stiffness(initData(&stiffness, (Real)500, "stiffness", "force stiffness (positive to repulse outward, negative inward)"))
-        , damping(initData(&damping, (Real)5, "damping", "force damping"))
-        , color(initData(&color, defaulttype::RGBAColor(0.0f,0.5f,1.0f,1.0f), "color", "ellipsoid color. (default=0,0.5,1.0,1.0)"))
-        , bDraw(initData(&bDraw, true, "draw", "enable/disable drawing of the ellipsoid"))
-    {
-    }
-public:
-    void setStiffness(Real stiff)
-    {
-        stiffness.setValue( stiff );
-    }
+    EllipsoidForceField();
 
-    void setDamping(Real damp)
-    {
-        damping.setValue( damp );
-    }
+public:
+    void setStiffness(Real stiff);
+    void setDamping(Real damp);
 
     virtual void addForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv &  dataF, const DataVecCoord &  dataX , const DataVecDeriv & dataV ) override;
     ///SOFA_DEPRECATED_ForceField <<<virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
@@ -128,17 +113,13 @@ public:
     virtual void addDForce(const sofa::core::MechanicalParams* /*mparams*/, DataVecDeriv&   datadF , const DataVecDeriv&   datadX ) override;
     ///SOFA_DEPRECATED_ForceField <<<virtual void addDForce (VecDeriv& df, const VecDeriv& dx, SReal kFactor, SReal bFactor);
 
-    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override
-    {
-        serr << "Get potentialEnergy not implemented" << sendl;
-        return 0.0;
-    }
+    virtual SReal getPotentialEnergy(const core::MechanicalParams* /*mparams*/, const DataVecCoord&  /* x */) const override;
 
     void draw(const core::visual::VisualParams* vparams) override;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_ELLIPSOIDFORCEFIELD_CPP)
 
+#if  !defined(SOFA_COMPONENT_FORCEFIELD_ELLIPSOIDFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BOUNDARY_CONDITION_API EllipsoidForceField<sofa::defaulttype::Vec3dTypes>;
 extern template class SOFA_BOUNDARY_CONDITION_API EllipsoidForceField<sofa::defaulttype::Vec2dTypes>;
@@ -150,7 +131,7 @@ extern template class SOFA_BOUNDARY_CONDITION_API EllipsoidForceField<sofa::defa
 extern template class SOFA_BOUNDARY_CONDITION_API EllipsoidForceField<sofa::defaulttype::Vec1fTypes>;
 #endif
 
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_ELLIPSOIDFORCEFIELD_CPP)
+#endif //  !defined(SOFA_COMPONENT_FORCEFIELD_ELLIPSOIDFORCEFIELD_CPP)
 
 } // namespace forcefield
 

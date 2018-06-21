@@ -23,9 +23,7 @@
 #define SOFA_COMPONENT_ENGINE_BOXROI_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/DataEngine.h>
@@ -215,7 +213,7 @@ protected:
     void getPointsFromOrientedBox(const Vec10& box, vector<Vec3> &points);
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_BOXROI_CPP)
+#if  !defined(SOFA_COMPONENT_ENGINE_BOXROI_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_ENGINE_API BoxROI<defaulttype::Vec3dTypes>;
 extern template class SOFA_ENGINE_API BoxROI<defaulttype::Rigid3dTypes>;

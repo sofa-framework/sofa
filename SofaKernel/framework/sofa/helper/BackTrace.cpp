@@ -21,10 +21,7 @@
 ******************************************************************************/
 #include <sofa/helper/BackTrace.h>
 
-#if !defined(PS3)
-#include <signal.h>
-#endif
-#if !defined(WIN32) && !defined(__APPLE__) && !defined(PS3)
+#if !defined(WIN32) && !defined(__APPLE__)
 #include <execinfo.h>
 #include <unistd.h>
 #endif
@@ -33,7 +30,7 @@
 #include "DbgHelp.h"
 #pragma comment(lib, "Dbghelp.lib")
 #endif
-#if defined(__GNUC__) && !defined(PS3)
+#if defined(__GNUC__)
 #include <cxxabi.h>
 #endif
 #include <cstdio>
@@ -53,7 +50,7 @@ namespace helper
 /// Currently only works on Linux. NOOP on other architectures.
 void BackTrace::dump()
 {
-#if defined(__GNUC__) && !defined(__APPLE__) && !defined(WIN32) && !defined(PS3)
+#if defined(__GNUC__) && !defined(__APPLE__) && !defined(WIN32)
     void *array[128];
     int size = backtrace(array, sizeof(array) / sizeof(array[0]));
     if (size > 0)
@@ -109,7 +106,7 @@ void BackTrace::dump()
             backtrace_symbols_fd(array, size, STDERR_FILENO);
         }
     }
-#elif !defined(__GNUC__) && !defined(__APPLE__) && defined(WIN32) && !defined(PS3)
+#elif !defined(__GNUC__) && !defined(__APPLE__) && defined(WIN32)
     unsigned int   i;
     void         * stack[100];
     unsigned short frames;
@@ -140,7 +137,6 @@ void BackTrace::dump()
 /// Currently only works on Linux. NOOP on other architectures
 void BackTrace::autodump()
 {
-#if !defined(PS3)
     signal(SIGABRT, BackTrace::sig);
     signal(SIGSEGV, BackTrace::sig);
     signal(SIGILL, BackTrace::sig);
@@ -149,7 +145,6 @@ void BackTrace::autodump()
     signal(SIGTERM, BackTrace::sig);
 #if !defined(WIN32)
     signal(SIGPIPE, BackTrace::sig);
-#endif
 #endif
 }
 
@@ -183,14 +178,10 @@ static std::string SigDescription(int sig)
 
 void BackTrace::sig(int sig)
 {
-#if !defined(PS3)
     std::cerr << std::endl << "########## SIG " << sig << " - " << SigDescription(sig) << " ##########" << std::endl;
     dump();
     signal(sig,SIG_DFL);
     raise(sig);
-#else
-    std::cerr << std::endl << "ERROR: BackTrace::sig(" << sig << " - " << SigDescription(sig) << ") not supported." << std::endl;
-#endif
 }
 
 } // namespace helper

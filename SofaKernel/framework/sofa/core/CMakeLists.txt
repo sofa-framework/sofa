@@ -8,6 +8,7 @@ set(HEADER_FILES
     CategoryLibrary.h
     CollisionElement.h
     CollisionModel.h
+    CollisionModel.inl
     ComponentLibrary.h
     ConstraintParams.h
     DataEngine.h
@@ -254,13 +255,6 @@ endif()
 # if(SOFA-MISC_SUPPORT_MOVING_FRAMES)
 #     list(APPEND HEADER_FILES behavior/InertiaForce.h)
 # endif()
-
-if(PS3)
-    list(APPEND HEADER_FILES ps3/cxa_demangle.h)
-    list(APPEND HEADER_FILES ps3/cxxabi.h)
-    list(APPEND SOURCE_FILES ps3/cxa_demangle.cpp)
-endif()
-
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaDefaultType)

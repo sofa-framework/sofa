@@ -23,9 +23,7 @@
 #define SOFA_COMPONENT_ENGINE_POINTSFROMINDICES_H
 #include "config.h"
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
+
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/DataEngine.h>
@@ -101,7 +99,7 @@ private:
     bool contains(VecCoord& v, Coord c);
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_POINTSFROMINDICES_CPP)
+#if  !defined(SOFA_COMPONENT_ENGINE_POINTSFROMINDICES_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_GENERAL_ENGINE_API PointsFromIndices<defaulttype::Vec3dTypes>;
 #endif //SOFA_FLOAT

@@ -12,6 +12,7 @@ set(HEADER_FILES
     DualQuat.inl
     Factory.h
     Factory.inl
+    TypeInfo.h
     FnDispatcher.h
     FnDispatcher.inl
     GenerateRigid.h
@@ -125,6 +126,7 @@ set(HEADER_FILES
     logging/ClangStyleMessageFormatter.h
     logging/DefaultStyleMessageFormatter.h
     logging/ExceptionMessageHandler.h
+    messaging/FileMessage.h
 )
 
 set(SOURCE_FILES
@@ -202,6 +204,7 @@ set(SOURCE_FILES
     logging/LoggingMessageHandler.cpp
     logging/RoutingMessageHandler.cpp
     logging/ExceptionMessageHandler.cpp
+    messaging/FileMessage.cpp
 )
 
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
@@ -296,13 +299,6 @@ endif()
     list(APPEND SOURCE_FILES "gl/VideoRecorder.cpp")
         include_directories(${SOFA-EXTERNAL_FFMPEG_PATH}/include)
 endif()
-
-
-if(PS3)
-    list(APPEND HEADER_FILES gl/ps3gl_compat.h)
-    list(APPEND SOURCE_FILES gl/ps3gl_compat.cpp)
-endif()
-
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SHADER_FILES} ${SOURCE_FILES})
 if(WIN32)

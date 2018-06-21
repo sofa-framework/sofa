@@ -113,7 +113,7 @@ public:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(CGALPLUGIN_CYLINDERMESH_CPP)
+#if  !defined(CGALPLUGIN_CYLINDERMESH_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_CGALPLUGIN_API CylinderMesh<defaulttype::Vec3dTypes>;
 #endif //SOFA_FLOAT

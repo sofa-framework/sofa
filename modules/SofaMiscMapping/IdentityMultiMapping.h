@@ -97,7 +97,7 @@ protected :
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_MAPPING_IDENTITYMULTIMAPPING_CPP)
+#if  !defined(SOFA_COMPONENT_MAPPING_IDENTITYMULTIMAPPING_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_MISC_MAPPING_API IdentityMultiMapping< defaulttype::Vec3dTypes, defaulttype::Vec3dTypes >;
 extern template class SOFA_MISC_MAPPING_API IdentityMultiMapping< defaulttype::Rigid3dTypes, defaulttype::Rigid3dTypes >;

@@ -32,12 +32,10 @@
 #  define snprintf _snprintf
 #endif
 
-#if defined(WIN32) || defined(PS3)
+#if defined(WIN32)
 #include <string.h>
-#ifndef PS3
 #define strcasecmp stricmp
 #define atoll atoi
-#endif
 #else
 #include <strings.h>
 #endif

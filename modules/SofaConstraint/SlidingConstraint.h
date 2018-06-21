@@ -117,7 +117,7 @@ public:
     void draw(const core::visual::VisualParams* vparams) override;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONSTRAINTSET_SLIDINGCONSTRAINT_CPP)
+#if  !defined(SOFA_COMPONENT_CONSTRAINTSET_SLIDINGCONSTRAINT_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_CONSTRAINT_API SlidingConstraint< defaulttype::Vec3dTypes >;
 #endif

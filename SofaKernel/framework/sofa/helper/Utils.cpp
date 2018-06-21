@@ -169,10 +169,7 @@ static std::string computeExecutablePath()
 {
     std::string path = "";
 
-#if defined(PS3)
-    msg_error("Utils::computeExecutablePath()") << "Utils::computeExecutablePath() is not implemented on this platform.";
-
-#elif defined(WIN32)
+#if defined(WIN32)
     std::vector<TCHAR> lpFilename(MAX_PATH);
     int ret = GetModuleFileName(NULL, /* NULL --> executable of the current process */
         &lpFilename[0],

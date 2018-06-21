@@ -91,7 +91,7 @@ private:
 
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFAVRPNCLIENT_TOOLTRACKER_CPP_)
+#if  !defined(SOFAVRPNCLIENT_TOOLTRACKER_CPP_)
 #ifndef SOFA_FLOAT
 extern template class SOFA_SOFAVRPNCLIENT_API ToolTracker<defaulttype::Vec3dTypes>;
 #endif //SOFA_FLOAT

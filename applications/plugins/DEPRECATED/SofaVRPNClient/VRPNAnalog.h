@@ -91,7 +91,7 @@ private:
     //static void handle_analog(void *userdata, const vrpn_ANALOGCB a);
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFAVRPNCLIENT_VRPNANALOG_CPP_)
+#if  !defined(SOFAVRPNCLIENT_VRPNANALOG_CPP_)
 #ifndef SOFA_FLOAT
 extern template class SOFA_SOFAVRPNCLIENT_API VRPNAnalog<defaulttype::Vec3dTypes>;
 #endif //SOFA_FLOAT

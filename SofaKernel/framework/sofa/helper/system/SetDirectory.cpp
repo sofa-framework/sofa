@@ -48,10 +48,6 @@ namespace system
 #if defined(WIN32)
     #define chdir _chdir
     #define getcwd _getcwd
-#elif defined(PS3)
-    std::string g_currentWorkingDir = std::string("/app_home/");
-    char* getcwd(char *buffer, int maxlen) { strcpy(buffer, g_currentWorkingDir.c_str()); return buffer;}
-    int chdir(const char* path) { g_currentWorkingDir = path; return 1;}
 #endif
 
 SetDirectory::SetDirectory(const char* filename)

@@ -22,10 +22,6 @@
 #ifndef SOFA_COMPONENT_ENGINE_SHAPEMATCHING_INL
 #define SOFA_COMPONENT_ENGINE_SHAPEMATCHING_INL
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaGeneralEngine/ShapeMatching.h>
 #include <sofa/helper/decompose.h>
@@ -84,7 +80,6 @@ ShapeMatching<DataTypes>::ShapeMatching()
     , oldRestPositionSize(0)
     , oldfixedweight(0)
 {
-    //affineRatio.setWidget("0to1RatioWidget");
 }
 
 template <class DataTypes>
@@ -121,8 +116,6 @@ void ShapeMatching<DataTypes>::update()
     helper::ReadAccessor<Data< VecCoord > > currentPositions = position;
     helper::WriteOnlyAccessor<Data< VecCoord > > targetPos = targetPosition;
     helper::ReadAccessor<Data< VVI > > clust = cluster;
-
-    //this->mstate->resize(restPositions.size());
 
     VI::const_iterator it, itEnd;
     size_t nbp = restPositions.size() , nbf = fixedPositions0.size() , nbc = clust.size();
@@ -193,7 +186,6 @@ void ShapeMatching<DataTypes>::update()
             if(affineRatio.getValue()!=(Real)1.0)
             {
                 helper::Decompose<Real>::polarDecomposition(T[i], R);
-                //if (determinant(R) < 0) for(unsigned int j=0 ; j<3;j++) R[j][0] *= -1;  // handle symmetry
             }
             if(affineRatio.getValue()!=(Real)0.0)
                 T[i] = T[i] * Qxinv[i] * (affineRatio.getValue()) + R * (1.0f-affineRatio.getValue());

@@ -80,7 +80,7 @@ public:
     void apply(Value& v, const MapIndex& m);
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_ENGINE_MAPINDICES_CPP)
+#if  !defined(SOFA_COMPONENT_ENGINE_MAPINDICES_CPP)
 extern template class SOFA_GENERAL_ENGINE_API MapIndices<int>;
 extern template class SOFA_GENERAL_ENGINE_API MapIndices<unsigned int>;
 extern template class SOFA_GENERAL_ENGINE_API MapIndices< helper::fixed_array<unsigned int, 2> >;

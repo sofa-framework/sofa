@@ -22,10 +22,6 @@
 #ifndef SOFA_COMPONENT_ENGINE_SMOOTHMESHENGINE_INL
 #define SOFA_COMPONENT_ENGINE_SMOOTHMESHENGINE_INL
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
 #include "SmoothMeshEngine.h"
 #include <sofa/helper/gl/template.h>
 

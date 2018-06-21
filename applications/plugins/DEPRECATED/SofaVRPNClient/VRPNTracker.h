@@ -87,7 +87,7 @@ private:
     double angleX, angleY, angleZ;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFAVRPNCLIENT_VRPNTRACKER_CPP_)
+#if  !defined(SOFAVRPNCLIENT_VRPNTRACKER_CPP_)
 #ifndef SOFA_FLOAT
 extern template class SOFA_SOFAVRPNCLIENT_API VRPNTracker<defaulttype::Vec3dTypes>;
 #endif //SOFA_FLOAT

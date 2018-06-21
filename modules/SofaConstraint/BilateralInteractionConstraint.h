@@ -223,7 +223,7 @@ template<>
 void BilateralInteractionConstraint<Rigid3fTypes>::addContact(Deriv /*norm*/, Coord P, Coord Q, Real /*contactDistance*/, int m1, int m2, Coord /*Pfree*/, Coord /*Qfree*/, long /*id*/, PersistentID /*localid*/);
 #endif
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_BUILD_CONSTRAINT)
+#if  !defined(SOFA_BUILD_CONSTRAINT)
 #ifdef SOFA_WITH_DOUBLE
 extern template class SOFA_CONSTRAINT_API BilateralInteractionConstraint< Vec3dTypes >;
 extern template class SOFA_CONSTRAINT_API BilateralInteractionConstraint< Rigid3dTypes >;

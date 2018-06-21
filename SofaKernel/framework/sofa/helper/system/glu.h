@@ -25,8 +25,6 @@
 #if !defined(SOFA_NO_OPENGL)
 #if defined (__APPLE__)
 #include <OpenGL/glu.h>
-#elif PS3
-#include <PSGL/psglu.h>
 #else
 #include <GL/glu.h>
 #endif

@@ -165,7 +165,7 @@ protected:
 	NumericalIntegrationDescriptor<Real,3> hexahedronNumericalIntegration;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_TOPOLOGY_HEXAHEDRONSETGEOMETRYALGORITHMS_CPP)
+#if  !defined(SOFA_COMPONENT_TOPOLOGY_HEXAHEDRONSETGEOMETRYALGORITHMS_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BASE_TOPOLOGY_API HexahedronSetGeometryAlgorithms<defaulttype::Vec3dTypes>;
 extern template class SOFA_BASE_TOPOLOGY_API HexahedronSetGeometryAlgorithms<defaulttype::Vec2dTypes>;

@@ -284,7 +284,7 @@ protected:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_CORE_MULTIMAPPING_CPP)
+#if  !defined(SOFA_CORE_MULTIMAPPING_CPP)
 
 #ifndef SOFA_FLOAT
 extern template class SOFA_CORE_API MultiMapping< defaulttype::Vec1dTypes, defaulttype::Vec1dTypes >;

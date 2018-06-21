@@ -186,7 +186,7 @@ int TriangleSetTopologyAlgorithms<defaulttype::Vec1fTypes>::SplitAlongPath(unsig
 
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_TOPOLOGY_TRIANGLESETTOPOLOGYALGORITHMS_CPP)
+#if  !defined(SOFA_COMPONENT_TOPOLOGY_TRIANGLESETTOPOLOGYALGORITHMS_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyAlgorithms<defaulttype::Vec3dTypes>;
 extern template class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyAlgorithms<defaulttype::Vec2dTypes>;

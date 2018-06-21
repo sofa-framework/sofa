@@ -98,7 +98,6 @@ std::string Capture::findFilename()
     if(!pngSupport && !bmpSupport)
         return filename;
 
-#ifndef PS3
     char buf[32];
     int c;
     c = 0;
@@ -124,7 +123,6 @@ std::string Capture::findFilename()
         filename += ".png";
     else
         filename += ".bmp";
-#endif
 
     return filename;
 }

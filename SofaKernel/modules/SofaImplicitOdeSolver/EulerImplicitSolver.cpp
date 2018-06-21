@@ -184,7 +184,6 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
 
     // mop.projectResponse(x);
     // x is the solution of the system
-
     // apply the solution
 
     const bool solveConstraint = f_solveConstraint.getValue();
@@ -267,8 +266,47 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
         serr<<"EulerImplicitSolver, final f = "<< f <<sendl;
 
     }
-
 }
+
+
+double EulerImplicitSolver::getPositionIntegrationFactor() const
+{
+    return getPositionIntegrationFactor(getContext()->getDt());
+}
+
+double EulerImplicitSolver::getIntegrationFactor(int inputDerivative, int outputDerivative) const
+{
+    return getIntegrationFactor(inputDerivative, outputDerivative, getContext()->getDt());
+}
+
+double EulerImplicitSolver::getIntegrationFactor(int inputDerivative, int outputDerivative, double dt) const
+{
+    double matrix[3][3] =
+    {
+        { 1, dt, 0},
+        { 0, 1, 0},
+        { 0, 0, 0}
+    };
+    if (inputDerivative >= 3 || outputDerivative >= 3)
+        return 0;
+    else
+        return matrix[outputDerivative][inputDerivative];
+}
+
+double EulerImplicitSolver::getSolutionIntegrationFactor(int outputDerivative) const
+{
+    return getSolutionIntegrationFactor(outputDerivative, getContext()->getDt());
+}
+
+double EulerImplicitSolver::getSolutionIntegrationFactor(int outputDerivative, double dt) const
+{
+    double vect[3] = { dt, 1, 1/dt};
+    if (outputDerivative >= 3)
+        return 0;
+    else
+        return vect[outputDerivative];
+}
+
 
 SOFA_DECL_CLASS(EulerImplicitSolver)
 

@@ -168,7 +168,7 @@ protected:
     sofa::defaulttype::Quat orientation;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONTROLLER_MECHANICALSTATECONTROLLEROMNI_CPP)
+#if  !defined(SOFA_COMPONENT_CONTROLLER_MECHANICALSTATECONTROLLEROMNI_CPP)
 #ifndef SOFA_FLOAT
 //extern template class SOFA_USER_INTERACTION_API MechanicalStateControllerOmni<defaulttype::Vec3dTypes>;
 //extern template class SOFA_USER_INTERACTION_API MechanicalStateControllerOmni<defaulttype::Vec2dTypes>;
