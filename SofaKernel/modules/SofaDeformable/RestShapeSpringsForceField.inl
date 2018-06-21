@@ -174,7 +174,7 @@ void RestShapeSpringsForceField<DataTypes>::recomputeIndices()
 
     if (m_indices.size() > m_ext_indices.size())
     {
-        msg_error() << "The dimention of the source and the targeted points are different ";
+        msg_error() << "The dimension of the source and the targeted points are different ";
         m_indices.clear();
     }
 }
@@ -203,7 +203,6 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
         recomputeIndices();
     }
 
-    //Springs_dir.resize(m_indices.size() );
     if ( k.size()!= m_indices.size() )
     {
         const Real k0 = k[0];
