@@ -68,15 +68,9 @@ template <class TDataTypes> template <class DataDeriv>
 void OscillatorConstraint<TDataTypes>::projectResponseT(const core::MechanicalParams* /*mparams*/, DataDeriv& res)
 {
     const helper::vector<Oscillator> &oscillators = constraints.getValue();
-    //Real t = (Real) this->getContext()->getTime();
     for (unsigned i = 0; i < oscillators.size(); ++i)
     {
         const unsigned& index = oscillators[i].index;
-        //const Deriv& a = constraints[i].second.amplitude;
-        //const Real& w = constraints[i].second.pulsation;
-        //const Real& p = constraints[i].second.phase;
-
-        //res[index] = a*(-w)*w*sin(w*t+p);
         res[index] = Deriv();
     }
 }

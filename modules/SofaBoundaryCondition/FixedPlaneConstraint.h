@@ -65,10 +65,9 @@ public:
     typedef helper::vector<unsigned int> SetIndexArray;
     typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
 public:
-    /// direction on which the constraint applies
-    Data<Coord> direction;
+    Data<Coord> direction;/// direction on which the constraint applies
 
-    Data<Real> dmin; ///< coordinates min of the plane for the vertex selection
+    Data<Real> dmin;///< coordinates min of the plane for the vertex selection
     Data<Real> dmax;///< coordinates max of the plane for the vertex selection
 protected:
     FixedPlaneConstraintInternalData<DataTypes> data;
@@ -165,6 +164,7 @@ void FixedPlaneConstraint<defaulttype::Rigid3fTypes>::projectResponseT(const cor
 template <>
 bool FixedPlaneConstraint<defaulttype::Rigid3fTypes>::isPointInPlane(Coord /*p*/);
 #endif
+
 
 #if  !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDPLANECONSTRAINT_CPP)
 #ifndef SOFA_FLOAT

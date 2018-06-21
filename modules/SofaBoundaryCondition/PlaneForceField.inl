@@ -50,7 +50,6 @@ using sofa::defaulttype::Vec ;
 template<class DataTypes>
 PlaneForceField<DataTypes>::PlaneForceField() :
      d_planeNormal(initData(&d_planeNormal, "normal", "plane normal. (default=[0,1,0])"))
-    // TODO(dmarchal): d coef is "jargon" that is not very helpfull if you ignore how is defined the model.
     , d_planeD(initData(&d_planeD, (Real)0, "d", "plane d coef. (default=0)"))
     , d_stiffness(initData(&d_stiffness, (Real)500, "stiffness", "force stiffness. (default=500)"))
     , d_damping(initData(&d_damping, (Real)5, "damping", "force damping. (default=5)"))
