@@ -19,75 +19,84 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "SceneCheckerVisitor.h"
+#include "SceneCheckDuplicatedName.h"
 
-#include <algorithm>
 #include <sofa/version.h>
+#include <sofa/simulation/Node.h>
 
 namespace sofa
 {
 namespace simulation
 {
-using sofa::core::ExecParams ;
-
-
-SceneCheckerVisitor::SceneCheckerVisitor(const ExecParams* params) : Visitor(params)
+namespace _scenechecks_
 {
 
+using sofa::simulation::Node;
+
+const std::string SceneCheckDuplicatedName::getName()
+{
+    return "SceneCheckDuplicatedName";
 }
 
-
-SceneCheckerVisitor::~SceneCheckerVisitor()
+const std::string SceneCheckDuplicatedName::getDesc()
 {
+    return "Check there is not duplicated name in the scenegraph";
 }
 
-
-void SceneCheckerVisitor::addCheck(SceneCheck::SPtr check)
+void SceneCheckDuplicatedName::doInit(Node* node)
 {
-    if( std::find(m_checkset.begin(), m_checkset.end(), check) == m_checkset.end() )
-        m_checkset.push_back(check) ;
+    SOFA_UNUSED(node);
+    m_hasDuplicates = false;
+    m_duplicatedMsg.str("");
+    m_duplicatedMsg.clear();
 }
 
-
-void SceneCheckerVisitor::removeCheck(SceneCheck::SPtr check)
+void SceneCheckDuplicatedName::doCheckOn(Node* node)
 {
-    m_checkset.erase( std::remove( m_checkset.begin(), m_checkset.end(), check ), m_checkset.end() );
-}
+    std::map<std::string, int> duplicated;
+    for (auto& object : node->object )
+    {
+        if( duplicated.find(object->getName()) == duplicated.end() )
+            duplicated[object->getName()] = 0;
+        duplicated[object->getName()]++;
+    }
 
-void SceneCheckerVisitor::validate(Node* node)
-{
+    for (auto& child : node->child )
+    {
+        if( duplicated.find(child->getName()) == duplicated.end() )
+            duplicated[child->getName()] = 0;
+        duplicated[child->getName()]++;
+    }
+
     std::stringstream tmp;
-    bool first = true;
-    for(SceneCheck::SPtr& check : m_checkset)
+    for(auto& p : duplicated)
     {
-        tmp << (first ? "" : ", ") << check->getName() ;
-        first = false;
-    }
-    msg_info("SceneCheckerVisitor") << "Validating node \""<< node->getName() << "\" with checks: [" << tmp.str() << "]" ;
-
-    for(SceneCheck::SPtr& check : m_checkset)
-    {
-        check->doInit(node) ;
+        if(p.second!=1)
+        {
+            tmp << "'" << p.first << "', ";
+        }
     }
 
-    execute(node) ;
-
-    for(SceneCheck::SPtr& check : m_checkset)
+    if(!tmp.str().empty())
     {
-        check->doPrintSummary() ;
+        m_hasDuplicates = true;
+        m_duplicatedMsg << "- Found duplicated names [" << tmp.str() << "] in node '"<<  node->getPathName() << "'" << msgendl;
     }
 }
 
-
-Visitor::Result SceneCheckerVisitor::processNodeTopDown(Node* node)
+void SceneCheckDuplicatedName::doPrintSummary()
 {
-    for(SceneCheck::SPtr& check : m_checkset)
+    if(m_hasDuplicates)
     {
-        check->doCheckOn(node) ;
+        msg_warning(this->getName()) << msgendl
+                                     << m_duplicatedMsg.str()
+                                     << "Nodes with similar names at the same level in your scene can "
+                                        "crash certain operations, please rename them";
     }
-
-    return RESULT_CONTINUE;
 }
+
+
+} // _scenechecks_
 
 } // namespace simulation
 

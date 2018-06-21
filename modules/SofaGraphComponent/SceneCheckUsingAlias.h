@@ -19,72 +19,50 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_SCENECHECKAPICHANGES_H
-#define SOFA_SIMULATION_SCENECHECKAPICHANGES_H
+#ifndef SOFA_SIMULATION_SCENECHECKUSINGALIAS_H
+#define SOFA_SIMULATION_SCENECHECKUSINGALIAS_H
 
 #include "config.h"
 #include "SceneChecks.h"
 #include <map>
 #include <vector>
-#include <functional>
 
-/////////////////////////////// FORWARD DECLARATION ////////////////////////////////////////////////
-namespace sofa {
-    namespace simulation {
-        class Node;
-    }
-    namespace core {
-        namespace objectmodel {
-            class Base;
-        }
-    }
-}
-
-
-/////////////////////////////////////// DECLARATION ////////////////////////////////////////////////
 namespace sofa
 {
 namespace simulation
 {
-namespace _scenecheckapichange_
+namespace _scenechecks_
 {
-
-
-typedef std::function<void(sofa::core::objectmodel::Base*)> ChangeSetHookFunction;
-class SOFA_GRAPH_COMPONENT_API SceneCheckAPIChange : public SceneCheck
+    
+class SOFA_GRAPH_COMPONENT_API SceneCheckUsingAlias : public SceneCheck
 {
 public:
-    SceneCheckAPIChange();
-    virtual ~SceneCheckAPIChange();
+    SceneCheckUsingAlias();
+    virtual ~SceneCheckUsingAlias();
 
-    typedef std::shared_ptr<SceneCheckAPIChange> SPtr;
-    static SPtr newSPtr() { return SPtr(new SceneCheckAPIChange()); }
+    typedef std::shared_ptr<SceneCheckUsingAlias> SPtr;
+    static SPtr newSPtr() { return SPtr(new SceneCheckUsingAlias()); }
     virtual const std::string getName() override;
     virtual const std::string getDesc() override;
-    virtual void doInit(Node* node) override;
-    virtual void doCheckOn(Node* node) override;
+    virtual void doInit(Node* node) override {}
+    virtual void doCheckOn(Node* node) override {}
     virtual void doPrintSummary() override;
 
-    void installDefaultChangeSets();
-    void addHookInChangeSet(const std::string& version, ChangeSetHookFunction fct);
 private:
-    std::string m_currentApiLevel;
-    std::string m_selectedApiLevel {"17.06"};
-
-    std::map<std::string, std::vector<ChangeSetHookFunction>> m_changesets;
+    std::map<std::string, std::vector<std::string>> m_componentsCreatedUsingAlias;
 };
 
 } /// _scenechecks_
 
-using _scenecheckapichange_::SceneCheckAPIChange;
+using _scenechecks_::SceneCheckUsingAlias;
 
 namespace scenecheckers
 {
-    using _scenecheckapichange_::SceneCheckAPIChange;
+    using _scenechecks_::SceneCheckUsingAlias;
 } /// checkers
 
 } /// namespace simulation
 
 } /// namespace sofa
 
-#endif /// SOFA_SIMULATION_SCENECHECKS_H
+#endif /// SOFA_SIMULATION_SCENECHECKUSINGALIAS_H

@@ -19,17 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include "SceneCheckMissingRequiredPlugin.h"
+
 #include <sofa/version.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/Visitor.h>
 #include <sofa/helper/system/PluginManager.h>
-#include <sofa/helper/system/FileRepository.h>
 
-#include "SceneChecks.h"
 #include "RequiredPlugin.h"
-
-#include "APIVersion.h"
-using sofa::component::APIVersion ;
 
 namespace sofa
 {
@@ -38,74 +35,10 @@ namespace simulation
 namespace _scenechecks_
 {
 
-using sofa::core::objectmodel::Base ;
-using sofa::component::misc::RequiredPlugin ;
-using sofa::core::ObjectFactory ;
-using sofa::core::ExecParams ;
-using sofa::helper::system::PluginRepository ;
-using sofa::helper::system::PluginManager ;
-
-const std::string SceneCheckDuplicatedName::getName()
-{
-    return "SceneCheckDuplicatedName";
-}
-
-const std::string SceneCheckDuplicatedName::getDesc()
-{
-    return "Check there is not duplicated name in the scenegraph";
-}
-
-void SceneCheckDuplicatedName::doInit(Node* node)
-{
-    SOFA_UNUSED(node) ;
-    m_hasDuplicates = false ;
-    m_duplicatedMsg.str("") ;
-    m_duplicatedMsg.clear() ;
-}
-
-void SceneCheckDuplicatedName::doCheckOn(Node* node)
-{
-    std::map<std::string, int> duplicated ;
-    for (auto& object : node->object )
-    {
-        if( duplicated.find(object->getName()) == duplicated.end() )
-            duplicated[object->getName()] = 0 ;
-        duplicated[object->getName()]++ ;
-    }
-
-    for (auto& child : node->child )
-    {
-        if( duplicated.find(child->getName()) == duplicated.end() )
-            duplicated[child->getName()] = 0 ;
-        duplicated[child->getName()]++ ;
-    }
-
-    std::stringstream tmp ;
-    for(auto& p : duplicated)
-    {
-        if(p.second!=1)
-        {
-            tmp << "'" << p.first << "', " ;
-        }
-    }
-
-    if(!tmp.str().empty())
-    {
-        m_hasDuplicates = true ;
-        m_duplicatedMsg << "- Found duplicated names [" << tmp.str() << "] in node '"<<  node->getPathName() << "'" << msgendl ;
-    }
-}
-
-void SceneCheckDuplicatedName::doPrintSummary()
-{
-    if(m_hasDuplicates)
-    {
-        msg_warning("SceneCheckDuplicatedName") << msgendl
-                                                << m_duplicatedMsg.str()
-                                                << "Nodes with similar names at the same level in your scene can "
-                                                   "crash certain operations, please rename them" ;
-    }
-}
+using sofa::core::objectmodel::Base;
+using sofa::component::misc::RequiredPlugin;
+using sofa::core::ObjectFactory;
+using sofa::helper::system::PluginManager;
 
 const std::string SceneCheckMissingRequiredPlugin::getName()
 {
@@ -126,17 +59,17 @@ void SceneCheckMissingRequiredPlugin::doCheckOn(Node* node)
         {
             ObjectFactory::CreatorMap::iterator it = entry.creatorMap.find(object->getTemplateName());
             if(entry.creatorMap.end() != it && *it->second->getTarget()){
-                std::string pluginName = it->second->getTarget() ;
-                std::string path = PluginManager::getInstance().findPlugin(pluginName) ;
+                std::string pluginName = it->second->getTarget();
+                std::string path = PluginManager::getInstance().findPlugin(pluginName);
                 if( PluginManager::getInstance().pluginIsLoaded(path)
                         && m_loadedPlugins.find(pluginName) == m_loadedPlugins.end() )
                 {
                     if( m_requiredPlugins.empty() ){
-                        m_requiredPlugins[pluginName].push_back(object->getClassName()) ;
+                        m_requiredPlugins[pluginName].push_back(object->getClassName());
                     }else{
-                        std::vector<std::string>& t = m_requiredPlugins[pluginName] ;
+                        std::vector<std::string>& t = m_requiredPlugins[pluginName];
                         if( std::find(t.begin(), t.end(), object->getClassName()) ==t.end() )
-                            t.push_back(object->getClassName()) ;
+                            t.push_back(object->getClassName());
                     }
                 }
             }
@@ -148,37 +81,37 @@ void SceneCheckMissingRequiredPlugin::doPrintSummary()
 {
     if(!m_requiredPlugins.empty())
     {
-        std::stringstream tmp ;
+        std::stringstream tmp;
         for(auto& kv : m_requiredPlugins)
         {
-            tmp << "<RequiredPlugin name='"<<kv.first<<"'/> <!-- Needed to use components [" ;
+            tmp << "<RequiredPlugin pluginName='"<<kv.first<<"'/> <!-- Needed to use components [";
             for(auto& name : kv.second)
             {
-                tmp << name << ", " ;
+                tmp << name << ", ";
             }
-            tmp <<"]-->" << msgendl ;
+            tmp <<"]-->";
         }
-        msg_warning("SceneChecker")
-                << "This scene is using component defined in plugins but are not importing the requierd plugins." << msgendl
-                << "Your scene may not work on a sofa environment with different pre-loaded plugins." << msgendl
-                << "To fix your scene and remove this warning you just need to cut & paste the following lines at the begining of your scene (if it is a .scn): " << msgendl
-                << tmp.str() ;
+        msg_warning(this->getName())
+                << "This scene is using component defined in plugins but is not importing the required plugins." << msgendl
+                << "  " << "Your scene may not work on a sofa environment with different pre-loaded plugins." << msgendl
+                << "  " << "To fix your scene and remove this warning you just need to cut & paste the following lines at the begining of your scene (if it is a .scn): " << msgendl
+                << "  " << tmp.str();
     }
 }
 
 void SceneCheckMissingRequiredPlugin::doInit(Node* node)
 {
-    helper::vector< RequiredPlugin* > plugins ;
-    node->getTreeObjects< RequiredPlugin >(&plugins) ;
+    helper::vector< RequiredPlugin* > plugins;
+    node->getTreeObjects< RequiredPlugin >(&plugins);
 
-    m_requiredPlugins.clear() ;
-    m_loadedPlugins.clear() ;
+    m_requiredPlugins.clear();
+    m_loadedPlugins.clear();
 
     for(auto& plugin : plugins)
     {
         for(auto& pluginName : plugin->d_pluginName.getValue())
         {
-            m_loadedPlugins[pluginName] = true ;
+            m_loadedPlugins[pluginName] = true;
         }
     }
 }

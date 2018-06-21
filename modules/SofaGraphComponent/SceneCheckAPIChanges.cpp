@@ -19,30 +19,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/version.h>
+#include "SceneCheckAPIChanges.h"
+
 #include <string>
+
+#include <sofa/version.h>
 #include <sofa/core/objectmodel/Base.h>
-using sofa::core::objectmodel::Base ;
-using sofa::core::objectmodel::BaseObjectDescription ;
+using sofa::core::objectmodel::Base;
 
-#include <sofa/core/ObjectFactory.h>
-using sofa::core::ObjectFactory ;
-
-#include <sofa/simulation/Visitor.h>
-#include <sofa/helper/system/PluginManager.h>
-#include <sofa/helper/system/FileRepository.h>
+#include <sofa/simulation/Node.h>
+using sofa::simulation::Node;
 
 #include <sofa/helper/ComponentChange.h>
 using sofa::helper::lifecycle::ComponentChange;
 using sofa::helper::lifecycle::deprecatedComponents;
 
-
-
-#include "SceneCheckAPIChanges.h"
-#include "RequiredPlugin.h"
-
 #include "APIVersion.h"
-using sofa::component::APIVersion ;
+using sofa::component::APIVersion;
 
 namespace sofa
 {
@@ -53,7 +46,7 @@ namespace _scenecheckapichange_
 
 SceneCheckAPIChange::SceneCheckAPIChange()
 {
-    installDefaultChangeSets() ;
+    installDefaultChangeSets();
 }
 
 SceneCheckAPIChange::~SceneCheckAPIChange()
@@ -77,55 +70,29 @@ void SceneCheckAPIChange::doInit(Node* node)
     version << SOFA_VERSION / 10000 << "." << SOFA_VERSION / 100 % 100;
     m_currentApiLevel = version.str();
 
-    APIVersion* apiversion {nullptr} ;
+    APIVersion* apiversion {nullptr};
     /// 1. Find if there is an APIVersion component in the scene. If there is none, warn the user and set
     /// the version to 17.06 (the last version before it was introduced). If there is one...use
     /// this component to request the API version requested by the scene.
-    node->getTreeObject(apiversion) ;
+    node->getTreeObject(apiversion);
     if(!apiversion)
     {
-        msg_info("SceneCheckAPIChange") << "The 'APIVersion' directive is missing in the current scene. Switching to the default APIVersion level '"<< m_selectedApiLevel <<"' " ;
+        msg_info("SceneCheckAPIChange") << "The 'APIVersion' directive is missing in the current scene. Switching to the default APIVersion level '"<< m_selectedApiLevel <<"' ";
     }
     else
     {
-        m_selectedApiLevel = apiversion->getApiLevel() ;
+        m_selectedApiLevel = apiversion->getApiLevel();
     }
 }
 
 void SceneCheckAPIChange::doPrintSummary()
 {
-    // Alias use summary
-    if ( ! this->m_componentsCreatedUsingAlias.empty() )
-    {
-        std::stringstream usingAliasesWarning;
-        usingAliasesWarning << "This scene is using aliases. Aliases are dangerous, use with caution." << msgendl;
-        for (auto i : this->m_componentsCreatedUsingAlias)
-        {
-            if (i.second.size() > 1)
-                usingAliasesWarning << "  - " << i.first << " have been created using the aliases ";
-            else
-                usingAliasesWarning << "  - " << i.first << " has been created using the alias ";
-
-            bool first = true;
-            for (std::string &alias : i.second)
-            {
-                if (first)
-                    usingAliasesWarning << "\"" << alias << "\"";
-                else
-                    usingAliasesWarning << ", \"" << alias << "\"";
-
-                first = false;
-            }
-            usingAliasesWarning << "." << msgendl;
-        }
-        msg_warning("SceneCheckAPIChanges") << usingAliasesWarning.str();
-    }
 }
 
 void SceneCheckAPIChange::doCheckOn(Node* node)
 {
     if(node==nullptr)
-        return ;
+        return;
 
     for (auto& object : node->object )
     {
@@ -142,45 +109,22 @@ void SceneCheckAPIChange::doCheckOn(Node* node)
 
 void SceneCheckAPIChange::installDefaultChangeSets()
 {
-    addHookInChangeSet("17.06", [](Base* o){
+    addHookInChangeSet("17.06", [this](Base* o){
         if(o->getClassName() == "BoxStiffSpringForceField" )
-            msg_warning(o) << "BoxStiffSpringForceField have changed since 17.06. To use the old behavior you need to set parameter 'forceOldBehavior=true'" ;
-    }) ;
+            msg_warning(this->getName()) << "BoxStiffSpringForceField have changed since 17.06. To use the old behavior you need to set parameter 'forceOldBehavior=true'";
+    });
 
-    addHookInChangeSet("17.06", [](Base* o){
+    addHookInChangeSet("17.06", [this](Base* o){
         if( deprecatedComponents.find( o->getClassName() ) != deprecatedComponents.end() )
         {
-            msg_deprecated(o) << deprecatedComponents.at(o->getClassName()).getMessage();
-        }
-    }) ;
-
-    for(auto i : this->m_componentsCreatedUsingAlias)
-    {
-        std::string aliases;
-        for (std::string &alias : i.second)
-        {
-            aliases += " " + alias;
-        }
-        msg_warning(i.first) << "Using the aliases: " << aliases;
-    }
-
-    /// Add a callback to be n
-    ObjectFactory::getInstance()->setCallback([this](Base* o, BaseObjectDescription *arg) {
-        if (o->getClassName() != arg->getAttribute("type", "") ) {
-            std::string alias = arg->getAttribute("type", "");
-
-            std::vector<std::string> v = this->m_componentsCreatedUsingAlias[o->getClassName()];
-            if ( std::find(v.begin(), v.end(), alias) == v.end() )
-            {
-                this->m_componentsCreatedUsingAlias[o->getClassName()].push_back(alias);
-            }
+            msg_deprecated(this->getName()) << deprecatedComponents.at(o->getClassName()).getMessage();
         }
     });
 }
 
 void SceneCheckAPIChange::addHookInChangeSet(const std::string& version, ChangeSetHookFunction fct)
 {
-    m_changesets[version].push_back(fct) ;
+    m_changesets[version].push_back(fct);
 }
 
 
