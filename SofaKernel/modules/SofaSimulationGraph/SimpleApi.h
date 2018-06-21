@@ -79,7 +79,7 @@ namespace BaseObject
     namespace data{
         static const std::string name {"name"} ;
     }
-};
+}
 
 namespace MechanicalObject
 {

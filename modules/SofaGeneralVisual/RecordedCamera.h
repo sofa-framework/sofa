@@ -48,14 +48,9 @@ protected:
     virtual ~RecordedCamera() {}
 public:
     virtual void init() override;
-
     virtual void reinit() override;
-
     virtual void reset() override;
-
     virtual void handleEvent(sofa::core::objectmodel::Event *) override;
-
-    //virtual void rotateWorldAroundPoint(Quat &rotation, const Vec3 &point);
 
     enum  { TRACKBALL_MODE, PAN_MODE, ZOOM_MODE, WHEEL_ZOOM_MODE, NONE_MODE };
     enum  { SCENE_CENTER_PIVOT = 0, WORLD_CENTER_PIVOT = 1};
@@ -110,8 +105,6 @@ public:
 protected:
     double m_nextStep;
     double m_angleStep;
-    //double m_initAngle;
-    //double m_radius;
     bool firstIterationforRotation;
     bool firstIterationforTranslation;
     bool firstIterationforNavigation;

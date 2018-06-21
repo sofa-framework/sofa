@@ -52,9 +52,6 @@ namespace component
 namespace forcefield
 {
 
-
-
-
 /** Compute Finite Element forces based on tetrahedral elements.
  */
 template<class DataTypes>

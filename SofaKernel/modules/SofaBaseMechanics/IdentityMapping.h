@@ -86,8 +86,6 @@ public:
 
     typedef defaulttype::Mat<N, N, Real> Mat;
 
-    //enum { N=((int)Deriv::static_size < (int)InDeriv::static_size ? (int)Deriv::static_size : (int)InDeriv::static_size) };
-
 protected:
     IdentityMapping()
         : Inherit()
@@ -131,9 +129,6 @@ protected:
 
     typedef helper::vector< defaulttype::BaseMatrix* > js_type;
     js_type Js;
-
-//    size_t previousMaskHash; ///< storing previous dof maskTo to check if it changed from last time step to updateJ in consequence
-//    void updateJ();
 
 public:
 

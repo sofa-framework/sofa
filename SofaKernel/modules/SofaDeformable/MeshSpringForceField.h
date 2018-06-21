@@ -71,36 +71,7 @@ protected:
 
     void addSpring(std::set<std::pair<int,int> >& sset, int m1, int m2, Real stiffness, Real damping);
 
-
-    MeshSpringForceField()
-        : linesStiffness(initData(&linesStiffness,Real(0),"linesStiffness","Stiffness for the Lines",true))
-        , linesDamping(initData(&linesDamping,Real(0),"linesDamping","Damping for the Lines",true))
-        , trianglesStiffness(initData(&trianglesStiffness,Real(0),"trianglesStiffness","Stiffness for the Triangles",true))
-        , trianglesDamping(initData(&trianglesDamping,Real(0),"trianglesDamping","Damping for the Triangles",true))
-        , quadsStiffness(initData(&quadsStiffness,Real(0),"quadsStiffness","Stiffness for the Quads",true))
-        , quadsDamping(initData(&quadsDamping,Real(0),"quadsDamping","Damping for the Quads",true))
-        , tetrahedraStiffness(initData(&tetrahedraStiffness,Real(0),"tetrahedraStiffness","Stiffness for the Tetrahedra",true))
-        , tetrahedraDamping(initData(&tetrahedraDamping,Real(0),"tetrahedraDamping","Damping for the Tetrahedra",true))
-        , cubesStiffness(initData(&cubesStiffness,Real(0),"cubesStiffness","Stiffness for the Cubes",true))
-        , cubesDamping(initData(&cubesDamping,Real(0),"cubesDamping","Damping for the Cubes",true))
-        , noCompression( initData(&noCompression, false, "noCompression", "Only consider elongation", false))
-        , d_draw(initData(&d_draw, false, "draw","Activation of draw"))
-        , d_drawMinElongationRange(initData(&d_drawMinElongationRange, Real(8.), "drawMinElongationRange","Min range of elongation (red eongation - blue neutral - green compression)"))
-        , d_drawMaxElongationRange(initData(&d_drawMaxElongationRange, Real(15.), "drawMaxElongationRange","Max range of elongation (red eongation - blue neutral - green compression)"))
-        , d_drawSpringSize(initData(&d_drawSpringSize, Real(8.), "drawSpringSize","Size of drawed lines"))
-        , localRange( initData(&localRange, defaulttype::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
-    {
-        this->ks.setDisplayed(false);
-        this->kd.setDisplayed(false);
-        this->addAlias(&linesStiffness,     "stiffness"); this->addAlias(&linesDamping,     "damping");
-        this->addAlias(&trianglesStiffness, "stiffness"); this->addAlias(&trianglesDamping, "damping");
-        this->addAlias(&quadsStiffness,     "stiffness"); this->addAlias(&quadsDamping,     "damping");
-        this->addAlias(&tetrahedraStiffness,"stiffness"); this->addAlias(&tetrahedraDamping, "damping");
-        this->addAlias(&cubesStiffness,     "stiffness"); this->addAlias(&cubesDamping,      "damping");
-        //Name changes: keep compatibility with old version
-        this->addAlias(&tetrahedraStiffness,"tetrasStiffness"); this->addAlias(&tetrahedraDamping, "tetrasDamping");
-    }
-
+    MeshSpringForceField() ;
     virtual ~MeshSpringForceField();
 public:
     Real getStiffness() const { return linesStiffness.getValue(); }

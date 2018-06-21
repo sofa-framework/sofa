@@ -239,10 +239,6 @@ void RestShapeSpringsForceField<DataTypes>::addForce(const MechanicalParams*  mp
 template<class DataTypes>
 void RestShapeSpringsForceField<DataTypes>::addDForce(const MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx)
 {
-    //  remove to be able to build in parallel
-    // 	const VecIndex& indices = points.getValue();
-    // 	const VecReal& k = stiffness.getValue();
-
     WriteAccessor< DataVecDeriv > df1 = df;
     ReadAccessor< DataVecDeriv > dx1 = dx;
     Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
@@ -314,9 +310,6 @@ void RestShapeSpringsForceField<DataTypes>::draw(const VisualParams *vparams)
 template<class DataTypes>
 void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const MechanicalParams* mparams, const MultiMatrixAccessor* matrix )
 {
-    //      remove to be able to build in parallel
-    // 	const VecIndex& indices = points.getValue();
-    // 	const VecReal& k = stiffness.getValue();
     MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     BaseMatrix* mat = mref.matrix;
     unsigned int offset = mref.offset;
@@ -356,9 +349,6 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(const MechanicalParams*
 template<class DataTypes>
 void RestShapeSpringsForceField<DataTypes>::addSubKToMatrix(const MechanicalParams* mparams, const MultiMatrixAccessor* matrix, const vector<unsigned> & addSubIndex )
 {
-    //      remove to be able to build in parallel
-    // 	const VecIndex& indices = points.getValue();
-    // 	const VecReal& k = stiffness.getValue();
     MultiMatrixAccessor::MatrixRef mref = matrix->getMatrix(this->mstate);
     BaseMatrix* mat = mref.matrix;
     unsigned int offset = mref.offset;
