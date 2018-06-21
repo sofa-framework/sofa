@@ -333,9 +333,8 @@ void LinearVelocityConstraint<TDataTypes>::projectJacobianMatrix(const core::Mec
 template <class TDataTypes>
 void LinearVelocityConstraint<TDataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-    vparams->drawTool()->saveLastState();
-
     if (!vparams->displayFlags().getShowBehaviorModels() || m_keyTimes.getValue().size() == 0 ) return;
+    vparams->drawTool()->saveLastState();
 
     vparams->drawTool()->disableLighting();
 

@@ -26,7 +26,7 @@
 #include <sofa/core/visual/VisualParams.h>
 
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/helper/gl/template.h>
+
 namespace sofa
 {
 
