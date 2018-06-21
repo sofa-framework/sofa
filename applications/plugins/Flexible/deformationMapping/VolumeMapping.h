@@ -269,7 +269,6 @@ extern template class SOFA_Flexible_API VolumeMapping< Vec3dTypes, Vec1dTypes >;
 #ifndef SOFA_DOUBLE
 extern template class SOFA_Flexible_API VolumeMapping< Vec3fTypes, Vec1fTypes >;
 #endif
-
 #endif
 
 } // namespace mapping
