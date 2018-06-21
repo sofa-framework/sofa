@@ -45,7 +45,7 @@ class TPointModel;
 class PointLocalMinDistanceFilter;
 
 template<class TDataTypes>
-class TPoint : public core::TCollisionElementIterator<TPointModel<TDataTypes> >
+class SOFA_MESH_COLLISION_API TPoint : public core::TCollisionElementIterator<TPointModel<TDataTypes> >
 {
 public:
     typedef TDataTypes DataTypes;

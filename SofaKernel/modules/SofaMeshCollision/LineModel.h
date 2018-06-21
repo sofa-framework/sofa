@@ -95,7 +95,7 @@ public:
 };
 
 template<class TDataTypes>
-class TLineModel : public core::CollisionModel
+class SOFA_MESH_COLLISION_API TLineModel : public core::CollisionModel
 {
 public :
     SOFA_CLASS(SOFA_TEMPLATE(TLineModel, TDataTypes), core::CollisionModel);

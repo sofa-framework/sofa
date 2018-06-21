@@ -43,7 +43,7 @@ namespace collision
 /**
  * @brief LocalMinDistance cone information class for a Point collision primitive.
  */
-class PointInfo : public InfoFilter //< Point >
+class SOFA_MESH_COLLISION_API PointInfo : public InfoFilter //< Point >
 {
 public:
     typedef std::vector< std::pair< sofa::defaulttype::Vector3, double > > TDataContainer;

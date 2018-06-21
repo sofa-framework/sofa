@@ -45,7 +45,7 @@ namespace collision
 {
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes = sofa::defaulttype::Vec3Types >
-class BarycentricPenalityContact : public core::collision::Contact
+class SOFA_MESH_COLLISION_API BarycentricPenalityContact : public core::collision::Contact
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE3(BarycentricPenalityContact, TCollisionModel1, TCollisionModel2, ResponseDataTypes), core::collision::Contact);
@@ -61,11 +61,7 @@ public:
     typedef core::behavior::MechanicalState<DataTypes2> MechanicalState2;
     typedef typename CollisionModel1::Element CollisionElement1;
     typedef typename CollisionModel2::Element CollisionElement2;
-//#ifdef SOFA_TEST_FRICTION
-//	typedef forcefield::PenalityContactFrictionForceField<ResponseDataTypes> ResponseForceField;
-//#else
     typedef interactionforcefield::PenalityContactForceField<ResponseDataTypes> ResponseForceField;
-//#endif
 protected:
     CollisionModel1* model1;
     CollisionModel2* model2;

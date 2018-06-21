@@ -48,7 +48,7 @@ struct IntrUtil<TTriangle<DataType> >{
 
 
 template <class TDataTypes1,class TDataTypes2>
-class IntrAxis<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >
+class SOFA_MESH_COLLISION_API IntrAxis<TTriangle<TDataTypes1>,TOBB<TDataTypes2> >
 {
 public:
     typedef typename TDataTypes1::Real Real;

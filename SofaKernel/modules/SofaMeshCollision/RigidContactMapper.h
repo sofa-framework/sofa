@@ -57,7 +57,7 @@ namespace collision
 
 /// Base class for all mappers using RigidMapping
 template < class TCollisionModel, class DataTypes >
-class RigidContactMapper : public BaseContactMapper<DataTypes>
+class SOFA_MESH_COLLISION_API RigidContactMapper : public BaseContactMapper<DataTypes>
 {
 public:
     typedef typename DataTypes::Real Real;
