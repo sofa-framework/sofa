@@ -102,7 +102,6 @@ public:
     virtual const sofa::defaulttype::BaseMatrix* getJ();
     virtual const helper::vector<sofa::defaulttype::BaseMatrix*>* getJs();
 
-
 protected:
     TriangleStrainAverageMapping();
     virtual ~TriangleStrainAverageMapping();
