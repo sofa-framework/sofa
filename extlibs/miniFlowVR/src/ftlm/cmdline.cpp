@@ -25,7 +25,7 @@
 *                                                                 *
 ******************************************************************/
 #include <ftl/cmdline.h>
-#if defined(WIN32) || defined(_XBOX)
+#if defined(WIN32)
 //short getopt_long_only replacement
 struct option
 {

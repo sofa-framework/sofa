@@ -87,7 +87,7 @@ void Spiral<DataTypes>::update()
         // t = t - l(t)/l'(t)
         for (int n=0; n<10; ++n)
         {
-#if !defined(WIN32) && !defined(_XBOX)
+#if !defined(WIN32)
             Real l_t = A/2 * ( t * sqrt(1+t*t) + asinh(t) );
 #else
             Real l_t = A/2 * ( t * sqrt(1+t*t) + log(t + sqrt(t * t + 1)));

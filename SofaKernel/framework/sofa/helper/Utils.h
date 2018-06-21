@@ -53,7 +53,7 @@ static std::string downcaseString(const std::string& s);
 /// @brief Convert a string to upper case.
 static std::string upcaseString(const std::string& s);
 
-#if defined WIN32 || defined _XBOX
+#if defined WIN32
 
 /// @brief Simple wrapper around the Windows function GetLastError().
 ///

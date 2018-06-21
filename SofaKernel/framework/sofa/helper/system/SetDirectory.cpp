@@ -24,8 +24,6 @@
 #ifdef WIN32
 #include <windows.h>
 #include <direct.h>
-#elif defined(_XBOX)
-#include <xtl.h>
 #else
 #include <unistd.h>
 #endif
@@ -50,9 +48,6 @@ namespace system
 #if defined(WIN32)
     #define chdir _chdir
     #define getcwd _getcwd
-#elif defined(_XBOX)
-    int chdir(const char* path) { return -1; } // NOT IMPLEMENTED
-    char* getcwd(char *buffer, int maxlen) { return ""; } // NOT IMPLEMENTED
 #endif
 
 SetDirectory::SetDirectory(const char* filename)
