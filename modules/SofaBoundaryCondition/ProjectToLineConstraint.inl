@@ -28,7 +28,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/helper/gl/template.h>
-//#include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 
@@ -47,7 +46,6 @@ namespace component
 namespace projectiveconstraintset
 {
 
-// Define TestNewPointFunction
 template< class DataTypes>
 bool ProjectToLineConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction(unsigned int, const sofa::helper::vector<unsigned int> &, const sofa::helper::vector<double> &)
 {
@@ -61,7 +59,6 @@ bool ProjectToLineConstraint<DataTypes>::FCPointHandler::applyTestCreateFunction
     }
 }
 
-// Define RemovalFunction
 template< class DataTypes>
 void ProjectToLineConstraint<DataTypes>::FCPointHandler::applyDestroyFunction(unsigned int pointIndex, core::objectmodel::Data<value_type> &)
 {
@@ -80,7 +77,6 @@ ProjectToLineConstraint<DataTypes>::ProjectToLineConstraint()
     , f_direction( initData(&f_direction,CPos(),"direction","Direction of the line"))
     , data(new ProjectToLineConstraintInternalData<DataTypes>())
 {
-    // default to index 0
     f_indices.beginEdit()->push_back(0);
     f_indices.endEdit();
 
@@ -128,9 +124,6 @@ void ProjectToLineConstraint<DataTypes>::init()
 
     topology = this->getContext()->getMeshTopology();
 
-    //  if (!topology)
-    //    serr << "Can not find the topology." << sendl;
-
     // Initialize functions and parameters
     f_indices.createTopologicalEngine(topology, pointHandler);
     f_indices.registerTopologicalData();
@@ -149,16 +142,11 @@ void ProjectToLineConstraint<DataTypes>::init()
     }
 
     reinit();
-
-//  cerr<<"ProjectToLineConstraint<DataTypes>::init(), getJ = " << *getJ(0) << endl;
-
 }
 
 template <class DataTypes>
 void  ProjectToLineConstraint<DataTypes>::reinit()
 {
-//    cerr<<"ProjectToLineConstraint<DataTypes>::getJ, numblocs = "<< numBlocks << ", block size = " << blockSize << endl;
-
     // normalize the normal vector
     CPos n = f_direction.getValue();
     if( n.norm()==0 )
@@ -173,7 +161,6 @@ void  ProjectToLineConstraint<DataTypes>::reinit()
         {
             bProjection[i][j] = n[i]*n[j];
         }
-//    cerr<<"ProjectToLineConstraint<DataTypes>::reinit() bProjection[0] = " << endl << bProjection[0] << endl;
 
     // get the indices sorted
     Indices tmp = f_indices.getValue();
@@ -201,8 +188,6 @@ void  ProjectToLineConstraint<DataTypes>::reinit()
         i++;
     }
     jacobian.compress();
-//    cerr<<"ProjectToLineConstraint<DataTypes>::reinit(), jacobian = " << jacobian << endl;
-
 }
 
 template <class DataTypes>
@@ -250,8 +235,6 @@ void ProjectToLineConstraint<DataTypes>::projectPosition(const core::MechanicalP
 
         const CPos xi = DataTypes::getCPos( x[indices[i]] );
         DataTypes::setCPos( x[indices[i]], o + n * ((xi-o)*n) );
-
-//        x[indices[i]] = o + n * ((x[indices[i]]-o)*n) );
     }
 
     xData.endEdit();
@@ -313,22 +296,6 @@ void ProjectToLineConstraint<DataTypes>::draw(const core::visual::VisualParams* 
     }
 #endif /* SOFA_NO_OPENGL */
 }
-
-//// Specialization for rigids
-//#ifndef SOFA_FLOAT
-//template <>
-//    void ProjectToLineConstraint<Rigid3dTypes >::draw(const core::visual::VisualParams* vparams);
-//template <>
-//    void ProjectToLineConstraint<Rigid2dTypes >::draw(const core::visual::VisualParams* vparams);
-//#endif
-//#ifndef SOFA_DOUBLE
-//template <>
-//    void ProjectToLineConstraint<Rigid3fTypes >::draw(const core::visual::VisualParams* vparams);
-//template <>
-//    void ProjectToLineConstraint<Rigid2fTypes >::draw(const core::visual::VisualParams* vparams);
-//#endif
-
-
 
 } // namespace constraint
 

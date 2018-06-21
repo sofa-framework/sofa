@@ -48,13 +48,11 @@ SkeletalMotionConstraint<DataTypes>::SkeletalMotionConstraint() : sofa::core::be
 	, animationSpeed(initData(&animationSpeed, 1.0f, "animationSpeed", "animation speed"))
     , active(initData(&active, true, "active", "is the constraint active?"))
 {
-
 }
 
 template <class DataTypes>
 SkeletalMotionConstraint<DataTypes>::~SkeletalMotionConstraint()
 {
-
 }
 
 template <class DataTypes>
@@ -348,6 +346,17 @@ void SkeletalMotionConstraint<DataTypes>::applyConstraint(defaulttype::BaseVecto
     	for (unsigned int c=0;c<N;++c)
     		vect->clear(offset + N * (*it) + c);
     }*/
+}
+
+template <class DataTypes>
+void SkeletalMotionConstraint<DataTypes>::projectMatrix( sofa::defaulttype::BaseMatrix* M, unsigned offset )
+{
+    unsigned blockSize = DataTypes::deriv_total_size;
+    unsigned size = this->mstate->getSize();
+    for( unsigned i=0; i<size; i++ )
+    {
+        M->clearRowsCols( offset + i * blockSize, offset + (i+1) * (blockSize) );
+    }
 }
 
 // display the paths the constrained dofs will go through

@@ -45,7 +45,6 @@ class PlaneForceFieldInternalData
 public:
 };
 
-///
 /// @class PlaneForceField
 /// A plane is cutting the space in two half spaces. This component generate a force preventing the
 /// object to cross the plane. The plane is defined by its normal and by the amount of displacement
@@ -127,6 +126,7 @@ public:
     void computeBBox(const core::ExecParams *, bool onlyVisible=false) override;
 
 };
+
 
 #if  !defined(SOFA_COMPONENT_INTERACTIONFORCEFIELD_PLANEFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
