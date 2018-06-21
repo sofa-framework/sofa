@@ -190,12 +190,9 @@ BaseGUI* SimpleGUI::CreateGUI(const char* /*name*/,  sofa::simulation::Node::SPt
 
     glutInitDisplayMode ( GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE );
 
-    //glutInitWindowPosition ( x0, y0 );
     glutInitWindowSize (_initialW, _initialH);
     glutCreateWindow ( ":: SOFA ::" );
 
-
-#ifndef PS3
     std::cout << "Window created:"
             << " red="<<glutGet(GLUT_WINDOW_RED_SIZE)
             << " green="<<glutGet(GLUT_WINDOW_GREEN_SIZE)
@@ -204,7 +201,6 @@ BaseGUI* SimpleGUI::CreateGUI(const char* /*name*/,  sofa::simulation::Node::SPt
             << " depth="<<glutGet(GLUT_WINDOW_DEPTH_SIZE)
             << " stencil="<<glutGet(GLUT_WINDOW_STENCIL_SIZE)
             << std::endl;
-#endif
 
     glClearColor ( 0.0f, 0.0f, 0.0f, 0.0f );
     glClear ( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
@@ -215,7 +211,6 @@ BaseGUI* SimpleGUI::CreateGUI(const char* /*name*/,  sofa::simulation::Node::SPt
     glutIdleFunc ( glut_idle );
     glutDisplayFunc ( glut_display );
 
-#ifndef PS3
     glutReshapeFunc ( glut_reshape );
     glutKeyboardFunc ( glut_keyboard );
     glutSpecialFunc ( glut_special );
@@ -225,10 +220,8 @@ BaseGUI* SimpleGUI::CreateGUI(const char* /*name*/,  sofa::simulation::Node::SPt
 
     SimpleGUI* gui = new SimpleGUI();
     gui->setScene(groot, filename);
-
     gui->initializeGL();
-#else
-    // no glutReshape on PS3 the resoluion is fixed
+
     GLuint screen_width;
     GLuint screen_height;
     psglGetDeviceDimensions(psglGetCurrentDevice(), &screen_width, &screen_height);
@@ -242,7 +235,6 @@ BaseGUI* SimpleGUI::CreateGUI(const char* /*name*/,  sofa::simulation::Node::SPt
 
     return gui;
 }
-
 
 
 void SimpleGUI::glut_display()
@@ -285,7 +277,6 @@ void SimpleGUI::glut_motion(int x, int y)
 {
     if (instance)
     {
-        //instance->updateModifiers();
         instance->mouseEvent( MouseMove, x, y, 0 );
     }
 }
@@ -451,7 +442,7 @@ void SimpleGUI::initializeGL(void)
         specref[2] = 1.0f;
         specref[3] = 1.0f;
         // Here we initialize our multi-texturing functions
-#if defined(SOFA_HAVE_GLEW) && !defined(PS3)
+#if defined(SOFA_HAVE_GLEW)
         glewInit();
         if (!GLEW_ARB_multitexture)
             std::cerr << "Error: GL_ARB_multitexture not supported\n";
@@ -489,7 +480,6 @@ void SimpleGUI::initializeGL(void)
         // Define background color
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-        //glBlendFunc(GL_SRC_ALPHA, GL_ONE);
         //Load texture for logo
         std::string filename = sofa::helper::system::DataRepository.getFile("textures/SOFA_logo.bmp");
         std::string extension = sofa::helper::system::SetDirectory::GetExtension(filename.c_str());
@@ -513,14 +503,11 @@ void SimpleGUI::initializeGL(void)
             texLogo->init();
         }
 
-#ifndef PS3
         glEnableClientState(GL_VERTEX_ARRAY);
         glEnableClientState(GL_NORMAL_ARRAY);
-#endif
+
         // Turn on our light and enable color along with the light
-        //glEnable(GL_LIGHTING);
         glEnable(GL_LIGHT0);
-        //glEnable(GL_COLOR_MATERIAL);
 
         // change status so we only do this stuff once
         initialized = true;
@@ -1236,19 +1223,15 @@ bool SimpleGUI::isAltPressed() const
 
 void SimpleGUI::updateModifiers()
 {
-#ifndef PS3
     m_isControlPressed =  (glutGetModifiers()&GLUT_ACTIVE_CTRL )!=0;
     m_isShiftPressed   =  (glutGetModifiers()&GLUT_ACTIVE_SHIFT)!=0;
     m_isAltPressed     =  (glutGetModifiers()&GLUT_ACTIVE_ALT  )!=0;
-#endif
 }
 
 void SimpleGUI::keyPressEvent ( int k )
 {
-#ifndef PS3
     if( isControlPressed() ) // pass event to the scene data structure
     {
-        //cerr<<"SimpleGUI::keyPressEvent, key = "<<k<<" with Control pressed "<<endl;
         sofa::core::objectmodel::KeypressedEvent keyEvent(k);
         groot->propagateEvent(core::ExecParams::defaultInstance(), &keyEvent);
     }
@@ -1349,13 +1332,11 @@ void SimpleGUI::keyPressEvent ( int k )
             break;
         }
         }
-#endif
 }
 
 
 void SimpleGUI::keyReleaseEvent ( int k )
 {
-    //cerr<<"SimpleGUI::keyReleaseEvent, key = "<<k<<endl;
     if( isControlPressed() ) // pass event to the scene data structure
     {
         sofa::core::objectmodel::KeyreleasedEvent keyEvent(k);
@@ -1366,7 +1347,6 @@ void SimpleGUI::keyReleaseEvent ( int k )
 // ---------------------- Here are the mouse controls for the scene  ----------------------
 void SimpleGUI::mouseEvent ( int type, int eventX, int eventY, int button )
 {
-#ifndef PS3
     const sofa::core::visual::VisualParams::Viewport& viewport = vparams->viewport();
 
     MousePosition mousepos;
@@ -1544,9 +1524,6 @@ void SimpleGUI::mouseEvent ( int type, int eventX, int eventY, int button )
             int dy = eventY - _mouseInteractorSavedPosY;
             if (dx || dy)
             {
-                //g_DepthBias[0] += dx*0.01;
-                //g_DepthBias[1] += dy*0.01;
-                //std::cout << "Depth bias = "<< g_DepthBias[0] << " " << g_DepthBias[1] << std::endl;
                 redraw();
                 _mouseInteractorSavedPosX = eventX;
                 _mouseInteractorSavedPosY = eventY;
@@ -1558,9 +1535,6 @@ void SimpleGUI::mouseEvent ( int type, int eventX, int eventY, int button )
             int dy = eventY - _mouseInteractorSavedPosY;
             if (dx || dy)
             {
-                //g_DepthOffset[0] += dx*0.01;
-                //g_DepthOffset[1] += dy*0.01;
-                //std::cout << "Depth offset = "<< g_DepthOffset[0] << " " << g_DepthOffset[1] << std::endl;
                 redraw();
                 _mouseInteractorSavedPosX = eventX;
                 _mouseInteractorSavedPosY = eventY;
@@ -1632,7 +1606,6 @@ void SimpleGUI::mouseEvent ( int type, int eventX, int eventY, int button )
 
         redraw();
     }
-#endif
 }
 
 void SimpleGUI::step()

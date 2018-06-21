@@ -386,8 +386,6 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::draw(const core::vi
         sofa::defaulttype::Quat q=vars.pos6D.getOrientation();
 #ifdef SOFA_FLOAT
         GLfloat R[4][4];
-#elif PS3
-        double R[4][4];
 #else
         GLdouble R[4][4];
 #endif

@@ -22,11 +22,7 @@
 #include <sofa/helper/Factory.inl>
 #include <typeinfo>
 #ifdef __GNUC__
-#ifdef PS3
-#include <sofa/core/ps3/cxxabi.h>
-#else
 #include <cxxabi.h>
-#endif
 #endif
 #include <cstdlib>
 

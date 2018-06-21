@@ -46,40 +46,6 @@
 #  include <xtl.h>
 #endif
 
-#ifdef __PS3__
-#  include <cstring>
-#  include <ctype.h>
-#  include <math.h>
-#  include <sys/timer.h>
-#  include <typeinfo>
-
-#  define usleep(x) sys_timer_usleep((usecond_t)x)
-
-namespace std
-{
-	// Stub provided for CImg dependency
-	inline int system(const char* command)
-	{
-		return 1;
-	}
-
-	// todo note that this is only used with host serialization from devkit
-	inline char* getenv( const char* env_var )
-	{
-		if (strcmp("TEMP", env_var) == 0)
-		{
-			return "/SYS_APP_HOME/TEMP";
-		}
-        else
-        {
-            return "/SYS_APP_HOME/";
-        }
-	}
-}
-
-#endif // __PS3__
-
-
 #ifdef BOOST_NO_EXCEPTIONS
 #  include<exception>
 
