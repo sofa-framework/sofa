@@ -105,18 +105,19 @@ void TetrahedronSetTopologyModifier::addTetrahedra(const sofa::helper::vector<Te
 
 void TetrahedronSetTopologyModifier::addTetrahedronProcess(Tetrahedron t)
 {
-#ifndef NDEBUG
-    // check if the 3 vertices are different
-    assert(t[0]!=t[1]);
-    assert(t[0]!=t[2]);
-    assert(t[0]!=t[3]);
-    assert(t[1]!=t[2]);
-    assert(t[1]!=t[3]);
-    assert(t[2]!=t[3]);
+	if (CHECK_TOPOLOGY)
+	{
+		// check if the 3 vertices are different
+		assert(t[0] != t[1]);
+		assert(t[0] != t[2]);
+		assert(t[0] != t[3]);
+		assert(t[1] != t[2]);
+		assert(t[1] != t[3]);
+		assert(t[2] != t[3]);
 
-    // check if there already exists a tetrahedron with the same indices
-    // assert(m_container->getTetrahedronIndex(t[0], t[1], t[2], t[3])== -1);
-#endif
+		// check if there already exists a tetrahedron with the same indices
+		// assert(m_container->getTetrahedronIndex(t[0], t[1], t[2], t[3])== -1);
+	}
     helper::WriteAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = m_container->d_tetrahedron;
     const unsigned int tetrahedronIndex = (unsigned int)m_tetrahedron.size();
 
@@ -588,7 +589,7 @@ void TetrahedronSetTopologyModifier::removeTetrahedra(const sofa::helper::vector
     for (unsigned int i = 0; i < tetrahedraIds.size(); i++)
     {
         if( tetrahedraIds[i] >= m_container->getNumberOfTetrahedra())
-            std::cout << "Error: TetrahedronSetTopologyModifier::removeTetrahedra: tetrahedra: "<< tetrahedraIds[i] <<" is out of bound and won't be removed." << std::endl;
+            msg_error() << "Tetrahedra: " << tetrahedraIds[i] << " is out of bound and won't be removed.";
         else
             tetrahedraIds_filtered.push_back(tetrahedraIds[i]);
     }
@@ -639,9 +640,6 @@ void TetrahedronSetTopologyModifier::propagateTopologicalEngineChanges()
         sofa::core::topology::TopologyEngine* topoEngine = (*it);
         if (topoEngine->isDirty())
         {
-#ifndef NDEBUG
-            std::cout << "TetrahedronSetTopologyModifier::performing: " << topoEngine->getName() << std::endl;
-#endif
             topoEngine->update();
         }
     }
