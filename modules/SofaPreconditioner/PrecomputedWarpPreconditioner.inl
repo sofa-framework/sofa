@@ -44,7 +44,6 @@
 #include <sofa/core/behavior/RotationFinder.h>
 #include <sofa/core/behavior/LinearSolver.h>
 
-#include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/Quater.h>
 
 #include <SofaImplicitOdeSolver/EulerImplicitSolver.h>
@@ -685,13 +684,15 @@ void PrecomputedWarpPreconditioner<TDataTypes>::init()
 template<class TDataTypes>
 void PrecomputedWarpPreconditioner<TDataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (! use_rotations.getValue()) return;
     if (draw_rotations_scale.getValue() <= 0.0) return;
     if (! vparams->displayFlags().getShowBehaviorModels()) return;
     if (mstate==NULL) return;
 
+    vparams->drawTool()->saveLastState();
+
     const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
+    const Real& scale = this->draw_rotations_scale.getValue();
 
     for (unsigned int i=0; i< nb_dofs; i++)
     {
@@ -709,9 +710,9 @@ void PrecomputedWarpPreconditioner<TDataTypes>::draw(const core::visual::VisualP
 
         sofa::defaulttype::Quat q;
         q.fromMatrix(RotMat);
-        helper::gl::Axis::draw(DataTypes::getCPos(x[pid]), q, this->draw_rotations_scale.getValue());
+        vparams->drawTool()->drawFrame(DataTypes::getCPos(x[pid]), q, sofa::defaulttype::Vector3(scale,scale,scale));
     }
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->restoreLastState();
 }
 
 } // namespace linearsolver

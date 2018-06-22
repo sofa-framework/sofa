@@ -26,7 +26,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/gl/template.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <string>
 #include <iostream>
