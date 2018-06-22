@@ -31,7 +31,51 @@ namespace sofa
 namespace core
 {
 
-/// Get the default MechanicalParams, to be used to provide a default values for method parameters
+MechanicalParams::MechanicalParams(const sofa::core::ExecParams& p)
+    : sofa::core::ExecParams(p)
+    , m_dt(0.0)
+    , m_implicit(false)
+    , m_energy(false)
+    , m_x (ConstVecCoordId::position())
+    , m_v (ConstVecDerivId::velocity())
+    , m_f (ConstVecDerivId::force())
+    , m_dx(ConstVecDerivId::dx())
+    , m_df(ConstVecDerivId::dforce())
+    , m_mFactor(0)
+    , m_bFactor(0)
+    , m_kFactor(0)
+    , m_symmetricMatrix(true)
+    , m_implicitVelocity(1)
+    , m_implicitPosition(1)
+{
+}
+
+MechanicalParams* MechanicalParams::setExecParams(const core::ExecParams* params)
+{
+    sofa::core::ExecParams::operator=(*params);
+    return this;
+}
+
+MechanicalParams* MechanicalParams::operator= ( const MechanicalParams& mparams )
+{
+    sofa::core::ExecParams::operator=(mparams);
+    m_dt = mparams.m_dt;
+    m_implicit = mparams.m_implicit;
+    m_energy = mparams.m_energy;
+    m_x = mparams.m_x;
+    m_v = mparams.m_v;
+    m_f = mparams.m_f;
+    m_dx = mparams.m_dx;
+    m_df = mparams.m_df;
+    m_mFactor = mparams.m_mFactor;
+    m_bFactor = mparams.m_bFactor;
+    m_kFactor = mparams.m_kFactor;
+    m_symmetricMatrix = mparams.m_symmetricMatrix;
+    m_implicitVelocity = mparams.m_implicitVelocity;
+    m_implicitPosition = mparams.m_implicitPosition;
+    return this;
+}
+
 const MechanicalParams* MechanicalParams::defaultInstance()
 {
     SOFA_THREAD_SPECIFIC_PTR(MechanicalParams, threadParams);
