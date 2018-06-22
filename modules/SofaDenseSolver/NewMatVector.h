@@ -146,8 +146,6 @@ public:
         return NormFrobenius();
     }
 
-    //void operator=(double f) { NEWMAT::ColumnVector::operator=(f); }
-
     template<class T>
     void operator=(const T& m) { NEWMAT::ColumnVector::operator=(m); }
 
