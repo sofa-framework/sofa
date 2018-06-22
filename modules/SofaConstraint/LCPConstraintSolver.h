@@ -92,7 +92,7 @@ public:
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
     virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::BaseMapping* /*map*/)
     {
-        return false; // !map->isMechanical();
+        return false;
     }
 
     /// Return a class name for this visitor
@@ -195,10 +195,6 @@ public:
     void MultigridConstraintsMerge_Spatial();
     void build_Coarse_Compliance(std::vector<int> &/*constraint_merge*/, int /*sizeCoarseSystem*/);
     sofa::component::linearsolver::LPtrFullMatrix<double>  _Wcoarse;
-
-    //std::vector< int> _contact_group;
-    //std::vector< int> _constraint_group;
-    //std::vector<int> _group_lead;
 
     std::vector< std::vector< int > > hierarchy_contact_group;
     std::vector< std::vector< int > > hierarchy_constraint_group;

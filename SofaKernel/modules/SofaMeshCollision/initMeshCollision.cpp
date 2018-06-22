@@ -44,7 +44,6 @@ void initMeshCollision()
 
     core::collision::IntersectorCreator<collision::NewProximityIntersection, collision::MeshNewProximityIntersection>* pMeshNewProximityIntersectors = new core::collision::IntersectorCreator<collision::NewProximityIntersection, collision::MeshNewProximityIntersection>("Mesh");
     (void) pMeshNewProximityIntersectors;
-    // pMeshNewProximityIntersectors will be deleted when the application is closed
 }
 
 SOFA_LINK_CLASS(BarycentricPenalityContact)

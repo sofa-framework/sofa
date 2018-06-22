@@ -80,7 +80,7 @@ protected:
     ContactIndexMap contactIndex;
 
     BarycentricPenalityContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod);
-    ~BarycentricPenalityContact();
+    virtual ~BarycentricPenalityContact();
 
     void setInteractionTags(MechanicalState1* mstate1, MechanicalState2* mstate2);
 

@@ -56,7 +56,6 @@
 #include <sofa/core/behavior/BaseConstraintSet.h>
 #include <sofa/core/topology/Topology.h>
 #include <sofa/core/topology/BaseTopologyObject.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/behavior/LinearSolver.h>
 #include <sofa/core/behavior/OdeSolver.h>
 #include <sofa/core/behavior/ConstraintSolver.h>
@@ -70,12 +69,18 @@
 #include <sofa/simulation/MutationListener.h>
 #include <sofa/simulation/VisitorScheduler.h>
 
-namespace sofa
-{
-namespace simulation
-{
-class Visitor;
+namespace sofa {
+    namespace core {
+        namespace topology {
+            class BaseMeshTopology ;
+        }
+    }
 }
+
+namespace sofa {
+namespace simulation {
+        class Visitor;
+    }
 }
 
 #include <sofa/helper/system/thread/CTime.h>

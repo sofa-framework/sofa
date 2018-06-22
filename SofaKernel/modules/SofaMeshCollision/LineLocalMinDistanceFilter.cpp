@@ -135,19 +135,12 @@ void LineInfo::buildFilter(unsigned int edge_index)
     setValid();
 }
 
-
-
-
-//bool LineInfo::validate(const unsigned int edge_index, const defaulttype::Vector3 &PQ)
-
 bool LineInfo::validate(const unsigned int edge_index, const defaulttype::Vector3& PQ)
 {
     bool debug=false;
 
     if ((int)edge_index==-1)
         debug=true;
-
-
 
     if (isValid())
     {
@@ -248,12 +241,6 @@ void LineLocalMinDistanceFilter::PointInfoHandler::applyCreateFunction(unsigned 
     {
         pInfo.setPositionFiltering(&mstateVec3d->read(core::ConstVecCoordId::position())->getValue());
     }
-
-    //component::container::MechanicalObject<Vec3fTypes>*  mstateVec3f= dynamic_cast<component::container::MechanicalObject<Vec3fTypes>*>(context->getMechanicalState())
-    //if(mstateVec3f != NULL)
-    //{
-    //	lInfo.setPositionFiltering(mstateVec3f->read(sofa::core::ConstVecCoordId::position())->getValue());
-    //}
 }
 
 
@@ -273,25 +260,11 @@ void LineLocalMinDistanceFilter::LineInfoHandler::applyCreateFunction(unsigned i
     {
         lInfo.setPositionFiltering(&mstateVec3d->read(core::ConstVecCoordId::position())->getValue());
     }
-
-    //component::container::MechanicalObject<Vec3fTypes>*  mstateVec3f= dynamic_cast<component::container::MechanicalObject<Vec3fTypes>*>(context->getMechanicalState())
-    //if(mstateVec3f != NULL)
-    //{
-    //	lInfo.setPositionFiltering(mstateVec3f->read(sofa::core::ConstVecCoordId::position())->getValue());
-    //}
-
 }
 
 bool LineLocalMinDistanceFilter::validPoint(const int pointIndex, const defaulttype::Vector3 &PQ)
 {
-
     PointInfo & Pi = m_pointInfo[pointIndex];
-//    if(&Pi==NULL)
-//    {
-//        serr<<"Pi == NULL"<<sendl;
-//        return true;
-//    }
-
     if(this->isRigid())
     {
         // filter is precomputed in the rest position
@@ -299,15 +272,12 @@ bool LineLocalMinDistanceFilter::validPoint(const int pointIndex, const defaultt
         PQtest = pos->getOrientation().inverseRotate(PQ);
         return Pi.validate(pointIndex,PQtest);
     }
-    //else
 
     return Pi.validate(pointIndex,PQ);
 }
 
 bool LineLocalMinDistanceFilter::validLine(const int /*lineIndex*/, const defaulttype::Vector3 &/*PQ*/)
 {
-    //const Edge& bmt->getEdge(lineIndex);
-    // m_lineInfo[edgeIndex].validate(lineIndex, PQ);
     return true;
 }
 

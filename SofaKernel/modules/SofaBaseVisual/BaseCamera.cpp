@@ -772,8 +772,6 @@ bool BaseCamera::importParametersFromFile(const std::string& viewFilename)
     if (!root)
         result = false;
 
-    //std::string camVersion;
-    //root->QueryStringAttribute ("version", &camVersion);
     if(result)
     {
         BaseCameraXMLImportSingleParameter(root, p_position, this);
@@ -795,8 +793,6 @@ bool BaseCamera::importParametersFromFile(const std::string& viewFilename)
 void BaseCamera::updateOutputData()
 {
     //Matrices
-    //sofa::helper::WriteAccessor< Data<Mat4> > wModelViewMatrix = p_modelViewMatrix;
-    //sofa::helper::WriteAccessor< Data<Mat4> > wProjectionMatrix = p_projectionMatrix;
     helper::vector<float>& wModelViewMatrix = *p_modelViewMatrix.beginEdit();
     helper::vector<float>& wProjectionMatrix = *p_projectionMatrix.beginEdit();
 

@@ -40,6 +40,7 @@
 #include <sofa/simulation/UpdateMappingVisitor.h>
 #include <sofa/simulation/UpdateMappingEndEvent.h>
 #include <sofa/simulation/UpdateBoundingBoxVisitor.h>
+#include <SofaConstraint/LCPConstraintSolver.h>
 
 
 namespace sofa
@@ -158,13 +159,11 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     using sofa::helper::AdvancedTimer;
 
     double time = 0.0;
-    //double timeTotal = 0.0;
     double timeScale = 1000.0 / (double)CTime::getTicksPerSec();
 
     if (displayTime.getValue())
     {
         time = (double) CTime::getTime();
-        //timeTotal = (double) CTime::getTime();
     }
 
     // Update the BehaviorModels
@@ -280,7 +279,6 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     sofa::helper::AdvancedTimer::stepBegin("UpdateMapping");
     //Visual Information update: Ray Pick add a MechanicalMapping used as VisualMapping
     this->gnode->execute<UpdateMappingVisitor>(params);
-//	sofa::helper::AdvancedTimer::step("UpdateMappingEndEvent");
     {
         UpdateMappingEndEvent ev ( dt );
         PropagateEventVisitor act ( params , &ev );
