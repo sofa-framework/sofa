@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <SofaGeneralLoader/ReadTopology.inl>
-#include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa

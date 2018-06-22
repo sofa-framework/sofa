@@ -27,7 +27,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
-#include <sofa/core/topology/BaseMeshTopology.h>
 
 #include <sstream>
 #include <sofa/core/ObjectFactory.h>
