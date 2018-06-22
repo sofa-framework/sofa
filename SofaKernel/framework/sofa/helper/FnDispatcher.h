@@ -48,7 +48,14 @@ public:
     void ignore(const std::type_info& class1, const std::type_info& class2) ;
 
     template <class ConcreteClass1,class ConcreteClass2,ResulT (*F)(ConcreteClass1&,ConcreteClass2&), bool symetric>
-    void ignore() ;
+    void ignore()
+    {
+        this->BasicDispatcher<BaseClass, ResulT>::add(typeid(ConcreteClass1), typeid(ConcreteClass2), &ignoreFn);
+        if (symetric)
+        {
+            this->BasicDispatcher<BaseClass, ResulT>::add(typeid(ConcreteClass2), typeid(ConcreteClass1), &ignoreFn);
+        }
+    }
 
     virtual ResulT defaultFn(BaseClass& arg1, BaseClass& arg2);
     static ResulT ignoreFn(BaseClass& arg1, BaseClass& arg2);
@@ -63,10 +70,36 @@ class FnDispatcher : public BasicDispatcher<BaseClass, ResulT>
 public:
 
     template <class ConcreteClass1, class ConcreteClass2, ResulT (*F)(ConcreteClass1&,ConcreteClass2&), bool symetric>
-    void add() ;
+    void add()
+    {
+        struct Local
+        {
+            static ResulT trampoline(BaseClass &arg1, BaseClass &arg2)
+            {
+                return F(static_cast<ConcreteClass1 &> (arg1),
+                    static_cast<ConcreteClass2 &> (arg2));
+            }
+            static ResulT trampolineR(BaseClass &arg1, BaseClass &arg2)
+            {
+                return trampoline(arg2, arg1);
+            }
+        };
+        this->BasicDispatcher<BaseClass, ResulT>::add(typeid(ConcreteClass1), typeid(ConcreteClass2), &Local::trampoline);
+        if (symetric)
+        {
+            this->BasicDispatcher<BaseClass, ResulT>::add(typeid(ConcreteClass2), typeid(ConcreteClass1), &Local::trampolineR);
+        }
+    }
 
     template <class ConcreteClass1, class ConcreteClass2, bool symetric>
-    void ignore() ;
+    void ignore()
+    {
+        this->BasicDispatcher<BaseClass, ResulT>::ignore(typeid(ConcreteClass1), typeid(ConcreteClass2));
+        if (symetric)
+        {
+            this->BasicDispatcher<BaseClass, ResulT>::ignore(typeid(ConcreteClass2), typeid(ConcreteClass1));
+        }
+    }
 };
 
 

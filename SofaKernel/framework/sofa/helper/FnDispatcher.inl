@@ -48,18 +48,6 @@ void BasicDispatcher<BaseClass, ResulT>::ignore(const std::type_info& class1, co
 
 
 template <class BaseClass, typename ResulT>
-template <class ConcreteClass1,class ConcreteClass2,ResulT (*F)(ConcreteClass1&,ConcreteClass2&), bool symetric>
-void BasicDispatcher<BaseClass, ResulT>::ignore()
-{
-    this->BasicDispatcher<BaseClass, ResulT>::add(typeid(ConcreteClass1), typeid(ConcreteClass2), &ignoreFn);
-    if (symetric)
-    {
-        this->BasicDispatcher<BaseClass, ResulT>::add(typeid(ConcreteClass2), typeid(ConcreteClass1), &ignoreFn);
-    }
-}
-
-
-template <class BaseClass, typename ResulT>
 ResulT BasicDispatcher<BaseClass, ResulT>::defaultFn(BaseClass& arg1, BaseClass& arg2)
 {
     msg_info("BasicDispatcher") << "ERROR DISPATCH ("
@@ -95,41 +83,6 @@ bool BasicDispatcher<BaseClass, ResulT>::isSupported(BaseClass &arg1, BaseClass 
     else
         return itt->second != ignoreFn;
 }
-
-template <class BaseClass, typename ResultT>
-template <class ConcreteClass1, class ConcreteClass2, ResultT (*F)(ConcreteClass1&,ConcreteClass2&), bool symetric>
-void FnDispatcher<BaseClass, ResultT>::add()
-{
-    struct Local
-    {
-        static ResultT trampoline(BaseClass &arg1,BaseClass &arg2)
-        {
-            return F(static_cast<ConcreteClass1 &> (arg1),
-                    static_cast<ConcreteClass2 &> (arg2));
-        }
-        static ResultT trampolineR(BaseClass &arg1,BaseClass &arg2)
-        {
-            return trampoline (arg2, arg1);
-        }
-    };
-    this->BasicDispatcher<BaseClass, ResultT>::add(typeid(ConcreteClass1), typeid(ConcreteClass2), &Local::trampoline);
-    if (symetric)
-    {
-        this->BasicDispatcher<BaseClass, ResultT>::add(typeid(ConcreteClass2), typeid(ConcreteClass1), &Local::trampolineR);
-    }
-}
-
-template <class BaseClass, typename ResultT>
-template <class ConcreteClass1, class ConcreteClass2, bool symetric>
-void FnDispatcher<BaseClass, ResultT>::ignore()
-{
-    this->BasicDispatcher<BaseClass, ResultT>::ignore(typeid(ConcreteClass1), typeid(ConcreteClass2));
-    if (symetric)
-    {
-        this->BasicDispatcher<BaseClass, ResultT>::ignore(typeid(ConcreteClass2), typeid(ConcreteClass1));
-    }
-}
-
 
 template <class BaseClass, typename ResulT>
 SingletonFnDispatcher<BaseClass, ResulT>::SingletonFnDispatcher()
