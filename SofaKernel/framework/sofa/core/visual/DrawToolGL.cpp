@@ -1305,7 +1305,7 @@ void DrawToolGL::draw3DText(const Vector3 &p, float scale, const Vec4f &color, c
     sofa::helper::gl::GlText::draw(text, p, (double)scale);
 }
 
-void DrawToolGL::draw3DText_Indices(const helper::vector<Vector3> &positions, float scale, const Vec4f &color)
+void DrawToolGL::draw3DText_Indices(const std::vector<Vector3> &positions, float scale, const Vec4f &color)
 {
     glColor4f(color[0], color[1], color[2], color[3]);
 

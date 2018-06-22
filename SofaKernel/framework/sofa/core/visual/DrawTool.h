@@ -163,7 +163,7 @@ public:
     virtual void drawBoundingBox( const Vector3 &min, const Vector3 &max, float size = 1.0 ) = 0;
 
     virtual void draw3DText(const Vector3 &p, float scale, const Vec4f &color, const char* text) = 0;
-    virtual void draw3DText_Indices(const helper::vector<Vector3> &positions, float scale, const Vec4f &color) = 0;
+    virtual void draw3DText_Indices(const std::vector<Vector3> &positions, float scale, const Vec4f &color) = 0;
     /// @}
 
     /// @name Transformation methods.
