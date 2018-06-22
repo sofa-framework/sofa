@@ -145,7 +145,7 @@ public:
     virtual void drawSphere( const Vector3 &p, float radius);
     virtual void drawEllipsoid(const Vector3 &p, const Vector3 &radii);
 
-    virtual void drawBoundingBox( const Vector3 &min, const Vector3 &max );
+    virtual void drawBoundingBox( const Vector3 &min, const Vector3 &max, float size = 1.0);
 
     virtual void draw3DText(const Vector3 &p, float scale, const Vec4f &color, const char* text);
 

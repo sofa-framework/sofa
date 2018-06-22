@@ -1063,8 +1063,9 @@ void DrawToolGL::drawEllipsoid(const Vector3 &p, const Vector3 &radii)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void DrawToolGL::drawBoundingBox( const Vector3 &min, const Vector3 &max )
+void DrawToolGL::drawBoundingBox( const Vector3 &min, const Vector3 &max, float size)
 {
+    glLineWidth(size);
     glBegin( GL_LINES );
 
     // 0-1
@@ -1105,6 +1106,7 @@ void DrawToolGL::drawBoundingBox( const Vector3 &min, const Vector3 &max )
     glVertex3f( (float)min[0], (float)max[1], (float)max[2] );
 
     glEnd();
+    glLineWidth(1.0);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
