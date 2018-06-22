@@ -177,7 +177,7 @@ struct SceneChecker_test : public Sofa_test<>
     }
 };
 
-TEST_F(SceneChecker_test, checkSceneCheckMissingRequiredPlugin )
+TEST_F(SceneChecker_test, checkMissingRequiredPlugin )
 {
     checkRequiredPlugin(true);
 }
