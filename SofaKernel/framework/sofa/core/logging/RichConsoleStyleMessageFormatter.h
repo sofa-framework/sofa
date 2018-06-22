@@ -48,10 +48,10 @@ class Message;
 ///     - automatic reading of the console number of column for prettier display.
 ///
 ///
-class SOFA_HELPER_API RichConsoleStyleMessageFormatter : public MessageFormatter
+class SOFA_CORE_API RichConsoleStyleMessageFormatter : public MessageFormatter
 {
 public:
-    static RichConsoleStyleMessageFormatter &getInstance ()
+    static inline RichConsoleStyleMessageFormatter &getInstance ()
     {
         static RichConsoleStyleMessageFormatter instance;
         return instance;

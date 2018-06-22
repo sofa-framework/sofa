@@ -39,6 +39,13 @@ using sofa::helper::logging::SofaComponentInfo ;
 #include <boost/token_functions.hpp>
 #include <boost/token_iterator.hpp>
 
+#ifdef WIN32
+#undef min
+#undef max
+#endif
+
+#include <algorithm>
+
 namespace sofa
 {
 
@@ -84,7 +91,7 @@ void simpleFormat(int jsize, const std::string& text, size_t line_length,
             if(isInItalic)
             {
                 isInItalic=false;
-                wrapped << Console::Code(Console::DEFAULT) ;
+                wrapped << console::Style::Reset;
                 wrapped << "'";
                 continue;
             }
@@ -98,13 +105,13 @@ void simpleFormat(int jsize, const std::string& text, size_t line_length,
                         numspaces = 0;
                         space_left--;
                     }else{
-                        wrapped << Console::Code(Console::DEFAULT) << emptyspace ;
+                        wrapped << console::Style::Reset << emptyspace ;
                     }
                 }
 
                 wrapped << "'";
-                wrapped << Console::Code(Console::ITALIC) ;
-                wrapped << Console::Code(Console::UNDERLINE) ;
+                wrapped << console::Style::Italic;
+                wrapped << console::Style::Underline;
                 continue;
             }
         }else if(word==" ")
@@ -128,11 +135,11 @@ void simpleFormat(int jsize, const std::string& text, size_t line_length,
                     numspaces = 0;
                     space_left--;
                 }else{
-                    wrapped << Console::Code(Console::DEFAULT);
+                    wrapped << console::Style::Reset;
                     wrapped << emptyspace ;
                     if(isInItalic){
-                        wrapped << Console::Code(Console::ITALIC);
-                        wrapped << Console::Code(Console::UNDERLINE);
+                        wrapped << console::Style::Italic;
+                        wrapped << console::Style::Underline;
                     }
                 }
             }
@@ -151,11 +158,11 @@ void simpleFormat(int jsize, const std::string& text, size_t line_length,
                     first=word.substr(curidx,endidx);
 
                     if(beginOfLine){
-                        wrapped << Console::Code(Console::DEFAULT);
+                        wrapped << console::Style::Reset;
                         wrapped << emptyspace ;
                         if(isInItalic){
-                            wrapped << Console::Code(Console::ITALIC);
-                            wrapped << Console::Code(Console::UNDERLINE);
+                            wrapped << console::Style::Italic;
+                            wrapped << console::Style::Underline;
                         }
                     }
                     beginOfLine=false;
@@ -175,11 +182,11 @@ void simpleFormat(int jsize, const std::string& text, size_t line_length,
             else
             {
                 wrapped << "\n";
-                wrapped << Console::Code(Console::DEFAULT);
+                wrapped << console::Style::Reset;
                 wrapped << emptyspace ;
                 if(isInItalic){
-                    wrapped << Console::Code(Console::ITALIC);
-                    wrapped << Console::Code(Console::UNDERLINE);
+                    wrapped << console::Style::Italic;
+                    wrapped << console::Style::Underline;
                 }
                 wrapped << word ;
                 space_left = line_length-word.length();
@@ -188,11 +195,11 @@ void simpleFormat(int jsize, const std::string& text, size_t line_length,
         else
         {
             if(beginOfLine){
-                wrapped << Console::Code(Console::DEFAULT);
+                wrapped << console::Style::Reset;
                 wrapped << emptyspace ;
                 if(isInItalic){
-                    wrapped << Console::Code(Console::ITALIC);
-                    wrapped << Console::Code(Console::UNDERLINE);
+                    wrapped << console::Style::Italic;
+                    wrapped << console::Style::Underline;
                 }
             }
             beginOfLine=false;
@@ -210,7 +217,7 @@ void RichConsoleStyleMessageFormatter::formatMessage(const Message& m, std::ostr
 {
     size_t psize = getPrefixText(m.type()).size() ;
 
-    out << getPrefixCode(m.type()) << getPrefixText(m.type());
+    setColor(out, m.type()) << getPrefixText(m.type());
 
     SofaComponentInfo* nfo = dynamic_cast<SofaComponentInfo*>(m.componentInfo().get()) ;
     if( nfo != nullptr )
@@ -218,29 +225,29 @@ void RichConsoleStyleMessageFormatter::formatMessage(const Message& m, std::ostr
         const std::string& classname= nfo->sender();
         const std::string& name = nfo->name();
         psize +=classname.size()+name.size()+5 ;
-        out << Console::Code(Console::BLUE) << "[" << classname << "(" << name << ")] ";
+        out << console::Foreground::Normal::Blue << "[" << classname << "(" << name << ")] ";
     }
     else
     {
         psize +=m.sender().size()+3 ;
-        out << Console::Code(Console::BLUE) << "[" << m.sender()<< "] ";
+        out << console::Foreground::Normal::Blue << "[" << m.sender()<< "] ";
     }
 
-    out << Console::Code(Console::DEFAULT);
+    out << console::Style::Reset;
 
     /// Format & align the text and write the result into 'out'.
-    simpleFormat(psize , m.message().str(), Console::getColumnCount()-psize, out) ;
+    simpleFormat(psize , m.message().str(), console::getColumnCount()-psize, out) ;
 
     if(m_showFileInfo && m.fileInfo()){
         std::stringstream buf;
         std::string emptyspace(psize, ' ') ;
         buf << "Emitted from '" << m.fileInfo()->filename << "' line " << m.fileInfo()->line ;
-        out << "\n" << Console::Code(Console::DEFAULT) << emptyspace ;
-        simpleFormat(psize , buf.str(), Console::getColumnCount()-psize, out) ;
+        out << "\n" << console::Style::Reset << emptyspace ;
+        simpleFormat(psize , buf.str(), console::getColumnCount()-psize, out) ;
     }
 
     ///Restore the console rendering attribute.
-    out << Console::Code(Console::DEFAULT);
+    out << console::Style::Reset;
     out << std::endl ;
 }
 

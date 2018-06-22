@@ -52,18 +52,18 @@ std::string MessageFormatter::getPrefixText(unsigned int type) const {
     }
 }
 
-std::string MessageFormatter::getPrefixCode(unsigned int type) const {
+std::ostream & MessageFormatter::setColor(std::ostream &os, unsigned int type) const {
     switch (type) {
-        case Message::Advice     : return Console::Code(Console::BRIGHT_GREEN);
-        case Message::Info       : return Console::Code(Console::BRIGHT_GREEN);
-        case Message::Deprecated : return Console::Code(Console::BRIGHT_YELLOW);
-        case Message::Warning    : return Console::Code(Console::BRIGHT_CYAN);
-        case Message::Error      : return Console::Code(Console::BRIGHT_RED);
-        case Message::Fatal      : return Console::Code(Console::BRIGHT_PURPLE);
+        case Message::Advice     : return os << console::Foreground::Bright::Green;
+        case Message::Info       : return os << console::Foreground::Bright::Green;
+        case Message::Deprecated : return os << console::Foreground::Bright::Yellow;
+        case Message::Warning    : return os << console::Foreground::Bright::Cyan;
+        case Message::Error      : return os << console::Foreground::Bright::Red;
+        case Message::Fatal      : return os << console::Foreground::Bright::Magenta;
 
         case Message::TEmpty:
         default:
-            return Console::Code(Console::DEFAULT);
+            return os << console::Foreground::Normal::Reset;
     }
 }
 

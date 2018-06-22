@@ -91,6 +91,7 @@ set(HEADER_FILES
     system/atomic.h
     system/config.h
     system/console.h
+    system/console_internal.h
     system/gl.h
     system/glu.h
     system/thread/CTime.h

@@ -43,7 +43,7 @@ class Message;
 class SOFA_HELPER_API ClangStyleMessageFormatter : public MessageFormatter
 {
 public:
-    static ClangStyleMessageFormatter &getInstance ()
+    static inline ClangStyleMessageFormatter &getInstance ()
     {
         static ClangStyleMessageFormatter instance;
         return instance;

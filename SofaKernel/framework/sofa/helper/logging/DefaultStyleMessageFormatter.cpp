@@ -24,12 +24,9 @@
 * in the messaging.h file.
 ******************************************************************************/
 
-
+#include <sofa/helper/system/console.h>
 #include "DefaultStyleMessageFormatter.h"
 #include "Message.h"
-
-#include <sofa/helper/system/console.h>
-#include <sofa/helper/fixed_array.h>
 
 
 namespace sofa
@@ -44,12 +41,12 @@ namespace logging
 void DefaultStyleMessageFormatter::formatMessage(const Message & m, std::ostream & out)
 {
 
-    out << getPrefixCode(m.type()) << getPrefixText(m.type());
+    setColor(out, m.type()) << getPrefixText(m.type());
 
     if (!m.sender().empty())
-        out << Console::Code(Console::BLUE) << "[" << m.componentInfo() << "] ";
+        out << console::Foreground::Normal::Blue << "[" << m.componentInfo() << "] ";
 
-    out << Console::Code(Console::DEFAULT) << m.message().str() << std::endl;
+    out << console::Foreground::Normal::Reset << m.message().str() << std::endl;
 }
 
 

@@ -28,6 +28,7 @@
 
 #include <sstream>
 #include <sofa/helper/helper.h>
+#include <sofa/helper/system/console.h>
 
 namespace sofa
 {
@@ -49,7 +50,8 @@ protected:
     MessageFormatter() {} // no public default constructor, it should be enough to have singleton for MessageFormatters
 
     virtual std::string getPrefixText(unsigned int type) const;
-    virtual std::string getPrefixCode(unsigned int type) const;
+
+    virtual std::ostream & setColor(std::ostream &stream, unsigned int type) const;
 
 };
 
