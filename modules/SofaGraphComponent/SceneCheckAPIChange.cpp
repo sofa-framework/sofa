@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "SceneCheckAPIChanges.h"
+#include "SceneCheckAPIChange.h"
 
 #include <string>
 

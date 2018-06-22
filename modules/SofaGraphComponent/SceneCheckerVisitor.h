@@ -28,7 +28,7 @@
 #include <map>
 
 #include <sofa/simulation/Visitor.h>
-#include "SceneChecks.h"
+#include "SceneCheck.h"
 
 namespace sofa
 {

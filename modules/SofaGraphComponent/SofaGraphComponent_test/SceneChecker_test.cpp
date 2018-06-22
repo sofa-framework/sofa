@@ -4,10 +4,10 @@ using sofa::Sofa_test;
 #include <SofaGraphComponent/SceneCheckerVisitor.h>
 using sofa::simulation::scenechecking::SceneCheckerVisitor;
 
-#include <SofaGraphComponent/SceneChecks.h>
+#include <SofaGraphComponent/SceneCheck.h>
 using sofa::simulation::scenechecking::SceneCheck;
 
-#include <SofaGraphComponent/SceneCheckAPIChanges.h>
+#include <SofaGraphComponent/SceneCheckAPIChange.h>
 using sofa::simulation::scenechecking::SceneCheckAPIChange;
 #include <SofaGraphComponent/SceneCheckMissingRequiredPlugin.h>
 using sofa::simulation::scenechecking::SceneCheckMissingRequiredPlugin;
