@@ -212,13 +212,10 @@ void FixedLMConstraint<DataTypes>::draw(const core::visual::VisualParams* vparam
 {
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     const VecCoord& x =this->constrainedObject1->read(core::ConstVecCoordId::position())->getValue();
-    //serr<<"FixedLMConstraint<DataTypes>::draw(), x.size() = "<<x.size()<<sendl;
-
     const SetIndexArray & indices = f_indices.getValue();
 
     std::vector< defaulttype::Vector3 > points;
     defaulttype::Vector3 point;
-    //serr<<"FixedLMConstraint<DataTypes>::draw(), indices = "<<indices<<sendl;
     for (SetIndexArray::const_iterator it = indices.begin();
             it != indices.end();
             ++it)

@@ -108,7 +108,6 @@ public:
             core::behavior::ConstraintGroup * group) override;
 
     bool isCorrectionComputedWithSimulatedDOF(ConstOrder order) const override;
-    //
     void clear();
     /// register a new contact
     void addContact(unsigned m1, unsigned m2);

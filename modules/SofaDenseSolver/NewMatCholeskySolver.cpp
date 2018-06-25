@@ -37,13 +37,8 @@ namespace linearsolver
 {
 
 
-//SOFA_DECL_CLASS(CholeskySolver)
-
 int NewMatCholeskySolverClass = core::RegisterObject("NewMat direct linear solver based on Cholesky factorization, for dense matrices")
-//.add< CholeskySolver< NewMatBandMatrix, NewMatVector > >(true)
-//.add< CholeskySolver< NewMatMatrix, NewMatVector > >()
         .add< CholeskySolver< NewMatSymmetricMatrix, NewMatVector > >()
-//.add< CholeskySolver< NewMatSymmetricBandMatrix, NewMatVector > >()
         ;
 
 } // namespace linearsolver

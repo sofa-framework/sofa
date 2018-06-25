@@ -37,6 +37,24 @@ namespace constraintset
 {
 
 template<class DataTypes>
+StopperConstraint<DataTypes>::StopperConstraint(MechanicalState* object)
+    : Inherit(object)
+    , index(initData(&index, 0, "index", "index of the stop constraint"))
+    , min(initData(&min, -100.0, "min", "minimum value accepted"))
+    , max(initData(&max, 100.0, "max", "maximum value accepted"))
+{
+}
+
+
+template<class DataTypes>
+StopperConstraint<DataTypes>::StopperConstraint()
+    : index(initData(&index, 0, "index", "index of the stop constraint"))
+    , min(initData(&min, -100.0, "min", "minimum value accepted"))
+    , max(initData(&max, 100.0, "max", "maximum value accepted"))
+{
+}
+
+template<class DataTypes>
 void StopperConstraint<DataTypes>::init()
 {
     this->mstate = dynamic_cast<MechanicalState*>(this->getContext()->getMechanicalState());
@@ -54,7 +72,6 @@ template<class DataTypes>
 void StopperConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintParams* /*cParams*/, DataMatrixDeriv &c_d, unsigned int &cIndex, const DataVecCoord &/*x*/)
 {
     cid = cIndex;
-//	assert(mstate);
 
     MatrixDeriv& c = *c_d.beginEdit();
 

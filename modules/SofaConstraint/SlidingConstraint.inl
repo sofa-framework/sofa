@@ -40,6 +40,35 @@ namespace constraintset
 {
 
 template<class DataTypes>
+SlidingConstraint<DataTypes>::SlidingConstraint(MechanicalState* object1, MechanicalState* object2)
+    : Inherit(object1, object2)
+    , yetIntegrated(false)
+    , m1(initData(&m1, 0, "sliding_point","index of the spliding point on the first model"))
+    , m2a(initData(&m2a, 0, "axis_1","index of one end of the sliding axis"))
+    , m2b(initData(&m2b, 0, "axis_2","index of the other end of the sliding axis"))
+{
+}
+
+template<class DataTypes>
+SlidingConstraint<DataTypes>::SlidingConstraint(MechanicalState* object)
+    : Inherit(object, object)
+    , yetIntegrated(false)
+    , m1(initData(&m1, 0, "sliding_point","index of the spliding point on the first model"))
+    , m2a(initData(&m2a, 0, "axis_1","index of one end of the sliding axis"))
+    , m2b(initData(&m2b, 0, "axis_2","index of the other end of the sliding axis"))
+{
+}
+
+template<class DataTypes>
+SlidingConstraint<DataTypes>::SlidingConstraint()
+    : yetIntegrated(false)
+    , m1(initData(&m1, 0, "sliding_point","index of the spliding point on the first model"))
+    , m2a(initData(&m2a, 0, "axis_1","index of one end of the sliding axis"))
+    , m2b(initData(&m2b, 0, "axis_2","index of the other end of the sliding axis"))
+{
+}
+
+template<class DataTypes>
 void SlidingConstraint<DataTypes>::init()
 {
     assert(this->mstate1);
@@ -175,8 +204,6 @@ void SlidingConstraint<DataTypes>::draw(const core::visual::VisualParams* vparam
     else
         glColor4f(1,0,1,1);
     helper::gl::glVertexT((this->mstate1->read(core::ConstVecCoordId::position())->getValue())[m1.getValue()]);
-    //      helper::gl::glVertexT((*this->object2->read(sofa::core::ConstVecCoordId::position())->getValue())[m3]);
-    //      helper::gl::glVertexT(proj);
     glEnd();
 
     glBegin(GL_LINES);

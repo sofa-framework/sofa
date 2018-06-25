@@ -137,8 +137,6 @@ private:
     VecDeriv constraint_disp, constraint_force;
     std::list<int> constraint_dofs;		// list of indices of each point which is involve with constraint
 
-    //std::vector< std::vector<int> >  dof_constraint_table;   // table of indices of each point involved with each constraint
-
 protected:
 
     sofa::core::behavior::OdeSolver* m_pOdeSolver;

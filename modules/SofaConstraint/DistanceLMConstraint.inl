@@ -35,9 +35,6 @@
 #include <iostream>
 
 
-
-
-
 namespace sofa
 {
 

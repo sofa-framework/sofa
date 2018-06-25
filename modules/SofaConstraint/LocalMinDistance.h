@@ -48,8 +48,6 @@ public:
 
     typedef core::collision::IntersectorFactory<LocalMinDistance> IntersectorFactory;
 
-    // Data<bool> useSphereTriangle;
-    // Data<bool> usePointPoint;
     Data<bool> filterIntersection; ///< Activate LMD filter
     Data<double> angleCone; ///< Filtering cone extension angle
     Data<double> coneFactor; ///< Factor for filtering cone angle computation

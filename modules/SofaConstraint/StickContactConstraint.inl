@@ -52,9 +52,6 @@ StickContactConstraint<TCollisionModel1,TCollisionModel2>::StickContactConstrain
     mapper1.setCollisionModel(model1);
     mapper2.setCollisionModel(model2);
     this->f_printLog.setValue(true);
-    //contacts.clear();
-    //mappedContacts.clear();
-
 }
 
 template < class TCollisionModel1, class TCollisionModel2 >
@@ -68,8 +65,6 @@ void StickContactConstraint<TCollisionModel1,TCollisionModel2>::cleanup()
     sout << "CLEANUP" << sendl;
     if (m_constraint)
     {
-        //m_constraint->cleanup();
-
         if (parent != NULL)
             parent->removeObject(m_constraint);
 

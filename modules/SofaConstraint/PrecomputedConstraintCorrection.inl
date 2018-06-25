@@ -61,9 +61,6 @@ namespace component
 namespace constraintset
 {
 
-//#define	MAX_NUM_CONSTRAINT_PER_NODE 10000
-//#define EPS_UNITARY_FORCE 0.01
-
 template<class DataTypes>
 PrecomputedConstraintCorrection<DataTypes>::PrecomputedConstraintCorrection(sofa::core::behavior::MechanicalState<DataTypes> *mm)
     : Inherit(mm)
@@ -431,33 +428,6 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
         serr << sendl;
     }
-
-    //// rotation de -Pi/2 autour de z en init
-    //Quat q0(0,0,-0.7071067811865475, 0.7071067811865475);
-    //q0.normalize();
-
-    //// rotation de -Pi/2 autour de x dans le repËre dÈfini par q0; (=rotation Pi/2 autour de l'axe y dans le repËre global)
-    //Quat q_q0(-0.7071067811865475,0,0,0.7071067811865475);
-    //q_q0.normalize();
-
-
-    //// calcul de la rotation Èquivalente dans le repËre global;
-    //Quat q = q0 * q_q0;
-    //q.normalize();
-
-    //// test des rotations:
-    //sout<<"VecX = "<<q.rotate( Vec3d(1.0,0.0,0.0) )<<sendl;
-    //sout<<"VecY = "<<q.rotate( Vec3d(0.0,1.0,0.0) )<<sendl;
-    //sout<<"VecZ = "<<q.rotate( Vec3d(0.0,0.0,1.0) )<<sendl;
-
-
-    //// on veut maintenant retrouver l'Èquivalent de q_q0 dans le repËre global
-    //// c'est ‡ dire une rotation de Pi/2 autour de l'axe y
-    //Quat q_test = q * q0.inverse();
-
-    //sout<<"q_test = "<<q_test<<sendl;
-
-    //sout<<"Alpha = "<<q_test.toEulerVector()<< " doit valoir une rotation de Pi/2 autour de l'axe y"<<sendl; // Consider to use quatToRotationVector instead of toEulerVector to have the rotation vector
 }
 
 
@@ -474,7 +444,6 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
     {
     case core::ConstraintParams::POS_AND_VEL :
     case core::ConstraintParams::POS :
-        // factor = eulerSolver->getPositionIntegrationFactor();
         break;
 
     case core::ConstraintParams::ACC :
@@ -490,7 +459,6 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
     /////////// The constraints are modified using a rotation value at each node/////
     if (m_rotations.getValue())
         rotateConstraints(false);
-    /////////////////////////////////////////////////////////////////////////////////
 
 
     /////////// Which node are involved with the contact ? /////
@@ -529,23 +497,11 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
     m_activeDofs.sort();
     m_activeDofs.unique();
 
-    // Commented by PJ
-    /*
-    int nActiveDof = 0;
-    for (unsigned int i = 0; i < noSparseComplianceSize; ++i)
-    {
-        if (_indexNodeSparseCompliance[i] == 0)
-            ++nActiveDof;
-    }
-    */
-
-    ////////////////////////////////////////////////////////////
     unsigned int offset, offset2;
     unsigned int ii,jj, it;
     Deriv Vbuf;
     it = 0;
 
-    //////////////////////////////////////////
     _sparseCompliance.resize(nActiveDof * nbConstraints);
 
     for (int NodeIdx = 0; NodeIdx < (int)noSparseComplianceSize; ++NodeIdx)
@@ -611,16 +567,6 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
                 curColConst++;
             }
         }
-
-        /*
-        //Compliance matrix is symetric ?
-        for(unsigned int curColConst = curRowConst+1; curColConst < numConstraints; curColConst++)
-        {
-            int indexCurColConst = this->mstate->getConstraintId()[curColConst];
-            W[indexCurColConst][indexCurRowConst] = W[indexCurRowConst][indexCurColConst];
-        }
-        */
-
         curConstraint++;
     }
 }
@@ -1020,7 +966,6 @@ void PrecomputedConstraintCorrection<DataTypes>::rotateResponse()
 
     if (node != NULL)
     {
-        //		core::behavior::BaseForceField* _forceField = node->forceField[1];
         forceField = node->get<component::forcefield::TetrahedronFEMForceField<DataTypes> > ();
         if (forceField == NULL)
         {
@@ -1077,14 +1022,9 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
     bool error_message_not_displayed=true;
 #endif
 
-    /////////// The constraints on the same nodes are gathered //////////////////////
-    //gatherConstraints();
-    /////////////////////////////////////////////////////////////////////////////////
-
     /////////// The constraints are modified using a rotation value at each node/////
     if (m_rotations.getValue())
         rotateConstraints(false);
-    /////////////////////////////////////////////////////////////////////////////////
 
     unsigned int nbConstraints = 0;
 
@@ -1229,16 +1169,6 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
                 curColConst++;
             }
         }
-
-        /*
-        //Compliance matrix is symetric ?
-        for(unsigned int curColConst = curRowConst+1; curColConst < numConstraints; curColConst++)
-        {
-            int indexCurColConst = this->mstate->getConstraintId()[curColConst];
-            W[indexCurColConst][indexCurRowConst] = W[indexCurRowConst][indexCurColConst];
-        }
-        */
-
         curRowConst++;
     }
 #endif
@@ -1412,7 +1342,6 @@ void PrecomputedConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(defa
     localActiveDof.sort();
     localActiveDof.unique();
 
-    ////////////////////////////////////////////////////////////
     unsigned int offset, offset2;
     Deriv Vbuf;
     int it = 0;
@@ -1462,8 +1391,6 @@ void PrecomputedConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(defa
             it++;
         }
     }
-
-    //////////////
     it = 0;
 
     for (int i = begin; i <= end; i++)

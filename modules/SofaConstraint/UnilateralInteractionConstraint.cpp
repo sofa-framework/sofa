@@ -67,8 +67,6 @@ void UnilateralConstraintResolutionWithFriction::init(int line, double** w, doub
     _W[4]=w[line+1][line+2];
     _W[5]=w[line+2][line+2];
 
-//	return;
-
     ////////////////// christian : the following does not work ! /////////
     if(_prev)
     {

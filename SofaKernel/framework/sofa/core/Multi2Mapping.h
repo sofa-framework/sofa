@@ -120,21 +120,8 @@ public:
     ///
     /// If the Mapping can be represented as a matrix J, this method computes
     /// $ out = J in $
-    virtual void apply (const MechanicalParams* mparams, MultiVecCoordId outPos, ConstMultiVecCoordId inPos ) override
-    {
-        helper::vector<OutDataVecCoord*> vecOutPos;
-        getVecOutCoord(outPos, vecOutPos);
-        helper::vector<const In1DataVecCoord*> vecIn1Pos;
-        getConstVecIn1Coord(inPos, vecIn1Pos);
-        helper::vector<const In2DataVecCoord*> vecIn2Pos;
-        getConstVecIn2Coord(inPos, vecIn2Pos);
+    virtual void apply (const MechanicalParams* mparams, MultiVecCoordId outPos, ConstMultiVecCoordId inPos ) override;
 
-        this->apply(mparams, vecOutPos, vecIn1Pos, vecIn2Pos);
-
-#ifdef SOFA_USE_MASK
-        this->m_forceMaskNewStep = true;
-#endif
-    }
     /// This method must be reimplemented by all mappings.
     /// InPos and OutPos by default contains VecIds of type V_COORD.
     /// The size of InPos vector is the same as the number of fromModels.
@@ -148,16 +135,8 @@ public:
     /// This method computes
     /// $ out = J in $
     /// where J is the tangent operator (the linear approximation) of the mapping
-    virtual void applyJ (const MechanicalParams* mparams, MultiVecDerivId outVel, ConstMultiVecDerivId inVel ) override
-    {
-        helper::vector<OutDataVecDeriv*> vecOutVel;
-        getVecOutDeriv(outVel, vecOutVel);
-        helper::vector<const In1DataVecDeriv*> vecIn1Vel;
-        getConstVecIn1Deriv(inVel, vecIn1Vel);
-        helper::vector<const In2DataVecDeriv*> vecIn2Vel;
-        getConstVecIn2Deriv(inVel, vecIn2Vel);
-        this->applyJ(mparams, vecOutVel, vecIn1Vel, vecIn2Vel);
-    }
+    virtual void applyJ (const MechanicalParams* mparams, MultiVecDerivId outVel, ConstMultiVecDerivId inVel );
+
     /// This method must be reimplemented by all mappings.
     /// InDeriv and OutDeriv by default contains VecIds of type V_DERIV.
     /// The size of InDeriv vector is the same as the number of fromModels.
@@ -196,25 +175,8 @@ public:
 
     /// ApplyJT (Force)///
     /// Apply the mapping to Force vectors.
-    virtual void applyJT (const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce ) override
-    {
-        helper::vector<In1DataVecDeriv*> vecOut1Force;
-        getVecIn1Deriv(inForce, vecOut1Force);
-        helper::vector<In2DataVecDeriv*> vecOut2Force;
-        getVecIn2Deriv(inForce, vecOut2Force);
+    virtual void applyJT (const MechanicalParams* mparams, MultiVecDerivId inForce, ConstMultiVecDerivId outForce ) override;
 
-        helper::vector<const OutDataVecDeriv*> vecInForce;
-        getConstVecOutDeriv(outForce, vecInForce);
-        this->applyJT(mparams, vecOut1Force, vecOut2Force, vecInForce);
-
-#ifdef SOFA_USE_MASK
-        if( this->m_forceMaskNewStep )
-        {
-            this->m_forceMaskNewStep = false;
-            updateForceMask();
-        }
-#endif
-    }
     /// This method must be reimplemented by all mappings.
     /// InDeriv and OutDeriv by default contains VecIds of type V_DERIV.
     /// The size of InDeriv vector is the same as the number of fromModels.
@@ -225,17 +187,8 @@ public:
         const helper::vector<const OutDataVecDeriv*>& dataVecInForce) = 0;
 
     /// ApplyJT (Constraint)///
-    virtual void applyJT(const ConstraintParams* cparams, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst ) override
-    {
-        helper::vector<In1DataMatrixDeriv*> matOut1Const;
-        getMatIn1Deriv(inConst, matOut1Const);
-        helper::vector<In2DataMatrixDeriv*> matOut2Const;
-        getMatIn2Deriv(inConst, matOut2Const);
+    virtual void applyJT(const ConstraintParams* cparams, MultiMatrixDerivId inConst, ConstMultiMatrixDerivId outConst ) override;
 
-        helper::vector<const OutDataMatrixDeriv*> matInConst;
-        getConstMatOutDeriv(outConst, matInConst);
-        this->applyJT(cparams, matOut1Const, matOut2Const, matInConst);
-    }
     /// This method must be reimplemented by all mappings if they need to support constraints.
     virtual void applyJT(
         const ConstraintParams* /* cparams */, const helper::vector< In1DataMatrixDeriv*>& /* dataMatOut1Const */ ,
@@ -246,23 +199,8 @@ public:
     }
 
     /// computeAccFromMapping
-    virtual void computeAccFromMapping(const MechanicalParams* mparams, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc ) override
-    {
-        helper::vector<OutDataVecDeriv*> vecOutAcc;
-        getVecOutDeriv(outAcc, vecOutAcc);
+    virtual void computeAccFromMapping(const MechanicalParams* mparams, MultiVecDerivId outAcc, ConstMultiVecDerivId inVel, ConstMultiVecDerivId inAcc ) override;
 
-        helper::vector<const In1DataVecDeriv*> vecIn1Vel;
-        getConstVecIn1Deriv(inVel, vecIn1Vel);
-        helper::vector<const In1DataVecDeriv*> vecIn1Acc;
-        getConstVecIn1Deriv(inAcc, vecIn1Acc);
-
-        helper::vector<const In2DataVecDeriv*> vecIn2Vel;
-        getConstVecIn2Deriv(inVel, vecIn2Vel);
-        helper::vector<const In2DataVecDeriv*> vecIn2Acc;
-        getConstVecIn2Deriv(inAcc, vecIn2Acc);
-
-        this->computeAccFromMapping(mparams, vecOutAcc, vecIn1Vel, vecIn2Vel,vecIn1Acc, vecIn2Acc);
-    }
     /// This method must be reimplemented by all mappings if they need to support composite accelerations
     virtual void computeAccFromMapping(
         const MechanicalParams* /* mparams */, const helper::vector< OutDataVecDeriv*>& /* dataVecOutAcc */,
@@ -307,7 +245,6 @@ public:
 
         return BaseMapping::canCreate(obj, context, arg);
     }
-
     /// Construction method called by ObjectFactory.
     ///
     /// This implementation read the input and output attributes to
@@ -325,7 +262,6 @@ public:
 
         return obj;
     }
-
 
 protected:
     void getVecIn1Coord     (const MultiVecCoordId id,         helper::vector<      In1DataVecCoord*> &v) const

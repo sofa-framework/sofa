@@ -221,7 +221,6 @@ public:
     int gaussseidel_unbuilt(double *dfree, double *f, std::vector<double>* residuals = NULL) { if (_mu == 0.0) return lcp_gaussseidel_unbuilt(dfree, f, residuals); else return nlcp_gaussseidel_unbuilt(dfree, f, residuals); }
 
     sofa::component::linearsolver::SparseMatrix<double> *_Wdiag;
-    //std::vector<helper::LocalBlock33 *> _Wdiag;
     std::vector<core::behavior::BaseConstraintCorrection*> _cclist_elem1;
     std::vector<core::behavior::BaseConstraintCorrection*> _cclist_elem2;
 
