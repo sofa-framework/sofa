@@ -26,10 +26,10 @@
 
 #include "Tasks.h"
 #include "Locks.h"
-//#include "LockFreeDeQueue.h"
-//#include "TasksAllocator.h"
 
 #include <thread>
+#include <mutex>
+#include <condition_variable>
 #include <memory>
 #include <map>
 #include <deque>

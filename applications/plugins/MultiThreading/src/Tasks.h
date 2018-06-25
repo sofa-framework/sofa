@@ -25,11 +25,10 @@
 #include <MultiThreading/config.h>
 
 #include <atomic>
-//#include <boost/detail/atomic_count.hpp>
+#include <mutex>
+
 #include <boost/pool/singleton_pool.hpp>
 
-//#include <sofa/helper/system/atomic.h>
-//#include <boost/thread/mutex.hpp>
 
 namespace sofa
 {

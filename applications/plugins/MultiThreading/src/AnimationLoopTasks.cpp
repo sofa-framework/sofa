@@ -8,6 +8,8 @@
 #include <sofa/helper/AdvancedTimer.h>
 //#include <sofa/helper/system/atomic.h>
 
+#include <thread>
+
 namespace sofa
 {
     
