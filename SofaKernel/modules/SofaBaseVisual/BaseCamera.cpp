@@ -834,8 +834,6 @@ void BaseCamera::handleEvent(sofa::core::objectmodel::Event* event)
 
 void BaseCamera::draw(const sofa::core::visual::VisualParams* params)
 {
-    params->drawTool()->drawPoint( p_position.getValue(), RGBAColor::red() );
-    params->drawTool()->drawLine( p_position.getValue(), p_lookAt.getValue(), RGBAColor::red() );
 }
 
 
