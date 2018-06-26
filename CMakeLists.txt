@@ -277,7 +277,8 @@ add_subdirectory(SofaAdvanced)
 add_subdirectory(SofaMisc)
 add_subdirectory(SofaGui)
 
-## Modules (in the 'consortium' convention' a module is a similar to a plugin the difference is that
+## Modules
+## in the consortium convention a module is a similar to a plugin the difference is that
 ## a module is hosted and managed by the consortium while plugins are hosted and managed by third parties.
 add_subdirectory(modules)
 
