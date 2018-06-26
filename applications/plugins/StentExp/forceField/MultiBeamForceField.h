@@ -120,13 +120,11 @@ protected:
         helper::fixed_array<MechanicalState, 27> _isPlasticPoint;
         helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> _plasticStrainHistory; ///< history of the plastic strain, one tensor for each Gauss point
 
-        //Hardening parameters
-        helper::fixed_array<double, 27> _yieldStresses;
-
         /*********************************************************************/
 
         // 	static const double FLEXIBILITY=1.00000; // was 1.00001
         double _E0,_E; //Young
+        double _yS; //yield Stress
         double _nu;//Poisson
         double _L; //length
         double _zDim; //for rectangular beams: dimension of the cross-section along z axis
@@ -159,7 +157,7 @@ protected:
         defaulttype::Quat quat;
 
         //void localStiffness();
-        void init(double E, double L, double nu, double zSection, double ySection);
+        void init(double E, double yS, double L, double nu, double zSection, double ySection);
         /// Output stream
         inline friend std::ostream& operator<< ( std::ostream& os, const BeamInfo& bi )
         {
@@ -368,6 +366,7 @@ protected:
 
     Data<Real> _poissonRatio;
     Data<Real> _youngModulus;
+    Data<Real> _yieldStress;
     Data<Real> _zSection;
     Data<Real> _ySection;
     Data< VecIndex > _list_segment;
@@ -392,7 +391,7 @@ protected:
 
 
     MultiBeamForceField();
-    MultiBeamForceField(Real poissonRatio, Real youngModulus, Real zSection, Real ySection, bool useVD,
+    MultiBeamForceField(Real poissonRatio, Real youngModulus, Real yieldStress, Real zSection, Real ySection, bool useVD,
                         bool isPlasticMuller, bool isPlasticKrabbenhoft, helper::vector<defaulttype::Quat> localOrientations);
     virtual ~MultiBeamForceField();
 public:
@@ -418,7 +417,7 @@ public:
     void draw(const core::visual::VisualParams* vparams);
     void computeBBox(const core::ExecParams* params, bool onlyVisible) override;
 
-    void setBeam(unsigned int i, double E, double L, double nu, double zSection, double ySection);
+    void setBeam(unsigned int i, double E, double yS, double L, double nu, double zSection, double ySection);
     void initBeams(size_t size);
 
 protected:

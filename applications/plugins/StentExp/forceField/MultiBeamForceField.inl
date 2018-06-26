@@ -57,8 +57,9 @@ template<class DataTypes>
 MultiBeamForceField<DataTypes>::MultiBeamForceField()
     : beamsData(initData(&beamsData, "beamsData", "Internal element data"))
     , _indexedElements(NULL)
-    , _poissonRatio(initData(&_poissonRatio,(Real)0.49f,"poissonRatio","Potion Ratio"))
-    , _youngModulus(initData(&_youngModulus,(Real)5000,"youngModulus","Young Modulus"))
+    , _poissonRatio(initData(&_poissonRatio,(Real)0.3f,"poissonRatio","Potion Ratio"))
+    , _youngModulus(initData(&_youngModulus, (Real)5000, "youngModulus", "Young Modulus"))
+    , _yieldStress(initData(&_yieldStress,(Real)6.0e8,"yieldStress","yield stress"))
     , _virtualDisplacementMethod(initData(&_virtualDisplacementMethod, true, "virtualDisplacementMethod", "indicates if the stiffness matrix is computed following the virtual displacement method"))
     , _inputLocalOrientations(initData(&_inputLocalOrientations, { defaulttype::Quat(0, 0, 0, 1) }, "beamLocalOrientations", "local orientation of each beam element"))
     , _isPlasticKrabbenhoft(initData(&_isPlasticKrabbenhoft, false, "isPlasticKrabbenhoft", "indicates wether the behaviour model is plastic, as in Krabbenhoft 2002"))
@@ -79,11 +80,14 @@ MultiBeamForceField<DataTypes>::MultiBeamForceField()
 }
 
 template<class DataTypes>
-MultiBeamForceField<DataTypes>::MultiBeamForceField(Real poissonRatio, Real youngModulus, Real zSection, Real ySection, bool useVD, bool isPlasticMuller, bool isPlasticKrabbenhoft, helper::vector<defaulttype::Quat> localOrientations)
+MultiBeamForceField<DataTypes>::MultiBeamForceField(Real poissonRatio, Real youngModulus, Real yieldStress, Real zSection,
+                                                    Real ySection, bool useVD, bool isPlasticMuller,
+                                                    bool isPlasticKrabbenhoft, helper::vector<defaulttype::Quat> localOrientations)
     : beamsData(initData(&beamsData, "beamsData", "Internal element data"))
     , _indexedElements(NULL)
     , _poissonRatio(initData(&_poissonRatio,(Real)poissonRatio,"poissonRatio","Potion Ratio"))
     , _youngModulus(initData(&_youngModulus,(Real)youngModulus,"youngModulus","Young Modulus"))
+    , _yieldStress(initData(&_yieldStress, (Real)yieldStress, "yieldStress", "yield stress"))
     , _virtualDisplacementMethod(initData(&_virtualDisplacementMethod, true, "virtualDisplacementMethod", "indicates if the stiffness matrix is computed following the virtual displacement method"))
     , _inputLocalOrientations(initData(&_inputLocalOrientations, localOrientations, "beamLocalOrientations", "local orientation of each beam element"))
     , _isPlasticKrabbenhoft(initData(&_isPlasticKrabbenhoft, false, "isPlasticKrabbenhoft", "indicates wether the behaviour model is plastic, as in Krabbenhoft 2002"))
@@ -248,7 +252,7 @@ void MultiBeamForceField<DataTypes>::reinit()
 template <class DataTypes>
 void MultiBeamForceField<DataTypes>::reinitBeam(unsigned int i)
 {
-    double stiffness, length, poisson, zSection, ySection;
+    double stiffness, yieldStress, length, poisson, zSection, ySection;
     Index a = (*_indexedElements)[i][0];
     Index b = (*_indexedElements)[i][1];
 
@@ -258,13 +262,14 @@ void MultiBeamForceField<DataTypes>::reinitBeam(unsigned int i)
     else
         stiffness =  _youngModulus.getValue() ;
 
+    yieldStress = _yieldStress.getValue();
     length = (x0[a].getCenter()-x0[b].getCenter()).norm() ;
 
     zSection = _zSection.getValue();
     ySection = _ySection.getValue();
-    poisson = _poissonRatio.getValue() ;
+    poisson = _poissonRatio.getValue();
 
-    setBeam(i, stiffness, length, poisson, zSection, ySection);
+    setBeam(i, stiffness, yieldStress, length, poisson, zSection, ySection);
 
     if (_virtualDisplacementMethod.getValue())
     {
@@ -616,7 +621,7 @@ void MultiBeamForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const Ve
 
                     newStress = C*Be*eigenDepl;
 
-                    yieldStress = beamsData.getValue()[i]._yieldStresses[gaussPointIt];
+                    yieldStress = beamsData.getValue()[i]._yS;
                     res = goInPlasticDeformation(newStress, yieldStress);
                     if (res)
                         isPlasticPoint[gaussPointIt] = PLASTIC;
@@ -1163,18 +1168,19 @@ void MultiBeamForceField<DataTypes>::initBeams(size_t size)
 }
 
 template<class DataTypes>
-void MultiBeamForceField<DataTypes>::setBeam(unsigned int i, double E, double L, double nu, double zSection, double ySection)
+void MultiBeamForceField<DataTypes>::setBeam(unsigned int i, double E, double yS, double L, double nu, double zSection, double ySection)
 {
     helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
-    bd[i].init(E,L,nu,zSection,ySection);
+    bd[i].init(E,yS,L,nu,zSection,ySection);
     beamsData.endEdit();
 }
 
 template<class DataTypes>
-void MultiBeamForceField<DataTypes>::BeamInfo::init(double E, double L, double nu, double zSection, double ySection)
+void MultiBeamForceField<DataTypes>::BeamInfo::init(double E, double yS, double L, double nu, double zSection, double ySection)
 {
     _E = E;
     _E0 = E;
+    _yS = yS;
     _nu = nu;
     _L = L;
     _zDim = zSection;
@@ -1304,19 +1310,6 @@ void MultiBeamForceField<DataTypes>::BeamInfo::init(double E, double L, double n
 
     //Initialises the plastic indicators
     _isPlasticPoint.assign(ELASTIC);
-
-    //****** Hardening parameters ******//
-
-    //Yield stress values for Cobalt Chrome Alloy Co28Cr6Mo
-    //    600 +- 50 MPa, source : https://www.3trpd.co.uk/wp-content/uploads/2015/05/Cobalt-Chrome-Alloy-Co28Cr6Mo.pdf
-
-    _yieldStresses.assign(600000000.0); //Initial yield stress, to be modified if hardening occurs
-
-    //NB:
-    //Found UTS of 655MPa for an ASTM F75-07 cobalt-chrome alloy
-    //Yield stress values for ASTM F-75 Cobalt Chromium alloy,
-    //    586-614 MPa, source : http://www.matweb.com/search/datasheet.aspx?matguid=df8d3cd30d5149cfaca9a3c6e3268655&ckck=1
-    //    450-560 MPa, source : http://www.arcam.com/wp-content/uploads/Arcam-ASTM-F75-Cobalt-Chrome.pdf
 
     //**********************************//
 }
@@ -2112,7 +2105,7 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
     //    This corresponds to an associative flow rule (for plasticity)
 
     const Eigen::Matrix<double, 6, 6>& C = beamsData.getValue()[index]._materialBehaviour; //Matrix D in Krabbenhoft's
-    const double yieldStress = beamsData.getValue()[index]._yieldStresses[gaussPointIt];
+    const double yieldStress = beamsData.getValue()[index]._yS;
 
     //First we compute the elastic predictor
     VoigtTensor2 elasticPredictor = C*strainIncrement;
@@ -2517,7 +2510,7 @@ void MultiBeamForceField<DataTypes>::updateTangentStiffness(int i,
         //Cep
         currentStressPoint = _prevStresses[i][gaussPointIt];
 
-        yieldStress = bd[i]._yieldStresses[gaussPointIt];
+        yieldStress = bd[i]._yS;
         VMgradient = vonMisesGradient(currentStressPoint, yieldStress);
 
         if (VMgradient.isZero() || isPlasticPoint[gaussPointIt] != PLASTIC)
