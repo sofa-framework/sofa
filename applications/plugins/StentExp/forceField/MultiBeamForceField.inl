@@ -1143,7 +1143,7 @@ void MultiBeamForceField<DataTypes>::computeBBox(const core::ExecParams* params,
         for (int c = 0; c<3; c++)
         {
             if (pt[c] > maxBBox[c]) maxBBox[c] = pt[c];
-            else if (pt[c] < minBBox[c]) minBBox[c] = pt[c];
+            if (pt[c] < minBBox[c]) minBBox[c] = pt[c];
         }
     }
 
