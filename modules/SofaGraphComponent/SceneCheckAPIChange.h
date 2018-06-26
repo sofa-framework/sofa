@@ -24,6 +24,7 @@
 
 #include "config.h"
 #include "SceneCheck.h"
+#include <string>
 #include <map>
 #include <vector>
 #include <functional>
