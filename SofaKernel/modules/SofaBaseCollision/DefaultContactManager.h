@@ -27,7 +27,6 @@
 #include <sofa/simulation/Node.h>
 #include <sofa/helper/OptionsGroup.h>
 #include <sofa/helper/map_ptr_stable_compare.h>
-#include <vector>
 
 
 namespace sofa

@@ -109,7 +109,6 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     if (dt == 0)
         dt = this->gnode->getDt();
 
-
     double startTime = this->gnode->getTime();
 
     simulation::common::VectorOperations vop(params, this->getContext());
@@ -119,6 +118,13 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     MultiVecDeriv vel(&vop, core::VecDerivId::velocity() );
     MultiVecCoord freePos(&vop, core::VecCoordId::freePosition() );
     MultiVecDeriv freeVel(&vop, core::VecDerivId::freeVelocity() );
+
+    core::ConstraintParams cparams(*params);
+    cparams.setX(freePos);
+    cparams.setV(freeVel);
+    cparams.setDx(constraintSolver->getDx());
+    cparams.setLambda(constraintSolver->getLambda());
+    cparams.setOrder(m_solveVelocityConstraintFirst.getValue() ? core::ConstraintParams::VEL : core::ConstraintParams::POS_AND_VEL);
 
     {
         MultiVecDeriv dx(&vop, core::VecDerivId::dx() ); dx.realloc( &vop, true, true );
@@ -176,15 +182,34 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
 
     dmsg_info() << "beginVisitor performed - SolveVisitor for freeMotion is called" ;
 
+    // Mapping geometric stiffness coming from previous lambda.
+    {
+        simulation::MechanicalVOpVisitor lambdaMultInvDt(params, cparams.lambda(), sofa::core::ConstMultiVecId::null(), cparams.lambda(), 1.0 / dt);
+        lambdaMultInvDt.setMapped(true);
+        this->getContext()->executeVisitor(&lambdaMultInvDt);
+        simulation::MechanicalComputeGeometricStiffness geometricStiffnessVisitor(&mop.mparams, cparams.lambda());
+        this->getContext()->executeVisitor(&geometricStiffnessVisitor);
+    }
+
+
     // Free Motion
     AdvancedTimer::stepBegin("FreeMotion");
     simulation::SolveVisitor freeMotion(params, dt, true);
     this->gnode->execute(&freeMotion);
     AdvancedTimer::stepEnd("FreeMotion");
 
-    mop.projectPositionAndVelocity(freePos, freeVel); // apply projective constraints
-    mop.propagateXAndV(freePos, freeVel);
+    
+    mop.projectResponse(freeVel);
+    mop.propagateDx(freeVel, true);
 
+    if (cparams.constOrder() == core::ConstraintParams::POS ||
+        cparams.constOrder() == core::ConstraintParams::POS_AND_VEL)
+    {
+        // xfree = x + vfree*dt
+        simulation::MechanicalVOpVisitor freePosEqPosPlusFreeVelDt(params, freePos, pos, freeVel, dt);
+        freePosEqPosPlusFreeVelDt.setMapped(true);
+        this->getContext()->executeVisitor(&freePosEqPosPlusFreeVelDt);
+    }
     dmsg_info() << " SolveVisitor for freeMotion performed" ;
 
     if (displayTime.getValue())
@@ -200,8 +225,6 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     computeCollision(params);
     AdvancedTimer::stepEnd  ("Collision");
 
-    mop.propagateX(pos); // Why is this done at that point ???
-
     if (displayTime.getValue())
     {
         sout << " computeCollision " << ((double) CTime::getTime() - time) * timeScale << " ms" << sendl;
@@ -213,53 +236,21 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
     {
         AdvancedTimer::stepBegin("ConstraintSolver");
 
-        if (m_solveVelocityConstraintFirst.getValue())
+        if (cparams.constOrder() == core::ConstraintParams::VEL )
         {
-            core::ConstraintParams cparams(*params);
-            cparams.setX(freePos);
-            cparams.setV(freeVel);
-
-            cparams.setOrder(core::ConstraintParams::VEL);
             constraintSolver->solveConstraint(&cparams, vel);
-
-            MultiVecDeriv dv(&vop, constraintSolver->getDx());
-            mop.projectResponse(dv);
-            mop.propagateDx(dv);
-
-            // xfree += dv * dt
-            freePos.eq(freePos, dv, dt);
-            mop.propagateX(freePos);
-
-            cparams.setOrder(core::ConstraintParams::POS);
-            constraintSolver->solveConstraint(&cparams, pos);
-
-            MultiVecDeriv dx(&vop, constraintSolver->getDx());
-
-            mop.projectVelocity(vel); // apply projective constraints
-            mop.propagateV(vel);
-            mop.projectResponse(dx);
-            mop.propagateDx(dx, true);
-
-            // "mapped" x = xfree + dx
-            simulation::MechanicalVOpVisitor(params, pos, freePos, dx, 1.0 ).setOnlyMapped(true).execute(this->gnode);
+            // x_t+1 = x_t + ( vfree + dv ) * dt
+            pos.eq(pos, vel, dt);
         }
         else
         {
-            core::ConstraintParams cparams(*params);
-            cparams.setX(freePos);
-            cparams.setV(freeVel);
-
             constraintSolver->solveConstraint(&cparams, pos, vel);
-            mop.projectVelocity(vel); // apply projective constraints
-            mop.propagateV(vel);
-
-            MultiVecDeriv dx(&vop, constraintSolver->getDx());
-            mop.projectResponse(dx);
-            mop.propagateDx(dx, true);
-
-            // "mapped" x = xfree + dx
-            simulation::MechanicalVOpVisitor(params, pos, freePos, dx, 1.0 ).setOnlyMapped(true).execute(this->gnode);
         }
+
+        MultiVecDeriv dx(&vop, constraintSolver->getDx());
+        mop.projectResponse(dx);
+        mop.propagateDx(dx, true);
+
         AdvancedTimer::stepEnd("ConstraintSolver");
 
     }
@@ -272,6 +263,9 @@ void FreeMotionAnimationLoop::step(const sofa::core::ExecParams* params, SReal d
 
     simulation::MechanicalEndIntegrationVisitor endVisitor(params, dt);
     this->gnode->execute(&endVisitor);
+
+    mop.projectPositionAndVelocity(pos, vel);
+    mop.propagateXAndV(pos, vel);
 
     this->gnode->setTime ( startTime + dt );
     this->gnode->execute<UpdateSimulationContextVisitor>(params);  // propagate time

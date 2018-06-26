@@ -22,17 +22,10 @@
 #ifndef SOFA_CORE_BASEMAPPING_H
 #define SOFA_CORE_BASEMAPPING_H
 
-#include <cstdlib>
-#include <string>
-#include <iostream>
 
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/BehaviorModel.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/ConstraintParams.h>
 #include <sofa/core/MechanicalParams.h>
-#include <sofa/core/VecId.h>
-#include <sofa/helper/vector.h>
 
 namespace sofa
 {

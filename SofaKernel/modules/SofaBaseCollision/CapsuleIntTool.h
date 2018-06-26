@@ -24,13 +24,10 @@
 #include "config.h"
 
 #include <sofa/core/collision/Intersection.h>
-#include <sofa/helper/FnDispatcher.h>
-#include <SofaBaseCollision/CapsuleModel.h>
-#include <SofaBaseCollision/RigidCapsuleModel.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <SofaBaseCollision/SphereModel.h>
 #include <SofaBaseCollision/OBBModel.h>
 #include <SofaBaseCollision/IntrCapsuleOBB.h>
-#include <cmath>
 
 namespace sofa
 {

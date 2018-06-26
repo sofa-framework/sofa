@@ -24,7 +24,6 @@
 #include "config.h"
 
 #include <SofaBaseTopology/MeshTopology.h>
-#include <sofa/defaulttype/Vec.h>
 
 namespace sofa
 {

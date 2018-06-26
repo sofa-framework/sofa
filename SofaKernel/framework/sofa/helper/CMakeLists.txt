@@ -125,6 +125,7 @@ set(HEADER_FILES
     logging/ClangStyleMessageFormatter.h
     logging/DefaultStyleMessageFormatter.h
     logging/ExceptionMessageHandler.h
+    messaging/FileMessage.h
 )
 
 set(SOURCE_FILES
@@ -202,6 +203,7 @@ set(SOURCE_FILES
     logging/LoggingMessageHandler.cpp
     logging/RoutingMessageHandler.cpp
     logging/ExceptionMessageHandler.cpp
+    messaging/FileMessage.cpp
 )
 
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)

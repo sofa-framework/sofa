@@ -73,23 +73,18 @@ protected:
 public:
     virtual void init() override;
 
+
     virtual void addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, defaulttype::BaseMatrix* W) override;
 
-    virtual void getComplianceMatrix(defaulttype::BaseMatrix* ) const override;
+    virtual void getComplianceMatrix(defaulttype::BaseMatrix* ) const;
 
-    virtual void computeAndApplyMotionCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::MultiVecCoordId x, sofa::core::MultiVecDerivId v, sofa::core::MultiVecDerivId f, const sofa::defaulttype::BaseVector * lambda) override;
+    virtual void computeMotionCorrection(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, core::MultiVecDerivId f) override;
 
-    virtual void computeAndApplyPositionCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::MultiVecCoordId x, sofa::core::MultiVecDerivId f, const sofa::defaulttype::BaseVector *lambda) override;
+    virtual void applyMotionCorrection(const core::ConstraintParams * cparams, Data< VecCoord > &x, Data< VecDeriv > &v, Data< VecDeriv > &dx, const Data< VecDeriv > &f) override;
 
-    virtual void computeAndApplyVelocityCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::MultiVecDerivId v, sofa::core::MultiVecDerivId f, const sofa::defaulttype::BaseVector *lambda) override;
+    virtual void applyPositionCorrection(const sofa::core::ConstraintParams *cparams, Data< VecCoord >& x, Data< VecDeriv>& dx, const Data< VecDeriv >& f) override;
 
-    virtual void computeAndApplyMotionCorrection(const sofa::core::ConstraintParams * /*cparams*/, sofa::core::objectmodel::Data< VecCoord > &/*x*/, sofa::core::objectmodel::Data< VecDeriv > &/*v*/, sofa::core::objectmodel::Data< VecDeriv > &/*f*/, const sofa::defaulttype::BaseVector * /*lambda*/) override {};
-
-    virtual void computeAndApplyPositionCorrection(const sofa::core::ConstraintParams * /*cparams*/, sofa::core::objectmodel::Data< VecCoord > &/*x*/, sofa::core::objectmodel::Data< VecDeriv > &/*f*/, const sofa::defaulttype::BaseVector * /*lambda*/) override {};
-
-    virtual void computeAndApplyVelocityCorrection(const sofa::core::ConstraintParams * /*cparams*/, sofa::core::objectmodel::Data< VecDeriv > &/*v*/, sofa::core::objectmodel::Data< VecDeriv > &/*f*/, const sofa::defaulttype::BaseVector * /*lambda*/) override {};
-
-    virtual void applyPredictiveConstraintForce(const sofa::core::ConstraintParams *cparams, sofa::core::objectmodel::Data< VecDeriv > &f, const defaulttype::BaseVector *lambda) override;
+    virtual void applyVelocityCorrection(const sofa::core::ConstraintParams *cparams, Data< VecDeriv>& v, Data< VecDeriv>& dv, const Data< VecDeriv >& f) override;
 
     virtual void rebuildSystem(double massFactor, double forceFactor) override;
 
@@ -143,12 +138,8 @@ protected:
     /**
     * @brief Compute the compliance matrix
     */
-    virtual void computeJ(sofa::defaulttype::BaseMatrix* W);
+    virtual void computeJ(sofa::defaulttype::BaseMatrix* W, const MatrixDeriv& j);
 
-    /**
-     * @brief Compute dx correction from motion space force vector.
-     */
-    virtual void computeDx(sofa::core::MultiVecDerivId f);
 
     ////////////////////////// Inherited attributes ////////////////////////////
     /// https://gcc.gnu.org/onlinedocs/gcc/Name-lookup.html
