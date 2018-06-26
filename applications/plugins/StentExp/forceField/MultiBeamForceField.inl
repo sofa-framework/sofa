@@ -451,16 +451,17 @@ void MultiBeamForceField<DataTypes>::computeStiffness(int i, Index , Index )
         for (int j=i+1; j<12; j++)
             k_loc[i][j] = k_loc[j][i];
 
-    std::cout << "k_loc pour l'element " << i << " : " << std::endl;
-    for (int i = 0; i < 12; i++)
-    {
-        for (int j = 0; j < 12; j++)
-        {
-            std::cout << k_loc[i][j] << " ";
-        }
-        std::cout << std::endl;
-    }
-    std::cout << std::endl << std::endl;
+    //DEBUG
+    //std::cout << "k_loc pour l'element " << i << " : " << std::endl;
+    //for (int i = 0; i < 12; i++)
+    //{
+    //    for (int j = 0; j < 12; j++)
+    //    {
+    //        std::cout << k_loc[i][j] << " ";
+    //    }
+    //    std::cout << std::endl;
+    //}
+    //std::cout << std::endl << std::endl;
 
     beamsData.endEdit();
 }
@@ -730,7 +731,7 @@ void MultiBeamForceField<DataTypes>::applyStiffnessLarge(VecDeriv& df, const Vec
     local_depl[11] = u[2];
 
     //if (_isPlasticKrabbenhoft.getValue())
-    //    std::cout << "deplacement vitesse (elastique) pour l'element " << i << " : " << std::endl << local_depl << " " << std::endl << std::endl; //TO DO: delete, debug purposes
+    //    std::cout << "deplacement vitesse (elastique) pour l'element " << i << " : " << std::endl << local_depl << " " << std::endl << std::endl; //DEBUG
 
     Displacement local_force;
 
@@ -747,7 +748,7 @@ void MultiBeamForceField<DataTypes>::applyStiffnessLarge(VecDeriv& df, const Vec
     }
 
     //if (_isPlasticKrabbenhoft.getValue())
-        //std::cout << "K*v_local pour l'element " << i << " : " << std::endl << local_force << " " << std::endl << std::endl; //TO DO: delete, debug purposes
+        //std::cout << "K*v_local pour l'element " << i << " : " << std::endl << local_force << " " << std::endl << std::endl; //DEBUG
 
     Vec3 fa1 = q.rotate(defaulttype::Vec3d(local_force[0],local_force[1] ,local_force[2] ));
     Vec3 fa2 = q.rotate(defaulttype::Vec3d(local_force[3],local_force[4] ,local_force[5] ));
@@ -760,7 +761,7 @@ void MultiBeamForceField<DataTypes>::applyStiffnessLarge(VecDeriv& df, const Vec
     df[b] += Deriv(-fb1,-fb2) * fact;
 
     //if (_isPlasticKrabbenhoft.getValue())
-    //    std::cout << "K*v_tot (elastique) pour l'element " << i << " : " << std::endl << df << " " << std::endl << std::endl; //TO DO: delete, debug purposes
+    //    std::cout << "K*v_tot (elastique) pour l'element " << i << " : " << std::endl << df << " " << std::endl << std::endl; //DEBUG
 }
 
 template<class DataTypes>
@@ -1654,7 +1655,8 @@ void MultiBeamForceField<DataTypes>::computeVDStiffness(int i, Index, Index)
         for (int j = 0; j < 12; j++)
             Ke_loc[i][j] = stiffness(i, j);
 
-    std::cout << "Ke pour l'element " << i << " : " << std::endl << stiffness << " " << std::endl << std::endl;
+    //DEBUG
+    //std::cout << "Ke pour l'element " << i << " : " << std::endl << stiffness << " " << std::endl << std::endl;
 
     beamsData.endEdit();
 }
@@ -1683,7 +1685,8 @@ void MultiBeamForceField<DataTypes>::computeMaterialBehaviour(int i, Index a, In
     C(3, 3) = C(4, 4) = C(5, 5) = (1 - 2 * poissonRatio) / (1 - poissonRatio);
     C *= (youngModulus*(1 - poissonRatio)) / ((1 + poissonRatio)*(1 - 2 * poissonRatio));
 
-    std::cout << "C pour l'element " << i << " : " << std::endl << C << " " << std::endl << std::endl;
+    //DEBUG
+    //std::cout << "C pour l'element " << i << " : " << std::endl << C << " " << std::endl << std::endl;
 
     Eigen::Matrix<double, 6, 6>& S = bd[i]._materialInv;
 
@@ -2239,7 +2242,7 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
     Eigen::Matrix<double, 6, 6> I6 = Eigen::Matrix<double, 6, 6>::Identity();
     VoigtTensor2 gradient = vonMisesGradient(currentStressPoint, yieldStress);
 
-    double increment = 1e-3; //TO DO: delete, debug purposes
+    double increment = 1e-3; //DEBUG
     VoigtTensor2 gradientFD = vonMisesGradientFD(currentStressPoint, increment, yieldStress);
 
     VoigtTensor4 hessian;
@@ -2262,11 +2265,11 @@ void MultiBeamForceField<DataTypes>::computeStressIncrement(int index,
     unsigned int count = 0;
     while (helper::rabs(yieldCondition) >= threshold && count < nbMaxIterations)
     {
-        //std::cout << "J pour le point " << gaussPointIt << " iteration " << count << " : " << std::endl << J << " " << std::endl << std::endl; //TO DO: delete, debug purposes
+        //std::cout << "J pour le point " << gaussPointIt << " iteration " << count << " : " << std::endl << J << " " << std::endl << std::endl; //DEBUG
         //Computes the new increment
         LU.compute(J);
 
-        //std::cout << "    Determinant LU : " << LU.determinant() << " " << std::endl << std::endl; //TO DO: delete, debug purposes
+        //std::cout << "    Determinant LU : " << LU.determinant() << " " << std::endl << std::endl; //DEBUG
 
         newIncrement = LU.solve(-b);
 
@@ -2312,7 +2315,7 @@ void MultiBeamForceField<DataTypes>::accumulateNonLinearForce(VecDeriv& f,
     //Computes f += Kx, assuming that this component is linear
     //All non-linearity has to be handled here (including plasticity)
 
-    //TO DO: delete, debug purposes
+    //DEBUG
     //std::cout << "Element : " << i << " " << std::endl;
     //std::cout << "position du point B : " << x[b].getCenter() << " " << std::endl;
     //std::cout << "orientation du point B : " << x[b].getOrientation() << " " << std::endl << std::endl;
@@ -2389,7 +2392,7 @@ void MultiBeamForceField<DataTypes>::accumulateNonLinearForce(VecDeriv& f,
 
     beamsData.endEdit();
 
-    //std::cout << "Nouveaux stress au point de Gauss 0 pour l'element " << i << " : " << std::endl << _prevStresses[i][0] << " " << std::endl << std::endl; //TO DO: delete, debug purposes
+    //std::cout << "Nouveaux stress au point de Gauss 0 pour l'element " << i << " : " << std::endl << _prevStresses[i][0] << " " << std::endl << std::endl; //DEBUG
 
     //Passes the contribution to the global system
     nodalForces force;
@@ -2402,7 +2405,7 @@ void MultiBeamForceField<DataTypes>::accumulateNonLinearForce(VecDeriv& f,
     //This matrix will then be used in addDForce and addKToMatrix methods
     updateTangentStiffness(i, a, b);
 
-    //std::cout << "Fint_local pour l'element " << i << " : " << std::endl << force << " " << std::endl << std::endl; //TO DO: delete, for debug purposes
+    //std::cout << "Fint_local pour l'element " << i << " : " << std::endl << force << " " << std::endl << std::endl; //DEBUG
 
     Vec3 fa1 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[0], force[1], force[2]));
     Vec3 fa2 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[3], force[4], force[5]));
@@ -2410,12 +2413,12 @@ void MultiBeamForceField<DataTypes>::accumulateNonLinearForce(VecDeriv& f,
     Vec3 fb1 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[6], force[7], force[8]));
     Vec3 fb2 = x[a].getOrientation().rotate(defaulttype::Vec3d(force[9], force[10], force[11]));
 
-    //std::cout << "Fint_monde pour l'element " << i << " : " << std::endl << fa1 << " " << fa2 << " " << fb1 << " " << fb2 << " " << std::endl << std::endl; //TO DO: delete, for debug purposes
+    //std::cout << "Fint_monde pour l'element " << i << " : " << std::endl << fa1 << " " << fa2 << " " << fb1 << " " << fb2 << " " << std::endl << std::endl; //DEBUG
 
     f[a] += Deriv(-fa1, -fa2);
     f[b] += Deriv(-fb1, -fb2);
 
-    //std::cout << "Ftot pour l'element " << i << " : " << std::endl << f << " " << std::endl << std::endl; //TO DO: delete, for debug
+    //std::cout << "Ftot pour l'element " << i << " : " << std::endl << f << " " << std::endl << std::endl; //DEBUG
 }
 
 
@@ -2456,12 +2459,12 @@ void MultiBeamForceField<DataTypes>::applyNonLinearStiffness(VecDeriv& df,
     local_depl[10] = u[1];
     local_depl[11] = u[2];
 
-    //std::cout << "deplacement vitesse pour l'element " << i << " : " << std::endl << local_depl << " " << std::endl << std::endl; //TO DO: delete, debug purposes
+    //std::cout << "deplacement vitesse pour l'element " << i << " : " << std::endl << local_depl << " " << std::endl << std::endl; //DEBUG
 
     defaulttype::Vec<12, Real> local_dforce;
     local_dforce = beamsData.getValue()[i]._Kt_loc * local_depl;
 
-    //std::cout << "K*v_local pour l'element " << i << " : " << std::endl << local_dforce << " " << std::endl << std::endl; //TO DO: delete, debug purposes
+    //std::cout << "K*v_local pour l'element " << i << " : " << std::endl << local_dforce << " " << std::endl << std::endl; //DEBUG
 
     Vec3 fa1 = q.rotate(defaulttype::Vec3d(local_dforce[0], local_dforce[1], local_dforce[2]));
     Vec3 fa2 = q.rotate(defaulttype::Vec3d(local_dforce[3], local_dforce[4], local_dforce[5]));
@@ -2471,7 +2474,7 @@ void MultiBeamForceField<DataTypes>::applyNonLinearStiffness(VecDeriv& df,
     df[a] += Deriv(-fa1, -fa2) * fact;
     df[b] += Deriv(-fb1, -fb2) * fact;
 
-    //std::cout << "K*v_tot pour l'element " << i << " : " << std::endl << df << " " << std::endl << std::endl; //TO DO: delete, debug purposes
+    //std::cout << "K*v_tot pour l'element " << i << " : " << std::endl << df << " " << std::endl << std::endl; //DEBUG
 }
 
 
@@ -2539,7 +2542,7 @@ void MultiBeamForceField<DataTypes>::updateTangentStiffness(int i,
         for (int j = 0; j < 12; j++)
             Kt_loc[i][j] = tangentStiffness(i, j);
 
-    //std::cout << "Kt pour l'element " << i << " : " << std::endl << tangentStiffness << " " << std::endl << std::endl; //TO DO: delete, debug purposes
+    //std::cout << "Kt pour l'element " << i << " : " << std::endl << tangentStiffness << " " << std::endl << std::endl; //DEBUG
 
     beamsData.endEdit();
 }
