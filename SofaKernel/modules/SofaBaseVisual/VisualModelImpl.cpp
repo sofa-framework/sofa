@@ -524,17 +524,16 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
                 return false;
             }
             else
-            {
-				msg_error() << "Method setMesh is not anymore supported in sofa release 18.06.";
-                if(objLoader.get()->loaderType == "stl" || objLoader.get()->loaderType == "vtu")
-                {
-                    setMesh(*objLoader, false);
-                }
-                else
+            {				
+                if(objLoader.get()->loaderType == "obj")
                 {
                     //Modified: previously, the texture coordinates were not loaded correctly if no texture name was specified.
                     //setMesh(*objLoader,tex);
-                    setMesh(*objLoader, true);
+                    setMesh(*objLoader, true); 
+                }
+                else
+                {                    
+                    msg_error() << "Method setMesh is not anymore supported in sofa release 18.06.";
                 }
             }
 
