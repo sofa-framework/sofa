@@ -10,52 +10,19 @@ find_package(SofaAdvanced REQUIRED)
 
 # Qt GUIs are all based on OpenGL
 if(NOT SOFA_NO_OPENGL)
-    ## Qt(Qt4/5)
+    ## Qt5
     set(QT_USE_IMPORTED_TARGETS 1)
 
+    # Search for Qt to see if we can auto-enable stuff
     find_package(Qt5 COMPONENTS Core QUIET)
-    if(Qt5Core_FOUND)
-        set(QT5_NO_LINK_QTMAIN 1)
-        find_package(Qt5 COMPONENTS Gui OpenGL Xml REQUIRED)
-
-        if(WIN32)
-            file(GLOB_RECURSE QT5_DLLS "${_qt5Core_install_prefix}/bin/*.dll")
-            if(CMAKE_CONFIGURATION_TYPES) # Multi-config generator (MSVC)
-                foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
-                    file(COPY ${QT5_DLLS} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CONFIG}")
-                endforeach()
-            else()                      # Single-config generator (nmake)
-                file(COPY ${QT5_DLLS} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
-            endif()
-        endif()
-
-        install(FILES ${QT5_DLLS} DESTINATION bin)
-    else()
-        set(QT4_NO_LINK_QTMAIN 1)
-        find_package(Qt4 COMPONENTS qtcore qtgui qtopengl qtxml)
-        if(WIN32)
-            file(GLOB QT4_DLLS "${QT_BINARY_DIR}/*.dll")
-            if(CMAKE_CONFIGURATION_TYPES) # Multi-config generator (MSVC)
-                foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
-                    file(COPY ${QT4_DLLS} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CONFIG}")
-                endforeach()
-            else()                      # Single-config generator (nmake)
-                file(COPY ${QT4_DLLS} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
-            endif()
-        endif()
-
-        install(FILES ${QT4_DLLS} DESTINATION bin)
-    endif()
 
     ## Thoses variables are used in SofaGuiConfig.cmake.in
-    if(Qt5_FOUND OR Qt4_FOUND)
+    if(Qt5_FOUND)
         set(SOFA_HAVE_QT 1)
     endif()
-    set(SOFA_QT4 ${Qt4_FOUND})
     set(SOFA_QT5 ${Qt5_FOUND})
 else()
     set(SOFA_HAVE_QT 0)
-    set(SOFA_QT4 0)
     set(SOFA_QT5 0)
 endif()
 
@@ -91,10 +58,7 @@ if(NOT SOFA_NO_OPENGL)
     set(SOFA_HAVE_QT_LIBRARIES 1)
     find_package(Qt5 COMPONENTS Core QUIET)
     if(NOT Qt5Core_FOUND)
-        find_package(Qt4 QUIET COMPONENTS qtcore)
-        if(NOT Qt4_FOUND)
-            set(SOFA_HAVE_QT_LIBRARIES 0)
-        endif()
+        set(SOFA_HAVE_QT_LIBRARIES 0)
     endif()
 
     if(SOFA_HAVE_QT_LIBRARIES)
@@ -158,7 +122,7 @@ endforeach()
 
 ## SofaGuiConfig/config.h
 configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/SofaGui/config.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/SofaGui/config.h" DESTINATION "include/SofaGui")
+install(FILES "${CMAKE_BINARY_DIR}/include/SofaGui/config.h" DESTINATION "include/SofaGui" COMPONENT headers)
 
 ## CMake package configurations files
 sofa_write_package_config_files(SofaGui ${SOFAGUI_VERSION})

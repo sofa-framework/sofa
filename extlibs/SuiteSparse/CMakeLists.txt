@@ -20,6 +20,6 @@ if(MSVC)
 		file(COPY ${dlls} DESTINATION "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
     endif()
     # Copy libraries to the install directory
-    install(FILES ${libs} DESTINATION ${ARCHIVE_OUTPUT_DIRECTORY})
-    install(FILES ${dlls} DESTINATION ${LIBRARY_OUTPUT_DIRECTORY})
+    install(FILES ${libs} DESTINATION ${ARCHIVE_OUTPUT_DIRECTORY} COMPONENT libraries)
+    install(FILES ${dlls} DESTINATION ${LIBRARY_OUTPUT_DIRECTORY} COMPONENT applications)
 endif()
