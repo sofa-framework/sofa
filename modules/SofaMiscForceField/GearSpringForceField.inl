@@ -325,56 +325,56 @@ void GearSpringForceField<DataTypes>::draw(const core::visual::VisualParams* vpa
     {
         if(springs[i].freeAxis[0] == 0)
         {
-            DataTypes::CPos vec = Vector((Real)(1.0*showFactorSize.getValue()), 0, 0);
+            typename DataTypes::CPos vec = Vector((Real)(1.0*showFactorSize.getValue()), 0, 0);
 
-            DataTypes::CPos v0 = p1[springs[i].m1].getCenter();
-            DataTypes::CPos v1 = p1[springs[i].m1].getOrientation().rotate(vec) + v0;
+            typename DataTypes::CPos v0 = p1[springs[i].m1].getCenter();
+            typename DataTypes::CPos v1 = p1[springs[i].m1].getOrientation().rotate(vec) + v0;
 
             vparams->drawTool()->drawCylinder(v0, v1 , radius, color);
         }
         if(springs[i].freeAxis[0] == 1)
         {
-            DataTypes::CPos vec = Vector(0, (Real)(1.0*showFactorSize.getValue()), 0.0);
+            typename DataTypes::CPos vec = Vector(0, (Real)(1.0*showFactorSize.getValue()), 0.0);
 
-            DataTypes::CPos v0 = p1[springs[i].m1].getCenter();
-            DataTypes::CPos v1 = p1[springs[i].m1].getOrientation().rotate(vec) + v0;
+            typename DataTypes::CPos v0 = p1[springs[i].m1].getCenter();
+            typename DataTypes::CPos v1 = p1[springs[i].m1].getOrientation().rotate(vec) + v0;
 
             vparams->drawTool()->drawCylinder(v0, v1, radius, color);
         }
         if(springs[i].freeAxis[0] == 2)
         {
-            DataTypes::CPos vec = Vector(0, 0, (Real)(1.0*showFactorSize.getValue()));
+            typename DataTypes::CPos vec = Vector(0, 0, (Real)(1.0*showFactorSize.getValue()));
 
-            DataTypes::CPos v0 = p1[springs[i].m1].getCenter();
-            DataTypes::CPos v1 = p1[springs[i].m1].getOrientation().rotate(vec) + v0;
+            typename DataTypes::CPos v0 = p1[springs[i].m1].getCenter();
+            typename DataTypes::CPos v1 = p1[springs[i].m1].getOrientation().rotate(vec) + v0;
 
             vparams->drawTool()->drawCylinder(v0, v1, radius, color);
         }
 
         if(springs[i].freeAxis[1] == 0)
         {
-            DataTypes::CPos vec = Vector((Real)(1.0*showFactorSize.getValue()), 0, 0);
+            typename DataTypes::CPos vec = Vector((Real)(1.0*showFactorSize.getValue()), 0, 0);
 
-            DataTypes::CPos v0 = p1[springs[i].m2].getCenter();
-            DataTypes::CPos v1 = p1[springs[i].m2].getOrientation().rotate(vec) + v0;
+            typename DataTypes::CPos v0 = p1[springs[i].m2].getCenter();
+            typename DataTypes::CPos v1 = p1[springs[i].m2].getOrientation().rotate(vec) + v0;
             
             vparams->drawTool()->drawCylinder(v0, v1, radius, color);
         }
         if(springs[i].freeAxis[1] == 1)
         {
-            DataTypes::CPos vec = Vector(0, (Real)(1.0*showFactorSize.getValue()), 0.0);
+            typename DataTypes::CPos vec = Vector(0, (Real)(1.0*showFactorSize.getValue()), 0.0);
 
-            DataTypes::CPos v0 = p1[springs[i].m2].getCenter();
-            DataTypes::CPos v1 = p1[springs[i].m2].getOrientation().rotate(vec) + v0;
+            typename DataTypes::CPos v0 = p1[springs[i].m2].getCenter();
+            typename DataTypes::CPos v1 = p1[springs[i].m2].getOrientation().rotate(vec) + v0;
 
             vparams->drawTool()->drawCylinder(v0, v1, radius, color);
         }
         if(springs[i].freeAxis[1] == 2)
         {
-            DataTypes::CPos vec = Vector(0, 0, (Real)(1.0*showFactorSize.getValue()));
+            typename DataTypes::CPos vec = Vector(0, 0, (Real)(1.0*showFactorSize.getValue()));
 
-            DataTypes::CPos v0 = p1[springs[i].m2].getCenter();
-            DataTypes::CPos v1 = p1[springs[i].m2].getOrientation().rotate(vec) + v0;
+            typename DataTypes::CPos v0 = p1[springs[i].m2].getCenter();
+            typename DataTypes::CPos v1 = p1[springs[i].m2].getOrientation().rotate(vec) + v0;
 
             vparams->drawTool()->drawCylinder(v0, v1, radius, color);
         }
