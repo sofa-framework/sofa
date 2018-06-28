@@ -9,7 +9,7 @@ set(SOFASIMULATION_VERSION ${SofaFramework_VERSION})
 
 ## sofa/simulation/config.h
 configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/sofa/simulation/config.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/sofa/simulation/config.h" DESTINATION include/sofa/simulation)
+install(FILES "${CMAKE_BINARY_DIR}/include/sofa/simulation/config.h" DESTINATION include/sofa/simulation COMPONENT headers)
 
 ## Subdirectories
 add_subdirectory(../modules/SofaSimulationCommon ${CMAKE_CURRENT_BINARY_DIR}/SofaSimulationCommon)
