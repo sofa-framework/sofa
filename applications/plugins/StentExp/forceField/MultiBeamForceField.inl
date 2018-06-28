@@ -980,71 +980,44 @@ void MultiBeamForceField<DataTypes>::draw(const core::visual::VisualParams* vpar
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    //std::vector< defaulttype::Vector3 > points[3];
-    std::vector<defaulttype::Vector3> points[1];
+    std::vector<defaulttype::Vector3> centrelinePoints[1];
     std::vector<defaulttype::Vector3> gaussPoints[1];
     std::vector<defaulttype::Vec<4, float>> colours[1];
 
     if (_partial_list_segment)
     {
         for (unsigned int j=0; j<_list_segment.getValue().size(); j++)
-            drawElement(_list_segment.getValue()[j], points, gaussPoints, colours, x);
+            drawElement(_list_segment.getValue()[j], gaussPoints, centrelinePoints, colours, x);
     }
     else
     {
         for (unsigned int i=0; i<_indexedElements->size(); ++i)
-            drawElement(i, points, gaussPoints, colours, x);
+            drawElement(i, gaussPoints, centrelinePoints, colours, x);
     }
 
     vparams->drawTool()->setPolygonMode(2, true);
     vparams->drawTool()->setLightingEnabled(true);
-    vparams->drawTool()->drawHexahedra(points[0], defaulttype::Vec<4, float>(0.24f, 0.72f, 0.96f, 1.0f));
-    vparams->drawTool()->drawPoints(gaussPoints[0], 5.0, colours[0]);
+    vparams->drawTool()->drawPoints(gaussPoints[0], 2.5, colours[0]);
+    vparams->drawTool()->drawLines(centrelinePoints[0], 1.0, defaulttype::Vec<4, float>(0.24f, 0.72f, 0.96f, 1.0f));
     vparams->drawTool()->setLightingEnabled(false);
     vparams->drawTool()->setPolygonMode(0, false);
 }
 
 template<class DataTypes>
-void MultiBeamForceField<DataTypes>::drawElement(int i, std::vector< defaulttype::Vector3 >* points,
-                                                 std::vector< defaulttype::Vector3 >* gaussPoints,
+void MultiBeamForceField<DataTypes>::drawElement(int i, std::vector< defaulttype::Vector3 >* gaussPoints,
+                                                 std::vector< defaulttype::Vector3 >* centrelinePoints,
                                                  std::vector<defaulttype::Vec<4, float>>* colours,
                                                  const VecCoord& x)
 {
     Index a = (*_indexedElements)[i][0];
     Index b = (*_indexedElements)[i][1];
-    //sout << "edge " << i << " : "<<a<<" "<<b<<" = "<<x[a].getCenter()<<"  -  "<<x[b].getCenter()<<" = "<<beamsData[i]._L<<sendl;
 
-    defaulttype::Vec3d pa, pb, v0, v1, v2, v3, v4, v5, v6, v7;
-    double zDim, yDim;
+    defaulttype::Vec3d pa, pb;
     pa = x[a].getCenter();
     pb = x[b].getCenter();
-    zDim = beamsData.getValue()[i]._zDim;
-    yDim = beamsData.getValue()[i]._yDim;
 
     defaulttype::Vec3d beamVec;
-    beamVec[0]=0.0; beamVec[1] = yDim*0.5; beamVec[2] = zDim*0.5;
-
-    //Gathers the vertices of the solid corresponding to a rectangular cross-section beam
-    //Vertices are listed starting from the lowest (y,z) coordinates of face A (local frame), counterclockwise
     const defaulttype::Quat& q = beamQuat(i);
-    v0 = pa - q.rotate(beamVec);
-    v4 = pb - q.rotate(beamVec);
-    v2 = pa + q.rotate(beamVec);
-    v6 = pb + q.rotate(beamVec);
-    beamVec[1] = -yDim*0.5; beamVec[2] = zDim*0.5;
-    v1 = pa - q.rotate(beamVec);
-    v5 = pb - q.rotate(beamVec);
-    v3 = pa + q.rotate(beamVec);
-    v7 = pb + q.rotate(beamVec);
-
-    points[0].push_back(v0);
-    points[0].push_back(v1);
-    points[0].push_back(v2);
-    points[0].push_back(v3);
-    points[0].push_back(v4);
-    points[0].push_back(v5);
-    points[0].push_back(v6);
-    points[0].push_back(v7);
 
     //***** Gauss points *****//
 
@@ -1102,9 +1075,6 @@ void MultiBeamForceField<DataTypes>::drawElement(int i, std::vector< defaulttype
         N = beamsData.getValue()[i]._N[gaussPointIt];
         Eigen::Matrix<double, 3, 1> u = N*disp;
 
-        //defaulttype::Vec3d beamVec = { p[0] + u1, p[1] + u2, p[2] + u3 };
-        //gaussPoints[0].push_back(q.rotate(beamVec));
-
         defaulttype::Vec3d beamVec = {u[0]+u1, u[1]+u2, u[2]+u3};
         defaulttype::Vec3d gp = pa + q.rotate(beamVec);
         gaussPoints[0].push_back(gp);
@@ -1122,6 +1092,26 @@ void MultiBeamForceField<DataTypes>::drawElement(int i, std::vector< defaulttype
     ozp::quadrature::detail::Interval<3> interval = beamsData.getValue()[i]._integrationInterval;
     ozp::quadrature::integrate <GaussianQuadratureType, 3, LambdaType>(interval, computeGaussCoordinates);
 
+    //****** Centreline ******//
+    int nbSeg = beamsData.getValue()[i]._nbCentrelineSeg; //number of segments descretising the centreline
+
+    centrelinePoints[0].push_back(pa);
+
+    Eigen::Matrix<double, 3, 12> drawN;
+    const double L = beamsData.getValue()[i]._L;
+    for (int drawPointIt = 0; drawPointIt < nbSeg - 1; drawPointIt++)
+    {
+        //Shape function of the centreline point
+        drawN = beamsData.getValue()[i]._drawN[drawPointIt];
+        Eigen::Matrix<double, 3, 1> u = drawN*disp;
+
+        defaulttype::Vec3d beamVec = {u[0] + (drawPointIt +1)*(L/nbSeg), u[1], u[2]};
+        defaulttype::Vec3d clp = pa + q.rotate(beamVec);
+        centrelinePoints[0].push_back(clp); //First time as the end of the former segment
+        centrelinePoints[0].push_back(clp); //Second time as the beginning of the next segment
+    }
+
+    centrelinePoints[0].push_back(pb);
 }
 
 
@@ -1307,6 +1297,56 @@ void MultiBeamForceField<DataTypes>::BeamInfo::init(double E, double yS, double 
     };
     ozp::quadrature::integrate <GaussianQuadratureType, 3, LambdaType>(_integrationInterval, initialiseShapeFunctions);
 
+    //Intialises the drawing points shape functions
+    for (int i = 1; i < _nbCentrelineSeg; i++)
+    {
+        double xi = i*(_L / _nbCentrelineSeg) / _L;
+        double xi2 = xi*xi;
+        double xi3 = xi*xi*xi;
+
+        //NB :
+        //double eta = 0;
+        //double zeta = 0;
+
+        _drawN[i-1](0, 0) = 1 - xi;
+        _drawN[i-1](0, 1) = 0;
+        _drawN[i-1](0, 2) = 0;
+        _drawN[i-1](0, 3) = 0;
+        _drawN[i-1](0, 4) = 0;
+        _drawN[i-1](0, 5) = 0;
+        _drawN[i-1](0, 6) = xi;
+        _drawN[i-1](0, 7) = 0;
+        _drawN[i-1](0, 8) = 0;
+        _drawN[i-1](0, 9) = 0;
+        _drawN[i-1](0, 10) = 0;
+        _drawN[i-1](0, 11) = 0;
+
+        _drawN[i-1](1, 0) = 0;
+        _drawN[i-1](1, 1) = 1 - 3 * xi2 + 2 * xi3;
+        _drawN[i-1](1, 2) = 0;
+        _drawN[i-1](1, 3) = 0;
+        _drawN[i-1](1, 4) = 0;
+        _drawN[i-1](1, 5) = (xi - 2 * xi2 + xi3)*_L;
+        _drawN[i-1](1, 6) = 0;
+        _drawN[i-1](1, 7) = 3 * xi2 - 2 * xi3;
+        _drawN[i-1](1, 8) = 0;
+        _drawN[i-1](1, 9) = 0;
+        _drawN[i-1](1, 10) = 0;
+        _drawN[i-1](1, 11) = (-xi2 + xi3)*_L;
+
+        _drawN[i-1](2, 0) = 0;
+        _drawN[i-1](2, 1) = 0;
+        _drawN[i-1](2, 2) = 1 - 3 * xi2 + 2 * xi3;
+        _drawN[i-1](2, 3) = 0;
+        _drawN[i-1](2, 4) = (-xi + 2 * xi2 - xi3)*_L;
+        _drawN[i-1](2, 5) = 0;
+        _drawN[i-1](2, 6) = 0;
+        _drawN[i-1](2, 7) = 0;
+        _drawN[i-1](2, 8) = 3 * xi2 - 2 * xi3;
+        _drawN[i-1](2, 9) = 0;
+        _drawN[i-1](2, 10) = (xi2 - xi3)*_L;
+        _drawN[i-1](2, 11) = 0;
+    }
 
     //Initialises the plastic indicators
     _isPlasticPoint.assign(ELASTIC);

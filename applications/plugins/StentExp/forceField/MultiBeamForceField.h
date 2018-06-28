@@ -120,6 +120,12 @@ protected:
         helper::fixed_array<MechanicalState, 27> _isPlasticPoint;
         helper::fixed_array<Eigen::Matrix<double, 6, 1>, 27> _plasticStrainHistory; ///< history of the plastic strain, one tensor for each Gauss point
 
+        ///< For drawing
+        int _nbCentrelineSeg = 10;
+        helper::fixed_array<shapeFunction, 9> _drawN; //TO DO: allow parameterisation of the number of segments
+                                                      //       which discretise the centreline (here : 10)
+                                                      // NB: we use 9 shape functions bewause extremity points are known
+
         /*********************************************************************/
 
         // 	static const double FLEXIBILITY=1.00000; // was 1.00001
@@ -422,7 +428,8 @@ public:
 
 protected:
 
-    void drawElement(int i, std::vector< defaulttype::Vector3 >* points, std::vector< defaulttype::Vector3 >* gaussPoints,
+    void drawElement(int i, std::vector< defaulttype::Vector3 >* gaussPoints,
+                     std::vector< defaulttype::Vector3 >* centrelinePoints,
                      std::vector<defaulttype::Vec<4, float>>* colours, const VecCoord& x);
 
     Real peudo_determinant_for_coef ( const defaulttype::Mat<2, 3, Real>&  M );
