@@ -107,11 +107,8 @@ void InvertibleFVMForceField<DataTypes>::init()
         msg_error() << "Object must have a BaseMeshTopology." ;
         return;
     }
-#ifdef SOFA_NEW_HEXA
+
     if (_mesh==NULL || (_mesh->getNbTetrahedra()<=0 && _mesh->getNbHexahedra()<=0))
-#else
-    if (_mesh==NULL || (_mesh->getNbTetrahedra()<=0 && _mesh->getNbCubes()<=0))
-#endif
     {
         msg_error() << "Object must have a tetrahedric BaseMeshTopology.";
         return;
@@ -123,11 +120,8 @@ void InvertibleFVMForceField<DataTypes>::init()
     else
     {
         core::topology::BaseMeshTopology::SeqTetrahedra* tetrahedra = new core::topology::BaseMeshTopology::SeqTetrahedra;
-#ifdef SOFA_NEW_HEXA
         int nbcubes = _mesh->getNbHexahedra();
-#else
-        int nbcubes = _mesh->getNbCubes();
-#endif
+
         // These values are only correct if the mesh is a grid topology
         int nx = 2;
         int ny = 1;
@@ -144,7 +138,6 @@ void InvertibleFVMForceField<DataTypes>::init()
         tetrahedra->reserve(nbcubes*6);
         for (int i=0; i<nbcubes; i++)
         {
-#ifdef SOFA_NEW_HEXA
             core::topology::BaseMeshTopology::Hexa c = _mesh->getHexahedron(i);
 #define swap(a,b) { int t = a; a = b; b = t; }
             if (!((i%nx)&1))
@@ -179,20 +172,6 @@ void InvertibleFVMForceField<DataTypes>::init()
             tetrahedra->push_back(Tetra(c[6],c[3],c[0],c[7]));
             tetrahedra->push_back(Tetra(c[6],c[7],c[0],c[5]));
             tetrahedra->push_back(Tetra(c[7],c[5],c[4],c[0]));
-#else
-            core::topology::BaseMeshTopology::Cube c = _mesh->getCube(i);
-            int sym = 0;
-            if (!((i%nx)&1)) sym+=1;
-            if (((i/nx)%ny)&1) sym+=2;
-            if ((i/(nx*ny))&1) sym+=4;
-            typedef core::topology::BaseMeshTopology::Tetra Tetra;
-            tetrahedra->push_back(Tetra(c[0^sym],c[5^sym],c[1^sym],c[7^sym]));
-            tetrahedra->push_back(Tetra(c[0^sym],c[1^sym],c[2^sym],c[7^sym]));
-            tetrahedra->push_back(Tetra(c[1^sym],c[2^sym],c[7^sym],c[3^sym]));
-            tetrahedra->push_back(Tetra(c[7^sym],c[2^sym],c[0^sym],c[6^sym]));
-            tetrahedra->push_back(Tetra(c[7^sym],c[6^sym],c[0^sym],c[5^sym]));
-            tetrahedra->push_back(Tetra(c[6^sym],c[5^sym],c[4^sym],c[0^sym]));
-#endif
         }
 
         _indexedTetra = tetrahedra;
