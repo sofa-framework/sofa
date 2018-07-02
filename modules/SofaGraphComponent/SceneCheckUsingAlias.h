@@ -44,8 +44,8 @@ public:
     static SPtr newSPtr() { return SPtr(new SceneCheckUsingAlias()); }
     virtual const std::string getName() override;
     virtual const std::string getDesc() override;
-    virtual void doInit(Node* node) override {SOFA_UNUSED(node);}
-    virtual void doCheckOn(Node* node) override {SOFA_UNUSED(node);}
+    virtual void doInit(Node* node) override { SOFA_UNUSED(node); }
+    virtual void doCheckOn(Node* node) override { SOFA_UNUSED(node); }
     virtual void doPrintSummary() override;
 
 private:

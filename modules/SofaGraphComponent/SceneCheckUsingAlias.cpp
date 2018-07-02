@@ -42,7 +42,8 @@ SceneCheckUsingAlias::SceneCheckUsingAlias()
 {
     /// Add a callback to be n
     ObjectFactory::getInstance()->setCallback([this](Base* o, BaseObjectDescription *arg) {
-        if (o->getClassName() != arg->getAttribute("type", "") ) {
+        if (o->getClassName() != arg->getAttribute("type", "") )
+        {
             std::string alias = arg->getAttribute("type", "");
 
             std::vector<std::string> v = this->m_componentsCreatedUsingAlias[o->getClassName()];
@@ -77,7 +78,8 @@ void SceneCheckUsingAlias::doPrintSummary()
     }
     
     std::stringstream usingAliasesWarning;
-    usingAliasesWarning << "This scene is using aliases. Aliases are dangerous, use with caution." << msgendl;
+    usingAliasesWarning << "This scene is using the hard coded aliases. Aliases can be very confusing, "
+                           "use with caution." << msgendl;
     for (auto i : this->m_componentsCreatedUsingAlias)
     {
         if (i.second.size() > 1)

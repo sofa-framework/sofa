@@ -37,6 +37,7 @@ namespace _scenechecking_
 class SOFA_GRAPH_COMPONENT_API SceneCheckDuplicatedName : public SceneCheck
 {
 public:
+    virtual ~SceneCheckDuplicatedName() {}
     typedef std::shared_ptr<SceneCheckDuplicatedName> SPtr;
     static SPtr newSPtr() { return SPtr(new SceneCheckDuplicatedName()); }
     virtual const std::string getName() override;
