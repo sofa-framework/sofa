@@ -23,6 +23,7 @@
 #include "MeshSTEPLoader.h"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/SetDirectory.h>
+#include <fstream>
 
 namespace sofa
 {
@@ -57,7 +58,7 @@ MeshSTEPLoader::MeshSTEPLoader():MeshLoader()
 
 bool MeshSTEPLoader::load()
 {
-    sout << "Loading STEP file: " << m_filename << sendl;
+    dmsg_info() << "Loading STEP file: " << m_filename;
 
     bool fileRead = false;
 
@@ -67,7 +68,7 @@ bool MeshSTEPLoader::load()
 
     if (!file.good())
     {
-        serr << "Error: MeshSTEPLoader: Cannot read file '" << m_filename << "'." << sendl;
+        msg_error() << "Error: MeshSTEPLoader: Cannot read file '" << m_filename << "'.";
         return false;
     }
 
@@ -80,7 +81,7 @@ bool MeshSTEPLoader::load()
 
 bool MeshSTEPLoader::readSTEP(const char* fileName)
 {
-    sout << "MeshSTEPLoader::readSTEP" << sendl;
+    dmsg_info() << "MeshSTEPLoader::readSTEP";
 
     STEPControl_Reader * aReader = new STEPControl_Reader;
 
@@ -130,7 +131,7 @@ bool MeshSTEPLoader::readSTEP(const char* fileName)
 
                     if (anEntity.IsNull())
                     {
-                        sout << "Warning[OpenCascade]: XSInterface_STEPReader::ReadAttributes()\nentity not found" << sendl;
+                        dmsg_info() << "Warning[OpenCascade]: XSInterface_STEPReader::ReadAttributes()\nentity not found";
                     }
                     /*else
                     {
@@ -138,11 +139,11 @@ bool MeshSTEPLoader::readSTEP(const char* fileName)
 
                     if (aReprItem.IsNull())
                     {
-                    serr <<"Error[OpenCascade]: STEPReader::ReadAttributes():\nStepRepr_RepresentationItem Is NULL" << sendl;
+                    msg_error() <<"Error[OpenCascade]: STEPReader::ReadAttributes():\nStepRepr_RepresentationItem Is NULL";
                     }
                     else
                     {
-                    sout << "Name = " << aReprItem->Name()->ToCString() << sendl;
+                    dmsg_info() << "Name = " << aReprItem->Name()->ToCString();
                     }
                     }*/
                 }
@@ -157,7 +158,7 @@ bool MeshSTEPLoader::readSTEP(const char* fileName)
     if (aSequence.IsNull() || !aSequence->Length())
         return false;
 
-    cout << endl << "ATTENTION: Depending on the size of the mesh, loading can take time. Please be patient !" << endl;
+    dmsg_info() << "ATTENTION: Depending on the size of the mesh, loading can take time. Please be patient !";
 
     // Boolean to tell if type of shape found (useful in the case of several components in a STEP file)
     bool faceBool = false;
@@ -182,7 +183,7 @@ bool MeshSTEPLoader::readSTEP(const char* fileName)
         if (!aFace.IsNull() && !faceBool)
         {
             faceBool = true;
-            sout << "[" << i << "]: Face" << sendl;
+            dmsg_info() << "[" << i << "]: Face";
         }
 
         try
@@ -195,7 +196,7 @@ bool MeshSTEPLoader::readSTEP(const char* fileName)
         if (!aWire.IsNull() && !faceBool)
         {
             faceBool = true;
-            sout << "[" << i << "]: Wire" << sendl;
+            dmsg_info() << "[" << i << "]: Wire";
         }
 
         try
@@ -208,7 +209,7 @@ bool MeshSTEPLoader::readSTEP(const char* fileName)
         if (!anEdge.IsNull() && !faceBool)
         {
             faceBool = true;
-            sout << "[" << i << "]: Edge" << sendl;
+            dmsg_info() << "[" << i << "]: Edge";
         }
 
         try
@@ -221,7 +222,7 @@ bool MeshSTEPLoader::readSTEP(const char* fileName)
         if (!aVertex.IsNull() && !faceBool)
         {
             faceBool = true;
-            sout << "[" << i << "]: Vertex" << sendl;
+            dmsg_info() << "[" << i << "]: Vertex";
         }
 
         try
@@ -234,14 +235,14 @@ bool MeshSTEPLoader::readSTEP(const char* fileName)
         if (!aSolid.IsNull() && !faceBool)
         {
             faceBool = true;
-            sout << "[" << i << "]: Solid" << sendl;
+            dmsg_info() << "[" << i << "]: Solid";
 
             std::string nameShape = readSolidName(aSolid, aReader);
-            sout << "============================" << sendl;
-            sout << "Name of the shape\t\t -> shape #" << sendl;
-            sout << "--------------------------------------------------------" << sendl;
-            sout << nameShape << "\t\t -> 0" << sendl;
-            sout << "============================" << sendl;
+            dmsg_info() << "============================";
+            dmsg_info() << "Name of the shape\t\t -> shape #";
+            dmsg_info() << "--------------------------------------------------------";
+            dmsg_info() << nameShape << "\t\t -> 0";
+            dmsg_info() << "============================";
 
             tesselateShape(aSolid);
         }
@@ -256,7 +257,7 @@ bool MeshSTEPLoader::readSTEP(const char* fileName)
         if (!aCompSolid.IsNull() && !faceBool)
         {
             faceBool = true;
-            sout << "[" << i << "]: CompSolid" << sendl;
+            dmsg_info() << "[" << i << "]: CompSolid";
         }
 
         try
@@ -269,11 +270,11 @@ bool MeshSTEPLoader::readSTEP(const char* fileName)
         if (!aCompound.IsNull() && !faceBool)
         {
             faceBool = true;
-            sout << "[" << i << "]: Compound" << sendl;
+            dmsg_info() << "[" << i << "]: Compound";
 
-            sout << "============================" << sendl;
-            sout << "Name of the shape\t\t -> shape #" << sendl;
-            sout << "--------------------------------------------------------" << sendl;
+            dmsg_info() << "============================";
+            dmsg_info() << "Name of the shape\t\t -> shape #";
+            dmsg_info() << "--------------------------------------------------------";
 
             TopExp_Explorer aExpSolid;
             std::vector<TopoDS_Solid> vshape;
@@ -284,11 +285,11 @@ bool MeshSTEPLoader::readSTEP(const char* fileName)
                 vshape.push_back(solid);
 
                 std::string nameShape = readSolidName(solid, aReader);
-                sout << nameShape << "\t\t -> " << numShape << sendl;
+                dmsg_info() << nameShape << "\t\t -> " << numShape;
                 ++numShape;
             }
 
-            sout << "============================" << sendl;
+            dmsg_info() << "============================";
 
             tesselateMultiShape(aCompound, vshape);
         }
@@ -299,10 +300,10 @@ bool MeshSTEPLoader::readSTEP(const char* fileName)
 
 void MeshSTEPLoader::tesselateShape(const TopoDS_Shape& aShape)
 {
-    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(positions.beginEdit());
+    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(d_positions.beginEdit());
 
-    helper::vector< Edge >& my_edges = *(edges.beginEdit());
-    helper::vector< Triangle >& my_triangles = *(triangles.beginEdit());
+    helper::vector< Edge >& my_edges = *(d_edges.beginEdit());
+    helper::vector< Triangle >& my_triangles = *(d_triangles.beginEdit());
 
     helper::vector<sofa::defaulttype::Vector2>& my_uv = *(_uv.beginEdit());
 
@@ -394,9 +395,9 @@ void MeshSTEPLoader::tesselateShape(const TopoDS_Shape& aShape)
                             if (_debug.getValue())
                             {
                                 Standard_Integer aNbOfNodesOfEdge = aPol->NbNodes();
-                                sout << "Number of nodes of the edge = " << aNbOfNodesOfEdge << sendl;
-                                sout << "Number of nodes of the face = " << aNbOfNodesOfFace << sendl;
-                                sout << "Number of triangles of the face = " << aNbOfTrianglesOfFace << sendl;
+                                dmsg_info() << "Number of nodes of the edge = " << aNbOfNodesOfEdge;
+                                dmsg_info() << "Number of nodes of the face = " << aNbOfNodesOfFace;
+                                dmsg_info() << "Number of triangles of the face = " << aNbOfTrianglesOfFace;
                             }
 
                             // Edge
@@ -441,20 +442,20 @@ void MeshSTEPLoader::tesselateShape(const TopoDS_Shape& aShape)
         }
         else
         {
-            serr << "Can't compute a triangulation on face " << aCount << sendl;
+            msg_error() << "Can't compute a triangulation on face " << aCount;
         }
     }
 
     my_indicesComponents.push_back(helper::fixed_array <unsigned int,3>(0, aNumOfNodes, aNumOfTriangles));
 
-    cout << "Finished loading mesh" << endl;
+    dmsg_info() << "Finished loading mesh";
 
-    sout << "Number of nodes of the shape = " << aNumOfNodes << sendl;
-    sout << "Number of triangles of the shape " << aNumOfTriangles << sendl;
+    dmsg_info() << "Number of nodes of the shape = " << aNumOfNodes;
+    dmsg_info() << "Number of triangles of the shape " << aNumOfTriangles;
 
-    positions.endEdit();
-    edges.endEdit();
-    triangles.endEdit();
+    d_positions.endEdit();
+    d_edges.endEdit();
+    d_triangles.endEdit();
 
     _uv.endEdit();
 
@@ -463,10 +464,10 @@ void MeshSTEPLoader::tesselateShape(const TopoDS_Shape& aShape)
 
 void MeshSTEPLoader::tesselateMultiShape(const TopoDS_Shape& aShape, const std::vector<TopoDS_Solid>& vshape)
 {
-    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(positions.beginEdit());
+    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(d_positions.beginEdit());
 
-    helper::vector< Edge >& my_edges = *(edges.beginEdit());
-    helper::vector< Triangle >& my_triangles = *(triangles.beginEdit());
+    helper::vector< Edge >& my_edges = *(d_edges.beginEdit());
+    helper::vector< Triangle >& my_triangles = *(d_triangles.beginEdit());
 
     helper::vector<sofa::defaulttype::Vector2>& my_uv = *(_uv.beginEdit());
 
@@ -542,9 +543,9 @@ void MeshSTEPLoader::tesselateMultiShape(const TopoDS_Shape& aShape, const std::
                                 if (_debug.getValue())
                                 {
                                     Standard_Integer aNbOfNodesOfEdge = aPol->NbNodes();
-                                    sout << "Number of nodes of the edge = " << aNbOfNodesOfEdge << sendl;
-                                    sout << "Number of nodes of the face = " << aNbOfNodesOfFace << sendl;
-                                    sout << "Number of triangles of the face = " << aNbOfTrianglesOfFace << sendl;
+                                    dmsg_info() << "Number of nodes of the edge = " << aNbOfNodesOfEdge;
+                                    dmsg_info() << "Number of nodes of the face = " << aNbOfNodesOfFace;
+                                    dmsg_info() << "Number of triangles of the face = " << aNbOfTrianglesOfFace;
                                 }
 
                                 // Edge
@@ -586,21 +587,21 @@ void MeshSTEPLoader::tesselateMultiShape(const TopoDS_Shape& aShape, const std::
             }
             else
             {
-                serr << "Can't compute a triangulation on face " << aCount << sendl;
+                msg_error() << "Can't compute a triangulation on face " << aCount;
             }
         }
 
         my_indicesComponents.push_back(helper::fixed_array <unsigned int,3>(numShape, aNumOfNodesShape, aNumOfTrianglesShape));
     }
 
-    cout << "Finished loading mesh" << endl;
+    dmsg_info() << "Finished loading mesh";
 
-    sout << "Number of nodes of the shape = " << aNumOfNodes << sendl;
-    sout << "Number of triangles of the shape " << aNumOfTriangles << sendl;
+    dmsg_info() << "Number of nodes of the shape = " << aNumOfNodes;
+    dmsg_info() << "Number of triangles of the shape " << aNumOfTriangles;
 
-    positions.endEdit();
-    edges.endEdit();
-    triangles.endEdit();
+    d_positions.endEdit();
+    d_edges.endEdit();
+    d_triangles.endEdit();
 
     _uv.endEdit();
 
@@ -628,7 +629,7 @@ std::string MeshSTEPLoader::readSolidName(const TopoDS_Solid& aSolid, STEPContro
 
     if (anEntity.IsNull())
     {
-        sout << "Warning[OpenCascade]: XSInterface_STEPReader::ReadAttributes()\nentity not found" << sendl;
+        dmsg_info() << "Warning[OpenCascade]: XSInterface_STEPReader::ReadAttributes()\nentity not found";
     }
     else
     {
@@ -636,7 +637,7 @@ std::string MeshSTEPLoader::readSolidName(const TopoDS_Solid& aSolid, STEPContro
 
         if (aReprItem.IsNull())
         {
-            serr << "Error[OpenCascade]: STEPReader::ReadAttributes():\nStepRepr_RepresentationItem Is NULL" << sendl;
+            msg_error() << "Error[OpenCascade]: STEPReader::ReadAttributes():\nStepRepr_RepresentationItem Is NULL";
         }
         else
         {
