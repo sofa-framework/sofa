@@ -211,10 +211,7 @@ public:
     Data< unsigned int >    marchingCubeStep; ///< Step of the Marching Cube algorithm
     Data< unsigned int >    convolutionSize; ///< Dimension of the convolution kernel to smooth the voxels. 0 if no smoothing is required.
 
-    Data< helper::vector< Vector3 > >    vertices; ///< Input mesh vertices
     Data< helper::vector < helper::vector <int> > >facets; ///< Input mesh facets
-    Data< SeqTriangles > input_triangles; ///< Input mesh triangles
-    Data< SeqQuads > input_quads; ///< Input mesh quads
 
     /** Create the data structure based on resolution, size and filling.
           \param numPoints  Number of points in the x,y,and z directions
