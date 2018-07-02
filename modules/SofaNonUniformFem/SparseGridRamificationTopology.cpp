@@ -108,19 +108,19 @@ void SparseGridRamificationTopology::findConnexionsAtFinestLevel()
                 return;
             }
         }
-        if(filename.empty() && vertices.getValue().empty()) // No vertices buffer set, nor mesh file => impossible to create mesh
+        if(filename.empty() && seqPoints.getValue().empty()) // No vertices buffer set, nor mesh file => impossible to create mesh
         {
             serr<<"Warning: SparseGridRamificationTopology::findConnexionsAtFinestLevel -- mesh is NULL (check if fileTopology=\""<< fileTopology.getValue()<<"\" is valid)"<<sendl;
             return;
         }
-        else if(filename.empty() && !vertices.getValue().empty()) // no file given but vertex buffer. We can rebuild the mesh
+        else if(filename.empty() && !seqPoints.getValue().empty()) // no file given but vertex buffer. We can rebuild the mesh
         {
             mesh = new helper::io::Mesh();
-            for (unsigned int i = 0; i<vertices.getValue().size(); ++i)
-                mesh->getVertices().push_back(vertices.getValue()[i]);
+            for (unsigned int i = 0; i<seqPoints.getValue().size(); ++i)
+                mesh->getVertices().push_back(seqPoints.getValue()[i]);
             const helper::vector < helper::vector <int> >& facets = this->facets.getValue();
-            const SeqTriangles& triangles = this->input_triangles.getValue();
-            const SeqQuads& quads = this->input_quads.getValue();
+            const SeqTriangles& triangles = this->seqTriangles.getValue();
+            const SeqQuads& quads = this->seqQuads.getValue();
             mesh->getFacets().resize(facets.size() + triangles.size() + quads.size());
             for (unsigned int i = 0; i<facets.size(); ++i)
                 mesh->getFacets()[i].push_back(facets[i]);
@@ -1012,10 +1012,10 @@ void SparseGridRamificationTopology::buildVirtualFinerLevels()
     const std::string& fileTopology = this->fileTopology.getValue();
     if (fileTopology.empty()) // If no file is defined, try to build from the input Datas
     {
-        _virtualFinerLevels[0]->vertices.setParent(&this->vertices);
+        _virtualFinerLevels[0]->seqPoints.setParent(&this->seqPoints);
         _virtualFinerLevels[0]->facets.setParent(&this->facets);
-        _virtualFinerLevels[0]->input_triangles.setParent(&this->input_triangles);
-        _virtualFinerLevels[0]->input_quads.setParent(&this->input_quads);
+        _virtualFinerLevels[0]->seqTriangles.setParent(&this->seqTriangles);
+        _virtualFinerLevels[0]->seqQuads.setParent(&this->seqQuads);
     }
     else
         _virtualFinerLevels[0]->load(fileTopology.c_str());
