@@ -24,6 +24,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <fstream>
+#include <BRepMesh_IncrementalMesh.hxx>
 
 namespace sofa
 {
@@ -310,7 +311,7 @@ void MeshSTEPLoader::tesselateShape(const TopoDS_Shape& aShape)
     helper::vector<helper::fixed_array <unsigned int,3> >& my_indicesComponents = *(_indicesComponents.beginEdit());
 
     BRepTools::Clean(aShape);
-    BRepMesh::Mesh(aShape, _aDeflection.getValue());
+    BRepMesh_IncrementalMesh(aShape, _aDeflection.getValue());
 
     Standard_Integer aCount = 0;
     Standard_Integer aNumOfNodes = 0;
@@ -474,7 +475,7 @@ void MeshSTEPLoader::tesselateMultiShape(const TopoDS_Shape& aShape, const std::
     helper::vector<helper::fixed_array <unsigned int,3> >& my_indicesComponents = *(_indicesComponents.beginEdit());
 
     BRepTools::Clean(aShape);
-    BRepMesh::Mesh(aShape, _aDeflection.getValue());
+    BRepMesh_IncrementalMesh(aShape, _aDeflection.getValue());
 
     Standard_Integer aCount = 0;
     Standard_Integer aNumOfNodes = 0;
