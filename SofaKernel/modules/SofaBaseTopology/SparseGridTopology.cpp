@@ -922,11 +922,8 @@ void SparseGridTopology::voxelizeTriangleMesh(helper::io::Mesh* mesh,
                         for(int k=0; k<8; ++k)
                             corners[k] = regularGrid->getPoint( c[k] );
 
-#ifdef SOFA_NEW_HEXA
                         Vector3 cubeDiagonal = corners[6] - corners[0];
-#else
-                        Vector3 cubeDiagonal = corners[7] - corners[0];
-#endif
+
                         Vector3 cubeCenter = corners[0] + cubeDiagonal*.5;
 
                         const Vector3& A = vertices[facet[0]];
@@ -1471,11 +1468,8 @@ int SparseGridTopology::findNearestCube(const Vector3& pos, SReal& fx, SReal &fy
 
         const Hexa& c = getHexahedron( w );
         int c0 = c[0];
-#ifdef SOFA_NEW_HEXA
         int c7 = c[6];
-#else
-        int c7 = c[7];
-#endif
+
         Vector3 p0((SReal)getPX(c0), (SReal)getPY(c0), (SReal)getPZ(c0));
         Vector3 p7((SReal)getPX(c7), (SReal)getPY(c7), (SReal)getPZ(c7));
 
@@ -1491,11 +1485,9 @@ int SparseGridTopology::findNearestCube(const Vector3& pos, SReal& fx, SReal &fy
 
     const Hexa& c = getHexahedron( indice );
     int c0 = c[0];
-#ifdef SOFA_NEW_HEXA
+
     int c7 = c[6];
-#else
-    int c7 = c[7];
-#endif
+
     Vector3 p0((SReal)getPX(c0), (SReal)getPY(c0), (SReal)getPZ(c0));
     Vector3 p7((SReal)getPX(c7), (SReal)getPY(c7), (SReal)getPZ(c7));
 
@@ -1555,7 +1547,6 @@ void SparseGridTopology::updateEdges()
     {
         Hexa c = seqHexahedra.getValue()[i];
 
-#ifdef SOFA_NEW_HEXA
         // horizontal
         edgesMap[pair<int,int>(c[0],c[1])]=0;
         edgesMap[pair<int,int>(c[3],c[2])]=0;
@@ -1571,23 +1562,6 @@ void SparseGridTopology::updateEdges()
         edgesMap[pair<int,int>(c[1],c[5])]=0;
         edgesMap[pair<int,int>(c[3],c[7])]=0;
         edgesMap[pair<int,int>(c[2],c[6])]=0;
-#else
-        // horizontal
-        edgesMap[pair<int,int>(c[0],c[1])]=0;
-        edgesMap[pair<int,int>(c[3],c[2])]=0;
-        edgesMap[pair<int,int>(c[4],c[5])]=0;
-        edgesMap[pair<int,int>(c[7],c[6])]=0;
-        // vertical
-        edgesMap[pair<int,int>(c[0],c[2])]=0;
-        edgesMap[pair<int,int>(c[1],c[3])]=0;
-        edgesMap[pair<int,int>(c[4],c[6])]=0;
-        edgesMap[pair<int,int>(c[5],c[7])]=0;
-        // profondeur
-        edgesMap[pair<int,int>(c[0],c[4])]=0;
-        edgesMap[pair<int,int>(c[1],c[5])]=0;
-        edgesMap[pair<int,int>(c[2],c[6])]=0;
-        edgesMap[pair<int,int>(c[3],c[7])]=0;
-#endif
     }
 
     SeqEdges& edges = *seqEdges.beginEdit();
@@ -1607,7 +1581,6 @@ void SparseGridTopology::updateQuads()
         Hexa c = seqHexahedra.getValue()[i];
         fixed_array<int,4> v;
 
-#ifdef SOFA_NEW_HEXA
         v[0]=c[0]; v[1]=c[1]; v[2]=c[2]; v[3]=c[3];
         quadsMap[v]=0;
         v[0]=c[4]; v[1]=c[5]; v[2]=c[6]; v[3]=c[7];
@@ -1620,21 +1593,6 @@ void SparseGridTopology::updateQuads()
         quadsMap[v]=0;
         v[0]=c[1]; v[1]=c[5]; v[2]=c[6]; v[3]=c[2];
         quadsMap[v]=0;
-#else
-
-        v[0]=c[0]; v[1]=c[1]; v[2]=c[3]; v[3]=c[2];
-        quadsMap[v]=0;
-        v[0]=c[4]; v[1]=c[5]; v[2]=c[7]; v[3]=c[6];
-        quadsMap[v]=0;
-        v[0]=c[0]; v[1]=c[1]; v[2]=c[5]; v[3]=c[4];
-        quadsMap[v]=0;
-        v[0]=c[2]; v[1]=c[3]; v[2]=c[7]; v[3]=c[6];
-        quadsMap[v]=0;
-        v[0]=c[0]; v[1]=c[4]; v[2]=c[6]; v[3]=c[2];
-        quadsMap[v]=0;
-        v[0]=c[1]; v[1]=c[5]; v[2]=c[7]; v[3]=c[3];
-        quadsMap[v]=0;
-#endif
     }
     SeqQuads& quads = *seqQuads.beginEdit();
     quads.clear();

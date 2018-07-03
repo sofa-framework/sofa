@@ -115,7 +115,7 @@ void TriangleSetTopologyModifier::addTriangles(const sofa::helper::vector<Triang
     }
     else
     {
-        std::cout << " TriangleSetTopologyModifier::addTriangleProcess(), preconditions for adding this triangle are not fulfilled. " << std::endl;
+        msg_error() << " TriangleSetTopologyModifier::addTriangleProcess(), preconditions for adding this triangle are not fulfilled. ";
     }
 }
 
@@ -149,7 +149,7 @@ void TriangleSetTopologyModifier::addTriangles(const sofa::helper::vector<Triang
     }
     else
     {
-        std::cout << " TriangleSetTopologyModifier::addTriangleProcess(), preconditions for adding this triangle are not fulfilled. " << std::endl;
+		msg_error() << "Preconditions for adding this triangle are not fulfilled. ";
     }
 }
 
@@ -164,28 +164,25 @@ void TriangleSetTopologyModifier::addTrianglesProcess(const sofa::helper::vector
 void TriangleSetTopologyModifier::addTriangleProcess(Triangle t)
 {
 
-#ifndef NDEBUG
-    // check if the 3 vertices are different
-    if((t[0]==t[1]) || (t[0]==t[2]) || (t[1]==t[2]) )
-    {
-        serr << "Error: [TriangleSetTopologyModifier::addTriangle] : invalid triangle: "
-                << t[0] << ", " << t[1] << ", " << t[2] <<  sendl;
-        //return;
-    }
+	if (CHECK_TOPOLOGY)
+	{
+		// check if the 3 vertices are different
+		if ((t[0] == t[1]) || (t[0] == t[2]) || (t[1] == t[2]))
+		{
+			msg_error() << "Invalid triangle: "	<< t[0] << ", " << t[1] << ", " << t[2];
+		}
 
-    // check if there already exists a triangle with the same indices
-    // Important: getEdgeIndex creates the quad vertex shell array
-    if(m_container->hasTrianglesAroundVertex())
-    {
-        int previd = m_container->getTriangleIndex(t[0],t[1],t[2]);
-        if( previd != -1)
-        {
-            serr << "Error: [TriangleSetTopologyModifier::addTriangle] : Triangle "
-                    << t[0] << ", " << t[1] << ", " << t[2] << " already exists with index " << previd << "." << sendl;
-            //return;
-        }
-    }
-#endif
+		// check if there already exists a triangle with the same indices
+		// Important: getEdgeIndex creates the quad vertex shell array
+		if (m_container->hasTrianglesAroundVertex())
+		{
+			int previd = m_container->getTriangleIndex(t[0], t[1], t[2]);
+			if (previd != -1)
+			{
+				msg_error() << "Triangle " << t[0] << ", " << t[1] << ", " << t[2] << " already exists with index " << previd << ".";
+			}
+		}
+	}
 
     const unsigned int triangleIndex = m_container->getNumberOfTriangles();
     helper::WriteAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = m_container->d_triangle;
@@ -302,7 +299,7 @@ void TriangleSetTopologyModifier::removeTriangles(const sofa::helper::vector<uns
     for (unsigned int i = 0; i < triangleIds.size(); i++)
     {
         if( triangleIds[i] >= m_container->getNumberOfTriangles())
-            std::cout << "Warning: TriangleSetTopologyModifier::removeTriangles: Triangle: "<< triangleIds[i] <<" is out of bound and won't be removed." << std::endl;
+            msg_warning() << "RemoveTriangles: Triangle: "<< triangleIds[i] <<" is out of bound and won't be removed.";
         else
             triangleIds_filtered.push_back(triangleIds[i]);
     }
@@ -320,7 +317,7 @@ void TriangleSetTopologyModifier::removeTriangles(const sofa::helper::vector<uns
     }
     else
     {
-        std::cout << " TriangleSetTopologyModifier::removeItems(), preconditions for removal are not fulfilled. " << std::endl;
+		msg_warning() << "Preconditions for removal are not fulfilled. ";
     }
 
 }
@@ -347,9 +344,9 @@ void TriangleSetTopologyModifier::removeTrianglesProcess(const sofa::helper::vec
 
     if(!m_container->hasTriangles()) // this method should only be called when triangles exist
     {
-#ifndef NDEBUG
-        serr << "Error. [TriangleSetTopologyModifier::removeTrianglesProcess] triangle array is empty." << sendl;
-#endif
+		if (CHECK_TOPOLOGY)
+			msg_error() << "Triangle array is empty.";
+
         return;
     }
 
@@ -458,12 +455,6 @@ void TriangleSetTopologyModifier::removeTrianglesProcess(const sofa::helper::vec
         propagateTopologicalChanges();
         removePointsProcess(vertexToBeRemoved);
     }
-
-    /*
-    #ifndef NDEBUG // TO BE REMOVED WHEN SURE.
-    	Debug();
-    #endif
-    */
 }
 
 
@@ -714,11 +705,6 @@ void TriangleSetTopologyModifier::propagateTopologicalEngineChanges()
     if (!m_container->isTriangleTopologyDirty()) // triangle Data has not been touched
         return EdgeSetTopologyModifier::propagateTopologicalEngineChanges();
 
-#ifndef NDEBUG
-    std::cout << "triangles is dirty" << std::endl;
-    std::cout << "TriangleSetTopologyModifier - Number of outputs for triangle array: " << m_container->m_enginesList.size() << std::endl;
-#endif
-
     std::list<sofa::core::topology::TopologyEngine *>::iterator it;
  //   for ( it = m_container->m_enginesList.begin(); it!=m_container->m_enginesList.end(); ++it)
 	 for ( it = m_container->m_topologyEngineList.begin(); it!=m_container->m_topologyEngineList.end(); ++it)
@@ -726,9 +712,6 @@ void TriangleSetTopologyModifier::propagateTopologicalEngineChanges()
         sofa::core::topology::TopologyEngine* topoEngine = (*it);
         if (topoEngine->isDirty())
         {
-#ifndef NDEBUG
-            std::cout << "TriangleSetTopologyModifier::performing: " << topoEngine->getName() << std::endl;
-#endif
             topoEngine->update();
         }
     }

@@ -22,7 +22,7 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_BASETOPOLOGYDATA_H
 #define SOFA_COMPONENT_TOPOLOGY_BASETOPOLOGYDATA_H
 
-#include <sofa/core/topology/Topology.h>
+#include <sofa/core/objectmodel/Data.h>
 
 namespace sofa
 {

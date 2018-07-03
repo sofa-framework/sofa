@@ -19,34 +19,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#ifndef FILEMESSAGE_H
+#define FILEMESSAGE_H
 
-#include <SofaGraphComponent/BackgroundSetting.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/ObjectFactory.h>
+#include <iostream>
+#include <string>
+#include <sofa/helper/helper.h>
 
 namespace sofa
 {
 
-namespace component
+namespace helper
 {
 
-namespace configurationsetting
+namespace messaging
 {
 
-SOFA_DECL_CLASS(BackgroundSetting)
-int BackgroundSettingClass = core::RegisterObject("Background colour setting")
-        .add< BackgroundSetting >()
-        .addAlias("Background")
-        ;
-
-BackgroundSetting::BackgroundSetting():
-      color(initData(&color, "color", "Color of the Background of the Viewer"))
-    , image(initData(&image, "image", "Image to be used as background of the viewer"))
+class SOFA_HELPER_API FileMessage
 {
-}
+public:
 
-}
+    FileMessage() {}
+    static const std::string unableToOpenFile(const char* filename);
 
-}
+};
 
-}
+} // logging
+} // helper
+} // sofa
+
+#endif // FILEMESSAGE_H

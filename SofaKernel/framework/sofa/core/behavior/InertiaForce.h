@@ -23,8 +23,6 @@
 #define SOFA_CORE_INTERTIAFORCE_H
 
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 
 namespace sofa

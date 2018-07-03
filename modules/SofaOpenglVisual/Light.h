@@ -110,6 +110,9 @@ public:
     virtual void reinit() override;
     virtual void updateVisual() override;
 
+    /// Draw the light source from an external point of view.
+    virtual void drawSource(const sofa::core::visual::VisualParams*) = 0;
+
     GLfloat getZNear();
     GLfloat getZFar();
 
@@ -147,6 +150,7 @@ public:
     virtual void preDrawShadow(core::visual::VisualParams* vp) override;
     virtual void drawLight() override;
     virtual void draw(const core::visual::VisualParams* vparams) override;
+    virtual void drawSource(const core::visual::VisualParams* vparams) override;
     virtual GLuint getDepthTexture() override;
     virtual GLuint getColorTexture() override;
     virtual defaulttype::Vector3 getDirection() override { return d_direction.getValue(); }
@@ -171,6 +175,7 @@ public:
     virtual ~PositionalLight();
     virtual void drawLight() override;
     virtual void draw(const core::visual::VisualParams* vparams) override;
+    virtual void drawSource(const core::visual::VisualParams* vparams) override;
     virtual const sofa::defaulttype::Vector3 getPosition() override { return d_position.getValue(); }
     LightType getLightType() override { return LightType::POSITIONAL; }
 };
@@ -189,6 +194,7 @@ public:
     virtual ~SpotLight();
     virtual void drawLight() override;
     virtual void draw(const core::visual::VisualParams* vparams) override;
+    virtual void drawSource(const core::visual::VisualParams* vparams) override;
 
     void preDrawShadow(core::visual::VisualParams*  vp) override;
     GLuint getDepthTexture() override;

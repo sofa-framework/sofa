@@ -23,16 +23,9 @@
 #define SOFA_CORE_BEHAVIOR_PAIRINTERACTIONFORCEFIELD_H
 
 #include <sofa/core/core.h>
-#include <sofa/core/MultiVecId.h>
-#include <sofa/core/MechanicalParams.h>
 #include <sofa/core/behavior/BaseInteractionForceField.h>
-#include <sofa/core/behavior/MechanicalState.h>
 
-#include <sofa/core/objectmodel/Data.h>
-#include <sofa/defaulttype/Vec.h>
 
-#include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
 {

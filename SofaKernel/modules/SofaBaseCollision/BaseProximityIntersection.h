@@ -25,7 +25,6 @@
 
 #include <SofaBaseCollision/DiscreteIntersection.h>
 #include <SofaBaseCollision/BaseIntTool.h>
-#include <sofa/helper/FnDispatcher.h>
 
 namespace sofa
 {

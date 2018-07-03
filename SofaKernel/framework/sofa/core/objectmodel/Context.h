@@ -24,10 +24,7 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/BaseContext.h>
-#include <sofa/core/objectmodel/Data.h>
 
-#include <iostream>
-#include <map>
 
 
 namespace sofa

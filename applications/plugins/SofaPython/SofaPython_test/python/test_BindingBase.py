@@ -28,3 +28,4 @@ def createScene(rootNode):
     ASSERT_EQ(lastCount+1, len(rootNode.getListOfDataFields()))
 
     ASSERT_NEQ(rootNode.getData("aData"), None)
+
