@@ -296,46 +296,6 @@ protected:
     };
 
 
-    /*	/// to compute valid cubes (intersection between mesh segments and cubes)
-    typedef struct segmentForIntersection{
-    Vector3 center;
-    Vector3 dir;
-    SReal norm;
-    segmentForIntersection(const Vector3& s0, const Vector3& s1)
-    {
-    center = (s0+s1)*.5;
-    dir = center-s0;
-    norm = dir.norm();
-    dir /= norm;
-    };
-    } SegmentForIntersection;
-    struct ltSegmentForIntersection // for set of SegmentForIntersection
-    {
-    bool operator()(const SegmentForIntersection& s0, const SegmentForIntersection& s1) const
-    {
-    return s0.center < s1.center || s0.norm < s1.norm;
-    }
-    };
-    typedef struct cubeForIntersection{
-    Vector3 center;
-    fixed_array<Vector3,3> dir;
-    Vector3 norm;
-    cubeForIntersection( const CubeCorners&  corners )
-    {
-    center = (corners[7] + corners[0]) * .5;
-
-    norm[0] = (center[0] - corners[0][0]);
-    dir[0] = Vector3(1,0,0);
-
-    norm[1] = (center[1] - corners[0][1]);
-    dir[1] = Vector3(0,1,0);
-
-    norm[2] = (center[2] - corners[0][2]);
-    dir[2] = Vector3(0,0,1);
-    }
-    } CubeForIntersection;
-    /// return true if there is an intersection between a SegmentForIntersection and a CubeForIntersection
-    bool intersectionSegmentBox( const SegmentForIntersection& seg, const CubeForIntersection& cube  ); */
 
     bool _alreadyInit;
 
