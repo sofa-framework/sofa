@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<Node name="root">
+
+    <LightManager />
+    <SpotLight name="light1" color="1 1 1" position="0 80 25" direction="0 -1 0" cutoff="100" exponent="1" />
+
+    <Node name="Visu" tags="Visual">
+        <OglModel  name="VisualModel" fileMesh="mesh/sphere_01.obj" />
+    </Node>
+
+    <RequiredPlugin name="Communication" pluginName="Communication" />
+    <ServerCommunicationVRPN name="vrpn1" job="sender" address="localhost"/>
+    <CommunicationSubscriber name="sub1" communication="@vrpn1" subject="Tracker0" target="@light1" datas="aNewStringValue"/>
+
+</Node>
