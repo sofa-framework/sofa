@@ -91,7 +91,12 @@ void TriangleSetTopologyContainer::createTrianglesAroundVertexArray ()
         clearTrianglesAroundVertex();
     }
 
-    m_trianglesAroundVertex.resize( getNbPoints() );
+    int nbPoints = getNbPoints();
+    if (nbPoints == 0) // in case only Data have been copied and not going thourgh AddTriangle methods.
+        this->setNbPoints(d_initPoints.getValue().size());
+
+    m_trianglesAroundVertex.resize(getNbPoints());
+    
     helper::ReadAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = d_triangle;
 
     for (unsigned int i = 0; i < m_triangle.size(); ++i)
