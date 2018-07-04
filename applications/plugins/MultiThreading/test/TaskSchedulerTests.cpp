@@ -1,4 +1,4 @@
-#include "TestTasks.h"
+#include "TaskSchedulerTestTasks.h"
 
 #include <MultiThreading/src/TaskScheduler.h>
 #include <sofa/helper/testing/BaseTest.h>
