@@ -110,14 +110,14 @@ namespace sofa
 
 		// This task is called once by each thread used by the TasScheduler
 		// this is useful to initialize the thread specific variables
-		class SOFA_MULTITHREADING_PLUGIN_API ThreadSpecificTaskLockFree : public Task
+		class SOFA_MULTITHREADING_PLUGIN_API ThreadSpecificTask : public Task
 		{
 
 		public:
 
-            ThreadSpecificTaskLockFree(std::atomic<int>* atomicCounter, std::mutex* mutex, Task::Status* pStatus );
+			ThreadSpecificTask(std::atomic<int>* atomicCounter, std::mutex* mutex, Task::Status* pStatus );
 
-			virtual ~ThreadSpecificTaskLockFree();
+			virtual ~ThreadSpecificTask();
 
 			virtual bool runThreadSpecific()  {return true;}
 

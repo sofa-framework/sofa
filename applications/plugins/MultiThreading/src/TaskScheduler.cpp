@@ -70,7 +70,7 @@ namespace sofa
 			stop();
 
             _isClosing = false;
-            _workerThreadsIdle = false;
+            _workerThreadsIdle = true;
             _mainTaskStatus	= nullptr;
             
             // only physicsal cores. no advantage from hyperthreading.
@@ -120,6 +120,7 @@ namespace sofa
 					while (!it.second->isFinished())
 					{
 						std::this_thread::yield();
+						std::this_thread::sleep_for(std::chrono::milliseconds(1));
 					}
 
 					// free memory
@@ -142,7 +143,10 @@ namespace sofa
 
 		void TaskScheduler::wakeUpWorkers()
 		{
-			_workerThreadsIdle = false;
+			{
+				std::lock_guard<std::mutex> guard(_wakeUpMutex);
+				_workerThreadsIdle = false;
+			}								
 			_wakeUpEvent.notify_all();
 		}
 
@@ -242,6 +246,10 @@ namespace sofa
         {
             {
                 std::unique_lock<std::mutex> lock( _taskScheduler->_wakeUpMutex );
+				if (!_taskScheduler->_workerThreadsIdle)
+				{
+					return;
+				}
                 // cpu free wait
                 _taskScheduler->_wakeUpEvent.wait(lock);
             }
@@ -262,9 +270,12 @@ namespace sofa
 					pPrevStatus = _currentStatus;
 					_currentStatus = pTask->getStatus();
 				
-					pTask->run(this);
-                    pTask->~Task();
-//                    free(pTask);
+					if (pTask->run(this))
+					{
+						// pooled memory: call destructor and free
+						pTask->~Task();
+						//free(pTask);
+					}
 					
 					_currentStatus->markBusy(false);
 					_currentStatus = pPrevStatus;
@@ -399,7 +410,7 @@ namespace sofa
             
             for (int i=0; i<nbThread; ++i)
             {
-                thread->addTask( new ThreadSpecificTaskLockFree( &atomicCounter, &InitThreadSpecificMutex, &status ) );
+                thread->addTask( new ThreadSpecificTask( &atomicCounter, &InitThreadSpecificMutex, &status ) );
             }
             
             thread->workUntilDone(&status);

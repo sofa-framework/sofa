@@ -26,17 +26,17 @@ namespace sofa
 		}
         
         
-		ThreadSpecificTaskLockFree::ThreadSpecificTaskLockFree(std::atomic<int>* atomicCounter, std::mutex* mutex, Task::Status* pStatus )
+		ThreadSpecificTask::ThreadSpecificTask(std::atomic<int>* atomicCounter, std::mutex* mutex, Task::Status* pStatus )
 			: Task(pStatus)
 			, _atomicCounter(atomicCounter) 
 			, _threadSpecificMutex(mutex)
 		{}
 
-		ThreadSpecificTaskLockFree::~ThreadSpecificTaskLockFree()
+		ThreadSpecificTask::~ThreadSpecificTask()
 		{
 		}
 
-		bool ThreadSpecificTaskLockFree::run(WorkerThread* )
+		bool ThreadSpecificTask::run(WorkerThread* )
 		{  
 
 			runThreadSpecific();
