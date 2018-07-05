@@ -2600,7 +2600,11 @@ void MechanicalObject<DataTypes>::buildIdentityBlocksInJacobian(const sofa::help
 }
 #endif
 
-
+template <class DataTypes>
+void MechanicalObject<DataTypes>::renumberConstraintId(const sofa::helper::vector<unsigned>& /*renumbering*/)
+{
+    this->serr << "MechanicalObject<DataTypes>::renumberConstraintId not implemented in the MatrixDeriv constraint API" << this->sendl;
+}
 
 template <class DataTypes>
 std::list< core::behavior::BaseMechanicalState::ConstraintBlock > MechanicalObject<DataTypes>::constraintBlocks( const std::list<unsigned int> &indices) const

@@ -226,7 +226,8 @@ public:
     /// fill the jacobian matrix (of the constraints) with identity blocks on the provided list of nodes(dofs)
     virtual void buildIdentityBlocksInJacobian(const sofa::helper::vector<unsigned int>& list_n, core::MatrixDerivId &mID) = 0;
 #endif
-
+    /// Renumber the constraint ids with the given permutation vector
+    virtual void renumberConstraintId(const sofa::helper::vector<unsigned>& renumbering) = 0;
 
     class ConstraintBlock
     {
