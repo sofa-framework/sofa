@@ -4,6 +4,7 @@ project(SofaBaseTopology_test)
 
 set(SOURCE_FILES
     PointSetTopology_test.cpp
+    EdgeSetTopology_test.cpp
     TriangleSetTopology_test.cpp
     RegularGridTopology_test.cpp
     TetrahedronNumericalIntegration_test.cpp
