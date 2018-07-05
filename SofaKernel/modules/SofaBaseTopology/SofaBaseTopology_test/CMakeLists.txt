@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 3.1)
 project(SofaBaseTopology_test)
 
 set(SOURCE_FILES
+    fake_TopologyScene.h
+    fake_TopologyScene.cpp
     PointSetTopology_test.cpp
     EdgeSetTopology_test.cpp
     TriangleSetTopology_test.cpp
