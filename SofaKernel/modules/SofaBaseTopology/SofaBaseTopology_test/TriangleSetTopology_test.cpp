@@ -181,12 +181,12 @@ bool TriangleSetTopology_test::testEdgeBuffers()
         EXPECT_EQ(edgeInTri[i], edgeInTriM[i]);
 
     sofa::helper::fixed_array<int, 3> edgeInTriTruth(5, 6, 3);
-    for (int i = 0; i<3; ++i)
+    for (int i = 0; i<edgeInTriTruth.size(); ++i)
         EXPECT_EQ(edgeInTri[i], edgeInTriTruth[i]);
     
     
     // Check Edge Index in Triangle
-    for (int i = 0; i<3; ++i)
+    for (int i = 0; i<edgeInTriTruth.size(); ++i)
         EXPECT_EQ(topoCon->getEdgeIndexInTriangle(edgeInTri, edgeInTriTruth[i]), i);
 
     int edgeId = topoCon->getEdgeIndexInTriangle(edgeInTri, 20000);

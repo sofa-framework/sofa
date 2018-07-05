@@ -5,10 +5,14 @@ project(SofaBaseTopology_test)
 set(SOURCE_FILES
     fake_TopologyScene.h
     fake_TopologyScene.cpp
+
     PointSetTopology_test.cpp
     EdgeSetTopology_test.cpp
     TriangleSetTopology_test.cpp
     QuadSetTopology_test.cpp
+    TetrahedronSetTopology_test.cpp
+    HexahedronSetTopology_test.cpp
+
     RegularGridTopology_test.cpp
     TetrahedronNumericalIntegration_test.cpp
     TriangleNumericalIntegration_test.cpp)

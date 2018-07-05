@@ -187,7 +187,7 @@ bool QuadSetTopology_test::testEdgeBuffers()
         EXPECT_EQ(edgeInElem[i], edgeInElemM[i]);
 
     sofa::helper::fixed_array<int, 4> edgeInElemTruth(7, 8, 4, 9);
-    for (int i = 0; i<3; ++i)
+    for (int i = 0; i<4; ++i)
         EXPECT_EQ(edgeInElem[i], edgeInElemTruth[i]);
     
     

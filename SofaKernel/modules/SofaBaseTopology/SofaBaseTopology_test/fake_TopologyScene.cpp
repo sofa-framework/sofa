@@ -34,7 +34,6 @@ fake_TopologyScene::fake_TopologyScene(const std::string& filename, TopologyObje
     , m_topoType(topoType)
 {
     loadMeshFromObj();
-    std::cout << sofa::core::topology::parseTopologyObjectTypeToString(m_topoType) << std::endl;
 }
 
 bool fake_TopologyScene::loadMeshFromObj()
@@ -42,7 +41,12 @@ bool fake_TopologyScene::loadMeshFromObj()
     m_simu = createSimulation("DAG");
     m_root = createRootNode(m_simu, "root");
 
-    auto loader = createObject(m_root, "MeshObjLoader", {
+    std::string loaderType = "MeshObjLoader";
+    if (m_topoType == TopologyObjectType::TETRAHEDRON || m_topoType == TopologyObjectType::HEXAHEDRON)
+        loaderType = "MeshGmshLoader";
+
+
+    auto loader = createObject(m_root, loaderType, {
         { "name","loader" },
         { "filename", sofa::helper::system::DataRepository.getFile(m_filename) } });
 
