@@ -249,7 +249,9 @@ static std::string computeSofaPathPrefix()
         const std::string exePath = Utils::getExecutablePath();
         std::size_t pos = exePath.rfind("/bin/");
         if (pos == std::string::npos) {
-            msg_error("Utils::getSofaPathPrefix()") << "failed to deduce the root path of Sofa from the application path: (" << exePath << ")";
+            // This triggers a segfault on MacOS (static call problem): see https://github.com/sofa-framework/sofa/issues/636
+            // msg_error("Utils::getSofaPathPrefix()") << "failed to deduce the root path of Sofa from the application path: (" << exePath << ")";
+
             // Safest thing to return in this case, I guess.
             return Utils::getExecutableDirectory();
         }
@@ -267,7 +269,15 @@ const std::string& Utils::getSofaPathPrefix()
 
 const std::string Utils::getSofaPathTo(const std::string& pathFromBuildDir)
 {
-    return getSofaPathPrefix() + "/" + pathFromBuildDir;
+    std::string path = Utils::getSofaPathPrefix() + "/" + pathFromBuildDir;
+    if(FileSystem::exists(path))
+    {
+        return path;
+    }
+    else
+    {
+        return Utils::getSofaPathPrefix();
+    }
 }
 
 std::map<std::string, std::string> Utils::readBasicIniFile(const std::string& path)

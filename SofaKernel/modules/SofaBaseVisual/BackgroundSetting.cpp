@@ -19,18 +19,34 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GRAPH_COMPONENT_BACKGROUNDSETTING_H
-#define SOFA_GRAPH_COMPONENT_BACKGROUNDSETTING_H
 
 #include <SofaBaseVisual/BackgroundSetting.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
-namespace defaulttype
+
+namespace component
 {
-    using sofa::component::configurationsetting::BackgroundSetting ;
-} // namespace defaulttype
-} // namespace sofa
 
+namespace configurationsetting
+{
 
-#endif
+SOFA_DECL_CLASS(BackgroundSetting)
+int BackgroundSettingClass = core::RegisterObject("Backgrounds setting")
+        .add< BackgroundSetting >()
+        .addAlias("Background")
+        ;
+
+BackgroundSetting::BackgroundSetting():
+      color(initData(&color, "color", "Color of the background"))
+    , image(initData(&image, "image", "Image to be used as background"))
+{
+}
+
+}
+
+}
+
+}

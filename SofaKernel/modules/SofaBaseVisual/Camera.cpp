@@ -19,10 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-#include <SofaGraphComponent/BackgroundSetting.h>
-#include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/ObjectFactory.h>
+#include <SofaBaseVisual/Camera.h>
 
 namespace sofa
 {
@@ -30,23 +28,25 @@ namespace sofa
 namespace component
 {
 
-namespace configurationsetting
+namespace visualmodel
 {
 
-SOFA_DECL_CLASS(BackgroundSetting)
-int BackgroundSettingClass = core::RegisterObject("Background colour setting")
-        .add< BackgroundSetting >()
-        .addAlias("Background")
-        ;
+SOFA_DECL_CLASS(Camera)
 
-BackgroundSetting::BackgroundSetting():
-      color(initData(&color, "color", "Color of the Background of the Viewer"))
-    , image(initData(&image, "image", "Image to be used as background of the viewer"))
+int CameraClass = core::RegisterObject("A Camera that render the scene from a given location & orientation.")
+                    .add<Camera>() ;
+
+Camera::Camera()
+{
+    p_computeZClip.setValue(false) ;
+}
+
+Camera::~Camera()
 {
 }
 
-}
+} // namespace visualmodel
 
-}
+} // namespace component
 
-}
+} // namespace sofa
