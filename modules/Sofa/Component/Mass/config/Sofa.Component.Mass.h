@@ -25,7 +25,7 @@
 #include <sofa/config.h>
 
 #ifdef BUILD_SOFA_MASS_API
-#  define  SOFA_TARGET    Mass
+#  define  SOFA_TARGET    Sofa.Component.Mass
 #  define SOFA_MASS_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
 #  define SOFA_MASS_API SOFA_IMPORT_DYNAMIC_LIBRARY
