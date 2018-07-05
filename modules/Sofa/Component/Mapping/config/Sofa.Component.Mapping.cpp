@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <Mapping.h>
+#include <Sofa.Component.Mapping.h>
 
 namespace sofa
 {

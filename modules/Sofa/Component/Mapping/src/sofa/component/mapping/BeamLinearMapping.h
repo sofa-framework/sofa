@@ -21,7 +21,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MAPPING_BEAMLINEARMAPPING_H
 #define SOFA_COMPONENT_MAPPING_BEAMLINEARMAPPING_H
-#include "config.h"
+#include <Sofa.Component.Mapping.h>
 
 #include <sofa/core/Mapping.h>
 

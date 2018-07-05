@@ -25,7 +25,7 @@
 #include <sofa/config.h>
 
 #ifdef BUILD_SOFA_MAPPING_API
-#  define  SOFA_TARGET    Mapping
+#  define  SOFA_TARGET    Sofa.Component.Mapping
 #  define SOFA_MAPPING_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
 #  define SOFA_MAPPING_API SOFA_IMPORT_DYNAMIC_LIBRARY
