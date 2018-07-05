@@ -24,14 +24,6 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/helper/list.h>
-#include <sofa/core/DataEngine.h>
-
-#include <sofa/helper/fixed_array.h>
-#include <iostream>
-#include <sofa/helper/vector.h>
-#include <cstdlib>
-#include <string>
-
 
 namespace sofa
 {

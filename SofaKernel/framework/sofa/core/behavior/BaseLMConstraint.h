@@ -22,7 +22,6 @@
 #ifndef SOFA_COMPONENT_CONSTRAINT_BASELMCONSTRAINT_H
 #define SOFA_COMPONENT_CONSTRAINT_BASELMCONSTRAINT_H
 
-#include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/behavior/BaseConstraintSet.h>
 #include <sofa/core/core.h>
 

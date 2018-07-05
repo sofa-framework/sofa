@@ -122,9 +122,9 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
     if (!firstNodeVisited)
     {
         firstNodeVisited=true;
-        sofa::core::MechanicalParams mparams(*this->params);
-        mparams.setDt(dt);
-        MechanicalResetConstraintVisitor resetConstraint(&mparams);
+        
+        sofa::core::ConstraintParams cparams(*this->params);
+        MechanicalResetConstraintVisitor resetConstraint(&cparams);
         node->execute(&resetConstraint);
     }
 

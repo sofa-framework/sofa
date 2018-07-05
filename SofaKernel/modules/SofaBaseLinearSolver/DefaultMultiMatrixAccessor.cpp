@@ -85,8 +85,8 @@ void DefaultMultiMatrixAccessor::addMechanicalState(const sofa::core::behavior::
 
     if( MULTIMATRIX_VERBOSE)/////////////////////////////////////////////////////////
     {
-        msg_info() << "Mechanical Visitor : adding Real MechanicalState " << mstate->getName()
-                << " in global matrix ["<<dim<<"."<<dim
+        msg_info() << "Adding '" << mstate->getPathName()
+                << "' in the global matrix ["<<dim<<"."<<dim
                 <<"] at offset (" << realStateOffsets[mstate] <<","<< realStateOffsets[mstate]<<")";
     }
 }
@@ -110,8 +110,8 @@ void DefaultMultiMatrixAccessor::addMechanicalMapping(sofa::core::BaseMapping* m
 
         if( MULTIMATRIX_VERBOSE)/////////////////////////////////////////////////////////
         {
-            msg_info() << "Mapping Visitor : adding validated MechanicalMapping " << mapping->getName()
-                       << " with J["<< jmatrix->rowSize()<<"."<<jmatrix->colSize()<<"]" ;
+            msg_info() << "Adding validated MechanicalMapping '" << mapping->getPathName()
+                       << "' with J["<< jmatrix->rowSize()<<"."<<jmatrix->colSize()<<"]" ;
         }
     }
 }
@@ -149,7 +149,7 @@ void DefaultMultiMatrixAccessor::setupMatrices()
 
     if( MULTIMATRIX_VERBOSE)
     {
-        msg_info() << "Setup Global Matrix [" << globalDim << "." << globalDim << "] for " << realStateOffsets.size() << " real mechanical state" ;
+        msg_info() << "Setting up the Global Matrix [" << globalDim << "." << globalDim << "] for " << realStateOffsets.size() << " real mechanical state(s)." ;
     }
 }
 
@@ -205,8 +205,8 @@ DefaultMultiMatrixAccessor::MatrixRef DefaultMultiMatrixAccessor::getMatrix(cons
     {
         if (r.matrix != NULL)
         {
-            msg_info() << "Giving Stiffness Matrix [" << r.matrix->rowSize() << "." << r.matrix->colSize() << "] for state " << mstate->getName()
-                    << " at offset (" << r.offset  <<","<< r.offset <<")" ;
+            msg_info() << "Giving Stiffness Matrix [" << r.matrix->rowSize() << "." << r.matrix->colSize() << "] for state '" << mstate->getPathName()
+                    << "' at offset (" << r.offset  <<","<< r.offset <<")" ;
         }
         else
             msg_warning() << "NULL matrix found for state " << mstate->getName() ;

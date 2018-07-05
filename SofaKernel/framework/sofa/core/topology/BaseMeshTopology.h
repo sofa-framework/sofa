@@ -22,19 +22,12 @@
 #ifndef SOFA_CORE_TOPOLOGY_BASEMESHTOPOLOGY_H
 #define SOFA_CORE_TOPOLOGY_BASEMESHTOPOLOGY_H
 
-#include <cstdlib>
-#include <string>
-#include <iostream>
 
-#include <sofa/core/topology/Topology.h>
-#include <sofa/core/topology/TopologyChange.h>
 #include <sofa/core/topology/BaseTopologyEngine.h>
 
 
 #include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/helper/vector.h>
 
-#include <sofa/core/core.h>
 
 namespace sofa
 {

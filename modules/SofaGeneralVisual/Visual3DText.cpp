@@ -24,6 +24,8 @@
 #include "Visual3DText.h"
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/RGBAColor.h>
+#include <sofa/helper/system/gl.h>
+
 
 namespace sofa
 {

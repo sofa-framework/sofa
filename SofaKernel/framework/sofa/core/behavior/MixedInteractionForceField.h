@@ -24,12 +24,6 @@
 
 #include <sofa/core/core.h>
 #include <sofa/core/behavior/BaseInteractionForceField.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/core/MultiVecId.h>
-#include <sofa/core/MechanicalParams.h>
 namespace sofa
 {
 

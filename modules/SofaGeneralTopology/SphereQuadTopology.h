@@ -21,10 +21,8 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_TOPOLOGY_SPHEREQUADTOPOLOGY_H
 #define SOFA_COMPONENT_TOPOLOGY_SPHEREQUADTOPOLOGY_H
-#include "config.h"
 
 #include <SofaGeneralTopology/CubeTopology.h>
-#include <sofa/defaulttype/Vec.h>
 
 namespace sofa
 {

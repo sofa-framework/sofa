@@ -24,7 +24,6 @@
 #include "config.h"
 
 #include <SofaBaseTopology/GridTopology.h>
-#include <sofa/defaulttype/Vec.h>
 
 namespace sofa
 {
