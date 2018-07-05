@@ -19,7 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SolidMechanics.h>
+#include <Sofa.Component.PhysicalModel.SolidMechanics.h>
 
 namespace sofa
 {

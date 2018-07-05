@@ -9,13 +9,13 @@ set(SOURCE_FILES config/${PROJECT_NAME}.cpp)
 
 list(APPEND HEADER_FILES
 	config/Sofa.Component.PhysicalModel.SolidMechanics.h
-    src/sofa/component/physicalModel/solidmechanics/fem/BeamFEMForceField.h
-    src/sofa/component/physicalModel/solidmechanics/fem/BeamFEMForceField.inl
+    src/sofa/component/physicalmodel/solidmechanics/fem/BeamFEMForceField.h
+    src/sofa/component/physicalmodel/solidmechanics/fem/BeamFEMForceField.inl
 )
 
 list(APPEND SOURCE_FILES
 	config/Sofa.Component.PhysicalModel.SolidMechanics.cpp
-    src/sofa/component/physicalModel/solidmechanics/fem/BeamFEMForceField.cpp
+    src/sofa/component/physicalmodel/solidmechanics/fem/BeamFEMForceField.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
