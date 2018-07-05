@@ -2,8 +2,10 @@ cmake_minimum_required(VERSION 3.1)
 
 ##########################################
 
-add_subdirectory(Utils)
+add_subdirectory(Mapping)
+add_subdirectory(Mass)
 add_subdirectory(PhysicalModel/SolidMechanics/FEM)
+add_subdirectory(Utils)
 
 ##########################################
 
