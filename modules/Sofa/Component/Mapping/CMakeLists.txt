@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 
-project(Mapping VERSION 1.0)
+project(Sofa.Component.Mapping VERSION 1.0)
 
 find_package(SofaFramework REQUIRED)
 
@@ -8,13 +8,13 @@ set(HEADER_FILES config/${PROJECT_NAME}.h)
 set(SOURCE_FILES config/${PROJECT_NAME}.cpp)
 
 list(APPEND HEADER_FILES
-    config/Mapping.h
+	config/Sofa.Component.Mapping.h
     src/sofa/component/mapping/BeamLinearMapping.h
     src/sofa/component/mapping/BeamLinearMapping.inl
 )
 
 list(APPEND SOURCE_FILES
-    config/Mapping.cpp
+	config/Sofa.Component.Mapping.cpp
     src/sofa/component/mapping/BeamLinearMapping.cpp
 )
 
