@@ -22,7 +22,7 @@
 #ifndef SOFA_COMPONENT_MASS_BEAMMASSMATRIX_H
 #define SOFA_COMPONENT_MASS_BEAMMASSMATRIX_H
 
-#include <Mass.h>
+#include <Sofa.Component.Mass.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 #include <sofa/core/topology/BaseMeshTopology.h>
