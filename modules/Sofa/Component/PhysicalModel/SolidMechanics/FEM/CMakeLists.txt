@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 
-project(SolidMechanics VERSION 1.0)
+project(Sofa.Component.PhysicalModel.SolidMechanics VERSION 1.0)
 
 find_package(SofaFramework REQUIRED)
 
@@ -8,13 +8,13 @@ set(HEADER_FILES config/${PROJECT_NAME}.h)
 set(SOURCE_FILES config/${PROJECT_NAME}.cpp)
 
 list(APPEND HEADER_FILES
-    config/SolidMechanics.h
+	config/Sofa.Component.PhysicalModel.SolidMechanics.h
     src/sofa/component/physicalModel/solidmechanics/fem/BeamFEMForceField.h
     src/sofa/component/physicalModel/solidmechanics/fem/BeamFEMForceField.inl
 )
 
 list(APPEND SOURCE_FILES
-    config/SolidMechanics.cpp
+	config/Sofa.Component.PhysicalModel.SolidMechanics.cpp
     src/sofa/component/physicalModel/solidmechanics/fem/BeamFEMForceField.cpp
 )
 

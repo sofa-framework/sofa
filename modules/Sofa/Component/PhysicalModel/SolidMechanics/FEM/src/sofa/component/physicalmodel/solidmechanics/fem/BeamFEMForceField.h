@@ -22,7 +22,7 @@
 #ifndef SOFA_COMPONENT_PHYSICALMODEL_SOLIDMECHANICS_FEM_BEAMFEMFORCEFIELD_H
 #define SOFA_COMPONENT_PHYSICALMODEL_SOLIDMECHANICS_FEM_BEAMFEMFORCEFIELD_H
 
-#include <SolidMechanics.h>
+#include <Sofa.Component.PhysicalModel.SolidMechanics.h>
 
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
