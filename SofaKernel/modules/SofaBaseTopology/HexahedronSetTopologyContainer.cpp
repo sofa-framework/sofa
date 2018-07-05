@@ -384,6 +384,9 @@ void HexahedronSetTopologyContainer::createHexahedraAroundVertexArray()
     if(hasHexahedraAroundVertex())
         clearHexahedraAroundVertex();
 
+    if (getNbPoints() == 0) // in case only Data have been copied and not going thourgh AddTriangle methods.
+        this->setNbPoints(d_initPoints.getValue().size());
+
     m_hexahedraAroundVertex.resize( getNbPoints() );
     helper::ReadAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
 

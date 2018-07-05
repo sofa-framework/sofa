@@ -86,9 +86,13 @@ void QuadSetTopologyContainer::createQuadsAroundVertexArray()
     {
         clearQuadsAroundVertex();
     }
-
-    m_quadsAroundVertex.resize( getNbPoints() );
+    
     helper::ReadAccessor< Data< sofa::helper::vector<Quad> > > m_quad = d_quad;
+
+    if (getNbPoints() == 0) // in case only Data have been copied and not going thourgh AddTriangle methods.
+        this->setNbPoints(d_initPoints.getValue().size());
+
+    m_quadsAroundVertex.resize(getNbPoints());
 
     for (size_t i=0; i<m_quad.size(); ++i)
     {
