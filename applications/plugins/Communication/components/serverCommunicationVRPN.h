@@ -7,8 +7,6 @@
 #include<vrpn_Connection.h>
 #include<vrpn_Configure.h>
 
-#define MAX 1024
-
 namespace sofa
 {
 
@@ -28,8 +26,6 @@ public:
     ServerCommunicationVRPN();
     virtual ~ServerCommunicationVRPN();
 
-    //ArgumentList stringToArgumentList(std::string dataString);
-
     //////////////////////////////// Factory VRPN type /////////////////////////////////
     typedef CommunicationDataFactory VRPNDataFactory;
     VRPNDataFactory* getFactoryInstance();
@@ -45,11 +41,6 @@ protected:
     vrpn_Analog_Server *vrpn_analog_server;
     vrpn_Tracker_Server *vrpn_tracker_server;
     timeval delay;
-
-    float angle = 0;
-    vrpn_float64 pos[3], d_quat[4];
-    const vrpn_uint32 class_of_service = vrpn_CONNECTION_LOW_LATENCY;
-    int sensor = 0;
 
     //////////////////////////////// Inherited from ServerCommunication /////////////////////////////////
     virtual void sendData() override;

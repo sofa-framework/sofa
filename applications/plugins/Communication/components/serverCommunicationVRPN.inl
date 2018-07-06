@@ -136,8 +136,7 @@ void ServerCommunicationVRPN::createVRPNMessage(CommunicationSubscriber* subscri
 
     delay.tv_sec = 0L;
     delay.tv_usec = 0L;
-    angle += 0.001f;
-
+    
     if (!typeinfo->Container())
     {
         if (vrpn_text_sender)
@@ -161,8 +160,13 @@ void ServerCommunicationVRPN::createVRPNMessage(CommunicationSubscriber* subscri
         }
 
         if(vrpn_tracker_server)
-        {   //Position of Tracker
-            pos[0] = sin ( angle );
+        {
+            vrpn_float64 pos[3], d_quat[4];
+            const vrpn_uint32 class_of_service = vrpn_CONNECTION_LOW_LATENCY;
+            int sensor = 0;
+
+            //Position of Tracker
+            pos[0] = stof (data->getValueString());
             pos[1] = stof (data->getValueString());
             pos[2] = stof (data->getValueString());
 
