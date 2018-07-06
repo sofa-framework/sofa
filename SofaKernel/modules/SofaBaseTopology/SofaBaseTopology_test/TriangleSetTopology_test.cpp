@@ -37,6 +37,11 @@ public:
     bool testEdgeBuffers();
     bool testVertexBuffers();
     bool checkTopology();
+
+    int nbrTriangle = 26;
+    int nbrEdge = 45;
+    int nbrVertex = 20;
+    int elemSize = 3;
 };
 
 
@@ -76,10 +81,10 @@ bool TriangleSetTopology_test::testTriangleBuffers()
     EXPECT_EQ((topoCon->getName()), std::string("topoCon"));
 
     // Check triangle container buffers size
-    EXPECT_EQ(topoCon->getNbTriangles(), 26);
-    EXPECT_EQ(topoCon->getNumberOfElements(), 26);
-    EXPECT_EQ(topoCon->getNumberOfTriangles(), 26);
-    EXPECT_EQ(topoCon->getTriangles().size(), 26);
+    EXPECT_EQ(topoCon->getNbTriangles(), nbrTriangle);
+    EXPECT_EQ(topoCon->getNumberOfElements(), nbrTriangle);
+    EXPECT_EQ(topoCon->getNumberOfTriangles(), nbrTriangle);
+    EXPECT_EQ(topoCon->getTriangles().size(), nbrTriangle);
 
     // check edges should not be created
     EXPECT_EQ(topoCon->getNumberOfEdges(), 0);
@@ -100,7 +105,7 @@ bool TriangleSetTopology_test::testTriangleBuffers()
     const TriangleSetTopologyContainer::Triangle& tri0 = triangles[0];
     EXPECT_EQ(tri0.size(), 3u);
     
-    for (int i = 0; i<3; ++i)
+    for (int i = 0; i<elemSize; ++i)
         EXPECT_EQ(tri0[i], triTruth0[i]);
     
     // check triangle indices
@@ -114,11 +119,11 @@ bool TriangleSetTopology_test::testTriangleBuffers()
 
     // Check triangle buffer access    
     const TriangleSetTopologyContainer::Triangle& tri1 = topoCon->getTriangle(1);
-    for (int i = 0; i<3; ++i)
+    for (int i = 0; i<elemSize; ++i)
         EXPECT_EQ(tri1[i], triTruth1[i]);
 
     const TriangleSetTopologyContainer::Triangle& tri2 = topoCon->getTriangle(1000);
-    for (int i = 0; i<3; ++i)
+    for (int i = 0; i<elemSize; ++i)
         EXPECT_EQ(tri2[i], -1);
 
 
@@ -145,9 +150,9 @@ bool TriangleSetTopology_test::testEdgeBuffers()
     const sofa::helper::vector< TriangleSetTopologyContainer::TrianglesAroundEdge >& triAroundEdges = topoCon->getTrianglesAroundEdgeArray();
         
     // check only the edge buffer size: Full test on edges are done in EdgeSetTopology_test
-    EXPECT_EQ(topoCon->getNumberOfEdges(), 45);
-    EXPECT_EQ(topoCon->getNbEdges(), 45);
-    EXPECT_EQ(topoCon->getEdges().size(), 45);
+    EXPECT_EQ(topoCon->getNumberOfEdges(), nbrEdge);
+    EXPECT_EQ(topoCon->getNbEdges(), nbrEdge);
+    EXPECT_EQ(topoCon->getEdges().size(), nbrEdge);
 
     // check edge created element
     TriangleSetTopologyContainer::Edge edge = topoCon->getEdge(0);
@@ -156,7 +161,7 @@ bool TriangleSetTopology_test::testEdgeBuffers()
 
 
     // check TriangleAroundEdge buffer access
-    EXPECT_EQ(triAroundEdges.size(), 45);
+    EXPECT_EQ(triAroundEdges.size(), nbrEdge);
     const TriangleSetTopologyContainer::TrianglesAroundEdge& triAEdge = triAroundEdges[0];
     const TriangleSetTopologyContainer::TrianglesAroundEdge& triAEdgeM = topoCon->getTrianglesAroundEdge(0);
 
@@ -171,7 +176,7 @@ bool TriangleSetTopology_test::testEdgeBuffers()
 
     // check EdgesInTriangle buffer acces
     const sofa::helper::vector< TriangleSetTopologyContainer::EdgesInTriangle > & edgeInTriangles = topoCon->getEdgesInTriangleArray();
-    EXPECT_EQ(edgeInTriangles.size(), 26);
+    EXPECT_EQ(edgeInTriangles.size(), nbrTriangle);
 
     const TriangleSetTopologyContainer::EdgesInTriangle& edgeInTri = edgeInTriangles[2];
     const TriangleSetTopologyContainer::EdgesInTriangle& edgeInTriM = topoCon->getEdgesInTriangle(2);
@@ -240,13 +245,13 @@ bool TriangleSetTopology_test::testVertexBuffers()
     const sofa::helper::vector< TriangleSetTopologyContainer::TrianglesAroundVertex >& triAroundVertices = topoCon->getTrianglesAroundVertexArray();
 
     //// check only the vertex buffer size: Full test on vertics are done in PointSetTopology_test
-    EXPECT_EQ(topoCon->d_initPoints.getValue().size(), 20);
-    EXPECT_EQ(topoCon->getNbPoints(), 20); //TODO: check why 0 and not 20
-    EXPECT_EQ(topoCon->getPoints().size(), 20);
+    EXPECT_EQ(topoCon->d_initPoints.getValue().size(), nbrVertex);
+    EXPECT_EQ(topoCon->getNbPoints(), nbrVertex);
+    EXPECT_EQ(topoCon->getPoints().size(), nbrVertex);
 
 
     // check TrianglesAroundVertex buffer access
-    EXPECT_EQ(triAroundVertices.size(), 20);
+    EXPECT_EQ(triAroundVertices.size(), nbrVertex);
     const TriangleSetTopologyContainer::TrianglesAroundVertex& triAVertex = triAroundVertices[0];
     const TriangleSetTopologyContainer::TrianglesAroundVertex& triAVertexM = topoCon->getTrianglesAroundVertex(0);
 

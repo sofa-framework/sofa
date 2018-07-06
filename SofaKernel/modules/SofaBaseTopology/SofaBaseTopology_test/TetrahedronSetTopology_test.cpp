@@ -64,10 +64,6 @@ bool TetrahedronSetTopology_test::testEmptyContainer()
     EXPECT_EQ(topoCon->getNbEdges(), 0);
     EXPECT_EQ(topoCon->getEdges().size(), 0);
 
-    EXPECT_EQ(topoCon->getNumberOfEdges(), 0);
-    EXPECT_EQ(topoCon->getNbEdges(), 0);
-    EXPECT_EQ(topoCon->getEdges().size(), 0);
-
     EXPECT_EQ(topoCon->d_initPoints.getValue().size(), 0);
     EXPECT_EQ(topoCon->getNbPoints(), 0);
     EXPECT_EQ(topoCon->getPoints().size(), 0);
@@ -446,6 +442,6 @@ TEST_F(TetrahedronSetTopology_test, checkTopology)
 }
 
 
-// TODO: test element on Border
-// TODO: test hexahedron add/remove
-// TODO: test check connectivity
+// TODO epernod 2018-07-05: test element on Border
+// TODO epernod 2018-07-05: test hexahedron add/remove
+// TODO epernod 2018-07-05: test check connectivity

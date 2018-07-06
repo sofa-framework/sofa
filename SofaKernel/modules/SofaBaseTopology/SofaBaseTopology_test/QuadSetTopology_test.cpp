@@ -325,6 +325,6 @@ TEST_F(QuadSetTopology_test, checkTopology)
 }
 
 
-// TODO: test element on Border
-// TODO: test quad add/remove
-// TODO: test check connectivity
+// TODO epernod 2018-07-05: test element on Border
+// TODO epernod 2018-07-05: test quad add/remove
+// TODO epernod 2018-07-05: test check connectivity

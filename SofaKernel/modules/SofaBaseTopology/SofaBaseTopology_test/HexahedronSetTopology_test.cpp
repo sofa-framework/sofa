@@ -64,10 +64,6 @@ bool HexahedronSetTopology_test::testEmptyContainer()
     EXPECT_EQ(topoCon->getNbEdges(), 0);
     EXPECT_EQ(topoCon->getEdges().size(), 0);
 
-    EXPECT_EQ(topoCon->getNumberOfEdges(), 0);
-    EXPECT_EQ(topoCon->getNbEdges(), 0);
-    EXPECT_EQ(topoCon->getEdges().size(), 0);
-
     EXPECT_EQ(topoCon->d_initPoints.getValue().size(), 0);
     EXPECT_EQ(topoCon->getNbPoints(), 0);
     EXPECT_EQ(topoCon->getPoints().size(), 0);

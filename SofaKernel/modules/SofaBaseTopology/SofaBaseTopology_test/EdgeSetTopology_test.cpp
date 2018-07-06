@@ -37,6 +37,9 @@ public:
     bool testEdgeBuffers();
     bool testVertexBuffers();
     bool checkTopology();
+
+    int nbrEdge = 45;
+    int nbrVertex = 20;
 };
 
 
@@ -72,10 +75,10 @@ bool EdgeSetTopology_test::testEdgeBuffers()
     EXPECT_EQ((topoCon->getName()), std::string("topoCon"));
 
     // Check edge container buffers size
-    EXPECT_EQ(topoCon->getNbEdges(), 45);
-    EXPECT_EQ(topoCon->getNumberOfElements(), 45);
-    EXPECT_EQ(topoCon->getNumberOfEdges(), 45);
-    EXPECT_EQ(topoCon->getEdges().size(), 45);
+    EXPECT_EQ(topoCon->getNbEdges(), nbrEdge);
+    EXPECT_EQ(topoCon->getNumberOfElements(), nbrEdge);
+    EXPECT_EQ(topoCon->getNumberOfEdges(), nbrEdge);
+    EXPECT_EQ(topoCon->getEdges().size(), nbrEdge);
 
     //// The first 2 edges in this file should be :
     sofa::helper::fixed_array<EdgeSetTopologyContainer::PointID, 2> edgeTruth0(12, 17);
@@ -104,7 +107,7 @@ bool EdgeSetTopology_test::testEdgeBuffers()
     //EXPECT_EQ(vertexID, -1);
 
 
-    //// Check edge buffer access    
+    // Check edge buffer access    
     const EdgeSetTopologyContainer::Edge& edge1 = topoCon->getEdge(1);
     for (int i = 0; i<2; ++i)
         EXPECT_EQ(edge1[i], edgeTruth1[i]);
@@ -137,13 +140,13 @@ bool EdgeSetTopology_test::testVertexBuffers()
     const sofa::helper::vector< EdgeSetTopologyContainer::EdgesAroundVertex >& edgeAroundVertices = topoCon->getEdgesAroundVertexArray();
 
     //// check only the vertex buffer size: Full test on vertics are done in PointSetTopology_test
-    EXPECT_EQ(topoCon->d_initPoints.getValue().size(), 20);
-    EXPECT_EQ(topoCon->getNbPoints(), 20); 
-    EXPECT_EQ(topoCon->getPoints().size(), 20);
+    EXPECT_EQ(topoCon->d_initPoints.getValue().size(), nbrVertex);
+    EXPECT_EQ(topoCon->getNbPoints(), nbrVertex); 
+    EXPECT_EQ(topoCon->getPoints().size(), nbrVertex);
 
 
     // check EdgesAroundVertex buffer access
-    EXPECT_EQ(edgeAroundVertices.size(), 20);
+    EXPECT_EQ(edgeAroundVertices.size(), nbrVertex);
     const EdgeSetTopologyContainer::EdgesAroundVertex& edgeAVertex = edgeAroundVertices[0];
     const EdgeSetTopologyContainer::EdgesAroundVertex& edgeAVertexM = topoCon->getEdgesAroundVertex(0);
 
