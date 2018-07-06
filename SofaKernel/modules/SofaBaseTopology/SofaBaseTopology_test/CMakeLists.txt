@@ -13,6 +13,8 @@ set(SOURCE_FILES
     TetrahedronSetTopology_test.cpp
     HexahedronSetTopology_test.cpp
 
+    MeshTopology_test.cpp
+
     RegularGridTopology_test.cpp
     TetrahedronNumericalIntegration_test.cpp
     TriangleNumericalIntegration_test.cpp)

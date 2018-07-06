@@ -29,14 +29,15 @@ using namespace sofa::simpleapi;
 using namespace sofa::simpleapi::components;
 using namespace sofa::core::topology;
 
-fake_TopologyScene::fake_TopologyScene(const std::string& filename, TopologyObjectType topoType)
+fake_TopologyScene::fake_TopologyScene(const std::string& filename, TopologyObjectType topoType, bool staticTopo)
     : m_filename(filename)
     , m_topoType(topoType)
+    , m_staticTopology(staticTopo)
 {
-    loadMeshFromObj();
+    loadMeshFile();
 }
 
-bool fake_TopologyScene::loadMeshFromObj()
+bool fake_TopologyScene::loadMeshFile()
 {
     m_simu = createSimulation("DAG");
     m_root = createRootNode(m_simu, "root");
@@ -52,7 +53,9 @@ bool fake_TopologyScene::loadMeshFromObj()
 
     // could do better but will work for now
     std::string topoConType = "";
-    if (m_topoType == TopologyObjectType::POINT)
+    if (m_staticTopology)
+        topoConType = "MeshTopology";
+    else if (m_topoType == TopologyObjectType::POINT)
         topoConType = "PointSetTopologyContainer";
     else if (m_topoType == TopologyObjectType::EDGE)
         topoConType = "EdgeSetTopologyContainer";
@@ -64,6 +67,7 @@ bool fake_TopologyScene::loadMeshFromObj()
         topoConType = "TetrahedronSetTopologyContainer";
     else if (m_topoType == TopologyObjectType::HEXAHEDRON)
         topoConType = "HexahedronSetTopologyContainer";
+
 
     auto topo = createObject(m_root, topoConType, {
         { "name", "topoCon" },
