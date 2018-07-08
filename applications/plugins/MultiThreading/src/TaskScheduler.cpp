@@ -353,7 +353,14 @@ namespace sofa
                 return true;
             }
 			
-			task->run(this);
+            // we are single thread: run the task
+            if (task->run(this))
+            {
+                // pooled memory: call destructor and free
+                task->~Task();
+                //free(pTask);
+            }
+            
 			return false;
 		}
 
