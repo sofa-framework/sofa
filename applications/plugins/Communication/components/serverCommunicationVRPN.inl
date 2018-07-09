@@ -96,9 +96,11 @@ void ServerCommunicationVRPN::sendData()
         CommunicationSubscriber* subscriber = it->second;
         std::string strTestText = subscriber->getSubject()+"@"+address;
         const char *device = strTestText.c_str();
-        vrpn_text_sender = new vrpn_Text_Sender(device, m_connection);
-        vrpn_analog_server = new vrpn_Analog_Server(device, m_connection);
-        vrpn_tracker_server = new vrpn_Tracker_Server(device, m_connection);
+        
+        VrpnSenders sendersStruct;
+        sendersStruct.vrpn_text_sender = new vrpn_Text_Sender(device, m_connection);
+        sendersStruct.vrpn_analog_server = new vrpn_Analog_Server(device, m_connection);
+        senders[subscriber] = sendersStruct;
     }
 
     while (!m_connection->connected() && this->m_running)
@@ -120,7 +122,7 @@ void ServerCommunicationVRPN::sendData()
                 if (isVerbose())
                     msg_info("ServerCommunicationVRPN") << e.what();
             }
-            m_connection->mainloop(&delay);
+            m_connection->mainloop();
         }
     }
 }
@@ -134,49 +136,67 @@ void ServerCommunicationVRPN::createVRPNMessage(CommunicationSubscriber* subscri
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
     const void* valueVoidPtr = data->getValueVoidPtr();
 
-    delay.tv_sec = 0L;
-    delay.tv_usec = 0L;
-    
-    if (!typeinfo->Container())
+    if (typeinfo->Container())
     {
-        if (vrpn_text_sender)
-            vrpn_text_sender->send_message(data->getValueString().c_str(), vrpn_TEXT_NORMAL);
-
-        if (vrpn_analog_server)
+        int nbRows = typeinfo->size();
+        int nbCols  = typeinfo->size(data->getValueVoidPtr()) / typeinfo->size();
+        if( !typeinfo->Text() && !typeinfo->Scalar() && !typeinfo->Integer() )
         {
-            vrpn_analog_server->setNumChannels(1);
-            double *channels = vrpn_analog_server->channels();
-            static int done = 0;
-            if (!done)
+            msg_advice(data->getOwner()) << "BaseData_getAttr_value unsupported native type=" << data->getValueTypeString() << " for data "<<data->getName()<<" ; returning string value" ;
+            if ( senders.find(subscriber) != senders.end() )
+                 senders.at(subscriber).vrpn_text_sender->send_message(data->getValueString().c_str(), vrpn_TEXT_NORMAL);
+        }
+        else if (typeinfo->Text())
+        {
+            for (int i=0; i < nbRows; i++)
             {
-                //converting string to double*
-                channels[0] = stod (data->getValueString());
-                done = 1;
-            }
-            else
-                channels[0] += stod (data->getValueString());
+                for (int j=0; j<nbCols; j++)
+                {
+                    if ( senders.find(subscriber) != senders.end() )
+                        senders.at(subscriber).vrpn_text_sender->send_message(data->getValueString().c_str(), vrpn_TEXT_NORMAL);
 
-            vrpn_analog_server->report_changes();
+                    messageStr << "string:" << typeinfo->getTextValue(valueVoidPtr,(i*nbCols) + j).c_str() << " ";
+                }
+            }
+        }
+        else if (typeinfo->Scalar())
+        {
+            for (int i=0; i < nbRows; i++)
+            {
+                for (int j=0; j<nbCols; j++)
+                {
+                    double *channels = senders.at(subscriber).vrpn_analog_server->channels();
+                    channels[i] = typeinfo->getScalarValue(valueVoidPtr,(i*nbCols) + j);
+                }
+            }
+            if ( senders.find(subscriber) != senders.end() )
+                senders.at(subscriber).vrpn_analog_server->report_changes();
         }
 
-        if(vrpn_tracker_server)
+
+    } else {
+
+        if( !typeinfo->Text() && !typeinfo->Scalar() && !typeinfo->Integer() )
         {
-            vrpn_float64 pos[3], d_quat[4];
-            const vrpn_uint32 class_of_service = vrpn_CONNECTION_LOW_LATENCY;
-            int sensor = 0;
-
-            //Position of Tracker
-            pos[0] = stof (data->getValueString());
-            pos[1] = stof (data->getValueString());
-            pos[2] = stof (data->getValueString());
-
-            //Orientation of Tracker
-            for(int i=0; i<4; i++)
+            msg_advice(data->getOwner()) << "BaseData_getAttr_value unsupported native type=" << data->getValueTypeString() << " for data "<<data->getName()<<" ; returning string value" ;
+            if ( senders.find(subscriber) != senders.end() )
+                 senders.at(subscriber).vrpn_text_sender->send_message(data->getValueString().c_str(), vrpn_TEXT_NORMAL);
+        }
+        if (typeinfo->Text())
+        {
+            if ( senders.find(subscriber) != senders.end() )
+                senders.at(subscriber).vrpn_text_sender->send_message(data->getValueString().c_str(), vrpn_TEXT_NORMAL);
+        }
+        else if (typeinfo->Scalar() || typeinfo->Integer())
+        {
+            if ( senders.find(subscriber) != senders.end() )
             {
-                d_quat[i] = stof (data->getValueString());
-            }
+                senders.at(subscriber).vrpn_analog_server->setNumChannels(1);
+                double *channels = senders.at(subscriber).vrpn_analog_server->channels();
+                channels[0] = stod (data->getValueString());
 
-            vrpn_tracker_server->report_pose(sensor, delay, pos, d_quat, class_of_service);
+                senders.at(subscriber).vrpn_analog_server->report_changes();
+            }
         }
 
     }
@@ -221,9 +241,9 @@ void ServerCommunicationVRPN::receiveData()
         receivers.push_back(vrpnAnalog);
 
         //Receiving Tracker via VRPN
-        vrpn_Tracker_Remote *vrpnTracker = new vrpn_Tracker_Remote(device);
-        vrpnTracker->register_change_handler( (void*) this, processTrackerMessage);
-        receivers.push_back(vrpnTracker);
+        // vrpn_Tracker_Remote *vrpnTracker = new vrpn_Tracker_Remote(device);
+        // vrpnTracker->register_change_handler( (void*) this, processTrackerMessage);
+        // receivers.push_back(vrpnTracker);
     }
 
     while(this->m_running)
@@ -328,56 +348,56 @@ void VRPN_CALLBACK ServerCommunicationVRPN::processAnalogMessage(void *userdata,
     }
 }
 
-void VRPN_CALLBACK ServerCommunicationVRPN::processTrackerMessage(void *userdata, const vrpn_TRACKERCB z)
-{
-    ServerCommunicationVRPN* instance = static_cast<ServerCommunicationVRPN*>(userdata);
-    std::map<std::string, CommunicationSubscriber*> subscribersMap = instance->getSubscribers();
-    ArgumentList trackerStream;
-    int row, col;
+// void VRPN_CALLBACK ServerCommunicationVRPN::processTrackerMessage(void *userdata, const vrpn_TRACKERCB z)
+// {
+//     ServerCommunicationVRPN* instance = static_cast<ServerCommunicationVRPN*>(userdata);
+//     std::map<std::string, CommunicationSubscriber*> subscribersMap = instance->getSubscribers();
+//     ArgumentList trackerStream;
+//     int row, col;
 
-    try
-    {   // Matrix will have a single row but the number of columns will be 3.
-        row = 1;
-        col = 3;
-        if (row < 0 || col < 0)
-            return;
-    }
-    catch(std::invalid_argument& e)
-    {
-        msg_warning(instance) << "no available conversion for: " << e.what();
-        return;
-    }
-    catch(std::out_of_range& e)
-    {
-        msg_warning(instance) << "out of range : " << e.what();
-        return;
-    }
+//     try
+//     {   // Matrix will have a single row but the number of columns will be 3.
+//         row = 1;
+//         col = 3;
+//         if (row < 0 || col < 0)
+//             return;
+//     }
+//     catch(std::invalid_argument& e)
+//     {
+//         msg_warning(instance) << "no available conversion for: " << e.what();
+//         return;
+//     }
+//     catch(std::out_of_range& e)
+//     {
+//         msg_warning(instance) << "out of range : " << e.what();
+//         return;
+//     }
 
-    for (int i = 0; i < col; i++)
-    {
-        std::string stream = "VRPNdouble:";
-        stream.append(std::to_string(z.pos[i]));
-        trackerStream.push_back(stream);
-    }
+//     for (int i = 0; i < col; i++)
+//     {
+//         std::string stream = "VRPNdouble:";
+//         stream.append(std::to_string(z.pos[i]));
+//         trackerStream.push_back(stream);
+//     }
 
-    if(trackerStream.size() == 0)
-    {
-        msg_error(instance) << "argument list size is empty";
-        return;
-    }
+//     if(trackerStream.size() == 0)
+//     {
+//         msg_error(instance) << "argument list size is empty";
+//         return;
+//     }
 
-    if((unsigned int)row*col != trackerStream.size())
-    {
-        msg_error(instance) << "argument list size is != row/cols; " << trackerStream.size() << " instead of " << row*col;
-        return;
-    }
+//     if((unsigned int)row*col != trackerStream.size())
+//     {
+//         msg_error(instance) << "argument list size is != row/cols; " << trackerStream.size() << " instead of " << row*col;
+//         return;
+//     }
 
-    for (std::map<std::string, CommunicationSubscriber*>::iterator it = subscribersMap.begin(); it != subscribersMap.end(); it++)
-    {
-        CommunicationSubscriber* subscriber = it->second;
-        instance->saveDatasToReceivedBuffer(subscriber->getSubject(), trackerStream, row, col);
-    }
-}
+//     for (std::map<std::string, CommunicationSubscriber*>::iterator it = subscribersMap.begin(); it != subscribersMap.end(); it++)
+//     {
+//         CommunicationSubscriber* subscriber = it->second;
+//         instance->saveDatasToReceivedBuffer(subscriber->getSubject(), trackerStream, row, col);
+//     }
+// }
 
 std::string ServerCommunicationVRPN::getArgumentValue(std::string value)
 {
