@@ -9,7 +9,7 @@
     </Node>
 
     <RequiredPlugin name="Communication" pluginName="Communication" />
-    <ServerCommunicationVRPN name="vrpn1" job="receiver" address="localhost"/>
-    <CommunicationSubscriber name="sub1" communication="@vrpn1" subject="testing" target="@light1" datas="aNewStringValue"/>
+    <ServerCommunicationVRPN name="vrpn1" job="sender" address="localhost"/>
+    <CommunicationSubscriber name="sub1" communication="@vrpn1" subject="testing" target="@light1" datas="position"/>
 
 </Node>

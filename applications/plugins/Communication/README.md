@@ -1,6 +1,29 @@
 # Communication Plugin
 
 ## Installation
+
+### VRPN Installation
+
+Linux :
+
+```
+sudo apt-get install vrpn
+```
+
+Windows : 
+
+Compile the library by yourself using this zip file : https://github.com/vrpn/vrpn/releases/download/v07.33/vrpn_07_33.zip
+
+MacOS :
+
+```
+brew install vrpn
+```
+
+> Although, the vrpn installed through brew should work for most cases but if it does not, it can always be build manually.
+
+Compile the library by yourself using this zip file : https://github.com/vrpn/vrpn/releases/download/v07.33/vrpn_07_33.zip
+
 ### LibOscpack installation
 Please ensure oscpack version is >= 1.1.X. Do not use the default packages provided by ubuntu repository (1.0.X version).
 You can find a fully working version here : http://ftp.debian.org/debian/pool/main/o/oscpack/?C=M;O=D
@@ -46,7 +69,10 @@ Here is an example of how you can use the Communication component. In this examp
 
 ### ServerCommunication
 
-ServerCommunication is an abstract class allowing users to create asynchronous communication class . Actually, there is two implementations of it. One using the OSC protocol and the other one using ZMQ protocol.
+ServerCommunication is an abstract class allowing users to create asynchronous communication class . Actually, there is three implementations of it. These three implementations use - 
+* ZMQ
+* OSC
+* VRPN
 
 ServerCommunication provides default DataFields :
 * job -> "receiver" or "sender". Depends if you want to receive or send datas. Default value is "receiver"
@@ -58,7 +84,7 @@ OSC and ZMQ implementations have specifics DataFields :
 * OSC
   * packetSize -> an int. Define size of OSC packets. Default value is 1024
 * ZMQ
-  * pattern -> "publish/subscribe" or "request/reply". It describe how zmq will works. Default value "publish/subscribe"
+  * pattern -> "publish/subscribe" or "request/reply". It describe how zmq will works. Default value "publish/subscribe".
 
 ### Subscriber
 
@@ -71,6 +97,22 @@ Subscriber DataFields explanation :
 * datas -> a string. A list of variables name. Existing or not inside the target
 
 A serverCommunication should contains at least one subscriber.
+
+### How to use ServerCommunication VRPN
+
+#### Receive
+
+```
+<ServerCommunicationVRPN name="vrpn1" job="receiver" address="localhost"/>
+<CommunicationSubscriber name="sub1" communication="@vrpn1" subject="testing" target="@light1" datas="aNewStringValue"/>
+```
+
+#### Send
+
+```
+<ServerCommunicationVRPN name="vrpn1" job="sender" address="localhost"/>
+<CommunicationSubscriber name="sub1" communication="@vrpn1" subject="testing" target="@light1" datas="position"/>
+```
 
 ### How to use ServerCommunication OSC
 
@@ -160,7 +202,7 @@ Then we bind "f" to float. In case of non existing data with type "f" the server
     virtual void receiveData() override;
 ```
 
-Those functions have to be implemented by the new protocols. Both are runs by the mother class inside a thread. This should be the place where you loop for sending or receiving datas. You can find examples in ZMQ or OSC implementations.
+Those functions have to be implemented by the new protocols. Both are runs by the mother class inside a thread. This should be the place where you loop for sending or receiving datas. You can find examples in ZMQ, OSC and VRPN implementations.
 
 For receiving and sending datas you will need to fetch them using the mother class function named fetchDataFromSenderBuffer and saveDatasToReceivedBuffer.
 
@@ -176,11 +218,9 @@ std::string ServerCommunicationZMQ::createZMQMessage(CommunicationSubscriber* su
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
 const void* valueVoidPtr = data->getValueVoidPtr();
 ```
-In this example we retrieve the data from a buffer using fetchDataFromSenderBuffer. The argument named argument is the argument name we want to fetch. You can find more details in ZMQ or OSC inl files.
+In this example we retrieve the data from a buffer using fetchDataFromSenderBuffer. The argument named argument is the argument name we want to fetch. You can find more details in ZMQ, OSC and VRPN inl files.
 
 Example for receiving datas :
 
 ```
 ```
-
-### 

@@ -95,34 +95,38 @@ void ServerCommunicationVRPN::sendData()
     {
         CommunicationSubscriber* subscriber = it->second;
         std::string strTestText = subscriber->getSubject()+"@"+address;
-        const char *device = strTestText.c_str();
-        
         VrpnSenders sendersStruct;
+        const char *device = strTestText.c_str();
         sendersStruct.vrpn_text_sender = new vrpn_Text_Sender(device, m_connection);
         sendersStruct.vrpn_analog_server = new vrpn_Analog_Server(device, m_connection);
         senders[subscriber] = sendersStruct;
     }
 
-    while (!m_connection->connected() && this->m_running)
-        m_connection->mainloop();
-
-    while (m_connection->connected() && this->m_running)
+    while (this->m_running)
     {
-
-        for (std::map<std::string, CommunicationSubscriber*>::iterator it = subscribersMap.begin(); it != subscribersMap.end(); it++)
+        if (!m_connection->connected())
         {
-            CommunicationSubscriber* subscriber = it->second;
-            ArgumentList argumentList = subscriber->getArgumentList();
-
-            try
-            {
-                for (ArgumentList::iterator itArgument = argumentList.begin(); itArgument != argumentList.end(); itArgument++ )
-                    createVRPNMessage(subscriber, *itArgument);
-            } catch(const std::exception& e) {
-                if (isVerbose())
-                    msg_info("ServerCommunicationVRPN") << e.what();
-            }
+            msg_error(this) << "Connection not established";
             m_connection->mainloop();
+            continue;
+        } else
+        {
+            msg_info(this) << "Connection Established:";
+            for (std::map<std::string, CommunicationSubscriber*>::iterator it = subscribersMap.begin(); it != subscribersMap.end(); it++)
+            {
+                CommunicationSubscriber* subscriber = it->second;
+                ArgumentList argumentList = subscriber->getArgumentList();
+
+                try
+                {
+                    for (ArgumentList::iterator itArgument = argumentList.begin(); itArgument != argumentList.end(); itArgument++ )
+                        createVRPNMessage(subscriber, *itArgument);
+                } catch(const std::exception& e) {
+                    if (isVerbose())
+                        msg_info("ServerCommunicationVRPN") << e.what();
+                }
+                m_connection->mainloop();
+            }
         }
     }
 }
@@ -138,13 +142,13 @@ void ServerCommunicationVRPN::createVRPNMessage(CommunicationSubscriber* subscri
 
     if (typeinfo->Container())
     {
-        int nbRows = typeinfo->size();
-        int nbCols  = typeinfo->size(data->getValueVoidPtr()) / typeinfo->size();
+        int nbCols = typeinfo->size();
+        int nbRows  = typeinfo->size(data->getValueVoidPtr()) / typeinfo->size();
         if( !typeinfo->Text() && !typeinfo->Scalar() && !typeinfo->Integer() )
         {
             msg_advice(data->getOwner()) << "BaseData_getAttr_value unsupported native type=" << data->getValueTypeString() << " for data "<<data->getName()<<" ; returning string value" ;
             if ( senders.find(subscriber) != senders.end() )
-                 senders.at(subscriber).vrpn_text_sender->send_message(data->getValueString().c_str(), vrpn_TEXT_NORMAL);
+                senders.at(subscriber).vrpn_text_sender->send_message(data->getValueString().c_str(), vrpn_TEXT_NORMAL);
         }
         else if (typeinfo->Text())
         {
@@ -170,9 +174,11 @@ void ServerCommunicationVRPN::createVRPNMessage(CommunicationSubscriber* subscri
                 }
             }
             if ( senders.find(subscriber) != senders.end() )
+            {
+                senders.at(subscriber).vrpn_analog_server->setNumChannels(nbRows*nbCols);
                 senders.at(subscriber).vrpn_analog_server->report_changes();
+            }
         }
-
 
     } else {
 
@@ -180,7 +186,7 @@ void ServerCommunicationVRPN::createVRPNMessage(CommunicationSubscriber* subscri
         {
             msg_advice(data->getOwner()) << "BaseData_getAttr_value unsupported native type=" << data->getValueTypeString() << " for data "<<data->getName()<<" ; returning string value" ;
             if ( senders.find(subscriber) != senders.end() )
-                 senders.at(subscriber).vrpn_text_sender->send_message(data->getValueString().c_str(), vrpn_TEXT_NORMAL);
+                senders.at(subscriber).vrpn_text_sender->send_message(data->getValueString().c_str(), vrpn_TEXT_NORMAL);
         }
         if (typeinfo->Text())
         {
@@ -200,14 +206,13 @@ void ServerCommunicationVRPN::createVRPNMessage(CommunicationSubscriber* subscri
         }
 
     }
-
     delete data;
 }
 
 /******************************************************************************
 *                                                                             *
 * RECEIVE PART                                                                *
-*                                                                             *
+*                                                                             6*
 ******************************************************************************/
 
 void ServerCommunicationVRPN::receiveData()
@@ -261,6 +266,7 @@ void VRPN_CALLBACK ServerCommunicationVRPN::processTextMessage(void *userdata, c
     std::map<std::string, CommunicationSubscriber*> subscribersMap = instance->getSubscribers();
     ArgumentList messageStream;
 
+    msg_info(this) << "Text type vrpn receiver is now running";
     if (t.type == vrpn_TEXT_NORMAL)
     {
         std::string message = "VRPNString:";
@@ -285,7 +291,7 @@ void VRPN_CALLBACK ServerCommunicationVRPN::processAnalogMessage(void *userdata,
     std::map<std::string, CommunicationSubscriber*> subscribersMap = instance->getSubscribers();
 
     ArgumentList analogStream;
-
+    msg_info(this) << "Analog type vrpn receiver is now running";
     if (a.num_channel>1)
     {
         int row=0, col=0;

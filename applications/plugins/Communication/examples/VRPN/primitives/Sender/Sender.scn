@@ -10,6 +10,6 @@
 
     <RequiredPlugin name="Communication" pluginName="Communication" />
     <ServerCommunicationVRPN name="vrpn1" job="sender" address="localhost"/>
-    <CommunicationSubscriber name="sub1" communication="@vrpn1" subject="testing" target="@light1" datas="cutoff"/>
+    <CommunicationSubscriber name="sub1" communication="@vrpn1" subject="testing" target="@light1" datas="aNewStringValue"/>
 
 </Node>
