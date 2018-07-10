@@ -427,7 +427,10 @@ const TetrahedronSetTopologyContainer::Tetrahedron TetrahedronSetTopologyContain
     if(!hasTetrahedra())
         createTetrahedronSetArray();
 
-    return (d_tetrahedron.getValue())[i];
+    if (i >= getNbTetrahedra())
+        return Tetrahedron(-1, -1, -1, -1);
+    else
+        return (d_tetrahedron.getValue())[i];
 }
 
 
