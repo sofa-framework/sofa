@@ -187,11 +187,8 @@ void BarycentricMapperSparseGridTopology<CudaVec3f1Types,CudaVec3fTypes>::applyJ
                 unsigned indexIn = colIt.index();
                 InDeriv data = (InDeriv) Out::getDPos(colIt.val());
 
-#ifdef SOFA_NEW_HEXA
                 const topology::SparseGridTopology::Hexa cube = this->fromTopology->getHexahedron ( map[indexIn].in_index );
-#else
-                const topology::SparseGridTopology::Cube cube = this->fromTopology->getCube ( map[indexIn].in_index );
-#endif
+
                 const OutReal fx = ( OutReal ) map[indexIn].baryCoords[0];
                 const OutReal fy = ( OutReal ) map[indexIn].baryCoords[1];
                 const OutReal fz = ( OutReal ) map[indexIn].baryCoords[2];
@@ -205,40 +202,23 @@ void BarycentricMapperSparseGridTopology<CudaVec3f1Types,CudaVec3fTypes>::applyJ
                 f = ( ( fx ) * oneMinusFy * oneMinusFz );
                 o.addCol ( cube[1],  ( data * f ) );
 
-#ifdef SOFA_NEW_HEXA
                 f = ( oneMinusFx * ( fy ) * oneMinusFz );
                 o.addCol ( cube[3],  ( data * f ) );
 
                 f = ( ( fx ) * ( fy ) * oneMinusFz );
                 o.addCol ( cube[2],  ( data * f ) );
 
-#else
-                f = ( oneMinusFx * ( fy ) * oneMinusFz );
-                o.addCol ( cube[2],  ( data * f ) );
-
-                f = ( ( fx ) * ( fy ) * oneMinusFz );
-                o.addCol ( cube[3],  ( data * f ) );
-
-#endif
                 f = ( oneMinusFx * oneMinusFy * ( fz ) );
                 o.addCol ( cube[4],  ( data * f ) );
 
                 f = ( ( fx ) * oneMinusFy * ( fz ) );
                 o.addCol ( cube[5],  ( data * f ) );
 
-#ifdef SOFA_NEW_HEXA
                 f = ( oneMinusFx * ( fy ) * ( fz ) );
                 o.addCol ( cube[7],  ( data * f ) );
 
                 f = ( ( fx ) * ( fy ) * ( fz ) );
                 o.addCol ( cube[6],  ( data * f ) );
-#else
-                f = ( oneMinusFx * ( fy ) * ( fz ) );
-                o.addCol ( cube[6],  ( data * f ) );
-
-                f = ( ( fx ) * ( fy ) * ( fz ) );
-                o.addCol ( cube[7],  ( data * f ) );
-#endif
             }
         }
     }
@@ -300,11 +280,8 @@ void BarycentricMapperSparseGridTopology<CudaVec3fTypes,CudaVec3f1Types>::applyJ
                 unsigned indexIn = colIt.index();
                 InDeriv data = (InDeriv) Out::getDPos(colIt.val());
 
-#ifdef SOFA_NEW_HEXA
                 const topology::SparseGridTopology::Hexa cube = this->fromTopology->getHexahedron ( map[indexIn].in_index );
-#else
-                const topology::SparseGridTopology::Cube cube = this->fromTopology->getCube ( map[indexIn].in_index );
-#endif
+
                 const OutReal fx = ( OutReal ) map[indexIn].baryCoords[0];
                 const OutReal fy = ( OutReal ) map[indexIn].baryCoords[1];
                 const OutReal fz = ( OutReal ) map[indexIn].baryCoords[2];
@@ -318,40 +295,23 @@ void BarycentricMapperSparseGridTopology<CudaVec3fTypes,CudaVec3f1Types>::applyJ
                 f = ( ( fx ) * oneMinusFy * oneMinusFz );
                 o.addCol ( cube[1],  ( data * f ) );
 
-#ifdef SOFA_NEW_HEXA
                 f = ( oneMinusFx * ( fy ) * oneMinusFz );
                 o.addCol ( cube[3],  ( data * f ) );
 
                 f = ( ( fx ) * ( fy ) * oneMinusFz );
                 o.addCol ( cube[2],  ( data * f ) );
 
-#else
-                f = ( oneMinusFx * ( fy ) * oneMinusFz );
-                o.addCol ( cube[2],  ( data * f ) );
-
-                f = ( ( fx ) * ( fy ) * oneMinusFz );
-                o.addCol ( cube[3],  ( data * f ) );
-
-#endif
                 f = ( oneMinusFx * oneMinusFy * ( fz ) );
                 o.addCol ( cube[4],  ( data * f ) );
 
                 f = ( ( fx ) * oneMinusFy * ( fz ) );
                 o.addCol ( cube[5],  ( data * f ) );
 
-#ifdef SOFA_NEW_HEXA
                 f = ( oneMinusFx * ( fy ) * ( fz ) );
                 o.addCol ( cube[7],  ( data * f ) );
 
                 f = ( ( fx ) * ( fy ) * ( fz ) );
                 o.addCol ( cube[6],  ( data * f ) );
-#else
-                f = ( oneMinusFx * ( fy ) * ( fz ) );
-                o.addCol ( cube[6],  ( data * f ) );
-
-                f = ( ( fx ) * ( fy ) * ( fz ) );
-                o.addCol ( cube[7],  ( data * f ) );
-#endif
             }
         }
     }

@@ -700,11 +700,9 @@ void MeshTopology::addTetra( int a, int b, int c, int d )
 
 void MeshTopology::addHexa(int p1, int p2, int p3, int p4, int p5, int p6, int p7, int p8)
 {
-#ifdef SOFA_NEW_HEXA
+
     seqHexahedra.beginEdit()->push_back(Hexa(p1,p2,p3,p4,p5,p6,p7,p8));
-#else
-    seqHexahedra.beginEdit()->push_back(Hexa(p1,p2,p4,p3,p5,p6,p8,p7));
-#endif
+
     seqHexahedra.endEdit();
     if (p1 >= (int)nbPoints) nbPoints = p1+1;
     if (p2 >= (int)nbPoints) nbPoints = p2+1;

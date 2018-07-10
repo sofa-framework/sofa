@@ -33,6 +33,7 @@ using namespace sofa::core;
 using namespace sofa::core::objectmodel;
 
 #include "Binding_Node.h"
+#include "Binding_Link.h"
 #include "Binding_Context.h"
 #include "PythonVisitor.h"
 #include "PythonScriptEvent.h"
@@ -440,14 +441,14 @@ static PyObject * Node_getMechanicalMapping(PyObject * self, PyObject * /*args*/
 
 static PyObject * Node_propagatePositionAndVelocity(PyObject * self, PyObject * /*args*/) {
     Node* node = get_node(self);
-  
+
     using sofa::core::MechanicalParams;
     const MechanicalParams* instance = MechanicalParams::defaultInstance();
 
     /// only mechanical mappings
     node->execute<MechanicalProjectPositionAndVelocityVisitor>(instance); // projective constraints
     node->execute<MechanicalPropagateOnlyPositionAndVelocityVisitor>(instance); // only mechanical mappings
-     
+
     /// propagating position and velocity through non mechanical mappings
     node->execute<UpdateMappingVisitor>(instance);
 
@@ -488,6 +489,62 @@ extern "C" PyObject * Node_getAsACreateObjectParameter(PyObject * self, PyObject
     return Node_getLinkPath(self, args);
 }
 
+/// Generic accessor to Data fields (in python native type)
+static PyObject* Node_GetAttr(PyObject *o, PyObject *attr_name) {
+    Node* obj = get_node(o);
+    char *attrName = PyString_AsString(attr_name);
+
+    /// see if a Data field has this name...
+    if( BaseData * data = obj->findData(attrName) ) {
+        /// special cases... from factory (e.g DisplayFlags, OptionsGroup)
+        if( PyObject* res = sofa::PythonFactory::toPython(data) ) {
+            return res;
+        } else {
+            /// the data type is not known by the factory, let's create the right Python type....
+            return GetDataValuePython(data);
+        }
+    }
+
+    /// see if a Link has this name...
+    if( BaseLink * link = obj->findLink(attrName) ) {
+        /// we have our link... let's create the right Python type....
+        return GetLinkValuePython(link);
+    }
+
+    if( Node* child = obj->getChild(attrName) ){
+        return sofa::PythonFactory::toPython(child) ;
+    }
+
+    if( BaseObject* object = obj->getObject(attrName) ){
+        return sofa::PythonFactory::toPython(object) ;
+    }
+
+    return PyObject_GenericGetAttr(o,attr_name);
+}
+
+static int Node_SetAttr(PyObject *o, PyObject *attr_name, PyObject *v) {
+    /// attribute does not exist: see if a Data field has this name...
+    Node* obj = get_node(o);
+    char *attrName = PyString_AsString(attr_name);
+
+    if (BaseData * data = obj->findData(attrName)) {
+        /// data types in Factory can have a specific setter
+        if( PyObject* pyData = sofa::PythonFactory::toPython(data) ) {
+            return PyObject_SetAttrString( pyData, "value", v );
+        } else {
+            /// the data type is not known by the factory, let's use the default implementation
+            return SetDataValuePython(data,v);
+        }
+    }
+
+    if (BaseLink * link = obj->findLink(attrName)) {
+        return SetLinkValuePython(link,v);
+    }
+
+    return PyObject_GenericSetAttr(o,attr_name,v);
+}
+
+
 SP_CLASS_METHODS_BEGIN(Node)
 SP_CLASS_METHOD(Node, executeVisitor)
 SP_CLASS_METHOD(Node, getRoot)
@@ -522,4 +579,4 @@ SP_CLASS_METHOD(Node, printGraph)
 SP_CLASS_METHOD(Node,getAsACreateObjectParameter)
 SP_CLASS_METHODS_END
 
-SP_CLASS_TYPE_SPTR(Node, Node, Context)
+SP_CLASS_TYPE_SPTR_GETATTR(Node, Node, Context)
