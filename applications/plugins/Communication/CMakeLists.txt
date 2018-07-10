@@ -3,6 +3,7 @@ project(Communication)
 
 option(PLUGIN_COMMUNICATION_Oscpack "Make use of the Oscpack protocol" OFF)
 option(PLUGIN_COMMUNICATION_ZMQ "Make use of the ZMQ protocol" OFF)
+option(PLUGIN_COMMUNICATION_VRPN "Make use of the VRPN protocol" OFF)
 
 set(COMMUNICATION_MAJOR_VERSION 1)
 set(COMMUNICATION_MINOR_VERSION 0)
@@ -47,6 +48,12 @@ set(EXTRA_FILES
     examples/OSC/matrix/Sender/sender.scn
 
     examples/OSC/matrix/Receiver/receiver.scn
+
+    examples/VRPN/primitives/Sender/Sender.scn
+    examples/VRPN/primitives/Receiver/Receiver.scn
+
+    examples/VRPN/matrix/Sender/Sender.scn
+    examples/VRPN/matrix/Receiver/Receiver.scn
     )
 
 find_package(SofaFramework REQUIRED)
@@ -92,6 +99,27 @@ if(PLUGIN_COMMUNICATION_Oscpack)
     endif ()
 endif()
 
+#COMMUNICATION VRPN
+if(PLUGIN_COMMUNICATION_VRPN)
+    find_package(VRPN REQUIRED)
+    if (VRPN_FOUND)
+        message("Found VRPN libraries")
+        include_directories(${VRPN_INCLUDE_DIRS})
+
+        list(APPEND HEADER_FILES
+            components/serverCommunicationVRPN.h
+            components/serverCommunicationVRPN.inl
+            )
+
+        list(APPEND SOURCE_FILES
+            components/serverCommunicationVRPN.cpp
+            )
+    else ()
+        message("Can't find VRPN !")
+    endif ()
+
+endif()
+
 add_subdirectory(Communication_test)
 
 IF(WIN32)
@@ -99,7 +127,7 @@ IF(WIN32)
 ENDIF(WIN32)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
-target_link_libraries(${PROJECT_NAME} ${Oscpack_LIBRARIES} ${ZMQ_LIBRARIES} SofaCore SofaSimulationGraph)
+target_link_libraries(${PROJECT_NAME} ${Oscpack_LIBRARIES} ${ZMQ_LIBRARIES} ${VRPN_LIBRARIES} SofaCore SofaSimulationGraph)
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_Communication")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
