@@ -74,7 +74,7 @@ bool TetrahedronSetTopology_test::testEmptyContainer()
 
 bool TetrahedronSetTopology_test::testTetrahedronBuffers()
 {
-    fake_TopologyScene* scene = new fake_TopologyScene("C:/projects/sofa-dev/share/mesh/cube_low_res.msh", sofa::core::topology::TopologyObjectType::TETRAHEDRON);
+    fake_TopologyScene* scene = new fake_TopologyScene("mesh/cube_low_res.msh", sofa::core::topology::TopologyObjectType::TETRAHEDRON);
     TetrahedronSetTopologyContainer* topoCon = dynamic_cast<TetrahedronSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
     if (topoCon == NULL)
@@ -148,7 +148,7 @@ bool TetrahedronSetTopology_test::testTetrahedronBuffers()
 
 bool TetrahedronSetTopology_test::testTriangleBuffers()
 {
-    fake_TopologyScene* scene = new fake_TopologyScene("C:/projects/sofa-dev/share/mesh/cube_low_res.msh", sofa::core::topology::TopologyObjectType::TETRAHEDRON);
+    fake_TopologyScene* scene = new fake_TopologyScene("mesh/cube_low_res.msh", sofa::core::topology::TopologyObjectType::TETRAHEDRON);
     TetrahedronSetTopologyContainer* topoCon = dynamic_cast<TetrahedronSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
     if (topoCon == NULL)
@@ -245,7 +245,7 @@ bool TetrahedronSetTopology_test::testTriangleBuffers()
 
 bool TetrahedronSetTopology_test::testEdgeBuffers()
 {
-    fake_TopologyScene* scene = new fake_TopologyScene("C:/projects/sofa-dev/share/mesh/cube_low_res.msh", sofa::core::topology::TopologyObjectType::TETRAHEDRON);
+    fake_TopologyScene* scene = new fake_TopologyScene("mesh/cube_low_res.msh", sofa::core::topology::TopologyObjectType::TETRAHEDRON);
     TetrahedronSetTopologyContainer* topoCon = dynamic_cast<TetrahedronSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
     if (topoCon == NULL)
@@ -342,7 +342,7 @@ bool TetrahedronSetTopology_test::testEdgeBuffers()
 
 bool TetrahedronSetTopology_test::testVertexBuffers()
 {
-    fake_TopologyScene* scene = new fake_TopologyScene("C:/projects/sofa-dev/share/mesh/cube_low_res.msh", sofa::core::topology::TopologyObjectType::TETRAHEDRON);
+    fake_TopologyScene* scene = new fake_TopologyScene("mesh/cube_low_res.msh", sofa::core::topology::TopologyObjectType::TETRAHEDRON);
     TetrahedronSetTopologyContainer* topoCon = dynamic_cast<TetrahedronSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
     if (topoCon == NULL)
@@ -391,7 +391,7 @@ bool TetrahedronSetTopology_test::testVertexBuffers()
 
 bool TetrahedronSetTopology_test::checkTopology()
 {
-    fake_TopologyScene* scene = new fake_TopologyScene("C:/projects/sofa-dev/share/mesh/cube_low_res.msh", sofa::core::topology::TopologyObjectType::TETRAHEDRON);
+    fake_TopologyScene* scene = new fake_TopologyScene("mesh/cube_low_res.msh", sofa::core::topology::TopologyObjectType::TETRAHEDRON);
     TetrahedronSetTopologyContainer* topoCon = dynamic_cast<TetrahedronSetTopologyContainer*>(scene->getNode().get()->getMeshTopology());
 
     if (topoCon == NULL)

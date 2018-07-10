@@ -34,6 +34,8 @@ fake_TopologyScene::fake_TopologyScene(const std::string& filename, TopologyObje
     , m_topoType(topoType)
     , m_staticTopology(staticTopo)
 {
+    sofa::helper::system::DataRepository.addFirstPath(SOFABASETOPOLOGY_TEST_RESOURCES_DIR);
+    
     loadMeshFile();
 }
 

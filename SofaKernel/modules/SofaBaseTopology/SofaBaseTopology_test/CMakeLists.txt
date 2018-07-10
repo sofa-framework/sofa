@@ -19,7 +19,7 @@ set(SOURCE_FILES
     TetrahedronNumericalIntegration_test.cpp
     TriangleNumericalIntegration_test.cpp)
 
-add_definitions("-DSOFABASETOPOLOGY_TEST_SCENES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/scenes\"")
+add_definitions("-DSOFABASETOPOLOGY_TEST_RESOURCES_DIR=\"${CMAKE_SOURCE_DIR}/share\"")
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaTest)
 
