@@ -54,19 +54,25 @@ public:
     typedef DataTypes::Real Real;
     
     typedef helper::vector<core::collision::DetectionOutput> ContactVector;
+    
+    /// Tool model path
+    Data < std::string > f_modelTool; 
+    /// TriangleSetModel or SphereModel path
+    Data < std::string > f_modelSurface;
 
-    Data < std::string > f_modelTool; ///< Tool model path
-    Data < std::string > f_modelSurface; ///< TriangleSetModel or SphereModel path
-    Data < Real > f_minDistance;
-    Data < Real > f_maxDistance;
-    Data < Real > f_edgeDistance;
+    /// Collision distance at which cavring will start. Equal to contactDistance by default.
+    Data < Real > f_carvingDistance;
     
-    
-    Data < bool > active; ///< Activate this object. Note that this can be dynamically controlled by using a key
-    Data < char > keyEvent; ///< key to press to activate this object until the key is released
-    Data < char > keySwitchEvent; ///< key to activate this object until the key is pressed again
-    Data < bool > mouseEvent; ///< Activate carving with middle mouse button
-    Data < bool > omniEvent; ///< Activate carving with omni button
+    ///< Activate this object. Note that this can be dynamically controlled by using a key
+    Data < bool > active;
+    ///< key to press to activate this object until the key is released
+    Data < char > keyEvent;
+    ///< key to activate this object until the key is pressed again
+    Data < char > keySwitchEvent;
+    ///< Activate carving with middle mouse button
+    Data < bool > mouseEvent;
+    ///< Activate carving with omni button
+    Data < bool > omniEvent;
     
 protected:
     /// Pointer to the tool collision model

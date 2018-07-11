@@ -52,6 +52,7 @@ int CarvingManagerClass = core::RegisterObject("Manager handling carving operati
 CarvingManager::CarvingManager()
 : f_modelTool( initData(&f_modelTool, "modelTool", "Tool model path"))
 , f_modelSurface( initData(&f_modelSurface, "modelSurface", "TriangleSetModel or SphereModel path"))
+, f_carvingDistance( initData(&f_carvingDistance, 0.0, "carvingDistance", "Collision distance at which cavring will start. Equal to contactDistance by default."))
 , active( initData(&active, false, "active", "Activate this object.\nNote that this can be dynamically controlled by using a key") )
 , keyEvent( initData(&keyEvent, '1', "key", "key to press to activate this object until the key is released") )
 , keySwitchEvent( initData(&keySwitchEvent, '4', "keySwitch", "key to activate this object until the key is pressed again") )
@@ -117,6 +118,9 @@ void CarvingManager::init()
     intersectionMethod = getContext()->get<core::collision::Intersection>();
     detectionNP = getContext()->get<core::collision::NarrowPhaseDetection>();
 
+    if (!f_carvingDistance.isSet())
+        f_carvingDistance.setValue(intersectionMethod->getContactDistance());
+
     m_carvingReady = true;
 
     if (modelTool == NULL) { msg_error() << "modelTool not found"; m_carvingReady = false; }
@@ -157,6 +161,8 @@ void CarvingManager::doCarve()
     
     sofa::helper::vector<std::pair<core::CollisionModel*, core::CollisionModel*> > vectCMPair;
     vectCMPair.push_back(std::make_pair(modelSurface->getFirst(),modelTool->getFirst()));
+
+    std::cout << intersectionMethod->getContactDistance() << std::endl;
     
     detectionNP->setInstance(this);
     detectionNP->setIntersectionMethod(intersectionMethod);
@@ -172,27 +178,36 @@ void CarvingManager::doCarve()
     {
         contacts = dynamic_cast<const ContactVector*>(it->second);
     }
+
     unsigned int ncontacts = 0;
     if (contacts != NULL)
     {
         ncontacts = contacts->size();
     }
 
-    int nbelems = 0;
-
-    helper::vector<int> elemsToRemove;
-    for (unsigned int j=0; j < ncontacts; ++j)
+    if (ncontacts > 0)
     {
-        const ContactVector::value_type& c = (*contacts)[j];
-        int triangleIdx = (c.elem.first.getCollisionModel()==modelSurface ? c.elem.first.getIndex():c.elem.second.getIndex());
+        int nbelems = 0;
 
-		elemsToRemove.push_back(triangleIdx);
-    }
-    sofa::helper::AdvancedTimer::stepBegin("CarveElems");
-    if (!elemsToRemove.empty())
-    {
-		static TopologicalChangeManager manager;
-		nbelems += manager.removeItemsFromCollisionModel(modelSurface, elemsToRemove);
+        helper::vector<int> elemsToRemove;
+        for (unsigned int j = 0; j < ncontacts; ++j)
+        {
+            const ContactVector::value_type& c = (*contacts)[j];
+            std::cout << j << " - value: " << c.value << std::endl;
+
+            if (c.value < f_carvingDistance.getValue())
+            {
+                int triangleIdx = (c.elem.first.getCollisionModel() == modelSurface ? c.elem.first.getIndex() : c.elem.second.getIndex());
+                elemsToRemove.push_back(triangleIdx);
+            }
+        }
+
+        sofa::helper::AdvancedTimer::stepBegin("CarveElems");
+        if (!elemsToRemove.empty())
+        {
+            static TopologicalChangeManager manager;
+            nbelems += manager.removeItemsFromCollisionModel(modelSurface, elemsToRemove);
+        }
     }
 
     detectionNP->setInstance(NULL);

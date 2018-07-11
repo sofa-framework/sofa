@@ -6,10 +6,10 @@
   <CollisionPipeline verbose="0" />
   <BruteForceDetection name="N2" />
   <CollisionResponse response="default" />
-  <MinProximityIntersection name="Proximity" alarmDistance="0.5" contactDistance="0.001"/>
+  <MinProximityIntersection name="Proximity" alarmDistance="0.5" contactDistance="0.001" useSurfaceNormals="false"/>
   <CollisionGroup />
 
-  <CarvingManager active="true"/>
+  <CarvingManager active="true" carvingDistance="-0.0005"/>
 
   <EulerImplicitSolver name="EulerImplicit"  rayleighStiffness="0.1" rayleighMass="0.1" />
   <CGLinearSolver name="CG Solver" iterations="25" tolerance="1e-5" threshold="1e-5"/>
@@ -24,7 +24,7 @@
     <Node name="Surface">
       <include href="Objects/TriangleSetTopology.xml" />
       <Tetra2TriangleTopologicalMapping input="@../Container" output="@Container" />
-      <TriangleSet stiffness="1000"/>
+      <TriangleSet/>
       <Node name="Visu">
         <OglModel name="Visual" color="yellow" />
         <IdentityMapping input="@../../Volume" output="@Visual" />
