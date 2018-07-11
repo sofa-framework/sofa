@@ -19,49 +19,67 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/******************************************************************************
-*  Contributors:                                                              *
-*  - damien.marchal@univ-lille1.fr                                            *
-******************************************************************************/
-#ifndef SOFA_APIVERSION_H
-#define SOFA_APIVERSION_H
-#include <sofa/core/objectmodel/BaseObject.h>
-using sofa::core::objectmodel::BaseObject ;
+#ifndef SOFA_SIMULATION_SCENECHECKAPICHANGES_H
+#define SOFA_SIMULATION_SCENECHECKAPICHANGES_H
 
 #include "config.h"
+#include "SceneCheck.h"
+#include <string>
+#include <map>
+#include <vector>
+#include <functional>
+
+namespace sofa {
+    namespace simulation {
+        class Node;
+    }
+    namespace core {
+        namespace objectmodel {
+            class Base;
+        }
+    }
+}
 
 namespace sofa
 {
-
-namespace component
+namespace simulation
+{
+namespace _scenechecking_
 {
 
-namespace _apiversion_
+typedef std::function<void(sofa::core::objectmodel::Base*)> ChangeSetHookFunction;
+class SOFA_GRAPH_COMPONENT_API SceneCheckAPIChange : public SceneCheck
 {
-
-class SOFA_GRAPH_COMPONENT_API APIVersion : public BaseObject
-{
-
 public:
-    SOFA_CLASS(APIVersion, BaseObject);
+    SceneCheckAPIChange();
+    virtual ~SceneCheckAPIChange();
 
-    const std::string& getApiLevel() ;
-    virtual void init() override ;
+    typedef std::shared_ptr<SceneCheckAPIChange> SPtr;
+    static SPtr newSPtr() { return SPtr(new SceneCheckAPIChange()); }
+    virtual const std::string getName() override;
+    virtual const std::string getDesc() override;
+    virtual void doInit(Node* node) override;
+    virtual void doCheckOn(Node* node) override;
+    virtual void doPrintSummary() override;
 
-protected:
-    APIVersion() ;
-    virtual ~APIVersion() ;
-    void checkInputData() ;
+    void installDefaultChangeSets();
+    void addHookInChangeSet(const std::string& version, ChangeSetHookFunction fct);
 private:
-    Data<std::string>  d_level ; ///< The API Level of the scene ('17.06', '17.12', '18.06', ...)
+    std::string m_currentApiLevel;
+    std::string m_selectedApiLevel {"17.06"};
+
+    std::map<std::string, std::vector<ChangeSetHookFunction>> m_changesets;
 };
 
-} // namespace _apiversion_
+} // namespace _scenechecking_
 
-using _apiversion_::APIVersion ;
+namespace scenechecking
+{
+    using _scenechecking_::SceneCheckAPIChange;
+}
 
-} // namespace component
+} // namespace simulation
 
 } // namespace sofa
 
-#endif // SOFA_APIVERSION_H
+#endif // SOFA_SIMULATION_SCENECHECKS_H

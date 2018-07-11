@@ -19,64 +19,46 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_SCENECHECKAPICHANGES_H
-#define SOFA_SIMULATION_SCENECHECKAPICHANGES_H
+#ifndef SOFA_SIMULATION_SCENECHECKS_H
+#define SOFA_SIMULATION_SCENECHECKS_H
 
-#include "SceneChecks.h"
 #include "config.h"
+#include <sofa/helper/system/config.h>
 #include <map>
+#include <memory>
 
-/////////////////////////////// FORWARD DECLARATION ////////////////////////////////////////////////
 namespace sofa {
-    namespace simulation {
-        class Node ;
-    }
+namespace simulation {
+    class Node;
+}
 }
 
-
-/////////////////////////////////////// DECLARATION ////////////////////////////////////////////////
 namespace sofa
 {
 namespace simulation
 {
-namespace _scenecheckapichange_
+namespace _scenechecking_
 {
 
-
-typedef std::function<void(sofa::core::objectmodel::Base*)> ChangeSetHookFunction ;
-class SOFA_GRAPH_COMPONENT_API SceneCheckAPIChange : public SceneCheck
+class SOFA_GRAPH_COMPONENT_API SceneCheck
 {
 public:
-    SceneCheckAPIChange() ;
-    virtual ~SceneCheckAPIChange() ;
-
-    typedef std::shared_ptr<SceneCheckAPIChange> SPtr ;
-    static SPtr newSPtr() { return SPtr(new SceneCheckAPIChange()); }
-    virtual const std::string getName() override ;
-    virtual const std::string getDesc() override ;
-    virtual void doInit(Node* node) override ;
-    virtual void doCheckOn(Node* node) override ;
-
-    void installDefaultChangeSets() ;
-    void addHookInChangeSet(const std::string& version, ChangeSetHookFunction fct) ;
-private:
-    std::string m_currentApiLevel;
-    std::string m_selectedApiLevel {"17.06"} ;
-
-    std::map<std::string, std::vector<ChangeSetHookFunction>> m_changesets ;
+    typedef std::shared_ptr<SceneCheck> SPtr;
+    virtual const std::string getName() = 0;
+    virtual const std::string getDesc() = 0;
+    virtual void doInit(Node* node) { SOFA_UNUSED(node); }
+    virtual void doCheckOn(Node* node) = 0;
+    virtual void doPrintSummary() {}
 };
 
-} /// _scenechecks_
+} // namespace _scenechecking_
 
-using _scenecheckapichange_::SceneCheckAPIChange ;
-
-namespace scenecheckers
+namespace scenechecking
 {
-    using _scenecheckapichange_::SceneCheckAPIChange ;
-} /// checkers
+    using _scenechecking_::SceneCheck;
+}
 
-} /// namespace simulation
+} // namespace simulation
+} // namespace sofa
 
-} /// namespace sofa
-
-#endif /// SOFA_SIMULATION_SCENECHECKS_H
+#endif // SOFA_SIMULATION_SCENECHECKS_H

@@ -19,49 +19,47 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/******************************************************************************
-*  Contributors:                                                              *
-*  - damien.marchal@univ-lille1.fr                                            *
-******************************************************************************/
-#ifndef SOFA_APIVERSION_H
-#define SOFA_APIVERSION_H
-#include <sofa/core/objectmodel/BaseObject.h>
-using sofa::core::objectmodel::BaseObject ;
+#ifndef SOFA_SIMULATION_SCENECHECKUSINGALIAS_H
+#define SOFA_SIMULATION_SCENECHECKUSINGALIAS_H
 
 #include "config.h"
+#include "SceneCheck.h"
+#include <map>
+#include <vector>
 
 namespace sofa
 {
-
-namespace component
+namespace simulation
 {
-
-namespace _apiversion_
+namespace _scenechecking_
 {
-
-class SOFA_GRAPH_COMPONENT_API APIVersion : public BaseObject
+    
+class SOFA_GRAPH_COMPONENT_API SceneCheckUsingAlias : public SceneCheck
 {
-
 public:
-    SOFA_CLASS(APIVersion, BaseObject);
+    SceneCheckUsingAlias();
+    virtual ~SceneCheckUsingAlias();
 
-    const std::string& getApiLevel() ;
-    virtual void init() override ;
+    typedef std::shared_ptr<SceneCheckUsingAlias> SPtr;
+    static SPtr newSPtr() { return SPtr(new SceneCheckUsingAlias()); }
+    virtual const std::string getName() override;
+    virtual const std::string getDesc() override;
+    virtual void doInit(Node* node) override { SOFA_UNUSED(node); }
+    virtual void doCheckOn(Node* node) override { SOFA_UNUSED(node); }
+    virtual void doPrintSummary() override;
 
-protected:
-    APIVersion() ;
-    virtual ~APIVersion() ;
-    void checkInputData() ;
 private:
-    Data<std::string>  d_level ; ///< The API Level of the scene ('17.06', '17.12', '18.06', ...)
+    std::map<std::string, std::vector<std::string>> m_componentsCreatedUsingAlias;
 };
 
-} // namespace _apiversion_
+} // namespace _scenechecking_
 
-using _apiversion_::APIVersion ;
+namespace scenechecking
+{
+    using _scenechecking_::SceneCheckUsingAlias;
+}
 
-} // namespace component
-
+} // namespace simulation
 } // namespace sofa
 
-#endif // SOFA_APIVERSION_H
+#endif // SOFA_SIMULATION_SCENECHECKUSINGALIAS_H

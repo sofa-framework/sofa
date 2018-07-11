@@ -19,49 +19,51 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-/******************************************************************************
-*  Contributors:                                                              *
-*  - damien.marchal@univ-lille1.fr                                            *
-******************************************************************************/
-#ifndef SOFA_APIVERSION_H
-#define SOFA_APIVERSION_H
-#include <sofa/core/objectmodel/BaseObject.h>
-using sofa::core::objectmodel::BaseObject ;
+#ifndef SOFA_SIMULATION_SCENECHECKMISSINGREQUIREDPLUGIN_H
+#define SOFA_SIMULATION_SCENECHECKMISSINGREQUIREDPLUGIN_H
 
 #include "config.h"
+#include "SceneCheck.h"
+#include <map>
+#include <vector>
+
+namespace sofa {
+namespace simulation {
+        class Node;
+} // namespace sofa
+} // namespace simulation
 
 namespace sofa
 {
-
-namespace component
+namespace simulation
+{
+namespace _scenechecking_
 {
 
-namespace _apiversion_
+class SOFA_GRAPH_COMPONENT_API SceneCheckMissingRequiredPlugin : public SceneCheck
 {
-
-class SOFA_GRAPH_COMPONENT_API APIVersion : public BaseObject
-{
-
 public:
-    SOFA_CLASS(APIVersion, BaseObject);
+    typedef std::shared_ptr<SceneCheckMissingRequiredPlugin> SPtr;
+    static SPtr newSPtr() { return SPtr(new SceneCheckMissingRequiredPlugin()); }
+    virtual const std::string getName() override;
+    virtual const std::string getDesc() override;
+    virtual void doInit(Node* node) override;
+    virtual void doCheckOn(Node* node) override;
+    virtual void doPrintSummary() override;
 
-    const std::string& getApiLevel() ;
-    virtual void init() override ;
-
-protected:
-    APIVersion() ;
-    virtual ~APIVersion() ;
-    void checkInputData() ;
-private:
-    Data<std::string>  d_level ; ///< The API Level of the scene ('17.06', '17.12', '18.06', ...)
+private:    
+    std::map<std::string, bool > m_loadedPlugins;
+    std::map<std::string, std::vector<std::string> > m_requiredPlugins;
 };
 
-} // namespace _apiversion_
+} // namespace _scenechecking_
 
-using _apiversion_::APIVersion ;
+namespace scenechecking
+{
+    using _scenechecking_::SceneCheckMissingRequiredPlugin;
+}
 
-} // namespace component
-
+} // namespace simulation
 } // namespace sofa
 
-#endif // SOFA_APIVERSION_H
+#endif // SOFA_SIMULATION_SCENECHECKMISSINGREQUIREDPLUGIN_H
