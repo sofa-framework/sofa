@@ -236,7 +236,7 @@ if(SOFA_USE_CCACHE)
         set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK "${CCACHE_PROGRAM}")
     else()
         message(WARNING "ccache not found, disabling option")
-        set(SOFA_USE_CCACHE OFF CACHE bool FORCE)
+        set(SOFA_USE_CCACHE OFF CACHE bool "Compile using ccache optimization" FORCE)
     endif()
 endif()
 
