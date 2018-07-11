@@ -53,7 +53,6 @@ public:
     typedef DataTypes::Coord Coord;
     typedef DataTypes::Real Real;
     
-	typedef core::CollisionModel ToolModel;
     typedef helper::vector<core::collision::DetectionOutput> ContactVector;
 
     Data < std::string > f_modelTool; ///< Tool model path
@@ -70,11 +69,16 @@ public:
     Data < bool > omniEvent; ///< Activate carving with omni button
     
 protected:
-    ToolModel* modelTool;
+    /// Pointer to the tool collision model
+    core::CollisionModel* modelTool;
+
+    // Pointer to the target object collision model
     core::CollisionModel* modelSurface;
+
     core::collision::Intersection* intersectionMethod;
     core::collision::NarrowPhaseDetection* detectionNP;
 
+    bool m_carvingReady;
 
     CarvingManager();
 

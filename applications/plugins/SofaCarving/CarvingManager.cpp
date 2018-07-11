@@ -61,34 +61,44 @@ CarvingManager::CarvingManager()
 , modelSurface(NULL)
 , intersectionMethod(NULL)
 , detectionNP(NULL)
+, m_carvingReady(false)
 {
     this->f_listening.setValue(true);
 }
+
 
 CarvingManager::~CarvingManager()
 {
 }
 
+
 void CarvingManager::init()
 {
+    // Search for collision model corresponding to the tool.
     if (f_modelTool.getValue().empty())
     {
-        modelTool = getContext()->get<ToolModel>(core::objectmodel::Tag("CarvingTool"), core::objectmodel::BaseContext::SearchDown);
+        modelTool = getContext()->get<core::CollisionModel>(core::objectmodel::Tag("CarvingTool"), core::objectmodel::BaseContext::SearchDown);
         if (!modelTool)
-            modelTool = getContext()->get<ToolModel>(core::objectmodel::BaseContext::SearchDown);
+            modelTool = getContext()->get<core::CollisionModel>(core::objectmodel::BaseContext::SearchDown);
     }
     else
-        modelTool = getContext()->get<ToolModel>(f_modelTool.getValue());
+        modelTool = getContext()->get<core::CollisionModel>(f_modelTool.getValue());
 
+    // Search for the surface collision model.
     if (f_modelSurface.getValue().empty())
     {
         // we look for a CollisionModel relying on a TetrahedronSetTopology.
         //modelSurface = getContext()->get<TriangleSetModel>(core::objectmodel::BaseContext::SearchDown);
         std::vector<core::CollisionModel*> models;
         getContext()->get<core::CollisionModel>(&models, core::objectmodel::Tag("CarvingSurface"), core::objectmodel::BaseContext::SearchRoot);
-    if (models.empty())
-        getContext()->get<core::CollisionModel>(&models, core::objectmodel::BaseContext::SearchRoot);
-	    sofa::core::topology::TopologicalMapping * topoMapping;
+    
+        // extend the research to model without the tag. 
+        if (models.empty())
+            getContext()->get<core::CollisionModel>(&models, core::objectmodel::BaseContext::SearchRoot);
+
+
+        // If topological mapping, iterate into child Node to find mapped topology
+	    sofa::core::topology::TopologicalMapping* topoMapping;
         for (unsigned int i=0;i<models.size();++i)
         {
             core::CollisionModel* m = models[i];
@@ -103,24 +113,32 @@ void CarvingManager::init()
     {
         modelSurface = getContext()->get<core::CollisionModel>(f_modelSurface.getValue());
     }
+
     intersectionMethod = getContext()->get<core::collision::Intersection>();
     detectionNP = getContext()->get<core::collision::NarrowPhaseDetection>();
-    bool error = false;
-    if (modelTool == NULL) { serr << "CarvingManager: modelTool not found"<<sendl; error = true; }
-    if (modelSurface == NULL) { serr << "CarvingManager: modelSurface not found"<<sendl; error = true; }
-    if (intersectionMethod == NULL) { serr << "CarvingManager: intersectionMethod not found"<<sendl; error = true; }
-    if (detectionNP == NULL) { serr << "CarvingManager: NarrowPhaseDetection not found"<<sendl; error = true; }
-    if (!error)
-        sout << "CarvingManager: init OK." << sendl;
+
+    m_carvingReady = true;
+
+    if (modelTool == NULL) { msg_error() << "modelTool not found"; m_carvingReady = false; }
+    if (modelSurface == NULL) { msg_error() << "CarvingManager: modelSurface not found"; m_carvingReady = false; }
+    if (intersectionMethod == NULL) { msg_error() << "CarvingManager: intersectionMethod not found"; m_carvingReady = false; }
+    if (detectionNP == NULL) { msg_error() << "CarvingManager: NarrowPhaseDetection not found"; m_carvingReady = false; }
+    
+    if (m_carvingReady)
+        msg_info() << "CarvingManager: init OK.";
 }
+
 
 void CarvingManager::reset()
 {
+
 }
+
 
 void CarvingManager::doCarve()
 {
-    if (modelTool==NULL || modelSurface==NULL || intersectionMethod == NULL || detectionNP == NULL) return;
+    if (m_carvingReady == false)
+        return;
 
     const bool continuous = intersectionMethod->useContinuous();
     const double dt       = getContext()->getDt();
@@ -184,7 +202,7 @@ void CarvingManager::handleEvent(sofa::core::objectmodel::Event* event)
 {
     if (sofa::core::objectmodel::KeypressedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeypressedEvent*>(event))
     {
-        sout << "GET KEY "<<ev->getKey()<<sendl;
+        dmsg_info() << "GET KEY "<<ev->getKey();
         if (ev->getKey() == keyEvent.getValue())
         {
             active.setValue(true);
