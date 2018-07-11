@@ -109,7 +109,28 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
     }
     else
     {
-        currentForce = driver->d_inputForceFeedback.getValue();
+        Vector3 inputForceFeedback = driver->d_inputForceFeedback.getValue();
+        double normValue = inputForceFeedback.norm();
+        double maxInputForceFeedback = driver->d_maxInputForceFeedback.getValue();
+
+        if( maxInputForceFeedback > 0.0)
+        {
+            if( normValue > maxInputForceFeedback )
+            {
+                msg_warning("GeomagicDriver") << "Force given to applied inputForceFeedback exceeds the maxInputForceFeedback";
+
+                inputForceFeedback[0] *= maxInputForceFeedback/normValue;
+                inputForceFeedback[1] *= maxInputForceFeedback/normValue;
+                inputForceFeedback[2] *= maxInputForceFeedback/normValue;
+
+                driver->d_inputForceFeedback.setValue(inputForceFeedback);
+            }
+            currentForce = driver->d_inputForceFeedback.getValue();
+        }
+        else
+        {
+            msg_error("GeomagicDriver") << "maxInputForceFeedback value is negative or 0, it should be strictly positive";
+        }
     }
 
     Vector3 force_in_omni = driver->d_orientationBase.getValue().inverseRotate(currentForce)  * driver->d_forceScale.getValue();
@@ -144,6 +165,7 @@ GeomagicDriver::GeomagicDriver()
 , d_button_1(initData(&d_button_1,"button1","Button state 1"))
 , d_button_2(initData(&d_button_2,"button2","Button state 2"))
 , d_inputForceFeedback(initData(&d_inputForceFeedback, Vec3d(0,0,0), "inputForceFeedback","Input force feedback in case of no LCPForceFeedback is found (manual setting)"))
+, d_maxInputForceFeedback(initData(&d_maxInputForceFeedback, double(1.0), "maxInputForceFeedback","Maximum value of the normed input force feedback for device security"))
 {
     this->f_listening.setValue(true);
     m_forceFeedback = NULL;
@@ -168,31 +190,42 @@ GeomagicDriver::~GeomagicDriver()
 //executed once at the start of Sofa, initialization of all variables excepts haptics-related ones
 void GeomagicDriver::init() {
 
-        HDErrorInfo error;
+    HDErrorInfo error;
 
-        HDSchedulerHandle hStateHandle = HD_INVALID_HANDLE;
-        m_hHD = hdInitDevice(d_deviceName.getValue().c_str());
+    HDSchedulerHandle hStateHandle = HD_INVALID_HANDLE;
+    m_hHD = hdInitDevice(d_deviceName.getValue().c_str());
 
-        if (HD_DEVICE_ERROR(error = hdGetError())) {
-                std::cerr << "[NewOmni] Failed to initialize the device called " << d_deviceName.getValue().c_str() << std::endl;
-                return;
-        }
+    if (HD_DEVICE_ERROR(error = hdGetError())) {
+        std::cerr << "[NewOmni] Failed to initialize the device called " << d_deviceName.getValue().c_str() << std::endl;
+        return;
+    }
 
-        hdMakeCurrentDevice(m_hHD);
-        hdEnable(HD_FORCE_OUTPUT);
-        //    hdEnable(HD_MAX_FORCE_CLAMPING);
+    hdMakeCurrentDevice(m_hHD);
+    hdEnable(HD_FORCE_OUTPUT);
+    //    hdEnable(HD_MAX_FORCE_CLAMPING);
 
-        hStateHandle = hdScheduleAsynchronous(stateCallback, this, HD_MAX_SCHEDULER_PRIORITY);
-        m_hStateHandles.push_back(hStateHandle);
+    hStateHandle = hdScheduleAsynchronous(stateCallback, this, HD_MAX_SCHEDULER_PRIORITY);
+    m_hStateHandles.push_back(hStateHandle);
 
-        hStateHandle = hdScheduleAsynchronous(copyDeviceDataCallback, this, HD_MIN_SCHEDULER_PRIORITY);
-        m_hStateHandles.push_back(hStateHandle);
+    hStateHandle = hdScheduleAsynchronous(copyDeviceDataCallback, this, HD_MIN_SCHEDULER_PRIORITY);
+    m_hStateHandles.push_back(hStateHandle);
 
-        if (HD_DEVICE_ERROR(error = hdGetError()))
+    if (HD_DEVICE_ERROR(error = hdGetError()))
+    {
+        printError(&error, "erreur avec le device Default PHANToM");
+        return;
+    }
+
+    if(d_maxInputForceFeedback.isSet())
+    {
+        msg_info("GeomagicDriver") << "maxInputForceFeedback value is set, carefully set the max force regarding your haptic device";
+
+        if(d_maxInputForceFeedback.getValue() <= 0.0)
         {
-                printError(&error, "erreur avec le device Default PHANToM");
-                return;
+            msg_error("GeomagicDriver") << "maxInputForceFeedback value is negative or 0, it should be strictly positive";
+            d_maxInputForceFeedback.setValue(1.0);
         }
+    }
 
     reinit();
 }
@@ -279,12 +312,12 @@ void GeomagicDriver::updatePosition() {
     button_2 = m_simuData.buttonState & HD_DEVICE_BUTTON_2;
 
     //copy angle
-    angle[0] =  m_simuData.angle1[0];
-    angle[1] =  m_simuData.angle1[1];
-    angle[2] =  -(M_PI/2)+m_simuData.angle1[2]-m_simuData.angle1[1];
-    angle[3] =  -(M_PI/2)-m_simuData.angle2[0];
+    angle[0] = m_simuData.angle1[0];
+    angle[1] = m_simuData.angle1[1];
+    angle[2] = -(M_PI/2)+m_simuData.angle1[2]-m_simuData.angle1[1];
+    angle[3] = -(M_PI/2)-m_simuData.angle2[0];
     angle[4] = m_simuData.angle2[1];
-    angle[5] =  -(M_PI/2)-m_simuData.angle2[2];
+    angle[5] = -(M_PI/2)-m_simuData.angle2[2];
 
     //copy the position of the tool
     Vector3 position;

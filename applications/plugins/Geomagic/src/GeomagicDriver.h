@@ -98,15 +98,16 @@ public:
     Data<bool> d_button_1; ///< Button state 1
     Data<bool> d_button_2; ///< Button state 2
     Data<Vector3> d_inputForceFeedback; ///< Input force feedback in case of no LCPForceFeedback is found (manual setting)
+    Data<double> d_maxInputForceFeedback; ///< Maximum value of the normed input force feedback for device security
 
     GeomagicDriver();
 
 	virtual ~GeomagicDriver();
 
-    virtual void init();
-    virtual void bwdInit();
-    virtual void reinit();
-    virtual void draw(const sofa::core::visual::VisualParams* vparams);
+    virtual void init() override;
+    virtual void bwdInit() override;
+    virtual void reinit() override;
+    virtual void draw(const sofa::core::visual::VisualParams* vparams) override;
     void updatePosition();
 
     void onAnimateBeginEvent();
@@ -114,8 +115,8 @@ public:
     ForceFeedback * m_forceFeedback;
 
 private:
-    void handleEvent(core::objectmodel::Event *);
-    void computeBBox(const core::ExecParams*  params, bool onlyVisible=false );
+    void handleEvent(core::objectmodel::Event *) override;
+    void computeBBox(const core::ExecParams*  params, bool onlyVisible=false ) override;
     void getMatrix( Mat<4,4, GLdouble> & M, int index, double teta);
 
     Mat<4,4, GLdouble> compute_dh_Matrix(double theta,double alpha, double a, double d);
