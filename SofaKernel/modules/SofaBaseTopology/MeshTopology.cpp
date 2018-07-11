@@ -186,7 +186,9 @@ void MeshTopology::EdgeUpdate::updateFromSurface()
                 // edge not in edgeMap so create a new one
                 edgeIndex=(unsigned int)seqEdges.size();
                 edgeMap[e]=edgeIndex;
-                seqEdges.push_back(e);
+                // To be similar to TriangleSetTopologyContainer::createEdgeSetArray
+                //seqEdges.push_back(e); Changed to have oriented edges on the border of the triangulation. 
+                seqEdges.push_back(Edge(v1, v2));
             }
 //            else
 //            {
@@ -865,7 +867,7 @@ void MeshTopology::createEdgesAroundVertexArray ()
         {
             // adding edge i in the edge shell of both points
             m_edgesAroundVertex[ edges[i][0] ].push_back( i );
-            m_edgesAroundVertex[ edges[i][1] ].insert( m_edgesAroundVertex[ edges[i][1] ].begin(), i );
+            m_edgesAroundVertex[ edges[i][1] ].push_back( i );
         }
     }
 }

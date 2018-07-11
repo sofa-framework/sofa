@@ -473,6 +473,11 @@ bool MeshTopology_test::testTriangleTopology()
 
     for (int i = 0; i < 6; ++i) // only test the 6 firsts elements of each buffer
     {
+        const TriangleSetTopologyContainer::Edge& e1 = edges1[i];
+        const BaseMeshTopology::Edge& e2 = edges2[i];
+        for (int j = 0; j<2; ++j)
+            EXPECT_EQ(e1[j], e2[j]);
+
         const TriangleSetTopologyContainer::EdgesInTriangle& EiT1 = edgesInTriangle1[i];
         const BaseMeshTopology::EdgesInTriangle& EiT2 = edgesInTriangle2[i];
         EXPECT_EQ(EiT1.size(), EiT2.size());
@@ -490,11 +495,6 @@ bool MeshTopology_test::testTriangleTopology()
         EXPECT_EQ(TaE1.size(), TaE2.size());
         for (int j = 0; j<TaE1.size(); ++j)
             EXPECT_EQ(TaE1[j], TaE2[j]);
-
-        const TriangleSetTopologyContainer::Edge& e1 = edges1[i];
-        const BaseMeshTopology::Edge& e2 = edges2[i];
-        for (int j = 0; j<2; ++j)
-            EXPECT_EQ(e1[j], e2[j]);
     }
 
     if (scene != NULL)

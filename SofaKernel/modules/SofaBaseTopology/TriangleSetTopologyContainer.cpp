@@ -140,10 +140,14 @@ void TriangleSetTopologyContainer::createTrianglesAroundEdgeArray ()
 
     for (unsigned int i = 0; i < numTriangles; ++i)
     {
+        const Triangle &t = getTriangle(i);
         // adding triangle i in the triangle shell of all edges
         for (unsigned int j=0; j<3; ++j)
         {
-            m_trianglesAroundEdge[ m_edgesInTriangle[i][j] ].push_back( i );
+            if (d_edge.getValue()[m_edgesInTriangle[i][j]][0] == t[(j + 1) % 3])
+                m_trianglesAroundEdge[m_edgesInTriangle[i][j]].insert(m_trianglesAroundEdge[m_edgesInTriangle[i][j]].begin(), i); // triangle is on the left of the edge
+            else
+                m_trianglesAroundEdge[m_edgesInTriangle[i][j]].push_back(i); // triangle is on the right of the edge
         }
     }
 }
@@ -196,7 +200,7 @@ void TriangleSetTopologyContainer::createEdgeSetArray()
                 // edge not in edgeMap so create a new one
                 const unsigned int edgeIndex = (unsigned int)edgeMap.size();
                 edgeMap[e] = edgeIndex;
-//	      m_edge.push_back(e); Changed to have oriented edges on the border of the triangulation
+                //m_edge.push_back(e); Changed to have oriented edges on the border of the triangulation
                 m_edge.push_back(Edge(v1,v2));
             }
         }
