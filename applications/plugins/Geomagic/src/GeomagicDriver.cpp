@@ -563,8 +563,6 @@ void GeomagicDriver::draw(const sofa::core::visual::VisualParams* vparams)
 
     if (d_omniVisu.getValue() && m_initVisuDone)
     {
-        //----------------
-
         //Reactivate visual node
         if(!m_visuActive)
         {
