@@ -10,7 +10,7 @@
   <MinProximityIntersection name="Proximity" alarmDistance="0.5" contactDistance="0.001"/>
   <CollisionGroup />
   
-  <CarvingManager active="true"/>
+  <CarvingManager active="true" carvingDistance="-0.008"/>
 
   <EulerImplicitSolver name="EulerImplicit"  rayleighStiffness="0.1" rayleighMass="0.1" />
   <CGLinearSolver name="CG Solver" iterations="25" tolerance="1e-9" threshold="1e-9"/>
@@ -38,7 +38,7 @@
   
   <Node name="carvingElement">
 		<MechanicalObject name="Particles" template="Vec3d" position="0 0 1.4" velocity="0 0 0"/>
-		<UniformMass name="Mass" totalmass="0.15" />
+		<UniformMass name="Mass" totalmass="0.2" />
 		<MeshSpringForceField name="Springs" stiffness="100" damping="1" />
 		<SphereModel radius="0.02" tags="CarvingTool"/>
   </Node>
