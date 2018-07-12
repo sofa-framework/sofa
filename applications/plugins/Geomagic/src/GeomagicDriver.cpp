@@ -45,6 +45,34 @@ namespace controller
 {
 
 
+const char* GeomagicDriver::visualNodeNames[NVISUALNODE] =
+{
+    "stylus",
+    "joint 2",
+    "joint 1",
+    "arm 2",
+    "arm 1",
+    "joint 0",
+    "base",
+    "axe X",
+    "axe Y",
+    "axe Z"
+};
+const char* GeomagicDriver::visualNodeFiles[NVISUALNODE] =
+{
+    "mesh/stylusO.obj",
+    "mesh/articulation5O.obj",
+    "mesh/articulation4O.obj",
+    "mesh/articulation3O.obj",
+    "mesh/articulation2O.obj",
+    "mesh/articulation1O.obj",
+    "mesh/BASEO.obj",
+    "mesh/axeX.obj",
+    "mesh/axeY.obj",
+    "mesh/axeZ.obj"
+};
+
+
 static Mat<4,4, GLdouble> getInitialTransform() {
     Mat<4,4, GLdouble> M;
 
@@ -65,11 +93,11 @@ using namespace sofa::defaulttype;
 
 void printError(const HDErrorInfo *error, const char *message)
 {
-    std::cerr << hdGetErrorString(error->errorCode) << std::endl;
-    std::cerr << "HHD: "<< error->hHD << std::endl;
-    std::cerr << "Error Code: "<< error->hHD << std::endl;
-    std::cerr << "Internal Error Code: "<< error->internalErrorCode<<std::endl;
-    std::cerr << "Message: " << message << std::endl;
+    msg_error("GeomagicDriver") << hdGetErrorString(error->errorCode);
+    msg_error("GeomagicDriver") << "HHD: "<< error->hHD;
+    msg_error("GeomagicDriver") << "Error Code: "<< error->hHD;
+    msg_error("GeomagicDriver") << "Internal Error Code: "<< error->internalErrorCode;
+    msg_error("GeomagicDriver") << "Message: " << message;
 }
 
 HDCallbackCode HDCALLBACK copyDeviceDataCallback(void * pUserData)
@@ -149,23 +177,24 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
 
 //constructeur
 GeomagicDriver::GeomagicDriver()
-: d_deviceName(initData(&d_deviceName, std::string("Default Device"), "deviceName","Name of device Configuration"))
-, d_positionBase(initData(&d_positionBase, Vec3d(0,0,0), "positionBase","Position of the interface base in the scene world coordinates"))
-, d_orientationBase(initData(&d_orientationBase, Quat(0,0,0,1), "orientationBase","Orientation of the interface base in the scene world coordinates"))
-, d_orientationTool(initData(&d_orientationTool, Quat(0,0,0,1), "orientationTool","Orientation of the tool"))
-, d_dh_theta(initData(&d_dh_theta, Vec6d(0,0,0,M_PI/2,M_PI/2,M_PI/2), "dh_teta","Denavit theta"))
-, d_dh_alpha(initData(&d_dh_alpha, Vec6d(0,-M_PI/2,0,M_PI/2,-M_PI/2,M_PI/2), "dh_alpha","Denavit alpha"))
-, d_dh_d(initData(&d_dh_d, Vec6d(0,0,0,0,13.3333,0), "dh_d","Denavit d"))
-, d_dh_a(initData(&d_dh_a, Vec6d(0,0,13.3333,0,0,0), "dh_a","Denavit a"))
-, d_angle(initData(&d_angle, "angle","Angluar values of joint (rad)"))
-, d_scale(initData(&d_scale, 1.0, "scale","Default scale applied to the Phantom Coordinates"))
-, d_forceScale(initData(&d_forceScale, 1.0, "forceScale","Default forceScale applied to the force feedback. "))
-, d_omniVisu(initData(&d_omniVisu, false, "drawDeviceFrame", "Visualize the frame of the interface in the virtual scene"))
-, d_posDevice(initData(&d_posDevice, "positionDevice", "position of the base of the part of the device"))
-, d_button_1(initData(&d_button_1,"button1","Button state 1"))
-, d_button_2(initData(&d_button_2,"button2","Button state 2"))
-, d_inputForceFeedback(initData(&d_inputForceFeedback, Vec3d(0,0,0), "inputForceFeedback","Input force feedback in case of no LCPForceFeedback is found (manual setting)"))
-, d_maxInputForceFeedback(initData(&d_maxInputForceFeedback, double(1.0), "maxInputForceFeedback","Maximum value of the normed input force feedback for device security"))
+    : d_deviceName(initData(&d_deviceName, std::string("Default Device"), "deviceName","Name of device Configuration"))
+    , d_positionBase(initData(&d_positionBase, Vec3d(0,0,0), "positionBase","Position of the interface base in the scene world coordinates"))
+    , d_orientationBase(initData(&d_orientationBase, Quat(0,0,0,1), "orientationBase","Orientation of the interface base in the scene world coordinates"))
+    , d_orientationTool(initData(&d_orientationTool, Quat(0,0,0,1), "orientationTool","Orientation of the tool"))
+    , d_dh_theta(initData(&d_dh_theta, Vec6d(0,0,0,M_PI/2,M_PI/2,M_PI/2), "dh_teta","Denavit theta"))
+    , d_dh_alpha(initData(&d_dh_alpha, Vec6d(0,-M_PI/2,0,M_PI/2,-M_PI/2,M_PI/2), "dh_alpha","Denavit alpha"))
+    , d_dh_d(initData(&d_dh_d, Vec6d(0,0,0,0,13.3333,0), "dh_d","Denavit d"))
+    , d_dh_a(initData(&d_dh_a, Vec6d(0,0,13.3333,0,0,0), "dh_a","Denavit a"))
+    , d_angle(initData(&d_angle, "angle","Angluar values of joint (rad)"))
+    , d_scale(initData(&d_scale, 1.0, "scale","Default scale applied to the Phantom Coordinates"))
+    , d_forceScale(initData(&d_forceScale, 1.0, "forceScale","Default forceScale applied to the force feedback. "))
+    , d_frameVisu(initData(&d_frameVisu, false, "drawDeviceFrame", "Visualize the frame corresponding to the device tooltip"))
+    , d_omniVisu(initData(&d_omniVisu, false, "drawDevice", "Visualize the Geomagic device in the virtual scene"))
+    , d_posDevice(initData(&d_posDevice, "positionDevice", "position of the base of the part of the device"))
+    , d_button_1(initData(&d_button_1,"button1","Button state 1"))
+    , d_button_2(initData(&d_button_2,"button2","Button state 2"))
+    , d_inputForceFeedback(initData(&d_inputForceFeedback, Vec3d(0,0,0), "inputForceFeedback","Input force feedback in case of no LCPForceFeedback is found (manual setting)"))
+    , d_maxInputForceFeedback(initData(&d_maxInputForceFeedback, double(1.0), "maxInputForceFeedback","Maximum value of the normed input force feedback for device security"))
 {
     this->f_listening.setValue(true);
     m_forceFeedback = NULL;
@@ -173,36 +202,39 @@ GeomagicDriver::GeomagicDriver()
 
 GeomagicDriver::~GeomagicDriver()
 {
-        hdMakeCurrentDevice(m_hHD);
+    hdMakeCurrentDevice(m_hHD);
 
-        hdStopScheduler();
+    hdStopScheduler();
 
-        for (std::vector< HDCallbackCode >::iterator i = m_hStateHandles.begin();
-                i != m_hStateHandles.end(); ++i)
-        {
-                hdUnschedule(*i);
-        }
-        m_hStateHandles.clear();
+    for (std::vector< HDCallbackCode >::iterator i = m_hStateHandles.begin();
+            i != m_hStateHandles.end(); ++i)
+    {
+            hdUnschedule(*i);
+    }
+    m_hStateHandles.clear();
 
-        hdDisableDevice(m_hHD);
+    hdDisableDevice(m_hHD);
 }
 
 //executed once at the start of Sofa, initialization of all variables excepts haptics-related ones
-void GeomagicDriver::init() {
-
+void GeomagicDriver::init()
+{
+    m_initVisuDone = false;
     HDErrorInfo error;
 
     HDSchedulerHandle hStateHandle = HD_INVALID_HANDLE;
     m_hHD = hdInitDevice(d_deviceName.getValue().c_str());
 
-    if (HD_DEVICE_ERROR(error = hdGetError())) {
-        std::cerr << "[NewOmni] Failed to initialize the device called " << d_deviceName.getValue().c_str() << std::endl;
+    if (HD_DEVICE_ERROR(error = hdGetError()))
+    {
+        msg_error("GeomagicDriver") << "Failed to initialize the device called " << d_deviceName.getValue().c_str();
+        d_omniVisu.setValue(false);
+
         return;
     }
 
     hdMakeCurrentDevice(m_hHD);
     hdEnable(HD_FORCE_OUTPUT);
-    //    hdEnable(HD_MAX_FORCE_CLAMPING);
 
     hStateHandle = hdScheduleAsynchronous(stateCallback, this, HD_MAX_SCHEDULER_PRIORITY);
     m_hStateHandles.push_back(hStateHandle);
@@ -228,26 +260,113 @@ void GeomagicDriver::init() {
     }
 
     reinit();
+
+    //Initialization of the visual components
+    //resize vectors
+    VecCoord& posD =(*d_posDevice.beginEdit());
+    posD.resize(NVISUALNODE+1);
+    d_posDevice.endEdit();
+
+    m_visuActive = false;
+
+    for(int i=0; i<NVISUALNODE; i++)
+    {
+        visualNode[i].visu = NULL;
+        visualNode[i].mapping = NULL;
+    }
+
+    //create a specific node containing rigid position for visual models
+    sofa::simulation::Node::SPtr rootContext = static_cast<simulation::Node*>(this->getContext()->getRootContext());
+    nodePrincipal = rootContext->createChild("omniVisu "+d_deviceName.getValue());
+    nodePrincipal->updateContext();
+
+    rigidDOF = sofa::core::objectmodel::New<component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes> >();
+    nodePrincipal->addObject(rigidDOF);
+    rigidDOF->name.setValue("rigidDOF");
+
+    VecCoord& posDOF =*(rigidDOF->x.beginEdit());
+    posDOF.resize(NVISUALNODE+1);
+    rigidDOF->x.endEdit();
+
+    rigidDOF->init();
+    nodePrincipal->updateContext();
+
+
+    //creation of subnodes for each part of the device visualization
+    for(int i=0; i<NVISUALNODE; i++)
+    {
+        visualNode[i].node = nodePrincipal->createChild(visualNodeNames[i]);
+
+        if(visualNode[i].visu == NULL && visualNode[i].mapping == NULL)
+        {
+
+            // create the visual model and add it to the graph //
+            visualNode[i].visu = sofa::core::objectmodel::New<sofa::component::visualmodel::OglModel>();
+            visualNode[i].node->addObject(visualNode[i].visu);
+            visualNode[i].visu->name.setValue("VisualParticles");
+            visualNode[i].visu->fileMesh.setValue(visualNodeFiles[i]);
+
+            visualNode[i].visu->init();
+            visualNode[i].visu->initVisual();
+            visualNode[i].visu->updateVisual();
+
+            // create the visual mapping and at it to the graph //
+            visualNode[i].mapping = sofa::core::objectmodel::New< sofa::component::mapping::RigidMapping< Rigid3dTypes, ExtVec3fTypes > > ();
+            visualNode[i].node->addObject(visualNode[i].mapping);
+            visualNode[i].mapping->setModels(rigidDOF.get(), visualNode[i].visu.get());
+            visualNode[i].mapping->name.setValue("RigidMapping");
+            visualNode[i].mapping->f_mapConstraints.setValue(false);
+            visualNode[i].mapping->f_mapForces.setValue(false);
+            visualNode[i].mapping->f_mapMasses.setValue(false);
+            visualNode[i].mapping->index.setValue(i+1);
+            visualNode[i].mapping->init();
+        }
+        if(i<VN_X)
+            nodePrincipal->removeChild(visualNode[i].node);
+    }
+
+    visualNode[VN_X].visu->setColor(1.0,0.0,0.0,0);
+    visualNode[VN_Y].visu->setColor(0.0,1.0,0.0,0);
+    visualNode[VN_Z].visu->setColor(0.0,0.0,1.0,0);
+
+    nodePrincipal->updateContext();
+
+    for(int i=0; i<NVISUALNODE; i++)
+    {
+        visualNode[i].node->updateContext();
+    }
+
+    m_initVisuDone = true;
+
+    /*for(int j=0; j<=VN_X; j++)
+    {
+        sofa::defaulttype::ResizableExtVector< sofa::defaulttype::Vec<3,float> > &scaleMapping = *(visualNode[j].mapping->points.beginEdit());
+        for(unsigned int i=0; i<scaleMapping.size(); i++)
+            scaleMapping[i] *= (float)(1.0*d_scale.getValue()/100.0);
+        visualNode[j].mapping->points.endEdit();
+    }*/
 }
 
-void GeomagicDriver::bwdInit() {
+void GeomagicDriver::bwdInit()
+{
     simulation::Node *context = dynamic_cast<simulation::Node *>(this->getContext()); // access to current node
     m_forceFeedback = context->get<ForceFeedback>(this->getTags(), sofa::core::objectmodel::BaseContext::SearchRoot);
 
 
-        hdStartScheduler();
+    hdStartScheduler();
+    HDErrorInfo error;
 
-        HDErrorInfo error;
     if (HD_DEVICE_ERROR(error = hdGetError()))
     {
-        std::cout<<"[NewOmni] Failed to start the scheduler"<<std::endl;
-                if (m_hStateHandles.size()) m_hStateHandles[0] = HD_INVALID_HANDLE;
-                return;
+        msg_info("GeomagicDriver") <<"Failed to start the scheduler";
+        if (m_hStateHandles.size()) m_hStateHandles[0] = HD_INVALID_HANDLE;
+            return;
     }
     updatePosition();
 }
 
-Mat<4,4, GLdouble> GeomagicDriver::compute_dh_Matrix(double teta,double alpha, double a, double d) {
+Mat<4,4, GLdouble> GeomagicDriver::compute_dh_Matrix(double teta,double alpha, double a, double d)
+{
     Mat<4,4, GLdouble> M;
 
     const double dh_ct = cos(teta);
@@ -281,7 +400,8 @@ Mat<4,4, GLdouble> GeomagicDriver::compute_dh_Matrix(double teta,double alpha, d
 }
 
 
-void GeomagicDriver::reinit() {
+void GeomagicDriver::reinit()
+{
     Quat * q_b = d_orientationBase.beginEdit();
     q_b->normalize();
     d_orientationBase.endEdit();
@@ -293,12 +413,12 @@ void GeomagicDriver::reinit() {
     for (int i=0;i<NBJOINT;i++) m_dh_matrices[i] = compute_dh_Matrix(d_dh_theta.getValue()[i],d_dh_alpha.getValue()[i],d_dh_a.getValue()[i],d_dh_d.getValue()[i]);
 }
 
-void GeomagicDriver::updatePosition() {
-
+void GeomagicDriver::updatePosition()
+{
     Mat3x3d mrot;
 
     Vector6 & angle = *d_angle.beginEdit();
-    GeomagicDriver::Coord & posDevice = *d_posDevice.beginEdit();
+    GeomagicDriver::VecCoord & posDevice = *d_posDevice.beginEdit();
     bool & button_1 = *d_button_1.beginEdit();
     bool & button_2 = *d_button_2.beginEdit();
 
@@ -333,13 +453,80 @@ void GeomagicDriver::updatePosition() {
     orientation.fromMatrix(mrot);
 
     //compute the position of the tool (according to positionbase, orientation base and the scale
-    posDevice.getCenter() = positionBase + orientationBase.rotate(position*scale);
-    posDevice.getOrientation() = orientationBase * orientation * orientationTool;
+    posDevice[0].getCenter() = positionBase + orientationBase.rotate(position*scale);
+    posDevice[0].getOrientation() = orientationBase * orientation * orientationTool;
 
-    d_posDevice.endEdit();
-    d_angle.endEdit();
     d_button_1.endEdit();
     d_button_2.endEdit();
+
+    if(d_omniVisu.getValue() && m_initVisuDone)
+    {
+        sofa::defaulttype::SolidTypes<double>::Transform tampon;
+        sofa::defaulttype::SolidTypes<double>::Transform baseOmni_H_endOmni;
+
+        tampon.set(posDevice[0].getCenter(), posDevice[0].getOrientation());
+        baseOmni_H_endOmni.set(position*scale,orientation);
+
+        //get position stylus
+//        tampon*=baseOmni_H_endOmni;
+        posDevice[1+VN_stylus] = Coord(tampon.getOrigin(), tampon.getOrientation());
+
+        //get pos joint 2
+        sofa::helper::Quater<double> quarter2(Vec3d(0.0,0.0,1.0),m_simuData.angle2[2]);
+        sofa::defaulttype::SolidTypes<double>::Transform transform_segr2(Vec3d(0.0,0.0,0.0),quarter2);
+        tampon*=transform_segr2;
+        posDevice[1+VN_joint2] = Coord(tampon.getOrigin(), tampon.getOrientation());
+
+        //get pos joint 1
+        sofa::helper::Quater<double> quarter3(Vec3d(1.0,0.0,0.0),m_simuData.angle2[1]);
+        sofa::defaulttype::SolidTypes<double>::Transform transform_segr3(Vec3d(0.0,0.0,0.0),quarter3);
+        tampon*=transform_segr3;
+        posDevice[1+VN_joint1] = Coord(tampon.getOrigin(), tampon.getOrientation());
+
+        //get pos arm 2
+        sofa::helper::Quater<double> quarter4(Vec3d(0.0,1.0,0.0),-m_simuData.angle2[0]);
+        sofa::defaulttype::SolidTypes<double>::Transform transform_segr4(Vec3d(0.0,0.0,0.0),quarter4);
+        tampon*=transform_segr4;
+        posDevice[1+VN_arm2] = Coord(tampon.getOrigin(), tampon.getOrientation());
+        //get pos arm 1
+        sofa::helper::Quater<double> quarter5(Vec3d(1.0,0.0,0.0),-(M_PI/2)+m_simuData.angle1[2]-m_simuData.angle1[1]);
+        sofa::defaulttype::SolidTypes<double>::Transform transform_segr5(Vec3d(0.0,13.33,0.0),quarter5);
+        tampon*=transform_segr5;
+        posDevice[1+VN_arm1] = Coord(tampon.getOrigin(), tampon.getOrientation());
+
+        //get pos joint 0
+        sofa::helper::Quater<double> quarter6(Vec3d(1.0,0.0,0.0),m_simuData.angle1[1]);
+        sofa::defaulttype::SolidTypes<double>::Transform transform_segr6(Vec3d(0.0,13.33,0.0),quarter6);
+        tampon*=transform_segr6;
+        posDevice[1+VN_joint0] = Coord(tampon.getOrigin(), tampon.getOrientation());
+
+        //get pos base
+        sofa::helper::Quater<double> quarter7(Vec3d(0.0,0.0,1.0),m_simuData.angle1[0]);
+        sofa::defaulttype::SolidTypes<double>::Transform transform_segr7(Vec3d(0.0,0.0,0.0),quarter7);
+        tampon*=transform_segr7;
+        posDevice[1+VN_base] = Coord(tampon.getOrigin(), tampon.getOrientation());
+
+        //get pos of axes
+        sofa::defaulttype::SolidTypes<double>::Transform world_H_baseOmni;
+        world_H_baseOmni.set(positionBase,orientationBase);
+
+        sofa::helper::Quater<double> q;
+        posDevice[1+VN_X].getCenter() = positionBase;
+        posDevice[1+VN_Y].getCenter() = positionBase;
+        posDevice[1+VN_Z].getCenter() = positionBase;
+        posDevice[1+VN_X].getOrientation() = orientationBase*q.axisToQuat(Vec3d(0.0,0.0,1.0),-M_PI/2);
+        posDevice[1+VN_Y].getOrientation() = orientationBase*q.axisToQuat(Vec3d(1.0,0.0,0.0),0);
+        posDevice[1+VN_Z].getOrientation() = orientationBase*q.axisToQuat(Vec3d(1.0,0.0,0.0),-M_PI/2);
+
+        sofa::simulation::Node *node = dynamic_cast<sofa::simulation::Node*> (this->getContext());
+        if (node)
+        {
+            sofa::simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor mechaVisitor(sofa::core::MechanicalParams::defaultInstance()); mechaVisitor.execute(node);
+            sofa::simulation::UpdateMappingVisitor updateVisitor(sofa::core::ExecParams::defaultInstance()); updateVisitor.execute(node);
+        }
+    }
+    d_posDevice.endEdit();
+    d_angle.endEdit();
 }
 
 void GeomagicDriver::getMatrix(Mat<4,4, GLdouble> & M1, int index, double teta) {
@@ -369,46 +556,75 @@ void GeomagicDriver::getMatrix(Mat<4,4, GLdouble> & M1, int index, double teta) 
     M1[3][3] =  M[3][3];
 }
 
-void GeomagicDriver::draw(const sofa::core::visual::VisualParams* vparams) {
-#ifndef SOFA_NO_OPENGL
-    if (!d_omniVisu.getValue()) return;
+void GeomagicDriver::draw(const sofa::core::visual::VisualParams* vparams)
+{
+    vparams->drawTool()->saveLastState();
 
-    Mat<4,4, GLdouble> M;
+    if (d_frameVisu.getValue() && m_initVisuDone)
+    {
+        vparams->drawTool()->disableLighting();
 
-    glDisable(GL_LIGHTING);
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
+        vparams->drawTool()->drawArrow(d_posDevice.getValue()[0].getCenter(), d_posDevice.getValue()[0].getCenter() + d_posDevice.getValue()[0].getOrientation().rotate(Vector3(2,0,0)*d_scale.getValue()), d_scale.getValue()*0.1, Vec4f(1,0,0,1) );
+        vparams->drawTool()->drawArrow(d_posDevice.getValue()[0].getCenter(), d_posDevice.getValue()[0].getCenter() + d_posDevice.getValue()[0].getOrientation().rotate(Vector3(0,2,0)*d_scale.getValue()), d_scale.getValue()*0.1, Vec4f(0,1,0,1) );
+        vparams->drawTool()->drawArrow(d_posDevice.getValue()[0].getCenter(), d_posDevice.getValue()[0].getCenter() + d_posDevice.getValue()[0].getOrientation().rotate(Vector3(0,0,2)*d_scale.getValue()), d_scale.getValue()*0.1, Vec4f(0,0,1,1) );
+    }
 
-    //Replace the base of the omni
-    sofa::defaulttype::SolidTypes<double>::Transform transform(d_positionBase.getValue(),d_orientationBase.getValue());
-    transform.writeOpenGlMatrix((double*) M.ptr());
-    glMultMatrixd((double*) M.ptr());
+    if (d_omniVisu.getValue() && m_initVisuDone)
+    {
+        //----------------
 
-    //scale the omni
-    glScaled(d_scale.getValue(),d_scale.getValue(),d_scale.getValue());
+        //Reactivate visual node
+        if(!m_visuActive)
+        {
+            m_visuActive = true;
 
-    //change the initial frame of the omni
-    glMultMatrixd((double*) initialTransform.ptr());
+            for(int i=0; i<VN_X; i++)
+            {
+                nodePrincipal->addChild(visualNode[i].node);
+                visualNode[i].node->updateContext();
+            }
+            nodePrincipal->updateContext();
+        }
 
-    glPopMatrix();
+        helper::WriteAccessor< sofa::core::objectmodel::Data< VecCoord > > posD = d_posDevice;
+        VecCoord& posDOF =*(rigidDOF->x.beginEdit());
+        posD.resize(NVISUALNODE+1);
+        posDOF.resize(NVISUALNODE+1);
+        for(int i=0; i<NVISUALNODE+1; i++)
+        {
+            posDOF[i].getCenter() = posD[i].getCenter();
+            posDOF[i].getOrientation() = posD[i].getOrientation();
+        }
 
-    vparams->drawTool()->drawArrow(d_posDevice.getValue().getCenter(), d_posDevice.getValue().getCenter() + d_posDevice.getValue().getOrientation().rotate(Vector3(2,0,0)*d_scale.getValue()), d_scale.getValue()*0.1, Vec4f(1,0,0,1) );
-    vparams->drawTool()->drawArrow(d_posDevice.getValue().getCenter(), d_posDevice.getValue().getCenter() + d_posDevice.getValue().getOrientation().rotate(Vector3(0,2,0)*d_scale.getValue()), d_scale.getValue()*0.1, Vec4f(0,1,0,1) );
-    vparams->drawTool()->drawArrow(d_posDevice.getValue().getCenter(), d_posDevice.getValue().getCenter() + d_posDevice.getValue().getOrientation().rotate(Vector3(0,0,2)*d_scale.getValue()), d_scale.getValue()*0.1, Vec4f(0,0,1,1) );
-#endif
+        rigidDOF->x.endEdit();
+    }
+    else
+    {
+        if(m_visuActive)
+        {
+            m_visuActive = false;
+            //delete omnivisual
+            for(int i=0; i<VN_X; i++)
+            {
+                nodePrincipal->removeChild(visualNode[i].node);
+            }
+        }
+    }
+
+    vparams->drawTool()->restoreLastState();
 }
 
 void GeomagicDriver::computeBBox(const core::ExecParams*  params, bool  ) {
     SReal minBBox[3] = {1e10,1e10,1e10};
     SReal maxBBox[3] = {-1e10,-1e10,-1e10};
 
-    minBBox[0] = d_posDevice.getValue().getCenter()[0]-d_positionBase.getValue()[0]*d_scale.getValue();
-    minBBox[1] = d_posDevice.getValue().getCenter()[1]-d_positionBase.getValue()[1]*d_scale.getValue();
-    minBBox[2] = d_posDevice.getValue().getCenter()[2]-d_positionBase.getValue()[2]*d_scale.getValue();
+    minBBox[0] = d_posDevice.getValue()[0].getCenter()[0]-d_positionBase.getValue()[0]*d_scale.getValue();
+    minBBox[1] = d_posDevice.getValue()[0].getCenter()[1]-d_positionBase.getValue()[1]*d_scale.getValue();
+    minBBox[2] = d_posDevice.getValue()[0].getCenter()[2]-d_positionBase.getValue()[2]*d_scale.getValue();
 
-    maxBBox[0] = d_posDevice.getValue().getCenter()[0]+d_positionBase.getValue()[0]*d_scale.getValue();
-    maxBBox[1] = d_posDevice.getValue().getCenter()[1]+d_positionBase.getValue()[1]*d_scale.getValue();
-    maxBBox[2] = d_posDevice.getValue().getCenter()[2]+d_positionBase.getValue()[2]*d_scale.getValue();
+    maxBBox[0] = d_posDevice.getValue()[0].getCenter()[0]+d_positionBase.getValue()[0]*d_scale.getValue();
+    maxBBox[1] = d_posDevice.getValue()[0].getCenter()[1]+d_positionBase.getValue()[1]*d_scale.getValue();
+    maxBBox[2] = d_posDevice.getValue()[0].getCenter()[2]+d_positionBase.getValue()[2]*d_scale.getValue();
 
     this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<SReal>(minBBox,maxBBox));
 }

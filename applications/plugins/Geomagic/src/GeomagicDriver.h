@@ -22,7 +22,7 @@
 #ifndef SOFA_GEOMAGIC_H
 #define SOFA_GEOMAGIC_H
 
-//Sensable include
+//Geomagic include
 #include <sofa/helper/LCPcalc.h>
 #include <sofa/defaulttype/SolidTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -53,6 +53,10 @@
 #include <HD/hdExport.h>
 #include <HD/hdScheduler.h>
 
+//Visualization
+#include <SofaRigid/RigidMapping.h>
+#include <SofaBaseMechanics/MechanicalObject.h>
+
 
 namespace sofa {
 
@@ -79,6 +83,12 @@ public:
 
     typedef defaulttype::Vec4f Vec4f;
     typedef defaulttype::Vector3 Vector3;
+    struct VisualComponent
+    {
+        simulation::Node::SPtr node;
+        sofa::component::visualmodel::OglModel::SPtr visu;
+        sofa::component::mapping::RigidMapping< Rigid3dTypes , ExtVec3fTypes  >::SPtr mapping;
+    };
 
     Data< std::string > d_deviceName; ///< Name of device Configuration
     Data<Vec3d> d_positionBase; ///< Position of the interface base in the scene world coordinates
@@ -93,8 +103,9 @@ public:
     Data<Vector6> d_angle; ///< Angluar values of joint (rad)
     Data<double> d_scale; ///< Default scale applied to the Phantom Coordinates
     Data<double> d_forceScale; ///< Default forceScale applied to the force feedback. 
+    Data<bool> d_frameVisu; ///< Visualize the frame corresponding to the device tooltip
     Data<bool> d_omniVisu; ///< Visualize the frame of the interface in the virtual scene
-    Data< Coord > d_posDevice; ///< position of the base of the part of the device
+    Data< VecCoord > d_posDevice; ///< position of the base of the part of the device
     Data<bool> d_button_1; ///< Button state 1
     Data<bool> d_button_2; ///< Button state 2
     Data<Vector3> d_inputForceFeedback; ///< Input force feedback in case of no LCPForceFeedback is found (manual setting)
@@ -113,6 +124,29 @@ public:
     void onAnimateBeginEvent();
 
     ForceFeedback * m_forceFeedback;
+
+    /// variable pour affichage graphique
+    enum
+    {
+        VN_stylus = 0,
+        VN_joint2 = 1,
+        VN_joint1 = 2,
+        VN_arm2   = 3,
+        VN_arm1   = 4,
+        VN_joint0 = 5,
+        VN_base   = 6,
+        VN_X      = 7,
+        VN_Y      = 8,
+        VN_Z      = 9,
+        NVISUALNODE = 10
+    };
+    VisualComponent visualNode[NVISUALNODE];
+    static const char* visualNodeNames[NVISUALNODE];
+    static const char* visualNodeFiles[NVISUALNODE];
+    simulation::Node::SPtr nodePrincipal;
+    component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes>::SPtr rigidDOF;
+    bool m_visuActive; ///< Internal boolean to detect activation switch of the draw
+    bool m_initVisuDone; ///< Internal boolean activated only if visu initialization done without return
 
 private:
     void handleEvent(core::objectmodel::Event *) override;
@@ -136,7 +170,7 @@ public:
     OmniData m_omniData;
     OmniData m_simuData;
     HHD m_hHD;
-	std::vector< HDCallbackCode > m_hStateHandles;
+    std::vector< HDCallbackCode > m_hStateHandles;
 
 };
 
