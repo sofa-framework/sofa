@@ -135,10 +135,7 @@ public:
         VN_arm1   = 4,
         VN_joint0 = 5,
         VN_base   = 6,
-        VN_X      = 7,
-        VN_Y      = 8,
-        VN_Z      = 9,
-        NVISUALNODE = 10
+        NVISUALNODE = 7
     };
     VisualComponent visualNode[NVISUALNODE];
     static const char* visualNodeNames[NVISUALNODE];

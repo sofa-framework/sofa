@@ -53,10 +53,7 @@ const char* GeomagicDriver::visualNodeNames[NVISUALNODE] =
     "arm 2",
     "arm 1",
     "joint 0",
-    "base",
-    "axe X",
-    "axe Y",
-    "axe Z"
+    "base"
 };
 const char* GeomagicDriver::visualNodeFiles[NVISUALNODE] =
 {
@@ -66,10 +63,7 @@ const char* GeomagicDriver::visualNodeFiles[NVISUALNODE] =
     "mesh/articulation3O.obj",
     "mesh/articulation2O.obj",
     "mesh/articulation1O.obj",
-    "mesh/BASEO.obj",
-    "mesh/axeX.obj",
-    "mesh/axeY.obj",
-    "mesh/axeZ.obj"
+    "mesh/BASEO.obj"
 };
 
 
@@ -321,13 +315,9 @@ void GeomagicDriver::init()
             visualNode[i].mapping->index.setValue(i+1);
             visualNode[i].mapping->init();
         }
-        if(i<VN_X)
+        if(i<NVISUALNODE)
             nodePrincipal->removeChild(visualNode[i].node);
     }
-
-    visualNode[VN_X].visu->setColor(1.0,0.0,0.0,0);
-    visualNode[VN_Y].visu->setColor(0.0,1.0,0.0,0);
-    visualNode[VN_Z].visu->setColor(0.0,0.0,1.0,0);
 
     nodePrincipal->updateContext();
 
@@ -338,13 +328,13 @@ void GeomagicDriver::init()
 
     m_initVisuDone = true;
 
-    /*for(int j=0; j<=VN_X; j++)
+    for(int j=0; j<NVISUALNODE; j++)
     {
         sofa::defaulttype::ResizableExtVector< sofa::defaulttype::Vec<3,float> > &scaleMapping = *(visualNode[j].mapping->points.beginEdit());
         for(unsigned int i=0; i<scaleMapping.size(); i++)
-            scaleMapping[i] *= (float)(1.0*d_scale.getValue()/100.0);
+            scaleMapping[i] *= (float)(d_scale.getValue());
         visualNode[j].mapping->points.endEdit();
-    }*/
+    }
 }
 
 void GeomagicDriver::bwdInit()
@@ -462,13 +452,9 @@ void GeomagicDriver::updatePosition()
     if(d_omniVisu.getValue() && m_initVisuDone)
     {
         sofa::defaulttype::SolidTypes<double>::Transform tampon;
-        sofa::defaulttype::SolidTypes<double>::Transform baseOmni_H_endOmni;
-
         tampon.set(posDevice[0].getCenter(), posDevice[0].getOrientation());
-        baseOmni_H_endOmni.set(position*scale,orientation);
 
         //get position stylus
-//        tampon*=baseOmni_H_endOmni;
         posDevice[1+VN_stylus] = Coord(tampon.getOrigin(), tampon.getOrientation());
 
         //get pos joint 2
@@ -490,13 +476,13 @@ void GeomagicDriver::updatePosition()
         posDevice[1+VN_arm2] = Coord(tampon.getOrigin(), tampon.getOrientation());
         //get pos arm 1
         sofa::helper::Quater<double> quarter5(Vec3d(1.0,0.0,0.0),-(M_PI/2)+m_simuData.angle1[2]-m_simuData.angle1[1]);
-        sofa::defaulttype::SolidTypes<double>::Transform transform_segr5(Vec3d(0.0,13.33,0.0),quarter5);
+        sofa::defaulttype::SolidTypes<double>::Transform transform_segr5(Vec3d(0.0,13.33*d_scale.getValue(),0.0),quarter5);
         tampon*=transform_segr5;
         posDevice[1+VN_arm1] = Coord(tampon.getOrigin(), tampon.getOrientation());
 
         //get pos joint 0
         sofa::helper::Quater<double> quarter6(Vec3d(1.0,0.0,0.0),m_simuData.angle1[1]);
-        sofa::defaulttype::SolidTypes<double>::Transform transform_segr6(Vec3d(0.0,13.33,0.0),quarter6);
+        sofa::defaulttype::SolidTypes<double>::Transform transform_segr6(Vec3d(0.0,13.33*d_scale.getValue(),0.0),quarter6);
         tampon*=transform_segr6;
         posDevice[1+VN_joint0] = Coord(tampon.getOrigin(), tampon.getOrientation());
 
@@ -505,18 +491,6 @@ void GeomagicDriver::updatePosition()
         sofa::defaulttype::SolidTypes<double>::Transform transform_segr7(Vec3d(0.0,0.0,0.0),quarter7);
         tampon*=transform_segr7;
         posDevice[1+VN_base] = Coord(tampon.getOrigin(), tampon.getOrientation());
-
-        //get pos of axes
-        sofa::defaulttype::SolidTypes<double>::Transform world_H_baseOmni;
-        world_H_baseOmni.set(positionBase,orientationBase);
-
-        sofa::helper::Quater<double> q;
-        posDevice[1+VN_X].getCenter() = positionBase;
-        posDevice[1+VN_Y].getCenter() = positionBase;
-        posDevice[1+VN_Z].getCenter() = positionBase;
-        posDevice[1+VN_X].getOrientation() = orientationBase*q.axisToQuat(Vec3d(0.0,0.0,1.0),-M_PI/2);
-        posDevice[1+VN_Y].getOrientation() = orientationBase*q.axisToQuat(Vec3d(1.0,0.0,0.0),0);
-        posDevice[1+VN_Z].getOrientation() = orientationBase*q.axisToQuat(Vec3d(1.0,0.0,0.0),-M_PI/2);
 
         sofa::simulation::Node *node = dynamic_cast<sofa::simulation::Node*> (this->getContext());
         if (node)
@@ -578,7 +552,7 @@ void GeomagicDriver::draw(const sofa::core::visual::VisualParams* vparams)
         {
             m_visuActive = true;
 
-            for(int i=0; i<VN_X; i++)
+            for(int i=0; i<NVISUALNODE; i++)
             {
                 nodePrincipal->addChild(visualNode[i].node);
                 visualNode[i].node->updateContext();
@@ -604,7 +578,7 @@ void GeomagicDriver::draw(const sofa::core::visual::VisualParams* vparams)
         {
             m_visuActive = false;
             //delete omnivisual
-            for(int i=0; i<VN_X; i++)
+            for(int i=0; i<NVISUALNODE; i++)
             {
                 nodePrincipal->removeChild(visualNode[i].node);
             }
