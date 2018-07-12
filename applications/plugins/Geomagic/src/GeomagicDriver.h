@@ -137,13 +137,16 @@ public:
         VN_base   = 6,
         NVISUALNODE = 7
     };
+
     VisualComponent visualNode[NVISUALNODE];
     static const char* visualNodeNames[NVISUALNODE];
     static const char* visualNodeFiles[NVISUALNODE];
     simulation::Node::SPtr nodePrincipal;
     component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes>::SPtr rigidDOF;
+
     bool m_visuActive; ///< Internal boolean to detect activation switch of the draw
     bool m_initVisuDone; ///< Internal boolean activated only if visu initialization done without return
+    bool m_errorDevice; ///< Boolean detecting any error coming from device / detection
 
 private:
     void handleEvent(core::objectmodel::Event *) override;
@@ -151,7 +154,6 @@ private:
     void getMatrix( Mat<4,4, GLdouble> & M, int index, double teta);
 
     Mat<4,4, GLdouble> compute_dh_Matrix(double theta,double alpha, double a, double d);
-
     Mat<4,4, GLdouble> m_dh_matrices[NBJOINT];
 
     //These data are written by the omni they cnnot be accessed in the simulation loop

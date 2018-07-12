@@ -139,7 +139,7 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
         {
             if( normValue > maxInputForceFeedback )
             {
-                msg_warning("GeomagicDriver") << "Force given to applied inputForceFeedback exceeds the maxInputForceFeedback";
+                msg_warning("GeomagicDriver") << "Force given to applied inputForceFeedback (norm = "<< normValue <<") exceeds the maxInputForceFeedback ("<< maxInputForceFeedback <<")";
 
                 inputForceFeedback[0] *= maxInputForceFeedback/normValue;
                 inputForceFeedback[1] *= maxInputForceFeedback/normValue;
@@ -151,7 +151,7 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
         }
         else
         {
-            msg_error("GeomagicDriver") << "maxInputForceFeedback value is negative or 0, it should be strictly positive";
+            msg_error("GeomagicDriver") << "maxInputForceFeedback value ("<< maxInputForceFeedback <<") is negative or 0, it should be strictly positive";
         }
     }
 
@@ -214,6 +214,7 @@ GeomagicDriver::~GeomagicDriver()
 void GeomagicDriver::init()
 {
     m_initVisuDone = false;
+    m_errorDevice = false;
     HDErrorInfo error;
 
     HDSchedulerHandle hStateHandle = HD_INVALID_HANDLE;
@@ -223,7 +224,12 @@ void GeomagicDriver::init()
     {
         msg_error("GeomagicDriver") << "Failed to initialize the device called " << d_deviceName.getValue().c_str();
         d_omniVisu.setValue(false);
-
+        m_errorDevice = true;
+        //init the positionDevice data to avoid any crash in the scene
+        VecCoord& posD =(*d_posDevice.beginEdit());
+        posD.clear();
+        posD.resize(1);
+        d_posDevice.endEdit();
         return;
     }
 
@@ -238,18 +244,19 @@ void GeomagicDriver::init()
 
     if (HD_DEVICE_ERROR(error = hdGetError()))
     {
-        printError(&error, "erreur avec le device Default PHANToM");
+        printError(&error, "Error with the device Default PHANToM");
+        m_errorDevice = true;
         return;
     }
 
     if(d_maxInputForceFeedback.isSet())
     {
-        msg_info("GeomagicDriver") << "maxInputForceFeedback value is set, carefully set the max force regarding your haptic device";
+        msg_info("GeomagicDriver") << "maxInputForceFeedback value ("<< d_maxInputForceFeedback.getValue() <<") is set, carefully set the max force regarding your haptic device";
 
         if(d_maxInputForceFeedback.getValue() <= 0.0)
         {
-            msg_error("GeomagicDriver") << "maxInputForceFeedback value is negative or 0, it should be strictly positive";
-            d_maxInputForceFeedback.setValue(1.0);
+            msg_error("GeomagicDriver") << "maxInputForceFeedback value ("<< d_maxInputForceFeedback.getValue() <<") is negative or 0, it should be strictly positive";
+            d_maxInputForceFeedback.setValue(0.0);
         }
     }
 
@@ -339,6 +346,9 @@ void GeomagicDriver::init()
 
 void GeomagicDriver::bwdInit()
 {
+    if(m_errorDevice)
+        return;
+
     simulation::Node *context = dynamic_cast<simulation::Node *>(this->getContext()); // access to current node
     m_forceFeedback = context->get<ForceFeedback>(this->getTags(), sofa::core::objectmodel::BaseContext::SearchRoot);
 
@@ -349,6 +359,7 @@ void GeomagicDriver::bwdInit()
     if (HD_DEVICE_ERROR(error = hdGetError()))
     {
         msg_info("GeomagicDriver") <<"Failed to start the scheduler";
+        m_errorDevice = true;
         if (m_hStateHandles.size()) m_hStateHandles[0] = HD_INVALID_HANDLE;
             return;
     }
@@ -392,15 +403,18 @@ Mat<4,4, GLdouble> GeomagicDriver::compute_dh_Matrix(double teta,double alpha, d
 
 void GeomagicDriver::reinit()
 {
-    Quat * q_b = d_orientationBase.beginEdit();
-    q_b->normalize();
-    d_orientationBase.endEdit();
+    if(!m_errorDevice)
+    {
+        Quat * q_b = d_orientationBase.beginEdit();
+        q_b->normalize();
+        d_orientationBase.endEdit();
 
-    Quat * q_t = d_orientationTool.beginEdit();
-    q_t->normalize();
-    d_orientationTool.endEdit();
+        Quat * q_t = d_orientationTool.beginEdit();
+        q_t->normalize();
+        d_orientationTool.endEdit();
 
-    for (int i=0;i<NBJOINT;i++) m_dh_matrices[i] = compute_dh_Matrix(d_dh_theta.getValue()[i],d_dh_alpha.getValue()[i],d_dh_a.getValue()[i],d_dh_d.getValue()[i]);
+        for (int i=0;i<NBJOINT;i++) m_dh_matrices[i] = compute_dh_Matrix(d_dh_theta.getValue()[i],d_dh_alpha.getValue()[i],d_dh_a.getValue()[i],d_dh_d.getValue()[i]);
+    }
 }
 
 void GeomagicDriver::updatePosition()
@@ -503,7 +517,8 @@ void GeomagicDriver::updatePosition()
     d_angle.endEdit();
 }
 
-void GeomagicDriver::getMatrix(Mat<4,4, GLdouble> & M1, int index, double teta) {
+void GeomagicDriver::getMatrix(Mat<4,4, GLdouble> & M1, int index, double teta)
+{
     const double ct = cos(teta);
     const double st = sin(teta);
 
@@ -532,6 +547,9 @@ void GeomagicDriver::getMatrix(Mat<4,4, GLdouble> & M1, int index, double teta) 
 
 void GeomagicDriver::draw(const sofa::core::visual::VisualParams* vparams)
 {
+    if(m_errorDevice)
+        return;
+
     vparams->drawTool()->saveLastState();
 
     if (d_frameVisu.getValue() && m_initVisuDone)
@@ -570,6 +588,25 @@ void GeomagicDriver::draw(const sofa::core::visual::VisualParams* vparams)
             posDOF[i].getOrientation() = posD[i].getOrientation();
         }
 
+        //if buttons pressed, change stylus color
+        std::string color = "grey";
+        if(d_button_1.getValue())
+        {
+            if(d_button_2.getValue())
+            {
+                color = "yellow";
+            }
+            else
+            {
+                color = "blue";
+            }
+        }
+        else if(d_button_2.getValue())
+        {
+            color = "red";
+        }
+        visualNode[0].visu->setColor(color);
+
         rigidDOF->x.endEdit();
     }
     else
@@ -588,7 +625,11 @@ void GeomagicDriver::draw(const sofa::core::visual::VisualParams* vparams)
     vparams->drawTool()->restoreLastState();
 }
 
-void GeomagicDriver::computeBBox(const core::ExecParams*  params, bool  ) {
+void GeomagicDriver::computeBBox(const core::ExecParams*  params, bool  )
+{
+    if(m_errorDevice)
+        return;
+
     SReal minBBox[3] = {1e10,1e10,1e10};
     SReal maxBBox[3] = {-1e10,-1e10,-1e10};
 
@@ -603,10 +644,16 @@ void GeomagicDriver::computeBBox(const core::ExecParams*  params, bool  ) {
     this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<SReal>(minBBox,maxBBox));
 }
 
-void GeomagicDriver::handleEvent(core::objectmodel::Event *event) {
-    if (dynamic_cast<sofa::simulation::AnimateBeginEvent *>(event)) {
-                if (m_hStateHandles.size() && m_hStateHandles[0] == HD_INVALID_HANDLE) return;
-                updatePosition();
+void GeomagicDriver::handleEvent(core::objectmodel::Event *event)
+{
+    if(m_errorDevice)
+        return;
+
+    if (dynamic_cast<sofa::simulation::AnimateBeginEvent *>(event))
+    {
+        if (m_hStateHandles.size() && m_hStateHandles[0] == HD_INVALID_HANDLE)
+            return;
+        updatePosition();
     }
 }
 
