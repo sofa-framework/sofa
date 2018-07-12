@@ -52,22 +52,21 @@ struct SceneChecker_test : public Sofa_test<>
 {
     void checkRequiredPlugin(bool missing)
     {
-        EXPECT_MSG_EMIT(Error);
-        EXPECT_MSG_NOEMIT(Warning);
-
         PluginManager::getInstance().loadPluginByName("SofaPython");
 
-        std::string missStr = (missing)?"" : "<RequiredPlugin name='SofaPython'/> \n";
+        std::string missStr = missing ? "" : "<RequiredPlugin name='SofaPython'/> \n";
         std::stringstream scene;
-        scene << "<?xml version='1.0'?>"
-              << "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >                   \n"
+        scene << "<?xml version='1.0'?>                                             \n"
+              << "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >      \n"
               << missStr
-              << "      <PythonScriptController classname='AClass' />                            \n"
-              << "</Node>                                                                        \n";
+              << "      <PythonScriptController classname='AClass' />               \n"
+              << "</Node>                                                           \n";
 
+        EXPECT_MSG_EMIT(Error); // [PythonScriptController(pythonScriptController1)]
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                           scene.str().c_str(),
                                                           scene.str().size());
+        EXPECT_MSG_NOEMIT(Error);
 
         ASSERT_NE(root.get(), nullptr);
         root->init(ExecParams::defaultInstance());
@@ -77,9 +76,11 @@ struct SceneChecker_test : public Sofa_test<>
 
         if(missing)
         {
-            EXPECT_MSG_EMIT(Warning);
+            EXPECT_MSG_EMIT(Warning); // [SceneCheckMissingRequiredPlugin]
             checker.validate(root.get());
-        }else{
+        }
+        else
+        {
             EXPECT_MSG_NOEMIT(Warning);
             checker.validate(root.get());
         }
@@ -88,25 +89,25 @@ struct SceneChecker_test : public Sofa_test<>
     void checkDuplicatedNames()
     {
         std::stringstream scene;
-        scene << "<?xml version='1.0'?>"
-              << "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >                   \n"
-              << "    <Node name='nodeCheck'>                                                    \n"
-              << "      <Node name='nodeA' />                                                    \n"
-              << "      <Node name='nodeA' />                                                    \n"
-              << "    </Node>                                                                    \n"
-              << "    <Node name='objectCheck'>                                                  \n"
-              << "      <OglModel name='objectA' />                                              \n"
-              << "      <OglModel name='objectA' />                                              \n"
-              << "    </Node>                                                                    \n"
-              << "    <Node name='mixCheck'>                                                     \n"
-              << "      <Node name='mixA' />                                                     \n"
-              << "      <OglModel name='mixA' />                                                 \n"
-              << "    </Node>                                                                    \n"
-              << "    <Node name='nothingCheck'>                                                 \n"
-              << "      <Node name='nodeA' />                                                    \n"
-              << "      <OglModel name='objectA' />                                              \n"
-              << "    </Node>                                                                    \n"
-              << "</Node>                                                                        \n";
+        scene << "<?xml version='1.0'?>                                           \n"
+              << "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >    \n"
+              << "    <Node name='nodeCheck'>                                     \n"
+              << "      <Node name='nodeA' />                                     \n"
+              << "      <Node name='nodeA' />                                     \n"
+              << "    </Node>                                                     \n"
+              << "    <Node name='objectCheck'>                                   \n"
+              << "      <OglModel name='objectA' />                               \n"
+              << "      <OglModel name='objectA' />                               \n"
+              << "    </Node>                                                     \n"
+              << "    <Node name='mixCheck'>                                      \n"
+              << "      <Node name='mixA' />                                      \n"
+              << "      <OglModel name='mixA' />                                  \n"
+              << "    </Node>                                                     \n"
+              << "    <Node name='nothingCheck'>                                  \n"
+              << "      <Node name='nodeA' />                                     \n"
+              << "      <OglModel name='objectA' />                               \n"
+              << "    </Node>                                                     \n"
+              << "</Node>                                                         \n";
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                           scene.str().c_str(),
@@ -144,11 +145,11 @@ struct SceneChecker_test : public Sofa_test<>
         std::string lvl = (shouldWarn)?"17.06":"17.12";
 
         std::stringstream scene;
-        scene << "<?xml version='1.0'?>"
-              << "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >                   \n"
-              << "      <APIVersion level='"<< lvl <<"'/>                                        \n"
-              << "      <ComponentDeprecated />                                                  \n"
-              << "</Node>                                                                        \n";
+        scene << "<?xml version='1.0'?>                                           \n"
+              << "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >    \n"
+              << "      <APIVersion level='"<< lvl <<"'/>                         \n"
+              << "      <ComponentDeprecated />                                   \n"
+              << "</Node>                                                         \n";
 
         Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
                                                           scene.str().c_str(),
@@ -172,6 +173,43 @@ struct SceneChecker_test : public Sofa_test<>
             checker.validate(root.get());
         }
         else {
+            checker.validate(root.get());
+        }
+    }
+
+    void checkUsingAlias(bool sceneWithAlias)
+    {
+        PluginManager::getInstance().loadPluginByName("SofaPython");
+
+        std::string withAlias = "Triangle";
+        std::string withoutAlias = "TTriangleModel";
+        std::string componentName = sceneWithAlias ? withAlias : withoutAlias;
+
+        std::stringstream scene;
+        scene << "<?xml version='1.0'?>                                           \n"
+              << "<Node name='Root' gravity='0 -9.81 0' time='0' animate='0' >    \n"
+              << "    <MechanicalObject template='Vec3d' />                       \n"
+              << "    <" << componentName << "/>                                  \n"
+              << "</Node>                                                         \n";
+
+
+        SceneCheckerVisitor checker(ExecParams::defaultInstance());
+        checker.addCheck( SceneCheckUsingAlias::newSPtr() );
+
+        Node::SPtr root = SceneLoaderXML::loadFromMemory ("testscene",
+                                                          scene.str().c_str(),
+                                                          scene.str().size());
+        ASSERT_NE(root.get(), nullptr);
+        root->init(ExecParams::defaultInstance());
+
+        if(sceneWithAlias)
+        {
+            EXPECT_MSG_EMIT(Warning); // [SceneCheckUsingAlias]
+            checker.validate(root.get());
+        }
+        else
+        {
+            EXPECT_MSG_NOEMIT(Warning);
             checker.validate(root.get());
         }
     }
@@ -205,4 +243,14 @@ TEST_F(SceneChecker_test, checkAPIVersionDeprecated )
 TEST_F(SceneChecker_test, checkDuplicatedNames )
 {
     checkDuplicatedNames();
+}
+
+TEST_F(SceneChecker_test, checkUsingAlias_withAlias )
+{
+    checkUsingAlias(true);
+}
+
+TEST_F(SceneChecker_test, checkUsingAlias_withoutAlias )
+{
+    checkUsingAlias(false);
 }
