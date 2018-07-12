@@ -58,7 +58,6 @@ CarvingManager::CarvingManager()
 , keySwitchEvent( initData(&keySwitchEvent, '4', "keySwitch", "key to activate this object until the key is pressed again") )
 , mouseEvent( initData(&mouseEvent, true, "mouseEvent", "Activate carving with middle mouse button") )
 , omniEvent( initData(&omniEvent, true, "omniEvent", "Activate carving with omni button") )
-, modelTool(NULL)
 , modelSurface(NULL)
 , intersectionMethod(NULL)
 , detectionNP(NULL)
@@ -105,14 +104,13 @@ void CarvingManager::init()
             core::CollisionModel* m = models[i];
             m->getContext()->get(topoMapping);
             if (topoMapping == NULL) continue;
-            
-            modelSurface = m; // we found a good object
-            break;
+                        
+            modelSurface.push_back(m);
         }
     }
     else
     {
-        modelSurface = getContext()->get<core::CollisionModel>(f_modelSurface.getValue());
+        modelSurface.push_back(getContext()->get<core::CollisionModel>(f_modelSurface.getValue()));
     }
 
     intersectionMethod = getContext()->get<core::collision::Intersection>();
@@ -124,7 +122,7 @@ void CarvingManager::init()
     m_carvingReady = true;
 
     if (modelTool == NULL) { msg_error() << "modelTool not found"; m_carvingReady = false; }
-    if (modelSurface == NULL) { msg_error() << "CarvingManager: modelSurface not found"; m_carvingReady = false; }
+    if (modelSurface.empty()) { msg_error() << "CarvingManager: modelSurface not found"; m_carvingReady = false; }
     if (intersectionMethod == NULL) { msg_error() << "CarvingManager: intersectionMethod not found"; m_carvingReady = false; }
     if (detectionNP == NULL) { msg_error() << "CarvingManager: NarrowPhaseDetection not found"; m_carvingReady = false; }
     
@@ -153,17 +151,17 @@ void CarvingManager::doCarve()
     else
         modelTool->computeBoundingTree(depth);
 
-    if (continuous)
-        modelSurface->computeContinuousBoundingTree(dt, depth);
-    else
-        modelSurface->computeBoundingTree(depth);
-
-    
     sofa::helper::vector<std::pair<core::CollisionModel*, core::CollisionModel*> > vectCMPair;
-    vectCMPair.push_back(std::make_pair(modelSurface->getFirst(),modelTool->getFirst()));
+    for (int i = 0; i < modelSurface.size(); i++)
+    {
+        if (continuous)
+            modelSurface[i]->computeContinuousBoundingTree(dt, depth);
+        else
+            modelSurface[i]->computeBoundingTree(depth);
 
-    std::cout << intersectionMethod->getContactDistance() << std::endl;
-    
+        vectCMPair.push_back(std::make_pair(modelSurface[i]->getFirst(), modelTool->getFirst()));
+    }
+
     detectionNP->setInstance(this);
     detectionNP->setIntersectionMethod(intersectionMethod);
     detectionNP->beginNarrowPhase();
@@ -173,31 +171,29 @@ void CarvingManager::doCarve()
     const core::collision::NarrowPhaseDetection::DetectionOutputMap& detectionOutputs = detectionNP->getDetectionOutputs();
 
     const ContactVector* contacts = NULL;
-    core::collision::NarrowPhaseDetection::DetectionOutputMap::const_iterator it = detectionOutputs.begin(); //find(std::make_pair(modelSurface,modelTool));
-    if (it != detectionOutputs.end())
+    core::collision::NarrowPhaseDetection::DetectionOutputMap::const_iterator it = detectionOutputs.begin(); 
+    
+    for (it = detectionOutputs.begin(); it != detectionOutputs.end(); ++it)
     {
         contacts = dynamic_cast<const ContactVector*>(it->second);
-    }
+        unsigned int ncontacts = 0;
+        if (contacts != NULL)
+            ncontacts = contacts->size();
 
-    unsigned int ncontacts = 0;
-    if (contacts != NULL)
-    {
-        ncontacts = contacts->size();
-    }
+        if (ncontacts == 0)
+            continue;
 
-    if (ncontacts > 0)
-    {
         int nbelems = 0;
-
         helper::vector<int> elemsToRemove;
+
         for (unsigned int j = 0; j < ncontacts; ++j)
         {
             const ContactVector::value_type& c = (*contacts)[j];
-            std::cout << j << " - value: " << c.value << std::endl;
-
+            
             if (c.value < f_carvingDistance.getValue())
             {
-                int triangleIdx = (c.elem.first.getCollisionModel() == modelSurface ? c.elem.first.getIndex() : c.elem.second.getIndex());
+                std::cout << j << " col: " << c.elem.first.getCollisionModel()->getName() << " - " << c.elem.second.getCollisionModel()->getName() << " value: " << c.value << std::endl;
+                int triangleIdx = (c.elem.first.getCollisionModel() == modelTool ? c.elem.second.getIndex() : c.elem.first.getIndex());
                 elemsToRemove.push_back(triangleIdx);
             }
         }
@@ -206,9 +202,13 @@ void CarvingManager::doCarve()
         if (!elemsToRemove.empty())
         {
             static TopologicalChangeManager manager;
-            nbelems += manager.removeItemsFromCollisionModel(modelSurface, elemsToRemove);
+            if (it->first.first == modelTool)
+                nbelems += manager.removeItemsFromCollisionModel(it->first.second, elemsToRemove);
+            else
+                nbelems += manager.removeItemsFromCollisionModel(it->first.first, elemsToRemove);
         }
     }
+    
 
     detectionNP->setInstance(NULL);
 }

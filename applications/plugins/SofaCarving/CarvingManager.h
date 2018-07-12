@@ -55,6 +55,23 @@ public:
     
     typedef helper::vector<core::collision::DetectionOutput> ContactVector;
     
+    /// Sofa API methods
+    virtual void init() override;
+
+    virtual void reset() override;
+
+    virtual void handleEvent(sofa::core::objectmodel::Event* event) override;
+
+    virtual void doCarve();
+
+
+protected:
+    CarvingManager();
+
+    virtual ~CarvingManager();
+
+
+public:
     /// Tool model path
     Data < std::string > f_modelTool; 
     /// TriangleSetModel or SphereModel path
@@ -79,25 +96,16 @@ protected:
     core::CollisionModel* modelTool;
 
     // Pointer to the target object collision model
-    core::CollisionModel* modelSurface;
+    std::vector<core::CollisionModel*> modelSurface;
 
+    // Pointer to the scene intersection Method component
     core::collision::Intersection* intersectionMethod;
+    // Pointer to the scene detection Method component (Narrow phase only)
     core::collision::NarrowPhaseDetection* detectionNP;
 
+    // Bool to store the information if component has well be init and can be used.
     bool m_carvingReady;
-
-    CarvingManager();
-
-    virtual ~CarvingManager();
-public:
-    virtual void init() override;
-
-    virtual void reset() override;
     
-    virtual void handleEvent(sofa::core::objectmodel::Event* event) override;
-
-    virtual void doCarve();
-
 };
 
 } // namespace collision
