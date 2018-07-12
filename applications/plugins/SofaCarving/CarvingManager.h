@@ -27,7 +27,6 @@
 #include <sofa/core/collision/Intersection.h>
 #include <sofa/core/collision/NarrowPhaseDetection.h>
 #include <sofa/core/CollisionModel.h>
-#include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/behavior/BaseController.h>
@@ -44,6 +43,12 @@ namespace component
 namespace collision
 {
 
+/**
+* The CarvingManager class will perform topological resection on a triangle surface (could be on top of tetrahedron topology)
+* The tool performing the carving need to be represented by a collision model @sa toolCollisionModel
+* The surface to be carved are also mapped on collision models @sa surfaceCollisionModels
+* Detecting the collision is done using the scene Intersection and NarrowPhaseDetection pipeline.
+*/
 class SOFA_SOFACARVING_API CarvingManager : public core::behavior::BaseController
 {
 public:
@@ -55,27 +60,31 @@ public:
     
     typedef helper::vector<core::collision::DetectionOutput> ContactVector;
     
-    /// Sofa API methods
+    /// Sofa API init method of the component
     virtual void init() override;
-
+    /// Sofa API reset method of the component
     virtual void reset() override;
 
+    /// Method to handle various event like keyboard or omni.
     virtual void handleEvent(sofa::core::objectmodel::Event* event) override;
 
+    /// Impl method that will compute the intersection and check if some element have to be removed.
     virtual void doCarve();
 
 
 protected:
+    /// Default constructor
     CarvingManager();
 
+    /// Default destructor
     virtual ~CarvingManager();
 
 
 public:
     /// Tool model path
-    Data < std::string > f_modelTool; 
+    Data < std::string > f_toolModelPath; 
     /// TriangleSetModel or SphereModel path
-    Data < std::string > f_modelSurface;
+    Data < std::string > f_surfaceModelPath;
 
     /// Collision distance at which cavring will start. Equal to contactDistance by default.
     Data < Real > f_carvingDistance;
@@ -93,10 +102,10 @@ public:
     
 protected:
     /// Pointer to the tool collision model
-    core::CollisionModel* modelTool;
+    core::CollisionModel* toolCollisionModel;
 
     // Pointer to the target object collision model
-    std::vector<core::CollisionModel*> modelSurface;
+    std::vector<core::CollisionModel*> surfaceCollisionModels;
 
     // Pointer to the scene intersection Method component
     core::collision::Intersection* intersectionMethod;

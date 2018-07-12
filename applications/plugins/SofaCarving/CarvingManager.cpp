@@ -29,7 +29,6 @@
 #include <sofa/simulation/AnimateEndEvent.h>
 
 #include <sofa/core/topology/TopologicalMapping.h>
-#include <sofa/helper/gl/template.h>
 #include <SofaUserInteraction/TopologicalChangeManager.h>
 #include <sofa/helper/AdvancedTimer.h>
 
@@ -50,15 +49,15 @@ int CarvingManagerClass = core::RegisterObject("Manager handling carving operati
 
 
 CarvingManager::CarvingManager()
-: f_modelTool( initData(&f_modelTool, "modelTool", "Tool model path"))
-, f_modelSurface( initData(&f_modelSurface, "modelSurface", "TriangleSetModel or SphereModel path"))
+: f_toolModelPath( initData(&f_toolModelPath, "toolModelPath", "Tool model path"))
+, f_surfaceModelPath( initData(&f_surfaceModelPath, "surfaceModelPath", "TriangleSetModel or SphereModel path"))
 , f_carvingDistance( initData(&f_carvingDistance, 0.0, "carvingDistance", "Collision distance at which cavring will start. Equal to contactDistance by default."))
 , active( initData(&active, false, "active", "Activate this object.\nNote that this can be dynamically controlled by using a key") )
 , keyEvent( initData(&keyEvent, '1', "key", "key to press to activate this object until the key is released") )
 , keySwitchEvent( initData(&keySwitchEvent, '4', "keySwitch", "key to activate this object until the key is pressed again") )
 , mouseEvent( initData(&mouseEvent, true, "mouseEvent", "Activate carving with middle mouse button") )
 , omniEvent( initData(&omniEvent, true, "omniEvent", "Activate carving with omni button") )
-, modelSurface(NULL)
+, toolCollisionModel(NULL)
 , intersectionMethod(NULL)
 , detectionNP(NULL)
 , m_carvingReady(false)
@@ -75,20 +74,19 @@ CarvingManager::~CarvingManager()
 void CarvingManager::init()
 {
     // Search for collision model corresponding to the tool.
-    if (f_modelTool.getValue().empty())
+    if (f_toolModelPath.getValue().empty())
     {
-        modelTool = getContext()->get<core::CollisionModel>(core::objectmodel::Tag("CarvingTool"), core::objectmodel::BaseContext::SearchDown);
-        if (!modelTool)
-            modelTool = getContext()->get<core::CollisionModel>(core::objectmodel::BaseContext::SearchDown);
+        toolCollisionModel = getContext()->get<core::CollisionModel>(core::objectmodel::Tag("CarvingTool"), core::objectmodel::BaseContext::SearchDown);
+        if (!toolCollisionModel)
+            toolCollisionModel = getContext()->get<core::CollisionModel>(core::objectmodel::BaseContext::SearchDown);
     }
     else
-        modelTool = getContext()->get<core::CollisionModel>(f_modelTool.getValue());
+        toolCollisionModel = getContext()->get<core::CollisionModel>(f_toolModelPath.getValue());
 
     // Search for the surface collision model.
-    if (f_modelSurface.getValue().empty())
+    if (f_surfaceModelPath.getValue().empty())
     {
         // we look for a CollisionModel relying on a TetrahedronSetTopology.
-        //modelSurface = getContext()->get<TriangleSetModel>(core::objectmodel::BaseContext::SearchDown);
         std::vector<core::CollisionModel*> models;
         getContext()->get<core::CollisionModel>(&models, core::objectmodel::Tag("CarvingSurface"), core::objectmodel::BaseContext::SearchRoot);
     
@@ -105,12 +103,12 @@ void CarvingManager::init()
             m->getContext()->get(topoMapping);
             if (topoMapping == NULL) continue;
                         
-            modelSurface.push_back(m);
+            surfaceCollisionModels.push_back(m);
         }
     }
     else
     {
-        modelSurface.push_back(getContext()->get<core::CollisionModel>(f_modelSurface.getValue()));
+        surfaceCollisionModels.push_back(getContext()->get<core::CollisionModel>(f_surfaceModelPath.getValue()));
     }
 
     intersectionMethod = getContext()->get<core::collision::Intersection>();
@@ -121,8 +119,8 @@ void CarvingManager::init()
 
     m_carvingReady = true;
 
-    if (modelTool == NULL) { msg_error() << "modelTool not found"; m_carvingReady = false; }
-    if (modelSurface.empty()) { msg_error() << "CarvingManager: modelSurface not found"; m_carvingReady = false; }
+    if (toolCollisionModel == NULL) { msg_error() << "toolCollisionModel not found"; m_carvingReady = false; }
+    if (surfaceCollisionModels.empty()) { msg_error() << "CarvingManager: surfaceCollisionModels not found"; m_carvingReady = false; }
     if (intersectionMethod == NULL) { msg_error() << "CarvingManager: intersectionMethod not found"; m_carvingReady = false; }
     if (detectionNP == NULL) { msg_error() << "CarvingManager: NarrowPhaseDetection not found"; m_carvingReady = false; }
     
@@ -147,19 +145,19 @@ void CarvingManager::doCarve()
     const int depth = 6;
 
     if (continuous)
-        modelTool->computeContinuousBoundingTree(dt, depth);
+        toolCollisionModel->computeContinuousBoundingTree(dt, depth);
     else
-        modelTool->computeBoundingTree(depth);
+        toolCollisionModel->computeBoundingTree(depth);
 
     sofa::helper::vector<std::pair<core::CollisionModel*, core::CollisionModel*> > vectCMPair;
-    for (int i = 0; i < modelSurface.size(); i++)
+    for (int i = 0; i < surfaceCollisionModels.size(); i++)
     {
         if (continuous)
-            modelSurface[i]->computeContinuousBoundingTree(dt, depth);
+            surfaceCollisionModels[i]->computeContinuousBoundingTree(dt, depth);
         else
-            modelSurface[i]->computeBoundingTree(depth);
+            surfaceCollisionModels[i]->computeBoundingTree(depth);
 
-        vectCMPair.push_back(std::make_pair(modelSurface[i]->getFirst(), modelTool->getFirst()));
+        vectCMPair.push_back(std::make_pair(surfaceCollisionModels[i]->getFirst(), toolCollisionModel->getFirst()));
     }
 
     detectionNP->setInstance(this);
@@ -192,8 +190,7 @@ void CarvingManager::doCarve()
             
             if (c.value < f_carvingDistance.getValue())
             {
-                std::cout << j << " col: " << c.elem.first.getCollisionModel()->getName() << " - " << c.elem.second.getCollisionModel()->getName() << " value: " << c.value << std::endl;
-                int triangleIdx = (c.elem.first.getCollisionModel() == modelTool ? c.elem.second.getIndex() : c.elem.first.getIndex());
+                int triangleIdx = (c.elem.first.getCollisionModel() == toolCollisionModel ? c.elem.second.getIndex() : c.elem.first.getIndex());
                 elemsToRemove.push_back(triangleIdx);
             }
         }
@@ -202,7 +199,7 @@ void CarvingManager::doCarve()
         if (!elemsToRemove.empty())
         {
             static TopologicalChangeManager manager;
-            if (it->first.first == modelTool)
+            if (it->first.first == toolCollisionModel)
                 nbelems += manager.removeItemsFromCollisionModel(it->first.second, elemsToRemove);
             else
                 nbelems += manager.removeItemsFromCollisionModel(it->first.first, elemsToRemove);
