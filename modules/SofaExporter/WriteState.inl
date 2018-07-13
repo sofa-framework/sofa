@@ -46,8 +46,7 @@ WriteState::WriteState()
     , f_writeX0( initData(&f_writeX0, false, "writeX0", "flag enabling output of X0 vector"))
     , f_writeV( initData(&f_writeV, false, "writeV", "flag enabling output of V vector"))
     , f_writeF( initData(&f_writeF, false, "writeF", "flag enabling output of F vector"))
-    , f_interval( initData(&f_interval, 0.0, "interval", "time duration between outputs"))
-    , f_time( initData(&f_time, helper::vector<double>(0), "time", "set time to write outputs"))
+    , f_time( initData(&f_time, helper::vector<double>(0), "time", "set time to write outputs (by default export at t=0)"))
     , f_period( initData(&f_period, 0.0, "period", "period between outputs"))
     , f_DOFsX( initData(&f_DOFsX, helper::vector<unsigned int>(0), "DOFsX", "set the position DOFs to write"))
     , f_DOFsV( initData(&f_DOFsV, helper::vector<unsigned int>(0), "DOFsV", "set the velocity DOFs to write"))
@@ -58,7 +57,7 @@ WriteState::WriteState()
 #ifdef SOFA_HAVE_ZLIB
     , gzfile(NULL)
 #endif
-    , nextTime(0)
+    , nextIteration(0)
     , lastTime(0)
     , kineticEnergyThresholdReached(false)
     , timeToTestEnergyIncrease(0)
@@ -81,6 +80,8 @@ WriteState::~WriteState()
 
 void WriteState::init()
 {
+    validInit = true;
+    periodicExport = false;
     mmodel = this->getContext()->getMechanicalState();
 
     // test the size and range of the DOFs to write in the file output
@@ -93,19 +94,13 @@ void WriteState::init()
     const std::string& filename = f_filename.getFullPath();
     if (!filename.empty())
     {
-        // 	    std::ifstream infile(filename.c_str());
-        // 	    if( infile.is_open() )
-        // 	      {
-        // 		serr << "ERROR: file "<<filename<<" already exists. Remove it to record new motion."<<sendl;
-        // 	      }
-        // 	    else
 #ifdef SOFA_HAVE_ZLIB
         if (filename.size() >= 3 && filename.substr(filename.size()-3)==".gz")
         {
             gzfile = gzopen(filename.c_str(),"wb");
             if( !gzfile )
             {
-                serr << "Error creating compressed file "<<filename<<sendl;
+                msg_error() << "Error creating compressed file "<<filename;
             }
         }
         else
@@ -114,11 +109,108 @@ void WriteState::init()
             outfile = new std::ofstream(filename.c_str());
             if( !outfile->is_open() )
             {
-                serr << "Error creating file "<<filename<<sendl;
+                msg_error() << "Error creating file "<<filename;
                 delete outfile;
                 outfile = NULL;
             }
         }
+    }
+
+    ///Check all input data
+    double dt = this->getContext()->getDt();
+    //check filename is set
+    if(!f_filename.isSet())
+    {
+        msg_warning() << "a filename must be specified for export"
+                      << "default: defaultExportFile";
+        f_filename.setValue(" defaultExportFile");
+    }
+
+    //check period
+    if(f_period.isSet())
+    {
+        if(f_time.getValue().size() == 0)
+        {
+            msg_warning() << "starting time should be specified to know when to start the periodic export"
+                          << "by default: start time=0";
+
+            helper::vector<double>& timeVector = *f_time.beginEdit();
+            timeVector.clear();
+            timeVector.resize(1);
+            timeVector[0] = 0.0;
+            f_time.endEdit();
+        }
+        if(f_time.getValue().size() > 1)
+        {
+            helper::vector<double>& timeVector = *f_time.beginEdit();
+            timeVector.resize(1);
+            f_time.endEdit();
+            msg_warning() << "using the period assume to have only one starting time for export: "<<f_time.getValue()[0];
+        }
+
+        if(f_period.getValue() < dt)
+        {
+            msg_warning() << "period ("<< f_period.getValue() <<") input value is too low regarding the time step ("<< dt <<")";
+        }
+
+        if(f_time.getValue()[0]!=0.0 && f_time.getValue()[0]<dt)
+        {
+            msg_warning() << "starting export time ("<< f_time.getValue()[0] <<") is too low regarding the time step ("<< dt <<")";
+        }
+        periodicExport = true;
+    }
+
+    //check time
+    if(!f_time.isSet())
+    {
+        msg_warning() << "an export time should be specified"
+                      << "by default, export at t=0";
+        helper::vector<double>& timeVector = *f_time.beginEdit();
+        timeVector.clear();
+        timeVector.resize(1);
+        timeVector[0] = 0.0;
+        f_time.endEdit();
+    }
+    else
+    {
+        for(unsigned int i=0; i<f_time.getValue().size(); i++)
+        {
+            if(f_time.getValue()[i] <= 0)
+            {
+                if(i==0)
+                {
+                    if(f_time.getValue()[i] != 0)
+                    {
+                        msg_error() << "time of export should always be zero or positive, no export will be done";
+                        validInit = false;
+                        return;
+                    }
+                }
+                else
+                {
+                    msg_error() << "time of export should always be positive, no export will be done";
+                    validInit = false;
+                    return;
+                }
+            }
+
+            //check that the desired export times will be met with the chosen time step
+            double mutiple = fmod(f_time.getValue()[i],dt);
+            int integerM = (int) mutiple;
+            mutiple -= (double)integerM;
+            if(mutiple > std::numeric_limits<double>::epsilon())
+            {
+                msg_warning() << "desired export time ("<< f_time.getValue()[i] <<") can not be met with the chosen time step("<< dt <<")";
+            }
+        }
+    }
+
+    //check stopAt
+    if(f_stopAt.getValue()<0)
+    {
+        msg_warning() << "stopping time should be strictly positive"
+                      << "default value stopAt=0.0";
+        f_stopAt.setValue(0.0);
     }
 }
 
@@ -133,7 +225,7 @@ init();
 }
 void WriteState::reset()
 {
-    nextTime = 0;
+    nextIteration = 0;
     lastTime = 0;
     kineticEnergyThresholdReached = false;
     timeToTestEnergyIncrease = f_keperiod.getValue();
@@ -143,7 +235,10 @@ void WriteState::reset()
 
 void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
 {
-    if (/* simulation::AnimateBeginEvent* ev = */simulation::AnimateBeginEvent::checkEventType(event))
+    if(!validInit)
+        return;
+
+    if (simulation::AnimateBeginEvent::checkEventType(event))
     {
         if (!mmodel) return;
         if (!outfile
@@ -166,7 +261,7 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
                 if (!gnode->mass)
                 {
                     // Error: the mechanical model has no mass
-                    serr << "Error: Kinetic energy can not be computed. The mass for " << mmodel->getName() << " has no been defined" << sendl;
+                    msg_error() << "Error: Kinetic energy can not be computed. The mass for " << mmodel->getName() << " has no been defined";
                     exit(EXIT_FAILURE);
                 }
                 else
@@ -187,24 +282,32 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
                 }
             }
         }
+
+        //check if the state has to be written or not
         bool writeCurrent = false;
-        if (nextTime<f_time.getValue().size())
+        if (nextIteration<f_time.getValue().size())
         {
             // store the actual time instant
-            lastTime = f_time.getValue()[nextTime];
-            if (time >= lastTime) // if the time simulation is >= that the actual time instant
+            lastTime = f_time.getValue()[nextIteration];
+            // if the time simulation is >= that the actual time instant
+            if ( (time > lastTime) || (fabs(time - lastTime)< std::numeric_limits<double>::epsilon()) )
             {
                 writeCurrent = true;
-                nextTime++;
+                firstExport = true;
+                nextIteration++;
             }
         }
         else
         {
-            // write the state using a period
-            if (time >= (lastTime + f_period.getValue()))
+            if(firstExport && periodicExport)
             {
-                writeCurrent = true;
-                lastTime += f_period.getValue();
+                double nextTime = lastTime + f_period.getValue();
+                // write the state using a period
+                if ( (time > nextTime) || (fabs(time - nextTime)< std::numeric_limits<double>::epsilon()) )
+                {
+                    writeCurrent = true;
+                    lastTime += f_period.getValue();
+                }
             }
         }
         if (writeCurrent)
@@ -218,18 +321,12 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
                 if (f_writeX.getValue())
                 {
                     str << "  X= ";
-                    //<TO REMOVE>
-                    //mmodel->writeX(str);
                     mmodel->writeVec(core::VecId::position(), str);
                     str << "\n";
                 }
                 if (f_writeX0.getValue())
                 {
                     str << "  X0= ";
-                    //<TO REMOVE>
-                    //mmodel->setX(core::VecId::restPosition());
-                    //mmodel->writeX(str);
-                    //mmodel->setX(core::VecId::position());
                     mmodel->writeVec(core::VecId::restPosition(), str);
                     str << "\n";
                 }
@@ -237,8 +334,6 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
                 if (f_writeV.getValue())
                 {
                     str << "  V= ";
-                    //<TO REMOVE>
-                    //mmodel->writeV(str);
                     mmodel->writeVec(core::VecId::velocity(), str);
                     str << "\n";
                 }
@@ -254,18 +349,12 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
                     if (f_writeX.getValue())
                     {
                         (*outfile) << "  X= ";
-                        //<TO REMOVE>
-                        //mmodel->writeX(*outfile);
                         mmodel->writeVec(core::VecId::position(), *outfile);
                         (*outfile) << "\n";
                     }
                     if (f_writeX0.getValue())
                     {
                         (*outfile) << "  X0= ";
-                        //<TO REMOVE>
-                        //mmodel->setX(core::VecId::restPosition());
-                        //mmodel->writeX((*outfile));
-                        //mmodel->setX(core::VecId::position());
                         mmodel->writeVec(core::VecId::restPosition(), *outfile);
                         (*outfile) << "\n";
                     }
@@ -273,8 +362,6 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
                     if (f_writeV.getValue())
                     {
                         (*outfile) << "  V= ";
-                        //<TO REMOVE>
-                        //mmodel->writeV(*outfile);
                         mmodel->writeVec(core::VecId::velocity(), *outfile);
                         (*outfile) << "\n";
                     }
@@ -282,13 +369,12 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
                     if (f_writeF.getValue())
                     {
                         (*outfile) << "  F= ";
-                        //<TO REMOVE>
-                        //mmodel->writeV(*outfile);
                         mmodel->writeVec(core::VecId::force(), *outfile);
                         (*outfile) << "\n";
                     }
                     outfile->flush();
                 }
+            msg_info() <<"Export done (time = "<< time <<")";
         }
     }
 }

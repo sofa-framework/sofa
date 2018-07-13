@@ -63,7 +63,6 @@ public:
     Data < bool > f_writeX0; ///< flag enabling output of X0 vector
     Data < bool > f_writeV; ///< flag enabling output of V vector
     Data < bool > f_writeF; ///< flag enabling output of F vector
-    Data < double > f_interval; ///< time duration between outputs
     Data < helper::vector<double> > f_time; ///< set time to write outputs
     Data < double > f_period; ///< period between outputs
     Data < helper::vector<unsigned int> > f_DOFsX; ///< set the position DOFs to write
@@ -77,11 +76,14 @@ protected:
 #ifdef SOFA_HAVE_ZLIB
     gzFile gzfile;
 #endif
-    unsigned int nextTime;
+    unsigned int nextIteration;
     double lastTime;
     bool kineticEnergyThresholdReached;
     double timeToTestEnergyIncrease;
     double savedKineticEnergy;
+    bool firstExport;
+    bool periodicExport;
+    bool validInit;
 
 
     WriteState();
