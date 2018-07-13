@@ -789,6 +789,10 @@ void QuadularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* v
     const helper::vector<EdgeInformation>& edgeInf = edgeInfo.getValue();
     std::vector<sofa::defaulttype::Vector3> vertices;
     std::vector<sofa::defaulttype::Vec4f> colors;
+    sofa::defaulttype::RGBAColor green_color = sofa::defaulttype::RGBAColor::green();
+    sofa::defaulttype::RGBAColor red_color   = sofa::defaulttype::RGBAColor::red();
+    sofa::defaulttype::RGBAColor color1 = sofa::defaulttype::RGBAColor(1,0.5, 0,1);
+    sofa::defaulttype::RGBAColor color2 = sofa::defaulttype::RGBAColor(0,1,0.5,1);
 
     for(unsigned int i=0; i<edgeInf.size(); ++i)
     {
@@ -800,26 +804,26 @@ void QuadularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* v
             {
                 if (d1<edgeInf[i].restlength2*0.9999)
                 {
-                    colors.push_back(sofa::defaulttype::RGBAColor::red());
-                    colors.push_back(sofa::defaulttype::RGBAColor::red());
+                    colors.push_back(red_color);
+                    colors.push_back(red_color);
                 }
                 else
                 {
-                    colors.push_back(sofa::defaulttype::RGBAColor::green());
-                    colors.push_back(sofa::defaulttype::RGBAColor::green());
+                    colors.push_back(green_color);
+                    colors.push_back(green_color);
                 }
             }
             else
             {
                 if (d1<edgeInf[i].restlength1*0.9999)
                 {
-                    colors.push_back(sofa::defaulttype::RGBAColor(1,0.5, 0,1));
-                    colors.push_back(sofa::defaulttype::RGBAColor(1,0.5, 0,1));
+                    colors.push_back(color1);
+                    colors.push_back(color1);
                 }
                 else
                 {
-                    colors.push_back(sofa::defaulttype::RGBAColor(0,1,0.5,1));
-                    colors.push_back(sofa::defaulttype::RGBAColor(0,1,0.5,1));
+                    colors.push_back(color2);
+                    colors.push_back(color2);
                 }
             }
 
@@ -831,26 +835,26 @@ void QuadularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* v
             {
                 if (d2<edgeInf[i].restlength2*0.9999)
                 {
-                    colors.push_back(sofa::defaulttype::RGBAColor::red());
-                    colors.push_back(sofa::defaulttype::RGBAColor::red());
+                    colors.push_back(red_color);
+                    colors.push_back(red_color);
                 }
                 else
                 {
-                    colors.push_back(sofa::defaulttype::RGBAColor::green());
-                    colors.push_back(sofa::defaulttype::RGBAColor::green());
+                    colors.push_back(green_color);
+                    colors.push_back(green_color);
                 }
             }
             else
             {
                 if (d2<edgeInf[i].restlength2*0.9999)
                 {
-                    colors.push_back(sofa::defaulttype::RGBAColor(1,0.5, 0,1));
-                    colors.push_back(sofa::defaulttype::RGBAColor(1,0.5, 0,1));
+                    colors.push_back(color1);
+                    colors.push_back(color1);
                 }
                 else
                 {
-                    colors.push_back(sofa::defaulttype::RGBAColor(0,1,0.5,1));
-                    colors.push_back(sofa::defaulttype::RGBAColor(0,1,0.5,1));
+                    colors.push_back(color2);
+                    colors.push_back(color2);
                 }
             }
 

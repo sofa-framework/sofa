@@ -100,15 +100,18 @@ void TetrahedronModel::addTetraToDraw(const Tetrahedron& t, std::vector<sofa::de
     Coord p3 = t.p3();
     Coord p4 = t.p4();
     Coord c = (p1 + p2 + p3 + p4)*0.25f;
-    p1 += (c - p1)*0.1f;
-    p2 += (c - p2)*0.1f;
-    p3 += (c - p3)*0.1f;
-    p4 += (c - p4)*0.1f;
+    auto computeP = [](Coord center, Coord pos) {pos += (center - pos)*0.1f; };
+    computeP(c, p1);
+    computeP(c, p2);
+    computeP(c, p3);
+    computeP(c, p4);
+
     Coord n1, n2, n3, n4;
-    n1 = cross(p3 - p1, p2 - p1); n1.normalize();
-    n2 = cross(p4 - p1, p3 - p1); n2.normalize();
-    n3 = cross(p2 - p1, p4 - p1); n3.normalize();
-    n4 = cross(p3 - p2, p4 - p2); n4.normalize();
+    auto computeN = [](Coord normal, Coord pos1, Coord pos2, Coord pos3) {normal = cross(pos3 - pos1, pos2 - pos1); normal.normalize(); };
+    computeN(n1,p1,p2,p3);
+    computeN(n1,p1,p3,p4);
+    computeN(n1,p1,p4,p2);
+    computeN(n1,p2,p4,p3);
 
     tetraVertices.push_back(p1);
     tetraVertices.push_back(p2);
@@ -116,16 +119,17 @@ void TetrahedronModel::addTetraToDraw(const Tetrahedron& t, std::vector<sofa::de
     tetraVertices.push_back(p4);
 
     Coord p;
-    p = (p1 + p2 + p3)*(1.0 / 3.0);
+    auto updateP = [](Coord pPos, Coord pos1, Coord pos2, Coord pos3) {pPos = (pos1 + pos2 + pos3)*(1.0 / 3.0); };
+    updateP(p,p1,p2,p3);
     normalVertices.push_back(p);
     normalVertices.push_back(p + n1*0.1);
-    p = (p1 + p3 + p4)*(1.0 / 3.0);
+    updateP(p,p1,p3,p4);
     normalVertices.push_back(p);
     normalVertices.push_back(p + n2*0.1);
-    p = (p1 + p4 + p2)*(1.0 / 3.0);
+    updateP(p,p1,p4,p2);
     normalVertices.push_back(p);
     normalVertices.push_back(p + n3*0.1);
-    p = (p2 + p3 + p4)*(1.0 / 3.0);
+    updateP(p,p2,p3,p4);
     normalVertices.push_back(p);
     normalVertices.push_back(p + n4*0.1);
 }
