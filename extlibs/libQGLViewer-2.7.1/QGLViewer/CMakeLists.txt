@@ -67,8 +67,19 @@ if(WIN32)
     list (GET QT_TARGETS 0 QtCore_target)
     get_target_property(QtCore_location ${QtCore_target} LOCATION_${CMAKE_BUILD_TYPE})
     string(REGEX REPLACE "\\/[^/]*/[^/]*$" "" Qt_location ${QtCore_location})
-    FILE(GLOB QT_PLUGINS "${Qt_location}/plugins/platforms/qwindows*.dll")
-    install(FILES ${QT_PLUGINS} DESTINATION "bin/platforms" COMPONENT applications)
+    if(WIN32)
+        sofa_copy_libraries_from_targets(${QT_TARGETS})
+        # Installing Qt platforms dll the hard way (dirty)
+        FILE(GLOB QT_PLUGINS "${Qt_location}/plugins/platforms/qwindows*.dll")
+        install(FILES ${QT_PLUGINS} DESTINATION "bin/platforms" COMPONENT applications)
+    endif()
+    # Installing Qt ICU libraries the hard way (dirty)
+    file(GLOB QT_ICU_LIBRARIES
+		"${Qt_location}/lib/libicudata${CMAKE_SHARED_LIBRARY_SUFFIX}"
+		"${Qt_location}/lib/libicui18n${CMAKE_SHARED_LIBRARY_SUFFIX}"
+		"${Qt_location}/lib/libicuuc${CMAKE_SHARED_LIBRARY_SUFFIX}"
+		)
+    sofa_install_libraries(${QT_ICU_LIBRARIES})
 endif()
 
 # These header files don't need to be processed by the moc.
