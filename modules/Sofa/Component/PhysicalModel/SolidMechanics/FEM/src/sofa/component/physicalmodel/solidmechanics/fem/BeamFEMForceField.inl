@@ -122,6 +122,33 @@ void BeamFEMForceField<DataTypes>::initInternalData()
 	_k_loc.resize(size);
 	_quat.resize(size);
 
+    sofa::helper::ReadAccessor< Data<VecReal> > radii = d_r;
+    sofa::helper::ReadAccessor< Data<VecReal> > innerRadii = d_innerR;
+
+    if(radii.size() == 1)
+    {
+        Real r = radii[0];
+        sofa::helper::WriteAccessor< Data<VecReal> > waRadii = d_r;
+        waRadii.resize(size);
+        for (size_t i = 0; i < size; i++)
+            waRadii[i] = r;
+    }
+    else
+        if (radii.size() != size)
+            msg_error() << "number of radii and beams differs";
+
+    if(innerRadii.size() == 1)
+    {
+        Real ir = innerRadii[0];
+        sofa::helper::WriteAccessor< Data<VecReal> > waInRadii = d_innerR;
+        waInRadii.resize(size);
+        for (size_t i = 0; i < size; i++)
+            waInRadii[i] = ir;
+    }
+    else
+        if (innerRadii.size() != n)
+            msg_error() << "number of inner radii and beams differs";
+
 	for (std::size_t i = 0; i<size; ++i)
 		reinitBeam(i);
 
