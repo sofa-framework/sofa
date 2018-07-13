@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+﻿cmake_minimum_required(VERSION 3.1)
 
 set(EXTLIBS_TARGETS
     csparse
@@ -48,4 +48,7 @@ foreach(target ${EXTLIBS_TARGETS})
     set_target_properties(${target} PROPERTIES DEBUG_POSTFIX "_d")
     set_target_properties(${target} PROPERTIES FOLDER "SofaExtlibs")
 endforeach()
+
+add_subdirectory(CGoGN_2)
+list(APPEND EXTLIBS_TARGETS cgogn_core cgogn_geometry cgogn_io cgogn_modeling)
 

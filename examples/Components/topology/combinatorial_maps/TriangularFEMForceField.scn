@@ -1,0 +1,27 @@
+<!-- Mechanical TriangularFEMForceField Example -->
+<Node name="root" dt="0.05" gravity="0 -9.8 10" showBoundingTree="0">
+    <VisualStyle displayFlags="showBehaviorModels showVisual" />
+    <CollisionPipeline verbose="0" />
+    <BruteForceDetection name="N2" />
+    <CollisionResponse response="default" />
+    <MinProximityIntersection name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
+    <CollisionGroup />
+    <Node name="SquareGravity">
+        <EulerImplicit name="cg_odesolver" printLog="false" />
+        <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+        <MeshGmshLoader filename="mesh/square3.msh" name="loader" />
+        <MechanicalObject src="@loader" name="DOFs" scale3d="100 100 0" />
+        <SurfaceTopologyContainer src="@loader" />
+        <MapTriangleSetTopologyContainer src="@loader" name="Container" />
+        <TriangleSetTopologyModifier name="Modifier" />
+        <TriangleSetTopologyAlgorithms name="TopoAlgo" template="Vec3d" />
+        <TriangleSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" />
+        <DiagonalMass massDensity="0.005" />
+        <FixedConstraint indices="0 1 2" />
+        <TriangularFEMForceField name="FEM" youngModulus="600" poissonRatio="0.3" method="large" />
+        <Node name="VisuA">
+            <OglModel name="Visual" color="yellow" />
+            <IdentityMapping template="Vec3d,ExtVec3f" name="visualMapping" input="@../DOFs" output="@Visual" />
+        </Node>
+    </Node>
+</Node>
