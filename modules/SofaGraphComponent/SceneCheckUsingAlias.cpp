@@ -78,7 +78,7 @@ void SceneCheckUsingAlias::doPrintSummary()
     }
     
     std::stringstream usingAliasesWarning;
-    usingAliasesWarning << "This scene is using the hard coded aliases. Aliases can be very confusing, "
+    usingAliasesWarning << "This scene is using hard coded aliases. Aliases can be very confusing, "
                            "use with caution." << msgendl;
     for (auto i : this->m_componentsCreatedUsingAlias)
     {
