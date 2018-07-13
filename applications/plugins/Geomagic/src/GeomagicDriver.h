@@ -121,9 +121,7 @@ public:
     virtual void draw(const sofa::core::visual::VisualParams* vparams) override;
     void updatePosition();
 
-    void onAnimateBeginEvent();
-
-    ForceFeedback * m_forceFeedback;
+    ForceFeedback::SPtr m_forceFeedback;
 
     /// variable pour affichage graphique
     enum
