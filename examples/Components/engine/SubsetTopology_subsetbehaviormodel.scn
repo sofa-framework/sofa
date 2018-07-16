@@ -24,7 +24,7 @@
             <TetrahedronSetTopologyModifier name="default10" />
             <TetrahedronSetTopologyAlgorithms template="Vec3d" name="default11" />
             <TetrahedronSetGeometryAlgorithms template="Vec3d" name="default12" />
-            <UniformMass template="Vec3d" name="mass" mass="15" />
+            <UniformMass template="Vec3d" name="mass" vertexMass="15" />
             <TetrahedronFEMForceField template="Vec3d" name="FEM" poissonRatio="0.49" youngModulus="1000" gatherPt=" " gatherBsize=" " />
             <RigidMapping template="Rigid,Vec3d" name="rigidMapping" input="@.." output="@." />
             <Node name="Surf" gravity="0 -9.81 0">

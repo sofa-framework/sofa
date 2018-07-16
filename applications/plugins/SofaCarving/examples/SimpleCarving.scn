@@ -34,7 +34,6 @@
       </Node>
     </Node>
   </Node>
-
   
   <Node name="carvingElement">
 		<MechanicalObject name="Particles" template="Vec3d" position="0 0 1.4" velocity="0 0 0"/>

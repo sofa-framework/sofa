@@ -15,7 +15,7 @@
         <TriangleSetTopologyModifier name="Modifier" />
         <TriangleSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
         <TriangleSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawTriangles="1" />
-        <UniformMass totalmass="0.1" />
+        <UniformMass totalMass="0.1" />
         <FixedConstraint template="Vec3d" name="default6" indices="0 2 18 20" />
         <!--		<TriangularFEMForceField template="Vec3d" name="FEM"  method="large"  poissonRatio="0.3"  youngModulus="60" />
 		<TriangularBendingSprings template="Vec3d" name="FEM-Bend"  stiffness="300"  damping="1" />-->
