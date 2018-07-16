@@ -11,7 +11,7 @@
         <MeshGmshLoader name="loader" filename="mesh/liver.msh" />
         <Mesh src="@loader" />
         <MechanicalObject src="@loader" name="Liver" />
-        <UniformMass name="mass" mass="0.05" />
+        <UniformMass name="mass" vertexMass="0.05" />
         <TetrahedronFEMForceField name="FEM" youngModulus="500" poissonRatio="0.3" computeGlobalMatrix="false" method="large" />
         <FixedConstraint name="FixedConstraint" indices="3 39 64" />
         <Node name="Visu">

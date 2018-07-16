@@ -27,7 +27,7 @@
         <EulerImplicit printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject template="Rigid" scale="1.0" dx="-3.0" dy="-0.5" dz="0.0" />
-        <UniformMass totalmass="1" />
+        <UniformMass totalMass="1" />
         <UncoupledConstraintCorrection />
         <Node name="Visu">
 			<OglShader vertFilename="sleepColorShader.vert" fragFilename="sleepColorShader.frag"/>
@@ -51,7 +51,7 @@
         <EulerImplicit printLog="false" />
         <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject template="Rigid" scale="1.0" dx="1.0" dy="3" dz="0.0" />
-        <UniformMass totalmass="1" />
+        <UniformMass totalMass="1" />
         <UncoupledConstraintCorrection />
         <Node name="Visu">
 			<OglShader vertFilename="sleepColorShader.vert" fragFilename="sleepColorShader.frag"/>
@@ -75,7 +75,7 @@
         <EulerImplicit printLog="false" />
         <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject template="Rigid" scale="1.0" dx="8.0" dy="12" dz="0.0" />
-        <UniformMass totalmass="1" />
+        <UniformMass totalMass="1" />
         <UncoupledConstraintCorrection />
         <Node name="Visu">
 			<OglShader vertFilename="sleepColorShader.vert" fragFilename="sleepColorShader.frag"/>
