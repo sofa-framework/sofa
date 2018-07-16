@@ -21,12 +21,12 @@ using sofa::core::ExecParams;
 
 namespace sofa
 {
-struct MonitorTest : public Monitor<Rigid3>
+struct MonitorTest : public Monitor<Rigid3Types>
 {
-    void testInit(MechanicalObject<Rigid3>* mo)
+    void testInit(MechanicalObject<Rigid3Types>* mo)
     {
-        const Rigid3::VecCoord& i1 = *m_X;
-        const Rigid3::VecCoord& i2 = mo->x.getValue();
+        const Rigid3Types::VecCoord& i1 = *m_X;
+        const Rigid3Types::VecCoord& i2 = mo->x.getValue();
 
         EXPECT_TRUE(i1.size() == i2.size());
         for (size_t i = 0; i < i1.size(); ++i) EXPECT_EQ(i1[i], i2[i]);
@@ -34,15 +34,15 @@ struct MonitorTest : public Monitor<Rigid3>
         EXPECT_EQ(d_fileName, std::string("./") + getName());
     }
 
-    void testModif(MechanicalObject<Rigid3>* mo)
+    void testModif(MechanicalObject<Rigid3Types>* mo)
     {
         helper::vector<unsigned int> idx = d_indices.getValue();
-        const Rigid3::VecCoord& i1 = *m_X;
-        const Rigid3::VecCoord& i2 = mo->x.getValue();
-        const Rigid3::VecDeriv& f1 = *m_F;
-        const Rigid3::VecDeriv& f2 = mo->f.getValue();
-        const Rigid3::VecDeriv& v1 = *m_V;
-        const Rigid3::VecDeriv& v2 = mo->v.getValue();
+        const Rigid3Types::VecCoord& i1 = *m_X;
+        const Rigid3Types::VecCoord& i2 = mo->x.getValue();
+        const Rigid3Types::VecDeriv& f1 = *m_F;
+        const Rigid3Types::VecDeriv& f2 = mo->f.getValue();
+        const Rigid3Types::VecDeriv& v1 = *m_V;
+        const Rigid3Types::VecDeriv& v2 = mo->v.getValue();
 
         EXPECT_TRUE(idx.size() <= i2.size());
         for (size_t i = 0; i < idx.size(); ++i) EXPECT_EQ(i1[idx[i]], i2[idx[i]]);
@@ -58,7 +58,7 @@ struct Monitor_test : public sofa::Sofa_test<>
     sofa::simulation::Node::SPtr root;
     sofa::simulation::SceneLoaderXML loader;
     MonitorTest* monitor;
-    MechanicalObject<Rigid3>::SPtr mo;
+    MechanicalObject<Rigid3Types>::SPtr mo;
 
     Monitor_test() {}
 
@@ -156,14 +156,14 @@ struct Monitor_test : public sofa::Sofa_test<>
         root->init(sofa::core::ExecParams::defaultInstance());
 
         std::string s = "/node/monitor";
-        Monitor<Rigid3>* ptr = NULL;
-        ptr = root->get<Monitor<Rigid3> >(s);
+        Monitor<Rigid3Types>* ptr = NULL;
+        ptr = root->get<Monitor<Rigid3Types> >(s);
         EXPECT_FALSE(ptr == NULL);
 
         monitor = reinterpret_cast<MonitorTest*>(ptr);
         EXPECT_FALSE(monitor == 0);
 
-        root->get<MechanicalObject<Rigid3> >(mo, "/node/MO");
+        root->get<MechanicalObject<Rigid3Types> >(mo, "/node/MO");
         EXPECT_FALSE(mo == 0);
     }
 

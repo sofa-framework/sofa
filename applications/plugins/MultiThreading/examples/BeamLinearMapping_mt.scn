@@ -25,7 +25,7 @@
       <Mesh name="lines" lines="0 1" />
       -->
         <FixedConstraint name="FixedConstraint" indices="0" />
-        <UniformMass mass="1 1 0.01 0 0 0 0.1 0 0 0 0.1" printLog="false" />
+        <UniformMass vertexMass="1 1 0.01 0 0 0 0.1 0 0 0 0.1" printLog="false" />
         <BeamFEMForceField name="FEM" radius="0.1" youngModulus="20000000" />
         <!--
       <Gravity value="0 0 0 0 0 0" />

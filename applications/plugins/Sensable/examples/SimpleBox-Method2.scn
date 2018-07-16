@@ -33,7 +33,7 @@
         <CGLinearSolver />
 
         <MechanicalObject name="ms" template="Rigid"/>
-        <UniformMass totalmass="0.1" />
+        <UniformMass totalMass="0.1" />
         <LCPForceFeedback activate="true" tags="Omni" forceCoef="0.001" />
 
         <Node name="ToolCollision">

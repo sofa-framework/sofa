@@ -11,7 +11,7 @@
         <MeshGmshLoader name="loader" filename="mesh/liver.msh" />
         <Mesh src="@loader" />
         <MechanicalObject src="@loader" template="Vec3f" name="Liver" />
-        <UniformMass name="mass" mass="0.05" />
+        <UniformMass name="mass" vertexMass="0.05" />
         <TetrahedronFEMForceField name="FEM" youngModulus="5000" poissonRatio="0.3" computeGlobalMatrix="false" method="large" />
         <ConicalForceField template="Vec3f" coneCenter="0.0 -10.0 0.0" coneHeight="0 20 0" coneAngle="40" />
         <Node name="Visu">
