@@ -12,7 +12,7 @@
         <MeshGmshLoader name="loader" filename="mesh/cylinder.msh" />
         <MechanicalObject src="@loader" name="DOFs" template="Vec3d" translation="0 0 0" rotation="0 90 0" scale="10" />
         <FixedConstraint name="FixedConstraint" template="Vec3d" indices="0" />
-        <UniformMass name="Mass" template="Vec3d" totalmass="50" />
+        <UniformMass name="Mass" template="Vec3d" totalMass="50" />
         <EulerImplicitSolver name="cg_odesolver" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver name="linear solver" template="GraphScattered" iterations="25" tolerance="1e-09" threshold="1e-09" />
         <MeshTopology src="@loader" name="Static Mesh" fileTopology="mesh/cylinder.msh" />
@@ -25,7 +25,7 @@
     <Node name="Cylinder Regular Mesh">
         <MechanicalObject name="DOFs" template="Vec3d" translation="0 0 -10" rotation="0 0 -90" />
         <FixedConstraint name="FixedConstraint" template="Vec3d" indices="54 44 45 55" drawSize="0" />
-        <UniformMass name="Mass" template="Vec3d" totalmass="500" />
+        <UniformMass name="Mass" template="Vec3d" totalMass="500" />
         <EulerImplicitSolver name="cg_odesolver" printLog="0" />
         <CGLinearSolver name="linear solver" template="GraphScattered" iterations="25" tolerance="1e-09" threshold="1e-09" />
         <CylinderGridTopology name="Regular Mesh" n="10 10 10" axis="0 1 0" radius="2" length="10" />
@@ -38,7 +38,7 @@
         <MeshGmshLoader name="loader" filename="mesh/cylinder.msh" />
         <MechanicalObject src="@loader" name="DOFs" template="Vec3d" translation="0 0 10" rotation="0 90 0" scale="10" />
         <FixedConstraint name="FixedConstraint" template="Vec3d" indices="0" />
-        <UniformMass name="Mass" template="Vec3d" totalmass="50" />
+        <UniformMass name="Mass" template="Vec3d" totalMass="50" />
         <EulerImplicitSolver name="cg_odesolver" printLog="0" />
         <CGLinearSolver name="linear solver" template="GraphScattered" iterations="25" tolerance="1e-09" threshold="1e-09" />
         <TetrahedronSetTopologyContainer src="@loader" name="Topology Container" fileTopology="mesh/cylinder.msh" />

@@ -30,7 +30,7 @@
         <EulerImplicit printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject template="Rigid" scale="1.0" dx="0.0" dy="0" dz="0.0" />
-        <UniformMass totalmass="0.1" />
+        <UniformMass totalMass="0.1" />
         <UncoupledConstraintCorrection />
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/cube.obj" color="1 1 0 1.0" />
@@ -55,7 +55,7 @@
         <EulerImplicit printLog="false" />
         <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject template="Rigid" scale="1.0" dx="0.0" dy="-2.5" dz="0.0" />
-        <UniformMass totalmass="0.1" />
+        <UniformMass totalMass="0.1" />
         <UncoupledConstraintCorrection />
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/cube.obj" color="0 1 0 1.0" />
@@ -80,7 +80,7 @@
         <EulerImplicit printLog="false" />
         <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject template="Rigid" scale="1.0" dx="0.0" dy="-5.0" dz="0.0" />
-        <UniformMass totalmass="0.1" />
+        <UniformMass totalMass="0.1" />
         <UncoupledConstraintCorrection />
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/cube.obj" color="0 1 1 1.0" />
@@ -105,7 +105,7 @@
         <EulerImplicit printLog="false" />
         <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject template="Rigid" scale="1.0" dx="0.0" dy="-2.5" dz="-2.5" />
-        <UniformMass totalmass="0.1" />
+        <UniformMass totalMass="0.1" />
         <UncoupledConstraintCorrection />
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/cube.obj" color="0 0 1 1.0" />

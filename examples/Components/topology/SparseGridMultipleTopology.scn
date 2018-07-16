@@ -11,7 +11,7 @@
         <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="10" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject />
-        <UniformMass mass="1" />
+        <UniformMass vertexMass="1" />
         <HexahedronFEMForceField youngModulus="3000" poissonRatio="0.3" method="large" updateStiffnessMatrix="false" printLog="0" />
         <Node name="Visu1">
             <OglModel name="VisualBody" fileMesh="mesh/frog_body.obj" normals="0" color="0.17 0.70 0.05" />

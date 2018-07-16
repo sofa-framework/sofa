@@ -12,7 +12,7 @@
         <MeshTopology name="mesh" fileTopology="mesh/liver.msh" />
         <MechanicalObject template="Vec3d" name="dofs" />
         <TetrahedronFEMForceField template="Vec3d" name="FEM" youngModulus="50" poissonRatio="0.45" />
-        <UniformMass name="mass" totalmass="1" />
+        <UniformMass name="mass" totalMass="1" />
         <FixedConstraint name="FixedConstraint" indices="3 39 64" />
         <Node name="Visu" gravity="0 -9.81 0">
             <OglModel name="VisualModel" fileMesh="mesh/liver-smooth.obj" />

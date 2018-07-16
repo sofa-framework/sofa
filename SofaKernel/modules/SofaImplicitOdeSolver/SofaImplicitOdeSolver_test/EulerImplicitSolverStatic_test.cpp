@@ -155,14 +155,14 @@ struct EulerImplicit_test_2_particles_in_different_nodes_to_equilibrium  : publi
         MechanicalObject<Vec3Types>::SPtr DOF = addNew<MechanicalObject<Vec3Types> >(root,"DOF");
 
         UniformMass<Vec3Types, SReal>::SPtr mass = addNew<UniformMass<Vec3Types, SReal> >(root,"mass");
-        mass->d_mass.setValue( 1. );
+        mass->d_vertexMass.setValue( 1. );
 
 
         // create a child node with its own DOF
         simulation::Node::SPtr child = root->createChild("childNode");
         MechanicalObject<Vec3Types>::SPtr childDof = addNew<MechanicalObject<Vec3Types> >(child);
         UniformMass<Vec3Types, SReal>::SPtr childMass = addNew<UniformMass<Vec3Types, SReal> >(child,"childMass");
-        childMass->d_mass.setValue( 1. );
+        childMass->d_vertexMass.setValue( 1. );
 
         // attach a spring
         StiffSpringForceField<Vec3Types>::SPtr spring = New<StiffSpringForceField<Vec3Types> >(DOF.get(), childDof.get());

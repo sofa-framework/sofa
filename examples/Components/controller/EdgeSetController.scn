@@ -13,7 +13,7 @@
         <include href="Objects/EdgeSetTopology.xml" src="@loader" template="Rigid" />
         <EdgeSetController template="Rigid" listening="true" mainDirection="-1.0 0.0 0.0" />
         <FixedConstraint name="FixedConstraint" indices="0" />
-        <UniformMass totalmass="1" printLog="false" />
+        <UniformMass totalMass="1" printLog="false" />
         <BeamFEMForceField name="FEM" radius="0.1" youngModulus="50000000" poissonRatio="0.49"/>
     </Node>
 </Node>

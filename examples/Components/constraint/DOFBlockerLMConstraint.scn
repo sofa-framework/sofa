@@ -6,7 +6,7 @@
     <Node name="CubeFree" gravity="0 -9.81 0">
         <MechanicalObject template="Rigid" name="wY=2" translation="0 0 0" restScale="1" velocity="0 0 0 0 2 0" />
         <UncoupledConstraintCorrection template="Rigid" name="default67" />
-        <UniformMass template="Rigid" name="default17" mass="10 1 [1 0 0,0 1 0,0 0 1]" totalmass="2" />
+        <UniformMass template="Rigid" name="default17" vertexMass="10 1 [1 0 0,0 1 0,0 0 1]" totalMass="2" />
         <Node name="Visu" gravity="0 -9.81 0">
             <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/cube.obj" material="Default Diffuse 1 1 0.5 0.25 1 Ambient 1 0.2 0.1 0.05 1 Specular 0 1 0.5 0.25 1 Emissive 0 1 0.5 0.25 1 Shininess 0 45" />
             <RigidMapping template="Rigid,ExtVec3f" name="default19" input="@.." output="@Visual" />
@@ -21,7 +21,7 @@
     <Node name="RotationConstrained" gravity="0 -9.81 0">
         <MechanicalObject template="Rigid" name="wY=2" translation="3 0 0" restScale="1" velocity="0 0 0 0 2 0" />
         <UncoupledConstraintCorrection template="Rigid" name="default67" />
-        <UniformMass template="Rigid" name="default17" mass="10 1 [1 0 0,0 1 0,0 0 1]" totalmass="2" />
+        <UniformMass template="Rigid" name="default17" vertexMass="10 1 [1 0 0,0 1 0,0 0 1]" totalMass="2" />
         <Node name="Visu" gravity="0 -9.81 0">
             <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/cube.obj" material="Default Diffuse 1 1 0.5 0.25 1 Ambient 1 0.2 0.1 0.05 1 Specular 0 1 0.5 0.25 1 Emissive 0 1 0.5 0.25 1 Shininess 0 45" />
             <RigidMapping template="Rigid,ExtVec3f" name="default19" input="@.." output="@Visual" />
