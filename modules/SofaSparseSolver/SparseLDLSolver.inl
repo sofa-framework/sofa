@@ -72,7 +72,7 @@ void SparseLDLSolver<TMatrix,TVector,TThreadManager>::invert(Matrix& M) {
     int * M_rowind = (int *) &Mfiltered.getColsIndex()[0];
     Real * M_values = (Real *) &Mfiltered.getColsValue()[0];
 
-    if(M_colptr==nullptr || M_rowind==nullptr || M_values==nullptr || Mfiltered.getRowBegin().size() < n )
+    if(M_colptr==nullptr || M_rowind==nullptr || M_values==nullptr || (int) Mfiltered.getRowBegin().size() < n )
     {
         msg_warning() << "Invalid Linear System to solve. Please insure that there is enough constraints (not rank deficient)." ;
         return ;
