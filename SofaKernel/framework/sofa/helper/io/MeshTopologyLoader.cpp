@@ -144,21 +144,9 @@ bool MeshTopologyLoader::loadObj(const char *filename)
     return true;
 }
 
-bool MeshTopologyLoader::loadStl(const char *filename)
-{
-    m_mesh = helper::io::Mesh::Create("stl", filename);
-    return addMeshtoTopology();
-}
-
 bool MeshTopologyLoader::loadGmsh(const char *filename)
 {
     m_mesh = helper::io::Mesh::Create("gmsh", filename);      
-    return addMeshtoTopology();
-}
-
-bool MeshTopologyLoader::loadXsp(const char *filename)
-{
-    m_mesh = helper::io::Mesh::Create("xsp", filename);
     return addMeshtoTopology();
 }
 
@@ -274,41 +262,6 @@ bool MeshTopologyLoader::loadMesh(std::ifstream &file)
     return true;
 }
 
-bool MeshTopologyLoader::loadMeshFile(const char *filename)
-{
-    bool fileLoaded = false;
-
-    std::ifstream file(filename);
-    if (!file.good()) return false;
-
-    int gmshFormat = 0;
-
-    std::string cmd;
-    file >> cmd;
-
-    if (cmd == "$MeshFormat") // Reading gmsh 2.0 file
-    {
-        fileLoaded = loadGmsh(filename);
-    }
-    else if (cmd == "$NOD" || cmd == "$Nodes") // Gmsh format
-    {
-        fileLoaded = loadGmsh(filename);
-    }
-    else if (cmd == "Xsp")
-    {
-        fileLoaded = loadXsp(filename);
-    }
-    else
-    {
-        //Reset the stream to the beginning.
-        file.seekg(0, std::ios::beg);
-        msg_error() << "This file format: " << filename << " will not be supported anymore in sofa release 18.06.";
-        fileLoaded = loadMesh(file);
-    }
-    file.close();
-    return 	fileLoaded;
-}
-
 
 bool MeshTopologyLoader::loadVtk(const char *filename)
 {
@@ -318,28 +271,34 @@ bool MeshTopologyLoader::loadVtk(const char *filename)
 
 bool MeshTopologyLoader::load(const char *filename)
 {
-    std::string fname(filename);
-    if (!sofa::helper::system::DataRepository.findFile(fname))
-    {
-        msg_error() << "Cannot find file: " << filename ;
-        return false;
-    }
+	std::string fname(filename);
+	if (!sofa::helper::system::DataRepository.findFile(fname))
+	{
+		msg_error() << "Cannot find file: " << filename;
+		return false;
+	}
 
-    bool fileLoaded;
+	bool fileLoaded;
 
-    // check the extension of the filename
-    if ((strlen(filename)>4 && !strcmp(filename+strlen(filename)-4,".obj"))
-        || (strlen(filename)>6 && !strcmp(filename+strlen(filename)-6,".trian")))
-        fileLoaded = loadObj(fname.c_str());
-    else if (strlen(filename)>4 && !strcmp(filename+strlen(filename)-4,".vtk"))
-        fileLoaded = loadVtk(fname.c_str());
-    else if (strlen(filename)>4 && !strcmp(filename+strlen(filename)-4,".stl"))
-        fileLoaded = loadStl(fname.c_str());
-    else if (strlen(filename)>9 && !strcmp(filename+strlen(filename)-9,".vtk_swap"))
-        fileLoaded = loadVtk(fname.c_str());
-    else // if extension unknown will check header for Gmsh format 1 or 2, Xsp or mehs file.
-        fileLoaded = loadMeshFile(fname.c_str());
-
+	// check the extension of the filename
+	if ((strlen(filename) > 4 && !strcmp(filename + strlen(filename) - 4, ".obj"))
+		|| (strlen(filename) > 6 && !strcmp(filename + strlen(filename) - 6, ".trian")))
+		fileLoaded = loadObj(fname.c_str());
+	else if (strlen(filename) > 4 && !strcmp(filename + strlen(filename) - 4, ".vtk"))
+		fileLoaded = loadVtk(fname.c_str());
+	else if (strlen(filename) > 9 && !strcmp(filename + strlen(filename) - 9, ".vtk_swap"))
+		fileLoaded = loadVtk(fname.c_str());
+    else if (strlen(filename) > 4 && !strcmp(filename + strlen(filename) - 4, ".msh"))
+        fileLoaded = loadGmsh(fname.c_str());
+	else
+	{
+		std::ifstream file(filename);
+		if (!file.good()) return false;
+		msg_error() << "This file format: " << filename << " will not be supported anymore in sofa release 18.06.";
+		fileLoaded = loadMesh(file);
+		file.close();
+	}
+       
     if(!fileLoaded)
         msg_error() << "Unable to load mesh file '" << fname << "'" ;
 

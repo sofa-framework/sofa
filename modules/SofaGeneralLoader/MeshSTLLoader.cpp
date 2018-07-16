@@ -23,7 +23,6 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <SofaGeneralLoader/MeshSTLLoader.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/io/Mesh.h>
 
 #include <iostream>
 #include <fstream>
@@ -76,30 +75,20 @@ bool MeshSTLLoader::load()
         return false;
     }
 
-    //if( _forceBinary.getValue() )
-    //    return this->readBinarySTL(filename); // -- Reading binary file
+    if( _forceBinary.getValue() )
+        return this->readBinarySTL(filename); // -- Reading binary file
 
-    //std::string test;
-    //file >> test;
+    std::string test;
+    file >> test;
 
-    //if ( test == "solid" )
-    //    return this->readSTL(file);
-    //else
-    //{
-    //    file.close(); // no longer need for an ascii-open file
-    //    return this->readBinarySTL(filename); // -- Reading binary file
-    //}
-
-    file.close();
-    helper::io::Mesh* _mesh = helper::io::Mesh::Create("stl", filename);
-    
-    if (_mesh != NULL)
-    {
-        copyMeshToData(_mesh);
-        delete _mesh;
-    }
+    if ( test == "solid" )
+        return this->readSTL(file);
     else
-        msg_error() << "STL mesh not created from file '" << filename << "'.";
+    {
+        file.close(); // no longer need for an ascii-open file
+        return this->readBinarySTL(filename); // -- Reading binary file
+    }
+
 }
 
 
@@ -224,8 +213,6 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
 
 bool MeshSTLLoader::readSTL(std::ifstream& dataFile)
 {
-    dmsg_info() << "Reading STL file..." ;
-
     Vec3f result;
     std::string line;
 

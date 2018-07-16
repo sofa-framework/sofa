@@ -40,7 +40,6 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/helper/io/MeshOBJ.h>
-#include <sofa/helper/io/MeshSTL.h>
 #include <sofa/helper/rmath.h>
 #include <sofa/helper/accessor.h>
 #include <sstream>
@@ -526,7 +525,7 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
             }
             else
             {
-                //if( MeshSTL *Loader = dynamic_cast< MeshSTL *>(objLoader.get()) )
+				msg_error() << "Method setMesh is not anymore supported in sofa release 18.06.";
                 if(objLoader.get()->loaderType == "stl" || objLoader.get()->loaderType == "vtu")
                 {
                     setMesh(*objLoader, false);

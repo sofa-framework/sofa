@@ -59,15 +59,6 @@ private:
 
     /// method will create a MeshGmsh which will parse the file. Then will call @see addMeshtoTopology() to add mesh data into topology
     bool loadGmsh(const char *filename);
-
-    /// method will create a MeshSTL which will parse the file. Then will call @see addMeshtoTopology() to add mesh data into topology
-    bool loadStl(const char *filename);
-
-    /// method will create a MeshXsp which will parse the file. Then will call @see addMeshtoTopology() to add mesh data into topology
-    bool loadXsp(const char *filename);
-
-    /// method called when format is not found. Will parse header and dispatch into @see loadGmsh or @see loadXsp or @see loadMesh
-    bool loadMeshFile(const char *filename);
     
 
     bool loadVtk(const char *filename);

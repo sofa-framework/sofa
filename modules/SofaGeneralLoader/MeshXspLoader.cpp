@@ -24,7 +24,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <iostream>
 #include <fstream>
-#include <sofa/helper/io/Mesh.h>
 
 namespace sofa
 {
@@ -54,8 +53,7 @@ MeshXspLoader::MeshXspLoader() : MeshLoader()
 
 bool MeshXspLoader::load()
 {
-
-    sout << "Loading Xsp file: " << m_filename << sendl;
+	dmsg_info() << "Loading Xsp file: " << m_filename;
 
     std::string cmd;
     bool fileRead = false;
@@ -66,7 +64,7 @@ bool MeshXspLoader::load()
 
     if (!file.good())
     {
-        serr << "Cannot read file '" << m_filename << "'." << sendl;
+		msg_error() << "Cannot read file '" << m_filename << "'.";
         return false;
     }
 
@@ -80,21 +78,16 @@ bool MeshXspLoader::load()
         float version = 0.0f;
         file >> version;
 
-        //TODO: 2018-04-06 (unify loader api): temporary change to unify loader API
-        //if (version == 3.0)
-        //    fileRead = readXsp(file, false);
-        //else if (version == 4.0)
-        //    fileRead = readXsp(file, true);
+        if (version == 3.0)
+            fileRead = readXsp(file, false);
+        else if (version == 4.0)
+            fileRead = readXsp(file, true);
 
-        file.close();
-        helper::io::Mesh* _mesh = helper::io::Mesh::Create("xsp", filename);
-        copyMeshToData(_mesh);
-
-        delete _mesh;        
+        file.close();    
     }
     else
     {
-        serr << "File '" << m_filename << "' finally appears not to be a Xsp file." << sendl;
+		msg_error() << "File '" << m_filename << "' finally appears not to be a Xsp file.";
         file.close();
         return false;
 
@@ -108,7 +101,7 @@ bool MeshXspLoader::load()
 
 bool MeshXspLoader::readXsp (std::ifstream &file, bool vector_spring)
 {
-    msg_info() << "Reading Xsp file: " << vector_spring;
+	dmsg_info() << "Reading Xsp file: " << vector_spring;
 
     std::string cmd;
     file >> cmd;
@@ -187,7 +180,7 @@ bool MeshXspLoader::readXsp (std::ifstream &file, bool vector_spring)
         }
         else		// it's an unknown keyword
         {
-            msg_error("MeshXspLoader") << "Unknown MassSpring keyword '" << cmd << "'.";
+            msg_error() << "Unknown MassSpring keyword '" << cmd << "'.";
             d_positions.endEdit();
             d_edges.endEdit();
             gravity.endEdit();
