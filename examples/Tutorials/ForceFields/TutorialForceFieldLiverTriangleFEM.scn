@@ -8,7 +8,8 @@
     <Node name="LiverTriangles" gravity="0 -9.81 0" depend="topo dofs">
         <EulerImplicitSolver name="cg_odesolver" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
-        <MeshTopology name="mesh" fileTopology="mesh/liver-smooth.obj" />
+        <MeshObjLoader name="meshLoader0" filename="mesh/liver-smooth.obj" />
+        <MeshTopology name="mesh" src="@meshLoader0" />
         <MechanicalObject template="Vec3d" name="dofs" />
         <TriangleFEMForceField template="Vec3d" />
         <UniformMass template="Vec3d" name="mass" totalmass="0.5" />

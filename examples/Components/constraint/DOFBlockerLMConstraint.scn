@@ -12,7 +12,8 @@
             <RigidMapping template="Rigid,ExtVec3f" name="default19" input="@.." output="@Visual" />
         </Node>
         <Node name="Surf2" gravity="0 -9.81 0">
-            <MeshTopology name="default20" tags="LDI" fileTopology="mesh/cube.obj" position="1 -1 -1 1 -1 1 -1 -1 1 -1 -1 -1 1 1 -1 0.999999 1 1 -1 1 1 -1 1 -1" triangles="4 0 7  0 3 7  2 6 7  2 7 3  1 5 2  5 6 2  0 4 1  4 5 1  4 7 6  4 6 5  0 1 2  0 2 3 " />
+            <MeshObjLoader name="meshLoader1" filename="mesh/cube.obj" />
+            <MeshTopology name="default20" tags="LDI" src="@meshLoader1" position="1 -1 -1 1 -1 1 -1 -1 1 -1 -1 -1 1 1 -1 0.999999 1 1 -1 1 1 -1 1 -1" triangles="4 0 7  0 3 7  2 6 7  2 7 3  1 5 2  5 6 2  0 4 1  4 5 1  4 7 6  4 6 5  0 1 2  0 2 3 " />
             <MechanicalObject template="Vec3d" name="default21"  restScale="1" />
             <RigidMapping template="Rigid,Vec3d" name="default22" />
             <TriangleModel name="FrictionCoeff" contactFriction="1" />
@@ -27,7 +28,8 @@
             <RigidMapping template="Rigid,ExtVec3f" name="default19" input="@.." output="@Visual" />
         </Node>
         <Node name="Surf2" gravity="0 -9.81 0">
-            <MeshTopology name="default20" tags="LDI" fileTopology="mesh/cube.obj" position="1 -1 -1 1 -1 1 -1 -1 1 -1 -1 -1 1 1 -1 0.999999 1 1 -1 1 1 -1 1 -1" triangles="4 0 7  0 3 7  2 6 7  2 7 3  1 5 2  5 6 2  0 4 1  4 5 1  4 7 6  4 6 5  0 1 2  0 2 3 " />
+            <MeshObjLoader name="meshLoader0" filename="mesh/cube.obj" />
+            <MeshTopology name="default20" tags="LDI" src="@meshLoader0" position="1 -1 -1 1 -1 1 -1 -1 1 -1 -1 -1 1 1 -1 0.999999 1 1 -1 1 1 -1 1 -1" triangles="4 0 7  0 3 7  2 6 7  2 7 3  1 5 2  5 6 2  0 4 1  4 5 1  4 7 6  4 6 5  0 1 2  0 2 3 " />
             <MechanicalObject template="Vec3d" name="default21"  restScale="1" />
             <RigidMapping template="Rigid,Vec3d" name="default22" />
             <TriangleModel name="FrictionCoeff" contactFriction="1" />
