@@ -9,7 +9,7 @@
         <EulerImplicitSolver name="cg_odesolver" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
         <MechanicalObject template="Vec3d" name="dofs" />
-        <UniformMass template="Vec3d" name="default25" mass="0.25" />
+        <UniformMass template="Vec3d" name="default25" vertexMass="0.25" />
         <RegularGridTopology name="grid" n="6 6 6" min="-10 0 -10" max="10 20 10" />
         <TetrahedronFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.4" youngModulus="1000" assembling="0" />
         <BoxROI template="Vec3d" name="box_roi" box="-11 -11 -11 11 -9 11" indices="0" drawSize="0" />

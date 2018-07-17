@@ -145,17 +145,11 @@ void GridTopology::GridUpdate::updateHexas()
     for (int z=0; z<n[2]-1; z++)
         for (int y=0; y<n[1]-1; y++)
             for (int x=0; x<n[0]-1; x++)
-#ifdef SOFA_NEW_HEXA
                 hexahedra.push_back(Hexa(topology->point(x  ,y  ,z  ),topology->point(x+1,y  ,z  ),
                         topology->point(x+1,y+1,z  ),topology->point(x  ,y+1,z  ),
                         topology->point(x  ,y  ,z+1),topology->point(x+1,y  ,z+1),
                         topology->point(x+1,y+1,z+1),topology->point(x  ,y+1,z+1)));
-#else
-                hexahedra.push_back(Hexa(topology->point(x  ,y  ,z  ),topology->point(x+1,y  ,z  ),
-                        topology->point(x  ,y+1,z  ),topology->point(x+1,y+1,z  ),
-                        topology->point(x  ,y  ,z+1),topology->point(x+1,y  ,z+1),
-                        topology->point(x  ,y+1,z+1),topology->point(x+1,y+1,z+1)));
-#endif
+
     topology->seqHexahedra.endEdit();
 }
 
@@ -337,17 +331,11 @@ GridTopology::Hexa GridTopology::getHexaCopy(int i)
 
 GridTopology::Hexa GridTopology::getHexahedron(int x, int y, int z)
 {
-#ifdef SOFA_NEW_HEXA
+
     return Hexa(point(x  ,y  ,z  ),point(x+1,y  ,z  ),
             point(x+1,y+1,z  ),point(x  ,y+1,z  ),
             point(x  ,y  ,z+1),point(x+1,y  ,z+1),
             point(x+1,y+1,z+1),point(x  ,y+1,z+1));
-#else
-    return Hexa(point(x  ,y  ,z  ),point(x+1,y  ,z  ),
-            point(x  ,y+1,z  ),point(x+1,y+1,z  ),
-            point(x  ,y  ,z+1),point(x+1,y  ,z+1),
-            point(x  ,y+1,z+1),point(x+1,y+1,z+1));
-#endif
 }
 
 GridTopology::Quad GridTopology::getQuadCopy(int i)

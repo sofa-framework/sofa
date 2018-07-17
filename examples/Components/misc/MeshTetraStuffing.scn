@@ -50,7 +50,7 @@
         <CGLinearSolver iterations="10" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <Mesh name="volume" points="@../input/stuffing.outputPoints" tetras="@../input/stuffing.outputTetras" />
         <MechanicalObject template="CudaVec3f" />
-        <UniformMass totalmass="5" name="mass" />
+        <UniformMass totalMass="5" name="mass" />
         <TetrahedronFEMForceField name="FEM" youngModulus="3000" poissonRatio="0.3" method="large" />
         <BoxConstraint box="-6 0 -2 -2 1.5 3" />
         <Node name="VM">

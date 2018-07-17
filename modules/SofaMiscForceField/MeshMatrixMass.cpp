@@ -41,8 +41,8 @@ using namespace sofa::defaulttype;
 template <>
 Vector6 MeshMatrixMass<Vec3dTypes, double>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const
 {
-    const MassVector &vertexMass= vertexMassInfo.getValue();
-    const MassVector &edgeMass= edgeMassInfo.getValue();
+    const MassVector &vertexMass= d_vertexMassInfo.getValue();
+    const MassVector &edgeMass= d_edgeMassInfo.getValue();
 
     helper::ReadAccessor< DataVecCoord > x = vx;
     helper::ReadAccessor< DataVecDeriv > v = vv;
@@ -84,8 +84,8 @@ Vector6 MeshMatrixMass<Vec3dTypes, double>::getMomentum ( const core::Mechanical
 template <>
 Vector6 MeshMatrixMass<Vec3fTypes, float>::getMomentum ( const core::MechanicalParams*, const DataVecCoord& vx, const DataVecDeriv& vv ) const
 {
-    const MassVector &vertexMass= vertexMassInfo.getValue();
-    const MassVector &edgeMass= edgeMassInfo.getValue();
+    const MassVector &vertexMass= d_vertexMassInfo.getValue();
+    const MassVector &edgeMass= d_edgeMassInfo.getValue();
 
     helper::ReadAccessor< DataVecCoord > x = vx;
     helper::ReadAccessor< DataVecDeriv > v = vv;

@@ -86,6 +86,7 @@ void MatrixLinearSolver<Matrix,Vector>::createGroups(const core::MechanicalParam
             if (gdim <= 0) continue;
             groups.push_back(n);
             gData[n].systemSize = (int)gdim;
+            gData[n].matrixAccessor.setDoPrintInfo( this->f_printLog.getValue() ) ;
             dim += gdim;
         }
         defaultGroup.systemSize = (int)dim;
@@ -96,6 +97,7 @@ void MatrixLinearSolver<Matrix,Vector>::createGroups(const core::MechanicalParam
         SReal dim = 0;
         simulation::MechanicalGetDimensionVisitor(mparams, &dim).execute(root);
         defaultGroup.systemSize = (int)dim;
+        defaultGroup.matrixAccessor.setDoPrintInfo( this->f_printLog.getValue() ) ;
     }
     currentNode = root;
     currentGroup = &defaultGroup;

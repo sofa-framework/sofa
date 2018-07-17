@@ -22,7 +22,7 @@
 	      <!--Mesh name="mesh" position="0.2 -0.1 0.3  0.7 0.2 0.1  -0.2 0.7 0.2  0.2 -0.1 1" tetrahedra="0 1 2 3" />   <!--crappy tetra-->
 	    
             <MechanicalObject src="@mesh"  />
-            <UniformMass totalmass="4" />
+            <UniformMass totalMass="4" />
             <InvertibleFVMForceField name="FEM" youngModulus="1000" poissonRatio="0" verbose="true"/>
 	    <Point />
 	    <FixedConstraint name="FixedConstraint" indices="1 2 3" />
@@ -37,7 +37,7 @@
              <Mesh name="mesh" position="1 0 0  1 1 0  0 0 0  1 0 1" tetrahedra="0 1 2 3" />   <!--rotated regular tetra-->
 	     
             <MechanicalObject src="@mesh" dx="2" />
-            <UniformMass totalmass="4" />
+            <UniformMass totalMass="4" />
 	    <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0" computeGlobalMatrix="false" method="svd" />
 	    <Point />
 	    <FixedConstraint name="FixedConstraint" indices="1 2 3" />

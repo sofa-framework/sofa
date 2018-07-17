@@ -31,6 +31,7 @@
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <SofaBaseMechanics/AddMToMatrixFunctor.h>
 #include <sofa/simulation/Simulation.h>
+#include <sofa/simulation/AnimateEndEvent.h>
 #include <iostream>
 #include <string.h>
 
@@ -74,52 +75,35 @@ using defaulttype::BaseMatrix;
 
 template <class DataTypes, class MassType>
 UniformMass<DataTypes, MassType>::UniformMass()
-    : d_mass ( initData ( &d_mass, MassType ( 1.0f ), "mass",
-                          "Specify a unique mass for all the particles.                      "
-                          "If the mass attribute is set then totalmass is deduced from it     "
-                          "using the following formula: totalmass = mass * number of particules"
-                          "The default value is {1.0}" ) )
-
-    , d_totalMass ( initData ( &d_totalMass, (SReal)0.0, "totalmass",
-                               "Specify a unique mass for all the particles.                        "
-                               "If the totalmass attribute is set then the mass is deduced from it   "
-                               "using the following formula: mass = totalmass / number of particules "
-                               "If unspecified the default value is totalmass = mass * number of particules."
-                                ) )
-
+    : d_vertexMass ( initData ( &d_vertexMass, MassType ( 1.0f ), "vertexMass",
+                                "Specify one single, positive, real value for the mass of each particle. \n"
+                                "If unspecified or wrongly set, the totalMass information is used." ) )
+    , d_totalMass ( initData ( &d_totalMass, (SReal)1.0, "totalMass",
+                               "Specify the total mass resulting from all particles. \n"
+                               "If unspecified or wrongly set, the default value is used: totalMass = 1.0") )
     , d_filenameMass ( initData ( &d_filenameMass, "filename",
                                   "rigid file to load the mass parameters" ) )
-
     , d_showCenterOfGravity ( initData ( &d_showCenterOfGravity, false, "showGravityCenter",
                                          "display the center of gravity of the system" ) )
-
     , d_showAxisSize ( initData ( &d_showAxisSize, 1.0f, "showAxisSizeFactor",
                                   "factor length of the axis displayed (only used for rigids)" ) )
-
     , d_computeMappingInertia ( initData ( &d_computeMappingInertia, false, "compute_mapping_inertia",
                                            "to be used if the mass is placed under a mapping" ) )
-
     , d_showInitialCenterOfGravity ( initData ( &d_showInitialCenterOfGravity, false, "showInitialCenterOfGravity",
                                                 "display the initial center of gravity of the system" ) )
-
     , d_showX0 ( initData ( &d_showX0, false, "showX0",
                             "display the rest positions" ) )
-
     , d_localRange ( initData ( &d_localRange, Vec<2,int> ( -1,-1 ), "localRange",
                                 "optional range of local DOF indices. \n"
-                              "Any computation involving only indices outside of this range \n"
-                              "are discarded (useful for parallelization using mesh partitionning)" ) )
-
+                                "Any computation involving only indices outside of this range \n"
+                                "are discarded (useful for parallelization using mesh partitionning)" ) )
     , d_indices ( initData ( &d_indices, "indices",
                              "optional local DOF indices. Any computation involving only indices outside of this list are discarded" ) )
-
     , d_handleTopoChange ( initData ( &d_handleTopoChange, false, "handleTopoChange",
                                       "The mass and totalMass are recomputed on particles add/remove." ) )
-
     , d_preserveTotalMass( initData ( &d_preserveTotalMass, false, "preserveTotalMass",
                                       "Prevent totalMass from decreasing when removing particles."))
 {
-    this->addAlias(&d_totalMass,"totalMass");
     constructor_message();
 }
 
@@ -139,23 +123,50 @@ void UniformMass<DataTypes, MassType>::constructor_message()
 template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::setMass ( const MassType& m )
 {
-    d_mass.setValue ( m );
+    const MassType& currentVertexMass = d_vertexMass.getValue();
+    d_vertexMass.setValue( m );
+    if(!checkVertexMass())
+    {
+        msg_warning() << "Given value to setVertexMass() is not a strictly positive value\n"
+                      << "Previous value is used: vertexMass = " << currentVertexMass;
+        d_vertexMass.setValue(currentVertexMass);
+    }
 }
 
 template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::setTotalMass ( SReal m )
 {
-    d_totalMass.setValue ( m );
+    Real currentTotalMass = d_totalMass.getValue();
+    d_totalMass.setValue( m );
+    if(!checkTotalMass())
+    {
+        msg_warning() << "Given value to setTotalMass() is not a strictly positive value\n"
+                      << "Previous value is used: totalMass = " << currentTotalMass;
+        d_totalMass.setValue(currentTotalMass);
+    }
 }
 
 
 template <class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::reinit()
+void UniformMass<DataTypes, MassType>::init()
 {
+    initDefaultImpl();
+}
+
+
+template <class DataTypes, class MassType>
+void UniformMass<DataTypes, MassType>::initDefaultImpl()
+{
+    Mass<DataTypes>::init();
+
+    m_dataTrackerVertex.trackData(d_vertexMass);
+    m_dataTrackerTotal.trackData(d_totalMass);
+
     WriteAccessor<Data<vector<int> > > indices = d_indices;
     m_doesTopoChangeAffect = false;
 
-    if(mstate==NULL){
+    if(mstate==NULL)
+    {
         msg_warning(this) << "Missing mechanical state. \n"
                              "UniformMass need to be used with an object also having a MechanicalState. \n"
                              "To remove this warning: add a <MechanicalObject/> to the parent node of the one \n"
@@ -163,7 +174,8 @@ void UniformMass<DataTypes, MassType>::reinit()
         return;
     }
 
-    if ( d_filenameMass.isSet() && d_filenameMass.getValue() != "unused" ){
+    if ( d_filenameMass.isSet() && d_filenameMass.getValue() != "unused" )
+    {
         loadRigidMass(d_filenameMass.getFullPath()) ;
     }
 
@@ -185,39 +197,163 @@ void UniformMass<DataTypes, MassType>::reinit()
             indices.push_back(i);
         m_doesTopoChangeAffect = true;
     }
-    if(d_totalMass.getValue() < 0.0 || d_mass.getValue() < 0.0){
-        msg_warning(this) << "The mass or totalmass data field cannot have negative values.\n"
-                             "Switching back to the default value, mass = 1.0 and totalmass = mass * num_position. \n"
-                             "To remove this warning you need to use positive values in totalmass and mass data field";
 
-        d_totalMass.setValue(0.0) ;
-        d_mass.setValue(1.0) ;
+
+    //If user defines the vertexMass, use this as the mass
+    if (d_vertexMass.isSet())
+    {
+        //Check double definition : both totalMass and vertexMass are user-defined
+        if (d_totalMass.isSet())
+        {
+            msg_warning(this) << "totalMass value overriding the value of the attribute vertexMass. \n"
+                                 "vertexMass = totalMass / nb_dofs. \n"
+                                 "To remove this warning you need to set either totalMass or vertexMass data field, but not both.";
+            checkTotalMassInit();
+            initFromTotalMass();
+        }
+        else
+        {
+            if(checkVertexMass())
+            {
+                initFromVertexMass();
+            }
+            else
+            {
+                checkTotalMassInit();
+                initFromTotalMass();
+            }
+        }
+    }
+    //else totalMass is used
+    else
+    {
+        if(!d_totalMass.isSet())
+        {
+            msg_info() << "No information about the mass is given. Default totatMass is used as reference.";
+        }
+
+        checkTotalMassInit();
+        initFromTotalMass();
     }
 
-    //Update mass and totalMass
-    if (d_totalMass.getValue() > 0)
-    {
-        if (d_mass.isSet()) {
-            msg_warning(this) << "Totalmass value overriding the value of the attribute Mass.\n"
-                                 "Mass = TotalMass / num_position. \n"
-                                 "To remove this warning you need to set either totalmass or mass data field but not both.";
-        }
-        MassType *m = d_mass.beginEdit();
-        *m = ( ( typename DataTypes::Real ) d_totalMass.getValue() / indices.size() );
-        d_mass.endEdit();
+    //Info post-init
+    msg_info() << "totalMass  = " << d_totalMass.getValue() << " \n"
+                  "vertexMass = " << d_vertexMass.getValue();
+}
 
+
+template <class DataTypes, class MassType>
+void UniformMass<DataTypes, MassType>::reinit()
+{
+    update();
+}
+
+
+template <class DataTypes, class MassType>
+void UniformMass<DataTypes, MassType>::update()
+{
+    bool update = false;
+
+    if (m_dataTrackerTotal.isDirty())
+    {
+        if(checkTotalMass())
+        {
+            initFromTotalMass();
+            update = true;
+        }
+        m_dataTrackerTotal.clean();
+    }
+    else if(m_dataTrackerVertex.isDirty())
+    {
+        if(checkVertexMass())
+        {
+            initFromVertexMass();
+            update = true;
+        }
+        m_dataTrackerVertex.clean();
+    }
+
+    //Info post-reinit
+    msg_info() << "totalMass  = " << d_totalMass.getValue() << " \n"
+                  "vertexMass = " << d_vertexMass.getValue();
+}
+
+
+template <class DataTypes, class MassType>
+bool UniformMass<DataTypes, MassType>::checkVertexMass()
+{
+    if(d_vertexMass.getValue() <= 0.0 )
+    {
+        msg_warning(this) << "vertexMass data can not have a negative value. \n"
+                             "To remove this warning, you need to set one single, non-zero and positive value to the vertexMass data";
+        return false;
     }
     else
-        d_totalMass.setValue ( indices.size() * (Real)d_mass.getValue() );
+    {
+        return true;
+    }
+}
+
+
+template <class DataTypes, class MassType>
+void UniformMass<DataTypes, MassType>::initFromVertexMass()
+{
+    //If the vertexMass attribute is set then the totalMass is computed from it
+    //using the following formula: totalMass = vertexMass * number of particules
+    int size = d_indices.getValue().size();
+    SReal vertexMass = (SReal) d_vertexMass.getValue();
+    SReal totalMass = vertexMass * (SReal)size;
+    d_totalMass.setValue(totalMass);
+    msg_info() << "vertexMass information is used";
 
 }
 
 
 template <class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::init()
+bool UniformMass<DataTypes, MassType>::checkTotalMass()
 {
-    Mass<DataTypes>::init();
-    reinit();
+    if(d_totalMass.getValue() <= 0.0)
+    {
+        msg_warning(this) << "totalMass data can not have a negative value. \n"
+                             "To remove this warning, you need to set a non-zero positive value to the totalMass data";
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
+
+template <class DataTypes, class MassType>
+void UniformMass<DataTypes, MassType>::checkTotalMassInit()
+{
+    //Check for negative or null value, if wrongly set use the default value totalMass = 1.0
+    if(!checkTotalMass())
+    {
+        msg_warning(this) << "Switching back to default values: totalMass = 1.0\n";
+        d_totalMass.setValue(1.0) ;
+    }
+}
+
+
+template <class DataTypes, class MassType>
+void UniformMass<DataTypes, MassType>::initFromTotalMass()
+{
+    //If the totalMass attribute is set then the vertexMass is computed from it
+    //using the following formula: vertexMass = totalMass / number of particules
+
+    if(d_indices.getValue().size() > 0)
+    {
+        MassType *m = d_vertexMass.beginEdit();
+        *m = ( ( typename DataTypes::Real ) d_totalMass.getValue() / d_indices.getValue().size() );
+        d_vertexMass.endEdit();
+        msg_info() << "totalMass information is used";
+    }
+    else
+    {
+        msg_warning() << "indices vector size is <= 0";
+    }
 }
 
 
@@ -234,7 +370,7 @@ void UniformMass<DataTypes, MassType>::handleTopologyChange()
             indices.push_back((int)i);
     }
 
-    if ( meshTopology != 0 )
+    if ( meshTopology != 0 && mstate->getSize()>0 )
     {
         list< const TopologyChange * >::const_iterator it = meshTopology->beginChange();
         list< const TopologyChange * >::const_iterator itEnd = meshTopology->endChange();
@@ -246,9 +382,9 @@ void UniformMass<DataTypes, MassType>::handleTopologyChange()
             case core::topology::POINTSADDED:
                 if ( d_handleTopoChange.getValue() && m_doesTopoChangeAffect)
                 {
-                    MassType* m = d_mass.beginEdit();
+                    MassType* m = d_vertexMass.beginEdit();
                     *m = ( ( typename DataTypes::Real ) d_totalMass.getValue() / mstate->getSize() );
-                    d_mass.endEdit();
+                    d_vertexMass.endEdit();
                 }
                 break;
 
@@ -256,9 +392,9 @@ void UniformMass<DataTypes, MassType>::handleTopologyChange()
                 if ( d_handleTopoChange.getValue() && m_doesTopoChangeAffect)
                 {
                     if (!d_preserveTotalMass.getValue())
-                        d_totalMass.setValue (mstate->getSize() * (Real)d_mass.getValue() );
+                        d_totalMass.setValue (mstate->getSize() * (Real)d_vertexMass.getValue() );
                     else
-                        d_mass.setValue( static_cast< MassType >( ( typename DataTypes::Real ) d_totalMass.getValue() / mstate->getSize()) );
+                        d_vertexMass.setValue( static_cast< MassType >( ( typename DataTypes::Real ) d_totalMass.getValue() / mstate->getSize()) );
                 }
                 break;
 
@@ -284,7 +420,7 @@ void UniformMass<DataTypes, MassType>::addMDx ( const core::MechanicalParams*,
 
     WriteAccessor<Data<vector<int> > > indices = d_indices;
 
-    MassType m = d_mass.getValue();
+    MassType m = d_vertexMass.getValue();
     if ( factor != 1.0 )
         m *= ( typename DataTypes::Real ) factor;
 
@@ -303,7 +439,7 @@ void UniformMass<DataTypes, MassType>::accFromF ( const core::MechanicalParams*,
 
     ReadAccessor<Data<vector<int> > > indices = d_indices;
 
-    MassType m = d_mass.getValue();
+    MassType m = d_vertexMass.getValue();
     for ( unsigned int i=0; i<indices.size(); i++ )
         a[indices[i]] = f[indices[i]] / m;
 }
@@ -370,10 +506,10 @@ void UniformMass<DataTypes, MassType>::addForce ( const core::MechanicalParams*,
     Deriv theGravity;
     DataTypes::set
     ( theGravity, g[0], g[1], g[2] );
-    const MassType& m = d_mass.getValue();
+    const MassType& m = d_vertexMass.getValue();
     Deriv mg = theGravity * m;
 
-    dmsg_info() <<" addForce, mg = "<<d_mass<<" * "<<theGravity<<" = "<<mg;
+    dmsg_info() <<" addForce, mg = "<<d_vertexMass<<" * "<<theGravity<<" = "<<mg;
 
 
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
@@ -432,7 +568,7 @@ SReal UniformMass<DataTypes, MassType>::getKineticEnergy ( const MechanicalParam
     ReadAccessor<Data<vector<int> > > indices = d_indices;
 
     SReal e = 0;
-    const MassType& m = d_mass.getValue();
+    const MassType& m = d_vertexMass.getValue();
 
     for ( unsigned int i=0; i<indices.size(); i++ )
         e+= v[indices[i]]*m*v[indices[i]];
@@ -449,7 +585,7 @@ SReal UniformMass<DataTypes, MassType>::getPotentialEnergy ( const MechanicalPar
     ReadAccessor<Data<vector<int> > > indices = d_indices;
 
     SReal e = 0;
-    const MassType& m = d_mass.getValue();
+    const MassType& m = d_vertexMass.getValue();
 
     Vec3d g( getContext()->getGravity());
     Deriv gravity;
@@ -487,7 +623,7 @@ template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::addMToMatrix (const MechanicalParams *mparams,
                                                      const MultiMatrixAccessor* matrix)
 {
-    const MassType& m = d_mass.getValue();
+    const MassType& m = d_vertexMass.getValue();
 
     const size_t N = DataTypeInfo<Deriv>::size();
 
@@ -505,7 +641,7 @@ void UniformMass<DataTypes, MassType>::addMToMatrix (const MechanicalParams *mpa
 template <class DataTypes, class MassType>
 SReal UniformMass<DataTypes, MassType>::getElementMass ( unsigned int ) const
 {
-    return ( SReal ) ( d_mass.getValue() );
+    return ( SReal ) ( d_vertexMass.getValue() );
 }
 
 
@@ -520,7 +656,7 @@ void UniformMass<DataTypes, MassType>::getElementMass ( unsigned int  index ,
         m->resize ( dimension, dimension );
 
     m->clear();
-    AddMToMatrixFunctor<Deriv,MassType>() ( m, d_mass.getValue(), 0, 1 );
+    AddMToMatrixFunctor<Deriv,MassType>() ( m, d_vertexMass.getValue(), 0, 1 );
 }
 
 
@@ -560,6 +696,20 @@ void UniformMass<DataTypes, MassType>::draw(const VisualParams* vparams)
         vparams->drawTool()->drawCross(temp, (float)axisSize, color);
     }
 }
+
+
+template<class DataTypes, class MassType>
+void UniformMass<DataTypes, MassType>::handleEvent(sofa::core::objectmodel::Event *event)
+{
+    if (sofa::simulation::AnimateEndEvent::checkEventType(event))
+    {
+        if (m_dataTrackerVertex.isDirty() || m_dataTrackerTotal.isDirty())
+        {
+            update();
+        }
+    }
+}
+
 
 template<class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::loadRigidMass( const std::string&  filename)

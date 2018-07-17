@@ -9,7 +9,7 @@
         <CGLinearSolver iterations="30" tolerance="1e-5" threshold="1e-5"/>
         <SparseGridTopology n="10 5 10" fileTopology="mesh/frog.obj" />
         <MechanicalObject dx="-10.0" />
-        <UniformMass mass="1.0" />
+        <UniformMass vertexMass="1.0" />
         <BoxConstraint box="-18.0 2.0 -5.0 -2.0 3.0 5.0" />
         <MeshSpringForceField name="Springs" stiffness="50000" damping="4" />
         <Node name="Visu">
@@ -32,7 +32,7 @@
         <CGLinearSolver iterations="30" tolerance="1e-5" threshold="1e-5"/>
         <SparseGridTopology n="10 5 10" fileTopology="mesh/frog_quads.obj" />
         <MechanicalObject dx="10.0" />
-        <UniformMass mass="1.0" />
+        <UniformMass vertexMass="1.0" />
         <BoxConstraint box="2.0 2.0 -5.0 18.0 3.0 5.0" />
         <MeshSpringForceField name="Springs" stiffness="50000" damping="4" />
         <Node name="Visu">
