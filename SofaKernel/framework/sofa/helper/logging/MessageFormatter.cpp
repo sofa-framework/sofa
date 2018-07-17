@@ -23,12 +23,10 @@
 * User of this library should read the documentation
 * in the messaging.h file.
 ******************************************************************************/
-#ifndef MESSAGEFORMATTER_H
-#define MESSAGEFORMATTER_H
 
-#include <sstream>
-#include <sofa/helper/helper.h>
 #include <sofa/helper/system/console.h>
+#include "Message.h"
+#include "MessageFormatter.h"
 
 namespace sofa
 {
@@ -39,25 +37,38 @@ namespace helper
 namespace logging
 {
 
-class Message;
+std::string MessageFormatter::getPrefixText(unsigned int type) const {
+    switch (type) {
+        case Message::Advice     : return "[SUGGESTION] ";
+        case Message::Deprecated : return "[DEPRECATED] ";
+        case Message::Warning    : return "[WARNING] ";
+        case Message::Info       : return "[INFO]    ";
+        case Message::Error      : return "[ERROR]   ";
+        case Message::Fatal      : return "[FATAL]   ";
+        case Message::TEmpty     : return "[EMPTY]   ";
 
-class SOFA_HELPER_API MessageFormatter
-{
-public:
-    virtual void formatMessage(const Message& m,std::ostream& out) = 0 ;
+        default:
+            return "";
+    }
+}
 
-protected:
-    MessageFormatter() {} // no public default constructor, it should be enough to have singleton for MessageFormatters
+std::ostream & MessageFormatter::setColor(std::ostream &os, unsigned int type) const {
+    switch (type) {
+        case Message::Advice     : return os << console::Foreground::Bright::Green;
+        case Message::Info       : return os << console::Foreground::Bright::Green;
+        case Message::Deprecated : return os << console::Foreground::Bright::Yellow;
+        case Message::Warning    : return os << console::Foreground::Bright::Cyan;
+        case Message::Error      : return os << console::Foreground::Bright::Red;
+        case Message::Fatal      : return os << console::Foreground::Bright::Magenta;
 
-    virtual std::string getPrefixText(unsigned int type) const;
+        case Message::TEmpty:
+        default:
+            return os << console::Foreground::Normal::Reset;
+    }
+}
 
-    virtual std::ostream & setColor(std::ostream &stream, unsigned int type) const;
+} // namespace logging
 
-};
+} // namespace helper
 
-} // logging
-} // helper
-} // sofa
-
-
-#endif // MESSAGEFORMATTER_H
+} // namespace sofa
