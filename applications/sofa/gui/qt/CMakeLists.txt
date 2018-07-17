@@ -177,20 +177,21 @@ endif()
 
     # QT INSTALL
     get_target_property(QtCore_location Qt5::Core LOCATION_${CMAKE_BUILD_TYPE})
-    string(REGEX REPLACE "\\/[^/]*/[^/]*$" "" Qt_location ${QtCore_location})
+    string(REGEX MATCH "^.*/(bin|lib)/" QtCore_dir ${QtCore_location})
+    string(REGEX REPLACE "/$" "" QtCore_dir "${QtCore_dir}") # remove trailing slash
     # Installing Qt plugins the hard way (dirty)
-    install(DIRECTORY "${Qt_location}/plugins/" DESTINATION "bin" COMPONENT applications)
+    install(DIRECTORY "${QtCore_dir}/../plugins/" DESTINATION "bin" COMPONENT applications)
     # Installing Qt XCB libraries the hard way (dirty)
     file(GLOB QT_XCB_LIBRARIES
-        "${Qt_location}/lib/libQt5DBus${CMAKE_SHARED_LIBRARY_SUFFIX}"
-        "${Qt_location}/lib/libQt5XcbQpa${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        "${QtCore_dir}/libQt5DBus${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        "${QtCore_dir}/libQt5XcbQpa${CMAKE_SHARED_LIBRARY_SUFFIX}"
         )
     sofa_install_libraries(${QT_XCB_LIBRARIES})
     # Installing Qt ICU libraries the hard way (dirty)
     file(GLOB QT_ICU_LIBRARIES
-        "${Qt_location}/lib/libicudata${CMAKE_SHARED_LIBRARY_SUFFIX}"
-        "${Qt_location}/lib/libicui18n${CMAKE_SHARED_LIBRARY_SUFFIX}"
-        "${Qt_location}/lib/libicuuc${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        "${QtCore_dir}/libicudata${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        "${QtCore_dir}/libicui18n${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        "${QtCore_dir}/libicuuc${CMAKE_SHARED_LIBRARY_SUFFIX}"
         )
     sofa_install_libraries(${QT_ICU_LIBRARIES})
 endif()
