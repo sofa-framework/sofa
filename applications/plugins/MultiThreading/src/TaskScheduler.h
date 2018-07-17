@@ -34,6 +34,7 @@
 #include <map>
 #include <deque>
 
+#include <boost/thread/tss.hpp>
 
 namespace sofa
 {
@@ -45,7 +46,7 @@ namespace sofa
 		class WorkerThread;
         class TasksAllocators;
 
-        
+
 		class SOFA_MULTITHREADING_PLUGIN_API WorkerThread
 		{
 		public:
@@ -54,9 +55,7 @@ namespace sofa
 
 			~WorkerThread();
 
-			static WorkerThread* getCurrent();
-            
-            static WorkerThread* getThread();
+			static WorkerThread* getCurrent();         
 
 			// queue task if there is space, and run it otherwise
 			bool addTask(Task* pTask);
@@ -170,9 +169,9 @@ namespace sofa
 
 		private:
 			
-            //static thread_local WorkerThreadLockFree* _workerThreadIndex;
+            //static thread_local WorkerThread* _workerThreadIndex;
 
-			static std::map< std::thread::id, WorkerThread*> _threads;
+			std::map< std::thread::id, WorkerThread*> _threads;
 
 			Task::Status*	_mainTaskStatus;
 

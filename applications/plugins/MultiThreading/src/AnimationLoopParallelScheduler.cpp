@@ -80,7 +80,7 @@ namespace simulation
 
 	AnimationLoopParallelScheduler::~AnimationLoopParallelScheduler()
 	{	
-		TaskScheduler::getInstance().init(mNbThread);
+		//TaskScheduler::getInstance().stop();
 	}
 
 	void AnimationLoopParallelScheduler::init()

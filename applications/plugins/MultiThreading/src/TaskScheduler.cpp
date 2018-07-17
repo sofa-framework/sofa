@@ -8,8 +8,7 @@ namespace sofa
 	namespace simulation
 	{
         
-        //thread_local WorkerThreadLockFree* TaskSchedulerLockFree::_workerThreadIndex = nullptr;
-		std::map< std::thread::id, WorkerThread*> TaskScheduler::_threads;
+        static thread_local WorkerThread* _workerThreadIndex = nullptr;
 
         
 		TaskScheduler& TaskScheduler::getInstance()
@@ -24,7 +23,11 @@ namespace sofa
 			_threadCount = 0;
 			_isClosing = false;
 
-			TaskScheduler::_threads[std::this_thread::get_id()] = new WorkerThread(this);
+            // init global static thread local var
+            _workerThreadIndex = new WorkerThread(this);
+
+			_threads[std::this_thread::get_id()] = _workerThreadIndex;
+           
 		}
 
 		TaskScheduler::~TaskScheduler()
@@ -71,8 +74,8 @@ namespace sofa
 
             _isClosing = false;
             _workerThreadsIdle = true;
-            _mainTaskStatus	= nullptr;
-            
+            _mainTaskStatus	= nullptr;          
+
             // only physicsal cores. no advantage from hyperthreading.
             _threadCount = GetHardwareThreadsCount() / 2;
             
@@ -179,6 +182,7 @@ namespace sofa
             {
                 _stdThread.join();
             }
+            _finished = true;
 		}
 
         bool WorkerThread::isFinished()
@@ -201,20 +205,16 @@ namespace sofa
             return &_stdThread;
         }
 
-		WorkerThread* WorkerThread::getCurrent()
-		{
-			auto thread = TaskScheduler::_threads.find(std::this_thread::get_id());
-			if (thread == TaskScheduler::_threads.end())
-			{
-				return nullptr;
-			}
-			return thread->second;
-		}
-
+        WorkerThread* WorkerThread::getCurrent()
+        {
+            return _workerThreadIndex;
+        }
 
 		void WorkerThread::run(void)
 		{
             
+            _workerThreadIndex = this;
+
 			// main loop
             while ( !_taskScheduler->isClosing() )
 			{
@@ -383,7 +383,7 @@ namespace sofa
 		bool WorkerThread::stealTasks()
 		{
 
-			for (auto it : TaskScheduler::_threads)
+			for (auto it : _taskScheduler->_threads)
 			{
 				// if this is the main thread continue
 				if (std::this_thread::get_id() == it.first)
