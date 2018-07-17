@@ -222,7 +222,7 @@ void GeomagicDriver::init()
 
     if (HD_DEVICE_ERROR(error = hdGetError()))
     {
-        msg_error("GeomagicDriver") << "Failed to initialize the device called " << d_deviceName.getValue().c_str();
+        msg_error() << "Failed to initialize the device called " << d_deviceName.getValue().c_str();
         d_omniVisu.setValue(false);
         m_errorDevice = true;
         //init the positionDevice data to avoid any crash in the scene
@@ -251,11 +251,11 @@ void GeomagicDriver::init()
 
     if(d_maxInputForceFeedback.isSet())
     {
-        msg_info("GeomagicDriver") << "maxInputForceFeedback value ("<< d_maxInputForceFeedback.getValue() <<") is set, carefully set the max force regarding your haptic device";
+        msg_info() << "maxInputForceFeedback value ("<< d_maxInputForceFeedback.getValue() <<") is set, carefully set the max force regarding your haptic device";
 
         if(d_maxInputForceFeedback.getValue() <= 0.0)
         {
-            msg_error("GeomagicDriver") << "maxInputForceFeedback value ("<< d_maxInputForceFeedback.getValue() <<") is negative or 0, it should be strictly positive";
+            msg_error() << "maxInputForceFeedback value ("<< d_maxInputForceFeedback.getValue() <<") is negative or 0, it should be strictly positive";
             d_maxInputForceFeedback.setValue(0.0);
         }
     }
@@ -358,7 +358,7 @@ void GeomagicDriver::bwdInit()
 
     if (HD_DEVICE_ERROR(error = hdGetError()))
     {
-        msg_info("GeomagicDriver") <<"Failed to start the scheduler";
+        msg_info() <<"Failed to start the scheduler";
         m_errorDevice = true;
         if (m_hStateHandles.size()) m_hStateHandles[0] = HD_INVALID_HANDLE;
             return;
