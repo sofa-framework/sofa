@@ -34,7 +34,6 @@
 #include <map>
 #include <deque>
 
-#include <boost/thread/tss.hpp>
 
 namespace sofa
 {
