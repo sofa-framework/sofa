@@ -16,7 +16,7 @@
         <EulerImplicitSolver name="cg_odesolver" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver name="linear solver" template="GraphScattered" iterations="25" tolerance="1e-09" threshold="1e-09" />
         <MeshGmshLoader name="meshLoader0" filename="mesh/cylinder.msh" />
-        <MeshTopology src="@loader" name="Static Mesh" src="@meshLoader0" />
+        <MeshTopology name="Static Mesh" src="@meshLoader0" />
         <MeshSpringForceField name="FEM-Bend" template="Vec3d" stiffness="100" damping="1" />
         <TetrahedronFEMForceField name="FEM" template="Vec3d" method="polar" poissonRatio="0.3" youngModulus="1116" assembling="0" />
         <TetrahedronModel name="Models" />
@@ -43,7 +43,7 @@
         <EulerImplicitSolver name="cg_odesolver" printLog="0" />
         <CGLinearSolver name="linear solver" template="GraphScattered" iterations="25" tolerance="1e-09" threshold="1e-09" />
         <MeshGmshLoader name="meshLoader1" filename="mesh/cylinder.msh" />
-        <TetrahedronSetTopologyContainer src="@loader" name="Topology Container" src="@meshLoader1" />
+        <TetrahedronSetTopologyContainer name="Topology Container" src="@meshLoader1" />
         <TetrahedronSetTopologyModifier name="Topology Modifier" />
         <TetrahedronSetTopologyAlgorithms name="Topology Algorithms" template="Vec3d" />
         <TetrahedronSetGeometryAlgorithms name="Geometry Algorithms" template="Vec3d" />
