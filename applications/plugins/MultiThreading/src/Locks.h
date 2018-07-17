@@ -61,7 +61,7 @@ namespace sofa
                 while( _flag.test_and_set(std::memory_order_acquire) )
                 {
                     // cpu busy wait
-                    std::this_thread::yield();
+                    //std::this_thread::yield();
                 }
             }
             
