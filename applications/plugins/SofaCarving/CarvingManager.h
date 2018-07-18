@@ -82,35 +82,35 @@ protected:
 
 public:
     /// Tool model path
-    Data < std::string > f_toolModelPath; 
+    Data < std::string > d_toolModelPath; 
     /// TriangleSetModel or SphereModel path
-    Data < std::string > f_surfaceModelPath;
+    Data < std::string > d_surfaceModelPath;
 
     /// Collision distance at which cavring will start. Equal to contactDistance by default.
-    Data < Real > f_carvingDistance;
+    Data < Real > d_carvingDistance;
     
     ///< Activate this object. Note that this can be dynamically controlled by using a key
-    Data < bool > active;
+    Data < bool > d_active;
     ///< key to press to activate this object until the key is released
-    Data < char > keyEvent;
+    Data < char > d_keyEvent;
     ///< key to activate this object until the key is pressed again
-    Data < char > keySwitchEvent;
+    Data < char > d_keySwitchEvent;
     ///< Activate carving with middle mouse button
-    Data < bool > mouseEvent;
+    Data < bool > d_mouseEvent;
     ///< Activate carving with omni button
-    Data < bool > omniEvent;
+    Data < bool > d_omniEvent;
     
 protected:
     /// Pointer to the tool collision model
-    core::CollisionModel* toolCollisionModel;
+    core::CollisionModel* m_toolCollisionModel;
 
     // Pointer to the target object collision model
-    std::vector<core::CollisionModel*> surfaceCollisionModels;
+    std::vector<core::CollisionModel*> m_surfaceCollisionModels;
 
     // Pointer to the scene intersection Method component
-    core::collision::Intersection* intersectionMethod;
+    core::collision::Intersection* m_intersectionMethod;
     // Pointer to the scene detection Method component (Narrow phase only)
-    core::collision::NarrowPhaseDetection* detectionNP;
+    core::collision::NarrowPhaseDetection* m_detectionNP;
 
     // Bool to store the information if component has well be init and can be used.
     bool m_carvingReady;
