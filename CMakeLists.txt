@@ -127,9 +127,6 @@ option(SOFA_WITH_DEVTOOLS "Compile with developement extra features." ON)
 ### Threading
 option(SOFA_WITH_THREADING "Compile sofa with thread-safetiness support (PARTIAL/EXPERIMENTAL)" ON)
 
-### Experimental
-option(SOFA_WITH_EXPERIMENTAL_FEATURES "Compile sofa with exprimental features regarding sparse matrices treatments under mappings" OFF)
-
 ### Testing
 option(SOFA_BUILD_TESTS "Compile the automatic tests for Sofa, along with the gtest library." ON)
 if(SOFA_BUILD_TESTS)
