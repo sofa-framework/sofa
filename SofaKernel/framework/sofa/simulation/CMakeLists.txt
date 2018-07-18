@@ -27,8 +27,6 @@ set(HEADER_FILES
     LocalStorage.h
     MechanicalComputeEnergyVisitor.h
     MechanicalMatrixVisitor.h
-    MechanicalMatrixMapper.h
-    MechanicalMatrixMapper.inl
     MechanicalOperations.h
     MechanicalVPrintVisitor.h
     MechanicalVisitor.h
@@ -88,7 +86,6 @@ set(SOURCE_FILES
     IntegrateBeginEvent.cpp
     IntegrateEndEvent.cpp
     MechanicalMatrixVisitor.cpp
-    MechanicalMatrixMapper.cpp
     MechanicalOperations.cpp
     MechanicalVPrintVisitor.cpp
     MechanicalVisitor.cpp

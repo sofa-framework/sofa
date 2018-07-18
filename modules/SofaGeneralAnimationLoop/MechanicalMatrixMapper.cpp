@@ -38,7 +38,6 @@ namespace interactionforcefield
 
 using namespace sofa::defaulttype;
 
-
 ////////////////////////////////////////////    FACTORY    //////////////////////////////////////////////
 SOFA_DECL_CLASS(MechanicalMatrixMapper)
 

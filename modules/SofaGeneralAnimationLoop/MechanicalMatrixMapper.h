@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_MechanicalMatrixMapper_H
-#define SOFA_COMPONENT_FORCEFIELD_MechanicalMatrixMapper_H
+#ifndef SOFA_COMPONENT_ANIMATIONLOOP_MECHANICALMATRIXMAPPER_H
+#define SOFA_COMPONENT_ANIMATIONLOOP_MECHANICALMATRIXMAPPER_H
 
 #include <sofa/core/behavior/MixedInteractionForceField.h>
 #include <sofa/core/behavior/MechanicalState.h>
@@ -52,7 +52,7 @@ namespace interactionforcefield
 {
 
 
-class SOFA_CONSTRAINT_API MechanicalAccumulateJacobian : public simulation::BaseMechanicalVisitor
+class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalAccumulateJacobian : public simulation::BaseMechanicalVisitor
 {
 public:
     MechanicalAccumulateJacobian(const core::ConstraintParams* _cparams, core::MultiMatrixDerivId _res)
@@ -143,11 +143,6 @@ public:
     static const unsigned int DerivSize2 = Deriv2::total_size;
     typedef Data<VecCoord2>    DataVecCoord2;
     typedef Data<VecDeriv2>    DataVecDeriv2;
-
-
-    typedef sofa::defaulttype::BaseVector::Index  Index;
-    typedef typename CompressedRowSparseMatrix<Real1>::Range  Range;
-
 
 protected:
 

@@ -58,22 +58,14 @@ namespace component
 namespace interactionforcefield
 {
 
-using sofa::component::linearsolver::DefaultMultiMatrixAccessor ;
-using sofa::core::behavior::BaseMechanicalState ;
-
-
-
 template<class DataTypes1, class DataTypes2>
 MechanicalMatrixMapper<DataTypes1, DataTypes2>::MechanicalMatrixMapper()
     :
-      d_forceFieldList(initData(&d_forceFieldList,"forceFieldList",
-                                  "ForceFields to work on (by default will take all)")),
-      l_nodeToParse(initLink("nodeToParse",
-                                  "link to the node on which the component will work")),
+      d_forceFieldList(initData(&d_forceFieldList,"forceFieldList","ForceFields to work on (by default will take all)")),
+      l_nodeToParse(initLink("nodeToParse","link to the node on which the component will work")),
       l_mechanicalState(initLink("mechanicalState","The mechanicalState with which the component will work on")),
       l_mappedMass(initLink("mass","mass with which the component will work on")),
-      l_forceField(initLink("forceField", "The ForceField(s) attached to this node"))
-
+      l_forceField(initLink("forceField","The ForceField(s) attached to this node"))
 {
 }
 
