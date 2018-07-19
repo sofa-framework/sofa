@@ -352,6 +352,9 @@ void TetrahedronSetTopologyContainer::createTetrahedraAroundVertexArray ()
     if(hasTetrahedraAroundVertex())
         clearTetrahedraAroundVertex();
 
+    if (getNbPoints() == 0) // in case only Data have been copied and not going thourgh AddTriangle methods.
+        this->setNbPoints(d_initPoints.getValue().size());
+
     m_tetrahedraAroundVertex.resize( getNbPoints() );
     helper::ReadAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
 
@@ -424,7 +427,10 @@ const TetrahedronSetTopologyContainer::Tetrahedron TetrahedronSetTopologyContain
     if(!hasTetrahedra())
         createTetrahedronSetArray();
 
-    return (d_tetrahedron.getValue())[i];
+    if (i >= getNbTetrahedra())
+        return Tetrahedron(-1, -1, -1, -1);
+    else
+        return (d_tetrahedron.getValue())[i];
 }
 
 
