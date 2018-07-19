@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_MechanicalMatrixMapper_INL
-#define SOFA_COMPONENT_FORCEFIELD_MechanicalMatrixMapper_INL
+#ifndef SOFA_COMPONENT_ANIMATIONLOOP_MECHANICALMATRIXMAPPER_INL
+#define SOFA_COMPONENT_ANIMATIONLOOP_MECHANICALMATRIXMAPPER_INL
 
 #include "MechanicalMatrixMapper.h"
 #include <sofa/core/visual/VisualParams.h>
@@ -66,29 +66,58 @@ MechanicalMatrixMapper<DataTypes1, DataTypes2>::MechanicalMatrixMapper()
 template<class DataTypes1, class DataTypes2>
 void MechanicalMatrixMapper<DataTypes1, DataTypes2>::init()
 {
+    if(m_componentstate==ComponentState::Valid){
+        msg_warning() << "Calling an already fully initialized component. You should use reinit instead." ;
+    }
+
+    if(l_nodeToParse.get() == NULL)
+    {
+        msg_error() << " failed to initialized -> missing/wrong link " << l_nodeToParse.getName() << " : " << l_nodeToParse.getLinkedPath() << sendl;
+        m_componentstate = ComponentState::Invalid ;
+        return;
+    }
+
     sofa::core::behavior::BaseInteractionForceField::init();
 
     if (mstate1.get() == NULL || mstate2.get() == NULL)
     {
-        msg_error()<< "Init of MixedInteractionForceField " << getContext()->getName() << " failed!" << sendl;
+        msg_error() << " failed to initialized -> missing/wrong link " << mstate1.getName() << " or " << mstate2.getName() << sendl;
+        m_componentstate = ComponentState::Invalid ;
         return;
     }
 
-    std::string massName;
 
-    // Add link to mechanical & mass
+    // Add link to mass & and get mass component name to rm it from forcefields
+    std::string massName;
     if (l_nodeToParse.get()->mass)
     {
         l_mappedMass.add(l_nodeToParse.get()->mass,l_nodeToParse.get()->mass->getPathName());
         massName.append(l_nodeToParse.get()->mass->getName());
     }
+
+    // Add link to  mechanical
     if (l_nodeToParse.get()->mechanicalState)
     {
         l_mechanicalState.add(l_nodeToParse.get()->mechanicalState,l_nodeToParse.get()->mechanicalState->getPathName());
     }
-    else {msg_error("MechanicalMatrixMapper") << "There is no mechanical object";}
+    else
+    {
+        msg_error() << ": no mechanical object to link to for this node path: " << l_nodeToParse.getPath();
+        m_componentstate = ComponentState::Invalid ;
+        return;
+    }
+
     // Parse l_nodeToParse to find & link with the forcefields
     parseNode(l_nodeToParse.get(),massName);
+
+    if (l_forceField.size() == 0)
+    {
+        msg_error() << ": no forcefield to link to for this node path: " << l_nodeToParse.getPath();
+        m_componentstate = ComponentState::Invalid ;
+        return;
+    }
+
+    m_componentstate = ComponentState::Valid ;
 }
 
 template<class DataTypes1, class DataTypes2>
@@ -225,7 +254,6 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addMassToSystem(const Mecha
     }
 }
 
-
 template<class DataTypes1, class DataTypes2>
 void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addPrecomputedMassToSystem(const MechanicalParams* mparams, const unsigned int mstateSize,const Eigen::SparseMatrix<double> &Jeig, Eigen::SparseMatrix<double> &JtKJeig)
 {
@@ -235,13 +263,12 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addPrecomputedMassToSystem(
     SOFA_UNUSED(JtKJeig);
 }
 
-
-
-
 template<class DataTypes1, class DataTypes2>
 void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const MechanicalParams* mparams,
-                                                                         const MultiMatrixAccessor* matrix)
+                                                                        const MultiMatrixAccessor* matrix)
 {
+    if(m_componentstate!=ComponentState::Valid)
+        return ;
 
     sofa::helper::system::thread::CTime *timer;
     double timeScale, time, totime ;
@@ -456,8 +483,6 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
     simulation::MechanicalResetConstraintVisitor(&cparams).execute(context);
 
 }
-
-
 
 // Even though it does nothing, this method has to be implemented
 // since it's a pure virtual in parent class

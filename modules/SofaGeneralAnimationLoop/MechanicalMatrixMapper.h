@@ -105,9 +105,11 @@ using sofa::core::behavior::MultiMatrixAccessor ;
 using sofa::component::linearsolver::DefaultMultiMatrixAccessor ;
 using sofa::defaulttype::BaseMatrix ;
 using sofa::core::MechanicalParams ;
+using sofa::core::objectmodel::ComponentState ;
+
 
 template<typename TDataTypes1, typename TDataTypes2>
-class MechanicalMatrixMapper : public MixedInteractionForceField<TDataTypes1, TDataTypes2>
+class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper : public MixedInteractionForceField<TDataTypes1, TDataTypes2>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(MechanicalMatrixMapper, TDataTypes1, TDataTypes2), SOFA_TEMPLATE2(MixedInteractionForceField, TDataTypes1, TDataTypes2));
@@ -146,11 +148,13 @@ public:
 
 protected:
 
-    SingleLink < MechanicalMatrixMapper<DataTypes1, DataTypes2>, sofa::simulation::Node , BaseLink::FLAG_STOREPATH | BaseLink::FLAG_DOUBLELINK > l_nodeToParse;
+    ComponentState m_componentstate { ComponentState::Undefined } ;
 
-    SingleLink < MechanicalMatrixMapper<DataTypes1, DataTypes2>, sofa::core::behavior::BaseMechanicalState , BaseLink::FLAG_STOREPATH | BaseLink::FLAG_DOUBLELINK > l_mechanicalState;
-    SingleLink < MechanicalMatrixMapper<DataTypes1, DataTypes2>, sofa::core::behavior::BaseMass , BaseLink::FLAG_STOREPATH | BaseLink::FLAG_DOUBLELINK > l_mappedMass;
-    MultiLink  < MechanicalMatrixMapper<DataTypes1, DataTypes2>, sofa::core::behavior::BaseForceField, BaseLink::FLAG_STOREPATH | BaseLink::FLAG_DOUBLELINK > l_forceField;
+    SingleLink < MechanicalMatrixMapper<DataTypes1, DataTypes2>, sofa::simulation::Node , BaseLink::FLAG_NONE > l_nodeToParse;
+
+    SingleLink < MechanicalMatrixMapper<DataTypes1, DataTypes2>, sofa::core::behavior::BaseMechanicalState , BaseLink::FLAG_NONE > l_mechanicalState;
+    SingleLink < MechanicalMatrixMapper<DataTypes1, DataTypes2>, sofa::core::behavior::BaseMass , BaseLink::FLAG_NONE > l_mappedMass;
+    MultiLink  < MechanicalMatrixMapper<DataTypes1, DataTypes2>, sofa::core::behavior::BaseForceField, BaseLink::FLAG_NONE > l_forceField;
 
     Data<helper::vector<std::string>> d_forceFieldList;
 
