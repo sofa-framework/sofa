@@ -30,9 +30,6 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/rmath.h>
-#include <assert.h>
-#include <iostream>
-#include <fstream>
 
 // accumulate jacobian
 #include <sofa/core/ExecParams.h>
@@ -42,9 +39,6 @@
 
 // verify timing
 #include <sofa/helper/system/thread/CTime.h>
-
-#include <sys/types.h>
-#include <dirent.h>
 
 //  Eigen Sparse Matrix
 #include <Eigen/Sparse>
