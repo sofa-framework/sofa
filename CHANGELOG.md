@@ -4,7 +4,16 @@
 
 ## On master branch (not released yet - Kernel modules are in **bold**)
 
-[Full log](https://github.com/sofa-framework/sofa/compare/v17.12...HEAD)
+[Full log](https://github.com/sofa-framework/sofa/compare/v18.06...HEAD)
+
+
+____________________________________________________________
+
+
+
+## [v18.06](https://github.com/sofa-framework/sofa/tree/v18.06)
+
+[Full log](https://github.com/sofa-framework/sofa/compare/v17.12...v18.06)
 
 
 ### Deprecated
@@ -54,11 +63,16 @@
 **Architecture**
 - [CMake] ADD external projects handling [#649](https://github.com/sofa-framework/sofa/pull/649)
 - [CMake] ADD the CMAKE_WARN_DEPRECATED option in SOFA [#662](https://github.com/sofa-framework/sofa/pull/662)
+- [CMake] Improve SOFA installation and packaging [#635](https://github.com/sofa-framework/sofa/pull/635)
 
 **Modules**
+- [All] Refactoring in Camera, BackgroundSetting and Light [#676](https://github.com/sofa-framework/sofa/pull/676)
 - **[SofaBaseLinearSolver]** Improve warning emission for CG [#658](https://github.com/sofa-framework/sofa/pull/658)
+- **[SofaBaseLinearSolver]** Add ability to activate printing of debug information at runtime [#667](https://github.com/sofa-framework/sofa/pull/667)
 - [SofaGeneralImplicitOdeSolver] FIX data field name in VariationalSymplecticSolver [#624](https://github.com/sofa-framework/sofa/pull/624)
+- [SofaGraphComponent] ADD alias usage detection [#702](https://github.com/sofa-framework/sofa/pull/702)
 - **[SofaLoader]** ADD support to load VTK polylines in legacy formated files [#576](https://github.com/sofa-framework/sofa/pull/576)
+- [SofaMiscMapping] Fix rigid barycentric mapping [#710](https://github.com/sofa-framework/sofa/pull/710)
 - **[SofaHelper]** PluginManager now checks for file existence instead of library extension match. [#621](https://github.com/sofa-framework/sofa/pull/621)
 
 **Applications**
@@ -78,6 +92,7 @@
 - [All] Fix computeBBox() [#634](https://github.com/sofa-framework/sofa/pull/634)
 - [All] FIX warnings [#584](https://github.com/sofa-framework/sofa/pull/584)
 - [All] Various small changes in error messages & bugfix  from defrost branches [#660](https://github.com/sofa-framework/sofa/pull/660)
+- [SofaConstraint] FIX: Moving semicolon under preprocessor define [#680](https://github.com/sofa-framework/sofa/pull/680)
 - **[SofaEngine]** FIX Bug in BoxROI that is not properly initialized [#627](https://github.com/sofa-framework/sofa/pull/627)
 - **[SofaFramework]** Fix plugin list configuration [#645](https://github.com/sofa-framework/sofa/pull/645)
 - **[SofaKernel]** FIX macro issue resulted from the #include cleaning. [#672](https://github.com/sofa-framework/sofa/pull/672)
@@ -117,8 +132,10 @@
 
 **Modules**
 - [All] CMake: Remove COMPONENTSET, keep DEPRECATED [#586](https://github.com/sofa-framework/sofa/pull/586)
+- [All] CLEAN topology classes [#693](https://github.com/sofa-framework/sofa/pull/693)
 - **[SofaHelper]** CLEAN commented code and double parentheses in Messaging.h [#587](https://github.com/sofa-framework/sofa/pull/587)
 - **[SofaKernel]** Header include cleanup [#638](https://github.com/sofa-framework/sofa/pull/638)
+- **[SofaKernel]** Remove unused function "renumberConstraintId" [#691](https://github.com/sofa-framework/sofa/pull/691)
 
 **Applications**
 - [CImgPlugin] Less scary config warnings [#607](https://github.com/sofa-framework/sofa/pull/607)

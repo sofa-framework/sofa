@@ -16,7 +16,7 @@
             <FixedConstraint name="FixedConstraint" indices="3 39 64" />
             <TriangleFEMForceField name="FEM1" youngModulus="500" poissonRatio="0.3" method="large" />
             <TriangularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0"/>
-            <UniformMass mass="0.1" />
+            <UniformMass vertexMass="0.1" />
             
             <Node name="Visu">
                 <OglModel name="Visual" color="red" />

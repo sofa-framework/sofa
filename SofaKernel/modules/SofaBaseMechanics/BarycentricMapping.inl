@@ -401,11 +401,8 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
     updateJ = true;
 
     const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = this->fromTopology->getTetrahedra();
-#ifdef SOFA_NEW_HEXA
     const sofa::core::topology::BaseMeshTopology::SeqHexahedra& cubes = this->fromTopology->getHexahedra();
-#else
-    const sofa::core::topology::BaseMeshTopology::SeqCubes& cubes = this->fromTopology->getCubes();
-#endif
+
     const sofa::core::topology::BaseMeshTopology::SeqTriangles& triangles = this->fromTopology->getTriangles();
     const sofa::core::topology::BaseMeshTopology::SeqQuads& quads = this->fromTopology->getQuads();
     sofa::helper::vector<sofa::defaulttype::Matrix3> bases;
@@ -528,11 +525,7 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
         {
             sofa::defaulttype::Mat3x3d m,mt;
             m[0] = in[cubes[c][1]]-in[cubes[c][0]];
-#ifdef SOFA_NEW_HEXA
             m[1] = in[cubes[c][3]]-in[cubes[c][0]];
-#else
-            m[1] = in[cubes[c][2]]-in[cubes[c][0]];
-#endif
             m[2] = in[cubes[c][4]]-in[cubes[c][0]];
             mt.transpose ( m );
             bases[c0+c].invert ( mt );
@@ -1165,11 +1158,8 @@ void BarycentricMapperMeshTopology<In,Out>::apply ( typename Out::VecCoord& out,
     const sofa::core::topology::BaseMeshTopology::SeqTriangles& triangles = this->fromTopology->getTriangles();
     const sofa::core::topology::BaseMeshTopology::SeqQuads& quads = this->fromTopology->getQuads();
     const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = this->fromTopology->getTetrahedra();
-#ifdef SOFA_NEW_HEXA
     const sofa::core::topology::BaseMeshTopology::SeqHexahedra& cubes = this->fromTopology->getHexahedra();
-#else
-    const sofa::core::topology::BaseMeshTopology::SeqCubes& cubes = this->fromTopology->getCubes();
-#endif
+
     // 1D elements
     {
         for ( unsigned int i=0; i<map1d.size(); i++ )
@@ -1232,29 +1222,16 @@ void BarycentricMapperMeshTopology<In,Out>::apply ( typename Out::VecCoord& out,
             }
             else
             {
-#ifdef SOFA_NEW_HEXA
                 const sofa::core::topology::BaseMeshTopology::Hexa& cube = cubes[index-c0];
-#else
-                const sofa::core::topology::BaseMeshTopology::Cube& cube = cubes[index-c0];
-#endif
+
                 Out::setCPos(out[i+i0] , in[cube[0]] * ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) )
                         + in[cube[1]] * ( ( fx ) * ( 1-fy ) * ( 1-fz ) )
-#ifdef SOFA_NEW_HEXA
                         + in[cube[3]] * ( ( 1-fx ) * ( fy ) * ( 1-fz ) )
                         + in[cube[2]] * ( ( fx ) * ( fy ) * ( 1-fz ) )
-#else
-                        + in[cube[2]] * ( ( 1-fx ) * ( fy ) * ( 1-fz ) )
-                        + in[cube[3]] * ( ( fx ) * ( fy ) * ( 1-fz ) )
-#endif
                         + in[cube[4]] * ( ( 1-fx ) * ( 1-fy ) * ( fz ) )
                         + in[cube[5]] * ( ( fx ) * ( 1-fy ) * ( fz ) )
-#ifdef SOFA_NEW_HEXA
                         + in[cube[7]] * ( ( 1-fx ) * ( fy ) * ( fz ) )
                         + in[cube[6]] * ( ( fx ) * ( fy ) * ( fz ) ) );
-#else
-                        + in[cube[6]] * ( ( 1-fx ) * ( fy ) * ( fz ) )
-                        + in[cube[7]] * ( ( fx ) * ( fy ) * ( fz ) ) );
-#endif
             }
         }
     }
@@ -1275,32 +1252,19 @@ void BarycentricMapperRegularGridTopology<In,Out>::apply ( typename Out::VecCoor
 
     for ( unsigned int i=0; i<map.size(); i++ )
     {
-#ifdef SOFA_NEW_HEXA
         const topology::RegularGridTopology::Hexa cube = this->fromTopology->getHexaCopy ( this->map[i].in_index );
-#else
-        const topology::RegularGridTopology::Cube cube = this->fromTopology->getCubeCopy ( this->map[i].in_index );
-#endif
+
         const Real fx = map[i].baryCoords[0];
         const Real fy = map[i].baryCoords[1];
         const Real fz = map[i].baryCoords[2];
         Out::setCPos(out[i] , in[cube[0]] * ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) )
                 + in[cube[1]] * ( ( fx ) * ( 1-fy ) * ( 1-fz ) )
-#ifdef SOFA_NEW_HEXA
                 + in[cube[3]] * ( ( 1-fx ) * ( fy ) * ( 1-fz ) )
                 + in[cube[2]] * ( ( fx ) * ( fy ) * ( 1-fz ) )
-#else
-                + in[cube[2]] * ( ( 1-fx ) * ( fy ) * ( 1-fz ) )
-                + in[cube[3]] * ( ( fx ) * ( fy ) * ( 1-fz ) )
-#endif
                 + in[cube[4]] * ( ( 1-fx ) * ( 1-fy ) * ( fz ) )
                 + in[cube[5]] * ( ( fx ) * ( 1-fy ) * ( fz ) )
-#ifdef SOFA_NEW_HEXA
                 + in[cube[7]] * ( ( 1-fx ) * ( fy ) * ( fz ) )
                 + in[cube[6]] * ( ( fx ) * ( fy ) * ( fz ) ) );
-#else
-                + in[cube[6]] * ( ( 1-fx ) * ( fy ) * ( fz ) )
-                + in[cube[7]] * ( ( fx ) * ( fy ) * ( fz ) ) );
-#endif
     }
 }
 
@@ -1325,33 +1289,21 @@ void BarycentricMapperSparseGridTopology<In,Out>::apply ( typename Out::VecCoord
 
     while (it != itEnd)
     {
-#ifdef SOFA_NEW_HEXA
         const topology::SparseGridTopology::Hexa cube = this->fromTopology->getHexahedron( it->in_index );
-#else
-        const topology::SparseGridTopology::Cube cube = this->fromTopology->getCube ( it->in_index );
-#endif
+
         const Real fx = it->baryCoords[0];
         const Real fy = it->baryCoords[1];
         const Real fz = it->baryCoords[2];
 
         Out::setCPos(out[i] , in[cube[0]] * ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) )
                 + in[cube[1]] * ( ( fx ) * ( 1-fy ) * ( 1-fz ) )
-#ifdef SOFA_NEW_HEXA
                 + in[cube[3]] * ( ( 1-fx ) * ( fy ) * ( 1-fz ) )
                 + in[cube[2]] * ( ( fx ) * ( fy ) * ( 1-fz ) )
-#else
-                + in[cube[2]] * ( ( 1-fx ) * ( fy ) * ( 1-fz ) )
-                + in[cube[3]] * ( ( fx ) * ( fy ) * ( 1-fz ) )
-#endif
                 + in[cube[4]] * ( ( 1-fx ) * ( 1-fy ) * ( fz ) )
                 + in[cube[5]] * ( ( fx ) * ( 1-fy ) * ( fz ) )
-#ifdef SOFA_NEW_HEXA
                 + in[cube[7]] * ( ( 1-fx ) * ( fy ) * ( fz ) )
                 + in[cube[6]] * ( ( fx ) * ( fy ) * ( fz ) ) );
-#else
-                + in[cube[6]] * ( ( 1-fx ) * ( fy ) * ( fz ) )
-                + in[cube[7]] * ( ( fx ) * ( fy ) * ( fz ) ) );
-#endif
+
         ++it;
         ++i;
     }
@@ -1538,11 +1490,8 @@ void BarycentricMapperMeshTopology<In,Out>::applyJ ( typename Out::VecDeriv& out
     const sofa::core::topology::BaseMeshTopology::SeqTriangles& triangles = this->fromTopology->getTriangles();
     const sofa::core::topology::BaseMeshTopology::SeqQuads& quads = this->fromTopology->getQuads();
     const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = this->fromTopology->getTetrahedra();
-#ifdef SOFA_NEW_HEXA
     const sofa::core::topology::BaseMeshTopology::SeqHexahedra& cubes = this->fromTopology->getHexahedra();
-#else
-    const sofa::core::topology::BaseMeshTopology::SeqCubes& cubes = this->fromTopology->getCubes();
-#endif
+
 
 
     //std::cout << "BarycentricMapper: applyJ with masks" << std::endl;
@@ -1615,29 +1564,16 @@ void BarycentricMapperMeshTopology<In,Out>::applyJ ( typename Out::VecDeriv& out
             }
             else
             {
-#ifdef SOFA_NEW_HEXA
                 const sofa::core::topology::BaseMeshTopology::Hexa& cube = cubes[index-c0];
-#else
-                const sofa::core::topology::BaseMeshTopology::Cube& cube = cubes[index-c0];
-#endif
+
                 Out::setDPos(out[i] , in[cube[0]] * ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) )
                         + in[cube[1]] * ( ( fx ) * ( 1-fy ) * ( 1-fz ) )
-#ifdef SOFA_NEW_HEXA
                         + in[cube[3]] * ( ( 1-fx ) * ( fy ) * ( 1-fz ) )
                         + in[cube[2]] * ( ( fx ) * ( fy ) * ( 1-fz ) )
-#else
-                        + in[cube[2]] * ( ( 1-fx ) * ( fy ) * ( 1-fz ) )
-                        + in[cube[3]] * ( ( fx ) * ( fy ) * ( 1-fz ) )
-#endif
                         + in[cube[4]] * ( ( 1-fx ) * ( 1-fy ) * ( fz ) )
                         + in[cube[5]] * ( ( fx ) * ( 1-fy ) * ( fz ) )
-#ifdef SOFA_NEW_HEXA
                         + in[cube[7]] * ( ( 1-fx ) * ( fy ) * ( fz ) )
                         + in[cube[6]] * ( ( fx ) * ( fy ) * ( fz ) ) );
-#else
-                        + in[cube[6]] * ( ( 1-fx ) * ( fy ) * ( fz ) )
-                        + in[cube[7]] * ( ( fx ) * ( fy ) * ( fz ) ) );
-#endif
             }
         }
     }
@@ -1653,32 +1589,19 @@ void BarycentricMapperRegularGridTopology<In,Out>::applyJ ( typename Out::VecDer
     {
         if( this->maskTo->isActivated() && !this->maskTo->getEntry(index) ) continue;
 
-#ifdef SOFA_NEW_HEXA
         const topology::RegularGridTopology::Hexa cube = this->fromTopology->getHexaCopy ( this->map[index].in_index );
-#else
-        const topology::RegularGridTopology::Cube cube = this->fromTopology->getCubeCopy ( this->map[index].in_index );
-#endif
+
         const Real fx = map[index].baryCoords[0];
         const Real fy = map[index].baryCoords[1];
         const Real fz = map[index].baryCoords[2];
         Out::setDPos(out[index] , in[cube[0]] * ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) )
                 + in[cube[1]] * ( ( fx ) * ( 1-fy ) * ( 1-fz ) )
-#ifdef SOFA_NEW_HEXA
                 + in[cube[3]] * ( ( 1-fx ) * ( fy ) * ( 1-fz ) )
                 + in[cube[2]] * ( ( fx ) * ( fy ) * ( 1-fz ) )
-#else
-                + in[cube[2]] * ( ( 1-fx ) * ( fy ) * ( 1-fz ) )
-                + in[cube[3]] * ( ( fx ) * ( fy ) * ( 1-fz ) )
-#endif
                 + in[cube[4]] * ( ( 1-fx ) * ( 1-fy ) * ( fz ) )
                 + in[cube[5]] * ( ( fx ) * ( 1-fy ) * ( fz ) )
-#ifdef SOFA_NEW_HEXA
                 + in[cube[7]] * ( ( 1-fx ) * ( fy ) * ( fz ) )
                 + in[cube[6]] * ( ( fx ) * ( fy ) * ( fz ) ) );
-#else
-                + in[cube[6]] * ( ( 1-fx ) * ( fy ) * ( fz ) )
-                + in[cube[7]] * ( ( fx ) * ( fy ) * ( fz ) ) );
-#endif
     }
 }
 
@@ -1691,32 +1614,19 @@ void BarycentricMapperSparseGridTopology<In,Out>::applyJ ( typename Out::VecDeri
     {
         if( this->maskTo->isActivated() && !this->maskTo->getEntry(index) ) continue;
 
-#ifdef SOFA_NEW_HEXA
         const topology::SparseGridTopology::Hexa cube = this->fromTopology->getHexahedron ( this->map[index].in_index );
-#else
-        const topology::SparseGridTopology::Cube cube = this->fromTopology->getCube ( this->map[index].in_index );
-#endif
+
         const Real fx = map[index].baryCoords[0];
         const Real fy = map[index].baryCoords[1];
         const Real fz = map[index].baryCoords[2];
         Out::setDPos(out[index] , in[cube[0]] * ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) )
                 + in[cube[1]] * ( ( fx ) * ( 1-fy ) * ( 1-fz ) )
-#ifdef SOFA_NEW_HEXA
                 + in[cube[3]] * ( ( 1-fx ) * ( fy ) * ( 1-fz ) )
                 + in[cube[2]] * ( ( fx ) * ( fy ) * ( 1-fz ) )
-#else
-                + in[cube[2]] * ( ( 1-fx ) * ( fy ) * ( 1-fz ) )
-                + in[cube[3]] * ( ( fx ) * ( fy ) * ( 1-fz ) )
-#endif
                 + in[cube[4]] * ( ( 1-fx ) * ( 1-fy ) * ( fz ) )
                 + in[cube[5]] * ( ( fx ) * ( 1-fy ) * ( fz ) )
-#ifdef SOFA_NEW_HEXA
                 + in[cube[7]] * ( ( 1-fx ) * ( fy ) * ( fz ) )
                 + in[cube[6]] * ( ( fx ) * ( fy ) * ( fz ) ) );
-#else
-                + in[cube[6]] * ( ( 1-fx ) * ( fy ) * ( fz ) )
-                + in[cube[7]] * ( ( fx ) * ( fy ) * ( fz ) ) );
-#endif
     }
 
 }
@@ -1856,11 +1766,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::VecDeriv& out
     const sofa::core::topology::BaseMeshTopology::SeqTriangles& triangles = this->fromTopology->getTriangles();
     const sofa::core::topology::BaseMeshTopology::SeqQuads& quads = this->fromTopology->getQuads();
     const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = this->fromTopology->getTetrahedra();
-#ifdef SOFA_NEW_HEXA
     const sofa::core::topology::BaseMeshTopology::SeqHexahedra& cubes = this->fromTopology->getHexahedra();
-#else
-    const sofa::core::topology::BaseMeshTopology::SeqCubes& cubes = this->fromTopology->getCubes();
-#endif
 
     const size_t i1d = map1d.size();
     const size_t i2d = map2d.size();
@@ -1942,29 +1848,21 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::VecDeriv& out
             }
             else
             {
-#ifdef SOFA_NEW_HEXA
+
                 const sofa::core::topology::BaseMeshTopology::Hexa& cube = cubes[index-c0];
-#else
-                const sofa::core::topology::BaseMeshTopology::Cube& cube = cubes[index-c0];
-#endif
+
                 out[cube[0]] += v * ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) );
                 out[cube[1]] += v * ( ( fx ) * ( 1-fy ) * ( 1-fz ) );
-#ifdef SOFA_NEW_HEXA
+
                 out[cube[3]] += v * ( ( 1-fx ) * ( fy ) * ( 1-fz ) );
                 out[cube[2]] += v * ( ( fx ) * ( fy ) * ( 1-fz ) );
-#else
-                out[cube[2]] += v * ( ( 1-fx ) * ( fy ) * ( 1-fz ) );
-                out[cube[3]] += v * ( ( fx ) * ( fy ) * ( 1-fz ) );
-#endif
+
                 out[cube[4]] += v * ( ( 1-fx ) * ( 1-fy ) * ( fz ) );
                 out[cube[5]] += v * ( ( fx ) * ( 1-fy ) * ( fz ) );
-#ifdef SOFA_NEW_HEXA
+
                 out[cube[7]] += v * ( ( 1-fx ) * ( fy ) * ( fz ) );
                 out[cube[6]] += v * ( ( fx ) * ( fy ) * ( fz ) );
-#else
-                out[cube[6]] += v * ( ( 1-fx ) * ( fy ) * ( fz ) );
-                out[cube[7]] += v * ( ( fx ) * ( fy ) * ( fz ) );
-#endif
+
 
                 mask.insertEntry(cube[0]);
                 mask.insertEntry(cube[1]);
@@ -1992,32 +1890,23 @@ void BarycentricMapperRegularGridTopology<In,Out>::applyJT ( typename In::VecDer
         if( !this->maskTo->getEntry(index) ) continue;
 
         const typename Out::DPos v = Out::getDPos(in[index]);
-#ifdef SOFA_NEW_HEXA
         const topology::RegularGridTopology::Hexa cube = this->fromTopology->getHexaCopy ( this->map[index].in_index );
-#else
-        const topology::RegularGridTopology::Cube cube = this->fromTopology->getCubeCopy ( this->map[index].in_index );
-#endif
+
         const OutReal fx = ( OutReal ) map[index].baryCoords[0];
         const OutReal fy = ( OutReal ) map[index].baryCoords[1];
         const OutReal fz = ( OutReal ) map[index].baryCoords[2];
         out[cube[0]] += v * ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) );
         out[cube[1]] += v * ( ( fx ) * ( 1-fy ) * ( 1-fz ) );
-#ifdef SOFA_NEW_HEXA
+
         out[cube[3]] += v * ( ( 1-fx ) * ( fy ) * ( 1-fz ) );
         out[cube[2]] += v * ( ( fx ) * ( fy ) * ( 1-fz ) );
-#else
-        out[cube[2]] += v * ( ( 1-fx ) * ( fy ) * ( 1-fz ) );
-        out[cube[3]] += v * ( ( fx ) * ( fy ) * ( 1-fz ) );
-#endif
+
         out[cube[4]] += v * ( ( 1-fx ) * ( 1-fy ) * ( fz ) );
         out[cube[5]] += v * ( ( fx ) * ( 1-fy ) * ( fz ) );
-#ifdef SOFA_NEW_HEXA
+
         out[cube[7]] += v * ( ( 1-fx ) * ( fy ) * ( fz ) );
         out[cube[6]] += v * ( ( fx ) * ( fy ) * ( fz ) );
-#else
-        out[cube[6]] += v * ( ( 1-fx ) * ( fy ) * ( fz ) );
-        out[cube[7]] += v * ( ( fx ) * ( fy ) * ( fz ) );
-#endif
+
         mask.insertEntry(cube[0]);
         mask.insertEntry(cube[1]);
         mask.insertEntry(cube[2]);
@@ -2040,32 +1929,23 @@ void BarycentricMapperSparseGridTopology<In,Out>::applyJT ( typename In::VecDeri
         if( !this->maskTo->getEntry(index) ) continue;
 
         const typename Out::DPos v = Out::getDPos(in[index]);
-#ifdef SOFA_NEW_HEXA
+
         const topology::SparseGridTopology::Hexa cube = this->fromTopology->getHexahedron ( this->map[index].in_index );
-#else
-        const topology::SparseGridTopology::Cube cube = this->fromTopology->getCube ( this->map[index].in_index );
-#endif
+
         const OutReal fx = ( OutReal ) map[index].baryCoords[0];
         const OutReal fy = ( OutReal ) map[index].baryCoords[1];
         const OutReal fz = ( OutReal ) map[index].baryCoords[2];
         out[cube[0]] += v * ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) );
         out[cube[1]] += v * ( ( fx ) * ( 1-fy ) * ( 1-fz ) );
-#ifdef SOFA_NEW_HEXA
+
         out[cube[3]] += v * ( ( 1-fx ) * ( fy ) * ( 1-fz ) );
         out[cube[2]] += v * ( ( fx ) * ( fy ) * ( 1-fz ) );
-#else
-        out[cube[2]] += v * ( ( 1-fx ) * ( fy ) * ( 1-fz ) );
-        out[cube[3]] += v * ( ( fx ) * ( fy ) * ( 1-fz ) );
-#endif
+
         out[cube[4]] += v * ( ( 1-fx ) * ( 1-fy ) * ( fz ) );
         out[cube[5]] += v * ( ( fx ) * ( 1-fy ) * ( fz ) );
-#ifdef SOFA_NEW_HEXA
+
         out[cube[7]] += v * ( ( 1-fx ) * ( fy ) * ( fz ) );
         out[cube[6]] += v * ( ( fx ) * ( fy ) * ( fz ) );
-#else
-        out[cube[6]] += v * ( ( 1-fx ) * ( fy ) * ( fz ) );
-        out[cube[7]] += v * ( ( fx ) * ( fy ) * ( fz ) );
-#endif
 
         mask.insertEntry(cube[0]);
         mask.insertEntry(cube[1]);
@@ -2268,11 +2148,8 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperMeshTopology<In,Out>::getJ
     const sofa::core::topology::BaseMeshTopology::SeqTriangles& triangles = this->fromTopology->getTriangles();
     const sofa::core::topology::BaseMeshTopology::SeqQuads& quads = this->fromTopology->getQuads();
     const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = this->fromTopology->getTetrahedra();
-#ifdef SOFA_NEW_HEXA
     const sofa::core::topology::BaseMeshTopology::SeqHexahedra& cubes = this->fromTopology->getHexahedra();
-#else
-    const sofa::core::topology::BaseMeshTopology::SeqCubes& cubes = this->fromTopology->getCubes();
-#endif
+
 
     // 1D elements
     {
@@ -2336,29 +2213,19 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperMeshTopology<In,Out>::getJ
             }
             else
             {
-#ifdef SOFA_NEW_HEXA
                 const sofa::core::topology::BaseMeshTopology::Hexa& cube = cubes[index-c0];
-#else
-                const sofa::core::topology::BaseMeshTopology::Cube& cube = cubes[index-c0];
-#endif
+
                 this->addMatrixContrib(matrixJ, out, cube[0],  ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) ));
                 this->addMatrixContrib(matrixJ, out, cube[1],  ( ( fx ) * ( 1-fy ) * ( 1-fz ) ));
-#ifdef SOFA_NEW_HEXA
+
                 this->addMatrixContrib(matrixJ, out, cube[3],  ( ( 1-fx ) * ( fy ) * ( 1-fz ) ));
                 this->addMatrixContrib(matrixJ, out, cube[2],  ( ( fx ) * ( fy ) * ( 1-fz ) ));
-#else
-                this->addMatrixContrib(matrixJ, out, cube[2],  ( ( 1-fx ) * ( fy ) * ( 1-fz ) ));
-                this->addMatrixContrib(matrixJ, out, cube[3],  ( ( fx ) * ( fy ) * ( 1-fz ) ));
-#endif
+
                 this->addMatrixContrib(matrixJ, out, cube[4],  ( ( 1-fx ) * ( 1-fy ) * ( fz ) ));
                 this->addMatrixContrib(matrixJ, out, cube[5],  ( ( fx ) * ( 1-fy ) * ( fz ) ));
-#ifdef SOFA_NEW_HEXA
+
                 this->addMatrixContrib(matrixJ, out, cube[7],  ( ( 1-fx ) * ( fy ) * ( fz ) ));
                 this->addMatrixContrib(matrixJ, out, cube[6],  ( ( fx ) * ( fy ) * ( fz ) ));
-#else
-                this->addMatrixContrib(matrixJ, out, cube[6],  ( ( 1-fx ) * ( fy ) * ( fz ) ));
-                this->addMatrixContrib(matrixJ, out, cube[7],  ( ( fx ) * ( fy ) * ( fz ) ));
-#endif
             }
         }
     }
@@ -2385,32 +2252,23 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperRegularGridTopology<In,Out
     for ( size_t i=0; i<map.size(); i++ )
     {
         const int out = i;
-#ifdef SOFA_NEW_HEXA
+
         const topology::RegularGridTopology::Hexa cube = this->fromTopology->getHexaCopy ( this->map[i].in_index );
-#else
-        const topology::RegularGridTopology::Cube cube = this->fromTopology->getCubeCopy ( this->map[i].in_index );
-#endif
+
         const Real fx = ( Real ) map[i].baryCoords[0];
         const Real fy = ( Real ) map[i].baryCoords[1];
         const Real fz = ( Real ) map[i].baryCoords[2];
         this->addMatrixContrib(matrixJ, out, cube[0], ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) ));
         this->addMatrixContrib(matrixJ, out, cube[1], ( ( fx ) * ( 1-fy ) * ( 1-fz ) ));
-#ifdef SOFA_NEW_HEXA
+
         this->addMatrixContrib(matrixJ, out, cube[3], ( ( 1-fx ) * ( fy ) * ( 1-fz ) ));
         this->addMatrixContrib(matrixJ, out, cube[2], ( ( fx ) * ( fy ) * ( 1-fz ) ));
-#else
-        this->addMatrixContrib(matrixJ, out, cube[2], ( ( 1-fx ) * ( fy ) * ( 1-fz ) ));
-        this->addMatrixContrib(matrixJ, out, cube[3], ( ( fx ) * ( fy ) * ( 1-fz ) ));
-#endif
+
         this->addMatrixContrib(matrixJ, out, cube[4], ( ( 1-fx ) * ( 1-fy ) * ( fz ) ));
         this->addMatrixContrib(matrixJ, out, cube[5], ( ( fx ) * ( 1-fy ) * ( fz ) ));
-#ifdef SOFA_NEW_HEXA
+
         this->addMatrixContrib(matrixJ, out, cube[7], ( ( 1-fx ) * ( fy ) * ( fz ) ));
         this->addMatrixContrib(matrixJ, out, cube[6], ( ( fx ) * ( fy ) * ( fz ) ));
-#else
-        this->addMatrixContrib(matrixJ, out, cube[6], ( ( 1-fx ) * ( fy ) * ( fz ) ));
-        this->addMatrixContrib(matrixJ, out, cube[7], ( ( fx ) * ( fy ) * ( fz ) ));
-#endif
     }
     updateJ = false;
     return matrixJ;
@@ -2432,32 +2290,23 @@ const sofa::defaulttype::BaseMatrix* BarycentricMapperSparseGridTopology<In,Out>
     for ( size_t i=0; i<map.size(); i++ )
     {
         const int out = i;
-#ifdef SOFA_NEW_HEXA
+
         const topology::SparseGridTopology::Hexa cube = this->fromTopology->getHexahedron ( this->map[i].in_index );
-#else
-        const topology::SparseGridTopology::Cube cube = this->fromTopology->getCube ( this->map[i].in_index );
-#endif
+
         const Real fx = ( Real ) map[i].baryCoords[0];
         const Real fy = ( Real ) map[i].baryCoords[1];
         const Real fz = ( Real ) map[i].baryCoords[2];
         this->addMatrixContrib(matrixJ, out, cube[0], ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) ));
         this->addMatrixContrib(matrixJ, out, cube[1], ( ( fx ) * ( 1-fy ) * ( 1-fz ) ));
-#ifdef SOFA_NEW_HEXA
+
         this->addMatrixContrib(matrixJ, out, cube[3], ( ( 1-fx ) * ( fy ) * ( 1-fz ) ));
         this->addMatrixContrib(matrixJ, out, cube[2], ( ( fx ) * ( fy ) * ( 1-fz ) ));
-#else
-        this->addMatrixContrib(matrixJ, out, cube[2], ( ( 1-fx ) * ( fy ) * ( 1-fz ) ));
-        this->addMatrixContrib(matrixJ, out, cube[3], ( ( fx ) * ( fy ) * ( 1-fz ) ));
-#endif
+
         this->addMatrixContrib(matrixJ, out, cube[4], ( ( 1-fx ) * ( 1-fy ) * ( fz ) ));
         this->addMatrixContrib(matrixJ, out, cube[5], ( ( fx ) * ( 1-fy ) * ( fz ) ));
-#ifdef SOFA_NEW_HEXA
+
         this->addMatrixContrib(matrixJ, out, cube[7], ( ( 1-fx ) * ( fy ) * ( fz ) ));
         this->addMatrixContrib(matrixJ, out, cube[6], ( ( fx ) * ( fy ) * ( fz ) ));
-#else
-        this->addMatrixContrib(matrixJ, out, cube[6], ( ( 1-fx ) * ( fy ) * ( fz ) ));
-        this->addMatrixContrib(matrixJ, out, cube[7], ( ( fx ) * ( fy ) * ( fz ) ));
-#endif
     }
     matrixJ->compress();
 //	std::cout << "J = " << *matrixJ << std::endl;
@@ -2675,11 +2524,8 @@ void BarycentricMapperMeshTopology<In,Out>::draw  (const core::visual::VisualPar
     const sofa::core::topology::BaseMeshTopology::SeqTriangles& triangles = this->fromTopology->getTriangles();
     const sofa::core::topology::BaseMeshTopology::SeqQuads& quads = this->fromTopology->getQuads();
     const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = this->fromTopology->getTetrahedra();
-#ifdef SOFA_NEW_HEXA
     const sofa::core::topology::BaseMeshTopology::SeqHexahedra& cubes = this->fromTopology->getHexahedra();
-#else
-    const sofa::core::topology::BaseMeshTopology::SeqCubes& cubes = this->fromTopology->getCubes();
-#endif
+
     std::vector< sofa::defaulttype::Vector3 > points;
     // 1D elements
     {
@@ -2781,30 +2627,21 @@ void BarycentricMapperMeshTopology<In,Out>::draw  (const core::visual::VisualPar
             }
             else
             {
-#ifdef SOFA_NEW_HEXA
                 const sofa::core::topology::BaseMeshTopology::Hexa& cube = cubes[index-c0];
-#else
-                const sofa::core::topology::BaseMeshTopology::Cube& cube = cubes[index-c0];
-#endif
+
                 Real f[8];
                 f[0] = ( 1-fx ) * ( 1-fy ) * ( 1-fz );
                 f[1] = ( fx ) * ( 1-fy ) * ( 1-fz );
-#ifdef SOFA_NEW_HEXA
+
                 f[3] = ( 1-fx ) * ( fy ) * ( 1-fz );
                 f[2] = ( fx ) * ( fy ) * ( 1-fz );
-#else
-                f[2] = ( 1-fx ) * ( fy ) * ( 1-fz );
-                f[3] = ( fx ) * ( fy ) * ( 1-fz );
-#endif
+
                 f[4] = ( 1-fx ) * ( 1-fy ) * ( fz );
                 f[5] = ( fx ) * ( 1-fy ) * ( fz );
-#ifdef SOFA_NEW_HEXA
+
                 f[7] = ( 1-fx ) * ( fy ) * ( fz );
                 f[6] = ( fx ) * ( fy ) * ( fz );
-#else
-                f[6] = ( 1-fx ) * ( fy ) * ( fz );
-                f[7] = ( fx ) * ( fy ) * ( fz );
-#endif
+
                 for ( int j=0; j<8; j++ )
                 {
                     if ( f[j]<=-0.0001 || f[j]>=0.0001 )
@@ -2827,33 +2664,25 @@ void BarycentricMapperRegularGridTopology<In,Out>::draw  (const core::visual::Vi
 
     for ( unsigned int i=0; i<map.size(); i++ )
     {
-#ifdef SOFA_NEW_HEXA
+
         const topology::RegularGridTopology::Hexa cube = this->fromTopology->getHexaCopy ( this->map[i].in_index );
-#else
-        const topology::RegularGridTopology::Cube cube = this->fromTopology->getCubeCopy ( this->map[i].in_index );
-#endif
+
         const Real fx = map[i].baryCoords[0];
         const Real fy = map[i].baryCoords[1];
         const Real fz = map[i].baryCoords[2];
         Real f[8];
         f[0] = ( 1-fx ) * ( 1-fy ) * ( 1-fz );
         f[1] = ( fx ) * ( 1-fy ) * ( 1-fz );
-#ifdef SOFA_NEW_HEXA
+
         f[3] = ( 1-fx ) * ( fy ) * ( 1-fz );
         f[2] = ( fx ) * ( fy ) * ( 1-fz );
-#else
-        f[2] = ( 1-fx ) * ( fy ) * ( 1-fz );
-        f[3] = ( fx ) * ( fy ) * ( 1-fz );
-#endif
+
         f[4] = ( 1-fx ) * ( 1-fy ) * ( fz );
         f[5] = ( fx ) * ( 1-fy ) * ( fz );
-#ifdef SOFA_NEW_HEXA
+
         f[7] = ( 1-fx ) * ( fy ) * ( fz );
         f[6] = ( fx ) * ( fy ) * ( fz );
-#else
-        f[6] = ( 1-fx ) * ( fy ) * ( fz );
-        f[7] = ( fx ) * ( fy ) * ( fz );
-#endif
+
         for ( int j=0; j<8; j++ )
         {
             if ( f[j]<=-0.0001 || f[j]>=0.0001 )
@@ -2874,33 +2703,25 @@ void BarycentricMapperSparseGridTopology<In,Out>::draw  (const core::visual::Vis
     std::vector< sofa::defaulttype::Vector3 > points;
     for ( unsigned int i=0; i<map.size(); i++ )
     {
-#ifdef SOFA_NEW_HEXA
+
         const topology::SparseGridTopology::Hexa cube = this->fromTopology->getHexahedron ( this->map[i].in_index );
-#else
-        const topology::SparseGridTopology::Cube cube = this->fromTopology->getCube ( this->map[i].in_index );
-#endif
+
         const Real fx = map[i].baryCoords[0];
         const Real fy = map[i].baryCoords[1];
         const Real fz = map[i].baryCoords[2];
         Real f[8];
         f[0] = ( 1-fx ) * ( 1-fy ) * ( 1-fz );
         f[1] = ( fx ) * ( 1-fy ) * ( 1-fz );
-#ifdef SOFA_NEW_HEXA
+
         f[3] = ( 1-fx ) * ( fy ) * ( 1-fz );
         f[2] = ( fx ) * ( fy ) * ( 1-fz );
-#else
-        f[2] = ( 1-fx ) * ( fy ) * ( 1-fz );
-        f[3] = ( fx ) * ( fy ) * ( 1-fz );
-#endif
+
         f[4] = ( 1-fx ) * ( 1-fy ) * ( fz );
         f[5] = ( fx ) * ( 1-fy ) * ( fz );
-#ifdef SOFA_NEW_HEXA
+
         f[7] = ( 1-fx ) * ( fy ) * ( fz );
         f[6] = ( fx ) * ( fy ) * ( fz );
-#else
-        f[6] = ( 1-fx ) * ( fy ) * ( fz );
-        f[7] = ( fx ) * ( fy ) * ( fz );
-#endif
+
         for ( int j=0; j<8; j++ )
         {
             if ( f[j]<=-0.0001 || f[j]>=0.0001 )
@@ -3108,11 +2929,8 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::MatrixDeriv& 
     const sofa::core::topology::BaseMeshTopology::SeqTriangles& triangles = this->fromTopology->getTriangles();
     const sofa::core::topology::BaseMeshTopology::SeqQuads& quads = this->fromTopology->getQuads();
     const sofa::core::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = this->fromTopology->getTetrahedra();
-#ifdef SOFA_NEW_HEXA
     const sofa::core::topology::BaseMeshTopology::SeqHexahedra& cubes = this->fromTopology->getHexahedra();
-#else
-    const sofa::core::topology::BaseMeshTopology::SeqCubes& cubes = this->fromTopology->getCubes();
-#endif
+
     //const size_t iLine = lines.size();
     const size_t iTri = triangles.size();
     //const size_t iQuad = quads.size();
@@ -3191,29 +3009,19 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::MatrixDeriv& 
                     }
                     else // cube
                     {
-#ifdef SOFA_NEW_HEXA
                         const sofa::core::topology::BaseMeshTopology::Hexa& cube = cubes[index-iTetra];
-#else
-                        const sofa::core::topology::BaseMeshTopology::Cube& cube = cubes[index-iTetra];
-#endif
+
                         o.addCol ( cube[0],data * ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) ) ) ;
                         o.addCol ( cube[1],data * ( ( fx ) * ( 1-fy ) * ( 1-fz ) ) ) ;
-#ifdef SOFA_NEW_HEXA
+
                         o.addCol ( cube[3],data * ( ( 1-fx ) * ( fy ) * ( 1-fz ) ) ) ;
                         o.addCol ( cube[2],data * ( ( fx ) * ( fy ) * ( 1-fz ) ) ) ;
-#else
-                        o.addCol ( cube[2],data * ( ( 1-fx ) * ( fy ) * ( 1-fz ) ) ) ;
-                        o.addCol ( cube[3],data * ( ( fx ) * ( fy ) * ( 1-fz ) ) ) ;
-#endif
+
                         o.addCol ( cube[4],data * ( ( 1-fx ) * ( 1-fy ) * ( fz ) ) ) ;
                         o.addCol ( cube[5],data * ( ( fx ) * ( 1-fy ) * ( fz ) ) ) ;
-#ifdef SOFA_NEW_HEXA
+
                         o.addCol ( cube[7],data * ( ( 1-fx ) * ( fy ) * ( fz ) ) ) ;
                         o.addCol ( cube[6],data * ( ( fx ) * ( fy ) * ( fz ) ) ) ;
-#else
-                        o.addCol ( cube[6],data * ( ( 1-fx ) * ( fy ) * ( fz ) ) ) ;
-                        o.addCol ( cube[7],data * ( ( fx ) * ( fy ) * ( fz ) ) );
-#endif
                     }
                 }
             }
@@ -3240,11 +3048,9 @@ void BarycentricMapperRegularGridTopology<In,Out>::applyJT ( typename In::Matrix
                 unsigned int indexIn = colIt.index();
                 InDeriv data = (InDeriv) Out::getDPos(colIt.val());
 
-#ifdef SOFA_NEW_HEXA
+
                 const topology::RegularGridTopology::Hexa cube = this->fromTopology->getHexaCopy ( this->map[indexIn].in_index );
-#else
-                const topology::RegularGridTopology::Cube cube = this->fromTopology->getCubeCopy ( this->map[indexIn].in_index );
-#endif
+
                 const OutReal fx = (OutReal) map[indexIn].baryCoords[0];
                 const OutReal fy = (OutReal) map[indexIn].baryCoords[1];
                 const OutReal fz = (OutReal) map[indexIn].baryCoords[2];
@@ -3254,22 +3060,15 @@ void BarycentricMapperRegularGridTopology<In,Out>::applyJT ( typename In::Matrix
 
                 o.addCol(cube[0], data * ((oneMinusFx) * (oneMinusFy) * (oneMinusFz)));
                 o.addCol(cube[1], data * ((fx) * (oneMinusFy) * (oneMinusFz)));
-#ifdef SOFA_NEW_HEXA
+
                 o.addCol(cube[3], data * ((oneMinusFx) * (fy) * (oneMinusFz)));
                 o.addCol(cube[2], data * ((fx) * (fy) * (oneMinusFz)));
-#else
-                o.addCol(cube[2], data * ((oneMinusFx) * (fy) * (oneMinusFz)));
-                o.addCol(cube[3], data * ((fx) * (fy) * (oneMinusFz)));
-#endif
+
                 o.addCol(cube[4], data * ((oneMinusFx) * (oneMinusFy) * (fz)));
                 o.addCol(cube[5], data * ((fx) * (oneMinusFy) * (fz)));
-#ifdef SOFA_NEW_HEXA
+
                 o.addCol(cube[7], data * ((oneMinusFx) * (fy) * (fz)));
                 o.addCol(cube[6], data * ((fx) * (fy) * (fz)));
-#else
-                o.addCol(cube[6], data * ((oneMinusFx) * (fy) * (fz)));
-                o.addCol(cube[7], data * ((fx) * (fy) * (fz)));
-#endif
             }
         }
     }
@@ -3294,11 +3093,9 @@ void BarycentricMapperSparseGridTopology<In,Out>::applyJT ( typename In::MatrixD
                 unsigned indexIn = colIt.index();
                 InDeriv data = (InDeriv) Out::getDPos(colIt.val());
 
-#ifdef SOFA_NEW_HEXA
+
                 const topology::SparseGridTopology::Hexa cube = this->fromTopology->getHexahedron ( this->map[indexIn].in_index );
-#else
-                const topology::SparseGridTopology::Cube cube = this->fromTopology->getCube ( this->map[indexIn].in_index );
-#endif
+
                 const OutReal fx = ( OutReal ) map[indexIn].baryCoords[0];
                 const OutReal fy = ( OutReal ) map[indexIn].baryCoords[1];
                 const OutReal fz = ( OutReal ) map[indexIn].baryCoords[2];
@@ -3312,40 +3109,26 @@ void BarycentricMapperSparseGridTopology<In,Out>::applyJT ( typename In::MatrixD
                 f = ( ( fx ) * oneMinusFy * oneMinusFz );
                 o.addCol ( cube[1],  ( data * f ) );
 
-#ifdef SOFA_NEW_HEXA
+
                 f = ( oneMinusFx * ( fy ) * oneMinusFz );
                 o.addCol ( cube[3],  ( data * f ) );
 
                 f = ( ( fx ) * ( fy ) * oneMinusFz );
                 o.addCol ( cube[2],  ( data * f ) );
 
-#else
-                f = ( oneMinusFx * ( fy ) * oneMinusFz );
-                o.addCol ( cube[2],  ( data * f ) );
 
-                f = ( ( fx ) * ( fy ) * oneMinusFz );
-                o.addCol ( cube[3],  ( data * f ) );
-
-#endif
                 f = ( oneMinusFx * oneMinusFy * ( fz ) );
                 o.addCol ( cube[4],  ( data * f ) );
 
                 f = ( ( fx ) * oneMinusFy * ( fz ) );
                 o.addCol ( cube[5],  ( data * f ) );
 
-#ifdef SOFA_NEW_HEXA
+
                 f = ( oneMinusFx * ( fy ) * ( fz ) );
                 o.addCol ( cube[7],  ( data * f ) );
 
                 f = ( ( fx ) * ( fy ) * ( fz ) );
                 o.addCol ( cube[6],  ( data * f ) );
-#else
-                f = ( oneMinusFx * ( fy ) * ( fz ) );
-                o.addCol ( cube[6],  ( data * f ) );
-
-                f = ( ( fx ) * ( fy ) * ( fz ) );
-                o.addCol ( cube[7],  ( data * f ) );
-#endif
             }
         }
     }

@@ -10,8 +10,8 @@
 
 	<Node 	 name="MassNode"  >
 		<MechanicalObject template="Vec3d" name="Mass"  position="0 1 0"  velocity="0 0 0" restScale="1"  showObject="1"  showObjectScale="5"  showIndices="1"  showIndicesScale="0.0001" />
-		<UniformMass template="Vec3d" name="uniformMass1"  totalmass="10" />
-<Monitor template="Vec3d" name="Springtest_positions_eulerImplicit_solver_M_10_K_100_D_0_dt0.1" indices="0" ExportPositions="1"  showPositions="1" PositionsColor="1 1 0 1"/>
+                <UniformMass template="Vec3d" name="uniformMass1"  totalMass="10" />
+                <Monitor template="Vec3d" name="Springtest_positions_eulerImplicit_solver_M_10_K_100_D_0_dt0.1" indices="0" ExportPositions="1"  showPositions="1" PositionsColor="1 1 0 1"/>
 	</Node>
 
 	<StiffSpringForceField template="Vec3d" name="jointSpring" object1="@fixedPointNode" object2="@MassNode" spring="0 0 100 0 1" drawMode="1"/>

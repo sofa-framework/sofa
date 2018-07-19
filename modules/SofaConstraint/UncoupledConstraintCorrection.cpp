@@ -105,7 +105,7 @@ SOFA_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types
             UniformMass< Rigid3Types, Rigid3Mass > *um = dynamic_cast< UniformMass< Rigid3Types, Rigid3Mass >* > (m);
 
             if (um)
-                massValue = um->getMass();
+                massValue = um->getVertexMass();
             else
                 serr << "WARNING : no mass found" << sendl;
         }

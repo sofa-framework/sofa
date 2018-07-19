@@ -3,6 +3,8 @@ project(SofaBaseVisual)
 
 set(HEADER_FILES
     BaseCamera.h
+    BackgroundSetting.h
+    Camera.h
     InteractiveCamera.h
     VisualModelImpl.h
     VisualStyle.h
@@ -12,6 +14,8 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
     BaseCamera.cpp
+    BackgroundSetting.cpp
+    Camera.cpp
     InteractiveCamera.cpp
     VisualModelImpl.cpp
     VisualStyle.cpp

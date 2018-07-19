@@ -44,6 +44,8 @@ namespace core
  *  \see RegisterObject for how new classes should be registered.
  *
  */
+
+typedef std::function<void(sofa::core::objectmodel::Base*, sofa::core::objectmodel::BaseObjectDescription*)> OnCreateCallback ;
 class SOFA_CORE_API ObjectFactory
 {
 public:
@@ -100,6 +102,7 @@ public:
 protected:
     /// Main class registry
     ClassEntryMap registry;
+    OnCreateCallback m_callbackOnCreate ;
 
 public:
 
@@ -183,6 +186,8 @@ public:
 
     /// Dump the content of the factory to a HTML stream.
     void dumpHTML(std::ostream& out = std::cout);
+
+    void setCallback(OnCreateCallback cb) { m_callbackOnCreate = cb ; }
 };
 
 /**
