@@ -27,9 +27,7 @@
 #define DEFAULTSTYLEMESSAGEFORMATTER_H
 #include <sstream>
 #include <string>
-#include "Message.h"
 #include "MessageFormatter.h"
-#include <sofa/helper/helper.h>
 
 
 namespace sofa
@@ -41,6 +39,8 @@ namespace helper
 namespace logging
 {
 
+class Message;
+
 /// Format the message using a very simple sofa style. For more advanced formatting style
 /// have a look at RichStyleMessageFormatter.
 /// Example:
@@ -48,16 +48,19 @@ namespace logging
 class SOFA_HELPER_API DefaultStyleMessageFormatter : public MessageFormatter
 {
 public:
-    static MessageFormatter& getInstance() { return s_instance; }
-    virtual void formatMessage(const Message& m,std::ostream& out);
+    static inline MessageFormatter &getInstance ()
+    {
+        static DefaultStyleMessageFormatter instance;
+        return instance;
+    }
+
+    void formatMessage (const Message &m, std::ostream &out) override;
 
 private:
-        // singleton API
-        DefaultStyleMessageFormatter();
-        DefaultStyleMessageFormatter(const DefaultStyleMessageFormatter&);
-
-        void operator=(const DefaultStyleMessageFormatter&);
-        static DefaultStyleMessageFormatter s_instance;
+    // singleton API
+    DefaultStyleMessageFormatter () {}
+    DefaultStyleMessageFormatter (const DefaultStyleMessageFormatter &);
+    void operator= (const DefaultStyleMessageFormatter &);
 };
 
 } // logging

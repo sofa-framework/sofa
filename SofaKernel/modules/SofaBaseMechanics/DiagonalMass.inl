@@ -30,6 +30,7 @@
 #include <SofaBaseTopology/TopologyData.inl>
 #include <SofaBaseTopology/RegularGridTopology.h>
 #include <SofaBaseMechanics/AddMToMatrixFunctor.h>
+#include <sofa/simulation/AnimateEndEvent.h>
 
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
 #include <sofa/core/behavior/InertiaForce.h>
@@ -46,14 +47,17 @@ namespace mass
 
 template <class DataTypes, class MassType>
 DiagonalMass<DataTypes, MassType>::DiagonalMass()
-    : d_mass( initData(&d_mass, "mass", "values of the particles masses") )
+    : d_vertexMass( initData(&d_vertexMass, "vertexMass", "Specify a vector giving the mass of each vertex. \n"
+                                                          "If unspecified or wrongly set, the massDensity or totalMass information is used.") )
+    , d_massDensity( initData(&d_massDensity, (Real)1.0,"massDensity","Specify one single real and positive value for the mass density. \n"
+                                                                      "If unspecified or wrongly set, the totalMass information is used.") )
+    , d_computeMassOnRest(initData(&d_computeMassOnRest, false, "computeMassOnRest", "If true, the mass of every element is computed based on the rest position rather than the position"))
+    , d_totalMass(initData(&d_totalMass, (Real)1.0, "totalMass", "Specify the total mass resulting from all particles. \n"
+                                                                  "If unspecified or wrongly set, the default value is used: totalMass = 1.0"))
+    , d_showCenterOfGravity( initData(&d_showCenterOfGravity, false, "showGravityCenter", "Display the center of gravity of the system" ) )
+    , d_showAxisSize( initData(&d_showAxisSize, 1.0f, "showAxisSizeFactor", "Factor length of the axis displayed (only used for rigids)" ) )
+    , d_fileMass( initData(&d_fileMass,  "fileMass", "Xsp3.0 file to specify the mass parameters" ) )
     , m_pointHandler(NULL)
-    , d_massDensity( initData(&d_massDensity, (Real)1.0,"massDensity", "mass density that allows to compute the  particles masses from a mesh topology and geometry.\nOnly used if > 0") )
-    , d_computeMassOnRest(initData(&d_computeMassOnRest, false, "computeMassOnRest", "if true, the mass of every element is computed based on the rest position rather than the position"))
-    , d_totalMass(initData(&d_totalMass, (Real)-1.0, "totalMass", "Total mass of the object, if set, the massDensity is overwritten"))
-    , d_showCenterOfGravity( initData(&d_showCenterOfGravity, false, "showGravityCenter", "display the center of gravity of the system" ) )
-    , d_showAxisSize( initData(&d_showAxisSize, 1.0f, "showAxisSizeFactor", "factor length of the axis displayed (only used for rigids)" ) )
-    , d_fileMass( initData(&d_fileMass,  "fileMass", "an Xsp3.0 file to specify the mass parameters" ) )
     , m_topologyType(TOPOLOGY_UNKNOWN)
 {
     this->addAlias(&d_fileMass,"filename");
@@ -396,32 +400,32 @@ void DiagonalMass<DataTypes,MassType>::DMassPointHandler::ApplyTopologyChange(co
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::clear()
 {
-    MassVector& masses = *d_mass.beginEdit();
+    MassVector& masses = *d_vertexMass.beginEdit();
     masses.clear();
-    d_mass.endEdit();
+    d_vertexMass.endEdit();
 }
 
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::addMass(const MassType& m)
 {
-    MassVector& masses = *d_mass.beginEdit();
+    MassVector& masses = *d_vertexMass.beginEdit();
     masses.push_back(m);
-    d_mass.endEdit();
+    d_vertexMass.endEdit();
 }
 
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::resize(int vsize)
 {
-    MassVector& masses = *d_mass.beginEdit();
+    MassVector& masses = *d_vertexMass.beginEdit();
     masses.resize(vsize);
-    d_mass.endEdit();
+    d_vertexMass.endEdit();
 }
 
 // -- Mass interface
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::addMDx(const core::MechanicalParams* /*mparams*/, DataVecDeriv& res, const DataVecDeriv& dx, SReal factor)
 {
-    const MassVector &masses= d_mass.getValue();
+    const MassVector &masses= d_vertexMass.getValue();
     helper::WriteAccessor< DataVecDeriv > _res = res;
     helper::ReadAccessor< DataVecDeriv > _dx = dx;
 
@@ -450,7 +454,7 @@ template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::accFromF(const core::MechanicalParams* /*mparams*/, DataVecDeriv& a, const DataVecDeriv& f)
 {
 
-    const MassVector &masses= d_mass.getValue();
+    const MassVector &masses= d_vertexMass.getValue();
     helper::WriteOnlyAccessor< DataVecDeriv > _a = a;
     const VecDeriv& _f = f.getValue();
 
@@ -464,7 +468,7 @@ template <class DataTypes, class MassType>
 SReal DiagonalMass<DataTypes, MassType>::getKineticEnergy( const core::MechanicalParams* /*mparams*/, const DataVecDeriv& v ) const
 {
 
-    const MassVector &masses= d_mass.getValue();
+    const MassVector &masses= d_vertexMass.getValue();
     helper::ReadAccessor< DataVecDeriv > _v = v;
     SReal e = 0.0;
     for (unsigned int i=0; i<masses.size(); i++)
@@ -478,7 +482,7 @@ template <class DataTypes, class MassType>
 SReal DiagonalMass<DataTypes, MassType>::getPotentialEnergy( const core::MechanicalParams* /*mparams*/, const DataVecCoord& x ) const
 {
 
-    const MassVector &masses= d_mass.getValue();
+    const MassVector &masses= d_vertexMass.getValue();
     helper::ReadAccessor< DataVecCoord > _x = x;
     SReal e = 0;
     // gravity
@@ -503,7 +507,7 @@ DiagonalMass<DataTypes, MassType>::getMomentum ( const core::MechanicalParams*, 
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalParams *mparams, const sofa::core::behavior::MultiMatrixAccessor* matrix)
 {
-    const MassVector &masses= d_mass.getValue();
+    const MassVector &masses= d_vertexMass.getValue();
     const int N = defaulttype::DataTypeInfo<Deriv>::size();
     AddMToMatrixFunctor<Deriv,MassType> calc;
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
@@ -516,7 +520,7 @@ void DiagonalMass<DataTypes, MassType>::addMToMatrix(const core::MechanicalParam
 template <class DataTypes, class MassType>
 SReal DiagonalMass<DataTypes, MassType>::getElementMass(unsigned int index) const
 {
-    return (SReal)(d_mass.getValue()[index]);
+    return (SReal)(d_vertexMass.getValue()[index]);
 }
 
 
@@ -528,18 +532,308 @@ void DiagonalMass<DataTypes, MassType>::getElementMass(unsigned int index, defau
     if (m->rowSize() != dimension || m->colSize() != dimension) m->resize(dimension,dimension);
 
     m->clear();
-    AddMToMatrixFunctor<Deriv,MassType>()(m, d_mass.getValue()[index], 0, 1);
+    AddMToMatrixFunctor<Deriv,MassType>()(m, d_vertexMass.getValue()[index], 0, 1);
 }
 
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::reinit()
 {
-    if (_topology && (d_massDensity.getValue() > 0 || d_mass.getValue().size() == 0))
+    if (m_dataTrackerTotal.isDirty() || m_dataTrackerDensity.isDirty() || m_dataTrackerVertex.isDirty())
     {
-        if (_topology->getNbTetrahedra()>0 && tetraGeo)
+        update();
+    }
+}
+
+template <class DataTypes, class MassType>
+void DiagonalMass<DataTypes, MassType>::initTopologyHandlers()
+{
+    // add the functions to handle topology changes.
+    m_pointHandler = new DMassPointHandler(this, &d_vertexMass);
+    d_vertexMass.createTopologicalEngine(_topology, m_pointHandler);
+    if (edgeGeo)
+        d_vertexMass.linkToEdgeDataArray();
+    if (triangleGeo)
+        d_vertexMass.linkToTriangleDataArray();
+    if (quadGeo)
+        d_vertexMass.linkToQuadDataArray();
+    if (tetraGeo)
+        d_vertexMass.linkToTetrahedronDataArray();
+    if (hexaGeo)
+        d_vertexMass.linkToHexahedronDataArray();
+    d_vertexMass.registerTopologicalData();
+}
+
+template <class DataTypes, class MassType>
+bool DiagonalMass<DataTypes, MassType>::checkTopology()
+{
+    _topology = this->getContext()->getMeshTopology();
+
+    this->getContext()->get(edgeGeo);
+    this->getContext()->get(triangleGeo);
+    this->getContext()->get(quadGeo);
+    this->getContext()->get(tetraGeo);
+    this->getContext()->get(hexaGeo);
+
+    if (_topology)
+    {
+        if (_topology->getNbHexahedra() > 0)
+        {
+            if(!hexaGeo)
+            {
+                msg_error() << "Hexahedron topology but no geometry algorithms found. Add the component HexahedronSetGeometryAlgorithms.";
+                return false;
+            }
+            else
+            {
+                msg_info() << "Hexahedral topology found.";
+                return true;
+            }
+        }
+        else if (_topology->getNbTetrahedra() > 0)
+        {
+            if(!tetraGeo)
+            {
+                msg_error() << "Tetrahedron topology but no geometry algorithms found. Add the component TetrahedronSetGeometryAlgorithms.";
+                return false;
+            }
+            else
+            {
+                msg_info() << "Tetrahedral topology found.";
+                return true;
+            }
+        }
+        else if (_topology->getNbQuads() > 0)
+        {
+            if(!quadGeo)
+            {
+                msg_error() << "Quad topology but no geometry algorithms found. Add the component QuadSetGeometryAlgorithms.";
+                return false;
+            }
+            else
+            {
+                msg_info() << "Quad topology found.";
+                return true;
+            }
+        }
+        else if (_topology->getNbTriangles() > 0)
+        {
+            if(!triangleGeo)
+            {
+                msg_error() << "Triangle topology but no geometry algorithms found. Add the component TriangleSetGeometryAlgorithms.";
+                return false;
+            }
+            else
+            {
+                msg_info() << "Triangular topology found.";
+                return true;
+            }
+        }
+        else if (_topology->getNbEdges() > 0)
+        {
+            if(!edgeGeo)
+            {
+                msg_error() << "Edge topology but no geometry algorithms found. Add the component EdgeSetGeometryAlgorithms.";
+                return false;
+            }
+            else
+            {
+                msg_info() << "Edge topology found.";
+                return true;
+            }
+        }
+        else
+        {
+            msg_error() << "Topology empty.";
+            return false;
+        }
+    }
+    else
+    {
+        msg_error() << "Topology not found.";
+        return false;
+    }
+}
+
+template <class DataTypes, class MassType>
+void DiagonalMass<DataTypes, MassType>::init()
+{
+    if (!d_fileMass.getValue().empty())
+    {
+        load(d_fileMass.getFullPath().c_str());
+
+        msg_warning() << "File given as input for DiagonalMass, in this a case:" << msgendl
+                      << "the topology won't be used to compute the mass" << msgendl
+                      << "the update, the coherency and the tracking of mass information data are disable (listening = false)";
+        this->f_listening.setValue(false);
+        Inherited::init();
+    }
+    else
+    {
+        m_dataTrackerVertex.trackData(d_vertexMass);
+        m_dataTrackerDensity.trackData(d_massDensity);
+        m_dataTrackerTotal.trackData(d_totalMass);
+
+        if(!checkTopology())
+        {
+            return;
+        }
+        Inherited::init();
+        initTopologyHandlers();
+
+        // TODO(dmarchal 2017-05-16): this code is duplicated with the one in RigidImpl we should factor it (remove in 1 year if not done or update the dates)
+        if (this->mstate && d_vertexMass.getValue().size() > 0 && d_vertexMass.getValue().size() < (unsigned)this->mstate->getSize())
+        {
+            MassVector &masses= *d_vertexMass.beginEdit();
+            size_t i = masses.size()-1;
+            size_t n = (size_t)this->mstate->getSize();
+            masses.reserve(n);
+            while (masses.size() < n)
+                masses.push_back(masses[i]);
+            d_vertexMass.endEdit();
+        }
+
+        massInitialization();
+    }
+}
+
+
+template <class DataTypes, class MassType>
+void DiagonalMass<DataTypes, MassType>::massInitialization()
+{
+    //Mass initialization process
+    if(d_vertexMass.isSet() || d_massDensity.isSet() || d_totalMass.isSet() )
+    {
+        //totalMass data is prioritary on vertexMass and massDensity
+        if (d_totalMass.isSet())
+        {
+            if(d_vertexMass.isSet() || d_massDensity.isSet())
+            {
+                msg_warning(this) << "totalMass value overriding other mass information (vertexMass or massDensity).\n"
+                                  << "To remove this warning you need to define only one single mass information data field.";
+            }
+            checkTotalMassInit();
+            initFromTotalMass();
+        }
+        //massDensity is secondly considered
+        else if(d_massDensity.isSet())
+        {
+            if(d_vertexMass.isSet())
+            {
+                msg_warning(this) << "massDensity value overriding the value of the attribute vertexMass.\n"
+                                  << "To remove this warning you need to set either vertexMass or massDensity data field, but not both.";
+            }
+            if(!checkMassDensity())
+            {
+                checkTotalMassInit();
+                initFromTotalMass();
+            }
+            else
+            {
+                initFromMassDensity();
+            }
+        }
+        //finally, the vertexMass is used
+        else if(d_vertexMass.isSet())
+        {
+            if(!checkVertexMass())
+            {
+                checkTotalMassInit();
+                initFromTotalMass();
+            }
+            else
+            {
+                initFromVertexMass();
+            }
+        }
+    }
+    // if no mass information provided, default initialization uses totalMass
+    else
+    {
+        msg_info() << "No information about the mass is given." << msgendl
+                      "Default : totalMass = 1.0";
+        checkTotalMassInit();
+        initFromTotalMass();
+    }
+
+    //Info post-init
+    printMass();
+}
+
+
+template <class DataTypes, class MassType>
+void DiagonalMass<DataTypes, MassType>::printMass()
+{
+    const MassVector &vertexM = d_vertexMass.getValue();
+
+    Real average_vertex = 0.0;
+    Real min_vertex = std::numeric_limits<Real>::max();
+    Real max_vertex = 0.0;
+
+    for(unsigned int i=0; i<vertexM.size(); i++)
+    {
+        average_vertex += vertexM[i];
+        if(vertexM[i]<min_vertex)
+            min_vertex = vertexM[i];
+        if(vertexM[i]>max_vertex)
+            max_vertex = vertexM[i];
+    }
+    if(vertexM.size() > 0)
+    {
+        average_vertex /= (Real)(vertexM.size());
+    }
+
+    msg_info() << "mass information computed :" << msgendl
+               << "totalMass   = " << d_totalMass.getValue() << msgendl
+               << "massDensity = " << d_massDensity.getValue() << msgendl
+               << "mean vertexMass [min,max] = " << average_vertex << " [" << min_vertex << "," <<  max_vertex <<"]";
+}
+
+
+template <class DataTypes, class MassType>
+void DiagonalMass<DataTypes, MassType>::computeMass()
+{
+    if (_topology && (d_massDensity.getValue() > 0 || d_vertexMass.getValue().size() == 0))
+    {
+        if (_topology->getNbHexahedra()>0 && hexaGeo)
         {
 
-            MassVector& masses = *d_mass.beginEdit();
+            MassVector& masses = *d_vertexMass.beginEdit();
+            m_topologyType=TOPOLOGY_HEXAHEDRONSET;
+
+            masses.resize(this->mstate->getSize());
+            for(unsigned int i=0; i<masses.size(); ++i)
+              masses[i]=(Real)0;
+
+            Real md=d_massDensity.getValue();
+            Real mass=(Real)0;
+            Real total_mass=(Real)0;
+
+            for (int i=0; i<_topology->getNbHexahedra(); ++i)
+            {
+                const Hexahedron &h=_topology->getHexahedron(i);
+                if (hexaGeo)
+                {
+                    if (d_computeMassOnRest.getValue())
+                        mass=(md*hexaGeo->computeRestHexahedronVolume(i))/(Real)8.0;
+                    else
+                        mass=(md*hexaGeo->computeHexahedronVolume(i))/(Real)8.0;
+
+                    for (unsigned int j = 0 ; j < h.size(); j++)
+                    {
+                        masses[h[j]] += mass;
+                        total_mass += mass;
+                    }
+                }
+            }
+
+            d_totalMass.setValue(total_mass);
+            d_vertexMass.endEdit();
+
+        }
+        else if (_topology->getNbTetrahedra()>0 && tetraGeo)
+        {
+
+            MassVector& masses = *d_vertexMass.beginEdit();
             m_topologyType=TOPOLOGY_TETRAHEDRONSET;
 
             // resize array
@@ -571,82 +865,10 @@ void DiagonalMass<DataTypes, MassType>::reinit()
                 }
             }
             d_totalMass.setValue(total_mass);
-            d_mass.endEdit();
-        }
-        else if (_topology->getNbTriangles()>0 && triangleGeo)
-        {
-            MassVector& masses = *d_mass.beginEdit();
-            m_topologyType=TOPOLOGY_TRIANGLESET;
-
-            // resize array
-            clear();
-            masses.resize(this->mstate->getSize());
-
-            for(unsigned int i=0; i<masses.size(); ++i)
-                masses[i]=(Real)0;
-
-            Real md=d_massDensity.getValue();
-            Real mass=(Real)0;
-            Real total_mass=(Real)0;
-
-            for (int i=0; i<_topology->getNbTriangles(); ++i)
-            {
-                const Triangle &t=_topology->getTriangle(i);
-                if(triangleGeo)
-                {
-                    if (d_computeMassOnRest.getValue())
-                        mass=(md*triangleGeo->computeRestTriangleArea(i))/(Real)3.0;
-                    else
-                        mass=(md*triangleGeo->computeTriangleArea(i))/(Real)3.0;
-                }
-                for (unsigned int j = 0 ; j < t.size(); j++)
-                {
-                    masses[t[j]] += mass;
-                    total_mass += mass;
-                }
-            }
-            d_totalMass.setValue(total_mass);
-            d_mass.endEdit();
-        }
-
-        else if (_topology->getNbHexahedra()>0)
-        {
-
-            MassVector& masses = *d_mass.beginEdit();
-            m_topologyType=TOPOLOGY_HEXAHEDRONSET;
-
-            masses.resize(this->mstate->getSize());
-            for(unsigned int i=0; i<masses.size(); ++i)
-              masses[i]=(Real)0;
-
-            Real md=d_massDensity.getValue();
-            Real mass=(Real)0;
-            Real total_mass=(Real)0;
-
-            for (int i=0; i<_topology->getNbHexahedra(); ++i)
-            {
-                const Hexahedron &h=_topology->getHexahedron(i);
-                if (hexaGeo)
-                {
-                    if (d_computeMassOnRest.getValue())
-                        mass=(md*hexaGeo->computeRestHexahedronVolume(i))/(Real)8.0;
-                    else
-                        mass=(md*hexaGeo->computeHexahedronVolume(i))/(Real)8.0;
-
-                    for (unsigned int j = 0 ; j < h.size(); j++)
-                    {
-                        masses[h[j]] += mass;
-                        total_mass += mass;
-                    }
-                }
-            }
-
-            d_totalMass.setValue(total_mass);
-            d_mass.endEdit();
-
+            d_vertexMass.endEdit();
         }
         else if (_topology->getNbQuads()>0 && quadGeo) {
-            MassVector& masses = *d_mass.beginEdit();
+            MassVector& masses = *d_vertexMass.beginEdit();
             m_topologyType=TOPOLOGY_QUADSET;
 
             // resize array
@@ -677,12 +899,47 @@ void DiagonalMass<DataTypes, MassType>::reinit()
                 }
             }
             d_totalMass.setValue(total_mass);
-            d_mass.endEdit();
+            d_vertexMass.endEdit();
+        }
+        else if (_topology->getNbTriangles()>0 && triangleGeo)
+        {
+            MassVector& masses = *d_vertexMass.beginEdit();
+            m_topologyType=TOPOLOGY_TRIANGLESET;
+
+            // resize array
+            clear();
+            masses.resize(this->mstate->getSize());
+
+            for(unsigned int i=0; i<masses.size(); ++i)
+                masses[i]=(Real)0;
+
+            Real md=d_massDensity.getValue();
+            Real mass=(Real)0;
+            Real total_mass=(Real)0;
+
+            for (int i=0; i<_topology->getNbTriangles(); ++i)
+            {
+                const Triangle &t=_topology->getTriangle(i);
+                if(triangleGeo)
+                {
+                    if (d_computeMassOnRest.getValue())
+                        mass=(md*triangleGeo->computeRestTriangleArea(i))/(Real)3.0;
+                    else
+                        mass=(md*triangleGeo->computeTriangleArea(i))/(Real)3.0;
+                }
+                for (unsigned int j = 0 ; j < t.size(); j++)
+                {
+                    masses[t[j]] += mass;
+                    total_mass += mass;
+                }
+            }
+            d_totalMass.setValue(total_mass);
+            d_vertexMass.endEdit();
         }
         else if (_topology->getNbEdges()>0 && edgeGeo)
         {
 
-            MassVector& masses = *d_mass.beginEdit();
+            MassVector& masses = *d_vertexMass.beginEdit();
             m_topologyType=TOPOLOGY_EDGESET;
 
             // resize array
@@ -713,90 +970,259 @@ void DiagonalMass<DataTypes, MassType>::reinit()
                 }
             }
             d_totalMass.setValue(total_mass);
-            d_mass.endEdit();
+            d_vertexMass.endEdit();
         }
     }
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::initTopologyHandlers()
+bool DiagonalMass<DataTypes, MassType>::checkTotalMass()
 {
-    // add the functions to handle topology changes.
-    m_pointHandler = new DMassPointHandler(this, &d_mass);
-    d_mass.createTopologicalEngine(_topology, m_pointHandler);
-    if (edgeGeo)
-        d_mass.linkToEdgeDataArray();
-    if (triangleGeo)
-        d_mass.linkToTriangleDataArray();
-    if (quadGeo)
-        d_mass.linkToQuadDataArray();
-    if (tetraGeo)
-        d_mass.linkToTetrahedronDataArray();
-    if (hexaGeo)
-        d_mass.linkToHexahedronDataArray();
-    d_mass.registerTopologicalData();
+    //Check for negative or null value, if wrongly set use the default value totalMass = 1.0
+    if(d_totalMass.getValue() <= 0.0)
+    {
+        msg_warning(this) << "totalMass data can not have a negative value.\n"
+                          << "To remove this warning, you need to set a strictly positive value to the totalMass data";
+        return false;
+    }
+    else
+    {
+        return true;
+    }
 }
 
+
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::init()
+void DiagonalMass<DataTypes, MassType>::checkTotalMassInit()
 {
-    if (!d_fileMass.getValue().empty())
-        load(d_fileMass.getFullPath().c_str());
-
-    _topology = this->getContext()->getMeshTopology();
-
-    this->getContext()->get(edgeGeo);
-    this->getContext()->get(triangleGeo);
-    this->getContext()->get(quadGeo);
-    this->getContext()->get(tetraGeo);
-    this->getContext()->get(hexaGeo);
-
-    if (_topology)
+    //Check for negative or null value, if wrongly set use the default value totalMass = 1.0
+    if(!checkTotalMass())
     {
-        if (_topology->getNbTetrahedra() > 0 && !tetraGeo)
-            serr << "Tetrahedron topology but no geometry algorithms found. Add the component TetrahedronSetGeometryAlgorithms." << sendl;
-        else if (_topology->getNbTriangles() > 0 && !triangleGeo)
-            serr << "Triangle topology but no geometry algorithms found. Add the component TriangleSetGeometryAlgorithms." << sendl;
-        else if (_topology->getNbHexahedra() > 0 && !hexaGeo)
-            serr << "Hexahedron topology but no geometry algorithms found. Add the component HexahedronSetGeometryAlgorithms." << sendl;
-       else if (_topology->getNbQuads() > 0 && !quadGeo)
-           serr << "Quad topology but no geometry algorithms found. Add the component QuadSetGeometryAlgorithms." << sendl;
-        else if (_topology->getNbEdges() > 0 && !edgeGeo)
-            serr << "Edge topology but no geometry algorithms found. Add the component EdgeSetGeometryAlgorithms." << sendl;
+        msg_warning(this) << "Switching back to default values: totalMass = 1.0\n";
+        d_totalMass.setValue(1.0) ;
     }
+}
 
-    Inherited::init();
-    initTopologyHandlers();
 
-    // TODO(dmarchal 2017-05-16): this code is duplicated with the one in RigidImpl we should factor it (remove in 1 year if not done or update the dates)
-    if (this->mstate && d_mass.getValue().size() > 0 && d_mass.getValue().size() < (unsigned)this->mstate->getSize())
+template <class DataTypes, class MassType>
+bool DiagonalMass<DataTypes, MassType>::checkVertexMass()
+{
+    const MassVector &vertexMass = d_vertexMass.getValue();
+
+    //Check size of the vector
+    if (vertexMass.size() != (size_t)_topology->getNbPoints())
     {
-        MassVector &masses= *d_mass.beginEdit();
-        size_t i = masses.size()-1;
-        size_t n = (size_t)this->mstate->getSize();
-        masses.reserve(n);
-        while (masses.size() < n)
-            masses.push_back(masses[i]);
-        d_mass.endEdit();
+        msg_warning() << "Inconsistent size of vertexMass vector ("<< vertexMass.size() <<") compared to the DOFs size ("<< _topology->getNbPoints() <<").";
+        return false;
     }
-
-    if (d_totalMass.isSet())
+    else
     {
-        if(d_massDensity.isSet())
+        //Check that the vertexMass vector has only strictly positive values
+        for(size_t i=0; i<vertexMass.size(); i++)
         {
-            msg_warning("DiagonalMass") << "both massDensity and totalMass are set, totalMass will be applied (recomputes the density)";
+            if(vertexMass[i]<=0)
+            {
+                msg_warning() << "Negative value of vertexMass vector: vertexMass[" << i << "] = " << vertexMass[i];
+                return false;
+            }
         }
-        Real totalMassTemp = d_totalMass.getValue();
-        reinit();
-        d_massDensity.setValue(totalMassTemp/d_totalMass.getValue());
-        reinit();
-    }
-
-    if ((d_mass.getValue().size()==0) && (_topology!=0))
-    {
-        reinit();
+        return true;
     }
 }
+
+
+template <class DataTypes, class MassType>
+void DiagonalMass<DataTypes, MassType>::initFromVertexMass()
+{
+    msg_info() << "vertexMass information is used";
+
+    const MassVector& vertexMass = d_vertexMass.getValue();
+    Real totalMassSave = 0.0;
+    for(size_t i=0; i<vertexMass.size(); i++)
+    {
+        totalMassSave += vertexMass[i];
+    }
+    //Compute the volume
+    setMassDensity(1.0);
+
+    computeMass();
+
+    helper::WriteAccessor<Data<MassVector> > vertexMassWrite = d_vertexMass;
+    //Compute volume = mass since massDensity = 1.0
+    Real volume = 0.0;
+    for(size_t i=0; i<vertexMassWrite.size(); i++)
+    {
+        volume += vertexMass[i];
+        vertexMassWrite[i] = vertexMass[i];
+    }
+    //Update all computed values
+    setMassDensity((Real)totalMassSave/volume);
+    d_totalMass.setValue(totalMassSave);
+}
+
+
+template <class DataTypes, class MassType>
+bool DiagonalMass<DataTypes, MassType>::checkMassDensity()
+{
+    const Real &massDensity = d_massDensity.getValue();
+
+    //Check that the massDensity is strictly positive
+    if(massDensity <= 0.0)
+    {
+        msg_warning() << "Negative value of massDensity: massDensity = " << massDensity;
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
+
+template <class DataTypes, class MassType>
+void DiagonalMass<DataTypes, MassType>::initFromMassDensity()
+{
+    msg_info() << "massDensity information is used";
+
+    computeMass();
+
+    const MassVector &vertexMass = d_vertexMass.getValue();
+    Real sumMass = 0.0;
+    for (size_t i=0; i<(size_t)_topology->getNbPoints(); i++)
+    {
+        sumMass += vertexMass[i];
+    }
+    d_totalMass.setValue(sumMass);
+}
+
+
+template <class DataTypes, class MassType>
+void DiagonalMass<DataTypes, MassType>::initFromTotalMass()
+{
+    msg_info() << "totalMass information is used";
+
+    const Real totalMassTemp = d_totalMass.getValue();
+
+    Real sumMass = 0.0;
+    setMassDensity(1.0);
+
+    computeMass();
+
+    const MassVector &vertexMass = d_vertexMass.getValue();
+    for (size_t i=0; i<(size_t)_topology->getNbPoints(); i++)
+    {
+        sumMass += vertexMass[i];
+    }
+
+    setMassDensity((Real)totalMassTemp/sumMass);
+
+    computeMass();
+}
+
+
+template <class DataTypes, class MassType>
+void DiagonalMass<DataTypes, MassType>::setVertexMass(sofa::helper::vector< Real > vertexMass)
+{
+    const MassVector currentVertexMass = d_vertexMass.getValue();
+    helper::WriteAccessor<Data<MassVector> > vertexMassWrite = d_vertexMass;
+    vertexMassWrite.resize(vertexMass.size());
+    for(int i=0; i<(int)vertexMass.size(); i++)
+    {
+        vertexMassWrite[i] = vertexMass[i];
+    }
+
+    if(!checkVertexMass())
+    {
+        msg_warning() << "Given values to setVertexMass() are not correct.\n"
+                      << "Previous values are used.";
+        d_vertexMass.setValue(currentVertexMass);
+    }
+}
+
+
+template <class DataTypes, class MassType>
+void DiagonalMass<DataTypes, MassType>::setMassDensity(Real massDensityValue)
+{
+    const Real currentMassDensity = d_massDensity.getValue();
+    d_massDensity.setValue(massDensityValue);
+    if(!checkMassDensity())
+    {
+        msg_warning() << "Given values to setMassDensity() are not correct.\n"
+                      << "Previous values are used.";
+        d_massDensity.setValue(currentMassDensity);
+    }
+}
+
+
+template <class DataTypes, class MassType>
+void DiagonalMass<DataTypes, MassType>::setTotalMass(Real totalMass)
+{
+    const Real currentTotalMass = d_totalMass.getValue();
+    d_totalMass.setValue(totalMass);
+    if(!checkTotalMass())
+    {
+        msg_warning() << "Given value to setTotalMass() is not a strictly positive value\n"
+                      << "Previous value is used: totalMass = " << currentTotalMass;
+        d_totalMass.setValue(currentTotalMass);
+    }
+}
+
+
+template <class DataTypes, class MassType>
+const typename DiagonalMass<DataTypes, MassType>::Real &DiagonalMass<DataTypes, MassType>::getMassDensity()
+{
+    return d_massDensity.getValue();
+}
+
+
+template <class DataTypes, class MassType>
+const typename DiagonalMass<DataTypes, MassType>::Real &DiagonalMass<DataTypes, MassType>::getTotalMass()
+{
+    return d_totalMass.getValue();
+}
+
+
+template <class DataTypes, class MassType>
+void DiagonalMass<DataTypes, MassType>::update()
+{
+    bool update = false;
+
+    if (m_dataTrackerTotal.isDirty())
+    {
+        if(checkTotalMass())
+        {
+            initFromTotalMass();
+            update = true;
+        }
+        m_dataTrackerTotal.clean();
+    }
+    else if(m_dataTrackerDensity.isDirty())
+    {
+        if(checkMassDensity())
+        {
+            initFromMassDensity();
+            update = true;
+        }
+        m_dataTrackerDensity.clean();
+    }
+    else if(m_dataTrackerVertex.isDirty())
+    {
+        if(checkVertexMass())
+        {
+            initFromVertexMass();
+            update = true;
+        }
+        m_dataTrackerVertex.clean();
+    }
+
+    if(update)
+    {
+        //Info post-init
+        msg_info() << "mass information updated";
+        printMass();
+    }
+}
+
 
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::addGravityToV(const core::MechanicalParams* mparams, DataVecDeriv& d_v)
@@ -824,7 +1250,7 @@ template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::addForce(const core::MechanicalParams* /*mparams*/, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v)
 {
 
-    const MassVector &masses= d_mass.getValue();
+    const MassVector &masses= d_vertexMass.getValue();
     helper::WriteAccessor< DataVecDeriv > _f = f;
     helper::ReadAccessor< DataVecCoord > _x = x;
     helper::ReadAccessor< DataVecDeriv > _v = v;
@@ -860,7 +1286,7 @@ void DiagonalMass<DataTypes, MassType>::addForce(const core::MechanicalParams* /
     if(this->m_separateGravity.getValue())
         return;
 
-    const MassVector &masses= d_mass.getValue();
+    const MassVector &masses= d_vertexMass.getValue();
     helper::WriteAccessor< DataVecDeriv > _f = f;
 
     // gravity
@@ -883,7 +1309,7 @@ void DiagonalMass<DataTypes, MassType>::draw(const core::visual::VisualParams* v
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
-    const MassVector &masses= d_mass.getValue();
+    const MassVector &masses= d_vertexMass.getValue();
     if (masses.empty())
         return;
 
@@ -943,6 +1369,17 @@ bool DiagonalMass<DataTypes, MassType>::load(const char *filename)
     }
     else return false;
 }
+
+
+template <class DataTypes, class MassType>
+void DiagonalMass<DataTypes, MassType>::handleEvent(sofa::core::objectmodel::Event *event)
+{
+    if (sofa::simulation::AnimateEndEvent::checkEventType(event))
+    {
+        update();
+    }
+}
+
 
 } // namespace mass
 

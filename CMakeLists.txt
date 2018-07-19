@@ -138,6 +138,21 @@ if(SOFA_BUILD_TESTS)
     add_subdirectory(extlibs/gtest)
 endif()
 
+## Active or not the use of ccache
+option(SOFA_USE_CCACHE "Compile using ccache optimization" OFF)
+if(SOFA_USE_CCACHE)
+    find_program(CCACHE_PROGRAM ccache)
+    if(CCACHE_PROGRAM)
+        # Support Unix Makefiles and Ninja
+        #TODO replace by <LANG>_COMPILER_LAUNCHER when min cmake version > 3.4
+        set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
+        set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK "${CCACHE_PROGRAM}")
+    else()
+        message(WARNING "ccache not found, disabling option")
+        set(SOFA_USE_CCACHE OFF CACHE bool "Compile using ccache optimization" FORCE)
+    endif()
+endif()
+
 ### Ninja build pools
 option(SOFA_NINJA_BUILD_POOLS "Activate the Ninja build pools feature, to limit the cores used by specific targets" OFF)
 

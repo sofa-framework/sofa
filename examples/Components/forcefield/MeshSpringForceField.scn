@@ -19,7 +19,7 @@
             <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" dx="2.5" />
-            <UniformMass totalmass="5" />
+            <UniformMass totalMass="5" />
             <MeshSpringForceField name="Springs" tetrasStiffness="400" tetrasDamping="0" />
             <Node name="Visu">
                 <OglModel name="Visual" fileMesh="mesh/torus.obj" dx="2.5" color="green" />
@@ -39,7 +39,7 @@
             <MeshGmshLoader name="loader" filename="mesh/torus2_low_res.msh" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" dx="5" />
-            <UniformMass totalmass="5" />
+            <UniformMass totalMass="5" />
             <MeshSpringForceField name="Springs" tetrasStiffness="400" tetrasDamping="0" />
             <Node name="Visu">
                 <OglModel name="Visual" fileMesh="mesh/torus2.obj" dx="5" color="green" />
@@ -59,7 +59,7 @@
             <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" dx="7.5" />
-            <UniformMass totalmass="5" />
+            <UniformMass totalMass="5" />
             <MeshSpringForceField name="Springs" tetrasStiffness="400" tetrasDamping="0" />
             <Node name="Visu">
                 <OglModel name="Visual" fileMesh="mesh/torus.obj" dx="7.5" color="green" />
@@ -79,7 +79,7 @@
             <MeshGmshLoader name="loader" filename="mesh/torus2_low_res.msh" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" dx="10" />
-            <UniformMass totalmass="5" />
+            <UniformMass totalMass="5" />
             <MeshSpringForceField name="Springs" tetrasStiffness="400" tetrasDamping="0" />
             <Node name="Visu">
                 <OglModel name="Visual" fileMesh="mesh/torus2.obj" dx="10" color="green" />

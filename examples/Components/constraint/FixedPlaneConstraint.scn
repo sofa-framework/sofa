@@ -10,7 +10,7 @@
         <MeshGmshLoader name="loader" filename="mesh/liver.msh" />
         <Mesh src="@loader" />
         <MechanicalObject src="@loader" template="Vec3f" name="dofs" />
-        <UniformMass name="mass" mass="0.05" />
+        <UniformMass name="mass" vertexMass="0.05" />
         <TetrahedronFEMForceField name="FEM" youngModulus="500" poissonRatio="0.3" computeGlobalMatrix="false" method="large" />
         <FixedPlaneConstraint direction="0 0 1" dmin="-3" dmax="1" />
         <BoxConstraint box="-5 4.8 -.2 5 6 1" />

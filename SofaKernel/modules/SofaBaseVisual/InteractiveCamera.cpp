@@ -36,7 +36,6 @@ SOFA_DECL_CLASS(InteractiveCamera)
 
 int InteractiveCameraClass = core::RegisterObject("InteractiveCamera")
         .add< InteractiveCamera >()
-        .addAlias("Camera")
         ;
 
 
@@ -47,7 +46,7 @@ InteractiveCamera::InteractiveCamera()
     ,currentMode(InteractiveCamera::NONE_MODE)
     ,isMoving(false)
     {
-}
+    }
 
 InteractiveCamera::~InteractiveCamera()
 {

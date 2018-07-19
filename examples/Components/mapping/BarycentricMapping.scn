@@ -22,7 +22,7 @@
             <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" dx="2.5" />
-            <UniformMass mass="0.1" />
+            <UniformMass vertexMass="0.1" />
             <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" computeGlobalMatrix="false" method="polar" />
             <Node name="Visu">
                 <OglModel name="Visual" fileMesh="mesh/torus.obj" color="red" dx="2.5" />
@@ -44,7 +44,7 @@
             <MeshGmshLoader name="loader" filename="mesh/torus2_low_res.msh" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" dx="5" />
-            <UniformMass totalmass="5" />
+            <UniformMass totalMass="5" />
             <MeshSpringForceField name="Springs" tetrasStiffness="400" tetrasDamping="4" />
             <Node name="Visu">
                 <OglModel name="Visual" fileMesh="mesh/torus2.obj" dx="5" color="green" />
@@ -64,7 +64,7 @@
             <EulerImplicit rayleighStiffness="0.01" />
             <CGLinearSolver iterations="100" threshold="0.00000001" tolerance="1e-5"/>
             <MechanicalObject dx="7.5" />
-            <UniformMass totalmass="5" />
+            <UniformMass totalMass="5" />
             <RegularGrid nx="6" ny="2" nz="5" xmin="-2.5" xmax="2.5" ymin="-0.5" ymax="0.5" zmin="-2" zmax="2" />
             <RegularGridSpringForceField name="Springs" stiffness="200" damping="2" />
             <Node name="Visu">
@@ -117,7 +117,7 @@
             <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" dx="2.5" dz="6" />
-            <UniformMass totalmass="5" />
+            <UniformMass totalMass="5" />
             <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" computeGlobalMatrix="false" method="polar" />
             <Node name="Visu">
                 <OglModel name="Visual" fileMesh="mesh/torus.obj" color="red" dx="2.5" dz="6" />
@@ -139,7 +139,7 @@
             <MeshGmshLoader name="loader" filename="mesh/torus2_low_res.msh" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" dx="5" dz="6" />
-            <UniformMass totalmass="5" />
+            <UniformMass totalMass="5" />
             <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" computeGlobalMatrix="false" method="polar" />
             <Node name="Visu">
                 <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="red" dx="5" dz="6" />
@@ -161,7 +161,7 @@
             <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" dx="7.5" dz="6" />
-            <UniformMass totalmass="5" />
+            <UniformMass totalMass="5" />
             <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" computeGlobalMatrix="false" method="polar" />
             <Node name="Visu">
                 <OglModel name="Visual" fileMesh="mesh/torus.obj" color="red" dx="7.5" dz="6" />
@@ -183,7 +183,7 @@
             <MeshGmshLoader name="loader" filename="mesh/torus2_low_res.msh" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" dx="10" dz="6" />
-            <UniformMass totalmass="5" />
+            <UniformMass totalMass="5" />
             <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" computeGlobalMatrix="false" method="polar" />
             <Node name="Visu">
                 <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="red" dx="10" dz="6" />
@@ -216,7 +216,7 @@
             <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" dx="2.5" dz="12" />
-            <UniformMass totalmass="5" />
+            <UniformMass totalMass="5" />
             <MeshSpringForceField name="Springs" tetrasStiffness="400" tetrasDamping="4" />
             <Node name="Visu">
                 <OglModel name="Visual" fileMesh="mesh/torus.obj" dx="2.5" dz="12" color="green" />
@@ -238,7 +238,7 @@
             <MeshGmshLoader name="loader" filename="mesh/torus2_low_res.msh" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" dx="5" dz="12" />
-            <UniformMass totalmass="5" />
+            <UniformMass totalMass="5" />
             <MeshSpringForceField name="Springs" tetrasStiffness="400" tetrasDamping="4" />
             <Node name="Visu">
                 <OglModel name="Visual" fileMesh="mesh/torus2.obj" dx="5" dz="12" color="green" />
@@ -260,7 +260,7 @@
             <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" dx="7.5" dz="12" />
-            <UniformMass totalmass="5" />
+            <UniformMass totalMass="5" />
             <MeshSpringForceField name="Springs" tetrasStiffness="400" tetrasDamping="4" />
             <Node name="Visu">
                 <OglModel name="Visual" fileMesh="mesh/torus.obj" dx="7.5" dz="12" color="green" />
@@ -282,7 +282,7 @@
             <MeshGmshLoader name="loader" filename="mesh/torus2_low_res.msh" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" dx="10" dz="12" />
-            <UniformMass totalmass="5" />
+            <UniformMass totalMass="5" />
             <MeshSpringForceField name="Springs" tetrasStiffness="400" tetrasDamping="4" />
             <Node name="Visu">
                 <OglModel name="Visual" fileMesh="mesh/torus2.obj" dx="10" dz="12" color="green" />
@@ -313,7 +313,7 @@
             <EulerImplicit rayleighStiffness="0.01" />
             <CGLinearSolver iterations="100" threshold="0.00000001" tolerance="1e-5"/>
             <MechanicalObject dx="2.5" dz="18" />
-            <UniformMass totalmass="5" />
+            <UniformMass totalMass="5" />
             <RegularGrid nx="6" ny="2" nz="5" xmin="-2.5" xmax="2.5" ymin="-0.5" ymax="0.5" zmin="-2" zmax="2" />
             <RegularGridSpringForceField name="Springs" stiffness="200" damping="2" />
             <Node name="Visu">
@@ -334,7 +334,7 @@
             <EulerImplicit rayleighStiffness="0.01" />
             <CGLinearSolver iterations="100" threshold="0.00000001" tolerance="1e-5"/>
             <MechanicalObject dx="5" dz="18" />
-            <UniformMass totalmass="5" />
+            <UniformMass totalMass="5" />
             <RegularGrid nx="6" ny="5" nz="2" xmin="-2.5" xmax="2.5" ymin="-2" ymax="2" zmin="-0.5" zmax="0.5" />
             <RegularGridSpringForceField name="Springs" stiffness="200" damping="2" />
             <Node name="Visu">
@@ -355,7 +355,7 @@
             <EulerImplicit rayleighStiffness="0.01" />
             <CGLinearSolver iterations="100" threshold="0.00000001" tolerance="1e-5"/>
             <MechanicalObject dx="7.5" dz="18" />
-            <UniformMass totalmass="5" />
+            <UniformMass totalMass="5" />
             <RegularGrid nx="6" ny="2" nz="5" xmin="-2.5" xmax="2.5" ymin="-0.5" ymax="0.5" zmin="-2" zmax="2" />
             <RegularGridSpringForceField name="Springs" stiffness="200" damping="2" />
             <Node name="Visu">
@@ -376,7 +376,7 @@
             <EulerImplicit rayleighStiffness="0.01" />
             <CGLinearSolver iterations="100" threshold="0.00000001" tolerance="1e-5"/>
             <MechanicalObject dx="10" dz="18" />
-            <UniformMass totalmass="5" />
+            <UniformMass totalMass="5" />
             <RegularGrid nx="6" ny="5" nz="2" xmin="-2.5" xmax="2.5" ymin="-2" ymax="2" zmin="-0.5" zmax="0.5" />
             <RegularGridSpringForceField name="Springs" stiffness="200" damping="2" />
             <Node name="Visu">

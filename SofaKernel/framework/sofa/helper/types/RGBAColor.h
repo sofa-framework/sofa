@@ -37,6 +37,8 @@ namespace helper
 namespace types
 {
 
+using sofa::helper::fixed_array ;
+
 #define RGBACOLOR_EQUALITY_THRESHOLD 1e-6
 
 /**

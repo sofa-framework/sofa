@@ -24,7 +24,7 @@
 	</Node>
        <Node name="cage">
                 <MechanicalObject template="Rigid" position="0 0 -1.15 0 0 0 1"/>
-                <UniformMass  mass="0.001" showAxisSizeFactor="0.01"/>
+                <UniformMass  vertexMass="0.001" showAxisSizeFactor="0.01"/>
 		<RestShapeSpringsForceField points="0" external_points="0" external_rest_shape="@../proxy/center/mechCenter" stiffness="2000" angularStiffness="50000"/>
                 <UncoupledConstraintCorrection compliance="0.0005 0.00002 0 0  0.00002  0 0.00002"/>
                 <Node name="Visu">
@@ -43,7 +43,7 @@
         </Node>
         <Node name="CUBE">
 		<MechanicalObject template="Rigid" position="0 0 -1.15 0 0 0 1" />
-                <UniformMass  mass="0.01 0.00001 0.0001 0 0 0 0.0001 0 0 0 0.0001" showAxisSizeFactor="0.01"/>
+                <UniformMass  vertexMass="0.01 0.00001 0.0001 0 0 0 0.0001 0 0 0 0.0001" showAxisSizeFactor="0.01"/>
                 <UncoupledConstraintCorrection/>
                 <Node name="Visu">
                         <OglModel name="Visual" fileMesh="mesh/smCube27.obj" color="0.0 0.5 0.5 1.0" scale="0.01"/>

@@ -22,7 +22,7 @@
       <Mesh name="lines" lines="0 1" />
       -->
         <FixedConstraint name="FixedConstraint" indices="0" />
-        <UniformMass mass="1 1 0.01 0 0 0 0.1 0 0 0 0.1" printLog="false" />
+        <UniformMass vertexMass="1 1 0.01 0 0 0 0.1 0 0 0 0.1" printLog="false" />
         <BeamFEMForceField name="FEM" radius="0.1" youngModulus="20000000" poissonRatio="0.49"/>
         <!--
       <Gravity value="0 0 0 0 0 0" />
@@ -54,7 +54,7 @@
         <MechanicalObject template="Rigid" name="DOFs" position="0 0 1 0 0 0 1  1 0 1 0 0 0 1" />
         <Mesh name="lines" lines="0 1" />
         <FixedConstraint name="FixedConstraint" indices="0" />
-        <UniformMass mass="1 1 0.01 0 0 0 0.1 0 0 0 0.1" />
+        <UniformMass vertexMass="1 1 0.01 0 0 0 0.1 0 0 0 0.1" />
         <BeamFEMForceField name="FEM" radius="0.05" youngModulus="10000000" poissonRatio="0.49"/>
         <!--
       <Gravity value="0 0 0 0 0 0" />

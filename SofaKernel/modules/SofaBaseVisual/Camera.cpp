@@ -19,64 +19,34 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_SCENECHECKAPICHANGES_H
-#define SOFA_SIMULATION_SCENECHECKAPICHANGES_H
+#include <sofa/core/ObjectFactory.h>
+#include <SofaBaseVisual/Camera.h>
 
-#include "SceneChecks.h"
-#include "config.h"
-#include <map>
-
-/////////////////////////////// FORWARD DECLARATION ////////////////////////////////////////////////
-namespace sofa {
-    namespace simulation {
-        class Node ;
-    }
-}
-
-
-/////////////////////////////////////// DECLARATION ////////////////////////////////////////////////
 namespace sofa
 {
-namespace simulation
+
+namespace component
 {
-namespace _scenecheckapichange_
+
+namespace visualmodel
 {
 
+SOFA_DECL_CLASS(Camera)
 
-typedef std::function<void(sofa::core::objectmodel::Base*)> ChangeSetHookFunction ;
-class SOFA_GRAPH_COMPONENT_API SceneCheckAPIChange : public SceneCheck
+int CameraClass = core::RegisterObject("A Camera that render the scene from a given location & orientation.")
+                    .add<Camera>() ;
+
+Camera::Camera()
 {
-public:
-    SceneCheckAPIChange() ;
-    virtual ~SceneCheckAPIChange() ;
+    p_computeZClip.setValue(false) ;
+}
 
-    typedef std::shared_ptr<SceneCheckAPIChange> SPtr ;
-    static SPtr newSPtr() { return SPtr(new SceneCheckAPIChange()); }
-    virtual const std::string getName() override ;
-    virtual const std::string getDesc() override ;
-    virtual void doInit(Node* node) override ;
-    virtual void doCheckOn(Node* node) override ;
-
-    void installDefaultChangeSets() ;
-    void addHookInChangeSet(const std::string& version, ChangeSetHookFunction fct) ;
-private:
-    std::string m_currentApiLevel;
-    std::string m_selectedApiLevel {"17.06"} ;
-
-    std::map<std::string, std::vector<ChangeSetHookFunction>> m_changesets ;
-};
-
-} /// _scenechecks_
-
-using _scenecheckapichange_::SceneCheckAPIChange ;
-
-namespace scenecheckers
+Camera::~Camera()
 {
-    using _scenecheckapichange_::SceneCheckAPIChange ;
-} /// checkers
+}
 
-} /// namespace simulation
+} // namespace visualmodel
 
-} /// namespace sofa
+} // namespace component
 
-#endif /// SOFA_SIMULATION_SCENECHECKS_H
+} // namespace sofa

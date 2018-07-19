@@ -19,34 +19,46 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#ifndef SOFA_SIMULATION_SCENECHECKS_H
+#define SOFA_SIMULATION_SCENECHECKS_H
 
-#include <SofaGraphComponent/BackgroundSetting.h>
-#include <sofa/core/visual/VisualParams.h>
-#include <sofa/core/ObjectFactory.h>
+#include "config.h"
+#include <sofa/helper/system/config.h>
+#include <map>
+#include <memory>
+
+namespace sofa {
+namespace simulation {
+    class Node;
+}
+}
 
 namespace sofa
 {
-
-namespace component
+namespace simulation
+{
+namespace _scenechecking_
 {
 
-namespace configurationsetting
+class SOFA_GRAPH_COMPONENT_API SceneCheck
 {
+public:
+    typedef std::shared_ptr<SceneCheck> SPtr;
+    virtual const std::string getName() = 0;
+    virtual const std::string getDesc() = 0;
+    virtual void doInit(Node* node) { SOFA_UNUSED(node); }
+    virtual void doCheckOn(Node* node) = 0;
+    virtual void doPrintSummary() {}
+};
 
-SOFA_DECL_CLASS(BackgroundSetting)
-int BackgroundSettingClass = core::RegisterObject("Background colour setting")
-        .add< BackgroundSetting >()
-        .addAlias("Background")
-        ;
+} // namespace _scenechecking_
 
-BackgroundSetting::BackgroundSetting():
-      color(initData(&color, "color", "Color of the Background of the Viewer"))
-    , image(initData(&image, "image", "Image to be used as background of the viewer"))
+namespace scenechecking
 {
+    using _scenechecking_::SceneCheck;
 }
 
-}
+} // namespace simulation
+} // namespace sofa
 
-}
-
-}
+#endif // SOFA_SIMULATION_SCENECHECKS_H

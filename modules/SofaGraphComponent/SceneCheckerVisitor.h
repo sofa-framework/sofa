@@ -28,12 +28,13 @@
 #include <map>
 
 #include <sofa/simulation/Visitor.h>
-#include "SceneChecks.h"
+#include "SceneCheck.h"
 
-/////////////////////////////////////// DECLARATION ////////////////////////////////////////////////
 namespace sofa
 {
 namespace simulation
+{
+namespace _scenechecking_
 {
 
 class SOFA_GRAPH_COMPONENT_API SceneCheckerVisitor : public Visitor
@@ -52,8 +53,14 @@ private:
     std::vector<SceneCheck::SPtr> m_checkset ;
 };
 
-} // namespace simulation
+} // namespace _scenechecking_
 
+namespace scenechecking
+{
+    using _scenechecking_::SceneCheckerVisitor;
+}
+
+} // namespace simulation
 } // namespace sofa
 
 #endif

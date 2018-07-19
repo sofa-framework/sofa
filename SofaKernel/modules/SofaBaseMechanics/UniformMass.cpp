@@ -63,76 +63,6 @@ Mat3x3d MatrixFromEulerXYZ(double thetaX, double thetaY, double thetaZ)
     return m;
 }
 
-template <class DataTypes, class MassType>
-template<class T>
-void UniformMass<DataTypes, MassType>::reinitDefaultImpl()
-{
-    WriteAccessor<Data<vector<int> > > indices = d_indices;
-    m_doesTopoChangeAffect = false;
-
-    if(mstate==NULL){
-        msg_warning(this) << "Missing mechanical state. \n"
-                             "UniformMass need to be used with an object also having a MechanicalState. \n"
-                             "To remove this warning: add a <MechanicalObject/> to the parent node of the one \n"
-                             " containing this <UniformMass/>";
-        return;
-    }
-
-    //If localRange is set, update indices
-    if (d_localRange.getValue()[0] >= 0
-        && d_localRange.getValue()[1] > 0
-        && d_localRange.getValue()[1] + 1 < (int)mstate->getSize())
-    {
-        indices.clear();
-        for(int i=d_localRange.getValue()[0]; i<=d_localRange.getValue()[1]; i++)
-            indices.push_back(i);
-    }
-
-    //If no given indices
-    if(indices.size()==0)
-    {
-        indices.clear();
-        for(int i=0; i<(int)mstate->getSize(); i++)
-            indices.push_back(i);
-        m_doesTopoChangeAffect = true;
-    }
-
-    if(d_totalMass.getValue() < 0.0 || d_mass.getValue() < 0.0){
-        msg_warning(this) << "The mass or totalmass data field cannot have negative values.\n"
-                             "Thus we will use the default value  that are mass = 1.0 and totalmass = mass * num_position. \n"
-                             "To remove this warning you need to use positive values in 'totalmass' and 'mass' data field";
-
-        d_totalMass.setValue(0.0) ;
-        d_mass.setValue(1.0) ;
-    }
-
-    //Update mass and totalMass
-    if (d_totalMass.getValue() > 0)
-    {
-        MassType *m = d_mass.beginEdit();
-        *m = ( ( typename DataTypes::Real ) d_totalMass.getValue() / indices.size() );
-        d_mass.endEdit();
-    }
-    else
-        d_totalMass.setValue ( indices.size() * (Real)d_mass.getValue() );
-
-}
-
-template <class RigidTypes, class MassType>
-template <class T>
-void UniformMass<RigidTypes, MassType>::reinitRigidImpl()
-{
-    if ( d_filenameMass.isSet() && d_filenameMass.getValue() != "unused" ){
-        loadRigidMass(d_filenameMass.getFullPath()) ;
-    }
-
-    reinitDefaultImpl<RigidTypes>() ;
-
-    d_mass.beginEdit()->recalc();
-    d_mass.endEdit();
-}
-
-
 
 template <class RigidTypes, class MassType>
 template <class T>
@@ -142,7 +72,7 @@ void UniformMass<RigidTypes, MassType>::loadFromFileRigidImpl(const string& file
 
     if (!filename.empty())
     {
-        MassType m = getMass();
+        MassType m = getVertexMass();
         string unconstingFilenameQuirck = filename ;
         if (!DataRepository.findFile(unconstingFilenameQuirck))
             msg_error(this) << "cannot find file '" << filename << "'.\n"  ;
@@ -184,13 +114,16 @@ void UniformMass<RigidTypes, MassType>::loadFromFileRigidImpl(const string& file
                                 }
                             }
                         }
-                        else if (!strcmp(cmd,"mass"))
+                        else if (!strcmp(cmd,"vertexMass"))
                         {
                             double mass;
                             if( fscanf(file, "%lf", &mass) > 0 )
                             {
-                                if (!this->d_mass.isSet())
-                                    m.mass = mass;
+                                m.mass = mass;
+                                if (!this->d_vertexMass.isSet())
+                                {
+                                    this->d_vertexMass.forceSet();
+                                }
                             }
                             else
                                 msg_error(this) << "error reading file '" << filename <<  "'." << msgendl
@@ -270,7 +203,7 @@ void UniformMass<RigidTypes, MassType>::loadFromFileRigidImpl(const string& file
         }
         setMass(m);
     }
-    else if (d_totalMass.getValue()>0 && mstate!=NULL) d_mass.setValue((Real)d_totalMass.getValue() / mstate->getSize());
+    else if (d_totalMass.getValue()>0 && mstate!=NULL) d_vertexMass.setValue((Real)d_totalMass.getValue() / mstate->getSize());
 }
 
 
@@ -285,7 +218,7 @@ void UniformMass<RigidTypes, MassType>::drawRigid2DImpl(const VisualParams* vpar
     ReadAccessor<Data<vector<int> > > indices = d_indices;
     defaulttype::Vec3d len;
 
-    len[0] = len[1] = sqrt(d_mass.getValue().inertiaMatrix);
+    len[0] = len[1] = sqrt(d_vertexMass.getValue().inertiaMatrix);
     len[2] = 0;
 
     for (unsigned int i=0; i<indices.size(); i++)
@@ -316,9 +249,9 @@ void UniformMass<RigidTypes, MassType>::drawRigid3DImpl(const VisualParams* vpar
     // So to get lx,ly,lz back we need to do
     //   lx = sqrt(12/M * (m->_I(1,1)+m->_I(2,2)-m->_I(0,0)))
     // Note that RigidMass inertiaMatrix is already divided by M
-    double m00 = d_mass.getValue().inertiaMatrix[0][0];
-    double m11 = d_mass.getValue().inertiaMatrix[1][1];
-    double m22 = d_mass.getValue().inertiaMatrix[2][2];
+    double m00 = d_vertexMass.getValue().inertiaMatrix[0][0];
+    double m11 = d_vertexMass.getValue().inertiaMatrix[1][1];
+    double m22 = d_vertexMass.getValue().inertiaMatrix[2][2];
     len[0] = sqrt(m11+m22-m00);
     len[1] = sqrt(m00+m22-m11);
     len[2] = sqrt(m00+m11-m22);
@@ -408,8 +341,8 @@ Vector6 UniformMass<RigidTypes,MassType>::getMomentumRigid3DImpl( const Mechanic
     ReadAccessor<DataVecCoord> x = d_x;
     ReadAccessor<Data<vector<int> > > indices = d_indices;
 
-    Real m = d_mass.getValue().mass;
-    const typename MassType::Mat3x3& I = d_mass.getValue().inertiaMassMatrix;
+    Real m = d_vertexMass.getValue().mass;
+    const typename MassType::Mat3x3& I = d_vertexMass.getValue().inertiaMassMatrix;
 
     defaulttype::Vec6d momentum;
 
@@ -435,7 +368,7 @@ Vector6 UniformMass<Vec3Types, MassType>::getMomentumVec3DImpl ( const Mechanica
     ReadAccessor<DataVecCoord> x = d_x;
     ReadAccessor<Data<vector<int> > > indices = d_indices;
 
-    const MassType& m = d_mass.getValue();
+    const MassType& m = d_vertexMass.getValue();
     defaulttype::Vec6d momentum;
 
     for ( unsigned int i=0 ; i<indices.size() ; i++ )
@@ -462,7 +395,7 @@ SReal UniformMass<VecTypes, MassType>::getPotentialEnergyRigidImpl(const core::M
 
     typename Coord::Pos g ( getContext()->getGravity() );
     for (unsigned int i=0; i<indices.size(); i++)
-        e -= g*d_mass.getValue().mass*x[indices[i]].getCenter();
+        e -= g*d_vertexMass.getValue().mass*x[indices[i]].getCenter();
 
     return e;
 }
@@ -475,7 +408,7 @@ void UniformMass<VecTypes, MassType>::addMDxToVectorVecImpl(defaulttype::BaseVec
                                                      unsigned int& offset)
 {
     unsigned int derivDim = (unsigned)Deriv::size();
-    double m = d_mass.getValue();
+    double m = d_vertexMass.getValue();
 
     ReadAccessor<Data<vector<int> > > indices = d_indices;
 
@@ -502,9 +435,14 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::constructor_message()
 }
 
 template<> SOFA_BASE_MECHANICS_API
-void UniformMass<Rigid3dTypes, Rigid3dMass>::reinit()
+void UniformMass<Rigid3dTypes, Rigid3dMass>::init()
 {
-    reinitRigidImpl<Rigid3dTypes>() ;
+    initDefaultImpl() ;
+
+    // Call recalc from RigidTypes:
+    // computes inertiaMassMatrix, invInertiaMatrix and invInertiaMassMatrix
+    d_vertexMass.beginEdit()->recalc();
+    d_vertexMass.endEdit();
 }
 
 
@@ -584,9 +522,14 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::constructor_message()
 }
 
 template<> SOFA_BASE_MECHANICS_API
-void UniformMass<Rigid3fTypes, Rigid3fMass>::reinit()
+void UniformMass<Rigid3fTypes, Rigid3fMass>::init()
 {
-    reinitRigidImpl<Rigid3fTypes>();
+    initDefaultImpl() ;
+
+    // Call recalc from RigidTypes:
+    // computes inertiaMassMatrix, invInertiaMatrix and invInertiaMassMatrix
+    d_vertexMass.beginEdit()->recalc();
+    d_vertexMass.endEdit();
 }
 
 template<> SOFA_BASE_MECHANICS_API

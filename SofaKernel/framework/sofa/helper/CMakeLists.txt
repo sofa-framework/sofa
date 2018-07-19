@@ -91,6 +91,7 @@ set(HEADER_FILES
     system/atomic.h
     system/config.h
     system/console.h
+    system/console_internal.h
     system/gl.h
     system/glu.h
     system/thread/CTime.h
@@ -192,6 +193,7 @@ set(SOURCE_FILES
     types/Material.cpp
     logging/Message.cpp
     logging/MessageDispatcher.cpp
+    logging/MessageFormatter.cpp
     logging/ComponentInfo.cpp
     logging/ClangMessageHandler.cpp
     logging/ClangStyleMessageFormatter.cpp

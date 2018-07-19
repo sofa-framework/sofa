@@ -7,7 +7,7 @@
     
     <Node name="uniformCompliance">
         <MechanicalObject name="dof" template="Vec3" position="0 0 0 10 0 0" showObject="true" drawMode="1"/>
-        <UniformMass name="mass" mass="1" />
+        <UniformMass name="mass" vertexMass="1" />
         <FixedConstraint indices="0" />
         <Node name="compliance">
             <EdgeSetTopologyContainer edges="0 1" />
@@ -19,7 +19,7 @@
     
     <Node name="linearCompliance">
         <MechanicalObject name="dof" template="Vec3" position="0 1 0 10 1 0" showObject="true" drawMode="1" showColor="1 0 0 1"/>
-        <UniformMass name="mass" mass="1" />
+        <UniformMass name="mass" vertexMass="1" />
         <FixedConstraint indices="0" />
         <Node name="compliance">
             <EdgeSetTopologyContainer edges="0 1" />
