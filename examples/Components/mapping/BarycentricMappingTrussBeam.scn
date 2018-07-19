@@ -10,7 +10,8 @@
         <CGLinearSolver iterations="125" tolerance="1e-16" threshold="1e-16" />
         <!--<LULinearSolver/>-->
         <!--<RegularGrid name="grid" min="0 0 0" max="0.1 0.01 0.01" nx="10" ny="2" nz="2" />-->
-        <TetrahedronSetTopologyContainer name="Container" fileTopology="mesh/truss_tetra.msh" />
+        <MeshGmshLoader name="meshLoader0" filename="mesh/truss_tetra.msh" />
+        <TetrahedronSetTopologyContainer name="Container" src="@meshLoader0" />
         <TetrahedronSetTopologyModifier name="Modifier" />
         <TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
         <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />

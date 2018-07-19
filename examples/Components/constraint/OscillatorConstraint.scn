@@ -11,7 +11,8 @@
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject name="dofs" />
         <!-- Container for the tetrahedra-->
-        <TetrahedronSetTopologyContainer name="topo" fileTopology="mesh/liver.msh" />
+        <MeshGmshLoader name="meshLoader0" filename="mesh/liver.msh" />
+        <TetrahedronSetTopologyContainer name="topo" src="@meshLoader0" />
         <!-- Algorithms: used in DiagonalMass to compute the mass -->
         <TetrahedronSetGeometryAlgorithms name="GeomAlgo" />
         <DiagonalMass massDensity="1" name="computed using mass density" />

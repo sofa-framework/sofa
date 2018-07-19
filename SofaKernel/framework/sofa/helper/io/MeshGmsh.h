@@ -19,11 +19,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_IO_MESHVTK_H
-#define SOFA_HELPER_IO_MESHVTK_H
+#ifndef SOFA_HELPER_IO_MESHGMSH_H
+#define SOFA_HELPER_IO_MESHGMSH_H
 
 #include <sofa/helper/io/Mesh.h>
-#include <fstream>
+#include <istream>
 
 namespace sofa
 {
@@ -34,21 +34,24 @@ namespace helper
 namespace io
 {
 
-class SOFA_HELPER_API MeshVTK : public Mesh
+class SOFA_HELPER_API MeshGmsh : public Mesh
 {
 public:
 
-    MeshVTK(const std::string& filename)
+    MeshGmsh(const std::string& filename)
     {
-        init(filename);
+        init (filename);
     }
 
-    void init(std::string filename);
+    void init (std::string filename);
 
 protected:
 
-    void readVTU(const std::string &filename);
+    bool readGmsh(std::ifstream &file, const unsigned int gmshFormat);
 
+    void addInGroup(helper::vector< sofa::core::loader::PrimitiveGroup>& group, int tag, int eid);
+
+    void normalizeGroup(helper::vector< sofa::core::loader::PrimitiveGroup>& group);
 };
 
 } // namespace io
@@ -57,4 +60,4 @@ protected:
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_HELPER_IO_MESHGMSH_H
