@@ -148,6 +148,7 @@ public:
     bool m_visuActive; ///< Internal boolean to detect activation switch of the draw
     bool m_initVisuDone; ///< Internal boolean activated only if visu initialization done without return
     bool m_errorDevice; ///< Boolean detecting any error coming from device / detection
+    bool m_simulationStarted; /// <Boolean storing hte information if Sofa has started the simulation (changed by AnimateBeginEvent)
 
 private:
     void handleEvent(core::objectmodel::Event *) override;
