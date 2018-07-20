@@ -149,7 +149,6 @@ template<class DataTypes1, class DataTypes2>
 void MechanicalMatrixMapper<DataTypes1, DataTypes2>::buildIdentityBlocksInJacobian(core::behavior::BaseMechanicalState* mstate, sofa::core::MatrixDerivId Id)
 {
     sofa::helper::vector<unsigned int> list;
-    std::cout << "mstate->getSize()" << mstate->getSize() << std::endl;
     for (unsigned int i=0; i<mstate->getSize(); i++)
         list.push_back(i);
     mstate->buildIdentityBlocksInJacobian(list, Id);
