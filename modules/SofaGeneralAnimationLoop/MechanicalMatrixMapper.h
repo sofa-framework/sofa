@@ -150,7 +150,7 @@ protected:
 
     ComponentState m_componentstate { ComponentState::Undefined } ;
 
-    SingleLink < MechanicalMatrixMapper<DataTypes1, DataTypes2>, sofa::simulation::Node , BaseLink::FLAG_NONE > l_nodeToParse;
+    SingleLink < MechanicalMatrixMapper<DataTypes1, DataTypes2>, sofa::simulation::Node , BaseLink::FLAG_STOREPATH > l_nodeToParse;
 
     SingleLink < MechanicalMatrixMapper<DataTypes1, DataTypes2>, sofa::core::behavior::BaseMechanicalState , BaseLink::FLAG_NONE > l_mechanicalState;
     SingleLink < MechanicalMatrixMapper<DataTypes1, DataTypes2>, sofa::core::behavior::BaseMass , BaseLink::FLAG_NONE > l_mappedMass;
