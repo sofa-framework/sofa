@@ -123,10 +123,9 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
 
     if (driver->m_forceFeedback)
     {
-        Vector3 currentForced;
-        currentForced.clear();
         Vector3 pos(driver->m_omniData.transform[12+0]*0.1,driver->m_omniData.transform[12+1]*0.1,driver->m_omniData.transform[12+2]*0.1);
         Vector3 pos_in_world = driver->d_positionBase.getValue() + driver->d_orientationBase.getValue().rotate(pos*driver->d_scale.getValue());
+
         driver->m_forceFeedback->computeForce(pos_in_world[0],pos_in_world[1],pos_in_world[2], 0, 0, 0, 0, currentForce[0], currentForce[1], currentForce[2]);
     }
     else
@@ -226,10 +225,8 @@ void GeomagicDriver::init()
         d_omniVisu.setValue(false);
         m_errorDevice = true;
         //init the positionDevice data to avoid any crash in the scene
-        VecCoord& posD =(*d_posDevice.beginEdit());
-        posD.clear();
-        posD.resize(1);
-        d_posDevice.endEdit();
+        m_posDeviceVisu.clear();
+        m_posDeviceVisu.resize(1);
         return;
     }
 
@@ -264,9 +261,7 @@ void GeomagicDriver::init()
 
     //Initialization of the visual components
     //resize vectors
-    VecCoord& posD =(*d_posDevice.beginEdit());
-    posD.resize(NVISUALNODE+1);
-    d_posDevice.endEdit();
+    m_posDeviceVisu.resize(NVISUALNODE+1);
 
     m_visuActive = false;
 
@@ -422,7 +417,7 @@ void GeomagicDriver::updatePosition()
     Mat3x3d mrot;
 
     Vector6 & angle = *d_angle.beginEdit();
-    GeomagicDriver::VecCoord & posDevice = *d_posDevice.beginEdit();
+    GeomagicDriver::Coord & posDevice = *d_posDevice.beginEdit();
     bool & button_1 = *d_button_1.beginEdit();
     bool & button_2 = *d_button_2.beginEdit();
 
@@ -457,8 +452,8 @@ void GeomagicDriver::updatePosition()
     orientation.fromMatrix(mrot);
 
     //compute the position of the tool (according to positionbase, orientation base and the scale
-    posDevice[0].getCenter() = positionBase + orientationBase.rotate(position*scale);
-    posDevice[0].getOrientation() = orientationBase * orientation * orientationTool;
+    posDevice.getCenter() = positionBase + orientationBase.rotate(position*scale);
+    posDevice.getOrientation() = orientationBase * orientation * orientationTool;
 
     d_button_1.endEdit();
     d_button_2.endEdit();
@@ -466,45 +461,46 @@ void GeomagicDriver::updatePosition()
     if(d_omniVisu.getValue() && m_initVisuDone)
     {
         sofa::defaulttype::SolidTypes<double>::Transform tampon;
-        tampon.set(posDevice[0].getCenter(), posDevice[0].getOrientation());
+        m_posDeviceVisu[0] = posDevice;
+        tampon.set(m_posDeviceVisu[0].getCenter(), m_posDeviceVisu[0].getOrientation());
 
         //get position stylus
-        posDevice[1+VN_stylus] = Coord(tampon.getOrigin(), tampon.getOrientation());
+        m_posDeviceVisu[1+VN_stylus] = Coord(tampon.getOrigin(), tampon.getOrientation());
 
         //get pos joint 2
         sofa::helper::Quater<double> quarter2(Vec3d(0.0,0.0,1.0),m_simuData.angle2[2]);
         sofa::defaulttype::SolidTypes<double>::Transform transform_segr2(Vec3d(0.0,0.0,0.0),quarter2);
         tampon*=transform_segr2;
-        posDevice[1+VN_joint2] = Coord(tampon.getOrigin(), tampon.getOrientation());
+        m_posDeviceVisu[1+VN_joint2] = Coord(tampon.getOrigin(), tampon.getOrientation());
 
         //get pos joint 1
         sofa::helper::Quater<double> quarter3(Vec3d(1.0,0.0,0.0),m_simuData.angle2[1]);
         sofa::defaulttype::SolidTypes<double>::Transform transform_segr3(Vec3d(0.0,0.0,0.0),quarter3);
         tampon*=transform_segr3;
-        posDevice[1+VN_joint1] = Coord(tampon.getOrigin(), tampon.getOrientation());
+        m_posDeviceVisu[1+VN_joint1] = Coord(tampon.getOrigin(), tampon.getOrientation());
 
         //get pos arm 2
         sofa::helper::Quater<double> quarter4(Vec3d(0.0,1.0,0.0),-m_simuData.angle2[0]);
         sofa::defaulttype::SolidTypes<double>::Transform transform_segr4(Vec3d(0.0,0.0,0.0),quarter4);
         tampon*=transform_segr4;
-        posDevice[1+VN_arm2] = Coord(tampon.getOrigin(), tampon.getOrientation());
+        m_posDeviceVisu[1+VN_arm2] = Coord(tampon.getOrigin(), tampon.getOrientation());
         //get pos arm 1
         sofa::helper::Quater<double> quarter5(Vec3d(1.0,0.0,0.0),-(M_PI/2)+m_simuData.angle1[2]-m_simuData.angle1[1]);
         sofa::defaulttype::SolidTypes<double>::Transform transform_segr5(Vec3d(0.0,13.33*d_scale.getValue(),0.0),quarter5);
         tampon*=transform_segr5;
-        posDevice[1+VN_arm1] = Coord(tampon.getOrigin(), tampon.getOrientation());
+        m_posDeviceVisu[1+VN_arm1] = Coord(tampon.getOrigin(), tampon.getOrientation());
 
         //get pos joint 0
         sofa::helper::Quater<double> quarter6(Vec3d(1.0,0.0,0.0),m_simuData.angle1[1]);
         sofa::defaulttype::SolidTypes<double>::Transform transform_segr6(Vec3d(0.0,13.33*d_scale.getValue(),0.0),quarter6);
         tampon*=transform_segr6;
-        posDevice[1+VN_joint0] = Coord(tampon.getOrigin(), tampon.getOrientation());
+        m_posDeviceVisu[1+VN_joint0] = Coord(tampon.getOrigin(), tampon.getOrientation());
 
         //get pos base
         sofa::helper::Quater<double> quarter7(Vec3d(0.0,0.0,1.0),m_simuData.angle1[0]);
         sofa::defaulttype::SolidTypes<double>::Transform transform_segr7(Vec3d(0.0,0.0,0.0),quarter7);
         tampon*=transform_segr7;
-        posDevice[1+VN_base] = Coord(tampon.getOrigin(), tampon.getOrientation());
+        m_posDeviceVisu[1+VN_base] = Coord(tampon.getOrigin(), tampon.getOrientation());
 
         sofa::simulation::Node *node = dynamic_cast<sofa::simulation::Node*> (this->getContext());
         if (node)
@@ -556,9 +552,9 @@ void GeomagicDriver::draw(const sofa::core::visual::VisualParams* vparams)
     {
         vparams->drawTool()->disableLighting();
 
-        vparams->drawTool()->drawArrow(d_posDevice.getValue()[0].getCenter(), d_posDevice.getValue()[0].getCenter() + d_posDevice.getValue()[0].getOrientation().rotate(Vector3(2,0,0)*d_scale.getValue()), d_scale.getValue()*0.1, Vec4f(1,0,0,1) );
-        vparams->drawTool()->drawArrow(d_posDevice.getValue()[0].getCenter(), d_posDevice.getValue()[0].getCenter() + d_posDevice.getValue()[0].getOrientation().rotate(Vector3(0,2,0)*d_scale.getValue()), d_scale.getValue()*0.1, Vec4f(0,1,0,1) );
-        vparams->drawTool()->drawArrow(d_posDevice.getValue()[0].getCenter(), d_posDevice.getValue()[0].getCenter() + d_posDevice.getValue()[0].getOrientation().rotate(Vector3(0,0,2)*d_scale.getValue()), d_scale.getValue()*0.1, Vec4f(0,0,1,1) );
+        vparams->drawTool()->drawArrow(m_posDeviceVisu[0].getCenter(), m_posDeviceVisu[0].getCenter() + m_posDeviceVisu[0].getOrientation().rotate(Vector3(2,0,0)*d_scale.getValue()), d_scale.getValue()*0.1, Vec4f(1,0,0,1) );
+        vparams->drawTool()->drawArrow(m_posDeviceVisu[0].getCenter(), m_posDeviceVisu[0].getCenter() + m_posDeviceVisu[0].getOrientation().rotate(Vector3(0,2,0)*d_scale.getValue()), d_scale.getValue()*0.1, Vec4f(0,1,0,1) );
+        vparams->drawTool()->drawArrow(m_posDeviceVisu[0].getCenter(), m_posDeviceVisu[0].getCenter() + m_posDeviceVisu[0].getOrientation().rotate(Vector3(0,0,2)*d_scale.getValue()), d_scale.getValue()*0.1, Vec4f(0,0,1,1) );
     }
 
     if (d_omniVisu.getValue() && m_initVisuDone)
@@ -576,14 +572,12 @@ void GeomagicDriver::draw(const sofa::core::visual::VisualParams* vparams)
             nodePrincipal->updateContext();
         }
 
-        helper::WriteAccessor< sofa::core::objectmodel::Data< VecCoord > > posD = d_posDevice;
         VecCoord& posDOF =*(rigidDOF->x.beginEdit());
-        posD.resize(NVISUALNODE+1);
-        posDOF.resize(NVISUALNODE+1);
+        posDOF.resize(m_posDeviceVisu.size());
         for(int i=0; i<NVISUALNODE+1; i++)
         {
-            posDOF[i].getCenter() = posD[i].getCenter();
-            posDOF[i].getOrientation() = posD[i].getOrientation();
+            posDOF[i].getCenter() = m_posDeviceVisu[i].getCenter();
+            posDOF[i].getOrientation() = m_posDeviceVisu[i].getOrientation();
         }
 
         //if buttons pressed, change stylus color
@@ -631,13 +625,13 @@ void GeomagicDriver::computeBBox(const core::ExecParams*  params, bool  )
     SReal minBBox[3] = {1e10,1e10,1e10};
     SReal maxBBox[3] = {-1e10,-1e10,-1e10};
 
-    minBBox[0] = d_posDevice.getValue()[0].getCenter()[0]-d_positionBase.getValue()[0]*d_scale.getValue();
-    minBBox[1] = d_posDevice.getValue()[0].getCenter()[1]-d_positionBase.getValue()[1]*d_scale.getValue();
-    minBBox[2] = d_posDevice.getValue()[0].getCenter()[2]-d_positionBase.getValue()[2]*d_scale.getValue();
+    minBBox[0] = d_posDevice.getValue().getCenter()[0]-d_positionBase.getValue()[0]*d_scale.getValue();
+    minBBox[1] = d_posDevice.getValue().getCenter()[1]-d_positionBase.getValue()[1]*d_scale.getValue();
+    minBBox[2] = d_posDevice.getValue().getCenter()[2]-d_positionBase.getValue()[2]*d_scale.getValue();
 
-    maxBBox[0] = d_posDevice.getValue()[0].getCenter()[0]+d_positionBase.getValue()[0]*d_scale.getValue();
-    maxBBox[1] = d_posDevice.getValue()[0].getCenter()[1]+d_positionBase.getValue()[1]*d_scale.getValue();
-    maxBBox[2] = d_posDevice.getValue()[0].getCenter()[2]+d_positionBase.getValue()[2]*d_scale.getValue();
+    maxBBox[0] = d_posDevice.getValue().getCenter()[0]+d_positionBase.getValue()[0]*d_scale.getValue();
+    maxBBox[1] = d_posDevice.getValue().getCenter()[1]+d_positionBase.getValue()[1]*d_scale.getValue();
+    maxBBox[2] = d_posDevice.getValue().getCenter()[2]+d_positionBase.getValue()[2]*d_scale.getValue();
 
     this->f_bbox.setValue(params,sofa::defaulttype::TBoundingBox<SReal>(minBBox,maxBBox));
 }
