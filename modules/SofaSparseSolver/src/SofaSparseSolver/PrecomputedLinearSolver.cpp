@@ -19,9 +19,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_PRECONDITIONER_INIT_H
-#define SOFA_COMPONENT_PRECONDITIONER_INIT_H
-#include "config.h"
+// Author: Hadrien Courtecuisse
+//
+// Copyright: See COPYING file that comes with this distribution
+#include <SofaSparseSolver/PrecomputedLinearSolver.inl>
 
 namespace sofa
 {
@@ -29,12 +30,21 @@ namespace sofa
 namespace component
 {
 
+namespace linearsolver
+{
 
-void SOFA_PRECONDITIONER_API initPreconditioner();
+using namespace sofa::component::odesolver;
+using namespace sofa::component::linearsolver;
+
+SOFA_DECL_CLASS(PrecomputedLinearSolver)
+
+int PrecomputedLinearSolverClass = core::RegisterObject("Linear system solver based on a precomputed inverse matrix")
+        .add< PrecomputedLinearSolver< CompressedRowSparseMatrix<double> , FullVector<double> > >()
+        ;
+
+} // namespace linearsolver
 
 } // namespace component
 
 } // namespace sofa
-
-#endif
 

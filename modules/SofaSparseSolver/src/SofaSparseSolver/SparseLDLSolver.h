@@ -57,14 +57,14 @@ public :
     typedef typename Inherit::JMatrixType JMatrixType;
     typedef SparseLDLImplInvertData<helper::vector<int>, helper::vector<Real> > InvertData;
 
-    void solve (Matrix& M, Vector& x, Vector& b);
-    void invert(Matrix& M);
-    bool addJMInvJtLocal(TMatrix * M, ResMatrixType * result,const JMatrixType * J, double fact);
+    void solve (Matrix& M, Vector& x, Vector& b) override ;
+    void invert(Matrix& M) override;
+    bool addJMInvJtLocal(TMatrix * M, ResMatrixType * result,const JMatrixType * J, double fact) override;
     int numStep;
 
     Data<bool> f_saveMatrixToFile; ///< save matrix to a text file (can be very slow, as full matrix is stored
 
-    MatrixInvertData * createInvertData() {
+    MatrixInvertData * createInvertData() override {
         return new InvertData();
     }
 
@@ -77,12 +77,12 @@ protected :
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_LINEARSOLVER_SPARSELDLSOLVER_CPP)
 #ifdef SOFA_WITH_DOUBLE
-extern template class SOFA_SPARSE_SOLVER_API SparseLDLSolver< CompressedRowSparseMatrix< double>,FullVector<double> >;
-extern template class SOFA_SPARSE_SOLVER_API SparseLDLSolver< CompressedRowSparseMatrix< defaulttype::Mat<3,3,double> >,FullVector<double> >;
+extern template class SOFA_SOFASPARSESOLVER_API SparseLDLSolver< CompressedRowSparseMatrix< double>,FullVector<double> >;
+extern template class SOFA_SOFASPARSESOLVER_API SparseLDLSolver< CompressedRowSparseMatrix< defaulttype::Mat<3,3,double> >,FullVector<double> >;
 #endif
 #ifdef SOFA_WITH_FLOAT
-extern template class SOFA_SPARSE_SOLVER_API SparseLDLSolver< CompressedRowSparseMatrix< float>,FullVector<float> >;
-extern template class SOFA_SPARSE_SOLVER_API SparseLDLSolver< CompressedRowSparseMatrix< defaulttype::Mat<3,3,float> >,FullVector<float> >;
+extern template class SOFA_SOFASPARSESOLVER_API SparseLDLSolver< CompressedRowSparseMatrix< float>,FullVector<float> >;
+extern template class SOFA_SOFASPARSESOLVER_API SparseLDLSolver< CompressedRowSparseMatrix< defaulttype::Mat<3,3,float> >,FullVector<float> >;
 #endif
 #endif
 

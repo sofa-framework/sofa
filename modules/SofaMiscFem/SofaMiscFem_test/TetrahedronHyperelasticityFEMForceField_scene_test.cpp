@@ -34,8 +34,6 @@
 #include <iostream>
 #include <fstream>
 
-
-
 namespace sofa {
 
 /** @brief Comparison of the result of simulation with theoretical values with hyperelastic material

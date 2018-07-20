@@ -19,22 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_SPARSE_SOLVER_INIT_H
-#define SOFA_COMPONENT_SPARSE_SOLVER_INIT_H
-#include "config.h"
+#ifndef SOFA_SPARSE_SOLVER_SPARSE_SOLVER_H
+#define SOFA_SPARSE_SOLVER_SPARSE_SOLVER_H
 
-namespace sofa
-{
+#include <sofa/helper/system/config.h>
 
-namespace component
-{
-
-
-void SOFA_SPARSE_SOLVER_API initSparseSolver();
-
-} // namespace component
-
-} // namespace sofa
-
+#ifdef SOFA_BUILD_SOFASPARSESOLVER
+#  define SOFA_SOFASPARSESOLVER_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_SOFASPARSESOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
+#endif

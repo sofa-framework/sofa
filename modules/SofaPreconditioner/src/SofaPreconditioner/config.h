@@ -19,34 +19,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <SofaPreconditioner/initPreconditioner.h>
+#ifndef SOFAPRECONDITIONER_CONFIG_H
+#define SOFAPRECONDITIONER_CONFIG_H
 
+#include <sofa/config/sharedlibrary_defines.h>
 
-namespace sofa
-{
+#ifdef SOFA_BUILD_SOFAPRECONDITIONER
+#  define SOFA_TARGET SofaPreconditioner
+#  define SOFA_PRECONDITIONER_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_PRECONDITIONER_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
-namespace component
-{
-
-
-void initPreconditioner()
-{
-    static bool first = true;
-    if (first)
-    {
-        first = false;
-    }
-}
-
-SOFA_LINK_CLASS(ShewchukPCGLinearSolver)
-SOFA_LINK_CLASS(JacobiPreconditioner)
-SOFA_LINK_CLASS(BlockJacobiPreconditioner)
-SOFA_LINK_CLASS(SSORPreconditioner)
-SOFA_LINK_CLASS(WarpPreconditioner)
-SOFA_LINK_CLASS(PrecomputedWarpPreconditioner)
-
-
-} // namespace component
-
-} // namespace sofa
+#endif

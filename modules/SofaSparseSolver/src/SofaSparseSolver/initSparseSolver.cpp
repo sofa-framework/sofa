@@ -19,15 +19,74 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SPARSE_SOLVER_SPARSE_SOLVER_H
-#define SOFA_SPARSE_SOLVER_SPARSE_SOLVER_H
+#include <SofaSparseSolver/config.h>
+#include <sofa/core/ObjectFactory.h>
+#include <string>
 
-#include <sofa/helper/system/config.h>
+namespace sofa
+{
 
-#ifdef SOFA_BUILD_SPARSE_SOLVER
-#  define SOFA_SPARSE_SOLVER_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_SPARSE_SOLVER_API SOFA_IMPORT_DYNAMIC_LIBRARY
+namespace component
+{
+
+extern "C" {
+SOFA_SOFASPARSESOLVER_API void initExternalModule();
+SOFA_SOFASPARSESOLVER_API const char* getModuleName();
+SOFA_SOFASPARSESOLVER_API const char* getModuleVersion();
+SOFA_SOFASPARSESOLVER_API const char* getModuleLicense();
+SOFA_SOFASPARSESOLVER_API const char* getModuleDescription();
+SOFA_SOFASPARSESOLVER_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
+{
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
+}
+
+const char* getModuleName()
+{
+    return "SofaSparseSolver";
+}
+
+const char* getModuleVersion()
+{
+    return "1.0";
+}
+
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
+const char* getModuleDescription()
+{
+    return "This plugin contains sparse solver for direct solving of linear systems.";
+}
+
+const char* getModuleComponentList()
+{
+    /// string containing the names of the classes provided by the plugin
+    static std::string classes = sofa::core::ObjectFactory::getInstance()->listClassesFromTarget(sofa_tostring(SOFA_TARGET));
+    return classes.c_str();
+}
+
+SOFA_LINK_CLASS(PrecomputedLinearSolver)
+
+#ifdef SOFA_HAVE_CSPARSE
+SOFA_LINK_CLASS(SparseCholeskySolver)
+SOFA_LINK_CLASS(SparseLUSolver)
 #endif
 
+#ifdef SOFA_HAVE_METIS
+SOFA_LINK_CLASS(SparseLDLSolver)
 #endif
+
+} /// component
+
+} /// sofa
+
+

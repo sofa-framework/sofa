@@ -19,9 +19,44 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFASPARSESOLVER_CONFIG_H
-#define SOFASPARSESOLVER_CONFIG_H
+// Author: Hadrien Courtecuisse
+#define SOFA_COMPONENT_LINEARSOLVER_SPARSELDLSOLVER_CPP
+#include <SofaSparseSolver/SparseLDLSolver.inl>
+#include <sofa/core/ObjectFactory.h>
 
-#include <SofaGeneral/config.h>
+namespace sofa
+{
 
+namespace component
+{
+
+namespace linearsolver
+{
+
+SOFA_DECL_CLASS(SparseLDLSolver)
+
+int SparseLDLSolverClass = core::RegisterObject("Direct Linear Solver using a Sparse LDL^T factorization.")
+#ifdef SOFA_WITH_DOUBLE
+        .add< SparseLDLSolver< CompressedRowSparseMatrix<double>,FullVector<double> > >(true)
+        .add< SparseLDLSolver< CompressedRowSparseMatrix<defaulttype::Mat<3,3,double> >,FullVector<double> > >()
 #endif
+#ifdef SOFA_WITH_FLOAT
+        .add< SparseLDLSolver< CompressedRowSparseMatrix<float>,FullVector<float> > >(true)
+        .add< SparseLDLSolver< CompressedRowSparseMatrix<defaulttype::Mat<3,3,float> >,FullVector<float> > >()
+#endif
+;
+
+#ifdef SOFA_WITH_DOUBLE
+template class SOFA_SOFASPARSESOLVER_API SparseLDLSolver< CompressedRowSparseMatrix<double>,FullVector<double> >;
+template class SOFA_SOFASPARSESOLVER_API SparseLDLSolver< CompressedRowSparseMatrix< defaulttype::Mat<3,3,double> >,FullVector<double> >;
+#endif
+
+#ifdef SOFA_WITH_FLOAT
+template class SOFA_SOFASPARSESOLVER_API SparseLDLSolver< CompressedRowSparseMatrix<float>,FullVector<float> >;
+template class SOFA_SOFASPARSESOLVER_API SparseLDLSolver< CompressedRowSparseMatrix< defaulttype::Mat<3,3,float> >,FullVector<float> >;
+#endif
+} // namespace linearsolver
+
+} // namespace component
+
+} // namespace sofa

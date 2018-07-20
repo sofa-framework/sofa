@@ -81,6 +81,20 @@ std::map<std::string, ComponentChange> uncreatableComponents = {
     {"InterpolatedImplicitSurface", Pluginized("v17.12", "SofaImplicitField")},
     {"SphereSurface", Pluginized("v17.12", "SofaImplicitField")},
     {"ImplicitSurfaceMapping", Pluginized("v17.12", "SofaImplicitField")},
+
+    /// Pluginized in #663
+    {"ShewchukPCGLinearSolver", Pluginized("v18.06", "SofaPreconditioner")},
+    {"JacobiPreconditioner", Pluginized("v18.06", "SofaPreconditioner")},
+    {"BlockJacobiPreconditioner", Pluginized("v18.06", "SofaPreconditioner")},
+    {"SSORPreconditioner", Pluginized("v18.06", "SofaPreconditioner")},
+    {"WarpPreconditioner", Pluginized("v18.06", "SofaPreconditioner")},
+    {"PrecomputedWarpPreconditioner", Pluginized("v18.06", "SofaPreconditioner")},
+
+    /// Pluginized in #663
+    {"PrecomputedLinearSolver", Pluginized("v18.06", "SofaSparseSolver")},
+    {"SparseCholeskySolver", Pluginized("v18.06", "SofaSparseSolver")},
+    {"SparseLUSolver", Pluginized("v18.06", "SofaSparseSolver")},
+    {"SparseLDLSolver", Pluginized("v18.06", "SofaSparseSolver")},
 };
 
 
