@@ -87,11 +87,11 @@ using namespace sofa::defaulttype;
 
 void printError(const HDErrorInfo *error, const char *message)
 {
-    msg_error("GeomagicDriver") << hdGetErrorString(error->errorCode);
-    msg_error("GeomagicDriver") << "HHD: "<< error->hHD;
-    msg_error("GeomagicDriver") << "Error Code: "<< error->hHD;
-    msg_error("GeomagicDriver") << "Internal Error Code: "<< error->internalErrorCode;
-    msg_error("GeomagicDriver") << "Message: " << message;
+    msg_error("GeomagicDriver::HD_DEVICE_ERROR") << hdGetErrorString(error->errorCode);
+    msg_error("GeomagicDriver::HD_DEVICE_ERROR") << "HHD: "<< error->hHD;
+    msg_error("GeomagicDriver::HD_DEVICE_ERROR") << "Error Code: "<< error->hHD;
+    msg_error("GeomagicDriver::HD_DEVICE_ERROR") << "Internal Error Code: "<< error->internalErrorCode;
+    msg_error("GeomagicDriver::HD_DEVICE_ERROR") << "Message: " << message;
 }
 
 HDCallbackCode HDCALLBACK copyDeviceDataCallback(void * pUserData)
@@ -138,7 +138,7 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
         {
             if( normValue > maxInputForceFeedback )
             {
-                msg_warning("GeomagicDriver") << "Force given to applied inputForceFeedback (norm = "<< normValue <<") exceeds the maxInputForceFeedback ("<< maxInputForceFeedback <<")";
+                msg_warning(driver) << "Force given to applied inputForceFeedback (norm = "<< normValue <<") exceeds the maxInputForceFeedback ("<< maxInputForceFeedback <<")";
 
                 inputForceFeedback[0] *= maxInputForceFeedback/normValue;
                 inputForceFeedback[1] *= maxInputForceFeedback/normValue;
@@ -150,7 +150,7 @@ HDCallbackCode HDCALLBACK stateCallback(void * userData)
         }
         else
         {
-            msg_error("GeomagicDriver") << "maxInputForceFeedback value ("<< maxInputForceFeedback <<") is negative or 0, it should be strictly positive";
+            msg_error(driver) << "maxInputForceFeedback value ("<< maxInputForceFeedback <<") is negative or 0, it should be strictly positive";
         }
     }
 
