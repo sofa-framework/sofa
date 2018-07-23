@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaComponentGeneral)
 
+find_package(SofaGeneral REQUIRED)
+
 set(HEADER_FILES
     config.h
     initComponentGeneral.h
@@ -12,9 +14,29 @@ set(SOURCE_FILES
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC
-    SofaGeneralAnimationLoop SofaGeneralDeformable SofaGeneralExplicitOdeSolver SofaGeneralImplicitOdeSolver SofaGeneralLinearSolver SofaGeneralLoader
-    SofaGeneralMeshCollision SofaGeneralObjectInteraction SofaGeneralRigid SofaGeneralSimpleFem SofaGeneralTopology  SofaGeneralVisual SofaBoundaryCondition
-    SofaConstraint SofaGeneralEngine SofaExporter SofaGraphComponent SofaHaptics SofaTopologyMapping SofaUserInteraction SofaValidation)
+    SofaGeneralAnimationLoop
+    SofaGeneralDeformable
+    SofaGeneralEngine
+    SofaGeneralExplicitOdeSolver
+    SofaGeneralImplicitOdeSolver
+    SofaGeneralLinearSolver
+    SofaGeneralLoader
+    SofaGeneralMeshCollision
+    SofaGeneralObjectInteraction
+    SofaGeneralRigid
+    SofaGeneralSimpleFem
+    SofaGeneralTopology
+    SofaGeneralVisual
+
+    SofaBoundaryCondition
+    SofaConstraint
+    SofaExporter
+    SofaGraphComponent
+    SofaHaptics
+    SofaTopologyMapping
+    SofaUserInteraction
+    SofaValidation
+    )
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_COMPONENT_GENERAL")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")

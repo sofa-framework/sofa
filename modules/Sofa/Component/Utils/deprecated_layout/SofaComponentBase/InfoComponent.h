@@ -28,10 +28,6 @@ namespace sofa
 {
 namespace component
 {
-namespace utils
-{
-namespace infocomponent {}
-}
 
 namespace infocomponent = sofa::component::utils::infocomponent;
 

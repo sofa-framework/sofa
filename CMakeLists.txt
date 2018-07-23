@@ -210,6 +210,9 @@ add_subdirectory(SofaGui)
 ## a module is hosted and managed by the consortium while plugins are hosted and managed by third parties.
 add_subdirectory(modules)
 
+# NG refactoring of Sofa modules
+add_subdirectory(modules/Sofa)
+
 ## Packages
 add_subdirectory(applications/packages)
 

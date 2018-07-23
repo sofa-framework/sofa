@@ -32,8 +32,9 @@ set(SOFAGENERAL_TARGETS
     SofaGeneralTopology
     SofaGeneralVisual
     SofaBoundaryCondition
-    SofaConstraint
     SofaGeneralEngine
+
+    SofaConstraint
     SofaExporter
     SofaGraphComponent
     SofaHaptics
