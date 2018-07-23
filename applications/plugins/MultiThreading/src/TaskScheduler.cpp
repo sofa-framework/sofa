@@ -8,7 +8,7 @@ namespace sofa
 	namespace simulation
 	{
         
-        static thread_local WorkerThread* _workerThreadIndex = nullptr;
+        static thread_local WorkerThread* workerThreadIndex = nullptr;
 
         
 		TaskScheduler& TaskScheduler::getInstance()
@@ -24,9 +24,9 @@ namespace sofa
 			_isClosing = false;
 
             // init global static thread local var
-            _workerThreadIndex = new WorkerThread(this);
+            workerThreadIndex = new WorkerThread(this);
 
-			_threads[std::this_thread::get_id()] = _workerThreadIndex;
+			_threads[std::this_thread::get_id()] = workerThreadIndex;
            
 		}
 
@@ -207,13 +207,13 @@ namespace sofa
 
         WorkerThread* WorkerThread::getCurrent()
         {
-            return _workerThreadIndex;
+            return workerThreadIndex;
         }
 
 		void WorkerThread::run(void)
 		{
             
-            _workerThreadIndex = this;
+            workerThreadIndex = this;
 
 			// main loop
             while ( !_taskScheduler->isClosing() )
