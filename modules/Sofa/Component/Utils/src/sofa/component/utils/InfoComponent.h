@@ -58,12 +58,12 @@ public:
     virtual ~InfoComponent(){}
 };
 
-}
+} // infocomponent
 
 /// Import the component from the per-file namespace.
 using infocomponent::InfoComponent ;
 
-}
-}
-}
+} // utils
+} // component
+} // sofa
 #endif // SOFA_INFOCOMPONENT_H
