@@ -29,6 +29,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/helper/system/gl.h>
 #include <sofa/defaulttype/BoundingBox.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateBeginEvent.h>

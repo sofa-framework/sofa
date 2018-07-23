@@ -162,6 +162,7 @@ set(SOURCE_FILES
     SofaLibrary.cpp
     State.cpp
     behavior/BaseAnimationLoop.cpp
+    behavior/BaseConstraint.cpp
     behavior/BaseConstraintSet.cpp
     behavior/BaseForceField.cpp
     behavior/BaseInteractionForceField.cpp
@@ -269,7 +270,4 @@ set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_COR
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION "${SOFAFRAMEWORK_VERSION}")
 
-sofa_install_targets(SofaFramework SofaCore "")
-
-install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/" DESTINATION "include/sofa/core"
-        FILES_MATCHING PATTERN "*.h" PATTERN "*.inl")
+sofa_install_targets(SofaFramework ${PROJECT_NAME} "sofa/core")

@@ -28,12 +28,11 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/Quater.h>
 
-#include <sofa/core/objectmodel/KeypressedEvent.h>
-#include <sofa/core/objectmodel/KeyreleasedEvent.h>
-#include <sofa/core/objectmodel/MouseEvent.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/OptionsGroup.h>
+
+#include "BackgroundSetting.h"
 
 namespace sofa
 {
@@ -97,6 +96,9 @@ public:
     
     Data<helper::vector<float> > p_modelViewMatrix; ///< ModelView Matrix
     Data<helper::vector<float> > p_projectionMatrix; ///< Projection Matrix
+
+    SingleLink<BaseCamera, sofa::component::configurationsetting::BackgroundSetting,
+               BaseLink::FLAG_STOREPATH> l_background ;
 
     BaseCamera();
     virtual ~BaseCamera();
@@ -197,7 +199,7 @@ public:
     Vec3 getLookAtFromOrientation(const Vec3 &pos, const double &distance,const Quat & orientation);
     Vec3 getPositionFromOrientation(const Vec3 &lookAt, const double &distance, const Quat& orientation);
 
-    virtual void manageEvent(core::objectmodel::Event* e)=0;
+    virtual void manageEvent(core::objectmodel::Event* event) = 0 ;
     virtual void internalUpdate() {}
 
     void handleEvent(sofa::core::objectmodel::Event* event) override;
@@ -247,6 +249,8 @@ public:
     {
         return 1.0;
     }
+
+    virtual void draw(const core::visual::VisualParams*) override ;
 
 protected:
     void updateOutputData();

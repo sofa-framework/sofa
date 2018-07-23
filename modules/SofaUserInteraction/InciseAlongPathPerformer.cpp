@@ -21,6 +21,7 @@
 ******************************************************************************/
 #include <SofaUserInteraction/InciseAlongPathPerformer.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/helper/system/gl.h>
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 

@@ -8,7 +8,7 @@
         <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject dx="0" dy="20" dz="-11" />
-        <UniformMass totalmass="30" />
+        <UniformMass totalMass="30" />
         <RegularGrid nx="6" ny="5" nz="2" xmin="-7.5" xmax="7.5" ymin="-6" ymax="6" zmin="-1.75" zmax="1.75" />
         <RegularGridSpringForceField name="Springs" stiffness="270" damping="0" />
         <Node name="Visu">
@@ -27,7 +27,7 @@
         <EulerImplicit name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject dx="0" dy="20" dz="-13" />
-        <UniformMass totalmass="30" />
+        <UniformMass totalMass="30" />
         <RegularGrid nx="6" ny="5" nz="2" xmin="-7.5" xmax="7.5" ymin="-6" ymax="6" zmin="-1.75" zmax="1.75" />
         <RegularGridSpringForceField name="Springs" stiffness="270" damping="0" />
         <Node name="Visu">
@@ -46,7 +46,7 @@
         <EulerImplicit name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject dx="0" dy="20" dz="-15" />
-        <UniformMass totalmass="30" />
+        <UniformMass totalMass="30" />
         <RegularGrid nx="6" ny="5" nz="2" xmin="-7.5" xmax="7.5" ymin="-6" ymax="6" zmin="-1.75" zmax="1.75" />
         <RegularGridSpringForceField name="Springs" stiffness="270" damping="0" />
         <Node name="Visu">
@@ -65,7 +65,7 @@
         <EulerImplicit name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject dx="0" dy="20" dz="-17" />
-        <UniformMass totalmass="30" />
+        <UniformMass totalMass="30" />
         <RegularGrid nx="6" ny="5" nz="2" xmin="-7.5" xmax="7.5" ymin="-6" ymax="6" zmin="-1.75" zmax="1.75" />
         <RegularGridSpringForceField name="Springs" stiffness="270" damping="0" />
         <Node name="Visu">
@@ -84,7 +84,7 @@
         <EulerImplicit name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject dx="0" dy="20" dz="-19" />
-        <UniformMass totalmass="30" />
+        <UniformMass totalMass="30" />
         <RegularGrid nx="6" ny="5" nz="2" xmin="-7.5" xmax="7.5" ymin="-6" ymax="6" zmin="-1.75" zmax="1.75" />
         <RegularGridSpringForceField name="Springs" stiffness="270" damping="0" />
         <Node name="Visu">
@@ -103,7 +103,7 @@
         <EulerImplicit name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject dx="0" dy="20" dz="-23" />
-        <UniformMass totalmass="30" />
+        <UniformMass totalMass="30" />
         <RegularGrid nx="6" ny="5" nz="2" xmin="-7.5" xmax="7.5" ymin="-6" ymax="6" zmin="-1.75" zmax="1.75" />
         <RegularGridSpringForceField name="Springs" stiffness="270" damping="0" />
         <Node name="Visu">
@@ -122,7 +122,7 @@
         <EulerImplicit name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject dx="0" dy="20" dz="-21" />
-        <UniformMass totalmass="30" />
+        <UniformMass totalMass="30" />
         <RegularGrid nx="6" ny="5" nz="2" xmin="-7.5" xmax="7.5" ymin="-6" ymax="6" zmin="-1.75" zmax="1.75" />
         <RegularGridSpringForceField name="Springs" stiffness="270" damping="0" />
         <Node name="Visu">
@@ -141,7 +141,7 @@
         <EulerImplicit name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject dx="0" dy="20" dz="-29" />
-        <UniformMass totalmass="30" />
+        <UniformMass totalMass="30" />
         <RegularGrid nx="6" ny="5" nz="2" xmin="-7.5" xmax="7.5" ymin="-6" ymax="6" zmin="-1.75" zmax="1.75" />
         <RegularGridSpringForceField name="Springs" stiffness="270" damping="0" />
         <Node name="Visu">
@@ -160,7 +160,7 @@
         <EulerImplicit name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject dx="0" dy="20" dz="-27" />
-        <UniformMass totalmass="30" />
+        <UniformMass totalMass="30" />
         <RegularGrid nx="6" ny="5" nz="2" xmin="-7.5" xmax="7.5" ymin="-6" ymax="6" zmin="-1.75" zmax="1.75" />
         <RegularGridSpringForceField name="Springs" stiffness="270" damping="0" />
         <Node name="Visu">
@@ -179,7 +179,7 @@
         <EulerImplicit name="cg_odesolver" printLog="false" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject dx="0" dy="20" dz="-25" />
-        <UniformMass totalmass="30" />
+        <UniformMass totalMass="30" />
         <RegularGrid nx="6" ny="5" nz="2" xmin="-7.5" xmax="7.5" ymin="-6" ymax="6" zmin="-1.75" zmax="1.75" />
         <RegularGridSpringForceField name="Springs" stiffness="270" damping="0" />
         <Node name="Visu">

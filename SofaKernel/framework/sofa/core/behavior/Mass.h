@@ -23,15 +23,8 @@
 #define SOFA_CORE_BEHAVIOR_MASS_H
 
 #include <sofa/core/core.h>
-#include <sofa/core/MultiVecId.h>
-#include <sofa/core/MechanicalParams.h>
 #include <sofa/core/behavior/BaseMass.h>
 #include <sofa/core/behavior/ForceField.h>
-#include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/core/objectmodel/Data.h>
-#include <sofa/defaulttype/Vec.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
 {
@@ -57,13 +50,15 @@ class Mass : virtual public ForceField<DataTypes>, public BaseMass
 public:
     SOFA_CLASS2(SOFA_TEMPLATE(Mass,DataTypes), SOFA_TEMPLATE(ForceField,DataTypes), BaseMass);
 
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::VecCoord    VecCoord;
+    typedef typename DataTypes::VecDeriv    VecDeriv;
+    typedef typename DataTypes::Real        Real;
     typedef core::objectmodel::Data<VecCoord> DataVecCoord;
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::Deriv Deriv;
+    typedef typename DataTypes::Coord       Coord;
+    typedef typename DataTypes::Deriv       Deriv;
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
+
 protected:
     Mass(MechanicalState<DataTypes> *mm = NULL);
 
@@ -77,7 +72,6 @@ public:
 
     /// @name Vector operations
     /// @{
-
     ///                         $ f += factor M dx $
     ///
     /// This method retrieves the force and dx vector and call the internal
@@ -170,13 +164,13 @@ public:
     virtual void addGravityToV(const MechanicalParams* /* mparams */, DataVecDeriv& /* d_v */);
 
 
+    /// recover the mass of an element
     virtual SReal getElementMass(unsigned int) const override;
     virtual void getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const override;
 
 protected:
     /// stream to export Kinematic, Potential and Mechanical Energy to gnuplot files
     std::ofstream* m_gnuplotFileEnergy;
-    /// @}
 
 public:
     virtual bool insertInNode( objectmodel::BaseNode* node ) override { BaseMass::insertInNode(node); BaseForceField::insertInNode(node); return true; }

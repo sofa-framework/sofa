@@ -12,7 +12,7 @@
         <SparseGridTopology name="default14" fileTopology="mesh/doubleBall.obj" n="6 6 6" />
         <TransformEngine name="transform" template="Vec3d" translation="10 0 0" rotation="0 0 90" scale="0.5 1 2" input_position="@[-1].position" />
         <MechanicalObject template="Vec3d" name="dofTransformed" position="@[-1].output_position" restScale="1" />
-        <UniformMass template="Vec3d" name="default16" totalmass="5" />
+        <UniformMass template="Vec3d" name="default16" totalMass="5" />
         <HexahedronFEMForceField template="Vec3d" name="FEM" method="polar" poissonRatio="0.3" youngModulus="5000" />
         <Node name="VisualNode" gravity="0 -9.81 0">
             <OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/doubleBall.obj" texturename="textures/board.png" scaleTex="0.1 0.1" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />

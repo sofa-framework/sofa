@@ -70,7 +70,6 @@ using sofa::core::ExecParams ;
 
 #include <sofa/helper/system/console.h>
 using sofa::helper::Utils;
-using sofa::helper::Console;
 
 using sofa::component::misc::CompareStateCreator;
 using sofa::component::misc::ReadStateActivator;
@@ -204,7 +203,7 @@ int main(int argc, char** argv)
     bool        disableStealing = false;
     bool        affinity = false;
 #endif
-    string colorsStatus = "auto";
+    string colorsStatus = "unset";
     string messageHandler = "auto";
     bool enableInteraction = false ;
     int width = 800;
@@ -239,7 +238,7 @@ int main(int argc, char** argv)
     argParser->addArgument(po::value<bool>(&temporaryFile)->default_value(false)->implicit_value(true),             "tmp", "the loaded scene won't appear in history of opened files");
     argParser->addArgument(po::value<bool>(&testMode)->default_value(false)->implicit_value(true),                  "test", "select test mode with xml output after N iteration");
     argParser->addArgument(po::value<std::string>(&verif)->default_value(""), "verification,v",                     "load verification data for the scene");
-    argParser->addArgument(po::value<std::string>(&colorsStatus)->default_value("auto")->implicit_value("yes"),     "colors,c", "use colors on stdout and stderr (yes, no, auto)");
+    argParser->addArgument(po::value<std::string>(&colorsStatus)->default_value("unset", "auto")->implicit_value("yes"),     "colors,c", "use colors on stdout and stderr (yes, no, auto)");
     argParser->addArgument(po::value<std::string>(&messageHandler)->default_value("auto"), "formatting,f",          "select the message formatting to use (auto, clang, sofa, rich, test)");
     argParser->addArgument(po::value<bool>(&enableInteraction)->default_value(false)->implicit_value(true),         "interactive,i", "enable interactive mode for the GUI which includes idle and mouse events (EXPERIMENTAL)");
     argParser->addArgument(po::value<std::vector<std::string> >()->multitoken(), "argv",                            "forward extra args to the python interpreter");
@@ -281,12 +280,24 @@ int main(int argc, char** argv)
     sofa::simulation::setSimulation(new TreeSimulation());
 #endif
 
-    if (colorsStatus == "auto")
-        Console::setColorsStatus(Console::ColorsAuto);
+    if (colorsStatus == "unset") {
+        // If the parameter is unset, check the environment variable
+        const char * colorStatusEnvironment = std::getenv("SOFA_COLOR_TERMINAL");
+        if (colorStatusEnvironment != nullptr) {
+            const std::string status (colorStatusEnvironment);
+            if (status == "yes" || status == "on" || status == "always")
+                sofa::helper::console::setStatus(sofa::helper::console::Status::On);
+            else if (status == "no" || status == "off" || status == "never")
+                sofa::helper::console::setStatus(sofa::helper::console::Status::Off);
+            else
+                sofa::helper::console::setStatus(sofa::helper::console::Status::Auto);
+        }
+    } else if (colorsStatus == "auto")
+        sofa::helper::console::setStatus(sofa::helper::console::Status::Auto);
     else if (colorsStatus == "yes")
-        Console::setColorsStatus(Console::ColorsEnabled);
+        sofa::helper::console::setStatus(sofa::helper::console::Status::On);
     else if (colorsStatus == "no")
-        Console::setColorsStatus(Console::ColorsDisabled);
+        sofa::helper::console::setStatus(sofa::helper::console::Status::Off);
 
     //TODO(dmarchal): Use smart pointer there to avoid memory leaks !!
     if (messageHandler == "auto" )
@@ -307,7 +318,7 @@ int main(int argc, char** argv)
     else if (messageHandler == "rich")
     {
         MessageDispatcher::clearHandlers() ;
-        MessageDispatcher::addHandler( new ConsoleMessageHandler(new RichConsoleStyleMessageFormatter()) ) ;
+        MessageDispatcher::addHandler( new ConsoleMessageHandler(&RichConsoleStyleMessageFormatter::getInstance()) ) ;
     }
     else if (messageHandler == "test"){
         MessageDispatcher::addHandler( new ExceptionMessageHandler() ) ;
@@ -337,12 +348,12 @@ int main(int argc, char** argv)
 
     if (!noAutoloadPlugins)
     {
-        if (DataRepository.findFile(configPluginPath))
+        if (PluginRepository.findFile(configPluginPath))
         {
             msg_info("runSofa") << "Loading automatically plugin list in " << configPluginPath;
             PluginManager::getInstance().readFromIniFile(configPluginPath);
         }
-        else if (DataRepository.findFile(defaultConfigPluginPath))
+        else if (PluginRepository.findFile(defaultConfigPluginPath))
         {
             msg_info("runSofa") << "Loading automatically plugin list in " << defaultConfigPluginPath;
             PluginManager::getInstance().readFromIniFile(defaultConfigPluginPath);

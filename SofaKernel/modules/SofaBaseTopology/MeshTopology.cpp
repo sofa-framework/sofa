@@ -186,7 +186,9 @@ void MeshTopology::EdgeUpdate::updateFromSurface()
                 // edge not in edgeMap so create a new one
                 edgeIndex=(unsigned int)seqEdges.size();
                 edgeMap[e]=edgeIndex;
-                seqEdges.push_back(e);
+                // To be similar to TriangleSetTopologyContainer::createEdgeSetArray
+                //seqEdges.push_back(e); Changed to have oriented edges on the border of the triangulation. 
+                seqEdges.push_back(Edge(v1, v2));
             }
 //            else
 //            {
@@ -700,11 +702,9 @@ void MeshTopology::addTetra( int a, int b, int c, int d )
 
 void MeshTopology::addHexa(int p1, int p2, int p3, int p4, int p5, int p6, int p7, int p8)
 {
-#ifdef SOFA_NEW_HEXA
+
     seqHexahedra.beginEdit()->push_back(Hexa(p1,p2,p3,p4,p5,p6,p7,p8));
-#else
-    seqHexahedra.beginEdit()->push_back(Hexa(p1,p2,p4,p3,p5,p6,p8,p7));
-#endif
+
     seqHexahedra.endEdit();
     if (p1 >= (int)nbPoints) nbPoints = p1+1;
     if (p2 >= (int)nbPoints) nbPoints = p2+1;
@@ -867,7 +867,7 @@ void MeshTopology::createEdgesAroundVertexArray ()
         {
             // adding edge i in the edge shell of both points
             m_edgesAroundVertex[ edges[i][0] ].push_back( i );
-            m_edgesAroundVertex[ edges[i][1] ].insert( m_edgesAroundVertex[ edges[i][1] ].begin(), i );
+            m_edgesAroundVertex[ edges[i][1] ].push_back( i );
         }
     }
 }

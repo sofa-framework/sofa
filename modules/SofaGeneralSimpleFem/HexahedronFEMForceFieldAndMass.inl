@@ -68,11 +68,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::init( )
     {
         defaulttype::Vec<8,Coord> nodes;
         for(int w=0; w<8; ++w)
-#ifndef SOFA_NEW_HEXA
-            nodes[w] = this->_initialPoints.getValue()[(*it)[this->_indices[w]]];
-#else
             nodes[w] = this->_initialPoints.getValue()[(*it)[w]];
-#endif
 
         // volume of a element
         Real volume = (nodes[1]-nodes[0]).norm()*(nodes[3]-nodes[0]).norm()*(nodes[4]-nodes[0]).norm();
@@ -146,11 +142,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMasses(  )
     {
         defaulttype::Vec<8,Coord> nodes;
         for(int w=0; w<8; ++w)
-#ifndef SOFA_NEW_HEXA
-            nodes[w] = this->_initialPoints.getValue()[(*it)[this->_indices[w]]];
-#else
             nodes[w] = this->_initialPoints.getValue()[(*it)[w]];
-#endif
 
         if( _elementMasses.getValue().size() <= (unsigned)i )
         {
@@ -250,11 +242,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addMDx(const core::MechanicalPar
             {
                 int indice = k*3;
                 for(int j=0 ; j<3 ; ++j )
-#ifndef SOFA_NEW_HEXA
-                    actualDx[indice+j] = _dx[(*it)[this->_indices[k]]][j];
-#else
                     actualDx[indice+j] = _dx[(*it)[k]][j];
-#endif
 
             }
 
@@ -262,11 +250,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addMDx(const core::MechanicalPar
 
 
             for(int w=0; w<8; ++w)
-#ifndef SOFA_NEW_HEXA
-                _f[(*it)[this->_indices[w]]] += Deriv( actualF[w*3],  actualF[w*3+1],   actualF[w*3+2]  ) * factor;
-#else
                 _f[(*it)[w]] += Deriv( actualF[w*3],  actualF[w*3+1],   actualF[w*3+2]  ) * factor;
-#endif
 
         }
     }
@@ -299,19 +283,13 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addMToMatrix(const core::Mechani
         // find index of node 1
         for (n1=0; n1<8; n1++)
         {
-#ifndef SOFA_NEW_HEXA
-            node1 = (*it)[_indices[n1]];
-#else
             node1 = (*it)[n1];
-#endif
+
             // find index of node 2
             for (n2=0; n2<8; n2++)
             {
-#ifndef SOFA_NEW_HEXA
-                node2 = (*it)[_indices[n2]];
-#else
                 node2 = (*it)[n2];
-#endif
+
                 Mat33 tmp = Mat33(Coord(Me[3*n1+0][3*n2+0],Me[3*n1+0][3*n2+1],Me[3*n1+0][3*n2+2]),
                         Coord(Me[3*n1+1][3*n2+0],Me[3*n1+1][3*n2+1],Me[3*n1+1][3*n2+2]),
                         Coord(Me[3*n1+2][3*n2+0],Me[3*n1+2][3*n2+1],Me[3*n1+2][3*n2+2]));

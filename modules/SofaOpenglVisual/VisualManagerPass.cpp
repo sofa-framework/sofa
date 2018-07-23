@@ -96,7 +96,6 @@ void VisualManagerPass::init()
 {
     sofa::core::objectmodel::BaseContext* context = this->getContext();
     multiPassEnabled=checkMultipass(context);
-    fbo = new FrameBufferObject(true, true, true, true);
 }
 
 /* herited from VisualModel */
@@ -108,6 +107,8 @@ void VisualManagerPass::initVisual()
     passWidth = (GLint) ((float)viewport[2]*factor.getValue());
     passHeight = (GLint)((float)viewport[3] * factor.getValue());
 
+    fbo = std::unique_ptr<helper::gl::FrameBufferObject>(
+                new FrameBufferObject(true, true, true, true));
     fbo->init(passWidth, passHeight);
 }
 

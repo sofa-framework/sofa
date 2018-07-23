@@ -38,7 +38,6 @@
 
 #include <sofa/core/visual/VisualManager.h>
 #include <sofa/helper/gl/GLSLShader.h>
-#include <sofa/helper/gl/FrameBufferObject.h>
 #include <SofaOpenglVisual/OglOITShader.h>
 
 namespace sofa

@@ -50,11 +50,14 @@ namespace simulation
 
 SOFA_DECL_CLASS(DefaultAnimationLoop)
 
-int DefaultAnimationLoopClass = core::RegisterObject("The simplest animation loop, created by default when user do not put on scene")
+int DefaultAnimationLoopClass = core::RegisterObject("Simulation loop to use in scene without constraints nor contact.")
         .add< DefaultAnimationLoop >()
-        ;
-
-
+        .addDescription(R"(
+This loop do the following steps:
+- build and solve all linear systems in the scene : collision and time integration to compute the new values of the dofs
+- update the context (dt++)
+- update the mappings
+- update the bounding box (volume covering all objects of the scene))");
 
 DefaultAnimationLoop::DefaultAnimationLoop(simulation::Node* _gnode)
     : Inherit()

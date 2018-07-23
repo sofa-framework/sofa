@@ -16,7 +16,7 @@
         <TetrahedronSetTopologyContainer src="@loader" name="topo" />
         <!-- Algorithms: used in DiagonalMass to compute the mass -->
         <TetrahedronSetGeometryAlgorithms name="GeomAlgo" />
-        <UniformMass mass="0.05" />
+        <UniformMass vertexMass="0.05" />
         <TetrahedralCorotationalFEMForceField name="FEM" youngModulus="3000" poissonRatio="0.3" computeGlobalMatrix="false" method="large" />
         <FixedConstraint name="FixedConstraint" indices="3 39 64" />
         <Node name="Visu">

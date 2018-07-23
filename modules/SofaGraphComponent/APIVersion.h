@@ -64,4 +64,4 @@ using _apiversion_::APIVersion ;
 
 } // namespace sofa
 
-#endif /// SOFA_APIVERSION_H
+#endif // SOFA_APIVERSION_H

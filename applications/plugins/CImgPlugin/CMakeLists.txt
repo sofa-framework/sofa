@@ -6,14 +6,6 @@ set(${PROJECT_NAME}_MAJOR_VERSION 0)
 set(${PROJECT_NAME}_MINOR_VERSION 1)
 set(${PROJECT_NAME}_VERSION ${${PROJECT_NAME}_MAJOR_VERSION}.${${PROJECT_NAME}_MINOR_VERSION})
 
-## RPATH
-if(UNIX)
-    set(CMAKE_INSTALL_RPATH "../lib")
-    if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-        set(CMAKE_MACOSX_RPATH ON)
-    endif()
-endif(UNIX)
-
 set(HEADER_FILES
     ImageCImg.h
     CImgPlugin.h
@@ -30,6 +22,10 @@ add_subdirectory(extlibs/CImg extlibs/CImg)
 find_package(CImg REQUIRED)
 find_package(SofaFramework REQUIRED)
 
+# OS X only: if the user installed its own JPEG/PNG lib (typically with homebrew/port),
+# it will allow to use those instead of those present in XCode's frameworks
+set(CMAKE_FIND_FRAMEWORK LAST)
+
 find_package(JPEG QUIET)
 find_package(TIFF QUIET)
 find_package(PNG QUIET)
@@ -42,6 +38,10 @@ if(TIFF_FOUND)
     link_directories(${TIFF_LIB_DIRS})
     include_directories(${TIFF_INCLUDE_DIR})
     SET(EXTERNAL_LIBS ${EXTERNAL_LIBS} ${TIFF_LIBRARIES})
+    if(WIN32)
+        sofa_copy_libraries_from_targets(TIFF::TIFF) # Windows dll -> bin
+    endif()
+    sofa_install_libraries_from_targets(TIFF::TIFF)
 else()
     message(STATUS "CImgPlugin: TIFF Image Format disabled")
 endif()
@@ -57,6 +57,10 @@ if(JPEG_FOUND)
     link_directories(${JPEG_LIB_DIRS})
     include_directories(${JPEG_INCLUDE_DIR})
     SET(EXTERNAL_LIBS ${EXTERNAL_LIBS} ${JPEG_LIBRARIES})
+    if(WIN32)
+        sofa_copy_libraries(${JPEG_LIBRARIES}) # Windows dll -> bin
+    endif()
+    sofa_install_libraries(${JPEG_LIBRARIES})
 else()
     message(STATUS "CImgPlugin: JPEG Image Format disabled")
 endif()
@@ -71,13 +75,17 @@ if (ZLIB_FOUND)
     if(PNG_FOUND)
         message(STATUS "CImgPlugin: PNG Image Format enabled")
         list(APPEND CIMG_CFLAGS ${CIMG_PNG_CCFLAGS} -DCIMGPLUGIN_HAVE_PNG -Dcimg_use_png)
-    if(UNIX)
-        # Prevent pngconf error (see https://bugs.launchpad.net/ubuntu/+source/libpng/+bug/218409)
-        list(APPEND CIMG_CFLAGS -DPNG_SKIP_SETJMP_CHECK)
-    endif()
+        if(UNIX)
+            # Prevent pngconf error (see https://bugs.launchpad.net/ubuntu/+source/libpng/+bug/218409)
+            list(APPEND CIMG_CFLAGS -DPNG_SKIP_SETJMP_CHECK)
+        endif()
         link_directories(${PNG_LIB_DIRS})
         include_directories(${PNG_INCLUDE_DIR} )
         SET( EXTERNAL_LIBS ${EXTERNAL_LIBS} ${PNG_LIBRARIES} )
+        if(WIN32)
+            sofa_copy_libraries_from_targets(PNG::PNG) # Windows dll -> bin
+        endif()
+        sofa_install_libraries_from_targets(PNG::PNG)
     else()
         message(STATUS "CImgPlugin: PNG Image Format disabled")
     endif()
@@ -87,7 +95,6 @@ endif()
 
 #Remove CImg sys calls
 list(APPEND CIMG_CFLAGS -Dcimg_no_system_calls)
-
 
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})

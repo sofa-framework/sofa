@@ -10,52 +10,19 @@ find_package(SofaAdvanced REQUIRED)
 
 # Qt GUIs are all based on OpenGL
 if(NOT SOFA_NO_OPENGL)
-    ## Qt(Qt4/5)
+    ## Qt5
     set(QT_USE_IMPORTED_TARGETS 1)
 
+    # Search for Qt to see if we can auto-enable stuff
     find_package(Qt5 COMPONENTS Core QUIET)
-    if(Qt5Core_FOUND)
-        set(QT5_NO_LINK_QTMAIN 1)
-        find_package(Qt5 COMPONENTS Gui OpenGL Xml REQUIRED)
-
-        if(WIN32)
-            file(GLOB_RECURSE QT5_DLLS "${_qt5Core_install_prefix}/bin/*.dll")
-            if(CMAKE_CONFIGURATION_TYPES) # Multi-config generator (MSVC)
-                foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
-                    file(COPY ${QT5_DLLS} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CONFIG}")
-                endforeach()
-            else()                      # Single-config generator (nmake)
-                file(COPY ${QT5_DLLS} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
-            endif()
-        endif()
-
-        install(FILES ${QT5_DLLS} DESTINATION bin)
-    else()
-        set(QT4_NO_LINK_QTMAIN 1)
-        find_package(Qt4 COMPONENTS qtcore qtgui qtopengl qtxml)
-        if(WIN32)
-            file(GLOB QT4_DLLS "${QT_BINARY_DIR}/*.dll")
-            if(CMAKE_CONFIGURATION_TYPES) # Multi-config generator (MSVC)
-                foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
-                    file(COPY ${QT4_DLLS} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CONFIG}")
-                endforeach()
-            else()                      # Single-config generator (nmake)
-                file(COPY ${QT4_DLLS} DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
-            endif()
-        endif()
-
-        install(FILES ${QT4_DLLS} DESTINATION bin)
-    endif()
 
     ## Thoses variables are used in SofaGuiConfig.cmake.in
-    if(Qt5_FOUND OR Qt4_FOUND)
+    if(Qt5_FOUND)
         set(SOFA_HAVE_QT 1)
     endif()
-    set(SOFA_QT4 ${Qt4_FOUND})
     set(SOFA_QT5 ${Qt5_FOUND})
 else()
     set(SOFA_HAVE_QT 0)
-    set(SOFA_QT4 0)
     set(SOFA_QT5 0)
 endif()
 
@@ -78,16 +45,7 @@ list(APPEND SOFAGUI_TARGETS SofaGuiCommon)
 
 ## OpenGL-based GUIs
 if(NOT SOFA_NO_OPENGL)
-    ## Glut GUI
-    if(SOFA_HAVE_GLUT)
-        option(SOFAGUI_GLUT "Compile the Glut GUI" OFF)
-        if(SOFAGUI_GLUT)
-            set(SOFA_GUI_GLUT 1) # cmakedefine
-            list(APPEND SOFAGUI_TARGETS SofaGuiGlut)
-            add_subdirectory(../applications/sofa/gui/glut ${CMAKE_CURRENT_BINARY_DIR}/SofaGuiGlut)
-        endif()
-    endif()
-
+    
     option(SOFAGUI_HEADLESS_RECORDER "Compile the headless recorder (Linux only)" OFF)
     if(SOFAGUI_HEADLESS_RECORDER)
         set(SOFA_GUI_HEADLESS_RECORDER 1) # cmakedefine
@@ -100,10 +58,7 @@ if(NOT SOFA_NO_OPENGL)
     set(SOFA_HAVE_QT_LIBRARIES 1)
     find_package(Qt5 COMPONENTS Core QUIET)
     if(NOT Qt5Core_FOUND)
-        find_package(Qt4 QUIET COMPONENTS qtcore)
-        if(NOT Qt4_FOUND)
-            set(SOFA_HAVE_QT_LIBRARIES 0)
-        endif()
+        set(SOFA_HAVE_QT_LIBRARIES 0)
     endif()
 
     if(SOFA_HAVE_QT_LIBRARIES)
@@ -111,14 +66,6 @@ if(NOT SOFA_NO_OPENGL)
         if(SOFAGUI_QT)
 
             ## Qt GUI options, used in the relevant CMakeLists.txt
-
-            ## SOFA_GUI_INTERACTION
-            option(SOFAGUI_QT_INTERACTION
-                "Enable interaction mode for the Qt GUI, whatever that means (this
-                will define the SOFA_GUI_INTERACTION macro)." OFF)
-            if(SOFAGUI_QT_INTERACTION)
-                set(SOFA_GUI_INTERACTION 1) # cmakedefine
-            endif()
 
             ## QtViewer
             option(SOFAGUI_QTVIEWER "Compile the QtViewer for the Qt GUI" ON)
@@ -175,7 +122,7 @@ endforeach()
 
 ## SofaGuiConfig/config.h
 configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/SofaGui/config.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/SofaGui/config.h" DESTINATION "include/SofaGui")
+install(FILES "${CMAKE_BINARY_DIR}/include/SofaGui/config.h" DESTINATION "include/SofaGui" COMPONENT headers)
 
 ## CMake package configurations files
 sofa_write_package_config_files(SofaGui ${SOFAGUI_VERSION})

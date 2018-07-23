@@ -12,7 +12,7 @@ set(SOFAADVANCED_VERSION ${SofaFramework_VERSION})
 
 ## SofaAdvanced/config.h
 configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/SofaAdvanced/config.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/SofaAdvanced/config.h" DESTINATION "include/SofaAdvanced")
+install(FILES "${CMAKE_BINARY_DIR}/include/SofaAdvanced/config.h" DESTINATION "include/SofaAdvanced" COMPONENT headers)
 
 
 ### Subdirectories
