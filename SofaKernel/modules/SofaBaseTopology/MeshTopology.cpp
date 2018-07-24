@@ -775,34 +775,34 @@ void MeshTopology::setNbPoints(int n)
     nbPoints = n;
 }
 
-int MeshTopology::getNbEdges()
+size_t MeshTopology::getNbEdges()
 {
-    return (int)getEdges().size();
+    return getEdges().size();
 }
 
-int MeshTopology::getNbTriangles()
+size_t MeshTopology::getNbTriangles()
 {
-    return (int)getTriangles().size();
+    return getTriangles().size();
 }
 
-int MeshTopology::getNbQuads()
+size_t MeshTopology::getNbQuads()
 {
-    return (int)getQuads().size();
+    return getQuads().size();
 }
 
-int MeshTopology::getNbTetrahedra()
+size_t MeshTopology::getNbTetrahedra()
 {
-    return (int)getTetrahedra().size();
+    return getTetrahedra().size();
 }
 
-int MeshTopology::getNbHexahedra()
+size_t MeshTopology::getNbHexahedra()
 {
-    return (int)getHexahedra().size();
+    return getHexahedra().size();
 }
 
-int MeshTopology::getNbUVs()
+size_t MeshTopology::getNbUVs()
 {
-    return (int)getUVs().size();
+    return getUVs().size();
 }
 
 const MeshTopology::Edge MeshTopology::getEdge(index_type i)
