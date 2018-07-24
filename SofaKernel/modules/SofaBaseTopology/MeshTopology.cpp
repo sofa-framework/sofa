@@ -2317,7 +2317,7 @@ void MeshTopology::updateTetrahedra()
 
 bool MeshTopology::checkConnexity()
 {
-    unsigned int nbr = 0;
+    size_t nbr = 0;
 
     if (UpperTopology == core::topology::HEXAHEDRON)
         nbr = this->getNbHexahedra();
@@ -2352,7 +2352,7 @@ bool MeshTopology::checkConnexity()
 
 unsigned int MeshTopology::getNumberOfConnectedComponent()
 {
-    unsigned int nbr = 0;
+    size_t nbr = 0;
 
     if (UpperTopology == core::topology::HEXAHEDRON)
         nbr = this->getNbHexahedra();
@@ -2400,7 +2400,7 @@ unsigned int MeshTopology::getNumberOfConnectedComponent()
 
 const sofa::helper::vector <unsigned int> MeshTopology::getConnectedElement(unsigned int elem)
 {
-    unsigned int nbr = 0;
+    size_t nbr = 0;
 
     if (UpperTopology == core::topology::HEXAHEDRON)
         nbr = this->getNbHexahedra();

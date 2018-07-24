@@ -752,7 +752,7 @@ bool TetrahedronSetTopologyContainer::checkTopology() const
 bool TetrahedronSetTopologyContainer::checkConnexity()
 {
 
-    unsigned int nbr = this->getNbTetrahedra();
+    size_t nbr = this->getNbTetrahedra();
 
     if (nbr == 0)
     {
@@ -776,7 +776,7 @@ bool TetrahedronSetTopologyContainer::checkConnexity()
 
 unsigned int TetrahedronSetTopologyContainer::getNumberOfConnectedComponent()
 {
-    unsigned int nbr = this->getNbTetrahedra();
+    size_t nbr = this->getNbTetrahedra();
 
     if (nbr == 0)
     {
