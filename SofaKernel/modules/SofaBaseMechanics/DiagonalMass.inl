@@ -763,6 +763,9 @@ void DiagonalMass<DataTypes, MassType>::massInitialization()
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::printMass()
 {
+    if (this->f_printLog.getValue() == false)
+        return;
+
     const MassVector &vertexM = d_vertexMass.getValue();
 
     Real average_vertex = 0.0;
@@ -1183,7 +1186,7 @@ const typename DiagonalMass<DataTypes, MassType>::Real &DiagonalMass<DataTypes, 
 
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::update()
+bool DiagonalMass<DataTypes, MassType>::update()
 {
     bool update = false;
 
@@ -1221,6 +1224,8 @@ void DiagonalMass<DataTypes, MassType>::update()
         msg_info() << "mass information updated";
         printMass();
     }
+
+    return update;
 }
 
 
