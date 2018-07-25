@@ -41,7 +41,7 @@ using namespace sofa::defaulttype;
 ////////////////////////////////////////////    FACTORY    //////////////////////////////////////////////
 SOFA_DECL_CLASS(MechanicalMatrixMapper)
 
-int MechanicalMatrixMapperClass = core::RegisterObject("Partially rigidify a mechanical object using a rigid mapping.")
+int MechanicalMatrixMapperClass = core::RegisterObject("This component allows to map the stiffness (and mass) matrix through a mapping.")
 #ifdef SOFA_WITH_FLOAT
         .add< MechanicalMatrixMapper<Vec3fTypes, Rigid3fTypes> >()
         .add< MechanicalMatrixMapper<Vec3fTypes, Vec3fTypes> >()
