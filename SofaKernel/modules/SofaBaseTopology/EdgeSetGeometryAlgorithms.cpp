@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_CPP
-#include <SofaBaseTopology/EdgeSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/EdgeSetGeometryAlgorithms.inl>
 
 #include <sofa/defaulttype/VecTypes.h>

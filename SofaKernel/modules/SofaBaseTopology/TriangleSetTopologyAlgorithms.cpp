@@ -20,7 +20,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_TOPOLOGY_TRIANGLESETTOPOLOGYALGORITHMS_CPP
-#include <SofaBaseTopology/TriangleSetTopologyAlgorithms.h>
 #include <SofaBaseTopology/TriangleSetTopologyAlgorithms.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
