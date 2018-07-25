@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import Sofa
+import SofaPython
 import os
 
 # This scene illustrates the basic functionality of the "PythonScriptDataEngine" (PSDE). First a small introduction the PSDE is given, then the scene itself is explained.
@@ -27,11 +28,15 @@ import os
 path = os.path.dirname(os.path.abspath(__file__))+'/../../../../../../share/mesh/'
 
 class PyAverageEngine(Sofa.PythonScriptDataEngine):
-  
-    def parse(self):        
+
+    def datalinks(self, dico):
+        for key, val in dico.iteritems():
+            self.addNewInput(key, value=val)
+        
+    def parse(self):
         # this is the correct place to define inputs and outputs! (linking will not work in init() for instance)
-        self.addNewInput('positions', value='@loader.position') #The Input 'positions' is linked to the loader. The Data type of the Input is derived automagically
-        self.addNewOutput('average', value='0') #The Output 'average' is declared, but given a vacant value. Data type will be inferred later, when another component links to this Output 
+        # self.addNewInput('positions', value='@loader.position')
+        self.addNewOutput('average', value="0")
         
     def init(self):
 	pass
@@ -51,7 +56,6 @@ class PyAverageEngine(Sofa.PythonScriptDataEngine):
 
 def createScene(rootNode):
         rootNode.createObject("MeshVTKLoader", name="loader", filename=path+'liver.vtk')
-        rootNode.createObject('PythonScriptDataEngine', name='PSDE', filename=__file__, classname="PyAverageEngine") 
-        rootNode.createObject('TransformEngine', name='TE', input_position="@loader.position", translation="@PSDE.average") #Since the type for the Data 'translation' is known, it is here that the correct Data is allocated for the PSDE
+        rootNode.createObject('PythonScriptDataEngine', name='PSDE', filename=__file__, classname="PyAverageEngine", positions="@loader.position")
+        rootNode.createObject('TransformEngine', name='TE', input_position="@loader.position", translation="@PSDE.average")
         rootNode.createObject('OglModel', name="visu", position="@TE.output_position", triangles="@loader.triangles", color="1 0 0 1")
-        
