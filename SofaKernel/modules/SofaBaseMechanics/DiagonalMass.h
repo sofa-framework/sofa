@@ -240,7 +240,7 @@ public:
     virtual void init() override;
     virtual void handleEvent(sofa::core::objectmodel::Event* ) override;
 
-    void update();
+    bool update();
 
     TopologyType getMassTopologyType() const
     {

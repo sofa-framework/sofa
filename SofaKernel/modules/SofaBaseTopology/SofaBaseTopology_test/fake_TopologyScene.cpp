@@ -30,8 +30,8 @@ using namespace sofa::simpleapi::components;
 using namespace sofa::core::topology;
 
 fake_TopologyScene::fake_TopologyScene(const std::string& filename, TopologyObjectType topoType, bool staticTopo)
-    : m_filename(filename)
-    , m_topoType(topoType)
+    : m_topoType(topoType)
+    , m_filename(filename)
     , m_staticTopology(staticTopo)
 {
     sofa::helper::system::DataRepository.addFirstPath(SOFABASETOPOLOGY_TEST_RESOURCES_DIR);
