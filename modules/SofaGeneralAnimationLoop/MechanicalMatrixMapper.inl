@@ -249,7 +249,7 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addMassToSystem(const Mecha
     }
     else
     {
-        msg_info(this) << "There is no mappedMass";
+        msg_info() << "There is no mappedMass";
     }
 }
 

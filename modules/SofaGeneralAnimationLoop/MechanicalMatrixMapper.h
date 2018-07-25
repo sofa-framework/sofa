@@ -210,13 +210,52 @@ public:
 
 
 protected:
-
+    /**
+     * \brief This method computes the mapping jacobian.
+     *
+    */
     void accumulateJacobians(const MechanicalParams* mparams);
+
+    /**
+     * \brief This method fills the jacobian matrix (of the mapping) with identity blocks on the provided list of nodes(dofs)
+     *
+     *
+    */
     virtual void buildIdentityBlocksInJacobian(core::behavior::BaseMechanicalState* mstate, sofa::core::MatrixDerivId Id);
+
+    /**
+     * \brief This method encapsulates the jacobian accumulation to allow for specific optimisations in child classes
+     *
+     *
+    */
     virtual void accumulateJacobiansOptimized(const MechanicalParams* mparams);
+
+    /**
+     * \brief This method adds the mass matrix to the system
+     *
+     *
+    */
     virtual void addMassToSystem(const MechanicalParams* mparams, const DefaultMultiMatrixAccessor* KAccessor);
+
+    /**
+     * \brief This method does not do anything in this class but is used in child classes.
+     *
+     *
+    */
     virtual void addPrecomputedMassToSystem(const MechanicalParams* mparams,const unsigned int mstateSize,const Eigen::SparseMatrix<double> &Jeig, Eigen::SparseMatrix<double>& JtKJeig);
+
+    /**
+     * \brief This method performs the copy of the jacobian matrix of the first  mstate to the eigen sparse format
+     *
+     *
+    */
     virtual void optimizeAndCopyMappingJacobianToEigenFormat1(const typename DataTypes1::MatrixDeriv& J, Eigen::SparseMatrix<double>& Jeig);
+
+    /**
+     * \brief This method performs the copy of the jacobian matrix of the second mstate (not mandatory) to the eigen sparse format
+     *
+     *
+    */
     virtual void optimizeAndCopyMappingJacobianToEigenFormat2(const typename DataTypes2::MatrixDeriv& J, Eigen::SparseMatrix<double>& Jeig);
 
     ////////////////////////// Inherited attributes ////////////////////////////
