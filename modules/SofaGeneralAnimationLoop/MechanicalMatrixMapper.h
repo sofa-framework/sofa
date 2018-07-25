@@ -95,7 +95,7 @@ protected:
     const sofa::core::ConstraintParams *cparams;
 };
 
-
+using sofa::core::objectmodel::BaseObject ;
 using sofa::component::linearsolver::CompressedRowSparseMatrix ;
 using sofa::core::behavior::MixedInteractionForceField ;
 using sofa::core::behavior::BaseForceField ;
@@ -109,7 +109,8 @@ using sofa::core::objectmodel::ComponentState ;
 
 
 /**
- * This component allows to map mechanical matrices (Stiffness, Mass) through a mapping.
+ * \brief This component allows to map mechanical matrices (Stiffness, Mass) through a mapping.
+ *
  * This is needed in SOFA scenes having these two following particularities:
  *  - There are using a direct solver (e.g. SparseLDLSolver) that, unlike
  *    iterative solvers, need to build the mechanical matrices.
@@ -121,9 +122,6 @@ using sofa::core::objectmodel::ComponentState ;
  * The component supports the case of subsetMultiMappings that map from one to two mechanical objects.
  * An example using this component can be found in examples/Components/animationLoop/MechanicalMatrixMapperExample.pyscn
 */
-
-
-
 template<typename TDataTypes1, typename TDataTypes2>
 class SOFA_GENERAL_ANIMATION_LOOP_API MechanicalMatrixMapper : public MixedInteractionForceField<TDataTypes1, TDataTypes2>
 {
@@ -164,8 +162,6 @@ public:
 
 protected:
 
-    ComponentState m_componentstate { ComponentState::Undefined } ;
-
     SingleLink < MechanicalMatrixMapper<DataTypes1, DataTypes2>, sofa::simulation::Node , BaseLink::FLAG_STOREPATH > l_nodeToParse;
 
     SingleLink < MechanicalMatrixMapper<DataTypes1, DataTypes2>, sofa::core::behavior::BaseMechanicalState , BaseLink::FLAG_NONE > l_mechanicalState;
@@ -178,40 +174,48 @@ protected:
 
 public:
 
-    virtual void init();
+    ////////////////////////// Inherited from BaseObject //////////////////////
+    virtual void init() override;
+    ///////////////////////////////////////////////////////////////////////////
 
+    ////////////////////////// Inherited from ForceField //////////////////////
     virtual void addForce(const MechanicalParams* mparams,
                           DataVecDeriv1& f1,
                           DataVecDeriv2& f2,
                           const DataVecCoord1& x1,
                           const DataVecCoord2& x2,
                           const DataVecDeriv1& v1,
-                          const DataVecDeriv2& v2) ;
+                          const DataVecDeriv2& v2) override;
 
     virtual void addDForce(const MechanicalParams* mparams,
                            DataVecDeriv1& df1,
                            DataVecDeriv2& df2,
                            const DataVecDeriv1& dx1,
-                           const DataVecDeriv2& dx2) ;
+                           const DataVecDeriv2& dx2) override;
 
     virtual void addKToMatrix(const MechanicalParams* mparams,
-                              const MultiMatrixAccessor* matrix ) ;
+                              const MultiMatrixAccessor* matrix ) override;
 
     virtual double getPotentialEnergy(const MechanicalParams* mparams,
-                                      const DataVecCoord1& x1, const DataVecCoord2& x2) const ;
+                                      const DataVecCoord1& x1, const DataVecCoord2& x2) const override;
+    ///////////////////////////////////////////////////////////////////////////
 
+
+    /**
+     * \brief Walk recursively through a node and its children linking with their forcefield
+     * \param node : from which node it start
+     * \param massName : won't link with given mass component
+     */
     void parseNode(sofa::simulation::Node *node ,std::string massName);
 
 
 protected:
 
+    void accumulateJacobians(const MechanicalParams* mparams);
     virtual void buildIdentityBlocksInJacobian(core::behavior::BaseMechanicalState* mstate, sofa::core::MatrixDerivId Id);
     virtual void accumulateJacobiansOptimized(const MechanicalParams* mparams);
     virtual void addMassToSystem(const MechanicalParams* mparams, const DefaultMultiMatrixAccessor* KAccessor);
     virtual void addPrecomputedMassToSystem(const MechanicalParams* mparams,const unsigned int mstateSize,const Eigen::SparseMatrix<double> &Jeig, Eigen::SparseMatrix<double>& JtKJeig);
-    void accumulateJacobians(const MechanicalParams* mparams);
-    //template<typename InputFormat>
-    //void copyMappingJacobianToEigenFormat(const typename InputFormat::MatrixDeriv& J, Eigen::SparseMatrix<double>& Jeig);
     virtual void optimizeAndCopyMappingJacobianToEigenFormat1(const typename DataTypes1::MatrixDeriv& J, Eigen::SparseMatrix<double>& Jeig);
     virtual void optimizeAndCopyMappingJacobianToEigenFormat2(const typename DataTypes2::MatrixDeriv& J, Eigen::SparseMatrix<double>& Jeig);
 
@@ -224,6 +228,7 @@ protected:
     using MixedInteractionForceField<TDataTypes1, TDataTypes2>::mstate1 ;
     using MixedInteractionForceField<TDataTypes1, TDataTypes2>::mstate2 ;
     using MixedInteractionForceField<TDataTypes1, TDataTypes2>::getContext ;
+    using BaseObject::m_componentstate ;
     ////////////////////////////////////////////////////////////////////////////
 
 };
@@ -234,5 +239,4 @@ protected:
 
 } // namespace sofa
 
-
-#endif
+#endif // SOFA_COMPONENT_ANIMATIONLOOP_MECHANICALMATRIXMAPPER_H

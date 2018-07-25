@@ -55,11 +55,11 @@ namespace interactionforcefield
 template<class DataTypes1, class DataTypes2>
 MechanicalMatrixMapper<DataTypes1, DataTypes2>::MechanicalMatrixMapper()
     :
-      d_forceFieldList(initData(&d_forceFieldList,"forceFieldList","ForceFields to work on (by default will take all)")),
-      l_nodeToParse(initLink("nodeToParse","link to the node on which the component will work")),
-      l_mechanicalState(initLink("mechanicalState","The mechanicalState with which the component will work on")),
-      l_mappedMass(initLink("mass","mass with which the component will work on")),
-      l_forceField(initLink("forceField","The ForceField(s) attached to this node"))
+      d_forceFieldList(initData(&d_forceFieldList,"forceFieldList","List of ForceField Names to work on (by default will take all)")),
+      l_nodeToParse(initLink("nodeToParse","link to the node on which the component will work, from this link the mechanicalState/mass/forceField links will be made")),
+      l_mechanicalState(initLink("mechanicalState","The mechanicalState with which the component will work on (filled automatically during init)")),
+      l_mappedMass(initLink("mass","mass with which the component will work on (filled automatically during init)")),
+      l_forceField(initLink("forceField","The ForceField(s) attached to this node (filled automatically during init)"))
 {
 }
 
@@ -266,14 +266,13 @@ template<class DataTypes1, class DataTypes2>
 void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const MechanicalParams* mparams,
                                                                         const MultiMatrixAccessor* matrix)
 {
-    if(m_componentstate!=ComponentState::Valid)
+    if(m_componentstate != ComponentState::Valid)
         return ;
 
     sofa::helper::system::thread::CTime *timer;
     double timeScale, time, totime ;
     timeScale = 1000.0 / (double)sofa::helper::system::thread::CTime::getTicksPerSec();
 
-    time = (double)timer->getTime();
     totime = (double)timer->getTime();
 
     sofa::core::behavior::MechanicalState<DataTypes1>* ms1 = this->getMState1();
@@ -317,13 +316,7 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
     KAccessor->setGlobalMatrix(K);
     KAccessor->setupMatrices();
 
-
-    //------------------------------------------------------------------------------
-
-
-    //msg_info(this)<<" time get K : "<<( (double)timer->getTime() - time)*timeScale<<" ms";
     time= (double)timer->getTime();
-
 
     for(unsigned int i=0; i<l_forceField.size(); i++)
     {
@@ -331,14 +324,6 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
     }
 
     addMassToSystem(mparams,KAccessor);
-    msg_info(this)<<" time addKtoMatrix K : "<<( (double)timer->getTime() - time)*timeScale<<" ms";
-
-    else{ msg_info(this) << "There is no mappedMass"; }
-    //msg_info(this) << "Out of the d_mappedMass business";
-
-    msg_info(this)<<"   time addKtoMatrix K : "<<( (double)timer->getTime() - time)*timeScale<<" ms" ; //(MAYBE OPTIMIZED)
-
-    time= (double)timer->getTime();
 
     if (!K)
     {
@@ -346,32 +331,23 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
         return;
     }
 
+    msg_info(this)<<" time addKtoMatrix K : "<<( (double)timer->getTime() - time)*timeScale<<" ms";
 
     ///////////////////////     COMPRESS K       ///////////////////////////////////
+    time= (double)timer->getTime();
     K->compress();
-    //------------------------------------------------------------------------------
-
     msg_info(this) << " time compress K : "<<( (double)timer->getTime() - time)*timeScale<<" ms";
 
-    ///////////////////////////     STEP 3      ////////////////////////////////////
-    /* -------------------------------------------------------------------------- */
-    /*                  we now get the matrices J1 and J2                         */
-    /* -------------------------------------------------------------------------- */
+    //------------------------------------------------------------------------------
 
-    ///////////////////////////     STEP 4      ////////////////////////////////////
-    /* -------------------------------------------------------------------------- */
-    /*          perform the multiplication with [J1t J2t] * K * [J1 J2]           */
-    /* -------------------------------------------------------------------------- */
-
-    double startTime= (double)timer->getTime();
+    time = (double)timer->getTime();
     Eigen::SparseMatrix<double,Eigen::ColMajor> Keig;
     copyKToEigenFormat(K,Keig);
+    msg_info(this)<<" time set Keig : "<<( (double)timer->getTime() - time)*timeScale<<" ms";
 
-    //--------------------------------------------------------------------------------------------------------------------
 
-    msg_info(this)<<" time set Keig : "<<( (double)timer->getTime() - startTime)*timeScale<<" ms";
-    startTime= (double)timer->getTime();
     ///////////////////////    COPY J1 AND J2 IN EIGEN FORMAT //////////////////////////////////////
+    double startTime= (double)timer->getTime();
     sofa::core::MultiMatrixDerivId c = sofa::core::MatrixDerivId::mappingJacobian();
     const MatrixDeriv1 &J1 = c[ms1].read()->getValue();
     const MatrixDeriv2 &J2 = c[ms2].read()->getValue();
@@ -393,7 +369,10 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
     msg_info(this)<<" time getJ + set J1eig (and potentially J2eig) : "<<( (double)timer->getTime() - startTime)*timeScale<<" ms";
     startTime= (double)timer->getTime();
 
-    ///////////////////////     J1t * K * J1    //////////////////////////////////////////////////////////////////////////
+    ///////////////////////////     STEP 4      ////////////////////////////////////
+    /* -------------------------------------------------------------------------- */
+    /*          perform the multiplication with [J1t J2t] * K * [J1 J2]           */
+    /* -------------------------------------------------------------------------- */
     nbColsJ1 = J1eig.cols();
     if (bms1 != bms2)
     {
