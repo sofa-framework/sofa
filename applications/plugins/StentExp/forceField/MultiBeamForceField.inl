@@ -997,7 +997,7 @@ void MultiBeamForceField<DataTypes>::draw(const core::visual::VisualParams* vpar
 
     vparams->drawTool()->setPolygonMode(2, true);
     vparams->drawTool()->setLightingEnabled(true);
-    vparams->drawTool()->drawPoints(gaussPoints[0], 2.5, colours[0]);
+    vparams->drawTool()->drawPoints(gaussPoints[0], 1, colours[0]);
     vparams->drawTool()->drawLines(centrelinePoints[0], 1.0, defaulttype::Vec<4, float>(0.24f, 0.72f, 0.96f, 1.0f));
     vparams->drawTool()->setLightingEnabled(false);
     vparams->drawTool()->setPolygonMode(0, false);
