@@ -21,6 +21,13 @@ struct SOFA_SOFATEST_API Python_test_data
     std::vector<std::string> arguments; // argc/argv in the python script
 };
 
+/// This function is used by gtest to print the content of the struct in a human friendly way
+/// eg:
+///        test.all_tests/2, where GetParam() = /path/to/file.py with args {1,2,3}
+/// instead of the defautl googletest printer that output things like the following:
+///        test.all_tests/2, where GetParam() = 56-byte object <10-48 EC-37 18-56 00-00 67-00-00-00>
+void SOFA_SOFATEST_API PrintTo(const sofa::Python_test_data& d, ::std::ostream* os);
+
 /// utility to build a static list of Python_test_data
 struct SOFA_SOFATEST_API Python_test_list
 {
