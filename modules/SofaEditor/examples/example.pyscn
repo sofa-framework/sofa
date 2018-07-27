@@ -1,0 +1,14 @@
+import Sofa
+import SofaEditor
+
+class UseSofaEditor(Sofa.PythonScriptController):
+        def __init__(self, node):
+                self.name = "UseSofaEditor"
+                pass 
+        
+        def onIdle(self):
+                print("The selected component is: "+str(SofaEditor.getSelection()))
+
+def createScene(root):
+        root.addObject( UseSofaEditor(root) )
+
