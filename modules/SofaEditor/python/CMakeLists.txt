@@ -11,18 +11,19 @@ if(!PythonLibs_FOUND)
     return()
 endif()
 
-find_package(Cython QUIET)
-if(!Cython_FOUND)
-    message("-- PythonSofaEditor is disabled because the 'cython' application is missing.")
-    return()
-endif()
-
 find_package(SofaEditor QUIET)
 if(!SofaEditor_FOUND)
     message("-- PythonSofaEditor is disabled because the 'SofaEditor' module is missing or not activated.")
     return()
 endif()
 
+find_package(Cython REQUIRED)
+if(Cython_FOUND)
+    message("-- PythonSofaEditor found 'cython' the .cpp will be regenerated from .pxd.")
+    set(CYTHON_ACTIVATION "--use-cython")
+else()
+    message("-- PythonSofaEditor didn't found the 'cython' application, the binding with use default .cpp files.")
+endif()
 
 ####################################################################################################
 # Files
@@ -31,6 +32,7 @@ set(SRC_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/setup.py
     ${CMAKE_CURRENT_SOURCE_DIR}/SofaEditor/cpp_SofaEditor.pxd
     ${CMAKE_CURRENT_SOURCE_DIR}/SofaEditor/SofaEditor.pyx
+    ${CMAKE_CURRENT_SOURCE_DIR}/SofaEditor/SofaEditor.cpp
 )
 
 ####################################################################################################
@@ -42,9 +44,9 @@ set(LIB_PATH "$<TARGET_FILE_DIR:SofaEditor>")
 
 ### Defines a new custom command that compile the binding.
 ### The pyx are first converted into .cpp. Those cpp are then compiled into pyton modules.
-add_custom_command(COMMAND python setup.py build_ext --inplace -I ${INCLUDES_PATH} -L ${LIB_PATH}   # Execute this command,
+add_custom_command(COMMAND python setup.py build_ext --inplace --force -I ${INCLUDES_PATH} -L ${LIB_PATH} ${CYTHON_ACTIVATION}  # Execute this command,
                    COMMAND ${CMAKE_COMMAND} -E touch ${CMAKE_CURRENT_BINARY_DIR}/SofaEditor.timestamp
-                   DEPENDS ${CYTHON_FILES} ${CMAKE_CURRENT_SOURCE_DIR}/setup.py SofaEditor          # The target depens on these files...
+                   DEPENDS ${SRC_FILES} SofaEditor          # The target depens on these files...
                    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}                                    # In this working directory
                    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/SofaEditor.timestamp)
 
@@ -65,7 +67,6 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/installed-SofaEditor-config"
          RENAME "SofaEditor")
 
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/SofaEditor DESTINATION modules/SofaEditor/python)
-
 
 ####################################################################################################
 # Tests
