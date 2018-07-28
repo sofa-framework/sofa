@@ -37,9 +37,12 @@ else()
     )
 endif()
 
-
 include( FindPackageHandleStandardArgs )
-FIND_PACKAGE_HANDLE_STANDARD_ARGS( Cython REQUIRED_VARS CYTHON_EXECUTABLE )
+FIND_PACKAGE_HANDLE_STANDARD_ARGS( Cython REQUIRED_VARS CYTHON_EXECUTABLE)
+
+if(CYTHON_FOUND)
+        set(Cython_FOUND TRUE)
+endif()
 
 mark_as_advanced( CYTHON_EXECUTABLE )
 
