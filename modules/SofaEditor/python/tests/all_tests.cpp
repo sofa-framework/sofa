@@ -29,7 +29,6 @@
 #include <SofaTest/Python_test.h>
 using sofa::Python_test ;
 using sofa::Python_test_list ;
-using sofa::PrintTo ;
 
 #include <sofa/helper/system/PluginManager.h>
 using sofa::helper::system::PluginManager ;
