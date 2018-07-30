@@ -170,7 +170,7 @@ namespace sofa
 			
             //static thread_local WorkerThread* _workerThreadIndex;
 
-			std::map< std::thread::id, WorkerThread*> _threads;
+			static std::map< std::thread::id, WorkerThread*> _threads;
 
 			Task::Status*	_mainTaskStatus;
 
