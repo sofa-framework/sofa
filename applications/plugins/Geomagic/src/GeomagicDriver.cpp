@@ -462,7 +462,7 @@ void GeomagicDriver::updatePosition()
     d_button_1.endEdit();
     d_button_2.endEdit();
 
-    if(d_omniVisu.getValue() && m_initVisuDone)
+    if(m_initVisuDone)
     {
         sofa::defaulttype::SolidTypes<double>::Transform tampon;
         m_posDeviceVisu[0] = posDevice;
