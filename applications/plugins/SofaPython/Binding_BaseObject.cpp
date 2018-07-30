@@ -250,6 +250,12 @@ static PyObject * BaseObject_getTarget(PyObject *self, PyObject * args)
     return nullptr ;
 }
 
+static PyObject * BaseObject_computeBBox(PyObject *self, PyObject * /*args*/)
+{
+    BaseObject* obj = get_baseobject( self );
+    obj->computeBBox(sofa::core::ExecParams::defaultInstance(), false);
+    Py_RETURN_NONE;
+}
 
 SP_CLASS_METHODS_BEGIN(BaseObject)
 SP_CLASS_METHOD(BaseObject,init)
@@ -270,6 +276,7 @@ SP_CLASS_METHOD_DOC(BaseObject, getCategories,
 SP_CLASS_METHOD_DOC(BaseObject, getTarget,
                     "Returns the target (plugin) that contains the current object.")
 SP_CLASS_METHOD(BaseObject,getAsACreateObjectParameter)
+SP_CLASS_METHOD(BaseObject,computeBBox)
 SP_CLASS_METHODS_END
 
 
