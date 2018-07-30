@@ -30,6 +30,7 @@
 #include <limits>
 
 #include <SofaEditor/config.h>
+#include <memory>
 
 namespace sofaeditor
 {
@@ -57,7 +58,6 @@ namespace sofaeditor
 
         /// get the current selection as a vector of absolute paths.
         const std::vector<std::string>& getSelection() const ;
-
     private:
         std::vector<std::string> m_currentSelection;
     };
@@ -91,12 +91,12 @@ namespace sofaeditor
         /// returns InvalidId is none is found.
         static ID getIdFromEditorName(const std::string& s);
 
-        static ID createId(const SofaEditorState* s=nullptr);
-        static bool attachState(ID editorId, const SofaEditorState* s);
-        static const SofaEditorState* getState(ID editorId=0);
+        static ID createId(std::shared_ptr<SofaEditorState>& s);
+        static bool attachState(ID editorId, std::shared_ptr<SofaEditorState>& s);
+        static std::shared_ptr<SofaEditorState> getState(ID editorId=0);
 
     private:
-        static std::vector<const SofaEditorState*> s_editorsstate ;
+        static std::vector<std::shared_ptr<SofaEditorState>> s_editorsstate ;
     };
 }
 

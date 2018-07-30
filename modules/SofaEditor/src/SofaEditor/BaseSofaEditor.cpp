@@ -25,7 +25,7 @@
  ****************************************************************************/
 
 #include <algorithm>
-
+#include <iostream>
 #include <SofaEditor/BaseSofaEditor.h>
 using sofaeditor::SofaEditorState;
 
@@ -56,7 +56,7 @@ const SofaEditor::ID SofaEditor::InvalidID = std::numeric_limits<ID>::max() ;
 SofaEditor::ID SofaEditor::getIdFromEditorName(const std::string& s)
 {
    auto res = std::find_if(s_editorsstate.begin(), s_editorsstate.end(),
-                           [&s](const SofaEditorState* item) {
+                           [&s](std::shared_ptr<SofaEditorState>& item) {
                             if(item==nullptr)
                                 return false;
                             return item->editorname == s;
@@ -66,13 +66,13 @@ SofaEditor::ID SofaEditor::getIdFromEditorName(const std::string& s)
    return static_cast<ID>( res - s_editorsstate.begin() );
 }
 
-SofaEditor::ID SofaEditor::createId(const SofaEditorState* s)
+SofaEditor::ID SofaEditor::createId(std::shared_ptr<SofaEditorState> &s)
 {
     s_editorsstate.push_back(s);
     return s_editorsstate.size() - 1;
 }
 
-bool SofaEditor::attachState(ID editorId, const SofaEditorState* s)
+bool SofaEditor::attachState(ID editorId, std::shared_ptr<SofaEditorState>& s)
 {
     if(editorId < s_editorsstate.size())
     {
@@ -82,14 +82,15 @@ bool SofaEditor::attachState(ID editorId, const SofaEditorState* s)
     return false;
 }
 
-const SofaEditorState* SofaEditor::getState(ID editorId)
+std::shared_ptr<SofaEditorState> SofaEditor::getState(ID editorId)
 {
-    if(editorId < s_editorsstate.size())
+    if(editorId < s_editorsstate.size()){
         return s_editorsstate[editorId];
+    }
     return nullptr;
 }
 
-std::vector<const SofaEditorState*> SofaEditor::s_editorsstate ;
+std::vector<std::shared_ptr<SofaEditorState>> SofaEditor::s_editorsstate ;
 
 } /// namespace sofaditor
 
