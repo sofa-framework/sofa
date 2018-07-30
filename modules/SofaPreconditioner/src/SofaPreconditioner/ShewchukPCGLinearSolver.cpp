@@ -77,8 +77,8 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::init()
 
         c->get(m_preconditioners, f_preconditioners.getValue());
 
-        if (m_preconditioners) sout << "Found " << f_preconditioners.getValue() << sendl;
-        else serr << "Solver \"" << f_preconditioners.getValue() << "\" not found." << sendl;
+        if (m_preconditioners) msg_info() << "Found " << f_preconditioners.getValue();
+        else msg_error() << "Solver \"" << f_preconditioners.getValue() << "\" not found.";
     }
 
     first = true;
@@ -230,7 +230,6 @@ SOFA_DECL_CLASS(ShewchukPCGLinearSolver)
 int ShewchukPCGLinearSolverClass = core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm")
 .add< ShewchukPCGLinearSolver<GraphScatteredMatrix,GraphScatteredVector> >(true)
 .addAlias("PCGLinearSolver");
-;
 
 } // namespace linearsolver
 
