@@ -17,7 +17,7 @@ if(!SofaEditor_FOUND)
     return()
 endif()
 
-find_package(Cython REQUIRED)
+find_package(Cython QUIET)
 if(Cython_FOUND)
     message("-- PythonSofaEditor found 'cython' the .cpp will be regenerated from .pxd.")
     set(CYTHON_ACTIVATION "--use-cython")
