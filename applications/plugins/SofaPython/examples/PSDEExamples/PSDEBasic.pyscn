@@ -8,10 +8,8 @@ import os
 # For details see DataEngine.py and DataEngine2.py
 
 
-path = os.path.dirname(os.path.abspath(__file__))+'/../../../../../../share/mesh/'
-        
 def createScene(rootNode):
-        rootNode.createObject("MeshVTKLoader", name="loader", filename=path+'liver.vtk')
+        rootNode.createObject("MeshVTKLoader", name="loader", filename='mesh/liver.vtk')
         rootNode.createObject('PythonScriptDataEngine', name='PSDE', filename="DataEngine.py", classname="MyDataEngine")	
         rootNode.createObject('PythonScriptDataEngine', name='PSDE2', filename='DataEngine2.py', classname='MyDataEngine')
         

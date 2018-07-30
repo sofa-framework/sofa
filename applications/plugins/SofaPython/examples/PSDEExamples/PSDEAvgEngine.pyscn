@@ -25,7 +25,7 @@ import os
 # value is passed to a "TransformEngine", that moves the mesh to these coordinates. The functionality can be inspected by looking at the properties (Inputs, Outputs) of the PSDE-object in the scene-graph.
 #
 
-path = os.path.dirname(os.path.abspath(__file__))+'/../../../../../../share/mesh/'
+path = 'mesh/'
 
 class PyAverageEngine(Sofa.PythonScriptDataEngine):
 
@@ -36,7 +36,7 @@ class PyAverageEngine(Sofa.PythonScriptDataEngine):
     def parse(self):
         # this is the correct place to define inputs and outputs! (linking will not work in init() for instance)
         # self.addNewInput('positions', value='@loader.position')
-        self.addNewOutput('average', value="0")
+        self.addNewOutput('average', value="")
         
     def init(self):
 	pass

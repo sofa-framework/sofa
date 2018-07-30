@@ -242,8 +242,6 @@ void PythonScriptDataEngine::script_parse()
 void PythonScriptDataEngine::script_datalinks(PyObject* pyobj)
 {
     PythonEnvironment::gil lock(__func__);
-    if (m_Func_datalinks == nullptr)
-        std::cout << "datalinks script not loaded" << std::endl;
     SP_CALL_MODULEFUNC(m_Func_datalinks, "(O)", pyobj);
 
 }
