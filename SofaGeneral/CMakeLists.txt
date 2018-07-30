@@ -8,10 +8,6 @@ option(CMAKE_WARN_DEPRECATED "Send warning when deprecated projects are found" O
 find_package(SofaCommon REQUIRED)
 find_package(Newmat)
 set(SOFA_HAVE_NEWMAT ${Newmat_FOUND})
-find_package(CSparse)
-set(SOFA_HAVE_CSPARSE ${CSparse_FOUND})
-find_package(Metis QUIET)
-set(SOFA_HAVE_METIS ${Metis_FOUND})
 
 ## Version
 set(SOFAGENERAL_VERSION ${SofaFramework_VERSION})
@@ -42,8 +38,6 @@ set(SOFAGENERAL_TARGETS
     SofaExporter
     SofaGraphComponent
     SofaHaptics
-    SofaPreconditioner
-    SofaSparseSolver
     SofaTopologyMapping
     SofaUserInteraction
     SofaValidation

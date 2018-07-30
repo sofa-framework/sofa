@@ -42,7 +42,6 @@ class AddMToMatrixFunctor
 public:
     void operator()(defaulttype::BaseMatrix * mat, const MassType& mass, int pos, double fact)
     {
-//         cerr<<"WARNING: AddMToMatrixFunctor not implemented"<<endl;
         const double m = mass*fact;
         for (unsigned int i=0; i<Deriv::size(); ++i)
             mat->add(pos+i, pos+i, m);
@@ -63,12 +62,10 @@ class AddMToMatrixFunctor< defaulttype::Vec<N,Real>, defaulttype::Mat<N,N,Real> 
 public:
     void operator()(defaulttype::BaseMatrix * mat, const defaulttype::Mat<N,N,Real>& mass, int pos, double fact)
     {
-//         cerr<<"WARNING: AddMToMatrixFunctor not implemented"<<endl;
         for (int i=0; i<N; ++i)
             for (int j=0; j<N; ++j)
             {
                 mat->add(pos+i, pos+j, mass[i][j]*fact);
-//            cerr<<"AddMToMatrixFunctor< defaulttype::Vec<N,Real>, defaulttype::Mat<N,N,Real> >::operator(), add "<< mass[i][j]*fact << " in " << pos+i <<","<< pos+j <<endl;
             }
     }
 };
@@ -80,7 +77,6 @@ public:
     enum { N=3 };
     void operator()(defaulttype::BaseMatrix * mat, const defaulttype::RigidMass<N,Real>& mass, int pos, double fact)
     {
-//         cerr<<"WARNING: AddMToMatrixFunctor not implemented"<<endl;
         const double m = mass.mass*fact;
         for (int i=0; i<N; ++i)
             mat->add(pos+i, pos+i, m);
@@ -99,7 +95,6 @@ public:
     enum { N=2 };
     void operator()(defaulttype::BaseMatrix * mat, const defaulttype::RigidMass<N,Real>& mass, int pos, double fact)
     {
-//         cerr<<"WARNING: AddMToMatrixFunctor not implemented"<<endl;
         const double m = mass.mass*fact;
         for (int i=0; i<N; ++i)
             mat->add(pos+i, pos+i, m);

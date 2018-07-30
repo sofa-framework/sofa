@@ -8,10 +8,11 @@
     <Node name="LiverTriangles" gravity="0 -9.81 0" depend="topo dofs">
         <EulerImplicitSolver name="cg_odesolver" printLog="0"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
-        <MeshTopology name="mesh" fileTopology="mesh/liver-smooth.obj" />
+        <MeshObjLoader name="meshLoader0" filename="mesh/liver-smooth.obj" />
+        <MeshTopology name="mesh" src="@meshLoader0" />
         <MechanicalObject template="Vec3d" name="dofs" />
         <TriangleFEMForceField template="Vec3d" />
-        <UniformMass template="Vec3d" name="mass" totalmass="0.5" />
+        <UniformMass template="Vec3d" name="mass" totalMass="0.5" />
         <FixedConstraint template="Vec3d" name="FixedConstraint" indices="3 39 64" />
         <Node name="Visu" gravity="0 -9.81 0">
             <OglModel template="ExtVec3f" name="VisualModel" fileMesh="mesh/liver-smooth.obj" material="Default Diffuse 1 1 0 0 1 Ambient 1 0.2 0 0 1 Specular 0 1 0 0 1 Emissive 0 1 0 0 1 Shininess 0 45" />

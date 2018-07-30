@@ -22,6 +22,10 @@ add_subdirectory(extlibs/CImg extlibs/CImg)
 find_package(CImg REQUIRED)
 find_package(SofaFramework REQUIRED)
 
+# OS X only: if the user installed its own JPEG/PNG lib (typically with homebrew/port),
+# it will allow to use those instead of those present in XCode's frameworks
+set(CMAKE_FIND_FRAMEWORK LAST)
+
 find_package(JPEG QUIET)
 find_package(TIFF QUIET)
 find_package(PNG QUIET)

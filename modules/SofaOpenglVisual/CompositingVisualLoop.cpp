@@ -91,9 +91,9 @@ void CompositingVisualLoop::drawStep(sofa::core::visual::VisualParams* vparams)
     const sofa::core::visual::DisplayFlags &backupFlags = vparams->displayFlags();
     const sofa::core::visual::DisplayFlags &currentFlags = visualStyle->displayFlags.getValue();
     vparams->displayFlags() = sofa::core::visual::merge_displayFlags(backupFlags, currentFlags);
-    renderingState = vparams->displayFlags().getShowRendering();
+    renderingState = vparams->displayFlags().getShowAdvancedRendering();
 
-    if (!(vparams->displayFlags().getShowRendering()))
+    if (!(vparams->displayFlags().getShowAdvancedRendering()))
     {
         dmsg_info() << "Advanced Rendering is OFF" ;
 

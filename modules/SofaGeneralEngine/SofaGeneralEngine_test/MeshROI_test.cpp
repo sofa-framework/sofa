@@ -184,8 +184,8 @@ struct MeshROI_test : public Sofa_test<typename _DataTypes::Real>,
 
         EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("edgeIndices")->getValueString(),"0 1 2 3 4 15");
         EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("edgeOutIndices")->getValueString(),"5 6 7 8 9 10 11 12 13 14 16 17");
-        EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("edgesInROI")->getValueString(),"0 7 4 7 0 4 3 7 0 3 4 5");
-        EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("edgesOutROI")->getValueString(),"6 7 2 7 2 6 2 3 2 5 1 2 1 5 5 6 1 4 0 1 4 6 0 2");
+        EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("edgesInROI")->getValueString(),"0 7 7 4 4 0 3 7 0 3 4 5");
+        EXPECT_EQ(m_root->getChild("node")->getObject("MeshROI")->findData("edgesOutROI")->getValueString(),"6 7 7 2 2 6 3 2 5 2 2 1 1 5 5 6 4 1 1 0 6 4 2 0");
     }
 
 
