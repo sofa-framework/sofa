@@ -4,7 +4,7 @@ import Sofa
 import SofaTest
 
 def createScene(rootNode):
-    rootNode.addNewData("aField", "TestField", "help message", "f", 1.0)
+    rootNode.addNewData("aField", "TestField", "help message", "float", 1.0)
     field = rootNode.getData("aField")
     ASSERT_NEQ(field, None)
 
