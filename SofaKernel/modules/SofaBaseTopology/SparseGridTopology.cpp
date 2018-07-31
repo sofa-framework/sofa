@@ -852,19 +852,19 @@ void SparseGridTopology::voxelizeTriangleMesh(helper::io::Mesh* mesh,
             const Vector3 gmin = regularGrid->getMin();
             const Vector3 gmax = regularGrid->getMax();
 
-            if (vertex2[0] <= gmin[0])
+            if ( (vertex2[0] - std::numeric_limits<float>::epsilon()) < gmin[0] )
                 vertex2[0] = gmin[0] + delta[0];
-            else if (vertex2[0] >= gmax[0])
+            else if ( (vertex2[0] + std::numeric_limits<float>::epsilon()) > gmax[0] )
                 vertex2[0] = gmax[0] - delta[0];
 
-            if (vertex2[1] <= gmin[1])
+            if ( (vertex2[1] - std::numeric_limits<float>::epsilon()) < gmin[1] )
                 vertex2[1] = gmin[1] + delta[1];
-            else if (vertex2[1] >= gmax[1])
+            else if ( (vertex2[1] + std::numeric_limits<float>::epsilon()) > gmax[1] )
                 vertex2[1] = gmax[1] - delta[1];
 
-            if (vertex2[2] <= gmin[2])
+            if ( (vertex2[2] - std::numeric_limits<float>::epsilon()) < gmin[2] )
                 vertex2[2] = gmin[2] + delta[2];
-            else if (vertex2[2] >= gmax[2])
+            else if ( (vertex2[2] + std::numeric_limits<float>::epsilon()) > gmax[2])
                 vertex2[2] = gmax[2] - delta[2];
 
             index = regularGrid->findHexa(vertex2);
