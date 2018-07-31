@@ -184,7 +184,7 @@ struct PlaneForceField_test : public Sofa_test<typename TTypeTuple::DataType::Re
         /// This list needs to be updated if you add an attribute.
         vector<string> attrnames = {
             "normal", "d", "stiffness", "damping", "maxForce", "bilateral", "localRange",
-            "draw", "color", "drawSize"
+            "showPlane", "color", "showPlaneSize"
         };
 
         for(auto& attrname : attrnames)
