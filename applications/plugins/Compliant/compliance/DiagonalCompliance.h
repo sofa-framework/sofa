@@ -1,5 +1,5 @@
-#ifndef SOFA_COMPONENT_COMPLIANCE_DiagonalCompliance_H
-#define SOFA_COMPONENT_COMPLIANCE_DiagonalCompliance_H
+#ifndef SOFA_COMPONENT_COMPLIANCE_DIAGONALCOMPLIANCE_H
+#define SOFA_COMPONENT_COMPLIANCE_DIAGONALCOMPLIANCE_H
 #include <Compliant/config.h>
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/defaulttype/Mat.h>
@@ -74,10 +74,24 @@ protected:
     static const Real s_complianceEpsilon; /// threshold for which stiffness can be computed by inverting compliance
 };
 
+
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COMPLIANCE_DIAGONALCOMPLIANCE_CPP)
+#ifndef SOFA_FLOAT
+extern template class SOFA_Compliant_API DiagonalCompliance<sofa::defaulttype::Vec1dTypes>;
+extern template class SOFA_Compliant_API DiagonalCompliance<sofa::defaulttype::Vec3dTypes>;
+extern template class SOFA_Compliant_API DiagonalCompliance<sofa::defaulttype::Vec6dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_Compliant_API DiagonalCompliance<sofa::defaulttype::Vec1fTypes>;
+extern template class SOFA_Compliant_API DiagonalCompliance<sofa::defaulttype::Vec3fTypes>;
+extern template class SOFA_Compliant_API DiagonalCompliance<sofa::defaulttype::Vec6fTypes>;
+#endif
+#endif
+
 }
 }
 }
 
-#endif // SOFA_COMPONENT_COMPLIANCE_DiagonalCompliance_H
+#endif // SOFA_COMPONENT_COMPLIANCE_DIAGONALCOMPLIANCE_H
 
 
