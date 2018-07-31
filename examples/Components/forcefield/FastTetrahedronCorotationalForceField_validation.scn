@@ -6,7 +6,8 @@
     <CollisionResponse response="default" name="collision response" />
     <DiscreteIntersection />
     <Node name="MeshTopology">
-        <TetrahedronSetTopologyContainer name="Container1" fileTopology="mesh/cylinder.msh" />
+        <MeshGmshLoader name="meshLoader0" filename="mesh/cylinder.msh" />
+        <TetrahedronSetTopologyContainer name="Container1" src="@meshLoader0" />
         <TetrahedronSetGeometryAlgorithms name="GeomAlgo" />
         <MechanicalObject name="dofs" />
 		<Node name="FastTetrahedronCorotationalForceField">

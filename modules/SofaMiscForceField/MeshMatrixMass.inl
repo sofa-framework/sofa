@@ -1148,6 +1148,9 @@ void MeshMatrixMass<DataTypes, MassType>::massInitialization()
 template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::printMass()
 {
+    if (this->f_printLog.getValue() == false)
+        return;
+
     //Info post-init
     const MassVector &vertexM = d_vertexMass.getValue();
     const MassVector &mDensity = d_massDensity.getValue();
@@ -1298,7 +1301,7 @@ void MeshMatrixMass<DataTypes, MassType>::reinit()
 
 
 template <class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::update()
+bool MeshMatrixMass<DataTypes, MassType>::update()
 {
     bool update = false;
 
@@ -1356,6 +1359,8 @@ void MeshMatrixMass<DataTypes, MassType>::update()
         msg_info() << "mass information updated";
         printMass();
     }
+
+    return update;
 }
 
 

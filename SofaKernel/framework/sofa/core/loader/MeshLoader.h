@@ -30,6 +30,13 @@
 
 namespace sofa
 {
+    namespace helper
+    {
+        namespace io
+        {
+            class Mesh;
+        }
+    }
 
 namespace core
 {
@@ -217,6 +224,9 @@ protected:
     void addPyramid(helper::vector< Pyramid>* pPyramids, const Pyramid& p);
     void addPyramid(helper::vector< Pyramid>* pPyramids,
                     unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3, unsigned int p4);
+
+    /// Temporary method that will copy all buffers from a io::Mesh into the corresponding Data. Will be removed as soon as work on unifying meshloader is finished
+    void copyMeshToData(helper::io::Mesh* _mesh);
 };
 
 

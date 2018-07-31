@@ -51,7 +51,7 @@ public:
 	typedef sofa::core::behavior::BaseAnimationLoop Inherit;
 	SOFA_CLASS(AnimationLoopParallelScheduler,sofa::core::behavior::BaseAnimationLoop);
 
-	Data<int> threadNumber; ///< number of thread
+	Data<unsigned int> threadNumber; ///< number of thread
 
 
 protected:
@@ -89,7 +89,7 @@ private :
 	// thread storage initialization
 	void initThreadLocalData();
 
-	int mNbThread;
+	unsigned int mNbThread;
 
 	simulation::Node* gnode;
 	
