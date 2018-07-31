@@ -126,7 +126,7 @@ void FixedConstraint<DataTypes>::init()
     topology = this->getContext()->getMeshTopology();
 
       if (!topology)
-        msg_warning() << "Can not find the topology";
+        msg_warning() << "Can not find the topology, won't be able to handle topological changes";
 
     // Initialize topological functions
     d_indices.createTopologicalEngine(topology, pointHandler);
@@ -251,7 +251,7 @@ void FixedConstraint<DataTypes>::projectVelocity(const core::MechanicalParams* m
     const SetIndexArray & indices = this->d_indices.getValue();
     helper::WriteAccessor<DataVecDeriv> res ( mparams, vData );
 
-    if( this->d_fixAll.getValue() )    // fix everyting
+    if( d_fixAll.getValue() )    // fix everyting
     {
         for( unsigned i=0; i<res.size(); i++ )
             res[i] = Deriv();
