@@ -336,7 +336,7 @@ public:
     }
 
     //Temporary function to warn the user when old attribute names are used
-    void parse( sofa::core::objectmodel::BaseObjectDescription* arg )
+    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
     {
         if (arg->getAttribute("mass"))
         {

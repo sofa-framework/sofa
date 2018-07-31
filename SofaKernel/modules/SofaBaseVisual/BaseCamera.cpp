@@ -832,7 +832,7 @@ void BaseCamera::handleEvent(sofa::core::objectmodel::Event* event)
         updateOutputData();
 }
 
-void BaseCamera::draw(const sofa::core::visual::VisualParams* params)
+void BaseCamera::draw(const sofa::core::visual::VisualParams* /*params*/)
 {
 }
 
