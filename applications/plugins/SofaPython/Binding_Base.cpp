@@ -229,7 +229,8 @@ BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
     char* dataClass = new char;
     char* dataHelp = new char;
     char * dataName = new char;
-
+    std::string val = "";
+    
     PyObject* dataValue = nullptr;
 
     bool KwargsOrArgs = 0; //Args = 0, Kwargs = 1
@@ -288,31 +289,43 @@ BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
         if (tmp!=nullptr){
             dataValue = tmp;
             Py_IncRef(dataValue); // call to Py_GetItemString doesn't increment the ref count, but we want to hold on to it for a while ...
-            std::string val(PyString_AsString(dataValue));
+            val = std::string(PyString_AsString(dataValue));
             bd = deriveTypeFromParentValue(obj, val);
         }
     }
 
     if (dataRawType[0]==0) // We cannot construct without a type
     {
-        bd = new Data<void*>();
-        bd->setName(dataName);
-        obj->addAlias(bd, "psde_output");
-
-        msg_warning(obj) << "No type provided for Data, creating void* data";
-        return bd;
+        if (val.empty())
+        {
+            bd = new Data<void*>();
+            bd->setName(dataName);
+            obj->addAlias(bd, "psde_output");
+        }
+        else if (std::string(dataName) != "type")
+        {
+            msg_warning(obj) << "No type provided for Data" << dataName << " with value " << val << ", creating void* data";
+            return bd;
+        }
+	else return new Data<void*>();
     }
 
     if (bd == nullptr)
         bd = getFactoryInstance()->createObject(dataRawType, sofa::helper::NoArgument());
     if (bd == nullptr)
     {
-        bd = new Data<void*>();
-        bd->setName(dataName);
-        obj->addAlias(bd, "psde_output");
-
-        msg_warning(obj) << "No type provided for Data, creating void* data";
-        return bd;
+        if (val.empty())
+        {
+            bd = new Data<void*>();
+            bd->setName(dataName);
+            obj->addAlias(bd, "psde_output");
+        }
+        else if (std::string(dataName) != "type")
+        {
+            msg_warning(obj) << "No type provided for Data" << dataName << " with value " << val << ", creating void* data";
+            return bd;
+        }
+        else return new Data<void*>();
 //        msg_error(obj) << dataRawType << " is not a known type";
 //        return nullptr;
     }

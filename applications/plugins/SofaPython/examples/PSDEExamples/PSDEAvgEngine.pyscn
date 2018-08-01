@@ -31,7 +31,7 @@ class PyAverageEngine(Sofa.PythonScriptDataEngine):
     def parse(self):        
         # this is the correct place to define inputs and outputs! (linking will not work in init() for instance)
         self.addNewInput('positions', value='@loader.position') #The Input 'positions' is linked to the loader. The Data type of the Input is derived automagically
-        self.addNewOutput('average', value='0') #The Output 'average' is declared, but given a vacant value. Data type will be inferred later, when another component links to this Output 
+        self.addNewOutput('average', value="") #The Output 'average' is declared, but given a vacant value. Data type will be inferred later, when another component links to this Output 
         
     def init(self):
 	pass
