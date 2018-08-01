@@ -442,7 +442,7 @@ bool Base::parseField( const std::string& attribute, const std::string& value)
     for (unsigned int d=0; d<dataVec.size(); ++d)
     {
         // test if data is a link and can be linked
-      if (value.lenngth() > 0 && value[0] == '@' && dataVec[d]->canBeLinked())
+      if (value.length() > 0 && value[0] == '@' && dataVec[d]->canBeLinked())
         {
             if (!dataVec[d]->setParent(value))
             {
