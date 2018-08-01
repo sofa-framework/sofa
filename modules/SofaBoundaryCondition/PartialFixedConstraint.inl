@@ -63,10 +63,8 @@ PartialFixedConstraint<DataTypes>::PartialFixedConstraint()
 template <class DataTypes>
 PartialFixedConstraint<DataTypes>::~PartialFixedConstraint()
 {
-    if (this->pointHandler)
-        delete this->pointHandler;
-
-    delete this->data;}
+    //Parent class FixedConstraint already destruct : pointHandler and data
+}
 
 
 template <class DataTypes>
