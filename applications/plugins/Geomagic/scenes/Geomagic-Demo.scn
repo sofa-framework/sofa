@@ -5,7 +5,7 @@
 
 	<VisualStyle displayFlags="showVisualModels showBehaviorModels hideCollisionModels hideBoundingCollisionModels hideMappings hideMechanicalMappings hideForceFields hideInteractionForceFields hideWireframe hideNormals" />
 
-    <GeomagicDriver name="GeomagicDevice" deviceName="Default Device" scale="1" drawDeviceFrame="1" positionBase="0 0 0" orientationBase="0 0 0 1"  />
+    <GeomagicDriver name="GeomagicDevice" deviceName="Default Device" scale="1" drawDevice="1" drawDeviceFrame="0" positionBase="0 0 0" orientationBase="0 0 0 1"  />
 
 	<MechanicalObject template="Rigid" name="GeomagicMO" position="@GeomagicDevice.positionDevice" />
 
