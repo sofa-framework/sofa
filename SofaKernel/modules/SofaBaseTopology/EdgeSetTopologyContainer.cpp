@@ -183,7 +183,7 @@ const EdgeSetTopologyContainer::Edge EdgeSetTopologyContainer::getEdge (EdgeID i
     if(!hasEdges())
         createEdgeSetArray();
 
-    if (i >= getNbEdges())
+    if ((size_t)i >= getNbEdges())
         return Edge(-1, -1);
     else
         return (d_edge.getValue())[i];

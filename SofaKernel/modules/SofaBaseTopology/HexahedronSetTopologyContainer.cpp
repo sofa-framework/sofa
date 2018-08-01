@@ -523,7 +523,7 @@ const HexahedronSetTopologyContainer::Hexahedron HexahedronSetTopologyContainer:
     if(!hasHexahedra())
         createHexahedronSetArray();
 
-    if (i >= getNbHexahedra())
+    if ((size_t)i >= getNbHexahedra())
         return Hexahedron(-1, -1, -1, -1, -1, -1, -1, -1);
     else
         return (d_hexahedron.getValue())[i];

@@ -440,7 +440,7 @@ const TriangleSetTopologyContainer::Triangle TriangleSetTopologyContainer::getTr
     if(!hasTriangles())
         createTriangleSetArray();
 
-    if (i >= getNbTriangles())
+    if ((size_t)i >= getNbTriangles())
         return Triangle(-1, -1, -1);
     else
         return (d_triangle.getValue())[i];
