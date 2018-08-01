@@ -211,7 +211,7 @@ add_subdirectory(SofaGui)
 add_subdirectory(modules)
 
 # NG refactoring of Sofa modules
-add_subdirectory(modules/Sofa)
+add_subdirectory(modules/Sofa/Component)
 
 ## Packages
 add_subdirectory(applications/packages)
