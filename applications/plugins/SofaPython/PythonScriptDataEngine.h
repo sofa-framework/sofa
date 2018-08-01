@@ -76,11 +76,13 @@ protected:
     PyObject *m_Func_update                {nullptr} ;
     PyObject *m_Func_init                  {nullptr} ;
     PyObject *m_Func_parse                {nullptr} ;
+    PyObject *m_Func_datalinks                {nullptr} ;
 
     virtual void script_update() override;
     virtual void script_init() override;
     virtual void script_parse() override;
-    virtual void loadScript() override;    
+    virtual void script_datalinks(PyObject* dico);
+    virtual void loadScript() override;
     void init() override;
 
 

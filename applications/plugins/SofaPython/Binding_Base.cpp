@@ -230,7 +230,7 @@ BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
     char* dataHelp = new char;
     char * dataName = new char;
     std::string val = "";
-    
+
     PyObject* dataValue = nullptr;
 
     bool KwargsOrArgs = 0; //Args = 0, Kwargs = 1
@@ -307,7 +307,7 @@ BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
             msg_warning(obj) << "No type provided for Data" << dataName << " with value " << val << ", creating void* data";
             return bd;
         }
-	else return new Data<void*>();
+        else return new Data<void*>();
     }
 
     if (bd == nullptr)
