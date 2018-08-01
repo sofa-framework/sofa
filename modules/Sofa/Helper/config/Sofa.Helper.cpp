@@ -19,21 +19,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaNg.h>
+#include <Sofa.Helper.h>
 
 #include <sofa/helper/system/PluginManager.h>
-using sofa::helper::system::PluginManager ;
+using sofa::helper::system::PluginManager;
 
 namespace sofa
 {
+namespace helper
+{
 
 extern "C" {
-    SOFA_API void initExternalModule();
-    SOFA_API const char* getModuleName();
-    SOFA_API const char* getModuleVersion();
-    SOFA_API const char* getModuleLicense();
-    SOFA_API const char* getModuleDescription();
-    SOFA_API const char* getModuleComponentList();
+    SOFA_HELPER_API void initExternalModule();
+    SOFA_HELPER_API const char* getModuleName();
+    SOFA_HELPER_API const char* getModuleVersion();
+    SOFA_HELPER_API const char* getModuleLicense();
+    SOFA_HELPER_API const char* getModuleDescription();
+    SOFA_HELPER_API const char* getModuleComponentList();
 }
 
 void initExternalModule()
@@ -41,15 +43,14 @@ void initExternalModule()
     static bool first = true;
     if (first)
     {
-        PluginManager::getInstance().loadPlugin("Sofa.Helper");
-        PluginManager::getInstance().loadPlugin("Sofa.Component");
+        PluginManager::getInstance().loadPlugin("Sofa.Helper.Bvh");
         first = false;
     }
 }
 
 const char* getModuleName()
 {
-    return "SofaNg";
+    return "Sofa.Helper";
 }
 
 const char* getModuleVersion()
@@ -73,3 +74,4 @@ const char* getModuleComponentList()
 }
 
 } // namespace sofa
+} // namespace helper

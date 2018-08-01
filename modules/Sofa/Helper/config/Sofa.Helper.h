@@ -19,57 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaNg.h>
+#ifndef SOFA_COMPONENT_INIT_H
+#define SOFA_COMPONENT_INIT_H
 
-#include <sofa/helper/system/PluginManager.h>
-using sofa::helper::system::PluginManager ;
+#include <sofa/config.h>
 
-namespace sofa
-{
+#ifdef BUILD_SOFA_HELPER
+#  define  SOFA_TARGET    Sofa.Component
+#  define SOFA_HELPER_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_HELPER_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
-extern "C" {
-    SOFA_API void initExternalModule();
-    SOFA_API const char* getModuleName();
-    SOFA_API const char* getModuleVersion();
-    SOFA_API const char* getModuleLicense();
-    SOFA_API const char* getModuleDescription();
-    SOFA_API const char* getModuleComponentList();
-}
+#endif
 
-void initExternalModule()
-{
-    static bool first = true;
-    if (first)
-    {
-        PluginManager::getInstance().loadPlugin("Sofa.Helper");
-        PluginManager::getInstance().loadPlugin("Sofa.Component");
-        first = false;
-    }
-}
-
-const char* getModuleName()
-{
-    return "SofaNg";
-}
-
-const char* getModuleVersion()
-{
-    return "1.0";
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-const char* getModuleDescription()
-{
-    return getModuleName();
-}
-
-const char* getModuleComponentList()
-{
-    return "";
-}
-
-} // namespace sofa

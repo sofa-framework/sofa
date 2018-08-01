@@ -61,11 +61,6 @@ set(HEADER_FILES
     io/MeshTopologyLoader.h
     io/SphereLoader.h
     io/TriangleLoader.h
-    io/bvh/BVHChannels.h
-    io/bvh/BVHJoint.h
-    io/bvh/BVHLoader.h
-    io/bvh/BVHMotion.h
-    io/bvh/BVHOffset.h
     kdTree.h
     kdTree.inl
     list.h
@@ -164,9 +159,6 @@ set(SOURCE_FILES
     io/MeshTopologyLoader.cpp
     io/SphereLoader.cpp
     io/TriangleLoader.cpp
-    io/bvh/BVHJoint.cpp
-    io/bvh/BVHLoader.cpp
-    io/bvh/BVHMotion.cpp
     kdTree.cpp
     polygon_cube_intersection/fast_polygon_cube_intersection.cpp
     polygon_cube_intersection/polygon_cube_intersection.cpp
@@ -387,3 +379,5 @@ set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION "${SOFAFRAMEWORK_VERSION}")
 
 sofa_install_targets(SofaFramework ${PROJECT_NAME} "sofa/helper")
+
+
