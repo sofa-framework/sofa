@@ -442,21 +442,21 @@ bool Base::parseField( const std::string& attribute, const std::string& value)
     for (unsigned int d=0; d<dataVec.size(); ++d)
     {
         // test if data is a link and can be linked
-        if (value[0] == '@' && dataVec[d]->canBeLinked())
+      if (value.lenngth() > 0 && value[0] == '@' && dataVec[d]->canBeLinked())
         {
             if (!dataVec[d]->setParent(value))
             {
-                BaseData* data = NULL;
-                BaseLink* bl = NULL;
+                BaseData* data = nullptr;
+                BaseLink* bl = nullptr;
                 dataVec[d]->findDataLinkDest(data, value, bl);
-                if (data != NULL)
+                if (data != nullptr)
                 {
                     Base* owner = data->getOwner();
                     const std::multimap<std::string, sofa::core::objectmodel::BaseData*>&
                         dataMap = owner->getDataAliases();
-                    for (auto& a : dataMap)
+                    for (const auto& dataItem : dataMap)
                     {
-                        if (a.first == "psde_output" && a.second->getName() == data->getName())
+                        if (dataItem.first == "psde_output" && dataItem.second->getName() == data->getName())
                         {
                             DDGNode* o = dynamic_cast<DDGNode*>(owner);
                             o->delOutput(data);

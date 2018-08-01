@@ -200,20 +200,20 @@ BaseData* deriveTypeFromParentValue(Base* obj, const std::string& value)
         return nullptr;
 
     // if data is a link
-    if (value[0] == '@')
+    if (value.length() > 0 && value[0] == '@')
     {
         std::string componentPath = value.substr(1, value.find('.') - 1);
         std::string parentDataName = value.substr(value.find('.') + 1);
 
         if (!o->getContext())
         {
-            std::cout << "no context" << std::endl;
+	    msg_warning("SofaPython") << "No context created. Cannot find data link to derive input type"
             return nullptr;
         }
         BaseObject* component;
         component = o->getContext()->get<BaseObject>(componentPath);
         if (!component)
-            std::cout << "no object with path " << componentPath << std::endl;
+	  msg_warning("SofaPython") << "no object with path " << componentPath << " in scene graph."
         BaseData* parentData = component->findData(parentDataName);
         return parentData->getNewInstance();
     }
