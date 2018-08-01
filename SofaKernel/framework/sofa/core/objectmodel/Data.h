@@ -381,6 +381,9 @@ public:
         T value;
     };
 
+    // It's used for getting a new instance from an existing instance. This function is used by the communication plugin
+    virtual BaseData* getNewInstance() { return new Data();}
+
     /** \copydoc BaseData(const BaseData::BaseInitData& init) */
     explicit Data(const BaseData::BaseInitData& init)
         : TData<T>(init)

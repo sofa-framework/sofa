@@ -181,7 +181,7 @@ static Base* get_base(PyObject* self) {
     return sofa::py::unwrap<Base>(self);
 }
 
-static char* getStringCopy(char *c)
+static char* getStringCopy(const char *c)
 {
     if (c==nullptr)
         return nullptr;
@@ -189,6 +189,35 @@ static char* getStringCopy(char *c)
     char* tmp = new char[strlen(c)+1] ;
     strcpy(tmp,c);
     return tmp ;
+}
+
+#include <sofa/core/objectmodel/Link.h>
+
+BaseData* deriveTypeFromParentValue(Base* obj, const std::string& value)
+{
+    BaseObject* o = dynamic_cast<BaseObject*>(obj);
+    if (!o)
+        return nullptr;
+
+    // if data is a link
+    if (value[0] == '@')
+    {
+        std::string componentPath = value.substr(1, value.find('.') - 1);
+        std::string parentDataName = value.substr(value.find('.') + 1);
+
+        if (!o->getContext())
+        {
+            std::cout << "no context" << std::endl;
+            return nullptr;
+        }
+        BaseObject* component;
+        component = o->getContext()->get<BaseObject>(componentPath);
+        if (!component)
+            std::cout << "no object with path " << componentPath << std::endl;
+        BaseData* parentData = component->findData(parentDataName);
+        return parentData->getNewInstance();
+    }
+    return nullptr;
 }
 
 
@@ -231,7 +260,7 @@ BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
     {
         return nullptr;
     }    
-
+    BaseData* bd = nullptr;
     if(KwargsOrArgs) // parse kwargs
     {
         if(kw==nullptr || !PyDict_Check(kw) )
@@ -259,27 +288,39 @@ BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
         if (tmp!=nullptr){
             dataValue = tmp;
             Py_IncRef(dataValue); // call to Py_GetItemString doesn't increment the ref count, but we want to hold on to it for a while ...
-        }      
+            std::string val(PyString_AsString(dataValue));
+            bd = deriveTypeFromParentValue(obj, val);
+        }
     }
 
     if (dataRawType[0]==0) // We cannot construct without a type
     {
-        msg_error(obj) << "No type provided for Data, cannot construct/add";
-        return nullptr;
+        bd = new Data<void*>();
+        bd->setName(dataName);
+        obj->addAlias(bd, "psde_output");
+
+        msg_warning(obj) << "No type provided for Data, creating void* data";
+        return bd;
     }
 
-    BaseData* bd = getFactoryInstance()->createObject(dataRawType, sofa::helper::NoArgument());
-
+    if (bd == nullptr)
+        bd = getFactoryInstance()->createObject(dataRawType, sofa::helper::NoArgument());
     if (bd == nullptr)
     {
-        msg_error(obj) << dataRawType << " is not a known type";
-        return nullptr;
+        bd = new Data<void*>();
+        bd->setName(dataName);
+        obj->addAlias(bd, "psde_output");
+
+        msg_warning(obj) << "No type provided for Data, creating void* data";
+        return bd;
+//        msg_error(obj) << dataRawType << " is not a known type";
+//        return nullptr;
     }
     else
     {
         bd->setName(dataName);
         bd->setHelp(dataHelp);
-        obj->addData(bd);        
+        obj->addData(bd);
         if(dataValue!=nullptr) // parse provided data: Py->SofaStr->Data or link
         {
             std::stringstream tmp;
