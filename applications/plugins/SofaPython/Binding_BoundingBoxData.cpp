@@ -46,15 +46,13 @@ SP_CLASS_ATTR_GET(BoundingBox, maxBBox)(PyObject *self, void*)
 
 SP_CLASS_ATTR_SET(BoundingBox, minBBox)(PyObject */*self*/, PyObject * /*args*/, void*)
 {
-    SP_MESSAGE_ERROR("BoundingBox attributes are read-only")
-        PyErr_BadArgument();
+    PyErr_SetString(PyExc_RuntimeError, "BoundingBox attributes are read-only");
     return -1;
 }
 
 SP_CLASS_ATTR_SET(BoundingBox, maxBBox)(PyObject */*self*/, PyObject * /*args*/, void*)
 {
-    SP_MESSAGE_ERROR("BoundingBox attributes are read-only")
-        PyErr_BadArgument();
+    PyErr_SetString(PyExc_RuntimeError, "BoundingBox attributes are read-only");
     return -1;
 }
 

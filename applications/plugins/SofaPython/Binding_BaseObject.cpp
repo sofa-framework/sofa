@@ -276,7 +276,7 @@ SP_CLASS_METHOD_DOC(BaseObject, getCategories,
 SP_CLASS_METHOD_DOC(BaseObject, getTarget,
                     "Returns the target (plugin) that contains the current object.")
 SP_CLASS_METHOD(BaseObject,getAsACreateObjectParameter)
-SP_CLASS_METHOD(BaseObject,computeBBox)
+SP_CLASS_METHOD_DOC(BaseObject, computeBBox, "Recomputes the bounding box of the object")
 SP_CLASS_METHODS_END
 
 
