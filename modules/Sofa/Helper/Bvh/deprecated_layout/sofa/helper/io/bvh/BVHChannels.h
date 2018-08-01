@@ -19,40 +19,32 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_IO_BVH_BVHOFFSET_H
-#define SOFA_HELPER_IO_BVH_BVHOFFSET_H
+#ifndef SOFA_BVHCHANNELS_DEPRECATEDLAYOUT_H
+#define SOFA_BVHCHANNELS_DEPRECATEDLAYOUT_H
 
-#include <sofa/helper/helper.h>
+#include <sofa/helper/bvh/BVHChannels.h>
 
 namespace sofa
 {
-
 namespace helper
 {
-
 namespace io
 {
 
+// Namespace forwarding: solution 1
+// Auto-generated alias to make sofa::helper::io::bvh point to sofa::helper::bvh
+// namespace bvh = sofa::helper::bvh;
+
+// Namespace forwarding: solution 2
+// Auto-generated "using" Component
+// This solution looks clearer but could miss other classes declared in BVHChannels.h
 namespace bvh
 {
-
-class SOFA_HELPER_API BVHOffset
-{
-public:
-    BVHOffset(double _x, double _y, double _z)
-        :x(_x),y(_y),z(_z) {}
-
-    virtual ~BVHOffset() {};
-
-    double x,y,z;
-};
-
+using sofa::helper::bvh::BVHChannels;
 } // namespace bvh
 
 } // namespace io
-
 } // namespace helper
-
 } // namespace sofa
 
-#endif
+#endif // SOFA_BVHCHANNELS_DEPRECATEDLAYOUT_H

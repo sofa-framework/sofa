@@ -19,53 +19,58 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_IO_BVH_BVHMOTION_H
-#define SOFA_HELPER_IO_BVH_BVHMOTION_H
-
-#include <vector>
-#include <sofa/helper/helper.h>
+#include <Sofa.Helper.Bvh.h>
 
 namespace sofa
 {
-
 namespace helper
 {
-
-namespace io
-{
-
 namespace bvh
 {
 
-class SOFA_HELPER_API BVHMotion
+extern "C" {
+    SOFA_HELPER_BVH_API void initExternalModule();
+    SOFA_HELPER_BVH_API const char* getModuleName();
+    SOFA_HELPER_BVH_API const char* getModuleVersion();
+    SOFA_HELPER_BVH_API const char* getModuleLicense();
+    SOFA_HELPER_BVH_API const char* getModuleDescription();
+    SOFA_HELPER_BVH_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
 {
-public:
-    BVHMotion()
+    static bool first = true;
+    if (first)
     {
-        frameCount = 0;
-        frameTime = 0.0;
-    };
+        first = false;
+    }
+}
 
-    virtual ~BVHMotion()
-    {
-        delete[] &frames;
-    };
+const char* getModuleName()
+{
+    return "Sofa.Helper.Bvh";
+}
 
-    void init(double _fTime, unsigned int _fCount, unsigned int _fSize);
+const char* getModuleVersion()
+{
+    return "1.0";
+}
 
-    int frameCount;
-    double frameTime;
-    std::vector< std::vector<double> > frames;
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
 
-    void debug(void);
-};
+const char* getModuleDescription()
+{
+    return getModuleName();
+}
+
+const char* getModuleComponentList()
+{
+    return "BVHChannels, BVHOffset, BVHJoint, BVHLoader, BVHMotion";
+}
 
 } // namespace bvh
-
-} // namespace io
-
 } // namespace helper
-
 } // namespace sofa
-
-#endif
