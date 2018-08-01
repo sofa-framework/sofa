@@ -99,9 +99,10 @@ def getState(id=0):
 
 def getSelection(id=0):
         """
-        Returns the current selection.
-
-        This is a shorter version of:
-        SofaEditor.getState().getSelection()
+        Returns the current selection that is associated to the given editor's 'id'.
+        If there is no editor with such an id returns None.
         """
-        return getState(id).getSelection()
+        n = getState(id)
+        if n != None:
+            return n.getSelection()
+        return None
