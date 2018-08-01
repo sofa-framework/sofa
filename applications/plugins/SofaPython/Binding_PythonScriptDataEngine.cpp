@@ -20,7 +20,6 @@ using namespace sofa::core::objectmodel;
 // #define LOG_UNIMPLEMENTED_METHODS // prints a message each time a
 // non-implemented (in the script) method is called
 
-
 #ifdef LOG_UNIMPLEMENTED_METHODS
 static inline PythonScriptDataEngine* get_dataengine(PyObject* obj) {
     return down_cast<PythonScriptDataEngine>( get_baseobject( obj ) );
@@ -57,6 +56,26 @@ static PyObject * PythonScriptDataEngine_init(PyObject * self, PyObject * /*args
 static PyObject * PythonScriptDataEngine_parse(PyObject * self, PyObject * /*args*/) {
     (void) self;
     msg_error("PythonScriptDataEngine")<< "awa, actually called from Py";
+
+#ifdef LOG_UNIMPLEMENTED_METHODS
+    PythonScriptDataEngine* obj = get_getdataengine(self);
+    msg_error("PythonScriptDataEngine") << obj->m_classname.getValueString()
+                                        << ".parse not implemented in "
+                                        << obj->name.getValueString() << std::endl;
+#endif
+
+    Py_RETURN_NONE;
+}
+
+static PyObject * PythonScriptDataEngine_datalinks(PyObject * self, PyObject * args) {
+    (void) self;
+    msg_error("PythonScriptDataEngine")<< "awa, actually called from Py";
+
+    PyObject * dico;
+    if (!PyArg_ParseTuple(args, "O", &dico))
+    {
+        return NULL;
+    }
 
 #ifdef LOG_UNIMPLEMENTED_METHODS
     PythonScriptDataEngine* obj = get_getdataengine(self);
@@ -110,6 +129,7 @@ SP_CLASS_METHODS_BEGIN(PythonScriptDataEngine)
 SP_CLASS_METHOD(PythonScriptDataEngine,parse)
 SP_CLASS_METHOD(PythonScriptDataEngine,init)
 SP_CLASS_METHOD(PythonScriptDataEngine,update)
+SP_CLASS_METHOD(PythonScriptDataEngine,datalinks)
 SP_CLASS_METHODS_END
 
 

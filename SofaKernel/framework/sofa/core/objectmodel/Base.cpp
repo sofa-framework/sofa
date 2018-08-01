@@ -326,6 +326,13 @@ void Base::removeTag(Tag t)
     f_tags.endEdit();
 }
 
+void Base::removeData(BaseData* d)
+{
+    m_vecData.erase(std::find(m_vecData.begin(), m_vecData.end(), d));
+    typedef MapData::const_iterator mapIterator;
+    std::pair< mapIterator, mapIterator> range = m_aliasData.equal_range(d->getName());
+    m_aliasData.erase(range.first, range.second);
+}
 
 /// Find a data field given its name.
 /// Return NULL if not found. If more than one field is found (due to aliases), only the first is returned.
@@ -439,6 +446,33 @@ bool Base::parseField( const std::string& attribute, const std::string& value)
         {
             if (!dataVec[d]->setParent(value))
             {
+                BaseData* data = NULL;
+                BaseLink* bl = NULL;
+                dataVec[d]->findDataLinkDest(data, value, bl);
+                if (data != NULL)
+                {
+                    Base* owner = data->getOwner();
+                    const std::multimap<std::string, sofa::core::objectmodel::BaseData*>&
+                        dataMap = owner->getDataAliases();
+                    for (auto& a : dataMap)
+                    {
+                        if (a.first == "psde_output" && a.second->getName() == data->getName())
+                        {
+                            DDGNode* o = dynamic_cast<DDGNode*>(owner);
+                            o->delOutput(data);
+                            owner->removeData(data);
+                            BaseData* newBD = dataVec[d]->getNewInstance();
+                            newBD->setName(data->getName());
+                            owner->addData(newBD);
+                            newBD->setGroup("Outputs");
+                            o->addOutput(newBD);
+                            dataVec[d]->setParent(newBD);
+                            break;
+                        }
+                    }
+                    ok = true;
+                    continue;
+                }
                 serr<<"Could not setup Data link between "<< value << " and " << attribute << "." << sendl;
                 ok = false;
                 continue;

@@ -71,6 +71,8 @@ BaseData * helper_addNewIO(PyObject * self, PyObject * args, PyObject * kw)
         msg_error("SofaPython") << "Adding new IO failed!";
         return nullptr;
     }
+    if (NewData->getName().empty())
+        return nullptr;
     NewData->setGroup(""); // Needs to be empty before it can be set to Input or Output ...
 
     return NewData;
@@ -111,7 +113,8 @@ static PyObject * DataEngine_addNewOutput(PyObject *self, PyObject* args, PyObje
     {
         Py_RETURN_NONE;
     }
-
+    if (!engine->findData(NewData->getName()))
+        engine->addData(NewData);
     engine->addOutput(NewData);
     Py_RETURN_NONE;
 }
