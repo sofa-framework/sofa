@@ -76,8 +76,14 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::init()
 
         c->get(preconditioners, f_preconditioners.getValue());
 
-        if (preconditioners) sout << "Found " << f_preconditioners.getValue() << sendl;
-        else serr << "Solver \"" << f_preconditioners.getValue() << "\" not found." << sendl;
+        if(preconditioners)
+        {
+            msg_info() << "Found " << f_preconditioners.getValue();
+        }
+        else
+        {
+            msg_error() << "Solver \"" << f_preconditioners.getValue() << "\" not found.";
+        }
     }
 
     first = true;
