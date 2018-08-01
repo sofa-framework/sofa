@@ -70,7 +70,7 @@ public:
 
 private :
     unsigned next_refresh_step;
-    sofa::core::behavior::LinearSolver* preconditioners;
+    sofa::core::behavior::LinearSolver* m_preconditioners;
     bool first;
     int newton_iter;
 
