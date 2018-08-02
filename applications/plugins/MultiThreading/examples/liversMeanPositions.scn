@@ -10,7 +10,7 @@
     <DefaultPipeline name="CollisionPipeline" verbose="0" />
     <BruteForceDetection name="N2" />
     <DefaultContactManager name="collision response" response="default" />
-	<LCPConstraintSolver tolerance="1e-3" maxIt="100" initial_guess="false" build_lcp="true"  printLog="0" mu="0.2"/>
+	<LCPConstraintSolverAsync tolerance="1e-3" maxIt="100" initial_guess="false" build_lcp="true"  printLog="0" mu="0.2"/>
     <Node name="liver1" gravity="0 -9.81 0">
       <EulerImplicitSolver name="cg_odesolver"   rayleighStiffness="0.1" rayleighMass="0.1" />
       <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
@@ -40,7 +40,7 @@
     <DefaultPipeline name="CollisionPipeline" verbose="0" />
     <BruteForceDetection name="N2" />
     <DefaultContactManager name="collision response" response="default" />
-	<LCPConstraintSolver tolerance="1e-3" maxIt="100" initial_guess="false" build_lcp="true"  printLog="0" mu="0.2"/>
+	<LCPConstraintSolverAsync tolerance="1e-3" maxIt="100" initial_guess="false" build_lcp="true"  printLog="0" mu="0.2"/>
     <Node name="liver2" gravity="0 -9.81 0">
       <EulerImplicitSolver name="cg_odesolver"  />
       <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
@@ -70,7 +70,7 @@
     <DefaultPipeline name="CollisionPipeline" verbose="0" />
     <BruteForceDetection name="N2" />
     <DefaultContactManager name="collision response" response="default" />
-	<LCPConstraintSolver tolerance="1e-3" maxIt="100" initial_guess="false" build_lcp="true"  printLog="0" mu="0.2"/>
+	<LCPConstraintSolverAsync tolerance="1e-3" maxIt="100" initial_guess="false" build_lcp="true"  printLog="0" mu="0.2"/>
     <Node name="liver3" gravity="0 -9.81 0">
       <EulerImplicitSolver name="cg_odesolver"  />
       <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
@@ -101,7 +101,7 @@
     <DefaultPipeline name="CollisionPipeline" verbose="0" />
     <BruteForceDetection name="N2" />
     <DefaultContactManager name="collision response" response="default" />
-	<LCPConstraintSolver tolerance="1e-3" maxIt="100" initial_guess="false" build_lcp="true"  printLog="0" mu="0.2"/>
+	<LCPConstraintSolverAsync tolerance="1e-3" maxIt="100" initial_guess="false" build_lcp="true"  printLog="0" mu="0.2"/>
     <Node name="liver4" gravity="0 -9.81 0">
       <EulerImplicitSolver name="cg_odesolver"  />
       <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
@@ -132,7 +132,7 @@
     <DefaultPipeline name="CollisionPipeline" verbose="0" />
     <BruteForceDetection name="N2" />
     <DefaultContactManager name="collision response" response="default" />
-	<LCPConstraintSolver tolerance="1e-3" maxIt="100" initial_guess="false" build_lcp="true"  printLog="0" mu="0.2"/>
+	<LCPConstraintSolverAsync tolerance="1e-3" maxIt="100" initial_guess="false" build_lcp="true"  printLog="0" mu="0.2"/>
     <Node name="Liver" gravity="0 -9.81 0">
       <!-- <EulerImplicitSolver name="cg_odesolver"  /> -->
       <!-- <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" /> -->
