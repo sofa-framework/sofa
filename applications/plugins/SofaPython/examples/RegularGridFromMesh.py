@@ -19,8 +19,8 @@ def createGrid(root, x, y, z, mesh, name):
     topoExporter.createObject('TetrahedronSetTopologyModifier')
     topoExporter.createObject('TetrahedronSetTopologyAlgorithms', template="Vec3d")
     topoExporter.createObject('TetrahedronSetGeometryAlgorithms', template="Vec3d", drawTetrahedra="0")
-    topoExporter.createObject('Hexa2TetraTopologicalMapping', name="default28", input="@" + grid.getPathName(),
-                              output="@" + topoContainer.getPathName())
+    topoExporter.createObject('Hexa2TetraTopologicalMapping', name="default28", input=grid.getLinkPath(),
+                              output=topoContainer.getLinkPath())
     # topoExporter.createObject('VTKExporter', position="@../DOFs.position", edges="0", tetras="1",
     #                           filename=self.name, exportAtBegin="true")
 
