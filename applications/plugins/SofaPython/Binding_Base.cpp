@@ -537,10 +537,10 @@ static PyObject * Base_downCast(PyObject *self, PyObject * /*args*/) {
 SP_CLASS_METHODS_BEGIN(Base)
 SP_CLASS_METHOD_DOC(Base,addNewData, "Add a new Data field to the current object. \n"
                                         "Eg:                                         \n"
-                                        "  obj.addNewData('myDataName1','theDataGroupA','help message','f',1.0)  \n"
-                                        "  obj.addNewData('myDataName2','theDataGroupA','help message','b',True) \n"
-                                        "  obj.addNewData('myDataName3','theDataGroupB','help message','d',1)     \n"
-                                        "  obj.addNewData('myDataName4','theDataGroupB','help message','s','hello') \n")
+                                        "  obj.addNewData('myDataName1','theDataGroupA','help message','float',1.0)  \n"
+                                        "  obj.addNewData('myDataName2','theDataGroupA','help message','','@otherComponent.datafield) \n"
+                                        "  obj.addNewData('myDataName3','theDataGroupB','help message','vector<Vec3d>', '@loader.position')     \n"
+                                        "  obj.addNewData('myDataName4','theDataGroupB','help message','string','hello') \n")
 SP_CLASS_METHOD_DOC(Base,addData, "Adds an existing data field to the current object")
 SP_CLASS_METHOD_DOC(Base,findData, "Returns the data field if there is one associated \n"
                                    "with the provided name and downcasts it to the lowest known type. \n"
