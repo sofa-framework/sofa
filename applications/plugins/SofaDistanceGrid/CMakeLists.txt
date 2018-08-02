@@ -10,7 +10,6 @@ set(HEADER_FILES
     config.h
     initSofaDistanceGrid.h
     DistanceGrid.h
-    DistanceGrid.h
     components/collision/FFDDistanceGridDiscreteIntersection.h
     components/collision/FFDDistanceGridDiscreteIntersection.inl
     components/collision/RigidDistanceGridDiscreteIntersection.h
@@ -42,7 +41,6 @@ set(EXTRA_FILES
 
 add_subdirectory(SofaDistanceGrid_test)
 
-configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/SofaDistanceGrid/config.h")
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaMeshCollision SofaMiscCollision ${SOFAADVANCED_DEPENDENCY_LINK})
 target_link_libraries(${PROJECT_NAME} PUBLIC SofaUserInteraction)

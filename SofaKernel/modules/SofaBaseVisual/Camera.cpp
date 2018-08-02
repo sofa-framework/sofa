@@ -19,15 +19,34 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SOFAIMPLICITFIELD_CONFIG_H
-#define SOFA_SOFAIMPLICITFIELD_CONFIG_H
+#include <sofa/core/ObjectFactory.h>
+#include <SofaBaseVisual/Camera.h>
 
-#include <SofaBase/config.h>
+namespace sofa
+{
 
-#ifdef SOFA_HAVE_SOFAIMPLICITFIELD
-#  define SOFA_SOFAIMPLICITFIELD_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_SOFAIMPLICITFIELD_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+namespace component
+{
 
-#endif
+namespace visualmodel
+{
+
+SOFA_DECL_CLASS(Camera)
+
+int CameraClass = core::RegisterObject("A Camera that render the scene from a given location & orientation.")
+                    .add<Camera>() ;
+
+Camera::Camera()
+{
+    p_computeZClip.setValue(false) ;
+}
+
+Camera::~Camera()
+{
+}
+
+} // namespace visualmodel
+
+} // namespace component
+
+} // namespace sofa

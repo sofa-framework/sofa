@@ -24,10 +24,7 @@
 
 #include <sofa/core/core.h>
 #include <sofa/core/behavior/BaseInteractionProjectiveConstraintSet.h>
-#include <sofa/core/behavior/MechanicalState.h>
 
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
 {

@@ -128,7 +128,7 @@ void MappedMatrixForceFieldAndMass<DataTypes1, DataTypes2>::accumulateJacobians(
     sofa::core::MatrixDerivId Id= sofa::core::MatrixDerivId::mappingJacobian();
     core::objectmodel::BaseContext* context = this->getContext();
     simulation::Node* gnode = dynamic_cast<simulation::Node*>(context);
-    simulation::MechanicalResetConstraintVisitor(eparams).execute(gnode);
+    simulation::MechanicalResetConstraintVisitor(&cparams).execute(gnode);
 
     buildIdentityBlocksInJacobian(m_childState, Id);
 
@@ -450,7 +450,7 @@ void MappedMatrixForceFieldAndMass<DataTypes1, DataTypes2>::addKToMatrix(const M
 
     core::objectmodel::BaseContext* context = this->getContext();
     simulation::Node* gnode = dynamic_cast<simulation::Node*>(context);
-    simulation::MechanicalResetConstraintVisitor(eparams).execute(gnode);
+    simulation::MechanicalResetConstraintVisitor(&cparams).execute(gnode);
 
 }
 

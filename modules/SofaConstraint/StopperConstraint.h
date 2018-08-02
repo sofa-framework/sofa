@@ -43,7 +43,12 @@ protected:
 
 public:
 
-    StopperConstraintResolution1Dof(const double &min, const double &max) { nbLines=1; _min=min; _max=max; }
+    StopperConstraintResolution1Dof(const double &min, const double &max)
+    :core::behavior::ConstraintResolution(1)
+    ,_min(min)
+    ,_max(max)
+    { 
+    }
 
     virtual void init(int line, double** w, double *force)
     {

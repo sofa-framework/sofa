@@ -22,10 +22,7 @@
 #ifndef SOFA_CORE_OBJECTMODEL_BASEOBJECT_H
 #define SOFA_CORE_OBJECTMODEL_BASEOBJECT_H
 
-#include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/BaseContext.h>
-#include <sofa/core/objectmodel/BaseObjectDescription.h>
-#include <sofa/core/objectmodel/Link.h>
 
 namespace sofa
 {

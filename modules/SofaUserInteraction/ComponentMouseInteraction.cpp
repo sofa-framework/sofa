@@ -28,11 +28,14 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/Factory.inl>
 
-
 using namespace sofa::simulation;
 
 namespace sofa
 {
+    namespace helper
+    {
+        template class SOFA_USER_INTERACTION_API Factory<std::string, component::collision::ComponentMouseInteraction, core::objectmodel::BaseContext*>;
+    }
 
 namespace component
 {
@@ -110,9 +113,7 @@ helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory, TCo
 #endif
 
 }
+
 }
-namespace helper
-{
-template class SOFA_USER_INTERACTION_API Factory<std::string, component::collision::ComponentMouseInteraction, core::objectmodel::BaseContext*>;
-}
+
 }

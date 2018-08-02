@@ -110,7 +110,7 @@ void DefaultMultiMatrixAccessor::addMechanicalMapping(sofa::core::BaseMapping* m
 
         if( MULTIMATRIX_VERBOSE)/////////////////////////////////////////////////////////
         {
-            msg_info() << "Mapping Visitor : adding validated MechanicalMapping '" << mapping->getPathName()
+            msg_info() << "Adding validated MechanicalMapping '" << mapping->getPathName()
                        << "' with J["<< jmatrix->rowSize()<<"."<<jmatrix->colSize()<<"]" ;
         }
     }

@@ -247,7 +247,6 @@ void QSofaListView::expandPathFrom(const std::vector<std::string>& pathes)
 
     for(auto& path : pathes)
     {
-        std::cout << "PATH: " << path << std::endl ;
         expandPath(path) ;
     }
 

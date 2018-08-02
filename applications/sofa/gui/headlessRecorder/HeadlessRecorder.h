@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2017 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_GLUT_HEADLESSRECORDER_H
-#define SOFA_GUI_GLUT_HEADLESSRECORDER_H
+#ifndef SOFA_GUI_HEADLESSRECORDER_H
+#define SOFA_GUI_HEADLESSRECORDER_H
 
 #include <sofa/gui/BaseGUI.h>
 
@@ -28,7 +28,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/visual/DrawToolGL.h>
 #include <SofaBaseVisual/InteractiveCamera.h>
-#include <sofa/helper/gl/RAII.h>
 #include <sofa/core/ObjectFactory.h>
 
 #include <signal.h>
@@ -37,14 +36,7 @@
 #include <chrono>
 #include <ctime>
 #include <iomanip>
-
-// LIBAV
-extern "C" {
-#include <libavcodec/avcodec.h>
-#include <libavutil/imgutils.h>
-#include <libavutil/opt.h>
-#include <libswscale/swscale.h>
-}
+#include <memory>
 
 // OPENGL
 #define GL_GLEXT_PROTOTYPES 1
@@ -55,6 +47,8 @@ extern "C" {
 #include <sofa/helper/io/Image.h>
 #include <sofa/helper/system/SetDirectory.h>
 
+#include "VideoRecorderFFMpeg.h"
+
 namespace sofa
 {
 
@@ -63,6 +57,8 @@ namespace gui
 
 namespace hRecorder
 {
+
+enum class RecordMode { wallclocktime, simulationtime, timeinterval };
 
 class HeadlessRecorder : public sofa::gui::BaseGUI
 {
@@ -93,6 +89,7 @@ public:
     // Needed for the registration
     static BaseGUI* CreateGUI(const char* name, sofa::simulation::Node::SPtr groot = NULL, const char* filename = NULL);
     static int RegisterGUIParameters(ArgumentParser* argumentParser);
+    static void parseRecordingModeOption();
 
     static int recordTimeInSeconds; // public for SIGTERM
     static bool recordUntilStopAnimate; // public for SIGTERM
@@ -100,13 +97,9 @@ public:
 private:
     void record();
     bool canRecord();
+    bool keepFrame();
     void screenshotPNG(std::string fileName);
-    void videoYUVToRGB();
-    void videoEncoderStart(const char *filename, int codec_id);
-    void encode();
-    void videoEncoderStop(void);
-    void videoFrameEncoder();
-    void videoGLToFrame();
+
     void displayOBJs();
     void drawScene();
     void calcProjection();
@@ -118,14 +111,8 @@ private:
     std::string sceneFileName;
     sofa::component::visualmodel::BaseCamera::SPtr currentCamera;
 
+    std::unique_ptr<VideoRecorderFFmpeg> videorecorder;
     int m_nFrames;
-    FILE* m_file;
-
-    AVCodecContext *c = NULL;
-    AVFrame *m_frame;
-    AVPacket* m_avPacket;
-    struct SwsContext *sws_context = NULL;
-    uint8_t *m_rgb = NULL;
 
     GLuint fbo;
     GLuint rbo_color, rbo_depth;
@@ -138,10 +125,12 @@ private:
     static std::string fileName;
     static bool saveAsScreenShot, saveAsVideo;
     static HeadlessRecorder instance;
-
+    static std::string recordTypeRaw;
+    static RecordMode recordType;
+    static float skipTime;
 };
 
-} // namespace glut
+} // namespace hRecorder
 
 } // namespace gui
 

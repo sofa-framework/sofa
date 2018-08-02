@@ -15,15 +15,6 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release")
 endif()
 
-## Set some policies to avoid warnings from CMake.
-cmake_policy(SET CMP0015 OLD)   # CMake 3.0.2 warns if this is not set.
-if(CMAKE_VERSION GREATER 3.0)
-    cmake_policy(SET CMP0039 OLD)   # CMake 3.0.2 warns if this is not set.
-    cmake_policy(SET CMP0043 OLD)   # CMake 3.2.3 warns if this is not set.
-endif()
-if(CMAKE_VERSION GREATER 3.1)
-    cmake_policy(SET CMP0054 OLD)   # CMake 3.2.3 warns if this is not set.
-endif()
 
 # Enable the organisation in folders for generators that support
 # it. (E.g. some versions of Visual Studio have 'solution folders')
@@ -83,85 +74,24 @@ if(UNIX)
     # RPATH.  And by default, it strips RPATH from installed binaries.  Here we
     # use CMAKE_INSTALL_RPATH to set a relative RPATH.  By doing so, we avoid
     # the need to play with LD_LIBRARY_PATH to get applications to run.
-    set(CMAKE_INSTALL_RPATH "../lib")
+
+    # see https://cmake.org/Wiki/CMake_RPATH_handling for $ORIGIN doc
+    set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib:$$ORIGIN/../lib")
 
     if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
         set(CMAKE_MACOSX_RPATH ON)
-
     endif()
-
 endif(UNIX)
 
 include(CompilerOptions)
 
 ## Boost (1.54.0 or higher) is now mandatory.
-set(BOOST_MIN_VERSION "1.54.0")
-find_package(Boost ${BOOST_MIN_VERSION} QUIET)
-if(NOT Boost_FOUND)
-    message("Did not find a boost directory from Boost_LIBRARY_DIR and Boost_INCLUDE_DIR, will try to search one in possible directories")
-    ## Try to find an installed boost.
-    ## (only for Windows ; we suppose boost in a POSIX way on an Unix system)
-    ## It will check from different Mount Points, different subdirectory.
-    ## For now, it is only searching within one level of the file hierarchy.
-    ## We assume also that the boost root dirname contains boost....
-    ## TODO: Set an other hint from the PATH, as the user should set it with the binaries directory when he launches Sofa
-    if(WIN32)
-        #set roots
-        set(BOOST_TEST_ROOTS
-            "C:" "D:" "E:" "F:" "G:" "H:"
-            )
-        #set credible subdirectories
-        set(BOOST_TEST_SUBDIRECTORIES
-            "/" "/local" "/Dependencies" "/Program Files" "/Program Files (x86)"
-            )
-
-        #create all combinations
-        set(BOOST_TEST_DIRECTORIES)
-        foreach( BOOST_TEST_ROOT ${BOOST_TEST_ROOTS} )
-            foreach( BOOST_TEST_SUBDIRECTORY ${BOOST_TEST_SUBDIRECTORIES} )
-                list(APPEND BOOST_TEST_DIRECTORIES ${BOOST_TEST_ROOT}${BOOST_TEST_SUBDIRECTORY}/)
-            endforeach()
-        endforeach()
-
-        #test if contains a boost_something directory
-        set(BOOST_TEST_POTENTIAL_DIRECTORIES)
-        foreach( BOOST_TEST_DIRECTORY ${BOOST_TEST_DIRECTORIES} )
-            file(GLOB BOOST_TEST_TEMP "${BOOST_TEST_DIRECTORY}*boost*" )
-            list(APPEND BOOST_TEST_POTENTIAL_DIRECTORIES "${BOOST_TEST_TEMP}" )
-        endforeach()
-
-        ## BOOST includes
-        #test if this directory contain a directory with the expected includes
-        #(boost_include_dir = <some_directory>/boost/....h)
-        find_path (BOOST_TEST_PATH boost/config.hpp
-            PATHS ${BOOST_TEST_POTENTIAL_DIRECTORIES}
-            )
-
-        #remove the test variable from the cache
-        SET(BOOST_TEST_PATH ${BOOST_TEST_PATH} CACHE INTERNAL "string")
-
-        if(NOT BOOST_TEST_PATH)
-            message(FATAL_ERROR "Boost includes was not found automatically, please set Boost_INCLUDE_DIR (i.e consistent with this: <BOOST_INCLUDE_DIR>/boost/thread/thread.hpp.")
-        else()
-            set(Boost_INCLUDE_DIR ${BOOST_TEST_PATH})
-            message("Found boost includes at ${Boost_INCLUDE_DIR}")
-
-            ## BOOST libraries
-            #test if this directory contain a directory with the expected library
-            # recursive = overkill ?
-            file(GLOB_RECURSE BOOST_TEST_PATH2  "${Boost_INCLUDE_DIR}/*/boost_thread-vc???-mt-?_??.lib")
-
-            SET(BOOST_TEST_PATH2 ${BOOST_TEST_PATH2} CACHE INTERNAL "string")
-            if(NOT BOOST_TEST_PATH2)
-                message("Boost libraries were not found automatically, please set Boost_LIBRARY_DIR.")
-            else()
-                set(Boost_THREAD_LIBRARY_RELEASE ${BOOST_TEST_PATH2})
-                message("Found boost libs at ${Boost_THREAD_LIBRARY_RELEASE}")
-            endif()
-        endif()
-    endif()
+if(WIN32)
+    message("Boost autodetection on Windows was removed.\n"
+        "Please follow CMake documentation to find Boost on your system.\n"
+        "Hint: set BOOST_ROOT to your Boost location.")
 endif()
-
+set(BOOST_MIN_VERSION "1.54.0")
 find_package(Boost ${BOOST_MIN_VERSION} REQUIRED)
 
 ### Dependency pack for Windows
@@ -184,25 +114,8 @@ if(MSVC)
         list(APPEND CMAKE_LIBRARY_PATH ${DEPENDENCY_PACK_DIR}/lib/win32)
     endif()
 
-    if(CMAKE_CL_64)
-        file(GLOB DLLS "${DEPENDENCY_PACK_DIR}/lib/win64/*.dll")
-        file(GLOB LIBS "${DEPENDENCY_PACK_DIR}/lib/win64/*.lib")
-    else()
-        file(GLOB DLLS "${DEPENDENCY_PACK_DIR}/lib/win32/*.dll")
-        file(GLOB LIBS "${DEPENDENCY_PACK_DIR}/lib/win32/*.lib")
-    endif()
-    ## Copy DLLs to the build tree
-    if(CMAKE_CONFIGURATION_TYPES) # Multi-config generator (MSVC)
-        foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
-            file(COPY ${DLLS} DESTINATION "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/${CONFIG}")
-        endforeach()
-    else()                      # Single-config generator (nmake)
-        file(COPY ${DLLS} DESTINATION "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
-    endif()
-    ## Install DLLs
-    install(FILES ${DLLS} DESTINATION ${LIBRARY_OUTPUT_DIRECTORY})
-    install(FILES ${LIBS} DESTINATION ${ARCHIVE_OUTPUT_DIRECTORY})
-    install(DIRECTORY ${DEPENDENCY_PACK_DIR}/include/ DESTINATION include)
+    install(DIRECTORY ${DEPENDENCY_PACK_DIR}/include/ DESTINATION include COMPONENT headers)
+    install(DIRECTORY ${DEPENDENCY_PACK_DIR}/licenses/ DESTINATION licenses COMPONENT applications)
 endif()
 
 ### Mask
@@ -337,7 +250,10 @@ if(NOT "${SOFA_EXTERNAL_DIRECTORIES}" STREQUAL "")
 endif()
 
 ### Deprecated components
-option(SOFA_WITH_DEPRECATED_COMPONENTS "Compile sofa with all deprecated components" ON)
+option(SOFA_WITH_DEPRECATED_COMPONENTS "Compile SOFA with all deprecated components" ON)
+if(SOFA_WITH_DEPRECATED_COMPONENTS)
+    message(DEPRECATION "Deprecated components are activated (SOFA_WITH_DEPRECATED_COMPONENTS variable is ON)")
+endif()
 
 ## Custom
 if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/custom.cmake")
@@ -345,35 +261,84 @@ if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/custom.cmake")
     include( "custom.cmake" )
 endif()
 
-# Install configuration:
-## when installing, keep an eye on options/params/sources used for compilation
-## this should be internal and not delivered, but this is definitively useful
-sofa_install_git_version( "sofa" ${CMAKE_CURRENT_SOURCE_DIR} )
-install(FILES "${CMAKE_BINARY_DIR}/CMakeCache.txt" DESTINATION .)
-install(FILES "${CMAKE_SOURCE_DIR}/README.md" DESTINATION .)
-install(FILES "${CMAKE_SOURCE_DIR}/CHANGELOG.md" DESTINATION .)
-install(FILES "${CMAKE_SOURCE_DIR}/LICENSE.LGPL.txt" DESTINATION .)
-install(FILES "${CMAKE_SOURCE_DIR}/Authors.txt" DESTINATION .)
+
+# Install configuration
+#install(FILES "${CMAKE_BINARY_DIR}/CMakeCache.txt" DESTINATION . COMPONENT headers)
+install(FILES "${CMAKE_SOURCE_DIR}/README.md" DESTINATION . COMPONENT applications)
+install(FILES "${CMAKE_SOURCE_DIR}/CHANGELOG.md" DESTINATION . COMPONENT applications)
+install(FILES "${CMAKE_SOURCE_DIR}/LICENSE.LGPL.txt" DESTINATION . COMPONENT applications)
+install(FILES "${CMAKE_SOURCE_DIR}/Authors.txt" DESTINATION . COMPONENT applications)
 
 ## Create etc/installedSofa.ini: it contains the paths to share/ and examples/. Compare to the Sofa.ini in the
 ## build directory, this one contains relative paths to the installed resource directory.
 set(SHARE_DIR "../share/sofa")
 set(EXAMPLES_DIR "../share/sofa/examples")
 configure_file(${SOFA_KERNEL_SOURCE_DIR}/etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/installedSofa.ini")
-install(FILES "${CMAKE_BINARY_DIR}/etc/installedSofa.ini" DESTINATION etc RENAME sofa.ini)
+install(FILES "${CMAKE_BINARY_DIR}/etc/installedSofa.ini" DESTINATION etc RENAME sofa.ini COMPONENT applications)
 
 option(SOFA_INSTALL_RESOURCES_FILES "Copy resources files (etc/, share/, examples/) when installing" ON)
 ## Install resource files
 if(SOFA_INSTALL_RESOURCES_FILES)
-    install(DIRECTORY share/ DESTINATION share/sofa)
-    install(DIRECTORY examples/ DESTINATION share/sofa/examples)
+    install(DIRECTORY share/ DESTINATION share/sofa COMPONENT resources)
+    install(DIRECTORY examples/ DESTINATION share/sofa/examples COMPONENT resources)
 endif()
 
 #CPack install
-SET(CPACK_PACKAGE_VERSION "18.06.dev")
 SET(CPACK_PACKAGE_VERSION_MAJOR "18")
 SET(CPACK_PACKAGE_VERSION_MINOR "06")
 SET(CPACK_PACKAGE_VERSION_PATCH "dev")
+SET(CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
+set(CPACK_PACKAGE_NAME "SOFA v${CPACK_PACKAGE_VERSION}")
+set(CPACK_PACKAGE_FILE_NAME "SOFA_v${CPACK_PACKAGE_VERSION}")
+set(CPACK_PACKAGE_VENDOR "The SOFA Team")
+#set(CPACK_PACKAGE_CONTACT "contact@sofa-framework.org")
+set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_SOURCE_DIR}/README.md")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Real-time multi-physics simulation with an emphasis on medical simulation.")
+set(CPACK_PACKAGE_EXECUTABLES "runSofa" "runSofa")
+
+set(CPACK_COMPONENTS_ALL applications headers Eigen_headers GTest_headers libraries resources)
+
+set(CPACK_COMPONENT_APPLICATIONS_DISPLAY_NAME "runSofa Application")
+set(CPACK_COMPONENT_HEADERS_DISPLAY_NAME "C++ Headers")
+set(CPACK_COMPONENT_EIGEN_HEADERS_DISPLAY_NAME "Eigen Headers")
+set(CPACK_COMPONENT_GTEST_HEADERS_DISPLAY_NAME "GTest Headers")
+set(CPACK_COMPONENT_LIBRARIES_DISPLAY_NAME "Libraries")
+set(CPACK_COMPONENT_RESOURCES_DISPLAY_NAME "Resources")
+
+set(CPACK_COMPONENT_APPLICATIONS_GROUP "Runtime")
+set(CPACK_COMPONENT_HEADERS_GROUP "Development")
+set(CPACK_COMPONENT_EIGEN_HEADERS_GROUP "Development")
+set(CPACK_COMPONENT_GTEST_HEADERS_GROUP "Development")
+set(CPACK_COMPONENT_LIBRARIES_GROUP "Development")
+set(CPACK_COMPONENT_RESOURCES_GROUP "Runtime")
+
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE.LGPL.txt")
+set(CPACK_RESOURCE_FILE_README "${CMAKE_SOURCE_DIR}/README.md")
+set(CPACK_RESOURCE_FILE_WELCOME "${CMAKE_SOURCE_DIR}/README.md")
+
+if(WIN32)
+    # There is a bug in NSI that does not handle full unix paths properly. Make
+    # sure there is at least one set of four (4) backlasshes.
+    set(CPACK_PACKAGE_INSTALL_DIRECTORY "SOFA_v${CPACK_PACKAGE_VERSION}")
+    set(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/share/icons\\\\SOFA.png")
+    set(CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\runSofa.exe")
+    set(CPACK_NSIS_DISPLAY_NAME "SOFA v${CPACK_PACKAGE_VERSION}")
+    set(CPACK_NSIS_HELP_LINK "https:\\\\\\\\www.sofa-framework.org")
+    set(CPACK_NSIS_URL_INFO_ABOUT "https:\\\\\\\\www.sofa-framework.org")
+    set(CPACK_NSIS_CONTACT "contact@sofa-framework.org")
+    set(CPACK_NSIS_INSTALL_ROOT "$PROFILE")
+elseif(APPLE)
+    #set(CPACK_PACKAGE_INSTALL_DIRECTORY "SOFA/v${CPACK_PACKAGE_VERSION}")
+
+    #set(CPACK_DMG_BACKGROUND_IMAGE "${CMAKE_SOURCE_DIR}/back.png")
+else()
+    set(CPACK_PACKAGE_INSTALL_DIRECTORY "SOFA/v${CPACK_PACKAGE_VERSION}")
+
+    find_package(ICU COMPONENTS data i18n uc)
+    if(ICU_FOUND)
+        sofa_install_libraries(${ICU_LIBRARIES})
+    endif()
+endif()
 
 #dirty hack to pack component we want (named BundlePack from runSofa for example, and that will install .app + share)
 #if not set, it will install everything as usual
@@ -382,6 +347,11 @@ get_property(TEMP_CPACK_COMPONENTS_ALL GLOBAL PROPERTY RUNSOFA_CPACK_COMPONENTS_
 if(TEMP_CPACK_COMPONENTS_ALL)
     set(CPACK_ARCHIVE_COMPONENT_INSTALL ON)
     set(CPACK_COMPONENTS_ALL ${TEMP_CPACK_COMPONENTS_ALL})
+endif()
+
+if(NOT ${CPACK_PACKAGE_VERSION_PATCH} STREQUAL "dev" AND EXISTS "${CMAKE_CURRENT_LIST_DIR}/package.cmake")
+    message("Using package.cmake")
+    include( "package.cmake" )
 endif()
 
 INCLUDE(CPack)

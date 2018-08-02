@@ -19,15 +19,34 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SOFADISTANCEGRID_CONFIG_H
-#define SOFA_SOFADISTANCEGRID_CONFIG_H
 
-#include <SofaGui/config.h>
+#include <SofaBaseVisual/BackgroundSetting.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/core/ObjectFactory.h>
 
-#ifdef SOFA_HAVE_SOFADISTANCEGRID
-#  define SOFA_SOFADISTANCEGRID_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#  define SOFA_SOFADISTANCEGRID_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
+namespace sofa
+{
 
-#endif
+namespace component
+{
+
+namespace configurationsetting
+{
+
+SOFA_DECL_CLASS(BackgroundSetting)
+int BackgroundSettingClass = core::RegisterObject("Backgrounds setting")
+        .add< BackgroundSetting >()
+        .addAlias("Background")
+        ;
+
+BackgroundSetting::BackgroundSetting():
+      color(initData(&color, "color", "Color of the background"))
+    , image(initData(&image, "image", "Image to be used as background"))
+{
+}
+
+}
+
+}
+
+}

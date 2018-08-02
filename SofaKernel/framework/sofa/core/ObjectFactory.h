@@ -23,14 +23,8 @@
 #define SOFA_CORE_OBJECTFACTORY_H
 
 #include <sofa/helper/system/config.h>
-#include <sofa/core/objectmodel/BaseObjectDescription.h>
-#include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 
-#include <map>
-#include <memory>
-#include <iostream>
-#include <typeinfo>
 
 namespace sofa
 {

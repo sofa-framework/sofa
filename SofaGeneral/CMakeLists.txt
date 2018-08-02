@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.1)
 project(SofaGeneral)
 
+# Send warnings when deprecated CMake project is activated
+option(CMAKE_WARN_DEPRECATED "Send warning when deprecated projects are found" ON)
+
 ## Dependencies
 find_package(SofaCommon REQUIRED)
 find_package(Newmat)
@@ -15,7 +18,7 @@ set(SOFAGENERAL_VERSION ${SofaFramework_VERSION})
 
 ## SofaGeneral/config.h
 configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/SofaGeneral/config.h")
-install(FILES "${CMAKE_BINARY_DIR}/include/SofaGeneral/config.h" DESTINATION "include/SofaGeneral")
+install(FILES "${CMAKE_BINARY_DIR}/include/SofaGeneral/config.h" DESTINATION "include/SofaGeneral" COMPONENT headers)
 
 ### Subdirectories
 

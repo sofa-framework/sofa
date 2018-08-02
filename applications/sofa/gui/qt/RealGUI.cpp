@@ -947,7 +947,26 @@ void RealGUI::setSceneWithoutMonitor (Node::SPtr root, const char* filename, boo
     }
 
     if (root)
-    {       
+    {
+        /// We want to warn user that there is component that are implemented in specific plugin
+        /// and that there is no RequiredPlugin in their scene.
+        SceneCheckerVisitor checker(ExecParams::defaultInstance()) ;
+        checker.addCheck(simulation::SceneCheckAPIChange::newSPtr());
+        checker.addCheck(simulation::SceneCheckDuplicatedName::newSPtr());
+        checker.addCheck(simulation::SceneCheckMissingRequiredPlugin::newSPtr());
+        checker.validate(root.get()) ;
+
+        //Check the validity of the BBox
+        const sofa::defaulttype::BoundingBox& nodeBBox = root->getContext()->f_bbox.getValue();
+        if(nodeBBox.isNegligeable())
+        {
+            msg_warning("RealGUI") << "Global Bounding Box seems very small ; Your viewer settings (based on the bbox) are likely invalid, switching to default value of [-1,-1,-1,1,1,1]."
+                                   << "This is caused by using component which does not implement properly the updateBBox function."
+                                   << "You can remove this warning by manually forcing a value in the parameter bbox=\"minX minY minZ maxX maxY maxZ\" in your root node \n";
+            sofa::defaulttype::BoundingBox b(-1.0,-1.0,-1.0,1.0,1.0,1.0) ;
+            root->f_bbox.setValue(b);
+        }
+
         mSimulation = root;
         eventNewTime();
         startButton->setChecked(root->getContext()->getAnimate() );
@@ -2007,46 +2026,10 @@ void RealGUI::playpauseGUI ( bool value )
 
 //------------------------------------
 
-#ifdef SOFA_GUI_INTERACTION
-void RealGUI::interactionGUI ( bool value )
-{
-    interactionButton->setChecked ( value );
-    m_interactionActived = value;
-    getQtViewer()->getQWidget()->setMouseTracking ( ! value);
-    if (value==true)
-        playpauseGUI(value);
-
-    if(value)
-    {
-        interactionButton->setText(QSOFAApplication::translate("GUI", "ESC to qu&it", 0));
-        this->grabMouse();
-        this->grabKeyboard();
-        this->setMouseTracking(true);
-        //this->setCursor(QCursor(Qt::BlankCursor));
-        application->setOverrideCursor( QCursor( Qt::BlankCursor ) );
-        QPoint p = mapToGlobal(QPoint((this->width()+2)/2,(this->height()+2)/2));
-        QCursor::setPos(p);
-    }
-    else
-    {
-        interactionButton->setText(QSOFAApplication::translate("GUI", "&Interaction", 0));
-        this->releaseKeyboard();
-        this->releaseMouse();
-        this->setMouseTracking(false);
-        //this->setCursor(QCursor(Qt::ArrowCursor));
-        application->restoreOverrideCursor();
-    }
-
-    sofa::core::objectmodel::KeypressedEvent keyEvent(value?(char)0x81:(char)0x80);
-    Node* groot = mViewer->getScene();
-    if (groot)
-        groot->propagateEvent(core::ExecParams::defaultInstance(), &keyEvent);
-}
-#else
 void RealGUI::interactionGUI ( bool )
 {
 }
-#endif
+
 
 //------------------------------------
 

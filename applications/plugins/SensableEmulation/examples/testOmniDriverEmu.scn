@@ -5,7 +5,9 @@
 	<BruteForceDetection name="detection" />
 	<CollisionResponse name="response" response="FrictionContact" />
 	<LocalMinDistance name="proximity" alarmDistance="0.15" contactDistance="0.05" angleCone="0.0" />
-	<FreeMotionAnimationLoop/>
+	<FreeMotionAnimationLoop solveVelocityConstraintFirst="true"/>
+	<LCPConstraintSolver tolerance="0.001" maxIt="1000"/>
+
 	<VisualStyle displayFlags="showBehavior" />
 	
 	<Node name="Omni" >

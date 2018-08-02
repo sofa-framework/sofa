@@ -67,23 +67,10 @@ using sofa::PythonFactory;
 void bindSofaPythonModule()
 {
     static std::string docstring=R"(
-            The Sofa module documentation (from SofaPython plugin).
+            Sofa module.
 
-            Content:
-            ********
-
-            HELLO SPHINX !
-
-            .. autosummary::
-
-                Base
-                Node
-
-            |
-
-            .. autoclass:: Base
-                :members:
-                :undoc-members:
+            This module is part of the SofaPython plugin and contains function and binding to the c++
+            objects.
 
             )";
 

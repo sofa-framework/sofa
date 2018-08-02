@@ -25,7 +25,7 @@
 #include <sofa/core/objectmodel/Base.h>
 #include <SofaGeneralEngine/TransformEngine.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/rmath.h> //M_PI
+#include <sofa/helper/rmath.h> //R_PI
 
 #include <cassert>
 
@@ -125,7 +125,7 @@ struct RotationSpecialized : public TransformOperation<DataTypes>
 
     void configure(const defaulttype::Vector3 &r, bool inverse)
     {
-        q=helper::Quater<Real>::createQuaterFromEuler( r*(M_PI/180.0));
+        q=helper::Quater<Real>::createQuaterFromEuler( r*(R_PI/180.0));
         if (inverse)
             q = q.inverse();
     }
@@ -158,8 +158,8 @@ struct RotationSpecialized<DataTypes, 2, false> : public TransformOperation<Data
 
     void configure(const defaulttype::Vector3 &r, bool inverse)
     {
-        q=helper::Quater<Real>::createQuaterFromEuler( r*(M_PI/180.0));
-		rotZ = static_cast<Real>(r.z() * (M_PI/180.0f));
+        q=helper::Quater<Real>::createQuaterFromEuler( r*(R_PI/180.0));
+		rotZ = static_cast<Real>(r.z() * (R_PI/180.0f));
         if (inverse)
             rotZ = -rotZ;
     }
@@ -189,7 +189,7 @@ struct RotationSpecialized<DataTypes, 3, false> : public TransformOperation<Data
 
     void configure(const defaulttype::Vector3 &r, bool inverse)
     {
-        q=helper::Quater<Real>::createQuaterFromEuler( r*(M_PI/180.0));
+        q=helper::Quater<Real>::createQuaterFromEuler( r*(R_PI/180.0));
         if (inverse)
             q = q.inverse();
     }

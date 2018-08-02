@@ -23,6 +23,7 @@
 #define SOFA_HELPER_STRING_UTILS_H
 
 #include <string>
+#include <cstring>
 
 namespace sofa
 {

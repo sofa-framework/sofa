@@ -189,11 +189,6 @@ public:
     Hexa getHexaCopy(int i);
     Quad getQuadCopy(int i);
 
-#ifndef SOFA_NEW_HEXA
-    Cube getCubeCopy(int i) { return getHexaCopy(i); }
-    Cube getCube(int x, int y, int z) { return getHexahedron(x,y,z); }
-#endif
-
     /// Get Point index in Grid, will call method @sa getIndex
     int point(int x, int y, int z) const { return getIndex(x,y,z); }
     /// Get Hexa index in Grid

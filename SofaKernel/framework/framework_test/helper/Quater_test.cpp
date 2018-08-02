@@ -650,3 +650,30 @@ TEST(QuaterTest, QuaterdSlerp2)
     EXPECT_NEAR(0.263984148784687, quatinterp[2], errorThreshold);
     EXPECT_NEAR(0.872287312333299, quatinterp[3], errorThreshold);
 }
+
+TEST(QuaterTest, QuaterdFromUnitVectors)
+{
+    sofa::defaulttype::Vec<3, double> vFrom(1, 0, 0);
+    sofa::defaulttype::Vec<3, double> vTo(0, 1, 0);
+
+    Quater<double> quat1;
+    quat1.setFromUnitVectors(vFrom, vTo);
+
+    EXPECT_NEAR(0, quat1[0], errorThreshold);
+    EXPECT_NEAR(0, quat1[1], errorThreshold);
+    EXPECT_NEAR(0.7071067811865475, quat1[2], errorThreshold);
+    EXPECT_NEAR(0.7071067811865475, quat1[3], errorThreshold);
+
+    vFrom = sofa::defaulttype::Vec<3, double>(0.5, 0.4, 0.3);
+    vTo = sofa::defaulttype::Vec<3, double>(0, 0.2, -1);
+    vFrom.normalize();
+    vTo.normalize();
+    quat1.setFromUnitVectors(vFrom, vTo);
+
+    EXPECT_NEAR(-0.5410972822985042, quat1[0], errorThreshold);
+    EXPECT_NEAR(0.5881492198896785, quat1[1], errorThreshold);
+    EXPECT_NEAR(0.11762984397793572, quat1[2], errorThreshold);
+    EXPECT_NEAR(0.5894552112230939, quat1[3], errorThreshold);
+}
+
+

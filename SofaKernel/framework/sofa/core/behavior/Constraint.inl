@@ -82,12 +82,30 @@ void Constraint<DataTypes>::buildConstraintMatrix(const ConstraintParams* cParam
     }
 }
 
+
+template<class DataTypes>
+void Constraint<DataTypes>::storeLambda(const ConstraintParams* cParams, MultiVecDerivId res, const sofa::defaulttype::BaseVector* lambda)
+{
+    if (cParams)
+    {
+        storeLambda(cParams, *res[mstate].write(), *cParams->readJ(mstate), lambda);
+    }
+}
+
 template<class DataTypes>
 void Constraint<DataTypes>::updateForceMask()
 {
     // the default implementation adds every dofs to the mask
     // this sould be overloaded by each forcefield to only add the implicated dofs subset to the mask
     mstate->forceMask.assign( mstate->getSize(), true );
+}
+
+template<class DataTypes>
+void Constraint<DataTypes>::storeLambda(const ConstraintParams* cParams, Data<VecDeriv>& result, const Data<MatrixDeriv>& jacobian, const sofa::defaulttype::BaseVector* lambda)
+{
+    auto res = sofa::helper::write(result, cParams);
+    const MatrixDeriv& j = jacobian.getValue(cParams);
+    j.multTransposeBaseVector(res, lambda ); // lambda is a vector of scalar value so block size is one.
 }
 
 

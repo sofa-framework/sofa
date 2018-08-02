@@ -22,14 +22,9 @@
 #ifndef SOFA_CORE_BEHAVIOR_ODESOLVER_H
 #define SOFA_CORE_BEHAVIOR_ODESOLVER_H
 
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/ExecParams.h>
 #include <sofa/core/behavior/BaseMechanicalState.h>
 #include <sofa/core/behavior/MultiVec.h>
 #include <sofa/core/behavior/MultiMatrix.h>
-#include <sofa/core/behavior/ConstraintSolver.h>
-#include <sofa/defaulttype/BaseMatrix.h>
-#include <sofa/defaulttype/BaseVector.h>
 
 namespace sofa
 {

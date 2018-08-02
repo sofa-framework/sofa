@@ -23,16 +23,12 @@
 #define SOFA_CORE_OBJECTMODEL_BASECONTEXT_H
 
 #include <sofa/core/objectmodel/Base.h>
-#include <sofa/core/objectmodel/BaseLink.h>
-#include <sofa/core/objectmodel/Tag.h>
 #include <sofa/core/objectmodel/ClassInfo.h>
-#include <sofa/core/ExecParams.h>
 
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
 #include <sofa/defaulttype/SolidTypes.h>
 #endif
 
-#include <set>
 
 namespace sofa
 {
