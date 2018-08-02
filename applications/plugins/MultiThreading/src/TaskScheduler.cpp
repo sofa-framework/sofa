@@ -83,7 +83,7 @@ namespace sofa
             _workerThreadsIdle = true;
             _mainTaskStatus	= nullptr;          
 
-            // only physicsal cores. no advantage from hyperthreading.
+            // default number of thread: only physicsal cores. no advantage from hyperthreading.
             _threadCount = GetHardwareThreadsCount() / 2;
             
             if ( NbThread > 0 && NbThread <= MAX_THREADS  )

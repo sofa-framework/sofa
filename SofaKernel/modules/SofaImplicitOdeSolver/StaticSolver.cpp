@@ -52,6 +52,7 @@ StaticSolver::StaticSolver()
     , dampingCoef( initData(&dampingCoef,(SReal)0.0,"dampingCoef","factor associated with the mass matrix in the equation system") )
     , stiffnessCoef( initData(&stiffnessCoef,(SReal)1.0,"stiffnessCoef","factor associated with the mass matrix in the equation system") )
     , applyIncrementFactor( initData(&applyIncrementFactor,false,"applyIncrementFactor","multiply the solution by dt before adding it to the current state") )
+    , d_threadsafevisitor(initData(&d_threadsafevisitor, false, "threadsafevisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
 {
 }
 
