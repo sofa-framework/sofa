@@ -33,6 +33,24 @@
 #include <memory>
 #include <map>
 #include <deque>
+#include <string> 
+
+
+//#define ENABLE_TASK_SCHEDULER_PROFILER 1     // Comment this line to disable the profiler
+
+#if ENABLE_TASK_SCHEDULER_PROFILER
+
+#include "TaskSchedulerProfiler.h"
+
+#else
+//----------------------
+// Profiler is disabled
+//----------------------
+#define DECLARE_TASK_SCHEDULER_PROFILER(name)
+#define DEFINE_TASK_SCHEDULER_PROFILER(name)
+#define TASK_SCHEDULER_PROFILER(name)
+
+#endif
 
 
 namespace sofa
@@ -50,7 +68,7 @@ namespace sofa
 		{
 		public:
 
-			WorkerThread(TaskScheduler* const& taskScheduler);
+            WorkerThread(TaskScheduler* const& taskScheduler, const int index, const std::string& name = "Worker");
 
 			~WorkerThread();
 
@@ -62,6 +80,10 @@ namespace sofa
 			void workUntilDone(Task::Status* status);
 
 			Task::Status* getCurrentStatus() const {return _currentStatus;}
+
+            const char* getName() { return _name.c_str(); }
+
+            const size_t getIndex() { return _index; }
 
             const std::thread::id getId();
             
@@ -82,6 +104,8 @@ namespace sofa
 
 			std::thread* create_and_attach( TaskScheduler* const& taskScheduler);
 
+            void runTask(Task* task);
+
 			// queue task if there is space (or do nothing)
 			bool pushTask(Task* pTask);
 
@@ -89,10 +113,14 @@ namespace sofa
 			bool popTask(Task** ppTask);
 			
 			// steal and queue some task from another thread 
-			bool stealTasks();
+            bool stealTask(Task** task);
+
+			//bool stealTasks();
 
 			// give an idle thread some work
-			bool giveUpSomeWork(WorkerThread* pIdleThread);
+   //         bool WorkerThread::giveUpSomeWork(Task** stolenTask);
+
+			//bool giveUpSomeWork(WorkerThread* pIdleThread);
 			
 			void doWork(Task::Status* status);
 
@@ -111,6 +139,10 @@ namespace sofa
 				Max_TasksPerThread = 256
 			};
 
+            const std::string _name;
+
+            const size_t _index;
+
             SpinLock _taskMutex;
             
             std::deque<Task*> _tasks;
@@ -128,6 +160,31 @@ namespace sofa
 		};
 
 
+
+        class SOFA_MULTITHREADING_PLUGIN_API TaskSchedulerInterface
+
+        {
+
+        public:
+
+            static TaskScheduler& getInstance();
+
+            virtual void init(const unsigned int nbThread = 0) = 0;
+
+            virtual void stop(void) = 0;
+
+            virtual unsigned int getThreadCount(void) const = 0;
+
+            static WorkerThread* getCurrent();
+
+            // queue task if there is space, and run it otherwise
+            bool addTask(Task* pTask);
+
+            virtual void workUntilDone(Task::Status* status) = 0;
+
+            virtual const WorkerThread* getWorkerThread(const std::thread::id id) = 0;
+
+        };
 
 
 		class SOFA_MULTITHREADING_PLUGIN_API TaskScheduler
@@ -150,6 +207,9 @@ namespace sofa
 //            void start(unsigned int NbThread);
 			
 			void stop(void);
+
+            // queue task if there is space, and run it otherwise
+            bool addTask(Task* pTask);
 
 			bool isClosing(void) const { return _isClosing; }
 

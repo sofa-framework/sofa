@@ -2,12 +2,18 @@
 
 //#include <sofa/helper/system/thread/CTime.h>
 
+
+
 namespace sofa
 {
 
 	namespace simulation
 	{
         
+        DEFINE_TASK_SCHEDULER_PROFILER(Push);
+        DEFINE_TASK_SCHEDULER_PROFILER(Pop);
+        DEFINE_TASK_SCHEDULER_PROFILER(Steal);
+
         // mac clang 3.5 doesn't support thread_local vars
         //static thread_local WorkerThread* workerThreadIndex = nullptr;
 
@@ -27,7 +33,7 @@ namespace sofa
 
             // init global static thread local var
             //workerThreadIndex = new WorkerThread(this);
-            _threads[std::this_thread::get_id()] = new WorkerThread(this);;
+            _threads[std::this_thread::get_id()] = new WorkerThread(this, 0, "Main  ");
            
 		}
 
@@ -88,7 +94,7 @@ namespace sofa
             /* start worker threads */
             for( unsigned int i=1; i<_threadCount; ++i)
             {
-				WorkerThread* thread = new WorkerThread(this);
+                WorkerThread* thread = new WorkerThread(this, i);
 				thread->create_and_attach(this);
 				_threads[thread->getId()] = thread;
 				thread->start(this);
@@ -145,6 +151,12 @@ namespace sofa
 			return;
 		}
 
+        bool TaskScheduler::addTask(Task* task)
+        {
+            simulation::WorkerThread* thread = simulation::WorkerThread::getCurrent();
+            return thread->addTask(task);
+        }
+
 		void TaskScheduler::wakeUpWorkers()
 		{
 			{
@@ -167,9 +179,11 @@ namespace sofa
 
 
 
-		WorkerThread::WorkerThread(TaskScheduler* const& pScheduler)
-        : _tasks()
-        , _taskScheduler(pScheduler)
+        WorkerThread::WorkerThread(TaskScheduler* const& pScheduler, const int index, const std::string& name)
+            : _tasks()
+            , _index(index)
+            , _name(name + std::to_string(index))
+            , _taskScheduler(pScheduler)
 		{
 			assert(pScheduler);
 			_finished		= false;
@@ -267,42 +281,54 @@ namespace sofa
 		void WorkerThread::doWork(Task::Status* status)
 		{
 
-			do
-			{
-				Task*		pTask;
-				Task::Status*	pPrevStatus = nullptr;
+            for (;;)// do
+            {
+                Task* task;
 
-				while (popTask(&pTask))
-				{
-					// run
-					pPrevStatus = _currentStatus;
-					_currentStatus = pTask->getStatus();
-				
-					if (pTask->run(this))
-					{
-						// pooled memory: call destructor and free
-						pTask->~Task();
-						//free(pTask);
-					}
-					
-					_currentStatus->markBusy(false);
-					_currentStatus = pPrevStatus;
-					
-					if ( status && !status->isBusy() )
-						return;
-				}
+                while (popTask(&task))
+                {
+                    // run
+                    runTask(task);
 
-				/* check if main work is finished */ 
-				if (_taskScheduler->_mainTaskStatus == nullptr)
-					return;
 
-			} while (stealTasks());	
+                    if (status && !status->isBusy())
+                        return;
+                }
+
+                /* check if main work is finished */
+                if (_taskScheduler->_mainTaskStatus == nullptr)
+                    return;
+
+                if (!stealTask(&task))
+                    return;
+
+                // run stolen task
+                runTask(task);
+
+            } //;;while (stealTasks());	
 
 		
 			return;
 
 		}
 
+        void WorkerThread::runTask(Task* task)
+        {
+            Task::Status* prevStatus = _currentStatus;
+            _currentStatus = task->getStatus();
+
+            {
+                if (task->run(this))
+                {
+                    // pooled memory: call destructor and free
+                    //task->~TaskLockFree();
+                    delete task;
+                }
+            }
+
+            _currentStatus->setBusy(false);
+            _currentStatus = prevStatus;
+        }
 
 		void WorkerThread::workUntilDone(Task::Status* status)
 		{
@@ -320,7 +346,8 @@ namespace sofa
 
 		bool WorkerThread::popTask(Task** task)
 		{
-//            if (!_tasks.pop(task) )
+            TASK_SCHEDULER_PROFILER(Pop);
+
             ScopedLock lock( _taskMutex );
             if (!_tasks.empty() )
             {
@@ -341,9 +368,15 @@ namespace sofa
                 return false;
             }
             
-            ScopedLock lock( _taskMutex );
-             task->getStatus()->markBusy(true);
-            _tasks.push_back(task);
+            {
+                TASK_SCHEDULER_PROFILER(Push);
+
+                ScopedLock lock(_taskMutex);
+                int taskId = task->getStatus()->setBusy(true);
+                task->_id = taskId;
+                _tasks.push_back(task);
+            }
+            
             
             if (!_taskScheduler->_mainTaskStatus)
             {
@@ -362,53 +395,61 @@ namespace sofa
             }
 			
             // we are single thread: run the task
-            if (task->run(this))
-            {
-                // pooled memory: call destructor and free
-                task->~Task();
-                //free(pTask);
-            }
-            
+            runTask(task);
+
 			return false;
 		}
 
+        //bool WorkerThread::giveUpSomeWork(Task** stolenTask)
+        //{
+        //    TASK_SCHEDULER_PROFILER(Steal);
 
-		bool WorkerThread::giveUpSomeWork(WorkerThread* idleThread)
-		{
-            ScopedLock lock( _taskMutex );
-            Task* stealedTask = nullptr;
-            if (!_tasks.empty() )
+        //    ScopedLock lock(_taskMutex);
+        //    if (!_tasks.empty())
+        //    {
+        //        *stolenTask = _tasks.front();
+        //        _tasks.pop_front();
+        //        return true;
+        //    }
+        //    *stolenTask = nullptr;
+        //    return false;
+        //}
+
+        bool WorkerThread::stealTask(Task** task)
+        {
             {
-                stealedTask = _tasks.front();
-                _tasks.pop_front();
-                idleThread->_tasks.push_back(stealedTask);
-                return true;
+                //TASK_SCHEDULER_PROFILER(StealTask);
+
+                for (auto it : _taskScheduler->_threads)
+                {
+                    // if this is the main thread continue
+                    if (std::this_thread::get_id() == it.first)
+                    {
+                        continue;
+                    }
+
+                    WorkerThread* otherThread = it.second;
+                    //if (it.second->giveUpSomeWork(task))
+                    //{
+                    //    return true;
+                    //}
+                    {
+                        TASK_SCHEDULER_PROFILER(Steal);
+
+                        ScopedLock lock(otherThread->_taskMutex);
+                        if (!otherThread->_tasks.empty())
+                        {
+                            *task = otherThread->_tasks.front();
+                            otherThread->_tasks.pop_front();
+                            return true;
+                        }
+                    }
+
+                }
             }
+
             return false;
-		}
-
-
-		bool WorkerThread::stealTasks()
-		{
-
-			for (auto it : _taskScheduler->_threads)
-			{
-				// if this is the main thread continue
-				if (std::this_thread::get_id() == it.first)
-				{
-					continue;
-				}
-
-				if (it.second->giveUpSomeWork(this))
-				{
-					return true;
-				}
-			}
-
-			return false;
-		}
-
-
+        }
 		
 		// called once by each thread used
 		// by the TaskScheduler
