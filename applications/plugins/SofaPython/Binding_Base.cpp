@@ -266,31 +266,33 @@ BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
     {
         if(kw==nullptr || !PyDict_Check(kw) )
         {
-            msg_error("SofaPython") << "Could not parse kwargs for adding Data";
-            return nullptr;
+            msg_warning("SofaPython") << "Could not parse kwargs for adding Data";
         }
-        PyObject * tmp;
-        tmp = PyDict_GetItemString(kw,"datatype");
-        if (tmp!=nullptr){
-            dataRawType = getStringCopy(PyString_AsString(tmp));
-        }
+        else
+        {
+            PyObject * tmp;
+            tmp = PyDict_GetItemString(kw,"datatype");
+            if (tmp!=nullptr){
+                dataRawType = getStringCopy(PyString_AsString(tmp));
+            }
 
-        tmp = PyDict_GetItemString(kw,"helptxt");
-        if (tmp!=nullptr){
-            dataHelp = getStringCopy(PyString_AsString(tmp));
-        }
+            tmp = PyDict_GetItemString(kw,"helptxt");
+            if (tmp!=nullptr){
+                dataHelp = getStringCopy(PyString_AsString(tmp));
+            }
 
-        tmp = PyDict_GetItemString(kw,"dataclass");
-        if (tmp!=nullptr){
-            dataClass= getStringCopy(PyString_AsString(tmp));
-        }
+            tmp = PyDict_GetItemString(kw,"dataclass");
+            if (tmp!=nullptr){
+                dataClass= getStringCopy(PyString_AsString(tmp));
+            }
 
-        tmp = PyDict_GetItemString(kw,"value");
-        if (tmp!=nullptr){
-            dataValue = tmp;
-            Py_IncRef(dataValue); // call to Py_GetItemString doesn't increment the ref count, but we want to hold on to it for a while ...
-            val = std::string(PyString_AsString(dataValue));
-            bd = deriveTypeFromParentValue(obj, val);
+            tmp = PyDict_GetItemString(kw,"value");
+            if (tmp!=nullptr){
+                dataValue = tmp;
+                Py_IncRef(dataValue); // call to Py_GetItemString doesn't increment the ref count, but we want to hold on to it for a while ...
+                val = std::string(PyString_AsString(dataValue));
+                bd = deriveTypeFromParentValue(obj, val);
+            }
         }
     }
 
