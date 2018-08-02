@@ -207,13 +207,13 @@ BaseData* deriveTypeFromParentValue(Base* obj, const std::string& value)
 
         if (!o->getContext())
         {
-	    msg_warning("SofaPython") << "No context created. Cannot find data link to derive input type"
+	    msg_warning("SofaPython") << "No context created. Cannot find data link to derive input type";
             return nullptr;
         }
         BaseObject* component;
         component = o->getContext()->get<BaseObject>(componentPath);
         if (!component)
-	  msg_warning("SofaPython") << "no object with path " << componentPath << " in scene graph."
+	    msg_warning("SofaPython") << "no object with path " << componentPath << " in scene graph.";
         BaseData* parentData = component->findData(parentDataName);
         return parentData->getNewInstance();
     }
