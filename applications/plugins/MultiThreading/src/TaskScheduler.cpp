@@ -287,7 +287,7 @@ namespace sofa
 
                 while (popTask(&task))
                 {
-                    // run
+                    // run task in the queue
                     runTask(task);
 
 
@@ -295,14 +295,14 @@ namespace sofa
                         return;
                 }
 
-                /* check if main work is finished */
+                // check if main work is finished 
                 if (_taskScheduler->_mainTaskStatus == nullptr)
                     return;
 
                 if (!stealTask(&task))
                     return;
 
-                // run stolen task
+                // run the stolen task
                 runTask(task);
 
             } //;;while (stealTasks());	
@@ -400,21 +400,6 @@ namespace sofa
 			return false;
 		}
 
-        //bool WorkerThread::giveUpSomeWork(Task** stolenTask)
-        //{
-        //    TASK_SCHEDULER_PROFILER(Steal);
-
-        //    ScopedLock lock(_taskMutex);
-        //    if (!_tasks.empty())
-        //    {
-        //        *stolenTask = _tasks.front();
-        //        _tasks.pop_front();
-        //        return true;
-        //    }
-        //    *stolenTask = nullptr;
-        //    return false;
-        //}
-
         bool WorkerThread::stealTask(Task** task)
         {
             {
@@ -429,10 +414,7 @@ namespace sofa
                     }
 
                     WorkerThread* otherThread = it.second;
-                    //if (it.second->giveUpSomeWork(task))
-                    //{
-                    //    return true;
-                    //}
+
                     {
                         TASK_SCHEDULER_PROFILER(Steal);
 
@@ -481,8 +463,6 @@ namespace sofa
 		{
 			return runThreadSpecificTask(WorkerThread::getCurrent(), task );
 		}
-
-
 
 
 	} // namespace simulation
