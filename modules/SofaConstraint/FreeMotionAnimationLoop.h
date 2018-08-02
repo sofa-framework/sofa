@@ -67,6 +67,8 @@ public:
 
     Data<bool> m_solveVelocityConstraintFirst; ///< solve separately velocity constraint violations before position constraint violations
 
+    Data<bool> d_threadsafevisitor;
+
 protected :
 
     sofa::core::behavior::ConstraintSolver *constraintSolver;

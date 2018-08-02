@@ -68,7 +68,7 @@ void StaticSolver::solve(const core::ExecParams* params, SReal dt, sofa::core::M
     MultiVecDeriv x(&vop);
 
     // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
-    MultiVecDeriv dx(&vop, core::VecDerivId::dx() ); dx.realloc( &vop, true, true );
+    MultiVecDeriv dx(&vop, core::VecDerivId::dx()); dx.realloc(&vop, !d_threadsafevisitor.getValue(), true);
     mop->setImplicit(true); // this solver is implicit
     mop.addSeparateGravity(dt);	// v += dt*g . Used if mass wants to add G to v separately from the other forces.
 

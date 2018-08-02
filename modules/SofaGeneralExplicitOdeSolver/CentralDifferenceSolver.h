@@ -50,7 +50,7 @@ public:
     void solve (const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 
     Data<SReal> f_rayleighMass; ///< Rayleigh damping coefficient related to mass
-
+    Data<bool> d_threadsafevisitor;
 
     /// Given an input derivative order (0 for position, 1 for velocity, 2 for acceleration),
     /// how much will it affect the output derivative of the given order.
