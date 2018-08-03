@@ -79,7 +79,7 @@ namespace sofaeditor
     ///     SofaEditor::ID id = SofaEditor::getIdFromEditorName("main");
     ///     SofaEditorState* state = SofaEditor::getState(id);
     ///     state->getSelection();
-    class SofaEditor
+    class SOFAEDITOR_API SofaEditor
     {
     public:
         typedef size_t ID;
