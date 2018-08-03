@@ -2401,7 +2401,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
 
         const sofa::helper::vector<Triangle> &triangleArray = this->m_topology->getTriangles();
 
-        helper::vector<defaulttype::Vector3> positions;
+        std::vector<defaulttype::Vector3> positions;
         for (unsigned int i =0; i<triangleArray.size(); i++)
         {
 

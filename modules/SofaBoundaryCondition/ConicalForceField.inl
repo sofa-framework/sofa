@@ -24,9 +24,8 @@
 
 #include <SofaBoundaryCondition/ConicalForceField.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/system/gl.h>
 #include <sofa/defaulttype/Quat.h>
-
+#include <sofa/defaulttype/RGBAColor.h>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/rmath.h>
 #include <assert.h>
@@ -160,31 +159,27 @@ void ConicalForceField<DataTypes>::updateStiffness( const VecCoord&  )
 template<class DataTypes>
 void ConicalForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowForceFields()) return;
-    if (!bDraw.getValue()) return;
 
     const Real a = coneAngle.getValue();
     Coord height = coneHeight.getValue();
     const Real h = sqrt(pow(coneHeight.getValue()[0],2) + pow(coneHeight.getValue()[1],2) +	pow(coneHeight.getValue()[2],2));
     const Real b = (Real)tan((a/180*M_PI)) * h;
     const Coord c = coneCenter.getValue();
-//    Coord axis = height.cross(Coord(0,0,1));
 
-    glEnable(GL_LIGHTING);
-    glEnable(GL_COLOR_MATERIAL);
-    glEnable(GL_BLEND) ;
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA) ;
-    sofa::defaulttype::Vec4f color4(color.getValue()[0], color.getValue()[1], color.getValue()[2], 0.5);
+    vparams->drawTool()->saveLastState();
 
-    glPushMatrix();
-    vparams->drawTool()->drawCone(c, c+height, 0, b, color4);
-    glPopMatrix();
+    vparams->drawTool()->enableBlending();
+    vparams->drawTool()->enableLighting();
 
-    glDisable(GL_BLEND) ;
-    glDisable(GL_LIGHTING);
-    glDisable(GL_COLOR_MATERIAL);
-#endif /* SOFA_NO_OPENGL */
+    sofa::defaulttype::RGBAColor rgbcolor(color.getValue()[0], color.getValue()[1], color.getValue()[2], 0.5);
+
+    vparams->drawTool()->drawCone(c, c+height, 0, b, rgbcolor);
+
+    vparams->drawTool()->disableBlending();
+    vparams->drawTool()->disableBlending();
+
+    vparams->drawTool()->restoreLastState();
 }
 
 template<class DataTypes>

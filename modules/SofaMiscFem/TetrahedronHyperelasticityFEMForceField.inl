@@ -39,7 +39,6 @@
 #include <sofa/core/ObjectFactory.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
-#include <sofa/helper/gl/template.h>
 #include <sofa/core/behavior/ForceField.inl>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <algorithm>
@@ -729,6 +728,8 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::draw(const core::visual
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
+    vparams->drawTool()->saveLastState();
+
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     if (vparams->displayFlags().getShowWireFrame())
@@ -831,6 +832,7 @@ void TetrahedronHyperelasticityFEMForceField<DataTypes>::draw(const core::visual
     if (vparams->displayFlags().getShowWireFrame())
           vparams->drawTool()->setPolygonMode(0,false);
 
+    vparams->drawTool()->restoreLastState();
 }
 
 } // namespace forcefield

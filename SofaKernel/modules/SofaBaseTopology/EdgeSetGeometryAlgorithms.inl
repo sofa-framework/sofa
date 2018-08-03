@@ -721,7 +721,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParams
 
         const sofa::helper::vector <Edge>& edgeArray = this->m_topology->getEdges();
 
-        helper::vector<defaulttype::Vector3> positions;
+        std::vector<defaulttype::Vector3> positions;
         for (unsigned int i = 0; i < edgeArray.size(); i++)
         {
 

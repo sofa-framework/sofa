@@ -22,7 +22,6 @@
 #define SOFA_COMPONENT_MASS_MESHMATRIXMASS_CPP
 #include <SofaMiscForceField/MeshMatrixMass.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/gl/Axis.h>
 
 namespace sofa
 {
