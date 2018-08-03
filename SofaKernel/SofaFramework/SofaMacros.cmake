@@ -25,7 +25,7 @@ include(CMakeParseLibraryList)
 #       ${CMAKE_CURRENT_SOURCE_DIR}/ModuleDir/binding_withCython.pxd    
 #       ${CMAKE_CURRENT_SOURCE_DIR}/ModuleDir/binding_withCPython.cpp 
 #    )  
-# sofa_add_python_module( PNG MyNamespace "${PNG_LIBRARY}" "${PNG_INCLUDE_DIRS}" )
+# sofa_add_python_module( TARGET MyModule SOURCES ${SOURCE_FILES} DEPENDS Deps1 Deps2 CYTHONIZE True OUTPUT ${CMAKE_CURRENT_BIN_DIR})
 function(sofa_add_python_module)
     set(options)
     set(oneValueArgs TARGET OUTPUT CYTHONIZE)
@@ -62,12 +62,11 @@ function(sofa_add_python_module)
                 OUTPUT ${cppfile}
             )
 
-            message("${_TARGET} ${pyxfile} cython generated: ${cppfile}" )
+            message("-- ${_TARGET} cython generated '${cppfile}' from '${filename}${ext}'" )
         endif()
 
         if(cppfile)
-            set(pyxtarget "${_TARGET}_${SHORT_NAME}")
-
+            set(pyxtarget "${_TARGET}_${filename}")
             add_library(${pyxtarget} SHARED ${cppfile})
 
             # The implementation of Python deliberately breaks strict-aliasing rules, so we
