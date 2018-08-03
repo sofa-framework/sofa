@@ -2,6 +2,100 @@ include(CMakePackageConfigHelpers)
 include(CMakeParseLibraryList)
 
 
+# - Create a target for a mixed python module composed of .py and binding code (in .cpp or .pyx)
+#                     
+# sofa_add_python_module(TARGET OUTPUT SOURCES DEPENDS CYTHONIZE)
+#  TARGET             - (input) the name of the generated target.
+#  OUTPUT             - (input) the output location, if not provided ${CMAKE_CURRENT_SOURCE_DIR} will be used. 
+#  SOURCES            - (input) list of input files. It can be .py, .pyx, .pxd, .cpp 
+#                               .cpp are compiled, .pyx can generate .cpp if CYTHONIZE param is set to true
+#  DEPENDS            - (input) set of target the generated target will depends on. 
+#  CYTHONIZE          - (input) boolean indicating wether or not 
+#                               we need to call cython on the .pyx file to re-generate the .cpp file. 
+#
+# The typical usage scenario is to build a python module out of cython binding. 
+#
+# Example:
+
+# find_package(Cython QUIET)
+# set(SOURCES_FILES 
+#       ${CMAKE_CURRENT_SOURCE_DIR}/ModuleDir/__init__.py
+#       ${CMAKE_CURRENT_SOURCE_DIR}/ModuleDir/purepython.py
+#       ${CMAKE_CURRENT_SOURCE_DIR}/ModuleDir/binding_withCython.pyx
+#       ${CMAKE_CURRENT_SOURCE_DIR}/ModuleDir/binding_withCython.pxd    
+#       ${CMAKE_CURRENT_SOURCE_DIR}/ModuleDir/binding_withCPython.cpp 
+#    )  
+# sofa_add_python_module( PNG MyNamespace "${PNG_LIBRARY}" "${PNG_INCLUDE_DIRS}" )
+function(sofa_add_python_module)
+    set(options)
+    set(oneValueArgs TARGET OUTPUT CYTHONIZE)
+    set(multiValueArgs SOURCES DEPENDS)
+    cmake_parse_arguments("" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+
+    set(INCLUDE_DIRS)
+    set(LIB_DIRS)
+
+    add_custom_target(${_TARGET}
+                       ALL
+                       SOURCES ${_SOURCES}
+                       DEPENDS ${_DEPENDS})
+
+    foreach( source ${_SOURCES} )
+        unset(cppfile)
+        get_filename_component(pathdir ${source} DIRECTORY)
+        get_filename_component(filename ${source} NAME_WE)
+        get_filename_component(ext ${source} EXT)
+
+        if((${ext} STREQUAL ".cpp"))
+            set(cppfile "${pathdir}/${filename}.cpp")
+        endif()
+
+        if(_CYTHONIZE AND (${ext} STREQUAL ".pyx"))
+            set(pyxfile "${pathdir}/${filename}.pyx")
+            set(cppfile "${pathdir}/${filename}.cpp")
+
+            # Build the .cpp out of the .pyx
+            add_custom_command(
+                COMMAND cython ${pathdir}/${filename}${ext} --cplus -2 --fast-fail --force          # Execute this command,
+                DEPENDS ${_SOURCES} ${_DEPENDS}                                                     # The target depens on these files...
+                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}                                       # In this working directory
+                OUTPUT ${cppfile}
+            )
+
+            message("${_TARGET} ${pyxfile} cython generated: ${cppfile}" )
+        endif()
+
+        if(cppfile)
+            set(pyxtarget "${_TARGET}_${SHORT_NAME}")
+
+            add_library(${pyxtarget} SHARED ${cppfile})
+
+            # The implementation of Python deliberately breaks strict-aliasing rules, so we
+            # compile with -fno-strict-aliasing to prevent the compiler from relying on
+            # those rules to optimize the code.
+            if(${CMAKE_COMPILER_IS_GNUCC})
+                set(SOFAPYTHON_COMPILER_FLAGS "${SOFAPYTHON_COMPILER_FLAGS} -fno-strict-aliasing")
+            endif()
+
+            target_link_libraries(${pyxtarget} ${_DEPENDS} ${PYTHON_LIBRARIES})
+            target_include_directories(${pyxtarget} PRIVATE ${PYTHON_INCLUDE_DIRS})
+            target_compile_options(${pyxtarget} PRIVATE ${SOFAPYTHON_COMPILER_FLAGS})
+            set_target_properties(${pyxtarget}
+                PROPERTIES
+                ARCHIVE_OUTPUT_DIRECTORY "${_OUTPUT}"
+                LIBRARY_OUTPUT_DIRECTORY "${_OUTPUT}"
+                RUNTIME_OUTPUT_DIRECTORY "${_OUTPUT}"
+                )
+
+            set_target_properties(${pyxtarget} PROPERTIES PREFIX "")
+            set_target_properties(${pyxtarget} PROPERTIES OUTPUT_NAME "${filename}")
+
+            add_dependencies(${_TARGET} ${pyxtarget})
+        endif()
+    endforeach()
+endfunction()
+
+
 # - Create an imported target from a library path and an include dir path.
 #   Handle the special case where LIBRARY_PATH is in fact an existing target.
 #   Handle the case where LIBRARY_PATH contains the following syntax supported by cmake:
