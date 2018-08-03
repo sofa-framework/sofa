@@ -11,7 +11,7 @@ def FAIL(message=""):
 
 def EXPECT_TRUE(value, message=""):
     if not value:
-        print "Value:", value, "Expected: True", message
+        print "Expecting 'True' but got '",value,"'", message
     return value
 
 def EXPECT_FALSE(value, message=""):
@@ -21,7 +21,7 @@ def EXPECT_FALSE(value, message=""):
 
 def EXPECT_EQ(expected, actual, message=""):
     if not expected==actual:
-        print "Value:", actual, "Expected:", expected, "-", message
+        print "Expecting '",expected,"' but got '",actual,"'", message
     return expected==actual
 
 def EXPECT_FLOAT_EQ(expected, actual, message="", rtol=1e-5, atol=1e-8):

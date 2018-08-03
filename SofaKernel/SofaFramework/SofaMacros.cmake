@@ -3,7 +3,7 @@ include(CMakeParseLibraryList)
 
 
 # - Create a target for a mixed python module composed of .py and binding code (in .cpp or .pyx)
-#                     
+#                     
 # sofa_add_python_module(TARGET OUTPUT SOURCES DEPENDS CYTHONIZE)
 #  TARGET             - (input) the name of the generated target.
 #  OUTPUT             - (input) the output location, if not provided ${CMAKE_CURRENT_SOURCE_DIR} will be used. 
@@ -27,8 +27,8 @@ include(CMakeParseLibraryList)
 #    )  
 # sofa_add_python_module( PNG MyNamespace "${PNG_LIBRARY}" "${PNG_INCLUDE_DIRS}" )
 function(sofa_add_python_module)
-    set(options CYTHONIZE)
-    set(oneValueArgs TARGET OUTPUT)
+    set(options)
+    set(oneValueArgs TARGET OUTPUT CYTHONIZE)
     set(multiValueArgs SOURCES DEPENDS)
     cmake_parse_arguments("" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
 
@@ -50,15 +50,15 @@ function(sofa_add_python_module)
             set(cppfile "${pathdir}/${filename}.cpp")
         endif()
 
-        if(${_CYTHONIZE} AND (${ext} STREQUAL ".pyx"))
+        if(_CYTHONIZE AND (${ext} STREQUAL ".pyx"))
             set(pyxfile "${pathdir}/${filename}.pyx")
             set(cppfile "${pathdir}/${filename}.cpp")
 
             # Build the .cpp out of the .pyx
             add_custom_command(
-                COMMAND cython ${pathdir}/${filename}${ext} --cplus -2 --fast-fail --force    # Execute this command,
-                DEPENDS ${_SOURCES} ${_DEPENDS}                                                                    # The target depens on these files...
-                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}                                                     # In this working directory
+                COMMAND cython ${pathdir}/${filename}${ext} --cplus -2 --fast-fail --force          # Execute this command,
+                DEPENDS ${_SOURCES} ${_DEPENDS}                                                     # The target depens on these files...
+                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}                                       # In this working directory
                 OUTPUT ${cppfile}
             )
 
