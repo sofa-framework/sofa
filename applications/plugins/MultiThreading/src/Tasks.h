@@ -89,8 +89,8 @@ namespace sofa
             
 		private:
 
-            Task(const Task& task) {}
-            Task& operator= (const Task& task) {return *this;}
+            Task(const Task& /*task*/) {}
+            Task& operator= (const Task& /*task*/) {return *this;}
 
 
 		protected:

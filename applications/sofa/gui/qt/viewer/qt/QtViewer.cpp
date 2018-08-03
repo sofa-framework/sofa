@@ -1709,9 +1709,13 @@ void QtViewer::screenshot(const std::string& filename, int compression_level)
     screenshot = this->grabFramebuffer();
     bool res = screenshot.save(filename.c_str(), nullptr, (compression_level == -1) ? -1 : compression_level*100); // compression_level is either -1 or [0,100]
     if(res)
+    {
         msg_info("QtViewer") << "Saved " << screenshot.width() << "x" << screenshot.height() << " screen image to " << filename;
+    }
     else
+    {
         msg_error("QtViewer") << "Unknown error while saving screen image to " << filename;
+    }
 }
 
 }// namespace qt
