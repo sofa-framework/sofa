@@ -1,23 +1,26 @@
 cmake_minimum_required(VERSION 3.1)
-
 project(SofaGeometry_test)
 
-#find_package(SofaEditor REQUIRED)
+if(NOT SOFA_BUILD_TESTS)
+    return()
+endif()
 
+####################################################################################################
+### Module dependencies
+####################################################################################################
+find_package(SofaGeometry QUIET)
+if(!SofaGeometry_FOUND)
+    message("-- 'SofaGeometry_test' requires the module SofaGeometry (is the module activated?).")
+    return()
+endif()
+
+####################################################################################################
+### Building
+####################################################################################################
 set(SOURCE_FILES
     Plane_test.cpp
     Ray_test.cpp
 )
-
-#find_package(SofaPython QUIET)
-#if(SofaPython_FOUND)
-#    list(APPEND SOURCE_FILES
-#        CustomField_test.cpp)
-#    add_definitions("-DDO_SOFAPYTHON_FEATURES=1")
-#else()
-#    add_definitions("-DDO_SOFAPYTHON_FEATURES=0")
-#endif()
-
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaGeometry)

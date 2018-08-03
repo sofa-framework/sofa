@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.1)
-
 project(PythonSofaGeometry_test)
+
+if(NOT SOFA_BUILD_TESTS)
+    return()
+endif()
 
 ####################################################################################################
 ### Module dependencies
@@ -16,6 +19,7 @@ if(!SofaTest_FOUND)
     message(FATAL_ERROR "-- 'PythonSofaGeometry_test' requires SofaTest.")
     return()
 endif()
+
 
 
 ####################################################################################################
