@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -13,8 +13,11 @@
 * more details.                                                               *
 *                                                                             *
 * You should have received a copy of the GNU General Public License along     *
-* with this program. If not, see <http://www.gnu.org/licenses/>.              *
+* with this program; if not, write to the Free Software Foundation, Inc., 51  *
+* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
 *******************************************************************************
+*                            SOFA :: Applications                             *
+*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -50,8 +53,16 @@ protected:
     QDoubleValidator *m_DblValid;
     double            m_bInternal;
 
+    bool              m_isDragging ;
+    QPoint            m_prevMousePosition ;
+
     void              checkValue();
     virtual void      keyPressEvent(QKeyEvent *);
+
+    virtual void      mouseMoveEvent(QMouseEvent *) ;
+    virtual void      mousePressEvent(QMouseEvent *) ;
+    virtual void      mouseReleaseEvent(QMouseEvent *) ;
+
 public:
 
     WDoubleLineEdit(QWidget *parent,const char *name);
@@ -80,14 +91,14 @@ public:
     int     getIntDisplayedValue() {return static_cast<int>(text().toDouble());}
 
 signals:
-
-    void ValueChanged(double);
+    void valueEdited(double) ;
+    void valueChanged(double);
     void valuePercentChanged(int);
 
 protected slots:
 
     void slotCalcValue(const QString&);
-    void slotCalcValue(double);
+    void slotCalcValue(double, bool isEditted=false);
     void slotReturnPressed();
 
 public slots:

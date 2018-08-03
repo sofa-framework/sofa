@@ -1,6 +1,6 @@
 /******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, development version     *
-*                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
+*                (c) 2006-2015 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *
 * under the terms of the GNU General Public License as published by the Free  *
@@ -13,8 +13,11 @@
 * more details.                                                               *
 *                                                                             *
 * You should have received a copy of the GNU General Public License along     *
-* with this program. If not, see <http://www.gnu.org/licenses/>.              *
+* with this program; if not, write to the Free Software Foundation, Inc., 51  *
+* Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.                   *
 *******************************************************************************
+*                            SOFA :: Applications                             *
+*                                                                             *
 * Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
@@ -23,6 +26,7 @@
 #include <math.h>
 #include "WDoubleLineEdit.h"
 #include <iostream>
+using std::cerr; using std::endl;
 /* -------------------------------------------------------- */
 
 WDoubleLineEdit::WDoubleLineEdit(QWidget *parent,const char *name) : QLineEdit(parent /*,name */)
@@ -35,6 +39,7 @@ WDoubleLineEdit::WDoubleLineEdit(QWidget *parent,const char *name) : QLineEdit(p
     m_fValue=0.0;
     m_bFirst=true;
     m_DblValid=new QDoubleValidator(m_fMinValue,m_fMaxValue,20,this);
+    m_isDragging = false ;
     setValidator(m_DblValid);
 
     connect(this,SIGNAL(returnPressed()),
@@ -56,11 +61,10 @@ void WDoubleLineEdit::slotReturnPressed()
 
 }
 /* -------------------------------------------------------- */
-void WDoubleLineEdit::slotCalcValue(double f)
+void WDoubleLineEdit::slotCalcValue(double f, bool isEditted)
 {
     int    p;
 
-    //cerr << "WDoubleLineEdit::slotCalcValue" << endl;
     if (f < m_fMinValue)
         f=m_fMinValue;
     else if (f > m_fMaxValue)
@@ -69,18 +73,20 @@ void WDoubleLineEdit::slotCalcValue(double f)
     {
         m_bFirst=false;
         m_fValue=f;
-        //cerr << "WDoubleLineEdit::slotCalcValue m_fValue = " << m_fValue << endl;
-        emit (ValueChanged(f));
+        if(isEditted)
+            emit (valueEdited(f));
+        else
+            emit (valueChanged(f));
+
         p=(int)(100.0*(f - m_fMinValue)/(m_fMaxValue - m_fMinValue));
         if (p != m_iPercent)
         {
-//      cerr << "m_iPercent = " << m_iPercent << endl;
             emit (valuePercentChanged(p));
             m_iPercent=p;
         }
         update();
     }
-//    validateAndSet(QString("%1").arg(m_fValue),0,0,0);
+
     this->setText(QString("%1").arg(m_fValue));
     this->setCursorPosition(0);
     this->setSelection(0, 0);
@@ -99,6 +105,7 @@ void WDoubleLineEdit::setValue(double f)
 
 void WDoubleLineEdit::setIntValue(int f)
 {
+    std::cout << "TO INT CASTER..." << std::endl ;
     setValue(static_cast<double>(f));
 }
 /* -------------------------------------------------------- */
@@ -117,6 +124,8 @@ int WDoubleLineEdit::valuePercent()
 /* -------------------------------------------------------- */
 void WDoubleLineEdit::keyPressEvent(QKeyEvent *e)
 {
+    std::cout << "Key Pressed: " << e->key() << std::endl ;
+
     if (e->key() == Qt::Key_Escape)
     {
 //        validateAndSet(QString("%1").arg(m_fValue),0,0,0);
@@ -126,5 +135,34 @@ void WDoubleLineEdit::keyPressEvent(QKeyEvent *e)
     }
     else
         QLineEdit::keyPressEvent(e);
+
+    std::cout << "VALUE IS: " << getValue() << std::endl ;
 }
 /* -------------------------------------------------------- */
+void WDoubleLineEdit::mouseMoveEvent(QMouseEvent *event) {
+    if(m_isDragging){
+        //TODO(damien) This hardcoded value sucks.
+        double dt=(event->x() - m_prevMousePosition.x())/100.0 ;
+        m_prevMousePosition = event->pos() ;
+        slotCalcValue(dt + m_fValue, false) ;
+        emit valueEdited(m_fValue) ;
+    }
+    QLineEdit::mouseMoveEvent(event) ;
+}
+
+void WDoubleLineEdit::mousePressEvent(QMouseEvent *event) {
+    if(event->button() == Qt::LeftButton){
+        m_isDragging = true ;
+        m_prevMousePosition = event->pos() ;
+    }
+    QLineEdit::mousePressEvent(event) ;
+}
+
+void WDoubleLineEdit::mouseReleaseEvent(QMouseEvent *event) {
+    if(event->button() == Qt::LeftButton){
+        m_isDragging = false ;
+        m_prevMousePosition = event->pos() ;
+    }
+    QLineEdit::mouseReleaseEvent(event) ;
+
+}
