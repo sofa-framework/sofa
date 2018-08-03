@@ -555,6 +555,8 @@ public:
             }
 
             // Remove the objects from the container that are not in the new list
+	        // TODO epernod 2018-08-01: This cast from size_t to unsigned int remove a large amount of warnings.
+            // But need to be rethink in the future. The problem is if index i is a site_t, then we need to template container<size_t> which impact the whole architecture.
             unsigned int csize = (unsigned int)container.size();
             for (unsigned int i = 0; i != csize; i++)
             {
