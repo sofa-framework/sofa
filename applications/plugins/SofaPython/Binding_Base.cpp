@@ -266,7 +266,7 @@ BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
     {
         if(kw==nullptr || !PyDict_Check(kw) )
         {
-            msg_warning("SofaPython") << "Could not parse kwargs for adding Data";
+            msg_warning("SofaPython") << "Could not parse kwargs for adding Data " << dataName;
         }
         else
         {

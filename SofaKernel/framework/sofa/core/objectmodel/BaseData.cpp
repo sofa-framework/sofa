@@ -112,7 +112,7 @@ bool BaseData::setParent(BaseData* parent, const std::string& path)
         this->delInput(*this->inputs.begin());
     if (parent && !validParent(parent))
     {
-        if (m_owner)
+        if (m_owner && parent->m_owner->getClassName() != "PythonScriptDataEngine")
         {
             m_owner->serr << "Invalid Data link from " << (parent->m_owner ? parent->m_owner->getName() : std::string("?")) << "." << parent->getName() << " to " << m_owner->getName() << "." << getName() << m_owner->sendl;
             if (!this->getValueTypeInfo()->ValidInfo())
