@@ -440,7 +440,7 @@ const TriangleSetTopologyContainer::Triangle TriangleSetTopologyContainer::getTr
     if(!hasTriangles())
         createTriangleSetArray();
 
-    if (i >= getNbTriangles())
+    if ((size_t)i >= getNbTriangles())
         return Triangle(-1, -1, -1);
     else
         return (d_triangle.getValue())[i];
@@ -781,7 +781,7 @@ bool TriangleSetTopologyContainer::checkTopology() const
 
 bool TriangleSetTopologyContainer::checkConnexity()
 {
-    unsigned int nbr = this->getNbTriangles();
+    size_t nbr = this->getNbTriangles();
 
     if (nbr == 0)
     {
@@ -804,7 +804,7 @@ bool TriangleSetTopologyContainer::checkConnexity()
 
 unsigned int TriangleSetTopologyContainer::getNumberOfConnectedComponent()
 {
-    unsigned int nbr = this->getNbTriangles();
+    size_t nbr = this->getNbTriangles();
 
     if (nbr == 0)
     {

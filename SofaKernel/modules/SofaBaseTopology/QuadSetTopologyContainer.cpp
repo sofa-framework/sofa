@@ -254,7 +254,7 @@ const QuadSetTopologyContainer::Quad QuadSetTopologyContainer::getQuad (QuadID i
     if(!hasQuads())
         createQuadSetArray();
 
-    if (i >= getNbQuads())
+    if ((size_t)i >= getNbQuads())
         return Quad(-1, -1, -1, -1);
     else
         return (d_quad.getValue())[i];

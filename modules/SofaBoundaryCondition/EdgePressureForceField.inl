@@ -25,7 +25,7 @@
 #include <SofaBoundaryCondition/EdgePressureForceField.h>
 #include <SofaBaseTopology/TopologySparseData.inl>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/gl/template.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <vector>
 #include <set>
 
@@ -367,35 +367,39 @@ void EdgePressureForceField<DataTypes>::selectEdgesFromEdgeList()
 }
 
 template<class DataTypes>
-void EdgePressureForceField<DataTypes>::draw(const core::visual::VisualParams*)
+void EdgePressureForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!p_showForces.getValue())
         return;
+
+    vparams->drawTool()->saveLastState();
 
     SReal aSC = arrowSizeCoef.getValue();
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    glDisable(GL_LIGHTING);
+    vparams->drawTool()->disableLighting();
 
-    glBegin(GL_LINES);
-    glColor4f(1,1,0,1);
+    const sofa::defaulttype::RGBAColor& color = sofa::defaulttype::RGBAColor::yellow();
+
+    std::vector<sofa::defaulttype::Vector3> vertices;
 
     const sofa::helper::vector <unsigned int>& my_map = edgePressureMap.getMap2Elements();
     const sofa::helper::vector<EdgePressureInformation>& my_subset = edgePressureMap.getValue();
 
     for (unsigned int i=0; i<my_map.size(); ++i)
     {
-        sofa::defaulttype::Vec3d p = (x[_topology->getEdge(my_map[i])[0]] + x[_topology->getEdge(my_map[i])[1]]) / 2.0;
-        sofa::helper::gl::glVertexT(p);
+        sofa::defaulttype::Vector3 p = (x[_topology->getEdge(my_map[i])[0]] + x[_topology->getEdge(my_map[i])[1]]) / 2.0;
+        vertices.push_back(p);
 
         sofa::defaulttype::Vec3d f = my_subset[i].force;
         //f.normalize();
         f *= aSC;
-        helper::gl::glVertexT(p + f);
+        vertices.push_back(p + f);
     }
-    glEnd();
-#endif /* SOFA_NO_OPENGL */
+
+    vparams->drawTool()->drawLines(vertices, 1, color);
+
+    vparams->drawTool()->restoreLastState();
 }
 
 } // namespace forcefield
