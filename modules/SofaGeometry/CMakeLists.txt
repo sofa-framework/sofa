@@ -31,16 +31,8 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>"
 ## Install rules for the library and headers; CMake package configurations files
 sofa_create_package(${PROJECT_NAME} ${PROJECT_VERSION} ${PROJECT_NAME} ${PROJECT_NAME})
 
-find_package(PythonLibs 2.7 REQUIRED)
-if(PythonLibs_FOUND)
-    add_subdirectory(python)
-else()
-    message("Python 2.7 is not available, disabling compilation of the binding for SofaGeometry")
-endif()
-add_subdirectory(tests)
-
-## When installing, copy the content of the example directory into module/SofaEditor
+## When installing, copy the content of the example directory into module/SofaGeometry
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/examples DESTINATION modules/SofaGeometry COMPONENT resources)
 
-## When installing, copy the target into module/SofaEditor
+## When installing, copy the target into module/SofaGeometry
 install(TARGETS ${PROJECT_NAME} DESTINATION modules/SofaGeometry)
