@@ -36,3 +36,5 @@ install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/examples DESTINATION modules/SofaG
 
 ## When installing, copy the target into module/SofaGeometry
 install(TARGETS ${PROJECT_NAME} DESTINATION modules/SofaGeometry)
+
+add_subdirectory(tests)
