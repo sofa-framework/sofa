@@ -41,7 +41,7 @@ namespace sofageometry
 /// A Plane in 3D.
 /// the plane orientation is represented by the normal vector and the distance to the origin
 /// along this line vector.
-class Plane
+class SOFAGEOMETRY_API Plane
 {
 public:
     Vec3d   normal ;   /// normal vector of the plane

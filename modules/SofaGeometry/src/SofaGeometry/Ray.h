@@ -35,7 +35,7 @@ namespace sofageometry
 {
     /// A ray in 3D.
     /// the ray has an origin and direction vector.
-    class Ray
+    class SOFAGEOMETRY_API Ray
     {
     public:
         Vec3d direction ;

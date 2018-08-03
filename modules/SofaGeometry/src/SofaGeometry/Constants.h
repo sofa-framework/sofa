@@ -36,7 +36,7 @@ namespace sofageometry
     using sofa::defaulttype::Vec2d ;
     using sofa::defaulttype::Vec1d ;
 
-    class Constants
+    class SOFAGEOMETRY_API Constants
     {
     public:
         static Vec3d Origin ;
