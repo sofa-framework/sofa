@@ -27,12 +27,12 @@
 #include "QTabulationModifyObject.h"
 #include <QTextBrowser>
 #include <QDesktopServices>
+#include <QTimer>
 #include <sofa/gui/qt/QTransformationWidget.h>
 #ifdef SOFA_HAVE_QWT
 #include <sofa/gui/qt/QEnergyStatWidget.h>
 #include <sofa/gui/qt/QMomentumStatWidget.h>
 #endif
-
 #include <sofa/helper/logging/Messaging.h>
 using sofa::helper::logging::Message ;
 
@@ -111,12 +111,13 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
     generalLayout->setObjectName("generalLayout");
     generalLayout->setMargin(0);
     generalLayout->setSpacing(1);
+
     //Tabulation widget
     dialogTab = new QTabWidget(this);
-    //generalLayout->addWidget(dialogTab);
 
     //add a scrollable area for data properties
     QScrollArea* m_scrollArea = new QScrollArea();
+
     //    const int screenHeight = QApplication::desktop()->height();
     m_scrollArea->setMinimumSize(600,QApplication::desktop()->height() * 0.75);
     m_scrollArea->setWidgetResizable(true);
@@ -124,11 +125,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
     m_scrollArea->setWidget(dialogTab);
     generalLayout->addWidget(m_scrollArea);
 
-    //    generalLayout->addWidget(dialogTab);
-
     connect(dialogTab, SIGNAL( currentChanged(int)), this, SLOT( updateTables()));
-
-    //    bool isNode = (dynamic_cast< simulation::Node *>(node) != NULL);
 
     buttonUpdate = new QPushButton( this );
     buttonUpdate->setObjectName("buttonUpdate");
@@ -142,6 +139,10 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
     buttonCancel->setObjectName("buttonCancel");
     buttonCancel->setText( tr( "&Cancel" ) );
 
+    QPushButton *buttonRefresh = new QPushButton( this );
+    buttonRefresh->setObjectName("buttonRefresh");
+    buttonRefresh->setText( tr( "Refresh" ) );
+
     // displayWidget
     if (node)
     {
@@ -149,25 +150,6 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
         const sofa::core::objectmodel::Base::VecLink& links = node->getLinks();
 
         std::map< std::string, std::vector<QTabulationModifyObject* > > groupTabulation;
-
-        //If we operate on a Node, we have to ...
-        /*if(isNode)
-        {
-            if (dialogFlags_.REINIT_FLAG)
-            {
-                //add the widgets to apply some basic transformations
-
-                m_tabs.push_back(new QTabulationModifyObject(this,node, item_,1));
-                groupTabulation[std::string("Property")].push_back(m_tabs.back());
-                connect(m_tabs.back(), SIGNAL(nodeNameModification(simulation::Node *)), this, SIGNAL(nodeNameModification(simulation::Node *)));
-
-                transformation = new QTransformationWidget(m_tabs.back(), QString("Transformation"));
-                m_tabs.back()->layout()->add(transformation);
-                m_tabs.back()->externalWidgetAddition(transformation->getNumWidgets());
-                connect( transformation, SIGNAL(TransformationDirty(bool)), buttonUpdate, SLOT( setEnabled(bool) ) );
-                connect( transformation, SIGNAL(TransformationDirty(bool)), this, SIGNAL( componentDirty(bool) ) );
-            }
-        }*/
 
         std::vector<std::string> tabNames;
         //Put first the Property Tab
@@ -223,6 +205,12 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
                 connect(buttonOk,       SIGNAL(clicked() ),          currentTab, SLOT( updateDataValue() ) );
                 connect(this,           SIGNAL(updateDataWidgets()), currentTab, SLOT( updateWidgetValue()) );
 
+                /// The timer is deleted when the 'this' object is destroyed.
+                QTimer *timer = new QTimer(this);
+                connect(timer, SIGNAL(timeout()), this, SLOT(updateTables()));
+                connect(timer, SIGNAL(timeout()), currentTab, SLOT(updateDataValue()));
+                timer->start(10);
+
                 connect(currentTab, SIGNAL( TabDirty(bool) ), buttonUpdate, SLOT( setEnabled(bool) ) );
                 connect(currentTab, SIGNAL( TabDirty(bool) ), this, SIGNAL( componentDirty(bool) ) );
             }
@@ -273,11 +261,6 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
         std::cout << "GUI: end Link" << std::endl;
 #endif
 
-        //std::map< std::string, std::vector<QTabulationModifyObject* > >::iterator it;
-        //for (it=groupTabulation.begin();it!=groupTabulation.end();++it)
-        //{
-        //    const std::string &groupName=it->first;
-        //    std::vector<QTabulationModifyObject* > &tabs=it->second;
         for (std::vector<std::string>::const_iterator it = tabNames.begin(), itend = tabNames.end(); it != itend; ++it)
         {
             const std::string& groupName = *it;
@@ -295,28 +278,6 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
                 tabs[i]->addStretch();
             }
         }
-
-#ifdef SOFA_HAVE_QWT
-        //Energy Widget
-        if (simulation::Node* real_node = dynamic_cast< simulation::Node* >(node))
-        {
-            if (dialogFlags_.REINIT_FLAG )
-            {
-                energy = new QEnergyStatWidget(dialogTab, real_node);
-                dialogTab->addTab(energy,QString("Energy Stats"));
-            }
-        }
-
-        //Momentum Widget
-        if (simulation::Node* real_node = dynamic_cast< simulation::Node* >(node))
-        {
-            if (dialogFlags_.REINIT_FLAG )
-            {
-                momentum = new QMomentumStatWidget(dialogTab, real_node);
-                dialogTab->addTab(momentum,QString("Momentum Stats"));
-            }
-        }
-#endif
 
         /// Info Widget
         {
@@ -337,7 +298,6 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
             }
         }
 
-
         //Adding buttons at the bottom of the dialog
         QHBoxLayout *lineLayout = new QHBoxLayout( 0);
         lineLayout->setMargin(0);
@@ -349,11 +309,15 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
 
         lineLayout->addWidget(buttonOk);
         lineLayout->addWidget(buttonCancel);
+        lineLayout->addWidget(buttonRefresh);
         generalLayout->addLayout( lineLayout );
+
         //Signals and slots connections
         connect( buttonUpdate,   SIGNAL( clicked() ), this, SLOT( updateValues() ) );
+        connect(buttonRefresh,       SIGNAL(clicked() ),          this, SLOT( updateTables() ));
         connect( buttonOk,       SIGNAL( clicked() ), this, SLOT( accept() ) );
         connect( buttonCancel,   SIGNAL( clicked() ), this, SLOT( reject() ) );
+
         resize( QSize(450, 130).expandedTo(minimumSizeHint()) );
     }
 }
@@ -413,10 +377,8 @@ void ModifyObject::createDialog(core::objectmodel::BaseData* data)
     generalLayout->addWidget(displaydatawidget);
     lineLayout->addWidget(buttonUpdate);
 
-
     QSpacerItem *Horizontal_Spacing = new QSpacerItem( 20, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
     lineLayout->addItem( Horizontal_Spacing );
-
 
     lineLayout->addWidget(buttonOk);
     lineLayout->addWidget(buttonCancel);
@@ -459,14 +421,8 @@ public:
     Q_OBJECT
 
 public:
-    ClickableTextEdit(QWidget* w) : QTextEdit(w) {
-
-    }
-
-
+    ClickableTextEdit(QWidget* w) : QTextEdit(w) {}
 };
-
-
 
 void ModifyObject::openExternalBrowser(const QUrl &link)
 {
@@ -518,14 +474,12 @@ void ModifyObject::updateConsole()
         messageEdit->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
         messageEdit->ensureCursorVisible();
     }
-
 }
 
 //*******************************************************************************************************************
 void ModifyObject::updateValues()
 {
-    if (buttonUpdate == NULL // || !buttonUpdate->isEnabled()
-            ) return;
+    if (buttonUpdate == NULL) return;
 
     //Make the update of all the values
     if (node)
@@ -539,8 +493,6 @@ void ModifyObject::updateValues()
                 transformation->applyTransformation(current_node);
             transformation->setDefaultValues();
         }
-
-
 
         if (dialogFlags_.REINIT_FLAG)
         {
@@ -649,7 +601,6 @@ void ModifyObject::reject   ()
         emit  dataModified( dataModifiedString  );
     }
 
-    //          else if (data) emit endDataModification(data);
     emit(dialogClosed(Id_));
     deleteLater();
     QDialog::reject();
@@ -675,7 +626,6 @@ void ModifyObject::accept   ()
         std::cout << "GUI<emit endObjectModification(" << node->getName() << ")" << std::endl;
 #endif
     }
-    //          else if (data) emit endDataModification(data);
     emit(dialogClosed(Id_));
     deleteLater();
     QDialog::accept();
