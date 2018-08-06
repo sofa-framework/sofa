@@ -33,8 +33,6 @@
 #include <QKeyEvent>
 
 /* -------------------------------------------------------- */
-
-
 class SOFA_SOFAGUIQT_API WDoubleLineEdit : public QLineEdit
 {
     Q_OBJECT
