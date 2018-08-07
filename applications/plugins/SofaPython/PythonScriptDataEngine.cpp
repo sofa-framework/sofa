@@ -186,11 +186,6 @@ void PythonScriptDataEngine::setInstance(PyObject* instance) {
 // Ok, so in the end we're stuck with using the AnimationBeginEvent? (20.02.2018, sescaida)
 void PythonScriptDataEngine::handleEvent(Event *event)
 {
-    if (AnimateBeginEvent::checkEventType(event))
-    {
-        setDirtyValue();
-        update();
-    }
 }
 void PythonScriptDataEngine::parse( sofa::core::objectmodel::BaseObjectDescription* arg )
 {
