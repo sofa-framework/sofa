@@ -32,14 +32,6 @@ ScriptDataEngine::~ScriptDataEngine()
 
 void ScriptDataEngine::update()
 {
-    const DDGLinkContainer& inputs = getInputs();
-    for (size_t i=0, iend=inputs.size() ; i<iend ; ++i)
-    {
-      static_cast<sofa::core::objectmodel::BaseData*>(inputs[i])->updateIfDirty();
-    }
-
-    // DataEngine::update(); doesn't make sense, probably?
-    cleanDirty();
     script_update();
 }
 
