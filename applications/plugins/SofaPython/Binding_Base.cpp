@@ -98,12 +98,12 @@ PSDEDataFactory* getFactoryInstance(){
                     "Mat4x4f", new DataCreator<sofa::defaulttype::Mat4x4f>());
 
         // Topology
-        s_localfactory->registerCreator("Edge", new DataCreator<Tetra>());
-        s_localfactory->registerCreator("Triangle", new DataCreator<Tetra>());
-        s_localfactory->registerCreator("Quad", new DataCreator<Tetra>());
+        s_localfactory->registerCreator("Edge", new DataCreator<Edge>());
+        s_localfactory->registerCreator("Triangle", new DataCreator<Triangle>());
+        s_localfactory->registerCreator("Quad", new DataCreator<Quad>());
         s_localfactory->registerCreator("Tetra", new DataCreator<Tetra>());
-        s_localfactory->registerCreator("Hexa", new DataCreator<Tetra>());
-        s_localfactory->registerCreator("Penta", new DataCreator<Tetra>());
+        s_localfactory->registerCreator("Hexa", new DataCreator<Hexa>());
+        s_localfactory->registerCreator("Penta", new DataCreator<Penta>());
 
         // VECTORS
         for (const auto& container : containers)
