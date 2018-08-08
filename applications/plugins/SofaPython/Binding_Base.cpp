@@ -300,16 +300,15 @@ BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
     {
         if (val.empty())
         {
-            bd = new Data<void*>();
+            bd = new EmptyData;
             bd->setName(dataName);
-            obj->addAlias(bd, "psde_output");
         }
         else if (std::string(dataName) != "type")
         {
             msg_warning(obj) << "No type provided for Data" << dataName << " with value " << val << ", creating void* data";
             return bd;
         }
-	else return new Data<void*>();
+        else return new EmptyData;
     }
 
     if (bd == nullptr)
@@ -318,9 +317,8 @@ BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
     {
         if (val.empty())
         {
-            bd = new Data<void*>();
+            bd = new EmptyData;
             bd->setName(dataName);
-            obj->addAlias(bd, "psde_output");
         }
         else if (std::string(dataName) != "type")
         {
@@ -334,7 +332,7 @@ BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
 	                      "types are:\n" << typesString;
             return nullptr;
         }
-        else return new Data<void*>();
+        else return new EmptyData;
     }
     else
     {

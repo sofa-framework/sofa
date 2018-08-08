@@ -442,34 +442,25 @@ bool Base::parseField( const std::string& attribute, const std::string& value)
     for (unsigned int d=0; d<dataVec.size(); ++d)
     {
         // test if data is a link and can be linked
-      if (value.length() > 0 && value[0] == '@' && dataVec[d]->canBeLinked())
+        if (value.length() > 0 && value[0] == '@' && dataVec[d]->canBeLinked())
         {
             if (!dataVec[d]->setParent(value))
             {
                 BaseData* data = nullptr;
                 BaseLink* bl = nullptr;
                 dataVec[d]->findDataLinkDest(data, value, bl);
-                if (data != nullptr)
+                if (data != nullptr && dynamic_cast<EmptyData*>(data) != nullptr)
                 {
                     Base* owner = data->getOwner();
-                    const std::multimap<std::string, sofa::core::objectmodel::BaseData*>&
-                        dataMap = owner->getDataAliases();
-                    for (const auto& dataItem : dataMap)
-                    {
-                        if (dataItem.first == "psde_output" && dataItem.second->getName() == data->getName())
-                        {
-                            DDGNode* o = dynamic_cast<DDGNode*>(owner);
-                            o->delOutput(data);
-                            owner->removeData(data);
-                            BaseData* newBD = dataVec[d]->getNewInstance();
-                            newBD->setName(data->getName());
-                            owner->addData(newBD);
-                            newBD->setGroup("Outputs");
-                            o->addOutput(newBD);
-                            dataVec[d]->setParent(newBD);
-                            break;
-                        }
-                    }
+                    DDGNode* o = dynamic_cast<DDGNode*>(owner);
+                    o->delOutput(data);
+                    owner->removeData(data);
+                    BaseData* newBD = dataVec[d]->getNewInstance();
+                    newBD->setName(data->getName());
+                    owner->addData(newBD);
+                    newBD->setGroup("Outputs");
+                    o->addOutput(newBD);
+                    dataVec[d]->setParent(newBD);
                     ok = true;
                     continue;
                 }

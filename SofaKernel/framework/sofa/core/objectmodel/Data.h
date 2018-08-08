@@ -312,7 +312,6 @@ public:
 //    }
 };
 
-
 /** \brief Container that holds a variable for a component.
  *
  * This is a fundamental class template in Sofa.  Data are used to encapsulated
@@ -548,6 +547,8 @@ private:
     Data(const Data& );
     Data& operator=(const Data& );
 };
+
+class EmptyData : public Data<void*> {};
 
 /// Specialization for reading strings
 template<>
