@@ -112,7 +112,6 @@ void PythonScriptDataEngine::refreshBinding()
     BIND_OBJECT_METHOD_DATA_ENGINE(update)
     BIND_OBJECT_METHOD_DATA_ENGINE(init)
     BIND_OBJECT_METHOD_DATA_ENGINE(parse)
-    BIND_OBJECT_METHOD_DATA_ENGINE(datalinks)
             //BIND_OBJECT_METHOD(update)
 }
 
@@ -196,23 +195,19 @@ void PythonScriptDataEngine::handleEvent(Event *event)
 void PythonScriptDataEngine::parse( sofa::core::objectmodel::BaseObjectDescription* arg )
 {
     ScriptDataEngine::parse(arg);
-    script_parse();
 
     // Create key / value dictionary from leftover "datalink" attributes:
     PyObject *d = PyDict_New();
     const std::map<std::string,
             sofa::core::objectmodel::BaseObjectDescription::Attribute>&
             attrs = arg->getAttributeMap();
-    for (auto a : attrs)
+    for (const auto& a : attrs)
     {
         std::string val(arg->getAttribute(a.first));
-        if (!this->findData(a.first))
-        {
-            PyDict_SetItem(d, PyString_FromString(a.first.c_str()),
+        PyDict_SetItem(d, PyString_FromString(a.first.c_str()),
                            PyString_FromString(val.c_str()));
-        }
     }
-    script_datalinks(d);
+    script_parse(d);
 }
 
 void PythonScriptDataEngine::init()
@@ -235,14 +230,12 @@ void PythonScriptDataEngine::script_init()
 
 void PythonScriptDataEngine::script_parse()
 {
-    PythonEnvironment::gil lock(__func__);
-    SP_CALL_MODULEFUNC_NOPARAM(m_Func_parse)
 }
 
-void PythonScriptDataEngine::script_datalinks(PyObject* pyobj)
+void PythonScriptDataEngine::script_parse(PyObject* pyobj)
 {
     PythonEnvironment::gil lock(__func__);
-    SP_CALL_MODULEFUNC(m_Func_datalinks, "(O)", pyobj);
+    SP_CALL_MODULEFUNC(m_Func_parse, "(O)", pyobj);
 
 }
 

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import Sofa
-import SofaPython
+import SofaPython as sp
 import os
 
 # This scene illustrates the basic functionality of the "PythonScriptDataEngine" (PSDE). First a small introduction the PSDE is given, then the scene itself is explained.
@@ -26,46 +26,16 @@ import os
 #
 
 path = 'mesh/'
-class initData:
-    def __init__(self, name="unknown", datatype="", default="", help="No description provided"):
-        self.name=name
-        self.datatype = datatype
-        self.default = default
-        self.help = help
-    
 
 class PyAverageEngine(Sofa.PythonScriptDataEngine):
 
-    # def __new__(cls, node, name='pythonScriptController', filename='', **kwarg): 
-    #     Sofa.PythonScriptDataEngine.__new__(cls, node, name, filename, kwarg)
-    #     print node
-    #     print kwarg
-    args = { "positions": initData("positions",help="Input set of positions to average"),
-             "test": initData("test", default="15", datatype="int", help="Input set of positions to average"),
-             "value2": initData("value2", default="0 0 0  1 1 1  2 2 2", datatype="vector<Vec3d>", help="Input set of positions to average")
+    args = { "positions": ps.initData("positions",help="Input set of positions to average"),
+             "test": ps.initData("test", default="15", datatype="int", help="Input set of positions to average"),
+             "value2": ps.initData("value2", default="0 0 0  1 1 1  2 2 2", datatype="vector<Vec3d>", help="Input set of positions to average")
     }
-    
-    def datalinks(self, dico):
-        for key, val in dico.iteritems():
-            d = self.args.get(key, initData())
-            if d.name is "unknown":
-                if key != "type":
-                    Sofa.msg_warning("unknown datafield " + key + " found ")
-            if d.datatype is not "":
-                self.addNewInput(key, datatype=d.datatype, value=(d.value if val is "" else val),
-                                 help=d.help)
-            else:
-                self.addNewInput(key, value=(d.value if val is "" else val),
-                                 help=d.help)
-        for key in set(self.args.keys()) - set(dico.keys()):
-            d = self.args.get(key)
-            self.addNewInput(key, datatype=d.datatype, value=d.default, help=d.help)
-        
 
-        
-    def parse(self):
-        # this is the correct place to define inputs and outputs! (linking will not work in init() for instance)
-        # self.addNewInput('positions', value='@loader.position')
+    @sp.ParseInputs
+    def parse(self, arg):
         self.addNewOutput('average', help="Average coordinate of the input point cloud")
         
     def init(self):

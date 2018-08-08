@@ -153,3 +153,37 @@ class DataEngine(Sofa.PythonScriptDataEngine):
             Sofa.msg_warning('SofaPython',
                              '`onLoaded` is defined in subclass but will not be called in the future' )
 
+
+class initData:
+    def __init__(self, name="unknown", datatype="", default="", help="No description provided"):
+        self.name=name
+        self.datatype = datatype
+        self.default = default
+        self.help = help
+
+def ParseInputs(func):
+    def wrapper(*args, **kwargs):
+        # Call the custom parse script
+        func(*args, **kwargs)
+        # use the leftover attributes and the custom *args* data dictionary to create inputs
+        engine = args[0]
+        dico = args[1]
+        for key, val in dico.iteritems():
+            print key
+            if engine.getData(key): # if the datafield already exists in the engine
+                continue
+            d = engine.args.get(key, initData())
+            if d.name is "unknown":
+                if key != "type":
+                    Sofa.msg_warning("unknown datafield " + key + " found ")
+            if d.datatype is not "":
+                engine.addNewInput(key, datatype=d.datatype, value=(d.value if val is "" else val),
+                                 help=d.help)
+            else:
+                engine.addNewInput(key, value=(d.value if val is "" else val),
+                                 help=d.help)
+        for key in set(engine.args.keys()) - set(dico.keys()):
+            d = engine.args.get(key)
+            engine.addNewInput(key, datatype=d.datatype, value=d.default, help=d.help)
+
+    return wrapper
