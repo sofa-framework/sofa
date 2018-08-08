@@ -72,7 +72,10 @@ BaseData * helper_addNewIO(PyObject * self, PyObject * args, PyObject * kw)
         return nullptr;
     }
     if (NewData->getName().empty())
+    {
+        delete NewData;
         return nullptr;
+    }
     NewData->setGroup(""); // Needs to be empty before it can be set to Input or Output ...
 
     return NewData;
