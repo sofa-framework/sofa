@@ -98,12 +98,12 @@ PSDEDataFactory* getFactoryInstance(){
                     "Mat4x4f", new DataCreator<sofa::defaulttype::Mat4x4f>());
 
         // Topology
-        s_localfactory->registerCreator("Edge", new DataCreator<Tetra>());
-        s_localfactory->registerCreator("Triangle", new DataCreator<Tetra>());
-        s_localfactory->registerCreator("Quad", new DataCreator<Tetra>());
+        s_localfactory->registerCreator("Edge", new DataCreator<Edge>());
+        s_localfactory->registerCreator("Triangle", new DataCreator<Triangle>());
+        s_localfactory->registerCreator("Quad", new DataCreator<Quad>());
         s_localfactory->registerCreator("Tetra", new DataCreator<Tetra>());
-        s_localfactory->registerCreator("Hexa", new DataCreator<Tetra>());
-        s_localfactory->registerCreator("Penta", new DataCreator<Tetra>());
+        s_localfactory->registerCreator("Hexa", new DataCreator<Hexa>());
+        s_localfactory->registerCreator("Penta", new DataCreator<Penta>());
 
         // VECTORS
         for (const auto& container : containers)
@@ -324,12 +324,17 @@ BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
         }
         else if (std::string(dataName) != "type")
         {
-            msg_warning(obj) << "No type provided for Data" << dataName << " with value " << val << ", creating void* data";
-            return bd;
+  	    sofa::helper::vector<std::string> validTypes;
+	    getFactoryInstance()->uniqueKeys(std::back_inserter(validTypes));
+	    std::string typesString = "[";
+	    for (const auto& i : validTypes)
+	        typesString += i + ", ";
+	    typesString += "\b\b]";
+	    msg_error(obj) << dataRawType << " is not a known type. Available"
+	                      "types are:\n" << typesString;
+            return nullptr;
         }
         else return new Data<void*>();
-//        msg_error(obj) << dataRawType << " is not a known type";
-//        return nullptr;
     }
     else
     {
