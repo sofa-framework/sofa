@@ -169,7 +169,6 @@ def ParseInputs(func):
         engine = args[0]
         dico = args[1]
         for key, val in dico.iteritems():
-            print key
             if engine.getData(key): # if the datafield already exists in the engine
                 continue
             d = engine.args.get(key, initData())

@@ -29,9 +29,9 @@ path = 'mesh/'
 
 class PyAverageEngine(Sofa.PythonScriptDataEngine):
 
-    args = { "positions": ps.initData("positions",help="Input set of positions to average"),
-             "test": ps.initData("test", default="15", datatype="int", help="Input set of positions to average"),
-             "value2": ps.initData("value2", default="0 0 0  1 1 1  2 2 2", datatype="vector<Vec3d>", help="Input set of positions to average")
+    args = { "positions": sp.initData("positions",help="Input set of positions to average"),
+             "test": sp.initData("test", default="15", datatype="int", help="Input set of positions to average"),
+             "value2": sp.initData("value2", default="0 0 0  1 1 1  2 2 2", datatype="vector<Vec3d>", help="Input set of positions to average")
     }
 
     @sp.ParseInputs
