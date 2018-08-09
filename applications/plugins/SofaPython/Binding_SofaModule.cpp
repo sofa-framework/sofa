@@ -911,11 +911,13 @@ static PyObject * Sofa_timerSetOutputType(PyObject* /*self*/, PyObject *args)
     Py_RETURN_NONE;
 }
 
-/**
- * Method : Sofa_addPluginRepository
- * Desc   : Add a path to the plugin repository.
- * Return : NONE
- */
+static constexpr const char* addPluginRepository_DOC =
+R"DOC(
+Adds a plugin repository path.
+
+:param path: The repository's directory path
+:type path: str
+)DOC";
 static PyObject * Sofa_addPluginRepository(PyObject *, PyObject *arg)
 {
     const char *path;
@@ -926,13 +928,17 @@ static PyObject * Sofa_addPluginRepository(PyObject *, PyObject *arg)
     return Py_None;
 }
 
-/**
- * Method : Sofa_createSimulation
- * Desc   : Create a Sofa simulation
- * Param  : Type : "DAG" or "TREE"
- * Param  : Name : The name of the simulation
- * Return : The simulation object
- */
+static constexpr const char* createSimulation_DOC =
+R"DOC(
+Creates a new simulation
+
+:param type: The simulation's type (DAG or TREE)
+:param name: (optional) The simulation's name
+:type type: str
+:type name: str
+:return: The simulation
+:rtype: sofa::simulation::Simulation
+)DOC";
 static PyObject * Sofa_createSimulation(PyObject *, PyObject *arg)
 {
     const char * type_ptr;
@@ -975,12 +981,13 @@ static PyObject * Sofa_createSimulation(PyObject *, PyObject *arg)
     return sofa::PythonFactory::toPython(obj);
 }
 
-/**
- * Method : Sofa_setSimulation
- * Desc   : Set the simulation
- * Param  : Simulation : The simulation python object
- * Return : None
- */
+static constexpr const char* setSimulation_DOC =
+R"DOC(
+Set a simulation as the main simulation
+
+:param simulation: The simulation
+:type simulation: sofa::simulation::Simulation
+)DOC";
 static PyObject * Sofa_setSimulation(PyObject *, PyObject *arg)
 {
     PyObject * simulation;
@@ -1034,9 +1041,9 @@ SP_MODULE_METHOD_DOC(Sofa,getCategories,"Return from a given component type (cla
 SP_MODULE_METHOD_DOC(Sofa,getAvailableComponents, "Returns the list of the available components in the factory.")
 SP_MODULE_METHOD_DOC(Sofa,getAliasesFor, "Returns the list of the aliases for a given component")
 SP_MODULE_METHOD_DOC(Sofa,getComponentsFromTarget, "Returns a string with the component contained in a given targets (plugins)")
-SP_MODULE_METHOD(Sofa,addPluginRepository)
-SP_MODULE_METHOD(Sofa,createSimulation)
-SP_MODULE_METHOD(Sofa,setSimulation)
+SP_MODULE_METHOD_DOC(Sofa,addPluginRepository, addPluginRepository_DOC)
+SP_MODULE_METHOD_DOC(Sofa,createSimulation, createSimulation_DOC)
+SP_MODULE_METHOD_DOC(Sofa,setSimulation, setSimulation_DOC)
 SP_MODULE_METHOD_DOC(Sofa, timerClear, "Method : Sofa_clear \nDesc   : Wrapper for python usage. Clear the timer. \nParam  : PyObject*, self - Object of the python script \nReturn : return None")
 SP_MODULE_METHOD_DOC(Sofa, timerIsEnabled, "Method : Sofa_isEnabled \nDesc   : Wrapper for python usage. Return if the timer is enable or not. \nParam  : PyObject*, self - Object of the python script \nParam  : PyObject*, args - given arguments to apply to the method \nReturn : None")
 SP_MODULE_METHOD_DOC(Sofa, timerSetEnabled, "Method : Sofa_setEnabled \nDesc   : Wrapper for python usage. /!\\ Need to pass an int in arguments insteed of a bool in the python script. \nParam  : PyObject*, self - Object of the python script \nParam  : PyObject*, args - given arguments to apply to the method \nReturn : None")

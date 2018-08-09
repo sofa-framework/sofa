@@ -30,23 +30,37 @@ static inline sofa::simulation::Simulation* get_simulation(PyObject* obj) {
     return sofa::py::unwrap<sofa::simulation::Simulation>(obj);
 }
 
+static constexpr const char* init_DOC =
+R"DOC(
+Initialize the simulation.
+
+:param root: The simulation's root node
+:type root: sofa::simulation::Node
+)DOC";
 static PyObject * Simulation_init(PyObject *self, PyObject * args) {
     sofa::simulation::Simulation* simulation  = get_simulation(self);
 
     PyObject * obj;
     if (!PyArg_ParseTuple(args, "O", &obj)) {
-        return NULL;
+        return nullptr;
     }
     sofa::simulation::Node* root = sofa::py::unwrap<sofa::simulation::Node>(obj);
     simulation->init(root);
     Py_RETURN_NONE;
 }
 
+static constexpr const char* unload_DOC =
+R"DOC(
+Unload the root from the current simulation.
+
+:param root: The simulation's root node
+:type root: sofa::simulation::Node
+)DOC";
 static PyObject * Simulation_unload(PyObject *self, PyObject * args) {
     sofa::simulation::Simulation* simulation  = get_simulation(self);
     PyObject * obj;
     if (!PyArg_ParseTuple(args, "O", &obj)) {
-        return NULL;
+        return nullptr;
     }
 
     sofa::simulation::Node* node = sofa::py::unwrap<sofa::simulation::Node>(obj);
@@ -54,26 +68,44 @@ static PyObject * Simulation_unload(PyObject *self, PyObject * args) {
     Py_RETURN_NONE;
 }
 
+static constexpr const char* exportXML_DOC =
+R"DOC(
+Export the node's graph as an XML file
+
+:param node: The node to be exported
+:param filename: The filename of the resulting XML file
+:type node: sofa::simulation::Node
+:type filename: str
+)DOC";
 static PyObject * Simulation_exportXML(PyObject *self, PyObject * args) {
     sofa::simulation::Simulation* simulation  = get_simulation(self);
 
     PyObject * obj;
     char *filename;
     if (!PyArg_ParseTuple(args, "Os", &obj, &filename)) {
-        return NULL;
+        return nullptr;
     }
     sofa::simulation::Node* root = sofa::py::unwrap<sofa::simulation::Node>(obj);
     simulation->exportXML(root, filename);
     Py_RETURN_NONE;
 }
 
+static constexpr const char* exportGraph_DOC =
+        R"DOC(
+Export the node's graph as a text file
+
+:param node: The node to be exported
+:param filename: The filename of the resulting text file
+:type node: sofa::simulation::Node
+:type filename: str
+)DOC";
 static PyObject * Simulation_exportGraph(PyObject *self, PyObject * args) {
     sofa::simulation::Simulation* simulation  = get_simulation(self);
 
     PyObject * obj;
     char *filename;
     if (!PyArg_ParseTuple(args, "Os", &obj, &filename)) {
-        return NULL;
+        return nullptr;
     }
     sofa::simulation::Node* root = sofa::py::unwrap<sofa::simulation::Node>(obj);
     simulation->exportGraph(root, filename);
@@ -81,10 +113,10 @@ static PyObject * Simulation_exportGraph(PyObject *self, PyObject * args) {
 }
 
 SP_CLASS_METHODS_BEGIN(Simulation)
-SP_CLASS_METHOD(Simulation, init)
-SP_CLASS_METHOD(Simulation, unload)
-SP_CLASS_METHOD(Simulation, exportXML)
-SP_CLASS_METHOD(Simulation, exportGraph)
+SP_CLASS_METHOD_DOC(Simulation, init, init_DOC)
+SP_CLASS_METHOD_DOC(Simulation, unload, unload_DOC)
+SP_CLASS_METHOD_DOC(Simulation, exportXML, exportXML_DOC)
+SP_CLASS_METHOD_DOC(Simulation, exportGraph, exportGraph_DOC)
 SP_CLASS_METHODS_END
 
 
