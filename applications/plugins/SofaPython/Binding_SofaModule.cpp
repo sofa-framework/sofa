@@ -57,6 +57,12 @@ using namespace sofa::defaulttype;
 using namespace sofa::component;
 
 #include <sofa/simulation/Node.h>
+#include <SofaSimulationCommon/init.h>
+#include <SofaSimulationTree/init.h>
+#ifdef SOFA_HAVE_DAG
+#include <SofaSimulationGraph/init.h>
+#endif
+
 using namespace sofa::simulation;
 
 using sofa::helper::Utils ;
@@ -906,6 +912,22 @@ static PyObject * Sofa_timerSetOutputType(PyObject* /*self*/, PyObject *args)
     Py_RETURN_NONE;
 }
 
+/**
+ * Method : Sofa_cleanup
+ * Desc   : Cleanup sofa components when python is used as the main application. This method should be called before the
+ *          end of the python script.
+ * Return : NONE
+ */
+static PyObject * Sofa_cleanup(PyObject*, PyObject*)
+{
+    sofa::simulation::common::cleanup();
+    sofa::simulation::tree::cleanup();
+#ifdef SOFA_HAVE_DAG
+    sofa::simulation::graph::cleanup();
+#endif
+
+    Py_RETURN_NONE;
+}
 
 
 /// Methods of the module
@@ -939,6 +961,7 @@ SP_MODULE_METHOD_DOC(Sofa,getCategories,"Return from a given component type (cla
 SP_MODULE_METHOD_DOC(Sofa,getAvailableComponents, "Returns the list of the available components in the factory.")
 SP_MODULE_METHOD_DOC(Sofa,getAliasesFor, "Returns the list of the aliases for a given component")
 SP_MODULE_METHOD_DOC(Sofa,getComponentsFromTarget, "Returns a string with the component contained in a given targets (plugins)")
+SP_MODULE_METHOD(Sofa,cleanup)
 SP_MODULE_METHOD_DOC(Sofa, timerClear, "Method : Sofa_clear \nDesc   : Wrapper for python usage. Clear the timer. \nParam  : PyObject*, self - Object of the python script \nReturn : return None")
 SP_MODULE_METHOD_DOC(Sofa, timerIsEnabled, "Method : Sofa_isEnabled \nDesc   : Wrapper for python usage. Return if the timer is enable or not. \nParam  : PyObject*, self - Object of the python script \nParam  : PyObject*, args - given arguments to apply to the method \nReturn : None")
 SP_MODULE_METHOD_DOC(Sofa, timerSetEnabled, "Method : Sofa_setEnabled \nDesc   : Wrapper for python usage. /!\\ Need to pass an int in arguments insteed of a bool in the python script. \nParam  : PyObject*, self - Object of the python script \nParam  : PyObject*, args - given arguments to apply to the method \nReturn : None")
