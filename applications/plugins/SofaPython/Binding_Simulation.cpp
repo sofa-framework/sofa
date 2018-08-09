@@ -30,6 +30,18 @@ static inline sofa::simulation::Simulation* get_simulation(PyObject* obj) {
     return sofa::py::unwrap<sofa::simulation::Simulation>(obj);
 }
 
+static PyObject * Simulation_init(PyObject *self, PyObject * args) {
+    sofa::simulation::Simulation* simulation  = get_simulation(self);
+
+    PyObject * obj;
+    if (!PyArg_ParseTuple(args, "O", &obj)) {
+        return NULL;
+    }
+    sofa::simulation::Node* root = sofa::py::unwrap<sofa::simulation::Node>(obj);
+    simulation->init(root);
+    Py_RETURN_NONE;
+}
+
 static PyObject * Simulation_exportXML(PyObject *self, PyObject * args) {
     sofa::simulation::Simulation* simulation  = get_simulation(self);
 
@@ -57,6 +69,7 @@ static PyObject * Simulation_exportGraph(PyObject *self, PyObject * args) {
 }
 
 SP_CLASS_METHODS_BEGIN(Simulation)
+SP_CLASS_METHOD(Simulation, init)
 SP_CLASS_METHOD(Simulation, exportXML)
 SP_CLASS_METHOD(Simulation, exportGraph)
 SP_CLASS_METHODS_END
