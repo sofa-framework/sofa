@@ -953,7 +953,8 @@ static PyObject * Sofa_createSimulation(PyObject *, PyObject *arg)
     }
 
     type = std::string(type_ptr);
-    name = std::string(name_ptr);
+    if (name_ptr and strlen(name_ptr))
+        name = std::string(name_ptr);
 
 #ifdef SOFA_HAVE_DAG
     if (type == "DAG")
