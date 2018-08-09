@@ -61,6 +61,9 @@ using namespace sofa::component;
 #include <SofaSimulationTree/init.h>
 #ifdef SOFA_HAVE_DAG
 #include <SofaSimulationGraph/init.h>
+#include <SofaSimulationGraph/DAGSimulation.h>
+#include <SofaSimulationTree/TreeSimulation.h>
+
 #endif
 
 using namespace sofa::simulation;
@@ -913,6 +916,87 @@ static PyObject * Sofa_timerSetOutputType(PyObject* /*self*/, PyObject *args)
 }
 
 /**
+ * Method : Sofa_addPluginRepository
+ * Desc   : Add a path to the plugin repository.
+ * Return : NONE
+ */
+static PyObject * Sofa_addPluginRepository(PyObject *, PyObject *arg)
+{
+    const char *path;
+    if (!PyArg_ParseTuple(arg, "s", &path))
+        return NULL;
+    sofa::helper::system::PluginRepository.addFirstPath(path);
+
+    return Py_None;
+}
+
+/**
+ * Method : Sofa_createSimulation
+ * Desc   : Create a Sofa simulation
+ * Param  : Type : "DAG" or "TREE"
+ * Param  : Name : The name of the simulation
+ * Return : The simulation object
+ */
+static PyObject * Sofa_createSimulation(PyObject *, PyObject *arg)
+{
+    const char * type_ptr;
+    const char * name_ptr;
+    sofa::simulation::Simulation * obj;
+    std::string type, name;
+
+    if (!PyArg_ParseTuple(arg, "s|s", &type_ptr, &name_ptr))
+        goto error;
+
+
+    type = std::string(type_ptr);
+    name = std::string(name_ptr);
+
+    if (type == "DAG")
+        obj = new sofa::simulation::graph::DAGSimulation();
+    else if(type == "TREE")
+        obj = new sofa::simulation::tree::TreeSimulation();
+    else
+        goto error;
+
+    if (!name.empty())
+        obj->setName(name);
+
+    return sofa::PythonFactory::toPython(obj);
+
+error:
+    SP_MESSAGE_ERROR("Sofa::createSimulation needs either 'DAG' or 'TREE' as argument.");
+    return NULL;
+}
+
+/**
+ * Method : Sofa_setSimulation
+ * Desc   : Set the simulation
+ * Param  : Simulation : The simulation python object
+ * Return : None
+ */
+static PyObject * Sofa_setSimulation(PyObject *, PyObject *arg)
+{
+    PyObject * simulation;
+    sofa::simulation::Simulation * obj;
+
+    if (!PyArg_ParseTuple(arg, "O", &simulation)) {
+        SP_MESSAGE_ERROR("Sofa::setSimulation needs a Simulation object.");
+        return NULL;
+    }
+
+    obj = sofa::py::unwrap<sofa::simulation::Simulation>(simulation);
+    if (obj == nullptr) {
+        SP_MESSAGE_ERROR("Sofa::setSimulation needs a valid Simulation object.");
+        return NULL;
+    }
+
+    sofa::simulation::setSimulation(obj);
+
+
+    return Py_None;
+}
+
+/**
  * Method : Sofa_cleanup
  * Desc   : Cleanup sofa components when python is used as the main application. This method should be called before the
  *          end of the python script.
@@ -961,6 +1045,9 @@ SP_MODULE_METHOD_DOC(Sofa,getCategories,"Return from a given component type (cla
 SP_MODULE_METHOD_DOC(Sofa,getAvailableComponents, "Returns the list of the available components in the factory.")
 SP_MODULE_METHOD_DOC(Sofa,getAliasesFor, "Returns the list of the aliases for a given component")
 SP_MODULE_METHOD_DOC(Sofa,getComponentsFromTarget, "Returns a string with the component contained in a given targets (plugins)")
+SP_MODULE_METHOD(Sofa,addPluginRepository)
+SP_MODULE_METHOD(Sofa,createSimulation)
+SP_MODULE_METHOD(Sofa,setSimulation)
 SP_MODULE_METHOD(Sofa,cleanup)
 SP_MODULE_METHOD_DOC(Sofa, timerClear, "Method : Sofa_clear \nDesc   : Wrapper for python usage. Clear the timer. \nParam  : PyObject*, self - Object of the python script \nReturn : return None")
 SP_MODULE_METHOD_DOC(Sofa, timerIsEnabled, "Method : Sofa_isEnabled \nDesc   : Wrapper for python usage. Return if the timer is enable or not. \nParam  : PyObject*, self - Object of the python script \nParam  : PyObject*, args - given arguments to apply to the method \nReturn : None")

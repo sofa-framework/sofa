@@ -48,6 +48,7 @@ set(HEADER_FILES
     Binding_PythonScriptDataEngine.h
     Binding_RegularGridTopology.h
     Binding_RigidMapping.h
+    Binding_Simulation.h
     Binding_SofaModule.h
 #    Binding_SubsetMultiMapping.h
     Binding_Topology.h
@@ -109,6 +110,7 @@ set(SOURCE_FILES
     Binding_PythonScriptDataEngine.cpp
     Binding_RegularGridTopology.cpp
     Binding_RigidMapping.cpp
+    Binding_Simulation.cpp
     Binding_SofaModule.cpp
 #    Binding_SubsetMultiMapping.cpp
     Binding_Topology.cpp
