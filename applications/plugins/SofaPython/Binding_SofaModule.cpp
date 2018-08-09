@@ -57,14 +57,10 @@ using namespace sofa::defaulttype;
 using namespace sofa::component;
 
 #include <sofa/simulation/Node.h>
-#include <SofaSimulationCommon/init.h>
-#include <SofaSimulationTree/init.h>
 #ifdef SOFA_HAVE_DAG
-#include <SofaSimulationGraph/init.h>
 #include <SofaSimulationGraph/DAGSimulation.h>
-#include <SofaSimulationTree/TreeSimulation.h>
-
 #endif
+#include <SofaSimulationTree/TreeSimulation.h>
 
 using namespace sofa::simulation;
 
@@ -944,28 +940,38 @@ static PyObject * Sofa_createSimulation(PyObject *, PyObject *arg)
     sofa::simulation::Simulation * obj;
     std::string type, name;
 
-    if (!PyArg_ParseTuple(arg, "s|s", &type_ptr, &name_ptr))
-        goto error;
+#ifdef SOFA_HAVE_DAG
+    const char * error_msg = "Sofa::createSimulation needs either 'DAG' or 'TREE' as first argument.";
+#else
+    const char * error_msg = "Sofa::createSimulation only supports 'TREE' as first argument.";
+#endif
 
+
+    if (!PyArg_ParseTuple(arg, "s|s", &type_ptr, &name_ptr)) {
+        SP_MESSAGE_ERROR(error_msg);
+        return nullptr;
+    }
 
     type = std::string(type_ptr);
     name = std::string(name_ptr);
 
+#ifdef SOFA_HAVE_DAG
     if (type == "DAG")
         obj = new sofa::simulation::graph::DAGSimulation();
-    else if(type == "TREE")
-        obj = new sofa::simulation::tree::TreeSimulation();
     else
-        goto error;
+#endif
+    if(type == "TREE")
+        obj = new sofa::simulation::tree::TreeSimulation();
+
+    if (obj == nullptr) {
+        SP_MESSAGE_ERROR(error_msg);
+        return nullptr;
+    }
 
     if (!name.empty())
         obj->setName(name);
 
     return sofa::PythonFactory::toPython(obj);
-
-error:
-    SP_MESSAGE_ERROR("Sofa::createSimulation needs either 'DAG' or 'TREE' as argument.");
-    return NULL;
 }
 
 /**
@@ -995,24 +1001,6 @@ static PyObject * Sofa_setSimulation(PyObject *, PyObject *arg)
 
     return Py_None;
 }
-
-/**
- * Method : Sofa_cleanup
- * Desc   : Cleanup sofa components when python is used as the main application. This method should be called before the
- *          end of the python script.
- * Return : NONE
- */
-static PyObject * Sofa_cleanup(PyObject*, PyObject*)
-{
-    sofa::simulation::common::cleanup();
-    sofa::simulation::tree::cleanup();
-#ifdef SOFA_HAVE_DAG
-    sofa::simulation::graph::cleanup();
-#endif
-
-    Py_RETURN_NONE;
-}
-
 
 /// Methods of the module
 SP_MODULE_METHODS_BEGIN(Sofa)
@@ -1048,7 +1036,6 @@ SP_MODULE_METHOD_DOC(Sofa,getComponentsFromTarget, "Returns a string with the co
 SP_MODULE_METHOD(Sofa,addPluginRepository)
 SP_MODULE_METHOD(Sofa,createSimulation)
 SP_MODULE_METHOD(Sofa,setSimulation)
-SP_MODULE_METHOD(Sofa,cleanup)
 SP_MODULE_METHOD_DOC(Sofa, timerClear, "Method : Sofa_clear \nDesc   : Wrapper for python usage. Clear the timer. \nParam  : PyObject*, self - Object of the python script \nReturn : return None")
 SP_MODULE_METHOD_DOC(Sofa, timerIsEnabled, "Method : Sofa_isEnabled \nDesc   : Wrapper for python usage. Return if the timer is enable or not. \nParam  : PyObject*, self - Object of the python script \nParam  : PyObject*, args - given arguments to apply to the method \nReturn : None")
 SP_MODULE_METHOD_DOC(Sofa, timerSetEnabled, "Method : Sofa_setEnabled \nDesc   : Wrapper for python usage. /!\\ Need to pass an int in arguments insteed of a bool in the python script. \nParam  : PyObject*, self - Object of the python script \nParam  : PyObject*, args - given arguments to apply to the method \nReturn : None")

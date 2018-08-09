@@ -24,11 +24,41 @@
 #include "Binding_Simulation.h"
 #include "Binding_Base.h"
 #include "PythonToSofa.inl"
-#include <SofaSimulationGraph/DAGSimulation.h>
+#include <sofa/simulation/Simulation.h>
 
+static inline sofa::simulation::Simulation* get_simulation(PyObject* obj) {
+    return sofa::py::unwrap<sofa::simulation::Simulation>(obj);
+}
 
+static PyObject * Simulation_exportXML(PyObject *self, PyObject * args) {
+    sofa::simulation::Simulation* simulation  = get_simulation(self);
+
+    PyObject * obj;
+    char *filename;
+    if (!PyArg_ParseTuple(args, "Os", &obj, &filename)) {
+        return NULL;
+    }
+    sofa::simulation::Node* root = sofa::py::unwrap<sofa::simulation::Node>(obj);
+    simulation->exportXML(root, filename);
+    Py_RETURN_NONE;
+}
+
+static PyObject * Simulation_exportGraph(PyObject *self, PyObject * args) {
+    sofa::simulation::Simulation* simulation  = get_simulation(self);
+
+    PyObject * obj;
+    char *filename;
+    if (!PyArg_ParseTuple(args, "Os", &obj, &filename)) {
+        return NULL;
+    }
+    sofa::simulation::Node* root = sofa::py::unwrap<sofa::simulation::Node>(obj);
+    simulation->exportGraph(root, filename);
+    Py_RETURN_NONE;
+}
 
 SP_CLASS_METHODS_BEGIN(Simulation)
+SP_CLASS_METHOD(Simulation, exportXML)
+SP_CLASS_METHOD(Simulation, exportGraph)
 SP_CLASS_METHODS_END
 
 
