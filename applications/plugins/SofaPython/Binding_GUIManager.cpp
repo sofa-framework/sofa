@@ -140,6 +140,20 @@ static PyObject * GUIManager_closeGUI(PyObject * /*self*/, PyObject * /*args*/) 
     Py_RETURN_NONE;
 }
 
+static PyObject * GUIManager_AddGUIOption(PyObject * /*self*/, PyObject * args) {
+    const char *option = nullptr;
+
+    if (!PyArg_ParseTuple(args, "s", &option)) {
+        std::string msg = "GUIManager.AddGUIOption requires an option as argument";
+        SP_MESSAGE_ERROR(msg.c_str());
+        return nullptr;
+    }
+
+    sofa::gui::GUIManager::AddGUIOption(option);
+
+    Py_RETURN_NONE;
+}
+
 
 SP_MODULE_METHODS_BEGIN(GUIManager)
 SP_MODULE_METHOD(GUIManager, listSupportedGUI)
@@ -155,4 +169,5 @@ SP_MODULE_METHOD(GUIManager, setDimension)
 SP_MODULE_METHOD(GUIManager, setScene)
 SP_MODULE_METHOD(GUIManager, MainLoop)
 SP_MODULE_METHOD(GUIManager, closeGUI)
+SP_MODULE_METHOD(GUIManager, AddGUIOption)
 SP_MODULE_METHODS_END
