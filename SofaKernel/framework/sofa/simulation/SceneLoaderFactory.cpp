@@ -118,6 +118,15 @@ SceneLoader* SceneLoaderFactory::addEntry(SceneLoader *loader)
     return loader;
 }
 
+/// Remove a scene loader
+void SceneLoaderFactory::removeEntry(const SceneLoader *loader)
+{
+    auto it = std::find(registry.begin(), registry.end(), loader);
+    if (it != registry.end()) {
+        registry.erase(it);
+    }
+}
+
 
 
 } // namespace simulation
