@@ -932,7 +932,7 @@ static constexpr const char* createSimulation_DOC =
 R"DOC(
 Creates a new simulation
 
-:param type: The simulation's type (DAG or TREE)
+:param type: (optional) The simulation's type (DAG or TREE, default DAG if supported, TREE otherwise)
 :param name: (optional) The simulation's name
 :type type: str
 :type name: str
@@ -941,8 +941,8 @@ Creates a new simulation
 )DOC";
 static PyObject * Sofa_createSimulation(PyObject *, PyObject *arg)
 {
-    const char * type_ptr;
-    const char * name_ptr;
+    const char * type_ptr = nullptr;
+    const char * name_ptr = nullptr;
     sofa::simulation::Simulation * obj = nullptr;
     std::string type, name;
 
@@ -953,12 +953,21 @@ static PyObject * Sofa_createSimulation(PyObject *, PyObject *arg)
 #endif
 
 
-    if (!PyArg_ParseTuple(arg, "s|s", &type_ptr, &name_ptr)) {
+    if (!PyArg_ParseTuple(arg, "|ss", &type_ptr, &name_ptr)) {
         SP_MESSAGE_ERROR(error_msg);
         return nullptr;
     }
 
-    type = std::string(type_ptr);
+    if (type_ptr and strlen(type_ptr))
+        type = std::string(type_ptr);
+#ifdef SOFA_HAVE_DAG
+    else
+        type = std::string("DAG");
+#else
+    else
+        type = std::string("TREE");
+#endif
+
     if (name_ptr and strlen(name_ptr))
         name = std::string(name_ptr);
 
