@@ -31,6 +31,7 @@ set(HEADER_FILES
     Binding_OptionsGroupData.h
     Binding_BoundingBoxData.h
     Binding_GridTopology.h
+    Binding_GUIManager.h
     Binding_LinearSpring.h
     Binding_Link.h
     Binding_Mapping.h
@@ -93,6 +94,7 @@ set(SOURCE_FILES
     Binding_OptionsGroupData.cpp
     Binding_BoundingBoxData.cpp
     Binding_GridTopology.cpp
+    Binding_GUIManager.cpp
     Binding_LinearSpring.cpp
     Binding_Link.cpp
     Binding_Mapping.cpp
@@ -196,7 +198,7 @@ target_include_directories(${PROJECT_NAME}
     PUBLIC "$<INSTALL_INTERFACE:include>"
     )
 
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCommon SofaUserInteraction SofaGuiCommon SofaComponentMisc SofaComponentGeneral SofaSimulationGraph ${PYTHON_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaSimulationCommon SofaUserInteraction SofaGuiCommon SofaGuiMain SofaComponentMisc SofaComponentGeneral SofaSimulationGraph ${PYTHON_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} PRIVATE SofaExporter)
 if(CMAKE_SYSTEM_NAME STREQUAL Linux)
     # dlopen() is used on Linux for a workaround (see PythonEnvironnement.cpp)

@@ -45,6 +45,7 @@
 #include "Binding_BaseMeshTopology.h"
 #include "Binding_MeshTopology.h"
 #include "Binding_GridTopology.h"
+#include "Binding_GUIManager.h"
 #include "Binding_RegularGridTopology.h"
 #include "Binding_BaseMechanicalState.h"
 #include "Binding_MechanicalObject.h"
@@ -123,6 +124,9 @@ void bindSofaPythonModule()
     SP_ADD_CLASS_IN_FACTORY(PointSetTopologyModifier,sofa::component::topology::PointSetTopologyModifier)
     SP_ADD_CLASS_IN_FACTORY(TriangleSetTopologyModifier,sofa::component::topology::TriangleSetTopologyModifier)
     SP_ADD_CLASS_IN_FACTORY(Simulation, sofa::simulation::Simulation)
+
+    /// Static modules
+    SP_ADD_MODULE_IN_SOFAMODULE(GUIManager)
 
     /// Custom Exception
     PyObject* PyExc_SofaException = PyErr_NewExceptionWithDoc(

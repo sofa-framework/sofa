@@ -937,7 +937,7 @@ static PyObject * Sofa_createSimulation(PyObject *, PyObject *arg)
 {
     const char * type_ptr;
     const char * name_ptr;
-    sofa::simulation::Simulation * obj;
+    sofa::simulation::Simulation * obj = nullptr;
     std::string type, name;
 
 #ifdef SOFA_HAVE_DAG
