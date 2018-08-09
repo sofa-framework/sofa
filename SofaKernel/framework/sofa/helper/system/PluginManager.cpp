@@ -174,10 +174,34 @@ bool PluginManager::loadPluginByPath(const std::string& pluginPath, std::ostream
         getPluginEntry(p.getModuleLicense,d);
         getPluginEntry(p.getModuleComponentList,d);
         getPluginEntry(p.getModuleVersion,d);
+
+        // Verify that the plugin isn't already loaded by comparing plugins names and init function locations
+        std::string version = strlen(p.getModuleVersion()) ? p.getModuleVersion() : "unknown";
+        std::string name = strlen(p.getModuleName()) ? p.getModuleName() : "";
+        bool pluginAlreadyLoaded = false;
+
+        for (const auto &plugin : m_pluginMap) {
+            std::string n = plugin.second.getModuleName() ? plugin.second.getModuleName() : "unknown";
+            if (p.initExternalModule.func == plugin.second.initExternalModule.func ||
+                (!name.empty() && name == n)) {
+                // Plugin seems to be already loaded
+                pluginAlreadyLoaded = true;
+                std::string v = plugin.second.getModuleVersion() ? plugin.second.getModuleVersion() : "unknown";
+                const std::string msg = "Plugin '"+pluginPath+"' won't be loaded since it seems there is a similar plugin already loaded (named '"+n+"', version '"+v+"', file '"+plugin.first+"')";
+                msg_error("PluginManager") << msg;
+                break;
+            }
+        }
+
+        if (pluginAlreadyLoaded) {
+            DynamicLibrary::unload(d);
+            return false;
+        }
+
     }
 
     p.dynamicLibrary = d;
-    m_pluginMap[pluginPath] = p;
+    addPlugin(pluginPath, p);
     p.initExternalModule();
 
     msg_info("PluginManager") << "Loaded plugin: " << pluginPath;
@@ -200,6 +224,11 @@ bool PluginManager::loadPluginByName(const std::string& pluginName, const std::s
 
         return false;
     }
+}
+
+void PluginManager::addPlugin(const std::string &pluginPath, Plugin plugin)
+{
+    m_pluginMap[pluginPath] = plugin;
 }
 
 bool PluginManager::loadPlugin(const std::string& plugin, const std::string& suffix, bool ignoreCase, bool recursive, std::ostream* errlog)
@@ -225,7 +254,13 @@ bool PluginManager::unloadPlugin(const std::string &pluginPath, std::ostream* er
     }
     else
     {
-        m_pluginMap.erase(m_pluginMap.find(pluginPath));
+        const auto & p = m_pluginMap.find(pluginPath);
+        if (p->second.permanent) {
+            msg_error("PluginManager::unloadPlugin()") << "Plugin '"+pluginPath+"' is permanent and will not be unloaded.";
+        } else {
+            DynamicLibrary::unload(p->second.dynamicLibrary);
+            m_pluginMap.erase(p);
+        }
         return true;
     }
 }
@@ -294,14 +329,13 @@ void PluginManager::init(const std::string& pluginPath)
 
 std::string PluginManager::findPlugin(const std::string& pluginName, const std::string& suffix, bool ignoreCase, bool recursive, int maxRecursiveDepth)
 {
-    std::vector<std::string> searchPaths = PluginRepository.getPaths();
-
     std::string name(pluginName);
     name  += suffix;
     const std::string libName = DynamicLibrary::prefix + name + "." + DynamicLibrary::extension;
+    const std::vector<std::string> & searchPaths = PluginRepository.getPaths();
 
     // First try: case sensitive
-    for (std::vector<std::string>::iterator i = searchPaths.begin(); i!=searchPaths.end(); i++)
+    for (std::vector<std::string>::const_iterator i = searchPaths.begin(); i!=searchPaths.end(); i++)
     {
         const std::string path = *i + "/" + libName;
         if (FileSystem::isFile(path))
@@ -313,7 +347,7 @@ std::string PluginManager::findPlugin(const std::string& pluginName, const std::
         if(!recursive) maxRecursiveDepth = 0;
         const std::string downcaseLibName = Utils::downcaseString(libName);
 
-        for (std::vector<std::string>::iterator i = searchPaths.begin(); i!=searchPaths.end(); i++)
+        for (std::vector<std::string>::const_iterator i = searchPaths.begin(); i!=searchPaths.end(); i++)
         {
             const std::string& dir = *i;
 

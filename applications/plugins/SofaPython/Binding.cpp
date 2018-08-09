@@ -67,7 +67,7 @@
 using sofa::PythonFactory;
 
 
-void bindSofaPythonModule()
+void bindSofaPythonModule(PyObject * module)
 {
     static std::string docstring=R"(
             Sofa module.
@@ -77,7 +77,11 @@ void bindSofaPythonModule()
 
             )";
 
-    PythonFactory::s_sofaPythonModule = SP_INIT_MODULE(Sofa,docstring.c_str())
+    if (!module) {
+        module = SP_INIT_MODULE(Sofa,docstring.c_str())
+    }
+
+    PythonFactory::s_sofaPythonModule =  module;
 
     /// non Base-Inherited types
     SP_ADD_CLASS_IN_SOFAMODULE(Data)

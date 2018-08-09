@@ -28,6 +28,11 @@
 #include <sofa/helper/system/FileSystem.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/simulation/Node.h>
+#include <SofaSimulationCommon/init.h>
+#include <SofaSimulationTree/init.h>
+#ifdef SOFA_HAVE_DAG
+#include <SofaSimulationGraph/init.h>
+#endif
 
 #include <sofa/helper/Utils.h>
 #include <sofa/helper/StringUtils.h>
@@ -215,6 +220,12 @@ void PythonEnvironment::Release()
         PyGILState_Ensure();
         Py_Finalize();
     }
+
+    sofa::simulation::common::cleanup();
+    sofa::simulation::tree::cleanup();
+#ifdef SOFA_HAVE_DAG
+    sofa::simulation::graph::cleanup();
+#endif
 }
 
 void PythonEnvironment::addPythonModulePath(const std::string& path)
