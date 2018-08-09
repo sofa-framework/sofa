@@ -278,7 +278,7 @@ BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
 	for (const auto& i : validTypes)
 	    typesString += i + ", ";
 	typesString += "\b\b]";
-	msg_error(obj) << dataRawType << " is not a known type. Available"
+	msg_error(obj) << dataRawType << " is not a known type. Available "
 	                  "types are:\n" << typesString;
         return nullptr;
     }
