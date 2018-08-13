@@ -47,7 +47,7 @@ namespace fem
 /** Compute Finite Element forces based on 6D beam elements.
 */
 template<class DataTypes>
-class BeamFEMForceField : public core::behavior::ForceField<DataTypes>
+class SOFA_SOLIDMECHANICS_API BeamFEMForceField : public core::behavior::ForceField<DataTypes>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(BeamFEMForceField,DataTypes), SOFA_TEMPLATE(core::behavior::ForceField,DataTypes));

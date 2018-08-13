@@ -40,7 +40,7 @@ namespace mass
 {
 
 template <class DataTypes, class TMassType>
-class BeamMassMatrix : public core::behavior::Mass<DataTypes>
+class SOFA_MASS_API BeamMassMatrix : public core::behavior::Mass<DataTypes>
 {
 public:
 	SOFA_CLASS(SOFA_TEMPLATE2(BeamMassMatrix,DataTypes,TMassType), SOFA_TEMPLATE(core::behavior::Mass,DataTypes));

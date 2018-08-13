@@ -44,7 +44,7 @@ namespace mapping
 {
 
 template <class TIn, class TOut>
-class BeamLinearMapping : public core::Mapping<TIn, TOut>
+class SOFA_MAPPING_API BeamLinearMapping : public core::Mapping<TIn, TOut>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(BeamLinearMapping,TIn,TOut), SOFA_TEMPLATE2(core::Mapping,TIn,TOut));
