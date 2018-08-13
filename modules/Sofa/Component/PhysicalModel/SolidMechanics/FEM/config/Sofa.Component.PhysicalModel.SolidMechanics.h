@@ -24,7 +24,7 @@
 
 #include <sofa/config.h>
 
-#ifdef BUILD_SOFA_SOLIDMECHANICS
+#ifdef BUILD_SOFA_SOLIDMECHANICS_API
 #  define  SOFA_TARGET    Sofa.Component.PhysicalModel.SolidMechanics
 #  define SOFA_SOLIDMECHANICS_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
