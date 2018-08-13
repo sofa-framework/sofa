@@ -146,7 +146,7 @@ void BeamFEMForceField<DataTypes>::initInternalData()
             waInRadii[i] = ir;
     }
     else
-        if (innerRadii.size() != n)
+        if (innerRadii.size() != size)
             msg_error() << "number of inner radii and beams differs";
 
 	for (std::size_t i = 0; i<size; ++i)
