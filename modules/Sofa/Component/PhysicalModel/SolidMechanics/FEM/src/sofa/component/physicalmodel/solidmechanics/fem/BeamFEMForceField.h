@@ -155,10 +155,10 @@ private:
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_PHYSICALMODEL_SOLIDMECHANICS_FEM_BEAMFEMFORCEFIELD_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_GENERAL_SIMPLE_FEM_API BeamFEMForceField<defaulttype::Rigid3dTypes>;
+extern template class SOFA_SOLIDMECHANICS_API BeamFEMForceField<defaulttype::Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_GENERAL_SIMPLE_FEM_API BeamFEMForceField<defaulttype::Rigid3fTypes>;
+extern template class SOFA_SOLIDMECHANICS_API BeamFEMForceField<defaulttype::Rigid3fTypes>;
 #endif
 #endif
 
