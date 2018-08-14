@@ -4,10 +4,17 @@ project(Communication)
 option(PLUGIN_COMMUNICATION_Oscpack "Make use of the Oscpack protocol" OFF)
 option(PLUGIN_COMMUNICATION_ZMQ "Make use of the ZMQ protocol" OFF)
 option(PLUGIN_COMMUNICATION_VRPN "Make use of the VRPN protocol" OFF)
+option(PLUGIN_COMMUNICATION_QSerial "Make use of the QSerial protocol" OFF)
 
 set(COMMUNICATION_MAJOR_VERSION 1)
 set(COMMUNICATION_MINOR_VERSION 0)
 set(COMMUNICATION_VERSION ${COMMUNICATION_MAJOR_VERSION}.${COMMUNICATION_MINOR_VERSION})
+
+find_package(Qt5Core REQUIRED)
+find_package(Qt5Multimedia REQUIRED)
+find_package(Qt5Widgets REQUIRED)
+find_package(Qt5Gui REQUIRED)
+find_package(Qt5SerialPort)
 
 set(HEADER_FILES
     config.h
@@ -54,6 +61,9 @@ set(EXTRA_FILES
 
     examples/VRPN/matrix/Sender/Sender.scn
     examples/VRPN/matrix/Receiver/Receiver.scn
+
+    examples/QSerial/primitives/Receiver/receiver.scn
+    examples/QSerial/primitives/Sender/sender.scn
     )
 
 find_package(SofaFramework REQUIRED)
@@ -120,6 +130,19 @@ if(PLUGIN_COMMUNICATION_VRPN)
 
 endif()
 
+#COMMUNICATION QSerial
+if(PLUGIN_COMMUNICATION_QSerial)
+    message("QSerial loaded")
+    list(APPEND HEADER_FILES
+        components/serverCommunicationQSerial.h
+        components/serverCommunicationQSerial.inl
+        )
+
+    list(APPEND SOURCE_FILES
+        components/serverCommunicationQSerial.cpp
+        )
+endif()
+
 add_subdirectory(Communication_test)
 
 IF(WIN32)
@@ -127,7 +150,7 @@ IF(WIN32)
 ENDIF(WIN32)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
-target_link_libraries(${PROJECT_NAME} ${Oscpack_LIBRARIES} ${ZMQ_LIBRARIES} ${VRPN_LIBRARIES} SofaCore SofaSimulationGraph)
+target_link_libraries(${PROJECT_NAME} ${Oscpack_LIBRARIES} ${ZMQ_LIBRARIES} ${VRPN_LIBRARIES} SofaCore SofaSimulationGraph Qt5::Widgets)
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_Communication")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
