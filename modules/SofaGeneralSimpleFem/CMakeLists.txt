@@ -27,8 +27,6 @@ list(APPEND HEADER_FILES
     TetrahedralCorotationalFEMForceField.inl
     TriangularFEMForceFieldOptim.h
     TriangularFEMForceFieldOptim.inl
-    CMTetrahedralCorotationalFEMForceField.h
-    CMTetrahedralCorotationalFEMForceField.inl
     )
 list(APPEND SOURCE_FILES
     BeamFEMForceField.cpp
@@ -37,7 +35,6 @@ list(APPEND SOURCE_FILES
     HexahedronFEMForceFieldAndMass.cpp
     TetrahedralCorotationalFEMForceField.cpp
     TriangularFEMForceFieldOptim.cpp
-    CMTetrahedralCorotationalFEMForceField.cpp
     )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})

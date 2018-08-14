@@ -130,13 +130,6 @@ set(HEADER_FILES
     topology/TopologyChange.h
     topology/TopologyElementHandler.h
     topology/TopologyHandler.h
-    topology/MapTopology.h
-    topology/CMTopologyChange.h
-    topology/CMTopologyHandler.h
-    topology/CMTopologyElementHandler.h
-    topology/CMBaseTopologyData.h
-    topology/CMBaseTopologyEngine.h
-    topology/CMBaseTopology.h
     visual/DisplayFlags.h
     visual/DrawTool.h
     visual/Shader.h
@@ -235,11 +228,6 @@ set(SOURCE_FILES
     topology/TopologyChange.cpp
     topology/TopologyElementHandler.cpp
     topology/TopologyHandler.cpp
-    topology/MapTopology.cpp
-    topology/CMTopologyHandler.cpp
-    topology/CMTopologyElementHandler.cpp
-    topology/CMBaseTopology.cpp
-    topology/CMTopologyChange.cpp
     visual/Shader.cpp
     visual/DisplayFlags.cpp
     visual/VisualLoop.cpp
@@ -273,13 +261,8 @@ if(PS3)
     list(APPEND SOURCE_FILES ps3/cxa_demangle.cpp)
 endif()
 
-find_package(cgogn_core REQUIRED)
-find_package(cgogn_geometry REQUIRED)
-find_package(cgogn_io REQUIRED)
-find_package(cgogn_modeling REQUIRED)
-
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaDefaultType ${cgogn_core_LIBRARIES} ${cgogn_geometry_LIBRARIES} ${cgogn_io_LIBRARIES} ${cgogn_modeling_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaHelper SofaDefaultType)
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../..>")
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_CORE")

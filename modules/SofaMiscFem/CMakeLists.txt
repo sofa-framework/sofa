@@ -45,8 +45,6 @@ list(APPEND SOURCE_FILES
 
 if(SOFA_HAVE_NEWMAT)
     list(APPEND HEADER_FILES
-        CMTriangularFEMForceField.h
-        CMTriangularFEMForceField.inl
         PlasticMaterial.h
         TriangularAnisotropicFEMForceField.h
         TriangularAnisotropicFEMForceField.inl
@@ -54,7 +52,6 @@ if(SOFA_HAVE_NEWMAT)
         TriangularFEMForceField.inl
         )
     list(APPEND SOURCE_FILES
-        CMTriangularFEMForceField.cpp
         PlasticMaterial.cpp
         TriangularAnisotropicFEMForceField.cpp
         TriangularFEMForceField.cpp

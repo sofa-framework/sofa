@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.1)
 project(SofaSimpleFem)
 
 set(HEADER_FILES
-	CMHexahedronFEMForceField.h
-	CMHexahedronFEMForceField.inl
     HexahedronFEMForceField.h
     HexahedronFEMForceField.inl
     TetrahedronFEMForceField.h
@@ -16,7 +14,6 @@ set(HEADER_FILES
 
 set(SOURCE_FILES
     initSimpleFEM.cpp
-	CMHexahedronFEMForceField.cpp
     HexahedronFEMForceField.cpp
     TetrahedronFEMForceField.cpp
     TetrahedronDiffusionFEMForceField.cpp

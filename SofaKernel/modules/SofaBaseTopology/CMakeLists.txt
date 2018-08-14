@@ -17,8 +17,6 @@ set(HEADER_FILES
     HexahedronSetTopologyAlgorithms.inl
     HexahedronSetTopologyContainer.h
     HexahedronSetTopologyModifier.h
-    MapTriangleSetTopologyContainer.h
-    MapTetrahedronSetTopologyContainer.h
     MeshTopology.h
     NumericalIntegrationDescriptor.h
     NumericalIntegrationDescriptor.inl
@@ -36,7 +34,6 @@ set(HEADER_FILES
     QuadSetTopologyModifier.h
     RegularGridTopology.h
     SparseGridTopology.h
-    SurfaceTopologyContainer.h
     TetrahedronSetGeometryAlgorithms.h
     TetrahedronSetGeometryAlgorithms.inl
     TetrahedronSetTopologyAlgorithms.h
@@ -63,21 +60,8 @@ set(HEADER_FILES
     TriangleSetTopologyAlgorithms.inl
     TriangleSetTopologyContainer.h
     TriangleSetTopologyModifier.h
-    VolumeTopologyContainer.h
     config.h
     initBaseTopology.h
-    CMTopologyData.h
-    CMTopologyData.inl
-    CMTopologyDataHandler.h
-    CMTopologyDataHandler.inl
-    CMTopologyEngine.h
-    CMTopologyEngine.inl
-    VolumeTopologyModifier.h
-    VolumeGeometryAlgorithms.h
-    MapHexahedronSetTopologyContainer.h
-    SurfaceMaskTraversal.h
-    CMTopologyCoupling.h
-    CMTopologyCoupling.inl
 )
 
 set(SOURCE_FILES
@@ -90,8 +74,6 @@ set(SOURCE_FILES
     HexahedronSetTopologyAlgorithms.cpp
     HexahedronSetTopologyContainer.cpp
     HexahedronSetTopologyModifier.cpp
-    MapTriangleSetTopologyContainer.cpp
-    MapTetrahedronSetTopologyContainer.cpp
     MeshTopology.cpp
     NumericalIntegrationDescriptor.cpp
     PointSetGeometryAlgorithms.cpp
@@ -113,13 +95,6 @@ set(SOURCE_FILES
     TriangleSetTopologyContainer.cpp
     TriangleSetTopologyModifier.cpp
     initBaseTopology.cpp
-    SurfaceTopologyContainer.cpp
-    VolumeTopologyContainer.cpp
-    VolumeTopologyModifier.cpp
-    VolumeGeometryAlgorithms.cpp
-    MapHexahedronSetTopologyContainer.cpp
-    SurfaceMaskTraversal.cpp
-    CMTopologyCoupling.cpp
 )
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
