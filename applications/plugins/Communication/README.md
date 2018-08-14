@@ -2,6 +2,12 @@
 
 ## Installation
 
+### QSerialPort Installation
+
+Refer to - https://wiki.qt.io/Qt_Serial_Port for all the instruction regarding installation of QSerialPort installation.
+
+It supports all major operating systems.
+
 ### VRPN Installation
 
 Linux :
@@ -73,6 +79,7 @@ ServerCommunication is an abstract class allowing users to create asynchronous c
 * ZMQ
 * OSC
 * VRPN
+* QSerial
 
 ServerCommunication provides default DataFields :
 * job -> "receiver" or "sender". Depends if you want to receive or send datas. Default value is "receiver"
@@ -97,6 +104,22 @@ Subscriber DataFields explanation :
 * datas -> a string. A list of variables name. Existing or not inside the target
 
 A serverCommunication should contains at least one subscriber.
+
+### How to use ServerCommunication QSerialPort
+
+#### Receive
+
+```
+<ServerCommunicationQSerial name="qserial" job="receiver" port="6000"/>
+<CommunicationSubscriber name="sub1" communication="@qserial" subject="/colorLight" target="@light1" datas="color"/>
+```
+
+#### Send
+
+```
+<ServerCommunicationQSerial name="qserial" job="sender" port="6000"/>
+<CommunicationSubscriber name="sub1" communication="@qserial" subject="/colorLight" target="@light1" datas="color"/>
+```
 
 ### How to use ServerCommunication VRPN
 
@@ -218,7 +241,7 @@ std::string ServerCommunicationZMQ::createZMQMessage(CommunicationSubscriber* su
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
 const void* valueVoidPtr = data->getValueVoidPtr();
 ```
-In this example we retrieve the data from a buffer using fetchDataFromSenderBuffer. The argument named argument is the argument name we want to fetch. You can find more details in ZMQ, OSC and VRPN inl files.
+In this example we retrieve the data from a buffer using fetchDataFromSenderBuffer. The argument named argument is the argument name we want to fetch. You can find more details in ZMQ, OSC, VRPN and QSerial inl files.
 
 Example for receiving datas :
 
