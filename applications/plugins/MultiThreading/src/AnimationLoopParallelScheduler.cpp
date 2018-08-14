@@ -1,6 +1,6 @@
 #include "AnimationLoopParallelScheduler.h"
 
-#include "TaskScheduler.h"
+#include "DefaultTaskScheduler.h"
 #include "AnimationLoopTasks.h"
 #include "InitTasks.h"
 #include "DataExchange.h"
@@ -94,7 +94,7 @@ namespace simulation
 			mNbThread = threadNumber.getValue();
 		}
 
-		TaskScheduler::getInstance().init( mNbThread );
+		TaskScheduler::getInstance()->init( mNbThread );
 
 		sofa::core::objectmodel::classidT<sofa::core::behavior::ConstraintSolver>();
 		sofa::core::objectmodel::classidT<sofa::core::behavior::LinearSolver>();
@@ -111,17 +111,17 @@ namespace simulation
 
 	void AnimationLoopParallelScheduler::reinit()
 	{
-        if ( threadNumber.getValue() != TaskScheduler::getInstance().getThreadCount() )
+        if ( threadNumber.getValue() != TaskScheduler::getInstance()->getThreadCount() )
         {
             mNbThread = threadNumber.getValue();
-            TaskScheduler::getInstance().init( mNbThread );
+            TaskScheduler::getInstance()->init(mNbThread);
             initThreadLocalData();
         }
 	}
 
 	void AnimationLoopParallelScheduler::cleanup()
 	{
-		TaskScheduler::getInstance().stop();
+		TaskScheduler::getInstance()->stop();
 	}
 
 	void AnimationLoopParallelScheduler::step(const core::ExecParams* params, SReal dt)
@@ -134,9 +134,7 @@ namespace simulation
 
 
 		Task::Status status;
-
-		WorkerThread* thread = WorkerThread::getCurrent();	
-
+        TaskScheduler* scheduler = TaskScheduler::getInstance();
 
 
 		typedef Node::Sequence<simulation::Node,true>::iterator ChildIterator;
@@ -145,13 +143,13 @@ namespace simulation
 			if ( core::behavior::BaseAnimationLoop* aloop = (*it)->getAnimationLoop() )
 			{
 				//thread->addTask( new( task_pool.malloc()) StepTask( aloop, dt, &status ) );
-                thread->addTask(new StepTask(aloop, dt, &status));
+                scheduler->addTask(new StepTask(aloop, dt, &status));
 
 			}
 
 		}
 
-		thread->workUntilDone(&status);
+		scheduler->workUntilDone(&status);
 
 
 
@@ -171,19 +169,19 @@ namespace simulation
 
 	void AnimationLoopParallelScheduler::initThreadLocalData()
 	{
-        std::atomic<int> atomicCounter( TaskScheduler::getInstance().size() );
+        std::atomic<int> atomicCounter( TaskScheduler::getInstance()->getThreadCount() );
 
         std::mutex  InitPerThreadMutex;
         
         Task::Status status;
-        WorkerThread* pThread = WorkerThread::getCurrent();
-        const int nbThread = TaskScheduler::getInstance().size();
+        TaskScheduler* scheduler = TaskScheduler::getInstance();
+        const int nbThread = TaskScheduler::getInstance()->getThreadCount();
         
         for (int i=0; i<nbThread; ++i)
         {
-            pThread->addTask( new InitPerThreadDataTask( &atomicCounter, &InitPerThreadMutex, &status ) );
+            scheduler->addTask( new InitPerThreadDataTask( &atomicCounter, &InitPerThreadMutex, &status ) );
         } 
-        pThread->workUntilDone(&status);
+        scheduler->workUntilDone(&status);
 	}
 
 } // namespace simulation

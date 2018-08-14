@@ -8,7 +8,7 @@ namespace sofa
 {
 
 
-	bool FibonacciTask::run(simulation::WorkerThread*)
+	bool FibonacciTask::run()
 	{
 		if (_N < 2)
 		{
@@ -20,14 +20,14 @@ namespace sofa
 
 		int64_t x, y;
 
-		simulation::WorkerThread* thread = simulation::WorkerThread::getCurrent();
+        simulation::TaskScheduler* scheduler = simulation::TaskScheduler::getInstance();
 
 		FibonacciTask task0(_N - 1, &x, &status);
 		FibonacciTask task1(_N - 2, &y, &status);
 
-		thread->addTask(&task0);
-		thread->addTask(&task1);
-		thread->workUntilDone(&status);
+        scheduler->addTask(&task0);
+        scheduler->addTask(&task1);
+        scheduler->workUntilDone(&status);
 		
 		// Do the sum
 		*_sum = x + y;
@@ -37,7 +37,7 @@ namespace sofa
 
 
 
-	bool IntSumTask::run(simulation::WorkerThread*)
+	bool IntSumTask::run()
 	{
 		const int64_t count = _last - _first;
 		if (count < 1)
@@ -52,14 +52,14 @@ namespace sofa
 
 		int64_t x, y;
 
-		simulation::WorkerThread* thread = simulation::WorkerThread::getCurrent();
+        simulation::TaskScheduler* scheduler = simulation::TaskScheduler::getInstance();
 
 		IntSumTask task0(_first, mid, &x, &status);
 		IntSumTask task1(mid+1, _last, &y, &status);
 
-		thread->addTask(&task0);
-		thread->addTask(&task1);
-		thread->workUntilDone(&status);
+        scheduler->addTask(&task0);
+        scheduler->addTask(&task1);
+        scheduler->workUntilDone(&status);
 
 		// Do the sum
 		*_sum = x + y;

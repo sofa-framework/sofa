@@ -26,6 +26,7 @@
 
 #include "BeamLinearMapping_tasks.inl"
 
+#include "TaskScheduler.h"
 
 namespace sofa
 {
@@ -56,7 +57,7 @@ namespace mapping
 	template <class TIn, class TOut>
 	void BeamLinearMapping_mt< TIn, TOut>::init()
 	{
-		simulation::TaskScheduler::getInstance().init();
+        simulation::TaskScheduler::getInstance()->init();
 
 		BeamLinearMapping< TIn, TOut>::init();
 	}
@@ -91,10 +92,8 @@ namespace mapping
 
 
 			// create tasks
-			simulation::Task::Status status;
-			simulation::WorkerThread* thread = simulation::WorkerThread::getCurrent();	
-
-			//const int nbThread = simulation::TaskScheduler::getInstance().size();
+            simulation::Task::Status status;
+            simulation::TaskScheduler* scheduler = simulation::TaskScheduler::getInstance();
 
 			const int taskSize = 2*mGrainSize.getValue();
 
@@ -113,7 +112,7 @@ namespace mapping
 				task->_firstPoint = i*taskSize;
 				task->_lastPoint = i*taskSize + mGrainSize.getValue();
 
-				thread->addTask( task );
+                scheduler->addTask( task );
 
 			}
 			if ( pointsLeft > 0)
@@ -128,11 +127,11 @@ namespace mapping
 				task->_firstPoint = nbTasks*taskSize;
 				task->_lastPoint = nbTasks*taskSize + pointsLeft;
 
-				thread->addTask( task );
+                scheduler->addTask( task );
 
 			}
 
-			thread->workUntilDone(&status);
+            scheduler->workUntilDone(&status);
 
 
 			for ( int i=0; i<nbTasks; ++i)
@@ -147,11 +146,11 @@ namespace mapping
 				task->_firstPoint = i*taskSize + mGrainSize.getValue();
 				task->_lastPoint = i*taskSize + taskSize;
 
-				thread->addTask( task );
+                scheduler->addTask( task );
 
 			}
 
-			thread->workUntilDone(&status);
+            scheduler->workUntilDone(&status);
 
 		}
 		else
@@ -187,8 +186,8 @@ namespace mapping
 
             out.resize(this->points.size());
 
-			simulation::Task::Status status;
-			simulation::WorkerThread* thread = simulation::WorkerThread::getCurrent();	
+            simulation::Task::Status status;
+            simulation::TaskScheduler* scheduler = simulation::TaskScheduler::getInstance();
 
 			const int taskSize = 2*mGrainSize.getValue();
 
@@ -206,7 +205,7 @@ namespace mapping
 				task->_firstPoint = i*taskSize;
 				task->_lastPoint = i*taskSize + mGrainSize.getValue();
 
-				thread->addTask( task );
+                scheduler->addTask( task );
 
 			}
 			if ( pointsLeft > 0)
@@ -220,11 +219,11 @@ namespace mapping
 				task->_firstPoint = nbTasks*taskSize;
 				task->_lastPoint = nbTasks*taskSize + pointsLeft;
 
-				thread->addTask( task );
+                scheduler->addTask( task );
 
 			}
 
-			thread->workUntilDone(&status);
+            scheduler->workUntilDone(&status);
 
 
 			for ( int i=0; i<nbTasks; ++i)
@@ -238,11 +237,11 @@ namespace mapping
 				task->_firstPoint = i*taskSize + mGrainSize.getValue();
 				task->_lastPoint = i*taskSize + taskSize;
 
-				thread->addTask( task );
+                scheduler->addTask( task );
 
 			}
 
-			thread->workUntilDone(&status);
+            scheduler->workUntilDone(&status);
 
 		}
 		else
@@ -274,8 +273,8 @@ namespace mapping
 			helper::ReadAccessor< Data< typename Out::VecDeriv > > in = _in;
 
 
-			simulation::Task::Status status;
-			simulation::WorkerThread* thread = simulation::WorkerThread::getCurrent();	
+            simulation::Task::Status status;
+            simulation::TaskScheduler* scheduler = simulation::TaskScheduler::getInstance();
 
 			const int taskSize = 2*mGrainSize.getValue();
 
@@ -293,7 +292,7 @@ namespace mapping
 				task->_firstPoint = i*taskSize;
 				task->_lastPoint = i*taskSize + mGrainSize.getValue();
 
-				thread->addTask( task );
+                scheduler->addTask( task );
 
 			}
 			if ( pointsLeft > 0)
@@ -307,11 +306,11 @@ namespace mapping
 				task->_firstPoint = nbTasks*taskSize;
 				task->_lastPoint = nbTasks*taskSize + pointsLeft;
 
-				thread->addTask( task );
+                scheduler->addTask( task );
 
 			}
 
-			thread->workUntilDone(&status);
+            scheduler->workUntilDone(&status);
 
 
 			for ( int i=0; i<nbTasks; ++i)
@@ -325,11 +324,11 @@ namespace mapping
 				task->_firstPoint = i*taskSize + mGrainSize.getValue();
 				task->_lastPoint = i*taskSize + taskSize;
 
-				thread->addTask( task );
+                scheduler->addTask( task );
 
 			}
 
-			thread->workUntilDone(&status);
+            scheduler->workUntilDone(&status);
 
 		}
 		else

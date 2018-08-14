@@ -22,7 +22,7 @@
 #ifndef InitTasks_h__
 #define InitTasks_h__
 
-#include "TaskScheduler.h"
+#include "Task.h"
 
 //#include <sofa/helper/system/atomic.h>
 
@@ -45,7 +45,7 @@ namespace sofa
 
             virtual ~InitPerThreadDataTask();
 
-            virtual bool run(WorkerThread*) override;
+            virtual bool run() override sealed;
 
         private:
 
@@ -62,7 +62,7 @@ namespace sofa
 
             InitOGLcontextTask::~InitOGLcontextTask();
 
-            virtual bool run(sofa::simulation::WorkerThread*) override;
+            virtual bool run() override sealed;
 
         private:
 
@@ -73,14 +73,14 @@ namespace sofa
         };
 
 
-        class DeleteOGLcontextTask : public sofa::simulation::Task
+        class DeleteOGLcontextTask : public Task
         {
         public:
             DeleteOGLcontextTask::DeleteOGLcontextTask(std::atomic<int>* atomicCounter, std::mutex* mutex, Task::Status* pStatus);
 
             DeleteOGLcontextTask::~DeleteOGLcontextTask();
 
-            virtual bool run(sofa::simulation::WorkerThread*) override;
+            virtual bool run() override sealed;
 
         private:
             std::mutex*	 IdFactorygetIDMutex;

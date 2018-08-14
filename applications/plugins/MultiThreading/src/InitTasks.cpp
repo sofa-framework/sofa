@@ -1,5 +1,7 @@
 #include "InitTasks.h"
 
+#include "DefaultTaskScheduler.h"
+
 #include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/core/ExecParams.h>
 #include <sofa/core/ConstraintParams.h>
@@ -11,7 +13,6 @@
 
 namespace sofa
 {
-
     namespace simulation
     {
 
@@ -27,7 +28,7 @@ namespace sofa
         {
         }
 
-        bool InitPerThreadDataTask::run(WorkerThread*)
+        bool InitPerThreadDataTask::run()
         {
 
             core::ExecParams::defaultInstance();
@@ -78,7 +79,7 @@ namespace sofa
         {
         }
 
-        bool InitOGLcontextTask::run(sofa::simulation::WorkerThread*)
+        bool InitOGLcontextTask::run()
         {
             //glGlobalContext = wglCreateContext(_hdc);
             //wglShareLists(_mainContext, glGlobalContext);
@@ -103,7 +104,7 @@ namespace sofa
         {
         }
 
-        bool DeleteOGLcontextTask::run(sofa::simulation::WorkerThread*)
+        bool DeleteOGLcontextTask::run()
         {
             wglDeleteContext(glGlobalContext);
 
@@ -120,13 +121,13 @@ namespace sofa
         void initThreadLocalData()
         {
             std::atomic<int> atomicCounter;
-            atomicCounter = TaskScheduler::getInstance().size();
+            atomicCounter = TaskScheduler::getInstance()->getThreadCount();
 
             std::mutex  InitThreadSpecificMutex;
 
             Task::Status status;
 
-            const int nbThread = TaskScheduler::getInstance().size();
+            const int nbThread = TaskScheduler::getInstance()->getThreadCount();
             WorkerThread* thread = WorkerThread::getCurrent();
 
             for (int i = 0; i<nbThread; ++i)
@@ -154,14 +155,15 @@ namespace sofa
             wglMakeCurrent(NULL, NULL);
 
             std::atomic<int> atomicCounter;
-            atomicCounter = sofa::simulation::TaskScheduler::getInstance().size() - 1;
+            atomicCounter = TaskScheduler::getInstance()->getThreadCount() - 1;
 
             std::mutex  InitThreadSpecificMutex;
 
-            sofa::simulation::Task::Status status;
+            Task::Status status;
 
-            const int nbWorkerThread = sofa::simulation::TaskScheduler::getInstance().size() - 1;
-            sofa::simulation::WorkerThread* thread = sofa::simulation::WorkerThread::getCurrent();
+            const int nbWorkerThread = TaskScheduler::getInstance()->getThreadCount() - 1;
+            //sofa::simulation::WorkerThread* thread = sofa::simulation::WorkerThread::getCurrent();
+            TaskScheduler* scheduler = TaskScheduler::getInstance();
 
             for (int i = 0; i<nbWorkerThread; ++i)
             {
@@ -169,7 +171,7 @@ namespace sofa
                 HGLRC workerThreadContexts = wglCreateContext(glGlobalDevice);
                 wglShareLists(mainContext, workerThreadContexts);
 
-                thread->addTask(new InitOGLcontextTask(glGlobalDevice, workerThreadContexts, &atomicCounter, &InitThreadSpecificMutex, &status));
+                scheduler->addTask(new InitOGLcontextTask(glGlobalDevice, workerThreadContexts, &atomicCounter, &InitThreadSpecificMutex, &status));
             }
 
             // wait for worker thread to complete the per-thread task
@@ -190,18 +192,19 @@ namespace sofa
         void deleteOGLcontext()
         {
             std::atomic<int> atomicCounter;
-            atomicCounter = sofa::simulation::TaskScheduler::getInstance().size() - 1;
+            atomicCounter = TaskScheduler::getInstance()->getThreadCount() - 1;
 
             std::mutex  InitThreadSpecificMutex;
 
-            sofa::simulation::Task::Status status;
+            Task::Status status;
 
-            const int nbWorkerThread = sofa::simulation::TaskScheduler::getInstance().size() - 1;
-            sofa::simulation::WorkerThread* thread = sofa::simulation::WorkerThread::getCurrent();
+            const int nbWorkerThread = TaskScheduler::getInstance()->getThreadCount() - 1;
+            //sofa::simulation::WorkerThread* thread = sofa::simulation::WorkerThread::getCurrent();
+            TaskScheduler* scheduler = TaskScheduler::getInstance();
 
             for (int i = 0; i<nbWorkerThread; ++i)
             {
-                thread->addTask(new DeleteOGLcontextTask(&atomicCounter, &InitThreadSpecificMutex, &status));
+                scheduler->addTask(new DeleteOGLcontextTask(&atomicCounter, &InitThreadSpecificMutex, &status));
             }
 
             // wait for worker thread to complete the per-thread task
