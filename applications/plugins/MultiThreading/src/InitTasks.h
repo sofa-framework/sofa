@@ -35,7 +35,7 @@ namespace sofa
 
 
 
-        class InitPerThreadDataTask : public Task
+        class SOFA_MULTITHREADING_PLUGIN_API InitPerThreadDataTask : public Task
         {
 
         public:
@@ -55,7 +55,7 @@ namespace sofa
 
 
 
-        class InitOGLcontextTask : public Task
+        class SOFA_MULTITHREADING_PLUGIN_API InitOGLcontextTask : public Task
         {
         public:
             InitOGLcontextTask::InitOGLcontextTask(HDC& glDevice, HGLRC& workerThreadContext, std::atomic<int>* atomicCounter, std::mutex* mutex, Task::Status* pStatus);
@@ -73,7 +73,7 @@ namespace sofa
         };
 
 
-        class DeleteOGLcontextTask : public Task
+        class SOFA_MULTITHREADING_PLUGIN_API DeleteOGLcontextTask : public Task
         {
         public:
             DeleteOGLcontextTask::DeleteOGLcontextTask(std::atomic<int>* atomicCounter, std::mutex* mutex, Task::Status* pStatus);

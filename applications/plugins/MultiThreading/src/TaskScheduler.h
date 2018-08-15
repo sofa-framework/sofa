@@ -50,14 +50,15 @@ namespace sofa
 
             virtual ~TaskScheduler() {}
 
-            static TaskScheduler* create(const char* name);
+            static TaskScheduler* create(const char* name = "");
 
             typedef std::function<TaskScheduler* ()> TaskSchedulerCreatorFunction;
 
-            static void registerScheduler(const char* name, std::function<TaskScheduler* ()> creatorFunc);
+            static bool registerScheduler(const char* name, std::function<TaskScheduler* ()> creatorFunc);
 
             static TaskScheduler* getInstance();
 
+            static const std::string& getCurrentName()  { return _currentSchedulerName; }
 
             // interface
             virtual void init(const unsigned int nbThread = 0) = 0;
@@ -73,6 +74,9 @@ namespace sofa
 
             virtual void workUntilDone(Task::Status* status) = 0;
 
+            virtual void* allocateTask(size_t size) = 0;
+
+            virtual void releaseTask(Task*) = 0;
 
         protected:
 

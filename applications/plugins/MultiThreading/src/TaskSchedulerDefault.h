@@ -47,7 +47,7 @@ namespace sofa  {
     namespace simulation
     {
 
-        //#define ENABLE_TASK_SCHEDULER_PROFILER 1     // Comment this line to disable the profiler
+ //#define ENABLE_TASK_SCHEDULER_PROFILER 1     // Comment this line to disable the profiler
 
 #if ENABLE_TASK_SCHEDULER_PROFILER
 
@@ -169,20 +169,24 @@ namespace sofa  {
         public:
 
             // interface
-            virtual void init(const unsigned int nbThread = 0) override;
-            virtual void stop(void) override;
-            virtual unsigned int getThreadCount(void)  const override  { return _threadCount; }
-            virtual const char* getCurrentThreadName() override;
+            virtual void init(const unsigned int nbThread = 0) override sealed;
+            virtual void stop(void) override sealed;
+            virtual unsigned int getThreadCount(void)  const override sealed { return _threadCount; }
+            virtual const char* getCurrentThreadName() override sealed;
             // queue task if there is space, and run it otherwise
-            bool addTask(Task* task) override;
-            virtual void workUntilDone(Task::Status* status) override;
-
+            virtual bool addTask(Task* task) override sealed;
+            virtual void workUntilDone(Task::Status* status) override sealed;
+            virtual void* allocateTask(size_t size) override sealed;
+            virtual void releaseTask(Task*) override sealed;
 
         public:
 
-            static const char* getName() { return _name.c_str(); }
+            // factory methods: name, creator function
+            static const char* name() { return "_default"; }
 
             static TaskSchedulerDefault* create();
+
+            static const bool isRegistered;
 
         private:
 
@@ -196,8 +200,6 @@ namespace sofa  {
 
             static unsigned GetHardwareThreadsCount();
 
-            //unsigned size()	const;
-
             WorkerThread* getCurrentThread();
 
             const WorkerThread* getWorkerThread(const std::thread::id id);
@@ -205,10 +207,10 @@ namespace sofa  {
 
         private:
 
-            static std::string _name;
+            static const std::string _name;
 
+            // TO DO: replace with thread_specific_ptr. clang 3.5 doesn't support C++ 11 thread_local vars on Mac
             //static thread_local WorkerThread* _workerThreadIndex;
-
             static std::map< std::thread::id, WorkerThread*> _threads;
 
             Task::Status*	_mainTaskStatus;

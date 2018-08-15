@@ -1,6 +1,6 @@
 #include "AnimationLoopParallelScheduler.h"
 
-#include "DefaultTaskScheduler.h"
+#include "TaskScheduler.h"
 #include "AnimationLoopTasks.h"
 #include "InitTasks.h"
 #include "DataExchange.h"
@@ -70,9 +70,11 @@ namespace simulation
 
 	AnimationLoopParallelScheduler::AnimationLoopParallelScheduler(simulation::Node* _gnode)
 		: Inherit()
+        , schedulerName(initData(&schedulerName, "scheduler", "name of the scheduler to use"))
 		, threadNumber(initData(&threadNumber, (unsigned int)0, "threadNumber", "number of thread") )
 		, mNbThread(0)
 		, gnode(_gnode)
+        , _taskScheduler(nullptr)
 	{
 		//assert(gnode);
 
@@ -94,7 +96,13 @@ namespace simulation
 			mNbThread = threadNumber.getValue();
 		}
 
-		TaskScheduler::getInstance()->init( mNbThread );
+        _taskScheduler = TaskScheduler::getInstance();
+
+        if (TaskScheduler::getCurrentName() != schedulerName.getValue())
+        {
+            _taskScheduler = TaskScheduler::create(schedulerName.getValue().c_str());
+        }        
+        _taskScheduler->init( mNbThread );
 
 		sofa::core::objectmodel::classidT<sofa::core::behavior::ConstraintSolver>();
 		sofa::core::objectmodel::classidT<sofa::core::behavior::LinearSolver>();
@@ -111,17 +119,17 @@ namespace simulation
 
 	void AnimationLoopParallelScheduler::reinit()
 	{
-        if ( threadNumber.getValue() != TaskScheduler::getInstance()->getThreadCount() )
+        if ( threadNumber.getValue() != _taskScheduler->getThreadCount() )
         {
             mNbThread = threadNumber.getValue();
-            TaskScheduler::getInstance()->init(mNbThread);
+            _taskScheduler->init(mNbThread);
             initThreadLocalData();
         }
 	}
 
 	void AnimationLoopParallelScheduler::cleanup()
 	{
-		TaskScheduler::getInstance()->stop();
+        _taskScheduler->stop();
 	}
 
 	void AnimationLoopParallelScheduler::step(const core::ExecParams* params, SReal dt)
@@ -134,8 +142,6 @@ namespace simulation
 
 
 		Task::Status status;
-        TaskScheduler* scheduler = TaskScheduler::getInstance();
-
 
 		typedef Node::Sequence<simulation::Node,true>::iterator ChildIterator;
 		for (ChildIterator it = gnode->child.begin(), itend = gnode->child.end(); it != itend; ++it)
@@ -143,13 +149,13 @@ namespace simulation
 			if ( core::behavior::BaseAnimationLoop* aloop = (*it)->getAnimationLoop() )
 			{
 				//thread->addTask( new( task_pool.malloc()) StepTask( aloop, dt, &status ) );
-                scheduler->addTask(new StepTask(aloop, dt, &status));
+                _taskScheduler->addTask(new StepTask(aloop, dt, &status));
 
 			}
 
 		}
 
-		scheduler->workUntilDone(&status);
+        _taskScheduler->workUntilDone(&status);
 
 
 
@@ -174,14 +180,13 @@ namespace simulation
         std::mutex  InitPerThreadMutex;
         
         Task::Status status;
-        TaskScheduler* scheduler = TaskScheduler::getInstance();
-        const int nbThread = TaskScheduler::getInstance()->getThreadCount();
+        const int nbThread = _taskScheduler->getThreadCount();
         
         for (int i=0; i<nbThread; ++i)
         {
-            scheduler->addTask( new InitPerThreadDataTask( &atomicCounter, &InitPerThreadMutex, &status ) );
+            _taskScheduler->addTask( new InitPerThreadDataTask( &atomicCounter, &InitPerThreadMutex, &status ) );
         } 
-        scheduler->workUntilDone(&status);
+        _taskScheduler->workUntilDone(&status);
 	}
 
 } // namespace simulation

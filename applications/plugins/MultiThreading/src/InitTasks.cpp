@@ -1,6 +1,6 @@
 #include "InitTasks.h"
 
-#include "DefaultTaskScheduler.h"
+#include "TaskScheduler.h"
 
 #include <sofa/core/behavior/BaseAnimationLoop.h>
 #include <sofa/core/ExecParams.h>
@@ -127,15 +127,15 @@ namespace sofa
 
             Task::Status status;
 
-            const int nbThread = TaskScheduler::getInstance()->getThreadCount();
-            WorkerThread* thread = WorkerThread::getCurrent();
+            TaskScheduler* scheduler = TaskScheduler::getInstance();
+            const int nbThread = scheduler->getThreadCount();
 
             for (int i = 0; i<nbThread; ++i)
             {
-                thread->addTask(new InitPerThreadDataTask(&atomicCounter, &InitThreadSpecificMutex, &status));
+                scheduler->addTask(new InitPerThreadDataTask(&atomicCounter, &InitThreadSpecificMutex, &status));
             }
 
-            thread->workUntilDone(&status);
+            scheduler->workUntilDone(&status);
 
             return;
         }
@@ -161,11 +161,10 @@ namespace sofa
 
             Task::Status status;
 
-            const int nbWorkerThread = TaskScheduler::getInstance()->getThreadCount() - 1;
-            //sofa::simulation::WorkerThread* thread = sofa::simulation::WorkerThread::getCurrent();
             TaskScheduler* scheduler = TaskScheduler::getInstance();
+            const int nbThread = scheduler->getThreadCount();
 
-            for (int i = 0; i<nbWorkerThread; ++i)
+            for (int i = 0; i<nbThread; ++i)
             {
                 // creqte a new context and share it with the main thread context
                 HGLRC workerThreadContexts = wglCreateContext(glGlobalDevice);
@@ -198,9 +197,8 @@ namespace sofa
 
             Task::Status status;
 
-            const int nbWorkerThread = TaskScheduler::getInstance()->getThreadCount() - 1;
-            //sofa::simulation::WorkerThread* thread = sofa::simulation::WorkerThread::getCurrent();
             TaskScheduler* scheduler = TaskScheduler::getInstance();
+            const int nbWorkerThread = scheduler->getThreadCount() - 1;            
 
             for (int i = 0; i<nbWorkerThread; ++i)
             {

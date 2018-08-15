@@ -51,6 +51,8 @@ public:
 	typedef sofa::core::behavior::BaseAnimationLoop Inherit;
 	SOFA_CLASS(AnimationLoopParallelScheduler,sofa::core::behavior::BaseAnimationLoop);
 
+    Data<std::string> schedulerName; ///< scheduler name type
+
 	Data<unsigned int> threadNumber; ///< number of thread
 
 
@@ -93,7 +95,7 @@ private :
 
 	simulation::Node* gnode;
 	
-
+    TaskScheduler* _taskScheduler;
 
 	//boost::shared_ptr<TaskScheduler> mScheduler;
 };

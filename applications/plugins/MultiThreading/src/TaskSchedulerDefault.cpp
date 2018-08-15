@@ -1,5 +1,7 @@
 #include "TaskSchedulerDefault.h"
 
+#include <sofa/helper/system/thread/thread_specific_ptr.h>
+
 #include <assert.h>
 
 
@@ -12,14 +14,16 @@ namespace sofa
         DEFINE_TASK_SCHEDULER_PROFILER(Pop);
         DEFINE_TASK_SCHEDULER_PROFILER(Steal);
 
-        // mac clang 3.5 doesn't support thread_local vars
-        //static thread_local WorkerThread* workerThreadIndex = nullptr;
 
-        std::string TaskSchedulerDefault::_name = "_default";
+        // mac clang 3.5 doesn't support thread_local vars
+        //static  WorkerThread* WorkerThread::_workerThreadIndex = nullptr;
+        SOFA_THREAD_SPECIFIC_PTR(WorkerThread, workerThreadIndex);
 
         std::map< std::thread::id, WorkerThread*> TaskSchedulerDefault::_threads;
         
-		
+        const bool TaskSchedulerDefault::isRegistered = TaskScheduler::registerScheduler(TaskSchedulerDefault::name(), &TaskSchedulerDefault::create);
+
+
         TaskSchedulerDefault* TaskSchedulerDefault::create()
         {
             return new TaskSchedulerDefault();
@@ -33,8 +37,8 @@ namespace sofa
 			_isClosing = false;
 
             // init global static thread local var
-            //workerThreadIndex = new WorkerThread(this);
-            _threads[std::this_thread::get_id()] = new WorkerThread(this, 0, "Main  ");
+            workerThreadIndex = new WorkerThread(this, 0, "Main  ");
+            _threads[std::this_thread::get_id()] = workerThreadIndex;// new WorkerThread(this, 0, "Main  ");
            
 		}
 
@@ -171,6 +175,18 @@ namespace sofa
             thread->workUntilDone(status);
         }
 
+        void* TaskSchedulerDefault::allocateTask(size_t size)
+        {
+            return std::malloc(size);
+        }
+
+        void TaskSchedulerDefault::releaseTask(Task* task)
+        {
+            delete task;
+        }
+
+
+
 		void TaskSchedulerDefault::wakeUpWorkers()
 		{
 			{
@@ -236,20 +252,20 @@ namespace sofa
 
         WorkerThread* WorkerThread::getCurrent()
         {
-            //return workerThreadIndex;
-            auto thread = TaskSchedulerDefault::_threads.find(std::this_thread::get_id());
-            if (thread == TaskSchedulerDefault::_threads.end())
-            {
-                return nullptr;
-            }
-            return thread->second;
+            return workerThreadIndex;
+            //auto thread = TaskSchedulerDefault::_threads.find(std::this_thread::get_id());
+            //if (thread == TaskSchedulerDefault::_threads.end())
+            //{
+            //    return nullptr;
+            //}
+            //return thread->second;
         }
 
 		void WorkerThread::run(void)
 		{
             
-            //workerThreadIndex = this;
-            TaskSchedulerDefault::_threads[std::this_thread::get_id()] = this;
+            workerThreadIndex = this;
+            //TaskSchedulerDefault::_threads[std::this_thread::get_id()] = this;
 
 			// main loop
             while ( !_taskScheduler->isClosing() )
@@ -335,7 +351,7 @@ namespace sofa
                 if (task->run())
                 {
                     // pooled memory: call destructor and free
-                    //task->~TaskLockFree();
+                    //task->~Task();
                     delete task;
                 }
             }
