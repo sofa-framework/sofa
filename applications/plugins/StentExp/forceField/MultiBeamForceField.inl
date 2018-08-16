@@ -1211,8 +1211,8 @@ void MultiBeamForceField<DataTypes>::BeamInfo::init(double E, double yS, double 
         _BeMatrices[i](1, 2) = _BeMatrices[i](2, 2) = _BeMatrices[i](3, 2) = _BeMatrices[i](4, 2) = _BeMatrices[i](5, 2) = 0.0;
 
         _BeMatrices[i](0, 3) = _BeMatrices[i](1, 3) = _BeMatrices[i](2, 3) = 0.0;
-        _BeMatrices[i](3, 3) = xi - 1;
-        _BeMatrices[i](4, 3) = eta / 2;
+        _BeMatrices[i](3, 3) = 0;
+        _BeMatrices[i](4, 3) = -eta / 2;
         _BeMatrices[i](5, 3) = zeta / 2;
 
         _BeMatrices[i](0, 4) = zeta * (6 * xi - 4);
@@ -1228,8 +1228,8 @@ void MultiBeamForceField<DataTypes>::BeamInfo::init(double E, double yS, double 
         _BeMatrices[i].block<6, 1>(0, 8) = -_BeMatrices[i].block<6, 1>(0, 2);
 
         _BeMatrices[i](0, 9) = _BeMatrices[i](1, 9) = _BeMatrices[i](2, 9) = 0.0;
-        _BeMatrices[i](3, 9) = -xi;
-        _BeMatrices[i](4, 9) = -eta / 2;
+        _BeMatrices[i](3, 9) = 0;
+        _BeMatrices[i](4, 9) = eta / 2;
         _BeMatrices[i](5, 9) = -zeta / 2;
 
         _BeMatrices[i](0, 10) = zeta * (6 * xi - 2);
@@ -1283,13 +1283,13 @@ void MultiBeamForceField<DataTypes>::BeamInfo::init(double E, double yS, double 
         _N[gaussPointIt](2, 0) = 0;
         _N[gaussPointIt](2, 1) = 0;
         _N[gaussPointIt](2, 2) = 1 - 3*xi2 + 2*xi3;
-        _N[gaussPointIt](2, 3) = (xi - 1)*_L*eta;
+        _N[gaussPointIt](2, 3) = (1 - xi)*_L*eta;
         _N[gaussPointIt](2, 4) = (-xi + 2*xi2 - xi3)*_L;
         _N[gaussPointIt](2, 5) = 0;
         _N[gaussPointIt](2, 6) = 0;
         _N[gaussPointIt](2, 7) = 0;
         _N[gaussPointIt](2, 8) = 3*xi2 - 2*xi3;
-        _N[gaussPointIt](2, 9) = -_L*xi*eta;
+        _N[gaussPointIt](2, 9) = _L*xi*eta;
         _N[gaussPointIt](2, 10) = (xi2 - xi3)*_L;
         _N[gaussPointIt](2, 11) = 0;
 
