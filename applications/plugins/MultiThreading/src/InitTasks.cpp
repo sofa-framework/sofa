@@ -15,10 +15,6 @@ namespace sofa
     namespace simulation
     {
 
-        static HDC glGlobalDevice = nullptr;
-        static thread_local HGLRC glGlobalContext = nullptr;
-
-
         InitPerThreadDataTask::InitPerThreadDataTask(std::atomic<int>* atomicCounter, std::mutex* mutex, Task::Status* pStatus)
             : Task(pStatus), IdFactorygetIDMutex(mutex), _atomicCounter(atomicCounter)
         {}
@@ -68,8 +64,38 @@ namespace sofa
             return true;
         }
 
+        
+        // temp remove this function to use the global one
+        void initThreadLocalData()
+        {
+            std::atomic<int> atomicCounter;
+            atomicCounter = TaskScheduler::getInstance().size();
+            
+            std::mutex  InitThreadSpecificMutex;
+            
+            Task::Status status;
+            
+            const int nbThread = TaskScheduler::getInstance().size();
+            WorkerThread* thread = WorkerThread::getCurrent();
+            
+            for (int i = 0; i<nbThread; ++i)
+            {
+                thread->addTask(new InitPerThreadDataTask(&atomicCounter, &InitThreadSpecificMutex, &status));
+            }
+            
+            thread->workUntilDone(&status);
+            
+            return;
+        }
+        
 
+#ifdef _WIN32
+        
 
+        static HDC glGlobalDevice = nullptr;
+        static thread_local HGLRC glGlobalContext = nullptr;
+        
+        
         InitOGLcontextTask::InitOGLcontextTask(HDC& glDevice, HGLRC& workerThreadContext, std::atomic<int>* atomicCounter, std::mutex* mutex, Task::Status* pStatus)
             : Task(pStatus), _glDevice(glDevice), _workerThreadContext(workerThreadContext), IdFactorygetIDMutex(mutex), _atomicCounter(atomicCounter)
         {}
@@ -114,29 +140,6 @@ namespace sofa
                 std::this_thread::yield();
             }
             return true;
-        }
-
-        // temp remove this function to use the global one
-        void initThreadLocalData()
-        {
-            std::atomic<int> atomicCounter;
-            atomicCounter = TaskScheduler::getInstance().size();
-
-            std::mutex  InitThreadSpecificMutex;
-
-            Task::Status status;
-
-            const int nbThread = TaskScheduler::getInstance().size();
-            WorkerThread* thread = WorkerThread::getCurrent();
-
-            for (int i = 0; i<nbThread; ++i)
-            {
-                thread->addTask(new InitPerThreadDataTask(&atomicCounter, &InitThreadSpecificMutex, &status));
-            }
-
-            thread->workUntilDone(&status);
-
-            return;
         }
 
         // temp remove this function to use the global one
@@ -212,6 +215,9 @@ namespace sofa
             return;
         }
 
+#endif // _WIN32
+        
+        
     } // namespace simulation
 
 } // namespace sofa

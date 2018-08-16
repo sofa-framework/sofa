@@ -54,7 +54,12 @@ namespace sofa
         };
 
 
-
+        //fix and prefer using the global runThreadSpecificTask
+        SOFA_MULTITHREADING_PLUGIN_API void initThreadLocalData();
+        
+        
+#ifdef _WIN32
+        
         class InitOGLcontextTask : public Task
         {
         public:
@@ -88,14 +93,13 @@ namespace sofa
         };
 
 
-        //fix and prefer using the global runThreadSpecificTask
-        SOFA_MULTITHREADING_PLUGIN_API void initThreadLocalData();
-
         SOFA_MULTITHREADING_PLUGIN_API void initOGLcontext();
 
         SOFA_MULTITHREADING_PLUGIN_API void deleteOGLcontext();
+        
+#endif // _WIN32
 
-
+        
     } // namespace simulation
 
 } // namespace sofa
