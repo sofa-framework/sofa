@@ -11,7 +11,7 @@
         <MechanicalObject name="ArticulatedObject" template="Vec1d" />
         <Node name="6D_DOFs1">
             <MechanicalObject name="6D_Dof" template="Rigid" />
-            <UniformMass totalmass="0.5" />
+            <UniformMass totalMass="0.5" />
             <ArticulatedSystemMapping input1="@../ArticulatedObject" input2="" output="@6D_Dof" />
         </Node>
         <ArticulatedHierarchyContainer filename="BehaviorModels/manWalking.bvh" />

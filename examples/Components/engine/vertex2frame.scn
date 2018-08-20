@@ -3,6 +3,6 @@
     <MeshObjLoader name="loader" filename="mesh/icosahedron.obj" />
     <Vertex2Frame name="vertex2frame" template="Rigid" src="@loader" />
     <MechanicalObject name="dofs" template="Rigid" position="@vertex2frame.frames" />
-    <UniformMass totalmass="0.1" />
+    <UniformMass totalMass="0.1" />
     <OglModel name="Visual" color="red" filename="mesh/icosahedron.obj" />
 </Node>

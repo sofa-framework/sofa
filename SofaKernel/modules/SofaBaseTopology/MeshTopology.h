@@ -261,6 +261,61 @@ public:
     //virtual const helper::vector <EdgeID>& getEdgesOnBorder();
 
     //virtual const helper::vector <PointID>& getPointsOnBorder();
+
+    /** \brief Returns the EdgesInTriangle array (i.e. provide the 3 edge indices for each triangle). */
+    const helper::vector< EdgesInTriangle > &getEdgesInTriangleArray();
+
+    /** \brief Returns the TrianglesAroundVertex array (i.e. provide the triangles indices adjacent to each vertex). */
+    const helper::vector< TrianglesAroundVertex > &getTrianglesAroundVertexArray();
+
+    /** \brief Returns the TrianglesAroundEdge array (i.e. provide the triangles indices adjacent to each edge). */
+    const helper::vector< TrianglesAroundEdge > &getTrianglesAroundEdgeArray();
+
+
+
+    /** \brief Returns the EdgesInQuadArray array (i.e. provide the 4 edge indices for each quad) */
+    const helper::vector< EdgesInQuad > &getEdgesInQuadArray();
+
+    /** \brief Returns the QuadsAroundVertex array (i.e. provide the quad indices adjacent to each vertex). */
+    const helper::vector< QuadsAroundVertex > &getQuadsAroundVertexArray();
+
+    /** \brief Returns the QuadsAroundEdge array (i.e. provide the quad indices adjacent to each edge). */
+    const helper::vector< QuadsAroundEdge > &getQuadsAroundEdgeArray();
+
+
+
+    /** \brief Returns the EdgesInHexahedron array (i.e. provide the 12 edge indices for each hexahedron).	*/
+    const helper::vector< EdgesInHexahedron > &getEdgesInHexahedronArray();
+
+    /** \brief Returns the QuadsInHexahedron array (i.e. provide the 8 quad indices for each hexahedron).	*/
+    const helper::vector< QuadsInHexahedron > &getQuadsInHexahedronArray();
+
+    /** \brief Returns the HexahedraAroundVertex array (i.e. provide the hexahedron indices adjacent to each vertex).*/
+    const helper::vector< HexahedraAroundVertex > &getHexahedraAroundVertexArray();
+
+    /** \brief Returns the HexahedraAroundEdge array (i.e. provide the hexahedron indices adjacent to each edge). */
+    const helper::vector< HexahedraAroundEdge > &getHexahedraAroundEdgeArray();
+
+    /** \brief Returns the HexahedraAroundQuad array (i.e. provide the hexahedron indices adjacent to each quad). */
+    const helper::vector< HexahedraAroundQuad > &getHexahedraAroundQuadArray();
+
+
+
+    /** \brief Returns the EdgesInTetrahedron array (i.e. provide the 6 edge indices for each tetrahedron). */
+    const helper::vector< EdgesInTetrahedron > &getEdgesInTetrahedronArray();
+
+    /** \brief Returns the TrianglesInTetrahedron array (i.e. provide the 4 triangle indices for each tetrahedron). */
+    const helper::vector< TrianglesInTetrahedron > &getTrianglesInTetrahedronArray();
+
+    /** \brief Returns the TetrahedraAroundVertex array (i.e. provide the tetrahedron indices adjacent to each vertex). */
+    const helper::vector< TetrahedraAroundVertex > &getTetrahedraAroundVertexArray();
+
+    /** \brief Returns the TetrahedraAroundEdge array (i.e. provide the tetrahedron indices adjacent to each edge). */
+    const helper::vector< TetrahedraAroundEdge > &getTetrahedraAroundEdgeArray();
+
+    /** \brief Returns the TetrahedraAroundTriangle array (i.e. provide the tetrahedron indices adjacent to each triangle). */
+    const helper::vector< TetrahedraAroundTriangle > &getTetrahedraAroundTriangleArray();
+
 public:
     typedef helper::vector<defaulttype::Vec<3, SReal > > SeqPoints;
     Data< SeqPoints > seqPoints; ///< List of point positions
@@ -480,65 +535,7 @@ protected:
      */
     void createHexahedraAroundQuadArray();
 
-
-
-
-    /** \brief Returns the EdgesInTriangle array (i.e. provide the 3 edge indices for each triangle). */
-    const helper::vector< EdgesInTriangle > &getEdgesInTriangleArray();
-
-    /** \brief Returns the TrianglesAroundVertex array (i.e. provide the triangles indices adjacent to each vertex). */
-    const helper::vector< TrianglesAroundVertex > &getTrianglesAroundVertexArray();
-
-    /** \brief Returns the TrianglesAroundEdge array (i.e. provide the triangles indices adjacent to each edge). */
-    const helper::vector< TrianglesAroundEdge > &getTrianglesAroundEdgeArray();
-
-
-
-    /** \brief Returns the EdgesInQuadArray array (i.e. provide the 4 edge indices for each quad) */
-    const helper::vector< EdgesInQuad > &getEdgesInQuadArray();
-
-    /** \brief Returns the QuadsAroundVertex array (i.e. provide the quad indices adjacent to each vertex). */
-    const helper::vector< QuadsAroundVertex > &getQuadsAroundVertexArray();
-
-    /** \brief Returns the QuadsAroundEdge array (i.e. provide the quad indices adjacent to each edge). */
-    const helper::vector< QuadsAroundEdge > &getQuadsAroundEdgeArray();
-
-
-
-    /** \brief Returns the EdgesInHexahedron array (i.e. provide the 12 edge indices for each hexahedron).	*/
-    const helper::vector< EdgesInHexahedron > &getEdgesInHexahedronArray();
-
-    /** \brief Returns the QuadsInHexahedron array (i.e. provide the 8 quad indices for each hexahedron).	*/
-    const helper::vector< QuadsInHexahedron > &getQuadsInHexahedronArray();
-
-    /** \brief Returns the HexahedraAroundVertex array (i.e. provide the hexahedron indices adjacent to each vertex).*/
-    const helper::vector< HexahedraAroundVertex > &getHexahedraAroundVertexArray();
-
-    /** \brief Returns the HexahedraAroundEdge array (i.e. provide the hexahedron indices adjacent to each edge). */
-    const helper::vector< HexahedraAroundEdge > &getHexahedraAroundEdgeArray();
-
-    /** \brief Returns the HexahedraAroundQuad array (i.e. provide the hexahedron indices adjacent to each quad). */
-    const helper::vector< HexahedraAroundQuad > &getHexahedraAroundQuadArray();
-
-
-
-    /** \brief Returns the EdgesInTetrahedron array (i.e. provide the 6 edge indices for each tetrahedron). */
-    const helper::vector< EdgesInTetrahedron > &getEdgesInTetrahedronArray();
-
-    /** \brief Returns the TrianglesInTetrahedron array (i.e. provide the 4 triangle indices for each tetrahedron). */
-    const helper::vector< TrianglesInTetrahedron > &getTrianglesInTetrahedronArray();
-
-    /** \brief Returns the TetrahedraAroundVertex array (i.e. provide the tetrahedron indices adjacent to each vertex). */
-    const helper::vector< TetrahedraAroundVertex > &getTetrahedraAroundVertexArray();
-
-    /** \brief Returns the TetrahedraAroundEdge array (i.e. provide the tetrahedron indices adjacent to each edge). */
-    const helper::vector< TetrahedraAroundEdge > &getTetrahedraAroundEdgeArray();
-
-    /** \brief Returns the TetrahedraAroundTriangle array (i.e. provide the tetrahedron indices adjacent to each triangle). */
-    const helper::vector< TetrahedraAroundTriangle > &getTetrahedraAroundTriangleArray();
-
-
-
+    
 public:
     /** \brief Returns the index of the edge joining vertex v1 and vertex v2; returns -1 if no edge exists
      *

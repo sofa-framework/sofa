@@ -1,5 +1,6 @@
 <!-- Automatic Quad adding example with Quad2Triangle mapping: Element added are define in: ./AddingQuadsProcess.txt -->
 <Node name="root" dt="0.005" showBoundingTree="0" gravity="0 -9.81 0">
+    <RequiredPlugin name='SofaMiscCollision' />
     <VisualStyle displayFlags="showBehaviorModels" />
     <CollisionPipeline verbose="0" />
     <BruteForceDetection name="N2" />
@@ -9,12 +10,12 @@
     <Node name="Q">
         <EulerImplicit name="cg_odesolver" printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-        <MeshGmshLoader name="loader" filename="mesh/cubeDof.msh" />
-        <MechanicalObject src="@loader" name="Quads" />
+        <MeshObjLoader name="loader" filename="mesh/cubeQuad.obj" />
+        <MechanicalObject template="Vec3d" src="@loader" name="Quads" showObject="1" />
         <QuadSetTopologyContainer src="@loader" name="Quad_topo" listening="1" />
         <QuadSetTopologyModifier name="Modifier" />
         <QuadSetTopologyAlgorithms template="Vec3d" name="TopoAlgo" />
-        <QuadSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" drawQuads="1" />
+        <QuadSetGeometryAlgorithms />
         <TopologicalChangeProcessor listening="1" filename="AddingQuadsProcess.txt" />
         <!--		<QuadularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0"/> -->
         <DiagonalMass massDensity="0.5" />

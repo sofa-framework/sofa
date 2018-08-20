@@ -37,7 +37,7 @@
     <CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 
     <MechanicalObject template="Rigid" name="instrumentState" tags="Omni"  />
-    <UniformMass template="Rigid" name="mass"  totalmass="0.05" />
+    <UniformMass template="Rigid" name="mass"  totalMass="0.05" />
     <LinearMovementConstraint template="Rigid" keyTimes="0 2" movements="-0.2 -0.2 -0.2   0 0 0
 										      0.2 0.2 0.2   0 0 0" />
     <Node 	name="VisualModel" >
