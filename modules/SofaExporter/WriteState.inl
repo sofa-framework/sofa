@@ -41,17 +41,17 @@ namespace misc
 
 
 WriteState::WriteState()
-    : f_filename( initData(&f_filename, "filename", "output file name"))
-    , f_writeX( initData(&f_writeX, true, "writeX", "flag enabling output of X vector"))
-    , f_writeX0( initData(&f_writeX0, false, "writeX0", "flag enabling output of X0 vector"))
-    , f_writeV( initData(&f_writeV, false, "writeV", "flag enabling output of V vector"))
-    , f_writeF( initData(&f_writeF, false, "writeF", "flag enabling output of F vector"))
-    , f_time( initData(&f_time, helper::vector<double>(0), "time", "set time to write outputs (by default export at t=0)"))
-    , f_period( initData(&f_period, 0.0, "period", "period between outputs"))
-    , f_DOFsX( initData(&f_DOFsX, helper::vector<unsigned int>(0), "DOFsX", "set the position DOFs to write"))
-    , f_DOFsV( initData(&f_DOFsV, helper::vector<unsigned int>(0), "DOFsV", "set the velocity DOFs to write"))
-    , f_stopAt( initData(&f_stopAt, 0.0, "stopAt", "stop the simulation when the given threshold is reached"))
-    , f_keperiod( initData(&f_keperiod, 0.0, "keperiod", "set the period to measure the kinetic energy increase"))
+    : d_filename( initData(&d_filename, "filename", "output file name"))
+    , d_writeX( initData(&d_writeX, true, "writeX", "flag enabling output of X vector"))
+    , d_writeX0( initData(&d_writeX0, false, "writeX0", "flag enabling output of X0 vector"))
+    , d_writeV( initData(&d_writeV, false, "writeV", "flag enabling output of V vector"))
+    , d_writeF( initData(&d_writeF, false, "writeF", "flag enabling output of F vector"))
+    , d_time( initData(&d_time, helper::vector<double>(0), "time", "set time to write outputs (by default export at t=0)"))
+    , d_period( initData(&d_period, 0.0, "period", "period between outputs"))
+    , d_DOFsX( initData(&d_DOFsX, helper::vector<unsigned int>(0), "DOFsX", "set the position DOFs to write"))
+    , d_DOFsV( initData(&d_DOFsV, helper::vector<unsigned int>(0), "DOFsV", "set the velocity DOFs to write"))
+    , d_stopAt( initData(&d_stopAt, 0.0, "stopAt", "stop the simulation when the given threshold is reached"))
+    , d_keperiod( initData(&d_keperiod, 0.0, "keperiod", "set the period to measure the kinetic energy increase"))
     , mmodel(NULL)
     , outfile(NULL)
 #ifdef SOFA_HAVE_ZLIB
@@ -87,11 +87,11 @@ void WriteState::init()
     // test the size and range of the DOFs to write in the file output
     if (mmodel)
     {
-        timeToTestEnergyIncrease = f_keperiod.getValue();
+        timeToTestEnergyIncrease = d_keperiod.getValue();
     }
     ///////////// end of the tests.
 
-    const std::string& filename = f_filename.getFullPath();
+    const std::string& filename = d_filename.getFullPath();
     if (!filename.empty())
     {
 #ifdef SOFA_HAVE_ZLIB
@@ -119,67 +119,67 @@ void WriteState::init()
     ///Check all input data
     double dt = this->getContext()->getDt();
     //check filename is set
-    if(!f_filename.isSet())
+    if(!d_filename.isSet())
     {
         msg_warning() << "a filename must be specified for export"
                       << "default: defaultExportFile";
-        f_filename.setValue(" defaultExportFile");
+        d_filename.setValue(" defaultExportFile");
     }
 
     //check period
-    if(f_period.isSet())
+    if(d_period.isSet())
     {
-        if(f_time.getValue().size() == 0)
+        if(d_time.getValue().size() == 0)
         {
             msg_warning() << "starting time should be specified to know when to start the periodic export"
                           << "by default: start time=0";
 
-            helper::vector<double>& timeVector = *f_time.beginEdit();
+            helper::vector<double>& timeVector = *d_time.beginEdit();
             timeVector.clear();
             timeVector.resize(1);
             timeVector[0] = 0.0;
-            f_time.endEdit();
+            d_time.endEdit();
         }
-        if(f_time.getValue().size() > 1)
+        if(d_time.getValue().size() > 1)
         {
-            helper::vector<double>& timeVector = *f_time.beginEdit();
+            helper::vector<double>& timeVector = *d_time.beginEdit();
             timeVector.resize(1);
-            f_time.endEdit();
-            msg_warning() << "using the period assume to have only one starting time for export: "<<f_time.getValue()[0];
+            d_time.endEdit();
+            msg_warning() << "using the period assume to have only one starting time for export: "<<d_time.getValue()[0];
         }
 
-        if(f_period.getValue() < dt)
+        if(d_period.getValue() < dt)
         {
-            msg_warning() << "period ("<< f_period.getValue() <<") input value is too low regarding the time step ("<< dt <<")";
+            msg_warning() << "period ("<< d_period.getValue() <<") input value is too low regarding the time step ("<< dt <<")";
         }
 
-        if(f_time.getValue()[0]!=0.0 && f_time.getValue()[0]<dt)
+        if(d_time.getValue()[0]!=0.0 && d_time.getValue()[0]<dt)
         {
-            msg_warning() << "starting export time ("<< f_time.getValue()[0] <<") is too low regarding the time step ("<< dt <<")";
+            msg_warning() << "starting export time ("<< d_time.getValue()[0] <<") is too low regarding the time step ("<< dt <<")";
         }
         periodicExport = true;
     }
 
     //check time
-    if(!f_time.isSet())
+    if(!d_time.isSet())
     {
         msg_warning() << "an export time should be specified"
                       << "by default, export at t=0";
-        helper::vector<double>& timeVector = *f_time.beginEdit();
+        helper::vector<double>& timeVector = *d_time.beginEdit();
         timeVector.clear();
         timeVector.resize(1);
         timeVector[0] = 0.0;
-        f_time.endEdit();
+        d_time.endEdit();
     }
     else
     {
-        for(unsigned int i=0; i<f_time.getValue().size(); i++)
+        for(unsigned int i=0; i<d_time.getValue().size(); i++)
         {
-            if(f_time.getValue()[i] <= 0)
+            if(d_time.getValue()[i] <= 0)
             {
                 if(i==0)
                 {
-                    if(f_time.getValue()[i] != 0)
+                    if(d_time.getValue()[i] != 0)
                     {
                         msg_error() << "time of export should always be zero or positive, no export will be done";
                         validInit = false;
@@ -195,22 +195,22 @@ void WriteState::init()
             }
 
             //check that the desired export times will be met with the chosen time step
-            double mutiple = fmod(f_time.getValue()[i],dt);
+            double mutiple = fmod(d_time.getValue()[i],dt);
             int integerM = (int) mutiple;
             mutiple -= (double)integerM;
             if(mutiple > std::numeric_limits<double>::epsilon())
             {
-                msg_warning() << "desired export time ("<< f_time.getValue()[i] <<") can not be met with the chosen time step("<< dt <<")";
+                msg_warning() << "desired export time ("<< d_time.getValue()[i] <<") can not be met with the chosen time step("<< dt <<")";
             }
         }
     }
 
     //check stopAt
-    if(f_stopAt.getValue()<0)
+    if(d_stopAt.getValue()<0)
     {
         msg_warning() << "stopping time should be strictly positive"
                       << "default value stopAt=0.0";
-        f_stopAt.setValue(0.0);
+        d_stopAt.setValue(0.0);
     }
 }
 
@@ -228,7 +228,7 @@ void WriteState::reset()
     nextIteration = 0;
     lastTime = 0;
     kineticEnergyThresholdReached = false;
-    timeToTestEnergyIncrease = f_keperiod.getValue();
+    timeToTestEnergyIncrease = d_keperiod.getValue();
     savedKineticEnergy = 0;
 }
 
@@ -253,7 +253,7 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
 
         double time = getContext()->getTime();
         // the time to measure the increase of energy is reached
-        if (f_stopAt.getValue())
+        if (d_stopAt.getValue())
         {
             if (time > timeToTestEnergyIncrease)
             {
@@ -267,7 +267,7 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
                 else
                 {
                     // computes the energy increase
-                    if (fabs(gnode->mass->getKineticEnergy() - savedKineticEnergy) < f_stopAt.getValue())
+                    if (fabs(gnode->mass->getKineticEnergy() - savedKineticEnergy) < d_stopAt.getValue())
                     {
                         sout << "WriteState has been stopped. Kinetic energy threshold has been reached" << sendl;
                         kineticEnergyThresholdReached = true;
@@ -277,7 +277,7 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
                         // save the last energy measured
                         savedKineticEnergy = gnode->mass->getKineticEnergy();
                         // increase the period to measure the energy
-                        timeToTestEnergyIncrease+=f_keperiod.getValue();
+                        timeToTestEnergyIncrease+=d_keperiod.getValue();
                     }
                 }
             }
@@ -285,10 +285,10 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
 
         //check if the state has to be written or not
         bool writeCurrent = false;
-        if (nextIteration<f_time.getValue().size())
+        if (nextIteration<d_time.getValue().size())
         {
             // store the actual time instant
-            lastTime = f_time.getValue()[nextIteration];
+            lastTime = d_time.getValue()[nextIteration];
             // if the time simulation is >= that the actual time instant
             if ( (time > lastTime) || (fabs(time - lastTime)< std::numeric_limits<double>::epsilon()) )
             {
@@ -301,12 +301,12 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
         {
             if(firstExport && periodicExport)
             {
-                double nextTime = lastTime + f_period.getValue();
+                double nextTime = lastTime + d_period.getValue();
                 // write the state using a period
                 if ( (time > nextTime) || (fabs(time - nextTime)< std::numeric_limits<double>::epsilon()) )
                 {
                     writeCurrent = true;
-                    lastTime += f_period.getValue();
+                    lastTime += d_period.getValue();
                 }
             }
         }
@@ -318,20 +318,20 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
                 // write the X state
                 std::ostringstream str;
                 str << "T= "<< time << "\n";
-                if (f_writeX.getValue())
+                if (d_writeX.getValue())
                 {
                     str << "  X= ";
                     mmodel->writeVec(core::VecId::position(), str);
                     str << "\n";
                 }
-                if (f_writeX0.getValue())
+                if (d_writeX0.getValue())
                 {
                     str << "  X0= ";
                     mmodel->writeVec(core::VecId::restPosition(), str);
                     str << "\n";
                 }
                 //write the V state
-                if (f_writeV.getValue())
+                if (d_writeV.getValue())
                 {
                     str << "  V= ";
                     mmodel->writeVec(core::VecId::velocity(), str);
@@ -346,27 +346,27 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
                 {
                     // write the X state
                     (*outfile) << "T= "<< time << "\n";
-                    if (f_writeX.getValue())
+                    if (d_writeX.getValue())
                     {
                         (*outfile) << "  X= ";
                         mmodel->writeVec(core::VecId::position(), *outfile);
                         (*outfile) << "\n";
                     }
-                    if (f_writeX0.getValue())
+                    if (d_writeX0.getValue())
                     {
                         (*outfile) << "  X0= ";
                         mmodel->writeVec(core::VecId::restPosition(), *outfile);
                         (*outfile) << "\n";
                     }
                     //write the V state
-                    if (f_writeV.getValue())
+                    if (d_writeV.getValue())
                     {
                         (*outfile) << "  V= ";
                         mmodel->writeVec(core::VecId::velocity(), *outfile);
                         (*outfile) << "\n";
                     }
                     //write the F state
-                    if (f_writeF.getValue())
+                    if (d_writeF.getValue())
                     {
                         (*outfile) << "  F= ";
                         mmodel->writeVec(core::VecId::force(), *outfile);
