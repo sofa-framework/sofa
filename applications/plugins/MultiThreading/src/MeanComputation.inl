@@ -34,7 +34,7 @@ namespace sofa
                 helper::ReadAccessor< Data<VecCoord> > output = d_result;
 
                 std::vector<component::container::MechanicalObject<DataTypes>*> mechObjs;
-                this->getContext()->get<component::container::MechanicalObject<DataTypes> >(
+                this->getContext()->template get<component::container::MechanicalObject<DataTypes> >(
                     &mechObjs,
                     BaseContext::Local);
 

@@ -22,7 +22,7 @@
 #ifndef InitTasks_h__
 #define InitTasks_h__
 
-#include "Task.h"
+#include "TaskScheduler.h"
 
 //#include <sofa/helper/system/atomic.h>
 
@@ -35,7 +35,7 @@ namespace sofa
 
 
 
-        class SOFA_MULTITHREADING_PLUGIN_API InitPerThreadDataTask : public Task
+        class InitPerThreadDataTask : public Task
         {
 
         public:
@@ -45,7 +45,7 @@ namespace sofa
 
             virtual ~InitPerThreadDataTask();
 
-            virtual bool run() override sealed;
+            virtual bool run(WorkerThread*) override;
 
         private:
 
@@ -54,15 +54,20 @@ namespace sofa
         };
 
 
-
-        class SOFA_MULTITHREADING_PLUGIN_API InitOGLcontextTask : public Task
+        //fix and prefer using the global runThreadSpecificTask
+        SOFA_MULTITHREADING_PLUGIN_API void initThreadLocalData();
+        
+        
+#ifdef _WIN32
+        
+        class InitOGLcontextTask : public Task
         {
         public:
             InitOGLcontextTask::InitOGLcontextTask(HDC& glDevice, HGLRC& workerThreadContext, std::atomic<int>* atomicCounter, std::mutex* mutex, Task::Status* pStatus);
 
             InitOGLcontextTask::~InitOGLcontextTask();
 
-            virtual bool run() override sealed;
+            virtual bool run(sofa::simulation::WorkerThread*) override;
 
         private:
 
@@ -73,14 +78,14 @@ namespace sofa
         };
 
 
-        class SOFA_MULTITHREADING_PLUGIN_API DeleteOGLcontextTask : public Task
+        class DeleteOGLcontextTask : public sofa::simulation::Task
         {
         public:
             DeleteOGLcontextTask::DeleteOGLcontextTask(std::atomic<int>* atomicCounter, std::mutex* mutex, Task::Status* pStatus);
 
             DeleteOGLcontextTask::~DeleteOGLcontextTask();
 
-            virtual bool run() override sealed;
+            virtual bool run(sofa::simulation::WorkerThread*) override;
 
         private:
             std::mutex*	 IdFactorygetIDMutex;
@@ -88,14 +93,13 @@ namespace sofa
         };
 
 
-        //fix and prefer using the global runThreadSpecificTask
-        SOFA_MULTITHREADING_PLUGIN_API void initThreadLocalData();
-
         SOFA_MULTITHREADING_PLUGIN_API void initOGLcontext();
 
         SOFA_MULTITHREADING_PLUGIN_API void deleteOGLcontext();
+        
+#endif // _WIN32
 
-
+        
     } // namespace simulation
 
 } // namespace sofa
