@@ -89,8 +89,6 @@ struct PartialFixedConstraint_test : public Sofa_test<typename _DataTypes::Real>
         node->addObject(mstate);
         createUniformMass<DataTypes>(node, *mstate.get());
 
-        std::cout<<"1"<<std::endl;
-
         Deriv force;
         size_t sizeD = force.size();
         for(unsigned i=0; i<sizeD; i++)
@@ -98,21 +96,15 @@ struct PartialFixedConstraint_test : public Sofa_test<typename _DataTypes::Real>
             force[i]=10;
         }
 
-        std::cout<<"2"<<std::endl;
-
         VecBool fixed;
         for(unsigned i=0; i<sizeD; i++)
         {
             fixed[i]=false;
         }
 
-        std::cout<<"fixed = "<<fixed<<std::endl;
-
         typename ForceField::SPtr forceField = addNew<ForceField>(node);
         forceField->setForce( 0, force );
         typename PartialFixedConstraint::SPtr constraint = addNew<PartialFixedConstraint>(node);
-
-        std::cout<<"3"<<std::endl;
 
         // Init simulation
         sofa::simulation::getSimulation()->init(root.get());
@@ -122,12 +114,8 @@ struct PartialFixedConstraint_test : public Sofa_test<typename _DataTypes::Real>
             fixed[i] = true;
             constraint->d_fixedDirections.setValue(fixed);
 
-            std::cout<<"4"<<std::endl;
-
             // Perform one time step
             sofa::simulation::getSimulation()->animate(root.get(),0.5);
-
-            std::cout<<"5"<<std::endl;
 
             // Check if the particle moved in a fixed direction
             typename MechanicalObject::ReadVecDeriv readV = mstate->readVelocities();
@@ -137,17 +125,11 @@ struct PartialFixedConstraint_test : public Sofa_test<typename _DataTypes::Real>
                 return false;
             }
 
-            std::cout<<"6"<<std::endl;
-
             sofa::simulation::getSimulation()->reset(root.get());
             fixed[i] = false;
-
-            std::cout<<"7"<<std::endl;
         }
 
         simulation::getSimulation()->unload(root);
-
-        std::cout<<"7"<<std::endl;
         return true;
     }
 };
