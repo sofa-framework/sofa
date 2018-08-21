@@ -91,7 +91,7 @@ void ReadState::reset()
     const std::string& filename = d_filename.getFullPath();
     if (filename.empty())
     {
-        serr << "ERROR: empty filename"<<sendl;
+        msg_error() << "ERROR: empty filename";
     }
 #ifdef SOFA_HAVE_ZLIB
     else if (filename.size() >= 3 && filename.substr(filename.size()-3)==".gz")
@@ -99,7 +99,7 @@ void ReadState::reset()
         gzfile = gzopen(filename.c_str(),"rb");
         if( !gzfile )
         {
-            serr << "Error opening compressed file "<<filename<<sendl;
+            msg_error() << "Error opening compressed file "<<filename;
         }
     }
 #endif
@@ -108,7 +108,7 @@ void ReadState::reset()
         infile = new std::ifstream(filename.c_str());
         if( !infile->is_open() )
         {
-            serr << "Error opening file "<<filename<<sendl;
+            msg_error() << "Error opening file "<<filename;
             delete infile;
             infile = NULL;
         }
@@ -202,14 +202,14 @@ bool ReadState::readNext(double time, std::vector<std::string>& validLines)
                 }
                 getline(*infile, line);
             }
-        //sout << "line= "<<line<<sendl;
+
         std::istringstream str(line);
         str >> cmd;
         if (cmd == "T=")
         {
             str >> nextTime;
             nextTime += loopTime;
-            //sout << "next time: " << nextTime << sendl;
+
             if (nextTime <= time)
                 validLines.clear();
         }
@@ -246,7 +246,6 @@ void ReadState::processReadState()
 
     if (updated)
     {
-        //sout<<"update from file"<<sendl;
         sofa::simulation::MechanicalProjectPositionAndVelocityVisitor action0(core::MechanicalParams::defaultInstance());
         this->getContext()->executeVisitor(&action0);
         sofa::simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor action1(core::MechanicalParams::defaultInstance());

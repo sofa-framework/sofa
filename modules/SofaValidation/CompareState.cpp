@@ -174,7 +174,7 @@ void CompareState::processCompareState()
         }
     }
 
-    sout << "totalError_X = " << totalError_X << ", totalError_V = " << totalError_V << sendl;
+    msg_info() << "totalError_X = " << totalError_X << ", totalError_V = " << totalError_V;
 }
 
 //-------------------------------- processCompareState------------------------------------
