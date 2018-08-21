@@ -76,7 +76,7 @@ namespace sofa {
             root = simulation::getSimulation()->createNewGraph("root");
         }
 
-        // Create the scene and the components: export velocity, VariationalSymplecticSolver is exact is velocity
+        // Create the scene and the components
         void createScene(bool symplectic)
         {
             timeStep = 0.01;
