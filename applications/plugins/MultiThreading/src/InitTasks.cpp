@@ -23,7 +23,7 @@ namespace sofa
         {
         }
 
-        bool InitPerThreadDataTask::run(WorkerThread*)
+        bool InitPerThreadDataTask::run()
         {
 
             core::ExecParams::defaultInstance();
@@ -69,22 +69,22 @@ namespace sofa
         void initThreadLocalData()
         {
             std::atomic<int> atomicCounter;
-            atomicCounter = TaskScheduler::getInstance().size();
-            
+            atomicCounter = TaskScheduler::getInstance()->getThreadCount();
+
             std::mutex  InitThreadSpecificMutex;
-            
+
             Task::Status status;
-            
-            const int nbThread = TaskScheduler::getInstance().size();
-            WorkerThread* thread = WorkerThread::getCurrent();
-            
+
+            TaskScheduler* scheduler = TaskScheduler::getInstance();
+            const int nbThread = scheduler->getThreadCount();
+
             for (int i = 0; i<nbThread; ++i)
             {
-                thread->addTask(new InitPerThreadDataTask(&atomicCounter, &InitThreadSpecificMutex, &status));
+                scheduler->addTask(new InitPerThreadDataTask(&atomicCounter, &InitThreadSpecificMutex, &status));
             }
-            
-            thread->workUntilDone(&status);
-            
+
+            scheduler->workUntilDone(&status);
+
             return;
         }
         
@@ -104,7 +104,7 @@ namespace sofa
         {
         }
 
-        bool InitOGLcontextTask::run(sofa::simulation::WorkerThread*)
+        bool InitOGLcontextTask::run()
         {
             //glGlobalContext = wglCreateContext(_hdc);
             //wglShareLists(_mainContext, glGlobalContext);
@@ -129,7 +129,7 @@ namespace sofa
         {
         }
 
-        bool DeleteOGLcontextTask::run(sofa::simulation::WorkerThread*)
+        bool DeleteOGLcontextTask::run()
         {
             wglDeleteContext(glGlobalContext);
 
@@ -140,79 +140,6 @@ namespace sofa
                 std::this_thread::yield();
             }
             return true;
-        }
-
-        // temp remove this function to use the global one
-        void initOGLcontext()
-        {
-            HWND hwin = FindWindow(0, L"GLEWTest");
-            glGlobalDevice = wglGetCurrentDC();// GetDC(hwin);
-                                               //main thread context
-                                               // share this context with worker thread contexts
-            glGlobalContext = wglGetCurrentContext();// wglCreateContext(glGlobalDevice);
-            HGLRC mainContext = glGlobalContext;
-
-            // drop the main context before sharing the context
-            // http://hacksoflife.blogspot.com/2008/02/creating-opengl-objects-in-second.html
-            wglMakeCurrent(NULL, NULL);
-
-            std::atomic<int> atomicCounter;
-            atomicCounter = sofa::simulation::TaskScheduler::getInstance().size() - 1;
-
-            std::mutex  InitThreadSpecificMutex;
-
-            sofa::simulation::Task::Status status;
-
-            const int nbWorkerThread = sofa::simulation::TaskScheduler::getInstance().size() - 1;
-            sofa::simulation::WorkerThread* thread = sofa::simulation::WorkerThread::getCurrent();
-
-            for (int i = 0; i<nbWorkerThread; ++i)
-            {
-                // creqte a new context and share it with the main thread context
-                HGLRC workerThreadContexts = wglCreateContext(glGlobalDevice);
-                wglShareLists(mainContext, workerThreadContexts);
-
-                thread->addTask(new InitOGLcontextTask(glGlobalDevice, workerThreadContexts, &atomicCounter, &InitThreadSpecificMutex, &status));
-            }
-
-            // wait for worker thread to complete the per-thread task
-            while (status.isBusy())
-            {
-                std::this_thread::sleep_for(std::chrono::milliseconds(1));
-            }
-
-            // set the main context back after sharing the context
-            // http://hacksoflife.blogspot.com/2008/02/creating-opengl-objects-in-second.html
-            wglMakeCurrent(glGlobalDevice, glGlobalContext);
-
-
-            return;
-        }
-
-        // temp remove this function to use the global one
-        void deleteOGLcontext()
-        {
-            std::atomic<int> atomicCounter;
-            atomicCounter = sofa::simulation::TaskScheduler::getInstance().size() - 1;
-
-            std::mutex  InitThreadSpecificMutex;
-
-            sofa::simulation::Task::Status status;
-
-            const int nbWorkerThread = sofa::simulation::TaskScheduler::getInstance().size() - 1;
-            sofa::simulation::WorkerThread* thread = sofa::simulation::WorkerThread::getCurrent();
-
-            for (int i = 0; i<nbWorkerThread; ++i)
-            {
-                thread->addTask(new DeleteOGLcontextTask(&atomicCounter, &InitThreadSpecificMutex, &status));
-            }
-
-            // wait for worker thread to complete the per-thread task
-            while (status.isBusy())
-            {
-                std::this_thread::sleep_for(std::chrono::milliseconds(1));
-            }
-            return;
         }
 
 #endif // _WIN32

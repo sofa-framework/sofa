@@ -35,17 +35,16 @@ namespace sofa
 
 
 
-        class InitPerThreadDataTask : public Task
+        class SOFA_MULTITHREADING_PLUGIN_API InitPerThreadDataTask : public Task
         {
 
         public:
 
-            //InitPerThreadDataTask(volatile long* atomicCounter, boost::mutex* mutex, TaskStatus* pStatus );
             InitPerThreadDataTask(std::atomic<int>* atomicCounter, std::mutex* mutex, Task::Status* pStatus);
 
             virtual ~InitPerThreadDataTask();
 
-            virtual bool run(WorkerThread*) override;
+            virtual bool run() override sealed;
 
         private:
 
@@ -60,14 +59,14 @@ namespace sofa
         
 #ifdef _WIN32
         
-        class InitOGLcontextTask : public Task
+        class SOFA_MULTITHREADING_PLUGIN_API InitOGLcontextTask : public Task
         {
         public:
             InitOGLcontextTask::InitOGLcontextTask(HDC& glDevice, HGLRC& workerThreadContext, std::atomic<int>* atomicCounter, std::mutex* mutex, Task::Status* pStatus);
 
             InitOGLcontextTask::~InitOGLcontextTask();
 
-            virtual bool run(sofa::simulation::WorkerThread*) override;
+            virtual bool run() override sealed;
 
         private:
 
@@ -78,14 +77,14 @@ namespace sofa
         };
 
 
-        class DeleteOGLcontextTask : public sofa::simulation::Task
+        class SOFA_MULTITHREADING_PLUGIN_API DeleteOGLcontextTask : public Task
         {
         public:
             DeleteOGLcontextTask::DeleteOGLcontextTask(std::atomic<int>* atomicCounter, std::mutex* mutex, Task::Status* pStatus);
 
             DeleteOGLcontextTask::~DeleteOGLcontextTask();
 
-            virtual bool run(sofa::simulation::WorkerThread*) override;
+            virtual bool run() override sealed;
 
         private:
             std::mutex*	 IdFactorygetIDMutex;
