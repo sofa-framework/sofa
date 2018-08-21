@@ -110,15 +110,18 @@ namespace sofa {
             time.resize(1);
             time[0] = 0.0;
             writeState->d_period.setValue(timeStep);
+
+            std::cout<<"SOFAEXPORTER_BUILD_DIR = "<<SOFAEXPORTER_BUILD_DIR<<std::endl;
+
             if(symplectic)
             {
-                writeState->d_filename.setValue(std::string(SOFAEXPORTER_TESTFILES_DIR)+"particleGravityX.data");
+                writeState->d_filename.setValue(std::string(SOFAEXPORTER_BUILD_DIR)+"particleGravityX.data");
                 writeState->d_writeX.setValue(true);
                 writeState->d_writeV.setValue(false);
             }
             else
             {
-                writeState->d_filename.setValue(std::string(SOFAEXPORTER_TESTFILES_DIR)+"particleGravityV.data");
+                writeState->d_filename.setValue(std::string(SOFAEXPORTER_BUILD_DIR)+"particleGravityV.data");
                 writeState->d_writeX.setValue(false);
                 writeState->d_writeV.setValue(true);
             }
@@ -175,12 +178,12 @@ namespace sofa {
             std::string createdFile, referenceFile;
             if(symplectic)
             {
-                createdFile = std::string(SOFAEXPORTER_TESTFILES_DIR)+"particleGravityX.data";
+                createdFile = std::string(SOFAEXPORTER_BUILD_DIR)+"particleGravityX.data";
                 referenceFile = std::string(SOFAEXPORTER_TESTFILES_DIR)+"particleGravityX-reference.data";
             }
             else
             {
-                createdFile = std::string(SOFAEXPORTER_TESTFILES_DIR)+"particleGravityV.data";
+                createdFile = std::string(SOFAEXPORTER_BUILD_DIR)+"particleGravityV.data";
                 referenceFile = std::string(SOFAEXPORTER_TESTFILES_DIR)+"particleGravityV-reference.data";
             }
 
