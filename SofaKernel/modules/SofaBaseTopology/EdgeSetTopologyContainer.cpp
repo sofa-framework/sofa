@@ -106,7 +106,13 @@ void EdgeSetTopologyContainer::createEdgesAroundVertexArray()
     }
 
     helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
-    m_edgesAroundVertex.resize( getNbPoints() );
+
+    int nbPoints = getNbPoints();
+    if (nbPoints == 0) // in case only Data have been copied and not going thourgh AddTriangle methods.
+        this->setNbPoints(d_initPoints.getValue().size());
+
+    m_edgesAroundVertex.resize(getNbPoints());
+
     for (unsigned int edge=0; edge<m_edge.size(); ++edge)
     {
         // adding edge in the edge shell of both points
@@ -177,7 +183,10 @@ const EdgeSetTopologyContainer::Edge EdgeSetTopologyContainer::getEdge (EdgeID i
     if(!hasEdges())
         createEdgeSetArray();
 
-    return (d_edge.getValue())[i];
+    if ((size_t)i >= getNbEdges())
+        return Edge(-1, -1);
+    else
+        return (d_edge.getValue())[i];
 }
 
 

@@ -138,6 +138,21 @@ if(SOFA_BUILD_TESTS)
     add_subdirectory(extlibs/gtest)
 endif()
 
+## Active or not the use of ccache
+option(SOFA_USE_CCACHE "Compile using ccache optimization" OFF)
+if(SOFA_USE_CCACHE)
+    find_program(CCACHE_PROGRAM ccache)
+    if(CCACHE_PROGRAM)
+        # Support Unix Makefiles and Ninja
+        #TODO replace by <LANG>_COMPILER_LAUNCHER when min cmake version > 3.4
+        set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
+        set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK "${CCACHE_PROGRAM}")
+    else()
+        message(WARNING "ccache not found, disabling option")
+        set(SOFA_USE_CCACHE OFF CACHE bool "Compile using ccache optimization" FORCE)
+    endif()
+endif()
+
 ### Ninja build pools
 option(SOFA_NINJA_BUILD_POOLS "Activate the Ninja build pools feature, to limit the cores used by specific targets" OFF)
 
@@ -190,6 +205,11 @@ add_subdirectory(SofaAdvanced)
 add_subdirectory(SofaMisc)
 add_subdirectory(SofaGui)
 
+## Modules
+## in the consortium convention a module is a similar to a plugin the difference is that
+## a module is hosted and managed by the consortium while plugins are hosted and managed by third parties.
+add_subdirectory(modules)
+
 # SofaTest depends on SofaPython, so we add SofaPython before SofaTest.
 sofa_add_plugin( applications/plugins/SofaPython SofaPython )
 
@@ -233,6 +253,7 @@ add_subdirectory(applications/packages)
 
 ## Applications
 add_subdirectory(applications/projects)
+
 
 # Tutorial add subdirectory
 if(SOFA_BUILD_TUTORIALS)

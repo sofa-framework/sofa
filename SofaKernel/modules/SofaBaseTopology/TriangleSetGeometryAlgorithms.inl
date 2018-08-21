@@ -2172,7 +2172,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::reorderTrianglesOrientationFromNo
 
     sofa::helper::vector<TriangleID> _neighTri = this->m_topology->getElementAroundElement(0);
     sofa::helper::vector<TriangleID> _neighTri2, buffK, buffKK;
-    unsigned int cpt_secu = 0, max = this->m_topology->getNbTriangles();
+    size_t cpt_secu = 0, max = this->m_topology->getNbTriangles();
     sofa::defaulttype::Vec<3,Real> triNormal;
     bool pair = true;
 
@@ -2401,7 +2401,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
 
         const sofa::helper::vector<Triangle> &triangleArray = this->m_topology->getTriangles();
 
-        helper::vector<defaulttype::Vector3> positions;
+        std::vector<defaulttype::Vector3> positions;
         for (unsigned int i =0; i<triangleArray.size(); i++)
         {
 
@@ -2481,7 +2481,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
         size_t nbrTtri = triangleArray.size();
 
         Coord point2;
-        sofa::defaulttype::Vec<4,float> color;
+        sofa::defaulttype::Vec4f color;
         SReal normalLength = _drawNormalLength.getValue();
 
         vparams->drawTool()->setLightingEnabled(false);
@@ -2503,7 +2503,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualPa
             sofa::defaulttype::Vec3d point2 = center + normal*normalLength;
 
             for(unsigned int j=0; j<3; j++)
-                color[j] = fabs (normal[j]);
+                color[j] = (float)fabs (normal[j]);
 
             vertices.push_back(center);
             colors.push_back(color);

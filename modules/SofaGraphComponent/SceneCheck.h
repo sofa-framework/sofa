@@ -24,6 +24,8 @@
 
 #include "config.h"
 #include <sofa/helper/system/config.h>
+#include <iostream>
+#include <string>
 #include <map>
 #include <memory>
 

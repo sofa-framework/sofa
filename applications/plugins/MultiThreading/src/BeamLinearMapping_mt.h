@@ -26,7 +26,7 @@
 #include <SofaMiscMapping/BeamLinearMapping.h>
 
 
-#include "TaskSchedulerBoost.h"
+#include "TaskScheduler.h"
 
 
 

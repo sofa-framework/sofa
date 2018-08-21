@@ -91,7 +91,12 @@ void TriangleSetTopologyContainer::createTrianglesAroundVertexArray ()
         clearTrianglesAroundVertex();
     }
 
-    m_trianglesAroundVertex.resize( getNbPoints() );
+    int nbPoints = getNbPoints();
+    if (nbPoints == 0) // in case only Data have been copied and not going thourgh AddTriangle methods.
+        this->setNbPoints(d_initPoints.getValue().size());
+
+    m_trianglesAroundVertex.resize(getNbPoints());
+    
     helper::ReadAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = d_triangle;
 
     for (unsigned int i = 0; i < m_triangle.size(); ++i)
@@ -135,10 +140,14 @@ void TriangleSetTopologyContainer::createTrianglesAroundEdgeArray ()
 
     for (unsigned int i = 0; i < numTriangles; ++i)
     {
+        const Triangle &t = getTriangle(i);
         // adding triangle i in the triangle shell of all edges
         for (unsigned int j=0; j<3; ++j)
         {
-            m_trianglesAroundEdge[ m_edgesInTriangle[i][j] ].push_back( i );
+            if (d_edge.getValue()[m_edgesInTriangle[i][j]][0] == t[(j + 1) % 3])
+                m_trianglesAroundEdge[m_edgesInTriangle[i][j]].insert(m_trianglesAroundEdge[m_edgesInTriangle[i][j]].begin(), i); // triangle is on the left of the edge
+            else
+                m_trianglesAroundEdge[m_edgesInTriangle[i][j]].push_back(i); // triangle is on the right of the edge
         }
     }
 }
@@ -191,7 +200,7 @@ void TriangleSetTopologyContainer::createEdgeSetArray()
                 // edge not in edgeMap so create a new one
                 const unsigned int edgeIndex = (unsigned int)edgeMap.size();
                 edgeMap[e] = edgeIndex;
-//	      m_edge.push_back(e); Changed to have oriented edges on the border of the triangulation
+                //m_edge.push_back(e); Changed to have oriented edges on the border of the triangulation
                 m_edge.push_back(Edge(v1,v2));
             }
         }
@@ -431,7 +440,10 @@ const TriangleSetTopologyContainer::Triangle TriangleSetTopologyContainer::getTr
     if(!hasTriangles())
         createTriangleSetArray();
 
-    return (d_triangle.getValue())[i];
+    if ((size_t)i >= getNbTriangles())
+        return Triangle(-1, -1, -1);
+    else
+        return (d_triangle.getValue())[i];
 }
 
 
@@ -769,7 +781,7 @@ bool TriangleSetTopologyContainer::checkTopology() const
 
 bool TriangleSetTopologyContainer::checkConnexity()
 {
-    unsigned int nbr = this->getNbTriangles();
+    size_t nbr = this->getNbTriangles();
 
     if (nbr == 0)
     {
@@ -792,7 +804,7 @@ bool TriangleSetTopologyContainer::checkConnexity()
 
 unsigned int TriangleSetTopologyContainer::getNumberOfConnectedComponent()
 {
-    unsigned int nbr = this->getNbTriangles();
+    size_t nbr = this->getNbTriangles();
 
     if (nbr == 0)
     {

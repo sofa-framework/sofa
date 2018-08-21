@@ -33,8 +33,7 @@
 
 #include <SofaGeneralEngine/ProximityROI.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/gl/template.h>
-#include <sofa/helper/gl/BasicShapes.h>
+#include <sofa/defaulttype/RGBAColor.h>
 
 namespace sofa
 {
@@ -263,39 +262,47 @@ void ProximityROI<DataTypes>::update()
 template <class DataTypes>
 void ProximityROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
-    glColor3f(0.0, 1.0, 1.0);
+    vparams->drawTool()->saveLastState();
+
+    const sofa::defaulttype::RGBAColor& color = sofa::defaulttype::RGBAColor::cyan();
 
     if(p_drawSphere.getValue()) // old classical drawing by points
     {
+        std::vector<sofa::defaulttype::Vector3> drawcenters;
+        std::vector<float> drawradii;
         ///draw the boxes
         const helper::vector<Vec3>& c=centers.getValue();
         const helper::vector<Real>& r=radii.getValue();
 
         for (unsigned int i=0; i<c.size() && i<r.size(); ++i)
         {
-            helper::gl::drawWireSphere(c[i], (float)(r[i]/2.0));
+            drawcenters.push_back(c[i]);
+            drawradii.push_back((float)(r[i] * 0.5));
         }
+        vparams->drawTool()->setPolygonMode(0, true);
+        vparams->drawTool()->drawSpheres(drawcenters, drawradii, color);
+        vparams->drawTool()->setPolygonMode(0, false);
     }
+
 
     ///draw points in ROI
     if( p_drawPoints.getValue())
     {
-        glDisable(GL_LIGHTING);
-        glBegin(GL_POINTS);
-        glPointSize(5.0);
+        vparams->drawTool()->disableLighting();
+
+        std::vector<sofa::defaulttype::Vector3> vertices;
         helper::ReadAccessor< Data<VecCoord > > pointsInROI = f_pointsInROI;
         for (unsigned int i=0; i<pointsInROI.size() ; ++i)
         {
-            CPos p = DataTypes::getCPos(pointsInROI[i]);
-            helper::gl::glVertexT(p);
+            vertices.push_back(DataTypes::getCPos(pointsInROI[i]));
         }
-        glEnd();
+        vparams->drawTool()->drawPoints(vertices, 5.0, color);
     }
-#endif /* SOFA_NO_OPENGL */
+
+    vparams->drawTool()->restoreLastState();
 }
 
 } // namespace engine

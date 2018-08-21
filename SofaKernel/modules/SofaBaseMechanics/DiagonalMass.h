@@ -44,6 +44,7 @@
 #include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.h>
 
 #include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/core/DataTracker.h>
 
 namespace sofa
 {
@@ -97,7 +98,7 @@ public:
     typedef typename DiagonalMassInternalData<DataTypes,TMassType>::MassVector MassVector;
     typedef typename DiagonalMassInternalData<DataTypes,TMassType>::GeometricalTypes GeometricalTypes;
 
-    VecMass d_mass; ///< values of the particles masses
+    VecMass d_vertexMass; ///< values of the particles masses
 
     typedef core::topology::BaseMeshTopology::Point Point;
     typedef core::topology::BaseMeshTopology::Edge Edge;
@@ -175,7 +176,6 @@ public:
     protected:
         DiagonalMass<DataTypes,TMassType>* dm;
     };
-    DMassPointHandler* m_pointHandler;
     /// the mass density used to compute the mass from a mesh topology and geometry
     Data< Real > d_massDensity;
 
@@ -187,8 +187,19 @@ public:
 
     /// to display the center of gravity of the system
     Data< bool > d_showCenterOfGravity;
+
     Data< float > d_showAxisSize; ///< factor length of the axis displayed (only used for rigids)
     core::objectmodel::DataFileName d_fileMass; ///< an Xsp3.0 file to specify the mass parameters
+
+    DMassPointHandler* m_pointHandler;
+
+    /// value defining the initialization process of the mass (0 : totalMass, 1 : massDensity, 2 : vertexMass)
+    int m_initializationProcess;
+
+    /// Data tracker
+    sofa::core::DataTracker m_dataTrackerVertex;
+    sofa::core::DataTracker m_dataTrackerDensity;
+    sofa::core::DataTracker m_dataTrackerTotal;
 
 protected:
     ////////////////////////// Inherited attributes ////////////////////////////
@@ -227,7 +238,9 @@ public:
 
     virtual void reinit() override;
     virtual void init() override;
+    virtual void handleEvent(sofa::core::objectmodel::Event* ) override;
 
+    bool update();
 
     TopologyType getMassTopologyType() const
     {
@@ -240,17 +253,45 @@ public:
     }
 
 protected:
+    bool checkTopology();
     void initTopologyHandlers();
+    void massInitialization();
 
 public:
 
-    void setMassDensity(Real m)
-    {
-        d_massDensity.setValue(m);
-    }
-
     SReal getTotalMass() const { return d_totalMass.getValue(); }
-    int getMassCount() { return d_mass.getValue().size(); }
+    int getMassCount() { return d_vertexMass.getValue().size(); }
+
+    /// Print key mass informations (totalMass, vertexMass and massDensity)
+    void printMass();
+
+    /// Compute the mass from input values
+    void computeMass();
+
+
+    /// @name Read and write access functions in mass information
+    /// @{
+    virtual const Real &getMassDensity();
+    virtual const Real &getTotalMass();
+
+    virtual void setVertexMass(sofa::helper::vector< Real > vertexMass);
+    virtual void setMassDensity(Real massDensityValue);
+    virtual void setTotalMass(Real totalMass);
+    /// @}
+
+
+    /// @name Check and standard initialization functions from mass information
+    /// @{
+    virtual bool checkVertexMass();
+    virtual void initFromVertexMass();
+
+    virtual bool checkMassDensity();
+    virtual void initFromMassDensity();
+
+    virtual bool checkTotalMass();
+    virtual void checkTotalMassInit();
+    virtual void initFromTotalMass();
+    /// @}
 
 
     void addMass(const MassType& mass);
@@ -292,6 +333,16 @@ public:
     static std::string templateName(const DiagonalMass<DataTypes, TMassType>* = NULL)
     {
         return DataTypes::Name();
+    }
+
+    //Temporary function to warn the user when old attribute names are used
+    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
+    {
+        if (arg->getAttribute("mass"))
+        {
+            msg_warning() << "input data 'mass' changed for 'vertexMass', please update your scene (see PR#637)";
+        }
+        Inherited::parse(arg);
     }
 
 private:

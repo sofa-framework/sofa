@@ -355,10 +355,10 @@ protected:
 			
 			return;
 		}
-
+        OutDataTypes::deriv_total_size;
 		// convert the data to Eigen type
         VectorEigenOut aux1(this->colSize(),1), aux2(this->rowSize(),1);
-        for(unsigned i = 0, n = data.size(); i < n; ++i) {
+        for(size_t i = 0, n = data.size(); i < n; ++i) {
 			for(unsigned j = 0; j < Nin; ++j) {
                 aux1[Nin * i + j] = data[i][j];
 			}
@@ -370,9 +370,9 @@ protected:
 #else
         aux2.noalias() = this->compressedMatrix * aux1;
 #endif
-
+        
         // convert the result back to the Sofa type
-        for(unsigned i = 0, n = result.size(); i < n; ++i) {
+        for(size_t i = 0, n = result.size(); i < n; ++i) {
 			for(unsigned j = 0; j < Nout; ++j) {
                 result[i][j] = aux2[Nout * i + j];
 			}
@@ -463,7 +463,7 @@ protected:
 		// convert the data to Eigen type
         VectorEigenOut aux1(this->rowSize()), aux2(this->colSize());
 
-        for(unsigned i = 0, n = data.size(); i < n; ++i) {
+        for(size_t i = 0, n = data.size(); i < n; ++i) {
 			for(unsigned j = 0; j < Nout; ++j) {
 				aux1[Nout * i + j] = data[i][j];
 			}
@@ -477,7 +477,7 @@ protected:
 #endif
 
 		// convert the result back to the Sofa type
-        for(unsigned i = 0, n = result.size(); i < n; ++i) {
+        for(size_t i = 0, n = result.size(); i < n; ++i) {
 			for(unsigned j = 0; j < Nin; ++j) {
                 result[i][j] += aux2[Nin * i + j] * fact;
 			}

@@ -4,7 +4,16 @@
 
 ## On master branch (not released yet - Kernel modules are in **bold**)
 
-[Full log](https://github.com/sofa-framework/sofa/compare/v17.12...HEAD)
+[Full log](https://github.com/sofa-framework/sofa/compare/v18.06...HEAD)
+
+
+____________________________________________________________
+
+
+
+## [v18.06](https://github.com/sofa-framework/sofa/tree/v18.06)
+
+[Full log](https://github.com/sofa-framework/sofa/compare/v17.12...v18.06)
 
 
 ### Deprecated

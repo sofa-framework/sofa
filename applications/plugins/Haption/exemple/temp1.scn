@@ -31,7 +31,8 @@
 		</Node>
 	</Node>
 	<Node 	name="Obstacle" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
-		<MeshTopology name="Mesh"  fileTopology="mesh/cube.obj" />
+		<MeshObjLoader name="meshLoader0" filename="mesh/cube.obj" />
+		<MeshTopology name="Mesh" src="@meshLoader0" />
 		<MechanicalObject template="Vec3d" name="Obstacle"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  showObjectScale="0.1"  showIndicesScale="0.0001"  translation="0 0 -10"  rotation="0 0 0"  scale3d="40 40 0.1" />
 		<TTriangleModel template="Vec3d" name="Triangles"  moving="0"  simulated="0"  contactStiffness="500"  contactFriction="0.01" />
 		<LineModel name="Lines"  moving="0"  simulated="0"  contactStiffness="500"  contactFriction="0.01" />
@@ -51,7 +52,8 @@
 			<BarycentricMapping template="Vec3d,ExtVec3f" name="Visual Mapping"  mapForces="0"  mapConstraints="0"  mapMasses="0"  input="@.."  output="@Objective" />
 		</Node>
 		<Node 	name="CollisionNode" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="0" showCollisionModels="0" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="0" showInteractionForceFields="0" showWireFrame="0" showNormals="0"  >
-			<MeshTopology name="Mesh"  fileTopology="mesh/liver.obj" />
+			<MeshObjLoader name="meshLoader2" filename="mesh/liver.obj" />
+			<MeshTopology name="Mesh" src="@meshLoader2" />
 			<MechanicalObject template="Vec3d" name="CollisionObject"  position="0 0 0"  velocity="0 0 0"  force="0 0 0"  externalForce="0 0 0"  derivX="0 0 0"  restScale="1"  scale3d="1 1 1" />
 			<PointModel name="Points" />
 			<LineModel name="Lines" />

@@ -940,7 +940,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visua
 
         const sofa::helper::vector<Tetrahedron> &tetraArray = this->m_topology->getTetrahedra();
 
-        helper::vector<defaulttype::Vector3> positions;
+        std::vector<defaulttype::Vector3> positions;
         for (unsigned int i =0; i<tetraArray.size(); i++)
         {
 

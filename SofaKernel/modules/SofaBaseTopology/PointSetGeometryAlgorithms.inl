@@ -257,7 +257,7 @@ void PointSetGeometryAlgorithms<DataTypes>::draw(const core::visual::VisualParam
 
         float scale = getIndicesScale();
 
-        helper::vector<defaulttype::Vector3> positions;
+        std::vector<defaulttype::Vector3> positions;
         for (unsigned int i =0; i<coords.size(); i++)
         {
             defaulttype::Vector3 center; center = DataTypes::getCPos(coords[i]);

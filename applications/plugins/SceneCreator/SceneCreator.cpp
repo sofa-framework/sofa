@@ -676,7 +676,7 @@ Node::SPtr massSpringString(Node::SPtr parent,
 
     simpleapi::createObject(node, "UniformMass", {
                                 {"name",oss.str()+"_mass"},
-                                {"mass", str(totalMass/numParticles)}});
+                                {"vertexMass", str(totalMass/numParticles)}});
 
     simpleapi::createObject(node, "StiffSpringForceField", {
                                 {"name", oss.str()+"_spring"},
