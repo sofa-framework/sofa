@@ -132,7 +132,7 @@ void CompareState::handleEvent(sofa::core::objectmodel::Event* event)
 //-------------------------------- processCompareState------------------------------------
 void CompareState::processCompareState()
 {
-    SReal time = getContext()->getTime() + f_shift.getValue();
+    SReal time = getContext()->getTime() + d_shift.getValue();
     time += getContext()->getDt() * 0.001;
     //lastTime = time+0.00001;
     std::vector<std::string> validLines;
@@ -180,7 +180,7 @@ void CompareState::processCompareState()
 //-------------------------------- processCompareState------------------------------------
 void CompareState::draw(const core::visual::VisualParams* vparams)
 {
-    SReal time = getContext()->getTime() + f_shift.getValue();
+    SReal time = getContext()->getTime() + d_shift.getValue();
     time += getContext()->getDt() * 0.001;
     //lastTime = time+0.00001;
     if (nextValidLines.empty() && last_time != getContext()->getTime())
@@ -326,7 +326,7 @@ void CompareStateCreator::addCompareState(sofa::core::behavior::BaseMechanicalSt
             validFilename = lookForValidCompareStateFile(sceneName, ms->getName(), counterCompareState, extension,
                     ms->getClass()->shortName);
         }
-        rs->f_filename.setValue(validFilename);  rs->f_listening.setValue(false); //Deactivated only called by extern functions
+        rs->d_filename.setValue(validFilename);  rs->f_listening.setValue(false); //Deactivated only called by extern functions
         if (init) rs->init();
 
         ++counterCompareState;
