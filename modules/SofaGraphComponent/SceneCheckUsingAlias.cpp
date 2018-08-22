@@ -40,16 +40,19 @@ using sofa::core::ObjectFactory;
 
 SceneCheckUsingAlias::SceneCheckUsingAlias()
 {
+    m_componentsCreatedUsingAlias = std::map<std::string, std::vector<std::string>>();
+
     /// Add a callback to be n
     ObjectFactory::getInstance()->setCallback([this](Base* o, BaseObjectDescription *arg) {
         if (o->getClassName() != arg->getAttribute("type", "") )
         {
             std::string alias = arg->getAttribute("type", "");
+            std::string className = o->getClassName();
 
-            std::vector<std::string> v = this->m_componentsCreatedUsingAlias[o->getClassName()];
-            if ( std::find(v.begin(), v.end(), alias) == v.end() )
+            std::vector<std::string> v = this->m_componentsCreatedUsingAlias[className];
+            if ( v.empty() || std::find(v.begin(), v.end(), alias) == v.end() )
             {
-                this->m_componentsCreatedUsingAlias[o->getClassName()].push_back(alias);
+                this->m_componentsCreatedUsingAlias[className].push_back(alias);
             }
         }
     });
@@ -70,6 +73,11 @@ const std::string SceneCheckUsingAlias::getDesc()
     return "Check if a Component has been created using an Alias.";
 }
 
+void SceneCheckUsingAlias::doInit(Node* node)
+{
+    m_componentsCreatedUsingAlias.clear();
+}
+
 void SceneCheckUsingAlias::doPrintSummary()
 {
     if ( this->m_componentsCreatedUsingAlias.empty() )
@@ -78,28 +86,22 @@ void SceneCheckUsingAlias::doPrintSummary()
     }
     
     std::stringstream usingAliasesWarning;
-    usingAliasesWarning << "This scene is using hard coded aliases. Aliases can be very confusing, "
-                           "use with caution." << msgendl;
+    msg_warning(this->getName()) << "This scene is using hard coded aliases. "
+                                    "Aliases can be very confusing, use with caution." << msgendl;
     for (auto i : this->m_componentsCreatedUsingAlias)
     {
-        if (i.second.size() > 1)
-            usingAliasesWarning << "  - " << i.first << " have been created using the aliases ";
-        else
-            usingAliasesWarning << "  - " << i.first << " has been created using the alias ";
+        usingAliasesWarning << "Component created using aliases: ";
 
         bool first = true;
         for (std::string &alias : i.second)
         {
-            if (first)
-                usingAliasesWarning << "\"" << alias << "\"";
-            else
-                usingAliasesWarning << ", \"" << alias << "\"";
-
-            first = false;
+            if (first) first = false;
+            else usingAliasesWarning << ", ";
+            usingAliasesWarning << "\"" << alias << "\"";
         }
         usingAliasesWarning << "." << msgendl;
+        msg_warning(i.first) << this->getName() << ": " << usingAliasesWarning.str();
     }
-    msg_warning(this->getName()) << usingAliasesWarning.str();
 }
 
 } // namespace _scenechecking_
