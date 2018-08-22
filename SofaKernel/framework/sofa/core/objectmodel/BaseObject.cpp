@@ -267,15 +267,6 @@ void BaseObject::releaseAspect(int aspect)
 
 void BaseObject::init()
 {
-
-
-	for(VecData::const_iterator iData = this->m_vecData.begin(); iData != this->m_vecData.end(); ++iData)
-	{
-		if ((*iData)->isRequired() && !(*iData)->isSet())
-		{
-            serr << "Required data \"" << (*iData)->getName() << "\" has not been set. (Current value is " << (*iData)->getValueString() << ")" << sendl;
-		}
-	}
 }
 
 void BaseObject::bwdInit()
