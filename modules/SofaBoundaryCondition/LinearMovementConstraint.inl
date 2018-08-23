@@ -26,8 +26,8 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/simulation/Simulation.h>
-#include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <iostream>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 
@@ -400,39 +400,51 @@ void LinearMovementConstraint<DataTypes>::applyConstraint(defaulttype::BaseVecto
 template <class DataTypes>
 void LinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels() || m_keyTimes.getValue().size() == 0)
         return;
+
+    vparams->drawTool()->saveLastState();
+    sofa::defaulttype::RGBAColor color(1, 0.5, 0.5, 1);
+
     if (showMovement.getValue())
     {
-        glDisable(GL_LIGHTING);
-        glPointSize(10);
-        glColor4f(1, 0.5, 0.5, 1);
-        glBegin(GL_LINES);
+        vparams->drawTool()->disableLighting();
+
+        std::vector<sofa::defaulttype::Vector3> vertices;
+
         const SetIndexArray & indices = m_indices.getValue();
+        const VecDeriv& keyMovements = m_keyMovements.getValue();
         if (d_relativeMovements.getValue()) 
         {
             for (unsigned int i = 0; i < m_keyMovements.getValue().size() - 1; i++)
             {
                 for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
                 {
-                    helper::gl::glVertexT(DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(m_keyMovements.getValue()[i]));
-                    helper::gl::glVertexT(DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(m_keyMovements.getValue()[i + 1]));
+                    auto tmp0 = DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(keyMovements[i]);
+                    auto tmp1 = DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(keyMovements[i + 1]);
+                    sofa::defaulttype::Vector3 v0(tmp0[0], tmp0[1], tmp0[2]);
+                    sofa::defaulttype::Vector3 v1(tmp1[0], tmp1[1], tmp1[2]);
+                    vertices.push_back(v0);
+                    vertices.push_back(v1);
                 }
             }
         } 
         else 
         {
-            for (unsigned int i = 0; i < m_keyMovements.getValue().size() - 1; i++)
+            for (unsigned int i = 0; i < keyMovements.size() - 1; i++)
             {
                 for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
                 {
-                    helper::gl::glVertexT(DataTypes::getDPos(m_keyMovements.getValue()[i]));
-                    helper::gl::glVertexT(DataTypes::getDPos(m_keyMovements.getValue()[i + 1]));
+                    auto tmp0 = DataTypes::getDPos(keyMovements[i]);
+                    auto tmp1 = DataTypes::getDPos(keyMovements[i + 1]);
+                    sofa::defaulttype::Vector3 v0(tmp0[0], tmp0[1], tmp0[2]);
+                    sofa::defaulttype::Vector3 v1(tmp1[0], tmp1[1], tmp1[2]);
+                    vertices.push_back(v0);
+                    vertices.push_back(v1);
                 }
             }
         }
-        glEnd();
+        vparams->drawTool()->drawLines(vertices, 10, color);
     }
     else
     {
@@ -446,9 +458,10 @@ void LinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams*
             point = DataTypes::getCPos(x[*it]);
             points.push_back(point);
         }
-        vparams->drawTool()->drawPoints(points, 10, defaulttype::Vec<4, float> (1, 0.5, 0.5, 1));
+        vparams->drawTool()->drawPoints(points, 10, color);
     }
-#endif /* SOFA_NO_OPENGL */
+
+    vparams->drawTool()->restoreLastState();
 }
 
 } // namespace constraint

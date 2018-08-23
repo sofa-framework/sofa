@@ -149,6 +149,10 @@ class ExampleController(Sofa.PythonScriptController):
 		sys.stdout.flush()
 		return 0
 
+        def onMouseMove(self,x,y):
+		print 'onMouseMove x='+str(x)+' y='+str(y)
+		sys.stdout.flush()
+		return 0
 
 	# called at each draw (possibility to use PyOpenGL)
 	def draw(self):

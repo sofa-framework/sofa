@@ -200,7 +200,7 @@ namespace sofa
 			return  true;
 		}
 
-        std::thread* WorkerThread::create_and_attach( TaskScheduler* const & taskScheduler)
+        std::thread* WorkerThread::create_and_attach( TaskScheduler* const & /*taskScheduler*/)
         {
             _stdThread = std::thread(std::bind(&WorkerThread::run, this));
             return &_stdThread;

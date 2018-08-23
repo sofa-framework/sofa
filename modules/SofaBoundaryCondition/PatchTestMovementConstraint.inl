@@ -27,7 +27,6 @@
 #include <SofaBaseTopology/TopologySubsetData.inl>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/simulation/Simulation.h>
-#include <sofa/helper/gl/template.h>
 #include <iostream>
 #include <sofa/helper/cast.h>
 

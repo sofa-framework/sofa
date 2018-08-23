@@ -523,7 +523,7 @@ const HexahedronSetTopologyContainer::Hexahedron HexahedronSetTopologyContainer:
     if(!hasHexahedra())
         createHexahedronSetArray();
 
-    if (i >= getNbHexahedra())
+    if ((size_t)i >= getNbHexahedra())
         return Hexahedron(-1, -1, -1, -1, -1, -1, -1, -1);
     else
         return (d_hexahedron.getValue())[i];
@@ -901,7 +901,7 @@ bool HexahedronSetTopologyContainer::checkTopology() const
 bool HexahedronSetTopologyContainer::checkConnexity()
 {
 
-    unsigned int nbr = this->getNbHexahedra();
+    size_t nbr = this->getNbHexahedra();
 
     if (nbr == 0)
     {
@@ -925,7 +925,7 @@ bool HexahedronSetTopologyContainer::checkConnexity()
 
 unsigned int HexahedronSetTopologyContainer::getNumberOfConnectedComponent()
 {
-    unsigned int nbr = this->getNbHexahedra();
+    size_t nbr = this->getNbHexahedra();
 
     if (nbr == 0)
     {
@@ -974,7 +974,7 @@ const HexahedronSetTopologyContainer::VecHexaID HexahedronSetTopologyContainer::
     VecHexaID elemOnFront, elemPreviousFront, elemNextFront;
     bool end = false;
     unsigned int cpt = 0;
-    const unsigned int nbr = this->getNbHexahedra();
+    size_t nbr = this->getNbHexahedra();
 
     // init algo
     elemAll.push_back(elem);

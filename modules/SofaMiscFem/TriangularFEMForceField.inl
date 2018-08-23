@@ -31,8 +31,7 @@
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/ColorMap.h>
-#include <sofa/helper/gl/template.h>
-#include <sofa/helper/system/gl.h>
+#include <sofa/defaulttype/RGBAColor.h>
 
 #include <SofaBaseTopology/TopologyData.inl>
 
@@ -1691,34 +1690,41 @@ void TriangularFEMForceField<DataTypes>::addDForce(const core::MechanicalParams*
 template<class DataTypes>
 void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowForceFields())
         return;
 
+    vparams->drawTool()->saveLastState();
+
     if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        vparams->drawTool()->setPolygonMode(0,true);
+
+    vparams->drawTool()->disableLighting();
+
+    sofa::defaulttype::RGBAColor color;
+    std::vector<sofa::defaulttype::Vec4f> colorVector;
+    std::vector<sofa::defaulttype::Vector3> vertices;
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     unsigned int nbTriangles=_topology->getNbTriangles();
 
-    glDisable(GL_LIGHTING);
     if (!f_fracturable.getValue() && !this->showFracturableTriangles.getValue())
     {
-        glBegin(GL_TRIANGLES);
         for(unsigned int i=0; i<nbTriangles; ++i)
         {
             Index a = _topology->getTriangle(i)[0];
             Index b = _topology->getTriangle(i)[1];
             Index c = _topology->getTriangle(i)[2];
 
-            glColor4f(0,1,0,1);
-            helper::gl::glVertexT(x[a]);
-            glColor4f(0,0.5,0.5,1);
-            helper::gl::glVertexT(x[b]);
-            glColor4f(0,0,1,1);
-            helper::gl::glVertexT(x[c]);
+            colorVector.push_back(sofa::defaulttype::RGBAColor(0,1,0,1));
+            vertices.push_back(sofa::defaulttype::Vector3(x[a]));
+            colorVector.push_back(sofa::defaulttype::RGBAColor(0,0.5,0.5,1));
+            vertices.push_back(sofa::defaulttype::Vector3(x[b]));
+            colorVector.push_back(sofa::defaulttype::RGBAColor(0,0,1,1));
+            vertices.push_back(sofa::defaulttype::Vector3(x[c]));
         }
-        glEnd();
+        vparams->drawTool()->drawTriangles(vertices,colorVector);
+        vertices.clear();
+        colorVector.clear();
     }
 
     helper::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
@@ -1731,8 +1737,7 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
 
     if (showStressVector.getValue())
     {
-        glColor4f(1,0,1,1);
-        glBegin(GL_LINES);
+        color = sofa::defaulttype::RGBAColor(1,0,1,1);
         for(unsigned int i=0; i<nbTriangles; ++i)
         {
             Index a = _topology->getTriangle(i)[0];
@@ -1740,10 +1745,11 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
             Index c = _topology->getTriangle(i)[2];
             Coord center = (x[a]+x[b]+x[c])/3;
             Coord d = triangleInf[i].principalStressDirection*2.5; //was 0.25
-            helper::gl::glVertexT(center);
-            helper::gl::glVertexT(center+d);
+            vertices.push_back(sofa::defaulttype::Vector3(center));
+            vertices.push_back(sofa::defaulttype::Vector3(center+d));
         }
-        glEnd();
+        vparams->drawTool()->drawLines(vertices,1,color);
+        vertices.clear();
     }
 
     if (showStressValue.getValue())
@@ -1775,21 +1781,22 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
         }
 
         helper::ColorMap::evaluator<double> evalColor = helper::ColorMap::getDefault()->getEvaluator(minStress, maxStress);
-        glBegin(GL_TRIANGLES);
         for(unsigned int i=0; i<nbTriangles; ++i)
         {
             Index a = _topology->getTriangle(i)[0];
             Index b = _topology->getTriangle(i)[1];
             Index c = _topology->getTriangle(i)[2];
 
-            glColor4fv(evalColor(vertexInf[a].stress).ptr());
-            helper::gl::glVertexT(x[a]);
-            glColor4fv(evalColor(vertexInf[b].stress).ptr());
-            helper::gl::glVertexT(x[b]);
-            glColor4fv(evalColor(vertexInf[c].stress).ptr());
-            helper::gl::glVertexT(x[c]);
+            colorVector.push_back(evalColor(vertexInf[a].stress));
+            vertices.push_back(sofa::defaulttype::Vector3(x[a]));
+            colorVector.push_back(evalColor(vertexInf[b].stress));
+            vertices.push_back(sofa::defaulttype::Vector3(x[b]));
+            colorVector.push_back(evalColor(vertexInf[c].stress));
+            vertices.push_back(sofa::defaulttype::Vector3(x[c]));
         }
-        glEnd();
+        vparams->drawTool()->drawTriangles(vertices,colorVector);
+        vertices.clear();
+        colorVector.clear();
     }
 
     if (showFracturableTriangles.getValue())
@@ -1808,28 +1815,29 @@ void TriangularFEMForceField<DataTypes>::draw(const core::visual::VisualParams* 
             }
         }
 
-        glBegin(GL_TRIANGLES);
         for (unsigned int i = 0 ; i < nbTriangles ; i++)
         {
             if (triangleInf[i].differenceToCriteria > 0)
             {
-                glColor4d( 0.4 + 0.4 * (triangleInf[i].differenceToCriteria - minDifference ) /  (maxDifference - minDifference) , 0.0 , 0.0, 0.5);
+                color = sofa::defaulttype::RGBAColor( 0.4 + 0.4 * (triangleInf[i].differenceToCriteria - minDifference ) /  (maxDifference - minDifference) , 0.0 , 0.0, 0.5);
 
                 Index a = _topology->getTriangle(i)[0];
                 Index b = _topology->getTriangle(i)[1];
                 Index c = _topology->getTriangle(i)[2];
 
-                helper::gl::glVertexT(x[a]);
-                helper::gl::glVertexT(x[b]);
-                helper::gl::glVertexT(x[c]);
+                colorVector.push_back(color);
+                vertices.push_back(sofa::defaulttype::Vector3(x[a]));
+                colorVector.push_back(color);
+                vertices.push_back(sofa::defaulttype::Vector3(x[b]));
+                colorVector.push_back(color);
+                vertices.push_back(sofa::defaulttype::Vector3(x[c]));
             }
+            vparams->drawTool()->drawTriangles(vertices,color);
         }
-        glEnd();
     }
     triangleInfo.endEdit();
-    if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-#endif /* SOFA_NO_OPENGL */
+
+    vparams->drawTool()->restoreLastState();
 }
 
 } // namespace forcefield

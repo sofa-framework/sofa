@@ -46,16 +46,12 @@ int ProjectToPointConstraintClass = core::RegisterObject("Project particles to a
         .add< ProjectToPointConstraint<Vec2dTypes> >()
         .add< ProjectToPointConstraint<Vec1dTypes> >()
         .add< ProjectToPointConstraint<Vec6dTypes> >()
-//.add< ProjectToPointConstraint<Rigid3dTypes> >()
-//.add< ProjectToPointConstraint<Rigid2dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
         .add< ProjectToPointConstraint<Vec3fTypes> >()
         .add< ProjectToPointConstraint<Vec2fTypes> >()
         .add< ProjectToPointConstraint<Vec1fTypes> >()
         .add< ProjectToPointConstraint<Vec6fTypes> >()
-//.add< ProjectToPointConstraint<Rigid3fTypes> >()
-//.add< ProjectToPointConstraint<Rigid2fTypes> >()
 #endif
         ;
 
@@ -64,116 +60,13 @@ template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<Vec3dTypes>;
 template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<Vec2dTypes>;
 template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<Vec1dTypes>;
 template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<Vec6dTypes>;
-//template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<Rigid3dTypes>;
-//template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<Rigid2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<Vec3fTypes>;
 template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<Vec2fTypes>;
 template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<Vec1fTypes>;
 template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<Vec6fTypes>;
-//template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<Rigid3fTypes>;
-//template class SOFA_BOUNDARY_CONDITION_API ProjectToPointConstraint<Rigid2fTypes>;
 #endif
-
-//#ifndef SOFA_FLOAT
-//template <>
-//void ProjectToPointConstraint<Rigid3dTypes>::draw(const core::visual::VisualParams* vparams)
-//{
-//        const SetIndexArray & indices = f_indices.getValue();
-//	if (!vparams->displayFlags().getShowBehaviorModels()) return;
-//	std::vector< Vector3 > points;
-
-//	const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
-//	if( f_fixAll.getValue()==true )
-//	    for (unsigned i=0; i<x.size(); i++ )
-//              points.push_back(x[i].getCenter());
-//	else
-//	{
-//		if( x.size() < indices.size() )
-//		{
-//			for (unsigned i=0; i<x.size(); i++ )
-//              points.push_back(x[indices[i]].getCenter());
-//		}
-//		else
-//		{
-//			for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
-//				  points.push_back(x[*it].getCenter());
-//		}
-//	}
-
-//        if( f_drawSize.getValue() == 0) // old classical drawing by points
-//          vparams->drawTool()->drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
-//        else
-//          vparams->drawTool()->drawSpheres(points, (float)f_drawSize.getValue(), Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
-//}
-
-//template <>
-//    void ProjectToPointConstraint<Rigid2dTypes>::draw(const core::visual::VisualParams* vparams)
-//{
-//  const SetIndexArray & indices = f_indices.getValue();
-//  if (!vparams->displayFlags().getShowBehaviorModels()) return;
-//  std::vector< Vector3 > points;
-
-//  const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
-//  glDisable (GL_LIGHTING);
-//  glPointSize(10);
-//  glColor4f (1,0.5,0.5,1);
-//  glBegin (GL_POINTS);
-//  if( f_fixAll.getValue()==true )
-//    for (unsigned i=0; i<x.size(); i++ )
-//      gl::glVertexT(x[i].getCenter());
-//  else
-//    for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
-//      gl::glVertexT(x[*it].getCenter());
-//  glEnd();
-//  glPointSize(1);
-//}
-//#endif
-
-//#ifndef SOFA_DOUBLE
-//template <>
-//void ProjectToPointConstraint<Rigid3fTypes>::draw(const core::visual::VisualParams* vparams)
-//{
-//        const SetIndexArray & indices = f_indices.getValue();
-//	if (!vparams->displayFlags().getShowBehaviorModels()) return;
-//	std::vector< Vector3 > points;
-
-//	const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
-//	if( f_fixAll.getValue()==true )
-//	    for (unsigned i=0; i<x.size(); i++ )
-//              points.push_back(x[i].getCenter());
-//	else
-//	    for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
-//              points.push_back(x[*it].getCenter());
-
-//        if( f_drawSize.getValue() == 0) // old classical drawing by points
-//          vparams->drawTool()->drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
-//        else
-//          vparams->drawTool()->drawSpheres(points, (float)f_drawSize.getValue(), Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
-//}
-
-//template <>
-//    void ProjectToPointConstraint<Rigid2fTypes>::draw(const core::visual::VisualParams* vparams)
-//{
-//  const SetIndexArray & indices = f_indices.getValue();
-//  if (!vparams->displayFlags().getShowBehaviorModels()) return;
-//  const VecCoord& x =mstate->read(core::ConstVecCoordId::position())->getValue();
-//  glDisable (GL_LIGHTING);
-//  glPointSize(10);
-//  glColor4f (1,0.5,0.5,1);
-//  glBegin (GL_POINTS);
-//  if( f_fixAll.getValue()==true )
-//    for (unsigned i=0; i<x.size(); i++ )
-//      gl::glVertexT(x[i].getCenter());
-//  else
-//    for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
-//      gl::glVertexT(x[*it].getCenter());
-//  glEnd();
-//  glPointSize(1);
-//}
-//#endif
-
 
 
 } // namespace projectiveconstraintset
