@@ -424,8 +424,8 @@ void MechanicalObject<DataTypes>::handleStateChange()
 
             if (pointsAdded.pointIndexArray.size() != nbPoints)
             {
-                serr << "TOPO STATE EVENT POINTSADDED SIZE MISMATCH: "
-                     << nbPoints << " != " << pointsAdded.pointIndexArray.size() << sendl;
+                msg_error() << "TOPO STATE EVENT POINTSADDED SIZE MISMATCH: "
+                            << nbPoints << " != " << pointsAdded.pointIndexArray.size();
             }
             for (unsigned int i=0; i<pointsAdded.pointIndexArray.size(); ++i)
             {
@@ -529,7 +529,7 @@ void MechanicalObject<DataTypes>::handleStateChange()
 
             if (ancestors.size() != indicesList.size() || ancestors.empty())
             {
-                this->serr << "Error ! MechanicalObject::POINTSMOVED topological event, bad inputs (inputs don't share the same size or are empty)."<<this->sendl;
+                msg_error() << "Error ! MechanicalObject::POINTSMOVED topological event, bad inputs (inputs don't share the same size or are empty).";
                 break;
             }
 
@@ -1489,6 +1489,10 @@ void MechanicalObject<DataTypes>::accumulateForce(const core::ExecParams* params
 template <class DataTypes>
 Data<typename MechanicalObject<DataTypes>::VecCoord>* MechanicalObject<DataTypes>::write(core::VecCoordId v)
 {
+    if (v.isNull())
+    {
+        msg_error() << "Accessing null VecCoord";
+    }
 
     if (v.index >= vectorsCoord.size())
     {
@@ -1513,13 +1517,20 @@ Data<typename MechanicalObject<DataTypes>::VecCoord>* MechanicalObject<DataTypes
         }
     }
     Data<typename MechanicalObject<DataTypes>::VecCoord>* d = vectorsCoord[v.index];
-#if defined(SOFA_DEBUG) || !defined(NDEBUG)
-    const typename MechanicalObject<DataTypes>::VecCoord& val = d->getValue();
-    if (!val.empty() && val.size() != (unsigned int)this->getSize())
+    if(d!=NULL)
     {
-        serr << "Writing to State vector " << v << " with incorrect size : " << val.size() << " != " << this->getSize() << sendl;
-    }
+#if defined(SOFA_DEBUG) || !defined(NDEBUG)
+        const typename MechanicalObject<DataTypes>::VecCoord& val = d->getValue();
+        if (!val.empty() && val.size() != (unsigned int)this->getSize())
+        {
+            msg_error() << "Writing to VecCoord State vector " << v << " with incorrect size : " << val.size() << " != " << this->getSize();
+        }
 #endif
+    }
+    else
+    {
+        msg_error() << "Writing to VecCoord State vector using a NULL pointer";
+    }
     return d;
 }
 
@@ -1530,23 +1541,31 @@ const Data<typename MechanicalObject<DataTypes>::VecCoord>* MechanicalObject<Dat
 {
     if (v.isNull())
     {
-        serr << "Accessing null VecCoord" << sendl;
+        msg_error() << "Reading null VecCoord";
     }
+
     if (v.index < vectorsCoord.size() && vectorsCoord[v.index] != NULL)
     {
         const Data<typename MechanicalObject<DataTypes>::VecCoord>* d = vectorsCoord[v.index];
-#if defined(SOFA_DEBUG) || !defined(NDEBUG)
-        const typename MechanicalObject<DataTypes>::VecCoord& val = d->getValue();
-        if (!val.empty() && val.size() != (unsigned int)this->getSize())
+        if(d!=NULL)
         {
-            serr << "Accessing State vector " << v << " with incorrect size : " << val.size() << " != " << this->getSize() << sendl;
-        }
+#if defined(SOFA_DEBUG) || !defined(NDEBUG)
+            const typename MechanicalObject<DataTypes>::VecCoord& val = d->getValue();
+            if (!val.empty() && val.size() != (unsigned int)this->getSize())
+            {
+                msg_error() << "Accessing State vector " << v << " with incorrect size : " << val.size() << " != " << this->getSize();
+            }
 #endif
+        }
+        else
+        {
+            msg_error() << "Reading State vector using a NULL pointer";
+        }
         return d;
     }
     else
     {
-        serr << "Vector " << v << " does not exist" << sendl;
+        msg_error() << "Vector " << v << " does not exist";
         return NULL;
     }
 }
@@ -1554,6 +1573,10 @@ const Data<typename MechanicalObject<DataTypes>::VecCoord>* MechanicalObject<Dat
 template <class DataTypes>
 Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<DataTypes>::write(core::VecDerivId v)
 {
+    if (v.isNull())
+    {
+        msg_error() << "Accessing null VecDeriv";
+    }
 
     if (v.index >= vectorsDeriv.size())
     {
@@ -1578,34 +1601,53 @@ Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<DataTypes
         }
     }
     Data<typename MechanicalObject<DataTypes>::VecDeriv>* d = vectorsDeriv[v.index];
-#if defined(SOFA_DEBUG) || !defined(NDEBUG)
-    const typename MechanicalObject<DataTypes>::VecDeriv& val = d->getValue();
-    if (!val.empty() && val.size() != (unsigned int)this->getSize())
+    if(d!=NULL)
     {
-        serr << "Writing to State vector " << v << " with incorrect size : " << val.size() << " != " << this->getSize() << sendl;
-    }
+#if defined(SOFA_DEBUG) || !defined(NDEBUG)
+        const typename MechanicalObject<DataTypes>::VecDeriv& val = d->getValue();
+        if (!val.empty() && val.size() != (unsigned int)this->getSize())
+        {
+            msg_error() << "Writing to VecDeriv State vector " << v << " with incorrect size : " << val.size() << " != " << this->getSize();
+        }
 #endif
+    }
+    else
+    {
+        msg_error() << "Writing to VecDeriv State vector using a NULL pointer";
+    }
     return d;
 }
 
 template <class DataTypes>
 const Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<DataTypes>::read(core::ConstVecDerivId v) const
 {
+    if (v.isNull())
+    {
+        msg_error() << "Reading null VecDeriv";
+    }
+
     if (v.index < vectorsDeriv.size())
     {
         const Data<typename MechanicalObject<DataTypes>::VecDeriv>* d = vectorsDeriv[v.index];
-#if defined(SOFA_DEBUG) || !defined(NDEBUG)
-        const typename MechanicalObject<DataTypes>::VecDeriv& val = d->getValue();
-        if (!val.empty() && val.size() != (unsigned int)this->getSize())
+        if(d!=NULL)
         {
-            serr << "Accessing State vector " << v << " with incorrect size : " << val.size() << " != " << this->getSize() << sendl;
-        }
+#if defined(SOFA_DEBUG) || !defined(NDEBUG)
+            const typename MechanicalObject<DataTypes>::VecDeriv& val = d->getValue();
+            if (!val.empty() && val.size() != (unsigned int)this->getSize())
+            {
+                msg_error() << "Accessing State vector " << v << " with incorrect size : " << val.size() << " != " << this->getSize();
+            }
 #endif
+        }
+        else
+        {
+            msg_error() << "Accessing State vector which returns a NULL pointer";
+        }
         return d;
     }
     else
     {
-        serr << "Vector " << v << "does not exist" << sendl;
+        msg_error() << "Vector " << v << "does not exist";
         return NULL;
     }
 }
@@ -1613,7 +1655,10 @@ const Data<typename MechanicalObject<DataTypes>::VecDeriv>* MechanicalObject<Dat
 template <class DataTypes>
 Data<typename MechanicalObject<DataTypes>::MatrixDeriv>* MechanicalObject<DataTypes>::write(core::MatrixDerivId v)
 {
-
+    if (v.isNull())
+    {
+        msg_error() << "Accessing null MatrixDeriv";
+    }
 
     if (v.index >= vectorsMatrixDeriv.size())
     {
@@ -1634,11 +1679,16 @@ Data<typename MechanicalObject<DataTypes>::MatrixDeriv>* MechanicalObject<DataTy
 template <class DataTypes>
 const Data<typename MechanicalObject<DataTypes>::MatrixDeriv>* MechanicalObject<DataTypes>::read(core::ConstMatrixDerivId v) const
 {
+    if (v.isNull())
+    {
+        msg_error() << "Reading null MatrixDeriv";
+    }
+
     if (v.index < vectorsMatrixDeriv.size())
         return vectorsMatrixDeriv[v.index];
     else
     {
-        serr << "Vector " << v << "does not exist" << sendl;
+        msg_error() << "Vector " << v << "does not exist";
         return NULL;
     }
 }
@@ -1817,7 +1867,7 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params, core::VecI
     if(v.isNull())
     {
         // ERROR
-        serr << "Invalid vOp operation 1 ("<<v<<','<<a<<','<<b<<','<<f<<")" << sendl;
+        msg_error() << "Invalid vOp operation 1 ("<<v<<','<<a<<','<<b<<','<<f<<")";
         return;
     }
     if (a.isNull())
@@ -1845,7 +1895,7 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params, core::VecI
             if (b.type != v.type)
             {
                 // ERROR
-                serr << "Invalid vOp operation 2 ("<<v<<','<<a<<','<<b<<','<<f<<")" << sendl;
+                msg_error() << "Invalid vOp operation 2 ("<<v<<','<<a<<','<<b<<','<<f<<")";
                 return;
             }
             if (v == b)
@@ -1891,7 +1941,7 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params, core::VecI
         if (a.type != v.type)
         {
             // ERROR
-            serr << "Invalid vOp operation 3 ("<<v<<','<<a<<','<<b<<','<<f<<")" << sendl;
+            msg_error() << "Invalid vOp operation 3 ("<<v<<','<<a<<','<<b<<','<<f<<")";
             return;
         }
         if (b.isNull())
@@ -1959,7 +2009,7 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params, core::VecI
                     else
                     {
                         // ERROR
-                        serr << "Invalid vOp operation 4 ("<<v<<','<<a<<','<<b<<','<<f<<")" << sendl;
+                        msg_error() << "Invalid vOp operation 4 ("<<v<<','<<a<<','<<b<<','<<f<<")";
                         return;
                     }
                 }
@@ -2004,7 +2054,7 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params, core::VecI
                     else
                     {
                         // ERROR
-                        serr << "Invalid vOp operation 5 ("<<v<<','<<a<<','<<b<<','<<f<<")" << sendl;
+                        msg_error() << "Invalid vOp operation 5 ("<<v<<','<<a<<','<<b<<','<<f<<")";
                         return;
                     }
                 }
@@ -2052,7 +2102,7 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params, core::VecI
                     else
                     {
                         // ERROR
-                        serr << "Invalid vOp operation 6 ("<<v<<','<<a<<','<<b<<','<<f<<")" << sendl;
+                        msg_error() << "Invalid vOp operation 6 ("<<v<<','<<a<<','<<b<<','<<f<<")";
                         return;
                     }
                 }
@@ -2127,7 +2177,7 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params, core::VecI
                     else
                     {
                         // ERROR
-                        serr << "Invalid vOp operation 7 ("<<v<<','<<a<<','<<b<<','<<f<<")" << sendl;
+                        msg_error() << "Invalid vOp operation 7 ("<<v<<','<<a<<','<<b<<','<<f<<")";
                         return;
                     }
                 }
@@ -2173,7 +2223,7 @@ void MechanicalObject<DataTypes>::vOp(const core::ExecParams* params, core::VecI
                     else
                     {
                         // ERROR
-                        serr << "Invalid vOp operation 8 ("<<v<<','<<a<<','<<b<<','<<f<<")" << sendl;
+                        msg_error() << "Invalid vOp operation 8 ("<<v<<','<<a<<','<<b<<','<<f<<")";
                         return;
                     }
                 }
@@ -2307,7 +2357,7 @@ void MechanicalObject<DataTypes>::vThreshold(core::VecId v, SReal t)
     }
     else
     {
-        serr<<"vThreshold does not apply to coordinate vectors"<<sendl;
+        msg_error()<<"vThreshold does not apply to coordinate vectors";
     }
 }
 
@@ -2338,7 +2388,7 @@ SReal MechanicalObject<DataTypes>::vDot(const core::ExecParams* params, core::Co
     }
     else
     {
-        serr << "Invalid dot operation ("<<a<<','<<b<<")" << sendl;
+        msg_error() << "Invalid dot operation ("<<a<<','<<b<<")";
     }
 
     return r;
@@ -2353,7 +2403,7 @@ SReal MechanicalObject<DataTypes>::vSum(const core::ExecParams* params, core::Co
 
     if (a.type == sofa::core::V_COORD )
     {
-        serr << "Invalid vSum operation: can not compute the sum of V_Coord terms in vector "<< a << sendl;
+        msg_error() << "Invalid vSum operation: can not compute the sum of V_Coord terms in vector "<< a;
     }
     else if (a.type == sofa::core::V_DERIV)
     {
@@ -2372,7 +2422,7 @@ SReal MechanicalObject<DataTypes>::vSum(const core::ExecParams* params, core::Co
     }
     else
     {
-        serr << "Invalid vSum operation ("<<a<<")" << sendl;
+        msg_error() << "Invalid vSum operation ("<<a<<")";
     }
 
     return r;
@@ -2405,7 +2455,7 @@ SReal MechanicalObject<DataTypes>::vMax(const core::ExecParams* params, core::Co
     }
     else
     {
-        serr << "Invalid vMax operation ("<<a<<")" << sendl;
+        msg_error() << "Invalid vMax operation ("<<a<<")";
     }
 
     return r;
@@ -2426,7 +2476,7 @@ size_t MechanicalObject<DataTypes>::vSize(const core::ExecParams* params, core::
     }
     else
     {
-        serr << "Invalid size operation ("<<v<<")" << sendl;
+        msg_error() << "Invalid size operation ("<<v<<")";
         return 0;
     }
 }
@@ -2702,7 +2752,7 @@ SReal MechanicalObject<DataTypes>::getConstraintJacobianTimesVecDeriv(unsigned i
     }
     else
     {
-        this->serr << "getConstraintJacobianTimesVecDeriv " << "NOT IMPLEMENTED for " << id.getName() << this->sendl;
+        msg_error() << "getConstraintJacobianTimesVecDeriv " << "NOT IMPLEMENTED for " << id.getName();
         return 0;
     }
 
@@ -2761,7 +2811,7 @@ inline void MechanicalObject<DataTypes>::drawVectors(const core::visual::VisualP
             vparams->drawTool()->drawArrow(p1, p2, rad, defaulttype::Vec<4,float>(1.0,1.0,1.0,1.0));
             break;
         default:
-            serr << "No proper drawing mode found!" << sendl;
+            msg_error() << "No proper drawing mode found!";
             break;
         }
     }
@@ -2812,7 +2862,7 @@ inline void MechanicalObject<DataTypes>::draw(const core::visual::VisualParams* 
             vparams->drawTool()->drawSpheres(positions,scale,defaulttype::Vec<4,float>(0.0,0.0,1.0,1.0));
             break;
         default:
-            serr << "No proper drawing mode found!" << sendl;
+            msg_error() << "No proper drawing mode found!";
             break;
         }
     }
