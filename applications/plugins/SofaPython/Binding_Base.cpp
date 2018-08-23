@@ -37,7 +37,12 @@
 #include "PythonEnvironment.h"
 using sofa::simulation::PythonEnvironment ;
 using sofa::core::topology::BaseMeshTopology ;
+typedef BaseMeshTopology::Edge Edge;
+typedef BaseMeshTopology::Triangle Triangle;
+typedef BaseMeshTopology::Quad Quad;
 typedef BaseMeshTopology::Tetra Tetra;
+typedef BaseMeshTopology::Hexa Hexa;
+typedef BaseMeshTopology::Penta Penta;
 using sofa::helper::vector;
 using sofa::helper::Factory;
 using namespace sofa::core::objectmodel;
@@ -47,19 +52,130 @@ typedef sofa::helper::Factory< std::string, BaseData> PSDEDataFactory;
 
 PSDEDataFactory* getFactoryInstance(){
     static PSDEDataFactory* s_localfactory = nullptr ;
-    if(s_localfactory==nullptr)
+    if (s_localfactory == nullptr)
     {
-        s_localfactory = new PSDEDataFactory() ;
-        s_localfactory->registerCreator("s", new DataCreator<std::string>());
-        s_localfactory->registerCreator("f", new DataCreator<float>());
-        s_localfactory->registerCreator("b", new DataCreator<bool>());
-        s_localfactory->registerCreator("d", new DataCreator<int>());
-        s_localfactory->registerCreator("t", new DataCreator<vector<Tetra>>());
-        s_localfactory->registerCreator("p", new DataCreator<sofa::defaulttype::Vec3dTypes::VecCoord>());
+        // helper vector style containers
+        std::string containers[] = {"vector", "ResizableExtVector"};
+
+        s_localfactory = new PSDEDataFactory();
+        // Scalars
+        s_localfactory->registerCreator("string", new DataCreator<std::string>());
+        s_localfactory->registerCreator("float", new DataCreator<float>());
+        s_localfactory->registerCreator("double", new DataCreator<double>());
+        s_localfactory->registerCreator("bool", new DataCreator<bool>());
+        s_localfactory->registerCreator("int", new DataCreator<int>());
+
+        // vectors
+        s_localfactory->registerCreator(
+                    "Vec2d", new DataCreator<sofa::defaulttype::Vec2d>());
+        s_localfactory->registerCreator(
+                    "Vec3d", new DataCreator<sofa::defaulttype::Vec3d>());
+        s_localfactory->registerCreator(
+                    "Vec4d", new DataCreator<sofa::defaulttype::Vec4d>());
+        s_localfactory->registerCreator(
+                    "Vec6d", new DataCreator<sofa::defaulttype::Vec6d>());
+        s_localfactory->registerCreator(
+                    "Vec2f", new DataCreator<sofa::defaulttype::Vec2f>());
+        s_localfactory->registerCreator(
+                    "Vec3f", new DataCreator<sofa::defaulttype::Vec3f>());
+        s_localfactory->registerCreator(
+                    "Vec4f", new DataCreator<sofa::defaulttype::Vec4f>());
+        s_localfactory->registerCreator(
+                    "Vec6f", new DataCreator<sofa::defaulttype::Vec6f>());
+
+        // Matrices
+        s_localfactory->registerCreator(
+                    "Mat2x2d", new DataCreator<sofa::defaulttype::Mat2x2d>());
+        s_localfactory->registerCreator(
+                    "Mat3x3d", new DataCreator<sofa::defaulttype::Mat3x3d>());
+        s_localfactory->registerCreator(
+                    "Mat4x4d", new DataCreator<sofa::defaulttype::Mat4x4d>());
+        s_localfactory->registerCreator(
+                    "Mat2x2f", new DataCreator<sofa::defaulttype::Mat2x2f>());
+        s_localfactory->registerCreator(
+                    "Mat3x3f", new DataCreator<sofa::defaulttype::Mat3x3f>());
+        s_localfactory->registerCreator(
+                    "Mat4x4f", new DataCreator<sofa::defaulttype::Mat4x4f>());
+
+        // Topology
+        s_localfactory->registerCreator("Edge", new DataCreator<Edge>());
+        s_localfactory->registerCreator("Triangle", new DataCreator<Triangle>());
+        s_localfactory->registerCreator("Quad", new DataCreator<Quad>());
+        s_localfactory->registerCreator("Tetra", new DataCreator<Tetra>());
+        s_localfactory->registerCreator("Hexa", new DataCreator<Hexa>());
+        s_localfactory->registerCreator("Penta", new DataCreator<Penta>());
+
+        // VECTORS
+        for (const auto& container : containers)
+        {
+            // Scalars
+            s_localfactory->registerCreator(container + "<string>",
+                                            new DataCreator<vector<std::string>>());
+            s_localfactory->registerCreator(container + "<float>",
+                                            new DataCreator<vector<float>>());
+            s_localfactory->registerCreator(container + "<double>",
+                                            new DataCreator<vector<double>>());
+            s_localfactory->registerCreator(container + "<bool>",
+                                            new DataCreator<vector<bool>>());
+            s_localfactory->registerCreator(container + "<int>",
+                                            new DataCreator<vector<int>>());
+
+            // vectors
+            s_localfactory->registerCreator(
+                        container + "<Vec2d>", new DataCreator<vector<sofa::defaulttype::Vec2d>>());
+            s_localfactory->registerCreator(
+                        container + "<Vec3d>", new DataCreator<vector<sofa::defaulttype::Vec3d>>());
+            s_localfactory->registerCreator(
+                        container + "<Vec4d>", new DataCreator<vector<sofa::defaulttype::Vec4d>>());
+            s_localfactory->registerCreator(
+                        container + "<Vec6d>", new DataCreator<vector<sofa::defaulttype::Vec6d>>());
+            s_localfactory->registerCreator(
+                        container + "<Vec2f>", new DataCreator<vector<sofa::defaulttype::Vec2f>>());
+            s_localfactory->registerCreator(
+                        container + "<Vec3f>", new DataCreator<vector<sofa::defaulttype::Vec3f>>());
+            s_localfactory->registerCreator(
+                        container + "<Vec4f>", new DataCreator<vector<sofa::defaulttype::Vec4f>>());
+            s_localfactory->registerCreator(
+                        container + "<Vec6f>", new DataCreator<vector<sofa::defaulttype::Vec6f>>());
+
+            // Matrices
+            s_localfactory->registerCreator(
+                        container + "<Mat2x2d>",
+                        new DataCreator<vector<sofa::defaulttype::Mat2x2d>>());
+            s_localfactory->registerCreator(
+                        container + "<Mat3x3d>",
+                        new DataCreator<vector<sofa::defaulttype::Mat3x3d>>());
+            s_localfactory->registerCreator(
+                        container + "<Mat4x4d>",
+                        new DataCreator<vector<sofa::defaulttype::Mat4x4d>>());
+            s_localfactory->registerCreator(
+                        container + "<Mat2x2f>",
+                        new DataCreator<vector<sofa::defaulttype::Mat2x2f>>());
+            s_localfactory->registerCreator(
+                        container + "<Mat3x3f>",
+                        new DataCreator<vector<sofa::defaulttype::Mat3x3f>>());
+            s_localfactory->registerCreator(
+                        container + "<Mat4x4f>",
+                        new DataCreator<vector<sofa::defaulttype::Mat4x4f>>());
+
+            // Topology
+            s_localfactory->registerCreator(container + "<Edge>",
+                                            new DataCreator<vector<Edge>>());
+            s_localfactory->registerCreator(container + "<Triangle>",
+                                            new DataCreator<vector<Triangle>>());
+            s_localfactory->registerCreator(container + "<Quad>",
+                                            new DataCreator<vector<Quad>>());
+            s_localfactory->registerCreator(container + "<Tetra>",
+                                            new DataCreator<vector<Tetra>>());
+            s_localfactory->registerCreator(container + "<Hexa>",
+                                            new DataCreator<vector<Hexa>>());
+            s_localfactory->registerCreator(container + "<Penta>",
+                                            new DataCreator<vector<Penta>>());
+
+        }
     }
     return s_localfactory ;
 }
-
 
 static Base* get_base(PyObject* self) {
     return sofa::py::unwrap<Base>(self);
@@ -156,7 +272,14 @@ BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
 
     if (bd == nullptr)
     {
-        msg_error(obj) << dataRawType << " is not a known type";
+        sofa::helper::vector<std::string> validTypes;
+	getFactoryInstance()->uniqueKeys(std::back_inserter(validTypes));
+	std::string typesString = "[";
+	for (const auto& i : validTypes)
+	    typesString += i + ", ";
+	typesString += "\b\b]";
+	msg_error(obj) << dataRawType << " is not a known type. Available "
+	                  "types are:\n" << typesString;
         return nullptr;
     }
     else
@@ -421,10 +544,10 @@ static PyObject * Base_downCast(PyObject *self, PyObject * /*args*/) {
 SP_CLASS_METHODS_BEGIN(Base)
 SP_CLASS_METHOD_DOC(Base,addNewData, "Add a new Data field to the current object. \n"
                                         "Eg:                                         \n"
-                                        "  obj.addNewData('myDataName1','theDataGroupA','help message','f',1.0)  \n"
-                                        "  obj.addNewData('myDataName2','theDataGroupA','help message','b',True) \n"
-                                        "  obj.addNewData('myDataName3','theDataGroupB','help message','d',1)     \n"
-                                        "  obj.addNewData('myDataName4','theDataGroupB','help message','s','hello') \n")
+                                        "  obj.addNewData('myDataName1','theDataGroupA','help message','float',1.0)  \n"
+                                        "  obj.addNewData('myDataName2','theDataGroupA','help message','','@otherComponent.datafield) \n"
+                                        "  obj.addNewData('myDataName3','theDataGroupB','help message','vector<Vec3d>', '@loader.position')     \n"
+                                        "  obj.addNewData('myDataName4','theDataGroupB','help message','string','hello') \n")
 SP_CLASS_METHOD_DOC(Base,addData, "Adds an existing data field to the current object")
 SP_CLASS_METHOD_DOC(Base,findData, "Returns the data field if there is one associated \n"
                                    "with the provided name and downcasts it to the lowest known type. \n"
