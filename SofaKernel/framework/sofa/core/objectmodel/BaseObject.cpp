@@ -90,7 +90,7 @@ void BaseObject::parse( BaseObjectDescription* arg )
 
         if (valueString[0] != '@')
         {
-            serr<<"ERROR: 'src' attribute value should be a link using '@'" << sendl;
+            msg_error() <<"'src' attribute value should be a link using '@'";
         }
         else
         {
@@ -115,7 +115,7 @@ void BaseObject::setSrc(const std::string &valueString, std::vector< std::string
     loader = getContext()->get<BaseObject>(objectName);
     if (!loader)
     {
-        serr << "Source object \"" << valueString << "\" NOT FOUND." << sendl;
+        msg_error() << "Source object \"" << valueString << "\" NOT FOUND.";
         return;
     }
     setSrc(valueString, loader, attributeList);
@@ -162,11 +162,10 @@ void BaseObject::setSrc(const std::string &valueString, const BaseObject *loader
         {
             if (!(*it_map).second->isAutoLink())
             {
-                sout << "Disabling autolink for Data " << data->getName() << sendl;
+                msg_warning() << "Disabling autolink for Data " << data->getName();
             }
             else
             {
-                //serr << "Autolinking Data " << data->getName() << sendl;
                 std::string linkPath = valueString+"."+(*it_map).first;
                 data->setParent( (*it_map).second, linkPath);
             }
@@ -267,13 +266,11 @@ void BaseObject::releaseAspect(int aspect)
 
 void BaseObject::init()
 {
-
-
 	for(VecData::const_iterator iData = this->m_vecData.begin(); iData != this->m_vecData.end(); ++iData)
 	{
 		if ((*iData)->isRequired() && !(*iData)->isSet())
-		{
-            serr << "Required data \"" << (*iData)->getName() << "\" has not been set. (Current value is " << (*iData)->getValueString() << ")" << sendl;
+        {
+            msg_error() << "Required data \"" << (*iData)->getName() << "\" has not been set. (Current value is " << (*iData)->getValueString() << ")";
 		}
 	}
 }
@@ -285,7 +282,6 @@ void BaseObject::bwdInit()
 /// Update method called when variables used in precomputation are modified.
 void BaseObject::reinit()
 {
-    //sout<<"WARNING: the reinit method of the object "<<this->getName()<<" does nothing."<<sendl;
 }
 
 /// Save the initial state for later uses in reset()
@@ -312,7 +308,6 @@ void BaseObject::handleTopologyChange(core::topology::Topology* t)
 {
     if (t == this->getContext()->getTopology())
     {
-        //	sout << getClassName() << " " << getName() << " processing topology changes from " << t->getName() << sendl;
         handleTopologyChange();
     }
 }
