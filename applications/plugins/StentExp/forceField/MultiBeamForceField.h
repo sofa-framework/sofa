@@ -112,7 +112,7 @@ protected:
         ozp::quadrature::detail::Interval<3> _integrationInterval;
 
         typedef Eigen::Matrix<double, 3, 12> shapeFunction;
-        helper::fixed_array<shapeFunction, 27> _N;
+        helper::fixed_array<shapeFunction, 27> _NEulerB;
 
         typedef Eigen::Matrix<double, 6, 12> deformationGradientFunction; ///< derivatives of the shape functions (Be)
         helper::fixed_array<deformationGradientFunction, 27> _BeMatrices; /// One Be function for each Gauss Point (27 in one beam element)
@@ -163,7 +163,7 @@ protected:
         defaulttype::Quat quat;
 
         //void localStiffness();
-        void init(double E, double yS, double L, double nu, double zSection, double ySection);
+        void init(double E, double yS, double L, double nu, double zSection, double ySection, bool isTimoshenko);
         /// Output stream
         inline friend std::ostream& operator<< ( std::ostream& os, const BeamInfo& bi )
         {
@@ -377,6 +377,7 @@ protected:
     Data<Real> _ySection;
     Data< VecIndex > _list_segment;
     Data< bool> _useSymmetricAssembly;
+    Data<bool> _isTimoshenko;
     bool _partial_list_segment;
 
     bool _updateStiffnessMatrix;
@@ -398,7 +399,8 @@ protected:
 
     MultiBeamForceField();
     MultiBeamForceField(Real poissonRatio, Real youngModulus, Real yieldStress, Real zSection, Real ySection, bool useVD,
-                        bool isPlasticMuller, bool isPlasticKrabbenhoft, helper::vector<defaulttype::Quat> localOrientations);
+                        bool isPlasticMuller, bool isTimoshenko, bool isPlasticKrabbenhoft,
+                        helper::vector<defaulttype::Quat> localOrientations);
     virtual ~MultiBeamForceField();
 public:
     void setUpdateStiffnessMatrix(bool val) { this->_updateStiffnessMatrix = val; }

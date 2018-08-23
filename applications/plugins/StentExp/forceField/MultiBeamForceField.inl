@@ -68,6 +68,7 @@ MultiBeamForceField<DataTypes>::MultiBeamForceField()
     , _ySection(initData(&_ySection, (Real)0.2, "ySection", "length of the section in the y direction for rectangular beams"))
     , _list_segment(initData(&_list_segment,"listSegment", "apply the forcefield to a subset list of beam segments. If no segment defined, forcefield applies to the whole topology"))
     , _useSymmetricAssembly(initData(&_useSymmetricAssembly,false,"useSymmetricAssembly","use symmetric assembly of the matrix K"))
+    , _isTimoshenko(initData(&_isTimoshenko,false,"isTimoshenko","implements a Timoshenko beam model"))
     , _partial_list_segment(false)
     , _updateStiffnessMatrix(true)
     , _assembling(false)
@@ -81,7 +82,7 @@ MultiBeamForceField<DataTypes>::MultiBeamForceField()
 
 template<class DataTypes>
 MultiBeamForceField<DataTypes>::MultiBeamForceField(Real poissonRatio, Real youngModulus, Real yieldStress, Real zSection,
-                                                    Real ySection, bool useVD, bool isPlasticMuller,
+                                                    Real ySection, bool useVD, bool isPlasticMuller, bool isTimoshenko,
                                                     bool isPlasticKrabbenhoft, helper::vector<defaulttype::Quat> localOrientations)
     : beamsData(initData(&beamsData, "beamsData", "Internal element data"))
     , _indexedElements(NULL)
@@ -96,6 +97,7 @@ MultiBeamForceField<DataTypes>::MultiBeamForceField(Real poissonRatio, Real youn
     , _ySection(initData(&_ySection, (Real)ySection, "ySection", "length of the section in the y direction for rectangular beams"))
     , _list_segment(initData(&_list_segment,"listSegment", "apply the forcefield to a subset list of beam segments. If no segment defined, forcefield applies to the whole topology"))
     , _useSymmetricAssembly(initData(&_useSymmetricAssembly,false,"useSymmetricAssembly","use symmetric assembly of the matrix K"))
+    , _isTimoshenko(initData(&_isTimoshenko, isTimoshenko, "isTimoshenko", "implements a Timoshenko beam model"))
     , _partial_list_segment(false)
     , _updateStiffnessMatrix(true)
     , _assembling(false)
@@ -1072,7 +1074,7 @@ void MultiBeamForceField<DataTypes>::drawElement(int i, std::vector< defaulttype
     LambdaType computeGaussCoordinates = [&](double u1, double u2, double u3, double w1, double w2, double w3)
     {
         //Shape function
-        N = beamsData.getValue()[i]._N[gaussPointIt];
+        N = beamsData.getValue()[i]._NEulerB[gaussPointIt];
         Eigen::Matrix<double, 3, 1> u = N*disp;
 
         defaulttype::Vec3d beamVec = {u[0]+u1, u[1]+u2, u[2]+u3};
@@ -1161,12 +1163,12 @@ template<class DataTypes>
 void MultiBeamForceField<DataTypes>::setBeam(unsigned int i, double E, double yS, double L, double nu, double zSection, double ySection)
 {
     helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
-    bd[i].init(E,yS,L,nu,zSection,ySection);
+    bd[i].init(E,yS,L,nu,zSection,ySection, _isTimoshenko.getValue());
     beamsData.endEdit();
 }
 
 template<class DataTypes>
-void MultiBeamForceField<DataTypes>::BeamInfo::init(double E, double yS, double L, double nu, double zSection, double ySection)
+void MultiBeamForceField<DataTypes>::BeamInfo::init(double E, double yS, double L, double nu, double zSection, double ySection, bool isTimoshenko)
 {
     _E = E;
     _E0 = E;
@@ -1201,42 +1203,45 @@ void MultiBeamForceField<DataTypes>::BeamInfo::init(double E, double yS, double 
         double eta = u2 / _L;
         double zeta = u3 / _L;
 
-        _BeMatrices[i](0, 0) = -1 / _L;
-        _BeMatrices[i](1, 0) = _BeMatrices[i](2, 0) = _BeMatrices[i](3, 0) = _BeMatrices[i](4, 0) = _BeMatrices[i](5, 0) = 0.0;
+        if (!isTimoshenko)
+        {
+            _BeMatrices[i](0, 0) = -1 / _L;
+            _BeMatrices[i](1, 0) = _BeMatrices[i](2, 0) = _BeMatrices[i](3, 0) = _BeMatrices[i](4, 0) = _BeMatrices[i](5, 0) = 0.0;
 
-        _BeMatrices[i](0, 1) = (6 * eta*(1 - 2 * xi)) / _L;
-        _BeMatrices[i](1, 1) = _BeMatrices[i](2, 1) = _BeMatrices[i](3, 1) = _BeMatrices[i](4, 1) = _BeMatrices[i](5, 1) = 0.0;
+            _BeMatrices[i](0, 1) = (6 * eta*(1 - 2 * xi)) / _L;
+            _BeMatrices[i](1, 1) = _BeMatrices[i](2, 1) = _BeMatrices[i](3, 1) = _BeMatrices[i](4, 1) = _BeMatrices[i](5, 1) = 0.0;
 
-        _BeMatrices[i](0, 2) = (6 * zeta*(1 - 2 * xi)) / _L;
-        _BeMatrices[i](1, 2) = _BeMatrices[i](2, 2) = _BeMatrices[i](3, 2) = _BeMatrices[i](4, 2) = _BeMatrices[i](5, 2) = 0.0;
+            _BeMatrices[i](0, 2) = (6 * zeta*(1 - 2 * xi)) / _L;
+            _BeMatrices[i](1, 2) = _BeMatrices[i](2, 2) = _BeMatrices[i](3, 2) = _BeMatrices[i](4, 2) = _BeMatrices[i](5, 2) = 0.0;
 
-        _BeMatrices[i](0, 3) = _BeMatrices[i](1, 3) = _BeMatrices[i](2, 3) = 0.0;
-        _BeMatrices[i](3, 3) = 0;
-        _BeMatrices[i](4, 3) = -eta / 2;
-        _BeMatrices[i](5, 3) = zeta / 2;
+            _BeMatrices[i](0, 3) = _BeMatrices[i](1, 3) = _BeMatrices[i](2, 3) = 0.0;
+            _BeMatrices[i](3, 3) = 0;
+            _BeMatrices[i](4, 3) = -eta / 2;
+            _BeMatrices[i](5, 3) = zeta / 2;
 
-        _BeMatrices[i](0, 4) = zeta * (6 * xi - 4);
-        _BeMatrices[i](1, 4) = _BeMatrices[i](2, 4) = _BeMatrices[i](3, 4) = _BeMatrices[i](4, 4) = _BeMatrices[i](5, 4) = 0.0;
+            _BeMatrices[i](0, 4) = zeta * (6 * xi - 4);
+            _BeMatrices[i](1, 4) = _BeMatrices[i](2, 4) = _BeMatrices[i](3, 4) = _BeMatrices[i](4, 4) = _BeMatrices[i](5, 4) = 0.0;
 
-        _BeMatrices[i](0, 5) = eta * (4 - 6 * xi);
-        _BeMatrices[i](1, 5) = _BeMatrices[i](2, 5) = _BeMatrices[i](3, 5) = _BeMatrices[i](4, 5) = _BeMatrices[i](5, 5) = 0.0;
+            _BeMatrices[i](0, 5) = eta * (4 - 6 * xi);
+            _BeMatrices[i](1, 5) = _BeMatrices[i](2, 5) = _BeMatrices[i](3, 5) = _BeMatrices[i](4, 5) = _BeMatrices[i](5, 5) = 0.0;
 
-        _BeMatrices[i].block<6, 1>(0, 6) = -_BeMatrices[i].block<6, 1>(0, 0);
+            _BeMatrices[i].block<6, 1>(0, 6) = -_BeMatrices[i].block<6, 1>(0, 0);
 
-        _BeMatrices[i].block<6, 1>(0, 7) = -_BeMatrices[i].block<6, 1>(0, 1);
+            _BeMatrices[i].block<6, 1>(0, 7) = -_BeMatrices[i].block<6, 1>(0, 1);
 
-        _BeMatrices[i].block<6, 1>(0, 8) = -_BeMatrices[i].block<6, 1>(0, 2);
+            _BeMatrices[i].block<6, 1>(0, 8) = -_BeMatrices[i].block<6, 1>(0, 2);
 
-        _BeMatrices[i](0, 9) = _BeMatrices[i](1, 9) = _BeMatrices[i](2, 9) = 0.0;
-        _BeMatrices[i](3, 9) = 0;
-        _BeMatrices[i](4, 9) = eta / 2;
-        _BeMatrices[i](5, 9) = -zeta / 2;
+            _BeMatrices[i](0, 9) = _BeMatrices[i](1, 9) = _BeMatrices[i](2, 9) = 0.0;
+            _BeMatrices[i](3, 9) = 0;
+            _BeMatrices[i](4, 9) = eta / 2;
+            _BeMatrices[i](5, 9) = -zeta / 2;
 
-        _BeMatrices[i](0, 10) = zeta * (6 * xi - 2);
-        _BeMatrices[i](1, 10) = _BeMatrices[i](2, 10) = _BeMatrices[i](3, 10) = _BeMatrices[i](4, 10) = _BeMatrices[i](5, 10) = 0.0;
+            _BeMatrices[i](0, 10) = zeta * (6 * xi - 2);
+            _BeMatrices[i](1, 10) = _BeMatrices[i](2, 10) = _BeMatrices[i](3, 10) = _BeMatrices[i](4, 10) = _BeMatrices[i](5, 10) = 0.0;
 
-        _BeMatrices[i](0, 11) = eta * (2 - 6 * xi);
-        _BeMatrices[i](1, 11) = _BeMatrices[i](2, 11) = _BeMatrices[i](3, 11) = _BeMatrices[i](4, 11) = _BeMatrices[i](5, 11) = 0.0;
+            _BeMatrices[i](0, 11) = eta * (2 - 6 * xi);
+            _BeMatrices[i](1, 11) = _BeMatrices[i](2, 11) = _BeMatrices[i](3, 11) = _BeMatrices[i](4, 11) = _BeMatrices[i](5, 11) = 0.0;
+        }
 
         i++;
     };
@@ -1254,44 +1259,47 @@ void MultiBeamForceField<DataTypes>::BeamInfo::init(double E, double yS, double 
         double xi2 = xi*xi;
         double xi3 = xi*xi*xi;
 
-        _N[gaussPointIt](0, 0) = 1 - xi;
-        _N[gaussPointIt](0, 1) = 6*(xi - xi2)*eta;
-        _N[gaussPointIt](0, 2) = 6*(xi - xi2)*zeta;
-        _N[gaussPointIt](0, 3) = 0;
-        _N[gaussPointIt](0, 4) = (1 - 4*xi + 3*xi2)*_L*zeta;
-        _N[gaussPointIt](0, 5) = (-1 +4*xi - 3*xi2)*_L*eta;
-        _N[gaussPointIt](0, 6) = xi;
-        _N[gaussPointIt](0, 7) = 6*(-xi + xi2)*eta;
-        _N[gaussPointIt](0, 8) = 6*(-xi + xi2)*zeta;
-        _N[gaussPointIt](0, 9) = 0;
-        _N[gaussPointIt](0, 10) = (-2*xi* + 3*xi2)*_L*zeta;
-        _N[gaussPointIt](0, 11) = (2*xi - 3*xi2)*_L*eta;
+        if (!isTimoshenko)
+        {
+            _NEulerB[gaussPointIt](0, 0) = 1 - xi;
+            _NEulerB[gaussPointIt](0, 1) = 6 * (xi - xi2)*eta;
+            _NEulerB[gaussPointIt](0, 2) = 6 * (xi - xi2)*zeta;
+            _NEulerB[gaussPointIt](0, 3) = 0;
+            _NEulerB[gaussPointIt](0, 4) = (1 - 4 * xi + 3 * xi2)*_L*zeta;
+            _NEulerB[gaussPointIt](0, 5) = (-1 + 4 * xi - 3 * xi2)*_L*eta;
+            _NEulerB[gaussPointIt](0, 6) = xi;
+            _NEulerB[gaussPointIt](0, 7) = 6 * (-xi + xi2)*eta;
+            _NEulerB[gaussPointIt](0, 8) = 6 * (-xi + xi2)*zeta;
+            _NEulerB[gaussPointIt](0, 9) = 0;
+            _NEulerB[gaussPointIt](0, 10) = (-2 * xi* +3 * xi2)*_L*zeta;
+            _NEulerB[gaussPointIt](0, 11) = (2 * xi - 3 * xi2)*_L*eta;
 
-        _N[gaussPointIt](1, 0) = 0;
-        _N[gaussPointIt](1, 1) = 1 - 3*xi2 + 2*xi3;
-        _N[gaussPointIt](1, 2) = 0;
-        _N[gaussPointIt](1, 3) = (xi - 1)*_L*zeta;
-        _N[gaussPointIt](1, 4) = 0;
-        _N[gaussPointIt](1, 5) = (xi - 2*xi2 + xi3)*_L;
-        _N[gaussPointIt](1, 6) = 0;
-        _N[gaussPointIt](1, 7) = 3*xi2 - 2*xi3;
-        _N[gaussPointIt](1, 8) = 0;
-        _N[gaussPointIt](1, 9) = -_L*xi*zeta;
-        _N[gaussPointIt](1, 10) = 0;
-        _N[gaussPointIt](1, 11) = (-xi2 + xi3)*_L;
+            _NEulerB[gaussPointIt](1, 0) = 0;
+            _NEulerB[gaussPointIt](1, 1) = 1 - 3 * xi2 + 2 * xi3;
+            _NEulerB[gaussPointIt](1, 2) = 0;
+            _NEulerB[gaussPointIt](1, 3) = (xi - 1)*_L*zeta;
+            _NEulerB[gaussPointIt](1, 4) = 0;
+            _NEulerB[gaussPointIt](1, 5) = (xi - 2 * xi2 + xi3)*_L;
+            _NEulerB[gaussPointIt](1, 6) = 0;
+            _NEulerB[gaussPointIt](1, 7) = 3 * xi2 - 2 * xi3;
+            _NEulerB[gaussPointIt](1, 8) = 0;
+            _NEulerB[gaussPointIt](1, 9) = -_L*xi*zeta;
+            _NEulerB[gaussPointIt](1, 10) = 0;
+            _NEulerB[gaussPointIt](1, 11) = (-xi2 + xi3)*_L;
 
-        _N[gaussPointIt](2, 0) = 0;
-        _N[gaussPointIt](2, 1) = 0;
-        _N[gaussPointIt](2, 2) = 1 - 3*xi2 + 2*xi3;
-        _N[gaussPointIt](2, 3) = (1 - xi)*_L*eta;
-        _N[gaussPointIt](2, 4) = (-xi + 2*xi2 - xi3)*_L;
-        _N[gaussPointIt](2, 5) = 0;
-        _N[gaussPointIt](2, 6) = 0;
-        _N[gaussPointIt](2, 7) = 0;
-        _N[gaussPointIt](2, 8) = 3*xi2 - 2*xi3;
-        _N[gaussPointIt](2, 9) = _L*xi*eta;
-        _N[gaussPointIt](2, 10) = (xi2 - xi3)*_L;
-        _N[gaussPointIt](2, 11) = 0;
+            _NEulerB[gaussPointIt](2, 0) = 0;
+            _NEulerB[gaussPointIt](2, 1) = 0;
+            _NEulerB[gaussPointIt](2, 2) = 1 - 3 * xi2 + 2 * xi3;
+            _NEulerB[gaussPointIt](2, 3) = (1 - xi)*_L*eta;
+            _NEulerB[gaussPointIt](2, 4) = (-xi + 2 * xi2 - xi3)*_L;
+            _NEulerB[gaussPointIt](2, 5) = 0;
+            _NEulerB[gaussPointIt](2, 6) = 0;
+            _NEulerB[gaussPointIt](2, 7) = 0;
+            _NEulerB[gaussPointIt](2, 8) = 3 * xi2 - 2 * xi3;
+            _NEulerB[gaussPointIt](2, 9) = _L*xi*eta;
+            _NEulerB[gaussPointIt](2, 10) = (xi2 - xi3)*_L;
+            _NEulerB[gaussPointIt](2, 11) = 0;
+        }
 
         gaussPointIt++;
     };
@@ -1307,45 +1315,48 @@ void MultiBeamForceField<DataTypes>::BeamInfo::init(double E, double yS, double 
         //NB :
         //double eta = 0;
         //double zeta = 0;
+        if (!isTimoshenko)
+        {
+            _drawN[i - 1](0, 0) = 1 - xi;
+            _drawN[i - 1](0, 1) = 0;
+            _drawN[i - 1](0, 2) = 0;
+            _drawN[i - 1](0, 3) = 0;
+            _drawN[i - 1](0, 4) = 0;
+            _drawN[i - 1](0, 5) = 0;
+            _drawN[i - 1](0, 6) = xi;
+            _drawN[i - 1](0, 7) = 0;
+            _drawN[i - 1](0, 8) = 0;
+            _drawN[i - 1](0, 9) = 0;
+            _drawN[i - 1](0, 10) = 0;
+            _drawN[i - 1](0, 11) = 0;
 
-        _drawN[i-1](0, 0) = 1 - xi;
-        _drawN[i-1](0, 1) = 0;
-        _drawN[i-1](0, 2) = 0;
-        _drawN[i-1](0, 3) = 0;
-        _drawN[i-1](0, 4) = 0;
-        _drawN[i-1](0, 5) = 0;
-        _drawN[i-1](0, 6) = xi;
-        _drawN[i-1](0, 7) = 0;
-        _drawN[i-1](0, 8) = 0;
-        _drawN[i-1](0, 9) = 0;
-        _drawN[i-1](0, 10) = 0;
-        _drawN[i-1](0, 11) = 0;
+            _drawN[i - 1](1, 0) = 0;
+            _drawN[i - 1](1, 1) = 1 - 3 * xi2 + 2 * xi3;
+            _drawN[i - 1](1, 2) = 0;
+            _drawN[i - 1](1, 3) = 0;
+            _drawN[i - 1](1, 4) = 0;
+            _drawN[i - 1](1, 5) = (xi - 2 * xi2 + xi3)*_L;
+            _drawN[i - 1](1, 6) = 0;
+            _drawN[i - 1](1, 7) = 3 * xi2 - 2 * xi3;
+            _drawN[i - 1](1, 8) = 0;
+            _drawN[i - 1](1, 9) = 0;
+            _drawN[i - 1](1, 10) = 0;
+            _drawN[i - 1](1, 11) = (-xi2 + xi3)*_L;
 
-        _drawN[i-1](1, 0) = 0;
-        _drawN[i-1](1, 1) = 1 - 3 * xi2 + 2 * xi3;
-        _drawN[i-1](1, 2) = 0;
-        _drawN[i-1](1, 3) = 0;
-        _drawN[i-1](1, 4) = 0;
-        _drawN[i-1](1, 5) = (xi - 2 * xi2 + xi3)*_L;
-        _drawN[i-1](1, 6) = 0;
-        _drawN[i-1](1, 7) = 3 * xi2 - 2 * xi3;
-        _drawN[i-1](1, 8) = 0;
-        _drawN[i-1](1, 9) = 0;
-        _drawN[i-1](1, 10) = 0;
-        _drawN[i-1](1, 11) = (-xi2 + xi3)*_L;
-
-        _drawN[i-1](2, 0) = 0;
-        _drawN[i-1](2, 1) = 0;
-        _drawN[i-1](2, 2) = 1 - 3 * xi2 + 2 * xi3;
-        _drawN[i-1](2, 3) = 0;
-        _drawN[i-1](2, 4) = (-xi + 2 * xi2 - xi3)*_L;
-        _drawN[i-1](2, 5) = 0;
-        _drawN[i-1](2, 6) = 0;
-        _drawN[i-1](2, 7) = 0;
-        _drawN[i-1](2, 8) = 3 * xi2 - 2 * xi3;
-        _drawN[i-1](2, 9) = 0;
-        _drawN[i-1](2, 10) = (xi2 - xi3)*_L;
-        _drawN[i-1](2, 11) = 0;
+            _drawN[i - 1](2, 0) = 0;
+            _drawN[i - 1](2, 1) = 0;
+            _drawN[i - 1](2, 2) = 1 - 3 * xi2 + 2 * xi3;
+            _drawN[i - 1](2, 3) = 0;
+            _drawN[i - 1](2, 4) = (-xi + 2 * xi2 - xi3)*_L;
+            _drawN[i - 1](2, 5) = 0;
+            _drawN[i - 1](2, 6) = 0;
+            _drawN[i - 1](2, 7) = 0;
+            _drawN[i - 1](2, 8) = 3 * xi2 - 2 * xi3;
+            _drawN[i - 1](2, 9) = 0;
+            _drawN[i - 1](2, 10) = (xi2 - xi3)*_L;
+            _drawN[i - 1](2, 11) = 0;
+        }
+        
     }
 
     //Initialises the plastic indicators
