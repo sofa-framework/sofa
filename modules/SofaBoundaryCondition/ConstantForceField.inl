@@ -263,11 +263,17 @@ void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
 
             if (!d_indexFromEnd.getValue())
             {
-                DataTypes::get(xx,xy,xz,x[indices[i]]);
+                if (indices[i] < x.size())
+                {
+                    DataTypes::get(xx, xy, xz, x[indices[i]]);
+                }
             }
             else
             {
-                DataTypes::get(xx,xy,xz,x[x.size() - indices[i] - 1]);
+                if ((x.size() - indices[i] - 1) < x.size() && (x.size() - indices[i] - 1) >= 0)
+                {
+                    DataTypes::get(xx, xy, xz, x[x.size() - indices[i] - 1]);
+                }
             }
 
             DataTypes::get(fx,fy,fz,(i<f.size())? f[i] : f_end);
@@ -286,11 +292,17 @@ void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
 
             if (!d_indexFromEnd.getValue())
             {
-                DataTypes::get(xx,xy,xz,x[indices[i]]);
+                if (indices[i] < x.size())
+                {
+                    DataTypes::get(xx, xy, xz, x[indices[i]]);
+                }
             }
             else
             {
-                DataTypes::get(xx,xy,xz,x[x.size() - indices[i] - 1]);
+                if ((x.size() - indices[i] - 1) < x.size() && (x.size() - indices[i] - 1) >= 0)
+                {
+                    DataTypes::get(xx, xy, xz, x[x.size() - indices[i] - 1]);
+                }
             }
 
             DataTypes::get(fx,fy,fz,(i<f.size())? f[i] : f_end);
