@@ -427,7 +427,7 @@ const TetrahedronSetTopologyContainer::Tetrahedron TetrahedronSetTopologyContain
     if(!hasTetrahedra())
         createTetrahedronSetArray();
 
-    if (i >= getNbTetrahedra())
+    if ((size_t)i >= getNbTetrahedra())
         return Tetrahedron(-1, -1, -1, -1);
     else
         return (d_tetrahedron.getValue())[i];
@@ -752,7 +752,7 @@ bool TetrahedronSetTopologyContainer::checkTopology() const
 bool TetrahedronSetTopologyContainer::checkConnexity()
 {
 
-    unsigned int nbr = this->getNbTetrahedra();
+    size_t nbr = this->getNbTetrahedra();
 
     if (nbr == 0)
     {
@@ -776,7 +776,7 @@ bool TetrahedronSetTopologyContainer::checkConnexity()
 
 unsigned int TetrahedronSetTopologyContainer::getNumberOfConnectedComponent()
 {
-    unsigned int nbr = this->getNbTetrahedra();
+    size_t nbr = this->getNbTetrahedra();
 
     if (nbr == 0)
     {

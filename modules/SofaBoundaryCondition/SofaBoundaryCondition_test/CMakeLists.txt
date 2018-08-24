@@ -9,7 +9,7 @@ set(SOURCE_FILES ../../empty.cpp)
 list(APPEND SOURCE_FILES
     AffineMovementConstraint_test.cpp
     FixedConstraint_test.cpp
-    PartialFixedConstraint.cpp
+    PartialFixedConstraint_test.cpp
     PlaneForceField_test.cpp
     PointConstraint_test.cpp
     ProjectDirectionConstraint_test.cpp

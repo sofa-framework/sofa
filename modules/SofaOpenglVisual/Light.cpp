@@ -677,7 +677,7 @@ void PositionalLight::drawLight()
 
 }
 
-void PositionalLight::drawSource(const core::visual::VisualParams* vparams)
+void PositionalLight::drawSource(const core::visual::VisualParams* /*vparams*/)
 {
     Vector3 sceneMinBBox, sceneMaxBBox;
     sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)this->getContext(), sceneMinBBox.ptr(), sceneMaxBBox.ptr());

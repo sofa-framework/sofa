@@ -11,7 +11,7 @@
         <UniformMass totalMass="10" />
         <RegularGrid nx="2" ny="2" nz="2" xmin="-3.5" xmax="3.5" ymin="-3.5" ymax="3.5" zmin="-3.5" zmax="3.5" />
         <RegularGridSpringForceField name="Springs" stiffness="1000" />
-        <PlaneForceField normal="0 1 0" d="-10" stiffness="100000" />
+        <PlaneForceField normal="0 1 0" d="-10" stiffness="100000" showPlane="1" showPlaneSize="20"/>
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/smCube125.obj" color="blue" />
             <BarycentricMapping input="@.." output="@Visual" />

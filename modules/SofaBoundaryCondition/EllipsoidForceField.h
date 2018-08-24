@@ -99,7 +99,6 @@ public:
     Data<Real> stiffness; ///< force stiffness (positive to repulse outward, negative inward)
     Data<Real> damping; ///< force damping
     Data<defaulttype::RGBAColor> color; ///< ellipsoid color. (default=0,0.5,1.0,1.0)
-    Data<bool> bDraw; ///< enable/disable drawing of the ellipsoid
 protected:
     EllipsoidForceField()
         : contacts(initData(&contacts,"contacts", "Contacts"))
@@ -108,7 +107,6 @@ protected:
         , stiffness(initData(&stiffness, (Real)500, "stiffness", "force stiffness (positive to repulse outward, negative inward)"))
         , damping(initData(&damping, (Real)5, "damping", "force damping"))
         , color(initData(&color, defaulttype::RGBAColor(0.0f,0.5f,1.0f,1.0f), "color", "ellipsoid color. (default=0,0.5,1.0,1.0)"))
-        , bDraw(initData(&bDraw, true, "draw", "enable/disable drawing of the ellipsoid"))
     {
     }
 public:

@@ -25,7 +25,7 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <SofaBoundaryCondition/FixedTranslationConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/gl/template.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 
 namespace sofa
@@ -189,31 +189,44 @@ void FixedTranslationConstraint<DataTypes>::projectJacobianMatrix(const core::Me
 template <class DataTypes>
 void FixedTranslationConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     const SetIndexArray & indices = f_indices.getValue();
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    glDisable(GL_LIGHTING);
-    glPointSize(10);
-    glColor4f(1, 0.5, 0.5, 1);
-    glBegin(GL_POINTS);
+
+    vparams->drawTool()->saveLastState();
+    vparams->drawTool()->disableLighting();
+
+    std::vector<sofa::defaulttype::Vector3> vertices;
+    sofa::defaulttype::RGBAColor color(1, 0.5, 0.5, 1);
+
     if (f_fixAll.getValue() == true)
     {
         for (unsigned i = 0; i < x.size(); i++)
         {
-            sofa::helper::gl::glVertexT(x[i].getCenter());
+            sofa::defaulttype::Vector3 v;
+            const typename DataTypes::CPos& cpos = DataTypes::getCPos(x[i]);
+            for(std::size_t j=0 ; j<cpos.size() && j<3; j++)
+                v[j] = cpos[j];
+
+            vertices.push_back(v);
         }
     }
     else
     {
         for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
-            sofa::helper::gl::glVertexT(x[*it].getCenter());
+            sofa::defaulttype::Vector3 v;
+            const typename DataTypes::CPos& cpos = DataTypes::getCPos(x[*it]);
+            for(std::size_t j=0 ; j<cpos.size() && j<3; j++)
+                v[j] = cpos[j];
+
+            vertices.push_back(v);
         }
     }
-    glEnd();
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->drawPoints(vertices, 10, color);
+    vparams->drawTool()->restoreLastState();
+
 }
 
 

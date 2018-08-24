@@ -27,7 +27,6 @@
 #endif
 
 #include "NormalsFromPoints.h"
-#include <sofa/helper/gl/template.h>
 #include <iostream>
 #include <math.h>
 

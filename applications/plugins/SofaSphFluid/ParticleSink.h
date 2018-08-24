@@ -35,7 +35,8 @@
 #include "config.h"
 
 #include <sofa/helper/system/config.h>
-#include <sofa/helper/gl/template.h>
+#include <sofa/core/visual/VisualParams.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <sofa/core/behavior/ProjectiveConstraintSet.h>
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/Event.h>
@@ -250,10 +251,13 @@ public:
         }
     }
 
-    virtual void draw(const core::visual::VisualParams*) override
+    virtual void draw(const core::visual::VisualParams* vparams) override
     {
-#ifndef SOFA_NO_OPENGL
-        if (!showPlane.getValue()) return;
+        if (!showPlane.getValue())
+            return;
+
+        vparams->drawTool()->saveLastState();
+
         defaulttype::Vec3d normal; normal = planeNormal.getValue();
 
         // find a first vector inside the plane
@@ -274,25 +278,19 @@ public:
         corners[2] = center+v1*size+v2*size;
         corners[3] = center-v1*size+v2*size;
 
-        // glEnable(GL_LIGHTING);
-        glDisable(GL_LIGHTING);
-        glEnable(GL_CULL_FACE);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        glCullFace(GL_FRONT);
+        vparams->drawTool()->disableLighting();
+        vparams->drawTool()->setPolygonMode(0, true);
 
-        glColor3f(color.getValue()[0],color.getValue()[1],color.getValue()[2]);
+        sofa::defaulttype::RGBAColor _color(color.getValue()[0],color.getValue()[1],color.getValue()[2],1.0);
+        std::vector<sofa::defaulttype::Vector3> vertices;
 
-        glBegin(GL_QUADS);
-        helper::gl::glVertexT(corners[0]);
-        helper::gl::glVertexT(corners[1]);
-        helper::gl::glVertexT(corners[2]);
-        helper::gl::glVertexT(corners[3]);
-        glEnd();
+        vertices.push_back(sofa::defaulttype::Vector3(corners[0]));
+        vertices.push_back(sofa::defaulttype::Vector3(corners[1]));
+        vertices.push_back(sofa::defaulttype::Vector3(corners[2]));
+        vertices.push_back(sofa::defaulttype::Vector3(corners[3]));
+        vparams->drawTool()->drawQuad(vertices[0],vertices[1],vertices[2],vertices[3], cross((vertices[1] - vertices[0]), (vertices[2] - vertices[0])), _color);
 
-        glDisable(GL_CULL_FACE);
-
-        glColor4f(1,0,0,1);
-#endif /* SOFA_NO_OPENGL */
+        vparams->drawTool()->restoreLastState();
     }
 };
 

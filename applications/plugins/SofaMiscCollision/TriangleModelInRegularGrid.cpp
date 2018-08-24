@@ -29,7 +29,6 @@
 #include <sofa/core/CollisionElement.h>
 #include <sofa/core/ObjectFactory.h>
 #include <vector>
-#include <sofa/helper/gl/template.h>
 #include <iostream>
 
 #include <sofa/core/topology/TopologyChange.h>
