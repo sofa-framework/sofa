@@ -275,7 +275,7 @@ struct Mapping_test: public Sofa_test<typename _Mapping::Real>
         }
 
         /// test applyJ and everything related to Jacobians
-        const unsigned Np=inDofs->getSize(), Nc=outDofs->getSize();
+        size_t Np = inDofs->getSize(), Nc=outDofs->getSize();
 
         InVecCoord xp(Np),xp1(Np);
         InVecDeriv vp(Np),fp(Np),dfp(Np),fp2(Np);

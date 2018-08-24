@@ -27,10 +27,8 @@
 #endif
 
 #include <sofa/core/core.h>
-#include <sofa/core/objectmodel/DDGNode.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <list>
-#include "DataTracker.h"
+#include <sofa/core/DataTracker.h>
 
 namespace sofa
 {

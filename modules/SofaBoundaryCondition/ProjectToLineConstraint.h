@@ -30,7 +30,6 @@
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/defaulttype/VecTypes.h>
-//#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Mat.h>
 #include <SofaBaseTopology/TopologySubsetData.h>
@@ -159,18 +158,10 @@ protected :
 #ifndef SOFA_FLOAT
 extern template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<defaulttype::Vec3dTypes>;
 extern template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<defaulttype::Vec2dTypes>;
-//extern template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<defaulttype::Vec1dTypes>;
-//extern template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<defaulttype::Vec6dTypes>;
-//extern template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<defaulttype::Rigid3dTypes>;
-//extern template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<defaulttype::Rigid2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 extern template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<defaulttype::Vec3fTypes>;
 extern template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<defaulttype::Vec2fTypes>;
-//extern template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<defaulttype::Vec1fTypes>;
-//extern template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<defaulttype::Vec6fTypes>;
-//extern template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<defaulttype::Rigid3fTypes>;
-//extern template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<defaulttype::Rigid2fTypes>;
 #endif
 #endif
 

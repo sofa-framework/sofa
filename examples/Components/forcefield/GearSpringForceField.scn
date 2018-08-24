@@ -3,7 +3,7 @@
     <EulerImplicitSolver name="cg_odesolver" printLog="0" rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGLinearSolver name="linear solver" iterations="50" tolerance="1e-009" threshold="1e-009" />
     <MechanicalObject template="Rigid" name="DOFs" rest_position="0 0 0 0 0 0 1 0 0 0 0 0 0 1 0 0 0 0 0 0 1 0 0 0 0 0 0 1 0 0 0 0 0 0 1" position="-1.161 0 1.706 0 0.194787 0 0.980846 &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;-6.7 4 1.706 0 0 0.707107 0.707107 &#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;1.790 0 -5.503 0 0.229019 0 0.973422&#x09;&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;-6.7 5.2 -3.5 0 0 0.707107 0.707107&#x0A;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;&#x09;0 0 0 0 0 0 1" restScale="1" />
-    <UniformMass template="Rigid" name="mass" mass="50 50 [1 0 0,0 1 0,0 0 1]" showAxisSizeFactor="2" />
+    <UniformMass template="Rigid" name="mass" vertexMass="50 50 [1 0 0,0 1 0,0 0 1]" showAxisSizeFactor="2" />
     <FixedConstraint template="Rigid" name="fixOrigin" indices="4" />
     <!--  	SELF SUPPORT 	 -->
     <!--

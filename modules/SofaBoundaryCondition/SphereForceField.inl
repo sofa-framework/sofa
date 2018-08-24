@@ -26,7 +26,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/rmath.h>
-#include <sofa/helper/system/gl.h>
 #include <assert.h>
 #include <iostream>
 
@@ -175,19 +174,20 @@ void SphereForceField<DataTypes>::updateStiffness( const VecCoord& x )
 template<class DataTypes>
 void SphereForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowForceFields()) return;
-    if (!bDraw.getValue()) return;
+
+    vparams->drawTool()->saveLastState();
 
     defaulttype::Vec3d center;
     DataTypes::get(center[0], center[1], center[2], sphereCenter.getValue());
-    const Real r = sphereRadius.getValue();
+    const Real& r = sphereRadius.getValue();
 
-    glEnable(GL_LIGHTING);
+    vparams->drawTool()->enableLighting();
+
     vparams->drawTool()->drawSphere(center, (float)(r*0.99) );
-    glDisable(GL_LIGHTING);
+    vparams->drawTool()->disableLighting();
 
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->restoreLastState();
 }
 
 

@@ -79,7 +79,7 @@ void perTestInit()
     }
 
     if(defaultHandler==nullptr)
-        defaultHandler=new ConsoleMessageHandler(new RichConsoleStyleMessageFormatter) ;
+        defaultHandler=new ConsoleMessageHandler(&RichConsoleStyleMessageFormatter::getInstance()) ;
 
     /// THE TESTS HERE ARE NOT INHERITING FROM SOFA TEST SO WE NEED TO MANUALLY INSTALL THE HANDLER
     /// DO NO REMOVE

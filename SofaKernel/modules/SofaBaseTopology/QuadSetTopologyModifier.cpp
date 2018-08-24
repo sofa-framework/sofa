@@ -77,7 +77,7 @@ void QuadSetTopologyModifier::addQuads(const sofa::helper::vector<Quad> &quads,
         const sofa::helper::vector<sofa::helper::vector<unsigned int> > &ancestors,
         const sofa::helper::vector<sofa::helper::vector<double> > &baryCoefs)
 {
-    unsigned int nQuads = m_container->getNbQuads();
+    size_t nQuads = m_container->getNbQuads();
 
     /// effectively add triangles in the topology container
     addQuadsProcess(quads);

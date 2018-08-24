@@ -286,10 +286,8 @@ void SofaViewer::wheelEvent(QWheelEvent *e)
     currentCamera->manageEvent(&me);
 
     getQWidget()->update();
-#ifndef SOFA_GUI_INTERACTION
     if (groot)
         groot->propagateEvent(core::ExecParams::defaultInstance(), &me);
-#endif
 }
 
 void SofaViewer::mouseMoveEvent ( QMouseEvent *e )
@@ -300,10 +298,8 @@ void SofaViewer::mouseMoveEvent ( QMouseEvent *e )
     currentCamera->manageEvent(&me);
 
     getQWidget()->update();
-#ifndef SOFA_GUI_INTERACTION
     if (groot)
         groot->propagateEvent(core::ExecParams::defaultInstance(), &me);
-#endif
 }
 
 void SofaViewer::mousePressEvent ( QMouseEvent * e)
@@ -324,10 +320,8 @@ void SofaViewer::mousePressEvent ( QMouseEvent * e)
     currentCamera->manageEvent(mEvent);
 
     getQWidget()->update();
-#ifndef SOFA_GUI_INTERACTION
     if (groot)
         groot->propagateEvent(core::ExecParams::defaultInstance(), mEvent);
-#endif
 }
 
 void SofaViewer::mouseReleaseEvent ( QMouseEvent * e)
@@ -349,10 +343,8 @@ void SofaViewer::mouseReleaseEvent ( QMouseEvent * e)
     currentCamera->manageEvent(mEvent);
 
     getQWidget()->update();
-#ifndef SOFA_GUI_INTERACTION
     if (groot)
         groot->propagateEvent(core::ExecParams::defaultInstance(), mEvent);
-#endif
 }
 
 bool SofaViewer::mouseEvent(QMouseEvent *e)

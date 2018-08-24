@@ -20,7 +20,7 @@
             <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" dx="2.5" />
-            <UniformMass totalmass="5" />
+            <UniformMass totalMass="5" />
             <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" method="large" />
             <Node name="Visu">
                 <OglModel name="Visual" fileMesh="mesh/torus.obj" color="red" dx="2.5" />
@@ -40,7 +40,7 @@
             <MeshGmshLoader name="loader" filename="mesh/torus2_low_res.msh" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" dx="5" />
-            <UniformMass totalmass="5" />
+            <UniformMass totalMass="5" />
             <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" method="polar" />
             <Node name="Visu">
                 <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="blue" dx="5" />
@@ -60,7 +60,7 @@
             <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" dx="7.5" />
-            <UniformMass totalmass="5" />
+            <UniformMass totalMass="5" />
             <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" method="svd" />
             <Node name="Visu">
                 <OglModel name="Visual" fileMesh="mesh/torus.obj" color="yellow" dx="7.5" />

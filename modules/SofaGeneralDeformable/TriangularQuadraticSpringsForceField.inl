@@ -26,7 +26,7 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
-#include <sofa/helper/gl/template.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
 #include <SofaBaseTopology/TopologyData.inl>
 
@@ -207,24 +207,6 @@ template <class DataTypes> void TriangularQuadraticSpringsForceField<DataTypes>:
                 _topology->getTriangle(i),  (const sofa::helper::vector< unsigned int > )0,
                 (const sofa::helper::vector< double >)0);
     }
-    /*
-            // Edge info
-            edgeInfo.createTopologicalEngine(_topology);
-            edgeInfo.setCreateFunction(TRQSEdgeCreationFunction);
-            edgeInfo.setCreateParameter( (void *) this );
-            edgeInfo.setDestroyParameter( (void *) this );
-            edgeInfo.registerTopologicalData();
-            edgeInfo.endEdit();
-
-            // Triangle info
-            triangleInfo.createTopologicalEngine(_topology);
-            triangleInfo.setCreateFunction(TRQSTriangleCreationFunction);
-            triangleInfo.setDestroyFunction(TRQSTriangleDestroyFunction);
-            triangleInfo.setCreateParameter( (void *) this );
-            triangleInfo.setDestroyParameter( (void *) this );
-            triangleInfo.registerTopologicalData();
-            triangleInfo.endEdit();
-    */
 }
 
 template <class DataTypes>
@@ -264,10 +246,7 @@ void TriangularQuadraticSpringsForceField<DataTypes>::addForce(const core::Mecha
         dv=v[v0]-v[v1];
         L=einfo->currentLength=dp.norm();
         einfo->dl=einfo->currentLength-einfo->restLength +_dampingRatio*dot(dv,dp)/L;
-        /*if (i==0) {
-        serr << "dl= " <<  einfo->dl<<sendl;
-        serr << "damping= " <<  (_dampingRatio*dot(dv,dp)*einfo->restLength/(L*L))<<sendl;
-        }*/
+
         val=einfo->stiffness*(einfo->dl)/L;
         f[v1]+=dp*val;
         f[v0]-=dp*val;
@@ -445,38 +424,42 @@ void TriangularQuadraticSpringsForceField<DataTypes>::updateLameCoefficients()
 template<class DataTypes>
 void TriangularQuadraticSpringsForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
+    vparams->drawTool()->saveLastState();
+
     if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        vparams->drawTool()->setPolygonMode(0, true);
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     int nbTriangles=_topology->getNbTriangles();
+    std::vector<sofa::defaulttype::Vector3> vertices;
+    std::vector<sofa::defaulttype::Vec4f> colors;
+    std::vector<sofa::defaulttype::Vector3> normals;
 
-    glDisable(GL_LIGHTING);
+    vparams->drawTool()->disableLighting();
 
-    glBegin(GL_TRIANGLES);
     for(int i=0; i<nbTriangles; ++i)
     {
         int a = _topology->getTriangle(i)[0];
         int b = _topology->getTriangle(i)[1];
         int c = _topology->getTriangle(i)[2];
 
-        glColor4f(0,1,0,1);
-        helper::gl::glVertexT(x[a]);
-        glColor4f(0,0.5,0.5,1);
-        helper::gl::glVertexT(x[b]);
-        glColor4f(0,0,1,1);
-        helper::gl::glVertexT(x[c]);
+        colors.push_back(sofa::defaulttype::RGBAColor::green());
+        vertices.push_back(x[a]);
+        colors.push_back(sofa::defaulttype::RGBAColor(0,0.5,0.5,1));
+        vertices.push_back(x[b]);
+        colors.push_back(sofa::defaulttype::RGBAColor::blue());
+        vertices.push_back(x[c]);
     }
-    glEnd();
+    vparams->drawTool()->drawTriangles(vertices, normals, colors);
 
 
     if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-#endif /* SOFA_NO_OPENGL */
+        vparams->drawTool()->setPolygonMode(0, false);
+
+    vparams->drawTool()->restoreLastState();
 }
 
 } // namespace forcefield

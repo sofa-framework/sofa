@@ -53,7 +53,7 @@ MeshXspLoader::MeshXspLoader() : MeshLoader()
 
 bool MeshXspLoader::load()
 {
-    msg_info() << "Loading Xsp file: " << m_filename;
+  	dmsg_info() << "Loading Xsp file: " << m_filename;
 
     std::string cmd;
     bool fileRead = false;
@@ -82,6 +82,8 @@ bool MeshXspLoader::load()
             fileRead = readXsp(file, false);
         else if (version == 4.0)
             fileRead = readXsp(file, true);
+
+        file.close();    
     }
     else
     {
@@ -101,26 +103,20 @@ bool MeshXspLoader::readXsp (std::ifstream &file, bool vector_spring)
 {
     dmsg_info() << "Reading Xsp file: " << vector_spring;
 
-
     std::string cmd;
-    //int npoints = 0;
-    //int nlines = 0;
-
     file >> cmd;
 
-    // then find out number of masses and springs
+    // then find out number of masses and springs, not used.
     if (cmd == "numm")
     {
         int totalNumMasses = 0;
         file >> totalNumMasses;
-        //npoints=totalNumMasses;
     }
 
     if (cmd=="nums")
     {
         int totalNumSprings = 0;
         file >> totalNumSprings;
-        //nlines=totalNumSprings;
     }
 
 
@@ -140,19 +136,13 @@ bool MeshXspLoader::readXsp (std::ifstream &file, bool vector_spring)
             double px,py,pz,vx,vy,vz,mass=0.0,elastic=0.0;
             //bool fixed=false;
             file >> index >> location >> px >> py >> pz >> vx >> vy >> vz >> mass >> elastic;
-//            if (mass < 0)
-//            {
-//                // fixed point initialization
-//                mass = -mass;
-//                //fixed = true;
-//            }
             my_positions.push_back(Vector3(px, py, pz));
         }
         else if (cmd=="lspg")	// linear springs connector
         {
             int	index;
             Edge m;
-            double ks=0.0,kd=0.0,initpos=-1;
+            double ks = 0.0, kd = 0.0, initpos = -1;
             if (vector_spring)
             {
                 double restx=0.0,resty=0.0,restz=0.0;
@@ -190,7 +180,7 @@ bool MeshXspLoader::readXsp (std::ifstream &file, bool vector_spring)
         }
         else		// it's an unknown keyword
         {
-            msg_error("MeshXspLoader") << "Unknown MassSpring keyword '" << cmd << "'.";
+            msg_error() << "Unknown MassSpring keyword '" << cmd << "'.";
             d_positions.endEdit();
             d_edges.endEdit();
             gravity.endEdit();

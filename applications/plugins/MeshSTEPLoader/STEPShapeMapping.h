@@ -21,7 +21,7 @@ public:
 
 public:
 
-    typedef core::topology::Topology::Triangle Triangle;
+    typedef sofa::core::topology::Topology::Triangle Triangle;
     STEPShapeExtractor(loader::MeshSTEPLoader* loader=NULL,topology::MeshTopology* topology=NULL);
 
     void init();

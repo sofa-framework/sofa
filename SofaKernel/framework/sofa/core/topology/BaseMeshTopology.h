@@ -22,19 +22,15 @@
 #ifndef SOFA_CORE_TOPOLOGY_BASEMESHTOPOLOGY_H
 #define SOFA_CORE_TOPOLOGY_BASEMESHTOPOLOGY_H
 
-#include <cstdlib>
-#include <string>
-#include <iostream>
-
 #include <sofa/core/topology/Topology.h>
-#include <sofa/core/topology/TopologyChange.h>
 #include <sofa/core/topology/BaseTopologyEngine.h>
-
-
 #include <sofa/core/objectmodel/DataFileName.h>
-#include <sofa/helper/vector.h>
 
-#include <sofa/core/core.h>
+#ifndef NDEBUG
+#define CHECK_TOPOLOGY true
+#else
+#define CHECK_TOPOLOGY false
+#endif
 
 namespace sofa
 {
@@ -44,8 +40,6 @@ namespace core
 
 namespace topology
 {
-
-#define SOFA_NEW_HEXA
 
 class SOFA_CORE_API BaseMeshTopology : public core::topology::Topology
 {
@@ -64,11 +58,6 @@ public:
     typedef EdgeID		                LineID;
     typedef Edge		                Line;
     typedef SeqEdges	                SeqLines;
-#ifndef SOFA_NEW_HEXA
-    typedef HexaID                              CubeID;
-    typedef Hexa                                Cube;
-    typedef SeqHexahedra                        SeqCubes;
-#endif
     /// @}
 
     /// fixed-size neighbors arrays
@@ -122,11 +111,11 @@ public:
     /// Random accessors
     /// @{
 
-    virtual int getNbEdges()                   { return (int)getEdges().size(); }
-    virtual int getNbTriangles()               { return (int)getTriangles().size(); }
-    virtual int getNbQuads()                   { return (int)getQuads().size(); }
-    virtual int getNbTetrahedra()              { return (int)getTetrahedra().size(); }
-    virtual int getNbHexahedra()	       { return (int)getHexahedra().size(); }
+    virtual size_t getNbEdges()                   { return getEdges().size(); }
+    virtual size_t getNbTriangles()               { return getTriangles().size(); }
+    virtual size_t getNbQuads()                   { return getQuads().size(); }
+    virtual size_t getNbTetrahedra()              { return getTetrahedra().size(); }
+    virtual size_t getNbHexahedra()	              { return getHexahedra().size(); }
 
     virtual const Edge getEdge(EdgeID i)             { return getEdges()[i]; }
     virtual const Triangle getTriangle(TriangleID i) { return getTriangles()[i]; }
@@ -139,8 +128,8 @@ public:
 
     /// Bridge from old functions (using Tetra/Tetras and Hexa/Hexas) to new ones
     ///@{
-    virtual int getNbTetras()    { return (int)getTetrahedra().size(); }
-    virtual int getNbHexas()     { return (int)getHexahedra().size(); }
+    virtual size_t getNbTetras()    { return getNbTetrahedra(); }
+    virtual size_t getNbHexas()     { return getNbHexahedra(); }
 
     virtual Tetra getTetra(TetraID i)          { return getTetrahedra()[i]; }
     virtual Hexa getHexa(HexaID i)             { return getHexahedra()[i]; }
@@ -244,13 +233,8 @@ public:
     /// @name Deprecated names, for backward-compatibility
     /// @{
     const SeqLines& getLines() { return getEdges(); }
-    int getNbLines() { return getNbEdges(); }
+    size_t getNbLines() { return getNbEdges(); }
     Line getLine(LineID i) { return getEdge(i); }
-#ifndef SOFA_NEW_HEXA
-    const SeqCubes& getCubes() { return getHexahedra(); }
-    int getNbCubes() { return getNbHexahedra(); }
-    Cube getCube(CubeID i) { return getHexahedron(i); }
-#endif
     /// @}
 
     /// @name Initial points accessors (only available if the topology was loaded from a file containing this information).

@@ -22,13 +22,9 @@
 #ifndef SOFA_CORE_OBJECTMODEL_BASECLASS_H
 #define SOFA_CORE_OBJECTMODEL_BASECLASS_H
 
-#include <sofa/helper/system/config.h>
-#include <sofa/helper/vector.h>
 #include <sofa/core/core.h>
 #include <sofa/core/objectmodel/SPtr.h>
-#include <string>
 #include <map>
-#include <typeinfo>
 
 namespace sofa
 {

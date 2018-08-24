@@ -7,7 +7,7 @@
         <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" tolerance="0.000001" threshold="1e-5"/>
         <MechanicalObject dx="-10" />
-        <UniformMass totalmass="15" />
+        <UniformMass totalMass="15" />
         <CylinderGridTopology nx="5" ny="5" nz="20" length="35.56" radius="3.75" axis="0 1 0" />
         <BoxConstraint box="-14 -0.1 -4 -6 0.1 4" fixAll="0" />
         <TetrahedronFEMForceField name="FEM" youngModulus="1116" poissonRatio="0.3" method="polar" />
@@ -16,7 +16,7 @@
         <EulerImplicit />
         <CGLinearSolver iterations="25" tolerance="0.000001" threshold="1e-5"/>
         <MechanicalObject />
-        <UniformMass totalmass="15" />
+        <UniformMass totalMass="15" />
         <CylinderGridTopology nx="5" ny="5" nz="20" length="35.56" radius="3.75" axis="0 1 0" />
         <BoxConstraint box="-4 -0.1 -4 4 0.1 4" fixAll="0" />
         <HexahedronFEMForceField name="FEM" youngModulus="1116" poissonRatio="0.3" method="large" />
@@ -25,7 +25,7 @@
         <EulerImplicit />
         <CGLinearSolver iterations="25" tolerance="0.000001" threshold="1e-5"/>
         <MechanicalObject dx="10" />
-        <UniformMass totalmass="15" />
+        <UniformMass totalMass="15" />
         <CylinderGridTopology nx="5" ny="5" nz="20" length="35.56" radius="3.75" axis="0 1 0" />
         <BoxConstraint box="6 -0.1 -4 14 0.1 4" fixAll="0" />
         <MeshSpringForceField name="FEM" stiffness="1000" />

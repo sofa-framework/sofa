@@ -10,7 +10,7 @@
                     position="0 0 0 0 0 1"
                     velocity="0 0 0 0 1 0"/>
  
-  <UniformMass name="Mass" totalmass="1" />
+  <UniformMass name="Mass" totalMass="1" />
 
   <FixedConstraint indices="0"/>
   <StiffSpringForceField name="Springs" stiffness="100" damping="1" spring="0 1 10 1 1"/>

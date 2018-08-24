@@ -23,13 +23,8 @@
 #define SOFA_CORE_BEHAVIOR_BASEMASS_H
 
 #include <sofa/core/core.h>
-#include <sofa/core/MultiVecId.h>
-#include <sofa/core/MechanicalParams.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/behavior/MultiMatrixAccessor.h>
-#include <sofa/defaulttype/BaseMatrix.h>
-#include <sofa/defaulttype/BaseVector.h>
-#include <sofa/defaulttype/Vec.h>
 namespace sofa
 {
 

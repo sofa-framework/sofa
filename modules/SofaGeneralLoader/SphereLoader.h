@@ -24,8 +24,6 @@
 #include "config.h"
 
 #include <sofa/core/loader/BaseLoader.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/helper/vector.h>
 
 namespace sofa
 {

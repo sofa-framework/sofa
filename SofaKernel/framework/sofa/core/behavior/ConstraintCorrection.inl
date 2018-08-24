@@ -66,49 +66,60 @@ void ConstraintCorrection<DataTypes>::removeConstraintSolver(core::behavior::Con
 }
 
 template< class DataTypes >
-void ConstraintCorrection< DataTypes >::computeAndApplyMotionCorrection(const core::ConstraintParams *cparams, core::MultiVecCoordId x, core::MultiVecDerivId v, core::MultiVecDerivId f, const defaulttype::BaseVector * lambda)
+void ConstraintCorrection< DataTypes >::computeMotionCorrectionFromLambda(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, const defaulttype::BaseVector * lambda)
+{
+    addConstraintForceInMotionSpace(cparams, cparams->lambda(), cparams->j(), lambda);
+
+    computeMotionCorrection(cparams, dx, cparams->lambda());
+}
+
+template< class DataTypes >
+void ConstraintCorrection< DataTypes >::applyMotionCorrection(const core::ConstraintParams *cparams, core::MultiVecCoordId x, core::MultiVecDerivId v, core::MultiVecDerivId dx, core::ConstMultiVecDerivId correction)
 {
     if (mstate)
     {
-        Data< VecCoord > *x_d = x[mstate].write();
-        Data< VecDeriv > *v_d = v[mstate].write();
-        Data< VecDeriv > *f_d = f[mstate].write();
+        Data< VecCoord > *x_d  = x[mstate].write();
+        Data< VecDeriv > *v_d  = v[mstate].write();
+        Data< VecDeriv > *dx_d = dx[mstate].write();
+        const Data< VecDeriv > *correction_d = correction[mstate].read();
 
-        if (x_d && v_d && f_d)
+        if (x_d && v_d && dx_d && correction_d)
         {
-            computeAndApplyMotionCorrection(cparams, *x_d, *v_d, *f_d, lambda);
+            applyMotionCorrection(cparams, *x_d, *v_d, *dx_d, *correction_d);
         }
     }
 }
 
 
 template< class DataTypes >
-void ConstraintCorrection< DataTypes >::computeAndApplyPositionCorrection(const core::ConstraintParams *cparams, core::MultiVecCoordId res, core::MultiVecDerivId f, const defaulttype::BaseVector * lambda)
+void ConstraintCorrection< DataTypes >::applyPositionCorrection(const core::ConstraintParams *cparams, core::MultiVecCoordId x, core::MultiVecDerivId dx, core::ConstMultiVecDerivId correction)
 {
     if (mstate)
     {
-        Data< VecCoord > *res_d = res[mstate].write();
-        Data< VecDeriv > *f_d = f[mstate].write();
+        Data< VecCoord > *x_d  = x[mstate].write();
+        Data< VecDeriv > *dx_d = dx[mstate].write();
+        const Data< VecDeriv > *correction_d = correction[mstate].read();
 
-        if (res_d && f_d)
+        if (x_d && dx_d && correction_d)
         {
-            computeAndApplyPositionCorrection(cparams, *res_d, *f_d, lambda);
+            applyPositionCorrection(cparams, *x_d, *dx_d, *correction_d);
         }
     }
 }
 
 
 template< class DataTypes >
-void ConstraintCorrection< DataTypes >::computeAndApplyVelocityCorrection(const core::ConstraintParams *cparams, core::MultiVecDerivId res, core::MultiVecDerivId f, const defaulttype::BaseVector *lambda)
+void ConstraintCorrection< DataTypes >::applyVelocityCorrection(const core::ConstraintParams *cparams, core::MultiVecDerivId v, core::MultiVecDerivId dv, core::ConstMultiVecDerivId correction)
 {
     if (mstate)
     {
-        Data< VecDeriv > *res_d = res[mstate].write();
-        Data< VecDeriv > *f_d = f[mstate].write();
+        Data< VecDeriv >* v_d  = v[mstate].write();
+        Data< VecDeriv >* dv_d = dv[mstate].write();
+        const Data< VecDeriv >* correction_d = correction[mstate].read();
 
-        if (res_d && f_d)
+        if (v_d && dv_d && correction_d)
         {
-            computeAndApplyVelocityCorrection(cparams, *res_d, *f_d, lambda);
+            applyVelocityCorrection(cparams, *v_d, *dv_d, *correction_d);
         }
     }
 }
@@ -119,68 +130,29 @@ void ConstraintCorrection< DataTypes >::applyPredictiveConstraintForce(const cor
 {
     if (mstate)
     {
-        Data< VecDeriv > *f_d = f[mstate].write();
-
-        if (f_d)
-        {
-            applyPredictiveConstraintForce(cparams, *f_d, lambda);
+        addConstraintForceInMotionSpace(cparams, f, cparams->j(), lambda);
         }
-    }
 }
 
-
 template< class DataTypes >
-void ConstraintCorrection< DataTypes >::setConstraintForceInMotionSpace(core::MultiVecDerivId f, const defaulttype::BaseVector *lambda)
+void ConstraintCorrection< DataTypes >::addConstraintForceInMotionSpace(const core::ConstraintParams* cparams, core::MultiVecDerivId f, core::ConstMultiMatrixDerivId j, const defaulttype::BaseVector * lambda)
 {
     if (mstate)
     {
         Data< VecDeriv > *f_d = f[mstate].write();
-
-        if (f_d)
+        const Data< MatrixDeriv > * j_d = j[mstate].read();
+        if (f_d && j_d)
         {
-            setConstraintForceInMotionSpace(*f_d, lambda);
+            addConstraintForceInMotionSpace(cparams,*f_d, *j_d, lambda);
         }
     }
 }
 
 
 template< class DataTypes >
-void ConstraintCorrection< DataTypes >::setConstraintForceInMotionSpace(Data< VecDeriv > &f, const defaulttype::BaseVector *lambda)
+void ConstraintCorrection< DataTypes >::addConstraintForceInMotionSpace(const core::ConstraintParams* cparams, Data< VecDeriv > &f, const Data< MatrixDeriv>& j, const defaulttype::BaseVector *lambda)
 {
-    VecDeriv& force = *f.beginEdit();
-
-    const size_t numDOFs = mstate->getSize();
-
-    force.clear();
-    force.resize(numDOFs);
-    for (size_t i = 0; i < numDOFs; i++)
-        force[i] = Deriv();
-
-    f.endEdit();
-
-    addConstraintForceInMotionSpace(f, lambda);
-}
-
-
-template< class DataTypes >
-void ConstraintCorrection< DataTypes >::addConstraintForceInMotionSpace(core::MultiVecDerivId f, const defaulttype::BaseVector *lambda)
-{
-    if (mstate)
-    {
-        Data< VecDeriv > *f_d = f[mstate].write();
-
-        if (f_d)
-        {
-            addConstraintForceInMotionSpace(*f_d, lambda);
-        }
-    }
-}
-
-
-template< class DataTypes >
-void ConstraintCorrection< DataTypes >::addConstraintForceInMotionSpace(Data< VecDeriv > &f, const defaulttype::BaseVector *lambda)
-{
-    VecDeriv& force = *f.beginEdit();
+    VecDeriv& force = *f.beginEdit(cparams);
 
     const size_t numDOFs = mstate->getSize();
     const size_t fPrevSize = force.size();
@@ -192,7 +164,7 @@ void ConstraintCorrection< DataTypes >::addConstraintForceInMotionSpace(Data< Ve
             force[i] = Deriv();
     }
 
-    const MatrixDeriv& c = mstate->read(ConstMatrixDerivId::constraintJacobian())->getValue();
+    const MatrixDeriv& c = j.getValue(cparams);
 
     MatrixDerivRowConstIterator rowItEnd = c.end();
 
@@ -211,99 +183,8 @@ void ConstraintCorrection< DataTypes >::addConstraintForceInMotionSpace(Data< Ve
         }
     }
 
-    f.endEdit();
+    f.endEdit(cparams);
 }
-
-
-template< class DataTypes >
-void ConstraintCorrection< DataTypes >::setConstraintForceInMotionSpace(core::MultiVecDerivId f, const defaulttype::BaseVector *lambda, std::list< int > &activeDofs)
-{
-    if (mstate)
-    {
-        Data< VecDeriv > *f_d = f[mstate].write();
-
-        if (f_d)
-        {
-            setConstraintForceInMotionSpace(*f_d, lambda, activeDofs);
-        }
-    }
-}
-
-
-template< class DataTypes >
-void ConstraintCorrection< DataTypes >::setConstraintForceInMotionSpace(Data< VecDeriv > &f, const defaulttype::BaseVector *lambda, std::list< int > &activeDofs)
-{
-    VecDeriv& force = *f.beginEdit();
-
-    const size_t numDOFs = mstate->getSize();
-
-    force.clear();
-    force.resize(numDOFs);
-    for (size_t i = 0; i < numDOFs; i++)
-        force[i] = Deriv();
-
-    f.endEdit();
-
-    addConstraintForceInMotionSpace(f, lambda, activeDofs);
-}
-
-
-template< class DataTypes >
-void ConstraintCorrection< DataTypes >::addConstraintForceInMotionSpace(core::MultiVecDerivId f, const defaulttype::BaseVector *lambda, std::list< int > &activeDofs)
-{
-    if (mstate)
-    {
-        Data< VecDeriv > *f_d = f[mstate].write();
-
-        if (f_d)
-        {
-            addConstraintForceInMotionSpace(*f_d, lambda, activeDofs);
-        }
-    }
-}
-
-
-template< class DataTypes >
-void ConstraintCorrection< DataTypes >::addConstraintForceInMotionSpace(Data< VecDeriv > &f, const defaulttype::BaseVector *lambda, std::list< int > &activeDofs)
-{
-    VecDeriv& force = *f.beginEdit();
-
-    const size_t numDOFs = mstate->getSize();
-    const size_t fPrevSize = force.size();
-
-    if (numDOFs > fPrevSize)
-    {
-        force.resize(numDOFs);
-        for (size_t i = fPrevSize; i < numDOFs; i++)
-            force[i] = Deriv();
-    }
-
-    const MatrixDeriv& c = mstate->read(ConstMatrixDerivId::constraintJacobian())->getValue();
-
-    MatrixDerivRowConstIterator rowItEnd = c.end();
-
-    for (MatrixDerivRowConstIterator rowIt = c.begin(); rowIt != rowItEnd; ++rowIt)
-    {
-        const double lambdaC1 = lambda->element(rowIt.index());
-
-        if (lambdaC1 != 0.0)
-        {
-            MatrixDerivColConstIterator colItEnd = rowIt.end();
-
-            for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
-            {
-                force[colIt.index()] += colIt.val() * lambdaC1;
-                activeDofs.push_back(colIt.index());
-            }
-        }
-    }
-
-    f.endEdit();
-
-    activeDofs.sort();
-    activeDofs.unique();
-}
-
 
 } // namespace behavior
 
