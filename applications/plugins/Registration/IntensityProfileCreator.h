@@ -60,7 +60,7 @@ public:
     Data< ImageTypes > image;
     Data< helper::vector<T> > values; ///< intensity values for each line
 
-    virtual std::string getTemplateName() const    { return templateName(this);    }
+    virtual std::string getTemplateName() const override { return templateName(this);    }
     static std::string templateName(const IntensityProfileCreator<ImageTypes>* = NULL) { return ImageTypes::Name(); }
 
     IntensityProfileCreator()    :   Inherited()
@@ -71,18 +71,18 @@ public:
 
     virtual ~IntensityProfileCreator() {}
 
-    virtual void init()
+    virtual void init() override
     {
         addInput(&values);
         addOutput(&image);
         setDirtyValue();
     }
 
-    virtual void reinit() { update(); }
+    virtual void reinit() override { update(); }
 
 protected:
 
-    virtual void update()
+    virtual void update() override
     {
         helper::ReadAccessor<Data< helper::vector<T> > > val(this->values);
 
