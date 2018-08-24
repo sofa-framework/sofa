@@ -149,7 +149,7 @@ void RestShapeSpringsForceField<DataTypes>::reinit()
     }
     else
     {
-        VecReal &k = stiffness.getValue();
+        const VecReal &k = stiffness.getValue();
         if ( k.size() != m_indices.size() )
         {
             msg_warning() << "Size of stiffness vector is not correct (" << k.size() << "), should be either 1 or " << m_indices.size() << msgendl
@@ -304,6 +304,7 @@ void RestShapeSpringsForceField<DataTypes>::addDForce(const MechanicalParams* mp
     WriteAccessor< DataVecDeriv > df1 = df;
     ReadAccessor< DataVecDeriv > dx1 = dx;
     Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
+    const VecReal& k = stiffness.getValue();
 
     if (k.size() != m_indices.size())
     {
