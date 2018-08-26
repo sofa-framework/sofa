@@ -121,7 +121,7 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
             if (SofaVideoRecorderManager::getInstance()->realtime())
             {
                 unsigned int framerate = SofaVideoRecorderManager::getInstance()->getFramerate();
-                msg_info() << "Starting capture timer ( " << framerate << " Hz )";
+                msg_info("SofaViewer") << "Starting capture timer ( " << framerate << " Hz )";
                 unsigned int interv = (1000+framerate-1)/framerate;
                 captureTimer.start(interv);
             }
@@ -131,7 +131,7 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
         {
             if(captureTimer.isActive())
             {
-                msg_info() << "Stopping capture timer";
+                msg_info("SofaViewer") << "Stopping capture timer";
                 captureTimer.stop();
             }
             switch (SofaVideoRecorderManager::getInstance()->getRecordingType())
@@ -166,21 +166,21 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
         // --- enable stereo mode
     {
         currentCamera->setStereoEnabled(!currentCamera->getStereoEnabled());
-        msg_info() << "Stereoscopic View " << (currentCamera->getStereoEnabled() ? "Enabled" : "Disabled");
+        msg_info("SofaViewer") << "Stereoscopic View " << (currentCamera->getStereoEnabled() ? "Enabled" : "Disabled");
         break;
     }
     case Qt::Key_F2:
         // --- reduce shift distance
     {
         currentCamera->setStereoShift(currentCamera->getStereoShift()-0.1);
-        msg_info() << "Stereo separation = " << currentCamera->getStereoShift();
+        msg_info("SofaViewer") << "Stereo separation = " << currentCamera->getStereoShift();
         break;
     }
     case Qt::Key_F3:
         // --- increase shift distance
     {
         currentCamera->setStereoShift(currentCamera->getStereoShift()+0.1);
-        msg_info() << "Stereo separation = " << currentCamera->getStereoShift();
+        msg_info("SofaViewer") << "Stereo separation = " << currentCamera->getStereoShift();
         break;
     }
     case Qt::Key_F4:
@@ -189,11 +189,11 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
         switch (currentCamera->getStereoStrategy()) {
         case sofa::component::visualmodel::BaseCamera::PARALLEL:
             currentCamera->setStereoStrategy(sofa::component::visualmodel::BaseCamera::TOEDIN);
-            msg_info() << "Stereo Strategy: TOEDIN";
+            msg_info("SofaViewer") << "Stereo Strategy: TOEDIN";
             break;
         case sofa::component::visualmodel::BaseCamera::TOEDIN:
             currentCamera->setStereoStrategy(sofa::component::visualmodel::BaseCamera::PARALLEL);
-            msg_info() << "Stereo Strategy: Parallel";
+            msg_info("SofaViewer") << "Stereo Strategy: Parallel";
             break;
         default:
             currentCamera->setStereoStrategy(sofa::component::visualmodel::BaseCamera::PARALLEL);
@@ -209,24 +209,24 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
         switch (currentCamera->getStereoMode())
         {
         case sofa::component::visualmodel::BaseCamera::STEREO_INTERLACED:
-            msg_info() << "Stereo mode: Interlaced";
+            msg_info("SofaViewer") << "Stereo mode: Interlaced";
             break;
         case sofa::component::visualmodel::BaseCamera::STEREO_SIDE_BY_SIDE:
-            msg_info() << "Stereo mode: Side by Side"; break;
+            msg_info("SofaViewer") << "Stereo mode: Side by Side"; break;
         case sofa::component::visualmodel::BaseCamera::STEREO_SIDE_BY_SIDE_HALF:
-            msg_info() << "Stereo mode: Side by Side Half"; break;
+            msg_info("SofaViewer") << "Stereo mode: Side by Side Half"; break;
         case sofa::component::visualmodel::BaseCamera::STEREO_FRAME_PACKING:
-            msg_info() << "Stereo mode: Frame Packing"; break;
+            msg_info("SofaViewer") << "Stereo mode: Frame Packing"; break;
         case sofa::component::visualmodel::BaseCamera::STEREO_TOP_BOTTOM:
-            msg_info() << "Stereo mode: Top Bottom"; break;
+            msg_info("SofaViewer") << "Stereo mode: Top Bottom"; break;
         case sofa::component::visualmodel::BaseCamera::STEREO_TOP_BOTTOM_HALF:
-            msg_info() << "Stereo mode: Top Bottom Half"; break;
+            msg_info("SofaViewer") << "Stereo mode: Top Bottom Half"; break;
         case sofa::component::visualmodel::BaseCamera::STEREO_AUTO:
-            msg_info() << "Stereo mode: Automatic"; break;
+            msg_info("SofaViewer") << "Stereo mode: Automatic"; break;
         case sofa::component::visualmodel::BaseCamera::STEREO_NONE:
-            msg_info() << "Stereo mode: None"; break;
+            msg_info("SofaViewer") << "Stereo mode: None"; break;
         default:
-            msg_info() << "Stereo mode: INVALID"; break;
+            msg_info("SofaViewer") << "Stereo mode: INVALID"; break;
             break;
         }
         break;
@@ -234,7 +234,7 @@ void SofaViewer::keyPressEvent(QKeyEvent * e)
     case Qt::Key_Control:
     {
         m_isControlPressed = true;
-        msg_info()<<"QtViewer::keyPressEvent, CONTROL pressed"<<std::endl;
+        msg_info("SofaViewer")<<"QtViewer::keyPressEvent, CONTROL pressed";
         break;
     }
     default:
