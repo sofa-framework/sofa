@@ -485,6 +485,7 @@ void SkinningMapping<TIn, TOut>::applyJT ( const sofa::core::ConstraintParams* c
                 }
             }
         }
+        outData.endEdit();
 }
 
 template <class TIn, class TOut>
