@@ -432,7 +432,31 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
                 {
                     core::topology::BaseMeshTopology::Edge e = edges[source.second];
                     typename In::Deriv f = data;
-                    double fx = topoMap->getEdgeBaryCoords()[indexIn][0];
+
+                    double fx = 0;
+
+                    if (topoMap->getEdgeBaryCoords().size() == 1)
+                    {
+                        fx = topoMap->getEdgeBaryCoords()[0][0];
+                    }
+                    else
+                    {
+                        const sofa::helper::vector< sofa::helper::vector<int> >& edgeMap = topoMap->getPointsMappedFromEdge();
+                        bool err = true;
+                        for(unsigned int i = 0; i < edgeMap[source.second].size(); ++i)
+                        {
+                            if (edgeMap[source.second][i] == indexIn)
+                            {
+                                fx = topoMap->getEdgeBaryCoords()[i][0];
+                                err = false;
+                                break;
+                            }
+                        }
+                        if (err)
+                        {
+                            serr << "Error in " << __FUNCTION__ << " : wrong source edge / destination point association" << sendl;
+                        }
+                    }
 
                     o.addCol(e[0], f * (1 - fx));
                     o.addCol(e[1], f * fx);
@@ -443,8 +467,34 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
                 {
                     core::topology::BaseMeshTopology::Triangle t = triangles[source.second];
                     typename In::Deriv f = data;
-                    double fx = topoMap->getTriangleBaryCoords()[indexIn][0];
-                    double fy = topoMap->getTriangleBaryCoords()[indexIn][1];
+
+                    double fx = 0;
+                    double fy = 0;
+
+                    if (topoMap->getTriangleBaryCoords().size() == 1)
+                    {
+                        fx = topoMap->getTriangleBaryCoords()[0][0];
+                        fy = topoMap->getTriangleBaryCoords()[0][1];
+                    }
+                    else
+                    {
+                        const sofa::helper::vector< sofa::helper::vector<int> >& triangleMap = topoMap->getPointsMappedFromTriangle();
+                        bool err = true;
+                        for(unsigned int i = 0; i < triangleMap[source.second].size(); ++i)
+                        {
+                            if (triangleMap[source.second][i] == indexIn)
+                            {
+                                fx = topoMap->getTriangleBaryCoords()[i][0];
+                                fy = topoMap->getTriangleBaryCoords()[i][1];
+                                err = false;
+                                break;
+                            }
+                        }
+                        if (err)
+                        {
+                            serr << "Error in " << __FUNCTION__ << " : wrong source triangle / destination point association" << sendl;
+                        }
+                    }
 
                     o.addCol(t[0], f * (1 - fx - fy));
                     o.addCol(t[1], f * fx);
@@ -456,8 +506,34 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
                 {
                     core::topology::BaseMeshTopology::Quad q = quads[source.second];
                     typename In::Deriv f = data;
-                    double fx = topoMap->getQuadBaryCoords()[indexIn][0];
-                    double fy = topoMap->getQuadBaryCoords()[indexIn][1];
+
+                    double fx = 0;
+                    double fy = 0;
+
+                    if (topoMap->getQuadBaryCoords().size() == 1)
+                    {
+                        fx = topoMap->getQuadBaryCoords()[0][0];
+                        fy = topoMap->getQuadBaryCoords()[0][1];
+                    }
+                    else
+                    {
+                        const sofa::helper::vector< sofa::helper::vector<int> >& quadMap = topoMap->getPointsMappedFromQuad();
+                        bool err = true;
+                        for(unsigned int i = 0; i < quadMap[source.second].size(); ++i)
+                        {
+                            if (quadMap[source.second][i] == indexIn)
+                            {
+                                fx = topoMap->getQuadBaryCoords()[i][0];
+                                fy = topoMap->getQuadBaryCoords()[i][1];
+                                err = false;
+                                break;
+                            }
+                        }
+                        if (err)
+                        {
+                            serr << "Error in " << __FUNCTION__ << " : wrong source quad / destination point association" << sendl;
+                        }
+                    }
 
                     o.addCol(q[0], f * ((1-fx) * (1-fy)));
                     o.addCol(q[1], f * (fx * (1-fy)));
@@ -470,9 +546,37 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
                 {
                     core::topology::BaseMeshTopology::Tetra t = tetrahedra[source.second];
                     typename In::Deriv f = data;
-                    double fx = topoMap->getTetraBaryCoords()[indexIn][0];
-                    double fy = topoMap->getTetraBaryCoords()[indexIn][1];
-                    double fz = topoMap->getTetraBaryCoords()[indexIn][2];
+
+                    double fx = 0;
+                    double fy = 0;
+                    double fz = 0;
+
+                    if (topoMap->getTetraBaryCoords().size() == 1)
+                    {
+                        fx = topoMap->getTetraBaryCoords()[0][0];
+                        fy = topoMap->getTetraBaryCoords()[0][1];
+                        fz = topoMap->getTetraBaryCoords()[0][2];
+                    }
+                    else
+                    {
+                        const sofa::helper::vector< sofa::helper::vector<int> >& tetraMap = topoMap->getPointsMappedFromTetra();
+                        bool err = true;
+                        for(unsigned int i = 0; i < tetraMap[source.second].size(); ++i)
+                        {
+                            if (tetraMap[source.second][i] == indexIn)
+                            {
+                                fx = topoMap->getTetraBaryCoords()[i][0];
+                                fy = topoMap->getTetraBaryCoords()[i][1];
+                                fz = topoMap->getTetraBaryCoords()[i][2];
+                                err = false;
+                                break;
+                            }
+                        }
+                        if (err)
+                        {
+                            serr << "Error in " << __FUNCTION__ << " : wrong source tetra / destination point association" << sendl;
+                        }
+                    }
 
                     o.addCol(t[0], f * (1-fx-fy-fz));
                     o.addCol(t[1], f * fx);
@@ -485,9 +589,37 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
                 {
                     core::topology::BaseMeshTopology::Hexa h = hexahedra[source.second];
                     typename In::Deriv f = data;
-                    const double fx = topoMap->getHexaBaryCoords()[indexIn][0];
-                    const double fy = topoMap->getHexaBaryCoords()[indexIn][1];
-                    const double fz = topoMap->getHexaBaryCoords()[indexIn][2];
+
+                    double fx = 0;
+                    double fy = 0;
+                    double fz = 0;
+                    if (topoMap->getHexaBaryCoords().size() == 1)
+                    {
+                        fx = topoMap->getHexaBaryCoords()[0][0];
+                        fy = topoMap->getHexaBaryCoords()[0][1];
+                        fz = topoMap->getHexaBaryCoords()[0][2];
+                    }
+                    else
+                    {
+                        const sofa::helper::vector< sofa::helper::vector<int> >& hexaMap = topoMap->getPointsMappedFromHexa();
+                        bool err = true;
+                        for(unsigned int i = 0; i < hexaMap[source.second].size(); ++i)
+                        {
+                            if (hexaMap[source.second][i] == indexIn)
+                            {
+                                fx = topoMap->getHexaBaryCoords()[i][0];
+                                fy = topoMap->getHexaBaryCoords()[i][1];
+                                fz = topoMap->getHexaBaryCoords()[i][2];
+                                err = false;
+                                break;
+                            }
+                        }
+                        if (err)
+                        {
+                            serr << "Error in " << __FUNCTION__ << " : wrong source hexa / destination point association" << sendl;
+                        }
+                    }
+
                     const double oneMinFx = 1 - fx;
                     const double oneMinFy = 1 - fy;
                     const double oneMinFz = 1 - fz;
