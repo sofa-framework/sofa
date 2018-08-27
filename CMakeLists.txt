@@ -212,7 +212,6 @@ add_subdirectory(modules)
 
 # SofaTest depends on SofaPython, so we add SofaPython before SofaTest.
 sofa_add_plugin( applications/plugins/SofaPython SofaPython )
-sofa_add_module(modules/SofaEditor SofaEditor ON)
 
 ## Scene creator option
 option(SOFA_BUILD_SCENECREATOR "Compile the C++ API located in applications/plugins/SceneCreator" OFF)
@@ -245,6 +244,8 @@ if(SOFA_BUILD_TESTS)
     # Not sure what is it
     add_subdirectory(applications/plugins/SofaTest/SofaTest_test SofaTest/SofaTest_test)
 endif()
+
+sofa_add_module(modules/SofaEditor SofaEditor ON)
 
 ## Plugins
 add_subdirectory(applications/plugins)
