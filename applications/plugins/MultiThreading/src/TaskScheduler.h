@@ -80,7 +80,7 @@ namespace sofa
 
 			bool start(TaskScheduler* const& taskScheduler);
 
-			std::thread* create_and_attach( TaskScheduler* const& taskScheduler);
+                        std::thread* create_and_attach(TaskScheduler* const&);
 
 			// queue task if there is space (or do nothing)
 			bool pushTask(Task* pTask);
@@ -170,7 +170,7 @@ namespace sofa
 			
             //static thread_local WorkerThread* _workerThreadIndex;
 
-			std::map< std::thread::id, WorkerThread*> _threads;
+			static std::map< std::thread::id, WorkerThread*> _threads;
 
 			Task::Status*	_mainTaskStatus;
 

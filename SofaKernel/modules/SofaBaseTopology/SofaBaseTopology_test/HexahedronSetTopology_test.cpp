@@ -181,7 +181,7 @@ bool HexahedronSetTopology_test::testQuadBuffers()
     const HexahedronSetTopologyContainer::HexahedraAroundQuad& elemAQuadM = topoCon->getHexahedraAroundQuad(3);
 
     EXPECT_EQ(elemAQuad.size(), elemAQuadM.size());
-    for (int i = 0; i < elemAQuad.size(); i++)
+    for (size_t i = 0; i < elemAQuad.size(); i++)
         EXPECT_EQ(elemAQuad[i], elemAQuadM[i]);
 
     // check HexahedraAroundQuad buffer element for this file
@@ -197,32 +197,32 @@ bool HexahedronSetTopology_test::testQuadBuffers()
     const HexahedronSetTopologyContainer::QuadsInHexahedron& quadInElemM = topoCon->getQuadsInHexahedron(1);
 
     EXPECT_EQ(quadInElem.size(), quadInElemM.size());
-    for (int i = 0; i < quadInElem.size(); i++)
+    for (size_t i = 0; i < quadInElem.size(); i++)
         EXPECT_EQ(quadInElem[i], quadInElemM[i]);
 
     sofa::helper::fixed_array<int, 6> quadInElemTruth(6, 7, 8, 9, 10, 3);
-    for (int i = 0; i<quadInElemTruth.size(); ++i)
+    for (size_t i = 0; i<quadInElemTruth.size(); ++i)
         EXPECT_EQ(quadInElem[i], quadInElemTruth[i]);
 
 
     // Check Quad Index in Hexahedron
-    for (int i = 0; i<quadInElemTruth.size(); ++i)
+    for (size_t i = 0; i<quadInElemTruth.size(); ++i)
         EXPECT_EQ(topoCon->getQuadIndexInHexahedron(quadInElem, quadInElemTruth[i]), i);
 
     int quadId = topoCon->getQuadIndexInHexahedron(quadInElem, 20000);
     EXPECT_EQ(quadId, -1);
 
     // check link between HexahedraAroundQuad and QuadsInHexahedron
-    for (int i = 0; i < 4; ++i)
+    for (unsigned int i = 0; i < 4; ++i)
     {
         HexahedronSetTopologyContainer::QuadID quadId = i;
         const HexahedronSetTopologyContainer::HexahedraAroundQuad& _elemAQuad = elemAroundQuads[quadId];
-        for (int j = 0; j < _elemAQuad.size(); ++j)
+        for (size_t j = 0; j < _elemAQuad.size(); ++j)
         {
             HexahedronSetTopologyContainer::HexahedronID triId = _elemAQuad[j];
             const HexahedronSetTopologyContainer::QuadsInHexahedron& _quadInElem = quadInHexahedra[triId];
             bool found = false;
-            for (int k = 0; k < _quadInElem.size(); ++k)
+            for (size_t k = 0; k < _quadInElem.size(); ++k)
             {
                 if (_quadInElem[k] == quadId)
                 {
@@ -276,7 +276,7 @@ bool HexahedronSetTopology_test::testEdgeBuffers()
     const HexahedronSetTopologyContainer::HexahedraAroundEdge& elemAEdgeM = topoCon->getHexahedraAroundEdge(13);
 
     EXPECT_EQ(elemAEdge.size(), elemAEdgeM.size());
-    for (int i = 0; i < elemAEdge.size(); i++)
+    for (size_t i = 0; i < elemAEdge.size(); i++)
         EXPECT_EQ(elemAEdge[i], elemAEdgeM[i]);
 
     // check HexahedronAroundEdge buffer element for this file
@@ -292,16 +292,16 @@ bool HexahedronSetTopology_test::testEdgeBuffers()
     const HexahedronSetTopologyContainer::EdgesInHexahedron& edgeInElemM = topoCon->getEdgesInHexahedron(2);
 
     EXPECT_EQ(edgeInElem.size(), edgeInElemM.size());
-    for (int i = 0; i < edgeInElem.size(); i++)
+    for (size_t i = 0; i < edgeInElem.size(); i++)
         EXPECT_EQ(edgeInElem[i], edgeInElemM[i]);
     
     sofa::helper::fixed_array<int, 10> edgeInElemTruth(20, 13, 14, 21, 22, 23, 24, 16, 25, 18); // Test only 10 out of 12 edges as no fixed_array<12>
-    for (int i = 0; i<edgeInElemTruth.size(); ++i)
+    for (size_t i = 0; i<edgeInElemTruth.size(); ++i)
         EXPECT_EQ(edgeInElem[i], edgeInElemTruth[i]);
     
     
     // Check Edge Index in Hexahedron
-    for (int i = 0; i<edgeInElemTruth.size(); ++i)
+    for (size_t i = 0; i<edgeInElemTruth.size(); ++i)
         EXPECT_EQ(topoCon->getEdgeIndexInHexahedron(edgeInElem, edgeInElemTruth[i]), i);
 
     int edgeId = topoCon->getEdgeIndexInHexahedron(edgeInElem, 20000);
@@ -312,12 +312,12 @@ bool HexahedronSetTopology_test::testEdgeBuffers()
     {
         HexahedronSetTopologyContainer::EdgeID edgeId = i;
         const HexahedronSetTopologyContainer::HexahedraAroundEdge& _elemAEdge = elemAroundEdges[edgeId];
-        for (int j = 0; j < _elemAEdge.size(); ++j)
+        for (size_t j = 0; j < _elemAEdge.size(); ++j)
         {
             HexahedronSetTopologyContainer::HexahedronID triId = _elemAEdge[j];
             const HexahedronSetTopologyContainer::EdgesInHexahedron& _edgeInElem = edgeInHexahedra[triId];
             bool found = false;
-            for (int k = 0; k < _edgeInElem.size(); ++k)
+            for (size_t k = 0; k < _edgeInElem.size(); ++k)
             {
                 if (_edgeInElem[k] == edgeId)
                 {
@@ -366,7 +366,7 @@ bool HexahedronSetTopology_test::testVertexBuffers()
     const HexahedronSetTopologyContainer::HexahedraAroundVertex& elemAVertexM = topoCon->getHexahedraAroundVertex(1);
 
     EXPECT_EQ(elemAVertex.size(), elemAVertexM.size());
-    for (int i = 0; i < elemAVertex.size(); i++)
+    for (size_t i = 0; i < elemAVertex.size(); i++)
         EXPECT_EQ(elemAVertex[i], elemAVertexM[i]);
 
     // check HexahedraAroundVertex buffer element for this file    

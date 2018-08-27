@@ -27,7 +27,7 @@
 #include <SofaBaseTopology/CommonAlgorithms.h>
 #include <SofaBaseTopology/TopologySparseData.inl>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/gl/template.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <vector>
 #include <set>
 
@@ -164,87 +164,6 @@ void TrianglePressureForceField<DataTypes>::addDForce(const core::MechanicalPara
 	mparams->kFactor();
     //Real kfactor = mparams->kFactor();
 
-	/*
-	if (pressureScalar.getValue()!=0.0f) {
-
-		size_t i,j,k;
-		VecDeriv& df=*(d_df.beginEdit());
-		const VecDeriv dx=d_dx.getValue();
-		typedef sofa::component::topology::BaseMeshTopology::Triangle Triangle;
-		const sofa::helper::vector<Triangle> &ta = _topology->getTriangles();
-		 
-		const  VecCoord p = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-		const sofa::helper::vector <unsigned int>& my_map = trianglePressureMap.getMap2Elements();
-		const sofa::helper::vector<TrianglePressureInformation>& my_subset = trianglePressureMap.getValue();
-
-		Real press=	pressureScalar.getValue()/6.0f;
-		Coord dp;
-		
-		for ( i=0; i<my_map.size(); ++i)
-		{
-			Deriv dForce;
-			const Triangle &t=ta[my_map[i]];
-
-			for (j=0;j<3;++j) {
-				dp=p[t[(j+2)%3]]-p[t[(j+1)%3]];
-				dForce+=cross(dp,dx[t[j]]);
-			}
-			dForce*=press*kfactor;
-			for (j=0;j<3;++j) {
-				df[t[j]]+=dForce;
-			}
-		}
-//		for (i=0;i<df.size();++i) {
-//			msg_info()<<"df["<<i<<"]= "<<df[i]<<std::endl;
-//		} 
-		d_df.endEdit();
-	} */
-/*
-	if (p_definedOnRestPosition.getValue()==false) {
-		size_t i,j,k;
-		VecDeriv& df=*(d_df.beginEdit());
-		const VecDeriv dx=d_dx.getValue();
-		typedef sofa::component::topology::BaseMeshTopology::Triangle Triangle;
-		const sofa::helper::vector<Triangle> &ta = _topology->getTriangles();
-		 
-		const  VecCoord p = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-		const sofa::helper::vector <unsigned int>& my_map = trianglePressureMap.getMap2Elements();
-		const sofa::helper::vector<TrianglePressureInformation>& my_subset = trianglePressureMap.getValue();
-
-		Coord dp;
-		Deriv dForce,press;
-		Real dArea;
-		Real KK,area;
-		Coord areaVec,dareaVec,dareaVec2;
-		press=pressure.getValue();
-
-		for ( i=0; i<my_map.size(); ++i)
-		{
-			dArea=0;
-			dareaVec=Coord();
-			const Triangle &t=ta[my_map[i]];
-			for (j=0;j<3;++j) {
-				dp=p[t[(j+2)%3]]-p[t[(j+1)%3]];
-				dareaVec2=cross(dp,dx[t[j]]);
-				//dArea+=dot(my_subset[i].force,cross(dp,dx[t[j]]));
-				dArea+=dot(my_subset[i].force,dareaVec2);//+dareaVec2.norm2()/(4*my_subset[i].area);
-				dareaVec+=dareaVec2;
-	//			dArea+=dot(dx[t[j]],cross(my_subset[i].force,dp));
-				//dp=dx[t[j]];
-			}
-//			dArea+=dareaVec.norm2()/(4*my_subset[i].area);
-			Real dAreatest=((cross(p[t[1]]-p[t[0]]+dx[t[1]]-dx[t[0]],p[t[2]]-p[t[0]]+dx[t[2]]-dx[t[0]])).norm()-(cross(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]])).norm())/2.0;
-			if (fabs(dArea-dAreatest)>1e-3){
-			}
-			dForce=press*dArea*kfactor/3;
-			for (j=0;j<3;++j) 
-				df[t[j]]+=dForce;
-
-		}
-		d_df.endEdit();
-	} 
-*/
-
 	return;
 }
 
@@ -345,34 +264,34 @@ void TrianglePressureForceField<DataTypes>::selectTrianglesFromString()
 template<class DataTypes>
 void TrianglePressureForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!p_showForces.getValue())
         return;
 
+    vparams->drawTool()->saveLastState();
+
     if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        vparams->drawTool()->setPolygonMode(0, true);
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    glDisable(GL_LIGHTING);
+    vparams->drawTool()->disableLighting();
 
-    glBegin(GL_TRIANGLES);
-    glColor4f(0,1,0,1);
+    const sofa::defaulttype::RGBAColor&  color = sofa::defaulttype::RGBAColor::green();
+    std::vector< sofa::defaulttype::Vector3 > vertices;
 
     const sofa::helper::vector <unsigned int>& my_map = trianglePressureMap.getMap2Elements();
 
     for (unsigned int i=0; i<my_map.size(); ++i)
     {
-        helper::gl::glVertexT(x[_topology->getTriangle(my_map[i])[0]]);
-        helper::gl::glVertexT(x[_topology->getTriangle(my_map[i])[1]]);
-        helper::gl::glVertexT(x[_topology->getTriangle(my_map[i])[2]]);
+        for(unsigned int j=0 ; j<3 ; j++)
+            vertices.push_back(x[_topology->getTriangle(my_map[i])[j]]);
     }
-    glEnd();
-
+    vparams->drawTool()->drawTriangles(vertices, color);
 
     if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-#endif /* SOFA_NO_OPENGL */
+        vparams->drawTool()->setPolygonMode(0, false);
+
+    vparams->drawTool()->restoreLastState();
 }
 
 } // namespace forcefield

@@ -180,7 +180,7 @@ bool TetrahedronSetTopology_test::testTriangleBuffers()
     const TetrahedronSetTopologyContainer::TetrahedraAroundTriangle& elemATriangleM = topoCon->getTetrahedraAroundTriangle(0);
 
     EXPECT_EQ(elemATriangle.size(), elemATriangleM.size());
-    for (int i = 0; i < elemATriangle.size(); i++)
+    for (size_t i = 0; i < elemATriangle.size(); i++)
         EXPECT_EQ(elemATriangle[i], elemATriangleM[i]);
 
     // check TetrahedraAroundTriangle buffer element for this file
@@ -196,32 +196,32 @@ bool TetrahedronSetTopology_test::testTriangleBuffers()
     const TetrahedronSetTopologyContainer::TrianglesInTetrahedron& triangleInElemM = topoCon->getTrianglesInTetrahedron(0);
 
     EXPECT_EQ(triangleInElem.size(), triangleInElemM.size());
-    for (int i = 0; i < triangleInElem.size(); i++)
+    for (size_t i = 0; i < triangleInElem.size(); i++)
         EXPECT_EQ(triangleInElem[i], triangleInElemM[i]);
 
     sofa::helper::fixed_array<int, 4> triangleInElemTruth(0, 1, 2, 3);
-    for (int i = 0; i<triangleInElemTruth.size(); ++i)
+    for (size_t i = 0; i<triangleInElemTruth.size(); ++i)
         EXPECT_EQ(triangleInElem[i], triangleInElemTruth[i]);
 
 
     // Check Triangle Index in Tetrahedron
-    for (int i = 0; i<triangleInElemTruth.size(); ++i)
+    for (size_t i = 0; i<triangleInElemTruth.size(); ++i)
         EXPECT_EQ(topoCon->getTriangleIndexInTetrahedron(triangleInElem, triangleInElemTruth[i]), i);
 
     int triangleId = topoCon->getTriangleIndexInTetrahedron(triangleInElem, 20000);
     EXPECT_EQ(triangleId, -1);
 
     // check link between TetrahedraAroundTriangle and TrianglesInTetrahedron
-    for (int i = 0; i < 4; ++i)
+    for (unsigned int i = 0; i < 4; ++i)
     {
         TetrahedronSetTopologyContainer::TriangleID triangleId = i;
         const TetrahedronSetTopologyContainer::TetrahedraAroundTriangle& _elemATriangle = elemAroundTriangles[triangleId];
-        for (int j = 0; j < _elemATriangle.size(); ++j)
+        for (size_t j = 0; j < _elemATriangle.size(); ++j)
         {
             TetrahedronSetTopologyContainer::TetrahedronID triId = _elemATriangle[j];
             const TetrahedronSetTopologyContainer::TrianglesInTetrahedron& _triangleInElem = triangleInTetrahedra[triId];
             bool found = false;
-            for (int k = 0; k < _triangleInElem.size(); ++k)
+            for (size_t k = 0; k < _triangleInElem.size(); ++k)
             {
                 if (_triangleInElem[k] == triangleId)
                 {
@@ -275,7 +275,7 @@ bool TetrahedronSetTopology_test::testEdgeBuffers()
     const TetrahedronSetTopologyContainer::TetrahedraAroundEdge& elemAEdgeM = topoCon->getTetrahedraAroundEdge(0);
 
     EXPECT_EQ(elemAEdge.size(), elemAEdgeM.size());
-    for (int i = 0; i < elemAEdge.size(); i++)
+    for (size_t i = 0; i < elemAEdge.size(); i++)
         EXPECT_EQ(elemAEdge[i], elemAEdgeM[i]);
 
     // check TetrahedronAroundEdge buffer element for this file
@@ -293,32 +293,32 @@ bool TetrahedronSetTopology_test::testEdgeBuffers()
     const TetrahedronSetTopologyContainer::EdgesInTetrahedron& edgeInElemM = topoCon->getEdgesInTetrahedron(2);
 
     EXPECT_EQ(edgeInElem.size(), edgeInElemM.size());
-    for (int i = 0; i < edgeInElem.size(); i++)
+    for (size_t i = 0; i < edgeInElem.size(); i++)
         EXPECT_EQ(edgeInElem[i], edgeInElemM[i]);
     
     sofa::helper::fixed_array<int, 6> edgeInElemTruth(7, 9, 8, 10, 3, 11);
-    for (int i = 0; i<edgeInElemTruth.size(); ++i)
+    for (size_t i = 0; i<edgeInElemTruth.size(); ++i)
         EXPECT_EQ(edgeInElem[i], edgeInElemTruth[i]);
     
     
     // Check Edge Index in Tetrahedron
-    for (int i = 0; i<edgeInElemTruth.size(); ++i)
+    for (size_t i = 0; i<edgeInElemTruth.size(); ++i)
         EXPECT_EQ(topoCon->getEdgeIndexInTetrahedron(edgeInElem, edgeInElemTruth[i]), i);
 
     int edgeId = topoCon->getEdgeIndexInTetrahedron(edgeInElem, 20000);
     EXPECT_EQ(edgeId, -1);
 
     // check link between TetrahedraAroundEdge and EdgesInTetrahedron
-    for (int i = 0; i < 4; ++i)
+    for (unsigned int i = 0; i < 4; ++i)
     {
         TetrahedronSetTopologyContainer::EdgeID edgeId = i;
         const TetrahedronSetTopologyContainer::TetrahedraAroundEdge& _elemAEdge = elemAroundEdges[edgeId];
-        for (int j = 0; j < _elemAEdge.size(); ++j)
+        for (size_t j = 0; j < _elemAEdge.size(); ++j)
         {
             TetrahedronSetTopologyContainer::TetrahedronID triId = _elemAEdge[j];
             const TetrahedronSetTopologyContainer::EdgesInTetrahedron& _edgeInElem = edgeInTetrahedra[triId];
             bool found = false;
-            for (int k = 0; k < _edgeInElem.size(); ++k)
+            for (size_t k = 0; k < _edgeInElem.size(); ++k)
             {
                 if (_edgeInElem[k] == edgeId)
                 {
@@ -367,7 +367,7 @@ bool TetrahedronSetTopology_test::testVertexBuffers()
     const TetrahedronSetTopologyContainer::TetrahedraAroundVertex& elemAVertexM = topoCon->getTetrahedraAroundVertex(1);
 
     EXPECT_EQ(elemAVertex.size(), elemAVertexM.size());
-    for (int i = 0; i < elemAVertex.size(); i++)
+    for (size_t i = 0; i < elemAVertex.size(); i++)
         EXPECT_EQ(elemAVertex[i], elemAVertexM[i]);
 
     // check TetrahedraAroundVertex buffer element for this file    

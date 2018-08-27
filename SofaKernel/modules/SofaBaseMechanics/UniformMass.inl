@@ -250,7 +250,7 @@ void UniformMass<DataTypes, MassType>::reinit()
 
 
 template <class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::update()
+bool UniformMass<DataTypes, MassType>::update()
 {
     bool update = false;
 
@@ -276,6 +276,8 @@ void UniformMass<DataTypes, MassType>::update()
     //Info post-reinit
     msg_info() << "totalMass  = " << d_totalMass.getValue() << " \n"
                   "vertexMass = " << d_vertexMass.getValue();
+
+    return update;
 }
 
 

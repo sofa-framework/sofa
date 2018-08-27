@@ -25,9 +25,7 @@
 #include <SofaGeneralDeformable/QuadularBendingSprings.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <iostream>
-
-#include <sofa/helper/gl/template.h>
-
+#include <sofa/defaulttype/RGBAColor.h>
 #include <SofaBaseTopology/TopologyData.inl>
 
 #include <sofa/core/topology/TopologyChange.h>
@@ -765,131 +763,123 @@ void QuadularBendingSprings<DataTypes>::addDForce(const core::MechanicalParams* 
             df[b1]-=dforce1;
             df[a2]+=dforce2;
             df[b2]-=dforce2;
-            //serr<<"QuadularBendingSprings<DataTypes>::addSpringDForce, a="<<a<<", b="<<b<<", dforce ="<<dforce<<sendl;
 
-            //if(updateMatrix)
-            //{
-            //}
             updateMatrix=false;
         }
     }
     d_df.endEdit();
 
-    //for (unsigned int i=0; i<springs.size(); i++)
-    //{
-    //    this->addSpringDForce(df,dx, i, springs[i]);
-    //}
-    //serr<<"QuadularBendingSprings<DataTypes>::addDForce, df = "<<f<<sendl;
 }
-
-
-/*
-template<class DataTypes>
-void QuadularBendingSprings<DataTypes>::updateLameCoefficients()
-{
-	lambda= f_youngModulus.getValue()*f_poissonRatio.getValue()/(1-f_poissonRatio.getValue()*f_poissonRatio.getValue());
-	mu = f_youngModulus.getValue()*(1-f_poissonRatio.getValue())/(1-f_poissonRatio.getValue()*f_poissonRatio.getValue());
-//	serr << "initialized Lame coef : lambda=" <<lambda<< " mu="<<mu<<sendl;
-}
-*/
-
 
 template<class DataTypes>
 void QuadularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
+    vparams->drawTool()->saveLastState();
+
     if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        vparams->drawTool()->setPolygonMode(0, true);
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    glDisable(GL_LIGHTING);
-
-    unsigned int nb_to_draw = 0;
+    vparams->drawTool()->disableLighting();
 
     const helper::vector<EdgeInformation>& edgeInf = edgeInfo.getValue();
+    std::vector<sofa::defaulttype::Vector3> vertices;
+    std::vector<sofa::defaulttype::Vec4f> colors;
+    sofa::defaulttype::RGBAColor green_color = sofa::defaulttype::RGBAColor::green();
+    sofa::defaulttype::RGBAColor red_color   = sofa::defaulttype::RGBAColor::red();
+    sofa::defaulttype::RGBAColor color1 = sofa::defaulttype::RGBAColor(1,0.5, 0,1);
+    sofa::defaulttype::RGBAColor color2 = sofa::defaulttype::RGBAColor(0,1,0.5,1);
 
-    glBegin(GL_LINES);
     for(unsigned int i=0; i<edgeInf.size(); ++i)
     {
         if(edgeInf[i].is_activated)
         {
-
-
             bool external=true;
             Real d1 = (x[edgeInf[i].m2]-x[edgeInf[i].m1]).norm();
             if (external)
             {
-                if (d1<edgeInf[i].restlength1*0.9999)
-                    glColor4f(1,0,0,1);
+                if (d1<edgeInf[i].restlength2*0.9999)
+                {
+                    colors.push_back(red_color);
+                    colors.push_back(red_color);
+                }
                 else
-                    glColor4f(0,1,0,1);
+                {
+                    colors.push_back(green_color);
+                    colors.push_back(green_color);
+                }
             }
             else
             {
                 if (d1<edgeInf[i].restlength1*0.9999)
-                    glColor4f(1,0.5f,0,1);
+                {
+                    colors.push_back(color1);
+                    colors.push_back(color1);
+                }
                 else
-                    glColor4f(0,1,0.5f,1);
+                {
+                    colors.push_back(color2);
+                    colors.push_back(color2);
+                }
             }
 
-
-            nb_to_draw+=1;
-
-            //glColor4f(0,1,0,1);
-            helper::gl::glVertexT(x[edgeInf[i].m1]);
-            helper::gl::glVertexT(x[edgeInf[i].m2]);
+            vertices.push_back( x[edgeInf[i].m1] );
+            vertices.push_back( x[edgeInf[i].m2] );
 
             Real d2 = (x[edgeInf[i].m4]-x[edgeInf[i].m3]).norm();
             if (external)
             {
                 if (d2<edgeInf[i].restlength2*0.9999)
-                    glColor4f(1,0,0,1);
+                {
+                    colors.push_back(red_color);
+                    colors.push_back(red_color);
+                }
                 else
-                    glColor4f(0,1,0,1);
+                {
+                    colors.push_back(green_color);
+                    colors.push_back(green_color);
+                }
             }
             else
             {
                 if (d2<edgeInf[i].restlength2*0.9999)
-                    glColor4f(1,0.5f,0,1);
+                {
+                    colors.push_back(color1);
+                    colors.push_back(color1);
+                }
                 else
-                    glColor4f(0,1,0.5f,1);
+                {
+                    colors.push_back(color2);
+                    colors.push_back(color2);
+                }
             }
 
-
-            nb_to_draw+=1;
-
-            //glColor4f(0,1,0,1);
-            helper::gl::glVertexT(x[edgeInf[i].m3]);
-            helper::gl::glVertexT(x[edgeInf[i].m4]);
-
+            vertices.push_back( x[edgeInf[i].m3] );
+            vertices.push_back( x[edgeInf[i].m4] );
         }
     }
-    glEnd();
-
+    vparams->drawTool()->drawLines(vertices, 1, colors);
 
     if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        vparams->drawTool()->setPolygonMode(0, false);
 
 
     ////
-
-    glBegin(GL_QUADS);
-    glColor4f(1,0,0,1);
+    vertices.clear();
     for(int i=0; i<_topology->getNbQuads(); ++i)
     {
-        helper::gl::glVertexT(x[_topology->getQuad(i)[0]]);
-        helper::gl::glVertexT(x[_topology->getQuad(i)[1]]);
-        helper::gl::glVertexT(x[_topology->getQuad(i)[2]]);
-        helper::gl::glVertexT(x[_topology->getQuad(i)[3]]);
+        for(unsigned int j = 0 ; j<4 ; j++)
+            vertices.push_back(x[_topology->getQuad(i)[j]]);
     }
-    glEnd();
+    vparams->drawTool()->drawQuads(vertices, sofa::defaulttype::RGBAColor::red());
+
 
     ////
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->restoreLastState();
 }
 
 

@@ -32,8 +32,6 @@
 #include <sofa/core/behavior/InertiaForce.h>
 #endif
 
-#include <sofa/helper/gl/template.h>
-
 namespace sofa
 {
 

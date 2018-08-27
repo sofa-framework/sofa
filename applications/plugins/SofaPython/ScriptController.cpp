@@ -114,6 +114,7 @@ void ScriptController::onMouseEvent(core::objectmodel::MouseEvent * evt)
     switch(evt->getState())
     {
     case core::objectmodel::MouseEvent::Move:
+        script_onMouseMove(evt->getPosX(),evt->getPosY());
         break;
     case core::objectmodel::MouseEvent::LeftPressed:
         script_onMouseButtonLeft(evt->getPosX(),evt->getPosY(),true);
