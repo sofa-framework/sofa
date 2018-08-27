@@ -428,7 +428,7 @@ void TetrahedronSetTopologyModifier::removeTetrahedraProcess( const sofa::helper
     }
 }
 
-void TetrahedronSetTopologyModifier::addPointsProcess(const unsigned int nPoints)
+void TetrahedronSetTopologyModifier::addPointsProcess(const size_t nPoints)
 {
     // start by calling the parent's method.
     TriangleSetTopologyModifier::addPointsProcess( nPoints );

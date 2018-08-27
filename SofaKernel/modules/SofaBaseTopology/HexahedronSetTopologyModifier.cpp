@@ -507,7 +507,7 @@ void HexahedronSetTopologyModifier::removeHexahedraProcess( const sofa::helper::
     }
 }
 
-void HexahedronSetTopologyModifier::addPointsProcess(const unsigned int nPoints)
+void HexahedronSetTopologyModifier::addPointsProcess(const size_t nPoints)
 {
     // start by calling the parent's method.
     QuadSetTopologyModifier::addPointsProcess( nPoints );

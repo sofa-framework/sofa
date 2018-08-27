@@ -147,7 +147,7 @@ public:
     *
     * \sa addPointsWarning
     */
-    virtual void addPointsProcess(const unsigned int nPoints) override;
+    virtual void addPointsProcess(const size_t nPoints) override;
 
     /** \brief Remove a subset of points
     *

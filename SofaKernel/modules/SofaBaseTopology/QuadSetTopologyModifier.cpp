@@ -334,7 +334,7 @@ void QuadSetTopologyModifier::removeQuadsProcess(const sofa::helper::vector<unsi
     }
 }
 
-void QuadSetTopologyModifier::addPointsProcess(const unsigned int nPoints)
+void QuadSetTopologyModifier::addPointsProcess(const size_t nPoints)
 {
     // start by calling the parent's method.
     EdgeSetTopologyModifier::addPointsProcess( nPoints );

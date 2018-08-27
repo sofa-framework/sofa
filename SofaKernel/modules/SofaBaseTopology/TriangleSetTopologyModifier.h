@@ -111,7 +111,7 @@ public:
      *
      * \sa addPointsWarning
      */
-    virtual void addPointsProcess(const unsigned int nPoints) override;
+    virtual void addPointsProcess(const size_t nPoints) override;
 
     /** \brief Sends a message to warn that some edges were added in this topology.
      *

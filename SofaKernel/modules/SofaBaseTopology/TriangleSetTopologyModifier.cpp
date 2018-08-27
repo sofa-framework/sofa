@@ -258,7 +258,7 @@ void TriangleSetTopologyModifier::addTrianglesWarning(const unsigned int nTriang
 }
 
 
-void TriangleSetTopologyModifier::addPointsProcess(const unsigned int nPoints)
+void TriangleSetTopologyModifier::addPointsProcess(const size_t nPoints)
 {
     // start by calling the parent's method.
     EdgeSetTopologyModifier::addPointsProcess( nPoints );

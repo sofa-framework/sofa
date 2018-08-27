@@ -188,7 +188,7 @@ public:
     *
     * \sa addPointsWarning
     */
-    virtual void addPointsProcess(const unsigned int nPoints) override;
+    virtual void addPointsProcess(const size_t nPoints) override;
 
     /** \brief Remove a subset of points
     *
@@ -198,7 +198,7 @@ public:
     * \sa removePointsWarning
     * Important : the points are actually deleted from the mechanical object's state vectors iff (removeDOF == true)
     */
-    virtual void removePointsProcess(const sofa::helper::vector<unsigned int> &indices,
+    virtual void removePointsProcess(const sofa::helper::vector<PointID> &indices,
             const bool removeDOF = true) override;
 
     /** \brief Reorder this topology.
@@ -206,8 +206,8 @@ public:
     * Important : the points are actually renumbered in the mechanical object's state vectors iff (renumberDOF == true)
     * \see MechanicalObject::renumberValues
     */
-    virtual void renumberPointsProcess( const sofa::helper::vector<unsigned int> &index,
-            const sofa::helper::vector<unsigned int> &/*inv_index*/,
+    virtual void renumberPointsProcess( const sofa::helper::vector<PointID> &index,
+            const sofa::helper::vector<PointID> &/*inv_index*/,
             const bool renumberDOF = true) override;
 
     /** \brief Remove a set of edges
@@ -267,9 +267,9 @@ public:
      * @param coefs The barycoef to locate new coord relatively to ancestors.
      * @moveDOF bool allowing the move (default true)
      */
-    virtual void movePointsProcess (const sofa::helper::vector <unsigned int>& id,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
-            const sofa::helper::vector< sofa::helper::vector< double > >& coefs,
+    virtual void movePointsProcess (const sofa::helper::vector <PointID>& id,
+            const sofa::helper::vector< sofa::helper::vector< PointID > >& ancestors,
+            const sofa::helper::vector< sofa::helper::vector< SReal > >& coefs,
             const bool moveDOF = true) override;
 
 
