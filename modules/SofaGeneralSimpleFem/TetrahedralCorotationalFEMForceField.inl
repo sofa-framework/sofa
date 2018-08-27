@@ -27,7 +27,6 @@
 #include <SofaBaseTopology/GridTopology.h>
 #include <sofa/simulation/Simulation.h>
 #include <sofa/helper/decompose.h>
-#include <sofa/helper/gl/template.h>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <assert.h>
 #include <iostream>
@@ -1269,6 +1268,8 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::draw(const core::visual::V
     if (!this->mstate) return;
     if (!f_drawing.getValue()) return;
 
+    vparams->drawTool()->saveLastState();
+
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     if (vparams->displayFlags().getShowWireFrame())
@@ -1314,6 +1315,9 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::draw(const core::visual::V
 
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0,false);
+
+
+    vparams->drawTool()->restoreLastState();
 }
 
 

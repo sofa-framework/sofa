@@ -24,8 +24,7 @@
 
 #include <SofaGeneralEngine/RandomPointDistributionInSurface.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/gl/template.h>
-#include <sofa/helper/gl/BasicShapes.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <cstdlib>
 #include <ctime>
 #include <limits.h>
@@ -260,55 +259,32 @@ void RandomPointDistributionInSurface<DataTypes>::update()
 template <class DataTypes>
 void RandomPointDistributionInSurface<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels() || !isVisible.getValue())
         return;
 
-    if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-    //DRAW
+    vparams->drawTool()->saveLastState();
+    
     const VecCoord& in = f_inPoints.getValue();
     const VecCoord& out = f_outPoints.getValue();
-    glDisable(GL_LIGHTING);
-    glPointSize(5.0);
-    glBegin(GL_POINTS);
-    glColor3f(1.0,0.0,0.0);
+    vparams->drawTool()->disableLighting();
+
+    std::vector<sofa::defaulttype::Vector3> vertices;
+
     for (unsigned int i=0 ; i<in.size() ; i++)
-        helper::gl::glVertexT(in[i]);
+        vertices.push_back(in[i]);
+
+    vparams->drawTool()->drawPoints(vertices, 5.0, sofa::defaulttype::RGBAColor::red());
+    vertices.clear();
 
     if (drawOutputPoints.getValue())
     {
-        glColor3f(0.0,0.0,1.0);
         for (unsigned int i=0 ; i<out.size() ; i++)
-            helper::gl::glVertexT(out[i]);
+            vertices.push_back(out[i]);
+
+        vparams->drawTool()->drawPoints(vertices, 5.0, sofa::defaulttype::RGBAColor::blue());
     }
 
-    glEnd();
-    //Debug : normals
-//    const VecCoord& vertices = f_vertices.getValue();
-//    const helper::vector<BaseMeshTopology::Triangle>& triangles = f_triangles.getValue();
-//
-//    glBegin(GL_LINES);
-//    for (unsigned int i=0 ; i<triangles.size() ; i++)
-//    {
-//    	BaseMeshTopology::Triangle triangle = triangles[i];
-//
-//    	Coord n = cross(vertices[triangle[1]]-vertices[triangle[0]], vertices[triangle[2]]-vertices[triangle[0]]);
-//    	Coord c = (vertices[triangle[0]] + vertices[triangle[1]] + vertices[triangle[2]])/3;
-//
-//    	helper::gl::glVertexT(c);
-//    	helper::gl::glVertexT(c+n);
-//    }
-//    glEnd();
-    //
-    //trianglesOctree.octreeRoot->draw(vparams);
-
-    if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-    glEnable(GL_LIGHTING);
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->restoreLastState();
 }
 
 } // namespace engine

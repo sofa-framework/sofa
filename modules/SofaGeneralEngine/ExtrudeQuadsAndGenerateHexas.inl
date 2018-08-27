@@ -24,8 +24,6 @@
 
 #include <SofaGeneralEngine/ExtrudeQuadsAndGenerateHexas.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/gl/template.h>
-#include <sofa/helper/gl/BasicShapes.h>
 
 namespace sofa
 {

@@ -31,7 +31,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/vector.h>
-#include <sofa/helper/gl/template.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <iostream>
 
 
@@ -178,6 +178,7 @@ void DistanceLMConstraint<DataTypes>::draw(const core::visual::VisualParams* vpa
 {
     if (this->l0.size() != vecConstraint.getValue().size()) updateRestLength();
 
+    vparams->drawTool()->saveLastState();
     if (vparams->displayFlags().getShowBehaviorModels())
     {
         const VecCoord &x1= this->constrainedObject1->read(core::ConstVecCoordId::position())->getValue();
@@ -192,6 +193,8 @@ void DistanceLMConstraint<DataTypes>::draw(const core::visual::VisualParams* vpa
         }
         vparams->drawTool()->drawLines(points, 1, sofa::defaulttype::Vec<4,float>(0.0,1.0,0.0f,1.0f));
     }
+    vparams->drawTool()->restoreLastState();
+
 }
 
 } // namespace constraintset

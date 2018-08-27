@@ -255,6 +255,7 @@ public:
 
     QString helpString() const;
 //    void setCameraMode(core::visual::VisualParams::CameraType mode);
+    void screenshot(const std::string& filename, int compression_level = -1);
 
 private:
 

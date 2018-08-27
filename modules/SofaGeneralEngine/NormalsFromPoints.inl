@@ -23,7 +23,6 @@
 #define SOFA_COMPONENT_ENGINE_NormalsFromPoints_INL
 
 #include "NormalsFromPoints.h"
-#include <sofa/helper/gl/template.h>
 #include <iostream>
 #include <math.h>
 

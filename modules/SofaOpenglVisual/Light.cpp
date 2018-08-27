@@ -141,59 +141,59 @@ void Light::init()
     if(!d_shadowsEnabled.getValue() && d_softShadows.getValue()){
         if(d_softShadows.isSet() && d_shadowsEnabled.isSet()){
             msg_warning() << "Soft shadow is specified but 'shadowEnable' is set to false. " << msgendl
-                                 "To remove this warning message you need to synchronize the softShadow & shadowEnable parameters." << msgendl ;
+                             "To remove this warning message you need to synchronize the softShadow & shadowEnable parameters." << msgendl ;
         }
     }
 
     if(!d_shadowsEnabled.getValue()){
         if( d_shadowTextureSize.isSet() ){
             msg_warning() << "Shadow is not enabled. The 'shadowTextureSize' parameter is not used but has been set." << msgendl
-                                 "To remove this warning message you can:" << msgendl
-                                 " - set the 'shadowEnabled' parameter to true." << msgendl
-                                 " - unset the 'shadowTextureSize' values.";
+                             "To remove this warning message you can:" << msgendl
+                             " - set the 'shadowEnabled' parameter to true." << msgendl
+                             " - unset the 'shadowTextureSize' values.";
         }
 
         if( d_shadowFactor.isSet() ){
             msg_warning() << "Shadow is not enabled. The 'shadowFactor' parameter is not used but has been set." << msgendl
-                                 "To remove this warning message you can:" << msgendl
-                                 " - set the 'shadowEnabled' parameter to true." << msgendl
-                                 " - unset the 'shadowFactor' values.";
+                             "To remove this warning message you can:" << msgendl
+                             " - set the 'shadowEnabled' parameter to true." << msgendl
+                             " - unset the 'shadowFactor' values.";
         }
 
         if( d_textureUnit.isSet() ){
             msg_warning() << "Shadow is not enabled. The 'textureUnit' parameter is not used but has been set." << msgendl
-                                 "To remove this warning message you can:" << msgendl
-                                 " - set the 'shadowEnabled' parameter to true." << msgendl
-                                 " - unset the 'textureUnit' values.";
+                             "To remove this warning message you can:" << msgendl
+                             " - set the 'shadowEnabled' parameter to true." << msgendl
+                             " - unset the 'textureUnit' values.";
         }
 
         if( d_zNear.isSet() ){
             msg_warning() << "Shadow is not enabled. The 'zNear' parameter is not used but has been set." << msgendl
-                                 "To remove this warning message you can:" << msgendl
-                                 " - set the 'shadowEnabled' parameter to true." << msgendl
-                                 " - unset the 'zNear' values.";
+                             "To remove this warning message you can:" << msgendl
+                             " - set the 'shadowEnabled' parameter to true." << msgendl
+                             " - unset the 'zNear' values.";
         }
 
         if( d_zFar.isSet() ){
             msg_warning() << "Shadow is not enabled. The 'zFar' parameter is not used but has been set." << msgendl
-                                 "To remove this warning message you can:" << msgendl
-                                 " - set the 'shadowEnabled' parameter to true." << msgendl
-                                 " - unset the 'zFar' values.";
+                             "To remove this warning message you can:" << msgendl
+                             " - set the 'shadowEnabled' parameter to true." << msgendl
+                             " - unset the 'zFar' values.";
         }
     }
 
     if(!d_softShadows.getValue()){
         if( d_VSMLightBleeding.isSet() ){
             msg_warning() << "Soft shadow is not enabled. The 'VSMLightBleeding' parameter is not used but has been set." << msgendl
-                                 "To remove this warning message you can:" << msgendl
-                                 " - set the 'softShadows' parameter to true." << msgendl
-                                 " - unset the 'VSMLightBleeding' values.";
+                             "To remove this warning message you can:" << msgendl
+                             " - set the 'softShadows' parameter to true." << msgendl
+                             " - unset the 'VSMLightBleeding' values.";
         }
         if( d_VSMMinVariance.isSet() ){
             msg_warning() << "Soft shadow is not enabled. The 'VSMMinVariance' parameter is not used but has been set." << msgendl
-                                 "To remove this warning message you can:" << msgendl
-                                 " - set the 'softShadows' parameter to true." << msgendl
-                                 " - unset the 'VMSMinVariance' values.";
+                             "To remove this warning message you can:" << msgendl
+                             " - set the 'softShadows' parameter to true." << msgendl
+                             " - unset the 'VMSMinVariance' values.";
         }
     }
 
@@ -454,8 +454,13 @@ void DirectionalLight::drawLight()
 
 void DirectionalLight::draw(const core::visual::VisualParams* )
 {
-
 }
+
+void DirectionalLight::drawSource(const core::visual::VisualParams* vparams)
+{
+    SOFA_UNUSED(vparams);
+}
+
 void DirectionalLight::computeOpenGLModelViewMatrix(GLfloat mat[16], const sofa::defaulttype::Vector3 &direction)
 {
     //1-compute bounding box
@@ -672,28 +677,33 @@ void PositionalLight::drawLight()
 
 }
 
+void PositionalLight::drawSource(const core::visual::VisualParams* /*vparams*/)
+{
+    Vector3 sceneMinBBox, sceneMaxBBox;
+    sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)this->getContext(), sceneMinBBox.ptr(), sceneMaxBBox.ptr());
+    float scale = (float)((sceneMaxBBox - sceneMinBBox).norm());
+    scale *= 0.01f;
+
+    GLUquadric* quad = gluNewQuadric();
+    const Vector3& pos = d_position.getValue();
+    const auto& col = d_color.getValue();
+
+    glDisable(GL_LIGHTING);
+    glColor3fv((float*)col.data());
+
+    glPushMatrix();
+    glTranslated(pos[0], pos[1], pos[2]);
+    gluSphere(quad, 1.0f*scale, 16, 16);
+    glPopMatrix();
+
+    glEnable(GL_LIGHTING);
+}
+
 void PositionalLight::draw(const core::visual::VisualParams* vparams)
 {
     if (d_drawSource.getValue() && vparams->displayFlags().getShowVisualModels())
     {
-        Vector3 sceneMinBBox, sceneMaxBBox;
-        sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)this->getContext(), sceneMinBBox.ptr(), sceneMaxBBox.ptr());
-        float scale = (float)((sceneMaxBBox - sceneMinBBox).norm());
-        scale *= 0.01f;
-
-        GLUquadric* quad = gluNewQuadric();
-        const Vector3& pos = d_position.getValue();
-        const auto& col = d_color.getValue();
-
-        glDisable(GL_LIGHTING);
-        glColor3fv((float*)col.data());
-
-        glPushMatrix();
-        glTranslated(pos[0], pos[1], pos[2]);
-        gluSphere(quad, 1.0f*scale, 16, 16);
-        glPopMatrix();
-
-        glEnable(GL_LIGHTING);
+        drawSource(vparams) ;
     }
 }
 
@@ -734,8 +744,43 @@ void SpotLight::drawLight()
         glPopMatrix();
         glMatrixMode(GL_MODELVIEW);
     }
-
 }
+
+void SpotLight::drawSource(const core::visual::VisualParams* vparams)
+{
+    float zNear, zFar;
+
+    computeClippingPlane(vparams, zNear, zFar);
+
+    Vector3 dir = d_direction.getValue();
+    if (d_lookat.getValue())
+        dir -= d_position.getValue();
+
+    computeOpenGLProjectionMatrix(m_lightMatProj, m_shadowTexWidth, m_shadowTexHeight, 2 * d_cutoff.getValue(), zNear, zFar);
+    computeOpenGLModelViewMatrix(m_lightMatModelview, d_position.getValue(), dir);
+
+    float baseLength = zFar * tanf(this->d_cutoff.getValue() * M_PI / 180);
+    float tipLength = (baseLength*0.5) * (zNear/ zFar);
+
+    Vector3 direction;
+    if(d_lookat.getValue())
+        direction = this->d_direction.getValue() - this->d_position.getValue();
+    else
+        direction = this->d_direction.getValue();
+
+    direction.normalize();
+    Vector3 base = this->getPosition() + direction*zFar;
+    Vector3 tip = this->getPosition() + direction*zNear;
+    std::vector<Vector3> centers;
+    centers.push_back(this->getPosition());
+    vparams->drawTool()->setPolygonMode(0, true);
+    vparams->drawTool()->setLightingEnabled(false);
+    vparams->drawTool()->drawSpheres(centers, zNear*0.1,d_color.getValue());
+    vparams->drawTool()->drawCone(base, tip, baseLength, tipLength, d_color.getValue());
+    vparams->drawTool()->setLightingEnabled(true);
+    vparams->drawTool()->setPolygonMode(0, false);
+}
+
 
 void SpotLight::draw(const core::visual::VisualParams* vparams)
 {
@@ -752,26 +797,7 @@ void SpotLight::draw(const core::visual::VisualParams* vparams)
 
     if (d_drawSource.getValue() && vparams->displayFlags().getShowVisualModels())
     {
-        float baseLength = zFar * tanf(this->d_cutoff.getValue() * M_PI / 180);
-        float tipLength = (baseLength*0.5) * (zNear/ zFar);
-
-        Vector3 direction;
-        if(d_lookat.getValue())
-            direction = this->d_direction.getValue() - this->d_position.getValue();
-        else
-            direction = this->d_direction.getValue();
-
-        direction.normalize();
-        Vector3 base = this->getPosition() + direction*zFar;
-        Vector3 tip = this->getPosition() + direction*zNear;
-        std::vector<Vector3> centers;
-        centers.push_back(this->getPosition());
-        vparams->drawTool()->setPolygonMode(0, true);
-        vparams->drawTool()->setLightingEnabled(false);
-        vparams->drawTool()->drawSpheres(centers, zNear*0.1,d_color.getValue());
-        vparams->drawTool()->drawCone(base, tip, baseLength, tipLength, d_color.getValue());
-        vparams->drawTool()->setLightingEnabled(true);
-        vparams->drawTool()->setPolygonMode(0, false);
+        drawSource(vparams) ;
     }
 }
 

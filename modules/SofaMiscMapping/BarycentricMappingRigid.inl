@@ -40,9 +40,19 @@ namespace mapping
 template <class In, class Out>
 void BarycentricMapperTetrahedronSetTopologyRigid<In,Out>::clear ( int reserve )
 {
+
     helper::vector<MappingData>& vectorData = *(map.beginEdit());
-    vectorData.clear(); if ( reserve>0 ) vectorData.reserve ( reserve );
+    vectorData.clear();
+    if ( reserve>0 )
+        vectorData.reserve ( reserve );
     map.endEdit();
+
+    helper::vector<MappingOrientData>& vectorOrientData = *(mapOrient.beginEdit());
+    vectorOrientData.clear();
+    if ( reserve>0 )
+        vectorOrientData.reserve ( reserve );
+
+    mapOrient.endEdit();
 }
 
 template <class In, class Out>

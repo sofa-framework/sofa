@@ -27,16 +27,9 @@
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Simulation.h>
-#include <sofa/helper/gl/template.h>
 #include <iostream>
 
 #include <SofaBaseTopology/TopologySubsetData.inl>
-
-
-#include <sofa/helper/gl/BasicShapes.h>
-
-
-
 
 namespace sofa
 {
@@ -265,10 +258,11 @@ void ProjectToPlaneConstraint<DataTypes>::applyConstraint(defaulttype::BaseVecto
 template <class DataTypes>
 void ProjectToPlaneConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     if (!this->isActive()) return;
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
+
+    vparams->drawTool()->saveLastState();
 
     const Indices & indices = f_indices.getValue();
 
@@ -289,7 +283,7 @@ void ProjectToPlaneConstraint<DataTypes>::draw(const core::visual::VisualParams*
     {
         std::vector< sofa::defaulttype::Vector3 > points;
         sofa::defaulttype::Vector3 point;
-        glColor4f (1.0f,0.35f,0.35f,1.0f);
+
         for (Indices::const_iterator it = indices.begin();
                 it != indices.end();
                 ++it)
@@ -299,8 +293,11 @@ void ProjectToPlaneConstraint<DataTypes>::draw(const core::visual::VisualParams*
         }
         vparams->drawTool()->drawSpheres(points, (float)f_drawSize.getValue(), sofa::defaulttype::Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
     }
-#endif /* SOFA_NO_OPENGL */
+
+    vparams->drawTool()->restoreLastState();
 }
+
+
 
 } // namespace constraint
 

@@ -27,7 +27,7 @@
         <EulerImplicit printLog="false"  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9"  />
         <MechanicalObject template="Rigid" scale="1.0" dx="0.0" dy="0" dz="0.0" />
-        <UniformMass totalmass="1" />
+        <UniformMass totalMass="1" />
         <UncoupledConstraintCorrection />
         <Node name="Visu">
 			<!-- J'utilise un shader pour changer la couleur de l'objet selon l'état du noeud -->
@@ -52,7 +52,7 @@
         <EulerImplicit printLog="false" />
         <CGLinearSolver iterations="25" tolerance="1.0e-9" threshold="1.0e-9" />
         <MechanicalObject template="Rigid" scale="1.0" dx="6.0" dy="6" dz="0.0" />
-        <UniformMass totalmass="1" />
+        <UniformMass totalMass="1" />
         <UncoupledConstraintCorrection />
         <Node name="Visu">
 			<!-- J'utilise un shader pour changer la couleur de l'objet selon l'état du noeud -->

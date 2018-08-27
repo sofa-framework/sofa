@@ -22,106 +22,174 @@
 #ifndef __HELPER_SYSTEM_console_H_
 #define __HELPER_SYSTEM_console_H_
 
+#include <cstdlib>
+#include <algorithm>
+#include <atomic>
+#include <cstring>
+#include <iostream>
+
+#ifndef WIN32
+
+#include <unistd.h>
+
+#ifdef __linux__
+#include <sys/ioctl.h>
+#endif
+
+#else
+
+#if defined(_WIN32_WINNT) && (_WIN32_WINNT < 0x0600)
+#error                                                                         \
+  "Please include this before any windows system headers or set _WIN32_WINNT at least to _WIN32_WINNT_VISTA"
+#elif !defined(_WIN32_WINNT)
+#define _WIN32_WINNT _WIN32_WINNT_VISTA
+#endif
+
+#include <windows.h>
+#include <io.h>
+#include <memory>
+
+// Only defined in windows 10 onwards, redefining in lower windows since it
+// doesn't gets used in lower versions
+// https://docs.microsoft.com/en-us/windows/console/getconsolemode
+#ifndef ENABLE_VIRTUAL_TERMINAL_PROCESSING
+#define ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004
+#endif
+
+#endif
 
 #include <sofa/helper/helper.h>
-#include <string.h>
-#include <iostream>
 #include <sofa/helper/system/config.h>
 
 namespace sofa {
 namespace helper {
 
+/**
+ * Utility that manages the output style of a stream into a terminal. It is based heavily on the work
+ * of https://github.com/agauniyal/rang
+ */
+namespace console {
 
-
-
-class SOFA_HELPER_API Console
-{
-
-    Console() {} // private constructor
-
-public:
-
-    /// @brief Initialize Console.
-    ///
-    /// Enable or disable colors based on the value of the SOFA_COLOR_TERMINAL
-    /// environnement variable (possible values: yes, no, auto).
-    static void init();
-
-#ifdef WIN32
-    typedef unsigned SystemColorType;
-    typedef unsigned SystemCodeType;
-#else
-    typedef std::string SystemColorType;
-    typedef std::string SystemCodeType;
-#endif
-
-    /// this color type can be used with stream operator on any system
-    struct ColorType
-    {
-        Console::SystemColorType value;
-        ColorType() : value(DEFAULT_COLOR.value) {}
-        ColorType( const ColorType& c ) : value(c.value) {}
-        ColorType( const Console::SystemColorType& v ) : value(v) {}
-        void operator= ( const ColorType& c ) { value=c.value; }
-        void operator= ( const Console::SystemColorType& v ) { value=v; }
-    };
-
-    struct CodeType
-    {
-        Console::SystemCodeType value;
-        CodeType() : value(DEFAULT_CODE.value) {}
-        CodeType( const CodeType& c ) : value(c.value) {}
-        CodeType( const Console::SystemCodeType& v ) : value(v) {}
-        void operator= ( const CodeType& c ) { value=c.value; }
-        void operator= ( const Console::SystemCodeType& v ) { value=v; }
-    };
-
-    /// to use stream operator with a color on any system
-    SOFA_HELPER_API friend std::ostream& operator<<(std::ostream &stream, ColorType color);
-    SOFA_HELPER_API friend std::ostream& operator<<(std::ostream &stream, CodeType color);
-
-    static const ColorType BLUE;
-    static const ColorType GREEN;
-    static const ColorType CYAN;
-    static const ColorType RED;
-    static const ColorType PURPLE;
-    static const ColorType YELLOW;
-    static const ColorType WHITE;
-    static const ColorType BLACK;
-    static const ColorType BRIGHT_BLUE;
-    static const ColorType BRIGHT_GREEN;
-    static const ColorType BRIGHT_CYAN;
-    static const ColorType BRIGHT_RED;
-    static const ColorType BRIGHT_PURPLE;
-    static const ColorType BRIGHT_YELLOW;
-    static const ColorType BRIGHT_WHITE;
-    static const ColorType BRIGHT_BLACK;
-    static const ColorType DEFAULT_COLOR;
-
-    static const CodeType ITALIC;
-    static const CodeType UNDERLINE;
-    static const CodeType DEFAULT_CODE;
-
-    enum ColorsStatus {ColorsEnabled, ColorsDisabled, ColorsAuto};
-    /// Enable or disable colors in stdout / stderr.
-    ///
-    /// This controls whether using ColorType values in streams will actually do
-    /// anything.  Passing ColorsAuto means that colors will be used for stdout
-    /// only if it hasn't been redirected (on Unix only). Same thing for stderr.
-    /// By default, colors are disabled.
-    static void setColorsStatus(ColorsStatus status);
-    static ColorsStatus getColorsStatus();
-
-    static size_t getColumnCount() ;
-
-private:
-    static ColorsStatus s_colorsStatus;
-    /// Internal helper function that determines whether colors should be used.
-    static bool shouldUseColors(std::ostream& stream);
+enum class Status {  // Toggle the status of the output style
+    Auto = 0, // (Default) automatically detects whether the terminal supports styled output
+    On   = 1,
+    Off  = 2
 };
 
-}
+#ifdef WIN32
+enum class Mode {  // Windows Terminal Mode
+    Auto   = 0, // (Default) automatically detects whether Ansi or Native API
+    Ansi   = 1, // Force use Ansi API
+    Native = 2  // Force use Native API
+};
+#endif
+
+enum class Style {
+    Reset     = 0,
+    Bold      = 1,
+    Dim       = 2,
+    Italic    = 3,
+    Underline = 4,
+    Blink     = 5,
+    Rblink    = 6,
+    Reversed  = 7,
+    Conceal   = 8,
+    Crossed   = 9
+};
+
+struct Foreground {
+    enum class Normal {
+        Black   = 30,
+        Red     = 31,
+        Green   = 32,
+        Yellow  = 33,
+        Blue    = 34,
+        Magenta = 35,
+        Cyan    = 36,
+        Gray    = 37,
+        Reset   = 39
+    };
+
+    enum class Bright {
+        Black   = 90,
+        Red     = 91,
+        Green   = 92,
+        Yellow  = 93,
+        Blue    = 94,
+        Magenta = 95,
+        Cyan    = 96,
+        Gray    = 97
+    };
+};
+
+struct Background {
+    enum class Normal {
+        Black   = 40,
+        Red     = 41,
+        Green   = 42,
+        Yellow  = 43,
+        Blue    = 44,
+        Magenta = 45,
+        Cyan    = 46,
+        Gray    = 47,
+        Reset   = 49
+    };
+
+    enum class Bright {
+        Black   = 100,
+        Red     = 101,
+        Green   = 102,
+        Yellow  = 103,
+        Blue    = 104,
+        Magenta = 105,
+        Cyan    = 106,
+        Gray    = 107
+    };
+};
+
+template<typename T>
+using enableStd = typename std::enable_if<
+    std::is_same<T, sofa::helper::console::Style>::value ||
+    std::is_same<T, sofa::helper::console::Foreground::Normal>::value ||
+    std::is_same<T, sofa::helper::console::Foreground::Bright>::value ||
+    std::is_same<T, sofa::helper::console::Background::Normal>::value ||
+    std::is_same<T, sofa::helper::console::Background::Bright>::value,
+    std::ostream &>::type;
+
+#define __CONSOLE_INTERNAL__
+#include "console_internal.h"
+#undef __CONSOLE_INTERNAL__
+
+/// Enable or disable colors in stdout / stderr.
+///
+/// This controls whether using styled values in streams will actually do
+/// anything.  Passing Auto means that styled output will be used for the stream
+/// only if it hasn't been redirected (on Unix only).
+/// By default, colors are enabled if supported (auto).
+SOFA_HELPER_API void setStatus(Status status) noexcept ;
+SOFA_HELPER_API Status getStatus() noexcept ;
+
+SOFA_HELPER_API size_t getColumnCount() ;
+
+/// to use stream operator with a styled output on any system
+template <typename T>
+inline enableStd<T> operator<<(std::ostream &os, const T & value)
+{
+    const Status status = internal::get_status();
+    switch (status) {
+        case sofa::helper::console::Status ::Auto:
+            return sofa::helper::console::internal::supportsColor()
+                   && sofa::helper::console::internal::isTerminal(os.rdbuf())
+                   ? sofa::helper::console::internal::setColor(os, value)
+                   : os;
+        case sofa::helper::console::Status::On : return sofa::helper::console::internal::setColor(os, value);
+        default: return os;
+    }
 }
 
+}; // namespace console
+
+} // namespace helper
+} // namespace sofa
 
 #endif

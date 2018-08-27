@@ -2609,11 +2609,7 @@ void MechanicalObject<DataTypes>::buildIdentityBlocksInJacobian(const sofa::help
 }
 #endif
 
-template <class DataTypes>
-void MechanicalObject<DataTypes>::renumberConstraintId(const sofa::helper::vector<unsigned>& /*renumbering*/)
-{
-    this->serr << "MechanicalObject<DataTypes>::renumberConstraintId not implemented in the MatrixDeriv constraint API" << this->sendl;
-}
+
 
 template <class DataTypes>
 std::list< core::behavior::BaseMechanicalState::ConstraintBlock > MechanicalObject<DataTypes>::constraintBlocks( const std::list<unsigned int> &indices) const
@@ -2729,7 +2725,7 @@ inline void MechanicalObject<DataTypes>::drawIndices(const core::visual::VisualP
 
     float scale = (float)((vparams->sceneBBox().maxBBox() - vparams->sceneBBox().minBBox()).norm() * showIndicesScale.getValue());
 
-    helper::vector<defaulttype::Vector3> positions;
+    std::vector<defaulttype::Vector3> positions;
     for (size_t i = 0; i <(size_t)d_size.getValue(); ++i)
         positions.push_back(defaulttype::Vector3(getPX(i), getPY(i), getPZ(i)));
 

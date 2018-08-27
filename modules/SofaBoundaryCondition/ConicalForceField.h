@@ -112,8 +112,6 @@ public:
     Data<Real> stiffness; ///< force stiffness
     Data<Real> damping; ///< force damping
     Data<defaulttype::RGBAColor> color; ///< cone color. (default=0.0,0.0,0.0,1.0,1.0)
-    Data<bool> bDraw; ///< enable/disable drawing of the cone
-
 protected:
     ConicalForceField();
 

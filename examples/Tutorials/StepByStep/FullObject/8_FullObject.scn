@@ -16,7 +16,8 @@
             <BarycentricMapping name="Visual Mapping" output="@Objective" />
         </Node>
         <Node name="CollisionNode" gravity="0 -9.81 0">
-            <MeshTopology name="Mesh" fileTopology="mesh/dragon.obj" />
+            <MeshObjLoader name="meshLoader1" filename="mesh/dragon.obj" />
+            <MeshTopology name="Mesh" src="@meshLoader1" />
             <MechanicalObject template="Vec3d" name="CollisionObject" scale3d="1 1 1" restScale="1" />
             <PointModel name="Points" />
             <LineModel name="Lines" />
@@ -25,7 +26,8 @@
         </Node>
     </Node>
     <Node name="Obstacle" gravity="0 -9.81 0">
-        <MeshTopology name="Mesh" fileTopology="mesh/cube.obj" />
+        <MeshObjLoader name="meshLoader2" filename="mesh/cube.obj" />
+        <MeshTopology name="Mesh" src="@meshLoader2" />
         <MechanicalObject template="Vec3d" name="Obstacle" translation="0 0 -10" rotation="0 0 0" scale3d="40 40 0.1" restScale="1" />
         <TTriangleModel template="Vec3d" name="Triangles" moving="0" simulated="0" contactStiffness="500" contactFriction="0.01" />
         <LineModel name="Lines" moving="0" simulated="0" contactStiffness="500" contactFriction="0.01" />

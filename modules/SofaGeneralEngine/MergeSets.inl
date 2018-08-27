@@ -24,7 +24,6 @@
 
 #include <SofaGeneralEngine/MergeSets.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/gl/template.h>
 
 #include <algorithm>
 

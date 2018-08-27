@@ -227,7 +227,7 @@ public:
     defaulttype::BaseMatrix* getSystemBaseMatrix() override { return currentGroup->systemMatrix; }
 
     /// Get the MultiMatrix view of the linear system, or NULL if this solved does not build it
-    const core::behavior::MultiMatrixAccessor* getSystemMultiMatrixAccessor() const { return &currentGroup->matrixAccessor; }
+    const core::behavior::MultiMatrixAccessor* getSystemMultiMatrixAccessor() const override { return &currentGroup->matrixAccessor; }
 
     /// Get the linear system right-hand term vector, or NULL if this solver does not build it
     defaulttype::BaseVector* getSystemRHBaseVector() override { return currentGroup->systemRHVector; }

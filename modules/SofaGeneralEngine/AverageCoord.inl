@@ -23,7 +23,6 @@
 #define SOFA_COMPONENT_ENGINE_AverageCoord_INL
 
 #include "AverageCoord.h"
-#include <sofa/helper/gl/template.h>
 #include <iostream>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/AnimateBeginEvent.h>

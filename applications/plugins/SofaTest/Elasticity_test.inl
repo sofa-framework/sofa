@@ -198,8 +198,12 @@ CylinderTractionStruct<DataTypes>  Elasticity_test<DataTypes>::createCylinderTra
     tractionStruct.dofs=meca1;
     // MeshMatrixMass
     typename sofa::component::mass::MeshMatrixMass<DataTypes,Real>::SPtr mass= sofa::modeling::addNew<sofa::component::mass::MeshMatrixMass<DataTypes,Real> >(root,"BezierMass");
-    mass->m_massDensity=1.0;
-    mass->lumping=false;
+    sofa::helper::vector< Real > massDensity;
+    massDensity.clear();
+    massDensity.resize(1);
+    massDensity[0] = 1.0;
+    mass->d_massDensity.setValue(massDensity);
+    mass->d_lumping=false;
     /// box fixed
     helper::vector < defaulttype::Vec<6,Real> > vecBox;
     defaulttype::Vec<6,Real> box;
@@ -302,7 +306,7 @@ simulation::Node::SPtr Elasticity_test<DT>::createGridScene(
     deformableGrid_mapping->addOutputModel(deformableGrid_dof.get());
 
     UniformMass3::SPtr mass = modeling::addNew<UniformMass3>(deformableGrid,"mass" );
-    mass->d_mass.setValue( totalMass/(numX*numY*numZ) );
+    mass->d_vertexMass.setValue( totalMass/(numX*numY*numZ) );
 
     RegularGridSpringForceField3::SPtr spring = modeling::addNew<RegularGridSpringForceField3>(deformableGrid, "spring");
     spring->setLinesStiffness(stiffnessValue);

@@ -37,7 +37,7 @@ namespace io
 class SOFA_HELPER_API MeshTopologyLoader
 {
 public:
-    MeshTopologyLoader():mesh(NULL) {}
+    MeshTopologyLoader():m_mesh(NULL) {}
     virtual ~MeshTopologyLoader() {}
     bool load(const char *filename);
     virtual void setNbPoints(int /*n*/) {}
@@ -54,18 +54,23 @@ public:
     virtual void addTetra(int /*p1*/, int /*p2*/, int /*p3*/, int /*p4*/) {}
     virtual void addCube(int /*p1*/, int /*p2*/, int /*p3*/, int /*p4*/, int /*p5*/, int /*p6*/, int /*p7*/, int /*p8*/) {}
 private:
+    /// method will create a MeshObj which will parse the file. Then data are loaded into the current topology
     bool loadObj(const char *filename);
-    bool loadMeshFile(const char *filename);
+
+    /// method will create a MeshGmsh which will parse the file. Then will call @see addMeshtoTopology() to add mesh data into topology
+    bool loadGmsh(const char *filename);
+    
+
     bool loadVtk(const char *filename);
-    bool loadStl(const char *filename);
-
-    bool loadGmsh(std::ifstream &file, const int);
-    bool loadXsp(std::ifstream &file, bool);
+        
+    /// method to load unknown format. TODO remove this method and deprecated attached format.
     bool loadMesh(std::ifstream &file);
-    bool loadCGAL(const char *filename);
 
-protected:
-    helper::io::Mesh* mesh;
+    // will take all data from loaded into @see m_mesh and add it to the current topology using methods api.
+    bool addMeshtoTopology();
+
+private:
+    helper::io::Mesh* m_mesh;
 };
 
 } // namespace io

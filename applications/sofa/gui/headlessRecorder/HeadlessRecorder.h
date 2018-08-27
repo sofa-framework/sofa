@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GUI_GLUT_HEADLESSRECORDER_H
-#define SOFA_GUI_GLUT_HEADLESSRECORDER_H
+#ifndef SOFA_GUI_HEADLESSRECORDER_H
+#define SOFA_GUI_HEADLESSRECORDER_H
 
 #include <sofa/gui/BaseGUI.h>
 
@@ -47,8 +47,6 @@
 #include <sofa/helper/io/Image.h>
 #include <sofa/helper/system/SetDirectory.h>
 
-#include "VideoRecorderFFMpeg.h"
-
 namespace sofa
 {
 
@@ -59,6 +57,8 @@ namespace hRecorder
 {
 
 enum class RecordMode { wallclocktime, simulationtime, timeinterval };
+
+class VideoRecorderFFmpeg;
 
 class HeadlessRecorder : public sofa::gui::BaseGUI
 {

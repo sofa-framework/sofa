@@ -56,22 +56,22 @@
 #include <SofaBaseVisual/VisualStyle.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/system/SetDirectory.h>
-using sofa::helper::system::SetDirectory ;
+using sofa::helper::system::SetDirectory;
 
 #include <sofa/helper/system/FileSystem.h>
-using sofa::helper::system::FileSystem ;
+using sofa::helper::system::FileSystem;
 
 #include <sofa/helper/Utils.h>
 using sofa::helper::Utils;
 
 #include <sofa/helper/system/FileRepository.h>
-using sofa::helper::system::DataRepository ;
+using sofa::helper::system::DataRepository;
 
 #include <sofa/gui/GuiDataRepository.h>
 using sofa::gui::GuiDataRepository;
 
 #include <sofa/simulation/SceneLoaderFactory.h>
-using sofa::simulation::SceneLoaderFactory ;
+using sofa::simulation::SceneLoaderFactory;
 
 #include <sofa/simulation/ExportGnuplotVisitor.h>
 
@@ -108,24 +108,30 @@ using sofa::simulation::SceneLoaderFactory ;
 #include <ctime>
 
 #include <sofa/core/objectmodel/IdleEvent.h>
-using sofa::core::objectmodel::IdleEvent ;
+using sofa::core::objectmodel::IdleEvent;
 
 #include <sofa/helper/system/FileMonitor.h>
-using sofa::helper::system::FileMonitor ;
+using sofa::helper::system::FileMonitor;
 
 #include <SofaGraphComponent/SceneCheckerVisitor.h>
-using sofa::simulation::SceneCheckerVisitor ;
+using sofa::simulation::scenechecking::SceneCheckerVisitor;
 
-#include <SofaGraphComponent/SceneCheckAPIChanges.h>
-using sofa::simulation::scenecheckers::SceneCheckAPIChange ;
+#include <SofaGraphComponent/SceneCheckAPIChange.h>
+using sofa::simulation::scenechecking::SceneCheckAPIChange;
+#include <SofaGraphComponent/SceneCheckMissingRequiredPlugin.h>
+using sofa::simulation::scenechecking::SceneCheckMissingRequiredPlugin;
+#include <SofaGraphComponent/SceneCheckDuplicatedName.h>
+using sofa::simulation::scenechecking::SceneCheckDuplicatedName;
+#include <SofaGraphComponent/SceneCheckUsingAlias.h>
+using sofa::simulation::scenechecking::SceneCheckUsingAlias;
 
 #include <sofa/core/ObjectFactory.h>
-using sofa::core::ObjectFactory ;
+using sofa::core::ObjectFactory;
 
 #include "panels/QDocBrowser.h"
-using sofa::gui::qt::DocBrowser ;
+using sofa::gui::qt::DocBrowser;
 
-using sofa::core::ExecParams ;
+using sofa::core::ExecParams;
 
 namespace sofa
 {
@@ -192,7 +198,7 @@ class RealGUIFileListener : public sofa::helper::system::FileEventListener
 {
 public:
     RealGUIFileListener(RealGUI* realgui){
-        m_realgui = realgui ;
+        m_realgui = realgui;
     }
     virtual ~RealGUIFileListener(){}
 
@@ -200,7 +206,7 @@ public:
     {
         m_realgui->fileOpen(filename, false, true);
     }
-    RealGUI* m_realgui ;
+    RealGUI* m_realgui;
 };
 
 
@@ -359,7 +365,7 @@ RealGUI::RealGUI ( const char* viewername)
     if(m_enableInteraction){
         timerIdle = new QTimer(this);
         connect ( timerIdle, SIGNAL ( timeout() ), this, SLOT ( emitIdle() ) );
-        timerIdle->start(50) ;
+        timerIdle->start(50);
     }
 
     this->setDockOptions(QMainWindow::AnimatedDocks | QMainWindow::AllowTabbedDocks);
@@ -453,11 +459,11 @@ RealGUI::RealGUI ( const char* viewername)
         getQtViewer()->getQWidget()->installEventFilter(this);
 #endif
 
-    m_docbrowser = new DocBrowser(this) ;
+    m_docbrowser = new DocBrowser(this);
     /// Signal to the realGUI that the visibility has changed (eg: to update the menu bar)
     connect(m_docbrowser, SIGNAL(visibilityChanged(bool)), this, SLOT(docBrowserVisibilityChanged(bool)));
 
-    m_filelistener = new RealGUIFileListener(this) ;
+    m_filelistener = new RealGUIFileListener(this);
 }
 
 //------------------------------------
@@ -487,8 +493,8 @@ RealGUI::~RealGUI()
 
     removeViewer();
 
-    FileMonitor::removeListener(m_filelistener) ;
-    delete m_filelistener ;
+    FileMonitor::removeListener(m_filelistener);
+    delete m_filelistener;
 }
 //======================= CONSTRUCTOR - DESTRUCTOR ========================= }
 
@@ -642,7 +648,7 @@ void RealGUI::pmlOpen ( const char* filename, bool /*resetView*/ )
     std::string scene = "PML/default.scn";
     if ( !DataRepository.findFile ( scene ) )
     {
-        msg_info("RealGUI") << "File '" << scene << "' not found " ;
+        msg_info("RealGUI") << "File '" << scene << "' not found ";
         return;
     }
     this->unloadScene();
@@ -738,7 +744,7 @@ sofa::simulation::Node* RealGUI::currentSimulation()
 
 void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
 {
-    SceneCheckerVisitor checker(ExecParams::defaultInstance()) ;
+    SceneCheckerVisitor checker(ExecParams::defaultInstance());
     std::vector<std::string> expandedNodes;
 
     if(reload)
@@ -746,13 +752,14 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
         saveView();
 
         if(simulationGraph)
-            simulationGraph->getExpandedNodes(expandedNodes) ;
+            simulationGraph->getExpandedNodes(expandedNodes);
     }
     else
     {
-        checker.addCheck(simulation::SceneCheckAPIChange::newSPtr());
-        checker.addCheck(simulation::SceneCheckDuplicatedName::newSPtr());
-        checker.addCheck(simulation::SceneCheckMissingRequiredPlugin::newSPtr());
+        checker.addCheck(SceneCheckAPIChange::newSPtr());
+        checker.addCheck(SceneCheckDuplicatedName::newSPtr());
+        checker.addCheck(SceneCheckMissingRequiredPlugin::newSPtr());
+        checker.addCheck(SceneCheckUsingAlias::newSPtr());
     }
 
     const std::string &extension=SetDirectory::GetExtension(filename.c_str());
@@ -804,7 +811,7 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
     /// But we don't want that to happen each reload in interactive mode.
     if(!reload)
     {
-        checker.validate(mSimulation.get()) ;
+        checker.validate(mSimulation.get());
     }
 }
 
@@ -814,7 +821,7 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile, bool reload )
 void RealGUI::emitIdle()
 {
     // Update all the registered monitor.
-    FileMonitor::updates(0) ;
+    FileMonitor::updates(0);
 
     IdleEvent hb;
     Node* groot = mViewer->getScene();
@@ -934,28 +941,29 @@ void RealGUI::setSceneWithoutMonitor (Node::SPtr root, const char* filename, boo
         if (!temporaryFile)
             recentlyOpenedFilesManager.openFile(filename);
         saveReloadFile=temporaryFile;
-        setTitle ( filename ) ;
-        m_docbrowser->loadHtml( filename ) ;
+        setTitle ( filename );
+        m_docbrowser->loadHtml( filename );
     }
 
     if (root)
     {
         /// We want to warn user that there is component that are implemented in specific plugin
         /// and that there is no RequiredPlugin in their scene.
-        SceneCheckerVisitor checker(ExecParams::defaultInstance()) ;
-        checker.addCheck(simulation::SceneCheckAPIChange::newSPtr());
-        checker.addCheck(simulation::SceneCheckDuplicatedName::newSPtr());
-        checker.addCheck(simulation::SceneCheckMissingRequiredPlugin::newSPtr());
-        checker.validate(root.get()) ;
+//        SceneCheckerVisitor checker(ExecParams::defaultInstance());
+//        checker.addCheck(SceneCheckAPIChange::newSPtr());
+//        checker.addCheck(SceneCheckDuplicatedName::newSPtr());
+//        checker.addCheck(SceneCheckMissingRequiredPlugin::newSPtr());
+//        checker.addCheck(SceneCheckUsingAlias::newSPtr());
+//        checker.validate(root.get());
 
         //Check the validity of the BBox
         const sofa::defaulttype::BoundingBox& nodeBBox = root->getContext()->f_bbox.getValue();
         if(nodeBBox.isNegligeable())
         {
-            msg_warning("RealGUI") << "Global Bounding Box seems very small ; Your viewer settings (based on the bbox) are likely invalid, switching to default value of [-1,-1,-1,1,1,1]."
+            msg_warning("RealGUI") << "Global Bounding Box seems very small; Your viewer settings (based on the bbox) are likely invalid, switching to default value of [-1,-1,-1,1,1,1]."
                                    << "This is caused by using component which does not implement properly the updateBBox function."
                                    << "You can remove this warning by manually forcing a value in the parameter bbox=\"minX minY minZ maxX maxY maxZ\" in your root node \n";
-            sofa::defaulttype::BoundingBox b(-1.0,-1.0,-1.0,1.0,1.0,1.0) ;
+            sofa::defaulttype::BoundingBox b(-1.0,-1.0,-1.0,1.0,1.0,1.0);
             root->f_bbox.setValue(b);
         }
 
@@ -992,10 +1000,10 @@ void RealGUI::setSceneWithoutMonitor (Node::SPtr root, const char* filename, boo
 void RealGUI::setScene(Node::SPtr root, const char* filename, bool temporaryFile)
 {
     if(m_enableInteraction &&  filename){
-        FileMonitor::removeListener(m_filelistener) ;
-        FileMonitor::addFile(filename, m_filelistener) ;
+        FileMonitor::removeListener(m_filelistener);
+        FileMonitor::addFile(filename, m_filelistener);
     }
-    setSceneWithoutMonitor(root, filename, temporaryFile) ;
+    setSceneWithoutMonitor(root, filename, temporaryFile);
 }
 
 //------------------------------------
@@ -1137,7 +1145,7 @@ void RealGUI::editGnuplotDirectory()
 
 void RealGUI::showDocBrowser()
 {
-    m_docbrowser->flipVisibility() ;
+    m_docbrowser->flipVisibility();
 }
 
 void RealGUI::showPluginManager()
@@ -1336,7 +1344,7 @@ void RealGUI::createViewer(const char* _viewerName, bool _updateViewerList/*=fal
     }
 
     for (std::map< helper::SofaViewerFactory::Key, QAction*>::const_iterator iter_map = viewerMap.begin();
-         iter_map != viewerMap.end() ; ++iter_map )
+         iter_map != viewerMap.end(); ++iter_map )
     {
         if( strcmp( iter_map->first.c_str(), _viewerName ) == 0 )
         {
@@ -1731,7 +1739,7 @@ void RealGUI::parseOptions()
 
     if(m_enableInteraction)
         msg_warning("runSofa") << "you activated the interactive mode. This is currently an experimental feature "
-                                  "that may change or be removed in the future. " ;
+                                  "that may change or be removed in the future. ";
 }
 
 //------------------------------------
@@ -2362,7 +2370,7 @@ void RealGUI::changeViewer()
     action->setChecked(true);
 
     std::map< helper::SofaViewerFactory::Key, QAction*  >::const_iterator iter_map;
-    for ( iter_map = viewerMap.begin(); iter_map != viewerMap.end() ; ++iter_map )
+    for ( iter_map = viewerMap.begin(); iter_map != viewerMap.end(); ++iter_map )
     {
         if ( iter_map->second == action )
         {
@@ -2388,7 +2396,7 @@ void RealGUI::updateViewerList()
     // the current list of viewer key with associate QAction
     helper::vector< helper::SofaViewerFactory::Key > currentKeys;
     std::map< helper::SofaViewerFactory::Key, QAction*>::const_iterator iter_map;
-    for ( iter_map = viewerMap.begin(); iter_map != viewerMap.end() ; ++iter_map )
+    for ( iter_map = viewerMap.begin(); iter_map != viewerMap.end(); ++iter_map )
         currentKeys.push_back((*iter_map).first);
     std::sort(currentKeys.begin(),currentKeys.end());
 

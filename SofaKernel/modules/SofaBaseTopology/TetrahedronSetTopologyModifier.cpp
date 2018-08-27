@@ -62,7 +62,7 @@ void TetrahedronSetTopologyModifier::reinit()
 
 void TetrahedronSetTopologyModifier::addTetrahedra(const sofa::helper::vector<Tetrahedron> &tetrahedra)
 {
-    unsigned int ntetra = m_container->getNbTetrahedra();
+    size_t ntetra = m_container->getNbTetrahedra();
 
     /// effectively add triangles in the topology container
     addTetrahedraProcess(tetrahedra);
@@ -85,7 +85,7 @@ void TetrahedronSetTopologyModifier::addTetrahedra(const sofa::helper::vector<Te
         const sofa::helper::vector<sofa::helper::vector<unsigned int> > &ancestors,
         const sofa::helper::vector<sofa::helper::vector<double> > &baryCoefs)
 {
-    unsigned int ntetra = m_container->getNbTetrahedra();
+    size_t ntetra = m_container->getNbTetrahedra();
 
     /// effectively add triangles in the topology container
     addTetrahedraProcess(tetrahedra);

@@ -27,13 +27,9 @@
 #include <SofaBaseLinearSolver/SparseMatrix.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Simulation.h>
-#include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
 #include <SofaBaseTopology/TopologySubsetData.inl>
-
-
-#include <sofa/helper/gl/BasicShapes.h>
 
 namespace sofa
 {
@@ -173,9 +169,11 @@ void PointConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, 
 template <class DataTypes>
 void PointConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
     if (!this->isActive()) return;
+
+    vparams->drawTool()->saveLastState();
+
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     const SetIndexArray & indices = f_indices.getValue();
@@ -197,7 +195,6 @@ void PointConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
     {
         std::vector< sofa::defaulttype::Vector3 > points;
         sofa::defaulttype::Vector3 point;
-        glColor4f (1.0f,0.35f,0.35f,1.0f);
         for (SetIndexArray::const_iterator it = indices.begin();
                 it != indices.end();
                 ++it)
@@ -207,22 +204,10 @@ void PointConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
         }
         vparams->drawTool()->drawSpheres(points, (float)_drawSize.getValue(), sofa::defaulttype::Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
     }
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->restoreLastState();
+
 }
 
-// Specialization for rigids
-#ifndef SOFA_FLOAT
-template <>
-void PointConstraint<defaulttype::Rigid3dTypes >::draw(const core::visual::VisualParams* vparams);
-template <>
-void PointConstraint<defaulttype::Rigid2dTypes >::draw(const core::visual::VisualParams* vparams);
-#endif
-#ifndef SOFA_DOUBLE
-template <>
-void PointConstraint<defaulttype::Rigid3fTypes >::draw(const core::visual::VisualParams* vparams);
-template <>
-void PointConstraint<defaulttype::Rigid2fTypes >::draw(const core::visual::VisualParams* vparams);
-#endif
 
 } // namespace constraint
 

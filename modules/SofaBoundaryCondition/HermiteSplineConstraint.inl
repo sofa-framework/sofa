@@ -24,8 +24,8 @@
 
 #include <SofaBoundaryCondition/HermiteSplineConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/gl/template.h>
 #include <SofaBaseTopology/TopologySubsetData.inl>
+#include <sofa/defaulttype/RGBAColor.h>
 
 namespace sofa
 {
@@ -233,17 +233,22 @@ void HermiteSplineConstraint<DataTypes>::projectJacobianMatrix(const core::Mecha
 template <class DataTypes>
 void HermiteSplineConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels()) return;
 
     Real dt = (Real) this->getContext()->getDt();
     Real DT = m_tEnd.getValue() - m_tBegin.getValue();
 
-    glDisable (GL_LIGHTING);
-    glPointSize(2);
-    glColor4f (1,0.5,0.5,1);
+    vparams->drawTool()->saveLastState();
+    vparams->drawTool()->disableLighting();
 
-    glBegin (GL_LINE_STRIP);
+    std::vector<sofa::defaulttype::Vector3> vertices;
+    sofa::defaulttype::RGBAColor color(1, 0.5, 0.5, 1);
+
+    const Vec3R& mx0 = m_x0.getValue();
+    const Vec3R& mx1 = m_x0.getValue();
+    const Vec3R& mdx0 = m_dx0.getValue();
+    const Vec3R& mdx1 = m_dx1.getValue();
+
     for (Real t=0.0 ; t< DT ; t+= dt)
     {
         Real u = t/DT;
@@ -251,27 +256,30 @@ void HermiteSplineConstraint<DataTypes>::draw(const core::visual::VisualParams* 
         Real H00, H10, H01, H11;
         computeHermiteCoefs( u, H00, H10, H01, H11);
 
-        Vec3R p = m_x0.getValue()*H00 + m_dx0.getValue()*H10 + m_x1.getValue()*H01 + m_dx1.getValue()*H11;
-        helper::gl::glVertexT(p);
+        Vec3R p = mx0*H00 + mdx0*H10 + mx1*H01 + mdx1*H11;
+
+        sofa::defaulttype::Vector3 v(p[0], p[1],p[2]);
+        vertices.push_back(v);
     }
-    glEnd();
+    vparams->drawTool()->drawLineStrip(vertices, 2, color);
 
+    color = sofa::defaulttype::RGBAColor::red();
 
-    glColor4f (1,0.0,0.0,1);
-    glPointSize(5);
-    //display control point
-    glBegin(GL_POINTS);
-    helper::gl::glVertexT(m_x0.getValue());
-    helper::gl::glVertexT(m_x1.getValue());
-    glEnd();
-    //display control tangeantes
-    glBegin(GL_LINES);
-    helper::gl::glVertexT(m_x0.getValue());
-    helper::gl::glVertexT(m_x0.getValue()+m_dx0.getValue()*0.1);
-    helper::gl::glVertexT(m_x1.getValue());
-    helper::gl::glVertexT(m_x1.getValue()+m_dx1.getValue()*0.1);
-    glEnd();
-#endif /* SOFA_NO_OPENGL */
+    vertices.clear();
+    vertices.push_back(sofa::defaulttype::Vector3(mx0[0], mx0[1], mx0[2]));
+    vertices.push_back(sofa::defaulttype::Vector3(mx1[0], mx1[1], mx1[2]));
+
+    vparams->drawTool()->drawPoints(vertices, 5.0, color);
+
+    //display control tangents
+    vertices.clear();
+    vertices.push_back(mx0);
+    vertices.push_back(mx0 + mdx0*0.1);
+    vertices.push_back(mx1);
+    vertices.push_back(mx1 + mdx1*0.1);
+
+    vparams->drawTool()->drawLines(vertices, 1.0, color);
+    vparams->drawTool()->restoreLastState();
 }
 
 

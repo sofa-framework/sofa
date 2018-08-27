@@ -24,8 +24,7 @@
 
 #include <SofaGeneralEngine/SphereROI.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/gl/template.h>
-#include <sofa/helper/gl/BasicShapes.h>
+#include <sofa/defaulttype/RGBAColor.h>
 
 namespace sofa
 {
@@ -461,138 +460,131 @@ void SphereROI<DataTypes>::update()
 template <class DataTypes>
 void SphereROI<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
+    vparams->drawTool()->saveLastState();
+
     const VecCoord* x0 = &f_X0.getValue();
-    glColor3f(0.0, 1.0, 1.0);
+    const sofa::defaulttype::RGBAColor& color = sofa::defaulttype::RGBAColor::cyan();
 
     if(p_drawSphere.getValue()) // old classical drawing by points
     {
         ///draw the boxes
         const helper::vector<Vec3>& c=centers.getValue();
-        const helper::vector<Real>& r=radii.getValue();
+        const helper::vector<Real>& r=radii.getValue();        
+        std::vector<sofa::defaulttype::Vector3> drawcenters;
+        std::vector<float> drawradii;
 
         for (unsigned int i=0; i<c.size() && i<r.size(); ++i)
         {
-            helper::gl::drawWireSphere(c[i], (float)(r[i]/2.0));
 
+            drawcenters.push_back(c[i]);
+            drawradii.push_back((float)(r[i] * 0.5));
+            
             if (edgeAngle.getValue() > 0)
             {
-                helper::gl::drawCone(c[i], c[i] + direction.getValue()*(cos(edgeAngle.getValue()*M_PI/180.0)*r[i]), 0, (float)sin(edgeAngle.getValue()*M_PI/180.0)*((float)r[i]));
+                vparams->drawTool()->drawCone(c[i], c[i] + direction.getValue()*(cos(edgeAngle.getValue()*M_PI / 180.0)*r[i]), 0, (float)sin(edgeAngle.getValue()*M_PI / 180.0)*((float)r[i]), color);
             }
 
             if (triAngle.getValue() > 0)
             {
-                helper::gl::drawCone(c[i], c[i] + normal.getValue()*(cos(triAngle.getValue()*M_PI/180.0)*r[i]), 0, (float)sin(triAngle.getValue()*M_PI/180.0)*((float)r[i]));
+                vparams->drawTool()->drawCone(c[i], c[i] + normal.getValue()*(cos(triAngle.getValue()*M_PI / 180.0)*r[i]), 0, (float)sin(triAngle.getValue()*M_PI / 180.0)*((float)r[i]), color);
             }
         }
+
+        vparams->drawTool()->setPolygonMode(0, true);
+        vparams->drawTool()->drawSpheres(drawcenters, drawradii, color);
+        vparams->drawTool()->setPolygonMode(0, false);
     }
+
+    vparams->drawTool()->disableLighting();
+    std::vector<sofa::defaulttype::Vector3> vertices;
 
     ///draw points in ROI
     if( p_drawPoints.getValue())
     {
-        glDisable(GL_LIGHTING);
-        glBegin(GL_POINTS);
-        glPointSize(5.0);
+        vertices.clear();
         helper::ReadAccessor< Data<VecCoord > > pointsInROI = f_pointsInROI;
         for (unsigned int i=0; i<pointsInROI.size() ; ++i)
         {
-            CPos p = DataTypes::getCPos(pointsInROI[i]);
-            helper::gl::glVertexT(p);
+            vertices.push_back(DataTypes::getCPos(pointsInROI[i]));
         }
-        glEnd();
+        vparams->drawTool()->drawPoints(vertices, 5, color);
     }
 
     ///draw edges in ROI
     if( p_drawEdges.getValue())
     {
-        glDisable(GL_LIGHTING);
-        glLineWidth((GLfloat)_drawSize.getValue());
-        glBegin(GL_LINES);
+        vertices.clear();
         helper::ReadAccessor< Data<helper::vector<Edge> > > edgesInROI = f_edgesInROI;
         for (unsigned int i=0; i<edgesInROI.size() ; ++i)
         {
-            Edge e = edgesInROI[i];
+            const Edge& e = edgesInROI[i];
             for (unsigned int j=0 ; j<2 ; j++)
             {
-                CPos p = DataTypes::getCPos((*x0)[e[j]]);
-                helper::gl::glVertexT(p);
+                vertices.push_back(DataTypes::getCPos((*x0)[e[j]]));
             }
         }
-        glEnd();
+        vparams->drawTool()->drawLines(vertices, _drawSize.getValue(), color);
     }
 
     ///draw triangles in ROI
     if( p_drawTriangles.getValue())
     {
-        glDisable(GL_LIGHTING);
-        glLineWidth((GLfloat)_drawSize.getValue());
-        glBegin(GL_TRIANGLES);
+        vertices.clear();
         helper::ReadAccessor< Data<helper::vector<Triangle> > > trianglesInROI = f_trianglesInROI;
         for (unsigned int i=0; i<trianglesInROI.size() ; ++i)
         {
-            Triangle t = trianglesInROI[i];
+            const Triangle& t = trianglesInROI[i];
             for (unsigned int j=0 ; j<3 ; j++)
             {
-                CPos p = DataTypes::getCPos((*x0)[t[j]]);
-                helper::gl::glVertexT(p);
+                vertices.push_back(DataTypes::getCPos((*x0)[t[j]]));
             }
         }
-        glEnd();
+        vparams->drawTool()->drawTriangles(vertices, color);
     }
 
     ///draw quads in ROI
     if( p_drawTriangles.getValue())
     {
-        glDisable(GL_LIGHTING);
-        glLineWidth((GLfloat)_drawSize.getValue());
-        glBegin(GL_QUADS);
+        vertices.clear();
         helper::ReadAccessor< Data<helper::vector<Quad> > > quadsInROI = f_quadsInROI;
         for (unsigned int i=0; i<quadsInROI.size() ; ++i)
         {
-            Quad t = quadsInROI[i];
+            const Quad& t = quadsInROI[i];
             for (unsigned int j=0 ; j<4 ; j++)
             {
-                CPos p = DataTypes::getCPos((*x0)[t[j]]);
-                helper::gl::glVertexT(p);
+                vertices.push_back(DataTypes::getCPos((*x0)[t[j]]));
             }
         }
-        glEnd();
+        vparams->drawTool()->drawQuads(vertices, color);
     }
 
 
     ///draw tetrahedra in ROI
     if( p_drawTetrahedra.getValue())
     {
-        glDisable(GL_LIGHTING);
-        glLineWidth((GLfloat)_drawSize.getValue());
-        glBegin(GL_LINES);
+        vertices.clear();
         helper::ReadAccessor< Data<helper::vector<Tetra> > > tetrahedraInROI = f_tetrahedraInROI;
         for (unsigned int i=0; i<tetrahedraInROI.size() ; ++i)
         {
             Tetra t = tetrahedraInROI[i];
             for (unsigned int j=0 ; j<4 ; j++)
             {
-                CPos p = DataTypes::getCPos((*x0)[t[j]]);
-                helper::gl::glVertexT(p);
-                p = DataTypes::getCPos((*x0)[t[(j+1)%4]]);
-                helper::gl::glVertexT(p);
+                vertices.push_back(DataTypes::getCPos((*x0)[t[j]]));
+                vertices.push_back(DataTypes::getCPos((*x0)[t[(j+1)%4]]));
             }
 
-            CPos p = DataTypes::getCPos((*x0)[t[0]]);
-            helper::gl::glVertexT(p);
-            p = DataTypes::getCPos((*x0)[t[2]]);
-            helper::gl::glVertexT(p);
-            p = DataTypes::getCPos((*x0)[t[1]]);
-            helper::gl::glVertexT(p);
-            p = DataTypes::getCPos((*x0)[t[3]]);
-            helper::gl::glVertexT(p);
+            vertices.push_back(DataTypes::getCPos((*x0)[t[0]]));
+            vertices.push_back(DataTypes::getCPos((*x0)[t[2]]));
+            vertices.push_back(DataTypes::getCPos((*x0)[t[1]]));
+            vertices.push_back(DataTypes::getCPos((*x0)[t[3]]));
         }
-        glEnd();
+        vparams->drawTool()->drawLines(vertices, _drawSize.getValue(), color);
     }
-#endif /* SOFA_NO_OPENGL */
+
+    vparams->drawTool()->restoreLastState();
 }
 
 

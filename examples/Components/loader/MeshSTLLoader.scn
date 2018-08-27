@@ -4,8 +4,4 @@
 
     <MeshSTLLoader name="STLLoader" filename="mesh/circle_knot_ascii.stl" printLog="true" />
     <OglModel src="@STLLoader" name="VisualModel" color="red" />
-
-    <OglModel fileMesh="mesh/circle_knot_ascii.stl" name="VisualModel2" color="green" translation="10 0 0" />
-
-
 </Node>

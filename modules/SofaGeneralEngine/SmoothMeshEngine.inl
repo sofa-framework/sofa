@@ -23,9 +23,9 @@
 #define SOFA_COMPONENT_ENGINE_SMOOTHMESHENGINE_INL
 
 #include "SmoothMeshEngine.h"
-#include <sofa/helper/gl/template.h>
 
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/defaulttype/RGBAColor.h>
 
 namespace sofa
 {
@@ -158,77 +158,62 @@ template <class DataTypes>
 void SmoothMeshEngine<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
     using sofa::defaulttype::Vec;
-#ifndef SOFA_NO_OPENGL
+
     if (!vparams->displayFlags().getShowVisualModels()) return;
+
+    vparams->drawTool()->saveLastState();
 
     bool wireframe=vparams->displayFlags().getShowWireFrame();
 
     sofa::core::topology::BaseMeshTopology::SeqTriangles tri = m_topo->getTriangles();
 
-    glPushAttrib( GL_LIGHTING_BIT | GL_ENABLE_BIT | GL_LINE_BIT | GL_CURRENT_BIT);
-    glEnable( GL_LIGHTING);
+    vparams->drawTool()->enableLighting();
+
+    if(wireframe)
+        vparams->drawTool()->setPolygonMode(0, true);
 
     if (this->showInput.getValue())
     {
+        std::vector<sofa::defaulttype::Vector3> vertices;
         helper::ReadAccessor< Data<VecCoord> > in(input_position);
 
-        const float color[] = {1.0f, 0.76078431372f, 0.0f, 0.0f};
-        const float specular[] = {0.0f, 0.0f ,0.0f ,0.0f};
-        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
-        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular);
-        glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 0.0f);
+        sofa::defaulttype::RGBAColor color(1.0f, 0.76078431372f, 0.0f, 1.0f);
+        vparams->drawTool()->setMaterial(color);
 
-        if(!wireframe) glBegin(GL_TRIANGLES);
         for (unsigned int i=0; i<tri.size(); ++i)
         {
-            if(wireframe) glBegin(GL_LINE_LOOP);
             const Vec<3,Real>& a = in[ tri[i][0] ];
             const Vec<3,Real>& b = in[ tri[i][1] ];
             const Vec<3,Real>& c = in[ tri[i][2] ];
-            Vec<3,Real> n = cross((a-b),(a-c));	n.normalize();
-            glNormal3d(n[0],n[1],n[2]);
-
-            glVertex3d(a[0],a[1],a[2]);
-            glVertex3d(b[0],b[1],b[2]);
-            glVertex3d(c[0],c[1],c[2]);
-
-            if(wireframe)  glEnd();
+            vertices.push_back(a);
+            vertices.push_back(b);
+            vertices.push_back(c);
         }
-        if(!wireframe) glEnd();
+        vparams->drawTool()->drawTriangles(vertices,color);
     }
 
     if (this->showOutput.getValue())
     {
+        std::vector<sofa::defaulttype::Vector3> vertices;
         helper::ReadAccessor< Data<VecCoord> > out(output_position);
+        sofa::defaulttype::RGBAColor color(0.0f, 0.6f, 0.8f, 1.0f);
 
-        const float color[] = {0.0f, 0.6f, 0.8f, 0.0f};
-        const float specular[] = {0.0f, 0.0f, 0.0f, 0.0f};
-        glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
-        glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular);
-        glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 0.0f);
-
-        if(!wireframe) glBegin(GL_TRIANGLES);
         for (unsigned int i=0; i<tri.size(); ++i)
         {
-            if(wireframe) glBegin(GL_LINE_LOOP);
             const Vec<3,Real>& a = out[ tri[i][0] ];
             const Vec<3,Real>& b = out[ tri[i][1] ];
             const Vec<3,Real>& c = out[ tri[i][2] ];
-            Vec<3,Real> n = cross((a-b),(a-c));	n.normalize();
-            glNormal3d(n[0],n[1],n[2]);
-
-            glVertex3d(a[0],a[1],a[2]);
-            glVertex3d(b[0],b[1],b[2]);
-            glVertex3d(c[0],c[1],c[2]);
-
-            if(wireframe)  glEnd();
+            vertices.push_back(a);
+            vertices.push_back(b);
+            vertices.push_back(c);
         }
-        if(!wireframe) glEnd();
+        vparams->drawTool()->drawTriangles(vertices, color);
     }
 
-    glPopAttrib();
+    if (wireframe)
+        vparams->drawTool()->setPolygonMode(0, false);
 
-#endif
+    vparams->drawTool()->restoreLastState();
 }
 
 } // namespace engine

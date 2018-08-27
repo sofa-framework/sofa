@@ -24,8 +24,6 @@
 
 #include <SofaGeneralEngine/ExtrudeEdgesAndGenerateQuads.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/gl/template.h>
-#include <sofa/helper/gl/BasicShapes.h>
 #include <sofa/helper/logging/Messaging.h>
 
 namespace sofa

@@ -56,7 +56,7 @@ namespace mapping
 	template <class TIn, class TOut>
 	void BeamLinearMapping_mt< TIn, TOut>::init()
 	{
-		simulation::TaskScheduler::getInstance().start();
+		simulation::TaskScheduler::getInstance().init();
 
 		BeamLinearMapping< TIn, TOut>::init();
 	}

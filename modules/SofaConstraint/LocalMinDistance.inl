@@ -33,7 +33,6 @@
 #include <sofa/core/collision/Intersection.inl>
 #include <iostream>
 #include <algorithm>
-#include <sofa/helper/gl/template.h>
 
 #include <sofa/simulation/Node.h>
 

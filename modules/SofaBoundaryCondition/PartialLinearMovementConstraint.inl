@@ -26,8 +26,8 @@
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/simulation/Simulation.h>
-#include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <iostream>
 #include <SofaBaseTopology/TopologySubsetData.inl>
 
@@ -462,41 +462,49 @@ void PartialLinearMovementConstraint<DataTypes>::applyConstraint(const core::Mec
 template <class DataTypes>
 void PartialLinearMovementConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
+    vparams->drawTool()->saveLastState();
+
     if (!vparams->displayFlags().getShowBehaviorModels() || m_keyTimes.getValue().size() == 0)
         return;
+
+    sofa::helper::vector<defaulttype::Vector3> vertices;
+    sofa::defaulttype::RGBAColor color(1, 0.5, 0.5, 1);
+
     if (showMovement.getValue())
     {
-        glDisable(GL_LIGHTING);
-        glPointSize(10);
-        glColor4f(1, 0.5, 0.5, 1);
-        glBegin(GL_LINES);
+        vparams->drawTool()->disableLighting();
+        defaulttype::Vector3 v0, v1;
+
         const SetIndexArray & indices = m_indices.getValue();
-        for (unsigned int i = 0; i < m_keyMovements.getValue().size() - 1; i++)
+        const VecDeriv& keyMovements = m_keyMovements.getValue();
+        for (unsigned int i = 0; i < keyMovements.size() - 1; i++)
         {
             for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
             {
-                helper::gl::glVertexT(DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(m_keyMovements.getValue()[i]));
-                helper::gl::glVertexT(DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(m_keyMovements.getValue()[i + 1]));
+                v0 = DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(keyMovements[i]);
+                v1 = DataTypes::getCPos(x0[*it]) + DataTypes::getDPos(keyMovements[i + 1]);
+
+                vertices.push_back(v0);
+                vertices.push_back(v1);
             }
         }
-        glEnd();
+        vparams->drawTool()->drawLines(vertices, 1, color);
     }
     else
     {
         const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-        sofa::helper::vector<defaulttype::Vector3> points;
         defaulttype::Vector3 point;
         const SetIndexArray & indices = m_indices.getValue();
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
             point = DataTypes::getCPos(x[*it]);
-            points.push_back(point);
+            vertices.push_back(point);
         }
-        vparams->drawTool()->drawPoints(points, 10, defaulttype::Vec<4, float> (1, 0.5, 0.5, 1));
+        vparams->drawTool()->drawPoints(vertices, 10, color);
     }
-#endif /* SOFA_NO_OPENGL */
+
+    vparams->drawTool()->restoreLastState();
 }
 
 } // namespace constraint

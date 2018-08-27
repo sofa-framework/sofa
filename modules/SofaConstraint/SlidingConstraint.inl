@@ -26,10 +26,8 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaConstraint/BilateralInteractionConstraint.h>
 #include <SofaConstraint/UnilateralInteractionConstraint.h>
-
+#include <sofa/defaulttype/RGBAColor.h>
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/helper/gl/template.h>
-
 namespace sofa
 {
 
@@ -191,28 +189,33 @@ void SlidingConstraint<DataTypes>::getConstraintResolution(const ConstraintParam
 template<class DataTypes>
 void SlidingConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowInteractionForceFields()) return;
 
-    glDisable(GL_LIGHTING);
-    glPointSize(10);
-    glBegin(GL_POINTS);
-    if(thirdConstraint<0)
-        glColor4f(1,1,0,1);
-    else if(thirdConstraint>0)
-        glColor4f(0,1,0,1);
-    else
-        glColor4f(1,0,1,1);
-    helper::gl::glVertexT((this->mstate1->read(core::ConstVecCoordId::position())->getValue())[m1.getValue()]);
-    glEnd();
+    vparams->drawTool()->saveLastState();
 
-    glBegin(GL_LINES);
-    glColor4f(0,0,1,1);
-    helper::gl::glVertexT((this->mstate2->read(core::ConstVecCoordId::position())->getValue())[m2a.getValue()]);
-    helper::gl::glVertexT((this->mstate2->read(core::ConstVecCoordId::position())->getValue())[m2b.getValue()]);
-    glEnd();
-    glPointSize(1);
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->disableLighting();
+
+    sofa::defaulttype::RGBAColor color;
+
+    if(thirdConstraint<0)
+        color = sofa::defaulttype::RGBAColor::yellow();
+    else if(thirdConstraint>0)
+        color = sofa::defaulttype::RGBAColor::green();
+    else
+        color = sofa::defaulttype::RGBAColor::magenta();
+
+    std::vector<sofa::defaulttype::Vector3> vertices;
+    vertices.push_back(DataTypes::getCPos((this->mstate1->read(core::ConstVecCoordId::position())->getValue())[m1.getValue()]));
+
+    vparams->drawTool()->drawPoints(vertices, 10, color);
+    vertices.clear();
+
+    color = sofa::defaulttype::RGBAColor::blue();
+    vertices.push_back(DataTypes::getCPos((this->mstate2->read(core::ConstVecCoordId::position())->getValue())[m2a.getValue()]));
+    vertices.push_back(DataTypes::getCPos((this->mstate2->read(core::ConstVecCoordId::position())->getValue())[m2b.getValue()]));
+    vparams->drawTool()->drawLines(vertices, 1, color);
+
+    vparams->drawTool()->restoreLastState();
 }
 
 } // namespace constraintset

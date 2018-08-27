@@ -24,9 +24,8 @@
 
 #include <SofaGeneralEngine/SubsetTopology.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/gl/template.h>
-#include <sofa/helper/gl/BasicShapes.h>
 #include <sofa/defaulttype/BoundingBox.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <limits>
 
 namespace sofa
@@ -803,127 +802,94 @@ bool SubsetTopology<DataTypes>::isPointChecked(unsigned int id, sofa::helper::ve
 template <class DataTypes>
 void SubsetTopology<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels())
         return;
 
+    vparams->drawTool()->saveLastState();
+
     const VecCoord* x0 = &f_X0.getValue();
-    glColor3f(0.0, 1.0, 1.0);
+    const sofa::defaulttype::RGBAColor& color = sofa::defaulttype::RGBAColor::cyan();
+
     if( p_drawROI.getValue())
     {
         ///draw the boxes
-        glBegin(GL_LINES);
         const helper::vector<Vec6>& vb=boxes.getValue();
         for (unsigned int bi=0; bi<vb.size(); ++bi)
         {
             const Vec6& b=vb[bi];
-            const Real& Xmin=b[0];
-            const Real& Xmax=b[3];
-            const Real& Ymin=b[1];
-            const Real& Ymax=b[4];
-            const Real& Zmin=b[2];
-            const Real& Zmax=b[5];
-            glVertex3d(Xmin,Ymin,Zmin);
-            glVertex3d(Xmin,Ymin,Zmax);
-            glVertex3d(Xmin,Ymin,Zmin);
-            glVertex3d(Xmax,Ymin,Zmin);
-            glVertex3d(Xmin,Ymin,Zmin);
-            glVertex3d(Xmin,Ymax,Zmin);
-            glVertex3d(Xmin,Ymax,Zmin);
-            glVertex3d(Xmax,Ymax,Zmin);
-            glVertex3d(Xmin,Ymax,Zmin);
-            glVertex3d(Xmin,Ymax,Zmax);
-            glVertex3d(Xmin,Ymax,Zmax);
-            glVertex3d(Xmin,Ymin,Zmax);
-            glVertex3d(Xmin,Ymin,Zmax);
-            glVertex3d(Xmax,Ymin,Zmax);
-            glVertex3d(Xmax,Ymin,Zmax);
-            glVertex3d(Xmax,Ymax,Zmax);
-            glVertex3d(Xmax,Ymin,Zmax);
-            glVertex3d(Xmax,Ymin,Zmin);
-            glVertex3d(Xmin,Ymax,Zmax);
-            glVertex3d(Xmax,Ymax,Zmax);
-            glVertex3d(Xmax,Ymax,Zmin);
-            glVertex3d(Xmax,Ymin,Zmin);
-            glVertex3d(Xmax,Ymax,Zmin);
-            glVertex3d(Xmax,Ymax,Zmax);
+            const sofa::defaulttype::Vector3 minBBox(b[0], b[1], b[2]);
+            const sofa::defaulttype::Vector3 maxBBox(b[3], b[4], b[5]);
+            vparams->drawTool()->setMaterial(color);
+            vparams->drawTool()->drawBoundingBox(minBBox, maxBBox, 1.0);
         }
-        glEnd();
     }
+
+    std::vector<sofa::defaulttype::Vector3> vertices;
+    vparams->drawTool()->disableLighting();
+
     if( p_drawPoints.getValue())
     {
         ///draw points in boxes
-        glBegin(GL_POINTS);
-        glPointSize(5.0);
         helper::ReadAccessor< Data<VecCoord > > pointsInROI = f_pointsInROI;
         for (unsigned int i=0; i<pointsInROI.size() ; ++i)
         {
-            CPos p = DataTypes::getCPos(pointsInROI[i]);
-            helper::gl::glVertexT(p);
+            vertices.push_back(DataTypes::getCPos(pointsInROI[i]));
         }
-        glEnd();
+        vparams->drawTool()->drawPoints(vertices, 5.0, color);
     }
     if( p_drawEdges.getValue())
     {
+        vertices.clear();
         ///draw edges in boxes
-        glBegin(GL_LINES);
         helper::ReadAccessor< Data<helper::vector<Edge> > > edgesInROI = f_edgesInROI;
         for (unsigned int i=0; i<edgesInROI.size() ; ++i)
         {
             Edge e = edgesInROI[i];
             for (unsigned int j=0 ; j<2 ; j++)
             {
-                CPos p = DataTypes::getCPos((*x0)[e[j]]);
-                helper::gl::glVertexT(p);
+                vertices.push_back(DataTypes::getCPos((*x0)[e[j]]));
             }
         }
-        glEnd();
+        vparams->drawTool()->drawLines(vertices, 1.0, color);
     }
     if( p_drawTriangles.getValue())
     {
+        vertices.clear();
         ///draw triangles in boxes
-        glBegin(GL_TRIANGLES);
         helper::ReadAccessor< Data<helper::vector<Triangle> > > trianglesInROI = f_trianglesInROI;
         for (unsigned int i=0; i<trianglesInROI.size() ; ++i)
         {
             Triangle t = trianglesInROI[i];
             for (unsigned int j=0 ; j<3 ; j++)
             {
-                CPos p = DataTypes::getCPos((*x0)[t[j]]);
-                helper::gl::glVertexT(p);
+                vertices.push_back(DataTypes::getCPos((*x0)[t[j]]));
             }
         }
-        glEnd();
+        vparams->drawTool()->drawTriangles(vertices, color);
     }
 
     if( p_drawTetrahedra.getValue())
     {
+        vertices.clear();
         ///draw tetrahedra in boxes
-        glBegin(GL_LINES);
         helper::ReadAccessor< Data<helper::vector<Tetra> > > tetrahedraInROI = f_tetrahedraInROI;
         for (unsigned int i=0; i<tetrahedraInROI.size() ; ++i)
         {
             Tetra t = tetrahedraInROI[i];
             for (unsigned int j=0 ; j<4 ; j++)
             {
-                CPos p = DataTypes::getCPos((*x0)[t[j]]);
-                helper::gl::glVertexT(p);
-                p = DataTypes::getCPos((*x0)[t[(j+1)%4]]);
-                helper::gl::glVertexT(p);
+                vertices.push_back(DataTypes::getCPos((*x0)[t[j]]));
+                vertices.push_back(DataTypes::getCPos((*x0)[t[(j+1)%4]]));
             }
 
-            CPos p = DataTypes::getCPos((*x0)[t[0]]);
-            helper::gl::glVertexT(p);
-            p = DataTypes::getCPos((*x0)[t[2]]);
-            helper::gl::glVertexT(p);
-            p = DataTypes::getCPos((*x0)[t[1]]);
-            helper::gl::glVertexT(p);
-            p = DataTypes::getCPos((*x0)[t[3]]);
-            helper::gl::glVertexT(p);
+            vertices.push_back(DataTypes::getCPos((*x0)[t[0]]));
+            vertices.push_back(DataTypes::getCPos((*x0)[t[2]]));
+            vertices.push_back(DataTypes::getCPos((*x0)[t[1]]));
+            vertices.push_back(DataTypes::getCPos((*x0)[t[3]]));
         }
-        glEnd();
+        vparams->drawTool()->drawLines(vertices, 1.0, color);
     }
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->restoreLastState();
 }
 
 template <class DataTypes>

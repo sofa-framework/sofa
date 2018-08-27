@@ -24,7 +24,6 @@
 
 #include <SofaBoundaryCondition/PositionBasedDynamicsConstraint.h>
 #include <sofa/simulation/Simulation.h>
-#include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
 

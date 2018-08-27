@@ -702,7 +702,7 @@ SReal UniformMass<defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::TYPEABSTRAC
         iend = d_localRange.getValue() [1]+1;
 
     SReal e = 0;
-    const MassType& m = d_mass.getValue();
+    const MassType& m = d_vertexMass.getValue();
     // gravity
     defaulttype::Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
@@ -744,7 +744,7 @@ SReal UniformMass<defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::TYPEABSTRAC
         iend = d_localRange.getValue() [1]+1;
 
     SReal e = 0;
-    const MassType& m = d_mass.getValue();
+    const MassType& m = d_vertexMass.getValue();
     // gravity
     defaulttype::Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;

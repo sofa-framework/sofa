@@ -80,18 +80,6 @@ void DefaultVisualManagerLoop::updateStep(sofa::core::ExecParams* params)
 #endif
     sofa::helper::AdvancedTimer::begin("UpdateVisual");
 
-    // 03/09/14: mapping update should already be performed by animation
-//    sofa::helper::AdvancedTimer::stepBegin("UpdateMapping");
-//    gRoot->execute<UpdateMappingVisitor>(params);
-//    sofa::helper::AdvancedTimer::step("UpdateMappingEndEvent");
-//    {
-//        SReal dt=gRoot->getDt();
-//        UpdateMappingEndEvent ev ( dt );
-//        PropagateEventVisitor act ( params, &ev );
-//        gRoot->execute ( act );
-//    }
-//    sofa::helper::AdvancedTimer::stepEnd("UpdateMapping");
-
     gRoot->execute<VisualUpdateVisitor>(params);
     sofa::helper::AdvancedTimer::end("UpdateVisual");
 #ifdef SOFA_DUMP_VISITOR_INFO

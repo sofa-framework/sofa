@@ -28,6 +28,7 @@
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/core/DataTracker.h>
 
 namespace sofa
 {
@@ -55,7 +56,7 @@ public:
     typedef core::objectmodel::Data<VecDeriv> DataVecDeriv;
     typedef TMassType MassType;
 
-    Data<MassType>                        d_mass;         ///< the mass of each particle
+    Data<MassType>                        d_vertexMass;   ///< single value defining the mass of each particle
     Data<SReal>                           d_totalMass;    ///< if >0 : total mass of this body
     sofa::core::objectmodel::DataFileName d_filenameMass; ///< a .rigid file to automatically load the inertia matrix and other parameters
 
@@ -96,33 +97,51 @@ protected:
     /// @internal fonction called in the constructor that can be specialized
     void constructor_message() ;
 
+    /// Data tracker
+    sofa::core::DataTracker m_dataTrackerVertex;
+    sofa::core::DataTracker m_dataTrackerTotal;
+
 public:
-    void setMass(const MassType& d_mass);
-    const MassType& getMass() const { return d_mass.getValue(); }
+
+    /// @name Read and write access functions in mass information
+    /// @{
+    void setMass(const MassType& d_vertexMass);
+    const MassType& getVertexMass() const { return d_vertexMass.getValue(); }
+    const MassType& getMass() const { return this->getVertexMass(); }
 
     SReal getTotalMass() const { return d_totalMass.getValue(); }
     void setTotalMass(SReal m);
+    /// }@
 
     void setFileMass(const std::string& file) {d_filenameMass.setValue(file);}
     std::string getFileMass() const {return d_filenameMass.getFullPath();}
 
     void loadRigidMass(const std::string& filename);
-    // -- Mass interface
 
     void reinit() override;
     void init() override;
+    void initDefaultImpl() ;
+    bool update();
+    virtual void handleEvent(sofa::core::objectmodel::Event */*event*/) override;
+
+    /// @name Check and standard initialization functions from mass information
+    /// @{
+    virtual bool checkVertexMass();
+    virtual void initFromVertexMass();
+
+    virtual bool checkTotalMass();
+    virtual void checkTotalMassInit();
+    virtual void initFromTotalMass();
+    /// @}
 
     void handleTopologyChange() override;
+
     void addMDx(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecDeriv& dx, SReal factor) override;
-
     void accFromF(const core::MechanicalParams* mparams, DataVecDeriv& a, const DataVecDeriv& f) override;
-
     void addForce(const core::MechanicalParams* mparams, DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override;
 
     SReal getKineticEnergy(const core::MechanicalParams* mparams, const DataVecDeriv& d_v) const override;  ///< vMv/2 using dof->getV() override
-
     SReal getPotentialEnergy(const core::MechanicalParams* mparams, const DataVecCoord& x) const override;   ///< Mgx potential in a uniform gravity field, null at origin
-
     defaulttype::Vector6 getMomentum(const core::MechanicalParams* mparams, const DataVecCoord& x, const DataVecDeriv& v) const override;  ///< (Mv,cross(x,Mv)+Iw) override
 
     void addMDxToVector(defaulttype::BaseVector *resVect, const VecDeriv *dx, SReal mFact, unsigned int& offset);
@@ -138,12 +157,23 @@ public:
 
     void draw(const core::visual::VisualParams* vparams) override;
 
-private:
-    template<class T>
-    void reinitDefaultImpl() ;
 
-    template<class T>
-    void reinitRigidImpl() ;
+    //Temporary function to warn the user when old attribute names are used
+    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
+    {
+        if (arg->getAttribute("mass"))
+        {
+            msg_warning() << "input data 'mass' changed for 'vertexMass', please update your scene (see PR#637)";
+        }
+        if (arg->getAttribute("totalmass"))
+        {
+            msg_warning() << "input data 'totalmass' changed for 'totalMass', please update your scene (see PR#637)";
+        }
+        Inherited::parse(arg);
+    }
+
+
+private:
 
     template<class T>
     void drawRigid3DImpl(const core::visual::VisualParams* vparams) ;
@@ -183,7 +213,7 @@ private:
 //Specialization for rigids
 #ifdef SOFA_WITH_DOUBLE
 template <>
-void UniformMass<defaulttype::Rigid3dTypes, defaulttype::Rigid3dMass>::reinit();
+void UniformMass<defaulttype::Rigid3dTypes, defaulttype::Rigid3dMass>::init();
 template <>
 void UniformMass<defaulttype::Rigid3dTypes, defaulttype::Rigid3dMass>::loadRigidMass ( const std::string&  );
 template <>
@@ -199,7 +229,7 @@ void UniformMass<defaulttype::Vec6dTypes,double>::draw(const core::visual::Visua
 #endif
 #ifdef SOFA_WITH_FLOAT
 template<>
-void UniformMass<defaulttype::Rigid3fTypes, defaulttype::Rigid3fMass>::reinit();
+void UniformMass<defaulttype::Rigid3fTypes, defaulttype::Rigid3fMass>::init();
 template<>
 void UniformMass<defaulttype::Rigid3fTypes, defaulttype::Rigid3fMass>::loadRigidMass ( const std::string& );
 template <>

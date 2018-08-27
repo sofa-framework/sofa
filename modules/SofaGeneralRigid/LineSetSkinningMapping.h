@@ -26,7 +26,6 @@
 #include <sofa/core/Mapping.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/Vec3Types.h>
 
 

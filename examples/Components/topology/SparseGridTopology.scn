@@ -11,7 +11,7 @@
         <EulerImplicit  rayleighStiffness="0.1" rayleighMass="0.1" />
         <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject />
-        <UniformMass mass="0.5" />
+        <UniformMass vertexMass="0.5" />
         <MeshSpringForceField name="Springs" stiffness="500" damping="10" />
         <BoxConstraint box="10 -10 -6 12 10 6" />
         <Node name="Visu">
@@ -30,7 +30,7 @@
         <EulerImplicit />
         <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject dz="15" />
-        <UniformMass mass="0.5" />
+        <UniformMass vertexMass="0.5" />
         <MeshSpringForceField name="Springs" stiffness="500" damping="10" />
         <BoxConstraint box="10 -10 10 12 10 22" />
         <Node name="Visu">
@@ -49,7 +49,7 @@
         <EulerImplicit />
         <CGLinearSolver iterations="100" tolerance="1e-5" threshold="1e-5"/>
         <MechanicalObject dz="30" />
-        <UniformMass mass="0.5" />
+        <UniformMass vertexMass="0.5" />
         <MeshSpringForceField name="Springs" stiffness="500" damping="10" />
         <BoxConstraint box="10 -10 26 12 10 38" />
         <Node name="Visu">

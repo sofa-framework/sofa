@@ -108,6 +108,7 @@ protected:
 protected:
 
     TetrahedronModel();
+    void addTetraToDraw(const Tetrahedron& t, std::vector<sofa::defaulttype::Vector3>& tetraVertices, std::vector<sofa::defaulttype::Vector3>& normalVertices);
 public:
     virtual void init() override;
 

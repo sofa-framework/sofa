@@ -24,11 +24,9 @@
 
 #include <SofaConstraint/BilateralInteractionConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
-
+#include <sofa/defaulttype/RGBAColor.h>
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/helper/gl/template.h>
-
-#include <algorithm>
+#include <algorithm> // for std::min
 
 namespace sofa
 {
@@ -45,28 +43,6 @@ using sofa::core::objectmodel::KeypressedEvent ;
 using sofa::core::objectmodel::Event ;
 using sofa::helper::WriteAccessor ;
 using sofa::defaulttype::Vec;
-
-//TODO(dmarchal): isn't ths function already defined somewhere in SOFA ?
-template<typename T>
-inline double sign(T &toto)
-{
-    if (toto<0.0)
-        return -1.0;
-    return 1.0;
-}
-
-inline defaulttype::Quat qDiff(defaulttype::Quat a, const defaulttype::Quat& b)
-{
-    if (a[0]*b[0]+a[1]*b[1]+a[2]*b[2]+a[3]*b[3]<0)
-    {
-        a[0] = -a[0];
-        a[1] = -a[1];
-        a[2] = -a[2];
-        a[3] = -a[3];
-    }
-    defaulttype::Quat q = b.inverse() * a;
-    return q;
-}
 
 template<class DataTypes>
 BilateralInteractionConstraint<DataTypes>::BilateralInteractionConstraint(MechanicalState* object1, MechanicalState* object2)
@@ -297,8 +273,8 @@ void BilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(const Cons
             }
             else
             {
-                c1_it.addCol(tm1, -cx*sign(dfree_loc[0]) );
-                c2_it.addCol(tm2, cx*sign(dfree_loc[0]));
+                c1_it.addCol(tm1, -cx*sofa::helper::sign(dfree_loc[0]) );
+                c2_it.addCol(tm2, cx*sofa::helper::sign(dfree_loc[0]));
             }
 
 
@@ -313,8 +289,8 @@ void BilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(const Cons
             }
             else
             {
-                c1_it.addCol(tm1, -cy*sign(dfree_loc[1]));
-                c2_it.addCol(tm2, cy*sign(dfree_loc[1]));
+                c1_it.addCol(tm1, -cy*sofa::helper::sign(dfree_loc[1]));
+                c2_it.addCol(tm2, cy*sofa::helper::sign(dfree_loc[1]));
             }
 
             // contribution along z axis
@@ -327,8 +303,8 @@ void BilateralInteractionConstraint<DataTypes>::buildConstraintMatrix(const Cons
             }
             else
             {
-                c1_it.addCol(tm1, -cz*sign(dfree_loc[2]));
-                c2_it.addCol(tm2, cz*sign(dfree_loc[2]));
+                c1_it.addCol(tm1, -cz*sofa::helper::sign(dfree_loc[2]));
+                c2_it.addCol(tm2, cz*sofa::helper::sign(dfree_loc[2]));
             }
         }
 
@@ -397,7 +373,7 @@ void BilateralInteractionConstraint<DataTypes>::getConstraintViolation(const Con
                 else
                 {
 
-                    v->add(cid[pid]+i  , dfree[pid][i]*sign(dfree[pid][i] ) );
+                    v->add(cid[pid]+i  , dfree[pid][i]*sofa::helper::sign(dfree[pid][i] ) );
                 }
             }
 
@@ -476,7 +452,7 @@ void BilateralInteractionConstraint<DataTypes>::getVelocityViolation(BaseVector 
                 }
                 else
                 {
-                    v->add(cid[pid]+i  , dPrimefree[pid][i]*sign(dfree[pid][i] ) );
+                    v->add(cid[pid]+i  , dPrimefree[pid][i]*sofa::helper::sign(dfree[pid][i] ) );
                 }
             }
 
@@ -570,26 +546,25 @@ void BilateralInteractionConstraint<DataTypes>::clear(int reserve)
 template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowInteractionForceFields()) return;
 
-    glDisable(GL_LIGHTING);
-    glPointSize(10);
-    if (activated)
-        glColor4f(1,0,1,1);
-    else
-        glColor4f(0,1,0,1);
-    glBegin(GL_POINTS);
+    vparams->drawTool()->saveLastState();
+    vparams->drawTool()->disableLighting();
+
+    sofa::defaulttype::RGBAColor colorActive = sofa::defaulttype::RGBAColor::magenta();
+    sofa::defaulttype::RGBAColor colorNotActive = sofa::defaulttype::RGBAColor::green();
+    std::vector< sofa::defaulttype::Vector3 > vertices;
 
     unsigned minp = std::min(m1.getValue().size(),m2.getValue().size());
     for (unsigned i=0; i<minp; i++)
     {
-        helper::gl::glVertexT(this->mstate1->read(ConstVecCoordId::position())->getValue()[m1.getValue()[i]]);
-        helper::gl::glVertexT(this->mstate2->read(ConstVecCoordId::position())->getValue()[m2.getValue()[i]]);
+        vertices.push_back(DataTypes::getCPos(this->mstate1->read(ConstVecCoordId::position())->getValue()[m1.getValue()[i]]));
+        vertices.push_back(DataTypes::getCPos(this->mstate2->read(ConstVecCoordId::position())->getValue()[m1.getValue()[i]]));
     }
-    glEnd();
-    glPointSize(1);
-#endif /* SOFA_NO_OPENGL */
+
+    vparams->drawTool()->drawPoints(vertices, 10, (activated) ? colorActive : colorNotActive);
+
+    vparams->drawTool()->restoreLastState();
 }
 
 //TODO(dmarchal): implementing keyboard interaction behavior directly in a component is not a valid

@@ -25,7 +25,8 @@
 #include <SofaConstraint/UnilateralInteractionConstraint.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/helper/gl/template.h>
+#include <sofa/defaulttype/RGBAColor.h>
+
 namespace sofa
 {
 
@@ -397,43 +398,42 @@ bool UnilateralInteractionConstraint<DataTypes>::isActive() const
 template<class DataTypes>
 void UnilateralInteractionConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
-//	return; // TEMP
-    if (!vparams->displayFlags().getShowInteractionForceFields()) return;
-    if (!vparams->isSupported(sofa::core::visual::API_OpenGL)) return;
 
-    glDisable(GL_LIGHTING);
+    if (!vparams->displayFlags().getShowInteractionForceFields()) return;
+
+    vparams->drawTool()->saveLastState();
+
+    vparams->drawTool()->disableLighting();
+    vparams->drawTool()->saveLastState();
+
+    std::vector<sofa::defaulttype::Vector3> redVertices;
+    std::vector<sofa::defaulttype::Vector3> otherVertices;
+    std::vector<sofa::defaulttype::Vec4f> otherColors;
 
     for (unsigned int i=0; i<contacts.size(); i++)
     {
         const Contact& c = contacts[i];
 
-        glLineWidth(5);
-        glBegin(GL_LINES);
+        redVertices.push_back(c.P);
+        redVertices.push_back(c.Q);
 
-        glColor4f(1,0,0,1);
-        helper::gl::glVertexT(c.P);
-        helper::gl::glVertexT(c.Q);
+        otherVertices.push_back(c.P);
+        otherColors.push_back(sofa::defaulttype::RGBAColor::white());
+        otherVertices.push_back(c.P + c.norm);
+        otherColors.push_back(sofa::defaulttype::RGBAColor(0,0.5,0.5,1));
 
-        glEnd();
+        otherVertices.push_back(c.Q);
+        otherColors.push_back(sofa::defaulttype::RGBAColor::black());
+        otherVertices.push_back(c.Q - c.norm);
+        otherColors.push_back(sofa::defaulttype::RGBAColor(0,0.5,0.5,1));
 
-        glLineWidth(3);
-        glBegin(GL_LINES);
-
-        glColor4f(1,1,1,1);
-        helper::gl::glVertexT(c.P);
-        glColor4f(0,0.5,0.5,1);
-        helper::gl::glVertexT(c.P + c.norm);
-
-        glColor4f(0,0,0,1);
-        helper::gl::glVertexT(c.Q);
-        glColor4f(0,0.5,0.5,1);
-        helper::gl::glVertexT(c.Q - c.norm);
-
-        glEnd();
-        glLineWidth(1);
     }
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->drawLines(redVertices, 5, sofa::defaulttype::RGBAColor::red());
+    vparams->drawTool()->drawLines(otherVertices, 3, otherColors);
+
+
+    vparams->drawTool()->restoreLastState();
+
 }
 
 } // namespace constraintset

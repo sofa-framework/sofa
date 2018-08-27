@@ -44,36 +44,20 @@ int ProjectDirectionConstraintClass = core::RegisterObject("Attach given particl
 #ifndef SOFA_FLOAT
         .add< ProjectDirectionConstraint<Vec3dTypes> >()
         .add< ProjectDirectionConstraint<Vec2dTypes> >()
-//.add< ProjectDirectionConstraint<Vec1dTypes> >()
-//.add< ProjectDirectionConstraint<Vec6dTypes> >()
-//.add< ProjectDirectionConstraint<Rigid3dTypes> >()
-//.add< ProjectDirectionConstraint<Rigid2dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
         .add< ProjectDirectionConstraint<Vec3fTypes> >()
         .add< ProjectDirectionConstraint<Vec2fTypes> >()
-//.add< ProjectDirectionConstraint<Vec1fTypes> >()
-//.add< ProjectDirectionConstraint<Vec6fTypes> >()
-//.add< ProjectDirectionConstraint<Rigid3fTypes> >()
-//.add< ProjectDirectionConstraint<Rigid2fTypes> >()
 #endif
         ;
 
 #ifndef SOFA_FLOAT
 template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<Vec3dTypes>;
 template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<Vec2dTypes>;
-//template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<Vec1dTypes>;
-//template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<Vec6dTypes>;
-//template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<Rigid3dTypes>;
-//template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<Rigid2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<Vec3fTypes>;
 template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<Vec2fTypes>;
-//template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<Vec1fTypes>;
-//template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<Vec6fTypes>;
-//template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<Rigid3fTypes>;
-//template class SOFA_BOUNDARY_CONDITION_API ProjectDirectionConstraint<Rigid2fTypes>;
 #endif
 
 
