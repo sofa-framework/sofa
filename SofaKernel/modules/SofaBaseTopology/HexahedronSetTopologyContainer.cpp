@@ -535,7 +535,7 @@ unsigned int HexahedronSetTopologyContainer::getNumberOfHexahedra() const
 }
 
 
-unsigned int HexahedronSetTopologyContainer::getNumberOfElements() const
+size_t HexahedronSetTopologyContainer::getNumberOfElements() const
 {
     return this->getNumberOfHexahedra();
 }
@@ -923,7 +923,7 @@ bool HexahedronSetTopologyContainer::checkConnexity()
 }
 
 
-unsigned int HexahedronSetTopologyContainer::getNumberOfConnectedComponent()
+size_t HexahedronSetTopologyContainer::getNumberOfConnectedComponent()
 {
     size_t nbr = this->getNbHexahedra();
 

@@ -488,7 +488,7 @@ unsigned int TriangleSetTopologyContainer::getNumberOfTriangles() const
     return (unsigned int)d_triangle.getValue().size();
 }
 
-unsigned int TriangleSetTopologyContainer::getNumberOfElements() const
+size_t TriangleSetTopologyContainer::getNumberOfElements() const
 {
     return this->getNumberOfTriangles();
 }
@@ -802,7 +802,7 @@ bool TriangleSetTopologyContainer::checkConnexity()
 }
 
 
-unsigned int TriangleSetTopologyContainer::getNumberOfConnectedComponent()
+size_t TriangleSetTopologyContainer::getNumberOfConnectedComponent()
 {
     size_t nbr = this->getNbTriangles();
 

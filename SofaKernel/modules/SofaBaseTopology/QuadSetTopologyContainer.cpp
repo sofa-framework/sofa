@@ -310,7 +310,7 @@ unsigned int QuadSetTopologyContainer::getNumberOfQuads() const
 }
 
 
-unsigned int QuadSetTopologyContainer::getNumberOfElements() const
+size_t QuadSetTopologyContainer::getNumberOfElements() const
 {
     return this->getNumberOfQuads();
 }
@@ -557,7 +557,7 @@ bool QuadSetTopologyContainer::checkConnexity()
 }
 
 
-unsigned int QuadSetTopologyContainer::getNumberOfConnectedComponent()
+size_t QuadSetTopologyContainer::getNumberOfConnectedComponent()
 {
     size_t nbr = this->getNbQuads();
 

@@ -285,7 +285,7 @@ bool EdgeSetTopologyContainer::checkConnexity()
 }
 
 
-unsigned int EdgeSetTopologyContainer::getNumberOfConnectedComponent()
+size_t EdgeSetTopologyContainer::getNumberOfConnectedComponent()
 {
     size_t nbr = this->getNbEdges();
 
@@ -298,7 +298,7 @@ unsigned int EdgeSetTopologyContainer::getNumberOfConnectedComponent()
     }
 
     VecEdgeID elemAll = this->getConnectedElement(0);
-    unsigned int cpt = 1;
+    size_t cpt = 1;
 
     while (elemAll.size() < nbr)
     {
@@ -486,13 +486,13 @@ const EdgeSetTopologyContainer::VecEdgeID EdgeSetTopologyContainer::getElementAr
 
 
 
-unsigned int EdgeSetTopologyContainer::getNumberOfEdges() const
+size_t EdgeSetTopologyContainer::getNumberOfEdges() const
 {
     d_edge.updateIfDirty();
-    return (unsigned int)d_edge.getValue().size();
+    return d_edge.getValue().size();
 }
 
-unsigned int EdgeSetTopologyContainer::getNumberOfElements() const
+size_t EdgeSetTopologyContainer::getNumberOfElements() const
 {
     return this->getNumberOfEdges();
 }

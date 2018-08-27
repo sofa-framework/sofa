@@ -2350,7 +2350,7 @@ bool MeshTopology::checkConnexity()
 }
 
 
-unsigned int MeshTopology::getNumberOfConnectedComponent()
+size_t MeshTopology::getNumberOfConnectedComponent()
 {
     size_t nbr = 0;
 

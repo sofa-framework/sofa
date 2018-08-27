@@ -480,7 +480,7 @@ unsigned int TetrahedronSetTopologyContainer::getNumberOfTetrahedra() const
     return (unsigned int)m_tetrahedron.size();
 }
 
-unsigned int TetrahedronSetTopologyContainer::getNumberOfElements() const
+size_t TetrahedronSetTopologyContainer::getNumberOfElements() const
 {
     return this->getNumberOfTetrahedra();
 }
@@ -774,7 +774,7 @@ bool TetrahedronSetTopologyContainer::checkConnexity()
 }
 
 
-unsigned int TetrahedronSetTopologyContainer::getNumberOfConnectedComponent()
+size_t TetrahedronSetTopologyContainer::getNumberOfConnectedComponent()
 {
     size_t nbr = this->getNbTetrahedra();
 
