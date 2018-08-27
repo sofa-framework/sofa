@@ -77,6 +77,7 @@ public:
     typedef sofa::component::topology::PointSubsetData< SetIndexArray > SetIndex;
     typedef sofa::core::topology::Point Point;
     typedef sofa::defaulttype::Vector3 Vector3;
+
 protected:
     FixedConstraint();
 
@@ -143,6 +144,9 @@ public:
     };
 
 protected :
+    /// Function check values of given indices
+    void checkIndices();
+
     /// Pointer to the current topology
     sofa::core::topology::BaseMeshTopology* topology;
 
