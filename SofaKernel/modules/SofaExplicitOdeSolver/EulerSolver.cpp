@@ -59,7 +59,7 @@ SOFA_DECL_CLASS(Euler);
 
 EulerSolver::EulerSolver()
     : symplectic( initData( &symplectic, true, "symplectic", "If true, the velocities are updated before the positions and the method is symplectic (more robust). If false, the positions are updated before the velocities (standard Euler, less robust).") )
-    , d_threadsafevisitor(initData(&d_threadsafevisitor, false, "threadsafevisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
+    , d_threadSafeVisitor(initData(&d_threadSafeVisitor, false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
 {
 }
 
@@ -72,7 +72,7 @@ void EulerSolver::solve(const core::ExecParams* params, SReal dt, sofa::core::Mu
     mop->setImplicit(false); // this solver is explicit only
     MultiVecCoord pos(&vop, core::VecCoordId::position() );
     MultiVecDeriv vel(&vop, core::VecDerivId::velocity() );
-    MultiVecDeriv acc(&vop, core::VecDerivId::dx()); acc.realloc(&vop, !d_threadsafevisitor.getValue(), true); // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
+    MultiVecDeriv acc(&vop, core::VecDerivId::dx()); acc.realloc(&vop, !d_threadSafeVisitor.getValue(), true); // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
     MultiVecDeriv f  (&vop, core::VecDerivId::force() );
     MultiVecCoord pos2(&vop, xResult /*core::VecCoordId::position()*/ );
     MultiVecDeriv vel2(&vop, vResult /*core::VecDerivId::velocity()*/ );

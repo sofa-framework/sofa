@@ -10,7 +10,7 @@
     <DefaultPipeline name="CollisionPipeline" verbose="0" />
     <BruteForceDetection name="N2" />
     <DefaultContactManager name="collision response" response="default" />
-	<LCPConstraintSolverAsync tolerance="1e-3" maxIt="100" initial_guess="false" build_lcp="true"  printLog="0" mu="0.2"/>
+	  <LCPConstraintSolver tolerance="1e-3" maxIt="100" initial_guess="false" build_lcp="true"  printLog="0" mu="0.2"/>
     <Node name="liver1" gravity="0 -9.81 0">
       <EulerImplicitSolver name="cg_odesolver"   rayleighStiffness="0.1" rayleighMass="0.1" />
       <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
@@ -40,7 +40,7 @@
     <DefaultPipeline name="CollisionPipeline" verbose="0" />
     <BruteForceDetection name="N2" />
     <DefaultContactManager name="collision response" response="default" />
-	<LCPConstraintSolverAsync tolerance="1e-3" maxIt="100" initial_guess="false" build_lcp="true"  printLog="0" mu="0.2"/>
+	  <LCPConstraintSolver tolerance="1e-3" maxIt="100" initial_guess="false" build_lcp="true"  printLog="0" mu="0.2"/>
     <Node name="liver2" gravity="0 -9.81 0">
       <EulerImplicitSolver name="cg_odesolver"  />
       <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
@@ -51,7 +51,7 @@
       <DiagonalMass  name="computed using mass density" massDensity="1" />
       <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" />
       <FixedConstraint  name="FixedConstraint" indices="64" />
-	  <UncoupledConstraintCorrection name="liver2_ConstraintCorrection"/>
+	    <UncoupledConstraintCorrection name="liver2_ConstraintCorrection"/>
       <Node name="Visu2" tags="Visual" gravity="0 -9.81 0">
         <OglModel  name="VisualModel" fileMesh="mesh/liver-smooth.obj" translation="-10 0 0"/>
         <BarycentricMapping name="visual mapping" input="@../dofs2" output="@VisualModel" />
@@ -70,7 +70,7 @@
     <DefaultPipeline name="CollisionPipeline" verbose="0" />
     <BruteForceDetection name="N2" />
     <DefaultContactManager name="collision response" response="default" />
-	<LCPConstraintSolverAsync tolerance="1e-3" maxIt="100" initial_guess="false" build_lcp="true"  printLog="0" mu="0.2"/>
+	  <LCPConstraintSolver tolerance="1e-3" maxIt="100" initial_guess="false" build_lcp="true"  printLog="0" mu="0.2"/>
     <Node name="liver3" gravity="0 -9.81 0">
       <EulerImplicitSolver name="cg_odesolver"  />
       <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
@@ -101,7 +101,7 @@
     <DefaultPipeline name="CollisionPipeline" verbose="0" />
     <BruteForceDetection name="N2" />
     <DefaultContactManager name="collision response" response="default" />
-	<LCPConstraintSolverAsync tolerance="1e-3" maxIt="100" initial_guess="false" build_lcp="true"  printLog="0" mu="0.2"/>
+	  <LCPConstraintSolver tolerance="1e-3" maxIt="100" initial_guess="false" build_lcp="true"  printLog="0" mu="0.2"/>
     <Node name="liver4" gravity="0 -9.81 0">
       <EulerImplicitSolver name="cg_odesolver"  />
       <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
@@ -132,25 +132,25 @@
     <DefaultPipeline name="CollisionPipeline" verbose="0" />
     <BruteForceDetection name="N2" />
     <DefaultContactManager name="collision response" response="default" />
-	<LCPConstraintSolverAsync tolerance="1e-3" maxIt="100" initial_guess="false" build_lcp="true"  printLog="0" mu="0.2"/>
+	  <LCPConstraintSolver tolerance="1e-3" maxIt="100" initial_guess="false" build_lcp="true"  printLog="0" mu="0.2"/>
     <Node name="Liver" gravity="0 -9.81 0">
       <!-- <EulerImplicitSolver name="cg_odesolver"  /> -->
       <!-- <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" /> -->
       <MeshGmshLoader name="meshLoader" filename="mesh/liver.msh" translation="0 0 0"/>
       <TetrahedronSetTopologyContainer name="topo" src="@meshLoader" />
-	  <!-- <Node name="Result"> -->
-	  <MechanicalObject name="dofs1" />
-	  <MechanicalObject name="dofs2" />
-	  <MechanicalObject name="dofs3" />
-	  <MechanicalObject name="dofs4" />
-	  <MeanComputation name="LiverEngine"/>
-	  <!-- </Node> -->
-	  <MechanicalObject name="ResultDofs" position="@LiverEngine.result" tags="MeanOutput"/>
+	    <!-- <Node name="Result"> -->
+	    <MechanicalObject name="dofs1" />
+	    <MechanicalObject name="dofs2" />
+	    <MechanicalObject name="dofs3" />
+	    <MechanicalObject name="dofs4" />
+	    <MeanComputation name="LiverEngine"/>
+	    <!-- </Node> -->
+	    <MechanicalObject name="ResultDofs" position="@LiverEngine.result" tags="MeanOutput"/>
       <!-- <TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" /> -->
       <!-- <DiagonalMass  name="computed using mass density" massDensity="1" /> -->
       <!-- <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" /> -->
       <!-- <FixedConstraint  name="FixedConstraint" indices="96" /> -->
-	  <!-- <UncoupledConstraintCorrection name="liver4_ConstraintCorrection"/> -->
+	    <!-- <UncoupledConstraintCorrection name="liver4_ConstraintCorrection"/> -->
       <Node name="ResultVisu" tags="Visual" gravity="0 -9.81 0">
         <OglModel  name="VisualModel" fileMesh="mesh/liver-smooth.obj" translation="0 0 0" color="blue"/>
         <BarycentricMapping name="visual mapping" input="@../ResultDofs" output="@VisualModel" />

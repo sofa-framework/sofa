@@ -67,7 +67,7 @@ public:
 
     Data<bool> m_solveVelocityConstraintFirst; ///< solve separately velocity constraint violations before position constraint violations
 
-    Data<bool> d_threadsafevisitor;
+    Data<bool> d_threadSafeVisitor;
 
 protected :
 

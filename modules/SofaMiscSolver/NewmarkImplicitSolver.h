@@ -70,7 +70,7 @@ public:
     Data<double> f_gamma; ///< Newmark scheme gamma coefficient
     Data<double> f_beta; ///< Newmark scheme beta coefficient
 
-    Data<bool> d_threadsafevisitor;
+    Data<bool> d_threadSafeVisitor;
 
     void solve (const core::ExecParams* params, SReal dt, sofa::core::MultiVecCoordId xResult, sofa::core::MultiVecDerivId vResult) override;
 

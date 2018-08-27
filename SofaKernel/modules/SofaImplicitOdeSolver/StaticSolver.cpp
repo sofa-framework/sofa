@@ -52,7 +52,7 @@ StaticSolver::StaticSolver()
     , dampingCoef( initData(&dampingCoef,(SReal)0.0,"dampingCoef","factor associated with the mass matrix in the equation system") )
     , stiffnessCoef( initData(&stiffnessCoef,(SReal)1.0,"stiffnessCoef","factor associated with the mass matrix in the equation system") )
     , applyIncrementFactor( initData(&applyIncrementFactor,false,"applyIncrementFactor","multiply the solution by dt before adding it to the current state") )
-    , d_threadsafevisitor(initData(&d_threadsafevisitor, false, "threadsafevisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
+    , d_threadSafeVisitor(initData(&d_threadSafeVisitor, false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
 {
 }
 
@@ -69,7 +69,7 @@ void StaticSolver::solve(const core::ExecParams* params, SReal dt, sofa::core::M
     MultiVecDeriv x(&vop);
 
     // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
-    MultiVecDeriv dx(&vop, core::VecDerivId::dx()); dx.realloc(&vop, !d_threadsafevisitor.getValue(), true);
+    MultiVecDeriv dx(&vop, core::VecDerivId::dx()); dx.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
     mop->setImplicit(true); // this solver is implicit
     mop.addSeparateGravity(dt);	// v += dt*g . Used if mass wants to add G to v separately from the other forces.
 
