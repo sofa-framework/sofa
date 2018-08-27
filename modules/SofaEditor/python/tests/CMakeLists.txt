@@ -1,22 +1,22 @@
 cmake_minimum_required(VERSION 3.1)
 
 project(PythonSofaEditor_test)
-
 ####################################################################################################
 ### Module dependencies
 ####################################################################################################
-find_package(SofaPython 2.7 QUIET)
-if(!SofaPython_FOUND)
-    message(FATAL_ERROR "-- 'PythonSofaEditor_test' is disabled because 'SofaPython' is missing or not activated.")
+find_package(SofaPython QUIET)
+if(NOT SofaPython_FOUND)
+    message("-- PythonSofaEditor_test is disabled because 'SofaPython' is missing or not activated.")
     return()
 endif()
 
 find_package(SofaTest QUIET)
-if(!SofaTest_FOUND)
-    message(FATAL_ERROR "-- 'PythonSofaEditor_test' is disabled because 'SofaTest' is missing or not activated.")
+if(NOT SofaTest_FOUND)
+    message("-- PythonSofaEditor_test is disabled because 'SofaTest' is missing or not activated.")
     return()
 endif()
 
+message("-- PythonSofaEditor_test is enabled.")
 
 ####################################################################################################
 ### Building
