@@ -43,12 +43,12 @@ class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyContainer : public PointSetTopologyC
 public:
     SOFA_CLASS(EdgeSetTopologyContainer,PointSetTopologyContainer);
 
-    typedef BaseMeshTopology::PointID		   	PointID;
-    typedef BaseMeshTopology::EdgeID			      EdgeID;
-    typedef BaseMeshTopology::Edge				   Edge;
-    typedef BaseMeshTopology::SeqEdges			   SeqEdges;
-    typedef BaseMeshTopology::EdgesAroundVertex	EdgesAroundVertex;
-    typedef sofa::helper::vector<EdgeID>         VecEdgeID;
+    typedef BaseMeshTopology::PointID               PointID;
+    typedef BaseMeshTopology::EdgeID                EdgeID;
+    typedef BaseMeshTopology::Edge                  Edge;
+    typedef BaseMeshTopology::SeqEdges              SeqEdges;
+    typedef BaseMeshTopology::EdgesAroundVertex     EdgesAroundVertex;
+    typedef sofa::helper::vector<EdgeID>            VecEdgeID;
 
 
 protected:
@@ -187,8 +187,8 @@ public:
     virtual const VecEdgeID getElementAroundElements(VecEdgeID elems) override;
     /// @}
 
-	  /** \brief Returns the type of the topology */
-	  virtual sofa::core::topology::TopologyObjectType getTopologyType() const override {return sofa::core::topology::EDGE;}
+      /** \brief Returns the type of the topology */
+      virtual sofa::core::topology::TopologyObjectType getTopologyType() const override {return sofa::core::topology::EDGE;}
     
 
 protected:

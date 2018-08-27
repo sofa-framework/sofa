@@ -115,11 +115,11 @@ public:
     void getRestEdgeVertexCoordinates(const EdgeID i, Coord[2]) const;
 
     // test if a point is on the triangle indexed by ind_e
-    bool isPointOnEdge(const sofa::defaulttype::Vec<3,double> &pt, const unsigned int ind_e) const;
+    bool isPointOnEdge(const sofa::defaulttype::Vec<3, double> &pt, const EdgeID ind_e) const;
 
     // compute barycentric coefficients
-    sofa::helper::vector< double > compute2PointsBarycoefs(const sofa::defaulttype::Vec<3,double> &p, unsigned int ind_p1, unsigned int ind_p2) const;
-    sofa::helper::vector< double > computeRest2PointsBarycoefs(const sofa::defaulttype::Vec<3,double> &p, unsigned int ind_p1, unsigned int ind_p2) const;
+    sofa::helper::vector< double > compute2PointsBarycoefs(const sofa::defaulttype::Vec<3, double> &p, PointID ind_p1, PointID ind_p2) const;
+    sofa::helper::vector< double > computeRest2PointsBarycoefs(const sofa::defaulttype::Vec<3, double> &p, PointID ind_p1, PointID ind_p2) const;
 
     /** \brief Compute the projection coordinate of a point C on the edge i. Using compute2EdgesIntersection().
     * @param i edgeID on which point is projected.
@@ -153,11 +153,11 @@ public:
       \param edges attached to the vertices
       \param weights associated with the edges. Each Vec3d represents the contribution of the associated edge to x,y and z of the deformed basis.
       */
-   void computeLocalFrameEdgeWeights( helper::vector<unsigned>& numEdges, helper::vector<Edge>& edges, helper::vector<Vec3d>& weights ) const;
+   void computeLocalFrameEdgeWeights( helper::vector<EdgeID>& numEdges, helper::vector<Edge>& edges, helper::vector<Vec3d>& weights ) const;
 
     /** \brief Process the added point initialization according to the topology and local coordinates.
     */
-    virtual void initPointAdded(unsigned int indice, const core::topology::PointAncestorElem &ancestorElem
+    virtual void initPointAdded(PointID indice, const core::topology::PointAncestorElem &ancestorElem
         , const helper::vector< VecCoord* >& coordVecs, const helper::vector< VecDeriv* >& derivVecs) override;
 
     /** return a pointer to the container of cubature points */

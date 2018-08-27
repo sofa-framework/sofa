@@ -117,7 +117,7 @@ public:
      *
      * \sa addEdgesProcess
      */
-    void addEdgesWarning(const unsigned int nEdges,
+    void addEdgesWarning(const size_t nEdges,
             const sofa::helper::vector< Edge >& edgesList,
             const sofa::helper::vector< unsigned int >& edgesIndexList) override
     {
@@ -128,7 +128,7 @@ public:
      *
      * \sa addEdgesProcess
      */
-    void addEdgesWarning(const unsigned int nEdges,
+    void addEdgesWarning(const size_t nEdges,
             const sofa::helper::vector< Edge >& edgesList,
             const sofa::helper::vector< unsigned int >& edgesIndexList,
             const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
