@@ -194,7 +194,7 @@ template <class DataTypes> void TriangularQuadraticSpringsForceField<DataTypes>:
         const VecCoord& p = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
         _initialPoints.setValue(p);
     }
-    int i;
+    unsigned int i;
     for (i=0; i<_topology->getNbEdges(); ++i)
     {
         edgeHandler->applyCreateFunction(i, edgeInf[i],
@@ -219,8 +219,8 @@ void TriangularQuadraticSpringsForceField<DataTypes>::addForce(const core::Mecha
     const VecDeriv& v = d_v.getValue();
 
     unsigned int j,k,l,v0,v1;
-    int nbEdges=_topology->getNbEdges();
-    int nbTriangles=_topology->getNbTriangles();
+    size_t nbEdges=_topology->getNbEdges();
+    size_t nbTriangles=_topology->getNbTriangles();
 
     Real val,L;
     TriangleRestInformation *tinfo;
@@ -237,7 +237,7 @@ void TriangularQuadraticSpringsForceField<DataTypes>::addForce(const core::Mecha
     Real _dampingRatio=f_dampingRatio.getValue();
 
 
-    for(int i=0; i<nbEdges; i++ )
+    for(unsigned int i=0; i<nbEdges; i++ )
     {
         einfo=&edgeInf[i];
         v0=_topology->getEdge(i)[0];
@@ -254,7 +254,7 @@ void TriangularQuadraticSpringsForceField<DataTypes>::addForce(const core::Mecha
     }
     if (f_useAngularSprings.getValue()==true)
     {
-        for(int i=0; i<nbTriangles; i++ )
+        for(unsigned int i=0; i<nbTriangles; i++ )
         {
             tinfo=&triangleInf[i];
             /// describe the jth edge index of triangle no i
@@ -433,14 +433,14 @@ void TriangularQuadraticSpringsForceField<DataTypes>::draw(const core::visual::V
         vparams->drawTool()->setPolygonMode(0, true);
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    int nbTriangles=_topology->getNbTriangles();
+    size_t nbTriangles=_topology->getNbTriangles();
     std::vector<sofa::defaulttype::Vector3> vertices;
     std::vector<sofa::defaulttype::Vec4f> colors;
     std::vector<sofa::defaulttype::Vector3> normals;
 
     vparams->drawTool()->disableLighting();
 
-    for(int i=0; i<nbTriangles; ++i)
+    for(unsigned int i=0; i<nbTriangles; ++i)
     {
         int a = _topology->getTriangle(i)[0];
         int b = _topology->getTriangle(i)[1];

@@ -308,7 +308,7 @@ template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init(
         _initialPoints=p;
     }
 
-    int i;
+    unsigned int i;
     // set edge tensor to 0
     for (i=0; i<_topology->getNbEdges(); ++i)
     {
@@ -375,7 +375,7 @@ void TriangularTensorMassForceField<DataTypes>::addDForce(const core::Mechanical
     Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
     unsigned int v0,v1;
-    int nbEdges=_topology->getNbEdges();
+    size_t nbEdges=_topology->getNbEdges();
     EdgeRestInformation *einfo;
 
     helper::vector<EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
@@ -383,7 +383,7 @@ void TriangularTensorMassForceField<DataTypes>::addDForce(const core::Mechanical
     Deriv force;
     Coord dp0,dp1,dp;
 
-    for(int i=0; i<nbEdges; i++ )
+    for(unsigned int i=0; i<nbEdges; i++ )
     {
         einfo=&edgeInf[i];
         v0=_topology->getEdge(i)[0];
@@ -422,7 +422,7 @@ void TriangularTensorMassForceField<DataTypes>::draw(const core::visual::VisualP
         vparams->drawTool()->setPolygonMode(0, true);
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    int nbTriangles=_topology->getNbTriangles();
+    size_t nbTriangles=_topology->getNbTriangles();
 
     std::vector<sofa::defaulttype::Vector3> vertices;
     std::vector<sofa::defaulttype::Vec4f> colors;
@@ -430,7 +430,7 @@ void TriangularTensorMassForceField<DataTypes>::draw(const core::visual::VisualP
 
     vparams->drawTool()->disableLighting();
 
-    for(int i=0; i<nbTriangles; ++i)
+    for(unsigned int i=0; i<nbTriangles; ++i)
     {
         int a = _topology->getTriangle(i)[0];
         int b = _topology->getTriangle(i)[1];
