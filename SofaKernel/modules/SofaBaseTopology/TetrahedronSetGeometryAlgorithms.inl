@@ -591,7 +591,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::computeTetrahedronVolume( Basi
 /// Finds the indices of all tetrahedra in the ball of center ind_ta and of radius dist(ind_ta, ind_tb)
 template<class DataTypes>
 void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const TetraID ind_ta, const TetraID ind_tb,
-        sofa::helper::vector<unsigned int> &indices) const
+        sofa::helper::vector<TetrahedronID> &indices) const
 {
     const typename DataTypes::VecCoord& vect_c =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
@@ -617,7 +617,7 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const TetraID
 /// Finds the indices of all tetrahedra in the ball of center ind_ta and of radius dist(ind_ta, ind_tb)
 template<class DataTypes>
 void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const TetraID ind_ta, Real r,
-        sofa::helper::vector<unsigned int> &indices) const
+        sofa::helper::vector<TetrahedronID> &indices) const
 {
     Real d = r;
     const Tetrahedron ta=this->m_topology->getTetrahedron(ind_ta);
@@ -629,29 +629,29 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const TetraID
     pa[1] = (Real) (ca[1]);
     pa[2] = (Real) (ca[2]);
 
-    unsigned int t_test=ind_ta;
+    TetrahedronID t_test=ind_ta;
     indices.push_back(t_test);
 
-    std::map<unsigned int, unsigned int> IndexMap;
+    std::map<TetrahedronID, TetrahedronID> IndexMap;
     IndexMap.clear();
     IndexMap[t_test]=0;
 
-    sofa::helper::vector<unsigned int> ind2test;
+    sofa::helper::vector<TetrahedronID> ind2test;
     ind2test.push_back(t_test);
-    sofa::helper::vector<unsigned int> ind2ask;
+    sofa::helper::vector<TetrahedronID> ind2ask;
     ind2ask.push_back(t_test);
 
     while(ind2test.size()>0)
     {
         ind2test.clear();
-        for (unsigned int t=0; t<ind2ask.size(); t++)
+        for (size_t t=0; t<ind2ask.size(); t++)
         {
-            unsigned int ind_t = ind2ask[t];
+            TetrahedronID ind_t = ind2ask[t];
             core::topology::BaseMeshTopology::TrianglesInTetrahedron adjacent_triangles = this->m_topology->getTrianglesInTetrahedron(ind_t);
 
-            for (unsigned int i=0; i<adjacent_triangles.size(); i++)
+            for (size_t i=0; i<adjacent_triangles.size(); i++)
             {
-                sofa::helper::vector< unsigned int > tetrahedra_to_remove = this->m_topology->getTetrahedraAroundTriangle(adjacent_triangles[i]);
+                sofa::helper::vector< TetrahedronID > tetrahedra_to_remove = this->m_topology->getTetrahedraAroundTriangle(adjacent_triangles[i]);
 
                 if(tetrahedra_to_remove.size()==2)
                 {
@@ -664,7 +664,7 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const TetraID
                         t_test=tetrahedra_to_remove[0];
                     }
 
-                    std::map<unsigned int, unsigned int>::iterator iter_1 = IndexMap.find(t_test);
+                    std::map<TetrahedronID, TetrahedronID>::iterator iter_1 = IndexMap.find(t_test);
                     if(iter_1 == IndexMap.end())
                     {
                         IndexMap[t_test]=0;
@@ -692,7 +692,7 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const TetraID
         }
 
         ind2ask.clear();
-        for (unsigned int t=0; t<ind2test.size(); t++)
+        for (size_t t=0; t<ind2test.size(); t++)
         {
             ind2ask.push_back(ind2test[t]);
         }
@@ -704,7 +704,7 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const TetraID
 /// Finds the indices of all tetrahedra in the ball of center c and of radius r
 template<class DataTypes>
 void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const Coord& c, Real r,
-        sofa::helper::vector<unsigned int> &indices) const
+        sofa::helper::vector<TetrahedronID> &indices) const
 {
     TetraID ind_ta = core::topology::BaseMeshTopology::InvalidID;
     sofa::defaulttype::Vec<3,Real> pa;
@@ -725,29 +725,29 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const Coord& 
 //      const Tetrahedron &ta=this->m_topology->getTetrahedron(ind_ta);
     const typename DataTypes::VecCoord& vect_c =(this->object->read(core::ConstVecCoordId::position())->getValue());
 
-    unsigned int t_test=ind_ta;
+    TetrahedronID t_test=ind_ta;
     indices.push_back(t_test);
 
-    std::map<unsigned int, unsigned int> IndexMap;
+    std::map<TetrahedronID, TetrahedronID> IndexMap;
     IndexMap.clear();
     IndexMap[t_test]=0;
 
-    sofa::helper::vector<unsigned int> ind2test;
+    sofa::helper::vector<TetrahedronID> ind2test;
     ind2test.push_back(t_test);
-    sofa::helper::vector<unsigned int> ind2ask;
+    sofa::helper::vector<TetrahedronID> ind2ask;
     ind2ask.push_back(t_test);
 
     while(ind2test.size()>0)
     {
         ind2test.clear();
-        for (unsigned int t=0; t<ind2ask.size(); t++)
+        for (size_t t=0; t<ind2ask.size(); t++)
         {
-            unsigned int ind_t = ind2ask[t];
+            TetrahedronID ind_t = ind2ask[t];
             core::topology::BaseMeshTopology::TrianglesInTetrahedron adjacent_triangles = this->m_topology->getTrianglesInTetrahedron(ind_t);
 
-            for (unsigned int i=0; i<adjacent_triangles.size(); i++)
+            for (size_t i=0; i<adjacent_triangles.size(); i++)
             {
-                sofa::helper::vector< unsigned int > tetrahedra_to_remove = this->m_topology->getTetrahedraAroundTriangle(adjacent_triangles[i]);
+                sofa::helper::vector< TetrahedronID > tetrahedra_to_remove = this->m_topology->getTetrahedraAroundTriangle(adjacent_triangles[i]);
 
                 if(tetrahedra_to_remove.size()==2)
                 {
@@ -760,7 +760,7 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const Coord& 
                         t_test=tetrahedra_to_remove[0];
                     }
 
-                    std::map<unsigned int, unsigned int>::iterator iter_1 = IndexMap.find(t_test);
+                    std::map<TetrahedronID, TetrahedronID>::iterator iter_1 = IndexMap.find(t_test);
                     if(iter_1 == IndexMap.end())
                     {
                         IndexMap[t_test]=0;
@@ -788,7 +788,7 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const Coord& 
         }
 
         ind2ask.clear();
-        for (unsigned int t=0; t<ind2test.size(); t++)
+        for (size_t t=0; t<ind2test.size(); t++)
         {
             ind2ask.push_back(ind2test[t]);
         }
@@ -810,7 +810,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::getIntersectionPointWithPlane(
     sofa::defaulttype::Vec<3,Real> intersection;
 
     //intersection with edge
-    for(unsigned int i=0; i<edgesInTetra.size(); i++)
+    for(size_t i=0; i<edgesInTetra.size(); i++)
     {
         p1=vect_c[edges[edgesInTetra[i]][0]]; p2=vect_c[edges[edgesInTetra[i]][1]];
         if(computeIntersectionEdgeWithPlane(p1,p2,c,normal,intersection))
@@ -829,7 +829,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::getIntersectionPointWithPlane(
             p1=vect_c[ta[i]];
             fprintf(f1,"%d %f %f %f\n",ta[i],p1[0],p1[1],p1[2]);
         }
-        for(unsigned int i=0; i<intersectedPoint.size(); i++)
+        for(size_t i=0; i<intersectedPoint.size(); i++)
         {
             fprintf(f2,"%f %f %f\n",intersectedPoint[i][0],intersectedPoint[i][1],intersectedPoint[i][2]);
         }
@@ -909,7 +909,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filen
 
     myfile << tea.size() <<"\n";
 
-    for (unsigned int i=0; i<tea.size(); ++i)
+    for (size_t i=0; i<tea.size(); ++i)
     {
         myfile << i+1 << " 4 1 1 4 " << tea[i][0]+1 << " " << tea[i][1]+1 << " " << tea[i][2]+1 << " " << tea[i][3]+1 <<"\n";
     }
@@ -941,7 +941,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visua
         const sofa::helper::vector<Tetrahedron> &tetraArray = this->m_topology->getTetrahedra();
 
         std::vector<defaulttype::Vector3> positions;
-        for (unsigned int i =0; i<tetraArray.size(); i++)
+        for (size_t i =0; i<tetraArray.size(); i++)
         {
 
             Tetrahedron the_tetra = tetraArray[i];
@@ -969,7 +969,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw(const core::visual::Visua
         std::vector<defaulttype::Vector3>   pos;
         pos.reserve(tetraArray.size()*4u);
 
-        for (unsigned int i = 0; i<tetraArray.size(); ++i)
+        for (size_t i = 0; i<tetraArray.size(); ++i)
         {
             const Tetrahedron& tet = tetraArray[i];
             for (unsigned int j = 0u; j<4u; ++j)
