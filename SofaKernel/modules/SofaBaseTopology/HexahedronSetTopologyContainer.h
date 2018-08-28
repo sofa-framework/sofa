@@ -269,7 +269,7 @@ public:
     /** \brief Returns the number of hexahedra in this topology.
      *	The difference to getNbHexahedra() is that this method does not generate the hexa array if it does not exist.
      */
-    unsigned int getNumberOfHexahedra() const;
+    size_t getNumberOfHexahedra() const;
 
 
     /** \brief Returns the number of topological element of the current topology.
