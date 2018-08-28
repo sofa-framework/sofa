@@ -112,7 +112,7 @@ protected:
         ozp::quadrature::detail::Interval<3> _integrationInterval;
 
         typedef Eigen::Matrix<double, 3, 12> shapeFunction;
-        helper::fixed_array<shapeFunction, 27> _NEulerB;
+        helper::fixed_array<shapeFunction, 27> _N;
 
         typedef Eigen::Matrix<double, 6, 12> deformationGradientFunction; ///< derivatives of the shape functions (Be)
         helper::fixed_array<deformationGradientFunction, 27> _BeMatrices; /// One Be function for each Gauss Point (27 in one beam element)

@@ -1074,7 +1074,7 @@ void MultiBeamForceField<DataTypes>::drawElement(int i, std::vector< defaulttype
     LambdaType computeGaussCoordinates = [&](double u1, double u2, double u3, double w1, double w2, double w3)
     {
         //Shape function
-        N = beamsData.getValue()[i]._NEulerB[gaussPointIt];
+        N = beamsData.getValue()[i]._N[gaussPointIt];
         Eigen::Matrix<double, 3, 1> u = N*disp;
 
         defaulttype::Vec3d beamVec = {u[0]+u1, u[1]+u2, u[2]+u3};
@@ -1188,6 +1188,25 @@ void MultiBeamForceField<DataTypes>::BeamInfo::init(double E, double yS, double 
     _Asy = _A;
     _Asz = _A;
 
+    double phiY, phiZ;
+    double L2 = L*L;
+    double kappaY = 1;
+    double kappaZ = 1;
+
+    if (_A == 0)
+    {
+        phiY = 0.0;
+        phiZ = 0.0;
+    }
+    else
+    {
+        phiY = (Real)(12.0*_E*_Iy / (kappaZ*_G*_A*L2));
+        phiZ = (Real)(12.0*_E*_Iz / (kappaY*_G*_A*L2));
+    }
+
+    double phiYInv = (Real)(1 / (1 + phiY));
+    double phiZInv = (Real)(1 / (1 + phiZ));
+
     _integrationInterval = ozp::quadrature::make_interval(0, -ySection / 2, -zSection / 2, L, ySection / 2, zSection / 2);
 
     //Computation of the Be matrix for this beam element, based on the integration points.
@@ -1196,60 +1215,123 @@ void MultiBeamForceField<DataTypes>::BeamInfo::init(double E, double yS, double 
     typedef std::function<void(double, double, double, double, double, double)> LambdaType;
 
     int i = 0; //Gauss Point iterator
-    LambdaType initialiseBeMatrix = [&](double u1, double u2, double u3, double w1, double w2, double w3)
+
+    //Euler-Bernoulli beam theory
+    LambdaType initBeMatrixEulerB = [&](double u1, double u2, double u3, double w1, double w2, double w3)
     {
         // Step 1: total strain computation
         double xi = u1 / _L;
         double eta = u2 / _L;
         double zeta = u3 / _L;
 
-        if (!isTimoshenko)
-        {
-            _BeMatrices[i](0, 0) = -1 / _L;
-            _BeMatrices[i](1, 0) = _BeMatrices[i](2, 0) = _BeMatrices[i](3, 0) = _BeMatrices[i](4, 0) = _BeMatrices[i](5, 0) = 0.0;
+        _BeMatrices[i](0, 0) = -1 / _L;
+        _BeMatrices[i](1, 0) = _BeMatrices[i](2, 0) = _BeMatrices[i](3, 0) = _BeMatrices[i](4, 0) = _BeMatrices[i](5, 0) = 0.0;
 
-            _BeMatrices[i](0, 1) = (6 * eta*(1 - 2 * xi)) / _L;
-            _BeMatrices[i](1, 1) = _BeMatrices[i](2, 1) = _BeMatrices[i](3, 1) = _BeMatrices[i](4, 1) = _BeMatrices[i](5, 1) = 0.0;
+        _BeMatrices[i](0, 1) = (6 * eta*(1 - 2 * xi)) / _L;
+        _BeMatrices[i](1, 1) = _BeMatrices[i](2, 1) = _BeMatrices[i](3, 1) = _BeMatrices[i](4, 1) = _BeMatrices[i](5, 1) = 0.0;
 
-            _BeMatrices[i](0, 2) = (6 * zeta*(1 - 2 * xi)) / _L;
-            _BeMatrices[i](1, 2) = _BeMatrices[i](2, 2) = _BeMatrices[i](3, 2) = _BeMatrices[i](4, 2) = _BeMatrices[i](5, 2) = 0.0;
+        _BeMatrices[i](0, 2) = (6 * zeta*(1 - 2 * xi)) / _L;
+        _BeMatrices[i](1, 2) = _BeMatrices[i](2, 2) = _BeMatrices[i](3, 2) = _BeMatrices[i](4, 2) = _BeMatrices[i](5, 2) = 0.0;
 
-            _BeMatrices[i](0, 3) = _BeMatrices[i](1, 3) = _BeMatrices[i](2, 3) = 0.0;
-            _BeMatrices[i](3, 3) = 0;
-            _BeMatrices[i](4, 3) = -eta / 2;
-            _BeMatrices[i](5, 3) = zeta / 2;
+        _BeMatrices[i](0, 3) = _BeMatrices[i](1, 3) = _BeMatrices[i](2, 3) = 0.0;
+        _BeMatrices[i](3, 3) = 0;
+        _BeMatrices[i](4, 3) = -eta / 2;
+        _BeMatrices[i](5, 3) = zeta / 2;
 
-            _BeMatrices[i](0, 4) = zeta * (6 * xi - 4);
-            _BeMatrices[i](1, 4) = _BeMatrices[i](2, 4) = _BeMatrices[i](3, 4) = _BeMatrices[i](4, 4) = _BeMatrices[i](5, 4) = 0.0;
+        _BeMatrices[i](0, 4) = zeta * (6 * xi - 4);
+        _BeMatrices[i](1, 4) = _BeMatrices[i](2, 4) = _BeMatrices[i](3, 4) = _BeMatrices[i](4, 4) = _BeMatrices[i](5, 4) = 0.0;
 
-            _BeMatrices[i](0, 5) = eta * (4 - 6 * xi);
-            _BeMatrices[i](1, 5) = _BeMatrices[i](2, 5) = _BeMatrices[i](3, 5) = _BeMatrices[i](4, 5) = _BeMatrices[i](5, 5) = 0.0;
+        _BeMatrices[i](0, 5) = eta * (4 - 6 * xi);
+        _BeMatrices[i](1, 5) = _BeMatrices[i](2, 5) = _BeMatrices[i](3, 5) = _BeMatrices[i](4, 5) = _BeMatrices[i](5, 5) = 0.0;
 
-            _BeMatrices[i].block<6, 1>(0, 6) = -_BeMatrices[i].block<6, 1>(0, 0);
+        _BeMatrices[i].block<6, 1>(0, 6) = -_BeMatrices[i].block<6, 1>(0, 0);
 
-            _BeMatrices[i].block<6, 1>(0, 7) = -_BeMatrices[i].block<6, 1>(0, 1);
+        _BeMatrices[i].block<6, 1>(0, 7) = -_BeMatrices[i].block<6, 1>(0, 1);
 
-            _BeMatrices[i].block<6, 1>(0, 8) = -_BeMatrices[i].block<6, 1>(0, 2);
+        _BeMatrices[i].block<6, 1>(0, 8) = -_BeMatrices[i].block<6, 1>(0, 2);
 
-            _BeMatrices[i](0, 9) = _BeMatrices[i](1, 9) = _BeMatrices[i](2, 9) = 0.0;
-            _BeMatrices[i](3, 9) = 0;
-            _BeMatrices[i](4, 9) = eta / 2;
-            _BeMatrices[i](5, 9) = -zeta / 2;
+        _BeMatrices[i](0, 9) = _BeMatrices[i](1, 9) = _BeMatrices[i](2, 9) = 0.0;
+        _BeMatrices[i](3, 9) = 0;
+        _BeMatrices[i](4, 9) = eta / 2;
+        _BeMatrices[i](5, 9) = -zeta / 2;
 
-            _BeMatrices[i](0, 10) = zeta * (6 * xi - 2);
-            _BeMatrices[i](1, 10) = _BeMatrices[i](2, 10) = _BeMatrices[i](3, 10) = _BeMatrices[i](4, 10) = _BeMatrices[i](5, 10) = 0.0;
+        _BeMatrices[i](0, 10) = zeta * (6 * xi - 2);
+        _BeMatrices[i](1, 10) = _BeMatrices[i](2, 10) = _BeMatrices[i](3, 10) = _BeMatrices[i](4, 10) = _BeMatrices[i](5, 10) = 0.0;
 
-            _BeMatrices[i](0, 11) = eta * (2 - 6 * xi);
-            _BeMatrices[i](1, 11) = _BeMatrices[i](2, 11) = _BeMatrices[i](3, 11) = _BeMatrices[i](4, 11) = _BeMatrices[i](5, 11) = 0.0;
-        }
+        _BeMatrices[i](0, 11) = eta * (2 - 6 * xi);
+        _BeMatrices[i](1, 11) = _BeMatrices[i](2, 11) = _BeMatrices[i](3, 11) = _BeMatrices[i](4, 11) = _BeMatrices[i](5, 11) = 0.0;
 
         i++;
     };
-    ozp::quadrature::integrate <GaussianQuadratureType, 3, LambdaType>(_integrationInterval, initialiseBeMatrix);
+
+    //Timoshenko beam theory
+    LambdaType initBeMatrixTimo = [&](double u1, double u2, double u3, double w1, double w2, double w3)
+    {
+        // Step 1: total strain computation
+        double xi = u1 / _L;
+        double eta = u2 / _L;
+        double zeta = u3 / _L;
+
+        //row 0
+        _BeMatrices[i](0, 0) = -1 / _L;
+        _BeMatrices[i](0, 1) = (phiZInv * 6 * eta * (1 - 2*xi)) / _L;
+        _BeMatrices[i](0, 2) = (phiYInv * 6 * zeta * (1 - 2*xi)) / _L;
+        _BeMatrices[i](0, 3) = 0;
+        _BeMatrices[i](0, 4) = phiYInv * zeta * (6*xi - 4 - phiY);
+        _BeMatrices[i](0, 5) = phiZInv * eta * (4 - 6*xi + phiZ);
+        _BeMatrices[i](0, 6) = 1 / _L;
+        _BeMatrices[i](0, 7) = (phiZInv * 6 * eta * (2*xi - 1)) / _L;
+        _BeMatrices[i](0, 8) = (phiYInv * 6 * zeta * (2*xi - 1)) / _L;
+        _BeMatrices[i](0, 9) = 0;
+        _BeMatrices[i](0, 10) = phiYInv * zeta * (6*xi - 2 + phiY);
+        _BeMatrices[i](0, 11) = phiZInv * eta * (2 - 6*xi - phiZ);
+
+        //rows 1, 2, 3
+        _BeMatrices[i](1, 0) = _BeMatrices[i](1, 1) = _BeMatrices[i](1, 2) = _BeMatrices[i](1, 3) = 0.0;
+        _BeMatrices[i](1, 4) = _BeMatrices[i](1, 5) = _BeMatrices[i](1, 6) = _BeMatrices[i](1, 7) = 0.0;
+        _BeMatrices[i](1, 8) = _BeMatrices[i](1, 9) = _BeMatrices[i](1, 10) = _BeMatrices[i](1, 11) = 0.0;
+
+        _BeMatrices[i](2, 0) = _BeMatrices[i](2, 1) = _BeMatrices[i](2, 2) = _BeMatrices[i](2, 3) = 0.0;
+        _BeMatrices[i](2, 4) = _BeMatrices[i](2, 5) = _BeMatrices[i](2, 6) = _BeMatrices[i](2, 7) = 0.0;
+        _BeMatrices[i](2, 8) = _BeMatrices[i](2, 9) = _BeMatrices[i](2, 10) = _BeMatrices[i](2, 11) = 0.0;
+
+        _BeMatrices[i](3, 0) = _BeMatrices[i](3, 1) = _BeMatrices[i](3, 2) = _BeMatrices[i](3, 3) = 0.0;
+        _BeMatrices[i](3, 4) = _BeMatrices[i](3, 5) = _BeMatrices[i](3, 6) = _BeMatrices[i](3, 7) = 0.0;
+        _BeMatrices[i](3, 8) = _BeMatrices[i](3, 9) = _BeMatrices[i](3, 10) = _BeMatrices[i](3, 11) = 0.0;
+
+        //row 4
+        _BeMatrices[i](4, 2) = -(phiYInv * phiY) / (2 * _L);
+        _BeMatrices[i](4, 3) = - eta / 2;
+        _BeMatrices[i](4, 4) = (phiYInv * phiY) / 4;
+        _BeMatrices[i](4, 8) = (phiYInv * phiY) / (2 * _L);
+        _BeMatrices[i](4, 9) = eta / 2;
+        _BeMatrices[i](4, 10) = (phiYInv * phiY) / 4;
+        _BeMatrices[i](4, 0) = _BeMatrices[i](4, 1) = _BeMatrices[i](4, 5) = 0.0;
+        _BeMatrices[i](4, 6) = _BeMatrices[i](4, 7) = _BeMatrices[i](4, 11) = 0.0;
+
+        //row5
+        _BeMatrices[i](5, 1) = -(phiZInv * phiZ) / (2 * _L);
+        _BeMatrices[i](5, 3) = zeta / 2;
+        _BeMatrices[i](5, 5) = -(phiZInv * phiZ) / 4;
+        _BeMatrices[i](5, 7) = (phiZInv * phiZ) / (2 * _L);
+        _BeMatrices[i](5, 9) = - zeta / 2;
+        _BeMatrices[i](5, 11) = -(phiZInv * phiZ) / 4;
+        _BeMatrices[i](5, 0) = _BeMatrices[i](5, 2) = _BeMatrices[i](5, 4) = 0.0;
+        _BeMatrices[i](5, 6) = _BeMatrices[i](5, 8) = _BeMatrices[i](5, 10) = 0.0;
+
+        i++;
+    };
+
+    if (isTimoshenko)
+        ozp::quadrature::integrate <GaussianQuadratureType, 3, LambdaType>(_integrationInterval, initBeMatrixTimo);
+    else
+        ozp::quadrature::integrate <GaussianQuadratureType, 3, LambdaType>(_integrationInterval, initBeMatrixEulerB);
 
 
     int gaussPointIt = 0; //Gauss Point iterator
-    LambdaType initialiseShapeFunctions = [&](double u1, double u2, double u3, double w1, double w2, double w3)
+
+    // Euler-Bernoulli beam model
+    LambdaType initialiseEBShapeFunctions = [&](double u1, double u2, double u3, double w1, double w2, double w3)
     {
         // Step 1: total strain computation
         double xi = u1 / _L;
@@ -1259,64 +1341,119 @@ void MultiBeamForceField<DataTypes>::BeamInfo::init(double E, double yS, double 
         double xi2 = xi*xi;
         double xi3 = xi*xi*xi;
 
-        if (!isTimoshenko)
-        {
-            _NEulerB[gaussPointIt](0, 0) = 1 - xi;
-            _NEulerB[gaussPointIt](0, 1) = 6 * (xi - xi2)*eta;
-            _NEulerB[gaussPointIt](0, 2) = 6 * (xi - xi2)*zeta;
-            _NEulerB[gaussPointIt](0, 3) = 0;
-            _NEulerB[gaussPointIt](0, 4) = (1 - 4 * xi + 3 * xi2)*_L*zeta;
-            _NEulerB[gaussPointIt](0, 5) = (-1 + 4 * xi - 3 * xi2)*_L*eta;
-            _NEulerB[gaussPointIt](0, 6) = xi;
-            _NEulerB[gaussPointIt](0, 7) = 6 * (-xi + xi2)*eta;
-            _NEulerB[gaussPointIt](0, 8) = 6 * (-xi + xi2)*zeta;
-            _NEulerB[gaussPointIt](0, 9) = 0;
-            _NEulerB[gaussPointIt](0, 10) = (-2 * xi* +3 * xi2)*_L*zeta;
-            _NEulerB[gaussPointIt](0, 11) = (2 * xi - 3 * xi2)*_L*eta;
+        _N[gaussPointIt](0, 0) = 1 - xi;
+        _N[gaussPointIt](0, 1) = 6 * (xi - xi2)*eta;
+        _N[gaussPointIt](0, 2) = 6 * (xi - xi2)*zeta;
+        _N[gaussPointIt](0, 3) = 0;
+        _N[gaussPointIt](0, 4) = (1 - 4*xi + 3*xi2)*_L*zeta;
+        _N[gaussPointIt](0, 5) = (-1 + 4*xi - 3*xi2)*_L*eta;
+        _N[gaussPointIt](0, 6) = xi;
+        _N[gaussPointIt](0, 7) = 6 * (-xi + xi2)*eta;
+        _N[gaussPointIt](0, 8) = 6 * (-xi + xi2)*zeta;
+        _N[gaussPointIt](0, 9) = 0;
+        _N[gaussPointIt](0, 10) = (-2*xi + 3*xi2)*_L*zeta;
+        _N[gaussPointIt](0, 11) = (2*xi - 3*xi2)*_L*eta;
 
-            _NEulerB[gaussPointIt](1, 0) = 0;
-            _NEulerB[gaussPointIt](1, 1) = 1 - 3 * xi2 + 2 * xi3;
-            _NEulerB[gaussPointIt](1, 2) = 0;
-            _NEulerB[gaussPointIt](1, 3) = (xi - 1)*_L*zeta;
-            _NEulerB[gaussPointIt](1, 4) = 0;
-            _NEulerB[gaussPointIt](1, 5) = (xi - 2 * xi2 + xi3)*_L;
-            _NEulerB[gaussPointIt](1, 6) = 0;
-            _NEulerB[gaussPointIt](1, 7) = 3 * xi2 - 2 * xi3;
-            _NEulerB[gaussPointIt](1, 8) = 0;
-            _NEulerB[gaussPointIt](1, 9) = -_L*xi*zeta;
-            _NEulerB[gaussPointIt](1, 10) = 0;
-            _NEulerB[gaussPointIt](1, 11) = (-xi2 + xi3)*_L;
+        _N[gaussPointIt](1, 0) = 0;
+        _N[gaussPointIt](1, 1) = 1 - 3*xi2 + 2*xi3;
+        _N[gaussPointIt](1, 2) = 0;
+        _N[gaussPointIt](1, 3) = (xi - 1)*_L*zeta;
+        _N[gaussPointIt](1, 4) = 0;
+        _N[gaussPointIt](1, 5) = (xi - 2*xi2 + xi3)*_L;
+        _N[gaussPointIt](1, 6) = 0;
+        _N[gaussPointIt](1, 7) = 3*xi2 - 2*xi3;
+        _N[gaussPointIt](1, 8) = 0;
+        _N[gaussPointIt](1, 9) = -_L*xi*zeta;
+        _N[gaussPointIt](1, 10) = 0;
+        _N[gaussPointIt](1, 11) = (-xi2 + xi3)*_L;
 
-            _NEulerB[gaussPointIt](2, 0) = 0;
-            _NEulerB[gaussPointIt](2, 1) = 0;
-            _NEulerB[gaussPointIt](2, 2) = 1 - 3 * xi2 + 2 * xi3;
-            _NEulerB[gaussPointIt](2, 3) = (1 - xi)*_L*eta;
-            _NEulerB[gaussPointIt](2, 4) = (-xi + 2 * xi2 - xi3)*_L;
-            _NEulerB[gaussPointIt](2, 5) = 0;
-            _NEulerB[gaussPointIt](2, 6) = 0;
-            _NEulerB[gaussPointIt](2, 7) = 0;
-            _NEulerB[gaussPointIt](2, 8) = 3 * xi2 - 2 * xi3;
-            _NEulerB[gaussPointIt](2, 9) = _L*xi*eta;
-            _NEulerB[gaussPointIt](2, 10) = (xi2 - xi3)*_L;
-            _NEulerB[gaussPointIt](2, 11) = 0;
-        }
+        _N[gaussPointIt](2, 0) = 0;
+        _N[gaussPointIt](2, 1) = 0;
+        _N[gaussPointIt](2, 2) = 1 - 3*xi2 + 2*xi3;
+        _N[gaussPointIt](2, 3) = (1 - xi)*_L*eta;
+        _N[gaussPointIt](2, 4) = (-xi + 2*xi2 - xi3)*_L;
+        _N[gaussPointIt](2, 5) = 0;
+        _N[gaussPointIt](2, 6) = 0;
+        _N[gaussPointIt](2, 7) = 0;
+        _N[gaussPointIt](2, 8) = 3*xi2 - 2*xi3;
+        _N[gaussPointIt](2, 9) = _L*xi*eta;
+        _N[gaussPointIt](2, 10) = (xi2 - xi3)*_L;
+        _N[gaussPointIt](2, 11) = 0;
 
         gaussPointIt++;
     };
-    ozp::quadrature::integrate <GaussianQuadratureType, 3, LambdaType>(_integrationInterval, initialiseShapeFunctions);
 
-    //Intialises the drawing points shape functions
-    for (int i = 1; i < _nbCentrelineSeg; i++)
+    // Timoshenko beam model
+    LambdaType initialiseTShapeFunctions = [&](double u1, double u2, double u3, double w1, double w2, double w3)
     {
-        double xi = i*(_L / _nbCentrelineSeg) / _L;
+        double xi = u1 / _L;
+        double eta = u2 / _L;
+        double zeta = u3 / _L;
+
         double xi2 = xi*xi;
         double xi3 = xi*xi*xi;
 
-        //NB :
-        //double eta = 0;
-        //double zeta = 0;
-        if (!isTimoshenko)
+        _N[gaussPointIt](0, 0) = 1 - xi;
+        _N[gaussPointIt](0, 1) = 6 * phiZInv * (xi - xi2)*eta;
+        _N[gaussPointIt](0, 2) = 6 * phiYInv * (xi - xi2)*zeta;
+        _N[gaussPointIt](0, 3) = 0;
+        _N[gaussPointIt](0, 4) =  _L * phiYInv * (1 - 4*xi + 3*xi2 + phiY*(1 - xi))*zeta;
+        _N[gaussPointIt](0, 5) = -_L * phiZInv * (1 - 4*xi + 3*xi2 + phiZ*(1 - xi))*eta;
+        _N[gaussPointIt](0, 6) = xi;
+        _N[gaussPointIt](0, 7) = 6 * phiZInv * (-xi + xi2)*eta;
+        _N[gaussPointIt](0, 8) = 6 * phiYInv * (-xi + xi2)*zeta;
+        _N[gaussPointIt](0, 9) = 0;
+        _N[gaussPointIt](0, 10) =  _L * phiYInv * (-2*xi + 3*xi2 + phiY*xi)*zeta;
+        _N[gaussPointIt](0, 11) = -_L * phiZInv * (-2*xi + 3*xi2 + phiZ*xi)*eta;
+
+        _N[gaussPointIt](1, 0) = 0;
+        _N[gaussPointIt](1, 1) = phiZInv * (1 - 3*xi2 + 2*xi3 + phiZ*(1 - xi));
+        _N[gaussPointIt](1, 2) = 0;
+        _N[gaussPointIt](1, 3) = (xi - 1)*_L*zeta;
+        _N[gaussPointIt](1, 4) = 0;
+        _N[gaussPointIt](1, 5) = _L * phiZInv * (xi - 2*xi2 + xi3 + (phiZ/2)*(xi - xi2));
+        _N[gaussPointIt](1, 6) = 0;
+        _N[gaussPointIt](1, 7) = phiZInv * (3*xi2 - 2*xi3 + phiZ*xi);
+        _N[gaussPointIt](1, 8) = 0;
+        _N[gaussPointIt](1, 9) = -_L * xi  *zeta;
+        _N[gaussPointIt](1, 10) = 0;
+        _N[gaussPointIt](1, 11) = _L * phiZInv *(-xi2 + xi3 - (phiZ/2)*(xi - xi2));
+
+        _N[gaussPointIt](2, 0) = 0;
+        _N[gaussPointIt](2, 1) = 0;
+        _N[gaussPointIt](2, 2) = phiYInv * (1 - 3*xi2 + 2*xi3 + phiY*(1 - xi));
+        _N[gaussPointIt](2, 3) = (1 - xi) * _L * eta;
+        _N[gaussPointIt](2, 4) = -_L * phiYInv * (xi - 2*xi2 + xi3 + (phiY/2)*(xi - xi2));
+        _N[gaussPointIt](2, 5) = 0;
+        _N[gaussPointIt](2, 6) = 0;
+        _N[gaussPointIt](2, 7) = 0;
+        _N[gaussPointIt](2, 8) = phiYInv * (3*xi2 - 2*xi3 + phiY*xi);
+        _N[gaussPointIt](2, 9) = _L * xi * eta;
+        _N[gaussPointIt](2, 10) = -_L * phiYInv * (-xi2 + xi3 - (phiY/2)*(xi - xi2));
+        _N[gaussPointIt](2, 11) = 0;
+
+        gaussPointIt++;
+    };
+
+    if (isTimoshenko)
+        ozp::quadrature::integrate <GaussianQuadratureType, 3, LambdaType>(_integrationInterval, initialiseTShapeFunctions);
+    else
+        ozp::quadrature::integrate <GaussianQuadratureType, 3, LambdaType>(_integrationInterval, initialiseEBShapeFunctions);
+
+    //Intialises the drawing points shape functions
+
+    if (!isTimoshenko)
+    {
+        for (int i = 1; i < _nbCentrelineSeg; i++)
         {
+            double xi = i*(_L / _nbCentrelineSeg) / _L;
+            double xi2 = xi*xi;
+            double xi3 = xi*xi*xi;
+
+            //NB :
+            //double eta = 0;
+            //double zeta = 0;
+
             _drawN[i - 1](0, 0) = 1 - xi;
             _drawN[i - 1](0, 1) = 0;
             _drawN[i - 1](0, 2) = 0;
@@ -1356,7 +1493,57 @@ void MultiBeamForceField<DataTypes>::BeamInfo::init(double E, double yS, double 
             _drawN[i - 1](2, 10) = (xi2 - xi3)*_L;
             _drawN[i - 1](2, 11) = 0;
         }
-        
+    }
+    else
+    {
+        for (int i = 1; i < _nbCentrelineSeg; i++)
+        {
+            double xi = i*(_L / _nbCentrelineSeg) / _L;
+            double xi2 = xi*xi;
+            double xi3 = xi*xi*xi;
+
+            //NB :
+            //double eta = 0;
+            //double zeta = 0;
+            _drawN[i - 1](0, 0) = 1 - xi;
+            _drawN[i - 1](0, 1) = 0;
+            _drawN[i - 1](0, 2) = 0;
+            _drawN[i - 1](0, 3) = 0;
+            _drawN[i - 1](0, 4) = 0;
+            _drawN[i - 1](0, 5) = 0;
+            _drawN[i - 1](0, 6) = xi;
+            _drawN[i - 1](0, 7) = 0;
+            _drawN[i - 1](0, 8) = 0;
+            _drawN[i - 1](0, 9) = 0;
+            _drawN[i - 1](0, 10) = 0;
+            _drawN[i - 1](0, 11) = 0;
+
+            _drawN[i - 1](1, 0) = 0;
+            _drawN[i - 1](1, 1) = phiZInv * (1 - 3*xi2 + 2*xi3 + phiZ*(1 - xi));
+            _drawN[i - 1](1, 2) = 0;
+            _drawN[i - 1](1, 3) = 0;
+            _drawN[i - 1](1, 4) = 0;
+            _drawN[i - 1](1, 5) = _L * phiZInv * (xi - 2*xi2 + xi3 + (phiZ/2)*(xi - xi2));
+            _drawN[i - 1](1, 6) = 0;
+            _drawN[i - 1](1, 7) = phiZInv * (3*xi2 - 2*xi3 + phiZ*xi);
+            _drawN[i - 1](1, 8) = 0;
+            _drawN[i - 1](1, 9) = 0;
+            _drawN[i - 1](1, 10) = 0;
+            _drawN[i - 1](1, 11) = _L * phiZInv *(-xi2 + xi3 - (phiZ/2)*(xi - xi2));
+
+            _drawN[i - 1](2, 0) = 0;
+            _drawN[i - 1](2, 1) = 0;
+            _drawN[i - 1](2, 2) = phiYInv * (1 - 3*xi2 + 2*xi3 + phiY*(1 - xi));
+            _drawN[i - 1](2, 3) = 0;
+            _drawN[i - 1](2, 4) = -_L * phiYInv * (xi - 2*xi2 + xi3 + (phiY/2)*(xi - xi2));
+            _drawN[i - 1](2, 5) = 0;
+            _drawN[i - 1](2, 6) = 0;
+            _drawN[i - 1](2, 7) = 0;
+            _drawN[i - 1](2, 8) = phiYInv * (3*xi2 - 2*xi3 + phiY*xi);
+            _drawN[i - 1](2, 9) = 0;
+            _drawN[i - 1](2, 10) = -_L * phiYInv * (-xi2 + xi3 - (phiY/2)*(xi - xi2));
+            _drawN[i - 1](2, 11) = 0;
+        }
     }
 
     //Initialises the plastic indicators
