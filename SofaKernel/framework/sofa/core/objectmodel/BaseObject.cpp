@@ -162,7 +162,7 @@ void BaseObject::setSrc(const std::string &valueString, const BaseObject *loader
         {
             if (!(*it_map).second->isAutoLink())
             {
-                msg_warning() << "Disabling autolink for Data " << data->getName();
+                msg_info() << "Disabling autolink for Data " << data->getName();
             }
             else
             {
