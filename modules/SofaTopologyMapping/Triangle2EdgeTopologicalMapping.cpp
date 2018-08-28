@@ -213,7 +213,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                                 }
                             }
 
-                            if((int) ind_k != ind_last)
+                            if(ind_k != ind_last)
                             {
 
                                 Glob2LocMap.erase(Glob2LocMap.find(Loc2GlobVec[ind_last]));

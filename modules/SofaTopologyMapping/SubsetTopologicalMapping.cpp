@@ -711,7 +711,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
                             inDst = false;
                     }
                 if (!inDst) continue;
-                unsigned int ed = unsigned int(eD0+nDadd);
+                unsigned int ed = (unsigned int)(eD0+nDadd);
                 edgeArray.push_back(data);
                 edgeIndexArray.push_back(ed);
                 eD2S.resize(ed+1);
@@ -860,7 +860,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
                             inDst = false;
                     }
                 if (!inDst) continue;
-                unsigned int td = unsigned int(tD0+nDadd);
+                unsigned int td = (unsigned int)(tD0+nDadd);
                 triangleArray.push_back(data);
                 triangleIndexArray.push_back(td);
                 tD2S.resize(td+1);
