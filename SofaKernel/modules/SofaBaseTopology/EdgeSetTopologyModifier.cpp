@@ -534,8 +534,8 @@ void EdgeSetTopologyModifier::splitEdgesProcess(sofa::helper::vector<EdgeID> &in
         v[i][1] = p2;
 
         // Adding the new Edges
-        const Edge e1( p1, (PointID)m_container->getNbPoints() + i );
-        const Edge e2( (PointID)m_container->getNbPoints() + i, p2 );
+        const Edge e1( p1, (PointID)(m_container->getNbPoints() + i ));
+        const Edge e2( (PointID)(m_container->getNbPoints() + i), p2 );
         edges.push_back( e1 );
         edges.push_back( e2 );
         edgesIndex.push_back((EdgeID)nbEdges++);
@@ -591,8 +591,8 @@ void EdgeSetTopologyModifier::splitEdgesProcess(sofa::helper::vector<EdgeID> &in
         v[i][1] = p2;
 
         // Adding the new Edges
-        const Edge e1( p1, (PointID)m_container->getNbPoints() + i );
-        const Edge e2( (PointID)m_container->getNbPoints() + i, p2 );
+        const Edge e1( p1, (PointID)(m_container->getNbPoints() + i) );
+        const Edge e2( (PointID)(m_container->getNbPoints() + i), p2 );
         edges.push_back( e1 );
         edges.push_back( e2 );
         edgesIndex.push_back((EdgeID)nbEdges++);
@@ -672,7 +672,7 @@ void EdgeSetTopologyModifier::addEdges(const sofa::helper::vector< Edge >& edges
 
     for (size_t i=0; i<edges.size(); ++i)
     {
-        edgesIndex.push_back((EdgeID)nEdges+i);
+        edgesIndex.push_back((EdgeID)(nEdges+i));
     }
 
     // add topology event in the stack of topological events
@@ -696,7 +696,7 @@ void EdgeSetTopologyModifier::addEdges(const sofa::helper::vector< Edge >& edges
 
     for (size_t i=0; i<edges.size(); ++i)
     {
-        edgesIndex.push_back((EdgeID)nEdges+i);
+        edgesIndex.push_back((EdgeID)(nEdges+i));
     }
 
     // add topology event in the stack of topological events
@@ -709,7 +709,7 @@ void EdgeSetTopologyModifier::addEdges(const sofa::helper::vector< Edge >& edges
 void EdgeSetTopologyModifier::addEdges(const sofa::helper::vector< Edge >& edges,
         const sofa::helper::vector< core::topology::EdgeAncestorElem >& ancestorElems)
 {
-    size_t nEdges = m_container->getNumberOfEdges();
+    size_t nEdge = m_container->getNumberOfEdges();
 
     assert(ancestorElems.size() == edges.size());
 
@@ -720,7 +720,7 @@ void EdgeSetTopologyModifier::addEdges(const sofa::helper::vector< Edge >& edges
     edgesIndex.resize(edges.size());
     for (size_t i=0; i<edges.size(); ++i)
     {
-        edgesIndex[i] = (EdgeID)nEdges+i;
+        edgesIndex[i] = (EdgeID)(nEdge + i);
     }
 
     // add topology event in the stack of topological events

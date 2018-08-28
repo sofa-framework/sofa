@@ -71,7 +71,7 @@ void TetrahedronSetTopologyModifier::addTetrahedra(const sofa::helper::vector<Te
     tetrahedraIndex.reserve(tetrahedra.size());
 
     for (size_t i=0; i<tetrahedra.size(); ++i)
-        tetrahedraIndex.push_back(ntetra+i);
+        tetrahedraIndex.push_back(TetrahedronID(ntetra+i));
 
     // add topology event in the stack of topological events
     addTetrahedraWarning(tetrahedra.size(), tetrahedra, tetrahedraIndex);
@@ -94,7 +94,7 @@ void TetrahedronSetTopologyModifier::addTetrahedra(const sofa::helper::vector<Te
     tetrahedraIndex.reserve(tetrahedra.size());
 
     for (size_t i=0; i<tetrahedra.size(); ++i)
-        tetrahedraIndex.push_back(ntetra+i);
+        tetrahedraIndex.push_back(TetrahedronID(ntetra+i));
 
     // add topology event in the stack of topological events
     addTetrahedraWarning(tetrahedra.size(), tetrahedra, tetrahedraIndex, ancestors, baryCoefs);

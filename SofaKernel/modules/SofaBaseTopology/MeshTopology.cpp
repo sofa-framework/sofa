@@ -2641,7 +2641,7 @@ void MeshTopology::draw(const core::visual::VisualParams* vparams)
     {
         std::vector<defaulttype::Vector3> pos;
         pos.reserve(this->getNbEdges()*2u);
-        for (int i=0; i<getNbEdges(); i++)
+        for (EdgeID i=0; i<getNbEdges(); i++)
         {
             const Edge& c = getEdge(i);
             pos.push_back(defaulttype::Vector3(getPosX(c[0]), getPosY(c[0]), getPosZ(c[0])));
@@ -2655,7 +2655,7 @@ void MeshTopology::draw(const core::visual::VisualParams* vparams)
     {
         std::vector<defaulttype::Vector3> pos;
         pos.reserve(this->getNbTriangles()*3u);
-        for (int i=0; i<getNbTriangles(); i++)
+        for (TriangleID i=0; i<getNbTriangles(); i++)
         {
             const Triangle& c = getTriangle(i);
             pos.push_back(defaulttype::Vector3(getPosX(c[0]), getPosY(c[0]), getPosZ(c[0])));
@@ -2670,7 +2670,7 @@ void MeshTopology::draw(const core::visual::VisualParams* vparams)
     {
         std::vector<defaulttype::Vector3> pos;
         pos.reserve(this->getNbQuads()*4u);
-        for (int i=0; i<getNbQuads(); i++)
+        for (QuadID i=0; i<getNbQuads(); i++)
         {
             const Quad& c = getQuad(i);
             pos.push_back(defaulttype::Vector3(getPosX(c[0]), getPosY(c[0]), getPosZ(c[0])));
@@ -2688,7 +2688,7 @@ void MeshTopology::draw(const core::visual::VisualParams* vparams)
         std::vector<defaulttype::Vector3> pos2;
         pos1.reserve(this->getNbHexahedra()*8u);
         pos2.reserve(this->getNbHexahedra()*8u);
-        for (int i=0; i<getNbHexahedra(); i++)
+        for (HexahedronID i=0; i<getNbHexahedra(); i++)
         {
             const Hexa& c = getHexahedron(i);
             pos1.push_back(defaulttype::Vector3(getPosX(c[0]), getPosY(c[0]), getPosZ(c[0])));
@@ -2718,7 +2718,7 @@ void MeshTopology::draw(const core::visual::VisualParams* vparams)
     {
         std::vector<defaulttype::Vector3> pos;
         pos.reserve(this->getNbTetrahedra()*12u);
-        for (int i=0; i<getNbTetras(); i++)
+        for (TetrahedronID i=0; i<getNbTetras(); i++)
         {
             const Tetra& t = getTetra(i);
             pos.push_back(defaulttype::Vector3(getPosX(t[0]), getPosY(t[0]), getPosZ(t[0])));

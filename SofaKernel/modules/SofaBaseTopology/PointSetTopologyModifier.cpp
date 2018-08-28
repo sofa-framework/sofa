@@ -72,10 +72,10 @@ void PointSetTopologyModifier::addPointsProcess(const size_t nPoints)
 void PointSetTopologyModifier::addPointsWarning(const size_t nPoints, const bool addDOF)
 {
     m_container->setPointTopologyToDirty();
-    const PointID startIndex = m_container->getNbPoints()-nPoints;
+    const size_t startIndex = m_container->getNbPoints()-nPoints;
     sofa::helper::vector <PointID> indices; indices.resize(nPoints);
     for(size_t i=0; i<nPoints; ++i)
-        indices[i] = startIndex+i;
+        indices[i] = PointID(startIndex+i);
 
     if(addDOF)
     {
@@ -96,10 +96,10 @@ void PointSetTopologyModifier::addPointsWarning(const size_t nPoints,
         const bool addDOF)
 {
     m_container->setPointTopologyToDirty();
-    const PointID startIndex = m_container->getNbPoints()-nPoints;
+    const size_t startIndex = m_container->getNbPoints()-nPoints;
     sofa::helper::vector <PointID> indices; indices.resize(nPoints);
     for(size_t i=0; i<nPoints; ++i)
-        indices[i] = startIndex+i;
+        indices[i] = PointID(startIndex+i);
 
     if(addDOF)
     {
@@ -127,7 +127,7 @@ void PointSetTopologyModifier::addPointsWarning(const size_t nPoints,
     // Compute standard points construction info based on ancestor points
     // related to topology elems and local coordinates
 
-    const PointID startIndex = m_container->getNbPoints() - nPoints;
+    const size_t startIndex = m_container->getNbPoints() - nPoints;
 
     helper::vector< PointID > newPointIndices;
     helper::vector< helper::vector< PointID > > ancestorPointIndices;
@@ -139,7 +139,7 @@ void PointSetTopologyModifier::addPointsWarning(const size_t nPoints,
 
     for(size_t i = 0; i < nPoints; ++i)
     {
-        newPointIndices[i] = startIndex + i;
+        newPointIndices[i] = PointID(startIndex + i);
         PointID ancestorIndex = ancestorElems[i].index;
         // check if this new point has indeed an ancestor.
         if (ancestorIndex != core::topology::BaseMeshTopology::InvalidID )

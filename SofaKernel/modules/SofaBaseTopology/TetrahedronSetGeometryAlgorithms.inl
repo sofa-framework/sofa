@@ -87,11 +87,11 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::defineTetrahedronCubaturePoi
     /// integration with quadric accuracy.
     qpa.clear();
     v=BarycentricCoordinatesType(0.25,0.25,0.25,0.25);
-    Real c= -0.131555555555555556e-01;
+    Real c= (Real)-0.131555555555555556e-01;
     qpa.push_back(QuadraturePoint(v,(Real)c ));
     a=(Real)0.714285714285714285e-01;
     b=(Real)1-3*a;
-    Real c1=0.762222222222222222e-02;
+    Real c1=(Real)0.762222222222222222e-02;
     for (i=0;i<4;++i) {
         v=BarycentricCoordinatesType(a,a,a,a);
         v[i]=b;
@@ -297,12 +297,12 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::defineTetrahedronCubaturePoi
     // See software PHG http://lsec.cc.ac.cn/phg/
     qpa.clear();
     v=BarycentricCoordinatesType(0.25,0.25,0.25,0.25);
-    c1= (Real).04574189830483037077884770618329337/6.0;
+    c1= (Real)(.04574189830483037077884770618329337/6.0);
     qpa.push_back(QuadraturePoint(v,(Real)c1 ));
     // 4 points
     a=(Real).11425191803006935688146412277598412;
     b=1-3*a;
-    c3=(Real)0.01092727610912416907498417206565671/6.0;
+    c3=(Real)(0.01092727610912416907498417206565671/6.0);
     for (i=0;i<4;++i) {
         v=BarycentricCoordinatesType(a,a,a,a);
         v[i]=b;
@@ -311,7 +311,7 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::defineTetrahedronCubaturePoi
     // 4 points
     a=(Real).01063790234539248531264164411274776;
     b=1-3*a;
-    c3=(Real).00055352334192264689534558564012282/6.0;
+    c3=(Real)(.00055352334192264689534558564012282/6.0);
     for (i=0;i<4;++i) {
         v=BarycentricCoordinatesType(a,a,a,a);
         v[i]=b;
@@ -320,7 +320,7 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::defineTetrahedronCubaturePoi
     // 4 points
     a=(Real).31274070833535645859816704980806110;
     b=1-3*a;
-    c3=(Real).02569337913913269580782688316792080/6.0;
+    c3=(Real)(.02569337913913269580782688316792080/6.0);
     for (i=0;i<4;++i) {
         v=BarycentricCoordinatesType(a,a,a,a);
         v[i]=b;
@@ -340,7 +340,7 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::defineTetrahedronCubaturePoi
     a=(Real).03430622963180452385835196582344460;
     b=(Real) .59830121060139461905983787517050400;
     c=(Real) 1-2*a-b;
-    d=(Real) .01044842402938294329072628200105773/6.0;
+    d=(Real) (.01044842402938294329072628200105773/6.0);
     for (i=0;i<6;++i) {
         v=BarycentricCoordinatesType(a,a,a,a);
         v[edgesInTetrahedronArray[i][0]]=b;
@@ -368,7 +368,7 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::defineTetrahedronCubaturePoi
     a=(Real).40991962933181117418479812480531207;
     b=(Real).16546413290740130923509687990363569;
     c=(Real) 1-2*a-b;
-    d=(Real) .01178620679249594711782155323755017/6.0;
+    d=(Real) (.01178620679249594711782155323755017/6.0);
     for (i=0;i<6;++i) {
         v=BarycentricCoordinatesType(a,a,a,a);
         v[edgesInTetrahedronArray[i][0]]=b;
