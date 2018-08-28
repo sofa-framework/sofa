@@ -259,7 +259,7 @@ void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
         std::vector<defaulttype::Vector3> points;
         for (unsigned int i=0; i<indices.size(); i++)
         {
-            Real xx,xy,xz,fx,fy,fz;
+            Real xx = 0.0, xy = 0.0, xz = 0.0, fx = 0.0, fy = 0.0, fz = 0.0;
 
             if (!d_indexFromEnd.getValue())
             {
@@ -288,7 +288,7 @@ void ConstantForceField<DataTypes>::draw(const core::visual::VisualParams* vpara
         vparams->drawTool()->setLightingEnabled(true);
         for (unsigned int i=0; i<indices.size(); i++)
         {
-            Real xx,xy,xz,fx,fy,fz;
+            Real xx = 0.0, xy = 0.0, xz = 0.0, fx = 0.0, fy = 0.0, fz = 0.0;
 
             if (!d_indexFromEnd.getValue())
             {

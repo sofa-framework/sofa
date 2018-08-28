@@ -416,9 +416,10 @@ void Mesh2PointMechanicalMapping<TIn, TOut>::applyJT(const core::ConstraintParam
 
             while (colIt != colItEnd)
             {
-                const unsigned int indexIn = colIt.index();
+                const unsigned int indexUIn = colIt.index();
                 const OutDeriv data = colIt.val();
-                std::pair< Mesh2PointTopologicalMapping::Element, int> source = pointSource[indexIn];
+                std::pair< Mesh2PointTopologicalMapping::Element, int> source = pointSource[indexUIn];
+                int indexIn = (int)indexUIn;
 
                 switch (source.first)
                 {
