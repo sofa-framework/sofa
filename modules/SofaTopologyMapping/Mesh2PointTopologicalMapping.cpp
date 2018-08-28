@@ -118,7 +118,7 @@ void Mesh2PointTopologicalMapping::init()
                 pointsMappedFrom[POINT].resize(fromModel->getNbPoints());
                 for (int i=0; i<fromModel->getNbPoints(); i++)
                 {
-                    toModelLastPointIndex+=addInputPoint(i);
+                    toModelLastPointIndex+=(int)addInputPoint((unsigned int)i);
                 }
             }
 
@@ -277,7 +277,7 @@ void Mesh2PointTopologicalMapping::init()
 }
 
 /// Check consistency of internal maps and output topology
-bool Mesh2PointTopologicalMapping::internalCheck(const char* step, const helper::fixed_array <int, NB_ELEMENTS >& nbInputRemoved)
+bool Mesh2PointTopologicalMapping::internalCheck(const char* step, const helper::fixed_array <size_t, NB_ELEMENTS >& nbInputRemoved)
 {
     bool ok = true;
     unsigned int nbPOut = (unsigned int)toModel->getNbPoints();
@@ -286,13 +286,13 @@ bool Mesh2PointTopologicalMapping::internalCheck(const char* step, const helper:
         serr << "Internal Error after " << step << ": pointSource size " << pointSource.size() << " != output topology size " << nbPOut << sendl;
         ok = false;
     }
-    unsigned int nbPMapped = 0;
+    size_t nbPMapped = 0;
     for (int type=0; type<NB_ELEMENTS; ++type)
     {
         const vector< vector<int> >& pointsMapped = pointsMappedFrom[type];
         std::string typestr;
-        unsigned int nbEIn = 0;
-        unsigned int nbEPOut = 0;
+        size_t nbEIn = 0;
+        size_t nbEPOut = 0;
         switch (type)
         {
         case POINT :    typestr="Point";    nbEIn = fromModel->getNbPoints();     nbEPOut = pointBaryCoords.getValue().size(); break;
@@ -410,7 +410,7 @@ size_t Mesh2PointTopologicalMapping::addInputPoint(unsigned int i, PointSetTopol
     
     for (unsigned int j = 0; j < pBaryCoords.size(); j++)
     {        
-        pointsMappedFrom[POINT][i].push_back(pointSource.size());
+        pointsMappedFrom[POINT][i].push_back((unsigned int)pointSource.size());
         pointSource.push_back(std::make_pair(POINT, i));
     }
     
@@ -440,7 +440,7 @@ void Mesh2PointTopologicalMapping::addInputEdge(unsigned int i, PointSetTopology
 
     for (unsigned int j = 0; j < eBaryCoords.size(); j++)
     {
-        pointsMappedFrom[EDGE][i].push_back(pointSource.size());
+        pointsMappedFrom[EDGE][i].push_back((unsigned int)pointSource.size());
         pointSource.push_back(std::make_pair(EDGE, i));
     }
 
@@ -484,7 +484,7 @@ void Mesh2PointTopologicalMapping::addInputTriangle(unsigned int i, PointSetTopo
 
     for (unsigned int j = 0; j < tBaryCoords.size(); j++)
     {
-        pointsMappedFrom[TRIANGLE][i].push_back(pointSource.size());
+        pointsMappedFrom[TRIANGLE][i].push_back((unsigned int)pointSource.size());
         pointSource.push_back(std::make_pair(TRIANGLE,i));
     }
 
@@ -531,7 +531,7 @@ void Mesh2PointTopologicalMapping::addInputTetrahedron(unsigned int i, PointSetT
 
     for (unsigned int j = 0; j < tBaryCoords.size(); j++)
     {
-        pointsMappedFrom[TETRA][i].push_back(pointSource.size());
+        pointsMappedFrom[TETRA][i].push_back((unsigned int)pointSource.size());
         pointSource.push_back(std::make_pair(TETRA,i));
     }
 
@@ -576,7 +576,7 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
         //HexahedronSetTopologyModifier *toHexahedronMod = NULL;
         toModel->getContext()->get(toPointMod, sofa::core::objectmodel::BaseContext::Local);
         bool check = false;
-        helper::fixed_array <int, NB_ELEMENTS > nbInputRemoved;
+        helper::fixed_array <size_t, NB_ELEMENTS > nbInputRemoved;
         nbInputRemoved.assign(0);
         std::string laststep = "";
         while( changeIt != itEnd )
@@ -875,7 +875,7 @@ void Mesh2PointTopologicalMapping::swapInput(Element elem, int i1, int i2)
 void Mesh2PointTopologicalMapping::removeInput(Element elem,  const sofa::helper::vector<unsigned int>& index )
 {
     if (pointsMappedFrom[elem].empty()) return;
-    unsigned int last = pointsMappedFrom[elem].size() -1;
+    unsigned int last = (unsigned int)pointsMappedFrom[elem].size() -1;
 
     for (unsigned int i = 0; i < index.size(); ++i)
     {
@@ -950,7 +950,7 @@ void Mesh2PointTopologicalMapping::swapOutputPoints(int i1, int i2, bool removeL
 
 void Mesh2PointTopologicalMapping::removeOutputPoints( const sofa::helper::vector<unsigned int>& index )
 {
-    unsigned int last = pointSource.size() - 1;
+    unsigned int last = (unsigned int)pointSource.size() - 1;
 
     for (unsigned int i = 0; i < index.size(); ++i)
     {

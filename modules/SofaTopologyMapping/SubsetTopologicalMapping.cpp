@@ -494,8 +494,8 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
         case core::topology::POINTSADDED:
         {
             const PointsAdded * pAdd = static_cast< const PointsAdded * >( topoChange );
-            unsigned int pS0 = (samePoints.getValue() ? toModel->getNbPoints() : pS2D.size());
-            unsigned int nSadd = pAdd->getNbAddedVertices();
+            size_t pS0 = (samePoints.getValue() ? toModel->getNbPoints() : pS2D.size());
+            size_t nSadd = pAdd->getNbAddedVertices();
             sout << "[" << count << "]POINTSADDED : " << nSadd << " : " << pS0 << " - " << (pS0 + nSadd-1) << sendl;
             if (samePoints.getValue())
             {
@@ -507,14 +507,14 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
             {
                 helper::vector< helper::vector<Index> > ancestors;
                 helper::vector< helper::vector<double> > coefs;
-                unsigned int nDadd = 0;
-                unsigned int pD0 = pD2S.size();
+                size_t nDadd = 0;
+                size_t pD0 = pD2S.size();
                 pS2D.resize(pS0+nSadd);
                 ancestors.reserve(pAdd->ancestorsList.size());
                 coefs.reserve(pAdd->coefs.size());
                 for (Index pi = 0; pi < nSadd; ++pi)
                 {
-                    Index ps = pS0+pi;
+                    size_t ps = pS0+pi;
                     pS2D[ps] = core::topology::Topology::InvalidID;
                     bool inDst = true;
                     if (!pAdd->ancestorsList.empty())
@@ -525,10 +525,10 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
                                 inDst = false;
                         }
                     if (!inDst) continue;
-                    Index pd = pD0+nDadd;
+                    size_t pd = pD0+nDadd;
                     pD2S.resize(pd+1);
-                    pS2D[ps] = pd;
-                    pD2S[pd] = ps;
+                    pS2D[ps] = (unsigned int)pd;
+                    pD2S[pd] = (unsigned int)ps;
 
                     if (!pAdd->ancestorsList.empty())
                     {
@@ -579,7 +579,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
                 sout << "[" << count << "]POINTSREMOVED : " << tab.size() << " -> " << tab2.size() << " : " << tab << " -> " << tab2 << sendl;
                 // apply removals in pS2D
                 {
-                    unsigned int last = pS2D.size() -1;
+                    size_t last = pS2D.size() -1;
                     for (unsigned int i = 0; i < tab.size(); ++i)
                     {
                         Index ps = tab[i];
@@ -601,7 +601,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
                     toPointMod->removePointsProcess(tab2, true);
                     // apply removals in pD2S
                     {
-                        unsigned int last = pD2S.size() -1;
+                        size_t last = pD2S.size() -1;
                         for (unsigned int i = 0; i < tab2.size(); ++i)
                         {
                             Index pd = tab2[i];
@@ -685,10 +685,10 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
             helper::vector< Index > edgeIndexArray;
             helper::vector< helper::vector<Index> > ancestors;
             helper::vector< helper::vector<double> > coefs;
-            unsigned int nSadd = eAdd->getNbAddedEdges();
+            size_t nSadd = eAdd->getNbAddedEdges();
             unsigned int nDadd = 0;
-            unsigned int eS0 = eS2D.size();
-            unsigned int eD0 = eD2S.size();
+            size_t eS0 = eS2D.size();
+            size_t eD0 = eD2S.size();
             eS2D.resize(eS0+nSadd);
             edgeArray.reserve(eAdd->edgeArray.size());
             edgeIndexArray.reserve(eAdd->edgeIndexArray.size());
@@ -711,7 +711,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
                             inDst = false;
                     }
                 if (!inDst) continue;
-                Index ed = eD0+nDadd;
+                unsigned int ed = unsigned int(eD0+nDadd);
                 edgeArray.push_back(data);
                 edgeIndexArray.push_back(ed);
                 eD2S.resize(ed+1);
@@ -763,7 +763,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
             sout << "[" << count << "]EDGESREMOVED : " << tab.size() << " -> " << tab2.size() << " : " << tab << " -> " << tab2 << sendl;
             // apply removals in eS2D
             {
-                unsigned int last = eS2D.size() -1;
+                size_t last = eS2D.size() -1;
                 for (unsigned int i = 0; i < tab.size(); ++i)
                 {
                     Index es = tab[i];
@@ -785,7 +785,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
                 toEdgeMod->removeEdgesProcess(tab2, false);
                 // apply removals in eD2S
                 {
-                    unsigned int last = eD2S.size() -1;
+                    size_t last = eD2S.size() -1;
                     for (unsigned int i = 0; i < tab2.size(); ++i)
                     {
                         Index ed = tab2[i];
@@ -814,7 +814,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
             sout << "[" << count << "]TRIANGLESADDED : " << tAdd->getNbAddedTriangles() << " : " << tAdd->triangleIndexArray << " : " << tAdd->triangleArray << sendl;
             if (!tAdd->ancestorsList.empty())
             {
-                int count = 0;
+                size_t count = 0;
                 double sum = 0.0;
                 sout << "   ";
                 for (unsigned int i = 0; i < tAdd->ancestorsList.size(); ++i)
@@ -834,10 +834,10 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
             helper::vector< Index > triangleIndexArray;
             helper::vector< helper::vector<Index> > ancestors;
             helper::vector< helper::vector<double> > coefs;
-            unsigned int nSadd = tAdd->getNbAddedTriangles();
+            size_t nSadd = tAdd->getNbAddedTriangles();
             unsigned int nDadd = 0;
-            unsigned int tS0 = tS2D.size();
-            unsigned int tD0 = tD2S.size();
+            size_t tS0 = tS2D.size();
+            size_t tD0 = tD2S.size();
             tS2D.resize(tS0+nSadd);
             triangleArray.reserve(tAdd->triangleArray.size());
             triangleIndexArray.reserve(tAdd->triangleIndexArray.size());
@@ -860,7 +860,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
                             inDst = false;
                     }
                 if (!inDst) continue;
-                Index td = tD0+nDadd;
+                unsigned int td = unsigned int(tD0+nDadd);
                 triangleArray.push_back(data);
                 triangleIndexArray.push_back(td);
                 tD2S.resize(td+1);
@@ -912,7 +912,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
             sout << "[" << count << "]TRIANGLESREMOVED : " << tab.size() << " -> " << tab2.size() << " : " << tab << " -> " << tab2 << sendl;
             // apply removals in tS2D
             {
-                unsigned int last = tS2D.size() -1;
+                size_t last = tS2D.size() -1;
                 for (unsigned int i = 0; i < tab.size(); ++i)
                 {
                     Index ts = tab[i];
@@ -934,7 +934,7 @@ void SubsetTopologicalMapping::updateTopologicalMappingTopDown()
                 toTriangleMod->removeTrianglesProcess(tab2, !handleEdges.getValue());
                 // apply removals in tD2S
                 {
-                    unsigned int last = tD2S.size() -1;
+                    size_t last = tD2S.size() -1;
                     for (unsigned int i = 0; i < tab2.size(); ++i)
                     {
                         Index td = tab2[i];
