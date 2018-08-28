@@ -126,7 +126,7 @@ void Mesh2PointTopologicalMapping::init()
             if (!edgeBaryCoords.getValue().empty())
             {
                 pointsMappedFrom[EDGE].resize(fromModel->getNbEdges());
-                for (int i=0; i<fromModel->getNbEdges(); i++)
+                for (unsigned int i=0; i<fromModel->getNbEdges(); i++)
                 {
                     addInputEdge(i, NULL);
                 }
@@ -136,7 +136,7 @@ void Mesh2PointTopologicalMapping::init()
             if (copyEdges.getValue())
             {
                 sout << "Copying " << fromModel->getNbEdges() << " edges" << sendl;
-                for (int i=0; i<fromModel->getNbEdges(); i++)
+                for (unsigned int i=0; i<fromModel->getNbEdges(); i++)
                 {
                     Edge e = fromModel->getEdge(i);
                     for (unsigned int j=0; j<e.size(); ++j)
@@ -152,7 +152,7 @@ void Mesh2PointTopologicalMapping::init()
             if (!triangleBaryCoords.getValue().empty())
             {
                 pointsMappedFrom[TRIANGLE].resize(fromModel->getNbTriangles());
-                for (int i=0; i<fromModel->getNbTriangles(); i++)
+                for (unsigned int i=0; i<fromModel->getNbTriangles(); i++)
                 {
                     addInputTriangle(i, NULL);
                 }
@@ -162,7 +162,7 @@ void Mesh2PointTopologicalMapping::init()
             if (copyTriangles.getValue())
             {
                 sout << "Copying " << fromModel->getNbTriangles() << " triangles" << sendl;
-                for (int i=0; i<fromModel->getNbTriangles(); i++)
+                for (unsigned int i=0; i<fromModel->getNbTriangles(); i++)
                 {
                     Triangle t = fromModel->getTriangle(i);
                     for (unsigned int j=0; j<t.size(); ++j)
@@ -178,7 +178,7 @@ void Mesh2PointTopologicalMapping::init()
             if (!quadBaryCoords.getValue().empty())
             {
                 pointsMappedFrom[QUAD].resize(fromModel->getNbQuads());
-                for (int i=0; i<fromModel->getNbQuads(); i++)
+                for (unsigned int i=0; i<fromModel->getNbQuads(); i++)
                 {
                     for (unsigned int j=0; j<quadBaryCoords.getValue().size(); j++)
                     {
@@ -210,7 +210,7 @@ void Mesh2PointTopologicalMapping::init()
             if (!tetraBaryCoords.getValue().empty())
             {
                 pointsMappedFrom[TETRA].resize(fromModel->getNbTetrahedra());
-                for (int i=0; i<fromModel->getNbTetrahedra(); i++)
+                for (unsigned int i=0; i<fromModel->getNbTetrahedra(); i++)
                 {
 					addInputTetrahedron(i, NULL);
                 }
@@ -220,7 +220,7 @@ void Mesh2PointTopologicalMapping::init()
             {
 
                 sout << "Copying " << fromModel->getNbTetrahedra() << " tetrahedra" << sendl;
-                for (int i=0; i<fromModel->getNbTetrahedra(); i++)
+                for (unsigned int i=0; i<fromModel->getNbTetrahedra(); i++)
                 {
                     Tetrahedron t = fromModel->getTetrahedron(i);
                     for (unsigned int j=0; j<t.size(); ++j)
@@ -235,7 +235,7 @@ void Mesh2PointTopologicalMapping::init()
             if (!hexaBaryCoords.getValue().empty())
             {
                 pointsMappedFrom[HEXA].resize(fromModel->getNbHexahedra());
-                for (int i=0; i<fromModel->getNbHexahedra(); i++)
+                for (unsigned int i=0; i<fromModel->getNbHexahedra(); i++)
                 {
                     for (unsigned int j=0; j<hexaBaryCoords.getValue().size(); j++)
                     {

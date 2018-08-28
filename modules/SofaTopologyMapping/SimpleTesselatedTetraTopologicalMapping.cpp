@@ -105,7 +105,7 @@ void SimpleTesselatedTetraTopologicalMapping::init()
 
             int newPointIndex = to_tstc->getNbPoints();
 
-            for (int i=0; i<from_tstc->getNbEdges(); i++)
+            for (unsigned int i=0; i<from_tstc->getNbEdges(); i++)
             {
                 Edge e = from_tstc->getEdge(i);
 
@@ -125,7 +125,7 @@ void SimpleTesselatedTetraTopologicalMapping::init()
 
             tetraSourceData.resize(8*from_tstc->getNbTetrahedra());
 
-            for (int i=0; i<from_tstc->getNbTetrahedra(); i++)
+            for (unsigned int i=0; i<from_tstc->getNbTetrahedra(); i++)
             {
                 core::topology::BaseMeshTopology::Tetra t = from_tstc->getTetrahedron(i);
                 core::topology::BaseMeshTopology::EdgesInTetrahedron e = from_tstc->getEdgesInTetrahedron(i);
