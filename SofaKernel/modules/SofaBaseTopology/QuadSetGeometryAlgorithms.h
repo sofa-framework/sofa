@@ -98,7 +98,7 @@ public:
     * is included or not in the plane defined by (ind_p, plane_vect)
     *
     */
-    bool isQuadInPlane(const QuadID ind_q, const unsigned int ind_p,
+    bool isQuadInPlane(const QuadID ind_q, const PointID ind_p,
             const defaulttype::Vec<3,Real>& plane_vect) const;
 
     bool isPointInQuad(const QuadID ind_q, const sofa::defaulttype::Vec<3,Real>& p) const;

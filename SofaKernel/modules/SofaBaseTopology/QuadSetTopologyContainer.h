@@ -188,7 +188,7 @@ public:
     /** \brief Returns the number of quads in this topology.
      * The difference to getNbQuads() is that this method does not generate the quad array if it does not exist.
      */
-    unsigned int getNumberOfQuads() const;
+    size_t getNumberOfQuads() const;
 
 
     /** \brief Returns the number of topological element of the current topology.
