@@ -146,7 +146,14 @@ void addGUIParameters(ArgumentParser* argumentParser)
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
-    GuiDataRepository.addFirstPath(Utils::getSofaPathTo("share/sofa/gui/runSofa/resources").c_str()) ;
+    // Add resources dir to GuiDataRepository
+    const std::string sofaIniFilePath = Utils::getSofaPathPrefix() + "/etc/runSofa.ini";
+    std::map<std::string, std::string> iniFileValues = Utils::readBasicIniFile(sofaIniFilePath);
+    if (iniFileValues.find("RESOURCES_DIR") != iniFileValues.end())
+    {
+        GuiDataRepository.addFirstPath( iniFileValues["RESOURCES_DIR"] );
+    }
+
     sofa::helper::BackTrace::autodump();
 
     ExecParams::defaultInstance()->setAspectID(0);
