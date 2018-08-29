@@ -155,11 +155,10 @@ class DataEngine(Sofa.PythonScriptDataEngine):
 
 
 class initData:
-    def __init__(self, name="unknown", datatype="", default="", help="No description provided"):
+    arguments = {}
+    def __init__(self, name="unknown", **kw):
         self.name=name
-        self.datatype = datatype
-        self.default = default
-        self.help = help
+        self.arguments = kw
 
 def ParseInputs(func):
     def wrapper(*args, **kwargs):
@@ -172,17 +171,21 @@ def ParseInputs(func):
             if engine.getData(key): # if the datafield already exists in the engine
                 continue
             d = engine.args.get(key, initData())
-            if d.name is "unknown":
+            if d.name == "unknown":
                 if key != "type":
                     Sofa.msg_warning("unknown datafield " + key + " found ")
-            if d.datatype is not "":
-                engine.addNewInput(key, datatype=d.datatype, value=(d.value if val is "" else val),
-                                 help=d.help)
+                else: break;
+            if d.arguments['datatype'] is not "":
+                engine.addNewInput(key, datatype=d.arguments['datatype'], value=(d.arguments['value'] if val is "" else val),
+                                   help=d.arguments['help'])
             else:
-                engine.addNewInput(key, value=(d.value if val is "" else val),
-                                 help=d.help)
+                engine.addNewInput(key, value=(d.arguments['value'] if val is "" else val),
+                                   help=d.arguments['help'])
         for key in set(engine.args.keys()) - set(dico.keys()):
             d = engine.args.get(key)
-            engine.addNewInput(key, datatype=d.datatype, value=d.default, help=d.help)
+            if 'default' in d.arguments:
+                engine.addNewInput(key, datatype=d.arguments['datatype'], value=d.arguments['default'], help=d.arguments['help'])
+            else:
+                Sofa.msg_error(engine.name + ": Required field " + key + " was not provided.")
 
     return wrapper
