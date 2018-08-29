@@ -19,8 +19,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-#include <sofa/helper/testing/BaseTest.h>
+#include <SofaTest/Sofa_test.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <SofaCarving/CarvingManager.h>
 #include <SofaSimulationGraph/SimpleApi.h>
@@ -31,18 +30,18 @@ using namespace sofa::simpleapi;
 using namespace sofa::simpleapi::components;
 
 
-class SofaCarving_test : public BaseTest
+class SofaCarving_test : public sofa::Sofa_test<>
 {
 public:
     SofaCarving_test()
-        : BaseTest()
+        : Sofa_test()
         , m_simu(NULL)
         , m_root(NULL)
     {
-
+        sofa::helper::system::DataRepository.addFirstPath(SOFACARVING_TEST_RESOURCES_DIR);
     }
 
-    bool createScene();
+    bool createScene(const std::string& carvingDistance);
 
     bool ManagerEmpty();
     bool ManagerInit();
@@ -55,11 +54,11 @@ private:
 };
 
 
-bool SofaCarving_test::createScene()
+bool SofaCarving_test::createScene(const std::string& carvingDistance)
 {
     m_simu = createSimulation("DAG");
     m_root = createRootNode(m_simu, "root");
-    
+   
     // set scene variables
     m_root->setGravity(sofa::defaulttype::Vector3(0.0, 0.0, -0.9));
     m_root->setDt(0.01);
@@ -75,8 +74,8 @@ bool SofaCarving_test::createScene()
         { "alarmDistance", "0.5" },
         { "contactDistance", "0.1" }
     });
-
-    createObject(m_root, "DefaultCollisionGroupManager", { { "name", "Collision Group Manager" } });
+    
+    createObject(m_root, "CollisionGroupManager", { { "name", "Collision Group Manager" } });
 
 
     // create solver
@@ -96,7 +95,8 @@ bool SofaCarving_test::createScene()
     
     // create carving
     createObject(m_root, "CarvingManager", { { "name","Carving Manager" },
-        { "active","1" }
+        { "active","1" },
+        { "carvingDistance", carvingDistance }
         }
     );
 
@@ -109,7 +109,7 @@ bool SofaCarving_test::createScene()
 
     createObject(nodeVolume, "MechanicalObject", {
         { "name","Volume" },
-        { "template","vec3" },
+        { "template","Vec3" },
         { "src", "@loader" }
     });
 
@@ -123,11 +123,11 @@ bool SofaCarving_test::createScene()
         });
     createObject(nodeVolume, "TetrahedronSetTopologyAlgorithms", {
         { "name","TopoAlgo" },
-        { "template", "vec3" }
+        { "template", "Vec3" }
         });
     createObject(nodeVolume, "TetrahedronSetGeometryAlgorithms", {
         { "name","GeomAlgo" },
-        { "template", "vec3" }
+        { "template", "Vec3" }
         });
 
     
@@ -138,7 +138,7 @@ bool SofaCarving_test::createScene()
     
     createObject(nodeVolume, "BoxROI", {
         { "name", "ROI1" },
-        { "template", "vec3" },
+        { "template", "Vec3" },
         { "box", "-1 -1 -1 1 1 0.01" }
     });
     createObject(nodeVolume, "FixedConstraint", {
@@ -164,11 +164,11 @@ bool SofaCarving_test::createScene()
         });
     createObject(nodeSurface, "TriangleSetTopologyAlgorithms", {
         { "name","TopoAlgo" },
-        { "template", "vec3" }
+        { "template", "Vec3" }
         });
     createObject(nodeSurface, "TriangleSetGeometryAlgorithms", {
         { "name","GeomAlgo" },
-        { "template", "vec3" }
+        { "template", "Vec3" }
         });
 
     createObject(nodeSurface, "Tetra2TriangleTopologicalMapping", {
@@ -182,10 +182,6 @@ bool SofaCarving_test::createScene()
         { "tags", "CarvingSurface" }
         });
 
-    createObject(nodeSurface, "PointSet", {
-        { "name", "Point Model" },
-        { "tags", "CarvingSurface" }
-        });
 
 
     // create carving Node
@@ -193,7 +189,7 @@ bool SofaCarving_test::createScene()
 
     createObject(nodeCarv, "MechanicalObject", {
         { "name","Particles" },
-        { "template","vec3" },
+        { "template","Vec3" },
         { "position", "0 0 1.4" },
         { "velocity", "0 0 0" }
     });
@@ -224,12 +220,26 @@ bool SofaCarving_test::ManagerEmpty()
 
 bool SofaCarving_test::ManagerInit()
 {
-    bool res = createScene();
+    bool res = createScene("0.1");
+    if (!res)
+        return false;
 
-    if (res)
-        m_simu->init(m_root.get());
+    // init scene
+    m_simu->init(m_root.get());
+    
+    // get node of the mesh
+    sofa::simulation::Node* cylinder = m_root->getChild("cylinder");
+    EXPECT_NE(cylinder, nullptr);
 
-    //m_root->getMeshTopology();
+    // getting topology
+    sofa::core::topology::BaseMeshTopology* topo = cylinder->getMeshTopology();
+    EXPECT_NE(topo, nullptr);
+
+    // checking topo at start
+    EXPECT_EQ(topo->getNbPoints(), 510);
+    EXPECT_EQ(topo->getNbEdges(), 3119);
+    EXPECT_EQ(topo->getNbTriangles(), 5040);
+    EXPECT_EQ(topo->getNbTetrahedra(), 2430);
 
     return res;
 }
@@ -237,30 +247,65 @@ bool SofaCarving_test::ManagerInit()
 
 bool SofaCarving_test::doCarving()
 {
-    bool res = createScene();
+    bool res = createScene("0.1");
     if (!res)
         return false;
 
-    if (m_root == NULL)
-        return false;
+    // init scene
+    m_simu->init(m_root.get());
 
+    // get node of the mesh
+    sofa::simulation::Node* cylinder = m_root->getChild("cylinder");
+    EXPECT_NE(cylinder, nullptr);
 
+    // getting topology
+    sofa::core::topology::BaseMeshTopology* topo = cylinder->getMeshTopology();
+    EXPECT_NE(topo, nullptr);
 
+    // perform some steps
+    for (unsigned int i = 0; i < 30; ++i)
+    {
+        m_simu->animate(m_root.get());
+    }
+
+    // checking topo after carving
+    EXPECT_EQ(topo->getNbPoints(), 170);
+    EXPECT_EQ(topo->getNbEdges(), 709);
+    EXPECT_EQ(topo->getNbTriangles(), 900);
+    EXPECT_EQ(topo->getNbTetrahedra(), 360);
+    
     return true;
 }
 
 
 bool SofaCarving_test::doCarvingWithPenetration()
 {
-    bool res = createScene();
+    bool res = createScene("-0.0001");
     if (!res)
         return false;
 
-    if (m_root == NULL)
-        return false;
+    // init scene
+    m_simu->init(m_root.get());
 
-    sofa::core::topology::BaseMeshTopology* _topo = m_root->getMeshTopology();
-    size_t nbrT = _topo->getNbTetrahedra();
+    // get node of the mesh
+    sofa::simulation::Node* cylinder = m_root->getChild("cylinder");
+    EXPECT_NE(cylinder, nullptr);
+
+    // getting topology
+    sofa::core::topology::BaseMeshTopology* topo = cylinder->getMeshTopology();
+    EXPECT_NE(topo, nullptr);
+
+    // perform some steps
+    for (unsigned int i = 0; i < 30; ++i)
+    {
+        m_simu->animate(m_root.get());
+    }
+
+    // checking topo after carving
+    EXPECT_EQ(topo->getNbPoints(), 310);
+    EXPECT_EQ(topo->getNbEdges(), 1529);
+    EXPECT_EQ(topo->getNbTriangles(), 2180);
+    EXPECT_EQ(topo->getNbTetrahedra(), 960);
 
     return true;
 }
