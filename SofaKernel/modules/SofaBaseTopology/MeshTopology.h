@@ -113,11 +113,11 @@ public:
 
     // Random accessors
 
-    virtual int getNbEdges() override;
-    virtual int getNbTriangles() override;
-    virtual int getNbQuads() override;
-    virtual int getNbTetrahedra() override;
-    virtual int getNbHexahedra() override;
+    virtual size_t getNbEdges() override;
+    virtual size_t getNbTriangles() override;
+    virtual size_t getNbQuads() override;
+    virtual size_t getNbTetrahedra() override;
+    virtual size_t getNbHexahedra() override;
 
     virtual const Edge getEdge(EdgeID i) override;
     virtual const Triangle getTriangle(TriangleID i) override;
@@ -130,7 +130,7 @@ public:
     typedef defaulttype::Vector2						UV;
     typedef helper::vector<UV>				SeqUV;
     virtual const SeqUV& getUVs();
-    virtual int getNbUVs();
+    virtual size_t getNbUVs();
     virtual const UV getUV(UVID i);
     void addUV(SReal u, SReal v);
     //

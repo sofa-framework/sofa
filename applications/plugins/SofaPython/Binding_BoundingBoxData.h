@@ -19,51 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_ProjectToPlaneConstraint_CPP
-#include <SofaBoundaryCondition/ProjectToPlaneConstraint.inl>
-#include <sofa/core/ObjectFactory.h>
+#ifndef BINDING_BOUNDINGBOX_H
+#define BINDING_BOUNDINGBOX_H
 
-#include <sofa/simulation/Node.h>
+#include "PythonMacros.h"
 
-namespace sofa
-{
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/BoundingBox.h>
 
-namespace component
-{
+SP_DECLARE_CLASS_TYPE(BoundingBox)
 
-namespace projectiveconstraintset
-{
-
-using namespace sofa::defaulttype;
-using namespace sofa::helper;
-
-
-SOFA_DECL_CLASS(ProjectToPlaneConstraint)
-
-int ProjectToPlaneConstraintClass = core::RegisterObject("Attach given particles to their initial positions")
-#ifndef SOFA_FLOAT
-        .add< ProjectToPlaneConstraint<Vec3dTypes> >()
-        .add< ProjectToPlaneConstraint<Vec2dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< ProjectToPlaneConstraint<Vec3fTypes> >()
-        .add< ProjectToPlaneConstraint<Vec2fTypes> >()
-#endif
-        ;
-
-#ifndef SOFA_FLOAT
-template class SOFA_BOUNDARY_CONDITION_API ProjectToPlaneConstraint<Vec3dTypes>;
-template class SOFA_BOUNDARY_CONDITION_API ProjectToPlaneConstraint<Vec2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_BOUNDARY_CONDITION_API ProjectToPlaneConstraint<Vec3fTypes>;
-template class SOFA_BOUNDARY_CONDITION_API ProjectToPlaneConstraint<Vec2fTypes>;
-#endif
-
-
-} // namespace projectiveconstraintset
-
-} // namespace component
-
-} // namespace sofa
-
+#endif // BINDING_BOUNDINGBOX_H

@@ -25,7 +25,7 @@
 #include <SofaBoundaryCondition/SurfacePressureForceField.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/helper/gl/template.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <vector>
 #include <set>
 #include <iostream>
@@ -475,70 +475,43 @@ const typename SurfacePressureForceField<DataTypes>::Real SurfacePressureForceFi
     return 0.0;
 }
 
-
-
 template<class DataTypes>
 void SurfacePressureForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
-    if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-
-    glDisable(GL_LIGHTING);
-
-    glColor4f(0.f,0.8f,0.3f,1.f);
-
-    glBegin(GL_LINE_LOOP);
-    glVertex3d(m_min.getValue()[0],m_min.getValue()[1],m_min.getValue()[2]);
-    glVertex3d(m_max.getValue()[0],m_min.getValue()[1],m_min.getValue()[2]);
-    glVertex3d(m_max.getValue()[0],m_min.getValue()[1],m_max.getValue()[2]);
-    glVertex3d(m_min.getValue()[0],m_min.getValue()[1],m_max.getValue()[2]);
-    glEnd();
-
-    glBegin(GL_LINE_LOOP);
-    glVertex3d(m_min.getValue()[0],m_max.getValue()[1],m_min.getValue()[2]);
-    glVertex3d(m_max.getValue()[0],m_max.getValue()[1],m_min.getValue()[2]);
-    glVertex3d(m_max.getValue()[0],m_max.getValue()[1],m_max.getValue()[2]);
-    glVertex3d(m_min.getValue()[0],m_max.getValue()[1],m_max.getValue()[2]);
-    glEnd();
-
-    glBegin(GL_LINES);
-    glVertex3d(m_min.getValue()[0],m_min.getValue()[1],m_min.getValue()[2]);
-    glVertex3d(m_min.getValue()[0],m_max.getValue()[1],m_min.getValue()[2]);
-
-    glVertex3d(m_max.getValue()[0],m_min.getValue()[1],m_min.getValue()[2]);
-    glVertex3d(m_max.getValue()[0],m_max.getValue()[1],m_min.getValue()[2]);
-
-    glVertex3d(m_max.getValue()[0],m_min.getValue()[1],m_max.getValue()[2]);
-    glVertex3d(m_max.getValue()[0],m_max.getValue()[1],m_max.getValue()[2]);
-
-    glVertex3d(m_min.getValue()[0],m_min.getValue()[1],m_max.getValue()[2]);
-    glVertex3d(m_min.getValue()[0],m_max.getValue()[1],m_max.getValue()[2]);
-    glEnd();
-
+    vparams->drawTool()->saveLastState();
 
     if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        vparams->drawTool()->setPolygonMode(0, true);
+
+    vparams->drawTool()->disableLighting();
+
+    const sofa::defaulttype::RGBAColor boxcolor(0.0, 0.8, 0.3, 1.0);
+
+    vparams->drawTool()->setMaterial(boxcolor);
+    vparams->drawTool()->drawBoundingBox(DataTypes::getCPos(m_min.getValue()), DataTypes::getCPos(m_max.getValue()));
+
+    if (vparams->displayFlags().getShowWireFrame())
+        vparams->drawTool()->setPolygonMode(0, false);
 
 
     helper::ReadAccessor<DataVecCoord> x = this->mstate->read(core::ConstVecCoordId::position());
     if (m_drawForceScale.getValue() && m_f.size()==x.size())
     {
         std::vector< defaulttype::Vector3 > points;
-        const sofa::defaulttype::Vec<4,float> color(0,1,0.5,1);
+        const sofa::defaulttype::RGBAColor color(0,1,0.5,1);
 
         for (unsigned int i=0; i<x.size(); i++)
         {
-            points.push_back(x[i]);
-            points.push_back(x[i]+m_f[i]*m_drawForceScale.getValue());
+            points.push_back(DataTypes::getCPos(x[i]));
+            points.push_back(DataTypes::getCPos(x[i]) + DataTypes::getDPos(m_f[i])*m_drawForceScale.getValue());
         }
         vparams->drawTool()->drawLines(points, 1, color);
     }
-#endif /* SOFA_NO_OPENGL */
+
+    vparams->drawTool()->restoreLastState();
 }
 
 #ifndef SOFA_FLOAT
@@ -687,70 +660,6 @@ void SurfacePressureForceField<defaulttype::Rigid3dTypes>::verifyDerivative(VecD
 {
 }
 
-template<>
-void SurfacePressureForceField<defaulttype::Rigid3dTypes>::draw(const core::visual::VisualParams* vparams)
-{
-#ifndef SOFA_NO_OPENGL
-	if (!vparams->displayFlags().getShowForceFields()) return;
-	if (!this->mstate) return;
-
-	if (vparams->displayFlags().getShowWireFrame())
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-
-	glDisable(GL_LIGHTING);
-
-	glColor4f(0.f,0.8f,0.3f,1.f);
-
-	glBegin(GL_LINE_LOOP);
-	glVertex3d(m_min.getValue()[0],m_min.getValue()[1],m_min.getValue()[2]);
-	glVertex3d(m_max.getValue()[0],m_min.getValue()[1],m_min.getValue()[2]);
-	glVertex3d(m_max.getValue()[0],m_min.getValue()[1],m_max.getValue()[2]);
-	glVertex3d(m_min.getValue()[0],m_min.getValue()[1],m_max.getValue()[2]);
-	glEnd();
-
-	glBegin(GL_LINE_LOOP);
-	glVertex3d(m_min.getValue()[0],m_max.getValue()[1],m_min.getValue()[2]);
-	glVertex3d(m_max.getValue()[0],m_max.getValue()[1],m_min.getValue()[2]);
-	glVertex3d(m_max.getValue()[0],m_max.getValue()[1],m_max.getValue()[2]);
-	glVertex3d(m_min.getValue()[0],m_max.getValue()[1],m_max.getValue()[2]);
-	glEnd();
-
-	glBegin(GL_LINES);
-	glVertex3d(m_min.getValue()[0],m_min.getValue()[1],m_min.getValue()[2]);
-	glVertex3d(m_min.getValue()[0],m_max.getValue()[1],m_min.getValue()[2]);
-
-	glVertex3d(m_max.getValue()[0],m_min.getValue()[1],m_min.getValue()[2]);
-	glVertex3d(m_max.getValue()[0],m_max.getValue()[1],m_min.getValue()[2]);
-
-	glVertex3d(m_max.getValue()[0],m_min.getValue()[1],m_max.getValue()[2]);
-	glVertex3d(m_max.getValue()[0],m_max.getValue()[1],m_max.getValue()[2]);
-
-	glVertex3d(m_min.getValue()[0],m_min.getValue()[1],m_max.getValue()[2]);
-	glVertex3d(m_min.getValue()[0],m_max.getValue()[1],m_max.getValue()[2]);
-	glEnd();
-
-
-	if (vparams->displayFlags().getShowWireFrame())
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-
-	helper::ReadAccessor<DataVecCoord> x = this->mstate->read(core::ConstVecCoordId::position());
-	if (m_drawForceScale.getValue() && m_f.size()==x.size())
-	{
-		std::vector< defaulttype::Vector3 > points;
-		const defaulttype::Vec<4,float> color(0,1,0.5,1);
-
-		for (unsigned int i=0; i<x.size(); i++)
-		{
-			points.push_back(x[i].getCenter());
-			points.push_back(x[i].getCenter()+m_f[i].getVCenter()*m_drawForceScale.getValue());
-		}
-		vparams->drawTool()->drawLines(points, 1, color);
-	}
-#endif /* SOFA_NO_OPENGL */
-}
-
 #endif
 
 #ifndef SOFA_DOUBLE
@@ -897,70 +806,6 @@ void SurfacePressureForceField<defaulttype::Rigid3fTypes>::addQuadSurfacePressur
 template<>
 void SurfacePressureForceField<defaulttype::Rigid3fTypes>::verifyDerivative(VecDeriv& /*v_plus*/, VecDeriv& /*v*/,  VecVec3DerivValues& /*DVval*/, VecVec3DerivIndices& /*DVind*/, const VecDeriv& /*Din*/)
 {
-}
-
-template<>
-void SurfacePressureForceField<defaulttype::Rigid3fTypes>::draw(const core::visual::VisualParams* vparams)
-{
-#ifndef SOFA_NO_OPENGL
-	if (!vparams->displayFlags().getShowForceFields()) return;
-	if (!this->mstate) return;
-
-	if (vparams->displayFlags().getShowWireFrame())
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-
-	glDisable(GL_LIGHTING);
-
-	glColor4f(0.f,0.8f,0.3f,1.f);
-
-	glBegin(GL_LINE_LOOP);
-	glVertex3d(m_min.getValue()[0],m_min.getValue()[1],m_min.getValue()[2]);
-	glVertex3d(m_max.getValue()[0],m_min.getValue()[1],m_min.getValue()[2]);
-	glVertex3d(m_max.getValue()[0],m_min.getValue()[1],m_max.getValue()[2]);
-	glVertex3d(m_min.getValue()[0],m_min.getValue()[1],m_max.getValue()[2]);
-	glEnd();
-
-	glBegin(GL_LINE_LOOP);
-	glVertex3d(m_min.getValue()[0],m_max.getValue()[1],m_min.getValue()[2]);
-	glVertex3d(m_max.getValue()[0],m_max.getValue()[1],m_min.getValue()[2]);
-	glVertex3d(m_max.getValue()[0],m_max.getValue()[1],m_max.getValue()[2]);
-	glVertex3d(m_min.getValue()[0],m_max.getValue()[1],m_max.getValue()[2]);
-	glEnd();
-
-	glBegin(GL_LINES);
-	glVertex3d(m_min.getValue()[0],m_min.getValue()[1],m_min.getValue()[2]);
-	glVertex3d(m_min.getValue()[0],m_max.getValue()[1],m_min.getValue()[2]);
-
-	glVertex3d(m_max.getValue()[0],m_min.getValue()[1],m_min.getValue()[2]);
-	glVertex3d(m_max.getValue()[0],m_max.getValue()[1],m_min.getValue()[2]);
-
-	glVertex3d(m_max.getValue()[0],m_min.getValue()[1],m_max.getValue()[2]);
-	glVertex3d(m_max.getValue()[0],m_max.getValue()[1],m_max.getValue()[2]);
-
-	glVertex3d(m_min.getValue()[0],m_min.getValue()[1],m_max.getValue()[2]);
-	glVertex3d(m_min.getValue()[0],m_max.getValue()[1],m_max.getValue()[2]);
-	glEnd();
-
-
-	if (vparams->displayFlags().getShowWireFrame())
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-
-	helper::ReadAccessor<DataVecCoord> x = this->mstate->read(core::ConstVecCoordId::position());
-	if (m_drawForceScale.getValue() && m_f.size()==x.size())
-	{
-		std::vector< defaulttype::Vector3 > points;
-		const defaulttype::Vec<4,float> color(0,1,0.5,1);
-
-		for (unsigned int i=0; i<x.size(); i++)
-		{
-			points.push_back(x[i].getCenter());
-			points.push_back(x[i].getCenter()+m_f[i].getVCenter()*m_drawForceScale.getValue());
-		}
-		vparams->drawTool()->drawLines(points, 1, color);
-	}
-#endif /* SOFA_NO_OPENGL */
 }
 
 #endif

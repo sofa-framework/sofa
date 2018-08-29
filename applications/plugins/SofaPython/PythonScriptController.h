@@ -88,6 +88,7 @@ protected:
     virtual bool script_onKeyPressed(const char c) override;
     virtual bool script_onKeyReleased(const char c) override;
 
+    virtual void script_onMouseMove(const int posX,const int posY) override;
     virtual void script_onMouseButtonLeft(const int posX,const int posY,const bool pressed) override;
     virtual void script_onMouseButtonRight(const int posX,const int posY,const bool pressed) override;
     virtual void script_onMouseButtonMiddle(const int posX,const int posY,const bool pressed) override;
@@ -127,6 +128,7 @@ protected:
     // optionnal script entry points:
     PyObject *m_Func_onKeyPressed          {nullptr} ;
     PyObject *m_Func_onKeyReleased         {nullptr} ;
+    PyObject *m_Func_onMouseMove           {nullptr} ;
     PyObject *m_Func_onMouseButtonLeft     {nullptr} ;
     PyObject *m_Func_onMouseButtonRight    {nullptr} ;
     PyObject *m_Func_onMouseButtonMiddle   {nullptr} ;

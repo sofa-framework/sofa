@@ -47,8 +47,6 @@
 #include <sofa/helper/io/Image.h>
 #include <sofa/helper/system/SetDirectory.h>
 
-#include "VideoRecorderFFMpeg.h"
-
 namespace sofa
 {
 
@@ -59,6 +57,8 @@ namespace hRecorder
 {
 
 enum class RecordMode { wallclocktime, simulationtime, timeinterval };
+
+class VideoRecorderFFmpeg;
 
 class HeadlessRecorder : public sofa::gui::BaseGUI
 {

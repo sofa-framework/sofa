@@ -61,7 +61,7 @@ void TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronsWithPla
 {
     //Current topological state
     int nbPoint=this->m_container->getNbPoints();
-    int nbTetra=this->m_container->getNbTetrahedra();
+    size_t nbTetra=this->m_container->getNbTetrahedra();
 
     //Number of to be added points
     unsigned int nbTobeAddedPoints=(unsigned int)intersectedEdgeID.size()*2;
@@ -164,7 +164,7 @@ void TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronsWithPla
 {
     //Current topological state
     int nbPoint=this->m_container->getNbPoints();
-    int nbTetra=this->m_container->getNbTetrahedra();
+    size_t nbTetra=this->m_container->getNbTetrahedra();
 
     //Number of to be added points
     unsigned int nbTobeAddedPoints=(unsigned int)intersectedEdgeID.size()*2;
@@ -1172,7 +1172,7 @@ void TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideRestTetrahedronsWit
 {
     //Current topological state
     int nbPoint=this->m_container->getNbPoints();
-    int nbTetra=this->m_container->getNbTetrahedra();
+    size_t nbTetra=this->m_container->getNbTetrahedra();
 
     //Number of to be added points
     unsigned int nbTobeAddedPoints=(unsigned int)intersectedEdgeID.size()*2;
@@ -1275,7 +1275,7 @@ void TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideRestTetrahedronsWit
 {
     //Current topological state
     int nbPoint=this->m_container->getNbPoints();
-    int nbTetra=this->m_container->getNbTetrahedra();
+    size_t nbTetra=this->m_container->getNbTetrahedra();
 
     //Number of to be added points
     unsigned int nbTobeAddedPoints=(unsigned int)intersectedEdgeID.size()*2;

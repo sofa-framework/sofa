@@ -106,7 +106,8 @@ void TopologySparseDataHandler <TopologyElementType, VecT>::add(unsigned int nbE
     // Using default values
     sofa::helper::vector <unsigned int>& keys = _topologyData->getMap2Elements();
     container_type& data = *(_topologyData->beginEdit());
-    unsigned int size = data.size();
+    
+    size_type size = data.size();
     data.resize(size+nbElements);
 
     for (unsigned int i = 0; i < nbElements; ++i)
@@ -159,9 +160,9 @@ void TopologySparseDataHandler <TopologyElementType, VecT>::remove( const sofa::
 
     sofa::helper::vector <unsigned int>& keys = _topologyData->getMap2Elements();
     container_type& data = *(_topologyData->beginEdit());
-    unsigned int last = data.size() -1;
+    size_type last = data.size() -1;
 
-    for (unsigned int i = 0; i < index.size(); ++i)
+    for (size_type i = 0; i < index.size(); ++i)
     {
         this->applyDestroyFunction( index[i], data[index[i]] );
         this->swap( index[i], last );

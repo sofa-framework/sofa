@@ -182,7 +182,7 @@ public:
 
     PluginMap& getPluginMap()  { return m_pluginMap; }
 
-    Plugin* getPlugin(const std::string& plugin, const std::string& suffix = getDefaultSuffix(), bool ignoreCase = true);
+    Plugin* getPlugin(const std::string& plugin, const std::string& = getDefaultSuffix(), bool = true);
 
     std::vector<std::string>& getSearchPaths() { return m_searchPaths; }
 

@@ -322,14 +322,14 @@ BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
         }
         else if (std::string(dataName) != "type")
         {
-  	    sofa::helper::vector<std::string> validTypes;
-	    getFactoryInstance()->uniqueKeys(std::back_inserter(validTypes));
-	    std::string typesString = "[";
-	    for (const auto& i : validTypes)
-	        typesString += i + ", ";
-	    typesString += "\b\b]";
-	    msg_error(obj) << dataRawType << " is not a known type. Available"
-	                      "types are:\n" << typesString;
+  	        sofa::helper::vector<std::string> validTypes;
+	          getFactoryInstance()->uniqueKeys(std::back_inserter(validTypes));
+	          std::string typesString = "[";
+	          for (const auto& i : validTypes)
+	              typesString += i + ", ";
+	          typesString += "\b\b]";
+	          msg_error(obj) << dataRawType << " is not a known type. Available "
+	                            "types are:\n" << typesString;
             return nullptr;
         }
         else return new EmptyData;

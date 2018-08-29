@@ -24,13 +24,9 @@
 
 #include <SofaGeneralRigid/SkinningMapping.h>
 #include <sofa/core/visual/VisualParams.h>
-
+#include <sofa/defaulttype/RGBAColor.h>
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 #include <sofa/core/behavior/MechanicalState.h>
-#include <sofa/helper/gl/Axis.h>
-#include <sofa/helper/gl/Color.h>
-#include <sofa/helper/gl/glText.inl>
-#include <sofa/helper/gl/template.h>
 #include <sofa/helper/io/Mesh.h>
 #include <limits>
 #include <sofa/simulation/Simulation.h>
@@ -506,7 +502,6 @@ const  sofa::defaulttype::BaseMatrix* SkinningMapping<TIn, TOut>::getJ()
 template <class TIn, class TOut>
 void SkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     const typename Out::VecCoord& xto = this->toModel->read(core::ConstVecCoordId::position())->getValue();
     const typename In::VecCoord& xfrom = this->fromModel->read(core::ConstVecCoordId::position())->getValue();
     unsigned int nbref = this->nbRef.getValue()[0];
@@ -514,15 +509,15 @@ void SkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
     sofa::helper::ReadAccessor<Data<helper::vector<sofa::helper::SVector<InReal> > > > m_weights  ( weight );
     sofa::helper::ReadAccessor<Data<helper::vector<sofa::helper::SVector<unsigned int> > > > index ( f_index );
 
-    glPushAttrib( GL_LIGHTING_BIT | GL_COLOR_BUFFER_BIT | GL_ENABLE_BIT);
-    glDisable ( GL_LIGHTING );
+    vparams->drawTool()->saveLastState();
+    vparams->drawTool()->disableLighting();
+
+    std::vector<sofa::defaulttype::Vec4f> colorVector;
+    std::vector<sofa::defaulttype::Vector3> vertices;
 
     if ( vparams->displayFlags().getShowMappings() )
     {
         // Display mapping links between in and out elements
-        glPointSize ( 1 );
-        glColor4f ( 1,1,0,1 );
-        glBegin ( GL_LINES );
 
         for ( unsigned int i=0; i<xto.size(); i++ )
         {
@@ -531,12 +526,14 @@ void SkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 
             for ( unsigned int m=0 ; m<nbref && m_weights[i][m]>0.; m++ )
             {
-                glColor4d ( m_weights[i][m],m_weights[i][m],0,1 );
-                helper::gl::glVertexT ( xfrom[index[i][m]].getCenter() );
-                helper::gl::glVertexT ( xto[i] );
+                colorVector.push_back( sofa::defaulttype::RGBAColor( m_weights[i][m],m_weights[i][m],0,1 ));
+                vertices.push_back(sofa::defaulttype::Vector3( xfrom[index[i][m]].getCenter() ));
+                vertices.push_back(sofa::defaulttype::Vector3( xto[i] ));
             }
         }
-        glEnd();
+        vparams->drawTool()->drawLines(vertices,1,colorVector);
+        vertices.clear();
+        colorVector.clear();
     }
 
     // Show weights
@@ -572,8 +569,6 @@ void SkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
         }
         else // Show by points
         {
-            glPointSize( 10);
-            glBegin( GL_POINTS);
             for ( unsigned int i = 0; i < xto.size(); i++)
             {
                 double color = 0;
@@ -585,15 +580,13 @@ void SkinningMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
                     if(index[i][m]==showFromIndex.getValue())
                         color = (m_weights[i][m] - minValue) / (maxValue - minValue);
 
-                glColor3f( (float)color, 0.0f, 0.0f);
-                glVertex3f( (float)xto[i][0], (float)xto[i][1], (float)xto[i][2]);
+                colorVector.push_back(sofa::defaulttype::RGBAColor( color, 0.0, 0.0, 1.0 ));
+                vertices.push_back( sofa::defaulttype::Vector3(xto[i][0], xto[i][1], xto[i][2]));
             }
-            glEnd();
+            vparams->drawTool()->drawPoints(vertices,10,colorVector);
         }
     }
-
-    glPopAttrib();
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->restoreLastState();
 }
 
 

@@ -44,36 +44,20 @@ int ProjectToLineConstraintClass = core::RegisterObject("Attach given particles 
 #ifndef SOFA_FLOAT
         .add< ProjectToLineConstraint<Vec3dTypes> >()
         .add< ProjectToLineConstraint<Vec2dTypes> >()
-//.add< ProjectToLineConstraint<Vec1dTypes> >()
-//.add< ProjectToLineConstraint<Vec6dTypes> >()
-//.add< ProjectToLineConstraint<Rigid3dTypes> >()
-//.add< ProjectToLineConstraint<Rigid2dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
         .add< ProjectToLineConstraint<Vec3fTypes> >()
         .add< ProjectToLineConstraint<Vec2fTypes> >()
-//.add< ProjectToLineConstraint<Vec1fTypes> >()
-//.add< ProjectToLineConstraint<Vec6fTypes> >()
-//.add< ProjectToLineConstraint<Rigid3fTypes> >()
-//.add< ProjectToLineConstraint<Rigid2fTypes> >()
 #endif
         ;
 
 #ifndef SOFA_FLOAT
 template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<Vec3dTypes>;
 template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<Vec2dTypes>;
-//template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<Vec1dTypes>;
-//template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<Vec6dTypes>;
-//template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<Rigid3dTypes>;
-//template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<Rigid2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<Vec3fTypes>;
 template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<Vec2fTypes>;
-//template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<Vec1fTypes>;
-//template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<Vec6fTypes>;
-//template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<Rigid3fTypes>;
-//template class SOFA_BOUNDARY_CONDITION_API ProjectToLineConstraint<Rigid2fTypes>;
 #endif
 
 

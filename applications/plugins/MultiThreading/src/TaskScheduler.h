@@ -80,7 +80,7 @@ namespace sofa
 
 			bool start(TaskScheduler* const& taskScheduler);
 
-			std::thread* create_and_attach( TaskScheduler* const& taskScheduler);
+                        std::thread* create_and_attach(TaskScheduler* const&);
 
 			// queue task if there is space (or do nothing)
 			bool pushTask(Task* pTask);

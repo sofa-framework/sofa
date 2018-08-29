@@ -236,6 +236,13 @@ void DrawToolGL::drawTriangles(const std::vector<Vector3> &points, const Vec<4,f
     resetMaterial(colour);
 }
 
+void DrawToolGL::drawTriangles(const std::vector<Vector3> &points, const std::vector< Vec4f > &colour)
+{
+    std::vector<Vector3> normal;
+    normal.clear();
+    this->drawTriangles(points,normal,colour);
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void DrawToolGL::drawTriangles(const std::vector<Vector3> &points, const Vector3& normal, const Vec<4,float>& colour)
@@ -859,6 +866,35 @@ void DrawToolGL::drawQuads(const std::vector<Vector3> &points, const Vec4f& colo
     resetMaterial(colour);
 }
 
+void DrawToolGL::drawQuads(const std::vector<Vector3> &points, const std::vector<Vec4f>& colours)
+{
+    glBegin(GL_QUADS);
+    {
+        for (unsigned int i=0; i<points.size()/4; ++i)
+        {
+            const Vector3& a = points[ 4*i+0 ];
+            const Vector3& b = points[ 4*i+1 ];
+            const Vector3& c = points[ 4*i+2 ];
+            const Vector3& d = points[ 4*i+3 ];
+
+            const Vec4f& col_a = colours[ 4*i+0 ];
+            const Vec4f& col_b = colours[ 4*i+1 ];
+            const Vec4f& col_c = colours[ 4*i+2 ];
+            const Vec4f& col_d = colours[ 4*i+3 ];
+
+            Vec4f average_colour;
+            for(int i=0; i<4; i++)
+            {
+                average_colour[i] = (col_a[i]+col_b[i]+col_c[i]+col_d[i])*0.25;
+            }
+
+            Vector3 n = cross((b-a),(c-a));
+            n.normalize();
+            internalDrawQuad(a,b,c,d,n,average_colour);
+        }
+    } glEnd();
+}
+
 void DrawToolGL::drawTetrahedron(const Vector3 &p0, const Vector3 &p1, const Vector3 &p2, const Vector3 &p3, const Vec4f &colour)
 {
     setMaterial(colour);
@@ -1027,8 +1063,9 @@ void DrawToolGL::drawEllipsoid(const Vector3 &p, const Vector3 &radii)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void DrawToolGL::drawBoundingBox( const Vector3 &min, const Vector3 &max )
+void DrawToolGL::drawBoundingBox( const Vector3 &min, const Vector3 &max, float size)
 {
+    glLineWidth(size);
     glBegin( GL_LINES );
 
     // 0-1
@@ -1069,6 +1106,7 @@ void DrawToolGL::drawBoundingBox( const Vector3 &min, const Vector3 &max )
     glVertex3f( (float)min[0], (float)max[1], (float)max[2] );
 
     glEnd();
+    glLineWidth(1.0);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1267,7 +1305,7 @@ void DrawToolGL::draw3DText(const Vector3 &p, float scale, const Vec4f &color, c
     sofa::helper::gl::GlText::draw(text, p, (double)scale);
 }
 
-void DrawToolGL::draw3DText_Indices(const helper::vector<Vector3> &positions, float scale, const Vec4f &color)
+void DrawToolGL::draw3DText_Indices(const std::vector<Vector3> &positions, float scale, const Vec4f &color)
 {
     glColor4f(color[0], color[1], color[2], color[3]);
 
