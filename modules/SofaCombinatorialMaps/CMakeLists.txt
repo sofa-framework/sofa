@@ -3,9 +3,7 @@ project(SofaCombinatorialMaps VERSION 1.0)
 
 # Dependencies
 
- 
-add_subdirectory(cgogn2)
-#list(APPEND CGOGN_TARGETS cgogn_core cgogn_geometry cgogn_io cgogn_modeling)
+sofa_add_subdirectory_external(extlibs/CGoGN CGoGN)
 
 find_package(Newmat)
 find_package(cgogn_core REQUIRED)
