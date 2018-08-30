@@ -87,7 +87,7 @@ void PointSetTopologyContainer::setNbPoints(int n)
     nbPoints.setValue(n);  
 }
 
-unsigned int PointSetTopologyContainer::getNumberOfElements() const
+size_t PointSetTopologyContainer::getNumberOfElements() const
 {
     return nbPoints.getValue();
 }

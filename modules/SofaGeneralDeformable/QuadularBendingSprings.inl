@@ -461,7 +461,7 @@ void QuadularBendingSprings<DataTypes>::EdgeBSHandler::applyPointRenumbering(con
     if(ff)
     {
         helper::vector<EdgeInformation>& edgeInf = *(ff->edgeInfo.beginEdit());
-        for ( int i = 0; i < ff->_topology->getNbEdges(); ++i)
+        for (unsigned  int i = 0; i < ff->_topology->getNbEdges(); ++i)
         {
             if(edgeInf[i].is_activated)
             {
@@ -534,7 +534,7 @@ void QuadularBendingSprings<DataTypes>::init()
     edgeInf.resize(_topology->getNbEdges());
 
     // set edge tensor to 0
-    for (int i=0; i<_topology->getNbEdges(); ++i)
+    for (unsigned int i=0; i<_topology->getNbEdges(); ++i)
     {
         edgeHandler->applyCreateFunction(i, edgeInf[i],
                 _topology->getEdge(i),  (const sofa::helper::vector< unsigned int > )0,
@@ -543,7 +543,7 @@ void QuadularBendingSprings<DataTypes>::init()
 
     // create edge tensor by calling the quad creation function
     sofa::helper::vector<unsigned int> quadAdded;
-    for (int i=0; i<_topology->getNbQuads(); ++i)
+    for (unsigned int i=0; i<_topology->getNbQuads(); ++i)
         quadAdded.push_back(i);
 
     edgeHandler->applyQuadCreation(quadAdded,
@@ -597,7 +597,7 @@ void QuadularBendingSprings<DataTypes>::addForce(const core::MechanicalParams* /
     const VecCoord& x = d_x.getValue();
     const VecDeriv& v = d_v.getValue();
 
-    int nbEdges=_topology->getNbEdges();
+    size_t nbEdges=_topology->getNbEdges();
 
     EdgeInformation *einfo;
 
@@ -609,7 +609,7 @@ void QuadularBendingSprings<DataTypes>::addForce(const core::MechanicalParams* /
     m_potentialEnergy = 0;
     /*        serr<<"QuadularBendingSprings<DataTypes>::addForce()"<<sendl;*/
 
-    for(int i=0; i<nbEdges; i++ )
+    for(unsigned int i=0; i<nbEdges; i++ )
     {
         einfo=&edgeInf[i];
 
@@ -730,7 +730,7 @@ void QuadularBendingSprings<DataTypes>::addDForce(const core::MechanicalParams* 
     const VecDeriv& dx = d_dx.getValue();
     Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
-    int nbEdges=_topology->getNbEdges();
+    size_t nbEdges=_topology->getNbEdges();
 
     const EdgeInformation *einfo;
 
@@ -741,7 +741,7 @@ void QuadularBendingSprings<DataTypes>::addDForce(const core::MechanicalParams* 
     //serr<<"QuadularBendingSprings<DataTypes>::addDForce, df1 before = "<<f1<<sendl;
     //const helper::vector<Spring>& springs = this->springs.getValue();
 
-    for(int i=0; i<nbEdges; i++ )
+    for(unsigned int i=0; i<nbEdges; i++ )
     {
         einfo=&edgeInf[i];
 
@@ -870,7 +870,7 @@ void QuadularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* v
 
     ////
     vertices.clear();
-    for(int i=0; i<_topology->getNbQuads(); ++i)
+    for(unsigned int i=0; i<_topology->getNbQuads(); ++i)
     {
         for(unsigned int j = 0 ; j<4 ; j++)
             vertices.push_back(x[_topology->getQuad(i)[j]]);

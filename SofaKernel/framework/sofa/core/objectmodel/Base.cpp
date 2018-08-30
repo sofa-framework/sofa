@@ -491,7 +491,7 @@ bool Base::parseField( const std::string& attribute, const std::string& value)
             ok = false;
         }
         sout << "Link " << linkVec[l]->getName() << " = " << linkVec[l]->getValueString() << sendl;
-        unsigned int s = linkVec[l]->getSize();
+        unsigned int s = (unsigned int)linkVec[l]->getSize();
         for (unsigned int i=0; i<s; ++i)
         {
             sout  << "  " << linkVec[l]->getLinkedPath(i) << " = ";

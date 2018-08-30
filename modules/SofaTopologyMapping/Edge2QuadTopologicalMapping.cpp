@@ -167,7 +167,7 @@ void Edge2QuadTopologicalMapping::init()
             if(edgeList.getValue().size()==0)
             {
 
-                int nb_elems = toModel->getNbQuads();
+                unsigned int nb_elems = (unsigned int)toModel->getNbQuads();
 
                 for (unsigned int i=0; i<edgeArray.size(); ++i)
                 {
@@ -200,7 +200,7 @@ void Edge2QuadTopologicalMapping::init()
                         }
 
                         Loc2GlobVec.push_back(i);
-                        out_info.push_back(Loc2GlobVec.size()-1);
+                        out_info.push_back((unsigned int)Loc2GlobVec.size()-1);
                     }
 
 
@@ -233,7 +233,7 @@ void Edge2QuadTopologicalMapping::init()
                         else
                             to_tstm->addQuadProcess(Quad((unsigned int) q0, (unsigned int) q1, (unsigned int) q2, (unsigned int) q3));
                         Loc2GlobVec.push_back(i);
-                        out_info.push_back(Loc2GlobVec.size()-1);
+                        out_info.push_back((unsigned int)Loc2GlobVec.size()-1);
                     }
 
                     In2OutMap[i]=out_info;
@@ -306,7 +306,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
                         sofa::helper::vector< Quad > quads_to_create;
                         sofa::helper::vector< unsigned int > quadsIndexList;
-                        int nb_elems = toModel->getNbQuads();
+                        unsigned int nb_elems = (unsigned int)toModel->getNbQuads();
 
                         for (unsigned int i = 0; i < tab.size(); ++i)
                         {
@@ -335,7 +335,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                                 nb_elems+=1;
 
                                 Loc2GlobVec.push_back(k);
-                                out_info.push_back(Loc2GlobVec.size()-1);
+                                out_info.push_back((unsigned int)Loc2GlobVec.size()-1);
 
                                 //to_tstm->addQuadsProcess(quads_to_create) ;
                                 //to_tstm->addQuadsWarning(quads_to_create.size(), quads_to_create, quadsIndexList) ;
@@ -360,12 +360,12 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
                         const sofa::helper::vector<unsigned int> &tab = ( static_cast< const EdgesRemoved *>( *itBegin ) )->getArray();
 
-                        int last= fromModel->getNbEdges() - 1;
+                        unsigned int last = (unsigned int)fromModel->getNbEdges() - 1;
 
                         unsigned int ind_tmp;
 
                         sofa::helper::vector<unsigned int> ind_real_last;
-                        int ind_last=toModel->getNbQuads();
+                        unsigned int ind_last = (unsigned int)toModel->getNbQuads();
 
                         for (unsigned int i = 0; i < tab.size(); ++i)
                         {
@@ -514,7 +514,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
                     const sofa::component::topology::PointsAdded *ta=static_cast< const sofa::component::topology::PointsAdded * >( *itBegin );
 
-                    unsigned int to_nVertices = ta->getNbAddedVertices() * N;
+                    unsigned int to_nVertices = (unsigned int)ta->getNbAddedVertices() * N;
                     sofa::helper::vector< sofa::helper::vector< unsigned int > > to_ancestorsList;
                     sofa::helper::vector< sofa::helper::vector< double > > to_coefs;
 
