@@ -364,7 +364,8 @@ public:
     Data<helper::vector<Real> > f_young;
     Data<Real> f_damping;
 
-    SingleLink<CMTriangularFEMForceField<DataTypes>, sofa::component::topology::SurfaceMaskTraversal, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mask;
+	//TODO check cgogn function_traits that does not support functors
+//    SingleLink<CMTriangularFEMForceField<DataTypes>, sofa::component::topology::SurfaceMaskTraversal, BaseLink::FLAG_STOREPATH|BaseLink::FLAG_STRONGLINK> mask;
 
     /// Initial strain parameters (if FEM is initialised with predefine values)
 	typedef helper::fixed_array<Coord,3> RotatedInitialElements;

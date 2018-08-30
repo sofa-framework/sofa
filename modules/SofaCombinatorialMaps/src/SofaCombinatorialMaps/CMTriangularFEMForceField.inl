@@ -129,7 +129,7 @@ CMTriangularFEMForceField<DataTypes>::CMTriangularFEMForceField() :
     , showFracturableTriangles(initData(&showFracturableTriangles,false,"showFracturableTriangles","Flag activating rendering of triangles to fracture"))
     , f_computePrincipalStress(initData(&f_computePrincipalStress,false,"computePrincipalStress","Compute principal stress for each triangle"))
 	//, faces_cache(initLink("travFaces", "A personalized face traversor"))
-    , mask(initLink("mask", "Traversal mask"))
+	//, mask(initLink("mask", "Traversal mask"))
 #ifdef PLOT_CURVE
     , elementID( initData(&elementID, (Real)0, "id","element id to follow for fracture criteria") )
     , f_graphStress( initData(&f_graphStress,"graphMaxStress","Graph of max stress corresponding to the element id") )
@@ -188,13 +188,13 @@ void CMTriangularFEMForceField<DataTypes>::init()
 
 	cell_traversor = cgogn::make_unique<FilteredQuickTraversor>(_topology->getMap());
 
-    if (!mask.get())
-        cell_traversor->build<Face>();
-    else
-    {
-        cell_traversor->build<Face>();     
-        cell_traversor->set_filter<Face>(std::move(std::ref(*(mask.get()))));
-    }
+//    if (!mask.get())
+//        cell_traversor->build<Face>();
+//    else
+//    {
+//        cell_traversor->build<Face>();
+//        cell_traversor->set_filter<Face>(std::move(std::ref(*(mask.get()))));
+//    }
 
 
 	m_rotatedInitialElements = _topology->add_attribute<RotatedInitialElements, Face>("CMTriangularFEMForceField_RotatedInitialElements");
