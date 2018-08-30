@@ -34,9 +34,9 @@ TEST(SofaEditorState, checkGetItFromEditorName)
     std::shared_ptr<SofaEditorState> editor3 = std::make_shared<SofaEditorState>("three") ;
 
     /// Insure that different calls are not returning the same ID.
-    SofaEditor::ID a = SofaEditor::createId(editor1) ;
-    SofaEditor::ID b = SofaEditor::createId(editor2) ;
-    SofaEditor::ID c = SofaEditor::createId(editor3) ;
+    SofaEditor::ID a = SofaEditor::createIdAndAttachState(editor1) ;
+    SofaEditor::ID b = SofaEditor::createIdAndAttachState(editor2) ;
+    SofaEditor::ID c = SofaEditor::createIdAndAttachState(editor3) ;
 
     ASSERT_NE(a, b);
     ASSERT_NE(a, c);
@@ -53,16 +53,16 @@ TEST(SofaEditorState, checkGetItFromEditorName)
     ASSERT_EQ(SofaEditor::getIdFromEditorName("invalidName"), SofaEditor::InvalidID);
 }
 
-TEST(SofaEditor, test_createId)
+TEST(SofaEditor, test_createIdAndAttachState)
 {
     std::shared_ptr<SofaEditorState> editor1 = std::make_shared<SofaEditorState>("one") ;
     std::shared_ptr<SofaEditorState> editor2 = std::make_shared<SofaEditorState>("two") ;
     std::shared_ptr<SofaEditorState> editor3 = std::make_shared<SofaEditorState>("three") ;
 
     /// Insure that different calls are not returning the same ID.
-    SofaEditor::ID a = SofaEditor::createId(editor1) ;
-    SofaEditor::ID b = SofaEditor::createId(editor2) ;
-    SofaEditor::ID c = SofaEditor::createId(editor3) ;
+    SofaEditor::ID a = SofaEditor::createIdAndAttachState(editor1) ;
+    SofaEditor::ID b = SofaEditor::createIdAndAttachState(editor2) ;
+    SofaEditor::ID c = SofaEditor::createIdAndAttachState(editor3) ;
 
     ASSERT_NE(a, b);
     ASSERT_NE(a, c);
@@ -75,8 +75,8 @@ TEST(SofaEditor, test_getSetId)
     std::shared_ptr<SofaEditorState> sb;
 
     /// Insure that different calls are not returning the same ID.
-    SofaEditor::ID a = SofaEditor::createId(sa) ;
-    SofaEditor::ID b = SofaEditor::createId(sb) ;
+    SofaEditor::ID a = SofaEditor::createIdAndAttachState(sa) ;
+    SofaEditor::ID b = SofaEditor::createIdAndAttachState(sb) ;
 
     ASSERT_TRUE(SofaEditor::attachState(a, sb));
     ASSERT_TRUE(SofaEditor::attachState(b, sa));

@@ -13,7 +13,7 @@ cdef extern from "../src/SofaEditor/BaseSofaEditor.h" namespace "sofaeditor":
                 ctypedef size_t ID
 
                 @staticmethod 
-                size_t createId(shared_ptr[SofaEditorState]);
+                size_t createIdAndAttachState(shared_ptr[SofaEditorState]);
 
                 @staticmethod
                 bool attachState(ID editorId, shared_ptr[SofaEditorState]& s);

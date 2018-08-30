@@ -91,7 +91,7 @@ namespace sofaeditor
         /// returns InvalidId is none is found.
         static ID getIdFromEditorName(const std::string& s);
 
-        static ID createId(std::shared_ptr<SofaEditorState>& s);
+        static ID createIdAndAttachState(std::shared_ptr<SofaEditorState>& s);
         static bool attachState(ID editorId, std::shared_ptr<SofaEditorState>& s);
         static std::shared_ptr<SofaEditorState> getState(ID editorId=0);
 

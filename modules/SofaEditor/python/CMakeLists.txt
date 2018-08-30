@@ -18,10 +18,9 @@ if(NOT SofaEditor_FOUND)
 endif()
 
 find_package(Cython QUIET)
-if(Cython_FOUND)
-    message("-- PythonSofaEditor found 'cython' the .cpp will be regenerated from .pxd.")
-else()
-    message("-- PythonSofaEditor didn't found the 'cython' application, the binding with use default .cpp files.")
+if(NOT Cython_FOUND)
+    message("-- PythonSofaEditor is disabled because the 'cython' application is missing or not activated (see: http://cython.org/).")
+    return()
 endif()
 
 ####################################################################################################

@@ -41,9 +41,12 @@ cdef class SofaEditorState(object):
         def __str__(self):
             return "SofaEditorState('"+str(self.editorname)+"')"
 
+        def __repr__(self):
+            return "SofaEditorState('"+str(self.editorname)+"')"
+
         def __eq__(self, other):
             if not isinstance(other, SofaEditorState):
-                return False
+                return NotImplemented
 
             cdef SofaEditorState tother = other
             return self.sptr.get() == tother.sptr.get()
@@ -56,14 +59,14 @@ cdef class SofaEditorState(object):
         def editorname(self, str newname not None):
             deref(self.sptr).editorname = newname
 
-def createId(SofaEditorState state not None):
+def createIdAndAttachState(SofaEditorState state not None):
         """
         Create a new id for the provided SofaEditorState.
         Returns the SofaEditor::ID on success.
 
         Examples:
         """
-        return cppSofaEditor.createId(state.sptr)
+        return cppSofaEditor.createIdAndAttachState(state.sptr)
 
 def getIdFromEditorName(str editorname not None):
         """
@@ -103,6 +106,6 @@ def getSelection(id=0):
         If there is no editor with such an id returns None.
         """
         n = getState(id)
-        if n != None:
+        if n is not None:
             return n.getSelection()
         return None

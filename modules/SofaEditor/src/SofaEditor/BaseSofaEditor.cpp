@@ -66,7 +66,7 @@ SofaEditor::ID SofaEditor::getIdFromEditorName(const std::string& s)
    return static_cast<ID>( res - s_editorsstate.begin() );
 }
 
-SofaEditor::ID SofaEditor::createId(std::shared_ptr<SofaEditorState> &s)
+SofaEditor::ID SofaEditor::createIdAndAttachState(std::shared_ptr<SofaEditorState> &s)
 {
     s_editorsstate.push_back(s);
     return s_editorsstate.size() - 1;
