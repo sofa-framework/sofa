@@ -79,18 +79,64 @@ public:
 
 };
 
+/// to test tracked Data
+class SimpleTestEngine : public core::SimpleDataEngine
+{
+public:
+    SOFA_CLASS(SimpleTestEngine, core::SimpleDataEngine);
+
+
+    Data< bool > input;
+    Data< int > output;
+
+    enum { UNDEFINED=0, CHANGED, NO_CHANGED };
+
+    SimpleTestEngine()
+        : Inherit1()
+        , input(initData(&input,false,"input","input"))
+        , output(initData(&output,(int)UNDEFINED,"output","output"))
+    {}
+
+    ~SimpleTestEngine() {}
+
+    void init() override
+    {
+        addInput(&input);
+        addOutput(&output);
+        setDirtyValue();
+    }
+
+    void reinit() override
+    {
+        update();
+    }
+
+    void Update() override
+    {
+        // true only if the DataTracker associated to the Data 'input' is Dirty
+        // that could only happen if 'input' was dirtied since last update
+        if( m_dataTracker.isDirty( input ) )
+            output.setValue(CHANGED);
+        else
+            output.setValue(NO_CHANGED);
+    }
+};
+
 
 struct DataEngine_test: public BaseTest
 {
     TestEngine engine;
+    SimpleTestEngine simpleEngine;
 
     void SetUp()
     {
         engine.init();
+        simpleEngine.init();
     }
 
     /// to test tracked Data
-    void testTrackedData()
+    template < class T >
+    void testTrackedData(T& engine)
     {
         // input did not change, it is not dirtied, so neither its associated DataTracker
         ASSERT_TRUE(engine.output.getValue()==TestEngine::NO_CHANGED);
@@ -112,10 +158,17 @@ struct DataEngine_test: public BaseTest
 
 };
 
+
+
 // Test
 TEST_F(DataEngine_test, testTrackedData )
 {
-    this->testTrackedData();
+    this->testTrackedData<TestEngine>(this->engine);
+}
+
+TEST_F(DataEngine_test, testSimpleEngine )
+{
+    this->testTrackedData<SimpleTestEngine>(this->simpleEngine);
 }
 
 

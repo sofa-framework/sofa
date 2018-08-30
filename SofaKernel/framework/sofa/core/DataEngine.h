@@ -184,6 +184,66 @@ public:
 
 };
 
+/**
+ *  \brief A simpler API for your DataEngines
+ *
+ * Implementation good rules:
+ *
+ * void init()
+ * {
+ *    addInput // indicate all inputs
+ *    addOutput // indicate all outputs
+ *    setDirtyValue(); // You still have to set that manually, sorry
+ * }
+ *
+ * // optional (called each time a data is modified in the gui)
+ * // it is not always desired
+ * void reinit()
+ * {
+ *    update();
+ * }
+ *
+ * void Update() override
+ * {
+ *    don't overthink it, just code. acces your inputs, set your outputs
+ *    No cleanDirty() required
+ * }
+ *
+ */
+class SOFA_CORE_API SimpleDataEngine : public sofa::core::DataEngine
+{
+ public:
+  SOFA_CLASS(SimpleDataEngine, sofa::core::DataEngine);
+
+  SimpleDataEngine() : Inherit1() {}
+  virtual ~SimpleDataEngine() {}
+
+  /// Updates your inputs and calls cleanDirty() for you.
+  /// User implementation moved to Update()
+  virtual void update() final
+  {
+      for(auto& input : getInputs())
+      {
+          static_cast<sofa::core::objectmodel::BaseData*>(input)
+                  ->updateIfDirty();
+      }
+      cleanDirty();
+      Update();
+  }
+
+  /// Where you put your engine's impl
+  virtual void Update() = 0;
+
+  /// Automatically adds the input fields to the datatracker
+  void addInput(sofa::core::objectmodel::BaseData* data)
+  {
+      m_dataTracker.trackData(*data);
+      sofa::core::objectmodel::DDGNode::addInput(data);
+  }
+
+};
+
+
 } // namespace core
 
 } // namespace sofa
