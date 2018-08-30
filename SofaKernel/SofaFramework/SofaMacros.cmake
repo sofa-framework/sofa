@@ -184,14 +184,12 @@ macro(sofa_add_generic_external directory name type)
 
     # optional parameter to activate/desactivate the option
     set(active OFF)
-    if(${ARGV4})
-        if( ${ARGV4} STREQUAL ON )
-            set(active ON)
-        endif()
+    if(${ARGV4} AND ${ARGV4} STREQUAL ON )
+        set(active ON)
     endif()
 
     if("${type}" STREQUAL "Subdirectory")
-        option(SOFA_FETCH_${option} "Fetch ${name} repository (auto-disabled afterwards)." OFF)
+        option(SOFA_FETCH_${option} "Fetch ${name} repository (auto-disabled afterwards)." ${active})
     else()
         option(${option} "Fetch and build the ${name} ${type}." ${active})
     endif()
@@ -246,7 +244,7 @@ macro(sofa_add_generic_external directory name type)
 endmacro()
 
 macro(sofa_add_subdirectory_external directory name)
-    sofa_add_generic_external(${directory} ${name} "Subdirectory")
+    sofa_add_generic_external(${directory} ${name} "Subdirectory" ${ARGV3})
 endmacro()
 
 macro(sofa_add_plugin_external directory name)

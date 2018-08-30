@@ -3,7 +3,7 @@ project(SofaCombinatorialMaps VERSION 1.0)
 
 # Dependencies
 
-sofa_add_subdirectory_external(extlibs/CGoGN CGoGN)
+sofa_add_subdirectory_external(extlibs/CGoGN CGoGN ON)
 
 find_package(Newmat)
 find_package(cgogn_core REQUIRED)

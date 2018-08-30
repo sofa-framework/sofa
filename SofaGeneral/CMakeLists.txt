@@ -41,7 +41,6 @@ set(SOFAGENERAL_TARGETS
     SofaTopologyMapping
     SofaUserInteraction
     SofaValidation
-    SofaCombinatorialMaps
 )
 
 if(SOFA_HAVE_NEWMAT)

@@ -5,5 +5,5 @@ ExternalProject_Add(CGoGN
     GIT_REPOSITORY https://github.com/cgogn/CGoGN_2
     GIT_REMOTE_NAME origin
     GIT_TAG develop
-    SOURCE_DIR "${CMAKE_SOURCE_DIR}/modules/SofaCombinatorialMaps/CGoGN"
+    SOURCE_DIR "${CMAKE_SOURCE_DIR}/modules/SofaCombinatorialMaps/extlibs/CGoGN"
 )
