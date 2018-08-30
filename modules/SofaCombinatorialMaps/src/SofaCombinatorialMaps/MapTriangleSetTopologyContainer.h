@@ -68,8 +68,8 @@ public:
     virtual const SeqEdges&getEdges() override;
     virtual const SeqTriangles&getTriangles() override;
 
-    virtual int getNbEdges() override;
-    virtual int getNbTriangles() override;
+	virtual size_t getNbEdges() override;
+	virtual size_t getNbTriangles() override;
     virtual const core::topology::Topology::Edge getEdge(EdgeID i) override;
     virtual const Triangle getTriangle(TriangleID i) override;
     virtual const EdgesAroundVertex& getEdgesAroundVertex(PointID i) override;

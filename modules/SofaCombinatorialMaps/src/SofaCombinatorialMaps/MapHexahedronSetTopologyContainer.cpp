@@ -107,22 +107,22 @@ const HexahedronSetTopologyContainer::SeqHexahedra&MaHexahedronSetTopologyContai
 	return map_->getHexahedra();
 }
 
-int MaHexahedronSetTopologyContainer::getNbEdges()
+size_t MaHexahedronSetTopologyContainer::getNbEdges()
 {
 	return map_->nb_cells<Edge::ORBIT>();
 }
 
-int MaHexahedronSetTopologyContainer::getNbQuads()
+size_t MaHexahedronSetTopologyContainer::getNbQuads()
 {
 	return map_->nb_cells<Face::ORBIT>();
 }
 
-int MaHexahedronSetTopologyContainer::getNbHexahedra()
+size_t MaHexahedronSetTopologyContainer::getNbHexahedra()
 {
 	return map_->template nb_cells<Volume::ORBIT>();
 }
 
-int MaHexahedronSetTopologyContainer::getNbHexas()
+size_t MaHexahedronSetTopologyContainer::getNbHexas()
 {
 	return getNbHexahedra();
 }

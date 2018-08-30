@@ -90,12 +90,12 @@ const TriangleSetTopologyContainer::SeqTriangles&MapTriangleSetTopologyContainer
 	return map_->getTriangles();
 }
 
-int MapTriangleSetTopologyContainer::getNbEdges()
+size_t MapTriangleSetTopologyContainer::getNbEdges()
 {
 	return map_->nb_cells<Edge::ORBIT>();
 }
 
-int MapTriangleSetTopologyContainer::getNbTriangles()
+size_t MapTriangleSetTopologyContainer::getNbTriangles()
 {
 	return map_->nb_cells<Face::ORBIT>();
 }

@@ -76,10 +76,10 @@ public:
 	virtual const SeqEdges&getEdges() override;
 	virtual const SeqQuads&getQuads() override;
 	virtual const SeqHexahedra&getHexahedra() override;
-	virtual int getNbEdges() override;
-	virtual int getNbQuads() override;
-	virtual int getNbHexahedra() override;
-	virtual int getNbHexas() override;
+	virtual size_t getNbEdges() override;
+	virtual size_t getNbQuads() override;
+	virtual size_t getNbHexahedra() override;
+	virtual size_t getNbHexas() override;
 	virtual const EdgesAroundVertex&getEdgesAroundVertex(PointID i) override;
 	virtual const EdgesInQuad&getEdgesInQuad(QuadID i) override;
 	virtual const EdgesInHexahedron&getEdgesInHexahedron(HexaID i) override;

@@ -107,22 +107,22 @@ const TetrahedronSetTopologyContainer::SeqTetrahedra&MapTetrahedronSetTopologyCo
 	return map_->getTetrahedra();
 }
 
-int MapTetrahedronSetTopologyContainer::getNbEdges()
+size_t MapTetrahedronSetTopologyContainer::getNbEdges()
 {
 	return map_->nb_cells<Edge::ORBIT>();
 }
 
-int MapTetrahedronSetTopologyContainer::getNbTriangles()
+size_t MapTetrahedronSetTopologyContainer::getNbTriangles()
 {
 	return map_->nb_cells<Face::ORBIT>();
 }
 
-int MapTetrahedronSetTopologyContainer::getNbTetrahedra()
+size_t MapTetrahedronSetTopologyContainer::getNbTetrahedra()
 {
 	return map_->template nb_cells<Volume::ORBIT>();
 }
 
-int MapTetrahedronSetTopologyContainer::getNbTetras()
+size_t MapTetrahedronSetTopologyContainer::getNbTetras()
 {
 	return getNbTetrahedra();
 }
