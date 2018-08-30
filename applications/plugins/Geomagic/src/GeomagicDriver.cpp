@@ -337,7 +337,7 @@ void GeomagicDriver::init()
     for(int j=0; j<NVISUALNODE; j++)
     {
         sofa::defaulttype::ResizableExtVector< sofa::defaulttype::Vec<3,float> > &scaleMapping = *(visualNode[j].mapping->points.beginEdit());
-        for(unsigned int i=0; i<scaleMapping.size(); i++)
+        for(size_t i=0; i<scaleMapping.size(); i++)
             scaleMapping[i] *= (float)(d_scale.getValue());
         visualNode[j].mapping->points.endEdit();
     }
@@ -412,7 +412,8 @@ void GeomagicDriver::reinit()
         q_t->normalize();
         d_orientationTool.endEdit();
 
-        for (int i=0;i<NBJOINT;i++) m_dh_matrices[i] = compute_dh_Matrix(d_dh_theta.getValue()[i],d_dh_alpha.getValue()[i],d_dh_a.getValue()[i],d_dh_d.getValue()[i]);
+        for (int i=0;i<NBJOINT;i++) 
+            m_dh_matrices[i] = compute_dh_Matrix(d_dh_theta.getValue()[i],d_dh_alpha.getValue()[i],d_dh_a.getValue()[i],d_dh_d.getValue()[i]);
     }
 }
 
@@ -556,9 +557,10 @@ void GeomagicDriver::draw(const sofa::core::visual::VisualParams* vparams)
     {
         vparams->drawTool()->disableLighting();
 
-        vparams->drawTool()->drawArrow(m_posDeviceVisu[0].getCenter(), m_posDeviceVisu[0].getCenter() + m_posDeviceVisu[0].getOrientation().rotate(Vector3(2,0,0)*d_scale.getValue()), d_scale.getValue()*0.1, Vec4f(1,0,0,1) );
-        vparams->drawTool()->drawArrow(m_posDeviceVisu[0].getCenter(), m_posDeviceVisu[0].getCenter() + m_posDeviceVisu[0].getOrientation().rotate(Vector3(0,2,0)*d_scale.getValue()), d_scale.getValue()*0.1, Vec4f(0,1,0,1) );
-        vparams->drawTool()->drawArrow(m_posDeviceVisu[0].getCenter(), m_posDeviceVisu[0].getCenter() + m_posDeviceVisu[0].getOrientation().rotate(Vector3(0,0,2)*d_scale.getValue()), d_scale.getValue()*0.1, Vec4f(0,0,1,1) );
+        float glRadius = (float)d_scale.getValue()*0.1f;
+        vparams->drawTool()->drawArrow(m_posDeviceVisu[0].getCenter(), m_posDeviceVisu[0].getCenter() + m_posDeviceVisu[0].getOrientation().rotate(Vector3(2,0,0)*d_scale.getValue()), glRadius, Vec4f(1,0,0,1) );
+        vparams->drawTool()->drawArrow(m_posDeviceVisu[0].getCenter(), m_posDeviceVisu[0].getCenter() + m_posDeviceVisu[0].getOrientation().rotate(Vector3(0,2,0)*d_scale.getValue()), glRadius, Vec4f(0,1,0,1) );
+        vparams->drawTool()->drawArrow(m_posDeviceVisu[0].getCenter(), m_posDeviceVisu[0].getCenter() + m_posDeviceVisu[0].getOrientation().rotate(Vector3(0,0,2)*d_scale.getValue()), glRadius, Vec4f(0,0,1,1) );
     }
 
     if (d_omniVisu.getValue() && m_initVisuDone)
