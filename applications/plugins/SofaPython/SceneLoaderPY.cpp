@@ -176,6 +176,9 @@ bool SceneLoaderPY::loadTestWithArguments(const char *filename, const std::vecto
         return false;
     }
 
+    PythonEnvironment::setArguments(SetDirectory::GetFileName(filename), arguments);
+
+
     PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));
 
     // pFunc is also a borrowed reference
