@@ -5,20 +5,20 @@ project(PythonSofaGeometry)
 ### Module dependencies
 ####################################################################################################
 find_package(PythonLibs 2.7 QUIET)
-if(!PythonLibs_FOUND)
-    message(FATAL_ERROR "-- The python package 'SofaGeometry' requires the PythonLibs 2.7 cmake package.")
+if(NOT PythonLibs_FOUND)
+    message("-- Cannot build the python module 'SofaGeometry', missing the required PythonLibs 2.7 cmake package.")
     return()
 endif()
 
 find_package(SofaGeometry QUIET)
-if(!SofaGeometry_FOUND)
-    message(FATAL_ERROR "-- The python package 'SofaGeometry' requires the SofaGeometry c++module to be activated.")
+if(NOT SofaGeometry_FOUND)
+    message("-- Cannot build the python module 'SofaGeometry', missing the SofaGeometry c++ module (or it is not activated in the build configuration).")
     return()
 endif()
 
 find_package(Cython QUIET)
-if(!Cython_FOUND)
-    message(FATAL_ERROR "-- The python package 'SofaGeometry' requires Cython to be installed to generate the bindings.")
+if(NOT Cython_FOUND)
+    message("-- Cannot build the python module 'SofaGeometry', missing the Cython software to generate the bindings (http://cython.org/).")
     return()
 endif()
 
