@@ -277,11 +277,11 @@ void GeomagicDriver::init()
 
     //create a specific node containing rigid position for visual models
     sofa::simulation::Node::SPtr rootContext = static_cast<simulation::Node*>(this->getContext()->getRootContext());
-    nodePrincipal = rootContext->createChild("omniVisu "+d_deviceName.getValue());
-    nodePrincipal->updateContext();
+    m_omniVisualNode = rootContext->createChild("omniVisu "+d_deviceName.getValue());
+    m_omniVisualNode->updateContext();
 
     rigidDOF = sofa::core::objectmodel::New<component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes> >();
-    nodePrincipal->addObject(rigidDOF);
+    m_omniVisualNode->addObject(rigidDOF);
     rigidDOF->name.setValue("rigidDOF");
 
     VecCoord& posDOF =*(rigidDOF->x.beginEdit());
@@ -289,13 +289,13 @@ void GeomagicDriver::init()
     rigidDOF->x.endEdit();
 
     rigidDOF->init();
-    nodePrincipal->updateContext();
+    m_omniVisualNode->updateContext();
 
 
     //creation of subnodes for each part of the device visualization
     for(int i=0; i<NVISUALNODE; i++)
     {
-        visualNode[i].node = nodePrincipal->createChild(visualNodeNames[i]);
+        visualNode[i].node = m_omniVisualNode->createChild(visualNodeNames[i]);
 
         if(visualNode[i].visu == NULL && visualNode[i].mapping == NULL)
         {
@@ -322,10 +322,10 @@ void GeomagicDriver::init()
             visualNode[i].mapping->init();
         }
         if(i<NVISUALNODE)
-            nodePrincipal->removeChild(visualNode[i].node);
+            m_omniVisualNode->removeChild(visualNode[i].node);
     }
 
-    nodePrincipal->updateContext();
+    m_omniVisualNode->updateContext();
 
     for(int i=0; i<NVISUALNODE; i++)
     {
@@ -463,7 +463,7 @@ void GeomagicDriver::updatePosition()
     d_button_1.endEdit();
     d_button_2.endEdit();
 
-    if(m_initVisuDone)
+    if(m_initVisuDone && d_omniVisu.getValue())
     {
         sofa::defaulttype::SolidTypes<double>::Transform tampon;
         m_posDeviceVisu[0] = posDevice;
@@ -507,11 +507,11 @@ void GeomagicDriver::updatePosition()
         tampon*=transform_segr7;
         m_posDeviceVisu[1+VN_base] = Coord(tampon.getOrigin(), tampon.getOrientation());
 
-        sofa::simulation::Node *node = dynamic_cast<sofa::simulation::Node*> (this->getContext());
-        if (node)
+        // update the omni visual node positions through the mappings
+        if (m_omniVisualNode)
         {
-            sofa::simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor mechaVisitor(sofa::core::MechanicalParams::defaultInstance()); mechaVisitor.execute(node);
-            sofa::simulation::UpdateMappingVisitor updateVisitor(sofa::core::ExecParams::defaultInstance()); updateVisitor.execute(node);
+            sofa::simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor mechaVisitor(sofa::core::MechanicalParams::defaultInstance()); mechaVisitor.execute(m_omniVisualNode.get());
+            sofa::simulation::UpdateMappingVisitor updateVisitor(sofa::core::ExecParams::defaultInstance()); updateVisitor.execute(m_omniVisualNode.get());
         }
     }
     d_posDevice.endEdit();
@@ -572,10 +572,10 @@ void GeomagicDriver::draw(const sofa::core::visual::VisualParams* vparams)
 
             for(int i=0; i<NVISUALNODE; i++)
             {
-                nodePrincipal->addChild(visualNode[i].node);
+                m_omniVisualNode->addChild(visualNode[i].node);
                 visualNode[i].node->updateContext();
             }
-            nodePrincipal->updateContext();
+            m_omniVisualNode->updateContext();
         }
 
         VecCoord& posDOF =*(rigidDOF->x.beginEdit());
@@ -615,7 +615,7 @@ void GeomagicDriver::draw(const sofa::core::visual::VisualParams* vparams)
             //delete omnivisual
             for(int i=0; i<NVISUALNODE; i++)
             {
-                nodePrincipal->removeChild(visualNode[i].node);
+                m_omniVisualNode->removeChild(visualNode[i].node);
             }
         }
     }
