@@ -80,7 +80,8 @@ protected:
     virtual void script_update() override;
     virtual void script_init() override;
     virtual void script_parse() override;
-    virtual void loadScript() override;    
+    virtual void script_parse(PyObject* dico);
+    virtual void loadScript() override;
     void init() override;
 
 
