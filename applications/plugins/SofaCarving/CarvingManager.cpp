@@ -97,7 +97,7 @@ void CarvingManager::init()
 
         // If topological mapping, iterate into child Node to find mapped topology
 	    sofa::core::topology::TopologicalMapping* topoMapping;
-        for (unsigned int i=0;i<models.size();++i)
+        for (size_t i=0;i<models.size();++i)
         {
             core::CollisionModel* m = models[i];
             m->getContext()->get(topoMapping);
@@ -150,7 +150,7 @@ void CarvingManager::doCarve()
         m_toolCollisionModel->computeBoundingTree(depth);
 
     sofa::helper::vector<std::pair<core::CollisionModel*, core::CollisionModel*> > vectCMPair;
-    for (int i = 0; i < m_surfaceCollisionModels.size(); i++)
+    for (size_t i = 0; i < m_surfaceCollisionModels.size(); i++)
     {
         if (continuous)
             m_surfaceCollisionModels[i]->computeContinuousBoundingTree(dt, depth);
@@ -174,7 +174,7 @@ void CarvingManager::doCarve()
     for (it = detectionOutputs.begin(); it != detectionOutputs.end(); ++it)
     {
         contacts = dynamic_cast<const ContactVector*>(it->second);
-        unsigned int ncontacts = 0;
+        size_t ncontacts = 0;
         if (contacts != NULL)
             ncontacts = contacts->size();
 
@@ -184,7 +184,7 @@ void CarvingManager::doCarve()
         int nbelems = 0;
         helper::vector<int> elemsToRemove;
 
-        for (unsigned int j = 0; j < ncontacts; ++j)
+        for (size_t j = 0; j < ncontacts; ++j)
         {
             const ContactVector::value_type& c = (*contacts)[j];
             
