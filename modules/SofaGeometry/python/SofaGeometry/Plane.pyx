@@ -21,13 +21,24 @@ cdef class Plane:
             (s, r) = p.raycast(r)
 
     """
-    def __init__(self, Vec3d normal not None, other):
-        assert isinstance(other, (float, int, Vec3d)), 'expecting the other argument to be of type (int, float, Vec3d) instead we got: '+str(type(other)) 
+    def __init__(self, unormal=Vec3d(1.0,0.0,0.0), other=float(0.0)):
+        assert isinstance(other, (float, int, Vec3d)), 'expecting the other argument to be of type (int, float, Vec3d) instead we got: '+str(type(other))
+
+        cdef Vec3d normal
+
+        if not isinstance(unormal, Vec3d):
+            normal = Vec3d(unormal)
+        else:
+            normal = unormal
+
         if isinstance(other, (float, int)):
                 self.planeptr = shared_ptr[_Plane](new _Plane( deref(normal.inst.get()), <double>other)) 
-        elif isinstance(other, Vec3d):
+                return
+
+        if isinstance(other, Vec3d):
                 self.__init__v(normal, other)
-                
+                return
+
     cdef __init__v(self, Vec3d normal, Vec3d position):
         self.planeptr = shared_ptr[_Plane](new _Plane( deref(normal.inst.get()),  deref(position.inst.get()))) 
                 
@@ -53,8 +64,15 @@ cdef class Plane:
             return self.planeptr.get().distance
     
     def raycast(self, Ray ray):
+        """Compute the intersection of the plane and a ray.
+           In case of intersection the distance along the ray at which intersection happens it returned.
+           Otherwise return None.
+           """
         cdef double p = 0.0 
         cdef bool r = self.planeptr.get().raycast(deref(ray.inst.get()), p)
         if r:
             return p
         return None
+
+    def __str__(self):
+        return "Plane(direction={:s}, distance={:s})".format(str(self.direction), str(self.distance))

@@ -1,2 +1,3 @@
-__all__ = ["vector","Plane","Ray"]
-
+from vector import *
+from Plane import *
+from Ray import *

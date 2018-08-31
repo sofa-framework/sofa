@@ -47,12 +47,8 @@ cdef class Ray:
     def __init__(self, Vec3d origin=Vec3d(0,0,0), Vec3d direction=Vec3d(1.0,0.0,0.0)):
 
         self.inst = shared_ptr[_Ray](new _Ray(deref(origin.inst), deref(direction.inst)))
-  
-    def hello(self):
-        r = Ray()        
-        print(str(dir(r)))
         
-    def getPoint(self, distance):
+    def getPoint(self, distance=0.0):
         """Returns the point along the ray at a distance 'd' from the ray origin
            Example:
                 r = Ray(Constants.Origin, Constant.XAxis)

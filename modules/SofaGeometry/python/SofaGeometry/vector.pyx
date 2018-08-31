@@ -22,15 +22,39 @@ cdef class Vec3d:
                 v3.norm()               # Returns a float with  the norm of the vector 
                 v3.distanceTo(v1)       # Returns the distance between v3 and v1
                 v3.set(1.0,0.0,1.0)     # Set new values to x,y,z
+                v3.dot(v2)              # Compute the dot product of two vectors
+                v3.cross(v2)            # Compute the cross producto of two vectors
                 v3.normalize()          # Normalizes the current vector
                 v3.normalized()         # Returns a normalized version of the vector
-                v3 * v2                 # Returns the resuolt of the element by element multiplication
+                v3 * v2                 # Returns the result of the element by element multiplication
                 v3 * 1.0                # Returns the result of the vector multiplied by a scalar
                 v3 / 1.0                # Returns the result of the vector divided by a scalar
+                v3 / v2                 # Returns the result of the element by element division
                 len(v)                  # Returns 3...so you can use this class in for loops.
                 v3[i] = 1.0             # Set the i'th component to a given value
     """
     #cdef shared_ptr[_Vec3d] inst
+
+    def __init__(self, *args):
+        if not args:
+            self._init_0(*args)
+        elif (len(args)==1) and (isinstance(args[0], Vec3d)):
+            self._init_1(*args)
+        elif (len(args)==1) and (isinstance(args[0], list)):
+            self._init_2(float(args[0][0]), float(args[0][1]), float(args[0][2]))
+        elif (len(args)==3) and (isinstance(args[0], (float,int))) and (isinstance(args[1], (float,int))) and (isinstance(args[2], (float,int))):
+            self._init_2(*args)
+        else:
+             raise Exception('can not handle type of %s' % (args,))
+
+    def _init_0(self):
+        self.inst = shared_ptr[_Vec3d](new _Vec3d())
+
+    def _init_1(self, Vec3d in_0 ):
+        self.inst = shared_ptr[_Vec3d](new _Vec3d((deref(in_0.inst.get()))))
+
+    def _init_2(self, double in_0 , double in_1 , double in_2 ):
+        self.inst = shared_ptr[_Vec3d](new _Vec3d((<double>in_0), (<double>in_1), (<double>in_2)))
 
     def __dealloc__(self):
          self.inst.reset()
@@ -64,35 +88,60 @@ cdef class Vec3d:
                 return cp
         return None
 
-    def mulscalar(Vec3d self, value):
+    def __div__(Vec3d self, value):
+        if isinstance(value, (float, int)):
+                return self.scalarDivision(value)
+        if isinstance(value, Vec3d):
+                return self.linearDivision(value)
+
+    def scalarDivision(Vec3d self, value):
         assert isinstance(value, (float, int)), 'arg value has a wrong type. int or float expected instead of '+str(type(value))
-        
+
+        cdef Vec3d result = Vec3d()
+        result.inst.get().set(self.inst.get().x(), self.inst.get().y(), self.inst.get().z())
+        result.inst.get().eqdivscalar(<double>value)
+        return result
+
+    def linearDivision(self, Vec3d other not None):
+        cdef _Vec3d* a = self.inst.get()
+        cdef _Vec3d* b = other.inst.get()
+
+        return Vec3d(a.x()/b.x(), a.y()/b.y(), a.z()/b.z())
+
+    def scalarMul(Vec3d self, value):
+        assert isinstance(value, (float, int)), 'arg value has a wrong type. int or float expected instead of '+str(type(value))
+
         cdef Vec3d result = Vec3d()
         result.inst.get().set(self.inst.get().x(), self.inst.get().y(), self.inst.get().z())
         result.inst.get().eqmulscalar(<double>value)
-        return result           
-    
-    def __div__(Vec3d self, value):
-        assert isinstance(value, (float, int)), 'arg value has a wrong type. int or float expected instead of '+str(type(value))
-        assert <double>value != 0.0, 'Division by zero' 
-        return self.mulscalar(1.0/<double>value)           
-    
-    
-    def elementmul(self, Vec3d other not None):
-        cdef _Vec3d* a = self.inst.get() 
-        cdef _Vec3d* b = other.inst.get() 
-        
+        return result
+
+    def linearMul(self, Vec3d other not None):
+        cdef _Vec3d* a = self.inst.get()
+        cdef _Vec3d* b = other.inst.get()
+
         return Vec3d(a.x()*b.x(), a.y()*b.y(), a.z()*b.z())
-        
-    
+
     def __mul__(self, value):
         if isinstance(value, (float, int)):
-                return self.mulscalar(value)
-        elif isinstance(value, Vec3d):
-                return self.elementmul(value)
+                return self.scalarMul(value)
+        if isinstance(value, Vec3d):
+                return self.linearMul(value)
                 
         raise TypeError("arg value has a wrong type. int or float or Vec3d expected instead of "+str(type(value)))
     
+    def dot(self, Vec3d other not None):
+        cdef _Vec3d* a = self.inst.get()
+        cdef _Vec3d* b = other.inst.get()
+        return float( deref(a) * deref(b) )
+
+    def cross(self, Vec3d other not None):
+        cdef _Vec3d* a = self.inst.get()
+        cdef _Vec3d* b = other.inst.get()
+        cdef _Vec3d r = a.cross(deref(b))
+
+        return Vec3d(r.x(), r.y(),r.z())
+
     def norm(self):
         return self.inst.get().norm()
     
@@ -105,27 +154,6 @@ cdef class Vec3d:
        cdef Vec3d rv = Vec3d.__new__(Vec3d)
        rv.inst = shared_ptr[_Vec3d](new _Vec3d(deref(self.inst.get())))
        return rv
-
-    def _init_0(self):
-        self.inst = shared_ptr[_Vec3d](new _Vec3d())
-    
-    def _init_1(self, Vec3d in_0 ):
-        self.inst = shared_ptr[_Vec3d](new _Vec3d((deref(in_0.inst.get()))))
-    
-    def _init_2(self, double in_0 , double in_1 , double in_2 ):
-        self.inst = shared_ptr[_Vec3d](new _Vec3d((<double>in_0), (<double>in_1), (<double>in_2)))
-        
-    def __init__(self, *args):
-        if not args:
-             self._init_0(*args)
-        elif (len(args)==1) and (isinstance(args[0], Vec3d)):
-             self._init_1(*args)
-        elif (len(args)==1) and (isinstance(args[0], list)):
-             self._init_2(float(args[0][0]), float(args[0][1]), float(args[0][2]))
-        elif (len(args)==3) and (isinstance(args[0], (float,int))) and (isinstance(args[1], (float,int))) and (isinstance(args[2], (float,int))):
-             self._init_2(*args)
-        else:
-               raise Exception('can not handle type of %s' % (args,))
  
     def __setitem__(self, index, value):
         assert isinstance(index, (int,long)), 'arg index has a wrong type. int is expected instead of '+str(type(index))
@@ -165,13 +193,19 @@ cdef class Vec3d:
         return py_result 
     
     def xy(self):
-        return [<double>self.inst.get().x(), <double>self.inst.get().y()]
+        return (<double>self.inst.get().x(), <double>self.inst.get().y())
     
     def xyz(self):
+        return (<double>self.inst.get().x(), <double>self.inst.get().y(), <double>self.inst.get().z())
+
+    def toList(self):
         return [<double>self.inst.get().x(), <double>self.inst.get().y(), <double>self.inst.get().z()]
-        
+
     def __str__(self):
         return "({:2.2f}, {:2.2f}, {:2.2f})".format(self.x(),self.y(), self.z())
+
+    def __repr__(self):
+        return "Vec3d({:2.2f}, {:2.2f}, {:2.2f})".format(self.x(),self.y(), self.z())
 
     def distanceTo(self, Vec3d aPoint):
         return (self-aPoint).norm() 

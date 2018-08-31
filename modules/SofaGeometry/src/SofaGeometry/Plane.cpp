@@ -36,24 +36,27 @@ using Eigen::Vector3d ;
 namespace sofageometry
 {
 
-// Create a new plan object.
+// Create a new plan object by passing the hessian-form of the place
+// see: http://mathworld.wolfram.com/Plane.html
 // the normal parameter must be a normalized vector.
 // the distance parameter is the distance to the origin.
-Plane::Plane(const Vec3d& normal, const double& distance ){
+Plane::Plane(const Vec3d& normal, const double& distance){
     this->normal = normal ;
     this->distance = distance ;
 }
 
-Plane::Plane(const Vec3d& normal, const Vec3d& point ){
-    this->normal = normal ;
+Plane::Plane(const Vec3d& normal, const Vec3d& point)
+{
+    double norm = normal.norm();
+    this->normal = normal/norm ;
 
     // Conversion is taken from:
     // http://mathworld.wolfram.com/Plane.html
-    double d = 0.0 - (normal.x()*point.x())
+    double d =     - (normal.x()*point.x())
                    - (normal.y()*point.y())
                    - (normal.z()*point.z()) ;
 
-    this->distance = d / normal.norm() ;
+    this->distance = d / norm ;
 }
 
 // Casts a rayon against the plane, returning true or false on

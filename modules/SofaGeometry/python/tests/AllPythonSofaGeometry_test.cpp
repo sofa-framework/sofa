@@ -58,10 +58,9 @@ static struct Tests : public Python_test_list
     Tests()
     {
         static const std::string testPath = std::string(PYTHON_TESTFILES_DIR);
-
-        addTest( "Plane_test.py", testPath, {} );
-        addTest( "Ray_test.py", testPath, {} );
         addTest( "vector_test.py", testPath, {} );
+        addTest( "Ray_test.py", testPath, {} );
+        addTest( "Plane_test.py", testPath, {} );
     }
 } python_tests;
 

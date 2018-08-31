@@ -16,11 +16,17 @@ cdef extern from "<SofaGeometry/Constants.h>" namespace "sofa::defaulttype":
         double z() except +
         
         double& operator[](int) except +
-        Vec3d operator+(Vec3d)
-        Vec3d operator-(Vec3d)
-        #void operator=(Vec3d)
+        Vec3d operator+(Vec3d&)
+        Vec3d operator-(Vec3d&)
+
+        ## This is the dot product
+        float operator*(Vec3d&)
+
+        Vec3d cross(Vec3d&)
         
         bool normalize()
         double norm() 
         Vec3d mulscalar(double f)  
         void eqmulscalar(double f)  
+        void eqdivscalar(double f)
+
