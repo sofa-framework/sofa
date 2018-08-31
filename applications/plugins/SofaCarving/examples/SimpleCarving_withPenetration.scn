@@ -10,7 +10,7 @@
   <MinProximityIntersection name="Proximity" alarmDistance="0.5" contactDistance="0.1"/>
   <CollisionGroup />
   
-  <CarvingManager active="true" />
+  <CarvingManager active="true" carvingDistance="-0.09"/>
 
   <EulerImplicitSolver name="EulerImplicit"  rayleighStiffness="0.1" rayleighMass="0.1" />
   <CGLinearSolver name="CG Solver" iterations="25" tolerance="1e-9" threshold="1e-9"/>
@@ -34,6 +34,7 @@
       </Node>
     </Node>
   </Node>
+
   
   <Node name="carvingElement">
 		<MechanicalObject name="Particles" template="Vec3d" position="0 0 1.4" velocity="0 0 0"/>
