@@ -250,8 +250,13 @@ void RealGUI::CreateApplication(int /*_argc*/, char** /*_argv*/)
     argv[1]=NULL;
     application = new QSOFAApplication ( *argc,argv );
 
-    //Initialize GUI resources path
-    GuiDataRepository.addFirstPath(Utils::getSofaPathTo("share/sofa/gui/qt/resources").c_str());
+    // Add resources dir to GuiDataRepository
+    const std::string sofaIniFilePath = Utils::getSofaPathPrefix() + "/etc/SofaGuiQt.ini";
+    std::map<std::string, std::string> iniFileValues = Utils::readBasicIniFile(sofaIniFilePath);
+    if (iniFileValues.find("RESOURCES_DIR") != iniFileValues.end())
+    {
+        sofa::gui::GuiDataRepository.addFirstPath( iniFileValues["RESOURCES_DIR"] );
+    }
 
     //force locale to Standard C
     //(must be done immediatly after the QApplication has been created)
