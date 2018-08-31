@@ -1,25 +1,21 @@
 cmake_minimum_required(VERSION 3.1)
 project(PythonSofaGeometry_test)
 
-if(NOT SOFA_BUILD_TESTS)
-    return()
-endif()
-
 ####################################################################################################
 ### Module dependencies
 ####################################################################################################
-find_package(SofaPython 2.7 QUIET)
-if(!SofaPython_FOUND)
-    message(FATAL_ERROR "-- 'PythonSofaGeometry_test' requires SofaPython.")
+find_package(SofaPython QUIET)
+if(NOT SofaPython_FOUND)
+    message("-- PythonSofaGeometry_test is disabled because 'SofaPython' is missing or not activated.")
     return()
 endif()
-
 find_package(SofaTest QUIET)
-if(!SofaTest_FOUND)
-    message(FATAL_ERROR "-- 'PythonSofaGeometry_test' requires SofaTest.")
+if(NOT SofaTest_FOUND)
+    message("-- PythonSofaGeometry_test is disabled because 'SofaTest' is missing or not activated.")
     return()
 endif()
 
+message("-- PythonSofaEditor_test is enabled.")
 
 
 ####################################################################################################
