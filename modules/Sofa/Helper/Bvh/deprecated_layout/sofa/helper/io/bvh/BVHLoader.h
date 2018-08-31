@@ -19,53 +19,32 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_IO_BVH_BVHMOTION_H
-#define SOFA_HELPER_IO_BVH_BVHMOTION_H
+#ifndef SOFA_BVHLOADER_DEPRECATEDLAYOUT_H
+#define SOFA_BVHLOADER_DEPRECATEDLAYOUT_H
 
-#include <vector>
-#include <sofa/helper/helper.h>
+#include <sofa/helper/bvh/BVHLoader.h>
 
 namespace sofa
 {
-
 namespace helper
 {
-
 namespace io
 {
 
+// Namespace forwarding: solution 1
+// Auto-generated alias to make sofa::helper::io::bvh point to sofa::helper::bvh
+// namespace bvh = sofa::helper::bvh;
+
+// Namespace forwarding: solution 2
+// Auto-generated "using" Component
+// This solution looks clearer but could miss other classes declared in BVHLoader.h
 namespace bvh
 {
-
-class SOFA_HELPER_API BVHMotion
-{
-public:
-    BVHMotion()
-    {
-        frameCount = 0;
-        frameTime = 0.0;
-    };
-
-    virtual ~BVHMotion()
-    {
-        delete[] &frames;
-    };
-
-    void init(double _fTime, unsigned int _fCount, unsigned int _fSize);
-
-    int frameCount;
-    double frameTime;
-    std::vector< std::vector<double> > frames;
-
-    void debug(void);
-};
-
+using sofa::helper::bvh::BVHLoader;
 } // namespace bvh
 
 } // namespace io
-
 } // namespace helper
-
 } // namespace sofa
 
-#endif
+#endif // SOFA_BVHLOADER_DEPRECATEDLAYOUT_H

@@ -19,21 +19,22 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaNg.h>
-
-#include <sofa/helper/system/PluginManager.h>
-using sofa::helper::system::PluginManager ;
+#include <Sofa.Helper.Bvh.h>
 
 namespace sofa
 {
+namespace helper
+{
+namespace bvh
+{
 
 extern "C" {
-    SOFA_API void initExternalModule();
-    SOFA_API const char* getModuleName();
-    SOFA_API const char* getModuleVersion();
-    SOFA_API const char* getModuleLicense();
-    SOFA_API const char* getModuleDescription();
-    SOFA_API const char* getModuleComponentList();
+    SOFA_HELPER_BVH_API void initExternalModule();
+    SOFA_HELPER_BVH_API const char* getModuleName();
+    SOFA_HELPER_BVH_API const char* getModuleVersion();
+    SOFA_HELPER_BVH_API const char* getModuleLicense();
+    SOFA_HELPER_BVH_API const char* getModuleDescription();
+    SOFA_HELPER_BVH_API const char* getModuleComponentList();
 }
 
 void initExternalModule()
@@ -41,15 +42,13 @@ void initExternalModule()
     static bool first = true;
     if (first)
     {
-        PluginManager::getInstance().loadPlugin("Sofa.Helper");
-        PluginManager::getInstance().loadPlugin("Sofa.Component");
         first = false;
     }
 }
 
 const char* getModuleName()
 {
-    return "SofaNg";
+    return "Sofa.Helper.Bvh";
 }
 
 const char* getModuleVersion()
@@ -69,7 +68,9 @@ const char* getModuleDescription()
 
 const char* getModuleComponentList()
 {
-    return "";
+    return "BVHChannels, BVHOffset, BVHJoint, BVHLoader, BVHMotion";
 }
 
+} // namespace bvh
+} // namespace helper
 } // namespace sofa

@@ -19,57 +19,41 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaNg.h>
+#ifndef SOFA_HELPER_IO_BVH_BVHCHANNELS_H
+#define SOFA_HELPER_IO_BVH_BVHCHANNELS_H
 
-#include <sofa/helper/system/PluginManager.h>
-using sofa::helper::system::PluginManager ;
+#include <vector>
+#include <Sofa.Helper.Bvh.h>
 
 namespace sofa
 {
-
-extern "C" {
-    SOFA_API void initExternalModule();
-    SOFA_API const char* getModuleName();
-    SOFA_API const char* getModuleVersion();
-    SOFA_API const char* getModuleLicense();
-    SOFA_API const char* getModuleDescription();
-    SOFA_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
+namespace helper
 {
-    static bool first = true;
-    if (first)
+namespace bvh
+{
+
+class SOFA_HELPER_BVH_API BVHChannels
+{
+public:
+    BVHChannels(unsigned int _size)
+        :size(_size) {};
+
+    virtual ~BVHChannels() {};
+
+    enum BVHChannelType { Xposition, Yposition, Zposition, Xrotation, Yrotation, Zrotation, NOP };
+
+    void addChannel(BVHChannelType cType)
     {
-        PluginManager::getInstance().loadPlugin("Sofa.Helper");
-        PluginManager::getInstance().loadPlugin("Sofa.Component");
-        first = false;
+        channels.push_back(cType);
     }
-}
 
-const char* getModuleName()
-{
-    return "SofaNg";
-}
+    std::vector<BVHChannelType> channels;
 
-const char* getModuleVersion()
-{
-    return "1.0";
-}
+    unsigned int size;
+};
 
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-const char* getModuleDescription()
-{
-    return getModuleName();
-}
-
-const char* getModuleComponentList()
-{
-    return "";
-}
-
+} // namespace bvh
+} // namespace helper
 } // namespace sofa
+
+#endif

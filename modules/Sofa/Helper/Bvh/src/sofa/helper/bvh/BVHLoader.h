@@ -19,57 +19,45 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaNg.h>
+#ifndef SOFA_HELPER_IO_BVH_BVHLOADER_H
+#define SOFA_HELPER_IO_BVH_BVHLOADER_H
 
-#include <sofa/helper/system/PluginManager.h>
-using sofa::helper::system::PluginManager ;
+#include <sofa/helper/io/bvh/BVHJoint.h>
+#include <sofa/helper/io/bvh/BVHMotion.h>
+#include <Sofa.Helper.Bvh.h>
 
 namespace sofa
 {
-
-extern "C" {
-    SOFA_API void initExternalModule();
-    SOFA_API const char* getModuleName();
-    SOFA_API const char* getModuleVersion();
-    SOFA_API const char* getModuleLicense();
-    SOFA_API const char* getModuleDescription();
-    SOFA_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
+namespace helper
 {
-    static bool first = true;
-    if (first)
-    {
-        PluginManager::getInstance().loadPlugin("Sofa.Helper");
-        PluginManager::getInstance().loadPlugin("Sofa.Component");
-        first = false;
-    }
-}
-
-const char* getModuleName()
+namespace bvh
 {
-    return "SofaNg";
-}
 
-const char* getModuleVersion()
+/**
+*	This class defines a BVH File Loader
+*	This files describe a hierarchical articulated model and also an associated motion
+*	see http://www.cs.wisc.edu/graphics/Courses/cs-838-1999/Jeff/BVH.html for the file format specification
+*/
+class SOFA_HELPER_BVH_API BVHLoader
 {
-    return "1.0";
-}
+public:
+    BVHLoader() {};
+    virtual ~BVHLoader() {};
 
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
+    BVHJoint *load(const char *filename);
 
-const char* getModuleDescription()
-{
-    return getModuleName();
-}
+private:
+    BVHJoint *parseJoint(FILE *f, bool isEndSite=false, BVHJoint *parent=NULL);
+    BVHOffset *parseOffset(FILE *f);
+    BVHChannels *parseChannels(FILE *f);
 
-const char* getModuleComponentList()
-{
-    return "";
-}
+    void parseMotion(FILE *f, BVHJoint *j);
+    void setFrameTime(BVHJoint *j, double _frameTime);
+    void parseFrames(BVHJoint *j, unsigned int frameIndex, FILE *f);
+};
 
+} // namespace bvh
+} // namespace helper
 } // namespace sofa
+
+#endif

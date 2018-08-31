@@ -19,40 +19,17 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_IO_BVH_BVHOFFSET_H
-#define SOFA_HELPER_IO_BVH_BVHOFFSET_H
+#ifndef SOFA_COMPONENT_INIT_H
+#define SOFA_COMPONENT_INIT_H
 
-#include <sofa/helper/helper.h>
+#include <sofa/config.h>
 
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace io
-{
-
-namespace bvh
-{
-
-class SOFA_HELPER_API BVHOffset
-{
-public:
-    BVHOffset(double _x, double _y, double _z)
-        :x(_x),y(_y),z(_z) {}
-
-    virtual ~BVHOffset() {};
-
-    double x,y,z;
-};
-
-} // namespace bvh
-
-} // namespace io
-
-} // namespace helper
-
-} // namespace sofa
+#ifdef BUILD_SOFA_HELPER
+#  define  SOFA_TARGET    Sofa.Component
+#  define SOFA_HELPER_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_HELPER_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
 #endif
+

@@ -19,54 +19,32 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_IO_BVH_BVHLOADER_H
-#define SOFA_HELPER_IO_BVH_BVHLOADER_H
+#ifndef SOFA_BVHMOTION_DEPRECATEDLAYOUT_H
+#define SOFA_BVHMOTION_DEPRECATEDLAYOUT_H
 
-#include <sofa/helper/io/bvh/BVHJoint.h>
-#include <sofa/helper/io/bvh/BVHMotion.h>
-#include <sofa/helper/helper.h>
+#include <sofa/helper/bvh/BVHMotion.h>
 
 namespace sofa
 {
-
 namespace helper
 {
-
 namespace io
 {
 
+// Namespace forwarding: solution 1
+// Auto-generated alias to make sofa::helper::io::bvh point to sofa::helper::bvh
+// namespace bvh = sofa::helper::bvh;
+
+// Namespace forwarding: solution 2
+// Auto-generated "using" Component
+// This solution looks clearer but could miss other classes declared in BVHMotion.h
 namespace bvh
 {
-
-/**
-*	This class defines a BVH File Loader
-*	This files describe a hierarchical articulated model and also an associated motion
-*	see http://www.cs.wisc.edu/graphics/Courses/cs-838-1999/Jeff/BVH.html for the file format specification
-*/
-class SOFA_HELPER_API BVHLoader
-{
-public:
-    BVHLoader() {};
-    virtual ~BVHLoader() {};
-
-    BVHJoint *load(const char *filename);
-
-private:
-    BVHJoint *parseJoint(FILE *f, bool isEndSite=false, BVHJoint *parent=NULL);
-    BVHOffset *parseOffset(FILE *f);
-    BVHChannels *parseChannels(FILE *f);
-
-    void parseMotion(FILE *f, BVHJoint *j);
-    void setFrameTime(BVHJoint *j, double _frameTime);
-    void parseFrames(BVHJoint *j, unsigned int frameIndex, FILE *f);
-};
-
+using sofa::helper::bvh::BVHMotion;
 } // namespace bvh
 
 } // namespace io
-
 } // namespace helper
-
 } // namespace sofa
 
-#endif
+#endif // SOFA_BVHMOTION_DEPRECATEDLAYOUT_H

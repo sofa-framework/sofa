@@ -237,6 +237,10 @@ endif()
 
 set(SOFAFRAMEWORK_TARGETS SofaCore SofaDefaultType SofaHelper)
 
+# NG version of SofaFramework
+add_subdirectory(../../modules/Sofa/Helper/Bvh ${CMAKE_CURRENT_BINARY_DIR}/Sofa.Helper.Bvh)
+list(APPEND SOFAFRAMEWORK_TARGETS Sofa.Helper.Bvh)
+
 ## CMake package configurations files
 sofa_write_package_config_files(SofaFramework ${SOFAFRAMEWORK_VERSION})
 

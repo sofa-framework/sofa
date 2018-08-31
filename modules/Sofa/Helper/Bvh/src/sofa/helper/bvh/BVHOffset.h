@@ -19,57 +19,31 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaNg.h>
+#ifndef SOFA_HELPER_IO_BVH_BVHOFFSET_H
+#define SOFA_HELPER_IO_BVH_BVHOFFSET_H
 
-#include <sofa/helper/system/PluginManager.h>
-using sofa::helper::system::PluginManager ;
+#include <Sofa.Helper.Bvh.h>
 
 namespace sofa
 {
-
-extern "C" {
-    SOFA_API void initExternalModule();
-    SOFA_API const char* getModuleName();
-    SOFA_API const char* getModuleVersion();
-    SOFA_API const char* getModuleLicense();
-    SOFA_API const char* getModuleDescription();
-    SOFA_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
+namespace helper
 {
-    static bool first = true;
-    if (first)
-    {
-        PluginManager::getInstance().loadPlugin("Sofa.Helper");
-        PluginManager::getInstance().loadPlugin("Sofa.Component");
-        first = false;
-    }
-}
-
-const char* getModuleName()
+namespace bvh
 {
-    return "SofaNg";
-}
 
-const char* getModuleVersion()
+class SOFA_HELPER_BVH_API BVHOffset
 {
-    return "1.0";
-}
+public:
+    BVHOffset(double _x, double _y, double _z)
+        :x(_x),y(_y),z(_z) {}
 
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
+    virtual ~BVHOffset() {};
 
-const char* getModuleDescription()
-{
-    return getModuleName();
-}
+    double x,y,z;
+};
 
-const char* getModuleComponentList()
-{
-    return "";
-}
-
+} // namespace bvh
+} // namespace helper
 } // namespace sofa
+
+#endif

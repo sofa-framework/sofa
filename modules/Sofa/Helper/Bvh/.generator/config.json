@@ -1,0 +1,56 @@
+{
+    "dependencies": [
+        "SofaHelper"
+    ],
+    "dependency_targets": [
+        "SofaFramework"
+    ],
+    "deprecated_header_files": [
+        "deprecated_layout/sofa/helper/io/bvh/BVHChannels.h",
+        "deprecated_layout/sofa/helper/io/bvh/BVHOffset.h",
+        "deprecated_layout/sofa/helper/io/bvh/BVHJoint.h",
+        "deprecated_layout/sofa/helper/io/bvh/BVHLoader.h",
+        "deprecated_layout/sofa/helper/io/bvh/BVHMotion.h"
+    ],
+    "extra_files": [],
+    "from_root": "../..",
+    "header_files": [
+        "src/sofa/helper/bvh/BVHChannels.h",
+        "src/sofa/helper/bvh/BVHOffset.h",
+        "src/sofa/helper/bvh/BVHJoint.h",
+        "src/sofa/helper/bvh/BVHLoader.h",
+        "src/sofa/helper/bvh/BVHMotion.h"
+    ],
+    "new_namespace": [
+        "sofa",
+        "helper",
+        "bvh"
+    ],
+    "old_namespace": [
+        "sofa",
+        "helper",
+        "io",
+        "bvh"
+    ],
+    "package_cname": "SOFA_HELPER_BVH",
+    "package_components": [
+        "BVHChannels",
+        "BVHOffset",
+        "BVHJoint",
+        "BVHLoader",
+        "BVHMotion"
+    ],
+    "package_dir_config": "../../modules/Sofa/Helper/Bvh/config",
+    "package_dir_deprecated": "../../modules/Sofa/Helper/Bvh/deprecated_layout/sofa/helper/io/bvh",
+    "package_dir_src": "../../modules/Sofa/Helper/Bvh/src",
+    "package_dir_src_with_namespace": "../../modules/Sofa/Helper/Bvh/src/sofa/helper/bvh",
+    "package_name": "Sofa.Helper.Bvh",
+    "package_type": "library",
+    "recipe_dir": "recipes",
+    "source_files": [
+        "src/sofa/helper/bvh/BVHJoint.cpp",
+        "src/sofa/helper/bvh/BVHLoader.cpp",
+        "src/sofa/helper/bvh/BVHMotion.cpp"
+    ],
+    "src_from": "../../SofaKernel/framework/sofa/helper/io/bvh"
+}

@@ -26,13 +26,8 @@
 
 namespace sofa
 {
-
 namespace helper
 {
-
-namespace io
-{
-
 namespace bvh
 {
 
@@ -59,9 +54,5 @@ void BVHMotion::debug(void)
 }
 
 } // namespace bvh
-
-} // namespace io
-
 } // namespace helper
-
 } // namespace sofa

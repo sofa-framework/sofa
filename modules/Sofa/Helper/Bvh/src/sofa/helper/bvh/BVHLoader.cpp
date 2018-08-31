@@ -29,13 +29,8 @@ MSG_REGISTER_CLASS(sofa::helper::io::bvh::BVHLoader, "BVHLoader")
 
 namespace sofa
 {
-
 namespace helper
 {
-
-namespace io
-{
-
 namespace bvh
 {
 
@@ -232,9 +227,5 @@ void BVHLoader::parseFrames(BVHJoint *joint, unsigned int frameIndex, FILE *f)
 }
 
 } // namespace bvh
-
-} // namespace io
-
 } // namespace helper
-
 } // namespace sofa

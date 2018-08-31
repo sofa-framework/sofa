@@ -19,57 +19,32 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <SofaNg.h>
+#ifndef SOFA_BVHJOINT_DEPRECATEDLAYOUT_H
+#define SOFA_BVHJOINT_DEPRECATEDLAYOUT_H
 
-#include <sofa/helper/system/PluginManager.h>
-using sofa::helper::system::PluginManager ;
+#include <sofa/helper/bvh/BVHJoint.h>
 
 namespace sofa
 {
-
-extern "C" {
-    SOFA_API void initExternalModule();
-    SOFA_API const char* getModuleName();
-    SOFA_API const char* getModuleVersion();
-    SOFA_API const char* getModuleLicense();
-    SOFA_API const char* getModuleDescription();
-    SOFA_API const char* getModuleComponentList();
-}
-
-void initExternalModule()
+namespace helper
 {
-    static bool first = true;
-    if (first)
-    {
-        PluginManager::getInstance().loadPlugin("Sofa.Helper");
-        PluginManager::getInstance().loadPlugin("Sofa.Component");
-        first = false;
-    }
-}
-
-const char* getModuleName()
+namespace io
 {
-    return "SofaNg";
-}
 
-const char* getModuleVersion()
+// Namespace forwarding: solution 1
+// Auto-generated alias to make sofa::helper::io::bvh point to sofa::helper::bvh
+// namespace bvh = sofa::helper::bvh;
+
+// Namespace forwarding: solution 2
+// Auto-generated "using" Component
+// This solution looks clearer but could miss other classes declared in BVHJoint.h
+namespace bvh
 {
-    return "1.0";
-}
+using sofa::helper::bvh::BVHJoint;
+} // namespace bvh
 
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-const char* getModuleDescription()
-{
-    return getModuleName();
-}
-
-const char* getModuleComponentList()
-{
-    return "";
-}
-
+} // namespace io
+} // namespace helper
 } // namespace sofa
+
+#endif // SOFA_BVHJOINT_DEPRECATEDLAYOUT_H
