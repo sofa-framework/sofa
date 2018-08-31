@@ -59,12 +59,6 @@ list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/applications/plugins)
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/applications/packages)
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/applications/projects)
 
-# Create etc/sofa.ini: it contains the paths to share/ and examples/. In the
-# build directory, it points to the source tree,
-set(SHARE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/share")
-set(EXAMPLES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/examples")
-configure_file(${SOFA_KERNEL_SOURCE_DIR}/etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/sofa.ini")
-
 ## RPATH
 if(UNIX)
     # RPATH is a field in ELF binaries that is used as a hint by the system
@@ -290,11 +284,15 @@ install(FILES "${CMAKE_SOURCE_DIR}/CHANGELOG.md" DESTINATION . COMPONENT applica
 install(FILES "${CMAKE_SOURCE_DIR}/LICENSE.LGPL.txt" DESTINATION . COMPONENT applications)
 install(FILES "${CMAKE_SOURCE_DIR}/Authors.txt" DESTINATION . COMPONENT applications)
 
-## Create etc/installedSofa.ini: it contains the paths to share/ and examples/. Compare to the Sofa.ini in the
-## build directory, this one contains relative paths to the installed resource directory.
+# Create build and install versions of etc/sofa.ini:
+#   - In build dir, sofa.ini contains absolute paths to distant (in source) share/ and examples/ dirs
+#   - In install dir, sofa.ini (generated later via installedSofa.ini) contains relative paths to local share/ and examples/ dirs
+set(SHARE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/share")
+set(EXAMPLES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/examples")
+configure_file("${SOFA_KERNEL_SOURCE_DIR}/etc/sofa.ini.in" "${CMAKE_BINARY_DIR}/etc/sofa.ini")
 set(SHARE_DIR "../share/sofa")
 set(EXAMPLES_DIR "../share/sofa/examples")
-configure_file(${SOFA_KERNEL_SOURCE_DIR}/etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/installedSofa.ini")
+configure_file("${SOFA_KERNEL_SOURCE_DIR}/etc/sofa.ini.in" "${CMAKE_BINARY_DIR}/etc/installedSofa.ini")
 install(FILES "${CMAKE_BINARY_DIR}/etc/installedSofa.ini" DESTINATION etc RENAME sofa.ini COMPONENT applications)
 
 option(SOFA_INSTALL_RESOURCES_FILES "Copy resources files (etc/, share/, examples/) when installing" ON)
