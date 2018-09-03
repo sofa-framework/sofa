@@ -73,12 +73,12 @@ function(sofa_add_python_module)
             # compile with -fno-strict-aliasing to prevent the compiler from relying on
             # those rules to optimize the code.
             if(${CMAKE_COMPILER_IS_GNUCC})
-                set(SOFAPYTHON_COMPILER_FLAGS "${SOFAPYTHON_COMPILER_FLAGS} -fno-strict-aliasing")
+                set(SOFACYTHON_COMPILER_FLAGS "-fno-strict-aliasing")
             endif()
 
             target_link_libraries(${pyxtarget} ${_DEPENDS} ${PYTHON_LIBRARIES})
             target_include_directories(${pyxtarget} PRIVATE ${PYTHON_INCLUDE_DIRS})
-            target_compile_options(${pyxtarget} PRIVATE ${SOFAPYTHON_COMPILER_FLAGS})
+            target_compile_options(${pyxtarget} PRIVATE ${SOFACYTHON_COMPILER_FLAGS})
             set_target_properties(${pyxtarget}
                 PROPERTIES
                 ARCHIVE_OUTPUT_DIRECTORY "${_OUTPUT}"
