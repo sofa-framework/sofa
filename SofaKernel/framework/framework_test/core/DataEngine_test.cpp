@@ -111,7 +111,7 @@ public:
         update();
     }
 
-    void Update() override
+    void doUpdate() override
     {
         // true only if the DataTracker associated to the Data 'input' is Dirty
         // that could only happen if 'input' was dirtied since last update

@@ -203,7 +203,7 @@ public:
  *    update();
  * }
  *
- * void Update() override
+ * void doUpdate() override
  * {
  *    don't overthink it, just code. acces your inputs, set your outputs
  *    No cleanDirty() required
@@ -219,7 +219,7 @@ class SOFA_CORE_API SimpleDataEngine : public sofa::core::DataEngine
   virtual ~SimpleDataEngine() {}
 
   /// Updates your inputs and calls cleanDirty() for you.
-  /// User implementation moved to Update()
+  /// User implementation moved to doUpdate()
   virtual void update() final
   {
       for(auto& input : getInputs())
@@ -228,11 +228,11 @@ class SOFA_CORE_API SimpleDataEngine : public sofa::core::DataEngine
                   ->updateIfDirty();
       }
       cleanDirty();
-      Update();
+      doUpdate();
   }
 
   /// Where you put your engine's impl
-  virtual void Update() = 0;
+  virtual void doUpdate() = 0;
 
   /// Automatically adds the input fields to the datatracker
   void addInput(sofa::core::objectmodel::BaseData* data)
