@@ -33,7 +33,7 @@ namespace core
 namespace cm_topology
 {
 
-//SOFA_CORE_API TopologyObjectType parseTopologyObjectTypeFromString(const std::string& s)
+//SOFA_COMBINATORIALMAPS_API TopologyObjectType parseTopologyObjectTypeFromString(const std::string& s)
 //{
 //	std::string sUP = s;
 //	std::transform( sUP.begin(), sUP.end(), sUP.begin(), ::tolower);
@@ -49,7 +49,7 @@ namespace cm_topology
 //	return POINT;
 //}
 
-//SOFA_CORE_API std::string parseTopologyObjectTypeToString(TopologyObjectType t)
+//SOFA_COMBINATORIALMAPS_API std::string parseTopologyObjectTypeToString(TopologyObjectType t)
 //{
 //	switch (t)
 //	{
@@ -65,12 +65,12 @@ namespace cm_topology
 //	}
 //}
 /*
-SOFA_CORE_API std::ostream& operator << (std::ostream& out, const TopologyObjectType& d)
+SOFA_COMBINATORIALMAPS_API std::ostream& operator << (std::ostream& out, const TopologyObjectType& d)
 {
 	return out << parseTopologyObjectTypeToString(d);
 }
 
-SOFA_CORE_API std::istream& operator >> (std::istream& in, TopologyObjectType& d)
+SOFA_COMBINATORIALMAPS_API std::istream& operator >> (std::istream& in, TopologyObjectType& d)
 {
 	std::string s;
 	in >> s;
@@ -78,7 +78,7 @@ SOFA_CORE_API std::istream& operator >> (std::istream& in, TopologyObjectType& d
 	return in;
 }
 */
-//SOFA_CORE_API TopologyChangeType parseTopologyChangeTypeFromString(const std::string& s)
+//SOFA_COMBINATORIALMAPS_API TopologyChangeType parseTopologyChangeTypeFromString(const std::string& s)
 //{
 //	std::string sUP = s;
 //	std::transform( sUP.begin(), sUP.end(), sUP.begin(), ::tolower);
@@ -132,7 +132,7 @@ SOFA_CORE_API std::istream& operator >> (std::istream& in, TopologyObjectType& d
 //	return TOPOLOGYCHANGE_LASTID;
 //}
 
-//SOFA_CORE_API std::string parseTopologyChangeTypeToString(TopologyChangeType t)
+//SOFA_COMBINATORIALMAPS_API std::string parseTopologyChangeTypeToString(TopologyChangeType t)
 //{
 //	switch (t)
 //	{
@@ -186,12 +186,12 @@ SOFA_CORE_API std::istream& operator >> (std::istream& in, TopologyObjectType& d
 //	}
 //}
 /*
-SOFA_CORE_API std::ostream& operator << (std::ostream& out, const TopologyChangeType& d)
+SOFA_COMBINATORIALMAPS_API std::ostream& operator << (std::ostream& out, const TopologyChangeType& d)
 {
 	return out << parseTopologyChangeTypeToString(d);
 }
 
-SOFA_CORE_API std::istream& operator >> (std::istream& in, TopologyChangeType& d)
+SOFA_COMBINATORIALMAPS_API std::istream& operator >> (std::istream& in, TopologyChangeType& d)
 {
 	std::string s;
 	in >> s;
@@ -200,13 +200,13 @@ SOFA_CORE_API std::istream& operator >> (std::istream& in, TopologyChangeType& d
 }
 */
 
-//SOFA_CORE_API std::ostream& operator << (std::ostream& out, const TopologyElemID& d)
+//SOFA_COMBINATORIALMAPS_API std::ostream& operator << (std::ostream& out, const TopologyElemID& d)
 //{
 //	out << parseTopologyObjectTypeToString(d.type) << " " << d.index;
 //	return out;
 //}
 
-//SOFA_CORE_API std::istream& operator >> (std::istream& in, TopologyElemID& /* d */)
+//SOFA_COMBINATORIALMAPS_API std::istream& operator >> (std::istream& in, TopologyElemID& /* d */)
 //{/*
 //	std::string tstr;
 //	in >> tstr;
@@ -215,13 +215,13 @@ SOFA_CORE_API std::istream& operator >> (std::istream& in, TopologyChangeType& d
 //	return in;
 //}
 
-//SOFA_CORE_API std::ostream& operator << (std::ostream& out, const PointAncestorElem& d)
+//SOFA_COMBINATORIALMAPS_API std::ostream& operator << (std::ostream& out, const PointAncestorElem& d)
 //{
 //	out << parseTopologyObjectTypeToString(d.type) << " " << d.index << " " << d.localCoords;
 //	return out;
 //}
 
-//SOFA_CORE_API std::istream& operator >> (std::istream& in, PointAncestorElem& /* d */)
+//SOFA_COMBINATORIALMAPS_API std::istream& operator >> (std::istream& in, PointAncestorElem& /* d */)
 //{/*
 //	std::string tstr;
 //	in >> tstr;
@@ -232,14 +232,14 @@ SOFA_CORE_API std::istream& operator >> (std::istream& in, TopologyChangeType& d
 //}
 
 //template<int NV>
-//SOFA_CORE_API std::ostream& operator << (std::ostream& out, const ElemAncestorElem<NV>& d)
+//SOFA_COMBINATORIALMAPS_API std::ostream& operator << (std::ostream& out, const ElemAncestorElem<NV>& d)
 //{
 //	out << d.pointSrcElems << " " << d.srcElems.size() << " " << d.srcElems << "\n";
 //	return out;
 //}
 
 //template<int NV>
-//SOFA_CORE_API std::istream& operator >> (std::istream& in, ElemAncestorElem<NV>& /*d*/)
+//SOFA_COMBINATORIALMAPS_API std::istream& operator >> (std::istream& in, ElemAncestorElem<NV>& /*d*/)
 //{
 //	/*
 //	in >> d.pointSrcElems;
@@ -255,10 +255,10 @@ SOFA_CORE_API std::istream& operator >> (std::istream& in, TopologyChangeType& d
 //	return in;
 //}
 
-//template SOFA_CORE_API std::ostream& operator<< (std::ostream& out, const ElemAncestorElem<2>& d);
-//template SOFA_CORE_API std::ostream& operator<< (std::ostream& out, const ElemAncestorElem<3>& d);
-//template SOFA_CORE_API std::ostream& operator<< (std::ostream& out, const ElemAncestorElem<4>& d);
-//template SOFA_CORE_API std::ostream& operator<< (std::ostream& out, const ElemAncestorElem<8>& d);
+//template SOFA_COMBINATORIALMAPS_API std::ostream& operator<< (std::ostream& out, const ElemAncestorElem<2>& d);
+//template SOFA_COMBINATORIALMAPS_API std::ostream& operator<< (std::ostream& out, const ElemAncestorElem<3>& d);
+//template SOFA_COMBINATORIALMAPS_API std::ostream& operator<< (std::ostream& out, const ElemAncestorElem<4>& d);
+//template SOFA_COMBINATORIALMAPS_API std::ostream& operator<< (std::ostream& out, const ElemAncestorElem<8>& d);
 
 TopologyChange::~TopologyChange()
 {

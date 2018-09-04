@@ -1,5 +1,6 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_SURFACEMASKTRAVERSAL_H
 #define SOFA_COMPONENT_TOPOLOGY_SURFACEMASKTRAVERSAL_H
+#include "config.h"
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <SofaCombinatorialMaps/SurfaceTopologyContainer.h>

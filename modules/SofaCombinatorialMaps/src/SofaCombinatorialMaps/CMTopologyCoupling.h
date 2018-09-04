@@ -1,6 +1,6 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_CMTOPOLOGYCOUPLING_H
 #define SOFA_COMPONENT_TOPOLOGY_CMTOPOLOGYCOUPLING_H
-
+#include "config.h"
 
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/helper/gl/template.h>

@@ -22,9 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #ifndef MAPTRIANGLESETTOPOLOGYCONTAINER_H
 #define MAPTRIANGLESETTOPOLOGYCONTAINER_H
+#include "config.h"
 
 #include <SofaBaseTopology/TriangleSetTopologyContainer.h>
 #include <SofaCombinatorialMaps/SurfaceTopologyContainer.h>
@@ -38,7 +38,7 @@ namespace component
 namespace topology
 {
 
-class SOFA_BASE_TOPOLOGY_API MapTriangleSetTopologyContainer : public TriangleSetTopologyContainer
+class SOFA_COMBINATORIALMAPS_API MapTriangleSetTopologyContainer : public TriangleSetTopologyContainer
 {
     friend class TriangleSetTopologyModifier;
 public:

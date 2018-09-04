@@ -1,5 +1,6 @@
 #ifndef CMTOPOLOGYELEMENTHANDLER_H
 #define CMTOPOLOGYELEMENTHANDLER_H
+#include "config.h"
 
 #include <SofaCombinatorialMaps/CMTopologyHandler.h>
 
@@ -22,7 +23,7 @@ namespace cm_topology
 * happen (non exhaustive list: Edges added, removed, fused, renumbered).
 */
 template<class TopologyElementType>
-class SOFA_CORE_API TopologyElementHandler : public sofa::core::cm_topology::TopologyHandler
+class SOFA_COMBINATORIALMAPS_API TopologyElementHandler : public sofa::core::cm_topology::TopologyHandler
 {
 public:
 

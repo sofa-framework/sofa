@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_CORE_TOPOLOGY_CMBASETOPOLOGY_H
 #define SOFA_CORE_TOPOLOGY_CMBASETOPOLOGY_H
+#include "config.h"
 
 #include <sofa/core/topology/BaseTopologyObject.h>
 #include <SofaCombinatorialMaps/MapTopology.h>
@@ -66,7 +67,7 @@ class TopologyEngine;
 
 
 /** A class that contains a set of high-level (user frisendly) methods that perform topological changes */
-class SOFA_CORE_API TopologyAlgorithms : public sofa::core::topology::BaseTopologyObject
+class SOFA_COMBINATORIALMAPS_API TopologyAlgorithms : public sofa::core::topology::BaseTopologyObject
 {
 public:
     SOFA_CLASS(TopologyAlgorithms, BaseTopologyObject);
@@ -96,7 +97,7 @@ protected:
 };
 
 /** A class that contains a set of methods that describes the geometry of the object */
-class SOFA_CORE_API GeometryAlgorithms : public sofa::core::topology::BaseTopologyObject
+class SOFA_COMBINATORIALMAPS_API GeometryAlgorithms : public sofa::core::topology::BaseTopologyObject
 {
 public:
     SOFA_CLASS(GeometryAlgorithms, BaseTopologyObject);
@@ -125,7 +126,7 @@ public:
 };
 
 /** A class that contains a set of low-level methods that perform topological changes */
-class SOFA_CORE_API TopologyModifier : public sofa::core::topology::BaseTopologyObject
+class SOFA_COMBINATORIALMAPS_API TopologyModifier : public sofa::core::topology::BaseTopologyObject
 {
 public:
     SOFA_CLASS(TopologyModifier, BaseTopologyObject);
@@ -192,7 +193,7 @@ protected:
 
 
 ///** A class that contains a description of the topology (set of edges, triangles, adjacency information, ...) */
-//class SOFA_CORE_API TopologyContainer : public sofa::core::topology::BaseTopologyObject,
+//class SOFA_COMBINATORIALMAPS_API TopologyContainer : public sofa::core::topology::BaseTopologyObject,
 //    public core::topology::BaseMeshTopology
 //{
 //public:

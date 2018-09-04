@@ -65,10 +65,10 @@ void TopologyElementHandler<topology::MapTopology::Vertex>::ApplyTopologyChange(
         << " (it should not even exist!)" << std::endl;
 }
 
-template class SOFA_CORE_API TopologyElementHandler<topology::MapTopology::Vertex>;
-template class SOFA_CORE_API TopologyElementHandler<topology::MapTopology::Edge>;
-template class SOFA_CORE_API TopologyElementHandler<topology::MapTopology::Face>;
-template class SOFA_CORE_API TopologyElementHandler<topology::MapTopology::Volume>;
+template class SOFA_COMBINATORIALMAPS_API TopologyElementHandler<topology::MapTopology::Vertex>;
+template class SOFA_COMBINATORIALMAPS_API TopologyElementHandler<topology::MapTopology::Edge>;
+template class SOFA_COMBINATORIALMAPS_API TopologyElementHandler<topology::MapTopology::Face>;
+template class SOFA_COMBINATORIALMAPS_API TopologyElementHandler<topology::MapTopology::Volume>;
 
 } // namespace cm_topology
 

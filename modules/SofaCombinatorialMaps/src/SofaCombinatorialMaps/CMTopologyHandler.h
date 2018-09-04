@@ -1,5 +1,6 @@
 #ifndef CMTOPOLOGYHANDLER_H
 #define CMTOPOLOGYHANDLER_H
+#include "config.h"
 
 #include <SofaCombinatorialMaps/CMTopologyChange.h>
 
@@ -22,7 +23,7 @@ typedef topology::MapTopology::Volume           Volume;
 //////////////////////////////   Generic Handling of Topology Event    /////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-class SOFA_CORE_API TopologyHandler
+class SOFA_COMBINATORIALMAPS_API TopologyHandler
 {
 public:
 	TopologyHandler() : lastElementIndex(0) {}

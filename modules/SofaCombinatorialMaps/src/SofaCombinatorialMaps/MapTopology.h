@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_CORE_TOPOLOGY_MAPTOPOLOGY_H
 #define SOFA_CORE_TOPOLOGY_MAPTOPOLOGY_H
+#include "config.h"
 
 #include <functional>
 #include <sofa/core/topology/BaseMeshTopology.h>
@@ -247,7 +248,7 @@ struct CGOGN_Traits
 };
 
 
-class SOFA_CORE_API MapTopology : public virtual core::objectmodel::BaseObject
+class SOFA_COMBINATORIALMAPS_API MapTopology : public virtual core::objectmodel::BaseObject
 {
 public:
 	SOFA_CLASS(MapTopology,core::objectmodel::BaseObject);

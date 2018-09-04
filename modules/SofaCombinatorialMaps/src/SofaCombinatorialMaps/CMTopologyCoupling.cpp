@@ -51,10 +51,10 @@ int CMTopologyCouplingClass = core::RegisterObject("Topological coupling")
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_BASE_TOPOLOGY_API CMTopologyCoupling<Vec3dTypes>;
+template class SOFA_COMBINATORIALMAPS_API CMTopologyCoupling<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_BASE_TOPOLOGY_API CMTopologyCoupling<Vec3fTypes>;
+template class SOFA_COMBINATORIALMAPS_API CMTopologyCoupling<Vec3fTypes>;
 #endif
 
 

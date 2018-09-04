@@ -22,9 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
 #ifndef MAPTETRAHEDRONSETTOPOLOGYCONTAINER_H
 #define MAPTETRAHEDRONSETTOPOLOGYCONTAINER_H
+#include "config.h"
 
 #include <SofaBaseTopology/TetrahedronSetTopologyContainer.h>
 #include <SofaCombinatorialMaps/VolumeTopologyContainer.h>
@@ -38,7 +38,7 @@ namespace component
 namespace topology
 {
 
-class SOFA_BASE_TOPOLOGY_API MapTetrahedronSetTopologyContainer : public TetrahedronSetTopologyContainer
+class SOFA_COMBINATORIALMAPS_API MapTetrahedronSetTopologyContainer : public TetrahedronSetTopologyContainer
 {
 	friend class TriangleSetTopologyModifier;
 public:

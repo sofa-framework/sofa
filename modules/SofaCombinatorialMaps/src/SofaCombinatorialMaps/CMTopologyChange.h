@@ -1,5 +1,6 @@
 #ifndef CMTOPOLOGYCHANGE_H
 #define CMTOPOLOGYCHANGE_H
+#include "config.h"
 
 #include <SofaCombinatorialMaps/MapTopology.h>
 #include <iostream>
@@ -50,35 +51,35 @@ enum TopologyChangeType
 	TOPOLOGYCHANGE_LASTID      ///< user defined topology changes can start here
 };
 
-//SOFA_CORE_API TopologyChangeType parseTopologyChangeTypeFromString(const std::string& s); // TODO
-//SOFA_CORE_API std::string parseTopologyChangeTypeToString(TopologyChangeType t); // TODO
+//SOFA_COMBINATORIALMAPS_API TopologyChangeType parseTopologyChangeTypeFromString(const std::string& s); // TODO
+//SOFA_COMBINATORIALMAPS_API std::string parseTopologyChangeTypeToString(TopologyChangeType t); // TODO
 
 // forward declarations
-class SOFA_CORE_API TopologyChange;
-class SOFA_CORE_API EndingEvent;
-class SOFA_CORE_API PointsIndicesSwap;
-class SOFA_CORE_API PointsAdded;
-class SOFA_CORE_API PointsRemoved;
-class SOFA_CORE_API PointsMoved;
-class SOFA_CORE_API PointsRenumbering;
-class SOFA_CORE_API EdgesIndicesSwap;
-class SOFA_CORE_API EdgesAdded;
-class SOFA_CORE_API EdgesRemoved;
-class SOFA_CORE_API EdgesMoved_Removing;
-class SOFA_CORE_API EdgesMoved_Adding;
-class SOFA_CORE_API EdgesRenumbering;
-class SOFA_CORE_API FacesIndicesSwap;
-class SOFA_CORE_API FacesAdded;
-class SOFA_CORE_API FacesRemoved;
-class SOFA_CORE_API FacesMoved_Removing;
-class SOFA_CORE_API FacesMoved_Adding;
-class SOFA_CORE_API FacesRenumbering;
-class SOFA_CORE_API VolumesIndicesSwap;
-class SOFA_CORE_API VolumesAdded;
-class SOFA_CORE_API VolumesRemoved;
-class SOFA_CORE_API VolumesMoved_Removing;
-class SOFA_CORE_API VolumesMoved_Adding;
-class SOFA_CORE_API VolumesRenumbering;
+class SOFA_COMBINATORIALMAPS_API TopologyChange;
+class SOFA_COMBINATORIALMAPS_API EndingEvent;
+class SOFA_COMBINATORIALMAPS_API PointsIndicesSwap;
+class SOFA_COMBINATORIALMAPS_API PointsAdded;
+class SOFA_COMBINATORIALMAPS_API PointsRemoved;
+class SOFA_COMBINATORIALMAPS_API PointsMoved;
+class SOFA_COMBINATORIALMAPS_API PointsRenumbering;
+class SOFA_COMBINATORIALMAPS_API EdgesIndicesSwap;
+class SOFA_COMBINATORIALMAPS_API EdgesAdded;
+class SOFA_COMBINATORIALMAPS_API EdgesRemoved;
+class SOFA_COMBINATORIALMAPS_API EdgesMoved_Removing;
+class SOFA_COMBINATORIALMAPS_API EdgesMoved_Adding;
+class SOFA_COMBINATORIALMAPS_API EdgesRenumbering;
+class SOFA_COMBINATORIALMAPS_API FacesIndicesSwap;
+class SOFA_COMBINATORIALMAPS_API FacesAdded;
+class SOFA_COMBINATORIALMAPS_API FacesRemoved;
+class SOFA_COMBINATORIALMAPS_API FacesMoved_Removing;
+class SOFA_COMBINATORIALMAPS_API FacesMoved_Adding;
+class SOFA_COMBINATORIALMAPS_API FacesRenumbering;
+class SOFA_COMBINATORIALMAPS_API VolumesIndicesSwap;
+class SOFA_COMBINATORIALMAPS_API VolumesAdded;
+class SOFA_COMBINATORIALMAPS_API VolumesRemoved;
+class SOFA_COMBINATORIALMAPS_API VolumesMoved_Removing;
+class SOFA_COMBINATORIALMAPS_API VolumesMoved_Adding;
+class SOFA_COMBINATORIALMAPS_API VolumesRenumbering;
 
 
 /// Topology identification of a primitive element
@@ -95,8 +96,8 @@ struct TopologyElemID
 	unsigned int index;
 };
 
-SOFA_CORE_API std::ostream& operator << (std::ostream& out, const TopologyElemID& d);
-SOFA_CORE_API std::istream& operator >> (std::istream& in, TopologyElemID& d);
+SOFA_COMBINATORIALMAPS_API std::ostream& operator << (std::ostream& out, const TopologyElemID& d);
+SOFA_COMBINATORIALMAPS_API std::istream& operator >> (std::istream& in, TopologyElemID& d);
 
 /// Topology change informations related to the ancestor topology element of a point
 struct PointAncestorElem
@@ -117,8 +118,8 @@ struct PointAncestorElem
 	LocalCoords localCoords;
 };
 
-SOFA_CORE_API std::ostream& operator << (std::ostream& out, const PointAncestorElem& d);
-SOFA_CORE_API std::istream& operator >> (std::istream& in, PointAncestorElem& d);
+SOFA_COMBINATORIALMAPS_API std::ostream& operator << (std::ostream& out, const PointAncestorElem& d);
+SOFA_COMBINATORIALMAPS_API std::istream& operator >> (std::istream& in, PointAncestorElem& d);
 
 /// Topology change informations related to the ancestor topology element of an edge
 
@@ -147,9 +148,9 @@ struct ElemAncestorElem
 };
 
 
-inline SOFA_CORE_API std::ostream& operator << (std::ostream& out, const ElemAncestorElem& d);
+inline SOFA_COMBINATORIALMAPS_API std::ostream& operator << (std::ostream& out, const ElemAncestorElem& d);
 
-inline SOFA_CORE_API std::istream& operator >> (std::istream& in, ElemAncestorElem& d);
+inline SOFA_COMBINATORIALMAPS_API std::istream& operator >> (std::istream& in, ElemAncestorElem& d);
 
 template<class TopologyElement>
 struct TopologyChangeElementInfo;
@@ -240,7 +241,7 @@ struct TopologyChangeElementInfo<topology::MapTopology::Volume>
 * Classes inheriting from this one describe a given topolopy change (e.g. RemovedPoint, AddedEdge, etc).
 * The exact type of topology change is given by member changeType.
 */
-class SOFA_CORE_API TopologyChange
+class SOFA_COMBINATORIALMAPS_API TopologyChange
 {
 public:
 	using Dart		= topology::MapTopology::Dart;
@@ -296,7 +297,7 @@ protected:
 };
 
 /** notifies the end for the current sequence of topological change events */
-class SOFA_CORE_API EndingEvent : public core::cm_topology::TopologyChange
+class SOFA_COMBINATORIALMAPS_API EndingEvent : public core::cm_topology::TopologyChange
 {
 public:
 	EndingEvent()
@@ -313,7 +314,7 @@ public:
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /** indicates that the indices of two points are being swapped */
-class SOFA_CORE_API PointsIndicesSwap : public core::cm_topology::TopologyChange
+class SOFA_COMBINATORIALMAPS_API PointsIndicesSwap : public core::cm_topology::TopologyChange
 {
 public:
 	PointsIndicesSwap(Vertex i1,Vertex i2) : core::cm_topology::TopologyChange(core::cm_topology::POINTSINDICESSWAP)
@@ -330,7 +331,7 @@ public:
 
 
 /** indicates that some points were added */
-class SOFA_CORE_API PointsAdded : public core::cm_topology::TopologyChange
+class SOFA_COMBINATORIALMAPS_API PointsAdded : public core::cm_topology::TopologyChange
 {
 public:
 
@@ -392,7 +393,7 @@ public:
 
 
 /** indicates that some points are about to be removed */
-class SOFA_CORE_API PointsRemoved : public core::cm_topology::TopologyChange
+class SOFA_COMBINATORIALMAPS_API PointsRemoved : public core::cm_topology::TopologyChange
 {
 public:
 	PointsRemoved(const sofa::helper::vector<Vertex>& _vArray) : core::cm_topology::TopologyChange(core::cm_topology::POINTSREMOVED),
@@ -409,7 +410,7 @@ public:
 
 
 /** indicates that the indices of all points have been renumbered */
-class SOFA_CORE_API PointsRenumbering : public core::cm_topology::TopologyChange
+class SOFA_COMBINATORIALMAPS_API PointsRenumbering : public core::cm_topology::TopologyChange
 {
 public:
 
@@ -435,7 +436,7 @@ public:
 
 
 /** indicates that some points were moved */
-class SOFA_CORE_API PointsMoved : public core::cm_topology::TopologyChange
+class SOFA_COMBINATORIALMAPS_API PointsMoved : public core::cm_topology::TopologyChange
 {
 public:
 
@@ -465,7 +466,7 @@ public:
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /** indicates that the indices of two edges are being swapped */
-class SOFA_CORE_API EdgesIndicesSwap : public core::cm_topology::TopologyChange
+class SOFA_COMBINATORIALMAPS_API EdgesIndicesSwap : public core::cm_topology::TopologyChange
 {
 public:
 	EdgesIndicesSwap(Edge i1,Edge i2) : core::cm_topology::TopologyChange(core::cm_topology::EDGESINDICESSWAP)
@@ -482,7 +483,7 @@ public:
 
 
 /** indicates that some edges were added */
-class SOFA_CORE_API EdgesAdded : public core::cm_topology::TopologyChange
+class SOFA_COMBINATORIALMAPS_API EdgesAdded : public core::cm_topology::TopologyChange
 {
 public:
 	EdgesAdded(const unsigned int nE) : core::cm_topology::TopologyChange(core::cm_topology::EDGESADDED),
@@ -555,7 +556,7 @@ public:
 
 
 /** indicates that some edges are about to be removed */
-class SOFA_CORE_API EdgesRemoved : public core::cm_topology::TopologyChange
+class SOFA_COMBINATORIALMAPS_API EdgesRemoved : public core::cm_topology::TopologyChange
 {
 public:
 	EdgesRemoved(const sofa::helper::vector<Edge> _eArray) : core::cm_topology::TopologyChange(core::cm_topology::EDGESREMOVED),
@@ -582,7 +583,7 @@ public:
 /** indicates that some edges are about to be moved (i.e one or both of their vertices have just been moved)
  * EdgesMoved_Removing First part, remove element concerned to force object to recompute global state with current positions
  */
-class SOFA_CORE_API EdgesMoved_Removing : public core::cm_topology::TopologyChange
+class SOFA_COMBINATORIALMAPS_API EdgesMoved_Removing : public core::cm_topology::TopologyChange
 {
 public:
 	EdgesMoved_Removing (const sofa::helper::vector< Edge >& edgeShell) : core::cm_topology::TopologyChange (core::cm_topology::EDGESMOVED_REMOVING),
@@ -601,7 +602,7 @@ public:
 /** indicates that some edges are about to be moved (i.e one or both of their vertices have just been moved)
  * EdgesMoved_Adding Second part, recompute state of all elements previously removed, with new positions points
  */
-class SOFA_CORE_API EdgesMoved_Adding : public core::cm_topology::TopologyChange
+class SOFA_COMBINATORIALMAPS_API EdgesMoved_Adding : public core::cm_topology::TopologyChange
 {
 public:
 	EdgesMoved_Adding (const sofa::helper::vector< Edge >& edgeShell,
@@ -622,7 +623,7 @@ public:
 
 
 /** indicates that the indices of all points have been renumbered */
-class SOFA_CORE_API EdgesRenumbering : public core::cm_topology::TopologyChange
+class SOFA_COMBINATORIALMAPS_API EdgesRenumbering : public core::cm_topology::TopologyChange
 {
 public:
 	EdgesRenumbering() : core::cm_topology::TopologyChange(core::cm_topology::EDGESRENUMBERING)
@@ -653,7 +654,7 @@ public:
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /** indicates that the indices of two Triangles are being swapped */
-class SOFA_CORE_API FacesIndicesSwap : public core::cm_topology::TopologyChange
+class SOFA_COMBINATORIALMAPS_API FacesIndicesSwap : public core::cm_topology::TopologyChange
 {
 public:
 	FacesIndicesSwap(Face i1,Face i2) : core::cm_topology::TopologyChange(core::cm_topology::FACESINDICESSWAP)
@@ -670,7 +671,7 @@ public:
 
 
 /** indicates that some triangles were added */
-class SOFA_CORE_API FacesAdded : public core::cm_topology::TopologyChange
+class SOFA_COMBINATORIALMAPS_API FacesAdded : public core::cm_topology::TopologyChange
 {
 public:
 	FacesAdded(const unsigned int nT) : core::cm_topology::TopologyChange(core::cm_topology::FACESADDED),
@@ -738,7 +739,7 @@ public:
 
 
 /** indicates that some triangles are about to be removed */
-class SOFA_CORE_API FacesRemoved : public core::cm_topology::TopologyChange
+class SOFA_COMBINATORIALMAPS_API FacesRemoved : public core::cm_topology::TopologyChange
 {
 public:
 	FacesRemoved(const sofa::helper::vector<Face> _tArray) : core::cm_topology::TopologyChange(core::cm_topology::FACESREMOVED),
@@ -765,7 +766,7 @@ protected:
 /** indicates that some triangles are about to be moved (i.e some/all of their vertices have just been moved)
  * TrianglesMoved_Removing First part, remove element concerned to force object to recompute global state with current positions
  */
-class SOFA_CORE_API FacesMoved_Removing : public core::cm_topology::TopologyChange
+class SOFA_COMBINATORIALMAPS_API FacesMoved_Removing : public core::cm_topology::TopologyChange
 {
 public:
 	FacesMoved_Removing (const sofa::helper::vector< Face >& triangleShell)
@@ -785,7 +786,7 @@ public:
 /** indicates that some triangles are about to be moved (i.e some/all of their vertices have just been moved)
  * TrianglesMoved_Adding Second part, recompute state of all elements previously removed, with new positions points
  */
-class SOFA_CORE_API FacesMoved_Adding : public core::cm_topology::TopologyChange
+class SOFA_COMBINATORIALMAPS_API FacesMoved_Adding : public core::cm_topology::TopologyChange
 {
 public:
 	FacesMoved_Adding (const sofa::helper::vector< Face >& triangleShell,
@@ -805,7 +806,7 @@ public:
 
 
 /** indicates that the indices of all points have been renumbered */
-class SOFA_CORE_API FacesRenumbering : public core::cm_topology::TopologyChange
+class SOFA_COMBINATORIALMAPS_API FacesRenumbering : public core::cm_topology::TopologyChange
 {
 public:
 
@@ -837,7 +838,7 @@ public:
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /** indicates that the indices of two Tetrahedra are being swapped */
-class SOFA_CORE_API VolumesIndicesSwap : public core::cm_topology::TopologyChange
+class SOFA_COMBINATORIALMAPS_API VolumesIndicesSwap : public core::cm_topology::TopologyChange
 {
 public:
 	VolumesIndicesSwap(Volume i1, Volume i2) : core::cm_topology::TopologyChange(core::cm_topology::VOLUMESINDICESSWAP)
@@ -854,7 +855,7 @@ public:
 
 
 /** indicates that some tetrahedra were added */
-class SOFA_CORE_API VolumesAdded : public core::cm_topology::TopologyChange
+class SOFA_COMBINATORIALMAPS_API VolumesAdded : public core::cm_topology::TopologyChange
 {
 public:
 	VolumesAdded(const sofa::helper::vector< Volume >& tetrahedronArray)
@@ -911,7 +912,7 @@ public:
 };
 
 /** indicates that some tetrahedra are about to be removed */
-class SOFA_CORE_API VolumesRemoved : public core::cm_topology::TopologyChange
+class SOFA_COMBINATORIALMAPS_API VolumesRemoved : public core::cm_topology::TopologyChange
 {
 public:
 	VolumesRemoved(const sofa::helper::vector<Volume> _tArray)
@@ -939,7 +940,7 @@ public:
 /** indicates that some tetrahedra are about to be moved (i.e some/all of their vertices have just been moved)
  * TetrahedraMoved_Removing First part, remove element concerned to force object to recompute global state with current positions
  */
-class SOFA_CORE_API VolumesMoved_Removing : public core::cm_topology::TopologyChange
+class SOFA_COMBINATORIALMAPS_API VolumesMoved_Removing : public core::cm_topology::TopologyChange
 {
 public:
 	VolumesMoved_Removing (const sofa::helper::vector< Volume >& tetrahedronShell)
@@ -959,7 +960,7 @@ public:
 /** indicates that some tetrahedra are about to be moved (i.e some/all of their vertices have just been moved)
  * TetrahedraMoved_Adding Second part, recompute state of all elements previously removed, with new positions points
  */
-class SOFA_CORE_API VolumesMoved_Adding : public core::cm_topology::TopologyChange
+class SOFA_COMBINATORIALMAPS_API VolumesMoved_Adding : public core::cm_topology::TopologyChange
 {
 public:
 	VolumesMoved_Adding (const sofa::helper::vector< Volume >& tetrahedronShell,
@@ -980,7 +981,7 @@ public:
 
 
 /** indicates that the indices of all points have been renumbered */
-class SOFA_CORE_API VolumesRenumbering : public core::cm_topology::TopologyChange
+class SOFA_COMBINATORIALMAPS_API VolumesRenumbering : public core::cm_topology::TopologyChange
 {
 public:
 

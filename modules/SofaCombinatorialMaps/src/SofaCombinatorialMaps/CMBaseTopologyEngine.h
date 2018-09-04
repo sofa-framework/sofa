@@ -1,5 +1,6 @@
 #ifndef CMBASETOPOLOGYENGINE_H
 #define CMBASETOPOLOGYENGINE_H
+#include "config.h"
 
 #include <SofaCombinatorialMaps/CMTopologyChange.h>
 

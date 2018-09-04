@@ -407,17 +407,17 @@ public:
 };
 
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_CMTRIANGULARFEMFORCEFIELD_CPP)
+#if !defined(SOFA_COMPONENT_FORCEFIELD_CMTRIANGULARFEMFORCEFIELD_CPP)
 
 #ifndef SOFA_FLOAT
-extern template class SOFA_MISC_FEM_API CMTriangularFEMForceField<defaulttype::Vec3dTypes>;
+extern template class SOFA_COMBINATORIALMAPS_API CMTriangularFEMForceField<defaulttype::Vec3dTypes>;
 #endif
 
 #ifndef SOFA_DOUBLE
-extern template class SOFA_MISC_FEM_API CMTriangularFEMForceField<defaulttype::Vec3fTypes>;
+extern template class SOFA_COMBINATORIALMAPS_API CMTriangularFEMForceField<defaulttype::Vec3fTypes>;
 #endif
 
-#endif // defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_FORCEFIELD_CMTRIANGULARFEMFORCEFIELD_CPP)
+#endif // !defined(SOFA_COMPONENT_FORCEFIELD_CMTRIANGULARFEMFORCEFIELD_CPP)
 
 } // namespace cm_forcefield
 
