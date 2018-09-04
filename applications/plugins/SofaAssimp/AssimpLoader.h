@@ -25,7 +25,7 @@
 #include <sofa/core/loader/MeshLoader.h>
 #include <SofaAssimp/config.h>
 
-class aiScene;
+struct aiScene;
 
 namespace sofa
 {
