@@ -3,12 +3,7 @@ cmake_minimum_required(VERSION 2.8.2)
 include(ExternalProject)
 ExternalProject_Add(CGoGN
     GIT_REPOSITORY https://github.com/cgogn/CGoGN_2
-    GIT_REMOTE_NAME origin
     GIT_TAG develop
     SOURCE_DIR "${CMAKE_SOURCE_DIR}/modules/SofaCombinatorialMaps/extlibs/CGoGN"
-    CMAKE_ARGS
-        -DCMAKE_BUILD_TYPE:STRING=${BUILD_TYPE}
-        -DCGOGN_BUILD_TESTS:BOOL=OFF
-        -DCGOGN_BUILD_EXAMPLES:BOOL=OFF
-        -DCGOGN_BUILD_BENCHS:BOOL=OF
+    CMAKE_ARGS -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DCGOGN_BUILD_TESTS=OFF -DCGOGN_BUILD_EXAMPLES=OFF -DCGOGN_BUILD_BENCHS=OFF
 )
