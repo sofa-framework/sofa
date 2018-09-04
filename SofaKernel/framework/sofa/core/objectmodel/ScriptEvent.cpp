@@ -19,7 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "ScriptEvent.h"
+
+#include <sofa/core/objectmodel/ScriptEvent.h>
 
 namespace sofa
 {
