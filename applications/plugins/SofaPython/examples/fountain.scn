@@ -18,6 +18,6 @@
     <OglModel name="FloorV" filename="mesh/floor2b.obj" scale="0.5" texturename="textures/floor.bmp" dy="-10" />
   </Node>
 
-  <PythonScriptController name="Fontain" filename="fontain.py" classname="Fontain"/>
+  <PythonScriptController name="Fountain" filename="fountain.py" classname="Fountain"/>
   
 </Node>

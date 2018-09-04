@@ -20,12 +20,12 @@ class Particle(Sofa.PythonScriptController):
 
 
 ############################################################################################
-# in this sample, a controller spawns particles and is responsible to delete them when necessary, then re-spawn others
-# Each particle has a script itself that check the particle's altitude an sends a message to the fontain script
-# when it reachs the minimum altitude, so that it can be removed from the scene.
+# in this sample, a controller spawns particles. It is responsible of deleting them once under the "floor" and re-spawning new ones
+# Each particle has a script that checks the particle's altitude and informs the fountain script to delete it through a ScriptEvent
+# when it reaches the minimum altitude, so that it can be removed from the scene and respawned.
 ############################################################################################
 
-class Fontain(Sofa.PythonScriptController):
+class Fountain(Sofa.PythonScriptController):
     
     def createCube(self,parentNode,name,vx,vy,vz,color):
         node = parentNode.createChild(name)
@@ -50,7 +50,7 @@ class Fontain(Sofa.PythonScriptController):
     
     # called once the script is loaded
     def onLoaded(self,node):
-        print 'Fontain.onLoaded called from node '+node.name
+        print 'Fountain.onLoaded called from node '+node.name
         self.rootNode = node
     
     particleCount = 0
@@ -61,12 +61,12 @@ class Fontain(Sofa.PythonScriptController):
         node = self.createCube(self.rootNode,'particle'+str(self.particleCount),uniform(-10,10),uniform(10,30),uniform(-10,10),color)
         self.particleCount+=1
         # add the controller script
-        node.createObject('PythonScriptController', filename='fontain.py', classname='Particle')
+        node.createObject('PythonScriptController', filename='fountain.py', classname='Particle')
         return node
      
     # optionnally, script can create a graph...
     def createGraph(self,node):
-        print 'Fontain.createGraph called from node '+node.name
+        print 'Fountain.createGraph called from node '+node.name
         for i in range(1,100):
             node = self.spawnParticle()
             node.init()
