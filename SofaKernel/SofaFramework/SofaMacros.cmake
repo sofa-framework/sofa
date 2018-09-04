@@ -277,7 +277,7 @@ macro(sofa_set_python_directory plugin_name directory)
 
     ## Python configuration file (build tree)
     file(WRITE "${CMAKE_BINARY_DIR}/etc/sofa/python.d/${plugin_name}"
-         "${CMAKE_CURRENT_SOURCE_DIR}/python")
+         "${CMAKE_CURRENT_SOURCE_DIR}/${directory}")
     ## Python configuration file (install tree)
      file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/installed-SofaPython-config"
          "lib/python2.7/site-packages")
