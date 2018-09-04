@@ -184,7 +184,7 @@ macro(sofa_add_generic_external directory name type)
 
     # optional parameter to activate/desactivate the option
     set(active OFF)
-    if(${ARGV4} AND ${ARGV4} STREQUAL ON )
+    if(${ARGV3})
         set(active ON)
     endif()
 
@@ -227,7 +227,7 @@ macro(sofa_add_generic_external directory name type)
 
         #execute script to get src
         message("Pulling ${name}... ")
-        execute_process(COMMAND "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .
+        execute_process(COMMAND "${CMAKE_COMMAND}" -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER} -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER} -G "${CMAKE_GENERATOR}" .
             WORKING_DIRECTORY "${${name}_TEMP_DIR}/" )
         execute_process(COMMAND "${CMAKE_COMMAND}" --build .
             WORKING_DIRECTORY  "${${name}_TEMP_DIR}/" )
@@ -254,11 +254,11 @@ macro(sofa_add_generic_external directory name type)
 endmacro()
 
 macro(sofa_add_subdirectory_external directory name)
-    sofa_add_generic_external(${directory} ${name} "Subdirectory")
+    sofa_add_generic_external(${directory} ${name} "Subdirectory" ${ARGV2})
 endmacro()
 
 macro(sofa_add_plugin_external directory name)
-    sofa_add_generic_external(${directory} ${name} "Plugin" ${ARGV3})
+    sofa_add_generic_external(${directory} ${name} "Plugin" ${ARGV2})
 endmacro()
 
 
