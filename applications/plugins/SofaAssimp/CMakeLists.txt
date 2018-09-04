@@ -24,14 +24,10 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/")
 ### Dependencies
 find_package(Assimp REQUIRED)
 
-
-## SofaAssimp/config.h
-#configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/SofaAssimp/config.h")
-#install(FILES "${CMAKE_BINARY_DIR}/include/SofaAssimp/config.h" DESTINATION "include/SofaAssimp")
+include_directories( ${ASSIMP_INCLUDE_DIR})
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES})
-target_link_libraries(${PROJECT_NAME} SofaCore SofaHelper)
-target_link_libraries(${PROJECT_NAME} ${ASSIMP_LIBRARY_DIR})
+target_link_libraries(${PROJECT_NAME} SofaCore SofaHelper ${ASSIMP_LIBRARY_DIR})
 
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
@@ -51,8 +47,5 @@ if(SOFA_BUILD_TESTS)
 #   add_subdirectory(CGALPlugin_test)
 endif()
 
-## Install rules for the library and the headers; CMake package configurations files
-#sofa_create_package(SofaAssimp ${ASSIMP_PLUGIN_VERSION} ${PROJECT_NAME} SofaAssimp)
-
-## Install rules for the resources
-#install(DIRECTORY scenes/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
+## Install rules for the library; CMake package configurations files
+sofa_create_package(${PROJECT_NAME} ${ASSIMP_PLUGIN_VERSION} ${PROJECT_NAME} ${PROJECT_NAME})
