@@ -5,8 +5,9 @@ elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
 endif(CMAKE_SIZEOF_VOID_P EQUAL 8)
     
 if(WIN32)
-    set(ASSIMP_ROOT_DIR CACHE PATH "ASSIMP root directory")
- message("ASSIMP_ROOT_DIR: ${ASSIMP_ROOT_DIR}")
+	SET(ASSIMP_MSVC_VERSION "vc140")
+    SET(ASSIMP_ROOT_DIR CACHE PATH "ASSIMP root directory")
+	
     FIND_PATH( ASSIMP_INCLUDE_DIR 
       NAMES assimp/postprocess.h assimp/scene.h assimp/version.h assimp/config.h assimp/cimport.h
       PATHS 
@@ -14,7 +15,7 @@ if(WIN32)
         ${ASSIMP_ROOT_DIR}/include/
 		DOC "The directory where assimp headers reside")
 	FIND_LIBRARY( ASSIMP_LIBRARY_RELEASE
-		NAMES assimp
+		NAMES assimp-${ASSIMP_MSVC_VERSION}-mt
 		PATH_SUFFIXES lib/x64
         PATHS
             "C://Program Files//Assimp" 
@@ -22,7 +23,7 @@ if(WIN32)
             ${ASSIMP_ROOT_DIR}
 		DOC "The assimp library")
 	FIND_LIBRARY( ASSIMP_LIBRARY_DEBUG
-		NAMES assimp
+		NAMES assimp-${ASSIMP_MSVC_VERSION}-mt
 		PATH_SUFFIXES lib/x64
         PATHS
             "C://Program Files//Assimp" 
@@ -37,7 +38,7 @@ if(WIN32)
 		SET(ASSIMP_LIBRARY_DIR ${ASSIMP_LIBRARY_DEBUG})
 	ENDIF()
 
-    SET(ASSIMP_MSVC_VERSION "vc140")
+    
     FUNCTION(ASSIMP_COPY_BINARIES TargetDirectory)
         ADD_CUSTOM_TARGET(AssimpCopyBinaries
             COMMAND ${CMAKE_COMMAND} -E copy ${ASSIMP_ROOT_DIR}/bin/${ASSIMP_ARCHITECTURE}/assimp-${ASSIMP_MSVC_VERSION}-mtd.dll     ${TargetDirectory}/Debug/assimp-${ASSIMP_MSVC_VERSION}-mtd.dll
@@ -74,8 +75,6 @@ endif(WIN32)
 
 if (ASSIMP_INCLUDE_DIR AND ASSIMP_LIBRARY_DIR)
   SET(assimp_FOUND TRUE)
-  message("ASSIMP_INCLUDE_DIR: ${ASSIMP_INCLUDE_DIR}")
-  message("ASSIMP_LIBRARY_DIR: ${ASSIMP_LIBRARY_DIR}")
 ENDIF (ASSIMP_INCLUDE_DIR AND ASSIMP_LIBRARY_DIR)
 
 if (assimp_FOUND)

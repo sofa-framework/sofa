@@ -25,6 +25,7 @@ See the feature list.
 
 - Library web page: http://www.assimp.org/
 - Source code on github: https://github.com/assimp/assimp
-- Library version tested: 3.3.1
+- Release version: https://github.com/assimp/assimp/releases
+- Library version tested: 4.1.0
 
 Important: For the moment only single Mesh is handle. That is to say, if a multi mesh is loaded, only one Sofa Mesh will be created by merging all sub meshes.
