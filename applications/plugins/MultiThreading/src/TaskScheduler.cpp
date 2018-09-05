@@ -235,7 +235,7 @@ namespace sofa
 		{
             
             //workerThreadIndex = this;
-            TaskScheduler::_threads[std::this_thread::get_id()] = this;
+//            TaskScheduler::_threads[std::this_thread::get_id()] = this;
 
 			// main loop
             while ( !_taskScheduler->isClosing() )
@@ -268,12 +268,12 @@ namespace sofa
         {
             {
                 std::unique_lock<std::mutex> lock( _taskScheduler->_wakeUpMutex );
-				if (!_taskScheduler->_workerThreadsIdle)
-				{
-					return;
-				}
+//                if (!_taskScheduler->_workerThreadsIdle)
+//                {
+//                    return;
+//                }
                 // cpu free wait
-                _taskScheduler->_wakeUpEvent.wait(lock);
+                _taskScheduler->_wakeUpEvent.wait(lock, [&]{return !_taskScheduler->_workerThreadsIdle;} );
             }
             return;
         }
