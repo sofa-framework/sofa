@@ -212,35 +212,35 @@ public:
  */
 class SOFA_CORE_API SimpleDataEngine : public sofa::core::DataEngine
 {
- public:
-  SOFA_CLASS(SimpleDataEngine, sofa::core::DataEngine);
+public:
+    SOFA_CLASS(SimpleDataEngine, sofa::core::DataEngine);
 
-  SimpleDataEngine() : Inherit1() {}
-  virtual ~SimpleDataEngine() {}
+    SimpleDataEngine() : Inherit1() {}
+    virtual ~SimpleDataEngine() {}
 
-  /// Updates your inputs and calls cleanDirty() for you.
-  /// User implementation moved to doUpdate()
-  virtual void update() final
-  {
-      for(auto& input : getInputs())
-      {
-          static_cast<sofa::core::objectmodel::BaseData*>(input)
-                  ->updateIfDirty();
-      }
-      cleanDirty();
-      doUpdate();
-  }
+    /// Updates your inputs and calls cleanDirty() for you.
+    /// User implementation moved to doUpdate()
+    virtual void update() final
+    {
+        for(auto& input : getInputs())
+        {
+            static_cast<sofa::core::objectmodel::BaseData*>(input)
+                    ->updateIfDirty();
+        }
+        cleanDirty();
+        doUpdate();
+    }
 
-  /// Where you put your engine's impl
-  virtual void doUpdate() = 0;
+    /// Automatically adds the input fields to the datatracker
+    void addInput(sofa::core::objectmodel::BaseData* data)
+    {
+        m_dataTracker.trackData(*data);
+        sofa::core::objectmodel::DDGNode::addInput(data);
+    }
 
-  /// Automatically adds the input fields to the datatracker
-  void addInput(sofa::core::objectmodel::BaseData* data)
-  {
-      m_dataTracker.trackData(*data);
-      sofa::core::objectmodel::DDGNode::addInput(data);
-  }
-
+private:
+    /// Where you put your engine's impl
+    virtual void doUpdate() = 0;
 };
 
 
