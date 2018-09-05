@@ -587,7 +587,7 @@ static PyObject * Base_getListOfLinks(PyObject *self, PyObject * /*args*/) {
 
 
 /// This function is called by the Python interpreter when calling (dir).
-/// It add to the default behavior all the data fields and links of the object.
+/// It adds to the default behavior all the data fields and links of the object.
 static PyObject * Base___dir__(PyObject *self, PyObject * /*args*/) {
     Base * component = get_base(self);
 
@@ -609,10 +609,10 @@ static PyObject * Base___dir__(PyObject *self, PyObject * /*args*/) {
     }
 
     /// The the other names out of data & links
-    const sofa::helper::vector<BaseData*> dataFields = component->getDataFields();
-    const sofa::helper::vector<BaseLink*> links = component->getLinks() ;
+    const sofa::helper::vector<BaseData*>& dataFields = component->getDataFields();
+    const sofa::helper::vector<BaseLink*>& links = component->getLinks() ;
 
-    /// Create a list big enough to store evreyone.
+    /// Create a list big enough to store everyone.
     unsigned int size = links.size() + dataFields.size() + listMethodsSize;
     PyObject * pyList = PyList_New(size);
 
