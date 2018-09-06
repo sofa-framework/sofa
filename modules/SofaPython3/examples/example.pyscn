@@ -1,0 +1,6 @@
+import sys
+
+print("Hello world")
+
+def createScene(root):
+        print("CreateScene")
