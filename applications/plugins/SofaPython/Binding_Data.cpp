@@ -43,7 +43,6 @@ static BaseData* get_basedata(PyObject* self) {
     return sofa::py::unwrap<BaseData>(self);
 }
 
-
 SP_CLASS_ATTR_GET(Data,name)(PyObject *self, void*)
 {
     BaseData* data = get_basedata( self );
@@ -93,9 +92,10 @@ PyObject *GetDataValuePython(BaseData* data)
         if( !typeinfo->Text() && !typeinfo->Scalar() && !typeinfo->Integer() )
         {
             SP_MESSAGE_WARNING( "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value" )
-            return PyString_FromString(data->getValueString().c_str());
+                    return PyString_FromString(data->getValueString().c_str());
         }
 
+        /// THIS IS DISGUSTING !
         PyObject *rows = PyList_New(nbRows);
         for (int i=0; i<nbRows; i++)
         {
@@ -131,12 +131,12 @@ PyObject *GetDataValuePython(BaseData* data)
     //TODO(PR:304) If this should not happen (see comment later) then we should rise an exception instead of providing a fallback scenario.
     /// default (should not happen)...
     SP_MESSAGE_WARNING( "BaseData_getAttr_value unsupported native type="<<data->getValueTypeString()<<" for data "<<data->getName()<<" ; returning string value (should not come here!)" )
-    return PyString_FromString(data->getValueString().c_str());
+            return PyString_FromString(data->getValueString().c_str());
 }
 
 
 static int SetDataValuePythonList(BaseData* data, PyObject* args,
-                            const int rowWidth, int nbRows) {
+                                  const int rowWidth, int nbRows) {
     const AbstractTypeInfo *typeinfo = data->getValueTypeInfo(); // info about the data value
 
     /// If list is empty we can safely exit.
@@ -165,7 +165,7 @@ static int SetDataValuePythonList(BaseData* data, PyObject* args,
                     /// resizing was not possible
                     /// only a warning and not an exception because we have a fallback solution.
                     SP_MESSAGE_WARNING( "list size mismatch for data \""<<data->getName()<<"\" (incorrect rows count)" )
-                        if (newNbRows<nbRows)
+                            if (newNbRows<nbRows)
                             nbRows = newNbRows;
                 }
                 else
@@ -187,7 +187,7 @@ static int SetDataValuePythonList(BaseData* data, PyObject* args,
             {
                 /// only a warning and not an exception because we have a fallback solution.
                 SP_MESSAGE_WARNING( "row "<<i<<" size mismatch for data \""<<data->getName()<<"\"" )
-                    if (PyList_Size(row)<size)
+                        if (PyList_Size(row)<size)
                         size = PyList_Size(row);
             }
 
@@ -269,7 +269,7 @@ static int SetDataValuePythonList(BaseData* data, PyObject* args,
                     /// resizing was not possible
                     /// only a warning; do not raise an exception...
                     SP_MESSAGE_WARNING( "list size mismatch for data \""<<data->getName()<<"\" (incorrect rows count)" )
-                        if (newSize<size)
+                            if (newSize<size)
                             size = newSize;
                 }
                 else
@@ -436,6 +436,90 @@ int SetDataValuePython(BaseData* data, PyObject* args)
     return -1;
 }
 
+SP_CLASS_ATTR_GET(Data,ndim)(PyObject *self, void*)
+{
+    BaseData* data = get_basedata( self );
+    const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
+    const AbstractTypeInfo *subtypeinfo = typeinfo->BaseType() ;
+
+    if(!typeinfo || !typeinfo->ValidInfo())
+    {
+        return nullptr;
+    }
+
+    if(!typeinfo->Container())
+    {
+        return PyInt_FromLong(0);
+    }
+
+    if(typeinfo->Container() && !subtypeinfo->Container())
+    {
+        return PyInt_FromLong(1);
+    }
+
+    /// We are an immediate type. So we set a ndim of size 0. So we match the memoryview
+    /// specification.
+    if(typeinfo->Container() && subtypeinfo->Container())
+    {
+        return PyInt_FromLong(2);
+    }
+
+    return nullptr;
+}
+
+
+SP_CLASS_ATTR_GET(Data,type)(PyObject *self, void*)
+{
+    BaseData* data = get_basedata( self );
+    const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
+
+    return PyString_FromString(typeinfo->name().c_str());
+}
+
+
+SP_CLASS_ATTR_GET(Data,shape)(PyObject *self, void*)
+{
+    BaseData* data = get_basedata( self );
+    const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
+    const AbstractTypeInfo *subtypeinfo = typeinfo->BaseType() ;
+
+    unsigned dataSize = typeinfo->byteSize();
+    unsigned dim2Size = typeinfo->size();
+    unsigned totalNumElements = typeinfo->size(data->getValueVoidPtr());
+    unsigned dim1Size = totalNumElements / dim2Size;
+
+//    std::cout << data->getName() << " infos: "<< totalNumElements << "," << dataSize << "," << dim1Size << "," << dim2Size << std::endl ;
+//    std::cout << "               :" << typeinfo->name() << std::endl;
+
+    if(!typeinfo || !typeinfo->ValidInfo())
+    {
+        return nullptr;
+    }
+
+    if(!typeinfo->Container())
+    {
+        Py_RETURN_NONE;
+    }
+
+    if(typeinfo->Container() && !subtypeinfo->Container())
+    {
+        PyObject* tuple = PyTuple_New(1);
+        PyTuple_SetItem(tuple, 0, PyInt_FromLong(dim2Size));
+        return tuple;
+    }
+
+    /// We are an immediate type. So we set a ndim of size 0. So we match the memoryview
+    /// specification.
+    if(typeinfo->Container() && subtypeinfo->Container())
+    {
+        PyObject* tuple = PyTuple_New(2);
+        PyTuple_SetItem(tuple, 0, PyInt_FromLong(dim1Size));
+        PyTuple_SetItem(tuple, 1, PyInt_FromLong(dim2Size));
+        return tuple;
+    }
+
+    return nullptr;
+}
 
 SP_CLASS_ATTR_GET(Data,value)(PyObject *self, void*)
 {
@@ -751,7 +835,7 @@ static PyObject * Data_getLinkPath(PyObject * self, PyObject * /*args*/)
 
     /// default: no owner or owner of unknown type
     SP_MESSAGE_WARNING( "Data_getLinkName the Data has no known owner. Returning its own name." )
-    return PyString_FromString(data->getName().c_str());
+            return PyString_FromString(data->getName().c_str());
 }
 
 
@@ -872,7 +956,15 @@ static PyObject * Data_str(PyObject *self)
     return PyString_FromString(data->getValueString().c_str());
 }
 
+#include "Binding_DataArray.h"
+#include "Binding_DataArray.cpp"
 
+/// implementation of __repr__ to cast a Data to a string
+static PyObject * Data_repr(PyObject *self)
+{
+    BaseData* data = get_basedata( self );
+    return PyObject_Str(Data_toList(self));
+}
 
 static PyObject * Data_getAsACreateObjectParameter(PyObject * self, PyObject * args)
 {
@@ -885,6 +977,194 @@ static PyObject * Data_setValueString(PyObject *self, PyObject * args)
 }
 
 
+static PyObject * Data_getTypedMemoryView(PyObject *self, PyObject * args)
+{
+    std::cout << "Hello world" << std::endl ;
+    return makeTypedArray();
+}
+
+/// Generic accessor to Data fields (in python native type)
+static PyObject* SofaData_asMapping_subscript(PyObject *o, PyObject *key) {
+    BaseData* data = get_basedata(o);
+    const AbstractTypeInfo *typeinfo = data->getValueTypeInfo(); /// info about the data value
+
+    /// If this is a tupled key we returns the best value we can.
+    /// If this is a single index... we try to get something at the requested location
+    /// If this is a tuple index... we try to fetch the adequate data.
+    if(!(PyInt_Check(key) || PyTuple_Check(key)))
+    {
+        PyErr_SetString(PyExc_AttributeError, "Invalid type for the provided index. The only allowed types are (int, tuple(int, int, ...)).");
+        return NULL;
+    }
+
+    long index=-1;
+    if(PyInt_Check(key))
+    {
+        index = PyInt_AsLong(key);
+        //std::cout << "Get Data from: " << index << std::endl ;
+    }
+    else if(PyTuple_Check(key) && PyTuple_Size(key) == 2)
+    {
+        /// If we have tuple this indicate an access using the myPos[1,2] syntax.
+        /// The semantic for this operation is then to access the data as a multi-dimmensionnal array
+        PyObject* a = PyTuple_GetItem(key, 0);
+        int aa = PyInt_AsLong(a);
+
+        PyObject* b = PyTuple_GetItem(key, 1);
+        int bb = PyInt_AsLong(b);
+
+        /// Build the global index out of the shapes.
+        unsigned dataSize = typeinfo->byteSize();
+        unsigned dim2Size = typeinfo->size();
+        unsigned totalNumElements = typeinfo->size(data->getValueVoidPtr());
+        unsigned dim1Size = totalNumElements / dim2Size;
+
+        if (aa >= dim1Size || bb >= dim2Size)
+        {
+            PyErr_SetString(PyExc_IndexError, "Out of bounds index.");
+            return nullptr;
+        }
+
+
+        index = aa*dim2Size+bb;
+        //std::cout << "Get Data from: " << index << ", " << aa << ":" << bb << std::endl ;
+    }
+
+    if (index < 0 || (unsigned int)index>=typeinfo->size(data->getValueVoidPtr()))
+    {
+        PyErr_SetString(PyExc_IndexError, "Out of bounds index.");
+        return nullptr;
+    }
+
+    if (typeinfo->Scalar())
+        return PyFloat_FromDouble(typeinfo->getScalarValue(data->getValueVoidPtr(),index));
+    if (typeinfo->Integer())
+        return PyInt_FromLong((long)typeinfo->getIntegerValue(data->getValueVoidPtr(),index));
+    if (typeinfo->Text())
+        return PyString_FromString(typeinfo->getTextValue(data->getValueVoidPtr(),index).c_str());
+
+    PyErr_SetString(PyExc_IndexError, "Index does not map to the underlying sofa structure.");
+    return nullptr;
+}
+
+/// Generic accessor to Data fields (in python native type)
+static int SofaData_asMapping_ass_subscript(PyObject *o, PyObject *key, PyObject *value)
+{
+    BaseData* data = get_basedata(o);
+    const AbstractTypeInfo *typeinfo = data->getValueTypeInfo(); /// info about the data value
+
+    if( Data_ass_subscript(o,key,value) )
+        return 0;
+
+    if( !typeinfo->Container() )
+    {
+        PyErr_SetString(PyExc_AttributeError, "The Data field is not implementing the container interface.");
+        return -1;
+    }
+
+    /// If this is a tupled key we returns the best value we can.
+    /// If this is a single index... we try to get something at the requested location
+    /// If this is a tuple index... we try to fetch the adequate data.
+    if(!(PyInt_Check(key) || PyTuple_Check(key)))
+    {
+        PyErr_SetString(PyExc_AttributeError, "Invalid type for the provided index. The only allowed types are (int, tuple(int, int, ...)).");
+        return -1;
+    }
+
+    long index=-1;
+    if(PyInt_Check(key))
+    {
+        long aa = PyInt_AsLong(key);
+        /// Build the global index out of the shapes.
+        unsigned dataSize = typeinfo->byteSize();
+        unsigned dim2Size = typeinfo->size();
+        unsigned totalNumElements = typeinfo->size(data->getValueVoidPtr());
+        unsigned dim1Size = totalNumElements / dim2Size;
+
+
+        /// Row access...
+        if( typeinfo->BaseType()->Container() )
+        {
+            if (aa >= dim1Size)
+            {
+                PyErr_SetString(PyExc_IndexError, "Out of bounds index.");
+                return -1;
+            }
+
+            index = aa*dim2Size;
+        }
+        else
+        {
+            if (aa >= dim2Size)
+            {
+                PyErr_SetString(PyExc_IndexError, "Out of bounds index.");
+                return -1;
+            }
+            index = aa;
+        }
+
+    }
+    else if(PyTuple_Check(key) && PyTuple_Size(key) == 2)
+    {
+        /// If we have tuple this indicate an access using the myPos[1,2] syntax.
+        /// The semantic for this operation is then to access the data as a multi-dimmensionnal array
+        PyObject* a = PyTuple_GetItem(key, 0);
+        int aa = PyInt_AsLong(a);
+
+        PyObject* b = PyTuple_GetItem(key, 1);
+        int bb = PyInt_AsLong(b);
+
+        /// Build the global index out of the shapes.
+        unsigned dataSize = typeinfo->byteSize();
+        unsigned dim2Size = typeinfo->size();
+        unsigned totalNumElements = typeinfo->size(data->getValueVoidPtr());
+        unsigned dim1Size = totalNumElements / dim2Size;
+
+        if (aa >= dim1Size || bb >= dim2Size)
+        {
+            PyErr_SetString(PyExc_IndexError, "Out of bounds index.");
+            return -1;
+        }
+
+        index = aa*dim2Size+bb;
+    }
+
+    if (index < 0 || (unsigned int)index>=typeinfo->size(data->getValueVoidPtr()))
+    {
+        PyErr_SetString(PyExc_IndexError, "Out of bounds index.");
+        return -1;
+    }
+
+    if (typeinfo->Scalar() && PyFloat_Check(value)){
+        typeinfo->setScalarValue((void*)data->getValueVoidPtr(), index, PyFloat_AsDouble(value));
+    }else if (typeinfo->Integer() && PyFloat_Check(value))
+        typeinfo->setIntegerValue((void*)data->getValueVoidPtr(), index, PyInt_AsLong(value));
+    else if (typeinfo->Text() && PyFloat_Check(value))
+        typeinfo->setTextValue((void*)data->getValueVoidPtr(),index, PyString_AsString(value));
+    else if(PyList_Check(value))
+    {
+        int elements = PyList_Size(value);
+        for(unsigned int i=0; i<elements;++i)
+        {
+            typeinfo->setScalarValue((void*)data->getValueVoidPtr(),
+                                     index+i,
+                                     PyFloat_AsDouble(PyList_GetItem(value,i)));
+        }
+    }
+    else
+    {
+        PyErr_SetString(PyExc_TypeError, "Invalid type for source data.");
+        return -1;
+    }
+    return 0;
+}
+
+
+static int Data_SetAttr(PyObject *o, PyObject *key, PyObject *v) {
+    BaseData* obj = get_basedata(o);
+
+    return 0;
+}
 
 SP_CLASS_METHODS_BEGIN(Data)
 SP_CLASS_METHOD(Data,getValueTypeString)
@@ -915,20 +1195,138 @@ SP_CLASS_METHOD(Data,getValueVoidPtr)
 SP_CLASS_METHOD(Data,getCounter)
 SP_CLASS_METHOD(Data,isDirty)
 SP_CLASS_METHOD(Data,getAsACreateObjectParameter)
-SP_CLASS_METHODS_END
+SP_CLASS_METHOD(Data, getTypedMemoryView)
 
+SP_CLASS_METHODS_END
 
 SP_CLASS_ATTRS_BEGIN(Data)
 SP_CLASS_ATTR(Data,name)
 SP_CLASS_ATTR(Data,value)
+SP_CLASS_ATTR_GETTER(Data,type)
+SP_CLASS_ATTR_GETTER(Data,ndim)
+SP_CLASS_ATTR_GETTER(Data,shape)
 SP_CLASS_ATTRS_END
 
+/// To implement the buffer protocol (a copy-less mechanism) for python
+/// each object implementing the protocol must implement a method to "export"
+/// the buffer description to ones that request it. This is done by this
+/// function.
+static int SofaData_getBuffer(PyObject *self, Py_buffer *view, int flags)
+{
+    std::cout << "Sofa.Data.getBuffer" << std::endl;
+    if (view == NULL) {
+        PyErr_SetString(PyExc_ValueError, "NULL view in getbuffer");
+        return -1;
+    }
+
+    BaseData* data = get_basedata(self);
+
+    const AbstractTypeInfo *typeinfo = data->getValueTypeInfo();
+    //void* dataValueVoidPtr = const_cast<void*>(data->getValueVoidPtr()); /// data->beginEditVoidPtr();
+    //void* valueVoidPtr = typeinfo->getValuePtr(dataValueVoidPtr);
+
+    if(!typeinfo->Container() || !typeinfo->SimpleLayout())
+    {
+        view->obj=nullptr;
+        PyErr_SetString(PyExc_BufferError, "Unable to create the requested buffer.");
+        return -1;
+    }
+
+    Py_ssize_t numEntries = typeinfo->size(data->getValueVoidPtr()) / typeinfo->size();
+    Py_ssize_t totalSize =  typeinfo->size(data->getValueVoidPtr()) * typeinfo->byteSize();
+    //int rowWidth = typeinfo->size();
+    //int nbRows =
+
+    std::cout << "SIZE: " << typeinfo->size() << std::endl;
+    std::cout << "SIZE(): " << typeinfo->size(data->getValueVoidPtr()) << std::endl;
+    std::cout << "byteSIze: " << typeinfo->byteSize() << std::endl;
+
+    view->obj = self;
+    view->buf = (void*)data->getValueVoidPtr();
+    view->len = totalSize;
+    view->readonly = 0;
+
+    if(typeinfo->Scalar() && typeinfo->byteSize() == 8)
+    {
+
+        view->itemsize =  typeinfo->byteSize() ;
+        view->format = "d";  // integer
+    }else{
+        std::cout << "BIIIIIIIIIIG PROBLEM." << std::endl ;
+    }
+
+    view->ndim = 2;
+    view->shape = new Py_ssize_t[2];
+    view->shape[0] = numEntries;
+    view->shape[1] = typeinfo->size();
+
+    /*view->strides = new Py_ssize_t[2];
+    view->strides[0] = typeinfo->byteSize()*typeinfo->size();
+    view->strides[1] = typeinfo->byteSize();*/
+
+    view->strides = NULL;
+    view->suboffsets = NULL;
+
+    /// The API in 2.7 is broken and the pointer can be lost which cause the release function
+    /// to crash.
+    view->internal = view->shape;
+
+    std::cout << "Allocating buffer: " << (void*)view << std::endl;
+    std::cout << "             size: " << view->len << std::endl;
+    std::cout << "         itemsize: " << view->itemsize << std::endl;
+    std::cout << "             data: " << view->buf << std::endl;
+    std::cout << "             shape: " << view->shape << std::endl;
+    std::cout << "          internal: " << view->internal << std::endl;
+
+    Py_INCREF(self);  // need to increase the reference count
+    return 0;
+}
+
+static void SofaData_releaseBuffer(PyObject *self, Py_buffer *view)
+{
+    std::cout << "Releasing buffer: " << (void*)view << std::endl;
+    std::cout << "             size: " << view->len << std::endl;
+    std::cout << "         itemsize: " << view->itemsize << std::endl;
+    std::cout << "             data: " << view->buf << std::endl;
+    std::cout << "             shape: " << view->shape << std::endl;
+    std::cout << "          internal: " << view->internal << std::endl;
+
+    if(view->internal)
+        delete[] (static_cast<Py_ssize_t*>(view->internal));
+}
+
+
+
 namespace {
+    static PyBufferProcs SofaData_asBuffer = {0,0,0,0,0,0};
+    static PyMappingMethods SofaData_asMapping = {0,0,0};
+
 static struct patch {
     patch() {
-        SP_SOFAPYTYPEOBJECT(Data).tp_str = Data_str; /// adding __str__ function
+        SP_SOFAPYTYPEOBJECT(Data).tp_str = Data_str;              /// adding __str__ function
+        SP_SOFAPYTYPEOBJECT(Data).tp_repr = Data_repr;              /// adding __repr__ function
+
+        /// Patch the structure to support the buffer protocol  (see: https://docs.python.org/3/c-api/buffer.html#bufferobjects)
+
+        SofaData_asBuffer.bf_getbuffer = (getbufferproc) SofaData_getBuffer;
+        SofaData_asBuffer.bf_releasebuffer = (releasebufferproc) SofaData_releaseBuffer;
+
+        /// Patch to implement the mapping protocol.
+        SofaData_asMapping.mp_subscript = &SofaData_asMapping_subscript;
+        SofaData_asMapping.mp_ass_subscript = &SofaData_asMapping_ass_subscript;
+
+        SP_SOFAPYTYPEOBJECT(Data).tp_as_buffer = &SofaData_asBuffer;
+        SP_SOFAPYTYPEOBJECT(Data).tp_as_mapping = &SofaData_asMapping;
+
+        /// This is undocumented in 2.7 => https://bugs.python.org/issue23850
+        /// Without this line the CheckBuffer function that implement the new protocol buffer
+        /// will return false.
+        SP_SOFAPYTYPEOBJECT(Data).tp_flags |= Py_TPFLAGS_HAVE_NEWBUFFER;
+
+
+        std::cout << "PATCHING IS DONE" << std::endl ;
     }
 } patcher;
 }
 
-SP_CLASS_TYPE_BASE_PTR_ATTR(Data, BaseData);
+SP_CLASS_TYPE_BASE_PTR_ATTR(Data, BaseData)

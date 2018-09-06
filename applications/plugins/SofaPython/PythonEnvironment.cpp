@@ -33,6 +33,8 @@
 #include <sofa/helper/StringUtils.h>
 using sofa::helper::getAStringCopy ;
 
+#include "Binding_DataArray.h"
+
 #if defined(__linux__)
 #  include <dlfcn.h>            // for dlopen(), see workaround in Init()
 #endif
@@ -201,6 +203,9 @@ void PythonEnvironment::Init()
 
     // python modules are automatically reloaded at each scene loading
     setAutomaticModuleReload( true );
+
+    initBinding_DataArray();
+
 }
 
 void PythonEnvironment::Release()
