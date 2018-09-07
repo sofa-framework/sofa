@@ -28,6 +28,7 @@ list(APPEND HEADER_FILES
     SceneCheckDuplicatedName.h
     SceneCheckMissingRequiredPlugin.h
     SceneCheckAPIChange.h
+    SceneCheckRequiredData.h
     SceneCheckUsingAlias.h
     SceneCheckerVisitor.h
     APIVersion.h
@@ -48,6 +49,7 @@ list(APPEND SOURCE_FILES
     SceneCheckDuplicatedName.cpp
     SceneCheckMissingRequiredPlugin.cpp
     SceneCheckAPIChange.cpp
+    SceneCheckRequiredData.cpp
     SceneCheckUsingAlias.cpp
     SceneCheckerVisitor.cpp
     APIVersion.cpp

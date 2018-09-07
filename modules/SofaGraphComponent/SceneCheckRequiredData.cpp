@@ -19,11 +19,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "SceneCheckUsingAlias.h"
+#include "SceneCheckRequiredData.h"
 
 #include <sofa/version.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
+#include <sofa/simulation/Node.h>
 
 
 namespace sofa
@@ -34,73 +35,76 @@ namespace _scenechecking_
 {
 
 using sofa::core::objectmodel::Base;
+using sofa::core::objectmodel::BaseObject;
 using sofa::core::objectmodel::BaseObjectDescription;
 using sofa::core::ObjectFactory;
 
 
-SceneCheckUsingAlias::SceneCheckUsingAlias()
+SceneCheckRequiredData::SceneCheckRequiredData()
 {
-    m_componentsCreatedUsingAlias = std::map<std::string, std::vector<std::string>>();
 
-    /// Add a callback to be n
-    ObjectFactory::getInstance()->setCallback([this](Base* o, BaseObjectDescription *arg) {
-        if (o->getClassName() != arg->getAttribute("type", "") )
+}
+
+SceneCheckRequiredData::~SceneCheckRequiredData()
+{
+
+}
+
+const std::string SceneCheckRequiredData::getName()
+{
+    return "SceneCheckRequiredData";
+}
+
+const std::string SceneCheckRequiredData::getDesc()
+{
+    return "Check if a Component has required Datas that are not set.";
+}
+
+void SceneCheckRequiredData::doInit(Node* node)
+{
+    m_missingDatas.clear();
+}
+
+void SceneCheckRequiredData::doCheckOn(Node* node)
+{
+    for (auto& object : node->object )
+    {
+        Base::VecData vecData = object->getDataFields();
+        for(Base::VecData::const_iterator iData = vecData.begin(); iData != vecData.end(); ++iData)
         {
-            std::string alias = arg->getAttribute("type", "");
-            std::string className = o->getClassName();
-
-            std::vector<std::string> v = this->m_componentsCreatedUsingAlias[className];
-            if ( v.empty() || std::find(v.begin(), v.end(), alias) == v.end() )
+            if ((*iData)->isRequired() && !(*iData)->isSet())
             {
-                this->m_componentsCreatedUsingAlias[className].push_back(alias);
+                std::vector<sofa::core::objectmodel::BaseData*> v = m_missingDatas[object.get()];
+                if ( v.empty() || std::find(v.begin(), v.end(), *iData) == v.end() )
+                {
+                    m_missingDatas[object.get()].push_back(*iData);
+                }
             }
         }
-    });
+    }
 }
 
-SceneCheckUsingAlias::~SceneCheckUsingAlias()
+void SceneCheckRequiredData::doPrintSummary()
 {
-
-}
-
-const std::string SceneCheckUsingAlias::getName()
-{
-    return "SceneCheckUsingAlias";
-}
-
-const std::string SceneCheckUsingAlias::getDesc()
-{
-    return "Check if a Component has been created using an Alias.";
-}
-
-void SceneCheckUsingAlias::doInit(Node* node)
-{
-    m_componentsCreatedUsingAlias.clear();
-}
-
-void SceneCheckUsingAlias::doPrintSummary()
-{
-    if ( this->m_componentsCreatedUsingAlias.empty() )
+    if(m_missingDatas.empty())
     {
         return;
     }
-    
-    std::stringstream usingAliasesWarning;
-    msg_warning(this->getName()) << "This scene is using hard coded aliases. "
-                                    "Aliases can be very confusing, use with caution." << msgendl;
-    for (auto i : this->m_componentsCreatedUsingAlias)
+
+    for (auto &i : m_missingDatas)
     {
-        usingAliasesWarning << "Component created using aliases: ";
+        std::stringstream errorStr;
+        errorStr << "Required datas have not been set: ";
 
         bool first = true;
-        for (std::string &alias : i.second)
+        for (auto &data : i.second)
         {
-            if (first) first = false;
-            else usingAliasesWarning << ", ";
-            usingAliasesWarning << "\"" << alias << "\"";
+             if (first) first = false;
+             else errorStr << ", ";
+             errorStr << "\"" << data->getName() << "\" (current value is " << data->getValueString() << ")";
         }
-        usingAliasesWarning << "." << msgendl;
-        msg_warning(i.first) << this->getName() << ": " << usingAliasesWarning.str();
+
+        msg_warning(i.first) << this->getName() << ": " << errorStr.str();
     }
 }
 

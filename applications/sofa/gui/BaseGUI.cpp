@@ -30,6 +30,17 @@
 #include <SofaGraphComponent/BackgroundSetting.h>
 #include <SofaGraphComponent/StatsSetting.h>
 
+#include <SofaGraphComponent/SceneCheckAPIChange.h>
+using sofa::simulation::scenechecking::SceneCheckAPIChange;
+#include <SofaGraphComponent/SceneCheckMissingRequiredPlugin.h>
+using sofa::simulation::scenechecking::SceneCheckMissingRequiredPlugin;
+#include <SofaGraphComponent/SceneCheckDuplicatedName.h>
+using sofa::simulation::scenechecking::SceneCheckDuplicatedName;
+#include <SofaGraphComponent/SceneCheckUsingAlias.h>
+using sofa::simulation::scenechecking::SceneCheckUsingAlias;
+#include <SofaGraphComponent/SceneCheckRequiredData.h>
+using sofa::simulation::scenechecking::SceneCheckRequiredData;
+
 #include <algorithm>
 #include <string.h>
 
@@ -54,8 +65,13 @@ std::string BaseGUI::screenshotDirectoryPath = ".";
 ArgumentParser* BaseGUI::mArgumentParser = NULL;
 
 BaseGUI::BaseGUI()
+    : m_checker(sofa::core::ExecParams::defaultInstance())
 {
-
+    m_checker.addCheck(SceneCheckAPIChange::newSPtr());
+    m_checker.addCheck(SceneCheckDuplicatedName::newSPtr());
+    m_checker.addCheck(SceneCheckMissingRequiredPlugin::newSPtr());
+    m_checker.addCheck(SceneCheckUsingAlias::newSPtr());
+    m_checker.addCheck(SceneCheckRequiredData::newSPtr());
 }
 
 BaseGUI::~BaseGUI()
@@ -177,6 +193,11 @@ void BaseGUI::setConfigDirectoryPath(const std::string& path, bool createIfNeces
 void BaseGUI::setScreenshotDirectoryPath(const std::string& path, bool createIfNecessary)
 {
     setDirectoryPath(screenshotDirectoryPath, path, createIfNecessary);
+}
+
+void BaseGUI::setScene(Node::SPtr groot, const char *filename, bool temporaryFile)
+{
+    m_checker.validate(groot.get());
 }
 
 

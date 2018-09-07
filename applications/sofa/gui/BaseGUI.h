@@ -30,6 +30,9 @@
 #include <sofa/helper/ArgumentParser.h>
 using sofa::helper::ArgumentParser;
 
+#include <SofaGraphComponent/SceneCheckerVisitor.h>
+using sofa::simulation::scenechecking::SceneCheckerVisitor;
+
 #include <list>
 
 
@@ -55,7 +58,7 @@ public:
     /// Close the GUI
     virtual int closeGUI()=0;
     /// Register the scene in our GUI
-    virtual void setScene(sofa::simulation::Node::SPtr groot, const char* filename=NULL, bool temporaryFile=false)=0;
+    virtual void setScene(sofa::simulation::Node::SPtr groot, const char* filename=NULL, bool temporaryFile=false);
     /// Get the rootNode of the sofa scene
     virtual sofa::simulation::Node* currentSimulation() = 0;
     /// @}
@@ -121,6 +124,8 @@ protected:
     static std::string screenshotDirectoryPath;
     static const char* mProgramName;
     static ArgumentParser* mArgumentParser;
+
+    SceneCheckerVisitor m_checker;
 };
 
 ////// TO declare into BaseViewer

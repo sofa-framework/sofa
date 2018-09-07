@@ -19,11 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_SCENECHECKUSINGALIAS_H
-#define SOFA_SIMULATION_SCENECHECKUSINGALIAS_H
+#ifndef SOFA_SIMULATION_SCENECHECKREQUIREDDATA_H
+#define SOFA_SIMULATION_SCENECHECKREQUIREDDATA_H
+
+#include "SceneCheck.h"
 
 #include "config.h"
-#include "SceneCheck.h"
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/BaseData.h>
+
 #include <map>
 #include <vector>
 
@@ -34,32 +38,32 @@ namespace simulation
 namespace _scenechecking_
 {
     
-class SOFA_GRAPH_COMPONENT_API SceneCheckUsingAlias : public SceneCheck
+class SOFA_GRAPH_COMPONENT_API SceneCheckRequiredData : public SceneCheck
 {
 public:
-    SceneCheckUsingAlias();
-    virtual ~SceneCheckUsingAlias();
+    SceneCheckRequiredData();
+    virtual ~SceneCheckRequiredData();
 
-    typedef std::shared_ptr<SceneCheckUsingAlias> SPtr;
-    static SPtr newSPtr() { return SPtr(new SceneCheckUsingAlias()); }
+    typedef std::shared_ptr<SceneCheckRequiredData> SPtr;
+    static SPtr newSPtr() { return SPtr(new SceneCheckRequiredData()); }
     virtual const std::string getName() override;
     virtual const std::string getDesc() override;
     virtual void doInit(Node* node) override;
-    virtual void doCheckOn(Node* node) override { SOFA_UNUSED(node); }
+    virtual void doCheckOn(Node* node) override;
     virtual void doPrintSummary() override;
 
 private:
-    std::map<std::string, std::vector<std::string>> m_componentsCreatedUsingAlias;
+    std::map<sofa::core::objectmodel::BaseObject*, std::vector<sofa::core::objectmodel::BaseData*>> m_missingDatas;
 };
 
 } // namespace _scenechecking_
 
 namespace scenechecking
 {
-    using _scenechecking_::SceneCheckUsingAlias;
+    using _scenechecking_::SceneCheckRequiredData;
 }
 
 } // namespace simulation
 } // namespace sofa
 
-#endif // SOFA_SIMULATION_SCENECHECKUSINGALIAS_H
+#endif // SOFA_SIMULATION_SCENECHECKREQUIREDDATA_H

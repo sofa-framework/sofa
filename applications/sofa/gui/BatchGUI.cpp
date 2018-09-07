@@ -108,6 +108,8 @@ int BatchGUI::closeGUI()
 
 void BatchGUI::setScene(sofa::simulation::Node::SPtr groot, const char* filename, bool )
 {
+    BaseGUI::setScene(groot);
+
     this->groot = groot;
     this->filename = (filename?filename:"");
 
