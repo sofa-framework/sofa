@@ -1,7 +1,7 @@
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-    set(ASSIMP_ARCHITECTURE "64")
+    set(ASSIMP_ARCHITECTURE "x64")
 elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
-    set(ASSIMP_ARCHITECTURE "32")
+    set(ASSIMP_ARCHITECTURE "x32")
 endif(CMAKE_SIZEOF_VOID_P EQUAL 8)
     
 if(WIN32)
@@ -37,12 +37,17 @@ if(WIN32)
 	ELSEIF(ASSIMP_LIBRARY_DEBUG)
 		SET(ASSIMP_LIBRARY_DIR ${ASSIMP_LIBRARY_DEBUG})
 	ENDIF()
-
+	
+	IF(ASSIMP_INCLUDE_DIR)
+		string(REPLACE "/include" "" ASSIMP_ROOT_DIR ${ASSIMP_INCLUDE_DIR})
+		set(ASSIMP_BIN_DIR "${ASSIMP_ROOT_DIR}/bin/${ASSIMP_ARCHITECTURE}/")
+		set(ASSIMP_DLL ${ASSIMP_ROOT_DIR}/bin/${ASSIMP_ARCHITECTURE}/assimp-${ASSIMP_MSVC_VERSION}-mt.dll)
+	ENDIF()
     
     FUNCTION(ASSIMP_COPY_BINARIES TargetDirectory)
         ADD_CUSTOM_TARGET(AssimpCopyBinaries
-            COMMAND ${CMAKE_COMMAND} -E copy ${ASSIMP_ROOT_DIR}/bin/${ASSIMP_ARCHITECTURE}/assimp-${ASSIMP_MSVC_VERSION}-mtd.dll     ${TargetDirectory}/Debug/assimp-${ASSIMP_MSVC_VERSION}-mtd.dll
-            COMMAND ${CMAKE_COMMAND} -E copy ${ASSIMP_ROOT_DIR}/bin/${ASSIMP_ARCHITECTURE}/assimp-${ASSIMP_MSVC_VERSION}-mt.dll         ${TargetDirectory}/Release/assimp-${ASSIMP_MSVC_VERSION}-mt.dll
+            COMMAND ${CMAKE_COMMAND} -E copy ${ASSIMP_ROOT_DIR}/bin/${ASSIMP_ARCHITECTURE}/assimp-${ASSIMP_MSVC_VERSION}-mtd.dll     ${TargetDirectory}/bin/Debug/assimp-${ASSIMP_MSVC_VERSION}-mtd.dll
+            COMMAND ${CMAKE_COMMAND} -E copy ${ASSIMP_ROOT_DIR}/bin/${ASSIMP_ARCHITECTURE}/assimp-${ASSIMP_MSVC_VERSION}-mt.dll         ${TargetDirectory}/bin/Release/assimp-${ASSIMP_MSVC_VERSION}-mt.dll
         COMMENT "Copying Assimp binaries to '${TargetDirectory}'"
         VERBATIM)
     ENDFUNCTION(ASSIMP_COPY_BINARIES)
