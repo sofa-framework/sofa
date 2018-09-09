@@ -41,4 +41,4 @@ install(TARGETS ${PROJECT_NAME} DESTINATION modules/SofaGeometry)
 add_subdirectory(tests)
 
 ## Add the python binding subdirectory.
-add_subdirectory(python)
+add_subdirectory(pybind11)
