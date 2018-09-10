@@ -196,12 +196,6 @@ add_subdirectory(SofaAdvanced)
 add_subdirectory(SofaMisc)
 add_subdirectory(SofaGui)
 
-## Modules
-## in the consortium convention a module is a similar to a plugin the difference is that
-## a module is hosted and managed by the consortium while plugins are hosted and managed by third parties.
-add_subdirectory(modules)
-
-# SofaTest depends on SofaPython, so we add SofaPython before SofaTest.
 sofa_add_plugin( applications/plugins/SofaPython SofaPython )
 
 ## Scene creator option
@@ -235,6 +229,11 @@ if(SOFA_BUILD_TESTS)
     # Not sure what is it
     add_subdirectory(applications/plugins/SofaTest/SofaTest_test SofaTest/SofaTest_test)
 endif()
+
+## Modules
+## in the consortium convention a module is a similar to a plugin the difference is that
+## a module is hosted and managed by the consortium while plugins are hosted and managed by third parties.
+add_subdirectory(modules)
 
 ## Plugins
 add_subdirectory(applications/plugins)
