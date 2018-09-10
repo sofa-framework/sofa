@@ -18,6 +18,6 @@ sofa_add_pybind11_module(
         TARGET PythonModule_Sofa
         SOURCES  ${SOURCE_FILES} 
         DEPENDS SofaPython3
-        OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/Sofa"
+        OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/package/"
         NAME Sofa
 )

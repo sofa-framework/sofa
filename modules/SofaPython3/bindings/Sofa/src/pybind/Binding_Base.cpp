@@ -8,14 +8,6 @@ using sofa::core::objectmodel::Base;
 /// /pybind11.readthedocs.io/en/stable/advanced/smart_ptrs.html
 PYBIND11_DECLARE_HOLDER_TYPE(Base, boost::intrusive_ptr<Base>, true)
 
-/*class MyBase
-{
-    public:
-        void setName(const std::string& name, int counter){}
-        void setName(const std::string& name){}
-        const std::string getName(){ return ""; }
-};*/
-
 void init_Base(py::module &m)
 {
   py::class_<Base, Base::SPtr> p(m, "Base");
@@ -23,39 +15,75 @@ void init_Base(py::module &m)
   p.def("getName", &Base::getName);
 }
 
-void registerLoader()
+
+#include <sofa/core/objectmodel/BaseObject.h>
+using sofa::core::objectmodel::BaseObject;
+
+void init_BaseObject(py::module& m)
 {
-    std::cout << "Loader" << std::endl ;
+    py::class_<BaseObject, Base, BaseObject::SPtr> p(m, "BaseObject");
 }
 
+class  PythonController : public BaseObject
+{
+public:
+    SOFA_CLASS(PythonController, BaseObject);
 
-PYBIND11_MODULE(example, m) {
-    init_Base(m) ;
+    PythonController(){}
+};
+
+void init_PythonController(py::module& m)
+{
+    py::class_<PythonController, BaseObject, PythonController::SPtr> p(m, "PythonController");
 }
 
+#include <sofa/simulation/Node.h>
+using sofa::simulation::Node;
 
-  /*
-  p.def_readwrite("distance", &Plane::distance);
-  p.def_readwrite("normal", &Plane::normal);
-  p.def(py::init<const vec3 &, double>(), "normal"_a = Constants::XAxis,
-        "distance"_a = 0);
-  p.def(py::init([](py::list l, double dist) {
-          return std::unique_ptr<Plane>(
-              new Plane(vec3(double(l[0].cast<py::float_>()),
-                             double(l[1].cast<py::float_>()),
-                             double(l[2].cast<py::float_>())),
-                        dist));
-        }),
-        "normal"_a = Constants::XAxis, "distance"_a = 0);
-  p.def(py::init<const vec3 &, const vec3 &>(), "normal"_a, "point"_a);
-  p.def("raycast",
-        (bool (Plane::*)(const Ray &, double &) const) & Plane::raycast,
-        "ray"_a, "p"_a);
-  p.def("raycast",
-        [](const Plane &plane, Ray r) {
-          double p = 0.0;
-          plane.raycast(r, p);
-          return p;
-        },
-        "ray"_a);
-   */
+#include <sofa/simulation/Simulation.h>
+using sofa::simulation::Simulation;
+
+void init_Node(py::module &m)
+{
+  py::class_<Node, Node::SPtr> p(m, "Node");
+  p.def("createObject", [](Node& self, const std::string& s){
+      py::print("createObject");
+  });
+
+  p.def("createChild", [](Node& self, const std::string& s){
+      py::print("createChild");
+  });
+}
+
+#include <pybind11/eval.h>
+
+/// The first parameter must be named the same as the module file to load.
+PYBIND11_MODULE(Sofa, m) {
+    init_Base(m);
+    init_BaseObject(m);
+    init_PythonController(m);
+    init_Node(m);
+
+    /// Beurk... ces fonctions à déplacer dans un module genre RunTime.
+    m.def("init", [](){
+        /// Beurk !
+        sofa::simulation::setSimulation(new Simulation());
+    });
+
+    m.def("load", [](const std::string& filename) -> py::object {
+        /// Evaluate the content of the file in the scope of the main module
+        py::object globals = py::module::import("__main__").attr("__dict__");
+        py::object locals = py::dict();
+        py::eval_file(filename, globals, locals);
+
+        if( locals.contains("createScene") ){
+            py::object o = locals["createScene"];
+            if( py::isinstance<py::function>(o) ){
+                Ca crash ici car il manque une instance de la simulation.
+                Node::SPtr tmp = Node::create("root");
+                return o(py::none());
+            }
+        }
+        return py::none();
+    });
+}

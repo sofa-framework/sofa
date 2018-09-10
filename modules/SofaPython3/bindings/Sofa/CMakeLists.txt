@@ -10,6 +10,9 @@ project(PythonModule_Sofa)
 #    return()
 #endif()
 
+# This must be done before doing the find_package(pybind11)
+#set(PYBIND11_PYTHON_VERSION 3.6m)
+set(PYTHON_EXECUTABLE python3)
 
 #include(src/cython/CMakeBuilds.cmake)
 include(src/pybind/CMakeBuilds.cmake)
@@ -20,7 +23,7 @@ set(EXAMPLES_FILES
 
 
 ## Python configuration file (build tree), the lib in the source dir (easier while developping .py files)
-file(WRITE "${CMAKE_BINARY_DIR}/etc/sofa/python.d/Sofa" "${CMAKE_CURRENT_SOURCE_DIR}")
+file(WRITE "${CMAKE_BINARY_DIR}/etc/sofa/python.d/Sofa" "${CMAKE_CURRENT_SOURCE_DIR}/package/")
 
 ## Python configuration file (install tree)
 file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/installed-Sofa-config"
