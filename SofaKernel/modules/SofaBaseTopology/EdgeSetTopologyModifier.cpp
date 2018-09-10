@@ -273,7 +273,7 @@ void EdgeSetTopologyModifier::removeEdgesProcess(const sofa::helper::vector<unsi
         removePointsWarning(vertexToBeRemoved);
         // inform other objects that the points are going to be removed
         propagateTopologicalChanges();
-        removePointsProcess(vertexToBeRemoved);
+        removePointsProcess(vertexToBeRemoved, d_propagateToDOF.getValue());
     }
 }
 

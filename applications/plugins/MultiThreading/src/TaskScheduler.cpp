@@ -57,6 +57,7 @@ namespace sofa
             if (_currentScheduler == nullptr)
             {
                 TaskScheduler::create();// TaskSchedulerDefault::getName());
+                _currentScheduler->init();
             }
 
             return _currentScheduler;
