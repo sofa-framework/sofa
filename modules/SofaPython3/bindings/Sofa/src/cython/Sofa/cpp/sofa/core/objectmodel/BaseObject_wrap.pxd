@@ -1,5 +1,5 @@
 # -*- coding: ASCII -*-
-from SofaPython3.cpp.sofa.core.objectmodel.Base_wrap cimport Base as cpp_Base
+from Sofa.cpp.sofa.core.objectmodel.Base_wrap cimport Base as cpp_Base
 
 cdef extern from "<sofa/core/objectmodel/BaseObject.h>" namespace "sofa::core::objectmodel":       
     cdef cppclass BaseObject(cpp_Base):

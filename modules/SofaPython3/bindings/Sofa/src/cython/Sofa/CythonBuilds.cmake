@@ -1,15 +1,3 @@
-cmake_minimum_required(VERSION 3.1)
-project(PythonModule_SofaPython3)
-
-####################################################################################################
-### Module dependencies
-####################################################################################################
-#find_package(PythonLibs 2.7 QUIET)
-#if(NOT PythonLibs_FOUND)
-#    message("-- Cannot build the python module 'SofaPython3', missing the required PythonLibs 2.7 cmake package.")
-#    return()
-#endif()
-
 find_package(Cython QUIET)
 if(NOT Cython_FOUND)
     message("-- Cannot build the python module for 'SofaPython3', missing the Cython software to generate the bindings (http://cython.org/).")
@@ -52,17 +40,3 @@ sofa_add_python_module(TARGET PythonModule_SofaPython3
                        DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/SofaPython3"
                        )
 
-## Python configuration file (build tree), the lib in the source dir (easier while developping .py files)
-file(WRITE "${CMAKE_BINARY_DIR}/etc/sofa/python.d/SofaPython3" "${CMAKE_CURRENT_SOURCE_DIR}")
-
-## Python configuration file (install tree)
-file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/installed-SofaPython3-config"
-             "modules/SofaPython3/python/")
-
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/installed-SofaPython3-config"
-         DESTINATION "etc/sofa/python.d"
-         RENAME "SofaPython3")
-
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/module/SofaPython3 DESTINATION modules/SofaPython3/python)
-
-#add_subdirectory(tests)

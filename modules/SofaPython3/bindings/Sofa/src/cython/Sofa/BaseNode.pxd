@@ -8,7 +8,7 @@ cdef class BaseNode(Base):
             It defined hierarchical relations between elements. Each node can have parent and child nodes
             (potentially defining a tree), as well as attached objects (the leaves of the tree).
         """
-        cdef _BaseNode* realptr
+        #cdef _BaseNode* realptr
 
 
 

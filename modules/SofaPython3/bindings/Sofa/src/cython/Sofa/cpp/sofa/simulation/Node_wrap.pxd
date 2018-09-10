@@ -7,8 +7,8 @@ cdef extern from "boost/intrusive_ptr.hpp" namespace "boost":
                 T* get()
                 void reset(T * r);
 
-from SofaPython3.cpp.sofa.core.objectmodel.BaseObject_wrap cimport BaseObject
-from SofaPython3.cpp.sofa.core.objectmodel.BaseNode_wrap cimport BaseNode
+from Sofa.cpp.sofa.core.objectmodel.BaseObject_wrap cimport BaseObject
+from Sofa.cpp.sofa.core.objectmodel.BaseNode_wrap cimport BaseNode
 
 cdef extern from "" namespace "sofa::simulation::Node":
     ctypedef intrusive_ptr[Node] SPtr

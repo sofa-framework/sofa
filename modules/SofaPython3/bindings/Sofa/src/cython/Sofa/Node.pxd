@@ -1,4 +1,4 @@
-from SofaPython3.cpp.sofa.simulation.Node_wrap cimport Node as Node_cpp, SPtr as Node_SPtr
+from Sofa.cpp.sofa.simulation.Node_wrap cimport Node as Node_cpp, SPtr as Node_SPtr
 
 
 cdef create(str name)

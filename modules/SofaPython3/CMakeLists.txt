@@ -14,13 +14,11 @@ set(HEADER_FILES
     src/SofaPython3/config.h
     src/SofaPython3/initModule.h
     src/SofaPython3/PythonEnvironment.h   
-    src/SofaPython3/SceneLoaderPY3.h  
 )
 
 set(SOURCE_FILES
     src/SofaPython3/initModule.cpp
     src/SofaPython3/PythonEnvironment.cpp
-    src/SofaPython3/SceneLoaderPY3.cpp
 )
 
 set(EXTRA_FILES
@@ -60,4 +58,4 @@ sofa_create_package(${PROJECT_NAME} ${PROJECT_VERSION} SofaPython3 "SofaPython3"
 #add_subdirectory(tests)
 
 ### Python binding
-add_subdirectory(python)
+add_subdirectory(bindings)

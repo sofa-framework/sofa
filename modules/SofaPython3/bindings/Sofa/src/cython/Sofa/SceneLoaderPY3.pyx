@@ -5,7 +5,7 @@ from libcpp.vector cimport vector as std_vector
 from libcpp.string cimport string as std_string
 from libcpp cimport bool
 from .Node cimport Node, create as createNode
-from SofaPython3.cpp.sofa.simulation.Node_wrap cimport Node as cpp_Node, SPtr as NodeSPtr
+from Sofa.cpp.sofa.simulation.Node_wrap cimport Node as cpp_Node, SPtr as NodeSPtr
 
 cdef extern from "<sofa/simulation/SceneLoaderFactory.h>" namespace "sofa::simulation":
     cdef cppclass SceneLoader:
