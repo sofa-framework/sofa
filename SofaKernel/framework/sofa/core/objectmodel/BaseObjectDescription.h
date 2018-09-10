@@ -23,8 +23,6 @@
 #define SOFA_CORE_OBJECTMODEL_BASEOBJECTDESCRIPTION_H
 
 #include <sofa/helper/vector.h>
-#include <string>
-#include <list>
 #include <map>
 
 #include <sofa/core/core.h>

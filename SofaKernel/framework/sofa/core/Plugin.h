@@ -50,12 +50,7 @@ public: 							\
 
 
 #include <sofa/core/core.h>
-#include <sofa/core/ObjectFactory.h>
 
-#include <map>
-#include <set>
-#include <string>
-#include <vector>
 
 namespace sofa
 {

@@ -344,26 +344,21 @@ protected:
 
 public :
 
-#ifdef SOFA_NEW_HEXA
+
     virtual const SeqHexahedra& getHexahedra() override
     {
         if( !_alreadyInit ) init();
         return sofa::component::topology::MeshTopology::getHexahedra();
     }
-#else
-    virtual const SeqCubes& getHexahedra()
-    {
-        if( !_alreadyInit ) init();
-        return sofa::component::topology::MeshTopology::getHexahedra();
-    }
-#endif
+
     virtual int getNbPoints() const override
     {
         if( !_alreadyInit ) const_cast<SparseGridTopology*>(this)->init();
         return sofa::component::topology::MeshTopology::getNbPoints();
     }
 
-    virtual int getNbHexahedra() override { return (int)this->getHexahedra().size();}
+    /// TODO 2018-07-23 epernod: check why this method is override to return the same result as parent class.
+    virtual size_t getNbHexahedra() override { return this->getHexahedra().size();}
 };
 
 } // namespace topology

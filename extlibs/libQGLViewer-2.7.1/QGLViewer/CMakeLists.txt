@@ -49,25 +49,26 @@ find_package(Qt5 COMPONENTS Core QUIET)
 
 if(Qt5Core_FOUND)
     message("QGLViewer: Using Qt5")
+    find_package(Qt5 COMPONENTS Gui Xml OpenGL Widgets REQUIRED)
 
-    find_package(Qt5 COMPONENTS Gui Xml OpenGL REQUIRED)
-
+    set(QT_TARGETS Qt5::Core Qt5::Gui Qt5::Xml Qt5::OpenGL Qt5::Widgets)
     set(EXT_QT_INCLUDES ${Qt5Core_INCLUDE_DIRS} ${Qt5Widgets_INCLUDE_DIRS} ${Qt5OpenGL_INCLUDE_DIRS} ${Qt5Xml_INCLUDE_DIRS})
     set(EXT_QT_LIBRARIES ${Qt5Core_LIBRARIES} ${Qt5Widgets_LIBRARIES} ${Qt5OpenGL_LIBRARIES} ${Qt5Xml_LIBRARIES})
 
     qt5_wrap_cpp(MOC_FILES ${HEADER_FILES})
     qt5_wrap_ui(FORM_FILES ${UI_FILES})
+endif()
 
-else()
-    message("QGLViewer: Using Qt4")
-    find_package(Qt4 QUIET REQUIRED QtCore QtOpenGL QtXml QtGui)
-    include(${QT_USE_FILE})
+if(WIN32)
+    sofa_copy_libraries_from_targets(${QT_TARGETS})
+    sofa_install_libraries_from_targets(${QT_TARGETS})
 
-    set(EXT_QT_INCLUDES ${QT_INCLUDES})
-    set(EXT_QT_LIBRARIES ${QT_LIBRARIES})
-    qt4_wrap_cpp(MOC_FILES ${HEADER_FILES})
-    qt4_wrap_ui(FORM_FILES ${UI_FILES})
-
+    # Installing Qt platforms dll the hard way (dirty)
+    list (GET QT_TARGETS 0 QtCore_target)
+    get_target_property(QtCore_location ${QtCore_target} LOCATION_${CMAKE_BUILD_TYPE})
+    string(REGEX REPLACE "\\/[^/]*/[^/]*$" "" Qt_location ${QtCore_location})
+    FILE(GLOB QT_PLUGINS "${Qt_location}/plugins/platforms/qwindows*.dll")
+    install(FILES ${QT_PLUGINS} DESTINATION "bin/platforms" COMPONENT applications)
 endif()
 
 # These header files don't need to be processed by the moc.

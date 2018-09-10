@@ -63,11 +63,17 @@ void initExternalModule()
         static_assert( EIGEN_WORLD_VERSION>=3 && EIGEN_MAJOR_VERSION>=2 && EIGEN_MINOR_VERSION>=5, "" );
 
 #ifdef SOFA_HAVE_SOFAPYTHON
+        static std::string docstring=R"(
+                Compliant module.
+
+                This module is part of the Compliant plugin and contains function and binding to the c++ objects.
+                )";
+
         // adding _Compliant python module
         if( PythonFactory::s_sofaPythonModule ) // add the module only if the Sofa module exists (SofaPython is loaded)
         {
             simulation::PythonEnvironment::gil lock(__func__);
-            static PyObject *s__CompliantPythonModule = SP_INIT_MODULE(_Compliant);
+            static PyObject *s__CompliantPythonModule = SP_INIT_MODULE(_Compliant, docstring.c_str());
 
             // adding more bindings to the _Compliant module
             SP_ADD_CLASS( s__CompliantPythonModule, AssembledSystem );

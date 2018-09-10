@@ -28,7 +28,6 @@
 #include <sofa/core/CollisionElement.h>
 #include <SofaBaseCollision/CubeModel.h>
 #include <sofa/defaulttype/Vec.h>
-#include <set>
 
 
 namespace sofa

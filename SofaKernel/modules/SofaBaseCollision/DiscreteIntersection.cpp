@@ -21,13 +21,17 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_COLLISION_DISCRETEINTERSECTION_CPP
 #include <sofa/helper/system/config.h>
-#include <sofa/helper/FnDispatcher.inl>
+
 #include <SofaBaseCollision/DiscreteIntersection.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/collision/Intersection.inl>
-#include <sofa/helper/proximity.h>
-#include <iostream>
-#include <algorithm>
+
+#include <SofaBaseCollision/SphereModel.h>
+#include <SofaBaseCollision/CubeModel.h>
+#include <SofaBaseCollision/CapsuleModel.h>
+#include <SofaBaseCollision/OBBModel.h>
+#include <SofaBaseCollision/BaseIntTool.h>
+#include <SofaBaseCollision/RigidCapsuleModel.h>
 
 namespace sofa
 {

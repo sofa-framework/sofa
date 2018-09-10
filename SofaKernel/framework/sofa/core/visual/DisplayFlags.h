@@ -24,7 +24,6 @@
 
 #include <sofa/core/core.h>
 #include <sofa/helper/vector.h>
-#include <sstream>
 #include <map>
 
 
@@ -97,8 +96,25 @@ inline tristate difference_tristate(const tristate& previous, const tristate& cu
 class SOFA_CORE_API FlagTreeItem
 {
 protected:
-    std::string m_showName;
-    std::string m_hideName;
+    // Creating a case insensitive "find" function for map
+    struct ci_comparison
+    {
+        // case-independent (ci) comparison
+        struct nocase_compare
+        {
+            bool operator() (const unsigned char& c1, const unsigned char& c2) const
+            {
+              return tolower (c1) < tolower (c2);
+            }
+        };
+        bool operator() (const std::string & s1, const std::string & s2) const
+        {
+            return std::lexicographical_compare(s1.begin (), s1.end (), s2.begin (), s2.end (), nocase_compare ());
+        }
+    };
+
+    sofa::helper::vector<std::string> m_showName;
+    sofa::helper::vector<std::string> m_hideName;
     tristate m_state;
 
     FlagTreeItem* m_parent;
@@ -126,13 +142,19 @@ public:
 
     void setValue(const tristate& state);
 
+    void addAliasShow(const std::string& newAlias);
+    void addAliasHide(const std::string& newAlias);
+    void addAlias(sofa::helper::vector<std::string> &name, const std::string &newAlias);
+
 protected:
     void propagateStateDown(FlagTreeItem* origin);
     void propagateStateUp(FlagTreeItem* origin);
-    static std::map<std::string,bool> create_flagmap(FlagTreeItem* root);
-    static void create_parse_map(FlagTreeItem* root, std::map<std::string,bool>& map);
-    static void read_recursive(FlagTreeItem* root, const std::map<std::string,bool>& map);
+    static std::map<std::string,bool, ci_comparison> create_flagmap(FlagTreeItem* root);
+    static void create_parse_map(FlagTreeItem* root, std::map<std::string,bool,ci_comparison>& map);
+    static void read_recursive(FlagTreeItem* root, const std::map<std::string,bool,ci_comparison>& map);
     static void write_recursive(const FlagTreeItem* root,  std::string& str);
+
+
 };
 
 /** \brief Class which describes the display of components in a hierarchical fashion
@@ -182,7 +204,7 @@ public:
     tristate getShowMappings() const { return m_showVisualMappings.state(); }
     tristate getShowMechanicalMappings() const { return m_showMechanicalMappings.state(); }
     tristate getShowOptions() const { return m_showOptions.state(); }
-    tristate getShowRendering() const { return m_showRendering.state(); }
+    tristate getShowAdvancedRendering() const { return m_showAdvancedRendering.state(); }
     tristate getShowWireFrame() const { return m_showWireframe.state(); }
     tristate getShowNormals() const { return m_showNormals.state(); }
 
@@ -200,7 +222,7 @@ public:
     DisplayFlags& setShowMappings(tristate v=true) { m_showVisualMappings.setValue(v); return (*this); }
     DisplayFlags& setShowMechanicalMappings(tristate v=true) { m_showMechanicalMappings.setValue(v); return (*this); }
     DisplayFlags& setShowOptions(tristate v=true) { m_showOptions.setValue(v); return (*this); }
-    DisplayFlags& setShowRendering(tristate v=true) { m_showRendering.setValue(v); return (*this); }
+    DisplayFlags& setShowAdvancedRendering(tristate v=true) { m_showAdvancedRendering.setValue(v); return (*this); }
     DisplayFlags& setShowWireFrame(tristate v=true) { m_showWireframe.setValue(v); return (*this); }
     DisplayFlags& setShowNormals(tristate v=true) { m_showNormals.setValue(v); return (*this); }
     friend std::ostream& operator<< ( std::ostream& os, const DisplayFlags& flags )
@@ -239,7 +261,7 @@ protected:
 
     FlagTreeItem m_showOptions;
 
-    FlagTreeItem m_showRendering;
+    FlagTreeItem m_showAdvancedRendering;
     FlagTreeItem m_showWireframe;
     FlagTreeItem m_showNormals;
 };

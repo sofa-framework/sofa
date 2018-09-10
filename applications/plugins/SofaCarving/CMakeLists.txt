@@ -20,3 +20,10 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILE
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFACARVING")
 target_link_libraries(${PROJECT_NAME} SofaComponentGeneral)
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
+
+if(SOFA_BUILD_TESTS)
+    find_package(SofaTest QUIET)
+    if(SofaTest_FOUND)
+        add_subdirectory(SofaCarving_test)
+    endif()
+endif()

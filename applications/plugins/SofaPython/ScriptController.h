@@ -26,7 +26,7 @@
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/simulation/Node.h>
-#include "ScriptEvent.h"
+#include <sofa/core/objectmodel/ScriptEvent.h>
 #include "ScriptFunction.h"
 
 /// fwd declaration
@@ -171,6 +171,7 @@ protected:
     virtual bool script_onKeyPressed(const char c) = 0;
     virtual bool script_onKeyReleased(const char c) = 0;
 
+    virtual void script_onMouseMove(const int posX, const int posY) = 0;
     virtual void script_onMouseButtonLeft(const int posX,const int posY,const bool pressed) = 0;
     virtual void script_onMouseButtonRight(const int posX,const int posY,const bool pressed) = 0;
     virtual void script_onMouseButtonMiddle(const int posX,const int posY,const bool pressed) = 0;

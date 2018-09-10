@@ -25,11 +25,7 @@
 ******************************************************************************/
 #ifndef RICHCONSOLESTYLEMESSAGEFORMATTER_H
 #define RICHCONSOLESTYLEMESSAGEFORMATTER_H
-#include <sstream>
-#include <string>
-#include <sofa/helper/logging/Message.h>
 #include <sofa/helper/logging/MessageFormatter.h>
-#include <sofa/helper/helper.h>
 
 namespace sofa
 {
@@ -40,8 +36,7 @@ namespace helper
 namespace logging
 {
 
-namespace richconsolestylemessageformater
-{
+class Message;
 
 ///
 /// \brief The RichConsoleStyleMessageFormatter class
@@ -56,29 +51,22 @@ namespace richconsolestylemessageformater
 class SOFA_CORE_API RichConsoleStyleMessageFormatter : public MessageFormatter
 {
 public:
-    virtual void formatMessage(const Message& m,std::ostream& out);
+    static inline RichConsoleStyleMessageFormatter &getInstance ()
+    {
+        static RichConsoleStyleMessageFormatter instance;
+        return instance;
+    }
 
-    RichConsoleStyleMessageFormatter();
+    void formatMessage(const Message& m,std::ostream& out) override;
+
 private:
+    // singleton API
+    RichConsoleStyleMessageFormatter() : m_showFileInfo(false) {}
+    RichConsoleStyleMessageFormatter(const RichConsoleStyleMessageFormatter&);
+    void operator=(const RichConsoleStyleMessageFormatter&);
+
     bool m_showFileInfo ;
 };
-
-/// Singleton based façade to RichConsoleStyleMessageFormatter.
-class SOFA_CORE_API MainRichConsoleStyleMessageFormatter
-{
-public:
-    static void formatMessage(const Message& m,std::ostream& out)
-    {
-        static RichConsoleStyleMessageFormatter formatter ;
-        formatter.formatMessage(m, out) ;
-    }
-};
-
-
-} // richconsolestylemessageformater
-
-using richconsolestylemessageformater::MainRichConsoleStyleMessageFormatter ;
-using richconsolestylemessageformater::RichConsoleStyleMessageFormatter ;
 
 } // logging
 } // helper

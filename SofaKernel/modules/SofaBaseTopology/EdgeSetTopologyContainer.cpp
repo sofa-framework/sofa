@@ -94,9 +94,9 @@ void EdgeSetTopologyContainer::createEdgesAroundVertexArray()
 {
     if(!hasEdges())	// this method should only be called when edges exist
     {
-#ifndef NDEBUG
-        sout << "Warning. [EdgeSetTopologyContainer::createEdgesAroundVertexArray] edge array is empty." << sendl;
-#endif
+		if(CHECK_TOPOLOGY)
+			msg_warning() << "Edge array is empty.";
+		
         createEdgeSetArray();
     }
 
@@ -106,7 +106,13 @@ void EdgeSetTopologyContainer::createEdgesAroundVertexArray()
     }
 
     helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
-    m_edgesAroundVertex.resize( getNbPoints() );
+
+    int nbPoints = getNbPoints();
+    if (nbPoints == 0) // in case only Data have been copied and not going thourgh AddTriangle methods.
+        this->setNbPoints(d_initPoints.getValue().size());
+
+    m_edgesAroundVertex.resize(getNbPoints());
+
     for (unsigned int edge=0; edge<m_edge.size(); ++edge)
     {
         // adding edge in the edge shell of both points
@@ -128,18 +134,18 @@ void EdgeSetTopologyContainer::reinit()
 
 void EdgeSetTopologyContainer::createEdgeSetArray()
 {
-#ifndef NDEBUG
-    sout << "Error. [EdgeSetTopologyContainer::createEdgeSetArray] This method must be implemented by a child topology." << sendl;
-#endif
+	if(CHECK_TOPOLOGY)
+		msg_error() << "This method must be implemented by a child topology.";
+
 }
 
 const sofa::helper::vector<EdgeSetTopologyContainer::Edge> &EdgeSetTopologyContainer::getEdgeArray()
 {
     if(!hasEdges() && getNbPoints()>0)
     {
-#ifndef NDEBUG
-        sout << "Warning. [EdgeSetTopologyContainer::getEdgeArray] creating edge array." << sendl;
-#endif
+		if(CHECK_TOPOLOGY)
+			msg_info() << "Creating edge array.";
+
         createEdgeSetArray();
     }
 
@@ -150,16 +156,16 @@ int EdgeSetTopologyContainer::getEdgeIndex(PointID v1, PointID v2)
 {
     if(!hasEdges()) // this method should only be called when edges exist
     {
-#ifndef NDEBUG
-        sout << "Warning. [EdgeSetTopologyContainer::getEdgeIndex] edge array is empty." << sendl;
-#endif
+		if(CHECK_TOPOLOGY)
+			msg_warning() << "Edge array is empty.";
+
         createEdgeSetArray();
     }
 
     if(!hasEdgesAroundVertex())
         createEdgesAroundVertexArray();
 
-    const sofa::helper::vector< unsigned int > &es1 = getEdgesAroundVertex(v1) ;
+    const sofa::helper::vector< EdgeID > &es1 = getEdgesAroundVertex(v1) ;
     helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
 
     int result = -1;
@@ -177,12 +183,15 @@ const EdgeSetTopologyContainer::Edge EdgeSetTopologyContainer::getEdge (EdgeID i
     if(!hasEdges())
         createEdgeSetArray();
 
-    return (d_edge.getValue())[i];
+    if ((size_t)i >= getNbEdges())
+        return Edge(-1, -1);
+    else
+        return (d_edge.getValue())[i];
 }
 
 
 // Return the number of connected components from the graph containing all edges and give, for each vertex, which component it belongs to  (use BOOST GRAPH LIBRAIRY)
-int EdgeSetTopologyContainer::getNumberConnectedComponents(sofa::helper::vector<unsigned int>& components)
+int EdgeSetTopologyContainer::getNumberConnectedComponents(sofa::helper::vector<EdgeID>& components)
 {
     using namespace boost;
 
@@ -204,47 +213,48 @@ int EdgeSetTopologyContainer::getNumberConnectedComponents(sofa::helper::vector<
 
 bool EdgeSetTopologyContainer::checkTopology() const
 {
-#ifndef NDEBUG
-    bool ret = true;
+	if (CHECK_TOPOLOGY)
+	{
+		bool ret = true;
 
-    if(hasEdgesAroundVertex())
-    {
-        helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
-        std::set<int> edgeSet;
-        std::set<int>::iterator it;
+		if (hasEdgesAroundVertex())
+		{
+			helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
+			std::set<int> edgeSet;
+			std::set<int>::iterator it;
 
-        for (size_t i=0; i<m_edgesAroundVertex.size(); ++i)
-        {
-            const sofa::helper::vector<unsigned int> &es = m_edgesAroundVertex[i];
+			for (size_t i = 0; i < m_edgesAroundVertex.size(); ++i)
+			{
+				const sofa::helper::vector<EdgeID> &es = m_edgesAroundVertex[i];
 
-            for (size_t j=0; j<es.size(); ++j)
-            {
-                bool check_edge_vertex_shell = (m_edge[ es[j] ][0] == i) ||  (m_edge[ es[j] ][1] == i);
-                if(! check_edge_vertex_shell)
-                {
-                    std::cout << "*** CHECK FAILED : check_edge_vertex_shell, i = " << i << " , j = " << j << std::endl;
-                    ret = false;
-                }
+				for (size_t j = 0; j < es.size(); ++j)
+				{
+					bool check_edge_vertex_shell = (m_edge[es[j]][0] == i) || (m_edge[es[j]][1] == i);
+					if (!check_edge_vertex_shell)
+					{
+						msg_warning() << "*** CHECK FAILED : check_edge_vertex_shell, i = " << i << " , j = " << j;
+						ret = false;
+					}
 
-                it=edgeSet.find(es[j]);
-                if (it == edgeSet.end())
-                {
-                    edgeSet.insert (es[j]);
-                }
-            }
-        }
+					it = edgeSet.find(es[j]);
+					if (it == edgeSet.end())
+					{
+						edgeSet.insert(es[j]);
+					}
+				}
+			}
 
-        if (edgeSet.size() != m_edge.size())
-        {
-            std::cout << "*** CHECK FAILED : check_edge_vertex_shell, edge are missing in m_edgesAroundVertex" << std::endl;
-            ret = false;
-        }
-    }
+			if (edgeSet.size() != m_edge.size())
+			{
+				msg_warning() << "*** CHECK FAILED : check_edge_vertex_shell, edge are missing in m_edgesAroundVertex";
+				ret = false;
+			}
+		}
 
-    return ret &&  PointSetTopologyContainer::checkTopology();
-#else
+		return ret && PointSetTopologyContainer::checkTopology();
+	}
+
     return true;
-#endif
 }
 
 
@@ -257,9 +267,9 @@ bool EdgeSetTopologyContainer::checkConnexity()
 
     if (nbr == 0)
     {
-#ifndef NDEBUG
-        serr << "Warning. [EdgeSetTopologyContainer::checkConnexity] Can't compute connexity as there are no edges" << sendl;
-#endif
+		if(CHECK_TOPOLOGY)
+			msg_warning() << "Can't compute connexity as there are no edges";
+
         return false;
     }
 
@@ -267,7 +277,7 @@ bool EdgeSetTopologyContainer::checkConnexity()
 
     if (elemAll.size() != nbr)
     {
-        serr << "Warning: in computing connexity, edges are missings. There is more than one connexe component." << sendl;
+		msg_warning() << "Warning: in computing connexity, edges are missings. There is more than one connexe component.";
         return false;
     }
 
@@ -275,25 +285,25 @@ bool EdgeSetTopologyContainer::checkConnexity()
 }
 
 
-unsigned int EdgeSetTopologyContainer::getNumberOfConnectedComponent()
+size_t EdgeSetTopologyContainer::getNumberOfConnectedComponent()
 {
     size_t nbr = this->getNbEdges();
 
     if (nbr == 0)
     {
-#ifndef NDEBUG
-        serr << "Warning. [EdgeSetTopologyContainer::getNumberOfConnectedComponent] Can't compute connexity as there are no edges" << sendl;
-#endif
+		if(CHECK_TOPOLOGY)
+			msg_warning() << "Can't compute connexity as there are no edges";
+
         return 0;
     }
 
     VecEdgeID elemAll = this->getConnectedElement(0);
-    unsigned int cpt = 1;
+    size_t cpt = 1;
 
     while (elemAll.size() < nbr)
     {
         std::sort(elemAll.begin(), elemAll.end());
-        EdgeID other_edgeID = elemAll.size();
+        size_t other_edgeID = elemAll.size();
 
         for (EdgeID i = 0; i<(EdgeID)elemAll.size(); ++i)
             if (elemAll[i] != i)
@@ -302,7 +312,7 @@ unsigned int EdgeSetTopologyContainer::getNumberOfConnectedComponent()
                 break;
             }
 
-        VecEdgeID elemTmp = this->getConnectedElement(other_edgeID);
+        VecEdgeID elemTmp = this->getConnectedElement((EdgeID)other_edgeID);
         cpt++;
 
         elemAll.insert(elemAll.begin(), elemTmp.begin(), elemTmp.end());
@@ -316,9 +326,9 @@ const EdgeSetTopologyContainer::VecEdgeID EdgeSetTopologyContainer::getConnected
 {
     if(!hasEdgesAroundVertex())	// this method should only be called when the shell array exists
     {
-#ifndef NDEBUG
-        serr << "Warning. [EdgeSetTopologyContainer::getConnectedElement] EdgesAroundVertex shell array is empty." << sendl;
-#endif
+		if(CHECK_TOPOLOGY)
+			msg_warning() << "EdgesAroundVertex shell array is empty.";
+
         createEdgesAroundVertexArray();
     }
 
@@ -365,9 +375,9 @@ const EdgeSetTopologyContainer::VecEdgeID EdgeSetTopologyContainer::getConnected
         if (elemPreviousFront.empty())
         {
             end = true;
-#ifndef NDEBUG
-            serr << "Loop for computing connexity has reach end." << sendl;
-#endif
+			if(CHECK_TOPOLOGY)
+				msg_error() << "Loop for computing connexity has reach end.";
+
         }
 
         // iterate
@@ -385,9 +395,9 @@ const EdgeSetTopologyContainer::VecEdgeID EdgeSetTopologyContainer::getElementAr
 
     if (!hasEdgesAroundVertex())
     {
-#ifndef NDEBUG
-        serr << "Warning. [EdgeSetTopologyContainer::getElementAroundElement] edge vertex shell array is empty." << sendl;
-#endif
+		if(CHECK_TOPOLOGY)
+			msg_warning() << "Edge vertex shell array is empty.";
+
         createEdgesAroundVertexArray();
     }
 
@@ -428,9 +438,9 @@ const EdgeSetTopologyContainer::VecEdgeID EdgeSetTopologyContainer::getElementAr
 
     if (!hasEdgesAroundVertex())
     {
-#ifndef NDEBUG
-        serr << "Warning. [EdgeSetTopologyContainer::getElementAroundElements] edge vertex shell array is empty." << sendl;
-#endif
+		if(CHECK_TOPOLOGY)
+			msg_warning() << "Edge vertex shell array is empty.";
+
         createEdgesAroundVertexArray();
     }
 
@@ -476,24 +486,24 @@ const EdgeSetTopologyContainer::VecEdgeID EdgeSetTopologyContainer::getElementAr
 
 
 
-unsigned int EdgeSetTopologyContainer::getNumberOfEdges() const
+size_t EdgeSetTopologyContainer::getNumberOfEdges() const
 {
     d_edge.updateIfDirty();
-    return (unsigned int)d_edge.getValue().size();
+    return d_edge.getValue().size();
 }
 
-unsigned int EdgeSetTopologyContainer::getNumberOfElements() const
+size_t EdgeSetTopologyContainer::getNumberOfElements() const
 {
     return this->getNumberOfEdges();
 }
 
-const sofa::helper::vector< sofa::helper::vector<unsigned int> > &EdgeSetTopologyContainer::getEdgesAroundVertexArray()
+const sofa::helper::vector< sofa::helper::vector<EdgeSetTopologyContainer::EdgeID> > &EdgeSetTopologyContainer::getEdgesAroundVertexArray()
 {
     if(!hasEdgesAroundVertex())
     {
-#ifndef NDEBUG
-        sout << "Warning. [EdgeSetTopologyContainer::getEdgesAroundVertexArray] edge vertex shell array is empty." << sendl;
-#endif
+		if(CHECK_TOPOLOGY)
+			msg_warning() << "Edge vertex shell array is empty.";
+
         createEdgesAroundVertexArray();
     }
 
@@ -504,28 +514,28 @@ const EdgeSetTopologyContainer::EdgesAroundVertex& EdgeSetTopologyContainer::get
 {
     if(!hasEdgesAroundVertex())	// this method should only be called when the shell array exists
     {
-#ifndef NDEBUG
-        sout << "Warning. [EdgeSetTopologyContainer::getEdgesAroundVertex] edge vertex shell array is empty." << sendl;
-#endif
+		if(CHECK_TOPOLOGY)
+			msg_warning() << "Edge vertex shell array is empty.";
+
         createEdgesAroundVertexArray();
     }
 
-#ifndef NDEBUG
-    if(m_edgesAroundVertex.size() <= i)
-        sout << "Error. [EdgeSetTopologyContainer::getEdgesAroundVertex] edge vertex shell array out of bounds: "
-                << i << " >= " << m_edgesAroundVertex.size() << sendl;
-#endif
+		if(CHECK_TOPOLOGY)
+			if(m_edgesAroundVertex.size() <= i)
+				msg_error() << "Edge vertex shell array out of bounds: "
+						<< i << " >= " << m_edgesAroundVertex.size();
+
 
     return m_edgesAroundVertex[i];
 }
 
-sofa::helper::vector< unsigned int > &EdgeSetTopologyContainer::getEdgesAroundVertexForModification(const unsigned int i)
+sofa::helper::vector< EdgeSetTopologyContainer::EdgeID > &EdgeSetTopologyContainer::getEdgesAroundVertexForModification(const PointID i)
 {
     if(!hasEdgesAroundVertex())	// this method should only be called when the shell array exists
     {
-#ifndef NDEBUG
-        sout << "Warning. [EdgeSetTopologyContainer::getEdgesAroundVertexForModification] edge vertex shell array is empty." << sendl;
-#endif
+		if(CHECK_TOPOLOGY)
+			msg_warning() << "Edge vertex shell array is empty.";
+
         createEdgesAroundVertexArray();
     }
 

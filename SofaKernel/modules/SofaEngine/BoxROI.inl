@@ -124,12 +124,6 @@ BoxROI<DataTypes>::BoxROI()
     d_deprecatedX0.setDisplayed(false);
     d_deprecatedIsVisible.setDisplayed(false);
 
-    if(!d_alignedBoxes.isSet() && !d_orientedBoxes.isSet())
-    {
-        d_alignedBoxes.beginEdit()->push_back(Vec6(0,0,0,1,1,1));
-        d_alignedBoxes.endEdit();
-    }
-
     d_indices.beginEdit()->push_back(0);
     d_indices.endEdit();
 }
@@ -320,6 +314,12 @@ void BoxROI<DataTypes>::init()
 template <class DataTypes>
 void BoxROI<DataTypes>::reinit()
 {
+    if(!d_alignedBoxes.isSet() && !d_orientedBoxes.isSet())
+    {
+        d_alignedBoxes.beginEdit()->push_back(Vec6(0,0,0,1,1,1));
+        d_alignedBoxes.endEdit();
+    }
+
     vector<Vec6>& alignedBoxes = *(d_alignedBoxes.beginEdit());
     if (!alignedBoxes.empty())
     {

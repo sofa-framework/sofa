@@ -89,6 +89,9 @@ void CGLinearSolver<TMatrix,TVector>::init()
                       << "default value used: 1e-5";
         f_smallDenominatorThreshold.setValue(1e-5);
     }
+
+    timeStepCount = 0;
+    equilibriumReached = false;
 }
 
 template<class TMatrix, class TVector>
@@ -171,7 +174,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     sofa::helper::vector<SReal>& graph_den = graph[(this->isMultiGroup()) ? this->currentNode->getName()+std::string("-Denominator") : std::string("Denominator")];
     graph_den.clear();
     graph_error.push_back(1);
-    unsigned nb_iter;
+    unsigned nb_iter = 0;
     const char* endcond = "iterations";
 
 
@@ -184,122 +187,182 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     simulation::Visitor::printCloseNode("VectorAllocation");
 #endif
 
-
-    for( nb_iter=1; nb_iter<=f_maxIter.getValue(); nb_iter++ )
+    if(normb != 0.0)
     {
-#ifdef SOFA_DUMP_VISITOR_INFO
-        std::ostringstream comment;
-        if (simulation::Visitor::isPrintActivated())
+        for( nb_iter=1; nb_iter<=f_maxIter.getValue(); nb_iter++ )
         {
-            comment << "Iteration_" << nb_iter;
-            simulation::Visitor::printNode(comment.str());
-        }
+#ifdef SOFA_DUMP_VISITOR_INFO
+            std::ostringstream comment;
+            if (simulation::Visitor::isPrintActivated())
+            {
+                comment << "Iteration_" << nb_iter;
+                simulation::Visitor::printNode(comment.str());
+            }
 #endif
 
-        /// Compute p = r^2
-        rho = r.dot(r);
+            /// Compute p = r^2
+            rho = r.dot(r);
 
-        /// Compute the error from the norm of ρ and b
-        double normr = sqrt(rho);
-        double err = normr/normb;
+            /// Compute the error from the norm of ρ and b
+            double normr = sqrt(rho);
+            double err = normr/normb;
 
-        graph_error.push_back(err);
+            graph_error.push_back(err);
 
 
-        /// Break condition = TOLERANCE criterion regarding the error err is reached
-        if (err <= f_tolerance.getValue())
-        {
-            /// Tolerance met at first step, tolerance value might not be relevant (do one more step)
-            if(nb_iter == 1)
+            /// Break condition = TOLERANCE criterion regarding the error err is reached
+            if (err <= f_tolerance.getValue())
             {
-                msg_warning() << "tolerance reached at first iteration of CG" << msgendl
-                              << "Check the 'tolerance' data field, you might decrease it";
+                /// Tolerance met at first step, tolerance value might not be relevant
+                if(nb_iter == 1 && timeStepCount == 0)
+                {
+                    msg_warning() << "tolerance reached at first iteration of CG" << msgendl
+                                  << "Check the 'tolerance' data field, you might decrease it";
+                }
+                else
+                {
+                    if(nb_iter == 1 && !equilibriumReached)
+                    {
+                        msg_info() << "Equilibrium reached regarding tolerance";
+                        equilibriumReached = true;
+                    }
+                    if(nb_iter > 1)
+                    {
+                        equilibriumReached = false;
+                    }
+
+                    endcond = "tolerance";
+                    if( verbose )
+                    {
+                        msg_info() << "error = " << err <<", tolerance = " << f_tolerance.getValue();
+                    }
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+                    if (simulation::Visitor::isPrintActivated())
+                        simulation::Visitor::printCloseNode(comment.str());
+#endif
+                    break;
+                }
             }
 
-            endcond = "tolerance";
+
+            /// Compute the value of p, conjugate with x
+            if( nb_iter==1 )    // FIRST step
+                p = r;
+            else                // ALL other steps
+            {
+                beta = rho / rho_1;
+
+                /// Update p = p*beta + r;
+                cgstep_beta(params, p,r,beta);
+            }
+
             if( verbose )
             {
-                msg_info() << "error = " << err <<", tolerance = " << f_tolerance.getValue();
+                msg_info() << "p : " << p;
             }
+
+            /// Compute the matrix-vector product : M p
+            q = M*p;
+
+            if( verbose )
+            {
+                msg_info() << "q = M p : " << q;
+            }
+
+            /// Compute the denominator : p M p
+            double den = p.dot(q);
+
+            graph_den.push_back(den);
+
+            if(den != 0.0)
+            {
+                /// Break condition = THRESHOLD criterion regarding the denominator is reached (but do at least one iteration)
+                if (fabs(den) <= f_smallDenominatorThreshold.getValue())
+                {
+                    /// Threshold met at first step, threshold value might not be relevant
+                    if(nb_iter == 1 && timeStepCount == 0)
+                    {
+                        msg_warning() << "denominator threshold reached at first iteration of CG" << msgendl
+                                      << "Check the 'threshold' data field, you might decrease it";
+                    }
+                    else
+                    {
+                        if(nb_iter == 1 && !equilibriumReached)
+                        {
+                            msg_info() << "Equilibrium reached regarding threshold";
+                            equilibriumReached = true;
+                        }
+                        if(nb_iter > 1)
+                        {
+                            equilibriumReached = false;
+                        }
+
+                        endcond = "threshold";
+                        if( verbose )
+                        {
+                            msg_info() << "den = " << den <<", smallDenominatorThreshold = " << f_smallDenominatorThreshold.getValue() <<", err = " << err;
+                        }
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+                    if (simulation::Visitor::isPrintActivated())
+                        simulation::Visitor::printCloseNode(comment.str());
+#endif
+                        break;
+                    }
+                }
+
+
+                /// Compute the coefficient α for the conjugate direction
+                alpha = rho/den;
+
+                /// End of the CG step : update x and r
+                cgstep_alpha(params, x,r,p,q,alpha);
+
+                if( verbose )
+                {
+                    msg_info() << "den = " << den << ", alpha = " << alpha << ", x = " << x << ", r = " << r;
+                }
+            }
+            else
+            {
+                msg_warning() << "den = 0.0, break the iterations";
+                break;
+            }
+
+            rho_1 = rho;
 
 #ifdef SOFA_DUMP_VISITOR_INFO
             if (simulation::Visitor::isPrintActivated())
                 simulation::Visitor::printCloseNode(comment.str());
 #endif
-            break;
         }
+    }
+    // Case no forces applied, b=0
+    else
+    {
+        endcond = "null norm of vector b";
 
-
-        /// Compute the value of p, conjugate with x
-        if( nb_iter==1 )    // FIRST step
+        // If first step : check the value of threshold
+        if( timeStepCount==0 )
+        {
             p = r;
-        else                // ALL other steps
-        {
-            beta = rho / rho_1;
+            q = M*p;
+            double den = p.dot(q);
 
-            /// Update p = p*beta + r;
-            cgstep_beta(params, p,r,beta);
-        }
-
-        if( verbose )
-        {
-            msg_info() << "p : " << p;
-        }
-
-        /// Compute the matrix-vector product : M p
-        q = M*p;
-
-        if( verbose )
-        {
-            msg_info() << "q = M p : " << q;
-        }
-
-        /// Compute the denominator : p M p
-        double den = p.dot(q);
-
-        graph_den.push_back(den);
-
-
-        /// Break condition = THRESHOLD criterion regarding the denominator is reached (but do at least one iteration)
-        if (fabs(den) <= f_smallDenominatorThreshold.getValue())
-        {
-            /// Threshold met at first step, threshold value might not be relevant (do one more step)
-            if(nb_iter == 1 && den != 0.0)
+            if(den != 0.0)
             {
-                msg_warning() << "denominator threshold reached at first iteration of CG" << msgendl
-                              << "Check the 'threshold' data field, you might decrease it";
+                if (fabs(den) <= f_smallDenominatorThreshold.getValue())
+                {
+                    msg_warning() << "denominator threshold reached at first iteration of CG" << msgendl
+                                  << "Check the 'threshold' data field, you might decrease it";
+                }
             }
-
-            endcond = "threshold";
-            if( verbose )
+            else
             {
-                msg_info() << "den = " << den <<", smallDenominatorThreshold = " << f_smallDenominatorThreshold.getValue();
+                msg_info() << "no way to check the validity of : tolerance and threshold value";
             }
-
-#ifdef SOFA_DUMP_VISITOR_INFO
-            if (simulation::Visitor::isPrintActivated())
-                simulation::Visitor::printCloseNode(comment.str());
-#endif
-            break;
         }
-
-
-        /// Compute the coefficient α for the conjugate direction
-        alpha = rho/den;
-
-        /// End of the CG step : update x and r
-        cgstep_alpha(params, x,r,p,q,alpha);
-
-        if( verbose )
-        {
-            msg_info() << "den = " << den << ", alpha = " << alpha << ", x = " << x << ", r = " << r;
-        }
-
-        rho_1 = rho;
-#ifdef SOFA_DUMP_VISITOR_INFO
-        if (simulation::Visitor::isPrintActivated())
-            simulation::Visitor::printCloseNode(comment.str());
-#endif
     }
 
 #ifdef DISPLAY_TIME
@@ -307,6 +370,7 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
 #endif
 
     f_graph.endEdit();
+    timeStepCount ++;
 
     sofa::helper::AdvancedTimer::valSet("CG iterations", nb_iter);
 

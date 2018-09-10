@@ -60,8 +60,6 @@ int BatchGUI::mainLoop()
             sofa::helper::AdvancedTimer::begin("Animate");
             sofa::simulation::getSimulation()->animate(groot.get());
             msg_info("BatchGUI") << "Processing." << sofa::helper::AdvancedTimer::end("Animate", groot.get()) << msgendl;
-            //As no visualization is done by the Batch GUI, these two lines are not necessary.
-            sofa::simulation::getSimulation()->updateVisual(groot.get());
             sofa::simulation::Visitor::ctime_t rtfreq = sofa::helper::system::thread::CTime::getRefTicksPerSec();
             sofa::simulation::Visitor::ctime_t tfreq = sofa::helper::system::thread::CTime::getTicksPerSec();
             sofa::simulation::Visitor::ctime_t rt = sofa::helper::system::thread::CTime::getRefTime();
@@ -75,8 +73,6 @@ int BatchGUI::mainLoop()
             {
                 sofa::helper::AdvancedTimer::begin("Animate");
                 sofa::simulation::getSimulation()->animate(groot.get());
-                //As no visualization is done by the Batch GUI, these two lines are not necessary.
-                sofa::simulation::getSimulation()->updateVisual(groot.get());
             }
 
             if ( i == nbIter || (nbIter == -1 && i%1000 == 0) )

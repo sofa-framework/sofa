@@ -9,7 +9,7 @@
         <CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
         <LMConstraintSolver name="default0" listening="1" constraintVel="1" constraintPos="1" numIterations="27" maxError="1e-7"/>
         <MechanicalObject template="Vec3d" name="dof"  translation="0 2 0" rotation="30 20 15" restScale="1" />
-        <UniformMass template="Vec3d" name="default2" mass="0.25" />
+        <UniformMass template="Vec3d" name="default2" vertexMass="0.25" />
         <RegularGridTopology name="default3" n="5 5 5" min="-3.5 -3.5 -3.5" max="3.5 3.5 3.5" p0="-3.5 -3.5 -3.5" />
         <TetrahedronFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="25" updateStiffnessMatrix="0" computeGlobalMatrix="0" />
         <Node name="Visu" gravity="0 -9.81 0">

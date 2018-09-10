@@ -37,7 +37,7 @@ namespace constraintset
 {
 
 /**
- *  \brief Component computing contact forces within a simulated body using the compliance method.
+ *  \brief Component computing constraint forces within a simulated body using the compliance method.
  */
 template<class TDataTypes>
 class UncoupledConstraintCorrection : public sofa::core::behavior::ConstraintCorrection< TDataTypes >
@@ -83,13 +83,13 @@ public:
     /// @name Correction API
     /// @{
 
-    virtual void computeAndApplyMotionCorrection(const sofa::core::ConstraintParams *cparams, Data< VecCoord > &x, Data< VecDeriv > &v, Data< VecDeriv > &f, const sofa::defaulttype::BaseVector *lambda) override;
+    virtual void computeMotionCorrection(const core::ConstraintParams* cparams, core::MultiVecDerivId dx, core::MultiVecDerivId f) override;
 
-    virtual void computeAndApplyPositionCorrection(const sofa::core::ConstraintParams *cparams, Data< VecCoord > &x, Data< VecDeriv > &f, const sofa::defaulttype::BaseVector *lambda) override;
+    virtual void applyMotionCorrection(const sofa::core::ConstraintParams *cparams, Data< VecCoord > &x, Data< VecDeriv > &v, Data< VecDeriv > &dx, const Data< VecDeriv > &correction) override;
 
-    virtual void computeAndApplyVelocityCorrection(const sofa::core::ConstraintParams *cparams, Data< VecDeriv > &v, Data< VecDeriv > &f, const sofa::defaulttype::BaseVector *lambda) override;
+    virtual void applyPositionCorrection(const sofa::core::ConstraintParams *cparams, Data< VecCoord > &x, Data<VecDeriv>& dx, const Data< VecDeriv > & correction) override;
 
-    virtual void applyPredictiveConstraintForce(const sofa::core::ConstraintParams *cparams, Data< VecDeriv > &f, const sofa::defaulttype::BaseVector *lambda) override;
+    virtual void applyVelocityCorrection(const sofa::core::ConstraintParams *cparams, Data< VecDeriv > &v, Data<VecDeriv>& dv, const Data< VecDeriv > & correction) override;
 
     /// @}
 
@@ -146,7 +146,7 @@ protected:
     /**
      * @brief Compute dx correction from motion space force vector.
      */
-    void computeDx(const Data< VecDeriv > &f);
+    void computeDx(const Data< VecDeriv > &f, VecDeriv& x);
 };
 
 template<>

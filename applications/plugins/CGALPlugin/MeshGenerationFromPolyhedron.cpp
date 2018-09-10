@@ -27,7 +27,6 @@
  */
 #define CGALPLUGIN_MESHGENERATIONFROMPOLYHEDRON_CPP
 
-#define CGAL_MESH_3_VERBOSE
 
 #include <CGALPlugin/config.h>
 #include "MeshGenerationFromPolyhedron.inl"

@@ -39,7 +39,6 @@
 #include <sofa/core/behavior/RotationFinder.h>
 
 #include <sofa/helper/system/FileRepository.h>
-#include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/Quater.h>
 
 #include <SofaConstraint/LMConstraintSolver.h>
@@ -135,7 +134,7 @@ template<class DataTypes>
 bool PrecomputedConstraintCorrection<DataTypes>::loadCompliance(std::string fileName)
 {
     // Try to load from memory
-    sout << "Try to load compliance from memory " << fileName << sendl;
+    msg_info(this) << "Try to load compliance from memory " << fileName ;
 
     invM = getInverse(fileName);
     dimensionAppCompliance = nbRows;
@@ -143,7 +142,7 @@ bool PrecomputedConstraintCorrection<DataTypes>::loadCompliance(std::string file
     if (invM->data == NULL)
     {
         // Try to load from file
-        sout << "Try to load compliance from : " << fileName << sendl;
+        msg_info(this) << "Try to load compliance from : " << fileName ;
 
         std::string dir = fileDir.getValue();
         if (!dir.empty())
@@ -153,7 +152,7 @@ bool PrecomputedConstraintCorrection<DataTypes>::loadCompliance(std::string file
             {
                 invM->data = new Real[nbRows * nbCols];
 
-                sout << "File " << dir + "/" + fileName << " found. Loading..." << sendl;
+                msg_info(this) << "File " << dir + "/" + fileName << " found. Loading..." ;
 
                 compFileIn.read((char*)invM->data, nbCols * nbRows * sizeof(double));
                 compFileIn.close();
@@ -171,7 +170,7 @@ bool PrecomputedConstraintCorrection<DataTypes>::loadCompliance(std::string file
 
                 std::ifstream compFileIn(fileName.c_str(), std::ifstream::binary);
 
-                sout << "File " << fileName << " found. Loading..." << sendl;
+                msg_info(this) << "File " << fileName << " found. Loading..." ;
 
                 compFileIn.read((char*)invM->data, nbCols * nbRows * sizeof(double));
                 compFileIn.close();
@@ -191,7 +190,7 @@ bool PrecomputedConstraintCorrection<DataTypes>::loadCompliance(std::string file
 template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::saveCompliance(const std::string& fileName)
 {
-    sout << "saveCompliance in " << fileName << sendl;
+    msg_info(this) << "saveCompliance in " << fileName;
 
     std::string filePathInSofaShare;
     std::string dir = fileDir.getValue();
@@ -218,7 +217,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
     if (nbNodes == 0)
     {
-        serr << "No degree of freedom" << sendl;
+        msg_error(this) << "No degree of freedom" ;
         return;
     }
 
@@ -233,7 +232,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
     if (!loadCompliance(invName))
     {
-        sout << "Compliance being built" << sendl;
+        msg_info(this) << "Compliance being built";
 
         // Buffer Allocation
         invM->data = new Real[nbRows * nbCols];
@@ -256,22 +255,22 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
         if (eulerSolver && cgLinearSolver)
         {
-            sout << "use EulerImplicitSolver & CGLinearSolver" << sendl;
+            msg_info(this) << "use EulerImplicitSolver & CGLinearSolver" ;
             solvernode = (simulation::Node*)eulerSolver->getContext();
         }
         else if (eulerSolver && linearSolver)
         {
-            sout << "use EulerImplicitSolver & LinearSolver" << sendl;
+            msg_info(this) << "use EulerImplicitSolver & LinearSolver";
             solvernode = (simulation::Node*)eulerSolver->getContext();
         }
         else if(eulerSolver)
         {
-            sout << "use EulerImplicitSolver" << sendl;
+            msg_info(this) << "use EulerImplicitSolver";
             solvernode = (simulation::Node*)eulerSolver->getContext();
         }
         else
         {
-            serr << "PrecomputedContactCorrection must be associated with EulerImplicitSolver+LinearSolver for the precomputation\nNo Precomputation" << sendl;
+            msg_error(this) << "PrecomputedContactCorrection must be associated with EulerImplicitSolver+LinearSolver for the precomputation\nNo Precomputation" ;
             return;
         }
 
@@ -333,7 +332,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
             std::streamsize prevPrecision = sout.precision();
             sout.precision(2);
             sout << "Precomputing constraint correction : " << std::fixed << (float)f / (float)nbNodes * 100.0f << " %   " << '\xd';
-            sout << sendl;
+            sout ;
             sout.precision(prevPrecision);
 
             // Deriv unitary_force;
@@ -418,53 +417,26 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
     //  Print 400 first row and column of the matrix
     if (this->notMuted())
     {
-        serr << "Matrix compliance : nbCols = " << nbCols << "  nbRows =" << nbRows;
+        msg_error(this) << "Matrix compliance : nbCols = " << nbCols << "  nbRows =" << nbRows;
 
         for (unsigned int i = 0; i < 20 && i < nbCols; i++)
         {
-            serr << sendl;
             for (unsigned int j = 0; j < 20 && j < nbCols; j++)
             {
-                serr << " \t " << appCompliance[j*nbCols + i];
+                msg_error(this) << " \t " << appCompliance[j*nbCols + i];
             }
         }
 
-        serr << sendl;
     }
-
-    //// rotation de -Pi/2 autour de z en init
-    //Quat q0(0,0,-0.7071067811865475, 0.7071067811865475);
-    //q0.normalize();
-
-    //// rotation de -Pi/2 autour de x dans le repËre dÈfini par q0; (=rotation Pi/2 autour de l'axe y dans le repËre global)
-    //Quat q_q0(-0.7071067811865475,0,0,0.7071067811865475);
-    //q_q0.normalize();
-
-
-    //// calcul de la rotation Èquivalente dans le repËre global;
-    //Quat q = q0 * q_q0;
-    //q.normalize();
-
-    //// test des rotations:
-    //sout<<"VecX = "<<q.rotate( Vec3d(1.0,0.0,0.0) )<<sendl;
-    //sout<<"VecY = "<<q.rotate( Vec3d(0.0,1.0,0.0) )<<sendl;
-    //sout<<"VecZ = "<<q.rotate( Vec3d(0.0,0.0,1.0) )<<sendl;
-
-
-    //// on veut maintenant retrouver l'Èquivalent de q_q0 dans le repËre global
-    //// c'est ‡ dire une rotation de Pi/2 autour de l'axe y
-    //Quat q_test = q * q0.inverse();
-
-    //sout<<"q_test = "<<q_test<<sendl;
-
-    //sout<<"Alpha = "<<q_test.toEulerVector()<< " doit valoir une rotation de Pi/2 autour de l'axe y"<<sendl; // Consider to use quatToRotationVector instead of toEulerVector to have the rotation vector
 }
 
 
 template< class DataTypes >
 void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpace(const sofa::core::ConstraintParams *cparams, sofa::defaulttype::BaseMatrix* W)
 {
-    const MatrixDeriv& c = this->mstate->read(core::ConstMatrixDerivId::constraintJacobian())->getValue();
+    m_activeDofs.clear();
+
+	const MatrixDeriv& c = cparams->readJ(this->mstate)->getValue(cparams);
 
     double factor = 1.0;
 
@@ -512,6 +484,7 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
         for (MatrixDerivColConstIterator colIt = rowIt.begin(); colIt != colItEnd; ++colIt)
         {
             unsigned int dof = colIt.index();
+            m_activeDofs.push_back(dof);
 
             if (_indexNodeSparseCompliance[dof] != 0)
             {
@@ -522,6 +495,9 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
 
         nbConstraints++;
     }
+
+    m_activeDofs.sort();
+    m_activeDofs.unique();
 
     // Commented by PJ
     /*
@@ -619,19 +595,22 @@ void PrecomputedConstraintCorrection< DataTypes >::addComplianceInConstraintSpac
     }
 }
 
+template<class DataTypes>
+void PrecomputedConstraintCorrection<DataTypes>::computeMotionCorrection(const core::ConstraintParams* /*cparams*/, core::MultiVecDerivId dx, core::MultiVecDerivId f)
+{
+    computeDx(*dx[this->getMState()].write(), *f[this->getMState()].read(), m_activeDofs);
+}
 
 template<class DataTypes>
-void PrecomputedConstraintCorrection<DataTypes>::computeDx(const Data< VecDeriv > &f_d, std::list< int > &activeDofs)
+void PrecomputedConstraintCorrection<DataTypes>::computeDx(Data<VecDeriv>& dx_d , const Data< VecDeriv > &f_d, const std::list< int > &activeDofs)
 {
     const VecDeriv& force = f_d.getValue();
-
-    Data< VecDeriv > &dx_d = *this->mstate->write(core::VecDerivId::dx());
     VecDeriv& dx = *dx_d.beginEdit();
 
     dx.clear();
     dx.resize(force.size());
 
-    std::list<int>::iterator IterateurListe;
+    std::list<int>::const_iterator IterateurListe;
     unsigned int i, offset, offset2;
 
     for (IterateurListe = activeDofs.begin(); IterateurListe != activeDofs.end(); ++IterateurListe)
@@ -666,19 +645,15 @@ void PrecomputedConstraintCorrection<DataTypes>::computeDx(const Data< VecDeriv 
 
 
 template<class DataTypes>
-void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyMotionCorrection(const sofa::core::ConstraintParams *cparams
-        , sofa::core::objectmodel::Data< VecCoord > &x_d, sofa::core::objectmodel::Data< VecDeriv > &v_d, sofa::core::objectmodel::Data< VecDeriv > &f_d, const sofa::defaulttype::BaseVector *lambda)
+void PrecomputedConstraintCorrection<DataTypes>::applyMotionCorrection(const sofa::core::ConstraintParams *cparams
+        , sofa::Data< VecCoord > &x_d, sofa::Data< VecDeriv > &v_d, sofa::Data< VecDeriv > & dx_d, const sofa::Data< VecDeriv > & correction_d )
 {
-    std::list< int > activeDof;
-
-    this->setConstraintForceInMotionSpace(f_d, lambda, activeDof);
-
-    computeDx(f_d, activeDof);
-
     VecCoord& x = *x_d.beginEdit();
     VecDeriv& v = *v_d.beginEdit();
 
-    const VecDeriv& dx = this->mstate->read(core::VecDerivId::dx())->getValue();
+    const VecDeriv& correction = correction_d.getValue();
+
+    auto dx = sofa::helper::write(dx_d, cparams);
 
     const VecCoord& x_free = cparams->readX(this->mstate)->getValue();
     const VecDeriv& v_free = cparams->readV(this->mstate)->getValue();
@@ -693,8 +668,9 @@ void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyMotionCorrection
         x[i] = x_free[i];
         v[i] = v_free[i];
 
-        x[i] += dx[i];
-        v[i] += dx[i] * invDt;
+        x[i] += correction[i];
+        v[i] += correction[i] * invDt;
+        dx[i] = correction[i];
     }
 
     x_d.endEdit();
@@ -703,17 +679,14 @@ void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyMotionCorrection
 
 
 template<class DataTypes>
-void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyPositionCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::objectmodel::Data< VecCoord > &x_d, sofa::core::objectmodel::Data< VecDeriv > &f_d, const sofa::defaulttype::BaseVector *lambda)
+void PrecomputedConstraintCorrection<DataTypes>::applyPositionCorrection(const sofa::core::ConstraintParams *cparams, 
+    sofa::Data< VecCoord > &x_d, sofa::Data< VecDeriv > &dx_d, const sofa::Data< VecDeriv > & correction_d)
 {
-    std::list< int > activeDof;
-
-    this->setConstraintForceInMotionSpace(f_d, lambda, activeDof);
-
-    computeDx(f_d, activeDof);
-
     VecCoord& x = *x_d.beginEdit();
 
-    const VecDeriv& dx = this->mstate->read(core::VecDerivId::dx())->getValue();
+    const VecDeriv& correction = correction_d.getValue();
+
+    auto dx = sofa::helper::write(dx_d,cparams);
 
     const VecCoord& x_free = cparams->readX(this->mstate)->getValue();
 
@@ -722,7 +695,8 @@ void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyPositionCorrecti
 
     for (unsigned int i=0; i< dx.size(); i++)
     {
-        x[i] = x_free[i] + dx[i];
+        x[i]  = x_free[i] + correction[i];
+        dx[i] = correction[i];
     }
 
     x_d.endEdit();
@@ -730,14 +704,11 @@ void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyPositionCorrecti
 
 
 template<class DataTypes>
-void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyVelocityCorrection(const sofa::core::ConstraintParams *cparams, sofa::core::objectmodel::Data< VecDeriv > &v_d, sofa::core::objectmodel::Data< VecDeriv > &f_d, const sofa::defaulttype::BaseVector *lambda)
+void PrecomputedConstraintCorrection<DataTypes>::applyVelocityCorrection(const sofa::core::ConstraintParams *cparams, 
+    sofa::Data< VecDeriv > &v_d, sofa::Data< VecDeriv > &dv_d, const sofa::Data<VecDeriv>& correction_d)
 {
-    std::list< int > activeDof;
-
-    this->setConstraintForceInMotionSpace(f_d, lambda, activeDof);
-
-    computeDx(f_d, activeDof);
-
+    const VecDeriv& correction = correction_d.getValue(cparams);
+    auto dv = sofa::helper::write(dv_d, cparams);
     VecDeriv& v = *v_d.beginEdit();
 
     const VecDeriv& dx = this->mstate->read(core::VecDerivId::dx())->getValue();
@@ -750,7 +721,8 @@ void PrecomputedConstraintCorrection<DataTypes>::computeAndApplyVelocityCorrecti
 
     for (unsigned int i=0; i< dx.size(); i++)
     {
-        v[i] = v_free[i] + dx[i] * invDt;
+        dv[i] = correction[i] * invDt;
+        v[i] = v_free[i] + dv[i];
     }
 
     v_d.endEdit();
@@ -867,13 +839,6 @@ void PrecomputedConstraintCorrection<DataTypes>::getComplianceMatrix(defaulttype
 
 
 template<class DataTypes>
-void PrecomputedConstraintCorrection<DataTypes>::applyPredictiveConstraintForce(const core::ConstraintParams * /*cparams*/, Data< VecDeriv > &f_d, const defaulttype::BaseVector *lambda)
-{
-    this->setConstraintForceInMotionSpace(f_d, lambda);
-}
-
-
-template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::resetContactForce()
 {
     helper::WriteAccessor<Data<VecDeriv> > forceData = *this->mstate->write(core::VecDerivId::force());
@@ -886,9 +851,10 @@ void PrecomputedConstraintCorrection<DataTypes>::resetContactForce()
 template< class DataTypes >
 void PrecomputedConstraintCorrection< DataTypes >::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels() || !m_rotations.getValue())
         return;
+
+    vparams->drawTool()->saveLastState();
 
     using sofa::component::forcefield::TetrahedronFEMForceField;
     using sofa::core::behavior::RotationFinder;
@@ -908,7 +874,7 @@ void PrecomputedConstraintCorrection< DataTypes >::draw(const core::visual::Visu
             rotationFinder = node->get< RotationFinder< DataTypes > > ();
             if (rotationFinder == NULL)
             {
-                sout << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";
+                msg_warning(this) << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";
                 return;
             }
         }
@@ -939,9 +905,11 @@ void PrecomputedConstraintCorrection< DataTypes >::draw(const core::visual::Visu
 
         sofa::defaulttype::Quat q;
         q.fromMatrix(RotMat);
-        helper::gl::Axis::draw(DataTypes::getCPos(x[i]), q, this->debugViewFrameScale.getValue());
+        vparams->drawTool()->drawFrame(DataTypes::getCPos(x[i]), q, sofa::defaulttype::Vec3f(this->debugViewFrameScale.getValue(),this->debugViewFrameScale.getValue(),this->debugViewFrameScale.getValue()));
+
     }
-#endif /* SOFA_NO_OPENGL */
+
+    vparams->drawTool()->restoreLastState();
 }
 
 
@@ -967,14 +935,14 @@ void PrecomputedConstraintCorrection< DataTypes >::rotateConstraints(bool back)
             rotationFinder = node->get< RotationFinder< DataTypes > > ();
             if (rotationFinder == NULL)
             {
-                sout << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";
+                msg_warning(this) << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";
                 return;
             }
         }
     }
     else
     {
-        sout << "Error getting context in method: PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::rotateConstraints(false)";
+        msg_error(this) << "Error getting context in method: PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::rotateConstraints(false)";
         return;
     }
 
@@ -1032,14 +1000,14 @@ void PrecomputedConstraintCorrection<DataTypes>::rotateResponse()
             rotationFinder = node->get< RotationFinder< DataTypes > > ();
             if (rotationFinder == NULL)
             {
-                sout << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";
+                msg_warning(this) << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";
                 return;
             }
         }
     }
     else
     {
-        sout << "Error getting context in method: PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::rotateConstraints(false)";
+        msg_error(this) << "Error getting context in method: PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::rotateConstraints(false)";
         return;
     }
 
@@ -1124,7 +1092,7 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
             id_to_localIndex.resize(cId + 1, -1);
 
         if (id_to_localIndex[cId] != -1)
-            serr << "duplicate entry in constraints for id " << cId << " : " << id_to_localIndex[cId] << " + " << cpt << sendl;
+            serr << "duplicate entry in constraints for id " << cId << " : " << id_to_localIndex[cId] << " + " << cpt ;
 
         id_to_localIndex[cId] = cpt;
         localIndex_to_id.push_back(cId);

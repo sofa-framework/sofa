@@ -22,12 +22,9 @@
 #ifndef SOFA_CORE_BEHAVIOR_BASECONSTRAINTSET_H
 #define SOFA_CORE_BEHAVIOR_BASECONSTRAINTSET_H
 
-#include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/ConstraintParams.h>
-#include <sofa/core/MultiVecId.h>
 #include <sofa/core/core.h>
 
-#include <sofa/defaulttype/BaseVector.h>
 
 
 namespace sofa

@@ -36,10 +36,10 @@
 #include <SofaGeneralDeformable/TriangularBendingSprings.h>
 #include <sofa/core/visual/VisualParams.h>
 #include <sofa/core/topology/TopologyChange.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
 
-#include <sofa/helper/gl/template.h>
 #include <SofaBaseTopology/TopologyData.inl>
 
 namespace sofa
@@ -427,7 +427,7 @@ void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyPointRen
     if(ff)
     {
         helper::vector<EdgeInformation>& edgeInf = *(ff->edgeInfo.beginEdit());
-        for (int i = 0; i < ff->_topology->getNbEdges(); ++i)
+        for (unsigned int i = 0; i < ff->_topology->getNbEdges(); ++i)
         {
             if(edgeInf[i].is_activated)
             {
@@ -503,7 +503,7 @@ void TriangularBendingSprings<DataTypes>::reinit()
     /// prepare to store info in the edge array
     helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
     edgeInf.resize(_topology->getNbEdges());
-    int i;
+    unsigned int i;
     // set edge tensor to 0
     for (i=0; i<_topology->getNbEdges(); ++i)
     {
@@ -541,7 +541,7 @@ void TriangularBendingSprings<DataTypes>::addForce(const core::MechanicalParams*
     const VecCoord& x = d_x.getValue();
     const VecDeriv& v = d_v.getValue();
 
-    int nbEdges=_topology->getNbEdges();
+    size_t nbEdges=_topology->getNbEdges();
     EdgeInformation *einfo;
     helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
 
@@ -555,7 +555,7 @@ void TriangularBendingSprings<DataTypes>::addForce(const core::MechanicalParams*
     const VecCoord& x_rest = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 #endif
 
-    for(int i=0; i<nbEdges; i++ )
+    for(unsigned int i=0; i<nbEdges; i++ )
     {
         einfo=&edgeInf[i];
 
@@ -664,7 +664,7 @@ void TriangularBendingSprings<DataTypes>::addDForce(const core::MechanicalParams
     const VecDeriv& dx = d_dx.getValue();
     Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
-    int nbEdges=_topology->getNbEdges();
+    size_t nbEdges=_topology->getNbEdges();
     const EdgeInformation *einfo;
     const helper::vector<EdgeInformation>& edgeInf = edgeInfo.getValue();
 
@@ -673,7 +673,7 @@ void TriangularBendingSprings<DataTypes>::addDForce(const core::MechanicalParams
     //serr<<"TriangularBendingSprings<DataTypes>::addDForce, df1 before = "<<f1<<sendl;
     //const helper::vector<Spring>& springs = this->springs.getValue();
 
-    for(int i=0; i<nbEdges; i++ )
+    for(unsigned int i=0; i<nbEdges; i++ )
     {
         einfo=&edgeInf[i];
 
@@ -697,101 +697,70 @@ void TriangularBendingSprings<DataTypes>::addDForce(const core::MechanicalParams
         }
     }
     d_df.endEdit();
-    //for (unsigned int i=0; i<springs.size(); i++)
-    //{
-    //    this->addSpringDForce(df,dx, i, springs[i]);
-    //}
-    //serr<<"TriangularBendingSprings<DataTypes>::addDForce, df = "<<f<<sendl;
 }
-
-
-/*
-template<class DataTypes>
-void TriangularBendingSprings<DataTypes>::updateLameCoefficients()
-{
-	lambda= f_youngModulus.getValue()*f_poissonRatio.getValue()/(1-f_poissonRatio.getValue()*f_poissonRatio.getValue());
-	mu = f_youngModulus.getValue()*(1-f_poissonRatio.getValue())/(1-f_poissonRatio.getValue()*f_poissonRatio.getValue());
-//	serr << "initialized Lame coef : lambda=" <<lambda<< " mu="<<mu<<sendl;
-}
-*/
 
 
 template<class DataTypes>
 void TriangularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     unsigned int i;
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
+    vparams->drawTool()->saveLastState();
+
     if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        vparams->drawTool()->setPolygonMode(0, true);
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    //VecCoord& x_rest = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
-    //int nbTriangles=_topology->getNbTriangles();
+    std::vector<sofa::defaulttype::Vector3> vertices;
+    std::vector<sofa::defaulttype::Vec4f> colors;
 
-    glDisable(GL_LIGHTING);
-
-
-    /*
-    glBegin(GL_TRIANGLES);
-    for(i=0;i<nbTriangles; ++i)
-    {
-    	int a = _topology->getTriangle(i)[0];
-    	int b = _topology->getTriangle(i)[1];
-    	int c = _topology->getTriangle(i)[2];
-
-    	glColor4f(0,1,0,1);
-    	helper::gl::glVertexT(x[a]);
-    	glColor4f(0,0.5,0.5,1);
-    	helper::gl::glVertexT(x[b]);
-    	glColor4f(0,0,1,1);
-    	helper::gl::glVertexT(x[c]);
-    }
-    */
-    unsigned int nb_to_draw = 0;
-
+    vparams->drawTool()->disableLighting();
     const helper::vector<EdgeInformation>& edgeInf = edgeInfo.getValue();
-
-    glBegin(GL_LINES);
     for(i=0; i<edgeInf.size(); ++i)
     {
         if(edgeInf[i].is_activated)
         {
-
-
             bool external=true;
             Real d = (x[edgeInf[i].m2]-x[edgeInf[i].m1]).norm();
             if (external)
             {
                 if (d<edgeInf[i].restlength*0.9999)
-                    glColor4f(1,0,0,1);
+                {
+                    colors.push_back(sofa::defaulttype::RGBAColor::red());
+                    colors.push_back(sofa::defaulttype::RGBAColor::red());
+                }
                 else
-                    glColor4f(0,1,0,1);
+                {
+                    colors.push_back(sofa::defaulttype::RGBAColor::green());
+                    colors.push_back(sofa::defaulttype::RGBAColor::green());
+                }
             }
             else
             {
                 if (d<edgeInf[i].restlength*0.9999)
-                    glColor4f(1,0.5f,0,1);
+                {
+                    colors.push_back(sofa::defaulttype::RGBAColor(1,0.5, 0,1));
+                    colors.push_back(sofa::defaulttype::RGBAColor(1,0.5, 0,1));
+                }
                 else
-                    glColor4f(0,1,0.5f,1);
+                {
+                    colors.push_back(sofa::defaulttype::RGBAColor(0,1,0.5,1));
+                    colors.push_back(sofa::defaulttype::RGBAColor(0,1,0.5,1));
+                }
             }
 
-
-            nb_to_draw+=1;
-
-            //glColor4f(0,1,0,1);
-            helper::gl::glVertexT(x[edgeInf[i].m1]);
-            helper::gl::glVertexT(x[edgeInf[i].m2]);
-
+            vertices.push_back( x[edgeInf[i].m1] );
+            vertices.push_back( x[edgeInf[i].m2] );
         }
     }
-    glEnd();
+    vparams->drawTool()->drawLines(vertices, 1, colors);
 
     if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-#endif /* SOFA_NO_OPENGL */
+        vparams->drawTool()->setPolygonMode(0, false);
+
+    vparams->drawTool()->restoreLastState();
 }
 
 

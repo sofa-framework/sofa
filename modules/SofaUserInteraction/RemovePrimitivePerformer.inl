@@ -647,26 +647,21 @@ sofa::helper::vector <unsigned int> RemovePrimitivePerformer<DataTypes>::getElem
 //***************************************************************************************************************
 
 template <class DataTypes>
-void RemovePrimitivePerformer<DataTypes>::draw(const core::visual::VisualParams* )
+void RemovePrimitivePerformer<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (picked.body == NULL) return;
 
     if (mstateCollision == NULL) return;
 
 
     const VecCoord& X = mstateCollision->read(core::ConstVecCoordId::position())->getValue();
-    //core::topology::BaseMeshTopology* topo = picked.body->getMeshTopology();
 
-    glDisable(GL_LIGHTING);
-    glColor3f(0.3f,0.8f,0.3f);
+    vparams->drawTool()->saveLastState();
+    vparams->drawTool()->disableLighting();
 
-
-    if (topoType == sofa::core::topology::QUAD || topoType == sofa::core::topology::HEXAHEDRON)
-        glBegin (GL_QUADS);
-    else
-        glBegin (GL_TRIANGLES);
-
+    std::vector<sofa::defaulttype::Vector3> vertices_quads;
+    std::vector<sofa::defaulttype::Vector3> vertices_triangles;
+    sofa::defaulttype::RGBAColor color(0.3, 0.8, 0.3, 1.0);
 
     for (unsigned int i=0; i<selectedElem.size(); ++i)
     {
@@ -684,10 +679,10 @@ void RemovePrimitivePerformer<DataTypes>::draw(const core::visual::VisualParams*
 
             for (unsigned int j = 0; j<8; ++j)
             {
-                glVertex3d(coordP[j][0], coordP[j][1], coordP[j][2]);
-                glVertex3d(coordP[(j+1)%4][0], coordP[(j+1)%4][1], coordP[(j+1)%4][2]);
-                glVertex3d(coordP[(j+2)%4][0], coordP[(j+2)%4][1], coordP[(j+2)%4][2]);
-                glVertex3d(coordP[(j+3)%4][0], coordP[(j+3)%4][1], coordP[(j+3)%4][2]);
+                vertices_quads.push_back(sofa::defaulttype::Vector3(coordP[j][0], coordP[j][1], coordP[j][2]));
+                vertices_quads.push_back(sofa::defaulttype::Vector3(coordP[(j+1)%4][0], coordP[(j+1)%4][1], coordP[(j+1)%4][2]));
+                vertices_quads.push_back(sofa::defaulttype::Vector3(coordP[(j+2)%4][0], coordP[(j+2)%4][1], coordP[(j+2)%4][2]));
+                vertices_quads.push_back(sofa::defaulttype::Vector3(coordP[(j+3)%4][0], coordP[(j+3)%4][1], coordP[(j+3)%4][2]));
             }
             break;
         }
@@ -701,9 +696,9 @@ void RemovePrimitivePerformer<DataTypes>::draw(const core::visual::VisualParams*
 
             for (unsigned int j = 0; j<4; ++j)
             {
-                glVertex3d(coordP[j][0], coordP[j][1], coordP[j][2]);
-                glVertex3d(coordP[(j+1)%4][0], coordP[(j+1)%4][1], coordP[(j+1)%4][2]);
-                glVertex3d(coordP[(j+2)%4][0], coordP[(j+2)%4][1], coordP[(j+2)%4][2]);
+                vertices_triangles.push_back(sofa::defaulttype::Vector3(coordP[j][0], coordP[j][1], coordP[j][2]));
+                vertices_triangles.push_back(sofa::defaulttype::Vector3(coordP[(j+1)%4][0], coordP[(j+1)%4][1], coordP[(j+1)%4][2]));
+                vertices_triangles.push_back(sofa::defaulttype::Vector3(coordP[(j+2)%4][0], coordP[(j+2)%4][1], coordP[(j+2)%4][2]));
             }
             break;
         }
@@ -714,7 +709,7 @@ void RemovePrimitivePerformer<DataTypes>::draw(const core::visual::VisualParams*
             for (unsigned int j = 0; j<4; j++)
             {
                 Coord coordP = X[quad[j]];
-                glVertex3d(coordP[0], coordP[1], coordP[2]);
+                vertices_quads.push_back(sofa::defaulttype::Vector3(coordP[0], coordP[1], coordP[2]));
             }
             break;
         }
@@ -725,12 +720,12 @@ void RemovePrimitivePerformer<DataTypes>::draw(const core::visual::VisualParams*
             for (unsigned int j = 0; j<3; j++)
             {
                 Coord coordP = X[tri[j]];
-                glVertex3d(coordP[0] * 1.001, coordP[1] * 1.001, coordP[2] * 1.001);
+                vertices_triangles.push_back(sofa::defaulttype::Vector3(coordP[0] * 1.001, coordP[1] * 1.001, coordP[2] * 1.001));
             }
             for (unsigned int j = 0; j<3; j++)
             {
                 Coord coordP = X[tri[j]];
-                glVertex3d(coordP[0] * 0.999, coordP[1] * 0.999, coordP[2] * 0.999);
+                vertices_triangles.push_back(sofa::defaulttype::Vector3(coordP[0] * 0.999, coordP[1] * 0.999, coordP[2] * 0.999));
             }
 
             break;
@@ -738,12 +733,11 @@ void RemovePrimitivePerformer<DataTypes>::draw(const core::visual::VisualParams*
         default:
             break;
         }
-
-
-
     }
-    glEnd();
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->drawQuads(vertices_quads, color);
+    vparams->drawTool()->drawTriangles(vertices_triangles, color);
+
+    vparams->drawTool()->restoreLastState();
 }
 
 

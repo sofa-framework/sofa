@@ -23,8 +23,6 @@
 #define SOFA_COMPONENT_MECHANICALOBJECT_H
 #include "config.h"
 
-#include <sofa/config/build_option_experimental_features.h>
-
 #include <sofa/core/behavior/MechanicalState.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 
@@ -147,9 +145,7 @@ public:
     Data< VecDeriv > vfree; ///< free velocity coordinates of the degrees of freedom
     Data< VecCoord > x0; ///< rest position coordinates of the degrees of freedom
     Data< MatrixDeriv > c; ///< constraints applied to the degrees of freedom
-#if(SOFA_WITH_EXPERIMENTAL_FEATURES==1)
     Data< MatrixDeriv > m; ///< mappingJacobian applied to the degrees of freedom
-#endif
     Data< VecCoord > reset_position; ///< reset position coordinates of the degrees of freedom
     Data< VecDeriv > reset_velocity; ///< reset velocity coordinates of the degrees of freedom
 #endif
@@ -308,10 +304,6 @@ public:
 
     /// @}
 
-    /// Renumber the constraint ids with the given permutation vector
-    void renumberConstraintId(const sofa::helper::vector< unsigned >& renumbering) override;
-
-
     /// @name Integration related methods
     /// @{
 
@@ -375,12 +367,11 @@ public:
 
     virtual void resetAcc(const core::ExecParams* params, core::VecDerivId a = core::VecDerivId::dx()) override;
 
-    virtual void resetConstraint(const core::ExecParams* params) override;
+    virtual void resetConstraint(const core::ConstraintParams* cparams) override;
 
-    virtual void getConstraintJacobian(const core::ExecParams* params, sofa::defaulttype::BaseMatrix* J,unsigned int & off) override;
-#if(SOFA_WITH_EXPERIMENTAL_FEATURES==1)
+    virtual void getConstraintJacobian(const core::ConstraintParams* cparams, sofa::defaulttype::BaseMatrix* J,unsigned int & off) override;
+
     virtual void buildIdentityBlocksInJacobian(const sofa::helper::vector<unsigned int>& list_n, core::MatrixDerivId &mID) override;
-#endif
     /// @}
 
     /// @name Debug

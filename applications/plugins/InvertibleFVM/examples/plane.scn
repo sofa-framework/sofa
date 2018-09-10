@@ -17,7 +17,7 @@
             <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader"  />
-            <UniformMass totalmass="5" />
+            <UniformMass totalMass="5" />
             <InvertibleFVMForceField name="FEM" youngModulus="100" poissonRatio="0"  />
 	    <PlaneForceField normal="0 1 0" d="-0.5" stiffness="100" drawSize="100" />
             <Node name="Visu">
@@ -39,7 +39,7 @@
             <MeshGmshLoader name="loader" filename="mesh/torus_low_res.msh" />
             <Mesh src="@loader" />
             <MechanicalObject src="@loader" dx="7" />
-            <UniformMass totalmass="5" />
+            <UniformMass totalMass="5" />
             <TetrahedronFEMForceField name="FEM" youngModulus="100" poissonRatio="0" computeGlobalMatrix="false" method="svd" />
 	    <PlaneForceField normal="0 1 0" d="-0.5" stiffness="100" drawSize="100" />
             <Node name="Visu">

@@ -26,7 +26,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaSphFluid/SpatialGridContainer.inl>
 #include <sofa/helper/system/config.h>
-#include <sofa/helper/gl/template.h>
 #include <math.h>
 #include <iostream>
 
@@ -186,19 +185,18 @@ void ParticlesRepulsionForceField<DataTypes>::addDForce(const core::MechanicalPa
 template<class DataTypes>
 void ParticlesRepulsionForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
-    if (!vparams->displayFlags().getShowForceFields() && !vparams->displayFlags().getShowInteractionForceFields()) return;
-    //if (grid != NULL)
-    //	grid->draw(vparams);
+    if (!vparams->displayFlags().getShowForceFields() && !vparams->displayFlags().getShowInteractionForceFields())
+        return;
+
+    vparams->drawTool()->saveLastState();
+    vparams->drawTool()->disableLighting();
+
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
     const Real h = distance.getValue();
-    glDisable(GL_LIGHTING);
-    //glEnable(GL_BLEND);
-    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    //glDepthMask(0);
-    glColor3f(0,1,1);
-    glLineWidth(1);
-    glBegin(GL_LINES);
+
+    std::vector<sofa::defaulttype::Vec4f> colorVector;
+    std::vector<sofa::defaulttype::Vector3> vertices;
+
     for (unsigned int i=0; i<particles.size(); i++)
     {
         Particle& Pi = particles[i];
@@ -209,20 +207,18 @@ void ParticlesRepulsionForceField<DataTypes>::draw(const core::visual::VisualPar
             float f = r_h*2;
             if (f < 1)
             {
-                glColor4f(0,1-f,f,1-r_h);
+                colorVector.push_back(sofa::defaulttype::Vec4f(0,1-f,f,1-r_h));
             }
             else
             {
-                glColor4f(f-1,0,2-f,1-r_h);
+                colorVector.push_back(sofa::defaulttype::Vec4f(f-1,0,2-f,1-r_h));
             }
-            helper::gl::glVertexT(x[i]);
-            helper::gl::glVertexT(x[j]);
+            vertices.push_back(sofa::defaulttype::Vector3(x[i]));
+            vertices.push_back(sofa::defaulttype::Vector3(x[j]));
         }
     }
-    glEnd();
-    glDisable(GL_BLEND);
-    glDepthMask(1);
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->drawLines(vertices,1,colorVector);
+    vparams->drawTool()->restoreLastState();
 }
 
 } // namespace forcefield

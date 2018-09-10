@@ -104,11 +104,15 @@ public:
     //the stiffness and interaction stiffness of this state couldn't directly described on the principal matrix
     //then it demande to create a new matrix
     static defaulttype::BaseMatrix* createMatrix(const sofa::core::behavior::BaseMechanicalState* mstate1, const sofa::core::behavior::BaseMechanicalState* mstate2);
+    static defaulttype::BaseMatrix* createMatrixImpl(const sofa::core::behavior::BaseMechanicalState* mstate1, const sofa::core::behavior::BaseMechanicalState* mstate2, bool doPrintInfo);
+
+    //Activate/deactive the printing of extra information related to the numerical system that is being solved.
+    void setDoPrintInfo(bool value){ m_doPrintInfo = value; }
 
 protected:
-
-    defaulttype::BaseMatrix* globalMatrix;
-    unsigned int globalDim;
+    bool m_doPrintInfo {false} ;
+    defaulttype::BaseMatrix* globalMatrix {nullptr} ;
+    unsigned int globalDim {0} ;
 
     //           case1                                           case2
     //      |               |                                  |       |

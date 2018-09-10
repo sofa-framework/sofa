@@ -26,7 +26,7 @@
 #include <SofaBaseTopology/TopologySparseData.inl>
 #include <sofa/core/visual/VisualParams.h>
 #include <SofaBaseTopology/TriangleSetGeometryAlgorithms.h>
-#include <sofa/helper/gl/template.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <vector>
 #include <set>
 
@@ -270,34 +270,36 @@ void OscillatingTorsionPressureForceField<DataTypes>::selectTrianglesFromString(
 template<class DataTypes>
 void OscillatingTorsionPressureForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
+    vparams->drawTool()->saveLastState();
+
     if (!p_showForces.getValue())
         return;
 
     if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
+        vparams->drawTool()->setPolygonMode(0, true);
 
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
-    glDisable(GL_LIGHTING);
-
-    glBegin(GL_TRIANGLES);
-    glColor4f(0,1,0,1);
+    vparams->drawTool()->disableLighting();
+    sofa::defaulttype::RGBAColor color = sofa::defaulttype::RGBAColor::green();
+    std::vector<sofa::defaulttype::Vector3> vertices;
 
     const sofa::helper::vector <unsigned int>& my_map = trianglePressureMap.getMap2Elements();
 
     for (unsigned int i = 0; i < my_map.size(); ++i)
     {
-        helper::gl::glVertexT(x[_topology->getTriangle(my_map[i])[0]]);
-        helper::gl::glVertexT(x[_topology->getTriangle(my_map[i])[1]]);
-        helper::gl::glVertexT(x[_topology->getTriangle(my_map[i])[2]]);
+        for(unsigned int j=0 ; j< 3 ; j++)
+        {
+            const Coord& c = x[_topology->getTriangle(my_map[i])[j]];
+            vertices.push_back(sofa::defaulttype::Vector3(c[0], c[1], c[2]));
+        }
     }
-    glEnd();
+    vparams->drawTool()->drawTriangles(vertices, color);
 
     if (vparams->displayFlags().getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-#endif /* SOFA_NO_OPENGL */
+        vparams->drawTool()->setPolygonMode(0, false);
+
+    vparams->drawTool()->restoreLastState();
 }
 
 } // namespace forcefield

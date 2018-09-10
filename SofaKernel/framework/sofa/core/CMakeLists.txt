@@ -118,6 +118,7 @@ set(HEADER_FILES
     objectmodel/IdleEvent.h
     objectmodel/Link.h
     objectmodel/MouseEvent.h
+    objectmodel/ScriptEvent.h
     objectmodel/SPtr.h
     objectmodel/Tag.h
     topology/BaseMeshTopology.h
@@ -162,6 +163,7 @@ set(SOURCE_FILES
     SofaLibrary.cpp
     State.cpp
     behavior/BaseAnimationLoop.cpp
+    behavior/BaseConstraint.cpp
     behavior/BaseConstraintSet.cpp
     behavior/BaseForceField.cpp
     behavior/BaseInteractionForceField.cpp
@@ -218,6 +220,7 @@ set(SOURCE_FILES
     objectmodel/KeypressedEvent.cpp
     objectmodel/KeyreleasedEvent.cpp
     objectmodel/MouseEvent.cpp
+    objectmodel/ScriptEvent.cpp
     objectmodel/IdleEvent.cpp
     objectmodel/Tag.cpp
     topology/BaseMeshTopology.cpp
@@ -269,7 +272,4 @@ set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_COR
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION "${SOFAFRAMEWORK_VERSION}")
 
-sofa_install_targets(SofaFramework SofaCore "")
-
-install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/" DESTINATION "include/sofa/core"
-        FILES_MATCHING PATTERN "*.h" PATTERN "*.inl")
+sofa_install_targets(SofaFramework ${PROJECT_NAME} "sofa/core")

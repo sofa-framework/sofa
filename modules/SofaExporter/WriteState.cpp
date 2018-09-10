@@ -100,9 +100,9 @@ void WriteStateCreator::addWriteState(sofa::core::behavior::BaseMechanicalState 
         {
             ws = sofa::core::objectmodel::New<WriteState>();
             gnode->addObject(ws);
-            ws->f_writeX.setValue(recordX);
-            ws->f_writeV.setValue(recordV);
-            ws->f_writeF.setValue(recordF);
+            ws->d_writeX.setValue(recordX);
+            ws->d_writeV.setValue(recordV);
+            ws->d_writeF.setValue(recordF);
             for (core::objectmodel::TagSet::iterator it=this->subsetsToManage.begin(); it != this->subsetsToManage.end(); ++it)
                 ws->addTag(*it);
 
@@ -110,7 +110,7 @@ void WriteStateCreator::addWriteState(sofa::core::behavior::BaseMechanicalState 
         std::ostringstream ofilename;
         ofilename << sceneName << "_" << counterWriteState << "_" << ms->getName()  << "_mstate" << extension ;
 
-        ws->f_filename.setValue(ofilename.str()); ws->init(); ws->f_listening.setValue(true);  //Activated at init
+        ws->d_filename.setValue(ofilename.str()); ws->init(); ws->f_listening.setValue(true);  //Activated at init
 
         ++counterWriteState;
 

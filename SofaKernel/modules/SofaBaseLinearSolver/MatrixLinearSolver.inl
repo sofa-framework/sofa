@@ -86,6 +86,7 @@ void MatrixLinearSolver<Matrix,Vector>::createGroups(const core::MechanicalParam
             if (gdim <= 0) continue;
             groups.push_back(n);
             gData[n].systemSize = (int)gdim;
+            gData[n].matrixAccessor.setDoPrintInfo( this->f_printLog.getValue() ) ;
             dim += gdim;
         }
         defaultGroup.systemSize = (int)dim;
@@ -96,6 +97,7 @@ void MatrixLinearSolver<Matrix,Vector>::createGroups(const core::MechanicalParam
         SReal dim = 0;
         simulation::MechanicalGetDimensionVisitor(mparams, &dim).execute(root);
         defaultGroup.systemSize = (int)dim;
+        defaultGroup.matrixAccessor.setDoPrintInfo( this->f_printLog.getValue() ) ;
     }
     currentNode = root;
     currentGroup = &defaultGroup;
@@ -401,7 +403,7 @@ bool MatrixLinearSolver<Matrix,Vector>::addMInvJt(defaulttype::BaseMatrix* resul
 }
 
 template<class Matrix, class Vector>
-bool MatrixLinearSolver<Matrix,Vector>::buildComplianceMatrix(defaulttype::BaseMatrix* result, double fact)
+bool MatrixLinearSolver<Matrix,Vector>::buildComplianceMatrix(const sofa::core::ConstraintParams* cparams, defaulttype::BaseMatrix* result, double fact)
 {
     JMatrixType * j_local = internalData.getLocalJ();
     j_local->clear();
@@ -412,22 +414,23 @@ bool MatrixLinearSolver<Matrix,Vector>::buildComplianceMatrix(defaulttype::BaseM
         return true;
     }
 
-    executeVisitor(simulation::MechanicalGetConstraintJacobianVisitor(core::ExecParams::defaultInstance(),j_local));
+    executeVisitor(simulation::MechanicalGetConstraintJacobianVisitor(cparams,j_local));
 
     return addJMInvJt(result,j_local,fact);
 }
 
 template<class Matrix, class Vector>
-void MatrixLinearSolver<Matrix,Vector>::applyContactForce(const defaulttype::BaseVector* f, double positionFactor, double velocityFactor)
-{    
+void MatrixLinearSolver<Matrix,Vector>::applyConstraintForce(const sofa::core::ConstraintParams* cparams, sofa::core::MultiVecDerivId dx, const defaulttype::BaseVector* f)
+{
     currentGroup->systemRHVector->clear();
     currentGroup->systemRHVector->resize(currentGroup->systemMatrix->colSize());
-
+    /// rhs = J^t * f
     internalData.projectForceInConstraintSpace(currentGroup->systemRHVector,f);
-
+    /// lhs = M^-1 * rhs  
     this->solve(*currentGroup->systemMatrix,*currentGroup->systemLHVector,*currentGroup->systemRHVector);
 
-    executeVisitor(simulation::MechanicalIntegrateConstraintsVisitor(core::ExecParams::defaultInstance(),currentGroup->systemLHVector,positionFactor,velocityFactor,&(currentGroup->matrixAccessor)));
+    executeVisitor(simulation::MechanicalMultiVectorFromBaseVectorVisitor(cparams, dx, currentGroup->systemLHVector, &(currentGroup->matrixAccessor)) ); 
+    executeVisitor(simulation::MechanicalMultiVectorFromBaseVectorVisitor(cparams, cparams->lambda(), currentGroup->systemRHVector, &(currentGroup->matrixAccessor)));
 }
 
 template<class Matrix, class Vector>
