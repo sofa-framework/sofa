@@ -11,7 +11,7 @@ project(PythonModule_Sofa)
 #endif()
 
 
-include(src/cython/CMakeBuilds.cmake)
+#include(src/cython/CMakeBuilds.cmake)
 include(src/pybind/CMakeBuilds.cmake)
 
 set(EXAMPLES_FILES

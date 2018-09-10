@@ -17,6 +17,45 @@ include(CMakeParseLibraryList)
 #
 # Example:
 
+# - Create a target for a python binding module relying on pybind11
+#
+# sofa_add_pybind11_module(TARGET OUTPUT SOURCES DEPENDS CYTHONIZE)
+#  TARGET             - (input) the name of the generated target.
+#  OUTPUT             - (input) the output location.
+#  SOURCES            - (input) list of input files. It can be .cpp, .h ...
+#  DEPENDS            - (input) set of target the generated target will depends on.
+#  NAME               - (input) The actual name of the generated .so file
+#                       (most commonly equals to TARGET, without the "python" prefix)
+#
+# The typical usage scenario is to build a python module out of cython binding.
+#
+# Example:
+# find_package(pybind11)
+# set(SOURCES_FILES
+#       ${CMAKE_CURRENT_SOURCE_DIR}/ModuleDir/initbindings.cpp
+#       ${CMAKE_CURRENT_SOURCE_DIR}/ModuleDir/binding1.cpp
+#       ${CMAKE_CURRENT_SOURCE_DIR}/ModuleDir/binding2.cpp
+#       [...]
+#    )
+# sofa_add_pybind11_module( TARGET MyModule SOURCES ${SOURCE_FILES}
+#                           DEPENDS Deps1 Deps2  OUTPUT ${CMAKE_CURRENT_BIN_DIR}
+#                           NAME python_module_name)
+function(sofa_add_pybind11_module)
+    set(options)
+    set(oneValueArgs TARGET OUTPUT NAME)
+    set(multiValueArgs SOURCES DEPENDS)
+    cmake_parse_arguments("" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN} )
+    include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+    set(PYBIND11_CPP_STANDARD -std=c++11)
+    pybind11_add_module(${_TARGET} ${_SOURCES})
+    target_link_libraries(${_TARGET} PRIVATE ${_DEPENDS} ${PYTHON_LIBRARIES} pybind11::module)
+    set_target_properties(${_TARGET} PROPERTIES
+      ARCHIVE_OUTPUT_DIRECTORY ${_OUTPUT}
+      LIBRARY_OUTPUT_DIRECTORY ${_OUTPUT}
+      RUNTIME_OUTPUT_DIRECTORY ${_OUTPUT}
+      OUTPUT_NAME ${_NAME})
+endfunction()
+
 # find_package(Cython QUIET)
 # set(SOURCES_FILES 
 #       ${CMAKE_CURRENT_SOURCE_DIR}/ModuleDir/__init__.py
