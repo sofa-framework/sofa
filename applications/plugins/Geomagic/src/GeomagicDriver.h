@@ -109,6 +109,7 @@ public:
     
     Data<bool> d_button_1; ///< Button state 1
     Data<bool> d_button_2; ///< Button state 2
+    Data<bool> d_emitButtonEvent; ///< Bool to send event through the graph when button are pushed/released
     Data<Vector3> d_inputForceFeedback; ///< Input force feedback in case of no LCPForceFeedback is found (manual setting)
     Data<double> d_maxInputForceFeedback; ///< Maximum value of the normed input force feedback for device security
 
@@ -123,6 +124,7 @@ public:
     virtual void reinit() override;
     virtual void draw(const sofa::core::visual::VisualParams* vparams) override;
     void updatePosition();
+    void updateButtonStates(bool emitEvent);
 
     ForceFeedback::SPtr m_forceFeedback;
 

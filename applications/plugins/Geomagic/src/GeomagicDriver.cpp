@@ -22,14 +22,12 @@
 
 #include "GeomagicDriver.h"
 #include <sofa/core/ObjectFactory.h>
-//#include <sofa/core/objectmodel/HapticDeviceEvent.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
 #include <sofa/simulation/Node.h>
 #include <sofa/simulation/MechanicalVisitor.h>
 #include <sofa/simulation/UpdateMappingVisitor.h>
-#include <sofa/core/objectmodel/KeypressedEvent.h>
-#include <sofa/core/objectmodel/KeyreleasedEvent.h>
+#include <sofa/core/objectmodel/ScriptEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/core/visual/VisualParams.h>
@@ -189,6 +187,7 @@ GeomagicDriver::GeomagicDriver()
     , d_posDevice(initData(&d_posDevice, "positionDevice", "position of the base of the part of the device"))
     , d_button_1(initData(&d_button_1,"button1","Button state 1"))
     , d_button_2(initData(&d_button_2,"button2","Button state 2"))
+    , d_emitButtonEvent(initData(&d_emitButtonEvent, false, "emitButtonEvent", "If true, will send event through the graph when button are pushed/released"))
     , d_inputForceFeedback(initData(&d_inputForceFeedback, Vec3d(0,0,0), "inputForceFeedback","Input force feedback in case of no LCPForceFeedback is found (manual setting)"))
     , d_maxInputForceFeedback(initData(&d_maxInputForceFeedback, double(1.0), "maxInputForceFeedback","Maximum value of the normed input force feedback for device security"))
     , m_simulationStarted(false)
@@ -422,18 +421,15 @@ void GeomagicDriver::updatePosition()
     Mat3x3d mrot;
 
     Vector6 & angle = *d_angle.beginEdit();
-    GeomagicDriver::Coord & posDevice = *d_posDevice.beginEdit();
-    bool & button_1 = *d_button_1.beginEdit();
-    bool & button_2 = *d_button_2.beginEdit();
+    GeomagicDriver::Coord & posDevice = *d_posDevice.beginEdit();    
 
     const Vector3 & positionBase = d_positionBase.getValue();
     const Quat & orientationBase = d_orientationBase.getValue();
     const Quat & orientationTool = d_orientationTool.getValue();
     const double & scale = d_scale.getValue();
 
-    //copy button state
-    button_1 = m_simuData.buttonState & HD_DEVICE_BUTTON_1;
-    button_2 = m_simuData.buttonState & HD_DEVICE_BUTTON_2;
+    // update button state
+    updateButtonStates(d_emitButtonEvent.getValue());
 
     //copy angle
     angle[0] = m_simuData.angle1[0];
@@ -460,8 +456,6 @@ void GeomagicDriver::updatePosition()
     posDevice.getCenter() = positionBase + orientationBase.rotate(position*scale);
     posDevice.getOrientation() = orientationBase * orientation * orientationTool;
 
-    d_button_1.endEdit();
-    d_button_2.endEdit();
 
     if(m_initVisuDone && d_omniVisu.getValue())
     {
@@ -516,6 +510,52 @@ void GeomagicDriver::updatePosition()
     }
     d_posDevice.endEdit();
     d_angle.endEdit();
+}
+
+
+void GeomagicDriver::updateButtonStates(bool emitEvent)
+{
+    int nbrButton = 2;
+    sofa::helper::fixed_array<bool, 2> buttons;
+    buttons[0] = d_button_1.getValue();
+    buttons[1] = d_button_2.getValue();
+
+    //copy button state
+    sofa::helper::fixed_array<bool, 2> oldStates;
+    for (int i = 0; i < nbrButton; i++)
+        oldStates[i] = buttons[i];
+
+    buttons[0] = m_simuData.buttonState & HD_DEVICE_BUTTON_1;
+    buttons[1] = m_simuData.buttonState & HD_DEVICE_BUTTON_2;
+
+    d_button_1.setValue(buttons[0]);
+    d_button_1.setValue(buttons[1]);
+
+    // emit event if requested
+    if (!emitEvent)
+        return;
+
+    sofa::simulation::Node::SPtr rootContext = static_cast<simulation::Node*>(this->getContext()->getRootContext());
+    if (!rootContext)
+    {
+        msg_error() << "Rootcontext can't be found using this->getContext()->getRootContext()";
+        return;
+    }
+
+    for (int i = 0; i < nbrButton; i++)
+    {
+        std::string eventString;
+        if (buttons[i] && !oldStates[i]) // button pressed
+            eventString = "button" + std::to_string(i) + "pressed";
+        else if (!buttons[i] && oldStates[i]) // button released
+            eventString = "button" + std::to_string(i) + "released";
+
+        if (!eventString.empty())
+        {
+            sofa::core::objectmodel::ScriptEvent eventS(static_cast<simulation::Node*>(this->getContext()), eventString.c_str());
+            rootContext->propagateEvent(core::ExecParams::defaultInstance(), &eventS);
+        }
+    }  
 }
 
 void GeomagicDriver::getMatrix(Mat<4,4, GLdouble> & M1, int index, double teta)
