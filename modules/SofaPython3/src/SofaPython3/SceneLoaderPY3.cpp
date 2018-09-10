@@ -66,7 +66,6 @@ void SceneLoaderPY3::getExtensionList(ExtensionList* list)
     list->push_back("py");
 }
 
-
 sofa::simulation::Node::SPtr SceneLoaderPY3::load(const char *filename)
 {
     sofa::simulation::Node::SPtr root;
@@ -78,7 +77,21 @@ void SceneLoaderPY3::loadSceneWithArguments(const char *filename,
                                            const std::vector<std::string>& arguments,
                                            Node::SPtr* root_out)
 {
-//    PythonEnvironment::gil lock(__func__);
+    PythonEnvironment::gil lock(__func__);
+
+    std::cout << "COUCOUC loading..: "<< filename << std::endl ;
+
+    std::stringstream tmp;
+    tmp << "with open('"<<filename<<"') as f:                             " << std::endl
+        << "    global_vars={}                                            " << std::endl
+        << "    local_vars={}                                             " << std::endl
+        << "    code = compile(f.read(), '" << filename    << "', 'exec') " << std::endl
+        << "    exec(code, global_vars, local_vars)                       " << std::endl
+        << "    print(str(global_vars))" ;
+
+    PythonEnvironment::runString(tmp.str());
+
+
 //    if(!OurHeader.empty() && 0 != PyRun_SimpleString(OurHeader.c_str()))
 //    {
 //        msg_error("SofaPython3::SceneLoader") << "header script run error." ;
@@ -138,6 +151,18 @@ void SceneLoaderPY3::loadSceneWithArguments(const char *filename,
 
 bool SceneLoaderPY3::loadTestWithArguments(const char *filename, const std::vector<std::string>& arguments)
 {
+    PythonEnvironment::gil lock(__func__);
+
+    std::stringstream tmp;
+
+    std::cout << "COUCOUCOCU " << std::endl ;
+    tmp << "with open(" << filename << ") as f:                   " << std::endl
+        << "     code = compile(f.read(), "<<filename<<", 'exec') " << std::endl
+        << "     exec(code, global_vars, local_vars)              " << std::endl
+        << "print(dir())                                          " << std::endl;
+
+    PythonEnvironment::runString(tmp.str());
+
 //    PythonEnvironment::gil lock(__func__);
 //    if(!OurHeader.empty() && 0 != PyRun_SimpleString(OurHeader.c_str()))
 //    {

@@ -6,6 +6,9 @@ find_package(SofaSimulation REQUIRED)
 
 set(PYTHON3_LIBRARY "python3.6m")
 set(PYTHON3_INCLUDE_DIR "/usr/include/python3.6/")
+set(PYTHON_LIBRARIES ${PYTHON3_LIBRARY})
+set(PYTHON_INCLUDE_DIRS ${PYTHON3_INCLUDE_DIR})
+
 
 set(HEADER_FILES
     src/SofaPython3/config.h
@@ -57,4 +60,4 @@ sofa_create_package(${PROJECT_NAME} ${PROJECT_VERSION} SofaPython3 "SofaPython3"
 #add_subdirectory(tests)
 
 ### Python binding
-# add_subdirectory(python)
+add_subdirectory(python)

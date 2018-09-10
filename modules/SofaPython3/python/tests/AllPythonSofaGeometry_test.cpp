@@ -19,59 +19,63 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "config.h"
+/******************************************************************************
+ * Contributors:                                                              *
+ *    - damien.marchal@univ-lille1.fr                                         *
+ *****************************************************************************/
 
-#include <sofa/simulation/SceneLoaderFactory.h>
-using sofa::simulation::SceneLoaderFactory;
+#include <vector>
 
-#include "PythonEnvironment.h"
-using sofapython3::PythonEnvironment;
+#include <SofaTest/Python_test.h>
+using sofa::Python_test ;
+using sofa::Python_test_list ;
+using sofa::PrintTo ;
 
-#include "SceneLoaderPY3.h"
-using sofapython3::SceneLoaderPY3;
+#include <sofa/helper/system/PluginManager.h>
+using sofa::helper::system::PluginManager ;
 
-extern "C" {
-    SOFAPYTHON3_API void initExternalModule();
-    SOFAPYTHON3_API const char* getModuleName();
-    SOFAPYTHON3_API const char* getModuleVersion();
-    SOFAPYTHON3_API const char* getModuleLicense();
-    SOFAPYTHON3_API const char* getModuleDescription();
-    SOFAPYTHON3_API const char* getModuleComponentList();
-}
+using std::vector;
+using std::string;
 
-void initExternalModule()
+namespace
 {
-    static bool first = true;
-    if (first)
-    {
-        //SceneLoaderFactory::getInstance()->addEntry(new SceneLoaderPY3());
 
-        PythonEnvironment::Init();
-        first = false;
+class PythonSofaGeometry_test : public Python_test
+{
+public:
+    /// Be sure that SofaPython plugin is loaded.
+    static void SetUpTestCase(){
+        static bool _inited_ = false;
+        if(!_inited_){
+            PluginManager::getInstance().loadPlugin("SofaPython") ;
+        }
     }
+};
+
+/// static build of the test list
+static struct Tests : public Python_test_list
+{
+    Tests()
+    {
+        static const std::string testPath = std::string(PYTHON_TESTFILES_DIR);
+        addTest( "vector_test.py", testPath, {} );
+        addTest( "Ray_test.py", testPath, {} );
+        addTest( "Plane_test.py", testPath, {} );
+    }
+} python_tests;
+
+
+/// run test list
+INSTANTIATE_TEST_CASE_P(Batch,
+                        PythonSofaGeometry_test,
+                        ::testing::ValuesIn(python_tests.list));
+
+
+
+TEST_P(PythonSofaGeometry_test, all_tests)
+{
+    run(GetParam());
 }
 
-const char* getModuleName()
-{
-    return "SofaPython3";
 }
 
-const char* getModuleVersion()
-{
-    return "1.0";
-}
-
-const char* getModuleLicense()
-{
-    return "LGPL";
-}
-
-const char* getModuleDescription()
-{
-    return "This plugin contains the interpreter for python3.";
-}
-
-const char* getModuleComponentList()
-{
-    return "";
-}

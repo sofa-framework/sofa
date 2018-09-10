@@ -4,3 +4,8 @@ print("Hello world")
 
 def createScene(root):
         print("CreateScene")
+        root.createChild("Damien")
+        print("CreateScene")
+        print(str(dir(root)))
+        print(str(root.findData("name")))
+        return root
