@@ -91,10 +91,6 @@ endif()
 if(NOT ${SOFA_NO_OPENGL})
     list(APPEND HEADER_FILES ImageViewer.h)
     list(APPEND SOURCE_FILES ImageViewer.cpp)
-endif()
-
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
-find_package(Freenect QUIET)
 
 if(FREENECT_FOUND)
     list(APPEND HEADER_FILES Kinect.h)
@@ -103,6 +99,12 @@ if(FREENECT_FOUND)
 else()
     message(STATUS "image: could not find the freenect library, won't build the Kinect component")
 endif()
+
+endif()
+
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
+find_package(Freenect QUIET)
+
 
 # todo?
 
