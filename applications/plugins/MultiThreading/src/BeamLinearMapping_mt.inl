@@ -74,7 +74,7 @@ namespace mapping
 	{
 
 		//Inherit::apply(mparams, dOut, dIn);
-		boost::pool<> task_pool(sizeof(BeamLinearMapping_mt< TIn, TOut>::applyTask));
+		//boost::pool<> task_pool(sizeof(BeamLinearMapping_mt< TIn, TOut>::applyTask));
 
         unsigned int numPoints = this->points.size();
 
@@ -103,7 +103,7 @@ namespace mapping
 			for ( int i=0; i<nbTasks; ++i)
 			{
 				typename BeamLinearMapping_mt< TIn, TOut>::applyTask* task = 
-					new( task_pool.malloc()) typename BeamLinearMapping_mt< TIn, TOut>::applyTask( &status );
+					new typename BeamLinearMapping_mt< TIn, TOut>::applyTask( &status );
 
 				task->_mapping = this;
 				//task->_mparams = mparams;
@@ -118,7 +118,7 @@ namespace mapping
 			if ( pointsLeft > 0)
 			{
 				typename BeamLinearMapping_mt< TIn, TOut>::applyTask* task = 
-					new( task_pool.malloc()) typename BeamLinearMapping_mt< TIn, TOut>::applyTask( &status );
+					new typename BeamLinearMapping_mt< TIn, TOut>::applyTask( &status );
 
 				task->_mapping = this;
 				//task->_mparams = mparams;
@@ -137,7 +137,7 @@ namespace mapping
 			for ( int i=0; i<nbTasks; ++i)
 			{
 				typename BeamLinearMapping_mt< TIn, TOut>::applyTask* task = 
-					new( task_pool.malloc()) typename BeamLinearMapping_mt< TIn, TOut>::applyTask( &status );
+					new typename BeamLinearMapping_mt< TIn, TOut>::applyTask( &status );
 
 				task->_mapping = this;
 				//task->_mparams = mparams;
@@ -161,7 +161,7 @@ namespace mapping
 		}
 
 		// it doesn't call the destructor
-		task_pool.purge_memory();
+		//task_pool.purge_memory();
 
 	}
 
@@ -172,7 +172,7 @@ namespace mapping
 	void BeamLinearMapping_mt< TIn, TOut>::applyJ(const core::MechanicalParams * params /* PARAMS FIRST */, Data< typename Out::VecDeriv >& _out, const Data< typename In::VecDeriv >& _in)
 	{
 
-		boost::pool<> task_pool(sizeof(BeamLinearMapping_mt< TIn, TOut>::applyJTask));
+		//boost::pool<> task_pool(sizeof(BeamLinearMapping_mt< TIn, TOut>::applyJTask));
         unsigned int numPoints = this->points.size();
 
 		if ( numPoints >  2*mGrainSize.getValue()  )
@@ -197,7 +197,7 @@ namespace mapping
 			for ( int i=0; i<nbTasks; ++i)
 			{
 				typename BeamLinearMapping_mt< TIn, TOut>::applyJTask* task = 
-					new( task_pool.malloc()) typename BeamLinearMapping_mt< TIn, TOut>::applyJTask( &status );
+					new typename BeamLinearMapping_mt< TIn, TOut>::applyJTask( &status );
 
 				task->_mapping = this;
 				task->_in = &in;
@@ -211,7 +211,7 @@ namespace mapping
 			if ( pointsLeft > 0)
 			{
 				typename BeamLinearMapping_mt< TIn, TOut>::applyJTask* task = 
-					new( task_pool.malloc()) typename BeamLinearMapping_mt< TIn, TOut>::applyJTask( &status );
+					new typename BeamLinearMapping_mt< TIn, TOut>::applyJTask( &status );
 
 				task->_mapping = this;
 				task->_in = &in;
@@ -229,7 +229,7 @@ namespace mapping
 			for ( int i=0; i<nbTasks; ++i)
 			{
 				typename BeamLinearMapping_mt< TIn, TOut>::applyJTask* task = 
-					new( task_pool.malloc()) typename BeamLinearMapping_mt< TIn, TOut>::applyJTask( &status );
+					new typename BeamLinearMapping_mt< TIn, TOut>::applyJTask( &status );
 
 				task->_mapping = this;
 				task->_in = &in;
@@ -252,7 +252,7 @@ namespace mapping
 		}
 
 		// it doesn't call the destructor
-		task_pool.purge_memory();
+		//task_pool.purge_memory();
 
 	}
 
@@ -263,7 +263,7 @@ namespace mapping
 	void BeamLinearMapping_mt<TIn, TOut>::applyJT(const core::MechanicalParams * mparams /* PARAMS FIRST */, Data< typename In::VecDeriv >& _out, const Data< typename Out::VecDeriv >& _in)
 	{
 
-		boost::pool<> task_pool(sizeof(BeamLinearMapping_mt< TIn, TOut>::applyJTmechTask));
+		//boost::pool<> task_pool(sizeof(BeamLinearMapping_mt< TIn, TOut>::applyJTmechTask));
 
         unsigned int numPoints = this->points.size();
 
@@ -284,7 +284,7 @@ namespace mapping
 			for ( int i=0; i<nbTasks; ++i)
 			{
 				typename BeamLinearMapping_mt< TIn, TOut>::applyJTmechTask* task = 
-					new( task_pool.malloc()) typename BeamLinearMapping_mt< TIn, TOut>::applyJTmechTask( &status );
+					new typename BeamLinearMapping_mt< TIn, TOut>::applyJTmechTask( &status );
 
 				task->_mapping = this;
 				task->_in = &in;
@@ -298,7 +298,7 @@ namespace mapping
 			if ( pointsLeft > 0)
 			{
 				typename BeamLinearMapping_mt< TIn, TOut>::applyJTmechTask* task = 
-					new( task_pool.malloc()) typename BeamLinearMapping_mt< TIn, TOut>::applyJTmechTask( &status );
+					new typename BeamLinearMapping_mt< TIn, TOut>::applyJTmechTask( &status );
 
 				task->_mapping = this;
 				task->_in = &in;
@@ -316,7 +316,7 @@ namespace mapping
 			for ( int i=0; i<nbTasks; ++i)
 			{
 				typename BeamLinearMapping_mt< TIn, TOut>::applyJTmechTask* task = 
-					new( task_pool.malloc()) typename BeamLinearMapping_mt< TIn, TOut>::applyJTmechTask( &status );
+					new typename BeamLinearMapping_mt< TIn, TOut>::applyJTmechTask( &status );
 
 				task->_mapping = this;
 				task->_in = &in;
@@ -339,7 +339,7 @@ namespace mapping
 		}
 
 		// it doesn't call the destructor
-		task_pool.purge_memory();
+		//task_pool.purge_memory();
 
 	}
 
