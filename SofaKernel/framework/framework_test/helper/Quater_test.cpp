@@ -51,6 +51,11 @@ TEST(QuaterTest, EulerAngles)
             q0=q2;
         }
 
+        for(std::size_t i=0; i<q0.size(); ++i)
+        {
+            ASSERT_FALSE(std::isnan(q0[i]));
+        }
+
         //Rotate p with q0
         sofa::defaulttype::Vec<3,double>  p0 = q0.Quater<double>::rotate(p);
 
@@ -60,6 +65,11 @@ TEST(QuaterTest, EulerAngles)
 
         //Rotate p with q1
         sofa::defaulttype::Vec<3,double> p1 = q1.Quater<double>::rotate(p);
+
+        for(std::size_t i=0; i<q1.size(); ++i)
+        {
+            ASSERT_FALSE(std::isnan(q1[i]));
+        }
 
         //Compare the result of the two rotations on p
         EXPECT_EQ(p0,p1);
