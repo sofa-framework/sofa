@@ -32,10 +32,11 @@ set(SOURCE_FILES
 
 find_package(SofaMisc REQUIRED)
 find_package(Boost QUIET COMPONENTS system thread date_time chrono)
+find_package(image QUIET)
 
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} SofaBaseMechanics SofaMiscMapping)
+target_link_libraries(${PROJECT_NAME} SofaBaseMechanics SofaMiscMapping image)
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
