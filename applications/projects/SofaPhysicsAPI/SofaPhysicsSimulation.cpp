@@ -220,7 +220,6 @@ SofaPhysicsSimulation::SofaPhysicsSimulation(bool useGUI_, int GUIFramerate_)
         {
           sofa::gui::initMain();
 
-          int argc= 1;
           char* argv[]= { const_cast<char*>("a") };
 
           if (sofa::gui::GUIManager::Init(argv[0],"qt"))

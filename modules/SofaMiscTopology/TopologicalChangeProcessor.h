@@ -143,7 +143,7 @@ public:
 
 protected:
 
-    std::vector<Real> getValuesInLine(std::string line, unsigned int nbElements);
+    std::vector<Real> getValuesInLine(std::string line, size_t nbElements);
 
     void findElementIndex(defaulttype::Vector3 coord, int& triangleIndex, int oldTriangleIndex);
     void saveIndices();//only for incision

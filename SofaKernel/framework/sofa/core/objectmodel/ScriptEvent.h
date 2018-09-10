@@ -19,10 +19,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SCRIPTEVENT_H
-#define SCRIPTEVENT_H
+#ifndef SOFA_CORE_OBJECTMODEL_SCRIPTEVENT_H
+#define SOFA_CORE_OBJECTMODEL_SCRIPTEVENT_H
 
-#include <SofaPython/config.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <string>
 #include <sofa/simulation/Node.h>
@@ -38,9 +37,9 @@ namespace objectmodel
 {
 
 /**
- * @brief This event notifies about GUI interaction.
- */
-class SOFA_SOFAPYTHON_API ScriptEvent : public sofa::core::objectmodel::Event
+* @brief Generic Event class to send a message through the simulation graph.
+*/
+class SOFA_CORE_API ScriptEvent : public sofa::core::objectmodel::Event
 {
 public:
 
@@ -80,4 +79,4 @@ private:
 
 } // namespace sofa
 
-#endif // SCRIPTEVENT_H
+#endif // SOFA_CORE_OBJECTMODEL_SCRIPTEVENT_H

@@ -19,35 +19,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "ScriptEvent.h"
+#ifndef BINDING_BOUNDINGBOX_H
+#define BINDING_BOUNDINGBOX_H
 
-namespace sofa
-{
+#include "PythonMacros.h"
 
-namespace core
-{
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/BoundingBox.h>
 
-namespace objectmodel
-{
+SP_DECLARE_CLASS_TYPE(BoundingBox)
 
-SOFA_EVENT_CPP( ScriptEvent )
-
-ScriptEvent::ScriptEvent(sofa::simulation::Node::SPtr sender, const char* eventName)
-    : sofa::core::objectmodel::Event()
-    , m_sender(sender)
-    , m_eventName(eventName)
-{
-
-}
-
-ScriptEvent::~ScriptEvent()
-{
-
-}
-
-} // namespace objectmodel
-
-} // namespace core
-
-} // namespace sofa
-
+#endif // BINDING_BOUNDINGBOX_H

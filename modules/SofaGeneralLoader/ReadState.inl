@@ -40,11 +40,11 @@ namespace misc
 {
 
 ReadState::ReadState()
-    : f_filename( initData(&f_filename, "filename", "output file name"))
-    , f_interval( initData(&f_interval, 0.0, "interval", "time duration between inputs"))    
-    , f_shift( initData(&f_shift, 0.0, "shift", "shift between times in the file and times when they will be read"))
-    , f_loop( initData(&f_loop, false, "loop", "set to 'true' to re-read the file when reaching the end"))
-    , f_scalePos( initData(&f_scalePos, 1.0, "scalePos", "scale the input mechanical object"))
+    : d_filename( initData(&d_filename, "filename", "output file name"))
+    , d_interval( initData(&d_interval, 0.0, "interval", "time duration between inputs"))
+    , d_shift( initData(&d_shift, 0.0, "shift", "shift between times in the file and times when they will be read"))
+    , d_loop( initData(&d_loop, false, "loop", "set to 'true' to re-read the file when reaching the end"))
+    , d_scalePos( initData(&d_scalePos, 1.0, "scalePos", "scale the input mechanical object"))
     , mmodel(NULL)
     , infile(NULL)
 #ifdef SOFA_HAVE_ZLIB
@@ -88,10 +88,10 @@ void ReadState::reset()
     }
 #endif
 
-    const std::string& filename = f_filename.getFullPath();
+    const std::string& filename = d_filename.getFullPath();
     if (filename.empty())
     {
-        serr << "ERROR: empty filename"<<sendl;
+        msg_error() << "ERROR: empty filename";
     }
 #ifdef SOFA_HAVE_ZLIB
     else if (filename.size() >= 3 && filename.substr(filename.size()-3)==".gz")
@@ -99,7 +99,7 @@ void ReadState::reset()
         gzfile = gzopen(filename.c_str(),"rb");
         if( !gzfile )
         {
-            serr << "Error opening compressed file "<<filename<<sendl;
+            msg_error() << "Error opening compressed file "<<filename;
         }
     }
 #endif
@@ -108,7 +108,7 @@ void ReadState::reset()
         infile = new std::ifstream(filename.c_str());
         if( !infile->is_open() )
         {
-            serr << "Error opening file "<<filename<<sendl;
+            msg_error() << "Error opening file "<<filename;
             delete infile;
             infile = NULL;
         }
@@ -163,7 +163,7 @@ bool ReadState::readNext(double time, std::vector<std::string>& validLines)
         {
             if (gzeof(gzfile))
             {
-                if (!f_loop.getValue())
+                if (!d_loop.getValue())
                     break;
                 gzrewind(gzfile);
                 loopTime = nextTime;
@@ -194,7 +194,7 @@ bool ReadState::readNext(double time, std::vector<std::string>& validLines)
             {
                 if (infile->eof())
                 {
-                    if (!f_loop.getValue())
+                    if (!d_loop.getValue())
                         break;
                     infile->clear();
                     infile->seekg(0);
@@ -202,14 +202,14 @@ bool ReadState::readNext(double time, std::vector<std::string>& validLines)
                 }
                 getline(*infile, line);
             }
-        //sout << "line= "<<line<<sendl;
+
         std::istringstream str(line);
         str >> cmd;
         if (cmd == "T=")
         {
             str >> nextTime;
             nextTime += loopTime;
-            //sout << "next time: " << nextTime << sendl;
+
             if (nextTime <= time)
                 validLines.clear();
         }
@@ -221,7 +221,7 @@ bool ReadState::readNext(double time, std::vector<std::string>& validLines)
 
 void ReadState::processReadState()
 {
-    double time = getContext()->getTime() + f_shift.getValue();
+    double time = getContext()->getTime() + d_shift.getValue();
     std::vector<std::string> validLines;
     if (!readNext(time, validLines)) return;
     bool updated = false;
@@ -233,7 +233,7 @@ void ReadState::processReadState()
         if (cmd == "X=")
         {
             mmodel->readVec(core::VecId::position(), str);            
-            mmodel->applyScale(f_scalePos.getValue(), f_scalePos.getValue(), f_scalePos.getValue());
+            mmodel->applyScale(d_scalePos.getValue(), d_scalePos.getValue(), d_scalePos.getValue());
 
             updated = true;
         }
@@ -246,7 +246,6 @@ void ReadState::processReadState()
 
     if (updated)
     {
-        //sout<<"update from file"<<sendl;
         sofa::simulation::MechanicalProjectPositionAndVelocityVisitor action0(core::MechanicalParams::defaultInstance());
         this->getContext()->executeVisitor(&action0);
         sofa::simulation::MechanicalPropagateOnlyPositionAndVelocityVisitor action1(core::MechanicalParams::defaultInstance());

@@ -252,6 +252,11 @@ void PythonMainScriptController::script_draw(const VisualParams*)
     SP_CALL_MODULEFUNC_NOPARAM(m_Func_draw)
 }
 
+void PythonMainScriptController::script_onMouseMove(const int posX,const int posY)
+{
+     SP_CALL_FILEFUNC(const_cast<char*>("onMouseMove"),const_cast<char*>("(ii)"), posX,posY)
+}
+
 void PythonMainScriptController::handleEvent(Event *event)
 {
     if (PythonScriptEvent::checkEventType(event))

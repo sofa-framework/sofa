@@ -177,17 +177,13 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
     simulation::Visitor::printNode("SystemSolution");
 #endif
     sofa::helper::AdvancedTimer::stepNext ("MBKBuild", "MBKSolve");
-    matrix.solve(x, b); //Call to ODE resolution.
+    matrix.solve(x, b); //Call to ODE resolution: x is the solution of the system
     sofa::helper::AdvancedTimer::stepEnd  ("MBKSolve");
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode("SystemSolution");
 #endif
 
-    // mop.projectResponse(x);
-    // x is the solution of the system
-
     // apply the solution
-
     const bool solveConstraint = f_solveConstraint.getValue();
 
 #ifndef SOFA_NO_VMULTIOP // unoptimized version
@@ -209,17 +205,18 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
     else
     {
         sofa::helper::AdvancedTimer::stepBegin("UpdateV");
-        //vel.peq( x );                       // vel = vel + x
+        // vel = vel + x
         newVel.eq(vel, x);
         sofa::helper::AdvancedTimer::stepNext ("UpdateV", "CorrectV");
         mop.solveConstraint(newVel,core::ConstraintParams::VEL);
         sofa::helper::AdvancedTimer::stepNext ("CorrectV", "UpdateX");
-        //pos.peq( vel, h );                  // pos = pos + h vel
+        // pos = pos + h vel
         newPos.eq(pos, newVel, h);
         sofa::helper::AdvancedTimer::stepNext ("UpdateX", "CorrectX");
         mop.solveConstraint(newPos,core::ConstraintParams::POS);
         sofa::helper::AdvancedTimer::stepEnd  ("CorrectX");
     }
+
     }
 #ifndef SOFA_NO_VMULTIOP
     else
@@ -252,7 +249,8 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
     }
 #endif
 
-    mop.addSeparateGravity(dt, newVel);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
+    mop.addSeparateGravity(dt, newVel);	// v += dt*g . Used if mass wants to add G separately from the other forces to v
+
     if (f_velocityDamping.getValue()!=0.0)
         newVel *= exp(-h*f_velocityDamping.getValue());
 
@@ -266,9 +264,7 @@ void EulerImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa::
         serr<<"EulerImplicitSolver, final v = "<< newVel <<sendl;
         mop.computeForce(f);
         serr<<"EulerImplicitSolver, final f = "<< f <<sendl;
-
     }
-
 }
 
 SOFA_DECL_CLASS(EulerImplicitSolver)

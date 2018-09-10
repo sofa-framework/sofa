@@ -19,9 +19,36 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CONFIG_BUILD_OPTION_EXPERIMENTAL_FEATURES_H
-#define SOFA_CONFIG_BUILD_OPTION_EXPERIMENTAL_FEATURES_H
 
-#define SOFA_WITH_EXPERIMENTAL_FEATURES() ${SOFA_WITH_EXPERIMENTAL_FEATURES_}
+#include <sofa/core/objectmodel/ScriptEvent.h>
 
-#endif
+namespace sofa
+{
+
+namespace core
+{
+
+namespace objectmodel
+{
+
+SOFA_EVENT_CPP( ScriptEvent )
+
+ScriptEvent::ScriptEvent(sofa::simulation::Node::SPtr sender, const char* eventName)
+    : sofa::core::objectmodel::Event()
+    , m_sender(sender)
+    , m_eventName(eventName)
+{
+
+}
+
+ScriptEvent::~ScriptEvent()
+{
+
+}
+
+} // namespace objectmodel
+
+} // namespace core
+
+} // namespace sofa
+

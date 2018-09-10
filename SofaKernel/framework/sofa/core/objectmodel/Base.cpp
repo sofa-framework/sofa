@@ -326,6 +326,13 @@ void Base::removeTag(Tag t)
     f_tags.endEdit();
 }
 
+void Base::removeData(BaseData* d)
+{
+    m_vecData.erase(std::find(m_vecData.begin(), m_vecData.end(), d));
+    typedef MapData::const_iterator mapIterator;
+    std::pair< mapIterator, mapIterator> range = m_aliasData.equal_range(d->getName());
+    m_aliasData.erase(range.first, range.second);
+}
 
 /// Find a data field given its name.
 /// Return NULL if not found. If more than one field is found (due to aliases), only the first is returned.
@@ -435,10 +442,28 @@ bool Base::parseField( const std::string& attribute, const std::string& value)
     for (unsigned int d=0; d<dataVec.size(); ++d)
     {
         // test if data is a link and can be linked
-        if (value[0] == '@' && dataVec[d]->canBeLinked())
+        if (value.length() > 0 && value[0] == '@' && dataVec[d]->canBeLinked())
         {
             if (!dataVec[d]->setParent(value))
             {
+                BaseData* data = nullptr;
+                BaseLink* bl = nullptr;
+                dataVec[d]->findDataLinkDest(data, value, bl);
+                if (data != nullptr && dynamic_cast<EmptyData*>(data) != nullptr)
+                {
+                    Base* owner = data->getOwner();
+                    DDGNode* o = dynamic_cast<DDGNode*>(owner);
+                    o->delOutput(data);
+                    owner->removeData(data);
+                    BaseData* newBD = dataVec[d]->getNewInstance();
+                    newBD->setName(data->getName());
+                    owner->addData(newBD);
+                    newBD->setGroup("Outputs");
+                    o->addOutput(newBD);
+                    dataVec[d]->setParent(newBD);
+                    ok = true;
+                    continue;
+                }
                 serr<<"Could not setup Data link between "<< value << " and " << attribute << "." << sendl;
                 ok = false;
                 continue;
@@ -466,7 +491,7 @@ bool Base::parseField( const std::string& attribute, const std::string& value)
             ok = false;
         }
         sout << "Link " << linkVec[l]->getName() << " = " << linkVec[l]->getValueString() << sendl;
-        unsigned int s = linkVec[l]->getSize();
+        unsigned int s = (unsigned int)linkVec[l]->getSize();
         for (unsigned int i=0; i<s; ++i)
         {
             sout  << "  " << linkVec[l]->getLinkedPath(i) << " = ";
