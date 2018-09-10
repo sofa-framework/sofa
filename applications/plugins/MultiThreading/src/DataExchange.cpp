@@ -5,7 +5,9 @@
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/defaulttype/VecTypes.h>
+#ifdef WITH_IMAGE
 #include <image/ImageTypes.h>
+#endif
 
 //#include <sofa/gpu/cuda/CudaTypes.h>
 
@@ -41,7 +43,7 @@ namespace sofa
 
         SOFA_EVENT_CPP(DataExchangeEvent)
 
-		SOFA_DECL_CLASS(DataExchange)
+        SOFA_DECL_CLASS(DataExchange)
 
 // Register in the Factory
 int DataExchangeClass = core::RegisterObject("DataExchange")
@@ -61,9 +63,11 @@ int DataExchangeClass = core::RegisterObject("DataExchange")
 .add< DataExchange< sofa::helper::vector<unsigned int> > >()
 .add< DataExchange< bool > >()
 
+#ifdef WITH_IMAGE
 .add< DataExchange< sofa::defaulttype::ImageUC> >()
 .add< DataExchange< sofa::defaulttype::ImageUS> >()
 .add< DataExchange< sofa::defaulttype::ImageF> >()
+#endif
 //.add< DataExchange< sofa::gpu::cuda::CudaVector<sofa::gpu::cuda::CudaVec2fTypes> >()
 ;
 
@@ -86,9 +90,11 @@ template class SOFA_MULTITHREADING_PLUGIN_API DataExchange< sofa::helper::vector
 template class SOFA_MULTITHREADING_PLUGIN_API DataExchange< sofa::helper::vector<unsigned int> >;
 template class SOFA_MULTITHREADING_PLUGIN_API DataExchange< bool >;
 
+#ifdef WITH_IMAGE
 template class SOFA_MULTITHREADING_PLUGIN_API DataExchange< sofa::defaulttype::ImageUC >;
 template class SOFA_MULTITHREADING_PLUGIN_API DataExchange< sofa::defaulttype::ImageUS >;
 template class SOFA_MULTITHREADING_PLUGIN_API DataExchange< sofa::defaulttype::ImageF >;
+#endif
 //template class SOFA_MULTITHREADING_PLUGIN_API DataExchange< sofa::gpu::cuda::CudaVector<sofa::gpu::cuda::CudaVec2fTypes> >;
 
 

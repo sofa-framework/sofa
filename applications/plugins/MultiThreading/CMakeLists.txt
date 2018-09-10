@@ -6,7 +6,6 @@ set(MULTITHREADING_MINOR_VERSION 1)
 set(MULTITHREADING_VERSION ${MULTITHREADING_MAJOR_VERSION}.${MULTITHREADING_MINOR_VERSION})
 
 set(HEADER_FILES
-    config.h
     src/TaskScheduler.h
     src/Tasks.h
     src/Locks.h
@@ -32,11 +31,25 @@ set(SOURCE_FILES
 
 find_package(SofaMisc REQUIRED)
 find_package(Boost QUIET COMPONENTS system thread date_time chrono)
-find_package(image QUIET)
 
+find_package(image QUIET)
+IF(image_FOUND)
+set (WITH_IMAGE TRUE)
+ELSE(image_FOUND)
+set (WITH_IMAGE FALSE)
+ENDIF()
+
+## Multithreading/config.h
+configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/MultiThreading/config.h")
+install(FILES "${CMAKE_BINARY_DIR}/include/MultiThreading/config.h" DESTINATION "include/MultiThreading")
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
+IF(image_FOUND)
 target_link_libraries(${PROJECT_NAME} SofaBaseMechanics SofaMiscMapping image)
+ELSE(image_FOUND)
+target_link_libraries(${PROJECT_NAME} SofaBaseMechanics SofaMiscMapping)
+ENDIF()
+
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
