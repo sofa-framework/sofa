@@ -8,6 +8,7 @@ endif()
 ### Module files
 ####################################################################################################
 set(SOURCE_FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/pybind/Module_Sofa.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/pybind/Binding_Base.cpp
 )
 
