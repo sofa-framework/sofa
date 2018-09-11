@@ -1,13 +1,7 @@
-#include <pybind11/pybind11.h>
-namespace py = pybind11;
+#ifndef PYTHONMODULE_SOFA_BINDING_NODE_H
+#define PYTHONMODULE_SOFA_BINDING_NODE_H
 
-#include <sofa/core/objectmodel/Base.h>
-using sofa::core::objectmodel::Base;
-
-/// More info about smart pointer in
-/// /pybind11.readthedocs.io/en/stable/advanced/smart_ptrs.html
-PYBIND11_DECLARE_HOLDER_TYPE(Base, boost::intrusive_ptr<Base>, true)
-
+#include "Binding_BaseObject.h"
 
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node;
@@ -15,3 +9,6 @@ using sofa::simulation::Node;
 template class py::class_<Base, Base::SPtr>;
 template class py::class_<Node, Base, Node::SPtr>;
 
+void moduleAddNode(py::module &m);
+
+#endif /// PYTHONMODULE_SOFA_BINDING_NODE_H
