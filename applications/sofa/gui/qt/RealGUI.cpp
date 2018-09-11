@@ -158,13 +158,7 @@ class QSOFAApplication : public QApplication
 public:
     QSOFAApplication(int &argc, char ** argv)
         : QApplication(argc,argv)
-    {
-        // this code disable the VSync
-        QSurfaceFormat format;
-        format.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
-        format.setSwapInterval(0);
-        QSurfaceFormat::setDefaultFormat(format);
-    }
+    { }
 
 #if QT_VERSION < 0x050000
     static inline QString translate(const char * context, const char * key, const char * disambiguation,
