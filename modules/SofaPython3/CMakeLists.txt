@@ -9,16 +9,24 @@ set(PYTHON3_INCLUDE_DIR "/usr/include/python3.6/")
 set(PYTHON_LIBRARIES ${PYTHON3_LIBRARY})
 set(PYTHON_INCLUDE_DIRS ${PYTHON3_INCLUDE_DIR})
 
+#set(PYTHON_EXECUTABLE python3)
+find_package(pybind11 QUIET)
+if(NOT pybind11_FOUND)
+  message("-- Cannot build the python module 'Sofa', missing the pybind software to generate the bindings.")
+  return()
+endif()
 
 set(HEADER_FILES
     src/SofaPython3/config.h
     src/SofaPython3/initModule.h
     src/SofaPython3/PythonEnvironment.h   
+    src/SofaPython3/PythonTest.h
 )
 
 set(SOURCE_FILES
     src/SofaPython3/initModule.cpp
     src/SofaPython3/PythonEnvironment.cpp
+    src/SofaPython3/PythonTest.cpp
 )
 
 set(EXTRA_FILES
@@ -28,12 +36,12 @@ set(EXTRA_FILES
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAPYTHON3")
 
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaSimulationCore)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaSimulationCore pybind11::embed)
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
 
-target_link_libraries(${PROJECT_NAME} PRIVATE "${PYTHON3_LIBRARY}")
+target_link_libraries(${PROJECT_NAME} PRIVATE "${PYTHON3_LIBRARY}" )
 
 target_include_directories(${PROJECT_NAME} PRIVATE "${PYTHON3_INCLUDE_DIR}")
 

@@ -4,11 +4,6 @@ project(PythonModule_Sofa)
 ####################################################################################################
 ### Module dependencies
 ####################################################################################################
-#find_package(PythonLibs 2.7 QUIET)
-#if(NOT PythonLibs_FOUND)
-#    message("-- Cannot build the python module 'SofaPython3', missing the required PythonLibs 2.7 cmake package.")
-#    return()
-#endif()
 
 # This must be done before doing the find_package(pybind11)
 #set(PYBIND11_PYTHON_VERSION 3.6m)
@@ -36,4 +31,4 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/installed-Sofa-config"
 
 #install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/module/Sofa DESTINATION modules/Sofa/python)
 
-#add_subdirectory(tests)
+add_subdirectory(tests)
