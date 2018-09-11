@@ -50,9 +50,11 @@ void init_Node(py::module &m)
       py::print("createObject");
   });
 
-  p.def("createChild", [](Node& self, const std::string& s) -> Node::SPtr {
+  p.def("getName", [](Node& self){ return self.getName();});
+
+  p.def("createChild", [](Node& self, const std::string& s) -> py::object {
       py::print("createChild");
-      return Node::SPtr(&self);
+      return py::cast(&self);
   });
 }
 
@@ -62,4 +64,14 @@ PYBIND11_MODULE(Sofa, m)
     init_Base(m);
     init_BaseObject(m);
     init_Node(m);
+
+    m.def("test", [](){
+        py::module m = py::module::import("SofaRuntime");
+        std::cout << "Hello..." << std::endl;
+        Node::SPtr s=Node::create("Damien");
+        std::cout << "ZUT  " << (void*)s.get() << std::endl;
+        std::cout << "ZOU  " << s->getName() << std::endl;
+        Base::SPtr b=Base::SPtr(s);
+        return s; //py::cast(b);
+    });
 }

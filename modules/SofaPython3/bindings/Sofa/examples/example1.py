@@ -2,10 +2,13 @@ print(".EXAMPLE SCENE.")
 
 def createScene(rootNode):
         print("COUCOU")
-        print("HELLO WORLD: "+str(type(rootNode)))
-        print("Dir:"+str(dir(rootNode)))
+        print("Type: "+str(type(rootNode)))
+        print("Name: "+str(type(rootNode.getName())))
         
-        rootNode.createChild("Child1")
-        rootNode.createChild("Child2")
+        one = rootNode.createChild("Child1")
+        two = rootNode.createChild("Child2")
+        
+        print("T:" + str(one.getName()))
+        print("T:" + str(two.getName()))
         
         return rootNode

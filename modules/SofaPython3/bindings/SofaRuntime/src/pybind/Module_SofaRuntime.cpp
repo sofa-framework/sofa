@@ -17,7 +17,8 @@ using sofa::simulation::graph::DAGSimulation ;
 
 /// The first parameter must be named the same as the module file to load.
 PYBIND11_MODULE(SofaRuntime, m) {
-
+    /// We need to import the project dependencies
+    py::module::import("Sofa");
     m.def("reinit", []()
     {
         if(sofa::simulation::getSimulation())
@@ -40,7 +41,7 @@ PYBIND11_MODULE(SofaRuntime, m) {
             if( py::isinstance<py::function>(o) ){
                 Node::SPtr tmp = Node::create("root");
                 std::cout << "ICI" << std::endl;
-                PAUSE-WORK-HERE
+                //PAUSE-WORK-HERE
                 // Je me suis arrête ici. Ca compile mais ça ne marche pas.
                 // quand je charge le module:
                 //    import sys
@@ -52,8 +53,8 @@ PYBIND11_MODULE(SofaRuntime, m) {
                 //    File "<stdin>", line 1, in <module>
                 //    RuntimeError: make_tuple(): unable to convert arguments to Python object (compile in debug mode for details)
 
-                o(py::cast(tmp));
-                std::cout << "LA" << std::endl;
+                o(tmp);
+                std::cout << "LA: " << tmp->getName() << std::endl;
                 return py::cast(tmp);
             }
         }
