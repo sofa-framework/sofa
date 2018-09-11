@@ -99,6 +99,8 @@ public:
     Data < bool > d_mouseEvent;
     ///< Activate carving with omni button
     Data < bool > d_omniEvent;
+    ///< Activate carving with string Event
+    Data < std::string > d_buttonName;
     
 protected:
     /// Pointer to the tool collision model

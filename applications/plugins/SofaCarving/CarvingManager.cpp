@@ -24,6 +24,7 @@
 #include <sofa/core/collision/DetectionOutput.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
+#include <sofa/core/objectmodel/ScriptEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
@@ -57,6 +58,7 @@ CarvingManager::CarvingManager()
     , d_keySwitchEvent( initData(&d_keySwitchEvent, '4', "keySwitch", "key to activate this object until the key is pressed again") )
     , d_mouseEvent( initData(&d_mouseEvent, true, "mouseEvent", "Activate carving with middle mouse button") )
     , d_omniEvent( initData(&d_omniEvent, true, "omniEvent", "Activate carving with omni button") )
+    , d_buttonName(initData(&d_buttonName, "button1", "d_buttonName", "Activate carving with script event, given the button name"))
     , m_toolCollisionModel(NULL)
     , m_intersectionMethod(NULL)
     , m_detectionNP(NULL)
@@ -248,11 +250,18 @@ void CarvingManager::handleEvent(sofa::core::objectmodel::Event* event)
         if (ev->getButtonState()==1) d_active.setValue(true);
         else if (ev->getButtonState()==0) d_active.setValue(false);
     }
-
     else if (/* simulation::AnimateEndEvent* ev = */ dynamic_cast<simulation::AnimateEndEvent*>(event))
     {
         if (d_active.getValue())
             doCarve();
+    }
+    else if (sofa::core::objectmodel::ScriptEvent *ev = dynamic_cast<sofa::core::objectmodel::ScriptEvent *>(event))
+    {
+        const std::string& eventS = ev->getEventName();
+        if (eventS.find(d_buttonName.getValue()) != std::string::npos && eventS.find("pressed") != std::string::npos)
+            d_active.setValue(true);
+        if (eventS.find(d_buttonName.getValue()) != std::string::npos && eventS.find("released") != std::string::npos)
+            d_active.setValue(false);
     }
 }
 
