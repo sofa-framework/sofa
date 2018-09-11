@@ -44,15 +44,6 @@ if(WIN32)
 		set(ASSIMP_DLL ${ASSIMP_ROOT_DIR}/bin/${ASSIMP_ARCHITECTURE}/assimp-${ASSIMP_MSVC_VERSION}-mt.dll)
 	ENDIF()
     
-    FUNCTION(ASSIMP_COPY_BINARIES TargetDirectory)
-        ADD_CUSTOM_TARGET(AssimpCopyBinaries
-            COMMAND ${CMAKE_COMMAND} -E copy ${ASSIMP_ROOT_DIR}/bin/${ASSIMP_ARCHITECTURE}/assimp-${ASSIMP_MSVC_VERSION}-mtd.dll     ${TargetDirectory}/bin/Debug/assimp-${ASSIMP_MSVC_VERSION}-mtd.dll
-            COMMAND ${CMAKE_COMMAND} -E copy ${ASSIMP_ROOT_DIR}/bin/${ASSIMP_ARCHITECTURE}/assimp-${ASSIMP_MSVC_VERSION}-mt.dll         ${TargetDirectory}/bin/Release/assimp-${ASSIMP_MSVC_VERSION}-mt.dll
-        COMMENT "Copying Assimp binaries to '${TargetDirectory}'"
-        VERBATIM)
-    ENDFUNCTION(ASSIMP_COPY_BINARIES)
-
-    
 else(WIN32)
     find_path(ASSIMP_INCLUDE_DIR
       NAMES assimp/postprocess.h assimp/scene.h assimp/version.h assimp/config.h assimp/cimport.h

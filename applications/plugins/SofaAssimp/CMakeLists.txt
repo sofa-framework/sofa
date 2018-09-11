@@ -30,9 +30,9 @@ add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILE
 target_link_libraries(${PROJECT_NAME} SofaCore SofaHelper ${ASSIMP_LIBRARY_DIR})
 
 if(WIN32)
-file(COPY "${ASSIMP_DLL}" DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}")
+	sofa_copy_libraries(${ASSIMP_DLL})
 endif()
-
+sofa_install_libraries(${ASSIMP_DLL})
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
