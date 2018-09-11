@@ -45,45 +45,21 @@ using sofa::simulation::Simulation;
 
 void init_Node(py::module &m)
 {
-  py::class_<Node, Node::SPtr> p(m, "Node");
+  py::class_<Node, Base, Node::SPtr> p(m, "Node");
   p.def("createObject", [](Node& self, const std::string& s){
       py::print("createObject");
   });
 
-  p.def("createChild", [](Node& self, const std::string& s){
+  p.def("createChild", [](Node& self, const std::string& s) -> Node::SPtr {
       py::print("createChild");
+      return Node::SPtr(&self);
   });
 }
 
-#include <pybind11/eval.h>
-
 /// The first parameter must be named the same as the module file to load.
-PYBIND11_MODULE(Sofa, m) {
+PYBIND11_MODULE(Sofa, m)
+{
     init_Base(m);
     init_BaseObject(m);
-    init_PythonController(m);
     init_Node(m);
-
-    /// Beurk... ces fonctions à déplacer dans un module genre RunTime.
-    m.def("init", [](){
-        /// Beurk !
-        sofa::simulation::setSimulation(new Simulation());
-    });
-
-    m.def("load", [](const std::string& filename) -> py::object {
-        /// Evaluate the content of the file in the scope of the main module
-        py::object globals = py::module::import("__main__").attr("__dict__");
-        py::object locals = py::dict();
-        py::eval_file(filename, globals, locals);
-
-        if( locals.contains("createScene") ){
-            py::object o = locals["createScene"];
-            if( py::isinstance<py::function>(o) ){
-                Ca crash ici car il manque une instance de la simulation.
-                Node::SPtr tmp = Node::create("root");
-                return o(py::none());
-            }
-        }
-        return py::none();
-    });
 }

@@ -1,7 +1,7 @@
 print(".EXAMPLE SCENE.")
-import SofaPython3
 
 def createScene(rootNode):
+        print("COUCOU")
         print("HELLO WORLD: "+str(type(rootNode)))
         print("Dir:"+str(dir(rootNode)))
         

@@ -29,6 +29,7 @@ file(WRITE "${CMAKE_BINARY_DIR}/etc/sofa/python.d/Sofa" "${CMAKE_CURRENT_SOURCE_
 file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/installed-Sofa-config"
              "modules/Sofa/python/")
 
+
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/installed-Sofa-config"
          DESTINATION "etc/sofa/python.d"
          RENAME "Sofa")

@@ -10,6 +10,7 @@ endif()
 set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/pybind/Module_Sofa.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/pybind/Binding_Base.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/pybind/Binding_Node.h
 )
 
 
@@ -17,7 +18,10 @@ set(SOURCE_FILES
 sofa_add_pybind11_module(
         TARGET PythonModule_Sofa
         SOURCES  ${SOURCE_FILES} 
-        DEPENDS SofaPython3
+        DEPENDS SofaPython3 SofaSimulationGraph
         OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/package/"
         NAME Sofa
 )
+
+target_include_directories(PythonModule_Sofa PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
+target_include_directories(PythonModule_Sofa PUBLIC "$<INSTALL_INTERFACE:include>")
