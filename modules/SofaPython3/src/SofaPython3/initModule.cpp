@@ -45,7 +45,7 @@ void initExternalModule()
     if (first)
     {
         //SceneLoaderFactory::getInstance()->addEntry(new SceneLoaderPY3());
-
+        std::cout << "INT MODULE" << std::endl;
         PythonEnvironment::Init();
         first = false;
     }
