@@ -325,7 +325,7 @@ bool TopologicalChangeProcessor::readNext(double time, std::vector<std::string>&
             buf[0] = '\0';
             while (gzgets(gzfile,buf,sizeof(buf))!=NULL && buf[0])
             {
-                int l = strlen(buf);
+                size_t l = strlen(buf);
                 if (buf[l-1] == '\n')
                 {
                     buf[l-1] = '\0';
@@ -378,7 +378,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
     std::vector<std::string> validLines;
     if (!readNext(time, validLines)) return;
 
-    unsigned int nbElements = 0;
+    size_t nbElements = 0;
     for (std::vector<std::string>::iterator it=validLines.begin(); it!=validLines.end();)
     {
         //For one Timestep store all topology data available.
@@ -421,7 +421,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                 helper::vector < unsigned int > triangles;
                 triangles.resize(nbElements);
 
-                for(unsigned int i=0;i<nbElements;++i)
+                for(size_t i=0;i<nbElements;++i)
                 {
                     Sin >> triangles[i];
                     Vector2& baryCoord = baryCoords[i];
@@ -431,7 +431,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
 
                 helper::vector< helper::vector< unsigned int > > p_ancestors(nbElements);
                 sofa::helper::vector< helper::vector< double > > p_baryCoefs(nbElements);
-                for(unsigned int i=0; i<nbElements; ++i)
+                for(size_t i=0; i<nbElements; ++i)
                 {
                     helper::vector<unsigned int>& ancestor = p_ancestors[i];
                     ancestor.resize(3);
@@ -462,7 +462,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                 helper::vector<core::topology::Topology::Edge > vitems;
                 vitems.resize (nbElements);
 
-                for (unsigned int i = 0; i<nbElements; ++i)
+                for (size_t i = 0; i<nbElements; ++i)
                     Sin >> vitems[i][0] >> vitems[i][1];
 
                 topoMod->addEdges(vitems);
@@ -480,7 +480,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                     str >> token;
                     if(token == "Ancestors" || token == "Ancestor")
                     {
-                        for(unsigned int i = 0; i<nbElements; ++i)
+                        for(size_t i = 0; i<nbElements; ++i)
                         {
                             helper::vector<unsigned int>& ancestor = p_ancestors[i];
                             ancestor.resize(1);
@@ -501,7 +501,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                 helper::vector<core::topology::Topology::Triangle > vitems;
                 vitems.resize (nbElements);
 
-                for (unsigned int i = 0; i<nbElements; ++i)
+                for (size_t i = 0; i<nbElements; ++i)
                     Sin >> vitems[i][0] >> vitems[i][1] >> vitems[i][2];
 
                 if(!p_ancestors.empty())
@@ -527,7 +527,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                 helper::vector<core::topology::Topology::Quad > vitems;
                 vitems.resize (nbElements);
 
-                for (unsigned int i = 0; i<nbElements; ++i)
+                for (size_t i = 0; i<nbElements; ++i)
                     Sin >> vitems[i][0] >> vitems[i][1] >> vitems[i][2] >> vitems[i][3];
 
                 topoMod->addQuads(vitems);
@@ -546,7 +546,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                 helper::vector<core::topology::Topology::Tetrahedron > vitems;
                 vitems.resize (nbElements);
 
-                for (unsigned int i = 0; i<nbElements; ++i)
+                for (size_t i = 0; i<nbElements; ++i)
                     Sin >> vitems[i][0] >> vitems[i][1] >> vitems[i][2] >> vitems[i][3];
 
                 topoMod->addTetrahedra(vitems);
@@ -565,7 +565,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                 helper::vector<core::topology::Topology::Hexahedron > vitems;
                 vitems.resize (nbElements);
 
-                for (unsigned int i = 0; i<nbElements; ++i)
+                for (size_t i = 0; i<nbElements; ++i)
                     Sin >> vitems[i][0] >> vitems[i][1] >> vitems[i][2] >> vitems[i][3]
                         >> vitems[i][4] >> vitems[i][5] >> vitems[i][6] >> vitems[i][7];
 
@@ -594,7 +594,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
             helper::vector <unsigned int> vitems;
             vitems.resize (nbElements);
 
-            for (unsigned int i = 0; i<nbElements; ++i)
+            for (size_t i = 0; i<nbElements; ++i)
                 Sin >> vitems[i];
 
             topoMod->removeItems(vitems);
@@ -660,7 +660,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                 findElementIndex(a, ind_ta, -1);
             }
 
-            for (unsigned int i = 1; i < nbElements; ++i)
+            for (size_t i = 1; i < nbElements; ++i)
             {
                 if (!onlyCoordinates)
                 {
@@ -771,7 +771,7 @@ void TopologicalChangeProcessor::saveIndices()
     }
 
     //filter only the lines about incision and put them in the linesAboutIncision
-    for (unsigned int i = 0 ; i < listInTheFile.size() ; i++)
+    for (size_t i = 0 ; i < listInTheFile.size() ; i++)
     {
         std::string currentString(listInTheFile[i]);
 
@@ -855,7 +855,7 @@ void TopologicalChangeProcessor::saveIndices()
 
         unsigned int increment = ( onlyCoordinates ) ? 3 : 4; // 3 if only the coordinates, 4 if there is also a triangle index
 
-        for (unsigned int i = 0 ; i < values.size() ; i+=increment)
+        for (size_t i = 0 ; i < values.size() ; i+=increment)
         {
             Vector3 coord;
             int triangleIndex;
@@ -905,7 +905,7 @@ void TopologicalChangeProcessor::saveIndices()
      * The hack consists in gently modify the first point of the line if both the points are equal (within epsilon)
      * Note : the crash is due to the computeIntersectedObjectsList algorithm in TriangleSetGeometryAlgorithm
      * */
-    for ( unsigned int i = 0 ; i < triangleIncisionInformation.size() ; i++)
+    for ( size_t i = 0 ; i < triangleIncisionInformation.size() ; i++)
     {
         triangleIncisionInformation[i].computeCoordinates(m_topology);
         if ( i )
@@ -955,7 +955,7 @@ void TopologicalChangeProcessor::saveIndices()
 int TopologicalChangeProcessor::findIndexInListOfTime(Real time)
 {
     double epsilon = 1e-10;
-    for (unsigned int i = 0 ; i < triangleIncisionInformation.size() ; i++)
+    for (size_t i = 0 ; i < triangleIncisionInformation.size() ; i++)
     {
         if ( fabs(time - triangleIncisionInformation[i].timeToIncise) < epsilon )
         {
@@ -965,7 +965,7 @@ int TopologicalChangeProcessor::findIndexInListOfTime(Real time)
     return -1;
 }
 
-std::vector<Real> TopologicalChangeProcessor::getValuesInLine(std::string line, unsigned int nbElements)
+std::vector<Real> TopologicalChangeProcessor::getValuesInLine(std::string line, size_t nbElements)
 {
     std::vector<Real> values;
     values.clear();
@@ -1034,7 +1034,7 @@ void  TopologicalChangeProcessor::findElementIndex(Vector3 coord, int& triangleI
         return;
 
     //get the number of triangle in the topology
-    unsigned int nbTriangle = m_topology->getNbTriangles();
+    size_t nbTriangle = m_topology->getNbTriangles();
 
     sofa::component::topology::TriangleSetTopologyAlgorithms<Vec3Types>* triangleAlg;
     m_topology->getContext()->get(triangleAlg);
@@ -1080,7 +1080,7 @@ void  TopologicalChangeProcessor::findElementIndex(Vector3 coord, int& triangleI
     std::vector<unsigned int> finalTriIndices;
     finalTriIndices.clear();
 
-    for (unsigned int i = 0 ; i < triIndices.size() ; i++)
+    for (size_t i = 0 ; i < triIndices.size() ; i++)
     {
         const bool is_tested = false;
         unsigned int indTest = 0;
@@ -1168,7 +1168,7 @@ void  TopologicalChangeProcessor::findElementIndex(Vector3 coord, int& triangleI
 
     //TODO(dmarchal 2017-05-03) So what ? Can we remove this ?
     //beastly way
-//                for( unsigned int i = 0 ; i < nbTriangle ; i++)
+//                for( size_t i = 0 ; i < nbTriangle ; i++)
 //                {
 //                    bool isPointInTriangle = false;
 //
@@ -1202,7 +1202,7 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
     {
         std::stringstream tmp ;
         tmp <<" Unable to find a time index with time " <<  getContext()->getTime() << ". The possible values are ";
-        for (unsigned int i = 0 ; i < triangleIncisionInformation.size() ; i++)
+        for (size_t i = 0 ; i < triangleIncisionInformation.size() ; i++)
             tmp << triangleIncisionInformation[i].timeToIncise << " | ";
         tmp << ". Aborting." ;
         msg_error() << tmp.str() ;
@@ -1219,7 +1219,7 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
     bool firstCut= true;
 
     std::vector<Vector3> coordinates;
-    for (unsigned int i = 0 ; i < triangleIncisionInformation.size() ; i++)
+    for (size_t i = 0 ; i < triangleIncisionInformation.size() ; i++)
     {
         if ( (int) i == indexOfTime)
             coordinates = triangleIncisionInformation[indexOfTime].computeCoordinates(m_topology);
@@ -1249,7 +1249,7 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
     a = coordinates[0];
 
     unsigned int ind_tb = 0;
-    for (unsigned int i =1; i < triangleIncisionInformation[indexOfTime].triangleIndices.size(); ++i)
+    for (size_t i =1; i < triangleIncisionInformation[indexOfTime].triangleIndices.size(); ++i)
     {
         ind_tb = triangleIncisionInformation[indexOfTime].triangleIndices[i];
 
@@ -1335,11 +1335,11 @@ void TopologicalChangeProcessor::inciseWithSavedIndices()
  */
 void TopologicalChangeProcessor::updateTriangleIncisionInformation()
 {
-    unsigned int nbTriangleInfo = triangleIncisionInformation.size();
+    size_t nbTriangleInfo = triangleIncisionInformation.size();
     sofa::component::topology::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeo;
     m_topology->getContext()->get(triangleGeo);
 
-    for ( unsigned int i = 0 ; i < nbTriangleInfo ; i++)
+    for ( size_t i = 0 ; i < nbTriangleInfo ; i++)
     {
         for (unsigned int j = 0 ; j < triangleIncisionInformation[i].triangleIndices.size() ; j++ )
         {
@@ -1393,14 +1393,14 @@ void TopologicalChangeProcessor::draw(const core::visual::VisualParams* vparams)
     if (!triangleGeo)
         return;
 
-    unsigned int nbTriangles = m_topology->getNbTriangles();
+    size_t nbTriangles = m_topology->getNbTriangles();
 
     std::vector< Vector3 > trianglesToDraw;
     std::vector< Vector3 > pointsToDraw;
 
-    for (unsigned int i = 0 ; i < triangleIncisionInformation.size() ; i++)
+    for (size_t i = 0 ; i < triangleIncisionInformation.size() ; i++)
     {
-        for (unsigned int j = 0 ; j < triangleIncisionInformation[i].triangleIndices.size() ; j++)
+        for (size_t j = 0 ; j < triangleIncisionInformation[i].triangleIndices.size() ; j++)
         {
             unsigned int triIndex = triangleIncisionInformation[i].triangleIndices[j];
 
@@ -1431,7 +1431,7 @@ void TopologicalChangeProcessor::draw(const core::visual::VisualParams* vparams)
         /* initialize random seed: */
         srand ( (unsigned int)time(NULL) );
 
-        for (unsigned int i = 0 ; i < errorTrianglesIndices.size() ; i++)
+        for (size_t i = 0 ; i < errorTrianglesIndices.size() ; i++)
         {
             Vec3Types::Coord coord[3];
             triangleGeo->getTriangleVertexCoordinates(errorTrianglesIndices[i], coord);

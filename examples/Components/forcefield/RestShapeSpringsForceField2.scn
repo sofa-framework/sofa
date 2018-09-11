@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 
 <Node name="root" dt="0.01" gravity="0 0 0" >
+      <RequiredPlugin name="SofaSparseSolver"/>
       <VisualStyle displayFlags=" showCollisionModels showForceFields" />
 
       <FreeMotionAnimationLoop />
@@ -22,5 +23,4 @@
 		    
 		<LinearSolverConstraintCorrection /> 
 	</Node> 
-	
-</Node>   
+</Node>

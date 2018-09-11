@@ -24,7 +24,6 @@
 
 #include <SofaMiscForceField/MeshMatrixMass.h>
 #include <sofa/core/visual/VisualParams.h>
-#include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <SofaBaseTopology/RegularGridTopology.h>
@@ -1149,6 +1148,9 @@ void MeshMatrixMass<DataTypes, MassType>::massInitialization()
 template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::printMass()
 {
+    if (this->f_printLog.getValue() == false)
+        return;
+
     //Info post-init
     const MassVector &vertexM = d_vertexMass.getValue();
     const MassVector &mDensity = d_massDensity.getValue();
@@ -1299,7 +1301,7 @@ void MeshMatrixMass<DataTypes, MassType>::reinit()
 
 
 template <class DataTypes, class MassType>
-void MeshMatrixMass<DataTypes, MassType>::update()
+bool MeshMatrixMass<DataTypes, MassType>::update()
 {
     bool update = false;
 
@@ -1357,6 +1359,8 @@ void MeshMatrixMass<DataTypes, MassType>::update()
         msg_info() << "mass information updated";
         printMass();
     }
+
+    return update;
 }
 
 
@@ -2096,8 +2100,8 @@ void MeshMatrixMass<DataTypes, MassType>::handleEvent(sofa::core::objectmodel::E
 template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
-    if (!vparams->displayFlags().getShowBehaviorModels()) return;
+    if (!vparams->displayFlags().getShowBehaviorModels())
+        return;
 
     const MassVector &vertexMass= d_vertexMassInfo.getValue();
 
@@ -2116,26 +2120,30 @@ void MeshMatrixMass<DataTypes, MassType>::draw(const core::visual::VisualParams*
         totalMass += vertexMass[i]*m_massLumpingCoeff;
     }
 
+    vparams->drawTool()->saveLastState();
+    vparams->drawTool()->disableLighting();
+    sofa::defaulttype::RGBAColor color(1.0,1.0,1.0,1.0);
 
+    vparams->drawTool()->drawPoints(points, 2, color);
 
-    vparams->drawTool()->drawPoints(points, 2, defaulttype::Vec<4,float>(1,1,1,1));
+    std::vector<sofa::defaulttype::Vector3> vertices;
 
     if(d_showCenterOfGravity.getValue())
     {
-        glBegin (GL_LINES);
-        glColor4f (1,1,0,1);
-        glPointSize(5);
+        color = sofa::defaulttype::RGBAColor(1.0,1.0,0,1.0);
         gravityCenter /= totalMass;
         for(unsigned int i=0 ; i<Coord::spatial_dimensions ; i++)
         {
-            Coord v;
+            Coord v, diff;
             v[i] = d_showAxisSize.getValue();
-            helper::gl::glVertexT(gravityCenter-v);
-            helper::gl::glVertexT(gravityCenter+v);
+            diff = gravityCenter-v;
+            vertices.push_back(sofa::defaulttype::Vector3(diff));
+            diff = gravityCenter+v;
+            vertices.push_back(sofa::defaulttype::Vector3(diff));
         }
-        glEnd();
     }
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->drawLines(vertices,5,color);
+    vparams->drawTool()->restoreLastState();
 }
 
 

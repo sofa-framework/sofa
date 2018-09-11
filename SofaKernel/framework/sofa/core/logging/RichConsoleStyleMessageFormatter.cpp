@@ -65,7 +65,7 @@ typedef boost::tokenizer<boost::char_separator<char> > tokenizer;
 /// \param line_length number of column to render to to
 /// \param wrapped the destination stream where to write the formatted text.
 ///
-void simpleFormat(int jsize, const std::string& text, size_t line_length,
+void simpleFormat(size_t jsize, const std::string& text, size_t line_length,
                   std::ostream& wrapped)
 {
     //TODO(dmarchal): All that code is a mess...need to be done for real.

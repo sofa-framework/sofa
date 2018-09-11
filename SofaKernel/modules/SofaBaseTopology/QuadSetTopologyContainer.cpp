@@ -99,7 +99,7 @@ void QuadSetTopologyContainer::createQuadsAroundVertexArray()
         // adding quad i in the quad shell of all points
         for (size_t j=0; j<4; ++j)
         {
-            m_quadsAroundVertex[ m_quad[i][j] ].push_back((unsigned int)i);
+            m_quadsAroundVertex[ m_quad[i][j] ].push_back((QuadID)i);
         }
     }
 }
@@ -140,7 +140,7 @@ void QuadSetTopologyContainer::createQuadsAroundEdgeArray()
         // adding quad i in the quad shell of all edges
         for (size_t j=0; j<4; ++j)
         {
-            m_quadsAroundEdge[ m_edgesInQuad[i][j] ].push_back((unsigned int)i);
+            m_quadsAroundEdge[ m_edgesInQuad[i][j] ].push_back((QuadID)i);
         }
     }
 }
@@ -172,7 +172,7 @@ void QuadSetTopologyContainer::createEdgeSetArray()
     }
 
     // create a temporary map to find redundant edges
-    std::map<Edge, unsigned int> edgeMap;
+    std::map<Edge, EdgeID> edgeMap;
     helper::WriteAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
     helper::ReadAccessor< Data< sofa::helper::vector<Quad> > > m_quad = d_quad;
 
@@ -181,8 +181,8 @@ void QuadSetTopologyContainer::createEdgeSetArray()
         const Quad &t = m_quad[i];
         for(size_t j=0; j<4; ++j)
         {
-            const unsigned int v1 = t[(j+1)%4];
-            const unsigned int v2 = t[(j+2)%4];
+            const PointID v1 = t[(j+1)%4];
+            const PointID v2 = t[(j+2)%4];
 
             // sort vertices in lexicographic order
             const Edge e = ((v1<v2) ? Edge(v1,v2) : Edge(v2,v1));
@@ -190,7 +190,7 @@ void QuadSetTopologyContainer::createEdgeSetArray()
             if(edgeMap.find(e) == edgeMap.end())
             {
                 // edge not in edgeMap so create a new one
-                const unsigned int edgeIndex = (unsigned int)edgeMap.size();
+                const EdgeID edgeIndex = (EdgeID)edgeMap.size();
                 edgeMap[e] = edgeIndex;
                 m_edge.push_back(e);
             }
@@ -254,7 +254,7 @@ const QuadSetTopologyContainer::Quad QuadSetTopologyContainer::getQuad (QuadID i
     if(!hasQuads())
         createQuadSetArray();
 
-    if (i >= getNbQuads())
+    if ((size_t)i >= getNbQuads())
         return Quad(-1, -1, -1, -1);
     else
         return (d_quad.getValue())[i];
@@ -266,10 +266,10 @@ int QuadSetTopologyContainer::getQuadIndex(PointID v1, PointID v2, PointID v3, P
     if(!hasQuadsAroundVertex())
         createQuadsAroundVertexArray();
 
-    sofa::helper::vector<unsigned int> set1 = getQuadsAroundVertex(v1);
-    sofa::helper::vector<unsigned int> set2 = getQuadsAroundVertex(v2);
-    sofa::helper::vector<unsigned int> set3 = getQuadsAroundVertex(v3);
-    sofa::helper::vector<unsigned int> set4 = getQuadsAroundVertex(v4);
+    sofa::helper::vector<QuadID> set1 = getQuadsAroundVertex(v1);
+    sofa::helper::vector<QuadID> set2 = getQuadsAroundVertex(v2);
+    sofa::helper::vector<QuadID> set3 = getQuadsAroundVertex(v3);
+    sofa::helper::vector<QuadID> set4 = getQuadsAroundVertex(v4);
 
     sort(set1.begin(), set1.end());
     sort(set2.begin(), set2.end());
@@ -277,18 +277,18 @@ int QuadSetTopologyContainer::getQuadIndex(PointID v1, PointID v2, PointID v3, P
     sort(set4.begin(), set4.end());
 
     // The destination vector must be large enough to contain the result.
-    sofa::helper::vector<unsigned int> out1(set1.size()+set2.size());
-    sofa::helper::vector<unsigned int>::iterator result1;
+    sofa::helper::vector<QuadID> out1(set1.size()+set2.size());
+    sofa::helper::vector<QuadID>::iterator result1;
     result1 = std::set_intersection(set1.begin(),set1.end(),set2.begin(),set2.end(),out1.begin());
     out1.erase(result1,out1.end());
 
-    sofa::helper::vector<unsigned int> out2(set3.size()+out1.size());
-    sofa::helper::vector<unsigned int>::iterator result2;
+    sofa::helper::vector<QuadID> out2(set3.size()+out1.size());
+    sofa::helper::vector<QuadID>::iterator result2;
     result2 = std::set_intersection(set3.begin(),set3.end(),out1.begin(),out1.end(),out2.begin());
     out2.erase(result2,out2.end());
 
-    sofa::helper::vector<unsigned int> out3(set4.size()+out2.size());
-    sofa::helper::vector<unsigned int>::iterator result3;
+    sofa::helper::vector<QuadID> out3(set4.size()+out2.size());
+    sofa::helper::vector<QuadID>::iterator result3;
     result3 = std::set_intersection(set4.begin(),set4.end(),out2.begin(),out2.end(),out3.begin());
     out3.erase(result3,out3.end());
 
@@ -303,20 +303,20 @@ int QuadSetTopologyContainer::getQuadIndex(PointID v1, PointID v2, PointID v3, P
         return -1;
 }
 
-unsigned int QuadSetTopologyContainer::getNumberOfQuads() const
+size_t QuadSetTopologyContainer::getNumberOfQuads() const
 {
     helper::ReadAccessor< Data< sofa::helper::vector<Quad> > > m_quad = d_quad;
-    return (unsigned int)m_quad.size();
+    return m_quad.size();
 }
 
 
-unsigned int QuadSetTopologyContainer::getNumberOfElements() const
+size_t QuadSetTopologyContainer::getNumberOfElements() const
 {
     return this->getNumberOfQuads();
 }
 
 
-const sofa::helper::vector< sofa::helper::vector<unsigned int> > &QuadSetTopologyContainer::getQuadsAroundVertexArray()
+const sofa::helper::vector< QuadSetTopologyContainer::QuadsAroundVertex > &QuadSetTopologyContainer::getQuadsAroundVertexArray()
 {
     if(!hasQuadsAroundVertex())	// this method should only be called when the shell array exists
     {
@@ -329,7 +329,7 @@ const sofa::helper::vector< sofa::helper::vector<unsigned int> > &QuadSetTopolog
     return m_quadsAroundVertex;
 }
 
-const sofa::helper::vector< sofa::helper::vector<unsigned int> > &QuadSetTopologyContainer::getQuadsAroundEdgeArray()
+const sofa::helper::vector< QuadSetTopologyContainer::QuadsAroundEdge > &QuadSetTopologyContainer::getQuadsAroundEdgeArray()
 {
     if(!hasQuadsAroundEdge())	// this method should only be called when the shell array exists
     {
@@ -390,7 +390,7 @@ const QuadSetTopologyContainer::QuadsAroundEdge& QuadSetTopologyContainer::getQu
     return m_quadsAroundEdge[i];
 }
 
-const QuadSetTopologyContainer::EdgesInQuad &QuadSetTopologyContainer::getEdgesInQuad(const unsigned int i)
+const QuadSetTopologyContainer::EdgesInQuad &QuadSetTopologyContainer::getEdgesInQuad(QuadID i)
 {
     if(m_edgesInQuad.empty())
         createEdgesInQuadArray();
@@ -406,7 +406,7 @@ const QuadSetTopologyContainer::EdgesInQuad &QuadSetTopologyContainer::getEdgesI
     return m_edgesInQuad[i];
 }
 
-int QuadSetTopologyContainer::getVertexIndexInQuad(const Quad &t, unsigned int vertexIndex) const
+int QuadSetTopologyContainer::getVertexIndexInQuad(const Quad &t, PointID vertexIndex) const
 {
     if(t[0]==vertexIndex)
         return 0;
@@ -420,7 +420,7 @@ int QuadSetTopologyContainer::getVertexIndexInQuad(const Quad &t, unsigned int v
         return -1;
 }
 
-int QuadSetTopologyContainer::getEdgeIndexInQuad(const EdgesInQuad &t, unsigned int edgeIndex) const
+int QuadSetTopologyContainer::getEdgeIndexInQuad(const EdgesInQuad &t, EdgeID edgeIndex) const
 {
     if(t[0]==edgeIndex)
         return 0;
@@ -434,7 +434,7 @@ int QuadSetTopologyContainer::getEdgeIndexInQuad(const EdgesInQuad &t, unsigned 
         return -1;
 }
 
-sofa::helper::vector< unsigned int > &QuadSetTopologyContainer::getQuadsAroundEdgeForModification(const unsigned int i)
+QuadSetTopologyContainer::QuadsAroundEdge &QuadSetTopologyContainer::getQuadsAroundEdgeForModification(const EdgeID i)
 {
     if(!hasQuadsAroundEdge())	// this method should only be called when the shell array exists
     {
@@ -455,7 +455,7 @@ sofa::helper::vector< unsigned int > &QuadSetTopologyContainer::getQuadsAroundEd
     return m_quadsAroundEdge[i];
 }
 
-sofa::helper::vector< unsigned int > &QuadSetTopologyContainer::getQuadsAroundVertexForModification(const unsigned int i)
+QuadSetTopologyContainer::QuadsAroundVertex &QuadSetTopologyContainer::getQuadsAroundVertexForModification(const PointID i)
 {
     if(!hasQuadsAroundVertex())	// this method should only be called when the shell array exists
     {
@@ -487,7 +487,7 @@ bool QuadSetTopologyContainer::checkTopology() const
     {
         for (size_t i=0; i<m_quadsAroundVertex.size(); ++i)
         {
-            const sofa::helper::vector<unsigned int> &tvs = m_quadsAroundVertex[i];
+            const sofa::helper::vector<QuadID> &tvs = m_quadsAroundVertex[i];
             for (size_t j=0; j<tvs.size(); ++j)
             {
                 if((m_quad[tvs[j]][0]!=i)
@@ -506,7 +506,7 @@ bool QuadSetTopologyContainer::checkTopology() const
     {
         for (size_t i=0; i<m_quadsAroundEdge.size(); ++i)
         {
-            const sofa::helper::vector<unsigned int> &tes = m_quadsAroundEdge[i];
+            const sofa::helper::vector<QuadID> &tes = m_quadsAroundEdge[i];
             for (size_t j=0; j<tes.size(); ++j)
             {
                 if((m_edgesInQuad[tes[j]][0]!=i)
@@ -557,7 +557,7 @@ bool QuadSetTopologyContainer::checkConnexity()
 }
 
 
-unsigned int QuadSetTopologyContainer::getNumberOfConnectedComponent()
+size_t QuadSetTopologyContainer::getNumberOfConnectedComponent()
 {
     size_t nbr = this->getNbQuads();
 
@@ -570,7 +570,7 @@ unsigned int QuadSetTopologyContainer::getNumberOfConnectedComponent()
     }
 
     VecQuadID elemAll = this->getConnectedElement(0);
-    unsigned int cpt = 1;
+    size_t cpt = 1;
 
     while (elemAll.size() < nbr)
     {

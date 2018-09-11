@@ -56,22 +56,22 @@ bool MeshTopologyLoader::addMeshtoTopology()
     const sofa::helper::vector< Topology::Tetrahedron > & tetra = m_mesh->getTetrahedra();
     const sofa::helper::vector< Topology::Hexahedron > & hexa = m_mesh->getHexahedra();
 
-    for (int i = 0; i < vertices.size(); ++i)
+    for (size_t i = 0; i < vertices.size(); ++i)
         addPoint(vertices[i][0], vertices[i][1], vertices[i][2]);
 
-    for (int i = 0; i < edges.size(); ++i)
+    for (size_t i = 0; i < edges.size(); ++i)
         addLine(edges[i][0], edges[i][1]);
 
-    for (int i = 0; i < triangles.size(); ++i)
+    for (size_t i = 0; i < triangles.size(); ++i)
         addTriangle(triangles[i][0], triangles[i][1], triangles[i][2]);
 
-    for (int i = 0; i < quads.size(); ++i)
+    for (size_t i = 0; i < quads.size(); ++i)
         addQuad(quads[i][0], quads[i][1], quads[i][2], quads[i][3]);
 
-    for (int i = 0; i < tetra.size(); ++i)
+    for (size_t i = 0; i < tetra.size(); ++i)
         addTetra(tetra[i][0], tetra[i][1], tetra[i][2], tetra[i][3]);
 
-    for (int i = 0; i < hexa.size(); ++i)
+    for (size_t i = 0; i < hexa.size(); ++i)
         addCube(hexa[i][0], hexa[i][1], hexa[i][2], hexa[i][3],
             hexa[i][4], hexa[i][5], hexa[i][6], hexa[i][7]);
 

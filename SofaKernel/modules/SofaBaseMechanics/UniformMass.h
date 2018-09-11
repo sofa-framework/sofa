@@ -121,7 +121,7 @@ public:
     void reinit() override;
     void init() override;
     void initDefaultImpl() ;
-    void update();
+    bool update();
     virtual void handleEvent(sofa::core::objectmodel::Event */*event*/) override;
 
     /// @name Check and standard initialization functions from mass information
@@ -159,7 +159,7 @@ public:
 
 
     //Temporary function to warn the user when old attribute names are used
-    void parse( sofa::core::objectmodel::BaseObjectDescription* arg )
+    void parse( sofa::core::objectmodel::BaseObjectDescription* arg ) override
     {
         if (arg->getAttribute("mass"))
         {

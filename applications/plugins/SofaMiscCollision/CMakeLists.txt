@@ -85,3 +85,4 @@ set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}"
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 sofa_create_package(SofaMiscCollision ${SOFAMISCCOLLISION_VERSION} ${PROJECT_NAME} SofaMiscCollision)
+

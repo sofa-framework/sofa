@@ -1,4 +1,5 @@
 <Node name="root" dt="0.02" gravity="0 -10 0">
+    <RequiredPlugin name="SofaSparseSolver"/>
     <VisualStyle displayFlags="showBehaviorModels showForceFields" />
     <CollisionPipeline depth="6" verbose="0" draw="0" />
     <BruteForceDetection name="N2" />

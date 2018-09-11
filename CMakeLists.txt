@@ -59,12 +59,6 @@ list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/applications/plugins)
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/applications/packages)
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR}/applications/projects)
 
-# Create etc/sofa.ini: it contains the paths to share/ and examples/. In the
-# build directory, it points to the source tree,
-set(SHARE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/share")
-set(EXAMPLES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/examples")
-configure_file(${SOFA_KERNEL_SOURCE_DIR}/etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/sofa.ini")
-
 ## RPATH
 if(UNIX)
     # RPATH is a field in ELF binaries that is used as a hint by the system
@@ -126,9 +120,6 @@ option(SOFA_WITH_DEVTOOLS "Compile with developement extra features." ON)
 
 ### Threading
 option(SOFA_WITH_THREADING "Compile sofa with thread-safetiness support (PARTIAL/EXPERIMENTAL)" ON)
-
-### Experimental
-option(SOFA_WITH_EXPERIMENTAL_FEATURES "Compile sofa with exprimental features regarding sparse matrices treatments under mappings" OFF)
 
 ### Testing
 option(SOFA_BUILD_TESTS "Compile the automatic tests for Sofa, along with the gtest library." ON)
@@ -205,6 +196,11 @@ add_subdirectory(SofaAdvanced)
 add_subdirectory(SofaMisc)
 add_subdirectory(SofaGui)
 
+## Modules
+## in the consortium convention a module is a similar to a plugin the difference is that
+## a module is hosted and managed by the consortium while plugins are hosted and managed by third parties.
+add_subdirectory(modules)
+
 # SofaTest depends on SofaPython, so we add SofaPython before SofaTest.
 sofa_add_plugin( applications/plugins/SofaPython SofaPython )
 
@@ -249,6 +245,7 @@ add_subdirectory(applications/packages)
 ## Applications
 add_subdirectory(applications/projects)
 
+
 # Tutorial add subdirectory
 if(SOFA_BUILD_TUTORIALS)
     add_subdirectory(applications/tutorials)
@@ -284,11 +281,15 @@ install(FILES "${CMAKE_SOURCE_DIR}/CHANGELOG.md" DESTINATION . COMPONENT applica
 install(FILES "${CMAKE_SOURCE_DIR}/LICENSE.LGPL.txt" DESTINATION . COMPONENT applications)
 install(FILES "${CMAKE_SOURCE_DIR}/Authors.txt" DESTINATION . COMPONENT applications)
 
-## Create etc/installedSofa.ini: it contains the paths to share/ and examples/. Compare to the Sofa.ini in the
-## build directory, this one contains relative paths to the installed resource directory.
+# Create build and install versions of etc/sofa.ini:
+#   - In build dir, sofa.ini contains absolute paths to distant (in source) share/ and examples/ dirs
+#   - In install dir, sofa.ini (generated later via installedSofa.ini) contains relative paths to local share/ and examples/ dirs
+set(SHARE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/share")
+set(EXAMPLES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/examples")
+configure_file("${SOFA_KERNEL_SOURCE_DIR}/etc/sofa.ini.in" "${CMAKE_BINARY_DIR}/etc/sofa.ini")
 set(SHARE_DIR "../share/sofa")
 set(EXAMPLES_DIR "../share/sofa/examples")
-configure_file(${SOFA_KERNEL_SOURCE_DIR}/etc/sofa.ini.in "${CMAKE_BINARY_DIR}/etc/installedSofa.ini")
+configure_file("${SOFA_KERNEL_SOURCE_DIR}/etc/sofa.ini.in" "${CMAKE_BINARY_DIR}/etc/installedSofa.ini")
 install(FILES "${CMAKE_BINARY_DIR}/etc/installedSofa.ini" DESTINATION etc RENAME sofa.ini COMPONENT applications)
 
 option(SOFA_INSTALL_RESOURCES_FILES "Copy resources files (etc/, share/, examples/) when installing" ON)
