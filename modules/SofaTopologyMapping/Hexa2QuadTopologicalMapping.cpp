@@ -124,7 +124,7 @@ void Hexa2QuadTopologicalMapping::init()
                     to_tstm->addQuadProcess(q);
 
                     Loc2GlobVec.push_back(i);
-                    Glob2LocMap[i]=Loc2GlobVec.size()-1;
+                    Glob2LocMap[i]= (unsigned int)Loc2GlobVec.size()-1;
                 }
             }
 
@@ -189,17 +189,14 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                 {
                     //sout << "INFO_print : Hexa2QuadTopologicalMapping - QUADSREMOVED" << sendl;
 
-                    int last;
-                    int ind_last;
-
-                    last= fromModel->getNbQuads() - 1;
+                    unsigned int last = (unsigned int)fromModel->getNbQuads() - 1;
+                    unsigned int ind_last = (unsigned int)toModel->getNbQuads();
 
                     const sofa::helper::vector<unsigned int> &tab = ( static_cast< const QuadsRemoved *>( *itBegin ) )->getArray();
 
                     unsigned int ind_tmp;
 
                     unsigned int ind_real_last;
-                    ind_last=toModel->getNbQuads();
 
                     for (unsigned int i = 0; i <tab.size(); ++i)
                     {
@@ -284,7 +281,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
                         sofa::helper::vector< core::topology::BaseMeshTopology::Quad > quads_to_create;
                         sofa::helper::vector< unsigned int > quadsIndexList;
-                        int nb_elems = toModel->getNbQuads();
+                        unsigned int nb_elems = (unsigned int)toModel->getNbQuads();
                         const bool flipN = flipNormals.getValue();
 
                         for (unsigned int i = 0; i < tab.size(); ++i)
@@ -359,7 +356,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                                             sout << "INFO_print : Hexa2QuadTopologicalMapping - fail to add quad " << k << " which already exists" << sendl;
                                             Glob2LocMap.erase(Glob2LocMap.find(k));
                                         }
-                                        Glob2LocMap[k]=Loc2GlobVec.size()-1;
+                                        Glob2LocMap[k]=(unsigned int)Loc2GlobVec.size()-1;
                                     }
                                 }
                             }

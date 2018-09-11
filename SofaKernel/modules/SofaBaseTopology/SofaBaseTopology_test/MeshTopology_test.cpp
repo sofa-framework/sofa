@@ -156,31 +156,31 @@ bool MeshTopology_test::testHexahedronTopology()
         const HexahedronSetTopologyContainer::HexahedraAroundQuad& HaQ1 = hexahedraAroundQuad1[i];
         const BaseMeshTopology::HexahedraAroundQuad& HaQ2 = hexahedraAroundQuad2[i];
         EXPECT_EQ(HaQ1.size(), HaQ2.size());
-        for (int j = 0; j<HaQ1.size(); ++j)
+        for (size_t j = 0; j<HaQ1.size(); ++j)
             EXPECT_EQ(HaQ1[j], HaQ2[j]);
 
         const HexahedronSetTopologyContainer::QuadsInHexahedron& QiH1 = trianglesInHexahedron1[i];
         const BaseMeshTopology::QuadsInHexahedron& QiH2 = trianglesInHexahedron2[i];
         EXPECT_EQ(QiH1.size(), QiH2.size());
-        for (int j = 0; j<QiH1.size(); ++j)
+        for (size_t j = 0; j<QiH1.size(); ++j)
             EXPECT_EQ(QiH1[j], QiH1[j]);
 
         const HexahedronSetTopologyContainer::HexahedraAroundEdge& HaE1 = hexahedraAroundEdge1[i];
         const BaseMeshTopology::HexahedraAroundEdge& HaE2 = hexahedraAroundEdge2[i];
         EXPECT_EQ(HaE1.size(), HaE2.size());
-        for (int j = 0; j<HaE1.size(); ++j)
+        for (size_t j = 0; j<HaE1.size(); ++j)
             EXPECT_EQ(HaE1[j], HaE2[j]);
 
         const HexahedronSetTopologyContainer::EdgesInHexahedron& EiH1 = edgesInHexahedron1[i];
         const BaseMeshTopology::EdgesInHexahedron& EiH2 = edgesInHexahedron2[i];
         EXPECT_EQ(EiH1.size(), EiH2.size());
-        for (int j = 0; j<EiH1.size(); ++j)
+        for (size_t j = 0; j<EiH1.size(); ++j)
             EXPECT_EQ(EiH1[j], EiH2[j]);
 
         const HexahedronSetTopologyContainer::HexahedraAroundVertex& HaV1 = hexahedraAroundVertex1[i];
         const BaseMeshTopology::HexahedraAroundVertex& HaV2 = hexahedraAroundVertex2[i];
         EXPECT_EQ(HaV1.size(), HaV2.size());
-        for (int j = 0; j<HaV1.size(); ++j)
+        for (size_t j = 0; j<HaV1.size(); ++j)
             EXPECT_EQ(HaV1[j], HaV2[j]);
 
         const HexahedronSetTopologyContainer::Edge& e1 = edges1[i];
@@ -270,31 +270,31 @@ bool MeshTopology_test::testTetrahedronTopology()
         const TetrahedronSetTopologyContainer::TetrahedraAroundTriangle& TaT1 = tetrahedraAroundTriangle1[i];
         const BaseMeshTopology::TetrahedraAroundTriangle& TaT2 = tetrahedraAroundTriangle2[i];
         EXPECT_EQ(TaT1.size(), TaT2.size());
-        for (int j = 0; j<TaT1.size(); ++j)
+        for (size_t j = 0; j<TaT1.size(); ++j)
             EXPECT_EQ(TaT1[j], TaT2[j]);
 
         const TetrahedronSetTopologyContainer::TrianglesInTetrahedron& TiT1 = trianglesInTetrahedron1[i];
         const BaseMeshTopology::TrianglesInTetrahedron& TiT2 = trianglesInTetrahedron2[i];
         EXPECT_EQ(TiT1.size(), TiT2.size());
-        for (int j = 0; j<TiT1.size(); ++j)
+        for (size_t j = 0; j<TiT1.size(); ++j)
             EXPECT_EQ(TiT1[j], TiT1[j]);
 
         const TetrahedronSetTopologyContainer::TetrahedraAroundEdge& TaE1 = tetrahedraAroundEdge1[i];
         const BaseMeshTopology::TetrahedraAroundEdge& TaE2 = tetrahedraAroundEdge2[i];
         EXPECT_EQ(TaE1.size(), TaE2.size());
-        for (int j = 0; j<TaE1.size(); ++j)
+        for (size_t j = 0; j<TaE1.size(); ++j)
             EXPECT_EQ(TaE1[j], TaE2[j]);
 
         const TetrahedronSetTopologyContainer::EdgesInTetrahedron& EiT1 = edgesInTetrahedron1[i];
         const BaseMeshTopology::EdgesInTetrahedron& EiT2 = edgesInTetrahedron2[i];
         EXPECT_EQ(EiT1.size(), EiT2.size());
-        for (int j = 0; j<EiT1.size(); ++j)
+        for (size_t j = 0; j<EiT1.size(); ++j)
             EXPECT_EQ(EiT1[j], EiT2[j]);
 
         const TetrahedronSetTopologyContainer::TetrahedraAroundVertex& TaV1 = tetrahedraAroundVertex1[i];
         const BaseMeshTopology::TetrahedraAroundVertex& TaV2 = tetrahedraAroundVertex2[i];
         EXPECT_EQ(TaV1.size(), TaV2.size());
-        for (int j = 0; j<TaV1.size(); ++j)
+        for (size_t j = 0; j<TaV1.size(); ++j)
             EXPECT_EQ(TaV1[j], TaV2[j]);
         
         const TetrahedronSetTopologyContainer::Edge& e1 = edges1[i];
@@ -378,19 +378,19 @@ bool MeshTopology_test::testQuadTopology()
         const QuadSetTopologyContainer::EdgesInQuad& EiQ1 = edgesInQuad1[i];
         const BaseMeshTopology::EdgesInQuad& EiQ2 = edgesInQuad2[i];
         EXPECT_EQ(EiQ1.size(), EiQ2.size());
-        for (int j = 0; j<EiQ1.size(); ++j)
+        for (size_t j = 0; j<EiQ1.size(); ++j)
             EXPECT_EQ(EiQ1[j], EiQ2[j]);
 
         const QuadSetTopologyContainer::QuadsAroundVertex& QaV1 = quadsAroundVertex1[i];
         const BaseMeshTopology::QuadsAroundVertex& QaV2 = quadsAroundVertex2[i];
         EXPECT_EQ(QaV1.size(), QaV2.size());
-        for (int j = 0; j<QaV1.size(); ++j)
+        for (size_t j = 0; j<QaV1.size(); ++j)
             EXPECT_EQ(QaV1[j], QaV2[j]);
 
         const QuadSetTopologyContainer::QuadsAroundEdge& QaE1 = quadsAroundEdge1[i];
         const BaseMeshTopology::QuadsAroundEdge& QaE2 = quadsAroundEdge2[i];
         EXPECT_EQ(QaE1.size(), QaE2.size());
-        for (int j = 0; j<QaE1.size(); ++j)
+        for (size_t j = 0; j<QaE1.size(); ++j)
             EXPECT_EQ(QaE1[j], QaE2[j]);
 
         const QuadSetTopologyContainer::Edge& e1 = edges1[i];
@@ -429,8 +429,6 @@ bool MeshTopology_test::testTriangleTopology()
     }
 
     int nbrTriangle = 26;
-    int nbrEdge = 45;
-    int nbrVertex = 20;
     int elemSize = 3;
 
     // Check triangles container buffers size
@@ -481,19 +479,19 @@ bool MeshTopology_test::testTriangleTopology()
         const TriangleSetTopologyContainer::EdgesInTriangle& EiT1 = edgesInTriangle1[i];
         const BaseMeshTopology::EdgesInTriangle& EiT2 = edgesInTriangle2[i];
         EXPECT_EQ(EiT1.size(), EiT2.size());
-        for (int j=0; j<EiT1.size(); ++j)
+        for (size_t j=0; j<EiT1.size(); ++j)
             EXPECT_EQ(EiT1[j], EiT2[j]);
 
         const TriangleSetTopologyContainer::TrianglesAroundVertex& TaV1 = trianglesAroundVertex1[i];
         const BaseMeshTopology::TrianglesAroundVertex& TaV2 = trianglesAroundVertex2[i];
         EXPECT_EQ(TaV1.size(), TaV2.size());
-        for (int j = 0; j<TaV1.size(); ++j)
+        for (size_t j = 0; j<TaV1.size(); ++j)
             EXPECT_EQ(TaV1[j], TaV2[j]);
 
         const TriangleSetTopologyContainer::TrianglesAroundEdge& TaE1 = trianglesAroundEdge1[i];
         const BaseMeshTopology::TrianglesAroundEdge& TaE2 = trianglesAroundEdge2[i];
         EXPECT_EQ(TaE1.size(), TaE2.size());
-        for (int j = 0; j<TaE1.size(); ++j)
+        for (size_t j = 0; j<TaE1.size(); ++j)
             EXPECT_EQ(TaE1[j], TaE2[j]);
     }
 
@@ -558,7 +556,7 @@ bool MeshTopology_test::testEdgeTopology()
         const BaseMeshTopology::EdgesAroundVertex & edgeAV2 = topo->getEdgesAroundVertex(i);
         EXPECT_EQ(edgeAV1.size(), edgeAV2.size());
 
-        for (int j = 0; j < edgeAV1.size(); ++j)
+        for (size_t j = 0; j < edgeAV1.size(); ++j)
             EXPECT_EQ(edgeAV1[j], edgeAV2[j]);
     }
 

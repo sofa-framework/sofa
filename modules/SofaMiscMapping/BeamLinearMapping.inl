@@ -28,7 +28,6 @@
 #include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/helper/io/SphereLoader.h>
 #include <sofa/helper/io/Mesh.h>
-#include <sofa/helper/gl/template.h>
 
 #include <sofa/simulation/Simulation.h>
 
@@ -273,6 +272,7 @@ template <class TIn, class TOut>
 void BeamLinearMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparams)
 {
     if (!vparams->displayFlags().getShowMappings()) return;
+    vparams->drawTool()->saveLastState();
     std::vector< sofa::defaulttype::Vector3 > points;
     sofa::defaulttype::Vector3 point;
 
@@ -284,6 +284,7 @@ void BeamLinearMapping<TIn, TOut>::draw(const core::visual::VisualParams* vparam
     }
 
     vparams->drawTool()->drawPoints(points, 7, sofa::defaulttype::Vec<4,float>(1,1,0,1));
+    vparams->drawTool()->restoreLastState();
 }
 
 

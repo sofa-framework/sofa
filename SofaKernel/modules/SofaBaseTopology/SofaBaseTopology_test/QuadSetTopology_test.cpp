@@ -167,7 +167,7 @@ bool QuadSetTopology_test::testEdgeBuffers()
     const QuadSetTopologyContainer::QuadsAroundEdge& elemAEdgeM = topoCon->getQuadsAroundEdge(0);
 
     EXPECT_EQ(elemAEdge.size(), elemAEdgeM.size());
-    for (int i = 0; i < elemAEdge.size(); i++)
+    for (size_t i = 0; i < elemAEdge.size(); i++)
         EXPECT_EQ(elemAEdge[i], elemAEdgeM[i]);
 
     // check QuadAroundEdge buffer element for this file
@@ -183,7 +183,7 @@ bool QuadSetTopology_test::testEdgeBuffers()
     const QuadSetTopologyContainer::EdgesInQuad& edgeInElemM = topoCon->getEdgesInQuad(2);
 
     EXPECT_EQ(edgeInElem.size(), edgeInElemM.size());
-    for (int i = 0; i < edgeInElem.size(); i++)
+    for (size_t i = 0; i < edgeInElem.size(); i++)
         EXPECT_EQ(edgeInElem[i], edgeInElemM[i]);
 
     sofa::helper::fixed_array<int, 4> edgeInElemTruth(7, 8, 4, 9);
@@ -199,16 +199,16 @@ bool QuadSetTopology_test::testEdgeBuffers()
     EXPECT_EQ(edgeId, -1);
 
     // check link between QuadsAroundEdge and EdgesInQuad
-    for (int i = 0; i < 4; ++i)
+    for (unsigned int i = 0; i < 4; ++i)
     {
         QuadSetTopologyContainer::EdgeID edgeId = i;
         const QuadSetTopologyContainer::QuadsAroundEdge& _elemAEdge = elemAroundEdges[edgeId];
-        for (int j = 0; j < _elemAEdge.size(); ++j)
+        for (size_t j = 0; j < _elemAEdge.size(); ++j)
         {
             QuadSetTopologyContainer::QuadID triId = _elemAEdge[j];
             const QuadSetTopologyContainer::EdgesInQuad& _edgeInElem = edgeInQuads[triId];
             bool found = false;
-            for (int k = 0; k < _edgeInElem.size(); ++k)
+            for (size_t k = 0; k < _edgeInElem.size(); ++k)
             {
                 if (_edgeInElem[k] == edgeId)
                 {
@@ -257,7 +257,7 @@ bool QuadSetTopology_test::testVertexBuffers()
     const QuadSetTopologyContainer::QuadsAroundVertex& elemAVertexM = topoCon->getQuadsAroundVertex(1);
 
     EXPECT_EQ(elemAVertex.size(), elemAVertexM.size());
-    for (int i = 0; i < elemAVertex.size(); i++)
+    for (size_t i = 0; i < elemAVertex.size(); i++)
         EXPECT_EQ(elemAVertex[i], elemAVertexM[i]);
 
     // check QuadsAroundVertex buffer element for this file    

@@ -166,7 +166,7 @@ bool TriangleSetTopology_test::testEdgeBuffers()
     const TriangleSetTopologyContainer::TrianglesAroundEdge& triAEdgeM = topoCon->getTrianglesAroundEdge(0);
 
     EXPECT_EQ(triAEdge.size(), triAEdgeM.size());
-    for (int i = 0; i < triAEdge.size(); i++)
+    for (size_t i = 0; i < triAEdge.size(); i++)
         EXPECT_EQ(triAEdge[i], triAEdgeM[i]);
 
     // check TriangleAroundEdge buffer element for this file
@@ -182,32 +182,32 @@ bool TriangleSetTopology_test::testEdgeBuffers()
     const TriangleSetTopologyContainer::EdgesInTriangle& edgeInTriM = topoCon->getEdgesInTriangle(2);
 
     EXPECT_EQ(edgeInTri.size(), edgeInTriM.size());
-    for (int i = 0; i < edgeInTri.size(); i++)
+    for (size_t i = 0; i < edgeInTri.size(); i++)
         EXPECT_EQ(edgeInTri[i], edgeInTriM[i]);
 
     sofa::helper::fixed_array<int, 3> edgeInTriTruth(5, 6, 3);
-    for (int i = 0; i<edgeInTriTruth.size(); ++i)
+    for (size_t i = 0; i<edgeInTriTruth.size(); ++i)
         EXPECT_EQ(edgeInTri[i], edgeInTriTruth[i]);
     
     
     // Check Edge Index in Triangle
-    for (int i = 0; i<edgeInTriTruth.size(); ++i)
+    for (size_t i = 0; i<edgeInTriTruth.size(); ++i)
         EXPECT_EQ(topoCon->getEdgeIndexInTriangle(edgeInTri, edgeInTriTruth[i]), i);
 
     int edgeId = topoCon->getEdgeIndexInTriangle(edgeInTri, 20000);
     EXPECT_EQ(edgeId, -1);
 
     // check link between TrianglesAroundEdge and EdgesInTriangle
-    for (int i = 0; i < 4; ++i)
+    for (unsigned int i = 0; i < 4; ++i)
     {
         TriangleSetTopologyContainer::EdgeID edgeId = i;
         const TriangleSetTopologyContainer::TrianglesAroundEdge& _triAEdge = triAroundEdges[edgeId];
-        for (int j = 0; j < _triAEdge.size(); ++j)
+        for (size_t j = 0; j < _triAEdge.size(); ++j)
         {
             TriangleSetTopologyContainer::TriangleID triId = _triAEdge[j];
             const TriangleSetTopologyContainer::EdgesInTriangle& _edgeInTri = edgeInTriangles[triId];
             bool found = false;
-            for (int k = 0; k < _edgeInTri.size(); ++k)
+            for (size_t k = 0; k < _edgeInTri.size(); ++k)
             {
                 if (_edgeInTri[k] == edgeId)
                 {
@@ -256,7 +256,7 @@ bool TriangleSetTopology_test::testVertexBuffers()
     const TriangleSetTopologyContainer::TrianglesAroundVertex& triAVertexM = topoCon->getTrianglesAroundVertex(0);
 
     EXPECT_EQ(triAVertex.size(), triAVertexM.size());
-    for (int i = 0; i < triAVertex.size(); i++)
+    for (size_t i = 0; i < triAVertex.size(); i++)
         EXPECT_EQ(triAVertex[i], triAVertexM[i]);
 
     // check TrianglesAroundVertex buffer element for this file    

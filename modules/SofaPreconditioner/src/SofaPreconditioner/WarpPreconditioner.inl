@@ -42,7 +42,6 @@
 #include <iostream>
 #include <math.h>
 
-#include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/Quater.h>
 
 namespace sofa

@@ -3,7 +3,7 @@
 
 using sofa::helper::lifecycle::deprecatedComponents;
 
-int main(int argc, char **argv)
+int main(int /*argc*/, char **/*argv*/)
 {
     for (const auto& component : deprecatedComponents)
     {

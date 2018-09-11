@@ -555,7 +555,10 @@ public:
             }
 
             // Remove the objects from the container that are not in the new list
-            for (size_t i = 0; i != container.size(); i++)
+	        // TODO epernod 2018-08-01: This cast from size_t to unsigned int remove a large amount of warnings.
+            // But need to be rethink in the future. The problem is if index i is a site_t, then we need to template container<size_t> which impact the whole architecture.
+            unsigned int csize = (unsigned int)container.size();
+            for (unsigned int i = 0; i != csize; i++)
             {
                 DestPtr dest(container[i]);
                 bool destFound = false;
@@ -707,8 +710,8 @@ public:
         if (!this->m_owner) return false;
         bool ok = true;
         const int aspect = core::ExecParams::currentAspect();
-        std::size_t n = this->size();
-		for (std::size_t i = 0; i<n; ++i)
+        unsigned int n = (unsigned int)this->getSize();
+		for (unsigned int i = 0; i<n; ++i)
         {
             ValueType& value = this->m_value[aspect][i];
             std::string path;

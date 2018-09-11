@@ -51,12 +51,13 @@ namespace sofa
         //  6 : 8
         // 13 : 233
         // 23 : 28657
+        // 27 : 196418
         // 35 : 9227465
         // 41 : 165580141
         // 43 : 433494437
         // 47 : 2971215073
-        const int64_t res = Fibonacci(43, 1);
-        EXPECT_EQ(res, 433494437);
+        const int64_t res = Fibonacci(27, 1);
+        EXPECT_EQ(res, 196418);
 		return;
 	}
 
@@ -68,12 +69,13 @@ namespace sofa
         //  6 : 8
         // 13 : 233
         // 23 : 28657
+        // 27 : 196418
         // 35 : 9227465
         // 41 : 165580141
         // 43 : 433494437
         // 47 : 2971215073
-        const int64_t res = Fibonacci(43);
-        EXPECT_EQ(res, 433494437);
+        const int64_t res = Fibonacci(27);
+        EXPECT_EQ(res, 196418);
 		return;
 	}
 

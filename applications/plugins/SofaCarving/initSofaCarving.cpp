@@ -54,7 +54,7 @@ const char* getModuleName()
 
 const char* getModuleVersion()
 {
-    return "0.2";
+    return "0.3";
 }
 
 const char* getModuleLicense()
@@ -65,7 +65,7 @@ const char* getModuleLicense()
 
 const char* getModuleDescription()
 {
-    return "a simple example of a plugin component module";
+    return "Manager handling carving operations between a tool and an object.";
 }
 
 const char* getModuleComponentList()

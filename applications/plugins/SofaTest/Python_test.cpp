@@ -24,6 +24,19 @@ struct fail {
         : message(message) { }
 };
 
+
+/// This function is used by gtest to print the content of the struct in a meaninfull way
+void SOFA_SOFATEST_API PrintTo(const sofa::Python_test_data& d, ::std::ostream *os)
+{
+  (*os) << d.filepath  ;
+  (*os) << " with args {" ;
+  for(auto& v : d.arguments)
+  {
+      (*os) << v << ", " ;
+  }
+  (*os) << "}";
+}
+
 static PyObject* operator||(PyObject* obj, const fail& error) {
     if(obj) return obj;
     throw std::runtime_error(error.message);

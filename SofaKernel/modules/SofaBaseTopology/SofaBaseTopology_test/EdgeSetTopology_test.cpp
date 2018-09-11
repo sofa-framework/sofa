@@ -149,9 +149,9 @@ bool EdgeSetTopology_test::testVertexBuffers()
     EXPECT_EQ(edgeAroundVertices.size(), nbrVertex);
     const EdgeSetTopologyContainer::EdgesAroundVertex& edgeAVertex = edgeAroundVertices[0];
     const EdgeSetTopologyContainer::EdgesAroundVertex& edgeAVertexM = topoCon->getEdgesAroundVertex(0);
-
+    
     EXPECT_EQ(edgeAVertex.size(), edgeAVertexM.size());
-    for (int i = 0; i < edgeAVertex.size(); i++)
+    for (size_t i = 0; i < edgeAVertex.size(); i++)
         EXPECT_EQ(edgeAVertex[i], edgeAVertexM[i]);
 
     // check EdgesAroundVertex buffer element for this file    

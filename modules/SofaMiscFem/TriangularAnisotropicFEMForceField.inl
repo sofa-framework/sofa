@@ -24,11 +24,10 @@
 
 #include "TriangularAnisotropicFEMForceField.h"
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
-#include <sofa/helper/gl/template.h>
 #include <SofaBaseTopology/TopologyData.inl>
-#include <sofa/helper/system/gl.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
 #include <vector>
@@ -292,11 +291,8 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
 template <class DataTypes>
 void TriangularAnisotropicFEMForceField<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
-    glPolygonOffset(1.0, 2.0);
-    glEnable(GL_POLYGON_OFFSET_FILL);
     Inherited::draw(vparams);
-    glDisable(GL_POLYGON_OFFSET_FILL);
+
     if (!vparams->displayFlags().getShowForceFields())
         return;
 
@@ -304,10 +300,12 @@ void TriangularAnisotropicFEMForceField<DataTypes>::draw(const core::visual::Vis
 
     if (showFiber.getValue() && lfd.size() >= (unsigned)_topology->getNbTriangles())
     {
+        vparams->drawTool()->saveLastState();
+        sofa::defaulttype::RGBAColor color(0, 0, 0, 1.0);
+        std::vector<sofa::defaulttype::Vector3> vertices;
+
         const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
         int nbTriangles=_topology->getNbTriangles();
-        glColor3f(0,0,0);
-        glBegin(GL_LINES);
 
         for(int i=0; i<nbTriangles; ++i)
         {
@@ -321,14 +319,14 @@ void TriangularAnisotropicFEMForceField<DataTypes>::draw(const core::visual::Vis
                 Coord center = (x[a]+x[b]+x[c])/3;
                 Coord d = (x[b]-x[a])*lfd[i][0] + (x[c]-x[a])*lfd[i][1];
                 d*=0.25;
-                helper::gl::glVertexT(center-d);
-                helper::gl::glVertexT(center+d);
+                vertices.push_back(sofa::defaulttype::Vector3(center-d));
+                vertices.push_back(sofa::defaulttype::Vector3(center+d));
             }
         }
-        glEnd();
+        vparams->drawTool()->drawLines(vertices,1,color);
+        vparams->drawTool()->restoreLastState();
     }
     localFiberDirection.endEdit();
-#endif /* SOFA_NO_OPENGL */
 }
 
 } // namespace forcefield

@@ -53,7 +53,13 @@ if(SOFA_BUILD_TESTS)
     endif()
 endif()
 
-# if MSVC then plugins are located in bin/ instead of lib/ on Mac and Linux
+# Create build and install versions of .ini file for resources finding
+set(RESOURCES_DIR "${CMAKE_CURRENT_SOURCE_DIR}/resources")
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/etc/${PROJECT_NAME}.ini.in" "${CMAKE_BINARY_DIR}/etc/${PROJECT_NAME}.ini")
+set(RESOURCES_DIR "../share/sofa/gui/runSofa")
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/etc/${PROJECT_NAME}.ini.in" "${CMAKE_BINARY_DIR}/etc/installed${PROJECT_NAME}.ini")
+install(FILES "${CMAKE_BINARY_DIR}/etc/installed${PROJECT_NAME}.ini" DESTINATION etc RENAME ${PROJECT_NAME}.ini COMPONENT applications)
+
 install(DIRECTORY "resources" DESTINATION "share/sofa/gui/runSofa" COMPONENT resources)
 install(FILES "${_defaultConfigPluginFilePath}" DESTINATION ${_pluginLocation}/ COMPONENT applications)
 
