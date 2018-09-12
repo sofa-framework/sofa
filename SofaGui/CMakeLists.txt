@@ -81,7 +81,7 @@ if(NOT SOFA_NO_OPENGL)
             endif()
 
             ## VSync
-            option(SOFAGUI_ENABLE_VSYNC "Enable vertical refresh sync" ON)
+            option(SOFAGUI_ENABLE_VSYNC "Enable vertical refresh sync" OFF)
             if(SOFAGUI_ENABLE_VSYNC)
                 set(SOFA_GUI_VSYNC_ 1) # config.h.in
             else()
