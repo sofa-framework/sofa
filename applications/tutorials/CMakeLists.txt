@@ -10,7 +10,7 @@ set(SOFATUTORIALS_TARGETS
     #oneParticle
     # Needs SofaTypedefs
     # oneParticleWithSofaTypedefs
-    #oneTetrahedron
+    oneTetrahedron
 )
 
 foreach(TARGET ${SOFATUTORIALS_TARGETS})
