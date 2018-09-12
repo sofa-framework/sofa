@@ -11,13 +11,14 @@ PYBIND11_MODULE(Sofa, m)
     moduleAddBaseObject(m);
     moduleAddNode(m);
 
-    m.def("test", [](){
+    m.def("test", []()
+    {
         py::module m = py::module::import("SofaRuntime");
-        std::cout << "Hello..." << std::endl;
-        Node::SPtr s=Node::create("Damien");
-        std::cout << "ZUT  " << (void*)s.get() << std::endl;
-        std::cout << "ZOU  " << s->getName() << std::endl;
-        Base::SPtr b=Base::SPtr(s);
-        return s; //py::cast(b);
+        Node::SPtr n=Node::create("Damien");
+        Base::SPtr b=Base::SPtr(n);
+        py::tuple t {2};                  /// Why there is no initializer list ?
+        t[0] = b;
+        t[1] = n;
+        return t;
     });
 }

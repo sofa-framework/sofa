@@ -11,11 +11,9 @@ void moduleAddBase(py::module &m)
 
   p.def("getData", [](Base& self, const std::string& s) -> py::object
   {
-        std::cout << "UP CAST..." ;
         BaseData* d = self.findData(s);
         if(d!=nullptr)
         {
-            std::cout << "UP CAST..." ;
             return py::cast(d);
         }
         return py::none();
