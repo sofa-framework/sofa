@@ -156,17 +156,19 @@ protected :
 };
 
 // Specialization for rigids
+#if defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDCONSTRAINT_CPP)
 #ifndef SOFA_FLOAT
-template <>
+template <> SOFA_BOUNDARY_CONDITION_API
 void FixedConstraint<defaulttype::Rigid3dTypes >::draw(const core::visual::VisualParams* vparams);
-template <>
+template <> SOFA_BOUNDARY_CONDITION_API
 void FixedConstraint<defaulttype::Rigid2dTypes >::draw(const core::visual::VisualParams* vparams);
 #endif
 #ifndef SOFA_DOUBLE
-template <>
+template <> SOFA_BOUNDARY_CONDITION_API
 void FixedConstraint<defaulttype::Rigid3fTypes >::draw(const core::visual::VisualParams* vparams);
-template <>
+template <> SOFA_BOUNDARY_CONDITION_API
 void FixedConstraint<defaulttype::Rigid2fTypes >::draw(const core::visual::VisualParams* vparams);
+#endif
 #endif
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_PROJECTIVECONSTRAINTSET_FIXEDCONSTRAINT_CPP)
