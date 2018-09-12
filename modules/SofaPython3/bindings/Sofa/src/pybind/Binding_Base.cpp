@@ -9,9 +9,8 @@ using sofa::core::objectmodel::BaseLink;
 void moduleAddBase(py::module &m)
 {
     py::class_<Base, Base::SPtr> p(m, "Base");
-    p.def("setName", [](Base& self, const std::string& s){ self.setName(s); });
-    p.def("getName", &Base::getName);
-
+    p.def_property("name", &Base::getName,
+                   [](Base &self, const std::string &s) { self.setName(s); });
     p.def("getData", [](Base& self, const std::string& s) -> py::object
     {
         BaseData* d = self.findData(s);

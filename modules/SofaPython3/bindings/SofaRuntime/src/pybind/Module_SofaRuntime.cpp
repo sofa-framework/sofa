@@ -14,11 +14,15 @@ using sofa::simulation::graph::DAGSimulation ;
 /// #include <PythonModule_Sofa/Binding_Node>
 /// #include <Sofa/python/Binding_Node>
 #include <src/pybind/Binding_Node.h>
+#include <src/pybind/Binding_Base.h>
 
 /// The first parameter must be named the same as the module file to load.
 PYBIND11_MODULE(SofaRuntime, m) {
     /// We need to import the project dependencies
     py::module::import("Sofa");
+
+    m.def("getSimulation", [](){ return sofa::simulation::getSimulation(); });
+    
     m.def("reinit", []()
     {
         if(sofa::simulation::getSimulation())

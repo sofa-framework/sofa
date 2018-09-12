@@ -3,6 +3,8 @@
 
 #include <pybind11/pybind11.h>
 namespace py = pybind11;
+using namespace pybind11::literals;
+
 
 #include <sofa/core/objectmodel/Base.h>
 using sofa::core::objectmodel::Base;
