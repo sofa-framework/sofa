@@ -76,7 +76,7 @@ template class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyAlgorithms<Vec1fTypes>;
 #ifndef SOFA_FLOAT
 
 
-template<> SOFA_BASE_TOPOLOGY_API
+template<>
 int TriangleSetTopologyAlgorithms<defaulttype::Vec2dTypes>::SplitAlongPath(PointID , Coord& , PointID , Coord& ,
                                                               sofa::helper::vector< sofa::core::topology::TopologyObjectType>& ,
                                                               sofa::helper::vector<ElemID>& ,
@@ -86,7 +86,7 @@ int TriangleSetTopologyAlgorithms<defaulttype::Vec2dTypes>::SplitAlongPath(Point
     serr<<"TriangleSetTopologyAlgorithms<defaulttype::Vec2dTypes>::SplitAlongPath not implemented"<<sendl;
     return 0;
 }
-template<> SOFA_BASE_TOPOLOGY_API
+template<>
 int TriangleSetTopologyAlgorithms<defaulttype::Vec1dTypes>::SplitAlongPath(PointID , Coord& , PointID , Coord& ,
                                                               sofa::helper::vector< sofa::core::topology::TopologyObjectType>& ,
                                                               sofa::helper::vector<ElemID>& ,
@@ -102,7 +102,7 @@ int TriangleSetTopologyAlgorithms<defaulttype::Vec1dTypes>::SplitAlongPath(Point
 
 #ifndef SOFA_DOUBLE
 
-template<> SOFA_BASE_TOPOLOGY_API
+template<>
 int TriangleSetTopologyAlgorithms<defaulttype::Vec2fTypes>::SplitAlongPath(PointID , Coord& , PointID , Coord& ,
                                                               sofa::helper::vector< sofa::core::topology::TopologyObjectType>& ,
                                                               sofa::helper::vector<ElemID>& ,
@@ -112,7 +112,7 @@ int TriangleSetTopologyAlgorithms<defaulttype::Vec2fTypes>::SplitAlongPath(Point
     sout<<"TriangleSetTopologyAlgorithms<defaulttype::Vec2fTypes>::SplitAlongPath not implemented"<<sendl;
     return 0;
 }
-template<> SOFA_BASE_TOPOLOGY_API
+template<>
 int TriangleSetTopologyAlgorithms<defaulttype::Vec1fTypes>::SplitAlongPath(PointID , Coord& , PointID , Coord& ,
                                                               sofa::helper::vector< sofa::core::topology::TopologyObjectType>& ,
                                                               sofa::helper::vector<ElemID>& ,
