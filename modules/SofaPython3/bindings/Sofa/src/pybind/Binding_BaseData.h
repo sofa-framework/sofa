@@ -10,6 +10,7 @@ using sofa::core::objectmodel::BaseData;
 /// This class is used to mimick the smart pointer API needed by pybind to hold raw
 /// pointer that are not released by python and are not using sharedptr (so weak_ptr
 /// is not possible)
+// TODO: move this somewhere else as we will probably need it in several other places.
 template <class T> class raw_ptr
 {
     public:
