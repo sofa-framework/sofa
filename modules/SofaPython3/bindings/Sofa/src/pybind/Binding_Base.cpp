@@ -6,16 +6,21 @@ using sofa::core::objectmodel::BaseData;
 #include <sofa/core/objectmodel/BaseLink.h>
 using sofa::core::objectmodel::BaseLink;
 
+#include "Binding_BaseData.h"
+
 void moduleAddBase(py::module &m)
 {
     py::class_<Base, Base::SPtr> p(m, "Base");
     p.def_property("name", &Base::getName,
                    [](Base &self, const std::string &s) { self.setName(s); });
+
     p.def("getData", [](Base& self, const std::string& s) -> py::object
     {
         BaseData* d = self.findData(s);
         if(d!=nullptr)
         {
+            if(d->getValueTypeInfo()->Container())
+                return py::cast(reinterpret_cast<BaseDataAsContainer*>(d));
             return py::cast(d);
         }
         return py::none();
@@ -53,6 +58,7 @@ void moduleAddBase(py::module &m)
         BaseData* d = self.findData(s);
         if(d!=nullptr)
             return py::cast(d);
+
         BaseLink* l = self.findLink(s);
         if(l!=nullptr)
             return py::cast(l);

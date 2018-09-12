@@ -9,7 +9,7 @@ set(PYTHON3_INCLUDE_DIR "/usr/include/python3.6/")
 set(PYTHON_LIBRARIES ${PYTHON3_LIBRARY})
 set(PYTHON_INCLUDE_DIRS ${PYTHON3_INCLUDE_DIR})
 
-set(PYTHON_EXECUTABLE python3)
+set(PYTHON_EXECUTABLE python3.6m)
 find_package(pybind11 QUIET)
 if(NOT pybind11_FOUND)
   message("-- Cannot build the python module 'Sofa', missing the pybind software to generate the bindings.")

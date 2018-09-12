@@ -34,4 +34,6 @@ PYBIND11_DECLARE_HOLDER_TYPE(BaseData, raw_ptr<BaseData>);
 
 void moduleAddBaseData(py::module& m);
 
+class BaseDataAsContainer : public BaseData {} ;
+
 #endif /// PYTHONMODULE_SOFA_BINDING_BASEDATA_H

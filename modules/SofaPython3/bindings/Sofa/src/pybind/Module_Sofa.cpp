@@ -13,6 +13,10 @@ PYBIND11_MODULE(Sofa, m)
     moduleAddSimulation(m);
     moduleAddNode(m);
 
+    ///py::module runtime = m.def_submodule("Runtime");
+    ///runtime.add_object();
+    ///py::exec("import SofaRuntime as Runtime", py::globals());
+
     m.def("test", []()
     {
         py::module m = py::module::import("SofaRuntime");

@@ -26,6 +26,24 @@ void moduleAddBaseData(py::module &m)
         return py::none();
     });
 
+    py::class_<BaseDataAsContainer, BaseData, raw_ptr<BaseDataAsContainer>> p2(m, "Container");
+
+    // TODO: Implementation should look like: https://github.com/sofa-framework/sofa/issues/767
+    p2.def("__getitem__", [](BaseData& self, py::object& s) -> py::object
+    {
+        std::cout << "(mapping protocol, __getitem__ get to implement)" << std::endl ;
+        return py::none();
+    });
+
+    // TODO: Implementation should look like: https://github.com/sofa-framework/sofa/issues/767
+    p2.def("__setitem__", [](BaseData& self, py::object& key, py::object& value)
+    {
+        std::cout << "mapping protocol, __setitem__ to implement)" << std::endl ;
+        return py::none();
+    });
+
+
+    return;
     /// TODO implement.
     /// Buffer protocol
     /// https://pybind11.readthedocs.io/en/stable/advanced/pycpp/numpy.html#buffer-protocol
@@ -71,6 +89,8 @@ void moduleAddBaseData(py::module &m)
 //                      sizeof(Scalar) * (rowMajor ? 1 : m.rows()) }
 //                    /* Strides (in bytes) for each index */
 //                    );
+
+
     });
 
 }
