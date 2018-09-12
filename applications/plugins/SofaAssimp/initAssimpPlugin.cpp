@@ -19,50 +19,65 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <TestPlugin/TestPlugin.h>
+#include <SofaAssimp/config.h>
+
+
+namespace sofa
+{
+
+namespace component
+{
+
+//Here are just several convenient functions to help users know what the plugin contains 
 
 extern "C" {
+    SOFA_ASSIMP_API void initExternalModule();
+    SOFA_ASSIMP_API const char* getModuleName();
+    SOFA_ASSIMP_API const char* getModuleVersion();
+    SOFA_ASSIMP_API const char* getModuleLicense();
+    SOFA_ASSIMP_API const char* getModuleDescription();
+    SOFA_ASSIMP_API const char* getModuleComponentList();
+}
 
-static int counter = 0;
-
-SOFA_TESTPLUGIN_API void initExternalModule()
+void initExternalModule()
 {
     static bool first = true;
-
     if (first)
     {
         first = false;
     }
-    counter++;
 }
 
-SOFA_TESTPLUGIN_API const char* getModuleName()
+const char* getModuleName()
 {
-    return "TestPlugin";
+    return "Assimp Plugin";
 }
 
-SOFA_TESTPLUGIN_API const char* getModuleVersion()
+const char* getModuleVersion()
 {
-    return "0.7";
+    return "0.1";
 }
 
-SOFA_TESTPLUGIN_API const char* getModuleLicense()
+const char* getModuleLicense()
 {
-    return "LicenseTest";
+    return "BSD License";
 }
 
-SOFA_TESTPLUGIN_API const char* getModuleDescription()
+
+const char* getModuleDescription()
 {
-    return "Description of the Test Plugin";
+    return "Use Assimp reader and write functionnalities into SOFA";
 }
 
-SOFA_TESTPLUGIN_API const char* getModuleComponentList()
+const char* getModuleComponentList()
 {
-    return "ComponentA, ComponentB";
+    return "AssimpLoader";
 }
 
-} // extern "C"
 
+}
 
-SOFA_LINK_CLASS(ComponentA)
-SOFA_LINK_CLASS(ComponentB)
+}
+
+SOFA_LINK_CLASS(AssimpLoader)
+

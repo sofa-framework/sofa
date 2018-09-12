@@ -19,50 +19,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <TestPlugin/TestPlugin.h>
+#ifndef SOFAASSIMP_CONFIG_H
+#define SOFAASSIMP_CONFIG_H
 
-extern "C" {
+#include <sofa/helper/system/config.h>
 
-static int counter = 0;
+#define ASSIMP_PLUGIN_MAJOR_VERSION ${ASSIMP_PLUGIN_MAJOR_VERSION}
+#define ASSIMP_PLUGIN_MINOR_VERSION ${ASSIMP_PLUGIN_MINOR_VERSION}
 
-SOFA_TESTPLUGIN_API void initExternalModule()
-{
-    static bool first = true;
+#ifdef SOFA_BUILD_SOFAASSIMP
+#  define SOFA_TARGET SofaAssimp
+#  define SOFA_ASSIMP_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_ASSIMP_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
-    if (first)
-    {
-        first = false;
-    }
-    counter++;
-}
+#endif //SOFAASSIMP_CONFIG_H
 
-SOFA_TESTPLUGIN_API const char* getModuleName()
-{
-    return "TestPlugin";
-}
-
-SOFA_TESTPLUGIN_API const char* getModuleVersion()
-{
-    return "0.7";
-}
-
-SOFA_TESTPLUGIN_API const char* getModuleLicense()
-{
-    return "LicenseTest";
-}
-
-SOFA_TESTPLUGIN_API const char* getModuleDescription()
-{
-    return "Description of the Test Plugin";
-}
-
-SOFA_TESTPLUGIN_API const char* getModuleComponentList()
-{
-    return "ComponentA, ComponentB";
-}
-
-} // extern "C"
-
-
-SOFA_LINK_CLASS(ComponentA)
-SOFA_LINK_CLASS(ComponentB)
