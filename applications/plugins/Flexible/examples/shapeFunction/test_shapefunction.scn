@@ -14,7 +14,7 @@
 
     <EulerImplicitSolver  rayleighStiffness="0.1" rayleighMass="0.1" />
     <CGLinearSolver  />
-    <UniformMass mass="1" />
+    <UniformMass vertexMass="1" />
 
     <Node 	name="Child"   >
          <MeshObjLoader name="loader" filename="mesh/torus_for_collision.obj" />

@@ -48,16 +48,16 @@ public:
 
 
 
-    typedef core::topology::BaseMeshTopology::PointID		            	PointID;
-    typedef core::topology::BaseMeshTopology::EdgeID		               	EdgeID;
-    typedef core::topology::BaseMeshTopology::TriangleID	               TriangleID;
-    typedef core::topology::BaseMeshTopology::Edge		        	         Edge;
-    typedef core::topology::BaseMeshTopology::Triangle	        	         Triangle;
-    typedef core::topology::BaseMeshTopology::SeqTriangles	        	      SeqTriangles;
-    typedef core::topology::BaseMeshTopology::EdgesInTriangle	         	EdgesInTriangle;
-    typedef core::topology::BaseMeshTopology::TrianglesAroundVertex    	TrianglesAroundVertex;
-    typedef core::topology::BaseMeshTopology::TrianglesAroundEdge        	TrianglesAroundEdge;
-    typedef sofa::helper::vector<TriangleID>                  VecTriangleID;
+    typedef core::topology::BaseMeshTopology::PointID                      PointID;
+    typedef core::topology::BaseMeshTopology::EdgeID                       EdgeID;
+    typedef core::topology::BaseMeshTopology::TriangleID                   TriangleID;
+    typedef core::topology::BaseMeshTopology::Edge                         Edge;
+    typedef core::topology::BaseMeshTopology::Triangle                     Triangle;
+    typedef core::topology::BaseMeshTopology::SeqTriangles                 SeqTriangles;
+    typedef core::topology::BaseMeshTopology::EdgesInTriangle              EdgesInTriangle;
+    typedef core::topology::BaseMeshTopology::TrianglesAroundVertex        TrianglesAroundVertex;
+    typedef core::topology::BaseMeshTopology::TrianglesAroundEdge          TrianglesAroundEdge;
+    typedef sofa::helper::vector<TriangleID>                               VecTriangleID;
 
 
 protected:
@@ -171,14 +171,14 @@ public:
 
 
     /** \brief Returns the number of triangles in this topology.
-     *	The difference to getNbTriangles() is that this method does not generate the triangle array if it does not exist.
+     *    The difference to getNbTriangles() is that this method does not generate the triangle array if it does not exist.
      */
-    unsigned int getNumberOfTriangles() const;
+    size_t getNumberOfTriangles() const;
 
     /** \brief Returns the number of topological element of the current topology.
      * This function avoids to know which topological container is in used.
      */
-    virtual unsigned int getNumberOfElements() const override;
+    virtual size_t getNumberOfElements() const override;
 
     /** \brief Returns the Triangle array. */
     const sofa::helper::vector<Triangle> &getTriangleArray();
@@ -223,7 +223,7 @@ public:
     virtual bool checkConnexity() override;
 
     /// Returns the number of connected component.
-    virtual unsigned int getNumberOfConnectedComponent() override;
+    virtual size_t getNumberOfConnectedComponent() override;
 
     /// Returns the set of element indices connected to an input one (i.e. which can be reached by topological links)
     virtual const VecTriangleID getConnectedElement(TriangleID elem) override;

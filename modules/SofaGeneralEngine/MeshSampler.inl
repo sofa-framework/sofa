@@ -23,7 +23,6 @@
 #define SOFA_COMPONENT_ENGINE_MESHSAMPLER_INL
 
 #include <SofaGeneralEngine/MeshSampler.h>
-#include <sofa/helper/gl/template.h>
 #include <iostream>
 
 

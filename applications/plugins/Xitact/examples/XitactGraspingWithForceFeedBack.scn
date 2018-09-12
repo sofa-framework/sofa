@@ -49,7 +49,7 @@
     <MeshLoader name="meshLoader" filename="mesh/torus_low_res.msh"/>
     <Mesh/>
     <MechanicalObject dx="-40" dy="0" dz="-70" rx="90" ry="0" rz="0" scale="8.0" />
-    <UniformMass totalmass="0.01" />
+    <UniformMass totalMass="0.01" />
     <TetrahedronFEMForceField name="FEM" youngModulus="10000" poissonRatio="0.48" computeGlobalMatrix="false" method="polar"/>
     <!--<LinearSolverConstraintCorrection />-->
     <PrecomputedConstraintCorrection rotations="true" recompute="0"/>

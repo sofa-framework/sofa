@@ -146,47 +146,15 @@ void IdentityMapping<TIn, TOut>::handleTopologyChange()
     if ( this->toModel && this->fromModel && this->toModel->getSize() != this->fromModel->getSize()) this->init();
 }
 
-//template <class TIn, class TOut>
-//void IdentityMapping<TIn, TOut>::updateJ()
-//{
-//    size_t currentHash = this->maskTo->getHash();
-//    if(  previousMaskHash!=currentHash )
-//    {
-//        previousMaskHash = currentHash;
-
-//        assert( this->fromModel->getSize() == this->toModel->getSize());
-
-//        static const unsigned N = std::min<unsigned>(NIn, NOut);
-
-//        J.compressedMatrix.setZero();
-
-//        for( size_t i=0 ; i<this->toModel->getSize() ; ++i )
-//        {
-//            for(unsigned r = 0; r < N; ++r)
-//            {
-//                if( this->maskTo->getEntry(i) )
-//                {
-//                    const unsigned row = NOut * i + r;
-//                    const unsigned col = NIn * i + r;
-//                    J.compressedMatrix.insert( row, col ) = (OutReal)1;
-//                }
-//            }
-//        }
-//    }
-//}
-
-
 template <class TIn, class TOut>
 const sofa::defaulttype::BaseMatrix* IdentityMapping<TIn, TOut>::getJ()
 {
-//    updateJ();
     return &J;
 }
 
 template <class TIn, class TOut>
 const typename IdentityMapping<TIn, TOut>::js_type* IdentityMapping<TIn, TOut>::getJs()
 {
-//    updateJ();
     return &Js;
 }
 

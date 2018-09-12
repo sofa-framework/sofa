@@ -27,9 +27,8 @@
 #endif
 
 #include <SofaGeneralEngine/MeshROI.h>
-#include <sofa/helper/gl/template.h>
-#include <sofa/helper/gl/BasicShapes.h>
 #include <sofa/core/visual/VisualParams.h>
+#include <sofa/defaulttype/RGBAColor.h>
 
 #include <sofa/helper/logging/Messaging.h>
 
@@ -603,42 +602,39 @@ void MeshROI<DataTypes>::update()
 template <class DataTypes>
 void MeshROI<DataTypes>::draw(const VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     if (!vparams->displayFlags().getShowBehaviorModels() && !this->d_drawSize.getValue())
         return;
 
+    vparams->drawTool()->saveLastState();
+
+    vparams->drawTool()->disableLighting();
+
     const VecCoord* x0 = &d_X0.getValue();
 
-    glColor3f(1.0f, 0.4f, 0.4f);
+    std::vector<sofa::defaulttype::Vector3> vertices;
+
+    Real drawSize = (d_drawSize.getValue() > 1.0) ? d_drawSize.getValue() : 1.0;
 
     // draw the ROI mesh
     if( d_drawMesh.getValue())
     {
-        glColor3f(0.4f, 0.4f, 1.0f);
         const VecCoord* x0_i = &d_X0_i.getValue();
         ///draw ROI points
         if(d_drawPoints.getValue())
         {
-            if (d_drawSize.getValue())
-                glPointSize((GLfloat)d_drawSize.getValue());
-            glDisable(GL_LIGHTING);
-            glBegin(GL_POINTS);
-            glPointSize(5.0);
             helper::ReadAccessor< Data<VecCoord > > points_i = d_X0_i;
             for (unsigned int i=0; i<points_i.size() ; ++i)
             {
                 CPos p = DataTypes::getCPos(points_i[i]);
-                helper::gl::glVertexT(p);
+                vertices.push_back(sofa::defaulttype::Vector3(p[0], p[1], p[2]));
             }
-            glEnd();
-            glPointSize(1);
+
+            vparams->drawTool()->drawPoints(vertices, drawSize, sofa::defaulttype::RGBAColor(0.4f, 0.4f, 1.0f, 1.0f));
         }
         // draw ROI edges
         if(d_drawEdges.getValue())
         {
-            glDisable(GL_LIGHTING);
-            glLineWidth((GLfloat)d_drawSize.getValue());
-            glBegin(GL_LINES);
+            vertices.clear();
             helper::ReadAccessor< Data<helper::vector<Edge> > > edges_i = d_edges_i;
             for (unsigned int i=0; i<edges_i.size() ; ++i)
             {
@@ -646,227 +642,117 @@ void MeshROI<DataTypes>::draw(const VisualParams* vparams)
                 for (unsigned int j=0 ; j<2 ; j++)
                 {
                     CPos p = DataTypes::getCPos((*x0_i)[e[j]]);
-                    helper::gl::glVertexT(p);
+                    vertices.push_back(sofa::defaulttype::Vector3(p[0], p[1], p[2]));
                 }
             }
-            glEnd();
-            glPointSize(1);
+            vparams->drawTool()->drawLines(vertices, drawSize, sofa::defaulttype::RGBAColor(1.0f, 0.4f, 0.4f, 1.0f));
         }
         // draw ROI triangles
         if(d_drawTriangles.getValue())
         {
-            glDisable(GL_LIGHTING);
-            glBegin(GL_TRIANGLES);
+            vertices.clear();
             helper::ReadAccessor< Data<helper::vector<Triangle> > > triangles_i = d_triangles_i;
             for (unsigned int i=0; i<triangles_i.size() ; ++i)
             {
                 Triangle t = triangles_i[i];
                 for (unsigned int j=0 ; j<3 ; j++)
                 {
-                    CPos p = DataTypes::getCPos((*x0_i)[t[j]]);
-                    helper::gl::glVertexT(p);
+                    CPos p = (DataTypes::getCPos((*x0_i)[t[j]]));
+                    vertices.push_back(sofa::defaulttype::Vector3(p[0], p[1], p[2]));
                 }
             }
-            glEnd();
+            vparams->drawTool()->drawTriangles(vertices, sofa::defaulttype::RGBAColor(1.0f, 0.4f, 0.4f, 1.0f));
         }
-        glColor3f(1.0f, 0.4f, 0.4f);
     }
     // draw the bounding box
     if( d_drawBox.getValue())
     {
-        glDisable(GL_LIGHTING);
-        if (d_drawSize.getValue())
-            glLineWidth((GLfloat)d_drawSize.getValue());
-        glBegin(GL_LINES);
-        const Vec6& b=d_box.getValue();
-        const Real& Xmin=b[0];
-        const Real& Xmax=b[3];
-        const Real& Ymin=b[1];
-        const Real& Ymax=b[4];
-        const Real& Zmin=b[2];
-        const Real& Zmax=b[5];
-        glVertex3d(Xmin,Ymin,Zmin);
-        glVertex3d(Xmin,Ymin,Zmax);
-        glVertex3d(Xmin,Ymin,Zmin);
-        glVertex3d(Xmax,Ymin,Zmin);
-        glVertex3d(Xmin,Ymin,Zmin);
-        glVertex3d(Xmin,Ymax,Zmin);
-        glVertex3d(Xmin,Ymax,Zmin);
-        glVertex3d(Xmax,Ymax,Zmin);
-        glVertex3d(Xmin,Ymax,Zmin);
-        glVertex3d(Xmin,Ymax,Zmax);
-        glVertex3d(Xmin,Ymax,Zmax);
-        glVertex3d(Xmin,Ymin,Zmax);
-        glVertex3d(Xmin,Ymin,Zmax);
-        glVertex3d(Xmax,Ymin,Zmax);
-        glVertex3d(Xmax,Ymin,Zmax);
-        glVertex3d(Xmax,Ymax,Zmax);
-        glVertex3d(Xmax,Ymin,Zmax);
-        glVertex3d(Xmax,Ymin,Zmin);
-        glVertex3d(Xmin,Ymax,Zmax);
-        glVertex3d(Xmax,Ymax,Zmax);
-        glVertex3d(Xmax,Ymax,Zmin);
-        glVertex3d(Xmax,Ymin,Zmin);
-        glVertex3d(Xmax,Ymax,Zmin);
-        glVertex3d(Xmax,Ymax,Zmax);
-        glEnd();
-        glLineWidth(1);
+        vertices.clear();
+        const Vec6& b = d_box.getValue();
+        const sofa::defaulttype::Vector3 minBBox(b[0], b[1], b[2]);
+        const sofa::defaulttype::Vector3 maxBBox(b[3], b[4], b[5]);
+
+        vparams->drawTool()->setMaterial(sofa::defaulttype::RGBAColor(1.0f, 0.4f, 0.4f, 1.0f));
+        vparams->drawTool()->drawBoundingBox(minBBox, maxBBox, drawSize);
+
     }
     // draw points in ROI
     if( d_drawPoints.getValue())
     {
-        if (d_drawSize.getValue())
-            glPointSize((GLfloat)d_drawSize.getValue());
-        glDisable(GL_LIGHTING);
-        glBegin(GL_POINTS);
-        glPointSize(5.0);
-        if(d_drawOut.getValue())
+        vertices.clear();
+        helper::ReadAccessor< Data<VecCoord > > pointsROI = d_drawOut.getValue() ? d_pointsOutROI : d_pointsInROI;
+        for (unsigned int i=0; i<pointsROI.size() ; ++i)
         {
-            helper::ReadAccessor< Data<VecCoord > > pointsROI = d_pointsOutROI;
-            for (unsigned int i=0; i<pointsROI.size() ; ++i)
-            {
-                CPos p = DataTypes::getCPos(pointsROI[i]);
-                helper::gl::glVertexT(p);
-            }
+            CPos p = (DataTypes::getCPos(pointsROI[i]));
+            vertices.push_back(sofa::defaulttype::Vector3(p[0], p[1], p[2]));
         }
-        else
-        {
-            helper::ReadAccessor< Data<VecCoord > > pointsROI = d_pointsInROI;
-            for (unsigned int i=0; i<pointsROI.size() ; ++i)
-            {
-                CPos p = DataTypes::getCPos(pointsROI[i]);
-                helper::gl::glVertexT(p);
-            }
-        }
-        glEnd();
-        glPointSize(1);
+        vparams->drawTool()->drawPoints(vertices, drawSize, sofa::defaulttype::RGBAColor(0.4f, 0.4f, 1.0f, 1.0f));
     }
     // draw edges in ROI
     if( d_drawEdges.getValue())
     {
-        glDisable(GL_LIGHTING);
-        glLineWidth((GLfloat)d_drawSize.getValue());
-        glBegin(GL_LINES);
-        if(d_drawOut.getValue())
+        vertices.clear();
+        helper::ReadAccessor< Data<helper::vector<Edge> > > edgesROI = d_drawOut.getValue() ? d_edgesOutROI : d_edgesInROI;
+
+        for (unsigned int i=0; i<edgesROI.size() ; ++i)
         {
-            helper::ReadAccessor< Data<helper::vector<Edge> > > edgesROI = d_edgesOutROI;
-            for (unsigned int i=0; i<edgesROI.size() ; ++i)
+            const Edge& e = edgesROI[i];
+            for (unsigned int j=0 ; j<2 ; j++)
             {
-                Edge e = edgesROI[i];
-                for (unsigned int j=0 ; j<2 ; j++)
-                {
-                    CPos p = DataTypes::getCPos((*x0)[e[j]]);
-                    helper::gl::glVertexT(p);
-                }
+                CPos p = (DataTypes::getCPos((*x0)[e[j]]));
+                vertices.push_back(sofa::defaulttype::Vector3(p[0], p[1], p[2]));
             }
         }
-        else
-        {
-            helper::ReadAccessor< Data<helper::vector<Edge> > > edgesROI = d_edgesInROI;
-            for (unsigned int i=0; i<edgesROI.size() ; ++i)
-            {
-                Edge e = edgesROI[i];
-                for (unsigned int j=0 ; j<2 ; j++)
-                {
-                    CPos p = DataTypes::getCPos((*x0)[e[j]]);
-                    helper::gl::glVertexT(p);
-                }
-            }
-        }
-        glEnd();
-        glLineWidth(1);
+        
+        vparams->drawTool()->drawLines(vertices, drawSize, sofa::defaulttype::RGBAColor(0.4f, 0.4f, 1.0f, 1.0f));
     }
     // draw triangles in ROI
     if( d_drawTriangles.getValue())
     {
-        glDisable(GL_LIGHTING);
-        glBegin(GL_TRIANGLES);
-        if(d_drawOut.getValue())
+        vertices.clear();
+        helper::ReadAccessor< Data<helper::vector<Triangle> > > trianglesROI = d_drawOut.getValue() ? d_trianglesOutROI : d_trianglesInROI;
+       
+        for (unsigned int i=0; i<trianglesROI.size() ; ++i)
         {
-            helper::ReadAccessor< Data<helper::vector<Triangle> > > trianglesROI = d_trianglesOutROI;
-            for (unsigned int i=0; i<trianglesROI.size() ; ++i)
+            const Triangle& t = trianglesROI[i];
+            for (unsigned int j=0 ; j<3 ; j++)
             {
-                Triangle t = trianglesROI[i];
-                for (unsigned int j=0 ; j<3 ; j++)
-                {
-                    CPos p = DataTypes::getCPos((*x0)[t[j]]);
-                    helper::gl::glVertexT(p);
-                }
+                CPos p = (DataTypes::getCPos((*x0)[t[j]]));
+                vertices.push_back(sofa::defaulttype::Vector3(p[0], p[1], p[2]));
             }
         }
-        else
-        {
-            helper::ReadAccessor< Data<helper::vector<Triangle> > > trianglesROI = d_trianglesInROI;
-            for (unsigned int i=0; i<trianglesROI.size() ; ++i)
-            {
-                Triangle t = trianglesROI[i];
-                for (unsigned int j=0 ; j<3 ; j++)
-                {
-                    CPos p = DataTypes::getCPos((*x0)[t[j]]);
-                    helper::gl::glVertexT(p);
-                }
-            }
-        }
-        glEnd();
+        vparams->drawTool()->drawTriangles(vertices, sofa::defaulttype::RGBAColor(0.4f, 0.4f, 1.0f, 1.0f));
     }
     // draw tetrahedra in ROI
     if( d_drawTetrahedra.getValue())
     {
-        glDisable(GL_LIGHTING);
-        glLineWidth((GLfloat)d_drawSize.getValue());
-        glBegin(GL_LINES);
-        if(d_drawOut.getValue())
-        {
-            helper::ReadAccessor< Data<helper::vector<Tetra> > > tetrahedraROI = d_tetrahedraOutROI;
-            for (unsigned int i=0; i<tetrahedraROI.size() ; ++i)
-            {
-                Tetra t = tetrahedraROI[i];
-                for (unsigned int j=0 ; j<4 ; j++)
-                {
-                    CPos p = DataTypes::getCPos((*x0)[t[j]]);
-                    helper::gl::glVertexT(p);
-                    p = DataTypes::getCPos((*x0)[t[(j+1)%4]]);
-                    helper::gl::glVertexT(p);
-                }
+        vertices.clear();
+        helper::ReadAccessor< Data<helper::vector<Tetra> > > tetrahedraROI = d_drawOut.getValue() ? d_tetrahedraOutROI : d_tetrahedraInROI;
 
-                CPos p = DataTypes::getCPos((*x0)[t[0]]);
-                helper::gl::glVertexT(p);
-                p = DataTypes::getCPos((*x0)[t[2]]);
-                helper::gl::glVertexT(p);
-                p = DataTypes::getCPos((*x0)[t[1]]);
-                helper::gl::glVertexT(p);
-                p = DataTypes::getCPos((*x0)[t[3]]);
-                helper::gl::glVertexT(p);
-            }
-        }
-        else
+        for (unsigned int i=0; i<tetrahedraROI.size() ; ++i)
         {
-            helper::ReadAccessor< Data<helper::vector<Tetra> > > tetrahedraROI = d_tetrahedraInROI;
-            for (unsigned int i=0; i<tetrahedraROI.size() ; ++i)
+            const Tetra& t = tetrahedraROI[i];
+            for (unsigned int j=0 ; j<4 ; j++)
             {
-                Tetra t = tetrahedraROI[i];
-                for (unsigned int j=0 ; j<4 ; j++)
-                {
-                    CPos p = DataTypes::getCPos((*x0)[t[j]]);
-                    helper::gl::glVertexT(p);
-                    p = DataTypes::getCPos((*x0)[t[(j+1)%4]]);
-                    helper::gl::glVertexT(p);
-                }
-
-                CPos p = DataTypes::getCPos((*x0)[t[0]]);
-                helper::gl::glVertexT(p);
-                p = DataTypes::getCPos((*x0)[t[2]]);
-                helper::gl::glVertexT(p);
-                p = DataTypes::getCPos((*x0)[t[1]]);
-                helper::gl::glVertexT(p);
-                p = DataTypes::getCPos((*x0)[t[3]]);
-                helper::gl::glVertexT(p);
+                CPos p = (DataTypes::getCPos((*x0)[t[j]]));
+                vertices.push_back(sofa::defaulttype::Vector3(p[0], p[1], p[2]));
+                p = (DataTypes::getCPos((*x0)[t[(j + 1) % 4]]));
+                vertices.push_back(sofa::defaulttype::Vector3(p[0], p[1], p[2]));
             }
+            CPos p = (DataTypes::getCPos((*x0)[t[0]]));
+            vertices.push_back(sofa::defaulttype::Vector3(p[0], p[1], p[2]));
+            p = (DataTypes::getCPos((*x0)[t[2]]));
+            vertices.push_back(sofa::defaulttype::Vector3(p[0], p[1], p[2]));
+            p = (DataTypes::getCPos((*x0)[t[1]]));
+            vertices.push_back(sofa::defaulttype::Vector3(p[0], p[1], p[2]));
+            p = (DataTypes::getCPos((*x0)[t[3]]));
+            vertices.push_back(sofa::defaulttype::Vector3(p[0], p[1], p[2]));
         }
-        glEnd();
-        glLineWidth(1);
+       
+        vparams->drawTool()->drawLines(vertices, drawSize, sofa::defaulttype::RGBAColor(0.4f, 0.4f, 1.0f, 1.0f));
     }
-#endif /* SOFA_NO_OPENGL */
+
+    vparams->drawTool()->restoreLastState();
 }
 
 } // namespace engine

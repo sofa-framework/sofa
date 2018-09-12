@@ -6,7 +6,8 @@
 	<Node name="TetraTopology1">
 		<EulerImplicit name="cg_odesolver" printLog="false" rayleighStiffness="0.1" rayleighMass="0.1" />
 		<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-		<TetrahedronSetTopologyContainer name="Container1" fileTopology="mesh/liver.msh" />
+		<MeshGmshLoader name="meshLoader0" filename="mesh/liver.msh" />
+		<TetrahedronSetTopologyContainer name="Container1" src="@meshLoader0" />
 		<TetrahedronSetTopologyModifier/>
 		<TetrahedronSetTopologyAlgorithms template="Vec3d" />
 		<TetrahedronSetGeometryAlgorithms template="Vec3d" />

@@ -101,7 +101,7 @@ bool OglViewport::isVisible(const core::visual::VisualParams*)
     {
         VisualStyle* vstyle = NULL;
         this->getContext()->get(vstyle);
-        if (vstyle && !vstyle->displayFlags.getValue().getShowRendering())
+        if (vstyle && !vstyle->displayFlags.getValue().getShowAdvancedRendering())
             return false;
     }
     return true;

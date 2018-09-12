@@ -50,9 +50,6 @@
 #include <algorithm>
 #include <iostream>
 
-//#include <SofaMeshCollision/MeshIntTool.h>
-
-
 namespace sofa
 {
 

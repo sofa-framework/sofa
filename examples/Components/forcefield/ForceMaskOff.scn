@@ -21,7 +21,7 @@ w/o mask = 230-330 fps
         <MeshObjLoader name="loader" filename="mesh/dragon.obj"/>
         <MechanicalObject src="@loader" showObject="1" showObjectScale="10"/>
 <!--     Note that   UniformMass is activating every dofs   -->
-        <UniformMass mass="10"/>
+        <UniformMass vertexMass="10"/>
         <RigidMapping/>
         
         <Node>

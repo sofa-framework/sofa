@@ -8,7 +8,7 @@
     <LocalMinDistance name="proximity" alarmDistance="0.15" contactDistance="0.05" angleCone="0.0" />
     <FreeMotionAnimationLoop/>
     <LCPConstraintSolver tolerance="0.001" maxIt="1000"/>
-    <GeomagicDriver name="GeomagicDevice" deviceName="Default Device" scale="1" drawDeviceFrame="1" positionBase="0 0 0" orientationBase="0 0.707 0 -0.707"  />
+    <GeomagicDriver name="GeomagicDevice" deviceName="Default Device" scale="1" drawDeviceFrame="1" positionBase="0 0 0" drawDevice="0" orientationBase="0 0.707 0 -0.707"  />
 
 
     <Node name="Liver" gravity="0 -9.81 0">
@@ -67,7 +67,7 @@
         <EulerImplicitSolver name="ODE solver" rayleighStiffness="0.05" rayleighMass="1.0" />
         <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-10" threshold="10e-10" /> 
         <MechanicalObject name="instrumentState" position="@GeomagicDevice.positionDevice" template="Rigid" />
-        <UniformMass name="mass" totalmass="0.005" />
+        <UniformMass name="mass" totalMass="0.005" />
         <LCPForceFeedback activate="true" forceCoef="0.005"/> <!-- ADDED : Compute a force-feedback for the device -->
         <UncoupledConstraintCorrection/>
         <Node name="VisualModel" >

@@ -12,7 +12,7 @@
         <!-- or MeshTopology -->
         <MechanicalObject src="@loader" />
         <FixedConstraint name="FixedConstraint" indices="0" />
-        <UniformMass totalmass="5" />
+        <UniformMass totalMass="5" />
         <TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.4" computeGlobalMatrix="false" method="large" />
         <Node name="Visu">
             <OglModel name="Visual" fileMesh="mesh/torus2.obj" color="red" />

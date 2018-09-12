@@ -76,8 +76,10 @@ void VideoRecorderFFmpeg::start(void)
         exit(1);
     }
     st->id = oc->nb_streams-1;
-    //enc = avcodec_alloc_context3(codec);
-    enc = st->codec;
+
+    AVCodec *pCodec = avcodec_find_decoder(st->codecpar->codec_id);
+    enc = avcodec_alloc_context3(pCodec);
+
     if (!enc) {
         msg_error("VideoRecorder") << "Could not allocate video codec context";
         exit(1);
@@ -192,8 +194,8 @@ void VideoRecorderFFmpeg::stop(void)
     // Write the file trailer, if any
     av_write_trailer(oc);
 
-    // Close the codec
-    avcodec_close(st->codec);
+    // Free the codec context
+    avcodec_free_context(&enc);
 
     //sws_freeContext(sws_context);
     if (!(oc->oformat->flags & AVFMT_NOFILE))

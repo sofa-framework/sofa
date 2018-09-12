@@ -37,7 +37,12 @@
 #include "PythonEnvironment.h"
 using sofa::simulation::PythonEnvironment ;
 using sofa::core::topology::BaseMeshTopology ;
+typedef BaseMeshTopology::Edge Edge;
+typedef BaseMeshTopology::Triangle Triangle;
+typedef BaseMeshTopology::Quad Quad;
 typedef BaseMeshTopology::Tetra Tetra;
+typedef BaseMeshTopology::Hexa Hexa;
+typedef BaseMeshTopology::Penta Penta;
 using sofa::helper::vector;
 using sofa::helper::Factory;
 using namespace sofa::core::objectmodel;
@@ -47,25 +52,136 @@ typedef sofa::helper::Factory< std::string, BaseData> PSDEDataFactory;
 
 PSDEDataFactory* getFactoryInstance(){
     static PSDEDataFactory* s_localfactory = nullptr ;
-    if(s_localfactory==nullptr)
+    if (s_localfactory == nullptr)
     {
-        s_localfactory = new PSDEDataFactory() ;
-        s_localfactory->registerCreator("s", new DataCreator<std::string>());
-        s_localfactory->registerCreator("f", new DataCreator<float>());
-        s_localfactory->registerCreator("b", new DataCreator<bool>());
-        s_localfactory->registerCreator("d", new DataCreator<int>());
-        s_localfactory->registerCreator("t", new DataCreator<vector<Tetra>>());
-        s_localfactory->registerCreator("p", new DataCreator<sofa::defaulttype::Vec3dTypes::VecCoord>());
+        // helper vector style containers
+        std::string containers[] = {"vector", "ResizableExtVector"};
+
+        s_localfactory = new PSDEDataFactory();
+        // Scalars
+        s_localfactory->registerCreator("string", new DataCreator<std::string>());
+        s_localfactory->registerCreator("float", new DataCreator<float>());
+        s_localfactory->registerCreator("double", new DataCreator<double>());
+        s_localfactory->registerCreator("bool", new DataCreator<bool>());
+        s_localfactory->registerCreator("int", new DataCreator<int>());
+
+        // vectors
+        s_localfactory->registerCreator(
+                    "Vec2d", new DataCreator<sofa::defaulttype::Vec2d>());
+        s_localfactory->registerCreator(
+                    "Vec3d", new DataCreator<sofa::defaulttype::Vec3d>());
+        s_localfactory->registerCreator(
+                    "Vec4d", new DataCreator<sofa::defaulttype::Vec4d>());
+        s_localfactory->registerCreator(
+                    "Vec6d", new DataCreator<sofa::defaulttype::Vec6d>());
+        s_localfactory->registerCreator(
+                    "Vec2f", new DataCreator<sofa::defaulttype::Vec2f>());
+        s_localfactory->registerCreator(
+                    "Vec3f", new DataCreator<sofa::defaulttype::Vec3f>());
+        s_localfactory->registerCreator(
+                    "Vec4f", new DataCreator<sofa::defaulttype::Vec4f>());
+        s_localfactory->registerCreator(
+                    "Vec6f", new DataCreator<sofa::defaulttype::Vec6f>());
+
+        // Matrices
+        s_localfactory->registerCreator(
+                    "Mat2x2d", new DataCreator<sofa::defaulttype::Mat2x2d>());
+        s_localfactory->registerCreator(
+                    "Mat3x3d", new DataCreator<sofa::defaulttype::Mat3x3d>());
+        s_localfactory->registerCreator(
+                    "Mat4x4d", new DataCreator<sofa::defaulttype::Mat4x4d>());
+        s_localfactory->registerCreator(
+                    "Mat2x2f", new DataCreator<sofa::defaulttype::Mat2x2f>());
+        s_localfactory->registerCreator(
+                    "Mat3x3f", new DataCreator<sofa::defaulttype::Mat3x3f>());
+        s_localfactory->registerCreator(
+                    "Mat4x4f", new DataCreator<sofa::defaulttype::Mat4x4f>());
+
+        // Topology
+        s_localfactory->registerCreator("Edge", new DataCreator<Edge>());
+        s_localfactory->registerCreator("Triangle", new DataCreator<Triangle>());
+        s_localfactory->registerCreator("Quad", new DataCreator<Quad>());
+        s_localfactory->registerCreator("Tetra", new DataCreator<Tetra>());
+        s_localfactory->registerCreator("Hexa", new DataCreator<Hexa>());
+        s_localfactory->registerCreator("Penta", new DataCreator<Penta>());
+
+        // VECTORS
+        for (const auto& container : containers)
+        {
+            // Scalars
+            s_localfactory->registerCreator(container + "<string>",
+                                            new DataCreator<vector<std::string>>());
+            s_localfactory->registerCreator(container + "<float>",
+                                            new DataCreator<vector<float>>());
+            s_localfactory->registerCreator(container + "<double>",
+                                            new DataCreator<vector<double>>());
+            s_localfactory->registerCreator(container + "<bool>",
+                                            new DataCreator<vector<bool>>());
+            s_localfactory->registerCreator(container + "<int>",
+                                            new DataCreator<vector<int>>());
+
+            // vectors
+            s_localfactory->registerCreator(
+                        container + "<Vec2d>", new DataCreator<vector<sofa::defaulttype::Vec2d>>());
+            s_localfactory->registerCreator(
+                        container + "<Vec3d>", new DataCreator<vector<sofa::defaulttype::Vec3d>>());
+            s_localfactory->registerCreator(
+                        container + "<Vec4d>", new DataCreator<vector<sofa::defaulttype::Vec4d>>());
+            s_localfactory->registerCreator(
+                        container + "<Vec6d>", new DataCreator<vector<sofa::defaulttype::Vec6d>>());
+            s_localfactory->registerCreator(
+                        container + "<Vec2f>", new DataCreator<vector<sofa::defaulttype::Vec2f>>());
+            s_localfactory->registerCreator(
+                        container + "<Vec3f>", new DataCreator<vector<sofa::defaulttype::Vec3f>>());
+            s_localfactory->registerCreator(
+                        container + "<Vec4f>", new DataCreator<vector<sofa::defaulttype::Vec4f>>());
+            s_localfactory->registerCreator(
+                        container + "<Vec6f>", new DataCreator<vector<sofa::defaulttype::Vec6f>>());
+
+            // Matrices
+            s_localfactory->registerCreator(
+                        container + "<Mat2x2d>",
+                        new DataCreator<vector<sofa::defaulttype::Mat2x2d>>());
+            s_localfactory->registerCreator(
+                        container + "<Mat3x3d>",
+                        new DataCreator<vector<sofa::defaulttype::Mat3x3d>>());
+            s_localfactory->registerCreator(
+                        container + "<Mat4x4d>",
+                        new DataCreator<vector<sofa::defaulttype::Mat4x4d>>());
+            s_localfactory->registerCreator(
+                        container + "<Mat2x2f>",
+                        new DataCreator<vector<sofa::defaulttype::Mat2x2f>>());
+            s_localfactory->registerCreator(
+                        container + "<Mat3x3f>",
+                        new DataCreator<vector<sofa::defaulttype::Mat3x3f>>());
+            s_localfactory->registerCreator(
+                        container + "<Mat4x4f>",
+                        new DataCreator<vector<sofa::defaulttype::Mat4x4f>>());
+
+            // Topology
+            s_localfactory->registerCreator(container + "<Edge>",
+                                            new DataCreator<vector<Edge>>());
+            s_localfactory->registerCreator(container + "<Triangle>",
+                                            new DataCreator<vector<Triangle>>());
+            s_localfactory->registerCreator(container + "<Quad>",
+                                            new DataCreator<vector<Quad>>());
+            s_localfactory->registerCreator(container + "<Tetra>",
+                                            new DataCreator<vector<Tetra>>());
+            s_localfactory->registerCreator(container + "<Hexa>",
+                                            new DataCreator<vector<Hexa>>());
+            s_localfactory->registerCreator(container + "<Penta>",
+                                            new DataCreator<vector<Penta>>());
+
+        }
     }
     return s_localfactory ;
 }
-
 
 static Base* get_base(PyObject* self) {
     return sofa::py::unwrap<Base>(self);
 }
 
-static char* getStringCopy(char *c)
+static char* getStringCopy(const char *c)
 {
     if (c==nullptr)
         return nullptr;
@@ -73,6 +189,35 @@ static char* getStringCopy(char *c)
     char* tmp = new char[strlen(c)+1] ;
     strcpy(tmp,c);
     return tmp ;
+}
+
+#include <sofa/core/objectmodel/Link.h>
+
+BaseData* deriveTypeFromParentValue(Base* obj, const std::string& value)
+{
+    BaseObject* o = dynamic_cast<BaseObject*>(obj);
+    if (!o)
+        return nullptr;
+
+    // if data is a link
+    if (value.length() > 0 && value[0] == '@')
+    {
+        std::string componentPath = value.substr(1, value.find('.') - 1);
+        std::string parentDataName = value.substr(value.find('.') + 1);
+
+        if (!o->getContext())
+        {
+	    msg_warning("SofaPython") << "No context created. Cannot find data link to derive input type.";
+            return nullptr;
+        }
+        BaseObject* component;
+        component = o->getContext()->get<BaseObject>(componentPath);
+        if (!component)
+	    msg_warning("SofaPython") << "No object with path " << componentPath << " in scene graph.";
+        BaseData* parentData = component->findData(parentDataName);
+        return parentData->getNewInstance();
+    }
+    return nullptr;
 }
 
 
@@ -84,7 +229,8 @@ BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
     char* dataClass = new char;
     char* dataHelp = new char;
     char * dataName = new char;
-
+    std::string val = "";
+    
     PyObject* dataValue = nullptr;
 
     bool KwargsOrArgs = 0; //Args = 0, Kwargs = 1
@@ -115,55 +261,84 @@ BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
     {
         return nullptr;
     }    
-
+    BaseData* bd = nullptr;
     if(KwargsOrArgs) // parse kwargs
     {
         if(kw==nullptr || !PyDict_Check(kw) )
         {
-            msg_error("SofaPython") << "Could not parse kwargs for adding Data";
-            return nullptr;
+            msg_warning("SofaPython") << "Could not parse kwargs for adding Data.";
         }
-        PyObject * tmp;
-        tmp = PyDict_GetItemString(kw,"datatype");
-        if (tmp!=nullptr){
-            dataRawType = getStringCopy(PyString_AsString(tmp));
-        }
+        else
+        {
+            PyObject * tmp;
+            tmp = PyDict_GetItemString(kw,"datatype");
+            if (tmp!=nullptr){
+                dataRawType = getStringCopy(PyString_AsString(tmp));
+            }
 
-        tmp = PyDict_GetItemString(kw,"helptxt");
-        if (tmp!=nullptr){
-            dataHelp = getStringCopy(PyString_AsString(tmp));
-        }
+            tmp = PyDict_GetItemString(kw,"helptxt");
+            if (tmp!=nullptr){
+                dataHelp = getStringCopy(PyString_AsString(tmp));
+            }
 
-        tmp = PyDict_GetItemString(kw,"dataclass");
-        if (tmp!=nullptr){
-            dataClass= getStringCopy(PyString_AsString(tmp));
-        }
+            tmp = PyDict_GetItemString(kw,"dataclass");
+            if (tmp!=nullptr){
+                dataClass= getStringCopy(PyString_AsString(tmp));
+            }
 
-        tmp = PyDict_GetItemString(kw,"value");
-        if (tmp!=nullptr){
-            dataValue = tmp;
-            Py_IncRef(dataValue); // call to Py_GetItemString doesn't increment the ref count, but we want to hold on to it for a while ...
-        }      
+            tmp = PyDict_GetItemString(kw,"value");
+            if (tmp!=nullptr){
+                dataValue = tmp;
+                Py_IncRef(dataValue); // call to Py_GetItemString doesn't increment the ref count, but we want to hold on to it for a while ...
+                val = std::string(PyString_AsString(dataValue));
+                bd = deriveTypeFromParentValue(obj, val);
+            }
+        }
     }
 
     if (dataRawType[0]==0) // We cannot construct without a type
     {
-        msg_error(obj) << "No type provided for Data, cannot construct/add";
-        return nullptr;
+        if (val.empty())
+        {
+            bd = new EmptyData;
+            bd->setName(dataName);
+        }
+        else if (std::string(dataName) != "type")
+        {
+            msg_warning(obj) << "No type provided for Data " << dataName << " with value " << val << ", creating void* data.";
+            return bd;
+        }
+        else return new EmptyData;
     }
 
-    BaseData* bd = getFactoryInstance()->createObject(dataRawType, sofa::helper::NoArgument());
-
+    if (bd == nullptr)
+        bd = getFactoryInstance()->createObject(dataRawType, sofa::helper::NoArgument());
     if (bd == nullptr)
     {
-        msg_error(obj) << dataRawType << " is not a known type";
-        return nullptr;
+        if (val.empty())
+        {
+            bd = new EmptyData;
+            bd->setName(dataName);
+        }
+        else if (std::string(dataName) != "type")
+        {
+  	        sofa::helper::vector<std::string> validTypes;
+	          getFactoryInstance()->uniqueKeys(std::back_inserter(validTypes));
+	          std::string typesString = "[";
+	          for (const auto& i : validTypes)
+	              typesString += i + ", ";
+	          typesString += "\b\b]";
+	          msg_error(obj) << dataRawType << " is not a known type. Available "
+	                            "types are:\n" << typesString;
+            return nullptr;
+        }
+        else return new EmptyData;
     }
     else
     {
         bd->setName(dataName);
         bd->setHelp(dataHelp);
-        obj->addData(bd);        
+        obj->addData(bd);
         if(dataValue!=nullptr) // parse provided data: Py->SofaStr->Data or link
         {
             std::stringstream tmp;
@@ -172,7 +347,7 @@ BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
             {
                 if(!bd->setParent(tmp.str()))
                 {
-                    msg_warning(obj) << "Could not setup link for Data, initialzing empty";
+                    msg_warning(obj) << "Could not setup link for Data, initialzing empty.";
                 }
             }
             else
@@ -253,7 +428,7 @@ static PyObject * Base_findData(PyObject *self, PyObject *args ) {
     if (!data) {
         std::stringstream tmp ;
         if( obj->hasField(dataName) ) {
-            tmp <<"object '"<<obj->getName()<<"' has a field '"<<dataName<<"' but it is not a Data";
+            tmp <<"object '"<<obj->getName()<<"' has a field '"<<dataName<<"' but it is not a Data.";
         } else {
             tmp << "object '"<<obj->getName()<<"' does no have a field '"<<dataName<<"'";
             obj->writeDatas(tmp,";");
@@ -284,7 +459,7 @@ static PyObject * Base_findLink(PyObject *self, PyObject *args) {
     if (!link) {
         std::stringstream tmp ;
         if( obj->hasField(linkName) ) {
-            tmp << "object '"<<obj->getName()<<"' has a field '"<<linkName<<"' but it is not a Link";
+            tmp << "object '"<<obj->getName()<<"' has a field '"<<linkName<<"' but it is not a Link.";
         } else {
             tmp <<"object '"<<obj->getName()<<"' does no have a field '"<<linkName<<"'" << msgendl;
             obj->writeDatas(tmp,";");
@@ -421,10 +596,10 @@ static PyObject * Base_downCast(PyObject *self, PyObject * /*args*/) {
 SP_CLASS_METHODS_BEGIN(Base)
 SP_CLASS_METHOD_DOC(Base,addNewData, "Add a new Data field to the current object. \n"
                                         "Eg:                                         \n"
-                                        "  obj.addNewData('myDataName1','theDataGroupA','help message','f',1.0)  \n"
-                                        "  obj.addNewData('myDataName2','theDataGroupA','help message','b',True) \n"
-                                        "  obj.addNewData('myDataName3','theDataGroupB','help message','d',1)     \n"
-                                        "  obj.addNewData('myDataName4','theDataGroupB','help message','s','hello') \n")
+                                        "  obj.addNewData('myDataName1','theDataGroupA','help message','float',1.0)  \n"
+                                        "  obj.addNewData('myDataName2','theDataGroupA','help message','','@otherComponent.datafield) \n"
+                                        "  obj.addNewData('myDataName3','theDataGroupB','help message','vector<Vec3d>', '@loader.position')     \n"
+                                        "  obj.addNewData('myDataName4','theDataGroupB','help message','string','hello') \n")
 SP_CLASS_METHOD_DOC(Base,addData, "Adds an existing data field to the current object")
 SP_CLASS_METHOD_DOC(Base,findData, "Returns the data field if there is one associated \n"
                                    "with the provided name and downcasts it to the lowest known type. \n"

@@ -8,7 +8,7 @@
     <CGLinearSolver  />
 
     <MechanicalObject  template="Vec3d" position="0 0 1   0 1 0   1 0 0   -0.7 -0.7 0 "  name="parent"  />
-    <UniformMass mass="1" />
+    <UniformMass vertexMass="1" />
     <ShepardShapeFunction position="@parent.rest_position" nbRef="4" power="2"/>
 
     <Node 	name="Child"   >

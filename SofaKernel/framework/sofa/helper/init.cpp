@@ -39,7 +39,6 @@ SOFA_HELPER_API void init()
 {
     if (!s_initialized)
     {
-        Console::init();
         s_initialized = true;
     }
 }

@@ -58,18 +58,17 @@ class SOFA_EXPORTER_API WriteState: public core::objectmodel::BaseObject
 public:
     SOFA_CLASS(WriteState,core::objectmodel::BaseObject);
 
-    sofa::core::objectmodel::DataFileName f_filename;
-    Data < bool > f_writeX; ///< flag enabling output of X vector
-    Data < bool > f_writeX0; ///< flag enabling output of X0 vector
-    Data < bool > f_writeV; ///< flag enabling output of V vector
-    Data < bool > f_writeF; ///< flag enabling output of F vector
-    Data < double > f_interval; ///< time duration between outputs
-    Data < helper::vector<double> > f_time; ///< set time to write outputs
-    Data < double > f_period; ///< period between outputs
-    Data < helper::vector<unsigned int> > f_DOFsX; ///< set the position DOFs to write
-    Data < helper::vector<unsigned int> > f_DOFsV; ///< set the velocity DOFs to write
-    Data < double > f_stopAt; ///< stop the simulation when the given threshold is reached
-    Data < double > f_keperiod; ///< set the period to measure the kinetic energy increase
+    sofa::core::objectmodel::DataFileName d_filename;
+    Data < bool > d_writeX; ///< flag enabling output of X vector
+    Data < bool > d_writeX0; ///< flag enabling output of X0 vector
+    Data < bool > d_writeV; ///< flag enabling output of V vector
+    Data < bool > d_writeF; ///< flag enabling output of F vector
+    Data < helper::vector<double> > d_time; ///< set time to write outputs
+    Data < double > d_period; ///< period between outputs
+    Data < helper::vector<unsigned int> > d_DOFsX; ///< set the position DOFs to write
+    Data < helper::vector<unsigned int> > d_DOFsV; ///< set the velocity DOFs to write
+    Data < double > d_stopAt; ///< stop the simulation when the given threshold is reached
+    Data < double > d_keperiod; ///< set the period to measure the kinetic energy increase
 
 protected:
     core::behavior::BaseMechanicalState* mmodel;
@@ -77,11 +76,14 @@ protected:
 #ifdef SOFA_HAVE_ZLIB
     gzFile gzfile;
 #endif
-    unsigned int nextTime;
+    unsigned int nextIteration;
     double lastTime;
     bool kineticEnergyThresholdReached;
     double timeToTestEnergyIncrease;
     double savedKineticEnergy;
+    bool firstExport;
+    bool periodicExport;
+    bool validInit;
 
 
     WriteState();

@@ -20,7 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "HeadlessRecorder.h"
-
+#include "VideoRecorderFFMpeg.h"
 namespace sofa
 {
 
