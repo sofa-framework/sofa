@@ -170,6 +170,8 @@ protected:
 
     Data<helper::vector<std::string>> d_forceFieldList;
 
+    unsigned int m_nbInteractionForceFields;
+
     MechanicalMatrixMapper() ;
 
 public:
