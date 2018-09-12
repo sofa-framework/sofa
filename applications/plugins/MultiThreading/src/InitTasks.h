@@ -19,52 +19,45 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef AnimationLoopTasks_h__
-#define AnimationLoopTasks_h__
+#ifndef InitTasks_h__
+#define InitTasks_h__
 
-#include "Tasks.h"
-
+#include "TaskScheduler.h"
 
 namespace sofa
 {
-    
-    // forawrd declaraion
-    namespace core { namespace behavior {
-        class BaseAnimationLoop;
-    } }
-    
-    //namespace helper { namespace system {
-    //    template<int> class atomic;
-    //} }
-    
-    
-    
     namespace simulation
     {
-        
+
         using namespace sofa;
-        
-        
-        class StepTask : public Task
+
+
+
+        class InitPerThreadDataTask : public Task
         {
+
         public:
-            StepTask(core::behavior::BaseAnimationLoop* aloop, const double t, Task::Status* pStatus);
-            
-            virtual ~StepTask();
-            
-            virtual bool run(WorkerThread* );
-            
-            
+
+            InitPerThreadDataTask(std::atomic<int>* atomicCounter, std::mutex* mutex, Task::Status* pStatus);
+
+            virtual ~InitPerThreadDataTask();
+
+            virtual bool run(WorkerThread*) override;
+
         private:
-            
-            core::behavior::BaseAnimationLoop* animationloop;
-            const double dt;
-            
+
+            std::mutex*	 IdFactorygetIDMutex;
+            std::atomic<int>* _atomicCounter;
         };
+
+
+        //fix and prefer using the global runThreadSpecificTask
+        SOFA_MULTITHREADING_PLUGIN_API void initThreadLocalData();
         
+
         
     } // namespace simulation
-    
+
 } // namespace sofa
 
-#endif // AnimationLoopTasks_h__
+#endif // InitTasks_h__

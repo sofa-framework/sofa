@@ -51,6 +51,7 @@ NewmarkImplicitSolver::NewmarkImplicitSolver()
     , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
     , f_gamma( initData(&f_gamma, 0.5, "gamma", "Newmark scheme gamma coefficient"))
     , f_beta( initData(&f_beta, 0.25, "beta", "Newmark scheme beta coefficient") )
+    , d_threadSafeVisitor(initData(&d_threadSafeVisitor, false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
 {
     cpt=0;
 }
@@ -70,7 +71,7 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa
 
 
     // dx is no longer allocated by default (but it will be deleted automatically by the mechanical objects)
-    MultiVecDeriv dx(&vop, core::VecDerivId::dx() ); dx.realloc( &vop, true, true );
+    MultiVecDeriv dx(&vop, core::VecDerivId::dx()); dx.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
 
     const SReal h = dt;
     const double gamma = f_gamma.getValue();
@@ -115,7 +116,7 @@ void NewmarkImplicitSolver::solve(const core::ExecParams* params, SReal dt, sofa
 
     // Define a
     MultiVecDeriv a(&vop, pID);
-    a.realloc( &vop, true, true );
+    a.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
     if(cpt ==0)
     {
         a.clear();

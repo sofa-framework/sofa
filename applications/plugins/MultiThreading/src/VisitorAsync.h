@@ -19,52 +19,43 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef AnimationLoopTasks_h__
-#define AnimationLoopTasks_h__
+#ifndef Sofa_VisitorAsync_h__
+#define Sofa_VisitorAsync_h__
 
-#include "Tasks.h"
+#include <Multithreading/config.h>
 
+#include <sofa/simulation/Visitor.h>
+#include <MultiThreading/src/Tasks.h>
 
 namespace sofa
 {
-    
-    // forawrd declaraion
-    namespace core { namespace behavior {
-        class BaseAnimationLoop;
-    } }
-    
-    //namespace helper { namespace system {
-    //    template<int> class atomic;
-    //} }
-    
-    
-    
+
     namespace simulation
     {
-        
-        using namespace sofa;
-        
-        
-        class StepTask : public Task
+
+        /**
+        * Used to execute async tasks
+        */
+
+        class SOFA_MULTITHREADING_PLUGIN_API VisitorAsync : public Visitor
         {
         public:
-            StepTask(core::behavior::BaseAnimationLoop* aloop, const double t, Task::Status* pStatus);
-            
-            virtual ~StepTask();
-            
-            virtual bool run(WorkerThread* );
-            
-            
-        private:
-            
-            core::behavior::BaseAnimationLoop* animationloop;
-            const double dt;
-            
+            VisitorAsync(const sofa::core::ExecParams* params, Task::Status* status)
+                : Visitor(params)
+                , _status(status)
+            {}
+
+            const Task::Status* getStatus() { return _status; }
+
+        protected:
+
+            Task::Status* _status;
+
         };
-        
-        
+
+
     } // namespace simulation
-    
+
 } // namespace sofa
 
-#endif // AnimationLoopTasks_h__
+#endif // Sofa_VisitorAsync_h__

@@ -53,21 +53,19 @@ namespace sofa
                 bool isBusy() const
                 {
                     return (_busy.load(std::memory_order_relaxed) > 0);
-                }
-                
-                
-                
+                }         
+        
             private:
                 
-                void markBusy(bool busy)
+                int setBusy(bool busy)
                 {
                     if (busy)
                     {
-                        _busy.fetch_add(1, std::memory_order_relaxed);
+                        return _busy.fetch_add(1, std::memory_order_relaxed);
                     }
                     else
                     {
-                        _busy.fetch_sub(1, std::memory_order_relaxed);
+                        return _busy.fetch_sub(1, std::memory_order_relaxed);
                     }
                 }
                 
@@ -101,6 +99,8 @@ namespace sofa
             }
 
 			const Task::Status*	_status;
+
+            int _id;
 
 			friend class WorkerThread;
 

@@ -16,6 +16,7 @@ namespace sofa
 
 		Task::Task(const Task::Status* pStatus)
 			: _status(pStatus)
+            , _id(0)
 		{
             
 		}
