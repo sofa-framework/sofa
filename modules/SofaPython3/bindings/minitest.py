@@ -1,17 +1,25 @@
 import sys
+import os
+os.environ["SOFA_ROOT"] = "/home/dmarchal//projects/DEFROST/dev/sofa1/builds/release/"
 sys.path.append("./Sofa/package")
 sys.path.append("./SofaRuntime/package")
 
 import Sofa
 import SofaRuntime
 
-SofaRuntime.reinit()
+## Register all the common component in the factory. 
+SofaRuntime.importPlugin("SofaAllCommonComponents")
 
+## Init the simulation singleton. 
+SofaRuntime.reinit()
 r = Sofa.test()
 
-b = r[0]
-b.name = "damien"
-b.createObject("MechanicalObject", "test")
+b = r[1]
+#b.name = "damien"
+print("B"+str(b))
+
+b.createObject("MechanicalObject",name="test", position=[[0,0,0]])
+print("Created object: "+str(b.test.getData("name")))
 
 for t in r:
         print("type: "+str(type(t)))

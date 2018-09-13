@@ -7,6 +7,15 @@ using sofa::simulation::Node;
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::graph::DAGSimulation ;
 
+#include <SofaSimulationGraph/SimpleApi.h>
+namespace simpleapi = sofa::simpleapi;
+
+#include <sofa/helper/Utils.h>
+using sofa::helper::Utils;
+
+#include <sofa/helper/system/FileRepository.h>
+using sofa::helper::system::PluginRepository;
+
 /// here is the .pxd.
 /// TODO(bruno-marques) ... this is mandatory for the conversion. But the path must be made
 /// un-ambiguous to sofa.
@@ -16,13 +25,31 @@ using sofa::simulation::graph::DAGSimulation ;
 #include <src/pybind/Binding_Node.h>
 #include <src/pybind/Binding_Base.h>
 
+// TODO (je suis dans une WIP) donc je peux dire que c'est beurk
+#include <SofaSimulationCommon/init.h>
+#include <SofaSimulationGraph/init.h>
+
 /// The first parameter must be named the same as the module file to load.
 PYBIND11_MODULE(SofaRuntime, m) {
+    // TODO, ces trucs sont fort laid. Normalement ce devrait être une joli plugin qui
+    // appelle le init.
+    sofa::simulation::common::init();
+    sofa::simulation::graph::init();
+
+    // Add the plugin directory to PluginRepository
+    const std::string& pluginDir = Utils::getPluginDirectory();
+    PluginRepository.addFirstPath(pluginDir);
+
     /// We need to import the project dependencies
     py::module::import("Sofa");
 
     m.def("getSimulation", [](){ return sofa::simulation::getSimulation(); });
     
+    m.def("importPlugin", [](const std::string& name)
+    {
+        return simpleapi::importPlugin(name);
+    });
+
     m.def("reinit", []()
     {
         if(sofa::simulation::getSimulation())
@@ -30,7 +57,8 @@ PYBIND11_MODULE(SofaRuntime, m) {
         sofa::simulation::setSimulation(new DAGSimulation());
     });
 
-    m.def("loadScene", [](const std::string& filename) -> py::object {
+    m.def("loadScene", [](const std::string& filename) -> py::object
+    {
         //if(sofa::simulation::getSimulation())
         //    delete sofa::simulation::getSimulation();
         sofa::simulation::setSimulation(new DAGSimulation());
