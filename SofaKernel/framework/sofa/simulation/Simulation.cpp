@@ -96,20 +96,6 @@ Simulation::~Simulation()
 {
 }
 
-/// The (unique) simulation which controls the scene
-Simulation::SPtr Simulation::theSimulation  {nullptr};
-
-void setSimulation ( Simulation* s )
-{
-    Simulation::theSimulation.reset(s);
-
-}
-
-Simulation* getSimulation()
-{
-    return Simulation::theSimulation.get();
-}
-
 /// Print all object in the graph
 void Simulation::print ( Node* root )
 {
@@ -486,6 +472,25 @@ void Simulation::unload(Node::SPtr root)
     root->execute<CleanupVisitor>(params);
     root->execute<DeleteVisitor>(params);
 }
+
+
+///////////////////// Simulation static/singleton API //////////////////////////////////////////////
+/// @warning this singleton has one limitation: it is easy to create several types of
+/// simulations at the same time (e.g. DAGSimulation + TreeSimulation)
+/// but it does not sound like a huge limitation
+/// The (unique) simulation which controls the scene
+Simulation::SPtr theSimulation  {nullptr};
+
+void setSimulation ( Simulation::SPtr s )
+{
+    theSimulation.swap(s);
+}
+
+Simulation* getSimulation()
+{
+    return theSimulation.get();
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////
 
 } // namespace simulation
 

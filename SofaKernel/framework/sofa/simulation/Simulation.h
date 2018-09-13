@@ -125,22 +125,16 @@ public:
     /// creates and returns a new node.
     virtual Node::SPtr createNewNode(const std::string& name)=0;
 
-    /// @warning this singleton has one limitation: it is easy to create several types of
-    /// simulations at the same time (e.g. DAGSimulation + TreeSimulation)
-    /// but it does not sound like a huge limitation
-    static Simulation::SPtr theSimulation;
-
     /// Can the simulation handle a directed acyclic graph?
     virtual bool isDirectedAcyclicGraph() = 0;
-
 };
 
-/// Set the (unique) simulation which controls the scene
-SOFA_SIMULATION_CORE_API void setSimulation(Simulation* s);
+/// Set the (unique) simulation which controls the scene, the simulation's object is
+/// automatically released.
+SOFA_SIMULATION_CORE_API void setSimulation(Simulation::SPtr s);
 
-/** Get the (unique) simulation which controls the scene.
-    Automatically creates one if no Simulation has been set.
- */
+/// Get the (unique) simulation which controls the scene.
+/// In case there is none returns nullptr;
 SOFA_SIMULATION_CORE_API Simulation* getSimulation();
 
 } // namespace simulation
