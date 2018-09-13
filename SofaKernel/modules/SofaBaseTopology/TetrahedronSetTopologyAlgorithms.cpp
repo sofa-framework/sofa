@@ -55,17 +55,6 @@ int TetrahedronSetTopologyAlgorithmsClass = core::RegisterObject("Tetrahedron se
 #endif
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_BASE_TOPOLOGY_API TetrahedronSetTopologyAlgorithms<Vec3dTypes>;
-template class SOFA_BASE_TOPOLOGY_API TetrahedronSetTopologyAlgorithms<Vec2dTypes>;
-template class SOFA_BASE_TOPOLOGY_API TetrahedronSetTopologyAlgorithms<Vec1dTypes>;
-#endif
-
-#ifndef SOFA_DOUBLE
-template class SOFA_BASE_TOPOLOGY_API TetrahedronSetTopologyAlgorithms<Vec3fTypes>;
-template class SOFA_BASE_TOPOLOGY_API TetrahedronSetTopologyAlgorithms<Vec2fTypes>;
-template class SOFA_BASE_TOPOLOGY_API TetrahedronSetTopologyAlgorithms<Vec1fTypes>;
-#endif
 
 } // namespace topology
 

@@ -90,23 +90,30 @@ protected:
     Real m_baryLimit;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETTOPOLOGYALGORITHMS_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BASE_TOPOLOGY_API TetrahedronSetTopologyAlgorithms<defaulttype::Vec3dTypes>;
-extern template class SOFA_BASE_TOPOLOGY_API TetrahedronSetTopologyAlgorithms<defaulttype::Vec2dTypes>;
-extern template class SOFA_BASE_TOPOLOGY_API TetrahedronSetTopologyAlgorithms<defaulttype::Vec1dTypes>;
+
+
+#ifndef SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETTOPOLOGYALGORITHMS_CPP
+#define SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETTOPOLOGYALGORITHMS_EXTERN extern
+#else
+#define SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETTOPOLOGYALGORITHMS_EXTERN
+#endif
+
+#ifdef SOFA_WITH_DOUBLE
+SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETTOPOLOGYALGORITHMS_EXTERN template class SOFA_BASE_TOPOLOGY_API TetrahedronSetTopologyAlgorithms<defaulttype::Vec3dTypes>;
+SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETTOPOLOGYALGORITHMS_EXTERN template class SOFA_BASE_TOPOLOGY_API TetrahedronSetTopologyAlgorithms<defaulttype::Vec2dTypes>;
+SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETTOPOLOGYALGORITHMS_EXTERN template class SOFA_BASE_TOPOLOGY_API TetrahedronSetTopologyAlgorithms<defaulttype::Vec1dTypes>;
 //extern template class SOFA_BASE_TOPOLOGY_API TetrahedronSetTopologyAlgorithms<defaulttype::Rigid3dTypes>;
 //extern template class SOFA_BASE_TOPOLOGY_API TetrahedronSetTopologyAlgorithms<defaulttype::Rigid2dTypes>;
 #endif
 
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BASE_TOPOLOGY_API TetrahedronSetTopologyAlgorithms<defaulttype::Vec3fTypes>;
-extern template class SOFA_BASE_TOPOLOGY_API TetrahedronSetTopologyAlgorithms<defaulttype::Vec2fTypes>;
-extern template class SOFA_BASE_TOPOLOGY_API TetrahedronSetTopologyAlgorithms<defaulttype::Vec1fTypes>;
+#ifdef SOFA_WITH_FLOAT
+SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETTOPOLOGYALGORITHMS_EXTERN template class SOFA_BASE_TOPOLOGY_API TetrahedronSetTopologyAlgorithms<defaulttype::Vec3fTypes>;
+SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETTOPOLOGYALGORITHMS_EXTERN template class SOFA_BASE_TOPOLOGY_API TetrahedronSetTopologyAlgorithms<defaulttype::Vec2fTypes>;
+SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETTOPOLOGYALGORITHMS_EXTERN template class SOFA_BASE_TOPOLOGY_API TetrahedronSetTopologyAlgorithms<defaulttype::Vec1fTypes>;
 //extern template class SOFA_BASE_TOPOLOGY_API TetrahedronSetTopologyAlgorithms<defaulttype::Rigid3fTypes>;
 //extern template class SOFA_BASE_TOPOLOGY_API TetrahedronSetTopologyAlgorithms<defaulttype::Rigid2fTypes>;
 #endif
-#endif
+
 
 } // namespace topology
 
