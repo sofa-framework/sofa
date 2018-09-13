@@ -124,11 +124,6 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::init()
 template<class DataTypes1, class DataTypes2>
 void MechanicalMatrixMapper<DataTypes1, DataTypes2>::parseNode(sofa::simulation::Node *node,std::string massName)
 {
-//    for(unsigned int i=0; i<l_forceField.size(); i++)
-//    {
-//        l_forceField.remove(l_forceField[i]);
-//    }
-
     bool empty = d_forceFieldList.getValue().empty();
     for(unsigned int i=0; i<node->forceField.size(); i++)
     {
@@ -157,11 +152,6 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::parseNode(sofa::simulation:
         }
 
     }
-//    for(unsigned int i=0; i<node->interactionForceField.size(); i++)
-//    {
-
-//        l_forceField.add(node->interactionForceField[i],node->interactionForceField[i]->getPathName());
-//    }
     for (sofa::simulation::Node::ChildIterator it = node->child.begin(), itend = node->child.end(); it != itend; ++it)
     {
         parseNode(it->get(),massName);
