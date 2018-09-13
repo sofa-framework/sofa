@@ -26,6 +26,9 @@
 #include <sofa/core/ObjectFactory.h>
 using sofa::core::ObjectFactory ;
 
+#include <sofa/helper/system/PluginManager.h>
+using sofa::helper::system::PluginManager;
+
 #include <SofaSimulationGraph/DAGSimulation.h>
 using sofa::simulation::graph::DAGSimulation ;
 
@@ -46,6 +49,14 @@ void dumpScene(Node::SPtr root)
     p.execute(root.get()) ;
 }
 
+bool importPlugin(const std::string& name)
+{
+    if(!PluginManager::getInstance().loadPluginByName(name))
+        return false;
+    PluginManager::getInstance().init();
+    return true;
+}
+
 Simulation::SPtr createSimulation(const std::string& type)
 {
     if(type!="DAG")
@@ -59,7 +70,7 @@ Simulation::SPtr createSimulation(const std::string& type)
 
 
 Node::SPtr createRootNode(Simulation::SPtr s, const std::string& name,
-                                              const std::map<std::string, std::string>& params)
+                          const std::map<std::string, std::string>& params)
 {
     Node::SPtr root = s->createNewNode(name) ;
 
