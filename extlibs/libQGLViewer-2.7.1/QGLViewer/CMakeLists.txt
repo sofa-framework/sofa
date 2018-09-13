@@ -57,8 +57,6 @@ if(Qt5Core_FOUND)
 
     qt5_wrap_cpp(MOC_FILES ${HEADER_FILES})
     qt5_wrap_ui(FORM_FILES ${UI_FILES})
-endif()
-
 
     if(WIN32)
         sofa_copy_libraries_from_targets(${QT_TARGETS})

@@ -167,8 +167,6 @@ if(Qt5Core_FOUND)
     set(MOC_FILES_GROUP "Generated")
     qt5_wrap_ui(FORM_FILES ${UI_FILES})
     set(FORM_FILES_GROUP "Generated")
-endif()
-
 
     if(WIN32)
         sofa_copy_libraries_from_targets(${QT_TARGETS})

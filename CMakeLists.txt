@@ -299,7 +299,7 @@ if(SOFA_INSTALL_RESOURCES_FILES)
     install(DIRECTORY examples/ DESTINATION share/sofa/examples COMPONENT resources)
 endif()
 
-#CPack install
+# CPack configuration
 SET(CPACK_PACKAGE_VERSION_MAJOR "18")
 SET(CPACK_PACKAGE_VERSION_MINOR "06")
 SET(CPACK_PACKAGE_VERSION_PATCH "dev")
@@ -334,7 +334,7 @@ set(CPACK_RESOURCE_FILE_WELCOME "${CMAKE_SOURCE_DIR}/README.md")
 
 if(WIN32)
     # There is a bug in NSI that does not handle full unix paths properly. Make
-    # sure there is at least one set of four (4) backlasshes.
+    # sure there is at least one set of four (4) backlashes.
     set(CPACK_PACKAGE_INSTALL_DIRECTORY "SOFA_v${CPACK_PACKAGE_VERSION}")
     set(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/share/icons\\\\SOFA.png")
     set(CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\runSofa.exe")
@@ -360,7 +360,8 @@ if(TEMP_CPACK_COMPONENTS_ALL)
     set(CPACK_COMPONENTS_ALL ${TEMP_CPACK_COMPONENTS_ALL})
 endif()
 
-if(NOT ${CPACK_PACKAGE_VERSION_PATCH} STREQUAL "dev" AND EXISTS "${CMAKE_CURRENT_LIST_DIR}/package.cmake")
+option(SOFA_BUILD_RELEASE_PACKAGE "Run package specific configure" OFF)
+if(SOFA_BUILD_RELEASE_PACKAGE)
     message("Using package.cmake")
     include( "package.cmake" )
 endif()
