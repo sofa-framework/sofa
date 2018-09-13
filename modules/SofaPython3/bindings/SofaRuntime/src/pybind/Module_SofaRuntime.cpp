@@ -52,16 +52,16 @@ PYBIND11_MODULE(SofaRuntime, m) {
 
     m.def("reinit", []()
     {
-        if(sofa::simulation::getSimulation())
-            delete sofa::simulation::getSimulation();
-        sofa::simulation::setSimulation(new DAGSimulation());
+        /// set the Simulation, replacing the existing one (which is automatically deleted)
+        if( !sofa::simulation::getSimulation() )
+            sofa::simulation::setSimulation(new DAGSimulation());
     });
 
     m.def("loadScene", [](const std::string& filename) -> py::object
     {
-        //if(sofa::simulation::getSimulation())
-        //    delete sofa::simulation::getSimulation();
-        sofa::simulation::setSimulation(new DAGSimulation());
+        /// set the Simulation, replacing the existing one (which is automatically deleted)
+        if( !sofa::simulation::getSimulation() )
+            sofa::simulation::setSimulation(new DAGSimulation());
 
         /// Evaluate the content of the file in the scope of the main module
         py::object globals = py::module::import("__main__").attr("__dict__");
