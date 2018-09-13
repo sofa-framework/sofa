@@ -43,8 +43,9 @@ using namespace sofa::defaulttype;
 
 Simulation* getSimulation()
 {
-    if ( simulation::Simulation::theSimulation.get() == 0 )
+    if ( !simulation::getSimulation() )
     {
+        /// Automatic conversion to SPtr. The object will be destroyed automatically.
         setSimulation( new TreeSimulation );
     }
     return simulation::getSimulation();

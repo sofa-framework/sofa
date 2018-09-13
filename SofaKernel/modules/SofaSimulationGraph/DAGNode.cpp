@@ -330,12 +330,13 @@ void DAGNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, G
         case Local:
             this->getLocalObjects( class_info, container, tags );
             break;
-
         case SearchUp:
             this->getLocalObjects( class_info, container, tags ); // add locals then SearchParents
-            // no break here, we want to execute the SearchParents code.
+            break;
         case SearchParents:
         {
+            this->getLocalObjects( class_info, container, tags ); // add locals then SearchParents
+
             // a visitor executed from top but only run for this' parents will enforce the selected object unicity due even with diamond graph setups
             GetUpObjectsVisitor vis( (DAGNode*)this, class_info, container, tags);
             getRootContext()->executeVisitor(&vis);
