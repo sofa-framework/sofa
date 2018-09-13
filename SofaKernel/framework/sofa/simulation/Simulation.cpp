@@ -97,7 +97,7 @@ Simulation::~Simulation()
 }
 
 /// The (unique) simulation which controls the scene
-Simulation::SPtr Simulation::theSimulation;
+Simulation::SPtr Simulation::theSimulation  {nullptr};
 
 void setSimulation ( Simulation* s )
 {
@@ -107,9 +107,6 @@ void setSimulation ( Simulation* s )
 
 Simulation* getSimulation()
 {
-    //TODO(damien):  replace that with an assert system that use the messaging API.
-    assert(Simulation::theSimulation.get()!=NULL && "There is no simulation initialized.") ;
-
     return Simulation::theSimulation.get();
 }
 
