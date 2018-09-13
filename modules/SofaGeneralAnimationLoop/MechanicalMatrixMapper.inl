@@ -128,6 +128,7 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::parseNode(sofa::simulation:
 //    {
 //        l_forceField.remove(l_forceField[i]);
 //    }
+
     bool empty = d_forceFieldList.getValue().empty();
     for(unsigned int i=0; i<node->forceField.size(); i++)
     {
@@ -342,36 +343,28 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
 
     sofa::simulation::Node *node = l_nodeToParse.get();
     unsigned int currentNbInteractionFFs = node->interactionForceField.size();
-    for (int i;i<node->interactionForceField.size();i++)
-    {
-        msg_warning()<< "the interactionFFs:" << node->interactionForceField[i]->getName();
-    }
-    for (int i;i<node->forceField.size();i++)
-    {
-        msg_warning()<< "the FFs:" << node->forceField[i]->getName();
-    }
-    msg_warning()<< "currentNbInteractionFFs:" << currentNbInteractionFFs << " m_nbInteractionForceFields:" << m_nbInteractionForceFields;
-    for(unsigned int i=0; i<l_forceField.size(); i++)
-    {
-        msg_warning()<< "the registered FFs:" << l_forceField[i]->getName();
-    }
+
     if (m_nbInteractionForceFields != currentNbInteractionFFs)
     {
+        bool emptyForceFieldList = l_forceField.empty();
+        if (!emptyForceFieldList)
+        {
+            int NbForcefieldRegistered = l_forceField.size();
+            for(int i=NbForcefieldRegistered-1; i>=0; i--)
+            {
+                l_forceField.remove(l_forceField[i]);
+            }
+        }
         parseNode(l_nodeToParse.get(),l_nodeToParse.get()->mass->getName());
         m_nbInteractionForceFields = currentNbInteractionFFs;
     }
-    msg_warning()<< "plop";
 
     for(unsigned int i=0; i<l_forceField.size(); i++)
     {
-        msg_warning()<< "adding forceField:" << i;
-        //msg_error() << "nb forceField" << i;
         l_forceField[i]->addKToMatrix(mparams, KAccessor);
     }
-    msg_warning()<< "plap";
 
     addMassToSystem(mparams,KAccessor);
-    msg_warning()<< "plip";
 
     if (!K)
     {
