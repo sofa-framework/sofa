@@ -349,11 +349,6 @@ elseif(APPLE)
     #set(CPACK_DMG_BACKGROUND_IMAGE "${CMAKE_SOURCE_DIR}/back.png")
 else()
     set(CPACK_PACKAGE_INSTALL_DIRECTORY "SOFA/v${CPACK_PACKAGE_VERSION}")
-
-    find_package(ICU COMPONENTS data i18n uc)
-    if(ICU_FOUND)
-        sofa_install_libraries(${ICU_LIBRARIES})
-    endif()
 endif()
 
 #dirty hack to pack component we want (named BundlePack from runSofa for example, and that will install .app + share)
