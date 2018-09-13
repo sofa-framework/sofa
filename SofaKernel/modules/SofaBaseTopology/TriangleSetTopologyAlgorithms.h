@@ -151,45 +151,11 @@ private:
     TriangleSetTopologyContainer*				m_container;
     TriangleSetTopologyModifier*				m_modifier;
     TriangleSetGeometryAlgorithms< DataTypes >*		m_geometryAlgorithms;
-
-
 };
 
 
-#if defined(SOFA_COMPONENT_TOPOLOGY_TRIANGLESETTOPOLOGYALGORITHMS_CPP)
-#ifndef SOFA_FLOAT
-template<> SOFA_BASE_TOPOLOGY_API
-int TriangleSetTopologyAlgorithms<defaulttype::Vec2dTypes>::SplitAlongPath(PointID pa, Coord& a, PointID pb, Coord& b,
-    sofa::helper::vector< sofa::core::topology::TopologyObjectType>& topoPath_list,
-    sofa::helper::vector<ElemID>& indices_list,
-    sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list,
-    sofa::helper::vector<EdgeID>& new_edges, double epsilonSnapPath, double epsilonSnapBorder);
-template<> SOFA_BASE_TOPOLOGY_API
-int TriangleSetTopologyAlgorithms<defaulttype::Vec1dTypes>::SplitAlongPath(PointID pa, Coord& a, PointID pb, Coord& b,
-    sofa::helper::vector< sofa::core::topology::TopologyObjectType>& topoPath_list,
-    sofa::helper::vector<ElemID>& indices_list,
-    sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list,
-    sofa::helper::vector<EdgeID>& new_edges, double epsilonSnapPath, double epsilonSnapBorder);
-#endif
-#ifndef SOFA_DOUBLE
-template<> SOFA_BASE_TOPOLOGY_API
-int TriangleSetTopologyAlgorithms<defaulttype::Vec2fTypes>::SplitAlongPath(PointID pa, Coord& a, PointID pb, Coord& b,
-    sofa::helper::vector< sofa::core::topology::TopologyObjectType>& topoPath_list,
-    sofa::helper::vector<ElemID>& indices_list,
-    sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list,
-    sofa::helper::vector<EdgeID>& new_edges, double epsilonSnapPath, double epsilonSnapBorder);
-template<> SOFA_BASE_TOPOLOGY_API
-int TriangleSetTopologyAlgorithms<defaulttype::Vec1fTypes>::SplitAlongPath(PointID pa, Coord& a, PointID pb, Coord& b,
-    sofa::helper::vector< sofa::core::topology::TopologyObjectType>& topoPath_list,
-    sofa::helper::vector<ElemID>& indices_list,
-    sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list,
-    sofa::helper::vector<EdgeID>& new_edges, double epsilonSnapPath, double epsilonSnapBorder);
-#endif
-#endif
-
-
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_TOPOLOGY_TRIANGLESETTOPOLOGYALGORITHMS_CPP)
-#ifndef SOFA_FLOAT
+#if !defined(SOFA_COMPONENT_TOPOLOGY_TRIANGLESETTOPOLOGYALGORITHMS_CPP)
+#ifdef SOFA_WITH_FLOAT
 extern template class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyAlgorithms<defaulttype::Vec3dTypes>;
 extern template class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyAlgorithms<defaulttype::Vec2dTypes>;
 extern template class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyAlgorithms<defaulttype::Vec1dTypes>;
@@ -197,7 +163,7 @@ extern template class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyAlgorithms<defau
 //extern template class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyAlgorithms<defaulttype::Rigid2dTypes>;
 #endif
 
-#ifndef SOFA_DOUBLE
+#ifdef SOFA_WITH_DOUBLE
 extern template class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyAlgorithms<defaulttype::Vec3fTypes>;
 extern template class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyAlgorithms<defaulttype::Vec2fTypes>;
 extern template class SOFA_BASE_TOPOLOGY_API TriangleSetTopologyAlgorithms<defaulttype::Vec1fTypes>;
