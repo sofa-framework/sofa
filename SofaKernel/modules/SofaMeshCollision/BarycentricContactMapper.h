@@ -30,8 +30,6 @@
 #include <SofaRigid/RigidMapping.h>
 #include <SofaBaseMechanics/SubsetMapping.h>
 #include <SofaBaseMechanics/MechanicalObject.h>
-#include <sofa/simulation/Node.h>
-#include <sofa/simulation/Simulation.h>
 #include <SofaBaseCollision/BaseContactMapper.h>
 #include <SofaBaseCollision/CapsuleModel.h>
 #include <SofaBaseCollision/SphereModel.h>
