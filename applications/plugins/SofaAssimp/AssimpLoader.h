@@ -19,50 +19,67 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <TestPlugin/TestPlugin.h>
+#ifndef SOFA_ASSIMPLOADER_H
+#define SOFA_ASSIMPLOADER_H
 
-extern "C" {
+#include <sofa/core/loader/MeshLoader.h>
+#include <SofaAssimp/config.h>
 
-static int counter = 0;
+struct aiScene;
 
-SOFA_TESTPLUGIN_API void initExternalModule()
+namespace sofa
 {
-    static bool first = true;
 
-    if (first)
-    {
-        first = false;
+namespace component
+{
+
+namespace loader
+{
+
+/**
+ * AssimpLoader class interfaces Assimp library reader with SOFA loader components.
+ * For more information about the class API see doc: http://assimp.sourceforge.net/lib_html/usage.html
+ *
+ *  Created on: February 28th 2018
+ *      Author: epernod 
+ */
+class SOFA_ASSIMP_API AssimpLoader : public sofa::core::loader::MeshLoader
+{
+public:
+    SOFA_CLASS(AssimpLoader, sofa::core::loader::MeshLoader);
+protected:
+    /// Default constructor of the component
+    AssimpLoader();
+    virtual ~AssimpLoader();
+
+public:
+    /// Main Load method inherites from \sa sofa::core::loader::MeshLoader::load()
+    virtual bool load();
+    
+
+    int getpPreprocessing() {
+        return pp_Loadsteps;
     }
-    counter++;
-}
+    void  setpPreprocessing(int p) {
+        pp_Loadsteps = p;
+    }
 
-SOFA_TESTPLUGIN_API const char* getModuleName()
-{
-    return "TestPlugin";
-}
-
-SOFA_TESTPLUGIN_API const char* getModuleVersion()
-{
-    return "0.7";
-}
-
-SOFA_TESTPLUGIN_API const char* getModuleLicense()
-{
-    return "LicenseTest";
-}
-
-SOFA_TESTPLUGIN_API const char* getModuleDescription()
-{
-    return "Description of the Test Plugin";
-}
-
-SOFA_TESTPLUGIN_API const char* getModuleComponentList()
-{
-    return "ComponentA, ComponentB";
-}
-
-} // extern "C"
+    aiScene* getScene() { return m_assimpScene; }
+  
+protected:
+    /// Main internal method, implement the loading of OpenCTM mesh file.
+    bool convertAssimpScene();
+    
+private:
+    aiScene* m_assimpScene;
+    unsigned int pp_Loadsteps;
+};
 
 
-SOFA_LINK_CLASS(ComponentA)
-SOFA_LINK_CLASS(ComponentB)
+} // namespace loader
+
+} // namespace component
+
+} // namespace sofa
+
+#endif //SOFA_ASSIMPLOADER_H

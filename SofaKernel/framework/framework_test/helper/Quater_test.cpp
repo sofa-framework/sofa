@@ -30,39 +30,38 @@ double errorThreshold = 1e-6;
 
 TEST(QuaterTest, EulerAngles)
 {
-    // Try to tranform a quat (q0) to euler angles and then back to quat (q1)
-    // compare the result of the rotations define by q0 and q1 on a vector
+    // Try to tranform a Quater (q0) to Euler angles and then back to a Quater (q1)
+    // Compare the result of a rotation defined by q0 and q1 on a vector
     srand (time(NULL));
     for (int i = 0; i < 100; ++i)
-    {   // Generate a test vector p
-        sofa::defaulttype::Vec<3,double> p(((rand()%101)/100)+1.f, ((rand()%101)/100)+1.f, ((rand()%101)/100)+1.f);
-
-        //Generate a test quaternion
-        Quater<double> q0 (((rand()%201)/100)-1.f, ((rand()%201)/100)-1.f, ((rand()%201)/100)-1.f, ((rand()%201)/100)-1.f);
-        q0.Quater<double>::normalize();
-        //if(q0[3]<0)q0*=(-1);
-
-        //Avoid singular values
-        while(fabs(q0[0])==0.5 && fabs(q0[1])==0.5 &&fabs(q0[2])==0.5 && fabs(q0[3])==0.5)
+    {
+        // Generate random Quater and avoid singular values
+        Quater<double> q0 (((rand()%201)/100.f)-1.f, ((rand()%201)/100.f)-1.f, ((rand()%201)/100.f)-1.f, ((rand()%201)/100.f)-1.f);
+        while( fabs(q0[0]) == 0.5 && fabs(q0[1]) == 0.5 && fabs(q0[2]) == 0.5 && fabs(q0[3]) == 0.5 )
         {
-            Quater<double> q2 (((rand()%201)/100)-1.f, ((rand()%201)/100)-1.f, ((rand()%201)/100)-1.f, ((rand()%201)/100)-1.f);
-            q2.Quater<double>::normalize();
-            //if(q2[3]<0)q2*=(-1);
-            q0=q2;
+            q0 = Quater<double>( ((rand()%201)/100.f)-1.f, ((rand()%201)/100.f)-1.f, ((rand()%201)/100.f)-1.f, ((rand()%201)/100.f)-1.f );
+        }
+        q0.Quater<double>::normalize();
+
+        for(std::size_t i = 0 ; i < q0.size() ; ++i)
+        {
+            ASSERT_FALSE( std::isnan(q0[i]) );
         }
 
-        //Rotate p with q0
-        sofa::defaulttype::Vec<3,double>  p0 = q0.Quater<double>::rotate(p);
+        // Transform q0 into Euler angles and back to a quaternion (q1)
+        Quater<double> q1 = Quater<double>::createQuaterFromEuler(q0.toEulerVector());
 
-        //Transform q0 into euler angles and back to a quaternion (q1)
-        Quater<double> q1 = Quater<double>::createQuaterFromEuler(q0.Quater<double>::toEulerVector());
-        //if(q1[3]<0)q1*=(-1);
+        for(std::size_t i = 0 ; i < q1.size() ; ++i)
+        {
+            ASSERT_FALSE( std::isnan(q1[i]) );
+        }
 
-        //Rotate p with q1
+        // Compute a random rotation with each Quater
+        sofa::defaulttype::Vec<3,double> p(((rand()%101)/100.f)+1.f, ((rand()%101)/100.f)+1.f, ((rand()%101)/100.f)+1.f);
+        sofa::defaulttype::Vec<3,double> p0 = q0.Quater<double>::rotate(p);
         sofa::defaulttype::Vec<3,double> p1 = q1.Quater<double>::rotate(p);
-
-        //Compare the result of the two rotations on p
-        EXPECT_EQ(p0,p1);
+        // Compare the result of the two rotations
+        EXPECT_EQ(p0, p1);
 
         // Specific check for a certain value of p
         sofa::defaulttype::Vec<3,double> p2(2,1,1);
@@ -70,7 +69,6 @@ TEST(QuaterTest, EulerAngles)
         p1 = q1.Quater<double>::rotate(p2);
         EXPECT_EQ(p0,p1);
     }
-
 }
 
 /* Following unit test results have been checked with Matlab 2016a.

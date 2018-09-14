@@ -79,7 +79,7 @@ namespace mapping
 			fact = 3*(fact*fact)-2*(fact*fact*fact);
 			(*_out)[i] = out0 * (1-fact) + out1 * (fact);
 		}
-		return true;
+		return false;
 	}
 
 
@@ -128,7 +128,7 @@ namespace mapping
 			
 			(*_out)[i] = out0 * (1-fact) + out1 * (fact);
 		}
-		return true;
+		return false;
 	}
 
 
@@ -183,7 +183,7 @@ namespace mapping
 			getVOrientation(_out1) += cross( rotatedPoint1, f) * (fact);
 
 		}
-		return true;
+		return false;
 	}
 
 

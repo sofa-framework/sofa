@@ -22,7 +22,7 @@ namespace sofa
         {
         }
 
-        bool InitPerThreadDataTask::run()
+        bool InitPerThreadDataTask::run(WorkerThread*)
         {
 
             core::ExecParams::defaultInstance();
@@ -58,24 +58,25 @@ namespace sofa
         void initThreadLocalData()
         {
             std::atomic<int> atomicCounter;
-            atomicCounter = TaskScheduler::getInstance()->getThreadCount();
-
+            atomicCounter = TaskScheduler::getInstance().size();
+            
             std::mutex  InitThreadSpecificMutex;
-
+            
             Task::Status status;
-
-            TaskScheduler* scheduler = TaskScheduler::getInstance();
-            const int nbThread = scheduler->getThreadCount();
-
+            
+            const int nbThread = TaskScheduler::getInstance().size();
+            WorkerThread* thread = WorkerThread::getCurrent();
+            
             for (int i = 0; i<nbThread; ++i)
             {
-                scheduler->addTask(new InitPerThreadDataTask(&atomicCounter, &InitThreadSpecificMutex, &status));
+                thread->addTask(new InitPerThreadDataTask(&atomicCounter, &InitThreadSpecificMutex, &status));
             }
-
-            scheduler->workUntilDone(&status);
-
+            
+            thread->workUntilDone(&status);
+            
             return;
         }
+        
         
     } // namespace simulation
 

@@ -33,7 +33,7 @@ namespace sofa
 
 
 
-        class SOFA_MULTITHREADING_PLUGIN_API InitPerThreadDataTask : public Task
+        class InitPerThreadDataTask : public Task
         {
 
         public:
@@ -42,7 +42,7 @@ namespace sofa
 
             virtual ~InitPerThreadDataTask();
 
-            virtual bool run() override sealed;
+            virtual bool run(WorkerThread*) override;
 
         private:
 
@@ -53,8 +53,8 @@ namespace sofa
 
         //fix and prefer using the global runThreadSpecificTask
         SOFA_MULTITHREADING_PLUGIN_API void initThreadLocalData();
-
         
+
         
     } // namespace simulation
 

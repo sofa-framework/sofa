@@ -80,7 +80,7 @@ public:
     Data<SReal> dampingCoef; ///< factor associated with the mass matrix in the equation system
     Data<SReal> stiffnessCoef; ///< factor associated with the mass matrix in the equation system
     Data<bool> applyIncrementFactor; ///< multiply the solution by dt. Default: false
-    Data<bool> d_threadsafevisitor;
+    Data<bool> d_threadSafeVisitor;
 };
 
 } // namespace odesolver
