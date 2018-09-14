@@ -106,7 +106,7 @@ namespace sofa
 
 			virtual ~ThreadSpecificTask();
 
-            virtual bool run() override sealed;
+            virtual bool run() final;
 
 
         private:

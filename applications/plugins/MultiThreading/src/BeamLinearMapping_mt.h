@@ -111,7 +111,7 @@ private:
 
 	public:
 
-		virtual bool run() override sealed;
+		virtual bool run() final;
 
 	protected:
 
@@ -141,7 +141,7 @@ private:
 	
 		applyJTask( const simulation::Task::Status* status );
 
-		virtual bool run() override sealed;
+		virtual bool run() final;
 
 	private:
 
@@ -166,7 +166,7 @@ private:
 		
 		applyJTmechTask( const simulation::Task::Status* status );
 	
-		virtual bool run() override sealed;
+		virtual bool run() final;
 
 	private:
 

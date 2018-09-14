@@ -52,7 +52,7 @@ namespace sofa
             
             virtual ~StepTask();
             
-            virtual bool run() override sealed;
+            virtual bool run() final;
             
             
         private:

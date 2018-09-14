@@ -169,15 +169,15 @@ namespace sofa  {
         public:
 
             // interface
-            virtual void init(const unsigned int nbThread = 0) override sealed;
-            virtual void stop(void) override sealed;
-            virtual unsigned int getThreadCount(void)  const override sealed { return _threadCount; }
-            virtual const char* getCurrentThreadName() override sealed;
+            virtual void init(const unsigned int nbThread = 0) final;
+            virtual void stop(void) final;
+            virtual unsigned int getThreadCount(void)  const final { return _threadCount; }
+            virtual const char* getCurrentThreadName() final;
             // queue task if there is space, and run it otherwise
-            virtual bool addTask(Task* task) override sealed;
-            virtual void workUntilDone(Task::Status* status) override sealed;
-            virtual void* allocateTask(size_t size) override sealed;
-            virtual void releaseTask(Task*) override sealed;
+            virtual bool addTask(Task* task) final;
+            virtual void workUntilDone(Task::Status* status) final;
+            virtual void* allocateTask(size_t size) final;
+            virtual void releaseTask(Task*) final;
 
         public:
 
