@@ -1,82 +1,104 @@
 #include "Binding_Vec.h"
+#include <pybind11/operators.h>
+
+#define BINDING_VEC_MAKE_NAME(N, type)                                         \
+  std::string(std::string("Vec") + std::to_string(N) + typeid(type).name())
+//#define BINDING_ARRAY_MAKE_NAME(N, type)                                       \
+//  std::string(std::string("array") + std::to_string(N) + typeid(type).name())
 
 template <int N, class T> struct VECTOR {
-  static void addVec(py::module &m, T *type = nullptr) { SOFA_UNUSED(type); }
-};
+  typedef Vec<N, T> VecClass;
+  //  typedef sofa::helper::fixed_array<T, N> Array;
 
-template <int N> struct VECTOR<N, int> {
-  static void addVec(py::module &m, int * /*type */ = nullptr) {
-    py::class_<Vec<N, int>> v(
-        m,
-        std::string(std::string("Vec") + std::to_string(N) + typeid(int).name())
-            .c_str()); // ....
-    // static_asserts handle limit for the number of args..
-    // there MUST be a cleaner way of doing this...
-    switch (N) {
-    case 1:
-      v.def(py::init<int>());
-      break;
-    case 2:
-      v.def(py::init<int, int>());
-      break;
-    case 3:
-      v.def(py::init<int, int, int>());
-      break;
-    case 4:
-      v.def(py::init<int, int, int, int>());
-      break;
-    case 5:
-      v.def(py::init<int, int, int, int, int>());
-      break;
-    case 6:
-      v.def(py::init<int, int, int, int, int, int>());
-      break;
-    };
-    // does not compile.. why?
-    v.def(py::init<>([](py::list l) {
-      std::unique_ptr<Vec<N, int>> vec(new Vec<N, int>());
-      for (size_t i = 0; i < N; ++i) {
-        int &val = (*(vec.get()))[i];
-        val = int(l[i].cast<py::int_>());
+  static const int total_size = N;
+
+  static void addVec(py::module &m, T type = 0) {
+    //    py::class_<Array>(m, BINDING_ARRAY_MAKE_NAME(N, type).c_str());
+    py::class_<VecClass /*, Array*/> p(m,
+                                       BINDING_VEC_MAKE_NAME(N, type).c_str());
+    p.def(py::init<>());
+
+    // @damienmarchal: any idea?
+//    if (total_size == 1)
+//        p.def("set", [](VecClass &v, T _1) { v.set(_1); });
+//    if (total_size == 2)
+//        p.def("set", [](VecClass &v, T _1, T _2) { v.set(_1, _2); });
+//    if (total_size == 3)
+//        p.def("set", (void (VecClass::*)(T, T, T)) & VecClass::set);
+//    if (total_size == 4)
+//        p.def("set", (void (VecClass::*)(T, T, T, T)) & VecClass::set);
+//    if (total_size == 5)
+//        p.def("set", (void (VecClass::*)(T, T, T, T, T)) & VecClass::set);
+//    if (total_size == 6)
+//        p.def("set", (void (VecClass::*)(T, T, T, T, T, T)) &
+//              VecClass::set);
+//    if (total_size == 7)
+//        p.def("set", (void (VecClass::*)(T, T, T, T, T, T, T)) &
+//              VecClass::set);
+//    if (total_size == 8)
+//        p.def("set",
+//              (void (VecClass::*)(T, T, T, T, T, T, T, T)) & VecClass::set);
+//    if (total_size == 9)
+//        p.def("set",
+//              (void (VecClass::*)(T, T, T, T, T, T, T, T, T)) &
+//              VecClass::set);
+//    if (total_size == 12)
+//        p.def("set", (void (VecClass::*)(T, T, T, T, T, T, T, T, T, T, T,
+//                                         T)) &
+//              VecClass::set);
+
+    p.def("set", [](VecClass &v, py::list l) {
+      for (size_t i = 0; i < N && i < l.size(); ++i) {
+        T &val = v[i];
+        if (std::string(typeid(T).name()) == "i")
+          val = int(l[i].cast<py::int_>());
+        else
+          val = double(l[i].cast<py::float_>());
       }
-    }));
+    });
+
+    p.def("__getitem__",
+          [](const VecClass &v, size_t i) {
+            if (i >= v.size())
+              throw py::index_error();
+            return v[i];
+          })
+        .def("__setitem__", [](VecClass &v, size_t i, T d) {
+          if (i >= v.size())
+            throw py::index_error();
+          T &val = v[i];
+          val = d;
+          return val;
+        });
+    p.def(py::self != py::self)
+        .def(py::self * py::self)
+        .def(py::self * float())
+        .def(py::self *= float())
+        .def(py::self + py::self)
+        .def(py::self += py::self)
+        .def(py::self - py::self)
+        .def(py::self -= py::self);
+    p.def("__str__", [](VecClass &v) {
+      std::string s("(");
+      s += std::to_string(v[0]);
+      for (size_t i = 1; i < v.size(); ++i)
+        s += std::string(", ") + std::to_string(v[i]);
+      s += ")";
+      return s;
+    });
+    p.def("__repr__", [type](VecClass &v) {
+      std::string s = BINDING_VEC_MAKE_NAME(N, type) + "(";
+      s += std::to_string(v[0]);
+      for (size_t i = 1; i < v.size(); ++i)
+        s += std::string(", ") + std::to_string(v[i]);
+      s += ")";
+      return s;
+    });
   }
 };
 
-template <int N> struct VECTOR<N, double> {
-  static void addVec(py::module &m, double * /*type */ = nullptr) {
-    py::class_<Vec<N, double>> v(m, std::string(std::string("Vec") +
-                                                std::to_string(N) +
-                                                typeid(double).name())
-                                        .c_str());
-    switch (N) {
-    case 1:
-      v.def(py::init<double>());
-      break;
-    case 2:
-      v.def(py::init<double, double>());
-      break;
-    case 3:
-      v.def(py::init<double, double, double>());
-      break;
-    case 4:
-      v.def(py::init<double, double, double, double>());
-      break;
-    case 5:
-      v.def(py::init<double, double, double, double, double>());
-      break;
-    case 6:
-      v.def(py::init<double, double, double, double, double, double>());
-      break;
-    };
-    v.def(py::init<>([](py::list l) {
-      std::unique_ptr<Vec<N, double>> vec(new Vec<N, double>());
-      for (size_t i = 0; i < N; ++i) {
-        double &val = (*(vec.get()))[i];
-        val = double(l[i].cast<py::float_>());
-      }
-    }));
-  }
+template <class T> struct VECTOR<0, T> {
+  static void addVec(py::module &m, T type = 0) { SOFA_UNUSED(type); }
 };
 
 void moduleAddVec(py::module &m) {
