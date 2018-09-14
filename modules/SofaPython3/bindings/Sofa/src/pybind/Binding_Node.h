@@ -7,7 +7,19 @@
 using sofa::simulation::Node;
 
 template class py::class_<Base, Base::SPtr>;
-template class py::class_<Node, Base, Node::SPtr>;
+template class py::class_<sofa::core::objectmodel::BaseNode, Base,
+                          sofa::core::objectmodel::BaseNode::SPtr>;
+
+template class py::class_<sofa::core::objectmodel::BaseContext,
+                          sofa::core::objectmodel::Base,
+                          sofa::core::objectmodel::BaseContext::SPtr>;
+
+template class py::class_<sofa::core::objectmodel::Context,
+                          sofa::core::objectmodel::BaseContext,
+                          sofa::core::objectmodel::Context::SPtr>;
+
+template class py::class_<Node, sofa::core::objectmodel::BaseNode,
+                          sofa::core::objectmodel::Context, Node::SPtr>;
 
 void moduleAddNode(py::module &m);
 

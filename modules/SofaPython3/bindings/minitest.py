@@ -1,6 +1,8 @@
+#!/usr/bin/python3
+
 import sys
 import os
-os.environ["SOFA_ROOT"] = "/home/dmarchal//projects/DEFROST/dev/sofa1/builds/release/"
+os.environ["SOFA_ROOT"] = "/home/bruno/dev/refactorPython3/build/lib"
 sys.path.append("./Sofa/package")
 sys.path.append("./SofaRuntime/package")
 
@@ -14,12 +16,16 @@ SofaRuntime.importPlugin("SofaAllCommonComponents")
 SofaRuntime.reinit()
 r = Sofa.test()
 
-b = r[1]
+b = r[0]
 #b.name = "damien"
 print("B"+str(b))
+print("B"+b.name)
 
-b.createObject("MechanicalObject",name="test", position=[[0,0,0]])
-print("Created object: "+str(b.test.getData("name")))
+b = r[1]
+b.name = "damien"
+print("N"+str(b))
+print("N"+b.name)
+
 
 for t in r:
         print("type: "+str(type(t)))

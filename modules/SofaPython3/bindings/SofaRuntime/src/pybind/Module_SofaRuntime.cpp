@@ -34,7 +34,10 @@ PYBIND11_MODULE(SofaRuntime, m) {
     // TODO, ces trucs sont fort laid. Normalement ce devrait être une joli plugin qui
     // appelle le init.
     sofa::simulation::common::init();
+    std::cout << "simu init " << std::endl;
     sofa::simulation::graph::init();
+    std::cout << "graph init " << std::endl;
+//    sofa::simulation::setSimulation(new DAGSimulation());
 
     // Add the plugin directory to PluginRepository
     const std::string& pluginDir = Utils::getPluginDirectory();
@@ -43,10 +46,12 @@ PYBIND11_MODULE(SofaRuntime, m) {
     /// We need to import the project dependencies
     py::module::import("Sofa");
 
-    m.def("getSimulation", [](){ return sofa::simulation::getSimulation(); });
+    m.def("getSimulation", [](){     std::cout << "get simu" << std::endl;
+return sofa::simulation::getSimulation(); });
     
     m.def("importPlugin", [](const std::string& name)
     {
+        std::cout << "import plugin" << std::endl;
         return simpleapi::importPlugin(name);
     });
 
