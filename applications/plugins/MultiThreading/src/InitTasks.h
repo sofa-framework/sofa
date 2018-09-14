@@ -24,8 +24,6 @@
 
 #include "TaskScheduler.h"
 
-//#include <sofa/helper/system/atomic.h>
-
 namespace sofa
 {
     namespace simulation
@@ -55,49 +53,8 @@ namespace sofa
 
         //fix and prefer using the global runThreadSpecificTask
         SOFA_MULTITHREADING_PLUGIN_API void initThreadLocalData();
+
         
-        
-#ifdef _WIN32
-        
-        class SOFA_MULTITHREADING_PLUGIN_API InitOGLcontextTask : public Task
-        {
-        public:
-            InitOGLcontextTask::InitOGLcontextTask(HDC& glDevice, HGLRC& workerThreadContext, std::atomic<int>* atomicCounter, std::mutex* mutex, Task::Status* pStatus);
-
-            InitOGLcontextTask::~InitOGLcontextTask();
-
-            virtual bool run() override sealed;
-
-        private:
-
-            HDC & _glDevice;
-            HGLRC& _workerThreadContext;
-            std::mutex*	 IdFactorygetIDMutex;
-            std::atomic<int>* _atomicCounter;
-        };
-
-
-        class SOFA_MULTITHREADING_PLUGIN_API DeleteOGLcontextTask : public Task
-        {
-        public:
-            DeleteOGLcontextTask::DeleteOGLcontextTask(std::atomic<int>* atomicCounter, std::mutex* mutex, Task::Status* pStatus);
-
-            DeleteOGLcontextTask::~DeleteOGLcontextTask();
-
-            virtual bool run() override sealed;
-
-        private:
-            std::mutex*	 IdFactorygetIDMutex;
-            std::atomic<int>* _atomicCounter;
-        };
-
-
-        SOFA_MULTITHREADING_PLUGIN_API void initOGLcontext();
-
-        SOFA_MULTITHREADING_PLUGIN_API void deleteOGLcontext();
-        
-#endif // _WIN32
-
         
     } // namespace simulation
 

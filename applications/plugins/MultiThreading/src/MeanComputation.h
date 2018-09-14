@@ -74,8 +74,6 @@ namespace sofa
             public:
                 void init() override;
 
-                void bwdInit() override;
-
                 void reinit() override;
 
                 virtual void handleEvent(core::objectmodel::Event* event) override;

@@ -252,19 +252,19 @@ namespace sofa
 
         WorkerThread* WorkerThread::getCurrent()
         {
-            return workerThreadIndex;
-            //auto thread = TaskSchedulerDefault::_threads.find(std::this_thread::get_id());
-            //if (thread == TaskSchedulerDefault::_threads.end())
-            //{
-            //    return nullptr;
-            //}
-            //return thread->second;
+            //return workerThreadIndex;
+            auto thread = TaskSchedulerDefault::_threads.find(std::this_thread::get_id());
+            if (thread == TaskSchedulerDefault::_threads.end())
+            {
+                return nullptr;
+            }
+            return thread->second;
         }
 
 		void WorkerThread::run(void)
 		{
             
-            workerThreadIndex = this;
+            //workerThreadIndex = this;
             //TaskSchedulerDefault::_threads[std::this_thread::get_id()] = this;
 
 			// main loop
@@ -298,12 +298,12 @@ namespace sofa
         {
             {
                 std::unique_lock<std::mutex> lock( _taskScheduler->_wakeUpMutex );
-				if (!_taskScheduler->_workerThreadsIdle)
-				{
-					return;
-				}
+				//if (!_taskScheduler->_workerThreadsIdle)
+				//{
+				//	return;
+				//}
                 // cpu free wait
-                _taskScheduler->_wakeUpEvent.wait(lock);
+                _taskScheduler->_wakeUpEvent.wait(lock, [&] {return !_taskScheduler->_workerThreadsIdle; });
             }
             return;
         }

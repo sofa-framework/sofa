@@ -46,8 +46,6 @@ namespace sofa
                     core::objectmodel::TagSet tags = mObj->getTags();
                     if (tags.find(Tag("MeanOutput")) != tags.end())
                     {
-                        helper::ReadAccessor<Data<VecCoord> >  inputpos = mObj->readPositions();
-
                         mObj->x.setValue(*d_result.beginEdit());
                         mObj->x.setParent(&d_result, std::string("to"));
 
@@ -59,7 +57,7 @@ namespace sofa
 
                         const VecCoord& positions = inputpos.ref();
 
-                        if (&output[0] == &positions[0])
+                        if (output.size() > 0 && &output[0] == &positions[0])
                         {
                             continue;
                         }
@@ -96,35 +94,6 @@ namespace sofa
             }
 
             template <class DataTypes>
-            void MeanComputation<DataTypes>::bwdInit()
-            {
-                //const size_t nbInputs = _inputs.size();
-                //if (nbInputs == 0)
-                //    return;
-
-                //// check for input vector size different
-                //const size_t vecSize = _inputs[0]->beginEdit()->size();
-                //size_t minVecSize = vecSize;
-
-                //for (size_t i = 1; i<nbInputs; ++i)
-                //{
-                //    const size_t i_size = _inputs[i]->beginEdit()->size();
-
-                //    if (vecSize != i_size)
-                //    {
-                //        minVecSize = (vecSize < i_size) ? vecSize : i_size;
-                //    }
-                //}
-
-                //_resultSize = minVecSize;
-
-                //// set result to 0
-                //d_result.beginEdit()->resize(_resultSize, Coord());
-
-                //compute();
-            }
-
-            template <class DataTypes>
             void MeanComputation<DataTypes>::reinit()
             {
                 compute();
@@ -153,23 +122,23 @@ namespace sofa
                 const double invNbInputs = 1.0 / nbInputs;
 
                 // accumulate all the input elems in result
-                for (int j = 0; j<nbInputs; ++j)
+                for (size_t j = 0; j<nbInputs; ++j)
                 {
                     const VecCoord& pos = *_inputs[j]->beginEdit();
 
-                    for (int i = 0; i<_resultSize; ++i)
+                    for (size_t i = 0; i<_resultSize; ++i)
                     {
                         result[i] += pos[i];
                     }
                 }
 
-                for (int i = 0; i<_resultSize; ++i)
+                for (size_t i = 0; i<_resultSize; ++i)
                 {
                     result[i] *= invNbInputs;
                 }    
                 
                 d_result.endEdit();
-                d_result.setDirtyValue();
+//                d_result.setDirtyValue();
             }
 
         } // namespace engine
