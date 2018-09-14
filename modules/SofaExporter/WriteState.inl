@@ -47,7 +47,7 @@ WriteState::WriteState()
     , d_writeV( initData(&d_writeV, false, "writeV", "flag enabling output of V vector"))
     , d_writeF( initData(&d_writeF, false, "writeF", "flag enabling output of F vector"))
     , d_time( initData(&d_time, helper::vector<double>(0), "time", "set time to write outputs (by default export at t=0)"))
-    , d_period( initData(&d_period, 0.0, "period", "period between outputs"))
+    , d_period( initData(&d_period, this->getContext()->getDt(), "period", "period between outputs"))
     , d_DOFsX( initData(&d_DOFsX, helper::vector<unsigned int>(0), "DOFsX", "set the position DOFs to write"))
     , d_DOFsV( initData(&d_DOFsV, helper::vector<unsigned int>(0), "DOFsV", "set the velocity DOFs to write"))
     , d_stopAt( initData(&d_stopAt, 0.0, "stopAt", "stop the simulation when the given threshold is reached"))
@@ -81,7 +81,7 @@ WriteState::~WriteState()
 void WriteState::init()
 {
     validInit = true;
-    periodicExport = false;
+    periodicExport = true;
     mmodel = this->getContext()->getMechanicalState();
 
     // test the size and range of the DOFs to write in the file output
@@ -126,6 +126,7 @@ void WriteState::init()
         d_filename.setValue(" defaultExportFile");
     }
 
+
     //check period
     if(d_period.isSet())
     {
@@ -157,14 +158,14 @@ void WriteState::init()
         {
             msg_warning() << "starting export time ("<< d_time.getValue()[0] <<") is too low regarding the time step ("<< dt <<")";
         }
-        periodicExport = true;
     }
+
 
     //check time
     if(!d_time.isSet())
     {
         msg_warning() << "an export time should be specified"
-                      << "by default, export at t=0";
+                      << "by default, export at t=0.0";
         helper::vector<double>& timeVector = *d_time.beginEdit();
         timeVector.clear();
         timeVector.resize(1);
@@ -195,14 +196,16 @@ void WriteState::init()
             }
 
             //check that the desired export times will be met with the chosen time step
-            double mutiple = fmod(d_time.getValue()[i],dt);
-            int integerM = (int) mutiple;
-            mutiple -= (double)integerM;
-            if(mutiple > std::numeric_limits<double>::epsilon())
+            double nbDtInTime = d_time.getValue()[i]/dt;
+            int intnbDtInTime = (int) nbDtInTime;
+            double rest = nbDtInTime - intnbDtInTime;
+            if(rest > std::numeric_limits<double>::epsilon())
             {
                 msg_warning() << "desired export time ("<< d_time.getValue()[i] <<") can not be met with the chosen time step("<< dt <<")";
             }
         }
+        if(!d_period.isSet())
+            periodicExport = false;
     }
 
     //check stopAt
