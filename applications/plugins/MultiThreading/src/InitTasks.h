@@ -19,50 +19,45 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <TestPlugin/TestPlugin.h>
+#ifndef InitTasks_h__
+#define InitTasks_h__
 
-extern "C" {
+#include "TaskScheduler.h"
 
-static int counter = 0;
-
-SOFA_TESTPLUGIN_API void initExternalModule()
+namespace sofa
 {
-    static bool first = true;
-
-    if (first)
+    namespace simulation
     {
-        first = false;
-    }
-    counter++;
-}
 
-SOFA_TESTPLUGIN_API const char* getModuleName()
-{
-    return "TestPlugin";
-}
-
-SOFA_TESTPLUGIN_API const char* getModuleVersion()
-{
-    return "0.7";
-}
-
-SOFA_TESTPLUGIN_API const char* getModuleLicense()
-{
-    return "LicenseTest";
-}
-
-SOFA_TESTPLUGIN_API const char* getModuleDescription()
-{
-    return "Description of the Test Plugin";
-}
-
-SOFA_TESTPLUGIN_API const char* getModuleComponentList()
-{
-    return "ComponentA, ComponentB";
-}
-
-} // extern "C"
+        using namespace sofa;
 
 
-SOFA_LINK_CLASS(ComponentA)
-SOFA_LINK_CLASS(ComponentB)
+
+        class InitPerThreadDataTask : public Task
+        {
+
+        public:
+
+            InitPerThreadDataTask(std::atomic<int>* atomicCounter, std::mutex* mutex, Task::Status* pStatus);
+
+            virtual ~InitPerThreadDataTask();
+
+            virtual bool run(WorkerThread*) override;
+
+        private:
+
+            std::mutex*	 IdFactorygetIDMutex;
+            std::atomic<int>* _atomicCounter;
+        };
+
+
+        //fix and prefer using the global runThreadSpecificTask
+        SOFA_MULTITHREADING_PLUGIN_API void initThreadLocalData();
+        
+
+        
+    } // namespace simulation
+
+} // namespace sofa
+
+#endif // InitTasks_h__

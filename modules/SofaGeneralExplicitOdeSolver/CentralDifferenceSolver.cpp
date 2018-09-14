@@ -44,6 +44,7 @@ using namespace core::behavior;
 
 CentralDifferenceSolver::CentralDifferenceSolver()
     : f_rayleighMass( initData(&f_rayleighMass,(SReal)0.0,"rayleighMass","Rayleigh damping coefficient related to mass"))
+    , d_threadSafeVisitor(initData(&d_threadSafeVisitor, false, "threadSafeVisitor", "If true, do not use realloc and free visitors in fwdInteractionForceField."))
 {
 }
 
@@ -91,7 +92,7 @@ void CentralDifferenceSolver::solve(const core::ExecParams* params, SReal dt, so
     MultiVecDeriv vel(&vop, core::VecDerivId::velocity() );
     MultiVecCoord pos2(&vop, xResult /*core::VecCoordId::position()*/ );
     MultiVecDeriv vel2(&vop, vResult /*core::VecDerivId::velocity()*/ );
-    MultiVecDeriv dx (&vop, core::VecDerivId::dx() ); dx.realloc( &vop, true, true );
+    MultiVecDeriv dx(&vop, core::VecDerivId::dx()); dx.realloc(&vop, !d_threadSafeVisitor.getValue(), true);
     MultiVecDeriv f  (&vop, core::VecDerivId::force() );
 
     const SReal r = f_rayleighMass.getValue();

@@ -19,50 +19,43 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <TestPlugin/TestPlugin.h>
+#ifndef Sofa_VisitorAsync_h__
+#define Sofa_VisitorAsync_h__
 
-extern "C" {
+#include <Multithreading/config.h>
 
-static int counter = 0;
+#include <sofa/simulation/Visitor.h>
+#include <MultiThreading/src/Tasks.h>
 
-SOFA_TESTPLUGIN_API void initExternalModule()
+namespace sofa
 {
-    static bool first = true;
 
-    if (first)
+    namespace simulation
     {
-        first = false;
-    }
-    counter++;
-}
 
-SOFA_TESTPLUGIN_API const char* getModuleName()
-{
-    return "TestPlugin";
-}
+        /**
+        * Used to execute async tasks
+        */
 
-SOFA_TESTPLUGIN_API const char* getModuleVersion()
-{
-    return "0.7";
-}
+        class SOFA_MULTITHREADING_PLUGIN_API VisitorAsync : public Visitor
+        {
+        public:
+            VisitorAsync(const sofa::core::ExecParams* params, Task::Status* status)
+                : Visitor(params)
+                , _status(status)
+            {}
 
-SOFA_TESTPLUGIN_API const char* getModuleLicense()
-{
-    return "LicenseTest";
-}
+            const Task::Status* getStatus() { return _status; }
 
-SOFA_TESTPLUGIN_API const char* getModuleDescription()
-{
-    return "Description of the Test Plugin";
-}
+        protected:
 
-SOFA_TESTPLUGIN_API const char* getModuleComponentList()
-{
-    return "ComponentA, ComponentB";
-}
+            Task::Status* _status;
 
-} // extern "C"
+        };
 
 
-SOFA_LINK_CLASS(ComponentA)
-SOFA_LINK_CLASS(ComponentB)
+    } // namespace simulation
+
+} // namespace sofa
+
+#endif // Sofa_VisitorAsync_h__

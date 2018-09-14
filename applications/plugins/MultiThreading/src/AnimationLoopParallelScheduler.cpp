@@ -2,6 +2,7 @@
 
 #include "TaskScheduler.h"
 #include "AnimationLoopTasks.h"
+#include "InitTasks.h"
 #include "DataExchange.h"
 
 #include <sofa/core/ObjectFactory.h>
@@ -126,7 +127,7 @@ namespace simulation
 	void AnimationLoopParallelScheduler::step(const core::ExecParams* params, SReal dt)
 	{
 
-		static boost::pool<> task_pool(sizeof(StepTask));
+		//static boost::pool<> task_pool(sizeof(StepTask));
 
 		if (dt == 0)
 			dt = this->gnode->getDt();
@@ -143,7 +144,8 @@ namespace simulation
 		{
 			if ( core::behavior::BaseAnimationLoop* aloop = (*it)->getAnimationLoop() )
 			{
-				thread->addTask( new( task_pool.malloc()) StepTask( aloop, dt, &status ) );
+				//thread->addTask( new( task_pool.malloc()) StepTask( aloop, dt, &status ) );
+                thread->addTask(new StepTask(aloop, dt, &status));
 
 			}
 
@@ -163,39 +165,25 @@ namespace simulation
 
 
 		// it doesn't call the destructor
-		task_pool.purge_memory();
+		//task_pool.purge_memory();
 	}
 
 
 	void AnimationLoopParallelScheduler::initThreadLocalData()
 	{
-
-        boost::pool<> task_pool(sizeof(InitPerThreadDataTask));
-        
-        //volatile long atomicCounter = TaskScheduler::getInstance().size();// mNbThread;
         std::atomic<int> atomicCounter( TaskScheduler::getInstance().size() );
-        
-        
+
         std::mutex  InitPerThreadMutex;
         
         Task::Status status;
-        
-        
         WorkerThread* pThread = WorkerThread::getCurrent();
         const int nbThread = TaskScheduler::getInstance().size();
         
         for (int i=0; i<nbThread; ++i)
         {
-            pThread->addTask( new( task_pool.malloc()) InitPerThreadDataTask( &atomicCounter, &InitPerThreadMutex, &status ) );
-//            pThread->addTask( new InitPerThreadDataTask( &atomicCounter, &InitPerThreadMutex, &status ) );
-        }
-        
-        
+            pThread->addTask( new InitPerThreadDataTask( &atomicCounter, &InitPerThreadMutex, &status ) );
+        } 
         pThread->workUntilDone(&status);
-        
-        // it doesn't call the destructor
-        task_pool.purge_memory();
-
 	}
 
 } // namespace simulation
