@@ -17,7 +17,7 @@ namespace sofa
 
 		virtual ~FibonacciTask() { }
 
-		virtual bool run() override sealed;
+		virtual bool run() final;
 
 	private:
 
@@ -40,7 +40,7 @@ namespace sofa
 
 		virtual ~IntSumTask() {}
 
-		virtual bool run() override sealed;
+		virtual bool run() final;
 
 
 	private:
