@@ -82,8 +82,8 @@ namespace simulation
 	}
 
 	AnimationLoopParallelScheduler::~AnimationLoopParallelScheduler()
-	{	
-		//TaskScheduler::getInstance().stop();
+	{
+        
 	}
 
 	void AnimationLoopParallelScheduler::init()

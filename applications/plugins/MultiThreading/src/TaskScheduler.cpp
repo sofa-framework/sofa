@@ -64,6 +64,10 @@ namespace sofa
         }
 
 
+        TaskScheduler::~TaskScheduler()
+        {
+            
+        }
 
         // called once by each thread used
         // by the TaskScheduler

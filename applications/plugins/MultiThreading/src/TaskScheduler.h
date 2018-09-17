@@ -48,7 +48,7 @@ namespace sofa
 
         public:
 
-            virtual ~TaskScheduler() {}
+            virtual ~TaskScheduler();
 
             static TaskScheduler* create(const char* name = "");
 
