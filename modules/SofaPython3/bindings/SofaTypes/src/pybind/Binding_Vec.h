@@ -8,6 +8,11 @@ using namespace pybind11::literals;
 #include <sofa/defaulttype/Vec.h>
 using sofa::defaulttype::Vec;
 
-void moduleAddVec(py::module& m);
+namespace pyVec {
+template <int N, class T>
+std::string __str__(const Vec<N, T> &self, bool repr = false);
+} // namespace pyVec
 
-#endif  // PYTHONMODULE_SOFA_BINDING_VEC_H
+void moduleAddVec(py::module &m);
+
+#endif // PYTHONMODULE_SOFA_BINDING_VEC_H

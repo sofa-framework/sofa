@@ -5,6 +5,18 @@
 #define BINDING_VEC_MAKE_NAME(N, type)                                         \
   std::string(std::string("Vec") + std::to_string(N) + typeid(type).name())
 
+namespace pyVec {
+template <int N, class T>
+std::string __str__(const Vec<N, T> &v, bool repr) {
+  std::string s = (repr) ? (BINDING_VEC_MAKE_NAME(N, T) + "(") : ("(");
+  s += std::to_string(v[0]);
+  for (size_t i = 1; i < v.size(); ++i)
+    s += std::string(", ") + std::to_string(v[i]);
+  s += ")";
+  return s;
+}
+} // namespace pyVec
+
 template <int N, class T>
 void addVec(py::module &m, py::class_<Vec<N, T>> &p, T type = 0) {
   typedef Vec<N, T> VecClass;
@@ -71,22 +83,8 @@ void addVec(py::module &m, py::class_<Vec<N, T>> &p, T type = 0) {
       .def(py::self /= float())
       .def(py::self /= int());
 
-  p.def("__str__", [](VecClass &v) {
-    std::string s("(");
-    s += std::to_string(v[0]);
-    for (size_t i = 1; i < v.size(); ++i)
-      s += std::string(", ") + std::to_string(v[i]);
-    s += ")";
-    return s;
-  });
-  p.def("__repr__", [type](VecClass &v) {
-    std::string s = BINDING_VEC_MAKE_NAME(N, type) + "(";
-    s += std::to_string(v[0]);
-    for (size_t i = 1; i < v.size(); ++i)
-      s += std::string(", ") + std::to_string(v[i]);
-    s += ")";
-    return s;
-  });
+  p.def("__str__", [](VecClass &v) { return pyVec::__str__(v); });
+  p.def("__repr__", [](VecClass &v) { return pyVec::__str__(v, true); });
 
   p.def("fill", &VecClass::fill, "r"_a);
   p.def("clear", &VecClass::clear);
