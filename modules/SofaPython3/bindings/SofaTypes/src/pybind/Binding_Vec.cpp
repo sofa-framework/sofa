@@ -34,14 +34,43 @@ void addVec(py::module &m, py::class_<Vec<N, T>> &p, T type = 0) {
         val = d;
         return val;
       });
+
+  /// Iterator protocol
+  static size_t value = 0;
+  p.def("__iter__", [](VecClass &v) {
+    value = 0;
+    return v;
+  });
+  p.def("__next__", [](VecClass &v) {
+    if (value == v.size())
+      throw py::stop_iteration();
+    else
+      return v[value++];
+    return v[value];
+  });
+
   p.def(py::self != py::self)
+      .def(py::self == py::self)
       .def(py::self * py::self)
-      .def(py::self * float())
-      .def(py::self *= float())
+      .def(py::self * py::self)
       .def(py::self + py::self)
       .def(py::self += py::self)
       .def(py::self - py::self)
       .def(py::self -= py::self);
+
+  p.def("__mul__", [](double d, const VecClass &v) { return v * d; });
+  p.def("__mul__", [](int d, const VecClass &v) { return v * d; });
+
+  p.def(py::self * float())
+      .def(py::self * int())
+      .def(py::self *= float())
+      .def(py::self *= int());
+
+  p.def(py::self / float())
+      .def(py::self / int())
+      .def(py::self /= float())
+      .def(py::self /= int());
+
   p.def("__str__", [](VecClass &v) {
     std::string s("(");
     s += std::to_string(v[0]);
@@ -58,6 +87,16 @@ void addVec(py::module &m, py::class_<Vec<N, T>> &p, T type = 0) {
     s += ")";
     return s;
   });
+
+  p.def("fill", &VecClass::fill, "r"_a);
+  p.def("clear", &VecClass::clear);
+  p.def("norm", &VecClass::norm);
+  p.def("norm2", &VecClass::norm2);
+  p.def("lNorm", &VecClass::lNorm, "l"_a);
+  p.def("normalize", (bool (VecClass::*)(T)) & VecClass::normalize,
+        "threshold"_a = std::numeric_limits<T>::epsilon());
+  p.def("normalized", &VecClass::normalized);
+  p.def("sum", &VecClass::sum);
 
   m.def("dot",
         (T(*)(const VecClass &a, const VecClass &b)) & sofa::defaulttype::dot);
