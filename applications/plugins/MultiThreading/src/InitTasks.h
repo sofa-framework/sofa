@@ -51,7 +51,7 @@ namespace sofa
         };
 
 
-        //fix and prefer using the global runThreadSpecificTask
+        // thread storage initialization
         SOFA_MULTITHREADING_PLUGIN_API void initThreadLocalData();
         
 

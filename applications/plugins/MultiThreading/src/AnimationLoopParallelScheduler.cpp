@@ -173,22 +173,6 @@ namespace simulation
 	}
 
 
-	void AnimationLoopParallelScheduler::initThreadLocalData()
-	{
-        std::atomic<int> atomicCounter( TaskScheduler::getInstance()->getThreadCount() );
-
-        std::mutex  InitPerThreadMutex;
-        
-        Task::Status status;
-        const int nbThread = _taskScheduler->getThreadCount();
-        
-        for (int i=0; i<nbThread; ++i)
-        {
-            _taskScheduler->addTask( new InitPerThreadDataTask( &atomicCounter, &InitPerThreadMutex, &status ) );
-        } 
-        _taskScheduler->workUntilDone(&status);
-	}
-
 } // namespace simulation
 
 } // namespace sofa

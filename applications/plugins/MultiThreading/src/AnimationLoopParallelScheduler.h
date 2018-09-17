@@ -88,9 +88,6 @@ public:
 
 private :
 
-	// thread storage initialization
-	void initThreadLocalData();
-
 	unsigned int mNbThread;
 
 	simulation::Node* gnode;
