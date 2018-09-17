@@ -34,9 +34,9 @@ void moduleAddQuat(py::module &m) {
   p.def("clear", &Quat::clear);
   p.def("fromFrame", &Quat::fromFrame, "x"_a, "y"_a, "z"_a);
   p.def("fromMatrix", &Quat::fromMatrix, "m"_a);
-  p.def("toMatrix", &Quat::toMatrix, "m"_a);
-  p.def("rotate", &Quat::rotate, "v"_a);
-  p.def("inverseRotate", &Quat::inverseRotate, "v"_a);
+//  p.def("toMatrix", &Quat::toMatrix, "m"_a);
+//  p.def("rotate", &Quat::rotate, "v"_a);
+//  p.def("inverseRotate", &Quat::inverseRotate, "v"_a);
   p.def("inverse", &Quat::inverse);
   p.def("toRotationVector", &Quat::quatToRotationVector);
   p.def("toEulerVector", &Quat::toEulerVector);
@@ -48,16 +48,16 @@ void moduleAddQuat(py::module &m) {
   });
   p.def("axisToQuat", &Quat::axisToQuat, "a"_a, "phi"_a);
   p.def("quatToAxis", &Quat::quatToAxis, "a"_a, "phi"_a);
-  p.def_static("createFromFrame", &Quat::createFromFrame);
-  p.def_static("createFromRotationVector",
-               (Quat(Quat::*)(Vec3d)) & Quat::createFromRotationVector);
-  p.def_static("createFromRotationVector",
-               (Quat(Quat::*)(double, double, double)) &
-                   Quat::createFromRotationVector);
-  p.def_static("createFromEuler",
-               (Quat(Quat::*)(Vec3d)) & Quat::createFromEuler);
-  p.def_static("createFromEuler",
-               (Quat(Quat::*)(double, double, double)) & Quat::createFromEuler);
+//  p.def_static("createFromFrame", &Quat::createFromFrame);
+//  p.def_static("createFromRotationVector",
+//               (Quat(Quat::*)(Vec3d)) & Quat::createFromRotationVector);
+//  p.def_static("createFromRotationVector",
+//               (Quat(Quat::*)(double, double, double)) &
+//                   Quat::createFromRotationVector);
+//  p.def_static("createFromEuler",
+//               (Quat(Quat::*)(Vec3d)) & Quat::createFromEuler);
+//  p.def_static("createFromEuler",
+//               (Quat(Quat::*)(double, double, double)) & Quat::createFromEuler);
   p.def("size", &Quat::size);
 
   p.def(py::self + py::self);
