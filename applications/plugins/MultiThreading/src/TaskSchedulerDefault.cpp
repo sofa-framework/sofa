@@ -53,7 +53,7 @@ namespace sofa
 
 		unsigned TaskSchedulerDefault::GetHardwareThreadsCount()
 		{
-			return std::thread::hardware_concurrency();
+			return std::thread::hardware_concurrency() / 2;
 		}
 
 
@@ -92,7 +92,7 @@ namespace sofa
             // default number of thread: only physicsal cores. no advantage from hyperthreading.
             _threadCount = GetHardwareThreadsCount();
             
-            if ( NbThread > 0 && NbThread <= MAX_THREADS  )
+            if ( NbThread > 0 )//&& NbThread <= MAX_THREADS  )
             {
                 _threadCount = NbThread;
             }
