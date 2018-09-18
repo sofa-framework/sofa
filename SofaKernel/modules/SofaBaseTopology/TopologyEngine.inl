@@ -48,10 +48,10 @@ TopologyEngineImpl< VecT>::TopologyEngineImpl(t_topologicalData *_topologicalDat
     m_topology =  dynamic_cast<sofa::core::topology::TopologyContainer*>(_topology);
 
     if (m_topology == NULL)
-        msg_error() <<"Error: Topology is not dynamic";
+        msg_error() << "Topology is not dynamic";
 
     if (m_topoHandler == NULL)
-        msg_error() <<"Error: Topology Handler not available";
+        msg_error() << "Topology Handler not available";
 }
 
 template <typename VecT>
@@ -98,9 +98,9 @@ void TopologyEngineImpl< VecT>::registerTopology(sofa::core::topology::BaseMeshT
 
     if (m_topology == NULL)
     {
-#ifndef NDEBUG // too much warnings
-        msg_error() <<"Error: Topology is not dynamic";
-#endif
+        if (CHECK_TOPOLOGY)
+            msg_error() <<"Topology is not dynamic";
+
         return;
     }
     else
@@ -113,9 +113,9 @@ void TopologyEngineImpl< VecT>::registerTopology()
 {
     if (m_topology == NULL)
     {
-#ifndef NDEBUG // too much warnings
-        msg_error() <<"Error: Topology is not dynamic";
-#endif
+        if (CHECK_TOPOLOGY)
+            msg_error() <<"Topology is not dynamic";
+
         return;
     }
     else
@@ -147,9 +147,9 @@ void TopologyEngineImpl< VecT>::linkToPointDataArray()
 
     if (_container == NULL)
     {
-#ifndef NDEBUG
-        msg_error() <<"Error: Can't dynamic cast topology as PointSetTopologyContainer";
-#endif
+        if(CHECK_TOPOLOGY)
+            msg_error() <<"Can't dynamic cast topology as PointSetTopologyContainer";
+
         return;
     }
 
@@ -168,9 +168,9 @@ void TopologyEngineImpl< VecT>::linkToEdgeDataArray()
 
     if (_container == NULL)
     {
-#ifndef NDEBUG
-        msg_error() <<"Error: Can't dynamic cast topology as EdgeSetTopologyContainer";
-#endif
+        if(CHECK_TOPOLOGY)
+            msg_error() <<"Can't dynamic cast topology as EdgeSetTopologyContainer";
+
         return;
     }
 
@@ -189,9 +189,9 @@ void TopologyEngineImpl< VecT>::linkToTriangleDataArray()
 
     if (_container == NULL)
     {
-#ifndef NDEBUG
-        msg_error() <<"Error: Can't dynamic cast topology as TriangleSetTopologyContainer";
-#endif
+        if(CHECK_TOPOLOGY)
+            msg_error() <<"Can't dynamic cast topology as TriangleSetTopologyContainer";
+
         return;
     }
 
@@ -210,9 +210,9 @@ void TopologyEngineImpl< VecT>::linkToQuadDataArray()
 
     if (_container == NULL)
     {
-#ifndef NDEBUG
-        msg_error() <<"Error: Can't dynamic cast topology as QuadSetTopologyContainer";
-#endif
+        if(CHECK_TOPOLOGY)
+            msg_error() <<"Can't dynamic cast topology as QuadSetTopologyContainer";
+
         return;
     }
 
@@ -231,9 +231,9 @@ void TopologyEngineImpl< VecT>::linkToTetrahedronDataArray()
 
     if (_container == NULL)
     {
-#ifndef NDEBUG
-        msg_error() <<"Error: Can't dynamic cast topology as TetrahedronSetTopologyContainer";
-#endif
+        if(CHECK_TOPOLOGY)
+            msg_error() <<"Can't dynamic cast topology as TetrahedronSetTopologyContainer";
+
         return;
     }
 
@@ -252,9 +252,9 @@ void TopologyEngineImpl< VecT>::linkToHexahedronDataArray()
 
     if (_container == NULL)
     {
-#ifndef NDEBUG
-        msg_error() <<"Error: Can't dynamic cast topology as HexahedronSetTopologyContainer";
-#endif
+        if(CHECK_TOPOLOGY)
+            msg_error() <<"Can't dynamic cast topology as HexahedronSetTopologyContainer";
+
         return;
     }
 
