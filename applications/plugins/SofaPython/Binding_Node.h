@@ -1,5 +1,4 @@
-/******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, development version     *
+/****************************************************************************** *       SOFA, Simulation Open-Framework Architecture, development version     *Bindin
 *                (c) 2006-2018 INRIA, USTL, UJF, CNRS, MGH                    *
 *                                                                             *
 * This program is free software; you can redistribute it and/or modify it     *

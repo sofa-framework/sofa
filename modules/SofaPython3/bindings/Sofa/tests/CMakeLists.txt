@@ -34,7 +34,7 @@ set(PYTHON_FILES
     )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${PYTHON_FILES})
-target_link_libraries(${PROJECT_NAME} SofaPython3 SofaGTestMain)
+target_link_libraries(${PROJECT_NAME} SofaGTestMain SofaPython3)
 target_compile_definitions(${PROJECT_NAME} PRIVATE "PYTHON_TESTFILES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/pyfiles/\"")
 
 add_test(NAME ${PROJECT_NAME} COMMAND ${PROJECT_NAME})

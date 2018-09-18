@@ -14,10 +14,13 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/pybind/Binding_BaseData.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/pybind/Binding_BaseObject.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/pybind/Binding_BaseObject.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/pybind/Binding_Simulation.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/pybind/Binding_Simulation.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/pybind/Binding_Node.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/pybind/Binding_Node.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/pybind/Binding_PythonController.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/pybind/Binding_PythonController.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/pybind/Binding_Node.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/pybind/Binding_Simulation.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/pybind/Binding_Simulation.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/pybind/Module_Sofa.cpp
 )
 

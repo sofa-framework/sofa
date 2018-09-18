@@ -10,6 +10,8 @@ using sofa::core::objectmodel::BaseLink;
 
 void moduleAddBase(py::module &m)
 {
+    //py::register_exception<AttributeError>(m, "AttributeError");
+
     py::class_<Base, Base::SPtr> p(m, "Base");
     p.def_property("name", &Base::getName,
                    [](Base &self, const std::string &s) { self.setName(s); });
@@ -43,7 +45,7 @@ void moduleAddBase(py::module &m)
         {
             return py::cast(d);
         }
-        return py::none();
+        throw py::attribute_error();
     });
 
     p.def("__setattr__", [](Base& self, const std::string& s, py::object& value) -> py::object
