@@ -84,8 +84,13 @@ void moduleAddNode(py::module &m) {
         self.addObject(f);
 
         // maybe I can return handle instead...? didn't check that yet
-        return f;
+        return handle;
       });
+
+    p.def("createNode", [](const std::string& name)
+    {
+        return Node::create(name);
+    });
 
     p.def("createChild", &Node::createChild);
     p.def("getRoot", &Node::getRoot);
@@ -98,6 +103,8 @@ void moduleAddNode(py::module &m) {
     p.def("reset", [](Node &n) { sofa::simulation::getSimulation()->reset(&n);
                                }); p.def("init", [](Node &n) {
         sofa::simulation::getSimulation()->init(&n); });
+
+    p.def("addObject", &Node::addObject);
 
     p.def("__getattr__", [](Node& self, const std::string& name) -> py::object
     {
