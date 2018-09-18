@@ -41,10 +41,13 @@ void moduleAddPythonController(py::module& m)
 
     p.def(py::init());
 
-    /*p.def("__setattr__", [](Base& self, const std::string& s, py::object& value) -> py::object
+    p.def("__setattr__", [](PythonController& self, const std::string& s, py::object& value) -> py::object
     {
         std::cout << "SET ATTR LOCAL: " << s << std::endl ;
+        py::object oself = py::cast(self);
+
+
         return py::none();
-    });*/
+    });
 
 }

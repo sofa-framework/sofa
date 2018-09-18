@@ -6,12 +6,14 @@ import SofaRuntime
 class MyController(Sofa.PythonController):
         """This is my custom controller
            when init is called from Sofa this should call the python init function
-        """
+        """        
         inited = 0
         reinited = 0
         
         def init(self):
                 print("COUCOU")
+                
+                print(" => "+str(dir(self))) 
                 self.inited += 1
                 
         def reinit(self):
