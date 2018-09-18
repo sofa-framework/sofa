@@ -70,22 +70,27 @@ private:
     EdgeSetGeometryAlgorithms< DataTypes >*		m_geometryAlgorithms;
 };
 
-#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_TOPOLOGY_EDGESETTOPOLOGYALGORITHMS_CPP)
-#ifndef SOFA_FLOAT
-extern template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<defaulttype::Vec3dTypes>;
-extern template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<defaulttype::Vec2dTypes>;
-extern template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<defaulttype::Vec1dTypes>;
-extern template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<defaulttype::Rigid3dTypes>;
-extern template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<defaulttype::Rigid2dTypes>;
+
+#ifndef SOFA_COMPONENT_TOPOLOGY_EDGESETTOPOLOGYALGORITHMS_CPP
+#define SOFA_COMPONENT_TOPOLOGY_EDGESETTOPOLOGYALGORITHMS_EXTERN extern
+#else
+#define SOFA_COMPONENT_TOPOLOGY_EDGESETTOPOLOGYALGORITHMS_EXTERN
 #endif
 
-#ifndef SOFA_DOUBLE
-extern template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<defaulttype::Vec3fTypes>;
-extern template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<defaulttype::Vec2fTypes>;
-extern template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<defaulttype::Vec1fTypes>;
-extern template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<defaulttype::Rigid3fTypes>;
-extern template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<defaulttype::Rigid2fTypes>;
+#ifdef SOFA_WITH_DOUBLE
+SOFA_COMPONENT_TOPOLOGY_EDGESETTOPOLOGYALGORITHMS_EXTERN template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<defaulttype::Vec3dTypes>;
+SOFA_COMPONENT_TOPOLOGY_EDGESETTOPOLOGYALGORITHMS_EXTERN template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<defaulttype::Vec2dTypes>;
+SOFA_COMPONENT_TOPOLOGY_EDGESETTOPOLOGYALGORITHMS_EXTERN template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<defaulttype::Vec1dTypes>;
+SOFA_COMPONENT_TOPOLOGY_EDGESETTOPOLOGYALGORITHMS_EXTERN template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<defaulttype::Rigid3dTypes>;
+SOFA_COMPONENT_TOPOLOGY_EDGESETTOPOLOGYALGORITHMS_EXTERN template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<defaulttype::Rigid2dTypes>;
 #endif
+
+#ifdef SOFA_WITH_FLOAT
+SOFA_COMPONENT_TOPOLOGY_EDGESETTOPOLOGYALGORITHMS_EXTERN template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<defaulttype::Vec3fTypes>;
+SOFA_COMPONENT_TOPOLOGY_EDGESETTOPOLOGYALGORITHMS_EXTERN template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<defaulttype::Vec2fTypes>;
+SOFA_COMPONENT_TOPOLOGY_EDGESETTOPOLOGYALGORITHMS_EXTERN template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<defaulttype::Vec1fTypes>;
+SOFA_COMPONENT_TOPOLOGY_EDGESETTOPOLOGYALGORITHMS_EXTERN template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<defaulttype::Rigid3fTypes>;
+SOFA_COMPONENT_TOPOLOGY_EDGESETTOPOLOGYALGORITHMS_EXTERN template class SOFA_BASE_TOPOLOGY_API EdgeSetTopologyAlgorithms<defaulttype::Rigid2fTypes>;
 #endif
 
 } // namespace topology
