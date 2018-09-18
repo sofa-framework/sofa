@@ -26,56 +26,29 @@
 
 #include <vector>
 
-#include <SofaTest/Python_test.h>
-using sofa::Python_test ;
-using sofa::Python_test_list ;
-using sofa::PrintTo ;
-
-#include <sofa/helper/system/PluginManager.h>
-using sofa::helper::system::PluginManager ;
-
-using std::vector;
+#include <SofaPython3/PythonTest.h>
+using sofapython3::PythonTest ;
+using sofapython3::PythonTestList ;
+using sofapython3::PrintTo ;
 using std::string;
 
 namespace
 {
 
-class PythonSofaTypes_test : public Python_test
-{
-public:
-    /// Be sure that SofaPython plugin is loaded.
-    static void SetUpTestCase(){
-        static bool _inited_ = false;
-        if(!_inited_){
-            PluginManager::getInstance().loadPlugin("SofaPython") ;
-        }
-    }
-};
-
-/// static build of the test list
-static struct Tests : public Python_test_list
-{
-    Tests()
+  class PythonModule_SofaTypes_test : public PythonTestList
+  {
+  public:
+    PythonModule_SofaTypes_test()
     {
-        static const std::string testPath = std::string(PYTHON_TESTFILES_DIR);
-        addTest( "vector_test.py", testPath, {} );
-        addTest( "matrix_test.py", testPath, {} );
-        addTest( "quaternion_test.py", testPath, {} );
+      addTestDir(std::string(PYTHON_TESTFILES_DIR));
     }
-} python_tests;
+  } python_tests;
 
+  /// run test list
+  INSTANTIATE_TEST_CASE_P(Batch,
+			  PythonTest,
+			  ::testing::ValuesIn(python_tests.list));
 
-/// run test list
-INSTANTIATE_TEST_CASE_P(Batch,
-                        PythonSofaTypes_test,
-                        ::testing::ValuesIn(python_tests.list));
-
-
-
-TEST_P(PythonSofaTypes_test, all_tests)
-{
-    run(GetParam());
-}
+  TEST_P(PythonTest, all_tests) { run(GetParam()); }
 
 }
-

@@ -19,7 +19,6 @@ std::string __str__(const Mat<R, C, double> &self, bool repr) {
 }
 } // namespace pyMat
 
-
 template <int R, int C>
 static void bindSquaredMat(py::class_<Mat<R, C, double>> & /*p*/) {}
 
@@ -140,22 +139,16 @@ static void addMat(py::module & /*m*/, py::class_<Mat<R, C, double>> &p) {
   // bindings to generic squared matrices methods
   bindSquaredMat(p);
 
-
-  p.def("__str__", [](MatClass &self) {
-      return pyMat::__str__(self);
-  });
-  p.def("__repr__", [](MatClass &self) {
-      return pyMat::__str__(self, true);
-  });
+  p.def("__str__", [](MatClass &self) { return pyMat::__str__(self); });
+  p.def("__repr__", [](MatClass &self) { return pyMat::__str__(self, true); });
 }
 
 // Generic bindings for Matrices
 template <int R, int C> struct MATRIX {
   static void addMat(py::module &m) {
     typedef Mat<R, C, double> MatClass;
-    //      typedef typename Mat<R, C, double>::Line Row;
-    //      typedef typename Mat<R, C, double>::Col Col;
     py::class_<MatClass> p(m, BINDING_MAT_MAKE_NAME(R, C).c_str());
+    ::addMat(m, p);
   }
 };
 
@@ -173,7 +166,7 @@ template <> struct MATRIX<1, 1> {
     //    typedef typename MatClass::Line Row;
     //    typedef typename MatClass::Col Col;
 
-    py::class_<MatClass> p(m, BINDING_MAT_MAKE_NAME(2, 2).c_str());
+    py::class_<MatClass> p(m, BINDING_MAT_MAKE_NAME(1, 1).c_str());
     p.def(py::init([](py::list l) {
       MatClass *mat = new MatClass(NOINIT);
       if (py::isinstance<py::list>(l[0])) // 2D array

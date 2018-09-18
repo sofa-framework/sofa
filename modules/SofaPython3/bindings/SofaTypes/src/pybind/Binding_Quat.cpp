@@ -25,10 +25,6 @@ void moduleAddQuat(py::module &m) {
 
   p.def("set", (void (Quat::*)(double, double, double, double)) & Quat::set,
         "x"_a, "y"_a, "z"_a, "w"_a);
-  p.def_static("set", [](double a0, double a1, double a2) {
-    return Quat::set(a0, a1, a2);
-  });
-  p.def_static("set", [](Vec3d V) { return Quat::set(V); });
   p.def("identity", &Quat::identity);
 
   p.def("normalize", &Quat::normalize);

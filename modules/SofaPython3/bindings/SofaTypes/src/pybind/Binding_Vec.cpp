@@ -2,12 +2,11 @@
 #include <functional>
 #include <pybind11/operators.h>
 
-#define BINDING_VEC_MAKE_NAME(N, type)                                         \
-  std::string(std::string("Vec") + std::to_string(N) + typeid(type).name())
+#define BINDING_VEC_MAKE_NAME(N, T)                                            \
+  std::string(std::string("Vec") + std::to_string(N) + typeid(T).name())
 
 namespace pyVec {
-template <int N, class T>
-std::string __str__(const Vec<N, T> &v, bool repr) {
+template <int N, class T> std::string __str__(const Vec<N, T> &v, bool repr) {
   std::string s = (repr) ? (BINDING_VEC_MAKE_NAME(N, T) + "(") : ("(");
   s += std::to_string(v[0]);
   for (size_t i = 1; i < v.size(); ++i)
@@ -17,13 +16,12 @@ std::string __str__(const Vec<N, T> &v, bool repr) {
 }
 } // namespace pyVec
 
-template <int N, class T>
-void addVec(py::module &m, py::class_<Vec<N, T>> &p, T type = 0) {
+template <int N, class T> void addVec(py::module &m, py::class_<Vec<N, T>> &p) {
   typedef Vec<N, T> VecClass;
-  p.def(py::init<>());
-  p.def(py::init<const VecClass &>());
+  p.def(py::init<>());                 // empty ctor
+  p.def(py::init<const VecClass &>()); // copy ctor
 
-  p.def("set", [](VecClass &v, py::list l) {
+  p.def("set", [](VecClass &v, py::list l) { // set
     for (size_t i = 0; i < N && i < l.size(); ++i) {
       T &val = v[i];
       if (std::string(typeid(T).name()) == "i")
@@ -100,36 +98,31 @@ void addVec(py::module &m, py::class_<Vec<N, T>> &p, T type = 0) {
         (T(*)(const VecClass &a, const VecClass &b)) & sofa::defaulttype::dot);
 }
 
-// generic bindings for N > 12
-template <int N, class T> struct VECTOR {
+template <int N, class T> struct VEC {
   typedef Vec<N, T> VecClass;
-  static void addVec(py::module &m, T type = 0) {
-    py::class_<Vec<N, T>> p(m, BINDING_VEC_MAKE_NAME(N, type).c_str());
-    ::addVec(m, p, type);
-  }
   template <int NN = N, typename std::enable_if<(NN >= 1), int>::type = 0>
-  T &add_x(py::class_<VecClass> &p) {
+  static void add_x(py::class_<VecClass> &p) {
     p.def_property("x", [](VecClass &v) { return v.x(); },
                    [](VecClass &v, double x) { v.x() = x; });
   }
   template <int NN = N, typename std::enable_if<(NN >= 2), int>::type = 0>
-  T &add_y(py::class_<VecClass> &p) {
+  static void add_y(py::class_<VecClass> &p) {
     p.def_property("y", [](VecClass &v) { return v.y(); },
                    [](VecClass &v, double y) { v.y() = y; });
   }
   template <int NN = N, typename std::enable_if<(NN >= 3), int>::type = 0>
-  T &add_z(py::class_<VecClass> &p) {
+  static void add_z(py::class_<VecClass> &p) {
     p.def_property("z", [](VecClass &v) { return v.z(); },
                    [](VecClass &v, double z) { v.z() = z; });
   }
   template <int NN = N, typename std::enable_if<(NN >= 4), int>::type = 0>
-  T &add_w(py::class_<VecClass> &p) {
+  static void add_w(py::class_<VecClass> &p) {
     p.def_property("w", [](VecClass &v) { return v.w(); },
                    [](VecClass &v, double w) { v.w() = w; });
   }
 
   template <int NN = N, typename std::enable_if<(NN >= 2), int>::type = 0>
-  T &add_xy(py::class_<VecClass> &p) {
+  static void add_xy(py::class_<VecClass> &p) {
     p.def_property("xy",
                    [](VecClass &v) {
                      py::tuple t(2);
@@ -144,7 +137,7 @@ template <int N, class T> struct VECTOR {
   }
 
   template <int NN = N, typename std::enable_if<(NN >= 3), int>::type = 0>
-  T &add_xyz(py::class_<VecClass> &p) {
+  static void add_xyz(py::class_<VecClass> &p) {
     p.def_property("xyz",
                    [](VecClass &v) {
                      py::tuple t(3);
@@ -161,10 +154,10 @@ template <int N, class T> struct VECTOR {
   }
 
   template <int NN = N, typename std::enable_if<(NN >= 4), int>::type = 0>
-  T &add_xyzw(py::class_<VecClass> &p) {
+  static void add_xyzw(py::class_<VecClass> &p) {
     p.def_property("xyzw",
                    [](VecClass &v) {
-                     py::tuple t(3);
+                     py::tuple t(4);
                      t[0] = v.x();
                      t[1] = v.y();
                      t[2] = v.z();
@@ -180,16 +173,25 @@ template <int N, class T> struct VECTOR {
   }
 };
 
+// generic bindings
+template <int N, class T> struct VECTOR : public VEC<N, T> {
+  static void addVec(py::module &m) {
+    py::class_<Vec<N, T>> p(m, BINDING_VEC_MAKE_NAME(N, T).c_str());
+    ::addVec(m, p);
+  }
+};
+
 // Prevent calling bindings with N == 0
-template <class T> struct VECTOR<0, T> {
-  static void addVec(py::module &m, T type = 0) { SOFA_UNUSED(type); }
+template <class T> struct VECTOR<0, T> : public VEC<0, T> {
+  static void addVec(py::module &m) {}
 };
 
 // specializations required for ctors / and variadic template methods
-template <class T> struct VECTOR<1, T> {
-  static void addVec(py::module &m, T type = 0) {
+template <class T> struct VECTOR<1, T> : public VEC<1, T> {
+  static void addVec(py::module &m) {
     typedef Vec<1, T> VecClass;
-    py::class_<VecClass> p(m, BINDING_VEC_MAKE_NAME(1, type).c_str());
+    typedef VEC<1, T> PARENT;
+    py::class_<VecClass> p(m, BINDING_VEC_MAKE_NAME(1, T).c_str());
     p.def(py::init<T>());
     p.def(py::init([](py::list l) {
       VecClass *v = new VecClass();
@@ -202,14 +204,16 @@ template <class T> struct VECTOR<1, T> {
       return std::unique_ptr<VecClass>(v);
     }));
     p.def("set", (void (VecClass::*)(T)) & VecClass::set);
-    ::addVec(m, p, type);
+    ::addVec(m, p);
+    PARENT::add_x(p);
   }
 };
 
-template <class T> struct VECTOR<2, T> {
-  static void addVec(py::module &m, T type = 0) {
+template <class T> struct VECTOR<2, T> : public VEC<2, T> {
+  static void addVec(py::module &m) {
     typedef Vec<2, T> VecClass;
-    py::class_<VecClass> p(m, BINDING_VEC_MAKE_NAME(2, type).c_str());
+    typedef VEC<2, T> PARENT;
+    py::class_<VecClass> p(m, BINDING_VEC_MAKE_NAME(2, T).c_str());
     p.def(py::init<T, T>());
     p.def(py::init([](py::list l) {
       VecClass *v = new VecClass();
@@ -222,7 +226,10 @@ template <class T> struct VECTOR<2, T> {
       return std::unique_ptr<VecClass>(v);
     }));
     p.def("set", (void (VecClass::*)(T, T)) & VecClass::set);
-    ::addVec(m, p, type);
+    ::addVec(m, p);
+    PARENT::add_x(p);
+    PARENT::add_y(p);
+    PARENT::add_xy(p);
 
     m.def("cross", [](const VecClass &a, const VecClass &b) {
       T val = sofa::defaulttype::cross(a, b);
@@ -231,10 +238,11 @@ template <class T> struct VECTOR<2, T> {
   }
 };
 
-template <class T> struct VECTOR<3, T> {
-  static void addVec(py::module &m, T type = 0) {
+template <class T> struct VECTOR<3, T> : public VEC<3, T> {
+  static void addVec(py::module &m) {
+    typedef VEC<3, T> PARENT;
     typedef Vec<3, T> VecClass;
-    py::class_<VecClass> p(m, BINDING_VEC_MAKE_NAME(3, type).c_str());
+    py::class_<VecClass> p(m, BINDING_VEC_MAKE_NAME(3, T).c_str());
     p.def(py::init<T, T, T>());
     p.def(py::init([](py::list l) {
       VecClass *v = new VecClass();
@@ -251,14 +259,20 @@ template <class T> struct VECTOR<3, T> {
       VecClass val = sofa::defaulttype::cross(a, b);
       return val;
     });
-    ::addVec(m, p, type);
+    ::addVec(m, p);
+    PARENT::add_x(p);
+    PARENT::add_y(p);
+    PARENT::add_z(p);
+    PARENT::add_xy(p);
+    PARENT::add_xyz(p);
   }
 };
 
-template <class T> struct VECTOR<4, T> {
-  static void addVec(py::module &m, T type = 0) {
+template <class T> struct VECTOR<4, T> : public VEC<4, T> {
+  static void addVec(py::module &m) {
     typedef Vec<4, T> VecClass;
-    py::class_<VecClass> p(m, BINDING_VEC_MAKE_NAME(4, type).c_str());
+    typedef VEC<4, T> PARENT;
+    py::class_<VecClass> p(m, BINDING_VEC_MAKE_NAME(4, T).c_str());
     p.def(py::init<T, T, T, T>());
     p.def(py::init([](py::list l) {
       VecClass *v = new VecClass();
@@ -271,14 +285,21 @@ template <class T> struct VECTOR<4, T> {
       return std::unique_ptr<VecClass>(v);
     }));
     p.def("set", (void (VecClass::*)(T, T, T, T)) & VecClass::set);
-    ::addVec(m, p, type);
+    ::addVec(m, p);
+    PARENT::add_x(p);
+    PARENT::add_y(p);
+    PARENT::add_z(p);
+    PARENT::add_w(p);
+    PARENT::add_xy(p);
+    PARENT::add_xyz(p);
+    PARENT::add_xyzw(p);
   }
 };
 
-template <class T> struct VECTOR<5, T> {
-  static void addVec(py::module &m, T type = 0) {
+template <class T> struct VECTOR<5, T> : public VEC<5, T> {
+  static void addVec(py::module &m) {
     typedef Vec<5, T> VecClass;
-    py::class_<Vec<5, T>> p(m, BINDING_VEC_MAKE_NAME(5, type).c_str());
+    py::class_<Vec<5, T>> p(m, BINDING_VEC_MAKE_NAME(5, T).c_str());
     p.def(py::init<T, T, T, T, T>());
     p.def(py::init([](py::list l) {
       VecClass *v = new VecClass();
@@ -291,14 +312,14 @@ template <class T> struct VECTOR<5, T> {
       return std::unique_ptr<VecClass>(v);
     }));
     p.def("set", (void (VecClass::*)(T, T, T, T, T)) & VecClass::set);
-    ::addVec(m, p, type);
+    ::addVec(m, p);
   }
 };
 
-template <class T> struct VECTOR<6, T> {
-  static void addVec(py::module &m, T type = 0) {
+template <class T> struct VECTOR<6, T> : public VEC<6, T> {
+  static void addVec(py::module &m) {
     typedef Vec<6, T> VecClass;
-    py::class_<Vec<6, T>> p(m, BINDING_VEC_MAKE_NAME(6, type).c_str());
+    py::class_<Vec<6, T>> p(m, BINDING_VEC_MAKE_NAME(6, T).c_str());
     p.def(py::init<T, T, T, T, T, T>());
     p.def(py::init([](py::list l) {
       VecClass *v = new VecClass();
@@ -311,14 +332,14 @@ template <class T> struct VECTOR<6, T> {
       return std::unique_ptr<VecClass>(v);
     }));
     p.def("set", (void (VecClass::*)(T, T, T, T, T, T)) & VecClass::set);
-    ::addVec(m, p, type);
+    ::addVec(m, p);
   }
 };
 
-template <class T> struct VECTOR<7, T> {
-  static void addVec(py::module &m, T type = 0) {
+template <class T> struct VECTOR<7, T> : public VEC<7, T> {
+  static void addVec(py::module &m) {
     typedef Vec<7, T> VecClass;
-    py::class_<Vec<7, T>> p(m, BINDING_VEC_MAKE_NAME(7, type).c_str());
+    py::class_<Vec<7, T>> p(m, BINDING_VEC_MAKE_NAME(7, T).c_str());
     p.def(py::init<T, T, T, T, T, T, T>());
     p.def(py::init([](py::list l) {
       VecClass *v = new VecClass();
@@ -331,14 +352,14 @@ template <class T> struct VECTOR<7, T> {
       return std::unique_ptr<VecClass>(v);
     }));
     p.def("set", (void (VecClass::*)(T, T, T, T, T, T, T)) & VecClass::set);
-    ::addVec(m, p, type);
+    ::addVec(m, p);
   }
 };
 
-template <class T> struct VECTOR<8, T> {
-  static void addVec(py::module &m, T type = 0) {
+template <class T> struct VECTOR<8, T> : public VEC<8, T> {
+  static void addVec(py::module &m) {
     typedef Vec<8, T> VecClass;
-    py::class_<Vec<8, T>> p(m, BINDING_VEC_MAKE_NAME(8, type).c_str());
+    py::class_<Vec<8, T>> p(m, BINDING_VEC_MAKE_NAME(8, T).c_str());
     p.def(py::init<T, T, T, T, T, T, T, T>());
     p.def(py::init([](py::list l) {
       VecClass *v = new VecClass();
@@ -351,14 +372,14 @@ template <class T> struct VECTOR<8, T> {
       return std::unique_ptr<VecClass>(v);
     }));
     p.def("set", (void (VecClass::*)(T, T, T, T, T, T, T, T)) & VecClass::set);
-    ::addVec(m, p, type);
+    ::addVec(m, p);
   }
 };
 
-template <class T> struct VECTOR<9, T> {
-  static void addVec(py::module &m, T type = 0) {
+template <class T> struct VECTOR<9, T> : public VEC<9, T> {
+  static void addVec(py::module &m) {
     typedef Vec<9, T> VecClass;
-    py::class_<Vec<9, T>> p(m, BINDING_VEC_MAKE_NAME(9, type).c_str());
+    py::class_<Vec<9, T>> p(m, BINDING_VEC_MAKE_NAME(9, T).c_str());
     p.def(py::init<T, T, T, T, T, T, T, T, T>());
     p.def(py::init([](py::list l) {
       VecClass *v = new VecClass();
@@ -372,14 +393,14 @@ template <class T> struct VECTOR<9, T> {
     }));
     p.def("set",
           (void (VecClass::*)(T, T, T, T, T, T, T, T, T)) & VecClass::set);
-    ::addVec(m, p, type);
+    ::addVec(m, p);
   }
 };
 
-template <class T> struct VECTOR<12, T> {
-  static void addVec(py::module &m, T type = 0) {
+template <class T> struct VECTOR<12, T> : public VEC<12, T> {
+  static void addVec(py::module &m) {
     typedef Vec<12, T> VecClass;
-    py::class_<Vec<12, T>> p(m, BINDING_VEC_MAKE_NAME(12, type).c_str());
+    py::class_<Vec<12, T>> p(m, BINDING_VEC_MAKE_NAME(12, T).c_str());
     p.def(py::init<T, T, T, T, T, T, T, T, T, T, T, T>());
     p.def(py::init([](py::list l) {
       VecClass *v = new VecClass();
@@ -393,7 +414,7 @@ template <class T> struct VECTOR<12, T> {
     }));
     p.def("set", (void (VecClass::*)(T, T, T, T, T, T, T, T, T, T, T, T)) &
                      VecClass::set);
-    ::addVec(m, p, type);
+    ::addVec(m, p);
   }
 };
 
