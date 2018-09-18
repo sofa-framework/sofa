@@ -62,7 +62,6 @@ template <int N, class T> void addVec(py::module &m, py::class_<Vec<N, T>> &p) {
   p.def(py::self != py::self)
       .def(py::self == py::self)
       .def(py::self * py::self)
-      .def(py::self * py::self)
       .def(py::self + py::self)
       .def(py::self += py::self)
       .def(py::self - py::self)

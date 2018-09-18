@@ -100,8 +100,23 @@ class Vec_tests(unittest.TestCase):
 
 
 
-    # def test_Operators(self):
-    #     v = Vec3d(1,2,3);
+    def test_Operators(self):
+        v1 = Vec3d(1,2,3);
+        v2 = Vec3d(2,3,4);
+
+        self.assertTrue(v1 != v2)
+        self.assertTrue(v1 == v1) 
+
+        print(' ')
+        print(v1 * v2)
+        print(v1 + v2)
+        print(v1 - v2)
+        self.assertEqual(v1 * v2, 20.0) # dot product
+        self.assertEqual(list(v1 + v2), [3.0, 5.0, 7.0]) # vector addition
+        self.assertEqual(list(v1 - v2), [-1.0, -1.0, -1.0]) # vector substraction
+        # print(v1 * v2)
+        # print(v1 + v2)
+        
         
     # def test_GeometricFunction(self):
     #     ## Norm
