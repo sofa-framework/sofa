@@ -6,15 +6,20 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 using sofa::core::objectmodel::BaseObject;
 
-class PythonController : public BaseObject
-{
+class PythonController : public BaseObject {
 public:
-    void init() override;
-    void reinit() override;
+  void init() override;
+  void reinit() override;
 };
 
-template class py::class_<PythonController,
-                          BaseObject, sofa::core::sptr<PythonController>>;
+struct PythonObjectWrapper : public BaseObject {
+  SOFA_CLASS(PythonObjectWrapper, BaseObject);
+  std::shared_ptr<BaseObject> _b;
+
+  PythonObjectWrapper(std::shared_ptr<BaseObject> b);
+  void init();
+  void reinit();
+};
 
 void moduleAddPythonController(py::module &m);
 

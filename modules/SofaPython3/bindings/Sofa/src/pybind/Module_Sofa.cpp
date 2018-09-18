@@ -22,10 +22,7 @@ PYBIND11_MODULE(Sofa, m) {
   m.def("test", []() {
     py::module m = py::module::import("SofaRuntime");
     Node::SPtr n = Node::create("testNode");
-    Base::SPtr b = Base::SPtr(n);
-    py::tuple t{2}; /// Why there is no initializer list ?
-    t[0] = b;
-    t[1] = n;
-    return t;
+
+    return n;
   });
 }

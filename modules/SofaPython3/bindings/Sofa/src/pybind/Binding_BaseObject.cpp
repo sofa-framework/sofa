@@ -1,8 +1,10 @@
 #include "Binding_BaseObject.h"
+#include "Binding_PythonController.h"
 
 void moduleAddBaseObject(py::module& m)
 {
-    py::class_<BaseObject, Base, BaseObject::SPtr> p(m, "BaseObject");
+    py::class_<BaseObject, Base, BaseObject::SPtr, PythonController>p(m, "BaseObject");
+    p.def(py::init<>());
     p.def("init", &BaseObject::init);
     p.def("reinit", &BaseObject::init);
 
