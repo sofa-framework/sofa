@@ -12,7 +12,7 @@ project(PythonModule_SofaTypes)
 
 # This must be done before doing the find_package(pybind11)
 #set(PYBIND11_PYTHON_VERSION 3.6m)
-set(PYTHON_EXECUTABLE python3)
+#set(PYTHON_EXECUTABLE python3)
 
 #include(src/cython/CMakeBuilds.cmake)
 include(src/pybind/CMakeBuilds.cmake)
@@ -36,4 +36,4 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/installed-SofaTypes-config"
 
 #install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/module/Sofa DESTINATION modules/Sofa/python)
 
-add_subdirectory(tests)
+#add_subdirectory(tests)

@@ -12,7 +12,7 @@ project(PythonModule_SofaRuntime)
 
 # This must be done before doing the find_package(pybind11)
 #set(PYBIND11_PYTHON_VERSION 3.6m)
-set(PYTHON_EXECUTABLE python3)
+#set(PYTHON_EXECUTABLE python3)
 
 #include(src/cython/CMakeBuilds.cmake)
 include(src/pybind/CMakeBuilds.cmake)

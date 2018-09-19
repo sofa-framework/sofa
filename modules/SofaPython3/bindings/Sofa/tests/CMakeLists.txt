@@ -31,6 +31,7 @@ set(PYTHON_FILES
     pyfiles/Base.py
     pyfiles/BaseObject.py
     pyfiles/Node.py
+    pyfiles/ScriptController.py
     )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${PYTHON_FILES})
