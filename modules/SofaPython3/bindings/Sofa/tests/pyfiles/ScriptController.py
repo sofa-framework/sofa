@@ -3,7 +3,7 @@ import gc
 import Sofa
 import SofaRuntime
 
-class MyController(Sofa.BaseObject):
+class MyController(Sofa.PythonController):
         """This is my custom controller
            when init is called from Sofa this should call the python init function
         """        
@@ -11,14 +11,13 @@ class MyController(Sofa.BaseObject):
         reinited = 0
         
         def init(self):
-                print("COUCOU")
-                
-                print(" => "+str(dir(self))) 
-                self.inited += 1
+                print("Python::init()")
+                #print(" => "+str(dir(self)))
+                #self.inited += 1
                 
         def reinit(self):
-                print("COUCOU")
-                self.reinited += 1   
+                print("Python::reinit()")
+                #self.reinited += 1
   
 # class TestScriptController(unittest.TestCase):
 #         def test_constructor(self):
@@ -56,10 +55,21 @@ class MyController(Sofa.BaseObject):
 #                 self.assertEqual( o.reinited, 2 ) 
 
 def createScene(rootNode):
+        print(str(dir(Sofa)))
         c = MyController()
-        c = rootNode.addPythonObject(c)
-        # c.init()
+        c1 = rootNode.addPythonObject(c)        
+        print("============= c ===================")
+        c.init()
+        print("============= c1 ===================")
+        c1.init()
+        print("============= root::init ===================")
         SofaRuntime.getSimulation().init(rootNode)
+        print("============= root::init2 ===================")
+        SofaRuntime.getSimulation().init(rootNode)
+        print("============= done ===================")
 
+        #SofaRuntime.
     # suite = unittest.TestLoader().loadTestsFromTestCase(TestScriptController)
     # return unittest.TextTestRunner(verbosity=2).run(suite).wasSuccessful()
+    
+

@@ -10,8 +10,34 @@ class PythonController : public BaseObject {
 public:
   void init() override;
   void reinit() override;
+
+  PyObject* o;
+
+  PythonController(){
+      std::cout << "PythonController()... " << std::endl;
+  }
+
+  ~PythonController(){
+      Py_DECREF(o);
+      std::cout << "Delete PythonController... " << std::endl;
+  }
+
+  void setPythonInstance(PyObject* o){
+      this->o = o;
+  }
+
+  friend inline void intrusive_ptr_add_ref(PythonController* p)
+  {
+      std::cout << "ADD REF" << std::endl;
+  }
+
+  friend inline void intrusive_ptr_release(PythonController* p)
+  {
+      std::cout << "DEL REF" << std::endl;
+  }
 };
 
+/*
 struct PythonObjectWrapper : public BaseObject {
   SOFA_CLASS(PythonObjectWrapper, BaseObject);
   std::shared_ptr<BaseObject> _b;
@@ -19,7 +45,7 @@ struct PythonObjectWrapper : public BaseObject {
   PythonObjectWrapper(std::shared_ptr<BaseObject> b);
   void init();
   void reinit();
-};
+};*/
 
 void moduleAddPythonController(py::module &m);
 

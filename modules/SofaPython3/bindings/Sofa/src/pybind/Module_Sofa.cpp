@@ -13,16 +13,4 @@ PYBIND11_MODULE(Sofa, m) {
   moduleAddNode(m);
   moduleAddPythonController(m);
   moduleAddSimulation(m);
-
-
-  /// py::module runtime = m.def_submodule("Runtime");
-  /// runtime.add_object();
-  /// py::exec("import SofaRuntime as Runtime", py::globals());
-
-  m.def("test", []() {
-    py::module m = py::module::import("SofaRuntime");
-    Node::SPtr n = Node::create("testNode");
-
-    return n;
-  });
 }

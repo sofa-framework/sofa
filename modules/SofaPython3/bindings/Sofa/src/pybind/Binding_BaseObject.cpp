@@ -3,8 +3,8 @@
 
 void moduleAddBaseObject(py::module& m)
 {
-    py::class_<BaseObject, Base, BaseObject::SPtr, PythonController>p(m, "BaseObject");
-    p.def(py::init<>());
+    py::class_<BaseObject, Base, BaseObject::SPtr>p(m, "BaseObject");
+    //p.def(py::init<>());
     p.def("init", &BaseObject::init);
     p.def("reinit", &BaseObject::init);
 

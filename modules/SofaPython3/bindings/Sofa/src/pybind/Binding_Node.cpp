@@ -61,29 +61,15 @@ void moduleAddNode(py::module &m) {
     });
 
     p.def("addPythonObject", [](Node& self, py::handle handle) {
-        // convert PyObject* (the handle) -  to BaseObject*
         py::detail::type_caster<BaseObject> obj_caster;
         if (!obj_caster.load(handle, true))
           throw py::value_error();
         BaseObject* o = obj_caster;
 
-        Py_INCREF(handle.ptr());
-        // create a sptr from the python pointer, that will properly remove the
-        // decref when deleted
-        std::shared_ptr<PyObject> pyptr(handle.ptr(), [](PyObject *ob) {
-          Py_DECREF(ob);
-        }); // custom desctructor
+        PythonController* tmp = dynamic_cast<PythonController*>(o);
+        tmp->setPythonInstance(handle.ptr());
 
-        // Where the magic happen: creates a aliasing shared_ptr, sharing ownership
-        // of the PyObj and holding the BaseObject pointer
-        std::shared_ptr<BaseObject> baseObj(pyptr, o);
-
-        PythonObjectWrapper::SPtr f(new PythonObjectWrapper(baseObj));
-
-        // finally, add the wrapped object to the Node!
-        self.addObject(f);
-
-        // maybe I can return handle instead...? didn't check that yet
+        self.addObject(o);
         return handle;
       });
 

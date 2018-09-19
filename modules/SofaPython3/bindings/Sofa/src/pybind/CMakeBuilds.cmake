@@ -29,7 +29,7 @@ set(SOURCE_FILES
 sofa_add_pybind11_module(
         TARGET PythonModule_Sofa
         SOURCES  ${SOURCE_FILES} 
-        DEPENDS SofaPython3 SofaSimulationGraph
+        DEPENDS SofaSimulationGraph pybind11::module
         OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/package/"
         NAME Sofa
 )
