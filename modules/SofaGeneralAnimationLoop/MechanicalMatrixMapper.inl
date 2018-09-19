@@ -335,18 +335,18 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
     time= (double)timer->getTime();
 
     sofa::simulation::Node *node = l_nodeToParse.get();
-    unsigned int currentNbInteractionFFs = node->interactionForceField.size();
+    size_t currentNbInteractionFFs = node->interactionForceField.size();
 
     if (m_nbInteractionForceFields != currentNbInteractionFFs)
     {
         bool emptyForceFieldList = l_forceField.empty();
         if (!emptyForceFieldList)
         {
-            int NbForcefieldRegistered = l_forceField.size();
-            for(int i=NbForcefieldRegistered-1; i>=0; i--)
+            while(l_forceField.size()>0)
             {
-                l_forceField.remove(l_forceField[i]);
+                l_forceField.removeAt(0);
             }
+
         }
         parseNode(l_nodeToParse.get(),l_nodeToParse.get()->mass->getName());
         m_nbInteractionForceFields = currentNbInteractionFFs;
