@@ -18,4 +18,4 @@ SofaRuntime.reinit()
 sys.path.append("./Sofa/tests/pyfiles")
 import ScriptController
 
-ScriptController.createScene(Sofa.test())
+ScriptController.createScene(SofaRuntime.dev_getANode())

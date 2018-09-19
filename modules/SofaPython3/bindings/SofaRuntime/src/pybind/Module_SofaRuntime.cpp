@@ -34,10 +34,8 @@ PYBIND11_MODULE(SofaRuntime, m) {
     // TODO, ces trucs sont fort laid. Normalement ce devrait être une joli plugin qui
     // appelle le init.
     sofa::simulation::common::init();
-    std::cout << "simu init " << std::endl;
     sofa::simulation::graph::init();
-    std::cout << "graph init " << std::endl;
-//    sofa::simulation::setSimulation(new DAGSimulation());
+    //    sofa::simulation::setSimulation(new DAGSimulation());
 
     // Add the plugin directory to PluginRepository
     const std::string& pluginDir = Utils::getPluginDirectory();
@@ -46,12 +44,11 @@ PYBIND11_MODULE(SofaRuntime, m) {
     /// We need to import the project dependencies
     py::module::import("Sofa");
 
-    m.def("getSimulation", [](){     std::cout << "get simu" << std::endl;
-return sofa::simulation::getSimulation(); });
+    m.def("getSimulation", [](){
+        return sofa::simulation::getSimulation(); });
     
     m.def("importPlugin", [](const std::string& name)
     {
-        std::cout << "import plugin" << std::endl;
         return simpleapi::importPlugin(name);
     });
 
@@ -60,6 +57,16 @@ return sofa::simulation::getSimulation(); });
         /// set the Simulation, replacing the existing one (which is automatically deleted)
         if( !sofa::simulation::getSimulation() )
             sofa::simulation::setSimulation(new DAGSimulation());
+    });
+
+
+    /// py::module runtime = m.def_submodule("Runtime");
+    /// runtime.add_object();
+    /// py::exec("import SofaRuntime as Runtime", py::globals());
+
+    m.def("dev_getANode", []() {
+        Node::SPtr n = Node::create("testNode");
+        return n;
     });
 
     m.def("loadScene", [](const std::string& filename) -> py::object
