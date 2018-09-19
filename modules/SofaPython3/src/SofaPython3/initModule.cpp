@@ -21,31 +21,23 @@
 ******************************************************************************/
 #include "config.h"
 
-#include <sofa/simulation/SceneLoaderFactory.h>
-using sofa::simulation::SceneLoaderFactory;
-
 #include "PythonEnvironment.h"
 using sofapython3::PythonEnvironment;
 
-#include "SceneLoaderPY3.h"
-using sofapython3::SceneLoaderPY3;
-
 extern "C" {
-    SOFAPYTHON3_API void initExternalModule();
-    SOFAPYTHON3_API const char* getModuleName();
-    SOFAPYTHON3_API const char* getModuleVersion();
-    SOFAPYTHON3_API const char* getModuleLicense();
-    SOFAPYTHON3_API const char* getModuleDescription();
-    SOFAPYTHON3_API const char* getModuleComponentList();
-}
+
+SOFAPYTHON3_API void initExternalModule();
+SOFAPYTHON3_API const char* getModuleName();
+SOFAPYTHON3_API const char* getModuleVersion();
+SOFAPYTHON3_API const char* getModuleLicense();
+SOFAPYTHON3_API const char* getModuleDescription();
+SOFAPYTHON3_API const char* getModuleComponentList();
 
 void initExternalModule()
 {
     static bool first = true;
     if (first)
     {
-        //SceneLoaderFactory::getInstance()->addEntry(new SceneLoaderPY3());
-        std::cout << "INT MODULE" << std::endl;
         PythonEnvironment::Init();
         first = false;
     }
@@ -74,4 +66,6 @@ const char* getModuleDescription()
 const char* getModuleComponentList()
 {
     return "";
+}
+
 }

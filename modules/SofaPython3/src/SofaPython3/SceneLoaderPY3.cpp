@@ -30,10 +30,18 @@
 #include <SofaPython3/PythonEnvironment.h>
 #include <SofaPython3/SceneLoaderPY3.h>
 
+#include <pybind11/pybind11.h>
+#include <pybind11/embed.h>
+namespace py = pybind11;
+
 using namespace sofa::core::objectmodel;
 using sofa::helper::system::SetDirectory;
 
 MSG_REGISTER_CLASS(sofapython3::SceneLoaderPY3, "SofaPython3::SceneLoader")
+
+PYBIND11_DECLARE_HOLDER_TYPE(Base, sofa::core::sptr<Base>, true)
+template class py::class_<sofa::core::objectmodel::Base,
+                          sofa::core::sptr<sofa::core::objectmodel::Base>>;
 
 namespace sofapython3
 {
@@ -73,39 +81,47 @@ sofa::simulation::Node::SPtr SceneLoaderPY3::load(const char *filename)
     return root;
 }
 
+py::module import(const std::string& module, const std::string& path, py::object& globals)
+{
+    py::dict locals;
+    locals["module_name"] = py::cast(module); // have to cast the std::string first
+    locals["path"]        = py::cast(path);
+
+    py::eval<py::eval_statements>(            // tell eval we're passing multiple statements
+        "import imp\n"
+        "new_module = imp.load_module(module_name, open(path), path, ('py', 'U', imp.PY_SOURCE))\n",
+        globals,
+        locals);
+    return py::cast<py::module>(locals["new_module"]);
+}
+
+
 void SceneLoaderPY3::loadSceneWithArguments(const char *filename,
                                            const std::vector<std::string>& arguments,
                                            Node::SPtr* root_out)
 {
+    notifyLoadingScene();
     PythonEnvironment::gil lock(__func__);
 
-    std::cout << "COUCOUC loading..: "<< filename << std::endl ;
+    std::cout << "loading..: "<< filename << std::endl ;
 
-    std::stringstream tmp;
-    tmp << "with open('"<<filename<<"') as f:                             " << std::endl
-        << "    global_vars={}                                            " << std::endl
-        << "    local_vars={}                                             " << std::endl
-        << "    code = compile(f.read(), '" << filename    << "', 'exec') " << std::endl
-        << "    exec(code, global_vars, local_vars)                       " << std::endl
-        << "    print(str(global_vars))" ;
+    py::module::import("Sofa");
+    py::object globals = py::module::import("__main__").attr("__dict__");
+    py::module module;
 
-    PythonEnvironment::runString(tmp.str());
+    SetDirectory localDir(filename);
+    module = import("PythonController", SetDirectory::GetFileName(filename), globals);
+    if(!module.attr("createScene"))
+    {
+        msg_error() << "Missing createScene function";
+        return ;
+    }
 
-
-//    if(!OurHeader.empty() && 0 != PyRun_SimpleString(OurHeader.c_str()))
-//    {
-//        msg_error("SofaPython3::SceneLoader") << "header script run error." ;
-//        if( root_out ) *root_out = 0;
-//        return;
-//    }
-
-//    PythonEnvironment::runString("createScene=None");
-//    PythonEnvironment::runString("createSceneAndController=None");
-
-//    PythonEnvironment::runString(std::string("__file__=\"") + filename + "\"");
+    *root_out = Node::create("root");
+    py::object createScene = module.attr("createScene");
+    createScene(*root_out);
 
 //    // We go to the current file's directory so that all relative path are correct
-//    SetDirectory chdir ( filename );
 
 //    notifyLoadingScene();
 //    PythonEnvironment::setArguments(SetDirectory::GetFileName(filename), arguments);

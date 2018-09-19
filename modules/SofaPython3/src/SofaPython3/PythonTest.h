@@ -6,14 +6,9 @@
 
 #include "config.h"
 
-namespace pybind11
-{
-    class scoped_interpreter;
-}
 
 namespace sofapython3
 {
-namespace py = pybind11;
 
 /// a Python_test is defined by a python filepath and optional arguments
 struct SOFAPYTHON3_API PythonTestData
@@ -67,7 +62,7 @@ public:
     void run( const PythonTestData& );
 
 private:
-    pybind11::scoped_interpreter* m_interpreter {nullptr};
+    //pybind11::scoped_interpreter* m_interpreter {nullptr};
 };
 
 }

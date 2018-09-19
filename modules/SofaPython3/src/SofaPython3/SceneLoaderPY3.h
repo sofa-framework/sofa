@@ -33,7 +33,7 @@
 
 namespace sofapython3
 {
-    using sofa::simulation::Node;
+using sofa::simulation::Node;
 
 /// The scene loader for python3 scene files
 class SOFAPYTHON3_API SceneLoaderPY3 : public SceneLoader

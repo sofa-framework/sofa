@@ -38,6 +38,14 @@ using sofa::helper::Utils;
 #include <sofa/helper/logging/Messaging.h>
 MSG_REGISTER_CLASS(sofapython3::PythonEnvironment, "SofaPython3::PythonEnvironment")
 
+#include <sofa/simulation/SceneLoaderFactory.h>
+using sofa::simulation::SceneLoaderFactory;
+
+#include "Python.h"
+
+#include "SceneLoaderPY3.h"
+using sofapython3::SceneLoaderPY3;
+
 namespace sofapython3
 {
 
@@ -99,6 +107,13 @@ namespace sofapython3
     void PythonEnvironment::Init()
     {
         std::string pythonVersion = Py_GetVersion();
+        std::cout << "INITIALIZING PYTHON VERSION: " << pythonVersion << std::endl ;
+
+        if( !SceneLoaderFactory::getInstance()->getEntryFileExtension("py3") )
+        {
+            std::cout << "Registering loader for python3 files" << std::endl ;
+            SceneLoaderFactory::getInstance()->addEntry(new SceneLoaderPY3());
+        }
 
         /*
  * #if defined(__linux__)

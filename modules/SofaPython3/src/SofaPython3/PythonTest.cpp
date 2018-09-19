@@ -5,17 +5,17 @@
 
 #include "PythonTest.h"
 
-#include <pybind11/pybind11.h>
-#include <pybind11/embed.h>
-namespace py = pybind11;
+//#include <pybind11/pybind11.h>
+//#include <pybind11/embed.h>
+//namespace py = pybind11;
 
 #include <sofa/helper/system/PluginManager.h>
 using sofa::helper::system::PluginManager;
 
+#include "initModule.h"
+
 namespace sofapython3
 {
-
-py::scoped_interpreter pyinterp;
 
 /// This function is used by gtest to print the content of the struct in a meaninfull way
 void SOFAPYTHON3_API PrintTo(const sofapython3::PythonTestData& d, ::std::ostream *os)
@@ -34,17 +34,20 @@ PythonTest::PythonTest()
 {
     //sofa::helper::system::PluginManager::getInstance().loadPlugin("SofaPython3");
 
+    initExternalModule();
+
     std::cout << "TEST "<< std::endl;
 
     //py::scoped_interpreter guard{};
     std::cout << "TEST "<< std::endl;
     //py::module::import("SofaRuntime");
 
+    /*
     py::exec(R"(
             kwargs = dict(name="World", number=42)
             message = "Hello, {name}! The answer is {number}".format(**kwargs)
             print(message)
-        )");
+        )");*/
 
     std::cout << "TEST "<< std::endl;
 }
@@ -52,10 +55,11 @@ PythonTest::PythonTest()
 PythonTest::~PythonTest()
 {
     std::cout << "DETEL" << std::endl;
-    //delete m_interpreter;
 }
 
-void PythonTest::run( const PythonTestData& data ) {
+void PythonTest::run( const PythonTestData& data )
+{
+
     msg_info("PythonTest") << "running " << data.filepath;
 }
 
