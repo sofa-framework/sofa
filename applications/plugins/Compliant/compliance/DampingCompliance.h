@@ -1,5 +1,5 @@
-#ifndef DAMPINGCOMPLIANCE_H
-#define DAMPINGCOMPLIANCE_H
+#ifndef SOFA_COMPONENT_COMPLIANCE_DAMPINGCOMPLIANCE_H
+#define SOFA_COMPONENT_COMPLIANCE_DAMPINGCOMPLIANCE_H
 
 #include <Compliant/config.h>
 #include <sofa/core/behavior/ForceField.h>
@@ -114,9 +114,22 @@ protected:
 };
 
 
-}
-}
-}
-
-
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COMPLIANCE_DAMPINGCOMPLIANCE_CPP)
+#ifndef SOFA_FLOAT
+extern template class SOFA_Compliant_API DampingCompliance<sofa::defaulttype::Vec6dTypes>;
+extern template class SOFA_Compliant_API DampingCompliance<sofa::defaulttype::Vec2dTypes>;
+extern template class SOFA_Compliant_API DampingCompliance<sofa::defaulttype::Vec1dTypes>;
 #endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_Compliant_API DampingCompliance<sofa::defaulttype::Vec6fTypes>;
+extern template class SOFA_Compliant_API DampingCompliance<sofa::defaulttype::Vec2fTypes>;
+extern template class SOFA_Compliant_API DampingCompliance<sofa::defaulttype::Vec1fTypes>;
+#endif
+#endif
+
+}
+}
+}
+
+
+#endif // SOFA_COMPONENT_COMPLIANCE_DAMPINGCOMPLIANCE_H
