@@ -125,36 +125,39 @@ template<class DataTypes1, class DataTypes2>
 void MechanicalMatrixMapper<DataTypes1, DataTypes2>::parseNode(sofa::simulation::Node *node,std::string massName)
 {
     bool empty = d_forceFieldList.getValue().empty();
-    for(unsigned int i=0; i<node->forceField.size(); i++)
+
+    for(BaseForceField* forcefield : node->forceField)
     {
-        if (node->forceField[i]->name != massName)
+        if (forcefield->name != massName)
         {
             bool found = true;
             if (!empty)
-                found = (std::find(d_forceFieldList.getValue().begin(), d_forceFieldList.getValue().end(), node->forceField[i]->getName()) != d_forceFieldList.getValue().end());
+                found = (std::find(d_forceFieldList.getValue().begin(),
+                                   d_forceFieldList.getValue().end(), forcefield->getName()) != d_forceFieldList.getValue().end());
 
             if(found)
             {
-                l_forceField.add(node->forceField[i],node->forceField[i]->getPathName());
+                l_forceField.add(forcefield,forcefield->getPathName());
             }
         }
     }
-    for(unsigned int i=0; i<node->interactionForceField.size(); i++)
-    {
 
+    for(BaseForceField* iforcefield : node->interactionForceField)
+    {
         bool found = true;
         if (!empty)
-            found = (std::find(d_forceFieldList.getValue().begin(), d_forceFieldList.getValue().end(), node->interactionForceField[i]->getName()) != d_forceFieldList.getValue().end());
+            found = (std::find(d_forceFieldList.getValue().begin(),
+                               d_forceFieldList.getValue().end(),
+                               iforcefield->getName()) != d_forceFieldList.getValue().end());
 
         if(found)
         {
-            l_forceField.add(node->interactionForceField[i],node->interactionForceField[i]->getPathName());
+            l_forceField.add(iforcefield,iforcefield->getPathName());
         }
 
     }
-    for (sofa::simulation::Node::ChildIterator it = node->child.begin(), itend = node->child.end(); it != itend; ++it)
-    {
-        parseNode(it->get(),massName);
+    for(auto& child : node->child){
+        parseNode(child.get(), massName);
     }
     return;
 }
