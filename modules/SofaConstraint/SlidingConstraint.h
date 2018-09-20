@@ -46,6 +46,7 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::MatrixDeriv MatrixDeriv;
+    //typedef typename DataTypes::MultiVecDerivId MultiVecDerivId;
     typedef typename DataTypes::MatrixDeriv::RowIterator MatrixDerivRowIterator;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
@@ -66,6 +67,7 @@ protected:
     Data<int> m1; ///< index of the spliding point on the first model
     Data<int> m2a; ///< index of one end of the sliding axis
     Data<int> m2b; ///< index of the other end of the sliding axis
+    Data<Deriv> mforce; ///< interaction force
 
     Real m_dist;	// constraint violation
     Real thirdConstraint; // 0 if A<proj<B, -1 if proj<A, 1 if B<proj
@@ -78,6 +80,7 @@ protected:
         , m1(initData(&m1, 0, "sliding_point","index of the spliding point on the first model"))
         , m2a(initData(&m2a, 0, "axis_1","index of one end of the sliding axis"))
         , m2b(initData(&m2b, 0, "axis_2","index of the other end of the sliding axis"))
+        , mforce(initData(&mforce,"force","force (impulse) used to solve the constraint"))
     {
     }
 
@@ -87,6 +90,7 @@ protected:
         , m1(initData(&m1, 0, "sliding_point","index of the spliding point on the first model"))
         , m2a(initData(&m2a, 0, "axis_1","index of one end of the sliding axis"))
         , m2b(initData(&m2b, 0, "axis_2","index of the other end of the sliding axis"))
+        , mforce(initData(&mforce,"force","force (impulse) used to solve the constraint"))
     {
     }
 
@@ -95,6 +99,7 @@ protected:
         , m1(initData(&m1, 0, "sliding_point","index of the spliding point on the first model"))
         , m2a(initData(&m2a, 0, "axis_1","index of one end of the sliding axis"))
         , m2b(initData(&m2b, 0, "axis_2","index of the other end of the sliding axis"))
+        , mforce(initData(&mforce,"force","force (impulse) used to solve the constraint"))
     {
     }
 
@@ -107,14 +112,22 @@ public:
     virtual void buildConstraintMatrix(const core::ConstraintParams* cParams, DataMatrixDeriv &c1, DataMatrixDeriv &c2, unsigned int &cIndex
             , const DataVecCoord &x1, const DataVecCoord &x2) override;
 
-    void getConstraintViolation(const core::ConstraintParams* cParams, defaulttype::BaseVector *v, const DataVecCoord &x1, const DataVecCoord &x2
+    virtual void getConstraintViolation(const core::ConstraintParams* cParams, defaulttype::BaseVector *v, const DataVecCoord &x1, const DataVecCoord &x2
             , const DataVecDeriv &v1, const DataVecDeriv &v2) override;
 
     virtual void getConstraintResolution(const core::ConstraintParams*,
                                          std::vector<core::behavior::ConstraintResolution*>& resTab,
                                          unsigned int& offset) override;
+    virtual void storeLambda(const ConstraintParams* cParams, sofa::core::MultiVecDerivId res, const sofa::defaulttype::BaseVector* lambda) override;
 
-    void draw(const core::visual::VisualParams* vparams) override;
+    virtual void draw(const core::visual::VisualParams* vparams) override;
+
+private:
+    // storage of force
+    Deriv  m_dirAxe, m_dirProj, m_dirOrtho;
+
+
+
 };
 
 #if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_CONSTRAINTSET_SLIDINGCONSTRAINT_CPP)

@@ -63,39 +63,40 @@ void SlidingConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintP
     const Coord B = x2.getValue()[tm2b];
 
     // the axis
-    Coord uniAB = B - A;
-    const Real ab = uniAB.norm();
-    uniAB.normalize();
+
+    Deriv m_dirAxe = B - A;
+    const Real ab = m_dirAxe.norm();
+    m_dirAxe.normalize();
 
     // projection of the point on the axis
-    Real r = (P-A) * uniAB;
+    Real r = (P-A) * m_dirAxe;
     Real r2 = r / ab;
-    const Coord proj = A + uniAB * r;
+    const Deriv proj = A + m_dirAxe * r;
 
     // We move the constraint point onto the projection
-    Coord dir1 = P - proj;
-    m_dist = dir1.norm(); // constraint violation
-    dir1.normalize(); // direction of the constraint
+    m_dirProj = P - proj;
+    m_dist = m_dirProj.norm(); // constraint violation
+    m_dirProj.normalize(); // direction of the constraint
 
-    Coord dir2 = cross(dir1, uniAB);
-    dir2.normalize();
+    Deriv m_dirOrtho = cross(m_dirProj, m_dirAxe);
+    m_dirOrtho.normalize();
 
     cid = cIndex;
     cIndex += 2;
 
     MatrixDerivRowIterator c1_it = c1.writeLine(cid);
-    c1_it.addCol(tm1, dir1);
+    c1_it.addCol(tm1, m_dirProj);
 
     MatrixDerivRowIterator c2_it = c2.writeLine(cid);
-    c2_it.addCol(tm2a, -dir1 * (1-r2));
-    c2_it.addCol(tm2b, -dir1 * r2);
+    c2_it.addCol(tm2a, -m_dirProj * (1-r2));
+    c2_it.addCol(tm2b, -m_dirProj * r2);
 
     c1_it = c1.writeLine(cid + 1);
-    c1_it.setCol(tm1, dir2);
+    c1_it.setCol(tm1, m_dirOrtho);
 
     c2_it = c2.writeLine(cid + 1);
-    c2_it.addCol(tm2a, -dir2 * (1-r2));
-    c2_it.addCol(tm2b, -dir2 * r2);
+    c2_it.addCol(tm2a, -m_dirOrtho * (1-r2));
+    c2_it.addCol(tm2b, -m_dirOrtho * r2);
 
     thirdConstraint = 0;
 
@@ -105,10 +106,10 @@ void SlidingConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintP
         cIndex++;
 
         c1_it = c1.writeLine(cid + 2);
-        c1_it.setCol(tm1, uniAB);
+        c1_it.setCol(tm1, m_dirAxe);
 
         c2_it = c2.writeLine(cid + 2);
-        c2_it.addCol(tm2a, -uniAB);
+        c2_it.addCol(tm2a, -m_dirAxe);
     }
     else if (r > ab)
     {
@@ -116,10 +117,10 @@ void SlidingConstraint<DataTypes>::buildConstraintMatrix(const core::ConstraintP
         cIndex++;
 
         c1_it = c1.writeLine(cid + 2);
-        c1_it.setCol(tm1, -uniAB);
+        c1_it.setCol(tm1, -m_dirAxe);
 
         c2_it = c2.writeLine(cid + 2);
-        c2_it.addCol(tm2b, uniAB);
+        c2_it.addCol(tm2b, m_dirAxe);
     }
 
     c1_d.endEdit();
@@ -156,6 +157,29 @@ void SlidingConstraint<DataTypes>::getConstraintResolution(const ConstraintParam
         resTab[offset++] = new UnilateralConstraintResolution();
 }
 
+
+template<class DataTypes>
+void SlidingConstraint<DataTypes>::storeLambda(const ConstraintParams* /*cParams*/, sofa::core::MultiVecDerivId /*res*/, const sofa::defaulttype::BaseVector* lambda)
+{
+    Real lamb1,lamb2, lamb3;
+
+    lamb1 = lambda->element(cid);
+    lamb2 = lambda->element(cid+1);
+
+    if(thirdConstraint)
+    {
+
+        lamb3 = lambda->element(cid+2);
+        mforce.setValue( m_dirProj* lamb1 + m_dirOrtho * lamb2 + m_dirAxe * lamb3);
+    }
+    else
+    {
+        mforce.setValue( m_dirProj* lamb1 + m_dirOrtho * lamb2 );
+    }
+
+
+
+}
 
 template<class DataTypes>
 void SlidingConstraint<DataTypes>::draw(const core::visual::VisualParams* vparams)
