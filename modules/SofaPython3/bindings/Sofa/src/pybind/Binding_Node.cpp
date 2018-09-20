@@ -60,19 +60,6 @@ void moduleAddNode(py::module &m) {
                                                  toStringMap(kwargs)) );
     });
 
-    p.def("addPythonObject", [](Node& self, py::handle handle) {
-        py::detail::type_caster<BaseObject> obj_caster;
-        if (!obj_caster.load(handle, true))
-          throw py::value_error();
-        BaseObject* o = obj_caster;
-
-        PythonController* tmp = dynamic_cast<PythonController*>(o);
-        tmp->setPythonInstance(handle.ptr());
-
-        self.addObject(o);
-        return handle;
-      });
-
     p.def("createNode", [](const std::string& name)
     {
         return Node::create(name);
@@ -86,11 +73,19 @@ void moduleAddNode(py::module &m) {
         sofa::simulation::getSimulation()->animate(&n, dt);
     }, "dt"_a);
 
-    p.def("reset", [](Node &n) { sofa::simulation::getSimulation()->reset(&n);
-                               }); p.def("init", [](Node &n) {
-        sofa::simulation::getSimulation()->init(&n); });
+    p.def("reset", [](Node &n)
+    { sofa::simulation::getSimulation()->reset(&n);
+    });
 
-    p.def("addObject", &Node::addObject);
+    p.def("init", [](Node &n)
+    {
+        sofa::simulation::getSimulation()->init(&n);
+    });
+
+    p.def("addObject", [](Node& self, py::object object)
+    {
+        return self.addObject(py::cast<BaseObject*>(object));
+    });
 
     p.def("__getattr__", [](Node& self, const std::string& name) -> py::object
     {

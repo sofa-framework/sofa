@@ -11,12 +11,12 @@ class MyController(Sofa.PythonController):
         reinited = 0
         
         def init(self):
-                print("Python::init()")
+                print(" Python::init() at "+str(self))
                 #print(" => "+str(dir(self)))
                 #self.inited += 1
                 
         def reinit(self):
-                print("Python::reinit()")
+                print(" Python::reinit() at "+str(self))
                 #self.reinited += 1
   
 # class TestScriptController(unittest.TestCase):
@@ -55,21 +55,15 @@ class MyController(Sofa.PythonController):
 #                 self.assertEqual( o.reinited, 2 ) 
 
 def createScene(rootNode):
-        print(str(dir(Sofa)))
         c = MyController()
-        c1 = rootNode.addPythonObject(c)        
+        rootNode.addObject(c)        
         print("============= c ===================")
         c.init()
-        print("============= c1 ===================")
-        c1.init()
         print("============= root::init ===================")
-        SofaRuntime.getSimulation().init(rootNode)
-        print("============= root::init2 ===================")
-        SofaRuntime.getSimulation().init(rootNode)
-        print("============= done ===================")
-
-        #SofaRuntime.
-    # suite = unittest.TestLoader().loadTestsFromTestCase(TestScriptController)
-    # return unittest.TextTestRunner(verbosity=2).run(suite).wasSuccessful()
+        
+        #SofaRuntime.getSimulation().init(rootNode)
+        #SofaRuntime.getSimulation().init(rootNode)
+        #suite = unittest.TestLoader().loadTestsFromTestCase(TestScriptController)
+        #return unittest.TextTestRunner(verbosity=2).run(suite).wasSuccessful()
     
 
