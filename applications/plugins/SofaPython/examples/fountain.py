@@ -38,8 +38,8 @@ class Fountain(Sofa.PythonScriptController):
 
         # VisualNode
         VisuNode = node.createChild('Visu')
-        VisuNode.createObject('MeshObjLoader',name='loader',filename='mesh/PokeCube.obj')
-        VisuNode.createObject('OglModel',name='Visual',src='@loader',color=color)
+        VisuNode.createObject('MeshObjLoader',name='visualMeshLoader',filename='mesh/PokeCube.obj')
+        VisuNode.createObject('OglModel',name='Visual',src='@visualMeshLoader',color=color)
         VisuNode.createObject('RigidMapping',input='@..',output='@Visual')
 
         # apply wanted initial translation
@@ -62,15 +62,14 @@ class Fountain(Sofa.PythonScriptController):
         node = self.createCube(self.rootNode,'particle'+str(self.particleCount),uniform(-10,10),uniform(10,30),uniform(-10,10),color)
         self.particleCount+=1
         # add the controller script
-        # node.createObject('PythonScriptController', filename='fountain.py', classname='Particle')
+        node.createObject('PythonScriptController', filename='fountain.py', classname='Particle')
         return node
      
     # optionnally, script can create a graph...
     def createGraph(self,node):
         print 'Fountain.createGraph called from node '+node.name
-        for i in range(1,10):
+        for i in range(1,100):
             node = self.spawnParticle()
-            # node.init()
         return 0
     
     def onScriptEvent(self,senderNode,eventName,data):
