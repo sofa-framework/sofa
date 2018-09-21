@@ -14,7 +14,7 @@ import SofaRuntime
 
 ## Init the simulation singleton. 
 SofaRuntime.reinit()
-SofaRuntime.load(sys.argv[1])
+SofaRuntime.load("Sofa/tests/pyfiles/ScriptController.py")
 SofaRuntime.init(rootNode)
 
         

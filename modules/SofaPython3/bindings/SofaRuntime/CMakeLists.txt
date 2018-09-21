@@ -27,7 +27,7 @@ file(WRITE "${CMAKE_BINARY_DIR}/etc/sofa/python.d/SofaRuntime" "${CMAKE_CURRENT_
 
 ## Python configuration file (install tree)
 file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/installed-SofaRuntime-config"
-             "modules/Sofa/python/")
+             "modules/SofaRuntime/python/")
 
 
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/installed-SofaRuntime-config"
