@@ -28,11 +28,7 @@
 #include <sofa/core/DataEngine.h>
 #include <sofa/defaulttype/Vec3Types.h>
 
-
 #include <sofa/helper/logging/Messaging.h>
-
-#include <sofa/helper/StringUtils.h>
-using sofa::helper::getAStringCopy ;
 
 #include "PythonFactory.h"
 #include "PythonToSofa.inl"
