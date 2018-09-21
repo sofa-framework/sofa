@@ -54,7 +54,7 @@ Node::SPtr SOFA_SIMULATION_GRAPH_API createRootNode( Simulation::SPtr, const std
 BaseObject::SPtr SOFA_SIMULATION_GRAPH_API createObject( Node::SPtr parent, const std::string& type,
     const std::map<std::string, std::string>& params = std::map<std::string, std::string>{} );
 
-Node::SPtr SOFA_SIMULATION_GRAPH_API createChild( Node::SPtr& node, const std::string& name,
+Node::SPtr SOFA_SIMULATION_GRAPH_API createChild( Node::SPtr node, const std::string& name,
     const std::map<std::string, std::string>& params = std::map<std::string, std::string>{} );
 
 void SOFA_SIMULATION_GRAPH_API dumpScene(Node::SPtr root) ;
@@ -78,46 +78,6 @@ std::string str(const std::vector<T>& t)
 }
 
 } /// simpleapi
-
-
-namespace simpleapi
-{
-namespace components {
-
-namespace BaseObject
-{
-    static const std::string aobjectname {"BaseObject"} ;
-    namespace data{
-        static const std::string name {"name"} ;
-    }
-};
-
-namespace MechanicalObject
-{
-    static const std::string objectname {"MechanicalObject"} ;
-    namespace data{
-        using namespace BaseObject::data ;
-        static const std::string position {"position"} ;
-    }
-}
-
-namespace VisualModel
-{
-    static const std::string objectname {"VisualModel"} ;
-
-    namespace data {
-        using namespace BaseObject::data ;
-        static const std::string filename {"filename"} ;
-    }
-}
-
-}
-
-namespace meca   { using namespace simpleapi::components::MechanicalObject ; }
-namespace visual { using namespace simpleapi::components::VisualModel ; }
-
-}
-
 
 } /// sofa
 
