@@ -24,8 +24,11 @@ list(APPEND HEADER_FILES
     SofaDefaultPathSetting.h
     StatsSetting.h
     ViewerSetting.h
-    SceneChecks.h
-    SceneCheckAPIChanges.h
+    SceneCheck.h
+    SceneCheckDuplicatedName.h
+    SceneCheckMissingRequiredPlugin.h
+    SceneCheckAPIChange.h
+    SceneCheckUsingAlias.h
     SceneCheckerVisitor.h
     APIVersion.h
     )
@@ -42,8 +45,10 @@ list(APPEND SOURCE_FILES
     SofaDefaultPathSetting.cpp
     StatsSetting.cpp
     ViewerSetting.cpp
-    SceneChecks.cpp
-    SceneCheckAPIChanges.cpp
+    SceneCheckDuplicatedName.cpp
+    SceneCheckMissingRequiredPlugin.cpp
+    SceneCheckAPIChange.cpp
+    SceneCheckUsingAlias.cpp
     SceneCheckerVisitor.cpp
     APIVersion.cpp
     )

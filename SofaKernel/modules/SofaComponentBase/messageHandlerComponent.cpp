@@ -91,7 +91,7 @@ void MessageHandlerComponent::parse ( core::objectmodel::BaseObjectDescription* 
 //    }else if(stype=="log"){
 //        MessageDispatcher::addHandler(new LoggerMessageHandler()) ;
     }else if(stype=="rich"){
-         MessageDispatcher::addHandler(new ConsoleMessageHandler(new RichConsoleStyleMessageFormatter())) ;
+         MessageDispatcher::addHandler(new ConsoleMessageHandler(&RichConsoleStyleMessageFormatter::getInstance())) ;
     }else if(stype=="silent"){
         MessageDispatcher::clearHandlers() ;
     }else{

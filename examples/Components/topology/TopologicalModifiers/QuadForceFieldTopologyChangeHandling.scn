@@ -13,7 +13,7 @@
         <RegularGrid name="grid" nx="20" ny="1" nz="20" xmin="12" xmax="-12" ymin="7" ymax="7" zmin="-12" zmax="12" />
         <MechanicalObject src="@grid" topology="@grid"/>
 	<include href="Objects/QuadSetTopology.xml" src="@grid" />
-        <UniformMass totalmass="100" />
+        <UniformMass totalMass="100" />
 <RegularGridSpringForceField name="Springs" stiffness="200" damping="2" />
         <QuadularBendingSprings name="FEM-Bend" stiffness="3000" damping="1.0" />
         <FixedConstraint name="FixedConstraint" indices="0 19" />
@@ -40,7 +40,7 @@
         <RegularGrid name="grid" nx="20" ny="1" nz="20" xmin="14" xmax="38" ymin="7" ymax="7" zmin="-12" zmax="12" />
         <MechanicalObject src="@grid" topology="@grid"/>
 	<include href="Objects/QuadSetTopology.xml" src="@grid" />
-        <UniformMass totalmass="100" />
+        <UniformMass totalMass="100" />
 	<RegularGridSpringForceField name="Springs" stiffness="200" damping="2" />
         <FixedConstraint name="FixedConstraint" indices="0 19" />
 

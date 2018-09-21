@@ -18,7 +18,7 @@
         
         <RegularGrid nx="50" ny="1" nz="50" xmin="-9" xmax="5" ymin="7" ymax="7" zmin="-7" zmax="7" name="Container" />
         <MechanicalObject name="dofs" />
-        <UniformMass totalmass="100" />
+        <UniformMass totalMass="100" />
         <Node name="T">
             <include href="Objects/TriangleSetTopology.xml" />
             <Quad2TriangleTopologicalMapping object1="../../Container" object2="Container" />

@@ -148,6 +148,15 @@ macro(sofa_add_plugin_experimental directory plugin_name)
 endmacro()
 
 
+macro(sofa_add_module directory module_name)
+    sofa_add_generic( ${directory} ${module_name} "Module" ${ARGV2} )
+endmacro()
+
+macro(sofa_add_module_experimental directory module_name)
+    sofa_add_generic( ${directory} ${module_name} "Module" ${ARGV2} )
+    message("-- ${module_name} is an experimental feature, use it at your own risk.")
+endmacro()
+
 macro(sofa_add_application directory app_name)
     sofa_add_generic( ${directory} ${app_name} "Application" ${ARGV2} )
 endmacro()
@@ -268,7 +277,7 @@ macro(sofa_set_python_directory plugin_name directory)
 
     ## Python configuration file (build tree)
     file(WRITE "${CMAKE_BINARY_DIR}/etc/sofa/python.d/${plugin_name}"
-         "${CMAKE_CURRENT_SOURCE_DIR}/python")
+         "${CMAKE_CURRENT_SOURCE_DIR}/${directory}")
     ## Python configuration file (install tree)
      file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/installed-SofaPython-config"
          "lib/python2.7/site-packages")
@@ -386,7 +395,7 @@ macro(sofa_install_libraries)
             get_filename_component(LIBREAL_NAME ${LIBREAL} NAME_WE)
             get_filename_component(LIBREAL_PATH ${LIBREAL} PATH)
 
-            file(GLOB_RECURSE SHARED_LIBS FOLLOW_SYMLINKS
+            file(GLOB_RECURSE SHARED_LIBS
                 "${LIB_PATH}/${LIB_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX}*"
                 "${LIB_PATH}/${LIB_NAME}[0-9]${CMAKE_SHARED_LIBRARY_SUFFIX}*"
                 "${LIB_PATH}/${LIB_NAME}[0-9][0-9]${CMAKE_SHARED_LIBRARY_SUFFIX}*"
@@ -395,7 +404,7 @@ macro(sofa_install_libraries)
                 "${LIBREAL_PATH}/${LIBREAL_NAME}[0-9]${CMAKE_SHARED_LIBRARY_SUFFIX}*"
                 "${LIBREAL_PATH}/${LIBREAL_NAME}[0-9][0-9]${CMAKE_SHARED_LIBRARY_SUFFIX}*"
             )
-            file(GLOB_RECURSE STATIC_LIBS FOLLOW_SYMLINKS
+            file(GLOB_RECURSE STATIC_LIBS
                 "${LIB_PATH}/${LIB_NAME}${CMAKE_STATIC_LIBRARY_SUFFIX}*"
                 "${LIB_PATH}/${LIB_NAME}[0-9]${CMAKE_STATIC_LIBRARY_SUFFIX}*"
                 "${LIB_PATH}/${LIB_NAME}[0-9][0-9]${CMAKE_STATIC_LIBRARY_SUFFIX}*"

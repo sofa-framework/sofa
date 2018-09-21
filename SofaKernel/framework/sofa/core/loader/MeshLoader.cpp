@@ -20,6 +20,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/loader/MeshLoader.h>
+#include <sofa/helper/io/Mesh.h>
 #include <cstdlib>
 
 namespace sofa
@@ -471,7 +472,7 @@ void MeshLoader::updatePoints()
 {
     if (d_onlyAttachedPoints.getValue())
     {
-        std::set<unsigned int> attachedPoints;
+        std::set<Topology::ElemID> attachedPoints;
         {
             helper::ReadAccessor<Data< helper::vector< Edge > > > elems = d_edges;
             for (size_t i = 0; i < elems.size(); ++i)
@@ -534,12 +535,12 @@ void MeshLoader::updatePoints()
             return;    // all points are attached
         }
         helper::WriteAccessor<Data<helper::vector<sofa::defaulttype::Vec<3, SReal> > > > waPositions = d_positions;
-        helper::vector<unsigned int> old2new;
+        helper::vector<Topology::ElemID> old2new;
         old2new.resize(waPositions.size());
-        unsigned int p = 0;
-        for (std::set<unsigned int>::const_iterator it = attachedPoints.begin(), itend = attachedPoints.end(); it != itend; ++it)
+        Topology::ElemID p = 0;
+        for (std::set<Topology::ElemID>::const_iterator it = attachedPoints.begin(), itend = attachedPoints.end(); it != itend; ++it)
         {
-            unsigned int newp = *it;
+            Topology::ElemID newp = *it;
             old2new[newp] = p;
             if (p != newp)
             {
@@ -697,7 +698,7 @@ void MeshLoader::addEdge(helper::vector<Edge >* pEdges, const Edge& p)
     pEdges->push_back(p);
 }
 
-void MeshLoader::addEdge(helper::vector<Edge >* pEdges, unsigned int p0, unsigned int p1)
+void MeshLoader::addEdge(helper::vector<Edge >* pEdges, Topology::EdgeID p0, Topology::EdgeID p1)
 {
     addEdge(pEdges, Edge(p0, p1));
 }
@@ -717,7 +718,7 @@ void MeshLoader::addTriangle(helper::vector<Triangle >* pTriangles, const Triang
     }
 }
 
-void MeshLoader::addTriangle(helper::vector<Triangle >* pTriangles, unsigned int p0, unsigned int p1, unsigned int p2)
+void MeshLoader::addTriangle(helper::vector<Triangle >* pTriangles, Topology::TriangleID p0, Topology::TriangleID p1, Topology::TriangleID p2)
 {
     addTriangle(pTriangles, Triangle(p0, p1, p2));
 }
@@ -737,16 +738,16 @@ void MeshLoader::addQuad(helper::vector<Quad >* pQuads, const Quad& p)
     }
 }
 
-void MeshLoader::addQuad(helper::vector<Quad >* pQuads, unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3)
+void MeshLoader::addQuad(helper::vector<Quad >* pQuads, Topology::QuadID p0, Topology::QuadID p1, Topology::QuadID p2, Topology::QuadID p3)
 {
     addQuad(pQuads, Quad(p0, p1, p2, p3));
 }
 
-void MeshLoader::addPolygon(helper::vector< helper::vector <unsigned int> >* pPolygons, const helper::vector<unsigned int>& p)
+void MeshLoader::addPolygon(helper::vector< helper::vector <Topology::ElemID> >* pPolygons, const helper::vector<Topology::ElemID>& p)
 {
     if (d_flipNormals.getValue())
     {
-        helper::vector<unsigned int> revertP(p.size());
+        helper::vector<Topology::ElemID> revertP(p.size());
         std::reverse_copy(p.begin(), p.end(), revertP.begin());
 
         pPolygons->push_back(revertP);
@@ -763,14 +764,14 @@ void MeshLoader::addTetrahedron(helper::vector< Tetrahedron >* pTetrahedra, cons
     pTetrahedra->push_back(p);
 }
 
-void MeshLoader::addTetrahedron(helper::vector< Tetrahedron >* pTetrahedra, unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3)
+void MeshLoader::addTetrahedron(helper::vector< Tetrahedron >* pTetrahedra, Topology::TetrahedronID p0, Topology::TetrahedronID p1, Topology::TetrahedronID p2, Topology::TetrahedronID p3)
 {
     addTetrahedron(pTetrahedra, Tetrahedron(p0, p1, p2, p3));
 }
 
 void MeshLoader::addHexahedron(helper::vector< Hexahedron >* pHexahedra,
-                               unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3,
-                               unsigned int p4, unsigned int p5, unsigned int p6, unsigned int p7)
+                               Topology::HexahedronID p0, Topology::HexahedronID p1, Topology::HexahedronID p2, Topology::HexahedronID p3,
+                               Topology::HexahedronID p4, Topology::HexahedronID p5, Topology::HexahedronID p6, Topology::HexahedronID p7)
 {
     addHexahedron(pHexahedra, Hexahedron(p0, p1, p2, p3, p4, p5, p6, p7));
 }
@@ -781,8 +782,8 @@ void MeshLoader::addHexahedron(helper::vector< Hexahedron >* pHexahedra, const H
 }
 
 void MeshLoader::addPentahedron(helper::vector< Pentahedron >* pPentahedra,
-                                unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3,
-                                unsigned int p4, unsigned int p5)
+                                Topology::ElemID p0, Topology::ElemID p1, Topology::ElemID p2, Topology::ElemID p3,
+                                Topology::ElemID p4, Topology::ElemID p5)
 {
     addPentahedron(pPentahedra, Pentahedron(p0, p1, p2, p3, p4, p5));
 }
@@ -793,7 +794,7 @@ void MeshLoader::addPentahedron(helper::vector< Pentahedron >* pPentahedra, cons
 }
 
 void MeshLoader::addPyramid(helper::vector< Pyramid >* pPyramids,
-                            unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3, unsigned int p4)
+                            Topology::ElemID p0, Topology::ElemID p1, Topology::ElemID p2, Topology::ElemID p3, Topology::ElemID p4)
 {
     addPyramid(pPyramids, Pyramid(p0, p1, p2, p3, p4));
 }
@@ -801,6 +802,79 @@ void MeshLoader::addPyramid(helper::vector< Pyramid >* pPyramids,
 void MeshLoader::addPyramid(helper::vector< Pyramid >* pPyramids, const Pyramid& p)
 {
     pPyramids->push_back(p);
+}
+
+void MeshLoader::copyMeshToData(sofa::helper::io::Mesh* _mesh)
+{
+    // copy vertices
+    helper::vector<sofa::defaulttype::Vector3>& my_positions = *(d_positions.beginEdit());
+    my_positions = _mesh->getVertices();
+    d_positions.endEdit();
+
+    // copy 2D topoogy
+    helper::vector<Edge>& my_edges = *(d_edges.beginEdit());
+    my_edges = _mesh->getEdges();
+    d_edges.endEdit();
+
+    helper::vector<Triangle>& my_triangles = *(d_triangles.beginEdit());
+    my_triangles = _mesh->getTriangles();
+    d_triangles.endEdit();
+
+    helper::vector<Quad>& my_quads = *(d_quads.beginEdit());
+    my_quads = _mesh->getQuads();
+    d_quads.endEdit();
+
+
+    // copy 3D elements
+    helper::vector<Tetrahedron>& my_tetrahedra = *(d_tetrahedra.beginEdit());
+    my_tetrahedra = _mesh->getTetrahedra();
+    d_tetrahedra.endEdit();
+
+    helper::vector<Hexahedron>& my_hexahedra = *(d_hexahedra.beginEdit());
+    my_hexahedra = _mesh->getHexahedra();
+    d_hexahedra.endEdit();
+
+    // copy groups
+    helper::vector< sofa::core::loader::PrimitiveGroup>& my_edgesGroups = *(d_edgesGroups.beginEdit());
+    helper::vector< sofa::core::loader::PrimitiveGroup>& my_trianglesGroups = *(d_trianglesGroups.beginEdit());
+    helper::vector< sofa::core::loader::PrimitiveGroup>& my_quadsGroups = *(d_quadsGroups.beginEdit());
+    helper::vector< sofa::core::loader::PrimitiveGroup>& my_polygonsGroups = *(d_polygonsGroups.beginEdit());
+    helper::vector< sofa::core::loader::PrimitiveGroup>& my_tetrahedraGroups = *(d_tetrahedraGroups.beginEdit());
+    helper::vector< sofa::core::loader::PrimitiveGroup>& my_hexahedraGroups = *(d_hexahedraGroups.beginEdit());
+    helper::vector< sofa::core::loader::PrimitiveGroup>& my_pentahedraGroups = *(d_pentahedraGroups.beginEdit());
+    helper::vector< sofa::core::loader::PrimitiveGroup>& my_pyramidsGroups = *(d_pyramidsGroups.beginEdit());
+
+    my_edgesGroups = _mesh->getEdgesGroups();
+    my_trianglesGroups = _mesh->getTrianglesGroups();
+    my_quadsGroups = _mesh->getQuadsGroups();
+    my_polygonsGroups = _mesh->getPolygonsGroups();
+    my_tetrahedraGroups = _mesh->getTetrahedraGroups();
+    my_hexahedraGroups = _mesh->getHexahedraGroups();
+    my_pentahedraGroups = _mesh->getPentahedraGroups();
+    my_pyramidsGroups = _mesh->getPyramidsGroups();
+
+    d_edgesGroups.endEdit();
+    d_trianglesGroups.endEdit();
+    d_quadsGroups.endEdit();
+    d_polygonsGroups.endEdit();
+    d_tetrahedraGroups.endEdit();
+    d_hexahedraGroups.endEdit();
+    d_pentahedraGroups.endEdit();
+    d_pyramidsGroups.endEdit();
+
+    // copy high order
+    helper::vector<HighOrderEdgePosition >& my_highOrderEdgePositions = *(d_highOrderEdgePositions.beginEdit());
+    helper::vector<HighOrderTrianglePosition >& my_highOrderTrianglePositions = *(d_highOrderTrianglePositions.beginEdit());
+    helper::vector<HighOrderQuadPosition >& my_highOrderQuadPositions = *(d_highOrderQuadPositions.beginEdit());
+
+    my_highOrderEdgePositions = _mesh->getHighOrderEdgePositions();
+    my_highOrderTrianglePositions = _mesh->getHighOrderTrianglePositions();
+    my_highOrderQuadPositions = _mesh->getHighOrderQuadPositions();
+
+    d_highOrderEdgePositions.endEdit();
+    d_highOrderTrianglePositions.endEdit();
+    d_highOrderQuadPositions.endEdit();
+
 }
 
 } // namespace loader

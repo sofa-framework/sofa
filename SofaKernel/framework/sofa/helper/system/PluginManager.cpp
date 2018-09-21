@@ -228,7 +228,7 @@ bool PluginManager::unloadPlugin(const std::string &pluginPath, std::ostream* er
     }
 }
 
-Plugin* PluginManager::getPlugin(const std::string& plugin, const std::string& suffix, bool ignoreCase)
+Plugin* PluginManager::getPlugin(const std::string& plugin, const std::string& /*suffix*/, bool /*ignoreCase*/)
 {
     std::string pluginPath = plugin;
 

@@ -26,7 +26,6 @@
 #include <sofa/core/visual/VisualParams.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
-#include <sofa/helper/gl/template.h>
 #include <SofaBaseTopology/TopologyData.inl>
 #include <sofa/helper/decompose.h>
 
@@ -618,6 +617,8 @@ void FastTetrahedralCorotationalForceField<DataTypes>::draw(const core::visual::
     if (!this->mstate) return;
     if (!f_drawing.getValue()) return;
 
+    vparams->drawTool()->saveLastState();
+
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
 
     if (vparams->displayFlags().getShowWireFrame())
@@ -667,6 +668,8 @@ void FastTetrahedralCorotationalForceField<DataTypes>::draw(const core::visual::
 
     if (vparams->displayFlags().getShowWireFrame())
         vparams->drawTool()->setPolygonMode(0, false);
+
+    vparams->drawTool()->restoreLastState();
 
 }
 

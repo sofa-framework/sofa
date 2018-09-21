@@ -30,9 +30,6 @@
 #include <sofa/simulation/VectorOperations.h>
 
 #include <sofa/simulation/Simulation.h>
-#include <sofa/helper/gl/template.h>
-#include <sofa/helper/gl/Axis.h>
-#include <sofa/helper/gl/Cylinder.h>
 #include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <math.h>

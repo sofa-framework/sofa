@@ -64,7 +64,7 @@ struct DampedOscillator_test : public CompliantSolver_test
         DOF->writeVelocities()[0] = Vec1(v0);
 
         UniformMass1::SPtr Mass = addNew<UniformMass1>(oscillator,"mass");
-        Mass->d_mass.setValue( mass );
+        Mass->d_vertexMass.setValue( mass );
 
         compliance = addNew<UniformCompliance1>(oscillator,"compliance");
         compliance->isCompliance.setValue(false);
@@ -274,7 +274,7 @@ TEST_F(DampedOscillator_test, compliance_second_degree )
     DOF->writeVelocities()[0] = Vec1(v0);
 
     UniformMass1::SPtr Mass = addNew<UniformMass1>(oscillator,"mass");
-    Mass->d_mass.setValue( mass );
+    Mass->d_vertexMass.setValue( mass );
 
     simulation::Node::SPtr constraint = oscillator->createChild( "constraint" );
 

@@ -261,164 +261,6 @@ template class SOFA_Flexible_API FixedConstraint<TYPEABSTRACTNAME3fTypes>;
 
 
 
-
-
-
-
-// ==========================================================================
-// PartialFixedConstraint
-
-
-#ifndef SOFA_FLOAT
-template <>
-void PartialFixedConstraint<TYPEABSTRACTNAME3dTypes>::draw(const core::visual::VisualParams* vparams)
-{
-    if (!vparams->displayFlags().getShowBehaviorModels()) return;
-
-    const SetIndexArray & indices = d_indices.getValue();
-    const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
-
-    if( d_drawSize.getValue() == 0) // old classical drawing by points
-    {
-        std::vector< Vector3 > points;
-
-        if( d_fixAll.getValue()==true )
-            for (unsigned i=0; i<x.size(); i++ )
-                points.push_back(x[i].getCenter());
-        else
-        {
-            if( x.size() < indices.size() ) for (unsigned i=0; i<x.size(); i++ ) points.push_back(x[indices[i]].getCenter());
-            else for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it) points.push_back(x[*it].getCenter());
-        }
-
-        vparams->drawTool()->drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
-    }
-    else
-//        vparams->drawTool()->drawSpheres(points, (float)d_drawSize.getValue(), Vec<4,float>(0.2f,0.1f,0.9f,1.0f));
-    {
-        if( d_fixAll.getValue()==true )
-            for (unsigned i=0; i<x.size(); i++ )
-            {
-                vparams->drawTool()->pushMatrix();
-                float glTransform[16];
-                x[i].writeOpenGlMatrix ( glTransform );
-                vparams->drawTool()->multMatrix( glTransform );
-                vparams->drawTool()->scale ( d_drawSize.getValue() );
-                vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
-                vparams->drawTool()->popMatrix();
-            }
-        else
-        {
-            if( x.size() < indices.size() )
-                for (unsigned i=0; i<x.size(); i++ )
-                {
-                    vparams->drawTool()->pushMatrix();
-                    float glTransform[16];
-                    x[indices[i]].writeOpenGlMatrix ( glTransform );
-                    vparams->drawTool()->multMatrix( glTransform );
-                    vparams->drawTool()->scale ( d_drawSize.getValue() );
-                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
-                    vparams->drawTool()->popMatrix();
-                }
-            else for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
-            {
-                vparams->drawTool()->pushMatrix();
-                float glTransform[16];
-                x[*it].writeOpenGlMatrix ( glTransform );
-                vparams->drawTool()->multMatrix( glTransform );
-                vparams->drawTool()->scale ( d_drawSize.getValue() );
-                vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
-                vparams->drawTool()->popMatrix();
-            }
-        }
-    }
-}
-#endif
-#ifndef SOFA_DOUBLE
-template <>
-void PartialFixedConstraint<TYPEABSTRACTNAME3fTypes>::draw(const core::visual::VisualParams* vparams)
-{
-    if (!vparams->displayFlags().getShowBehaviorModels()) return;
-
-    const SetIndexArray & indices = d_indices.getValue();
-    const VecCoord& x = mstate->read(core::ConstVecCoordId::position())->getValue();
-
-    if( d_drawSize.getValue() == 0) // old classical drawing by points
-    {
-        std::vector< Vector3 > points;
-
-        if( d_fixAll.getValue()==true )
-            for (unsigned i=0; i<x.size(); i++ )
-                points.push_back(x[i].getCenter());
-        else
-        {
-            if( x.size() < indices.size() ) for (unsigned i=0; i<x.size(); i++ ) points.push_back(x[indices[i]].getCenter());
-            else for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it) points.push_back(x[*it].getCenter());
-        }
-
-        vparams->drawTool()->drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
-    }
-    else
-//        vparams->drawTool()->drawSpheres(points, (float)d_drawSize.getValue(), Vec<4,float>(0.2f,0.1f,0.9f,1.0f));
-    {
-        if( d_fixAll.getValue()==true )
-            for (unsigned i=0; i<x.size(); i++ )
-            {
-                vparams->drawTool()->pushMatrix();
-                float glTransform[16];
-                x[i].writeOpenGlMatrix ( glTransform );
-                vparams->drawTool()->multMatrix( glTransform );
-                vparams->drawTool()->scale ( d_drawSize.getValue() );
-                vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
-                vparams->drawTool()->popMatrix();
-            }
-        else
-        {
-            if( x.size() < indices.size() )
-                for (unsigned i=0; i<x.size(); i++ )
-                {
-                    vparams->drawTool()->pushMatrix();
-                    float glTransform[16];
-                    x[indices[i]].writeOpenGlMatrix ( glTransform );
-                    vparams->drawTool()->multMatrix( glTransform );
-                    vparams->drawTool()->scale ( d_drawSize.getValue() );
-                    vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
-                    vparams->drawTool()->popMatrix();
-                }
-            else for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
-            {
-                vparams->drawTool()->pushMatrix();
-                float glTransform[16];
-                x[*it].writeOpenGlMatrix ( glTransform );
-                vparams->drawTool()->multMatrix( glTransform );
-                vparams->drawTool()->scale ( d_drawSize.getValue() );
-                vparams->drawTool()->drawFrame ( Vector3(), Quat(), Vector3 ( 1,1,1 ), Vec4f(0,0,1,1) );
-                vparams->drawTool()->popMatrix();
-            }
-        }
-    }
-}
-#endif
-
-SOFA_DECL_CLASS ( EVALUATOR(TYPEABSTRACTNAME,PartialFixedConstraint) )
-int EVALUATOR(TYPEABSTRACTNAME,PartialFixedConstraintClass) = core::RegisterObject ( "Attach given cinematic dofs to their initial positions" )
-        #ifndef SOFA_FLOAT
-        .add< PartialFixedConstraint<defaulttype::TYPEABSTRACTNAME3dTypes> >()
-    #endif
-    #ifndef SOFA_DOUBLE
-        .add< PartialFixedConstraint<defaulttype::TYPEABSTRACTNAME3fTypes> >()
-    #endif
-;
-#ifndef SOFA_FLOAT
-template class SOFA_Flexible_API PartialFixedConstraint<TYPEABSTRACTNAME3dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class SOFA_Flexible_API PartialFixedConstraint<TYPEABSTRACTNAME3fTypes>;
-#endif
-
-
-
-
 // ==========================================================================
 // ProjectToPointConstraint
 SOFA_DECL_CLASS ( EVALUATOR(TYPEABSTRACTNAME,ProjectToPointConstraint) )
@@ -702,7 +544,7 @@ SReal UniformMass<defaulttype::TYPEABSTRACTNAME3dTypes, defaulttype::TYPEABSTRAC
         iend = d_localRange.getValue() [1]+1;
 
     SReal e = 0;
-    const MassType& m = d_mass.getValue();
+    const MassType& m = d_vertexMass.getValue();
     // gravity
     defaulttype::Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
@@ -744,7 +586,7 @@ SReal UniformMass<defaulttype::TYPEABSTRACTNAME3fTypes, defaulttype::TYPEABSTRAC
         iend = d_localRange.getValue() [1]+1;
 
     SReal e = 0;
-    const MassType& m = d_mass.getValue();
+    const MassType& m = d_vertexMass.getValue();
     // gravity
     defaulttype::Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;

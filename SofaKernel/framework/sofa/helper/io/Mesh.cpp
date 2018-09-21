@@ -35,8 +35,7 @@ namespace io
 {
 
 SOFA_LINK_CLASS(MeshOBJ)
-SOFA_LINK_CLASS(MeshTrian)
-SOFA_LINK_CLASS(MeshSTL)
+SOFA_LINK_CLASS(MeshGmsh)
 
 Mesh* Mesh::Create(const std::string& filename)
 {

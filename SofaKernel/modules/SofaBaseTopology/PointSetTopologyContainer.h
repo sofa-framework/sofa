@@ -76,7 +76,7 @@ public:
     /** \brief Returns the number of topological element of the current topology.
      * This function avoids to know which topological container is in used.
      */
-    virtual unsigned int getNumberOfElements() const;
+    virtual size_t getNumberOfElements() const;
 
     /** \brief Returns a reference to the Data of points array container. */
     Data<InitTypes::VecCoord>& getPointDataArray() {return d_initPoints;}

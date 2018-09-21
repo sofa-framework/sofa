@@ -4,7 +4,7 @@
         <CGLinearSolver iterations="30" tolerance="1e-5" threshold="1e-5"/>
         <SparseGridTopology n="10 5 10" fileTopology="mesh/dragon.obj" />
         <MechanicalObject dx="-12.0" />
-        <UniformMass mass="1.0" />
+        <UniformMass vertexMass="1.0" />
         <RestShapeSpringsForceField name="Springs" stiffness="50"/>
 		
         <Node name="Visu">
@@ -27,7 +27,7 @@
         <CGLinearSolver iterations="30" tolerance="1e-5" threshold="1e-5"/>
         <SparseGridTopology n="10 5 10" fileTopology="mesh/dragon.obj" />
         <MechanicalObject dx="12.0" />
-        <UniformMass mass="1.0" />
+        <UniformMass vertexMass="1.0" />
         <RestShapeSpringsForceField name="Springs" stiffness="50"/>
 		
         <Node name="Visu">

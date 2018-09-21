@@ -10,7 +10,7 @@
         <CGLinearSolver template="GraphScattered" name="default14" iterations="25" tolerance="1e-05" threshold="1e-08" />
         <SparseGridTopology name="default15" fileTopology="mesh/dragon.obj" n="4 4 4" />
         <MechanicalObject template="Vec3d" name="default16" translation="0 0 1.5" rotation="90 0 -90" scale3d="0.2 0.2 0.2" restScale="1" />
-        <UniformMass template="Vec3d" name="default17" totalmass="1" />
+        <UniformMass template="Vec3d" name="default17" totalMass="1" />
         <PlaneForceField template="Vec3d" name="Wall" normal="0 -1 0" d="-4" stiffness="10" damping="1" color="1 1 1" draw="1" />
         <PlaneForceField template="Vec3d" name="Floor" normal="0 0.2 1" stiffness="10" damping="1" draw="1" />
         <Node name="VisualNode" gravity="0 -9.81 0">

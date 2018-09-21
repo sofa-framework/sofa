@@ -38,8 +38,7 @@
 #include <sofa/core/topology/TopologyChange.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
-
-#include <sofa/helper/gl/template.h>
+#include <sofa/defaulttype/RGBAColor.h>
 #include <SofaBaseTopology/TopologyData.inl>
 
 namespace sofa
@@ -326,7 +325,7 @@ void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyPoin
     if(ff)
     {
         helper::vector<EdgeSpring>& edgeInf = *(ff->edgeSprings.beginEdit());
-        for (int i = 0; i < ff->_topology->getNbEdges(); ++i)
+        for (unsigned int i = 0; i < ff->_topology->getNbEdges(); ++i)
         {
             if(edgeInf[i].is_activated)
             {
@@ -399,9 +398,9 @@ void FastTriangularBendingSprings<DataTypes>::reinit()
     /// prepare to store info in the edge array
     helper::vector<EdgeSpring>& edgeInf = *(edgeSprings.beginEdit());
     edgeInf.resize(_topology->getNbEdges());
-    int i;
+
     // set edge tensor to 0
-    for (i=0; i<_topology->getNbEdges(); ++i)
+    for (unsigned int i=0; i<_topology->getNbEdges(); ++i)
     {
 
         edgeHandler->applyCreateFunction(i, edgeInf[i],
@@ -411,7 +410,7 @@ void FastTriangularBendingSprings<DataTypes>::reinit()
 
     // create edge tensor by calling the triangle creation function
     sofa::helper::vector<unsigned int> triangleAdded;
-    for (i=0; i<_topology->getNbTriangles(); ++i)
+    for (unsigned int i=0; i<_topology->getNbTriangles(); ++i)
         triangleAdded.push_back(i);
 
     edgeHandler->applyTriangleCreation(triangleAdded,
@@ -476,39 +475,30 @@ void FastTriangularBendingSprings<DataTypes>::addKToMatrix(sofa::defaulttype::Ba
 template<class DataTypes>
 void FastTriangularBendingSprings<DataTypes>::draw(const core::visual::VisualParams* vparams)
 {
-#ifndef SOFA_NO_OPENGL
     unsigned int i;
     if (!vparams->displayFlags().getShowForceFields()) return;
     if (!this->mstate) return;
 
+    vparams->drawTool()->saveLastState();
+
     const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-    //VecCoord& x_rest = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 
-    //int nbTriangles=_topology->getNbTriangles();
-
-    glPushAttrib(GL_LIGHTING_BIT);
-    glDisable(GL_LIGHTING);
-
-    //unsigned int nb_to_draw = 0;
+    vparams->drawTool()->disableLighting();
 
     const helper::vector<EdgeSpring>& edgeInf = edgeSprings.getValue();
+    sofa::defaulttype::RGBAColor color = sofa::defaulttype::RGBAColor::green();
+    std::vector<sofa::defaulttype::Vector3> vertices;
 
-    glColor4f(0,1,0,1);
-    glBegin(GL_LINES);
     for(i=0; i<edgeInf.size(); ++i)
     {
         if(edgeInf[i].is_activated)
         {
-            //nb_to_draw+=1;
-            helper::gl::glVertexT(x[edgeInf[i].vid[EdgeSpring::A]]);
-            helper::gl::glVertexT(x[edgeInf[i].vid[EdgeSpring::B]]);
-
+            vertices.push_back(x[edgeInf[i].vid[EdgeSpring::A]]);
+            vertices.push_back(x[edgeInf[i].vid[EdgeSpring::B]]);
         }
     }
-    glEnd();
-    
-    glPopAttrib();
-#endif /* SOFA_NO_OPENGL */
+    vparams->drawTool()->drawLines(vertices, 1.0, color);
+
 }
 
 } // namespace forcefield

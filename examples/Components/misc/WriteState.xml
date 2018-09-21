@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<Node name="root" dt="0.01" gravity="0 0 -9.81">
+    <VisualStyle displayFlags="showForceFields showBehaviorModels showVisual showInteractionForceFields" />
+    <DefaultAnimationLoop/>
+    <EulerImplicitSolver />
+    <CGLinearSolver />
+
+    <Node name="Particle" bbox="-1 -1 -1 1 1 1" >
+        <!-- Particle falling under gravity -->
+        <MechanicalObject name="ParticleMO" template="Rigid" position="0 0 0 0 0 0 1" showObject="1" />
+        <UniformMass totalMass="1.0" />
+
+        <!-- WriteState: finds automatically the Mechanical within its node/context -->
+        <!-- Export positions (X) every 0.01 (each time step) -->
+        <WriteState name="StateWriter" filename="particleGravity.data" period="0.01" writeX="1" writeV="0" writeF="0" time="0"/>
+
+        <Node name="Visu">
+            <OglModel color="1.000 0.000 0.000" fileMesh="mesh/torus.obj" name="Visual" />
+            <RigidMapping input="@.." output="@Visual" />
+        </Node>
+    </Node>
+</Node>

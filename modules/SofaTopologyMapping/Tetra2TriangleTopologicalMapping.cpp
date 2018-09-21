@@ -125,7 +125,7 @@ void Tetra2TriangleTopologicalMapping::init()
                         else	to_tstm->addTriangleProcess(triangleArray[i]);
 
                         Loc2GlobVec.push_back(i);
-                        Glob2LocMap[i]=Loc2GlobVec.size()-1;
+                        Glob2LocMap[i]= (unsigned int)Loc2GlobVec.size()-1;
                     }
                 }
 
@@ -184,17 +184,13 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
                 case core::topology::TRIANGLESREMOVED:
                 {
-                    int last;
-                    int ind_last;
-
-                    last= fromModel->getNbTriangles() - 1;
+                    unsigned int last = (unsigned int)fromModel->getNbTriangles() - 1;
+                    unsigned int ind_last = (unsigned int)toModel->getNbTriangles();
 
                     const sofa::helper::vector<unsigned int> &tab = ( static_cast< const TrianglesRemoved *>( *itBegin ) )->getArray();
 
                     unsigned int ind_tmp;
-
                     unsigned int ind_real_last;
-                    ind_last=toModel->getNbTriangles();
 
                     for (unsigned int i = 0; i <tab.size(); ++i)
                     {
@@ -291,7 +287,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                     const sofa::helper::vector<core::topology::BaseMeshTopology::Tetrahedron> &tetrahedronArray=fromModel->getTetrahedra();
                     sofa::helper::vector< core::topology::BaseMeshTopology::Triangle > triangles_to_create;
                     sofa::helper::vector< unsigned int > trianglesIndexList;
-                    int nb_elems = toModel->getNbTriangles();
+                    unsigned int nb_elems = (unsigned int)toModel->getNbTriangles();
                     const bool flipN = flipNormals.getValue();
 
                     for (unsigned int i = 0; i <tab.size(); ++i)
@@ -353,7 +349,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                                 nb_elems+=1;
 
                                 Loc2GlobVec.push_back(tab[i]);
-                                Glob2LocMap[tab[i]]=Loc2GlobVec.size()-1;
+                                Glob2LocMap[tab[i]]= (unsigned int)Loc2GlobVec.size()-1;
                             }
                         }
                     }
@@ -399,9 +395,8 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                             }
                         }
 
-                        int ind_last;
+                        unsigned int ind_last = (unsigned int)toModel->getNbTriangles();
                         unsigned int ind_tmp;
-                        ind_last=toModel->getNbTriangles();
 
                         for (unsigned int i = 0; i <triangles_to_remove.size(); ++i)
                         {
@@ -468,7 +463,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
                         sofa::helper::vector< core::topology::BaseMeshTopology::Triangle > triangles_to_create;
                         sofa::helper::vector< unsigned int > trianglesIndexList;
-                        int nb_elems = toModel->getNbTriangles();
+                        unsigned int nb_elems = (unsigned int)toModel->getNbTriangles();
                         const bool flipN = flipNormals.getValue();
 
                         for (unsigned int i = 0; i < tab.size(); ++i)
@@ -591,7 +586,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                                         {
                                             addedTriangleIndex.push_back(nb_elems-1);
                                         }
-                                        Glob2LocMap[k]=Loc2GlobVec.size()-1;
+                                        Glob2LocMap[k]= (unsigned int)Loc2GlobVec.size()-1;
                                     }
                                 }
                             }
@@ -617,7 +612,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                 case core::topology::POINTSADDED:
                 {
 
-                    int nbAddedPoints = ( static_cast< const sofa::component::topology::PointsAdded * >( *itBegin ) )->getNbAddedVertices();
+                    size_t nbAddedPoints = ( static_cast< const sofa::component::topology::PointsAdded * >( *itBegin ) )->getNbAddedVertices();
                     to_tstm->addPointsProcess(nbAddedPoints);
                     to_tstm->addPointsWarning(nbAddedPoints, true);
 

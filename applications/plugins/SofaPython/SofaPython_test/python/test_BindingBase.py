@@ -24,7 +24,7 @@ def createScene(rootNode):
 
     ### addNewData
     lastCount = len(rootNode.getListOfDataFields())
-    rootNode.addNewData("aData", "CustomData", "This is an help message", "f", 1.0)
+    rootNode.addNewData("aData", "CustomData", "This is an help message", "float", 1.0)
     ASSERT_EQ(lastCount+1, len(rootNode.getListOfDataFields()))
 
     ASSERT_NEQ(rootNode.getData("aData"), None)
