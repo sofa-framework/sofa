@@ -1,18 +1,17 @@
 #include <fstream>
 
+#include <sofa/helper/testing/BaseTest.h>
 #include <sofa/helper/logging/Messaging.h>
 #include <sofa/helper/system/FileSystem.h>
-
-#include "PythonTest.h"
-
-//#include <pybind11/pybind11.h>
-//#include <pybind11/embed.h>
-//namespace py = pybind11;
 
 #include <sofa/helper/system/PluginManager.h>
 using sofa::helper::system::PluginManager;
 
-#include "initModule.h"
+#include "PythonEnvironment.h"
+#include "PythonTest.h"
+
+#include <SofaSimulationGraph/SimpleApi.h>
+namespace simpleapi=sofa::simpleapi;
 
 namespace sofapython3
 {
@@ -29,56 +28,31 @@ void SOFAPYTHON3_API PrintTo(const sofapython3::PythonTestData& d, ::std::ostrea
     (*os) << "}";
 }
 
+///////////////////////// PythonTestData Definition  ///////////////////////////////////////////////
+PythonTestData::PythonTestData(const std::string& filepath, const std::vector<std::string>& arguments ) :
+    filepath(filepath), arguments(arguments) {}
+
+
 ///////////////////////// PythonTest Definition  //////////////////////////////////////////////////
 PythonTest::PythonTest()
 {
-    //sofa::helper::system::PluginManager::getInstance().loadPlugin("SofaPython3");
-
-    initExternalModule();
-
-    std::cout << "TEST "<< std::endl;
-
-    //py::scoped_interpreter guard{};
-    std::cout << "TEST "<< std::endl;
-    //py::module::import("SofaRuntime");
-
-    /*
-    py::exec(R"(
-            kwargs = dict(name="World", number=42)
-            message = "Hello, {name}! The answer is {number}".format(**kwargs)
-            print(message)
-        )");*/
-
-    std::cout << "TEST "<< std::endl;
 }
 
 PythonTest::~PythonTest()
 {
-    std::cout << "DETEL" << std::endl;
 }
 
 void PythonTest::run( const PythonTestData& data )
 {
-
     msg_info("PythonTest") << "running " << data.filepath;
-}
-
-static bool ends_with(const std::string& suffix, const std::string& full){
-    const std::size_t lf = full.length();
-    const std::size_t ls = suffix.length();
-
-    if(lf < ls) return false;
-
-    return (0 == full.compare(lf - ls, ls, suffix));
-}
-
-static bool starts_with(const std::string& prefix, const std::string& full){
-    const std::size_t lf = full.length();
-    const std::size_t lp = prefix.length();
-
-    if(lf < lp) return false;
-
-    return (0 == full.compare(0, lp, prefix));
+    PythonEnvironment::Init();
+    {
+        EXPECT_MSG_NOEMIT(Error);
+        PythonEnvironment::setArguments(data.filepath, data.arguments);
+        auto simulation = simpleapi::createSimulation();
+        auto root = simulation->load(data.filepath.c_str());
+    }
+    PythonEnvironment::Release();
 }
 
 /// add a Python_test_data with given path
@@ -89,19 +63,20 @@ void PythonTestList::addTest( const std::string& filename,
     list.push_back( PythonTestData( filepath(path,filename), arguments ) );
 }
 
-void PythonTestList::addTestDir(const std::string& dir, const std::string& prefix) {
-
+void PythonTestList::addTestDir(const std::string& dir, const std::string& prefix)
+{
     std::vector<std::string> files;
     sofa::helper::system::FileSystem::listDirectory(dir, files);
 
     for(const std::string& file : files)
     {
-        if( starts_with(prefix, file) && ends_with(".py", file) )
+        if( sofa::helper::starts_with(prefix, file)
+                && (sofa::helper::ends_with(".py", file) || sofa::helper::ends_with(".py3", file)))
         {
             addTest(file, dir);
         }
     }
 }
 
-} // namespace sofapython3
+} /// namespace sofapython3
 

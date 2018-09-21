@@ -34,32 +34,30 @@
 namespace sofapython3
 {
 using sofa::simulation::Node;
+using sofa::simulation::SceneLoader;
 
 /// The scene loader for python3 scene files
 class SOFAPYTHON3_API SceneLoaderPY3 : public SceneLoader
 {
 public:
     /// Pre-loading check
-    virtual bool canLoadFileExtension(const char *extension);
+    virtual bool canLoadFileExtension(const char *extension) override;
 
     /// Pre-saving check
-    virtual bool canWriteFileExtension(const char *extension);
+    virtual bool canWriteFileExtension(const char *extension) override;
 
     /// load the file
-    virtual Node::SPtr load(const char *filename);
+    virtual Node::SPtr load(const char *filename) override;
 
-    // max: added out parameter to get the root *before* createScene is called
     void loadSceneWithArguments(const char *filename,
                                 const std::vector<std::string>& arguments=std::vector<std::string>(0),
                                 Node::SPtr* root_out = 0);
-    bool loadTestWithArguments(const char *filename,
-                               const std::vector<std::string>& arguments=std::vector<std::string>(0));
 
     /// get the file type description
-    virtual std::string getFileTypeDesc();
+    virtual std::string getFileTypeDesc() override;
 
     /// get the list of file extensions
-    virtual void getExtensionList(ExtensionList* list);
+    virtual void getExtensionList(ExtensionList* list) override;
 };
 
 } // namespace sofapython3

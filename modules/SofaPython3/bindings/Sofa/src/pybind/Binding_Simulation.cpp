@@ -7,10 +7,10 @@ using sofa::simulation::Simulation;
 void moduleAddSimulation(py::module &m)
 {
   py::class_<Simulation, Simulation::SPtr> s(m, "Simulation");
-  s.def("print", &Simulation::print, "root"_a);
-  s.def("init", &Simulation::init, "root"_a);
-  s.def("animate", &Simulation::animate, "root"_a, "dt"_a = 0.0);
-  s.def("reset", &Simulation::reset, "root"_a);
+  s.def("print", &Simulation::print, "node"_a);
+  s.def("init", &Simulation::init, "node"_a);
+  s.def("animate", &Simulation::animate, "node"_a, "dt"_a = 0.0);
+  s.def("reset", &Simulation::reset, "node"_a);
   s.def("load", &Simulation::load, "filename"_a);
-  s.def("unload", &Simulation::unload, "root"_a);
+  s.def("unload", &Simulation::unload, "node"_a);
 }

@@ -6,9 +6,12 @@
 #include "Binding_Simulation.h"
 
 /// The first parameter must be named the same as the module file to load.
-PYBIND11_MODULE(Sofa, m) {
+PYBIND11_MODULE(Sofa, m)
+{
   moduleAddBase(m);
   moduleAddBaseData(m);
+  moduleAddDataAsString(m);
+  moduleAddDataContainer(m);
   moduleAddBaseObject(m);
   moduleAddNode(m);
   moduleAddPythonController(m);

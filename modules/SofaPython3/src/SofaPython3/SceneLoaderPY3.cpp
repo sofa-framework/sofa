@@ -41,7 +41,7 @@ MSG_REGISTER_CLASS(sofapython3::SceneLoaderPY3, "SofaPython3::SceneLoader")
 
 PYBIND11_DECLARE_HOLDER_TYPE(Base, sofa::core::sptr<Base>, true)
 template class py::class_<sofa::core::objectmodel::Base,
-                          sofa::core::sptr<sofa::core::objectmodel::Base>>;
+sofa::core::sptr<sofa::core::objectmodel::Base>>;
 
 namespace sofapython3
 {
@@ -88,150 +88,42 @@ py::module import(const std::string& module, const std::string& path, py::object
     locals["path"]        = py::cast(path);
 
     py::eval<py::eval_statements>(            // tell eval we're passing multiple statements
-        "import imp\n"
-        "new_module = imp.load_module(module_name, open(path), path, ('py', 'U', imp.PY_SOURCE))\n",
-        globals,
-        locals);
+                                              "import imp\n"
+                                              "new_module = imp.load_module(module_name, open(path), path, ('py', 'U', imp.PY_SOURCE))\n",
+                                              globals,
+                                              locals);
     return py::cast<py::module>(locals["new_module"]);
 }
 
-
 void SceneLoaderPY3::loadSceneWithArguments(const char *filename,
-                                           const std::vector<std::string>& arguments,
-                                           Node::SPtr* root_out)
+                                            const std::vector<std::string>& arguments,
+                                            Node::SPtr* root_out)
 {
     notifyLoadingScene();
     PythonEnvironment::gil lock(__func__);
 
-    std::cout << "loading..: "<< filename << std::endl ;
+    try{
+        py::module::import("Sofa");
+        py::object globals = py::module::import("__main__").attr("__dict__");
+        py::module module;
 
-    py::module::import("Sofa");
-    py::object globals = py::module::import("__main__").attr("__dict__");
-    py::module module;
+        SetDirectory localDir(filename);
+        std::string basename = SetDirectory::GetFileNameWithoutExtension(SetDirectory::GetFileName(filename).c_str());
+        module = import(basename, SetDirectory::GetFileName(filename), globals);
+        if(!module.attr("createScene"))
+        {
+            msg_error() << "Missing createScene function";
+            return ;
+        }
 
-    SetDirectory localDir(filename);
-    module = import("PythonController", SetDirectory::GetFileName(filename), globals);
-    if(!module.attr("createScene"))
+        *root_out = Node::create("root");
+        py::object createScene = module.attr("createScene");
+        createScene(*root_out);
+    }catch(std::exception& e)
     {
-        msg_error() << "Missing createScene function";
-        return ;
+        msg_error() << e.what();
     }
-
-    *root_out = Node::create("root");
-    py::object createScene = module.attr("createScene");
-    createScene(*root_out);
-
-//    // We go to the current file's directory so that all relative path are correct
-
-//    notifyLoadingScene();
-//    PythonEnvironment::setArguments(SetDirectory::GetFileName(filename), arguments);
-//    if(!PythonEnvironment::runFile(SetDirectory::GetFileName(filename)))
-//    {
-//        msg_error() << "scene script load error." ;
-//        if( root_out ) *root_out = 0;
-//        return;
-//    }
-
-//    PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));
-
-//    // pFunc is also a borrowed reference
-//    PyObject *pFunc = PyDict_GetItemString(pDict, "createScene");
-//    if (PyCallable_Check(pFunc))
-//    {
-//        Node::SPtr rootNode = Node::create("root");
-//        if(root_out) *root_out = rootNode;
-
-//        SP_CALL_MODULEFUNC(pFunc, "(O)", sofa::PythonFactory::toPython(rootNode.get()));
-//        return;
-//    }
-//    else
-//    {
-//        PyObject *pFunc = PyDict_GetItemString(pDict, "createSceneAndController");
-//        if (PyCallable_Check(pFunc))
-//        {
-//            Node::SPtr rootNode = Node::create("root");
-//            if(root_out) *root_out = rootNode;
-
-//            SP_CALL_MODULEFUNC(pFunc, "(O)", sofa::PythonFactory::toPython(rootNode.get()));
-//            rootNode->addObject( core::objectmodel::New<component::controller::PythonMainScriptController>( filename ) );
-
-//            return;
-//        }
-//    }
-
-//    SP_MESSAGE_ERROR( "cannot create Scene, no \"createScene(rootNode)\" nor \"createSceneAndController(rootNode)\" module method found." );
-//    if( root_out ) *root_out = 0;
-//    return;
 }
-
-
-bool SceneLoaderPY3::loadTestWithArguments(const char *filename, const std::vector<std::string>& arguments)
-{
-    PythonEnvironment::gil lock(__func__);
-
-    std::stringstream tmp;
-
-    std::cout << "COUCOUCOCU " << std::endl ;
-    tmp << "with open(" << filename << ") as f:                   " << std::endl
-        << "     code = compile(f.read(), "<<filename<<", 'exec') " << std::endl
-        << "     exec(code, global_vars, local_vars)              " << std::endl
-        << "print(dir())                                          " << std::endl;
-
-    PythonEnvironment::runString(tmp.str());
-
-//    PythonEnvironment::gil lock(__func__);
-//    if(!OurHeader.empty() && 0 != PyRun_SimpleString(OurHeader.c_str()))
-//    {
-//        SP_MESSAGE_ERROR( "header script run error." )
-//        return false;
-//    }
-
-//    PythonEnvironment::runString("createScene=None");
-//    PythonEnvironment::runString("createSceneAndController=None");
-
-//    PythonEnvironment::runString(std::string("__file__=\"") + filename + "\"");
-
-//    // it runs the unecessary SofaPython script but it is not a big deal
-//    if(!PythonEnvironment::runFile(filename,arguments))
-//    {
-//        // LOAD ERROR
-//        SP_MESSAGE_ERROR( "script load error." )
-//        return false;
-//    }
-
-//    PyObject* pDict = PyModule_GetDict(PyImport_AddModule("__main__"));
-
-//    // pFunc is also a borrowed reference
-//    PyObject *pFunc = PyDict_GetItemString(pDict, "run");
-//    if (PyCallable_Check(pFunc))
-//    {
-//        PyObject *res = PyObject_CallObject(pFunc,0);
-//        printPythonExceptions();
-
-//        if( !res )
-//        {
-//            SP_MESSAGE_ERROR( "Python test 'run' function does not return any value" )
-//            return false;
-//        }
-//        else if( !PyBool_Check(res) )
-//        {
-//            SP_MESSAGE_ERROR( "Python test 'run' function does not return a boolean" )
-//            Py_DECREF(res);
-//            return false;
-//        }
-
-//        bool result = ( res == Py_True );
-//        Py_DECREF(res);
-
-//        return result;
-//    }
-//    else
-//    {
-//        SP_MESSAGE_ERROR( "Python test has no 'run'' function" )
-//        return false;
-//    }
-}
-
 
 } // namespace sofapython3
 
