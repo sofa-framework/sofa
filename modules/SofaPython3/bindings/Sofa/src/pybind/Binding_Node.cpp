@@ -2,6 +2,7 @@
 /// Neede to have automatic conversion from pybind types to stl container.
 #include <pybind11/stl.h>
 
+#include "Binding_Base.h"
 #include "Binding_Node.h"
 
 #include <sofa/core/objectmodel/BaseData.h>
@@ -23,6 +24,9 @@ std::string toSofaParsableString(const py::handle& p)
         }
         return tmp.str();
     }
+    //TODO(dmarchal) This conversion to string is so bad.
+    if(py::isinstance<py::str>(p))
+        return py::str(p);
     return py::repr(p);
 }
 
@@ -53,34 +57,15 @@ void moduleAddNode(py::module &m) {
             sofa::core::objectmodel::Context, Node::SPtr>
             p(m, "Node");
 
-    p.def("createObject", [](Node& self, const std::string& type, const
-          py::kwargs& kwargs) -> py::object
+    p.def("createObject",
+          [](Node& self, const std::string& type, const py::kwargs& kwargs) -> py::object
     {
         return py::cast( simpleapi::createObject(&self, type,
                                                  toStringMap(kwargs)) );
     });
 
-    p.def("createNode", [](const std::string& name)
-    {
-        return Node::create(name);
-    });
-
     p.def("createChild", &Node::createChild);
     p.def("getRoot", &Node::getRoot);
-
-    // TODO in Sofa.Runtime ?
-    p.def("simulationStep", [](Node &n, double dt) {
-        sofa::simulation::getSimulation()->animate(&n, dt);
-    }, "dt"_a);
-
-    p.def("reset", [](Node &n)
-    { sofa::simulation::getSimulation()->reset(&n);
-    });
-
-    p.def("init", [](Node &n)
-    {
-        sofa::simulation::getSimulation()->init(&n);
-    });
 
     p.def("addObject", [](Node& self, py::object object)
     {
@@ -89,21 +74,6 @@ void moduleAddNode(py::module &m) {
 
     p.def("__getattr__", [](Node& self, const std::string& name) -> py::object
     {
-        /// I'm not sure implicit behavior is nice but we could do:
-        ///    - The attribute is a data,
-        ///         returns it if it is a container
-        ///         returns the value/specific binding otherwise
-        ///    - The attribute is a link, return it.
-        ///    - The attribute is an object or a child return it.
-        ///    - The attribute is not existing:
-        ///                raise an exception or search using difflib for
-        /// close match.
-        BaseData* d = self.findData(name); if(d!=nullptr)
-            return py::cast(d);
-
-        //TODO missing link search.
-
-        std::cout << "SEARCHING FOR: " << name << std::endl;
         BaseObject *object = self.getObject(name);
         if (object)
             return py::cast(object);
@@ -112,7 +82,7 @@ void moduleAddNode(py::module &m) {
         if (child)
             return py::cast(child);
 
-        return py::none();
+        return BindingBase::GetAttr(self, name);
     });
 
     p.def("getChild", [](Node &n, const std::string &name) -> py::object {

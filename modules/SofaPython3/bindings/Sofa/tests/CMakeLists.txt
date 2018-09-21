@@ -10,12 +10,6 @@ if(NOT SofaPython3_FOUND)
     return()
 endif()
 
-find_package(SofaTest QUIET)
-if(NOT SofaTest_FOUND)
-    message("-- PythonModule_Sofa_test is disabled because 'SofaTest' is missing or not activated.")
-    return()
-endif()
-
 message("-- PythonModule_Sofa_test is enabled.")
 
 

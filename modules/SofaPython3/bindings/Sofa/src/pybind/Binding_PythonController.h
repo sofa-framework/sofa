@@ -18,13 +18,8 @@ public:
     ~PythonController()
     {
         std::cout << "~PythonController()" << std::endl;
-    }
 
-    virtual void __init__()
-    {
-        std::cout << "I'm a parent" << std::endl;
     }
-
 };
 
 void moduleAddPythonController(py::module &m);

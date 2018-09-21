@@ -37,14 +37,14 @@ set(HEADER_FILES
     src/SofaPython3/config.h
     src/SofaPython3/initModule.h
     src/SofaPython3/PythonEnvironment.h
-    #src/SofaPython3/PythonTest.h
+    src/SofaPython3/PythonTest.h
     src/SofaPython3/SceneLoaderPY3.h
 )
 
 set(SOURCE_FILES
     src/SofaPython3/initModule.cpp
     src/SofaPython3/PythonEnvironment.cpp
-    #src/SofaPython3/PythonTest.cpp
+    src/SofaPython3/PythonTest.cpp
     src/SofaPython3/SceneLoaderPY3.cpp
 )
 
@@ -55,7 +55,7 @@ set(EXTRA_FILES
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_SOFAPYTHON3")
 
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaSimulationCore)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaCore SofaSimulationCore SofaSimulationGraph)
 
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
@@ -63,7 +63,6 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>"
 target_link_libraries(${PROJECT_NAME} PRIVATE "${PYTHON_LIBRARY}" )
 target_include_directories(${PROJECT_NAME} PRIVATE "${PYTHON_INCLUDE_DIR}")
 #target_link_libraries(${PROJECT_NAME} PRIVATE pybind11::embed pybind11::module)
-
 
 ## When installing, copy the content of the example directory into module/SofaPython3
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/examples DESTINATION modules/SofaPython3 COMPONENT resources)

@@ -1,24 +1,21 @@
 #ifndef SOFAPYTHON3_PYTHONTEST_H
 #define SOFAPYTHON3_PYTHONTEST_H
 
-#include <gtest/gtest.h>
 #include <string>
-
 #include "config.h"
-
+#include <sofa/helper/testing/BaseTest.h>
 
 namespace sofapython3
 {
 
+using sofa::helper::testing::BaseTest;
+
 /// a Python_test is defined by a python filepath and optional arguments
 struct SOFAPYTHON3_API PythonTestData
 {
-    PythonTestData( const std::string& filepath,
-                      const std::vector<std::string>& arguments )
-        : filepath(filepath), arguments(arguments) {}
-
+    PythonTestData( const std::string& filepath, const std::vector<std::string>& arguments );
     std::string filepath;
-    std::vector<std::string> arguments; // argc/argv in the python script
+    std::vector<std::string> arguments;
 };
 
 /// This function is used by gtest to print the content of the struct in a human friendly way
@@ -53,18 +50,16 @@ private:
 };
 
 /// A test written in python (but not as a sofa class to perform unitary testing on python functions)
-class SOFAPYTHON3_API PythonTest : public ::testing::TestWithParam<PythonTestData>
+class SOFAPYTHON3_API PythonTest : public BaseTest,
+        public ::testing::WithParamInterface<PythonTestData>
 {
 public:
     PythonTest();
     ~PythonTest();
 
     void run( const PythonTestData& );
-
-private:
-    //pybind11::scoped_interpreter* m_interpreter {nullptr};
 };
 
 }
 
-#endif
+#endif /// PYTHONTEST_H_
