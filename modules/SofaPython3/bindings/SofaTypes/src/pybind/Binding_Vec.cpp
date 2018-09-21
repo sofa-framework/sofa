@@ -70,15 +70,15 @@ template <int N, class T> void addVec(py::module &m, py::class_<Vec<N, T>> &p) {
   p.def("__mul__", [](double d, const VecClass &v) { return v * d; });
   p.def("__mul__", [](int d, const VecClass &v) { return v * d; });
 
-  p.def(py::self * float())
-      .def(py::self * int())
-      .def(py::self *= float())
-      .def(py::self *= int());
+  p.def(py::self * double());
+  p.def(py::self * int());
+  p.def("__imul__", [](VecClass &v, const float d) { v.eqmulscalar(d);});
+  p.def("__imul__", [](VecClass &v, const int d) { v.eqmulscalar(d); });
 
-  p.def(py::self / float())
-      .def(py::self / int())
-      .def(py::self /= float())
-      .def(py::self /= int());
+  p.def(py::self / double());
+  p.def(py::self / int());
+  p.def("__idiv__", [](VecClass &v, const double d) { v.eqdivscalar(d); });
+  p.def("__idiv__", [](VecClass &v, const int d) { v.eqdivscalar(d); });
 
   p.def("__str__", [](VecClass &v) { return pyVec::__str__(v); });
   p.def("__repr__", [](VecClass &v) { return pyVec::__str__(v, true); });
@@ -92,9 +92,9 @@ template <int N, class T> void addVec(py::module &m, py::class_<Vec<N, T>> &p) {
         "threshold"_a = std::numeric_limits<T>::epsilon());
   p.def("normalized", &VecClass::normalized);
   p.def("sum", &VecClass::sum);
-
-  m.def("dot",
-        (T(*)(const VecClass &a, const VecClass &b)) & sofa::defaulttype::dot);
+  p.def("dot", [](const VecClass &self, const VecClass &b) {
+    return sofa::defaulttype::dot(self, b);
+  });
 }
 
 template <int N, class T> struct VEC {
@@ -230,9 +230,8 @@ template <class T> struct VECTOR<2, T> : public VEC<2, T> {
     PARENT::add_y(p);
     PARENT::add_xy(p);
 
-    m.def("cross", [](const VecClass &a, const VecClass &b) {
-      T val = sofa::defaulttype::cross(a, b);
-      return val;
+    p.def("cross", [](const VecClass &self, const VecClass &b) {
+      return sofa::defaulttype::cross(self, b);
     });
   }
 };
@@ -254,9 +253,8 @@ template <class T> struct VECTOR<3, T> : public VEC<3, T> {
       return std::unique_ptr<VecClass>(v);
     }));
     p.def("set", (void (VecClass::*)(T, T, T)) & VecClass::set);
-    m.def("cross", [](const VecClass &a, const VecClass &b) {
-      VecClass val = sofa::defaulttype::cross(a, b);
-      return val;
+    p.def("cross", [](const VecClass &self, const VecClass &b) {
+      return sofa::defaulttype::cross(self, b);
     });
     ::addVec(m, p);
     PARENT::add_x(p);
