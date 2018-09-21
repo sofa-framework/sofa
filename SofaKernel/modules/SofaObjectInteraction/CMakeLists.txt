@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.1)
 project(SofaObjectInteraction)
 
 set(HEADER_FILES
-    MappedMatrixForceFieldAndMass.h
-    MappedMatrixForceFieldAndMass.inl
     PenalityContactForceField.h
     PenalityContactForceField.inl
     config.h
@@ -11,14 +9,13 @@ set(HEADER_FILES
 )
 
 set(SOURCE_FILES
-    MappedMatrixForceFieldAndMass.cpp
     PenalityContactForceField.cpp
     initObjectInteraction.cpp
 )
 
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} PUBLIC SofaDeformable SofaBaseLinearSolver)
+target_link_libraries(${PROJECT_NAME} PUBLIC SofaDeformable)
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_OBJECT_INTERACTION")
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER "${HEADER_FILES}")
 
