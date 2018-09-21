@@ -228,7 +228,7 @@ void PointSetGeometryAlgorithms<DataTypes>::initPointsAdded(const helper::vector
 
 
 template<class DataTypes>
-void PointSetGeometryAlgorithms<DataTypes>::initPointAdded(unsigned int index, const core::topology::PointAncestorElem &ancestorElem
+void PointSetGeometryAlgorithms<DataTypes>::initPointAdded(PointID index, const core::topology::PointAncestorElem &ancestorElem
     , const helper::vector< VecCoord* >& coordVecs, const helper::vector< VecDeriv* >& /*derivVecs*/)
 
 {

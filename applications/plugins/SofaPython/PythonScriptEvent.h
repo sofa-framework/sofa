@@ -25,7 +25,7 @@
 #include "PythonCommon.h"
 
 #include <SofaPython/config.h>
-#include "ScriptEvent.h"
+#include <sofa/core/objectmodel/ScriptEvent.h>
 
 
 namespace sofa

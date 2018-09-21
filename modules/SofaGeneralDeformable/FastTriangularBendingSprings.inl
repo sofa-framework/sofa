@@ -325,7 +325,7 @@ void FastTriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyPoin
     if(ff)
     {
         helper::vector<EdgeSpring>& edgeInf = *(ff->edgeSprings.beginEdit());
-        for (int i = 0; i < ff->_topology->getNbEdges(); ++i)
+        for (unsigned int i = 0; i < ff->_topology->getNbEdges(); ++i)
         {
             if(edgeInf[i].is_activated)
             {
@@ -398,9 +398,9 @@ void FastTriangularBendingSprings<DataTypes>::reinit()
     /// prepare to store info in the edge array
     helper::vector<EdgeSpring>& edgeInf = *(edgeSprings.beginEdit());
     edgeInf.resize(_topology->getNbEdges());
-    int i;
+
     // set edge tensor to 0
-    for (i=0; i<_topology->getNbEdges(); ++i)
+    for (unsigned int i=0; i<_topology->getNbEdges(); ++i)
     {
 
         edgeHandler->applyCreateFunction(i, edgeInf[i],
@@ -410,7 +410,7 @@ void FastTriangularBendingSprings<DataTypes>::reinit()
 
     // create edge tensor by calling the triangle creation function
     sofa::helper::vector<unsigned int> triangleAdded;
-    for (i=0; i<_topology->getNbTriangles(); ++i)
+    for (unsigned int i=0; i<_topology->getNbTriangles(); ++i)
         triangleAdded.push_back(i);
 
     edgeHandler->applyTriangleCreation(triangleAdded,

@@ -142,7 +142,7 @@ public:
     VisualComponent visualNode[NVISUALNODE];
     static const char* visualNodeNames[NVISUALNODE];
     static const char* visualNodeFiles[NVISUALNODE];
-    simulation::Node::SPtr nodePrincipal;
+    simulation::Node::SPtr m_omniVisualNode;
     component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes>::SPtr rigidDOF;
 
     bool m_visuActive; ///< Internal boolean to detect activation switch of the draw

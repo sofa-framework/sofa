@@ -48,7 +48,7 @@ SOFA_TESTPLUGIN_API const char* getModuleVersion()
 
 SOFA_TESTPLUGIN_API const char* getModuleLicense()
 {
-    return "LicenceTest";
+    return "LicenseTest";
 }
 
 SOFA_TESTPLUGIN_API const char* getModuleDescription()

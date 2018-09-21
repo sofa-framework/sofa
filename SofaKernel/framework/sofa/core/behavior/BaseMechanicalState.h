@@ -22,7 +22,6 @@
 #ifndef SOFA_CORE_BEHAVIOR_BASEMECHANICALSTATE_H
 #define SOFA_CORE_BEHAVIOR_BASEMECHANICALSTATE_H
 
-#include <sofa/config/build_option_experimental_features.h>
 
 #include <sofa/core/BaseState.h>
 #include <sofa/core/MultiVecId.h>
@@ -222,11 +221,9 @@ public:
 
     /// build the jacobian of the constraint in a baseMatrix
     virtual void getConstraintJacobian(const ConstraintParams* params, sofa::defaulttype::BaseMatrix* J,unsigned int & off) = 0;
-#if SOFA_WITH_EXPERIMENTAL_FEATURES() == 1
+
     /// fill the jacobian matrix (of the constraints) with identity blocks on the provided list of nodes(dofs)
     virtual void buildIdentityBlocksInJacobian(const sofa::helper::vector<unsigned int>& list_n, core::MatrixDerivId &mID) = 0;
-#endif
-
 
     class ConstraintBlock
     {

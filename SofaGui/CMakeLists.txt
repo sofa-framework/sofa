@@ -80,6 +80,14 @@ if(NOT SOFA_NO_OPENGL)
                 add_subdirectory(${CMAKE_SOURCE_DIR}/extlibs/libQGLViewer-2.7.1/QGLViewer ${CMAKE_BINARY_DIR}/extlibs/QGLViewer)
             endif()
 
+            ## VSync
+            option(SOFAGUI_ENABLE_VSYNC "Enable vertical refresh sync" OFF)
+            if(SOFAGUI_ENABLE_VSYNC)
+                set(SOFA_GUI_VSYNC_ 1) # config.h.in
+            else()
+                set(SOFA_GUI_VSYNC_ 0) # config.h.in
+            endif()
+
             ## QWT
             option(SOFAGUI_ENABLE_QWT "Enable QWT for Qt GUIs")
             if(SOFAGUI_ENABLE_QWT)

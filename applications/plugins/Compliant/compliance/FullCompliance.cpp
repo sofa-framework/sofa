@@ -1,3 +1,5 @@
+#define SOFA_COMPONENT_COMPLIANCE_FULLCOMPLIANCE_CPP
+
 #include "FullCompliance.inl"
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>

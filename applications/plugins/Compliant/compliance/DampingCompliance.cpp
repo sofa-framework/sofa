@@ -1,3 +1,4 @@
+#define SOFA_COMPONENT_COMPLIANCE_DAMPINGCOMPLIANCE_CPP
 #include "DampingCompliance.h"
 
 #include <sofa/defaulttype/VecTypes.h>

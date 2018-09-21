@@ -885,7 +885,7 @@ void DrawToolGL::drawQuads(const std::vector<Vector3> &points, const std::vector
             Vec4f average_colour;
             for(int i=0; i<4; i++)
             {
-                average_colour[i] = (col_a[i]+col_b[i]+col_c[i]+col_d[i])*0.25;
+                average_colour[i] = (col_a[i]+col_b[i]+col_c[i]+col_d[i])*0.25f;
             }
 
             Vector3 n = cross((b-a),(c-a));

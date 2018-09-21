@@ -69,7 +69,6 @@ set(HEADER_FILES
     SceneLoaderPY.h
     ScriptController.h
     ScriptDataEngine.h
-    ScriptEvent.h
     ScriptFunction.h
 )
 
@@ -129,7 +128,6 @@ set(SOURCE_FILES
     SceneLoaderPY.cpp
     ScriptController.cpp
     ScriptDataEngine.cpp
-    ScriptEvent.cpp
     ScriptFunction.cpp
     initSofaPython.cpp
     ctypes.cpp
