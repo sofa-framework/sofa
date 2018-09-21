@@ -48,6 +48,24 @@ static inline void replaceAll(std::string& str, const std::string& search, const
     }
 }
 
+static bool ends_with(const std::string& suffix, const std::string& full){
+    const std::size_t lf = full.length();
+    const std::size_t ls = suffix.length();
+
+    if(lf < ls) return false;
+
+    return (0 == full.compare(lf - ls, ls, suffix));
+}
+
+static bool starts_with(const std::string& prefix, const std::string& full){
+    const std::size_t lf = full.length();
+    const std::size_t lp = prefix.length();
+
+    if(lf < lp) return false;
+
+    return (0 == full.compare(0, lp, prefix));
+}
+
 } // namespace helper
 
 } // namespace sofa
