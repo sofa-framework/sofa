@@ -98,8 +98,37 @@ class Vec_tests(unittest.TestCase):
         self.assertEqual(p.xyz,  (5,6,7))
         self.assertEqual(p.xyzw, (5,6,7,8))
 
+    def test_GeometricFunction(self):
+        ## Norm
+        p = Vec3d(2.0, 2.0, 2.0)
 
-
+        self.assertEqual(6.0, sum(p)) # neat!
+            
+        p.clear()
+        self.assertEqual(list(p), [0.0, 0.0, 0.0])
+        p.fill(2.0)
+        self.assertEqual(list(p), [2.0, 2.0, 2.0])
+        
+        p = Vec3d(2.0, 2.0, 2.0)
+        self.assertAlmostEqual(p.norm(), math.sqrt(12))
+        self.assertAlmostEqual(p.norm2(), 12.0)
+        self.assertAlmostEqual(p.lNorm(1), 6.0)
+        p1 = p.normalized()
+        self.assertEqual(str(p1), "(0.577350, 0.577350, 0.577350)") # better way to compare collections of floats? numpy.testing maybe?
+        ret = p.normalize()
+        self.assertEqual(ret, True)
+        self.assertEqual(str(p), "(0.577350, 0.577350, 0.577350)")
+        
+        ## dot product
+        p1 = Vec3d(1.0, 3.0, -5.0)
+        p2 = Vec3d(4.0, -2.0, -1.0)
+        self.assertAlmostEqual(p1.dot(p2), 3.0)
+        self.assertEqual(list(p1.cross(p2)), [-13.0, -19.0, -14.0])
+        
+        self.assertTrue(hasattr(Vec2d(), "cross"))
+        self.assertTrue(hasattr(Vec3d(), "cross"))
+        self.assertFalse(hasattr(Vec4d(), "cross"))
+        
     def test_Operators(self):
         v1 = Vec3d(1,2,3);
         v2 = Vec3d(2,3,4);
@@ -107,83 +136,31 @@ class Vec_tests(unittest.TestCase):
         self.assertTrue(v1 != v2)
         self.assertTrue(v1 == v1) 
 
-        print(' ')
-        print(v1 * v2)
-        print(v1 + v2)
-        print(v1 - v2)
-        self.assertEqual(v1 * v2, 20.0) # dot product
+        self.assertAlmostEqual(v1 * v2, 20.0) # dot product
         self.assertEqual(list(v1 + v2), [3.0, 5.0, 7.0]) # vector addition
         self.assertEqual(list(v1 - v2), [-1.0, -1.0, -1.0]) # vector substraction
-        # print(v1 * v2)
-        # print(v1 + v2)
+        
+        self.assertEqual(list(v1 * 2.0), [2.0, 4.0, 6.0])
+        self.assertEqual(list(v1 * 2), [2.0, 4.0, 6.0])
+        tmp = Vec3d(list(v1))
+        # tmp *= 2.0   # why isn't this working?
+        tmp.__imul__(2.0)
+        self.assertEqual(list(tmp),[2.0, 4.0, 6.0])
+        tmp = Vec3d(list(v1))
+        # tmp *= 2 ## WHYYY?
+        tmp.__imul__(2)
+        self.assertEqual(list(tmp),[2.0, 4.0, 6.0])
+        
+        self.assertEqual(list(v1 / 2.0), [0.5, 1.0, 1.5])
+        self.assertEqual(list(v1 / 2), [0.5, 1.0, 1.5])
+        tmp = Vec3d(list(v1))
+        tmp /= 2.0
+        self.assertEqual(list(tmp),[0.5, 1.0, 1.5])
+        tmp = Vec3d(list(v1))
+        tmp /= 2
+        self.assertEqual(list(tmp),[0.5, 1.0, 1.5])
         
         
-    # def test_GeometricFunction(self):
-    #     ## Norm
-    #     p = Vec3d(2.0, 2.0, 2.0)
-    #     self.assertAlmostEqual(p.norm(), math.sqrt(12))
-
-    #     ## distanceTo
-    #     p1 = Vec3d(2.0, 2.0, 2.0)
-    #     p2 = Vec3d(2.0, 2.0, 2.0)
-    #     self.assertAlmostEqual(p1.distanceTo(p2), 0.0)
-
-    #     ## distanceTo
-    #     p1 = Vec3d(2.0, 2.0, 2.0)
-    #     p2 = Vec3d(3.0, 3.0, 3.0)
-    #     self.assertAlmostEqual(p1.distanceTo(p2), math.sqrt(3))
-
-    # def test_ScalarMul(self):
-    #         p = Vec3d(1.0,2.0,3.0)
-    #         p2 = p * 2.0
-    #         self.assertTrue(isinstance(p2, Vec3d))
-    #         self.assertAlmostEqual((p2-Vec3d(2.0, 4.0, 6.0)).norm(), 0.0)
-
-    # def test_VectorMul(self):
-    #         p1 = Vec3d(1.0,2.0,3.0)
-    #         p2 = Vec3d(2.0,3.0,4.0)
-    #         p3 = p1 * p2
-    #         self.assertTrue(isinstance(p3, Vec3d))
-    #         self.assertAlmostEqual((p3-Vec3d(1.0*2.0, 2.0*3.0, 3.0*4.0)).norm(), 0.0)
-
-    # def test_VectorDot(self):
-    #         p1 = Vec3d(1.0,2.0,3.0)
-    #         p2 = Vec3d(2.0,3.0,4.0)
-    #         s = p1.dot(p2)
-    #         self.assertTrue(isinstance(s, float))
-    #         self.assertAlmostEqual(s, 20.0)
-
-    # def test_VectorCross(self):
-    #         p1 = Vec3d(1.0,2.0,3.0)
-    #         p2 = Vec3d(2.0,3.0,4.0)
-    #         p3 = p1.cross(p2)
-    #         self.assertTrue(isinstance(p3, Vec3d))
-    #         self.assertAlmostEqual((p3-Vec3d(-1.0,2.0,-1.0)).norm(), 0.0)
-
-    # def test_Acessors(self):
-    #         p = Vec3d(1.0, 2.0, 3.0)
-
-    #         ## Setters...
-    #         p.set(3.0,2.0,1.0)
-    #         self.assertEqual(p.toList(), [3.0,2.0,1.0])
-
-    #         ## [] operators
-    #         p[0] = 5.0
-    #         p[1] = 6.0
-    #         p[2] = 7.0
-    #         self.assertEqual(p.toList(), [5.0,6.0,7.0])
-
-    #         ## x,y,z accessor.
-    #         self.assertEqual(p.x(), 5.0)
-    #         self.assertEqual(p.y(), 6.0)
-    #         self.assertEqual(p.z(), 7.0)
-
-    #         ## xy and xyz
-    #         self.assertEqual(p.xy(), (5.0,6.0))
-    #         self.assertEqual(p.xyz(), (5.0,6.0,7.0))
-
-
-
 def run():
     suite = unittest.TestLoader().loadTestsFromTestCase(Vec_tests)
     return unittest.TextTestRunner(verbosity=2).run(suite).wasSuccessful()
