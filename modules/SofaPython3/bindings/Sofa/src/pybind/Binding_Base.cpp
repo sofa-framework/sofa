@@ -7,29 +7,53 @@ using sofa::core::objectmodel::BaseData;
 using sofa::core::objectmodel::BaseLink;
 
 #include "Binding_BaseData.h"
+using sofa::defaulttype::AbstractTypeInfo;
 
 py::object toPython(BaseData* d)
 {
-    if(d->getValueTypeInfo()->Integer())
-        return py::cast(d->getValueTypeInfo()->getIntegerValue(d->getValueVoidPtr(), 0));
-    if(d->getValueTypeInfo()->Text())
+    const AbstractTypeInfo& nfo{ *(d->getValueTypeInfo()) };
+    if(nfo.Container())
     {
-        return py::cast(d->getValueString());
+        size_t dim0 = nfo.size(d->getValueVoidPtr())/nfo.size();
+        size_t dim1 = nfo.size();
+        py::list list;
+        for(size_t i=0;i<dim0;i++)
+        {
+            py::list list1;
+            for(size_t j=0;j<dim1;j++)
+            {
+                if(nfo.Integer())
+                    list1.append(nfo.getIntegerValue(d->getValueVoidPtr(),i*dim1+j));
+                if(nfo.Scalar())
+                    list1.append(nfo.getScalarValue(d->getValueVoidPtr(),i*dim1+j));
+                if(nfo.Text())
+                    list1.append(nfo.getTextValue(d->getValueVoidPtr(),0));
+            }
+            list.append(list1);
+        }
+        return list;
     }
-    if(d->getValueTypeInfo()->Scalar())
-        return py::cast(d->getValueTypeInfo()->getScalarValue(d->getValueVoidPtr(), 0));
+
+    if(nfo.Integer())
+        return py::cast(nfo.getIntegerValue(d->getValueVoidPtr(), 0));
+    if(nfo.Text())
+        return py::cast(d->getValueString());
+    if(nfo.Scalar())
+        return py::cast(nfo.getScalarValue(d->getValueVoidPtr(), 0));
 
     return py::cast(d->getValueString());
 }
 
 void fromPython(BaseData* d, py::object& o)
 {
-    if(d->getValueTypeInfo()->Integer())
-        d->getValueTypeInfo()->setIntegerValue(d->beginEditVoidPtr(), 0, py::cast<int>(o));
-    if(d->getValueTypeInfo()->Text())
-        d->getValueTypeInfo()->setTextValue(d->beginEditVoidPtr(), 0, py::cast<py::str>(o));
-    if(d->getValueTypeInfo()->Scalar())
-        d->getValueTypeInfo()->setScalarValue(d->beginEditVoidPtr(), 0, py::cast<double>(o));
+    const AbstractTypeInfo& nfo{ *(d->getValueTypeInfo()) };
+
+    if(nfo.Integer())
+        nfo.setIntegerValue(d->beginEditVoidPtr(), 0, py::cast<int>(o));
+    if(nfo.Text())
+        nfo.setTextValue(d->beginEditVoidPtr(), 0, py::cast<py::str>(o));
+    if(nfo.Scalar())
+        nfo.setScalarValue(d->beginEditVoidPtr(), 0, py::cast<double>(o));
     d->endEditVoidPtr();
     msg_error("SofaPython3") << "binding problem";
 }
@@ -47,9 +71,11 @@ py::object BindingBase::GetAttr(Base& self, const std::string& s)
     BaseData* d = self.findData(s);
     if(d!=nullptr)
     {
-        if(d->getValueTypeInfo()->Container())
+        const AbstractTypeInfo& nfo{ *(d->getValueTypeInfo()) };
+
+        if(nfo.Container())
             return py::cast(reinterpret_cast<DataAsContainer*>(d));
-        if(d->getValueTypeInfo()->Text())
+        if(nfo.Text())
             return py::cast(reinterpret_cast<DataAsString*>(d));
         return toPython(d);
     }
@@ -70,8 +96,10 @@ void BindingBase::SetAttr(py::object self, const std::string& s, py::object& val
 
     if(d!=nullptr)
     {
+        const AbstractTypeInfo& nfo{ *(d->getValueTypeInfo()) };
+
         /// We go for the container path.
-        if(d->getValueTypeInfo()->Container())
+        if(nfo.Container())
         {
             return;
         }
@@ -105,9 +133,11 @@ void moduleAddBase(py::module &m)
         BaseData* d = self.findData(s);
         if(d!=nullptr)
         {
-            if(d->getValueTypeInfo()->Container())
+            const AbstractTypeInfo& nfo{ *(d->getValueTypeInfo()) };
+
+            if(nfo.Container())
                 return py::cast(reinterpret_cast<DataAsContainer*>(d));
-            if(d->getValueTypeInfo()->Text())
+            if(nfo.Text())
                 return py::cast(reinterpret_cast<DataAsString*>(d));
             return py::cast(d);
         }

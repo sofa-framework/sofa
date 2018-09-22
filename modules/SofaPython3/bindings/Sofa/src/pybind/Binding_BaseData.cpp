@@ -1,3 +1,4 @@
+#include "Binding_Base.h"
 #include "Binding_BaseData.h"
 
 #include <sofa/defaulttype/DataTypeInfo.h>
@@ -19,7 +20,7 @@ void moduleAddDataAsString(py::module& m)
 
 void moduleAddDataContainer(py::module& m)
 {
-    py::class_<DataAsContainer, BaseData, raw_ptr<DataAsContainer>> p(m, "DataContainer");
+    py::class_<DataAsContainer, BaseData, raw_ptr<DataAsContainer>> p(m, "DataContainer", py::buffer_protocol());
 
     // TODO: Implementation should look like: https://github.com/sofa-framework/sofa/issues/767
     p.def("__getitem__", [](DataAsContainer& self, py::size_t index) -> py::object
@@ -52,6 +53,58 @@ void moduleAddDataContainer(py::module& m)
         std::cout << "mapping protocol, __setitem__ to implement)" << std::endl ;
         return py::none();
     });
+
+    p.def("__str__", [](BaseData* self)
+    {
+        return py::str(toPython(self));
+    });
+
+    p.def("__repr__", [](BaseData* self)
+    {
+        return py::repr(toPython(self));
+    });
+
+    /// https://julien.danjou.info/high-performance-in-python-with-zero-copy-and-the-buffer-protocol/
+    p.def_buffer([](BaseData& m) -> py::buffer_info
+    {
+        const AbstractTypeInfo& nfo { *m.getValueTypeInfo() };
+
+        const char* format;
+        if(nfo.Integer())
+        {
+            format = py::format_descriptor<long>::value;
+        } else if(nfo.Scalar() )
+        {
+            if(nfo.byteSize() == 8)
+                format = py::format_descriptor<double>::value;
+            else if(nfo.byteSize() == 4)
+                format = py::format_descriptor<float>::value;
+        }
+        int rows = nfo.size(m.getValueVoidPtr()) / nfo.size();
+        int cols = nfo.size();
+        size_t datasize = nfo.byteSize();
+
+        if(rows == 1 && nfo.FixedSize()){
+            return py::buffer_info(
+                        nfo.getValuePtr(m.beginEditVoidPtr()), /* Pointer to buffer */
+                        datasize,                              /* Size of one scalar */
+                        format,                                /* Python struct-style format descriptor */
+                        1,                                     /* Number of dimensions */
+            { cols },                              /* Buffer dimensions */
+            {                                      /* Strides (in bytes) for each index */
+                                                   datasize }
+                        );
+        }
+        return py::buffer_info(
+                    nfo.getValuePtr(m.beginEditVoidPtr()), /* Pointer to buffer */
+                    datasize,                              /* Size of one scalar */
+                    format,                                /* Python struct-style format descriptor */
+                    2,                                     /* Number of dimensions */
+        { rows, cols },                        /* Buffer dimensions */
+        { datasize * cols ,                           /* Strides (in bytes) for each index */
+          datasize }
+                    );
+    });
 }
 
 void moduleAddBaseData(py::module& m)
@@ -76,58 +129,17 @@ void moduleAddBaseData(py::module& m)
     p.def("dim", [](BaseData& b) -> py::tuple
     {
         auto nfo = b.getValueTypeInfo();
-        return py::make_tuple(py::int_(nfo->size(b.getValueVoidPtr()) / nfo->size()),
+        return py::make_tuple(py::int_(nfo->size(b.getValueVoidPtr())/nfo->size()),
                               py::int_(nfo->size()));
     });
 
-    return;
-    /// TODO implement.
-    /// Buffer protocol
-    /// https://pybind11.readthedocs.io/en/stable/advanced/pycpp/numpy.html#buffer-protocol
-    p.def_buffer([](BaseData &m) -> py::buffer_info {
-        const AbstractTypeInfo *typeinfo = m.getValueTypeInfo();
-        //        if(!typeinfo->Container() || !typeinfo->SimpleLayout())
-        //        {
-        //            throw py::exception("Unable to create a buffer for this data type");
-        //        }
-
-        //        Py_ssize_t numEntries = typeinfo->size(data->getValueVoidPtr()) / typeinfo->size();
-        //        Py_ssize_t totalSize =  typeinfo->size(data->getValueVoidPtr()) * typeinfo->byteSize();
-
-        //        std::cout << "SIZE: " << typeinfo->size() << std::endl;
-        //        std::cout << "SIZE(): " << typeinfo->size(data->getValueVoidPtr()) << std::endl;
-        //        std::cout << "byteSIze: " << typeinfo->byteSize() << std::endl;
-
-        //        view->len = totalSize;
-        //        view->readonly = 0;
-
-        //        if(typeinfo->Scalar() && typeinfo->byteSize() == 8)
-        //        {
-
-        //            view->itemsize =  typeinfo->byteSize() ;
-        //            view->format = "d";  // integer
-        //        }else{
-        //            std::cout << "BIIIIIIIIIIG PROBLEM." << std::endl ;
-        //        }
-
-        //        view->ndim = 2;
-        //        view->shape = new Py_ssize_t[2];
-        //        view->shape[0] = numEntries;
-        //        view->shape[1] = typeinfo->size();
-
-
-        //        return py::buffer_info(
-        //                    (void*)data->getValueVoidPtr(),          /* Pointer to buffer */
-        //                    sizeof(Scalar),                          /* Size of one scalar */
-        //                    py::format_descriptor<Scalar>::format(), /* Python struct-style format descriptor */
-        //                    2,                                       /* Number of dimensions */
-        //                    { m.rows(), m.cols() },                  /* Buffer dimensions */
-        //                    { sizeof(Scalar) * (rowMajor ? m.cols() : 1),
-        //                      sizeof(Scalar) * (rowMajor ? 1 : m.rows()) }
-        //                    /* Strides (in bytes) for each index */
-        //                    );
-
-
+    p.def("__str__", [](BaseData* self)
+    {
+        return py::str(toPython(self));
     });
 
+    p.def("__repr__", [](BaseData* self)
+    {
+        return py::repr(toPython(self));
+    });
 }
