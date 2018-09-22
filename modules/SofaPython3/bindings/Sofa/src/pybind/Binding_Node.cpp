@@ -57,20 +57,45 @@ void moduleAddNode(py::module &m) {
             sofa::core::objectmodel::Context, Node::SPtr>
             p(m, "Node");
 
+
+    /// The Node::create function will be used as the constructor of the
+    /// class two version exists.
+    p.def(py::init( [](){ return Node::create("unnamed"); }));
+    p.def(py::init( [](const std::string& name){ return Node::create(name); }));
+
+    /// Object's related method. A single addObject is now available
+    /// and the createObject is deprecated printing a warning for old scenes.
     p.def("createObject",
-          [](Node& self, const std::string& type, const py::kwargs& kwargs) -> py::object
+          [](Node* self, const std::string& type, const py::kwargs& kwargs)
     {
-        return py::cast( simpleapi::createObject(&self, type,
+        return py::cast( simpleapi::createObject(self, type,
                                                  toStringMap(kwargs)) );
     });
-
-    p.def("createChild", &Node::createChild);
-    p.def("getRoot", &Node::getRoot);
-
-    p.def("addObject", [](Node& self, py::object object)
+    p.def("addObject", [](Node& self, BaseObject* object)
     {
-        return self.addObject(py::cast<BaseObject*>(object));
+        return self.addObject(object);
     });
+
+
+    /// Node's related method. A single addNode is now available
+    /// and the createChild is deprecated printing a warning for old scenes.
+    p.def("createChild", [](Node* self, const std::string& name, const py::kwargs& kwargs)
+    {
+        return py::cast( simpleapi::createChild(self, name, toStringMap(kwargs)));
+    });
+    p.def("addChild", [](Node* self, Node* child)
+    {
+        self->addChild(child);
+        return child;
+    });
+    p.def("getChild", [](Node &n, const std::string &name) -> py::object {
+        Node *child = n.getChild(name);
+        if (child)
+            return py::cast(child);
+        return py::none();
+    });
+
+    p.def("getRoot", &Node::getRoot);
 
     p.def("__getattr__", [](Node& self, const std::string& name) -> py::object
     {
@@ -83,13 +108,5 @@ void moduleAddNode(py::module &m) {
             return py::cast(child);
 
         return BindingBase::GetAttr(self, name);
-    });
-
-    p.def("getChild", [](Node &n, const std::string &name) -> py::object {
-        sofa::simulation::Node *child = n.getChild(name);
-        if (child)
-            return py::cast(child);
-        else
-            return py::none();
     });
 }
