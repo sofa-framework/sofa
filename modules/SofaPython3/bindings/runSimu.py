@@ -1,7 +1,11 @@
 #!/usr/bin/python3
 import sys
 import os
-os.environ["SOFA_ROOT"] = "/home/bruno/dev/refactorPython3/build/lib"
+
+if "SOFA_ROOT" not in os.environ:
+        print("WARNING: missing SOFA_ROOT in you environment variable. ") 
+        sys.exit(-1)
+
 sys.path.append("./Sofa/package")
 sys.path.append("./SofaRuntime/package")
 
@@ -22,4 +26,6 @@ c=SofaRuntime.load(sys.argv[1])
 print("COUCOU2 "+c)
 #SofaRuntime.getSimulation().init(rootNode)
 
+        
+        
         
