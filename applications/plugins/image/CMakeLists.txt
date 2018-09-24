@@ -80,6 +80,16 @@ find_package(SofaGeneral REQUIRED)
 find_package(Newmat REQUIRED)
 find_package(CImgPlugin REQUIRED)
 
+find_package(MultiThreading QUIET)
+
+if(MultiThreading_FOUND)
+    set (MultiThreading_LIBRARY MultiThreading)
+    set (WITH_MULTITHREADING TRUE)
+else(MultiThreading_FOUND)
+    set (MultiThreading_LIBRARY)
+    set (WITH_MULTITHREADING FALSE)
+endif(MultiThreading_FOUND)
+
 configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/image/config.h")
 install(FILES "${CMAKE_BINARY_DIR}/include/image/config.h" DESTINATION "include/image")
 
@@ -127,7 +137,7 @@ endif()
 find_package(DiffusionSolver CONFIG REQUIRED)
 
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${README_FILES} ${PYTHON_FILES})
-target_link_libraries(${PROJECT_NAME} SofaCore SofaComponentBase SofaGeneralVisual CImgPlugin)
+target_link_libraries(${PROJECT_NAME} SofaCore SofaComponentBase SofaGeneralVisual CImgPlugin ${MultiThreading_LIBRARY})
 target_link_libraries(${PROJECT_NAME} DiffusionSolver)
 target_link_libraries(${PROJECT_NAME} newmat)
 

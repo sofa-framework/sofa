@@ -24,8 +24,6 @@
 
 #include <sofa/helper/system/config.h>
 
-#cmakedefine WITH_IMAGE
-
 #ifdef SOFA_MULTITHREADING_PLUGIN
 #  define SOFA_MULTITHREADING_PLUGIN_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
