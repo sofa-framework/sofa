@@ -8,7 +8,7 @@ set(MULTITHREADING_VERSION ${MULTITHREADING_MAJOR_VERSION}.${MULTITHREADING_MINO
 set(HEADER_FILES
     config.h
     src/TaskScheduler.h
-	src/TaskSchedulerDefault.h
+	src/DefaultTaskScheduler.h
 	src/Task.h
 	src/InitTasks.h
     src/Locks.h
@@ -28,7 +28,7 @@ set(HEADER_FILES
 set(SOURCE_FILES
     src/initMultiThreading.cpp
     src/TaskScheduler.cpp
-	src/TaskSchedulerDefault.cpp
+	src/DefaultTaskScheduler.cpp
 	src/Task.cpp
 	src/InitTasks.cpp
     src/AnimationLoopParallelScheduler.cpp

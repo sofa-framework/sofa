@@ -19,8 +19,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef TaskSchedulerDefault_h__
-#define TaskSchedulerDefault_h__
+#ifndef DefaultTaskScheduler_h__
+#define DefaultTaskScheduler_h__
 
 #include <MultiThreading/config.h>
 
@@ -248,4 +248,4 @@ namespace sofa  {
 } // namespace sofa
 
 
-#endif // TaskSchedulerDefault_h__
+#endif // DefaultTaskScheduler_h__

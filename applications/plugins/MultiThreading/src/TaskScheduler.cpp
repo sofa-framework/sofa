@@ -1,6 +1,6 @@
 #include "TaskScheduler.h"
 
-#include "TaskSchedulerDefault.h"
+#include "DefaultTaskScheduler.h"
 
 //#include <sofa/helper/system/thread/CTime.h>
 
