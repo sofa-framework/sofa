@@ -238,7 +238,7 @@ public:
         sofa::core::objectmodel::DDGNode::addInput(data);
     }
 
-private:
+protected:
     /// Where you put your engine's impl
     virtual void doUpdate() = 0;
 };
