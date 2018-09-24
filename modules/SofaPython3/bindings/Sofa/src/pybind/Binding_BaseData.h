@@ -33,7 +33,7 @@ template <class T> class raw_ptr
 PYBIND11_DECLARE_HOLDER_TYPE(BaseData, raw_ptr<BaseData>);
 
 void moduleAddBaseData(py::module& m);
-void moduleAddDataContainer(py::module& m);
+void moduleAddDataAsContainer(py::module& m);
 void moduleAddDataAsString(py::module& m);
 
 class DataAsContainer : public BaseData {} ;

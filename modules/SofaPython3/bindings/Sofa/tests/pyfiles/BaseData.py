@@ -1,6 +1,5 @@
 import Sofa
 import array
-import cProfile
 import timeit
 
 def time(root):
@@ -60,6 +59,8 @@ def createScene(root):
         print("get_object_data: " + str( timeit.timeit("root.mstate.position", globals={"root":root}) ))
         print("memoryview(get_object_data): " + str( timeit.timeit("memoryview(root.mstate.position)", globals={"root":root}) ))
         print("memoryview::tolist: " + str( timeit.timeit("p.tolist()", globals={"p":p}) ))
-        print("listacess: " + str( timeit.timeit("l[20][0]", globals={"l":l}) ))
-        print("memoryview::__getitem__: " + str( timeit.timeit("p[20,0]", globals={"p":p}) ))
+        print("listacess: " + str( timeit.timeit("l[5][0]", globals={"l":l}) ))
+        print("memoryview::__getitem__: " + str( timeit.timeit("p[5,0]", globals={"p":p}) ))
+        
+        print("FIN")
         

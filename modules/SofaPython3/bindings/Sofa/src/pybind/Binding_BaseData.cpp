@@ -18,7 +18,7 @@ void moduleAddDataAsString(py::module& m)
     });
 }
 
-void moduleAddDataContainer(py::module& m)
+void moduleAddDataAsContainer(py::module& m)
 {
     py::class_<DataAsContainer, BaseData, raw_ptr<DataAsContainer>> p(m, "DataContainer", py::buffer_protocol());
 

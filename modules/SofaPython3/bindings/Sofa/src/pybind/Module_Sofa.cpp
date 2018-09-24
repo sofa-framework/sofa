@@ -11,7 +11,7 @@ PYBIND11_MODULE(Sofa, m)
   moduleAddBase(m);
   moduleAddBaseData(m);
   moduleAddDataAsString(m);
-  moduleAddDataContainer(m);
+  moduleAddDataAsContainer(m);
   moduleAddBaseObject(m);
   moduleAddNode(m);
   moduleAddPythonController(m);
