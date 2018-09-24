@@ -181,7 +181,7 @@ static Base* get_base(PyObject* self) {
     return sofa::py::unwrap<Base>(self);
 }
 
-static char* getStringCopy(char *c)
+static char* getStringCopy(const char *c)
 {
     if (c==nullptr)
         return nullptr;
@@ -189,6 +189,35 @@ static char* getStringCopy(char *c)
     char* tmp = new char[strlen(c)+1] ;
     strcpy(tmp,c);
     return tmp ;
+}
+
+#include <sofa/core/objectmodel/Link.h>
+
+BaseData* deriveTypeFromParentValue(Base* obj, const std::string& value)
+{
+    BaseObject* o = dynamic_cast<BaseObject*>(obj);
+    if (!o)
+        return nullptr;
+
+    // if data is a link
+    if (value.length() > 0 && value[0] == '@')
+    {
+        std::string componentPath = value.substr(1, value.find('.') - 1);
+        std::string parentDataName = value.substr(value.find('.') + 1);
+
+        if (!o->getContext())
+        {
+	    msg_warning("SofaPython") << "No context created. Cannot find data link to derive input type.";
+            return nullptr;
+        }
+        BaseObject* component;
+        component = o->getContext()->get<BaseObject>(componentPath);
+        if (!component)
+	    msg_warning("SofaPython") << "No object with path " << componentPath << " in scene graph.";
+        BaseData* parentData = component->findData(parentDataName);
+        return parentData->getNewInstance();
+    }
+    return nullptr;
 }
 
 
@@ -200,7 +229,8 @@ BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
     char* dataClass = new char;
     char* dataHelp = new char;
     char * dataName = new char;
-
+    std::string val = "";
+    
     PyObject* dataValue = nullptr;
 
     bool KwargsOrArgs = 0; //Args = 0, Kwargs = 1
@@ -231,62 +261,84 @@ BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
     {
         return nullptr;
     }    
-
+    BaseData* bd = nullptr;
     if(KwargsOrArgs) // parse kwargs
     {
         if(kw==nullptr || !PyDict_Check(kw) )
         {
-            msg_error("SofaPython") << "Could not parse kwargs for adding Data";
-            return nullptr;
+            msg_warning("SofaPython") << "Could not parse kwargs for adding Data.";
         }
-        PyObject * tmp;
-        tmp = PyDict_GetItemString(kw,"datatype");
-        if (tmp!=nullptr){
-            dataRawType = getStringCopy(PyString_AsString(tmp));
-        }
+        else
+        {
+            PyObject * tmp;
+            tmp = PyDict_GetItemString(kw,"datatype");
+            if (tmp!=nullptr){
+                dataRawType = getStringCopy(PyString_AsString(tmp));
+            }
 
-        tmp = PyDict_GetItemString(kw,"helptxt");
-        if (tmp!=nullptr){
-            dataHelp = getStringCopy(PyString_AsString(tmp));
-        }
+            tmp = PyDict_GetItemString(kw,"helptxt");
+            if (tmp!=nullptr){
+                dataHelp = getStringCopy(PyString_AsString(tmp));
+            }
 
-        tmp = PyDict_GetItemString(kw,"dataclass");
-        if (tmp!=nullptr){
-            dataClass= getStringCopy(PyString_AsString(tmp));
-        }
+            tmp = PyDict_GetItemString(kw,"dataclass");
+            if (tmp!=nullptr){
+                dataClass= getStringCopy(PyString_AsString(tmp));
+            }
 
-        tmp = PyDict_GetItemString(kw,"value");
-        if (tmp!=nullptr){
-            dataValue = tmp;
-            Py_IncRef(dataValue); // call to Py_GetItemString doesn't increment the ref count, but we want to hold on to it for a while ...
-        }      
+            tmp = PyDict_GetItemString(kw,"value");
+            if (tmp!=nullptr){
+                dataValue = tmp;
+                Py_IncRef(dataValue); // call to Py_GetItemString doesn't increment the ref count, but we want to hold on to it for a while ...
+                val = std::string(PyString_AsString(dataValue));
+                bd = deriveTypeFromParentValue(obj, val);
+            }
+        }
     }
 
     if (dataRawType[0]==0) // We cannot construct without a type
     {
-        msg_error(obj) << "No type provided for Data, cannot construct/add";
-        return nullptr;
+        if (val.empty())
+        {
+            bd = new EmptyData;
+            bd->setName(dataName);
+        }
+        else if (std::string(dataName) != "type")
+        {
+            msg_warning(obj) << "No type provided for Data " << dataName << " with value " << val << ", creating void* data.";
+            return bd;
+        }
+        else return new EmptyData;
     }
 
-    BaseData* bd = getFactoryInstance()->createObject(dataRawType, sofa::helper::NoArgument());
-
+    if (bd == nullptr)
+        bd = getFactoryInstance()->createObject(dataRawType, sofa::helper::NoArgument());
     if (bd == nullptr)
     {
-        sofa::helper::vector<std::string> validTypes;
-	getFactoryInstance()->uniqueKeys(std::back_inserter(validTypes));
-	std::string typesString = "[";
-	for (const auto& i : validTypes)
-	    typesString += i + ", ";
-	typesString += "\b\b]";
-	msg_error(obj) << dataRawType << " is not a known type. Available "
-	                  "types are:\n" << typesString;
-        return nullptr;
+        if (val.empty())
+        {
+            bd = new EmptyData;
+            bd->setName(dataName);
+        }
+        else if (std::string(dataName) != "type")
+        {
+  	        sofa::helper::vector<std::string> validTypes;
+	          getFactoryInstance()->uniqueKeys(std::back_inserter(validTypes));
+	          std::string typesString = "[";
+	          for (const auto& i : validTypes)
+	              typesString += i + ", ";
+	          typesString += "\b\b]";
+	          msg_error(obj) << dataRawType << " is not a known type. Available "
+	                            "types are:\n" << typesString;
+            return nullptr;
+        }
+        else return new EmptyData;
     }
     else
     {
         bd->setName(dataName);
         bd->setHelp(dataHelp);
-        obj->addData(bd);        
+        obj->addData(bd);
         if(dataValue!=nullptr) // parse provided data: Py->SofaStr->Data or link
         {
             std::stringstream tmp;
@@ -295,7 +347,7 @@ BaseData* helper_addNewData(PyObject *args, PyObject * kw, Base * obj) {
             {
                 if(!bd->setParent(tmp.str()))
                 {
-                    msg_warning(obj) << "Could not setup link for Data, initialzing empty";
+                    msg_warning(obj) << "Could not setup link for Data, initialzing empty.";
                 }
             }
             else
@@ -376,7 +428,7 @@ static PyObject * Base_findData(PyObject *self, PyObject *args ) {
     if (!data) {
         std::stringstream tmp ;
         if( obj->hasField(dataName) ) {
-            tmp <<"object '"<<obj->getName()<<"' has a field '"<<dataName<<"' but it is not a Data";
+            tmp <<"object '"<<obj->getName()<<"' has a field '"<<dataName<<"' but it is not a Data.";
         } else {
             tmp << "object '"<<obj->getName()<<"' does no have a field '"<<dataName<<"'";
             obj->writeDatas(tmp,";");
@@ -407,7 +459,7 @@ static PyObject * Base_findLink(PyObject *self, PyObject *args) {
     if (!link) {
         std::stringstream tmp ;
         if( obj->hasField(linkName) ) {
-            tmp << "object '"<<obj->getName()<<"' has a field '"<<linkName<<"' but it is not a Link";
+            tmp << "object '"<<obj->getName()<<"' has a field '"<<linkName<<"' but it is not a Link.";
         } else {
             tmp <<"object '"<<obj->getName()<<"' does no have a field '"<<linkName<<"'" << msgendl;
             obj->writeDatas(tmp,";");
@@ -502,7 +554,6 @@ static PyObject * Base_getDataFields(PyObject *self, PyObject * /*args*/) {
     return pyDict;
 }
 
-
 /// This function is named this way because someone give the getDataFields to the one
 /// that returns a dictionary of (name, value) which is not coherente with the c++
 /// name of the function.
@@ -530,6 +581,67 @@ static PyObject * Base_getListOfLinks(PyObject *self, PyObject * /*args*/) {
     for (unsigned int i = 0; i < links.size(); ++i) {
         PyList_SetItem(pyList, i, SP_BUILD_PYPTR(Link, BaseLink, links[i], false)) ;
     }
+
+    return pyList;
+}
+
+
+/// This function is called by the Python interpreter when calling (dir).
+/// It adds to the default behavior all the data fields and links of the object.
+static PyObject * Base___dir__(PyObject *self, PyObject * /*args*/) {
+    Base * component = get_base(self);
+
+    PyObject* listMethods = nullptr;
+    unsigned int listMethodsSize = 0;
+
+    /// Get the method lists
+    PyObject* pclass = PyObject_GetAttrString(self, "__class__");
+    if(pclass!=nullptr){
+        /// Returns a lists that contains the 'class' specific names (eg: method)
+        /// The list is a new reference which must be destroyed when not needed.
+        listMethods = PyObject_Dir(pclass);
+        if(listMethods==nullptr)
+        {
+            Py_XDECREF(pclass);
+            return nullptr;
+        }
+        listMethodsSize=PyList_Size(listMethods);
+    }
+
+    /// The the other names out of data & links
+    const sofa::helper::vector<BaseData*>& dataFields = component->getDataFields();
+    const sofa::helper::vector<BaseLink*>& links = component->getLinks() ;
+
+    /// Create a list big enough to store everyone.
+    unsigned int size = links.size() + dataFields.size() + listMethodsSize;
+    PyObject * pyList = PyList_New(size);
+
+    /// Fill this lists
+    unsigned int dstIndex=0;
+
+    /// From methods..
+    for (unsigned int i = 0; i < listMethodsSize; ++i, ++dstIndex) {
+          PyObject* tmp = PyList_GetItem(listMethods, i);
+
+          /// Increment the reference counter to getItem because according to the documentation
+          /// the PyList_SetItem will steal it.
+          Py_INCREF(tmp);
+          PyList_SetItem(pyList, dstIndex, tmp);
+    }
+
+    /// From links
+    for (unsigned int i = 0; i < links.size(); ++i, ++dstIndex) {
+        PyList_SetItem(pyList, dstIndex, PyString_FromString(links[i]->getName().c_str())) ;
+    }
+
+    /// From datas
+    for (unsigned int i = 0; i < dataFields.size(); ++i, ++dstIndex) {
+        PyList_SetItem(pyList, dstIndex, PyString_FromString(dataFields[i]->getName().c_str())) ;
+    }
+
+    /// We release temporary object.
+    Py_XDECREF(pclass);
+    Py_XDECREF(listMethods);
 
     return pyList;
 }
@@ -563,16 +675,19 @@ SP_CLASS_METHOD_DOC(Base,getLink, "Returns the link field if there is one associ
 SP_CLASS_METHOD(Base,getClassName)
 SP_CLASS_METHOD(Base,getTemplateName)
 SP_CLASS_METHOD(Base,getName)
-
+SP_CLASS_METHOD(Base,__dir__)
 SP_CLASS_METHOD_DOC(Base,getDataFields, "Returns a list with the *content* of all the data fields converted in python"
                                         " type. \n")
 SP_CLASS_METHOD_DOC(Base,getListOfDataFields, "Returns the list of data fields.")
 SP_CLASS_METHOD_DOC(Base,getListOfLinks, "Returns the list of link fields.")
 SP_CLASS_METHOD(Base,downCast)
+
 SP_CLASS_METHODS_END;
 
 
 SP_CLASS_ATTRS_BEGIN(Base)
 SP_CLASS_ATTRS_END;
+
+
 
 SP_CLASS_TYPE_BASE_SPTR_ATTR_GETATTR(Base, Base)

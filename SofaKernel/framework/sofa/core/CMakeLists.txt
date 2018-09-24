@@ -118,6 +118,7 @@ set(HEADER_FILES
     objectmodel/IdleEvent.h
     objectmodel/Link.h
     objectmodel/MouseEvent.h
+    objectmodel/ScriptEvent.h
     objectmodel/SPtr.h
     objectmodel/Tag.h
     topology/BaseMeshTopology.h
@@ -219,6 +220,7 @@ set(SOURCE_FILES
     objectmodel/KeypressedEvent.cpp
     objectmodel/KeyreleasedEvent.cpp
     objectmodel/MouseEvent.cpp
+    objectmodel/ScriptEvent.cpp
     objectmodel/IdleEvent.cpp
     objectmodel/Tag.cpp
     topology/BaseMeshTopology.cpp

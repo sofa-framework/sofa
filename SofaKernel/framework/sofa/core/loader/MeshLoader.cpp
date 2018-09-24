@@ -107,15 +107,13 @@ void MeshLoader::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
         d_scale.setValue(d_scale.getValue()*s);
     }
 
-
+    bool success = false;
     if (canLoad())
-    {
-        load(/*m_filename.getFullPath().c_str()*/);
-    }
-    else
-    {
-        sout << "Doing nothing" << sendl;
-    }
+        success = load(/*m_filename.getFullPath().c_str()*/);
+
+    // File not loaded, component is set to invalid
+    if (!success)
+        m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
 }
 
 void MeshLoader::init()
@@ -140,7 +138,7 @@ void MeshLoader::reinit()
     {
         if (d_scale != Vector3(1.0, 1.0, 1.0) || d_rotation != Vector3(0.0, 0.0, 0.0) || d_translation != Vector3(0.0, 0.0, 0.0))
         {
-            sout << "Parameters scale, rotation, translation ignored in favor of transformation matrix" << sendl;
+            msg_info() << "Parameters scale, rotation, translation ignored in favor of transformation matrix";
         }
     }
     else
@@ -240,7 +238,7 @@ void MeshLoader::updateElements()
         }
         if (nbnew > 0)
         {
-            sout << nbnew << " quads were missing around the hexahedra" << sendl;
+            msg_info() << nbnew << " quads were missing around the hexahedra";
         }
     }
     if (d_pentahedra.getValue().size() > 0 && d_createSubelements.getValue())
@@ -302,7 +300,7 @@ void MeshLoader::updateElements()
         }
         if (nbnewQuad > 0 || nbnewTri > 0 )
         {
-            sout << nbnewQuad << " quads, " << nbnewTri << " triangles were missing around the pentahedra" << sendl;
+            msg_info() << nbnewQuad << " quads, " << nbnewTri << " triangles were missing around the pentahedra";
         }
     }
     if (d_pyramids.getValue().size() > 0 && d_createSubelements.getValue())
@@ -364,7 +362,7 @@ void MeshLoader::updateElements()
         }
         if (nbnewTri > 0 || nbnewQuad > 0)
         {
-            sout << nbnewTri << " triangles and " << nbnewQuad << " quads were missing around the pyramids" << sendl;
+            msg_info() << nbnewTri << " triangles and " << nbnewQuad << " quads were missing around the pyramids";
         }
     }
     if (d_tetrahedra.getValue().size() > 0 && d_createSubelements.getValue())
@@ -407,7 +405,7 @@ void MeshLoader::updateElements()
         }
         if (nbnew > 0)
         {
-            sout << nbnew << " triangles were missing around the tetrahedra" << sendl;
+            msg_info() << nbnew << " triangles were missing around the tetrahedra";
         }
     }
     if (d_quads.getValue().size() > 0 && d_createSubelements.getValue())
@@ -435,7 +433,7 @@ void MeshLoader::updateElements()
         }
         if (nbnew > 0)
         {
-            sout << nbnew << " edges were missing around the quads" << sendl;
+            msg_info() << nbnew << " edges were missing around the quads";
         }
     }
     if (d_triangles.getValue().size() > 0 && d_createSubelements.getValue())
@@ -463,7 +461,7 @@ void MeshLoader::updateElements()
         }
         if (nbnew > 0)
         {
-            sout << nbnew << " edges were missing around the triangles" << sendl;
+            msg_info() << nbnew << " edges were missing around the triangles";
         }
     }
 }
@@ -472,7 +470,7 @@ void MeshLoader::updatePoints()
 {
     if (d_onlyAttachedPoints.getValue())
     {
-        std::set<unsigned int> attachedPoints;
+        std::set<Topology::ElemID> attachedPoints;
         {
             helper::ReadAccessor<Data< helper::vector< Edge > > > elems = d_edges;
             for (size_t i = 0; i < elems.size(); ++i)
@@ -535,12 +533,12 @@ void MeshLoader::updatePoints()
             return;    // all points are attached
         }
         helper::WriteAccessor<Data<helper::vector<sofa::defaulttype::Vec<3, SReal> > > > waPositions = d_positions;
-        helper::vector<unsigned int> old2new;
+        helper::vector<Topology::ElemID> old2new;
         old2new.resize(waPositions.size());
-        unsigned int p = 0;
-        for (std::set<unsigned int>::const_iterator it = attachedPoints.begin(), itend = attachedPoints.end(); it != itend; ++it)
+        Topology::ElemID p = 0;
+        for (std::set<Topology::ElemID>::const_iterator it = attachedPoints.begin(), itend = attachedPoints.end(); it != itend; ++it)
         {
-            unsigned int newp = *it;
+            Topology::ElemID newp = *it;
             old2new[newp] = p;
             if (p != newp)
             {
@@ -668,7 +666,7 @@ void MeshLoader::applyTransformation(Matrix4 const& T)
 {
     if (!T.isTransform())
     {
-        serr << "applyTransformation: ignored matrix which is not a transformation T=" << T << sendl;
+        msg_info() << "applyTransformation: ignored matrix which is not a transformation T=" << T ;
         return;
     }
     sofa::helper::WriteAccessor <Data< helper::vector<sofa::defaulttype::Vec<3, SReal> > > > my_positions = d_positions;
@@ -698,7 +696,7 @@ void MeshLoader::addEdge(helper::vector<Edge >* pEdges, const Edge& p)
     pEdges->push_back(p);
 }
 
-void MeshLoader::addEdge(helper::vector<Edge >* pEdges, unsigned int p0, unsigned int p1)
+void MeshLoader::addEdge(helper::vector<Edge >* pEdges, Topology::EdgeID p0, Topology::EdgeID p1)
 {
     addEdge(pEdges, Edge(p0, p1));
 }
@@ -718,7 +716,7 @@ void MeshLoader::addTriangle(helper::vector<Triangle >* pTriangles, const Triang
     }
 }
 
-void MeshLoader::addTriangle(helper::vector<Triangle >* pTriangles, unsigned int p0, unsigned int p1, unsigned int p2)
+void MeshLoader::addTriangle(helper::vector<Triangle >* pTriangles, Topology::TriangleID p0, Topology::TriangleID p1, Topology::TriangleID p2)
 {
     addTriangle(pTriangles, Triangle(p0, p1, p2));
 }
@@ -738,16 +736,16 @@ void MeshLoader::addQuad(helper::vector<Quad >* pQuads, const Quad& p)
     }
 }
 
-void MeshLoader::addQuad(helper::vector<Quad >* pQuads, unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3)
+void MeshLoader::addQuad(helper::vector<Quad >* pQuads, Topology::QuadID p0, Topology::QuadID p1, Topology::QuadID p2, Topology::QuadID p3)
 {
     addQuad(pQuads, Quad(p0, p1, p2, p3));
 }
 
-void MeshLoader::addPolygon(helper::vector< helper::vector <unsigned int> >* pPolygons, const helper::vector<unsigned int>& p)
+void MeshLoader::addPolygon(helper::vector< helper::vector <Topology::ElemID> >* pPolygons, const helper::vector<Topology::ElemID>& p)
 {
     if (d_flipNormals.getValue())
     {
-        helper::vector<unsigned int> revertP(p.size());
+        helper::vector<Topology::ElemID> revertP(p.size());
         std::reverse_copy(p.begin(), p.end(), revertP.begin());
 
         pPolygons->push_back(revertP);
@@ -764,14 +762,14 @@ void MeshLoader::addTetrahedron(helper::vector< Tetrahedron >* pTetrahedra, cons
     pTetrahedra->push_back(p);
 }
 
-void MeshLoader::addTetrahedron(helper::vector< Tetrahedron >* pTetrahedra, unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3)
+void MeshLoader::addTetrahedron(helper::vector< Tetrahedron >* pTetrahedra, Topology::TetrahedronID p0, Topology::TetrahedronID p1, Topology::TetrahedronID p2, Topology::TetrahedronID p3)
 {
     addTetrahedron(pTetrahedra, Tetrahedron(p0, p1, p2, p3));
 }
 
 void MeshLoader::addHexahedron(helper::vector< Hexahedron >* pHexahedra,
-                               unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3,
-                               unsigned int p4, unsigned int p5, unsigned int p6, unsigned int p7)
+                               Topology::HexahedronID p0, Topology::HexahedronID p1, Topology::HexahedronID p2, Topology::HexahedronID p3,
+                               Topology::HexahedronID p4, Topology::HexahedronID p5, Topology::HexahedronID p6, Topology::HexahedronID p7)
 {
     addHexahedron(pHexahedra, Hexahedron(p0, p1, p2, p3, p4, p5, p6, p7));
 }
@@ -782,8 +780,8 @@ void MeshLoader::addHexahedron(helper::vector< Hexahedron >* pHexahedra, const H
 }
 
 void MeshLoader::addPentahedron(helper::vector< Pentahedron >* pPentahedra,
-                                unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3,
-                                unsigned int p4, unsigned int p5)
+                                Topology::ElemID p0, Topology::ElemID p1, Topology::ElemID p2, Topology::ElemID p3,
+                                Topology::ElemID p4, Topology::ElemID p5)
 {
     addPentahedron(pPentahedra, Pentahedron(p0, p1, p2, p3, p4, p5));
 }
@@ -794,7 +792,7 @@ void MeshLoader::addPentahedron(helper::vector< Pentahedron >* pPentahedra, cons
 }
 
 void MeshLoader::addPyramid(helper::vector< Pyramid >* pPyramids,
-                            unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3, unsigned int p4)
+                            Topology::ElemID p0, Topology::ElemID p1, Topology::ElemID p2, Topology::ElemID p3, Topology::ElemID p4)
 {
     addPyramid(pPyramids, Pyramid(p0, p1, p2, p3, p4));
 }

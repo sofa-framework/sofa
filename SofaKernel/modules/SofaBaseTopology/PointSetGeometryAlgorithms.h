@@ -120,7 +120,7 @@ public:
 
     /** \brief Process the added point initialization according to the topology and local coordinates.
     */
-    virtual void initPointAdded(unsigned int indice, const core::topology::PointAncestorElem &ancestorElem, const helper::vector< VecCoord* >& coordVecs, const helper::vector< VecDeriv* >& derivVecs);
+    virtual void initPointAdded(PointID indice, const core::topology::PointAncestorElem &ancestorElem, const helper::vector< VecCoord* >& coordVecs, const helper::vector< VecDeriv* >& derivVecs);
 
 protected:
     /** the object where the mechanical DOFs are stored */

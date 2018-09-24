@@ -44,6 +44,9 @@ class SOFA_BASE_TOPOLOGY_API PointSetTopologyModifier : public core::topology::T
 {
 public:
     SOFA_CLASS(PointSetTopologyModifier,core::topology::TopologyModifier);
+    
+    typedef core::topology::BaseMeshTopology::PointID PointID;
+
 protected:
     PointSetTopologyModifier()
         : TopologyModifier()
@@ -62,22 +65,22 @@ public:
     *
     * \sa addPointsProcess
     */
-    void addPointsWarning(const unsigned int nPoints, const bool addDOF = true);
+    void addPointsWarning(const size_t nPoints, const bool addDOF = true);
 
     /** \brief Sends a message to warn that some points were added in this topology.
     *
     * \sa addPointsProcess
     */
-    void addPointsWarning(const unsigned int nPoints,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
-            const sofa::helper::vector< sofa::helper::vector< double       > >& coefs,
+    void addPointsWarning(const size_t nPoints,
+            const sofa::helper::vector< sofa::helper::vector< PointID > >& ancestors,
+            const sofa::helper::vector< sofa::helper::vector< SReal > >& coefs,
             const bool addDOF = true);
 
     /** \brief Sends a message to warn that some points were added in this topology.
     *
     * \sa addPointsProcess
     */
-    void addPointsWarning(const unsigned int nPoints,
+    void addPointsWarning(const size_t nPoints,
             const sofa::helper::vector< core::topology::PointAncestorElem >& ancestorElems,
             const bool addDOF = true);
 
@@ -86,28 +89,28 @@ public:
     *
     * \sa addPointsWarning
     */
-    virtual void addPointsProcess(const unsigned int nPoints);
+    virtual void addPointsProcess(const size_t nPoints);
 
     /** \brief Add a set of points
     * 
     * \sa addPoints
     */
-    virtual void addPoints(const unsigned int nPoints, const bool addDOF = true);
+    virtual void addPoints(const size_t nPoints, const bool addDOF = true);
  
     /** \brief Add a set of points
     * 
     * \sa addPoints
     */
-    virtual void addPoints(const unsigned int nPoints,
-                           const sofa::helper::vector< sofa::helper::vector< unsigned int> >& ancestors,
-                           const sofa::helper::vector< sofa::helper::vector< double      > >& coefs,
+    virtual void addPoints(const size_t nPoints,
+                           const sofa::helper::vector< sofa::helper::vector< PointID > >& ancestors,
+                           const sofa::helper::vector< sofa::helper::vector< SReal > >& coefs,
                            const bool addDOF = true);
 
     /** \brief Add a set of points according to their ancestors topology elements
      *
      * \sa addPoints
      */
-    void addPoints( const unsigned int nPoints,
+    void addPoints( const size_t nPoints,
                     const sofa::helper::vector< core::topology::PointAncestorElem >& ancestorElems,
                     const bool addDOF = true);
 
@@ -117,7 +120,7 @@ public:
     * \sa removePointsProcess
     */
     // side effect: indices are sorted first
-    void removePointsWarning(/*const*/ sofa::helper::vector<unsigned int> &indices,
+    void removePointsWarning(/*const*/ sofa::helper::vector< PointID > &indices,
             const bool removeDOF = true);
 
 
@@ -131,7 +134,7 @@ public:
     * @param indices is not const because it is actually sorted from the highest index to the lowest one.
     * @param removeDOF if true the points are actually deleted from the mechanical object's state vectors
     */
-    virtual void removePointsProcess(const sofa::helper::vector<unsigned int> &indices,
+    virtual void removePointsProcess(const sofa::helper::vector< PointID > &indices,
             const bool removeDOF = true);
 
     /** \brief move input points indices to input new coords. Also propagate event
@@ -141,17 +144,17 @@ public:
      * @param coefs : barycoef to locate new coord relatively to ancestors.
      * @moveDOF bool allowing the move (default true)
      */
-    virtual void movePointsProcess (const sofa::helper::vector <unsigned int>& id,
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
-            const sofa::helper::vector< sofa::helper::vector< double > >& coefs,
+    virtual void movePointsProcess (const sofa::helper::vector < PointID >& id,
+            const sofa::helper::vector< sofa::helper::vector< PointID > >& ancestors,
+            const sofa::helper::vector< sofa::helper::vector< SReal > >& coefs,
             const bool moveDOF = true);
 
     /** \brief Sends a message to warn that points are about to be reordered.
     *
     * \sa renumberPointsProcess
     */
-    void renumberPointsWarning( const sofa::helper::vector<unsigned int> &index,
-            const sofa::helper::vector<unsigned int> &inv_index,
+    void renumberPointsWarning( const sofa::helper::vector< PointID > &index,
+            const sofa::helper::vector< PointID > &inv_index,
             const bool renumberDOF = true);
 
     /** \brief Reorder this topology.
@@ -159,8 +162,8 @@ public:
     * Important : the points are actually renumbered in the mechanical object's state vectors iff (renumberDOF == true)
     * \see MechanicalObject::renumberValues
     */
-    virtual void renumberPointsProcess( const sofa::helper::vector<unsigned int> &index,
-            const sofa::helper::vector<unsigned int> &/*inv_index*/,
+    virtual void renumberPointsProcess( const sofa::helper::vector< PointID > &index,
+            const sofa::helper::vector< PointID > &/*inv_index*/,
             const bool renumberDOF = true);
 
     /** \brief Called by a topology to warn specific topologies linked to it that TopologyChange objects happened.
@@ -200,13 +203,13 @@ public:
 
     /** \brief Generic method to remove a list of items.
     */
-    virtual void removeItems(const sofa::helper::vector< unsigned int >& /*items*/) override
+    virtual void removeItems(const sofa::helper::vector<  PointID  >& /*items*/) override
     { }
 
     /** \brief Generic method for points renumbering
     */
-    virtual void renumberPoints( const sofa::helper::vector<unsigned int> &/*index*/,
-            const sofa::helper::vector<unsigned int> &/*inv_index*/)
+    virtual void renumberPoints( const sofa::helper::vector< PointID > &/*index*/,
+            const sofa::helper::vector< PointID > &/*inv_index*/)
     { }
 
 private:

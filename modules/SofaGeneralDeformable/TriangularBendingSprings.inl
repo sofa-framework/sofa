@@ -427,7 +427,7 @@ void TriangularBendingSprings<DataTypes>::TriangularBSEdgeHandler::applyPointRen
     if(ff)
     {
         helper::vector<EdgeInformation>& edgeInf = *(ff->edgeInfo.beginEdit());
-        for (int i = 0; i < ff->_topology->getNbEdges(); ++i)
+        for (unsigned int i = 0; i < ff->_topology->getNbEdges(); ++i)
         {
             if(edgeInf[i].is_activated)
             {
@@ -503,7 +503,7 @@ void TriangularBendingSprings<DataTypes>::reinit()
     /// prepare to store info in the edge array
     helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
     edgeInf.resize(_topology->getNbEdges());
-    int i;
+    unsigned int i;
     // set edge tensor to 0
     for (i=0; i<_topology->getNbEdges(); ++i)
     {
@@ -541,7 +541,7 @@ void TriangularBendingSprings<DataTypes>::addForce(const core::MechanicalParams*
     const VecCoord& x = d_x.getValue();
     const VecDeriv& v = d_v.getValue();
 
-    int nbEdges=_topology->getNbEdges();
+    size_t nbEdges=_topology->getNbEdges();
     EdgeInformation *einfo;
     helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
 
@@ -555,7 +555,7 @@ void TriangularBendingSprings<DataTypes>::addForce(const core::MechanicalParams*
     const VecCoord& x_rest = this->mstate->read(core::ConstVecCoordId::restPosition())->getValue();
 #endif
 
-    for(int i=0; i<nbEdges; i++ )
+    for(unsigned int i=0; i<nbEdges; i++ )
     {
         einfo=&edgeInf[i];
 
@@ -664,7 +664,7 @@ void TriangularBendingSprings<DataTypes>::addDForce(const core::MechanicalParams
     const VecDeriv& dx = d_dx.getValue();
     Real kFactor = (Real)mparams->kFactorIncludingRayleighDamping(this->rayleighStiffness.getValue());
 
-    int nbEdges=_topology->getNbEdges();
+    size_t nbEdges=_topology->getNbEdges();
     const EdgeInformation *einfo;
     const helper::vector<EdgeInformation>& edgeInf = edgeInfo.getValue();
 
@@ -673,7 +673,7 @@ void TriangularBendingSprings<DataTypes>::addDForce(const core::MechanicalParams
     //serr<<"TriangularBendingSprings<DataTypes>::addDForce, df1 before = "<<f1<<sendl;
     //const helper::vector<Spring>& springs = this->springs.getValue();
 
-    for(int i=0; i<nbEdges; i++ )
+    for(unsigned int i=0; i<nbEdges; i++ )
     {
         einfo=&edgeInf[i];
 

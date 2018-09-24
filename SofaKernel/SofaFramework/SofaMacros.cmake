@@ -199,7 +199,7 @@ macro(sofa_add_generic_external directory name type)
         else()
             set(option SOFA_FETCH_${uppername})
         endif()
-        option(${option} "Fetch ${name} repository (auto-disabled afterwards)." ${active})
+        option(${option} "Fetch ${name} repository." ${active})
     else()
         option(${option} "Fetch and build the ${name} ${type}." ${active})
     endif()
@@ -210,10 +210,6 @@ macro(sofa_add_generic_external directory name type)
     # Fetch
     if(${option})
         message("Fetching ${type} ${name}")
-
-        if("${type}" STREQUAL "Subdirectory")
-            set(${option} OFF CACHE BOOL "Fetch ${name} repository (auto-disabled afterwards)." FORCE)
-        endif()
 
         message("Checking for ${${name}_TEMP_DIR}")
         if(NOT EXISTS ${${name}_TEMP_DIR})
@@ -288,7 +284,7 @@ macro(sofa_set_python_directory plugin_name directory)
 
     ## Python configuration file (build tree)
     file(WRITE "${CMAKE_BINARY_DIR}/etc/sofa/python.d/${plugin_name}"
-         "${CMAKE_CURRENT_SOURCE_DIR}/python")
+         "${CMAKE_CURRENT_SOURCE_DIR}/${directory}")
     ## Python configuration file (install tree)
      file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/installed-SofaPython-config"
          "lib/python2.7/site-packages")
@@ -406,7 +402,7 @@ macro(sofa_install_libraries)
             get_filename_component(LIBREAL_NAME ${LIBREAL} NAME_WE)
             get_filename_component(LIBREAL_PATH ${LIBREAL} PATH)
 
-            file(GLOB_RECURSE SHARED_LIBS FOLLOW_SYMLINKS
+            file(GLOB_RECURSE SHARED_LIBS
                 "${LIB_PATH}/${LIB_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX}*"
                 "${LIB_PATH}/${LIB_NAME}[0-9]${CMAKE_SHARED_LIBRARY_SUFFIX}*"
                 "${LIB_PATH}/${LIB_NAME}[0-9][0-9]${CMAKE_SHARED_LIBRARY_SUFFIX}*"
@@ -415,7 +411,7 @@ macro(sofa_install_libraries)
                 "${LIBREAL_PATH}/${LIBREAL_NAME}[0-9]${CMAKE_SHARED_LIBRARY_SUFFIX}*"
                 "${LIBREAL_PATH}/${LIBREAL_NAME}[0-9][0-9]${CMAKE_SHARED_LIBRARY_SUFFIX}*"
             )
-            file(GLOB_RECURSE STATIC_LIBS FOLLOW_SYMLINKS
+            file(GLOB_RECURSE STATIC_LIBS
                 "${LIB_PATH}/${LIB_NAME}${CMAKE_STATIC_LIBRARY_SUFFIX}*"
                 "${LIB_PATH}/${LIB_NAME}[0-9]${CMAKE_STATIC_LIBRARY_SUFFIX}*"
                 "${LIB_PATH}/${LIB_NAME}[0-9][0-9]${CMAKE_STATIC_LIBRARY_SUFFIX}*"
@@ -474,8 +470,15 @@ endmacro()
 
 macro(sofa_copy_libraries_from_targets)
     foreach(target ${ARGN})
-        get_target_property(target_location ${target} LOCATION_${CMAKE_BUILD_TYPE})
-        sofa_copy_libraries(${target_location})
+        if(CMAKE_CONFIGURATION_TYPES) # Multi-config generator (MSVC)
+            foreach(CONFIG ${CMAKE_CONFIGURATION_TYPES})
+                get_target_property(target_location ${target} LOCATION_${CONFIG})
+                sofa_copy_libraries(${target_location})
+            endforeach()
+        else() # Single-config generator (nmake)
+            get_target_property(target_location ${target} LOCATION_${CMAKE_BUILD_TYPE})
+            sofa_copy_libraries(${target_location})
+        endif()
     endforeach()
 endmacro()
 

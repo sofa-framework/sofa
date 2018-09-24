@@ -26,7 +26,7 @@
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/simulation/Node.h>
-#include "ScriptEvent.h"
+#include <sofa/core/objectmodel/ScriptEvent.h>
 #include "ScriptFunction.h"
 
 /// fwd declaration

@@ -1,3 +1,5 @@
+#define SOFA_COMPONENT_COMPLIANCE_PROJECTIONMAPPING_CPP
+
 #include "ProjectionMapping.h"
 
 #include <sofa/core/ObjectFactory.h>

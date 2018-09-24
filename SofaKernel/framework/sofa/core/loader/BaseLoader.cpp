@@ -46,10 +46,14 @@ BaseLoader::~BaseLoader()
 void BaseLoader::parse(sofa::core::objectmodel::BaseObjectDescription *arg)
 {
     objectmodel::BaseObject::parse(arg);
+
+    bool success = false;
     if (canLoad())
-        load();
-    else
-        sout << "Doing nothing" << sendl;
+        success = load();
+    
+    // File not loaded, component is set to invalid
+    if (!success)
+        m_componentstate = sofa::core::objectmodel::ComponentState::Invalid;
 }
 
 
@@ -60,7 +64,7 @@ bool BaseLoader::canLoad()
     // -- Check filename field:
     if(m_filename.getValue() == "")
     {
-        serr << "Error: MeshLoader: No file name given." << sendl;
+        msg_error() << "No file to load. Data filename is not set.";
         return false;
     }
 
@@ -71,7 +75,7 @@ bool BaseLoader::canLoad()
 
     if (!sofa::helper::system::DataRepository.findFile(sfilename))
     {
-        serr << "Error: MeshLoader: File '" << m_filename << "' not found. " << sendl;
+        msg_error() << "File: '" << m_filename << "' not found. ";
         return false;
     }
 
@@ -80,7 +84,7 @@ bool BaseLoader::canLoad()
     // -- Check if file is readable:
     if (!file.good())
     {
-        serr << "Error: MeshLoader: Cannot read file '" << m_filename << "'." << sendl;
+        msg_error() << "Cannot read file: '" << m_filename << "'.";
         return false;
     }
 
@@ -88,7 +92,7 @@ bool BaseLoader::canLoad()
     file >> cmd;
     if (cmd.empty())
     {
-        serr << "Error: MeshLoader: Cannot read first line in file '" << m_filename << "'." << sendl;
+        msg_error() << "Cannot read first line of file: '" << m_filename << "'.";
         file.close();
         return false;
     }
