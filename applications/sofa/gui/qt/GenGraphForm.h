@@ -45,7 +45,7 @@ class GenGraphForm : public QDialog, public Ui_BaseGenGraphForm
 {
     Q_OBJECT
 public:
-    GenGraphForm();
+    GenGraphForm(QWidget *parent = Q_NULLPTR);
 
     void setScene(sofa::simulation::Node* scene);
 

@@ -506,7 +506,10 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addMBKToMatrix (const core::Mech
 
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
 
-    for ( unsigned int e = 0; e < hexahedra.size(); ++e )
+    unsigned int e = 0;
+    for ( it = this->hexahedronInfo.getValue().begin();
+          it != this->hexahedronInfo.getValue().end() && e < hexahedra.size();
+          ++it, ++e )
     {
         const ElementMass &Me = _elementMasses.getValue() [e];
         const Element hexa = hexahedra[e];

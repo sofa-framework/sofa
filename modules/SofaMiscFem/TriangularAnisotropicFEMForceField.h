@@ -108,8 +108,6 @@ public:
         TriangularAnisotropicFEMForceField<DataTypes>* ff;
     };
 
-    sofa::core::topology::BaseMeshTopology* _topology;
-
     TRQSTriangleHandler* triangleHandler;
 };
 
