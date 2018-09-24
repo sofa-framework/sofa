@@ -1,5 +1,5 @@
-#ifndef SOFA_COMPONENT_COMPLIANCE_LinearDiagonalCompliance_H
-#define SOFA_COMPONENT_COMPLIANCE_LinearDiagonalCompliance_H
+#ifndef SOFA_COMPONENT_COMPLIANCE_LINEARDIAGONALCOMPLIANCE_H
+#define SOFA_COMPONENT_COMPLIANCE_LINEARDIAGONALCOMPLIANCE_H
 
 #include <Compliant/config.h>
 #include "DiagonalCompliance.h"
@@ -56,8 +56,19 @@ protected:
 
 };
 
+#if defined(SOFA_EXTERN_TEMPLATE) && !defined(SOFA_COMPONENT_COMPLIANCE_LINEARDIAGONALCOMPLIANCE_CPP)
+#ifndef SOFA_FLOAT
+extern template class SOFA_Compliant_API LinearDiagonalCompliance<sofa::defaulttype::Vec1dTypes>;
+extern template class SOFA_Compliant_API LinearDiagonalCompliance<sofa::defaulttype::Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_Compliant_API LinearDiagonalCompliance<sofa::defaulttype::Vec1fTypes>;
+extern template class SOFA_Compliant_API LinearDiagonalCompliance<sofa::defaulttype::Vec3fTypes>;
+#endif
+#endif
+
 }
 }
 }
 
-#endif // SOFA_COMPONENT_COMPLIANCE_LinearDiagonalCompliance_H
+#endif // SOFA_COMPONENT_COMPLIANCE_LINEARDIAGONALCOMPLIANCE_H

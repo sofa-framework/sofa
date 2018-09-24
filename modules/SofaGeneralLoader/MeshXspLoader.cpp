@@ -53,7 +53,7 @@ MeshXspLoader::MeshXspLoader() : MeshLoader()
 
 bool MeshXspLoader::load()
 {
-	dmsg_info() << "Loading Xsp file: " << m_filename;
+  	dmsg_info() << "Loading Xsp file: " << m_filename;
 
     std::string cmd;
     bool fileRead = false;
@@ -64,7 +64,7 @@ bool MeshXspLoader::load()
 
     if (!file.good())
     {
-		msg_error() << "Cannot read file '" << m_filename << "'.";
+        msg_error() << "Cannot read file '" << m_filename << "'.";
         return false;
     }
 
@@ -87,7 +87,7 @@ bool MeshXspLoader::load()
     }
     else
     {
-		msg_error() << "File '" << m_filename << "' finally appears not to be a Xsp file.";
+        msg_error() << "File '" << m_filename << "' finally appears not to be a Xsp file.";
         file.close();
         return false;
 
@@ -101,7 +101,7 @@ bool MeshXspLoader::load()
 
 bool MeshXspLoader::readXsp (std::ifstream &file, bool vector_spring)
 {
-	dmsg_info() << "Reading Xsp file: " << vector_spring;
+    dmsg_info() << "Reading Xsp file: " << vector_spring;
 
     std::string cmd;
     file >> cmd;

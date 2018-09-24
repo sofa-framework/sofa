@@ -111,7 +111,6 @@ bool MeshSTLLoader::readBinarySTL(const char *filename)
     // Skipping header file
     char buffer[256];
     dataFile.read(buffer, _headerSize.getValue());
-//    sout << "Header binary file: "<< buffer << sendl;
 
     uint32_t nbrFacet;
     dataFile.read((char*)&nbrFacet, 4);
