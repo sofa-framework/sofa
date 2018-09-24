@@ -1202,9 +1202,9 @@ SP_CLASS_METHODS_END
 SP_CLASS_ATTRS_BEGIN(Data)
 SP_CLASS_ATTR(Data,name)
 SP_CLASS_ATTR(Data,value)
-SP_CLASS_ATTR_GETTER(Data,type)
-SP_CLASS_ATTR_GETTER(Data,ndim)
-SP_CLASS_ATTR_GETTER(Data,shape)
+//SP_CLASS_ATTR_GETTER(Data,type)
+//SP_CLASS_ATTR_GETTER(Data,ndim)
+//SP_CLASS_ATTR_GETTER(Data,shape)
 SP_CLASS_ATTRS_END
 
 /// To implement the buffer protocol (a copy-less mechanism) for python
