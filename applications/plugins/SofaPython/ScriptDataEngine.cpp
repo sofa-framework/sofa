@@ -11,7 +11,7 @@ namespace controller
 
 void ScriptDataEngine::parse(sofa::core::objectmodel::BaseObjectDescription *arg)
 {
-    DataEngine::parse(arg);
+    Inherit1::parse(arg);
 
     // load & bind script
     loadScript();
@@ -20,7 +20,7 @@ void ScriptDataEngine::parse(sofa::core::objectmodel::BaseObjectDescription *arg
     //script_createGraph( down_cast<simulation::Node>(getContext()) );
 }
 
-ScriptDataEngine::ScriptDataEngine() : DataEngine()
+ScriptDataEngine::ScriptDataEngine() : Inherit1()
 {
     f_listening = true;
 }
@@ -30,14 +30,19 @@ ScriptDataEngine::~ScriptDataEngine()
 
 }
 
-void ScriptDataEngine::update()
+void ScriptDataEngine::call_update()
+{
+    update();
+}
+
+void ScriptDataEngine::doUpdate()
 {
     script_update();
 }
 
 void ScriptDataEngine::init()
 {
-    DataEngine::init();
+    Inherit1::init();
 }
 
 void ScriptDataEngine::reinit()

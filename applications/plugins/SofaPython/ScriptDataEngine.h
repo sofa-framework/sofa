@@ -18,10 +18,10 @@ namespace controller
 {
 
 
-class SOFA_SOFAPYTHON_API ScriptDataEngine : public core::DataEngine
+class SOFA_SOFAPYTHON_API ScriptDataEngine : public core::SimpleDataEngine
 {
 public:
-    SOFA_CLASS(ScriptDataEngine,core::DataEngine);
+    SOFA_CLASS(ScriptDataEngine,core::SimpleDataEngine);
 
 protected:
     ScriptDataEngine();
@@ -37,7 +37,8 @@ public:
     virtual void reinit() override ;
 
 
-    virtual void update() override ;
+    void call_update();
+    virtual void doUpdate() override ;
 
 
 protected:

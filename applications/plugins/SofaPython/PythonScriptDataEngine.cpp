@@ -112,7 +112,6 @@ void PythonScriptDataEngine::refreshBinding()
     BIND_OBJECT_METHOD_DATA_ENGINE(update)
     BIND_OBJECT_METHOD_DATA_ENGINE(init)
     BIND_OBJECT_METHOD_DATA_ENGINE(parse)
-            //BIND_OBJECT_METHOD(update)
 }
 
 void PythonScriptDataEngine::doLoadScript()
