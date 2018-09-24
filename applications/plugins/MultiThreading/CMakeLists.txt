@@ -8,7 +8,7 @@ set(MULTITHREADING_VERSION ${MULTITHREADING_MAJOR_VERSION}.${MULTITHREADING_MINO
 set(HEADER_FILES
     src/TaskScheduler.h
     src/Tasks.h
-	src/InitTasks.h
+    src/InitTasks.h
     src/Locks.h
     src/AnimationLoopParallelScheduler.h
     src/AnimationLoopTasks.h
@@ -17,28 +17,32 @@ set(HEADER_FILES
     src/BeamLinearMapping_tasks.inl
     src/DataExchange.h
     src/DataExchange.inl
-	src/VisitorAsync.h
-	src/MeanComputation.h
-	src/MeanComputation.inl
-    
+    src/VisitorAsync.h
+    src/MeanComputation.h
+    src/MeanComputation.inl
 )
 
 set(SOURCE_FILES
     src/initMultiThreading.cpp
     src/TaskScheduler.cpp
     src/Tasks.cpp
-	src/InitTasks.cpp
+    src/InitTasks.cpp
     src/AnimationLoopParallelScheduler.cpp
     src/AnimationLoopTasks.cpp
     src/BeamLinearMapping_mt.cpp
-    src/DataExchange.cpp    
-	src/MeanComputation.cpp
+    src/DataExchange.cpp
+    src/MeanComputation.cpp
 )
 
 find_package(SofaMisc REQUIRED)
 
+## Multithreading/config.h
+configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/MultiThreading/config.h")
+install(FILES "${CMAKE_BINARY_DIR}/include/MultiThreading/config.h" DESTINATION "include/MultiThreading")
+
 add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} SofaBaseMechanics SofaMiscMapping SofaConstraint)
+
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>")
 target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>")
@@ -53,11 +57,6 @@ sofa_create_package(MultiThreading ${MULTITHREADING_VERSION} MultiThreading Mult
 
 ## Install rules for the resources
 install(DIRECTORY examples/ DESTINATION share/sofa/plugins/${PROJECT_NAME})
-
-
-# if(Boost_FOUND)
-#	include_directories(${Boost_INCLUDE_DIRS})
-# endif()
 
 if(SOFA_BUILD_TESTS)
     find_package(SofaTest QUIET)
