@@ -147,6 +147,11 @@ py::class_<Vec<N,T>> addVec(py::module &m)
                        [](VecClass &v) { return v[2]; },
         [](VecClass &v, double z) { v[2] = z; });
     }
+    if(N>=4){
+        p.def_property("w",
+                       [](VecClass &v) { return v[3]; },
+        [](VecClass &v, double w) { v[3] = w; });
+    }
     p.def(py::self / int());
     p.def("__idiv__", [](VecClass &v, const double d) { v.eqdivscalar(d); return v; });
     p.def("__idiv__", [](VecClass &v, const int d) { v.eqdivscalar(d); return v; });
@@ -167,27 +172,7 @@ py::class_<Vec<N,T>> addVec(py::module &m)
         return sofa::defaulttype::dot(self, b);
     });
 
-    /// Add individual x,y,z
-    if(N>=1){
-        p.def_property("x",
-                       [](VecClass &v) { return v[0]; },
-        [](VecClass &v, double x) { v[0] = x; });
-    }
-    if(N>=2){
-        p.def_property("y",
-                       [](VecClass &v) { return v[1]; },
-        [](VecClass &v, double y) { v[1] = y; });
-    }
-    if(N>=3){
-        p.def_property("z",
-                       [](VecClass &v) { return v[2]; },
-        [](VecClass &v, double z) { v[2] = z; });
-    }
-    if(N>=4){
-        p.def_property("w",
-                       [](VecClass &v) { return v[3]; },
-        [](VecClass &v, double w) { v[3] = w; });
-    }
+
 
     /// Add paired elements.
     if(N>=2){

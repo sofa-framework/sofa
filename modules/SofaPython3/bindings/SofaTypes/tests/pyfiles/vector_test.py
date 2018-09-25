@@ -52,7 +52,7 @@ class Vec_tests(unittest.TestCase):
 
         pass
 
-    def test_Acessors(self):
+    def test_Accessors(self):
         p = Vec3d(1.0, 2.0, 3.0)
         
         ## [] operators
