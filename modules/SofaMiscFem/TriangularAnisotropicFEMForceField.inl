@@ -94,10 +94,10 @@ void TriangularAnisotropicFEMForceField<DataTypes>::TRQSTriangleHandler::applyCr
 template< class DataTypes>
 void TriangularAnisotropicFEMForceField<DataTypes>::init()
 {
-    _topology = this->getContext()->getMeshTopology();
+    this->_topology = this->getContext()->getMeshTopology();
 
     // Create specific handler for TriangleData
-    localFiberDirection.createTopologicalEngine(_topology, triangleHandler);
+    localFiberDirection.createTopologicalEngine(this->_topology, triangleHandler);
     localFiberDirection.registerTopologicalData();
 
     Inherited::init();
@@ -122,7 +122,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::reinit()
     f_poisson2.setValue(poiss2);
 
     helper::vector<Deriv>& lfd = *(localFiberDirection.beginEdit());
-    lfd.resize(_topology->getNbTriangles());
+    lfd.resize(this->_topology->getNbTriangles());
     localFiberDirection.endEdit();
     Inherited::reinit();
 }
@@ -137,7 +137,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::getFiberDir(int element, Der
     {
         const Deriv& ref = lfd[element];
         const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-        core::topology::BaseMeshTopology::Triangle t = _topology->getTriangle(element);
+        core::topology::BaseMeshTopology::Triangle t = this->_topology->getTriangle(element);
         dir = (x[t[1]]-x[t[0]])*ref[0] + (x[t[2]]-x[t[0]])*ref[1];
     }
     else
@@ -298,23 +298,23 @@ void TriangularAnisotropicFEMForceField<DataTypes>::draw(const core::visual::Vis
 
     helper::vector<Deriv>& lfd = *(localFiberDirection.beginEdit());
 
-    if (showFiber.getValue() && lfd.size() >= (unsigned)_topology->getNbTriangles())
+    if (showFiber.getValue() && lfd.size() >= (unsigned)this->_topology->getNbTriangles())
     {
         vparams->drawTool()->saveLastState();
         sofa::defaulttype::RGBAColor color(0, 0, 0, 1.0);
         std::vector<sofa::defaulttype::Vector3> vertices;
 
         const VecCoord& x = this->mstate->read(core::ConstVecCoordId::position())->getValue();
-        int nbTriangles=_topology->getNbTriangles();
+        int nbTriangles = this->_topology->getNbTriangles();
 
         for(int i=0; i<nbTriangles; ++i)
         {
 
             if ( (unsigned int)i < lfd.size())
             {
-                Index a = _topology->getTriangle(i)[0];
-                Index b = _topology->getTriangle(i)[1];
-                Index c = _topology->getTriangle(i)[2];
+                Index a = this->_topology->getTriangle(i)[0];
+                Index b = this->_topology->getTriangle(i)[1];
+                Index c = this->_topology->getTriangle(i)[2];
 
                 Coord center = (x[a]+x[b]+x[c])/3;
                 Coord d = (x[b]-x[a])*lfd[i][0] + (x[c]-x[a])*lfd[i][1];
