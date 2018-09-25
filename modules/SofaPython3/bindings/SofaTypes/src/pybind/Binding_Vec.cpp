@@ -10,7 +10,8 @@ namespace pyVec {
 template <int N, class T> std::string __str__(const Vec<N, T> &v, bool repr)
 {
     std::stringstream s ;
-    s << (repr) ? (BINDING_VEC_MAKE_NAME(N, T) + "(") : ("(");
+    s.imbue(std::locale("C"));
+    s << ((repr) ? (BINDING_VEC_MAKE_NAME(N, T) + "(") : ("("));
     s << v[0];
     for (size_t i = 1; i < v.size(); ++i)
         s <<  ", " << v[i];

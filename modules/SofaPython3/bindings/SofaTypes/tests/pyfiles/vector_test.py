@@ -115,10 +115,10 @@ class Vec_tests(unittest.TestCase):
         self.assertAlmostEqual(p.norm2(), 12.0)
         self.assertAlmostEqual(p.lNorm(1), 6.0)
         p1 = p.normalized()
-        self.assertEqual(str(p1), "(0.577350, 0.577350, 0.577350)") # better way to compare collections of floats? numpy.testing maybe?
+        self.assertEqual(p1, Vec3d(0.57735, 0.57735, 0.57735))
         ret = p.normalize()
         self.assertEqual(ret, True)
-        self.assertEqual(str(p), "(0.577350, 0.577350, 0.577350)")
+        self.assertEqual(p, Vec3d(0.57735, 0.57735, 0.57735))
         
         ## dot product
         p1 = Vec3d(1.0, 3.0, -5.0)
