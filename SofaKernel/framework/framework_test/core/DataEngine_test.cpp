@@ -114,12 +114,12 @@ public:
 private:
     void doUpdate() override
     {
-        // true only if the DataTracker associated to the Data 'input' is Dirty
-        // that could only happen if 'input' was dirtied since last update
-        if( m_dataTracker.isDirty( input ) )
-            output.setValue(CHANGED);
-        else
+        // SimpleDataEngines cannot check whether a datafield is dirty or not:
+        // all input fields must be considered dirty in update.
+        if (output.getValue() != NO_CHANGED)
             output.setValue(NO_CHANGED);
+        else
+            output.setValue(CHANGED);
     }
 };
 
@@ -162,12 +162,12 @@ struct DataEngine_test: public BaseTest
 
 
 // Test
-TEST_F(DataEngine_test, testTrackedData )
+TEST_F(DataEngine_test, testDataEngine )
 {
     this->testTrackedData<TestEngine>(this->engine);
 }
 
-TEST_F(DataEngine_test, testSimpleEngine )
+TEST_F(DataEngine_test, testSimpleDataEngine )
 {
     this->testTrackedData<SimpleTestEngine>(this->simpleEngine);
 }

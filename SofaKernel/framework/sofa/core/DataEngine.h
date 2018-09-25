@@ -235,7 +235,7 @@ public:
     void addInput(sofa::core::objectmodel::BaseData* data)
     {
         m_dataTracker.trackData(*data);
-        sofa::core::objectmodel::DDGNode::addInput(data);
+        Inherit1::addInput(data);
     }
 
 protected:
