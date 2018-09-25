@@ -44,6 +44,12 @@ find_package(MPFR REQUIRED)
 find_package(GMP REQUIRED)
 find_package(Boost QUIET REQUIRED COMPONENTS system thread)
 
+message(STATUS "CGAL VERSION ${CGAL_MAJOR_VERSION}.${CGAL_MINOR_VERSION}")
+set(CGAL_VERSION ${CGAL_MAJOR_VERSION}.${CGAL_MINOR_VERSION})
+if (CGAL_VERSION VERSION_GREATER_EQUAL 4.10)
+    add_definitions(-DCGAL_MESH_3_VERBOSE=0)
+endif()
+
 
 ## CGALPlugin/config.h
 configure_file(config.h.in "${CMAKE_BINARY_DIR}/include/CGALPlugin/config.h")
