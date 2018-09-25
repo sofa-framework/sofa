@@ -144,12 +144,10 @@ class Vec_tests(unittest.TestCase):
         self.assertEqual(list(v1 * 2.0), [2.0, 4.0, 6.0])
         self.assertEqual(list(v1 * 2), [2.0, 4.0, 6.0])
         tmp = Vec3d(list(v1))
-        # tmp *= 2.0   # why isn't this working?
-        tmp.__imul__(2.0)
+        tmp *= 2.0  ## Because :)
         self.assertEqual(list(tmp),[2.0, 4.0, 6.0])
         tmp = Vec3d(list(v1))
-        # tmp *= 2 ## WHYYY?
-        tmp.__imul__(2)
+        tmp *= 2 ## Because
         self.assertEqual(list(tmp),[2.0, 4.0, 6.0])
         
         self.assertEqual(list(v1 / 2.0), [0.5, 1.0, 1.5])

@@ -127,13 +127,28 @@ py::class_<Vec<N,T>> addVec(py::module &m)
 
     p.def(py::self * double());
     p.def(py::self * int());
-    p.def("__imul__", [](VecClass &v, const float d) { v.eqmulscalar(d);});
-    p.def("__imul__", [](VecClass &v, const int d) { v.eqmulscalar(d); });
+    p.def("__imul__", [](VecClass &v, const float d) { v.eqmulscalar(d); return v; });
+    p.def("__imul__", [](VecClass &v, const int d) { v.eqmulscalar(d); return v; });
 
-    p.def(py::self / double());
+    p.def(py::self / double());/// Add individual x,y,z
+    if(N>=1){
+        p.def_property("x",
+                       [](VecClass &v) { return v[0]; },
+        [](VecClass &v, double x) { v[0] = x; });
+    }
+    if(N>=2){
+        p.def_property("y",
+                       [](VecClass &v) { return v[1]; },
+        [](VecClass &v, double y) { v[1] = y; });
+    }
+    if(N>=3){
+        p.def_property("z",
+                       [](VecClass &v) { return v[2]; },
+        [](VecClass &v, double z) { v[2] = z; });
+    }
     p.def(py::self / int());
-    p.def("__idiv__", [](VecClass &v, const double d) { v.eqdivscalar(d); });
-    p.def("__idiv__", [](VecClass &v, const int d) { v.eqdivscalar(d); });
+    p.def("__idiv__", [](VecClass &v, const double d) { v.eqdivscalar(d); return v; });
+    p.def("__idiv__", [](VecClass &v, const int d) { v.eqdivscalar(d); return v; });
 
     p.def("__str__", [](VecClass &v) { return pyVec::__str__(v); });
     p.def("__repr__", [](VecClass &v) { return pyVec::__str__(v, true); });
