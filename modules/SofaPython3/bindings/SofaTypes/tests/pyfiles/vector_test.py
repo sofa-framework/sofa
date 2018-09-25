@@ -1,6 +1,7 @@
 import math
 import unittest
 
+import SofaTypes
 from SofaTypes import Vec1d, Vec2d, Vec3d, Vec4d, Vec4i
 
 class Vec_tests(unittest.TestCase):
@@ -161,7 +162,7 @@ class Vec_tests(unittest.TestCase):
         self.assertEqual(list(tmp),[0.5, 1.0, 1.5])
         
         
-def run():
+def createScene(rootNode):
     suite = unittest.TestLoader().loadTestsFromTestCase(Vec_tests)
     return unittest.TextTestRunner(verbosity=2).run(suite).wasSuccessful()
 

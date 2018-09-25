@@ -36,4 +36,4 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/installed-SofaTypes-config"
 
 #install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/module/Sofa DESTINATION modules/Sofa/python)
 
-#add_subdirectory(tests)
+add_subdirectory(tests)
