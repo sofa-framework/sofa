@@ -80,7 +80,7 @@ py::object BindingBase::GetAttr(Base& self, const std::string& s)
         return toPython(d);
     }
 
-    throw py::attribute_error();
+    throw py::attribute_error(s);
 }
 
 void BindingBase::SetAttr(py::object self, const std::string& s, py::object& value)
@@ -143,6 +143,7 @@ void moduleAddBase(py::module &m)
         }
         return py::none();
     });
+
 
     p.def("__getattr__", &BindingBase::GetAttr);
     p.def("__setattr__", &BindingBase::SetAttr);

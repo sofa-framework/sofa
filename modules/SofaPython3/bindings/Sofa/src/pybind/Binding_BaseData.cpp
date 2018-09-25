@@ -7,6 +7,12 @@ using sofa::defaulttype::AbstractTypeInfo;
 #include <sofa/core/objectmodel/BaseData.h>
 using sofa::core::objectmodel::BaseData;
 
+#include <sofa/core/objectmodel/BaseObject.h>
+using  sofa::core::objectmodel::BaseObject;
+
+#include <sofa/core/objectmodel/BaseNode.h>
+using  sofa::core::objectmodel::BaseNode;
+
 
 void moduleAddDataAsString(py::module& m)
 {
@@ -18,11 +24,22 @@ void moduleAddDataAsString(py::module& m)
     });
 }
 
+std::string getPathTo(Base* b)
+{
+    BaseNode* node = dynamic_cast<BaseNode*>(b);
+    if(node)
+        return node->getPathName();
+    BaseObject* object = dynamic_cast<BaseObject*>(b);
+    if(object)
+        return object->getPathName();
+
+    assert(true && "Only Base & BaseObject are supported");
+}
+
 void moduleAddDataAsContainer(py::module& m)
 {
     py::class_<DataAsContainer, BaseData, raw_ptr<DataAsContainer>> p(m, "DataContainer", py::buffer_protocol());
 
-    // TODO: Implementation should look like: https://github.com/sofa-framework/sofa/issues/767
     p.def("__getitem__", [](DataAsContainer& self, py::size_t index) -> py::object
     {
         std::cout << " single axis " << std::endl ;
@@ -35,7 +52,7 @@ void moduleAddDataAsContainer(py::module& m)
         return py::none();
     });
 
-    p.def("__getitem__", [](DataAsContainer& self, py::tuple tuple) -> py::object
+    p.def("__getitem__", [](DataAsContainer& self, py::tuple ij) -> py::object
     {
         std::cout << "  dual axis " << std::endl ;
         return py::none();
@@ -131,6 +148,12 @@ void moduleAddBaseData(py::module& m)
         auto nfo = b.getValueTypeInfo();
         return py::make_tuple(py::int_(nfo->size(b.getValueVoidPtr())/nfo->size()),
                               py::int_(nfo->size()));
+    });
+
+    p.def("getPath", [](BaseData& self){
+        Base* b= self.getOwner();
+        std::string prefix = getPathTo(b);
+        return prefix+"."+self.getName();
     });
 
     p.def("__str__", [](BaseData* self)

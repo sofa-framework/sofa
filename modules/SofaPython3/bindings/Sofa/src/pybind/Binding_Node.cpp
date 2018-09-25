@@ -96,6 +96,7 @@ void moduleAddNode(py::module &m) {
     });
 
     p.def("getRoot", &Node::getRoot);
+    p.def("getPath", &Node::getPathName);
 
     p.def("__getattr__", [](Node& self, const std::string& name) -> py::object
     {

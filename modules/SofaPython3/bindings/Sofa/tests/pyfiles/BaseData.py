@@ -2,19 +2,20 @@ import Sofa
 import array
 import timeit
 
-def time(root):
-        pr = cProfile.Profile()
-        pr.enable()
+def test_datacontainer(o):
+        print("Test data container")
+        print(o.position)
+        print(o.position[0])
+        print(o.position[0,0])
+        print(o.position[:])
+        print(o.position[:,:])
         
-        for i in range(0, 10000):
-                pass        
+def test_basedata(o):
+        print(o.position.getPath())        
+        print(o.getRoot().gravity.getPath())        
         
-        pr.disable()
-        s = io.StringIO()
-        sortby = SortKey.CUMULATIVE
-        ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
-        ps.print_stats()
-        print(s.getvalue())
+#        print(o.position[0,0])
+#        print(o.position[0,0])
 
 def createScene(root):
         root.createObject("MechanicalObject", 
@@ -50,17 +51,19 @@ def createScene(root):
 
         p = memoryview(root.mstate.position)
 
-        print("get_object: " + str( timeit.timeit("str(root.mstate.position)", globals={"root":root}) ))
-        print("get_object_data: " + str( timeit.timeit("str(memoryview(root.mstate.position).tolist())", globals={"root":root}) ))
+        test_datacontainer(root.mstate)
+        test_basedata(root.mstate)
+        #print("get_object: " + str( timeit.timeit("str(root.mstate.position)", globals={"root":root}) ))
+        #print("get_object_data: " + str( timeit.timeit("str(memoryview(root.mstate.position).tolist())", globals={"root":root}) ))
         
-        l = p.tolist()
+        #l = p.tolist()
         
-        print("get_object: " + str( timeit.timeit("root.mstate", globals={"root":root}) ))
-        print("get_object_data: " + str( timeit.timeit("root.mstate.position", globals={"root":root}) ))
-        print("memoryview(get_object_data): " + str( timeit.timeit("memoryview(root.mstate.position)", globals={"root":root}) ))
-        print("memoryview::tolist: " + str( timeit.timeit("p.tolist()", globals={"p":p}) ))
-        print("listacess: " + str( timeit.timeit("l[5][0]", globals={"l":l}) ))
-        print("memoryview::__getitem__: " + str( timeit.timeit("p[5,0]", globals={"p":p}) ))
+        #print("get_object: " + str( timeit.timeit("root.mstate", globals={"root":root}) ))
+        #print("get_object_data: " + str( timeit.timeit("root.mstate.position", globals={"root":root}) ))
+        #print("memoryview(get_object_data): " + str( timeit.timeit("memoryview(root.mstate.position)", globals={"root":root}) ))
+        #print("memoryview::tolist: " + str( timeit.timeit("p.tolist()", globals={"p":p}) ))
+        #print("listacess: " + str( timeit.timeit("l[5][0]", globals={"l":l}) ))
+        #print("memoryview::__getitem__: " + str( timeit.timeit("p[5,0]", globals={"p":p}) ))
         
         print("FIN")
         

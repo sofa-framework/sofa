@@ -7,7 +7,7 @@ void moduleAddBaseObject(py::module& m)
     p.def("init", &BaseObject::init);
     p.def("reinit", &BaseObject::init);
 
-    p.def("getPathName", &BaseObject::getPathName);
+    p.def("getPath", &BaseObject::getPathName);
     p.def("getLinkPath", [](const BaseObject &self)
     {
         return std::string("@") + self.getPathName();

@@ -41,11 +41,12 @@ public:
         py::print(py::str( s.get_type() ));
 
         s.inc_ref();
-        --ref_counter;
+
+        // TODO(bruno-marques) ici ça crash dans SOFA.
+        //--ref_counter;
 
         o = std::shared_ptr<PyObject>( s.ptr(), [](PyObject* ob)
         {
-            // TODO(bruno-marques) ici ça crash dans SOFA.
             // runSofa Sofa/tests/pyfiles/ScriptController.py => CRASH
             // Py_DECREF(ob);
         });
