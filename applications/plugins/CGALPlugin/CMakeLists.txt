@@ -12,6 +12,8 @@ set(HEADER_FILES
     MeshGenerationFromPolyhedron.inl
     TriangularConvexHull3D.h
     TriangularConvexHull3D.inl
+    CylinderMesh.h
+    CylinderMesh.inl
 )
 
 set(SOURCE_FILES
@@ -19,6 +21,7 @@ set(SOURCE_FILES
     MeshGenerationFromPolyhedron.cpp
     TriangularConvexHull3D.cpp
     initCGALPlugin.cpp
+    CylinderMesh.cpp
 )
 
 set(README_FILES CGALPlugin.txt)

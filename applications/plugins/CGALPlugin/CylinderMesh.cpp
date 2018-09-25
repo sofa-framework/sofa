@@ -36,20 +36,27 @@
 SOFA_DECL_CLASS(CylinderMesh)
 
 using namespace sofa::defaulttype;
-using namespace cgal;
-
+namespace cgal
+{
 int CylinderMeshClass = sofa::core::RegisterObject("Generate a regular tetrahedron mesh of a cylinder")
 #ifndef SOFA_FLOAT
-        .add< CylinderMesh<Vec3dTypes> >()
+    .add<CylinderMesh<Vec3dTypes> >()
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-        .add< CylinderMesh<Vec3fTypes> >()
+    .add<CylinderMesh<Vec3fTypes> >()
 #endif //SOFA_DOUBLE
-        ;
+;
 
 #ifndef SOFA_FLOAT
-template class SOFA_CGALPLUGIN_API CylinderMesh<Vec3dTypes>;
+
+template
+class SOFA_CGALPLUGIN_API CylinderMesh<Vec3dTypes>;
+
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_CGALPLUGIN_API CylinderMesh<Vec3fTypes>;
+
+template
+class SOFA_CGALPLUGIN_API CylinderMesh<Vec3fTypes>;
+
 #endif //SOFA_DOUBLE
+}
