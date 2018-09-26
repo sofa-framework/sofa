@@ -314,13 +314,13 @@ void PointSetTopologyModifier::movePointsProcess (const sofa::helper::vector <Po
 
 
 
-void PointSetTopologyModifier::removePointsWarning(sofa::helper::vector<PointID> &indices,
+void PointSetTopologyModifier::removePointsWarning(sofa::helper::vector<PointID> indices,
         const bool removeDOF)
 {
     m_container->setPointTopologyToDirty();
 
     // sort points so that they are removed in a descending order
-    std::sort( indices.begin(), indices.end(), std::greater<PointID>() );
+    std::sort(indices.begin(), indices.end(), std::greater<PointID>());
 
     // Warning that these vertices will be deleted
     PointsRemoved *e = new PointsRemoved(indices);
