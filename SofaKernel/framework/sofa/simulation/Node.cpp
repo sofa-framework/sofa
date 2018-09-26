@@ -969,6 +969,7 @@ void Node::sortComponents()
 
 Node::SPtr Node::create( const std::string& name )
 {
+    std::cout << "PLEASE STIP USING THIS SINGLETON IN THE BINDING... use DAGNode::create()" << std::endl ;
     return getSimulation()->createNewNode(name);
 }
 
