@@ -28,6 +28,7 @@
 #include <sofa/core/objectmodel/MouseEvent.h>
 #include <sofa/simulation/AnimateBeginEvent.h>
 #include <sofa/simulation/AnimateEndEvent.h>
+#include <sofa/simulation/CollisionEndEvent.h>
 
 #include <sofa/core/topology/TopologicalMapping.h>
 #include <SofaUserInteraction/TopologicalChangeManager.h>
@@ -139,43 +140,32 @@ void CarvingManager::reset()
 
 void CarvingManager::doCarve()
 {
-    if (m_carvingReady == false)
+    if (!m_carvingReady)
         return;
 
-    const bool continuous = m_intersectionMethod->useContinuous();
-    const double dt       = getContext()->getDt();
-    const int depth = 6;
-
-    if (continuous)
-        m_toolCollisionModel->computeContinuousBoundingTree(dt, depth);
-    else
-        m_toolCollisionModel->computeBoundingTree(depth);
-
-    sofa::helper::vector<std::pair<core::CollisionModel*, core::CollisionModel*> > vectCMPair;
-    for (size_t i = 0; i < m_surfaceCollisionModels.size(); i++)
-    {
-        if (continuous)
-            m_surfaceCollisionModels[i]->computeContinuousBoundingTree(dt, depth);
-        else
-            m_surfaceCollisionModels[i]->computeBoundingTree(depth);
-
-        vectCMPair.push_back(std::make_pair(m_surfaceCollisionModels[i]->getFirst(), m_toolCollisionModel->getFirst()));
-    }
-
-    m_detectionNP->setInstance(this);
-    m_detectionNP->setIntersectionMethod(m_intersectionMethod);
-    m_detectionNP->beginNarrowPhase();
-    m_detectionNP->addCollisionPairs(vectCMPair);
-    m_detectionNP->endNarrowPhase();
-    
+    // get the collision output
     const core::collision::NarrowPhaseDetection::DetectionOutputMap& detectionOutputs = m_detectionNP->getDetectionOutputs();
+    if (detectionOutputs.size() == 0)
+        return;
 
+    // loop on the contact to get the one between the CarvingSurface and the CarvingTool collision model
     const ContactVector* contacts = NULL;
-    core::collision::NarrowPhaseDetection::DetectionOutputMap::const_iterator it = detectionOutputs.begin(); 
-    
-    for (it = detectionOutputs.begin(); it != detectionOutputs.end(); ++it)
+    for (core::collision::NarrowPhaseDetection::DetectionOutputMap::const_iterator it = detectionOutputs.begin(); it != detectionOutputs.end(); ++it)
     {
-        contacts = dynamic_cast<const ContactVector*>(it->second);
+        const sofa::core::CollisionModel* collMod1 = it->first.first;
+        const sofa::core::CollisionModel* collMod2 = it->first.second;
+
+        if (collMod1 == m_toolCollisionModel && collMod2->hasTag(sofa::core::objectmodel::Tag("CarvingSurface")))
+        {
+            contacts = dynamic_cast<const ContactVector*>(it->second);
+        }
+        else if (collMod2 == m_toolCollisionModel && collMod1->hasTag(sofa::core::objectmodel::Tag("CarvingSurface")))
+        {
+            contacts = dynamic_cast<const ContactVector*>(it->second);
+        }
+        else // not linked to the carving, iterate.
+            continue;
+
         size_t ncontacts = 0;
         if (contacts != NULL)
             ncontacts = contacts->size();
@@ -189,7 +179,7 @@ void CarvingManager::doCarve()
         for (size_t j = 0; j < ncontacts; ++j)
         {
             const ContactVector::value_type& c = (*contacts)[j];
-            
+
             if (c.value < d_carvingDistance.getValue())
             {
                 int triangleIdx = (c.elem.first.getCollisionModel() == m_toolCollisionModel ? c.elem.second.getIndex() : c.elem.first.getIndex());
@@ -207,13 +197,13 @@ void CarvingManager::doCarve()
                 nbelems += manager.removeItemsFromCollisionModel(it->first.first, elemsToRemove);
         }
     }
-    
-
-    m_detectionNP->setInstance(NULL);
 }
 
 void CarvingManager::handleEvent(sofa::core::objectmodel::Event* event)
 {
+    if (m_carvingReady == false)
+        return;
+
     if (sofa::core::objectmodel::KeypressedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeypressedEvent*>(event))
     {
         dmsg_info() << "GET KEY "<<ev->getKey();
@@ -250,11 +240,6 @@ void CarvingManager::handleEvent(sofa::core::objectmodel::Event* event)
         if (ev->getButtonState()==1) d_active.setValue(true);
         else if (ev->getButtonState()==0) d_active.setValue(false);
     }
-    else if (/* simulation::AnimateEndEvent* ev = */ dynamic_cast<simulation::AnimateEndEvent*>(event))
-    {
-        if (d_active.getValue())
-            doCarve();
-    }
     else if (sofa::core::objectmodel::ScriptEvent *ev = dynamic_cast<sofa::core::objectmodel::ScriptEvent *>(event))
     {
         const std::string& eventS = ev->getEventName();
@@ -263,6 +248,13 @@ void CarvingManager::handleEvent(sofa::core::objectmodel::Event* event)
         if (eventS.find(d_buttonName.getValue()) != std::string::npos && eventS.find("released") != std::string::npos)
             d_active.setValue(false);
     }
+    else if (simulation::CollisionEndEvent::checkEventType(event))
+    {
+        if (d_active.getValue())
+            doCarve();
+    }
+
+
 }
 
 } // namespace collision
