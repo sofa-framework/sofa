@@ -33,6 +33,7 @@
 #include <SofaOpenglVisual/OglModel.h>
 #endif
 
+#include <Geomagic/src/config.h>
 #include <SofaUserInteraction/Controller.h>
 #include <sofa/core/behavior/BaseController.h>
 #include <sofa/simulation/Node.h>
@@ -72,7 +73,7 @@ using core::objectmodel::Data;
 /**
 * Geomagic driver
 */
-class GeomagicDriver : public Controller
+class SOFA_GEOMAGIC_API GeomagicDriver : public Controller
 {
 
 public:
