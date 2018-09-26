@@ -200,10 +200,13 @@ GeomagicDriver::GeomagicDriver()
 GeomagicDriver::~GeomagicDriver()
 {
     hdMakeCurrentDevice(m_hHD);
+    
+    if (!m_hStateHandles.empty()) {
+        hdStopScheduler();
+    }
 
-    hdStopScheduler();
 
-    for (std::vector< HDCallbackCode >::iterator i = m_hStateHandles.begin();
+    for (std::vector< HDSchedulerHandle >::iterator i = m_hStateHandles.begin();
             i != m_hStateHandles.end(); ++i)
     {
             hdUnschedule(*i);
