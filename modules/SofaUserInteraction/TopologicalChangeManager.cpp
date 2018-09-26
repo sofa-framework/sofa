@@ -173,6 +173,137 @@ int TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::coll
     return res;
 }
 
+
+int TopologicalChangeManager::removeItemsFromPointModel(sofa::component::collision::PointModel* model, const helper::vector<int>& indices) const
+{
+    sofa::core::topology::BaseMeshTopology* topo_curr;
+    topo_curr = model->getContext()->getMeshTopology();
+
+    if (topo_curr == NULL)
+        return 0;
+
+    sofa::helper::vector<unsigned int> tItems;
+    for (auto i : indices)
+    {
+        const sofa::core::topology::BaseMeshTopology::TrianglesAroundVertex& triAV = topo_curr->getTrianglesAroundVertex(i);        
+        for (auto j : triAV)
+        {
+            bool found = false;
+            for (auto k : tItems)
+            {
+                if (j == k)
+                {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found)
+                tItems.push_back(j);
+        }
+    }
+
+    std::set< unsigned int > items;
+    //std::cout << topo_curr->getName() << " - Tri to remove: " << tItems << std::endl;
+
+    simulation::Node *node_curr = dynamic_cast<simulation::Node*>(topo_curr->getContext());
+
+    if (topo_curr->getNbTetrahedra() > 0)
+    {
+        // get the index of the tetra linked to each triangle
+        for (unsigned int i = 0; i<tItems.size(); ++i)
+            items.insert(topo_curr->getTetrahedraAroundTriangle(tItems[i])[0]);
+    }
+    else if (topo_curr->getNbHexahedra() > 0)
+    {
+        // get the index of the hexa linked to each quad
+        for (unsigned int i = 0; i<tItems.size(); ++i)
+            items.insert(topo_curr->getHexahedraAroundQuad(tItems[i] / 2)[0]);
+    }
+    else
+    {
+        //Quick HACK for Hexa2TetraMapping
+        sofa::component::topology::Hexa2TetraTopologicalMapping* badMapping;
+        model->getContext()->get(badMapping, sofa::core::objectmodel::BaseContext::SearchRoot);
+        if (badMapping) //stop process
+        {
+            msg_warning("TopologicalChangeManager") << " Removing element is not handle by Hexa2TetraTopologicalMapping. Stopping process.";
+            return 0;
+        }
+
+        int nbt = topo_curr->getNbTriangles();
+        for (unsigned int i = 0; i<tItems.size(); ++i)
+        {
+            items.insert(tItems[i] < nbt ? tItems[i] : (tItems[i] + nbt) / 2);
+        }
+    }
+
+    bool is_topoMap = true;
+
+    while (is_topoMap)
+    {
+        is_topoMap = false;
+        std::vector< core::objectmodel::BaseObject * > listObject;
+        node_curr->get<core::objectmodel::BaseObject>(&listObject, core::objectmodel::BaseContext::Local);
+        for (unsigned int i = 0; i<listObject.size(); ++i)
+        {
+            sofa::core::topology::TopologicalMapping *topoMap = dynamic_cast<sofa::core::topology::TopologicalMapping *>(listObject[i]);
+            if (topoMap != NULL && !topoMap->propagateFromOutputToInputModel())
+            {
+                is_topoMap = true;
+                //unsigned int ind_glob = topoMap->getGlobIndex(ind_curr);
+                //ind_curr = topoMap->getFromIndex(ind_glob);
+                std::set< unsigned int > loc_items = items;
+                items.clear();
+                if (topoMap->isTheOutputTopologySubdividingTheInputOne())
+                {
+                    for (std::set< unsigned int >::const_iterator it = loc_items.begin(); it != loc_items.end(); ++it)
+                    {
+                        unsigned int ind_glob = topoMap->getGlobIndex(*it);
+                        unsigned int ind = topoMap->getFromIndex(ind_glob);
+                        items.insert(ind);
+                    }
+                }
+                else
+                {
+                    for (std::set< unsigned int >::const_iterator it = loc_items.begin(); it != loc_items.end(); ++it)
+                    {
+                        vector<unsigned int> indices;
+                        topoMap->getFromIndex(indices, *it);
+                        for (vector<unsigned int>::const_iterator itIndices = indices.begin(); itIndices != indices.end(); ++itIndices)
+                        {
+                            items.insert(*itIndices);
+                        }
+                    }
+                }
+                topo_curr = topoMap->getFrom()->getContext()->getMeshTopology();
+                node_curr = dynamic_cast<simulation::Node*>(topo_curr->getContext());
+                //std::cout << topo_curr->getName() << " - Tri to remove2: " << items << std::endl;
+                break;
+            }
+        }
+    }
+
+    sofa::helper::vector<unsigned int> vitems;
+    vitems.reserve(items.size());
+    vitems.insert(vitems.end(), items.rbegin(), items.rend());
+
+    int res = vitems.size();
+    
+
+    sofa::core::topology::TopologyModifier* topoMod;
+    topo_curr->getContext()->get(topoMod);
+
+    topoMod->removeItems(vitems);
+
+    topoMod->notifyEndingEvent();
+
+
+    topoMod->propagateTopologicalChanges();
+
+    return res;
+}
+
 #if 0
 
 int TopologicalChangeManager::removeItemsFromTetrahedronModel(sofa::component::collision::TetrahedronModel* model, const helper::vector<int>& indices) const
@@ -355,6 +486,10 @@ int TopologicalChangeManager::removeItemsFromCollisionModel(sofa::core::Collisio
     if(dynamic_cast<TriangleModel*>(model)!= NULL)
     {
         return removeItemsFromTriangleModel(static_cast<TriangleModel*>(model), indices);
+    }
+    if (dynamic_cast<PointModel*>(model) != NULL)
+    {
+        return removeItemsFromPointModel(static_cast<PointModel*>(model), indices);
     }
 #if 0
     else if(dynamic_cast<TetrahedronModel*>(model)!= NULL)
