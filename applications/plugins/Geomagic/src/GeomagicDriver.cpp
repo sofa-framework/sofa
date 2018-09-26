@@ -190,6 +190,7 @@ GeomagicDriver::GeomagicDriver()
     , d_emitButtonEvent(initData(&d_emitButtonEvent, false, "emitButtonEvent", "If true, will send event through the graph when button are pushed/released"))
     , d_inputForceFeedback(initData(&d_inputForceFeedback, Vec3d(0,0,0), "inputForceFeedback","Input force feedback in case of no LCPForceFeedback is found (manual setting)"))
     , d_maxInputForceFeedback(initData(&d_maxInputForceFeedback, double(1.0), "maxInputForceFeedback","Maximum value of the normed input force feedback for device security"))
+    , d_manualStart(initData(&d_manualStart, false, "manualStart", "If true, will not automatically initDevice at component init phase."))
     , m_simulationStarted(false)
     , m_errorDevice(0)
 {
@@ -218,6 +219,24 @@ GeomagicDriver::~GeomagicDriver()
 
 //executed once at the start of Sofa, initialization of all variables excepts haptics-related ones
 void GeomagicDriver::init()
+{
+    
+}
+
+void GeomagicDriver::bwdInit()
+{
+    if(m_errorDevice != 0)
+        return;
+
+    simulation::Node *context = dynamic_cast<simulation::Node *>(this->getContext()); // access to current node
+    m_forceFeedback = context->get<ForceFeedback>(this->getTags(), sofa::core::objectmodel::BaseContext::SearchRoot);
+
+    if (d_manualStart.getValue() == false)
+        initDevice();
+}
+
+
+void GeomagicDriver::initDevice()
 {
     m_initVisuDone = false;
     m_errorDevice = 0;
@@ -249,30 +268,45 @@ void GeomagicDriver::init()
     if (HD_DEVICE_ERROR(error = hdGetError()))
     {
         printError(&error, "Error with the device Default PHANToM");
-        m_errorDevice = true;
+        m_errorDevice = error.errorCode;
         return;
     }
 
-    if(d_maxInputForceFeedback.isSet())
+    if (d_maxInputForceFeedback.isSet())
     {
-        msg_info() << "maxInputForceFeedback value ("<< d_maxInputForceFeedback.getValue() <<") is set, carefully set the max force regarding your haptic device";
+        msg_info() << "maxInputForceFeedback value (" << d_maxInputForceFeedback.getValue() << ") is set, carefully set the max force regarding your haptic device";
 
-        if(d_maxInputForceFeedback.getValue() <= 0.0)
+        if (d_maxInputForceFeedback.getValue() <= 0.0)
         {
-            msg_error() << "maxInputForceFeedback value ("<< d_maxInputForceFeedback.getValue() <<") is negative or 0, it should be strictly positive";
+            msg_error() << "maxInputForceFeedback value (" << d_maxInputForceFeedback.getValue() << ") is negative or 0, it should be strictly positive";
             d_maxInputForceFeedback.setValue(0.0);
         }
     }
 
     reinit();
 
+    hdStartScheduler();
+
+    if (HD_DEVICE_ERROR(error = hdGetError()))
+    {
+        msg_info() << "Failed to start the scheduler";
+        m_errorDevice = error.errorCode;
+        if (m_hStateHandles.size()) m_hStateHandles[0] = HD_INVALID_HANDLE;
+        return;
+    }
+    updatePosition();
+
+
+    if (!d_omniVisu.getValue())
+        return;
+
     //Initialization of the visual components
     //resize vectors
-    m_posDeviceVisu.resize(NVISUALNODE+1);
+    m_posDeviceVisu.resize(NVISUALNODE + 1);
 
     m_visuActive = false;
 
-    for(int i=0; i<NVISUALNODE; i++)
+    for (int i = 0; i<NVISUALNODE; i++)
     {
         visualNode[i].visu = NULL;
         visualNode[i].mapping = NULL;
@@ -280,15 +314,15 @@ void GeomagicDriver::init()
 
     //create a specific node containing rigid position for visual models
     sofa::simulation::Node::SPtr rootContext = static_cast<simulation::Node*>(this->getContext()->getRootContext());
-    m_omniVisualNode = rootContext->createChild("omniVisu "+d_deviceName.getValue());
+    m_omniVisualNode = rootContext->createChild("omniVisu " + d_deviceName.getValue());
     m_omniVisualNode->updateContext();
 
     rigidDOF = sofa::core::objectmodel::New<component::container::MechanicalObject<sofa::defaulttype::Rigid3dTypes> >();
     m_omniVisualNode->addObject(rigidDOF);
     rigidDOF->name.setValue("rigidDOF");
 
-    VecCoord& posDOF =*(rigidDOF->x.beginEdit());
-    posDOF.resize(NVISUALNODE+1);
+    VecCoord& posDOF = *(rigidDOF->x.beginEdit());
+    posDOF.resize(NVISUALNODE + 1);
     rigidDOF->x.endEdit();
 
     rigidDOF->init();
@@ -296,11 +330,11 @@ void GeomagicDriver::init()
 
 
     //creation of subnodes for each part of the device visualization
-    for(int i=0; i<NVISUALNODE; i++)
+    for (int i = 0; i<NVISUALNODE; i++)
     {
         visualNode[i].node = m_omniVisualNode->createChild(visualNodeNames[i]);
 
-        if(visualNode[i].visu == NULL && visualNode[i].mapping == NULL)
+        if (visualNode[i].visu == NULL && visualNode[i].mapping == NULL)
         {
 
             // create the visual model and add it to the graph //
@@ -314,58 +348,36 @@ void GeomagicDriver::init()
             visualNode[i].visu->updateVisual();
 
             // create the visual mapping and at it to the graph //
-            visualNode[i].mapping = sofa::core::objectmodel::New< sofa::component::mapping::RigidMapping< Rigid3dTypes, ExtVec3fTypes > > ();
+            visualNode[i].mapping = sofa::core::objectmodel::New< sofa::component::mapping::RigidMapping< Rigid3dTypes, ExtVec3fTypes > >();
             visualNode[i].node->addObject(visualNode[i].mapping);
             visualNode[i].mapping->setModels(rigidDOF.get(), visualNode[i].visu.get());
             visualNode[i].mapping->name.setValue("RigidMapping");
             visualNode[i].mapping->f_mapConstraints.setValue(false);
             visualNode[i].mapping->f_mapForces.setValue(false);
             visualNode[i].mapping->f_mapMasses.setValue(false);
-            visualNode[i].mapping->index.setValue(i+1);
+            visualNode[i].mapping->index.setValue(i + 1);
             visualNode[i].mapping->init();
         }
-        if(i<NVISUALNODE)
+        if (i<NVISUALNODE)
             m_omniVisualNode->removeChild(visualNode[i].node);
     }
 
     m_omniVisualNode->updateContext();
 
-    for(int i=0; i<NVISUALNODE; i++)
+    for (int i = 0; i<NVISUALNODE; i++)
     {
         visualNode[i].node->updateContext();
     }
 
     m_initVisuDone = true;
 
-    for(int j=0; j<NVISUALNODE; j++)
+    for (int j = 0; j<NVISUALNODE; j++)
     {
-        sofa::defaulttype::ResizableExtVector< sofa::defaulttype::Vec<3,float> > &scaleMapping = *(visualNode[j].mapping->points.beginEdit());
-        for(size_t i=0; i<scaleMapping.size(); i++)
+        sofa::defaulttype::ResizableExtVector< sofa::defaulttype::Vec<3, float> > &scaleMapping = *(visualNode[j].mapping->points.beginEdit());
+        for (size_t i = 0; i<scaleMapping.size(); i++)
             scaleMapping[i] *= (float)(d_scale.getValue());
         visualNode[j].mapping->points.endEdit();
     }
-}
-
-void GeomagicDriver::bwdInit()
-{
-    if(m_errorDevice)
-        return;
-
-    simulation::Node *context = dynamic_cast<simulation::Node *>(this->getContext()); // access to current node
-    m_forceFeedback = context->get<ForceFeedback>(this->getTags(), sofa::core::objectmodel::BaseContext::SearchRoot);
-
-
-    hdStartScheduler();
-    HDErrorInfo error;
-
-    if (HD_DEVICE_ERROR(error = hdGetError()))
-    {
-        msg_info() <<"Failed to start the scheduler";
-        m_errorDevice = true;
-        if (m_hStateHandles.size()) m_hStateHandles[0] = HD_INVALID_HANDLE;
-            return;
-    }
-    updatePosition();
 }
 
 Mat<4,4, GLdouble> GeomagicDriver::compute_dh_Matrix(double teta,double alpha, double a, double d)
@@ -460,7 +472,6 @@ void GeomagicDriver::updatePosition()
     posDevice.getCenter() = positionBase + orientationBase.rotate(position*scale);
     posDevice.getOrientation() = orientationBase * orientation * orientationTool;
 
-
     if(m_initVisuDone && d_omniVisu.getValue())
     {
         sofa::defaulttype::SolidTypes<double>::Transform tampon;
@@ -529,11 +540,12 @@ void GeomagicDriver::updateButtonStates(bool emitEvent)
     for (int i = 0; i < nbrButton; i++)
         oldStates[i] = buttons[i];
 
+    // get new values
     buttons[0] = m_simuData.buttonState & HD_DEVICE_BUTTON_1;
     buttons[1] = m_simuData.buttonState & HD_DEVICE_BUTTON_2;
 
     d_button_1.setValue(buttons[0]);
-    d_button_1.setValue(buttons[1]);
+    d_button_2.setValue(buttons[1]);
 
     // emit event if requested
     if (!emitEvent)

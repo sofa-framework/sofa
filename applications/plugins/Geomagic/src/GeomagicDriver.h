@@ -106,7 +106,7 @@ public:
     Data<double> d_forceScale; ///< Default forceScale applied to the force feedback. 
     Data<bool> d_frameVisu; ///< Visualize the frame corresponding to the device tooltip
     Data<bool> d_omniVisu; ///< Visualize the frame of the interface in the virtual scene
-    Data< Coord > d_posDevice; ///< position of the base of the part of the device
+    Data< Coord > d_posDevice; ///< position of the base of the part of the device    
     
     Data<bool> d_button_1; ///< Button state 1
     Data<bool> d_button_2; ///< Button state 2
@@ -114,6 +114,7 @@ public:
     Data<Vector3> d_inputForceFeedback; ///< Input force feedback in case of no LCPForceFeedback is found (manual setting)
     Data<double> d_maxInputForceFeedback; ///< Maximum value of the normed input force feedback for device security
 
+    Data<bool> d_manualStart; /// < Bool to unactive the automatic start of the device at init. initDevice need to be called manually. False by default.
     VecCoord m_posDeviceVisu; ///< position of the hpatic devices for rendering. first pos is equal to d_posDevice
 
     GeomagicDriver();
@@ -126,7 +127,7 @@ public:
     virtual void draw(const sofa::core::visual::VisualParams* vparams) override;
     void updatePosition();
     void updateButtonStates(bool emitEvent);
-
+    void initDevice();
     ForceFeedback::SPtr m_forceFeedback;
 
     /// variable pour affichage graphique
@@ -174,7 +175,7 @@ public:
     OmniData m_omniData;
     OmniData m_simuData;
     HHD m_hHD;
-    std::vector< HDCallbackCode > m_hStateHandles;
+    std::vector< HDSchedulerHandle > m_hStateHandles;
 
 };
 
