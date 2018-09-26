@@ -188,101 +188,46 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                 {
                     sofa::helper::AdvancedTimer::stepBegin("Tetra2TriangleTopologicalMapping::TRIANGLESREMOVED");
                     unsigned int last = (unsigned int)fromModel->getNbTriangles() - 1;
-                    unsigned int ind_last = (unsigned int)toModel->getNbTriangles();
+                    unsigned int ind_last = (unsigned int)toModel->getNbTriangles() - 1;
 
-                    const sofa::helper::vector<unsigned int> &tab = ( static_cast< const TrianglesRemoved *>( *itBegin ) )->getArray();
+                    const sofa::helper::vector<unsigned int> &triIDtoRemove = ( static_cast< const TrianglesRemoved *>( *itBegin ) )->getArray();
 
                     unsigned int ind_tmp;
                     unsigned int ind_real_last;
 
-                    for (unsigned int i = 0; i <tab.size(); ++i)
+                    // search for the list of triangles to remove in mapped topology
+                    sofa::helper::vector< unsigned int > triangles_to_remove;
+                    std::map <unsigned int, unsigned int> tmpLoc2Glob;
+                    for (auto globTriId : triIDtoRemove)
                     {
-                        unsigned int k = tab[i];
-
-                        std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(k);
-                        if(iter_1 != Glob2LocMap.end())
-                        {
-
-                            ind_last = ind_last - 1;
-
-                            unsigned int ind_k = Glob2LocMap[k];
-//                            ind_real_last = ind_k;
-
-                            std::map<unsigned int, unsigned int>::iterator iter_2 = Glob2LocMap.find(last);
-                            if(iter_2 != Glob2LocMap.end())
-                            {
-
-                                ind_real_last = Glob2LocMap[last];
-
-                                if (k != last)
-                                {
-
-                                    Glob2LocMap.erase(Glob2LocMap.find(k));
-                                    Glob2LocMap[k] = ind_real_last;
-
-                                    Glob2LocMap.erase(Glob2LocMap.find(last));
-                                    Glob2LocMap[last] = ind_k;
-
-                                    ind_tmp = Loc2GlobVec[ind_real_last];
-                                    Loc2GlobVec[ind_real_last] = Loc2GlobVec[ind_k];
-                                    Loc2GlobVec[ind_k] = ind_tmp;
-                                }
-                            }
-
-                            if (ind_k != ind_last)
-                            {
-
-                                Glob2LocMap.erase(Glob2LocMap.find(Loc2GlobVec[ind_last]));
-                                Glob2LocMap[Loc2GlobVec[ind_last]] = ind_k;
-
-                                Glob2LocMap.erase(Glob2LocMap.find(Loc2GlobVec[ind_k]));
-                                Glob2LocMap[Loc2GlobVec[ind_k]] = ind_last;
-
-                                ind_tmp = Loc2GlobVec[ind_k];
-                                Loc2GlobVec[ind_k] = Loc2GlobVec[ind_last];
-                                Loc2GlobVec[ind_last] = ind_tmp;
-
-                            }
-
-                            Glob2LocMap.erase(Glob2LocMap.find(Loc2GlobVec[Loc2GlobVec.size() - 1]));
-                            Loc2GlobVec.resize( Loc2GlobVec.size() - 1 );
-
-                            sofa::helper::vector< unsigned int > triangles_to_remove;
-                            triangles_to_remove.push_back(ind_k);
-
-                            TriangleSetTopologyModifier *triangleMod;
-                            toModel->getContext()->get(triangleMod);
-                            triangleMod->removeTriangles(triangles_to_remove, true, false);
-
-                            for(unsigned int i=0; i<addedTriangleIndex.size(); i++)
-                            {
-                                if(addedTriangleIndex[i]==ind_k)
-                                    addedTriangleIndex[i]=0;
-                                if(addedTriangleIndex[i]>ind_k)
-                                    addedTriangleIndex[i]-=1;
-                            }
-                        }
-                        else
-                        {
-                            if(CHECK_TOPOLOGY)
-                            {
-                                msg_info() << "updateTopologicalMappingTopDown::TRIANGLESREMOVED - Glob2LocMap should have the visible triangle " << tab[i];
-                                msg_info() << "updateTopologicalMappingTopDown::TRIANGLESREMOVED - nb triangles = " << ind_last;
-                            }
-
-                            std::map<unsigned int, unsigned int>::iterator iter_2 = Glob2LocMap.find(last);
-                            if(iter_2 != Glob2LocMap.end())
-                            {
-
-                                ind_real_last = Glob2LocMap[last];
-                                Glob2LocMap.erase(Glob2LocMap.find(last));
-                                Glob2LocMap[k] = ind_real_last;
-                                Loc2GlobVec[ind_real_last]=k;
-                            }
-                        }
-
-                        --last;
+                        std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(globTriId);
+                        if (iter_1 != Glob2LocMap.end())
+                            triangles_to_remove.push_back(iter_1->second);
+                        tmpLoc2Glob.insert(std::pair<unsigned int, unsigned int>(iter_1->second, globTriId));
                     }
+
+                    std::sort(triangles_to_remove.begin(), triangles_to_remove.end(), std::greater<unsigned int>());
+                    to_tstm->removeTriangles(triangles_to_remove, true, false);
+
+                    // update the maps from toModel changes
+                    for (auto oldLocTriId : triangles_to_remove)
+                    {
+                        //unsigned int oldGlobTriId = tmpLoc2Glob[oldLocTriId];
+
+                        unsigned int newGlobTriId = Loc2GlobVec.back();
+                        Loc2GlobVec[oldLocTriId] = newGlobTriId; // swap loc2Glob map
+                        Loc2GlobVec.pop_back(); //pop last
+
+                        Glob2LocMap[newGlobTriId] = oldLocTriId; // update Glob2LocMap of new loc ids                        
+                    }
+
+                    // update Glob2LocMap from fromModel changes
+                    for (auto oldGlobTriId : triIDtoRemove)
+                    {
+                        std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(oldGlobTriId);
+                        Glob2LocMap.erase(iter_1); // pop last of glob map
+                    }
+
                     sofa::helper::AdvancedTimer::stepEnd("Tetra2TriangleTopologicalMapping::TRIANGLESREMOVED");
                     break;
                 }
@@ -646,20 +591,9 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
                     const sofa::helper::vector<unsigned int> tab = ( static_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
 
-                    sofa::helper::vector<unsigned int> indices;
-
-                    for(unsigned int i = 0; i < tab.size(); ++i)
-                    {
-
-                        indices.push_back(tab[i]);
-                    }
-
-                    sofa::helper::vector<unsigned int>& tab_indices = indices;
-
-                    to_tstm->removePointsWarning(tab_indices, false);
-
+                    to_tstm->removePointsWarning(tab, false);
                     to_tstm->propagateTopologicalChanges();
-                    to_tstm->removePointsProcess(tab_indices, false);
+                    to_tstm->removePointsProcess(tab, false);
 
                     sofa::helper::AdvancedTimer::stepEnd("Tetra2TriangleTopologicalMapping::POINTSREMOVED");
                     break;

@@ -85,7 +85,7 @@ protected:
     Data<bool> noNewTriangles; ///< If true no new triangles are being created
     Data<bool> noInitialTriangles; ///< If true the list of initial triangles is initially empty. Only additional triangles will be added in the list
 
-    std::vector<unsigned int> addedTriangleIndex;
+    sofa::helper::vector<unsigned int> addedTriangleIndex;
 };
 
 } // namespace topology
