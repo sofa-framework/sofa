@@ -151,9 +151,6 @@ private:
     int removeItemsFromTriangleModel(sofa::component::collision::TriangleModel* model, const helper::vector<int>& indices) const;
     int removeItemsFromPointModel(sofa::component::collision::PointModel* model, const helper::vector<int>& indices) const;
 
-#if 0
-    int removeItemsFromTetrahedronModel(sofa::component::collision::TetrahedronModel* model, const helper::vector<int>& indices) const;
-#endif
     int removeItemsFromSphereModel(sofa::component::collision::SphereModel* model, const helper::vector<int>& indices) const;
 
 private:
