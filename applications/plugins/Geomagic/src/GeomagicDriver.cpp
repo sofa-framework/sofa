@@ -191,6 +191,7 @@ GeomagicDriver::GeomagicDriver()
     , d_inputForceFeedback(initData(&d_inputForceFeedback, Vec3d(0,0,0), "inputForceFeedback","Input force feedback in case of no LCPForceFeedback is found (manual setting)"))
     , d_maxInputForceFeedback(initData(&d_maxInputForceFeedback, double(1.0), "maxInputForceFeedback","Maximum value of the normed input force feedback for device security"))
     , m_simulationStarted(false)
+    , m_errorDevice(0)
 {
     this->f_listening.setValue(true);
     m_forceFeedback = NULL;
@@ -216,7 +217,7 @@ GeomagicDriver::~GeomagicDriver()
 void GeomagicDriver::init()
 {
     m_initVisuDone = false;
-    m_errorDevice = false;
+    m_errorDevice = 0;
     HDErrorInfo error;
 
     HDSchedulerHandle hStateHandle = HD_INVALID_HANDLE;
@@ -226,7 +227,7 @@ void GeomagicDriver::init()
     {
         msg_error() << "Failed to initialize the device called " << d_deviceName.getValue().c_str();
         d_omniVisu.setValue(false);
-        m_errorDevice = true;
+        m_errorDevice = error.errorCode;
         //init the positionDevice data to avoid any crash in the scene
         m_posDeviceVisu.clear();
         m_posDeviceVisu.resize(1);
@@ -401,7 +402,7 @@ Mat<4,4, GLdouble> GeomagicDriver::compute_dh_Matrix(double teta,double alpha, d
 
 void GeomagicDriver::reinit()
 {
-    if(!m_errorDevice)
+    if(m_errorDevice != 0)
     {
         Quat * q_b = d_orientationBase.beginEdit();
         q_b->normalize();
@@ -588,7 +589,7 @@ void GeomagicDriver::getMatrix(Mat<4,4, GLdouble> & M1, int index, double teta)
 
 void GeomagicDriver::draw(const sofa::core::visual::VisualParams* vparams)
 {
-    if(m_errorDevice)
+    if(m_errorDevice != 0)
         return;
 
     vparams->drawTool()->saveLastState();
@@ -665,7 +666,7 @@ void GeomagicDriver::draw(const sofa::core::visual::VisualParams* vparams)
 
 void GeomagicDriver::computeBBox(const core::ExecParams*  params, bool  )
 {
-    if(m_errorDevice)
+    if(m_errorDevice != 0)
         return;
 
     SReal minBBox[3] = {1e10,1e10,1e10};
@@ -684,7 +685,7 @@ void GeomagicDriver::computeBBox(const core::ExecParams*  params, bool  )
 
 void GeomagicDriver::handleEvent(core::objectmodel::Event *event)
 {
-    if(m_errorDevice)
+    if(m_errorDevice != 0)
         return;
 
     if (dynamic_cast<sofa::simulation::AnimateBeginEvent *>(event))
