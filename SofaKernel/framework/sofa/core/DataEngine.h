@@ -218,17 +218,23 @@ public:
     SimpleDataEngine() : Inherit1() {}
     virtual ~SimpleDataEngine() {}
 
-    /// Updates your inputs and calls cleanDirty() for you.
-    /// User implementation moved to doUpdate()
-    virtual void update() final
+
+    virtual void updateAllInputs()
     {
         for(auto& input : getInputs())
         {
             static_cast<sofa::core::objectmodel::BaseData*>(input)
                     ->updateIfDirty();
         }
-        cleanDirty();
+    }
+    /// Updates your inputs and calls cleanDirty() for you.
+    /// User implementation moved to doUpdate()
+    virtual void update() final
+    {
+        updateAllInputs();
+        DDGNode::cleanDirty();
         doUpdate();
+        m_dataTracker.clean();
     }
 
     /// Automatically adds the input fields to the datatracker

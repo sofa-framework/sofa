@@ -114,12 +114,12 @@ public:
 private:
     void doUpdate() override
     {
-        // SimpleDataEngines cannot check whether a datafield is dirty or not:
-        // all input fields must be considered dirty in update.
-        if (output.getValue() != NO_CHANGED)
-            output.setValue(NO_CHANGED);
-        else
+        // true only iff the DataTracker associated to the Data 'input' is Dirty
+        // that could only happen if 'input' was dirtied since last update
+        if( m_dataTracker.isDirty( input ) )
             output.setValue(CHANGED);
+        else
+            output.setValue(NO_CHANGED);
     }
 };
 
