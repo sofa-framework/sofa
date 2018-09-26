@@ -14,6 +14,9 @@ namespace simpleapi = sofa::simpleapi;
 
 #include "Binding_PythonController.h"
 
+#include <SofaSimulationGraph/DAGSimulation.h>
+#include <SofaSimulationGraph/DAGNode.h>
+
 std::string toSofaParsableString(const py::handle& p)
 {
     if(py::isinstance<py::list>(p) || py::isinstance<py::tuple>(p))
@@ -41,6 +44,7 @@ std::map<std::string, std::string> toStringMap(const py::dict& dict)
     return tmp;
 }
 
+
 void moduleAddNode(py::module &m) {
     py::class_<sofa::core::objectmodel::BaseNode, Base,
             sofa::core::objectmodel::BaseNode::SPtr>(m, "BaseNode");
@@ -60,8 +64,10 @@ void moduleAddNode(py::module &m) {
 
     /// The Node::create function will be used as the constructor of the
     /// class two version exists.
-    p.def(py::init( [](){ return Node::create("unnamed"); }));
-    p.def(py::init( [](const std::string& name){ return Node::create(name); }));
+    p.def(py::init([](){ return sofa::simulation::graph::DAGNode::SPtr(); }));
+    p.def(py::init( [](const std::string& name){
+        return sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>(name);
+    }));
 
     /// Object's related method. A single addObject is now available
     /// and the createObject is deprecated printing a warning for old scenes.
@@ -100,6 +106,8 @@ void moduleAddNode(py::module &m) {
 
     p.def("__getattr__", [](Node& self, const std::string& name) -> py::object
     {
+        /// Custom properties.
+
         BaseObject *object = self.getObject(name);
         if (object)
             return py::cast(object);

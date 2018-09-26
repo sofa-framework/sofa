@@ -1,27 +1,38 @@
+import unittest
 import Sofa
 
+class TestBaseObject(unittest.TestCase):
+        def __init__(self,a):
+                unittest.TestCase.__init__(self,a)
+                    
+        def test_createObjectWithParam(self):
+                root = Sofa.Node("rootNode")
+                c = root.createObject("MechanicalObject", name="t", position=[[0,0,0],[1,1,1],[2,2,2]])
+                self.assertTrue( c is not None )
+        
+        def test_createObjectWithInvalidParamName(self):
+                ## This one should raise an error because of 'v' should rise a type error.
+                root = Sofa.Node("rootNode")
+                root.createObject("MechanicalObject", name="tt", v=[[0,0,0],[1,1,1],[2,2,2]])
+                self.fail()
+
+        def test_createObjectWithInvalidParamValue(self):
+                ## This one should raise an error because of 'v' should rise a type error.
+                root = Sofa.Node("rootNode")
+                root.createObject("MechanicalObject", name="tt", v="xmoi")
+                self.fail()
+                
+        def test_data_property(self):
+                root = Sofa.Node("rootNode")
+                c = root.createObject("MechanicalObject", name="t", position=[[0,0,0],[1,1,1],[2,2,2]])
+                self.assertTrue(hasattr(c, "__data__"))
+                self.assertGreater(len(c.__data__), 0)
+                self.assertTrue("name" in c.__data__)
+                self.assertTrue(hasattr(c.__data__, "position"))
+                self.assertFalse(hasattr(c.__data__, "invalidEntry"))
+                self.assertTrue( isinstance(c.__data__, Sofa.DataDict))
+                      
+                                       
 def createScene(rootNode):
-        node1 = rootNode.createChild("node1")
-        node2 = rootNode.addChild(Sofa.Node())
-        node3 = rootNode.addChild(Sofa.Node("node3"))
-
-        obj1 = node1.createObject("MechanicalObject", name="mmm", position=[[1.0,2.0,3.0],[4.0,5.0,6.0]])
-
-        #print(str(type(obj.name)))
-        #print(str(type(obj.position)))
-        
-        #print(str(len(obj.name)))
-        #print(str(len(obj.position)))
-        
-        #print(":"+str(obj.position.dim()))
-
-        #print("position[1]: "+str(obj.position[0]))
-        #print("position[0:1]: "+str(obj.position[0:1]))
-        #print("position[1,1]: "+str(obj.position[1,1]))
-        #print("position[0:1,0:]: "+str(obj.position[0:1,0:]))
-        #print("position[0:1,0:]: "+str(obj.position[OnEven]))
-        
-
-        #ASSERT_NEQ( node.getObject("m"), None )
-        #ASSERT_NEQ( node.m.position, None )
-        #ASSERT_EQ( node.m.position.tolist(), [[1.0,2.0,3.0],[4.0,5.0,6.0]] )
+        suite = unittest.TestLoader().loadTestsFromTestCase(TestBaseObject)
+        unittest.TextTestRunner(verbosity=2).run(suite)

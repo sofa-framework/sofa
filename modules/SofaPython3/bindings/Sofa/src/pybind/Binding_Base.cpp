@@ -9,6 +9,7 @@ using sofa::core::objectmodel::BaseLink;
 #include "Binding_BaseData.h"
 using sofa::defaulttype::AbstractTypeInfo;
 
+
 py::object toPython(BaseData* d)
 {
     const AbstractTypeInfo& nfo{ *(d->getValueTypeInfo()) };
@@ -44,6 +45,18 @@ py::object toPython(BaseData* d)
     return py::cast(d->getValueString());
 }
 
+py::object toPython2(BaseData* d)
+{
+    const AbstractTypeInfo& nfo{ *(d->getValueTypeInfo()) };
+
+    if(nfo.Container())
+        return py::cast(reinterpret_cast<DataAsContainer*>(d));
+    //if(nfo.Text())
+    //    return py::cast(reinterpret_cast<DataAsString*>(d));
+    return toPython(d);
+}
+
+
 void fromPython(BaseData* d, py::object& o)
 {
     const AbstractTypeInfo& nfo{ *(d->getValueTypeInfo()) };
@@ -58,6 +71,13 @@ void fromPython(BaseData* d, py::object& o)
     msg_error("SofaPython3") << "binding problem";
 }
 
+class DataDict
+{
+public:
+    Base::SPtr owner;
+    DataDict(Base::SPtr b){ owner = b; }
+};
+
 py::object BindingBase::GetAttr(Base& self, const std::string& s)
 {
     /// I'm not sure implicit behavior is nice but we could do:
@@ -70,15 +90,10 @@ py::object BindingBase::GetAttr(Base& self, const std::string& s)
     ///                raise an exception or search using difflib for close match.
     BaseData* d = self.findData(s);
     if(d!=nullptr)
-    {
-        const AbstractTypeInfo& nfo{ *(d->getValueTypeInfo()) };
+        return toPython2(d);
 
-        if(nfo.Container())
-            return py::cast(reinterpret_cast<DataAsContainer*>(d));
-        if(nfo.Text())
-            return py::cast(reinterpret_cast<DataAsString*>(d));
-        return toPython(d);
-    }
+    if( s == "__data__")
+        return py::cast( DataDict(&self) );
 
     throw py::attribute_error(s);
 }
@@ -125,8 +140,104 @@ void BindingBase::SetAttr(py::object self, const std::string& s, py::object& val
     throw py::attribute_error();
 }
 
+class DataDictIterator
+{
+public:
+    Base::SPtr owner;
+    size_t     index=0;
+    bool       key;
+    bool       value;
+    DataDictIterator(Base::SPtr owner_, bool withKey, bool withValue)
+    {
+        owner=owner_;
+        index=0;
+        key=withKey;
+        value=withValue;
+    }
+};
+
 void moduleAddBase(py::module &m)
 {
+    py::class_<DataDictIterator> ddi(m, "DataDictIterator");
+    ddi.def("__iter__", [](DataDictIterator& d)
+    {
+        return d;
+    });
+    ddi.def("__next__", [](DataDictIterator& d) -> py::object
+    {
+        if(d.index>=d.owner->getDataFields().size())
+            throw py::stop_iteration();
+
+        BaseData* data = d.owner->getDataFields()[d.index++];
+        if(!d.key)
+            return toPython(data);
+
+        if(!d.value)
+            return py::cast(data->getName());
+
+        py::tuple t {2};
+        t[0] = data->getName();
+        t[1] = toPython(data);
+        return t;
+    });
+
+    py::class_<DataDict> d(m, "DataDict");
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    d.def("__len__", [](DataDict& self)
+    {
+        return self.owner->getDataFields().size();
+    });
+
+    d.def("__getitem__",[](DataDict& self, const size_t& i)
+    {
+        const Base::VecData& vd = self.owner->getDataFields();
+        if(i > vd.size())
+            throw py::index_error(std::to_string(i));
+        return toPython2(vd[i]);
+    });
+
+    d.def("__getitem__",[](DataDict& self, const std::string& s)
+    {
+        BaseData* d = self.owner->findData(s);
+        if(d!=nullptr)
+        {
+            const AbstractTypeInfo& nfo{ *(d->getValueTypeInfo()) };
+
+            if(nfo.Container())
+                return py::cast(reinterpret_cast<DataAsContainer*>(d));
+            if(nfo.Text())
+                return py::cast(reinterpret_cast<DataAsString*>(d));
+            return py::cast(d);
+        }
+        throw py::attribute_error(s);
+    });
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    d.def("__setitem__",[](DataDict& d, const std::string& s, py::object v)
+    {
+        return 0.0;
+    });
+
+    d.def("__iter__", [](DataDict& d)
+    {
+        return DataDictIterator(d.owner, true, false);
+    });
+    d.def("keys", [](DataDict& d)
+    {
+        return DataDictIterator(d.owner, true, false);
+    });
+    d.def("values", [](DataDict& d)
+    {
+        return DataDictIterator(d.owner, false, true);
+    });
+    d.def("items", [](DataDict& d)
+    {
+        return DataDictIterator(d.owner, true, true);
+    });
+
+
+
     py::class_<Base, Base::SPtr> p(m, "Base");
     p.def("getData", [](Base& self, const std::string& s) -> py::object
     {
@@ -143,7 +254,6 @@ void moduleAddBase(py::module &m)
         }
         return py::none();
     });
-
 
     p.def("__getattr__", &BindingBase::GetAttr);
     p.def("__setattr__", &BindingBase::SetAttr);

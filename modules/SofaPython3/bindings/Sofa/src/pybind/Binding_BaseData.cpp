@@ -42,7 +42,7 @@ void moduleAddDataAsContainer(py::module& m)
 
     p.def("__getitem__", [](DataAsContainer& self, py::size_t index) -> py::object
     {
-        std::cout << " single axis " << std::endl ;
+        std::cout << " single axis "<< index << std::endl ;
         return py::none();
     });
 
