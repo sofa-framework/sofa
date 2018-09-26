@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<Node 	name="root" gravity="0 0 0" dt="1"  >
+  <RequiredPlugin pluginName="image"/>
+  <RequiredPlugin name="MultiThreading" pluginName="MultiThreading"/>
+  <AnimationLoopParallelScheduler name="mainLoop" threadNumber="2" />
+  	<Node name="imageloader">
+  	<DefaultAnimationLoop name="imageloader" />
+  	<ImageContainer  name="image" filename="textures/cubemap_bk.bmp" transform="-5 -10 0 0 0 0 0.1 0.1 15 0 1 1" drawBB="1"/>
+  	</Node>
+	
+	<Node name="imageviewer">
+	<DefaultAnimationLoop name="imageviewer" /> 
+  	<ImageViewer  name="viewer" transform="-5 -10 0 0 0 0 0.1 0.1 15 0 1 1"/>
+	</Node>
+
+<OglModel fileMesh="mesh/cube.obj" color="1 1 0.5 1"/>
+
+<DataExchange name="exchangeData1" template="ImageUC" from="@imageloader/image.inputImage" to="@imageviewer/viewer.outputImage" />
+</Node>
