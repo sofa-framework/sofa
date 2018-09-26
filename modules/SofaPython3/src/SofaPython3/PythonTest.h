@@ -55,7 +55,7 @@ class SOFAPYTHON3_API PythonTest : public BaseTest,
 {
 public:
     PythonTest();
-    ~PythonTest();
+    virtual ~PythonTest();
 
     void run( const PythonTestData& );
 };

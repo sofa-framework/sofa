@@ -41,7 +41,10 @@ MSG_REGISTER_CLASS(sofapython3::PythonEnvironment, "SofaPython3::PythonEnvironme
 #include <sofa/simulation/SceneLoaderFactory.h>
 using sofa::simulation::SceneLoaderFactory;
 
-#include "Python.h"
+//#include "Python.h"
+
+#include <pybind11/embed.h>
+namespace py = pybind11;
 
 #include "SceneLoaderPY3.h"
 using sofapython3::SceneLoaderPY3;
@@ -77,6 +80,7 @@ public:
             PyMem_Free(s);
         }
         m_argv.clear();
+        addedPath.clear();
     }
 
     wchar_t* getDataAt(unsigned int index)
@@ -89,6 +93,7 @@ public:
         return &m_argv[0];
     }
 
+    std::set<std::string> addedPath;
 private:
     std::vector<wchar_t*> m_argv;
 };
@@ -131,7 +136,9 @@ void PythonEnvironment::Init()
 
     if ( !Py_IsInitialized() )
     {
-        Py_Initialize();
+        msg_info("SofaPython3") << "Intializing python";
+        //Py_Initialize();
+        py::initialize_interpreter();
     }
 
     PyEval_InitThreads();
@@ -201,16 +208,18 @@ void PythonEnvironment::Release()
 {
     /// Finish the Python Interpreter
     /// obviously can't use raii here
-    if( Py_IsInitialized() ) {
+    if(  Py_IsInitialized() ) {
         PyGILState_Ensure();
-        Py_Finalize();
+        py::finalize_interpreter();
+        getStaticData()->reset();
     }
+    msg_info("SofaPython3") << "Releasing the python environment." ;
 }
 
 void PythonEnvironment::addPythonModulePath(const std::string& path)
 {
-    static std::set<std::string> addedPath;
-    if (addedPath.find(path)==addedPath.end()) {
+    PythonEnvironmentData* data = getStaticData() ;
+    if (  data->addedPath.find(path)==data->addedPath.end()) {
         // note not to insert at first 0 place
         // an empty string must be at first so modules can be found in the current directory first.
 
@@ -220,7 +229,7 @@ void PythonEnvironment::addPythonModulePath(const std::string& path)
         }
 
         msg_info("SofaPython3") << "Added '" + path + "' to sys.path";
-        addedPath.insert(path);
+        data->addedPath.insert(path);
     }
 }
 
