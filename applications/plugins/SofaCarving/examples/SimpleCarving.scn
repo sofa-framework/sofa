@@ -38,7 +38,7 @@
   <Node name="carvingElement">
 		<MechanicalObject name="Particles" template="Vec3d" position="0 0 1.4" velocity="0 0 0"/>
 		<UniformMass name="Mass" totalMass="1.0" />
-		<SphereModel radius="0.02" tags="CarvingTool"/>
+		<SphereModel name="toolS" radius="0.02" tags="CarvingTool"/>
   </Node>
   
      
