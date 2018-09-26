@@ -69,13 +69,6 @@ static PyObject * PythonScriptDataEngine_parse(PyObject * self, PyObject * /*arg
 }
 
 
-static PyObject * PythonScriptDataEngine_cleanDirty(PyObject * self, PyObject */* args*/)
-{
-    ScriptDataEngine* _this = sofa::py::unwrap<ScriptDataEngine>(self);
-    _this->cleanDirty();
-    Py_RETURN_NONE;
-}
-
 struct error { };
 
 template<class T>
@@ -118,7 +111,6 @@ SP_CLASS_METHODS_BEGIN(PythonScriptDataEngine)
 SP_CLASS_METHOD(PythonScriptDataEngine,parse)
 SP_CLASS_METHOD(PythonScriptDataEngine,init)
 SP_CLASS_METHOD_DOC(PythonScriptDataEngine, update, "method called everytime a component tries to access one of this engine's outputs while at least one of its inputs is dirty")
-SP_CLASS_METHOD_DOC(PythonScriptDataEngine, cleanDirty, "A method to clean the engine's inputs. To call before trying to access the outputs")
 SP_CLASS_METHODS_END
 
 
