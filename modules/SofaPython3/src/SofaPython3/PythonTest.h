@@ -5,6 +5,9 @@
 #include "config.h"
 #include <sofa/helper/testing/BaseTest.h>
 
+#include <boost/filesystem/path.hpp>
+using boost::filesystem::path;
+
 namespace sofapython3
 {
 
@@ -58,6 +61,13 @@ public:
     virtual ~PythonTest();
 
     void run( const PythonTestData& );
+
+    /// This function is called by gtest to generate the test from the filename. This is nice
+    /// As this allows to do mytest --gtest_filter=*MySomething*
+    static std::string getTestName(const testing::TestParamInfo<PythonTestData>& p)
+    {
+        return  std::to_string(p.index)+"_"+path(p.param.filepath).stem().string();
+    }
 };
 
 }

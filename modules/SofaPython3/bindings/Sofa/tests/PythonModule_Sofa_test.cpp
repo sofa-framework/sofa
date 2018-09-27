@@ -44,10 +44,12 @@ static struct PythonModule_Sofa_tests : public PythonTestList
     }
 } python_tests;
 
-/// run test list
+/// run test list using the custom name function getTestName.
+/// this allows to do gtest_filter=*FileName*
 INSTANTIATE_TEST_CASE_P(Batch,
                         PythonTest,
-                        ::testing::ValuesIn(python_tests.list));
+                        ::testing::ValuesIn(python_tests.list),
+                        PythonTest::getTestName);
 
 TEST_P(PythonTest, all_tests) { run(GetParam()); }
 

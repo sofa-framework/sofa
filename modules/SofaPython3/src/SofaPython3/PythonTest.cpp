@@ -49,6 +49,7 @@ void PythonTest::run( const PythonTestData& data )
     {
         EXPECT_MSG_NOEMIT(Error);
         PythonEnvironment::setArguments(data.filepath, data.arguments);
+        simpleapi::importPlugin("SofaAllCommonComponents");
         auto simulation = simpleapi::createSimulation();
         sofa::simulation::setSimulation(simulation);
         auto root = simulation->load(data.filepath.c_str());
