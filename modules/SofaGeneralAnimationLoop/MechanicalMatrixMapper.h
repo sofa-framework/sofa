@@ -162,13 +162,12 @@ public:
 
 protected:
 
+    Data<helper::vector<std::string>> d_forceFieldList;
     SingleLink < MechanicalMatrixMapper<DataTypes1, DataTypes2>, sofa::simulation::Node , BaseLink::FLAG_STOREPATH > l_nodeToParse;
-
     SingleLink < MechanicalMatrixMapper<DataTypes1, DataTypes2>, sofa::core::behavior::BaseMechanicalState , BaseLink::FLAG_NONE > l_mechanicalState;
     SingleLink < MechanicalMatrixMapper<DataTypes1, DataTypes2>, sofa::core::behavior::BaseMass , BaseLink::FLAG_NONE > l_mappedMass;
     MultiLink  < MechanicalMatrixMapper<DataTypes1, DataTypes2>, sofa::core::behavior::BaseForceField, BaseLink::FLAG_NONE > l_forceField;
 
-    Data<helper::vector<std::string>> d_forceFieldList;
 
     size_t m_nbInteractionForceFields;
 

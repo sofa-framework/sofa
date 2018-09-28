@@ -348,7 +348,10 @@ void MechanicalMatrixMapper<DataTypes1, DataTypes2>::addKToMatrix(const Mechanic
             }
 
         }
-        parseNode(l_nodeToParse.get(),l_nodeToParse.get()->mass->getName());
+        std::string massName;
+        if (l_nodeToParse.get()->mass)
+            massName.append(l_nodeToParse.get()->mass->getName());
+        parseNode(l_nodeToParse.get(),massName);
         m_nbInteractionForceFields = currentNbInteractionFFs;
     }
 
