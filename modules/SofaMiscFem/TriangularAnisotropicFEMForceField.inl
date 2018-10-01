@@ -298,7 +298,7 @@ void TriangularAnisotropicFEMForceField<DataTypes>::draw(const core::visual::Vis
 
     helper::vector<Deriv>& lfd = *(localFiberDirection.beginEdit());
 
-    if (showFiber.getValue() && lfd.size() >= (unsigned)this->_topology->getNbTriangles())
+    if (showFiber.getValue() && lfd.size() >= this->_topology->getNbTriangles())
     {
         vparams->drawTool()->saveLastState();
         sofa::defaulttype::RGBAColor color(0, 0, 0, 1.0);
