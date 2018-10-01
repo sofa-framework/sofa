@@ -92,7 +92,7 @@ BaseObject::SPtr createObject(Node::SPtr parent, const std::string& type, const 
     BaseObjectDescription desc(type.c_str(),type.c_str());
     for(auto& kv : params)
     {
-        desc.setAttribute(kv.first.c_str(), kv.second.c_str());
+        desc.setAttribute(kv.first, kv.second);
     }
 
     /// Create the object.
@@ -106,6 +106,32 @@ BaseObject::SPtr createObject(Node::SPtr parent, const std::string& type, const 
         msg_error(parent.get()) << msg.str() ;
         return NULL;
     }
+
+    for( auto it : desc.getAttributeMap() )
+    {
+        if (!it.second.isAccessed())
+        {
+            msg_warning(obj.get()) <<"Unused Attribute: \""<<it.first <<"\" with value: \"" <<(std::string)it.second<<"\" (" << obj->getPathName() << ")" ;
+        }
+    }
+
+    return obj ;
+}
+
+BaseObject::SPtr createObject(Node::SPtr parent, const std::string& type, BaseObjectDescription& desc)
+{
+    /// Create the object.
+    BaseObject::SPtr obj = ObjectFactory::getInstance()->createObject(parent.get(), &desc);
+    if (obj==0)
+    {
+        std::stringstream msg;
+        msg << "Component '" << desc.getName() << "' of type '" << desc.getAttribute("type","") << "' failed:" << msgendl ;
+        for (std::vector< std::string >::const_iterator it = desc.getErrors().begin(); it != desc.getErrors().end(); ++it)
+            msg << " " << *it << msgendl ;
+        msg_error(parent.get()) << msg.str() ;
+        return NULL;
+    }
+
     return obj ;
 }
 
@@ -116,6 +142,13 @@ Node::SPtr createChild(Node::SPtr node, const std::string& name, const std::map<
     {
         desc.setAttribute(kv.first.c_str(), kv.second.c_str());
     }
+    Node::SPtr tmp = node->createChild(name);
+    tmp->parse(&desc);
+    return tmp;
+}
+
+Node::SPtr createChild(Node::SPtr node, const std::string& name, BaseObjectDescription& desc)
+{
     Node::SPtr tmp = node->createChild(name);
     tmp->parse(&desc);
     return tmp;

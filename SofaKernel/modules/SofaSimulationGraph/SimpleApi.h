@@ -39,7 +39,7 @@ namespace sofa
 {
 namespace simpleapi
 {
-
+using sofa::core::objectmodel::BaseObjectDescription ;
 using sofa::core::objectmodel::BaseObject ;
 using sofa::simulation::Simulation ;
 using sofa::simulation::Node ;
@@ -54,8 +54,15 @@ Node::SPtr SOFA_SIMULATION_GRAPH_API createRootNode( Simulation::SPtr, const std
 BaseObject::SPtr SOFA_SIMULATION_GRAPH_API createObject( Node::SPtr parent, const std::string& type,
     const std::map<std::string, std::string>& params = std::map<std::string, std::string>{} );
 
+BaseObject::SPtr SOFA_SIMULATION_GRAPH_API createObject( Node::SPtr parent, const std::string& type,
+    BaseObjectDescription& desc );
+
 Node::SPtr SOFA_SIMULATION_GRAPH_API createChild( Node::SPtr node, const std::string& name,
     const std::map<std::string, std::string>& params = std::map<std::string, std::string>{} );
+
+Node::SPtr SOFA_SIMULATION_GRAPH_API createChild( Node::SPtr node, const std::string& name,
+    BaseObjectDescription& desc );
+
 
 void SOFA_SIMULATION_GRAPH_API dumpScene(Node::SPtr root) ;
 
