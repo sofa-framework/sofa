@@ -118,6 +118,9 @@ public:
     /// Set an attribute. Override any existing value
     virtual void setAttribute(const std::string& attr, const char* val);
 
+    /// Set an attribute. Override any existing value
+    virtual void setAttribute(const std::string& attr, const std::string& val);
+
     /// Remove an attribute given its name
     virtual bool removeAttribute(const std::string& attr);
 

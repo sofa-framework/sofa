@@ -167,9 +167,13 @@ int BaseObjectDescription::getAttributeAsInt(const std::string& attr, const int 
     return retval ;
 }
 
+void BaseObjectDescription::setAttribute(const std::string& attr, const char* val)
+{
+    attributes[attr] = val;
+}
 
 /// Set an attribute. Override any existing value
-void BaseObjectDescription::setAttribute(const std::string& attr, const char* val)
+void BaseObjectDescription::setAttribute(const std::string& attr, const std::string &val)
 {
     attributes[attr] = val;
 }
