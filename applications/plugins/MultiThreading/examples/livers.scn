@@ -10,7 +10,7 @@
     <DefaultPipeline name="CollisionPipeline" verbose="0" />
     <BruteForceDetection name="N2" />
     <DefaultContactManager name="collision response" response="default" />
-	<LCPConstraintSolver tolerance="1e-3" maxIt="100" initial_guess="false" build_lcp="true"  printLog="0" mu="0.2"/>
+	  <LCPConstraintSolver tolerance="1e-3" maxIt="100" initial_guess="false" build_lcp="true"  printLog="0" mu="0.2"/>
     <Node name="liver1" gravity="0 -9.81 0">
       <EulerImplicitSolver name="cg_odesolver"   rayleighStiffness="0.1" rayleighMass="0.1" />
       <CGLinearSolver name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09" />
@@ -21,7 +21,7 @@
       <DiagonalMass  name="computed using mass density" massDensity="1" />
       <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" />
       <FixedConstraint  name="FixedConstraint" indices="39" />
-	  <UncoupledConstraintCorrection name="liver1_ConstraintCorrection"/>	
+	    <UncoupledConstraintCorrection name="liver1_ConstraintCorrection" compliance="1.0"/>	
       <Node name="Visu1" tags="Visual" gravity="0 -9.81 0">
         <OglModel  name="VisualModel" fileMesh="mesh/liver-smooth.obj"  translation="10 0 0"/>
         <BarycentricMapping name="visual mapping" input="@../dofs1" output="@VisualModel" />
@@ -51,7 +51,7 @@
       <DiagonalMass  name="computed using mass density" massDensity="1" />
       <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" />
       <FixedConstraint  name="FixedConstraint" indices="64" />
-	  <UncoupledConstraintCorrection name="liver2_ConstraintCorrection"/>
+	    <UncoupledConstraintCorrection name="liver2_ConstraintCorrection" compliance="1.0"/>
       <Node name="Visu2" tags="Visual" gravity="0 -9.81 0">
         <OglModel  name="VisualModel" fileMesh="mesh/liver-smooth.obj" translation="-10 0 0"/>
         <BarycentricMapping name="visual mapping" input="@../dofs2" output="@VisualModel" />
@@ -81,7 +81,7 @@
       <DiagonalMass  name="computed using mass density" massDensity="1" />
       <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" />
       <FixedConstraint  name="FixedConstraint" indices="72" />
-	  <UncoupledConstraintCorrection name="liver3_ConstraintCorrection"/>
+	    <UncoupledConstraintCorrection name="liver3_ConstraintCorrection" compliance="1.0"/>
       <Node name="Visu3" tags="Visual" gravity="0 -9.81 0">
         <OglModel  name="VisualModel" fileMesh="mesh/liver-smooth.obj" translation="10 10 0"/>
         <BarycentricMapping name="visual mapping" input="@../dofs3" output="@VisualModel" />
@@ -112,7 +112,7 @@
       <DiagonalMass  name="computed using mass density" massDensity="1" />
       <TetrahedralCorotationalFEMForceField template="Vec3d" name="FEM" method="large" poissonRatio="0.3" youngModulus="3000" computeGlobalMatrix="0" />
       <FixedConstraint  name="FixedConstraint" indices="96" />
-	  <UncoupledConstraintCorrection name="liver4_ConstraintCorrection"/>
+	    <UncoupledConstraintCorrection name="liver4_ConstraintCorrection" compliance="1.0"/>
       <Node name="Visu4" tags="Visual" gravity="0 -9.81 0">
         <OglModel  name="VisualModel" fileMesh="mesh/liver-smooth.obj" translation="-10 10 0"/>
         <BarycentricMapping name="visual mapping" input="@../dofs4" output="@VisualModel" />
