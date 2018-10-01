@@ -160,7 +160,6 @@ void GtestMessageFrameFailureWhenMissing::finalize(){
                                              << "' was expected but none was received. " << std::endl ;
 }
 
-
 GtestMessageFrameIgnore::GtestMessageFrameIgnore(Message::Type type)
 {
     m_type = type;
@@ -181,6 +180,9 @@ GtestMessageHandler::GtestMessageHandler(Message::Class mclass)
 
 void GtestMessageHandler::process(Message& m)
 {
+    if(m_gtestframes[m.type()].size() == 0)
+        return;
+
     m_gtestframes[m.type()].back()->process(m) ;
 }
 
@@ -194,11 +196,13 @@ GtestMessageHandler::~GtestMessageHandler()
 }
 
 void GtestMessageHandler::pushFrame(Message::Type type,
-                                    GtestMessageFrame* frame){
+                                    GtestMessageFrame* frame)
+{
     m_gtestframes[type].push_back(frame) ;
 }
 
-void GtestMessageHandler::popFrame(Message::Type type){
+void GtestMessageHandler::popFrame(Message::Type type)
+{
     m_gtestframes[type].pop_back() ;
 }
 
@@ -207,8 +211,10 @@ MessageHandler* MainGtestMessageHandler::getInstance(){
 }
 
 GtestMessageHandler& MainGtestMessageHandlerPrivate::getInstance(){
-    static GtestMessageHandler instance(Message::Runtime) ;
-    return instance ;
+    static GtestMessageHandler *instance {nullptr};
+    if( instance == nullptr )
+        instance = new GtestMessageHandler(Message::Runtime) ;
+    return *instance ;
 }
 
 void MainGtestMessageHandlerPrivate::pushFrame(Message::Type type, GtestMessageFrame *frame){

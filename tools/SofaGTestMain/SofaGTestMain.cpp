@@ -26,9 +26,9 @@ int main(int argc, char **argv)
     int ret =  RUN_ALL_TESTS();
 
 #ifdef SOFA_HAVE_DAG
-    sofa::simulation::tree::cleanup();
-#endif
     sofa::simulation::graph::cleanup();
+#endif
+    sofa::simulation::tree::cleanup();
 
     return ret;
 }
