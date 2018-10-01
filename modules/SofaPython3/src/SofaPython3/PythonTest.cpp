@@ -54,7 +54,7 @@ void PythonTest::run( const PythonTestData& data )
         sofa::simulation::setSimulation(simulation);
         auto root = simulation->load(data.filepath.c_str());
     }
-    PythonEnvironment::Release();
+    //PythonEnvironment::Release();
 }
 
 /// add a Python_test_data with given path

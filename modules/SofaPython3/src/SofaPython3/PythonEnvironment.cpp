@@ -213,7 +213,7 @@ void PythonEnvironment::Release()
         py::finalize_interpreter();
         getStaticData()->reset();
     }
-    msg_info("SofaPython3") << "Releasing the python environment." ;
+
 }
 
 void PythonEnvironment::addPythonModulePath(const std::string& path)
@@ -278,7 +278,7 @@ struct raii {
     }
 
     ~raii() {
-        PythonEnvironment::Release();
+        //PythonEnvironment::Release();
     }
 };
 
