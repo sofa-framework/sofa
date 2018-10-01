@@ -1,0 +1,14 @@
+#include "Submodule_Simulation.h"
+
+#include "Binding_Node.h"
+#include "Binding_Simulation.h"
+
+/// The first parameter must be named the same as the module file to load.
+py::module addSubmoduleSimulation(py::module& module)
+{
+  py::module simu = module.def_submodule("Simulation");
+  moduleAddNode(simu);
+  moduleAddSimulation(simu);
+
+  return simu;
+}
