@@ -1,21 +1,51 @@
 cmake_minimum_required(VERSION 3.1)
-project(PythonModule_Sofa)
+project(SofaPython3_Sofa VERSION 1.0)
 
 ####################################################################################################
 ### Module dependencies
 ####################################################################################################
+find_package(SofaPython3 REQUIRED)
 
 # This must be done before doing the find_package(pybind11)
 #set(PYBIND11_PYTHON_VERSION 3.6m)
 #set(PYTHON_EXECUTABLE python3)
 
-#include(src/cython/CMakeBuilds.cmake)
-include(src/pybind/CMakeBuilds.cmake)
+set(HEADER_FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Binding_Base.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Binding_BaseData.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Binding_BaseObject.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Binding_PythonController.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Submodule_Core.h
 
-set(EXAMPLES_FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/examples/example1.py
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Simulation/Binding_Node.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Simulation/Binding_Simulation.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Simulation/Submodule_Simulation.h
+)
+
+set(SOURCE_FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Binding_Base.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Binding_BaseData.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Binding_BaseObject.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Binding_PythonController.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Core/Submodule_Core.cpp
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Simulation/Binding_Node.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Simulation/Binding_Simulation.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Simulation/Submodule_Simulation.cpp
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/SofaPython3/Sofa/Module_Sofa.cpp
+)
+
+sofa_add_pybind11_module(
+             TARGET SofaPython3_Sofa
+             SOURCES  ${SOURCE_FILES} ${HEADER_FILES}
+             DEPENDS SofaCore SofaSimulationGraph pybind11::module
+             OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/package/"
+             NAME Sofa
     )
 
+target_include_directories(SofaPython3_Sofa PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>/src")
+target_include_directories(SofaPython3_Sofa PUBLIC "$<INSTALL_INTERFACE:include>")
 
 ## Python configuration file (build tree), the lib in the source dir (easier while developping .py files)
 file(WRITE "${CMAKE_BINARY_DIR}/etc/sofa/python.d/Sofa" "${CMAKE_CURRENT_SOURCE_DIR}/package/")
@@ -24,11 +54,11 @@ file(WRITE "${CMAKE_BINARY_DIR}/etc/sofa/python.d/Sofa" "${CMAKE_CURRENT_SOURCE_
 file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/installed-Sofa-config"
              "modules/Sofa/python/")
 
-
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/installed-Sofa-config"
          DESTINATION "etc/sofa/python.d"
          RENAME "Sofa")
 
-#install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/module/Sofa DESTINATION modules/Sofa/python)
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${PROJECT_NAME}Config.cmake.in"
+               "${CMAKE_BINARY_DIR}/cmake/${PROJECT_NAME}Config.cmake")
 
 add_subdirectory(tests)

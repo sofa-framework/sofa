@@ -83,19 +83,6 @@ sofa::simulation::Node::SPtr SceneLoaderPY3::load(const char *filename)
     return root;
 }
 
-py::module import(const std::string& module, const std::string& path, py::object& globals)
-{
-    py::dict locals;
-    locals["module_name"] = py::cast(module); // have to cast the std::string first
-    locals["path"]        = py::cast(path);
-
-    py::eval<py::eval_statements>(            // tell eval we're passing multiple statements
-                                              "import imp\n"
-                                              "new_module = imp.load_module(module_name, open(path), path, ('py', 'U', imp.PY_SOURCE))\n",
-                                              globals,
-                                              locals);
-    return py::cast<py::module>(locals["new_module"]);
-}
 
 void SceneLoaderPY3::loadSceneWithArguments(const char *filename,
                                             const std::vector<std::string>& arguments,
@@ -111,7 +98,7 @@ void SceneLoaderPY3::loadSceneWithArguments(const char *filename,
 
         SetDirectory localDir(filename);
         std::string basename = SetDirectory::GetFileNameWithoutExtension(SetDirectory::GetFileName(filename).c_str());
-        module = import(basename, SetDirectory::GetFileName(filename), globals);
+        module = PythonEnvironment::importFromFile(basename, SetDirectory::GetFileName(filename), globals);
         if(!module.attr("createScene"))
         {
             msg_error() << "Missing createScene function";

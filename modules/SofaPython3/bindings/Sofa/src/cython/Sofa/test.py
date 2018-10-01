@@ -1,2 +1,0 @@
-def myTest():
-        print("TEST")

@@ -1,7 +1,6 @@
 import unittest
 import gc
 import Sofa
-import SofaRuntime
 
 class MyController(Sofa.PythonController):
         """This is my custom controller
@@ -28,7 +27,7 @@ class MyController(Sofa.PythonController):
                 print(" Python::reinit() at "+str(self))
                 #self.reinited += 1
   
-class TestScriptController(unittest.TestCase):
+class Test(unittest.TestCase):
          def test_constructor(self):
                  c = Sofa.PythonController()
                  c.init()
@@ -63,8 +62,10 @@ class TestScriptController(unittest.TestCase):
                  self.assertEqual( o.inited, 2 ) 
                  self.assertEqual( o.reinited, 2 ) 
 
-def createScene(rootNode):
-        suite = unittest.TestLoader().loadTestsFromTestCase(TestScriptController)
+def runTests():
+        suite = unittest.TestLoader().loadTestsFromTestCase(Test)
         return unittest.TextTestRunner(verbosity=2).run(suite).wasSuccessful()
     
+def createScene(rootNode):
+        runTests()
 

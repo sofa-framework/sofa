@@ -3,7 +3,11 @@ import Sofa
 import unittest
 import sys
 
-class TestNode(unittest.TestCase):                
+class Test(unittest.TestCase):
+        def test_SimulationConstructor(self):
+            root = Sofa.Simulation.Node("rootNode")
+            self.assertEqual(root.name, "rootNode")
+
         def test_Constructor(self):
                 root = Sofa.Node("rootNode")                               
                 self.assertEqual(root.name, "rootNode")
@@ -69,6 +73,6 @@ class TestNode(unittest.TestCase):
                 self.assertTrue(isinstance(root.__data__, Sofa.DataDict))
                         
 ## If we run a test scene from sofa we can access to the created scene. 
-def createScene(rootNode):
-        suite = unittest.TestLoader().loadTestsFromTestCase(TestNode)
-        unittest.TextTestRunner(verbosity=2).run(suite)
+def runTests():
+        suite = unittest.TestLoader().loadTestsFromTestCase(Test)
+        return unittest.TextTestRunner(verbosity=2).run(suite).wasSuccessful()

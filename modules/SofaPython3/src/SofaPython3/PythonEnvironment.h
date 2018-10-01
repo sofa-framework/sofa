@@ -31,8 +31,11 @@
 #include <SofaPython3/config.h>
 #include <sofa/simulation/SceneLoaderFactory.h>
 
+#include <pybind11/pybind11.h>
+
 namespace sofapython3
 {
+namespace py = pybind11;
 using sofa::simulation::SceneLoader ;
 
 /// Forward definition
@@ -43,6 +46,10 @@ class SOFAPYTHON3_API PythonEnvironment
 public:
     static void Init();
     static void Release();
+
+    static py::module importFromFile(const std::string& module,
+                                     const std::string& path,
+                                     py::object& globals);
 
     /// Add a path to sys.path, the list of search path for Python modules.
     static void addPythonModulePath(const std::string& path);

@@ -16,9 +16,10 @@ using sofa::helper::testing::BaseTest;
 /// a Python_test is defined by a python filepath and optional arguments
 struct SOFAPYTHON3_API PythonTestData
 {
-    PythonTestData( const std::string& filepath, const std::vector<std::string>& arguments );
+    PythonTestData( const std::string& filepath, const std::string& testgroup, const std::vector<std::string>& arguments );
     std::string filepath;
     std::vector<std::string> arguments;
+    std::string testgroup;
 };
 
 /// This function is used by gtest to print the content of the struct in a human friendly way
@@ -34,12 +35,12 @@ struct SOFAPYTHON3_API PythonTestList
     std::vector<PythonTestData> list;
 protected:
     /// add a Python_test_data with given path
-    void addTest( const std::string& filename,
-                  const std::string& path="",
-                  const std::vector<std::string>& arguments=std::vector<std::string>(0) );
+    void addTest(const std::string& filename,
+                 const std::string& path="", const std::string &testgroup="",
+                 const std::vector<std::string>& arguments=std::vector<std::string>(0) );
 
     /// add all the python test files in `dir` starting with `prefix`
-    void addTestDir(const std::string& dir, const std::string& prefix = "");
+    void addTestDir(const std::string& dir, const std::string& testgroup = "", const std::string& prefix = "" );
 
 private:
     /// concatenate path and filename
@@ -66,7 +67,7 @@ public:
     /// As this allows to do mytest --gtest_filter=*MySomething*
     static std::string getTestName(const testing::TestParamInfo<PythonTestData>& p)
     {
-        return  std::to_string(p.index)+"_"+path(p.param.filepath).stem().string();
+        return  std::to_string(p.index)+"_"+p.param.testgroup+path(p.param.filepath).stem().string();
     }
 };
 

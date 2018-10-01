@@ -1,6 +1,6 @@
 import unittest
-import Sofa
 import numpy
+import Sofa
 
 class RGBAColor(numpy.ndarray):
     def __new__(cls, input_array=None):
@@ -58,8 +58,7 @@ class Vec4d(numpy.ndarray):
     def w(self):
         return self[3]
 
-
-class TestBaseData(unittest.TestCase):                    
+class Test(unittest.TestCase):
         def test_ValidDataAccess(self):
                 root = Sofa.Node("rootNode")
                 c = root.createObject("MechanicalObject", name="t", position=[[0,0,0],[1,1,1],[2,2,2]])
@@ -149,7 +148,9 @@ class TestBaseData(unittest.TestCase):
                 self.assertEqual(m[2,2], 2.0)
                 self.assertEqual(m.tolist(), v)
                        
-def createScene(rootNode):
+def runTests():
+        suite = unittest.TestLoader().loadTestsFromTestCase(Test)
+        return unittest.TextTestRunner(verbosity=2).run(suite).wasSuccessful()
 
-        suite = unittest.TestLoader().loadTestsFromTestCase(TestBaseData)
-        unittest.TextTestRunner(verbosity=2).run(suite)
+def createScene(rootNode):
+        runTests()

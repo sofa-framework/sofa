@@ -35,22 +35,25 @@ using std::string;
 namespace
 {
 
+class Sofa : public PythonTest {};
+
 /// static build of the test list
 static struct PythonModule_Sofa_tests : public PythonTestList
 {
     PythonModule_Sofa_tests()
     {
-        addTestDir(std::string(PYTHON_TESTFILES_DIR));
+        addTestDir(std::string(PYTHON_TESTFILES_DIR)+"/Core", "Sofa_Core_");
+        addTestDir(std::string(PYTHON_TESTFILES_DIR)+"/Simulation", "Sofa_Simulation_");
     }
 } python_tests;
 
 /// run test list using the custom name function getTestName.
 /// this allows to do gtest_filter=*FileName*
-INSTANTIATE_TEST_CASE_P(Batch,
-                        PythonTest,
+INSTANTIATE_TEST_CASE_P(SofaPython3,
+                        Sofa,
                         ::testing::ValuesIn(python_tests.list),
-                        PythonTest::getTestName);
+                        Sofa::getTestName);
 
-TEST_P(PythonTest, all_tests) { run(GetParam()); }
+TEST_P(Sofa, all_tests) { run(GetParam()); }
 
 }
