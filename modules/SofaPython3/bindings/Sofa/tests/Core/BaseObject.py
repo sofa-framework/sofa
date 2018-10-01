@@ -13,15 +13,14 @@ class Test(unittest.TestCase):
         def test_createObjectWithInvalidParamName(self):
                 ## This one should raise an error because of 'v' should rise a type error.
                 root = Sofa.Node("rootNode")
-                root.createObject("MechanicalObject", name="tt", v=[[0,0,0],[1,1,1],[2,2,2]])
-                self.fail()
+                self.assertRaises(TypeError, root.createObject, "MechanicalObject", name="tt", v=[[0,0,0],[1,1,1],[2,2,2]])
 
         def test_createObjectWithInvalidParamValue(self):
                 ## This one should raise an error because of 'v' should rise a type error.
                 root = Sofa.Node("rootNode")
-                root.createObject("MechanicalObject", name="tt", v="xmoi")
-                self.fail()
-                
+                root.createObject("MechanicalObject", name="tt", position="xmoi")
+                self.fail("We should find a solution not to emit a warning but an exception")
+
         def test_data_property(self):
                 root = Sofa.Node("rootNode")
                 c = root.createObject("MechanicalObject", name="t", position=[[0,0,0],[1,1,1],[2,2,2]])

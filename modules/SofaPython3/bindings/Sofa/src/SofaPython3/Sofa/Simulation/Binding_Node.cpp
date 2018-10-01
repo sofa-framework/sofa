@@ -15,6 +15,7 @@ namespace simpleapi = sofa::simpleapi;
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
 #include "Binding_Node.h"
 
+using sofa::core::objectmodel::BaseObjectDescription;
 
 std::string toSofaParsableString(const py::handle& p)
 {
@@ -33,16 +34,31 @@ std::string toSofaParsableString(const py::handle& p)
 }
 
 /// RVO optimized function. Don't care about copy on the return code.
-std::map<std::string, std::string> toStringMap(const py::dict& dict)
+void fillBaseObjectdescription(BaseObjectDescription& desc, const py::dict& dict)
 {
-    std::map<std::string, std::string> tmp;
     for(auto kv : dict)
     {
-        tmp[py::str(kv.first)] = toSofaParsableString(kv.second);
+        desc.setAttribute(py::str(kv.first), toSofaParsableString(kv.second));
     }
-    return tmp;
 }
 
+bool checkParamUsage(Base* object, BaseObjectDescription& desc)
+{
+    bool hasFailure = false;
+    std::stringstream tmp;
+    tmp <<"Unknown Attribute(s): " << msgendl;
+    for( auto it : desc.getAttributeMap() )
+    {
+        if (!it.second.isAccessed())
+        {
+            hasFailure = true;
+            tmp << " - \""<<it.first <<"\" with value: \"" <<(std::string)it.second << msgendl;
+        }
+    }
+    if(hasFailure)
+        throw py::type_error(tmp.str());
+    return hasFailure;
+}
 
 void moduleAddNode(py::module &m) {
     py::class_<Node, sofa::core::objectmodel::BaseNode,
@@ -62,8 +78,11 @@ void moduleAddNode(py::module &m) {
     p.def("createObject",
           [](Node* self, const std::string& type, const py::kwargs& kwargs)
     {
-        return py::cast( simpleapi::createObject(self, type,
-                                                 toStringMap(kwargs)) );
+        BaseObjectDescription desc {type.c_str(), type.c_str()};
+        fillBaseObjectdescription(desc, kwargs);
+        auto object = simpleapi::createObject(self, type, desc);
+        checkParamUsage(object.get(), desc);
+        return py::cast(object);
     });
     p.def("addObject", [](Node& self, BaseObject* object)
     {
@@ -75,7 +94,11 @@ void moduleAddNode(py::module &m) {
     /// and the createChild is deprecated printing a warning for old scenes.
     p.def("createChild", [](Node* self, const std::string& name, const py::kwargs& kwargs)
     {
-        return py::cast( simpleapi::createChild(self, name, toStringMap(kwargs)));
+        BaseObjectDescription desc (name.c_str(), "Node");
+        fillBaseObjectdescription(desc,kwargs);
+        auto node=simpleapi::createChild(self, name, desc);
+        checkParamUsage(node.get(), desc);
+        return py::cast(node);
     });
     p.def("addChild", [](Node* self, Node* child)
     {
