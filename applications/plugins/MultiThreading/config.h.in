@@ -19,54 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_TOPOLOGY_HEXAHEDRONSETGEOMETRYALGORITHMS_CPP
-#include <SofaBaseTopology/HexahedronSetGeometryAlgorithms.inl>
-#include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/core/ObjectFactory.h>
-namespace sofa
-{
+#ifndef MULTITHREADING_CONFIG_H
+#define MULTITHREADING_CONFIG_H
 
-namespace component
-{
+#include <sofa/helper/system/config.h>
 
-namespace topology
-{
-using namespace sofa::defaulttype;
-SOFA_DECL_CLASS(HexahedronSetGeometryAlgorithms)
-int HexahedronSetGeometryAlgorithmsClass = core::RegisterObject("Hexahedron set geometry algorithms")
-#ifdef SOFA_FLOAT
-        .add< HexahedronSetGeometryAlgorithms<Vec3fTypes> >(true) // default template
+#ifdef SOFA_MULTITHREADING_PLUGIN
+#  define SOFA_MULTITHREADING_PLUGIN_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-        .add< HexahedronSetGeometryAlgorithms<Vec3dTypes> >(true) // default template
-#ifndef SOFA_DOUBLE
-        .add< HexahedronSetGeometryAlgorithms<Vec3fTypes> >() // default template
-#endif
-#endif
-#ifndef SOFA_FLOAT
-        .add< HexahedronSetGeometryAlgorithms<Vec2dTypes> >()
-        .add< HexahedronSetGeometryAlgorithms<Vec1dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< HexahedronSetGeometryAlgorithms<Vec2fTypes> >()
-        .add< HexahedronSetGeometryAlgorithms<Vec1fTypes> >()
-#endif
-        ;
-
-#ifndef SOFA_FLOAT
-template class SOFA_BASE_TOPOLOGY_API HexahedronSetGeometryAlgorithms<Vec3dTypes>;
-template class SOFA_BASE_TOPOLOGY_API HexahedronSetGeometryAlgorithms<Vec2dTypes>;
-template class SOFA_BASE_TOPOLOGY_API HexahedronSetGeometryAlgorithms<Vec1dTypes>;
+#  define SOFA_MULTITHREADING_PLUGIN_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 
-#ifndef SOFA_DOUBLE
-template class SOFA_BASE_TOPOLOGY_API HexahedronSetGeometryAlgorithms<Vec3fTypes>;
-template class SOFA_BASE_TOPOLOGY_API HexahedronSetGeometryAlgorithms<Vec2fTypes>;
-template class SOFA_BASE_TOPOLOGY_API HexahedronSetGeometryAlgorithms<Vec1fTypes>;
 #endif
-
-} // namespace topology
-
-} // namespace component
-
-} // namespace sofa
-

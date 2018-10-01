@@ -4,7 +4,7 @@
 	<MeshGmshLoader name="meshLoader" filename="mesh/torus_low_res.msh"/>
 	<Mesh src="@meshLoader" />
 	<MechanicalObject dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0" />
-	<UniformMass totalmass="5" />
+	<UniformMass totalMass="5" />
 	<TetrahedronFEMForceField name="FEM" youngModulus="1000" poissonRatio="0.3" computeGlobalMatrix="false" method="polar"/>
 	<Node name="Visu">
 		<OglModel name="Visual" fileMesh="mesh/torus.obj" color="red" dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0"/>

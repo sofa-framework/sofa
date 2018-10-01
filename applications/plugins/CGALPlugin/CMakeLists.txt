@@ -12,6 +12,8 @@ set(HEADER_FILES
     MeshGenerationFromPolyhedron.inl
     TriangularConvexHull3D.h
     TriangularConvexHull3D.inl
+    CylinderMesh.h
+    CylinderMesh.inl
 )
 
 set(SOURCE_FILES
@@ -19,6 +21,7 @@ set(SOURCE_FILES
     MeshGenerationFromPolyhedron.cpp
     TriangularConvexHull3D.cpp
     initCGALPlugin.cpp
+    CylinderMesh.cpp
 )
 
 set(README_FILES CGALPlugin.txt)
@@ -43,6 +46,12 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
 find_package(MPFR REQUIRED)
 find_package(GMP REQUIRED)
 find_package(Boost QUIET REQUIRED COMPONENTS system thread)
+
+message(STATUS "CGAL VERSION ${CGAL_MAJOR_VERSION}.${CGAL_MINOR_VERSION}")
+set(CGAL_VERSION ${CGAL_MAJOR_VERSION}.${CGAL_MINOR_VERSION})
+if (CGAL_VERSION VERSION_GREATER 4.9) # if CGAL >= 4.10
+    add_definitions(-DCGAL_MESH_3_VERBOSE=0)
+endif()
 
 
 ## CGALPlugin/config.h

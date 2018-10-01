@@ -38,7 +38,8 @@ class Fountain(Sofa.PythonScriptController):
 
         # VisualNode
         VisuNode = node.createChild('Visu')
-        VisuNode.createObject('OglModel',name='Visual',fileMesh='mesh/PokeCube.obj',color=color)
+        VisuNode.createObject('MeshObjLoader',name='visualMeshLoader',filename='mesh/PokeCube.obj')
+        VisuNode.createObject('OglModel',name='Visual',src='@visualMeshLoader',color=color)
         VisuNode.createObject('RigidMapping',input='@..',output='@Visual')
 
         # apply wanted initial translation
@@ -69,7 +70,6 @@ class Fountain(Sofa.PythonScriptController):
         print 'Fountain.createGraph called from node '+node.name
         for i in range(1,100):
             node = self.spawnParticle()
-            node.init()
         return 0
     
     def onScriptEvent(self,senderNode,eventName,data):
