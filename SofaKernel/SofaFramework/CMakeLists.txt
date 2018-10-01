@@ -185,8 +185,8 @@ install(FILES "${CMAKE_BINARY_DIR}/include/sofa/config.h" DESTINATION "include/s
 list(REMOVE_DUPLICATES SOFAFRAMEWORK_DEPENDENCY_INCLUDE_DIRECTORIES)
 
 ## Version
-set(SOFAFRAMEWORK_VERSION "18.06.dev")
-set(SOFA_VERSION "180699")
+set(SOFAFRAMEWORK_VERSION "18.12.dev")
+set(SOFA_VERSION "181299")
 set(SOFA_VERSION_STR "\"${SOFAFRAMEWORK_VERSION}\"")
 configure_file(../framework/sofa/version.h.in "${CMAKE_BINARY_DIR}/include/sofa/version.h")
 install(FILES "${CMAKE_BINARY_DIR}/include/sofa/version.h" DESTINATION include/sofa COMPONENT headers)
