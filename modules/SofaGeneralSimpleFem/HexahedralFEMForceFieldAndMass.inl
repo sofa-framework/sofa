@@ -501,15 +501,19 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addMBKToMatrix (const core::Mech
 
     const VecElement& hexahedra = this->_topology->getHexahedra();
 
+    if (this->hexahedronInfo.getValue().size() != hexahedra.size())
+    {
+        msg_error() << "HexahedronInformation vector and Topology's Hexahedron vector should have the same size.";
+        return;
+    }
+
     //typename VecElement::const_iterator it;
     typename helper::vector<HexahedronInformation>::const_iterator it;
 
     sofa::core::behavior::MultiMatrixAccessor::MatrixRef r = matrix->getMatrix(this->mstate);
 
     unsigned int e = 0;
-    for ( it = this->hexahedronInfo.getValue().begin();
-          it != this->hexahedronInfo.getValue().end() && e < hexahedra.size();
-          ++it, ++e )
+    for ( it = this->hexahedronInfo.getValue().begin() ; it != this->hexahedronInfo.getValue().end() ; ++it, ++e )
     {
         const ElementMass &Me = _elementMasses.getValue() [e];
         const Element hexa = hexahedra[e];
