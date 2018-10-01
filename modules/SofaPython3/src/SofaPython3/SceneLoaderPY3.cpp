@@ -22,7 +22,9 @@
 #include <sstream>
 #include <fstream>
 
-#include <sofa/simulation/Simulation.h>
+#include <SofaSimulationGraph/DAGNode.h>
+using sofa::simulation::graph::DAGNode;
+
 #include <sofa/helper/ArgumentParser.h>
 //#include <SofaSimulationCommon/xml/NodeElement.h>
 //#include <SofaSimulationCommon/FindByTypeVisitor.h>
@@ -116,7 +118,7 @@ void SceneLoaderPY3::loadSceneWithArguments(const char *filename,
             return ;
         }
 
-        *root_out = Node::create("root");
+        *root_out = New<DAGNode>("root");
         py::object createScene = module.attr("createScene");
         createScene(*root_out);
     }catch(std::exception& e)
