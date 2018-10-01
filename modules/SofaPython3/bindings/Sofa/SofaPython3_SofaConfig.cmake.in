@@ -1,0 +1,5 @@
+#CMake package configuration file for the @PROJECT_NAME@ plugin
+
+@PACKAGE_INIT@
+
+set(SOFAPYTHON3_BINDING_SOFA_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/package/Sofa")
