@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*
 import Sofa
 import unittest
 import sys
@@ -67,7 +68,7 @@ class TestNode(unittest.TestCase):
                 self.assertFalse(hasattr(root.__data__, "invalidEntry"))
                 self.assertTrue(isinstance(root.__data__, Sofa.DataDict))
                         
-## If we run a test scene from sofa we can access to the created scene. 
+## If we run a test scene from sofa we can access to the created scene. 
 def createScene(rootNode):
         suite = unittest.TestLoader().loadTestsFromTestCase(TestNode)
         unittest.TextTestRunner(verbosity=2).run(suite)

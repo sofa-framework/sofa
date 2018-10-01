@@ -2,6 +2,7 @@
 #define PYTHONMODULE_SOFA_BINDING_BASE_H
 
 #include <pybind11/pybind11.h>
+#include <pybind11/numpy.h>
 namespace py = pybind11;
 using namespace pybind11::literals;
 
@@ -20,10 +21,11 @@ class BindingBase
 public:
     static py::object GetAttr(Base& self, const std::string& s);
     static void SetAttr(py::object self, const std::string& s, py::object& value);
+    static void SetAttr2(py::object self, const std::string& s, const pybind11::array &value);
 };
 
 py::object toPython(BaseData* d);
-void fromPython(BaseData* d, py::object& o);
+void fromPython(BaseData* d, const pybind11::object &o);
 
 void moduleAddBase(py::module& m);
 

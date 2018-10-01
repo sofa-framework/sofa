@@ -13,6 +13,7 @@ using  sofa::core::objectmodel::BaseObject;
 #include <sofa/core/objectmodel/BaseNode.h>
 using  sofa::core::objectmodel::BaseNode;
 
+#include <pybind11/numpy.h>
 
 void moduleAddDataAsString(py::module& m)
 {
@@ -36,14 +37,44 @@ std::string getPathTo(Base* b)
     assert(true && "Only Base & BaseObject are supported");
 }
 
+const char* getFormat(const AbstractTypeInfo& nfo)
+{
+    if(nfo.Integer())
+    {
+        return py::format_descriptor<long>::value;
+    } else if(nfo.Scalar() )
+    {
+        if(nfo.byteSize() == 8)
+            return py::format_descriptor<double>::value;
+        else if(nfo.byteSize() == 4)
+            return py::format_descriptor<float>::value;
+    }
+    return nullptr;
+}
+
 void moduleAddDataAsContainer(py::module& m)
 {
-    py::class_<DataAsContainer, BaseData, raw_ptr<DataAsContainer>> p(m, "DataContainer", py::buffer_protocol());
+    py::class_<DataAsContainer, BaseData, raw_ptr<DataAsContainer>> p(m, "DataContainer",
+                                                                      py::buffer_protocol());
 
     p.def("__getitem__", [](DataAsContainer& self, py::size_t index) -> py::object
     {
-        std::cout << " single axis "<< index << std::endl ;
-        return py::none();
+        const AbstractTypeInfo& nfo { *self.getValueTypeInfo() };
+
+        if( index >= nfo.size(self.getValueVoidPtr())/nfo.size() )
+            throw py::index_error();
+
+        int cols = nfo.size();
+        py::buffer_info binfo(
+                    nfo.getValuePtr(self.beginEditVoidPtr())+nfo.byteSize()*cols*index, /* Pointer to buffer */
+                    nfo.size(),                            /* Size of one scalar */
+                    getFormat(nfo),                        /* Python struct-style format descriptor */
+                    1,                                     /* Number of dimensions */
+                    { cols },                              /* Buffer dimensions */
+                    { nfo.byteSize() }                     /* Strides (in bytes) for each index */
+        );
+
+        return py::array(binfo);
     });
 
     p.def("__getitem__", [](DataAsContainer& self, py::slice slice) -> py::object
@@ -80,6 +111,14 @@ void moduleAddDataAsContainer(py::module& m)
     {
         return py::repr(toPython(self));
     });
+
+    p.def("shape", [](BaseData& b) -> py::tuple
+    {
+        auto nfo = b.getValueTypeInfo();
+        return py::make_tuple(py::int_(nfo->size(b.getValueVoidPtr())/nfo->size()),
+                              py::int_(nfo->size()));
+    });
+
 
     /// https://julien.danjou.info/high-performance-in-python-with-zero-copy-and-the-buffer-protocol/
     p.def_buffer([](BaseData& m) -> py::buffer_info
@@ -141,13 +180,6 @@ void moduleAddBaseData(py::module& m)
     {
         auto nfo = b.getValueTypeInfo();
         return nfo->size(b.getValueVoidPtr()) / nfo->size();
-    });
-
-    p.def("dim", [](BaseData& b) -> py::tuple
-    {
-        auto nfo = b.getValueTypeInfo();
-        return py::make_tuple(py::int_(nfo->size(b.getValueVoidPtr())/nfo->size()),
-                              py::int_(nfo->size()));
     });
 
     p.def("getPath", [](BaseData& self){

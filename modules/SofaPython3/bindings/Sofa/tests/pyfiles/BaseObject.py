@@ -28,11 +28,11 @@ class TestBaseObject(unittest.TestCase):
                 self.assertTrue(hasattr(c, "__data__"))
                 self.assertGreater(len(c.__data__), 0)
                 self.assertTrue("name" in c.__data__)
-                self.assertTrue(hasattr(c.__data__, "position"))
+                self.assertTrue("position" in c.__data__)
                 self.assertFalse(hasattr(c.__data__, "invalidEntry"))
                 self.assertTrue( isinstance(c.__data__, Sofa.DataDict))
                       
                                        
 def createScene(rootNode):
         suite = unittest.TestLoader().loadTestsFromTestCase(TestBaseObject)
-        unittest.TextTestRunner(verbosity=2).run(suite)
+        return unittest.TextTestRunner(verbosity=2).run(suite).wasSuccessful()
