@@ -10,10 +10,12 @@ project(Sofa.Component VERSION 1.0)
 
 find_package(Sofa.Component.Utils)
 
-set(HEADER_FILES config/${PROJECT_NAME}.h)
-set(SOURCE_FILES config/${PROJECT_NAME}.cpp)
+file(GLOB CONFIG_FILES
+    config/${PROJECT_NAME}.h
+    config/${PROJECT_NAME}.cpp
+    )
 
-add_library(${PROJECT_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
+add_library(${PROJECT_NAME} SHARED ${CONFIG_FILES} ${HEADER_FILES} ${SOURCE_FILES} ${EXTRA_FILES})
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Sofa.Component.Utils)
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DBUILD_SOFA_COMPONENT")
