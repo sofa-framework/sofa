@@ -126,8 +126,8 @@
     </Node>
   </Node>    
 
-	  <DataExchange name="exchangeData1" template="vector<Vec3d>" from="@scene1/liver1/dofs1.position" to="@scene2/liver2/dofs2.position" />
-  <!--<DataExchange name="exchangeData2" template="vector<Vec3d>" from="@scene1/liver1/dofs1.free_position" to="@scene2/liver2/dofs2.free_position" />-->
+	<DataExchange name="exchangeData1" template="vector<Vec3d>" from="@scene1/liver1/dofs1.position" to="@scene2/liver2/dofs2.position" />
+  <DataExchange name="exchangeData2" template="vector<Vec3d>" from="@scene1/liver1/dofs1.free_position" to="@scene2/liver2/dofs2.free_position" />
     
 	
 </Node>
