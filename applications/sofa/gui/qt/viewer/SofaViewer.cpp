@@ -256,6 +256,7 @@ void SofaViewer::keyReleaseEvent(QKeyEvent * e)
             sofa::core::objectmodel::MouseEvent::Reset);
         if (groot)
             groot->propagateEvent(core::ExecParams::defaultInstance(), &mouseEvent);
+        break;
     }
     default:
     {
