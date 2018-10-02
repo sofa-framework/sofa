@@ -98,13 +98,42 @@ class Test(unittest.TestCase):
                 root = Sofa.Node("rootNode")
                 c = root.createObject("MechanicalObject", name="t", position=v)
                 c.position = [[1,1,1],[2,2,2],[3,3,3],[4,4,4]]
-                numpy.testing.assert_array_equal(c.position, [[1,1,1],[2,2,2],[3,3,3],[4,4,4]])
+                numpy.testing.assert_array_equal(c.position, [[1.0,1.0,1.0],[2.0,2.0,2.0],[3.0,3.0,3.0],[4.0,4.0,4.0]])
+
+        def test_DataArray2DResizeFromArray(self):
+                v=[[0,0,0],[1,1,1],[2,2,2],[3,3,3]]
+                root = Sofa.Node("rootNode")
+                c = root.createObject("MechanicalObject", name="t", position=v)
+                zeros = numpy.zeros((100,3), dtype=numpy.float64)
+                c.position = zeros
+                numpy.testing.assert_array_equal(c.position, zeros)
+
+        def test_DataArray2DInvalidResizeFromArray(self):
+                v=[[0,0,0],[1,1,1],[2,2,2],[3,3,3]]
+                root = Sofa.Node("rootNode")
+                c = root.createObject("MechanicalObject", name="t", position=v)
+                zeros = numpy.zeros((4,100), dtype=numpy.float64)
+                def d():
+                    c.position = zeros
+                self.assertRaises(IndexError, d)
 
         def test_DataArray2DSetFromArray(self):
                 v=[[0,0,0],[1,1,1],[2,2,2],[3,3,3]]
                 root = Sofa.Node("rootNode")
                 c = root.createObject("MechanicalObject", name="t", position=v)
                 zeros = numpy.zeros((4,3), dtype=numpy.float64)
+                c.position = zeros
+                numpy.testing.assert_array_equal(c.position, zeros)
+
+                zeros = numpy.zeros((4,3), dtype=numpy.float32)
+                c.position = zeros
+                numpy.testing.assert_array_equal(c.position, zeros)
+
+                zeros = numpy.ones((4,3), dtype=numpy.float32)
+                c.position = zeros
+                numpy.testing.assert_array_equal(c.position, zeros)
+
+                zeros = numpy.ones((4,3), dtype=numpy.float64)
                 c.position = zeros
                 numpy.testing.assert_array_equal(c.position, zeros)
 

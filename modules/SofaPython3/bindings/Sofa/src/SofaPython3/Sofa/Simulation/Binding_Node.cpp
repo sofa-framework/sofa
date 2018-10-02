@@ -81,7 +81,8 @@ void moduleAddNode(py::module &m) {
         BaseObjectDescription desc {type.c_str(), type.c_str()};
         fillBaseObjectdescription(desc, kwargs);
         auto object = simpleapi::createObject(self, type, desc);
-        checkParamUsage(object.get(), desc);
+        if(object)
+            checkParamUsage(object.get(), desc);
         return py::cast(object);
     });
     p.def("addObject", [](Node& self, BaseObject* object)

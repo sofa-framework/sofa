@@ -29,7 +29,7 @@ class Test(unittest.TestCase):
                 self.assertTrue("name" in c.__data__)
                 self.assertTrue("position" in c.__data__)
                 self.assertFalse(hasattr(c.__data__, "invalidEntry"))
-                self.assertTrue( isinstance(c.__data__, Sofa.Core.DataDict))
+                self.assertTrue(isinstance(c.__data__, Sofa.Core.DataDict))
 
 def runTests():
     suite = unittest.TestLoader().loadTestsFromTestCase(Test)

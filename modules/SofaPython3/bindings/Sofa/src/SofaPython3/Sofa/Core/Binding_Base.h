@@ -21,7 +21,7 @@ class BindingBase
 public:
     static py::object GetAttr(Base& self, const std::string& s);
     static void SetAttr(py::object self, const std::string& s, py::object& value);
-    static void SetAttr2(py::object self, const std::string& s, const pybind11::array &value);
+    static void SetAttrFromArray(py::object self, const std::string& s, const pybind11::array &value);
 };
 
 class DataDict
@@ -47,7 +47,7 @@ public:
     }
 };
 
-py::object toPython(BaseData* d);
+py::object toPython(BaseData* d, bool writeable=false);
 void fromPython(BaseData* d, const pybind11::object &o);
 
 void moduleAddDataDict(py::module& m);
