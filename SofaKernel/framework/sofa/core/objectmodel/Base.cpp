@@ -341,14 +341,11 @@ BaseData* Base::findData( const std::string &name ) const
     //Search in the aliases
     if(m_aliasData.size())
     {
-        typedef MapData::const_iterator mapIterator;
-        std::pair< mapIterator, mapIterator> range = m_aliasData.equal_range(name);
-        if (range.first != range.second)
-            return range.first->second;
-        else
-            return NULL;
+        auto r = m_aliasData.find(name);
+        if(r != m_aliasData.end())
+            return r->second;
     }
-    else return NULL;
+    return NULL;
 }
 
 /// Find fields given a name: several can be found as we look into the alias map
