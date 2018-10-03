@@ -1,6 +1,7 @@
 #include "TaskSchedulerTestTasks.h"
 
 #include <MultiThreading/src/TaskScheduler.h>
+#include <MultiThreading/src/DefaultTaskScheduler.h>
 #include <sofa/helper/testing/BaseTest.h>
 
 namespace sofa
@@ -9,17 +10,17 @@ namespace sofa
 	// compute the Fibonacci number for input N
 	static int64_t Fibonacci(int64_t N, int nbThread = 0)
 	{
-		simulation::TaskScheduler::getInstance().init(nbThread);
+        simulation::TaskScheduler* scheduler = simulation::TaskScheduler::create(simulation::TaskSchedulerDefault::name());
+        scheduler->init(nbThread);
 
-		simulation::Task::Status status;
+        simulation::Task::Status status;
 		int64_t result = 0;
 
-		simulation::WorkerThread* thread = simulation::WorkerThread::getCurrent();
 		FibonacciTask task(N, &result, &status);
-		thread->addTask(&task);
-		thread->workUntilDone(&status);
+        scheduler->addTask(&task);
+        scheduler->workUntilDone(&status);
 
-		simulation::TaskScheduler::getInstance().stop();
+        scheduler->stop();
 		return result;
 	}
 
@@ -27,17 +28,17 @@ namespace sofa
 	// compute the sum of integers from 1 to N
 	static int64_t IntSum1ToN(const int64_t N, int nbThread = 0)
 	{
-		simulation::TaskScheduler::getInstance().init(nbThread);
+        simulation::TaskScheduler* scheduler = simulation::TaskScheduler::create(simulation::TaskSchedulerDefault::name());
+        scheduler->init(nbThread);
 
-		simulation::Task::Status status;
+        simulation::Task::Status status;
 		int64_t result = 0;
 
-		simulation::WorkerThread* thread = simulation::WorkerThread::getCurrent();
 		IntSumTask task(1, N, &result, &status);
-		thread->addTask(&task);
-		thread->workUntilDone(&status);
+        scheduler->addTask(&task);
+        scheduler->workUntilDone(&status);
 
-		simulation::TaskScheduler::getInstance().stop();
+        scheduler->stop();
 		return result;
 	}
 

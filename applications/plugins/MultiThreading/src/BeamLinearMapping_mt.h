@@ -26,7 +26,7 @@
 #include <SofaMiscMapping/BeamLinearMapping.h>
 
 
-#include "TaskScheduler.h"
+#include "Task.h"
 
 
 
@@ -111,7 +111,7 @@ private:
 
 	public:
 
-		virtual bool run( simulation::WorkerThread* );
+		virtual bool run() final;
 
 	protected:
 
@@ -141,7 +141,7 @@ private:
 	
 		applyJTask( const simulation::Task::Status* status );
 
-		virtual bool run( simulation::WorkerThread* );
+		virtual bool run() final;
 
 	private:
 
@@ -166,7 +166,7 @@ private:
 		
 		applyJTmechTask( const simulation::Task::Status* status );
 	
-		virtual bool run( simulation::WorkerThread* );
+		virtual bool run() final;
 
 	private:
 

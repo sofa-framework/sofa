@@ -19,52 +19,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef AnimationLoopTasks_h__
-#define AnimationLoopTasks_h__
+#ifndef MULTITHREADING_CONFIG_H
+#define MULTITHREADING_CONFIG_H
 
-#include "Task.h"
+#include <sofa/helper/system/config.h>
 
+#ifdef SOFA_MULTITHREADING_PLUGIN
+#  define SOFA_MULTITHREADING_PLUGIN_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#  define SOFA_MULTITHREADING_PLUGIN_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
 
-namespace sofa
-{
-    
-    // forawrd declaraion
-    namespace core { namespace behavior {
-        class BaseAnimationLoop;
-    } }
-    
-    //namespace helper { namespace system {
-    //    template<int> class atomic;
-    //} }
-    
-    
-    
-    namespace simulation
-    {
-        
-        using namespace sofa;
-        
-        
-        class StepTask : public Task
-        {
-        public:
-            StepTask(core::behavior::BaseAnimationLoop* aloop, const double t, Task::Status* pStatus);
-            
-            virtual ~StepTask();
-            
-            virtual bool run() final;
-            
-            
-        private:
-            
-            core::behavior::BaseAnimationLoop* animationloop;
-            const double dt;
-            
-        };
-        
-        
-    } // namespace simulation
-    
-} // namespace sofa
-
-#endif // AnimationLoopTasks_h__
+#endif
