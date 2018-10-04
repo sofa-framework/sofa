@@ -42,10 +42,17 @@ class Test(unittest.TestCase):
         def test_removeChild(self):                
                 root = Sofa.Node("rootNode")                               
                 c = root.addChild(Sofa.Node("child1"))
+                c2 = root.addChild(Sofa.Node("child2"))
+                self.assertEqual(len(root.children), 2)
                 self.assertTrue(hasattr(root,"child1"))
+                self.assertTrue(hasattr(root,"child2"))
                 root.removeChild(c)
+                self.assertEqual(len(root.children), 1)
                 self.assertFalse(hasattr(root,"child1"))
-               
+                root.removeChild("child2")
+                self.assertFalse(hasattr(root,"child2"))
+                self.assertEqual(len(root.children), 0)
+
         def test_createObjectWithParam(self):
                 root = Sofa.Node("rootNode")
                 root.createObject("MechanicalObject", name="mechanical", position=[[0,0,0],[1,1,1],[2,2,2]])
@@ -53,6 +60,7 @@ class Test(unittest.TestCase):
         def test_children_property(self):                
                 root = Sofa.Node("rootNode")                               
                 c = root.addChild(Sofa.Node("child1"))
+                self.assertEqual(len(root.children), 1)
                 c = root.addChild(Sofa.Node("child2"))                
                 self.assertEqual(len(root.children), 2) 
 
@@ -62,17 +70,28 @@ class Test(unittest.TestCase):
                 c2 = root.addChild(Sofa.Node("child2"))
                 d = c1.addChild(Sofa.Node("subchild"))
                 d = c2.addChild(Sofa.Node("subchild"))
-                self.assertEqual(len(d.parents), 2) 
-                
+                self.assertEqual(len(d.parents), 1)
+                c1.addChild(d)
+                self.assertEqual(len(d.parents), 2)
+
         def test_data_property(self):
                 root = Sofa.Node("rootNode")
                 self.assertTrue(hasattr(root, "__data__"))
                 self.assertGreater(len(root.__data__), 0)
                 self.assertTrue("name" in root.__data__)
                 self.assertFalse(hasattr(root.__data__, "invalidEntry"))
-                self.assertTrue(isinstance(root.__data__, Sofa.DataDict))
-                        
-## If we run a test scene from sofa we can access to the created scene. 
+                self.assertTrue(isinstance(root.__data__, Sofa.Core.DataDict))
+
+def getTestsName():
+    suite = unittest.TestLoader().loadTestsFromTestCase(Test)
+    return [ test.id().split(".")[2] for test in suite]
+
 def runTests():
-        suite = unittest.TestLoader().loadTestsFromTestCase(Test)
-        return unittest.TextTestRunner(verbosity=2).run(suite).wasSuccessful()
+        import sys
+        suite = None
+        if( len(sys.argv) == 1 ):
+            suite = unittest.TestLoader().loadTestsFromTestCase(Test)
+        else:
+            suite = unittest.TestSuite()
+            suite.addTest(Test(sys.argv[1]))
+        return unittest.TextTestRunner(verbosity=1).run(suite).wasSuccessful()

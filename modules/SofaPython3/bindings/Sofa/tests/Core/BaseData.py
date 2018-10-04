@@ -162,16 +162,6 @@ class Test(unittest.TestCase):
                 numpy.testing.assert_array_equal(c.position.toarray(), v)
                 numpy.testing.assert_array_equal(c2, v+2.0)
 
-                #self.assertSequenceEqual(list(c.position[0]), [0.0,0.0,0.0])
-                #self.assertSequenceEqual(list(c.position[1]), [1.0,1.0,1.0])
-                #self.assertSequenceEqual(list(c.position[2]), [2.0,2.0,2.0])
-                #self.assertSequenceEqual(list(c.position[3]), [3.0,3.0,3.0])
-
-                #self.assertSequenceEqual(list(c2[0]), [0.0,0.0,0.0])
-                #self.assertSequenceEqual(list(c2[1]), [2.0,2.0,2.0])
-                #self.assertSequenceEqual(list(c2[2]), [4.0,4.0,4.0])
-                #self.assertSequenceEqual(list(c2[3]), [6.0,6.0,6.0])
-
         #@unittest.skip  # no reason needed
         def test_DataAsArray1D(self):
                 root = Sofa.Node("rootNode")
