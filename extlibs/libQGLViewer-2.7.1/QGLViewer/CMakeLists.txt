@@ -57,18 +57,31 @@ if(Qt5Core_FOUND)
 
     qt5_wrap_cpp(MOC_FILES ${HEADER_FILES})
     qt5_wrap_ui(FORM_FILES ${UI_FILES})
-endif()
 
-if(WIN32)
-    sofa_copy_libraries_from_targets(${QT_TARGETS})
+    if(WIN32)
+        sofa_copy_libraries_from_targets(${QT_TARGETS})
+    endif()
     sofa_install_libraries_from_targets(${QT_TARGETS})
 
-    # Installing Qt platforms dll the hard way (dirty)
-    list (GET QT_TARGETS 0 QtCore_target)
-    get_target_property(QtCore_location ${QtCore_target} LOCATION_${CMAKE_BUILD_TYPE})
-    string(REGEX REPLACE "\\/[^/]*/[^/]*$" "" Qt_location ${QtCore_location})
-    FILE(GLOB QT_PLUGINS "${Qt_location}/plugins/platforms/qwindows*.dll")
-    install(FILES ${QT_PLUGINS} DESTINATION "bin/platforms" COMPONENT applications)
+    # QT INSTALL
+    get_target_property(QtCore_location Qt5::Core LOCATION_${CMAKE_BUILD_TYPE})
+    string(REGEX MATCH "^.*/(bin|lib)/" QtCore_dir ${QtCore_location})
+    string(REGEX REPLACE "/$" "" QtCore_dir "${QtCore_dir}") # remove trailing slash
+    # Installing Qt plugins the hard way (dirty)
+    install(DIRECTORY "${QtCore_dir}/../plugins/" DESTINATION "bin" COMPONENT applications)
+    # Installing Qt XCB libraries the hard way (dirty)
+    file(GLOB QT_XCB_LIBRARIES
+        "${QtCore_dir}/libQt5DBus${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        "${QtCore_dir}/libQt5XcbQpa${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        )
+    sofa_install_libraries(${QT_XCB_LIBRARIES})
+    # Installing Qt ICU libraries the hard way (dirty)
+    file(GLOB QT_ICU_LIBRARIES
+        "${QtCore_dir}/libicudata${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        "${QtCore_dir}/libicui18n${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        "${QtCore_dir}/libicuuc${CMAKE_SHARED_LIBRARY_SUFFIX}"
+        )
+    sofa_install_libraries(${QT_ICU_LIBRARIES})
 endif()
 
 # These header files don't need to be processed by the moc.
