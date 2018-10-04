@@ -1,6 +1,8 @@
 #include "Binding_Base.h"
 #include "Binding_BaseData.h"
 
+
+
 #include <sofa/defaulttype/DataTypeInfo.h>
 using sofa::defaulttype::AbstractTypeInfo;
 
@@ -14,6 +16,14 @@ using  sofa::core::objectmodel::BaseObject;
 using  sofa::core::objectmodel::BaseNode;
 
 #include <pybind11/numpy.h>
+#include <pybind11/eval.h>
+
+class WriteAccessor
+{
+public:
+    WriteAccessor(BaseData* data_) : data(data_){}
+    BaseData* data {nullptr};
+};
 
 void moduleAddDataAsString(py::module& m)
 {
@@ -52,114 +62,321 @@ const char* getFormat(const AbstractTypeInfo& nfo)
     return nullptr;
 }
 
+
+template<class Array, typename Value>
+void setValueArray1D(Array p,
+                     const py::slice& slice,
+                     const Value& v)
+{
+    size_t start, stop, step, slicelength;
+    if (!slice.compute(p.shape(0), &start, &stop, &step, &slicelength))
+        throw py::error_already_set();
+
+    for (size_t i = 0; i < slicelength; ++i) {
+        p(start) = v;
+        start += step;
+    }
+}
+
+template<class Array, typename Value>
+void setValueArray2D(Array p,
+                     const py::slice& slice,
+                     const Value& v)
+{
+    size_t start, stop, step, slicelength;
+    if (!slice.compute(p.shape(0), &start, &stop, &step, &slicelength))
+        throw py::error_already_set();
+
+    for (size_t i = 0; i < slicelength; ++i, start+=step) {
+        for(size_t j=0; j<p.shape(1);++j){
+            p(start, j) = v;
+        }
+    }
+}
+
+
+template<class Array, typename Value>
+void setItem2DTyped(Array a, py::slice slice, Value dvalue)
+{
+    size_t start, stop, step, slicelength;
+    if (!slice.compute(a.shape(0), &start, &stop, &step, &slicelength))
+        throw py::error_already_set();
+
+    for(size_t i=0;i<slicelength;++i, start+=step)
+        for(size_t j=0;j<a.shape(1);++j)
+            a(start, j) = dvalue;
+}
+
+template<class Array, typename Value>
+void setItem2DTyped(Array a, py::slice sliceI, py::slice sliceJ, Value dvalue)
+{
+    size_t startI, stopI, stepI, slicelengthI;
+    if (!sliceI.compute(a.shape(0), &startI, &stopI, &stepI, &slicelengthI))
+        throw py::error_already_set();
+
+    size_t startJ, stopJ, stepJ, slicelengthJ;
+    if (!sliceJ.compute(a.shape(1), &startJ, &stopJ, &stepJ, &slicelengthJ))
+        throw py::error_already_set();
+
+    for(size_t i=0;i<slicelengthI;++i, startI+=stepI)
+    {
+        for(size_t j=0, itJ=startJ;j<slicelengthJ;++j, itJ+=stepJ)
+        {
+            a(startI, itJ) = dvalue;
+        }
+    }
+}
+
+
+void setItem2D(py::array a, py::slice slice, py::object o)
+{
+    if(a.request().format=="d")
+        setItem2DTyped(a.mutable_unchecked<double, 2>(), slice, py::cast<double>(o));
+    else if(a.request().format=="f")
+        setItem2DTyped(a.mutable_unchecked<float, 2>(), slice, py::cast<float>(o));
+    else
+        throw py::type_error("Invalid type");
+}
+
+void setItem2D(py::array a, const py::slice& slice, const py::slice& slice1, py::object o)
+{
+    if(a.request().format=="d")
+        setItem2DTyped(a.mutable_unchecked<double, 2>(), slice, slice1, py::cast<double>(o));
+    else if(a.request().format=="f")
+        setItem2DTyped(a.mutable_unchecked<float, 2>(), slice, slice1, py::cast<float>(o));
+    else
+        throw py::type_error("Invalid type");
+}
+
+
+template<class Array, typename Value>
+void setItem1DTyped(Array a, py::slice slice, Value dvalue)
+{
+    size_t start, stop, step, slicelength;
+    if (!slice.compute(a.shape(0), &start, &stop, &step, &slicelength))
+        throw py::error_already_set();
+
+    for(size_t i=0;i<slicelength;++i, start+=step)
+        a(start) = dvalue;
+}
+
+void setItem1D(py::array a, py::slice slice, py::object o)
+{
+    if(a.request().format=="d")
+        setItem1DTyped(a.mutable_unchecked<double, 1>(), slice, py::cast<double>(o));
+    else if(a.request().format=="f")
+        setItem1DTyped(a.mutable_unchecked<float, 1>(), slice, py::cast<float>(o));
+    else
+        throw py::type_error("Invalid type");
+}
+
+void setItem(py::array a, py::slice slice, py::object value)
+{
+    if(a.ndim()>2)
+        throw py::index_error("DataContainer can only operate on 1 or 2D array.");
+
+    else if(a.ndim()==1)
+        setItem1D(a, slice, value);
+
+    else if(a.ndim()==2)
+        setItem2D(a, slice, value);
+}
+
+py::slice toSlice(const py::object& o)
+{
+    if( py::isinstance<py::slice>(o))
+        return py::cast<py::slice>(o);
+
+    size_t v = py::cast<size_t>(o);
+    return py::slice(v,v+1,1);
+}
+
+
 void moduleAddDataAsContainer(py::module& m)
 {
     py::class_<DataAsContainer, BaseData, raw_ptr<DataAsContainer>> p(m, "DataContainer",
                                                                       py::buffer_protocol());
 
-    p.def("__getitem__", [](DataAsContainer& self, py::size_t index) -> py::object
+    p.def("__getitem__", [](DataAsContainer* self, py::size_t index) -> py::object
     {
-        const AbstractTypeInfo& nfo { *self.getValueTypeInfo() };
-
-        if( index >= nfo.size(self.getValueVoidPtr())/nfo.size() )
-            throw py::index_error();
-
-        int cols = nfo.size();
-        py::buffer_info binfo(
-                    nfo.getValuePtr(self.beginEditVoidPtr())+nfo.byteSize()*cols*index, /* Pointer to buffer */
-                    nfo.size(),                            /* Size of one scalar */
-                    getFormat(nfo),                        /* Python struct-style format descriptor */
-                    1,                                     /* Number of dimensions */
-                    { cols },                              /* Buffer dimensions */
-                    { nfo.byteSize() }                     /* Strides (in bytes) for each index */
-        );
-
-        return py::array(binfo);
+        py::array a = getPythonArrayFor(self);
+        py::buffer_info parentinfo = a.request();
+        //return py::array()
+        //return a.data(0);
     });
 
-    p.def("__getitem__", [](DataAsContainer& self, py::slice slice) -> py::object
+    //    p.def("__getitem__", [](DataAsContainer& self, py::slice slice) -> py::object
+    //    {
+    //        std::cout << "  single slice" << std::endl ;
+    //        return py::none();
+    //    });
+
+    //    p.def("__getitem__", [](DataAsContainer& self, py::tuple ij) -> py::object
+    //    {
+    //        std::cout << "  dual axis " << std::endl ;
+    //        return py::none();
+    //    });
+
+    //    p.def("__getitem__", [](DataAsContainer& self, py::function fct) -> py::object
+    //    {
+    //        std::cout << "  functional " << std::endl ;
+    //        return py::none();
+    //    });
+
+    p.def("__setitem__", [](DataAsContainer* self, size_t& index, py::object& value)
     {
-        std::cout << "  single slice" << std::endl ;
+        scoped_writeonly_access access(self);
+        setItem(getPythonArrayFor(self), py::slice(index, index+1, 1), value);
         return py::none();
     });
 
-    p.def("__getitem__", [](DataAsContainer& self, py::tuple ij) -> py::object
+    p.def("__setitem__", [](DataAsContainer* self, py::slice& slice, py::object& value) -> py::object
     {
-        std::cout << "  dual axis " << std::endl ;
+        scoped_writeonly_access access(self);
+
+        setItem(getPythonArrayFor(self), slice, value);
         return py::none();
     });
 
-    p.def("__getitem__", [](DataAsContainer& self, py::function fct) -> py::object
+    p.def("__setitem__", [](DataAsContainer* self, py::tuple key, py::object& value)
     {
-        std::cout << "  functional " << std::endl ;
+        scoped_writeonly_access access(self);
+
+        py::array a=getPythonArrayFor(self);
+        py::slice s0=toSlice(key[0]);
+        py::slice s1=toSlice(key[1]);
+
+        setItem2D(a, s0, s1, value);
+
         return py::none();
     });
 
-    // TODO: Implementation should look like: https://github.com/sofa-framework/sofa/issues/767
-    p.def("__setitem__", [](DataAsContainer& self, py::object& key, py::object& value)
+    p.def("apply", [](DataAsContainer* self, py::function f)
     {
-        std::cout << "mapping protocol, __setitem__ to implement)" << std::endl ;
-        return py::none();
+        scoped_write_access access(self);
+        py::array a = getPythonArrayFor(self);
+
+        auto aa=a.mutable_unchecked<double>();
+        for(size_t i=0;i<aa.shape(0);++i){
+            for(size_t j=0;j<aa.shape(1);++j){
+                aa(i,j) = py::cast<double>(f(i,j, aa(i,j)));
+            }
+        }
     });
 
     p.def("__str__", [](BaseData* self)
     {
-        return py::str(toPython(self));
+        return py::str(convertToPython(self));
     });
 
     p.def("__repr__", [](BaseData* self)
     {
-        return py::repr(toPython(self));
+        return py::repr(convertToPython(self));
     });
 
-    p.def("shape", [](BaseData& b) -> py::tuple
+    p.def("getWriteAccessor", [](DataAsContainer* self) -> py::object
     {
-        auto nfo = b.getValueTypeInfo();
-        return py::make_tuple(py::int_(nfo->size(b.getValueVoidPtr())/nfo->size()),
-                              py::int_(nfo->size()));
+        if(self!=nullptr)
+            return py::cast(new WriteAccessor(self));
+        return py::none();
     });
 
+    p.def("__iadd__", [](DataAsContainer* self, py::object value){
+        /// Acquire an access to the underlying data. As this is a read+write access we
+        /// use the scoped_write_access object.
+        scoped_write_access access(self);
 
-    /// https://julien.danjou.info/high-performance-in-python-with-zero-copy-and-the-buffer-protocol/
-    p.def_buffer([](BaseData& m) -> py::buffer_info
+        /// Search if this container object has a PythonArray in the case, if this is not the case
+        /// create one.
+        py::array p = getPythonArrayFor(self);
+
+        /// Returns a new reference on the result.
+        /// We don't want to keep this reference so we decref it to avoid memory leak.
+        Py_DECREF(PyNumber_InPlaceAdd(p.release().ptr(), value.release().ptr()));
+
+        /// Instead, returns the self object as we are in an in-place add operator.
+        return self;
+    });
+
+    p.def("__add__", [](DataAsContainer* self, py::object value){
+        /// Acquire an access to the underlying data. As this is a read only access we
+        /// use the scoped_read_access object. This imply that the data will updates the content
+        /// of this object.
+        scoped_read_access access(self);
+        py::array p = getPythonArrayFor(self);
+        return py::reinterpret_steal<py::object>(PyNumber_Add(p.release().ptr(), value.release().ptr()));
+    });
+
+    p.def("__isub__", [](DataAsContainer* self, py::object value){
+        /// Acquire an access to the underlying data. As this is a read+write access we
+        /// use the scoped_write_access object.
+        scoped_write_access access(self);
+
+        /// Search if this container object has a PythonArray in the case, if this is not the case
+        /// create one.
+        py::array p = getPythonArrayFor(self);
+
+        /// Returns a new reference on the result.
+        /// We don't want to keep this reference so we decref it to avoid memory leak.
+        Py_DECREF(PyNumber_InPlaceSubtract(p.release().ptr(), value.release().ptr()));
+
+        /// Instead, returns the self object as we are in an in-place add operator.
+        return self;
+    });
+
+    p.def("__sub__", [](DataAsContainer* self, py::object value){
+        /// Acquire an access to the underlying data. As this is a read only access we
+        /// use the scoped_read_access object. This imply that the data will updates the content
+        /// of this object.
+        scoped_read_access access(self);
+        py::array p = getPythonArrayFor(self);
+        return py::reinterpret_steal<py::object>(PyNumber_Subtract(p.release().ptr(), value.release().ptr()));
+    });
+
+    p.def("__imul__", [](DataAsContainer* self, py::object value){
+        /// Acquire an access to the underlying data. As this is a read+write access we
+        /// use the scoped_write_access object.
+        scoped_write_access access(self);
+
+        /// Search if this container object has a PythonArray in the case, if this is not the case
+        /// create one.
+        py::array p = getPythonArrayFor(self);
+
+        /// Returns a new reference on the result.
+        /// We don't want to keep this reference so we decref it to avoid memory leak.
+        Py_DECREF(PyNumber_InPlaceMultiply(p.release().ptr(), value.release().ptr()));
+
+        /// Instead, returns the self object as we are in an in-place add operator.
+        return self;
+    });
+
+    p.def("__mul__", [](DataAsContainer* self, py::object value){
+        /// Acquire an access to the underlying data. As this is a read only access we
+        /// use the scoped_read_access object. This imply that the data will updates the content
+        /// of this object.
+        scoped_read_access access(self);
+        py::array p = getPythonArrayFor(self);
+        return py::reinterpret_steal<py::object>(PyNumber_Multiply(p.release().ptr(), value.release().ptr()));
+    });
+}
+
+void moduleAddWriteAccessor(py::module& m)
+{
+
+    py::class_<WriteAccessor> wa(m, "getWriteAccessor");
+    wa.def("__enter__", [](WriteAccessor& wa)
     {
-        const AbstractTypeInfo& nfo { *m.getValueTypeInfo() };
+        wa.data->beginEditVoidPtr();
+        return toPython(wa.data, true);
+    });
 
-        const char* format;
-        if(nfo.Integer())
-        {
-            format = py::format_descriptor<long>::value;
-        } else if(nfo.Scalar() )
-        {
-            if(nfo.byteSize() == 8)
-                format = py::format_descriptor<double>::value;
-            else if(nfo.byteSize() == 4)
-                format = py::format_descriptor<float>::value;
-        }
-        int rows = nfo.size(m.getValueVoidPtr()) / nfo.size();
-        int cols = nfo.size();
-        size_t datasize = nfo.byteSize();
-
-        if(rows == 1 && nfo.FixedSize()){
-            return py::buffer_info(
-                        nfo.getValuePtr(m.beginEditVoidPtr()), /* Pointer to buffer */
-                        datasize,                              /* Size of one scalar */
-                        format,                                /* Python struct-style format descriptor */
-                        1,                                     /* Number of dimensions */
-            { cols },                              /* Buffer dimensions */
-            {                                      /* Strides (in bytes) for each index */
-                                                   datasize }
-                        );
-        }
-        return py::buffer_info(
-                    nfo.getValuePtr(m.beginEditVoidPtr()), /* Pointer to buffer */
-                    datasize,                              /* Size of one scalar */
-                    format,                                /* Python struct-style format descriptor */
-                    2,                                     /* Number of dimensions */
-        { rows, cols },                        /* Buffer dimensions */
-        { datasize * cols ,                           /* Strides (in bytes) for each index */
-          datasize }
-                    );
+    wa.def("__exit__",
+           [](WriteAccessor& wa, py::object type, py::object value, py::object traceback)
+    {
+        SOFA_UNUSED(type);
+        SOFA_UNUSED(value);
+        SOFA_UNUSED(traceback);
+        wa.data->endEditVoidPtr();
     });
 }
 

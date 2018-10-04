@@ -24,6 +24,10 @@ public:
     static void SetAttrFromArray(py::object self, const std::string& s, const pybind11::array &value);
 };
 
+bool hasArrayFor(BaseData* d);
+py::object getPythonArrayFor(BaseData* d);
+py::object convertToPython(BaseData* d);
+
 class DataDict
 {
 public:

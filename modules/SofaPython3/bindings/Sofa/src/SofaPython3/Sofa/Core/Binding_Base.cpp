@@ -3,8 +3,6 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 
-#include <SofaPython3/PythonEnvironment.h>
-
 #include <sofa/core/objectmodel/BaseData.h>
 using sofa::core::objectmodel::BaseData;
 
@@ -61,6 +59,8 @@ py::buffer_info toBufferInfo(BaseData& m)
 
     void* ptr = const_cast<void*>(nfo.getValuePtr(m.getValueVoidPtr()));
     if(rows == 1 && nfo.FixedSize()){
+        std::cout << "WEIRD BUFFER" << std::endl ;
+        std::cout << "COLD" << cols << " d " << datasize << std::endl;
         return py::buffer_info(
                     ptr, /* Pointer to buffer */
                     datasize,                              /* Size of one scalar */
@@ -86,6 +86,9 @@ py::buffer_info toBufferInfo(BaseData& m)
 py::object convertToPython(BaseData* d)
 {
     const AbstractTypeInfo& nfo{ *(d->getValueTypeInfo()) };
+    if(hasArrayFor(d))
+        return getPythonArrayFor(d);
+
     if(nfo.Container())
     {
         size_t dim0 = nfo.size(d->getValueVoidPtr())/nfo.size();
@@ -118,6 +121,12 @@ py::object convertToPython(BaseData* d)
     return py::cast(d->getValueString());
 }
 
+bool hasArrayFor(BaseData* d)
+{
+    auto& memcache = getObjectCache();
+    return memcache.find(d) != memcache.end();
+}
+
 py::object getPythonArrayFor(BaseData* d)
 {
     auto& memcache = getObjectCache();
@@ -129,7 +138,9 @@ py::object getPythonArrayFor(BaseData* d)
         py::buffer_info ninfo = toBufferInfo(*d);
         py::array a(pybind11::dtype(ninfo), ninfo.shape,
                     ninfo.strides, ninfo.ptr, capsule);
+
         memcache[d] = a;
+        std::cout << "ADDING AN ARRAY SIZE: " << ninfo.ndim << std::endl;
     }
 
     return memcache[d];
@@ -147,6 +158,9 @@ py::object toPython(BaseData* d, bool writeable)
     /// we can expose the field as a numpy.array
     if(nfo.Container() && nfo.SimpleLayout())
     {
+        if(!writeable)
+            return py::cast(reinterpret_cast<DataAsContainer*>(d));
+
         return getPythonArrayFor(d);
     }
 
@@ -242,6 +256,7 @@ void BindingBase::SetAttr(py::object self, const std::string& s, pybind11::objec
     Base& self_base = py::cast<Base&>(self);
     BaseData* d = self_base.findData(s);
 
+    std::cout << "SETTER " << std::endl ;
     if(d!=nullptr)
     {
         const AbstractTypeInfo& nfo{ *(d->getValueTypeInfo()) };
@@ -497,37 +512,10 @@ void moduleAddDataDictIterator(py::module &m)
     });
 }
 
-class WriteAccessor
-{
-public:
-    WriteAccessor(BaseData* data_) : data(data_){}
-    BaseData* data {nullptr};
-};
 
 void moduleAddBase(py::module &m)
 {
-    py::class_<WriteAccessor> wa(m, "WriteAccessor");
-    wa.def("__enter__", [](WriteAccessor& wa)
-    {
-        wa.data->beginEditVoidPtr();
-        return toPython(wa.data, true);
-    });
-
-    wa.def("__exit__",
-           [](WriteAccessor& wa, py::object type, py::object value, py::object traceback)
-    {
-        wa.data->endEditVoidPtr();
-    });
-
     py::class_<Base, Base::SPtr> p(m, "Base");
-
-    p.def("WriteAccessor", [](Base& self, const std::string& s) -> py::object {
-        BaseData* d = self.findData(s);
-        if(d!=nullptr)
-            return py::cast(new WriteAccessor(d));
-        return py::none();
-    });
-
     p.def("getData", [](Base& self, const std::string& s) -> py::object
     {
         BaseData* d = self.findData(s);
@@ -539,10 +527,22 @@ void moduleAddBase(py::module &m)
     });
 
     p.def("__getattr__", &BindingBase::GetAttr);
-    p.def("__setattr__", [](py::object self, const std::string& s, py::object value){
+    p.def("__setattr__", [](py::object self, const std::string& s, py::object value)
+    {
+        if(py::isinstance<DataAsContainer>(value))
+        {
+            BaseData* data = py::cast<BaseData*>(value);
+            py::array a = getPythonArrayFor(data);
+            BindingBase::SetAttrFromArray(self,s, a);
+            return;
+        }
+
         if(py::isinstance<py::array>(value))
+        {
             BindingBase::SetAttrFromArray(self,s, py::cast<py::array>(value));
-        else
-            BindingBase::SetAttr(self,s,value);
+            return;
+        }
+
+        BindingBase::SetAttr(self,s,value);
     });
 }

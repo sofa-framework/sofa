@@ -18,7 +18,8 @@ pybind11::module addSubmoduleCore(py::module& p)
   moduleAddBase(core);
   moduleAddBaseData(core);
   //moduleAddDataAsString(core);
-  //moduleAddDataAsContainer(core);
+  moduleAddWriteAccessor(core);
+  moduleAddDataAsContainer(core);
   moduleAddBaseObject(core);
   moduleAddPythonController(core);
 
