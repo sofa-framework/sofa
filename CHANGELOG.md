@@ -64,6 +64,7 @@ ____________________________________________________________
 - [CMake] ADD external projects handling [#649](https://github.com/sofa-framework/sofa/pull/649)
 - [CMake] ADD the CMAKE_WARN_DEPRECATED option in SOFA [#662](https://github.com/sofa-framework/sofa/pull/662)
 - [CMake] Improve SOFA installation and packaging [#635](https://github.com/sofa-framework/sofa/pull/635)
+- [CMake] Cleans for packaging [#789](https://github.com/sofa-framework/sofa/pull/789)
 
 **Modules**
 - [All] Refactoring in Camera, BackgroundSetting and Light [#676](https://github.com/sofa-framework/sofa/pull/676)
@@ -77,6 +78,7 @@ ____________________________________________________________
 
 **Applications**
 - [HeadlessRecorder] ADD frameskip option to headless recorder [#615](https://github.com/sofa-framework/sofa/pull/615)
+- [HeadlessRecorder] Remove avcodec dependency in HeadlessRecorder.h [#752](https://github.com/sofa-framework/sofa/pull/752)
 - [runSofa] Save&restore the scenegraph state when live-code & add info panel [#657](https://github.com/sofa-framework/sofa/pull/657)
 - [SofaPython] PythonScriptDataEngine (PSDE) [#583](https://github.com/sofa-framework/sofa/pull/583)
 - [SofaPython] Small fix & new features. [#656](https://github.com/sofa-framework/sofa/pull/656)
@@ -95,9 +97,12 @@ ____________________________________________________________
 - [SofaConstraint] FIX: Moving semicolon under preprocessor define [#680](https://github.com/sofa-framework/sofa/pull/680)
 - **[SofaEngine]** FIX Bug in BoxROI that is not properly initialized [#627](https://github.com/sofa-framework/sofa/pull/627)
 - **[SofaFramework]** Fix plugin list configuration [#645](https://github.com/sofa-framework/sofa/pull/645)
-- **[SofaKernel]** FIX macro issue resulted from the #include cleaning. [#672](https://github.com/sofa-framework/sofa/pull/672)
+- [SofaGraphComponent] FIX SceneChecker_test + ADD alias test [#711](https://github.com/sofa-framework/sofa/pull/711)
+- [SofaGraphComponent] FIX SceneCheck build on MacOS [#719](https://github.com/sofa-framework/sofa/pull/719)
+- [SofaGuiQt] FIX missing resources [#758](https://github.com/sofa-framework/sofa/pull/758)
 - [SofaGeneralEngine] FIX disabled tests [#675](https://github.com/sofa-framework/sofa/pull/675)
 - **[SofaHelper]** More robust method to test end of string [#617](https://github.com/sofa-framework/sofa/pull/617)
+- **[SofaKernel]** FIX macro issue resulted from the #include cleaning. [#672](https://github.com/sofa-framework/sofa/pull/672)
 - [SofaMiscFem] FIX dependencies [#588](https://github.com/sofa-framework/sofa/pull/588)
 - [SofaOpenglVisual] FIX MacOS crash in batch mode [#646](https://github.com/sofa-framework/sofa/pull/646)
 - **[SofaSimulationGraph]** FIX dependencies [#588](https://github.com/sofa-framework/sofa/pull/588)
@@ -112,6 +117,7 @@ ____________________________________________________________
 - [MultiThreading] FIX: add createSubelements param in MeshGmshLoader [#626](https://github.com/sofa-framework/sofa/pull/626)
 - [runSofa] Fix compilation when SofaGuiQt is not activated [#599](https://github.com/sofa-framework/sofa/pull/599)
 - [runSofa] ADD infinite iterations option to batch gui [#613](https://github.com/sofa-framework/sofa/pull/613)
+- [runSofa] FIX missing resources [#758](https://github.com/sofa-framework/sofa/pull/758)
 - [SofaDistanceGrid] ADD .scene-tests to ignore scene [#594](https://github.com/sofa-framework/sofa/pull/594)
 - [SofaPython] FIX build for MacOS >10.13.0 [#614](https://github.com/sofa-framework/sofa/pull/614)
 
