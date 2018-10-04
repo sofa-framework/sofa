@@ -274,6 +274,10 @@ void moduleAddDataAsContainer(py::module& m)
         return py::repr(convertToPython(self));
     });
 
+    p.def("tolist", [](DataAsContainer* self){
+       return convertToPython(self);
+    });
+
     p.def("getWriteAccessor", [](DataAsContainer* self) -> py::object
     {
         if(self!=nullptr)
