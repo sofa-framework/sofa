@@ -1363,6 +1363,7 @@ int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, doub
                 free(F_coarse);
                 free(d_coarse);
 
+                free(d);
                 for (int i = 0; i < numContacts; i++)
                     delete W33[i];
                 free(W33);
@@ -1552,6 +1553,7 @@ int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, doub
     free(F_coarse);
     free(d_coarse);
 
+    free(d);
     for (int i = 0; i < numContacts; i++)
         delete W33[i];
     free(W33);
@@ -1688,7 +1690,6 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, do
             free(d);
             for (int i = 0; i < numContacts; i++)
                 delete W33[i];
-
             free(W33);
 
             if (verbose){

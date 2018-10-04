@@ -318,6 +318,7 @@ bool STLExporter::writeSTLBinary(bool autonumbering)
 
     outfile.close();
     msg_info() << "File '" << filename << "' written" ;
+    delete[] buffer;
     return true;
 }
 
