@@ -123,7 +123,36 @@ void PythonTestList::addTest( const std::string& filename,
                               const std::vector<std::string>& arguments
                               )
 {
-    list.push_back( PythonTestData( filepath(path,filename), testgroup, arguments ) );
+    PythonEnvironment::Init();
+    PythonEnvironment::gil scoped_gil{__FUNCTION__};
+
+    py::module::import("Sofa");
+    py::object globals = py::module::import("__main__").attr("__dict__");
+    py::module module;
+
+    const char* filenameC = filename.c_str();
+    std::string fullpath = (path+"/"+filename);
+    const char* pathC = fullpath.c_str();
+
+    SetDirectory localDir(pathC);
+    std::string basename = SetDirectory::GetFileNameWithoutExtension(SetDirectory::GetFileName(filenameC).c_str());
+    module = PythonEnvironment::importFromFile(basename, SetDirectory::GetFileName(filenameC),
+                                               globals);
+    if(!module.attr("getTestsName"))
+    {
+        list.push_back( PythonTestData( filepath(path,filename), testgroup, arguments) );
+        return ;
+    }
+
+    py::list names = module.attr("getTestsName")();
+
+    for(auto& n : names)
+    {
+        std::vector<std::string> cargs;
+        cargs.push_back(py::cast<std::string>(n));
+        cargs.insert(cargs.end(), arguments.begin(), arguments.end());
+        list.push_back( PythonTestData( filepath(path,filename), testgroup, cargs ) );
+    }
 }
 
 void PythonTestList::addTestDir(const std::string& dir, const std::string& testgroup, const std::string& prefix)

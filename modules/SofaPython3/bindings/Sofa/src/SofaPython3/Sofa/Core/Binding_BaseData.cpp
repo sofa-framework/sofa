@@ -223,6 +223,15 @@ void moduleAddDataAsContainer(py::module& m)
     //        return py::none();
     //    });
 
+    p.def("toarray", [](DataAsContainer* self){
+        auto capsule = py::capsule(new Base::SPtr(self->getOwner()));
+        py::buffer_info ninfo = toBufferInfo(*self);
+        py::array a(pybind11::dtype(ninfo), ninfo.shape,
+                    ninfo.strides, ninfo.ptr, capsule);
+        a.attr("flags").attr("writeable") = false;
+        return a;
+    });
+
     p.def("__setitem__", [](DataAsContainer* self, size_t& index, py::object& value)
     {
         scoped_writeonly_access access(self);
@@ -275,7 +284,7 @@ void moduleAddDataAsContainer(py::module& m)
     });
 
     p.def("tolist", [](DataAsContainer* self){
-       return convertToPython(self);
+        return convertToPython(self);
     });
 
     p.def("getWriteAccessor", [](DataAsContainer* self) -> py::object
@@ -294,9 +303,12 @@ void moduleAddDataAsContainer(py::module& m)
         /// create one.
         py::array p = getPythonArrayFor(self);
 
+        if(py::isinstance<DataAsContainer>(value))
+            value = getPythonArrayFor(py::cast<BaseData*>(value));
+
         /// Returns a new reference on the result.
         /// We don't want to keep this reference so we decref it to avoid memory leak.
-        Py_DECREF(PyNumber_InPlaceAdd(p.release().ptr(), value.release().ptr()));
+        Py_DECREF(PyNumber_InPlaceAdd(p.ptr(), value.ptr()));
 
         /// Instead, returns the self object as we are in an in-place add operator.
         return self;
@@ -308,7 +320,11 @@ void moduleAddDataAsContainer(py::module& m)
         /// of this object.
         scoped_read_access access(self);
         py::array p = getPythonArrayFor(self);
-        return py::reinterpret_steal<py::object>(PyNumber_Add(p.release().ptr(), value.release().ptr()));
+
+        if(py::isinstance<DataAsContainer>(value))
+            value = getPythonArrayFor(py::cast<BaseData*>(value));
+
+        return py::reinterpret_steal<py::object>(PyNumber_Add(p.ptr(), value.ptr()));
     });
 
     p.def("__isub__", [](DataAsContainer* self, py::object value){
@@ -320,9 +336,12 @@ void moduleAddDataAsContainer(py::module& m)
         /// create one.
         py::array p = getPythonArrayFor(self);
 
+        if(py::isinstance<DataAsContainer>(value))
+            value = getPythonArrayFor(py::cast<BaseData*>(value));
+
         /// Returns a new reference on the result.
         /// We don't want to keep this reference so we decref it to avoid memory leak.
-        Py_DECREF(PyNumber_InPlaceSubtract(p.release().ptr(), value.release().ptr()));
+        Py_DECREF(PyNumber_InPlaceSubtract(p.ptr(), value.ptr()));
 
         /// Instead, returns the self object as we are in an in-place add operator.
         return self;
@@ -334,7 +353,11 @@ void moduleAddDataAsContainer(py::module& m)
         /// of this object.
         scoped_read_access access(self);
         py::array p = getPythonArrayFor(self);
-        return py::reinterpret_steal<py::object>(PyNumber_Subtract(p.release().ptr(), value.release().ptr()));
+
+        if(py::isinstance<DataAsContainer>(value))
+            value = getPythonArrayFor(py::cast<BaseData*>(value));
+
+        return py::reinterpret_steal<py::object>(PyNumber_Subtract(p.ptr(), value.ptr()));
     });
 
     p.def("__imul__", [](DataAsContainer* self, py::object value){
@@ -344,11 +367,19 @@ void moduleAddDataAsContainer(py::module& m)
 
         /// Search if this container object has a PythonArray in the case, if this is not the case
         /// create one.
+        if( !hasArrayFor(self) )
+            throw py::type_error("NOOO");
+
         py::array p = getPythonArrayFor(self);
+
+        if(py::isinstance<DataAsContainer>(value))
+        {
+            value = getPythonArrayFor(py::cast<BaseData*>(value));
+        }
 
         /// Returns a new reference on the result.
         /// We don't want to keep this reference so we decref it to avoid memory leak.
-        Py_DECREF(PyNumber_InPlaceMultiply(p.release().ptr(), value.release().ptr()));
+        Py_DECREF(PyNumber_InPlaceMultiply(p.ptr(), value.ptr()));
 
         /// Instead, returns the self object as we are in an in-place add operator.
         return self;
@@ -360,7 +391,11 @@ void moduleAddDataAsContainer(py::module& m)
         /// of this object.
         scoped_read_access access(self);
         py::array p = getPythonArrayFor(self);
-        return py::reinterpret_steal<py::object>(PyNumber_Multiply(p.release().ptr(), value.release().ptr()));
+
+        if(py::isinstance<DataAsContainer>(value))
+            value = getPythonArrayFor(py::cast<BaseData*>(value));
+
+        return py::reinterpret_steal<py::object>(PyNumber_Multiply(p.ptr(), value.ptr()));
     });
 }
 

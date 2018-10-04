@@ -67,7 +67,10 @@ public:
     /// As this allows to do mytest --gtest_filter=*MySomething*
     static std::string getTestName(const testing::TestParamInfo<PythonTestData>& p)
     {
-        return  std::to_string(p.index)+"_"+p.param.testgroup+path(p.param.filepath).stem().string();
+        if(p.param.arguments.size()==0)
+            return  std::to_string(p.index)+"_"+p.param.testgroup+path(p.param.filepath).stem().string();
+        return  std::to_string(p.index)+"_"+p.param.testgroup+path(p.param.filepath).stem().string()
+                                       +"_"+p.param.arguments[0];
     }
 };
 

@@ -17,13 +17,13 @@ using sofa::defaulttype::AbstractTypeInfo;
 #include <sofa/helper/accessor.h>
 using sofa::helper::WriteOnlyAccessor;
 
-std::map<void*, py::object>& getObjectCache()
+std::map<void*, py::array>& getObjectCache()
 {
-    static std::map<void*, py::object>* s_objectcache {nullptr} ;
+    static std::map<void*, py::array>* s_objectcache {nullptr} ;
     if(!s_objectcache)
     {
         std::cout << "CREATE A NEW CACHE" << std::endl ;
-        s_objectcache=new std::map<void*, py::object>();
+        s_objectcache=new std::map<void*, py::array>();
     }
     return *s_objectcache;
 }
@@ -127,21 +127,69 @@ bool hasArrayFor(BaseData* d)
     return memcache.find(d) != memcache.end();
 }
 
-py::object getPythonArrayFor(BaseData* d)
+py::array resetArrayFor(BaseData* d)
+{
+    auto& memcache = getObjectCache();
+    auto capsule = py::capsule(new Base::SPtr(d->getOwner()));
+
+    py::buffer_info ninfo = toBufferInfo(*d);
+    py::array a(pybind11::dtype(ninfo), ninfo.shape,
+                ninfo.strides, ninfo.ptr, capsule);
+
+    memcache[d] = a;
+
+    std::cout << "RECREATE A NEW CACHE ENTRY FOR: " << d->getName() << std::endl ;
+    std::cout << "                            : " << d->getValueVoidPtr() << std::endl ;
+    if(ninfo.ndim==2)
+        std::cout << "                            : " << ninfo.shape[0] << "," << ninfo.shape[1] << std::endl ;
+    else
+        std::cout << "                            : " << ninfo.shape[0] << std::endl ;
+
+    return a;
+}
+
+py::array getPythonArrayFor(BaseData* d)
 {
     auto& memcache = getObjectCache();
     if(memcache.find(d) == memcache.end())
     {
-        auto capsule = py::capsule(d->getOwner(),
-                                   [](void *v){});
+
+        auto capsule = py::capsule(new Base::SPtr(d->getOwner()));
 
         py::buffer_info ninfo = toBufferInfo(*d);
         py::array a(pybind11::dtype(ninfo), ninfo.shape,
                     ninfo.strides, ninfo.ptr, capsule);
 
         memcache[d] = a;
-        std::cout << "ADDING AN ARRAY SIZE: " << ninfo.ndim << std::endl;
+
+        std::cout << "CREATE A NEW CACHE ENTRY FOR: " << d->getName() << std::endl ;
+        std::cout << "                            : " << d->beginEditVoidPtr() << std::endl ;
+        if(ninfo.ndim==2)
+            std::cout << "                            : " << ninfo.shape[0] << "," << ninfo.shape[1] << std::endl ;
+        else
+            std::cout << "                            : " << ninfo.shape[0] << std::endl ;
+
+        return a;
+        //std::cout << "ADDING AN ARRAY SIZE: " << a.shape(0) << ":" << a.shape(1) << " for " << d->getName() <<  std::endl;
     }
+    //    else
+    //    {
+    //        if( d->getValueVoidPtr() != memcache[d].request().ptr )
+    //        {
+    //            std::cout << " OUFFFFFFFFFFFFFFTY " << std::endl ;
+    //            /*
+    //            auto capsule = py::capsule(d->getOwner(),
+    //                                       [](void *v){ std::cout << "Trashing array..."  << std::endl; });
+
+    //            py::buffer_info ninfo = toBufferInfo(*d);
+    //            py::array a(pybind11::dtype(ninfo), ninfo.shape,
+    //                        ninfo.strides, ninfo.ptr, capsule);
+    //            */
+
+
+    //            //memcache[d] = a;
+    //        }
+    //    }
 
     return memcache[d];
 }
@@ -152,6 +200,7 @@ py::object getPythonArrayFor(BaseData* d)
 /// If possible the data is exposed as a numpy.array to minmize copy and data conversion
 py::object toPython(BaseData* d, bool writeable)
 {
+    std::cout << "to Python:  " << writeable << std::endl;
     const AbstractTypeInfo& nfo{ *(d->getValueTypeInfo()) };
 
     /// In case the data is a container with a simple layout
@@ -159,8 +208,10 @@ py::object toPython(BaseData* d, bool writeable)
     if(nfo.Container() && nfo.SimpleLayout())
     {
         if(!writeable)
+        {
+            getPythonArrayFor(d);
             return py::cast(reinterpret_cast<DataAsContainer*>(d));
-
+        }
         return getPythonArrayFor(d);
     }
 
@@ -256,7 +307,6 @@ void BindingBase::SetAttr(py::object self, const std::string& s, pybind11::objec
     Base& self_base = py::cast<Base&>(self);
     BaseData* d = self_base.findData(s);
 
-    std::cout << "SETTER " << std::endl ;
     if(d!=nullptr)
     {
         const AbstractTypeInfo& nfo{ *(d->getValueTypeInfo()) };
@@ -305,10 +355,12 @@ void copyScalar(BaseData* a, const AbstractTypeInfo& nfo, py::array_t<T, py::arr
 
     auto r = src.unchecked();
     for (ssize_t i = 0; i < r.shape(0); i++)
+    {
         for (ssize_t j = 0; j < r.shape(1); j++)
         {
             nfo.setScalarValue( ptr, i*r.shape(1)+j, r(i,j) );
         }
+    }
     a->endEditVoidPtr();
 }
 
@@ -337,6 +389,8 @@ void BindingBase::SetAttrFromArray(py::object self, const std::string& s, const 
             py::buffer_info srcinfo = src.request();
             if( srcinfo.ptr == dstinfo.ptr )
             {
+                /// Increment the change counter so other data field can keep track of
+                /// what happens.
                 d->beginEditVoidPtr();
                 d->endEditVoidPtr();
                 return;
@@ -345,7 +399,6 @@ void BindingBase::SetAttrFromArray(py::object self, const std::string& s, const 
             /// Invalid dimmensions
             if( srcinfo.ndim != dst.ndim() )
                 throw py::type_error("Invalid dimension");
-
 
             bool needResize = false;
             size_t resizeShape;
@@ -367,33 +420,37 @@ void BindingBase::SetAttrFromArray(py::object self, const std::string& s, const 
 
             if(needResize)
             {
+                /// Change the allocated memory of the data field, then update the
+                /// cache entry so keep up with the changes. As we use dstinfo in the following
+                /// we also update it.
                 nfo.setSize(d->beginEditVoidPtr(), srcSize);
+                dst = resetArrayFor(d);
+                dstinfo=dst.request();
             }
 
             bool sameDataType = (srcinfo.format == dstinfo.format);
             if(sameDataType && (nfo.BaseType()->FixedSize() || nfo.SimpleCopy()))
             {
-                //std::cout << "SetAttrFromArray is going the fast way" << s << std::endl;
-
-                memcpy(nfo.getValuePtr(d->beginEditVoidPtr()), srcinfo.ptr, srcSize*srcinfo.itemsize);
-                d->endEditVoidPtr();
+                scoped_writeonly_access guard(d);
+                std::cout << "SetAttrFromArray :: memcpy " << s << std::endl;
+                memcpy(dstinfo.ptr, srcinfo.ptr, srcSize*dstinfo.itemsize);
                 return;
             }
 
             /// In this case we go for the fast path.
             if(nfo.SimpleLayout())
             {
+                std::cout << "SetAttrFromArray :: C-loop " << s << std::endl;
                 if(srcinfo.format=="d")
                     copyScalar<double>(d, nfo, src);
                 else if(srcinfo.format=="f")
                     copyScalar<float>(d, nfo, src);
+                else
+                    std::cout << "SetAttrFromArray :: unsupported fileformat" << std::endl ;
                 return;
             }
-
-            std::cout << "SetAttrFromArray is going the slow way" << s << std::endl;
-            fromPython(d, value);
         }
-        std::cout << "SetAttrFromArray is GOING THE SUPER SLOW PATH" << s << std::endl ;
+        //std::cout << "SetAttrFromArray :: python conversion " << s << std::endl;
         fromPython(d, value);
         return;
     }
@@ -529,6 +586,8 @@ void moduleAddBase(py::module &m)
     p.def("__getattr__", &BindingBase::GetAttr);
     p.def("__setattr__", [](py::object self, const std::string& s, py::object value)
     {
+        std::cout << "Base::__setattr__" << std::endl;
+
         if(py::isinstance<DataAsContainer>(value))
         {
             BaseData* data = py::cast<BaseData*>(value);

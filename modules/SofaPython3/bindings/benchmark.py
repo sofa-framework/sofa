@@ -26,7 +26,7 @@ p = obj.position
 d = rawcpy.copy()
 
 import timeit
-it = 100
+it = 1000
 
 def pattern1SofaPython():
         l = obj.position.tolist()
@@ -60,8 +60,8 @@ def pattern2SofaPython3():
         
 print(timeit.timeit("obj.position.tolist()", number=it, globals=globals()))
 print(timeit.timeit("obj.position", number=it, globals=globals()))
-print(timeit.timeit("obj.position[0,0]", number=it, globals=globals()))
-it = 100
+#print(timeit.timeit("obj.position[0,0]", number=it, globals=globals()))
+it = 10
 
 print("pattern 1")
 print(timeit.timeit("pattern1SofaPython()", number=it, globals=globals()))
