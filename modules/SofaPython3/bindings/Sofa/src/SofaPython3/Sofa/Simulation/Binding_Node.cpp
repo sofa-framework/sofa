@@ -55,12 +55,47 @@ bool checkParamUsage(Base* object, BaseObjectDescription& desc)
             tmp << " - \""<<it.first <<"\" with value: \"" <<(std::string)it.second << msgendl;
         }
     }
+    if(!desc.getErrors().empty())
+    {
+        hasFailure = true;
+        tmp << desc.getErrors()[0];
+    }
     if(hasFailure)
         throw py::type_error(tmp.str());
     return hasFailure;
 }
 
+void moduleAddNodeIterator(py::module &m)
+{
+    py::class_<NodeIterator> d(m, "NodeIterator");
+
+    d.def("__getitem__", [](NodeIterator& d, size_t index) -> py::object
+    {
+        if(index>=d.size(d.owner.get()))
+            throw py::index_error("Too large index '"+std::to_string(index)+"'");
+        return py::cast(d.get(d.owner.get(), index));
+    });
+
+    d.def("__iter__", [](NodeIterator& d)
+    {
+        return d;
+    });
+    d.def("__next__", [](NodeIterator& d) -> py::object
+    {
+        if(d.index>=d.size(d.owner.get()))
+            throw py::stop_iteration();
+        return py::cast(d.get(d.owner.get(), d.index++));
+    });
+    d.def("__len__", [](NodeIterator& d) -> py::object
+    {
+        return py::cast(d.size(d.owner.get()));
+    });
+}
+
+
 void moduleAddNode(py::module &m) {
+    moduleAddNodeIterator(m);
+
     py::class_<Node, sofa::core::objectmodel::BaseNode,
             sofa::core::objectmodel::Context, Node::SPtr>
             p(m, "Node");
@@ -69,7 +104,7 @@ void moduleAddNode(py::module &m) {
     /// The Node::create function will be used as the constructor of the
     /// class two version exists.
     p.def(py::init([](){ return sofa::simulation::graph::DAGNode::SPtr(); }));
-    p.def(py::init( [](const std::string& name){
+    p.def(py::init([](const std::string& name){
         return sofa::core::objectmodel::New<sofa::simulation::graph::DAGNode>(name);
     }));
 
@@ -95,22 +130,41 @@ void moduleAddNode(py::module &m) {
     /// and the createChild is deprecated printing a warning for old scenes.
     p.def("createChild", [](Node* self, const std::string& name, const py::kwargs& kwargs)
     {
-        BaseObjectDescription desc (name.c_str(), "Node");
+        BaseObjectDescription desc (name.c_str());
         fillBaseObjectdescription(desc,kwargs);
         auto node=simpleapi::createChild(self, name, desc);
         checkParamUsage(node.get(), desc);
         return py::cast(node);
     });
+
     p.def("addChild", [](Node* self, Node* child)
     {
         self->addChild(child);
         return child;
     });
-    p.def("getChild", [](Node &n, const std::string &name) -> py::object {
+
+    p.def("getChild", [](Node &n, const std::string &name) -> py::object
+    {
         Node *child = n.getChild(name);
         if (child)
             return py::cast(child);
         return py::none();
+    });
+
+    p.def("removeChild", [](Node* n, Node* n2)
+    {
+        n->removeChild(n2);
+        return py::cast(n2);
+    });
+
+    p.def("removeChild", [](Node& n, const std::string name)
+    {
+        Node* node = n.getChild(name);
+        if(node==nullptr)
+            throw py::index_error("Invalid name '"+name+"'");
+
+        n.removeChild(node);
+        return py::cast(node);
     });
 
     p.def("getRoot", &Node::getRoot);
@@ -130,4 +184,39 @@ void moduleAddNode(py::module &m) {
 
         return BindingBase::GetAttr(self, name);
     });
+
+    p.def_property_readonly("children", [](Node* node)
+    {
+        return new NodeIterator(node,
+                                [](Node* n) -> size_t { return n->child.size(); },
+                                [](Node* n, size_t index) -> Node::SPtr { return n->child[index]; }
+                                );
+    });
+
+    p.def_property_readonly("parents", [](Node* node)
+    {
+        return new NodeIterator(node,
+                                [](Node* n) -> size_t { return n->getNbParents(); },
+                                [](Node* n, size_t index) -> Node::SPtr {
+                                        auto p = n->getParents();
+                                        return (Node*)(p[index]);
+                                }
+                                );
+    });
+
+    p.def("__old_getChildren", [](Node& node)
+    {
+        py::list l;
+        for(auto& child : node.child)
+            l.append( py::cast(child) );
+        return l;
+    });
+
+    p.def("__old_getChild", [](Node& node, size_t t)
+    {
+        if(t >= node.child.size())
+            throw py::index_error("Index trop grand");
+        return py::cast(node.child[t]);
+    });
+
 }
