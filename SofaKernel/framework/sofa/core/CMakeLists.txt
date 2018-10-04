@@ -270,6 +270,18 @@ target_include_directories(${PROJECT_NAME} PUBLIC "$<INSTALL_INTERFACE:include>"
 target_include_directories(${PROJECT_NAME} PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../..>")
 set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-DSOFA_BUILD_CORE")
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX "_d")
-set_target_properties(${PROJECT_NAME} PROPERTIES VERSION "${SOFAFRAMEWORK_VERSION}")
+set_target_properties(${PROJECT_NAME} PROPERTIES VERSION "${SofaFramework_VERSION}")
 
 sofa_install_targets(SofaFramework ${PROJECT_NAME} "sofa/core")
+
+if(UNIX AND NOT APPLE)
+	# Installing ICU libraries the hard way (dirty)
+	file(GLOB ICU_LIBRARIES
+		"/usr/lib/x86_64-linux-gnu/libicudata${CMAKE_SHARED_LIBRARY_SUFFIX}"
+		"/usr/lib/x86_64-linux-gnu/libicui18n${CMAKE_SHARED_LIBRARY_SUFFIX}"
+		"/usr/lib/x86_64-linux-gnu/libicuuc${CMAKE_SHARED_LIBRARY_SUFFIX}"
+		)
+	message("ICU_LIBRARIES = ${ICU_LIBRARIES}")
+	sofa_install_libraries(${ICU_LIBRARIES})
+	target_link_libraries(${PROJECT_NAME} PRIVATE ${ICU_LIBRARIES}) # force link with ICU
+endif()
