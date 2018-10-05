@@ -1276,6 +1276,39 @@ void MechanicalObject<DataTypes>::reinit()
 
     if (translation.getValue()[0]!=0.0 || translation.getValue()[1]!=0.0 || translation.getValue()[2]!=0.0)
         this->applyTranslation( translation.getValue()[0],translation.getValue()[1],translation.getValue()[2]);
+
+    if (x.getValue()[0].size() == 7)   // The object is a Rigid3D.
+    {
+        VecCoord rigidPositions = x.getValue();
+        double epsilon = 1.0e-10;
+        for (size_t i = 0; i<x.getValue().size();i++)
+        {
+            double x3 = (double)x.getValue()[i][3];
+            double x4 = (double)x.getValue()[i][4];
+            double x5 = (double)x.getValue()[i][5];
+            double x6 = (double)x.getValue()[i][6];
+            double normQuat = x3*x3 + x4*x4 + x5*x5 + x6*x6;
+            if (std::abs(normQuat - 1.0) > epsilon)
+            {
+                msg_warning() << "Rigid Object with invalid quaternion (non-unitary norm)! Normalising quaternion value.";
+                if (normQuat == 0.0)
+                {
+                    rigidPositions[i][3] = 0;
+                    rigidPositions[i][4] = 0;
+                    rigidPositions[i][5] = 0;
+                    rigidPositions[i][6] = 1;
+                }
+                else
+                {
+                    rigidPositions[i][3] = rigidPositions[i][3]/sqrt(normQuat);
+                    rigidPositions[i][4] = rigidPositions[i][4]/sqrt(normQuat);
+                    rigidPositions[i][5] = rigidPositions[i][5]/sqrt(normQuat);
+                    rigidPositions[i][6] = rigidPositions[i][6]/sqrt(normQuat);
+                }
+            }
+        }
+        x.setValue(rigidPositions);
+    }
 }
 
 template <class DataTypes>
