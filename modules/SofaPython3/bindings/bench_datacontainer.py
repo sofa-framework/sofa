@@ -27,16 +27,17 @@ def sofa1():
 def f(i,j,v):
         return v*v
 
-code = [
-        #"sofa1()",
-        """
-with obj.position.getWriteAccessor() as w:
+def bloc():
+        with obj.position.writeable() as w:
                 w += w
                 w *= w
                 w += 1.0
                 w -= 2.0
                 w *= w 
-        """,
+
+code = [
+        #"sofa1()",
+        "bloc()",
         "obj.position",
         "obj.position[0]=1.0",
         "obj.position[:]=1.0",
@@ -49,5 +50,5 @@ with obj.position.getWriteAccessor() as w:
         "obj.position.apply(f)"]          # Comment accélérer. En délégant à du code c.
                 
 for c in code:
-        print(c, timeit.timeit(c, number=it, globals=globals()))
+        print(c, ": ", timeit.timeit(c, number=it, globals=globals()))
 
