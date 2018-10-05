@@ -194,16 +194,46 @@ class Test(unittest.TestCase):
 
         def test_DataAsContainerNumpyArray(self):
                 root = Sofa.Node("rootNode")
-                v=[[0,0,0],[1,1,1],[2,2,2],[3,3,3]]
-                c = root.createObject("MechanicalObject", name="t", position=v)
+                v=numpy.array([[0,0,0],[1,1,1],[2,2,2],[3,3,3]])
+                c = root.createObject("MechanicalObject", name="t", position=v.tolist())
 
-                with c.position.getWriteAccessor() as wa:
+                with c.position.writeable() as wa:
                     self.assertEqual(wa.shape, (4,3))
                     self.assertEqual(wa[0,0], 0.0)
                     self.assertEqual(wa[1,1], 1.0)
                     self.assertEqual(wa[2,2], 2.0)
-                    self.assertEqual(wa.tolist(), v)
+                    numpy.testing.assert_array_equal(c.position.toarray(), v)
 
+        def test_DataAsContainerNumpyArrayRepeat(self):
+               root = Sofa.Node("rootNode")
+               v=numpy.array([[0,0,0],[1,1,1],[2,2,2],[3,3,3]])
+               c = root.createObject("MechanicalObject", name="t", position=v.tolist())
+
+               with c.position.writeable() as wa:
+                   wa *= 2.0
+                   self.assertEqual(wa.shape, (4,3))
+                   self.assertEqual(wa[0,0], 0.0)
+                   self.assertEqual(wa[1,1], 2.0)
+                   self.assertEqual(wa[2,2], 4.0)
+                   numpy.testing.assert_array_equal(wa, v*2.0)
+
+               ### Checks that the data are correctly changed in the writeable block
+               numpy.testing.assert_array_equal(c.position.toarray(), v*2.0)
+
+               ### Checks that trying to access wa object in write correctly raise
+               ### an error.
+               def t(c):
+                   c[0,0]=1.0
+               self.assertRaises(ValueError, (lambda c: t(c)), wa )
+
+               ### Checks that the previously defined blocks is correctly re-created.
+               with c.position.writeable() as wa:
+                   wa *= 2.0
+                   self.assertEqual(wa.shape, (4,3))
+                   self.assertEqual(wa[0,0], 0.0)
+                   self.assertEqual(wa[1,1], 4.0)
+                   self.assertEqual(wa[2,2], 8.0)
+                   numpy.testing.assert_array_equal(wa, v*4.0)
 
 def getTestsName():
     suite = unittest.TestLoader().loadTestsFromTestCase(Test)

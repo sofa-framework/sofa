@@ -1,8 +1,6 @@
 #include "Binding_Base.h"
 #include "Binding_BaseData.h"
 
-
-
 #include <sofa/defaulttype/DataTypeInfo.h>
 using sofa::defaulttype::AbstractTypeInfo;
 
@@ -21,17 +19,11 @@ using  sofa::core::objectmodel::BaseNode;
 class WriteAccessor
 {
 public:
-    WriteAccessor(BaseData* data_) : data(data_){}
+    WriteAccessor(BaseData* data_, py::object fct_) : data(data_), fct(fct_){}
+
     BaseData* data {nullptr};
     py::object wrap;
-};
-class WriteAccessor2
-{
-public:
-    WriteAccessor2(BaseData* data_, py::object o_) : data(data_), o(o_){}
-    BaseData* data {nullptr};
-    py::object o;
-    py::object wrap;
+    py::object fct;
 };
 
 void moduleAddDataAsString(py::module& m)
@@ -71,7 +63,6 @@ const char* getFormat(const AbstractTypeInfo& nfo)
     return nullptr;
 }
 
-
 template<class Array, typename Value>
 void setValueArray1D(Array p,
                      const py::slice& slice,
@@ -102,7 +93,6 @@ void setValueArray2D(Array p,
         }
     }
 }
-
 
 template<class Array, typename Value>
 void setItem2DTyped(Array a, py::slice slice, Value dvalue)
@@ -136,7 +126,6 @@ void setItem2DTyped(Array a, py::slice sliceI, py::slice sliceJ, Value dvalue)
     }
 }
 
-
 void setItem2D(py::array a, py::slice slice, py::object o)
 {
     if(a.request().format=="d")
@@ -156,7 +145,6 @@ void setItem2D(py::array a, const py::slice& slice, const py::slice& slice1, py:
     else
         throw py::type_error("Invalid type");
 }
-
 
 template<class Array, typename Value>
 void setItem1DTyped(Array a, py::slice slice, Value dvalue)
@@ -200,7 +188,6 @@ py::slice toSlice(const py::object& o)
     return py::slice(v,v+1,1);
 }
 
-
 void moduleAddDataAsContainer(py::module& m)
 {
     py::class_<DataAsContainer, BaseData, raw_ptr<DataAsContainer>> p(m, "DataContainer",
@@ -210,27 +197,7 @@ void moduleAddDataAsContainer(py::module& m)
     {
         py::array a = getPythonArrayFor(self);
         py::buffer_info parentinfo = a.request();
-        //return py::array()
-        //return a.data(0);
     });
-
-    //    p.def("__getitem__", [](DataAsContainer& self, py::slice slice) -> py::object
-    //    {
-    //        std::cout << "  single slice" << std::endl ;
-    //        return py::none();
-    //    });
-
-    //    p.def("__getitem__", [](DataAsContainer& self, py::tuple ij) -> py::object
-    //    {
-    //        std::cout << "  dual axis " << std::endl ;
-    //        return py::none();
-    //    });
-
-    //    p.def("__getitem__", [](DataAsContainer& self, py::function fct) -> py::object
-    //    {
-    //        std::cout << "  functional " << std::endl ;
-    //        return py::none();
-    //    });
 
     p.def("toarray", [](DataAsContainer* self){
         auto capsule = py::capsule(new Base::SPtr(self->getOwner()));
@@ -296,22 +263,24 @@ void moduleAddDataAsContainer(py::module& m)
         return convertToPython(self);
     });
 
-    p.def("getWriteAccessor", [](DataAsContainer* self) -> py::object
+    p.def("writeable", [](DataAsContainer* self, py::object f) -> py::object
     {
         if(self!=nullptr)
-            return py::cast(new WriteAccessor(self));
-        return py::none();
-    });
-
-    p.def("writeable", [](DataAsContainer* self, py::object o) -> py::object
-    {
-        if(self!=nullptr)
-            return py::cast(new WriteAccessor2(self, o));
+            return py::cast(new WriteAccessor(self, f));
 
         return py::none();
     });
 
-    p.def("__iadd__", [](DataAsContainer* self, py::object value){
+    p.def("writeable", [](DataAsContainer* self) -> py::object
+    {
+        if(self!=nullptr)
+            return py::cast(new WriteAccessor(self, py::none()));
+
+        return py::none();
+    });
+
+    p.def("__iadd__", [](DataAsContainer* self, py::object value)
+    {
         /// Acquire an access to the underlying data. As this is a read+write access we
         /// use the scoped_write_access object.
         scoped_write_access access(self);
@@ -331,7 +300,8 @@ void moduleAddDataAsContainer(py::module& m)
         return self;
     });
 
-    p.def("__add__", [](DataAsContainer* self, py::object value){
+    p.def("__add__", [](DataAsContainer* self, py::object value)
+    {
         /// Acquire an access to the underlying data. As this is a read only access we
         /// use the scoped_read_access object. This imply that the data will updates the content
         /// of this object.
@@ -344,7 +314,8 @@ void moduleAddDataAsContainer(py::module& m)
         return py::reinterpret_steal<py::object>(PyNumber_Add(p.ptr(), value.ptr()));
     });
 
-    p.def("__isub__", [](DataAsContainer* self, py::object value){
+    p.def("__isub__", [](DataAsContainer* self, py::object value)
+    {
         /// Acquire an access to the underlying data. As this is a read+write access we
         /// use the scoped_write_access object.
         scoped_write_access access(self);
@@ -364,7 +335,8 @@ void moduleAddDataAsContainer(py::module& m)
         return self;
     });
 
-    p.def("__sub__", [](DataAsContainer* self, py::object value){
+    p.def("__sub__", [](DataAsContainer* self, py::object value)
+    {
         /// Acquire an access to the underlying data. As this is a read only access we
         /// use the scoped_read_access object. This imply that the data will updates the content
         /// of this object.
@@ -377,7 +349,8 @@ void moduleAddDataAsContainer(py::module& m)
         return py::reinterpret_steal<py::object>(PyNumber_Subtract(p.ptr(), value.ptr()));
     });
 
-    p.def("__imul__", [](DataAsContainer* self, py::object value){
+    p.def("__imul__", [](DataAsContainer* self, py::object value)
+    {
         /// Acquire an access to the underlying data. As this is a read+write access we
         /// use the scoped_write_access object.
         scoped_write_access access(self);
@@ -402,7 +375,8 @@ void moduleAddDataAsContainer(py::module& m)
         return self;
     });
 
-    p.def("__mul__", [](DataAsContainer* self, py::object value){
+    p.def("__mul__", [](DataAsContainer* self, py::object value)
+    {
         /// Acquire an access to the underlying data. As this is a read only access we
         /// use the scoped_read_access object. This imply that the data will updates the content
         /// of this object.
@@ -418,35 +392,23 @@ void moduleAddDataAsContainer(py::module& m)
 
 void moduleAddWriteAccessor(py::module& m)
 {
-
-    py::class_<WriteAccessor> wa(m, "getWriteAccessor");
+    py::class_<WriteAccessor> wa(m, "DataContainerContextManager");
     wa.def("__enter__", [](WriteAccessor& wa)
     {
         wa.data->beginEditVoidPtr();
-        wa.wrap = toPython(wa.data, true);
+        py::array mainbuffer = getPythonArrayFor(wa.data);
+        py::buffer_info info = mainbuffer.request();
+        wa.wrap = py::array(pybind11::dtype(info), info.shape,
+                            info.strides, info.ptr, mainbuffer);
+
+        if(!wa.fct.is_none())
+            wa.wrap = wa.fct(wa.wrap);
+
         return wa.wrap;
     });
 
     wa.def("__exit__",
            [](WriteAccessor& wa, py::object type, py::object value, py::object traceback)
-    {
-        SOFA_UNUSED(type);
-        SOFA_UNUSED(value);
-        SOFA_UNUSED(traceback);
-        wa.wrap.attr("flags").attr("writeable") = false;
-        wa.data->endEditVoidPtr();
-    });
-
-    py::class_<WriteAccessor2> wa2(m, "WrappedWriteAccessor");
-    wa2.def("__enter__", [](WriteAccessor2& wa)
-    {
-        wa.data->beginEditVoidPtr();
-        wa.wrap = wa.o(toPython(wa.data, true));
-        return wa.wrap;
-    });
-
-    wa2.def("__exit__",
-           [](WriteAccessor2& wa, py::object type, py::object value, py::object traceback)
     {
         SOFA_UNUSED(type);
         SOFA_UNUSED(value);
@@ -479,7 +441,8 @@ void moduleAddBaseData(py::module& m)
         return nfo->size(b.getValueVoidPtr()) / nfo->size();
     });
 
-    p.def("getPath", [](BaseData& self){
+    p.def("getPath", [](BaseData& self)
+    {
         Base* b= self.getOwner();
         std::string prefix = getPathTo(b);
         return prefix+"."+self.getName();

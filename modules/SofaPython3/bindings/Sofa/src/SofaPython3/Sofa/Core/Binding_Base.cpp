@@ -200,7 +200,6 @@ py::array getPythonArrayFor(BaseData* d)
 /// If possible the data is exposed as a numpy.array to minmize copy and data conversion
 py::object toPython(BaseData* d, bool writeable)
 {
-    std::cout << "to Python:  " << writeable << std::endl;
     const AbstractTypeInfo& nfo{ *(d->getValueTypeInfo()) };
 
     /// In case the data is a container with a simple layout
@@ -432,7 +431,6 @@ void BindingBase::SetAttrFromArray(py::object self, const std::string& s, const 
             if(sameDataType && (nfo.BaseType()->FixedSize() || nfo.SimpleCopy()))
             {
                 scoped_writeonly_access guard(d);
-                std::cout << "SetAttrFromArray :: memcpy " << s << std::endl;
                 memcpy(dstinfo.ptr, srcinfo.ptr, srcSize*dstinfo.itemsize);
                 return;
             }
@@ -440,23 +438,18 @@ void BindingBase::SetAttrFromArray(py::object self, const std::string& s, const 
             /// In this case we go for the fast path.
             if(nfo.SimpleLayout())
             {
-                std::cout << "SetAttrFromArray :: C-loop " << s << std::endl;
                 if(srcinfo.format=="d")
                     copyScalar<double>(d, nfo, src);
                 else if(srcinfo.format=="f")
                     copyScalar<float>(d, nfo, src);
                 else
                     std::cout << "SetAttrFromArray :: unsupported fileformat" << std::endl ;
-                return;
             }
         }
-        //std::cout << "SetAttrFromArray :: python conversion " << s << std::endl;
         fromPython(d, value);
         return;
     }
 
-
-    std::cout << "SETTING TO A DICT" << std::endl ;
     /// We are falling back to dynamically adding the objet into the object dict.
     py::dict t = self.attr("__dict__");
     if(!t.is_none())
@@ -586,8 +579,6 @@ void moduleAddBase(py::module &m)
     p.def("__getattr__", &BindingBase::GetAttr);
     p.def("__setattr__", [](py::object self, const std::string& s, py::object value)
     {
-        std::cout << "Base::__setattr__" << std::endl;
-
         if(py::isinstance<DataAsContainer>(value))
         {
             BaseData* data = py::cast<BaseData*>(value);
