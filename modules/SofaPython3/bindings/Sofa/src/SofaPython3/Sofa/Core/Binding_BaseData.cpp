@@ -23,6 +23,15 @@ class WriteAccessor
 public:
     WriteAccessor(BaseData* data_) : data(data_){}
     BaseData* data {nullptr};
+    py::object wrap;
+};
+class WriteAccessor2
+{
+public:
+    WriteAccessor2(BaseData* data_, py::object o_) : data(data_), o(o_){}
+    BaseData* data {nullptr};
+    py::object o;
+    py::object wrap;
 };
 
 void moduleAddDataAsString(py::module& m)
@@ -294,6 +303,14 @@ void moduleAddDataAsContainer(py::module& m)
         return py::none();
     });
 
+    p.def("writeable", [](DataAsContainer* self, py::object o) -> py::object
+    {
+        if(self!=nullptr)
+            return py::cast(new WriteAccessor2(self, o));
+
+        return py::none();
+    });
+
     p.def("__iadd__", [](DataAsContainer* self, py::object value){
         /// Acquire an access to the underlying data. As this is a read+write access we
         /// use the scoped_write_access object.
@@ -406,7 +423,8 @@ void moduleAddWriteAccessor(py::module& m)
     wa.def("__enter__", [](WriteAccessor& wa)
     {
         wa.data->beginEditVoidPtr();
-        return toPython(wa.data, true);
+        wa.wrap = toPython(wa.data, true);
+        return wa.wrap;
     });
 
     wa.def("__exit__",
@@ -415,6 +433,25 @@ void moduleAddWriteAccessor(py::module& m)
         SOFA_UNUSED(type);
         SOFA_UNUSED(value);
         SOFA_UNUSED(traceback);
+        wa.wrap.attr("flags").attr("writeable") = false;
+        wa.data->endEditVoidPtr();
+    });
+
+    py::class_<WriteAccessor2> wa2(m, "WrappedWriteAccessor");
+    wa2.def("__enter__", [](WriteAccessor2& wa)
+    {
+        wa.data->beginEditVoidPtr();
+        wa.wrap = wa.o(toPython(wa.data, true));
+        return wa.wrap;
+    });
+
+    wa2.def("__exit__",
+           [](WriteAccessor2& wa, py::object type, py::object value, py::object traceback)
+    {
+        SOFA_UNUSED(type);
+        SOFA_UNUSED(value);
+        SOFA_UNUSED(traceback);
+        wa.wrap.attr("flags").attr("writeable") = false;
         wa.data->endEditVoidPtr();
     });
 }

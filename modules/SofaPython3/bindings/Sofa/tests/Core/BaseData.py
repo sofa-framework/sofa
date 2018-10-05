@@ -2,11 +2,17 @@ import unittest
 import numpy
 import Sofa
 
+#with obj.position.writeable(RGBAColor) as w:
+
 class RGBAColor(numpy.ndarray):
     def __new__(cls, input_array=None):
            if input_array is None:
                obj = super(Vec4d, cls).__new__(cls, shape=(4), dtype=float)
                return obj
+
+           if isinstance(input_array, Sofa.Core.DataContainer):
+               cls.owner = input_array
+               input_array = input_array.toarray()
 
            if input_array.ndim != 1:
                raise TypeError("Invalid dimension, expecting a 1D array, got "+str(input_array.ndim)+"D")
@@ -168,6 +174,23 @@ class Test(unittest.TestCase):
                 v=[[0,0,0],[1,1,1],[2,2,2]]
                 c = root.createObject("MechanicalObject", name="t", position=v)
                 self.assertEqual(len(c.showColor), 4)
+
+        #@unittest.skip  # no reason needed
+        def test_DataWrapper1D(self):
+                root = Sofa.Node("rootNode")
+                v=[[0,0,0],[1,1,1],[2,2,2]]
+                root.createObject("MechanicalObject", name="obj", position=v)
+
+                c = RGBAColor(root.obj.showColor)
+                self.assertEqual(c.r(), 1.0)
+
+                with root.obj.showColor.writeable(RGBAColor) as color:
+                    color[0] = 2.0
+
+                self.assertEqual(color.r(), 2.0)
+                def t(c):
+                    c[0]=1.0
+                self.assertRaises(ValueError, (lambda c: t(c)), color )
 
         def test_DataAsContainerNumpyArray(self):
                 root = Sofa.Node("rootNode")
