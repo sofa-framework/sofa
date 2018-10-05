@@ -88,7 +88,7 @@ public:
     virtual void addTriangle(int a, int b, int c) override;
 
     virtual bool checkConnexity() override;
-    virtual unsigned int getNumberOfConnectedComponent() override;
+    virtual size_t getNumberOfConnectedComponent() override;
     virtual int getRevision() const override;
     virtual void reOrientateTriangle(TriangleID id) override;
     virtual const sofa::helper::vector<TriangleID>&getTrianglesOnBorder() override;
@@ -101,7 +101,7 @@ protected:
 
     // PointSetTopologyContainer interface
 public:
-    virtual unsigned int getNumberOfElements() const override;
+    virtual size_t getNumberOfElements() const override;
     virtual bool checkTopology() const override;
 
     // EdgeSetTopologyContainer interface

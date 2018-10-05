@@ -101,14 +101,14 @@ public:
 	virtual void addQuad(int a, int b, int c, int d) override;
 	virtual void addHexa(int a, int b, int c, int d, int e, int f, int g, int h) override;
 	virtual bool checkConnexity() override;
-	virtual unsigned int getNumberOfConnectedComponent() override;
+        virtual size_t getNumberOfConnectedComponent() override;
 	virtual const sofa::helper::vector<index_type> getConnectedElement(index_type elem) override;
 	virtual const sofa::helper::vector<EdgeID>&getEdgesOnBorder() override;
 	virtual const sofa::helper::vector<PointID>&getPointsOnBorder() override;
 
 	// PointSetTopologyContainer interface
 public:
-	virtual unsigned int getNumberOfElements() const override;
+        virtual size_t getNumberOfElements() const override;
 	virtual bool checkTopology() const override;
 
 private:

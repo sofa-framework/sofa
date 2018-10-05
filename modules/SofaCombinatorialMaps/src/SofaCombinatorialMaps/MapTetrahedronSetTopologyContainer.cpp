@@ -205,7 +205,7 @@ bool MapTetrahedronSetTopologyContainer::checkConnexity()
 	return true;
 }
 
-unsigned int MapTetrahedronSetTopologyContainer::getNumberOfConnectedComponent()
+size_t MapTetrahedronSetTopologyContainer::getNumberOfConnectedComponent()
 {
 	return 0u;
 }
@@ -237,7 +237,7 @@ const sofa::helper::vector<TetrahedronSetTopologyContainer::PointID>&MapTetrahed
 	return empty;
 }
 
-unsigned int MapTetrahedronSetTopologyContainer::getNumberOfElements() const
+size_t MapTetrahedronSetTopologyContainer::getNumberOfElements() const
 {
 	return map_->template nb_cells<Volume::ORBIT>();
 }

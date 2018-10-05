@@ -180,7 +180,7 @@ bool MapTriangleSetTopologyContainer::checkConnexity()
 //	return map_->checkConnexity();
 }
 
-unsigned int MapTriangleSetTopologyContainer::getNumberOfConnectedComponent()
+size_t MapTriangleSetTopologyContainer::getNumberOfConnectedComponent()
 {
 	return map_->getNumberOfConnectedComponent();
 }
@@ -220,7 +220,7 @@ void MapTriangleSetTopologyContainer::updateTopologyEngineGraph()
 //	map_->updateTopologyEngineGraph();
 }
 
-unsigned int MapTriangleSetTopologyContainer::getNumberOfElements() const
+size_t MapTriangleSetTopologyContainer::getNumberOfElements() const
 {
 	return map_->getNumberOfConnectedComponent();
 }

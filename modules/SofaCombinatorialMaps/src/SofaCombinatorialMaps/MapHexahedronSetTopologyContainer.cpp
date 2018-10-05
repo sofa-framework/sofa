@@ -205,7 +205,7 @@ bool MaHexahedronSetTopologyContainer::checkConnexity()
 	return true;
 }
 
-unsigned int MaHexahedronSetTopologyContainer::getNumberOfConnectedComponent()
+size_t MaHexahedronSetTopologyContainer::getNumberOfConnectedComponent()
 {
 	return 0u;
 }
@@ -232,7 +232,7 @@ const sofa::helper::vector<HexahedronSetTopologyContainer::PointID>&MaHexahedron
 	return empty;
 }
 
-unsigned int MaHexahedronSetTopologyContainer::getNumberOfElements() const
+size_t MaHexahedronSetTopologyContainer::getNumberOfElements() const
 {
 	return map_->template nb_cells<Volume::ORBIT>();
 }
