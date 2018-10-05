@@ -230,7 +230,7 @@ void copyFromListScalar(BaseData& d, const AbstractTypeInfo& nfo, const py::list
     {
         void* ptr = d.beginEditVoidPtr();
 
-        if( dstinfo.shape[0] != l.size())
+        if( (size_t)dstinfo.shape[0] != l.size())
             nfo.setSize(ptr, l.size());
         for(size_t i=0;i<l.size();++i)
         {
@@ -240,13 +240,13 @@ void copyFromListScalar(BaseData& d, const AbstractTypeInfo& nfo, const py::list
         return;
     }
     void* ptr = d.beginEditVoidPtr();
-    if( dstinfo.shape[0] != l.size())
+    if( (size_t)dstinfo.shape[0] != l.size())
         nfo.setSize(ptr, l.size());
 
-    for(size_t i=0;i<dstinfo.shape[0];++i)
+    for(auto i=0;i<dstinfo.shape[0];++i)
     {
         py::list ll = l[i];
-        for(size_t j=0;j<dstinfo.shape[1];++j)
+        for(auto j=0;j<dstinfo.shape[1];++j)
         {
             nfo.setScalarValue(ptr, i*dstinfo.shape[1]+j, py::cast<double>(ll[j]));
         }
@@ -400,9 +400,9 @@ void BindingBase::SetAttrFromArray(py::object self, const std::string& s, const 
                 throw py::type_error("Invalid dimension");
 
             bool needResize = false;
-            size_t resizeShape;
+            size_t resizeShape=0;
             size_t srcSize = 1;
-            for(size_t i=0;i<srcinfo.ndim;++i){
+            for(auto i=0;i<srcinfo.ndim;++i){
                 srcSize *= srcinfo.shape[i];
                 if( srcinfo.shape[i] != dstinfo.shape[i])
                 {
@@ -411,14 +411,14 @@ void BindingBase::SetAttrFromArray(py::object self, const std::string& s, const 
                 }
             }
 
-            if(nfo.FixedSize() && needResize)
-                throw py::index_error("The destination is not large enough and cannot be resized. Please clamp the source data set before setting.");
-
-            if(resizeShape != 0 && needResize)
-                throw py::index_error("The destination can only be resized on the first dimension. ");
-
             if(needResize)
             {
+                if(nfo.FixedSize())
+                    throw py::index_error("The destination is not large enough and cannot be resized. Please clamp the source data set before setting.");
+
+                if(resizeShape != 0)
+                    throw py::index_error("The destination can only be resized on the first dimension. ");
+
                 /// Change the allocated memory of the data field, then update the
                 /// cache entry so keep up with the changes. As we use dstinfo in the following
                 /// we also update it.
@@ -508,7 +508,6 @@ void moduleAddDataDict(py::module& m)
         }
         throw py::attribute_error(s);
     });
-
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     d.def("__setitem__",[](DataDict& d, const std::string& s, py::object v)

@@ -46,6 +46,7 @@ std::string getPathTo(Base* b)
         return object->getPathName();
 
     assert(true && "Only Base & BaseObject are supported");
+    return "";
 }
 
 const char* getFormat(const AbstractTypeInfo& nfo)
@@ -102,7 +103,7 @@ void setItem2DTyped(Array a, py::slice slice, Value dvalue)
         throw py::error_already_set();
 
     for(size_t i=0;i<slicelength;++i, start+=step)
-        for(size_t j=0;j<a.shape(1);++j)
+        for(int j=0;j<a.shape(1);++j)
             a(start, j) = dvalue;
 }
 
@@ -242,8 +243,8 @@ void moduleAddDataAsContainer(py::module& m)
         py::array a = getPythonArrayFor(self);
 
         auto aa=a.mutable_unchecked<double>();
-        for(size_t i=0;i<aa.shape(0);++i){
-            for(size_t j=0;j<aa.shape(1);++j){
+        for(auto i=0;i<aa.shape(0);++i){
+            for(auto j=0;j<aa.shape(1);++j){
                 aa(i,j) = py::cast<double>(f(i,j, aa(i,j)));
             }
         }
