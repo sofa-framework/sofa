@@ -35,6 +35,7 @@
 #include <cgogn/core/basic/cell_marker.h>
 #include <cgogn/io/io_utils.h>
 
+#include <SofaCombinatorialMaps/CMTopologyChange.h>
 
 namespace sofa
 {
@@ -174,7 +175,7 @@ namespace cm_topology
 // fw declaration of cm_topology::TopologyEngine
 class TopologyEngine;
 // fw declaration of cm_topology::TopologyChange
-class TopologyChange;
+//class TopologyChange;
 
 template<typename T>
 struct TopologyElementInfo;
