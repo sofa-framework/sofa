@@ -263,7 +263,7 @@ public:
 	virtual bool read(std::istream& in);
 
 	/// Output  stream
-	friend std::ostream& operator<< ( std::ostream& out, const TopologyChange* t )
+	friend std::ostream& operator<< ( std::ostream& out, const core::cm_topology::TopologyChange* t )
 	{
 		if (t)
 		{
@@ -273,7 +273,7 @@ public:
 	}
 
 	/// Input (empty) stream
-	friend std::istream& operator>> ( std::istream& in, TopologyChange*& t )
+	friend std::istream& operator>> ( std::istream& in, core::cm_topology::TopologyChange*& t )
 	{
 		if (t)
 		{
@@ -283,7 +283,7 @@ public:
 	}
 
 	/// Input (empty) stream
-	friend std::istream& operator>> ( std::istream& in, const TopologyChange*& )
+	friend std::istream& operator>> ( std::istream& in, const core::cm_topology::TopologyChange*& )
 	{
 		return in;
 	}
