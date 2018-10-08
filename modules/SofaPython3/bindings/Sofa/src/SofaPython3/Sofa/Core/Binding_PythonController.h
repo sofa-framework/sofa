@@ -3,12 +3,21 @@
 
 #include "Binding_BaseObject.h"
 
+#include <sofa/core/behavior/BaseController.h>
+
+template class pybind11::class_<sofa::core::behavior::BaseController,
+                          sofa::core::objectmodel::BaseObject,
+                          sofa::core::sptr<sofa::core::behavior::BaseController>>;
+
+
 namespace sofapython3
 {
-class PythonController : public BaseObject
+using sofa::core::behavior::BaseController;
+
+class PythonController : public BaseController
 {
 public:
-    SOFA_CLASS(PythonController, BaseObject);
+    SOFA_CLASS(PythonController, BaseController);
     void init() override ;
     void reinit() override;
 
@@ -20,10 +29,9 @@ public:
     ~PythonController()
     {
         std::cout << "~PythonController()" << std::endl;
-
     }
-};
 
+};
 
 template <typename T> class py_shared_ptr : public sofa::core::sptr<T>
 {

@@ -1,18 +1,18 @@
 import unittest
 import gc
 import Sofa
+from Sofa.Simulation import SingleSimulation
 
 class MyController(Sofa.PythonController):
         """This is my custom controller
            when init is called from Sofa this should call the python init function
         """        
         inited = 0
-        reinited = 0
+        iterations = 0
         
-        def __init__(self):
-                Sofa.PythonController.__init__(self)
-                self.name = "Damien"
-                #self.nulle = "Z"
+        def __init__(self, *args, **kwargs):
+                ## These are needed (and the normal way to override from a python class)
+                Sofa.PythonController.__init__(self, *args, **kwargs)
                 print(" Python::__init__::"+str(self.name))
         
         def __del__(self):
@@ -20,47 +20,71 @@ class MyController(Sofa.PythonController):
         
         def init(self):
                 print(" Python::init() at "+str(self))
-                #print(" => "+str(dir(self)))
-                #self.inited += 1
-                
-        def reinit(self):
-                print(" Python::reinit() at "+str(self))
-                #self.reinited += 1
-  
+                self.inited += 1
+
+        def handleEvent(self, event):
+                Sofa.PythonController.handleEvent(self, event)
+                print(" HandleEvent" )
+
+        def onAnimateBeginEvent(self, other):
+                print(" Python::onAnimationBeginEvent() at "+str(other))
+                self.iterations+=1
+
 class Test(unittest.TestCase):
          def test_constructor(self):
                  c = Sofa.PythonController()
                  c.init()
                  c.reinit()
 
-         def test_inheritance(self):
-                 c = MyController()
-                 c.name = "MyController"
-                 c.init()
-                 c.reinit()
-                 self.assertTrue( hasattr(c, "inited") ) 
-                 self.assertTrue( hasattr(c, "reinited") ) 
+         def test_constructorOverriden(self):
+                 root = Sofa.Node("rootNode")
+                 root.addObject(MyController("controller"))
+                 root.controller.init()
+                 root.controller.reinit()
 
-                 print(str(c.inited))
-                 print(str(c.reinited))
-                
+         def test_methodOverriding(self):
+                 """Test that a custom controller 'MyController' correctly adds attributes when overridden.
+                 dynamically in its init and reinit function. And that after the
+                 call the attributes are still available.
+                 """
+                 c = MyController("controller")
+
+                 self.assertTrue( hasattr(c, "inited") )
+                 c.init()
+
                  self.assertEqual( c.inited, 1 ) 
-                 self.assertEqual( c.reinited, 1 ) 
                  return c
-                
-         def test_inheritance2(self):
-                 node = Sofa.Node.createNode("root")
-                 node.addObject( self.test_inheritance() ) 
+
+         def test_events(self):
+            """Test the event system."""
+            node = Sofa.Node("root")
+            node.addObject("DefaultAnimationLoop", name="loop")
+            controller = node.addObject( MyController() )
+
+            self.assertTrue( hasattr(controller, "iterations") )
+
+            SingleSimulation.init(node)
+            for i in range(10):
+                SingleSimulation.animate(node, 0.01)
+
+            self.assertTrue( hasattr(controller, "iterations") )
+            self.assertEqual( controller.iterations, 10 )
+
+         def test_bindingPersistance(self):
+                 """Test that custom controllers correctly preserves attributes.
+                    This can happens if the binding is not properly done and is loosing
+                    the python part when go to/from sofa without having the sofa side
+                    holding a reference to the python object.
+                 """
+                 node = Sofa.Node("root")
+                 node.addObject( MyController("controller") )
+                 node.init()
+
+                 ## At this step we can validate that the python side is ok.
+                 self.assertTrue( hasattr(node.controller, "inited") )
+                 self.assertEqual( node.controller.inited, 1 )
+
                  gc.collect()
-                
-                 ## We init the node (and thus all its child)
-                 node.init() 
-                
-                 o = r.getObject("MyController")
-                 self.assertTrue( hasattr(o, "inited") ) 
-                 self.assertTrue( hasattr(o, "reinited") ) 
-                 self.assertEqual( o.inited, 2 ) 
-                 self.assertEqual( o.reinited, 2 ) 
 
 def getTestsName():
     suite = unittest.TestLoader().loadTestsFromTestCase(Test)
@@ -75,7 +99,6 @@ def runTests():
             suite = unittest.TestSuite()
             suite.addTest(Test(sys.argv[1]))
         return unittest.TextTestRunner(verbosity=1).run(suite).wasSuccessful()
-
 
 def createScene(rootNode):
         runTests()
