@@ -1,6 +1,8 @@
 #include "Binding_BaseObject.h"
 #include "Binding_PythonController.h"
 
+namespace sofapython3
+{
 void moduleAddBaseObject(py::module& m)
 {
     py::class_<BaseObject, Base, BaseObject::SPtr>p(m, "BaseObject");
@@ -12,4 +14,5 @@ void moduleAddBaseObject(py::module& m)
     {
         return std::string("@") + self.getPathName();
     });
+}
 }

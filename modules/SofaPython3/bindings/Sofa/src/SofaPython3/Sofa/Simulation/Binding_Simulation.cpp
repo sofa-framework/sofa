@@ -4,6 +4,9 @@
 using sofa::simulation::Simulation;
 using namespace pybind11::literals;
 
+namespace sofapython3
+{
+
 void moduleAddSimulation(py::module &m)
 {
   py::class_<Simulation, Simulation::SPtr> s(m, "Simulation");
@@ -14,3 +17,5 @@ void moduleAddSimulation(py::module &m)
   s.def("load", &Simulation::load, "filename"_a);
   s.def("unload", &Simulation::unload, "node"_a);
 }
+
+} /// namespace sofapython3

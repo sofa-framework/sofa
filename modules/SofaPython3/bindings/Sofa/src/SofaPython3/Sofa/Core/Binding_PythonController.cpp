@@ -1,6 +1,14 @@
-#include "Binding_PythonController.h"
-#include "Binding_Base.h"
+#include <pybind11/pybind11.h>
 #include <pybind11/detail/init.h>
+
+#include "Binding_Base.h"
+#include "Binding_PythonController.h"
+
+PYBIND11_DECLARE_HOLDER_TYPE(PythonController,
+                             sofapython3::py_shared_ptr<PythonController>, true)
+
+namespace sofapython3
+{
 
 void PythonController::init() {
     std::cout << " PythonController::init()" << std::endl;
@@ -10,11 +18,6 @@ void PythonController::reinit() {
     std::cout << " PythonController::reinit()" << std::endl;
 }
 
-template <typename T> class py_shared_ptr : public sofa::core::sptr<T>
-{
-public:
-    py_shared_ptr(T *ptr) ;
-};
 
 class PythonController_Trampoline : public PythonController
 {
@@ -56,6 +59,14 @@ public:
     virtual void reinit() override ;
 };
 
+template <typename T>
+py_shared_ptr<T>::py_shared_ptr(T *ptr) : sofa::core::sptr<T>(ptr)
+{
+    auto nptr = dynamic_cast<PythonController_Trampoline*>(ptr);
+    if(nptr)
+        nptr->setInstance( py::cast(ptr) ) ;
+}
+
 void PythonController_Trampoline::init()
 {
     //std::cout << "PythonController_trampoline::init()" << std::endl;
@@ -68,17 +79,6 @@ void PythonController_Trampoline::reinit()
     PYBIND11_OVERLOAD(void, PythonController, reinit, );
 }
 
-template <typename T>
-py_shared_ptr<T>::py_shared_ptr(T *ptr) : sofa::core::sptr<T>(ptr)
-{
-    auto nptr = dynamic_cast<PythonController_Trampoline*>(ptr);
-    if(nptr)
-        nptr->setInstance( py::cast(ptr) ) ;
-}
-
-PYBIND11_DECLARE_HOLDER_TYPE(PythonController,
-                             py_shared_ptr<PythonController>, true)
-
 void moduleAddPythonController(py::module &m) {
     py::class_<PythonController, BaseObject,
             PythonController_Trampoline,
@@ -87,4 +87,6 @@ void moduleAddPythonController(py::module &m) {
     f.def(py::init());
     f.def("init", &PythonController::init);
     f.def("reinit", &PythonController::reinit);
+}
+
 }

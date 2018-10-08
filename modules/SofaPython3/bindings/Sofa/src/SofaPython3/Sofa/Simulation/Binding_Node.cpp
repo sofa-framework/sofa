@@ -13,9 +13,13 @@ namespace simpleapi = sofa::simpleapi;
 #include <SofaSimulationGraph/DAGNode.h>
 
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
+#include <SofaPython3/Sofa/Core/DataHelper.h>
 #include "Binding_Node.h"
 
 using sofa::core::objectmodel::BaseObjectDescription;
+
+namespace sofapython3
+{
 
 std::string toSofaParsableString(const py::handle& p)
 {
@@ -100,7 +104,6 @@ void moduleAddNode(py::module &m) {
             sofa::core::objectmodel::Context, Node::SPtr>
             p(m, "Node");
 
-
     /// The Node::create function will be used as the constructor of the
     /// class two version exists.
     p.def(py::init([](){ return sofa::simulation::graph::DAGNode::SPtr(); }));
@@ -118,6 +121,20 @@ void moduleAddNode(py::module &m) {
         auto object = simpleapi::createObject(self, type, desc);
         if(object)
             checkParamUsage(object.get(), desc);
+
+        /*
+        for(const auto& kv : kwargs)
+        {
+            BaseData* d = object->findData(py::str(kv.first));
+            if(d)
+            {
+                fromPython(d, py::cast<py::object>(kv.second));
+                continue;
+            }
+
+            /// TODO(dmarchal) do the links.
+        }*/
+
         return py::cast(object);
     });
     p.def("addObject", [](Node& self, BaseObject* object)
@@ -218,5 +235,6 @@ void moduleAddNode(py::module &m) {
             throw py::index_error("Index trop grand");
         return py::cast(node.child[t]);
     });
-
 }
+
+} /// namespace sofapython3

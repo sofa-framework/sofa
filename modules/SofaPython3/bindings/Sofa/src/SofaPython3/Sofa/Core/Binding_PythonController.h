@@ -3,6 +3,8 @@
 
 #include "Binding_BaseObject.h"
 
+namespace sofapython3
+{
 class PythonController : public BaseObject
 {
 public:
@@ -22,6 +24,16 @@ public:
     }
 };
 
+
+template <typename T> class py_shared_ptr : public sofa::core::sptr<T>
+{
+public:
+    py_shared_ptr(T *ptr) ;
+};
+
+
 void moduleAddPythonController(py::module &m);
+
+} /// namespace sofapython3
 
 #endif /// PYTHONMODULE_SOFA_BINDING_PYTHONCONTROLLER_H

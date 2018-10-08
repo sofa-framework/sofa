@@ -26,6 +26,10 @@ set(PYTHON_FILES
     Core/BaseObject.py
     Core/ScriptController.py
     Simulation/Node.py
+    bench_datacontainer.py
+    bench_node.py
+    benchmark.py
+    dataaccess.py
     )
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${PYTHON_FILES})

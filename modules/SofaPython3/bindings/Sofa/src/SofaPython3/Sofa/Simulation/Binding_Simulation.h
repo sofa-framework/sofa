@@ -6,8 +6,13 @@
 #include <sofa/simulation/Simulation.h>
 using sofa::simulation::Simulation;
 
-template class py::class_<Simulation, Simulation::SPtr>;
+template class pybind11::class_<Simulation, Simulation::SPtr>;
+
+namespace sofapython3
+{
 
 void moduleAddSimulation(py::module &m);
+
+} ///sofapython3
 
 #endif /// PYTHONMODULE_SOFA_BINDING_SIMULATION_H

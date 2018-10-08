@@ -1,13 +1,18 @@
-#include "Binding_Base.h"
-#include "Binding_BaseObject.h"
-#include "Binding_BaseData.h"
-#include "Binding_PythonController.h"
-#include "Submodule_Core.h"
 
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/Context.h>
+
+#include "Binding_Base.h"
+#include "Binding_BaseObject.h"
+#include "Binding_BaseData.h"
+#include "Binding_DataContainer.h"
+#include "Binding_PythonController.h"
+#include "Submodule_Core.h"
+
+namespace sofapython3
+{
 
 /// The first parameter must be named the same as the module file to load.
 pybind11::module addSubmoduleCore(py::module& p)
@@ -17,9 +22,8 @@ pybind11::module addSubmoduleCore(py::module& p)
   moduleAddDataDictIterator(core);
   moduleAddBase(core);
   moduleAddBaseData(core);
-  //moduleAddDataAsString(core);
   moduleAddWriteAccessor(core);
-  moduleAddDataAsContainer(core);
+  moduleAddDataContainer(core);
   moduleAddBaseObject(core);
   moduleAddPythonController(core);
 
@@ -37,3 +41,5 @@ pybind11::module addSubmoduleCore(py::module& p)
 
   return core;
 }
+
+} ///namespace sofapython3

@@ -3,18 +3,21 @@
 
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
-namespace py = pybind11;
-using namespace pybind11::literals;
-
 #include <sofa/core/objectmodel/Base.h>
-using sofa::core::objectmodel::Base;
-
 #include <sofa/core/objectmodel/BaseData.h>
-using sofa::core::objectmodel::BaseData;
 
 /// More info about smart pointer in
 /// /pybind11.readthedocs.io/en/stable/advanced/smart_ptrs.html
 PYBIND11_DECLARE_HOLDER_TYPE(Base, sofa::core::sptr<Base>, true)
+
+namespace sofapython3
+{
+/// Makes an alias for the pybind11 namespace to increase readability.
+namespace py { using namespace pybind11; }
+using namespace pybind11::literals;
+using sofa::core::objectmodel::Base;
+using sofa::core::objectmodel::BaseData;
+using sofa::core::sptr;
 
 class BindingBase
 {
@@ -33,8 +36,8 @@ py::object convertToPython(BaseData* d);
 class DataDict
 {
 public:
-    Base::SPtr owner;
-    DataDict(Base::SPtr b){ owner = b; }
+    sptr<Base> owner;
+    DataDict(sptr<Base> b){ owner = b; }
 };
 
 class DataDictIterator
@@ -53,11 +56,12 @@ public:
     }
 };
 
-py::object toPython(BaseData* d, bool writeable=false);
-void fromPython(BaseData* d, const pybind11::object &o);
-
 void moduleAddDataDict(py::module& m);
 void moduleAddDataDictIterator(py::module& m);
 void moduleAddBase(py::module& m);
+
+
+
+} /// namespace sofapython3
 
 #endif /// PYTHONMODULE_SOFA_BINDING_BASE_H

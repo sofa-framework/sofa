@@ -1,6 +1,9 @@
 #include "Core/Submodule_Core.h"
 #include "Simulation/Submodule_Simulation.h"
 
+namespace sofapython3
+{
+
 /// The first parameter must be named the same as the module file to load.
 PYBIND11_MODULE(Sofa, m)
 {
@@ -11,3 +14,5 @@ PYBIND11_MODULE(Sofa, m)
     m.add_object("PythonController", core.attr("PythonController"));
     m.add_object("Node", simulation.attr("Node"));
 }
+
+} ///namespace sofapython3

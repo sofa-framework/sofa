@@ -3,6 +3,8 @@
 #include "Binding_Node.h"
 #include "Binding_Simulation.h"
 
+namespace sofapython3
+{
 /// The first parameter must be named the same as the module file to load.
 py::module addSubmoduleSimulation(py::module& module)
 {
@@ -12,3 +14,5 @@ py::module addSubmoduleSimulation(py::module& module)
 
   return simu;
 }
+
+} ///namespace sofapython3
