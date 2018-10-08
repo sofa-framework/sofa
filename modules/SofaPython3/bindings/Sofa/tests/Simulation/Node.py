@@ -21,7 +21,13 @@ class Test(unittest.TestCase):
                 o = c.createObject("MechanicalObject", name="mechanical")
                 self.assertTrue(o is not None)
                 self.assertTrue(root.child1.mechanical is not None)
-                
+
+        def test_init(self):
+                root = Sofa.Node("rootNode")
+                c = root.createChild("child1")
+                c.createObject("MechanicalObject", position=[0.0,1.0,2.0]*100)
+                root.init()
+
         def test_createChild(self):                
                 root = Sofa.Node("rootNode")                               
                 c = root.createChild("child1")
@@ -73,6 +79,14 @@ class Test(unittest.TestCase):
                 self.assertEqual(len(d.parents), 1)
                 c1.addChild(d)
                 self.assertEqual(len(d.parents), 2)
+
+        def test_objects_property(self):
+                root = Sofa.Node("rootNode")
+                root.createObject("MechanicalObject", name="name1")
+                root.createObject("MechanicalObject", name="name2")
+                self.assertEqual(len(root.objects), 2)
+                root.createObject("MechanicalObject", name="name2")
+                self.assertEqual(len(root.objects), 3)
 
         def test_data_property(self):
                 root = Sofa.Node("rootNode")

@@ -11,6 +11,7 @@ namespace simpleapi = sofa::simpleapi;
 
 #include <SofaSimulationGraph/DAGSimulation.h>
 #include <SofaSimulationGraph/DAGNode.h>
+using sofa::core::ExecParams;
 
 #include <SofaPython3/Sofa/Core/Binding_Base.h>
 #include <SofaPython3/Sofa/Core/DataHelper.h>
@@ -69,28 +70,36 @@ bool checkParamUsage(Base* object, BaseObjectDescription& desc)
     return hasFailure;
 }
 
-void moduleAddNodeIterator(py::module &m)
+void moduleAddBaseIterator(py::module &m)
 {
-    py::class_<NodeIterator> d(m, "NodeIterator");
+    py::class_<BaseIterator> d(m, "NodeIterator");
 
-    d.def("__getitem__", [](NodeIterator& d, size_t index) -> py::object
+    d.def("__getitem__", [](BaseIterator& d, size_t index) -> py::object
     {
         if(index>=d.size(d.owner.get()))
             throw py::index_error("Too large index '"+std::to_string(index)+"'");
         return py::cast(d.get(d.owner.get(), index));
     });
 
-    d.def("__iter__", [](NodeIterator& d)
+    d.def("__getitem__", [](BaseIterator& d, const std::string& name) -> py::object
+    {
+        BaseObject* obj =d.owner->getObject(name);
+        if(obj==nullptr)
+            throw py::index_error("Not existing object '"+name+"'");
+        return py::cast(obj);
+    });
+
+    d.def("__iter__", [](BaseIterator& d)
     {
         return d;
     });
-    d.def("__next__", [](NodeIterator& d) -> py::object
+    d.def("__next__", [](BaseIterator& d) -> py::object
     {
         if(d.index>=d.size(d.owner.get()))
             throw py::stop_iteration();
         return py::cast(d.get(d.owner.get(), d.index++));
     });
-    d.def("__len__", [](NodeIterator& d) -> py::object
+    d.def("__len__", [](BaseIterator& d) -> py::object
     {
         return py::cast(d.size(d.owner.get()));
     });
@@ -98,7 +107,7 @@ void moduleAddNodeIterator(py::module &m)
 
 
 void moduleAddNode(py::module &m) {
-    moduleAddNodeIterator(m);
+    moduleAddBaseIterator(m);
 
     py::class_<Node, sofa::core::objectmodel::BaseNode,
             sofa::core::objectmodel::Context, Node::SPtr>
@@ -137,11 +146,24 @@ void moduleAddNode(py::module &m) {
 
         return py::cast(object);
     });
-    p.def("addObject", [](Node& self, BaseObject* object)
+    p.def("addObject", [](Node& self, BaseObject* object) -> py::object
     {
-        return self.addObject(object);
+        if(self.addObject(object))
+            return py::cast(object);
+        return py::none();
     });
 
+    //TODO(dmarchal 08/10/2018): this implementation should be shared with createObject
+    p.def("addObject", [](Node* self, const std::string& type, const py::kwargs& kwargs)
+    {
+        BaseObjectDescription desc {type.c_str(), type.c_str()};
+        fillBaseObjectdescription(desc, kwargs);
+        auto object = simpleapi::createObject(self, type, desc);
+        if(object)
+            checkParamUsage(object.get(), desc);
+
+        return py::cast(object);
+    });
 
     /// Node's related method. A single addNode is now available
     /// and the createChild is deprecated printing a warning for old scenes.
@@ -186,6 +208,7 @@ void moduleAddNode(py::module &m) {
 
     p.def("getRoot", &Node::getRoot);
     p.def("getPath", &Node::getPathName);
+    p.def("init", [](Node& self){ return self.init(ExecParams::defaultInstance());} );
 
     p.def("__getattr__", [](Node& self, const std::string& name) -> py::object
     {
@@ -204,37 +227,46 @@ void moduleAddNode(py::module &m) {
 
     p.def_property_readonly("children", [](Node* node)
     {
-        return new NodeIterator(node,
+        return new BaseIterator(node,
                                 [](Node* n) -> size_t { return n->child.size(); },
-                                [](Node* n, size_t index) -> Node::SPtr { return n->child[index]; }
-                                );
-    });
+        [](Node* n, size_t index) -> Node::SPtr { return n->child[index]; }
+    );
+});
 
-    p.def_property_readonly("parents", [](Node* node)
-    {
-        return new NodeIterator(node,
-                                [](Node* n) -> size_t { return n->getNbParents(); },
-                                [](Node* n, size_t index) -> Node::SPtr {
-                                        auto p = n->getParents();
-                                        return (Node*)(p[index]);
-                                }
-                                );
-    });
+p.def_property_readonly("parents", [](Node* node)
+{
+    return new BaseIterator(node,
+                            [](Node* n) -> size_t { return n->getNbParents(); },
+    [](Node* n, size_t index) -> Node::SPtr {
+    auto p = n->getParents();
+    return (Node*)(p[index]);
+});
+});
 
-    p.def("__old_getChildren", [](Node& node)
-    {
-        py::list l;
-        for(auto& child : node.child)
-            l.append( py::cast(child) );
-        return l;
-    });
+p.def_property_readonly("objects", [](Node* node)
+{
+    return new BaseIterator(node,
+                            [](Node* n) -> size_t { return n->object.size(); },
+                            [](Node* n, size_t index) -> Base::SPtr {
+                                       return (n->object[index]);
+                            });
+});
 
-    p.def("__old_getChild", [](Node& node, size_t t)
-    {
-        if(t >= node.child.size())
-            throw py::index_error("Index trop grand");
-        return py::cast(node.child[t]);
-    });
+
+p.def("__old_getChildren", [](Node& node)
+{
+    py::list l;
+    for(auto& child : node.child)
+        l.append( py::cast(child) );
+    return l;
+});
+
+p.def("__old_getChild", [](Node& node, size_t t)
+{
+    if(t >= node.child.size())
+        throw py::index_error("Index trop grand");
+    return py::cast(node.child[t]);
+});
 }
 
 } /// namespace sofapython3

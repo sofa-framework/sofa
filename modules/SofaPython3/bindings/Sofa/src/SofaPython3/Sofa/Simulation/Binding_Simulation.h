@@ -12,6 +12,7 @@ namespace sofapython3
 {
 
 void moduleAddSimulation(py::module &m);
+void moduleAddRuntime(py::module &m);
 
 } ///sofapython3
 

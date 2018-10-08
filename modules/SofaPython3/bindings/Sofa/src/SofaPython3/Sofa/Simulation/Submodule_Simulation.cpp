@@ -12,6 +12,9 @@ py::module addSubmoduleSimulation(py::module& module)
   moduleAddNode(simu);
   moduleAddSimulation(simu);
 
+  py::module runtime = module.def_submodule("Runtime");
+  moduleAddRuntime(simu);
+
   return simu;
 }
 

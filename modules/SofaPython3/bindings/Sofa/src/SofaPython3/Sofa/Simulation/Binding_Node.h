@@ -29,17 +29,17 @@ namespace sofapython3
 {
 namespace py { using namespace pybind11; }
 
-class NodeIterator
+class BaseIterator
 {
 public:
     Node::SPtr owner;
     size_t     index=0;
     std::function<size_t (Node*)> size ;
-    std::function<Node::SPtr (Node*, size_t)> get ;
+    std::function<Base::SPtr (Node*, size_t)> get ;
 
-    NodeIterator(Node::SPtr owner_,
+    BaseIterator(Node::SPtr owner_,
                  std::function<size_t (Node*)> size_,
-                 std::function<Node::SPtr (Node*, size_t)> get_)
+                 std::function<Base::SPtr (Node*, size_t)> get_)
     {
         size = size_;
         get = get_;
@@ -47,6 +47,8 @@ public:
         index=0;
     }
 };
+
+
 
 void moduleAddNode(py::module &m);
 
