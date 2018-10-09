@@ -186,7 +186,7 @@ namespace sofa  {
 
             static TaskSchedulerDefault* create();
 
-            static const bool isRegistered;
+            static bool isRegistered;
 
         private:
 

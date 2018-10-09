@@ -23,7 +23,7 @@
 #define SOFA_HELPER_ADVANCEDTIMER_H
 #include <sofa/helper/helper.h>
 #include <sofa/simulation/Simulation.h>
-
+#include <sofa/helper/system/thread/thread_specific_ptr.h>
 
 #include <iostream>
 #include <string>
@@ -143,7 +143,7 @@ public:
             }
 
         public:
-
+            
             /**
                @return the Id corresponding to the name of the id given in parameter
                If the name isn't found in the list, it is added to it and return the new id.
@@ -188,8 +188,12 @@ public:
             /// return the instance of the factory. Creates it if doesn't exist yet.
             static IdFactory& getInstance()
             {
-                static IdFactory instance;
-                return instance;
+                static sofa::helper::system::thread::thread_specific_ptr<IdFactory> instance;
+                if (instance == nullptr)
+                {
+                    instance = new IdFactory;
+                }
+                return *instance;
             }
         };
 

@@ -17,6 +17,10 @@ namespace sofa
         std::string TaskScheduler::_currentSchedulerName;
         TaskScheduler* TaskScheduler::_currentScheduler = nullptr;
 
+        // register default task scheduler
+        bool TaskSchedulerDefault::isRegistered = TaskScheduler::registerScheduler(TaskSchedulerDefault::name(), &TaskSchedulerDefault::create);
+
+        
         TaskScheduler* TaskScheduler::create(const char* name)
         {
             // is already the current scheduler

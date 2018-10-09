@@ -21,7 +21,7 @@ namespace sofa
 
         std::map< std::thread::id, WorkerThread*> TaskSchedulerDefault::_threads;
         
-        const bool TaskSchedulerDefault::isRegistered = TaskScheduler::registerScheduler(TaskSchedulerDefault::name(), &TaskSchedulerDefault::create);
+//        const bool TaskSchedulerDefault::isRegistered = TaskScheduler::registerScheduler(TaskSchedulerDefault::name(), &TaskSchedulerDefault::create);
 
 
         TaskSchedulerDefault* TaskSchedulerDefault::create()
