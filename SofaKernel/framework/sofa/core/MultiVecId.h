@@ -39,44 +39,6 @@ template<class DataTypes> class State;
 template <VecType vtype, VecAccess vaccess>
 class TMultiVecId;
 
-/*
-/// Helper class to infer the types of elements, vectors, and Data for vectors of the given VecType in states with the given DataTypes
-template<class DataTypes, VecType vtype>
-struct DataTypesVecInfo;
-
-template<class DataTypes>
-struct DataTypesVecInfo<V_COORD>
-{
-    typedef typename DataTypes::Coord T;
-    typedef typename DataTypes::VecCoord VecT;
-    typedef Data<VecT> DataVecT;
-};
-
-template<class DataTypes>
-struct DataTypesVecInfo<V_DERIV>
-{
-    typedef typename DataTypes::Deriv T;
-    typedef typename DataTypes::VecDeriv VecT;
-    typedef Data<VecT> DataVecT;
-};
-
-template<class DataTypes>
-struct DataTypesVecInfo<V_MATDERIV>
-{
-    typedef typename DataTypes::MatrixDeriv T;
-    typedef typename DataTypes::MatrixDeriv VecT;
-    typedef Data<VecT> DataVecT;
-};
-
-template<class DataTypes>
-struct DataTypesVecInfo<V_ALL>
-{
-    typedef void T;
-    typedef void VecT;
-    typedef BaseData DataVecT;
-};
-*/
-
 /// Helper class to access vectors of a given type in a given State
 template<class DataTypes, VecType vtype, VecAccess vaccess>
 struct StateVecAccessor;
@@ -185,11 +147,9 @@ struct StateVecAccessor<DataTypes, V_ALL, V_READ>
 {
 public:
     typedef TVecId<V_ALL, V_READ> MyVecId;
-    //typedef BaseData MyDataVec;
 
     StateVecAccessor(const State<DataTypes>* state, const MyVecId& id) : state(state), id(id) {}
     operator MyVecId() const {  return id;  }
-    //const MyDataVec* read()  const {  return state-> read(id);  }
 
 protected:
     const State<DataTypes>* state;
@@ -201,12 +161,9 @@ struct StateVecAccessor<DataTypes, V_ALL, V_WRITE>
 {
 public:
     typedef TVecId<V_ALL, V_WRITE> MyVecId;
-    //typedef BaseData MyDataVec;
 
     StateVecAccessor(State<DataTypes>* state, const MyVecId& id) : state(state), id(id) {}
     operator MyVecId() const {  return id;  }
-    //const MyDataVec* read()  const {  return state-> read(id);  }
-    //      MyDataVec* write() const {  return state->write(id);  }
 
 protected:
     State<DataTypes>* state;
@@ -448,10 +405,6 @@ public:
         return true;
     }
 
-    // fId.write(mstate);
-    // fId[mstate].write();   <- THE CURRENT API
-    // mstate->write(fId.getId(mstate));
-
     template <class DataTypes>
     StateVecAccessor<DataTypes,vtype,vaccess> operator[](State<DataTypes>* s) const
     {
@@ -463,22 +416,6 @@ public:
     {
         return StateVecAccessor<DataTypes,vtype,V_READ>(s,getId(s));
     }
-
-    /*
-        template<class DataTypes>
-        typename const typename DataTypesVecInfo<DataTypes,vtype>::DataVecT* read(const State<DataTypes>* s) const
-        {
-            return s->read(getId(s));
-        }
-
-        template<class DataTypes>
-        typename DataTypesVecInfo<DataTypes,vtype>::DataVecT* write(State<DataTypes>* s) const
-        {
-            static_assert(vaccess >= V_WRITE, "");
-            return s->write(getId(s));
-        }
-    */
-
 };
 
 
@@ -694,10 +631,6 @@ public:
         return true;
     }
 
-    // fId.write(mstate);
-    // fId[mstate].write();   <- THE CURRENT API
-    // mstate->write(fId.getId(mstate));
-
     template <class DataTypes>
     StateVecAccessor<DataTypes,V_ALL,vaccess> operator[](State<DataTypes>* s) const
     {
@@ -709,22 +642,6 @@ public:
     {
         return StateVecAccessor<DataTypes,V_ALL,V_READ>(s,getId(s));
     }
-
-    /*
-        template<class DataTypes>
-        typename const typename DataTypesVecInfo<DataTypes,vtype>::DataVecT* read(const State<DataTypes>* s) const
-        {
-            return s->read(getId(s));
-        }
-
-        template<class DataTypes>
-        typename DataTypesVecInfo<DataTypes,vtype>::DataVecT* write(State<DataTypes>* s) const
-        {
-            static_assert(vaccess >= V_WRITE, "");
-            return s->write(getId(s));
-        }
-    */
-
 };
 
 
@@ -736,39 +653,7 @@ typedef TMultiVecId<V_MATDERIV, V_READ> ConstMultiMatrixDerivId;
 typedef TMultiVecId<V_MATDERIV, V_WRITE>     MultiMatrixDerivId;
 typedef TMultiVecId<V_ALL, V_READ>      ConstMultiVecId;
 typedef TMultiVecId<V_ALL, V_WRITE>          MultiVecId;
-/*
-//typedef TMultiVecId<V_ALL, V_READ>      ConstMultiVecId;
-class ConstMultiVecId : public TMultiVecId<V_ALL, V_READ>
-{
-    typedef TMultiVecId<V_ALL, V_READ> Inherit;
-public:
 
-    ConstMultiVecId()
-    {
-    }
-
-    template<VecType vtype2>
-    ConstMultiVecId(const TVecId<vtype2, V_READ>& v) : Inherit((ConstVecId)v)
-    {
-    }
-};
-
-//typedef TMultiVecId<V_ALL, V_WRITE>          MultiVecId;
-class MultiVecId : public TMultiVecId<V_ALL, V_WRITE>
-{
-    typedef TMultiVecId<V_ALL, V_WRITE> Inherit;
-public:
-
-    MultiVecId()
-    {
-    }
-
-    template<VecType vtype2, VecAccess vaccess2>
-    MultiVecId(const TVecId<vtype2, vaccess2>& v) : Inherit((TVecId<V_ALL,vaccess2>)v)
-    {
-    }
-};
-*/
 } // namespace core
 
 } // namespace sofa
