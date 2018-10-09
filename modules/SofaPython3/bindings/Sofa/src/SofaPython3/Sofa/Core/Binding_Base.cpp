@@ -8,6 +8,9 @@ using sofa::core::objectmodel::BaseData;
 #include <sofa/core/objectmodel/BaseLink.h>
 using sofa::core::objectmodel::BaseLink;
 
+#include <sofa/helper/Factory.h>
+#include <sofa/helper/Factory.inl>
+
 #include <sofa/helper/accessor.h>
 using sofa::helper::WriteOnlyAccessor;
 
@@ -17,6 +20,54 @@ using sofa::helper::WriteOnlyAccessor;
 
 namespace sofapython3
 {
+template<typename DataType>
+class DataCreator : public sofa::helper::BaseCreator<sofa::core::objectmodel::BaseData>
+{
+public:
+    virtual sofa::core::objectmodel::BaseData* createInstance(sofa::helper::NoArgument) override { return new sofa::core::objectmodel::Data<DataType>(); }
+    virtual const std::type_info& type() override { return typeid(sofa::core::objectmodel::BaseData);}
+};
+
+typedef sofa::helper::Factory< std::string, BaseData> PSDEDataFactory;
+
+PSDEDataFactory* getFactoryInstance(){
+    static PSDEDataFactory* s_localfactory = nullptr ;
+    if (s_localfactory == nullptr)
+    {
+        // helper vector style containers
+        std::string containers[] = {"vector", "ResizableExtVector"};
+
+        s_localfactory = new PSDEDataFactory();
+        // Scalars
+        s_localfactory->registerCreator("string", new DataCreator<std::string>());
+        s_localfactory->registerCreator("float", new DataCreator<float>());
+        s_localfactory->registerCreator("double", new DataCreator<double>());
+        s_localfactory->registerCreator("bool", new DataCreator<bool>());
+        s_localfactory->registerCreator("int", new DataCreator<int>());
+
+        // vectors
+        s_localfactory->registerCreator(
+                    "Vec2d", new DataCreator<sofa::defaulttype::Vec2d>());
+        s_localfactory->registerCreator(
+                    "Vec3d", new DataCreator<sofa::defaulttype::Vec3d>());
+        s_localfactory->registerCreator(
+                    "Vec4d", new DataCreator<sofa::defaulttype::Vec4d>());
+        s_localfactory->registerCreator(
+                    "Vec6d", new DataCreator<sofa::defaulttype::Vec6d>());
+        s_localfactory->registerCreator(
+                    "Vec2f", new DataCreator<sofa::defaulttype::Vec2f>());
+        s_localfactory->registerCreator(
+                    "Vec3f", new DataCreator<sofa::defaulttype::Vec3f>());
+        s_localfactory->registerCreator(
+                    "Vec4f", new DataCreator<sofa::defaulttype::Vec4f>());
+        s_localfactory->registerCreator(
+                    "Vec6f", new DataCreator<sofa::defaulttype::Vec6f>());
+    }
+    return s_localfactory ;
+}
+
+
+
 py::object BindingBase::GetAttr(Base* self, const std::string& s)
 {
     /// I'm not sure implicit behavior is nice but we could do:
@@ -34,22 +85,74 @@ py::object BindingBase::GetAttr(Base* self, const std::string& s)
     if(d!=nullptr)
         return toPython(d);
 
+    /// I'm using this syntax as this make the 'l' variable local.
+    if(BaseLink* l = self->findLink(s))
+    {
+        return py::cast(l->getLinkedBase());
+    }
+
     if( s == "__data__")
         return py::cast( DataDict(self) );
+
 
     throw py::attribute_error(s);
 }
 
 void BindingBase::SetAttr(py::object self, const std::string& s, py::object value)
 {
-    /// I'm not sure implicit behavior is nice but we could do:
-    ///    - The attribute is a data, set its value.
-    ///          If the data is a container...check dimmensions and do type coercion.
-    ///    - The attribute is a link, set its value.
-    ///    - The attribute is an object or a child, raise an exception.
-    ///    - The attribute is not existing, add it has data with type deduced from value ?
-    Base& self_base = py::cast<Base&>(self);
-    SetAttr(self_base, s, value);
+    Base* self_d = py::cast<Base*>(self);
+    BaseData* d = self_d->findData(s);
+
+    if(d!=nullptr)
+    {
+        const AbstractTypeInfo& nfo{ *(d->getValueTypeInfo()) };
+
+        /// We go for the container path.
+        if(nfo.Container())
+        {
+            fromPython(d,value);
+            return;
+        }
+        fromPython(d, value);
+        return;
+    }
+
+    BaseLink* l = self_d->findLink(s);
+    if(l!=nullptr)
+    {
+        return;
+    }
+
+    /// We are falling back to dynamically adding the objet into the object dict.
+//    py::dict t = self.attr("__dict__");
+//    if(!t.is_none())
+//    {
+//        t[s.c_str()] = value;
+//        return;
+//    }
+
+    std::string id="none";
+    if(py::isinstance<py::float_>(value))
+        id = "double";
+    else if(py::isinstance<py::int_>(value))
+        id = "int";
+    else if(py::isinstance<py::str>(value))
+        id = "string";
+
+    BaseData* data = getFactoryInstance()->createObject(id, sofa::helper::NoArgument());
+    if(data)
+    {
+        fromPython(data, value);
+        data->setGroup("Custom");
+        data->setDisplayed(true);
+        data->setPersistent(true);
+        self_d->addData(data, s);
+
+        return;
+    }
+
+    /// Well this should never happen unless there is no __dict__
+    throw py::attribute_error();
 }
 
 void BindingBase::SetAttr(Base& self, const std::string& s, py::object value)
@@ -75,14 +178,6 @@ void BindingBase::SetAttr(Base& self, const std::string& s, py::object value)
     {
         return;
     }
-
-    /// We are falling back to dynamically adding the objet into the object dict.
-//    py::dict t = self.attr("__dict__");
-//    if(!t.is_none())
-//    {
-//        t[s.c_str()] = value;
-//        return;
-//    }
 
     /// Well this should never happen unless there is no __dict__
     throw py::attribute_error();

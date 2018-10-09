@@ -1,6 +1,5 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/detail/init.h>
-
 #include "Binding_BaseObject.h"
 #include "Binding_ForceField.h"
 #include "DataHelper.h"
@@ -25,6 +24,7 @@ class TForceField  : public ForceField<Vec3dTypes>, public PythonTrampoline
 public:
     TForceField() {}
     virtual ~TForceField(){}
+
     virtual void init() override
     {
         Inherit1::init();
@@ -34,19 +34,21 @@ public:
 
         if(!mstate.get())
             throw py::type_error("Missing mechanical state.");
+
+        PYBIND11_OVERLOAD(void, ForceField, init,);
     }
 
     virtual void addForce(const MechanicalParams* mparams,  DataVecDeriv& f, const DataVecCoord& x, const DataVecDeriv& v) override
     {
         BaseData* xx = const_cast<BaseData*>(static_cast<const BaseData*>(&x));
         BaseData* vv = const_cast<BaseData*>(static_cast<const BaseData*>(&v));
-        PYBIND11_OVERLOAD_PURE(void, ForceField, addForce, py::none(), toPython(&f), toPython(xx), toPython(vv));
+        PYBIND11_OVERLOAD_PURE(void, ForceField, addForce, py::none(), toPython(&f,true), toPython(xx,true), toPython(vv,true));
     }
 
     virtual void addDForce(const MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx ) override
     {
         BaseData* dxx = const_cast<BaseData*>(static_cast<const BaseData*>(&dx));
-        PYBIND11_OVERLOAD_PURE(void, ForceField, addDForce, toPython(&df), toPython(dxx) );
+        PYBIND11_OVERLOAD_PURE(void, ForceField, addDForce, toPython(&df,true), toPython(dxx,true) );
     }
 
     virtual void addMBKdx(const MechanicalParams* mparams, MultiVecDerivId dfId) override
@@ -68,13 +70,21 @@ public:
     }
     virtual SReal getPotentialEnergy( const MechanicalParams* mparams,
                                       const DataVecCoord& x) const override {}
+
+
+    virtual std::string getClassName() const override
+    {
+        return pyobject->ob_type->tp_name;
+    }
 };
 
 
 void moduleAddForceField(py::module &m) {
     py::class_<ForceField<Vec3dTypes>,
             TForceField, BaseObject,
-            py_shared_ptr<ForceField<Vec3dTypes>>> f(m, "BaseForceField", py::multiple_inheritance());
+            py_shared_ptr<ForceField<Vec3dTypes>>> f(m, "BaseForceField",
+                                                     py::dynamic_attr(),
+                                                     py::multiple_inheritance());
 
     f.def(py::init([](py::args& args, py::kwargs& kwargs)
     {
@@ -87,6 +97,7 @@ void moduleAddForceField(py::module &m) {
                   else throw py::type_error("Only one un-named arguments can be provided.");
               }
 
+              py::object cc = py::cast(c);
               for(auto& kv : kwargs)
               {
                   std::string key = py::cast<std::string>(kv.first);
@@ -100,7 +111,7 @@ void moduleAddForceField(py::module &m) {
                           "positional argument='"+py::cast<std::string>(args[0])+"'.");
                       }
                   }
-                  BindingBase::SetAttr(*c, key, value);
+                  BindingBase::SetAttr(cc, key, value);
               }
               return c;
           }));
