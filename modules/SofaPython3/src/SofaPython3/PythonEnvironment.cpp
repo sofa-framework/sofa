@@ -21,6 +21,9 @@
 ******************************************************************************/
 #include <fstream>
 
+#if defined(__linux__)
+#include <dlfcn.h>
+#endif
 
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/FileSystem.h>
@@ -135,15 +138,16 @@ void PythonEnvironment::Init()
         SceneLoaderFactory::getInstance()->addEntry(new SceneLoaderPY3());
     }
 
-    /*
- * #if defined(__linux__)
-    // WARNING: workaround to be able to import python libraries on linux (like
-    // numpy), at least on Ubuntu (see http://bugs.python.org/issue4434). It is
-    // not fixing the real problem, but at least it is working for now.
-    std::string pythonLibraryName = "libpython" + std::string(pythonVersion,0,3) + ".so";
-    dlopen( pythonLibraryName.c_str(), RTLD_LAZY|RTLD_GLOBAL );
-#endif
-*/
+
+    #if defined(__linux__)
+        // WARNING: workaround to be able to import python libraries on linux (like
+        // numpy), at least on Ubuntu (see http://bugs.python.org/issue4434). It is
+        // not fixing the real problem, but at least it is working for now.
+        // dmarchal: The problem still exists python3 10/10/2018.
+        std::string pythonLibraryName = "libpython" + std::string(pythonVersion,0,3) + "m.so";
+        dlopen( pythonLibraryName.c_str(), RTLD_LAZY|RTLD_GLOBAL );
+        std::cout << "ICI..." << pythonLibraryName << std::endl;
+    #endif
 
     /// Prevent the python terminal from being buffered, not to miss or mix up traces.
     if( putenv( (char*)"PYTHONUNBUFFERED=1" ) )
