@@ -32,10 +32,38 @@ using sofa::core::objectmodel::BaseNode;
 using sofa::core::objectmodel::BaseObject;
 using sofa::defaulttype::AbstractTypeInfo;
 
+class PythonTrampoline
+{
+protected:
+    std::shared_ptr<PyObject> pyobject;
+public:
+    virtual void setInstance(py::object s)
+    {
+        py::print(py::str( s.get_type() ));
+
+        s.inc_ref();
+
+        // TODO(bruno-marques) ici ça crash dans SOFA.
+        //--ref_counter;
+
+        pyobject = std::shared_ptr<PyObject>( s.ptr(), [](PyObject* ob)
+        {
+                // runSofa Sofa/tests/pyfiles/ScriptController.py => CRASH
+                // Py_DECREF(ob);
+        });
+    }
+};
+
 template <typename T> class py_shared_ptr : public sofa::core::sptr<T>
 {
 public:
-    py_shared_ptr(T *ptr) ;
+    py_shared_ptr(T *ptr) : sofa::core::sptr<T>(ptr)
+    {
+        std::cout << "Hooking the python objects..." << std::endl ;
+        auto nptr = dynamic_cast<PythonTrampoline*>(ptr);
+        if(nptr)
+            nptr->setInstance( py::cast(ptr) ) ;
+    }
 };
 
 void setItem2D(py::array a, py::slice slice, py::object o);

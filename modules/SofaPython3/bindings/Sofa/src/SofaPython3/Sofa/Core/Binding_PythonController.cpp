@@ -22,11 +22,8 @@ namespace sofapython3
         std::cout << " PythonController::reinit()" << std::endl;
     }
 
-    class PythonController_Trampoline : public PythonController
-    {
-    private:
-        std::shared_ptr<PyObject> o;
-
+    class PythonController_Trampoline : public PythonController, public PythonTrampoline
+    {    
     public:
         PythonController_Trampoline()
         {
@@ -40,37 +37,13 @@ namespace sofapython3
 
         virtual std::string getClassName() const override
         {
-            return o->ob_type->tp_name;
-        }
-
-        void setInstance(py::object s){
-            py::print(py::str( s.get_type() ));
-
-            s.inc_ref();
-
-            // TODO(bruno-marques) ici ça crash dans SOFA.
-            //--ref_counter;
-
-            o = std::shared_ptr<PyObject>( s.ptr(), [](PyObject* ob)
-            {
-                    // runSofa Sofa/tests/pyfiles/ScriptController.py => CRASH
-                    // Py_DECREF(ob);
-        });
+            return pyobject->ob_type->tp_name;
         }
 
         virtual void init() override ;
         virtual void reinit() override ;
         virtual void handleEvent(Event* event) override ;
     };
-
-    template <typename T>
-    py_shared_ptr<T>::py_shared_ptr(T *ptr) : sofa::core::sptr<T>(ptr)
-    {
-        std::cout << "TEMPLATE CO" << std::endl ;
-        auto nptr = dynamic_cast<PythonController_Trampoline*>(ptr);
-        if(nptr)
-            nptr->setInstance( py::cast(ptr) ) ;
-    }
 
     void PythonController_Trampoline::init()
     {

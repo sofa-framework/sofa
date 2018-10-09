@@ -9,6 +9,10 @@
 #include <sofa/core/behavior/ForceField.h>
 #include <sofa/simulation/Node.h>
 
+PYBIND11_DECLARE_HOLDER_TYPE(TForceField,
+                             sofapython3::py_shared_ptr<TForceField>, true)
+
+
 namespace sofapython3
 {
 using sofa::core::objectmodel::ComponentState;
@@ -16,7 +20,7 @@ using sofa::core::behavior::MechanicalState;
 using sofa::core::behavior::ForceField;
 using sofa::defaulttype::Vec3dTypes;
 
-class TForceField  : public ForceField<Vec3dTypes>
+class TForceField  : public ForceField<Vec3dTypes>, public PythonTrampoline
 {
 public:
     TForceField() {}
@@ -36,14 +40,15 @@ public:
     {
         BaseData* xx = const_cast<BaseData*>(static_cast<const BaseData*>(&x));
         BaseData* vv = const_cast<BaseData*>(static_cast<const BaseData*>(&v));
-
         PYBIND11_OVERLOAD_PURE(void, ForceField, addForce, py::none(), toPython(&f), toPython(xx), toPython(vv));
     }
 
     virtual void addDForce(const MechanicalParams* mparams, DataVecDeriv& df, const DataVecDeriv& dx ) override
     {
-        PYBIND11_OVERLOAD_PURE(void, ForceField, addDForce, mparams, py::none(), py::none() );
+        BaseData* dxx = const_cast<BaseData*>(static_cast<const BaseData*>(&dx));
+        PYBIND11_OVERLOAD_PURE(void, ForceField, addDForce, toPython(&df), toPython(dxx) );
     }
+
     virtual void addMBKdx(const MechanicalParams* mparams, MultiVecDerivId dfId) override
     {
         PYBIND11_OVERLOAD_PURE(void, ForceField, addMBKdx, py::none(), py::none() );
@@ -52,18 +57,24 @@ public:
     {
         PYBIND11_OVERLOAD_PURE(void, ForceField, addKtoMatrix, py::none(), py::none() );
     }
+
     virtual void updateForceMask() override
     {
-        PYBIND11_OVERLOAD_PURE(void, ForceField, updateForceMask,);
+        #ifdef SOFA_USE_MASK
+            PYBIND11_OVERLOAD_PURE(void, ForceField, updateForceMask,);
+        #else
+           PYBIND11_OVERLOAD(void, ForceField, updateForceMask,);
+        #endif
     }
     virtual SReal getPotentialEnergy( const MechanicalParams* mparams,
                                       const DataVecCoord& x) const override {}
 };
 
+
 void moduleAddForceField(py::module &m) {
     py::class_<ForceField<Vec3dTypes>,
             TForceField, BaseObject,
-            sofa::core::sptr<ForceField<Vec3dTypes>>> f(m, "BaseForceField", py::multiple_inheritance());
+            py_shared_ptr<ForceField<Vec3dTypes>>> f(m, "BaseForceField", py::multiple_inheritance());
 
     f.def(py::init([](py::args& args, py::kwargs& kwargs)
     {

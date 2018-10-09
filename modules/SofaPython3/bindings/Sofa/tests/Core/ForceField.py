@@ -7,41 +7,40 @@ class MyForceField(Sofa.Core.BaseForceField):
     def __init__(self, *args, **kwargs):
         Sofa.Core.BaseForceField.__init__(self, *args, **kwargs)
 
-    def init(self):
-        print(" Python::init() at ", self.name)
-
     def addForce(self, m, f, x, v):
-        print(" Python::addForce: ", m, " ", f, " ", x ," ", v)
-
-        n = numpy.ones((1000,1))
-        with f.writeable() as fw:
-            fw += n
+        f += [0.0,11,0.0]
 
         print(" Python::addForce: ", m, " ", f, " ", x ," ", v)
 
-
-    def addDForce(self, a, b):
-        print(" Python::addForce: ", a, " ", b)
+    def addDForce(self, f, dx):
+        print(" Python::addDForce: ", a, " ", b)
 
     def addMBKdx(self, a, b):
         print(" Python::addMBKdx: ", a, " ", b)
 
-    def updateForceMask(self):
-        print(" Python::updateFroceMask: ")
+    #def updateForceMask(self):
+    #    print(" Python::updateFroceMask: ")
 
 class Test(unittest.TestCase):
     def test_animation(self):
-        node = Sofa.Node("root")
+        node = Sofa.Node("TestAnimation")
+        node.addObject("RequiredPlugin", name="SofaSparseSolver")
         node.addObject("DefaultAnimationLoop", name="loop")
         node.addObject("EulerImplicit")
-        node.addObject("CGLinearSolver")
+        node.addObject("SparseLDLSolver")
         object1 = node.addChild("object1")
         c = object1.addObject("MechanicalObject", position=[0,0,0]*1)
+        m = object1.addObject("UniformMass")
         d = object1.addObject(MyForceField("customFF"))
+        
+        c.showObject = True
+        c.drawMode = 1
 
         SingleSimulation.init(node)
         for i in range(10):
             SingleSimulation.animate(node, 0.01)
+
+        return node
 
 def getTestsName():
     suite = unittest.TestLoader().loadTestsFromTestCase(Test)
@@ -58,5 +57,4 @@ def runTests():
         return unittest.TextTestRunner(verbosity=1).run(suite).wasSuccessful()
 
 def createScene(rootNode):
-        runTests()
-
+        rootNode.addChild(Test().test_animation())
