@@ -12,6 +12,7 @@ PYBIND11_MODULE(Sofa, m)
 
     /// Import into the Sofa main package the class from theyr sub-module.
     m.add_object("PythonController", core.attr("PythonController"));
+    m.add_object("BaseForceField", core.attr("BaseForceField"));
     m.add_object("Node", simulation.attr("Node"));
 }
 

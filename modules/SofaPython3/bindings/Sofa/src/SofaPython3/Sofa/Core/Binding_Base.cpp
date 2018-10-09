@@ -17,7 +17,7 @@ using sofa::helper::WriteOnlyAccessor;
 
 namespace sofapython3
 {
-py::object BindingBase::GetAttr(Base& self, const std::string& s)
+py::object BindingBase::GetAttr(Base* self, const std::string& s)
 {
     /// I'm not sure implicit behavior is nice but we could do:
     ///    - The attribute is a data,
@@ -27,17 +27,20 @@ py::object BindingBase::GetAttr(Base& self, const std::string& s)
     ///    - The attribute is an object or a child return it.
     ///    - The attribute is not existing:
     ///                raise an exception or search using difflib for close match.
-    BaseData* d = self.findData(s);
+    if(self==nullptr)
+        throw py::attribute_error("None object used to get an attribute.");
+
+    BaseData* d = self->findData(s);
     if(d!=nullptr)
         return toPython(d);
 
     if( s == "__data__")
-        return py::cast( DataDict(&self) );
+        return py::cast( DataDict(self) );
 
     throw py::attribute_error(s);
 }
 
-void BindingBase::SetAttr(py::object self, const std::string& s, py::object &value)
+void BindingBase::SetAttr(py::object self, const std::string& s, py::object value)
 {
     /// I'm not sure implicit behavior is nice but we could do:
     ///    - The attribute is a data, set its value.
@@ -46,7 +49,12 @@ void BindingBase::SetAttr(py::object self, const std::string& s, py::object &val
     ///    - The attribute is an object or a child, raise an exception.
     ///    - The attribute is not existing, add it has data with type deduced from value ?
     Base& self_base = py::cast<Base&>(self);
-    BaseData* d = self_base.findData(s);
+    SetAttr(self_base, s, value);
+}
+
+void BindingBase::SetAttr(Base& self, const std::string& s, py::object value)
+{
+    BaseData* d = self.findData(s);
 
     if(d!=nullptr)
     {
@@ -62,19 +70,19 @@ void BindingBase::SetAttr(py::object self, const std::string& s, py::object &val
         return;
     }
 
-    BaseLink* l = self_base.findLink(s);
+    BaseLink* l = self.findLink(s);
     if(l!=nullptr)
     {
         return;
     }
 
     /// We are falling back to dynamically adding the objet into the object dict.
-    py::dict t = self.attr("__dict__");
-    if(!t.is_none())
-    {
-        t[s.c_str()] = value;
-        return;
-    }
+//    py::dict t = self.attr("__dict__");
+//    if(!t.is_none())
+//    {
+//        t[s.c_str()] = value;
+//        return;
+//    }
 
     /// Well this should never happen unless there is no __dict__
     throw py::attribute_error();

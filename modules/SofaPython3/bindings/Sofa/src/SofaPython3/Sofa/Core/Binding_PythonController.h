@@ -33,13 +33,6 @@ public:
 
 };
 
-template <typename T> class py_shared_ptr : public sofa::core::sptr<T>
-{
-public:
-    py_shared_ptr(T *ptr) ;
-};
-
-
 void moduleAddPythonController(py::module &m);
 
 } /// namespace sofapython3

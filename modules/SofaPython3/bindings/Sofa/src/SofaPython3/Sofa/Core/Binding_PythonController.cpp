@@ -3,6 +3,7 @@
 
 #include "Binding_Base.h"
 #include "Binding_PythonController.h"
+#include "DataHelper.h"
 
 #include <sofa/core/objectmodel/Event.h>
 using sofa::core::objectmodel::Event;
@@ -65,6 +66,7 @@ namespace sofapython3
     template <typename T>
     py_shared_ptr<T>::py_shared_ptr(T *ptr) : sofa::core::sptr<T>(ptr)
     {
+        std::cout << "TEMPLATE CO" << std::endl ;
         auto nptr = dynamic_cast<PythonController_Trampoline*>(ptr);
         if(nptr)
             nptr->setInstance( py::cast(ptr) ) ;
@@ -109,7 +111,6 @@ namespace sofapython3
                       else throw py::type_error("Only one un-named arguments can be provided.");
                   }
 
-                  py::object o = py::cast(c);
                   for(auto& kv : kwargs)
                   {
                       std::string key = py::cast<std::string>(kv.first);
@@ -123,7 +124,7 @@ namespace sofapython3
                                                    "positional argument='"+py::cast<std::string>(args[0])+"'.");
                           }
                       }
-                      BindingBase::SetAttr(o, key, value);
+                      BindingBase::SetAttr(*c, key, value);
                   }
 
                   return c;

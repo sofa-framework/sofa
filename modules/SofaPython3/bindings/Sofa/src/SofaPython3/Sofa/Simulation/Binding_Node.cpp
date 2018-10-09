@@ -176,6 +176,16 @@ void moduleAddNode(py::module &m) {
         return py::cast(node);
     });
 
+    p.def("addChild", [](Node* self, const std::string& name, const py::kwargs& kwargs)
+    {
+        BaseObjectDescription desc (name.c_str());
+        fillBaseObjectdescription(desc,kwargs);
+        auto node=simpleapi::createChild(self, name, desc);
+        checkParamUsage(node.get(), desc);
+        return py::cast(node);
+    });
+
+
     p.def("addChild", [](Node* self, Node* child)
     {
         self->addChild(child);
@@ -222,7 +232,7 @@ void moduleAddNode(py::module &m) {
         if (child)
             return py::cast(child);
 
-        return BindingBase::GetAttr(self, name);
+        return BindingBase::GetAttr(&self, name);
     });
 
     p.def_property_readonly("children", [](Node* node)

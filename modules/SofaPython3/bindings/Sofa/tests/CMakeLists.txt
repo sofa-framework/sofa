@@ -24,6 +24,7 @@ set(PYTHON_FILES
     Core/BaseData.py
     Core/Base.py
     Core/BaseObject.py
+    Core/ForceField.py
     Core/ScriptController.py
     Simulation/Node.py
     bench_datacontainer.py

@@ -4,6 +4,8 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 
+#include <sofa/core/sptr.h>
+
 ////////////////////////// FORWARD DECLARATION ///////////////////////////
 namespace sofa {
     namespace defaulttype {
@@ -29,6 +31,12 @@ using sofa::core::objectmodel::BaseData;
 using sofa::core::objectmodel::BaseNode;
 using sofa::core::objectmodel::BaseObject;
 using sofa::defaulttype::AbstractTypeInfo;
+
+template <typename T> class py_shared_ptr : public sofa::core::sptr<T>
+{
+public:
+    py_shared_ptr(T *ptr) ;
+};
 
 void setItem2D(py::array a, py::slice slice, py::object o);
 void setItem2D(py::array a, const py::slice& slice,

@@ -9,8 +9,8 @@
 #include "Binding_BaseObject.h"
 
 template class pybind11::class_<sofa::core::objectmodel::BaseObject,
-                          sofa::core::objectmodel::Base,
-                          sofa::core::sptr<sofa::core::objectmodel::BaseObject>>;
+                                sofa::core::objectmodel::Base,
+                                sofa::core::sptr<sofa::core::objectmodel::BaseObject>>;
 
 namespace sofapython3
 {

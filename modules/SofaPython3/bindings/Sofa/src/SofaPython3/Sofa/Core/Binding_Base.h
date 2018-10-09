@@ -10,6 +10,9 @@
 /// /pybind11.readthedocs.io/en/stable/advanced/smart_ptrs.html
 PYBIND11_DECLARE_HOLDER_TYPE(Base, sofa::core::sptr<Base>, true)
 
+template class pybind11::class_<sofa::core::objectmodel::Base,
+                                sofa::core::objectmodel::Base::SPtr>;
+
 namespace sofapython3
 {
 /// Makes an alias for the pybind11 namespace to increase readability.
@@ -22,8 +25,9 @@ using sofa::core::sptr;
 class BindingBase
 {
 public:
-    static py::object GetAttr(Base& self, const std::string& s);
-    static void SetAttr(py::object self, const std::string& s, py::object& value);
+    static py::object GetAttr(Base* self, const std::string& s);
+    static void SetAttr(py::object self, const std::string& s, pybind11::object value);
+    static void SetAttr(Base& self, const std::string& s, py::object value);
     static void SetAttrFromArray(py::object self, const std::string& s, const pybind11::array &value);
 };
 

@@ -7,8 +7,6 @@
 #include <sofa/simulation/Node.h>
 using sofa::simulation::Node;
 
-template class pybind11::class_<sofa::core::objectmodel::Base,
-                                sofa::core::objectmodel::Base::SPtr>;
 template class pybind11::class_<sofa::core::objectmodel::BaseNode,
                                 sofa::core::objectmodel::Base,
                                 sofa::core::objectmodel::BaseNode::SPtr>;
@@ -21,8 +19,10 @@ template class pybind11::class_<sofa::core::objectmodel::Context,
                                 sofa::core::objectmodel::BaseContext,
                                 sofa::core::objectmodel::Context::SPtr>;
 
-template class pybind11::class_<Node, sofa::core::objectmodel::BaseNode,
-                                sofa::core::objectmodel::Context, Node::SPtr>;
+template class pybind11::class_<Node,
+                                sofa::core::objectmodel::BaseNode,
+                                sofa::core::objectmodel::Context,
+                                Node::SPtr>;
 
 
 namespace sofapython3
