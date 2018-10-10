@@ -3,8 +3,8 @@
 
 // SE(3) kinematics
 
-// author: maxime.tournier@inria.fr
-// license: LGPL 2.1
+// author: tournier.maxime@gmail.com
+// license: LGPL 2.1 and later
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
@@ -258,8 +258,8 @@ struct SE3 {
         real sin_half_theta; // note that sin(theta/2) == norm of the imaginary part for unit quaternion
         real theta;
 
-        // to avoid numerical instabilities of acos for theta < 5°
-        if(w>0.999) // theta < 5° -> _q[3] = cos(theta/2) > 0.999
+        // to avoid numerical instabilities of acos for theta < 5Â°
+        if(w>0.999) // theta < 5Â° -> _q[3] = cos(theta/2) > 0.999
         {
             sin_half_theta = q.vec().norm();
             theta = (real)(2.0 * asin(sin_half_theta)); // in (0, pi)
