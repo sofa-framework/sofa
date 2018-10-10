@@ -4,7 +4,7 @@
 // SE(3) kinematics
 
 // author: tournier.maxime@gmail.com
-// license: LGPL 2.1 and later
+// license: LGPL 2.1-or-later
 
 #include <Eigen/Core>
 #include <Eigen/Geometry>
