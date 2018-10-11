@@ -186,7 +186,7 @@ public:
             }
 
             /// return the instance of the factory. Creates it if doesn't exist yet.
-            static AdvancedTimer::Id<Base>::IdFactory& getInstance()
+            static IdFactory& getInstance()
             {
                 SOFA_THREAD_SPECIFIC_PTR(IdFactory, instance);
                 if (instance == nullptr)
