@@ -58,7 +58,7 @@ set(RESOURCES_DIR "../share/sofa/gui/runSofa")
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/etc/${PROJECT_NAME}.ini.in" "${CMAKE_BINARY_DIR}/etc/installed${PROJECT_NAME}.ini")
 install(FILES "${CMAKE_BINARY_DIR}/etc/installed${PROJECT_NAME}.ini" DESTINATION etc RENAME ${PROJECT_NAME}.ini COMPONENT applications)
 
-install(DIRECTORY "resources" DESTINATION "share/sofa/gui/runSofa" COMPONENT resources)
+install(DIRECTORY "resources/" DESTINATION "share/sofa/gui/runSofa" COMPONENT resources)
 install(FILES "${_defaultConfigPluginFilePath}" DESTINATION ${_pluginLocation}/ COMPONENT applications)
 
 if(APPLE AND SOFA_BUILD_RELEASE_PACKAGE)

@@ -221,6 +221,6 @@ set(RESOURCES_DIR "../share/sofa/gui/qt")
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/etc/${PROJECT_NAME}.ini.in "${CMAKE_BINARY_DIR}/etc/installed${PROJECT_NAME}.ini")
 install(FILES "${CMAKE_BINARY_DIR}/etc/installed${PROJECT_NAME}.ini" DESTINATION etc RENAME ${PROJECT_NAME}.ini COMPONENT applications)
 
-install(DIRECTORY "resources" DESTINATION "share/sofa/gui/qt" COMPONENT resources)
+install(DIRECTORY "resources/" DESTINATION "share/sofa/gui/qt" COMPONENT resources)
 install(FILES ${HEADER_FILES} DESTINATION "include/sofa/gui/qt" COMPONENT headers)
 install(FILES ${MOC_HEADER_FILES} DESTINATION "include/sofa/gui/qt" COMPONENT headers)
