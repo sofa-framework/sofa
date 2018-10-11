@@ -606,7 +606,7 @@ template class SOFA_MISC_MAPPING_API BarycentricMapperEdgeSetTopology< Vec3dType
 template class SOFA_MISC_MAPPING_API BarycentricMapperTriangleSetTopology< Vec3dTypes, Rigid3dTypes >;
 template class SOFA_MISC_MAPPING_API BarycentricMapperQuadSetTopology< Vec3dTypes, Rigid3dTypes >;
 template class SOFA_MISC_MAPPING_API BarycentricMapperTetrahedronSetTopologyRigid< Vec3dTypes, Rigid3dTypes >;
-//template class SOFA_MISC_MAPPING_API BarycentricMapperTetrahedronSetTopology< Vec3dTypes, Rigid3dTypes >;
+template class SOFA_MISC_MAPPING_API BarycentricMapperTetrahedronSetTopology< Vec3dTypes, Rigid3dTypes >;
 template class SOFA_MISC_MAPPING_API BarycentricMapperHexahedronSetTopology< Vec3dTypes, Rigid3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
@@ -620,7 +620,7 @@ template class SOFA_MISC_MAPPING_API BarycentricMapperEdgeSetTopology< Vec3fType
 template class SOFA_MISC_MAPPING_API BarycentricMapperTriangleSetTopology< Vec3fTypes, Rigid3fTypes >;
 template class SOFA_MISC_MAPPING_API BarycentricMapperQuadSetTopology< Vec3fTypes, Rigid3fTypes >;
 template class SOFA_MISC_MAPPING_API BarycentricMapperTetrahedronSetTopologyRigid< Vec3fTypes, Rigid3fTypes >;
-//template class SOFA_MISC_MAPPING_API BarycentricMapperTetrahedronSetTopology< Vec3fTypes, Rigid3fTypes >;
+template class SOFA_MISC_MAPPING_API BarycentricMapperTetrahedronSetTopology< Vec3fTypes, Rigid3fTypes >;
 template class SOFA_MISC_MAPPING_API BarycentricMapperHexahedronSetTopology< Vec3fTypes, Rigid3fTypes >;
 #endif
 #ifndef SOFA_FLOAT
@@ -642,9 +642,9 @@ template class SOFA_MISC_MAPPING_API BarycentricMapperTriangleSetTopology< Vec3f
 template class SOFA_MISC_MAPPING_API BarycentricMapperQuadSetTopology< Vec3dTypes, Rigid3fTypes >;
 template class SOFA_MISC_MAPPING_API BarycentricMapperQuadSetTopology< Vec3fTypes, Rigid3dTypes >;
 template class SOFA_MISC_MAPPING_API BarycentricMapperTetrahedronSetTopologyRigid< Vec3dTypes, Rigid3fTypes >;
-//template class SOFA_MISC_MAPPING_API BarycentricMapperTetrahedronSetTopology< Vec3dTypes, Rigid3fTypes >;
+template class SOFA_MISC_MAPPING_API BarycentricMapperTetrahedronSetTopology< Vec3dTypes, Rigid3fTypes >;
 template class SOFA_MISC_MAPPING_API BarycentricMapperTetrahedronSetTopologyRigid< Vec3fTypes, Rigid3dTypes >;
-//template class SOFA_MISC_MAPPING_API BarycentricMapperTetrahedronSetTopology< Vec3fTypes, Rigid3dTypes >;
+template class SOFA_MISC_MAPPING_API BarycentricMapperTetrahedronSetTopology< Vec3fTypes, Rigid3dTypes >;
 template class SOFA_MISC_MAPPING_API BarycentricMapperHexahedronSetTopology< Vec3dTypes, Rigid3fTypes >;
 template class SOFA_MISC_MAPPING_API BarycentricMapperHexahedronSetTopology< Vec3fTypes, Rigid3dTypes >;
 #endif
