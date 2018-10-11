@@ -188,14 +188,10 @@ public:
             }
 
             /// return the instance of the factory. Creates it if doesn't exist yet.
-            static AdvancedTimer::Id<Base>::IdFactory& getInstance()
+            static IdFactory& getInstance()
             {
-                static sofa::helper::system::thread::thread_specific_ptr<AdvancedTimer::Id<Base>::IdFactory> instance;
-                if (instance == nullptr)
-                {
-                    instance = new AdvancedTimer::Id<Base>::IdFactory;
-                }
-                return *instance;
+                static thread_local IdFactory instance;
+                return instance;
             }
         };
 
