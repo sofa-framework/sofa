@@ -114,20 +114,20 @@ public:
     //virtual int addContactPointFromInputMapping(const typename In::VecDeriv& in, const sofa::defaulttype::Vector3& /*pos*/, std::vector< std::pair<int, double> > & /*baryCoords*/);
 };
 
-//template<class TInReal, class TOutReal>
-//class BarycentricMapperTetrahedronSetTopology< sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3,TInReal>,sofa::defaulttype::Vec<3,TInReal>,TInReal>, sofa::defaulttype::StdRigidTypes<3,TOutReal> > : public BarycentricMapperTetrahedronSetTopologyRigid< sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3,TInReal>,sofa::defaulttype::Vec<3,TInReal>,TInReal>, sofa::defaulttype::StdRigidTypes<3,TOutReal> >
-//{
-//public:
-//    typedef sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3,TInReal>,sofa::defaulttype::Vec<3,TInReal>,TInReal> In;
-//    typedef sofa::defaulttype::StdRigidTypes<3,TOutReal> Out;
-//    SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapperTetrahedronSetTopology,In,Out),SOFA_TEMPLATE2(BarycentricMapperTetrahedronSetTopologyRigid,In,Out));
-//    typedef BarycentricMapperTetrahedronSetTopologyRigid<In,Out> Inherit;
+template<class TInReal, class TOutReal>
+class BarycentricMapperTetrahedronSetTopology< sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3,TInReal>,sofa::defaulttype::Vec<3,TInReal>,TInReal>, sofa::defaulttype::StdRigidTypes<3,TOutReal> > : public BarycentricMapperTetrahedronSetTopologyRigid< sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3,TInReal>,sofa::defaulttype::Vec<3,TInReal>,TInReal>, sofa::defaulttype::StdRigidTypes<3,TOutReal> >
+{
+public:
+    typedef sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3,TInReal>,sofa::defaulttype::Vec<3,TInReal>,TInReal> In;
+    typedef sofa::defaulttype::StdRigidTypes<3,TOutReal> Out;
+    SOFA_CLASS(SOFA_TEMPLATE2(BarycentricMapperTetrahedronSetTopology,In,Out),SOFA_TEMPLATE2(BarycentricMapperTetrahedronSetTopologyRigid,In,Out));
+    typedef BarycentricMapperTetrahedronSetTopologyRigid<In,Out> Inherit;
 
-//    BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* _toTopology)
-//        : Inherit(fromTopology, _toTopology)
-//    {}
+    BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* fromTopology, topology::PointSetTopologyContainer* _toTopology)
+        : Inherit(fromTopology, _toTopology)
+    {}
 
-//};
+};
 
 
 
@@ -143,7 +143,7 @@ extern template class SOFA_MISC_MAPPING_API BarycentricMapperEdgeSetTopology< de
 extern template class SOFA_MISC_MAPPING_API BarycentricMapperTriangleSetTopology< defaulttype::Vec3dTypes, defaulttype::Rigid3dTypes >;
 extern template class SOFA_MISC_MAPPING_API BarycentricMapperQuadSetTopology< defaulttype::Vec3dTypes, defaulttype::Rigid3dTypes >;
 extern template class SOFA_MISC_MAPPING_API BarycentricMapperTetrahedronSetTopologyRigid< defaulttype::Vec3dTypes, defaulttype::Rigid3dTypes >;
-//extern template class SOFA_MISC_MAPPING_API BarycentricMapperTetrahedronSetTopology< defaulttype::Vec3dTypes, defaulttype::Rigid3dTypes >;
+extern template class SOFA_MISC_MAPPING_API BarycentricMapperTetrahedronSetTopology< defaulttype::Vec3dTypes, defaulttype::Rigid3dTypes >;
 extern template class SOFA_MISC_MAPPING_API BarycentricMapperHexahedronSetTopology< defaulttype::Vec3dTypes, defaulttype::Rigid3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
@@ -157,7 +157,7 @@ extern template class SOFA_MISC_MAPPING_API BarycentricMapperEdgeSetTopology< de
 extern template class SOFA_MISC_MAPPING_API BarycentricMapperTriangleSetTopology< defaulttype::Vec3fTypes, defaulttype::Rigid3fTypes >;
 extern template class SOFA_MISC_MAPPING_API BarycentricMapperQuadSetTopology< defaulttype::Vec3fTypes, defaulttype::Rigid3fTypes >;
 extern template class SOFA_MISC_MAPPING_API BarycentricMapperTetrahedronSetTopologyRigid< defaulttype::Vec3fTypes, defaulttype::Rigid3fTypes >;
-//extern template class SOFA_MISC_MAPPING_API BarycentricMapperTetrahedronSetTopology< defaulttype::Vec3fTypes, defaulttype::Rigid3fTypes >;
+extern template class SOFA_MISC_MAPPING_API BarycentricMapperTetrahedronSetTopology< defaulttype::Vec3fTypes, defaulttype::Rigid3fTypes >;
 extern template class SOFA_MISC_MAPPING_API BarycentricMapperHexahedronSetTopology< defaulttype::Vec3fTypes, defaulttype::Rigid3fTypes >;
 #endif
 #ifndef SOFA_FLOAT
@@ -181,9 +181,9 @@ extern template class SOFA_MISC_MAPPING_API BarycentricMapperTriangleSetTopology
 extern template class SOFA_MISC_MAPPING_API BarycentricMapperQuadSetTopology< defaulttype::Vec3dTypes, defaulttype::Rigid3fTypes >;
 extern template class SOFA_MISC_MAPPING_API BarycentricMapperQuadSetTopology< defaulttype::Vec3fTypes, defaulttype::Rigid3dTypes >;
 extern template class SOFA_MISC_MAPPING_API BarycentricMapperTetrahedronSetTopologyRigid< defaulttype::Vec3dTypes, defaulttype::Rigid3fTypes >;
-//extern template class SOFA_MISC_MAPPING_API BarycentricMapperTetrahedronSetTopology< defaulttype::Vec3dTypes, defaulttype::Rigid3fTypes >;
+extern template class SOFA_MISC_MAPPING_API BarycentricMapperTetrahedronSetTopology< defaulttype::Vec3dTypes, defaulttype::Rigid3fTypes >;
 extern template class SOFA_MISC_MAPPING_API BarycentricMapperTetrahedronSetTopologyRigid< defaulttype::Vec3fTypes, defaulttype::Rigid3dTypes >;
-//extern template class SOFA_MISC_MAPPING_API BarycentricMapperTetrahedronSetTopology< defaulttype::Vec3fTypes, defaulttype::Rigid3dTypes >;
+extern template class SOFA_MISC_MAPPING_API BarycentricMapperTetrahedronSetTopology< defaulttype::Vec3fTypes, defaulttype::Rigid3dTypes >;
 extern template class SOFA_MISC_MAPPING_API BarycentricMapperHexahedronSetTopology< defaulttype::Vec3dTypes, defaulttype::Rigid3fTypes >;
 extern template class SOFA_MISC_MAPPING_API BarycentricMapperHexahedronSetTopology< defaulttype::Vec3fTypes, defaulttype::Rigid3dTypes >;
 #endif

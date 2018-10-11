@@ -32,6 +32,8 @@
 #include <sofa/core/Mapping.h>
 #include <sofa/core/MechanicalParams.h>
 
+#include <sofa/core/topology/BaseMeshTopology.h>
+
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/defaulttype/Vec.h>
@@ -550,16 +552,36 @@ public:
 };
 
 
-/// Template class for set topology mapper
-template<class In, class Out, class MappingDataType>
+
+
+
+
+typedef typename sofa::core::topology::BaseMeshTopology::Edge Edge;
+typedef typename sofa::core::topology::BaseMeshTopology::Triangle Triangle;
+typedef typename sofa::core::topology::BaseMeshTopology::Quad Quad;
+typedef typename sofa::core::topology::BaseMeshTopology::Tetrahedron Tetrahedron;
+typedef typename sofa::core::topology::BaseMeshTopology::Hexahedron Hexahedron;
+using sofa::defaulttype::Mat3x3d;
+using sofa::defaulttype::Vector3;
+
+
+/// Template class for topology container mappers
+template<class In, class Out, class MappingDataType, class Element>
 class BarycentricMapperTopologyContainer : public TopologyBarycentricMapper<In,Out>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE3(BarycentricMapperTopologyContainer,In,Out,MappingDataType),SOFA_TEMPLATE2(TopologyBarycentricMapper,In,Out));
+    SOFA_CLASS(SOFA_TEMPLATE4(BarycentricMapperTopologyContainer,In,Out,MappingDataType,Element),SOFA_TEMPLATE2(TopologyBarycentricMapper,In,Out));
     typedef TopologyBarycentricMapper<In,Out> Inherit;
-    typedef typename Inherit::MatrixType MatrixType;
-    typedef typename MatrixType::Index MatrixTypeIndex;
     typedef typename Inherit::Real Real;
+    typedef typename Inherit::OutReal OutReal;
+    typedef typename Inherit::OutDeriv  OutDeriv;
+    typedef typename Inherit::InDeriv  InDeriv;
+
+    typedef typename Inherit::MBloc MBloc;
+    typedef typename Inherit::MatrixType MatrixType;
+
+    typedef typename Inherit::ForceMask ForceMask;
+    typedef typename MatrixType::Index MatrixTypeIndex;
     enum { NIn = Inherit::NIn };
     enum { NOut = Inherit::NOut };
 
@@ -577,36 +599,29 @@ protected:
 
     virtual ~BarycentricMapperTopologyContainer() {}
 
+protected:
+
+    virtual helper::vector<Element> getElements()=0;
+    virtual helper::vector<Real> getBaryCoef(const Real* f)=0;
+    virtual void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Element& element)=0;
+    virtual void computeCenter(Vector3& center, const typename In::VecCoord& in, const Element& element)=0;
+    virtual void addPointInElement(const int elementIndex, const SReal* baryCoords)=0;
+    virtual void computeDistance(double& d, const Vector3& v)=0;
+
 public:
 
-    virtual void clearMapAndReserve(int size=0) override
-    {
-        helper::vector<MappingDataType>& vectorData = *(d_map.beginEdit());
-        vectorData.clear();
-        if ( size>0 ) vectorData.reserve ( size );
-        d_map.endEdit();
-    }
+    virtual void clearMapAndReserve(int size=0) override;
+    virtual void resize( core::State<Out>* toModel ) override;
 
-    virtual void resize( core::State<Out>* toModel ) override
-    {
-        toModel->resize(d_map.getValue().size());
-    }
+    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) override;
+    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) override;
+    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in ) override;
+    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) override;
+    virtual const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize) override;
+    virtual void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
+    void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
 
-    virtual const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize) override
-    {
-        if (m_matrixJ && !m_updateJ)
-            return m_matrixJ;
-
-        if (!m_matrixJ) m_matrixJ = new MatrixType;
-        if (m_matrixJ->rowBSize() != (MatrixTypeIndex)outSize || m_matrixJ->colBSize() != (MatrixTypeIndex)inSize)
-            m_matrixJ->resize(outSize*NOut, inSize*NIn);
-        else
-            m_matrixJ->clear();
-
-        return m_matrixJ;
-    }
-
-    inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperTopologyContainer<In, Out, MappingDataType> &b )
+    inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperTopologyContainer<In, Out, MappingDataType, Element> &b )
     {
         unsigned int size_vec;
 
@@ -624,7 +639,7 @@ public:
         return in;
     }
 
-    inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperTopologyContainer<In, Out, MappingDataType> & b )
+    inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperTopologyContainer<In, Out, MappingDataType, Element> & b )
     {
 
         out << b.d_map.getValue().size();
@@ -642,28 +657,20 @@ public:
 };
 
 
+
 /////// Class allowing barycentric mapping computation on a EdgeSetTopology
-template<class In, class Out, class MappingDataType = typename BarycentricMapper<In,Out>::MappingData1D>
-class BarycentricMapperEdgeSetTopology : public BarycentricMapperTopologyContainer<In,Out,MappingDataType>
+template<class In, class Out, class MappingDataType = typename BarycentricMapper<In,Out>::MappingData1D, class Element = Edge>
+class BarycentricMapperEdgeSetTopology : public BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE3(BarycentricMapperEdgeSetTopology,In,Out,MappingDataType),SOFA_TEMPLATE3(BarycentricMapperTopologyContainer,In,Out,MappingDataType));
+    SOFA_CLASS(SOFA_TEMPLATE4(BarycentricMapperEdgeSetTopology,In,Out,MappingDataType,Element),SOFA_TEMPLATE4(BarycentricMapperTopologyContainer,In,Out,MappingDataType,Element));
     typedef MappingDataType MappingData;
-    typedef BarycentricMapperTopologyContainer<In,Out,MappingData> Inherit;
+    typedef BarycentricMapperTopologyContainer<In,Out,MappingData,Element> Inherit;
     typedef typename Inherit::Real Real;
-    typedef typename Inherit::OutReal OutReal;
-    typedef typename Inherit::OutDeriv  OutDeriv;
-    typedef typename Inherit::InDeriv  InDeriv;
-
-    typedef typename Inherit::MBloc MBloc;
-    typedef typename Inherit::MatrixType MatrixType;
-
-    typedef typename Inherit::ForceMask ForceMask;
-
 
 protected:
     topology::EdgeSetTopologyContainer*	m_fromContainer;
-    topology::EdgeSetGeometryAlgorithms<In>*	m_fromGeomAlgo;
+    topology::EdgeSetGeometryAlgorithms<In>* m_fromGeomAlgo;
 
     using Inherit::d_map;
     using Inherit::m_fromTopology;
@@ -678,7 +685,12 @@ protected:
 
     virtual ~BarycentricMapperEdgeSetTopology() {}
 
-    helper::vector<Real> getBaryCoef(const Real* f)
+    virtual helper::vector<Element> getElements() override
+    {
+        return this->m_fromTopology->getEdges();
+    }
+
+    virtual helper::vector<Real> getBaryCoef(const Real* f) override
     {
         return getBaryCoef(f[0]);
     }
@@ -689,42 +701,47 @@ protected:
         return edgeCoef;
     }
 
+    virtual void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Element& element) override
+    {
+        Mat3x3d mt;
+        base[0] = in[element[1]]-in[element[0]];
+        mt.transpose(base);
+        base.invert(mt);
+    }
+
+    virtual void computeCenter(Vector3& center, const typename In::VecCoord& in, const Element& element) override
+    {
+        center = (in[element[0]]+in[element[1]])*0.5;
+    }
+
+    virtual void computeDistance(double& d, const Vector3& v) override
+    {
+        SOFA_UNUSED(d);
+        SOFA_UNUSED(v);
+    }
+
+    virtual void addPointInElement(const int elementIndex, const SReal* baryCoords) override
+    {
+        addPointInLine(elementIndex,baryCoords);
+    }
+
 public:
 
-    int addPointInLine(const int edgeIndex, const SReal* baryCoords) override;
-    int createPointInLine(const typename Out::Coord& p, int edgeIndex, const typename In::VecCoord* points) override;
-
-    void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
-
-    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) override;
-    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) override;
-    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in ) override;
-    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) override;
-
-    virtual const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize) override;
-
-    void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
+    virtual int addPointInLine(const int edgeIndex, const SReal* baryCoords) override;
+    virtual int createPointInLine(const typename Out::Coord& p, int edgeIndex, const typename In::VecCoord* points) override;
 };
 
 
 
 /// Class allowing barycentric mapping computation on a TriangleSetTopology
-template<class In, class Out, class MappingDataType = typename BarycentricMapper<In,Out>::MappingData2D>
-class BarycentricMapperTriangleSetTopology : public BarycentricMapperTopologyContainer<In,Out,MappingDataType>
+template<class In, class Out, class MappingDataType = typename BarycentricMapper<In,Out>::MappingData2D, class Element = Triangle>
+class BarycentricMapperTriangleSetTopology : public BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE3(BarycentricMapperTriangleSetTopology,In,Out,MappingDataType),SOFA_TEMPLATE3(BarycentricMapperTopologyContainer,In,Out,MappingDataType));
+    SOFA_CLASS(SOFA_TEMPLATE4(BarycentricMapperTriangleSetTopology,In,Out,MappingDataType,Element),SOFA_TEMPLATE4(BarycentricMapperTopologyContainer,In,Out,MappingDataType,Element));
     typedef MappingDataType MappingData;
-    typedef BarycentricMapperTopologyContainer<In,Out,MappingData> Inherit;
+    typedef BarycentricMapperTopologyContainer<In,Out,MappingData,Element> Inherit;
     typedef typename Inherit::Real Real;
-    typedef typename Inherit::OutReal OutReal;
-    typedef typename Inherit::OutDeriv  OutDeriv;
-    typedef typename Inherit::InDeriv  InDeriv;
-
-    typedef typename Inherit::MBloc MBloc;
-    typedef typename Inherit::MatrixType MatrixType;
-
-    typedef typename Inherit::ForceMask ForceMask;
 
 protected:
     topology::TriangleSetTopologyContainer*			m_fromContainer;
@@ -741,9 +758,15 @@ protected:
           m_fromGeomAlgo(NULL)
     {}
 
-    virtual ~BarycentricMapperTriangleSetTopology(){}
+    virtual ~BarycentricMapperTriangleSetTopology() {}
 
-    helper::vector<Real> getBaryCoef(const Real* f)
+
+    virtual helper::vector<Element> getElements() override
+    {
+        return this->m_fromTopology->getTriangles();
+    }
+
+    virtual helper::vector<Real> getBaryCoef(const Real* f) override
     {
         return getBaryCoef(f[0],f[1]);
     }
@@ -754,21 +777,35 @@ protected:
         return triangleCoef;
     }
 
+    virtual void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Element& element) override
+    {
+        Mat3x3d mt;
+        base[0] = in[element[1]]-in[element[0]];
+        base[1] = in[element[2]]-in[element[0]];
+        base[2] = cross(base[0],base[1]);
+        mt.transpose(base);
+        base.invert(mt);
+    }
+
+    virtual void computeCenter(Vector3& center, const typename In::VecCoord& in, const Element& element) override
+    {
+        center = (in[element[0]]+in[element[1]]+in[element[2]])/3;
+    }
+
+    virtual void computeDistance(double& d, const Vector3& v) override
+    {
+        d = std::max ( std::max ( -v[0],-v[1] ),std::max ( ( v[2]<0?-v[2]:v[2] )-0.01,v[0]+v[1]-1 ) );
+    }
+
+    virtual void addPointInElement(const int elementIndex, const SReal* baryCoords) override
+    {
+        addPointInTriangle(elementIndex,baryCoords);
+    }
+
 public:
 
     virtual int addPointInTriangle(const int triangleIndex, const SReal* baryCoords) override;
     int createPointInTriangle(const typename Out::Coord& p, int triangleIndex, const typename In::VecCoord* points) override;
-
-    void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
-
-    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) override;
-    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) override;
-    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in ) override;
-    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) override;
-
-    virtual const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize) override;
-
-    void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
 
 #ifdef BARYCENTRIC_MAPPER_TOPOCHANGE_REINIT
     // handle topology changes in the From topology
@@ -779,22 +816,14 @@ public:
 
 
 /// Class allowing barycentric mapping computation on a QuadSetTopology
-template<class In, class Out, class MappingDataType = typename BarycentricMapper<In,Out>::MappingData2D>
-class BarycentricMapperQuadSetTopology : public BarycentricMapperTopologyContainer<In,Out,MappingDataType>
+template<class In, class Out, class MappingDataType = typename BarycentricMapper<In,Out>::MappingData2D, class Element = Quad>
+class BarycentricMapperQuadSetTopology : public BarycentricMapperTopologyContainer<In,Out,MappingDataType, Element>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE3(BarycentricMapperQuadSetTopology,In,Out,MappingDataType),SOFA_TEMPLATE3(BarycentricMapperTopologyContainer,In,Out,MappingDataType));
+    SOFA_CLASS(SOFA_TEMPLATE4(BarycentricMapperQuadSetTopology,In,Out,MappingDataType,Element),SOFA_TEMPLATE4(BarycentricMapperTopologyContainer,In,Out,MappingDataType,Element));
     typedef MappingDataType MappingData;
-    typedef BarycentricMapperTopologyContainer<In,Out,MappingData> Inherit;
+    typedef BarycentricMapperTopologyContainer<In,Out,MappingData,Element> Inherit;
     typedef typename Inherit::Real Real;
-    typedef typename Inherit::OutReal OutReal;
-    typedef typename Inherit::OutDeriv  OutDeriv;
-    typedef typename Inherit::InDeriv  InDeriv;
-
-    typedef typename Inherit::MBloc MBloc;
-    typedef typename Inherit::MatrixType MatrixType;
-
-    typedef typename Inherit::ForceMask ForceMask;
 
 protected:
     topology::QuadSetTopologyContainer*			m_fromContainer;
@@ -813,7 +842,13 @@ protected:
 
     virtual ~BarycentricMapperQuadSetTopology() {}
 
-    helper::vector<Real> getBaryCoef(const Real* f)
+
+    virtual helper::vector<Element> getElements() override
+    {
+        return this->m_fromTopology->getQuads();
+    }
+
+    virtual helper::vector<Real> getBaryCoef(const Real* f) override
     {
         return getBaryCoef(f[0],f[1]);
     }
@@ -827,48 +862,53 @@ protected:
         return quadCoef;
     }
 
+    virtual void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Element& element) override
+    {
+        Mat3x3d matrixTranspose;
+        base[0] = in[element[1]]-in[element[0]];
+        base[1] = in[element[3]]-in[element[0]];
+        base[2] = cross(base[0],base[1]);
+        matrixTranspose.transpose(base);
+        base.invert(matrixTranspose);
+    }
+
+    virtual void computeCenter(Vector3& center, const typename In::VecCoord& in, const Element& element) override
+    {
+        center = ( in[element[0]]+in[element[1]]+in[element[2]]+in[element[3]] ) *0.25;
+    }
+
+    virtual void computeDistance(double& d, const Vector3& v) override
+    {
+        d = std::max ( std::max ( -v[0],-v[1] ),std::max ( std::max ( v[1]-1,v[0]-1 ),std::max ( v[2]-0.01,-v[2]-0.01 ) ) );
+    }
+
+    virtual void addPointInElement(const int elementIndex, const SReal* baryCoords) override
+    {
+        addPointInQuad(elementIndex,baryCoords);
+    }
+
 public:
 
-    int addPointInQuad(const int index, const SReal* baryCoords) override;
-    int createPointInQuad(const typename Out::Coord& p, int index, const typename In::VecCoord* points) override;
-
-    void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
-
-    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) override;
-    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) override;
-    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in ) override;
-    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) override;
-
-    virtual const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize) override;
-
-    void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
+    virtual int addPointInQuad(const int index, const SReal* baryCoords) override;
+    virtual int createPointInQuad(const typename Out::Coord& p, int index, const typename In::VecCoord* points) override;
 };
 
 
 
 /// Class allowing barycentric mapping computation on a TetrahedronSetTopology
-template<class In, class Out, class MappingDataType = typename BarycentricMapper<In,Out>::MappingData3D>
-class BarycentricMapperTetrahedronSetTopology : BarycentricMapperTopologyContainer<In,Out,MappingDataType>
+template<class In, class Out, class MappingDataType = typename BarycentricMapper<In,Out>::MappingData3D, class Element = Tetrahedron>
+class BarycentricMapperTetrahedronSetTopology : public BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE3(BarycentricMapperTetrahedronSetTopology,In,Out,MappingDataType),SOFA_TEMPLATE3(BarycentricMapperTopologyContainer,In,Out,MappingDataType));
+    SOFA_CLASS(SOFA_TEMPLATE4(BarycentricMapperTetrahedronSetTopology,In,Out,MappingDataType,Element),SOFA_TEMPLATE4(BarycentricMapperTopologyContainer,In,Out,MappingDataType,Element));
     typedef MappingDataType MappingData;
-    typedef BarycentricMapperTopologyContainer<In,Out,MappingData> Inherit;
+    typedef BarycentricMapperTopologyContainer<In,Out,MappingData,Element> Inherit;
     typedef typename Inherit::Real Real;
-    typedef typename Inherit::OutReal OutReal;
-    typedef typename Inherit::OutDeriv  OutDeriv;
-    typedef typename Inherit::InDeriv  InDeriv;
-
     typedef typename In::VecCoord VecCoord;
 
-    typedef typename Inherit::MBloc MBloc;
-    typedef typename Inherit::MatrixType MatrixType;
-
-    typedef typename Inherit::ForceMask ForceMask;
 
 protected:
 
-    VecCoord m_actualTetraPosition;
     topology::TetrahedronSetTopologyContainer*      m_fromContainer;
     topology::TetrahedronSetGeometryAlgorithms<In>*	m_fromGeomAlgo;
 
@@ -883,9 +923,15 @@ protected:
           m_fromGeomAlgo(NULL)
     {}
 
-    virtual ~BarycentricMapperTetrahedronSetTopology() {}
+    virtual ~BarycentricMapperTetrahedronSetTopology() override {}
 
-    helper::vector<Real> getBaryCoef(const Real* f)
+
+    virtual helper::vector<Element> getElements() override
+    {
+        return this->m_fromTopology->getTetrahedra();
+    }
+
+    virtual helper::vector<Real> getBaryCoef(const Real* f) override
     {
         return getBaryCoef(f[0],f[1],f[2]);
     }
@@ -896,40 +942,47 @@ protected:
         return tetrahedronCoef;
     }
 
+    virtual void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Element& element) override
+    {
+        Mat3x3d matrixTranspose;
+        base[0] = in[element[1]]-in[element[0]];
+        base[1] = in[element[2]]-in[element[0]];
+        base[2] = in[element[3]]-in[element[0]];
+        matrixTranspose.transpose(base);
+        base.invert(matrixTranspose);
+    }
+
+    virtual void computeCenter(Vector3& center, const typename In::VecCoord& in, const Element& element) override
+    {
+        center = ( in[element[0]]+in[element[1]]+in[element[2]]+in[element[3]] ) *0.25;
+    }
+
+    virtual void computeDistance(double& d, const Vector3& v) override
+    {
+        d = std::max ( std::max ( -v[0],-v[1] ), std::max ( -v[2],v[0]+v[1]+v[2]-1 ) );
+    }
+
+    virtual void addPointInElement(const int elementIndex, const SReal* baryCoords) override
+    {
+        addPointInTetra(elementIndex,baryCoords);
+    }
+
 public:
-    int addPointInTetra(const int index, const SReal* baryCoords) override ;
 
-    void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
-
-    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) override;
-    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) override;
-    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in ) override;
-    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) override;
-
-    virtual const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize) override;
-
-    void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
+    virtual int addPointInTetra(const int index, const SReal* baryCoords) override ;
 };
 
 
 
 /// Class allowing barycentric mapping computation on a HexahedronSetTopology
-template<class In, class Out, class MappingDataType = typename BarycentricMapper<In, Out>::MappingData3D>
-class BarycentricMapperHexahedronSetTopology : public BarycentricMapperTopologyContainer<In,Out,MappingDataType>
+template<class In, class Out, class MappingDataType = typename BarycentricMapper<In, Out>::MappingData3D, class Element = Hexahedron>
+class BarycentricMapperHexahedronSetTopology : public BarycentricMapperTopologyContainer<In,Out,MappingDataType,Element>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE3(BarycentricMapperHexahedronSetTopology,In,Out,MappingDataType),SOFA_TEMPLATE3(BarycentricMapperTopologyContainer,In,Out,MappingDataType));
+    SOFA_CLASS(SOFA_TEMPLATE4(BarycentricMapperHexahedronSetTopology,In,Out,MappingDataType,Element),SOFA_TEMPLATE4(BarycentricMapperTopologyContainer,In,Out,MappingDataType,Element));
     typedef MappingDataType MappingData;
-    typedef BarycentricMapperTopologyContainer<In,Out,MappingData> Inherit;
+    typedef BarycentricMapperTopologyContainer<In,Out,MappingData,Element> Inherit;
     typedef typename Inherit::Real Real;
-    typedef typename Inherit::OutReal OutReal;
-    typedef typename Inherit::OutDeriv  OutDeriv;
-    typedef typename Inherit::InDeriv  InDeriv;
-
-    typedef typename Inherit::MBloc MBloc;
-    typedef typename Inherit::MatrixType MatrixType;
-
-    typedef typename Inherit::ForceMask ForceMask;
 
 protected:
     topology::HexahedronSetTopologyContainer*		m_fromContainer;
@@ -956,7 +1009,12 @@ protected:
     virtual ~BarycentricMapperHexahedronSetTopology() {}
 
 
-    helper::vector<Real> getBaryCoef(const Real* f)
+    virtual helper::vector<Element> getElements() override
+    {
+        return this->m_fromTopology->getHexahedra();
+    }
+
+    virtual helper::vector<Real> getBaryCoef(const Real* f) override
     {
         return getBaryCoef(f[0],f[1],f[2]);
     }
@@ -974,27 +1032,38 @@ protected:
         return hexahedronCoef;
     }
 
+    virtual void computeBase(Mat3x3d& base, const typename In::VecCoord& in, const Element& element) override
+    {
+        Mat3x3d matrixTranspose;
+        base[0] = in[element[1]]-in[element[0]];
+        base[1] = in[element[3]]-in[element[0]];
+        base[2] = in[element[4]]-in[element[0]];
+        matrixTranspose.transpose(base);
+        base.invert(matrixTranspose);
+    }
+
+    virtual void computeCenter(Vector3& center, const typename In::VecCoord& in, const Element& element) override
+    {
+        center = ( in[element[0]]+in[element[1]]+in[element[2]]+in[element[3]]+in[element[4]]+in[element[5]]+in[element[6]]+in[element[7]] ) *0.125;
+    }
+
+    virtual void computeDistance(double& d, const Vector3& v) override
+    {
+        d = std::max ( std::max ( -v[0],-v[1] ),std::max ( std::max ( -v[2],v[0]-1 ),std::max ( v[1]-1,v[2]-1 ) ) );
+    }
+
+    virtual void addPointInElement(const int elementIndex, const SReal* baryCoords) override
+    {
+        addPointInCube(elementIndex,baryCoords);
+    }
+
 public:
 
-    int addPointInCube(const int index, const SReal* baryCoords) override;
-
-    int setPointInCube(const int pointIndex, const int cubeIndex, const SReal* baryCoords) override;
-
-    void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
-
-    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) override;
-    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) override;
-    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in ) override;
-    void applyJT( typename In::MatrixDeriv& out, const typename Out::MatrixDeriv& in ) override;
-
-    virtual const sofa::defaulttype::BaseMatrix* getJ(int outSize, int inSize) override;
-
-    void draw(const core::visual::VisualParams*,const typename Out::VecCoord& out, const typename In::VecCoord& in) override;
-
+    virtual int addPointInCube(const int index, const SReal* baryCoords) override;
+    virtual int setPointInCube(const int pointIndex, const int cubeIndex, const SReal* baryCoords) override;
     //-- test mapping partiel
-    void applyOnePoint( const unsigned int& hexaId, typename Out::VecCoord& out, const typename In::VecCoord& in) override;
+    virtual void applyOnePoint( const unsigned int& hexaId, typename Out::VecCoord& out, const typename In::VecCoord& in) override;
     //--
-
     // handle topology changes in the From topology
     virtual void handleTopologyChange(core::topology::Topology* t) override;
 
@@ -1123,12 +1192,16 @@ extern template class SOFA_BASE_MECHANICS_API BarycentricMapperSparseGridTopolog
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperSparseGridTopology< Vec3dTypes, ExtVec3fTypes >;
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperMeshTopology< Vec3dTypes, Vec3dTypes >;
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperMeshTopology< Vec3dTypes, ExtVec3fTypes >;
-extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3dTypes, Vec3dTypes , typename BarycentricMapper<Vec3dTypes, Vec3dTypes>::MappingData1D>;
-extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3dTypes, ExtVec3fTypes , typename BarycentricMapper<Vec3dTypes, ExtVec3fTypes>::MappingData1D>;
-extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3dTypes, Vec3dTypes , typename BarycentricMapper<Vec3dTypes, Vec3dTypes>::MappingData2D>;
-extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3dTypes, ExtVec3fTypes , typename BarycentricMapper<Vec3dTypes, ExtVec3fTypes>::MappingData2D>;
-extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3dTypes, Vec3dTypes , typename BarycentricMapper<Vec3dTypes, Vec3dTypes>::MappingData3D>;
-extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3dTypes, ExtVec3fTypes , typename BarycentricMapper<Vec3dTypes, ExtVec3fTypes>::MappingData3D>;
+extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3dTypes, Vec3dTypes , typename BarycentricMapper<Vec3dTypes, Vec3dTypes>::MappingData1D, Edge>;
+extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3dTypes, ExtVec3fTypes , typename BarycentricMapper<Vec3dTypes, ExtVec3fTypes>::MappingData1D, Edge>;
+extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3dTypes, Vec3dTypes , typename BarycentricMapper<Vec3dTypes, Vec3dTypes>::MappingData2D, Triangle>;
+extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3dTypes, ExtVec3fTypes , typename BarycentricMapper<Vec3dTypes, ExtVec3fTypes>::MappingData2D, Triangle>;
+extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3dTypes, Vec3dTypes , typename BarycentricMapper<Vec3dTypes, Vec3dTypes>::MappingData2D, Quad>;
+extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3dTypes, ExtVec3fTypes , typename BarycentricMapper<Vec3dTypes, ExtVec3fTypes>::MappingData2D, Quad>;
+extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3dTypes, Vec3dTypes , typename BarycentricMapper<Vec3dTypes, Vec3dTypes>::MappingData3D, Tetrahedron>;
+extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3dTypes, ExtVec3fTypes , typename BarycentricMapper<Vec3dTypes, ExtVec3fTypes>::MappingData3D, Tetrahedron>;
+extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3dTypes, Vec3dTypes , typename BarycentricMapper<Vec3dTypes, Vec3dTypes>::MappingData3D, Hexahedron>;
+extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3dTypes, ExtVec3fTypes , typename BarycentricMapper<Vec3dTypes, ExtVec3fTypes>::MappingData3D, Hexahedron>;
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperEdgeSetTopology< Vec3dTypes, Vec3dTypes>;
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperEdgeSetTopology< Vec3dTypes, ExtVec3fTypes>;
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTriangleSetTopology< Vec3dTypes, Vec3dTypes >;
@@ -1153,12 +1226,16 @@ extern template class SOFA_BASE_MECHANICS_API BarycentricMapperSparseGridTopolog
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperSparseGridTopology< Vec3fTypes, ExtVec3fTypes >;
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperMeshTopology< Vec3fTypes, Vec3fTypes >;
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperMeshTopology< Vec3fTypes, ExtVec3fTypes >;
-extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3fTypes, Vec3fTypes , typename BarycentricMapper<Vec3fTypes, Vec3fTypes>::MappingData1D>;
-extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3fTypes, ExtVec3fTypes , typename BarycentricMapper<Vec3fTypes, ExtVec3fTypes>::MappingData1D>;
-extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3fTypes, Vec3fTypes , typename BarycentricMapper<Vec3fTypes, Vec3fTypes>::MappingData2D>;
-extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3fTypes, ExtVec3fTypes , typename BarycentricMapper<Vec3fTypes, ExtVec3fTypes>::MappingData2D>;
-extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3fTypes, Vec3fTypes , typename BarycentricMapper<Vec3fTypes, Vec3fTypes>::MappingData3D>;
-extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3fTypes, ExtVec3fTypes , typename BarycentricMapper<Vec3fTypes, ExtVec3fTypes>::MappingData3D>;
+extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3fTypes, Vec3fTypes , typename BarycentricMapper<Vec3fTypes, Vec3fTypes>::MappingData1D, Edge>;
+extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3fTypes, ExtVec3fTypes , typename BarycentricMapper<Vec3fTypes, ExtVec3fTypes>::MappingData1D, Edge>;
+extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3fTypes, Vec3fTypes , typename BarycentricMapper<Vec3fTypes, Vec3fTypes>::MappingData2D, Triangle>;
+extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3fTypes, ExtVec3fTypes , typename BarycentricMapper<Vec3fTypes, ExtVec3fTypes>::MappingData2D, Triangle>;
+extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3fTypes, Vec3fTypes , typename BarycentricMapper<Vec3fTypes, Vec3fTypes>::MappingData2D, Quad>;
+extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3fTypes, ExtVec3fTypes , typename BarycentricMapper<Vec3fTypes, ExtVec3fTypes>::MappingData2D, Quad>;
+extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3fTypes, Vec3fTypes , typename BarycentricMapper<Vec3fTypes, Vec3fTypes>::MappingData3D, Tetrahedron>;
+extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3fTypes, ExtVec3fTypes , typename BarycentricMapper<Vec3fTypes, ExtVec3fTypes>::MappingData3D, Tetrahedron>;
+extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3fTypes, Vec3fTypes , typename BarycentricMapper<Vec3fTypes, Vec3fTypes>::MappingData3D, Hexahedron>;
+extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3fTypes, ExtVec3fTypes , typename BarycentricMapper<Vec3fTypes, ExtVec3fTypes>::MappingData3D, Hexahedron>;
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperEdgeSetTopology< Vec3fTypes, Vec3fTypes>;
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperEdgeSetTopology< Vec3fTypes, ExtVec3fTypes>;
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTriangleSetTopology< Vec3fTypes, Vec3fTypes >;
@@ -1184,12 +1261,16 @@ extern template class SOFA_BASE_MECHANICS_API BarycentricMapperSparseGridTopolog
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperSparseGridTopology< Vec3fTypes, Vec3dTypes >;
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperMeshTopology< Vec3dTypes, Vec3fTypes >;
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperMeshTopology< Vec3fTypes, Vec3dTypes >;
-extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3dTypes, Vec3fTypes , typename BarycentricMapper<Vec3dTypes, Vec3fTypes>::MappingData1D>;
-extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3fTypes, Vec3dTypes , typename BarycentricMapper<Vec3fTypes, Vec3dTypes>::MappingData1D>;
-extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3dTypes, Vec3fTypes , typename BarycentricMapper<Vec3dTypes, Vec3fTypes>::MappingData2D>;
-extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3fTypes, Vec3dTypes , typename BarycentricMapper<Vec3fTypes, Vec3dTypes>::MappingData2D>;
-extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3dTypes, Vec3fTypes , typename BarycentricMapper<Vec3dTypes, Vec3fTypes>::MappingData3D>;
-extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3fTypes, Vec3dTypes , typename BarycentricMapper<Vec3fTypes, Vec3dTypes>::MappingData3D>;
+extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3dTypes, Vec3fTypes , typename BarycentricMapper<Vec3dTypes, Vec3fTypes>::MappingData1D,Edge>;
+extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3fTypes, Vec3dTypes , typename BarycentricMapper<Vec3fTypes, Vec3dTypes>::MappingData1D,Edge>;
+extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3dTypes, Vec3fTypes , typename BarycentricMapper<Vec3dTypes, Vec3fTypes>::MappingData2D,Triangle>;
+extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3fTypes, Vec3dTypes , typename BarycentricMapper<Vec3fTypes, Vec3dTypes>::MappingData2D,Triangle>;
+extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3dTypes, Vec3fTypes , typename BarycentricMapper<Vec3dTypes, Vec3fTypes>::MappingData2D,Quad>;
+extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3fTypes, Vec3dTypes , typename BarycentricMapper<Vec3fTypes, Vec3dTypes>::MappingData2D,Quad>;
+extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3dTypes, Vec3fTypes , typename BarycentricMapper<Vec3dTypes, Vec3fTypes>::MappingData3D,Tetrahedron>;
+extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3fTypes, Vec3dTypes , typename BarycentricMapper<Vec3fTypes, Vec3dTypes>::MappingData3D,Tetrahedron>;
+extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3dTypes, Vec3fTypes , typename BarycentricMapper<Vec3dTypes, Vec3fTypes>::MappingData3D,Hexahedron>;
+extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTopologyContainer< Vec3fTypes, Vec3dTypes , typename BarycentricMapper<Vec3fTypes, Vec3dTypes>::MappingData3D,Hexahedron>;
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperEdgeSetTopology< Vec3dTypes, Vec3fTypes>;
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperEdgeSetTopology< Vec3fTypes, Vec3dTypes>;
 extern template class SOFA_BASE_MECHANICS_API BarycentricMapperTriangleSetTopology< Vec3dTypes, Vec3fTypes >;
