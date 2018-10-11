@@ -142,6 +142,8 @@ public:
                 idsList.push_back(std::string("0")); // ID 0 == "0" or empty string
             }
 
+            static sofa::helper::system::thread::thread_specific_ptr<Id<Base>::IdFactory> instance;
+            
         public:
             
             /**
@@ -186,12 +188,12 @@ public:
             }
 
             /// return the instance of the factory. Creates it if doesn't exist yet.
-            static IdFactory& getInstance()
+            static AdvancedTimer::Id<Base>::IdFactory& getInstance()
             {
-                static sofa::helper::system::thread::thread_specific_ptr<IdFactory> instance;
+                static sofa::helper::system::thread::thread_specific_ptr<AdvancedTimer::Id<Base>::IdFactory> instance;
                 if (instance == nullptr)
                 {
-                    instance = new IdFactory;
+                    instance = new AdvancedTimer::Id<Base>::IdFactory;
                 }
                 return *instance;
             }
